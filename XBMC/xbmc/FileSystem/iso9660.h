@@ -143,35 +143,53 @@ struct iso_directories
 	struct iso_dirtree*			dir;
 	struct iso_directories*	next;
 };
+#define MAX_ISO_FILES 30
 
 class iso9660
 {
 public:
+  class isofile
+  {
+    public:
+	    bool				m_bUseMode2;
+	    DWORD				m_dwCircBuffBegin;
+	    DWORD				m_dwCircBuffEnd;
+	    DWORD				m_dwCircBuffSectorStart;
+
+	    DWORD				m_dwStartBlock;
+	    DWORD				m_dwCurrentBlock;				// Current being read Block
+	    __int64			m_dwFilePos;
+	    BYTE*       m_pBuffer;
+	    __int64			m_dwFileSize;
+  };
 	iso9660( );
 	virtual ~iso9660(  );
 
-	HANDLE							FindFirstFile( char *szLocalFolder, WIN32_FIND_DATA *wfdFile );
-	int									FindNextFile( HANDLE szLocalFolder, WIN32_FIND_DATA *wfdFile );
-	bool								FindClose( HANDLE szLocalFolder );
-	DWORD								SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHigh,  DWORD dwMoveMethod  );
-	__int64							GetFileSize();
-	__int64							GetFilePosition();
-	__int64							Seek(int fd, __int64 lOffset, int whence);
-	HANDLE							OpenFile( const char* filename );
-	long								ReadFile(int fd, byte *pBuffer, long lSize);
-	void								CloseFile();
+	HANDLE						FindFirstFile( char *szLocalFolder, WIN32_FIND_DATA *wfdFile );
+	int								FindNextFile( HANDLE szLocalFolder, WIN32_FIND_DATA *wfdFile );
+	bool							FindClose( HANDLE szLocalFolder );
+	DWORD							SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHigh,  DWORD dwMoveMethod  );
+	__int64						GetFileSize(HANDLE hFile);
+	__int64						GetFilePosition(HANDLE hFile);
+	__int64           Seek(HANDLE hFile, __int64 lOffset, int whence);
+	HANDLE						OpenFile( const char* filename );
+	long							ReadFile(HANDLE fd, byte *pBuffer, long lSize);
+	void							CloseFile(HANDLE hFile);
+  void              Reset();
+  void              Scan();
 
 protected:
 	struct iso_dirtree*					ReadRecursiveDirFromSector( DWORD sector, const char * );
 	struct iso_dirtree*					FindFolder( char *Folder );
 	string											GetThinText(WCHAR* strTxt, int iLen );
-	bool												ReadSectorFromCache(DWORD sector, byte** ppBuffer);
-	void												ReleaseSectorFromCache(DWORD sector);
+	bool												ReadSectorFromCache(iso9660::isofile* pContext, DWORD sector, byte** ppBuffer);
+  void												ReleaseSectorFromCache(iso9660::isofile* pContext, DWORD sector);
 	const string								ParseName(struct	iso9660_Directory& isodir);
-
+  HANDLE                      AllocFileContext();
+  void                        FreeFileContext(HANDLE hFile);
+  isofile*                    GetFileContext(HANDLE hFile);
 	struct iso_dirtree*					m_dirtree;
 	struct iso9660info					m_info;
-	bool												m_bUseMode2;
 	CIoSupport									m_IoSupport;
 	string											m_strReturn;
 
@@ -181,10 +199,12 @@ protected:
 	struct iso_directories*			m_lastpath;
 	
 	vector<struct iso_dirtree*> m_vecDirsAndFiles;
-	static int									m_iReferences;
-	static HANDLE								m_hCDROM;
-
+  
+	HANDLE								      m_hCDROM;
+  isofile*                    m_isoFiles[MAX_ISO_FILES];
 	#define CIRC_BUFFER_SIZE 10
+#if 0
+	bool												m_bUseMode2;
 	DWORD				m_dwCircBuffBegin;
 	DWORD				m_dwCircBuffEnd;
 	DWORD				m_dwCircBuffSectorStart;
@@ -194,8 +214,8 @@ protected:
 	__int64			m_dwFilePos;
 	BYTE*       m_pBuffer;
 	__int64			m_dwFileSize;
-
+#endif
 
 };
-
+extern class iso9660 m_isoReader;
 #endif

@@ -32,7 +32,8 @@ namespace XFILE
 		virtual __int64			Seek(__int64 iFilePosition, int iWhence=SEEK_SET);
 		virtual void					Close();
 	protected:
-		iso9660*			m_pIsoReader;
+    bool          m_bOpened;
+    HANDLE        m_hFile;
 		CRingBuffer   m_cache;
 	};
 };

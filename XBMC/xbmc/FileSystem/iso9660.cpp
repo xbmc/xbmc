@@ -19,9 +19,10 @@ ISO9660
 #include "iso9660.h"
 #include "../utils/singlelock.h"
 #include "stdstring.h"
-#define _DEBUG_OUTPUT 1
-int iso9660::m_iReferences=0;
-HANDLE iso9660::m_hCDROM=NULL;
+//#define _DEBUG_OUTPUT 1
+
+class iso9660 m_isoReader;
+
 static CRITICAL_SECTION m_critSection;
 #define BUFFER_SIZE MODE2_DATA_SIZE
 #define RET_ERR -1
@@ -357,14 +358,17 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 //******************************************************************************************************************
 iso9660::iso9660( )
 {
-	m_bUseMode2=false;
-	if (!m_iReferences)
-	{
-		m_hCDROM = m_IoSupport.OpenCDROM();
-		InitializeCriticalSection(&m_critSection);
-	}
+  memset(m_isoFiles,0,sizeof(m_isoFiles));
+  InitializeCriticalSection(&m_critSection);
+  m_hCDROM=NULL;
+  Reset();
+}
 
-	m_iReferences++;
+void iso9660::Scan()
+{
+
+  m_hCDROM = m_IoSupport.OpenCDROM();
+	
 	
 	m_paths = 0;
 	m_lastpath = 0;
@@ -426,6 +430,13 @@ iso9660::iso9660( )
 //******************************************************************************************************************  
 iso9660::~iso9660(  )
 {
+	DeleteCriticalSection(&m_critSection);
+  Reset();
+}
+
+void iso9660::Reset()
+{
+
 	if (m_info.Curr_dir)
 		free(m_info.Curr_dir);
 	m_info.Curr_dir=NULL;
@@ -453,18 +464,20 @@ iso9660::~iso9660(  )
 		if (pDir->name) free(pDir->name);
 		free(pDir);
 	}
+  m_vecDirsAndFiles.erase(m_vecDirsAndFiles.begin(),m_vecDirsAndFiles.end());
 
-	m_iReferences--;
-	if (!m_iReferences)
+  for (int i=0; i < MAX_ISO_FILES;++i)
+  {
+    FreeFileContext( (HANDLE)i);
+  }
+
+	if (m_hCDROM)
 	{
-		DeleteCriticalSection(&m_critSection);
-		if (m_hCDROM)
-		{
-			m_IoSupport.CloseCDROM(m_hCDROM);
-		}
-		m_hCDROM=NULL;
+		m_IoSupport.CloseCDROM(m_hCDROM);
 	}
+	m_hCDROM=NULL;
 }
+
 //******************************************************************************************************************
 struct iso_dirtree *iso9660::FindFolder( char *Folder )
 {
@@ -577,12 +590,15 @@ string iso9660::GetThinText(WCHAR* strTxt, int iLen )
 HANDLE iso9660::OpenFile(const char *filename)
 {
 	if (m_info.ISO_HANDLE==NULL) return INVALID_HANDLE_VALUE;
+  HANDLE hContext=AllocFileContext();
+  if (hContext==INVALID_HANDLE_VALUE) return hContext;
 
+  iso9660::isofile* pContext=GetFileContext(hContext);
 	
 	WIN32_FIND_DATA fileinfo;
 	char *pointer,*pointer2;
 	char work[512];
-	m_bUseMode2=false;
+	pContext->m_bUseMode2=false;
 	m_info.curr_filepos = 0;
 
 	pointer = (char*)filename;
@@ -606,57 +622,63 @@ HANDLE iso9660::OpenFile(const char *filename)
 			loop = FindNextFile( NULL, &fileinfo );
 	}
 	if( loop == 0 )
+  {
+    FreeFileContext(hContext);
 		return INVALID_HANDLE_VALUE;
+  }
 
-
-	m_dwCurrentBlock=m_searchpointer->Location;
-	m_dwFileSize=m_info.curr_filesize = fileinfo.nFileSizeLow;
-
-	m_pBuffer    = new byte[CIRC_BUFFER_SIZE*BUFFER_SIZE];
-	m_dwStartBlock=m_dwCurrentBlock;
-	m_dwFilePos=0;
-	m_dwCircBuffBegin = 0;
-	m_dwCircBuffEnd = 0;
-	m_dwCircBuffSectorStart = 0;
-	m_bUseMode2 = false;
+	pContext->m_dwCurrentBlock=m_searchpointer->Location;
+	pContext->m_dwFileSize=m_info.curr_filesize = fileinfo.nFileSizeLow;
+	pContext->m_pBuffer    = new byte[CIRC_BUFFER_SIZE*BUFFER_SIZE];
+	pContext->m_dwStartBlock=pContext->m_dwCurrentBlock;
+	pContext->m_dwFilePos=0;
+	pContext->m_dwCircBuffBegin = 0;
+	pContext->m_dwCircBuffEnd = 0;
+	pContext->m_dwCircBuffSectorStart = 0;
+	pContext->m_bUseMode2 = false;
 
 	bool bError;
 
 	EnterCriticalSection(&m_critSection);
-	bError = (m_IoSupport.ReadSector(m_info.ISO_HANDLE,m_dwStartBlock, (char*)&(m_pBuffer[0])) <0);
+	bError = (m_IoSupport.ReadSector(m_info.ISO_HANDLE,pContext->m_dwStartBlock, (char*)&(pContext->m_pBuffer[0])) <0);
 	if( bError )
 	{
-		bError = (m_IoSupport.ReadSectorMode2(m_info.ISO_HANDLE,m_dwStartBlock, (char*)&(m_pBuffer[0])) <0);
+		bError = (m_IoSupport.ReadSectorMode2(m_info.ISO_HANDLE,pContext->m_dwStartBlock, (char*)&(pContext->m_pBuffer[0])) <0);
 		if( !bError )
-			m_bUseMode2 = true;		
+			pContext->m_bUseMode2 = true;		
 	}
 	LeaveCriticalSection(&m_critSection);
-	if (m_bUseMode2)
-		m_dwFileSize = (m_dwFileSize / 2048) * MODE2_DATA_SIZE;
+	if (pContext->m_bUseMode2)
+		pContext->m_dwFileSize = (pContext->m_dwFileSize / 2048) * MODE2_DATA_SIZE;
+  
+	return hContext;		
+}
 
-	return m_info.ISO_HANDLE;		
-}
 //************************************************************************************
-void iso9660::CloseFile()
+void iso9660::CloseFile(HANDLE hFile)
 {
-	if (m_pBuffer)
-	{
-		delete [] m_pBuffer;
-		m_pBuffer=NULL;
-	}
+  iso9660::isofile* pContext=GetFileContext(hFile);
+  if (pContext)
+  {
+	  if (pContext->m_pBuffer)
+	  {
+		  delete [] pContext->m_pBuffer;
+		  pContext->m_pBuffer=NULL;
+	  }
+  }
+  FreeFileContext(hFile);
 }
 //************************************************************************************
-bool iso9660::ReadSectorFromCache(DWORD sector, byte** ppBuffer)
+bool iso9660::ReadSectorFromCache(iso9660::isofile* pContext, DWORD sector, byte** ppBuffer)
 {
 	
-
-	DWORD StartSectorInCircBuff = m_dwCircBuffSectorStart;
+	DWORD StartSectorInCircBuff = pContext->m_dwCircBuffSectorStart;
 	DWORD SectorsInCircBuff;
 
-	if( m_dwCircBuffEnd >= m_dwCircBuffBegin )
-		SectorsInCircBuff = m_dwCircBuffEnd - m_dwCircBuffBegin;
+	if( pContext->m_dwCircBuffEnd >= pContext->m_dwCircBuffBegin )
+		SectorsInCircBuff = pContext->m_dwCircBuffEnd - pContext->m_dwCircBuffBegin;
 	else
-		SectorsInCircBuff = CIRC_BUFFER_SIZE - (m_dwCircBuffBegin - m_dwCircBuffEnd);
+		SectorsInCircBuff = CIRC_BUFFER_SIZE - (pContext->m_dwCircBuffBegin - pContext->m_dwCircBuffEnd);
 
 	// If our sector is already in the circular buffer
 	if( sector >= StartSectorInCircBuff &&
@@ -665,11 +687,11 @@ bool iso9660::ReadSectorFromCache(DWORD sector, byte** ppBuffer)
 	{
 		// Just retrieve it
 		DWORD SectorInCircBuff = (sector - StartSectorInCircBuff) +
-									m_dwCircBuffBegin;
+									pContext->m_dwCircBuffBegin;
 		if( SectorInCircBuff >= CIRC_BUFFER_SIZE )
 			SectorInCircBuff -= CIRC_BUFFER_SIZE;
 
-		*ppBuffer = &(m_pBuffer[SectorInCircBuff]);
+		*ppBuffer = &(pContext->m_pBuffer[SectorInCircBuff]);
 	}
 	else
 	{
@@ -686,16 +708,16 @@ bool iso9660::ReadSectorFromCache(DWORD sector, byte** ppBuffer)
 			if( SectorIsAdjacentInBuffer )
 			{
 				// Release the first sector in cache
-				m_dwCircBuffBegin++;
-				if( m_dwCircBuffBegin >= CIRC_BUFFER_SIZE )
-					m_dwCircBuffBegin -= CIRC_BUFFER_SIZE;
-				m_dwCircBuffSectorStart++;
+				pContext->m_dwCircBuffBegin++;
+				if( pContext->m_dwCircBuffBegin >= CIRC_BUFFER_SIZE )
+					pContext->m_dwCircBuffBegin -= CIRC_BUFFER_SIZE;
+				pContext->m_dwCircBuffSectorStart++;
 				SectorsInCircBuff--;
 			}
 			else
 			{
-				m_dwCircBuffBegin = m_dwCircBuffEnd = 0;
-				m_dwCircBuffSectorStart = 0;
+				pContext->m_dwCircBuffBegin = pContext->m_dwCircBuffEnd = 0;
+				pContext->m_dwCircBuffSectorStart = 0;
 				SectorsInCircBuff = 0;
 				SectorIsAdjacentInBuffer = 0;
 			}
@@ -703,37 +725,37 @@ bool iso9660::ReadSectorFromCache(DWORD sector, byte** ppBuffer)
 		// Ok, we're ready to read the sector into the cache
 		bool bError;
 		EnterCriticalSection(&m_critSection);
-		if( m_bUseMode2 )
+		if( pContext->m_bUseMode2 )
 		{
-			bError = (m_IoSupport.ReadSectorMode2(m_info.ISO_HANDLE,sector, (char*)&(m_pBuffer[m_dwCircBuffEnd])) <0);
+			bError = (m_IoSupport.ReadSectorMode2(m_info.ISO_HANDLE,sector, (char*)&(pContext->m_pBuffer[pContext->m_dwCircBuffEnd])) <0);
 		}
 		else
 		{
-			bError = (m_IoSupport.ReadSector(m_info.ISO_HANDLE,sector, (char*)&(m_pBuffer[m_dwCircBuffEnd])) <0);
+			bError = (m_IoSupport.ReadSector(m_info.ISO_HANDLE,sector, (char*)&(pContext->m_pBuffer[pContext->m_dwCircBuffEnd])) <0);
 		}
 		LeaveCriticalSection(&m_critSection);
 		if( bError )
 			return false;
-		*ppBuffer = &(m_pBuffer[m_dwCircBuffEnd]);
-		if( m_dwCircBuffEnd == m_dwCircBuffBegin )
-			m_dwCircBuffSectorStart = sector;
-		m_dwCircBuffEnd++;
-		if( m_dwCircBuffEnd >= CIRC_BUFFER_SIZE )
-			m_dwCircBuffEnd -= CIRC_BUFFER_SIZE;
+		*ppBuffer = &(pContext->m_pBuffer[pContext->m_dwCircBuffEnd]);
+		if( pContext->m_dwCircBuffEnd == pContext->m_dwCircBuffBegin )
+			pContext->m_dwCircBuffSectorStart = sector;
+		pContext->m_dwCircBuffEnd++;
+		if( pContext->m_dwCircBuffEnd >= CIRC_BUFFER_SIZE )
+			pContext->m_dwCircBuffEnd -= CIRC_BUFFER_SIZE;
 	}
 	return true;
 }
 //************************************************************************************
-void iso9660::ReleaseSectorFromCache(DWORD sector)
+void iso9660::ReleaseSectorFromCache(iso9660::isofile* pContext,DWORD sector)
 {
 
-	DWORD StartSectorInCircBuff = m_dwCircBuffSectorStart;
+	DWORD StartSectorInCircBuff = pContext->m_dwCircBuffSectorStart;
 	DWORD SectorsInCircBuff;
 
-	if( m_dwCircBuffEnd >= m_dwCircBuffBegin )
-		SectorsInCircBuff = m_dwCircBuffEnd - m_dwCircBuffBegin;
+	if( pContext->m_dwCircBuffEnd >= pContext->m_dwCircBuffBegin )
+		SectorsInCircBuff = pContext->m_dwCircBuffEnd - pContext->m_dwCircBuffBegin;
 	else
-		SectorsInCircBuff = CIRC_BUFFER_SIZE - (m_dwCircBuffBegin - m_dwCircBuffEnd);
+		SectorsInCircBuff = CIRC_BUFFER_SIZE - (pContext->m_dwCircBuffBegin - pContext->m_dwCircBuffEnd);
 
 	// If our sector is in the circular buffer
 	if( sector >= StartSectorInCircBuff &&
@@ -741,35 +763,37 @@ void iso9660::ReleaseSectorFromCache(DWORD sector)
 		SectorsInCircBuff > 0 )
 	{
 		DWORD SectorsToFlush = sector - StartSectorInCircBuff + 1;
-		m_dwCircBuffBegin += SectorsToFlush;
+		pContext->m_dwCircBuffBegin += SectorsToFlush;
 
-		m_dwCircBuffSectorStart += SectorsToFlush;
-		if( m_dwCircBuffBegin >= CIRC_BUFFER_SIZE )
-			m_dwCircBuffBegin -= CIRC_BUFFER_SIZE;
+		pContext->m_dwCircBuffSectorStart += SectorsToFlush;
+		if( pContext->m_dwCircBuffBegin >= CIRC_BUFFER_SIZE )
+			pContext->m_dwCircBuffBegin -= CIRC_BUFFER_SIZE;
 	}
 }
 //************************************************************************************
-long iso9660::ReadFile(int fd, byte *pBuffer, long lSize)
+long iso9660::ReadFile(HANDLE hFile, byte *pBuffer, long lSize)
 {
 	bool bError;
 	long iBytesRead=0;
 	DWORD sectorSize = 2048;
+  iso9660::isofile* pContext=GetFileContext(hFile);
+  if (!pContext) return -1;
 
-	if( m_bUseMode2 )
+	if( pContext->m_bUseMode2 )
 		sectorSize = MODE2_DATA_SIZE;
 	
-  while (lSize > 0 && m_dwFilePos <= m_dwFileSize)
+  while (lSize > 0 && pContext->m_dwFilePos <= pContext->m_dwFileSize)
 	{
-		m_dwCurrentBlock  = (DWORD) (m_dwFilePos/sectorSize);
-		__int64 iOffsetInBuffer= m_dwFilePos - (sectorSize*m_dwCurrentBlock);
-		m_dwCurrentBlock += m_dwStartBlock;
+		pContext->m_dwCurrentBlock  = (DWORD) (pContext->m_dwFilePos/sectorSize);
+		__int64 iOffsetInBuffer= pContext->m_dwFilePos - (sectorSize*pContext->m_dwCurrentBlock);
+		pContext->m_dwCurrentBlock += pContext->m_dwStartBlock;
 
 		//char szBuf[256];
 		//sprintf(szBuf,"pos:%i cblk:%i sblk:%i off:%i",(long)m_dwFilePos, (long)m_dwCurrentBlock,(long)m_dwStartBlock,(long)iOffsetInBuffer);
 		//DBG(szBuf);
 
 		byte* pSector;
-		bError = !ReadSectorFromCache(m_dwCurrentBlock, &pSector);
+		bError = !ReadSectorFromCache(pContext,pContext->m_dwCurrentBlock, &pSector);
 		if (!bError)
 		{
 			DWORD iBytes2Copy =lSize;
@@ -780,13 +804,13 @@ long iso9660::ReadFile(int fd, byte *pBuffer, long lSize)
 			memcpy( &pBuffer[iBytesRead], &pSector[iOffsetInBuffer], iBytes2Copy);
 			iBytesRead += iBytes2Copy;
 			lSize      -= iBytes2Copy;
-			m_dwFilePos += iBytes2Copy;
+			pContext->m_dwFilePos += iBytes2Copy;
 
 			if( iBytes2Copy + iOffsetInBuffer == sectorSize )
-				ReleaseSectorFromCache(m_dwCurrentBlock);
+				ReleaseSectorFromCache(pContext,pContext->m_dwCurrentBlock);
 			
 			// Why is this done?  It is recalculated at the beginning of the loop
-			m_dwCurrentBlock += BUFFER_SIZE / MODE2_DATA_SIZE;
+			pContext->m_dwCurrentBlock += BUFFER_SIZE / MODE2_DATA_SIZE;
 			
 		}
 		else 
@@ -799,44 +823,88 @@ long iso9660::ReadFile(int fd, byte *pBuffer, long lSize)
 	return iBytesRead;
 }
 //************************************************************************************
-__int64 iso9660::Seek(int fd, __int64 lOffset, int whence)
+__int64 iso9660::Seek(HANDLE hFile, __int64 lOffset, int whence)
 {
-	__int64 dwFilePos=m_dwFilePos;
+  iso9660::isofile* pContext=GetFileContext(hFile);
+  if (!pContext) return -1;
+
+  __int64 dwFilePos=pContext->m_dwFilePos;
 	switch(whence)  
 	{
 		case SEEK_SET:
 			// cur = pos
-			m_dwFilePos = lOffset;
+			pContext->m_dwFilePos = lOffset;
 			break;
  
 		case SEEK_CUR: 
 			// cur += pos
-			m_dwFilePos += lOffset;
+			pContext->m_dwFilePos += lOffset;
 			break;
 		case SEEK_END:
 			// end -= pos
-			m_dwFilePos = m_dwFileSize - lOffset;
+			pContext->m_dwFilePos = pContext->m_dwFileSize - lOffset;
 			break;
 	}
 
-	if (m_dwFilePos >m_dwFileSize || m_dwFilePos<0)
+	if (pContext->m_dwFilePos >pContext->m_dwFileSize || pContext->m_dwFilePos<0)
 	{
-		m_dwFilePos=dwFilePos;
-		return m_dwFilePos;
+		pContext->m_dwFilePos=dwFilePos;
+		return pContext->m_dwFilePos;
 	}
 
 
-	return m_dwFilePos;
+	return pContext->m_dwFilePos;
 }
 
 
 //************************************************************************************
-__int64 iso9660::GetFileSize()
+__int64 iso9660::GetFileSize(HANDLE hFile)
 {
-	return m_dwFileSize;
+  iso9660::isofile* pContext=GetFileContext(hFile);
+  if (!pContext) return -1;
+	return pContext->m_dwFileSize;
 }
+
 //************************************************************************************
-__int64 iso9660::GetFilePosition()
+__int64 iso9660::GetFilePosition(HANDLE hFile)
 {
-	return m_dwFilePos;
+  iso9660::isofile* pContext=GetFileContext(hFile);
+  if (!pContext) return -1;
+	return pContext->m_dwFilePos;
+}
+
+//************************************************************************************
+void iso9660::FreeFileContext(HANDLE hFile)
+{
+  int iFile=(int)hFile;
+  if (iFile  >=1&& iFile <MAX_ISO_FILES)
+  {
+    if (m_isoFiles[iFile ]) delete m_isoFiles[iFile ];
+    m_isoFiles[iFile ]=NULL;
+  }
+}
+
+//************************************************************************************
+HANDLE iso9660::AllocFileContext()
+{
+  for (int i=1; i < MAX_ISO_FILES; ++i)
+  {
+    if (m_isoFiles[i]==NULL) 
+    {
+      m_isoFiles[i] = new isofile();
+      return (HANDLE)i;
+    }
+  }
+  return INVALID_HANDLE_VALUE;
+}
+
+//************************************************************************************
+iso9660::isofile* iso9660::GetFileContext(HANDLE hFile)
+{
+  int iFile=(int)hFile;
+  if (iFile >=1&& iFile <MAX_ISO_FILES)
+  {
+    return m_isoFiles[iFile];
+  }
+  return NULL;
 }
