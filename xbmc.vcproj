@@ -457,6 +457,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\StringUtils.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\XBAudioConfig.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\XboxMediaCenter.cpp">
 			</File>
 			<Filter
@@ -777,9 +780,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Filter="">
 				<File
 					RelativePath=".\xbmc\MusicDatabase.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\MusicDatabaseReorg.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\ProgramDatabase.cpp">
@@ -1203,9 +1203,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\MusicDatabase.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\MusicDatabaseReorg.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\utils\MusicInfoScraper.h">
 			</File>
 			<File
@@ -1330,6 +1327,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\XBApplicationEx.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\XBAudioConfig.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\XBInputEx.h">

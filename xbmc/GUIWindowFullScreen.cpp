@@ -322,7 +322,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
         do
         {
 			setpos = (setpos > jumpsize) ? setpos-jumpsize : 0;
- 			g_application.m_pPlayer->SeekTime(setpos);
+ 			g_application.m_pPlayer->SeekTime(setpos*1000);
  			Sleep(g_stSettings.m_iSmallStepBackDelay); // delay to let mplayer finish its seek (in ms)
  			newpos = (int)g_application.m_pPlayer->GetTime();
  		} while ( (newpos>orgpos-jumpsize) && (setpos>0) && (--triesleft>0));
@@ -829,7 +829,7 @@ void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
 			ih*=3600; 
 			itotal = ih+im+is;
 			if(itotal < g_application.m_pPlayer->GetTotalTime())
-				g_application.m_pPlayer->SeekTime(itotal);
+				g_application.m_pPlayer->SeekTime(itotal*1000);
 			m_iTimeCodePosition = 0;
       m_bShowTime=false;
 		}

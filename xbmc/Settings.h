@@ -303,8 +303,6 @@ public:
 		bool			m_bDetectAsIso;
 		bool			m_bAudioOnAllSpeakers;
 		int				m_iChannels;
-		bool			m_bDD_DTSMultiChannelPassThrough;
-		bool			m_bDDStereoPassThrough;
 		bool			m_bUseID3;
 		char			m_szMusicRecordingDirectory[128];
 		char      m_szAlternateSubtitleDirectory[128];

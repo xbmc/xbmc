@@ -56,7 +56,7 @@ CSettings::CSettings(void)
 	m_ResInfo[HDTV_1080i].Overscan.top = 0;
 	m_ResInfo[HDTV_1080i].Overscan.right = 1920;
 	m_ResInfo[HDTV_1080i].Overscan.bottom = 1080;
-	m_ResInfo[HDTV_1080i].iSubtitles = 1080;
+	m_ResInfo[HDTV_1080i].iSubtitles = (int)(0.965*1080);
 	m_ResInfo[HDTV_1080i].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
 	m_ResInfo[HDTV_1080i].iWidth = 1920;
 	m_ResInfo[HDTV_1080i].iHeight = 1080;
@@ -68,7 +68,7 @@ CSettings::CSettings(void)
 	m_ResInfo[HDTV_720p].Overscan.top = 0;
 	m_ResInfo[HDTV_720p].Overscan.right = 1280;
 	m_ResInfo[HDTV_720p].Overscan.bottom = 720;
-	m_ResInfo[HDTV_720p].iSubtitles = 720;
+	m_ResInfo[HDTV_720p].iSubtitles = (int)(0.965*720);
 	m_ResInfo[HDTV_720p].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
 	m_ResInfo[HDTV_720p].iWidth = 1280;
 	m_ResInfo[HDTV_720p].iHeight = 720;
@@ -80,7 +80,7 @@ CSettings::CSettings(void)
 	m_ResInfo[HDTV_480p_4x3].Overscan.top = 0;
 	m_ResInfo[HDTV_480p_4x3].Overscan.right = 720;
 	m_ResInfo[HDTV_480p_4x3].Overscan.bottom = 480;
-	m_ResInfo[HDTV_480p_4x3].iSubtitles = 480;
+	m_ResInfo[HDTV_480p_4x3].iSubtitles = (int)(0.9*480);
 	m_ResInfo[HDTV_480p_4x3].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
 	m_ResInfo[HDTV_480p_4x3].iWidth = 720;
 	m_ResInfo[HDTV_480p_4x3].iHeight = 480;
@@ -92,7 +92,7 @@ CSettings::CSettings(void)
 	m_ResInfo[HDTV_480p_16x9].Overscan.top = 0;
 	m_ResInfo[HDTV_480p_16x9].Overscan.right = 720;
 	m_ResInfo[HDTV_480p_16x9].Overscan.bottom = 480;
-	m_ResInfo[HDTV_480p_16x9].iSubtitles = 480;
+	m_ResInfo[HDTV_480p_16x9].iSubtitles = (int)(0.965*480);
 	m_ResInfo[HDTV_480p_16x9].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
 	m_ResInfo[HDTV_480p_16x9].iWidth = 720;
 	m_ResInfo[HDTV_480p_16x9].iHeight = 480;
@@ -104,7 +104,7 @@ CSettings::CSettings(void)
 	m_ResInfo[NTSC_4x3].Overscan.top = 0;
 	m_ResInfo[NTSC_4x3].Overscan.right = 720;
 	m_ResInfo[NTSC_4x3].Overscan.bottom = 480;
-	m_ResInfo[NTSC_4x3].iSubtitles = 480;
+	m_ResInfo[NTSC_4x3].iSubtitles = (int)(0.9*480);
 	m_ResInfo[NTSC_4x3].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
 	m_ResInfo[NTSC_4x3].iWidth = 720;
 	m_ResInfo[NTSC_4x3].iHeight = 480;
@@ -116,7 +116,7 @@ CSettings::CSettings(void)
 	m_ResInfo[NTSC_16x9].Overscan.top = 0;
 	m_ResInfo[NTSC_16x9].Overscan.right = 720;
 	m_ResInfo[NTSC_16x9].Overscan.bottom = 480;
-	m_ResInfo[NTSC_16x9].iSubtitles = 480;
+	m_ResInfo[NTSC_16x9].iSubtitles = (int)(0.965*480);
 	m_ResInfo[NTSC_16x9].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
 	m_ResInfo[NTSC_16x9].iWidth = 720;
 	m_ResInfo[NTSC_16x9].iHeight = 480;
@@ -128,7 +128,7 @@ CSettings::CSettings(void)
 	m_ResInfo[PAL_4x3].Overscan.top = 0;
 	m_ResInfo[PAL_4x3].Overscan.right = 720;
 	m_ResInfo[PAL_4x3].Overscan.bottom = 576;
-	m_ResInfo[PAL_4x3].iSubtitles = 576;
+	m_ResInfo[PAL_4x3].iSubtitles = (int)(0.9*576);
 	m_ResInfo[PAL_4x3].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
 	m_ResInfo[PAL_4x3].iWidth = 720;
 	m_ResInfo[PAL_4x3].iHeight = 576;
@@ -140,7 +140,7 @@ CSettings::CSettings(void)
 	m_ResInfo[PAL_16x9].Overscan.top = 0;
 	m_ResInfo[PAL_16x9].Overscan.right = 720;
 	m_ResInfo[PAL_16x9].Overscan.bottom = 576;
-	m_ResInfo[PAL_16x9].iSubtitles = 576;
+	m_ResInfo[PAL_16x9].iSubtitles = (int)(0.965*576);
 	m_ResInfo[PAL_16x9].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
 	m_ResInfo[PAL_16x9].iWidth = 720;
 	m_ResInfo[PAL_16x9].iHeight = 576;
@@ -152,7 +152,7 @@ CSettings::CSettings(void)
 	m_ResInfo[PAL60_4x3].Overscan.top = 0;
 	m_ResInfo[PAL60_4x3].Overscan.right = 720;
 	m_ResInfo[PAL60_4x3].Overscan.bottom = 480;
-	m_ResInfo[PAL60_4x3].iSubtitles = 480;
+	m_ResInfo[PAL60_4x3].iSubtitles = (int)(0.9*480);
 	m_ResInfo[PAL60_4x3].iOSDYOffset = -75;	// Y offset for OSD (applied to all Y pos in skin)
 	m_ResInfo[PAL60_4x3].iWidth = 720;
 	m_ResInfo[PAL60_4x3].iHeight = 480;
@@ -164,7 +164,7 @@ CSettings::CSettings(void)
 	m_ResInfo[PAL60_16x9].Overscan.top = 0;
 	m_ResInfo[PAL60_16x9].Overscan.right = 720;
 	m_ResInfo[PAL60_16x9].Overscan.bottom = 480;
-	m_ResInfo[PAL60_16x9].iSubtitles = 480;
+	m_ResInfo[PAL60_16x9].iSubtitles = (int)(0.965*480);
 	m_ResInfo[PAL60_16x9].iOSDYOffset = -75;	// Y offset for OSD (applied to all Y pos in skin)
 	m_ResInfo[PAL60_16x9].iWidth = 720;
 	m_ResInfo[PAL60_16x9].iHeight = 480;
@@ -198,8 +198,6 @@ CSettings::CSettings(void)
 	g_stSettings.m_bNoCache=false;
 	g_stSettings.m_bAudioOnAllSpeakers=false;
 	g_stSettings.m_bUseID3=false;
-	g_stSettings.m_bDD_DTSMultiChannelPassThrough=false;
-	g_stSettings.m_bDDStereoPassThrough=false;
 	g_stSettings.m_bAutorunPictures=true;
 	g_stSettings.m_bAutorunMusic=true;
 	g_stSettings.m_bAutorunVideo=true;
@@ -834,10 +832,13 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
 		int iRes;
 		GetInteger(pResolution, "id", iRes, (int)PAL_4x3, HDTV_1080i, PAL60_16x9); //PAL4x3 as default data
 		GetString(pResolution, "description", m_ResInfo[iRes].strMode, m_ResInfo[iRes].strMode);
-		//		GetInteger(pResolution, "width", m_ResInfo[iRes].iWidth,720,640,10000);
-		//		GetInteger(pResolution, "height", m_ResInfo[iRes].iHeight,576,400,10000);
-		GetInteger(pResolution, "subtitles", m_ResInfo[iRes].iSubtitles,m_ResInfo[iRes].iHeight,m_ResInfo[iRes].iHeight/2,m_ResInfo[iRes].iHeight*5/4);
-		//		GetInteger(pResolution, "flags", (int &)m_ResInfo[iRes].dwFlags,0,INT_MIN,INT_MAX);
+		// get the appropriate "safe graphics area" = 10% for 4x3, 3.5% for 16x9
+		float fSafe;
+		if (iRes == PAL_4x3 || iRes == NTSC_4x3 || iRes == PAL60_4x3 || iRes == HDTV_480p_4x3)
+			fSafe = 0.1f;
+		else
+			fSafe = 0.035f;
+		GetInteger(pResolution, "subtitles", m_ResInfo[iRes].iSubtitles,(int)((1-fSafe)*m_ResInfo[iRes].iHeight),m_ResInfo[iRes].iHeight/2,m_ResInfo[iRes].iHeight*5/4);
 		GetFloat(pResolution, "pixelratio", m_ResInfo[iRes].fPixelRatio,128.0f/117.0f,0.5f,2.0f);
 		GetInteger(pResolution, "osdyoffset", m_ResInfo[iRes].iOSDYOffset,0,-m_ResInfo[iRes].iHeight,m_ResInfo[iRes].iHeight);
 
@@ -875,11 +876,8 @@ bool CSettings::SaveCalibration(TiXmlNode* pRootNode) const
 		// Now write each of the pieces of information we need...
 		SetString(pNode, "description", m_ResInfo[i].strMode);
 		SetInteger(pNode, "id", i);
-		SetInteger(pNode, "width", m_ResInfo[i].iWidth);
-		SetInteger(pNode, "height", m_ResInfo[i].iHeight);
 		SetInteger(pNode, "subtitles", m_ResInfo[i].iSubtitles);
 		SetInteger(pNode, "osdyoffset", m_ResInfo[i].iOSDYOffset);
-		SetInteger(pNode, "flags", m_ResInfo[i].dwFlags);
 		SetFloat(pNode, "pixelratio", m_ResInfo[i].fPixelRatio);
 		// create the overscan child
 		TiXmlElement overscanElement("overscan");
@@ -1209,8 +1207,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 	{
 		GetBoolean(pElement, "audioonallspeakers", g_stSettings.m_bAudioOnAllSpeakers);
 		GetInteger(pElement, "channels",g_stSettings.m_iChannels,2,0,INT_MAX);
-		GetBoolean(pElement, "ac3passthru51", g_stSettings.m_bDD_DTSMultiChannelPassThrough);
-		GetBoolean(pElement, "ac3passthru21", g_stSettings.m_bDDStereoPassThrough);
 		GetBoolean(pElement, "useid3", g_stSettings.m_bUseID3);
 		GetString(pElement, "visualisation", g_stSettings.szDefaultVisualisation, g_stSettings.szDefaultVisualisation);
 		GetBoolean(pElement, "autoshuffleplaylist", g_stSettings.m_bAutoShufflePlaylist);
@@ -1590,8 +1586,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	if (!pNode) return false;
 	SetBoolean(pNode, "audioonallspeakers", g_stSettings.m_bAudioOnAllSpeakers);
 	SetInteger(pNode, "channels",g_stSettings.m_iChannels);
-	SetBoolean(pNode, "ac3passthru51", g_stSettings.m_bDD_DTSMultiChannelPassThrough);
-	SetBoolean(pNode, "ac3passthru21", g_stSettings.m_bDDStereoPassThrough);
 	SetBoolean(pNode, "useid3", g_stSettings.m_bUseID3);
 	SetString(pNode, "visualisation", g_stSettings.szDefaultVisualisation);
 	SetBoolean(pNode, "autoshuffleplaylist", g_stSettings.m_bAutoShufflePlaylist);
