@@ -5,7 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-  - 08-11-2004 fixed: my music songs, record button was not enabled/disabled immediately after starting/stopping a shoutcast stream
+  - 09-11-2004 fixed: my music songs, record button was not enabled/disabled immediately after starting/stopping a shoutcast stream
   - 08-11-2004 added: new command "XBMC.RestartApp" for skinners to restart only the application
   - 08-11-2004 changed: xbmc will now only restart xbmc instead of the xbox when soft restart is requested
   - 07-11-2004 added: xbmc will now check for necessary files when executing a python script
