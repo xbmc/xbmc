@@ -555,7 +555,7 @@ unsigned int Directx_ManageDisplay()
 
 			// calculate AR compensation (see http://www.iki.fi/znark/video/conversion)
 			float fOutputFrameRatio = fSourceFrameRatio / g_settings.m_ResInfo[iRes].fPixelRatio; 
-			if (m_iResolution == HDTV_1080i) fOutputFrameRatio *= 2;
+//			if (m_iResolution == HDTV_1080i) fOutputFrameRatio *= 2;
 
 			// assume that the movie is widescreen first, so use full height
 			float fVertBorder=0;
@@ -609,7 +609,7 @@ unsigned int Directx_ManageDisplay()
 		// and keep the aspect ratio (introduces with black bars)
 
 		float fOutputFrameRatio = fSourceFrameRatio / g_settings.m_ResInfo[iRes].fPixelRatio; 
-		if (m_iResolution == HDTV_1080i) fOutputFrameRatio *= 2;
+//		if (m_iResolution == HDTV_1080i) fOutputFrameRatio *= 2;
 
 		// maximize the movie width
 		float fNewWidth  = iScreenWidth;
@@ -1032,8 +1032,8 @@ void xbox_video_CheckScreenSaver()
 void xbox_video_getAR(float& fAR)
 {
 	float fOutputPixelRatio = g_settings.m_ResInfo[m_iResolution].fPixelRatio;
-	if (m_iResolution == HDTV_1080i)
-		fOutputPixelRatio /= 2;
+//	if (m_iResolution == HDTV_1080i)
+//		fOutputPixelRatio /= 2;
 	float fWidth = (float)(rd.right - rd.left);
 	float fHeight = (float)(rd.bottom - rd.top);
 	fAR = fWidth/fHeight*fOutputPixelRatio;
