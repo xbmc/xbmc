@@ -12,6 +12,8 @@ public:
 	CStdString GetText() const {return m_strEdit;};
 	bool IsDirty() { return m_bDirty; };
 
+	static bool ShowAndGetInput(CStdString& aTextString, bool allowEmptyResult);
+
 protected:
 	
 	virtual void OnInitWindow();

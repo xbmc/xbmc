@@ -36,6 +36,7 @@ CHTTP::CHTTP(const string& strProxyServer, int iProxyPort)
 CHTTP::CHTTP()
 :m_socket(INVALID_SOCKET)
 {
+	m_bProxyEnabled=g_stSettings.m_bHTTPProxyEnabled;
 	m_strProxyServer=g_stSettings.m_szHTTPProxy;
 	m_iProxyPort=g_stSettings.m_iHTTPProxyPort;
 	m_strCookie="";
@@ -268,7 +269,7 @@ bool CHTTP::Connect()
 	service.sin_family = AF_INET;
 	memset(service.sin_zero, 0, sizeof(service.sin_zero));
 
-	if (m_strProxyServer.size())
+	if (m_bProxyEnabled)
 	{
 		// connect to proxy server
 		service.sin_addr.s_addr = inet_addr(m_strProxyServer.c_str());

@@ -1856,10 +1856,97 @@
 		<id>704</id>
 		<value>Press No to just add new songs.</value>
 	</string>
-	
+	<string>
+		<id>705</id>
+		<value>Network</value>
+	</string>
+	<string>
+		<id>706</id>
+		<value>HTTP Proxy Host:</value>
+	</string>
+	<string>
+		<id>707</id>
+		<value>HTTP Proxy Port:</value>
+	</string>
+	<string>
+		<id>708</id>
+		<value>Enable HTTP Proxy</value>
+	</string>
+	<string>
+		<id>709</id>
+		<value>XLink Kai XTag:</value>
+	</string>
+	<string>
+		<id>710</id>
+		<value>XLink Kai Password:</value>
+	</string>
+	<string>
+		<id>711</id>
+		<value>Internet Protocol (IP) Settings</value>
+	</string>
+	<string>
+		<id>712</id>
+		<value>Invalid port specified. Value must be between 1 and 65535.</value>
+	</string>
+	<string>
+		<id>713</id>
+		<value>HTTP Proxy Settings</value>
+	</string>	
+	<string>
+		<id>714</id>
+		<value>XLink Kai Settings</value>
+	</string>	
+	<string>
+		<id>715</id>
+		<value>Assignment:</value>
+	</string>	
+	<string>
+		<id>716</id>
+		<value>Automatic (DHCP)</value>
+	</string>	
+	<string>
+		<id>717</id>
+		<value>Manual (Static)</value>
+	</string>	
+	<string>
+		<id>718</id>
+		<value>Default (Dashboard)</value>
+	</string>	
+	<string>
+		<id>719</id>
+		<value>IP Address:</value>
+	</string>	
+	<string>
+		<id>720</id>
+		<value>Netmask:</value>
+	</string>	
+	<string>
+		<id>721</id>
+		<value>Default Gateway:</value>
+	</string>	
+	<string>
+		<id>722</id>
+		<value>DNS Server:</value>
+	</string>
+	<string>
+		<id>723</id>
+		<value>Save Settings and Reset XBox</value>
+	</string>
+	<string>
+		<id>724</id>
+		<value>Invalid address specified. Value must be AAA.BBB.CCC.DDD</value>
+	</string>
+	<string>
+		<id>725</id>
+		<value>with numbers between 0 and 255.</value>
+	</string>
+	<string>
+		<id>726</id>
+		<value>Changes not saved. Continue without saving?</value>
+	</string>
 	<string>
 		<id>998</id>
-		<value>XLink KAI</value>
+		<value>XLink Kai</value>
 	</string>
 	<string>
 		<id>999</id>
