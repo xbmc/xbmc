@@ -1565,7 +1565,8 @@ void CApplication::OnKey(CKey& key)
 	// Reset the screensaver timer
 	// but not for the analog thumbsticks
 	if (key.GetButtonCode() != KEY_BUTTON_LEFT_THUMB_STICK &&
-		key.GetButtonCode() != KEY_BUTTON_RIGHT_THUMB_STICK)
+		key.GetButtonCode() != KEY_BUTTON_RIGHT_THUMB_STICK &&
+    key.GetButtonCode() != KEY_BUTTON_LEFT_THUMB_BUTTON)
 	{
 		// reset harddisk spindown timer
 		m_bSpinDown        = false;
@@ -2588,9 +2589,6 @@ bool CApplication::ResetScreenSaverWindow()
 
 void CApplication::CheckScreenSaver()
 {
-	D3DGAMMARAMP Ramp;
-	FLOAT fFadeLevel;
-
 	if ( m_gWindowManager.IsRouted()) return;
 	if (g_guiSettings.GetInt("LCD.Mode")==LCD_MODE_NOTV) return;
 
@@ -2631,49 +2629,56 @@ void CApplication::CheckScreenSaver()
 			// no, then check the timer if screensaver should pop up
 			if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("ScreenSaver.Time")*60*1000L) )
 			{
-				//yes, show the screensaver
-				m_bScreenSave = true;
-				m_dwSaverTick=timeGetTime();		// Save the current time for the shutdown timeout
-
-				CStdString strScreenSaver = g_guiSettings.GetString("ScreenSaver.Mode");
-				if (strScreenSaver == "Dim")
-				{
-					fFadeLevel = (FLOAT) g_guiSettings.GetInt("ScreenSaver.DimLevel") / 100; // 0.07f;
-				}
-				else if (strScreenSaver == "Black")
-				{
-					fFadeLevel = 0;
-				}
-				else if (strScreenSaver != "None")
-				{
-					if (!IsPlayingVideo())
-					{
-						m_gWindowManager.ActivateWindow(WINDOW_SCREENSAVER);
-						return;
-					}
-					else
-					{
-						fFadeLevel = (FLOAT) g_guiSettings.GetInt("ScreenSaver.DimLevel") / 100; // 0.07f;
-					}
-				}
-				m_pd3dDevice->GetGammaRamp(&m_OldRamp);	// Store the old gamma ramp
-				// Fade to fFadeLevel
-				for (float fade=1.f; fade>=fFadeLevel; fade-=0.01f)
-				{
-					for(int i=0;i<256;i++)
-					{
-						Ramp.red[i]=(int)((float)m_OldRamp.red[i]*fade);
-						Ramp.green[i]=(int)((float)m_OldRamp.green[i]*fade);
-						Ramp.blue[i]=(int)((float)m_OldRamp.blue[i]*fade);
-					}
-					Sleep(5);
-					m_pd3dDevice->SetGammaRamp(D3DSGR_IMMEDIATE, &Ramp);	// use immediate to get a smooth fade
-				}
-			}
+      	//yes, show the screensaver
+        ActivateScreenSaver();
+      }
 		}
 	}
+}
 
-	return;
+void CApplication::ActivateScreenSaver()
+{
+	D3DGAMMARAMP Ramp;
+	FLOAT fFadeLevel;
+
+  m_bInactive = true;
+	m_bScreenSave = true;
+	m_dwSaverTick=timeGetTime();		// Save the current time for the shutdown timeout
+
+	CStdString strScreenSaver = g_guiSettings.GetString("ScreenSaver.Mode");
+	if (strScreenSaver == "Dim")
+	{
+		fFadeLevel = (FLOAT) g_guiSettings.GetInt("ScreenSaver.DimLevel") / 100; // 0.07f;
+	}
+	else if (strScreenSaver == "Black")
+	{
+		fFadeLevel = 0;
+	}
+	else if (strScreenSaver != "None")
+	{
+		if (!IsPlayingVideo())
+		{
+			m_gWindowManager.ActivateWindow(WINDOW_SCREENSAVER);
+			return;
+		}
+		else
+		{
+			fFadeLevel = (FLOAT) g_guiSettings.GetInt("ScreenSaver.DimLevel") / 100; // 0.07f;
+		}
+	}
+	m_pd3dDevice->GetGammaRamp(&m_OldRamp);	// Store the old gamma ramp
+	// Fade to fFadeLevel
+	for (float fade=1.f; fade>=fFadeLevel; fade-=0.01f)
+	{
+		for(int i=0;i<256;i++)
+		{
+			Ramp.red[i]=(int)((float)m_OldRamp.red[i]*fade);
+			Ramp.green[i]=(int)((float)m_OldRamp.green[i]*fade);
+			Ramp.blue[i]=(int)((float)m_OldRamp.blue[i]*fade);
+		}
+		Sleep(5);
+		m_pd3dDevice->SetGammaRamp(D3DSGR_IMMEDIATE, &Ramp);	// use immediate to get a smooth fade
+	}
 }
 
 void CApplication::CheckShutdown()

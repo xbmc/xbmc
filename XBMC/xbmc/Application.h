@@ -136,6 +136,7 @@ public:
   void          CheckNetworkHDSpinDown(bool playbackStarted = false);
 	void					CheckHDSpindown();
 	void				  CheckScreenSaver();		// CB: SCREENSAVER PATCH
+	void				  ActivateScreenSaver();
 	void				  CheckShutdown();
 	void					SetCurrentSong(const CMusicInfoTag& tag);
 	void					SetCurrentMovie(const CIMDBMovie& tag);
