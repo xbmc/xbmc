@@ -1542,6 +1542,10 @@
     <id>469</id>
     <value>OSD Position</value>
   </string>
+  <string>
+    <id>470</id>
+    <value>Credits</value>
+  </string>
 <string><id>10000</id><value>Home</value></string>
 <string><id>10001</id><value>My Programs</value></string>
 <string><id>10002</id><value>My Pictures</value></string>

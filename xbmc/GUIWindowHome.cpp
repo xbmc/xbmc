@@ -107,7 +107,14 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 					g_application.Stop();
 					XKUtils::XBOXPowerCycle();
 				}
-      }
+				break;
+
+				case 13:
+				{
+					RunCredits();
+				}
+				break;
+			}
     }
     break;
   }
