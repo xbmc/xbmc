@@ -2,6 +2,7 @@
 #include "settings.h"
 #include "StdString.h"
 #include "crc32.h"
+#include "LocalizeStrings.h"
 
 CSong::CSong()
 {
@@ -204,9 +205,27 @@ long CMusicDatabase::AddAlbum(const CStdString& strAlbum1, long lArtistId)
 
 	if (NULL==m_pDB.get()) return -1;
 	if (NULL==m_pDS.get()) return -1;
-	CStdString strSQL="select * from album where strAlbum like '";
-	strSQL += strAlbum;
-	strSQL += "'";
+
+	VECSONGS songs;
+	GetSongsByAlbum(strAlbum1, songs);
+	if (songs.size()>1)
+	{
+		//	Are the artists of this album all the same
+		for (int i=0; i < (int)songs.size()-1; i++)
+		{
+			CSong song=songs[i];
+			CSong song1=songs[i+1];
+			if (song.strArtist!=song1.strArtist)
+			{
+				CStdString strVariousArtists=g_localizeStrings.Get(340);
+				lArtistId=AddArtist(strVariousArtists);
+				break;
+			}
+		}
+	}
+
+	CStdString strSQL;
+	strSQL.Format("select * from album where strAlbum like '%s'", strAlbum);
 	m_pDS->query(strSQL.c_str());
 	if (m_pDS->num_rows() == 0) 
 	{
@@ -219,8 +238,17 @@ long CMusicDatabase::AddAlbum(const CStdString& strAlbum1, long lArtistId)
 	}
 	else
 	{
-		const field_value value = m_pDS->fv("idAlbum");
-		long lAlbumID=value.get_asLong() ;
+		long lAlbumID=m_pDS->fv("idAlbum").get_asLong();
+		long lArtistID=m_pDS->fv("idArtist").get_asLong();
+
+		// Is this a "Various Artists" album which has another artist set?
+		if (lArtistID!=lArtistId)
+		{
+			char sSQL[1024];
+			sprintf(sSQL,"update album set idArtist=%i where idAlbum=%i", lArtistId, lAlbumID);
+			m_pDS->exec(sSQL);
+		}
+
 		return lAlbumID;
 	}
 
@@ -467,8 +495,11 @@ bool CMusicDatabase::GetArtists(VECARTISTS& artists)
 	artists.erase(artists.begin(), artists.end());
 	if (NULL==m_pDB.get()) return false;
 	if (NULL==m_pDS.get()) return false;
+	// Exclude "Various Artists"
+	CStdString strVariousArtists=g_localizeStrings.Get(340);
+	long lVariousArtistId=AddArtist(strVariousArtists);
 	char szSQL[1024];
-	sprintf(szSQL,"select * from artist " );
+	sprintf(szSQL,"select * from artist where idArtist <> %i ", lVariousArtistId );
 	if (!m_pDS->query(szSQL)) return false;
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound== 0) return false;
