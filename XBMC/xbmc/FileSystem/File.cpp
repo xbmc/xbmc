@@ -106,6 +106,7 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 		if (!szFileName) szFileName = strrchr(strFileName, '/');
 
 		// Presize file for faster writes
+		// removed it since this isn't supported by samba
 		/*LARGE_INTEGER size;
 		size.QuadPart = llFileSizeOrg;
 		::SetFilePointerEx(hMovie, size, 0, FILE_BEGIN);
@@ -237,7 +238,7 @@ void CFile::Close()
 //*********************************************************************************************
 __int64 CFile::Seek(__int64 iFilePosition, int iWhence)
 {
-	if (m_pFile) return m_pFile->Seek( iFilePosition, iWhence);
+	if (m_pFile) return m_pFile->Seek(iFilePosition, iWhence);
 	return 0;
 }
 
