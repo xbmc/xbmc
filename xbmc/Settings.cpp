@@ -1239,8 +1239,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 	pElement = pRootElement->FirstChildElement("slideshow");
 	if (pElement)
 	{
-		GetInteger(pElement, "transistiontime", g_stSettings.m_iSlideShowTransistionTime,2000,500,INT_MAX);
-		GetInteger(pElement, "staytime", g_stSettings.m_iSlideShowStayTime,3000,500,INT_MAX);
+		GetInteger(pElement, "transistiontime", g_stSettings.m_iSlideShowTransistionTime,1500,500,INT_MAX);
+		GetInteger(pElement, "staytime", g_stSettings.m_iSlideShowStayTime,9000,500,INT_MAX);
 		GetFloat(pElement, "moveamount", g_stSettings.m_fSlideShowMoveAmount,0.20f,0,0.5f);
 		GetFloat(pElement, "zoomamount", g_stSettings.m_fSlideShowZoomAmount,0.07f,0,0.5f);
 		GetFloat(pElement, "blackbarcompensation", g_stSettings.m_fSlideShowBlackBarCompensation,0.3f,0,0.5f);
