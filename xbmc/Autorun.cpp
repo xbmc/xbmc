@@ -5,6 +5,7 @@
 #include "util.h"
 #include "settings.h"
 #include "playlistplayer.h"
+#include "texturemanager.h"
 #include "GuiUserMessages.h"
 #include "guiwindowmanager.h"
 #include "stdstring.h"
@@ -70,7 +71,7 @@ void CAutorun::RunXboxCd()
 	int nAddedToPlaylist = 0;
 	CFactoryDirectory factory;
 	CDirectory* pDir = factory.Create( "D:\\" );
-	bool bPlaying=RunDisc(pDir, "D:",nAddedToPlaylist,true);
+	bool bPlaying=RunDisc(pDir, "D:\\",nAddedToPlaylist,true);
 	if ( !bPlaying && nAddedToPlaylist > 0 )
 	{
 		CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
@@ -129,7 +130,7 @@ void CAutorun::RunISOMedia()
 	int nAddedToPlaylist = 0;
 	CFactoryDirectory factory;
 	CDirectory* pDir = factory.Create( "iso9660://" );
-	bool bPlaying=RunDisc(pDir, "iso9660:",nAddedToPlaylist,true);
+	bool bPlaying=RunDisc(pDir, "iso9660://",nAddedToPlaylist,true);
 	if ( !bPlaying && nAddedToPlaylist > 0 )
 	{
 		CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
@@ -143,6 +144,9 @@ bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAdded
 {
 	bool bPlaying(false);
 	VECFILEITEMS vecItems;
+	char szSlash='\\';
+	if (strDrive.Find("iso9660") != -1) szSlash='/';
+
 	if ( !pDir->GetDirectory( strDrive, vecItems ) )
 	{
 		return false;
@@ -160,7 +164,8 @@ bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAdded
 					if ( g_stSettings.m_bAutorunDVD ) 
 					{
 						CStdString strFileName;
-						strFileName.Format("%s\\VIDEO_TS\\VIDEO_TS.IFO",strDrive.c_str());
+						strFileName.Format("%s%cVIDEO_TS.IFO",pItem->m_strPath.c_str(),szSlash);
+						g_TextureManager.Flush();
 						g_graphicsContext.SetFullScreenVideo(true);
 						g_application.PlayFile( strFileName );
 						bPlaying=true;
@@ -172,7 +177,8 @@ bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAdded
 					if ( g_stSettings.m_bAutorunVCD ) 
 					{
 						CStdString strFileName;
-						strFileName.Format("%s\\MPEGAV\\AVSEQ01.DAT",strDrive.c_str());
+						strFileName.Format("%s%cAVSEQ01.DAT",pItem->m_strPath.c_str(),szSlash);
+						g_TextureManager.Flush();
 						g_graphicsContext.SetFullScreenVideo(true);
 						g_application.PlayFile( strFileName );
 						bPlaying=true;
