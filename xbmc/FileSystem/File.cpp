@@ -43,7 +43,7 @@ CFile::~CFile()
 }
 
 //*********************************************************************************************
-bool CFile::Cache(const char* strFileName, const char* szDest, bool bShowCacheDialog)
+bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallback* pCallback, void* pContext)
 {
 	if ( Open(strFileName,true))
 	{
@@ -73,7 +73,25 @@ bool CFile::Cache(const char* strFileName, const char* szDest, bool bShowCacheDi
 				WriteFile(hMovie,buffer,iRead,&dwWrote,NULL);
 				dwFileSize -= iRead;
 				dwPos+= iRead;
-				
+				float fPercent=(float)dwPos;
+				fPercent /= ((float)dwFileSizeOrg);
+				fPercent*=100.0;
+				if ( (int)fPercent != ipercent)
+				{
+					ipercent=(int)fPercent;
+					if (pCallback)
+					{
+						if (!pCallback->OnFileCallback(pContext,ipercent))
+						{
+							// canceled
+							Close();
+							CloseHandle(hMovie);
+							delete [] buffer;
+							::DeleteFile(szDest);
+							return false;
+						}
+					}
+				}				
 			}
 			if (iRead != iBytesToRead) break;
 		}
