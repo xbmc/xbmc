@@ -1078,6 +1078,7 @@ void CGUIWindowMusicNav::AddItemToPlayList(const CFileItem* pItem)
     CStdString strOldGenre = m_strGenre;
     CStdString strOldArtist = m_strArtist;
     CStdString strOldAlbum = m_strAlbum;
+    CStdString strOldAlbumPath = m_strAlbumPath;
     CStdString strDirectory = m_Directory.m_strPath;
     CStdString strOldParentPath = m_strParentPath;
     int iViewAsIcons = m_iViewAsIcons;
@@ -1108,8 +1109,10 @@ void CGUIWindowMusicNav::AddItemToPlayList(const CFileItem* pItem)
         if (pItem->m_strPath.IsEmpty())
           m_strAlbum.Empty();
         else
+        {
           m_strAlbum = pItem->m_musicInfoTag.GetAlbum();
-        m_strAlbumPath = pItem->m_strPath;
+          m_strAlbumPath = pItem->m_strPath;
+        }
       }
       break;
     }
@@ -1130,6 +1133,7 @@ void CGUIWindowMusicNav::AddItemToPlayList(const CFileItem* pItem)
     m_strGenre = strOldGenre;
     m_strArtist = strOldArtist;
     m_strAlbum = strOldAlbum;
+    m_strAlbumPath = strOldAlbumPath;
     m_Directory.m_strPath = strDirectory;
     m_strParentPath = strOldParentPath;
     m_iViewAsIcons = iViewAsIcons;
@@ -1157,6 +1161,7 @@ void CGUIWindowMusicNav::AddItemToTempPlayList(const CFileItem* pItem)
     CStdString strOldGenre = m_strGenre;
     CStdString strOldArtist = m_strArtist;
     CStdString strOldAlbum = m_strAlbum;
+    CStdString strOldAlbumPath = m_strAlbumPath;
     CStdString strDirectory = m_Directory.m_strPath;
     CStdString strOldParentPath = m_strParentPath;
     int iViewAsIcons = m_iViewAsIcons;
@@ -1187,7 +1192,10 @@ void CGUIWindowMusicNav::AddItemToTempPlayList(const CFileItem* pItem)
         if (pItem->m_strPath.IsEmpty())
           m_strAlbum.Empty();
         else
+        {
           m_strAlbum = pItem->m_musicInfoTag.GetAlbum();
+          m_strAlbumPath = pItem->m_strPath;
+        }
       }
       break;
     }
@@ -1208,6 +1216,7 @@ void CGUIWindowMusicNav::AddItemToTempPlayList(const CFileItem* pItem)
     m_strGenre = strOldGenre;
     m_strArtist = strOldArtist;
     m_strAlbum = strOldAlbum;
+    m_strAlbumPath = strOldAlbumPath;
     m_Directory.m_strPath = strDirectory;
     m_strParentPath = strOldParentPath;
     m_iViewAsIcons = iViewAsIcons;
