@@ -56,6 +56,9 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
 	m_pTrueTypeFont->SetTextAntialiasLevel( 0 );
 	m_pTrueTypeFont->SetTextAlignment(XFONT_CENTER);
 
+	float fTextHeight;
+	GetTextExtent( L"W", &m_iMaxCharWidth, &fTextHeight);
+
 	return true;
 }
 
