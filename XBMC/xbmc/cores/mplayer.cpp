@@ -239,7 +239,9 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
   }
   if ( m_bAC3PassTru)
   {
-    //e
+    // this is nice, we can ask mplayer to try hwac3 filter (used for ac3/dts pass-through) first
+    // and if it fails try a52 filter (used for ac3 software decoding) and if that fails
+    // try the other audio codecs (mp3, wma,...)
     m_vecOptions.push_back("-ac");
     m_vecOptions.push_back("hwac3,a52,");
   }
