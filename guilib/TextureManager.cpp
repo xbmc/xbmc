@@ -493,12 +493,13 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 			int iWidth = AnimatedGifSet.FrameWidth;
 			int iHeight= AnimatedGifSet.FrameHeight;
 
+			int iPalletSize = (1 << AnimatedGifSet.m_vecimg[0]->BPP);
 			g_graphicsContext.Get3DDevice()->CreatePalette(D3DPALETTE_256, &pPal);
 			PALETTEENTRY* pal;
 			pPal->Lock((D3DCOLOR**)&pal, 0);
 
-			fast_memcpy(pal, AnimatedGifSet.m_vecimg[0]->Palette, sizeof(PALETTEENTRY)*256);
-			for (int i = 0; i < 256; i++)
+			fast_memcpy(pal, AnimatedGifSet.m_vecimg[0]->Palette, sizeof(PALETTEENTRY)*iPalletSize);
+			for (int i = 0; i < iPalletSize; i++)
 				pal[i].peFlags = 0xff; // alpha
 			if (AnimatedGifSet.m_vecimg[0]->Transparency && AnimatedGifSet.m_vecimg[0]->Transparent >= 0)
 				pal[AnimatedGifSet.m_vecimg[0]->Transparent].peFlags = 0;
