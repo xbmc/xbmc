@@ -596,7 +596,14 @@ void XB_Update(void)
 
 	static int LastChans = 0;
 	if (ActiveChans != LastChans)
+	{
 		XB_Log("%02d:%02d: Active Chans: %03d", pf->positions[pf->sngpos], pf->patpos, LastChans = ActiveChans);
+		if (pf->positions[pf->sngpos] == 14)
+		{
+			for (int i = 0; i < md_hardchn; ++i)
+				XB_Log("Chn: %02d, act=%d, vol=%03d, pan=%03d, frq=%05d", i, VoiceInfo[i].active, VoiceInfo[i].chanvol, VoiceInfo[i].chanpan, VoiceInfo[i].chanfreq);
+		}
+	}
 
 	LeaveCriticalSection(&DSCS);
 }
@@ -894,6 +901,13 @@ void XB_VoicePlay(UBYTE voice,SWORD handle,ULONG start,ULONG size,ULONG reppos,U
 		// not entirely faithful to the original, but distortion sucks more than slightly quieter mods.
 		if (!FAILED(r))
 			VoiceInfo[voice].pdsb[i]->SetHeadroom(300);
+
+		// set buffer defaults
+		VoiceInfo[voice].bufvol[i] = 0;
+		VoiceInfo[voice].buffreq[i] = 48000;
+		VoiceInfo[voice].bufpan[i] = -1;
+		VoiceInfo[voice].rampvol[i] = 0;
+		VoiceInfo[voice].ramppan[i] = 0;
 	}
 
 	if (!FAILED(r))
