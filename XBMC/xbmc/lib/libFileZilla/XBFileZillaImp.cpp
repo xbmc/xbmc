@@ -646,14 +646,14 @@ int CXFServerSettings::GetLogShowPass()
   return XBFILEZILLA(GetServer())->GetOptions()->GetOptionVal(OPTION_LOGSHOWPASS);
 }
 
-void CXFServerSettings::SetCustomPasvEnable(int CustomPasvEnable)
+void CXFServerSettings::SetCustomPasvIpType(int CustomPasvIpType)
 {
-  XBFILEZILLA(GetServer())->GetOptions()->SetOption(OPTION_CUSTOMPASVIPTYPE, CustomPasvEnable);
+  XBFILEZILLA(GetServer())->GetOptions()->SetOption(OPTION_CUSTOMPASVIPTYPE, CustomPasvIpType);
   //XBFILEZILLA(GetServer())->GetOptions()->SetOption(OPTION_CUSTOMPASVENABLE, CustomPasvEnable);
 
 }
 
-int CXFServerSettings::GetCustomPasvEnable()
+int CXFServerSettings::GetCustomPasvIpType()
 {
   return XBFILEZILLA(GetServer())->GetOptions()->GetOptionVal(OPTION_CUSTOMPASVIPTYPE);
  // return XBFILEZILLA(GetServer())->GetOptions()->GetOptionVal(OPTION_CUSTOMPASVENABLE);
