@@ -86,12 +86,12 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 
       if (m_bButtonEnabled)
       {
-        CGUIMessage msg2(GUI_MSG_ENABLED,GetID(),CONTROL_BUTTON,0,0,NULL);
+        CGUIMessage msg2(GUI_MSG_VISIBLE,GetID(),CONTROL_BUTTON,0,0,NULL);
 			  g_graphicsContext.SendMessage(msg2);  
       }
       else
       {
-        CGUIMessage msg2(GUI_MSG_DISABLED,GetID(),CONTROL_BUTTON,0,0,NULL);
+        CGUIMessage msg2(GUI_MSG_HIDDEN,GetID(),CONTROL_BUTTON,0,0,NULL);
 			  g_graphicsContext.SendMessage(msg2);  
       }
 			return true;
