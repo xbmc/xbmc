@@ -199,6 +199,8 @@ void CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, VECFI
 		iCurrentSong=g_playlistPlayer.GetCurrentSong();
 
 	CStdString strPath,strFileName;
+	m_vecItems.reserve(playlist.size());
+
 	for (int i=0; i < playlist.size(); ++i)
 	{
 		const CPlayList::CPlayListItem& item = playlist[i];
