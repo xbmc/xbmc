@@ -972,7 +972,14 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
   {
     g_playlistPlayer.Reset();
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-    g_playlistPlayer.Play(0);
+    if (g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC))
+    {
+      // if shuffled dont start on first song
+      g_playlistPlayer.SetCurrentSong(0);
+      g_playlistPlayer.PlayNext();
+    }
+    else
+      g_playlistPlayer.Play(0);
   }
 }
 
