@@ -1507,7 +1507,11 @@
   <string>
     <id>450</id>
     <value>Spalten:</value>
-  </string> 
+  </string>
+	<string>
+		<id>4501</id>
+		<value>LCD Typ</value>
+	</string>
   <string>
     <id>451</id>
     <value>Reihe 1:</value>
@@ -1733,14 +1737,14 @@
   <value>Verzeichnisnamen verwenden</value> 
   </string>
 
-      <string> 	 
-            <id>507</id> 	 
-            <value>n. Verw. ord.</value> 	 
-      </string>
-      <string>
-		<id>508</id>
-		<value>Deaktiviere Verknüpfungen und Durchsuchen</value>
-      </string>
+  <string> 	 
+    <id>507</id> 	 
+    <value>n. Verw. ord.</value> 	 
+  </string>
+  <string>
+    <id>508</id>
+    <value>Deaktiviere Verknüpfungen und Durchsuchen</value>
+  </string>
 
   <string>
     <id>600</id> 
@@ -1837,7 +1841,7 @@
 	</string>
 	<string>
 		<id>636</id>
-		<value>Custom</value>
+		<value>Benutzerdefiniert</value>
 	</string>
 	<string>
 		<id>700</id>
@@ -1978,6 +1982,55 @@
 	<string>
 		<id>734</id>
 		<value>Nicht möglich</value>
+	</string>
+
+	<string>
+		<id>735</id>
+		<value>Zeichentabelle:</value>
+	</string>	
+	<string>
+		<id>736</id>
+		<value>Stil:</value>
+	</string>	
+	<string>
+		<id>737</id>
+		<value>Farbe:</value>
+	</string>
+	<string>
+		<id>738</id>
+		<value>Normal</value>
+	</string>	
+	<string>
+		<id>739</id>
+		<value>Fett</value>
+	</string>	
+	<string>
+		<id>740</id>
+		<value>Kursiv</value>
+	</string>	
+	<string>
+		<id>741</id>
+		<value>Fett Kursiv</value>
+	</string>	
+	<string>
+		<id>742</id>
+		<value>Weiß</value>
+	</string>	
+	<string>
+		<id>743</id>
+		<value>Gelb</value>
+	</string>
+	<string>
+		<id>744</id>
+		<value>Dateien</value>
+	</string>		
+	<string>
+		<id>745</id>
+		<value>Keine Informationen für diese Ansicht</value>
+	</string>		
+	<string>
+		<id>746</id>
+		<value>Wechsle zu Dateienansicht</value>
 	</string>
 
   <string>	
@@ -2253,7 +2306,7 @@
   </string>
   <string>
     <id>13304</id>
-    <value>Zeichentabelle</value>
+    <value>Aktiviere Bi-Direktionale Zeichenfolge</value>
   </string>
   <string>
     <id>13305</id>
