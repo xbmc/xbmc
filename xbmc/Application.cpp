@@ -199,6 +199,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiMusicInfo);				// window id = 2001
 	m_gWindowManager.Add(&m_guiDialogOK);					// window id = 2002
 	m_gWindowManager.Add(&m_guiVideoInfo);				// window id = 2003
+	
   g_graphicsContext.Set(m_pd3dDevice,m_d3dpp.BackBufferWidth,m_d3dpp.BackBufferHeight, (m_d3dpp.Flags&D3DPRESENTFLAG_WIDESCREEN) !=0 );
   m_keyboard.Initialize();
 	m_ctrDpad.SetDelays(g_stSettings.m_iMoveDelayController,g_stSettings.m_iRepeatDelayController);
@@ -206,7 +207,7 @@ HRESULT CApplication::Initialize()
 
 	m_gWindowManager.SetCallback(*this);
 	m_gWindowManager.ActivateWindow(g_stSettings.m_iStartupWindow);
-
+	m_guiMusicOverlay.AllocResources();
   return S_OK;
 }
 
@@ -219,6 +220,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	strSkinPath+="\\skin\\";
 	strSkinPath+=strSkin;
 
+	m_guiMusicOverlay.FreeResources();
 	m_gWindowManager.DeInitialize();
 	g_TextureManager.Cleanup();
 
@@ -241,6 +243,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiDialogSelect.Load( strSkinPath+"\\dialogSelect.xml" );  
 	m_guiDialogOK.Load( strSkinPath+"\\dialogOK.xml" );  
 	m_guiVideoInfo.Load( strSkinPath+"\\DialogVideoInfo.xml" );  
+	m_guiMusicOverlay.Load( strSkinPath+"\\musicOverlay.xml" );  
 }
 
 
@@ -251,7 +254,15 @@ void CApplication::Render()
   
 	
 	m_gWindowManager.Render();
-  
+
+	if (m_pPlayer)
+	{
+		if (m_pPlayer->IsPlaying() )
+		{
+			m_guiMusicOverlay.Render();
+		}
+	}
+
   {
 	  MEMORYSTATUS stat;
 	  GlobalMemoryStatus(&stat);
@@ -556,6 +567,7 @@ void CApplication::Stop()
 		m_pPlayer=NULL;
 	}
 	m_sntpClient.StopThread();
+	m_guiMusicOverlay.FreeResources();
 	g_fontManager.Clear();
 	m_gWindowManager.DeInitialize();
 	g_TextureManager.Cleanup();

@@ -23,11 +23,12 @@ public:
 	const CGUIControl*	GetControl(int iControl) const;
 	void								ClearAll();
 	int									GetFocusedControl() const;
+	void								AllocResources();
+  void								FreeResources();
+  
 protected:
   vector<CGUIControl*> m_vecControls;
   typedef vector<CGUIControl*>::iterator ivecControls;
-  void   AllocResources();
-  void   FreeResources();
   DWORD  m_dwWindowId;
   DWORD  m_dwDefaultFocusControlID;
 };

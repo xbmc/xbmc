@@ -4,7 +4,6 @@
 #include "../DllLoader/dll.h"
 
 
-
 int							(__cdecl* pInitPlayer)(int argc, char* argvp[]);
 int							(__cdecl* pOpenFile)(const char*);
 int							(__cdecl* pProcess)();
@@ -26,7 +25,7 @@ void						(__cdecl* pVODrawAlphargb24)(int w,int h, unsigned char* src, unsigned
 void						(__cdecl* pVODrawAlphargb32)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride);
 void						(__cdecl* pVODrawAlphargb15)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride);
 void						(__cdecl* pVODrawAlphargb16)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride);
-
+__int64					(__cdecl* pGetPTS)();
 
 extern "C" 
 {
@@ -115,6 +114,10 @@ extern "C"
 		pVODrawText(dxs,dys,mydrawalpha);
 	}
 
+	__int64 mplayer_get_pts()
+	{
+		return pGetPTS();
+	}
 
 void mplayer_load_dll(DllLoader& dll)
 {
@@ -181,6 +184,9 @@ void mplayer_load_dll(DllLoader& dll)
 
 	dll.ResolveExport("vo_draw_alpha_rgb16", &pProc);
 	pVODrawAlphargb16=(void (__cdecl*)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride))pProc;
+
+	dll.ResolveExport("mplayer_get_pts", &pProc);
+	pGetPTS=(__int64 (__cdecl*)())pProc;
 
 	pSetVideoFunctions(&video_functions);
 	pSetAudioFunctions(&audio_functions);

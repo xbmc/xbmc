@@ -22,6 +22,7 @@
 #include "GUIWindowSettingsGeneral.h"
 #include "GUIWindowMusicInfo.h" 
 #include "GUIWindowVideoInfo.h"
+#include "GUIWindowMusicOverlay.h"
 #include "LocalizeStrings.h"
 #include "utils/sntp.h"
 #include "utils/delaycontroller.h"
@@ -63,17 +64,18 @@ public:
 	CGUIWindowSettings		m_guiSettings;
 	CGUIWindowSystemInfo	m_guiSystemInfo;
 	CGUIWindowSettingsGeneral m_guiSettingsGeneral;
-	CGUIWindowMusicInfo		m_guiMusicInfo;
-	CGUIWindowVideoInfo   m_guiVideoInfo;
-	CGUIDialogSelect			m_guiDialogSelect;
-  CXBVirtualKeyboard    m_keyboard;
-	CSNTPClient						m_sntpClient;
-	CDelayController			m_ctrDpad;
-	CDelayController			m_ctrIR;
-	Python*								m_pPhytonParser;
-	IPlayer*							m_pPlayer;
+	CGUIWindowMusicInfo			m_guiMusicInfo;
+	CGUIWindowVideoInfo			m_guiVideoInfo;
+	CGUIDialogSelect				m_guiDialogSelect;
+	CGUIWindowMusicOverlay	m_guiMusicOverlay;
+  CXBVirtualKeyboard   		m_keyboard;
+	CSNTPClient							m_sntpClient;
+	CDelayController				m_ctrDpad;
+	CDelayController				m_ctrIR;
+	Python*									m_pPhytonParser;
+	IPlayer*								m_pPlayer;
 protected:
-	vector<int>						m_vecScriptIds;
+	vector<int>							m_vecScriptIds;
 	typedef vector<int>::iterator ivecScriptIds;
 };
 
