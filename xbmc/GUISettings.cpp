@@ -239,7 +239,7 @@ CGUISettings::CGUISettings(void)
 	AddInt(5,"System.ShutDownTime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS);
 	AddBool(6,"System.ShutDownWhilePlaying", 14043, false);
 	AddBool(7,"System.FanSpeedControl", 13302, false);
-	AddInt(8,"System.FanSpeed", 13300, CFanController::Instance()->GetFanSpeed(), 5, 5, 50, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+	AddInt(8,"System.FanSpeed", 13300, CFanController::Instance()->GetFanSpeed(), 5, 1, 50, SPIN_CONTROL_TEXT);
 	AddBool(9,"System.AutoTemperature", 13301, false);
 	AddInt(10,"System.TargetTemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
 
