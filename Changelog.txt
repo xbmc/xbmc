@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 06-03-2005 added: HttpApi patch as described here http://www.xboxmediaplayer.de/cgi-bin/forums/ikonboard.pl?s=227ea528324363fb8af20c24d5ff3ddd;act=ST;f=5;t=9397
   - 05-03-2005 added: thumbAlign tag for thumbnailpanel controls, only supports center so far which centers the thumbs on the texture <thumbAlign>center</thumbAlign>. thumbPosX/thumbPosY will bump it out of center.
   - 05-03-2005 added: ActivateWindow() function now accepts a path parameter or bookmark name for bookmark jumping. Valid windows ID's for this are 1,2,3,6,501.  Example: ActivateWindow(6,F:\Videos) or ActivateWindow(501,Music Server). Valid windows ID's for this are 1,2,3,6,501
   - 05-03-2005 added: the default tag for the each section's bookmark can now be a bookmark name
