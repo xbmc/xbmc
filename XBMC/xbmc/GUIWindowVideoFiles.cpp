@@ -1297,8 +1297,13 @@ void CGUIWindowVideoFiles::OnPopupMenu(int iItem)
 	{
 		// mark the item
 		m_vecItems[iItem]->Select(true);
+
+		bool bMaxRetryExceeded=false;
+		if (g_stSettings.m_iMasterLockMaxRetry!=0)
+			bMaxRetryExceeded=!(m_vecItems[iItem]->m_iBadPwdCount < g_stSettings.m_iMasterLockMaxRetry);
+		
 		// and do the popup menu
-		if (CGUIDialogContextMenu::BookmarksMenu("videos", m_vecItems[iItem]->GetLabel(), m_vecItems[iItem]->m_strPath, m_vecItems[iItem]->m_iLockMode, !(m_vecItems[iItem]->m_iBadPwdCount < g_stSettings.m_iMasterLockMaxRetry), iPosX, iPosY))
+		if (CGUIDialogContextMenu::BookmarksMenu("videos", m_vecItems[iItem]->GetLabel(), m_vecItems[iItem]->m_strPath, m_vecItems[iItem]->m_iLockMode, bMaxRetryExceeded, iPosX, iPosY))
 		{
 			m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
 			Update(m_strDirectory);
