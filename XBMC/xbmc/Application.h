@@ -38,11 +38,13 @@
 #include "lib/libPython/XboxPython.h"
 #include "cores/IPlayer.h"
 #include "DetectDVDType.h"
+#include "Autorun.h"
+#include "IMsgTargetCallback.h"
 
 #include <vector>
 using namespace std;
 
-class CApplication : public CXBApplicationEx, public IPlayerCallback
+class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback
 {
 public:
   CApplication(void);
@@ -56,6 +58,8 @@ public:
 	void									LoadSkin(const CStdString& strSkin);
 	void									ExecuteScript(const CStdString& strScript);
 	void									ProcessScripts();
+
+	virtual bool					OnMessage(CGUIMessage& message);
 
 	virtual	void					OnPlayBackEnded();
 	virtual	void					OnPlayBackStarted();
@@ -95,6 +99,7 @@ public:
   CXBVirtualKeyboard   						m_keyboard;
 	CSNTPClient											m_sntpClient;
 	CDetectDVDMedia									m_DetectDVDType;
+	CAutorun												m_Autorun;
 	CDelayController								m_ctrDpad;
 	CDelayController								m_ctrIR;
 	Python*													m_pPhytonParser;

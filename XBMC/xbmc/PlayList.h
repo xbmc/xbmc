@@ -41,6 +41,7 @@ namespace PLAYLIST
 		void 								Clear();
 		void 								Shuffle();
 		int									size() const;
+		int									RemoveDVDItems();
 		const CPlayList::CPlayListItem& operator[] (int iItem)  const;
 
 	protected:

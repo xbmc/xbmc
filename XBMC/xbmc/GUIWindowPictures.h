@@ -39,6 +39,4 @@ protected:
 	CStdString					m_strDirectory;
 	CGUIDialogProgress*	m_dlgProgress;
 	CDirectoryHistory		m_history;
-	bool								m_bDVDDiscChanged;
-	bool								m_bDVDDiscEjected;
 };

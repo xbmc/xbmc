@@ -97,8 +97,6 @@ CGUIWindowPictures::CGUIWindowPictures(void)
 :CGUIWindow(0)
 {
 	m_strDirectory="?";
-  m_bDVDDiscChanged = false;
-  m_bDVDDiscEjected = false;
 }
 
 CGUIWindowPictures::~CGUIWindowPictures(void)
@@ -139,20 +137,39 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-	case GUI_MSG_DVDDRIVE_EJECTED_CD:
-		//	Message send by a thread.
-		//	We have to process it later
-		//	(in Render()), if we have shares
-		//	visible
-		m_bDVDDiscEjected = true;
+		case GUI_MSG_START_SLIDESHOW:
+		{
+			CStdString* pUrl = (CStdString*) message.GetLPVOID();
+			Update( *pUrl );
+			OnSlideShow();
+		}
 		break;
-	case GUI_MSG_DVDDRIVE_CHANGED_CD:
-		//	Message send by a thread.
-		//	We have to process it later
-		//	(in Render()), if we have shares
-		//	visible
-		if ( m_strDirectory.IsEmpty() )
-			m_bDVDDiscChanged = true;
+		case GUI_MSG_DVDDRIVE_EJECTED_CD:
+		{
+			if ( !m_strDirectory.IsEmpty() ) {
+				if ( CUtil::IsCDDA( m_strDirectory ) || CUtil::IsDVD( m_strDirectory ) || CUtil::IsISO9660( m_strDirectory ) ) {
+					//	Disc has changed and we are inside a DVD Drive share, get out of here :)
+					m_strDirectory = "";
+					Update( m_strDirectory );
+				}
+			}
+			else {
+				int iItem = GetSelectedItem();
+				Update( m_strDirectory );
+				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
+				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
+			}
+		}
+		break;
+		case GUI_MSG_DVDDRIVE_CHANGED_CD:
+		{
+			if ( m_strDirectory.IsEmpty() ) {
+				int iItem = GetSelectedItem();
+				Update( m_strDirectory );
+				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
+				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
+			}
+		}
 		break;
     case GUI_MSG_WINDOW_DEINIT:
       Clear();
@@ -204,11 +221,11 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 				//pDialog->DoModal(GetID());
 
 		  if ( m_strDirectory.IsEmpty() )
-	        g_stSettings.m_bMyPicturesRootViewAsIcons=!g_stSettings.m_bMyPicturesRootViewAsIcons;
+				g_stSettings.m_bMyPicturesRootViewAsIcons=!g_stSettings.m_bMyPicturesRootViewAsIcons;
 		  else
-			g_stSettings.m_bMyPicturesViewAsIcons=!g_stSettings.m_bMyPicturesViewAsIcons;
+				g_stSettings.m_bMyPicturesViewAsIcons=!g_stSettings.m_bMyPicturesViewAsIcons;
 
-		g_settings.Save();
+				g_settings.Save();
 				
         UpdateButtons();
       }
@@ -472,6 +489,10 @@ bool CGUIWindowPictures::HaveDiscOrConnection( CStdString& strPath, int iDriveTy
 			dlg->SetLine( 1, L"" );
 			dlg->SetLine( 2, L"" );
 			dlg->DoModal( GetID() );
+			int iItem = GetSelectedItem();
+			Update( m_strDirectory );
+			CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
+			CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
 			return false;
 		}
 	}
@@ -551,33 +572,6 @@ void CGUIWindowPictures::OnCreateThumbs()
 
 void CGUIWindowPictures::Render()
 {
-	//	Process GUI_MSG_DVDDRIVE_EJECTED_CD message, if we have shares
-	if ( m_bDVDDiscEjected ) {
-		if ( !m_strDirectory.IsEmpty() ) {
-			if ( CUtil::IsCDDA( m_strDirectory ) || CUtil::IsDVD( m_strDirectory ) || CUtil::IsISO9660( m_strDirectory ) ) {
-				//	Disc has changed and we are inside a DVD Drive share, get out of here :)
-				m_strDirectory = "";
-				Update( m_strDirectory );
-			}
-		}
-		else {
-			int iItem = GetSelectedItem();
-			Update( m_strDirectory );
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
-		}
-		m_bDVDDiscEjected = false;
-	}
-
-	//	Process GUI_MSG_DVDDRIVED_CHANGED_CD message, if we have shares
-	if ( m_bDVDDiscChanged && m_strDirectory.IsEmpty() ) {
-		int iItem = GetSelectedItem();
-		Update( m_strDirectory );
-		CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
-		CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
-		m_bDVDDiscChanged = false;
-	}
-
 	CGUIWindow::Render();
 	m_slideShow.Render();
 }

@@ -9,6 +9,7 @@
 #include "playlistplayer.h"
 #include "musicdatabase.h"
 #include "url.h"
+#include "autorun.h"
 using namespace PLAYLIST;
 
 #ifdef _DEBUG
@@ -221,6 +222,7 @@ HRESULT CApplication::Initialize()
 	m_ctrDpad.SetDelays(g_stSettings.m_iMoveDelayController,g_stSettings.m_iRepeatDelayController);
 	m_ctrIR.SetDelays(g_stSettings.m_iMoveDelayIR,g_stSettings.m_iRepeatDelayIR);
 
+	m_gWindowManager.AddMsgTarget(this);
 	m_gWindowManager.SetCallback(*this);
 	m_gWindowManager.ActivateWindow(g_stSettings.m_iStartupWindow);
 	m_guiMusicOverlay.AllocResources();
@@ -393,19 +395,9 @@ void CApplication::FrameMove()
 	
 	WORD wDir = m_ctrDpad.DpadInput(wDpad,0!=pGamepad->bAnalogButtons[XINPUT_GAMEPAD_LEFT_TRIGGER],0!=pGamepad->bAnalogButtons[XINPUT_GAMEPAD_RIGHT_TRIGGER]);
 
-	CStdString strTmp;
 
 	wRemotes=m_ctrIR.IRInput(wRemotes);
-	if (wRemotes!=0x0 || pRemote->wPressedButtons!=0x0)
-	{
-		strTmp.Format("remote:0x%x 0x%x\n", wRemotes, pRemote->wPressedButtons);
-		OutputDebugString(strTmp.c_str());
-	}
-	if (wButtons!=0x0 || wDir!=0x0)
-	{
-		strTmp.Format("controller:0x%x 0x%x\n", wButtons, wDir);
-		OutputDebugString(strTmp.c_str());
-	}
+
 	bool bGotKey=false;
 
 	if ( pGamepad->fX1 || pGamepad->fY1 || pGamepad->fX2 || pGamepad->fY2)
@@ -539,7 +531,6 @@ void CApplication::FrameMove()
 		
 		case DC_UP:
 		{
-			OutputDebugString("DC_UP\n");
 			bGotKey=true;
 			CKey key(true,KEY_BUTTON_DPAD_UP,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 			OnKey(key);   
@@ -731,6 +722,11 @@ void CApplication::FrameMove()
 	{
 		m_dwSpinDownTime=timeGetTime();
 	}
+
+	m_Autorun.HandleAutorun();
+
+	m_gWindowManager.DispatchThreadMessages();
+
 }
 
 void CApplication::Stop()
@@ -927,4 +923,22 @@ void CApplication::ResetAllControls()
 	m_guiMusicOverlay.ResetAllControls();
 	m_guiWindowVideoOverlay.ResetAllControls();
 	m_guiWindowFullScreen.ResetAllControls();
+}
+bool CApplication::OnMessage(CGUIMessage& message)
+{
+  switch ( message.GetMessage() )
+  {
+		case GUI_MSG_DVDDRIVE_EJECTED_CD:
+		{
+				//	Update general playlist: Remove DVD playlist items
+				int nRemoved = g_playlistPlayer.RemoveDVDItems();
+				if ( nRemoved > 0 ) {
+					CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
+					m_gWindowManager.SendMessage( msg );
+				}
+		}
+		break;
+	}
+
+	return true;
 }
