@@ -2,6 +2,7 @@
 #include "guidialog.h"
 #include "guimessage.h"
 #include "guiwindowmanager.h"
+#include "GUILabelControl.h"
 
 CGUIDialog::CGUIDialog(DWORD dwID)
 :CGUIWindow(dwID)
@@ -14,6 +15,34 @@ CGUIDialog::CGUIDialog(DWORD dwID)
 
 CGUIDialog::~CGUIDialog(void)
 {
+}
+
+bool CGUIDialog::Load(const CStdString& strFileName, bool bContainsPath)
+{
+	if (!CGUIWindow::Load(strFileName, bContainsPath))
+		return false;
+
+	// Clip labels to extents
+	if (m_vecControls.size())
+	{
+		CGUIControl* pBase = m_vecControls[0];
+
+		for (ivecControls p = m_vecControls.begin() + 1; p != m_vecControls.end(); ++p)
+		{
+			if ((*p)->GetControlType() == CGUIControl::GUICONTROL_LABEL)
+			{
+				CGUILabelControl* pLabel = (CGUILabelControl*)(*p);
+				if (!pLabel->GetWidth())
+				{
+					int spacing = (pLabel->GetXPosition() - pBase->GetXPosition()) * 2;
+					pLabel->SetWidth(pBase->GetWidth() - spacing);
+					pLabel->m_dwTextAlign |= XBFONT_TRUNCATED;
+				}
+			}
+		}
+	}
+
+	return true;
 }
 
 
