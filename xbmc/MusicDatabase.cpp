@@ -3,6 +3,23 @@
 #include "StdString.h"
 #include "crc32.h"
 
+CSong::CSong()
+{
+	Clear();
+}
+
+void CSong::Clear() 
+{
+	strFileName="";
+	strTitle="";
+	strArtist="";
+	strAlbum="";
+	strGenre="";
+	iTrack=0;
+	iDuration=0;
+	iYear=0;
+}
+
 CMusicDatabase::CMusicDatabase(void)
 {
 }
@@ -52,7 +69,7 @@ bool CMusicDatabase::Open()
 
 	// test id dbs already exists, if not we need 2 create the tables
 	bool bDatabaseExists=false;
-	FILE* fd= fopen("Q:\\albums\\MyMusic2.db","rb");
+	FILE* fd= fopen("Q:\\albums\\MyMusic3.db","rb");
 	if (fd)
 	{
 		bDatabaseExists=true;
@@ -60,7 +77,7 @@ bool CMusicDatabase::Open()
 	}
 
 	m_pDB.reset(new SqliteDatabase() ) ;
-  m_pDB->setDatabase("Q:\\albums\\MyMusic2.db");
+  m_pDB->setDatabase("Q:\\albums\\MyMusic3.db");
 	
   m_pDS.reset(m_pDB->CreateDataset());
 	if ( m_pDB->connect() != DB_CONNECTION_OK) 
@@ -102,14 +119,14 @@ bool CMusicDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE album ( idAlbum integer primary key, idArtist integer, strAlbum text)\n");
 		m_pDS->exec("CREATE TABLE genre ( idGenre integer primary key, strGenre text)\n");
 		m_pDS->exec("CREATE TABLE path ( idPath integer primary key,  strPath text)\n");
-		m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idArtist integer, idAlbum integer, idGenre integer, idPath integer, strTitle text, iTrack integer, iDuration integer, iYear integer, dwFileNameCRC integer, strFileName text)\n");
+		m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idArtist integer, idAlbum integer, idGenre integer, idPath integer, strTitle text, iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text)\n");
 		m_pDS->exec("CREATE TABLE albuminfo ( idAlbumInfo integer primary key, idAlbum integer, idArtist integer,iYear integer, idGenre integer, strTones text, strStyles text, strReview text, strImage text, iRating integer)\n");
 
 		m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum)");
 		m_pDS->exec("CREATE INDEX idxGenre ON genre(strGenre)");
 		m_pDS->exec("CREATE INDEX idxArtist ON artist(strArtist)");
 		m_pDS->exec("CREATE INDEX idxPath ON path(strPath)");
-		m_pDS->exec("CREATE INDEX idxSong ON song(dwFileNameCRC)");
+		//m_pDS->exec("CREATE INDEX idxSong ON song(dwFileNameCRC)");
 
   }
   catch (...) 
@@ -137,7 +154,6 @@ void CMusicDatabase::AddSong(const CSong& song1)
 	long lArtistId = AddArtist(song1.strArtist);
 	long lPathId   = AddPath(strPath);
 	long lAlbumId  = AddAlbum(song1.strAlbum,lArtistId);
-
 	DWORD dwCRC;
 	Crc32 crc;
 	crc.Reset();
@@ -145,18 +161,38 @@ void CMusicDatabase::AddSong(const CSong& song1)
 	dwCRC=crc;
 
 	char szSQL[1024];
-	sprintf(szSQL,"select * from song where idAlbum=%i AND idGenre=%i AND idArtist=%i AND dwFileNameCRC=%i AND strTitle='%s'", 
+	sprintf(szSQL,"select * from song where idAlbum=%i AND idGenre=%i AND idArtist=%i AND dwFileNameCRC='%ul' AND strTitle='%s'", 
 			lAlbumId,lGenreId,lArtistId,dwCRC,song.strTitle.c_str());
-	if (!m_pDS->query(szSQL)) return;
+	try
+	{
+		if (!m_pDS->query(szSQL)) return;
+	}
+	catch(...)
+	{
+		OutputDebugString("-------ERRORohoh!");
+		return;
+	}
 	int iRowsFound = m_pDS->num_rows();
-	if (iRowsFound!= 0) return ; // already exists
-	sprintf(szSQL,"insert into song (idSong,idArtist,idAlbum,idGenre,idPath,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName) values(NULL,%i,%i,%i,%i,'%s',%i,%i,%i,%i,'%s')",
+	if (iRowsFound!= 0) 
+	{
+		return ; // already exists
+	}
+	
+
+	sprintf(szSQL,"insert into song (idSong,idArtist,idAlbum,idGenre,idPath,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName) values(NULL,%i,%i,%i,%i,'%s',%i,%i,%i,'%ul','%s')",
 								lArtistId,lAlbumId,lGenreId,lPathId,
 								song.strTitle.c_str(),
 								song.iTrack,song.iDuration,song.iYear,
 								dwCRC,
 								strFileName.c_str());
-	m_pDS->exec(szSQL);
+	try
+	{
+		m_pDS->exec(szSQL);
+	}
+	catch(...)
+	{
+		OutputDebugString("-------ERROR----------------");
+	}
 }
 
 
@@ -287,6 +323,7 @@ long CMusicDatabase::AddPath(const CStdString& strPath1)
 
 bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName1, CSong& song)
 {
+	song.Clear();
 	CStdString strFileName=strFileName1;
 	RemoveInvalidChars(strFileName);
 
@@ -302,7 +339,7 @@ bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName1, CSong& so
   crc.Compute(strFileName1.c_str(),strlen(strFileName1.c_str()));
 	dwCRC=crc;
 
-	sprintf(szSQL,"select * from song,album,genre,artist,path where song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and dwFileNameCRC=%i and strPath='%s'",
+	sprintf(szSQL,"select * from song,album,genre,artist,path where song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and dwFileNameCRC='%ul' and strPath='%s'",
 									dwCRC,
 									strPath.c_str());
 	if (!m_pDS->query(szSQL)) return false;
@@ -323,6 +360,7 @@ bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName1, CSong& so
 
 bool CMusicDatabase::GetSong(const CStdString& strTitle1, CSong& song)
 {
+	song.Clear();
 	CStdString strTitle=strTitle1;
 	RemoveInvalidChars(strTitle);
 

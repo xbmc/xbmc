@@ -8,6 +8,10 @@ using namespace std;
 class CSong
 {
 public:
+	CSong() ;
+	virtual ~CSong(){};
+	void Clear() ;
+
 	CStdString strFileName;
 	CStdString strTitle;
 	CStdString strArtist;
