@@ -429,6 +429,9 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   g_graphicsContext.SetMediaDir(strSkinPath);
   g_fontManager.LoadFonts(strSkinPath+string("\\font.xml")) ;
 
+	LARGE_INTEGER start;
+	QueryPerformanceCounter(&start);
+
   CLog::Log("  load new skin...");
   if (!m_guiHome.Load( strSkinPath+"\\home.xml" ))
   {
@@ -490,6 +493,11 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiMyWeather.Load( strSkinPath+"\\myweather.xml");	//WEATHER
 	m_guiSettingsWeather.Load(strSkinPath+"\\SettingsWeather.xml");	//WEATHER SETTINGS
 	CGUIWindow::FlushReferenceCache(); // flush the cache so it doesn't use memory all the time
+
+	LARGE_INTEGER end, freq;
+	QueryPerformanceCounter(&end);
+	QueryPerformanceFrequency(&freq);
+	CLog::DebugLog("Load Skin XML: %.2fms", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart);
 
   CLog::Log("  initialize new skin...");
 	m_guiMusicOverlay.AllocResources();
