@@ -43,7 +43,7 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate,int
 	CStdString strExtension;
 	CStdString strCachedFile;
 	DWORD dwImageType=0xffff;
-	
+
 	CUtil::GetExtension(strFileName,strExtension);
 	if (!strExtension.size()) return NULL;
 
@@ -103,17 +103,17 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate,int
     return NULL;
   }
 
-  for (int i=0; i < iRotate; ++i) 
+  for (int i=0; i < iRotate; ++i)
   {
 		image.RotateRight();
   }
 
 	m_dwWidth  = image.GetWidth();
 	m_dwHeight = image.GetHeight();
-	
+
 	bool bResize=false;
 	float fAspect= ((float)m_dwWidth) / ((float)m_dwHeight);
-		
+
 	if (m_dwWidth > (DWORD)iMaxWidth)
     {
 		bResize=true;
@@ -158,17 +158,17 @@ DWORD	CPicture::GetHeight()  const
 IDirect3DTexture8* CPicture::GetTexture( CxImage& image  )
 {
 	IDirect3DTexture8* pTexture=NULL;
-	if (g_graphicsContext.Get3DDevice()->CreateTexture( image.GetWidth(), 
-																											image.GetHeight(), 
+	if (g_graphicsContext.Get3DDevice()->CreateTexture( image.GetWidth(),
+																											image.GetHeight(),
 																											1, // levels
 																											0, //usage
 																											D3DFMT_LIN_A8R8G8B8 ,
 																											0,
-																											&pTexture) != D3D_OK) 
+																											&pTexture) != D3D_OK)
 	{
 		return NULL;
 	}
-	if (!pTexture) 
+	if (!pTexture)
 	{
 		return NULL;
 	}
@@ -186,7 +186,7 @@ IDirect3DTexture8* CPicture::GetTexture( CxImage& image  )
 			for (DWORD x=0; x < dwWidth; x++)
 			{
 				RGBQUAD rgb=image.GetPixelColor( x, y);
-				
+
 				*pDest++ = rgb.rgbBlue;
 				*pDest++ = rgb.rgbGreen;
 				*pDest++ = rgb.rgbRed;
@@ -201,17 +201,17 @@ IDirect3DTexture8* CPicture::GetTexture( CxImage& image  )
 IDirect3DTexture8* CPicture::GetYUY2Texture( CxImage& image  )
 {
 	IDirect3DTexture8* pTexture=NULL;
-	if (g_graphicsContext.Get3DDevice()->CreateTexture( image.GetWidth(), 
-																											image.GetHeight(), 
+	if (g_graphicsContext.Get3DDevice()->CreateTexture( image.GetWidth(),
+																											image.GetHeight(),
 																											1, // levels
 																											0, //usage
 																											D3DFMT_YUY2 ,
 																											0,
-																											&pTexture) != D3D_OK) 
+																											&pTexture) != D3D_OK)
 	{
 		return NULL;
 	}
-	if (!pTexture) 
+	if (!pTexture)
 	{
 		return NULL;
 	}
@@ -252,7 +252,7 @@ IDirect3DTexture8* CPicture::GetYUY2Texture( CxImage& image  )
 bool CPicture::CreateAlbumThumbnail(const CStdString& strFileName, const CStdString& strAlbum)
 {
   CStdString strThumbnail;
-	CUtil::GetAlbumThumb(strAlbum, strThumbnail,true);
+	CUtil::GetAlbumFolderThumb(strAlbum, strThumbnail,true);
 	return DoCreateThumbnail(strFileName, strThumbnail, MAX_ALBUM_THUMB_WIDTH, MAX_ALBUM_THUMB_HEIGHT);
 }
 
@@ -269,7 +269,7 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
 	CStdString strExtension;
 	CStdString strCachedFile;
 	DWORD dwImageType=CXIMAGE_FORMAT_JPG;
-	
+
 	CUtil::GetExtension(strFileName,strExtension);
 	if (!strExtension.size()) return false;
 
@@ -317,10 +317,10 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
 		}
 		m_dwWidth=image.GetWidth();
 		m_dwHeight=image.GetHeight();
-	  
+
 		bool bResize=false;
 		float fAspect= ((float)m_dwWidth) / ((float)m_dwHeight);
-			
+
 		if (m_dwWidth > (DWORD)nMaxWidth )
 		{
 			bResize=true;
@@ -411,7 +411,7 @@ bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize,
 
 	auto_aptr<BYTE> pPicture(new BYTE[nBufSize]);
 	fast_memcpy(pPicture.get(), pBuffer, nBufSize);
-	
+
 	if (!m_bSectionLoaded)
 	{
 		CSectionLoader::Load("CXIMAGE");
@@ -432,7 +432,7 @@ bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize,
 
 		m_dwWidth=image.GetWidth();
 		m_dwHeight=image.GetHeight();
-	  
+
     bool bResize=false;
     float fAspect= ((float)m_dwWidth) / ((float)m_dwHeight);
 
@@ -526,12 +526,12 @@ void CPicture::RenderImage(IDirect3DTexture8* pTexture,int x, int y, int width, 
   vertex[3].p = D3DXVECTOR4( fx - 0.5f,	fy+fheight - 0.5f,	0, 0 );
   vertex[3].tu = fxOff;
   vertex[3].tv = fyOff+iTextureHeight;
- 
+
   vertex[0].col = 0xffffffff;
 	vertex[1].col = 0xffffffff;
 	vertex[2].col = 0xffffffff;
 	vertex[3].col = 0xffffffff;
-  m_pVB->Unlock();  
+  m_pVB->Unlock();
 
 
     // Set state to render the image
@@ -571,7 +571,7 @@ bool CPicture::Convert(const CStdString& strSource,const CStdString& strDest)
 	CStdString strExtension;
 	CStdString strCachedFile;
 	DWORD dwImageType;
-	
+
 	CUtil::GetExtension(strSource,strExtension);
 	if (!strExtension.size()) return false;
 
@@ -614,12 +614,12 @@ bool CPicture::Convert(const CStdString& strSource,const CStdString& strDest)
 	{
 		CxImage image(dwImageType);
 		if (!image.Load(strCachedFile.c_str(),dwImageType))
-		{	
+		{
 			CLog::Log(LOGERROR, "PICTURE::convert: Unable to load image: %s Error:%s\n", strCachedFile.c_str(), image.GetLastError());
 			return false;
 		}
 
-    ::DeleteFile(strDest.c_str());		
+    ::DeleteFile(strDest.c_str());
     if ( image.GetNumColors() )
     {
       image.IncreaseBpp(24);
