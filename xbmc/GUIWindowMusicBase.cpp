@@ -707,10 +707,12 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 			}
 		}
 
+		//	no album found in folder use the 
+		//	item label, we may find something?
 		if (albums.size()==0)
 		{
 			if (m_dlgProgress) m_dlgProgress->Close();
-			return;	
+			bSaveDirThumb=true;
 		}
 
 		if (albums.size()==1)
@@ -719,7 +721,8 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 			strLabel=strAlbum;
 			bSaveDirThumb=true;
 		}
-		else
+
+		if (albums.size()>1)
 		{
 			//	More then one album is found in this directory
 			//	let the user choose
