@@ -37,7 +37,7 @@ bool CGUIWindowSettings::OnMessage(CGUIMessage& message)
 			CGUIWindow::OnMessage(message);
 
 	    if (m_iLastControl>-1)
-				SET_CONTROL_FOCUS(GetID(), m_iLastControl);
+				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
 
 			return true;
 		}

@@ -192,7 +192,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 			
 			if (m_iLastControl>-1)
 			{
-				SET_CONTROL_FOCUS(GetID(), m_iLastControl);
+				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
 			}
 			return true;
 		}
@@ -223,7 +223,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 				g_settings.Save();
 
 				m_gWindowManager.ActivateWindow(g_stSettings.m_iMyMusicStartWindow);
-				SET_CONTROL_FOCUS(g_stSettings.m_iMyMusicStartWindow, CONTROL_BTNTYPE);
+				SET_CONTROL_FOCUS(g_stSettings.m_iMyMusicStartWindow, CONTROL_BTNTYPE, 0);
 			}
 			else if (iControl==CONTROL_BTNSEARCH)
 			{
@@ -348,11 +348,11 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 	{
 		if (ViewByIcon()) 
 		{	
-			SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS);
+			SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
 		}
 		else 
 		{
-			SET_CONTROL_FOCUS(GetID(), CONTROL_LIST);
+			SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
 		}
 	}
 
