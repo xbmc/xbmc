@@ -493,7 +493,7 @@ public:
 		int		m_iCdgBgAlpha;
 		int		m_iCdgFgAlpha;
 		float		m_fCdgAVDelay;
-
+		char      szDefaultScreenSaver[256];
 	};
 
 	// cache copies of these parsed values, to avoid re-parsing over and over

@@ -2413,6 +2413,22 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\cdrip\EncoderWav.h">
 			</File>
 		</Filter>
+		<Filter
+			Name="Screensavers"
+			Filter="">
+			<File
+				RelativePath=".\xbmc\screensavers\Screensaver.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\screensavers\Screensaver.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\screensavers\ScreenSaverFactory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\screensavers\ScreenSaverFactory.h">
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>
