@@ -215,7 +215,8 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 
 			Update(m_strDirectory);
 
-      if (m_iItemSelected >=0)
+			ShowThumbPanel();
+     if (m_iItemSelected >=0)
       {
 			  CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_iItemSelected)
 			  CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_iItemSelected)
@@ -407,6 +408,7 @@ void CGUIWindowPictures::UpdateButtons()
     SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
   }
 
+    ShowThumbPanel();
 		SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
 		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyPicturesSortMethod+103);
 
