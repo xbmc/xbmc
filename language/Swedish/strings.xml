@@ -1895,6 +1895,94 @@
  <id>704</id>
  <value>Välj Nej för att bara lägga till nya sånger.</value>
  </string>
+	<string>
+		<id>705</id>
+		<value>Nätverk</value>
+	</string>
+	<string>
+		<id>706</id>
+		<value>HTTP Proxy:</value>
+	</string>
+	<string>
+		<id>707</id>
+		<value>HTTP Proxy Port:</value>
+	</string>
+	<string>
+		<id>708</id>
+		<value>Använd HTTP Proxy</value>
+	</string>
+	<string>
+		<id>709</id>
+		<value>XLink Kai XTag:</value>
+	</string>
+	<string>
+		<id>710</id>
+		<value>XLink Kai lösenord:</value>
+	</string>
+	<string>
+		<id>711</id>
+		<value>IP inställningar</value>
+	</string>
+	<string>
+		<id>712</id>
+		<value>Felaktig port angiven. Värde måste vara mellan 1 och 65535.</value>
+	</string>
+	<string>
+		<id>713</id>
+		<value>HTTP Proxy Inställningar</value>
+	</string>	
+	<string>
+		<id>714</id>
+		<value>XLink Kai Inställningar</value>
+	</string>	
+	<string>
+		<id>715</id>
+		<value>Tilldelning:</value>
+	</string>	
+	<string>
+		<id>716</id>
+		<value>Automatisk (DHCP)</value>
+	</string>	
+	<string>
+		<id>717</id>
+		<value>Manuell (Statisk)</value>
+	</string>	
+	<string>
+		<id>718</id>
+		<value>Förval (Dashboard)</value>
+	</string>	
+	<string>
+		<id>719</id>
+		<value>IP Adress:</value>
+	</string>	
+	<string>
+		<id>720</id>
+		<value>Nätmask:</value>
+	</string>	
+	<string>
+		<id>721</id>
+		<value>Gateway:</value>
+	</string>	
+	<string>
+		<id>722</id>
+		<value>DNS Server:</value>
+	</string>
+	<string>
+		<id>723</id>
+		<value>Spara inställningarna och starta om XBoxen</value>
+	</string>
+	<string>
+		<id>724</id>
+		<value>Felaktig adress angiven. Värde måsta vara AAA.BBB.CCC.DDD</value>
+	</string>
+	<string>
+		<id>725</id>
+		<value>med siffror mellan 0 och 255.</value>
+	</string>
+	<string>
+		<id>726</id>
+		<value>Inställningar ej sparade. Fortsätt utan att spara?</value>
+	</string>
 
  <string>
  <id>998</id>
