@@ -4,7 +4,7 @@
 #include "crc32.h"
 #include "LocalizeStrings.h"
 #include "util.h"
-
+#include "utils/log.h"
 #define MUSIC_DATABASE "Q:\\albums\\MyMusic5.db"
 
 CSong::CSong()
@@ -70,6 +70,7 @@ bool CMusicDatabase::Open()
 	m_pDS.reset(m_pDB->CreateDataset());
 	if ( m_pDB->connect() != DB_CONNECTION_OK) 
 	{
+    CLog::Log("unable to open %s (old version?)",MUSIC_DATABASE);
 		Close();
 		return false;
 	}
@@ -78,6 +79,7 @@ bool CMusicDatabase::Open()
 	{
 		if (!CreateTables()) 
 		{
+      CLog::Log("unable to create %s ",MUSIC_DATABASE);
 			Close();
 			return false;
 		}

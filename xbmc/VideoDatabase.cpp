@@ -5,6 +5,7 @@
 //********************************************************************************************************************************
 #include ".\videodatabase.h"
 #include "utils/fstrcmp.h"
+#include "utils/log.h"
 
 //********************************************************************************************************************************
 CVideoDatabase::CVideoDatabase(void)
@@ -72,6 +73,7 @@ bool CVideoDatabase::Open()
   m_pDS.reset(m_pDB->CreateDataset());
 	if ( m_pDB->connect() != DB_CONNECTION_OK) 
 	{
+    CLog::Log("unable to open Q:\\albums\\MyVideos1.db (old version?)");
 		Close();
 		return false;
 	}
@@ -80,6 +82,7 @@ bool CVideoDatabase::Open()
 	{
 		if (!CreateTables()) 
 		{
+      CLog::Log("unable to create Q:\\albums\\MyVideos1.db");
 			Close();
 			return false;
 		}
