@@ -50,7 +50,7 @@ public:
 	virtual void			OnOpponentLeave(CStdString& aOpponent);
 	virtual void			OnSupportedTitle(DWORD aTitleId, CStdString& aVector);
 	virtual void			OnJoinsChat(CStdString& aOpponent);
-	virtual void			OnChat(CStdString& aVector, CStdString& aOpponent, CStdString& aMessage);
+	virtual void			OnChat(CStdString& aVector, CStdString& aOpponent, CStdString& aMessage, bool bPrivate);
 	virtual void			OnLeavesChat(CStdString& aOpponent);
 
 	virtual void			OnInitWindow();
