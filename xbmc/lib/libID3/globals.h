@@ -34,6 +34,16 @@
 #ifndef _ID3LIB_GLOBALS_H_
 #define _ID3LIB_GLOBALS_H_
 
+#if defined(__BORLANDC__)
+// due to a bug in borland it sometimes still wants mfc compatibility even when you disable it
+#  if defined(_MSC_VER)
+#    undef _MSC_VER
+#  endif
+#  if defined(__MFC_COMPAT__)
+#    undef __MFC_COMPAT__
+#  endif
+#endif
+
 #include <stdlib.h>
 #include "sized_types.h"
 
@@ -55,29 +65,47 @@
 #    pragma message("***")
 #    error read message above or win32.readme.first.txt
 #  else
-#    if (ID3LIB_LINKOPTION == LINKOPTION_CREATE_DYNAMIC)
+#    if (ID3LIB_LINKOPTION == LINKOPTION_CREATE_DYNAMIC) 
        //used for creating a dynamic dll
-#      define ID3_C_EXPORT extern _declspec(dllexport)
+#      if defined(__BORLANDC__)
+#        define ID3_C_EXPORT extern __declspec(dllexport)
+#      else
+#        define ID3_C_EXPORT extern _declspec(dllexport)
+#      endif
 #      define ID3_CPP_EXPORT __declspec(dllexport)
 #      define CCONV __stdcall // Added for VB & Delphi Compatibility - By FrogPrince Advised By Lothar
 #    endif
-#    if (ID3LIB_LINKOPTION == LINKOPTION_STATIC)
+#    if (ID3LIB_LINKOPTION == LINKOPTION_STATIC) 
        //used for creating a static lib and using a static lib
 #      define ID3_C_EXPORT
 #      define ID3_CPP_EXPORT
 #      define CCONV
 #    endif
-#    if (ID3LIB_LINKOPTION == LINKOPTION_USE_DYNAMIC)
+#    if (ID3LIB_LINKOPTION == LINKOPTION_USE_DYNAMIC) 
        //used for those that do not link static and are using the dynamic dll by including a id3lib header
-#      define ID3_C_EXPORT extern _declspec(dllimport)
-#      define ID3_CPP_EXPORT __declspec(dllimport) //functions like these shouldn't be used by vb and delphi,
+#      if defined(__BORLANDC__)
+#        define ID3_C_EXPORT extern __declspec(dllimport)
+#      else
+#        define ID3_C_EXPORT extern _declspec(dllimport)
+#      endif
+#      define ID3_CPP_EXPORT __declspec(dllimport) //functions like these shouldn't be used by vb and delphi, 
 #      define CCONV __stdcall // Added for VB & Delphi Compatibility - By FrogPrince Advised By Lothar
 #    endif
+#  endif
+#  if (defined(_DEBUG) && defined(_MSC_VER) && _MSC_VER > 1000 && ID3LIB_LINKOPTION == LINKOPTION_CREATE_DYNAMIC)
+    //used for detecting memory leaks
+#    define _CRTDBG_MAP_ALLOC
+#    include <stdlib.h>
+#    include <crtdbg.h>
+#    define LEAKTESTNEW(type) new(_NORMAL_BLOCK, __FILE__, __LINE__) type
+#  else
+#    define LEAKTESTNEW(type) new type
 #  endif
 #else /* !WIN32 */
 #  define ID3_C_EXPORT
 #  define ID3_CPP_EXPORT
 #  define CCONV
+#  define LEAKTESTNEW(type) new type
 #endif /* !WIN32 */
 
 #define ID3_C_VAR extern
@@ -166,7 +194,7 @@ ID3_ENUM(ID3_V2Spec)
   ID3V2_3_0,
   ID3V2_4_0,
   ID3V2_EARLIEST = ID3V2_2_0,
-  ID3V2_LATEST = ID3V2_3_0
+  ID3V2_LATEST = ID3V2_4_0
 };
 
 /** The various types of tags that id3lib can handle
@@ -196,31 +224,51 @@ ID3_ENUM(ID3_TagType)
  **/
 ID3_ENUM(ID3_FieldID)
 {
-  ID3FN_NOFIELD = 0,    /**< No field */
-  ID3FN_TEXTENC,        /**< Text encoding (unicode or ASCII) */
-  ID3FN_TEXT,           /**< Text field */
-  ID3FN_URL,            /**< A URL */
-  ID3FN_DATA,           /**< Data field */
-  ID3FN_DESCRIPTION,    /**< Description field */
-  ID3FN_OWNER,          /**< Owner field */
-  ID3FN_EMAIL,          /**< Email field */
-  ID3FN_RATING,         /**< Rating field */
-  ID3FN_FILENAME,       /**< Filename field */
-  ID3FN_LANGUAGE,       /**< Language field */
-  ID3FN_PICTURETYPE,    /**< Picture type field */
-  ID3FN_IMAGEFORMAT,    /**< Image format field */
-  ID3FN_MIMETYPE,       /**< Mimetype field */
-  ID3FN_COUNTER,        /**< Counter field */
-  ID3FN_ID,             /**< Identifier/Symbol field */
-  ID3FN_VOLUMEADJ,      /**< Volume adjustment field */
-  ID3FN_NUMBITS,        /**< Number of bits field */
-  ID3FN_VOLCHGRIGHT,    /**< Volume chage on the right channel */
-  ID3FN_VOLCHGLEFT,     /**< Volume chage on the left channel */
-  ID3FN_PEAKVOLRIGHT,   /**< Peak volume on the right channel */
-  ID3FN_PEAKVOLLEFT,    /**< Peak volume on the left channel */
-  ID3FN_TIMESTAMPFORMAT,/**< SYLT Timestamp Format */
-  ID3FN_CONTENTTYPE,    /**< SYLT content type */
-  ID3FN_LASTFIELDID     /**< Last field placeholder */
+  ID3FN_NOFIELD = 0,       /**< No field */
+  ID3FN_TEXTENC,           /**< Text encoding (unicode or ASCII) */
+  ID3FN_TEXT,              /**< Text field */
+  ID3FN_URL,               /**< A URL */
+  ID3FN_DATA,              /**< Data field */
+  ID3FN_DESCRIPTION,       /**< Description field */
+  ID3FN_OWNER,             /**< Owner field */
+  ID3FN_EMAIL,             /**< Email field */
+  ID3FN_RATING,            /**< Rating field */
+  ID3FN_FILENAME,          /**< Filename field */
+  ID3FN_LANGUAGE,          /**< Language field */
+  ID3FN_PICTURETYPE,       /**< Picture type field */
+  ID3FN_IMAGEFORMAT,       /**< Image format field */
+  ID3FN_MIMETYPE,          /**< Mimetype field */
+  ID3FN_COUNTER,           /**< Counter field */
+  ID3FN_ID,                /**< Identifier/Symbol field */
+  ID3FN_VOLUMEADJ,         /**< Volume adjustment field */
+  ID3FN_NUMBITS,           /**< Number of bits field */
+  ID3FN_NUMBER,            /**< General Number, can be anything, as long it's an integer <= 32 bits  */
+  ID3FN_VOLCHGRIGHT,       /**< Volume chage on the right channel */
+  ID3FN_VOLCHGLEFT,        /**< Volume chage on the left channel */
+  ID3FN_PEAKVOLRIGHT,      /**< Peak volume on the right channel */
+  ID3FN_PEAKVOLLEFT,       /**< Peak volume on the left channel */
+  ID3FN_TIMESTAMPFORMAT,   /**< SYLT Timestamp Format */
+  ID3FN_CONTENTTYPE,       /**< SYLT content type */
+  ID3FN_REVERBL,           /**< Reverb Left */
+  ID3FN_REVERBR,           /**< Reverb Right */
+  ID3FN_REVERBBOUNCESL,    /**< Reverb Bounces Left */
+  ID3FN_REVERBBOUNCESR,    /**< Reverb Bounces Right */
+  ID3FN_REVERBFEEDBACKL2L, /**< Reverb Feedback Left to Left */
+  ID3FN_REVERBFEEDBACKL2R, /**< Reverb Feedback Left to Right */
+  ID3FN_REVERBFEEDBACKR2R, /**< Reverb Feedback Right to Right */
+  ID3FN_REVERBFEEDBACKR2L, /**< Reverb Feedback Right to Left */
+  ID3FN_PREMIXL2R,         /**< Premix Left to Right */
+  ID3FN_PREMIXR2L,         /**< Premix Right to Left */
+  ID3FN_LENGTH,            /**< Size field, can be bits, bytes, time etc */
+  ID3FN_FLAGS,             /**< Flags field */
+  ID3FN_OFFSET,            /**< Offset, can be bits, bytes, time etc */
+  ID3FN_PRICE,             /**< Price Field, containing currency+amount */
+  ID3FN_8DATE,             /**< Date Field, containing date as YYYYMMDD */
+  ID3FN_SELLER,            /**< Seller */
+  ID3FN_DELIVERY,          /**< Way of delivery field */
+  ID3FN_BITSSIZE,          /**< contains the number of bits for other fields' fixed size */
+  ID3FN_BYTESSIZE,         /**< contains the number of bytes for other fields' fixed size */
+  ID3FN_LASTFIELDID        /**< Last field placeholder */
 };
 
 /**
@@ -340,11 +388,18 @@ ID3_ENUM(ID3_V1Lengths)
 
 ID3_ENUM(ID3_FieldFlags)
 {
-  ID3FF_NONE       =      0,
-  ID3FF_CSTR       = 1 << 0,
-  ID3FF_LIST       = 1 << 1,
-  ID3FF_ENCODABLE  = 1 << 2,
-  ID3FF_TEXTLIST   = ID3FF_CSTR | ID3FF_LIST | ID3FF_ENCODABLE
+  ID3FF_NONE          =      0,
+  ID3FF_CSTR          = 1 << 0,  /*null (according to encoding) terminated*/
+  ID3FF_LIST          = 1 << 1,  /*null (according to encoding) seperates listitems*/
+  ID3FF_ENCODABLE     = 1 << 2,  /*possible to encode in valid encodings, 
+                                  *if not set then string is encoded by ID3TE_ISO8859_1 */
+  ID3FF_HASLINKEDSIZE = 1 << 3   /*used together with _linked_field. 
+                                  *if _linked_field is NOT set, than this field contains
+                                  *a size for other fields to use, if _linked_field is set,
+                                  *than it's size comes from the last field which had this 
+                                  *flag but didn't have _linked_field set*/
+// the following was utter nonsense. A list doesn't have a ID3FF_CSTR, use "ID3FF_LIST | ID3FF_ENCODABLE" instead
+//  ID3FF_TEXTLIST   = ID3FF_CSTR | ID3FF_LIST | ID3FF_ENCODABLE
 };
 
 /** Enumeration of the types of field types */
@@ -362,20 +417,26 @@ ID3_ENUM(ID3_FieldType)
  **/
 ID3_ENUM(ID3_Err)
 {
+// what is not currently used is commented
   ID3E_NoError = 0,             /**< No error reported */
-  ID3E_NoMemory,                /**< No available memory */
-  ID3E_NoData,                  /**< No data to parse */
-  ID3E_BadData,                 /**< Improperly formatted data */
-  ID3E_NoBuffer,                /**< No buffer to write to */
-  ID3E_SmallBuffer,             /**< Buffer is too small */
+  ID3E_NoData,                  /**< No data to parse or render*/
   ID3E_InvalidFrameID,          /**< Invalid frame id */
-  ID3E_FieldNotFound,           /**< Requested field not found */
+  ID3E_InvalidFrameSize,        /**< Invalid frame size */
   ID3E_UnknownFieldType,        /**< Unknown field type */
-  ID3E_TagAlreadyAttached,      /**< Tag is already attached to a file */
-  ID3E_InvalidTagVersion,       /**< Invalid tag version */
   ID3E_NoFile,                  /**< No file to parse */
   ID3E_ReadOnly,                /**< Attempting to write to a read-only file */
+  ID3E_InvalidTag,              /**< Invalid Tag */
+//  ID3E_NoMemory,                /**< No available memory */
+//  ID3E_BadData,                 /**< Improperly formatted data */
+//  ID3E_NoBuffer,                /**< No buffer to write to */
+//  ID3E_SmallBuffer,             /**< Buffer is too small */
+//  ID3E_FieldNotFound,           /**< Requested field not found */
+//  ID3E_TagAlreadyAttached,      /**< Tag is already attached to a file */
+//  ID3E_InvalidTagVersion,       /**< Invalid tag version */
   ID3E_zlibError                /**< Error in compression/uncompression */
+// We use these errors in a hack in RenderV2ToFile; for this, it is important to keep
+// the errors which can be returned from createFile(), openWritableFile and ID3E_NoFile and ID3E_ReadOnly
+// below the minimum tag size ( which is 10 bytes for the header, + 7 bytes for a minimal (2.2) frame
 };
 
 ID3_ENUM(ID3_ContentType)
@@ -392,7 +453,7 @@ ID3_ENUM(ID3_ContentType)
 ID3_ENUM(ID3_PictureType)
 {
   ID3PT_OTHER = 0,
-  ID3PT_PNG32ICON = 1,     //  32x32 pixels 'file icon' (PNG only)
+  ID3PT_PNG32ICON = 1,     // 32x32 pixels 'file icon' (PNG only)
   ID3PT_OTHERICON = 2,     // Other file icon
   ID3PT_COVERFRONT = 3,    // Cover (front)
   ID3PT_COVERBACK = 4,     // Cover (back)
@@ -420,126 +481,9 @@ ID3_ENUM(ID3_TimeStampFormat)
   ID3TSF_MS
 };
 
-ID3_ENUM(MP3_BitRates)
-{
-  MP3BITRATE_FALSE = -1,
-  MP3BITRATE_NONE = 0,
-  MP3BITRATE_8K   = 8000,
-  MP3BITRATE_16K  = 16000,
-  MP3BITRATE_24K  = 24000,
-  MP3BITRATE_32K  = 32000,
-  MP3BITRATE_40K  = 40000,
-  MP3BITRATE_48K  = 48000,
-  MP3BITRATE_56K  = 56000,
-  MP3BITRATE_64K  = 64000,
-  MP3BITRATE_80K  = 80000,
-  MP3BITRATE_96K  = 96000,
-  MP3BITRATE_112K = 112000,
-  MP3BITRATE_128K = 128000,
-  MP3BITRATE_144K = 144000,
-  MP3BITRATE_160K = 160000,
-  MP3BITRATE_176K = 176000,
-  MP3BITRATE_192K = 192000,
-  MP3BITRATE_224K = 224000,
-  MP3BITRATE_256K = 256000,
-  MP3BITRATE_288K = 288000,
-  MP3BITRATE_320K = 320000,
-  MP3BITRATE_352K = 352000,
-  MP3BITRATE_384K = 384000,
-  MP3BITRATE_416K = 416000,
-  MP3BITRATE_448K = 448000
-};
-
-ID3_ENUM(Mpeg_Layers)
-{
-  MPEGLAYER_FALSE = -1,
-  MPEGLAYER_UNDEFINED,
-  MPEGLAYER_III,
-  MPEGLAYER_II,
-  MPEGLAYER_I
-};
-
-ID3_ENUM(Mpeg_Version)
-{
-  MPEGVERSION_FALSE = -1,
-  MPEGVERSION_2_5,
-  MPEGVERSION_Reserved,
-  MPEGVERSION_2,
-  MPEGVERSION_1
-};
-
-ID3_ENUM(Mp3_Frequencies)
-{
-  MP3FREQUENCIES_FALSE = -1,
-  MP3FREQUENCIES_Reserved = 0,
-  MP3FREQUENCIES_8000HZ = 8000,
-  MP3FREQUENCIES_11025HZ = 11025,
-  MP3FREQUENCIES_12000HZ = 12000,
-  MP3FREQUENCIES_16000HZ = 16000,
-  MP3FREQUENCIES_22050HZ = 22050,
-  MP3FREQUENCIES_24000HZ = 24000,
-  MP3FREQUENCIES_32000HZ = 32000,
-  MP3FREQUENCIES_48000HZ = 48000,
-  MP3FREQUENCIES_44100HZ = 44100,
-};
-
-ID3_ENUM(Mp3_ChannelMode)
-{
-  MP3CHANNELMODE_FALSE = -1,
-  MP3CHANNELMODE_STEREO,
-  MP3CHANNELMODE_JOINT_STEREO,
-  MP3CHANNELMODE_DUAL_CHANNEL,
-  MP3CHANNELMODE_SINGLE_CHANNEL
-};
-
-ID3_ENUM(Mp3_ModeExt)
-{
-  MP3MODEEXT_FALSE = -1,
-  MP3MODEEXT_0,
-  MP3MODEEXT_1,
-  MP3MODEEXT_2,
-  MP3MODEEXT_3
-};
-
-ID3_ENUM(Mp3_Emphasis)
-{
-  MP3EMPHASIS_FALSE = -1,
-  MP3EMPHASIS_NONE,
-  MP3EMPHASIS_50_15MS,
-  MP3EMPHASIS_Reserved,
-  MP3EMPHASIS_CCIT_J17
-};
-
-ID3_ENUM(Mp3_Crc)
-{
-  MP3CRC_ERROR_SIZE = -2,
-  MP3CRC_MISMATCH = -1,
-  MP3CRC_NONE = 0,
-  MP3CRC_OK = 1
-};
-
-ID3_STRUCT(Mp3_Headerinfo)
-{
-  Mpeg_Layers layer;
-  Mpeg_Version version;
-  MP3_BitRates bitrate;
-  Mp3_ChannelMode channelmode;
-  Mp3_ModeExt modeext;
-  Mp3_Emphasis emphasis;
-  Mp3_Crc crc;
-  uint32 vbr_bitrate;           // avg bitrate from xing header
-  uint32 frequency;             // samplerate
-  uint32 framesize;
-  uint32 frames;                // nr of frames
-  uint32 time;                  // nr of seconds in song
-  bool privatebit;
-  bool copyrighted;
-  bool original;
-};
-
 #define ID3_NR_OF_V1_GENRES 148
 
-static const char *ID3_v1_genre_description[ID3_NR_OF_V1_GENRES] =
+static const char* ID3_v1_genre_description[ID3_NR_OF_V1_GENRES] =
 {
   "Blues",             //0
   "Classic Rock",      //1
@@ -686,13 +630,130 @@ static const char *ID3_v1_genre_description[ID3_NR_OF_V1_GENRES] =
   "Christian Rock ",       //141
   "Merengue",              //142
   "Salsa",                 //143
-  "Trash Metal",           //144
+  "Thrash Metal",          //144
   "Anime",                 //145
   "JPop",                  //146
   "Synthpop"               //147
 };
 
 #define ID3_V1GENRE2DESCRIPTION(x) (x < ID3_NR_OF_V1_GENRES && x >= 0) ? ID3_v1_genre_description[x] : NULL
+
+ID3_ENUM(MP3_BitRates)
+{
+  MP3BITRATE_FALSE = -1,
+  MP3BITRATE_NONE = 0,
+  MP3BITRATE_8K   = 8000,
+  MP3BITRATE_16K  = 16000,
+  MP3BITRATE_24K  = 24000,
+  MP3BITRATE_32K  = 32000,
+  MP3BITRATE_40K  = 40000,
+  MP3BITRATE_48K  = 48000,
+  MP3BITRATE_56K  = 56000,
+  MP3BITRATE_64K  = 64000,
+  MP3BITRATE_80K  = 80000,
+  MP3BITRATE_96K  = 96000,
+  MP3BITRATE_112K = 112000,
+  MP3BITRATE_128K = 128000,
+  MP3BITRATE_144K = 144000,
+  MP3BITRATE_160K = 160000,
+  MP3BITRATE_176K = 176000,
+  MP3BITRATE_192K = 192000,
+  MP3BITRATE_224K = 224000,
+  MP3BITRATE_256K = 256000,
+  MP3BITRATE_288K = 288000,
+  MP3BITRATE_320K = 320000,
+  MP3BITRATE_352K = 352000,
+  MP3BITRATE_384K = 384000,
+  MP3BITRATE_416K = 416000,
+  MP3BITRATE_448K = 448000
+};
+
+ID3_ENUM(Mpeg_Layers)
+{
+  MPEGLAYER_FALSE = -1,
+  MPEGLAYER_UNDEFINED,
+  MPEGLAYER_III,
+  MPEGLAYER_II,
+  MPEGLAYER_I
+};
+
+ID3_ENUM(Mpeg_Version)
+{
+  MPEGVERSION_FALSE = -1,
+  MPEGVERSION_2_5,
+  MPEGVERSION_Reserved,
+  MPEGVERSION_2,
+  MPEGVERSION_1
+};
+
+ID3_ENUM(Mp3_Frequencies)
+{
+  MP3FREQUENCIES_FALSE = -1,
+  MP3FREQUENCIES_Reserved = 0,
+  MP3FREQUENCIES_8000HZ = 8000,
+  MP3FREQUENCIES_11025HZ = 11025,
+  MP3FREQUENCIES_12000HZ = 12000,
+  MP3FREQUENCIES_16000HZ = 16000,
+  MP3FREQUENCIES_22050HZ = 22050,
+  MP3FREQUENCIES_24000HZ = 24000,
+  MP3FREQUENCIES_32000HZ = 32000,
+  MP3FREQUENCIES_48000HZ = 48000,
+  MP3FREQUENCIES_44100HZ = 44100,
+};
+
+ID3_ENUM(Mp3_ChannelMode)
+{
+  MP3CHANNELMODE_FALSE = -1,
+  MP3CHANNELMODE_STEREO,
+  MP3CHANNELMODE_JOINT_STEREO,
+  MP3CHANNELMODE_DUAL_CHANNEL,
+  MP3CHANNELMODE_SINGLE_CHANNEL
+};
+
+ID3_ENUM(Mp3_ModeExt)
+{
+  MP3MODEEXT_FALSE = -1,
+  MP3MODEEXT_0,
+  MP3MODEEXT_1,
+  MP3MODEEXT_2,
+  MP3MODEEXT_3
+};
+
+ID3_ENUM(Mp3_Emphasis)
+{
+  MP3EMPHASIS_FALSE = -1,
+  MP3EMPHASIS_NONE,
+  MP3EMPHASIS_50_15MS,
+  MP3EMPHASIS_Reserved,
+  MP3EMPHASIS_CCIT_J17
+};
+
+ID3_ENUM(Mp3_Crc)
+{
+  MP3CRC_ERROR_SIZE = -2,
+  MP3CRC_MISMATCH = -1,
+  MP3CRC_NONE = 0,
+  MP3CRC_OK = 1
+};
+
+ID3_STRUCT(Mp3_Headerinfo)
+{
+  Mpeg_Layers layer;
+  Mpeg_Version version;
+  MP3_BitRates bitrate;
+  Mp3_ChannelMode channelmode;
+  Mp3_ModeExt modeext;
+  Mp3_Emphasis emphasis;
+  Mp3_Crc crc;
+  uint32 frequency;             // samplerate
+  uint32 framesize;
+  uint32 frames;                // nr of frames
+  uint32 time;                  // nr of seconds in song
+  uint32 datasize;              // size from first sync byte till before the appended tags
+  bool privatebit;
+  bool copyrighted;
+  bool original;
+};
 
 #define MASK(bits) ((1 << (bits)) - 1)
 #define MASK1 MASK(1)

@@ -29,6 +29,16 @@
 #ifndef _ID3LIB_MISC_SUPPORT_H_
 #define _ID3LIB_MISC_SUPPORT_H_
 
+#if defined(__BORLANDC__)
+// due to a bug in borland it sometimes still wants mfc compatibility even when you disable it
+#  if defined(_MSC_VER)
+#    undef _MSC_VER
+#  endif
+#  if defined(__MFC_COMPAT__)
+#    undef __MFC_COMPAT__
+#  endif
+#endif
+
 #include "tag.h"
 
 ID3_C_EXPORT char*      ID3_GetString(const ID3_Frame *, ID3_FieldID);
@@ -132,6 +142,7 @@ ID3_C_EXPORT char *ID3_GetDescriptionOfPicType(ID3_Tag*, ID3_PictureType pictype
 //following routine courtesy of John George
 ID3_C_EXPORT size_t ID3_RemovePictureType(ID3_Tag*, ID3_PictureType pictype);
 
+ID3_C_EXPORT ID3_Frame* ID3_AddGenre(ID3_Tag* tag, size_t genreNum, char* genre, bool add_v1_genre_number = true, bool add_v1_genre_description = true, bool addRXorCR = false, bool replace = true);
 
 #endif /* _ID3LIB_MISC_SUPPORT_H_ */
 

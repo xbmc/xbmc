@@ -29,7 +29,7 @@
 #ifndef _ID3LIB_ID3_H_
 #define _ID3LIB_ID3_H_
 
-#include "globals.h" //has <stdlib.h> "sized_types.h"
+#include "globals.h" //has <stdlib.h> "id3/sized_types.h"
 
 #ifdef __cplusplus
 extern "C"

@@ -3,6 +3,7 @@
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
+// Copyright 2002 Thijmen Klok (thijmen@id3lib.org)
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -28,13 +29,24 @@
 #ifndef _ID3LIB_UTILS_H_
 #define _ID3LIB_UTILS_H_
 
+#if defined(__BORLANDC__)
+// due to a bug in borland it sometimes still wants mfc compatibility even when you disable it
+#  if defined(_MSC_VER)
+#    undef _MSC_VER
+#  endif
+#  if defined(__MFC_COMPAT__)
+#    undef __MFC_COMPAT__
+#  endif
+#endif
+
 #if defined HAVE_CONFIG_H
 #include <config.h>
 #endif
 
 #include "id3lib_streams.h"
-#include "globals.h" //has <stdlib.h> "sized_types.h"
+#include "globals.h" //has <stdlib.h> "id3/sized_types.h"
 #include "id3lib_strings.h"
+#include <stdlib.h>
 
 namespace dami
 {
@@ -83,7 +95,7 @@ namespace dami
 
   String ID3_C_EXPORT toString(uint32 val);
   WString ID3_C_EXPORT toWString(const unicode_t[], size_t);
-  
+
   size_t ID3_C_EXPORT ucslen(const unicode_t *unicode);
   String ID3_C_EXPORT convert(String data, ID3_TextEnc, ID3_TextEnc);
 
@@ -98,6 +110,6 @@ namespace dami
   ID3_Err ID3_C_EXPORT openReadableFile(String, ifstream&);
 
 };
-  
+
 #endif /* _ID3LIB_UTILS_H_ */
 

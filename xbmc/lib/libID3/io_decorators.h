@@ -3,6 +3,7 @@
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
+// Copyright 2002 Thijmen Klok (thijmen@id3lib.org)
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -28,16 +29,26 @@
 #ifndef _ID3LIB_READER_DECORATORS_H_
 #define _ID3LIB_READER_DECORATORS_H_
 
+#if defined(__BORLANDC__)
+// due to a bug in borland it sometimes still wants mfc compatibility even when you disable it
+#  if defined(_MSC_VER)
+#    undef _MSC_VER
+#  endif
+#  if defined(__MFC_COMPAT__)
+#    undef __MFC_COMPAT__
+#  endif
+#endif
+
 #include "readers.h"
 #include "io_helpers.h"
-#include "utils.h" // has <config.h> "id3lib_streams.h" "globals.h" "id3lib_strings.h"
+#include "id3/utils.h" // has <config.h> "id3/id3lib_streams.h" "id3/globals.h" "id3/id3lib_strings.h"
 
 namespace dami
 {
   namespace io
   {
     /**
-     * Set a window on the buffer.  Characters can only be read within this 
+     * Set a window on the buffer.  Characters can only be read within this
      * window.
      */
     class ID3_CPP_EXPORT WindowedReader : public ID3_Reader
@@ -47,26 +58,26 @@ namespace dami
       ID3_Reader& _reader;
       pos_type _beg, _end;
 
-      bool inWindow(pos_type cur) 
+      bool inWindow(pos_type cur)
       { return this->getBeg() <= cur && cur < this->getEnd(); }
 
      public:
       explicit WindowedReader(ID3_Reader& reader)
         : _reader(reader), _beg(reader.getBeg()), _end(reader.getEnd()) { ; }
-  
-      WindowedReader(ID3_Reader& reader, size_type size) 
+
+      WindowedReader(ID3_Reader& reader, size_type size)
         : _reader(reader), _beg(reader.getBeg()), _end(reader.getEnd())
       { this->setWindow(this->getCur(), size); }
-  
-      WindowedReader(ID3_Reader& reader, pos_type beg, size_type size) 
+
+      WindowedReader(ID3_Reader& reader, pos_type beg, size_type size)
         : _reader(reader), _beg(reader.getBeg()), _end(reader.getEnd())
       { this->setWindow(beg, size); }
 
       void setWindow(pos_type beg, size_type size);
 
       pos_type setBeg(pos_type);
-      pos_type setCur(pos_type cur) 
-      { 
+      pos_type setCur(pos_type cur)
+      {
         return _reader.setCur(mid(this->getBeg(), cur, this->getEnd()));
       }
       pos_type setEnd(pos_type);
@@ -82,8 +93,8 @@ namespace dami
 
       size_type readChars(char_type buf[], size_type len);
       size_type readChars(char buf[], size_type len)
-      { 
-        return this->readChars((char_type*) buf, len); 
+      {
+        return this->readChars((char_type*) buf, len);
       }
 
       void close() { ; }
@@ -95,12 +106,12 @@ namespace dami
 
      protected:
       ID3_Reader& _reader;
-      
+
     public:
 
       CharReader(ID3_Reader& reader) : _reader(reader) { }
       virtual ~CharReader() { ; }
-    
+
       /**
        * Read \c len characters into the array \c buf.  Since the stream needs
        * might have been unsynced, this function copies the characters one at a
@@ -108,8 +119,8 @@ namespace dami
        */
       size_type readChars(char_type buf[], size_type len);
       size_type readChars(char buf[], size_type len)
-      { 
-        return this->readChars((char_type*) buf, len); 
+      {
+        return this->readChars((char_type*) buf, len);
       }
 
       void close() { ; }
@@ -158,8 +169,8 @@ namespace dami
       size_type _numSyncs;
 
      public:
-      UnsyncedWriter(ID3_Writer& writer) 
-        : _writer(writer), _last('\0'), _numSyncs(0) 
+      UnsyncedWriter(ID3_Writer& writer)
+        : _writer(writer), _last('\0'), _numSyncs(0)
       { ; }
 
       size_type getNumSyncs() const { return _numSyncs; }
@@ -173,7 +184,7 @@ namespace dami
        */
       size_type writeChars(const char_type[], size_type len);
       size_type writeChars(const char buf[], size_type len)
-      { 
+      {
         return this->writeChars(reinterpret_cast<const char_type *>(buf), len);
       }
 
@@ -194,14 +205,14 @@ namespace dami
      public:
 
       explicit CompressedWriter(ID3_Writer& writer)
-        : _writer(writer), _data(), _origSize(0) 
+        : _writer(writer), _data(), _origSize(0)
       { ; }
       virtual ~CompressedWriter() { this->flush(); }
-      
+
       size_type getOrigSize() const { return _origSize; }
 
       void flush();
-      
+
       size_type writeChars(const char_type buf[], size_type len);
       size_type writeChars(const char buf[], size_type len)
       {

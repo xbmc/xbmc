@@ -24,6 +24,17 @@
 
 #ifndef STREAMS_H_DEFINE
 #define STREAMS_H_DEFINE
+
+#if defined(__BORLANDC__)
+// due to a bug in borland it sometimes still wants mfc compatibility even when you disable it
+#  if defined(_MSC_VER)
+#    undef _MSC_VER
+#  endif
+#  if defined(__MFC_COMPAT__)
+#    undef __MFC_COMPAT__
+#  endif
+#endif
+
 #include <fstream>
 #include <iostream>
 #include <iosfwd>

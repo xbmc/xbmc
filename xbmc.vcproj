@@ -61,7 +61,7 @@
 				StackSize="0x40000"
 				IncludeDebugInfo="TRUE"
 				NoLibWarn="TRUE"
-				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;LIBID3;PYTHON"
+				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"/>
@@ -226,7 +226,7 @@
 				Name="XboxImageTool"
 				FileName="$(TargetDir)default.xbe"
 				StackSize="0x80000"
-				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;LIBID3;PYTHON"
+				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"/>

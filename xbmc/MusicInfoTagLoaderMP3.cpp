@@ -61,7 +61,7 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
 	// retrieve the ID3 Tag info from strFileName
 	// and put it in tag
 	bool bResult=false;
-	CSectionLoader::Load("LIBID3");
+//	CSectionLoader::Load("LIBID3");
 	tag.SetURL(strFileName);
 	tag.SetLoaded(true);
 	CFile file;
@@ -83,6 +83,6 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
 		}
 		file.Close();
 	}
-	CSectionLoader::Unload("LIBID3");
+//	CSectionLoader::Unload("LIBID3");
 	return bResult;
 }

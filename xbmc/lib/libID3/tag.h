@@ -29,9 +29,18 @@
 #ifndef _ID3LIB_TAG_H_
 #define _ID3LIB_TAG_H_
 
+#if defined(__BORLANDC__)
+// due to a bug in borland it sometimes still wants mfc compatibility even when you disable it
+#  if defined(_MSC_VER)
+#    undef _MSC_VER
+#  endif
+#  if defined(__MFC_COMPAT__)
+#    undef __MFC_COMPAT__
+#  endif
+#endif
+
 #include "id3lib_frame.h"
 #include "field.h"
-#include "utils.h"//for ID3_PATH_LENGTH
 
 class ID3_Reader;
 class ID3_Writer;
@@ -41,7 +50,6 @@ class ID3_Tag;
 class ID3_CPP_EXPORT ID3_Tag
 {
   ID3_TagImpl* _impl;
-  char _tmp_filename[ID3_PATH_LENGTH];
 public:
 
   class Iterator
@@ -58,7 +66,7 @@ public:
 
 public:
 
-  ID3_Tag(const char *name = NULL);
+  ID3_Tag(const char *name = NULL, flags_t = (flags_t) ID3TT_ALL);
   ID3_Tag(const ID3_Tag &tag);
   virtual ~ID3_Tag();
 
@@ -88,6 +96,7 @@ public:
 
   size_t     Link(const char *fileInfo, flags_t = (flags_t) ID3TT_ALL);
   size_t     Link(ID3_Reader &reader, flags_t = (flags_t) ID3TT_ALL);
+
   flags_t    Update(flags_t = (flags_t) ID3TT_ALL);
   flags_t    Strip(flags_t = (flags_t) ID3TT_ALL);
 
@@ -95,6 +104,7 @@ public:
   size_t     GetAppendedBytes() const;
   size_t     GetFileSize() const;
   const char* GetFileName() const;
+  ID3_Err    GetLastError();
 
   ID3_Frame* Find(ID3_FrameID) const;
   ID3_Frame* Find(ID3_FrameID, ID3_FieldID, uint32) const;
