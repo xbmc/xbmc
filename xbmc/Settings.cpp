@@ -1002,7 +1002,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetInteger(pElement, "lcdrow2",g_stSettings.m_iLCDAdress[1],0x40,0,0x400);
 		GetInteger(pElement, "lcdrow3",g_stSettings.m_iLCDAdress[2],0x14,0,0x400);
 		GetInteger(pElement, "lcdrow4",g_stSettings.m_iLCDAdress[3],0x54,0,0x400);
-		GetInteger(pElement, "lcdchip",g_stSettings.m_iLCDModChip,0,0,1);
+		GetInteger(pElement, "lcdchip",g_stSettings.m_iLCDModChip,0,0,10);
 		GetInteger(pElement, "lcdcontrast",g_stSettings.m_iLCDContrast,100,0,100);
 	}
 
