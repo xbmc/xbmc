@@ -699,6 +699,7 @@ void CApplication::OnKey(CKey& key)
         }
       }
 	  }
+    
 
     // previous : play previous song from playlist
 	  if (action.wID == ACTION_PREV_ITEM)
