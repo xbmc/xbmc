@@ -651,7 +651,7 @@ void ConvertAnim(const char* Dir, const char* Filename, double MaxMSE)
 
 	char OutFilename[52];
 	if (Dir)
-		_snprintf(OutFilename, 52, "%s/%s", Dir, Filename);
+		_snprintf(OutFilename, 52, "%s\\%s", Dir, Filename);
 	else
 		_snprintf(OutFilename, 52, "%s", Filename);
 	OutFilename[51] = 0;
