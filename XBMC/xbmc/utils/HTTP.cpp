@@ -462,6 +462,7 @@ bool CHTTP::Recv(int iLen)
 		}
 		if (!n)
 		{
+			WSASetLastError(0);
 			return !bUnknown; // graceful close
 		}
 		m_RecvBytes+=n;
@@ -546,7 +547,7 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 			Close();
 			return 0;
 		}
-		if (!Recv(BUFSIZE - m_RecvBytes - 1))
+		if (!Recv(BUFSIZE-m_RecvBytes-1) && WSAGetLastError())
 		{
 			CLog::Log("Recv failed: %d", WSAGetLastError());
 			Close();
