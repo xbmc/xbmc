@@ -1,0 +1,707 @@
+<strings>
+  <string>
+    <id>0</id>
+    <value>Programma's</value>
+  </string>
+  <string>
+    <id>1</id>
+    <value>Afbeeldingen</value>
+  </string>
+  <string>
+    <id>2</id>
+    <value>MP3</value>
+  </string>
+  <string>
+    <id>3</id>
+    <value>Video</value>
+  </string>
+  <string>
+    <id>4</id>
+    <value>TV Gids</value>
+  </string>
+  <string>
+    <id>5</id>
+    <value>Instellingen</value>
+  </string>
+  <string>
+    <id>6</id>
+    <value>XBOX Media Center 12 okt 2003 build</value>
+  </string>
+  <string>
+    <id>7</id>
+    <value>Bestands beheer</value>
+  </string>
+  
+  <string>
+    <id>11</id>
+    <value>maandag</value>
+  </string>
+  <string>
+    <id>12</id>
+    <value>dinsdag</value>
+  </string>
+  <string>
+    <id>13</id>
+    <value>woensdag</value>
+  </string>
+  <string>
+    <id>14</id>
+    <value>donderdag</value>
+  </string>
+  <string>
+    <id>15</id>
+    <value>vrijdag</value>
+  </string>
+  <string>
+    <id>16</id>
+    <value>zaterdag</value>
+  </string>  
+  <string>
+    <id>17</id>
+    <value>zondag</value>
+  </string>
+  
+    
+  <string>
+    <id>21</id>
+    <value>januari</value>
+  </string>
+  
+  <string>
+    <id>22</id>
+    <value>februari</value>
+  </string>  
+  <string>
+    <id>23</id>
+    <value>maart</value>
+  </string>  
+  <string>
+    <id>24</id>
+    <value>april</value>
+  </string>  
+  <string>
+    <id>25</id>
+    <value>mei</value>
+  </string>  
+  <string>
+    <id>26</id>
+    <value>juni</value>
+  </string>  
+  <string>
+    <id>27</id>
+    <value>juli</value>
+  </string>  
+  <string>
+    <id>28</id>
+    <value>augustus</value>
+  </string>  
+  <string>
+    <id>29</id>
+    <value>september</value>
+  </string>  
+  <string>
+    <id>30</id>
+    <value>oktober</value>
+  </string>  
+  <string>
+    <id>31</id>
+    <value>november</value>
+  </string>  
+  <string>
+    <id>32</id>
+    <value>december</value>
+  </string>  
+  <string>
+    <id>100</id>
+    <value>Bekijk als icoon</value>
+  </string>  
+  <string>
+    <id>101</id>
+    <value>Bekijk als lijst</value>
+  </string>  
+  <string>
+    <id>102</id>
+    <value>Scannen</value>
+  </string>  
+  <string>
+    <id>103</id>
+    <value>Sorteer op naam</value>
+  </string> 
+  <string>
+    <id>104</id>
+    <value>Sorteer op datum</value>
+  </string>    
+  <string>
+    <id>105</id>
+    <value>Sorteer op formaat</value>
+  </string>      
+  <string>
+    <id>106</id>
+    <value>Nee</value>
+  </string>     
+  <string>
+    <id>107</id>
+    <value>JA</value>
+  </string>   
+  <string>
+    <id>108</id>
+    <value>Schuif voorstelling</value>
+  </string>   
+  <string>
+    <id>109</id>
+    <value>Maak Thumbs</value>
+  </string>   
+  <string>
+    <id>110</id>
+    <value>Maak Thumbnails</value>
+  </string>   
+  <string>
+    <id>111</id>
+    <value>Snelkoppelingen</value>
+  </string>   
+  <string>
+    <id>112</id>
+    <value>Gepauzeerd</value>
+  </string>   
+  <string>
+    <id>113</id>
+    <value>Mijn Bestanden : Bron</value>
+  </string>   
+  <string>
+    <id>114</id>
+    <value>Mijn Bestanden : Bestemming</value>
+  </string>   
+  <string>
+    <id>115</id>
+    <value>Kopieer</value>
+  </string>   
+  <string>
+    <id>116</id>
+    <value>Verplaats</value>
+  </string>   
+  <string>
+    <id>117</id>
+    <value>Verwijder</value>
+  </string>   
+  <string>
+    <id>118</id>
+    <value>Hernoem</value>
+  </string>   
+  <string>
+    <id>119</id>
+    <value>Nieuwe map</value>
+  </string>   
+  <string>
+    <id>120</id>
+    <value>Bevestig bestand(en) kopieren</value>
+  </string>   
+  <string>
+    <id>121</id>
+    <value>Bevestig bestand(en) verplaatsen</value>
+  </string>   
+  <string>
+    <id>122</id>
+    <value>Bevestig bestand(en) verwijderen</value>
+  </string>   
+  <string>
+    <id>123</id>
+    <value>Weet je zeker dat je deze bestanden wilt kopieren?</value>
+  </string>   
+  <string>
+    <id>124</id>
+    <value>Weet je zeker dat je deze bestanden wilt verplaatsen?</value>
+  </string>   
+  <string>
+    <id>125</id>
+    <value>Weet je zeker dat je deze bestanden wilt verwijderen?</value>
+  </string>  
+  <string>
+    <id>126</id>
+    <value>Status</value>
+  </string>  
+  <string>
+    <id>127</id>
+    <value>Objekten</value>
+  </string>  
+  <string>
+    <id>128</id>
+    <value>Algemeen</value>
+  </string> 
+  <string>
+    <id>129</id>
+    <value>Voorstelling</value>
+  </string> 
+  <string>
+    <id>130</id>
+    <value>Systeem informatie</value>
+  </string>  
+  <string>
+    <id>131</id>
+    <value>Scherm</value>
+  </string>  
+  <string>
+    <id>132</id>
+    <value>Albums</value>
+  </string>  
+  <string>
+    <id>133</id>
+    <value>Artiesten</value>
+  </string>  
+  <string>
+    <id>134</id>
+    <value>Bekijk nummer</value>
+  </string>  
+  <string>
+    <id>135</id>
+    <value>Genres</value>
+  </string>  
+  <string>
+    <id>136</id>
+    <value>Afspeellijsten</value>
+  </string>  
+  <string>
+    <id>137</id>
+    <value>Zoeken</value>
+  </string>  
+  <string>
+    <id>138</id>
+    <value>SYSTEEM INFORMATIE</value>
+  </string>  
+  <string>
+    <id>139</id>
+    <value>Temperatuur:</value>
+  </string> 
+  <string>
+    <id>140</id>
+    <value>CPU:</value>
+  </string> 
+  <string>
+    <id>141</id>
+    <value>GPU:</value>
+  </string> 
+  <string>
+    <id>142</id>
+    <value>Tijd:</value>
+  </string> 
+  <string>
+    <id>143</id>
+    <value>Huidige:</value>
+  </string> 
+  <string>
+    <id>144</id>
+    <value>Bouw:</value>
+  </string> 
+  <string>
+    <id>145</id>
+    <value>Netwerk:</value>
+  </string> 
+  <string>
+    <id>146</id>
+    <value>Type:</value>
+  </string> 
+  <string>
+    <id>147</id>
+    <value>Statisch</value>
+  </string> 
+  <string>
+    <id>148</id>
+    <value>DHCP</value>
+  </string> 
+  <string>
+    <id>149</id>
+    <value>MAC</value>
+  </string> 
+  <string>
+    <id>150</id>
+    <value>IP:</value>
+  </string> 
+  <string>
+    <id>151</id>
+    <value>Verbinding:</value>
+  </string> 
+  <string>
+    <id>152</id>
+    <value>Half duplex</value>
+  </string> 
+  <string>
+    <id>153</id>
+    <value>Full duplex</value>
+  </string> 
+  <string>
+    <id>154</id>
+    <value>Opslag</value>
+  </string> 
+  <string>
+    <id>155</id>
+    <value>Station</value>
+  </string> 
+  <string>
+    <id>156</id>
+    <value>Vrij</value>
+  </string> 
+  <string>
+    <id>157</id>
+    <value>Video</value>
+  </string> 
+  <string>
+    <id>158</id>
+    <value>Vrij geheugen</value>
+  </string> 
+  <string>
+    <id>159</id>
+    <value>Geen verbinding</value>
+  </string> 
+  <string>
+    <id>160</id>
+    <value>Vrij</value>
+  </string> 
+  <string>
+    <id>161</id>
+    <value>Niet beschikbaar</value>
+  </string> 
+  <string>
+    <id>162</id>
+    <value>Lade Open</value>
+  </string> 
+  <string>
+    <id>163</id>
+    <value>Inlezen</value>
+  </string> 
+  <string>
+    <id>164</id>
+    <value>Geen disk</value>
+  </string> 
+  <string>
+    <id>165</id>
+    <value>Disk aanwezig</value>
+  </string> 
+  <string>
+    <id>166</id>
+    <value>Omhulsel:</value>
+  </string> 
+  <string>
+    <id>167</id>
+    <value>FTP server:</value>
+  </string> 
+  <string>
+    <id>168</id>
+    <value>Tijd server:</value>
+  </string> 
+  <string>
+    <id>169</id>
+    <value>Resolutie:</value>
+  </string> 
+  <string>
+    <id>170</id>
+    <value>Album:</value>
+  </string> 
+  <string>
+    <id>171</id>
+    <value>Artiest:</value>
+  </string> 
+  <string>
+    <id>172</id>
+    <value>Datum van uitbrengen:</value>
+  </string> 
+  <string>
+    <id>173</id>
+    <value>Waardering:</value>
+  </string> 
+  <string>
+    <id>174</id>
+    <value>Genre:</value>
+  </string> 
+  <string>
+    <id>175</id>
+    <value>Tonen:</value>
+  </string> 
+  <string>
+    <id>176</id>
+    <value>Stijlen:</value>
+  </string> 
+  <string>
+    <id>177</id>
+    <value>Beschrijving:</value>
+  </string> 
+  <string>
+    <id>178</id>
+    <value>Nummers:</value>
+  </string> 
+  <string>
+    <id>179</id>
+    <value>Nummer</value>
+  </string> 
+  <string>
+    <id>180</id>
+    <value>Tijdsduur</value>
+  </string> 
+  <string>
+    <id>181</id>
+    <value>Selekteer album</value>
+  </string> 
+  <string>
+    <id>182</id>
+    <value>Nummer</value>
+  </string> 
+  <string>
+    <id>183</id>
+    <value>Beschrijving</value>
+  </string> 
+  <string>
+    <id>184</id>
+    <value>Ververs</value>
+  </string> 
+  <string>
+    <id>185</id>
+    <value>zoeken naar album</value>
+  </string> 
+  <string>
+    <id>186</id>
+    <value>OK</value>
+  </string>  
+  <string>
+    <id>187</id>
+    <value>Geen albums gevonden!</value>
+  </string>  
+  <string>
+    <id>188</id>
+    <value>Selekteer alles</value>
+  </string>  
+  <string>
+    <id>189</id>
+    <value>Scannen media informatie</value>
+  </string>  
+  <string>
+    <id>190</id>
+    <value>Opslaan</value>
+  </string>  
+  <string>
+    <id>191</id>
+    <value>willekeurige volgorde</value>
+  </string>  
+  <string>
+    <id>192</id>
+    <value>leegmaken</value>
+  </string>  
+  <string>
+    <id>193</id>
+    <value>Scannen</value>
+  </string>  
+  <string>
+    <id>194</id>
+    <value>Zoeken...</value>
+  </string> 
+  <string>
+    <id>195</id>
+    <value>Geen IMDB informatie gevonden!</value>
+  </string> 
+  <string>
+    <id>196</id>
+    <value>Selekteer film:</value>
+  </string> 
+  <string>
+    <id>197</id>
+    <value>Aanspreken van IMDB informatie</value>
+  </string> 
+  <string>
+    <id>198</id>
+    <value>Film gegevens laden</value>
+  </string> 
+  <string>
+    <id>199</id>
+    <value>Regisseur</value>
+  </string> 
+  <string>
+    <id>200</id>
+    <value>Credits</value>
+  </string> 
+  <string>
+    <id>201</id>
+    <value>Jaar</value>
+  </string> 
+  <string>
+    <id>202</id>
+    <value>Tag line</value>
+  </string> 
+  <string>
+    <id>203</id>
+    <value>Plot outline</value>
+  </string> 
+  <string>
+    <id>204</id>
+    <value>Waardering</value>
+  </string> 
+  <string>
+    <id>205</id>
+    <value>Stemmen</value>
+  </string> 
+  <string>
+    <id>206</id>
+    <value>Cast</value>
+  </string> 
+  <string>
+    <id>207</id>
+    <value>Plot</value>
+  </string> 
+  <string>
+    <id>208</id>
+    <value>Afspelen</value>
+  </string> 
+  <string>
+    <id>209</id>
+    <value>Volgende</value>
+  </string> 
+  <string>
+    <id>210</id>
+    <value>Vorige</value>
+  </string> 
+  <string>
+    <id>211</id>
+    <value>Zoeken naar applicaties</value>
+  </string> 
+  <string>
+    <id>212</id>
+    <value>gevonden applicaties</value>
+  </string> 
+  <string>
+    <id>213</id>
+    <value>UI Kalibratie</value>
+  </string> 
+  <string>
+    <id>214</id>
+    <value>Film Kalibratie</value>
+  </string> 
+  <string>
+    <id>215</id>
+    <value>Verzachten</value>
+  </string> 
+  <string>
+    <id>216</id>
+    <value>Inzoomen</value>
+  </string> 
+  <string>
+    <id>217</id>
+    <value>Uitrekken</value>
+  </string> 
+  <string>
+    <id>218</id>
+    <value>DVD Station</value>
+  </string> 
+  <string>
+    <id>219</id>
+    <value>Plaats disk</value>
+  </string> 
+  <string>
+    <id>220</id>
+    <value>Gedeeld op afstand</value>
+  </string> 
+  <string>
+    <id>221</id>
+    <value>Netwerk is niet verbonden</value>
+  </string> 
+  <string>
+    <id>222</id>
+    <value>Annuleren</value>
+  </string> 
+  <string>
+    <id>223</id>
+    <value>Kies beste resolutie voor videos</value>
+  </string> 
+  <string>
+    <id>224</id>
+    <value>Snelheid</value>
+  </string> 
+  <string>
+    <id>225</id>
+    <value>Transitie tijd</value>
+  </string> 
+  <string>
+    <id>226</id>
+    <value>PAL60 aanzetten</value>
+  </string> 
+  <string>
+    <id>227</id>
+    <value>CDDB aanzetten</value>
+  </string> 
+  <string>
+    <id>228</id>
+    <value>Willekeurige volgorde van afspeellijst bij laden</value>
+  </string> 
+  <string>
+    <id>229</id>
+    <value>HD Spindown tijd (min)</value>
+  </string> 
+  <string>
+    <id>230</id>
+    <value>Filters</value>
+  </string> 
+  <string>
+    <id>231</id>
+    <value>Geen</value>
+  </string> 
+  <string>
+    <id>232</id>
+    <value>Punt</value>
+  </string> 
+  <string>
+    <id>233</id>
+    <value>Linear</value>
+  </string> 
+  <string>
+    <id>234</id>
+    <value>Anisotropisch</value>
+  </string> 
+  <string>
+    <id>235</id>
+    <value>Quincunx</value>
+  </string> 
+  <string>
+    <id>236</id>
+    <value>Gaussian Cubic</value>
+  </string> 
+  <string>
+    <id>237</id>
+    <value>Verkleinen:</value>
+  </string> 
+  <string>
+    <id>238</id>
+    <value>Vergroten:</value>
+  </string>
+  <string>
+    <id>240</id>
+    <value>Autom. afspelen DVD-Video</value>
+  </string>
+  <string>
+    <id>241</id>
+    <value>Autom. afspelen VCD/SVCD</value>
+  </string>
+  <string>
+    <id>242</id>
+    <value>Autom. afspelen Audio-CD</value>
+  </string>
+  <string>
+    <id>243</id>
+    <value>Autom. afspelen XBOX Spellen</value>
+  </string>
+  <string>
+    <id>244</id>
+    <value>Autom. afspelen Videos</value>
+  </string>
+  <string>
+    <id>245</id>
+    <value>Autom. afspelen Muziek</value>
+  </string>
+  <string>
+    <id>246</id>
+    <value>Autom. afspelen Afbeeldingen</value>
+  </string>
+  <string>
+    <id>247</id>
+    <value>Scripts</value>
+  </string>
+  <string>
+    <id>248</id>
+    <value>Taal</value>
+  </string>
+
+</strings>
