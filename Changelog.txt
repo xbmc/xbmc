@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-12-2004 fixed: 12 hour LCD related crash
+  - 13-12-2004 fixed: Vis crash + keymap.xml (white button) problem
   - 12-12-2004 added: dialogButtonMenu.xml - currently used as a shutdown menu.  id is 111.  Assigned to Right Thumb Button.
   - 12-12-2004 fixed: <align>center for labelcontrols.
   - 12-12-2004 fixed: Couple of issues with the buttonscroller.
