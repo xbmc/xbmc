@@ -117,18 +117,32 @@ void CGUIWindowVideoInfo::Update()
   strTmp=m_pMovie->m_strDirector; strTmp.Trim();
   SetLabel(CONTROL_DIRECTOR, strTmp.c_str() );
 
-  strTmp=m_pMovie->m_strWritingCredits; strTmp.Trim();
+    strTmp=m_pMovie->m_strWritingCredits; strTmp.Trim();
 	SetLabel(CONTROL_CREDITS, strTmp.c_str() );
 
 	strTmp=m_pMovie->m_strGenre; strTmp.Trim();
 	SetLabel(CONTROL_GENRE,  strTmp.c_str() );
-
-  strTmp=m_pMovie->m_strTagLine; strTmp.Trim();
-	SetLabel(CONTROL_TAGLINE, strTmp.c_str() );
-
+    
+	{
+	CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_TAGLINE); 
+    OnMessage(msg1);
+	}
+	{
+	strTmp=m_pMovie->m_strTagLine; strTmp.Trim();
+	CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TAGLINE); 
+    msg1.SetLabel( strTmp );
+    OnMessage(msg1);
+	}
+	{
+	CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PLOTOUTLINE); 
+    OnMessage(msg1);
+	}
+	{
 	strTmp=m_pMovie->m_strPlotOutline; strTmp.Trim();
-	SetLabel(CONTROL_PLOTOUTLINE, strTmp.c_str() );
-
+	CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PLOTOUTLINE); 
+    msg1.SetLabel( strTmp );
+    OnMessage(msg1);
+	}
 	CStdString strYear;
 	strYear.Format("%i", m_pMovie->m_iYear);
 	SetLabel(CONTROL_YEAR, strYear );
