@@ -916,14 +916,11 @@ bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
                   byte g=*(pPtr+1);
                   byte r=*(pPtr+2);
                   pPtr+=4;
-                  
                   pImage->SetPixelColor(x,y,RGB(r,g,b));
                 }
               }
 
               m_pTexture->UnlockRect(0);
-              //mp_msg(0,0,"save as %s\n", szThumbNail);
-              pImage->Resample(64,64,0);
               pImage->Flip();
               pImage->Save(strIcon.c_str(),CXIMAGE_FORMAT_JPG);
               delete pImage;
