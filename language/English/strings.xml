@@ -577,11 +577,11 @@
 	</string>
 	<string>
 		<id>213</id>
-		<value>Centre User Interface...</value>
+		<value>User Interface Calibration</value>
 	</string>
 	<string>
 		<id>214</id>
-		<value>Calibrate Screen...</value>
+		<value>Video Calibration</value>
 	</string>
 	<string>
 		<id>215</id>
@@ -617,7 +617,7 @@
 	</string>
 	<string>
 		<id>223</id>
-		<value>Auto widescreen switching</value>
+		<value>Auto Widescreen Switching</value>
 	</string>
 	<string>
 		<id>224</id>
@@ -625,7 +625,7 @@
 	</string>
 	<string>
 		<id>225</id>
-		<value>Transition time</value>
+		<value>Transition Time</value>
 	</string>
 	<string>
 		<id>226</id>
@@ -637,11 +637,11 @@
 	</string>
 	<string>
 		<id>228</id>
-		<value>Shuffle Playlist on load</value>
+		<value>Shuffle Playlist on Load</value>
 	</string>
 	<string>
 		<id>229</id>
-		<value>HD Spindown time (mins)</value>
+		<value>HD Spindown Time</value>
 	</string>
 	<string>
 		<id>230</id>
@@ -729,7 +729,7 @@
 	</string>
 	<string>
 		<id>252</id>
-		<value>- Output Stereo to all speakers</value>
+		<value>- Output Stereo to all Speakers</value>
 	</string>
 	<string>
 		<id>253</id>
@@ -753,7 +753,7 @@
 	</string>
 	<string>
 		<id>258</id>
-		<value>Enable ID3 tags</value>
+		<value>Enable ID3 Tags</value>
 	</string>
 	<string>
 		<id>259</id>
@@ -861,11 +861,11 @@
 	</string>
 	<string>
 		<id>285</id>
-		<value>Deinterlace filter</value>
+		<value>Deinterlace Filter</value>
 	</string>
 	<string>
 		<id>286</id>
-		<value>Postprocessing filter</value>
+		<value>Postprocessing Filter</value>
 	</string>
 	<string>
 		<id>287</id>
@@ -877,11 +877,11 @@
 	</string>
 	<string>
 		<id>289</id>
-		<value>Size</value>
+		<value>- Size</value>
 	</string>
 	<string>
 		<id>290</id>
-		<value>Volume amplification (dB)</value>
+		<value>Volume Amplification (dB)</value>
 	</string>
 	<string>
 		<id>291</id>
@@ -945,19 +945,19 @@
 	</string>
 	<string>
 		<id>307</id>
-		<value>- Automatic postprocessing</value>
+		<value>- Automatic Postprocessing</value>
 	</string>
 	<string>
 		<id>308</id>
-		<value>- vertical deblocking filter</value>
+		<value>- Vertical Deblocking Filter</value>
 	</string>
 	<string>
 		<id>309</id>
-		<value>- horizontal deblocking filter</value>
+		<value>- Horizontal Deblocking Filter</value>
 	</string>
 	<string>
 		<id>310</id>
-		<value>- Auto brightness/contrast</value>
+		<value>- Auto Brightness/Contrast</value>
 	</string>
 	<string>
 		<id>311</id>
@@ -1053,7 +1053,7 @@
 	</string>
 	<string>
 		<id>334</id>
-		<value>Clean the music library</value>
+		<value>Clean Music Library</value>
 	</string>
 	<string>
 		<id>335</id>
@@ -1165,7 +1165,7 @@
 	</string>
 	<string>
 		<id>362</id>
-		<value>Screensaver Fade Level (%)</value>
+		<value>Screensaver Fade Level</value>
 	</string>
 	<string>
 		<id>363</id>
@@ -1401,11 +1401,11 @@
 	</string>
 	<string>
 		<id>422</id>
-		<value>Delete albuminfo</value>
+		<value>Delete Albuminfo</value>
 	</string>
 	<string>
 		<id>423</id>
-		<value>Delete CDDB info</value>
+		<value>Delete CDDB Info</value>
 	</string>
 	<string>
 		<id>424</id>
@@ -1521,19 +1521,19 @@
 	</string>
 	<string>
 		<id>451</id>
-		<value>Row 1 adress</value>
+		<value>Row 1 Adress</value>
 	</string>
 	<string>
 		<id>452</id>
-		<value>Row 2 adress</value>
+		<value>Row 2 Adress</value>
 	</string>
 	<string>
 		<id>453</id>
-		<value>Row 3 adress</value>
+		<value>Row 3 Adress</value>
 	</string>
 	<string>
 		<id>454</id>
-		<value>Row 4 adress</value>
+		<value>Row 4 Adress</value>
 	</string>
 	<string>
 		<id>455</id>
@@ -1605,7 +1605,7 @@
 	</string>
 	<string>
 		<id>472</id>
-		<value>OSD Timeout</value>
+		<value>Video OSD Timeout</value>
 	</string>
 	<string>
 		<id>473</id>
@@ -1669,11 +1669,11 @@
 	</string>
 	<string>
 		<id>488</id>
-		<value>Repeat folders</value>
+		<value>Repeat Folders</value>
 	</string>
 	<string>
 		<id>489</id>
-		<value>Auto play next item</value>
+		<value>Auto Play Next Item</value>
 	</string>
 	<string>
 		<id>490</id>
@@ -1697,7 +1697,7 @@
 	</string>
 	<string>
 		<id>495</id>
-		<value>Upsample videos to GUI resolution</value>
+		<value>Upsample Videos to GUI Resolution</value>
 	</string>
 	<string>
 		<id>496</id>
@@ -1742,7 +1742,7 @@
 
 		<string>
 		<id>506</id>
-		<value>Use directory names for description</value>
+		<value>Use Directory Names for Description</value>
 	</string> 
       <string> 	 
             <id>507</id> 	 
@@ -1810,7 +1810,7 @@
 	</string>
 	<string>
 		<id>624</id>
-		<value>Include Track number</value>
+		<value>Include Track Number</value>
 	</string>
 	<string>
 		<id>625</id>
@@ -1874,11 +1874,11 @@
 	</string>
 	<string>
 		<id>706</id>
-		<value>HTTP Proxy Host</value>
+		<value>- HTTP Proxy Host</value>
 	</string>
 	<string>
 		<id>707</id>
-		<value>HTTP Proxy Port</value>
+		<value>- HTTP Proxy Port</value>
 	</string>
 	<string>
 		<id>708</id>
@@ -1926,19 +1926,19 @@
 	</string>	
 	<string>
 		<id>719</id>
-		<value>IP Address</value>
+		<value>- IP Address</value>
 	</string>	
 	<string>
 		<id>720</id>
-		<value>Netmask</value>
+		<value>- Netmask</value>
 	</string>	
 	<string>
 		<id>721</id>
-		<value>Default Gateway</value>
+		<value>- Default Gateway</value>
 	</string>	
 	<string>
 		<id>722</id>
-		<value>DNS Server</value>
+		<value>- DNS Server</value>
 	</string>
 	<string>
 		<id>723</id>
@@ -1970,11 +1970,11 @@
 	</string>	
 	<string>
 		<id>730</id>
-		<value>Web Server Port</value>
+		<value>- Web Server Port</value>
 	</string>	
 	<string>
 		<id>731</id>
-		<value>Time Server Host</value>
+		<value>- Time Server Host</value>
 	</string>
 	<string>
 		<id>732</id>
@@ -1982,7 +1982,7 @@
 	</string>
 	<string>
 		<id>733</id>
-		<value>Web Server Password</value>
+		<value>- Web Server Password</value>
 	</string>
 	<string>
 		<id>734</id>
@@ -1990,15 +1990,15 @@
 	</string>
 	<string>
 		<id>735</id>
-		<value>Charset:</value>
+		<value>- Charset</value>
 	</string>	
 	<string>
 		<id>736</id>
-		<value>Style:</value>
+		<value>- Style</value>
 	</string>	
 	<string>
 		<id>737</id>
-		<value>Color:</value>
+		<value>- Color</value>
 	</string>
 	<string>
 		<id>738</id>
@@ -2273,18 +2273,18 @@
   <string><id>13001</id><value>Immediate HD Spindown</value></string>
   <string><id>13002</id><value>Video Only</value></string>
   <string><id>13003</id><value>- Delay</value></string>
-  <string><id>13004</id><value>- Minimum file duration</value></string>
-  <string><id>13100</id><value>Flicker filter</value></string>
+  <string><id>13004</id><value>- Minimum File Duration</value></string>
+  <string><id>13100</id><value>Flicker Filter</value></string>
   <string><id>13200</id><value>Profiles</value></string>
   <string><id>13201</id><value>Delete profile '%s'?</value></string>
   <string><id>13202</id><value>Save current settings as profile...</value></string>
   <string><id>13203</id><value>Profile '%s' loaded successfully</value></string>
   <string><id>13204</id><value>Last loaded profile:</value></string>
   <string><id>13205</id><value>Unknown</value></string>
-  <string><id>13299</id><value>Target Temperature:</value></string>
-  <string><id>13300</id><value>Fan Speed:</value></string>
-  <string><id>13301</id><value>Auto temperature control</value></string>
-  <string><id>13302</id><value>Fanspeed control</value></string>
+  <string><id>13299</id><value>Target Temperature</value></string>
+  <string><id>13300</id><value>Fan Speed</value></string>
+  <string><id>13301</id><value>Auto Temperature Control</value></string>
+  <string><id>13302</id><value>Fan Speed Override</value></string>
   <string><id>13303</id><value>Skin Fonts</value></string>
   <string><id>13304</id><value>Enable Flipping Bi-Directional Strings</value></string>
   <string><id>13305</id><value>Enable RSS Feeds</value></string>
@@ -2292,9 +2292,9 @@
   <string><id>13307</id><value>Hide Track Numbers</value></string>
   <string><id>13308</id><value>Do you wish to reboot your xbox</value></string>
   <string><id>13309</id><value>instead of just XBMC?</value></string>
-  <string><id>13310</id><value>Zoom effect</value></string>
-  <string><id>13311</id><value>Float effect</value></string>
-  <string><id>13312</id><value>Black bar reduction</value></string>
+  <string><id>13310</id><value>Zoom Effect</value></string>
+  <string><id>13311</id><value>Float Effect</value></string>
+  <string><id>13312</id><value>Black Bar Reduction</value></string>
   <string><id>13313</id><value>Reset/Reboot</value></string>
   <string><id>13314</id><value>Music OSD Timeout</value></string>
   <string><id>13315</id><value>Create Thumbnails</value></string>
@@ -2319,7 +2319,7 @@
   <string><id>13334</id><value>Edit Label</value></string>
   <string><id>13335</id><value>Make Default</value></string>
   <string><id>13336</id><value>Remove Button</value></string>
-  <string><id>13337</id><value>2 Channel PCM passthrough</value></string>
+  <string><id>13337</id><value>- 2 Channel PCM Passthrough</value></string>
   <string><id>14000</id><value>Stacking: Off</value></string>
   <string><id>14001</id><value>Stacking: Simple</value></string>
   <string><id>14002</id><value>Stacking: Fuzzy</value></string>
@@ -2328,20 +2328,20 @@
   <string><id>14005</id><value>Parsing streams list...</value></string>
   <string><id>14006</id><value>Downloading streams list failed</value></string>
   <string><id>14007</id><value>Downloading playlist file failed</value></string>
-  <string><id>14008</id><value>Enable Kai notifications</value></string>
-  <string><id>14009</id><value>Games directory</value></string>
+  <string><id>14008</id><value>Enable Kai Notifications</value></string>
+  <string><id>14009</id><value>Games Directory</value></string>
   <string><id>14010</id><value>Autoswitch Options</value></string>
-  <string><id>14011</id><value>Enable Autoswitching?</value></string>
-  <string><id>14012</id><value>Use Large Icons</value></string>
-  <string><id>14013</id><value>Method:</value></string>
-  <string><id>14014</id><value>Percentage:</value></string>
-  <string><id>14015</id><value>Thumbpanel if no files</value></string>
-  <string><id>14016</id><value>Listpanel if no folders</value></string>
-  <string><id>14017</id><value>Percentage of thumbs</value></string>
+  <string><id>14011</id><value>Enable Autoswitching</value></string>
+  <string><id>14012</id><value>- Use Large Icons</value></string>
+  <string><id>14013</id><value>- Method</value></string>
+  <string><id>14014</id><value>- Percentage</value></string>
+  <string><id>14015</id><value>Thumbpanel if no Files</value></string>
+  <string><id>14016</id><value>Listpanel if no Folders</value></string>
+  <string><id>14017</id><value>Percentage of Thumbs</value></string>
   <string><id>14018</id><value>View Options</value></string>
-  <string><id>14019</id><value>Area code 1</value></string>
-  <string><id>14020</id><value>Area code 2</value></string>
-  <string><id>14021</id><value>Area code 3</value></string>
+  <string><id>14019</id><value>Change Area Code 1</value></string>
+  <string><id>14020</id><value>Change Area Code 2</value></string>
+  <string><id>14021</id><value>Change Area Code 3</value></string>
   <string><id>14022</id><value>Library</value></string>
   <string><id>14023</id><value>No TV</value></string>
   <string><id>14024</id><value>Enter the nearest large town or US ZIP code</value></string>
