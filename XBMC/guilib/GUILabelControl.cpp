@@ -115,28 +115,35 @@ void CGUILabelControl::ShortenPath()
 	if ( m_strLabel.size() <= 0 )
 		return;
 
-	CStdStringW strLabelUnicode;
-	g_charsetConverter.stringCharsetToFontCharset(m_strLabel, strLabelUnicode);
-
 	float fTextHeight,fTextWidth;
 	char cDelim = '\0';
 	int nGreaterDelim, nPos;
-
-	m_pFont->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth,&fTextHeight);
-
-	if ( fTextWidth <= (m_dwWidth) )
-		return;
 
 	nPos = m_strLabel.find_last_of( '\\' );
 	if ( nPos >= 0 )
 		cDelim = '\\';
 	else
 	{
-		int nPos = m_strLabel.find_last_of( '/' );
+		nPos = m_strLabel.find_last_of( '/' );
 		if ( nPos >= 0 )
 			cDelim = '/';
 	}
 	if ( cDelim == '\0' )
+		return;
+
+	//	remove trailing slashes
+	if (nPos==m_strLabel.size()-1)
+	{
+		m_strLabel.erase(m_strLabel.size()-1);
+		nPos = m_strLabel.find_last_of( cDelim );
+	}
+
+	CStdStringW strLabelUnicode;
+	g_charsetConverter.stringCharsetToFontCharset(m_strLabel, strLabelUnicode);
+
+	m_pFont->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth,&fTextHeight);
+
+	if ( fTextWidth <= (m_dwWidth) )
 		return;
 
 	while ( fTextWidth > m_dwWidth )
@@ -154,6 +161,7 @@ void CGUILabelControl::ShortenPath()
 		if ( nGreaterDelim > nPos )
 		{
 			m_strLabel.replace( nPos+1, nGreaterDelim - nPos - 1, L"..." );
+			g_charsetConverter.stringCharsetToFontCharset(m_strLabel, strLabelUnicode);
 		}
 
 		m_pFont->GetTextExtent( strLabelUnicode.c_str(), &fTextWidth,&fTextHeight );
