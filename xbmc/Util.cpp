@@ -3415,4 +3415,12 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
 		int iWindow = WINDOW_HOME + atoi(parameter.c_str());
 		m_gWindowManager.ActivateWindow(iWindow);
 	}
+	else if (execute == "RunScript")
+	{
+		g_pythonParser.evalFile(parameter.c_str());
+	}
+	else if (execute == "RunXBE")
+	{
+		CUtil::RunXBE(parameter.c_str());
+	}
 }

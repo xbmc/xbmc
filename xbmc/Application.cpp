@@ -1441,6 +1441,12 @@ void CApplication::OnKey(CKey& key)
 		if (SwitchToFullScreen()) return;
 	}
 
+	// handle global functions - form is XBMC.Function()
+	if (action.wID == ACTION_BUILT_IN_FUNCTION)
+	{
+		CUtil::ExecBuiltIn(action.strAction);
+		return;
+	}
 	// in normal case
 	// just pass the action to the current window and let it handle it
 	m_gWindowManager.OnAction(action);
