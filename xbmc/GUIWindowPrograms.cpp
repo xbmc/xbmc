@@ -246,9 +246,9 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
       CStdString strFile=strRootDir;
       strFile+=wfd.cFileName;
 
-			if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
+	  if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
       {
-        if (strFileName != "." && strFileName != "..")
+        if (strFileName != "." && strFileName != ".." && !bFlattenDir)
         {
           CFileItem *pItem = new CFileItem(strFileName);
           pItem->m_strPath=strFile;
@@ -258,7 +258,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
           m_vecItems.push_back(pItem);
         }
 	      else
-		    {
+		  {
 		      if (bFlattenDir)
 		      {
 
@@ -268,7 +268,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
 			      strSubSearchMask+="\\";
 			      bOnlyDefaultXBE ? strSubSearchMask+="default.xbe" : strSubSearchMask+="*.xbe";
 			      CAutoPtrFind subhFind ( FindFirstFile(strSubSearchMask.c_str(), &subwfd)) ;
-			      if (hFind.isValid())
+			      if (subhFind.isValid())
 			      {
 					    do
 					    {
@@ -289,15 +289,18 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
 						    }
 					    } while (FindNextFile(subhFind, &subwfd));
 				    }
+				  else {
+
+				  }
 			    }
 		    }
        }
        else
        {
-        if (CUtil::IsXBE(strFileName))
+		   if (bOnlyDefaultXBE ? CUtil::IsDefaultXBE(strFileName) : CUtil::IsXBE(strFileName))
         {
           CStdString strDescription;
-					CUtil::GetXBEDescription(strFile,strDescription);
+		  CUtil::GetXBEDescription(strFile,strDescription);
           CFileItem *pItem = new CFileItem(strDescription);
           pItem->m_strPath=strFile;
           pItem->m_bIsFolder=false;
@@ -309,7 +312,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
           bRecurseSubDirs=false;          
         }
 
-        if ( CUtil::IsShortCut(strFileName)  )
+        if ( CUtil::IsShortCut(strFileName) )
         {
           CFileItem *pItem = new CFileItem(wfd.cFileName);
           pItem->m_strPath=strFile;
