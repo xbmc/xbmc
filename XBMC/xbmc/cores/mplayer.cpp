@@ -1003,8 +1003,8 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 				CLog::Log(LOGINFO, "  --------------- restart ---------------");
 				//CLog::Log(LOGINFO, "  open 2nd time");
 				if (m_bIsMplayeropenfile) {
-					mplayer_close_file();
 					m_bIsMplayeropenfile = false;
+					mplayer_close_file();
 				}
 				options.GetOptions(argc,argv);
 				load();
@@ -1168,8 +1168,8 @@ void CMPlayer::Process()
     try
     {
 		if (m_bIsMplayeropenfile) {
-            mplayer_close_file();
 			m_bIsMplayeropenfile = false;
+            mplayer_close_file();
 		}
     }
     catch(...)
@@ -1194,8 +1194,8 @@ void CMPlayer::Unload()
     try
     {
 		if (m_bIsMplayeropenfile) {
-            mplayer_close_file();
 			m_bIsMplayeropenfile = false;
+            mplayer_close_file();
 		}
 	}
     catch(...)
