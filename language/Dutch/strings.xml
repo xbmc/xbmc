@@ -150,8 +150,8 @@
 <string><id>221</id><value>Netwerk is niet verbonden</value></string> 
 <string><id>222</id><value>Annuleren</value></string> 
 <string><id>223</id><value>Automatisch weergeven in breedbeeld</value></string> 
-<string><id>224</id><value>Snelheid</value></string> 
-<string><id>225</id><value>Transitie tijd</value></string> 
+<string><id>224</id><value>Wisseltijd</value></string> 
+<string><id>225</id><value>Overgangstijd</value></string> 
 <string><id>226</id><value>PAL60 Gebruiken</value></string> 
 <string><id>227</id><value>CDDB Gebruiken</value></string> 
 <string><id>228</id><value>Willekeurige volgorde van afspeellijst bij laden</value></string> 
@@ -492,7 +492,7 @@
 <string><id>732</id><value>Opslaan &amp; Toepassen</value></string>
 <string><id>733</id><value>Webserver Paswoord</value></string>
 <string><id>734</id><value>Geen Paswoord</value></string>
-<string><id>735</id><value>Charset:</value></string>	
+<string><id>735</id><value>Tekenset:</value></string>	
 <string><id>736</id><value>Stijl:</value></string>	
 <string><id>737</id><value>Kleur:</value></string>
 <string><id>738</id><value>Normaal</value></string>	
@@ -572,7 +572,7 @@
 <string><id>13201</id><value>Profiel '%s' verwijderen?</value></string>
 <string><id>13202</id><value>Bewaar huidige instellingen in profiel...</value></string>
 <string><id>13203</id><value>Laden van profiel '%s' geslaagd</value></string>
-<string><id>13204</id><value>Laatst geladen profiel:</value></string>
+<string><id>13204</id><value>Laatst gebruikte profiel:</value></string>
 <string><id>13205</id><value>Onbekend</value></string>
 <string><id>13300</id><value>Fan snelheid:</value></string>
 <string><id>13301</id><value>Temperatuurregeling</value></string>
@@ -580,5 +580,15 @@
 <string><id>13303</id><value>Lettertype voor skin</value></string>
 <string><id>13304</id><value>Omdraaien Bi-Directionele Strings inschakelen</value></string>
 <string><id>13305</id><value>RSS Feeds inschakelen</value></string>
+<string><id>13306</id><value>Verberg hoofdmapitems</value></string>
+<string><id>13307</id><value>Verberg tracknummers</value></string>
+<string><id>13308</id><value>Wilt u opnieuw opstarten (hardboot)</value></string>
+<string><id>13309</id><value>In plaats van een herstart?(softboot)</value></string>
+<string><id>13310</id><value>Zoom Effect</value></string>
+<string><id>13311</id><value>Zweef Effect</value></string>
+<string><id>13312</id><value>Zwarte balk reductie</value></string>
+<string><id>13313</id><value>Reset/Reboot</value></string>
+<string><id>13314</id><value>Muziek OSD sluittijd</value></string>
+
 
 </strings>
