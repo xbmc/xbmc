@@ -23,16 +23,18 @@ CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPo
     m_strFont=strFont;
     m_pFont=NULL;
     m_dwTextColor=dwTextColor;
+	m_dwDisabledColor = 0xFF606060; 
     m_iType=iType;
     m_iSelect=SPIN_BUTTON_DOWN;
     m_bShowRange=false;
     m_iTypedPos=0;
     strcpy(m_szTyped,"");
+	m_dwBuddyControlID = 0;
+	m_bBuddyDisabled = false;
 }
 
 CGUISpinControl::~CGUISpinControl(void)
 {}
-
 
 void CGUISpinControl::OnAction(const CAction &action)
 {
@@ -186,7 +188,6 @@ void CGUISpinControl::OnAction(const CAction &action)
 
 bool CGUISpinControl::OnMessage(CGUIMessage& message)
 {
-
     if (CGUIControl::OnMessage(message) )
     {
         if (!HasFocus())
@@ -268,6 +269,14 @@ void CGUISpinControl::AllocResources()
 
     m_pFont=g_fontManager.GetFont(m_strFont);
     SetPosition(m_dwPosX, m_dwPosY);
+
+	if (m_dwBuddyControlID)	// do we have an associated label control?
+	{
+		// set it to disabled by default (i.e. no focus)
+		CGUIMessage msg(GUI_MSG_DISABLED, GetID(), m_dwBuddyControlID, 0);
+		g_graphicsContext.SendMessage(msg);
+		m_bBuddyDisabled = true;
+	}
 }
 
 void CGUISpinControl::FreeResources()
@@ -296,6 +305,31 @@ void CGUISpinControl::Render()
       m_iTypedPos=0;
       strcpy(m_szTyped,"");
     }
+
+	if (m_dwBuddyControlID)		// do we have an associated label control?
+	{
+		if (HasFocus())			// we currently have focus
+		{
+			if (m_bBuddyDisabled)	// our associated label is currently disabled
+			{
+				// make it enabled
+				CGUIMessage msg(GUI_MSG_ENABLED, GetID(), m_dwBuddyControlID, 0);
+				g_graphicsContext.SendMessage(msg);
+				m_bBuddyDisabled = false;
+			}
+		}
+		else					// we do not have focus
+		{
+			if (!m_bBuddyDisabled)	// our associated label is current enabled
+			{
+				// make it disabled
+				CGUIMessage msg(GUI_MSG_DISABLED, GetID(), m_dwBuddyControlID, 0);
+				g_graphicsContext.SendMessage(msg);
+				m_bBuddyDisabled = true;
+			}
+		}
+	}
+
     DWORD dwPosX=m_dwPosX;
     WCHAR wszText[1024];
 
@@ -396,12 +430,11 @@ void CGUISpinControl::Render()
         fPosY-=fHeight;
         fPosY+=(float)m_dwPosY;
 
-
-        m_pFont->DrawText((float)m_dwPosX-3, (float)fPosY,m_dwTextColor,wszText,m_dwAlign);
+		if ( HasFocus() )
+			m_pFont->DrawText((float)m_dwPosX-3, (float)fPosY,m_dwTextColor,wszText,m_dwAlign);
+		else
+			m_pFont->DrawText((float)m_dwPosX-3, (float)fPosY,m_dwDisabledColor,wszText,m_dwAlign);
     }
-
-
-
 }
 
 
@@ -687,6 +720,11 @@ void CGUISpinControl::SetShowRange(bool bOnoff)
     m_bShowRange=bOnoff;
 }
 
+void CGUISpinControl::SetDisabledColor(D3DCOLOR color)
+{
+	m_dwDisabledColor=color;
+}
+
 int CGUISpinControl::GetMinimum() const
 {
   switch (m_iType)
@@ -723,4 +761,10 @@ int CGUISpinControl::GetMaximum() const
     break;
   }
   return 100;
+}
+
+void CGUISpinControl::SetBuddyControlID(DWORD dwBuddyControlID)
+{
+	m_dwBuddyControlID = dwBuddyControlID;
+	return;
 }

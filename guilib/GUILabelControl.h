@@ -22,13 +22,14 @@ class CGUILabelControl :
   public CGUIControl
 {
 public:
-  CGUILabelControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFont,const wstring& strLabel, DWORD dwTextColor,DWORD dwTextAlign, bool bHasPath);
+  CGUILabelControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFont,const wstring& strLabel, DWORD dwTextColor, DWORD dwDisabledColor, DWORD dwTextAlign, bool bHasPath);
   virtual ~CGUILabelControl(void);
   virtual void Render();
   virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);
 
 	DWORD							GetTextColor() const { return m_dwTextColor;};
+	DWORD							GetDisabledColor() const { return m_dwDisabledColor;};
 	DWORD							GetAlignment() const { return m_dwdwTextAlign;};
 	const CStdString& GetFontName() const { return m_pFont->GetFontName(); };
 	const wstring			GetLabel() const { return m_strLabel; };
@@ -40,5 +41,6 @@ protected:
   DWORD                   m_dwTextColor;
   DWORD                   m_dwdwTextAlign;
 	bool										m_bHasPath;
+  DWORD		m_dwDisabledColor;
 };
 #endif
