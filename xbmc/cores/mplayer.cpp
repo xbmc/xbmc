@@ -893,6 +893,7 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 		{
       throw iRet;
 		}
+
 		// Seek to the correct starting position
 		if (iStartTime) SeekTime(iStartTime);
 
@@ -994,7 +995,9 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 		m_bIsPlaying= true;
 
 		if(bIsDVD) //Default subtitles for dvd's off
-			mplayer_showSubtitle(false);
+			SetSubtitleVisible(false);
+		else 
+			SetSubtitleVisible(true);
 		
 		bIsVideo=HasVideo();
 		bIsAudio=HasAudio();
@@ -1199,7 +1202,10 @@ void CMPlayer::SwitchToNextLanguage()
 
 void CMPlayer::ToggleSubtitles()
 {
-	mplayer_put_key('s');
+	if (CUtil::IsUsingTTFSubtitles() && mplayer_isTextSubLoaded())
+		m_bSubsVisibleTTF = !m_bSubsVisibleTTF;
+	else
+		mplayer_put_key('s');
 }
 
 
@@ -1509,14 +1515,27 @@ void    CMPlayer::SetSubtitle(int iStream)
 
 bool    CMPlayer::GetSubtitleVisible()
 {
-	if(mplayer_SubtitleVisible())
-		return true;
+	if (CUtil::IsUsingTTFSubtitles() && mplayer_isTextSubLoaded())
+	{
+		return m_bSubsVisibleTTF;
+	}
 	else
-		return false;
+	{
+		if (mplayer_SubtitleVisible())
+			return true;
+		else
+			return false;
+	}
 }
-void    CMPlayer::SetSubtitleVisible(bool bVisible)
+void CMPlayer::SetSubtitleVisible(bool bVisible)
 {
-	mplayer_showSubtitle(bVisible);
+	if (CUtil::IsUsingTTFSubtitles() && mplayer_isTextSubLoaded())
+	{
+		m_bSubsVisibleTTF = bVisible;
+		mplayer_showSubtitle(false);
+	}
+	else
+		mplayer_showSubtitle(bVisible);
 }
 
 int     CMPlayer::GetAudioStreamCount()

@@ -118,13 +118,14 @@ void CCharsetConverter::reset(void)
 	m_iconvStringCharsetToFontCharset = (iconv_t) -1;
 	m_iconvUtf8ToStringCharset = (iconv_t) -1;
 	m_iconvUcs2CharsetToStringCharset  = (iconv_t) -1;
-	m_fribidiCharset = FRIBIDI_CHARSET_NOT_FOUND;
+	m_iconvSubtitleCharsetToFontCharset = (iconv_t) -1;
+	m_stringFribidiCharset = FRIBIDI_CHARSET_NOT_FOUND;
 
 	for (unsigned int i = 0; i < m_vecBidiCharsetNames.size(); i++)
 	{
 		if (m_vecBidiCharsetNames[i] == g_stSettings.m_szStringCharset)
 		{
-			m_fribidiCharset = m_vecBidiCharsets[i];
+			m_stringFribidiCharset = m_vecBidiCharsets[i];
 		}
 	}
 }
@@ -136,10 +137,10 @@ void CCharsetConverter::stringCharsetToFontCharset(const CStdStringA& strSource,
 	const char* src;
 	size_t inBytes;
 
-	// If this is hebrew/arabic, flip the characters, if required
-	if (g_stSettings.m_bFlipBiDiCharset && m_fribidiCharset != FRIBIDI_CHARSET_NOT_FOUND)
+	// If this is hebrew/arabic, flip the characters
+	if (m_stringFribidiCharset != FRIBIDI_CHARSET_NOT_FOUND)
 	{   
-		logicalToVisualBiDi(strSource, strFlipped);
+		logicalToVisualBiDi(strSource, strFlipped, m_stringFribidiCharset);
 		src = strFlipped.c_str();
 		inBytes = strFlipped.length() + 1;
 	}
@@ -163,13 +164,35 @@ void CCharsetConverter::stringCharsetToFontCharset(const CStdStringA& strSource,
 	}
 }
 
-void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest)
+void CCharsetConverter::subtitleCharsetToFontCharset(const CStdStringA& strSource, CStdStringW& strDest)
+{
+	CStdStringA strFlipped;
+
+	// No need to flip hebrew/arabic as mplayer does the flipping
+
+	if (m_iconvSubtitleCharsetToFontCharset == (iconv_t) -1)
+	{
+		m_iconvSubtitleCharsetToFontCharset = iconv_open("UTF-16LE", g_stSettings.m_szSubtitleCharset);
+	}
+
+	if (m_iconvSubtitleCharsetToFontCharset != (iconv_t) -1)
+	{
+		const char* src = strSource.c_str();
+		size_t inBytes = strSource.length() + 1;
+		char *dst = (char*) strDest.SetBuf(inBytes * 2);
+		size_t outBytes = inBytes * 2;
+
+		iconv(m_iconvSubtitleCharsetToFontCharset, &src, &inBytes, &dst, &outBytes);
+	}
+}
+
+void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, FriBidiCharSet fribidiCharset)
 {
 	int sourceLen = strlen(strSource.c_str());
 	FriBidiChar* logical = (FriBidiChar*) malloc((sourceLen+1) * sizeof(FriBidiChar)); 
 	FriBidiChar* visual = (FriBidiChar*) malloc((sourceLen+1) * sizeof(FriBidiChar)); 
 	// Convert from the selected charset to Unicode
-	int len = fribidi_charset_to_unicode(m_fribidiCharset, (char*) strSource.c_str(), sourceLen, logical);
+	int len = fribidi_charset_to_unicode(fribidiCharset, (char*) strSource.c_str(), sourceLen, logical);
 
 	// Convert from logical to visual
 	FriBidiCharType base = FRIBIDI_TYPE_L; // Right-to-left paragraph
@@ -182,7 +205,7 @@ void CCharsetConverter::logicalToVisualBiDi(const CStdStringA& strSource, CStdSt
 		char* result = strDest.SetBuf(sourceLen+1);
 
 		// Convert back from Unicode to the charset 
- 		fribidi_unicode_to_charset(m_fribidiCharset, visual, len, result);
+ 		fribidi_unicode_to_charset(fribidiCharset, visual, len, result);
 	}
 
 	free(logical);

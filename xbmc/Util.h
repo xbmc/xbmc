@@ -148,6 +148,7 @@ public:
 	static char GetDirectorySeperator(const CStdString& strFile);
 
 	static bool IsNaturalNumber(const CStdString& str);
+	static bool IsUsingTTFSubtitles();
 
 private:
 	static bool m_bNetworkUp;
