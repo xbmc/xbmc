@@ -77,7 +77,9 @@ bool CIMDB::FindMovie(const CStdString &strMovie,IMDB_MOVIELIST& movielist)
 		char* pMoviePlot	 = strstr(szBuffer,"Plot");
 
 		// oh i say, it appears we've been redirected to the actual movie details...
-		if (pMovieTitle && pMovieDirector && pMovieGenre && pMoviePlot)
+
+		// NOTE: pMovieDirector not always populated for TV series
+		if (pMovieTitle && pMovieGenre && pMoviePlot)
 		{
 			pMovieTitle+=8;
 			char *pEnd = strstr(pMovieTitle,"<");
