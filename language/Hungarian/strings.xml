@@ -5,6 +5,7 @@
   <string><id>3</id><value>Videók</value></string>
   <string><id>4</id><value>TV Mûsor</value></string>
   <string><id>5</id><value>Beállítások</value></string>
+  <!-- String with id 6 should not be set here, only in the english language file !-->
   <string><id>7</id><value>Fájlok</value></string>
   <string><id>8</id><value>Idõjárás</value></string>
   <string><id>11</id><value>Hétfõ</value></string>
