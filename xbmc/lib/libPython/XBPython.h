@@ -65,6 +65,8 @@ public:
   PyThreadState *getMainThreadState();
 
 private:
+  bool              FileExist(const char* strFile);
+  
 	int								nextid;
 	PyThreadState*		mainThreadState;
 	DWORD							dThreadId;
