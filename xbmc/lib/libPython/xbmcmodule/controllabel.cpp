@@ -43,6 +43,11 @@ namespace PYXBMC
 		self->ob_type->tp_free((PyObject*)self);
 	}
 
+	PyDoc_STRVAR(setLabel__doc__,
+		"setLabel(string label) -- Set's text for this label.\n"
+		"\n"
+		"label     : string or unicode string");
+
 	PyObject* ControlLabel_SetLabel(ControlLabel *self, PyObject *args)
 	{
 		PyObject *pObjectText;
@@ -63,9 +68,18 @@ namespace PYXBMC
 	}
 
 	PyMethodDef ControlLabel_methods[] = {
-		{"setLabel", (PyCFunction)ControlLabel_SetLabel, METH_VARARGS, ""},
+		{"setLabel", (PyCFunction)ControlLabel_SetLabel, METH_VARARGS, setLabel__doc__},
 		{NULL, NULL, 0, NULL}
 	};
+
+	PyDoc_STRVAR(controlLabel__doc__,
+		"ControlLabel class.\n"
+		"\n"
+		"ControlLabel(int x, int y, int width, int height[, label, font, textColor])\n"
+		"\n"
+		"label     : string or unicode string\n"
+		"font      : string fontname (example, 'font13' / 'font14')\n"
+		"textColor : hexString (example, '0xFFFF3300')");
 
 // Restore code and data sections to normal.
 #pragma code_seg()
@@ -95,7 +109,7 @@ namespace PYXBMC
 			0,                         /*tp_setattro*/
 			0,                         /*tp_as_buffer*/
 			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-			"ControlLabel Objects",    /* tp_doc */
+			controlLabel__doc__,       /* tp_doc */
 			0,		                     /* tp_traverse */
 			0,		                     /* tp_clear */
 			0,		                     /* tp_richcompare */

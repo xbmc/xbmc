@@ -54,7 +54,10 @@ namespace PYXBMC
 		if (self->item) delete self->item;
 		self->ob_type->tp_free((PyObject*)self);
 	}
-	
+
+	PyDoc_STRVAR(getLabel__doc__,
+		"getLabel() -- Return's the listitem label.");
+
 	PyObject* ListItem_GetLabel(ListItem *self, PyObject *args)
 	{
 		if (!self->item) return NULL;
@@ -65,6 +68,9 @@ namespace PYXBMC
 
 		return Py_BuildValue("s", cLabel);
 	}
+
+	PyDoc_STRVAR(setLabel__doc__,
+		"setLabel(string label) -- Set's the listitem label.");
 
 	PyObject* ListItem_SetLabel(ListItem *self, PyObject *args)
 	{
@@ -83,10 +89,15 @@ namespace PYXBMC
 	}
 
 	PyMethodDef ListItem_methods[] = {
-		{"getLabel", (PyCFunction)ListItem_GetLabel, METH_VARARGS, ""},
-		{"setLabel", (PyCFunction)ListItem_SetLabel, METH_VARARGS, ""},
+		{"getLabel", (PyCFunction)ListItem_GetLabel, METH_VARARGS, getLabel__doc__},
+		{"setLabel", (PyCFunction)ListItem_SetLabel, METH_VARARGS, setLabel__doc__},
 		{NULL, NULL, 0, NULL}
 	};
+
+	PyDoc_STRVAR(listItem__doc__,
+		"ListItem class.\n"
+		"\n"
+		"ListItem([string label]) -- Creates a new ListItem.");
 
 // Restore code and data sections to normal.
 #pragma code_seg()
@@ -116,7 +127,7 @@ namespace PYXBMC
 			0,                         /*tp_setattro*/
 			0,                         /*tp_as_buffer*/
 			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-			"ListItem Objects",        /* tp_doc */
+			listItem__doc__,        /* tp_doc */
 			0,		                     /* tp_traverse */
 			0,		                     /* tp_clear */
 			0,		                     /* tp_richcompare */
