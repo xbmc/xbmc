@@ -1,0 +1,734 @@
+<!-- Finnish - language resource  -->
+<!-- Finnish Translation by Nanite1000 -->
+<!-- Based on CVS revision 10-26-03 -->
+<!-- For comments PM me in xboxmediacenter forum -->
+<!-- Kommentteja voi lähetellä xboxmediacentterin foorumin kautta -->
+<strings>
+  <string>
+    <id>0</id>
+    <value>Ohjelmat</value>
+  </string>
+  <string>
+    <id>1</id>
+    <value>Kuvat</value>
+  </string>
+  <string>
+    <id>2</id>
+    <value>Musiikki</value>
+  </string>
+  <string>
+    <id>3</id>
+    <value>Videot</value>
+  </string>
+  <string>
+    <id>4</id>
+    <value>TV Opas</value>
+  </string>
+  <string>
+    <id>5</id>
+    <value>Asetukset</value>
+  </string>
+  <string>
+    <id>6</id>
+    <value>XBOX Media Center Oct 26th build</value>
+  </string>
+  <string>
+    <id>7</id>
+    <value>Tiedostohallinta</value>
+  </string>
+  
+  <string>
+    <id>11</id>
+    <value>Maanantai</value>
+  </string>
+  <string>
+    <id>12</id>
+    <value>Tiistai</value>
+  </string>
+  <string>
+    <id>13</id>
+    <value>Keskiviikko</value>
+  </string>
+  <string>
+    <id>14</id>
+    <value>Torstai</value>
+  </string>
+  <string>
+    <id>15</id>
+    <value>Perjantai</value>
+  </string>
+  <string>
+    <id>16</id>
+    <value>Lauantai</value>
+  </string>  
+  <string>
+    <id>17</id>
+    <value>Sunnuntai</value>
+  </string>
+  
+    
+  <string>
+    <id>21</id>
+    <value>Tammikuu</value>
+  </string>
+  <string>
+    <id>22</id>
+    <value>Helmikuu</value>
+  </string>  
+  <string>
+    <id>23</id>
+    <value>Maaliskuu</value>
+  </string>  
+  <string>
+    <id>24</id>
+    <value>Huhtikuu</value>
+  </string>  
+  <string>
+    <id>25</id>
+    <value>Toukokuu</value>
+  </string>  
+  <string>
+    <id>26</id>
+    <value>Kesäkuu</value>
+  </string>  
+  <string>
+    <id>27</id>
+    <value>Heinäkuu</value>
+  </string>  
+  <string>
+    <id>28</id>
+    <value>Elokuu</value>
+  </string>  
+  <string>
+    <id>29</id>
+    <value>Syyskuu</value>
+  </string>  
+  <string>
+    <id>30</id>
+    <value>Lokakuu</value>
+  </string>  
+  <string>
+    <id>31</id>
+    <value>Marraskuu</value>
+  </string>  
+  <string>
+    <id>32</id>
+    <value>Joulukuu</value>
+  </string>  
+  <string>
+    <id>100</id>
+    <value>Näytä kuvina</value>
+  </string>  
+  <string>
+    <id>101</id>
+    <value>Näytä listana</value>
+  </string>  
+  <string>
+    <id>102</id>
+    <value>Päivitä</value>
+  </string>  
+  <string>
+    <id>103</id>
+    <value>Nimen mukaan</value>
+  </string> 
+  <string>
+    <id>104</id>
+    <value>Päivän mukaan</value>
+  </string>    
+  <string>
+    <id>105</id>
+    <value>Koon mukaan</value>
+  </string>      
+  <string>
+    <id>106</id>
+    <value>Ei</value>
+  </string>     
+  <string>
+    <id>107</id>
+    <value>Kyllä</value>
+  </string>   
+  <string>
+    <id>108</id>
+    <value>Diaesitys</value>
+  </string>   
+  <string>
+    <id>109</id>
+    <value>Luo kuvat</value>
+  </string>   
+  <string>
+    <id>110</id>
+    <value>Luo kuvat</value>
+  </string>   
+  <string>
+    <id>111</id>
+    <value>Kirjanmerkit</value>
+  </string>   
+  <string>
+    <id>112</id>
+    <value>TAUKO</value>
+  </string>   
+  <string>
+    <id>113</id>
+    <value>Tiedostot : Lähde</value>
+  </string>   
+  <string>
+    <id>114</id>
+    <value>Tiedostot : Kohde</value>
+  </string>   
+  <string>
+    <id>115</id>
+    <value>Kopioi</value>
+  </string>   
+  <string>
+    <id>116</id>
+    <value>Siirrä</value>
+  </string>   
+  <string>
+    <id>117</id>
+    <value>Poista</value>
+  </string>   
+  <string>
+    <id>118</id>
+    <value>Nimeä</value>
+  </string>   
+  <string>
+    <id>119</id>
+    <value>Uusi Kansio</value>
+  </string>   
+  <string>
+    <id>120</id>
+    <value>Vahvista kopiointi</value>
+  </string>   
+  <string>
+    <id>121</id>
+    <value>Vahvista siirto</value>
+  </string>   
+  <string>
+    <id>122</id>
+    <value>Vahvista poisto</value>
+  </string>   
+  <string>
+    <id>123</id>
+    <value>Kopioidaanko valitut tiedostot?</value>
+  </string>   
+  <string>
+    <id>124</id>
+    <value>Siirretäänkö valitut tiedostot?</value>
+  </string>   
+  <string>
+    <id>125</id>
+    <value>Poistetaanko valitut tiedostot?</value>
+  </string>  
+  <string>
+    <id>126</id>
+    <value>Tila</value>
+  </string>  
+  <string>
+    <id>127</id>
+    <value>objektia</value>
+  </string>  
+  <string>
+    <id>128</id>
+    <value>Yleiset</value>
+  </string> 
+  <string>
+    <id>129</id>
+    <value>Diaesitys</value>
+  </string> 
+  <string>
+    <id>130</id>
+    <value>Järjestelmä</value>
+  </string>  
+  <string>
+    <id>131</id>
+    <value>Näyttö</value>
+  </string>  
+  <string>
+    <id>132</id>
+    <value>Albumit</value>
+  </string>  
+  <string>
+    <id>133</id>
+    <value>Esittäjät</value>
+  </string>  
+  <string>
+    <id>134</id>
+    <value>Kappaleet</value>
+  </string>  
+  <string>
+    <id>135</id>
+    <value>Tyyli</value>
+  </string>  
+  <string>
+    <id>136</id>
+    <value>Soittolistat</value>
+  </string>  
+  <string>
+    <id>137</id>
+    <value>Etsi</value>
+  </string>  
+  <string>
+    <id>138</id>
+    <value>JÄRJESTELMÄN TIEDOT</value>
+  </string>  
+  <string>
+    <id>139</id>
+    <value>Lämpötilat:</value>
+  </string> 
+  <string>
+    <id>140</id>
+    <value>CPU:</value>
+  </string> 
+  <string>
+    <id>141</id>
+    <value>GPU:</value>
+  </string> 
+  <string>
+    <id>142</id>
+    <value>Aika:</value>
+  </string> 
+  <string>
+    <id>143</id>
+    <value>Nyt</value>
+  </string> 
+  <string>
+    <id>144</id>
+    <value>Versio:</value>
+  </string> 
+  <string>
+    <id>145</id>
+    <value>Verkko:</value>
+  </string> 
+  <string>
+    <id>146</id>
+    <value>Tyyppi:</value>
+  </string> 
+  <string>
+    <id>147</id>
+    <value>Kiinteä</value>
+  </string> 
+  <string>
+    <id>148</id>
+    <value>DHCP</value>
+  </string> 
+  <string>
+    <id>149</id>
+    <value>MAC</value>
+  </string> 
+  <string>
+    <id>150</id>
+    <value>IP:</value>
+  </string> 
+  <string>
+    <id>151</id>
+    <value>Linkki:</value>
+  </string> 
+  <string>
+    <id>152</id>
+    <value>Half duplex</value>
+  </string> 
+  <string>
+    <id>153</id>
+    <value>Full duplex</value>
+  </string> 
+  <string>
+    <id>154</id>
+    <value>Asemat</value>
+  </string> 
+  <string>
+    <id>155</id>
+    <value>Asema</value>
+  </string> 
+  <string>
+    <id>156</id>
+    <value>Vapaana</value>
+  </string> 
+  <string>
+    <id>157</id>
+    <value>Näyttö</value>
+  </string> 
+  <string>
+    <id>158</id>
+    <value>Muistia Vapaana</value>
+  </string> 
+  <string>
+    <id>159</id>
+    <value>Ei Yhteyttä</value>
+  </string> 
+  <string>
+    <id>160</id>
+    <value>Vapaana</value>
+  </string> 
+  <string>
+    <id>161</id>
+    <value>Ei mitään</value>
+  </string> 
+  <string>
+    <id>162</id>
+    <value>DVD luukku auki</value>
+  </string> 
+  <string>
+    <id>163</id>
+    <value>Luetaan</value>
+  </string> 
+  <string>
+    <id>164</id>
+    <value>Ei levyä</value>
+  </string> 
+  <string>
+    <id>165</id>
+    <value>Levy sisällä</value>
+  </string> 
+  <string>
+    <id>166</id>
+    <value>Skini:</value>
+  </string> 
+  <string>
+    <id>167</id>
+    <value>FTP palvelin:</value>
+  </string> 
+  <string>
+    <id>168</id>
+    <value>Aika palvelin:</value>
+  </string> 
+  <string>
+    <id>169</id>
+    <value>Näyttö:</value>
+  </string> 
+  <string>
+    <id>170</id>
+    <value>Albumi:</value>
+  </string> 
+  <string>
+    <id>171</id>
+    <value>Esittäjä:</value>
+  </string> 
+  <string>
+    <id>172</id>
+    <value>Julkaistu:</value>
+  </string> 
+  <string>
+    <id>173</id>
+    <value>Arvosana:</value>
+  </string> 
+  <string>
+    <id>174</id>
+    <value>Tyylilaji:</value>
+  </string> 
+  <string>
+    <id>175</id>
+    <value>Tunnelma:</value>
+  </string> 
+  <string>
+    <id>176</id>
+    <value>Tyylit:</value>
+  </string> 
+  <string>
+    <id>177</id>
+    <value>Arvostelu:</value>
+  </string> 
+  <string>
+    <id>178</id>
+    <value>Kappaleet:</value>
+  </string> 
+  <string>
+    <id>179</id>
+    <value>Kappale</value>
+  </string> 
+  <string>
+    <id>180</id>
+    <value>Kesto</value>
+  </string> 
+  <string>
+    <id>181</id>
+    <value>Valitse:</value>
+  </string> 
+  <string>
+    <id>182</id>
+    <value>Kappaleet</value>
+  </string> 
+  <string>
+    <id>183</id>
+    <value>Arvostelu</value>
+  </string> 
+  <string>
+    <id>184</id>
+    <value>Päivitä</value>
+  </string> 
+  <string>
+    <id>185</id>
+    <value>Etsitään albumia</value>
+  </string> 
+  <string>
+    <id>186</id>
+    <value>OK</value>
+  </string>  
+  <string>
+    <id>187</id>
+    <value>Albumia ei löytynyt!</value>
+  </string>  
+  <string>
+    <id>188</id>
+    <value>Valitse kaikki</value>
+  </string>  
+  <string>
+    <id>189</id>
+    <value>Haetaan median tiedot</value>
+  </string>  
+  <string>
+    <id>190</id>
+    <value>Tallenna</value>
+  </string>  
+  <string>
+    <id>191</id>
+    <value>Sekoita</value>
+  </string>  
+  <string>
+    <id>192</id>
+    <value>Tyhjää</value>
+  </string>  
+  <string>
+    <id>193</id>
+    <value>Skannaa</value>
+  </string>  
+  <string>
+    <id>194</id>
+    <value>Etsitään...</value>
+  </string> 
+  <string>
+    <id>195</id>
+    <value>IMDB tietoja ei löytynyt!</value>
+  </string> 
+  <string>
+    <id>196</id>
+    <value>Valitse elokuva:</value>
+  </string> 
+  <string>
+    <id>197</id>
+    <value>Etsitään elokuvaa IMDB kannasta</value>
+  </string> 
+  <string>
+    <id>198</id>
+    <value>Haetaan elokuvan tiedot</value>
+  </string> 
+  <string>
+    <id>199</id>
+    <value>Ohjaaja</value>
+  </string> 
+  <string>
+    <id>200</id>
+    <value>Lopputekstit</value>
+  </string> 
+  <string>
+    <id>201</id>
+    <value>Vuosi</value>
+  </string> 
+  <string>
+    <id>202</id>
+    <value>Iskulause</value>
+  </string> 
+  <string>
+    <id>203</id>
+    <value>Juonilyhenne</value>
+  </string> 
+  <string>
+    <id>204</id>
+    <value>Arvosana</value>
+  </string> 
+  <string>
+    <id>205</id>
+    <value>Arvosanoja</value>
+  </string> 
+  <string>
+    <id>206</id>
+    <value>Näyttelijät</value>
+  </string> 
+  <string>
+    <id>207</id>
+    <value>Juoni</value>
+  </string> 
+  <string>
+    <id>208</id>
+    <value>Toista</value>
+  </string> 
+  <string>
+    <id>209</id>
+    <value>Seuraava</value>
+  </string> 
+  <string>
+    <id>210</id>
+    <value>Edellinen</value>
+  </string> 
+  <string>
+    <id>211</id>
+    <value>Haetaan sovellukset</value>
+  </string> 
+  <string>
+    <id>212</id>
+    <value>sovellusta löytynyt</value>
+  </string> 
+  <string>
+    <id>213</id>
+    <value>Valikon Säätö</value>
+  </string> 
+  <string>
+    <id>214</id>
+    <value>Videokuvan Säätö</value>
+  </string> 
+  <string>
+    <id>215</id>
+    <value>Pehmennä</value>
+  </string> 
+  <string>
+    <id>216</id>
+    <value>Zoomaa</value>
+  </string> 
+  <string>
+    <id>217</id>
+    <value>Venytä</value>
+  </string> 
+  <string>
+    <id>218</id>
+    <value>DVD Asema</value>
+  </string> 
+  <string>
+    <id>219</id>
+    <value>Aseta levy</value>
+  </string> 
+  <string>
+    <id>220</id>
+    <value>Verkkoasema</value>
+  </string> 
+  <string>
+    <id>221</id>
+    <value>Verkkoa ei kytketty</value>
+  </string> 
+  <string>
+    <id>222</id>
+    <value>Peruuta</value>
+  </string> 
+  <string>
+    <id>223</id>
+    <value>Valitse videolle sopivin resoluutio</value>
+  </string> 
+  <string>
+    <id>224</id>
+    <value>Nopeus</value>
+  </string> 
+  <string>
+    <id>225</id>
+    <value>Siirtymäaika</value>
+  </string> 
+  <string>
+    <id>226</id>
+    <value>Käytä PAL60</value>
+  </string> 
+  <string>
+    <id>227</id>
+    <value>Käytä CDDB</value>
+  </string> 
+  <string>
+    <id>228</id>
+    <value>Sekoita Soittolista ladattaessa</value>
+  </string> 
+  <string>
+    <id>229</id>
+    <value>Kiintolevyn sammutusaika</value>
+  </string> 
+  <string>
+    <id>230</id>
+    <value>Filtterit</value>
+  </string> 
+  <string>
+    <id>231</id>
+    <value>Ei</value>
+  </string> 
+  <string>
+    <id>232</id>
+    <value>Point</value>
+  </string> 
+  <string>
+    <id>233</id>
+    <value>Linear</value>
+  </string> 
+  <string>
+    <id>234</id>
+    <value>Anisotropic</value>
+  </string> 
+  <string>
+    <id>235</id>
+    <value>Quincunx</value>
+  </string> 
+  <string>
+    <id>236</id>
+    <value>Gaussian Cubic</value>
+  </string> 
+  <string>
+    <id>237</id>
+    <value>Pienennys:</value>
+  </string> 
+  <string>
+    <id>238</id>
+    <value>Suurennus:</value>
+  </string>
+  <string>
+    <id>240</id>
+    <value>Toista automaattisesti DVD-Video</value>
+  </string>
+  <string>
+    <id>241</id>
+    <value>Toista automaattisesti VCD/SVCD</value>
+  </string>
+  <string>
+    <id>242</id>
+    <value>Toista automaattisesti Audio-CD</value>
+  </string>
+  <string>
+    <id>243</id>
+    <value>Toista automaattisesti XBOX Pelit</value>
+  </string>
+  <string>
+    <id>244</id>
+    <value>Toista automaattisesti Videot</value>
+  </string>
+  <string>
+    <id>245</id>
+    <value>Toista automaattisesti Musiikki</value>
+  </string>
+  <string>
+    <id>246</id>
+    <value>Toista automaattisesti Kuvat</value>
+  </string>
+  <string>
+    <id>247</id>
+    <value>Skriptit</value>
+  </string>
+  <string>
+    <id>248</id>
+    <value>Language Kieli</value>
+  </string>
+  <string>
+    <id>249</id>
+    <value>Musiikki</value>
+  </string>
+  <string>
+    <id>250</id>
+    <value>Visualisointi</value>
+  </string>
+  <string>
+    <id>251</id>
+    <value>Valitse kohdehakemisto</value>
+  </string>
+  <string>
+    <id>252</id>
+    <value>Käytä aina kaikkia kaiuttimia</value>
+  </string>
+  <string>
+    <id>253</id>
+    <value>Kanavien määrä</value>
+  </string>
+  <string>
+    <id>254</id>
+    <value>AC3 PassTru</value>
+  </string>
+</strings>
