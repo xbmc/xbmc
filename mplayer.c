@@ -285,6 +285,18 @@ int forced_subs_only=0;
 #ifdef _XBOX
 static voldpts=0;
 static aoldpts=0;
+
+extern float demux_mpg_get_first_pts(demuxer_t* demuxer);
+float demux_get_first_pts(demuxer_t* demuxer)
+{
+  if( demuxer->type == DEMUXER_TYPE_MPEG_ES 
+    || demuxer->type == DEMUXER_TYPE_MPEG_PS)
+  {
+    return demux_mpg_get_first_pts(demuxer);
+  }
+  return 0.0f;
+};
+
 #endif //!_XBOX
        int stream_cache_size=-1;
 #ifdef USE_STREAM_CACHE
@@ -1102,7 +1114,7 @@ const char* mplayer_getcompiletime()
 
 __int64 mplayer_get_pts()
 {
-  return aoldpts;
+  return aoldpts - demux_get_first_pts(demuxer);
 }
 
 short mplayer_HasVideo()
@@ -4501,6 +4513,9 @@ if ((user_muted | edl_muted) != mixer.muted) mixer_mute(&mixer);
 #ifdef USE_OSD
       if(osd_level>=1 && sh_video){
         int pts=sh_video->pts;
+#ifdef _XBOX
+        pts-=demux_get_first_pts(demuxer);
+#endif
         char osd_text_tmp[64];
         if(pts==osd_last_pts-1) ++pts; else osd_last_pts=pts;
         vo_osd_text=osd_text_buffer;
@@ -5041,14 +5056,15 @@ int mplayer_getAudioStream()
 
 __int64 mplayer_getCurrentTime()
 {
+  
   if (sh_video ||d_video)
   {
     if (step_sec != 0 ||  playback_speed != orgplayback_speed)
     {
-      return sh_video ? sh_video->pts : d_video->pts;;
+      return( (sh_video ? sh_video->pts : d_video->pts) - demux_get_first_pts(demuxer) );
     }
   }
-  return (__int64)(aoldpts);
+  return (__int64)(aoldpts - demux_get_first_pts(demuxer)) ;
 }
 
 void mplayer_setTime(int iTime)

@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 02-04-2005 fixed: seeking and time reporting in mpg/vob files which has timecodes that doesn't start from zero
   - 27-03-2005 fixed: threading issue wich caused video to revert back to start when resuming from rewind
   - 17-03-2005 changed: reverted parts of last, syncing after ff/rw is now again done using a small seek. too many problems with it. Some other things tuned.
   - 08-03-2005 changed: reworked FF/RW, no skiping when returning to normal playback anymore. AV sync might be abit of, but should correct itself in a sec or two
