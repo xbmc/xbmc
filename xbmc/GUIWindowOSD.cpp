@@ -14,6 +14,7 @@
 #include "util.h"
 #include "sectionloader.h"
 #include "cores/mplayer/mplayer.h"
+#include "utils/log.h"
 
 #define OSD_VIDEOPROGRESS 1
 #define OSD_SKIPBWD 210
@@ -446,7 +447,8 @@ void CGUIWindowOSD::SetVideoProgress()
 		CGUIProgressControl* pControl = (CGUIProgressControl*)GetControl(OSD_VIDEOPROGRESS);
 		if (pControl) pControl->SetPercentage(iValue);			// Update our progress bar accordingly ...
 
-	    iValue=g_application.m_pPlayer->GetVolume();
+      
+	  iValue=g_application.m_pPlayer->GetVolume();
 		CGUISliderControl* pSlider = (CGUISliderControl*)GetControl(OSD_VOLUMESLIDER);
 		if (pSlider) pSlider->SetPercentage(iValue);			// Update our progress bar accordingly ...
 
@@ -923,6 +925,7 @@ void CGUIWindowOSD::PopulateSubTitles()
 {
 	// get the number of subtitles in the current movie
 	int iValue=mplayer_getSubtitleCount();
+  CLog::DebugLog("total subs:%i current sub:%i",iValue,mplayer_getSubtitle());
 
 	// tell the list control not to show the page x/y spin control
 	CGUIListControl* pControl=(CGUIListControl*)GetControl(OSD_SUBTITLE_LIST);
