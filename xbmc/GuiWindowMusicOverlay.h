@@ -19,6 +19,8 @@ public:
 	IDirect3DTexture8* 	m_pTexture;
 	int									m_iTextureWidth;
 	int									m_iTextureHeight;
+  virtual void				FreeResources();
+
 protected:
   int                 m_iFrames;
   int                 m_iPosOrgIcon;

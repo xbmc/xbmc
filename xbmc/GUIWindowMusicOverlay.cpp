@@ -248,11 +248,11 @@ void CGUIWindowMusicOverlay::Render()
 
 void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 {
-	auto_ptr<char>pYear  (ID3_GetYear( &id3tag  ));
-	auto_ptr<char>pTitle (ID3_GetTitle( &id3tag ));
-	auto_ptr<char>pArtist(ID3_GetArtist( &id3tag));
-	auto_ptr<char>pAlbum (ID3_GetAlbum( &id3tag ));
-	auto_ptr<char>pGenre (ID3_GetGenre( &id3tag ));
+	auto_aptr<char>pYear  (ID3_GetYear( &id3tag  ));
+	auto_aptr<char>pTitle (ID3_GetTitle( &id3tag ));
+	auto_aptr<char>pArtist(ID3_GetArtist( &id3tag));
+	auto_aptr<char>pAlbum (ID3_GetAlbum( &id3tag ));
+	auto_aptr<char>pGenre (ID3_GetGenre( &id3tag ));
 	int nTrackNum=ID3_GetTrackNum( &id3tag );
 	{
 		CGUIMessage msg(GUI_MSG_VISIBLE, GetID(), CONTROL_LOGO_PIC); 
@@ -309,10 +309,10 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 	}
 }
 
+/// \brief Tries to set the music tag information for \e strFile to window.
+/// \param strFile Audiofile to set.
 void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
 {
-	//	Tries to set the tag information for strFile to window.
-
 	//	Reset frame counter for window fading
   m_iFrames=0;
 
@@ -564,4 +564,10 @@ void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
 			OnMessage(msg1);
 		}
 	}
+}
+
+void CGUIWindowMusicOverlay::FreeResources()
+{
+	CGUIWindow::FreeResources();
+	m_iPosOrgIcon=0;
 }
