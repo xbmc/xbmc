@@ -39,7 +39,8 @@ protected:
   virtual void			OnPopupMenu(int iItem);
   virtual void			OnInfo(int iItem);
 
-  bool              OnScan(VECFILEITEMS& items);
+	virtual void			OnScan();
+  bool              DoScan(VECFILEITEMS& items);
   void              OnRetrieveVideoInfo(VECFILEITEMS& items);
   void              LoadPlayList(const CStdString& strFileName);
   virtual void			GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items);
