@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 06-11-2004 updated: Italian language file (Thnx to kotix)
+  - 06-11-2004 updated: Dutch language file (Thnx to joepmeloenx)
+  - 06-11-2004 updated: German (Austrian) language file (Thnx to CEOMR)
+  - 06-11-2004 updated: German language file
   - 06-11-2004 changed: Some strings from cd+g support changed for better translation
   - 06-11-2004 fixed ttf font .srt subtitle lockup issue
   - 06-11-2004 changed: CD+G support updated (Thnx to stcogolin)
