@@ -5,8 +5,10 @@
 #include "localizeStrings.h"
 
 #define BACKGROUND_IMAGE 999
+#define BACKGROUND_BOTTOM 998
 #define BUTTON_TEMPLATE 1000
 
+#define SPACE_BETWEEN_BUTTONS 2
 
 CGUIDialogContextMenu::CGUIDialogContextMenu(void)
 :CGUIDialog(0)
@@ -85,7 +87,7 @@ void CGUIDialogContextMenu::AddButton(const wstring &strLabel)
 	m_iNumButtons++;
 	DWORD dwID = BUTTON_TEMPLATE+m_iNumButtons;
 	pButton->SetID(dwID);
-	pButton->SetPosition(0,(m_iNumButtons-1)*pButtonTemplate->GetHeight());
+	pButton->SetPosition(pButtonTemplate->GetXPosition(),(m_iNumButtons-1)*(pButtonTemplate->GetHeight()+SPACE_BETWEEN_BUTTONS));
 	pButton->SetVisible(true);
 	pButton->SetNavigation(dwID-1, dwID+1, dwID, dwID);
 	pButton->SetText(strLabel);
@@ -94,7 +96,12 @@ void CGUIDialogContextMenu::AddButton(const wstring &strLabel)
 	CGUIControl *pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
 	if (pControl)
 	{
-		pControl->SetHeight(m_iNumButtons*pButtonTemplate->GetHeight());
+		pControl->SetHeight(m_iNumButtons*(pButtonTemplate->GetHeight()+SPACE_BETWEEN_BUTTONS));
+		CGUIControl *pControl2 = (CGUIControl *)GetControl(BACKGROUND_BOTTOM);
+		if (pControl2)
+		{
+			pControl2->SetPosition(pControl2->GetXPosition(), pControl->GetYPosition()+pControl->GetHeight()); 
+		}
 	}
 }
 
