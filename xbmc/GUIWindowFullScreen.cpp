@@ -636,7 +636,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
 		{
 			CStdString strStatus;
 			strStatus.Format("%ix%i %s", g_settings.m_ResInfo[iResolution].iWidth, g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].strMode);
-			if (g_guiSettings.GetInt("Filter.Soften"))
+			if (g_guiSettings.GetBool("Filters.Soften"))
 				strStatus += "  |  Soften";
 			else
 				strStatus += "  |  No Soften";
