@@ -939,7 +939,7 @@ void CUtil::SetThumbs(VECFILEITEMS &items)
 				CStdString strFileName;
 				pItem->SetIconImage("defaultPlaylist.png");
 				strFileName=CUtil::GetFileName(pItem->m_strPath);
-				strDir.Format("%s\\playlists\\",g_stSettings.m_szAlbumDirectory,strFileName.c_str());
+				strDir.Format("%s\\playlists\\%s",g_stSettings.m_szAlbumDirectory,strFileName.c_str());
 				if ( strDir != pItem->m_strPath )
 				{
 					CFile file;
