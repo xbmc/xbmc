@@ -23,7 +23,7 @@ ACTION_PREV_ITEM							= 15
 class Window(xbmcgui.Window):
 	def __init__(self):
 	
-		self.addControl(xbmcgui.ControlImage(0,0,720,576, 'q:\\skin\\mediacenter\\media\\background.png'))
+		self.addControl(xbmcgui.ControlImage(0,0,720,576, 'background.png'))
 		self.strAction = xbmcgui.ControlLabel(100, 100, 100, 20, 'action', 'font13', '0xFFFF3300')
 		self.strButton = xbmcgui.ControlLabel(100, 150, 100, 20, 'button', 'font13', '0xFF666666')
 		self.addControl(self.strAction)
