@@ -33,7 +33,7 @@ bool  CHDDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 
   FILETIME localTime;
   hFind = FindFirstFile(strSearchMask.c_str(),&wfd);
-	if (hFind==NULL)
+	if (hFind==INVALID_HANDLE_VALUE)
 		return false;
 	do
 	{

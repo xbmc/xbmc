@@ -220,6 +220,7 @@ HRESULT CApplication::Initialize()
 	m_guiMusicOverlay.AllocResources();
 	m_guiWindowVideoOverlay.AllocResources();
 	m_guiWindowFullScreen.AllocResources();
+	CUtil::RemoveTempFiles();
   return S_OK;
 }
 
