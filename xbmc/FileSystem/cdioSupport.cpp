@@ -40,7 +40,7 @@ signature_t CCdIoSupport::sigs[] =
     { 0 }
   };
 
-#define DEBUG_CDIO
+#undef DEBUG_CDIO
 
 static void
 xbox_cdio_log_handler (cdio_log_level_t level, const char message[])
