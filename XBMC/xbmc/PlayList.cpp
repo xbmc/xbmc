@@ -84,9 +84,7 @@ const CPlayList::CPlayListItem& CPlayList::operator[] (int iItem) const
 
 void CPlayList::Shuffle()
 {
-	SYSTEMTIME time;
-	GetLocalTime(&time);
-	srand(time.wMilliseconds);
+	srand( timeGetTime() );
 
 	int nItemCount = size();
 
