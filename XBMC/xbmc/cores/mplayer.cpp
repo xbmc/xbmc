@@ -251,6 +251,7 @@ CMPlayer::Options::Options()
 	m_bNoIdx=false;
 	m_iChannels=0;
 	m_bAC3PassTru=false;
+  m_bDTSPassTru=false;
 	m_strChannelMapping="";
 	m_fVolumeAmplification=0.0f;
 	m_bNonInterleaved=false;
@@ -357,6 +358,15 @@ bool CMPlayer::Options::GetAC3PassTru()
 void CMPlayer::Options::SetAC3PassTru(bool bOnOff)
 {
 	m_bAC3PassTru=bOnOff;
+}
+
+bool CMPlayer::Options::GetDTSPassTru()
+{
+	return m_bDTSPassTru;
+}
+void CMPlayer::Options::SetDTSPassTru(bool bOnOff)
+{
+	m_bDTSPassTru=bOnOff;
 }
 
 const string CMPlayer::Options::GetChannelMapping() const
@@ -486,13 +496,17 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 		m_vecOptions.push_back("-af");
 		m_vecOptions.push_back(m_strChannelMapping);
 	}
-	if ( m_bAC3PassTru)
+	if ( m_bAC3PassTru || m_bDTSPassTru)
 	{
 		// this is nice, we can ask mplayer to try hwac3 filter (used for ac3/dts pass-through) first
 		// and if it fails try a52 filter (used for ac3 software decoding) and if that fails
 		// try the other audio codecs (mp3, wma,...)
 		m_vecOptions.push_back("-ac");
-		m_vecOptions.push_back("hwdts,hwac3,");
+    CStdString buf;
+
+    if (m_bDTSPassTru) buf += "hwdts,";
+    if (m_bAC3PassTru) buf += "hwac3,";
+		m_vecOptions.push_back(buf.c_str());
 	}
 
 	if (m_strFlipBiDiCharset.length()>0)
@@ -769,7 +783,6 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 			options.SetFlipBiDiCharset(g_stSettings.m_szFlipBiDiCharset);
 		}
 
-
 		bool bSupportsAC3Out=g_audioConfig.GetAC3Enabled();
 		bool bSupportsDTSOut=g_audioConfig.GetDTSEnabled();
 
@@ -777,19 +790,21 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 		if (CUtil::IsShoutCast(strFile) ) 
 		{
 			options.SetChannels(0);
-			bSupportsAC3Out = false;
-			bSupportsDTSOut = false;
-		}
+      options.SetAC3PassTru(false);		
+      options.SetDTSPassTru(false);
+    }
 		else 
 		{
-			// if we are using analog output, then we only got 2 stereo output
-			options.SetChannels(0);
+      //Since the xbox downmixes any multichannel track to dolby surround if we don't have a dd reciever, 
+      //allways tell mplayer to output the maximum number of channels.
+      options.SetChannels(6);
 
 			// if we're using digital out
-			// then try opening file with max channels
-			if (g_stSettings.m_bUseDigitalOutput && (bSupportsAC3Out || bSupportsDTSOut))
+			// then try using direct passtrough
+			if (g_stSettings.m_bUseDigitalOutput)
 			{
-				options.SetChannels(6);
+        options.SetAC3PassTru(bSupportsAC3Out);
+        options.SetDTSPassTru(bSupportsDTSOut);
 			}
 		}
 
@@ -940,124 +955,14 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 			bool bDTS = strstr(strAudioCodec,"DTS")!=0;
 			bool bAC3 = strstr(strAudioCodec,"AC3")!=0;
 			
-			// should we be using passthrough??
-			// code updated to work with mplayer-pre5 + libdts 0.0.2
-			options.SetAC3PassTru(false);
-			if (g_stSettings.m_bUseDigitalOutput)
-			{	// can only use passthrough with 48kHz audio
-				if (lSampleRate == 48000)
-				{	// do we support AC3 out?
-					if (bAC3 && bSupportsAC3Out)
-					{	// multichannel is all go
-						if (iChannels > 2)
-						{	// fine
-							options.SetAC3PassTru(true);
-							options.SetChannels(2);
-							bNeed2Restart = true;
-						}	// stereo/mono needs checking against the Output Stereo To All Speakers setting
-						if (!g_stSettings.m_bAudioOnAllSpeakers)
-						{	// fine
-							options.SetAC3PassTru(true);
-							options.SetChannels(2);
-							bNeed2Restart = true;
-						}
-					}	// DTS should be passed through (no stereo DTS files??)
-					if (bDTS && bSupportsDTSOut)
-					{	// fine
-						options.SetAC3PassTru(true);
-						options.SetChannels(2);
-						bNeed2Restart = true;
-					}
-				}
-			}
 
-			// if we dont have ac3 passtru enabled
-			if (!options.GetAC3PassTru())
-			{
-				// if DMO filter is used we need 2 remap the audio speaker layout (MS does things differently)
-				// FL, FR, C, LFE, SL, SR
-				if( strstr(strAudioCodec,"DMO") && (iChannels==6) )
-				{
-					options.SetChannels(6);
-				
-					options.SetChannelMapping("channels=6:6:0:0:1:1:2:4:3:5:4:2:5:3");
-					bNeed2Restart=true;
-					CLog::Log(LOGINFO, "  --restart cause speaker mapping needs fixing");
-				}	
-				// AAC has a different channel mapping.. C, FL, FR, SL, SR, LFE
-				if ( strstr(strAudioCodec, "AAC") && (iChannels==6))
-				{
-					if(g_stSettings.m_bUseDigitalOutput)
-					{
-						options.SetChannels(6);
-						options.SetChannelMapping("channels=6:6:0:4:1:0:2:1:3:2:4:3:5:5");
-					}
-					else
-					{
-						options.SetChannels(0);
-						options.SetChannelMapping("channels=6:2:0:0:0:1:1:0:2:1:3:0:4:1:5:0:5:1");
-					}
-					
-					bNeed2Restart=true;
-					CLog::Log(LOGINFO, "  --restart cause speaker mapping needs fixing");		
-				}
-				// OGG has yet another channel mapping.. we need a better way for this FL, C, FR, SL, SR, LFE
-				if ( strstr(strAudioCodec, "OggVorbis") && (iChannels==6))
-				{
-					if(g_stSettings.m_bUseDigitalOutput)
-					{
-						options.SetChannels(6);
-						options.SetChannelMapping("channels=6:6:0:0:1:4:2:1:3:2:4:3:5:5");
-					}
-					else
-					{
-						//Doesn't seem to be working here.. only left and right channel seems to be mixed
-						options.SetChannels(0);
-						options.SetChannelMapping("channels=6:2:0:0:2:1:1:0:1:1:3:0:4:1:5:0:5:1");
-					}
-					
-					bNeed2Restart=true;
-					CLog::Log(LOGINFO, "  --restart cause speaker mapping needs fixing");		
-				}
-
-				// if xbox only got stereo output, then limit number of channels to 2
-				// same if xbox got digital output, but we're listening to the analog output
-				if (!g_audioConfig.HasDigitalOutput() || !g_stSettings.m_bUseDigitalOutput)
-				{
-					if (iChannels > 2) 
-					{
-						iChannels=2;
-					}
-				}
-				// remap audio speaker layout for files with 5 audio channels 
-				if (iChannels==5)
-				{
-					options.SetChannels(6);
-					options.SetChannelMapping("channels=6:5:0:0:1:1:2:2:3:3:4:4:5:5");
-					bNeed2Restart=true;
-					CLog::Log(LOGINFO, "  --restart cause audio channels changed:5");
-				}
-				// remap audio speaker layout for files with 3 audio channels 
-				if (iChannels==3)
-				{
-					options.SetChannels(4);
-					options.SetChannelMapping("channels=4:4:0:0:1:1:2:2:2:3");
-					bNeed2Restart=true;
-					CLog::Log(LOGINFO, "  --restart cause audio channels changed:3");
-				}
-
-				if (iChannels==1 || iChannels==2||iChannels==4)
-				{
-					int iChan=options.GetChannels();
-					if ( iChannels ==2) iChannels=0;
-					if (iChan!=iChannels)
-					{
-						CLog::Log(LOGINFO, "  --restart cause audio channels changed");
-						options.SetChannels(iChannels);
-						bNeed2Restart=true; 
-					}
-				}
-			}
+      if (lSampleRate != 48000 && (bAC3 || bDTS)) //Fallback if we run into a weird ac3/dts track.
+      {
+        options.SetAC3PassTru(false);
+        options.SetDTSPassTru(false);
+        bNeed2Restart = true;
+      }
+      
 
 			if (bNeed2Restart)
 			{
