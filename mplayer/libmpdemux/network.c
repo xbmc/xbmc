@@ -192,9 +192,6 @@ char *af2String(int af) {
 
 int
 connect2Server_with_af(char *host, int port, int af,int verb) {
-#ifdef _XBOX
-// mplayer connect2Server_with_af from 1.0 pre4 seems to do strange things.
-// using older mplayer code for now
 	int socket_server_fd;
 	int err, err_len;
 	int ret,count = 0;
@@ -299,7 +296,6 @@ connect2Server_with_af(char *host, int port, int af,int verb) {
 	val = 1;
 	ioctlsocket( socket_server_fd, FIONBIO, &val );
 #endif
-
 	if( connect( socket_server_fd, (struct sockaddr*)&server_address, server_address_size )==-1 ) {
 #ifndef HAVE_WINSOCK2
 		if( errno!=EINPROGRESS ) {
@@ -338,20 +334,11 @@ connect2Server_with_af(char *host, int port, int af,int verb) {
 	fcntl( socket_server_fd, F_SETFL, fcntl(socket_server_fd, F_GETFL) & ~O_NONBLOCK );
 #else
 	val = 0;
-#ifdef _XBOX
-	int iErr = ioctlsocket( socket_server_fd, FIONBIO, &val );
-#else
 	ioctlsocket( socket_server_fd, FIONBIO, &val );
-#endif
 #endif
 	// Check if there were any error
 	err_len = sizeof(int);
-#ifdef _XBOX
-	ret = iErr;
-	printf("%i : %i", iErr, ret);
-#else
 	ret =  getsockopt(socket_server_fd,SOL_SOCKET,SO_ERROR,&err,&err_len);
-#endif
 	if(ret < 0) {
 		mp_msg(MSGT_NETWORK,MSGL_ERR,"getsockopt failed : %s\n",strerror(errno));
 		return -2;
@@ -362,7 +349,6 @@ connect2Server_with_af(char *host, int port, int af,int verb) {
 	}
 	
 	return socket_server_fd;
-#endif //_XBOX
 }
 
 // Connect to a server using a TCP connection
