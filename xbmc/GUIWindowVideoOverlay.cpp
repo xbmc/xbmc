@@ -107,6 +107,9 @@ void CGUIWindowVideoOverlay::Render()
     }
 	}
 	CGUIWindow::Render();
+
+	extern void xbox_video_render_update();
+	xbox_video_render_update();
 }
 
 

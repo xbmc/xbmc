@@ -421,10 +421,10 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   if (m_bLastRender)
   {
     m_bLastRender=false;
-    g_graphicsContext.Lock();
-    g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
-    g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
-    g_graphicsContext.Unlock();
+//    g_graphicsContext.Lock();
+//    g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
+//    g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
+//    g_graphicsContext.Unlock();
 
   }
   return false;

@@ -307,7 +307,7 @@ HRESULT CXBApplicationEx::RenderGradientBackground( DWORD dwTopColor,
     m_pd3dDevice->DrawPrimitive( D3DPT_TRIANGLESTRIP, 0, 2 );
 
     // Clear the zbuffer
-    m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
+    //m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
 
     return S_OK;
 }
