@@ -12,6 +12,7 @@
 #include "guiSpinControl.h"
 #include "guiRSSControl.h"
 #include "guiRAMControl.h"
+#include "guiConsoleControl.h"
 #include "guiListControl.h"
 #include "guiListControlEx.h"
 #include "guiImage.h"
@@ -104,6 +105,10 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 			else if (!strcmp(it->m_szType,"ram"))
 			{
 				stControl.m_pControl = new CGUIRAMControl(*((CGUIRAMControl*)it->m_pControl));
+			}
+			else if (!strcmp(it->m_szType,"console"))
+			{
+				stControl.m_pControl = new CGUIConsoleControl(*((CGUIConsoleControl*)it->m_pControl));
 			}
 			else if (!strcmp(it->m_szType,"togglebutton"))
 			{
@@ -241,6 +246,10 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 		else if (!strcmp(it->m_szType,"ram"))
 		{
 			stControl.m_pControl = new CGUIRAMControl(*((CGUIRAMControl*)it->m_pControl));
+		}
+		else if (!strcmp(it->m_szType,"console"))
+		{
+			stControl.m_pControl = new CGUIConsoleControl(*((CGUIConsoleControl*)it->m_pControl));
 		}
 		else if (!strcmp(it->m_szType,"togglebutton"))
 		{
