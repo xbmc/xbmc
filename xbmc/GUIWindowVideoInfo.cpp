@@ -272,9 +272,9 @@ void CGUIWindowVideoInfo::Refresh()
       m_iTextureHeight=picture.GetHeight();
   		
 	  }
-    OutputDebugString("update\n");
+    //OutputDebugString("update\n");
 	  Update();
-    OutputDebugString("updated\n");
+    //OutputDebugString("updated\n");
   }
   catch(...)
   {
