@@ -182,11 +182,11 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 			CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
 			g_guiSettings.m_LookAndFeelResolution = g_videoConfig.GetSafeMode();
 			CLog::Log(LOGERROR, "Resetting to mode %s", g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode);
-			// Transfer the resolution information to our graphics context
-			g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
-			g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
 			CLog::Log(LOGERROR, "Done reset");
 		}
+		// Transfer the resolution information to our graphics context
+		g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
+		g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
 
 		// Create the device
 		if (m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_d3dpp, &m_pd3dDevice) != S_OK)
@@ -207,6 +207,8 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
     m_splash->Stop();
   }
 	m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
+	m_pd3dDevice->BlockUntilVerticalBlank();
+	m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 
 	// D3D is up, load default font
 	XFONT* pFont;
@@ -222,7 +224,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 	pFont->SetTextColor(D3DCOLOR_XRGB(0xff,0x20,0x20));
 
 	int iLine = 0;
-	FEH_TextOut(pFont, iLine++, L"XBMC Fatal Load Error:");
+	FEH_TextOut(pFont, iLine++, L"XBMC Fatal Error:");
 	char buf[500];
 	strncpy(buf, g_LoadErrorStr.c_str(), 500);
 	buf[499] = 0;
@@ -242,6 +244,8 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 		helper.Remount("D:","Cdrom0");
 		helper.Remap("E:,Harddisk0\\Partition1");
 	}
+
+  Pal = g_graphicsContext.GetVideoResolution() == PAL_4x3;
 
 	if (HaveGamepad)
 		FEH_TextOut(pFont, (Pal ? 16 : 12) | 0x18000, L"Press start to reboot");
@@ -441,31 +445,34 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 
 	if (NetworkUp)
 	{
-		// Start FTP with default settings
-		FEH_TextOut(pFont, iLine++, L"Starting FTP server...");
+    if (!m_pFileZilla)
+    {
+		  // Start FTP with default settings
+		  FEH_TextOut(pFont, iLine++, L"Starting FTP server...");
 
-		m_pFileZilla = new CXBFileZilla(NULL);
-		m_pFileZilla->Start();
+		  m_pFileZilla = new CXBFileZilla(NULL);
+		  m_pFileZilla->Start();
 
-		// Default settings
-		m_pFileZilla->mSettings.SetMaxUsers(1);
-		m_pFileZilla->mSettings.SetWelcomeMessage("XBMC emergency recovery console FTP.");
+		  // Default settings
+		  m_pFileZilla->mSettings.SetMaxUsers(1);
+		  m_pFileZilla->mSettings.SetWelcomeMessage("XBMC emergency recovery console FTP.");
 
-		// default user
-		CXFUser* pUser;
-		m_pFileZilla->AddUser("xbox", pUser);
-		pUser->SetPassword("xbox");
-		pUser->SetShortcutsEnabled(false);
-		pUser->SetUseRelativePaths(false);
-		pUser->SetBypassUserLimit(false);
-		pUser->SetUserLimit(0);
-		pUser->SetIPLimit(0);
-		pUser->AddDirectory("/", XBFILE_READ|XBFILE_WRITE|XBFILE_DELETE|XBFILE_APPEND|XBDIR_DELETE|XBDIR_CREATE|XBDIR_LIST|XBDIR_SUBDIRS|XBDIR_HOME);
-		pUser->AddDirectory("C:\\", XBFILE_READ|XBFILE_WRITE|XBFILE_DELETE|XBFILE_APPEND|XBDIR_DELETE|XBDIR_CREATE|XBDIR_LIST|XBDIR_SUBDIRS);
-		pUser->AddDirectory("D:\\", XBFILE_READ|XBDIR_LIST|XBDIR_SUBDIRS);
-		pUser->AddDirectory("E:\\", XBFILE_READ|XBFILE_WRITE|XBFILE_DELETE|XBFILE_APPEND|XBDIR_DELETE|XBDIR_CREATE|XBDIR_LIST|XBDIR_SUBDIRS);
-		pUser->AddDirectory("Q:\\", XBFILE_READ|XBFILE_WRITE|XBFILE_DELETE|XBFILE_APPEND|XBDIR_DELETE|XBDIR_CREATE|XBDIR_LIST|XBDIR_SUBDIRS);
-		pUser->CommitChanges();
+		  // default user
+		  CXFUser* pUser;
+		  m_pFileZilla->AddUser("xbox", pUser);
+		  pUser->SetPassword("xbox");
+		  pUser->SetShortcutsEnabled(false);
+		  pUser->SetUseRelativePaths(false);
+		  pUser->SetBypassUserLimit(false);
+		  pUser->SetUserLimit(0);
+		  pUser->SetIPLimit(0);
+		  pUser->AddDirectory("/", XBFILE_READ|XBFILE_WRITE|XBFILE_DELETE|XBFILE_APPEND|XBDIR_DELETE|XBDIR_CREATE|XBDIR_LIST|XBDIR_SUBDIRS|XBDIR_HOME);
+		  pUser->AddDirectory("C:\\", XBFILE_READ|XBFILE_WRITE|XBFILE_DELETE|XBFILE_APPEND|XBDIR_DELETE|XBDIR_CREATE|XBDIR_LIST|XBDIR_SUBDIRS);
+		  pUser->AddDirectory("D:\\", XBFILE_READ|XBDIR_LIST|XBDIR_SUBDIRS);
+		  pUser->AddDirectory("E:\\", XBFILE_READ|XBFILE_WRITE|XBFILE_DELETE|XBFILE_APPEND|XBDIR_DELETE|XBDIR_CREATE|XBDIR_LIST|XBDIR_SUBDIRS);
+		  pUser->AddDirectory("Q:\\", XBFILE_READ|XBFILE_WRITE|XBFILE_DELETE|XBFILE_APPEND|XBDIR_DELETE|XBDIR_CREATE|XBDIR_LIST|XBDIR_SUBDIRS);
+		  pUser->CommitChanges();
+    }
 
 		FEH_TextOut(pFont, iLine++, L"FTP server running on port %d, login: xbox/xbox", m_pFileZilla->mSettings.GetServerPort());
 		++iLine;
@@ -483,6 +490,41 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 	}
 	else
 		Sleep(INFINITE);
+}
+
+LONG WINAPI CApplication::UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo)
+{
+  PCSTR pExceptionString = "Unknown exception code";
+
+#define STRINGIFY_EXCEPTION(code) case code: pExceptionString = #code; break
+  switch (ExceptionInfo->ExceptionRecord->ExceptionCode)
+  {
+    STRINGIFY_EXCEPTION(EXCEPTION_ACCESS_VIOLATION);
+    STRINGIFY_EXCEPTION(EXCEPTION_ARRAY_BOUNDS_EXCEEDED);
+    STRINGIFY_EXCEPTION(EXCEPTION_BREAKPOINT);
+    STRINGIFY_EXCEPTION(EXCEPTION_FLT_DENORMAL_OPERAND);
+    STRINGIFY_EXCEPTION(EXCEPTION_FLT_DIVIDE_BY_ZERO);
+    STRINGIFY_EXCEPTION(EXCEPTION_FLT_INEXACT_RESULT);
+    STRINGIFY_EXCEPTION(EXCEPTION_FLT_INVALID_OPERATION);
+    STRINGIFY_EXCEPTION(EXCEPTION_FLT_OVERFLOW);
+    STRINGIFY_EXCEPTION(EXCEPTION_FLT_STACK_CHECK);
+    STRINGIFY_EXCEPTION(EXCEPTION_ILLEGAL_INSTRUCTION);
+    STRINGIFY_EXCEPTION(EXCEPTION_INT_DIVIDE_BY_ZERO);
+    STRINGIFY_EXCEPTION(EXCEPTION_INT_OVERFLOW);
+    STRINGIFY_EXCEPTION(EXCEPTION_INVALID_DISPOSITION);
+    STRINGIFY_EXCEPTION(EXCEPTION_NONCONTINUABLE_EXCEPTION);
+    STRINGIFY_EXCEPTION(EXCEPTION_SINGLE_STEP);
+  }
+#undef STRINGIFY_EXCEPTION
+
+  g_LoadErrorStr.Format("%s (0x%08x)\n at 0x%08x", 
+    pExceptionString, ExceptionInfo->ExceptionRecord->ExceptionCode,
+	ExceptionInfo->ExceptionRecord->ExceptionAddress);
+
+  g_application.FatalErrorHandler(false, true, true);
+
+  // not useful since previous function never returns
+  return EXCEPTION_EXECUTE_HANDLER;
 }
 
 HRESULT CApplication::Create()
@@ -753,6 +795,10 @@ HRESULT CApplication::Create()
   if (LOCK_MODE_EVERYONE == g_stSettings.m_iMasterLockMode)
     // masterlock is disabled, so disable all share locks too
     m_bMasterLockOverridesLocalPasswords = true;
+
+  // show recovery console on fatal error instead of freezing
+  CLog::Log(LOGINFO, "install unhandled exception filter");
+  SetUnhandledExceptionFilter(UnhandledExceptionFilter);
 
   return CXBApplicationEx::Create();
 }
