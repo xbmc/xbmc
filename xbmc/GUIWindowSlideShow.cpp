@@ -431,12 +431,12 @@ void CSlideShowPic::Render()
 	if (fScreenRatio < fSourceAR * fComp && fSourceAR < fScreenRatio * fComp)
 		bFillScreen = true;
 	if ((!bFillScreen && fScreenWidth*fPixelRatio > fScreenHeight*fSourceAR) || (bFillScreen && fScreenWidth*fPixelRatio < fScreenHeight*fSourceAR))
-		fScaleNorm = fScreenHeight/m_fHeight;
+		fScaleNorm = fScreenHeight/(m_fHeight*fPixelRatio);
 	bFillScreen = false;
 	if (fScreenRatio < fSourceInvAR * fComp && fSourceInvAR < fScreenRatio * fComp)
 		bFillScreen = true;
 	if ((!bFillScreen && fScreenWidth*fPixelRatio > fScreenHeight*fSourceInvAR) || (bFillScreen && fScreenWidth*fPixelRatio < fScreenHeight*fSourceInvAR))
-		fScaleInv = fScreenHeight/m_fWidth;
+		fScaleInv = fScreenHeight/(m_fWidth*fPixelRatio);
 
 	float fScale = si*si*(fScaleInv-fScaleNorm)+fScaleNorm;
 	// scale if we need to due to the effect we're using
@@ -451,7 +451,7 @@ void CSlideShowPic::Render()
 	for (int i=0; i<4; i++)
 	{
 		x[i] *= fScale*0.5f;	// as the offsets x[] and y[] are from center
-		y[i] *= fScale*0.5f;
+		y[i] *= fScale*fPixelRatio*0.5f;
 		// center it
 		x[i] += 0.5f*fScreenWidth + fOffsetX;
 		y[i] += 0.5f*fScreenHeight + fOffsetY;
@@ -514,7 +514,7 @@ void CSlideShowPic::Render()
 	sy[3] = -m_fWidth*si + m_fHeight*co;
 	// convert to the appropriate scale
 	float fSmallArea = fScreenWidth*fScreenHeight/50;
-	float fSmallWidth = sqrt(fSmallArea*fAR); // fAR*height = width, so total area*far = width*width
+	float fSmallWidth = sqrt(fSmallArea*fAR/fPixelRatio); // fAR*height = width, so total area*far = width*width
 	float fSmallHeight = fSmallArea/fSmallWidth;
 	float fSmallX = fOffsetX + fScreenWidth*0.95f - fSmallWidth*0.5f;
 	float fSmallY = fOffsetY + fScreenHeight*0.05f + fSmallHeight*0.5f;
@@ -524,7 +524,7 @@ void CSlideShowPic::Render()
 	for (int i=0; i<4; i++)
 	{
 		sx[i] *= fScale*0.5f;
-		sy[i] *= fScale*0.5f;
+		sy[i] *= fScale*fPixelRatio*0.5f;
 	}
 	// calculate a black border
 	float bx[4];
@@ -571,9 +571,9 @@ void CSlideShowPic::Render()
 	// crop to within the range of our piccy
 	for (int i=0; i<4; i++)
 	{
-		if (ox[i] < fSmallX - fSmallWidth) ox[i] = fSmallX - fSmallWidth;
+		if (ox[i] < fSmallX) ox[i] = fSmallX;
 		if (ox[i] > fSmallX + fSmallWidth) ox[i] = fSmallX + fSmallWidth;
-		if (oy[i] < fSmallY - fSmallHeight) oy[i] = fSmallY - fSmallHeight;
+		if (oy[i] < fSmallY) oy[i] = fSmallY;
 		if (oy[i] > fSmallY + fSmallHeight) oy[i] = fSmallY + fSmallHeight;
 	}
 	Render(ox, oy, NULL, PICTURE_VIEW_BOX_COLOR, D3DFILL_WIREFRAME);
