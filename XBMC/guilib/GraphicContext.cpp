@@ -138,15 +138,6 @@ void CGraphicContext::SetOffset(int iXoffset, int iYoffset)
 	m_iScreenOffsetX=iXoffset;
 	m_iScreenOffsetY=iYoffset;
 }
-void CGraphicContext::Lock()
-{
-	EnterCriticalSection(&m_critSection);
-}
-
-void CGraphicContext::Unlock()
-{
-	LeaveCriticalSection(&m_critSection);
-}
 
 void CGraphicContext::EnablePreviewWindow(bool bEnable)
 {
@@ -273,8 +264,8 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
 			  m_pd3dParams->FullScreen_RefreshRateInHz = 60;
       }
       else
+			{
         m_pd3dParams->FullScreen_RefreshRateInHz = 0;
-      {
       }
 		}
 		else
