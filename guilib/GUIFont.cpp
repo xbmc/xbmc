@@ -1,4 +1,5 @@
 #include "guifont.h"
+#include "../xbmc/utils/log.h"
 
 CGUIFont::CGUIFont(void)
 {
@@ -20,12 +21,11 @@ bool CGUIFont::Load(const CStdString& strFontName,const CStdString& strFilename)
 	strPath+="\\fonts\\";
   strPath+=strFilename;
   m_strFontName=strFontName;
+  CLog::Log("Load font:%s path:%s", m_strFontName.c_str(), strPath.c_str());
   bool bResult= (CXBFont::Create(strPath.c_str())==S_OK);
 	if (!bResult)
 	{
-		OutputDebugString("Unable to load font:");
-		OutputDebugString(strFilename.c_str());
-		OutputDebugString("\n");
+    CLog::Log("failed to load Load font:%s path:%s", m_strFontName.c_str(), strPath.c_str());
 	}
 	return bResult;
 }

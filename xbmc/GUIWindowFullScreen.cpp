@@ -93,12 +93,15 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 	{
 		if (action.wID == ACTION_SHOW_OSD && !g_application.m_guiWindowOSD.SubMenuVisible())	// hide the OSD
 		{
+      OutputDebugString("CGUIWindowFullScreen::HIDEOSD\n");
 			CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0,0,0,NULL);
-			OnMessage(msg);	// Send a de-init msg to the OSD
-			m_bOSDVisible=!m_bOSDVisible;
+			g_application.m_guiWindowOSD.OnMessage(msg);	// Send a de-init msg to the OSD
+			m_bOSDVisible=false;
 		}
 		else
 		{
+      OutputDebugString("CGUIWindowFullScreen::OnAction() reset timeout\n");
+      m_dwOSDTimeOut=timeGetTime();
 			g_application.m_guiWindowOSD.OnAction(action);	// route keys to OSD window
 		}
 		return;
@@ -208,12 +211,13 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 
 		case ACTION_SHOW_OSD:	// Show the OSD
     {	
-      //g_application.m_pPlayer->ToggleOSD();
-      m_bOSDVisible=!m_bOSDVisible;
-	  CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,0,0,NULL);
-	  OnMessage(msg);	// Send an init msg to the OSD
-      //if (m_bOSDVisible) ShowOSD();
-      //else HideOSD();
+      OutputDebugString("CGUIWindowFullScreen:SHOWOSD\n");
+      m_dwOSDTimeOut=timeGetTime();
+      m_bOSDVisible=true;
+	    CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,0,0,NULL);
+	    g_application.m_guiWindowOSD.OnMessage(msg);	// Send an init msg to the OSD
+
+      
     }
     break;
 			
@@ -313,23 +317,6 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 			ChangetheTimeCode(REMOTE_9);
 		break;
 
-		/*
-    case ACTION_OSD_SHOW_LEFT:
-    case ACTION_OSD_SHOW_RIGHT:
-    case ACTION_OSD_SHOW_UP:
-    case ACTION_OSD_SHOW_DOWN:
-    case ACTION_OSD_SHOW_SELECT:
-    case ACTION_OSD_SHOW_VALUE_PLUS:
-    case ACTION_OSD_SHOW_VALUE_MIN:
-    {
-      if (m_bOSDVisible)
-      {
-        m_osdMenu.OnAction(*this,action);
-      }
-      return;
-    }
-    break;
-	*/
 
  		case ACTION_SMALL_STEP_BACK:
      {
@@ -356,6 +343,24 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 {	
 	if (m_bOSDVisible)
 	{
+    if (timeGetTime()-m_dwOSDTimeOut > 5000)
+    {
+      CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0,0,0,NULL);
+			g_application.m_guiWindowOSD.OnMessage(msg);	// Send a de-init msg to the OSD
+			m_bOSDVisible=false;
+      return g_application.m_guiWindowOSD.OnMessage(message);	// route messages to OSD window
+    }
+    switch (message.GetMessage())
+    {
+      case GUI_MSG_SETFOCUS:
+      case GUI_MSG_LOSTFOCUS:
+      case GUI_MSG_CLICKED:
+      case GUI_MSG_WINDOW_INIT:
+      case GUI_MSG_WINDOW_DEINIT:
+        OutputDebugString("CGUIWindowFullScreen::OnMessage() reset timeout\n");
+        m_dwOSDTimeOut=timeGetTime();
+      break;
+    }
 		return g_application.m_guiWindowOSD.OnMessage(message);	// route messages to OSD window
 	}
 
@@ -380,6 +385,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 		}
 		case GUI_MSG_WINDOW_DEINIT:
 		{
+      CGUIWindow::OnMessage(message);
       CUtil::RestoreBrightnessContrastGamma();
 			g_graphicsContext.Lock();
 			g_graphicsContext.SetFullScreenVideo( false );
@@ -392,6 +398,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       
       m_iCurrentBookmark=0;
       HideOSD();
+      return true;
 		}
 	}
 	return CGUIWindow::OnMessage(message);
@@ -407,6 +414,7 @@ void CGUIWindowFullScreen::Render()
 
 bool CGUIWindowFullScreen::NeedRenderFullScreen()
 {
+
 	if (g_application.m_pPlayer) 
   {
     if (g_application.m_pPlayer->IsPaused() )return true;
@@ -425,11 +433,6 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   if (m_bLastRender)
   {
     m_bLastRender=false;
-//    g_graphicsContext.Lock();
-//    g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
-//    g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
-//    g_graphicsContext.Unlock();
-
   }
   return false;
 }
@@ -548,22 +551,9 @@ void CGUIWindowFullScreen::RenderFullScreen()
   }
   if (m_bOSDVisible)
   {
-    //CGUIWindow::Render();
-    CSingleLock lock(m_section);      
+	  // tell the OSD window to draw itself
+	  g_application.m_guiWindowOSD.Render();
 
-	/*
-    if (g_application.m_pPlayer)
-    {
-      int iValue=g_application.m_pPlayer->GetPercentage();
-      m_osdMenu.SetValue(MENU_ACTION_SEEK,iValue);
-    }
-
-	m_osdMenu.Draw();
-	SET_CONTROL_FOCUS(GetID(), m_osdMenu.GetSelectedMenu()+BTN_OSD_VIDEO, 0);
-	*/
-
-	// tell the OSD window to draw itself
-	g_application.m_guiWindowOSD.Render();
     return;
   }
     
@@ -738,76 +728,7 @@ void CGUIWindowFullScreen::HideOSD()
 
 void CGUIWindowFullScreen::ShowOSD()
 {
-	/*
-  CSingleLock lock(m_section);      
-	m_osdMenu.Clear();
-  COSDSubMenu videoMenu(291,100,100);
 
-  COSDOptionButton    optionNewBookmark(MENU_ACTION_NEW_BOOKMARK,294);
-  COSDOptionButton    optionNextBookmark(MENU_ACTION_NEXT_BOOKMARK, 295);
-  COSDOptionButton    optionClearbookmarks(MENU_ACTION_CLEAR_BOOKMARK, 296);
-
-
-  float fValue=g_application.m_pPlayer->GetAVDelay();
-  COSDOptionFloatRange optionAVDelay(MENU_ACTION_AVDELAY,297,-10.0f,10.0f,0.01f,fValue);
-
-  int iValue=g_application.m_pPlayer->GetPercentage();
-  COSDOptionIntRange   optionPercentage(MENU_ACTION_SEEK,298,true,0,100,1,iValue);
-  COSDOptionBoolean    optionNonInterleaved(MENU_ACTION_INTERLEAVED,306, g_stSettings.m_bNonInterleaved);
-  COSDOptionBoolean    optionFrameRateConversions(MENU_ACTION_FRAMERATECONVERSIONS, 343, g_stSettings.m_bFrameRateConversions);
-  COSDOptionBoolean    optionNoCache(MENU_ACTION_NOCACHE,431, g_stSettings.m_bNoCache);
-  
-  videoMenu.AddOption(&optionNewBookmark);
-  videoMenu.AddOption(&optionNextBookmark);
-  videoMenu.AddOption(&optionClearbookmarks);
-
-  videoMenu.AddOption(&optionAVDelay);
-  videoMenu.AddOption(&optionPercentage);
-  videoMenu.AddOption(&optionNonInterleaved);
-  videoMenu.AddOption(&optionNoCache);
-  videoMenu.AddOption(&optionFrameRateConversions);
-  
-
-  COSDSubMenu audioMenu(292,100,100);
-  iValue=g_application.m_pPlayer->GetAudioStreamCount();
-  if (iValue>1)
-  {
-    COSDOptionIntRange   optionAudioStream(MENU_ACTION_AUDIO_STREAM,302,false,1,iValue,1,g_stSettings.m_iAudioStream+1);
-    audioMenu.AddOption(&optionAudioStream);
-  }
-
-  COSDSubMenu SubtitleMenu(293,100,100);
-  fValue=g_application.m_pPlayer->GetSubTitleDelay();
-  COSDOptionFloatRange optionSubtitleDelay(MENU_ACTION_SUBTITLEDELAY,303,-10.0f,10.0f,0.01f,fValue);
-  
-
-
-  iValue=mplayer_SubtitleVisible();
-  COSDOptionBoolean    optionEnable(MENU_ACTION_SUBTITLEONOFF,305, (iValue!=0));
-
-  SubtitleMenu.AddOption(&optionSubtitleDelay);
-  if (mplayer_getSubtitleCount() > 1)
-  {
-    iValue=mplayer_getSubtitle();
-    COSDOptionIntRange   optionSubtitleLanguage(MENU_ACTION_SUBTITLELANGUAGE,304,false,0,mplayer_getSubtitleCount()-1,1,iValue);
-    SubtitleMenu.AddOption(&optionSubtitleLanguage);
-  }  
-  SubtitleMenu.AddOption(&optionEnable);
-
-  m_osdMenu.AddSubMenu(videoMenu);
-  m_osdMenu.AddSubMenu(audioMenu);
-  m_osdMenu.AddSubMenu(SubtitleMenu);
-
-  SET_CONTROL_VISIBLE(GetID(),BTN_OSD_VIDEO);
-  SET_CONTROL_VISIBLE(GetID(),BTN_OSD_AUDIO);
-  SET_CONTROL_VISIBLE(GetID(),BTN_OSD_SUBTITLE);
-
-  SET_CONTROL_HIDDEN(GetID(),LABEL_ROW1);
-  SET_CONTROL_HIDDEN(GetID(),LABEL_ROW2);
-  SET_CONTROL_HIDDEN(GetID(),LABEL_ROW3);
-  SET_CONTROL_HIDDEN(GetID(),BLUE_BAR);
-  Update();
-  */
 }
 
 bool CGUIWindowFullScreen::OSDVisible() const
@@ -817,144 +738,7 @@ bool CGUIWindowFullScreen::OSDVisible() const
 
 void CGUIWindowFullScreen::OnExecute(int iAction, const IOSDOption* option)
 {
-	/*
-  switch (iAction)
-  {
-    case MENU_ACTION_SEEK:
-    {
-      const COSDOptionIntRange* intOption = (const COSDOptionIntRange*)option;
-      g_application.m_pPlayer->SeekPercentage(intOption->GetValue());
-      
-    }
-    break;
 
-    case MENU_ACTION_AVDELAY:
-    {
-      const COSDOptionFloatRange* floatOption = (const COSDOptionFloatRange*)option;
-      g_application.m_pPlayer->SetAVDelay(floatOption->GetValue());
-    }
-    break;
-
-    case MENU_ACTION_SUBTITLEDELAY:
-    {
-      const COSDOptionFloatRange* floatOption = (const COSDOptionFloatRange*)option;
-      g_application.m_pPlayer->SetSubTittleDelay(floatOption->GetValue());
-    }
-    break;
-
-    
-    case MENU_ACTION_SUBTITLEONOFF:
-    {
-      const COSDOptionBoolean* boolOption = (const COSDOptionBoolean*)option;
-      mplayer_showSubtitle(boolOption->GetValue());
-    }
-    break;
-    
-    case MENU_ACTION_SUBTITLELANGUAGE:
-    {
-      const COSDOptionIntRange* intOption = (const COSDOptionIntRange*)option;
-      mplayer_setSubtitle(intOption->GetValue());
-    }
-    break;
-    
-    case MENU_ACTION_INTERLEAVED:
-	  {
-        const COSDOptionBoolean* boolOption = (const COSDOptionBoolean*)option;
-        g_stSettings.m_bNonInterleaved=!g_stSettings.m_bNonInterleaved;
-        HideOSD();
-        m_bOSDVisible=false;
-        g_application.Restart(true);
-        return;
-	  }
-	  break;
-
-   case MENU_ACTION_NOCACHE:
-	  {
-        const COSDOptionBoolean* boolOption = (const COSDOptionBoolean*)option;
-        g_stSettings.m_bNoCache=!g_stSettings.m_bNoCache;
-        HideOSD();
-        m_bOSDVisible=false;
-        g_application.Restart(true);
-        return;
-	  }
-	  break;
-
-	  case MENU_ACTION_FRAMERATECONVERSIONS:
-	  {
-		    const COSDOptionBoolean* boolOption = (const COSDOptionBoolean*)option;
-		    g_stSettings.m_bFrameRateConversions=!g_stSettings.m_bFrameRateConversions;
-        HideOSD();
-        m_bOSDVisible=false;
-		    g_application.Restart(true);
-        return;	  
-    }
-    break;
-    case MENU_ACTION_AUDIO_STREAM:
-    {
-      const COSDOptionIntRange* intOption = (const COSDOptionIntRange*)option;
-      g_stSettings.m_iAudioStream=intOption->GetValue()-1;
-      m_iAudioStreamIDX=mplayer_getAudioStream(g_stSettings.m_iAudioStream);
-      char szTmp[128];
-      sprintf(szTmp,"got audio stream:%i=%i\n", g_stSettings.m_iAudioStream,m_iAudioStreamIDX);
-      OutputDebugString(szTmp);
-
-      HideOSD();
-      m_bOSDVisible=false;
-      g_application.Restart(true);
-    }
-    break;
-
-    case MENU_ACTION_NEW_BOOKMARK:
-    {
-      float fPercentage=(float)g_application.m_pPlayer->GetPercentage();
-      const CStdString& strMovie=g_application.CurrentFile();
-      CVideoDatabase dbs;
-      dbs.Open();
-      dbs.AddBookMarkToMovie(strMovie, fPercentage);
-      dbs.Close();
-      Update();
-    }
-    break;
-
-    case MENU_ACTION_NEXT_BOOKMARK:
-    {
-      VECBOOKMARKS bookmarks;
-      const CStdString& strMovie=g_application.CurrentFile();
-      CVideoDatabase dbs;
-      dbs.Open();
-      dbs.GetBookMarksForMovie(strMovie, bookmarks);
-      dbs.Close();
-      if (bookmarks.size()<=0) return;
-
-      if (m_iCurrentBookmark >= (int)bookmarks.size())
-      {
-        m_iCurrentBookmark =0;
-      }
-      float fPercentage =bookmarks[m_iCurrentBookmark];
-      g_application.m_pPlayer->SeekPercentage( (int)fPercentage );
-      m_iCurrentBookmark++;
-      if (m_iCurrentBookmark >= (int)bookmarks.size())
-      {
-        m_iCurrentBookmark =0;
-      }
-      Update();
-    }
-    break;
-
-    case MENU_ACTION_CLEAR_BOOKMARK:
-    {
-      const CStdString& strMovie=g_application.CurrentFile();
-      CVideoDatabase dbs;
-      dbs.Open();
-      dbs.ClearBookMarksOfMovie(strMovie);
-      dbs.Close();
-      m_iCurrentBookmark=0;
-      Update();
-    }
-    break;
-
-  }
-  */
 }
 void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
 {
@@ -1007,16 +791,5 @@ void CGUIWindowFullScreen::ChangetheSpeed(DWORD action)
 
 void CGUIWindowFullScreen::Update()
 {
-	/*
-  VECBOOKMARKS bookmarks;
-  const CStdString& strMovie=g_application.CurrentFile();
-  CVideoDatabase dbs;
-  dbs.Open();
-  dbs.GetBookMarksForMovie(strMovie, bookmarks);
-  dbs.Close();
 
-  CStdString strValue;
-  strValue.Format("%i/%i", 1+m_iCurrentBookmark,bookmarks.size());
-  m_osdMenu.SetLabel(MENU_ACTION_NEXT_BOOKMARK,strValue);
-  */
 }

@@ -991,9 +991,9 @@ public:
 	{		
 		assert( err > 0 && err < TIXML_ERROR_STRING_COUNT );
 		m_bError   = true;
-		char szTmp[1024];
-		sprintf(szTmp,"xml error:%i %s\n", err,errorString[ err ]);
-		OutputDebugString(szTmp);
+		//char szTmp[1024];
+		//sprintf(szTmp,"xml error:%i %s\n", err,errorString[ err ]);
+		//OutputDebugString(szTmp);
 		errorId = err;
 		errorDesc = errorString[ errorId ]; 
 	}
