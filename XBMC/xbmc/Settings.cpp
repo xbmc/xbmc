@@ -370,6 +370,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bEnableRSS=true;
 	g_stSettings.m_bShowFreeMem=false;
 
+	g_stSettings.m_iMusicOSDTimeout=5;
   m_iLastLoadedProfileIndex = -1;
 
 	xbmcXmlLoaded = false;
@@ -1214,6 +1215,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetString(pElement, "areacode2", g_stSettings.m_szWeatherArea[1], "NLXX0002");			//WEATHER SETTINGS
 		GetString(pElement, "areacode3", g_stSettings.m_szWeatherArea[2], "CAXX0343");			//WEATHER SETTINGS
 		GetInteger(pElement, "osdtimeout", g_stSettings.m_iOSDTimeout,5,0,INT_MAX);
+		GetInteger(pElement, "musicosdtimeout", g_stSettings.m_iMusicOSDTimeout,5,0,INT_MAX);
 		GetBoolean(pElement, "hideextensions", g_stSettings.m_bHideExtensions);
 		GetBoolean(pElement, "hideparentdiritem", g_stSettings.m_bHideParentDirItems);
 
@@ -1625,6 +1627,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	SetString(pNode, "areacode2", g_stSettings.m_szWeatherArea[1]);			//WEATHER SETTINGS
 	SetString(pNode, "areacode3", g_stSettings.m_szWeatherArea[2]);			//WEATHER SETTINGS
 	SetInteger(pNode, "osdtimeout", g_stSettings.m_iOSDTimeout);
+	SetInteger(pNode, "musicosdtimeout", g_stSettings.m_iMusicOSDTimeout);
 	SetBoolean(pNode, "hideextensions", g_stSettings.m_bHideExtensions);
 	SetBoolean(pNode, "hideparentdiritem", g_stSettings.m_bHideParentDirItems);
 
