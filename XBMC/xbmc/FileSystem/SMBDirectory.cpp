@@ -18,8 +18,7 @@ CSMBDirectory::~CSMBDirectory(void)
 {
 	
 }
-
-
+	
 bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 {
 /*
@@ -51,20 +50,27 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 
 	smb.Init();
 
+	smb.Lock();
 	int fd = smbc_opendir(strPath);
+	smb.Unlock();
 
 	if (fd < 0) return false;
 	else
 	{
 		struct smbc_dirent* dirEnt;
-		while ((dirEnt = smbc_readdir(fd))) 
+		smb.Lock();
+		dirEnt = smbc_readdir(fd);
+		smb.Unlock();
+		while (dirEnt) 
 		{
 			if (dirEnt->name && strcmp(dirEnt->name,".") && strcmp(dirEnt->name,".."))
 			{
 				CStdString strFile=dirEnt->name;
 				struct stat info;
 
+				smb.Lock();
 				smbc_stat(strRoot + strFile, &info);
+				smb.Unlock();
 				
 				__int64 lTimeDate= info.st_ctime;
 				
@@ -99,8 +105,13 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 					}
 				}
 			}
+			smb.Lock();
+			dirEnt = smbc_readdir(fd);
+			smb.Unlock();
 		}
+		smb.Lock();
 		smbc_closedir(fd);
+		smb.Unlock();
 	}
 	return true;
 }
