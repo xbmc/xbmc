@@ -279,7 +279,17 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
 
 	float iScreenWidth =(float)m_iDeviceWidth  + fOffsetX2-fOffsetX1;
 	float iScreenHeight=(float)m_iDeviceHeight + fOffsetY2-fOffsetY1;
-	if( g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() )
+	if( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
+	{
+		const RECT& rv = g_graphicsContext.GetViewWindow();
+		iScreenWidth = rv.right-rv.left;
+		iScreenHeight= rv.bottom-rv.top;
+		fOffsetX1    = rv.left;
+		fOffsetY1    = rv.top;
+		fOffsetX2    = 0;
+		fOffsetY2    = 0;
+	}
+	//if( g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() )
   {
 		if (g_stSettings.m_bStretch)
 		{
@@ -400,7 +410,7 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
 
 		return 0;
 	}
-	else
+	/*else
 	{
 		// preview window.
 		rs.left		= 0;
@@ -414,7 +424,7 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
 		rd.top    = rv.top;
 		rd.bottom = rv.bottom;
 
-	}
+	}*/
 
 	return 0;
 }
