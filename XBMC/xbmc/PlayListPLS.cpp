@@ -60,7 +60,8 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
     CURL url(strLine);
     if (url.GetProtocol() == "http" ||url.GetProtocol() == "mms"||url.GetProtocol() == "rtp")
     {
-			if (bShoutCast) strLine.Replace("http:","shout:");
+			if (bShoutCast && !CUtil::IsAudio(strLine) && !CUtil::IsAudio(strLine))
+				strLine.Replace("http:","shout:");
 			CPlayListItem newItem(strLine,strLine,0);
 			Add(newItem);
       file.Close();
@@ -92,7 +93,7 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
 				m_vecItems.resize(idx);
 				if (m_vecItems[idx-1].GetDescription().empty())
 					m_vecItems[idx-1].SetDescription(CUtil::GetFileName(strValue));
-				if (bShoutCast)
+				if (bShoutCast && !CUtil::IsAudio(strValue))
 					strValue.Replace("http:","shout:");
 				CUtil::GetQualifiedFilename(strBasePath,strValue);
 				m_vecItems[idx-1].SetFileName(strValue);
