@@ -1,5 +1,7 @@
 #pragma once
 
+//#define NEW_FILEMANAGER
+
 #include <xtl.h>
 #include <xgraphics.h>
 #include <stdio.h>
@@ -22,7 +24,11 @@
 #include "GUIWindowPrograms.h"
 #include "GUIWindowSettingsPrograms.h"
 #include "GUIWindowPictures.h"
-#include "GUIWindowMyFiles.h"
+#ifdef NEW_FILEMANAGER
+	#include "GUIWindowFileManager.h"
+#else
+	#include "GUIWindowMyFiles.h"
+#endif
 #include "GUIWindowVideo.h"
 #include "GUIWindowVideoGenre.h"
 #include "GUIWindowVideoActors.h"
@@ -38,7 +44,7 @@
 #include "GUIDialogFileStacking.h"
 #include "GUIDialogVolumeBar.h"
 #include "GUIDialogSubMenu.h"
-//#include "GUIDialogContextMenu.h"
+#include "GUIDialogContextMenu.h"
 #include "GUIWindowSystemInfo.h"
 #include "GUIWindowSettingsLCD.h"
 #include "GUIWindowSettingsGeneral.h"
@@ -179,8 +185,12 @@ public:
 	CGUIDialogOK										m_guiDialogOK;
 	CGUIDialogVolumeBar							m_guiDialogVolumeBar;
 	CGUIDialogSubMenu								m_guiDialogSubMenu;
-//	CGUIDialogContextMenu						m_guiDialogContextMenu;
+	CGUIDialogContextMenu						m_guiDialogContextMenu;
+#ifdef NEW_FILEMANAGER
+	CGUIWindowFileManager						m_guiFileManager;
+#else
 	CGUIWindowMyFiles								m_guiMyFiles;
+#endif
 	CGUIWindowVideo									m_guiMyVideo;
 	CGUIWindowSettings							m_guiSettings;
 	CGUIWindowSystemInfo						m_guiSystemInfo;

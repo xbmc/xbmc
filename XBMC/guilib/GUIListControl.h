@@ -62,6 +62,7 @@ public:
 	void									SetColors2(DWORD dwTextColor, DWORD dwSelectedColor);
 	void									SetPageControlVisible(bool bVisible);
   int                   GetSelectedItem(CStdString& strLabel);
+	int										GetSelectedItem();
 	bool									SelectItemFromPoint(int iPosX, int iPosY);
 	void									GetPointFromItem(int &iPosX, int &iPosY);
 	DWORD									GetTextColor() const { return m_dwTextColor;};

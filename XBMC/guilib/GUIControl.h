@@ -73,6 +73,7 @@ public:
   void          SetWidth(int iWidth);
   void          SetHeight(int iHeight);
   void          SetVisible(bool bVisible);
+	void					SetEnabled(bool bEnable);
 	virtual void			EnableCalibration(bool bOnOff);
 	bool					CalibrationEnabled() const;
   void SetGroup(int iGroup);
