@@ -1951,9 +1951,11 @@ if(xbmc_cancel) {
 	return -1;
 }
 #endif
-
+#ifdef _XBOX //Allways allocate sub spudec, nomatter if something is specified
+if(vo_spudec==NULL && sh_video){
+#else
 if(d_dvdsub->id >= 0 && vo_spudec==NULL && sh_video){
-
+#endif
 if (spudec_ifo) {
   unsigned int palette[16], width, height;
   current_module="spudec_init_vobsub";
@@ -2034,7 +2036,7 @@ if(sh_video) {
 #endif
   }
 #ifdef _XBOX
-  if (set_of_sub_size > 0 && !vo_vobsub && !vo_spudec ) {
+  if (set_of_sub_size > 0 && !vo_vobsub && !(demuxer && demuxer->sub && demuxer->sub->id>=0) ) {
       //osd_show_sub_changed = sh_video->fps;
       subdata = set_of_subtitles[set_of_sub_pos=0];
 #else
@@ -4231,7 +4233,6 @@ goto_next_file:  // don't jump here after ao/vo/getch initialization!
 
 mp_msg(MSGT_CPLAYER,MSGL_INFO,"\n");
 
-#ifndef _XBOX
 
 if(benchmark){
   double tot=video_time_usage+vout_time_usage+audio_time_usage;
@@ -4258,7 +4259,7 @@ if(benchmark){
 	(total_time_usage>0.5)?(total_frame_cnt/total_time_usage):0);
 
 }
-#endif //!_XBOX
+
 
 #ifdef _XBOX
 printf(" unint_player\n");
