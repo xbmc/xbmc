@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 17-08-2004 updated: Polish Language file by NaPeK 
   - 17-08-2004 updated: small changes to the skin
   - 17-08-2004 updated: german language file
   - 17-08-2004 fixed: Bookmarks display properly in My Programs even without <shorcuts> in XML and when remove shortcut/scan option enabled.
