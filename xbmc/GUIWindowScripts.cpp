@@ -386,13 +386,13 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
 	 * since stopping a script can take up to 10 seconds or more,we display 'stopping'
 	 * after the filename for now.
 	 */
-	int iSize = m_pythonParser.ScriptsSize();
+	int iSize = g_pythonParser.ScriptsSize();
 	for (int i=0; i < iSize; i++)
 	{
-		int id = m_pythonParser.GetPythonScriptId(i);
-		if (m_pythonParser.isRunning(id))
+		int id = g_pythonParser.GetPythonScriptId(i);
+		if (g_pythonParser.isRunning(id))
 		{
-			const char* filename = m_pythonParser.getFileName(id);
+			const char* filename = g_pythonParser.getFileName(id);
 
 			for (int i=0; i < (int)m_vecItems.size(); i++)
 			{
@@ -401,7 +401,7 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
 				{
 					char tstr[1024];
 					strcpy(tstr, pItem->GetLabel());
-					if (m_pythonParser.isStopping(id))
+					if (g_pythonParser.isStopping(id))
 						strcat(tstr, " (Stopping)");
 					else
 						strcat(tstr, " (Running)");
@@ -491,15 +491,15 @@ void CGUIWindowScripts::OnClick(int iItem)
 		/* execute script...
 		 * if script is already running do not run it again but stop it.
 		 */
-		int id = m_pythonParser.getScriptId(strPath);
+		int id = g_pythonParser.getScriptId(strPath);
 		if (id != -1)
 		{
 			/* if we are here we already know that this script is running.
 				* But we will check it again to be sure :)
 				*/
-			if(m_pythonParser.isRunning(id))
+			if(g_pythonParser.isRunning(id))
 			{
-				m_pythonParser.stopScript(id);
+				g_pythonParser.stopScript(id);
 
 				// update items
 				int selectedItem = GetSelectedItem();
@@ -509,7 +509,7 @@ void CGUIWindowScripts::OnClick(int iItem)
 				return;
 			}
 		}
-		m_pythonParser.evalFile(strPath);
+		g_pythonParser.evalFile(strPath);
 	}
 }
 
@@ -559,13 +559,13 @@ void CGUIWindowScripts::OnInfo()
 void CGUIWindowScripts::Render()
 {
 	// update control_list / control_thumbs if one or more scripts have stopped / started
-	if(m_pythonParser.ScriptsSize() != scriptSize)
+	if(g_pythonParser.ScriptsSize() != scriptSize)
 	{
 		int selectedItem = GetSelectedItem();
 		Update(m_strDirectory);
 		CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,selectedItem);
 		CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,selectedItem);
-		scriptSize = m_pythonParser.ScriptsSize();
+		scriptSize = g_pythonParser.ScriptsSize();
 	}
 	CGUIWindow::Render();
 }

@@ -160,7 +160,7 @@ public:
   CGUIWindowSettingsSystem        m_guiSettingsSytem;
 	CGUIWindowPictures							m_guiPictures;
 	CGUIDialogInvite								m_guiDialogInvite;
-	CGUIDialogKeyboard								m_guiDialogKeyboard;
+	CGUIDialogKeyboard							m_guiDialogKeyboard;
 	CGUIDialogYesNo									m_guiDialogYesNo;
 	CGUIDialogProgress							m_guiDialogProgress;
 	CGUIDialogOK										m_guiDialogOK;
