@@ -317,6 +317,7 @@ HRESULT CASyncDirectSound::Deinitialize()
 HRESULT CASyncDirectSound::Pause()
 {
 	if (m_bPause) return S_OK;
+	CLog::DebugLog("Pause stream");
 	m_bPause=true;
 	m_pStream->Pause( DSSTREAMPAUSE_PAUSE );
 	return S_OK;
@@ -341,6 +342,7 @@ HRESULT CASyncDirectSound::Stop()
 
 	// Check the status of each packet
 	//mp_msg(0,0,"CASyncDirectSound::Stop");
+	CLog::DebugLog("Stop stream");
 	if (m_pStream) 
 	{   
 		m_pStream->Flush();
