@@ -35,10 +35,10 @@ public:
   virtual void SetAlpha(DWORD dwAlpha);
   virtual void SetColourDiffuse(D3DCOLOR colour);
   virtual void SetDisabledColor(D3DCOLOR color);
-  	DWORD	GetTextOffsetX() const { return m_dwTextOffsetX;};
-	DWORD	GetTextOffsetY() const { return m_dwTextOffsetY;};
-  	void	SetTextOffsetX(DWORD dwTextOffsetX) { m_dwTextOffsetX=dwTextOffsetX;};
-	void	SetTextOffsetY(DWORD dwTextOffsetY) { m_dwTextOffsetY=dwTextOffsetY;};
+  	DWORD	GetTextOffsetX() const { return m_lTextOffsetX;};
+	DWORD	GetTextOffsetY() const { return m_lTextOffsetY;};
+  	void	SetTextOffsetX(long lTextOffsetX) { m_lTextOffsetX=lTextOffsetX;};
+	void	SetTextOffsetY(long lTextOffsetY) { m_lTextOffsetY=lTextOffsetY;};
 	void        SetLabel(const CStdString& strFontName,const wstring& strLabel,D3DCOLOR dwColor);
 	void        SetLabel(const CStdString& strFontName,const CStdString& strLabel,D3DCOLOR dwColor);
   void        SetHyperLink(long dwWindowID);
@@ -61,8 +61,8 @@ protected:
   DWORD                   m_dwFrameCounter;
 	wstring									m_strLabel;
 	CGUIFont*								m_pFont;
-  DWORD		m_dwTextOffsetX;
-  DWORD		m_dwTextOffsetY;
+  long		m_lTextOffsetX;
+  long		m_lTextOffsetY;
 	D3DCOLOR								m_dwTextColor;
   D3DCOLOR                m_dwDisabledColor;
   long                    m_lHyperLinkWindowID;

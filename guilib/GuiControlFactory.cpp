@@ -164,8 +164,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	CStdString 	strSuffix="";
 	CStdString 	strFont2="";
 	
-	DWORD		dwTextOffsetX	 = 10;
-	DWORD		dwTextOffsetY	 = 2;
+	long		lTextOffsetX	 = 10;
+	long		lTextOffsetY	 = 2;
 	DWORD		dwControlOffsetX = 0;
 	DWORD		dwControlOffsetY = 0;
 
@@ -250,8 +250,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwTextColor3		= ((CGUIRAMControl*)pReference)->GetTitleTextColor();
 			dwTextColor			= ((CGUIRAMControl*)pReference)->GetNormalTextColor();
 			dwSelectedColor		= ((CGUIRAMControl*)pReference)->GetSelectedTextColor();
-			dwTextOffsetX		= ((CGUIRAMControl*)pReference)->GetTextOffsetX();
-			dwTextOffsetY		= ((CGUIRAMControl*)pReference)->GetTextOffsetY();
+			lTextOffsetX		= ((CGUIRAMControl*)pReference)->GetTextOffsetX();
+			lTextOffsetY		= ((CGUIRAMControl*)pReference)->GetTextOffsetY();
 			dwTextSpaceY		= ((CGUIRAMControl*)pReference)->GetTextSpacing();
 
 			((CGUIRAMControl*)pReference)->GetThumbAttributes(dwThumbWidth,dwThumbHeight,dwThumbSpaceX,dwThumbSpaceY,strDefaultThumb);
@@ -267,8 +267,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwDisabledColor		= ((CGUIButtonControl*)pReference)->GetDisabledColor() ;
 			iHyperLink			= ((CGUIButtonControl*)pReference)->GetHyperLink();
 			strScriptAction		= ((CGUIButtonControl*)pReference)->GetScriptAction();
-			dwTextOffsetX		= ((CGUIButtonControl*)pReference)->GetTextOffsetX();
-			dwTextOffsetY		= ((CGUIButtonControl*)pReference)->GetTextOffsetY();
+			lTextOffsetX		= ((CGUIButtonControl*)pReference)->GetTextOffsetX();
+			lTextOffsetY		= ((CGUIButtonControl*)pReference)->GetTextOffsetY();
 		}
 		else if (strType=="spinbutton")
 		{
@@ -292,8 +292,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwTextColor			= ((CGUIToggleButtonControl*)pReference)->GetTextColor();
 			dwDisabledColor		= ((CGUIToggleButtonControl*)pReference)->GetDisabledColor() ;
 			iHyperLink			= ((CGUIToggleButtonControl*)pReference)->GetHyperLink();
-			dwTextOffsetX		= ((CGUIToggleButtonControl*)pReference)->GetTextOffsetX();
-			dwTextOffsetY		= ((CGUIToggleButtonControl*)pReference)->GetTextOffsetY();
+			lTextOffsetX		= ((CGUIToggleButtonControl*)pReference)->GetTextOffsetX();
+			lTextOffsetY		= ((CGUIToggleButtonControl*)pReference)->GetTextOffsetY();
 		}
 		else if (strType=="buttonM")
 		{
@@ -305,8 +305,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwTextColor			= ((CGUIMButtonControl*)pReference)->GetTextColor();
 			dwDisabledColor		= ((CGUIMButtonControl*)pReference)->GetDisabledColor() ;
 			iHyperLink			= ((CGUIMButtonControl*)pReference)->GetHyperLink();
-			dwTextOffsetX		= ((CGUIMButtonControl*)pReference)->GetTextOffsetX();
-			dwTextOffsetY		= ((CGUIMButtonControl*)pReference)->GetTextOffsetY();
+			lTextOffsetX		= ((CGUIMButtonControl*)pReference)->GetTextOffsetX();
+			lTextOffsetY		= ((CGUIMButtonControl*)pReference)->GetTextOffsetY();
 		}
 		else if (strType=="checkmark")
 		{
@@ -332,8 +332,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwTextColor			= ((CGUIRadioButtonControl*)pReference)->GetTextColor();
 			dwDisabledColor		= ((CGUIRadioButtonControl*)pReference)->GetDisabledColor() ;
 			iHyperLink			= ((CGUIRadioButtonControl*)pReference)->GetHyperLink();
-			dwTextOffsetX		= ((CGUIRadioButtonControl*)pReference)->GetTextOffsetX();
-			dwTextOffsetY		= ((CGUIRadioButtonControl*)pReference)->GetTextOffsetY();
+			lTextOffsetX		= ((CGUIRadioButtonControl*)pReference)->GetTextOffsetX();
+			lTextOffsetY		= ((CGUIRadioButtonControl*)pReference)->GetTextOffsetY();
 		}
 		else if (strType=="spincontrol")
 		{
@@ -349,8 +349,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwWidth				= ((CGUISpinControl*)pReference)->GetSpinWidth();
 			dwHeight			= ((CGUISpinControl*)pReference)->GetSpinHeight();
 			dwDisabledColor		= ((CGUISpinControl*)pReference)->GetDisabledColor() ;
-			dwTextOffsetX		= ((CGUISpinControl*)pReference)->GetTextOffsetX();
-			dwTextOffsetY		= ((CGUISpinControl*)pReference)->GetTextOffsetY();
+			lTextOffsetX		= ((CGUISpinControl*)pReference)->GetTextOffsetX();
+			lTextOffsetY		= ((CGUISpinControl*)pReference)->GetTextOffsetY();
 		}
 		else if (strType=="slider")
 		{
@@ -399,8 +399,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwTextColor2		= ((CGUIListControl*)pReference)->GetTextColor2(); 
 			dwSelectedColor2	= ((CGUIListControl*)pReference)->GetSelectedColor2();
 			strFont2			= ((CGUIListControl*)pReference)->GetFontName2();
-			dwTextOffsetX		= ((CGUIListControl*)pReference)->GetButtonTextOffsetX();
-			dwTextOffsetY		= ((CGUIListControl*)pReference)->GetButtonTextOffsetY();
+			lTextOffsetX		= ((CGUIListControl*)pReference)->GetButtonTextOffsetX();
+			lTextOffsetY		= ((CGUIListControl*)pReference)->GetButtonTextOffsetY();
 		}
 		else if (strType=="listcontrolex")
 		{
@@ -426,8 +426,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwTextColor2		= ((CGUIListControlEx*)pReference)->GetTextColor2(); 
 			dwSelectedColor2	= ((CGUIListControlEx*)pReference)->GetSelectedColor2();
 			strFont2			= ((CGUIListControlEx*)pReference)->GetFontName2();
-			dwTextOffsetX		= ((CGUIListControlEx*)pReference)->GetTextOffsetX();
-			dwTextOffsetY		= ((CGUIListControlEx*)pReference)->GetTextOffsetY();
+			lTextOffsetX		= ((CGUIListControlEx*)pReference)->GetTextOffsetX();
+			lTextOffsetY		= ((CGUIListControlEx*)pReference)->GetTextOffsetY();
 		}
 		else if (strType=="textbox")
 		{
@@ -486,8 +486,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			strLabel			= ((CGUISelectButtonControl*)pReference)->GetLabel();
 			dwTextColor			= ((CGUISelectButtonControl*)pReference)->GetTextColor();
 			dwDisabledColor		= ((CGUISelectButtonControl*)pReference)->GetDisabledColor() ;
-			dwTextOffsetX		= ((CGUISelectButtonControl*)pReference)->GetTextOffsetX();
-			dwTextOffsetY		= ((CGUISelectButtonControl*)pReference)->GetTextOffsetY();
+			lTextOffsetX		= ((CGUISelectButtonControl*)pReference)->GetTextOffsetX();
+			lTextOffsetY		= ((CGUISelectButtonControl*)pReference)->GetTextOffsetY();
 		}
 	}
 	
@@ -504,8 +504,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	if (GetDWORD(pControlNode, "posY", dwPosY)) g_graphicsContext.ScaleYCoord(dwPosY, res);
 	if (GetDWORD(pControlNode, "width", dwWidth)) g_graphicsContext.ScaleXCoord(dwWidth, res);
 	if (GetDWORD(pControlNode, "height", dwHeight)) g_graphicsContext.ScaleYCoord(dwHeight, res);
-	if (GetDWORD(pControlNode, "textOffsetX", dwTextOffsetX)) g_graphicsContext.ScaleXCoord(dwTextOffsetX, res);
-	if (GetDWORD(pControlNode, "textOffsetY", dwTextOffsetY)) g_graphicsContext.ScaleYCoord(dwTextOffsetY, res);
+	if (GetLong(pControlNode, "textOffsetX", lTextOffsetX)) g_graphicsContext.ScaleXCoord(lTextOffsetX, res);
+	if (GetLong(pControlNode, "textOffsetY", lTextOffsetY)) g_graphicsContext.ScaleYCoord(lTextOffsetY, res);
 	if (GetDWORD(pControlNode, "textSpaceY",  dwTextSpaceY)) g_graphicsContext.ScaleYCoord(dwTextSpaceY, res);
 
 	if (GetDWORD(pControlNode, "controlOffsetX", dwControlOffsetX)) g_graphicsContext.ScaleXCoord(dwControlOffsetX, res);
@@ -741,7 +741,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		CGUIRAMControl* pControl = new CGUIRAMControl(
 					dwParentId,dwID,dwPosX,dwPosY,dwWidth,dwHeight,
 					strFont,strFont2,dwTextColor3,dwTextColor,
-					dwSelectedColor,dwTextOffsetX,dwTextOffsetY);
+					dwSelectedColor,lTextOffsetX,lTextOffsetY);
 
 		pControl->SetTextSpacing(dwTextSpaceY);
 		pControl->SetThumbAttributes(dwThumbWidth,dwThumbHeight,dwThumbSpaceX,dwThumbSpaceY,strDefaultThumb);
@@ -755,7 +755,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		CGUIButtonControl* pControl = new CGUIButtonControl(
 					dwParentId,dwID,dwPosX,dwPosY,dwWidth,dwHeight,
 					strTextureFocus,strTextureNoFocus,
-					dwTextOffsetX,dwTextOffsetY);
+					lTextOffsetX,lTextOffsetY);
 
 		pControl->SetLabel(strFont,strLabel,dwTextColor);
 		pControl->SetDisabledColor(dwDisabledColor);
@@ -779,8 +779,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		pControl->SetColourDiffuse(dwColorDiffuse);
 		pControl->SetHyperLink(iHyperLink);
 		pControl->SetVisible(bVisible);
-		pControl->SetTextOffsetX(dwTextOffsetX);
-		pControl->SetTextOffsetY(dwTextOffsetY);
+		pControl->SetTextOffsetX(lTextOffsetX);
+		pControl->SetTextOffsetY(lTextOffsetY);
 		return pControl;
 	}
 	if (strType=="buttonM")
@@ -788,7 +788,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		CGUIMButtonControl* pControl = new CGUIMButtonControl(
 					dwParentId,dwID,dwPosX,dwPosY,dwWidth,dwHeight,
 					dwItems,strTextureFocus,strTextureNoFocus,
-					dwTextOffsetX,dwTextOffsetY);
+					lTextOffsetX,lTextOffsetY);
 
 		pControl->SetLabel(strFont,strLabel,dwTextColor);
 		pControl->SetDisabledColor(dwDisabledColor);
@@ -818,7 +818,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		CGUIRadioButtonControl* pControl = new CGUIRadioButtonControl(
 					dwParentId,dwID,dwPosX,dwPosY,dwWidth,dwHeight,
 					strTextureFocus,strTextureNoFocus,
-					dwTextOffsetX,dwTextOffsetY,
+					lTextOffsetX,lTextOffsetY,
 					strTextureRadioFocus,strTextureRadioNoFocus);
 
 		pControl->SetLabel(strFont,strLabel,dwTextColor);
@@ -842,8 +842,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		pControl->SetReverse(bReverse);
 		pControl->SetBuddyControlID(dwBuddyControlID);
 		pControl->SetDisabledColor(dwDisabledColor);
-		pControl->SetTextOffsetX(dwTextOffsetX);
-		pControl->SetTextOffsetY(dwTextOffsetY);
+		pControl->SetTextOffsetX(lTextOffsetX);
+		pControl->SetTextOffsetY(lTextOffsetY);
 		pControl->SetAlignmentY(dwAlignY);
 		return pControl;
 	}
@@ -889,7 +889,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 						dwSpinColor,dwSpinPosX,dwSpinPosY,
 						strFont,dwTextColor,dwSelectedColor,
 						strButton,strButtonFocus,
-						dwTextOffsetX, dwTextOffsetY);
+						lTextOffsetX, lTextOffsetY);
 
 		pControl->SetNavigation(up,down,left,right);
 		pControl->SetColourDiffuse(dwColorDiffuse);
@@ -914,7 +914,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 						dwSpinColor,dwSpinPosX,dwSpinPosY,
 						strFont,dwTextColor,dwSelectedColor,
 						strButton,strButtonFocus,
-						dwTextOffsetX, dwTextOffsetY);
+						lTextOffsetX, lTextOffsetY);
 
 		pControl->SetNavigation(up,down,left,right);
 		pControl->SetColourDiffuse(dwColorDiffuse);
@@ -979,7 +979,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		CGUISelectButtonControl* pControl = new CGUISelectButtonControl(
 					dwParentId,dwID,dwPosX,dwPosY,
 					dwWidth, dwHeight, strTextureFocus,strTextureNoFocus, 
-					dwTextOffsetX, dwTextOffsetY,
+					lTextOffsetX, lTextOffsetY,
 					strTextureBg, strLeft, strLeftFocus, strRight, strRightFocus);
 
 		pControl->SetLabel(strFont,strLabel,dwTextColor);
