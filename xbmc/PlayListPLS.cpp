@@ -1,6 +1,7 @@
 #include "playlistpls.h"
 #include "util.h"
 #include "filesystem/file.h"
+#include "url.h"
 
 #define START_PLAYLIST_MARKER "[playlist]"
 #define PLAYLIST_NAME					"PlaylistName"
@@ -29,6 +30,11 @@ CPlayListPLS::~CPlayListPLS(void)
 bool CPlayListPLS::Load(const CStdString& strFileName)
 {
 	CStdString strBasePath;
+  bool bShoutCast=false;
+  CStdString strExt=CUtil::GetExtension(strFileName);
+  strExt.ToLower();
+  if ( CUtil::cmpnocase(strExt,".pls")==0) bShoutCast=true;
+
 	Clear();
 	m_strPlayListName=CUtil::GetFileName(strFileName);
 	CUtil::GetParentPath(strFileName,strBasePath);
@@ -49,6 +55,15 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
 	CUtil::RemoveCRLF(strLine);
 	if (strLine != START_PLAYLIST_MARKER)
 	{
+    CURL url(strLine);
+    if (url.GetProtocol() == "http" ||url.GetProtocol() == "mms")
+    {
+			if (bShoutCast) strLine.Replace("http:","shout:");
+			CPlayListItem newItem(strLine,strLine,0);
+			Add(newItem);
+      file.Close();
+      return true;
+    }
 		file.Close();
 		return false;
 	}
@@ -91,7 +106,7 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
 			{
 				long lDuration=atol(strDuration.c_str());
 				lDuration*=1000;
-				//strFilename.Replace("http:","shout:");
+				if (bShoutCast) strFilename.Replace("http:","shout:");
 				CUtil::GetQualifiedFilename(strBasePath,strFilename);
 				CPlayListItem newItem(strInfo,strFilename,lDuration);
 				Add(newItem);

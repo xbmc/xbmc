@@ -579,6 +579,7 @@ bool CUtil::IsPlayList(const CStdString& strFile)
 	if (strExtension==".m3u") return true;
 	if (strExtension==".b4s") return true;
 	if (strExtension==".pls") return true;
+	if (strExtension==".strm") return true;
 	return false;
 }
  void CUtil::URLEncode(CStdString& strURLData)
@@ -935,6 +936,10 @@ bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
 
 	if (CUtil::IsRemote(strFolder) )
 	{
+    CURL url(strFolder);
+    if (url.GetProtocol() =="http" || url.GetProtocol()=="HTTP") return false;
+    if (url.GetProtocol() =="shout" || url.GetProtocol()=="SHOUT") return false;
+    if (url.GetProtocol() =="mms" || url.GetProtocol()=="MMS") return false;
 		CUtil::GetThumbnail( strFolderImage,strThumb);
 		CFile file;
 		if ( file.Cache(strFolderImage.c_str(), strThumb.c_str(),NULL,NULL))
