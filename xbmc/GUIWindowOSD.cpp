@@ -13,7 +13,7 @@
 #include "guiFontManager.h"
 #include "util.h"
 #include "sectionloader.h"
-#include "cores/mplayer/mplayer.h"
+//#include "cores/mplayer/mplayer.h"
 #include "utils/log.h"
 
 #define OSD_VIDEOPROGRESS 1
@@ -82,7 +82,6 @@
 	OnMessage(msg); \
 }
 
-extern int m_iAudioStreamIDX;
 
 CGUIWindowOSD::CGUIWindowOSD(void)
 :CGUIWindow(0)
@@ -346,7 +345,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 				{
 					// set the controls values
 					SetSliderValue(-10.0f, 10.0f, g_application.m_pPlayer->GetSubTitleDelay(), OSD_SUBTITLE_DELAY);
-					SetCheckmarkValue(mplayer_SubtitleVisible(), OSD_SUBTITLE_ONOFF);
+					SetCheckmarkValue(g_application.m_pPlayer->GetSubtitleVisible(), OSD_SUBTITLE_ONOFF);
 
 					// show the controls on this sub menu
 					SET_CONTROL_VISIBLE(GetID(), OSD_SUBTITLE_DELAY);
@@ -695,14 +694,9 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 				CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),OSD_AUDIOSTREAM_LIST,0,0,NULL);
 				OnMessage(msg);
 				// only change the audio stream if a different one has been asked for
-				if (g_stSettings.m_iAudioStream != msg.GetParam1())	
+				if (g_application.m_pPlayer->GetAudioStream() != msg.GetParam1())	
 				{
-					g_stSettings.m_iAudioStream = msg.GetParam1();				// Set the audio stream to the one selected
-					//mplayer_getAudioStream(g_stSettings.m_iAudioStream);		// Tell mplayer ...
-					if (g_stSettings.m_iAudioStream)
-						m_iAudioStreamIDX = (g_stSettings.m_iAudioStream + 1);	// audio streams are 1 based
-					else
-						m_iAudioStreamIDX = -1;		// -1 = first audio stream ?
+					g_application.m_pPlayer->SetAudioStream(msg.GetParam1());				// Set the audio stream to the one selected
 					m_bSubMenuOn = false;										// hide the sub menu
 					OutputDebugString("OSD:RESTART1\n");
 					g_application.m_guiWindowFullScreen.m_bOSDVisible = false;	// toggle the OSD off so parent window can de-init
@@ -799,21 +793,15 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 			if (pControl)
 			{
 				// Set the subtitle delay
-				g_application.m_pPlayer->SetSubTittleDelay(pControl->GetFloatValue());
+				g_application.m_pPlayer->SetSubTitleDelay(pControl->GetFloatValue());
 			}
 		}
 		break;
 
 		case OSD_SUBTITLE_ONOFF:
 		{
-			if (mplayer_SubtitleVisible())
-			{
-				mplayer_showSubtitle(false);		// Turn off subtitles
-			}
-			else
-			{
-				mplayer_showSubtitle(true);			// Turn on subtitles
-			}
+			// Toggle subtitles
+			g_application.m_pPlayer->SetSubtitleVisible(!g_application.m_pPlayer->GetSubtitleVisible());
 			PopulateSubTitles(); //Redrew subtitle menu
 		}
 		break;
@@ -823,9 +811,9 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 			if (wID)	// check to see if list control has an action ID, remote can cause 0 based events
 			{
 				CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),OSD_SUBTITLE_LIST,0,0,NULL);
-				OnMessage(msg);								// retrieve the selected list item
-				mplayer_setSubtitle(msg.GetParam1());		// set the current subtitle
-				mplayer_showSubtitle(true);                 // make sure we are showing subs
+				OnMessage(msg);	// retrieve the selected list item
+				g_application.m_pPlayer->SetSubtitle(msg.GetParam1()); // set the current subtitle
+				g_application.m_pPlayer->SetSubtitleVisible(true);
 				SetCheckmarkValue(true,OSD_SUBTITLE_ONOFF);
 				PopulateSubTitles();
 			}
@@ -881,7 +869,7 @@ void CGUIWindowOSD::PopulateAudioStreams()
 {
 	// get the number of audio strams for the current movie
 	int iValue=g_application.m_pPlayer->GetAudioStreamCount();
-
+	int iCurrent=g_application.m_pPlayer->GetAudioStream();
 	// tell the list control not to show the page x/y spin control
 	CGUIListControl* pControl=(CGUIListControl*)GetControl(OSD_AUDIOSTREAM_LIST);
 	if (pControl) pControl->SetPageControlVisible(false);
@@ -897,15 +885,14 @@ void CGUIWindowOSD::PopulateAudioStreams()
 	for (int i=0; i < iValue; ++i)
 	{
 		CStdString strItem;
-		if (g_stSettings.m_iAudioStream == i)	
-		{
-			// formats to 'Audio Stream X [active]'
-			strItem.Format(strLabel + " %2i " + strActiveLabel,i+1);	// this audio stream is active, show as such
-		}
-		else
-		{
-			// formats to 'Audio Stream X'
+		g_application.m_pPlayer->GetAudioStreamName(i, strItem);
+		if(strItem.length() == 0)
 			strItem.Format(strLabel + " %2i",i+1);
+
+		if (iCurrent == i)
+		{
+			strItem += " ";
+			strItem += strActiveLabel; // formats to 'Audio Stream X [active]'
 		}
 
 		// create a list item object to add to the list
@@ -925,10 +912,11 @@ void CGUIWindowOSD::PopulateAudioStreams()
 void CGUIWindowOSD::PopulateSubTitles()
 {
 	// get the number of subtitles in the current movie
-	int bEnabled = mplayer_SubtitleVisible();
-	int iValue=mplayer_getSubtitleCount();
-	
-  CLog::DebugLog("total subs:%i current sub:%i",iValue,mplayer_getSubtitle());
+	int bEnabled = g_application.m_pPlayer->GetSubtitleVisible();
+	int iValue=g_application.m_pPlayer->GetSubtitleCount();
+	int iCurrent=g_application.m_pPlayer->GetSubtitle();
+
+  CLog::DebugLog("total subs:%i current sub:%i",iValue,iCurrent);
 
 	// tell the list control not to show the page x/y spin control
 	CGUIListControl* pControl=(CGUIListControl*)GetControl(OSD_SUBTITLE_LIST);
@@ -947,16 +935,16 @@ void CGUIWindowOSD::PopulateSubTitles()
 	for (int i=0; i < iValue; ++i)
 	{
 		CStdString strItem;
-		if (mplayer_getSubtitle() == i && bEnabled)		// this subtitle is active, show as such
-		{
-			// formats to 'Subtitle X [active]'
-			strItem.Format(strLabel + " %2i " + strActiveLabel,i+1);	// this audio stream is active, show as such
-		}
-		else
-		{
-			// formats to 'Subtitle X'
+		g_application.m_pPlayer->GetSubtitleName(i, strItem);
+		if(strItem.length() == 0)
 			strItem.Format(strLabel + " %2i",i+1);
+
+		if (iCurrent == i && bEnabled)
+		{
+			strItem += " ";
+			strItem += strActiveLabel; // formats to 'Subtitle X [active]'
 		}
+
 
 		// create a list item object to add to the list
 		CGUIListItem* pItem = new CGUIListItem();
@@ -968,7 +956,7 @@ void CGUIWindowOSD::PopulateSubTitles()
 	}
 
 	// set the current active subtitle as the selected item in the list control
-	CGUIMessage msgSet(GUI_MSG_ITEM_SELECT,GetID(),OSD_SUBTITLE_LIST,mplayer_getSubtitle(),0,NULL);
+	CGUIMessage msgSet(GUI_MSG_ITEM_SELECT,GetID(),OSD_SUBTITLE_LIST,iCurrent,0,NULL);
 	OnMessage(msgSet);
 }
 

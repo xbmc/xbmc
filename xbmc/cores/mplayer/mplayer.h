@@ -5,6 +5,13 @@ extern "C" {
 
 #include "../DllLoader/dll.h"
 
+typedef struct {
+ int id; // 0 - 31 mpeg; 128 - 159 ac3; 160 - 191 pcm
+ int language; 
+ int type;
+ int channels;
+} stream_language_t;
+
 void		mplayer_load_dll(DllLoader& dll);
 void		mplayer_put_key(int code);
 int			mplayer_process();
@@ -35,8 +42,10 @@ void    mplayer_showSubtitle(int bOnOff);
 int     mplayer_SubtitleVisible();
 int     mplayer_getAudioLanguageCount();
 int     mplayer_getAudioLanguage();
-int     mplayer_getAudioStream(int iStream);
-int     mplayer_getAudioStreamCount();
+int     mplayer_getAudioStream(); //Currently playing stream, 0 based not aid
+int     mplayer_getAudioStreamCount(); //Number of available streams
+int     mplayer_getAudioStreamInfo(int iStream, stream_language_t* stream_info); //More info on a specified stream, 0 based not aid
+int     mplayer_getSubtitleStreamInfo(int iStream, stream_language_t* stream_info);
 void    mplayer_setAudioLanguage(int iAudioLang);
 void    mplayer_setTime(int iTime);
 int     mplayer_getTime();

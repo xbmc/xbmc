@@ -105,9 +105,23 @@ public:
   virtual int     GetPercentage();
   virtual void    SetAVDelay(float fValue=0.0f);
   virtual float   GetAVDelay();
-  virtual void    SetSubTittleDelay(float fValue=0.0f);
+
+
+  virtual void    SetSubTitleDelay(float fValue=0.0f);
   virtual float   GetSubTitleDelay();
+
+  virtual int     GetSubtitleCount();
+  virtual int     GetSubtitle();
+  virtual void	  GetSubtitleName(int iStream, CStdString &strStreamName);
+  virtual void    SetSubtitle(int iStream);
+  virtual bool    GetSubtitleVisible();
+  virtual void    SetSubtitleVisible(bool bVisible);
+
   virtual int     GetAudioStreamCount();
+  virtual int     GetAudioStream();
+  virtual void     GetAudioStreamName(int iStream, CStdString& strStreamName);
+  virtual void     SetAudioStream(int iStream);
+
   virtual void	  SeekTime(int iTime=0);
   virtual int	   GetTotalTime();
   virtual __int64 GetTime();
@@ -124,4 +138,5 @@ protected:
 	bool								m_bIsPlaying;
 	DllLoader*					m_pDLL;
 	__int64							m_iPTS;
+	Options					options;
 };

@@ -68,13 +68,26 @@
 #define KEY_KPDEL (KEY_KEYPAD+12)
 #define KEY_KPENTER (KEY_KEYPAD+13)
 
+//Transforms a string into a language code used by dvd's
+#define DVDLANGCODE(x) ((int)(x[1]|(x[0]<<8)))
+
 extern "C" void free_registry(void);
 extern void xbox_video_wait();
 extern void xbox_video_CheckScreenSaver();	// Screensaver check
 extern CFileShoutcast* m_pShoutCastRipper;
 extern "C" void dllReleaseAll( );
 
-int m_iAudioStreamIDX=-1;
+const char * dvd_audio_stream_types[8] =
+        { "ac3","unknown","mpeg1","mpeg2ext","lpcm","unknown","dts" };
+
+const char * dvd_audio_stream_channels[6] =
+	{ "mono", "stereo", "unknown", "unknown", "5.1/6.1", "5.1" };
+
+#define DVDLANGUAGES 8
+const char * dvd_audio_stream_langs[DVDLANGUAGES][2] = 
+{ {"en", "English"}, {"es", "Spanish"}, {"de", "German"}, {"sv", "Swedish"}, {"nl", "Dutch"}, {"fi", "Finish"},{"is", "Iclandic"}, {"fr", "French"}};
+
+
 static CDlgCache* m_dlgCache=NULL;
 CMPlayer::Options::Options()
 {
@@ -87,7 +100,11 @@ CMPlayer::Options::Options()
     m_fVolumeAmplification=0.0f;
     m_bNonInterleaved=false;
     m_fSpeed=1.0f;
-    m_iAudioStream=-1;
+	//Workaround for the need to restart
+	if(g_stSettings.m_iAudioStream >=0)
+		m_iAudioStream=g_stSettings.m_iAudioStream;
+	else
+		m_iAudioStream=-1;
 	m_strDvdDevice="";
 }
 void  CMPlayer::Options::SetFPS(float fFPS)
@@ -246,6 +263,7 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 
   if ( m_iAudioStream >=0)
   {
+	  CLog::Log(" Playing audio stream: %d", m_iAudioStream);
     m_vecOptions.push_back("-aid");
     strTmp.Format("%i", m_iAudioStream);
     m_vecOptions.push_back(strTmp);
@@ -496,7 +514,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 
     char *argv[30];
     int argc=8;
-    Options options;
+    //Options options;
     if (CUtil::IsVideo(strFile))
     {
       options.SetNonInterleaved(g_stSettings.m_bNonInterleaved);
@@ -526,7 +544,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
         options.SetChannels(6);
       }
     }
-    options.SetAudioStream(m_iAudioStreamIDX);
+
     if (1 /* bIsVideo*/) 
     {
       options.SetVolumeAmplification(g_stSettings.m_fVolumeAmplification);
@@ -600,6 +618,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
       // get the audio & video info from the file
 	    mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
       mplayer_GetVideoInfo(strVidFourCC,strVideoCodec, &fFPS, &iWidth,&iHeight, &lFrames2Early, &lFrames2Late);
+
 
       // do we need 2 do frame rate conversions ?
       if (g_stSettings.m_bFrameRateConversions && CUtil::IsVideo(strFile) )
@@ -1144,7 +1163,7 @@ float   CMPlayer::GetAVDelay()
   return mplayer_getAVDelay();
 }
 
-void    CMPlayer::SetSubTittleDelay(float fValue)
+void    CMPlayer::SetSubTitleDelay(float fValue)
 {
   mplayer_setSubtitleDelay(fValue);
 }
@@ -1154,10 +1173,130 @@ float   CMPlayer::GetSubTitleDelay()
   return mplayer_getSubtitleDelay();
 }
 
+int     CMPlayer::GetSubtitleCount()
+{
+	return mplayer_getSubtitleCount();
+}
+
+int     CMPlayer::GetSubtitle()
+{
+	return mplayer_getSubtitle();
+};
+
+void	  CMPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
+{
+	stream_language_t slt;
+	mplayer_getSubtitleStreamInfo(iStream, &slt);
+	CLog::Log("Stream:%d language:%d", iStream, slt.language);
+	if(slt.language != 0)
+	{		
+		char lang[3];
+		lang[2]=0;
+		lang[1]=(slt.language&255);
+		lang[0]=(slt.language>>8);
+		CStdString strName;
+		for(int i=0;i<DVDLANGUAGES;i++)
+		{
+			if(stricmp(lang,dvd_audio_stream_langs[i][0])==0)
+			{
+				strName = dvd_audio_stream_langs[i][1];
+				break;
+			}
+		}
+		if(strName.length() == 0)
+		{
+			strName = "UNKNOWN:";
+			strName += (char)(slt.language>>8);
+			strName += (char)(slt.language&255);
+		}
+		
+		strStreamName = strName;
+		
+	}
+	else
+	{
+		strStreamName = "";
+	}
+
+};
+
+void    CMPlayer::SetSubtitle(int iStream)
+{
+	mplayer_setSubtitle(iStream);
+};
+
+bool    CMPlayer::GetSubtitleVisible()
+{
+	if(mplayer_SubtitleVisible())
+		return true;
+	else
+		return false;
+}
+void    CMPlayer::SetSubtitleVisible(bool bVisible)
+{
+	mplayer_showSubtitle(bVisible);
+}
+
 int     CMPlayer::GetAudioStreamCount()
 {
   return mplayer_getAudioStreamCount();
 }
+
+int     CMPlayer::GetAudioStream()
+{
+	return mplayer_getAudioStream();
+}
+
+void     CMPlayer::GetAudioStreamName(int iStream, CStdString& strStreamName)
+{
+	stream_language_t slt;
+	mplayer_getAudioStreamInfo(iStream, &slt);
+	if(slt.language != 0)
+	{		
+		char lang[3];
+		lang[2]=0;
+		lang[1]=(slt.language&255);
+		lang[0]=(slt.language>>8);
+		CStdString strName;
+		for(int i=0;i<DVDLANGUAGES;i++)
+		{
+			if(stricmp(lang,dvd_audio_stream_langs[i][0])==0)
+			{
+				strName = dvd_audio_stream_langs[i][1];
+				break;
+			}
+		}
+		if(strName.length() == 0)
+		{
+			strName = "UNKNOWN:";
+			strName += (char)(slt.language>>8);
+			strName += (char)(slt.language&255);
+		}
+		
+		strStreamName.Format("%s - %s(%s)",strName,dvd_audio_stream_types[slt.type],dvd_audio_stream_channels[slt.channels]);
+		
+	}
+	else
+	{
+		strStreamName = "";
+	}
+	//char lang[3];
+	//code=lang[1]|(lang[0]<<8);
+	//lang[2]=0;
+	//lang[1]=(slt.language&255);
+	//lang[0]=(slt.language>>8);
+	//strStreamName = lang;
+}
+
+void     CMPlayer::SetAudioStream(int iStream)
+{
+	//Make sure we get the correct aid for the stream
+	//Really bad way cause we need to restart and there is no good way currently to restart mplayer without onloading it first
+	g_stSettings.m_iAudioStream = mplayer_getAudioStreamInfo(iStream, NULL);
+	options.SetAudioStream(g_stSettings.m_iAudioStream);
+	//we need to restart after here for change to take effect
+}
+
 
 void CMPlayer::SeekTime(int iTime)
 {

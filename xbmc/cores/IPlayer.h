@@ -52,9 +52,21 @@ public:
 	virtual bool		Record(bool bOnOff) {return false;};
   virtual void    SetAVDelay(float fValue=0.0f){};
   virtual float   GetAVDelay(){return 0.0f;};
-  virtual void    SetSubTittleDelay(float fValue=0.0f){};
+
+  virtual void    SetSubTitleDelay(float fValue=0.0f){};
   virtual float   GetSubTitleDelay(){return 0.0f;};
+  virtual int     GetSubtitleCount(){return 1;};
+  virtual int     GetSubtitle(){return 0;};
+  virtual void	  GetSubtitleName(int iStream, CStdString &strStreamName){};
+  virtual void    SetSubtitle(int iStream){};
+  virtual bool    GetSubtitleVisible(){return false;};
+  virtual void    SetSubtitleVisible(bool bVisible){};
+
   virtual int     GetAudioStreamCount(){return 1;};
+  virtual int     GetAudioStream(){return 0;};
+  virtual void	  GetAudioStreamName(int iStream, CStdString &strStreamName){};
+  virtual void    SetAudioStream(int iStream){};
+
   virtual void	  SeekTime(int iTime=0){};
   virtual __int64 GetTime(){return 0;};
   virtual int	    GetTotalTime(){return 0;};
