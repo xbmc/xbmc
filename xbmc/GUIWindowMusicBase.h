@@ -75,7 +75,7 @@ protected:
 	virtual	void							UpdateButtons();
 	virtual	void							OnQueueItem(int iItem);
 	virtual void							OnRetrieveMusicInfo(VECFILEITEMS& items);
-					void							GoParentFolder();
+	virtual void							GoParentFolder();
 					void							RetrieveMusicInfo();
 					void							OnInfo(int iItem);
 					bool							FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumInfo& album);
