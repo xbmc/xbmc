@@ -6,8 +6,8 @@ namespace OSD
 		public IOSDOption
 	{
 	public:
-		COSDOptionBoolean(void);
-		COSDOptionBoolean(bool bValue);
+		COSDOptionBoolean(int iHeading);
+		COSDOptionBoolean(int iHeading,bool bValue);
 		COSDOptionBoolean(const COSDOptionBoolean& option);
 		const OSD::COSDOptionBoolean& operator = (const COSDOptionBoolean& option);
 

@@ -6,8 +6,8 @@ namespace OSD
 		public IOSDOption
 	{
 	public:
-		COSDOptionFloatRange(void);
-		COSDOptionFloatRange(float fStart, float fEnd, float fInterval, float fValue);
+		COSDOptionFloatRange(int iHeading);
+		COSDOptionFloatRange(int iHeading,float fStart, float fEnd, float fInterval, float fValue);
 		COSDOptionFloatRange(const COSDOptionFloatRange& option);
 		const OSD::COSDOptionFloatRange& operator = (const COSDOptionFloatRange& option);
 

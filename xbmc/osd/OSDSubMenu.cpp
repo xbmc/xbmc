@@ -44,11 +44,12 @@ const COSDSubMenu& COSDSubMenu::operator = (const COSDSubMenu& submenu)
 {
 	if (&submenu==this) return *this;
   Clear();
-	ivecOptions i =m_vecOptions.begin();
-	while (i != m_vecOptions.end())
+	icvecOptions i =submenu.m_vecOptions.begin();
+	while (i != submenu.m_vecOptions.end())
 	{
-		IOSDOption* pOption=*i;
+		const IOSDOption* pOption=*i;
 		m_vecOptions.push_back ( pOption->Clone() );
+    ++i;
 	}
 
 	m_iCurrentOption=submenu.m_iCurrentOption;
