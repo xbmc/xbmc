@@ -29,7 +29,6 @@ CGUIWindowMusicOverlay::CGUIWindowMusicOverlay()
 	m_dwTimeout=0;
 	m_iTopPosition=0;
 	m_bShowInfoAlways=false;
-	m_bRelativeCoords=true;	// so that we can move things around easily :)
 }
 
 CGUIWindowMusicOverlay::~CGUIWindowMusicOverlay()
@@ -147,6 +146,12 @@ void CGUIWindowMusicOverlay::OnMouse()
 	{
 		CGUIWindow::OnMouse();
 	}
+}
+
+void CGUIWindowMusicOverlay::OnWindowLoaded()
+{
+  CGUIWindow::OnWindowLoaded();
+  m_bRelativeCoords=true;  // so that we can move things around easily :)
 }
 
 void CGUIWindowMusicOverlay::ShowControl(int iControl)
