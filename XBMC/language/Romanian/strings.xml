@@ -108,6 +108,14 @@
 		<value>Decembrie</value>
 	</string>
 	<string>
+		<id>98</id>
+		<value>Aranjare: Automatic</value>
+	</string>
+	<string>
+		<id>99</id>
+		<value>Aranjare: Automatic mare</value>
+	</string>
+	<string>
 		<id>100</id>
 		<value>Aranjare: Icoane</value>
 	</string>
@@ -309,7 +317,7 @@
 	</string>
 	<string>
 		<id>150</id>
-		<value>IP:</value>
+		<value>IP</value>
 	</string>
 	<string>
 		<id>151</id>
@@ -526,6 +534,10 @@
 	<string>
 		<id>204</id>
 		<value>Rating:</value>
+	</string>
+	<string>
+		<id>2050</id>
+		<value>Runtime:</value>
 	</string>
 	<string>
 		<id>205</id>
@@ -1814,15 +1826,15 @@
 	</string>
 	<string>
 		<id>632</id>
-		<value>Stretch 4:3</value>
+		<value>Extinde 4:3</value>
 	</string>
 	<string>
 		<id>633</id>
-		<value>Stretch 14:9</value>
+		<value>Extinde 14:9</value>
 	</string>
 	<string>
 		<id>634</id>
-		<value>Stretch 16:9</value>
+		<value>Extinde 16:9</value>
 	</string>
 	<string>
 		<id>635</id>
@@ -2265,6 +2277,7 @@
   <string><id>13203</id><value>Profilul '%s' a fost incarcat cu succes</value></string>
   <string><id>13204</id><value>Ultimul profil incarcat:</value></string>
   <string><id>13205</id><value>Necunoscut</value></string>
+  <string><id>13299</id><value>Temperatura propusa</value></string>
   <string><id>13300</id><value>Viteza ventilator:</value></string>
   <string><id>13301</id><value>Control temperatura automatic</value></string>
   <string><id>13302</id><value>Control viteza ventilator</value></string>
@@ -2295,7 +2308,7 @@
   <string><id>13327</id><value>Karaoke</value></string>
   <string><id>13328</id><value>%s negasit.</value></string>
   <string><id>13329</id><value>Eroare la deschiderea %s</value></string>
-  <string><id>13330</id><value>Unable to load %s</value></string>
+  <string><id>13330</id><value>%s nu se poate incarca</value></string>
   <string><id>13331</id><value>Eroare: out of memory.</value></string>
   <string><id>13332</id><value>Muta sus</value></string>
   <string><id>13333</id><value>Muta jos</value></string>
@@ -2309,8 +2322,41 @@
   <string><id>14003</id><value>Downloadare fisier playlist...</value></string>
   <string><id>14004</id><value>Downloadare lista stream-uri...</value></string>
   <string><id>14005</id><value>Parsare lista stream-uri...</value></string>
-  <string><id>14006</id><value>Downloadare list stream-uri eronata</value></string>
-  <string><id>14007</id><value>Downloadare fisier playlist eronata</value></string>
+  <string><id>14006</id><value>Download lista stream-uri eronata</value></string>
+  <string><id>14007</id><value>Download fisier playlist eronata</value></string>
   <string><id>14008</id><value>Activare notificari Kai</value></string>
   <string><id>14009</id><value>Directorul Games</value></string>
+  <string><id>14010</id><value>Optiuni Autoswitch</value></string>
+  <string><id>14011</id><value>Activare Autoswitching</value></string>
+  <string><id>14012</id><value>- Foloseste icoane mari</value></string>
+  <string><id>14013</id><value>- Metoda</value></string>
+  <string><id>14014</id><value>- Procentaj</value></string>
+  <string><id>14015</id><value>Thumbpanel in lipsa fisierelor</value></string>
+  <string><id>14016</id><value>Listpanel in lipsa directoarelor</value></string>
+  <string><id>14017</id><value>Procentaj de Thumbs</value></string>
+  <string><id>14018</id><value>Vizualizare Optiuni</value></string>
+  <string><id>14019</id><value>Schimbare cod postal 1</value></string>
+  <string><id>14020</id><value>Schimbare cod postal 2</value></string>
+  <string><id>14021</id><value>Schimbare cod postal 3</value></string>
+  <string><id>14022</id><value>Librarie</value></string>
+  <string><id>14023</id><value>No TV</value></string>
+  <string><id>14024</id><value>Introduceti cel mai apropiat oras sau cod postal din US</value></string>
+  <string><id>14025</id><value>Video de pe harddisk</value></string>
+  <string><id>14026</id><value>Video de pe DVDRom</value></string>
+  <string><id>14027</id><value>Video din reteaua locala</value></string>
+  <string><id>14028</id><value>Video din Internet</value></string>
+  <string><id>14029</id><value>Audio de pe harddisk</value></string>
+  <string><id>14030</id><value>Audio de pe DVDRom</value></string>
+  <string><id>14031</id><value>Audio din reteaua locala</value></string>
+  <string><id>14032</id><value>Audio din Internet</value></string>
+  <string><id>14033</id><value>DVD de pe harddisk</value></string>
+  <string><id>14034</id><value>DVD de pe DVDRom</value></string>
+  <string><id>14035</id><value>DVD din reteaua locala</value></string>
+  <string><id>14036</id><value>Servere</value></string>
+  <string><id>14037</id><value>Look and Feel</value></string>
+  <string><id>14038</id><value>Setari network schimate</value></string>
+  <string><id>14039</id><value>XBMC trebuie restartat pt a schimba</value></string>
+  <string><id>14040</id><value>setarile de retea. Doriti restartarea imediata?</value></string>
+  <string><id>14041</id><value>Post Processing</value></string>
+  <string><id>14042</id><value>Adresa IP Engine</value></string>
 </strings>
