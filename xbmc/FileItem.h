@@ -28,7 +28,7 @@ public:
   const CFileItem& operator=(const CFileItem& item);
   CStdString    m_strPath;						///< complete path to item
   bool          m_bIsShareOrDrive;		///< is this a root share/drive
-  int			m_iDriveType;			///< if it is a root share/drive which type. Types see CShare
+  int			m_iDriveType;			///< If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CShare::m_iDriveType
   SYSTEMTIME    m_stTime;							///< file creation date & time
   __int64       m_dwSize;							///< file size (0 for folders)
   float         m_fRating;

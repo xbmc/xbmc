@@ -19,11 +19,24 @@ CVirtualDirectory::~CVirtualDirectory(void)
 {
 }
 
+/*!
+	\brief Add shares to the virtual directory
+	\param vecShares Shares to add
+	\sa CShare, VECSHARES
+	*/
 void CVirtualDirectory::SetShares(VECSHARES& vecShares)
 {
 	m_vecShares = &vecShares;
 }
 
+/*!
+	\brief Retrieve the shares or the content of a directory.
+	\param strPath Specifies the path of the directory to retrieve or pass an empty string to get the shares.
+	\param items Content of the directory.
+	\return Returns \e true, if directory access is successfull.
+	\note If \e strPath is an empty string, the share \e items have thumbnails and icons set, else the thumbnails
+				and icons have to be set manually.
+	*/
 bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 {
   CStdString strPath2=strPath;
@@ -95,6 +108,13 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
   return true;
 }
 
+/*!
+	\brief Is the share \e strPath in the virtual directory.
+	\param strPath Share to test
+	\return Returns \e true, if share is in the virtual directory.
+	\note The parameter \e strPath can not be a share with directory. Eg. "iso9660://dir" will return \e false.
+				It must be "iso9660://".
+	*/
 bool CVirtualDirectory::IsShare(const CStdString& strPath) const
 {
 	for (int i=0; i < (int)m_vecShares->size(); ++i)
@@ -105,6 +125,10 @@ bool CVirtualDirectory::IsShare(const CStdString& strPath) const
 	return false;
 }
 
+/*!
+	\brief Retrieve the current share type of the DVD-Drive.
+	\return Returns the share type, eg. iso9660://.
+	*/
 CStdString CVirtualDirectory::GetDVDDriveUrl()
 {
 	for (int i=0; i < (int)m_vecShares->size(); ++i)

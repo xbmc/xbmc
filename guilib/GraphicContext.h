@@ -123,5 +123,9 @@ protected:
 	RESOLUTION_INFO								*m_pResInfo;
 };
 
+/*!
+	\ingroup graphics
+	\brief 
+	*/
 extern CGraphicContext g_graphicsContext;
 #endif
