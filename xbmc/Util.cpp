@@ -63,7 +63,7 @@ CUtil::~CUtil(void)
 {
 }
 
-char* CUtil::GetExtension(const CStdString& strFileName) 
+char* CUtil::GetExtension(const CStdString& strFileName)
 {
   char* extension = strrchr(strFileName.c_str(),'.');
   return extension ;
@@ -105,7 +105,7 @@ int CUtil::cmpnocase(const char* str1,const char* str2)
 {
   int iLen;
   if ( strlen(str1) != strlen(str2) ) return 1;
-  
+
   iLen=strlen(str1);
   for (int i=0; i < iLen;i++ )
   {
@@ -243,7 +243,7 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
     {
       if (!( strFilename.c_str()[1] == ':')) //Filename not fully qualified
       {
-        if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\') 
+        if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\')
         {
           strFilename = strBasePath + strFilename;
           strFilename.Replace('/','\\');
@@ -376,9 +376,9 @@ void CUtil::GetThumbnail(const CStdString& strFileName, CStdString& strThumb)
     if ( shortcut.Create( strFileName ) )
     {
       CStdString strFile=shortcut.m_strPath;
-      
+
       GetThumbnail(strFile,strThumb);
-      return;     
+      return;
     }
   }
 
@@ -573,7 +573,7 @@ void CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNew
   GetExtension(strFile,strExtension);
   if ( strExtension.size() )
   {
-    
+
     strChangedFile=strFile.substr(0, strFile.size()-strExtension.size()) ;
     strChangedFile+=strNewExtension;
   }
@@ -635,7 +635,7 @@ bool CUtil::HasSlashAtEnd(const CStdString& strFile)
 {
   if (strFile.Left(2)=="D:" || strFile.Left(2)=="d:")
     return true;
-  
+
   if (strFile.Left(4)=="UDF:" || strFile.Left(4)=="udf:")
     return true;
 
@@ -644,7 +644,7 @@ bool CUtil::HasSlashAtEnd(const CStdString& strFile)
 bool CUtil::IsCDDA(const CStdString& strFile)
 {
 CURL url(strFile);
-if (url.GetProtocol()=="cdda") 
+if (url.GetProtocol()=="cdda")
   return true;
 return false;
 }
@@ -681,7 +681,7 @@ void CUtil::RemoveCRLF(CStdString& strLine)
   }
 
 }
-bool CUtil::IsPicture(const CStdString& strFile) 
+bool CUtil::IsPicture(const CStdString& strFile)
 {
   CStdString strExtension;
   CUtil::GetExtension(strFile,strExtension);
@@ -707,7 +707,7 @@ bool CUtil::IsCUESheet(const CStdString& strFileName)
 	return (strExtension == ".cue");
 }
 
-bool CUtil::IsAudio(const CStdString& strFile) 
+bool CUtil::IsAudio(const CStdString& strFile)
 {
   CStdString strExtension;
   CUtil::GetExtension(strFile,strExtension);
@@ -722,7 +722,7 @@ bool CUtil::IsAudio(const CStdString& strFile)
 
   return false;
 }
-bool CUtil::IsVideo(const CStdString& strFile) 
+bool CUtil::IsVideo(const CStdString& strFile)
 {
   CStdString strExtension;
   CUtil::GetExtension(strFile,strExtension);
@@ -734,7 +734,7 @@ bool CUtil::IsVideo(const CStdString& strFile)
   }
   return false;
 }
-bool CUtil::IsPlayList(const CStdString& strFile) 
+bool CUtil::IsPlayList(const CStdString& strFile)
 {
   CStdString strExtension;
   CUtil::GetExtension(strFile,strExtension);
@@ -884,7 +884,7 @@ void CUtil::GetSongInfo(const CStdString& strFileName, CStdString& strSongCacheN
   strSongCacheName.Format("%s\\songinfo\\%x.si",g_stSettings.m_szAlbumDirectory,crc);
 }
 
-void CUtil::GetAlbumThumb(const CStdString& strFileName, CStdString& strThumb, bool bTempDir /*=false*/)
+void CUtil::GetAlbumFolderThumb(const CStdString& strFileName, CStdString& strThumb, bool bTempDir /*=false*/)
 {
   Crc32 crc;
   crc.Reset();
@@ -893,6 +893,21 @@ void CUtil::GetAlbumThumb(const CStdString& strFileName, CStdString& strThumb, b
     strThumb.Format("%s\\thumbs\\temp\\%x.tbn",g_stSettings.m_szAlbumDirectory,crc);
   else
     strThumb.Format("%s\\thumbs\\%x.tbn",g_stSettings.m_szAlbumDirectory,crc);
+}
+
+void CUtil::GetAlbumThumb(const CStdString& strAlbumName, const CStdString& strFileName, CStdString& strThumb, bool bTempDir /*=false*/)
+{
+  CStdString str;
+  if (strAlbumName.IsEmpty())
+  {
+	  str = "unknown" + strFileName;
+  }
+  else
+  {
+	  str = strAlbumName + strFileName;
+  }
+
+  GetAlbumFolderThumb(str, strThumb, bTempDir);
 }
 
 
@@ -928,7 +943,7 @@ bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
     }
     szFileName="T:\\1.xpr";
   }
-      
+
   CXBPackedResource* pPackedResource = new CXBPackedResource();
   if( SUCCEEDED( pPackedResource->Create( szFileName.c_str(), 1, NULL ) ) )
   {
@@ -958,13 +973,13 @@ bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
         pTexture->GetSurfaceLevel( 0, &pSrcSurface );
         m_pTexture->GetSurfaceLevel( 0, &pDestSurface );
 
-        D3DXLoadSurfaceFromSurface( pDestSurface, NULL, NULL, 
+        D3DXLoadSurfaceFromSurface( pDestSurface, NULL, NULL,
                                     pSrcSurface, NULL, NULL,
                                     D3DX_DEFAULT, D3DCOLOR( 0 ) );
         D3DLOCKED_RECT rectLocked;
         if ( D3D_OK == m_pTexture->LockRect(0,&rectLocked,NULL,0L  ) )
         {
-            BYTE *pBuff   = (BYTE*)rectLocked.pBits;  
+            BYTE *pBuff   = (BYTE*)rectLocked.pBits;
             if (pBuff)
             {
               DWORD strideScreen=rectLocked.Pitch;
@@ -1058,15 +1073,15 @@ bool CUtil::GetXBEDescription(const CStdString& strFileName, CStdString& strDesc
 DWORD CUtil::GetXbeID( const CStdString& strFilePath)
 {
   DWORD dwReturn = 0;
-  
+
   DWORD dwCertificateLocation;
   DWORD dwLoadAddress;
   DWORD dwRead;
 //  WCHAR wcTitle[41];
-  
-  CAutoPtrHandle  hFile( CreateFile( strFilePath.c_str(), 
-            GENERIC_READ, 
-            FILE_SHARE_READ, 
+
+  CAutoPtrHandle  hFile( CreateFile( strFilePath.c_str(),
+            GENERIC_READ,
+            FILE_SHARE_READ,
             NULL,
             OPEN_EXISTING,
             FILE_ATTRIBUTE_NORMAL,
@@ -1116,14 +1131,14 @@ void CUtil::FillInDefaultIcon(CFileItem* pItem)
 {
   // find the default icon for a file or folder item
   // for files this can be the (depending on the file type)
-  //   default picture for photo's 
+  //   default picture for photo's
   //   default picture for songs
   //   default picture for videos
   //   default picture for shortcuts
   //   default picture for playlists
   //   or the icon embedded in an .xbe
   //
-  // for folders 
+  // for folders
   //   for .. folders the default picture for parent folder
   //   for other folders the defaultFolder.png
 
@@ -1218,7 +1233,7 @@ void CUtil::FillInDefaultIcon(CFileItem* pItem)
     {
       CStdString strExtension;
       CUtil::GetExtension(pItem->m_strPath,strExtension);
-      
+
       for (int i=0; i < (int)g_settings.m_vecIcons.size(); ++i)
       {
         CFileTypeIcon& icon=g_settings.m_vecIcons[i];
@@ -1304,7 +1319,7 @@ void CUtil::SetThumbs(VECFILEITEMS &items)
     dir.GetDirectory(strThumb.c_str(),qitems);			//	precache Q:\thumbs\imdb directory
   }
 
-  
+
 
   for (int i=0; i < (int)items.size(); ++i)
   {
@@ -1376,7 +1391,7 @@ void CUtil::SetThumb(CFileItem* pItem)
   // if it already has a thumbnail, then return
   if ( pItem->HasThumbnail() ) return;
 
-	
+
   CStdString strFileName=pItem->m_strPath;
 
 	if (!CUtil::IsRemote(strFileName))
@@ -1406,14 +1421,14 @@ void CUtil::SetThumb(CFileItem* pItem)
   crc.Reset();
   crc.Compute(strFileName.c_str(),strlen(strFileName.c_str()));
   strCachedThumbnail.Format("%s\\%x.tbn",g_stSettings.szThumbnailsDirectory,crc);
-    
-  bool bGotIcon(false);
-  
 
-  // get the path for the  thumbnail 
+  bool bGotIcon(false);
+
+
+  // get the path for the  thumbnail
   CUtil::GetThumbnail( strFileName,strThumb);
-  
-  
+
+
   // does a cached thumbnail exists?
   if (!CUtil::FileExists(strCachedThumbnail) )
   {
@@ -1464,7 +1479,7 @@ void CUtil::SetThumb(CFileItem* pItem)
 					//	remote, cache thumb to hdd
 					if ( file.Cache(strThumbnailFileName.c_str(), strCachedThumbnail.c_str(),NULL,NULL))
 					{
-						
+
 						pItem->SetThumbnailImage(strCachedThumbnail);
 						bGotIcon=true;
 					}
@@ -1506,12 +1521,12 @@ void CUtil::ShortenFileName(CStdString& strFileNameAndPath)
     CStdString strExtension;
     CUtil::GetExtension(strFileNameAndPath, strExtension);
     CStdString strPath=strFileNameAndPath.Left( strFileNameAndPath.size() - strFile.size() );
-    
+
     strFile=strFile.Left(42-strExtension.size());
     strFile+=strExtension;
 
     CStdString strNewFile=strPath;
-    if (!CUtil::HasSlashAtEnd(strPath)) 
+    if (!CUtil::HasSlashAtEnd(strPath))
       strNewFile+="\\";
 
     strNewFile+=strFile;
@@ -1555,7 +1570,7 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
     strIcon="defaultDVDRom.png";
     return;
   }
-  
+
   if ( IsCDDA(strPath) ) {
     strIcon="defaultCDDA.png";
     return;
@@ -1565,7 +1580,7 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 void CUtil::RemoveTempFiles()
 {
   WIN32_FIND_DATA wfd;
-  
+
   CStdString strAlbumDir;
   strAlbumDir.Format("%s\\*.tmp",g_stSettings.m_szAlbumDirectory);
   memset(&wfd,0,sizeof(wfd));
@@ -1618,7 +1633,7 @@ void CUtil::DeleteTDATA()
     if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
     {
  	  string strFile="T:\\";
-      strFile += wfd.cFileName;      
+      strFile += wfd.cFileName;
 	  CLog::Log(LOGINFO, "  DeleteFile(%s)", strFile.c_str());
 	  DeleteFile(strFile.c_str());
     }
@@ -1732,7 +1747,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   if (CUtil::IsPlayList(strMovie)) return;
   if (!CUtil::IsVideo(strMovie)) return;
 
-  if (strlen(g_stSettings.m_szAlternateSubtitleDirectory)!=0) 
+  if (strlen(g_stSettings.m_szAlternateSubtitleDirectory)!=0)
   {
     // check alternate subtitle directory
     iPos=0;
@@ -1796,7 +1811,7 @@ void CUtil::SecondsToHMSString(long lSeconds, CStdString& strHMS)
 
 }
 void CUtil::PrepareSubtitleFonts()
-{       
+{
   if (strlen(g_stSettings.m_szSubtitleFont)==0) return;
   if (g_stSettings.m_iSubtitleHeight==0) return;
 
@@ -1839,7 +1854,7 @@ __int64 CUtil::ToInt64(DWORD dwHigh, DWORD dwLow)
 void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult)
 {
   strResult=strFolder;
-  if (!CUtil::HasSlashAtEnd(strResult)) 
+  if (!CUtil::HasSlashAtEnd(strResult))
   {
     if (strResult.Find("//")>=0 )
       strResult+="/";
@@ -1877,11 +1892,11 @@ void CUtil::GetDirectory(const CStdString& strFilePath, CStdString& strDirectory
 	{
 		iPos1=iPos2;
 	}
-	
+
 	if (iPos1>0)
 	{
 		strDirectoryPath = strFilePath.Left(iPos1);
-	}	
+	}
 }
 
 void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName)
@@ -1902,10 +1917,10 @@ void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CSt
 int CUtil::GetFolderCount(VECFILEITEMS &items)
 {
   int nFolderCount=0;
-  for (int i = 0; i < (int)items.size(); i++) 
+  for (int i = 0; i < (int)items.size(); i++)
   {
     CFileItem* pItem = items[i];
-    if (pItem->m_bIsFolder) 
+    if (pItem->m_bIsFolder)
       nFolderCount++;
   }
 
@@ -1915,10 +1930,10 @@ int CUtil::GetFolderCount(VECFILEITEMS &items)
 int CUtil::GetFileCount(VECFILEITEMS &items)
 {
   int nFileCount=0;
-  for (int i = 0; i < (int)items.size(); i++) 
+  for (int i = 0; i < (int)items.size(); i++)
   {
     CFileItem* pItem = items[i];
-    if (! pItem->m_bIsFolder) 
+    if (! pItem->m_bIsFolder)
       nFileCount++;
   }
 
@@ -1982,7 +1997,7 @@ void CUtil::PlayDVD()
 
 DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
 {
-  static unsigned char params[512]; 
+  static unsigned char params[512];
   static DWORD        vReturn;
   static XNADDR       sAddress;
   char temp_str[64];
@@ -2014,12 +2029,12 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
     CLog::Log(LOGINFO, "ip address:%s",azIPAdd);
   }
 
-  // if local address is specified 
+  // if local address is specified
   if( mode == 0 )
   {
     if ( !networkinfo.DHCP )
     {
-      TXNetConfigParams configParams;   
+      TXNetConfigParams configParams;
 
       XNetLoadConfigParams( (LPBYTE) &configParams );
       BOOL bXboxVersion2 = (configParams.V2_Tag == 0x58425632 );  // "XBV2"
@@ -2142,20 +2157,20 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
       /**     Set DHCP-flags from a known DHCP mode  (maybe some day we will fix this)  **/
       XNetLoadConfigParams(params);
       memset( params, 0, (sizeof(IN_ADDR) * 5) + 20 );
-      params[40]=33;  params[41]=223; params[42]=196; params[43]=67;  params[44]=6; 
-      params[45]=145; params[46]=157; params[47]=118; params[48]=182; params[49]=239; 
-      params[50]=68;  params[51]=197; params[52]=133; params[53]=150; params[54]=118; 
-      params[55]=211; params[56]=38;  params[57]=87;  params[58]=222; params[59]=119;   
+      params[40]=33;  params[41]=223; params[42]=196; params[43]=67;  params[44]=6;
+      params[45]=145; params[46]=157; params[47]=118; params[48]=182; params[49]=239;
+      params[50]=68;  params[51]=197; params[52]=133; params[53]=150; params[54]=118;
+      params[55]=211; params[56]=38;  params[57]=87;  params[58]=222; params[59]=119;
       params[64]=0; params[72]=0; params[73]=0; params[74]=0; params[75]=0;
-      params[340]=160;    params[341]=93;       params[342]=131;      params[343]=191;      params[344]=46; 
+      params[340]=160;    params[341]=93;       params[342]=131;      params[343]=191;      params[344]=46;
 
       XNetStartupParams xnsp;
-  
+
       memset(&xnsp, 0, sizeof(xnsp));
       xnsp.cfgSizeOfStruct = sizeof(XNetStartupParams);
       // Bypass security so that we may connect to 'untrusted' hosts
       xnsp.cfgFlags = XNET_STARTUP_BYPASS_SECURITY;
- 
+
 			xnsp.cfgPrivatePoolSizeInPages = 64; // == 256kb, default = 12 (48kb)
 			xnsp.cfgEnetReceiveQueueLength = 16; // == 32kb, default = 8 (16kb)
 			xnsp.cfgIpFragMaxSimultaneous = 16; // default = 4
@@ -2183,10 +2198,10 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
   {
     XNADDR xna;
     DWORD dwState;
-    
+
     dwState = XNetGetTitleXnAddr(&xna);
 
-    if( dwState==XNET_GET_XNADDR_PENDING) 
+    if( dwState==XNET_GET_XNADDR_PENDING)
       return 1;
 
     XNetInAddrToString(xna.ina,g_szTitleIP,32);
@@ -2202,7 +2217,7 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
 
     ftploop = 1;
 
-    if( vReturn != XNET_GET_XNADDR_PENDING ) 
+    if( vReturn != XNET_GET_XNADDR_PENDING )
     {
       char  azIPAdd[256];
       //char  azMessage[256];
@@ -2242,7 +2257,7 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
 
           if ( vReturn &  XNET_GET_XNADDR_STATIC )
           {
-            CLog::Log(LOGINFO, "  static ip");             
+            CLog::Log(LOGINFO, "  static ip");
           }
 
           if ( vReturn &  XNET_GET_XNADDR_DHCP )
@@ -2285,7 +2300,7 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
             CLog::Log(LOGINFO, "  ppoe");
           }
 
-          sprintf(temp_str,"  IP: %s",azIPAdd);         
+          sprintf(temp_str,"  IP: %s",azIPAdd);
           CLog::Log(LOGINFO, temp_str);
         }
         ftploop = 0;
@@ -2295,7 +2310,7 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
 			return 2;
     }
 
-    Sleep(50); 
+    Sleep(50);
     return 1;
   }
   return 1;
@@ -2311,7 +2326,7 @@ void CUtil::SetMusicThumbs(VECFILEITEMS &items)
   VECFILEITEMS qitems;
   CHDDirectory dir;
 
-  
+
   CStdString strThumb=g_stSettings.m_szAlbumDirectory;
   strThumb+="\\thumbs";
   {
@@ -2364,26 +2379,26 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
 	}
 
 	//	Look if an album thumb is available,
-	//	could be any file with tags loaded or 
+	//	could be any file with tags loaded or
 	//	a directory in album window
   CStdString strAlbum;
 	if (pItem->m_musicInfoTag.Loaded())
 		strAlbum=pItem->m_musicInfoTag.GetAlbum();
 
-	if (!strAlbum.IsEmpty())
+	if (!pItem->m_bIsFolder)
   {
     // look for a permanent thumb (Q:\albums\thumbs)
-    CUtil::GetAlbumThumb(strAlbum+strPath,strThumb);
+    CUtil::GetAlbumThumb(strAlbum, strPath, strThumb);
     if (CUtil::FileExists(strThumb))
     {
 			//	found it, we are finished.
       pItem->SetIconImage(strThumb);
       pItem->SetThumbnailImage(strThumb);
     }
-    else 
+    else
     {
       // look for a temporary thumb (Q:\albums\thumbs\temp)
-      CUtil::GetAlbumThumb(strAlbum+strPath,strThumb, true);
+      CUtil::GetAlbumThumb(strAlbum, strPath,strThumb, true);
       if (CUtil::FileExists(strThumb) )
       {
 				//	found it
@@ -2406,7 +2421,7 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
 		{
 			//	Query local cache
 			CStdString strCached;
-			CUtil::GetAlbumThumb(strThumb, strCached, true);
+			CUtil::GetAlbumFolderThumb(strThumb, strCached, true);
 			if (CUtil::FileExists(strCached))
 			{
 				//	Remote thumb found in local cache
@@ -2419,7 +2434,7 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
 				//	on a remote share
 				if (CUtil::FileExists(strThumb))
 				{
-					//	found, save a thumb 
+					//	found, save a thumb
 					//	to the temp thumb dir.
 					CPicture pic;
 					if (pic.CreateAlbumThumbnail(strThumb, strThumb))
@@ -2464,12 +2479,12 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
 
 		//	Lookup permanent thumbs on HD, if a
 		//	thumb for this folder exists
-    CUtil::GetAlbumThumb(strPath,strFolderThumb);
+    CUtil::GetAlbumFolderThumb(strPath,strFolderThumb);
 		if (!CUtil::FileExists(strFolderThumb))
 		{
-			//	No, lookup saved temp thumbs on HD, if a previously 
+			//	No, lookup saved temp thumbs on HD, if a previously
 			//	cached thumb for this folder exists...
-			CUtil::GetAlbumThumb(strPath,strFolderThumb, true);
+			CUtil::GetAlbumFolderThumb(strPath,strFolderThumb, true);
 			if (!CUtil::FileExists(strFolderThumb))
 			{
 				if (pItem->m_bIsFolder)
@@ -2481,7 +2496,7 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
 					//	...no, check for a folder.jpg
 					if (CUtil::ThumbExists(strThumb, true))
 					{
-						//	found, save a thumb for this folder 
+						//	found, save a thumb for this folder
 						//	to the temp thumb dir.
 						CPicture pic;
 						if (!pic.CreateAlbumThumbnail(strThumb, strPath))
@@ -2493,7 +2508,7 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
 					}	//	...or maybe we have a "foldername".tbn
 					else if (CUtil::ThumbExists(strFolderTbn, true))
 					{
-						//	found, save a thumb for this folder 
+						//	found, save a thumb for this folder
 						//	to the temp thumb dir.
 						CPicture pic;
 						if (!pic.CreateAlbumThumbnail(strFolderTbn, strPath))
@@ -2525,7 +2540,7 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
 		//	Have we found a folder thumb
 		if (!strFolderThumb.IsEmpty())
 		{
-				//	if we have a directory from album 
+				//	if we have a directory from album
 				//	window, set the icon too.
 			if (pItem->m_bIsFolder && !strAlbum.IsEmpty())
 				pItem->SetIconImage(strFolderThumb);
@@ -2536,31 +2551,31 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
 }
 
 CStdString CUtil::GetNextFilename(const char* fn_template, int max)
-{	
-	// Open the file.	
+{
+	// Open the file.
 	char szName[1024];
 
 	INT i;
 
 	WIN32_FIND_DATA wfd;
-	HANDLE hFind;	
+	HANDLE hFind;
 
 
 	if (NULL != strstr(fn_template, "%03d"))
 	{
 		for(i = 0; i <= max; i++)
 		{
-						
+
 			wsprintf(szName, fn_template, i);
-			
+
 			memset(&wfd, 0, sizeof(wfd));
-			if ((hFind = FindFirstFile(szName, &wfd)) != INVALID_HANDLE_VALUE)		
+			if ((hFind = FindFirstFile(szName, &wfd)) != INVALID_HANDLE_VALUE)
 				FindClose(hFind);
 			else
 			{
 				// FindFirstFile didn't find the file 'szName', return it
 				return szName;
-			}		
+			}
 		}
 	}
 
@@ -2620,7 +2635,7 @@ void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float G
 // Tokenize ripped from http://www.linuxselfhelp.com/HOWTO/C++Programming-HOWTO-7.html
 void CUtil::Tokenize(const CStdString& path, vector<CStdString>& tokens, const string& delimiters)
 {
-	string str = path; 
+	string str = path;
 	// Skip delimiters at beginning.
 	string::size_type lastPos = str.find_first_not_of(delimiters, 0);
 	// Find first "non-delimiter".
@@ -2628,7 +2643,7 @@ void CUtil::Tokenize(const CStdString& path, vector<CStdString>& tokens, const s
 
 	while (string::npos != pos || string::npos != lastPos)
 	{
-		// Found a token, add it to the vector. 
+		// Found a token, add it to the vector.
 		tokens.push_back(str.substr(lastPos, pos - lastPos));
 		// Skip delimiters.  Note the "not_of"
 		lastPos = str.find_first_not_of(delimiters, pos);
@@ -2641,7 +2656,7 @@ void CUtil::Tokenize(const CStdString& path, vector<CStdString>& tokens, const s
 void CUtil::FlashScreen(bool bImmediate, bool bOn)
 {
 	static bool bInFlash = false;
-	
+
 	if (bInFlash == bOn)
 		return;
 	bInFlash = bOn;
@@ -2663,7 +2678,7 @@ void CUtil::TakeScreenshot()
 	CStdString strDir = g_stSettings.m_szScreenshotsDirectory;
 
 	if (strlen(g_stSettings.m_szScreenshotsDirectory))
-	{		
+	{
 		sprintf(fn, "%s\\screenshot%%03d.bmp", strDir.c_str());
 		strcpy(fn, CUtil::GetNextFilename(fn, 999).c_str());
 
@@ -2676,13 +2691,13 @@ void CUtil::TakeScreenshot()
 				if (FAILED(XGWriteSurfaceToFile(lpSurface, fn)))
 				{
 					CLog::Log(LOGERROR, "Failed to Generate Screenshot");
-				}	
+				}
 				else
 				{
 					CLog::Log(LOGINFO, "Screen shot saved as %s", fn);
 				}
 				lpSurface->Release();
-			}	
+			}
 			g_graphicsContext.Unlock();
 			g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
 			FlashScreen(true, true);
@@ -2694,7 +2709,7 @@ void CUtil::TakeScreenshot()
 		{
 			CLog::Log(LOGWARNING, "Too many screen shots or invalid folder");
 		}
-	}	
+	}
  }
 
 void CUtil::ClearCache()
@@ -2957,7 +2972,7 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
 	 */
 	int i, s = 0;
 	if (path.at(1) == ':') i = 2; // to skip 'e:'
-	s = i; 
+	s = i;
 	while(i < iSize)
 	{
 		i = path.find(cSep, i + 1);
@@ -2971,9 +2986,9 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
 	{
 		CDirectory::Create(strTemp + strArray[i].c_str());
 	}
-	
+
   strArray.clear();
-  
+
 	// is the directory successfully created ?
   if (!CDirectory::Exists(strPath)) return false;
 	return true;
@@ -2991,7 +3006,7 @@ CStdString CUtil::MakeLegalFileName(const char* strFile, bool bKeepExtension, bo
 	unsigned int iSize = strlen(strFile);
 	unsigned int iNewStringSize = 0;
 	char* strNewString = new char[iSize + 1];
-  
+
   // only copy the legal characters to the new filename
   for (unsigned int i = 0; i < iSize; i++)
   {
@@ -3004,7 +3019,7 @@ CStdString CUtil::MakeLegalFileName(const char* strFile, bool bKeepExtension, bo
 			  strFile[i] > 31 && strFile[i] < 127) strNewString[iNewStringSize++] = strFile[i];
   }
   strNewString[iNewStringSize] = '\0';
-	
+
   if (isFATX)
   {
     // since we can only write to samba shares and hd, we assume this has to be a fatx filename
@@ -3019,26 +3034,26 @@ CStdString CUtil::MakeLegalFileName(const char* strFile, bool bKeepExtension, bo
 		  char strExtension[42];
 		  unsigned int iExtensionLenght = iNewStringSize - (strrchr(strNewString, '.') - strNewString);
 		  strcpy(strExtension, (strNewString + iNewStringSize - iExtensionLenght));
-  		
+
 		  strcpy(strNewString + (42 - iExtensionLenght), strExtension);
 	  }
 	}
-	
+
 	CStdString result(strNewString);
   delete[] strNewString;
-	return result;  
+	return result;
 }
 
 void CUtil::AddDirectorySeperator(CStdString& strPath)
 {
   if (IsSmb(strPath)) strPath += "/";
-  else strPath += "\\"; 
+  else strPath += "\\";
 }
 
 char CUtil::GetDirectorySeperator(const CStdString& strPath)
 {
   if (IsSmb(strPath)) return '/';
-  return '\\'; 
+  return '\\';
 }
 
 void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayList::CPlayListItem &playlistitem)

@@ -132,7 +132,7 @@ char* CMusicInfoTagLoaderMP3::GetString(const ID3_Frame *frame, ID3_FieldID fldN
 
 		nText = strlen(ansiString.c_str());
 		strncpy(text, ansiString.c_str(), nText);
-		text[nText] = '\0';		
+		text[nText] = '\0';
 	}
   }
   return text;
@@ -252,7 +252,7 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
 
 		CStdString strCoverArt, strPath, strFileName;
 		CUtil::Split(tag.GetURL(), strPath, strFileName);
-		CUtil::GetAlbumThumb(tag.GetAlbum()+strPath, strCoverArt,true);
+		CUtil::GetAlbumThumb(tag.GetAlbum(), strPath, strCoverArt,true);
 		if (bFound)
 		{
 			if (!CUtil::ThumbExists(strCoverArt))
@@ -281,7 +281,7 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
 		}
 		else
 		{
-			//	id3 has no cover, so add to cache 
+			//	id3 has no cover, so add to cache
 			//	that it does not exist
 			CUtil::ThumbCacheAdd(strCoverArt, false);
 		}
@@ -300,7 +300,7 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
 	//	CSectionLoader::Load("LIBID3");
 		tag.SetURL(strFileName);
 		CFile file;
-		if ( file.Open( strFileName.c_str() ) ) 
+		if ( file.Open( strFileName.c_str() ) )
 		{
 			//	Do not use ID3TT_ALL, because
 			//	id3lib reads the ID3V1 tag first
@@ -309,10 +309,10 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
 			ID3_Tag myTag;
 			if ( myTag.Link(reader, ID3TT_ID3V2) >= 0)
 			{
-				if ( !(bResult = ReadTag( myTag, tag )) ) 
+				if ( !(bResult = ReadTag( myTag, tag )) )
 				{
 					myTag.Clear();
-					if ( myTag.Link(reader, ID3TT_ID3V1 ) >= 0 ) 
+					if ( myTag.Link(reader, ID3TT_ID3V1 ) >= 0 )
 					{
 						bResult = ReadTag( myTag, tag );
 					}
@@ -356,11 +356,11 @@ bool CMusicInfoTagLoaderMP3::IsMp3FrameHeader(unsigned long head)
         return false;
     if ((head & 0xffff0000) == 0xfffe0000)
         return false;
-    
+
     return true;
 }
 
-//	Inspired by http://rockbox.haxx.se/ and http://www.xs4all.nl/~rwvtveer/scilla 
+//	Inspired by http://rockbox.haxx.se/ and http://www.xs4all.nl/~rwvtveer/scilla
 int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
 {
 	int nDuration=0;
@@ -373,8 +373,8 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
 	file.Seek(0, SEEK_SET);
 	file.Read(buffer, 6);
 
-	if (buffer[0]=='I' && 
-			buffer[1]=='D' && 
+	if (buffer[0]=='I' &&
+			buffer[1]=='D' &&
 			buffer[2]=='3')
 	{
 		/* Now check what the ID3v2 size field says */
@@ -406,7 +406,7 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
 																	( (buffer[i+1] & 255) << 16) |
 																	( (buffer[i+2] & 255) <<  8) |
 																	( (buffer[i+3] & 255)      )
-																); 
+																);
 
 		//	Do we have a Xing header before the first mpeg frame?
 		if (buffer[i  ]=='X' &&
@@ -432,16 +432,16 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
 					version = MPEG_VERSION2_5;
 					bittable = MPEG_VERSION2 - 1; /* use the V2 bit rate table */
 					break;
-		      
+
 			case (1 << 19):
 					return 0;
-		      
+
 			case (2 << 19):
 					/* MPEG version 2 (ISO/IEC 13818-3) */
 					version = MPEG_VERSION2;
 					bittable = MPEG_VERSION2 - 1;
 					break;
-		      
+
 			case (3 << 19):
 					/* MPEG version 1 (ISO/IEC 11172-3) */
 					version = MPEG_VERSION1;
@@ -486,7 +486,7 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
 			int bitindex = (mpegheader & 0xf000) >> 12;
 			int freqindex = (mpegheader & 0x0C00) >> 10;
 			bitrate = bitrate_table[bittable][layer][bitindex];
-  
+
 			/* Calculate bytes per frame, calculation depends on layer */
 			switch(layer) {
 			case 1:
@@ -563,7 +563,7 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
 	}
 
 	//	Normal mp3 with constant bitrate duration
-	//	Now song length is (filesize without id3v1/v2 tag)/((bitrate)/(8)) 
+	//	Now song length is (filesize without id3v1/v2 tag)/((bitrate)/(8))
 	double d=(double)(nMp3DataSize / ((bitrate*1000) / 8));
 	return (int)d;
 }

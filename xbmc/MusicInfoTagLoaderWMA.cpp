@@ -134,7 +134,7 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 		//{
 			//iOffset+=54;
 			////Codec
-			//TCHAR C1[30]; 
+			//TCHAR C1[30];
 		  //_itoa(pData[iOffset]+pData[iOffset+1]*0x100, C1, 16);
 			//CStdString Codec=C1;
 			//while (Codec.size()<4)
@@ -273,7 +273,7 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 					picture.pwszDescription=(LPWSTR)(pValue+iPicOffset);
 					iPicOffset+=(wcslen(picture.pwszDescription)*2);
 					iPicOffset+=2;
-					
+
 					picture.pbData=(pValue+iPicOffset);
 
 					if (picture.bPictureType==3) //	Cover Front
@@ -281,7 +281,7 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 						CStdString strExtension(picture.pwszMIMEType);
 						CStdString strCoverArt, strPath, strFileName;
 						CUtil::Split(tag.GetURL(), strPath, strFileName);
-						CUtil::GetAlbumThumb(tag.GetAlbum()+strPath, strCoverArt,true);
+						CUtil::GetAlbumThumb(tag.GetAlbum(), strPath, strCoverArt,true);
 						if (!CUtil::ThumbExists(strCoverArt))
 						{
 							int nPos=strExtension.Find('/');
