@@ -1,0 +1,714 @@
+<strings>
+  <string>
+    <id>0</id>
+    <value>Mina Program</value>
+  </string>
+  <string>
+    <id>1</id>
+    <value>Mina Bilder</value>
+  </string>
+  <string>
+    <id>2</id>
+    <value>Min Musik</value>
+  </string>
+  <string>
+    <id>3</id>
+    <value>Mina Filmer</value>
+  </string>
+  <string>
+    <id>4</id>
+    <value>TV Guide</value>
+  </string>
+  <string>
+    <id>5</id>
+    <value>Inställningar</value>
+  </string>
+  <string>
+    <id>6</id>
+    <value>XBOX Media Center Oct 18th 2003 build</value>
+  </string>
+  <string>
+    <id>7</id>
+    <value>Mina Filer</value>
+  </string>
+  
+  <string>
+    <id>11</id>
+    <value>Måndag</value>
+  </string>
+  <string>
+    <id>12</id>
+    <value>Tisdag</value>
+  </string>
+  <string>
+    <id>13</id>
+    <value>Onsdag</value>
+  </string>
+  <string>
+    <id>14</id>
+    <value>>Torsdag</value>
+  </string>
+  <string>
+    <id>15</id>
+    <value>Fredag</value>
+  </string>
+  <string>
+    <id>16</id>
+    <value>Lördag</value>
+  </string>  
+  <string>
+    <id>17</id>
+    <value>Söndag</value>
+  </string>
+  
+    
+  <string>
+    <id>21</id>
+    <value>Januari</value>
+  </string>
+  
+  <string>
+    <id>22</id>
+    <value>Februari</value>
+  </string>  
+  <string>
+    <id>23</id>
+    <value>Mars</value>
+  </string>  
+  <string>
+    <id>24</id>
+    <value>April</value>
+  </string>  
+  <string>
+    <id>25</id>
+    <value>Maj</value>
+  </string>  
+  <string>
+    <id>26</id>
+    <value>Juni</value>
+  </string>  
+  <string>
+    <id>27</id>
+    <value>Juli</value>
+  </string>  
+  <string>
+    <id>28</id>
+    <value>Augusti</value>
+  </string>  
+  <string>
+    <id>29</id>
+    <value>September</value>
+  </string>  
+  <string>
+    <id>30</id>
+    <value>Oktober</value>
+  </string>  
+  <string>
+    <id>31</id>
+    <value>November</value>
+  </string>  
+  <string>
+    <id>32</id>
+    <value>December</value>
+  </string>  
+  <string>
+    <id>100</id>
+    <value>Visa ikoner</value>
+  </string>  
+  <string>
+    <id>101</id>
+    <value>Visa som lista</value>
+  </string>  
+  <string>
+    <id>102</id>
+    <value>Hitta program</value>
+  </string>  
+  <string>
+    <id>103</id>
+    <value>Namn</value>
+  </string> 
+  <string>
+    <id>104</id>
+    <value>Datum</value>
+  </string>    
+  <string>
+    <id>105</id>
+    <value>Storlek</value>
+  </string>      
+  <string>
+    <id>106</id>
+    <value>Nej</value>
+  </string>     
+  <string>
+    <id>107</id>
+    <value>Ja</value>
+  </string>   
+  <string>
+    <id>108</id>
+    <value>Bildspel</value>
+  </string>   
+  <string>
+    <id>109</id>
+    <value>Skapa miniatyrer</value>
+  </string>   
+  <string>
+    <id>110</id>
+    <value>Skapa miniatyrer</value>
+  </string>   
+  <string>
+    <id>111</id>
+    <value>Genvägar</value>
+  </string>   
+  <string>
+    <id>112</id>
+    <value>PAUSAD</value>
+  </string>   
+  <string>
+    <id>113</id>
+    <value>Mina filer : Källa</value>
+  </string>   
+  <string>
+    <id>114</id>
+    <value>Mina filer : Destination</value>
+  </string>   
+  <string>
+    <id>115</id>
+    <value>Kopiera</value>
+  </string>   
+  <string>
+    <id>116</id>
+    <value>Flytta</value>
+  </string>   
+  <string>
+    <id>117</id>
+    <value>Radera</value>
+  </string>   
+  <string>
+    <id>118</id>
+    <value>Ändra namn</value>
+  </string>   
+  <string>
+    <id>119</id>
+    <value>Ny mapp</value>
+  </string>   
+  <string>
+    <id>120</id>
+    <value>Bekräfta kopiering</value>
+  </string>   
+  <string>
+    <id>121</id>
+    <value>Bekräfta flyttning av fil</value>
+  </string>   
+  <string>
+    <id>122</id>
+    <value>Bekräfta radering</value>
+  </string>   
+  <string>
+    <id>123</id>
+    <value>Är du säker på att du vill kopiera dessa filer?</value>
+  </string>   
+  <string>
+    <id>124</id>
+    <value>Är du säker på att du vill flytta dessa filer?</value>
+  </string>   
+  <string>
+    <id>125</id>
+    <value>Är du säker på att du vill radera dessa filer?</value>
+  </string>  
+  <string>
+    <id>126</id>
+    <value>Status</value>
+  </string>  
+  <string>
+    <id>127</id>
+    <value>Objekt</value>
+  </string>  
+  <string>
+    <id>128</id>
+    <value>Generella</value>
+  </string> 
+  <string>
+    <id>129</id>
+    <value>Bildspel</value>
+  </string> 
+  <string>
+    <id>130</id>
+    <value>System info</value>
+  </string>  
+  <string>
+    <id>131</id>
+    <value>Bildskärm</value>
+  </string>  
+  <string>
+    <id>132</id>
+    <value>Album</value>
+  </string>  
+  <string>
+    <id>133</id>
+    <value>Artister</value>
+  </string>  
+  <string>
+    <id>134</id>
+    <value>Visa spår</value>
+  </string>  
+  <string>
+    <id>135</id>
+    <value>Genrer</value>
+  </string>  
+  <string>
+    <id>136</id>
+    <value>Spelningslistor</value>
+  </string>  
+  <string>
+    <id>137</id>
+    <value>Sök</value>
+  </string>  
+  <string>
+    <id>138</id>
+    <value>SYSTEM INFORMATION</value>
+  </string>  
+  <string>
+    <id>139</id>
+    <value>Temperaturer:</value>
+  </string> 
+  <string>
+    <id>140</id>
+    <value>CPU:</value>
+  </string> 
+  <string>
+    <id>141</id>
+    <value>GPU:</value>
+  </string> 
+  <string>
+    <id>142</id>
+    <value>Tid:</value>
+  </string> 
+  <string>
+    <id>143</id>
+    <value>Nuvarande:</value>
+  </string> 
+  <string>
+    <id>144</id>
+    <value>Bygge:</value>
+  </string> 
+  <string>
+    <id>145</id>
+    <value>Nätverk:</value>
+  </string> 
+  <string>
+    <id>146</id>
+    <value>Typ:</value>
+  </string> 
+  <string>
+    <id>147</id>
+    <value>Statiskt</value>
+  </string> 
+  <string>
+    <id>148</id>
+    <value>DHCP</value>
+  </string> 
+  <string>
+    <id>149</id>
+    <value>MAC</value>
+  </string> 
+  <string>
+    <id>150</id>
+    <value>IP:</value>
+  </string> 
+  <string>
+    <id>151</id>
+    <value>Status:</value>
+  </string> 
+  <string>
+    <id>152</id>
+    <value>Halv duplex</value>
+  </string> 
+  <string>
+    <id>153</id>
+    <value>Full duplex</value>
+  </string> 
+  <string>
+    <id>154</id>
+    <value>Utrymme</value>
+  </string> 
+  <string>
+    <id>155</id>
+    <value>Disk</value>
+  </string> 
+  <string>
+    <id>156</id>
+    <value>Ledigt</value>
+  </string> 
+  <string>
+    <id>157</id>
+    <value>Video</value>
+  </string> 
+  <string>
+    <id>158</id>
+    <value>Ledigt minne</value>
+  </string> 
+  <string>
+    <id>159</id>
+    <value>Inget nätverk</value>
+  </string> 
+  <string>
+    <id>160</id>
+    <value>Ledigt</value>
+  </string> 
+  <string>
+    <id>161</id>
+    <value>Ej tillgänglig</value>
+  </string> 
+  <string>
+    <id>162</id>
+    <value>DVD lucka öppen</value>
+  </string> 
+  <string>
+    <id>163</id>
+    <value>Läser</value>
+  </string> 
+  <string>
+    <id>164</id>
+    <value>Ingen disk</value>
+  </string> 
+  <string>
+    <id>165</id>
+    <value>Disk i drive</value>
+  </string> 
+  <string>
+    <id>166</id>
+    <value>Skal:</value>
+  </string> 
+  <string>
+    <id>167</id>
+    <value>FTP server:</value>
+  </string> 
+  <string>
+    <id>168</id>
+    <value>Tidsserver:</value>
+  </string> 
+  <string>
+    <id>169</id>
+    <value>Upplösning:</value>
+  </string> 
+  <string>
+    <id>170</id>
+    <value>Album:</value>
+  </string> 
+  <string>
+    <id>171</id>
+    <value>Artist:</value>
+  </string> 
+  <string>
+    <id>172</id>
+    <value>Årtal:</value>
+  </string> 
+  <string>
+    <id>173</id>
+    <value>Betyg:</value>
+  </string> 
+  <string>
+    <id>174</id>
+    <value>Genre:</value>
+  </string> 
+  <string>
+    <id>175</id>
+    <value>Musiktyp:</value>
+  </string> 
+  <string>
+    <id>176</id>
+    <value>Stilar:</value>
+  </string> 
+  <string>
+    <id>177</id>
+    <value>Recension:</value>
+  </string> 
+  <string>
+    <id>178</id>
+    <value>Spår:</value>
+  </string> 
+  <string>
+    <id>179</id>
+    <value>Sång</value>
+  </string> 
+  <string>
+    <id>180</id>
+    <value>Varaktighet</value>
+  </string> 
+  <string>
+    <id>181</id>
+    <value>Välj album</value>
+  </string> 
+  <string>
+    <id>182</id>
+    <value>Spår</value>
+  </string> 
+  <string>
+    <id>183</id>
+    <value>Recension</value>
+  </string> 
+  <string>
+    <id>184</id>
+    <value>Uppdatera</value>
+  </string> 
+  <string>
+    <id>185</id>
+    <value>Söker album</value>
+  </string> 
+  <string>
+    <id>186</id>
+    <value>OK</value>
+  </string>  
+  <string>
+    <id>187</id>
+    <value>Hittade inga album!</value>
+  </string>  
+  <string>
+    <id>188</id>
+    <value>Markera allt</value>
+  </string>  
+  <string>
+    <id>189</id>
+    <value>Indexerar media info</value>
+  </string>  
+  <string>
+    <id>190</id>
+    <value>Spara</value>
+  </string>  
+  <string>
+    <id>191</id>
+    <value>Blanda</value>
+  </string>  
+  <string>
+    <id>192</id>
+    <value>Rensa</value>
+  </string>  
+  <string>
+    <id>193</id>
+    <value>Indexera</value>
+  </string>  
+  <string>
+    <id>194</id>
+    <value>Söker...</value>
+  </string> 
+  <string>
+    <id>195</id>
+    <value>Ingen IMDB info hittades!</value>
+  </string> 
+  <string>
+    <id>196</id>
+    <value>Välj film:</value>
+  </string> 
+  <string>
+    <id>197</id>
+    <value>Förfrågar IMDB info</value>
+  </string> 
+  <string>
+    <id>198</id>
+    <value>Laddar detaljer om film</value>
+  </string> 
+  <string>
+    <id>199</id>
+    <value>Regissör</value>
+  </string> 
+  <string>
+    <id>200</id>
+    <value>Författare</value>
+  </string> 
+  <string>
+    <id>201</id>
+    <value>Årtal</value>
+  </string> 
+  <string>
+    <id>202</id>
+    <value>Tag line</value>
+  </string> 
+  <string>
+    <id>203</id>
+    <value>Handling</value>
+  </string> 
+  <string>
+    <id>204</id>
+    <value>Betyg</value>
+  </string> 
+  <string>
+    <id>205</id>
+    <value>Röster</value>
+  </string> 
+  <string>
+    <id>206</id>
+    <value>Författare</value>
+  </string> 
+  <string>
+    <id>207</id>
+    <value>Handling</value>
+  </string> 
+  <string>
+    <id>208</id>
+    <value>Spela upp</value>
+  </string> 
+  <string>
+    <id>209</id>
+    <value>Nästa</value>
+  </string> 
+  <string>
+    <id>210</id>
+    <value>Föregående</value>
+  </string> 
+  <string>
+    <id>211</id>
+    <value>Söker applikationer</value>
+  </string> 
+  <string>
+    <id>212</id>
+    <value>Applikaitoner hittades</value>
+  </string> 
+  <string>
+    <id>213</id>
+    <value>Kalibrering GUI</value>
+  </string> 
+  <string>
+    <id>214</id>
+    <value>Kalibrering film</value>
+  </string> 
+  <string>
+    <id>215</id>
+    <value>Mjuka upp kanter</value>
+  </string> 
+  <string>
+    <id>216</id>
+    <value>Zooma</value>
+  </string> 
+  <string>
+    <id>217</id>
+    <value>Tänj</value>
+  </string> 
+  <string>
+    <id>218</id>
+    <value>DVD spelare</value>
+  </string> 
+  <string>
+    <id>219</id>
+    <value>Sätt i skiva</value>
+  </string> 
+  <string>
+    <id>220</id>
+    <value>Nätverks filer</value>
+  </string> 
+  <string>
+    <id>221</id>
+    <value>Det finns inget nätverk</value>
+  </string> 
+  <string>
+    <id>222</id>
+    <value>Avbryt</value>
+  </string> 
+  <string>
+    <id>223</id>
+    <value>Välj bästa upplösning för filmer</value>
+  </string> 
+  <string>
+    <id>224</id>
+    <value>Hastighet</value>
+  </string> 
+  <string>
+    <id>225</id>
+    <value>Tid för övergång</value>
+  </string> 
+  <string>
+    <id>226</id>
+    <value>Slå på PAL60</value>
+  </string> 
+  <string>
+    <id>227</id>
+    <value>Slå på CDDB</value>
+  </string> 
+  <string>
+    <id>228</id>
+    <value>Blanda spellistor när de laddas</value>
+  </string> 
+  <string>
+    <id>229</id>
+    <value>Tid innan sänkt HD hastighet</value>
+  </string> 
+  <string>
+    <id>230</id>
+    <value>Filter</value>
+  </string> 
+  <string>
+    <id>231</id>
+    <value>Inget</value>
+  </string> 
+  <string>
+    <id>232</id>
+    <value>Punkt</value>
+  </string> 
+  <string>
+    <id>233</id>
+    <value>Linjär</value>
+  </string> 
+  <string>
+    <id>234</id>
+    <value>Anisotropisk</value>
+  </string> 
+  <string>
+    <id>235</id>
+    <value>Quincunx</value>
+  </string> 
+  <string>
+    <id>236</id>
+    <value>Gaussisk Kubiskt</value>
+  </string> 
+  <string>
+    <id>237</id>
+    <value>Minifiering:</value>
+  </string> 
+  <string>
+    <id>238</id>
+    <value>Förstoring:</value>
+  </string>
+  <string>
+    <id>240</id>
+    <value>Starta DVD-Video automatiskt</value>
+  </string>
+  <string>
+    <id>241</id>
+    <value>Starta VCD/SVCD automatiskt</value>
+  </string>
+  <string>
+    <id>242</id>
+    <value>Starta Audio-CD automatiskt</value>
+  </string>
+  <string>
+    <id>243</id>
+    <value>Starta XBOX spel automatiskt</value>
+  </string>
+  <string>
+    <id>244</id>
+    <value>Starta Videofilmer automatiskt</value>
+  </string>
+  <string>
+    <id>245</id>
+    <value>Starta Musik automatiskt</value>
+  </string>
+  <string>
+    <id>246</id>
+    <value>Starta Bilder automatiskt</value>
+  </string>
+  <string>
+    <id>247</id>
+    <value>Skript</value>
+  </string>
+  <string>
+    <id>248</id>
+    <value>Språk</value>
+  </string>
+  <string>
+    <id>249</id>
+    <value>Musik</value>
+  </string>
+  <string>
+    <id>250</id>
+    <value>Visualisering</value>
+  </string>
+</strings>
