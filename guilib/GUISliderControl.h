@@ -1,3 +1,8 @@
+/*!
+	\file GUISliderControl.h
+	\brief 
+	*/
+
 #ifndef GUILIB_GUIsliderCONTROL_H
 #define GUILIB_GUIsliderCONTROL_H
 
@@ -9,6 +14,10 @@
 #include "stdstring.h"
 using namespace std;
 
+/*!
+	\ingroup controls
+	\brief 
+	*/
 class CGUISliderControl :
   public CGUIControl
 {

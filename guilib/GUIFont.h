@@ -1,3 +1,8 @@
+/*!
+	\file GUIFont.h
+	\brief 
+	*/
+
 #ifndef CGUILIB_GUIFONT_H
 #define CGUILIB_GUIFONT_H
 #pragma once
@@ -9,6 +14,10 @@
 #include "common/xbfont.h"
 using namespace std;
 
+/*!
+	\ingroup textures
+	\brief 
+	*/
 class CGUIFont: public CXBFont  
 {
 public:

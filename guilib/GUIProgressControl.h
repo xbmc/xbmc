@@ -1,3 +1,8 @@
+/*!
+	\file GUIProgressControl.h
+	\brief 
+	*/
+
 #ifndef GUILIB_GUIPROGRESSCONTROL_H
 #define GUILIB_GUIPROGRESSCONTROL_H
 
@@ -9,6 +14,10 @@
 #include "stdstring.h"
 using namespace std;
 
+/*!
+	\ingroup controls
+	\brief 
+	*/
 class CGUIProgressControl :
   public CGUIControl
 {

@@ -1,3 +1,8 @@
+/*!
+	\file GUIThumbnailPanel.h
+	\brief 
+	*/
+
 #ifndef GUILIB_GUITHUMBNAILCONTROL_H
 #define GUILIB_GUITHUMBNAILCONTROL_H
 
@@ -14,6 +19,10 @@
 #include "stdstring.h"
 using namespace std;
 
+/*!
+	\ingroup controls
+	\brief 
+	*/
 class CGUIThumbnailPanel :
   public CGUIControl
 {

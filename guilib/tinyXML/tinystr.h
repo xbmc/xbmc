@@ -1,3 +1,8 @@
+/*!
+	\file tinystr.h
+	\brief 
+	*/
+
 /*
 www.sourceforge.net/projects/tinyxml
 Original file by Yves Berquin.
@@ -34,7 +39,8 @@ distribution.
 
 #include <assert.h>
 
-/*
+/*!
+   \ingroup tinyxml
    TiXmlString is an emulation of the std::CStdString template.
    Its purpose is to allow compiling TinyXML on compilers with no or poor STL support.
    Only the member functions relevant to the TinyXML project have been implemented.
@@ -200,7 +206,8 @@ class TiXmlString
 
 } ;
 
-/* 
+/*!
+   \ingroup tinyxml
    TiXmlOutStream is an emulation of std::ostream. It is based on TiXmlString.
    Only the operators that we need for TinyXML have been developped.
 */

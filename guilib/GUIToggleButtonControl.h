@@ -1,3 +1,8 @@
+/*!
+	\file GUIToggleButtonControl.h
+	\brief 
+	*/
+
 #ifndef GUILIB_GUITOGGLEBUTTONCONTROL_H
 #define GUILIB_GUITOGGLEBUTTONCONTROL_H
 
@@ -10,6 +15,10 @@
 #include "stdstring.h"
 using namespace std;
 
+/*!
+	\ingroup controls
+	\brief 
+	*/
 class CGUIToggleButtonControl : public CGUIControl
 {
 public:

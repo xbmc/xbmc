@@ -1,3 +1,8 @@
+/*!
+	\file ActionManager.h
+	\brief 
+	*/
+
 #pragma once
 #include "gui3d.h"
 #include "GUIMessage.h"
@@ -6,6 +11,10 @@
 #include "stdstring.h"
 using namespace std;
 
+/*!
+	\ingroup actionkeys
+	\brief 
+	*/
 class CActionManager
 {
 public:
@@ -18,4 +27,8 @@ protected:
   IMsgSenderCallback*     m_pScriptActionCallback;
 };
 
+/*!
+	\ingroup actionkeys
+	\brief 
+	*/
 extern CActionManager g_actionManager;

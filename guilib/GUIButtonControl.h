@@ -1,3 +1,8 @@
+/*!
+	\file GUIButtonControl.h
+	\brief 
+	*/
+
 #ifndef GUILIB_GUIBUTTONCONTROL_H
 #define GUILIB_GUIBUTTONCONTROL_H
 
@@ -10,6 +15,10 @@
 #include "stdstring.h"
 using namespace std;
 
+/*!
+	\ingroup controls
+	\brief 
+	*/
 class CGUIButtonControl : public CGUIControl
 {
 public:
