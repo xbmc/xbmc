@@ -91,9 +91,6 @@ void obtain_resolution_parameters(RESOLUTION iResolution, D3DPRESENT_PARAMETERS 
 {
 	params.BackBufferWidth = resInfo[iResolution].iWidth;
 	params.BackBufferHeight = resInfo[iResolution].iHeight;
-	// Fix 1080i mode to 540p (keep the backbuffer at 1080, but everything else at 540)
-	if (iResolution == HDTV_1080i)
-		params.BackBufferHeight *=2;
 	params.Flags = resInfo[iResolution].dwFlags;
 }
 
@@ -268,8 +265,8 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 		// FIXME:  Should always use image_height - this should be sorted
 		// once the subtitles are sorted out.
 		UINT height = image_height;
-		if (resInfo[m_iResolution].iHeight > height)
-			height = resInfo[m_iResolution].iHeight;
+		if (resInfo[m_iResolution].iOverlayHeight > height)
+			height = resInfo[m_iResolution].iOverlayHeight;
 		g_graphicsContext.Get3DDevice()->CreateTexture( image_width,
 																										height,
 																										1,
@@ -360,7 +357,7 @@ static unsigned int Directx_ManageDisplay()
 	float fOffsetY2 = (float)g_settings.m_rectMovieCalibration[m_iResolution].bottom;
 
 	float iScreenWidth =(float)resInfo[m_iResolution].iWidth + fOffsetX2-fOffsetX1;
-	float iScreenHeight=(float)resInfo[m_iResolution].iHeight + fOffsetY2-fOffsetY1;
+	float iScreenHeight=(float)resInfo[m_iResolution].iOverlayHeight + fOffsetY2-fOffsetY1;
 
 	if( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
 	{
@@ -401,7 +398,7 @@ static unsigned int Directx_ManageDisplay()
 
 				// calculate AR compensation (see http://www.iki.fi/znark/video/conversion)
 
-				float fScreenPixelRatio = resInfo[m_iResolution].fPixelRatio;
+				float fScreenPixelRatio = resInfo[m_iResolution].fOverlayPixelRatio;
 
 				// Calculate frame ratio based on source frame size and pixel ratio (Added by JM)
 				float fSourcePixelRatio = GetSourcePixelRatio(image_width, image_height, d_image_width, d_image_height);
@@ -456,7 +453,7 @@ static unsigned int Directx_ManageDisplay()
 		// scale up image as much as possible
 		// and keep the aspect ratio (introduces with black bars)
 
-		float fScreenPixelRatio = resInfo[m_iResolution].fPixelRatio;
+		float fScreenPixelRatio = resInfo[m_iResolution].fOverlayPixelRatio;
 		
 	        // Calculate frame ratio based on source frame size and pixel ratio (Added by JM)
 		float fSourcePixelRatio = GetSourcePixelRatio(image_width, image_height, d_image_width, d_image_height);
@@ -499,10 +496,10 @@ static unsigned int Directx_ManageDisplay()
 		iSubTitlePos = image_height;
 		bClearSubtitleRegion= true;
 
-		if (iSubTitlePos  + 2*iSubTitleHeight >= resInfo[m_iResolution].iHeight - fOffsetY2)
+		if (iSubTitlePos  + 2*iSubTitleHeight >= resInfo[m_iResolution].iOverlayHeight - fOffsetY2)
 		{
 			bClearSubtitleRegion= false;
-			iSubTitlePos = resInfo[m_iResolution].iHeight - (int)fOffsetY2 - iSubTitleHeight*2;
+			iSubTitlePos = resInfo[m_iResolution].iOverlayHeight - (int)fOffsetY2 - iSubTitleHeight*2;
 		}
 
 		return 0;
@@ -712,7 +709,7 @@ void xbox_video_getRect(RECT& SrcRect, RECT& DestRect)
 
 void xbox_video_getAR(float& fAR)
 {
-	float fOutputPixelRatio = resInfo[m_iResolution].fPixelRatio;
+	float fOutputPixelRatio = resInfo[m_iResolution].fOverlayPixelRatio;
 	float fOutputFrameRatio = ((float)(rd.right-rd.left)) / ((float)(rd.bottom-rd.top));
 	fAR = fOutputFrameRatio*fOutputPixelRatio;
 }
