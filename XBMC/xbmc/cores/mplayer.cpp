@@ -131,35 +131,39 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
   CStdString strTmp;
   m_vecOptions.erase(m_vecOptions.begin(),m_vecOptions.end());
   m_vecOptions.push_back("xbmc.exe");
-  // enable direct rendering
+  
+  // enable direct rendering (mplayer directly draws on xbmc's overlay texture)
   m_vecOptions.push_back("-dr");    
 
   //limit A-V sync correction in order to get smoother playback.
   //defaults to 0.01 but for high quality videos 0.0001 results in 
   // much smoother playback but slow reaction time to fix A-V desynchronization
-  m_vecOptions.push_back("-mc");
-  m_vecOptions.push_back("0.0001");
+  //m_vecOptions.push_back("-mc");
+  //m_vecOptions.push_back("0.0001");
 
   // smooth out audio driver timer (audio drivers arent perect)
   //Higher values mean more smoothing,but avoid using numbers too high, 
   //as they will cause independent timing from the sound card and may result in 
   //an A-V desync
-  m_vecOptions.push_back("-autosync");
-  m_vecOptions.push_back("30");
+  //m_vecOptions.push_back("-autosync");
+  //m_vecOptions.push_back("30");
   
   if ( m_iChannels) 
   {
+    // set number of audio channels
     m_vecOptions.push_back("-channels");
     strTmp.Format("%i", m_iChannels);
     m_vecOptions.push_back(strTmp);
   }
 	if ( m_strChannelMapping.size()) 
   {
+    // set audio channel mapping
     m_vecOptions.push_back("-af");
     m_vecOptions.push_back(m_strChannelMapping);
   }
   if ( m_bAC3PassTru)
   {
+    //e
     m_vecOptions.push_back("-ac");
     m_vecOptions.push_back("hwac3");
   }
@@ -168,6 +172,7 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
   {
     if (g_stSettings.m_bPPAuto && !g_stSettings.m_bDeInterlace)
     {
+      // enable auto quality &postprocessing 
       m_vecOptions.push_back("-autoq");
       m_vecOptions.push_back("100");
       m_vecOptions.push_back("-vop");
@@ -175,12 +180,14 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     }
     else
     {
+      // manual postprocessing
       CStdString strOpt;
       strTmp = "pp=";
       bool bAddComma(false);
       m_vecOptions.push_back("-vop");
       if ( g_stSettings.m_bDeInterlace)
       {
+        // add deinterlace filter
         if (bAddComma) strTmp +="/";
         strOpt="ci";
         bAddComma=true;
@@ -188,6 +195,7 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
       }
       if (g_stSettings.m_bPPdering)
       {
+        // add dering filter
         if (bAddComma) strTmp +="/";
         if (g_stSettings.m_iPPVertical>0) strOpt.Format("vb:%i",g_stSettings.m_iPPVertical);
         else strOpt="dr";
@@ -196,6 +204,7 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
       }
       if (g_stSettings.m_bPPVertical)
       {
+        // add vertical deblocking filter
         if (bAddComma) strTmp +="/";
         if (g_stSettings.m_iPPVertical>0) strOpt.Format("vb:%i",g_stSettings.m_iPPVertical);
         else strOpt="vb:a";
@@ -204,6 +213,7 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
       }
       if (g_stSettings.m_bPPHorizontal)
       {
+        // add horizontal deblocking filter
         if (bAddComma) strTmp +="/";
         if (g_stSettings.m_iPPHorizontal>0) strOpt.Format("hb:%i",g_stSettings.m_iPPHorizontal);
         else strOpt="hb:a";
@@ -213,6 +223,7 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
       }
       if (g_stSettings.m_bPPAutoLevels)
       {
+        // add auto brightness/contrast levels
         if (bAddComma) strTmp +="/";
         strOpt="al";
         bAddComma=true;
@@ -224,6 +235,7 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 
   if (m_fVolumeAmplification > 0.1f || m_fVolumeAmplification < -0.1f)
   {
+    //add volume amplification audio filter
     strTmp.Format("volume=%2.2f:0",m_fVolumeAmplification);
     m_vecOptions.push_back("-af");
     m_vecOptions.push_back(strTmp);
@@ -231,8 +243,10 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 
   if (m_bNonInterleaved)
   {
+    // open file in non-interleaved way
     m_vecOptions.push_back("-ni");
   }
+
 
   m_vecOptions.push_back("1.avi");
 
