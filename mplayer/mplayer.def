@@ -61,3 +61,5 @@ EXPORTS
 	mplayer_getcompiledate @ 59 ;
 	mplayer_getcompiletime @ 60 ;
 	mplayer_setTimeMs @ 61 ;
+	mplayer_getCurrentSubtitle @ 62 ;
+	mplayer_isTextSubLoaded @ 63 ;

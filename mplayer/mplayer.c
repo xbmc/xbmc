@@ -4325,6 +4325,17 @@ exit_player_with_rc(MSGTR_Exit_eof, 0);
 return 1;
 }
 
+#ifdef _XBOX
+subtitle* mplayer_getCurrentSubtitle()
+{
+	return vo_sub;
+}
+
+int mplayer_isTextSubLoaded()
+{
+	return (subdata != NULL);
+}
+#endif
 
 #ifdef _XBOX
 void mplayer_GetAudioInfo(char* strFourCC,char* strAudioCodec, long* bitrate, long* samplerate, int* channels, int* bVBR)
