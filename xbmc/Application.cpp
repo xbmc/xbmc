@@ -1845,12 +1845,12 @@ void CApplication::OnKey(CKey& key)
 
 }
 
-void CApplication::SetKaiNotification(const CStdString& aCaption, const CStdString& aDescription, CGUIImage* aIcon)
+void CApplication::SetKaiNotification(const CStdString& aCaption, const CStdString& aDescription, CStdString aIconFile/*=""*/)
 {
   // queue toast notification
   if (g_guiSettings.GetBool("XLinkKai.EnableNotifications"))
   {
-    m_guiDialogKaiToast.QueueNotification(aIcon, aCaption, aDescription);
+    m_guiDialogKaiToast.QueueNotification(aIconFile, aCaption, aDescription);
   }
 }
 

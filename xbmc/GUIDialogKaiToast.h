@@ -13,11 +13,11 @@ public:
   {
     CStdString caption;
     CStdString description;
-    CGUIImage* image;
+    CStdString imagefile;
   };
 
   void QueueNotification(const CStdString& aCaption, const CStdString& aDescription);
-  void QueueNotification(CGUIImage* aImage, const CStdString& aCaption, const CStdString& aDescription);
+  void QueueNotification(const CStdString& aImageFile, const CStdString& aCaption, const CStdString& aDescription);
   bool DoWork();
 
   virtual bool OnMessage(CGUIMessage& message);
