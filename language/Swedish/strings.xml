@@ -1492,6 +1492,27 @@
      <id>457</id>
      <value>Växla Vy:</value>
    </string> 
+   <string>
+     <id>458</id>
+     <value>B/Mark</value>
+   </string>
+   <string>
+     <id>459</id>
+     <value>undertext</value>
+   </string>
+   <string>
+     <id>460</id>
+     <value>Audio Ström</value>
+   </string>
+   <string>
+     <id>461</id>
+     <value>[aktive]</value>
+   </string>
+   <string>
+     <id>462</id>
+     <value>Undertext</value>
+   </string>
+
 
  <string><id>10000</id><value>Start</value></string>
  <string><id>10001</id><value>Mina Program</value></string>
