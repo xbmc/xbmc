@@ -3058,3 +3058,12 @@ bool CUtil::IsNaturalNumber(const CStdString& str)
 	}
 	return true;
 }
+
+bool CUtil::IsUsingTTFSubtitles()
+{
+	char* ext = CUtil::GetExtension(g_stSettings.m_szSubtitleFont);
+	if (ext && stricmp(ext, ".ttf") == 0)
+		return true;
+	else
+		return false;
+}

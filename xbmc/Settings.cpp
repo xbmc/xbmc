@@ -191,6 +191,9 @@ CSettings::CSettings(void)
 	g_stSettings.m_bUseDigitalOutput=false;
 
 	strcpy(g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
+	g_stSettings.m_iSubtitleTTFStyle = XFONT_BOLD;
+	g_stSettings.m_iSubtitleTTFColor = 0xFFFFFF;
+	strcpy(g_stSettings.m_szSubtitleCharset, "ISO-8859-1");
 	strcpy(g_stSettings.m_szStringCharset, "ISO-8859-1");
 	g_stSettings.m_bFlipBiDiCharset = true;
 	g_stSettings.m_iEnlargeSubtitlePercent = 0;
@@ -763,6 +766,19 @@ void CSettings::GetBoolean(const TiXmlElement* pRootElement, const CStdString& s
 		bValue = false;
 }
 
+void CSettings::GetHex(const TiXmlNode* pRootElement, const CStdString& strTagName, DWORD& dwHexValue, DWORD dwDefaultValue)
+{
+	const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
+	if (pChild)
+	{
+		sscanf(pChild->FirstChild()->Value(),"%x", &dwHexValue);
+	}
+	else
+	{
+		dwHexValue = dwDefaultValue;
+	}
+}
+
 void CSettings::SetString(TiXmlNode* pRootNode, const CStdString& strTagName, const CStdString& strValue) const
 {
 	TiXmlElement newElement(strTagName);
@@ -794,6 +810,13 @@ void CSettings::SetBoolean(TiXmlNode* pRootNode, const CStdString& strTagName, b
 		SetString(pRootNode, strTagName, "true");
 	else
 		SetString(pRootNode, strTagName, "false");
+}
+
+void CSettings::SetHex(TiXmlNode* pRootNode, const CStdString& strTagName, DWORD dwHexValue) const
+{
+	CStdString strValue;
+	strValue.Format("%x",dwHexValue);
+	SetString(pRootNode, strTagName, strValue);
 }
 
 bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& strSettingsFile)
@@ -1119,6 +1142,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetInteger(pElement, "enlargesubtitlepercent",g_stSettings.m_iEnlargeSubtitlePercent, 0, 0, 200);
 		GetInteger(pElement, "subtitleheight",g_stSettings.m_iSubtitleHeight,28,1,128);
 		GetString(pElement, "subtitlefont", g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
+		GetInteger(pElement, "subtitlettfstyle", g_stSettings.m_iSubtitleTTFStyle, XFONT_BOLD, 1, 4);
+		GetHex(pElement, "subtitlettfcolor", g_stSettings.m_iSubtitleTTFColor, 0xffffff);
+		GetString(pElement, "subtitlecharset", g_stSettings.m_szSubtitleCharset, "ISO-8859-1");
 		GetString(pElement, "stringcharset", g_stSettings.m_szStringCharset, "ISO-8859-1");
 		GetInteger(pElement, "smallstepbackseconds", g_stSettings.m_iSmallStepBackSeconds,7,1,INT_MAX);
 		GetInteger(pElement, "smallstepbacktries", g_stSettings.m_iSmallStepBackTries,3,1,10);
@@ -1524,6 +1550,9 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	SetInteger(pNode, "enlargesubtitlepercent",g_stSettings.m_iEnlargeSubtitlePercent);
 	SetInteger(pNode, "subtitleheight",g_stSettings.m_iSubtitleHeight);
 	SetString(pNode, "subtitlefont", g_stSettings.m_szSubtitleFont);
+	SetInteger(pNode, "subtitlettfstyle", g_stSettings.m_iSubtitleTTFStyle);
+	SetHex(pNode, "subtitlettfcolor", g_stSettings.m_iSubtitleTTFColor);
+	SetString(pNode, "subtitlecharset", g_stSettings.m_szSubtitleCharset);
 	SetString(pNode, "stringcharset", g_stSettings.m_szStringCharset);
 	SetInteger(pNode, "smallstepbackseconds", g_stSettings.m_iSmallStepBackSeconds);
 	SetInteger(pNode, "smallstepbacktries", g_stSettings.m_iSmallStepBackTries);

@@ -12,6 +12,20 @@ typedef	struct {
  int channels;
 }	stream_language_t;
 
+/* Copied from mplayer\subreader.h */
+#define SUB_MAX_TEXT 10
+#define SUB_ALIGNMENT_HLEFT	1
+#define SUB_ALIGNMENT_HCENTER	0
+#define SUB_ALIGNMENT_HRIGHT	2
+
+typedef struct {
+    int lines;
+    unsigned long start;
+    unsigned long end;  
+    char *text[SUB_MAX_TEXT];
+	unsigned char alignment;
+} subtitle;
+
 void		mplayer_load_dll(DllLoader&	dll);
 void		mplayer_put_key(int	code);
 int			mplayer_process();
@@ -56,6 +70,9 @@ void		mplayer_setVolume(long nVolume);
 int			mplayer_getVolume();
 void		mplayer_get_current_module(char* s, int n);
 void         mplayer_exit_player(void); 
+subtitle*	mplayer_GetCurrentSubtitle(void);
+bool		mplayer_isTextSubLoaded(void);
+
 #ifdef __cplusplus
-}
+};
 #endif
