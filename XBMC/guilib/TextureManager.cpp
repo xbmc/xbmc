@@ -276,7 +276,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
   // normal picture
 
   if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), strPath.c_str(),
-		 D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
+		 D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED,
 		 D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, NULL, NULL, &pTexture)!=D3D_OK)
 	{
 		OutputDebugString("Texture manager unable to find file: ");

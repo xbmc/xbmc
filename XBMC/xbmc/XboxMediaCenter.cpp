@@ -15,6 +15,7 @@
 //      - screen calibration offsets
 //  		- 4:3/16:9 aspect ratio
 //			- skinnable key mapping for controls
+//			- center text in dialog boxes
 //
 // My Pictures:
 //      - use analog thumbsticks voor zoom en move
@@ -22,20 +23,20 @@
 //      - show selected image in file browser
 //
 // my music:
-//			- http://www.saunalahti.fi/~cse/html/tag.html
-//		  - show track, filename, time in listview
-//	    - show fileinfo:id3v1/id3v2/mpeg info 
-//		  - sort : path,filename, length,track
-//			- m3u playlists (save/load)
-//			- play window:
-//					- show current playtime, kbps, stereo/mono, samplerate (khz), total duration, id3 tag info			
+//			- album : change gui
+//		  - artist interface
+//			- genre interface
+//			- search
+//			- playlists
 //			- shoutcast
 //		  - cddb
+//			- when playing : show album info/playtime/... in leftbottom corner
 //
 // my videos:
 //		  - control panel like in xbmp
 //		  - back 7 sec, forward 30 sec buttons
 //		  - imdb
+//			- when playing : show video in leftbottom corner
 //
 // settings:
 //			- general:
@@ -44,7 +45,7 @@
 //					- specify mypics transition time/slideshow time
 //		  - screen:
 //					- screen calibration offsets
-//
+//					- filter on/off
 //
 
 #include "stdafx.h"
