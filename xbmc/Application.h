@@ -17,6 +17,7 @@
 #include "GUIWindowVideoGenre.h"
 #include "GUIWindowVideoActors.h"
 #include "GUIWindowVideoYear.h"
+#include "GUIWindowVideoTitle.h"
 #include "GUIWindowSettings.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
@@ -141,6 +142,7 @@ public:
   CGUIWindowVideoGenre            m_guiVideoGenre;
   CGUIWindowVideoActors           m_guiVideoActors;
 	CGUIWindowVideoYear             m_guiVideoYear;
+	CGUIWindowVideoTitle            m_guiVideoTitle;
   CXBVirtualKeyboard   						m_keyboard;
 	CSNTPClient											m_sntpClient;
 	CDetectDVDMedia									m_DetectDVDType;

@@ -507,6 +507,12 @@
 				RelativePath=".\xbmc\GUIWindowVideoOverlay.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowVideoTitle.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowVideoTitle.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowVideoYear.cpp">
 			</File>
 			<File

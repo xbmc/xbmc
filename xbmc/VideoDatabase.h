@@ -40,6 +40,7 @@ public:
   void    GetMoviesByActor(CStdString& strActor, VECMOVIES& movies);
 	void    GetMoviesByYear(CStdString& strYear, VECMOVIES& movies);
   void    GetMoviesByPath(CStdString& strPath1, VECMOVIES& movies);
+  void    GetMovies(VECMOVIES& movies);
   void    GetBookMarksForMovie(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks);
   void    AddBookMarkToMovie(const CStdString& strFilenameAndPath, float fPercentage);
   void    ClearBookMarksOfMovie(const CStdString& strFilenameAndPath);
