@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 09-12-2004 added: [ 1067203 ] GUI Contrast Control for Xenium-LCD, thanks to GreenGiant.
   - 09-12-2004 added: [ 1065952 ] Disable Internet Lookups option, thanks to kraqh3d.
   - 09-12-2004 added: [ 1081938 ] Updated strings.xml files to single-line format, thanks to slacker.
   - 09-12-2004 fixed: Issue with autorun videos/music (strings mix up)
