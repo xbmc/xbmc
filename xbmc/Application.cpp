@@ -598,6 +598,7 @@ HRESULT CApplication::Create()
 	CLog::Log(LOGINFO, " GUI screen offset (%i,%i)", g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY);
 	m_gWindowManager.Initialize();
 	g_actionManager.SetScriptActionCallback(&g_pythonParser);
+
 	return CXBApplicationEx::Create();
 }
 
@@ -835,7 +836,6 @@ void CApplication::StopWebServer()
 	{
 		CLog::Log(LOGNOTICE, "stop webserver");
 		m_pWebServer->Stop();
-    m_pWebServer->WaitForThreadExit(INFINITE);
 		delete m_pWebServer;
 		m_pWebServer = NULL;
     CSectionLoader::Unload("LIBHTTP");
