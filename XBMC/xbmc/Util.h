@@ -40,6 +40,7 @@ public:
 	static bool IsVideo(const CStdString& strLine) ;
 	static void URLEncode(CStdString& strURLData);
 	static bool LoadString(string &strTxt, FILE *fd);
+	static int  LoadString(CStdString &strTxt, byte* pBuffer);
 	static void SaveString(const CStdString &strTxt, FILE *fd);
 	static void	SaveInt(int iValue, FILE *fd);
 	static int	LoadInt( FILE *fd);
