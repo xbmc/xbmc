@@ -123,7 +123,7 @@ public:
 protected:
 	bool										m_bOverlayEnabled;
 	CStdString							m_strCurrentPlayer;
-
+  bool                    m_bSettingsLoaded;
 };
 
 extern CApplication g_application;

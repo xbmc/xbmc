@@ -130,17 +130,19 @@ void CSettings::Save() const
 	}
 }
 
-void CSettings::Load()
+bool CSettings::Load()
 {
 	// load settings file...
 	if (!LoadSettings("T:\\settings.xml"))
 	{
 		OutputDebugString("LoadSettings() Failed\n");
+    return false;
 	}
 	// load calibration file...
 	if (!LoadCalibration("T:\\calibration.xml"))
 	{
 		OutputDebugString("LoadCalibration() Failed\n");
+    return false;
 	}
 
 	// load xml file...
@@ -153,12 +155,12 @@ void CSettings::Load()
 		OutputDebugString("unable to load:");
 		OutputDebugString(strXMLFile.c_str());
 		OutputDebugString("\n");
-		return;
+		return false;
 	}
 
 	TiXmlElement* pRootElement =xmlDoc.RootElement();
   CStdString strValue=pRootElement->Value();
-	if ( strValue != "xboxmediacenter") return ;
+	if ( strValue != "xboxmediacenter") return false;
 
 	TiXmlElement* pFileTypeIcons =pRootElement->FirstChildElement("filetypeicons");
 	TiXmlNode* pFileType=pFileTypeIcons->FirstChild();
@@ -277,7 +279,7 @@ void CSettings::Load()
   GetShares(pRootElement,"video",m_vecMyVideoShares,strDefault);
 	if (strDefault.size())
 		strcpy( g_stSettings.m_szDefaultVideos, strDefault.c_str());	
-
+  return true;
 }
 
 void CSettings::ConvertHomeVar(CStdString& strText)

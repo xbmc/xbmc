@@ -46,7 +46,7 @@ public:
   CSettings(void);
   virtual ~CSettings(void);
 
-	void	Load();
+	bool	Load();
 	void	Save() const;
 
   struct stSettings
