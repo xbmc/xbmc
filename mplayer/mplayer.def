@@ -58,3 +58,4 @@ EXPORTS
  	mplayer_setcache_backbuffer @ 56 ;
 	exit_player @ 57 ;
 	mplayer_getversion @ 58 ;
+	mplayer_setTimeMs @ 59 ;
