@@ -309,7 +309,7 @@ void CGUIWindowVideoYear::UpdateButtons()
 	g_graphicsContext.SendMessage(msg);
 
 	//	Add labels to the window selection
-	CStdString strItem=g_localizeStrings.Get(342);	//	Movies
+	CStdString strItem=g_localizeStrings.Get(744);	//	Files
 	CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_BTNTYPE);
 	msg2.SetLabel(strItem);
 	g_graphicsContext.SendMessage(msg2);
@@ -515,6 +515,8 @@ void CGUIWindowVideoYear::Update(const CStdString &strDirectory)
   {
     VECMOVIEYEARS years;
     m_database.GetYears( years);
+		// Display an error message if the database doesn't contain any years
+		DisplayEmptyDatabaseMessage(years.empty());
     for (int i=0; i < (int)years.size(); ++i)
     {
 			CFileItem *pItem = new CFileItem(years[i]);
@@ -595,12 +597,6 @@ void CGUIWindowVideoYear::Update(const CStdString &strDirectory)
 			break;
 		}
 	}
-}
-
-//****************************************************************************************************************************
-void CGUIWindowVideoYear::Render()
-{
-	CGUIWindow::Render();
 }
 
 //****************************************************************************************************************************

@@ -373,7 +373,7 @@ void CGUIWindowVideoTitle::UpdateButtons()
 	g_graphicsContext.SendMessage(msg);
 
 	//	Add labels to the window selection
-	CStdString strItem=g_localizeStrings.Get(342);	//	Movies
+	CStdString strItem=g_localizeStrings.Get(744);	//	Files
 	CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_BTNTYPE);
 	msg2.SetLabel(strItem);
 	g_graphicsContext.SendMessage(msg2);
@@ -571,6 +571,8 @@ void CGUIWindowVideoTitle::Update(const CStdString &strDirectory)
   m_strDirectory=strDirectory;
   VECMOVIES movies;
   m_database.GetMovies(movies);
+ 	// Display an error message if the database doesn't contain any movies
+	DisplayEmptyDatabaseMessage(movies.empty());
   for (int i=0; i < (int)movies.size(); ++i)
   {
     CIMDBMovie movie=movies[i];
@@ -632,12 +634,6 @@ void CGUIWindowVideoTitle::Update(const CStdString &strDirectory)
 			break;
 		}
 	}
-}
-
-//****************************************************************************************************************************
-void CGUIWindowVideoTitle::Render()
-{
-	CGUIWindow::Render();
 }
 
 //****************************************************************************************************************************
