@@ -2770,6 +2770,7 @@ void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayList::CPl
 	playlistitem.SetStartOffset(pItem->m_lStartOffset);
 	playlistitem.SetEndOffset(pItem->m_lEndOffset);
 	playlistitem.SetMusicTag(pItem->m_musicInfoTag);
+  playlistitem.SetThumbnailImage(pItem->GetThumbnailImage());
 }
 
 
