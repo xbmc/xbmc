@@ -139,6 +139,7 @@ void CGUIThumbnailPanel::Render()
   {
       m_iCursorX=0;
       m_iCursorY=0;
+      m_iRowOffset=0;
   }
   CGUIControl::Render();
 

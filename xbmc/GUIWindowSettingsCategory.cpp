@@ -369,8 +369,9 @@ void CGUIWindowSettingsCategory::CreateSettings()
 		{
 			CSettingInt *pSettingInt = (CSettingInt*)pSetting;
 			CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-			pControl->AddLabel("LCD", LCD_MODE_TYPE_LCD);
-			pControl->AddLabel("VFD", LCD_MODE_TYPE_VFD);
+			pControl->AddLabel("LCD - HD44780", LCD_TYPE_LCD_HD44780);
+			pControl->AddLabel("LCD - KS0073", LCD_TYPE_LCD_KS0073);
+			pControl->AddLabel("VFD", LCD_TYPE_VFD);
 			pControl->SetValue(pSettingInt->GetData());
 		}
 		else if (strSetting == "LCD.ModChip")
