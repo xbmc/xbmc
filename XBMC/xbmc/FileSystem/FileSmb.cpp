@@ -33,7 +33,7 @@ void CSMB::Init()
 		// set ip and subnet
 		set_xbox_interface(g_stSettings.m_strLocalIPAdres, g_stSettings.m_strLocalNetmask);
 
-		if(!smbc_init(xb_smbc_auth, 1/*Debug Level*/))
+		if(!smbc_init(xb_smbc_auth, 2/*Debug Level*/))
 		{
 			// set wins nameserver
 			lp_do_parameter(-1, "wins server", g_stSettings.m_strNameServer);
@@ -114,11 +114,30 @@ bool CFileSMB::Open(const char* strUserName, const char* strPassword,const char 
 
 	smb.Lock();
 
+	// opening a file to another computer share will create a new session
+	// when opening smb://server xbms will try to find folder.jpg in all shares
+	// listed, which will create lot's of open sessions.
+	
 	m_fd = smbc_open(strUtfFileName, O_RDONLY, 0);
 
 	if(m_fd == -1)
 	{
+		// file failed to open. If we tried to open a file in a share
+		// we should close all sessions available. It is slow, so don't
+		// just do it if opening a file fails.
+		char* cPos = strchr(strFileName, '/');
+		if(cPos)
+		{
+			if (strlen(cPos) > 0 && !strchr(cPos+1, '/'))
+			{
+				//we have a file in a share, close sessions
+				smbc_purge();
+			}
+		}
 		smb.Unlock();
+		// int error = map_nt_error_from_unix(errno);
+		// nt_errstr(error);
+		// get_friendly_nt_error_msg(error);
 		return false;
 	}
 	UINT64 ret = smbc_lseek(m_fd, 0, SEEK_END);
@@ -236,6 +255,9 @@ void CFileSMB::Close()
 	{
 		smb.Lock();
 		smbc_close(m_fd);
+		// we could close all sessions that are open now, but it will slow things down if we
+		// have more open / close to do on the same server
+		//smbc_purge();
 		smb.Unlock();
 	}
 	m_fd = -1;
