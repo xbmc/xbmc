@@ -543,7 +543,21 @@ void CUtil::SaveString(const CStdString &strTxt, FILE *fd)
 		fwrite(&strTxt.c_str()[0],1,iSize,fd);
 	}
 }
-
+int  CUtil::LoadString(CStdString &strTxt, byte* pBuffer)
+{
+	strTxt="";
+	int iSize;
+	int iCount=sizeof(int);
+	memcpy(&iSize,pBuffer,sizeof(int));
+	if (iSize==0) return iCount;
+	char *szTmp = new char [iSize+2];
+	memcpy(szTmp ,&pBuffer[iCount], iSize);
+	szTmp[iSize]=0;
+	iCount+=iSize;
+	strTxt=szTmp;
+	delete [] szTmp;
+	return iCount;
+}
 bool CUtil::LoadString(string &strTxt, FILE *fd)
 {
 	strTxt="";
