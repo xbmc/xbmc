@@ -400,6 +400,8 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
 		m_database.GetProgramsByBookmark(m_bookmarkName, m_vecItems, bOnlyDefaultXBE); 
     CUtil::ClearCache();
  	CUtil::SetThumbs(m_vecItems);
+	if (g_stSettings.m_bHideExtensions)
+		CUtil::RemoveExtensions(m_vecItems);
 	CUtil::FillInDefaultIcons(m_vecItems);
 }
 

@@ -818,6 +818,11 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
 			pItem->SetLabel( str );
 		}
 	}
+	else
+	{	// No tag, so we disable the file extension if it has one
+		if (g_stSettings.m_bHideExtensions)
+			CUtil::RemoveExtension(pItem);
+	}
 
 	//	set label 2
 

@@ -122,6 +122,22 @@ char* CUtil::GetFileName(const CStdString& strFileNameAndPath)
 
 }
 
+void CUtil::RemoveExtension(CFileItem *pItem)
+{
+	if (pItem->m_bIsFolder)
+		return;
+	CStdString strLabel = pItem->GetLabel();
+	int iPos = strLabel.ReverseFind(".");
+	if (iPos>0)
+		pItem->SetLabel(strLabel.Left(iPos));
+}
+
+// Remove the extensions from the filenames
+void CUtil::RemoveExtensions(VECFILEITEMS &items)
+{
+	for (int i=0; i < (int)items.size(); ++i)
+		RemoveExtension(items[i]);
+}
 
 bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
 {

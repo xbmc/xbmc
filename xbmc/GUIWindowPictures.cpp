@@ -489,6 +489,8 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
 	m_strDirectory=strDirectory;
 	m_rootDir.GetDirectory(strDirectory,m_vecItems);
 	CUtil::SetThumbs(m_vecItems);
+	if (g_stSettings.m_bHideExtensions)
+		CUtil::RemoveExtensions(m_vecItems);
 	CUtil::FillInDefaultIcons(m_vecItems);
 	OnSort();
 	UpdateButtons();
@@ -670,14 +672,8 @@ void CGUIWindowPictures::OnCreateThumbs()
   }
   CSectionLoader::Load("CXIMAGE");
   // calculate the number of items to take thumbs of
-  int iTotalItems = 0;
+  int iTotalItems = m_vecItems.size()-CUtil::GetFolderCount(m_vecItems);
   int iCurrentItem = 0;
-  for (int i=0; i < (int)m_vecItems.size();++i)
-  {
-    CFileItem* pItem=m_vecItems[i];
-    if (!pItem->m_bIsFolder)
-		iTotalItems++;
-  }
   // now run through and create the thumbs
   for (int i=0; i < (int)m_vecItems.size();++i)
   {
