@@ -120,6 +120,13 @@ void CPlayList::Remove(const CStdString& strFileName)
 		else ++it;
 	}
 }
+
+// remove item from playlist by position
+void CPlayList::Remove(int position)
+{
+	if (position < m_vecItems.size())
+		m_vecItems.erase(m_vecItems.begin() + position);
+}
 int CPlayList::RemoveDVDItems()
 {
 	vector <CStdString> vecFilenames;
