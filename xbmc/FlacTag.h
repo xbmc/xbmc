@@ -13,15 +13,11 @@ namespace MUSIC_INFO {
 	public:
 		CFlacTag(void);
 		virtual ~CFlacTag(void);
-		int GetDuration() { return m_nDuration; }
+		virtual bool ReadTag(CFile* file);
 
 	protected:
-		virtual bool FindVobisTagHeader(void);	// override of COggTag's implementation
 		int ReadFlacHeader(void);				// returns the position after the STREAM_INFO metadata
 		int FindFlacHeader(void);				// returns the offset in the file of the fLaC data
-		virtual bool ReadBit(void);
 
-	private:
-		int	m_nDuration;
 	};
 };
