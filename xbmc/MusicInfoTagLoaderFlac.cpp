@@ -20,7 +20,7 @@ bool CMusicInfoTagLoaderFlac::Load(const CStdString& strFileName, CMusicInfoTag&
 {
 	try
 	{
-		// retrieve the OGG Tag info from strFileName
+		// retrieve the Flac Tag info from strFileName
 		// and put it in tag
 		bool bResult= false;
 		tag.SetURL(strFileName);
@@ -69,8 +69,9 @@ bool CMusicInfoTagLoaderFlac::Load(const CStdString& strFileName, CMusicInfoTag&
 	}
 	catch(...)
 	{
-		CLog::Log("Tag loader ogg: exception in file %s", strFileName.c_str());
+		CLog::Log("Tag loader flac: exception in file %s", strFileName.c_str());
 	}
 
+	tag.SetLoaded(false);
 	return false;
 }
