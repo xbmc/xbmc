@@ -63,23 +63,21 @@ public:
 	HRESULT Remount(const char* szDrive, char* szDevice);
 	HRESULT Remap(char* szMapping);
 
-	DWORD	GetTrayState();
+	DWORD		GetTrayState();
 	HRESULT EjectTray();
 	HRESULT CloseTray();
 
 	string	GetDrive(const string& szPartition);
-	VOID	GetPartition(LPCSTR strFilename, LPSTR strPartition);
-	VOID	RemountDrive(LPCSTR szDrive);
-
-	VOID	UpdateDvdrom();
-
+	VOID		GetPartition(LPCSTR strFilename, LPSTR strPartition);
+	VOID		RemountDrive(LPCSTR szDrive);
+	VOID		UpdateDvdrom();
 	HANDLE	OpenCDROM();
-	INT		ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
-	INT 	ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
-	INT 	ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
-	VOID	CloseCDROM(HANDLE hDevice);
+	INT			ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
+	INT 		ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
+	INT 		ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
+	VOID		CloseCDROM(HANDLE hDevice);
 	
-	BOOL	IsDebug();
+	BOOL		IsDebug();
 	HRESULT Shutdown();
 
 	static VOID	SpindownHarddisk();

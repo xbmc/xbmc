@@ -52,7 +52,7 @@ bool CFileISO::Open(const char* strUserName, const char* strPassword,const char*
 	{
 		if (strFName[i]=='/') strFName[i]='\\';
 	}
-	if ( m_pIsoReader->OpenFile((char*)strFName.c_str(),0) == INVALID_HANDLE_VALUE)
+	if ( m_pIsoReader->OpenFile((char*)strFName.c_str()) == INVALID_HANDLE_VALUE)
 	{
 		delete m_pIsoReader;
 		m_pIsoReader=NULL;

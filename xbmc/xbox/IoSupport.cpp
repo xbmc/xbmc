@@ -372,16 +372,16 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
 	for (int i=0; i < 5; i++)
 	{
 		if( DeviceIoControl( hDevice,
-			IOCTL_CDROM_RAW_READ,
-			&rawRead,
-			sizeof(RAW_READ_INFO),
-			m_rawXferBuffer,
-			sizeof(RAW_SECTOR_SIZE),
-			&dwBytesReturned,
-			NULL ) != 0 )
+					IOCTL_CDROM_RAW_READ,
+					&rawRead,
+					sizeof(RAW_READ_INFO),
+					m_rawXferBuffer,
+					sizeof(RAW_SECTOR_SIZE),
+					&dwBytesReturned,
+					NULL ) != 0 )
 		{
-			memcpy(lpczBuffer, (byte*)m_rawXferBuffer + MODE2_DATA_START, MODE2_DATA_SIZE);
-			return MODE2_DATA_SIZE;
+				memcpy(lpczBuffer, (byte*)m_rawXferBuffer + MODE2_DATA_START, MODE2_DATA_SIZE);
+				return MODE2_DATA_SIZE;
 		}
 	}
 	return -1;
