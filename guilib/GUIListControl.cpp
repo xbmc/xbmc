@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "guilistcontrol.h"
 #include "guifontmanager.h"
+#include "../xbmc/utils/CharsetConverter.h"
 
 #define CONTROL_LIST		0
 #define CONTROL_UPDOWN	1
@@ -51,7 +52,7 @@ void CGUIListControl::Render()
   if (!m_pFont) return;
   if (!IsVisible()) return;
   CGUIControl::Render();
-  WCHAR wszText[1024];
+  CStdStringW labelUnicode;
   int iPosY=m_iPosY;
 	
   for (int i=0; i < m_iItemsPerPage; i++)
@@ -111,34 +112,37 @@ void CGUIListControl::Render()
 			CStdString strLabel2=pItem->GetLabel2();
       
 			DWORD dMaxWidth=(m_dwWidth-m_iImageWidth-16);
-      if ( strLabel2.size() > 0 && m_pFont2)
-      {
+			if ( strLabel2.size() > 0 && m_pFont2)
+			{
 				if ( m_iTextOffsetY == m_iTextOffsetY2 ) 
 				{
 					float fTextHeight,fTextWidth;
-					swprintf(wszText,L"%S", strLabel2.c_str() );
-					m_pFont2->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
+
+					g_charsetConverter.stringCharsetToFontCharset(strLabel2, labelUnicode);
+
+					m_pFont2->GetTextExtent( labelUnicode.c_str(), &fTextWidth,&fTextHeight);
 					dMaxWidth -= (DWORD)(fTextWidth+20);
 				}
 			}
 
-			swprintf(wszText,L"%S", pItem->GetLabel().c_str() );
-			RenderText((float)iPosX, (float)iPosY+2+m_iTextOffsetY, (FLOAT)dMaxWidth, dwColor, wszText,bSelected);
+			g_charsetConverter.stringCharsetToFontCharset(pItem->GetLabel(), labelUnicode);
+			RenderText((float)iPosX, (float)iPosY+2+m_iTextOffsetY, (FLOAT)dMaxWidth, dwColor, (WCHAR*) labelUnicode.c_str(), bSelected);
       
       if (strLabel2.size()>0 && m_pFont2)
       {
-				dwColor=m_dwTextColor2;
-				if (pItem->IsSelected())
-				{
-					dwColor=m_dwSelectedColor2;
-				}
-				if (!m_iTextOffsetX2)
-					iPosX=m_iPosX+m_dwWidth-16;
-				else
-					iPosX=m_iPosX+m_iTextOffsetX2;
+		dwColor=m_dwTextColor2;
+		if (pItem->IsSelected())
+		{
+			dwColor=m_dwSelectedColor2;
+		}
+		if (!m_iTextOffsetX2)
+			iPosX=m_iPosX+m_dwWidth-16;
+		else
+			iPosX=m_iPosX+m_iTextOffsetX2;
 
-        swprintf(wszText,L"%S", strLabel2.c_str() );
-        m_pFont2->DrawText((float)iPosX, (float)iPosY+2+m_iTextOffsetY2,dwColor,wszText,XBFONT_RIGHT); 
+		CStdStringW labelUnicode;
+		g_charsetConverter.stringCharsetToFontCharset(strLabel2, labelUnicode);
+		m_pFont2->DrawText((float)iPosX, (float)iPosY+2+m_iTextOffsetY2,dwColor,labelUnicode.c_str(),XBFONT_RIGHT); 
       }	
       iPosY += (DWORD)(m_iItemHeight+m_iSpaceBetweenItems);
     }
@@ -189,7 +193,7 @@ void CGUIListControl::RenderText(float fPosX, float fPosY, float fMaxWidth,DWORD
   if (!bScroll)
   {
     m_pFont->DrawTextWidth(fPosX,fPosY,dwTextColor,wszText,fMaxWidth);
-		g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
+	g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
     return;
   }
   else

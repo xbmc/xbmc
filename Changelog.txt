@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 11-09=2004 added: support for international characters in GUI (skin and file names)
   - 11-09-2004 fixed: retrieval of non $HOME <albums> location (sf patch #1026378 by kraqh3d)
   - 10-09-2004 Updated finnish strings.xml (thanks nanite1k)
   - 10-09-2004 changed: restart XBMC instead of reset when changed network settings.

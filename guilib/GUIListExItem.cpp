@@ -2,6 +2,7 @@
 #include "GUIListExItem.h"
 #include "guifontmanager.h"
 #include "../xbmc/utils/log.h"
+#include "../xbmc/utils/CharsetConverter.h"
 
 CGUIListExItem::CGUIListExItem(CStdString& aItemName) : CGUIItem(aItemName)
 {
@@ -74,9 +75,9 @@ void CGUIListExItem::OnPaint(CGUIItem::RenderContext* pContext)
 			// render the text
 			DWORD dwColor = pDC->m_bFocused ? pDC->m_dwTextSelectedColour : pDC->m_dwTextNormalColour;
 
-			WCHAR wszText[1024];
-			swprintf(wszText,L"%S", m_strName.c_str() );
-			RenderText((FLOAT)iPosX, (FLOAT)iPosY+2, (FLOAT)pDC->m_pButton->GetWidth(), dwColor, wszText, pDC->m_pFont);
+			CStdStringW strNameUnicode;
+			g_charsetConverter.stringCharsetToFontCharset(m_strName, strNameUnicode);
+			RenderText((FLOAT)iPosX, (FLOAT)iPosY+2, (FLOAT)pDC->m_pButton->GetWidth(), dwColor, (WCHAR*) strNameUnicode.c_str(), pDC->m_pFont);
 		}
 	}
 }
