@@ -565,7 +565,7 @@
   </string>
  <string>
   <id>213</id> 
-  <value>Calibrazione Interfaccia</value> 
+  <value>Calibraz. Interfaccia</value> 
   </string>
  <string>
   <id>214</id> 
@@ -577,11 +577,11 @@
   </string>
  <string>
   <id>216</id> 
-  <value>Zoom</value> 
+  <value>Livello di Zoom</value> 
   </string>
  <string>
   <id>217</id> 
-  <value>Adatta Schermo</value> 
+  <value>Pixel Ratio</value> 
   </string>
  <string>
   <id>218</id> 
@@ -717,7 +717,7 @@
   </string>
  <string>
   <id>252</id> 
-  <value>Uscita su tutte le Casse</value> 
+  <value>- Uscita su tutte le Casse</value> 
   </string>
  <string>
   <id>253</id> 
@@ -725,7 +725,7 @@
   </string>
  <string>
   <id>254</id> 
-  <value>DD Stereo Passthrough</value> 
+  <value>- DD Stereo Passthrough</value> 
   </string>
  <string>
   <id>255</id> 
@@ -933,23 +933,23 @@
   </string>
  <string>
   <id>307</id> 
-  <value>Auto</value> 
+  <value>- Postprocessing Automatico</value> 
   </string>
  <string>
   <id>308</id> 
-  <value>Filtro verticale deblocking</value> 
+  <value>- Filtro verticale deblocking</value> 
   </string>
  <string>
   <id>309</id> 
-  <value>Filtro orizzontale deblocking</value> 
+  <value>- Filtro orizzontale deblocking</value> 
   </string>
  <string>
   <id>310</id> 
-  <value>Luce/Contrasto Automatico</value> 
+  <value>- Luce/Contrasto Automatico</value> 
   </string>
  <string>
   <id>311</id> 
-  <value>Dering</value> 
+  <value>- Dering</value> 
   </string>
  <string>
   <id>312</id> 
@@ -1161,7 +1161,7 @@
   </string>
  <string>
   <id>364</id> 
-  <value>DD/DTS Passthrough Multicanale</value> 
+  <value>- DD/DTS Passthrough Multicanale</value> 
   </string>
  <string>
   <id>365</id> 
@@ -1665,7 +1665,7 @@
   </string>
  <string>
   <id>491</id> 
-  <value>Usa icone grandi</value> 
+  <value>- Usa icone grandi</value> 
   </string>
  <string>
   <id>492</id> 
@@ -1723,6 +1723,10 @@
   <id>505</id> 
   <value>Caricamento informazioni dai files...</value> 
   </string>
+ <string> 
+  <id>506</id> 
+  <value>Usa nomi cartelle per la descrizione</value> 
+ </string> 
  <string>
   <id>600</id> 
   <value>Rip CD</value> 
@@ -1783,6 +1787,11 @@
   <id>624</id> 
   <value>Includi Numero Traccia</value> 
   </string>
+ <string> 
+  <id>625</id> 
+  <value>Tutte canzoni di</value> 
+ </string> 
+
  <string>
   <id>998</id> 
   <value>XLink KAI</value> 
@@ -1993,7 +2002,7 @@
   </string>
  <string>
   <id>13001</id> 
-  <value>Autospegnimento HD immediato:</value> 
+  <value>Autospegnimento HD immediato</value> 
   </string>
  <string>
   <id>13002</id> 
@@ -2007,4 +2016,36 @@
   <id>13004</id> 
   <value>- Durata minima del file:</value> 
   </string>
-  </strings>
+ <string>
+  <id>13100</id>
+  <value>Flicker filter</value>
+ </string>
+ <string>
+  <id>13200</id>
+  <value>Profili</value>
+ </string>
+ <string>
+  <id>13201</id>
+  <value>Cancella profilo '%i'?</value>
+ </string>
+ <string>
+  <id>13202</id>
+  <value>Salva impostazioni come profilo...</value>
+ </string>
+ <string>
+  <id>13203</id>
+  <value>Profilo '%i' caricato con successo</value>
+ </string>
+ <string>
+  <id>13300</id>
+  <value>Velocità ventola:</value>
+ </string> 
+ <string>
+  <id>13301</id>
+  <value>Controllo automatico temperatura</value>
+ </string> 
+ <string>
+  <id>13302</id>
+  <value>Controllo velocità ventola</value>
+ </string> 
+ </strings>
