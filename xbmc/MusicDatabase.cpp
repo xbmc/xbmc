@@ -1,5 +1,6 @@
 #include ".\musicdatabase.h"
 #include "settings.h"
+#include "StdString.h"
 
 CMusicDatabase::CMusicDatabase(void)
 {
@@ -11,9 +12,25 @@ CMusicDatabase::~CMusicDatabase(void)
 {
 }
 
-void CMusicDatabase::RemoveInvalidChars(string& strTxt)
+
+void CMusicDatabase::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName)
 {
-	string strReturn="";
+	strFileName="";
+	strPath="";
+	int i=strFileNameAndPath.size()-1;
+	while (i > 0)
+	{
+		char ch=strFileNameAndPath[i];
+		if (ch==':' || ch=='/' || ch=='\\') break;
+		else i--;
+	}
+	strPath     = strFileNameAndPath.Left(i);
+	strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i);
+}
+
+void CMusicDatabase::RemoveInvalidChars(CStdString& strTxt)
+{
+	CStdString strReturn="";
 	for (int i=0; i < (int)strTxt.size(); ++i)
 	{
 		byte k=strTxt[i];
@@ -23,13 +40,15 @@ void CMusicDatabase::RemoveInvalidChars(string& strTxt)
 		}
 		strReturn += k;
 	}
+	if (strReturn=="") 
+		strReturn="unknown";
 	strTxt=strReturn;
 }
 
 
 bool CMusicDatabase::Open()
 {
-#if 1
+
 	Close();
 
 	// test id dbs already exists, if not we need 2 create the tables
@@ -59,41 +78,49 @@ bool CMusicDatabase::Open()
 			return false;
 		}
 	}
-#endif
+
 	return true;
 }
 
 
 void CMusicDatabase::Close()
 {
-#if 1
+
 	if (!m_pDB) return;
 	m_pDB->disconnect();
 	delete m_pDB;
 	m_pDB=NULL;
-#endif
+
 }
 
 bool CMusicDatabase::CreateTables()
 {
-#if 1
+
   try 
 	{
-    m_pDB->start_transaction();
     m_pDS->exec("CREATE TABLE artist ( idArtist integer primary key, strArtist text)\n");
     m_pDS->exec("CREATE TABLE album ( idAlbum integer primary key, idArtist integer, strAlbum text)\n");
 		m_pDS->exec("CREATE TABLE genre ( idGenre integer primary key, strGenre text)\n");
-		m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idArtist integer, idAlbum integer, idGenre integer, strTitle text, iTrack integer, iDuration integer, iYear integer, strFileName text)\n");
+		m_pDS->exec("CREATE TABLE path ( idPath integer primary key,  strPath text)\n");
+		m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idArtist integer, idAlbum integer, idGenre integer, idPath integer, strTitle text, iTrack integer, iDuration integer, iYear integer, strFileName text)\n");
 		m_pDS->exec("CREATE TABLE albuminfo ( idAlbumInfo integer primary key, idAlbum integer, idArtist integer,iYear integer, idGenre integer, strTones text, strStyles text, strReview text, strImage text, iRating integer)\n");
+		m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum)");
+		m_pDS->exec("CREATE INDEX idxAlbum2 ON album(idAlbum)");
+		m_pDS->exec("CREATE INDEX idxGenre ON genre(strGenre)");
+		m_pDS->exec("CREATE INDEX idxArtist ON artist(strArtist)");
+		m_pDS->exec("CREATE INDEX idxPath ON path(strPath)");
+		m_pDS->exec("CREATE INDEX idxSong ON song(idArtist,idAlbum,idGenre,strTitle)");
+		m_pDS->exec("CREATE INDEX idxSong2 ON song(idPath,idArtist,idAlbum,idGenre,strFileName)");
+		m_pDS->exec("CREATE INDEX idxSong3 ON song(idPath,idArtist,idAlbum,idGenre,strTitle)");
+		m_pDS->exec("CREATE INDEX idxSong4 ON song(idPath,idArtist,idAlbum,idGenre)");
 
-    m_pDB->commit_transaction();
+		m_pDS->exec("CREATE INDEX idxalbuminfo ON albuminfo(idArtist,idAlbum,idGenre)");
   }
   catch (...) 
 	{ 
-		m_pDB->rollback_transaction(); 
-	return false;
+		return false;
 	}
-#endif
+
 	return true;
 }
 
@@ -105,11 +132,14 @@ void CMusicDatabase::AddSong(const CSong& song1)
 	RemoveInvalidChars(song.strArtist);
 	RemoveInvalidChars(song.strFileName);
 	RemoveInvalidChars(song.strTitle);
-#if 1
+
+	CStdString strPath, strFileName;
+	Split(song.strFileName, strPath, strFileName);
 	if (NULL==m_pDB) return ;
 	if (NULL==m_pDS) return ;
 	long lGenreId  = AddGenre(song.strGenre);
 	long lArtistId = AddArtist(song.strArtist);
+	long lPathId   = AddPath(strPath);
 	long lAlbumId  = AddAlbum(song.strAlbum,lArtistId);
 
 	char szSQL[1024];
@@ -118,22 +148,23 @@ void CMusicDatabase::AddSong(const CSong& song1)
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound!= 0) return ; // already exists
 
-	sprintf(szSQL,"insert into song (idSong,idArtist,idAlbum,idGenre,strTitle,iTrack,iDuration,iYear,strFileName) values(NULL,%i,%i,%i,'%s',%i,%i,%i,'%s')",
-				lArtistId,lAlbumId,lGenreId,song.strTitle.c_str(),song.iTrack,song.iDuration,song.iYear,song.strFileName.c_str());
+	sprintf(szSQL,"insert into song (idSong,idArtist,idAlbum,idGenre,idPath,strTitle,iTrack,iDuration,iYear,strFileName) values(NULL,%i,%i,%i,%i,'%s',%i,%i,%i,'%s')",
+								lArtistId,lAlbumId,lGenreId,lPathId,
+								song.strTitle.c_str(),
+								song.iTrack,song.iDuration,song.iYear,
+								strFileName.c_str());
 	m_pDS->exec(szSQL);
-	
-#endif
 }
 
 
-long CMusicDatabase::AddAlbum(const string& strAlbum1, long lArtistId)
+long CMusicDatabase::AddAlbum(const CStdString& strAlbum1, long lArtistId)
 {
-	string strAlbum=strAlbum1;
+	CStdString strAlbum=strAlbum1;
 	RemoveInvalidChars(strAlbum);
-#if 1
+
 	if (NULL==m_pDB) return -1;
 	if (NULL==m_pDS) return -1;
-	string strSQL="select * from album where strAlbum='";
+	CStdString strSQL="select * from album where strAlbum like '";
 	strSQL += strAlbum;
 	strSQL += "'";
 	m_pDS->query(strSQL.c_str());
@@ -153,18 +184,18 @@ long CMusicDatabase::AddAlbum(const string& strAlbum1, long lArtistId)
 		return lAlbumID;
 	}
 
-#endif
+
 	return -1;
 }
 
-long CMusicDatabase::AddGenre(const string& strGenre1)
+long CMusicDatabase::AddGenre(const CStdString& strGenre1)
 {
-	string strGenre=strGenre1;
+	CStdString strGenre=strGenre1;
 	RemoveInvalidChars(strGenre);
-#if 1
+
 	if (NULL==m_pDB) return -1;
 	if (NULL==m_pDS) return -1;
-	string strSQL="select * from genre where strGenre='";
+	CStdString strSQL="select * from genre where strGenre like '";
 	strSQL += strGenre;
 	strSQL += "'";
 	m_pDS->query(strSQL.c_str());
@@ -184,18 +215,18 @@ long CMusicDatabase::AddGenre(const string& strGenre1)
 		long lGenreId=value.get_asLong() ;
 		return lGenreId;
 	}
-#endif
+
 	return -1;
 }
 
-long CMusicDatabase::AddArtist(const string& strArtist1)
+long CMusicDatabase::AddArtist(const CStdString& strArtist1)
 {
-	string strArtist=strArtist1;
+	CStdString strArtist=strArtist1;
 	RemoveInvalidChars(strArtist);
-#if 1
+
 	if (NULL==m_pDB) return -1;
 	if (NULL==m_pDS) return -1;
-	string strSQL="select * from Artist where strArtist='";
+	CStdString strSQL="select * from Artist where strArtist like '";
 	strSQL += strArtist;
 	strSQL += "'";
 	m_pDS->query(strSQL.c_str());
@@ -216,19 +247,55 @@ long CMusicDatabase::AddArtist(const string& strArtist1)
 		return lArtistId;
 	}
 
-#endif
+
 	return -1;
 }
 
-bool CMusicDatabase::GetSongByFileName(const string& strFileName1, CSong& song)
+long CMusicDatabase::AddPath(const CStdString& strPath1)
 {
-	string strFileName=strFileName1;
+	CStdString strPath=strPath1;
+	RemoveInvalidChars(strPath);
+
+	if (NULL==m_pDB) return -1;
+	if (NULL==m_pDS) return -1;
+	CStdString strSQL="select * from Path where strPath like '";
+	strSQL += strPath;
+	strSQL += "'";
+	m_pDS->query(strSQL.c_str());
+	if (m_pDS->num_rows() == 0) 
+	{
+		// doesnt exists, add it
+		strSQL = "insert into Path (idPath, strPath) values( NULL, '" ;
+		strSQL += strPath;
+		strSQL += "')";
+		m_pDS->exec(strSQL.c_str());
+		long lPathId=sqlite_last_insert_rowid(m_pDB->getHandle());
+		return lPathId;
+	}
+	else
+	{
+		const field_value value = m_pDS->fv("idPath");
+		long lPathId=value.get_asLong() ;
+		return lPathId;
+	}
+	return -1;
+}
+
+
+bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName1, CSong& song)
+{
+	CStdString strFileName=strFileName1;
 	RemoveInvalidChars(strFileName);
-#if 1
+
+	CStdString strPath, strFName;
+	Split(strFileName, strPath, strFName);
+
 	if (NULL==m_pDB) return false;
 	if (NULL==m_pDS) return false;
 	char szSQL[1024];
-	sprintf(szSQL,"select * from song,album,genre,artist where song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and strFileName='%s'",strFileName.c_str() );
+	sprintf(szSQL,"select * from song,album,genre,artist,path where song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and strFileName='%s' and strPath='%s'",
+									strPath.c_str(),
+									strFName.c_str() );
 	if (!m_pDS->query(szSQL)) return false;
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound== 0) return false;
@@ -240,21 +307,21 @@ bool CMusicDatabase::GetSongByFileName(const string& strFileName1, CSong& song)
 	song.iDuration = m_pDS->fv("song.iDuration").get_asLong() ;
 	song.iYear     = m_pDS->fv("song.iYear").get_asLong() ;
 	song.strTitle  = m_pDS->fv("song.strTitle").get_asString() ;
-	song.strFileName= m_pDS->fv("song.strFileName").get_asString() ;
+	song.strFileName= strFileName1;
 
-#endif
+
 	return true;
 }
 
-bool CMusicDatabase::GetSong(const string& strTitle1, CSong& song)
+bool CMusicDatabase::GetSong(const CStdString& strTitle1, CSong& song)
 {
-	string strTitle=strTitle1;
+	CStdString strTitle=strTitle1;
 	RemoveInvalidChars(strTitle);
-#if 1
+
 	if (NULL==m_pDB) return false;
 	if (NULL==m_pDS) return false;
 	char szSQL[1024];
-	sprintf(szSQL,"select * from song,album,genre,artist where song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and strTitle='%s'",strTitle.c_str() );
+	sprintf(szSQL,"select * from song,album,genre,artist,path where song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and strTitle='%s'",strTitle.c_str() );
 	if (!m_pDS->query(szSQL)) return false;
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound== 0) return false;
@@ -266,21 +333,23 @@ bool CMusicDatabase::GetSong(const string& strTitle1, CSong& song)
 	song.iDuration = m_pDS->fv("song.iDuration").get_asLong() ;
 	song.iYear     = m_pDS->fv("song.iYear").get_asLong() ;
 	song.strTitle  = m_pDS->fv("song.strTitle").get_asString() ;
-	song.strFileName= m_pDS->fv("song.strFileName").get_asString() ;
-#endif
+
+	string strFileName = m_pDS->fv("path.strPath").get_asString() ;
+	strFileName += m_pDS->fv("song.strFileName").get_asString() ;
+	song.strFileName = strFileName;
 	return true;
 }
 
-bool CMusicDatabase::GetSongsByArtist(const string strArtist1, VECSONGS& songs)
+bool CMusicDatabase::GetSongsByArtist(const CStdString strArtist1, VECSONGS& songs)
 {	
-	string strArtist=strArtist1;
+	CStdString strArtist=strArtist1;
 	RemoveInvalidChars(strArtist);
-#if 1
+
 	songs.erase(songs.begin(), songs.end());
 	if (NULL==m_pDB) return false;
 	if (NULL==m_pDS) return false;
 	char szSQL[1024];
-	sprintf(szSQL,"select * from song,album,genre,artist where song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and artist.strArtist='%s'",strArtist.c_str() );
+	sprintf(szSQL,"select * from song,album,genre,artist,path where song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and artist.strArtist like '%s'",strArtist.c_str() );
 	if (!m_pDS->query(szSQL)) return false;
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound== 0) return false;
@@ -294,24 +363,27 @@ bool CMusicDatabase::GetSongsByArtist(const string strArtist1, VECSONGS& songs)
 		song.iDuration = m_pDS->fv("song.iDuration").get_asLong() ;
 		song.iYear     = m_pDS->fv("song.iYear").get_asLong() ;
 		song.strTitle  = m_pDS->fv("song.strTitle").get_asString();
-		song.strFileName= m_pDS->fv("song.strFileName").get_asString() ;
+			
+		string strFileName = m_pDS->fv("path.strPath").get_asString() ;
+		strFileName += m_pDS->fv("song.strFileName").get_asString() ;
+		song.strFileName = strFileName;
 		songs.push_back(song);
 		m_pDS->next();
 	}
-#endif
+
 	return true;
 }
 
-bool CMusicDatabase::GetSongsByAlbum(const string& strAlbum1, VECSONGS& songs)
+bool CMusicDatabase::GetSongsByAlbum(const CStdString& strAlbum1, VECSONGS& songs)
 {
-	string strAlbum=strAlbum1;
+	CStdString strAlbum=strAlbum1;
 	RemoveInvalidChars(strAlbum);
-#if 1
+
 	songs.erase(songs.begin(), songs.end());
 	if (NULL==m_pDB) return false;
 	if (NULL==m_pDS) return false;
 	char szSQL[1024];
-	sprintf(szSQL,"select * from song,album,genre,artist where song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and album.strAlbum='%s'",strAlbum.c_str() );
+	sprintf(szSQL,"select * from song,album,genre,artist,path where song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and album.strAlbum like '%s'",strAlbum.c_str() );
 	if (!m_pDS->query(szSQL)) return false;
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound== 0) return false;
@@ -325,17 +397,21 @@ bool CMusicDatabase::GetSongsByAlbum(const string& strAlbum1, VECSONGS& songs)
 		song.iDuration = m_pDS->fv("song.iDuration").get_asLong() ;
 		song.iYear     = m_pDS->fv("song.iYear").get_asLong() ;
 		song.strTitle  = m_pDS->fv("song.strTitle").get_asString();
-		song.strFileName= m_pDS->fv("song.strFileName").get_asString() ;
+		
+		string strFileName = m_pDS->fv("path.strPath").get_asString() ;
+		strFileName += m_pDS->fv("song.strFileName").get_asString() ;
+		song.strFileName = strFileName;
+
 		songs.push_back(song);
 		m_pDS->next();
 	}
-#endif
+
 	return true;
 }
 
 bool CMusicDatabase::GetArtists(VECARTISTS& artists)
 {
-#if 1
+
 	artists.erase(artists.begin(), artists.end());
 	if (NULL==m_pDB) return false;
 	if (NULL==m_pDS) return false;
@@ -346,17 +422,17 @@ bool CMusicDatabase::GetArtists(VECARTISTS& artists)
 	if (iRowsFound== 0) return false;
 	while (!m_pDS->eof()) 
 	{
-		string strArtist = m_pDS->fv("strArtist").get_asString();
+		CStdString strArtist = m_pDS->fv("strArtist").get_asString();
 		artists.push_back(strArtist);
 		m_pDS->next();
 	}
-#endif
+
 	return true;
 }
 
 bool CMusicDatabase::GetAlbums(VECALBUMS& albums)
 {
-#if 1
+
 	albums.erase(albums.begin(), albums.end());
 	if (NULL==m_pDB) return false;
 	if (NULL==m_pDS) return false;
@@ -373,7 +449,7 @@ bool CMusicDatabase::GetAlbums(VECALBUMS& albums)
 		albums.push_back(album);
 		m_pDS->next();
 	}
-#endif
+
 	return true;
 }
 
@@ -389,7 +465,7 @@ long CMusicDatabase::AddAlbumInfo(const CAlbum& album1)
 	RemoveInvalidChars(album.strStyles);
 	RemoveInvalidChars(album.strReview);
 	RemoveInvalidChars(album.strImage);
-#if 1
+
 	if (NULL==m_pDB) return -1;
 	if (NULL==m_pDS) return -1;
 	long lGenreId  = AddGenre(album.strGenre);
@@ -420,20 +496,20 @@ long CMusicDatabase::AddAlbumInfo(const CAlbum& album1)
 	delete [] pszSQL;
 	long lAlbumInfoId=sqlite_last_insert_rowid(m_pDB->getHandle());
 	return lAlbumInfoId;
-#endif
+
 	return -1;
 }
 
-bool CMusicDatabase::GetSongsByGenre(const string& strGenre, VECSONGS& songs)
+bool CMusicDatabase::GetSongsByGenre(const CStdString& strGenre, VECSONGS& songs)
 {
-	string strSQLGenre=strGenre;
+	CStdString strSQLGenre=strGenre;
 	RemoveInvalidChars(strSQLGenre);
-#if 1
+
 	songs.erase(songs.begin(), songs.end());
 	if (NULL==m_pDB) return false;
 	if (NULL==m_pDS) return false;
 	char szSQL[1024];
-	sprintf(szSQL,"select * from song,album,genre,artist where song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and genre.strGenre='%s'",strSQLGenre.c_str() );
+	sprintf(szSQL,"select * from song,album,genre,artist,path where song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and genre.strGenre like '%s'",strSQLGenre.c_str() );
 	if (!m_pDS->query(szSQL)) return false;
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound== 0) return false;
@@ -447,17 +523,21 @@ bool CMusicDatabase::GetSongsByGenre(const string& strGenre, VECSONGS& songs)
 		song.iDuration = m_pDS->fv("song.iDuration").get_asLong() ;
 		song.iYear     = m_pDS->fv("song.iYear").get_asLong() ;
 		song.strTitle  = m_pDS->fv("song.strTitle").get_asString();
-		song.strFileName= m_pDS->fv("song.strFileName").get_asString() ;
+		
+		string strFileName = m_pDS->fv("path.strPath").get_asString() ;
+		strFileName += m_pDS->fv("song.strFileName").get_asString() ;
+		song.strFileName = strFileName;
+
 		songs.push_back(song);
 		m_pDS->next();
 	}
-#endif
+
 	return true;
 }
 
 bool CMusicDatabase::GetGenres(VECGENRES& genres)
 {
-#if 1
+
 	genres.erase(genres.begin(), genres.end());
 	if (NULL==m_pDB) return false;
 	if (NULL==m_pDS) return false;
@@ -468,21 +548,21 @@ bool CMusicDatabase::GetGenres(VECGENRES& genres)
 	if (iRowsFound== 0) return false;
 	while (!m_pDS->eof()) 
 	{
-		string strGenre = m_pDS->fv("strGenre").get_asString();
+		CStdString strGenre = m_pDS->fv("strGenre").get_asString();
 		genres.push_back(strGenre);
 		m_pDS->next();
 	}
-#endif
+
 	return true;
 }
 
 
-bool CMusicDatabase::GetAlbumInfo(const string& strAlbum1, CAlbum& album)
+bool CMusicDatabase::GetAlbumInfo(const CStdString& strAlbum1, CAlbum& album)
 {
-	string strAlbum = strAlbum1;
+	CStdString strAlbum = strAlbum1;
 	RemoveInvalidChars(strAlbum);
 	char szSQL[1024];
-	sprintf(szSQL,"select * from albuminfo,album,genre,artist where albuminfo.idAlbum=album.idAlbum and albuminfo.idGenre=genre.idGenre and albuminfo.idArtist=artist.idArtist and strAlbum='%s'",strAlbum.c_str() );
+	sprintf(szSQL,"select * from albuminfo,album,genre,artist where albuminfo.idAlbum=album.idAlbum and albuminfo.idGenre=genre.idGenre and albuminfo.idArtist=artist.idArtist and strAlbum like '%s'",strAlbum.c_str() );
 	if (!m_pDS->query(szSQL)) return false;
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound!= 0) 

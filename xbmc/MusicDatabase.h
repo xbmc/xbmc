@@ -1,17 +1,17 @@
 #pragma once
 #include "lib/sqlLite/sqlitedataset.h"
-#include <string>
+#include "StdString.h"
 #include <vector>
 using namespace std;
 
 class CSong
 {
 public:
-	string strFileName;
-	string strTitle;
-	string strArtist;
-	string strAlbum;
-	string strGenre;
+	CStdString strFileName;
+	CStdString strTitle;
+	CStdString strArtist;
+	CStdString strAlbum;
+	CStdString strGenre;
 	int iTrack;
 	int iDuration;
 	int iYear;
@@ -20,20 +20,20 @@ public:
 class CAlbum
 {
 public:
-	string strAlbum;
-	string strArtist;
-	string strGenre;
-	string strTones ;
-	string strStyles ;
-	string strReview ;
-	string strImage ;
+	CStdString strAlbum;
+	CStdString strArtist;
+	CStdString strGenre;
+	CStdString strTones ;
+	CStdString strStyles ;
+	CStdString strReview ;
+	CStdString strImage ;
 	int    iRating ;
 	int		 iYear;
 };
 
 typedef vector<CSong>  VECSONGS;
-typedef vector<string> VECARTISTS;
-typedef vector<string> VECGENRES;
+typedef vector<CStdString> VECARTISTS;
+typedef vector<CStdString> VECGENRES;
 typedef vector<CAlbum> VECALBUMS;
 
 class CMusicDatabase
@@ -45,22 +45,23 @@ public:
 	void		Close() ;
 	void		AddSong(const CSong& song);
 	long		AddAlbumInfo(const CAlbum& album);
-	bool		GetAlbumInfo(const string& strAlbum, CAlbum& album);
-	bool		GetSong(const string& strTitle, CSong& song);
-	bool		GetSongByFileName(const string& strFileName, CSong& song);
-	bool		GetSongsByArtist(const string strArtist, VECSONGS& songs);
-	bool		GetSongsByAlbum(const string& strAlbum, VECSONGS& songs);
-	bool		GetSongsByGenre(const string& strGenre, VECSONGS& songs);
+	bool		GetAlbumInfo(const CStdString& strAlbum, CAlbum& album);
+	bool		GetSong(const CStdString& strTitle, CSong& song);
+	bool		GetSongByFileName(const CStdString& strFileName, CSong& song);
+	bool		GetSongsByArtist(const CStdString strArtist, VECSONGS& songs);
+	bool		GetSongsByAlbum(const CStdString& strAlbum, VECSONGS& songs);
+	bool		GetSongsByGenre(const CStdString& strGenre, VECSONGS& songs);
 	bool    GetArtists(VECARTISTS& artists);
 	bool    GetAlbums(VECALBUMS& albums);
 	bool    GetGenres(VECGENRES& genres);
-
+	void    Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
 protected:
   SqliteDatabase* m_pDB;
 	Dataset*				m_pDS;
 	bool						CreateTables();
-	long						AddAlbum(const string& strAlbum, long lArtistId);
-	long						AddGenre(const string& strGenre);
-	long						AddArtist(const string& strArtist);
-	void						RemoveInvalidChars(string& strTxt);
+	long						AddAlbum(const CStdString& strAlbum, long lArtistId);
+	long						AddGenre(const CStdString& strGenre);
+	long						AddArtist(const CStdString& strArtist);
+	long						AddPath(const CStdString& strPath);
+	void						RemoveInvalidChars(CStdString& strTxt);
 };
