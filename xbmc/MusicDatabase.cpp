@@ -90,7 +90,6 @@ bool CMusicDatabase::Open()
 	return true;
 }
 
-
 void CMusicDatabase::Close()
 {
 	if (NULL==m_pDB.get() ) return;
@@ -183,7 +182,6 @@ void CMusicDatabase::AddSong(const CSong& song1, bool bCheck)
 		OutputDebugString("-------ERROR----------------");
 	}
 }
-
 
 long CMusicDatabase::AddAlbum(const CStdString& strAlbum1, long lArtistId, long lPathId, const CStdString& strPath)
 {
@@ -287,7 +285,6 @@ void CMusicDatabase::CheckVariousArtistsAndCoverArt()
 
 	m_albumCache.erase(m_albumCache.begin(), m_albumCache.end());
 }
-
 
 long CMusicDatabase::AddGenre(const CStdString& strGenre1)
 {
@@ -410,7 +407,6 @@ long CMusicDatabase::AddPath(const CStdString& strPath1)
 
 	return -1;
 }
-
 
 bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName1, CSong& song)
 {
@@ -728,7 +724,6 @@ bool CMusicDatabase::GetGenres(VECGENRES& genres)
 	return true;
 }
 
-
 bool CMusicDatabase::GetAlbumInfo(const CStdString& strAlbum1, CAlbum& album)
 {
 	CStdString strAlbum = strAlbum1;
@@ -835,7 +830,6 @@ bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, VECSONGS& songs)
   songs.erase(songs.begin(),songs.end());
 	CStdString strPath=strPath1;
 	RemoveInvalidChars(strPath);
-	songs.erase(songs.begin(), songs.end());
 	if (NULL==m_pDB.get()) return false;
 	if (NULL==m_pDS.get()) return false;
 	CStdString strSQL;
@@ -931,4 +925,53 @@ void CMusicDatabase::EmptyCache()
 	m_genreCache.erase(m_genreCache.begin(), m_genreCache.end());
 	m_pathCache.erase(m_pathCache.begin(), m_pathCache.end());
 	m_albumCache.erase(m_albumCache.begin(), m_albumCache.end());
+}
+
+bool CMusicDatabase::GetSongsByPathes(SETPATHES& pathes, MAPSONGS& songs)
+{
+  songs.erase(songs.begin(),songs.end());
+	if (pathes.size()<=0)
+		return false;
+	if (NULL==m_pDB.get()) return false;
+	if (NULL==m_pDS.get()) return false;
+
+	CStdString strWhere="path.strPath in ( ";
+	for (ISETPATHES it=pathes.begin(); it!=pathes.end(); it++)
+	{
+		CStdString strPath=*it;
+		RemoveInvalidChars(strPath);
+
+		CStdString strPart;
+		strPart.Format("'%s', ", strPath);
+		strWhere+=strPart;
+	}
+	strWhere.TrimRight( ", " );
+	strWhere+=" )";
+
+	CStdString strSQL;
+	strSQL.Format("select * from song,album,genre,artist,path where song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and %s", strWhere);
+	if (!m_pDS->query(strSQL.c_str())) return false;
+	int iRowsFound = m_pDS->num_rows();
+	if (iRowsFound== 0) return false;
+	while (!m_pDS->eof()) 
+	{
+		CSong song;
+		song.strArtist    = m_pDS->fv("artist.strArtist").get_asString();
+		song.strAlbum     = m_pDS->fv("album.strAlbum").get_asString();
+		song.strGenre     = m_pDS->fv("genre.strGenre").get_asString();
+		song.iTrack       = m_pDS->fv("song.iTrack").get_asLong() ;
+		song.iDuration    = m_pDS->fv("song.iDuration").get_asLong() ;
+		song.iYear        = m_pDS->fv("song.iYear").get_asLong() ;
+		song.strTitle     = m_pDS->fv("song.strTitle").get_asString();
+		song.iTimedPlayed = m_pDS->fv("song.iTimesPlayed").get_asLong();
+		
+		CStdString strFileName = m_pDS->fv("path.strPath").get_asString() ;
+		strFileName += m_pDS->fv("song.strFileName").get_asString() ;
+		song.strFileName = strFileName;
+		
+		songs.insert(pair<CStdString, CSong>(song.strFileName, song));
+		m_pDS->next();
+	}
+
+	return true;
 }
