@@ -1252,6 +1252,26 @@
      <id>385</id>
      <value>Medel</value>
    </string>
+    <string>
+   <id>396</id> 
+   <value>Välj Plats</value> 
+   </string>
+   <string>
+   <id>397</id> 
+   <value>Uppdaterings Tid</value> 
+   </string>
+   <string>
+   <id>398</id> 
+   <value>Temperatur Enhet</value> 
+   </string>
+  <string>
+   <id>399</id> 
+   <value>Hastighets Enhet</value> 
+   </string>
+   <string>
+   <id>400</id> 
+   <value>Väder</value> 
+   </string>
    <string>
       <id>401</id>
       <value>Temp</value>
