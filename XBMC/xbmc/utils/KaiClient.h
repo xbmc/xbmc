@@ -112,6 +112,7 @@ private:
 	State client_state;
 	IBuddyObserver* observer;
 	CStdString client_vector;
+	BOOL	m_bHeadset;
 	BOOL	m_bHosting;
 	BOOL	m_bContactsSettling;
 	INT		m_nFriendsOnline;

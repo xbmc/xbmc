@@ -531,6 +531,10 @@ HRESULT CVoiceManager::ResetChatter( DWORD dwPlayer )
 }
 
 
+BOOL CVoiceManager::IsHeadsetConnected()
+{
+	return XGetDevices( XDEVICE_TYPE_VOICE_MICROPHONE ) > 0;
+}
 
 //-----------------------------------------------------------------------------
 // Name: CheckDeviceChanges

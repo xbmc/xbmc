@@ -53,16 +53,49 @@
 	g_graphicsContext.SendMessage(msg); \
 }
 
-bool CGUIWindowBuddies::SortArenaItems(CGUIItem* pStart, CGUIItem* pEnd)
+
+
+bool CGUIWindowBuddies::SortGames(CGUIItem* pStart, CGUIItem* pEnd)
+{
+	CArenaItem& rpStart=* ((CArenaItem*)pStart);
+	CArenaItem& rpEnd=* ((CArenaItem*)pEnd);
+
+	// order by number of players: games with most players at the top of the list.
+	if (rpStart.m_nPlayers != rpEnd.m_nPlayers)
+	{
+		return rpStart.m_nPlayers > rpEnd.m_nPlayers;
+	}
+
+	// order alphabetically
+	return ( rpStart.GetName().CompareNoCase( rpEnd.GetName() ) < 0 );
+}
+
+bool CGUIWindowBuddies::SortArena(CGUIItem* pStart, CGUIItem* pEnd)
 {
 	CGUIItem& rpStart	=*pStart;
 	CGUIItem& rpEnd		=*pEnd;
 
+	// order by item time: arenas at the top of list, players at bottom.
 	if ( rpStart.GetCookie() != rpEnd.GetCookie() )
 	{
 		return ( rpStart.GetCookie() == CKaiClient::Item::Arena );
 	}
 
+	// if both items are players
+	if ( rpStart.GetCookie() == CKaiClient::Item::Player &&
+		 rpEnd.GetCookie()	 == CKaiClient::Item::Player)
+	{
+		CBuddyItem& plStart=* ((CBuddyItem*)pStart);
+		CBuddyItem& plEnd=*	  ((CBuddyItem*)pEnd);
+
+		// order by player status: hosters on top, non-hosters at bottom
+		if ( plStart.m_nStatus != plEnd.m_nStatus )
+		{
+			return (  plStart.m_nStatus > plEnd.m_nStatus );
+		}
+	}
+
+	// order alphabetically
 	return ( rpStart.GetName().CompareNoCase( rpEnd.GetName() ) < 0 );
 }
 
@@ -71,11 +104,13 @@ bool CGUIWindowBuddies::SortFriends(CGUIItem* pStart, CGUIItem* pEnd)
 	CBuddyItem& rpStart=* ((CBuddyItem*)pStart);
 	CBuddyItem& rpEnd=*		((CBuddyItem*)pEnd);
 
+	// order by online status: contacts online at the top of the list.
 	if (rpStart.m_bIsOnline != rpEnd.m_bIsOnline)
 	{
 		return rpStart.m_bIsOnline;
 	}
 
+	// order alphabetically
 	return ( rpStart.GetName().CompareNoCase( rpEnd.GetName() ) < 0 );
 }
 
@@ -87,11 +122,12 @@ CGUIWindowBuddies::CGUIWindowBuddies(void)
 	m_pCurrentAvatar = NULL;
 	m_pMe			 = NULL;
 	m_dwGamesUpdateTimer = 0;
+	m_dwArenaUpdateTimer = 0;
 	m_bContactNotifications = FALSE;
 
 	m_friends.SetSortingAlgorithm(CGUIWindowBuddies::SortFriends);
-	m_arena.SetSortingAlgorithm(CGUIWindowBuddies::SortArenaItems);
-	m_games.SetSortingAlgorithm(CGUIWindowBuddies::SortArenaItems);
+	m_arena.SetSortingAlgorithm(CGUIWindowBuddies::SortArena);
+	m_games.SetSortingAlgorithm(CGUIWindowBuddies::SortGames);
 
 	ON_CLICK_MESSAGE(CONTROL_BTNMODE,	CGUIWindowBuddies, OnClickModeButton);
 	ON_CLICK_MESSAGE(CONTROL_BTNADD,	CGUIWindowBuddies, OnClickAddButton);
@@ -143,6 +179,7 @@ void CGUIWindowBuddies::OnInitWindow()
 
 	while(!m_pKaiClient->IsEngineConnected())
 	{
+		m_bContactNotifications = FALSE;
 		SET_CONTROL_DISABLED(GetID(), CONTROL_BTNMODE);	
 
 		CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
@@ -541,12 +578,20 @@ void CGUIWindowBuddies::Render()
 	CGUIWindow::Render();
 
 	m_dwGamesUpdateTimer++;
+	m_dwArenaUpdateTimer++;
 
 	// Every 5 minutes
 	if(m_dwGamesUpdateTimer%15000==0)
 	{
 		// Update the game list player count.
 		UpdateGamesPlayerCount();
+	}
+
+	// Every minute
+	if(m_dwArenaUpdateTimer%3000==0)
+	{
+		// Sort the arena.
+		m_arena.Sort();
 	}
 
 	// Update buttons
@@ -921,18 +966,6 @@ void CGUIWindowBuddies::OnContactOffline(CStdString& aFriend)
 		pBuddy = new CBuddyItem(aFriend);
 		pBuddy->m_bIsContact = true;
 		m_friends.Add(pBuddy);
-/*
-		CStdString choke="Chokemaniac";
-		if (aFriend.CompareNoCase(choke)==0)
-		{
-			Invitation invite;
-			invite.message="Fancy a game in 5 mins?";
-			invite.time="Sunday 5th November 2004, 12:34:22pm";
-			invite.vector="Arena/XBOX/First Person Shooters/Halo 2";
-			m_invitations[choke]=invite;
-			pBuddy->m_bInvite = true;
-		}
-*/
 	}
 
 	pBuddy->SetIcon(16,16,"buddyitem-offline.png");
@@ -943,6 +976,7 @@ void CGUIWindowBuddies::OnContactOffline(CStdString& aFriend)
 		pBuddy->UseCachedAvatar();
 	}
 		
+	m_friends.Sort();
 	m_friends.Release();
 }
 
@@ -955,6 +989,7 @@ void CGUIWindowBuddies::OnContactOnline(CStdString& aFriend)
 	CGUIList::GUILISTITEMS& list = m_friends.Lock();
 
 	CBuddyItem* pBuddy = (CBuddyItem*) m_friends.Find(aFriend);
+
 	if (pBuddy==NULL)
 	{
 		pBuddy = new CBuddyItem(aFriend);
@@ -972,6 +1007,7 @@ void CGUIWindowBuddies::OnContactOnline(CStdString& aFriend)
 
 	pBuddy->SetIcon(16,16,"buddyitem-online.png");
 
+	m_friends.Sort();
 	m_friends.Release();
 
 	if (m_bContactNotifications)
@@ -1230,6 +1266,7 @@ void CGUIWindowBuddies::OnSupportedTitle(DWORD aTitleId, CStdString& aVector)
 		pArena->SetAvatar(aAvatarUrl);
 
 		m_games.Add(pArena);
+		m_games.Sort();
 	}
 
 	m_games.Release();
@@ -1294,6 +1331,7 @@ void CGUIWindowBuddies::OnNewArena(	CStdString& aVector, CStdString& aDescriptio
 		pArena->SetAvatar(aAvatarUrl);
 
 		m_arena.Add(pArena);
+		m_arena.Sort();
 	}
 
 	m_arena.Release();
@@ -1304,9 +1342,9 @@ void CGUIWindowBuddies::OnUpdateArena(	CStdString& aVector, int nPlayers )
 	INT arenaDelimiter = aVector.ReverseFind('/')+1;
 	CStdString arenaLabel = aVector.Mid(arenaDelimiter);
 
-//	CStdString strDebug;
-//	strDebug.Format("KAI: updated %s player count: %d",aVector,nPlayers);
-//	CLog::Log(LOGINFO,strDebug.c_str());
+	//CStdString strDebug;
+	//strDebug.Format("KAI: updated %s player count: %d",aVector,nPlayers);
+	//CLog::Log(LOGINFO,strDebug.c_str());
 
 	m_arena.Lock();
 	CArenaItem* pArena = (CArenaItem*) m_arena.Find(arenaLabel);
@@ -1315,14 +1353,6 @@ void CGUIWindowBuddies::OnUpdateArena(	CStdString& aVector, int nPlayers )
 		pArena->m_nPlayers = nPlayers;
 	}
 	m_arena.Release();
-
-	m_games.Lock();
-	pArena = (CArenaItem*) m_games.Find(arenaLabel);
-	if (pArena)
-	{
-		pArena->m_nPlayers = nPlayers;
-	}
-	m_games.Release();
 }
 
 void CGUIWindowBuddies::OnUpdateOpponent(CStdString& aOpponent, CStdString& aAge, 

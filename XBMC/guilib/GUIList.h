@@ -15,7 +15,7 @@ using namespace std;
 class CGUIList
 {
 public:
-
+	typedef bool (*GUILISTITEMCOMPARISONFUNC) (CGUIItem* pObject1, CGUIItem* pObject2);
 	typedef vector<CGUIItem*> GUILISTITEMS;
 	typedef vector<CGUIItem*> ::iterator GUILISTITERATOR;
 
@@ -31,23 +31,12 @@ public:
 	CGUIItem* Find(CStdString aListItemLabel);
 	void Release();
 
+	void SetSortingAlgorithm(GUILISTITEMCOMPARISONFUNC aFunction);
+	void Sort();
+
 protected:
 	CRITICAL_SECTION m_critical;
 	GUILISTITEMS m_listitems;
-};
-
-class CGUISortedList : public CGUIList
-{
-public:
-	typedef bool (*GUILISTITEMCOMPARISONFUNC) (CGUIItem* pObject1, CGUIItem* pObject2);
-
-	CGUISortedList();
-	virtual ~CGUISortedList(void);
-
-	void SetSortingAlgorithm(GUILISTITEMCOMPARISONFUNC aFunction);
-	virtual void Add(CGUIItem* aListItem);
-
-protected:
 	GUILISTITEMCOMPARISONFUNC m_comparision;
 };
 

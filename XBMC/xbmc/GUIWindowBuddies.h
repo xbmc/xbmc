@@ -81,7 +81,8 @@ protected:
 	void	Play(CStdString& aVector);
 
 	static bool	SortFriends(CGUIItem* pStart, CGUIItem* pEnd);
-	static bool	SortArenaItems(CGUIItem* pStart, CGUIItem* pEnd);
+	static bool	SortGames(CGUIItem* pStart, CGUIItem* pEnd);
+	static bool	SortArena(CGUIItem* pStart, CGUIItem* pEnd);
 
 	CBuddyItem* GetBuddySelection();
 	CArenaItem* GetArenaSelection();
@@ -94,9 +95,9 @@ protected:
 		CStdString message;
 	};
 
-	CGUISortedList			m_friends;
-	CGUISortedList			m_arena;
-	CGUISortedList			m_games;
+	CGUIList	m_friends;
+	CGUIList	m_arena;
+	CGUIList	m_games;
 	State window_state;
 
 	CGUIImage*	m_pOpponentImage;
@@ -108,6 +109,7 @@ protected:
 	BOOL		m_bContactNotifications;
 
 	DWORD		m_dwGamesUpdateTimer;
+	DWORD		m_dwArenaUpdateTimer;
 
 	typedef map<CStdString,Invitation> INVITETABLE;
 	INVITETABLE m_invitations;
