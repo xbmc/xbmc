@@ -307,6 +307,8 @@ public:
   virtual void deletion();
 /* Cancel changes, made in insert or edit states of dataset */
   virtual void cancel() {};
+/* interupt any pending database operation  */
+	virtual void interrupt() {};
 
   virtual void setParamList(const ParamList &params);
   virtual bool locate();

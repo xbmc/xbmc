@@ -143,6 +143,8 @@ public:
   virtual long nextid(const char *seq_name);
 /* sequence numbers */
   virtual int num_rows();
+/* interupt any pending database operation  */
+  virtual void interrupt();
 
   virtual bool bof();
   virtual bool eof();
