@@ -1,11 +1,9 @@
 #include "modplayer.h"
 #include "../util.h"
 #include "../application.h"
-#include "../xbox/iosupport.h"
 #include "../utils/log.h"
 #include "../SectionLoader.h"
 #include "../URL.h"
-#include "../FileSystem/FileSmb.h"
 
 #pragma comment(linker,"/merge:MOD_RD=MOD_RX")
 #pragma comment(linker,"/section:MOD_RX,REN")

@@ -1,4 +1,5 @@
 #pragma once
+
 #include "../lib/libsidplay/libsidplay/include/sidplay/sidplay2.h"
 #include <sidplay/utils/SidDatabase.h>
 #include "sidplayer/audio/AudioDrv.h"

@@ -1,3 +1,4 @@
+#include "application.h"
 #include "util.h"
 #include "xbox/iosupport.h"
 #include "xbox/xbeheader.h"
@@ -17,7 +18,6 @@
 #include "autoptrhandle.h"
 #include "playlistfactory.h"
 #include "ThumbnailCache.h"
-#include "application.h"
 #include "picture.h"
 
 using namespace AUTOPTR;

@@ -1,4 +1,11 @@
 #pragma once
+
+#include <xtl.h>
+#include <xgraphics.h>
+#include <stdio.h>
+#include <vector>
+#include <memory>
+#include <stdlib.h>
 #include "xbapplicationex.h"
 #include "applicationmessenger.h"
 #include "GUIWindowManager.h"
@@ -72,8 +79,6 @@
 #include "IMsgTargetCallback.h"
 #include "ButtonTranslator.h"
 #include "musicInfoTag.h"
-#include <vector>
-#include <memory>
 
 using namespace std;
 using namespace MEDIA_DETECT;
