@@ -92,6 +92,10 @@
 
 CStdString g_LoadErrorStr;
 
+static char szHomePaths[][13] = { "E:\\Apps\\XBMC", "E:\\XBMC", "F:\\Apps\\XBMC", "F:\\XBMC" };
+
+#define NUM_HOME_PATHS 4
+
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void)
 :m_ctrDpad(220,220)
@@ -573,28 +577,33 @@ HRESULT CApplication::Create()
 	CLog::Log(LOGINFO, "  map drive D:");
 	helper.Remount("D:","Cdrom0");
 
-	if (g_stSettings.m_bUseFDrive)
+	if (helper.IsDrivePresent("F:") || g_stSettings.m_bUseFDrive)
 	{
 		CLog::Log(LOGINFO, "  map drive F:");
 		helper.Remap("F:,Harddisk0\\Partition6");
+		g_stSettings.m_bUseFDrive = true;
 	}
 
 	// used for the LBA-48 hack allowing >120 gig
-	if (g_stSettings.m_bUseGDrive)
+	if (helper.IsDrivePresent("G:") || g_stSettings.m_bUseGDrive)
 	{
 		CLog::Log(LOGINFO, "  map drive G:");
 		helper.Remap("G:,Harddisk0\\Partition7");
+		g_stSettings.m_bUseGDrive = true;
 	}
 
 	// check settings to see if another home dir is defined.
 	// if there is, we check if it's a xbmc dir and map to it Q:
+	CStdString strHomePath = "Q:";
 	if (strlen(g_stSettings.szHomeDir) > 1)
 	{
 		CLog::Log(LOGNOTICE, "map Q: to homedir:%s...",g_stSettings.szHomeDir);
 		// home dir is defined in xboxmediacenter.xml
-		CStdString strHomePath = g_stSettings.szHomeDir;
-
-		if(!access(strHomePath + "\\skin", 0))
+		strHomePath = g_stSettings.szHomeDir;
+	}
+	if(!access(strHomePath + "\\skin", 0))
+	{
+		if (strHomePath != "Q:")
 		{
 			helper.GetPartition(strHomePath, szDevicePath);
 			strcat(szDevicePath, &strHomePath.c_str()[2]);
@@ -607,9 +616,40 @@ HRESULT CApplication::Create()
 			CLog::Close();
 			CLog::Log(LOGNOTICE, "Q is mapped to:%s",szDevicePath);
 		}
+	}
+	else
+	{
+		// failed - lets try defaults:
+		// E:\apps\xbmc
+		// E:\xbmc
+		// F:\apps\xbmc
+		// F:\xbmc
+		bool bFoundHomePath = false;
+		for (int i=0; i<NUM_HOME_PATHS; i++)
+		{
+			strHomePath = szHomePaths[i];
+			if (!access(strHomePath + "\\skin", 0))
+			{
+				bFoundHomePath = true;
+				break;
+			}
+		}
+		if (bFoundHomePath)
+		{
+			helper.GetPartition(strHomePath, szDevicePath);
+			strcat(szDevicePath, &strHomePath.c_str()[2]);
+			strcpy(g_stSettings.szHomeDir, strHomePath.c_str());
+			CLog::Close();
+			helper.Unmount("Q:");
+			helper.Mount("Q:", szDevicePath);
+			::DeleteFile("Q:\\xbmc.old.log");
+			::MoveFile("Q:\\xbmc.log","Q:\\xbmc.old.log");
+			CLog::Close();
+			CLog::Log(LOGNOTICE, "Q is mapped to:%s",szDevicePath);
+		}
 		else
 		{
-			g_LoadErrorStr = "Invalid <home> tag in xml - no skins found";
+			g_LoadErrorStr = "Invalid or missing <home> tag in xml - no skins found";
 			FatalErrorHandler(true, false, true);
 		}
 	}
@@ -972,7 +1012,7 @@ void CApplication::StartLEDControl(bool switchoff)
 			CLog::Log(LOGNOTICE, "LED Control: Playing Music LED is switched OFF!");
 			ILED::CLEDControl(LED_COLOUR_OFF);
 		}
-		if ( IsPlayingVideo() || IsPlayingAudio() && g_guiSettings.GetInt("LED.DisableOnPlayback") == LED_PLAYBACK_VIDEO_MUSIC)
+		if ( (IsPlayingVideo() || IsPlayingAudio()) && g_guiSettings.GetInt("LED.DisableOnPlayback") == LED_PLAYBACK_VIDEO_MUSIC)
 		{
 			CLog::Log(LOGNOTICE, "LED Control: Playing Video Or Music LED is switched OFF!");
 			ILED::CLEDControl(LED_COLOUR_OFF);

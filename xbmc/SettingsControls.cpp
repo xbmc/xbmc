@@ -122,7 +122,7 @@ void CButtonSettingControl::OnClick()
 	CStdString keyboardInput(((CSettingString *)m_pSetting)->GetData());
 	if (m_pSetting->GetControlType() == BUTTON_CONTROL_INPUT || m_pSetting->GetControlType() == BUTTON_CONTROL_HIDDEN_INPUT || m_pSetting->GetControlType() == BUTTON_CONTROL_IP_INPUT)
 	{
-		if (CGUIDialogKeyboard::ShowAndGetInput(keyboardInput, false))
+		if (CGUIDialogKeyboard::ShowAndGetInput(keyboardInput, ((CSettingString *)m_pSetting)->m_bAllowEmpty))
 		{
 			if (m_pSetting->GetControlType() == BUTTON_CONTROL_IP_INPUT)
 			{	// check if we have a valid ip...

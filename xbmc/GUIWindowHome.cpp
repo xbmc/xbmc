@@ -187,7 +187,12 @@ void CGUIWindowHome::Render()
 	GetTime(szText,&time);
 
 	SET_CONTROL_LABEL(201,szText);
-
+	// set controls 121->160 invisible (these are the focus + nofocus buttons for the button scroller)
+	for (int i=121; i<160; i++)
+	{
+		CGUIControl *pControl = (CGUIControl *)GetControl(i);
+		if (pControl) pControl->SetVisible(false);
+	}
   CGUIWindow::Render();
 }
 
