@@ -110,7 +110,6 @@ bool CMPlayer::openfile(const CStdString& strFile)
 
 	m_iPTS			= 0;
 	m_bPaused	  = false;
-	m_bIsPlaying= true;
 
 	load();
 //	int argc=8;
@@ -143,6 +142,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		closefile();
 		return false;
 	}
+	m_bIsPlaying= true;
 
 	CStdString strAudioInfo;
 	GetAudioInfo( strAudioInfo);
