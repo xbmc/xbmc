@@ -24,15 +24,16 @@ After building XBMC copy the following files & directories to your xbox
 
 lets say you're installing XBMC on e:\apps\xbmc then:
 
-release/default.xbe	-> 	e:\apps\xbmc\default.xbe
-XboxMediaCenter.xml	->	e:\apps\xbmc\XboxMediaCenter.xml
-mplayer/		->	e:\apps\xbmc\mplayer		(copy all files & subdirs)
-skin/			->	e:\apps\xbmc\skin		(copy all files & subdirs)
-language/               ->      e:\apps\xbmc\language		(copy all files & subdirs)
-xbmc/keyboard/media	->	e:\apps\xbmc\media		(copy all files & subdirs)
-visualisations    	->	e:\apps\xbmc\visualisations	(copy all files & subdirs)
-scripts/		->	e:\apps\xbmc\scripts		(these are just samples, only extract if you want to experiment with it)
-python			->	e:\apps\xbmc\python  		(unpack the .rar file)
-web					-> e:\apps\xbmc\web					(unpack the .rar file)
+release/default.xbe ->  e:\apps\xbmc\default.xbe
+XboxMediaCenter.xml ->  e:\apps\xbmc\XboxMediaCenter.xml
+mplayer/            ->  e:\apps\xbmc\mplayer        (copy all files & subdirs)
+skin/               ->  e:\apps\xbmc\skin           (copy all files & subdirs)
+language/           ->  e:\apps\xbmc\language       (copy all files & subdirs)
+weather/            ->  e:\apps\xbmc\weather        (copy all files & subdirs)
+xbmc/keyboard/media ->  e:\apps\xbmc\media          (copy all files & subdirs)
+visualisations      ->  e:\apps\xbmc\visualisations (copy all files & subdirs)
+scripts/            ->  e:\apps\xbmc\scripts        (these are just samples, only extract if you want to experiment with it)
+python              ->  e:\apps\xbmc\python         (unpack the .rar file)
+web                 -> e:\apps\xbmc\web             (unpack the .rar file)
 
 !!! please not that you unpack the .rar files in scripts/ python/ and web/ !!!
