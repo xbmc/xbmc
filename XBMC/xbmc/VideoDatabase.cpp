@@ -9,7 +9,7 @@
 #include "utils/fstrcmp.h"
 #include "util.h"
 
-#define VIDEO_DATABASE_VERSION 1.1f
+#define VIDEO_DATABASE_VERSION 1.2f
 
 //********************************************************************************************************************************
 CVideoDatabase::CVideoDatabase(void)
@@ -1387,7 +1387,7 @@ bool CVideoDatabase::UpdateOldVersion(float fVersion)
                 "SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer,"
                 "AdjustFrameRate integer, AudioDelay float)\n");
   }
-  if (fVersion < VIDEO_DATABASE_VERSION)
+  if (fVersion < 1.1f)
   {
     // version 1.0 to 1.1 upgrade - addition of ResumeTime to the settings table
     CLog::Log(LOGINFO, "Creating temporary settings table");
@@ -1414,6 +1414,16 @@ bool CVideoDatabase::UpdateOldVersion(float fVersion)
     // ok, now fill in the defaults
     CLog::Log(LOGINFO, "UPDATE settings set ResumeTime='0'");
     m_pDS->exec("UPDATE settings set ResumeTime='0'");
+    fVersion = 1.1f;
+    // now update the version table
+    CStdString strVersion;
+    strVersion.Format("UPDATE version set idVersion='%f'\n", fVersion);
+    m_pDS->exec(strVersion.c_str());
+  }
+  if (fVersion < VIDEO_DATABASE_VERSION)
+  { // v 1.1 -> 1.2 (bug fix - clean out the settings table)
+    CLog::Log(LOGINFO, "Cleaning the settings table");
+    m_pDS->exec("delete from settings\n");
     fVersion = VIDEO_DATABASE_VERSION;
     // now update the version table
     CStdString strVersion;
