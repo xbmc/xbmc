@@ -82,7 +82,7 @@ struct CreditLine_t
 	{  50,  35,   8100,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"poing" },
 	{  50,  45,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"RUNTiME" },
 	{  50,  55,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Shadow_Mx" },
-	{  50,  65,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"xAD" },
+	{  50,  65,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"xAD/nIGHTFALL" },
 
 	// Support
 	{  50,  22,   9500,   5000,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Tech Support" },
@@ -104,7 +104,7 @@ struct CreditLine_t
 	{  50,  35,    500,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"HulleBulle" },
 	{  50,  45,    100,   7400,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"MrX" },
 	{  50,  55,    100,   7300,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team-XBMC" },
-	{  50,  65,    100,   7200,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"xAD (ASP Interface Site Upload)" },
+	{  50,  65,    100,   7200,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"xAD/nIGHTFALL (ASP Interface Site Upload)" },
 
 	// Special Thanks
 	{  50,  22,   9500,   8000,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Special Thanks to" },
@@ -148,7 +148,7 @@ struct CreditLine_t
 	{  50,  75,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"my school for giving me a laptop for free" },
 
   // joke section xAD
-	{  50,  22,   9500,   8000,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   36, L"xAD" },
+	{  50,  22,   9500,   8000,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   36, L"xAD/nIGHTFALL" },
   {  50,  35,    500,   7500,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"Special thanks to:" },
 	{  50,  45,    100,   7400,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"Butcher for making me happy (Sid player)" },
 	{  50,  55,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"My wife for moral support" },
