@@ -40,7 +40,7 @@
   <string><id>109</id><value>Skapa miniatyrer</value></string>
   <string><id>110</id><value>Skapa miniatyrer</value></string>
   <string><id>111</id><value>Genvägar</value></string>
-  <string><id>112</id><value>PAUSAD</value></string>
+  <string><id>112</id><value>Pausad</value></string>
   <string><id>113</id><value>Mina filer  Källa</value></string>
   <string><id>114</id><value>Mina filer  Destination</value></string>
   <string><id>115</id><value>Kopiera</value></string>
@@ -58,7 +58,7 @@
   <string><id>127</id><value>Objekt</value></string>
   <string><id>128</id><value>Generella</value></string>
   <string><id>129</id><value>Bildspel</value></string>
-  <string><id>130</id><value>System info</value></string>
+  <string><id>130</id><value>System Info</value></string>
   <string><id>131</id><value>Bildskärm</value></string>
   <string><id>132</id><value>Album</value></string>
   <string><id>133</id><value>Artister</value></string>
@@ -72,7 +72,7 @@
   <string><id>141</id><value>GPU</value></string>
   <string><id>142</id><value>Tid</value></string>
   <string><id>143</id><value>Nuvarande</value></string>
-  <string><id>144</id><value>Bygge</value></string>
+  <string><id>144</id><value>Bygge/Version</value></string>
   <string><id>145</id><value>Nätverk</value></string>
   <string><id>146</id><value>Typ</value></string>
   <string><id>147</id><value>Statiskt</value></string>
@@ -115,7 +115,7 @@
   <string><id>184</id><value>Uppdatera</value></string>
   <string><id>185</id><value>Söker album</value></string>
   <string><id>186</id><value>OK</value></string>
-  <string><id>187</id><value>Hittade inga album!</value></string>
+  <string><id>187</id><value>Hittade inga album</value></string>
   <string><id>188</id><value>Markera allt</value></string>
   <string><id>189</id><value>Indexerar mediainfo</value></string>
   <string><id>190</id><value>Spara</value></string>
@@ -606,6 +606,8 @@
   <string><id>13002</id><value>Bara video</value></string>
   <string><id>13003</id><value>- Fördröjning</value></string>
   <string><id>13004</id><value>- Minimum speltid</value></string>
+  <string><id>13005</id><value>Stäng av</value></string>
+  <string><id>13006</id><value>Dashboard</value></string>
   <string><id>13100</id><value>Fladder filter</value></string>
   <string><id>13200</id><value>Profiler</value></string>
   <string><id>13201</id><value>Radera profil '%s'?</value></string>
