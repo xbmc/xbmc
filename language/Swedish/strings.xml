@@ -1184,6 +1184,7 @@
     <id>369</id>
     <value>Titel</value>
   </string>
+
   <string>
     <id>370</id>
      <value>Åska</value>
@@ -1227,7 +1228,7 @@
    </string>
    <string>
      <id>380</id>
-     <value>Fall</value>
+     <value>Skurar</value>
    </string>
    <string>
      <id>381</id>
@@ -1249,6 +1250,48 @@
      <id>385</id>
      <value>Medel</value>
    </string>
+ <string>
+ <id>386</id>
+ <value>Klart</value>
+ </string>
+
+ <string>
+ <id>387</id>
+ <value>Molnigt</value>
+ </string>
+	<string>
+		<id>388</id>
+		<value>N/A</value>
+	</string>
+	<string>
+		<id>389</id>
+		<value>N/A</value>
+	</string>
+	<string>
+		<id>390</id>
+		<value>N/A</value>
+	</string>
+	<string>
+		<id>391</id>
+		<value>N/A</value>
+	</string>
+	<string>
+		<id>392</id>
+		<value>N/A</value>
+	</string>
+	<string>
+		<id>393</id>
+		<value>N/A</value>
+	</string>
+	<string>
+		<id>394</id>
+		<value>N/A</value>
+	</string>
+	<string>
+		<id>395</id>
+		<value>N/A</value>
+	</string>
+
     <string>
    <id>396</id> 
    <value>Välj plats</value> 
