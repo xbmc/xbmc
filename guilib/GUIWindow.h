@@ -23,6 +23,7 @@ using namespace std;
 
 // forward
 class TiXmlNode;
+class TiXmlElement;
 
 class CPosition
 {
@@ -41,43 +42,44 @@ public:
 	CGUIWindow(DWORD dwID);
 	virtual ~CGUIWindow(void);
 
-	virtual bool      Load(const CStdString& strFileName, bool bContainsPath = false);
-	virtual void			SetPosition(int iPosX, int iPosY);
-	void					CenterWindow();
-	virtual void    		Render();
-	virtual void    		OnAction(const CAction &action);
-	void					OnMouseAction();
-	virtual void			OnMouse();
-	bool					HandleMouse(CGUIControl *pControl);
-	virtual bool    		OnMessage(CGUIMessage& message);
-	void            		Add(CGUIControl* pControl);
-	void					Remove(DWORD dwId);
-	int             		GetFocusControl();
-	void            		SelectNextControl();
-	void	                SelectPreviousControl();
-	void					SetID(DWORD dwID);
-	DWORD           		GetID(void) const;
-	DWORD					GetPreviousWindowID(void) const;
-	DWORD					GetWidth() { return m_dwWidth; };
-	DWORD					GetHeight() { return m_dwHeight; };
-	int						GetPosX() { return m_iPosX; };
-	int						GetPosY() { return m_iPosY; };
-	const CGUIControl*		GetControl(int iControl) const;
-	void					ClearAll();
-	int						GetFocusedControl() const;
-	virtual void			AllocResources();
-	virtual void			FreeResources();
-	virtual void			ResetAllControls();
-	static void		        FlushReferenceCache();
-	virtual bool	IsDialog() {return false;};
+	virtual bool				Load(const CStdString& strFileName, bool bContainsPath = false);
+	virtual bool				Load(const TiXmlElement* pRootElement, RESOLUTION resToUse);
+	virtual void				SetPosition(int iPosX, int iPosY);
+	void								CenterWindow();
+	virtual void				Render();
+	virtual void				OnAction(const CAction &action);
+	void								OnMouseAction();
+	virtual void				OnMouse();
+	bool								HandleMouse(CGUIControl *pControl);
+	virtual bool				OnMessage(CGUIMessage& message);
+	void								Add(CGUIControl* pControl);
+	void								Remove(DWORD dwId);
+	int									GetFocusControl();
+	void								SelectNextControl();
+	void								SelectPreviousControl();
+	void								SetID(DWORD dwID);
+	DWORD								GetID(void) const;
+	DWORD								GetPreviousWindowID(void) const;
+	DWORD								GetWidth() { return m_dwWidth; };
+	DWORD								GetHeight() { return m_dwHeight; };
+	int									GetPosX() { return m_iPosX; };
+	int									GetPosY() { return m_iPosY; };
+	const CGUIControl*	GetControl(int iControl) const;
+	void								ClearAll();
+	int									GetFocusedControl() const;
+	virtual void				AllocResources();
+	virtual void				FreeResources();
+	virtual void				ResetAllControls();
+	static void					FlushReferenceCache();
+	virtual bool				IsDialog() {return false;};
 
 protected:
-	virtual void        OnWindowLoaded() {};
-  virtual void			OnInitWindow();
+	virtual void				OnWindowLoaded() {};
+  virtual void				OnInitWindow();
 	struct stReferenceControl
 	{
-		char				 m_szType[128];
-		CGUIControl* m_pControl;
+		char					m_szType[128];
+		CGUIControl*	m_pControl;
 	};
 
 	typedef Event<CGUIMessage&> CLICK_EVENT; 

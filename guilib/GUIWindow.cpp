@@ -304,108 +304,113 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 
 bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 {
+	RESOLUTION resToUse = INVALID;
 	CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
-    m_vecGroups.erase(m_vecGroups.begin(),m_vecGroups.end());
+	m_vecGroups.erase(m_vecGroups.begin(),m_vecGroups.end());
 	TiXmlDocument xmlDoc;
 	// Find appropriate skin folder + resolution to load from
-	RESOLUTION resToUse = INVALID;
 	CStdString strPath;
 	if (bContainsPath)
 		strPath = strFileName;
 	else
 		strPath = g_SkinInfo.GetSkinPath(strFileName, &resToUse);
 
-    if ( !xmlDoc.LoadFile(strPath.c_str()) )
-    {
-        CLog::Log(LOGERROR, "unable to load:%s", strPath.c_str());
-		m_dwWindowId=WINDOW_INVALID;
-        return false;
-    }
-  TiXmlElement* pRootElement =xmlDoc.RootElement();
-  CStdString strValue=pRootElement->Value();
-  if (strValue!=CStdString("window")) 
+  if ( !xmlDoc.LoadFile(strPath.c_str()) )
   {
-    CLog::Log(LOGERROR, "file :%s doesnt contain <window>", strPath.c_str());
+    CLog::Log(LOGERROR, "unable to load:%s", strPath.c_str());
+    m_dwWindowId=WINDOW_INVALID;
     return false;
   }
-  
+	TiXmlElement* pRootElement =xmlDoc.RootElement();
+	CStdString strValue=pRootElement->Value();
+	if (strValue!=CStdString("window"))
+	{
+		CLog::Log(LOGERROR, "file :%s doesnt contain <window>", strPath.c_str());
+		return false;
+	}
+
+	return Load(pRootElement, resToUse);
+}
+
+bool CGUIWindow::Load(const TiXmlElement* pRootElement, RESOLUTION resToUse)
+{
   m_dwDefaultFocusControlID=0;
   m_dwWidth=m_dwHeight=0;
-	
-	VECREFERENCECONTOLS  referencecontrols;
-	IVECREFERENCECONTOLS it;
-	LoadReference(referencecontrols);
-  const TiXmlNode *pChild = pRootElement->FirstChild();
-  while (pChild)
-  {
-    CStdString strValue=pChild->Value();
-    if (strValue=="id")
-    {
-      m_dwWindowId=WINDOW_HOME + atoi(pChild->FirstChild()->Value());		// window Id's start at WINDOW_HOME
-    }
-    else if (strValue=="defaultcontrol")
-    {
-      m_dwDefaultFocusControlID=atoi(pChild->FirstChild()->Value());
-    }
-    else if (strValue=="coordinates")
-    {
-			TiXmlNode* pSystem=pChild->FirstChild("system");
-			if (pSystem)
-			{
-				int iCoordinateSystem = atoi(pSystem->FirstChild()->Value());
-				m_bRelativeCoords = (iCoordinateSystem==1);
-			}
 
-			TiXmlNode* pPosX=pChild->FirstChild("posX");
-			if (pPosX)
-			{
-				m_iPosX = atoi(pPosX->FirstChild()->Value());
-				g_graphicsContext.ScaleXCoord(m_iPosX, resToUse);
-			}
-
-			TiXmlNode* pPosY=pChild->FirstChild("posY");
-			if (pPosY)
-			{
-				m_iPosY = atoi(pPosY->FirstChild()->Value());
-				g_graphicsContext.ScaleYCoord(m_iPosY, resToUse);
-			}
-    }
-    else if (strValue=="controls")
-    {
-      const TiXmlNode *pControl = pChild->FirstChild("control");
-      while (pControl)
+  VECREFERENCECONTOLS  referencecontrols;
+  IVECREFERENCECONTOLS it;
+  LoadReference(referencecontrols);
+	const TiXmlNode *pChild = pRootElement->FirstChild();
+	while (pChild)
+	{
+		CStdString strValue=pChild->Value();
+		if (strValue=="id")
+		{
+			m_dwWindowId=WINDOW_HOME + atoi(pChild->FirstChild()->Value());            // window Id's start at	WINDOW_HOME
+		}
+		else if (strValue=="defaultcontrol")
+		{
+			m_dwDefaultFocusControlID=atoi(pChild->FirstChild()->Value());
+		}
+		else if (strValue=="coordinates")
+		{
+      TiXmlNode* pSystem=pChild->FirstChild("system");
+      if (pSystem)
       {
-        LoadControl(pControl, -1, referencecontrols, resToUse);
-        pControl=pControl->NextSibling("control");
+        int iCoordinateSystem = atoi(pSystem->FirstChild()->Value());
+        m_bRelativeCoords = (iCoordinateSystem==1);
       }
 
-      const TiXmlNode *pControlGroup = pChild->FirstChild("controlgroup");
-      int iGroup=0;
-      while (pControlGroup)
+      TiXmlNode* pPosX=pChild->FirstChild("posX");
+      if (pPosX)
       {
-        const TiXmlNode *pControl = pControlGroup->FirstChild("control");
-        // In this group no focus of the controls is remembered
-        m_vecGroups.push_back(-1);
-        while (pControl)
-        {
-          LoadControl(pControl, iGroup, referencecontrols, resToUse);
-	        pControl=pControl->NextSibling("control");
-        }
-        pControlGroup=pControlGroup->NextSibling("controlgroup");
-        iGroup++;
+        m_iPosX = atoi(pPosX->FirstChild()->Value());
+        g_graphicsContext.ScaleXCoord(m_iPosX, resToUse);
       }
-    }
 
-		pChild=pChild->NextSibling();
-	}
+      TiXmlNode* pPosY=pChild->FirstChild("posY");
+      if (pPosY)
+      {
+        m_iPosY = atoi(pPosY->FirstChild()->Value());
+        g_graphicsContext.ScaleYCoord(m_iPosY, resToUse);
+      }
+		}
+		else if (strValue=="controls")
+		{
+			const TiXmlNode *pControl = pChild->FirstChild("control");
+			while (pControl)
+			{
+				LoadControl(pControl, -1, referencecontrols, resToUse);
+				pControl=pControl->NextSibling("control");
+			}
+
+			const TiXmlNode *pControlGroup = pChild->FirstChild("controlgroup");
+			int iGroup=0;
+			while (pControlGroup)
+			{
+				const TiXmlNode *pControl = pControlGroup->FirstChild("control");
+				// In this group no focus of the controls is remembered
+				m_vecGroups.push_back(-1);
+				while (pControl)
+				{
+					LoadControl(pControl, iGroup, referencecontrols, resToUse);
+					pControl=pControl->NextSibling("control");
+				}
+				pControlGroup=pControlGroup->NextSibling("controlgroup");
+				iGroup++;
+			}
+		}
+
+    pChild=pChild->NextSibling();
+  }
 
 	for (int i=0; i < (int)referencecontrols.size();++i)
 	{
 		struct stReferenceControl stControl=referencecontrols[i];
 		delete stControl.m_pControl;
 	}
-  OnWindowLoaded();
-  return true;
+	OnWindowLoaded();
+	return true;
 }
 
 void CGUIWindow::LoadControl(const TiXmlNode* pControl, int iGroup, VECREFERENCECONTOLS& referencecontrols,RESOLUTION& resToUse)

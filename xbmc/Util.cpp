@@ -143,6 +143,73 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath)
 	return strFilename;
 }
 
+bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumePrefix, int& volumeNumber)
+{
+  bool result = false;
+  CStdString strFileNameTemp = strFileName;
+
+  // remove any extension
+  int pos = strFileNameTemp.ReverseFind('.');
+  if (pos > 0)
+    strFileNameTemp = strFileNameTemp.Left(pos);
+
+  const CStdString & separatorsString = g_settings.m_szMyVideoStackSeparatorsString;
+  const CStdStringArray & tokens = g_settings.m_szMyVideoStackTokensArray;
+
+  CStdString strFileNameTempLower = strFileNameTemp;
+  strFileNameTempLower.MakeLower();
+
+  for (int i = 0; i < (int)tokens.size(); i++)
+  {
+    const CStdString & token = tokens[i];
+    pos = strFileNameTempLower.ReverseFind(token);
+    //CLog::Log(LOGERROR, "GetVolumeFromFileName : " + strFileNameTemp + " : " + token + " : 1");
+    if ((pos > 0) && (pos < (int)strFileNameTemp.size()))
+    {
+      //CLog::Log(LOGERROR, "GetVolumeFromFileName : " + strFileNameTemp + " : " + token + " : 2");
+      // token found at end
+      if (separatorsString.Find(strFileNameTemp.GetAt(pos - 1)) > -1)
+      {
+        // appropriate separator found between file title and token
+
+        CStdString volumeNumberString = strFileNameTemp.Mid(pos + token.size()).Trim();
+        //CLog::Log(LOGERROR, "GetVolumeFromFileName : " + strFileNameTemp + " : " + token + " : " + volumeNumberString + " : 3");
+        volumeNumber = atoi(volumeNumberString.c_str());
+        // the parsed result must be > 0
+        if (volumeNumber > 0)
+        {
+          //CLog::Log(LOGERROR, "GetVolumeFromFileName : " + strFileNameTemp + " : " + token + " : " + volumeNumberString + " : 4");
+          bool volumeNumberValid = true;
+          // make sure only numbers follow the token
+          for (int j = 1; j < (int)volumeNumberString.size(); j++)
+          {
+            char c = volumeNumberString.GetAt(j);
+            if ((c < '0') || (c > '9'))
+            {
+              volumeNumberValid = false;
+              break;
+            }
+          }
+
+          if (volumeNumberValid)
+          {
+            //CLog::Log(LOGERROR, "GetVolumeFromFileName : " + strFileNameTemp + " : " + token + " : " + volumeNumberString + " : 5");
+
+            result = true;
+            strFileTitle = strFileNameTemp.Left(pos-1);
+            // trim all additional separator characters
+            strFileTitle.TrimRight(separatorsString.c_str());
+            strVolumePrefix = token;
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  return result;
+}
+
 void CUtil::RemoveExtension(CFileItem *pItem)
 {
 	if (pItem->m_bIsFolder)
@@ -178,6 +245,202 @@ void CUtil::RemoveExtensions(VECFILEITEMS &items)
 {
 	for (int i=0; i < (int)items.size(); ++i)
 		RemoveExtension(items[i]);
+}
+
+void CUtil::CleanFileName(CFileItem *pItem)
+{
+	if (pItem->m_bIsFolder)
+		return;
+	CStdString strLabel = pItem->GetLabel();
+	CleanFileName(strLabel);
+	pItem->SetLabel(strLabel);
+}
+
+void CUtil::CleanFileName(CStdString& strFileName)
+{
+  bool result = false;
+
+  // assume extension has already been removed
+
+  // remove volume indicator
+
+  {
+    const CStdString & separatorsString = g_settings.m_szMyVideoStackSeparatorsString;
+    const CStdStringArray & tokens = g_settings.m_szMyVideoStackTokensArray;
+
+    CStdString strFileNameTempLower = strFileName;
+    strFileNameTempLower.MakeLower();
+
+    for (int i = 0; i < (int)tokens.size(); i++)
+    {
+      const CStdString & token = tokens[i];
+      int pos = strFileNameTempLower.ReverseFind(token);
+      if ((pos > 0) && (pos < (int)strFileName.size()))
+      {
+        // token found at end
+        if (separatorsString.Find(strFileName.GetAt(pos - 1)) > -1)
+        {
+          // appropriate separator found between file title and token
+
+          CStdString volumeNumberString = strFileName.Mid(pos + token.size()).Trim();
+          int volumeNumber = atoi(volumeNumberString.c_str());
+          // the parsed result must be > 0
+          if (volumeNumber > 0)
+          {
+            bool volumeNumberValid = true;
+            // make sure only numbers follow the token
+            for (int j = 1; j < (int)volumeNumberString.size(); j++)
+            {
+              char c = volumeNumberString.GetAt(j);
+              if ((c < '0') || (c > '9'))
+              {
+                volumeNumberValid = false;
+                break;
+              }
+            }
+
+            if (volumeNumberValid)
+            {
+              strFileName = strFileName.Left(pos-1);
+              // trim all additional separator characters
+              strFileName.TrimRight(separatorsString.c_str());
+              break;
+            }
+          }
+        }
+      }
+    }
+  }
+
+
+  // remove known tokens:      { "divx", "xvid", "3ivx", "ac3", "ac351", "mp3", "wma", "m4a", "mp4", "ogg", "SCR", "TS", "sharereactor" }
+  // including any separators: { ' ', '-', '_', '.', '[', ']', '(', ')' }
+  // logic is as follows:
+  //   - multiple tokens can be listed, separated by any combination of separators
+  //   - first token must follow a '-' token, potentially in addition to other separator tokens
+  //   - thus, something like "video_XviD_AC3" will not be parsed, but something like "video_-_XviD_AC3" will be parsed
+
+  // special logic - if a known token is found, try to group it with any 
+  // other tokens up to the dash separating the token group from the title. 
+  // thus, something like "The Godfather-DivX_503_2p_VBR-HQ_480x640_16x9" should 
+  // be fully cleaned up to "The Godfather"
+  // the problem with this logic is that it may clean out things we still 
+  // want to see, such as language codes.
+
+  {
+    //const CStdString separatorsString = " -_.[]()+";
+
+    //const CStdString tokensString = "divx|xvid|3ivx|ac3|ac351|mp3|wma|m4a|mp4|ogg|scr|ts|sharereactor";
+    //CStdStringArray tokens;
+    //StringUtils::SplitString(tokensString, "|", tokens);
+
+    const CStdString & separatorsString = g_settings.m_szMyVideoCleanSeparatorsString;
+    const CStdStringArray & tokens = g_settings.m_szMyVideoCleanTokensArray;
+
+    CStdString strFileNameTempLower = strFileName;
+    strFileNameTempLower.MakeLower();
+
+    int maxPos = 0;
+    bool tokenFoundWithSeparator = false;
+
+    while ((maxPos < (int)strFileName.size()) && (!tokenFoundWithSeparator))
+    {
+      bool tokenFound = false;
+
+      for (int i = 0; i < (int)tokens.size(); i++)
+      {
+        CStdString token = tokens[i];
+        int pos = strFileNameTempLower.Find(token, maxPos);
+        if (pos >= maxPos && pos>0)
+        {
+          tokenFound = tokenFound | true;
+          char separator = strFileName.GetAt(pos - 1);
+          char buffer[10];
+          itoa(pos, buffer, 10);
+          char buffer2[10];
+          itoa(maxPos, buffer2, 10);
+          //CLog::Log(LOGERROR, "CleanFileName : 1 : " + strFileName + " : " + token + " : " + buffer + " : " + separator + " : " + buffer2 + " : " + separatorsString);
+          if (separatorsString.Find(separator) > -1)
+          {
+            // token has some separator before it - now look for the 
+            // specific '-' separator, and trim any additional separators.
+
+            int pos2 = pos;
+            while (pos2 > 0)
+            {
+              separator = strFileName.GetAt(pos2 - 1);
+              if (separator == '-')
+                tokenFoundWithSeparator = true;
+              else if (separatorsString.Find(separator) == -1)
+                break;
+              pos2--;
+            }
+            if (tokenFoundWithSeparator)
+              pos = pos2;
+            //if (tokenFoundWithSeparator)
+            //  CLog::Log(LOGERROR, "CleanFileName : 2 : " + strFileName + " : " + token + " : " + buffer + " : " + separator + " : " + buffer2);
+            //else
+            //  CLog::Log(LOGERROR, "CleanFileName : 3 : " + strFileName + " : " + token + " : " + buffer + " : " + separator + " : " + buffer2);
+          }
+
+          if (tokenFoundWithSeparator)
+          {
+            if (pos > 0)
+              strFileName = strFileName.Left(pos);
+            break;
+          }
+          else
+          {
+            maxPos = max(maxPos, pos + 1);
+          }
+        }
+      }
+
+      if (!tokenFound)
+        break;
+
+      maxPos++;
+    }
+    
+  }
+  
+
+  // TODO: would be nice if we could remove years (i.e. "(1999)") from the 
+  // title, and put the year in a separate column instead
+
+  // TODO: would also be nice if we could do something with 
+  // languages (i.e. "[ITA]") - need to consider files with 
+  // multiple audio tracks
+
+
+  // final cleanup - special characters used instead of spaces:
+  // all '_' tokens should be replaced by spaces
+  // if the file contains no spaces, all '.' tokens should be replaced by 
+  // spaces - one possibility of a mistake here could be something like:
+  // "Dr..StrangeLove" - hopefully no one would have anything like this.
+
+  strFileName = strFileName.Trim();
+
+  {
+    bool alreadyContainsSpace = (strFileName.Find(' ') >= 0);
+
+    for (int i = 0; i < (int)strFileName.size(); i++)
+    {
+      char c = strFileName.GetAt(i);
+      if ((c == '_') || ((!alreadyContainsSpace) && (c == '.')))
+      {
+        strFileName.SetAt(i, ' ');
+      }
+    }
+  }
+
+  strFileName = strFileName.Trim();
+}
+
+void CUtil::CleanFileNames(VECFILEITEMS &items)
+{
+	for (int i=0; i < (int)items.size(); ++i)
+		CleanFileName(items[i]);
 }
 
 bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
@@ -3085,4 +3348,32 @@ bool CUtil::IsUsingTTFSubtitles()
 		return true;
 	else
 		return false;
+}
+
+bool CUtil::IsBuiltIn(const CStdString& execString)
+{
+	if (strncmp(execString.c_str(), "XBMC.", 5) == 0)
+		return true;
+
+	return false;
+}
+
+void CUtil::ExecBuiltIn(const CStdString& execString)
+{
+	// Get the text after the "XBMC."
+	char* pExec = strchr(execString.c_str(), '.');
+	CStdString execute(++pExec);
+
+	if (execute == "Reboot")
+	{
+		g_applicationMessenger.Restart();
+	}
+	else if (execute == "ShutDown")
+	{
+		g_applicationMessenger.Shutdown();
+	}
+	else if (execute == "Dashboard")
+	{
+		RunXBE(g_stSettings.szDashboard);
+	}
 }

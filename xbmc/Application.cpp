@@ -30,6 +30,7 @@
 #include "utils/FanController.h"
 #include "utils/CharsetConverter.h"
 #include "XBVideoConfig.h"
+#include "GUIStandardWindow.h"
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
@@ -1080,6 +1081,9 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiMyBuddies.Load( "mybuddies.xml");
 	m_guiSettingsCDRipper.Load("SettingsCDRipper.xml");
 	m_guiPointer.Load("Pointer.xml");
+	
+	// Load the user windows
+	LoadUserWindows(strSkinPath);
 
 	CGUIWindow::FlushReferenceCache(); // flush the cache so it doesn't use memory all the time
 
@@ -1100,6 +1104,102 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	CLog::Log(LOGINFO, "  skin loaded...");
 }
 
+bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
+{
+  WIN32_FIND_DATA FindFileData;
+  WIN32_FIND_DATA NextFindFileData;
+  HANDLE hFind;
+  TiXmlDocument xmlDoc;
+  RESOLUTION resToUse = INVALID;
+
+  // Load from wherever home.xml is
+  g_SkinInfo.GetSkinPath("home.xml", &resToUse);
+
+  CStdString strLoadPath;
+  strLoadPath.Format("%s%s", strSkinPath, g_SkinInfo.GetDirFromRes(resToUse));
+
+  CStdString strPath;
+  strPath.Format("%s\\%s", strLoadPath, "custom*.xml");
+  CLog::Log(LOGINFO, "Loading user windows %s", strPath.c_str());
+  hFind = FindFirstFile(strPath.c_str(), &NextFindFileData);
+
+  CStdString strFileName;
+  while (hFind != INVALID_HANDLE_VALUE)
+  {
+    FindFileData=NextFindFileData;
+
+    if (!FindNextFile(hFind, &NextFindFileData))
+    {
+      FindClose(hFind);
+      hFind = INVALID_HANDLE_VALUE;
+    }
+
+    // skip "up" directories, which come in all queries
+    if (!_tcscmp(FindFileData.cFileName, _T(".")) || !_tcscmp(FindFileData.cFileName, _T("..")))
+      continue;
+
+    strFileName.Format("%s\\%s", strLoadPath.c_str(), FindFileData.cFileName);
+    CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
+    if (!xmlDoc.LoadFile(strFileName.c_str()))
+    {
+			CLog::Log(LOGERROR, "unable to load:%s", strFileName.c_str());
+			continue;
+    }
+
+    // Root element should be <window>
+    TiXmlElement* pRootElement = xmlDoc.RootElement();
+    CStdString strValue=pRootElement->Value();
+    if (!strValue.Equals("window"))
+    {
+      CLog::Log(LOGERROR, "file :%s doesnt contain <window>", strFileName.c_str());
+      continue;
+    }
+
+    // Read the <type> element to get the window type to create
+    // If no type is specified, create a CGUIWindow as default
+    CGUIWindow* pWindow = NULL;
+    const TiXmlNode *pType = pRootElement->FirstChild("type");
+    if (pType == NULL)
+    {
+      pWindow = new CGUIStandardWindow();
+    }
+    else
+    {
+      CStdString strType = pType->FirstChild()->Value();
+      if (strType == "dialog")
+      {
+        pWindow = new CGUIDialog(0);
+      }
+      else if (strType == "subMenu")
+      {
+        pWindow = new CGUIDialogSubMenu();
+      }
+      else
+      {
+        pWindow = new CGUIStandardWindow();
+      }
+    }
+
+    // Check to make sure the pointer isn't still null
+    if (pWindow == NULL)
+    {
+      CLog::Log(LOGERROR, "Out of memory / Failed to create new object in LoadUserWindows");
+      return false;
+    }
+
+    // Try to load the page.  If the load fails, delete the pointer
+    if (pWindow->Load(pRootElement, resToUse))
+    {
+      m_gWindowManager.Add(pWindow);
+    }
+		else
+		{
+			delete pWindow;
+		}
+  }
+
+  return true;
+}
 
 void CApplication::Render()
 {
@@ -2671,6 +2771,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
 				{
 					SwitchToFullScreen();
 				}
+			}
+			else if (CUtil::IsBuiltIn(message.GetStringParam()))
+			{
+				CUtil::ExecBuiltIn(message.GetStringParam());
 			}
 		}
 	}
