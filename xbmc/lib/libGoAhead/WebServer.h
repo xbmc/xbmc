@@ -1,3 +1,4 @@
+
 /* WebServer.h: interface for the CWebServer class.
  * A darivation of:  main.c -- Main program for the GoAhead WebServer
  *
@@ -41,6 +42,9 @@ int XbmcWebsAspConfigSetOption( int eid, webs_t wp, int argc, char_t **argv);
 }
 #endif 
 
+// group for default xbox user
+#define WEBSERVER_UM_GROUP "sys_xbox"
+
 #include <xtl.h>
 #include "..\..\utils\Thread.h"
 
@@ -50,26 +54,27 @@ public:
 
 	CWebServer();
 	virtual ~CWebServer();
-	virtual void		OnStartup();
-	virtual void		OnExit();
-	virtual void		Process();
 	bool						Start(const char* szLocalAddress, int port = 80, const char* web = "Q:\\web");
 	void						Stop();
 
 	DWORD						SuspendThread();
 	DWORD						ResumeThread();
 
-	const char_t*		GetPassword();
-	void						SetPassword(char_t* Password);
-	int							initWebs();
+	void						SetPassword(char_t* strPassword);
+	char*           GetPassword();
 
-private:
+protected:
+
+  virtual void		OnStartup();
+  virtual void		OnExit();
+  virtual void		Process();
 	
-	const char_t*		m_szLocalAddress;		/* local ip address */
-	char						m_szRootWeb[1024];	/* local directory */
-	const char_t*		m_password;					/* Security password */
+  int							initWebs();
+	
+	char            m_szLocalAddress[128];		/* local ip address */
+	char            m_szRootWeb[1024];	/* local directory */
+	char            m_szPassword[128];	/* password */
 	int							m_port;							/* Server port */
-	int							m_sockServiceTime;	/* in milliseconds */
 	bool						m_bFinished;				/* Finished flag */
 	HANDLE					m_hEvent;
 };
