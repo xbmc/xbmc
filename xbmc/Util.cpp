@@ -2077,10 +2077,12 @@ CStdString CUtil::GetNextFilename(const char* fn_template, int max)
 	WIN32_FIND_DATA wfd;
 	HANDLE hFind;	
 
-	if (NULL != strstr(fn_template, "%d"))
+
+	if (NULL != strstr(fn_template, "%02d"))
 	{
 		for(i = 0; i <= max; i++)
 		{
+						
 			wsprintf(szName, fn_template, i);
 			
 			memset(&wfd, 0, sizeof(wfd));
@@ -2106,7 +2108,7 @@ void CUtil::TakeScreenshot()
 
 	if (strlen(g_stSettings.m_szScreenshotsDirectory))
 	{		
-		sprintf(fn, "%s\\screenshot%%d.bmp", strDir.c_str());
+		sprintf(fn, "%s\\screenshot%%02d.bmp", strDir.c_str());
 		strcpy(fn, CUtil::GetNextFilename(fn, 30).c_str());
 
 		if (strlen(fn))
