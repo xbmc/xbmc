@@ -366,7 +366,7 @@ CGUISettings::CGUISettings(void)
 	AddInt(3, "ScreenSaver.DimLevel", 362, 20, 10, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
 	AddCategory(7, "UIFilters", 14053);
-	AddInt(1, "UIFilters.Flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT);
+	AddInt(1, "UIFilters.Flicker", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT);
 	AddBool(2, "UIFilters.Soften", 215, false);
 
 	AddInt(-1, "UIOffset.X", 0, 0, -128, 1, 128, SPIN_CONTROL_INT);
