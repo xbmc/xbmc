@@ -2347,7 +2347,10 @@ void CApplication::Stop()
 
 bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
 {
-  if (!item.IsPlayList())
+  if (
+    (!item.IsPlayList()) && 
+    (!item.IsInternetStream())
+    )
   {
     //not a playlist, just play the file
     return g_application.PlayFile(item);
@@ -2358,8 +2361,16 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
     return false;
   }
   //playlist
+  CStdString strPath = item.m_strPath;
+  if (item.IsInternetStream())
+  {
+    //we got an url, create a dummy .strm playlist,
+    //pPlayList->Load will handle loading it from url instead of from a file
+    strPath = "temp.strm";
+  }
+
 	CPlayListFactory factory;
-  auto_ptr<CPlayList> pPlayList (factory.Create(item.m_strPath));
+  auto_ptr<CPlayList> pPlayList (factory.Create(strPath));
 	if ( NULL == pPlayList.get()) return false;
   // load it
 	if (!pPlayList->Load(item.m_strPath)) return false;

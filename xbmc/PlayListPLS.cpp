@@ -34,6 +34,18 @@ CPlayListPLS::~CPlayListPLS(void)
 
 bool CPlayListPLS::Load(const CStdString& strFileName)
 {
+  CFileItem item(strFileName, false);
+  if (item.IsInternetStream())
+  {
+    //load it from the url
+    if (!LoadFromWeb(item.m_strPath))
+		{
+			CPlayListItem newItem(item.m_strPath,item.m_strPath,0);
+			Add(newItem);
+    }
+    return true;
+  }
+  //read it from the file
 	CStdString strBasePath;
   bool bShoutCast=false;
   CStdString strExt=CUtil::GetExtension(strFileName);
