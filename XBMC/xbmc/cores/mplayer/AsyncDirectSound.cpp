@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include "AsyncDirectSound.h"
 #include "../../settings.h"
+#include "../../utils/log.h"
 
 
 #define VOLUME_MIN		DSBVOLUME_MIN
@@ -115,8 +116,8 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	
 	//m_dwPacketSize		 = 1152 * (uiBitsPerSample/8) * iChannels;
 	//m_dwNumPackets = ( (m_wfx.nSamplesPerSec / ( m_dwPacketSize / ((uiBitsPerSample/8) * m_wfx.nChannels) )) / 2);
-  m_dwPacketSize=1024;
-  m_dwNumPackets=16;
+  m_dwPacketSize=1152;
+  m_dwNumPackets=8*iChannels;
 
 	for (DWORD dwX=0; dwX < m_dwNumPackets ; dwX++)
 		m_pbSampleData[dwX] = (BYTE*)XPhysicalAlloc( m_dwPacketSize, MAXULONG_PTR,0,PAGE_READWRITE|PAGE_NOCACHE);
@@ -128,7 +129,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	hr= DirectSoundCreate( NULL, &m_pDSound, NULL ) ;
   if( DS_OK != hr  )
 	{
-			//mp_msg(0,0,"DirectSoundCreate() Failed");
+    CLog::Log("DirectSoundCreate() Failed");
       return;
 	}
 	m_nCurrentVolume = GetMaximumVolume();
@@ -221,7 +222,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 
 	if(DirectSoundCreateStream( &dssd, &m_pStream )!=DS_OK)
 	{
-//		OUTPUTDEBUG("*WARNING* Unable to create sound stream!");
+      CLog::Log("*WARNING* Unable to create sound stream!");
 	}
 
 	m_nCurrentVolume = GetMaximumVolume();
