@@ -15,6 +15,13 @@ using namespace std;
 #include "guicontrol.h" 
 
 
+class CPosition
+{
+public:
+  CGUIControl* pControl;
+  int x;
+  int y;
+};
 /*!
 	\ingroup winmsg
 	\brief 
@@ -44,6 +51,7 @@ public:
 	virtual void				ResetAllControls();
 	static void         FlushReferenceCache();
 protected:
+  virtual void        OnSkinLoaded();
 	struct stReferenceControl
 	{
 		char				 m_szType[128];
@@ -60,6 +68,7 @@ protected:
   DWORD  m_dwWindowId;
   DWORD  m_dwPreviousWindowId;
   DWORD  m_dwDefaultFocusControlID;
+  vector<CPosition> m_vecPositions;
 };
 
 #endif
