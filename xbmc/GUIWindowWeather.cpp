@@ -5,6 +5,7 @@
 #include "localizestrings.h"
 #include "util.h"
 #include <algorithm>
+#include "utils/log.h"
 
 #define CONTROL_BTNREFRESH		2
 #define CONTROL_LABELLOCATION	10
@@ -271,6 +272,7 @@ bool CGUIWindowWeather::LoadWeather(const CStdString& strWeatherFile)
 		sprintf(m_szNowIcon, "Q:\\weather\\128x128\\%i.png", iTmpInt);
 
 		GetString(pElement, "t", m_szNowCond, "");			//current condition
+		LocalizeOverview(m_szNowCond);
 		SplitLongString(m_szNowCond, 8, 15);				//split to 2 lines if needed
 
 		GetInteger(pElement, "tmp", iTmpInt);				//current temp
@@ -343,6 +345,7 @@ bool CGUIWindowWeather::LoadWeather(const CStdString& strWeatherFile)
 					GetInteger(pDayTimeElement, "icon", iTmpInt);
 					sprintf(m_dfForcast[i].m_szIcon, "Q:\\weather\\64x64\\%i.png", iTmpInt);
 					GetString(pDayTimeElement, "t", m_dfForcast[i].m_szOverview, "");
+					LocalizeOverview(m_dfForcast[i].m_szOverview);
 					SplitLongString(m_dfForcast[i].m_szOverview, 6, 15);
 				}
 			}
@@ -476,4 +479,84 @@ void CGUIWindowWeather::LocalizeDay(char *szDay)
 		strLocDay = "";
 
 	strcpy(szDay, strLocDay.GetBuffer(strLocDay.GetLength()));
+}
+
+
+
+void CGUIWindowWeather::LocalizeOverviewToken(char *szToken)
+{
+	CStdString strLocStr="";
+	if(strcmp(szToken, "T-Storms") == 0)
+		strLocStr = g_localizeStrings.Get(370);
+	else if(strcmp(szToken, "Partly") == 0)
+		strLocStr = g_localizeStrings.Get(371);
+	else if(strcmp(szToken, "Mostly") == 0)
+		strLocStr = g_localizeStrings.Get(372);
+	else if(strcmp(szToken, "Sunny") == 0)
+		strLocStr = g_localizeStrings.Get(373);
+	else if(strcmp(szToken, "Cloudy") == 0)
+		strLocStr = g_localizeStrings.Get(374);
+	else if(strcmp(szToken, "Snow") == 0)
+		strLocStr = g_localizeStrings.Get(375);
+	else if(strcmp(szToken, "Rain") == 0)
+		strLocStr = g_localizeStrings.Get(376);
+	else if(strcmp(szToken, "Light") == 0)
+		strLocStr = g_localizeStrings.Get(377);
+	else if(strcmp(szToken, "AM") == 0)
+		strLocStr = g_localizeStrings.Get(378);
+	else if(strcmp(szToken, "PM") == 0)
+		strLocStr = g_localizeStrings.Get(379);
+	else if(strcmp(szToken, "Showers") == 0)
+		strLocStr = g_localizeStrings.Get(380);
+	else if(strcmp(szToken, "Few") == 0)
+		strLocStr = g_localizeStrings.Get(381);
+	else if(strcmp(szToken, "Scattered") == 0)
+		strLocStr = g_localizeStrings.Get(382);
+	else if(strcmp(szToken, "Wind") == 0)
+		strLocStr = g_localizeStrings.Get(383);
+	else if(strcmp(szToken, "Strong") == 0)
+		strLocStr = g_localizeStrings.Get(384);
+	else if(strcmp(szToken, "Fair") == 0)
+		strLocStr = g_localizeStrings.Get(385);
+
+	if(strLocStr == "")
+		strLocStr = szToken;	//if not found, let fallback
+	strLocStr += " "; 
+	strcpy(szToken, strLocStr.GetBuffer(strLocStr.GetLength()));
+}
+
+void CGUIWindowWeather::LocalizeOverview(char *szStr)
+{
+	char loc[256];
+	char szToken[256];
+	int  intOffset = 0;
+	int  outOffset = 0;
+	bool bDone = false;
+
+	while (!bDone)
+	{
+		char* remainingStr = strstr(szStr+intOffset," ");
+		if (remainingStr)
+		{
+			int iTokenLen = (int)(remainingStr - szStr);
+			strncpy(szToken, szStr, iTokenLen);
+			szToken[iTokenLen] = '\0';
+			LocalizeOverviewToken(szToken);
+			strcpy(loc+outOffset, szToken);
+			outOffset += strlen(szToken);
+			intOffset += (int)iTokenLen+1;
+		}
+		else
+		{
+			if(szStr != NULL)
+			{
+				strcpy(szToken, szStr+intOffset);
+				szToken[strlen(szStr+intOffset)] = '\0';
+				LocalizeOverviewToken(szToken);
+				strcpy(loc+outOffset, szToken);
+			}
+			bDone = true; 
+		}
+	}
+	strcpy(szStr, loc);
 }
