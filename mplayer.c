@@ -1634,11 +1634,11 @@ if(stream_cache_size>0){
         current_module="enable_cache";
         if(!stream_enable_cache(stream,stream_cache_size*1024,stream_cache_size*1024/5,stream_cache_size*1024/20))
     if((eof = libmpdemux_was_interrupted(PT_NEXT_ENTRY))) 
-	return -1; //goto goto_next_file;
+      return -1; //goto goto_next_file;
     }
 
-		char* cExt = strrchr(filename, '.') + 1;
-		if (cExt != NULL && (stricmp(cExt,".mp3") == 0 || strstr(filename,"shout:")))
+		char* cExt = strrchr(filename, '.');
+		if (strstr(filename,"shout:") || (cExt != NULL && strstr(cExt,".mp3")))
     {
         printf("open as audio stream\n");
         file_format=DEMUXER_TYPE_AUDIO;
