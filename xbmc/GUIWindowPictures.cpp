@@ -1208,8 +1208,12 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
 	}	
 	if ( m_strDirectory.IsEmpty() )
 	{
+		bool bMaxRetryExceeded=false;
+		if (g_stSettings.m_iMasterLockMaxRetry!=0)
+			bMaxRetryExceeded=!(m_vecItems[iItem]->m_iBadPwdCount < g_stSettings.m_iMasterLockMaxRetry);
+
 		// and do the popup menu
-    if (CGUIDialogContextMenu::BookmarksMenu("pictures", m_vecItems[iItem]->GetLabel(), m_vecItems[iItem]->m_strPath, m_vecItems[iItem]->m_iLockMode, !(m_vecItems[iItem]->m_iBadPwdCount < g_stSettings.m_iMasterLockMaxRetry), iPosX, iPosY))
+    if (CGUIDialogContextMenu::BookmarksMenu("pictures", m_vecItems[iItem]->GetLabel(), m_vecItems[iItem]->m_strPath, m_vecItems[iItem]->m_iLockMode, bMaxRetryExceeded, iPosX, iPosY))
 		{
 			m_rootDir.SetShares(g_settings.m_vecMyPictureShares);
 			Update(m_strDirectory);

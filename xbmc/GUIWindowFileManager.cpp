@@ -1315,8 +1315,12 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
 	}	
 	if (m_strDirectory[list] == "")
 	{
+		bool bMaxRetryExceeded=false;
+		if (g_stSettings.m_iMasterLockMaxRetry!=0)
+			bMaxRetryExceeded=!(m_vecItems[list][item]->m_iBadPwdCount < g_stSettings.m_iMasterLockMaxRetry);
+		
 		// and do the popup menu
-		if (CGUIDialogContextMenu::BookmarksMenu("files", m_vecItems[list][item]->GetLabel(), m_vecItems[list][item]->m_strPath, m_vecItems[list][item]->m_iLockMode, !(m_vecItems[list][item]->m_iBadPwdCount < g_stSettings.m_iMasterLockMaxRetry), iPosX, iPosY))
+		if (CGUIDialogContextMenu::BookmarksMenu("files", m_vecItems[list][item]->GetLabel(), m_vecItems[list][item]->m_strPath, m_vecItems[list][item]->m_iLockMode, bMaxRetryExceeded, iPosX, iPosY))
 		{
 			m_rootDir.SetShares(g_settings.m_vecMyFilesShares);
 			if (m_strDirectory[1-list] == "")
