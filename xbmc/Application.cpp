@@ -1351,7 +1351,6 @@ void CApplication::RenderFullScreen()
 
 void CApplication::ResetScreenSaver()
 {
-  //OutputDebugString("reset sreensaver\n");
   m_dwSpinDownTime=timeGetTime();
   if (m_bInactive) 
   {
