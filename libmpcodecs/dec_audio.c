@@ -65,7 +65,7 @@ int init_audio_codec(sh_audio_t *sh_audio)
   sh_audio->i_bps=0;  // input rate (bytes/sec)
   sh_audio->o_bps=0;  // output rate (bytes/sec)
 
-  sh_audio->audio_out_minsize=8192;/* default size, maybe not enough for Win32/ACM*/
+  sh_audio->audio_out_minsize=8192*3;/* default size, maybe not enough for Win32/ACM*/
   sh_audio->audio_in_minsize=0;
   
   if(!mpadec->preinit(sh_audio))
