@@ -171,13 +171,16 @@ void CGUISpinControl::Render()
 	if (!IsVisible()) return;
 	DWORD dwPosX=m_dwPosX;
 	WCHAR wszText[1024];
+	
 	if (m_iType == SPIN_CONTROL_TYPE_INT)
 		swprintf(wszText,L"%i/%i",m_iValue, m_iEnd);
 	else if (m_iType==SPIN_CONTROL_TYPE_FLOAT)
 		swprintf(wszText,L"%02.2f/%02.2f",m_fValue, m_fEnd);
 	else
 	{
-		swprintf(wszText,L"%s", m_vecLabels[m_iValue].c_str() );
+		swprintf(wszText,L"");
+		if (m_iValue < m_vecLabels.size() )
+			swprintf(wszText,L"%s", m_vecLabels[m_iValue].c_str() );
 	}
 
 	if ( m_dwAlign== XBFONT_LEFT)

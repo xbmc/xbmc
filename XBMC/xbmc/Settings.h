@@ -152,6 +152,7 @@ public:
 		bool			m_bAutorunMusic;
 		bool			m_bAutorunVideo;
 		bool			m_bAutorunPictures;
+		char      szDefaultLanguage[256];
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;

@@ -18,6 +18,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bAutorunCdda=true;
 	g_stSettings.m_bAutorunXbox=true;
 
+	strcpy(g_stSettings.szDefaultLanguage,"english");
 	g_stSettings.m_minFilter=D3DTEXF_LINEAR;
 	g_stSettings.m_maxFilter=D3DTEXF_LINEAR;
 	g_stSettings.m_iSoften=1;
