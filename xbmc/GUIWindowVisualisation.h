@@ -29,6 +29,7 @@ class CGUIWindowVisualisation :
 public:
   CGUIWindowVisualisation(void);
   virtual ~CGUIWindowVisualisation(void);
+  virtual void    FreeResources();
   virtual bool    OnMessage(CGUIMessage& message);
   virtual void    OnAction(const CAction &action);
 	virtual void		Render();
