@@ -19,23 +19,27 @@ public:
   virtual ~CProgramDatabase(void);
   bool    Open() ;
   void	  Close() ;
-  long    AddProgram(const CStdString& strFilenameAndPath, const CStdString& strBookmarkDir, const CStdString& strDescription, const CStdString& strBookmark);
-  long    GetPath(const CStdString& strPath);
-  void	  GetProgramsByBookmark(CStdString& strBookmark, VECFILEITEMS& programs, CStdString& strBookmarkDir, bool bOnlyDefaultXBE, bool bOnlyOnePath);
+  long    AddProgram(const CStdString& strFilenameAndPath, const CStdString& strDescription, const CStdString& strBookmark);
+  long	  GetFile(const CStdString& strFilenameAndPath, VECFILEITEMS& programs);
+  void	  GetProgramsByBookmark(CStdString& strBookmark, VECFILEITEMS& programs, bool bOnlyDefaultXBE);
+  void	  GetProgramsByPath(const CStdString& strPath, VECFILEITEMS& programs, bool bOnlyDefaultXBE);
   bool    IncTimesPlayed(const CStdString& strFileName1);
+  bool	  EntryExists(const CStdString& strPath, const CStdString& strBookmark);
 protected:
   auto_ptr<SqliteDatabase>  m_pDB;
 	auto_ptr<Dataset>				  m_pDS;
 
 
-  long    AddPath(const CStdString& strPath, const CStdString& strBookmarkDir);
-  long    AddFile(long lProgramid, long lPathId, const CStdString& strFileName, const CStdString& strDescription);
+  long    AddPath(const CStdString& strPath);
+  long    AddFile(long lPathId, const CStdString& strFileName, const CStdString& strDescription);
 
   long	  AddBookMark(const CStdString& strBookmark);
   long    GetProgram(long lPathId);
+  long    GetPath(const CStdString& strPath);
 
   void    Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   void    RemoveInvalidChars(CStdString& strTxt);
   bool	  CreateTables();
   void    DeleteProgram(const CStdString& strPath);
+  void	  DeleteFile(long lFileId);
 };

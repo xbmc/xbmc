@@ -66,7 +66,11 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 			m_database.Open();
             m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 			if (m_strDirectory=="?")
+			{
                 m_strDirectory=g_stSettings.m_szDefaultPrograms;
+				m_iDepth=1;
+				m_strBookmarkName="default";
+			}
 
             // make controls 100-110 invisible...
             for (int i=100; i < 110; i++)
@@ -87,8 +91,8 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
             Update(m_strDirectory);
 
-						if (m_iLastControl>-1)
-							SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
+			if (m_iLastControl>-1)
+				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
 
             if (m_iSelectedItem>-1)
             {
@@ -217,6 +221,8 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
                 {
                     CShare share = g_settings.m_vecMyProgramsBookmarks[iControl-100];
                     m_strDirectory=share.strPath;
+					m_strBookmarkName=share.strName;
+					m_iDepth=share.m_iDepthSize;
                     Update(m_strDirectory);
                 }
             }
@@ -298,7 +304,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int depth
 				{
 					if (strFileName != "." && strFileName != ".." && bFlattenDir && depth > 0 )
 					{
-						if (m_database.GetPath(strFile) < 0)
+						if (!m_database.EntryExists(strFile,m_strBookmarkName))
 						{
 							LoadDirectory(strFile, depth-1);
 						}
@@ -333,7 +339,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int depth
 					}
 					else
 					{
-						m_database.AddProgram(strFile,m_strDirectory,strDescription,m_bookmarkName);
+						m_database.AddProgram(strFile,strDescription,m_strBookmarkName);
 					}
 				}
 
@@ -353,7 +359,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int depth
 
 					else 
 					{
-						m_database.AddProgram(strFile,m_strDirectory,wfd.cFileName,m_bookmarkName);
+						m_database.AddProgram(strFile,wfd.cFileName,m_strBookmarkName);
 					}
 				}
 			}
@@ -376,7 +382,7 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 	bool   bOnlyOnePath(true);
     CStdString strParentPath;
 	CStdString strDir = strDirectory;
-	int depth;
+	int depth = m_iDepth;
 	vector<CStdString> pathArray;
 
     Clear();
@@ -392,48 +398,28 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 		strShortCutsDir.Delete(strShortCutsDir.size()-1);
 
 	
-	for (int i=0; i < (int)g_settings.m_vecMyProgramsBookmarks.size(); ++i)
+	for (int k=0; k < (int)pathArray.size(); k++)
 	{
-		CShare& share = g_settings.m_vecMyProgramsBookmarks[i];
-		vector<CStdString> shareArray;
-		CUtil::Tokenize(share.strPath, shareArray, ",");
-
-		for (int k=0; k < (int)shareArray.size(); k++)
+		int start = pathArray[k].find_first_not_of(" \t");
+		int end = pathArray[k].find_last_not_of(" \t") + 1;
+		pathArray[k]=pathArray[k].substr(start, end - start);
+		if (CUtil::HasSlashAtEnd(pathArray[k]))
 		{
-			int start = shareArray[k].find_first_not_of(" \t");
-			int end = shareArray[k].find_last_not_of(" \t") + 1;
-			shareArray[k]=shareArray[k].substr(start, end - start);
-			if (CUtil::HasSlashAtEnd(shareArray[k]))
-			{
-				shareArray[k].Delete(shareArray[k].size()-1);
-			}
-		}
-
-		for (int k=0; k < (int)pathArray.size(); k++)
-		{
-			int start = pathArray[k].find_first_not_of(" \t");
-			int end = pathArray[k].find_last_not_of(" \t") + 1;
-			pathArray[k]=pathArray[k].substr(start, end - start);
-			if (CUtil::HasSlashAtEnd(pathArray[k]))
-			{
-				pathArray[k].Delete(pathArray[k].size()-1);
-			}
-		}
-
-		if (pathArray==shareArray) {
-			m_bookmarkName=share.strName;
-			depth=share.m_iDepthSize;
-			if (bFlattenDir)
-			{
-				bParentPath=CUtil::GetParentPath(pathArray[0],strParentPath);
-				if (strParentPath!=shareArray[0])
-					bPastBookMark=false;
-			}
+			pathArray[k].Delete(pathArray[k].size()-1);
 		}
 	}
 
+	if (bFlattenDir)
+	{
+		bParentPath=CUtil::GetParentPath(pathArray[0],strParentPath);
+		if (strParentPath!=pathArray[0])
+			bPastBookMark=false;
+		
+	}
+
+
 	if (pathArray[0]==strShortCutsDir)
-		m_bookmarkName="shortcuts";
+		m_strBookmarkName="shortcuts";
 
 	if ( strParentPath.size() && bParentPath && !bFlattenDir && bPastBookMark)
 	{
@@ -451,16 +437,37 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 
 	for (int j=0; j < (int)pathArray.size(); j++)
 	{
-		m_strDirectory=pathArray[j];			// we want to set m_strDirectory to just the one path for LoadDirectory
-		LoadDirectory(pathArray[j], depth);
+		if (CUtil::IsXBE(pathArray[j]))					// we've found a single XBE in the path array
+		{
+			CStdString strDescription;
+			if ( (m_database.GetFile(pathArray[j],m_vecItems) < 0) && CUtil::FileExists(pathArray[j]))
+			{
+				if (!CUtil::GetXBEDescription(pathArray[j], strDescription))
+				{
+					CUtil::GetDirectoryName(pathArray[j], strDescription);
+					CUtil::ShortenFileName(strDescription);
+					CUtil::RemoveIllegalChars(strDescription);
+				}
+
+				m_database.AddProgram(pathArray[j], strDescription, m_strBookmarkName);
+
+				m_database.GetFile(pathArray[j],m_vecItems);
+			
+			}
+		}
+		else
+		{
+			LoadDirectory(pathArray[j], depth);
+			if (m_strBookmarkName=="shortcuts")
+				bOnlyDefaultXBE=false;			// let's do this so that we don't only grab default.xbe from database when getting shortcuts
+			if (bFlattenDir)
+				m_database.GetProgramsByPath(pathArray[j],m_vecItems,bOnlyDefaultXBE);
+		}
 	}
 
-	m_strDirectory=strDir;						// let's set it back to the full path now
-
-	if (m_bookmarkName=="shortcuts")
-		bOnlyDefaultXBE=false;			// let's do this so that we don't only grab default.xbe from database when getting shortcuts
-	if (bFlattenDir) 
-		m_database.GetProgramsByBookmark(m_bookmarkName, m_vecItems, pathArray[0], bOnlyDefaultXBE, bOnlyOnePath); 
+	
+//	if (bFlattenDir) 
+//		m_database.GetProgramsByBookmark(m_strBookmarkName, m_vecItems, bOnlyDefaultXBE); 
 	CUtil::ClearCache();
 	CUtil::SetThumbs(m_vecItems);
 	if (g_stSettings.m_bHideExtensions)
