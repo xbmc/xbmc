@@ -126,17 +126,21 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-
-void CGUIDialogSelect::Reset()
+void CGUIDialogSelect::Close()
 {
+	CGUIDialog::Close();
+
 	for (int i=0; i < (int)m_vecList.size(); ++i)
 	{
 		CGUIListItem* pItem=m_vecList[i];
 		delete pItem;
 	}
 	m_vecList.erase(m_vecList.begin(),m_vecList.end());
-  m_bButtonEnabled=false;
+}
 
+void CGUIDialogSelect::Reset()
+{
+	m_bButtonEnabled=false;
 }
 
 void CGUIDialogSelect::Add(const CStdString& strLabel)
@@ -144,14 +148,17 @@ void CGUIDialogSelect::Add(const CStdString& strLabel)
 	CGUIListItem* pItem = new CGUIListItem(strLabel);
 	m_vecList.push_back(pItem);
 }
+
 int CGUIDialogSelect::GetSelectedLabel() const
 {
 	return m_iSelected;
 }
+
 const CStdString& CGUIDialogSelect::GetSelectedLabelText()
 {
 	return m_strSelected;
 }
+
 void  CGUIDialogSelect::SetHeading(const wstring& strLine)
 {
 	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),CONTROL_HEADING);
@@ -172,7 +179,6 @@ void CGUIDialogSelect::SetHeading(int iString)
 	msg.SetLabel(iString);
 	OnMessage(msg);
 }
-
 
 void CGUIDialogSelect::EnableButton(bool bOnOff)
 {

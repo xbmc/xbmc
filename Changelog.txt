@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 17-02-2005 fixed: dialog select doesn't free its items when it is closed
   - 17-02-2005 fixed: black screen when going from visualisation -> other window -> press stop -> press back  
   - 17-02-2005 updated: Finnish language file (Thnx to jutski)
   - 16-02-2005 updated: German language file

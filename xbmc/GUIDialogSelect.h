@@ -16,6 +16,7 @@ public:
   virtual bool    OnMessage(CGUIMessage& message);
   virtual void    OnAction(const CAction &action);
   
+	virtual void		Close();
 	void						Reset();
 	void						Add(const CStdString& strLabel);
 	int							GetSelectedLabel() const;
