@@ -11,6 +11,7 @@
 #include "playlistplayer.h"
 #include <algorithm>
 #include "GuiUserMessages.h"
+#include "filesystem/cddadirectory.h"
 
 #define CONTROL_BTNVIEWASICONS		2
 #define CONTROL_BTNSORTBY					3
@@ -452,6 +453,21 @@ void CGUIWindowMusicPlayList::OnFileItemFormatLabel(CFileItem* pItem)
 			CUtil::SecondsToHMSString(nDuration, str);
 			pItem->SetLabel2(str);
 		}
+	}	//	if (pItem->m_musicInfoTag.Loaded())
+	else
+	{
+		//	If we have a cdda track without cddb information,...
+		if (!pItem->m_musicInfoTag.Loaded() && CUtil::IsCDDA(pItem->m_strPath) )
+		{
+			//	...we have the duration for display
+			int nDuration=pItem->m_musicInfoTag.GetDuration();
+			if (nDuration > 0)
+			{
+				CStdString str;
+				CUtil::SecondsToHMSString(nDuration, str);
+				pItem->SetLabel2(str);
+			}
+		}
 	}
 	//	set thumbs and default icons
 	CUtil::SetMusicThumb(pItem);
@@ -476,28 +492,51 @@ void CGUIWindowMusicPlayList::OnRetrieveMusicInfo(VECFILEITEMS& items)
 	{
 		CFileItem* pItem=m_vecItems[i];
 
-		IMAPSONGS it=songsMap.find(pItem->m_strPath);
-		if (it!=songsMap.end())
+		if (CUtil::IsCDDA(pItem->m_strPath))
 		{
-			song=it->second;
-			pItem->m_musicInfoTag.SetAlbum(song.strAlbum);
-			pItem->m_musicInfoTag.SetArtist(song.strArtist);
-			pItem->m_musicInfoTag.SetGenre(song.strGenre);
-			pItem->m_musicInfoTag.SetDuration(song.iDuration);
-			pItem->m_musicInfoTag.SetTitle(song.strTitle);
-			pItem->m_musicInfoTag.SetTrackNumber(song.iTrack);
-			pItem->m_musicInfoTag.SetLoaded(true);
+			VECFILEITEMS  items;
+			CCDDADirectory dir;
+			//	... use the directory of the cd to 
+			//	get its cddb information...
+			if (dir.GetDirectory("D:",items))
+			{
+				for (int i=0; i < (int)items.size(); ++i)
+				{
+					CFileItem* pCDDAItem=items[i];
+					if (pCDDAItem->m_strPath==pItem->m_strPath)
+					{
+						//	...and find current track to use
+						//	cddb information for display.
+						pItem->m_musicInfoTag=pCDDAItem->m_musicInfoTag;
+					}
+				}
+			}
 		}
 		else
 		{
-			if (g_stSettings.m_bUseID3)
+			IMAPSONGS it=songsMap.find(pItem->m_strPath);
+			if (it!=songsMap.end())
 			{
-				// get correct tag parser
-				CMusicInfoTagLoaderFactory factory;
-				auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
-				if (NULL != pLoader.get())
-						// get id3tag
-					pLoader->Load(pItem->m_strPath,pItem->m_musicInfoTag);
+				song=it->second;
+				pItem->m_musicInfoTag.SetAlbum(song.strAlbum);
+				pItem->m_musicInfoTag.SetArtist(song.strArtist);
+				pItem->m_musicInfoTag.SetGenre(song.strGenre);
+				pItem->m_musicInfoTag.SetDuration(song.iDuration);
+				pItem->m_musicInfoTag.SetTitle(song.strTitle);
+				pItem->m_musicInfoTag.SetTrackNumber(song.iTrack);
+				pItem->m_musicInfoTag.SetLoaded(true);
+			}
+			else
+			{
+				if (g_stSettings.m_bUseID3)
+				{
+					// get correct tag parser
+					CMusicInfoTagLoaderFactory factory;
+					auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
+					if (NULL != pLoader.get())
+							// get id3tag
+						pLoader->Load(pItem->m_strPath,pItem->m_musicInfoTag);
+				}
 			}
 		}
 	}
