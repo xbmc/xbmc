@@ -1394,9 +1394,9 @@ void CGUIWindowBuddies::QueryInstalledGames()
 	WIN32_FIND_DATA wfd;
 	memset(&wfd,0,sizeof(wfd));
 
-	HANDLE hFind = FindFirstFile("E:\\tdata\\*.*",&wfd);
+	CAutoPtrFind hFind (FindFirstFile("E:\\tdata\\*.*",&wfd));
 
-	if (hFind!=NULL)
+	if (hFind.isValid())
 	{
 		do
 		{
@@ -1425,9 +1425,7 @@ void CGUIWindowBuddies::QueryInstalledGames()
 					}
 				}
 			}
-		} while (FindNextFile(hFind, &wfd));
-
-		CloseHandle(hFind);
+		} while (FindNextFile((HANDLE)hFind, &wfd));
 	}
 }
 
@@ -1494,51 +1492,60 @@ bool CGUIWindowBuddies::GetGamePathFromTitleId(DWORD aTitleId, CStdString& aGame
 {
 	WIN32_FIND_DATA wfd;
 	memset(&wfd,0,sizeof(wfd));
+	
+	//split the string in case there are multiple dirs
+	CStdStringArray gamesDirs;
+	StringUtils::SplitString(g_guiSettings.GetString("XLinkKai.GamesDir"),";",gamesDirs);
 
-	// Search for XBE in within GamesDir subfolders matching same TitleId.
-	CStdString strSearchMask;
-	strSearchMask.Format("%s\\*.*",g_guiSettings.GetString("XLinkKai.GamesDir"));
-	HANDLE hFind = FindFirstFile(strSearchMask.c_str(),&wfd);
-
-	aGamePath = "";
-
-	if (hFind!=NULL)
+	for (int i = 0; i < (int)gamesDirs.size(); ++i)
 	{
-		do
+		CStdString gameDir = gamesDirs[i];
+
+		// Search for XBE in within GamesDir subfolders matching same TitleId.
+		CStdString strSearchMask;
+		strSearchMask.Format("%s\\*.*",gameDir.c_str());
+		CAutoPtrFind hFind (FindFirstFile(strSearchMask.c_str(),&wfd));
+
+		if (hFind.isValid())
 		{
-			if (wfd.cFileName[0]!=0)
+			do
 			{
-				if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+				if (wfd.cFileName[0]!=0)
 				{
-					// Calculate the path of the game's xbe
-					CStdString strGamePath;
-					strGamePath.Format("%s\\%s\\default.xbe",g_guiSettings.GetString("XLinkKai.GamesDir").c_str(),(CHAR*)wfd.cFileName);
-
-					// If the XBE actually exists
-					if (CUtil::FileExists(strGamePath))
+					if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 					{
-						// Read its header info
-						FILE* hFile  = fopen(strGamePath.c_str(),"rb");
-						_XBE_HEADER HS;
-						fread(&HS,1,sizeof(HS),hFile);
-						fseek(hFile,HS.XbeHeaderSize,SEEK_SET);
-						_XBE_CERTIFICATE HC;
-						fread(&HC,1,sizeof(HC),hFile);
-						fclose(hFile);
+						// Calculate the path of the game's xbe
+						CStdString strGamePath;
+						strGamePath.Format("%s\\%s\\default.xbe",gameDir.c_str(),(CHAR*)wfd.cFileName);
 
-						// Is this the title we're looking for?
-						if (aTitleId == HC.TitleId)
+						// If the XBE actually exists
+						if (CUtil::FileExists(strGamePath))
 						{
-							// Store its path and stop searching
-							aGamePath = strGamePath;
-							break;
+							// Read its header info
+							FILE* hFile  = fopen(strGamePath.c_str(),"rb");
+							_XBE_HEADER HS;
+							fread(&HS,1,sizeof(HS),hFile);
+							fseek(hFile,HS.XbeHeaderSize,SEEK_SET);
+							_XBE_CERTIFICATE HC;
+							fread(&HC,1,sizeof(HC),hFile);
+							fclose(hFile);
+
+							// Is this the title we're looking for?
+							if (aTitleId == HC.TitleId)
+							{
+								// Store its path and stop searching
+								aGamePath = strGamePath;
+								break;
+							}
 						}
 					}
 				}
-			}
-		} while (FindNextFile(hFind, &wfd));
+			} while (FindNextFile((HANDLE)hFind, &wfd));
+		}
 
-		CloseHandle(hFind);
+		//break out of for loop if the game was found
+		if(!aGamePath.IsEmpty())
+			break;
 	}
 
 	return aGamePath.length()>0;
