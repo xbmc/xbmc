@@ -812,13 +812,18 @@ void CMPlayer::Process()
 	{
 		m_callback.OnPlayBackStarted();
 
-		try
+		int exceptionCount = 0;
+		clock_t mark = clock();
+
+		do 
 		{
-			do 
+			try
 			{
 				if (!m_bPaused)
 				{
+					// we're playing
 					int iRet=mplayer_process();
+					
 					if (iRet < 0)
 					{
 						m_bIsPlaying=false;
@@ -830,7 +835,7 @@ void CMPlayer::Process()
 						m_iPTS=iPTS;
 					}
 				}
-				else 
+				else // we're paused
 				{
 					if (HasVideo())
 					{
@@ -840,16 +845,32 @@ void CMPlayer::Process()
 					else
 						Sleep(10);
 				}
-			} while (m_bIsPlaying && !m_bStop);
-		}
-		catch(...)
-		{
-			char module[100];
-			mplayer_get_current_module(module, sizeof(module));
-			CLog::Log("mplayer generated exception in %s", module);
-		}
+			}
+			catch(...)
+			{
+				char module[100];
+				mplayer_get_current_module(module, sizeof(module));
+				CLog::Log("mplayer generated exception in %s", module);
+				exceptionCount++;
+			}
+
+			if (exceptionCount>0)
+			{
+				bool oneSecondHasElapsed = (clock()-mark)>CLOCKS_PER_SEC;
+				if (oneSecondHasElapsed)
+				{
+					mark = clock();
+					exceptionCount--;
+				}
+			}
+
+		} while ((m_bIsPlaying && !m_bStop) && (exceptionCount<10));
+
 		if (!m_bStop)
+		{
 			xbox_audio_wait_completion();
+		}
+		
 		mplayer_close_file();
 	}
 	m_bIsPlaying=false;
