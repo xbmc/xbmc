@@ -808,6 +808,7 @@ bool CMPlayer::HasAudio()
 
 void CMPlayer::ToggleOSD()
 {
+  OutputDebugString("toggle mplayer OSD\n");
 	mplayer_put_key('o');
 }
 
@@ -1144,5 +1145,6 @@ int CMPlayer::GetCacheSize(bool bFileOnHD,bool bFileOnISO,bool bFileOnUDF,bool b
 
 void CMPlayer::ShowOSD(bool bOnoff)
 {
-  mplayer_showosd(bOnoff? 1:0);
+  if (bOnoff) mplayer_showosd(1);
+  else mplayer_showosd(0);
 }

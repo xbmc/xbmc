@@ -197,6 +197,7 @@ void choose_best_resolution(float fps)
 			}
 		}
 		// Change our screen resolution
+    Sleep(1000);
 		g_graphicsContext.SetVideoResolution(m_iResolution);
 		return;
 	}
@@ -259,6 +260,7 @@ void choose_best_resolution(float fps)
 	}
 
 	// Finished - update our video resolution
+  Sleep(1000);
 	g_graphicsContext.SetVideoResolution(m_iResolution);
 }
 
