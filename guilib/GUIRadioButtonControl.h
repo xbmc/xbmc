@@ -14,7 +14,12 @@ class CGUIRadioButtonControl :
   public CGUIButtonControl
 {
 public:
-  CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus, const CStdString& strRadioFocus,const CStdString& strRadioNoFocus);
+  CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControlId, 
+	  DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight,
+	  const CStdString& strTextureFocus,const CStdString& strTextureNoFocus,
+	  DWORD dwTextOffsetX, DWORD dwTextOffsetY,
+	  const CStdString& strRadioFocus,const CStdString& strRadioNoFocus);
+
   virtual ~CGUIRadioButtonControl(void);
   virtual void Render();
   virtual void OnAction(const CAction &action) ;
