@@ -826,12 +826,11 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_DETACH")==0)
 			{
-				if (observer!=NULL && client_state!=State::Disconnected)
+				client_state = State::Disconnected;
+				if (observer!=NULL)
 				{
 					observer->OnEngineDetached();
 				}
-
-				client_state = State::Disconnected;
 			}
 
 			break;
