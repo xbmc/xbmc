@@ -48,7 +48,7 @@ public:
   DWORD         GetParentID(void) const; 
   bool          HasFocus(void) const;
 	virtual void  PreAllocResources() {}
-  virtual void  AllocResources() {}
+  virtual void  AllocResources();
   virtual void  FreeResources() {}
   virtual bool  CanFocus() const;
 	virtual bool  IsVisible() const;
@@ -134,6 +134,7 @@ protected:
   bool							 m_bSelected;
   int                m_iGroup;
 	bool							 m_bCalibration;
+  bool               m_bInvalidated;
 	GUICONTROLTYPES    ControlType;
 };
 #endif

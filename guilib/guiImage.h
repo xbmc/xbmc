@@ -33,6 +33,7 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual bool CanFocus() const;
+
   void         Select(int iBitmap);
   void         SetItems(int iItems);
 	void				 SetTextureWidth(int iWidth);
