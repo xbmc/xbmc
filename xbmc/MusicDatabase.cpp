@@ -384,6 +384,7 @@ void CMusicDatabase::CheckVariousArtistsAndCoverArt()
 				if (song.strArtist!=song1.strArtist)
 				{
 					CStdString strVariousArtists=g_localizeStrings.Get(340);
+					RemoveInvalidChars(strVariousArtists);
 					lVariousArtistsId = AddArtist(strVariousArtists);
 					bVarious=true;
 					break;
@@ -499,20 +500,17 @@ long CMusicDatabase::AddGenre(const CStdString& strGenre1)
 	return -1;
 }
 
-long CMusicDatabase::AddArtist(const CStdString& strArtist1)
+long CMusicDatabase::AddArtist(const CStdString& strArtist)
 {
 	CStdString strSQL;
 	try 
 	{
-		CStdString strArtist=strArtist1;
-		RemoveInvalidChars(strArtist);
-
 		if (NULL==m_pDB.get()) return -1;
 		if (NULL==m_pDS.get()) return -1;
 
 		map <CStdString, CArtistCache>::const_iterator it;
 
-		it=m_artistCache.find(strArtist1);
+		it=m_artistCache.find(strArtist);
 		if (it!=m_artistCache.end())
 			return it->second.idArtist;
 
@@ -526,7 +524,7 @@ long CMusicDatabase::AddArtist(const CStdString& strArtist1)
 			m_pDS->exec(strSQL.c_str());
 			CArtistCache artist;
 			artist.idArtist = sqlite_last_insert_rowid(m_pDB->getHandle());
-			artist.strArtist = strArtist1;
+			artist.strArtist = strArtist;
 			m_artistCache.insert(pair<CStdString, CArtistCache>(artist.strArtist, artist));
 			return artist.idArtist;
 		}
@@ -534,7 +532,7 @@ long CMusicDatabase::AddArtist(const CStdString& strArtist1)
 		{
 			CArtistCache artist;
 			artist.idArtist = m_pDS->fv("idArtist").get_asLong();
-			artist.strArtist = strArtist1;
+			artist.strArtist = strArtist;
 			m_artistCache.insert(pair<CStdString, CArtistCache>(artist.strArtist, artist));
 			return artist.idArtist;
 		}
@@ -971,6 +969,7 @@ bool CMusicDatabase::GetArtists(VECARTISTS& artists)
 
 		// Exclude "Various Artists"
 		CStdString strVariousArtists=g_localizeStrings.Get(340);
+		RemoveInvalidChars(strVariousArtists);
 		long lVariousArtistId=AddArtist(strVariousArtists);
 		CStdString strSQL;
 		strSQL.Format("select * from artist where idArtist <> %i ", lVariousArtistId );
@@ -1008,6 +1007,7 @@ bool CMusicDatabase::GetArtistsByName(const CStdString& strArtist1, VECARTISTS& 
 
 		// Exclude "Various Artists"
 		CStdString strVariousArtists=g_localizeStrings.Get(340);
+		RemoveInvalidChars(strVariousArtists);
 		long lVariousArtistId=AddArtist(strVariousArtists);
 		CStdString strSQL;
 		strSQL.Format("select * from artist where strArtist LIKE '%%%s%%' and idArtist <> %i ", strArtist, lVariousArtistId );
@@ -2046,6 +2046,7 @@ bool CMusicDatabase::CleanupArtists()
 		// must be executed AFTER the song, exartistsong, album and exartistalbum tables are cleaned.
 		// don't delete the "Various Artists" string
 		CStdString strVariousArtists=g_localizeStrings.Get(340);
+		RemoveInvalidChars(strVariousArtists);
 		long lVariousArtistsId = AddArtist(strVariousArtists);
 		CStdString strSQL = "delete from artist where idArtist not in (select distinct idArtist from song)";
 		strSQL += " and idArtist not in (select distinct idArtist from exartistsong)";
