@@ -53,7 +53,9 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
+		case GUI_MSG_PLAYBACK_ENDED:
 		case GUI_MSG_PLAYBACK_STOPPED:
+		case GUI_MSG_PLAYLISTPLAYER_STOPPED:
 		{
 			for (int i=0; i < (int)m_vecItems.size(); ++i)
 			{

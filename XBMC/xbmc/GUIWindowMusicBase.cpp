@@ -120,6 +120,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
   {
 		case GUI_MSG_PLAYBACK_ENDED:
 		case GUI_MSG_PLAYBACK_STOPPED:
+		case GUI_MSG_PLAYLISTPLAYER_STOPPED:
 		{
 			CStdString strDirectory=m_strDirectory;
 			if (CUtil::HasSlashAtEnd(strDirectory))
@@ -140,7 +141,8 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 		}
 		break;
 
-		case GUI_MSG_PLAYLIST_PLAY_NEXT_PREV:
+		case GUI_MSG_PLAYLISTPLAYER_STARTED:
+		case GUI_MSG_PLAYLISTPLAYER_CHANGED:
 		{
 			// started playing another song...
 			int nCurrentPlaylist=message.GetParam1();
@@ -150,8 +152,17 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 			if ((nCurrentPlaylist==PLAYLIST_MUSIC_TEMP && m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory==strDirectory )
 					|| (GetID()==WINDOW_MUSIC_PLAYLIST && nCurrentPlaylist==PLAYLIST_MUSIC))
 			{
-				int nCurrentItem=LOWORD(message.GetParam2());
-				int nPreviousItem=(int)HIWORD(message.GetParam2());
+				int nCurrentItem=0;
+				int nPreviousItem=-1;
+				if (message.GetMessage()==GUI_MSG_PLAYLISTPLAYER_STARTED)
+				{
+					nCurrentItem=message.GetParam2();
+				}
+				else if (message.GetMessage()==GUI_MSG_PLAYLISTPLAYER_CHANGED)
+				{
+					nCurrentItem=LOWORD(message.GetParam2());
+					nPreviousItem=HIWORD(message.GetParam2());
+				}
 
 				int nFolderCount=CUtil::GetFolderCount(m_vecItems);
 
