@@ -57,7 +57,7 @@ extern "C" {
 #define XVID_API_MAJOR(a)        (((a)>>16) & 0xff)
 #define XVID_API_MINOR(a)        (((a)>> 0) & 0xff)
 
-#define XVID_VERSION             XVID_MAKE_VERSION(1,0,1)
+#define XVID_VERSION             XVID_MAKE_VERSION(1,0,2)
 #define XVID_API                 XVID_MAKE_API(4, 0)
 
 /* Bitstream Version
@@ -71,7 +71,7 @@ extern "C" {
  * doesnt hurt but not increasing it could cause difficulty for decoders in the
  * future
  */
-#define XVID_BS_VERSION 35
+#define XVID_BS_VERSION 36
 
 /*****************************************************************************
  * error codes
