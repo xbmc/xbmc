@@ -66,7 +66,7 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback,int iChannels, unsi
 	ZeroMemory(&m_wfx,sizeof(m_wfx)); 
 	m_wfx.cbSize=sizeof(m_wfx);
 	XAudioCreatePcmFormat(  iChannels,
-													uiSamplesPerSec,
+													uiSamplesPerSec, 
 													uiBitsPerSample,
 													&m_wfx
 													);
