@@ -739,6 +739,11 @@
   <string><id>13374</id><value>- Port 3 röst</value></string>
   <string><id>13375</id><value>Aktivera enhet</value></string>
   <string><id>13376</id><value>Volym(%)</value></string>
+  <string><id>13377</id><value>Default View Mode</value></string>
+  <string><id>13378</id><value>Förvald ljusstyrka</value></string>
+  <string><id>13379</id><value>Förvald Kontrast</value></string>
+  <string><id>13380</id><value>Förvald Gamma</value></string>
+  <string><id>13381</id><value>Fortsätt Video</value></string>
   <string><id>14000</id><value>Stacking Av</value></string>
   <string><id>14001</id><value>Stacking enkel</value></string>
   <string><id>14002</id><value>Stacking luddig</value></string>
@@ -866,4 +871,5 @@
   <string><id>15103</id><value>* Alla artister</value></string>
   <string><id>15104</id><value>* Alla låtar</value></string>
   <string><id>15105</id><value>* Alla genres</value></string>
+  <string><id>15106</id><value>Kom ihåg vald fil under navigation framåt</value></string>
 </strings>
