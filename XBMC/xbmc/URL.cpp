@@ -123,6 +123,8 @@ CURL::CURL(const CStdString& strURL)
 		m_strFileType = m_strFileName.Right(m_strFileName.size()-iFileType);
 		m_strFileType.Normalize();
 	}
+
+	m_strFileName.Replace("\\","/");
 }
 
 CURL::~CURL()
