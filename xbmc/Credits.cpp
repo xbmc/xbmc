@@ -310,7 +310,7 @@ static HRESULT InitLogo()
 	if (!ResourceHeader)
 	{
 		CloseHandle(hFile);
-		return E_FAIL;
+		return E_OUTOFMEMORY;
 	}
 	ZeroMemory(ResourceHeader, Size);
 	if (!ReadFile(hFile, ResourceHeader, Size, &n, 0) || n < Size)
@@ -334,7 +334,7 @@ static HRESULT InitLogo()
 	if (!PackedData)
 	{
 		CloseHandle(hFile);
-		return E_FAIL;
+		return E_OUTOFMEMORY;
 	}
 	if (!ReadFile(hFile, PackedData, Size, &n, 0) || n < Size)
 	{
@@ -348,7 +348,7 @@ static HRESULT InitLogo()
 	if (!ResourceData)
 	{
 		free(PackedData);
-		return E_FAIL;
+		return E_OUTOFMEMORY;
 	}
 
 	if (lzo_init() != LZO_E_OK)
@@ -774,9 +774,22 @@ void RunCredits()
 	D3DDevice::Clear(0, 0, D3DCLEAR_STENCIL | D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
 	D3DDevice::Present(0, 0, 0, 0);
 
+	MEMORYSTATUS stat;
+	GlobalMemoryStatus(&stat);
+	if (stat.dwAvailPhys < 10*1024*1024)
+	{
+		CLog::Log("Not enough memory to display credits");
+		D3DDevice::SetGammaRamp(D3DSGR_IMMEDIATE, &StartRamp);
+		g_graphicsContext.Unlock();
+		if (NeedUnpause)
+			g_application.m_pPlayer->Pause();
+		return;
+	}
+
 	if (FAILED(InitLogo()))
 	{
 		CLog::Log("Unable to load credits logo");
+		D3DDevice::SetGammaRamp(D3DSGR_IMMEDIATE, &StartRamp);
 		CleanupLogo();
 		g_graphicsContext.Unlock();
 		if (NeedUnpause)
