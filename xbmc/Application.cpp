@@ -2833,7 +2833,7 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
         (
           (iSpinDown == SPIN_DOWN_VIDEO && IsPlayingVideo()) ||
           (iSpinDown == SPIN_DOWN_MUSIC && IsPlayingAudio()) ||
-					(iSpinDown == SPIN_DOWN_BOTH)
+					(iSpinDown == SPIN_DOWN_BOTH && (IsPlayingVideo() || IsPlayingAudio()))
         ) &&
         (
           (iDuration <= 0) ||
