@@ -14,6 +14,15 @@
 
 using namespace std;
 
+//	String id's of the masks
+#define MASK_MINS			14044
+#define MASK_SECS			14045
+#define MASK_MS				14046
+#define MASK_PERCENT	14047
+#define MASK_KBPS			14048
+#define MASK_KB				14049
+#define MASK_DB				14050
+
 class CGUISettings g_guiSettings;
 
 struct sortsettings
@@ -62,8 +71,22 @@ CSettingInt::CSettingInt(int iOrder, const char *strSetting, int iLabel, int iDa
 	m_iMin = iMin;
 	m_iMax = iMax;
 	m_iStep = iStep;
+	m_iFormat = -1;
 	if (strFormat)
 		m_strFormat = strFormat;
+	else
+		m_strFormat = "%i";
+}
+
+CSettingInt::CSettingInt(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, int iFormat)
+:CSetting(iOrder, strSetting, iLabel, iControlType)
+{
+	m_iData = iData;
+	m_iMin = iMin;
+	m_iMax = iMax;
+	m_iStep = iStep;
+	if (iFormat>-1)
+		m_iFormat = iFormat;
 	else
 		m_strFormat = "%i";
 }
@@ -111,24 +134,23 @@ CStdString CSettingString::ToString()
 }
 
 // Settings are case sensitive
-
 CGUISettings::CGUISettings(void)
 {
 	// Pictures settings
 	AddGroup(0, 1);
 	AddCategory(0, "Slideshow", 108);
-	AddInt(1,"Slideshow.StayTime", 224, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, "%i secs");
-	AddInt(2,"Slideshow.TransistionTime", 225, 1500, 100, 100, 10000, SPIN_CONTROL_INT_PLUS, "%i ms");
-	AddInt(3,"Slideshow.MoveAmount", 13311, 20, 0, 1, 40, SPIN_CONTROL_INT_PLUS, "%i%%");
-	AddInt(4,"Slideshow.ZoomAmount", 13310, 7, 0, 1, 40, SPIN_CONTROL_INT_PLUS, "%i%%");
-	AddInt(5,"Slideshow.BlackBarCompensation", 13312, 20, 0, 1, 40, SPIN_CONTROL_INT_PLUS, "%i%%");
+	AddInt(1,"Slideshow.StayTime", 224, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+	AddInt(2,"Slideshow.TransistionTime", 225, 1500, 100, 100, 10000, SPIN_CONTROL_INT_PLUS, MASK_MS);
+	AddInt(3,"Slideshow.MoveAmount", 13311, 20, 0, 1, 40, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+	AddInt(4,"Slideshow.ZoomAmount", 13310, 7, 0, 1, 40, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+	AddInt(5,"Slideshow.BlackBarCompensation", 13312, 20, 0, 1, 40, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 	AddBool(6,"Slideshow.Shuffle", 13319, false);
 	AddCategory(0, "Pictures", 14018);
 	AddBool(1,"Pictures.HideParentDirItems", 13306, false);
 	AddBool(2,"Pictures.UseAutoSwitching", 14011, false);
 	AddBool(3,"Pictures.AutoSwitchUseLargeThumbs", 14012, false);
 	AddInt(4,"Pictures.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
-	AddInt(5,"Pictures.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, "%i%%");
+	AddInt(5,"Pictures.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 	// Programs settings
 	AddGroup(1, 0);
 	AddCategory(1, "Programs", 0);
@@ -140,7 +162,7 @@ CGUISettings::CGUISettings(void)
 	AddBool(6,"Programs.UseAutoSwitching", 14011, false);
 	AddBool(7,"Programs.AutoSwitchUseLargeThumbs", 14012, false);
 	AddInt(8,"Programs.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
-	AddInt(9,"Programs.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, "%i%%");
+	AddInt(9,"Programs.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 	AddCategory(1, "XLinkKai", 714);
 	AddBool(1,"XLinkKai.EnableNotifications", 14008, true);
 	AddString(2,"XLinkKai.GamesDir", 14009, "f:\\games");
@@ -150,7 +172,7 @@ CGUISettings::CGUISettings(void)
 	// My Weather settings
 	AddGroup(2, 8);
 	AddCategory(2, "Weather", 8);
-	AddInt(1,"Weather.RefreshTime", 397, 30, 15, 15, 120, SPIN_CONTROL_INT_PLUS, "%i mins");
+	AddInt(1,"Weather.RefreshTime", 397, 30, 15, 15, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS);
 	AddInt(2,"Weather.TemperatureUnits", 398, 0, 0, 1, 1, SPIN_CONTROL_TEXT);
 	AddInt(3,"Weather.SpeedUnits", 399, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
 	AddString(4,"Weather.AreaCode1", 14019, "UKXX0085", BUTTON_CONTROL_STANDARD);
@@ -164,14 +186,14 @@ CGUISettings::CGUISettings(void)
 	AddBool(3,"MyMusic.Repeat", 488, false);
 	AddBool(4,"MyMusic.UseCDDB", 227, true);
 	AddBool(5,"MyMusic.UseTags", 258, true);
-	AddInt(6,"MyMusic.OSDTimeout", 13314, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, "%i secs");
+	AddInt(6,"MyMusic.OSDTimeout", 13314, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_SECS);
 	AddCategory(3, "MusicLists", 14018);
 	AddBool(1,"MusicLists.HideTrackNumber", 13307, false);
 	AddBool(2,"MusicLists.HideParentDirItems", 13306, true);
 	AddBool(3,"MusicLists.UseAutoSwitching", 14011, false);
 	AddBool(4,"MusicLists.AutoSwitchUseLargeThumbs", 14012, false);
 	AddInt(5,"MusicLists.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
-	AddInt(6,"MusicLists.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, "%i%%");
+	AddInt(6,"MusicLists.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 	AddCategory(3, "MusicLibrary", 14022);
 	AddBool(1,"MusicLibrary.ShufflePlaylistsOnLoad", 228, false);
 	AddString(2,"MusicLibrary.Cleanup", 334, "", BUTTON_CONTROL_STANDARD);
@@ -183,7 +205,7 @@ CGUISettings::CGUISettings(void)
 	AddBool(1,"CDDARipper.UseTrackNumber", 624, true);
 	AddInt(2,"CDDARipper.Encoder", 621, CDDARIP_ENCODER_LAME, CDDARIP_ENCODER_LAME, 1, CDDARIP_ENCODER_WAV, SPIN_CONTROL_TEXT);
 	AddInt(3,"CDDARipper.Quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
-	AddInt(4,"CDDARipper.Bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, "%i kbps");
+	AddInt(4,"CDDARipper.Bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
 
 	AddCategory(3, "Karaoke", 13327);
 	AddBool(1,"Karaoke.Enabled", 13323, false);
@@ -198,20 +220,20 @@ CGUISettings::CGUISettings(void)
 	AddBool(5,"AudioOutput.AC3PassThrough", 364, true);
 	AddBool(6,"AudioOutput.DTSPassThrough", 254, true);
 	AddBool(7,"AudioOutput.HighQualityResampling", 473, true);
-	AddInt(8,"AudioOutput.Headroom", 494, 6, 0, 6, 12, SPIN_CONTROL_INT_PLUS, "%i.0 dB");
+	AddInt(8,"AudioOutput.Headroom", 494, 6, 0, 6, 12, SPIN_CONTROL_INT_PLUS, MASK_DB);
 	// don't show the one underneath here
-	AddInt(1,"AudioVideo.VolumeAmplification", 290, 0, -200, 1, 60, SPIN_CONTROL_INT_PLUS, "%i.0 dB");
+	AddInt(1,"AudioVideo.VolumeAmplification", 290, 0, -200, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_DB);
 	// System settings
 	AddGroup(4, 13000);
 	AddCategory(4, "System", 13000);
-	AddInt(1, "System.HDSpinDownTime", 229, 0, 0, 1, 60, SPIN_CONTROL_INT_PLUS, "%i mins");	// Minutes
+	AddInt(1, "System.HDSpinDownTime", 229, 0, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);	// Minutes
 	AddInt(2, "System.RemotePlayHDSpinDown", 13001, 0, 0, 1, 3, SPIN_CONTROL_TEXT);	// off, music, video, both
-	AddInt(3, "System.RemotePlayHDSpinDownMinDuration", 13004, 20, 0, 1, 20, SPIN_CONTROL_INT_PLUS, "%i mins"); // Minutes
-	AddInt(4, "System.RemotePlayHDSpinDownDelay", 13003, 20, 5, 5, 300, SPIN_CONTROL_INT_PLUS, "%i secs");	// seconds
-	AddInt(5,"System.ShutDownTime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, "%i mins");
+	AddInt(3, "System.RemotePlayHDSpinDownMinDuration", 13004, 20, 0, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_MINS); // Minutes
+	AddInt(4, "System.RemotePlayHDSpinDownDelay", 13003, 20, 5, 5, 300, SPIN_CONTROL_INT_PLUS, MASK_SECS);	// seconds
+	AddInt(5,"System.ShutDownTime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS);
 	AddBool(6,"System.ShutDownWhilePlaying", 14043, false);
 	AddBool(7,"System.FanSpeedControl", 13302, false);
-	AddInt(8,"System.FanSpeed", 13300, CFanController::Instance()->GetFanSpeed(), 5, 5, 50, SPIN_CONTROL_INT_PLUS, "%i%%");
+	AddInt(8,"System.FanSpeed", 13300, CFanController::Instance()->GetFanSpeed(), 5, 5, 50, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 	AddBool(9,"System.AutoTemperature", 13301, false);
 	AddInt(10,"System.TargetTemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
 
@@ -225,17 +247,17 @@ CGUISettings::CGUISettings(void)
 	AddBool(7,"Autorun.Pictures", 246, true);
 
 	AddCategory(4, "Cache", 439);
-	AddInt(1,"CacheVideo.HardDisk", 14025, 1024, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, "%i kb");
-	AddInt(2,"CacheVideo.DVDRom", 14026, 8192, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, "%i kb");
-	AddInt(3,"CacheVideo.LAN", 14027, 8192, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, "%i kb");
-	AddInt(4,"CacheVideo.Internet", 14028, 2048, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, "%i kb");
-	AddInt(5,"CacheAudio.HardDisk", 14029, 256, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, "%i kb");
-	AddInt(6,"CacheAudio.DVDRom", 14030, 256, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, "%i kb");
-	AddInt(7,"CacheAudio.LAN", 14031, 256, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, "%i kb");
-	AddInt(8,"CacheAudio.Internet", 14032, 256, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, "%i kb");
-	AddInt(9,"CacheDVD.HardDisk", 14033, 16384, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, "%i kb");
-	AddInt(10,"CacheDVD.DVDRom", 14034, 16384, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, "%i kb");
-	AddInt(11,"CacheDVD.LAN", 14035, 16384, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, "%i kb");
+	AddInt(1,"CacheVideo.HardDisk", 14025, 1024, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
+	AddInt(2,"CacheVideo.DVDRom", 14026, 8192, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
+	AddInt(3,"CacheVideo.LAN", 14027, 8192, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
+	AddInt(4,"CacheVideo.Internet", 14028, 2048, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
+	AddInt(5,"CacheAudio.HardDisk", 14029, 256, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
+	AddInt(6,"CacheAudio.DVDRom", 14030, 256, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
+	AddInt(7,"CacheAudio.LAN", 14031, 256, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
+	AddInt(8,"CacheAudio.Internet", 14032, 256, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
+	AddInt(9,"CacheDVD.HardDisk", 14033, 16384, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
+	AddInt(10,"CacheDVD.DVDRom", 14034, 16384, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
+	AddInt(11,"CacheDVD.LAN", 14035, 16384, 256, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB);
 
 	AddCategory(4, "LCD", 448);
 	AddInt(1,"LCD.Mode", 456, LCD_MODE_NONE, LCD_MODE_NONE, 1, LCD_MODE_NOTV, SPIN_CONTROL_TEXT);
@@ -243,8 +265,8 @@ CGUISettings::CGUISettings(void)
 	AddInt(3,"LCD.ModChip", 471, MODCHIP_SMARTXX, MODCHIP_SMARTXX, 1, MODCHIP_XECUTER3, SPIN_CONTROL_TEXT);
 	AddInt(4,"LCD.Columns", 450, 20, 1, 1, 20, SPIN_CONTROL_INT);
 	AddInt(5,"LCD.Rows", 455, 4, 1, 1, 4, SPIN_CONTROL_INT);
-	AddInt(6,"LCD.BackLight", 463, 80, 0, 5, 100, SPIN_CONTROL_INT_PLUS, "%i%%");
-	AddInt(7,"LCD.Contrast", 465, 100, 0, 5, 100, SPIN_CONTROL_INT_PLUS, "%i%%");
+	AddInt(6,"LCD.BackLight", 463, 80, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+	AddInt(7,"LCD.Contrast", 465, 100, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 	AddHex(8,"LCD.Row1Address", 451, 0, 0, 0x4, 0x100, SPIN_CONTROL_INT_PLUS, "%x");
 	AddHex(9,"LCD.Row2Address", 452, 0x40, 0, 0x4, 0x100, SPIN_CONTROL_INT_PLUS, "%x");
 	AddHex(10,"LCD.Row3Address", 453, 0x14, 0, 0x4, 0x100, SPIN_CONTROL_INT_PLUS, "%x");
@@ -258,14 +280,14 @@ CGUISettings::CGUISettings(void)
 	AddBool(3, "MyVideos.PAL60Switching", 226, true);
 	AddBool(4, "MyVideos.FrameRateConversions", 336, false);
 	AddBool(5, "MyVideos.UseGUIResolution", 495, true);
-	AddInt(6,"MyVideos.OSDTimeout", 472, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, "%i secs");
+	AddInt(6,"MyVideos.OSDTimeout", 472, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_SECS);
 
 	AddCategory(5, "VideoLists", 14018);
 	AddBool(1,"VideoLists.HideParentDirItems", 13306, true);
 	AddBool(2,"VideoLists.UseAutoSwitching", 14011, false);
 	AddBool(3,"VideoLists.AutoSwitchUseLargeThumbs", 14012, false);
 	AddInt(4,"VideoLists.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
-	AddInt(5,"VideoLists.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, "%i%%");
+	AddInt(5,"VideoLists.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 	
 	AddCategory(5, "PostProcessing", 14041);
 	AddBool(1, "PostProcessing.DeInterlace", 285, false);
@@ -289,7 +311,7 @@ CGUISettings::CGUISettings(void)
 	AddInt(4, "Subtitles.Color", 737, SUBTITLE_COLOR_YELLOW, SUBTITLE_COLOR_YELLOW, 1, SUBTITLE_COLOR_WHITE, SPIN_CONTROL_TEXT);
 	AddString(5, "Subtitles.CharSet", 735, "ISO-8859-1", SPIN_CONTROL_TEXT);
 	AddBool(6, "Subtitles.FlipBiDiCharSet", 13304, false);
-	AddInt(7, "Subtitles.EnlargePercentage", 492, 0, 0, 10, 200, SPIN_CONTROL_INT_PLUS, "%i%%");
+	AddInt(7, "Subtitles.EnlargePercentage", 492, 0, 0, 10, 200, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
 	AddCategory(5, "Audio", 481);
 
@@ -330,8 +352,8 @@ CGUISettings::CGUISettings(void)
 
 	AddCategory(7, "ScreenSaver", 360);
 	AddString(1, "ScreenSaver.Mode", 356, "Dim", SPIN_CONTROL_TEXT);
-	AddInt(2, "ScreenSaver.Time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, "%i mins");
-	AddInt(3, "ScreenSaver.DimLevel", 362, 20, 10, 10, 80, SPIN_CONTROL_INT_PLUS, "%i%%");
+	AddInt(2, "ScreenSaver.Time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+	AddInt(3, "ScreenSaver.DimLevel", 362, 20, 10, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
 	AddCategory(7, "UIFilters", 230);
 	AddInt(1, "UIFilters.Flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT);
@@ -456,6 +478,13 @@ void CGUISettings::SetFloat(const char *strSetting, float fSetting)
 void CGUISettings::AddInt(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, const char *strFormat)
 {
 	CSettingInt* pSetting = new CSettingInt(iOrder, strSetting, iLabel, iData, iMin, iStep, iMax, iControlType, strFormat);
+	if (!pSetting) return;
+	settingsMap.insert(pair<CStdString,CSetting*>(strSetting,pSetting));
+}
+
+void CGUISettings::AddInt(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, int iFormat)
+{
+	CSettingInt* pSetting = new CSettingInt(iOrder, strSetting, iLabel, iData, iMin, iStep, iMax, iControlType, iFormat);
 	if (!pSetting) return;
 	settingsMap.insert(pair<CStdString,CSetting*>(strSetting,pSetting));
 }

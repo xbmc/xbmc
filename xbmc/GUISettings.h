@@ -129,6 +129,7 @@ class CSettingInt : public CSetting
 {
 public:
 	CSettingInt(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, const char *strFormat);
+	CSettingInt(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, int iFormat);
 	~CSettingInt() {};
 
 	virtual int GetType() { return SETTINGS_TYPE_INT; };
@@ -141,6 +142,7 @@ public:
 	int m_iMin;
 	int m_iStep;
 	int m_iMax;
+	int m_iFormat;
 	CStdString m_strFormat;
 
 protected:
@@ -248,6 +250,7 @@ public:
 	void SetFloat(const char *strSetting, float fSetting);
 
 	void AddInt(int iOrder, const char *strSetting, int iLabel, int fSetting, int iMin, int iStep, int iMax, int iControlType, const char *strFormat = NULL);
+	void AddInt(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, int iFormat);
 	int GetInt(const char *strSetting);
 	void SetInt(const char *strSetting, int fSetting);
 

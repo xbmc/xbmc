@@ -1083,7 +1083,13 @@ void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)
 		CStdString strLabel;
 		for (int i=pSettingInt->m_iMin; i <= pSettingInt->m_iMax; i+= pSettingInt->m_iStep)
 		{
-			strLabel.Format(pSettingInt->m_strFormat, i);
+			if (pSettingInt->m_iFormat>-1)
+			{
+				CStdString strFormat=g_localizeStrings.Get(pSettingInt->m_iFormat);
+				strLabel.Format(strFormat, i);
+			}
+			else
+				strLabel.Format(pSettingInt->m_strFormat, i);
 			pControl->AddLabel(strLabel, (i-pSettingInt->m_iMin)/pSettingInt->m_iStep);
 		}
 		pControl->SetValue((pSettingInt->GetData()-pSettingInt->m_iMin)/pSettingInt->m_iStep);

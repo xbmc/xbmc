@@ -2364,4 +2364,11 @@
   <string><id>14041</id><value>Post Processing</value></string>
   <string><id>14042</id><value>Engine IP Address</value></string>
   <string><id>14043</id><value>- Shutdown while playing</value></string>
+  <string><id>14044</id><value>%i mins</value></string>
+  <string><id>14045</id><value>%i secs</value></string>
+  <string><id>14046</id><value>%i ms</value></string>
+  <string><id>14047</id><value>%i %%</value></string>
+  <string><id>14048</id><value>%i kbps</value></string>
+  <string><id>14049</id><value>%i kb</value></string>
+  <string><id>14050</id><value>%i.0 dB</value></string>
 </strings>
