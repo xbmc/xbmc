@@ -438,18 +438,18 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 			m_vecItems.push_back(pItem);
 		}
 		m_strParentPath.Empty();
-  }
+	}
 
-  m_Directory.m_strPath=strDirectory;
+	m_Directory.m_strPath=strDirectory;
 
-  if (g_stSettings.m_iMyVideoVideoStack != STACK_NONE)
-  {
-    VECFILEITEMS items;
-	  m_rootDir.GetDirectory(strDirectory,items);
-    bool bDVDFolder(false);
+	if (g_stSettings.m_iMyVideoVideoStack != STACK_NONE)
+	{
+		VECFILEITEMS items;
+		m_rootDir.GetDirectory(strDirectory,items);
+		bool bDVDFolder(false);
 		//Figure out first if we are in a folder that contains a dvd
-    for (int i=0; i < (int)items.size(); ++i) //Do it this way to avoid an extra roundtrip to files
-    {
+		for (int i=0; i < (int)items.size(); ++i) //Do it this way to avoid an extra roundtrip to files
+		{
 			CFileItem* pItem1= items[i];
 			if (CStdString(CUtil::GetFileName(pItem1->m_strPath)).Equals("VIDEO_TS.IFO"))
 			{
@@ -459,7 +459,7 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 				break;
 			}
 		}
-	  
+		
 		for (int i=0; i < (int)items.size(); ++i)
 		{
 			bool bAdd(true);
@@ -498,7 +498,7 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 							}
 						}
 					}
-	          
+		        
 					if (searchForStackedFiles)
 					{
 						for (int x=0; x < (int)items.size(); ++x)
@@ -563,27 +563,27 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 				delete pItem1;
 			}
 		}
-  }
-  else
-  {
-    VECFILEITEMS items;
-	  m_rootDir.GetDirectory(strDirectory,m_vecItems);
-  }
+	}
+	else
+	{
+		VECFILEITEMS items;
+		m_rootDir.GetDirectory(strDirectory,m_vecItems);
+	}
 
 	m_iLastControl=GetFocusedControl();
 
 	CUtil::SetThumbs(m_vecItems);
 	if ((g_guiSettings.GetBool("FileLists.HideExtensions")) || (g_stSettings.m_bMyVideoCleanTitles))
 		CUtil::RemoveExtensions(m_vecItems);
-  if (g_stSettings.m_bMyVideoCleanTitles)
-    CUtil::CleanFileNames(m_vecItems);
+	if (g_stSettings.m_bMyVideoCleanTitles)
+		CUtil::CleanFileNames(m_vecItems);
 
 	SetIMDBThumbs(m_vecItems);
 	CUtil::FillInDefaultIcons(m_vecItems);
-  OnSort();
-  UpdateButtons();
+	OnSort();
+	UpdateButtons();
 
-	strSelectedItem=m_history.Get(m_Directory.m_strPath);	
+	strSelectedItem=m_history.Get(m_Directory.m_strPath);
 
 	if (m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST)
 	{
