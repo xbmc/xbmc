@@ -12,7 +12,12 @@ int GetDateFormat(
   int cchDate                // size of buffer
 )
 {
-  return 0;
+  // will always return just current local date in YYYY-MM-DD format
+  SYSTEMTIME time;
+  if (cchDate < 10) return 0;
+  GetLocalTime(&time);
+  _stprintf(lpDateStr, _T("%04d-%02d-%02d"), time.wYear, time.wMonth, time.wDay);
+  return _tcslen(lpDateStr);
 }
 
 int GetTimeFormat(
@@ -24,6 +29,11 @@ int GetTimeFormat(
   int cchTime                // size, in bytes or characters, of the buffer
 )
 {
-  return 0;
+  // will always return just current local time in HH:MM:SS format
+  SYSTEMTIME time;
+  if (cchTime < 8) return 0;
+  GetLocalTime(&time);
+  _stprintf(lpTimeStr, _T("%0d:%02d:%02d"), time.wHour, time.wMinute, time.wSecond);
+  return _tcslen(lpTimeStr);
 }
 
