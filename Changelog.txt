@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 01-04-2005 removed: mplayerdebug is no longer needed. Just setting loglevel to 0 will enabled mplayer logs.
   - 01-04-2005 removed: Old (not working) method of stopping ffwd + rewd on trigger release. 
   - 01-04-2005 changed: Renamed "Nav" view to "Library".
   - 01-04-2005 added: Big List to the Nav Music view at the albums level.
