@@ -43,6 +43,7 @@ void CGUIWindowManager::Add(CGUIWindow* pWindow)
 void CGUIWindowManager::ActivateWindow(int iWindowID)
 {
   // deactivate any window
+	int iPrevActiveWindow=m_iActiveWindow;
   if (m_iActiveWindow >=0)
   {
     CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
@@ -61,8 +62,23 @@ void CGUIWindowManager::ActivateWindow(int iWindowID)
       m_iActiveWindow=i;
       CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
       pWindow->OnMessage(msg);
+			return;
     }
   }
+
+	// new window doesnt exists. (maybe .xml file is invalid or doesnt exists)
+	// so we go back to the previous window
+	for (int i=0; i < (int)m_vecWindows.size(); i++)
+	{
+		CGUIWindow* pWindow=m_vecWindows[i];
+		if (pWindow->GetID() == iPrevActiveWindow) 
+		{
+			m_iActiveWindow=iPrevActiveWindow;
+			CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
+			CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
+			pWindow->OnMessage(msg);
+		}
+	}
 }
 
 
