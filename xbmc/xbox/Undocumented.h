@@ -408,6 +408,14 @@ typedef UCHAR KIRQL, *PKIRQL;
 #define APC_LEVEL 1                 // APC interrupt level
 #define DISPATCH_LEVEL 2            // Dispatcher level
 
+typedef CCHAR KPROCESSOR_MODE;
+
+typedef enum _MODE {
+  KernelMode,
+  UserMode,
+  MaximumMode
+} MODE;
+
 // Thread entry point
 // NOTE: This is not a standard call!  You can't call this function from C code!
 // You push registers like stdcall, but ebp + 4 must point to the first argument before the call!
@@ -502,8 +510,6 @@ typedef struct _KTIMER {
     struct _KDPC *Dpc;
     LONG Period;
 } KTIMER, *PKTIMER;
-
-
 
 // XBE stuff
 // Not used in any exported kernel calls, but still useful.
@@ -913,6 +919,20 @@ KeInitializeTimerEx(
 	IN TIMER_TYPE Type
 	);
 
+// KeDelayExecutionThread:
+// Delay the thread for n * 100 nsec
+//
+// Differences from NT: None.
+NTSYSAPI
+EXPORTNUM(99)
+NTSTATUS
+NTAPI
+KeDelayExecutionThread(
+    IN KPROCESSOR_MODE WaitMode,
+    IN BOOLEAN Alertable,
+    IN PLARGE_INTEGER Interval
+    );
+    
 // KeRaiseIrql:
 // Raises IRQL to some value.
 //
