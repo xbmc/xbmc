@@ -14,11 +14,12 @@ public:
   CGUIWindowManager(void);
   virtual ~CGUIWindowManager(void);  
   virtual void    SendMessage(CGUIMessage& message);
+	void						Initialize();
   void            Add(CGUIWindow* pWindow);
 	void						Remove(DWORD dwID);
   void            ActivateWindow(int iWindowID);
-  void			  PreviousWindow();
-  void			  RefreshWindow();
+  void						PreviousWindow();
+  void						RefreshWindow();
   void            OnAction(const CAction &action);
   void            Render();
 	CGUIWindow*     GetWindow(DWORD dwID);
