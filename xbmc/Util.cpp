@@ -146,6 +146,13 @@ void CUtil::RemoveExtension(CFileItem *pItem)
 		pItem->SetLabel(strLabel.Left(iPos));
 }
 
+void CUtil::RemoveExtension(CStdString& strFileName)
+{
+	int iPos = strFileName.ReverseFind(".");
+	if (iPos>0)
+		strFileName=strFileName.Left(iPos);
+}
+
 // Remove the extensions from the filenames
 void CUtil::RemoveExtensions(VECFILEITEMS &items)
 {
