@@ -733,6 +733,22 @@
   <string><id>13356</id><value>Hardware Overlays</value></string>
   <string><id>13357</id><value>Shader (hohe Qualität)</value></string>
   <string><id>13360</id><value>Abbilder erstellen</value></string>
+  <string><id>13361</id><value>Voice aktivieren</value></string>
+  <string><id>13362</id><value>Voice Maske</value></string>
+  <string><id>13363</id><value>- Spektrale Form verändern</value></string>
+  <string><id>13364</id><value>-- Wert der spektralen Form</value></string>
+  <string><id>13365</id><value>- Stimmlage verändern</value></string>
+  <string><id>13366</id><value>-- Wert der Veränderung</value></string>
+  <string><id>13367</id><value>- Flüster Verfremdung benutzen</value></string>
+  <string><id>13368</id><value>-- Wert der Verfremdung</value></string>
+  <string><id>13369</id><value>- Roboter Verfremdung benutzen</value></string>
+  <string><id>13370</id><value>-- Wert der Verfremdung</value></string>
+  <string><id>13371</id><value>- Port 0 Voice</value></string>
+  <string><id>13372</id><value>- Port 1 Voice</value></string>
+  <string><id>13373</id><value>- Port 2 Voice</value></string>
+  <string><id>13374</id><value>- Port 3 Voice</value></string>
+  <string><id>13375</id><value>Gerät benutzen</value></string>
+  <string><id>13376</id><value>Lautstärke (%)</value></string>
 
   <string><id>14000</id><value>Stapeln: Aus</value></string>
   <string><id>14001</id><value>Stapeln: Einfach</value></string>
