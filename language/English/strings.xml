@@ -581,6 +581,20 @@
   <string><id>10508</id><value>Weather Forecast</value></string>
   <string><id>10509</id><value>Network Gaming</value></string>
   <string><id>10510</id><value>Extensions</value></string>
+  <string><id>10511</id><value>System Info</value></string>
+  <string><id>10512</id><value>My Music - Albums</value></string>
+  <string><id>10513</id><value>My Music - Artists</value></string>
+  <string><id>10514</id><value>My Music - Genres</value></string>
+  <string><id>10515</id><value>My Music - Top 100</value></string>
+  <string><id>10516</id><value>My Music - Library</value></string>
+  <string><id>10517</id><value>My Music - Playlist</value></string>
+  <string><id>10518</id><value>My Video - Actors</value></string>
+  <string><id>10519</id><value>My Video - Genres</value></string>
+  <string><id>10520</id><value>My Video - Title</value></string>
+  <string><id>10521</id><value>My Video - Year</value></string>
+  <string><id>10522</id><value>My Video - Playlist</value></string>
+  <string><id>10523</id><value>Album Info</value></string>
+  <string><id>10524</id><value>Movie Info</value></string>
   <string><id>11000</id><value>keyboard</value></string>
   <string><id>12000</id><value>Select dialog</value></string>
   <string><id>12001</id><value>My Music/info</value></string>
