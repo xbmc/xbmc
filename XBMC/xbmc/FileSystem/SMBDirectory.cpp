@@ -8,7 +8,7 @@
  *   share = smb://, user selects a workgroup, user selects a server.
  *   doing ".." will go back to smb:// (entire network) and not to workgroup list.
  *
- * debugging is off for release builds (see local.h)
+ * debugging is set to a max of 10 for release builds (see local.h)
  */
 
 #include "smbdirectory.h"
@@ -31,21 +31,8 @@ CSMBDirectory::~CSMBDirectory(void)
 
 bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 {
-/*
-	We accept smb://[[[domain;]user[:password@]]server[/share[/path[/file]]]]
+	// We accept smb://[[[domain;]user[:password@]]server[/share[/path[/file]]]]
 
-	unsigned int smbc_type; 
-		 Type of entity.
-	    SMBC_WORKGROUP=1,
-	    SMBC_SERVER=2, 
-	    SMBC_FILE_SHARE=3,
-	    SMBC_PRINTER_SHARE=4,
-	    SMBC_COMMS_SHARE=5,
-	    SMBC_IPC_SHARE=6,
-	    SMBC_DIR=7,
-	    SMBC_FILE=8,
-	    SMBC_LINK=9,
-*/
 	VECFILEITEMS vecCacheItems;
   g_directoryCache.ClearDirectory(strPath);
 
@@ -61,7 +48,7 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	smb.Init();
 
 	// convert from string to UTF8
-	strLen = convert_string(CH_DOS, CH_UTF8, strRoot, strRoot.length(), strUtfPath, 1024);
+	strLen = convert_string(CH_DOS, CH_UTF8, strRoot, strRoot.length(), strUtfPath, 1024, false);
 	strUtfPath[strLen] = 0;
 
 	smb.Lock();
@@ -114,7 +101,7 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 				__int64 lTimeDate = 0;
 
 				// convert from UTF8 to wide string
-				strLen = convert_string(CH_UTF8, CH_UCS2, dirEnt->name, dirEnt->namelen, wStrFile, 1024);
+				strLen = convert_string(CH_UTF8, CH_UCS2, dirEnt->name, dirEnt->namelen, wStrFile, 1024, false);
 				wStrFile[strLen] = 0;
 
 				CUtil::Unicode2Ansi(wStrFile, strFile);
@@ -131,7 +118,7 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 					struct __stat64 info;
 					strFullName = strRoot + strFile;
 					// convert from string to UTF8
-					strLen = convert_string(CH_DOS, CH_UTF8, strFullName, strFullName.length(), strUtfFile, 1024);
+					strLen = convert_string(CH_DOS, CH_UTF8, strFullName, strFullName.length(), strUtfFile, 1024, false);
 					strUtfFile[strLen] = 0;
 
 					smb.Lock();
@@ -198,5 +185,6 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 		smb.Unlock();
 	}
   g_directoryCache.SetDirectory(strPath,vecCacheItems);
+	smbc_purge();
 	return true;
 }
