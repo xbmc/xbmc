@@ -497,6 +497,8 @@ SMBCCTX * smbc_new_context(void);
  */
 int smbc_free_context(SMBCCTX * context, int shutdown_ctx);
 
+// xbox
+int smbc_purge();
 
 /**@ingroup misc
  * Initialize a SBMCCTX (a context).
