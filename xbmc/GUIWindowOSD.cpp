@@ -96,7 +96,8 @@ CGUIWindowOSD::CGUIWindowOSD(void)
 	m_iActiveMenuButtonID = 0;
 	m_iCurrentBookmark = 0;
 	// enable relative coordinates
-//	m_bRelativeCoords = true;
+	m_bRelativeCoords = true;
+	m_bNeedsScaling = true;
 }
 
 CGUIWindowOSD::~CGUIWindowOSD(void)
@@ -110,11 +111,9 @@ bool CGUIWindowOSD::SubMenuVisible()
 
 void CGUIWindowOSD::Render()
 {
-  
 	SetVideoProgress();			// get the percentage of playback complete so far
 	Get_TimeInfo();				// show the time elapsed/total playing time
 	CGUIWindow::Render();		// render our controls to the screen
-  
 }
 
 void CGUIWindowOSD::OnAction(const CAction &action)
@@ -238,9 +237,8 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 			OutputDebugString("OSD:INIT\n");
 			if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(false);
 			// position correctly
-//			int iResolution = g_graphicsContext.GetVideoResolution();
-	//		SetPosition(0, g_settings.m_ResInfo[iResolution].iOSDYOffset);
-			ResetAllControls();							// make sure the controls are positioned relevant to the OSD Y offset
+			int iResolution = g_graphicsContext.GetVideoResolution();
+			SetPosition(0, g_settings.m_ResInfo[iResolution].iOSDYOffset);
 			m_bSubMenuOn=false;
 			m_iActiveMenuButtonID=0;
 			m_iActiveMenu=0;
@@ -1015,61 +1013,6 @@ void CGUIWindowOSD::PopulateSubTitles()
 	// set the current active subtitle as the selected item in the list control
 	CGUIMessage msgSet(GUI_MSG_ITEM_SELECT,GetID(),OSD_SUBTITLE_LIST,iCurrent,0,NULL);
 	OnMessage(msgSet);
-}
-
-void	CGUIWindowOSD::ResetAllControls()
-{
-  //reset all
-
-	int iResolution  =g_graphicsContext.GetVideoResolution();
-	int iBottom = g_settings.m_ResInfo[iResolution].Overscan.bottom;
-
-	// ensure valid calibration
-	if (m_vecPositions[0].y + g_settings.m_ResInfo[iResolution].iOSDYOffset > iBottom)
-		g_settings.m_ResInfo[iResolution].iOSDYOffset = iBottom - m_vecPositions[0].y - 2;
-
-  
-  bool bOffScreen(false);
-	int iCalibrationY=g_settings.m_ResInfo[iResolution].iOSDYOffset;
-  int iTop = g_settings.m_ResInfo[iResolution].Overscan.top;
-  int iMin=0;
-  
-  for (int i=0; i < (int)m_vecPositions.size();++i)
-  {
-    CPosition pos=m_vecPositions[i];
-    pos.pControl->SetPosition(pos.x,pos.y+iCalibrationY);
-  }
-  for (int i=0;i < (int)m_vecControls.size(); ++i)
-  {
-    CGUIControl* pControl= m_vecControls[i];
-    
-    int dwPosY=pControl->GetYPosition();
-    if (pControl->IsVisible())
-    {
-      if ( dwPosY < iTop)
-      {
-        int iSize=iTop-dwPosY;
-        if ( iSize > iMin) iMin=iSize;
-        bOffScreen=true;
-      }
-    }
-	}
-  if (bOffScreen) 
-  {
-
-    for (int i=0;i < (int)m_vecControls.size(); ++i)
-    {
-      CGUIControl* pControl= m_vecControls[i];
-      int dwPosX=pControl->GetXPosition();
-      int dwPosY=pControl->GetYPosition();
-      if ( dwPosY < (int)100)
-      {
-        dwPosY+=abs(iMin);
-        pControl->SetPosition(dwPosX,dwPosY);
-      }
-	  }
-  }
-  CGUIWindow::ResetAllControls();
 }
 
 void CGUIWindowOSD::Reset()
