@@ -61,6 +61,9 @@ void CGUIDialogMusicScan::StartScanning(const CStdString& strDirectory, bool bUp
 {
   Show(m_gWindowManager.GetActiveWindow());
 
+  // save settings
+  g_application.SaveMusicScanSettings();
+
   m_musicInfoScanner.Start(strDirectory, bUpdateAll);
 }
 
@@ -83,6 +86,10 @@ void CGUIDialogMusicScan::OnFinished()
 {
   CGUIMessage msg(GUI_MSG_SCAN_FINISHED, 0, 0, 0);
   m_gWindowManager.SendThreadMessage(msg);
+
+  // be sure to restore the settings
+  CLog::Log(LOGINFO,"Music scan was stopped or finished ... restoring UseTags and FindRemoteThumbs");
+  g_application.RestoreMusicScanSettings();
 
   Close();
 }

@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 26-03-2005 changed: UseTags and FindRemoteThumbs are automatically enabled when a music scan starts, and restored when completed
   - 25-03-2005 fixed: tbn thumbnails on iso9660 discs
   - 23-03-2005 updated: Korean language file (Thnx to akoako)
   - 23-03-2004 updated: Polish language file (Thnx to napek)
