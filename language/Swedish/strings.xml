@@ -599,6 +599,14 @@
   <string><id>12345</id><value>Tillgång nekas</value></string>
   <string><id>12346</id><value>Du har använt max antal lösenordsförsök.</value></string>
   <string><id>12347</id><value>XBMC och XBoxen kommer nu stängas av.</value></string>
+  <string><id>12348</id><value>Föremål låst</value></string>
+  <string><id>12349</id><value>Kom ihåg huvudkod vid nästa uppstart?</value></string>
+  <string><id>12350</id><value>(Att öppnna något föremål i Inställningar kommer</value></string>
+  <string><id>12351</id><value>automatiskt att återaktivera huvudlåset.)</value></string>
+  <string><id>12352</id><value>Tryck Huvudkods knapp kombination och</value></string>
+  <string><id>12353</id><value>Återaktivera delningslåsk</value></string>
+  <string><id>12354</id><value>Gå förbi mapplås tills nästa uppstart?</value></string>
+  <string><id>12355</id><value>automatisk återaktivering av mapplåss.)</value></string>
   <string><id>12600</id><value>Mitt väder</value></string>
   <string><id>12900</id><value>Skärmsläckare</value></string>
   <string><id>12901</id><value>Helskärms OSD</value></string>
