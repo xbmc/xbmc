@@ -322,8 +322,8 @@
   <string><id>391</id><value>Låg</value></string>
   <string><id>392</id><value>Medium</value></string>
   <string><id>393</id><value>Hög</value></string>
-  <string><id>394</id><value>N/A</value></string>
-  <string><id>395</id><value>N/A</value></string>
+  <string><id>394</id><value>Dimma</value></string>
+  <string><id>395</id><value>Dis</value></string>
   <string><id>396</id><value>Välj plats</value></string>
   <string><id>397</id><value>Uppdateringstid</value></string>
   <string><id>398</id><value>Temperaturenhet</value></string>
@@ -517,6 +517,21 @@
   <string><id>753</id><value>Ändra utdelnings namn</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Online Spel</value></string>
+  <string><id>1396</id><value>Drifting</value></string>
+  <string><id>1397</id><value>and</value></string>
+  <string><id>1398</id><value>Nollgradigt</value></string>
+  <string><id>1399</id><value>N/A</value></string>
+  <string><id>1400</id><value>N/A</value></string>
+  <string><id>1401</id><value>N/A</value></string>
+  <string><id>1402</id><value>N/A</value></string>
+  <string><id>1403</id><value>N/A</value></string>
+  <string><id>1404</id><value>N/A</value></string>
+  <string><id>1405</id><value>N/A</value></string>
+  <string><id>1406</id><value>N/A</value></string>
+  <string><id>1407</id><value>N/A</value></string>
+  <string><id>1408</id><value>N/A</value></string>
+  <string><id>1409</id><value>N/A</value></string>
+  <string><id>1410</id><value>N/A</value></string>
   <string><id>10000</id><value>Start</value></string>
   <string><id>10001</id><value>Mina Program</value></string>
   <string><id>10002</id><value>Mina Bilder</value></string>
