@@ -176,7 +176,7 @@ bool CFile::Open(const char* strFileName, bool bBinary)
 
   CURL url(strFileName);
 
-  return m_pFile->Open(url.GetUserName().c_str(),url.GetPassWord().c_str(),url.GetHostName().c_str(),url.GetFileName().c_str(), url.GetPort(),bBinary);
+  return m_pFile->Open(url,bBinary);
 }
 
 bool CFile::Exists(const char* strFileName)
@@ -193,7 +193,7 @@ bool CFile::Exists(const char* strFileName)
 	
 	CURL url(strFileName);
 
-	return m_pFile->Exists(url.GetUserName().c_str(),url.GetPassWord().c_str(),url.GetHostName().c_str(),url.GetFileName().c_str(), url.GetPort());
+	return m_pFile->Exists(url);
 }
 
 int CFile::Stat(const char* strFileName, struct __stat64* buffer)
@@ -203,7 +203,7 @@ int CFile::Stat(const char* strFileName, struct __stat64* buffer)
 	if (!m_pFile) return false;
 	
 	CURL url(strFileName);
-	return m_pFile->Stat(url.GetUserName().c_str(),url.GetPassWord().c_str(),url.GetHostName().c_str(),url.GetFileName().c_str(), url.GetPort(), buffer);
+	return m_pFile->Stat(url, buffer);
 }
 
 //*********************************************************************************************

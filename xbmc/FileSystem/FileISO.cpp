@@ -41,11 +41,11 @@ CFileISO::~CFileISO()
 	}
 }
 //*********************************************************************************************
-bool CFileISO::Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName, int iport,bool bBinary)
+bool CFileISO::Open(const CURL& url,bool bBinary)
 {
 	
 	string strFName="\\";
-	strFName+=strFileName;
+	strFName+=url.GetFileName();
 	for (int i=0; i < (int)strFName.size(); ++i )
 	{
 		if (strFName[i]=='/') strFName[i]='\\';
@@ -183,10 +183,10 @@ bool CFileISO::ReadString(char *szLine, int iLineLength)
 	return false;
 }
 
-bool CFileISO::Exists(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport)
+bool CFileISO::Exists(const CURL& url)
 {
 	string strFName="\\";
-	strFName+=strFileName;
+	strFName+=url.GetFileName();
 	for (int i=0; i < (int)strFName.size(); ++i )
 	{
 		if (strFName[i]=='/') strFName[i]='\\';
@@ -199,10 +199,10 @@ bool CFileISO::Exists(const char* strUserName, const char* strPassword,const cha
 	return true;
 }
 
-int CFileISO::Stat(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName, int iport, struct __stat64* buffer)
+int CFileISO::Stat(const CURL& url, struct __stat64* buffer)
 {
 	string strFName="\\";
-	strFName+=strFileName;
+	strFName+=url.GetFileName();
 	for (int i=0; i < (int)strFName.size(); ++i )
 	{
 		if (strFName[i]=='/') strFName[i]='\\';

@@ -206,7 +206,7 @@ const CStdString&  CURL::GetFileType() const
 	return m_strFileType;
 }
 
-void  CURL::GetURL(CStdString& strURL)
+void  CURL::GetURL(CStdString& strURL) const
 {
 	if (m_strProtocol=="")
 	{
@@ -252,7 +252,7 @@ void  CURL::GetURL(CStdString& strURL)
 
 }
 
-void CURL::GetURLWithoutUserDetails(CStdString& strURL)
+void CURL::GetURLWithoutUserDetails(CStdString& strURL) const
 {
 	if (m_strProtocol=="")
 	{
