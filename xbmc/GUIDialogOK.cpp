@@ -2,6 +2,9 @@
 #include "guiWindowManager.h"
 #include "localizeStrings.h"
 
+#define ID_BUTTON_NO   10
+#define ID_BUTTON_YES  11
+
 CGUIDialogOK::CGUIDialogOK(void)
 :CGUIDialog(0)
 {
@@ -30,13 +33,19 @@ bool CGUIDialogOK::OnMessage(CGUIMessage& message)
 			if (1||ACTION_SELECT_ITEM==iAction)
 			{
 				int iControl=message.GetSenderId();
-				if (iControl==10)
+        if ( GetControl(ID_BUTTON_YES) == NULL)
+        {
+          m_bConfirmed=true;
+					Close();
+					return true;
+        }
+				if (iControl==ID_BUTTON_NO)
 				{
 					m_bConfirmed=false;
 					Close();
 					return true;
 				}
-				if (iControl==11)
+				if (iControl==ID_BUTTON_YES)
 				{
 					m_bConfirmed=true;
 					Close();
