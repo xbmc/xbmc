@@ -761,7 +761,7 @@ void CGUIWindowSlideShow::Render()
 	if (m_bErrorMessage)
 	{	// we have an error when loading either the current or next picture
 		// check to see if we have a picture loaded
-		CLog::DebugLog("We have an error!");
+		CLog::Log(LOGDEBUG, "We have an error loading a picture!");
 		if (m_Image[m_iCurrentPic].IsLoaded())
 		{	// Yes.  Let's let it transistion out, wait for it to be released, then try loading again.
 			CLog::Log(LOGERROR, "Error loading the next image %s", m_vecSlides[m_iNextSlide].c_str());
@@ -791,6 +791,7 @@ void CGUIWindowSlideShow::Render()
 		RenderErrorMessage();
 		return;
 	}
+
 	if (!m_Image[m_iCurrentPic].IsLoaded() && !m_pBackgroundLoader->IsLoading())
 	{	// load first image
 		CLog::Log(LOGDEBUG, "Loading the current image %s", m_vecSlides[m_iCurrentSlide].c_str());
@@ -1048,7 +1049,6 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 
 		case GUI_MSG_WINDOW_INIT:
 		{
-			CLog::Log(LOGDEBUG, "Starting slideshow::Openwindow");
 			CGUIWindow::OnMessage(message);
       if (g_application.IsPlayingVideo())
         g_application.StopPlaying();
@@ -1069,7 +1069,6 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 			// shuffle
 			if (g_guiSettings.GetBool("Slideshow.Shuffle") && m_bSlideShow)
 				Shuffle();
-			CLog::Log(LOGDEBUG, "Starting slideshow::Openwindow DONE.");
 			return true;
 		}
 	}
