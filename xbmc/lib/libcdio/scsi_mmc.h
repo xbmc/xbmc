@@ -26,9 +26,9 @@
 #ifndef __SCSI_MMC_H__
 #define __SCSI_MMC_H__
 
-#include <cdio/cdio.h>
-#include <cdio/types.h>
-#include <cdio/dvd.h>
+#include <cdio.h>
+#include <types.h>
+#include <dvd.h>
 
 /*! The generic packet command opcodes for CD/DVD Logical Units. */
 
@@ -264,13 +264,16 @@
  */
 #define MAX_CDB_LEN 12
 
-/*! A Command Descriptor Buffer (CDB) used in sending SCSI MMC 
+/*! \brief A Command Descriptor Buffer (CDB) used in sending SCSI MMC 
     commands.
  */
 typedef struct scsi_mmc_cdb {
   uint8_t field[MAX_CDB_LEN];
 } scsi_mmc_cdb_t;
 
+/*! \brief Format of header block in data returned from a SCSI-MMC
+    GET_CONFIGURATION command.
+ */
 typedef struct scsi_mmc_feature_list_header {
   unsigned char length_msb;
   unsigned char length_1sb;
