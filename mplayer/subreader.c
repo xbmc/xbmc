@@ -2275,17 +2275,25 @@ void dump_sami(sub_data* subd, float fps) {
     mp_msg(MSGT_SUBREADER,MSGL_INFO,"SUB: Subtitles dumped in \'dumpsub.smi\'.\n");
 }
 
+static free_subtitles( subtitle * subrecord )
+{
+ int i;
+    for (i=0; i < subrecord->lines; i++) 
+	    if(subrecord->text[i])
+		free( subrecord->text[i] );
+}
+
 void sub_free( sub_data * subd )
 {
  int i;
  
     if ( !subd ) return;
- 
-    if (subd->subtitles) {
-	for (i=0; i < subd->subtitles->lines; i++) free( subd->subtitles->text[i] );
-	free( subd->subtitles );
-    }
-    if (subd->filename) free( subd->filename );
+    
+    for ( i=0; i<subd->sub_num; i++) 
+	free_subtitles( subd->subtitles + i );
+
+    if(subd->subtitles) free( subd->subtitles);
+ //   if (subd->filename) free( subd->filename );
     free( subd );
 }
 
