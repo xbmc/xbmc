@@ -18,6 +18,7 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dw
 	m_iCurrentImage=0;
 	m_dwFrameCounter=0;
   m_bKeepAspectRatio=false;
+  m_iCurrentLoop=0;
 }
 
 
@@ -152,6 +153,7 @@ void CGUIImage::AllocResources()
 
 	m_dwFrameCounter=0;
 	m_iCurrentImage=0;
+  m_iCurrentLoop=0;
   // Create a vertex buffer for rendering the image
   g_graphicsContext.Get3DDevice()->CreateVertexBuffer( 4*sizeof(CGUIImage::VERTEX), D3DUSAGE_WRITEONLY, 0L, D3DPOOL_DEFAULT, &m_pVB );
 
@@ -183,6 +185,7 @@ void CGUIImage::FreeResources()
 
   m_vecTextures.erase(m_vecTextures.begin(),m_vecTextures.end());
 	m_iCurrentImage=0;
+  m_iCurrentLoop=0;
 }
 
 
@@ -295,16 +298,32 @@ void CGUIImage::SetItems(int iItems)
 void CGUIImage::Process()
 {
 	m_dwFrameCounter++;
-  DWORD dwDelay = g_TextureManager.GetDelay(m_strFileName,m_iCurrentImage);
+  DWORD dwDelay    = g_TextureManager.GetDelay(m_strFileName,m_iCurrentImage);
+  int   iMaxLoops  = g_TextureManager.GetLoops(m_strFileName,m_iCurrentImage);
 	if (!dwDelay) dwDelay=100;
 	if (m_dwFrameCounter*40 >= dwDelay)
 	{
 		m_dwFrameCounter=0;
-		m_iCurrentImage++;
-    if (m_iCurrentImage >= (int)m_vecTextures.size() )
+    if (m_iCurrentImage+1 >= (int)m_vecTextures.size() )
 		{
-			m_iCurrentImage=0;
+      if (iMaxLoops > 0)
+      {
+        if (m_iCurrentLoop+1 < iMaxLoops)
+        {
+          m_iCurrentLoop++;
+			    m_iCurrentImage=0;
+        }
+      }
+      else
+      {
+        //loop forever
+			  m_iCurrentImage=0;
+      }
 		}
+    else
+    {
+		  m_iCurrentImage++;
+    }
 	}
 }
 void CGUIImage::SetTextureWidth(int iWidth)
