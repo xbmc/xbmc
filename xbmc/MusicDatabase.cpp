@@ -1199,6 +1199,35 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
 	return false;
 }
 
+bool CMusicDatabase::GetRecentlyAddedAlbums(VECALBUMS& albums)
+{
+	try
+	{
+		albums.erase(albums.begin(), albums.end());
+		if (NULL==m_pDB.get()) return false;
+		if (NULL==m_pDS.get()) return false;
+		CStdString strSQL;
+		strSQL.Format("select * from album,path,artist where album.idPath=path.idPath and album.idArtist=artist.idArtist order by album.idAlbum desc limit 20" );
+		if (!m_pDS->query(strSQL.c_str())) return false;
+		int iRowsFound = m_pDS->num_rows();
+		if (iRowsFound== 0) return false;
+		while (!m_pDS->eof())
+		{
+			albums.push_back(GetAlbumFromDataset());
+			m_pDS->next();
+		}
+
+		m_pDS->close();	//	cleanup recordset data
+		return true;
+	}
+	catch(...)
+	{
+    CLog::Log(LOGERROR, "CMusicDatabase:GetAlbums() failed");
+	}
+
+	return false;
+}
+
 long CMusicDatabase::AddAlbumInfo(const CAlbum& album1, const VECSONGS& songs)
 {
 	CStdString strSQL;
