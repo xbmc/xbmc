@@ -10,6 +10,7 @@ public:
   CLCD();
   virtual ~CLCD(void);
   static void Initialize();
+  static void Stop();
   static void SetLine(int iLine, const CStdString& strLine);
 
 protected:

@@ -944,8 +944,10 @@ void CApplication::Stop()
   CLog::Log("stop dvd detect media");
 	m_DetectDVDType.StopThread();
 
-  //g_lcd.StopThread();
+  CLog::Log("stop LCD");
+  g_lcd.Stop();
   
+
   CLog::Log("stop time server");
 	m_sntpClient.StopThread();
 
