@@ -2472,6 +2472,25 @@
 <value>Reseta/Starta om</value>
 </string>
 
+  <string><id>13314</id><value>Musik OSD Timeout</value></string>
+  <string><id>13315</id><value>Skapa Miniatyrer</value></string>
+  <string><id>13316</id><value>Recursive miniatyrer</value></string>
+  <string><id>13317</id><value>Titta på bildspel</value></string>
+  <string><id>13318</id><value>Recursive bildspel</value></string>
+  <string><id>13319</id><value>Blanda</value></string>
+  <string><id>13320</id><value>Stereo</value></string>
+  <string><id>13321</id><value>Endast vänster</value></string>
+  <string><id>13322</id><value>Endast Höger</value></string>
+  <string><id>13323</id><value>Aktivera CD+G</value></string>
+  <string><id>13324</id><value>Bakgrunds genomlysning</value></string>
+  <string><id>13325</id><value>Förgrunds genomlysning</value></string>
+  <string><id>13326</id><value>A/V försening</value></string>
+  <string><id>13327</id><value>Karaoke</value></string>
+  <string><id>13328</id><value>%s inte funnen.</value></string>
+  <string><id>13329</id><value>Fel vid öppnande av %s</value></string>
+  <string><id>13330</id><value>Gick inte ladda %s</value></string>
+  <string><id>13331</id><value>Fel:För lite ledigt minne.</value></string>
+
 <string>
 <id>14000</id>
 <value>Stacking: Av</value>
