@@ -265,9 +265,9 @@ void CGUIWindowVideoTitle::FormatItemLabels()
   }
 }
 
-void CGUIWindowVideoTitle::SortItems()
+void CGUIWindowVideoTitle::SortItems(VECFILEITEMS& items)
 {
-  sort(m_vecItems.begin(), m_vecItems.end(), SSortVideoTitleByTitle());
+  sort(items.begin(), items.end(), SSortVideoTitleByTitle());
 }
 
 //****************************************************************************************************************************

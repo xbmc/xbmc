@@ -31,7 +31,7 @@ protected:
 	virtual void			SetViewMode(int iMode)=0;
 	virtual int				SortMethod()=0;
 	virtual bool			SortAscending()=0;
-	virtual void			SortItems()=0;
+	virtual void			SortItems(VECFILEITEMS& items)=0;
 	virtual void			FormatItemLabels()=0;
   virtual void			UpdateButtons();
 	virtual void			OnPopupMenu(int iItem) { OnInfo(iItem); };

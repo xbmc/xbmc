@@ -407,7 +407,7 @@ void CGUIWindowVideoBase::OnSort()
 	g_graphicsContext.SendMessage(msg2);         
 
 	FormatItemLabels();
-	SortItems();
+	SortItems(m_vecItems);
 
 	for (int i=0; i < (int)m_vecItems.size(); i++)
 	{
@@ -839,7 +839,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem)
 		CFileItemList itemlist(items);
 		GetDirectory(m_strDirectory, items);
     
-    SortItems();
+    SortItems(items);
 
 		for (int i=0; i < (int) items.size(); ++i)
 		{
