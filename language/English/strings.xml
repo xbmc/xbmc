@@ -1482,4 +1482,8 @@
     <id>454</id>
     <value>Row 4 adress:</value>
   </string> 
+  <string>
+    <id>455</id>
+    <value>Rows:</value>
+  </string> 
 </strings>

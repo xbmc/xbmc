@@ -251,6 +251,7 @@ public:
   int       m_iMyVideoPlaylistViewAsIcons;
   bool      m_bLCDUsed;
   int       m_iLCDColumns;
+  int       m_iLCDRows;
   int       m_iLCDAdress[4];
   };
 
