@@ -278,15 +278,10 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 			//g_application.m_pPlayer->AudioOffset(false);
 		break;
 		case ACTION_PLAY:
-			if (g_application.m_pPlayer)
-      {
-        if (g_application.m_pPlayer->IsPaused())
-				  g_application.m_pPlayer->Pause();
-        else
-        {
-          g_application.SetPlaySpeed(1);
-        }
+      if (g_application.m_pPlayer->IsPaused()) {
+				g_application.m_pPlayer->Pause();
       }
+      g_application.SetPlaySpeed(1);
 		m_bShowCurrentTime = true;
     m_dwTimeCodeTimeout=timeGetTime();
 		break;
