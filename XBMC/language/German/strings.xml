@@ -2486,4 +2486,12 @@
     <id>14007</id>
     <value>Herunterladen der Playlist fehlgeschlagen</value>
   </string>
+  <string>
+    <id>14008</id>
+    <value>Kai Benachrichtigungen aktivieren</value>
+  </string>
+  <string>
+    <id>14009</id>
+    <value>Spiele Verzeichnis</value>
+  </string>
 </strings>
