@@ -189,7 +189,7 @@ namespace PYXBMC
 	}
 
 	PyDoc_STRVAR(isCanceled__doc__,
-		"iscanceled() -- Returns True if the user pressed cancle.");
+		"iscanceled() -- Returns True if the user pressed cancel.");
 
 	PyObject* Dialog_ProgressIsCanceled(PyObject *self, PyObject *args)
 	{
