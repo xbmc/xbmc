@@ -761,8 +761,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetBoolean(pElement, "autorunmusic", g_stSettings.m_bAutorunMusic);
 		GetBoolean(pElement, "autorunvideo", g_stSettings.m_bAutorunVideo);
 		GetBoolean(pElement, "autorunpictures", g_stSettings.m_bAutorunPictures);
-		GetBoolean(pElement, "flatten", g_stSettings.m_bMyProgramsFlatten);
-		GetBoolean(pElement, "defaultxbe", g_stSettings.m_bMyProgramsDefaultXBE);
 		GetString(pElement, "language", g_stSettings.szDefaultLanguage, g_stSettings.szDefaultLanguage);
 	}
 	// slideshow settings
@@ -825,6 +823,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 	  GetBoolean(pElement, "viewicons", g_stSettings.m_bMyProgramsViewAsIcons);
 	  GetBoolean(pElement, "sortascending", g_stSettings.m_bMyProgramsSortAscending);
 	  GetBoolean(pElement, "flatten", g_stSettings.m_bMyProgramsFlatten);
+   	  GetBoolean(pElement, "defaultxbe", g_stSettings.m_bMyProgramsDefaultXBE);
 	  GetInteger(pElement, "sortmethod", g_stSettings.m_iMyProgramsSortMethod);
     GetInteger(pElement, "selecteditem",g_stSettings.m_iMyProgramsSelectedItem);
   }
@@ -846,6 +845,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetInteger(pNode, "sortmethod", g_stSettings.m_iMyProgramsSortMethod);
 	SetBoolean(pNode, "sortascending", g_stSettings.m_bMyProgramsSortAscending);
 	SetBoolean(pNode, "flatten", g_stSettings.m_bMyProgramsFlatten);
+	SetBoolean(pNode, "defaultxbe", g_stSettings.m_bMyProgramsDefaultXBE);
   SetInteger(pNode, "selecteditem",g_stSettings.m_iMyProgramsSelectedItem);
 
 	// mypictures settings
@@ -1000,8 +1000,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetBoolean(pNode, "autorunmusic", g_stSettings.m_bAutorunMusic);
 	SetBoolean(pNode, "autorunvideo", g_stSettings.m_bAutorunVideo);
 	SetBoolean(pNode, "autorunpictures", g_stSettings.m_bAutorunPictures);
-	SetBoolean(pNode, "flatten", g_stSettings.m_bMyProgramsFlatten);
-	SetBoolean(pNode, "defaultxbe", g_stSettings.m_bMyProgramsDefaultXBE);
 	SetString(pNode, "language", g_stSettings.szDefaultLanguage);
 	// slideshow settings
 	TiXmlElement slideshowNode("slideshow");
