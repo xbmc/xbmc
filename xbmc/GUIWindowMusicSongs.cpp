@@ -1564,4 +1564,5 @@ void CGUIWindowMusicSongs::OnPopupMenu(int iItem)
 		m_vecItems[iItem]->Select(false);
 		return;
 	}
+	CGUIWindowMusicBase::OnPopupMenu(iItem);
 }
