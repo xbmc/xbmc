@@ -219,6 +219,10 @@ public:
 	  int				m_iMyVideoYearSortMethod;
 	  bool			m_bMyVideoYearSortAscending;
 
+		bool			m_bMyVideoTitleViewAsIcons;
+		bool			m_bMyVideoTitleRootViewAsIcons;
+	  int				m_iMyVideoTitleSortMethod;
+	  bool			m_bMyVideoTitleSortAscending;
 
     bool			m_bMyVideoVideoStack;
     bool			m_bMyVideoActorStack;

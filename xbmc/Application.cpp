@@ -214,6 +214,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(&m_guiVideoActors);							// window id = 22
 	m_gWindowManager.Add(&m_guiVideoYear);							  // window id = 23
   m_gWindowManager.Add(&m_guiSettingsPrograms);					// window id = 24
+	m_gWindowManager.Add(&m_guiVideoTitle);							  // window id = 25
 
   m_gWindowManager.Add(&m_guiDialogYesNo);							// window id = 100
   m_gWindowManager.Add(&m_guiDialogProgress);						// window id = 101
@@ -290,6 +291,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_guiVideoGenre.Load( strSkinPath+"\\myvideogenre.xml" );  
   m_guiVideoActors.Load( strSkinPath+"\\myvideoactors.xml" );  
 	m_guiVideoYear.Load( strSkinPath+"\\myvideoYear.xml" );  
+  m_guiVideoTitle.Load( strSkinPath+"\\myvideoTitle.xml" );  
 	m_guiSettings.Load( strSkinPath+"\\settings.xml" );  
 	m_guiSystemInfo.Load( strSkinPath+"\\SettingsSystemInfo.xml" );  
 	m_guiMusicInfo.Load( strSkinPath+"\\DialogAlbumInfo.xml" );  
