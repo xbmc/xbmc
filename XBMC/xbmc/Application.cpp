@@ -130,22 +130,32 @@ HRESULT CApplication::Initialize()
   if (g_stSettings.m_szShortcutDirectory[0]==0)
   {
     strcpy(g_stSettings.m_szShortcutDirectory,strPath.c_str());
-    strcat(g_stSettings.m_szShortcutDirectory,"\\shortcuts");
+    strcat(g_stSettings.m_szShortcutDirectory,"\\shortcuts");		
   }
+  if (g_stSettings.m_szIMDBDirectory[0]==0)
+  {
+    strcpy(g_stSettings.m_szIMDBDirectory,strPath.c_str());
+    strcat(g_stSettings.m_szIMDBDirectory,"\\imdb");		
+  }
+  if (g_stSettings.m_szAlbumDirectory[0]==0)
+  {
+    strcpy(g_stSettings.m_szAlbumDirectory,strPath.c_str());
+    strcat(g_stSettings.m_szAlbumDirectory,"\\albums");		
+  }
+	CreateDirectory(g_stSettings.szThumbnailsDirectory,NULL);
+	CreateDirectory(g_stSettings.m_szShortcutDirectory,NULL);
+	CreateDirectory(g_stSettings.m_szIMDBDirectory,NULL);
+	CreateDirectory(g_stSettings.m_szAlbumDirectory,NULL);
 
 	
   // initialize network
-  if (g_stSettings.m_strLocalIPAdres[0]!=0 &&
-      g_stSettings.m_strLocalNetmask[0]!=0 &&
-      g_stSettings.m_strGateway [0]!=0)
+  
+  if ( CUtil::InitializeNetwork(g_stSettings.m_strLocalIPAdres,
+                            g_stSettings.m_strLocalNetmask,
+                            g_stSettings.m_strGateway ) )
   {
-    if ( CUtil::InitializeNetwork(g_stSettings.m_strLocalIPAdres,
-                             g_stSettings.m_strLocalNetmask,
-                             g_stSettings.m_strGateway ) )
-    {
-				m_sntpClient.Create();                      
-      
-    }
+			m_sntpClient.Create();                      
+    
   }
 	LoadSkin(g_stSettings.szDefaultSkin);
   m_gWindowManager.Add(&m_guiHome);
@@ -160,7 +170,9 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(&m_guiDialogProgress);
   m_gWindowManager.Add(&m_keyboard);
 	m_gWindowManager.Add(&m_guiSystemInfo);
-
+	m_gWindowManager.Add(&m_guiMusicInfo);
+	m_gWindowManager.Add(&m_guiDialogSelect);
+	m_gWindowManager.Add(&m_guiDialogOK);
   g_graphicsContext.Set(m_pd3dDevice,m_d3dpp.BackBufferWidth,m_d3dpp.BackBufferHeight, (m_d3dpp.Flags&D3DPRESENTFLAG_WIDESCREEN) !=0 );
   m_keyboard.Initialize();
 	m_ctrDpad.SetDelays(g_stSettings.m_iMoveDelayController,g_stSettings.m_iRepeatDelayController);
@@ -196,10 +208,12 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiMyVideo.Load( strSkinPath+string("\\myvideo.xml" ));  
 	m_guiSettings.Load( strSkinPath+string("\\settings.xml" ));  
 	m_guiSystemInfo.Load( strSkinPath+string("\\SettingsSystemInfo.xml" ));  
+	m_guiMusicInfo.Load( strSkinPath+string("\\DialogAlbumInfo.xml" ));  
 	m_guiSettingsGeneral.Load( strSkinPath+string("\\SettingsGeneral.xml" ));  
 	m_guiDialogYesNo.Load( strSkinPath+string("\\dialogYesNo.xml" ));  
 	m_guiDialogProgress.Load( strSkinPath+string("\\dialogProgress.xml" ));  
-
+	m_guiDialogSelect.Load( strSkinPath+string("\\dialogSelect.xml" ));  
+	m_guiDialogOK.Load( strSkinPath+string("\\dialogOK.xml" ));  
 }
 
 

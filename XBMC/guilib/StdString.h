@@ -2,7 +2,7 @@
 #include <string>
 using namespace std;
 #include <xtl.h>
-
+#define SS_ANSI 1
 // =============================================================================
 //  FILE:  StdString.h
 //  AUTHOR:	Joe O'Leary (with outside help noted in comments)
@@ -287,7 +287,7 @@ inline const Type& SSMAX(const Type& arg1, const Type& arg2)
 		#else
 
 			#include <TCHAR.H>
-			#include <WTYPES.H>
+//			#include <WTYPES.H>
 			#ifndef STRICT
 				#define STRICT
 			#endif

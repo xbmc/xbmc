@@ -6,7 +6,10 @@
 // bugs: 
 //			- reboot button blinks 1/2 speed???
 //		  - reboot doesnt work on some biosses
-//	
+//			- my music : 
+//					-music info : tracks : duration not aligned	
+//					-progress screen while loading
+//					-whole album dbs
 // general:
 //			- keep groups together when sorting (hd, shares,...)
 //			-	ftp server

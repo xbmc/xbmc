@@ -226,3 +226,13 @@ void CGUIWindow::ClearAll()
   }
 	m_vecControls.erase(m_vecControls.begin(),m_vecControls.end());
 }
+
+const CGUIControl* 	CGUIWindow::GetControl(int iControl) const
+{
+	for (int i=0;i < (int)m_vecControls.size(); ++i)
+  {
+    const CGUIControl* pControl= m_vecControls[i];
+		if (pControl->GetID() == iControl) return pControl;
+  }
+	return NULL;
+}

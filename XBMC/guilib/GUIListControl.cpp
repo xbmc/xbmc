@@ -128,22 +128,13 @@ void CGUIListControl::RenderText(float fPosX, float fPosY, float fMaxWidth,DWORD
   float fTextHeight,fTextWidth;
   m_pFont->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
 
-	D3DVIEWPORT8 oldviewport, newviewport;
-	g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
-
-	newviewport.X      = (DWORD)fPosX;
-	newviewport.Y			 = (DWORD)fPosY;
-	newviewport.Width  = (DWORD)(fMaxWidth-5.0f);
-	newviewport.Height = 60;
-	newviewport.MinZ   = 0.0f;
-	newviewport.MaxZ   = 1.0f;
-	g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
+	g_graphicsContext.SetViewPort(fPosX,fPosY,fMaxWidth-5.0f,60.0f);
 
 
   if (!bScroll || fTextWidth <= fMaxWidth)
   {
     m_pFont->DrawTextWidth(fPosX,fPosY,dwTextColor,wszText,fMaxWidth);
-		g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
+		g_graphicsContext.RestoreViewPort();
     return;
   }
   else
@@ -211,7 +202,7 @@ void CGUIListControl::RenderText(float fPosX, float fPosY, float fMaxWidth,DWORD
 					}
     }
   }
-	g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
+	g_graphicsContext.RestoreViewPort();
 }
 
 void CGUIListControl::OnKey(const CKey& key)

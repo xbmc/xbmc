@@ -1,5 +1,7 @@
 #include "graphiccontext.h"
 
+#define WIDE_SCREEN_COMPENSATIONY (FLOAT)1.2
+#define WIDE_SCREEN_COMPENSATIONX (FLOAT)0.85
 
 CGraphicContext g_graphicsContext;
 
@@ -70,4 +72,34 @@ DWORD CGraphicContext::GetNewID()
 bool CGraphicContext::IsWidescreen() const
 {
 	return m_bWidescreen;
+}
+
+
+VOID CGraphicContext::Correct(FLOAT& fCoordinateX, FLOAT& fCoordinateY, FLOAT& fCoordinateX2, FLOAT& fCoordinateY2)  const
+{
+	if (! IsWidescreen() ) return;
+
+	fCoordinateX	*= WIDE_SCREEN_COMPENSATIONX;
+	fCoordinateX2	*= WIDE_SCREEN_COMPENSATIONX;
+	fCoordinateY	*= WIDE_SCREEN_COMPENSATIONY;
+	fCoordinateY2	*= WIDE_SCREEN_COMPENSATIONY;
+}
+
+void CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheight)
+{
+	Correct(fx,fy,fwidth,fheight);
+	D3DVIEWPORT8 newviewport;
+	Get3DDevice()->GetViewport(&m_oldviewport);
+	newviewport.X      = (DWORD)fx;
+	newviewport.Y			 = (DWORD)fy;
+	newviewport.Width  = (DWORD)(fwidth);
+	newviewport.Height = (DWORD)(fheight);
+	newviewport.MinZ   = 0.0f;
+	newviewport.MaxZ   = 1.0f;
+	Get3DDevice()->SetViewport(&newviewport);
+}
+
+void CGraphicContext::RestoreViewPort()
+{
+	Get3DDevice()->SetViewport(&m_oldviewport);
 }

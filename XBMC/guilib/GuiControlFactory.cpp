@@ -10,6 +10,7 @@
 #include "GUIThumbnailPanel.h"
 #include "GUIMButtonControl.h"
 #include "GUIToggleButtonControl.h" 
+#include "GUITextBox.h" 
 
 CGUIControlFactory::CGUIControlFactory(void)
 {
@@ -360,6 +361,37 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
         CStdString strSuffix=pControlNode->FirstChild("suffix" )->FirstChild()->Value();
         pControl->SetScrollySuffix(strSuffix);
       }
+      pControl->SetVisible(bVisible);
+      return pControl;
+  }
+
+ if (strType=="textbox")
+ {
+      CStdString strFont,strUp,strDown;
+      CStdString strUpFocus,strDownFocus;
+      strUp=pControlNode->FirstChild("textureUp")->FirstChild()->Value();
+      strDown=pControlNode->FirstChild("textureDown")->FirstChild()->Value();
+      strUpFocus=pControlNode->FirstChild("textureUpFocus")->FirstChild()->Value();
+      strDownFocus=pControlNode->FirstChild("textureDownFocus")->FirstChild()->Value();
+      strFont=pControlNode->FirstChild("font")->FirstChild()->Value();
+      D3DCOLOR dwTextColor,dwSpinColor;
+      sscanf(pControlNode->FirstChild("textcolor" )->FirstChild()->Value(),"%x",&dwTextColor);
+      sscanf(pControlNode->FirstChild("spinColor" )->FirstChild()->Value(),"%x",&dwSpinColor);
+      
+      DWORD dwSpinWidth=atol(pControlNode->FirstChild("spinWidth" )->FirstChild()->Value());
+      DWORD dwSpinHeight=atol(pControlNode->FirstChild("spinHeight" )->FirstChild()->Value());
+      DWORD dwSpinPosX=atol(pControlNode->FirstChild("spinPosX" )->FirstChild()->Value());
+			DWORD dwSpinPosY=atol(pControlNode->FirstChild("spinPosY" )->FirstChild()->Value());
+
+      CGUITextBox* pControl = new CGUITextBox(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,
+                                                      strFont,
+                                                      dwSpinWidth,dwSpinHeight,
+                                                      strUp,strDown,
+                                                      strUpFocus,strDownFocus,
+                                                      dwSpinColor,dwSpinPosX,dwSpinPosY,
+                                                      strFont,dwTextColor);
+      pControl->SetNavigation(up,down,left,right);
+      pControl->SetColourDiffuse(dwColorDiffuse);
       pControl->SetVisible(bVisible);
       return pControl;
   }

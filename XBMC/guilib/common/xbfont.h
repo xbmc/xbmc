@@ -163,12 +163,12 @@ public:
     // performance, they should batch multiple calls together, bracketed by 
     // calls to Begin() and End().
     HRESULT Begin();
-    HRESULT DrawText( DWORD dwColor, const WCHAR* strText, DWORD dwFlags=0L,
+    virtual HRESULT DrawText( DWORD dwColor, const WCHAR* strText, DWORD dwFlags=0L,
                       FLOAT fMaxPixelWidth = 0.0f );
-    HRESULT DrawText( FLOAT sx, FLOAT sy, DWORD dwColor, 
+    virtual HRESULT DrawText( FLOAT sx, FLOAT sy, DWORD dwColor, 
                       const WCHAR* strText, DWORD dwFlags=0L,
                       FLOAT fMaxPixelWidth = 0.0f );
-    HRESULT DrawTextEx( FLOAT sx, FLOAT sy, DWORD dwColor, 
+    virtual HRESULT DrawTextEx( FLOAT sx, FLOAT sy, DWORD dwColor, 
                       const WCHAR* strText, DWORD cchText, DWORD dwFlags=0L,
                       FLOAT fMaxPixelWidth = 0.0f );
 		

@@ -30,7 +30,7 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate)
 	IDirect3DTexture8* pTexture=NULL;
 	CStdString strExtension;
 	CStdString strCachedFile;
-	DWORD dwImageType;
+	DWORD dwImageType=0xffff;
 	
 	CUtil::GetExtension(strFileName,strExtension);
 	if (!strExtension.size()) return NULL;
@@ -269,4 +269,68 @@ bool CPicture::CreateThumnail(const CStdString& strFileName)
 	}
 
 	return true;
+}
+
+void CPicture::RenderImage(IDirect3DTexture8* pTexture,int x, int y, int width, int height, int iTextureWidth, int iTextureHeight, int xOff, int yOff)
+{
+  CPicture::VERTEX* vertex=NULL;
+  LPDIRECT3DVERTEXBUFFER8 m_pVB;
+
+	g_graphicsContext.Get3DDevice()->CreateVertexBuffer( 4*sizeof(CPicture::VERTEX), D3DUSAGE_WRITEONLY, 0L, D3DPOOL_DEFAULT, &m_pVB );
+  m_pVB->Lock( 0, 0, (BYTE**)&vertex, 0L );
+
+	float fx=(float)x;
+	float fy=(float)y;
+	float fwidth=(float)width;
+	float fheight=(float)height;
+	g_graphicsContext.Correct(fx,fy,fwidth,fheight);
+
+  vertex[0].p = D3DXVECTOR4( fx - 0.5f,	fy - 0.5f,		0, 0 );
+  vertex[0].tu = (float)xOff;
+  vertex[0].tv = (float)yOff;
+
+  vertex[1].p = D3DXVECTOR4( fx+fwidth - 0.5f,	fy - 0.5f,		0, 0 );
+  vertex[1].tu = (float)(xOff+iTextureWidth);
+  vertex[1].tv = (float)yOff;
+
+  vertex[2].p = D3DXVECTOR4( fx+fwidth - 0.5f,	fy+fheight - 0.5f,	0, 0 );
+  vertex[2].tu = (float)(xOff+iTextureWidth);
+  vertex[2].tv = (float)(yOff+iTextureHeight);
+
+  vertex[3].p = D3DXVECTOR4( fx - 0.5f,	fy+fheight - 0.5f,	0, 0 );
+  vertex[3].tu = (float)xOff;
+  vertex[3].tv = (float)(yOff+iTextureHeight);
+ 
+  vertex[0].col = 0xffffffff;
+	vertex[1].col = 0xffffffff;
+	vertex[2].col = 0xffffffff;
+	vertex[3].col = 0xffffffff;
+  m_pVB->Unlock();  
+
+
+    // Set state to render the image
+    g_graphicsContext.Get3DDevice()->SetTexture( 0, pTexture );
+    g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
+    g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+    g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+    g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_MODULATE );
+    g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+    g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+    g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_COLOROP,   D3DTOP_DISABLE );
+    g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
+    g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSU,  D3DTADDRESS_CLAMP );
+    g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSV,  D3DTADDRESS_CLAMP );
+    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ZENABLE,      FALSE );
+    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGENABLE,    FALSE );
+    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
+    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FILLMODE,     D3DFILL_SOLID );
+    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_CULLMODE,     D3DCULL_CCW );
+    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
+    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA );
+    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+    g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_VERTEX );
+    // Render the image
+    g_graphicsContext.Get3DDevice()->SetStreamSource( 0, m_pVB, sizeof(VERTEX) );
+    g_graphicsContext.Get3DDevice()->DrawPrimitive( D3DPT_QUADLIST, 0, 1 );
+		m_pVB->Release();
 }

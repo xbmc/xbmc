@@ -26,7 +26,8 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.m_strTimeServer,"");
 	g_stSettings.m_bTimeServerEnabled=false;
 	g_stSettings.m_bFTPServerEnabled=false;
-
+	g_stSettings.m_iHTTPProxyPort=0;
+	strcpy(g_stSettings.m_szHTTPProxy,"");
   strcpy(g_stSettings.szDefaultSkin,"MediaCenter");
 	g_stSettings.m_bMyPicturesViewAsIcons=false;
 	g_stSettings.m_bMyPicturesSortAscending=true;
@@ -133,19 +134,25 @@ void CSettings::Load()
   GetString(pRootElement, "skin", g_stSettings.szDefaultSkin,"MediaCenter");
 	GetString(pRootElement, "dashboard", g_stSettings.szDashboard,"C:\\xboxdash.xbe");
 	
-	GetString(pRootElement, "ipadres", g_stSettings.m_strLocalIPAdres,"192.168.0.174");
-	GetString(pRootElement, "netmask", g_stSettings.m_strLocalNetmask,"255.255.255.0");
-	GetString(pRootElement, "defaultgateway", g_stSettings.m_strGateway,"192.168.0.1");
-	GetString(pRootElement, "nameserver", g_stSettings.m_strNameServer,"192.168.0.1");
+	GetString(pRootElement, "ipadres", g_stSettings.m_strLocalIPAdres,"");
+	GetString(pRootElement, "netmask", g_stSettings.m_strLocalNetmask,"");
+	GetString(pRootElement, "defaultgateway", g_stSettings.m_strGateway,"");
+	GetString(pRootElement, "nameserver", g_stSettings.m_strNameServer,"");
 	GetString(pRootElement, "timeserver", g_stSettings.m_strTimeServer,"207.46.248.43");
   GetString(pRootElement, "thumbnails",g_stSettings.szThumbnailsDirectory,"");
   GetString(pRootElement, "shortcuts", g_stSettings.m_szShortcutDirectory,"");
+	GetString(pRootElement, "httpproxy", g_stSettings.m_szHTTPProxy,"");
+	
+	GetString(pRootElement, "imdb", g_stSettings.m_szIMDBDirectory,"");
+	GetString(pRootElement, "albums", g_stSettings.m_szAlbumDirectory,"");
+
 	GetString(pRootElement, "pictureextensions", g_stSettings.m_szMyPicturesExtensions,".bmp|.jpg|.png|.gif|.pcx|.tif|.jpeg");
   
 	GetString(pRootElement, "musicextensions", g_stSettings.m_szMyMusicExtensions,".ac3|.aac|.nfo|.pls|.rm|.sc|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u");
 	GetString(pRootElement, "videoextensions", g_stSettings.m_szMyVideoExtensions,".nfo|.rm|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli");
 
 	g_stSettings.m_iStartupWindow=GetInteger(pRootElement, "startwindow");
+	g_stSettings.m_iHTTPProxyPort=GetInteger(pRootElement, "httpproxyport");
 	
 
   CStdString strDir;
@@ -158,10 +165,16 @@ void CSettings::Load()
   strcpy( g_stSettings.szThumbnailsDirectory, strDir.c_str() );
 
 
+  strDir=g_stSettings.m_szIMDBDirectory;
+  ConvertHomeVar(strDir);
+  strcpy( g_stSettings.m_szIMDBDirectory, strDir.c_str() );
+
+  strDir=g_stSettings.m_szAlbumDirectory;
+  ConvertHomeVar(strDir);
+  strcpy( g_stSettings.m_szAlbumDirectory, strDir.c_str() );
 
   if (g_stSettings.m_szShortcutDirectory[0])
   {
-    
 		const WCHAR* szText;
     szText=g_localizeStrings.Get(111).c_str();
     CShare share;
@@ -174,6 +187,7 @@ void CSettings::Load()
 	GetShares(pRootElement,"myprograms",m_vecMyProgramsBookmarks);
 	GetShares(pRootElement,"pictures",m_vecMyPictureShares);
   GetShares(pRootElement,"files",m_vecMyFilesShares);
+  GetShares(pRootElement,"music",m_vecMyMusicShares);
 	
 
 }
@@ -251,7 +265,12 @@ void CSettings::GetString(const TiXmlElement* pRootElement, const CStdString& st
 	const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
 	if (pChild)
 	{
-		strcpy(szValue,pChild->FirstChild()->Value());
+		CStdString strValue=pChild->FirstChild()->Value();
+		if (strValue.size() )
+		{
+			if (strValue !="-")
+				strcpy(szValue,strValue.c_str());
+		}
 	}
 	if (strlen(szValue)==0)
 	{

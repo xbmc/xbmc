@@ -25,6 +25,13 @@ public:
   void DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
                               const WCHAR* strText,float fMaxWidth);
 
+  virtual HRESULT DrawText( FLOAT sx, FLOAT sy, DWORD dwColor, 
+                    const WCHAR* strText, DWORD dwFlags=0L,
+                    FLOAT fMaxPixelWidth = 0.0f );
+  virtual HRESULT DrawTextEx( FLOAT sx, FLOAT sy, DWORD dwColor, 
+                    const WCHAR* strText, DWORD cchText, DWORD dwFlags=0L,
+                    FLOAT fMaxPixelWidth = 0.0f );
+	
 protected:
   CStdString m_strFontName;
 };

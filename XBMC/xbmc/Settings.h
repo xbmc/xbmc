@@ -71,6 +71,8 @@ public:
 		char      m_szMyMusicExtensions[256];
 		char      m_szMyVideoExtensions[256];
     char      m_szShortcutDirectory[256];
+    char      m_szIMDBDirectory[256];
+		char      m_szAlbumDirectory[256];
 
 	  bool			m_bMyFilesViewAsIcons;
 	  int				m_bMyFilesSortMethod;
@@ -96,11 +98,14 @@ public:
 		int       m_iSlideShowTransistionFrames;
 		int       m_iSlideShowStayTime;
 		int				m_iScreenResolution;
+		int			  m_iHTTPProxyPort;
+		char		  m_szHTTPProxy[128];
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;
 	VECSHARES					m_vecMyPictureShares;
   VECSHARES					m_vecMyFilesShares;
+  VECSHARES					m_vecMyMusicShares;
   VECFILETYPEICONS	m_vecIcons;
 
 protected:

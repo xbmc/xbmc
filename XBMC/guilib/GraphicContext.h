@@ -24,6 +24,9 @@ public:
   const CStdString&     GetMediaDir() const;
   void									SetMediaDir(const CStdString& strMediaDir);
 	bool									IsWidescreen() const;
+	VOID									Correct(FLOAT& fCoordinateX, FLOAT& fCoordinateY, FLOAT& fCoordinateX2, FLOAT& fCoordinateY2) const;
+	void									SetViewPort(float fx, float fy , float fwidth, float fheight);
+	void									RestoreViewPort();
 protected:
   IMsgSenderCallback*     m_pCallback;
   LPDIRECT3DDEVICE8       m_pd3dDevice;
@@ -31,7 +34,8 @@ protected:
   int                     m_iScreenWidth;
   DWORD                   m_dwID;
 	bool										m_bWidescreen;
-  CStdString                  m_strMediaDir;
+  CStdString              m_strMediaDir;
+	D3DVIEWPORT8						m_oldviewport;
 };
 
 extern CGraphicContext g_graphicsContext;

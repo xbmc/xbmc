@@ -15,9 +15,12 @@
 #include "GUIWindowVideo.h"
 #include "GUIWindowSettings.h"
 #include "GUIDialogYesNo.h"
+#include "GUIDialogOK.h"
 #include "GUIDialogProgress.h"
+#include "GUIDialogSelect.h"
 #include "GUIWindowSystemInfo.h"
 #include "GUIWindowSettingsGeneral.h"
+#include "GUIWindowMusicInfo.h" 
 #include "LocalizeStrings.h"
 #include "utils/sntp.h"
 #include "utils/delaycontroller.h"
@@ -41,12 +44,15 @@ public:
 	CGUIWindowPictures		m_guiPictures;
 	CGUIDialogYesNo				m_guiDialogYesNo;
 	CGUIDialogProgress		m_guiDialogProgress;
+	CGUIDialogOK					m_guiDialogOK;
 	CGUIWindowMyFiles			m_guiMyFiles;
 	CGUIWindowMusic				m_guiMyMusic;
 	CGUIWindowVideo				m_guiMyVideo;
 	CGUIWindowSettings		m_guiSettings;
 	CGUIWindowSystemInfo	m_guiSystemInfo;
 	CGUIWindowSettingsGeneral m_guiSettingsGeneral;
+	CGUIWindowMusicInfo		m_guiMusicInfo;
+	CGUIDialogSelect			m_guiDialogSelect;
   CXBVirtualKeyboard    m_keyboard;
 	CSNTPClient						m_sntpClient;
 	CDelayController			m_ctrDpad;

@@ -37,20 +37,27 @@ void CGUIFont::DrawShadowText( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
                               int iShadowHeight,
                               DWORD dwShadowColor)
 {
-  for (int x=0; x < iShadowWidth; x++)
+	float nw=0.0f,nh=0.0f;
+	g_graphicsContext.Correct(fOriginX, fOriginY,  nw,nh);
+
+	for (int x=0; x < iShadowWidth; x++)
   {
     for (int y=0; y < iShadowHeight; y++)
     {
-      CXBFont::DrawText(fOriginX+x, fOriginY+y, dwShadowColor,strText,dwFlags,fMaxPixelWidth );
+			CXBFont::DrawTextEx( fOriginX, fOriginY, dwColor, strText, wcslen( strText ));	
     }
   }
-  CXBFont::DrawText(fOriginX, fOriginY, dwColor,strText,dwFlags,fMaxPixelWidth );
+	CXBFont::DrawTextEx( fOriginX, fOriginY, dwColor, strText, wcslen( strText ));	
 }
 
 
 void CGUIFont::DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
                               const WCHAR* strText,float fMaxWidth)
 {
+
+	float nh=0.0f;
+	g_graphicsContext.Correct(fOriginX, fOriginY, fMaxWidth, nh);
+
   WCHAR wszText[1024];
   wcscpy(wszText,strText);
   
@@ -58,7 +65,7 @@ void CGUIFont::DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
   GetTextExtent( wszText, &fTextWidth,&fTextHeight);
 	if (fTextWidth <=fMaxWidth)
 	{
-		CXBFont::DrawText(fOriginX,fOriginY,dwColor,wszText);
+		CXBFont::DrawTextEx( fOriginX, fOriginY, dwColor, wszText, wcslen( wszText ),0, 0.0f);	
 		return;
 	}
 
@@ -68,6 +75,19 @@ void CGUIFont::DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
     GetTextExtent( wszText, &fTextWidth,&fTextHeight);
   }
 
-  CXBFont::DrawText(fOriginX,fOriginY,dwColor,wszText);
-	
+  CXBFont::DrawTextEx( fOriginX, fOriginY, dwColor, wszText, wcslen( wszText ),0, 0.0f);	
+}
+HRESULT CGUIFont::DrawText( FLOAT sx, FLOAT sy, DWORD dwColor, const WCHAR* strText, DWORD dwFlags,FLOAT fMaxPixelWidth)
+{
+	float nw=0.0f,nh=0.0f;
+	g_graphicsContext.Correct(sx, sy, nw, nh);
+
+  return CXBFont::DrawTextEx( sx, sy, dwColor, strText, wcslen( strText ),dwFlags, fMaxPixelWidth );
+
+}
+HRESULT CGUIFont::DrawTextEx( FLOAT sx, FLOAT sy, DWORD dwColor, const WCHAR* strText, DWORD cchText, DWORD dwFlags,FLOAT fMaxPixelWidth )
+{
+	float nw=0.0f,nh=0.0f;
+	g_graphicsContext.Correct(sx, sy, nw, nh);
+	return CXBFont::DrawTextEx( sx, sy, dwColor, strText, cchText, dwFlags,fMaxPixelWidth );
 }
