@@ -18,6 +18,7 @@ class CTexture
     int                 GetDelay() const;
     int                 GetRef() const;
     void                Dump() const;
+    void                SetDelay(int iDelay);
 		void                Flush();
   protected:
     LPDIRECT3DTEXTURE8  m_pTexture;
