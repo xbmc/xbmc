@@ -425,6 +425,10 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 		m_vecOptions.push_back("-dvd-device");
 		m_vecOptions.push_back(CStdString("""") + m_strDvdDevice + CStdString(""""));	
 	}
+	
+	//Only display forced subs for dvds.
+	//m_vecOptions.push_back("-forcedsubsonly");
+
 	m_vecOptions.push_back("1.avi");
 
 	argc=(int)m_vecOptions.size();
@@ -539,7 +543,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		CLog::Log("mplayer play:%s cachesize:%i", strFile.c_str(), iCacheSize);
 
 		// cache (remote) subtitles to HD
-		if (!bFileOnInternet && bIsVideo)
+		if (!bFileOnInternet && bIsVideo && !bIsDVD)
 		{
 			CUtil::CacheSubtitles(strFile);
 			CUtil::PrepareSubtitleFonts();
@@ -879,10 +883,10 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			}
 		}
 		m_bIsPlaying= true;
-		
-		//Make sure subtitles isn't visible by default. will not be correct if osd has asked for a restart.
-		mplayer_showSubtitle(false);
 
+		if(bIsDVD) //Default subtitles for dvd's off
+			mplayer_showSubtitle(false);
+		
 		bIsVideo=HasVideo();
 		bIsAudio=HasAudio();
 		int iNewCacheSize=GetCacheSize(bFileOnHD,bFileOnISO,bFileOnUDF,bFileOnInternet,bFileOnLAN, bIsVideo, bIsAudio, bIsDVD);
