@@ -14,11 +14,13 @@ namespace PLAYLIST
 	public:
 		CPlayListPlayer(void);
 		virtual ~CPlayListPlayer(void);
-		void			PlayNext(bool bAutoPlay=false);
-		void			PlayPrevious();
-		void			Play(int iSong);
-		int				GetCurrentSong() const;
-		bool			HasChanged() ;
+		void					PlayNext(bool bAutoPlay=false);
+		void					PlayPrevious();
+		void					Play(int iSong);
+		int						GetCurrentSong() const;
+		void					SetCurrentSong(int iSong);
+		bool					HasChanged() ;
+		virtual void Shuffle();
 	protected:
 		bool			m_bChanged;
 		int				m_iCurrentSong;

@@ -46,6 +46,7 @@ void CPlayListPlayer::PlayPrevious()
 	Play(m_iCurrentSong);
 
 }
+	
 
 void CPlayListPlayer::Play(int iSong)
 {
@@ -59,6 +60,12 @@ void CPlayListPlayer::Play(int iSong)
 	g_application.PlayFile( item.GetFileName() );	
 }
 
+void CPlayListPlayer::SetCurrentSong(int iSong)
+{
+	m_iCurrentSong=iSong;
+}
+
+
 int CPlayListPlayer::GetCurrentSong() const
 {
 	return m_iCurrentSong;
@@ -69,4 +76,10 @@ bool CPlayListPlayer::HasChanged()
 	bool bResult=m_bChanged;
 	m_bChanged=false;
 	return bResult;
+}
+
+void CPlayListPlayer::Shuffle()
+{
+	CPlayList::Shuffle();
+	m_iCurrentSong=-1;
 }
