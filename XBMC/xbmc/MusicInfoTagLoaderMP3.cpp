@@ -55,6 +55,9 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
 		delete pYear;
 	}
 
+	const Mp3_Headerinfo* mp3info = id3tag.GetMp3HeaderInfo();
+	if ( mp3info != NULL )
+		tag.SetDuration( mp3info->time );
 	return bResult;
 }
 
