@@ -792,6 +792,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIDialogFileStacking.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIDialogHost.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIDialogInvite.cpp">
 				</File>
 				<File
@@ -1025,6 +1028,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIDialogFileStacking.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIDialogHost.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIDialogInvite.h">
@@ -1987,10 +1993,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">

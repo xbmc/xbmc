@@ -465,6 +465,8 @@ public:
 		char      szOnlineUsername[32]; // KAITAG (username)
 		char      szOnlinePassword[32]; // corresponding password
 		char      szOnlineGamesDir[32]; // user games directory path
+		char      szOnlineArenaPassword[32]; // private arena password
+		char      szOnlineArenaDescription[64]; // private arena description
 		bool	  m_bOnlineNotifications; // kai notifications
 		bool      m_mplayerDebug;
 		int       m_iSambaDebugLevel;
