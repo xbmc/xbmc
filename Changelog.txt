@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 25-11-2004 changed: Fade in from dimmed and black screensaver
   - 25-11-2004 fixed: Screen only partially filled on HDTV
   - 24-11-2004 fixed: last folder not remembered on 'back' (sf bug #1071390)
   - 24-11-2004 updated: Hungarian language file (Thnx to Tracy18)
