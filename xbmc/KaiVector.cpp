@@ -7,6 +7,7 @@
 #include "settings.h"
 #include "tinyxml/tinyxml.h"
 #include "util.h"
+#include "utils/http.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -104,6 +105,25 @@ void CKaiVector::Load(const CStdString& strPath)
 
 		LeaveCriticalSection(&m_critical);
 	}
+	else
+	{
+		CStdString strAppSpecificUrl = "http://www.teamxlink.co.uk/connector/orbappspec.php";
+		CKaiVector* pVector = CKaiVector::From(strAppSpecificUrl);
+
+		if (pVector!=NULL)
+		{
+			EnterCriticalSection(&m_critical);
+			for (TITLEVECTORMAP::iterator it = pVector->m_mapTitles.begin(); it!=pVector->m_mapTitles.end(); it++)
+			{
+				DWORD dwTitleId = it->first;
+				CStdString strVector = it->second;
+				m_mapTitles[dwTitleId] = strVector;
+			}
+			LeaveCriticalSection(&m_critical);
+			m_bDirty = true;
+			delete pVector;
+		}
+	}
 }
 
 void CKaiVector::AddTitle(DWORD aTitleId, CStdString& aVector)
@@ -138,3 +158,48 @@ bool CKaiVector::ContainsTitle(DWORD aTitleId)
 	LeaveCriticalSection(&m_critical);
 	return bContainsTitle;
 }
+
+bool CKaiVector::IsEmpty()
+{
+	EnterCriticalSection(&m_critical);
+
+	bool bIsEmpty = ( m_mapTitles.begin()== m_mapTitles.end() );
+	
+	LeaveCriticalSection(&m_critical);
+	return bIsEmpty;
+}
+
+CKaiVector* CKaiVector::From(CStdString& strUrl)
+{
+	CStdString strPHP;
+	CHTTP http;
+	CKaiVector* pDoc = NULL;
+
+	if (http.Get(strUrl,strPHP))
+	{
+		CHAR* szData = strtok( (char*)((LPCSTR)strPHP), ";"); 
+
+		if (szData!=NULL && strcmp(szData,"XSERVER_ADVANCED_APPSPEC")==0)
+		{
+			pDoc = new CKaiVector();
+
+			CStdString strXBE;
+			CStdString strArena;
+			CHAR* szToken;
+
+			while ( (szToken = strtok(NULL, ";"))!=NULL )
+			{
+				strXBE = szToken;
+				if (strXBE.Find("XBE_")==0)
+				{
+					strArena = strtok(NULL, ";");
+					DWORD dwTitleId = strtoul(strXBE.Mid(4).c_str(),NULL,16);
+					pDoc->AddTitle(dwTitleId,strArena);
+				}
+			}
+		}
+	}
+
+	return pDoc;
+}
+

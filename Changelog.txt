@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 20-12-2004 fixed: serious bug in HTTP requests that result in  XBMC ignoring some responses without Content-Length header.
+  - 20-12-2004 added: XLink Kai app specific fail-safe mode, delete kai-vectors.xml in XBMC dir to enable.
   - 20-12-2004 added: support for multiple subtitles, with language extension ie: filename.eng.sub (needs new mplayer.dll)
   - 20-12-2004 changed: new subtitle name interface for xbmc, will fallback to old style if missing (support old dlls)
   - 20-12-2004 added: full subtitle/audio translation database for both iso639-1 and iso639-2 language codes
