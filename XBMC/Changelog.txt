@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 15-02-2005 fixed: enable/disable "Repeat Folders" option only works after restart
   - 15-02-2005 fixed: More weather localization stuff.  New ids need translating: 388-393. Thanks to vnm.
   - 15-02-2005 fixed: [ 1122791 ] LCD: no display of current playbacktime while videoplayback
   - 15-02-2005 fixed: wrong display in the lcd of following asci characters: _ [ ] \
