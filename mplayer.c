@@ -4564,7 +4564,7 @@ void mplayer_setTime(int iTime)
     rel_seek_secs = iTime;
 }
 
-void mplayer_setTimeMs(__int64 iTime)
+void mplayer_setTimeMs(float iTime)
 {
     abs_seek_pos = 1;
     rel_seek_secs = iTime/1000.0f;
