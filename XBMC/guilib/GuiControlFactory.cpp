@@ -315,6 +315,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwWidth								= ((CGUISpinControl*)pReference)->GetSpinWidth();
 			dwHeight							= ((CGUISpinControl*)pReference)->GetSpinHeight();
 			dwDisabledColor				= ((CGUISpinControl*)pReference)->GetDisabledColor() ;
+			dwTextOffsetX	= ((CGUISpinControl*)pReference)->GetTextOffsetX();
+			dwTextOffsetY	= ((CGUISpinControl*)pReference)->GetTextOffsetY();
 		}
 		if (strType=="slider")
 		{
@@ -749,6 +751,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			pControl->SetReverse(bReverse);
 	  pControl->SetBuddyControlID(dwBuddyControlID);
 	  pControl->SetDisabledColor(dwDisabledColor);
+	  pControl->SetTextOffsetX(dwTextOffsetX);
+	  pControl->SetTextOffsetY(dwTextOffsetY);
       return pControl;
   }
 
