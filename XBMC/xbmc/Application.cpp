@@ -1398,11 +1398,16 @@ void CApplication::SetPlaySpeed(int iSpeed)
   if (!IsPlayingAudio() && !IsPlayingVideo()) return;
   m_iPlaySpeed=iSpeed;
 
+  __int64 iTime= m_pPlayer->GetTime();
+  iTime/= (__int64)10;
   m_pPlayer->ToFFRW(m_iPlaySpeed);
   if (m_pAudioDecoder)
   {
     if(m_iPlaySpeed==1)
+    {
+      m_pPlayer->SeekTime((int)iTime);
       m_pAudioDecoder->SetCurrentVolume (m_pAudioDecoder->GetMaximumVolume());
+    }
     else
       m_pAudioDecoder->SetCurrentVolume (m_pAudioDecoder->GetMinimumVolume());
   }
