@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 06-12-2004 fixed: Various settings options weren't being displayed correctly.
+  - 06-12-2004 fixed: LCD Off mode was missing.
+  - 06-12-2004 fixed: Problem with Autoswitch to Big Icons in Video Files view.
+  - 06-12-2004 fixed: LaunchXBE/Reboot XBMC didn't work.
   - 06-12-2004 added: option to autoshutdown xbox while playing
   - 06-12-2004 fixed: my pictures, recursive slideshow was played unsorted
   - 06-12-2004 fixed: my videos, items where added unsorted to the playlist
