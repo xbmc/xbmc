@@ -7,10 +7,11 @@
 #include "stdstring.h"
 #include "MusicInfoTag.h"
 #include "MusicDatabase.h"
+#include "PlayList.h"
 #include <vector>
 using namespace std;
 using namespace MUSIC_INFO;
-
+using namespace PLAYLIST;
 
 /*!
 	\brief Represents a file on a share
@@ -25,9 +26,10 @@ public:
   CFileItem(const CStdString& strLabel);
 	CFileItem(const CSong& song);
 	CFileItem(const CAlbum& album);
+	CFileItem(const CPlayList::CPlayListItem &item);
   virtual ~CFileItem(void);
 
-	
+	void Clear();
   const CFileItem& operator=(const CFileItem& item);
   CStdString    m_strPath;						///< complete path to item
   bool          m_bIsShareOrDrive;		///< is this a root share/drive
@@ -38,6 +40,8 @@ public:
   CStdString    m_strDVDLabel;
 	CMusicInfoTag m_musicInfoTag;
   int			m_iprogramCount;
+	long		m_lStartOffset;
+	long		m_lEndOffset;
 };
 
 /*!

@@ -125,7 +125,7 @@ public:
 	virtual bool			OnMessage(CGUIMessage& message);
 	virtual	void			OnPlayBackEnded();
 	virtual	void			OnPlayBackStarted();
-	bool					PlayFile(const CStdString& strFile,bool bRestart=false);
+	bool					PlayFile(const CFileItem& item,bool bRestart=false);
 	void					StopPlaying();
 	void					Restart(bool bSamePosition=true);
 	void					EnableOverlay();
@@ -248,12 +248,11 @@ protected:
 	void										FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork);
   bool                    m_bXboxMediacenterLoaded,m_bSettingsLoaded;
   CIMDBMovie              m_tagCurrentMovie;
-  CMusicInfoTag           m_tagCurrentSong;
   int                     m_iPlaySpeed;
 	bool										m_bOverlayEnabled;
 	CStdString							m_strCurrentPlayer;
   bool                    m_bAllSettingsLoaded;
-  CStdString              m_strCurrentFile;
+  CFileItem              m_itemCurrentFile;
   D3DGAMMARAMP m_OldRamp;			// CB: SCREENSAVER PATCH
 };
 

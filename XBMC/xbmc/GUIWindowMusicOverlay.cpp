@@ -38,6 +38,7 @@ CGUIWindowMusicOverlay::CGUIWindowMusicOverlay()
 	m_iFrames=0;
 	m_dwTimeout=0;
 	m_iPosOrgIcon=0;
+	m_lStartOffset=0;
 	m_pTexture=NULL;
 }
 
@@ -247,7 +248,7 @@ void CGUIWindowMusicOverlay::Render()
     ShowControl( CONTROL_INFO);
     ShowControl( CONTROL_BIG_PLAYTIME);
 
-    __int64 lPTS=g_application.m_pPlayer->GetPTS();
+    __int64 lPTS=g_application.m_pPlayer->GetPTS() - (m_lStartOffset*10)/75;
     int hh = (int)(lPTS / 36000) % 100;
     int mm = (int)((lPTS / 600) % 60);
     int ss = (int)((lPTS /  10) % 60);
@@ -369,6 +370,7 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 
   CMusicInfoTag tag;
   tag.SetLoaded(true);
+  m_lStartOffset = 0;
 
 	int nTrackNum=ID3_GetTrackNum( &id3tag );
 	{
@@ -437,7 +439,7 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 
 /// \brief Tries to set the music tag information for \e strFile to window.
 /// \param strFile Audiofile to set.
-void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
+void CGUIWindowMusicOverlay::SetCurrentFile(CFileItem& item)
 {
 	//	Release previously shown album 
 	//	thumb, if any
@@ -455,80 +457,81 @@ void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
 	OnMessage(msg1);
 
 	//	No audio file, we are finished here
-	if (!CUtil::IsAudio(strFile) )
+	if (!CUtil::IsAudio(item.m_strPath) )
 		return;
 
-	CFileItem item;
-	item.m_strPath=strFile;
+	m_lStartOffset = item.m_lStartOffset;
 	//	Get a reference to the item's tag
 	CMusicInfoTag& tag=item.m_musicInfoTag;
-
-	CURL url(strFile);
-	//	if the file is a cdda track, ...
-	if (url.GetProtocol()=="cdda" )
+	CURL url(item.m_strPath);
+	// check if we don't have the tag already loaded
+	if (!tag.Loaded())
 	{
-		VECFILEITEMS  items;
-		CCDDADirectory dir;
-		//	... use the directory of the cd to 
-		//	get its cddb information...
-		if (dir.GetDirectory("D:",items))
+		//	if the file is a cdda track, ...
+		if (url.GetProtocol()=="cdda" )
 		{
-			for (int i=0; i < (int)items.size(); ++i)
+			VECFILEITEMS  items;
+			CCDDADirectory dir;
+			//	... use the directory of the cd to 
+			//	get its cddb information...
+			if (dir.GetDirectory("D:",items))
 			{
-				CFileItem* pItem=items[i];
-				if (pItem->m_strPath==strFile)
+				for (int i=0; i < (int)items.size(); ++i)
 				{
-					//	...and find current track to use
-					//	cddb information for display.
-					item=*pItem;
+					CFileItem* pItem=items[i];
+					if (pItem->m_strPath==item.m_strPath)
+					{
+						//	...and find current track to use
+						//	cddb information for display.
+						item=*pItem;
+					}
 				}
 			}
-		}
-		{
-			CFileItemList itemlist(items);	//	cleanup everything
-		}
-	}
-	else
-	{
-		//	we have a audio file.
-		//	Look if we have this file in database...
-		bool bFound=false;
-		CSong song;
-		if (g_musicDatabase.Open())
-		{
-			bFound=g_musicDatabase.GetSongByFileName(strFile, song);
-			g_musicDatabase.Close();
-		}
-		// always get id3 info for the overlay
-		if (!bFound)// && g_stSettings.m_bUseID3)
-		{
-			//	...no, try to load the tag of the file.
-			CMusicInfoTagLoaderFactory factory;
-			auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(strFile));
-			//	Do we have a tag loader for this file type?
-			if (NULL != pLoader.get())
 			{
-				// yes, load its tag
-				if ( !pLoader->Load(strFile,tag))
-				{
-					//	Failed!
-					tag.SetLoaded(false);
-					//	just to be sure :-)
-				}
+				CFileItemList itemlist(items);	//	cleanup everything
 			}
 		}
 		else
 		{
-			//	...yes, this file is found in database
-			//	fill the tag of our fileitem
-			tag.SetSong(song);
+			//	we have a audio file.
+			//	Look if we have this file in database...
+			bool bFound=false;
+			CSong song;
+			if (g_musicDatabase.Open())
+			{
+				bFound=g_musicDatabase.GetSongByFileName(item.m_strPath, song);
+				g_musicDatabase.Close();
+			}
+			// always get id3 info for the overlay
+			if (!bFound)// && g_stSettings.m_bUseID3)
+			{
+				//	...no, try to load the tag of the file.
+				CMusicInfoTagLoaderFactory factory;
+				auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(item.m_strPath));
+				//	Do we have a tag loader for this file type?
+				if (NULL != pLoader.get())
+				{
+					// yes, load its tag
+					if ( !pLoader->Load(item.m_strPath,tag))
+					{
+						//	Failed!
+						tag.SetLoaded(false);
+						//	just to be sure :-)
+					}
+				}
+			}
+			else
+			{
+				//	...yes, this file is found in database
+				//	fill the tag of our fileitem
+				tag.SetSong(song);
+			}
 		}
 	}
 
 	//	If we have tag information, ...
 	if (tag.Loaded())
 	{
-    g_application.SetCurrentSong(tag);
 		//	...display them in window
 
 		//	display only, if we have a title
@@ -612,11 +615,11 @@ void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
 			CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
 			CSndtrkDirectory dir;
 			char NameOfSong[64];
-			bool foundname = dir.FindTrackName(strFile,NameOfSong);
+			bool foundname = dir.FindTrackName(item.m_strPath,NameOfSong);
 			if(foundname == true)
 				msg1.SetLabel(NameOfSong);
 			else
-				msg1.SetLabel( CUtil::GetFileName(strFile) );
+				msg1.SetLabel( CUtil::GetFileName(item.m_strPath) );
 			OnMessage(msg1);
 		}
 	}	//	if (tag.Loaded())
@@ -662,7 +665,7 @@ void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
 		{
 			//	No tag information available for this file, show filename only
 			CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO);
-			msg1.SetLabel( CUtil::GetTitleFromPath(strFile) );
+			msg1.SetLabel( CUtil::GetTitleFromPath(item.m_strPath) );
 			OnMessage(msg1);
 		}
 	}

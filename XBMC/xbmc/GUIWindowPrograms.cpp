@@ -201,7 +201,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
             {
                 // get selected item
                 int iAction=message.GetParam1();
-                if (ACTION_SELECT_ITEM==iAction)
+                if (ACTION_SELECT_ITEM==iAction || ACTION_MOUSE_LEFT_CLICK == iAction)
                 {
                     CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
                     g_graphicsContext.SendMessage(msg);

@@ -216,9 +216,7 @@ void CXbmcWeb::AddItemToPlayList(const CFileItem* pItem)
 	{
 		//selected item is a file, add it to playlist
 		PLAYLIST::CPlayList::CPlayListItem playlistItem;
-		playlistItem.SetFileName(pItem->m_strPath);
-		playlistItem.SetDescription(pItem->GetLabel());
-		playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
+		CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
 
 		switch(GetNavigatorState())
 		{

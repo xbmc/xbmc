@@ -8,6 +8,7 @@ public:
 	virtual	~CGUIWindowMusicSongs(void);
 
   virtual	bool				OnMessage(CGUIMessage& message);
+	void						FilterItems(VECFILEITEMS &items);
 
 protected:
 	virtual void				GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items);

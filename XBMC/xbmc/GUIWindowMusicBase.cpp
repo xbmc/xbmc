@@ -973,10 +973,8 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem)
 	{
     if (!CUtil::IsNFO(pItem->m_strPath) && CUtil::IsAudio(pItem->m_strPath) && !CUtil::IsPlayList(pItem->m_strPath))
 		{
-			CPlayList::CPlayListItem playlistItem ;
-			playlistItem.SetFileName(pItem->m_strPath);
-			playlistItem.SetDescription(pItem->GetLabel());
-			playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
+			CPlayList::CPlayListItem playlistItem;
+			CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
 			g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).Add(playlistItem);
 		}
 	}

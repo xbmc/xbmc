@@ -5,6 +5,7 @@
 #pragma once
 #include "lib/sqlLite/sqlitedataset.h"
 #include "StdString.h"
+#include "StringUtils.h"
 #include <vector>
 #include <set>
 #include <memory>
@@ -36,6 +37,8 @@ public:
 	int iDuration;
 	int iYear;
 	int iTimedPlayed;
+	int iStartOffset;
+	int iEndOffset;
 };
 
 /*!
@@ -115,6 +118,12 @@ typedef set<CStdString>::iterator ISETPATHES;
 
 /*!
 	\ingroup music
+	\brief A vector of longs for iDs, used for CMusicDatabase's multiple artist/genre capability
+	*/
+typedef vector<long> VECLONGS;
+
+/*!
+	\ingroup music
 	\brief Class to store and read tag information
 
 	CMusicDatabase can be used to read and store
@@ -155,7 +164,7 @@ class CMusicDatabase
 	{
 	public:
 		long idAlbum;
-		long idArtist;
+//		long idArtist;
 		long idPath;
 	};
 
@@ -206,10 +215,14 @@ protected:
 	bool		m_bOpen;
 	int			m_iRefCount;
 	bool		CreateTables();
-	long		AddAlbum(const CStdString& strAlbum, long lArtistId, long lPathId, const CStdString& strPath);
+	long		AddAlbum(const CStdString& strAlbum, const CStdString& strArtist, long lPathId, const CStdString& strPath);
 	long		AddGenre(const CStdString& strGenre);
 	long		AddArtist(const CStdString& strArtist);
 	long		AddPath(const CStdString& strPath);
+	void		AddArtists(const CStdString& strArtists, long lSongId, long lAlbumId, bool bCheck=true);
+	void		AddGenres(const CStdString& strGenres, long lSongId, long lAlbumId, bool bCheck=true);
+	void		AddArtistLinks(long lArtistId, long lSongId, long lAlbumId, bool bCheck=true);
+	void		AddGenreLinks(long lArtistId, long lSongId, long lAlbumId, bool bCheck=true);
 	void		RemoveInvalidChars(CStdString& strTxt);
 };
 

@@ -337,13 +337,13 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 				// now calculate the correct zoom amount.  First zoom to full height.
 				float fNewHeight = fScreenHeight;
 				float fNewWidth = fNewHeight*fOutputFrameRatio;
+				g_stSettings.m_fZoomAmount = fNewWidth/fScreenWidth;
 				if (fNewWidth < fScreenWidth)
 				{	// zoom to full width
 					fNewWidth = fScreenWidth;
 					fNewHeight = fNewWidth/fOutputFrameRatio;
+					g_stSettings.m_fZoomAmount = fNewHeight/fScreenHeight;
 				}
-				// and set the zoom amount.
-				g_stSettings.m_fZoomAmount = fNewWidth/fScreenWidth;
 			}
 			else // if (m_iViewMode == VIEW_MODE_STRETCH)
 			{	// stretch image to boundaries

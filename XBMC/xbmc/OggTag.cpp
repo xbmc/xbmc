@@ -125,7 +125,10 @@ int COggTag::parseTagEntry(CStdString& strTagEntry)
 	//	Save tag entry to members
 
 	if ( strTagType == "artist" ) {
-		m_strArtist = strTagValue;
+		if (m_strArtist.length())
+			m_strArtist += "/" + strTagValue;
+		else
+			m_strArtist = strTagValue;
 	}
 
 	if ( strTagType == "title" ) {
@@ -145,7 +148,10 @@ int COggTag::parseTagEntry(CStdString& strTagEntry)
 	}
 
 	if ( strTagType == "genre" ) {
-		m_strGenre = strTagValue;
+		if (m_strGenre.length())
+			m_strGenre += "/" + strTagValue;
+		else
+			m_strGenre = strTagValue;
 	}
 
 	return 0;

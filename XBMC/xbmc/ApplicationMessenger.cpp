@@ -95,7 +95,9 @@ void CApplicationMessenger::ProcessMessages()
 
 					//g_application.StopPlaying();
 					// play file
-					g_application.PlayFile(pMsg->strParam);
+					CFileItem item;
+					item.m_strPath = pMsg->strParam;
+					g_application.PlayFile(item);
 
 					if (g_application.IsPlayingVideo())
 					{

@@ -95,7 +95,7 @@ protected:
 	void UpdateAllTitles();
 	void UpdateTitle(CStdString& strFilepath, INT nIndex);
 	static struct SSortVideoListByName;
-	void PlayMovie(CStdString& strFilePath);
+	void PlayMovie(CFileItem& item);
 
 	CMediaMonitor*		m_pMonitor;
 	Movie				m_current[RECENT_MOVIES];
