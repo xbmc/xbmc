@@ -2447,7 +2447,7 @@ void CApplication::CheckScreenSaver()
 					}
 					break;
 
-				case SCREENSAVER_MATRIX:
+				case SCREENSAVER_XBS:
 					{
 						if (!IsPlayingVideo())
 						{
