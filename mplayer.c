@@ -4983,8 +4983,10 @@ void mplayer_ToFFRW(int iSpeed)
     if(iSpeed == 1)
     {
       playback_speed = orgplayback_speed;
-      abs_seek_pos=1; //Absolute seek since something goes wrong when ff/rw
-      rel_seek_secs = aoldpts/10+1; //for some reason pts is multiplied by 10, and somewhat to small
+      if(ffrw_speed != 0){
+        abs_seek_pos=1; //Absolute seek since something goes wrong when ff/rw
+        rel_seek_secs = aoldpts/10+1; //for some reason pts is multiplied by 10, and somewhat to small
+      }
       
       //Dump audio buffer immidiatly      
       audio_out->reset();
@@ -4999,25 +5001,28 @@ void mplayer_ToFFRW(int iSpeed)
   //For video
   if (iSpeed == 1)
   {
-      //Make sure we get rid of the big delay that might have gone by in pause
-      //fixes autosync problems in pause
-      GetRelativeTime(); 
+      if(ffrw_speed != 0) {//We where rewinding or fastforwarding before        
+        rel_seek_secs  = 0.001;
+        abs_seek_pos   = 0;
+        //Dump audio buffer immidiatly      
+        audio_out->reset();
+      }
+      else {
+        //Make sure we get rid of the big delay that might have gone by in pause
+        //fixes autosync problems in pause
+        GetRelativeTime(); 
+      }
 
       ffrw_startpts=0;
       ffrw_starttime=0;
-      ffrw_sstepframes = 0;
       ffrw_speed=0;
 
-      rel_seek_secs  = 0.1;  //to resync audio/video
-      abs_seek_pos   = 0;
+
       osd_function=OSD_PLAY;
 
       playback_speed = orgplayback_speed;
 
       printf("FFRW:normal play\n");
-
-      //Dump audio buffer immidiatly      
-      audio_out->reset();
 
       return;
   }
