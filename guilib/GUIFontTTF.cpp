@@ -3,25 +3,15 @@
 #include "guifontttf.h"
 #include "../xbmc/utils/log.h"
 
-LPDIRECT3DSURFACE8 CGUIFontTTF::m_pSurface = NULL;
-int CGUIFontTTF::m_iCountSurface = 0;
-
 CGUIFontTTF::CGUIFontTTF(const CStdString& strFontName) : CGUIFont(strFontName)
 {
 	m_pTrueTypeFont = NULL;
-	m_iCountSurface++;
-	if(m_pSurface == NULL && m_iCountSurface==1 )
-	D3DDevice::GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &m_pSurface);
 }
 
 CGUIFontTTF::~CGUIFontTTF(void)
 {
 	if (m_pTrueTypeFont)
 		XFONT_Release(m_pTrueTypeFont);
-
-	m_iCountSurface--;
-	if (m_pSurface && m_iCountSurface==0)
-		m_pSurface->Release();
 }
 
 // Change font style: XFONT_NORMAL, XFONT_BOLD, XFONT_ITALICS, XFONT_BOLDITALICS
@@ -168,18 +158,16 @@ void CGUIFontTTF::DrawTrueType(LONG nPosX, LONG nPosY, WCHAR* text, int len)
 {
 	if (!m_pTrueTypeFont)
 		return;
-/*	do not grab buffer per draw basis.
-	if (!m_pSurface)
-		g_graphicsContext.Get3DDevice()->GetBackBuffer(0,D3DBACKBUFFER_TYPE_MONO, &m_pSurface);
-		D3DDevice::GetBackBuffer(0,D3DBACKBUFFER_TYPE_MONO, &m_pSurface);
-*/	
-	// draw to back buffer
-	m_pTrueTypeFont->TextOut(m_pSurface, text, len, nPosX, nPosY);
-
-	// release back buffer
-/*	if (m_pSurface)
-	{
-		m_pSurface->Release();
-		m_pSurface = NULL;
-	}*/
+  g_graphicsContext.Lock();
+  LPDIRECT3DSURFACE8 surface;
+  //get a reference to the backbuffer
+	if (D3D_OK == g_graphicsContext.Get3DDevice()->GetBackBuffer(0,D3DBACKBUFFER_TYPE_MONO, &surface))
+  {
+	  // draw to back buffer
+	  m_pTrueTypeFont->TextOut(surface, text, len, nPosX, nPosY);
+  	// release the reference to the back buffer
+		surface->Release();
+		surface = NULL;
+	}
+  g_graphicsContext.Unlock();
 }
