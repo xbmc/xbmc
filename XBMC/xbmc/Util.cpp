@@ -524,7 +524,7 @@ void CUtil::SaveString(const CStdString &strTxt, FILE *fd)
 	}
 }
 
-bool CUtil::LoadString(CStdString &strTxt, FILE *fd)
+bool CUtil::LoadString(string &strTxt, FILE *fd)
 {
 	strTxt="";
 	int iSize;
@@ -949,4 +949,40 @@ void CUtil::SetThumbs(VECFILEITEMS &items)
 			}
 		}
   }
+}
+
+void CUtil::ShortenFileName(CStdString& strFileNameAndPath)
+{
+	CStdString strFile=CUtil::GetFileName(strFileNameAndPath);
+	if (strFile.size() > 42)
+	{
+		CStdString strExtension;
+		CUtil::GetExtension(strFileNameAndPath, strExtension);
+		CStdString strPath=strFileNameAndPath.Left( strFileNameAndPath.size() - strFile.size() );
+		
+		strFile=strFile.Left(42-strExtension.size());
+		strFile+=strExtension;
+
+		CStdString strNewFile=strPath;
+		if (!CUtil::HasSlashAtEnd(strPath)) 
+			strNewFile+="\\";
+
+		strNewFile+=strFile;
+		strFileNameAndPath=strNewFile;
+	}
+}
+
+void CUtil::GetIMDBInfo(const CStdString& strFileName, CStdString& strImbInfo)
+{
+	CStdString strTmp="";
+	for (int i=0; i < (int)strFileName.size(); ++i)
+	{
+		char kar=strFileName[i];
+		if ( isalpha( (byte)kar) ) strTmp +=kar;
+	}
+	strTmp.ToLower();
+	Crc32 crc;
+	crc.Reset();
+  crc.Compute(strTmp.c_str(),strTmp.size());
+	strImbInfo.Format("%s\\%x.imdb",g_stSettings.m_szIMDBDirectory,crc);
 }

@@ -37,7 +37,7 @@ Clear();
 		return false;
 	}
 
-	char szLine[1024];
+	char szLine[4096];
 	if ( !file.ReadString(szLine, sizeof(szLine) ) )
 	{
 		file.Close();

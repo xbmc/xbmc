@@ -5,6 +5,7 @@
 #include "utils/http.h"
 #include "util.h"
 #include "picture.h"
+
 #define	CONTROL_ALBUM		20
 #define	CONTROL_ARTIST	21
 #define	CONTROL_DATE 		22

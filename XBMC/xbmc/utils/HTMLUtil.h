@@ -12,7 +12,7 @@ namespace HTML
 		void getValueOfTag(const CStdString& strTagAndValue, CStdString& strValue);
 		void getAttributeOfTag(const CStdString& strTagAndValue,const CStdString& strTag, CStdString& strValue);
 		void RemoveTags(CStdString& strHTML);
-		void ConvertHTMLToAnsi(const CStdString& strHTML, CStdString& strStripped);
+		void ConvertHTMLToAnsi(const CStdString& strHTML, string& strStripped);
 	};
 
 };

@@ -76,7 +76,7 @@ void CHTMLUtil::RemoveTags(CStdString& strHTML)
 }
 
 
-void CHTMLUtil::ConvertHTMLToAnsi(const CStdString& strHTML, CStdString& strStripped)
+void CHTMLUtil::ConvertHTMLToAnsi(const CStdString& strHTML, string& strStripped)
 {
 	int i=0; 
 	if (strHTML.size()==0)

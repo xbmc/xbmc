@@ -102,3 +102,10 @@ void  CGUIDialogSelect::SetHeading(const wstring& strLine)
 	msg.SetLabel(strLine);
 	OnMessage(msg);
 }
+
+void CGUIDialogSelect::SetHeading(int iString)
+{
+	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),1);
+	msg.SetLabel(iString);
+	OnMessage(msg);
+}

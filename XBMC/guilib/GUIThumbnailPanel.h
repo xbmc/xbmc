@@ -36,6 +36,8 @@ public:
   virtual void AllocResources() ;
   virtual void FreeResources() ;
   void         SetScrollySuffix(CStdString wstrSuffix);
+	void				 SetTextureDimensions(int iWidth, int iHeight);
+
 protected:
 	void				 RenderItem(bool bFocus,DWORD dwPosX, DWORD dwPosY, CGUIListItem* pItem);
   void         RenderText(float fPosX, float fPosY, DWORD dwTextColor, WCHAR* wszText,bool bScroll );
@@ -61,7 +63,8 @@ protected:
   DWORD                 m_dwTextColor;
   DWORD                 m_dwSelectedColor;
 	int										m_iLastItem;
-	
+	int										m_iTextureWidth;
+	int										m_iTextureHeight;
   CGUIFont*             m_pFont;
   CGUISpinControl       m_upDown;
   CGUIImage             m_imgFolder;

@@ -11,10 +11,10 @@ class CTexture
 {
   public:
     CTexture();
-    CTexture(LPDIRECT3DTEXTURE8 pTexture, int iDelay=100);
+    CTexture(LPDIRECT3DTEXTURE8 pTexture,int iWidth, int iHeight, int iDelay=100);
     virtual   ~CTexture();
     bool                Release();
-    LPDIRECT3DTEXTURE8  GetTexture();
+    LPDIRECT3DTEXTURE8  GetTexture(int& iWidth, int& iHeight);
     int                 GetDelay() const;
     int                 GetRef() const;
     void                Dump() const;
@@ -22,6 +22,8 @@ class CTexture
     LPDIRECT3DTEXTURE8  m_pTexture;
     int                 m_iReferenceCount;
     int                 m_iDelay;
+		int									m_iWidth;
+		int									m_iHeight;
 };
 
 class CTextureMap
@@ -32,7 +34,7 @@ class CTextureMap
     virtual   ~CTextureMap();
     const CStdString&   GetName() const;
     int                 size() const;
-    LPDIRECT3DTEXTURE8  GetTexture(int iPicture=0);
+    LPDIRECT3DTEXTURE8  GetTexture(int iPicture,int& iWidth, int& iHeight);
     int                 GetDelay(int iPicture=0) const;
     void                Add(CTexture* pTexture);
     bool                Release(int iPicture=0);
@@ -51,7 +53,7 @@ public:
   virtual ~CGUITextureManager(void);
 
   int                Load(const CStdString& strTextureName,DWORD dwColorKey=0);
-  LPDIRECT3DTEXTURE8 GetTexture(const CStdString& strTextureName, int iItem=0);
+  LPDIRECT3DTEXTURE8 GetTexture(const CStdString& strTextureName, int iItem,int& iWidth, int& iHeight);
   int                GetDelay(const CStdString& strTextureName, int iPicture=0) const;
   void               ReleaseTexture(const CStdString& strTextureName, int iPicture=0);
   void               Cleanup();

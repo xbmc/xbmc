@@ -154,7 +154,7 @@ void CGUIImage::AllocResources()
   for (int i=0; i < iImages; i++)
   {
     LPDIRECT3DTEXTURE8 pTexture;
-    pTexture=g_TextureManager.GetTexture(m_strFileName,i);
+		pTexture=g_TextureManager.GetTexture(m_strFileName,i, m_iTextureWidth,m_iTextureHeight);
     m_vecTextures.push_back(pTexture);
   }
 
@@ -283,6 +283,6 @@ void CGUIImage::SetTextureWidth(int iWidth)
 }
 void CGUIImage::SetTextureHeight(int iHeight)
 {
-	m_iTextureWidth=iHeight;
+	m_iTextureHeight=iHeight;
 	Update();
 }

@@ -1,13 +1,25 @@
 // XboxMediaCenter
 //
-// graphics:
-//			- pike:special icon for files (they now use the folder icon)
+// libraries:
+//			- CDRipX			: doesnt support section loading yet			
+//			- xbfilezilla : doesnt support section loading yet
+//
+// test:
+//			- default dirs
+//			- my files copy : shortens filenames to 42 chars.
+//			- my music search
+//			- progress dialog box is nu echt groter
+//			- cdda/cddb
 //
 // bugs: 
 //			- reboot button blinks 1/2 speed???
 //		  - reboot doesnt work on some biosses
-
+//
+// graphics:
+//			- pike:special icon for files (they now use the folder icon)
+//
 // general:
+//			- CDDB query : show dialogs
 //			- keep groups together when sorting (hd, shares,...)
 //			-	ftp server
 //      - thumbnails need 2b centered in folder icon
@@ -16,9 +28,11 @@
 //  		- 4:3/16:9 aspect ratio
 //			- skinnable key mapping for controls
 //			- center text in dialog boxes
+//			- autodetect dvd/iso/cdda
+//		  - goom
+//			- tvguide
 //
 // My Files:
-//		  - make sure filenames < 42 chars
 //
 // My Pictures:
 //      - use analog thumbsticks voor zoom en move
@@ -26,9 +40,7 @@
 //      - show selected image in file browser
 //
 // my music:
-//			- search
 //			- shoutcast
-//		  - cddb
 //			- when playing : show album info/playtime/... in leftbottom corner
 //
 // my videos:
@@ -36,6 +48,10 @@
 //		  - back 7 sec, forward 30 sec buttons
 //		  - imdb
 //			- when playing : show video in leftbottom corner
+//			- bookmarks
+//			- OSD
+//			- subtitles (positioning also)
+//			- file stacking
 //
 // settings:
 //			- general:

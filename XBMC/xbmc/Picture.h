@@ -9,7 +9,7 @@ class CPicture
 public:
 	CPicture(void);
 	virtual ~CPicture(void);
-	IDirect3DTexture8*	Load(const CStdString& strFilename, int iRotate=0);
+	IDirect3DTexture8*	Load(const CStdString& strFilename, int iRotate=0, int iMaxWidth=128, int iMaxHeight=128);
   bool                CreateThumnail(const CStdString& strFileName);
 	DWORD								GetWidth() const;
 	DWORD								GetHeight() const;

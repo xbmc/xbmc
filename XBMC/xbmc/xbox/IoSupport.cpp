@@ -526,7 +526,7 @@ VOID CIoSupport::GetXbePath(char* szDest)
 	strncpy(szDevicePath,
 		    &pImageFileName->Buffer[8],
 		    pImageFileName->Length - 7 );	//get xbepath (without \Device\ prefix)
-	OutputDebugString("home:");OutputDebugString(szDevicePath);OutputDebugString("\n");
+	
 
 	strcpy(szHomeDrive, helper.GetDrive(szDevicePath).c_str());	//get driveletter of xbepath
 	if (szHomeDrive[0])
@@ -540,6 +540,8 @@ VOID CIoSupport::GetXbePath(char* szDest)
 		strncat(szDest,													//concat the path
 			    &szDevicePath[strlen(szPartition)],
 			    strlen(szDevicePath) - strlen(szPartition));		
+
+
 	} 
 	else 
 	{

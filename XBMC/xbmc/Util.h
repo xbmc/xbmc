@@ -9,6 +9,7 @@ class CUtil
 {
 public:
   CUtil(void);
+  virtual ~CUtil(void);
   static char* GetExtension(const CStdString& strFileName);
   static char* GetFileName(const CStdString& strFileNameAndPath);
   static bool  IsXBE(const CStdString& strFileName);
@@ -37,7 +38,7 @@ public:
 	static bool IsAudio(const CStdString& strLine) ;
 	static bool IsVideo(const CStdString& strLine) ;
 	static void URLEncode(CStdString& strURLData);
-	static bool LoadString(CStdString &strTxt, FILE *fd);
+	static bool LoadString(string &strTxt, FILE *fd);
 	static void SaveString(const CStdString &strTxt, FILE *fd);
 	static void	SaveInt(int iValue, FILE *fd);
 	static int	LoadInt( FILE *fd);
@@ -55,5 +56,6 @@ public:
 	static void GetArtistDatabase(const CStdString& strFileName, CStdString& strArtistDBS);
 	static void GetGenreDatabase(const CStdString& strFileName, CStdString& strGenreDBS);
 	static bool IsPlayList(const CStdString& strFile) ;
-  virtual ~CUtil(void);
+	static void ShortenFileName(CStdString& strFileNameAndPath);
+	static void GetIMDBInfo(const CStdString& strFileName, CStdString& strImbInfo);
 };

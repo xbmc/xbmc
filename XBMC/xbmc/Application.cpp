@@ -14,13 +14,18 @@
 	#pragma comment (lib,"xbmc/lib/libsmb/libsmbd.lib")      // SECTIONNAME=LIBSMB
 	#pragma comment (lib,"xbmc/lib/cximage/ImageLibd.lib")   // SECTIONNAME=CXIMAGE
 	#pragma comment (lib,"xbmc/lib/libID3/i3dlibd.lib")			 // SECTIONNAME=LIBID3
-	#pragma comment (lib,"guilib/debug/guiLib.lib")				 // -
+	#pragma comment (lib,"xbmc/lib/libCDRip/cdripd.lib")		 // SECTIONNAME=LIBCDRIP
+	#pragma comment (lib,"xbmc/lib/libPython/pythond.lib")	 // SECTIONNAME=PYTHON
+	#pragma comment (lib,"guilib/debug/guiLib.lib")				   // -
+	
 #else
 //  #pragma comment (lib,"lib/filezilla/xbfilezilla.lib")
 	#pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")          
   #pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")           
 	#pragma comment (lib,"xbmc/lib/cximage/ImageLib.lib")
 	#pragma comment (lib,"xbmc/lib/libID3/i3dlib.lib")					
+	#pragma comment (lib,"xbmc/lib/libCDRip/cdrip.lib")						
+	#pragma comment (lib,"xbmc/lib/libPython/python.lib")		 
 	#pragma comment (lib,"guiLib/release/guiLib.lib")
 #endif
 
@@ -29,26 +34,33 @@ CApplication::CApplication(void)
 :m_ctrDpad(220,220)
 ,m_ctrIR(220,220)
 {
-  
-}
+		m_pPhytonParser=NULL;
+}	
 
 CApplication::~CApplication(void)
 {
 }
+
 HRESULT CApplication::Create()
 {
 	CStdString strPath;
 	CUtil::GetHomePath(strPath);
-	OutputDebugString("homepath:");
-	OutputDebugString(strPath.c_str());
-	OutputDebugString("\n");
 	
   CIoSupport helper;
   helper.Remap("C:,Harddisk0\\Partition2");
   helper.Remap("E:,Harddisk0\\Partition1");
   helper.Remap("F:,Harddisk0\\Partition6");
+	
+	{
+		CHAR szDevicePath[1024];
+		helper.Unmount("Q:");
+		helper.Mount("Q:","Harddisk0\\Partition2");
 
-
+		helper.GetPartition(strPath.c_str(),szDevicePath);
+		strcat(szDevicePath,&strPath.c_str()[2]);
+		helper.Unmount("Q:");
+		helper.Mount("Q:",szDevicePath);	
+	}
 
 	string strSkinPath=strPath;
 	strSkinPath+=CStdString("\\skin");
@@ -153,6 +165,7 @@ HRESULT CApplication::Initialize()
 	CreateDirectory((strDir+"\\genres").c_str(),NULL);
 	CreateDirectory((strDir+"\\albums").c_str(),NULL);
 	CreateDirectory((strDir+"\\playlists").c_str(),NULL);
+	CreateDirectory((strDir+"\\cddb").c_str(),NULL);
 
 	
   // initialize network
@@ -180,6 +193,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiDialogSelect);			// window id = 2000
 	m_gWindowManager.Add(&m_guiMusicInfo);				// window id = 2001
 	m_gWindowManager.Add(&m_guiDialogOK);					// window id = 2002
+	m_gWindowManager.Add(&m_guiVideoInfo);				// window id = 2003
   g_graphicsContext.Set(m_pd3dDevice,m_d3dpp.BackBufferWidth,m_d3dpp.BackBufferHeight, (m_d3dpp.Flags&D3DPRESENTFLAG_WIDESCREEN) !=0 );
   m_keyboard.Initialize();
 	m_ctrDpad.SetDelays(g_stSettings.m_iMoveDelayController,g_stSettings.m_iRepeatDelayController);
@@ -221,35 +235,36 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiDialogProgress.Load( strSkinPath+"\\dialogProgress.xml" );  
 	m_guiDialogSelect.Load( strSkinPath+"\\dialogSelect.xml" );  
 	m_guiDialogOK.Load( strSkinPath+"\\dialogOK.xml" );  
+	m_guiVideoInfo.Load( strSkinPath+"\\DialogVideoInfo.xml" );  
 }
 
 
 void CApplication::Render()
 {
-      // Clear the backbuffer to a blue color
-      m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0xff202020, 1.0f, 0L );
-      m_gWindowManager.Render();
-      
-      {
-	      MEMORYSTATUS stat;
-	      GlobalMemoryStatus(&stat);
-				CStdStringW wszText;
-				wszText.Format(L"FreeMem %i/%iMB",stat.dwAvailPhys  /(1024*1024),
-																					      stat.dwTotalPhys  /(1024*1024)  );
+  // Clear the backbuffer to a blue color
+  m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0xff202020, 1.0f, 0L );
+  m_gWindowManager.Render();
+  
+  {
+	  MEMORYSTATUS stat;
+	  GlobalMemoryStatus(&stat);
+		CStdStringW wszText;
+		wszText.Format(L"FreeMem %i/%iMB",stat.dwAvailPhys  /(1024*1024),
+																					  stat.dwTotalPhys  /(1024*1024)  );
 
-      	
-        CGUIFont* pFont=g_fontManager.GetFont("font13");
-        if (pFont)
-        {
-	        pFont->DrawText( 60, 40, 0xffffffff, wszText);
-        }
+    
+    CGUIFont* pFont=g_fontManager.GetFont("font13");
+    if (pFont)
+    {
+	    pFont->DrawText( 60, 40, 0xffffffff, wszText);
+    }
 
-      }
-      // Present the backbuffer contents to the display
-      m_pd3dDevice->BlockUntilVerticalBlank();      
-      m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
-
- 
+  }
+  // Present the backbuffer contents to the display
+  m_pd3dDevice->BlockUntilVerticalBlank();      
+  m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+	ProcessScripts();
+	 
 }
 
 void CApplication::FrameMove()
@@ -492,10 +507,59 @@ case XINPUT_IR_REMOTE_0:
 }
 void CApplication::Stop()
 {
+	if (m_pPhytonParser)
+	{
+		ivecScriptIds it=m_vecScriptIds.begin();
+		while (it != m_vecScriptIds.end())
+		{
+			int iScriptId = *it;
+			if ( !m_pPhytonParser->isDone(iScriptId) )
+			{
+				m_pPhytonParser->stopScript(iScriptId);
+			}
+		}
+		delete m_pPhytonParser;
+		m_pPhytonParser=NULL;
+	}
 	m_sntpClient.StopThread();
 	g_fontManager.Clear();
 	m_gWindowManager.DeInitialize();
 	g_TextureManager.Cleanup();
 	CSectionLoader::UnloadAll();
 	Destroy();
+}
+
+void CApplication::ExecuteScript(const CStdString& strScript)
+{
+	if ( !m_pPhytonParser)
+	{
+		m_pPhytonParser=new Python(NULL);
+		int id=m_pPhytonParser->evalFile( (char*)strScript.c_str() );
+		m_vecScriptIds.push_back(id);
+	}
+}
+
+void CApplication::ProcessScripts()
+{
+	if ( !m_pPhytonParser) return;
+	if ( m_vecScriptIds.size()==0) return;
+
+	ivecScriptIds it=m_vecScriptIds.begin();
+	while (it != m_vecScriptIds.end())
+	{
+		int iScriptId = *it;
+		if ( m_pPhytonParser->isDone(iScriptId) )
+		{
+			it=m_vecScriptIds.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+	if ( m_vecScriptIds.size()==0)
+	{
+		delete m_pPhytonParser;
+		m_pPhytonParser=NULL;
+	}
 }

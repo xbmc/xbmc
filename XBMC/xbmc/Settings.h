@@ -100,19 +100,27 @@ public:
 		int				m_iScreenResolution;
 		int			  m_iHTTPProxyPort;
 		char		  m_szHTTPProxy[128];
+
+		char			m_szDefaultMusic[128];
+		char			m_szDefaultPictures[128];
+		char			m_szDefaultFiles[128];
+		char			m_szDefaultVideos[128];
+		char			m_szCDDBIpAdres[128];
+		bool			m_bUseCDDB;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;
 	VECSHARES					m_vecMyPictureShares;
   VECSHARES					m_vecMyFilesShares;
   VECSHARES					m_vecMyMusicShares;
+  VECSHARES					m_vecMyVideoShares;
   VECFILETYPEICONS	m_vecIcons;
 
 protected:
 	bool GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName);
 	int	 GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName);
 	void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, char* szValue, const CStdString& strDefaultValue);
-	void GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items);
+	void GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items, CStdString& strDefault);
 	void ConvertHomeVar(CStdString& strText);
 };
 
