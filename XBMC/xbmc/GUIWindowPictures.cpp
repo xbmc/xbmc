@@ -755,7 +755,7 @@ bool CGUIWindowPictures::ViewByLargeIcon()
 
 void CGUIWindowPictures::ShowThumbPanel()
 {
- 
+  m_iItemSelected=GetSelectedItem(); 
   if ( ViewByLargeIcon() )
   {
     CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
@@ -771,5 +771,10 @@ void CGUIWindowPictures::ShowThumbPanel()
     pControl->SetTextureDimensions(80,80);
     pControl->SetItemHeight(128);
     pControl->SetItemWidth(128);
+  }
+  if (m_iItemSelected>-1)
+  {
+    CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_iItemSelected);
+    CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_iItemSelected);
   }
 }
