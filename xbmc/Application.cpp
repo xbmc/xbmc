@@ -711,7 +711,7 @@ bool CApplication::PlayFile(const CStdString& strFile)
 		if ( CUtil::IsRemote(strFile) || CUtil::IsDVD(strFile) || CUtil::IsCDDA(strFile) || CUtil::IsISO9660(strFile) )
 		{
 			CIoSupport helper;
-			helper.SpindownHarddisk();
+			//helper.SpindownHarddisk();
 		}
 	}
 	return bResult;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "tinyxml/tinyxml.h"
-#define CONFIG_VERSION 0x0003
+#define CONFIG_VERSION 0x0005
 
 #include <xtl.h>
 #include "stdstring.h"
@@ -70,6 +70,7 @@ public:
     char      m_strTimeServer[128];
 
 	  bool			m_bMyPicturesViewAsIcons;
+	  bool			m_bMyPicturesRootViewAsIcons;
 	  int				m_bMyPicturesSortMethod;
 	  bool			m_bMyPicturesSortAscending;
 
@@ -80,16 +81,29 @@ public:
     char      m_szIMDBDirectory[256];
 		char      m_szAlbumDirectory[256];
 
-	  bool			m_bMyFilesViewAsIcons;
+	  bool			m_bMyFilesSourceViewAsIcons;
+	  bool			m_bMyFilesSourceRootViewAsIcons;
+	  bool			m_bMyFilesDestViewAsIcons;
+	  bool			m_bMyFilesDestRootViewAsIcons;
 	  int				m_bMyFilesSortMethod;
 	  bool			m_bMyFilesSortAscending;
 
-		bool			m_bMyMusicViewAsIcons;
+		//bool			m_bMyMusicViewAsIcons;
+		bool			m_bMyMusicSongsRootViewAsIcons;
+		bool			m_bMyMusicSongsViewAsIcons;
+		bool			m_bMyMusicAlbumRootViewAsIcons;
+		bool			m_bMyMusicAlbumViewAsIcons;
+		bool			m_bMyMusicArtistRootViewAsIcons;
+		bool			m_bMyMusicArtistViewAsIcons;
+		bool			m_bMyMusicGenresRootViewAsIcons;
+		bool			m_bMyMusicGenresViewAsIcons;
+		bool			m_bMyMusicPlaylistViewAsIcons;
 	  int				m_bMyMusicSortMethod;
 	  bool			m_bMyMusicSortAscending;
 		int				m_iMyMusicViewMethod;
 
 		bool			m_bMyVideoViewAsIcons;
+		bool			m_bMyVideoRootViewAsIcons;
 	  int				m_bMyVideoSortMethod;
 	  bool			m_bMyVideoSortAscending;
 
