@@ -907,6 +907,9 @@ bool CUtil::HasSlashAtEnd(const CStdString& strFile)
 
  bool CUtil::IsDVD(const CStdString& strFile)
 {
+  if (strFile.Left(4)=="DVD:" || strFile.Left(4)=="dvd:")
+    return true;
+    
   if (strFile.Left(2)=="D:" || strFile.Left(2)=="d:")
     return true;
 
@@ -2286,7 +2289,7 @@ bool CUtil::ThumbCached(const CStdString& strFileName)
 
 void CUtil::PlayDVD()
 {
-  if (g_stSettings.m_szExternalDVDPlayer[0])
+  if (g_stSettings.m_szExternalDVDPlayer[0] && strcmp(g_stSettings.m_szExternalDVDPlayer, "dvdplayerbeta") != 0)
   {
     char szPath[1024];
     char szDevicePath[1024];

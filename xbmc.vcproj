@@ -1279,10 +1279,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\cores\ModPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
@@ -2064,10 +2064,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
@@ -2186,6 +2186,184 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\audio\xbox\xbox.h">
 				</File>
+			</Filter>
+			<Filter
+				Name="dvdplayer"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDAudio.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDAudio.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDClock.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDClock.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxSPU.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxSPU.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDOverlay.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDOverlay.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDPlayer.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDPlayer.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDPlayerAudio.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDPlayerAudio.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDPlayerDLL.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDPlayerDLL.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDPlayerMessenger.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDPlayerMessenger.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDPlayerVideo.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDPlayerVideo.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDVideo.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\DVDVideo.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\IDVDPlayer.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\video.cpp">
+				</File>
+				<Filter
+					Name="DVDCodecs"
+					Filter="">
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\DVDAudioCodec.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\DVDAudioCodecFFmpeg.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\DVDAudioCodecFFmpeg.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\DVDAudioCodecLiba52.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\DVDAudioCodecLiba52.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\DVDCodecUtils.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\DVDCodecUtils.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\DVDFactoryCodec.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\DVDFactoryCodec.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\DVDVideoCodec.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\DVDVideoCodecFFmpeg.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\DVDVideoCodecFFmpeg.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\DVDVideoCodecLibMpeg2.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDCodecs\DVDVideoCodecLibMpeg2.h">
+					</File>
+				</Filter>
+				<Filter
+					Name="DVDDemuxers"
+					Filter="">
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemux.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemux.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxFFmpeg.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxFFmpeg.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxUtils.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxUtils.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxers\DVDFactoryDemuxer.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxers\DVDFactoryDemuxer.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxers\DVDPacketQueue.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxers\DVDPacketQueue.h">
+					</File>
+				</Filter>
+				<Filter
+					Name="DVDInputStreams"
+					Filter="">
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DVDFactoryInputStream.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DVDFactoryInputStream.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStream.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStream.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamFile.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamFile.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.h">
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 		<Filter
