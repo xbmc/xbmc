@@ -9,7 +9,7 @@ CGUIDialog::CGUIDialog(DWORD dwID)
 {
 	m_dwParentWindowID		= 0;
 	m_pParentWindow			= NULL;
-	m_bPrevOverlayAllowed	= true;
+	m_iPrevOverlayAllowed	= -1;
 	m_bModal				= true;
 }
 
@@ -54,14 +54,18 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
 	{
 		case GUI_MSG_WINDOW_INIT:
 		{
-			m_bPrevOverlayAllowed = g_graphicsContext.IsOverlayAllowed();
+			m_iPrevOverlayAllowed = g_graphicsContext.IsOverlayAllowed() ? 1 : 0;
 			CGUIWindow::OnMessage(message);
 			return true;
 		}
 
 		case GUI_MSG_WINDOW_DEINIT:
 		{
-			g_graphicsContext.SetOverlay(m_bPrevOverlayAllowed);
+			if (m_iPrevOverlayAllowed>=0)
+			{
+				g_graphicsContext.SetOverlay(m_iPrevOverlayAllowed>0 ? true : false);
+				m_iPrevOverlayAllowed=-1;
+			}
 			break;
 		}
 	}
