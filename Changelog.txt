@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 04-04-2005 fixed: re-scanning music dirs and music thumbnail caching
   - 04-04-2005 fixed: Scissors clipping crash in FullscreenVideo->GUI switch.
   - 04-04-2005 changed: DVD/Video off DVD/LAN cache defaults to 4Mb.
   - 04-04-2005 changed: Default regexps for filestacking.

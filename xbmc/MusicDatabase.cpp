@@ -2228,9 +2228,13 @@ bool CMusicDatabase::RemoveSongsFromPaths(const CStdString &strPathIds)
     m_pDS->close();
     strSongIds.TrimRight(",");
     strSongIds += ")";
+
+    // DONT DELETE THE PATHS UNTIL THE END
+    // CLEANUPALBUMSFROMPATHS RELIES ON PATHS
     // ok, now delete all the paths
-    strSQL = "delete from path where idPath in " + strPathIds;
-    int iRet = m_pDS->exec(strSQL.c_str());
+    //strSQL = "delete from path where idPath in " + strPathIds;
+    //int iRet = m_pDS->exec(strSQL.c_str());
+
     // and all songs + exartistsongs and exgenresongs
     strSQL = "delete from song where idSong in " + strSongIds;
     m_pDS->exec(strSQL.c_str());
@@ -2253,6 +2257,7 @@ bool CMusicDatabase::CleanupAlbumsFromPaths(const CStdString &strPathIds)
   try
   {
     CStdString strSQL = "select * from album,path where album.idPath in " + strPathIds + " and album.idAlbum not in (select distinct idAlbum from song) and album.idPath=path.idPath";
+    //CStdString strSQL = "select * from album where album.idPath in " + strPathIds + " and album.idAlbum not in (select distinct idAlbum from song)";
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
@@ -2266,6 +2271,7 @@ bool CMusicDatabase::CleanupAlbumsFromPaths(const CStdString &strPathIds)
     {
       strAlbumIds += m_pDS->fv("album.idAlbum").get_asString() + ",";
       // delete the thumb
+      
       CStdString strThumb;
       CUtil::GetAlbumThumb(m_pDS->fv("album.strAlbum").get_asString(), m_pDS->fv("path.strPath").get_asString(), strThumb);
       ::DeleteFile(strThumb);
@@ -2450,6 +2456,9 @@ bool CMusicDatabase::CleanupThumbs()
       }
       m_pDS->next();
     }
+    // clear the thumb cache
+    CUtil::ThumbCacheClear();
+    g_directoryCache.ClearMusicThumbCache();
     // now we can delete
     m_pDS->close();
     strSQL = "delete from thumb where idThumb not in (select distinct idThumb from song)";
