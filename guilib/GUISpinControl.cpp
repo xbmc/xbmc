@@ -15,6 +15,7 @@ CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPo
   m_iEnd=100;
   m_fStart=0.0f;
   m_fEnd=1.0f;
+  m_fInterval=0.1f;
   m_iValue=0;
 	m_dwAlign=dwAlign;
   m_fValue=0.0;
@@ -351,7 +352,7 @@ bool CGUISpinControl::CanMoveUp()
 
 		case SPIN_CONTROL_TYPE_FLOAT:
 		{
-			if (m_fValue-0.1 >= m_fStart) return true;
+			if (m_fValue-m_fInterval >= m_fStart) return true;
 			return false;
 		}
 		break;
@@ -379,7 +380,7 @@ bool CGUISpinControl::CanMoveDown()
 
 	case SPIN_CONTROL_TYPE_FLOAT:
 		{
-			if (m_fValue+0.1 <= m_fEnd) return true;
+			if (m_fValue+m_fInterval <= m_fEnd) return true;
 			return false;
 		}
 		break;
@@ -410,8 +411,8 @@ void CGUISpinControl::MoveUp()
 
 	case SPIN_CONTROL_TYPE_FLOAT:
 		{
-			if (m_fValue-0.1 >= m_fStart)
-				m_fValue-=0.1f;
+			if (m_fValue-m_fInterval >= m_fStart)
+				m_fValue-=m_fInterval;
 			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
 			g_graphicsContext.SendMessage(msg);
 			return;
@@ -446,8 +447,8 @@ void CGUISpinControl::MoveDown()
 
 		case SPIN_CONTROL_TYPE_FLOAT:
 		{
-			if (m_fValue+0.1 <= m_fEnd)
-				m_fValue+=0.1f;
+			if (m_fValue+m_fInterval <= m_fEnd)
+				m_fValue+=m_fInterval;
 			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
 			g_graphicsContext.SendMessage(msg);
 			return;
@@ -468,4 +469,14 @@ void CGUISpinControl::MoveDown()
 void CGUISpinControl::SetReverse(bool bReverse)
 {
 	m_bReverse=bReverse;
+}
+
+void CGUISpinControl::SetFloatInterval(float fInterval)
+{
+  m_fInterval=fInterval;
+}
+
+float CGUISpinControl::GetFloatInterval() const
+{
+  return m_fInterval;
 }

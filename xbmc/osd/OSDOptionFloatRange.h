@@ -9,7 +9,7 @@ namespace OSD
 		COSDOptionFloatRange(void);
 		COSDOptionFloatRange(float fStart, float fEnd, float fInterval, float fValue);
 		COSDOptionFloatRange(const COSDOptionFloatRange& option);
-		OSD::COSDOptionFloatRange operator = (const COSDOptionFloatRange& option);
+		const OSD::COSDOptionFloatRange& operator = (const COSDOptionFloatRange& option);
 
 
 		virtual ~COSDOptionFloatRange(void);

@@ -22,7 +22,7 @@ COSDOptionFloatRange::COSDOptionFloatRange(const COSDOptionFloatRange& option)
 	*this=option;
 }
 
-OSD::COSDOptionFloatRange COSDOptionFloatRange::operator = (const COSDOptionFloatRange& option)
+const OSD::COSDOptionFloatRange& COSDOptionFloatRange::operator = (const COSDOptionFloatRange& option)
 {
 	if (this==&option) return *this;
 
