@@ -11,28 +11,32 @@
 #pragma comment(linker,"/section:SID_RX,REN")
 #pragma comment(linker,"/section:SID_RW,RWN")
 
+#include <crtdbg.h>
+
 static const char RESID_ID[] = "ReSID";
 
 static IAudioCallback* m_pCallback=NULL;
 
-/*
-if (!player.open ())
-goto main_error;
-
-// Play loop
-FOREVER
-{
-if (!player.play ())
-break;
-}
-
-player.close ();
-return EXIT_SUCCESS;
-
- */
+#ifdef _DEBUG
+_CrtMemState m_MemStateStart;
+_CrtMemState m_MemStateEnd;
+#endif // _DEBUG
 
 SidPlayer::SidPlayer(IPlayerCallback& callback) :IPlayer(callback), m_name("SidPlay"), m_tune(0), Event("External Timer")
 {
+#ifdef _DEBUG
+	if (m_MemStateStart.pBlockHeader)
+	{
+		_CrtMemCheckpoint(&m_MemStateEnd);
+
+		_CrtMemState diff;
+		_CrtMemDifference(&diff, &m_MemStateStart, &m_MemStateEnd);
+		_CrtMemDumpStatistics(&diff);
+	}
+
+	_CrtMemCheckpoint(&m_MemStateStart);
+#endif // _DEBUG
+
 	CSectionLoader::Load("SID_RX");
 	CSectionLoader::Load("SID_RW");
 	// WTF half my data is getting merged into here by the stupid VC linker
@@ -95,6 +99,8 @@ SidPlayer::SidPlayer(IPlayerCallback& callback) :IPlayer(callback), m_name("SidP
 SidPlayer::~SidPlayer()
 {
 	closefile();
+
+	m_driver.null.close();
 
 	DeleteCriticalSection(&m_CS);
 
@@ -209,11 +215,11 @@ bool SidPlayer::createSidEmu (SIDEMUS emu)
 #ifdef HAVE_RESID_BUILDER
 		case EMU_RESID:
 			{
-#ifdef HAVE_EXCEPTIONS
-				ReSIDBuilder *rs = new(std::nothrow) ReSIDBuilder( RESID_ID );
-#else
+//#ifdef HAVE_EXCEPTIONS
+//				ReSIDBuilder *rs = new(std::nothrow) ReSIDBuilder( RESID_ID );
+//#else
 				ReSIDBuilder *rs = new ReSIDBuilder( RESID_ID );
-#endif
+//#endif
 				if (rs)
 				{
 					m_engCfg.sidEmulation = rs;
@@ -428,11 +434,6 @@ bool SidPlayer::closefile()
 	StopThread();
 
 	m_engine.stop();
-	if (m_state == playerExit)
-	{   // Natural finish
-	}
-	else // Destroy buffers
-		m_driver.selected->reset ();
 
 	// Shutdown drivers, etc
 	createOutput    (OUT_NULL, NULL);
@@ -441,7 +442,10 @@ bool SidPlayer::closefile()
 	m_engine.config (m_engCfg);
 
 	if (m_filename)
+	{
 		free(m_filename);
+		m_filename = NULL;
+	}
 	
 	return true;
 }
