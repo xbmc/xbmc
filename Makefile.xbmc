@@ -56,3 +56,4 @@ dll:
 	@echo "*** stripping $(DLL_NAME)"
 	@strip $(DLL_NAME)
 	@echo "*** $(DLL_NAME) linked with: $(NAMES)"
+	@ls -lah $(DLL_NAME) | awk '{print "*** Size of $(DLL_NAME) = " $$(NF-4)}'
