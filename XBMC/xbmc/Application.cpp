@@ -23,6 +23,9 @@
 #include "GUISpinControl.h"
 #include "GUIListControl.h"
 #include "GUIThumbnailPanel.h"
+
+
+#pragma comment (lib,"xbmc/lib/libXenium/XeniumSPIg.lib")    
 #ifdef _DEBUG
 //	#pragma comment (lib,"lib/filezilla/xbfilezillad.lib") // SECTIONNAME=FILEZILL
 	#pragma comment (lib,"xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS

@@ -8,8 +8,6 @@ using namespace std;
 class ILCD : public CThread
 {
 public:
-  ILCD();
-  virtual ~ILCD(void);
   virtual void Initialize()=0;
   virtual void Stop()=0;
   virtual void SetLine(int iLine, const CStdString& strLine)=0;
