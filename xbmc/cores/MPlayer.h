@@ -6,9 +6,34 @@
 #include "../utils/thread.h"
 #include "../utils/event.h"
 
+#include <vector>
+#include <string>
+using namespace std;
 class CMPlayer : public IPlayer, public CThread
 {
 public:
+  class Options
+  {
+  public:
+    Options();
+    int          GetChannels() const;
+    void         SetChannels(int iChannels);
+
+    bool         GetAC3PassTru();
+    void         SetAC3PassTru(bool bOnOff);
+
+    const string GetChannelMapping() const;
+    void         SetChannelMapping(const string& strMapping);
+    
+    void         GetOptions(int& argc, char* argv[]);
+
+    private:
+      int     m_iChannels;
+      bool    m_bAC3PassTru;
+      string  m_strChannelMapping;
+      vector<string> m_vecOptions;
+
+  };
 	CMPlayer(IPlayerCallback& callback);
 	virtual ~CMPlayer();
 	virtual void		RegisterAudioCallback(IAudioCallback* pCallback);

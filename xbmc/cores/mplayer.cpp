@@ -67,6 +67,85 @@ extern "C" void dllReleaseAll( );
 
 extern "C" void free_registry(void);
 
+CMPlayer::Options::Options()
+{
+    m_iChannels=0;
+    m_bAC3PassTru=false;
+    m_strChannelMapping="";
+}
+int CMPlayer::Options::GetChannels() const
+{
+  return m_iChannels;
+}
+void CMPlayer::Options::SetChannels(int iChannels)
+{
+  m_iChannels=iChannels;
+}
+
+bool CMPlayer::Options::GetAC3PassTru()
+{
+  return m_bAC3PassTru;
+}
+void CMPlayer::Options::SetAC3PassTru(bool bOnOff)
+{
+  m_bAC3PassTru=bOnOff;
+}
+
+const string CMPlayer::Options::GetChannelMapping() const
+{
+  return m_strChannelMapping;
+}
+
+void CMPlayer::Options::SetChannelMapping(const string& strMapping)
+{
+  m_strChannelMapping=strMapping;
+}
+
+
+void CMPlayer::Options::GetOptions(int& argc, char* argv[])
+{
+  CStdString strTmp;
+  m_vecOptions.erase(m_vecOptions.begin(),m_vecOptions.end());
+  m_vecOptions.push_back("xbmc.exe");
+  m_vecOptions.push_back("-autoq");
+  m_vecOptions.push_back("6");
+	if ( m_iChannels) 
+  {
+    m_vecOptions.push_back("-channels");
+    strTmp.Format("%i", m_iChannels);
+    m_vecOptions.push_back(strTmp);
+  }
+	if ( m_strChannelMapping.size()) 
+  {
+    m_vecOptions.push_back("-af");
+    m_vecOptions.push_back(m_strChannelMapping);
+  }
+  if ( m_bAC3PassTru)
+  {
+    m_vecOptions.push_back("-ac");
+    m_vecOptions.push_back("hwac3");
+  }
+
+  if ( g_stSettings.m_bPostProcessing || g_stSettings.m_bDeInterlace )
+  {
+    m_vecOptions.push_back("-vf");
+    if ( g_stSettings.m_bDeInterlace)
+      m_vecOptions.push_back("pp=lb");
+    else
+      m_vecOptions.push_back("pp");
+  }
+
+  m_vecOptions.push_back("1.avi");
+
+  argc=(int)m_vecOptions.size();
+  for (int i=0; i < argc; ++i)
+  {
+    argv[i]=(char*)m_vecOptions[i].c_str();
+  }
+  argv[argc]=NULL;
+}
+
+
 CMPlayer::CMPlayer(IPlayerCallback& callback)
 :IPlayer(callback)
 {
@@ -136,13 +215,12 @@ bool CMPlayer::openfile(const CStdString& strFile)
 	m_bPaused	  = false;
 
 	load();
-//	int argc=8;
-//	char szChannels[12];
-//	sprintf(szChannels,"%i", g_stSettings.m_iChannels);
-//	char *argv[] = {"xbmc.xbe", "-channels",szChannels,"-autoq", "6", "-vf", "pp", "1.avi",NULL};
 
-	int argc=8;
-	char *argv[] = {"xbmc.xbe","-channels","6","-autoq", "6", "-vf", "pp", "1.avi",NULL};
+  char *argv[30];
+  int argc=8;
+  Options options;
+  options.SetChannels(6);
+  options.GetOptions(argc,argv);
 
 	mplayer_init(argc,argv);
 	
@@ -176,8 +254,9 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			//then close file and reopen it, 
 			//but now enable the AC3 passthru audio codecs hwac3
 			mplayer_close_file();
-			int argc=10;
-			char *argv[] = {"xbmc.xbe", "-channels","2", "-ac","hwac3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
+      options.SetChannels(2);
+      options.SetAC3PassTru(true);
+			options.GetOptions(argc,argv);
 			load();
 			mplayer_init(argc,argv);
 			mplayer_setcache_size(iCacheSize);
@@ -196,8 +275,9 @@ bool CMPlayer::openfile(const CStdString& strFile)
 	if( strstr(strAudioCodec,"DMO") && (iChannels==6) )
 	{
 		mplayer_close_file();
-		int argc=10;
-		char *argv[] = {"xbmc.xbe", "-channels","6","-af","channels=6:6:0:0:1:1:2:4:3:5:4:2:5:3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
+    options.SetChannels(6);
+    options.SetChannelMapping("channels=6:6:0:0:1:1:2:4:3:5:4:2:5:3");
+		options.GetOptions(argc,argv);
 		load();
 		mplayer_init(argc,argv);
     mplayer_setcache_size(iCacheSize);
@@ -215,10 +295,6 @@ bool CMPlayer::openfile(const CStdString& strFile)
 
 	if ( !strstr(strAudioCodec,"SPDIF") ) 
 	{
-		int iRet,argc;
-	    char * argv1[] = {"xbmc.xbe", "-channels","2","-autoq", "6", "-vf", "pp", "1.avi",NULL};
-		char * argv2[] = {"xbmc.xbe", "-channels","6","-af","channels=6:5:0:0:1:1:2:2:3:3:4:4:5:5","-autoq", "6", "-vf", "pp", "1.avi",NULL};
-		char * argv3[] = {"xbmc.xbe", "-channels","4","-af","channels=4:4:0:0:1:1:2:2:2:3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
 
 		switch(iChannels)
 		{
@@ -226,12 +302,10 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			case 2:
 			case 4:
 				mplayer_close_file();
-				char szChannels[12];
-				sprintf(szChannels,"%i", iChannels);
-				argc=8;
-				argv1[2] = szChannels;
+        options.SetChannels(iChannels);
+        options.GetOptions(argc,argv);
 				load();
-				mplayer_init(argc,argv1);
+				mplayer_init(argc,argv);
         mplayer_setcache_size(iCacheSize);
 
 				iRet=mplayer_open_file(strFile.c_str());
@@ -246,9 +320,12 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			
 			case 5:
 				mplayer_close_file();
-				argc=10;
+
+        options.SetChannels(6);
+        options.SetChannelMapping("channels=6:5:0:0:1:1:2:2:3:3:4:4:5:5");
+        options.GetOptions(argc,argv);
 				load();
-				mplayer_init(argc,argv2);
+				mplayer_init(argc,argv);
         mplayer_setcache_size(iCacheSize);
 				iRet=mplayer_open_file(strFile.c_str());
 				if (iRet < 0)
@@ -262,9 +339,12 @@ bool CMPlayer::openfile(const CStdString& strFile)
 
 			case 3:
 				mplayer_close_file();
-				argc=10;
+				
+        options.SetChannels(4);
+        options.SetChannelMapping("channels=4:4:0:0:1:1:2:2:2:3");
+        options.GetOptions(argc,argv);
 				load();
-				mplayer_init(argc,argv3);
+				mplayer_init(argc,argv);
         mplayer_setcache_size(iCacheSize);
 				iRet=mplayer_open_file(strFile.c_str());
 				if (iRet < 0)
