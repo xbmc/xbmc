@@ -792,7 +792,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 					m_bSubMenuOn = false;										// hide the sub menu
 					OutputDebugString("OSD:RESTART1\n");
 					g_application.m_guiWindowFullScreen.m_bOSDVisible = false;	// toggle the OSD off so parent window can de-init
-					g_application.Restart(true);								// restart to make new audio track active
+					if (g_application.GetCurrentPlayer() == "mplayer") g_application.Restart(true);		// restart to make new audio track active
 				}
 			}
 		}

@@ -1,6 +1,8 @@
 #pragma once
 #include "stdstring.h"
 #include "IAudioCallback.h"
+#include "Key.h"
+
 class IPlayerCallback
 {
 public:
@@ -75,6 +77,8 @@ public:
   virtual void    ShowOSD(bool bOnoff){};
 
   virtual void    DoAudioWork(){};
+  virtual bool    OnAction(const CAction &action) { return false; };
+  
 protected:
 	IPlayerCallback& m_callback;
 };

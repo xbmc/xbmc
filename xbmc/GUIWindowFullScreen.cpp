@@ -130,7 +130,10 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 		}
 		return;
 	}
-    
+  
+  // if the player has handled the message, just return
+  if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action)) return;
+  
 	switch (action.wID)
 	{
 

@@ -2048,7 +2048,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 	}
 	// We should restart the player, unless the previous and next tracks are using the cdda player
 	// (allows gapless cdda playback)
-	if (m_pPlayer && !(m_strCurrentPlayer == strNewPlayer && m_strCurrentPlayer == "cdda"))
+	if (m_pPlayer && !(m_strCurrentPlayer == strNewPlayer && (m_strCurrentPlayer == "cdda" || m_strCurrentPlayer == "dvdplayer")))
 	{
 		if (1||m_strCurrentPlayer != strNewPlayer || !CUtil::IsAudio(m_itemCurrentFile.m_strPath) )
 		{
@@ -2170,7 +2170,7 @@ void CApplication::StopPlaying()
 		m_pPlayer->closefile();
 	}
 	CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
-	m_gWindowManager.SendThreadMessage( msg );
+	m_gWindowManager.SendMessage(msg);
 }
 
 
@@ -2812,4 +2812,9 @@ void CApplication::RestartApp()
 	CIoSupport helper;
 	helper.GetXbePath(szXBEFileName);
 	CUtil::RunXBE(szXBEFileName);
+}
+
+const CStdString& CApplication::GetCurrentPlayer()
+{
+  return m_strCurrentPlayer;
 }
