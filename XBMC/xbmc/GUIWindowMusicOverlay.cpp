@@ -7,7 +7,7 @@
 #include "application.h"
 #include "MusicInfoTag.h"
 #include "picture.h"
-
+#include "musicdatabase.h"
 using namespace MUSIC_INFO;
 
 #define CONTROL_LOGO_PIC    1
@@ -108,54 +108,59 @@ void CGUIWindowMusicOverlay::Render()
 			CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_INFO); 
 			OnMessage(msg1);
 
-			CMusicInfoTag tag;
-			CStdString strCacheName;
-			CUtil::GetSongInfo(strFile, strCacheName);
-
-			if ( tag.Load(strCacheName) ) 
+			CSong song;
+			CMusicDatabase dbs;
+			if (dbs.Open())
 			{
-				if (tag.GetTitle().size())
+				if (dbs.GetSongByFileName(strFile, song) )
 				{
-					CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-					msg1.SetLabel(tag.GetTitle() );
-					OnMessage(msg1);
-					
-					if (tag.GetArtist().size())
+					if (song.strTitle.size())
 					{
 						CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-						msg1.SetLabel(tag.GetArtist() );
+						msg1.SetLabel(song.strTitle );
 						OnMessage(msg1);
-					}
-					
-					if (tag.GetAlbum().size())
-					{
-						CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-						msg1.SetLabel(tag.GetAlbum() );
-						OnMessage(msg1);
-						strAlbum=tag.GetAlbum();
-					}
-					
-					int iTrack=tag.GetTrackNumber();
-					if (iTrack >=1)
-					{
-						CStdString strTrack;
-						strTrack.Format("Track %i", iTrack);
 						
-						CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-						msg1.SetLabel( strTrack );
-						OnMessage(msg1);
-					}
+						if (song.strArtist.size())
+						{
+							CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+							msg1.SetLabel( song.strArtist );
+							OnMessage(msg1);
+						}
+						
+						if ( song.strAlbum.size())
+						{
+							CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+							msg1.SetLabel( song.strAlbum );
+							OnMessage(msg1);
+							strAlbum=song.strAlbum;
+						}
+						
+						int iTrack=song.iTrack;
+						if (iTrack >=1)
+						{
+							CStdString strTrack;
+							strTrack.Format("Track %i", iTrack);
+							
+							CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+							msg1.SetLabel( strTrack );
+							OnMessage(msg1);
+						}
 
-					SYSTEMTIME dateTime;
-					tag.GetReleaseDate(dateTime);
-					if (dateTime.wYear >=1900)
+						if (song.iYear >=1900)
+						{
+							CStdString strYear;
+							strYear.Format("%i", song.iYear);
+							
+							CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+							msg1.SetLabel( strYear );
+							OnMessage(msg1);
+						}
+					}
+					else
 					{
-						CStdString strYear;
-						strYear.Format("%i", dateTime.wYear);
-						
-						CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-						msg1.SetLabel( strYear );
-						OnMessage(msg1);
+							CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+							msg1.SetLabel( CUtil::GetFileName(strFile) );
+							OnMessage(msg1);
 					}
 				}
 				else
@@ -164,6 +169,7 @@ void CGUIWindowMusicOverlay::Render()
 						msg1.SetLabel( CUtil::GetFileName(strFile) );
 						OnMessage(msg1);
 				}
+				dbs.Close();
 			}
 			else
 			{
@@ -172,16 +178,14 @@ void CGUIWindowMusicOverlay::Render()
 					OnMessage(msg1);
 			}
 		}
-#if 0
-		CAlbumDatabase albumDatabase(strAlbum);
-		if (albumDatabase.Load())
+
+		CMusicDatabase dbs;
+		if ( dbs.Open() )
 		{
-			CStdString strURL=albumDatabase.GetAlbumInfoURL();
-			if (CUtil::FileExists(strURL) )
+			CAlbum album;
+			if ( dbs.GetAlbumInfo(strAlbum, album) )
 			{
-				CMusicAlbumInfo album;
-				if ( album.Load(strURL))
-				{
+/*
 					CStdString strThumb;
 					CUtil::GetAlbumThumb(album.GetTitle(),strThumb);
 					if (CUtil::FileExists(strThumb) )
@@ -196,8 +200,8 @@ void CGUIWindowMusicOverlay::Render()
 							OnMessage(msg1);
 						}
 					}
+*/
 				}
 			}
-		}
-#endif
+			dbs.Close();
 	}

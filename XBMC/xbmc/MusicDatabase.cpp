@@ -409,7 +409,8 @@ long CMusicDatabase::AddAlbumInfo(const CAlbum& album1)
 		return lAlbumID;
 	}
 
-	sprintf(szSQL,"insert into albuminfo (idAlbumInfo,idAlbum,idArtist,idGenre,strTones,strStyles,strReview,strImage,iRating,iYear) values(NULL,%i,%i,%i,'%s','%s','%s','%s',%i,%i)",
+	char* pszSQL = new char[80000];
+	sprintf(pszSQL,"insert into albuminfo (idAlbumInfo,idAlbum,idArtist,idGenre,strTones,strStyles,strReview,strImage,iRating,iYear) values(NULL,%i,%i,%i,'%s','%s','%s','%s',%i,%i)",
 											lAlbumId,lArtistId,lGenreId,
 											album.strTones.c_str(),
 											album.strStyles.c_str(),
@@ -417,7 +418,8 @@ long CMusicDatabase::AddAlbumInfo(const CAlbum& album1)
 											album.strImage.c_str(),
 											album.iRating,
 											album.iYear);
-	m_pDS->exec(szSQL);
+	m_pDS->exec(pszSQL);
+	delete [] pszSQL;
 	long lAlbumInfoId=sqlite_last_insert_rowid(m_pDB->getHandle());
 	return lAlbumInfoId;
 #endif
@@ -474,4 +476,29 @@ bool CMusicDatabase::GetGenres(VECGENRES& genres)
 	}
 #endif
 	return true;
+}
+
+
+bool CMusicDatabase::GetAlbumInfo(const string& strAlbum1, CAlbum& album)
+{
+	string strAlbum = strAlbum1;
+	RemoveInvalidChars(strAlbum);
+	char szSQL[1024];
+	sprintf(szSQL,"select * from albuminfo where where albuminfo.idAlbum=album.idAlbum and albuminfo.idGenre=genre.idGenre and albuminfo.idArtist=artist.idArtist and strAlbum='%s'",strAlbum.c_str() );
+	if (!m_pDS->query(szSQL)) return false;
+	int iRowsFound = m_pDS->num_rows();
+	if (iRowsFound!= 0) 
+	{
+		album.iRating		= m_pDS->fv("albuminfo.iRating").get_asLong() ;
+		album.iYear			= m_pDS->fv("albuminfo.iYear").get_asLong() ;
+		album.strAlbum	= m_pDS->fv("album.strAlbum").get_asString();
+		album.strArtist	= m_pDS->fv("artist.strArtist").get_asString();
+		album.strGenre	= m_pDS->fv("genre.strGenre").get_asString();
+		album.strImage	= m_pDS->fv("albuminfo.strImage").get_asString();
+		album.strReview	= m_pDS->fv("albuminfo.strReview").get_asString();
+		album.strStyles	= m_pDS->fv("albuminfo.strStyles").get_asString();
+		album.strTones	= m_pDS->fv("albuminfo.strTones").get_asString();
+		return true;
+	}
+	return false;
 }
