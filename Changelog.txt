@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 21-12-2004 fixed: music scanning and reading from database broken (database has to be rescanned)
   - 21-12-2004 fixed: incorrect imdb plot due to imdb url changes.
   - 21-12-2004 fixed: imdb thumb not always saved due to imdb url changes.
   - 21-12-2004 fixed: Button Scroller Mouse bugs

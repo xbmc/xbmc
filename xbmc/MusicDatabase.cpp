@@ -814,9 +814,10 @@ CSong CMusicDatabase::GetSongFromDataset()
   song.iStartOffset = m_pDS->fv("song.iStartOffset").get_asLong();
   song.iEndOffset	  = m_pDS->fv("song.iEndOffset").get_asLong();
 
-  CStdString strFileName = m_pDS->fv("path.strPath").get_asString() ;
-  strFileName += m_pDS->fv("song.strFileName").get_asString() ;
-  song.strFileName = strFileName;
+	//	Get filename with full path
+	song.strFileName=m_pDS->fv("path.strPath").get_asString();
+	CUtil::AddDirectorySeperator(song.strFileName);
+  song.strFileName+=m_pDS->fv("song.strFileName").get_asString();
 
   return song;
 }
@@ -2231,7 +2232,10 @@ bool CMusicDatabase::CleanupAlbumsFromPaths(const CStdString &strPathIds)
 			CStdString strThumb;
 			CUtil::GetAlbumThumb(m_pDS->fv("album.strAlbum").get_asString(), m_pDS->fv("path.strPath").get_asString(), strThumb);
 			::DeleteFile(strThumb);
-			m_pDS->next();
+
+			// delete directory thumb
+			CUtil::GetAlbumFolderThumb(m_pDS->fv("path.strPath").get_asString(), strThumb);
+			::DeleteFile(strThumb);
 		}
     m_pDS->close();
 		strAlbumIds.TrimRight(",");
