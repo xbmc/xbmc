@@ -91,12 +91,12 @@ void CGUISliderControl::Render()
 	{
 		if (m_bHasFocus)
 		{
-			m_guiMidFocus.SetPosition((int)fPos, m_guiBackground.GetYPosition() );
+			m_guiMidFocus.SetPosition((int)fPos, (int)m_guiBackground.GetYPosition() );
 			m_guiMidFocus.Render();
 		}
 		else
 		{
-			m_guiMid.SetPosition((int)fPos, m_guiBackground.GetYPosition() );
+			m_guiMid.SetPosition((int)fPos, (int)m_guiBackground.GetYPosition() );
 			m_guiMid.Render();
 		}
 	}
