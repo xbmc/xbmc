@@ -94,6 +94,15 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 			if (iControl == CONTROL_BTN_SCROLLER)
 			{
 				// the button scroller has changed focus...
+        if (message.GetSenderId() != CONTROL_BTN_SCROLLER && 
+            message.GetSenderId() != GetID())
+        {
+          // button scroller is focused from some other control
+          // we need to fire off a message to update the info
+          CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), CONTROL_BTN_SCROLLER);
+          OnMessage(msg);
+          return true;
+        }
 				int iIconType = message.GetParam1();
 				if (iIconType>=101 && iIconType<=120)
 				{
