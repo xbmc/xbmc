@@ -93,7 +93,7 @@ public:
 	void									SetGUIResolution(RESOLUTION &res);
 	void									GetAllowedResolutions(vector<RESOLUTION> &res, bool bAllowPAL60 = false);
 	bool									IsValidResolution(RESOLUTION res);
-	void									SetVideoResolution(RESOLUTION &res);
+	void									SetVideoResolution(RESOLUTION &res, BOOL NeedZ = FALSE);
 	RESOLUTION						GetVideoResolution() const;
 	void									ResetScreenParameters(RESOLUTION res);
 	void									SetOffset(int iXoffset, int iYoffset);

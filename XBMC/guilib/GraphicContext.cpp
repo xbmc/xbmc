@@ -221,7 +221,7 @@ void CGraphicContext::SetGUIResolution(RESOLUTION &res)
 	m_bWidescreen=(m_pd3dParams->Flags & D3DPRESENTFLAG_WIDESCREEN)!=0;
 }
 
-void CGraphicContext::SetVideoResolution(RESOLUTION &res)
+void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
 {
 	if (!IsValidResolution(res))
 	{	// Choose a failsafe resolution that we can actually display
@@ -246,6 +246,11 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res)
 			m_pd3dParams->FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 			NeedReset = true;
 		}
+	}
+	if (NeedZ != m_pd3dParams->EnableAutoDepthStencil)
+	{
+		m_pd3dParams->EnableAutoDepthStencil = NeedZ;
+		NeedReset = true;
 	}
 	if (m_Resolution != res)
 	{	
