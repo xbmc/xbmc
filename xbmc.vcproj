@@ -39,7 +39,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xapilibd.lib d3dx8d.lib d3d8d.lib xgraphicsd.lib dsoundd.lib xboxkrnl.lib xonlined.lib "
+				AdditionalDependencies="xapilibd.lib d3dx8d.lib d3d8d.lib xgraphicsd.lib dsoundd.lib xboxkrnl.lib xonlined.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames="libc,libcmt"
@@ -64,7 +64,7 @@
 				IncludeDebugInfo="TRUE"
 				InsertFile="$(TargetDir)YV12toRGB.xpu,PXLSHADER,R"
 				NoLibWarn="TRUE"
-				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBLAME;LIBMP4;LIBOGGVO"
+				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBLAME;LIBMP4;LIBOGGVO;LIBXDAAP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center Debug"/>
@@ -1366,6 +1366,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileSystem\cdioSupport.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\DAAPDirectory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\DAAPDirectory.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\Directory.cpp">
 			</File>
 			<File
@@ -1382,6 +1388,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\File.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FileDAAP.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FileDAAP.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\FileFactory.cpp">
