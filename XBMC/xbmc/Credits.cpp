@@ -83,12 +83,12 @@ CreditLine_t Credits[] =
   {  50,  35,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Butcher" },
   {  50,  45,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Forza" },
   {  50,  55,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Bobbin007" },
-  {  50,  65,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"J Marshall" },
+	{  50,  65,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"elupus" },
+  {  50,  75,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"J Marshall" },
   //  crossfade 3.5, on 45, fadeout 16
-  {  50,  22,   7620,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"jwnmulder" },
-  {  50,  35,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"monkeyhappy" },
-  {  50,  45,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Tslayer" },
-  {  50,  55,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"elupus" },
+  {  50,  35,   7620,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"jwnmulder" },
+  {  50,  45,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"monkeyhappy" },
+  {  50,  55,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Tslayer" },
   {  50,  65,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"yuvalt" },
 
   // Project management flash 0.5, on 63, crossfade 3.5
