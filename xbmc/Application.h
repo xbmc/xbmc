@@ -41,6 +41,7 @@
 #include "GUIWindowSettingsScreenCalibration.h"
 #include "GUIWindowSettingsSubtitles.h"
 #include "GUIWindowScreensaver.h"		// CB: Matrix Screensaver
+#include "GUIWindowOSD.h"
 #include "GUIWindowMusicInfo.h" 
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowScriptsInfo.h"
@@ -50,7 +51,7 @@
 #include "GUIWindowVideoPlaylist.h" 
 #include "GUIWindowSettingsSlideShow.h"
 #include "GUIWindowSettingsScreensaver.h"
-#include "GUIWindowOSD.h"
+#include "GUIWindowSettingsOSD.h"
 #include "guiwindowsettingsautorun.h"
 #include "guiwindowsettingsfilter.h"
 #include "guiwindowsettingsmusic.h"
@@ -143,6 +144,7 @@ public:
 	CGUIWindowSettingsScreenCalibration m_guiSettingsScreenCalibration;
 	CGUIWindowSettingsSlideShow			m_guiSettingsSlideShow;
 	CGUIWindowSettingsScreensaver			m_guiSettingsScreensaver;
+	CGUIWindowSettingsOSD					m_guiSettingsOSD;
   CGUIWindowSettingsAutoRun       m_guiSettingsAutoRun;
 	CGUIWindowScripts								m_guiScripts;
 	CGUIWindowSettingsFilter				m_guiSettingsFilter;

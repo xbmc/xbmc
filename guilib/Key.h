@@ -149,6 +149,7 @@
 #define WINDOW_SETTINGS_SUBTITLES     15 
 #define WINDOW_SETTINGS_SCREENSAVER   16
 #define WINDOW_WEATHER_SETTINGS       17
+#define WINDOW_SETTINGS_OSD			  18
 #define WINDOW_SCRIPTS                20
 #define WINDOW_VIDEO_GENRE            21
 #define WINDOW_VIDEO_ACTOR            22
