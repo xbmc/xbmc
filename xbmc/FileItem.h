@@ -23,6 +23,7 @@ public:
   int			m_iDriveType;			// if it is a root share/drive which type. Types see CShare
   SYSTEMTIME    m_stTime;							// file creation date & time
   __int64       m_dwSize;							// file size (0 for folders)
+  float         m_fRating;
 	CMusicInfoTag m_musicInfoTag;
 };
 
