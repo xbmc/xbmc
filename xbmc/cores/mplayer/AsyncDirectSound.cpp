@@ -56,7 +56,20 @@ void CASyncDirectSound::StreamCallback(LPVOID pPacketContext, DWORD dwStatus)
 CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample)
 {
 	m_pCallback=pCallback;
-	if(!g_stSettings.m_bAudioOnAllSpeakers ) 
+  
+  bool  bAudioOnAllSpeakers(false);
+	if (g_stSettings.m_bUseDigitalOutput)
+  {
+    if (g_stSettings.m_bAudioOnAllSpeakers  ) 
+    {
+      bAudioOnAllSpeakers=true;
+    }
+  }
+  if (bAudioOnAllSpeakers)
+  {
+      DirectSoundOverrideSpeakerConfig(DSSPEAKER_USE_DEFAULT);
+  }
+  else
 	{
 		if (iChannels == 1)
 			DirectSoundOverrideSpeakerConfig(DSSPEAKER_MONO);
@@ -64,10 +77,6 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 			DirectSoundOverrideSpeakerConfig(DSSPEAKER_STEREO);
 		else
 			DirectSoundOverrideSpeakerConfig(DSSPEAKER_USE_DEFAULT);
-	} 
-	else 
-	{
-		DirectSoundOverrideSpeakerConfig(DSSPEAKER_USE_DEFAULT);
 	}
 
 	LARGE_INTEGER qwTicksPerSec;
@@ -149,7 +158,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	dsmb.dwMixBinCount			 = 6;
 	dsmb.lpMixBinVolumePairs = dsmbvp6;
 
-	if (!g_stSettings.m_bAudioOnAllSpeakers)
+	if (!bAudioOnAllSpeakers)
 	{
 		switch (iChannels)
 		{
@@ -187,9 +196,9 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	}
 	m_wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
 
-	xbox_Ac3encoder_active = false;
-	if ( (dsmb.dwMixBinCount>2) && ((XGetAudioFlags()&(DSSPEAKER_ENABLE_AC3|DSSPEAKER_ENABLE_DTS)) != 0 ) )
-		xbox_Ac3encoder_active = true;
+	//xbox_Ac3encoder_active = false;
+	//if ( (dsmb.dwMixBinCount>2) && ((XGetAudioFlags()&(DSSPEAKER_ENABLE_AC3|DSSPEAKER_ENABLE_DTS)) != 0 ) )
+		//xbox_Ac3encoder_active = true;
 
 	DSSTREAMDESC dssd; 
 	memset(&dssd,0,sizeof(dssd));
