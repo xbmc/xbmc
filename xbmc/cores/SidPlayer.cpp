@@ -173,12 +173,10 @@ bool SidPlayer::createOutput (OUTPUTS driver, const SidTuneInfo *tuneInfo)
 	case 1:
 		if (m_engCfg.playback == sid2_stereo)
 			m_engCfg.playback  = sid2_mono;
-		DirectSoundOverrideSpeakerConfig(DSSPEAKER_MONO);
 		break;
 	case 2:
 		if (m_engCfg.playback != sid2_stereo)
 			m_engCfg.playback  = sid2_stereo;
-		DirectSoundOverrideSpeakerConfig(DSSPEAKER_STEREO);
 		break;
 	default:
 //		cerr << m_name << ": " << "ERROR: " << m_driver.cfg.channels
