@@ -153,7 +153,7 @@ string Xcddb::Recv(bool wait4point)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-int Xcddb::queryCDinfo(int inexact_list_select)
+int Xcddb::queryCDinfo(CCdInfo* pInfo, int inexact_list_select)
 {
 	CStdString strCmd=getInexactCommand(inexact_list_select);
 	if (strCmd.size()==0)
@@ -164,6 +164,8 @@ int Xcddb::queryCDinfo(int inexact_list_select)
 	char read_buffer[1024];
 	sprintf(read_buffer,"%s",strCmd.c_str());
 	
+  unsigned long discid=pInfo->GetCddbDiscId();
+
 	//erstmal den Müll abholen
 	Recv(false);
 
@@ -195,6 +197,7 @@ int Xcddb::queryCDinfo(int inexact_list_select)
 		case 2:
 //			//writeLog("2-- XXXXXXXXXXXXXXXX");
 			// Cool, I got it ;-)
+			writeCacheFile( tmp_str2, discid );
 			parseData(tmp_str2);
 		break;
 		case 4:
