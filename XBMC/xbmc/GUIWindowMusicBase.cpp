@@ -224,6 +224,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 			m_iLastControl=GetFocusedControl();
       ClearFileItems();
 			CSectionLoader::Unload("LIBID3");
+			CSectionLoader::Unload("LIBMP4");
 		}
 		break;
 
@@ -232,6 +233,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 			CGUIWindow::OnMessage(message);
 
 			CSectionLoader::Load("LIBID3");
+			CSectionLoader::Load("LIBMP4");
 
 			if (!g_musicDatabase.IsOpen())
 				g_musicDatabase.Open();
