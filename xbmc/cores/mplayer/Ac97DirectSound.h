@@ -81,7 +81,6 @@ private:
 
 	LPAC97MEDIAOBJECT			m_pDigitalOutput;
 	WAVEFORMATEX				  m_wfx;
-	LONG								  m_nCurrentVolume;
 	DWORD									m_dwPacketSize;
 	bool									m_AudioEOF;
 	DWORD									m_dwNumPackets;
@@ -90,6 +89,7 @@ private:
 	bool									m_bPause;
 	bool									m_bMute;
 	bool									m_bIsAllocated;
+  bool                  m_bFirstPacketDone;
 	LONGLONG       				m_startTime;
 	WAVEFORMATEXTENSIBLE	m_wfxex;
 	LPDIRECTSOUND8        m_pDSound;
