@@ -43,7 +43,7 @@ TiXmlBase::Entity TiXmlBase::entity[ NUM_ENTITY ] =
 };
 
 
-const char* TiXmlBase::SkipWhiteSpace( const char* p )
+const char* TiXmlBase::SkipWhiteSpace( const char* p, TiXmlDocument* pDoc )
 {
 	if ( !p || !*p )
 	{
@@ -51,6 +51,8 @@ const char* TiXmlBase::SkipWhiteSpace( const char* p )
 	}
 	while ( p && *p )
 	{
+		if (pDoc && *p == '\n')
+			++pDoc->LineNo;
 		if ( ISSPACE( *p ) || *p == '\n' || *p =='\r' )		// Still using old rules for white space.
 			++p;
 		else
@@ -203,7 +205,8 @@ const char* TiXmlBase::ReadText(	const char* p,
 									TIXML_STRING * text, 
 									bool trimWhiteSpace, 
 									const char* endTag, 
-									bool caseInsensitive )
+									bool caseInsensitive,
+									TiXmlDocument* document)
 {
     *text = "";
 	if (    !trimWhiteSpace			// certain tags always keep whitespace
@@ -224,7 +227,7 @@ const char* TiXmlBase::ReadText(	const char* p,
 		bool whitespace = false;
 
 		// Remove leading white space:
-		p = SkipWhiteSpace( p );
+		p = SkipWhiteSpace( p, document );
 		while (	   p && *p
 				&& !StringEqual( p, endTag, caseInsensitive ) )
 		{
@@ -325,6 +328,7 @@ const char* TiXmlDocument::Parse( const char* p )
 	// In this variant (as opposed to stream and Parse) we
 	// read everything we can.
 
+	LineNo = 1;
 
 	if ( !p || !*p )
 	{
@@ -332,7 +336,7 @@ const char* TiXmlDocument::Parse( const char* p )
 		return false;
 	}
 
-    p = SkipWhiteSpace( p );
+  p = SkipWhiteSpace( p, this );
 	if ( !p )
 	{
 		XMLSetError( TIXML_ERROR_DOCUMENT_EMPTY );
@@ -351,7 +355,7 @@ const char* TiXmlDocument::Parse( const char* p )
 		{
 			break;
 		}
-		p = SkipWhiteSpace( p );
+		p = SkipWhiteSpace( p, this );
 	}
 	// All is well.
 	return p;
@@ -361,15 +365,15 @@ const char* TiXmlDocument::Parse( const char* p )
 TiXmlNode* TiXmlNode::Identify( const char* p )
 {
 	TiXmlNode* returnNode = 0;
+	TiXmlDocument* doc = GetDocument();
 
-	p = SkipWhiteSpace( p );
+	p = SkipWhiteSpace( p, doc );
 	if( !p || !*p || *p != '<' )
 	{
 		return 0;
 	}
 
-	TiXmlDocument* doc = GetDocument();
-	p = SkipWhiteSpace( p );
+	p = SkipWhiteSpace( p, doc );
 
 	if ( !p || !*p )
 	{
@@ -538,8 +542,8 @@ void TiXmlElement::StreamIn (TIXML_ISTREAM * in, TIXML_STRING * tag)
 
 const char* TiXmlElement::Parse( const char* p )
 {
-	p = SkipWhiteSpace( p );
 	TiXmlDocument* document = GetDocument();
+	p = SkipWhiteSpace( p, document );
 
 	if ( !p || !*p || *p != '<' )
 	{
@@ -548,7 +552,7 @@ const char* TiXmlElement::Parse( const char* p )
 		return false;
 	}
 
-	p = SkipWhiteSpace( p+1 );
+	p = SkipWhiteSpace( p+1, document );
 
 	// Read the name.
     p = ReadName( p, &value );
@@ -567,7 +571,7 @@ const char* TiXmlElement::Parse( const char* p )
 	// tag or an end tag.
 	while ( p && *p )
 	{
-		p = SkipWhiteSpace( p );
+		p = SkipWhiteSpace( p, document );
 		if ( !p || !*p )
 		{
 			if ( document ) 
@@ -634,7 +638,7 @@ const char* TiXmlElement::ReadValue( const char* p )
 	TiXmlDocument* document = GetDocument();
 
 	// Read in text and elements in any order.
-	p = SkipWhiteSpace( p );
+	p = SkipWhiteSpace( p, document );
 	while ( p && *p )
 	{
 		if ( *p != '<' )
@@ -678,7 +682,7 @@ const char* TiXmlElement::ReadValue( const char* p )
 				}
 			}
 		}
-		p = SkipWhiteSpace( p );
+		p = SkipWhiteSpace( p, document );
 	}
 
 	if ( !p )
@@ -711,7 +715,7 @@ void TiXmlUnknown::StreamIn( TIXML_ISTREAM * in, TIXML_STRING * tag )
 const char* TiXmlUnknown::Parse( const char* p )
 {
 	TiXmlDocument* document = GetDocument();
-	p = SkipWhiteSpace( p );
+	p = SkipWhiteSpace( p, document );
 	if ( !p || !*p || *p != '<' )
 	{
 		if ( document ) 
@@ -762,7 +766,7 @@ const char* TiXmlComment::Parse( const char* p )
 	TiXmlDocument* document = GetDocument();
 	value = "";
 
-	p = SkipWhiteSpace( p );
+	p = SkipWhiteSpace( p, document );
 	const char* startTag = "<!--";
 	const char* endTag   = "-->";
 
@@ -772,14 +776,14 @@ const char* TiXmlComment::Parse( const char* p )
 		return 0;
 	}
 	p += strlen( startTag );
-	p = ReadText( p, &value, false, endTag, false );
+	p = ReadText( p, &value, false, endTag, false, document );
 	return p;
 }
 
 
 const char* TiXmlAttribute::Parse( const char* p )
 {
-	p = SkipWhiteSpace( p );
+	p = SkipWhiteSpace( p, document );
 	if ( !p || !*p ) return 0;
 
 	// Read the name, the '=' and the value.
@@ -790,7 +794,7 @@ const char* TiXmlAttribute::Parse( const char* p )
 			document->XMLSetError( TIXML_ERROR_READING_ATTRIBUTES );
 		return 0;
 	}
-	p = SkipWhiteSpace( p );
+	p = SkipWhiteSpace( p, document );
 	if ( !p || !*p || *p != '=' )
 	{
 		if ( document ) 
@@ -799,7 +803,7 @@ const char* TiXmlAttribute::Parse( const char* p )
 	}
 
 	++p;	// skip '='
-	p = SkipWhiteSpace( p );
+	p = SkipWhiteSpace( p, document );
 	if ( !p || !*p )
 	{
 		if ( document ) 
@@ -813,13 +817,13 @@ const char* TiXmlAttribute::Parse( const char* p )
 	{
 		++p;
 		end = "\'";
-		p = ReadText( p, &value, false, end, false );
+		p = ReadText( p, &value, false, end, false, document );
 	}
 	else if ( *p == '"' )
 	{
 		++p;
 		end = "\"";
-		p = ReadText( p, &value, false, end, false );
+		p = ReadText( p, &value, false, end, false, document );
 	}
 	else
 	{
@@ -857,12 +861,12 @@ const char* TiXmlText::Parse( const char* p )
 {
 	value = "";
 
-	//TiXmlDocument* doc = GetDocument();
+	TiXmlDocument* doc = GetDocument();
 	bool ignoreWhite = true;
 //	if ( doc && !doc->IgnoreWhiteSpace() ) ignoreWhite = false;
 
 	const char* end = "<";
-	p = ReadText( p, &value, ignoreWhite, end, false );
+	p = ReadText( p, &value, ignoreWhite, end, false, doc );
 	if ( p )
 		return p-1;	// don't truncate the '<'
 	return 0;
@@ -887,10 +891,10 @@ void TiXmlDeclaration::StreamIn( TIXML_ISTREAM * in, TIXML_STRING * tag )
 
 const char* TiXmlDeclaration::Parse( const char* p )
 {
-	p = SkipWhiteSpace( p );
+	TiXmlDocument* document = GetDocument();
+	p = SkipWhiteSpace( p, document );
 	// Find the beginning, find the end, and look for
 	// the stuff in-between.
-	TiXmlDocument* document = GetDocument();
 	if ( !p || !*p || !StringEqual( p, "<?xml", true ) )
 	{
 		if ( document ) 
@@ -914,7 +918,7 @@ const char* TiXmlDeclaration::Parse( const char* p )
 			return p;
 		}
 
-		p = SkipWhiteSpace( p );
+		p = SkipWhiteSpace( p, document );
 		if ( StringEqual( p, "version", true ) )
 		{
 //			p += 7;
