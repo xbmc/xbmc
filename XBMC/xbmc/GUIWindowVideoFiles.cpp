@@ -577,7 +577,7 @@ void CGUIWindowVideoFiles::OnClick(int iItem)
     m_iItemSelected=-1;
 		if ( pItem->m_bIsShareOrDrive ) 
 		{
-      if ( !CGUIPassword::IsItemUnlocked( pItem, "videos" ) )
+      if ( !CGUIPassword::IsItemUnlocked( pItem, "video" ) )
         return;
 
 			if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )
@@ -1309,7 +1309,7 @@ void CGUIWindowVideoFiles::OnPopupMenu(int iItem)
 			bMaxRetryExceeded=!(m_vecItems[iItem]->m_iBadPwdCount < g_stSettings.m_iMasterLockMaxRetry);
 		
 		// and do the popup menu
-		if (CGUIDialogContextMenu::BookmarksMenu("videos", m_vecItems[iItem]->GetLabel(), m_vecItems[iItem]->m_strPath, m_vecItems[iItem]->m_iLockMode, bMaxRetryExceeded, iPosX, iPosY))
+		if (CGUIDialogContextMenu::BookmarksMenu("video", m_vecItems[iItem]->GetLabel(), m_vecItems[iItem]->m_strPath, m_vecItems[iItem]->m_iLockMode, bMaxRetryExceeded, iPosX, iPosY))
 		{
 			m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
 			Update(m_strDirectory);

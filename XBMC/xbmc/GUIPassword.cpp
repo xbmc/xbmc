@@ -30,7 +30,7 @@ CGUIPassword::~CGUIPassword(void)
 
 /// \brief Tests if the user is allowed to access the share folder
 /// \param pItem The share folder item to access
-/// \param strType The type of share being accessed, e.g. "music", "videos", etc. See CSettings::UpdateBookmark
+/// \param strType The type of share being accessed, e.g. "music", "video", etc. See CSettings::UpdateBookmark
 /// \return If access is granted, returns \e true
 bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const CStdString &strType)
 {

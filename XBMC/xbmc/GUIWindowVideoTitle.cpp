@@ -369,7 +369,7 @@ void CGUIWindowVideoTitle::OnClick(int iItem)
     m_iItemSelected=-1;
 		if ( pItem->m_bIsShareOrDrive ) 
 		{
-      if ( !CGUIPassword::IsItemUnlocked( pItem, "videos" ) )
+      if ( !CGUIPassword::IsItemUnlocked( pItem, "video" ) )
         return;
 
 			if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )
