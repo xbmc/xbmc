@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 20-09-2004 fixed: [ 1026292 ] tags with blank album name would cause the display of wrong thumbnails
   - 19-09-2004 fixed: Artists/Genres with ' in their name were replaced with '' in the database views.
   - 19-09-2004 fixed: Loadfont crash when font did not exist.
   - 19-09-2004 fixed: SF bug 1030531: Crash when skin change after python is used.
