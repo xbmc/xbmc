@@ -79,7 +79,7 @@ protected:
 					void							RetrieveMusicInfo();
 					void							OnInfo(int iItem);
 					bool							FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumInfo& album);
-					void							ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strPath, bool bSaveDb, bool bRefresh);
+					void							ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strPath, bool bSaveDb, bool bSaveDirThumb, bool bRefresh);
 					void							ClearFileItems();
 					void							Update(const CStdString &strDirectory);
 					void							UpdateListControl();
