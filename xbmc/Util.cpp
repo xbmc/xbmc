@@ -2534,6 +2534,7 @@ void fast_memcpy(void* d, const void* s, unsigned n)
 		mov ecx,16
 		and eax,15
 		sub ecx,eax
+		and ecx,15
 		cmp edx,ecx
 		jb fmc_exit_main
 		sub edx,ecx
@@ -2603,5 +2604,86 @@ fmc_start_post:
 		jmp fmc_start_post
 
 fmc_exit_post:
+	}
+}
+
+void fast_memset(void* d, int c, unsigned n)
+{
+	char __declspec(align(16)) buf[16];
+
+	__asm {
+		mov edx,n
+		mov edi,d
+
+		// pre align
+		mov eax,edi
+		mov ecx,16
+		and eax,15
+		sub ecx,eax
+		and ecx,15
+		cmp edx,ecx
+		jb fms_exit_main
+		sub edx,ecx
+		mov eax,c
+
+		test ecx,ecx
+fms_start_pre:
+		jz fms_exit_pre
+
+		mov [edi],al
+
+		inc edi
+		dec ecx
+		jmp fms_start_pre
+
+fms_exit_pre:
+		test al,al
+		jz fms_initzero
+
+		// duplicate the value 16 times
+		lea esi,buf
+		mov [esi],al
+		mov [esi+1],al
+		mov [esi+2],al
+		mov [esi+3],al
+		mov eax,[esi]
+		mov [esi+4],eax
+		mov [esi+8],eax
+		mov [esi+12],eax
+		movaps xmm0,[esi]
+		jmp fms_init_loop
+
+fms_initzero:
+		// optimzed set zero
+		xorps xmm0,xmm0
+
+fms_init_loop:
+		mov ecx,edx
+		shr ecx,4
+
+fms_start_main:
+		jz fms_exit_main
+
+		movntps [edi],xmm0
+
+		add edi,16
+		dec ecx
+		jmp fms_start_main
+
+fms_exit_main:
+
+		// post align
+		mov ecx,edx
+		and ecx,15
+fms_start_post:
+		jz fms_exit_post
+
+		mov [edi],al
+
+		inc edi
+		dec ecx
+		jmp fms_start_post
+
+fms_exit_post:
 	}
 }

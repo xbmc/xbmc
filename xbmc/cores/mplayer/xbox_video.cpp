@@ -35,7 +35,9 @@
 #define SUBTITLE_TEXTURE_WIDTH  720
 #define SUBTITLE_TEXTURE_HEIGHT 120
 
-#define NUM_BUFFERS (3)
+#define OSD_TEXTURE_HEIGHT 100
+
+#define NUM_BUFFERS (2)
 
 struct DRAWRECT
 {
@@ -45,41 +47,55 @@ struct DRAWRECT
 	float bottom;
 };
 
-static RECT                    rd;                             //rect of our stretched image
-static RECT                    rs;                             //rect of our source image
-static unsigned int            image_width, image_height;      //image width and height
-static unsigned int            d_image_width, d_image_height;  //image width and height zoomed
-static unsigned int            image_format=0;                 //image format
-static unsigned int            primary_image_format;
-static float                   fSourceFrameRatio=0;            //frame aspect ratio of video
-static unsigned int            fs = 0;                         //display in window or fullscreen
-static bool                    m_bPauseDrawing=false;          // whether we have paused drawing or not
-static int                     iClearSubtitleRegion[2]={0};  // amount of subtitle region to clear
-static LPDIRECT3DTEXTURE8      m_pSubtitleTexture[2]={NULL};
-static unsigned char*          subtitleimage=NULL;             //image data
-static unsigned int            subtitlestride;                 //surface stride
-static int                     m_iBackBuffer=0;								// subtitles only
-static int                     m_bFlip=0;
-static bool                    m_bRenderGUI=false;
-static RESOLUTION              m_iResolution=PAL_4x3;
-static bool                    m_bFlipped;
-static float                   m_fps;
-static __int64                 m_lFrameCounter;
-static DRAWRECT								 m_SubRect;
+static RECT                   rd;                             //rect of our stretched image
+static RECT                   rs;                             //rect of our source image
+static unsigned int           image_width, image_height;      //image width and height
+static unsigned int           d_image_width, d_image_height;  //image width and height zoomed
+static unsigned int           image_format=0;                 //image format
+static unsigned int           primary_image_format;
+static float                  fSourceFrameRatio=0;            //frame aspect ratio of video
+static unsigned int           fs = 0;                         //display in window or fullscreen
+static bool                   m_bPauseDrawing=false;          // whether we have paused drawing or not
+static int                    iClearSubtitleRegion[2];				 // amount of subtitle region to clear
+static LPDIRECT3DTEXTURE8     m_pSubtitleYTexture[2];
+static LPDIRECT3DTEXTURE8     m_pSubtitleATexture[2];
+static unsigned char*         subtitleimage;                  //image data
+static unsigned char*         subtitlealpha;                  //alpha data
+static unsigned int           subtitlestride;                 //surface stride
+static int                    m_iBackBuffer=0;							 	 // subtitles only
+static int                    m_bFlip=0;
+static bool                   m_bRenderGUI=false;
+static RESOLUTION             m_iResolution=PAL_4x3;
+static bool                   m_bFlipped;
+static float                  m_fps;
+static __int64                m_lFrameCounter;
+static DRAWRECT								m_SubRect;
 
+static LPDIRECT3DTEXTURE8     m_pOSDYTexture[2];
+static LPDIRECT3DTEXTURE8     m_pOSDATexture[2];
+static float									m_OSDWidth;
+static float									m_OSDHeight;
+static DRAWRECT								m_OSDDRect;
+static int										m_iOSDBuffer;
 
 // YV12 decoder textures
-static D3DTexture               m_YTexture[NUM_BUFFERS];
-static D3DTexture               m_UTexture[NUM_BUFFERS];
-static D3DTexture               m_VTexture[NUM_BUFFERS];
-static void*                    m_TextureBuffer[NUM_BUFFERS];
-static DWORD                    m_hPixelShader = 0;
-static int                      ytexture_pitch;
-static int                      uvtexture_pitch;
-static int											ytexture_height; // aligned heights
-static int											uvtexture_height;
-static int                      m_iRenderBuffer;
-static int                      m_iDecodeBuffer;
+static D3DTexture             m_YTexture[NUM_BUFFERS];
+static D3DTexture             m_UTexture[NUM_BUFFERS];
+static D3DTexture             m_VTexture[NUM_BUFFERS];
+static D3DTexture             m_RGBTexture[NUM_BUFFERS];
+static void*                  m_YUVTextureBuffer[NUM_BUFFERS];
+static void*                  m_RGBTextureBuffer[NUM_BUFFERS];
+static DWORD                  m_hPixelShader = 0;
+static int                    ytexture_pitch;
+static int                    uvtexture_pitch;
+static int										ytexture_height; // aligned heights
+static int										uvtexture_height;
+static int                    rgbtexture_pitch;
+static int										rgbtexture_height; // aligned heights
+static int                    m_iYUVDecodeBuffer;
+static int                    m_iRGBRenderBuffer;
+static int                    m_iRGBDecodeBuffer;
+
 typedef struct directx_fourcc_caps
 {
 	char*             img_format_name;      //human readable name
@@ -93,27 +109,17 @@ typedef struct directx_fourcc_caps
 // 20-2-2004. 
 // Removed the VFCAP_TIMER. (VFCAP_TIMER means that the video output driver handles all timing which we dont)
 // this solves problems playing movies with no audio. With VFCAP_TIMER enabled they played much 2 fast
-#define DIRECT3D8CAPS VFCAP_CSP_SUPPORTED_BY_HW |VFCAP_CSP_SUPPORTED |VFCAP_OSD |VFCAP_HWSCALE_UP|VFCAP_HWSCALE_DOWN//|VFCAP_TIMER
+#define DIRECT3D8CAPS VFCAP_CSP_SUPPORTED_BY_HW |VFCAP_CSP_SUPPORTED |VFCAP_OSD |VFCAP_HWSCALE_UP|VFCAP_HWSCALE_DOWN
 static directx_fourcc_caps g_ddpf[] =
 {
-	{"YV12 ",IMGFMT_YV12 ,DIRECT3D8CAPS},
+	{ "YV12",  IMGFMT_YV12,  DIRECT3D8CAPS},
+//	{ "RGB32", IMGFMT_RGB32, DIRECT3D8CAPS},
+//	{ "BGR32", IMGFMT_BGR32, DIRECT3D8CAPS},
 };
 
-struct VIDVERTEX 
-{ 
-	D3DXVECTOR4 p;
-	FLOAT tu0, tv0;
-	FLOAT tu1, tv1;
-	FLOAT tu2, tv2;
-};
-static const DWORD FVF_VIDVERTEX = D3DFVF_XYZRHW|D3DFVF_TEX3;
-
-struct SUBVERTEX 
-{ 
-	D3DXVECTOR4 p;
-	FLOAT tu, tv;
-};
-static const DWORD FVF_SUBVERTEX = D3DFVF_XYZRHW|D3DFVF_TEX1;
+static const DWORD FVF_YV12VERTEX = D3DFVF_XYZRHW|D3DFVF_TEX3;
+static const DWORD FVF_RGBVERTEX  = D3DFVF_XYZRHW|D3DFVF_TEX1;
+static const DWORD FVF_Y8A8VERTEX = D3DFVF_XYZRHW|D3DFVF_TEX2;
 
 #define NUM_FORMATS (sizeof(g_ddpf) / sizeof(g_ddpf[0]))
 
@@ -201,7 +207,7 @@ void choose_best_resolution(float fps)
 				m_iResolution = HDTV_480p_4x3;
 		}
 		// Change our screen resolution
-		Sleep(1000);
+		//Sleep(1000);
 		g_graphicsContext.SetVideoResolution(m_iResolution);
 		return;
 	}
@@ -264,7 +270,7 @@ void choose_best_resolution(float fps)
 	}
 
 	// Finished - update our video resolution
-  Sleep(1000);
+  //Sleep(1000);
 	g_graphicsContext.SetVideoResolution(m_iResolution);
 }
 
@@ -275,23 +281,13 @@ void choose_best_resolution(float fps)
 //**********************************************************************************************
 static void ClearSubtitleRegion(int iTexture)
 {
-	//  OutputDebugString("Clearing subs\n");
-	for (int y=SUBTITLE_TEXTURE_HEIGHT-iClearSubtitleRegion[iTexture]; y < SUBTITLE_TEXTURE_HEIGHT; y++)
-	{
-		for (int x=0; x < (int)(subtitlestride); x+=2)
-		{
-			*(subtitleimage + subtitlestride*y+x   ) = 0x00;  // for black Y=0x10  U=0x80 V=0x80
-			*(subtitleimage + subtitlestride*y+x+1 ) = 0x01;
-		}
-	}
+	fast_memset(subtitlealpha + subtitlestride*(SUBTITLE_TEXTURE_HEIGHT-iClearSubtitleRegion[iTexture]), 0, iClearSubtitleRegion[iTexture]*subtitlestride);
 	iClearSubtitleRegion[iTexture] = 0;
 }
 
 //********************************************************************************************************
 void xbox_video_update_subtitle_position()
 {
-	SUBVERTEX* vertex=NULL;
-
 	float EnlargeFactor = 1.0f + (g_stSettings.m_iEnlargeSubtitlePercent / 100.0f);
 	float fSubtitleHeight = (float)g_settings.m_ResInfo[m_iResolution].iWidth/SUBTITLE_TEXTURE_WIDTH*SUBTITLE_TEXTURE_HEIGHT;
 	fSubtitleHeight *= EnlargeFactor;
@@ -308,81 +304,82 @@ void xbox_video_update_subtitle_position()
 //********************************************************************************************************
 static void Directx_CreateOverlay(unsigned int uiFormat)
 {
-	//  /*
-	//      D3DFMT_YUY2 format (PC98 compliance). 
-	//      Two pixels are stored in each YUY2 word. 
-	//      Each data value (Y0, U, Y1, V) is 8 bits. This format is identical to the UYVY format described 
-	//      except that the ordering of the bits is changed.
-	//
-	//      D3DFMT_UYVY 
-	//      UYVY format (PC98 compliance). Two pixels are stored in each UYVY word. 
-	//      Each data value (U, Y0, V, Y1) is 8 bits. The U and V specify the chrominance and are 
-	//      shared by both pixels. The Y0 and Y1 values specify the luminance of the respective pixels. 
-	//      The chrominance and luminance can be computed from RGB values using the following formulas: 
-	//      Y = 0.299 * R + 0.587 * G + 0.114 * B
-	//      U = -0.168736 * R + -0.331264 * G + 0.5 * B
-	//      V = 0.5 * R + -0.418688 * G + -0.081312 * B 
-	//  */
-
 	g_graphicsContext.Lock();
 
 	// Calculate texture pitches - must have a stride that is a multiple of 64 bytes
 	ytexture_pitch = (image_width + 63) & ~63;
 	uvtexture_pitch = (image_width/2 + 63) & ~63;
+	rgbtexture_pitch = (image_width*4 + 63) & ~63;
+
+	int yw = (image_width + 1) & ~1; // make sure it's even
+	int uvw = (image_width/2 + 1) & ~1; // make sure it's even
+	ytexture_height = (image_height + 1) & ~1; // make sure it's even
+	uvtexture_height = (image_height/2 + 1) & ~1; // make sure it's even
+	rgbtexture_height = ytexture_height;
 
 	for (int i = 0; i < NUM_BUFFERS; ++i)
 	{
-		int yw = (image_width + 1) & ~1; // make sure it's even
-		int uvw = (image_width/2 + 1) & ~1; // make sure it's even
-		ytexture_height = (image_height + 1) & ~1; // make sure it's even
-		uvtexture_height = (image_height/2 + 1) & ~1; // make sure it's even
+		// Create texture buffers
+		if (m_YUVTextureBuffer[i])
+			XPhysicalFree(m_YUVTextureBuffer[i]);
+		m_YUVTextureBuffer[i] = (BYTE*)XPhysicalAlloc(ytexture_pitch*ytexture_height + uvtexture_pitch*uvtexture_height*2, MAXULONG_PTR, 128, PAGE_READWRITE | PAGE_WRITECOMBINE);
 
-		// Create texture buffer
-		if (m_TextureBuffer[i])
-			XPhysicalFree(m_TextureBuffer[i]);
-		m_TextureBuffer[i] = (BYTE*)XPhysicalAlloc(ytexture_pitch*ytexture_height + uvtexture_pitch*uvtexture_height*2, MAXULONG_PTR, 128, PAGE_READWRITE | PAGE_WRITECOMBINE);
+		if (m_RGBTextureBuffer[i])
+			XPhysicalFree(m_RGBTextureBuffer[i]);
+		m_RGBTextureBuffer[i] = (BYTE*)XPhysicalAlloc(rgbtexture_pitch*rgbtexture_height, MAXULONG_PTR, 128, PAGE_READWRITE | PAGE_WRITECOMBINE);
 
 		// blank the textures (just in case)
-		memset(m_TextureBuffer[i], 0, ytexture_pitch*ytexture_height);
-		memset((char*)m_TextureBuffer[i] + ytexture_pitch*ytexture_height, 128, uvtexture_pitch*uvtexture_height*2);
+		fast_memset(m_YUVTextureBuffer[i], 0, ytexture_pitch*ytexture_height);
+		fast_memset((char*)m_YUVTextureBuffer[i] + ytexture_pitch*ytexture_height, 128, uvtexture_pitch*uvtexture_height*2);
+		fast_memset(m_RGBTextureBuffer[i], 0, rgbtexture_pitch*rgbtexture_height);
 
 		// setup textures as linear luminance only textures, the pixel shader handles translation to RGB
 		// YV12 is Y plane then V plane then U plane, U and V are half as wide and high
 		XGSetTextureHeader(yw, ytexture_height, 1, 0, D3DFMT_LIN_L8, 0, &m_YTexture[i], 0, ytexture_pitch);
 		XGSetTextureHeader(uvw, uvtexture_height, 1, 0, D3DFMT_LIN_L8, 0, &m_UTexture[i], ytexture_pitch*ytexture_height, uvtexture_pitch);
 		XGSetTextureHeader(uvw, uvtexture_height, 1, 0, D3DFMT_LIN_L8, 0, &m_VTexture[i], ytexture_pitch*ytexture_height+uvtexture_pitch*uvtexture_height, uvtexture_pitch);
-		m_YTexture[i].Register(m_TextureBuffer[i]);
-		m_UTexture[i].Register(m_TextureBuffer[i]);
-		m_VTexture[i].Register(m_TextureBuffer[i]);
+		XGSetTextureHeader(yw, rgbtexture_height, 1, 0, D3DFMT_LIN_X8R8G8B8, 0, &m_RGBTexture[i], 0, rgbtexture_pitch);
+		m_YTexture[i].Register(m_YUVTextureBuffer[i]);
+		m_UTexture[i].Register(m_YUVTextureBuffer[i]);
+		m_VTexture[i].Register(m_YUVTextureBuffer[i]);
+		m_RGBTexture[i].Register(m_RGBTextureBuffer[i]);
 	}
 
-	// Create subtitle textures
+	// Create subtitle and osd textures
 	for (int i = 0; i < 2; ++i)
 	{
-		if (m_pSubtitleTexture[i])  m_pSubtitleTexture[i]->Release();
-		g_graphicsContext.Get3DDevice()->CreateTexture( SUBTITLE_TEXTURE_WIDTH,
-																										SUBTITLE_TEXTURE_HEIGHT,
-																										1,
-																										0,
-																										D3DFMT_LIN_A8R8G8B8,
-																										0,
-																										&m_pSubtitleTexture[i] ) ;
+		if (m_pSubtitleYTexture[i])
+			m_pSubtitleYTexture[i]->Release();
+		g_graphicsContext.Get3DDevice()->CreateTexture( SUBTITLE_TEXTURE_WIDTH, SUBTITLE_TEXTURE_HEIGHT, 1, 0, D3DFMT_LIN_L8, 0, &m_pSubtitleYTexture[i]);
+		if (m_pSubtitleATexture[i])
+			m_pSubtitleATexture[i]->Release();
+		g_graphicsContext.Get3DDevice()->CreateTexture( SUBTITLE_TEXTURE_WIDTH, SUBTITLE_TEXTURE_HEIGHT, 1, 0, D3DFMT_LIN_A8, 0, &m_pSubtitleATexture[i]);
 
 		// Clear the subtitle region of this overlay
 		D3DLOCKED_RECT rectLocked;
-		if ( D3D_OK == m_pSubtitleTexture[i]->LockRect(0,&rectLocked,NULL,0L) )
-		{   
-			subtitleimage  =(unsigned char*)rectLocked.pBits;
-			subtitlestride = rectLocked.Pitch;
-			iClearSubtitleRegion[i] = SUBTITLE_TEXTURE_HEIGHT;
-			ClearSubtitleRegion(i);
-		}
-		m_pSubtitleTexture[i]->UnlockRect(0);
+		m_pSubtitleYTexture[i]->LockRect(0,&rectLocked,NULL,0L);
+		subtitleimage  =(unsigned char*)rectLocked.pBits;
+		subtitlestride = rectLocked.Pitch;
+		m_pSubtitleATexture[i]->LockRect(0,&rectLocked,NULL,0L);
+		subtitlealpha  =(unsigned char*)rectLocked.pBits;
+
+		iClearSubtitleRegion[i] = SUBTITLE_TEXTURE_HEIGHT;
+		ClearSubtitleRegion(i);
+
+		m_pSubtitleYTexture[i]->UnlockRect(0);
+		m_pSubtitleATexture[i]->UnlockRect(0);
+
+		if (m_pOSDYTexture[i])
+			m_pOSDYTexture[i]->Release();
+		g_graphicsContext.Get3DDevice()->CreateTexture(image_width, OSD_TEXTURE_HEIGHT, 1, 0, D3DFMT_LIN_L8, 0, &m_pOSDYTexture[i]);
+		if (m_pOSDATexture[i])
+			m_pOSDATexture[i]->Release();
+		g_graphicsContext.Get3DDevice()->CreateTexture(image_width, OSD_TEXTURE_HEIGHT, 1, 0, D3DFMT_LIN_A8, 0, &m_pOSDATexture[i]);
+
+		m_OSDWidth = m_OSDHeight = 0;
 	}
 
 	xbox_video_update_subtitle_position();
-
-	//g_graphicsContext.Get3DDevice()->EnableOverlay(TRUE);
 
 	g_graphicsContext.Unlock();
 }
@@ -564,27 +561,19 @@ unsigned int Directx_ManageDisplay()
 }
 
 //***********************************************************************************************************
-static void vo_draw_alpha_rgb32_shadow(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride)
+static void vo_draw_alpha_xbox(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta,int dststride)
 {
-  if (m_bPauseDrawing) return;
-	register int y;
-	for(y=0;y<h;y++)
-	{
-		register int x;
+  if (m_bPauseDrawing)
+		return;
 
-		for(x=0;x<w;x++)
-		{
-			if(srca[x])
-			{
-				dstbase[4*x+0]=((dstbase[4*x+0]*srca[x])>>8)+src[x];
-				dstbase[4*x+1]=((dstbase[4*x+1]*srca[x])>>8)+src[x];
-				dstbase[4*x+2]=((dstbase[4*x+2]*srca[x])>>8)+src[x];
-				dstbase[4*x+3]=0xff;
-			}
-		}
+	for(int y = 0; y < h; ++y)
+	{
+		fast_memcpy(dst, src, w);
+		fast_memcpy(dsta, srca, w);
 		src+=srcstride;
 		srca+=srcstride;
-		dstbase+=dststride;
+		dst+=dststride;
+		dsta+=dststride;
 	}
 }
 
@@ -594,33 +583,57 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
   if (m_bPauseDrawing) return;
 	// if we draw text on the bottom then it must b the subtitles
 	// if we're not in stretch mode try to put the subtitles below the video
-	if ( y0 > (int)(image_height/10)  )
+	if (y0 > int(image_height - image_height/5))
 	{
 		if (w > SUBTITLE_TEXTURE_WIDTH) w = SUBTITLE_TEXTURE_WIDTH;
 		if (h > SUBTITLE_TEXTURE_HEIGHT) h = SUBTITLE_TEXTURE_HEIGHT;
 		int xpos = (SUBTITLE_TEXTURE_WIDTH-w)/2;
 		//    OutputDebugString("Rendering Subs\n");
-		vo_draw_alpha_rgb32_shadow(w,h,src,srca,stride,((unsigned char *) subtitleimage) + subtitlestride*(SUBTITLE_TEXTURE_HEIGHT-h) + 4*xpos,subtitlestride);
-		//    vo_draw_alpha_rgb32(w,h,src,srca,stride,((unsigned char *) subtitleimage) + subtitlestride*(SUBTITLE_TEXTURE_HEIGHT-h) + 4*xpos,subtitlestride);
+		int start = subtitlestride*(SUBTITLE_TEXTURE_HEIGHT-h) + xpos;
+		vo_draw_alpha_xbox(w,h,src,srca,stride, subtitleimage + start, subtitlealpha + start, subtitlestride);
 		iClearSubtitleRegion[m_iBackBuffer] = h;
 		m_bRenderGUI=true;
 		return;
 	}
   
   // OSD is drawn after draw_slice / put_image
-  // this means that m_iDecodeBuffer already points to the next buffer
-  // so get previous buffer and draw OSD into it
-  int iBuffer=m_iDecodeBuffer-1;
-  if (iBuffer < 0) iBuffer=NUM_BUFFERS-1;
-  byte* image=(byte*)m_TextureBuffer[iBuffer];
-  DWORD dstride=ytexture_pitch;
-	vo_draw_alpha_yv12(w,h,src,srca,stride,((unsigned char *) image) + dstride*y0 + 2*x0,dstride);
+  // this means that the buffer has already been handed off to the RGB converter
+	// solution: have separate OSD textures
+
+	// clip to buffer
+	if (w > (int)image_width) w = image_width;
+	if (h > OSD_TEXTURE_HEIGHT) h = OSD_TEXTURE_HEIGHT;
+
+	// flip buffers and wait for gpu
+	m_iOSDBuffer = 1-m_iOSDBuffer;
+	while (m_pOSDYTexture[m_iOSDBuffer]->IsBusy()) Sleep(1);
+	while (m_pOSDYTexture[m_iOSDBuffer]->IsBusy()) Sleep(1);
+
+	// scale to fit screen
+	float xscale = float(rd.right - rd.left) / image_width;
+	float yscale = float(rd.bottom - rd.top) / image_height;
+	m_OSDDRect.left = rd.left + (float)x0 * xscale;
+	m_OSDDRect.top = rd.top + (float)y0 * yscale;
+	m_OSDDRect.right = rd.left + (float)(x0 + w) * xscale;
+	m_OSDDRect.bottom = rd.top + (float)(y0 + h) * yscale;
+
+	m_OSDWidth = (float)w;
+	m_OSDHeight = (float)h;
+
+	RECT rc = { 0, 0, w, h };
+
+	// draw textures
+	D3DLOCKED_RECT lr, lra;
+	m_pOSDYTexture[m_iOSDBuffer]->LockRect(0, &lr, &rc, 0);
+	m_pOSDATexture[m_iOSDBuffer]->LockRect(0, &lra, &rc, 0);
+	vo_draw_alpha_xbox(w,h,src,srca,stride, (BYTE*)lr.pBits, (BYTE*)lra.pBits, lr.Pitch);
+	m_pOSDYTexture[m_iOSDBuffer]->UnlockRect(0);
+	m_pOSDATexture[m_iOSDBuffer]->UnlockRect(0);
 }
 
 //********************************************************************************************************
 static void video_draw_osd(void)
 {
-  
   if (m_bPauseDrawing) return;
 	vo_draw_text(image_width, image_height, draw_alpha);
 }
@@ -643,17 +656,25 @@ static void video_uninit(void)
 {
 	OutputDebugString("video_uninit\n");  
 
-//	g_graphicsContext.Get3DDevice()->EnableOverlay(FALSE);
 	for (int i=0; i < NUM_BUFFERS; i++)
 	{
-		if (m_TextureBuffer[i]) XPhysicalFree(m_TextureBuffer[i]);
-		m_TextureBuffer[i] = NULL;
+		if (m_YUVTextureBuffer[i]) XPhysicalFree(m_YUVTextureBuffer[i]);
+		m_YUVTextureBuffer[i] = NULL;
+		if (m_RGBTextureBuffer[i]) XPhysicalFree(m_RGBTextureBuffer[i]);
+		m_RGBTextureBuffer[i] = NULL;
 	}
+	// subtitle and osd stuff
 	for (int i = 0; i < 2; ++i)
 	{
-		// subtitle stuff
-		if ( m_pSubtitleTexture[i]) m_pSubtitleTexture[i]->Release();
-		m_pSubtitleTexture[i]=NULL;
+		if (m_pSubtitleYTexture[i]) m_pSubtitleYTexture[i]->Release();
+		m_pSubtitleYTexture[i]=NULL;
+		if (m_pSubtitleATexture[i]) m_pSubtitleATexture[i]->Release();
+		m_pSubtitleATexture[i]=NULL;
+
+		if (m_pOSDYTexture[i]) m_pOSDYTexture[i]->Release();
+		m_pOSDYTexture[i]=NULL;
+		if (m_pOSDATexture[i]) m_pOSDATexture[i]->Release();
+		m_pOSDATexture[i]=NULL;
 	}
 	OutputDebugString("video_uninit done\n");
 }
@@ -669,9 +690,10 @@ static unsigned int video_preinit(const char *arg)
 	m_iResolution=PAL_4x3;
 	m_bPauseDrawing=false;
 	for (int i=0; i<NUM_BUFFERS; i++) iClearSubtitleRegion[i] = 0;
-	m_iBackBuffer=0;
-	m_iRenderBuffer = -1;
-  m_iDecodeBuffer = 0;
+	m_iBackBuffer = 0;
+//	m_iOSDBuffer = 0;
+	m_iRGBRenderBuffer = -1;
+	m_iRGBDecodeBuffer = m_iYUVDecodeBuffer = 0;
 	m_bFlip=0;
 	fs=1;
 
@@ -686,117 +708,30 @@ static unsigned int video_preinit(const char *arg)
 }
 
 //********************************************************************************************************
-static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,int h,int x,int y )
+
+static void YV12ToRGB()
 {
-  BYTE *s;
-  BYTE *d;
-  DWORD i=0;
-  int   iBottom=y+h;
-  int iOrgY=y;
-  int iOrgH=h;
+	if (!m_YUVTextureBuffer[m_iYUVDecodeBuffer]) return;
+	if (!m_RGBTextureBuffer[m_iRGBDecodeBuffer]) return;
 
-	while (m_YTexture[m_iDecodeBuffer].IsBusy()) Sleep(1);
-	while (m_UTexture[m_iDecodeBuffer].IsBusy()) Sleep(1);
-	while (m_VTexture[m_iDecodeBuffer].IsBusy()) Sleep(1);
+	while (m_RGBTexture[m_iRGBDecodeBuffer].IsBusy()) Sleep(1);
 
-  // copy Y
-  d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer]+ytexture_pitch*y+x;                
-  s=src[0];                           
-  for(i=0;i<(DWORD)h;i++){
-    fast_memcpy(d,s,w);                  
-    s+=stride[0];                  
-    d+=ytexture_pitch;
-  }
-    
-	w/=2;h/=2;x/=2;y/=2;
-	
-	// copy U
-  d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer] + ytexture_pitch*ytexture_height+ uvtexture_pitch*y+x;
-  s=src[1];
-  for(i=0;i<(DWORD)h;i++){
-    fast_memcpy(d,s,w);
-    s+=stride[1];
-    d+=uvtexture_pitch;
-  }
-	// copy V
-  d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer] + ytexture_pitch*ytexture_height + uvtexture_pitch*uvtexture_height+ uvtexture_pitch*y+x;
-  s=src[2];
-  for(i=0;i<(DWORD)h;i++){
-    fast_memcpy(d,s,w);
-    s+=stride[2];
-    d+=uvtexture_pitch;
-  }
+	g_graphicsContext.Lock();
 
-  if (iBottom+1>=(int)image_height)
-  {
-    ++m_iDecodeBuffer %= NUM_BUFFERS;
-    m_bFlip++;
-   // char szTmp[128];
-   // sprintf(szTmp,"%i slice%i->%i decodebuf:%i renderbuf:%i flip:%i\n", 
-   //     image_height,iOrgY,iOrgY+iOrgH,m_iDecodeBuffer ,m_iRenderBuffer, m_bFlip);
-   // OutputDebugString(szTmp);
-  }
+	LPDIRECT3DSURFACE8 pOldRT, pNewRT;
+	m_RGBTexture[m_iRGBDecodeBuffer].GetSurfaceLevel(0, &pNewRT);
+	g_graphicsContext.Get3DDevice()->GetRenderTarget(&pOldRT);
+	g_graphicsContext.Get3DDevice()->SetRenderTarget(pNewRT, NULL);
 
-  return 0;
-}
-
-//********************************************************************************************************
-void xbox_video_render_subtitles(bool bUseBackBuffer)
-{
-	int iTexture = bUseBackBuffer ? m_iBackBuffer : 1-m_iBackBuffer;
-  
-	if (!m_pSubtitleTexture[iTexture])
-		return;
-
-	//  OutputDebugString("Rendering subs to screen\n");
-	// Set state to render the image
-	g_graphicsContext.Get3DDevice()->SetTexture( 0, m_pSubtitleTexture[iTexture]);
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_MODULATE );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_COLOROP,   D3DTOP_DISABLE );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSU,  D3DTADDRESS_CLAMP );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSV,  D3DTADDRESS_CLAMP );
-
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ZENABLE,      FALSE );
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGENABLE,    FALSE );
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FILLMODE,     D3DFILL_SOLID );
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_CULLMODE,     D3DCULL_CCW );
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA );
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-	g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_SUBVERTEX );
-	// Render the image
-	g_graphicsContext.Get3DDevice()->Begin(D3DPT_QUADLIST);
-  g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, 0.0f, 0.0f );
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_SubRect.left, m_SubRect.top, 0, 0 );
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, SUBTITLE_TEXTURE_WIDTH, 0.0f );
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_SubRect.right, m_SubRect.top, 0, 0 );
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, SUBTITLE_TEXTURE_WIDTH, SUBTITLE_TEXTURE_HEIGHT );
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_SubRect.right, m_SubRect.bottom, 0, 0 );
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, 0.0f, SUBTITLE_TEXTURE_HEIGHT );
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_SubRect.left, m_SubRect.bottom, 0, 0 );
-	g_graphicsContext.Get3DDevice()->End();
-}
-//********************************************************************************************************
-void RenderVideo()
-{
-  if (m_iRenderBuffer<0 || m_iRenderBuffer >= NUM_BUFFERS) return;
-	if (!m_TextureBuffer[m_iRenderBuffer]) return;
-  g_graphicsContext.Get3DDevice()->SetTexture( 0, &m_YTexture[m_iRenderBuffer]);
-	g_graphicsContext.Get3DDevice()->SetTexture( 1, &m_UTexture[m_iRenderBuffer]);
-	g_graphicsContext.Get3DDevice()->SetTexture( 2, &m_VTexture[m_iRenderBuffer]);
+	g_graphicsContext.Get3DDevice()->SetTexture( 0, &m_YTexture[m_iYUVDecodeBuffer]);
+	g_graphicsContext.Get3DDevice()->SetTexture( 1, &m_UTexture[m_iYUVDecodeBuffer]);
+	g_graphicsContext.Get3DDevice()->SetTexture( 2, &m_VTexture[m_iYUVDecodeBuffer]);
 	for (int i = 0; i < 3; ++i)
 	{
 		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_ADDRESSU,  D3DTADDRESS_CLAMP );
 		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_ADDRESSV,  D3DTADDRESS_CLAMP );
-		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_MAGFILTER,  g_stSettings.m_minFilter );
-		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_MINFILTER,  g_stSettings.m_maxFilter );
+		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_MAGFILTER,  D3DTEXF_POINT );
+		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_MINFILTER,  D3DTEXF_POINT );
 	}
 	g_graphicsContext.Get3DDevice()->SetPixelShader(m_hPixelShader);
 
@@ -808,83 +743,302 @@ void RenderVideo()
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_ONE );
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_ZERO );
-	g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_VIDVERTEX );
+	g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_YV12VERTEX );
 	// Render the image
 	g_graphicsContext.Get3DDevice()->Begin(D3DPT_QUADLIST);
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left, (float)rs.top );
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.left*0.5f, (float)rs.top*0.5f );
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.left*0.5f, (float)rs.top*0.5f );
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.left, (float)rd.top, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, 0, 0, 0, 0 );
 
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)rs.top );
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.right*0.5f, (float)rs.top*0.5f );
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.right*0.5f, (float)rs.top*0.5f );
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.right, (float)rd.top, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)image_width, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)image_width*0.5f, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)image_width*0.5f, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)image_width, 0, 0, 0 );
 
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)rs.bottom );
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.right*0.5f, (float)rs.bottom*0.5f );
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.right*0.5f, (float)rs.bottom*0.5f );
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.right, (float)rd.bottom, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)image_width, (float)image_height );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)image_width*0.5f, (float)image_height*0.5f );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)image_width*0.5f, (float)image_height*0.5f );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)image_width, (float)image_height, 0, 0 );
 
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left, (float)rs.bottom );
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.left*0.5f, (float)rs.bottom*0.5f );
-	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.left*0.5f, (float)rs.bottom*0.5f );
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.left, (float)rd.bottom, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, 0, (float)image_height );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, 0, (float)image_height*0.5f );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, 0, (float)image_height*0.5f );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, 0, (float)image_height, 0, 0 );
 	g_graphicsContext.Get3DDevice()->End();
 
 	g_graphicsContext.Get3DDevice()->SetPixelShader(NULL);
+	g_graphicsContext.Get3DDevice()->SetTexture(0, NULL);
+	g_graphicsContext.Get3DDevice()->SetTexture(1, NULL);
+	g_graphicsContext.Get3DDevice()->SetTexture(2, NULL);
+	g_graphicsContext.Get3DDevice()->SetRenderTarget(pOldRT, NULL);
+	pOldRT->Release();
+	pNewRT->Release();
+
+	++m_iRGBDecodeBuffer %= NUM_BUFFERS;
+
+	g_graphicsContext.Unlock();
+}
+
+static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,int h,int x,int y )
+{
+  BYTE *s;
+  BYTE *d;
+  DWORD i=0;
+  int   iBottom=y+h;
+  int iOrgY=y;
+  int iOrgH=h;
+
+	while (m_YTexture[m_iYUVDecodeBuffer].IsBusy()) Sleep(1);
+	while (m_UTexture[m_iYUVDecodeBuffer].IsBusy()) Sleep(1);
+	while (m_VTexture[m_iYUVDecodeBuffer].IsBusy()) Sleep(1);
+
+  // copy Y
+  d=(BYTE*)m_YUVTextureBuffer[m_iYUVDecodeBuffer]+ytexture_pitch*y+x;                
+  s=src[0];                           
+  for(i=0;i<(DWORD)h;i++){
+    fast_memcpy(d,s,w);                  
+    s+=stride[0];                  
+    d+=ytexture_pitch;
+  }
+    
+	w/=2;h/=2;x/=2;y/=2;
+	
+	// copy U
+  d=(BYTE*)m_YUVTextureBuffer[m_iYUVDecodeBuffer] + ytexture_pitch*ytexture_height+ uvtexture_pitch*y+x;
+  s=src[1];
+  for(i=0;i<(DWORD)h;i++){
+    fast_memcpy(d,s,w);
+    s+=stride[1];
+    d+=uvtexture_pitch;
+  }
+	// copy V
+  d=(BYTE*)m_YUVTextureBuffer[m_iYUVDecodeBuffer] + ytexture_pitch*ytexture_height + uvtexture_pitch*uvtexture_height+ uvtexture_pitch*y+x;
+  s=src[2];
+  for(i=0;i<(DWORD)h;i++){
+    fast_memcpy(d,s,w);
+    s+=stride[2];
+    d+=uvtexture_pitch;
+  }
+
+  if (iBottom+1>=(int)image_height)
+  {
+		// frame finished, send buffer off for RGB conversion
+		YV12ToRGB();
+    ++m_iYUVDecodeBuffer %= NUM_BUFFERS;
+    m_bFlip++;
+  }
+
+  return 0;
+}
+
+//********************************************************************************************************
+
+/* In mplayer's alpha planes, 0 is transparent, then 1 is nearly
+opaque upto 255 which is transparent */
+// means do alphakill + an inverse alphablend
+
+void Setup_Y8A8Render()
+{
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_SELECTARG1 );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1 );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_COLOROP,   D3DTOP_SELECTARG1 );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_COLORARG1, D3DTA_CURRENT );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1 );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAKILL, D3DTALPHAKILL_ENABLE );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 2, D3DTSS_COLOROP,   D3DTOP_DISABLE );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 2, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSU,  D3DTADDRESS_CLAMP );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSV,  D3DTADDRESS_CLAMP );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ADDRESSU,  D3DTADDRESS_CLAMP );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ADDRESSV,  D3DTADDRESS_CLAMP );
+
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MAGFILTER,  g_stSettings.m_minFilter );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MINFILTER,  g_stSettings.m_maxFilter );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_MAGFILTER,  g_stSettings.m_minFilter );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_MINFILTER,  g_stSettings.m_maxFilter );
+
+
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ZENABLE,      FALSE );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGENABLE,    FALSE );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FILLMODE,     D3DFILL_SOLID );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_CULLMODE,     D3DCULL_CCW );
+	g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_Y8A8VERTEX );
+}
+
+void xbox_video_render_subtitles()
+{
+	int iTexture = 1-m_iBackBuffer;
+  
+	if (!m_pSubtitleYTexture[iTexture] || !m_pSubtitleATexture[iTexture])
+		return;
+
+	// Set state to render the image
+	g_graphicsContext.Get3DDevice()->SetTexture(0, m_pSubtitleYTexture[iTexture]);
+	g_graphicsContext.Get3DDevice()->SetTexture(1, m_pSubtitleATexture[iTexture]);
+	Setup_Y8A8Render();
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_INVSRCALPHA );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_SRCALPHA );
+
+	// Render the image
+	g_graphicsContext.Get3DDevice()->Begin(D3DPT_QUADLIST);
+  g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, 0.0f, 0.0f );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, 0.0f, 0.0f );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_SubRect.left, m_SubRect.top, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, SUBTITLE_TEXTURE_WIDTH, 0.0f );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, SUBTITLE_TEXTURE_WIDTH, 0.0f );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_SubRect.right, m_SubRect.top, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, SUBTITLE_TEXTURE_WIDTH, SUBTITLE_TEXTURE_HEIGHT );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, SUBTITLE_TEXTURE_WIDTH, SUBTITLE_TEXTURE_HEIGHT );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_SubRect.right, m_SubRect.bottom, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, 0.0f, SUBTITLE_TEXTURE_HEIGHT );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, 0.0f, SUBTITLE_TEXTURE_HEIGHT );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_SubRect.left, m_SubRect.bottom, 0, 0 );
+	g_graphicsContext.Get3DDevice()->End();
+
+	g_graphicsContext.Get3DDevice()->SetTexture(0, NULL);
+	g_graphicsContext.Get3DDevice()->SetTexture(1, NULL);
+
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAKILL, D3DTALPHAKILL_DISABLE );
+}
+//********************************************************************************************************
+
+void xbox_video_render_osd()
+{
+	if (!m_pOSDYTexture[m_iOSDBuffer] || !m_pOSDATexture[m_iOSDBuffer])
+		return;
+	if (!m_OSDWidth || !m_OSDHeight)
+		return;
+
+	// Set state to render the image
+	g_graphicsContext.Get3DDevice()->SetTexture(0, m_pOSDYTexture[m_iOSDBuffer]);
+	g_graphicsContext.Get3DDevice()->SetTexture(1, m_pOSDATexture[m_iOSDBuffer]);
+	Setup_Y8A8Render();
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_ONE );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+
+	// Render the image
+	g_graphicsContext.Get3DDevice()->Begin(D3DPT_QUADLIST);
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_OSDDRect.left, m_OSDDRect.top, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, m_OSDWidth, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, m_OSDWidth, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_OSDDRect.right, m_OSDDRect.top, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, m_OSDWidth, m_OSDHeight );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, m_OSDWidth, m_OSDHeight );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_OSDDRect.right, m_OSDDRect.bottom, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, 0, m_OSDHeight );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, 0, m_OSDHeight );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_OSDDRect.left, m_OSDDRect.bottom, 0, 0 );
+	g_graphicsContext.Get3DDevice()->End();
+
+	g_graphicsContext.Get3DDevice()->SetTexture(0, NULL);
+	g_graphicsContext.Get3DDevice()->SetTexture(1, NULL);
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAKILL, D3DTALPHAKILL_DISABLE );
+
+	m_OSDWidth = m_OSDHeight = 0;
+}
+
+void xbox_video_render()
+{
+  if (m_iRGBRenderBuffer<0 || m_iRGBRenderBuffer >= NUM_BUFFERS) return;
+	if (!m_RGBTextureBuffer[m_iRGBRenderBuffer]) return;
+  g_graphicsContext.Get3DDevice()->SetTexture( 0, &m_RGBTexture[m_iRGBRenderBuffer]);
+
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_SELECTARG1 );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1 );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_COLOROP,   D3DTOP_DISABLE );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSU,  D3DTADDRESS_CLAMP );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSV,  D3DTADDRESS_CLAMP );
+
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MAGFILTER,  g_stSettings.m_minFilter );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MINFILTER,  g_stSettings.m_maxFilter );
+
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ZENABLE,      FALSE );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGENABLE,    FALSE );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FILLMODE,     D3DFILL_SOLID );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_CULLMODE,     D3DCULL_CCW );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_ONE );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_ZERO );
+	g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_RGBVERTEX );
+	// Render the image
+	g_graphicsContext.Get3DDevice()->Begin(D3DPT_QUADLIST);
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left, (float)rs.top );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.left, (float)rd.top, 0, 0 );
+
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)rs.top );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.right, (float)rd.top, 0, 0 );
+
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)rs.bottom );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.right, (float)rd.bottom, 0, 0 );
+
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left, (float)rs.bottom );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.left, (float)rd.bottom, 0, 0 );
+	g_graphicsContext.Get3DDevice()->End();
+
 	g_graphicsContext.Get3DDevice()->SetTexture( 0, NULL);
-	g_graphicsContext.Get3DDevice()->SetTexture( 1, NULL);
-	g_graphicsContext.Get3DDevice()->SetTexture( 2, NULL);
+
+	xbox_video_render_osd();
 }
 //************************************************************************************
 static void video_flip_page(void)
 {
   if (m_bPauseDrawing) return;
   
-	int nextbuf = (m_iRenderBuffer+1) % NUM_BUFFERS;
-	if (m_bFlip<=0 || nextbuf == m_iDecodeBuffer)
+	int nextbuf = (m_iRGBRenderBuffer+1) % NUM_BUFFERS;
+	if (m_bFlip<=0)
   {
     return;
   }
 	m_bFlip--;
-  m_iRenderBuffer = nextbuf;
-	m_pSubtitleTexture[m_iBackBuffer]->UnlockRect(0);
+  m_iRGBRenderBuffer = nextbuf;
+	m_pSubtitleYTexture[m_iBackBuffer]->UnlockRect(0);
+	m_pSubtitleATexture[m_iBackBuffer]->UnlockRect(0);
+	m_iBackBuffer = 1-m_iBackBuffer;
   
-
 	Directx_ManageDisplay();
+
+	g_graphicsContext.Lock();
 	if (g_graphicsContext.IsFullScreenVideo())
 	{
 		if (g_application.NeedRenderFullScreen())
 			m_bRenderGUI = true;
 
-		g_graphicsContext.Lock();
-		g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
+		g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET, 0, 1.0f, 0);
 
 		// render first so the subtitle overlay works
-		RenderVideo();
+		xbox_video_render();
 
 		if (m_bRenderGUI)
 		{
 			// update our subtitle position
 			xbox_video_update_subtitle_position();
-			xbox_video_render_subtitles(true);
+			xbox_video_render_subtitles();
 			g_application.RenderFullScreen();
 		}
 
 	  //g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      
 		g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
-		g_graphicsContext.Unlock();
 		m_bRenderGUI=false;
 	}
-	m_iBackBuffer = 1-m_iBackBuffer;
-	g_graphicsContext.Lock();
-	D3DLOCKED_RECT rectLocked2;
-	if ( D3D_OK == m_pSubtitleTexture[m_iBackBuffer]->LockRect(0,&rectLocked2,NULL,0L))
-	{
-		subtitlestride=rectLocked2.Pitch;
-		subtitleimage  =(unsigned char*)rectLocked2.pBits;
-	}
+	D3DLOCKED_RECT rectLocked;
+	m_pSubtitleYTexture[m_iBackBuffer]->LockRect(0,&rectLocked,NULL,0L);
+	subtitlestride=rectLocked.Pitch;
+	subtitleimage  =(unsigned char*)rectLocked.pBits;
+	m_pSubtitleATexture[m_iBackBuffer]->LockRect(0,&rectLocked,NULL,0L);
+	subtitlealpha  =(unsigned char*)rectLocked.pBits;
 
 	if (iClearSubtitleRegion[m_iBackBuffer])
 	{
@@ -895,7 +1049,6 @@ static void video_flip_page(void)
 
 	m_bFlipped=true;
 /*
-#if 0
 	// when movie is running,
 	// check the FPS again after 50 frames
 	// after 50 frames mplayer has determined the REAL fps instead of just the one mentioned in the header
@@ -914,7 +1067,6 @@ static void video_flip_page(void)
 			choose_best_resolution(fps);
 		}
 	}
-#endif
 */
 }
 
@@ -923,9 +1075,9 @@ void xbox_video_wait()
 {
 	int iTmp=0;
 	m_bFlipped=false;
-	while (!m_bFlipped && iTmp < 300)
+	while (!m_bFlipped && iTmp < 3000)
 	{
-		Sleep(10);
+		Sleep(1);
 		iTmp++;
 	}
 }
@@ -956,16 +1108,16 @@ void xbox_video_getAR(float& fAR)
 //********************************************************************************************************
 void xbox_video_render_update()
 {
-  if (m_iRenderBuffer < 0 || m_iRenderBuffer >=NUM_BUFFERS) return;
+  if (m_iRGBRenderBuffer < 0 || m_iRGBRenderBuffer >=NUM_BUFFERS) return;
   bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
-	if (m_TextureBuffer[m_iRenderBuffer])
+	if (m_RGBTextureBuffer[m_iRGBRenderBuffer])
 	{
 		g_graphicsContext.Lock();
-		RenderVideo();
+		xbox_video_render();
     if ( bFullScreen )
     {
 		  xbox_video_update_subtitle_position();
-		  xbox_video_render_subtitles(false);
+		  xbox_video_render_subtitles();
     }
 
 		g_graphicsContext.Unlock();
@@ -1014,53 +1166,49 @@ static unsigned int put_image(mp_image_t *mpi)
   DWORD w = mpi->w;
   DWORD h = mpi->h;
 
-	while (m_YTexture[m_iDecodeBuffer].IsBusy()) Sleep(1);
-	while (m_UTexture[m_iDecodeBuffer].IsBusy()) Sleep(1);
-	while (m_VTexture[m_iDecodeBuffer].IsBusy()) Sleep(1);
+	while (m_YTexture[m_iYUVDecodeBuffer].IsBusy()) Sleep(1);
+	while (m_UTexture[m_iYUVDecodeBuffer].IsBusy()) Sleep(1);
+	while (m_VTexture[m_iYUVDecodeBuffer].IsBusy()) Sleep(1);
 
 	if (mpi->flags&MP_IMGFLAG_PLANAR)
 	{
-    //if(image_format!=IMGFMT_YVU9) video_draw_slice( mpi->planes,(int*)&mpi->stride[0],mpi->w,mpi->h,0,0);
-    //else
+    // copy Y
+    byte* image=(byte*)m_YUVTextureBuffer[m_iYUVDecodeBuffer];
+    DWORD dstride=ytexture_pitch;
+    d=image+dstride*y+x;
+    s=mpi->planes[0];
+    for(i=0;i<h;i++)
     {
-      // copy Y
-      byte* image=(byte*)m_TextureBuffer[m_iDecodeBuffer];
-      DWORD dstride=ytexture_pitch;
-      d=image+dstride*y+x;
-      s=mpi->planes[0];
-      for(i=0;i<h;i++)
-      {
-        fast_memcpy(d,s,w);
-        s+=mpi->stride[0];
-        d+=dstride;
-      }
-      //w/=4;h/=4;x/=4;y/=4;
-      w/=2;
-      h/=2;
-      x/=2;
-      y/=2;
-      
-      // copy V
-      //d=image+dstride*image_height + dstride*y/4+x;
-      dstride=uvtexture_pitch;
-      d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer] + ytexture_pitch*ytexture_height + dstride*y+x;
-      s=mpi->planes[1];
-      for(i=0;i<h;i++){
-        fast_memcpy(d,s,w);
-        s+=mpi->stride[1];
-        d+=dstride;
-      }
+      fast_memcpy(d,s,w);
+      s+=mpi->stride[0];
+      d+=dstride;
+    }
+    //w/=4;h/=4;x/=4;y/=4;
+    w/=2;
+    h/=2;
+    x/=2;
+    y/=2;
+    
+    // copy V
+    //d=image+dstride*image_height + dstride*y/4+x;
+    dstride=uvtexture_pitch;
+    d=(BYTE*)m_YUVTextureBuffer[m_iYUVDecodeBuffer] + ytexture_pitch*ytexture_height + dstride*y+x;
+    s=mpi->planes[1];
+    for(i=0;i<h;i++){
+      fast_memcpy(d,s,w);
+      s+=mpi->stride[1];
+      d+=dstride;
+    }
 
 
-      // copy U
-      //d=image+dstride*image_height + dstride*image_height/16 + dstride/4*y+x;
-      d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer] + ytexture_pitch*ytexture_height + uvtexture_pitch*uvtexture_height + dstride*y+x;
-      s=mpi->planes[2];
-      for(i=0;i<h;i++){
-        fast_memcpy(d,s,w);
-        s+=mpi->stride[2];
-        d+=dstride;
-      }
+    // copy U
+    //d=image+dstride*image_height + dstride*image_height/16 + dstride/4*y+x;
+    d=(BYTE*)m_YUVTextureBuffer[m_iYUVDecodeBuffer] + ytexture_pitch*ytexture_height + uvtexture_pitch*uvtexture_height + dstride*y+x;
+    s=mpi->planes[2];
+    for(i=0;i<h;i++){
+      fast_memcpy(d,s,w);
+      s+=mpi->stride[2];
+      d+=dstride;
     }
 	}
 	else
@@ -1068,12 +1216,11 @@ static unsigned int put_image(mp_image_t *mpi)
 		return VO_FALSE; // no packed support
 	}
 
-  ++m_iDecodeBuffer %= NUM_BUFFERS;
-  m_bFlip++;
+	// frame finished, send buffer off for RGB conversion
+	YV12ToRGB();
+	++m_iYUVDecodeBuffer %= NUM_BUFFERS;
+	m_bFlip++;
 
-  //char szTmp[128];
-  //sprintf(szTmp,"putimage decodebuf:%i renderbuf:%i flip:%i\n", m_iDecodeBuffer ,m_iRenderBuffer, m_bFlip);
-  //OutputDebugString(szTmp);
 	return VO_TRUE;
 }
 
