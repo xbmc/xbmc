@@ -500,11 +500,7 @@ void CGUISpinControl::Render()
 		}
     }
 
-
-
 }
-
-
 
 void CGUISpinControl::SetRange(int iStart, int iEnd)
 {
