@@ -419,24 +419,7 @@ void CApplication::OnKey(CKey& key)
 	CAction action;
 	// get the current window to send to
 	int iWin = m_gWindowManager.GetActiveWindow();
-  if (iWin==WINDOW_FULLSCREEN_VIDEO)
-  {
-    if (m_guiWindowFullScreen.OSDVisible() )
-    {
-      if (key.GetButtonCode()==KEY_BUTTON_BLACK)
-        action.wID=ACTION_SHOW_OSD;
-	    else 
-        g_buttonTranslator.GetAction(WINDOW_HOME, key, action);
-    }
-    else
-    {
-	    g_buttonTranslator.GetAction(iWin, key, action);
-    }
-  }
-  else
-  {
-    g_buttonTranslator.GetAction(iWin, key, action);
-  }
+  g_buttonTranslator.GetAction(iWin, key, action);
 	// now translate our key into an action id (Transfer into button translator!!)
 
 	if ( IsPlayingVideo() )
@@ -466,31 +449,30 @@ void CApplication::OnKey(CKey& key)
 	m_gWindowManager.OnAction(action);
 
 	/* handle extra global presses */
-  if (action.wID == ACTION_STOP)
-	{
-    if ( IsPlayingAudio() && !IsPlayingVideo())
-    {
-      m_pPlayer->closefile();
-    }
-		CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
-		m_gWindowManager.SendThreadMessage( msg );
-	}  
-	if (action.wID == ACTION_PAUSE)
-	{
-		if (m_pPlayer) m_pPlayer->Pause();
-	}
-	if (action.wID == ACTION_STOP)
-	{
-		if (m_pPlayer) m_pPlayer->closefile();
-	}
-	if (action.wID == ACTION_PREV_ITEM)
-	{
-		g_playlistPlayer.PlayPrevious();
-	}
-	if (action.wID == ACTION_NEXT_ITEM)
-	{
-		g_playlistPlayer.PlayNext();
-	}
+  if (iWin != WINDOW_FULLSCREEN_VIDEO)
+  {
+    if (action.wID == ACTION_STOP)
+	  {
+      if ( IsPlayingAudio() && !IsPlayingVideo())
+      {
+        m_pPlayer->closefile();
+      }
+		  CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
+		  m_gWindowManager.SendThreadMessage( msg );
+	  }  
+	  if (action.wID == ACTION_PAUSE)
+	  {
+		  if (m_pPlayer) m_pPlayer->Pause();
+	  }
+	  if (action.wID == ACTION_PREV_ITEM)
+	  {
+		  g_playlistPlayer.PlayPrevious();
+	  }
+	  if (action.wID == ACTION_NEXT_ITEM)
+	  {
+		  g_playlistPlayer.PlayNext();
+	  }
+  }
 }
 
 void CApplication::FrameMove()
