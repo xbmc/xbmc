@@ -1,5 +1,6 @@
 #include "PlayListPlayer.h"
 #include "application.h"
+#include "util.h"
 
 using namespace PLAYLIST;
 
@@ -17,13 +18,21 @@ CPlayListPlayer::~CPlayListPlayer(void)
 	Clear();
 }
 
-void CPlayListPlayer::PlayNext()
+void CPlayListPlayer::PlayNext(bool bAutoPlay)
 {
 	if (size() <= 0) return;
 	m_iCurrentSong++;
 	if (m_iCurrentSong >= size() )
 		m_iCurrentSong=0;
 
+	if (bAutoPlay)
+	{
+		CPlayListItem& item = m_vecItems[m_iCurrentSong];
+		if ( CUtil::IsShoutCast(item.GetFileName()) )
+		{
+			return;
+		}
+	}
 	Play(m_iCurrentSong);
 }
 

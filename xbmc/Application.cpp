@@ -828,7 +828,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 			m_dwIdleTime=timeGetTime();
 			if (m_pPlayer) 
 			{
-				g_playlistPlayer.PlayNext();
+				g_playlistPlayer.PlayNext(true);
 			}
 		}
 		break;
