@@ -1,7 +1,7 @@
 /*!
-	\file GUIConsoleControl.h
-	\brief 
-	*/
+\file GUIConsoleControl.h
+\brief 
+*/
 
 #ifndef GUILIB_GUIConsoleControl_H
 #define GUILIB_GUIConsoleControl_H
@@ -11,61 +11,61 @@
 #include "GUIControl.h"
 
 /*!
-	\ingroup controls
-	\brief 
-	*/
+ \ingroup controls
+ \brief 
+ */
 class CGUIConsoleControl : public CGUIControl
 {
 public:
 
-	CGUIConsoleControl(DWORD dwParentID, DWORD dwControlId,
-		int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, 
-		const CStdString& strFontName,
-		D3DCOLOR dwPenColor1, D3DCOLOR dwPenColor2, D3DCOLOR dwPenColor3, D3DCOLOR dwPenColor4);
+  CGUIConsoleControl(DWORD dwParentID, DWORD dwControlId,
+                     int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
+                     const CStdString& strFontName,
+                     D3DCOLOR dwPenColor1, D3DCOLOR dwPenColor2, D3DCOLOR dwPenColor3, D3DCOLOR dwPenColor4);
 
-	virtual ~CGUIConsoleControl(void);
-  
-	virtual void Render();
-	virtual void OnAction(const CAction &action);
+  virtual ~CGUIConsoleControl(void);
 
-	virtual void PreAllocResources();
-	virtual void AllocResources();
-	virtual void FreeResources();
+  virtual void Render();
+  virtual void OnAction(const CAction &action);
 
-	DWORD	GetPenColor(INT nPaletteIndex)
-	{
-		return nPaletteIndex<(INT)m_palette.size() ? m_palette[nPaletteIndex] : 0xFF808080;
-	};
+  virtual void PreAllocResources();
+  virtual void AllocResources();
+  virtual void FreeResources();
 
-	LPCSTR	GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
+  DWORD GetPenColor(INT nPaletteIndex)
+  {
+    return nPaletteIndex < (INT)m_palette.size() ? m_palette[nPaletteIndex] : 0xFF808080;
+  };
 
-	void	Clear();
-	void	Write(CStdString& aString, INT nPaletteIndex = 0);
+  LPCSTR GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
 
-protected:
-
-	void	AddLine(CStdString& aString, DWORD aColour);
-	void	WriteString(CStdString& aString, DWORD aColour);
+  void Clear();
+  void Write(CStdString& aString, INT nPaletteIndex = 0);
 
 protected:
 
-	struct Line
-	{
-		CStdString text;
-		DWORD colour;
-	};
+  void AddLine(CStdString& aString, DWORD aColour);
+  void WriteString(CStdString& aString, DWORD aColour);
 
-	typedef vector<Line> LINEVECTOR;
-	LINEVECTOR		m_lines;
+protected:
 
-	typedef vector<D3DCOLOR> PALETTE;
-	PALETTE			m_palette;
+  struct Line
+  {
+    CStdString text;
+    DWORD colour;
+  };
 
-	INT				m_nMaxLines;
-	DWORD			m_dwLineCounter;
-	DWORD			m_dwFrameCounter;
+  typedef vector<Line> LINEVECTOR;
+  LINEVECTOR m_lines;
 
-	FLOAT			m_fFontHeight;
-	CGUIFont*		m_pFont;
+  typedef vector<D3DCOLOR> PALETTE;
+  PALETTE m_palette;
+
+  INT m_nMaxLines;
+  DWORD m_dwLineCounter;
+  DWORD m_dwFrameCounter;
+
+  FLOAT m_fFontHeight;
+  CGUIFont* m_pFont;
 };
 #endif

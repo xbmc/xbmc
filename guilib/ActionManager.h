@@ -1,30 +1,30 @@
 /*!
-	\file ActionManager.h
-	\brief 
-	*/
+\file ActionManager.h
+\brief 
+*/
 
 #pragma once
 #include "GUIMessage.h"
 #include "IMsgSenderCallback.h"
 
 /*!
-	\ingroup actionkeys
-	\brief 
-	*/
+ \ingroup actionkeys
+ \brief 
+ */
 class CActionManager
 {
 public:
   CActionManager(void);
   virtual ~CActionManager(void);
-  void		CallScriptAction(CGUIMessage& message);
-  void		SetScriptActionCallback(IMsgSenderCallback* pCallback);
+  void CallScriptAction(CGUIMessage& message);
+  void SetScriptActionCallback(IMsgSenderCallback* pCallback);
 
 protected:
-  IMsgSenderCallback*     m_pScriptActionCallback;
+  IMsgSenderCallback* m_pScriptActionCallback;
 };
 
 /*!
-	\ingroup actionkeys
-	\brief 
-	*/
+ \ingroup actionkeys
+ \brief 
+ */
 extern CActionManager g_actionManager;
