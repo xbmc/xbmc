@@ -3355,13 +3355,15 @@ CStdString CUtil::MakeLegalFileName(const char* strFile, bool bKeepExtension, bo
 
 void CUtil::AddDirectorySeperator(CStdString& strPath)
 {
-  if (IsSmb(strPath)) strPath += "/";
+  CURL url(strPath);
+  if (url.GetProtocol().size()>0) strPath += "/";
   else strPath += "\\";
 }
 
 char CUtil::GetDirectorySeperator(const CStdString& strPath)
 {
-  if (IsSmb(strPath)) return '/';
+  CURL url(strPath);
+  if (url.GetProtocol().size()>0) return '/';
   return '\\';
 }
 
