@@ -22,21 +22,21 @@ public:
 	void					CheckScreenSaver() { if (!m_bChanging && m_pRenderer) m_pRenderer->CheckScreenSaver(); };
 
 	// Functions called from mplayer
-	void					WaitForFlip();
-	unsigned int	QueryFormat(unsigned int format);
-	unsigned int 	Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, unsigned int options, char *title, unsigned int format);
-	unsigned int	GetImage(mp_image_t *mpi);
-	unsigned int	PutImage(mp_image_t *mpi);
-	unsigned int	DrawFrame(unsigned char *src[]);
-	unsigned int	DrawSlice(unsigned char *src[], int stride[], int w,int h,int x,int y);
-	void					FlipPage();
-	unsigned int	PreInit(const char *arg);
-	void					UnInit();
-	void					DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,unsigned char *srca, int stride);
+inline void         WaitForFlip();
+unsigned int        QueryFormat(unsigned int format);
+unsigned int        Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, unsigned int options, char *title, unsigned int format);
+inline unsigned int GetImage(mp_image_t *mpi);
+inline unsigned int PutImage(mp_image_t *mpi);
+inline unsigned int DrawFrame(unsigned char *src[]);
+inline unsigned int DrawSlice(unsigned char *src[], int stride[], int w,int h,int x,int y);
+inline void				  FlipPage();
+unsigned int        PreInit(const char *arg);
+void      				  UnInit();
+inline void				  DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,unsigned char *srca, int stride);
 
-	int						GetOSDWidth() { return m_iSourceWidth; };
-	int						GetOSDHeight() { return m_iSourceHeight; };
-	bool					Paused() { return m_bPauseDrawing; };
+inline int					GetOSDWidth() { return m_iSourceWidth; };
+inline int					GetOSDHeight() { return m_iSourceHeight; };
+inline bool					Paused() { return m_bPauseDrawing; };
 
 	CXBoxRenderer *m_pRenderer;
 protected:
