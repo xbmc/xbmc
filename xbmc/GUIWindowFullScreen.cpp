@@ -169,6 +169,10 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
     }
     break;
 
+    case ACTION_SHOW_MPLAYER_OSD:
+      g_application.m_pPlayer->ToggleOSD();
+    break;
+
 		case ACTION_SHOW_OSD:
     {	
       //g_application.m_pPlayer->ToggleOSD();

@@ -120,6 +120,7 @@
 #define ACTION_DELETE_ITEM          80
 #define ACTION_COPY_ITEM            81
 #define ACTION_MOVE_ITEM            82
+#define ACTION_SHOW_MPLAYER_OSD     83
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID								-1

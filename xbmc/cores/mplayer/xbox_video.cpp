@@ -70,7 +70,10 @@ typedef struct directx_fourcc_caps
 } directx_fourcc_caps;
 
 // we just support 1 format which is YUY2
-#define DIRECT3D8CAPS VFCAP_CSP_SUPPORTED_BY_HW |VFCAP_CSP_SUPPORTED |VFCAP_OSD |VFCAP_HWSCALE_UP|VFCAP_HWSCALE_DOWN|VFCAP_TIMER
+// 20-2-2004. 
+// Removed the VFCAP_TIMER. (VFCAP_TIMER means that the video output driver handles all timing which we dont)
+// this solves problems playing movies with no audio. With VFCAP_TIMER enabled they played much 2 fast
+#define DIRECT3D8CAPS VFCAP_CSP_SUPPORTED_BY_HW |VFCAP_CSP_SUPPORTED |VFCAP_OSD |VFCAP_HWSCALE_UP|VFCAP_HWSCALE_DOWN//|VFCAP_TIMER
 static directx_fourcc_caps g_ddpf[] =
 {
   {"YUY2 ",IMGFMT_YUY2 ,DIRECT3D8CAPS},
