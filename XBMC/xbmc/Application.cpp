@@ -8,6 +8,7 @@
 #include "cores/playercorefactory.h"
 #include "playlistplayer.h"
 #include "musicdatabase.h"
+#include "url.h"
 using namespace PLAYLIST;
 
 #ifdef _DEBUG
@@ -225,7 +226,7 @@ HRESULT CApplication::Initialize()
 	m_guiWindowVideoOverlay.AllocResources();
 	m_guiWindowFullScreen.AllocResources();
 	CUtil::RemoveTempFiles();
-	
+
 	//	Start Thread for DVD Mediatype detection
 	m_DetectDVDType.Create( false);
 
@@ -752,11 +753,28 @@ void CApplication::ProcessScripts()
 
 bool CApplication::PlayFile(const CStdString& strFile)
 {
+	CURL url(strFile);
+	CStdString strNewPlayer = "mplayer";
+	if ( url.GetProtocol() == "cdda")
+	{
+		strNewPlayer = "cdda";
+//		m_DetectDVDType.StopThread();
+	}
+	if (m_pPlayer)
+	{
+		if (m_strCurrentPlayer != strNewPlayer)
+		{
+			delete m_pPlayer;
+			m_pPlayer=NULL;
+		}
+	}
+
+	m_strCurrentPlayer=strNewPlayer;
 	m_bSpinDown=true;
 	if (!m_pPlayer)
 	{
 		CPlayerCoreFactory factory;
-		m_pPlayer = factory.CreatePlayer("mplayer",*this);
+		m_pPlayer = factory.CreatePlayer(strNewPlayer,*this);
 	}
 	bool bResult=m_pPlayer->openfile(strFile);
 	if (bResult) 

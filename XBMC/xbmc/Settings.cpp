@@ -175,7 +175,7 @@ void CSettings::Load()
 	
 	
 	GetString(pRootElement, "CDDBIpAdres", g_stSettings.m_szCDDBIpAdres,"194.97.4.18");
-	g_stSettings.m_bUseCDDB=GetBoolean(pRootElement, "CDDBEnabled");
+	//g_stSettings.m_bUseCDDB=GetBoolean(pRootElement, "CDDBEnabled");
 
 	GetString(pRootElement, "ipadres", g_stSettings.m_strLocalIPAdres,"");
 	GetString(pRootElement, "netmask", g_stSettings.m_strLocalNetmask,"");
