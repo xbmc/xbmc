@@ -27,11 +27,14 @@ public:
 	~CSMB();
 	void Init();
 	void Purge();
+	void PurgeEx(const CURL& url);
 	void Lock();
 	void Unlock();
 private:
-	bool binitialized;
+	bool							binitialized;
 	CRITICAL_SECTION	m_critSection;
+	CStdString				m_strLastHost;
+	CStdString				m_strLastShare;
 };
 
 extern CSMB smb;
@@ -54,7 +57,7 @@ namespace XFILE
 		virtual int						Stat(const CURL& url, struct __stat64* buffer);
 		virtual __int64				GetLength();
 		virtual __int64				GetPosition();
-		int										Write(const void* lpBuf, __int64 uiBufSize);
+		virtual int						Write(const void* lpBuf, __int64 uiBufSize);
 	protected:
 		__int64								m_fileSize;
 		bool									m_bBinary;
