@@ -44,6 +44,9 @@ public:
     bool         GetDTSPassTru();
 		void         SetDTSPassTru(bool bOnOff);
 
+    bool         GetLimitedHWAC3();
+		void         SetLimitedHWAC3(bool bOnOff);
+
 		const string GetChannelMapping() const;
 		void         SetChannelMapping(const string& strMapping);
 		void         SetSpeed(float fSpeed);
@@ -68,6 +71,7 @@ public:
     bool    m_bDTSPassTru;
 		float   m_fVolumeAmplification;
 		bool    m_bNonInterleaved;
+    bool    m_bLimitedHWAC3;
 		string  m_strChannelMapping;
 		string  m_strDvdDevice;
 		string  m_strFlipBiDiCharset;

@@ -263,6 +263,8 @@ CMPlayer::Options::Options()
 	m_strDvdDevice="";
 	m_strFlipBiDiCharset="";
   m_strHexRawAudioFormat="";
+
+  m_bLimitedHWAC3=false;
 }
 void  CMPlayer::Options::SetFPS(float fFPS)
 {
@@ -367,6 +369,15 @@ bool CMPlayer::Options::GetDTSPassTru()
 void CMPlayer::Options::SetDTSPassTru(bool bOnOff)
 {
 	m_bDTSPassTru=bOnOff;
+}
+
+bool CMPlayer::Options::GetLimitedHWAC3()
+{
+	return m_bLimitedHWAC3;
+}
+void CMPlayer::Options::SetLimitedHWAC3(bool bOnOff)
+{
+	m_bLimitedHWAC3=bOnOff;
 }
 
 const string CMPlayer::Options::GetChannelMapping() const
@@ -508,6 +519,8 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     if (m_bAC3PassTru) buf += "hwac3,";
 		m_vecOptions.push_back(buf.c_str());
 	}
+  if ( m_bLimitedHWAC3 )
+    m_vecOptions.push_back("-limitedhwac3");
 
 	if (m_strFlipBiDiCharset.length()>0)
 	{
@@ -805,6 +818,9 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 			{
         options.SetAC3PassTru(bSupportsAC3Out);
         options.SetDTSPassTru(bSupportsDTSOut);
+
+        if(g_stSettings.m_bAudioOnAllSpeakers)
+          options.SetLimitedHWAC3(true); //Will limit hwac3 to not kick in on 2.0 channel streams
 			}
 		}
 
