@@ -17,7 +17,7 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dw
   m_iBitmap=0;
   m_dwItems=1;
 	m_iCurrentImage=0;
-	m_dwFrameCounter=0;
+	m_dwFrameCounter=-1;
   m_bKeepAspectRatio=false;
   m_iCurrentLoop=0;
   m_iRenderWidth=dwWidth;
@@ -154,14 +154,11 @@ void CGUIImage::Render(DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight
 
 void CGUIImage::Render()
 {
-	if (m_bVisible && !m_bWasVisible)
+	if (!m_bVisible)
 	{
-		m_iCurrentLoop = 0;
-		m_iCurrentImage = 0;
+		m_bWasVisible = false;
+		return;
 	}
-
-	m_bWasVisible = m_bVisible;
-	if (!m_bVisible) return;
 	if (!m_vecTextures.size())
 		return ;
 	if (!m_pVB)
@@ -420,6 +417,18 @@ void CGUIImage::SetItems(int iItems)
 
 void CGUIImage::Process()
 {
+	if (m_vecTextures.size() <= 1)
+		return;
+
+	if (!m_bWasVisible)
+	{
+		m_iCurrentLoop = 0;
+		m_iCurrentImage = 0;
+		m_dwFrameCounter = 0;
+		m_bWasVisible = true;
+		return;
+	}
+
 	m_dwFrameCounter++;
   DWORD dwDelay    = g_TextureManager.GetDelay(m_strFileName,m_iCurrentImage);
   int   iMaxLoops  = g_TextureManager.GetLoops(m_strFileName,m_iCurrentImage);
