@@ -242,6 +242,94 @@ void CButtonTranslator::MapAction(WORD wAction, TiXmlNode *pNode, buttonMap &map
 				if (wButtonCode > 255) wButtonCode = 0;
 			}
 		}
+		if (strNode=="keyboard")
+		{
+      if (pNode->FirstChild())
+			  strButton = pNode->FirstChild()->Value();
+      else
+        strButton="";
+			if (strButton.size() == 1)
+			{	// single character
+				char ch = strButton.ToUpper()[0];
+				if			(ch == ';' || ch == ':')	wButtonCode = 0xF0BA;
+				else if (ch == '=' || ch == '+')	wButtonCode = 0xF0BB;
+				else if (ch == ',' || ch == '<')	wButtonCode = 0xF0BC;
+				else if (ch == '-' || ch == '_')	wButtonCode = 0xF0BD;
+				else if (ch == '.' || ch == '>')	wButtonCode = 0xF0BE;
+				else if (ch == '/' || ch == '?')	wButtonCode = 0xF0BF;
+				else if (ch == '`' || ch == '~')	wButtonCode = 0xF0C0;
+				else if (ch == '[' || ch == '{')	wButtonCode = 0xF0EB;
+				else if (ch == '\\'|| ch == '|')	wButtonCode = 0xF0EC;
+				else if (ch == ']' || ch == '}')	wButtonCode = 0xF0ED;
+				else if (ch == '\''|| ch == '"')	wButtonCode = 0xF0EE;
+				else wButtonCode = (WORD)ch | KEY_VKEY;
+			}
+			else
+			{	// for keys such as return etc. etc.
+				CStdString strKey = strButton.ToLower();
+				if (strKey == "return")		wButtonCode = 0xF00D;
+				if (strKey == "enter")		wButtonCode = 0xF06C;
+				if (strKey == "escape")		wButtonCode = 0xF01B;
+				if (strKey == "esc")			wButtonCode = 0xF01B;
+				if (strKey == "tab")			wButtonCode = 0xF009;
+				if (strKey == "space")		wButtonCode = 0xF020;
+				if (strKey == "left")			wButtonCode = 0xF025;
+				if (strKey == "right")		wButtonCode = 0xF027;
+				if (strKey == "up")				wButtonCode = 0xF026;
+				if (strKey == "down")			wButtonCode = 0xF028;
+				if (strKey == "insert")		wButtonCode = 0xF02D;
+				if (strKey == "delete")		wButtonCode = 0xF02E;
+				if (strKey == "home")			wButtonCode = 0xF024;
+				if (strKey == "end")			wButtonCode = 0xF023;
+				if (strKey == "f1")				wButtonCode = 0xF070;
+				if (strKey == "f2")				wButtonCode = 0xF071;
+				if (strKey == "f3")				wButtonCode = 0xF072;
+				if (strKey == "f4")				wButtonCode = 0xF073;
+				if (strKey == "f5")				wButtonCode = 0xF074;
+				if (strKey == "f6")				wButtonCode = 0xF075;
+				if (strKey == "f7")				wButtonCode = 0xF076;
+				if (strKey == "f8")				wButtonCode = 0xF077;
+				if (strKey == "f9")				wButtonCode = 0xF078;
+				if (strKey == "f10")			wButtonCode = 0xF079;
+				if (strKey == "f11")			wButtonCode = 0xF07A;
+				if (strKey == "f12")			wButtonCode = 0xF07B;
+				if (strKey == "numpad0")	wButtonCode = 0xF060;
+				if (strKey == "numpad1")	wButtonCode = 0xF061;
+				if (strKey == "numpad2")	wButtonCode = 0xF062;
+				if (strKey == "numpad3")	wButtonCode = 0xF063;
+				if (strKey == "numpad4")	wButtonCode = 0xF064;
+				if (strKey == "numpad5")	wButtonCode = 0xF065;
+				if (strKey == "numpad6")	wButtonCode = 0xF066;
+				if (strKey == "numpad7")	wButtonCode = 0xF067;
+				if (strKey == "numpad8")	wButtonCode = 0xF068;
+				if (strKey == "numpad9")	wButtonCode = 0xF069;
+				if (strKey == "numpad*")	wButtonCode = 0xF06A;
+				if (strKey == "numpad+")	wButtonCode = 0xF06B;
+				if (strKey == "numpad-")	wButtonCode = 0xF06D;
+				if (strKey == "numpad.")	wButtonCode = 0xF06E;
+				if (strKey == "numpad/")	wButtonCode = 0xF06F;
+				if (strKey == "pageup")				wButtonCode = 0xF021;
+				if (strKey == "pagedown")			wButtonCode = 0xF022;
+				if (strKey == "printscreen")	wButtonCode = 0xF02C;
+				if (strKey == "backspace")		wButtonCode = 0xF008;
+				if (strKey == "menu")					wButtonCode = 0xF05D;
+				if (strKey == "pause")				wButtonCode = 0xF013;
+				if (strKey == "home")					wButtonCode = 0xF024;
+				if (strKey == "end")					wButtonCode = 0xF023;
+				if (strKey == "insert")				wButtonCode = 0xF02D;
+				if (strKey == "leftshift")		wButtonCode = 0xF0A0;
+				if (strKey == "rightshift")		wButtonCode = 0xF0A1;
+				if (strKey == "leftctrl")			wButtonCode = 0xF0A2;
+				if (strKey == "rightctrl")		wButtonCode = 0xF0A3;
+				if (strKey == "leftalt")			wButtonCode = 0xF0A4;
+				if (strKey == "rightalt")			wButtonCode = 0xF0A5;
+				if (strKey == "leftwindows")	wButtonCode = 0xF05B;
+				if (strKey == "rightwindows")	wButtonCode = 0xF05C;
+				if (strKey == "capslock")			wButtonCode = 0xF020;
+				if (strKey == "numlock")			wButtonCode = 0xF090;
+				if (strKey == "scrolllock")		wButtonCode = 0xF091;
+			}
+		}
 		// check we have a valid button code
 		if (wButtonCode>0)
 		{

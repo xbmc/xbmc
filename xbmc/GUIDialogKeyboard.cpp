@@ -72,9 +72,56 @@ void CGUIDialogKeyboard::OnAction(const CAction &action)
 	{
 		Backspace();
 	}
+	else if (action.wID == ACTION_CURSOR_LEFT)
+	{
+		OnCursor(-1);
+	}
+	else if (action.wID == ACTION_CURSOR_RIGHT)
+	{
+		OnCursor(1);
+	}
+	else if (action.wID == ACTION_SHIFT)
+	{
+		OnShift();
+	}
+	else if (action.wID == ACTION_SYMBOLS)
+	{
+		OnSymbols();
+	}
 	else if (action.wID >= REMOTE_0 && action.wID <= REMOTE_9)
 	{
 		OnRemoteNumberClick(action.wID);
+	}
+	else if (action.wID >= KEY_VKEY && action.wID < KEY_ASCII)
+	{	// input from the keyboard (vkey, not ascii)
+		BYTE b = action.wID & 0xFF;
+		if (b == 0x25) OnCursor(-1);	// left
+		if (b == 0x27) OnCursor(1);		// right
+	}
+	else if (action.wID >= KEY_ASCII)
+	{	// input from the keyboard
+		char ch = action.wID & 0xFF;
+		switch (ch)
+		{
+		case 10:	// enter
+			{
+			CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
+			if (pEdit)
+				m_strEdit = pEdit->GetLabel();
+			Close();
+			}
+			break;
+		case 8:		// backspace or delete??
+			Backspace();
+			break;
+		case 27:	// escape
+			m_bDirty = false;
+			Close();
+			break;
+		default: //use character input
+			Character((WCHAR)ch);
+			break;
+		}
 	}
 	else
 	{
@@ -111,8 +158,7 @@ bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
 					Close();
 					break;
 				case CTL_BUTTON_SHIFT:
-					m_bShift = !m_bShift;
-					UpdateButtons();
+					OnShift();
 					break;
 				case CTL_BUTTON_CAPS:
 					if (m_keyType == LOWER)
@@ -122,28 +168,16 @@ bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
 					UpdateButtons();
 					break;
 				case CTL_BUTTON_SYMBOLS:
-					if (m_keyType == SYMBOLS)
-						m_keyType = LOWER;
-					else
-						m_keyType = SYMBOLS;
-					UpdateButtons();
+					OnSymbols();
 					break;
 				case CTL_BUTTON_LEFT:
 					{
-						CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
-						if (pEdit)
-						{
-							pEdit->SetCursorPos(pEdit->GetCursorPos()-1);
-						}
+						OnCursor(-1);
 					}
 					break;
 				case CTL_BUTTON_RIGHT:
 					{
-						CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
-						if (pEdit)
-						{
-							pEdit->SetCursorPos(pEdit->GetCursorPos()+1);
-						}
+						OnCursor(1);
 					}
 					break;
 				default:
@@ -256,7 +290,10 @@ WCHAR CGUIDialogKeyboard::GetCharacter(int iButton)
 	if (iButton >= 48 && iButton <= 57)
 	{
 		if (m_keyType == SYMBOLS)
+		{
+			OnSymbols();
 			return (WCHAR)symbol_map[iButton-48];
+		}
 		else
 			return (WCHAR)iButton;
 	}
@@ -264,6 +301,7 @@ WCHAR CGUIDialogKeyboard::GetCharacter(int iButton)
 		return (WCHAR)iButton;
 	if (m_keyType == SYMBOLS)
 	{	// symbol
+		OnSymbols();
 		return (WCHAR)symbol_map[iButton-65+10];
 	}
 	if ((m_keyType == CAPS && m_bShift) || (m_keyType == LOWER && !m_bShift))
@@ -272,8 +310,7 @@ WCHAR CGUIDialogKeyboard::GetCharacter(int iButton)
 	}
 	if (m_bShift)
 	{	// turn off the shift key
-		m_bShift = false;
-		UpdateButtons();
+		OnShift();
 	}
 	return (WCHAR) iButton;
 }
@@ -398,6 +435,30 @@ void CGUIDialogKeyboard::Close()
 	m_strHeading = "";
 	// call base class
 	CGUIDialog::Close();
+}
+
+void CGUIDialogKeyboard::OnCursor(int iAmount)
+{
+	CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
+	if (pEdit)
+	{
+		pEdit->SetCursorPos(pEdit->GetCursorPos()+iAmount);
+	}
+}
+
+void CGUIDialogKeyboard::OnSymbols()
+{
+	if (m_keyType == SYMBOLS)
+		m_keyType = LOWER;
+	else
+		m_keyType = SYMBOLS;
+	UpdateButtons();
+}
+
+void CGUIDialogKeyboard::OnShift()
+{
+	m_bShift = !m_bShift;
+	UpdateButtons();
 }
 
 const char* CGUIDialogKeyboard::s_charsSeries[10] = { " !@#$%^&*()[]{}<>/\\|0", ".,;:\'\"-+_=?`~1", "ABC2", "DEF3", "GHI4", "JKL5", "MNO6", "PQRS7", "TUV8", "WXYZ9" };

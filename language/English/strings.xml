@@ -2275,4 +2275,6 @@
   <string><id>13303</id><value>Skin Fonts</value></string>
   <string><id>13304</id><value>Enable Flipping Bi-Directional Strings</value></string>
   <string><id>13305</id><value>Enable RSS Feeds</value></string>
+  <string><id>13306</id><value>Hide Parent Folder Items</value></string>
+  <string><id>13307</id><value>Hide Track Numbers</value></string>
 </strings>

@@ -443,11 +443,15 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 	{
 		if (strDir != strShortCutsDir)
 		{
-			CFileItem *pItem = new CFileItem("..");
-			pItem->m_strPath=strParentPath;
-			pItem->m_bIsShareOrDrive=false;
-			pItem->m_bIsFolder=true;
-			m_vecItems.push_back(pItem);
+			if (!g_stSettings.m_bHideParentDirItems)
+			{
+				CFileItem *pItem = new CFileItem("..");
+				pItem->m_strPath=strParentPath;
+				pItem->m_bIsShareOrDrive=false;
+				pItem->m_bIsFolder=true;
+				m_vecItems.push_back(pItem);
+			}
+			m_strParentPath = strParentPath;
 		}
 	}
 
@@ -986,6 +990,9 @@ void CGUIWindowPrograms::ShowThumbPanel()
 /// \brief Call to go to parent folder
 void CGUIWindowPrograms::GoParentFolder()
 {
+	CStdString strPath=m_strParentPath;
+	Update(strPath);
+	/*
 	if (m_vecItems.size()==0) return;
 	CFileItem* pItem=m_vecItems[0];
 	if (pItem->m_bIsFolder)
@@ -995,5 +1002,5 @@ void CGUIWindowPrograms::GoParentFolder()
 			CStdString strPath=pItem->m_strPath;
 			Update(strPath);
 		}
-	}
+	}*/
 }

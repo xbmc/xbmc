@@ -28,7 +28,7 @@ protected:
   void              UpdateControl(int iList);
   void              Update(int iList, const CStdString &strDirectory); //???
   void              OnStart(CFileItem *pItem);
-
+	bool							SelectItem(int iList, int &item);
   void							Clear();
   void							OnClick(int iList, int iItem);
   void              OnMark(int iList, int iItem);
@@ -49,7 +49,7 @@ protected:
   int				        GetSelectedItem(int iList);
   bool				      HaveDiscOrConnection( CStdString& strPath, int iDriveType );
 	void              GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
-	void							GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items);
+	void							GetDirectory(int iList, const CStdString &strDirectory, VECFILEITEMS &items);
 	int								NumSelected(int iList);
 	int								GetFocusedList() const;
 	// functions to check for actions that we can perform
@@ -65,6 +65,7 @@ protected:
   VECFILEITEMS				m_vecItems[2];
   typedef vector <CFileItem*> ::iterator ivecItems;
   CStdString          m_strDirectory[2];
+	CStdString					m_strParentPath[2];
   CGUIDialogProgress*	m_dlgProgress;
 	CDirectoryHistory		m_history[2];
   int                 m_iItemSelected;

@@ -384,22 +384,30 @@ void CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, VECFILEI
 		if ( bParentExists )
 		{
 			// yes
-			CFileItem *pItem = new CFileItem("..");
-			pItem->m_strPath=strParentPath;
-			pItem->m_bIsFolder=true;
-			pItem->m_bIsShareOrDrive=false;
-			items.push_back(pItem);
+			if (!g_stSettings.m_bHideParentDirItems)
+			{
+				CFileItem *pItem = new CFileItem("..");
+				pItem->m_strPath=strParentPath;
+				pItem->m_bIsFolder=true;
+				pItem->m_bIsShareOrDrive=false;
+				items.push_back(pItem);
+			}
+			m_strParentPath = strParentPath;
 		}
 	}
 	else
 	{
 		// yes, this is the root of a share
 		// add parent path to the virtual directory
-		CFileItem *pItem = new CFileItem("..");
-		pItem->m_strPath="";
-		pItem->m_bIsShareOrDrive=false;
-		pItem->m_bIsFolder=true;
-		items.push_back(pItem);
+		if (!g_stSettings.m_bHideParentDirItems)
+		{
+			CFileItem *pItem = new CFileItem("..");
+			pItem->m_strPath="";
+			pItem->m_bIsShareOrDrive=false;
+			pItem->m_bIsFolder=true;
+			items.push_back(pItem);
+		}
+		m_strParentPath = "";
 	}
 	m_rootDir.GetDirectory(strDirectory,items);
 
@@ -912,7 +920,7 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
 			if (strArtist)
 			{
 				int iTrack=tag.GetTrackNumber();
-				if (iTrack>0 && g_stSettings.m_bMyMusicShowTrackNumber)
+				if (iTrack>0 && !g_stSettings.m_bMyMusicHideTrackNumber)
 					str.Format("%02.2i. %s - %s",iTrack, tag.GetArtist().c_str(), tag.GetTitle().c_str());
 				else 
 					str.Format("%s - %s", tag.GetArtist().c_str(), tag.GetTitle().c_str());

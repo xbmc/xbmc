@@ -522,7 +522,7 @@ void CGUIWindowMusicPlayList::OnFileItemFormatLabel(CFileItem* pItem)
 			{
 				//int iTrack=tag.GetTrackNumber();
 				int iTrack = (int)m_lPlayListSeq;
-				if (iTrack>0 && g_stSettings.m_bMyMusicShowTrackNumber)
+				if (iTrack>0 && !g_stSettings.m_bMyMusicHideTrackNumber)
 					str.Format("%02.2i. %s - %s",iTrack, tag.GetArtist().c_str(), tag.GetTitle().c_str());
 				else 
 					str.Format("%s - %s", tag.GetArtist().c_str(), tag.GetTitle().c_str());
@@ -531,7 +531,7 @@ void CGUIWindowMusicPlayList::OnFileItemFormatLabel(CFileItem* pItem)
 			{
 				//int iTrack=tag.GetTrackNumber();
 				int iTrack = (int)m_lPlayListSeq;
-				if (iTrack>0 && g_stSettings.m_bMyMusicShowTrackNumber)
+				if (iTrack>0 && !g_stSettings.m_bMyMusicHideTrackNumber)
 					str.Format("%02.2i. %s ",iTrack, tag.GetTitle().c_str());
 				else 
 					str.Format("%s", tag.GetTitle().c_str());
