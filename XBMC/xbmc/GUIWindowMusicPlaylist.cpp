@@ -168,13 +168,21 @@ void CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, VECFI
 	if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC)
 		iCurrentSong=g_playlistPlayer.GetCurrentSong();
 
+	CStdString strPath,strFileName;
 	for (int i=0; i < playlist.size(); ++i)
 	{
 		const CPlayList::CPlayListItem& item = playlist[i];
+
+		CStdString strFileName   = item.GetFileName();
+		CStdString strPath,strFName;
+		CUtil::Split( strFileName, strPath, strFName);
+		m_Pathes.insert(strPath);
+		
 		CFileItem *pItem				 = new CFileItem(item.GetDescription());
-		pItem->m_strPath			   = item.GetFileName();
+		pItem->m_strPath			   = strFileName;
 		pItem->m_bIsFolder		   = false;
 		pItem->m_bIsShareOrDrive = false;
+
 		if (item.GetDuration())
 		{
 			int nDuration=item.GetDuration();
@@ -193,22 +201,13 @@ void CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, VECFI
 
 void CGUIWindowMusicPlayList::SavePlayList()
 {
-	CXBVirtualKeyboard* pKeyboard = (CXBVirtualKeyboard*)m_gWindowManager.GetWindow(WINDOW_VIRTUAL_KEYBOARD);
-  if (!pKeyboard) return;
-	pKeyboard->Reset();
-	WCHAR wsFile[1024];
-	wcscpy(wsFile,L"");
-	pKeyboard->SetText(wsFile);
-	pKeyboard->DoModal(GetID());
-	if (pKeyboard->IsConfirmed())
+	CStdString strNewFileName;
+	if (GetKeyboard(strNewFileName))
 	{
 		// need 2 rename it
-		CStdString strNewFileName;
 		CStdString strPath=g_stSettings.m_szAlbumDirectory;
 		strPath+="\\playlists\\";
 
-		const WCHAR* pNewFileName=pKeyboard->GetText();
-		CUtil::Unicode2Ansi(pNewFileName,strNewFileName);
 		strPath += strNewFileName;
 		strPath+=".m3u";
 		CPlayListM3U playlist;
@@ -427,4 +426,44 @@ void CGUIWindowMusicPlayList::OnFileItemFormatLabel(CFileItem* pItem)
 void CGUIWindowMusicPlayList::DoSort(VECFILEITEMS& items)
 {
 
+}
+
+void CGUIWindowMusicPlayList::OnRetrieveMusicInfo(VECFILEITEMS& items)
+{
+	if (items.size()<=0)
+		return;
+
+	MAPSONGS songsMap;
+	m_database.GetSongsByPathes(m_Pathes, songsMap);
+
+	CSong song;
+	for (int i=0; i<(int)m_vecItems.size(); i++)
+	{
+		CFileItem* pItem=m_vecItems[i];
+
+		IMAPSONGS it=songsMap.find(pItem->m_strPath);
+		if (it!=songsMap.end())
+		{
+			song=it->second;
+			pItem->m_musicInfoTag.SetAlbum(song.strAlbum);
+			pItem->m_musicInfoTag.SetArtist(song.strArtist);
+			pItem->m_musicInfoTag.SetGenre(song.strGenre);
+			pItem->m_musicInfoTag.SetDuration(song.iDuration);
+			pItem->m_musicInfoTag.SetTitle(song.strTitle);
+			pItem->m_musicInfoTag.SetTrackNumber(song.iTrack);
+			pItem->m_musicInfoTag.SetLoaded(true);
+		}
+		else
+		{
+			if (g_stSettings.m_bUseID3)
+			{
+				// get correct tag parser
+				CMusicInfoTagLoaderFactory factory;
+				auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
+				if (NULL != pLoader.get())
+						// get id3tag
+					pLoader->Load(pItem->m_strPath,pItem->m_musicInfoTag);
+			}
+		}
+	}
 }

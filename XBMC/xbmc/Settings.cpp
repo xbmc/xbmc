@@ -656,7 +656,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 			GetBoolean(pChild, "viewicons", g_stSettings.m_bMyMusicSongsViewAsIcons);
 			GetBoolean(pChild, "rooticons", g_stSettings.m_bMyMusicSongsRootViewAsIcons);
 			GetInteger(pChild, "sortmethod",g_stSettings.m_iMyMusicSongsSortMethod);
-			GetInteger(pChild, "sortmethodroot",g_stSettings.m_iMyMusicSongsSortMethod);
+			GetInteger(pChild, "sortmethodroot",g_stSettings.m_iMyMusicSongsRootSortMethod);
 			GetBoolean(pChild, "sortascending",g_stSettings.m_bMyMusicSongsSortAscending);
 			GetBoolean(pChild, "sortascendingroot",g_stSettings.m_bMyMusicSongsRootSortAscending);
 		}

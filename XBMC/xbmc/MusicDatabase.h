@@ -2,6 +2,7 @@
 #include "lib/sqlLite/sqlitedataset.h"
 #include "StdString.h"
 #include <vector>
+#include <set>
 #include <memory>
 #include "MusicDatabaseReorg.h"
 using namespace std;
@@ -45,6 +46,8 @@ typedef map<CStdString,CSong>::iterator  IMAPSONGS;
 typedef vector<CStdString> VECARTISTS;
 typedef vector<CStdString> VECGENRES;
 typedef vector<CAlbum> VECALBUMS;
+typedef set<CStdString> SETPATHES;
+typedef set<CStdString>::iterator ISETPATHES;
 
 class CMusicDatabase
 {
@@ -106,6 +109,7 @@ public:
 	void		EmptyCache();
 	void		CheckVariousArtistsAndCoverArt();
 	bool		GetRecentlyPlayedAlbums(VECALBUMS& albums);
+	bool		GetSongsByPathes(SETPATHES& pathes, MAPSONGS& songs);
 protected:
 	auto_ptr<SqliteDatabase> m_pDB;
 	auto_ptr<Dataset>				 m_pDS;
