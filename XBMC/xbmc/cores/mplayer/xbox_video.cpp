@@ -96,6 +96,13 @@ void choose_best_resolution(float fps)
   bool bUsingPAL        = (dwStandard==XC_VIDEO_STANDARD_PAL_I);    // current video standard:PAL or NTSC 
   bool bCanDoWidescreen = (dwFlags & XC_VIDEO_FLAGS_WIDESCREEN)!=0; // can widescreen be enabled?
 
+  // only allow 16:9 if GUI is also using 16:9
+  int iGUIResolution=g_stSettings.m_ScreenResolution;
+  if (  (g_settings.m_ResInfo[iGUIResolution].dwFlags&D3DPRESENTFLAG_WIDESCREEN)==0)
+  {
+    bCanDoWidescreen =false;
+  }
+
   // Work out if the framerate suits PAL50 or PAL60
   bool bPal60=false;
   if (bUsingPAL && g_stSettings.m_bAllowPAL60 && (dwFlags&XC_VIDEO_FLAGS_PAL_60Hz))
