@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 04-03-2005 changed: Reversed Clear() change as it caused graphics leak through when UI calibration was not at 0,0.
   - 04-03-2005 added: Thumbs table clean up on cleanup of the music library.
   - 04-03-2005 fixed: Small thumbs in list controls weren't centered + other small graphical glitches here and there.
   - 04-03-2005 changed: Zoom in my pictures now goes in steps of 1.0, 1.2, 1.5, 2.0, 2.8, 4.0, 6.0, 9.0, 13.5 and 20.

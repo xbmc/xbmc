@@ -1448,7 +1448,7 @@ void CApplication::Render()
 
 	// draw GUI
   //if Clear needs to be enabled here for some reason, remove them from Render in GUIWindowScreensaver and GUIWindowVisualisation
-	//m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, 0x00010001, 1.0f, 0L );
+	m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, 0x00010001, 1.0f, 0L );
   //SWATHWIDTH of 2 improves fillrates (performance investigator)
   m_pd3dDevice->SetRenderState(D3DRS_SWATHWIDTH, 2);
 
