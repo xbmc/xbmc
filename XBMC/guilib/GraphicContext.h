@@ -87,6 +87,7 @@ public:
 	void									RestoreViewPort();
 	const RECT&						GetViewWindow() const;
 	void									SetViewWindow(const RECT&	rc) ;
+  void									SetFullScreenViewWindow(RESOLUTION &res);
 	void									SetFullScreenVideo(bool bOnOff); 
 	bool									IsFullScreenVideo() const; 
 	bool									IsCalibrating() const; 
