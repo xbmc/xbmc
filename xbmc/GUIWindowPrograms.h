@@ -19,7 +19,6 @@ protected:
   bool            ViewByIcon();
 	void						OnScan(VECFILEITEMS& items, int& iTotalAppsFound)  ;
   void            Update(const CStdString& strDirectory);
-  void            LoadDirectory(const CStdString& strDirectory);
   void			  LoadDirectory(const CStdString& strDirectory, int depth);
   void            OnClick(int iItem);
   void            OnSort();
