@@ -36,6 +36,7 @@ class CVideoSettings
 		int				m_Gamma;
 		bool			m_AdjustFrameRate;
 		float			m_AudioDelay;
+    int       m_ResumeTime;
 private:
 };
 

@@ -11,7 +11,7 @@
 #include "utils/log.h"
 #include "util.h"
 
-#define VIDEO_DATABASE_VERSION 1.0f
+#define VIDEO_DATABASE_VERSION 1.1f
 
 //********************************************************************************************************************************
 CVideoDatabase::CVideoDatabase(void)
@@ -1286,6 +1286,7 @@ bool CVideoDatabase::GetVideoSettings(const CStdString &strFilenameAndPath, CVid
 			settings.m_SubtitleOn = m_pDS->fv("SubtitlesOn").get_asBool();
 			settings.m_SubtitleStream = m_pDS->fv("SubtitleStream").get_asInteger();
 			settings.m_ViewMode = m_pDS->fv("ViewMode").get_asInteger();
+			settings.m_ResumeTime = m_pDS->fv("ResumeTime").get_asInteger();
 			m_pDS->close();
 			return true;
 		}
@@ -1322,10 +1323,14 @@ void CVideoDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, cons
 			// update the item
       strSQL.Format("update settings set Interleaved=%i,NoCache=%i,Deinterlace=%i,FilmGrain=%i,ViewMode=%i,ZoomAmount=%f,PixelRatio=%f,"
 										"AudioStream=%i,SubtitleStream=%i,SubtitleDelay=%f,SubtitlesOn=%i,Brightness=%i,Contrast=%i,Gamma=%i,"
-										"AdjustFrameRate=%i,AudioDelay=%f where idFile=%i\n",
+										"AdjustFrameRate=%i,AudioDelay=%f,ResumeTime=%i",
 										setting.m_NonInterleaved,setting.m_NoCache,setting.m_Deinterlace,setting.m_FilmGrain,setting.m_ViewMode, setting.m_CustomZoomAmount, setting.m_CustomPixelRatio,
 										setting.m_AudioStream,setting.m_SubtitleStream,setting.m_SubtitleDelay,setting.m_SubtitleOn,
-										setting.m_Brightness,setting.m_Contrast,setting.m_Gamma,setting.m_AdjustFrameRate,setting.m_AudioDelay,lFileId);
+										setting.m_Brightness,setting.m_Contrast,setting.m_Gamma,setting.m_AdjustFrameRate,setting.m_AudioDelay,
+                    setting.m_ResumeTime);
+      CStdString strSQL2;
+      strSQL2.Format(" where idFile=%i\n", lFileId);
+      strSQL += strSQL2;
 	    m_pDS->exec(strSQL.c_str());
       return;
     }
@@ -1334,10 +1339,13 @@ void CVideoDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, cons
 			m_pDS->close();
       strSQL.Format("insert into settings ( idFile,Interleaved,NoCache,Deinterlace,FilmGrain,ViewMode,ZoomAmount,PixelRatio,"
 										"AudioStream,SubtitleStream,SubtitleDelay,SubtitlesOn,Brightness,Contrast,Gamma,"
-										"AdjustFrameRate,AudioDelay) values (%i,%i,%i,%i,%i,%i,%f,%f,%i,%i,%f,%i,%i,%i,%i,%i,%f)\n",
+										"AdjustFrameRate,AudioDelay,ResumeTime) values (%i,%i,%i,%i,%i,%i,%f,%f,%i,%i,%f,%i,%i,%i,%i,%i,%f,",
 										lFileId, setting.m_NonInterleaved,setting.m_NoCache,setting.m_Deinterlace,setting.m_FilmGrain,setting.m_ViewMode, setting.m_CustomZoomAmount, setting.m_CustomPixelRatio,
 										setting.m_AudioStream,setting.m_SubtitleStream,setting.m_SubtitleDelay,setting.m_SubtitleOn,
 										setting.m_Brightness,setting.m_Contrast,setting.m_Gamma,setting.m_AdjustFrameRate,setting.m_AudioDelay);
+      CStdString strSQL2;
+      strSQL2.Format("%i)\n", setting.m_ResumeTime);
+      strSQL += strSQL2;
 	    m_pDS->exec(strSQL.c_str());
 		}
   }
@@ -1353,8 +1361,9 @@ bool CVideoDatabase::UpdateOldVersion(float fVersion)
 	{	// Version 0 to 0.5 upgrade - we need to add the version table and the settings table
 		CLog::Log(LOGINFO, "creating versions table");
 		m_pDS->exec("CREATE TABLE version (idVersion float)\n");
+    fVersion = 1.0f;
 		CStdString strVersion;
-		strVersion.Format("INSERT INTO version (idVersion) values(%f)\n", VIDEO_DATABASE_VERSION);
+		strVersion.Format("INSERT INTO version (idVersion) values(%f)\n", fVersion);
 		m_pDS->exec(strVersion.c_str());
 
     CLog::Log(LOGINFO, "create settings table");
@@ -1362,7 +1371,39 @@ bool CVideoDatabase::UpdateOldVersion(float fVersion)
 			          "ViewMode integer,ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer,"
 								"SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer,"
 								"AdjustFrameRate integer, AudioDelay float)\n");
-		fVersion = VIDEO_DATABASE_VERSION;
 	}
+  if (fVersion < VIDEO_DATABASE_VERSION)
+  {
+    // version 1.0 to 1.1 upgrade - addition of ResumeTime to the settings table
+    CLog::Log(LOGINFO, "Creating temporary settings table");
+		m_pDS->exec("CREATE TEMPORARY TABLE tempsettings ( idFile integer, Interleaved bool, NoCache bool, Deinterlace bool, FilmGrain integer,"
+			          "ViewMode integer,ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer,"
+								"SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer,"
+                "AdjustFrameRate integer, AudioDelay float)\n");
+    CLog::Log(LOGINFO, "Copying settings into temporary settings table");
+    m_pDS->exec("INSERT INTO tempsettings SELECT idFile,Interleaved,NoCache,Deinterlace,FilmGrain,"
+                "ViewMode,ZoomAmount,PixelRatio,AudioStream,SubtitleStream,SubtitleDelay,"
+                "SubtitlesOn,Brightness,Contrast,Gamma,AdjustFrameRate,AudioDelay FROM settings");
+    CLog::Log(LOGINFO, "Destroying old settings table");
+    m_pDS->exec("DROP TABLE settings");
+    CLog::Log(LOGINFO, "Creating new settings table");
+		m_pDS->exec("CREATE TABLE settings ( idFile integer, Interleaved bool, NoCache bool, Deinterlace bool, FilmGrain integer,"
+			          "ViewMode integer,ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer,"
+								"SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer,"
+                "AdjustFrameRate integer, AudioDelay float, ResumeTime integer)\n");
+    CLog::Log(LOGINFO, "Copying settings into new settings table");
+    m_pDS->exec("INSERT INTO settings(idFile,Interleaved,NoCache,Deinterlace,FilmGrain,ViewMode,ZoomAmount,PixelRatio,AudioStream,SubtitleStream,"
+                "SubtitleDelay,SubtitlesOn,Brightness,Contrast,Gamma,AdjustFrameRate,AudioDelay) SELECT * FROM tempsettings");
+    CLog::Log(LOGINFO, "Deleting temporary settings table");
+    m_pDS->exec("DROP TABLE tempsettings");
+    // ok, now fill in the defaults
+    CLog::Log(LOGINFO, "UPDATE settings set ResumeTime='0'");
+    m_pDS->exec("UPDATE settings set ResumeTime='0'");
+    fVersion = VIDEO_DATABASE_VERSION;
+    // now update the version table
+		CStdString strVersion;
+		strVersion.Format("UPDATE version set idVersion='%f'\n", fVersion);
+		m_pDS->exec(strVersion.c_str());
+  }
 	return true;
 }

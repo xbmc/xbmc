@@ -746,6 +746,11 @@
   <string><id>13374</id><value>- Port 3 Voice</value></string>
   <string><id>13375</id><value>Enable Device</value></string>
   <string><id>13376</id><value>Volume(%)</value></string>
+  <string><id>13377</id><value>Default View Mode</value></string>
+  <string><id>13378</id><value>Default Brightness</value></string>
+  <string><id>13379</id><value>Default Contrast</value></string>
+  <string><id>13380</id><value>Default Gamma</value></string>
+  <string><id>13381</id><value>Resume Video</value></string>
 
   <string><id>14000</id><value>Stacking: Off</value></string>
   <string><id>14001</id><value>Stacking: Simple</value></string>

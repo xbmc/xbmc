@@ -549,7 +549,15 @@ void CGUIWindowSettingsCategory::CreateSettings()
 			pControl->AddLabel(g_localizeStrings.Get(13357), RENDER_HQ_RGB_SHADER);
 			pControl->SetValue(pSettingInt->GetData());
 		}
-		iPosY+=iGapY;
+		else if (strSetting == "MyVideos.ViewMode")
+		{
+			CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+			CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      for (int i=VIEW_MODE_NORMAL; i<VIEW_MODE_CUSTOM; i++)
+			  pControl->AddLabel(g_localizeStrings.Get(630+i), i);
+			pControl->SetValue(pSettingInt->GetData());
+		}
+    iPosY+=iGapY;
 	}
 	// fix first and last navigation
 	CGUIControl *pControl = (CGUIControl *)GetControl(CONTROL_START_CONTROL + (int)m_vecSettings.size()-1);

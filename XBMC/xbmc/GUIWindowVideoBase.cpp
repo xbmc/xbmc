@@ -965,24 +965,40 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
 	pMenu->ClearButtons();
 	// add the needed buttons
 	pMenu->AddButton(13346);	// Show Video Information
+  pMenu->AddButton(13381);  // Resume Video
 	pMenu->AddButton(13347);	// Add to Playlist
 	pMenu->AddButton(13350);	// Now Playing...
 	pMenu->AddButton(13349);	// Query Info For All Files
 	pMenu->AddButton(13348);	// Search IMDb...
 	pMenu->AddButton(5);			// Settings
 
+  // check to see if the Resume Video button is applicable
+  int startOffset = 0;
+  pMenu->EnableButton(2, false);
+  if (m_vecItems[iItem]->IsVideo())
+  { // ok, we have a video file at least
+    // grab the database info
+    CVideoSettings settings;
+    m_database.GetVideoSettings(m_vecItems[iItem]->m_strPath, settings);
+    if (settings.m_ResumeTime > 0)
+    {
+      startOffset = settings.m_ResumeTime;
+      pMenu->EnableButton(2, true);
+    }
+  }
 	// turn off the now playing button if nothing is playing
 /*	if (!g_application.IsPlayingVideo())
-		pMenu->EnableButton(3, false);*/
+		pMenu->EnableButton(4, false);*/
   bool bIsGotoParent = m_vecItems[iItem]->GetLabel() == "..";
   if (bIsGotoParent)
   {
 		pMenu->EnableButton(1, false);
 		pMenu->EnableButton(2, false);
+		pMenu->EnableButton(3, false);
   }
 	// turn off the query info button if we aren't in files view
 	if (GetID() != WINDOW_VIDEOS)
-		pMenu->EnableButton(4, false);
+		pMenu->EnableButton(5, false);
 	// position it correctly
 	pMenu->SetPosition(iPosX-pMenu->GetWidth()/2, iPosY-pMenu->GetHeight()/2);
 	pMenu->DoModal(GetID());
@@ -991,20 +1007,25 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
 	case 1:	// Show Video Information
 		OnInfo(iItem);
 		break;
-	case 2:	// Add to Playlist
+  case 2: // Resume Video
+    // set the start offset
+    m_vecItems[iItem]->m_lStartOffset = startOffset;
+    OnClick(iItem);
+    break;
+	case 3:	// Add to Playlist
 		OnQueueItem(iItem);
 		break;
-	case 3:	// Now Playing...
+	case 4:	// Now Playing...
 		m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
 		return;
 		break;
-	case 4:	// Query Info For All Files
+	case 5:	// Query Info For All Files
 		OnScan();
 		break;
-	case 5:	// Search IMDb...
+	case 6:	// Search IMDb...
 		OnManualIMDB();
 		break;
-	case 6:	// Settings
+	case 7:	// Settings
 		m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS);
 		return;
 		break;
