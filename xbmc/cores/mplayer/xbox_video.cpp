@@ -697,7 +697,19 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
 		m_bRenderGUI=true;
 		return;
 	}
-	//vo_draw_alpha_yuy2(w,h,src,srca,stride,((unsigned char *) image) + dstride*y0 + 2*x0,dstride);
+  
+  // OSD is drawn after draw_slice / put_image
+  // this means that m_iDecodeBuffer already points to the next buffer
+  // so get previous buffer and draw OSD into it
+  int iBuffer=m_iDecodeBuffer-1;
+  if (iBuffer < 0) iBuffer=NUM_BUFFERS-1;
+  byte* image=(byte*)m_TextureBuffer[iBuffer];
+  DWORD dstride=ytexture_pitch;
+	vo_draw_alpha_yv12(w,h,src,srca,stride,((unsigned char *) image) + dstride*y0 + 2*x0,dstride);
+  // flush CPU cache. This way all data is back in memory and GPU (pixelshader) can access it
+  __asm {
+    wbinvd
+  }
 }
 
 //********************************************************************************************************
