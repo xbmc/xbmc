@@ -10,9 +10,8 @@
 
 /********************************* Includes ***********************************/
 
-#include "..\..\..\guilib\tinyXML\tinyxml.h"
 #include "..\..\FileSystem\VirtualDirectory.h"
-//#include	"wsIntrn.h"
+#include "includes.h"
 
 class CXbmcWeb
 {
@@ -29,11 +28,14 @@ public:
 	void		AddItemToPlayList(const CFileItem* pItem);
 
 	int			xbmcCommand( int eid, webs_t wp, int argc, char_t **argv);
-	int			xbmcConfiguration( int eid, webs_t wp, int argc, char_t **argv);
+
 	void		xbmcForm(webs_t wp, char_t *path, char_t *query);
 	int			xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *parameter);
 
+
 	int 		xbmcPlayerPlay( int eid, webs_t wp, char_t *parameter);
+	int			xbmcPlayerPrevious( int eid, webs_t wp, char_t *parameter);
+	int			xbmcPlayerNext( int eid, webs_t wp, char_t *parameter);
 	int 		xbmcNavigate( int eid, webs_t wp, char_t *parameter);
 	int 		xbmcCatalog( int eid, webs_t wp, char_t *parameter);
 	int 		xbmcRemoteControl( int eid, webs_t wp, char_t *parameter);
@@ -45,10 +47,8 @@ private:
 	int			currentItem;
 	bool		wroteHeader;
 	bool		wroteFooter;
-	TiXmlDocument xbmcCfg;// ("Q:\\config.xml");
 	VECFILEITEMS webDirItems;
 	int			catalogItemCounter;
-	bool		xbmcCfgLoaded;
 	DIRECTORY::CVirtualDirectory *directory;
 	string	strCurrentMediaFile;
 };

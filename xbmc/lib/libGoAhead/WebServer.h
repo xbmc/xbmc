@@ -16,41 +16,33 @@
 
 #pragma once
 
-#include "defines.h"
-#define SOCK_DFT_SVC_TIME	20
-#define SPYCE_SUPPORT
+#include "includes.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include	"wsIntrn.h"
-
-#ifdef WEBS_SSL_SUPPORT
-#include	"websSSL.h"
-#endif
-
-#ifdef USER_MANAGEMENT_SUPPORT
-#include	"um.h"
-	void		formDefineUserMgmt(void);
-#endif
-
 int		aspTest(int eid, webs_t wp, int argc, char_t **argv);
 void	formTest(webs_t wp, char_t *path, char_t *query);
 int		XbmcWebsAspCommand(int eid, webs_t wp, int argc, char_t **argv);
-int		XbmcWebsAspConfiguration( int eid, webs_t wp, int argc, char_t **argv);
 void	XbmcWebsForm(webs_t wp, char_t *path, char_t *query);
+
+// wrapers for XBMCConfiguration
+int XbmcWebsAspConfigBookmarkSize(int eid, webs_t wp, int argc, char_t **argv);
+int XbmcWebsAspConfigGetBookmark( int eid, webs_t wp, int argc, char_t **argv);
+int XbmcWebsAspConfigAddBookmark( int eid, webs_t wp, int argc, char_t **argv);
+int XbmcWebsAspConfigSaveBookmark( int eid, webs_t wp, int argc, char_t **argv);
+int XbmcWebsAspConfigRemoveBookmark( int eid, webs_t wp, int argc, char_t **argv);
+int XbmcWebsAspConfigSaveConfiguration( int eid, webs_t wp, int argc, char_t **argv);
+int XbmcWebsAspConfigGetOption( int eid, webs_t wp, int argc, char_t **argv);
+int XbmcWebsAspConfigSetOption( int eid, webs_t wp, int argc, char_t **argv);
 
 #if defined(__cplusplus)
 }
 #endif 
 
 #include <xtl.h>
-#include <process.h>
 #include "..\..\utils\Thread.h"
-#include "xbmcweb.h"
-
-static CXbmcWeb* pXbmcWeb;
 
 class CWebServer : public CThread
 {
