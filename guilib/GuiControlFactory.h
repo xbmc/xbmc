@@ -8,6 +8,7 @@
 #pragma once
 #include "GUICOntrol.h"
 #include "tinyxml/tinyxml.h"
+#include "../xbmc/StringUtils.h"
 
 #include <string>
 using namespace std;
@@ -28,6 +29,7 @@ private:
 	bool GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntValue);
 	bool GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& bBoolValue);
 	bool GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue);
+  bool GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, CStdStringArray& vecStringValue);
 	bool GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringPath);
 	bool GetAlignment(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
 	bool GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);

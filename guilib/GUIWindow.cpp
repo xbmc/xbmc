@@ -36,6 +36,7 @@
 #include "../xbmc/application.h"
 #include "../xbmc/xbox/XKUtils.h"
 #include "GUIInfoLabelControl.h"
+#include "GUIInfoFadeLabelControl.h"
 #include "GUIInfoImage.h"
 //#include "../xbmc/util.h"
 
@@ -102,6 +103,10 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 			else if (!strcmp(it->m_szType,"fadelabel"))
 			{
 				stControl.m_pControl = new CGUIFadeLabelControl(*((CGUIFadeLabelControl*)it->m_pControl));
+			}
+			else if (!strcmp(it->m_szType,"infofadelabel"))
+			{
+				stControl.m_pControl = new CGUIInfoFadeLabelControl(*((CGUIInfoFadeLabelControl*)it->m_pControl));
 			}
 			else if (!strcmp(it->m_szType,"spinbutton"))
 			{
@@ -263,6 +268,10 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 		else if (!strcmp(it->m_szType,"fadelabel"))
 		{
 			stControl.m_pControl = new CGUIFadeLabelControl(*((CGUIFadeLabelControl*)it->m_pControl));
+		}
+		else if (!strcmp(it->m_szType,"infofadelabel"))
+		{
+			stControl.m_pControl = new CGUIInfoFadeLabelControl(*((CGUIInfoFadeLabelControl*)it->m_pControl));
 		}
 		else if (!strcmp(it->m_szType,"spinbutton"))
 		{

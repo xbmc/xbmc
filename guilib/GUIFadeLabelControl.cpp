@@ -122,7 +122,7 @@ bool CGUIFadeLabelControl::RenderText(float fPosX, float fPosY, float fMaxWidth,
 	float fHeight=60;
 	if (fHeight+fPosCY >= g_graphicsContext.GetHeight() )
 		fHeight = g_graphicsContext.GetHeight() - fPosCY -1;
-	if (fHeight <= 0) return true;
+	if (fHeight <= 0 || fMaxWidth < 5.0f) return true;
 
 	newviewport.X      = (DWORD)fPosCX;
 	newviewport.Y			 = (DWORD)fPosCY;
