@@ -138,8 +138,8 @@ struct CreditLine_t
 	{  50,  65,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"Douglas Adams for making me smile each summer" },
 	{  50,  75,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"hitchhikers guide to the galaxy" },
 
-    // joke section [XC]-Ice
-	{  50,  22,   9500,   8000,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   36, L"[XC]-Ice" },
+    // joke section [XC]D-Ice
+	{  50,  22,   9500,   8000,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   36, L"[XC]D-Ice" },
   {  50,  35,    500,   7500,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"Special thanks to:" },
 	{  50,  45,    100,   7400,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"Heineken for getting me VERY drunk when coding" },
 	{  50,  55,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"and Pepsi for curing my hangovers" },
