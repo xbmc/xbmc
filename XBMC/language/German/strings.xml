@@ -161,7 +161,7 @@
   </string>   
   <string>
     <id>112</id>
-    <value>PAUSE</value>
+    <value>Pause</value>
   </string>   
   <string>
     <id>113</id>
@@ -265,7 +265,7 @@
   </string>  
   <string>
     <id>138</id>
-    <value>SYSTEM INFORMATION</value>
+    <value>System Information</value>
   </string>  
   <string>
     <id>139</id>
@@ -681,7 +681,7 @@
   </string>
   <string>
     <id>243</id>
-    <value>Autostart XBOX Spiele</value>
+    <value>Autostart XBox Spiele</value>
   </string>
   <string>
     <id>244</id>
