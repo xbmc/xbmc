@@ -5,9 +5,12 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-	- 07-09-2004 fixed: python dll loading ('import unicodedata' should work again)
-	- 07-09-2004 fixed: xbmc oculd crash when restarting the webserver
-	- 07-09-2004 added: password can now be set for the webserver
+  - 07-09-2004 updated: Polish language file (thanks NaPek)
+  - 07-09-2004 updated: Portuguese language file (thanks wellingtontu)
+  - 07-09-2004 updated: Italian language file (thanks kotix)
+  - 07-09-2004 fixed: python dll loading ('import unicodedata' should work again)
+  - 07-09-2004 fixed: xbmc oculd crash when restarting the webserver
+  - 07-09-2004 added: password can now be set for the webserver
   - 07-09-2004 fixed: <aligny> now defaults to top instead of center (should make textoffsetY work unless overridden by aligny)
   - 07-09-2004 added: SF patch 1019867: Fix Matrix Screensaver to work in 1080i (thanks kraqh3d)
   - 07-09-2004 added: SF patch 1016454: Proper MP3 Genre Parsing (thanks kraqh3d)

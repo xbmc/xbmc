@@ -365,7 +365,7 @@
   </string>
  <string>
   <id>163</id> 
-  <value>Lettore</value> 
+  <value>Lettura</value> 
   </string>
  <string>
   <id>164</id> 
@@ -725,7 +725,7 @@
   </string>
  <string>
   <id>254</id> 
-  <value>- DD Stereo Passthrough</value> 
+  <value>- Amplificatore con DTS</value> 
   </string>
  <string>
   <id>255</id> 
@@ -761,7 +761,7 @@
   </string>
  <string>
   <id>263</id> 
-  <value>HTTP server</value> 
+  <value>Abilita Web server</value> 
   </string>
  <string>
   <id>264</id> 
@@ -1037,7 +1037,7 @@
   </string>
  <string>
   <id>333</id> 
-  <value>Vuoi riorganizzare il databese musicale?</value> 
+  <value>Vuoi riorganizzare il database musicale?</value> 
   </string>
  <string>
   <id>334</id> 
@@ -1125,7 +1125,7 @@
   </string>
  <string>
   <id>355</id> 
-  <value>Screensaver</value> 
+  <value>Inattività per Screensaver</value> 
   </string>
  <string>
   <id>356</id> 
@@ -1133,7 +1133,7 @@
   </string>
  <string>
   <id>357</id> 
-  <value>Autospegnimento</value> 
+  <value>Autospegnimento per inattività</value> 
   </string>
  <string>
   <id>358</id> 
@@ -1153,7 +1153,7 @@
   </string>
  <string>
   <id>362</id> 
-  <value>Livello Fade Screensaver (%)</value> 
+  <value>Oscuramento Screensaver (%)</value> 
   </string>
  <string>
   <id>363</id> 
@@ -1161,7 +1161,7 @@
   </string>
  <string>
   <id>364</id> 
-  <value>- DD/DTS Passthrough Multicanale</value> 
+  <value>- Amplificatore con AC3</value> 
   </string>
  <string>
   <id>365</id> 
@@ -1661,7 +1661,7 @@
   </string>
  <string>
   <id>490</id> 
-  <value>Auto switch Lista e icone in Musica</value> 
+  <value>Auto switch Lista e Icone in Musica</value> 
   </string>
  <string>
   <id>491</id> 
@@ -1669,7 +1669,7 @@
   </string>
  <string>
   <id>492</id> 
-  <value>Ingrandisci VobSubs</value> 
+  <value>Ingrandisci Sottotitoli</value> 
   </string>
  <string>
   <id>493</id> 
@@ -1677,11 +1677,11 @@
   </string>
  <string>
   <id>494</id> 
-  <value>Overall Audio Headroom (dB)</value> 
+  <value>Livello audio generale (dB)</value> 
   </string>
  <string>
   <id>495</id> 
-  <value>Upsample videos to GUI resolution</value> 
+  <value>Adatta i video alla risoluzione dell'interfaccia</value> 
   </string>
  <string>
   <id>496</id> 
@@ -1705,7 +1705,7 @@
   </string>
  <string>
   <id>501</id> 
-  <value>Ricerca nomi album in corso...</value> 
+  <value>Ricerca nome album in corso...</value> 
   </string>
  <string>
   <id>502</id> 
@@ -1725,8 +1725,16 @@
   </string>
  <string> 
   <id>506</id> 
-  <value>Usa nomi cartelle per la descrizione</value> 
+  <value>Usa il nome della directory per la descrizione</value> 
  </string> 
+ <string> 	 
+  <id>507</id> 	 
+  <value>Ordina x Utilizzo</value> 	 
+ </string>
+ <string>
+  <id>508</id>
+  <value>Non usare Shortcuts o Scan</value>
+ </string>
  <string>
   <id>600</id> 
   <value>Rip CD</value> 
@@ -1790,7 +1798,171 @@
  <string> 
   <id>625</id> 
   <value>Tutte canzoni di</value> 
- </string> 
+ </string>
+	<string>
+		<id>629</id>
+		<value>Modalità di visione</value>
+	</string>
+	<string>
+		<id>630</id>
+		<value>Normale</value>
+	</string>
+	<string>
+		<id>631</id>
+		<value>Zoom</value>
+	</string>
+	<string>
+		<id>632</id>
+		<value>Stretch 4:3</value>
+	</string>
+	<string>
+		<id>633</id>
+		<value>Stretch 14:9</value>
+	</string>
+	<string>
+		<id>634</id>
+		<value>Stretch 16:9</value>
+	</string>
+	<string>
+		<id>635</id>
+		<value>Dimensione originale</value>
+	</string>
+	<string>
+		<id>636</id>
+		<value>Personalizzata</value>
+	</string>
+ 	<string>
+		<id>700</id>
+		<value>Riorganizzo il Database</value>
+	</string>
+	<string>
+		<id>701</id>
+		<value>Eliminazione vecchie canzoni dal Database</value>
+	</string>
+	<string>
+		<id>702</id>
+		<value>Questo percorso è già stato esaminato in precedenza.</value>
+	</string>
+	<string>
+		<id>703</id>
+		<value>Premere Si per aggiornare tutte le canzoni in questo percorso.</value>
+	</string>
+	<string>
+		<id>704</id>
+		<value>Premere No per aggiungere solo nuove canzoni.</value>
+	</string>
+	<string>
+		<id>705</id>
+		<value>Network</value>
+	</string>
+	<string>
+		<id>706</id>
+		<value>HTTP Proxy Host</value>
+	</string>
+	<string>
+		<id>707</id>
+		<value>HTTP Proxy Port</value>
+	</string>
+	<string>
+		<id>708</id>
+		<value>Attiva HTTP Proxy</value>
+	</string>
+	<string>
+		<id>709</id>
+		<value>XLink Kai XTag</value>
+	</string>
+	<string>
+		<id>710</id>
+		<value>XLink Kai Password</value>
+	</string>
+	<string>
+		<id>711</id>
+		<value>Internet Protocol (IP)</value>
+	</string>
+	<string>
+		<id>712</id>
+		<value>Porta specificata non valida. Inserire un valore compreso tra 1 and 65535.</value>
+	</string>
+	<string>
+		<id>713</id>
+		<value>HTTP Proxy</value>
+	</string>	
+	<string>
+		<id>714</id>
+		<value>XLink Kai</value>
+	</string>	
+	<string>
+		<id>715</id>
+		<value>Assegnazione</value>
+	</string>	
+	<string>
+		<id>716</id>
+		<value>Automatico (DHCP)</value>
+	</string>	
+	<string>
+		<id>717</id>
+		<value>Manuale (Static)</value>
+	</string>	
+	<string>
+		<id>718</id>
+		<value>Default (Dashboard)</value>
+	</string>	
+	<string>
+		<id>719</id>
+		<value>Indirizzo IP</value>
+	</string>	
+	<string>
+		<id>720</id>
+		<value>Netmask</value>
+	</string>	
+	<string>
+		<id>721</id>
+		<value>Default Gateway</value>
+	</string>	
+	<string>
+		<id>722</id>
+		<value>DNS Server</value>
+	</string>
+	<string>
+		<id>723</id>
+		<value>Salva e Riavvia XBox</value>
+	</string>
+	<string>
+		<id>724</id>
+		<value>Indirizzo non valido. Inserire un valore tipo AAA.BBB.CCC.DDD</value>
+	</string>
+	<string>
+		<id>725</id>
+		<value>Con cifre tra 0 and 255.</value>
+	</string>
+	<string>
+		<id>726</id>
+		<value>Modifiche non salvate. Continuare senza salvare?</value>
+	</string>
+	<string>
+		<id>727</id>
+		<value>Web Server</value>
+	</string>	
+	<string>
+		<id>728</id>
+		<value>FTP Server</value>
+	</string>	
+	<string>
+		<id>729</id>
+		<value>Internet Time</value>
+	</string>	
+	<string>
+		<id>730</id>
+		<value>Web Server Port</value>
+	</string>	
+	<string>
+		<id>731</id>
+		<value>Time Server Host</value>
+	</string>
+	<string>
+		<id>732</id>
+		<value>Salva e Applica</value>
+	</string>
 
  <string>
   <id>998</id> 
@@ -1874,7 +2046,7 @@
   </string>
  <string>
   <id>10020</id> 
-  <value>Impostazioni->Script</value> 
+  <value>Impostazioni->Scripts</value> 
   </string>
  <string>
   <id>10021</id> 
@@ -2010,11 +2182,11 @@
   </string>
  <string>
   <id>13003</id> 
-  <value>- Ritardo:</value> 
+  <value>- Ritardo</value> 
   </string>
  <string>
   <id>13004</id> 
-  <value>- Durata minima del file:</value> 
+  <value>- Durata minima del file</value> 
   </string>
  <string>
   <id>13100</id>
@@ -2030,12 +2202,20 @@
  </string>
  <string>
   <id>13202</id>
-  <value>Salva impostazioni come profilo...</value>
+  <value>Salva impostazioni correnti come profilo...</value>
  </string>
  <string>
   <id>13203</id>
   <value>Profilo '%i' caricato con successo</value>
  </string>
+  <string>
+<id>13204</id>
+<value>Ultimo profilo caricato:</value>
+</string>
+  <string>
+<id>13205</id>
+<value>Sconosciuto</value>
+</string>
  <string>
   <id>13300</id>
   <value>Velocità ventola:</value>
@@ -2048,4 +2228,16 @@
   <id>13302</id>
   <value>Controllo velocità ventola</value>
  </string> 
+  <string>
+<id>13303</id>
+<value>Skin Fonts</value>
+</string>
+  <string>
+<id>13304</id>
+<value>Flip Charset</value>
+</string>
+ <string>
+<id>13305</id>
+<value>Abilita i feed RSS</value>
+</string>
  </strings>
