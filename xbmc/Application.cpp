@@ -1535,8 +1535,7 @@ void CApplication::Render()
 		{
 			// in debug mode, show freememory
 			CStdStringW wszText;
-			wszText.Format(L"FreeMem %d/%d",stat.dwAvailPhys,
-				stat.dwTotalPhys);
+			wszText.Format(L"FPS %.0f FreeMem %d/%d", m_fFPS, stat.dwAvailPhys, stat.dwTotalPhys);
 
 			CGUIFont* pFont=g_fontManager.GetFont("font13");
 			if (pFont)
@@ -1546,7 +1545,6 @@ void CApplication::Render()
 		}
 	}
 	// Present the backbuffer contents to the display
-	m_pd3dDevice->BlockUntilVerticalBlank();
 	m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 	g_graphicsContext.Unlock();
 
