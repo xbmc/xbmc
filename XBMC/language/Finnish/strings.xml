@@ -1,6 +1,6 @@
 <!-- Finnish - language resource  -->
-<!-- Finnish Translation 2004-4-25 by Nanite1000 -->
-<!-- Based on CVS revision 2004-4-25 YYYY-MM-DD -->
+<!-- Finnish Translation 2004-5-18 by Nanite1000 -->
+<!-- Based on CVS revision 2004-5-18 YYYY-MM-DD -->
 <!-- For comments PM me in xboxmediacenter forum or IRC: nanite1k @ #xbmc on efnet-->
 <!-- Kommentteja voi lähetellä xboxmediacentterin foorumin kautta -->
 <!-- Not all weather strings are tranlated, cant get it to look correct/too long -->
@@ -1696,6 +1696,18 @@
     <id>497</id>
     <value>Piilota tiedostojen tarkenteet</value>
   </string>
+  <string>
+    <id>498</id>
+    <value>Tyypin mukaan</value>
+  </string>
+  <string>
+    <id>499</id>
+    <value>Ei yhteyttä www.allmusic.com palvelimeen</value>
+  </string>
+  <string>
+    <id>500</id>
+    <value>Albumin tietojen lataus ei onnistunut</value>
+  </string>
 <string><id>10000</id><value>Paavalikko</value></string>
 <string><id>10001</id><value>Ohjelmat</value></string>
 <string><id>10002</id><value>Kuvat</value></string>
@@ -1704,26 +1716,26 @@
 <string><id>10005</id><value>Musiikki</value></string>
 <string><id>10006</id><value>Videot</value></string>
 <string><id>10007</id><value>Jarjestelma</value></string>
-<string><id>10008</id><value>Asetukset->Yleiset</value></string>
-<string><id>10009</id><value>Asetukset->Naytto</value></string>
-<string><id>10010</id><value>Asetukset->Naytto->Menunayton paikka</value></string>
-<string><id>10011</id><value>Asetukset->Naytto->Kuvaruudun Saato</value></string>
-<string><id>10012</id><value>Asetukset->Diaesitys</value></string>
-<string><id>10013</id><value>Asetukset->Naytto->Filtterit</value></string>
-<string><id>10014</id><value>Asetukset->Musiikki</value></string>
-<string><id>10015</id><value>Asetukset->Naytto->Tekstitys</value></string>
-<string><id>10016</id><value>Asetukset->Naytto->Naytonsaastaja</value></string>
-<string><id>10017</id><value>Asetukset->Saa</value></string>
-<string><id>10020</id><value>Asetukset->Scriptit</value></string>
+<string><id>10008</id><value>Asetukset-&gt;Yleiset</value></string>
+<string><id>10009</id><value>Asetukset-&gt;Naytto</value></string>
+<string><id>10010</id><value>Asetukset-&gt;Naytto-&gt;Menunayton paikka</value></string>
+<string><id>10011</id><value>Asetukset-&gt;Naytto-&gt;Kuvaruudun Saato</value></string>
+<string><id>10012</id><value>Asetukset-&gt;Diaesitys</value></string>
+<string><id>10013</id><value>Asetukset-&gt;Naytto-&gt;Filtterit</value></string>
+<string><id>10014</id><value>Asetukset-&gt;Musiikki</value></string>
+<string><id>10015</id><value>Asetukset-&gt;Naytto-&gt;Tekstitys</value></string>
+<string><id>10016</id><value>Asetukset-&gt;Naytto-&gt;Naytonsaastaja</value></string>
+<string><id>10017</id><value>Asetukset-&gt;Saa</value></string>
+<string><id>10020</id><value>Asetukset-&gt;Scriptit</value></string>
 <string><id>10021</id><value>Videot/tyylit</value></string>
 <string><id>10022</id><value>Videot/nayttelijat</value></string>
 <string><id>10023</id><value>Videot/vuosi</value></string>
-<string><id>10024</id><value>Asetukset->Ohjelmat</value></string>
+<string><id>10024</id><value>Asetukset-&gt;Ohjelmat</value></string>
 <string><id>10025</id><value>Videot/nimi</value></string>
-<string><id>10026</id><value>Asetukset->Yleiset->Valimuisti</value></string>
-<string><id>10027</id><value>Asetukset->Yleiset->Autorun</value></string>
+<string><id>10026</id><value>Asetukset-&gt;Yleiset-&gt;Valimuisti</value></string>
+<string><id>10027</id><value>Asetukset-&gt;Yleiset-&gt;Autorun</value></string>
 <string><id>10028</id><value>Videot/soittolista</value></string>
-<string><id>10029</id><value>Asetukset->Yleiset->LCD</value></string>
+<string><id>10029</id><value>Asetukset-&gt;Yleiset-&gt;LCD</value></string>
 <string><id>10100</id><value>Kylla/ei dialogi</value></string>
 <string><id>10101</id><value>Toiminnan dialogi</value></string>
 <string><id>10500</id><value>Musiikki/soittolista</value></string>
