@@ -61,7 +61,7 @@ struct DllTrackInfo
 };
 
 int ResolveName(char*, char*, void **);
-extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file);
+extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR file, LPCSTR sourcedll);
 extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule);
 
 std::list<DllTrackInfo> TrackedDlls;
@@ -136,6 +136,31 @@ inline std::list<HMODULE>* get_track_list_dll(unsigned addr)
 		if (addr >= it->MinAddr && addr <= it->MaxAddr)
 		{
 			return &it->DllList;
+		}
+	}
+	return NULL;
+}
+
+inline char* getpath(char *buf, const char *full)
+{
+  char* pos;
+  if(pos = strrchr(full, '\\'))
+  {
+    strncpy(buf, full, pos - full);
+    buf[pos - full] = 0;
+    return buf;
+  }
+  else
+    return NULL;
+}
+
+inline char* get_track_dll_path(unsigned addr)
+{
+	for (TrackedDllsIter it = TrackedDlls.begin(); it != TrackedDlls.end(); ++it)
+	{
+		if (addr >= it->MinAddr && addr <= it->MaxAddr)
+		{
+			return it->pDll->GetDLLName();
 		}
 	}
 	return NULL;
@@ -257,8 +282,8 @@ extern "C" HMODULE __stdcall track_LoadLibraryA(LPCSTR file)
   __asm mov loc,eax
 
   std::list<HMODULE>* pList = get_track_list_dll(loc);
+  HMODULE handle = dllLoadLibraryExtended(file, get_track_dll_path(loc));
 
-  HMODULE handle = dllLoadLibraryA(file);
   if (pList && handle) pList->push_back(handle);
   return handle;
 }
@@ -937,7 +962,7 @@ Exp2Dll::~Exp2Dll()
 	}
 }           
 
-extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file) 
+extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR file, LPCSTR sourcedll) 
 {
   // we skip to the last backslash
   // this is effectively eliminating weird characters in
@@ -960,8 +985,26 @@ extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file)
 	if (strcmp(llibname, "ws2_32.dll") == 0 || strcmp(llibname, "ws2_32") == 0) return (HMODULE)MODULE_HANDLE_ws2_32;
   
 	char pfile[MAX_PATH+1];
-	if (strlen(file) > 1 && file[1] == ':') sprintf(pfile, "%s", (char *)file);
-	else sprintf(pfile, "%s\\%s", DEFAULT_DLLPATH ,(char *)libname);
+	if (strlen(file) > 1 && file[1] == ':') 
+    sprintf(pfile, "%s", (char *)file);
+  else
+  {
+    if(sourcedll)
+    {
+      //Use calling dll's path as base address for this call
+      char path[MAX_PATH+1];
+      getpath(path, sourcedll);
+
+      //Handle mplayer case specially
+      //it has all it's dlls in a codecs subdirectory
+      if(strstr(sourcedll, "mplayer.dll"))
+        sprintf(pfile, "%s\\codecs\\%s", path, (char *)libname);
+      else
+        sprintf(pfile, "%s\\%s", path, (char *)libname);
+    }
+	  else 
+      sprintf(pfile, "%s\\%s", DEFAULT_DLLPATH ,(char *)libname);
+  }
 	
 	// Check m_vecDlls vector if dll is already loaded and return its handle
 	for (unsigned int i=0; i<m_vecDlls.size(); i++)
@@ -1068,6 +1111,15 @@ extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file)
 	// Add dll to m_vecDlls
 	m_vecDlls.push_back(dllhandle);
 	return (HMODULE) dllhandle;
+}
+
+extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file) 
+{
+  unsigned loc;
+  __asm mov eax,[ebp+4]
+  __asm mov loc,eax
+
+  return dllLoadLibraryExtended(file, get_track_dll_path(loc));
 }
 
 #define DONT_RESOLVE_DLL_REFERENCES   0x00000001

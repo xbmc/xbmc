@@ -814,4 +814,5 @@
   <string><id>15059</id><value>Invite accepted!</value></string>
   <string><id>15060</id><value>Message Here</value></string>
   <string><id>15061</id><value>You're invited to play %s.</value></string>
+  <string><id>15062</id><value>Use alternate mplayer core</value></string>
 </strings>

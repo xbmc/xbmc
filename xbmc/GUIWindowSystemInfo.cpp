@@ -37,8 +37,15 @@ DWORD WINAPI GetMPlayerVersionW( LPVOID lpParam )
 	const char* (__cdecl* pMplayerGetVersion)();
 	const char* (__cdecl* pMplayerGetCompileDate)();
 	wszVersion[0] = 0; wszCompileDate[0] = 0;
-		
-	DllLoader* mplayerDll = new DllLoader("Q:\\mplayer\\mplayer.dll");
+	DllLoader* mplayerDll;
+	if(g_guiSettings.GetBool("MyVideos.AlternateMPlayer"))
+  {
+    mplayerDll = new DllLoader("Q:\\system\\players\\mplayer\\mplayer.dll",true);
+  }
+  else
+  {
+    mplayerDll = new DllLoader("Q:\\mplayer\\mplayer.dll",true);
+  }
 
 	if( mplayerDll->Parse() )
 	{		
