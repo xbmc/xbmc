@@ -697,7 +697,8 @@ void CGUIWindowMusicOverlay::SetCurrentFile(CFileItem& item)
 	{
 		//	Found, so load it.
 		CPicture picture;
-		m_pTexture=picture.Load(item.GetThumbnailImage());
+		int iWidth, iHeight;
+		m_pTexture=picture.Load(item.GetThumbnailImage(), iWidth, iHeight);
 		m_iTextureWidth=picture.GetWidth();
 		m_iTextureHeight=picture.GetHeight();
 		//	 thumb correctly loaded?

@@ -1,5 +1,6 @@
 #include "mouse.h"
 #include "../key.h"
+#include "../../xbmc/utils/log.h"
 
 CMouse g_Mouse;	// global
 
@@ -29,6 +30,7 @@ void CMouse::Initialize()
       // Get a handle to the device
       m_hMouseDevice[i] = XInputOpen( XDEVICE_TYPE_DEBUG_MOUSE, i, 
                                       XDEVICE_NO_SLOT, NULL );
+			CLog::Log(LOGINFO, "Found mouse on port %i", i);
     }
   }
 	// Set the default resolution (PAL)
@@ -50,6 +52,7 @@ void CMouse::Update()
       {
 				XInputClose( m_hMouseDevice[i] );
 				m_hMouseDevice[i] = NULL;
+				CLog::Log(LOGINFO, "Mouse removed from port %i", i);
       }
     }
 
@@ -63,6 +66,7 @@ void CMouse::Update()
 				// Get a handle to the device
 				m_hMouseDevice[i] = XInputOpen( XDEVICE_TYPE_DEBUG_MOUSE, i, 
 																				XDEVICE_NO_SLOT, NULL );
+				CLog::Log(LOGINFO, "Mouse inserted on port %i", i);
 			}
 		}
   }

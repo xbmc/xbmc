@@ -1241,8 +1241,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 	{
 		GetInteger(pElement, "transistiontime", g_stSettings.m_iSlideShowTransistionTime,2000,500,INT_MAX);
 		GetInteger(pElement, "staytime", g_stSettings.m_iSlideShowStayTime,3000,500,INT_MAX);
-		GetFloat(pElement, "moveamount", g_stSettings.m_fSlideShowMoveAmount,0.05f,0,0.5f);
-		GetFloat(pElement, "zoomamount", g_stSettings.m_fSlideShowZoomAmount,0.05f,0,0.5f);
+		GetFloat(pElement, "moveamount", g_stSettings.m_fSlideShowMoveAmount,0.20f,0,0.5f);
+		GetFloat(pElement, "zoomamount", g_stSettings.m_fSlideShowZoomAmount,0.07f,0,0.5f);
+		GetFloat(pElement, "blackbarcompensation", g_stSettings.m_fSlideShowBlackBarCompensation,0.3f,0,0.5f);
 	}
 	// screen settings
 	pElement = pRootElement->FirstChildElement("screen");
@@ -1652,6 +1653,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	SetInteger(pNode, "staytime", g_stSettings.m_iSlideShowStayTime);
 	SetFloat(pNode, "moveamount", g_stSettings.m_fSlideShowMoveAmount);
 	SetFloat(pNode, "zoomamount", g_stSettings.m_fSlideShowZoomAmount);
+	SetFloat(pNode, "blackbarcompensation", g_stSettings.m_fSlideShowBlackBarCompensation);
 
 	// screen settings
 	TiXmlElement screenNode("screen");
