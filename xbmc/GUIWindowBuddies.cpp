@@ -5,7 +5,6 @@
 #include "GUIWindowBuddies.h"
 #include "settings.h"
 #include "guiWindowManager.h"
-#include "GUIEditControl.h"
 #include "GUIDialogInvite.h"
 #include "GUIDialogHost.h"
 #include "GUIDialogProgress.h"
@@ -179,6 +178,14 @@ void CGUIWindowBuddies::OnInitWindow()
 	{
 		// bind to the control defined in the xml
 		m_pConsole = (CGUIConsoleControl*)GetControl(CONTROL_KAI_CONSOLE);	
+
+		// set edit control observer
+		CGUIEditControl* pEdit = ((CGUIEditControl*)GetControl(CONTROL_KAI_TEXTEDIT));
+		if (pEdit)
+		{
+			// use inline text edit control
+			pEdit->SetObserver(this);
+		}
 
 		// bind this image to the control defined in the xml, later we'll use this
 		// as a template to determine the size and position of avatars
@@ -402,6 +409,14 @@ void CGUIWindowBuddies::OnClickHostButton(CGUIMessage& aMessage)
 	}
 }
 
+void CGUIWindowBuddies::OnEditTextComplete(CStdString& strLineOfText)
+{
+	CStdString strMessage = strLineOfText.Trim();
+	if (strMessage.length()>0)
+	{
+		m_pKaiClient->Chat(strMessage);
+	}
+}
 
 void CGUIWindowBuddies::OnClickKeyboardButton(CGUIMessage& aMessage)
 {
@@ -932,6 +947,7 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_BTNINVITE);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_BTNREMOVE);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_KAI_CONSOLE);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_KAI_TEXTEDIT);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNPLAY);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNADD);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNHOST);
@@ -963,6 +979,7 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNREMOVE);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNKEYBOARD);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_KAI_CONSOLE);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_KAI_TEXTEDIT);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_LISTEX);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_BTNMODE);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_BTNPLAY);
@@ -996,6 +1013,7 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNREMOVE);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNKEYBOARD);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_KAI_CONSOLE);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_KAI_TEXTEDIT);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_LISTEX);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_BTNMODE);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_BTNPLAY);
@@ -1023,6 +1041,7 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_IMAGEBUDDYICON2);
 
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_KAI_CONSOLE);
+			SET_CONTROL_VISIBLE(GetID(),CONTROL_KAI_TEXTEDIT);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_BTNMODE);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_BTNKEYBOARD);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_LISTEX);

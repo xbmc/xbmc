@@ -5,8 +5,10 @@
 #include "TinyXML/TinyXML.h"
 #include "StdString.h"
 
-#include "utils/UdpClient.h"
+#include "guiEditControl.h"
 #include "guiDialogProgress.h"
+
+#include "utils/UdpClient.h"
 #include "utils/KaiClient.h"
 
 #include "BuddyItem.h"
@@ -17,7 +19,8 @@ using namespace std;
 
 class CGUIConsoleControl;
 
-class CGUIWindowBuddies : 	public CGUIWindow, public IBuddyObserver
+class CGUIWindowBuddies : 	public CGUIWindow, public IBuddyObserver,
+							public IEditControlObserver
 {
 public:
 	CGUIWindowBuddies(void);
@@ -52,6 +55,8 @@ public:
 	virtual void			OnJoinsChat(CStdString& aOpponent);
 	virtual void			OnChat(CStdString& aVector, CStdString& aOpponent, CStdString& aMessage, bool bPrivate);
 	virtual void			OnLeavesChat(CStdString& aOpponent);
+
+	virtual void			OnEditTextComplete(CStdString& strLineOfText);
 
 	virtual void			OnInitWindow();
 	virtual void			OnAction(const CAction &action);

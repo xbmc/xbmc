@@ -19,8 +19,14 @@ using namespace std;
 	\ingroup controls
 	\brief 
 	*/
-class CGUIEditControl :
-  public CGUILabelControl
+
+class IEditControlObserver
+{
+	public:
+		virtual void OnEditTextComplete(CStdString& strLineOfText)=0;
+};
+
+class CGUIEditControl : public CGUILabelControl
 {
 public:
 	CGUIEditControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY,
@@ -29,6 +35,10 @@ public:
 
 	virtual ~CGUIEditControl(void);
 
+	virtual void SetObserver(IEditControlObserver* aObserver);
 	virtual void OnKeyPress(WORD wKeyId);
+
+protected:
+	IEditControlObserver* m_pObserver;
 };
 #endif
