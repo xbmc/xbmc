@@ -42,7 +42,11 @@ void CPlayListPlayer::PlayNext(bool bAutoPlay)
 	int iSong=m_iCurrentSong;
 	iSong++;
 	if (iSong >= playlist.size() )
+  {
+    if (m_iCurrentPlayList==PLAYLIST_VIDEO) return;
+    if (m_iCurrentPlayList==PLAYLIST_VIDEO_TEMP) return;
 		iSong=0;
+  }
 
 	if (bAutoPlay)
 	{
@@ -115,7 +119,6 @@ void CPlayListPlayer::SetCurrentPlaylist( int iPlayList )
 {
 	if (iPlayList == m_iCurrentPlayList)
 		return;
-	m_iCurrentSong=-1;
 	m_iCurrentPlayList=iPlayList;
 	m_bChanged=true;
 }
@@ -158,3 +161,7 @@ void CPlayListPlayer::Shuffle()
 	m_iCurrentSong=-1;
 }
 
+void CPlayListPlayer::Reset()
+{
+  m_iCurrentSong=-1;
+}

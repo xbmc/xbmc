@@ -20,6 +20,7 @@
 #include "DetectDVDType.h"
 #include "nfofile.h"
 #include "filesystem/file.h"
+#include "playlistplayer.h"
 #include "xbox/iosupport.h"
 #include "GUIDialogFileStacking.h"
 #define CONTROL_BTNVIEWASICONS		 2
@@ -503,15 +504,24 @@ void CGUIWindowVideoGenre::OnClick(int iItem)
 		  iSelectedFile = dlg->GetSelectedFile();
       if (iSelectedFile < 1) return;
     }
-		CStdString strFileName=movies[iSelectedFile-1];
-		if (CUtil::IsVideo(strFileName))
-		{
-			// play movie...
-			g_TextureManager.Flush();
-			g_graphicsContext.SetFullScreenVideo(true);
-			m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
-			g_application.PlayFile(strFileName);
-		}
+    
+    g_playlistPlayer.Reset();
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
+    CPlayList& playlist=g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
+    playlist.Clear();
+    for (int i=iSelectedFile-1; i < (int)movies.size(); ++i)
+    {
+      CStdString strFileName=movies[i];
+      CPlayList::CPlayListItem item;
+      item.SetFileName(strFileName);
+      playlist.Add(item);
+    }
+
+    // play movie...
+		g_TextureManager.Flush();
+		g_graphicsContext.SetFullScreenVideo(true);
+		m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+		g_playlistPlayer.PlayNext();
 	}
 }
 
