@@ -27,7 +27,8 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock) : CThread
   m_bInitializedOutputDevice = false;
   m_pOverlayPicture = NULL;
   m_iSpeed = 1;
-  
+  m_bRenderSubs = false;
+
   InitializeCriticalSection(&m_critCodecSection);
   m_packetQueue.SetMaxSize(5 * 256 * 1024); // 1310720
   
@@ -303,8 +304,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
   {
     DVDOverlayPicture* pOverlayPicture = m_overlay.Get();
     
-    if (pOverlayPicture && (pOverlayPicture->bForced ||
-        (pOverlayPicture->iPTSStartTime <= pts && pOverlayPicture->iPTSStopTime >= pts)))
+    if (pOverlayPicture && (pOverlayPicture->bForced || (m_bRenderSubs
+      && pOverlayPicture->iPTSStartTime <= pts && pOverlayPicture->iPTSStopTime >= pts)))
     {
       // create overlay picture if not already done
       if (!m_pOverlayPicture)

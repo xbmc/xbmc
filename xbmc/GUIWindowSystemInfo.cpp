@@ -79,7 +79,6 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 			m_dwFPSTime=timeGetTime();
 			m_dwFrames=0;
 			m_fFPS=0.0f;
-			m_dwlastTime=0;
 
 			//Get the version from the dll in a seperate thread.
 
@@ -123,19 +122,10 @@ void CGUIWindowSystemInfo::Render()
 
 void  CGUIWindowSystemInfo::GetValues()
 {
-	if(timeGetTime() - m_dwlastTime >= 1000)
-	{
-		m_dwlastTime = timeGetTime();
-    fanSpeed = CFanController::Instance()->GetFanSpeed();
-	}
-  // cpu + gpu temperature
+  // cpu + gpu temperature and fanspeed
   SET_CONTROL_LABEL(2, g_infoManager.GetLabel("System.CPUTemperature"));
   SET_CONTROL_LABEL(3, g_infoManager.GetLabel("System.GPUTemperature"));
-
-  //fanspeed
-  {
-		SET_CONTROL_LABEL(16, g_infoManager.GetLabel("System.FanSpeed"));
-  }
+	SET_CONTROL_LABEL(16, g_infoManager.GetLabel("System.FanSpeed"));
 
   WCHAR wszText[1024];
   // time build:

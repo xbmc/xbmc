@@ -310,6 +310,8 @@ void CDVDPlayer::Process()
       oldstate = DVDSTATE_NORMAL;
     }
 
+    CDemuxStream *pStream = m_pDemuxer->GetStream(pPacket->iStreamId);
+
     int iFileStreamId = m_pDemuxer->GetStream(pPacket->iStreamId)->iId;
     if (iFileStreamId >= m_dvd.iSelectedSPUStream &&
         iFileStreamId <= m_dvd.iSelectedSPUStream)
@@ -770,6 +772,7 @@ bool CDVDPlayer::GetSubtitleVisible()
 void CDVDPlayer::SetSubtitleVisible(bool bVisible)
 {
   m_bRenderSubtitle = bVisible;
+  m_dvdPlayerVideo.m_bRenderSubs = bVisible;
 }
 
 int CDVDPlayer::GetAudioStreamCount()

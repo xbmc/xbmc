@@ -241,6 +241,7 @@ CStdString CGUIInfoManager::GetCurrentPlayTime()
 	if (g_application.IsPlayingAudio())
 	{
 		__int64 lPTS=g_application.m_pPlayer->GetPTS() - (g_infoManager.GetCurrentSongStart()*10)/75;
+    if (lPTS < 0) lPTS = 0;
 		CUtil::SecondsToHMSString((long)(lPTS/10), strTime);
 	}
 	else if (g_application.IsPlayingVideo())
@@ -429,4 +430,17 @@ wstring CGUIInfoManager::GetFreeSpace(const CStdString &strDrive)
 	}
 	strReturn = wszHD;
 	return strReturn;
+}
+CStdString CGUIInfoManager::GetVersion()
+{
+	CStdString tmp = g_localizeStrings.Get(6).c_str();
+	tmp = tmp.substr(18, tmp.size()-14);
+	return tmp;
+}
+CStdString CGUIInfoManager::GetBuild()
+{
+	WCHAR wszDate[32];
+	CStdString tmp;
+	mbstowcs(wszDate, __DATE__, sizeof(wszDate));
+	return wszDate;
 }

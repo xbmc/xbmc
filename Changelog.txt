@@ -5,6 +5,12 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 20-02-2005 fixed: OSD crashes when filling listcontrols.
+  - 20-02-2005 fixed: Noise level was not used correctly for video filters.
+  - 20-02-2005 fixed: various info related things (eg music current pos could show negative times)
+  - 20-02-2005 fixed: Kai avatar on toast dialog wasn't shown in correct position.
+  - 20-02-2005 changed: Improved handling of resolution switching in GUI->Fullscreen video.
+  - 20-02-2005 fixed: Comborenderer small window in different resolution.
   - 19-02-2005 added: System.CPUTemperature, System.GPUTemperature, and System.FanSpeed to the infoManager.
   - 19-02-2005 changed: audiobuffer sizes for smoother pal video
   - 19-02-2005 added: Option to disable thumbnail generation during picture viewing.

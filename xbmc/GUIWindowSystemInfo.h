@@ -12,12 +12,8 @@ public:
 	virtual void	Render();	
 protected:
 	void			GetValues();
-	DWORD			m_dwlastTime ;
 	DWORD           m_dwFPSTime;
 	DWORD           m_dwFrames;
 	float           m_fFPS;
-	float           cputemp;
-	float           mbtemp;
-	unsigned short  fanSpeed;
 	wchar_t			m_wszMPlayerVersion[50];
 };

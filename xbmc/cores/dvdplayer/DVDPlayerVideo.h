@@ -54,7 +54,8 @@ public:
   int pictq_size, pictq_rindex, pictq_windex;
     
   int m_iSpeed;
-  
+  bool m_bRenderSubs;
+
 protected:
 
   virtual void    OnStartup();
@@ -74,7 +75,6 @@ protected:
   DVDVideoPicture* m_pOverlayPicture;
 
   CDVDDemuxSPU*   m_pDVDSpu;
-  
   
   CDemuxStreamVideo* m_pDemuxStreamVideo;
 
