@@ -12,6 +12,10 @@
 using namespace std;
 Exp2Dll *Head = 0;
 extern "C" int dummy_Unresolved(void);
+extern "C" int dummy_Kernel32Unresolved(void);
+extern "C" int dummy_User32Unresolved(void);
+extern "C" int dummy_OLE32Unresolved(void);
+extern "C" int dummy_MSVCRTUnresolved(void);
 static int ResolveName(char *Name, char* Function, void **Fixup);
 
 //hack to Free pe image, global variable.
@@ -265,7 +269,7 @@ int DllLoader::ResolveImports(void)
 					{
 						bResult=0;
 						char szBuf[128];
-						sprintf(szBuf,"unable to resolve %s %d\n",Name,*Table&0x7ffffff);
+						sprintf(szBuf,"unable to resolve ordinal %s %d\n",Name,*Table&0x7ffffff);
 						OutputDebugString(szBuf);
 						*Addr = (unsigned long) dummy_Unresolved;
 					} else { 
@@ -284,7 +288,16 @@ int DllLoader::ResolveImports(void)
 						char szBuf[128];
 						sprintf(szBuf,"unable to resolve %s %s\n",Name,ImpName);
 						OutputDebugString(szBuf);
-						*Addr = (unsigned long) dummy_Unresolved;
+            if (strstr(Name,"KERNEL32")  || strstr(Name,"kernel32") )
+						  *Addr = (unsigned long) dummy_Kernel32Unresolved;
+            else if (strstr(Name,"USER32")  || strstr(Name,"user32") )
+						  *Addr = (unsigned long) dummy_User32Unresolved;
+            else if (strstr(Name,"ole32")  || strstr(Name,"ole32") )
+						  *Addr = (unsigned long) dummy_OLE32Unresolved;
+            else if (strstr(Name,"MSVCRT")  || strstr(Name,"msvcrt") )
+						  *Addr = (unsigned long) dummy_MSVCRTUnresolved;
+            else
+						  *Addr = (unsigned long) dummy_Unresolved;
 						bResult=0;
 					} else {
 						if (pList)
@@ -680,7 +693,6 @@ extern "C" FARPROC __stdcall dllGetProcAddress( HMODULE hModule, LPCSTR function
 	dllhandle->ResolveExport((char *)function, &address);
 	return (FARPROC) address;
 }
-
 //dummy functions used to catch unresolved function calls
 extern "C" int dummy_Unresolved(void) {
 		static int Count = 0;
@@ -688,7 +700,55 @@ extern "C" int dummy_Unresolved(void) {
 		char szBuf[128];
 		__asm { mov eax, [ebp+4] }
 		__asm { mov rtn_addr, eax }
-		sprintf(szBuf,"unresolved function called from 0x%08X, Count number %d\n",rtn_addr,Count++);
+    sprintf(szBuf,"unresolved function called from 0x%08X, Count number %d\n",rtn_addr,Count++);
+		OutputDebugString(szBuf);
+		return 1;
+}
+//dummy functions used to catch unresolved function calls
+extern "C" int dummy_Kernel32Unresolved(void) {
+		static int Count = 0;
+		DWORD rtn_addr;
+		char szBuf[128];
+		__asm { mov eax, [ebp+4] }
+		__asm { mov rtn_addr, eax }
+    sprintf(szBuf,"kernel32:unresolved function called from 0x%08X, Count number %d\n",rtn_addr,Count++);
+		OutputDebugString(szBuf);
+		return 1;
+}
+
+
+//dummy functions used to catch unresolved function calls
+extern "C" int dummy_User32Unresolved(void) {
+		static int Count = 0;
+		DWORD rtn_addr;
+		char szBuf[128];
+		__asm { mov eax, [ebp+4] }
+		__asm { mov rtn_addr, eax }
+    sprintf(szBuf,"user32:unresolved function called from 0x%08X, Count number %d\n",rtn_addr,Count++);
+		OutputDebugString(szBuf);
+		return 1;
+}
+
+//dummy functions used to catch unresolved function calls
+extern "C" int dummy_OLE32Unresolved(void) {
+		static int Count = 0;
+		DWORD rtn_addr;
+		char szBuf[128];
+		__asm { mov eax, [ebp+4] }
+		__asm { mov rtn_addr, eax }
+    sprintf(szBuf,"ole32:unresolved function called from 0x%08X, Count number %d\n",rtn_addr,Count++);
+		OutputDebugString(szBuf);
+		return 1;
+}
+
+//dummy functions used to catch unresolved function calls
+extern "C" int dummy_MSVCRTUnresolved(void) {
+		static int Count = 0;
+		DWORD rtn_addr;
+		char szBuf[128];
+		__asm { mov eax, [ebp+4] }
+		__asm { mov rtn_addr, eax }
+    sprintf(szBuf,"ole32:unresolved function called from 0x%08X, Count number %d\n",rtn_addr,Count++);
 		OutputDebugString(szBuf);
 		return 1;
 }
