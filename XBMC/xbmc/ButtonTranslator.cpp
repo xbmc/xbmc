@@ -146,6 +146,14 @@ void CButtonTranslator::GetAction(WORD wWindow, const CKey &key, CAction &action
     action.fAmount1 = key.GetRightThumbX();
     action.fAmount2 = key.GetRightThumbY();
   }
+  if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_UP || key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_DOWN)
+  {
+    action.fAmount1 = key.GetLeftThumbY();
+  }
+  if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_LEFT || key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_RIGHT)
+  {
+    action.fAmount1 = key.GetLeftThumbX();
+  }
   if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_UP || key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN)
   {
     action.fAmount1 = key.GetRightThumbY();
@@ -197,6 +205,10 @@ void CButtonTranslator::MapAction(WORD wAction, const CStdString &strAction, TiX
       if (strButton == "leftthumbbutton") wButtonCode = KEY_BUTTON_LEFT_THUMB_BUTTON;
       if (strButton == "rightthumbbutton") wButtonCode = KEY_BUTTON_RIGHT_THUMB_BUTTON;
       if (strButton == "leftthumbstick") wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK;
+      if (strButton == "leftthumbstickup") wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK_UP;
+      if (strButton == "leftthumbstickdown") wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK_DOWN;
+      if (strButton == "leftthumbstickleft") wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK_LEFT;
+      if (strButton == "leftthumbstickright") wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
       if (strButton == "rightthumbstick") wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK;
       if (strButton == "rightthumbstickup") wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
       if (strButton == "rightthumbstickdown") wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_DOWN;
