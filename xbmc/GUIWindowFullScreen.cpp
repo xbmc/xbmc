@@ -339,6 +339,14 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
   CGUIWindow::OnAction(action);
 }
 
+void CGUIWindowFullScreen::OnWindowLoaded()
+{
+  CGUIWindow::OnWindowLoaded();
+  //  Do not free resources of invisible controls
+  //  or hdd will spin up when fast forwarding etc.
+  DynamicResourceAlloc(false);
+}
+
 bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 {
 
