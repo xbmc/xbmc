@@ -1075,13 +1075,11 @@ vobsub_parse_one_line(vobsub_t *vob, rar_stream_t *fd)
 {
     ssize_t line_size;
     int res = -1;
+    size_t line_reserve = 0;
+    char *line = NULL;
     do {
-	size_t line_reserve = 0;
-	char *line = NULL;
 	line_size = getline(&line, &line_reserve, fd);
 	if (line_size < 0) {
-	    if (line)
-		free(line);
 	    break;
 	}
 	if (*line == 0 || *line == '\r' || *line == '\n' || *line == '#')
@@ -1113,6 +1111,8 @@ vobsub_parse_one_line(vobsub_t *vob, rar_stream_t *fd)
 	    mp_msg(MSGT_VOBSUB,MSGL_ERR,  "ERROR in %s", line);
 	break;
     } while (1);
+    if(line)
+      free(line);
     return res;
 }
 

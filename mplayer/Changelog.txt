@@ -5,11 +5,13 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 25-25-2004 fixed: huge memleak in vobsub loader code, fixes large vobsubs and decreases footprint of vobsubs
+  - 20-12-2004 added: support for multiple subtitles, with language extension ie: filename.eng.sub
+  - 20-12-2004 changed: new subtitle name interface for xbmc
   - 29-10-2004 added: display and switching of audiostreams in matroska
   - 29-10-2004 fixed: DTS in matroska container where not being detected
   - 12-10-2004 fixed: multi Channel DTS decoding should be full functional
   - 12-10-2004 changed/fixed: decss code. should now decrypt instead of cracking encryption on all DVD-drives [ 1011174 ]
-
   - 20-09-2004 added: new commandline option limitedhwac3, disables hwac3 for 2ch streams to let a52 decode it.
   - 21-08-2004 fixed: shoutcast streams
   - 20-08-2004 fixed: allow percentage seeking in realmedia
