@@ -355,13 +355,9 @@ bool CSettings::Load()
 
   //GetString(pRootElement, "skin", g_stSettings.szDefaultSkin,"MediaCenter");
 	GetString(pRootElement, "home", g_stSettings.szHomeDir, "");
-  if (g_stSettings.szHomeDir[0])
+  while ( CUtil::HasSlashAtEnd(g_stSettings.szHomeDir) )
   {
-     while (g_stSettings.szHomeDir[strlen(g_stSettings.szHomeDir)-1]=='\\');
-      g_stSettings.szHomeDir[strlen(g_stSettings.szHomeDir)-1]=0;
-
-     while (g_stSettings.szHomeDir[strlen(g_stSettings.szHomeDir)-1]=='/');
-      g_stSettings.szHomeDir[strlen(g_stSettings.szHomeDir)-1]=0;
+    g_stSettings.szHomeDir[strlen(g_stSettings.szHomeDir)-1]=0;
   }
 	GetString(pRootElement, "dashboard", g_stSettings.szDashboard,"C:\\xboxdash.xbe");
 	
@@ -419,6 +415,10 @@ bool CSettings::Load()
   strDir=g_stSettings.m_szScreenshotsDirectory;
   ConvertHomeVar(strDir);
   strcpy( g_stSettings.m_szScreenshotsDirectory, strDir.c_str() );
+  while ( CUtil::HasSlashAtEnd(g_stSettings.m_szScreenshotsDirectory) )
+  {
+    g_stSettings.m_szScreenshotsDirectory[strlen(g_stSettings.m_szScreenshotsDirectory)-1]=0;
+  }
 
   if (g_stSettings.m_szShortcutDirectory[0])
   {
