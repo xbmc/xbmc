@@ -2207,7 +2207,7 @@ void CApplication::FrameMove()
   static bool TriggLeft=false, TriggRight=false;
   if (bLeftTrigger || TriggLeft)
   {
-    if(bRightTrigger)
+    if(bLeftTrigger)
       TriggLeft = true;
     else
       TriggLeft = false;
