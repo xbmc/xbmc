@@ -136,8 +136,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 			m_rootDir.SetMask(g_stSettings.m_szMyPicturesExtensions);
 			int iControl=CONTROL_LIST;
       if (!g_stSettings.m_bMyPicturesViewAsIcons) iControl=CONTROL_THUMBS;
-      CGUIMessage msg(GUI_MSG_HIDDEN,GetID(), iControl);
-      g_graphicsContext.SendMessage(msg);
+			SET_CONTROL_HIDDEN(GetID(), iControl);
 
       if ( g_stSettings.m_bMyPicturesSortAscending)
       {
@@ -271,36 +270,22 @@ void CGUIWindowPictures::UpdateButtons()
 
     if (g_stSettings.m_bMyPicturesViewAsIcons) 
     {
-      CGUIMessage msg(GUI_MSG_HIDDEN,GetID(), CONTROL_LIST);
-      g_graphicsContext.SendMessage(msg);
-      CGUIMessage msg2(GUI_MSG_VISIBLE,GetID(), CONTROL_THUMBS);
-      g_graphicsContext.SendMessage(msg2);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
+			SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
     }
     else
     {
-      CGUIMessage msg(GUI_MSG_HIDDEN,GetID(), CONTROL_THUMBS);
-      g_graphicsContext.SendMessage(msg);
-      CGUIMessage msg2(GUI_MSG_VISIBLE,GetID(), CONTROL_LIST);
-      g_graphicsContext.SendMessage(msg2);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
+			SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
     }
 
-    const WCHAR *szText;
+    int iString=101;
     if (!g_stSettings.m_bMyPicturesViewAsIcons) 
     {
-      szText=g_localizeStrings.Get(100).c_str();
+      iString=100;
     }
-    else
-    {
-      szText=g_localizeStrings.Get(101).c_str();
-    }
-    CGUIMessage msg2(GUI_MSG_LABEL_SET,GetID(),CONTROL_BTNVIEWASICONS,0,0,(void*)szText);
-    g_graphicsContext.SendMessage(msg2);         
-
-
-    szText=g_localizeStrings.Get(g_stSettings.m_bMyPicturesSortMethod+103).c_str();
-    
-    CGUIMessage msg3(GUI_MSG_LABEL_SET,GetID(),CONTROL_BTNSORTBY,0,0,(void*)szText);
-    g_graphicsContext.SendMessage(msg3); 
+		SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
+		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_bMyPicturesSortMethod+103);
 
     if ( g_stSettings.m_bMyPicturesSortAscending)
     {
@@ -320,10 +305,11 @@ void CGUIWindowPictures::UpdateButtons()
       if (pItem->GetLabel()=="..") iItems--;
     }
     WCHAR wszText[20];
-    szText=g_localizeStrings.Get(127).c_str();
+    const WCHAR* szText=g_localizeStrings.Get(127).c_str();
     swprintf(wszText,L"%i %s", iItems,szText);
-    CGUIMessage msg4(GUI_MSG_LABEL_SET,GetID(),CONTROL_LABELFILES,0,0,(void*)wszText);
-    g_graphicsContext.SendMessage(msg4); 
+
+		
+		SET_CONTROL_LABEL(GetID(), CONTROL_LABELFILES,wszText);
 }
 
 

@@ -21,7 +21,7 @@ bool	CDirectory::IsAllowed(const CStdString& strFile)
 	CUtil::GetExtension(strFile,strExtension);
 	if (!strExtension.size()) return true;
   CUtil::Lower(strExtension);
-	if ( strstr( m_strFileMask.c_str(), strExtension.c_str() ) )
+	if ( m_strFileMask.Find(strExtension.c_str() )>=0 )
 	{
 		return true;
 	}

@@ -43,7 +43,8 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 			if (!pDirectory) return false;
       pDirectory->SetMask(m_strFileMask);
 			bool bResult=pDirectory->GetDirectory(strPath,items);
-      CacheThumbs(items);
+			CUtil::SetThumbs(items);
+			CUtil::FillInDefaultIcons(items);
 			delete pDirectory;
 			return bResult;
 		}
@@ -88,105 +89,4 @@ bool CVirtualDirectory::IsShare(const CStdString& strPath) const
 		if (share.strPath==strPath) return true;
 	}
 	return false;
-}
-
-void  CVirtualDirectory::CacheThumbs(VECFILEITEMS &items)
-{
-  CStdString strThumb;
-  for (int i=0; i < (int)items.size(); ++i)
-  {
-    CFileItem* pItem=items[i];
-		pItem->m_bIsShareOrDrive=false;
-		if (pItem->m_bIsFolder)
-		{
-		}
-		else
-		{
-			if (CUtil::IsPicture(pItem->m_strPath) )
-			{
-				pItem->SetIconImage("defaultPicture.png");
-			}
-			if (CUtil::IsAudio(pItem->m_strPath) )
-			{
-				pItem->SetIconImage("defaultAudio.png");
-			}
-			if (CUtil::IsXBE(pItem->m_strPath) )
-			{
-				pItem->SetIconImage("defaultProgram.png");
-			}
-
-			if (CUtil::IsVideo(pItem->m_strPath) )
-			{
-				pItem->SetIconImage("defaultVideo.png");
-			}
-		}
-		
-		if (pItem->HasThumbnail() )
-		{
-			CUtil::GetThumbnail( pItem->m_strPath,strThumb);
-      
-			CFile file;
-			CStdString strThumbnailFileName;
-			CUtil::ReplaceExtension(pItem->m_strPath,".tbn", strThumbnailFileName);
-			if ( file.Cache(strThumbnailFileName.c_str(), strThumb.c_str()))
-			{
-				pItem->SetThumbnailImage(strThumb);
-			}
-			else
-			{
-				
-				CUtil::GetThumbnail(pItem->m_strPath,strThumb);
-				if (CUtil::FileExists(strThumb) )
-				{
-					pItem->SetThumbnailImage(strThumb);
-				}
-			}
-		}
-		else
-		{
-			CUtil::GetThumbnail(pItem->m_strPath,strThumb);
-			if (CUtil::FileExists(strThumb))
-			{
-				pItem->SetThumbnailImage(strThumb);
-			}
-		}
-
-		
-		if (pItem->GetThumbnailImage()=="")
-		{
-			if (pItem->GetIconImage()=="")
-			{
-				if (pItem->m_bIsFolder)
-				{
-					pItem->SetIconImage("defaultFolder.png");
-				}
-				else
-				{
-					CStdString strExtension;
-					CUtil::GetExtension(pItem->m_strPath,strExtension);
-					
-					for (int i=0; i < (int)g_settings.m_vecIcons.size(); ++i)
-					{
-						CFileTypeIcon& icon=g_settings.m_vecIcons[i];
-
-						if (CUtil::cmpnocase(strExtension.c_str(), icon.m_strName)==0)
-						{
-							pItem->SetIconImage(icon.m_strIcon);
-							break;
-						}
-					}
-				}
-			}
-
-			if (pItem->GetIconImage()!="")
-			{
-				CStdString strBig;
-				int iPos=pItem->GetIconImage().Find(".");
-				strBig=pItem->GetIconImage().Left(iPos);
-				strBig+="Big";
-				strBig+=pItem->GetIconImage().Right(pItem->GetIconImage().size()-(iPos));
-				pItem->SetThumbnailImage(strBig);
-			}
-		}
-  }
 }

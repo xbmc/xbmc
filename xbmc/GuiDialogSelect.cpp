@@ -53,8 +53,8 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 			WCHAR wszText[20];
 			const WCHAR* szText=g_localizeStrings.Get(127).c_str();
 			swprintf(wszText,L"%i %s", m_vecList.size(),szText);
-			CGUIMessage msg4(GUI_MSG_LABEL_SET,GetID(),CONTROL_NUMBEROFFILES,0,0,(void*)wszText);
-			g_graphicsContext.SendMessage(msg4); 
+
+			SET_CONTROL_LABEL(GetID(), CONTROL_NUMBEROFFILES,wszText);
 		}
 		break;
 
@@ -96,6 +96,7 @@ int CGUIDialogSelect::GetSelectedLabel() const
 }
 void  CGUIDialogSelect::SetHeading(const wstring& strLine)
 {
-  CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),CONTROL_HEADING,0,0,(void*)strLine.c_str());
-  OnMessage(msg);
+	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),CONTROL_HEADING);
+	msg.SetLabel(strLine);
+	OnMessage(msg);
 }

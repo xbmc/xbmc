@@ -33,7 +33,7 @@ public:
   void 					SetFloatValue(float fValue);
   int  					GetValue() const;
   float					GetFloatValue() const;
-  void					AddLabel(const WCHAR* strLabel, int  iValue);
+  void					AddLabel(const wstring& strLabel, int  iValue);
   const WCHAR*	GetLabel() const;
   virtual void	SetFocus(bool bOnOff);
 protected:

@@ -78,9 +78,7 @@ bool CGUICheckMarkControl::OnMessage(CGUIMessage& message)
   {
     if (message.GetMessage() == GUI_MSG_LABEL_SET)
     {
-      WCHAR wszText[1024];
-      swprintf(wszText,L"%S",(char*)message.GetLPVOID() );
-	    m_strLabel=wszText;
+			m_strLabel=message.GetLabel();
       return true;
     }
   }

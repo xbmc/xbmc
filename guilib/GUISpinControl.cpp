@@ -142,10 +142,7 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
 
       case GUI_MSG_LABEL_ADD:
       {
-        WCHAR wszLabel[1024];
-				wcscpy(wszLabel, (WCHAR *)message.GetLPVOID() );
-				int iValue=message.GetParam1();
-        AddLabel(wszLabel, iValue);
+        AddLabel(message.GetLabel(), message.GetParam1());
         return true;
       }
       break;
@@ -290,7 +287,7 @@ float CGUISpinControl::GetFloatValue() const
 }
 
 
-void CGUISpinControl::AddLabel(const WCHAR* strLabel, int iValue)
+void CGUISpinControl::AddLabel(const wstring& strLabel, int iValue)
 {
   m_vecLabels.push_back(strLabel);
 	m_vecValues.push_back(iValue);
