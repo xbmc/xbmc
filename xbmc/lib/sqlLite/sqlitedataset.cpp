@@ -33,9 +33,8 @@
 #include <time.h>
 //#include <iostream.h>
 #include <string.h>
-
 #include "sqlitedataset.h"
-//#include <unistd.h>
+#include "../../utils/log.h"
 
 #pragma warning (disable:4018)
 
@@ -159,16 +158,18 @@ const char *SqliteDatabase::getErrorMsg() {
 
 int SqliteDatabase::connect() {
   disconnect();
-  if (conn = sqlite_open(db.c_str(),0,NULL)) {
-    //cout << "Connected!\n";
+  if (conn = sqlite_open(db.c_str(),0,NULL)) 
+  {
     char* err=NULL;
-    if (setErr(sqlite_exec(getHandle(),"PRAGMA empty_result_callbacks=ON",NULL,NULL,&err)) != SQLITE_OK) {
-      //fprintf(stderr,"Error: %s",err);
+    if (setErr(sqlite_exec(getHandle(),"PRAGMA empty_result_callbacks=ON",NULL,NULL,&err)) != SQLITE_OK) 
+    {
+      CLog::Log("sqlite:unable to set callback on:%s", error.c_str());
       throw DbErrors(getErrorMsg());
     }
     active = true;
     return DB_CONNECTION_OK;
   }
+  CLog::Log("unable to open database:%s (%i)", db.c_str(),GetLastError());
   return DB_CONNECTION_NONE;
 };
 
