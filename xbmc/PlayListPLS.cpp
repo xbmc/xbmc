@@ -104,10 +104,16 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
 				m_strPlayListName=strValue;
 			}
 
-			if (strDuration.size() && strInfo.size() && strFilename.size()) 
+			if (strInfo.size() && strFilename.size()) 
 			{
-				long lDuration=atol(strDuration.c_str());
-				lDuration*=1000;
+				long lDuration;
+				if (strDuration.size() && strDuration != "-1")
+				{
+					lDuration=atol(strDuration.c_str());
+					lDuration*=1000;
+				}
+				else
+					lDuration = -1;
 				if (bShoutCast) strFilename.Replace("http:","shout:");
 				CUtil::GetQualifiedFilename(strBasePath,strFilename);
 				CPlayListItem newItem(strInfo,strFilename,lDuration);
