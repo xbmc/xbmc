@@ -13,6 +13,7 @@ CGUICheckMarkControl::CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, 
 	m_pFont=NULL;
   m_bSelected=false;
 	m_dwAlign=dwAlign;
+  m_bShadow=false;
 }
 
 CGUICheckMarkControl::~CGUICheckMarkControl(void)
@@ -45,11 +46,17 @@ void CGUICheckMarkControl::Render()
     {
       if (HasFocus())
       {
-        m_pFont->DrawShadowText((float)dwTextPosX, (float)m_dwPosY, m_dwTextColor, m_strLabel.c_str());
+        if (m_bShadow)
+          m_pFont->DrawShadowText((float)dwTextPosX, (float)m_dwPosY, m_dwTextColor, m_strLabel.c_str());
+        else
+          m_pFont->DrawText((float)dwTextPosX, (float)m_dwPosY, m_dwTextColor, m_strLabel.c_str());
       }
       else
       {
-        m_pFont->DrawText((float)dwTextPosX, (float)m_dwPosY, m_dwDisabledColor, m_strLabel.c_str());
+        if (m_bShadow)
+          m_pFont->DrawShadowText((float)dwTextPosX, (float)m_dwPosY, m_dwDisabledColor, m_strLabel.c_str());
+        else
+          m_pFont->DrawText((float)dwTextPosX, (float)m_dwPosY, m_dwDisabledColor, m_strLabel.c_str());
       }
     }
   }
@@ -135,4 +142,14 @@ void CGUICheckMarkControl::SetSelected(bool bOnOff)
 bool CGUICheckMarkControl::GetSelected() const
 {
   return m_bSelected;
+}
+
+bool CGUICheckMarkControl::GetShadow() const
+{
+  return m_bShadow;
+}
+
+void CGUICheckMarkControl::SetShadow(bool bOnOff)
+{
+  m_bShadow=bOnOff;
 }
