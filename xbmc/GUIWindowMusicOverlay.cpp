@@ -149,7 +149,16 @@ void CGUIWindowMusicOverlay::Render()
 						if (song.iYear >=1900)
 						{
 							CStdString strYear;
-							strYear.Format("%i", song.iYear);
+							strYear.Format("Year:%i", song.iYear);
+							
+							CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+							msg1.SetLabel( strYear );
+							OnMessage(msg1);
+						}
+						if (song.iDuration > 0)
+						{
+							CStdString strYear;
+							strYear.Format("Duration: %i:%02.2i", song.iDuration/60, song.iDuration%60);
 							
 							CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
 							msg1.SetLabel( strYear );
