@@ -2631,7 +2631,7 @@ public:
 	#define FMT_BLOCK_SIZE		2048 // # of bytes to increment per try
 	#define BUFSIZE_1ST	256
 	#define BUFSIZE_2ND 512
-	#define STD_BUF_SIZE		1024
+	#define STD_BUF_SIZE		16384
 
 	// an efficient way to add formatted characters to the string.  You may only
 	// add up to STD_BUF_SIZE characters at a time, though
