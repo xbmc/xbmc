@@ -44,7 +44,7 @@ struct SSortVideoListByName
 
 struct SSortVideoByName
 {
-	bool operator()(CFileItem* pStart, CFileItem* pEnd)
+	static bool Sort(CFileItem* pStart, CFileItem* pEnd)
 	{
     CFileItem& rpStart=*pStart;
     CFileItem& rpEnd=*pEnd;
@@ -119,10 +119,11 @@ struct SSortVideoByName
     if (!rpStart.m_bIsFolder) return false;
 		return true;
 	}
-	bool m_bSortAscending;
-	int m_iSortMethod;
+	static bool m_bSortAscending;
+	static int m_iSortMethod;
 };
-
+bool SSortVideoByName::m_bSortAscending;
+int SSortVideoByName::m_iSortMethod;
 
 CGUIWindowVideoFiles::CGUIWindowVideoFiles()
 :CGUIWindowVideoBase()
@@ -310,7 +311,7 @@ void CGUIWindowVideoFiles::UpdateButtons()
 
 void CGUIWindowVideoFiles::FormatItemLabels()
 {
-  for (int i=0; i < (int)m_vecItems.size(); i++)
+  for (int i=0; i < (int)m_vecItems.Size(); i++)
   {
     CFileItem* pItem=m_vecItems[i];
     if (g_stSettings.m_iMyVideoSortMethod==0||g_stSettings.m_iMyVideoSortMethod==2)
@@ -337,20 +338,19 @@ void CGUIWindowVideoFiles::FormatItemLabels()
   }
 }
 
-void CGUIWindowVideoFiles::SortItems(VECFILEITEMS& items)
+void CGUIWindowVideoFiles::SortItems(CFileItemList& items)
 {
-  SSortVideoByName sortmethod;
 	if (m_Directory.IsVirtualDirectoryRoot())
 	{
-		sortmethod.m_iSortMethod=g_stSettings.m_iMyVideoRootSortMethod;
-		sortmethod.m_bSortAscending=g_stSettings.m_bMyVideoRootSortAscending;
+		SSortVideoByName::m_iSortMethod=g_stSettings.m_iMyVideoRootSortMethod;
+		SSortVideoByName::m_bSortAscending=g_stSettings.m_bMyVideoRootSortAscending;
 	}
 	else
 	{
-		sortmethod.m_iSortMethod=g_stSettings.m_iMyVideoSortMethod;
-		sortmethod.m_bSortAscending=g_stSettings.m_bMyVideoSortAscending;
+		SSortVideoByName::m_iSortMethod=g_stSettings.m_iMyVideoSortMethod;
+		SSortVideoByName::m_bSortAscending=g_stSettings.m_bMyVideoSortAscending;
 	}
-  sort(items.begin(), items.end(), sortmethod);
+	items.Sort(SSortVideoByName::Sort);
 }
 
 void CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
@@ -379,7 +379,7 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
   // get selected item
 	int iItem=GetSelectedItem();
 	CStdString strSelectedItem="";
-	if (iItem >=0 && iItem < (int)m_vecItems.size())
+	if (iItem >=0 && iItem < (int)m_vecItems.Size())
 	{
 		CFileItem* pItem=m_vecItems[iItem];
 		if (pItem->GetLabel() != "..")
@@ -406,7 +406,7 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 				pItem->m_strPath=strParentPath;
 				pItem->m_bIsFolder=true;
 				pItem->m_bIsShareOrDrive=false;
-				m_vecItems.push_back(pItem);
+				m_vecItems.Add(pItem);
 			}
 			m_strParentPath = strParentPath;
 		}
@@ -421,7 +421,7 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 			pItem->m_strPath="";
 			pItem->m_bIsShareOrDrive=false;
 			pItem->m_bIsFolder=true;
-			m_vecItems.push_back(pItem);
+			m_vecItems.Add(pItem);
 		}
 		m_strParentPath.Empty();
 	}
@@ -430,23 +430,23 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 
 	if (g_stSettings.m_iMyVideoVideoStack != STACK_NONE)
 	{
-		VECFILEITEMS items;
+		CFileItemList items;
 		m_rootDir.GetDirectory(strDirectory,items);
 		bool bDVDFolder(false);
 		//Figure out first if we are in a folder that contains a dvd
-		for (int i=0; i < (int)items.size(); ++i) //Do it this way to avoid an extra roundtrip to files
+		for (int i=0; i < (int)items.Size(); ++i) //Do it this way to avoid an extra roundtrip to files
 		{
 			CFileItem* pItem1= items[i];
 			if (CStdString(CUtil::GetFileName(pItem1->m_strPath)).Equals("VIDEO_TS.IFO"))
 			{
 				bDVDFolder = true;
-				m_vecItems.push_back(pItem1);
-				items.erase(items.begin() + i); //Make sure this is not included in the comeing search as it would have been deleted.
+				m_vecItems.Add(pItem1);
+				m_vecItems.Remove(i); //Make sure this is not included in the comeing search as it would have been deleted.
 				break;
 			}
 		}
 		
-		for (int i=0; i < (int)items.size(); ++i)
+		for (int i=0; i < items.Size(); ++i)
 		{
 			bool bAdd(true);
 			CFileItem* pItem1= items[i];
@@ -487,7 +487,7 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 		        
 					if (searchForStackedFiles)
 					{
-						for (int x=0; x < (int)items.size(); ++x)
+						for (int x=0; x < (int)items.Size(); ++x)
 						{
 							if (i != x)
 							{
@@ -542,7 +542,7 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 			}
 			if (bAdd)
 			{
-				m_vecItems.push_back(pItem1);
+				m_vecItems.Add(pItem1);
 			}
 			else
 			{
@@ -552,20 +552,20 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 	}
 	else
 	{
-		VECFILEITEMS items;
+		CFileItemList items;
 		m_rootDir.GetDirectory(strDirectory,m_vecItems);
 	}
 
 	m_iLastControl=GetFocusedControl();
 
-	CUtil::SetThumbs(m_vecItems);
+	m_vecItems.SetThumbs();
 	if ((g_guiSettings.GetBool("FileLists.HideExtensions")) || (g_stSettings.m_bMyVideoCleanTitles))
-		CUtil::RemoveExtensions(m_vecItems);
+		m_vecItems.RemoveExtensions();
 	if (g_stSettings.m_bMyVideoCleanTitles)
-		CUtil::CleanFileNames(m_vecItems);
+		m_vecItems.CleanFileNames();
 
 	SetIMDBThumbs(m_vecItems);
-	CUtil::FillInDefaultIcons(m_vecItems);
+	m_vecItems.FillInDefaultIcons();
 	OnSort();
 	UpdateButtons();
 
@@ -581,7 +581,7 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 		}
 	}
 
-	for (int i=0; i < (int)m_vecItems.size(); ++i)
+	for (int i=0; i < (int)m_vecItems.Size(); ++i)
 	{
 		CFileItem* pItem=m_vecItems[i];
 		CStdString strHistory;
@@ -597,7 +597,7 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 
 void CGUIWindowVideoFiles::OnClick(int iItem)
 {
-	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
+	if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return;
   CFileItem* pItem=m_vecItems[iItem];
   CStdString strPath=pItem->m_strPath;
   CStdString strExtension;
@@ -654,9 +654,9 @@ void CGUIWindowVideoFiles::OnClick(int iItem)
       {
         if (fileStackable)
         {
-        VECFILEITEMS items;
+        CFileItemList items;
 	      m_rootDir.GetDirectory(m_Directory.m_strPath,items);
-        for (int i=0; i < (int)items.size(); ++i)
+        for (int i=0; i < (int)items.Size(); ++i)
         {
           CFileItem *pItemTmp=items[i];
             if (!pItemTmp->IsNFO() && !pItemTmp->IsPlayList())
@@ -701,7 +701,6 @@ void CGUIWindowVideoFiles::OnClick(int iItem)
             }
           }
         }
-        CFileItemList itemlist(items); // will clean up everything
       }
         else
         {
@@ -753,7 +752,7 @@ void CGUIWindowVideoFiles::OnClick(int iItem)
 
 void CGUIWindowVideoFiles::OnInfo(int iItem)
 {
-	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
+	if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return;
 	bool                 bFolder(false);
 	CStdString           strFolder="";
 	int iSelectedItem=GetSelectedItem();
@@ -766,10 +765,10 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
 		// IMDB is done on a folder, find first file in folder
 		strFolder=pItem->m_strPath;
 		bFolder=true;
-    VECFILEITEMS vecitems;
+    CFileItemList vecitems;
     m_rootDir.GetDirectory(pItem->m_strPath, vecitems);
     bool bFoundFile(false);
-    for (int i=0; i < (int)vecitems.size(); ++i)
+    for (int i=0; i < (int)vecitems.Size(); ++i)
     {
       CFileItem *pItem=vecitems[i];
       if (!pItem->m_bIsFolder)
@@ -782,7 +781,6 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
         }
       }
     }
-    CFileItemList itemlist(vecitems); // will clean up everything
     if (!bFoundFile) 
     {
       // no video file in this folder?
@@ -864,11 +862,11 @@ void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
   m_database.AddMovie(pItem->m_strPath, strCDLabel, bHassubtitles);
 }
 
-void CGUIWindowVideoFiles::OnRetrieveVideoInfo(VECFILEITEMS& items)
+void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
 {
 
   // for every file found
-  for (int i=0; i < (int)items.size(); ++i)
+  for (int i=0; i < (int)items.Size(); ++i)
 	{
     g_application.ResetScreenSaver();
     CFileItem* pItem=items[i];
@@ -877,7 +875,7 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(VECFILEITEMS& items)
       if (pItem->IsVideo() && !pItem->IsNFO() && !pItem->IsPlayList() )
       {
         CStdString strItem;
-        strItem.Format("%i/%i", i+1, items.size());
+        strItem.Format("%i/%i", i+1, items.Size());
         if (m_dlgProgress)
         {
           m_dlgProgress->SetLine(0,strItem);
@@ -975,7 +973,7 @@ void CGUIWindowVideoFiles::OnScan()
 	DoScan(m_vecItems);
 }
 
-bool CGUIWindowVideoFiles::DoScan(VECFILEITEMS& items)
+bool CGUIWindowVideoFiles::DoScan(CFileItemList& items)
 {
 	// remove username + password from m_strDirectory for display in Dialog
 	CURL url(m_Directory.m_strPath);
@@ -1005,7 +1003,7 @@ bool CGUIWindowVideoFiles::DoScan(VECFILEITEMS& items)
 	
   if (!bCancel)
   {
-	  for (int i=0; i < (int)items.size(); ++i)
+	  for (int i=0; i < (int)items.Size(); ++i)
 	  {
 		  CFileItem *pItem= items[i];
       if (m_dlgProgress)
@@ -1023,8 +1021,7 @@ bool CGUIWindowVideoFiles::DoScan(VECFILEITEMS& items)
 				  // load subfolder
 				  CStdString strDir=m_Directory.m_strPath;
 				  m_Directory.m_strPath=pItem->m_strPath;
-				  VECFILEITEMS subDirItems;
-				  CFileItemList itemlist(subDirItems);
+				  CFileItemList subDirItems;
 				  m_rootDir.GetDirectory(pItem->m_strPath,subDirItems);
 				  if (m_dlgProgress)
 					  m_dlgProgress->Close();
@@ -1044,11 +1041,11 @@ bool CGUIWindowVideoFiles::DoScan(VECFILEITEMS& items)
 	return !bCancel;
 }
 
-void CGUIWindowVideoFiles::SetIMDBThumbs(VECFILEITEMS& items)
+void CGUIWindowVideoFiles::SetIMDBThumbs(CFileItemList& items)
 {
   VECMOVIES movies;
   m_database.GetMoviesByPath(m_Directory.m_strPath,movies);
-  for (int x=0; x < (int)items.size(); ++x)
+  for (int x=0; x < (int)items.Size(); ++x)
   {
     CFileItem* pItem=items[x];
     if (!pItem->m_bIsFolder && pItem->GetThumbnailImage() == "")
@@ -1195,12 +1192,12 @@ void CGUIWindowVideoFiles::LoadPlayList(const CStdString& strPlayList)
 	}
 }
 
-void CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items)
+void CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
-	if (items.size() )
+	if (items.Size() )
 	{
 		// cleanup items
-		CFileItemList itemlist(items);
+		items.Clear();
 	}
 
 	CStdString strParentPath;
@@ -1219,7 +1216,7 @@ void CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, VECFILEI
 				pItem->m_strPath=strParentPath;
 				pItem->m_bIsFolder=true;
 				pItem->m_bIsShareOrDrive=false;
-				items.push_back(pItem);
+				items.Add(pItem);
 			}
 			m_strParentPath = strParentPath;
 		}
@@ -1234,7 +1231,7 @@ void CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, VECFILEI
 			pItem->m_strPath="";
 			pItem->m_bIsShareOrDrive=false;
 			pItem->m_bIsFolder=true;
-			items.push_back(pItem);
+			items.Add(pItem);
 		}
 		m_strParentPath = "";
 	}
@@ -1296,14 +1293,13 @@ void CGUIWindowVideoFiles::SetHistoryForPath(const CStdString& strDirectory)
 		//	Build the directory history for default path
 		CStdString strPath, strParentPath;
 		strPath=strDirectory;
-		VECFILEITEMS items;
-		CFileItemList itemlist(items);
+		CFileItemList items;
 		GetDirectory("", items);
 
 		while (CUtil::GetParentPath(strPath, strParentPath))
 		{
 			bool bSet=false;
-			for (int i=0; i<(int)items.size(); ++i)
+			for (int i=0; i<items.Size(); ++i)
 			{
 				CFileItem* pItem=items[i];
 				while (CUtil::HasSlashAtEnd(pItem->m_strPath))

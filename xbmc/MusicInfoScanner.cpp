@@ -169,12 +169,11 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 		m_pObserver->OnDirectoryChanged(strDirectory);
 
 	// load subfolder
-	VECFILEITEMS items;
-	CFileItemList itemlist(items);
+	CFileItemList items;
 	CDirectory dir;
 	dir.GetDirectory(strDirectory,items);
 	// filter items in the sub dir (for .cue sheet support)
-	g_application.m_guiMyMusicSongs.FilterItems(items);
+	items.FilterCueItems();
 	CUtil::SortFileItemsByName(items);
 
 	if (RetrieveMusicInfo(items, strDirectory)>0)
@@ -185,7 +184,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 			m_pObserver->OnDirectoryScanned(strDirectory);
 	}
 
-	for (int i=0; i < (int)items.size(); ++i)
+	for (int i=0; i < items.Size(); ++i)
 	{
 		CFileItem *pItem= items[i];
 
@@ -206,14 +205,14 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 	return !m_bStop;
 }
 
-int CMusicInfoScanner::RetrieveMusicInfo(VECFILEITEMS& items, const CStdString& strDirectory)
+int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString& strDirectory)
 {
-	int nFolderCount=CUtil::GetFolderCount(items);
+	int nFolderCount=items.GetFolderCount();
 	// Skip items with folders only
-	if (nFolderCount == (int)items.size())
+	if (nFolderCount == items.Size())
 		return 0;
 
-	int nFileCount=(int)items.size()-nFolderCount;
+	int nFileCount=items.Size()-nFolderCount;
 
 	CStdString strItem;
   MAPSONGS songsMap;
@@ -222,7 +221,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(VECFILEITEMS& items, const CStdString& 
 
 	int iFilesAdded=0;
 	// for every file found, but skip folder
-  for (int i=0; i < (int)items.size(); ++i)
+  for (int i=0; i < items.Size(); ++i)
 	{
 		CFileItem* pItem=items[i];
 		CStdString strExtension;

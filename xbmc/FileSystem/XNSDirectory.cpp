@@ -15,13 +15,13 @@ CXNSDirectory::~CXNSDirectory(void)
 
 
 
-bool  CXNSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
+bool  CXNSDirectory::GetDirectory(const CStdString& strPath,CFileItemList &items)
 {
 	CURL url(strPath);
 	int iport					 = 1400;
 	if (url.HasPort()) iport=url.GetPort();
 
-	VECFILEITEMS vecCacheItems;
+	CFileItemList vecCacheItems;
   g_directoryCache.ClearDirectory(strPath);
 
 	CStdString strHostName;
@@ -199,12 +199,12 @@ bool  CXNSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 
 			if ( bIsFolder || IsAllowed( szPath) )
 			{
-				vecCacheItems.push_back(pItem);
-				items.push_back(new CFileItem(*pItem));
+				vecCacheItems.Add(pItem);
+				items.Add(new CFileItem(*pItem));
 			}
 			else
 			{
-				vecCacheItems.push_back(pItem);
+				vecCacheItems.Add(pItem);
 			}
 		}
 

@@ -1546,7 +1546,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)
 		{
 			//find font sizes...
 			CHDDirectory directory;	
-			VECFILEITEMS items;
+			CFileItemList items;
 			CStdString strPath = "Q:\\system\\players\\mplayer\\font\\";
 /*	    if(g_guiSettings.GetBool("MyVideos.AlternateMPlayer"))
       {
@@ -1557,7 +1557,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)
 			directory.GetDirectory(strPath,items);
 			int iCurrentSize=0;
 			int iSize=0;
-			for (int i=0; i < (int)items.size(); ++i)
+			for (int i=0; i < items.Size(); ++i)
 			{
 				CFileItem* pItem=items[i];
 				if (pItem->m_bIsFolder)
@@ -1568,7 +1568,6 @@ void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)
 						iCurrentSize=iSize;
 					pControl->AddLabel(pItem->GetLabel(), iSize++);
 				}
-				delete pItem;
 			}
 			pControl->SetValue(iCurrentSize);
 		}
@@ -1587,14 +1586,14 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
 	// Find mplayer fonts...
 	{
 		CHDDirectory directory;	
-		VECFILEITEMS items;
+		CFileItemList items;
 		CStdString strPath = "Q:\\system\\players\\mplayer\\font\\";
 /*	  if(g_guiSettings.GetBool("MyVideos.AlternateMPlayer"))
     {
       strPath = "Q:\\mplayer\\font\\";
     }*/
 		directory.GetDirectory(strPath,items);
-		for (int i=0; i < (int)items.size(); ++i)
+		for (int i=0; i < items.Size(); ++i)
 		{
 			CFileItem* pItem=items[i];
 			if (pItem->m_bIsFolder)
@@ -1604,18 +1603,17 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
 					iCurrentFont=iFont;
 				pControl->AddLabel(pItem->GetLabel(), iFont++);
 			}
-			delete pItem;
 		}
 	}
 
 	// find TTF fonts
 	{
 		CHDDirectory directory;	
-		VECFILEITEMS items;
+		CFileItemList items;
 		CStdString strPath = "Q:\\media\\fonts\\";
 		if (directory.GetDirectory(strPath,items))
 		{
-			for (int i=0; i < (int)items.size(); ++i)
+			for (int i=0; i < items.Size(); ++i)
 			{
 				CFileItem* pItem=items[i];
 
@@ -1629,7 +1627,6 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
 					pControl->AddLabel(pItem->GetLabel(), iFont++);
 				}
 
-				delete pItem;
 			}
 		}
 	}
@@ -1712,14 +1709,14 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
 
 	//find skins...
 	CHDDirectory directory;	
-	VECFILEITEMS items;
+	CFileItemList items;
 	CStdString strPath = "Q:\\skin\\";
 	directory.GetDirectory(strPath,items);
 
 	int iCurrentSkin=0;
 	int iSkin=0;
 	vector<CStdString> vecSkins;
-	for (int i=0; i < (int)items.size(); ++i)
+	for (int i=0; i < items.Size(); ++i)
 	{
 		CFileItem* pItem=items[i];
 		if (pItem->m_bIsFolder)
@@ -1732,7 +1729,6 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
 				vecSkins.push_back(pItem->GetLabel());
 //			}
 		}
-		delete pItem;
 	}
 
 	sort(vecSkins.begin(),vecSkins.end(),sortstringbyname());
@@ -1784,10 +1780,10 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting)
 	vector<CStdString> vecVis;
 	//find visz....
 	CHDDirectory directory;	
-	VECFILEITEMS items;
+	CFileItemList items;
 	CStdString strPath = "Q:\\visualisations\\";
 	directory.GetDirectory(strPath,items);
-	for (int i=0; i < (int)items.size(); ++i)
+	for (int i=0; i < items.Size(); ++i)
 	{
 		CFileItem* pItem=items[i];
 		if (!pItem->m_bIsFolder)
@@ -1800,7 +1796,6 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting)
 				vecVis.push_back(strLabel.Mid(0, strLabel.size()-4));
 			}
 		}
-		delete pItem;
 	}
 
 	CStdString strDefaultVis = pSettingString->GetData();
@@ -2052,7 +2047,7 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
 	m_strNewLanguage.Empty();
 	//find languages...
 	CHDDirectory directory;	
-	VECFILEITEMS items;
+	CFileItemList items;
 
 	CStdString strPath = "Q:\\language\\";
 	directory.GetDirectory(strPath,items);
@@ -2060,7 +2055,7 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
 	int iCurrentLang=0;
 	int iLanguage=0;
 	vector<CStdString> vecLanguage;
-	for (int i=0; i < (int)items.size(); ++i)
+	for (int i=0; i < items.Size(); ++i)
 	{
 		CFileItem* pItem=items[i];
 		if (pItem->m_bIsFolder)
@@ -2070,7 +2065,6 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
 			if (CUtil::cmpnocase(pItem->GetLabel().c_str(),"media")==0) continue;
 			vecLanguage.push_back(pItem->GetLabel());
 		}
-		delete pItem;
 	}
 
 	sort(vecLanguage.begin(),vecLanguage.end(),sortstringbyname());
@@ -2097,14 +2091,14 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
 
 	//find screensavers ....
 	CHDDirectory directory;	
-	VECFILEITEMS items;
+	CFileItemList items;
 	CStdString strPath = "Q:\\screensavers\\";
 	directory.GetDirectory(strPath,items);
 
 	int iCurrentScr = -1;
 	int iScr = 0;
 	vector<CStdString> vecScr;
-	for (int i=0; i < (int)items.size(); ++i)
+	for (int i=0; i < items.Size(); ++i)
 	{
 		CFileItem* pItem=items[i];
 		if (!pItem->m_bIsFolder)
@@ -2117,7 +2111,6 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
 				vecScr.push_back(strLabel.Mid(0, strLabel.size()-4));
 			}
 		}
-		delete pItem;
 	}
 
 	CStdString strDefaultScr = pSettingString->GetData();

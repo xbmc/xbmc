@@ -32,7 +32,7 @@ namespace MUSIC_INFO
 
 
 	protected:
-						int			RetrieveMusicInfo(VECFILEITEMS& items, const CStdString& strDirectory);
+						int			RetrieveMusicInfo(CFileItemList& items, const CStdString& strDirectory);
 						bool		DoScan(const CStdString& strDirectory);
 
 	protected:

@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-03-2005 changed: Replaced all VECFILEITEMS with CFileItemList
   - 13-03-2005 added: VideoPlayer.Genre, VideoPlayer.Year, VideoPlayer.Directory for infolabels/infofadelabels.
   - 13-03-2005 fixed: weather broken since last update
   - 12-03-2005 changed: code cleanup, removing unnecessary inlcudes, making more use of precompiled headers

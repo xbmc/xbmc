@@ -16,7 +16,7 @@ namespace MUSIC_INFO
 		CMusicInfoLoader();
 		virtual ~CMusicInfoLoader();
 
-						void		Load(VECFILEITEMS& items);
+						void		Load(CFileItemList& items);
 						bool		IsLoading();
 		virtual void		OnStartup();
 		virtual void		OnExit();
@@ -27,10 +27,10 @@ namespace MUSIC_INFO
 	protected:
 						void		LoadItem(CFileItem* pItem);
 						void		LoadCache(const CStdString& strFileName, MAPFILEITEMS& items);
-						void		SaveCache(const CStdString& strFileName, VECFILEITEMS& items);
+						void		SaveCache(const CStdString& strFileName, CFileItemList& items);
 
 	protected:
-		VECFILEITEMS*								m_pVecItems;
+		CFileItemList*								m_pVecItems;
 		IMusicInfoLoaderObserver*		m_pObserver;
 		CStdString									m_strCacheFileName;
 		bool												m_bRunning;

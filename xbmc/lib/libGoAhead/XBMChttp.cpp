@@ -150,7 +150,7 @@ CStdString encode( CStdString inFilename, int linesize )
 
 struct SSortWebFilesByName
 {
-	bool operator()(CFileItem* pStart, CFileItem* pEnd)
+	static bool Sort(CFileItem* pStart, CFileItem* pEnd)
 	{
     CFileItem& rpStart=*pStart;
     CFileItem& rpEnd=*pEnd;
@@ -230,7 +230,7 @@ int displayDir(webs_t wp, char *dir) {
 	//mask = "*" -> just folders
 	//mask = "" -> all files and folder
 
-	VECFILEITEMS dirItems;
+	CFileItemList dirItems;
 	CStdString output="";
 
 	CStdString folderAndMask=dir, folder, mask;
@@ -261,11 +261,10 @@ int displayDir(webs_t wp, char *dir) {
 		websWrite(wp, "<li>Error: Not folder\n");
 		return 0;
 	}
-	sort(dirItems.begin(), dirItems.end(), SSortWebFilesByName());
-	VECFILEITEMS::iterator it = dirItems.begin();
-	while (it != dirItems.end())
+	dirItems.Sort(SSortWebFilesByName::Sort);
+	for (int i=0; i<dirItems.Size(); ++i)
 	{
-		CFileItem *itm = *it;
+		CFileItem *itm = dirItems[i];
 		if (mask=="*" || (mask =="" && itm->m_bIsFolder))
 			if (!CUtil::HasSlashAtEnd(itm->m_strPath))
 				output+="\n<li>" + itm->m_strPath + "\\" ;
@@ -273,7 +272,6 @@ int displayDir(webs_t wp, char *dir) {
 				output+="\n<li>" + itm->m_strPath ;
 		else if (!itm->m_bIsFolder)
 			output+="\n<li>" + itm->m_strPath;
-		++it;
 	}
 	websWriteBlock(wp, (char_t *) output.c_str(), output.length()) ;
 	return 0;
@@ -323,11 +321,11 @@ void AddItemToPlayList(const CFileItem* pItem, int playList)
 		// recursive
 		if (pItem->GetLabel() == "..") return;
 		CStdString strDirectory=pItem->m_strPath;
-		VECFILEITEMS items;
+		CFileItemList items;
 		CFactoryDirectory factory;
 		IDirectory *pDirectory = factory.Create(strDirectory);
 		bool bResult=pDirectory->GetDirectory(strDirectory,items);
-		for (int i=0; i < (int) items.size(); ++i)
+		for (int i=0; i < items.Size(); ++i)
 		{
 			AddItemToPlayList(items[i], playList);
 			delete items[i];

@@ -25,7 +25,7 @@
 
 struct SSortMusicSongs
 {
-	bool operator()(CFileItem* pStart, CFileItem* pEnd)
+	static bool Sort(CFileItem* pStart, CFileItem* pEnd)
 	{
     CFileItem& rpStart=*pStart;
     CFileItem& rpEnd=*pEnd;
@@ -137,10 +137,13 @@ struct SSortMusicSongs
 		return true;
 	}
 
-	int m_iSortMethod;
-	int m_bSortAscending;
-	CStdString m_strDirectory;
+	static int m_iSortMethod;
+	static int m_bSortAscending;
+	static CStdString m_strDirectory;
 };
+int SSortMusicSongs::m_iSortMethod;
+int SSortMusicSongs::m_bSortAscending;
+CStdString SSortMusicSongs::m_strDirectory;
 
 CGUIWindowMusicSongs::CGUIWindowMusicSongs(void)
 :CGUIWindowMusicBase()
@@ -333,7 +336,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 					g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Clear();
 					g_playlistPlayer.Reset();
 					int nFolderCount=0;
-					for (int i = 0; i < (int)m_vecItems.size(); i++) 
+					for (int i = 0; i < (int)m_vecItems.Size(); i++) 
 					{
 						CFileItem* pItem = m_vecItems[i];
 						if (pItem->m_bIsFolder) 
@@ -349,7 +352,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 					}
 				}
 
-				for (int i=0; i<(int)m_vecItems.size(); i++)
+				for (int i=0; i<(int)m_vecItems.Size(); i++)
 				{
 					CFileItem* pItem = m_vecItems[i];
 					if (pItem->m_strPath==strSelected)
@@ -415,12 +418,12 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 	return CGUIWindowMusicBase::OnMessage(message);
 }
 
-void CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items)
+void CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
-	if (items.size() )
+	if (items.Size() )
 	{
 		// cleanup items
-		CFileItemList itemlist(items);
+		items.Clear();
 	}
 
 	CStdString strParentPath;
@@ -447,7 +450,7 @@ void CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, VECFILEI
 				pItem->m_strPath=strParentPath;
 				pItem->m_bIsFolder=true;
 				pItem->m_bIsShareOrDrive=false;
-				items.push_back(pItem);
+				items.Add(pItem);
 			}
 			m_strParentPath = strParentPath;
 		}
@@ -462,14 +465,14 @@ void CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, VECFILEI
 			pItem->m_strPath="";
 			pItem->m_bIsShareOrDrive=false;
 			pItem->m_bIsFolder=true;
-			items.push_back(pItem);
+			items.Add(pItem);
 		}
 		m_strParentPath = "";
 	}
 	m_rootDir.GetDirectory(strDirectory,items);
 
 	// check for .CUE files here.
-	FilterItems(items);
+	items.FilterCueItems();
 
 	if (strPlayListDir!=strDirectory) 
 	{
@@ -749,7 +752,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
 	SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS,iString);
 
 	//	Update object count label
-	int iItems=m_vecItems.size();
+	int iItems=m_vecItems.Size();
 	if (iItems)
 	{
 		CFileItem* pItem=m_vecItems[0];
@@ -790,7 +793,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
 
 void CGUIWindowMusicSongs::OnClick(int iItem)
 {
-	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
+	if ( iItem < 0 || iItem >= m_vecItems.Size() ) return;
 	CFileItem* pItem=m_vecItems[iItem];
 	CStdString strPath=pItem->m_strPath;
 	if (pItem->m_bIsFolder)
@@ -820,7 +823,7 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
 				g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC_TEMP ).Clear();
 				g_playlistPlayer.Reset();
 				int iNoSongs=0;
-				for ( int i = 0; i < (int) m_vecItems.size(); i++ ) 
+				for ( int i = 0; i < m_vecItems.Size(); i++ ) 
 				{
 					CFileItem* pItem = m_vecItems[i];
 					if ( pItem->m_bIsFolder ) 
@@ -869,7 +872,7 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
 	else
 	{	// No tag, so we disable the file extension if it has one
 		if (g_guiSettings.GetBool("FileLists.HideExtensions"))
-			CUtil::RemoveExtension(pItem);
+			pItem->RemoveExtension();
 	}
 
 	//	set label 2
@@ -926,31 +929,29 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
 	}
 }
 
-void CGUIWindowMusicSongs::DoSort(VECFILEITEMS& items)
+void CGUIWindowMusicSongs::DoSort(CFileItemList& items)
 {
-	SSortMusicSongs sortmethod;
-
-	sortmethod.m_strDirectory=m_Directory.m_strPath;
+	SSortMusicSongs::m_strDirectory=m_Directory.m_strPath;
 
 	if (m_Directory.IsVirtualDirectoryRoot())
 	{
-		sortmethod.m_iSortMethod=g_stSettings.m_iMyMusicSongsRootSortMethod;
-		sortmethod.m_bSortAscending=g_stSettings.m_bMyMusicSongsRootSortAscending;
+		SSortMusicSongs::m_iSortMethod=g_stSettings.m_iMyMusicSongsRootSortMethod;
+		SSortMusicSongs::m_bSortAscending=g_stSettings.m_bMyMusicSongsRootSortAscending;
 	}
 	else
 	{
-		sortmethod.m_iSortMethod=g_stSettings.m_iMyMusicSongsSortMethod;
-		sortmethod.m_bSortAscending=g_stSettings.m_bMyMusicSongsSortAscending;
+		SSortMusicSongs::m_iSortMethod=g_stSettings.m_iMyMusicSongsSortMethod;
+		SSortMusicSongs::m_bSortAscending=g_stSettings.m_bMyMusicSongsSortAscending;
 	}
 
-	sort(items.begin(), items.end(), sortmethod);
+	items.Sort(SSortMusicSongs::Sort);
 }
 
-void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
+void CGUIWindowMusicSongs::OnRetrieveMusicInfo(CFileItemList& items)
 {
-	int nFolderCount=CUtil::GetFolderCount(items);
+	int nFolderCount=items.GetFolderCount();
 	// Skip items with folders only
-	if (nFolderCount == (int)items.size())
+	if (nFolderCount == (int)items.Size())
 		return;
 
 	MAPSONGS songsMap;
@@ -974,7 +975,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 	int iTaglessFiles=0;
 
 	// for every file found, but skip folder
-	for (int i=0; i < (int)items.size(); ++i)
+	for (int i=0; i < (int)items.Size(); ++i)
 	{
 		CFileItem* pItem=items[i];
 
@@ -1034,16 +1035,16 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 					m_dlgProgress->SetLine(2,strStrippedPath );
 					m_dlgProgress->StartModal(GetID());
 					m_dlgProgress->ShowProgressBar(true);
-					m_dlgProgress->SetPercentage((i*100)/items.size());
+					m_dlgProgress->SetPercentage((i*100)/items.Size());
 					m_dlgProgress->Progress();
 					bProgressVisible=true;
 				}
 			}
 		}		
 
-		if (bProgressVisible && ((i%10)==0 || i==items.size()-1))
+		if (bProgressVisible && ((i%10)==0 || i==items.Size()-1))
 		{
-			m_dlgProgress->SetPercentage((i*100)/items.size());
+			m_dlgProgress->SetPercentage((i*100)/items.Size());
 			m_dlgProgress->Progress();
 		}
 
@@ -1058,7 +1059,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 	}//	for (int i=0; i < (int)items.size(); ++i)
 
 	//	Save the hdd cache if there are more songs in this directory then loaded from database 
-	if ((m_dlgProgress && !m_dlgProgress->IsCanceled()) && songsMap.size()!=(items.size()-iTaglessFiles))
+	if ((m_dlgProgress && !m_dlgProgress->IsCanceled()) && songsMap.size()!=(items.Size()-iTaglessFiles))
 		SaveDirectoryCache(m_Directory.m_strPath, items);
 
 	//	cleanup cache loaded from HD
@@ -1091,7 +1092,7 @@ void CGUIWindowMusicSongs::OnSearchItemFound(const CFileItem* pSelItem)
 		if (pSelItem->IsSmb() && !CUtil::HasSlashAtEnd(strPath))
 			strPath+="/";
 
-		for (int i=0; i<(int)m_vecItems.size(); i++)
+		for (int i=0; i<m_vecItems.Size(); i++)
 		{
 			CFileItem* pItem=m_vecItems[i];
 			if (pItem->m_strPath==strPath)
@@ -1117,7 +1118,7 @@ void CGUIWindowMusicSongs::OnSearchItemFound(const CFileItem* pSelItem)
 		}
 		m_history.Set(strPath, "");
 
-		for (int i=0; i<(int)m_vecItems.size(); i++)
+		for (int i=0; i<(int)m_vecItems.Size(); i++)
 		{
 			CFileItem* pItem=m_vecItems[i];
 			if (pItem->m_strPath==pSelItem->m_strPath)
@@ -1143,7 +1144,7 @@ void CGUIWindowMusicSongs::OnSearchItemFound(const CFileItem* pSelItem)
 /// \brief Search for a song or a artist with search string \e strSearch in the musicdatabase and return the found \e items
 /// \param strSearch The search string 
 /// \param items Items Found
-void CGUIWindowMusicSongs::DoSearch(const CStdString& strSearch,VECFILEITEMS& items)
+void CGUIWindowMusicSongs::DoSearch(const CStdString& strSearch,CFileItemList& items)
 {
 	VECALBUMS albums;
 	g_musicDatabase.FindAlbumsByName(strSearch, albums);
@@ -1156,7 +1157,7 @@ void CGUIWindowMusicSongs::DoSearch(const CStdString& strSearch,VECFILEITEMS& it
 			CAlbum& album=albums[i];
 			CFileItem* pItem=new CFileItem(album);
 			pItem->SetLabel("[" + strAlbum + "] " + album.strAlbum + " - " + album.strArtist);
-			items.push_back(pItem);
+			items.Add(pItem);
 		}
 	}
 
@@ -1171,7 +1172,7 @@ void CGUIWindowMusicSongs::DoSearch(const CStdString& strSearch,VECFILEITEMS& it
 			CSong& song=songs[i];
 			CFileItem* pItem=new CFileItem(song);
 			pItem->SetLabel("[" + strSong + "] " + song.strTitle + " - " + song.strArtist + " - " + song.strAlbum);
-			items.push_back(pItem);
+			items.Add(pItem);
 		}
 	}
 }
@@ -1248,14 +1249,13 @@ void CGUIWindowMusicSongs::SetHistoryForPath(const CStdString& strDirectory)
 		//	Build the directory history for default path
 		CStdString strPath, strParentPath;
 		strPath=strDirectory;
-		VECFILEITEMS items;
-		CFileItemList itemlist(items);
+		CFileItemList items;
 		GetDirectory("", items);
 
 		while (CUtil::GetParentPath(strPath, strParentPath))
 		{
 			bool bSet=false;
-			for (int i=0; i<(int)items.size(); ++i)
+			for (int i=0; i<(int)items.Size(); ++i)
 			{
 				CFileItem* pItem=items[i];
 				while (CUtil::HasSlashAtEnd(pItem->m_strPath))
@@ -1274,89 +1274,6 @@ void CGUIWindowMusicSongs::SetHistoryForPath(const CStdString& strDirectory)
 			while (CUtil::HasSlashAtEnd(strPath))
 				strPath.Delete(strPath.size()-1);
 		}
-	}
-}
-
-void CGUIWindowMusicSongs::FilterItems(VECFILEITEMS &items)
-{
-	// Handle .CUE sheet files...
-	VECSONGS itemstoadd;
-	VECARTISTS itemstodelete;
-	for (int i=0; i<(int)items.size(); i++)
-	{
-		CFileItem *pItem = items[i];
-		if (!pItem->m_bIsFolder)
-		{	// see if it's a .CUE sheet
-			if (pItem->IsCUESheet())
-			{
-				CCueDocument cuesheet;
-				if (cuesheet.Parse(pItem->m_strPath))
-				{
-					VECSONGS newitems;
-					cuesheet.GetSongs(newitems);
-					// queue the cue sheet and the underlying media file for deletion
-					if (CUtil::FileExists(cuesheet.GetMediaPath()))
-					{
-						itemstodelete.push_back(pItem->m_strPath);
-						itemstodelete.push_back(cuesheet.GetMediaPath());
-						// get the additional stuff (year, genre etc.) from the underlying media files tag.
-						CMusicInfoTagLoaderFactory factory;
-						CMusicInfoTag tag;
-						auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(cuesheet.GetMediaPath()));
-						if (NULL != pLoader.get())
-						{						
-							// get id3tag
-							pLoader->Load(cuesheet.GetMediaPath(),tag);
-						}
-						// fill in any missing entries from underlying media file
-						for (int j=0; j<(int)newitems.size(); j++)
-						{
-							CSong song = newitems[j];
-							if (tag.Loaded())
-							{
-								if (song.strAlbum.empty() && !tag.GetAlbum().empty()) song.strAlbum = tag.GetAlbum();
-								if (song.strGenre.empty() && !tag.GetGenre().empty()) song.strGenre = tag.GetGenre();
-								if (song.strArtist.empty() && !tag.GetArtist().empty()) song.strArtist = tag.GetArtist();
-								SYSTEMTIME dateTime;
-								tag.GetReleaseDate(dateTime);
-								if (dateTime.wYear > 1900) song.iYear = dateTime.wYear;
-							}
-							if (!song.iDuration && tag.GetDuration()>0)
-							{	// must be the last song
-								song.iDuration = (tag.GetDuration()*75 - song.iStartOffset+37)/75;
-							}
-							// add this item to the list
-							itemstoadd.push_back(song);
-						}
-					}
-					else
-					{	// remove the .cue sheet from the directory
-						itemstodelete.push_back(pItem->m_strPath);
-					}
-				}
-			}
-		}
-	}
-	// now delete the .CUE files and underlying media files.
-	for (int i=0; i<(int)itemstodelete.size(); i++)
-	{
-		for (int j=0; j<(int)items.size(); j++)
-		{
-			CFileItem *pItem = items[j];
-			if (pItem->m_strPath == itemstodelete[i])
-			{	// delete this item
-				delete pItem;
-				items.erase(items.begin()+j);
-				break;
-			}
-		}
-	}
-	// and add the files from the .CUE sheet
-	for (int i=0; i<(int)itemstoadd.size(); i++)
-	{
-		// now create the file item, and add to the item list.
-		CFileItem *pItem = new CFileItem(itemstoadd[i]);
-		items.push_back(pItem);
 	}
 }
 
@@ -1432,9 +1349,9 @@ void CGUIWindowMusicSongs::LoadDirectoryCache(const CStdString& strDirectory, MA
 	}
 }
 
-void CGUIWindowMusicSongs::SaveDirectoryCache(const CStdString& strDirectory, VECFILEITEMS& items)
+void CGUIWindowMusicSongs::SaveDirectoryCache(const CStdString& strDirectory, CFileItemList& items)
 {
-	int iSize=items.size();
+	int iSize=items.Size();
 
 	if (iSize<=0)
 		return;
@@ -1456,7 +1373,7 @@ void CGUIWindowMusicSongs::SaveDirectoryCache(const CStdString& strDirectory, VE
 	if (file.OpenForWrite(strFileName))
 	{
 		CArchive ar(&file, CArchive::store);
-		ar << (int)items.size();
+		ar << items.Size();
 		for (int i=0; i<iSize; i++)
 		{
 			CFileItem* pItem=items[i];

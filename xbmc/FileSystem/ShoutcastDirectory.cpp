@@ -41,9 +41,9 @@ bool CShoutcastDirectory::IsCacheValid()
   return false;
 }
 
-void CShoutcastDirectory::CacheItems(VECFILEITEMS &items)
+void CShoutcastDirectory::CacheItems(CFileItemList &items)
 {
-	if (items.size()==0)
+	if (items.Size()==0)
 		return;
 
   CFile file;
@@ -53,7 +53,7 @@ void CShoutcastDirectory::CacheItems(VECFILEITEMS &items)
 		if (items[0]->GetLabel()=="..")
 				i=1;
 
-		for (i; i<(int)items.size(); ++i)
+		for (i; i<(int)items.Size(); ++i)
     {
       CFileItem* pItem=items[i];
 
@@ -71,7 +71,7 @@ void CShoutcastDirectory::CacheItems(VECFILEITEMS &items)
   }
 }
 
-void CShoutcastDirectory::LoadCachedItems(VECFILEITEMS &items)
+void CShoutcastDirectory::LoadCachedItems(CFileItemList &items)
 {
   CFile file;
   if (file.Open("Z:\\cachedPlaylists.txt", false))
@@ -100,14 +100,14 @@ void CShoutcastDirectory::LoadCachedItems(VECFILEITEMS &items)
 
       pItem->m_bIsFolder=true;
 
-      items.push_back(pItem);
+      items.Add(pItem);
     }
 
     file.Close();
   }
 }
 
-bool CShoutcastDirectory::DownloadPlaylists(VECFILEITEMS &items)
+bool CShoutcastDirectory::DownloadPlaylists(CFileItemList &items)
 {
 	CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   if (dlgProgress)
@@ -203,7 +203,7 @@ bool CShoutcastDirectory::DownloadPlaylists(VECFILEITEMS &items)
 
     if (iNumEntries>0)
     {
-	    VECFILEITEMS vecCacheItems;
+	    CFileItemList vecCacheItems;
 
       if (dlgProgress)
       {
@@ -212,7 +212,7 @@ bool CShoutcastDirectory::DownloadPlaylists(VECFILEITEMS &items)
         dlgProgress->Progress();
       }
 
-      items.reserve(iNumEntries);
+      items.Reserve(iNumEntries);
 
       TiXmlElement* pEntry=pPlaylist->FirstChildElement("entry");
       int i=1;
@@ -265,8 +265,8 @@ bool CShoutcastDirectory::DownloadPlaylists(VECFILEITEMS &items)
 //        pEntry=pEntry1;
         pEntry = pEntry->NextSiblingElement("entry");
 
-        items.push_back(pItem);
-        vecCacheItems.push_back(new CFileItem(*pItem));
+        items.Add(pItem);
+        vecCacheItems.Add(new CFileItem(*pItem));
 
         if ((i%20)==0)
         {
@@ -289,13 +289,13 @@ bool CShoutcastDirectory::DownloadPlaylists(VECFILEITEMS &items)
   return true;
 }
 
-bool  CShoutcastDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
+bool  CShoutcastDirectory::GetDirectory(const CStdString& strPath,CFileItemList &items)
 {
 	CStdString strRoot=strPath;
   if (CUtil::HasSlashAtEnd(strRoot))
     strRoot.Delete(strRoot.size()-1);
 
-	VECFILEITEMS vecCacheItems;
+	CFileItemList vecCacheItems;
   g_directoryCache.ClearDirectory(strRoot);
 
 	CURL url(strRoot);
@@ -310,10 +310,10 @@ bool  CShoutcastDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &
 			CLog::DebugLog("Returned from Parsing");
       CacheItems(items);
     }
-    for (int i=0; i<(int)items.size(); ++i)
+    for (int i=0; i<(int)items.Size(); ++i)
     {
       CFileItem* pItem=items[i];
-      vecCacheItems.push_back(new CFileItem(*pItem));
+      vecCacheItems.Add(new CFileItem(*pItem));
     }
   }
   else
@@ -366,8 +366,8 @@ bool  CShoutcastDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &
           CFileItem* pItem=new CFileItem;
           pItem->m_strPath=pPlayListItem.GetFileName();
           pItem->SetLabel(pPlayListItem.GetDescription());
-          items.push_back(pItem);
-          vecCacheItems.push_back(new CFileItem(*pItem));
+          items.Add(pItem);
+          vecCacheItems.Add(new CFileItem(*pItem));
         }
       }
     }

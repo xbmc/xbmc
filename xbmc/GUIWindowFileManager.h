@@ -36,7 +36,7 @@ protected:
 	void							OnSelectAll(int iList);
   void							RenameFile(const CStdString &strFile);
   void              OnNewFolder(int iList);
-  bool              DoProcess(int iAction,VECFILEITEMS & items, const CStdString& strDestFile);
+  bool              DoProcess(int iAction,CFileItemList & items, const CStdString& strDestFile);
   bool              DoProcessFile(int iAction, const CStdString& strFile, const CStdString& strDestFile);
   bool              DoProcessFolder(int iAction, const CStdString& strPath, const CStdString& strDestFile);
   void              Refresh();
@@ -44,7 +44,7 @@ protected:
   int				        GetSelectedItem(int iList);
   bool				      HaveDiscOrConnection( CStdString& strPath, int iDriveType );
 	void              GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
-	void							GetDirectory(int iList, const CStdString &strDirectory, VECFILEITEMS &items);
+	void							GetDirectory(int iList, const CStdString &strDirectory, CFileItemList &items);
 	int								NumSelected(int iList);
 	int								GetFocusedList() const;
 	// functions to check for actions that we can perform
@@ -56,7 +56,7 @@ protected:
 	void							OnPopupMenu(int iList, int iItem);
 
 	CVirtualDirectory		m_rootDir;
-  VECFILEITEMS				m_vecItems[2];
+  CFileItemList				m_vecItems[2];
   typedef vector <CFileItem*> ::iterator ivecItems;
   CFileItem           m_Directory[2];
 	CStdString					m_strParentPath[2];

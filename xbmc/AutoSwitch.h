@@ -8,11 +8,11 @@ public:
 	CAutoSwitch(void);
 	virtual ~CAutoSwitch(void);
 
-	static int GetView(VECFILEITEMS& vecItems);
+	static int GetView(CFileItemList& vecItems);
 
-	static int ByFolders(bool bBigThumbs, VECFILEITEMS& vecItems);
-	static int ByFiles(bool bBigThumbs, bool bHideParentDirItems, VECFILEITEMS& vecItems);
-	static int ByThumbPercent(bool bBigThumbs, bool bHideParentDirItems, int iPercent, VECFILEITEMS& vecItems);
+	static int ByFolders(bool bBigThumbs, CFileItemList& vecItems);
+	static int ByFiles(bool bBigThumbs, bool bHideParentDirItems, CFileItemList& vecItems);
+	static int ByThumbPercent(bool bBigThumbs, bool bHideParentDirItems, int iPercent, CFileItemList& vecItems);
 
 protected:
 

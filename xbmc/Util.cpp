@@ -21,7 +21,7 @@ bool CUtil::m_bNetworkUp = false;
 
 struct SSortByLabel
 {
-	bool operator()(CFileItem* pStart, CFileItem* pEnd)
+	static bool Sort(CFileItem* pStart, CFileItem* pEnd)
 	{
     CGUIListItem& rpStart=*pStart;
     CGUIListItem& rpEnd=*pEnd;
@@ -38,8 +38,9 @@ struct SSortByLabel
 			return (strcmp(strLabel1.c_str(),strLabel2.c_str())>=0);
 	}
 
-	bool m_bSortAscending;
+	static bool m_bSortAscending;
 };
+bool SSortByLabel::m_bSortAscending;
 
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;
@@ -177,15 +178,6 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
   return result;
 }
 
-void CUtil::RemoveExtension(CFileItem *pItem)
-{
-	if (pItem->m_bIsFolder)
-		return;
-	CStdString strLabel = pItem->GetLabel();
-	RemoveExtension(strLabel);
-	pItem->SetLabel(strLabel);
-}
-
 void CUtil::RemoveExtension(CStdString& strFileName)
 {
 	int iPos = strFileName.ReverseFind(".");
@@ -205,22 +197,6 @@ void CUtil::RemoveExtension(CStdString& strFileName)
 		if (strFileMask.Find(strExtension.c_str())>=0)
 			strFileName=strFileName.Left(iPos);
 	}
-}
-
-// Remove the extensions from the filenames
-void CUtil::RemoveExtensions(VECFILEITEMS &items)
-{
-	for (int i=0; i < (int)items.size(); ++i)
-		RemoveExtension(items[i]);
-}
-
-void CUtil::CleanFileName(CFileItem *pItem)
-{
-	if (pItem->m_bIsFolder)
-		return;
-	CStdString strLabel = pItem->GetLabel();
-	CleanFileName(strLabel);
-	pItem->SetLabel(strLabel);
 }
 
 void CUtil::CleanFileName(CStdString& strFileName)
@@ -402,12 +378,6 @@ void CUtil::CleanFileName(CStdString& strFileName)
   }
 
   strFileName = strFileName.Trim();
-}
-
-void CUtil::CleanFileNames(VECFILEITEMS &items)
-{
-	for (int i=0; i < (int)items.size(); ++i)
-		CleanFileName(items[i]);
 }
 
 bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
@@ -1288,19 +1258,9 @@ DWORD CUtil::GetXbeID( const CStdString& strFilePath)
   return dwReturn;
 }
 
-void CUtil::FillInDefaultIcons(VECFILEITEMS &items)
+void CUtil::CreateShortcuts(CFileItemList &items)
 {
-  for (int i=0; i < (int)items.size(); ++i)
-  {
-    CFileItem* pItem=items[i];
-    pItem->FillInDefaultIcon();
-
-  }
-}
-
-void CUtil::CreateShortcuts(VECFILEITEMS &items)
-{
-	for (int i=0; i < (int)items.size(); ++i)
+	for (int i=0; i < items.Size(); ++i)
 	{
 		CFileItem* pItem=items[i];
 		CreateShortcut(pItem);
@@ -1336,21 +1296,6 @@ void CUtil::CreateShortcut(CFileItem* pItem)
 			}
 		}
 	}
-}
-
-
-void CUtil::SetThumbs(VECFILEITEMS &items)
-{
-  //cache thumbnails directory
-	g_directoryCache.InitThumbCache();
-
-  for (int i=0; i < (int)items.size(); ++i)
-  {
-    CFileItem* pItem=items[i];
-    pItem->SetThumb();
-  }
-
-  g_directoryCache.ClearThumbCache();
 }
 
 bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
@@ -1661,13 +1606,12 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
       g_directoryCache.ClearDirectory(strLookInPaths[step]);
 
 
-			VECFILEITEMS items;
-      CFileItemList temp(items); //Releases memory when it goes out of scope
+			CFileItemList items;
 
       CDirectory::GetDirectory(strLookInPaths[step],items);
 			int fnl = strFileNameNoExt.size();
 
-			for (int j=0; j < (int)items.size(); j++)
+			for (int j=0; j < (int)items.Size(); j++)
 			{
 			  for(int i=0; sub_exts[i]; i++)
 			  {
@@ -1819,32 +1763,6 @@ void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CSt
   }
   strPath     = strFileNameAndPath.Left(i + 1);
   strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i - 1);
-}
-
-int CUtil::GetFolderCount(VECFILEITEMS &items)
-{
-  int nFolderCount=0;
-  for (int i = 0; i < (int)items.size(); i++)
-  {
-    CFileItem* pItem = items[i];
-    if (pItem->m_bIsFolder)
-      nFolderCount++;
-  }
-
-  return nFolderCount;
-}
-
-int CUtil::GetFileCount(VECFILEITEMS &items)
-{
-  int nFileCount=0;
-  for (int i = 0; i < (int)items.size(); i++)
-  {
-    CFileItem* pItem = items[i];
-    if (! pItem->m_bIsFolder)
-      nFileCount++;
-  }
-
-  return nFileCount;
 }
 
 bool CUtil::ThumbExists(const CStdString& strFileName, bool bAddCache)
@@ -2227,20 +2145,6 @@ void CUtil::GetVideoThumbnail(const CStdString& strIMDBID, CStdString& strThumb)
   strThumb.Format("%s\\imdb\\imdb%s.jpg",g_stSettings.szThumbnailsDirectory,strIMDBID.c_str());
 }
 
-void CUtil::SetMusicThumbs(VECFILEITEMS &items)
-{
-  //cache thumbnails directory
-	g_directoryCache.InitMusicThumbCache();
-
-  for (int i=0; i < (int)items.size(); ++i)
-  {
-    CFileItem* pItem=items[i];
-    pItem->SetMusicThumb();
-  }
-
-  g_directoryCache.ClearMusicThumbCache();
-}
-
 CStdString CUtil::GetNextFilename(const char* fn_template, int max)
 {
 	// Open the file.
@@ -2420,11 +2324,10 @@ void CUtil::ClearCache()
   g_directoryCache.ClearDirectory(strThumb+"\\imdb");
 }
 
-void CUtil::SortFileItemsByName(VECFILEITEMS& items, bool bSortAscending/*=true*/)
+void CUtil::SortFileItemsByName(CFileItemList& items, bool bSortAscending/*=true*/)
 {
-	SSortByLabel sortmethod;
-	sortmethod.m_bSortAscending=bSortAscending;
-	sort(items.begin(), items.end(), sortmethod);
+	SSortByLabel::m_bSortAscending=bSortAscending;
+	items.Sort(SSortByLabel::Sort);
 }
 
 void CUtil::Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat)

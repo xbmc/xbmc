@@ -388,7 +388,7 @@ void CGUIWindowVideoBase::UpdateButtons()
 		g_graphicsContext.SendMessage(msg);
 	}
 
-	int iItems=m_vecItems.size();
+	int iItems=m_vecItems.Size();
 	if (iItems)
 	{
 		CFileItem* pItem=m_vecItems[0];
@@ -411,7 +411,7 @@ void CGUIWindowVideoBase::OnSort()
 	FormatItemLabels();
 	SortItems(m_vecItems);
 
-	for (int i=0; i < (int)m_vecItems.size(); i++)
+	for (int i=0; i < m_vecItems.Size(); i++)
 	{
 		CFileItem* pItem=m_vecItems[i];
 		CGUIMessage msg(GUI_MSG_LABEL_ADD,GetID(),CONTROL_LIST,0,0,(void*)pItem);
@@ -429,7 +429,7 @@ void CGUIWindowVideoBase::ClearFileItems()
 	CGUIMessage msg2(GUI_MSG_LABEL_RESET,GetID(),CONTROL_THUMBS,0,0,NULL);
 	g_graphicsContext.SendMessage(msg2);         
 
-	CFileItemList itemlist(m_vecItems); // will clean up everything
+	m_vecItems.Clear(); // will clean up everything
 }
 
 int CGUIWindowVideoBase::GetSelectedItem()
@@ -445,7 +445,7 @@ int CGUIWindowVideoBase::GetSelectedItem()
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
   g_graphicsContext.SendMessage(msg);         
   int iItem=msg.GetParam1();
-	if (iItem >= (int)m_vecItems.size())
+	if (iItem >= m_vecItems.Size())
 		return -1;
 	return iItem;
 }
@@ -497,7 +497,7 @@ bool CGUIWindowVideoBase::HaveDiscOrConnection( CStdString& strPath, int iDriveT
 
 void CGUIWindowVideoBase::OnInfo(int iItem)
 {
-	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
+	if ( iItem < 0 || iItem >= m_vecItems.Size() ) return;
 	CFileItem* pItem=m_vecItems[iItem];
   VECMOVIESFILES movies;
   m_database.GetFiles(atol(pItem->m_strPath),movies);
@@ -729,15 +729,15 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
 		int iSelectedItem=GetSelectedItem();
 
 		//	Refresh all items 
-		for (int i=0; i<(int)m_vecItems.size(); ++i)
+		for (int i=0; i<m_vecItems.Size(); ++i)
 		{
 			CFileItem* pItem=m_vecItems[i];
 			pItem->FreeIcons();
 		}
 
-		CUtil::SetThumbs(m_vecItems);
+		m_vecItems.SetThumbs();
 		SetIMDBThumbs(m_vecItems);
-		CUtil::FillInDefaultIcons(m_vecItems);
+		m_vecItems.FillInDefaultIcons();
 
 		//	HACK: If we are in files view
 		//	autoswitch between list/thumb control
@@ -881,7 +881,7 @@ bool CGUIWindowVideoBase::CheckMovie(const CStdString& strFileName)
 
 void CGUIWindowVideoBase::OnQueueItem(int iItem)
 {
-	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
+	if ( iItem < 0 || iItem >= m_vecItems.Size() ) return;
 	// add item 2 playlist
 	const CFileItem* pItem=m_vecItems[iItem];
 	AddItemToPlayList(pItem);
@@ -907,13 +907,12 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem)
 		if (pItem->GetLabel() == "..") return;
 		CStdString strDirectory=m_Directory.m_strPath;
 		m_Directory.m_strPath=pItem->m_strPath;
-		VECFILEITEMS items;
-		CFileItemList itemlist(items);
+		CFileItemList items;
 		GetDirectory(m_Directory.m_strPath, items);
     
     SortItems(items);
 
-		for (int i=0; i < (int) items.size(); ++i)
+		for (int i=0; i < items.Size(); ++i)
 		{
 			AddItemToPlayList(items[i]);
 		}
@@ -939,7 +938,7 @@ void CGUIWindowVideoBase::DisplayEmptyDatabaseMessage(bool bDisplay)
 
 void CGUIWindowVideoBase::OnPopupMenu(int iItem)
 {
-	if (iItem < 0 || iItem >= (int)m_vecItems.size()) return;
+	if (iItem < 0 || iItem >= m_vecItems.Size()) return;
 	// calculate our position
 	int iPosX=200;
 	int iPosY=100;

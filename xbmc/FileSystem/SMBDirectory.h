@@ -10,7 +10,7 @@ namespace DIRECTORY
   public:
     CSMBDirectory(void);
     virtual ~CSMBDirectory(void);
-    virtual bool GetDirectory(const CStdString& strPath,VECFILEITEMS &items);
+    virtual bool GetDirectory(const CStdString& strPath,CFileItemList &items);
     virtual bool Create(const char* strPath);
     virtual bool Exists(const char* strPath);
     virtual bool Remove(const char* strPath);
