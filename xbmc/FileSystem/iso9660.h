@@ -96,7 +96,7 @@ struct iso9660_Directory
 		WORD	VolSequenceLE;						//28..29 volume sequence number
 		WORD	VolSequenceBE;            //30..31
 		BYTE	Len_Fi;										//32     N, the identifier length
-		BYTE	FileName[128];						//33     identifier
+		BYTE	FileName[512];						//33     identifier
 
 };
 #pragma pack()
