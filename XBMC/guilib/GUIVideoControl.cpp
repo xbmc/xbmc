@@ -18,6 +18,9 @@ void CGUIVideoControl::Render()
 	RECT rc;
 	float x = (float)m_dwPosX;
 	float y = (float)m_dwPosY;
+
+	if (!IsVisible()) return;
+
 	g_graphicsContext.Correct(x, y);
 
 	rc.left    = (DWORD)x;
