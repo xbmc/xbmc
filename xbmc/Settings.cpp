@@ -220,6 +220,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bMyProgramsSortAscending=true;
 	g_stSettings.m_bMyProgramsFlatten=true;
 	g_stSettings.m_bMyProgramsDefaultXBE=true;
+	g_stSettings.m_bMyProgramsDirectoryName=false;
 	strcpy(g_stSettings.szDashboard,"C:\\xboxdash.xbe");
 	strcpy(g_stSettings.m_szAlternateSubtitleDirectory,"");
 	strcpy(g_stSettings.m_strLocalIPAdres,"");
@@ -1202,6 +1203,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 
 		GetBoolean(pElement, "flatten", g_stSettings.m_bMyProgramsFlatten);
 		GetBoolean(pElement, "defaultxbe", g_stSettings.m_bMyProgramsDefaultXBE);
+		GetBoolean(pElement, "directoryname", g_stSettings.m_bMyProgramsDirectoryName);
 	}
 
 	// cdda ripper settings
@@ -1250,6 +1252,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetBoolean(pNode, "programssortascending", g_stSettings.m_bMyProgramsSortAscending);
 	SetBoolean(pNode, "flatten", g_stSettings.m_bMyProgramsFlatten);
 	SetBoolean(pNode, "defaultxbe", g_stSettings.m_bMyProgramsDefaultXBE);
+	SetBoolean(pNode, "directoryname", g_stSettings.m_bMyProgramsDirectoryName);
 
 
 	// cache settings

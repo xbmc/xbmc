@@ -1723,6 +1723,10 @@
 		<id>505</id>
 		<value>Loading media info from files...</value>
 	</string>
+	<string>
+		<id>506</id>
+		<value>Use directory names for description</value>
+	</string>
 
 	<string>
 		<id>600</id>

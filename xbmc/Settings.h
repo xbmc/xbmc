@@ -117,6 +117,7 @@ public:
 		int       m_iMyProgramsViewAsIcons;
 		bool			m_bMyProgramsFlatten;
 		bool			m_bMyProgramsDefaultXBE;
+		bool			m_bMyProgramsDirectoryName;
 
 		char      szThumbnailsDirectory[1024];
 		char      szDashboard[1024];
