@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 31-12-2004 added: adapted keymap.xml to take full advantage of the media center extender remote
   - 29-12-2004 added: support for xbox media center extender remote (page+/-, vol+/-)
   - 28-12-2004 added: [ 1092220 ] Fix an exception for DLL Loader
   - 28-12-2004 updated: Finnish language file (Thnx to jutski)
