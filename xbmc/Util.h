@@ -90,6 +90,7 @@ public:
 	static bool IsPlayList(const CStdString& strFile) ;
 	static void ShortenFileName(CStdString& strFileNameAndPath);
 	static bool IsISO9660(const CStdString& strFile);
+	static bool IsSmb(const CStdString& strFile);
 	static void ConvertPathToUrl( const CStdString& strPath, const CStdString& strProtocol, CStdString& strOutUrl );
 	static void GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon );
 	static void RemoveTempFiles();
@@ -141,8 +142,10 @@ public:
 	static void StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat);
 	static void Stat64ToStat(struct _stat *result, struct __stat64 *stat);
 	static bool CreateDirectoryEx(const CStdString& strPath);
-	static CStdString MakeLegalFATXFileName(const char* strFile, bool bKeepExtension);
+	static CStdString MakeLegalFileName(const char* strFile, bool bKeepExtension, bool isFATX = true);
 	static void ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayList::CPlayListItem &playlistitem);
+	static void AddDirectorySeperator(CStdString& strPath);
+	static char GetDirectorySeperator(const CStdString& strFile);
 
 	static bool IsNaturalNumber(const CStdString& str);
 
