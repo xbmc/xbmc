@@ -516,8 +516,9 @@
 <string><id>751</id><value>Snelkoppeling verwijderen</value></string>
 <string><id>752</id><value>Snelkoppeling wijzingen</value></string>
 <string><id>753</id><value>Naam snlkoppeling wijzingen</value></string>
-<string><id>998</id><value>XLink KAI</value></string>
+<string><id>998</id><value>XLink Kai</value></string>
 <string><id>999</id><value>Online gamen</value></string>
+<string><id>1000</id><value>Screensaver voorbeeld</value></string>
 
 <string><id>1396</id><value>Driftsneeuw</value></string>
 <string><id>1397</id><value>en</value></string>
@@ -565,12 +566,31 @@
 <string><id>10029</id><value>Instellingen-&gt;Hoofdinstellingen-&gt;LCD</value></string>
 <string><id>10100</id><value>Ja/Nee Scherm</value></string>
 <string><id>10101</id><value>Voortgang scherm</value></string>
-<string><id>10500</id><value>Mijn Muziek/Playlist</value></string>
+<string><id>10500</id><value>Mijn Muziek/Afspeellijst</value></string>
 <string><id>10501</id><value>Mijn Muziek/Bestanden</value></string>
 <string><id>10502</id><value>Mijn Muziek/Albums</value></string>
 <string><id>10503</id><value>Mijn Muziek/Artiesten</value></string>
 <string><id>10504</id><value>Mijn Muziek/Genres</value></string>
-<string><id>10505</id><value>Mijn Muziek/Top100</value></string>
+<string><id>10505</id><value>Mijn Muziek/Top 100</value></string>
+<string><id>10506</id><value>Programma's</value></string>
+<string><id>10507</id><value>Instellingen</value></string>
+<string><id>10508</id><value>Weerbericht</value></string>
+<string><id>10509</id><value>Netwerk gaming</value></string>
+<string><id>10510</id><value>Extensies</value></string>
+<string><id>10511</id><value>Systeem informatie</value></string>
+<string><id>10512</id><value>Muziek - Albums</value></string>
+<string><id>10513</id><value>Muziek - Artiesten</value></string>
+<string><id>10514</id><value>Muziek - Genres</value></string>
+<string><id>10515</id><value>Muziek - Top 100</value></string>
+<string><id>10516</id><value>Muziek - Bibliotheek</value></string>
+<string><id>10517</id><value>Muziek - Afspeellijst</value></string>
+<string><id>10518</id><value>Films - Acteurs</value></string>
+<string><id>10519</id><value>Films - Genres</value></string>
+<string><id>10520</id><value>Films - Titels</value></string>
+<string><id>10521</id><value>Films - Jaar</value></string>
+<string><id>10522</id><value>Films - Afspeellijst</value></string>
+<string><id>10523</id><value>Album informatie</value></string>
+<string><id>10524</id><value>Film informatie</value></string>
 <string><id>11000</id><value>Toetsenbord</value></string>
 <string><id>12000</id><value>Selecteer Scherm</value></string>
 <string><id>12001</id><value>Mijn Muziek/info</value></string>
@@ -652,7 +672,7 @@
 <string><id>13313</id><value>Reset/Reboot</value></string>
 <string><id>13314</id><value>Muziek OSD verbergen na</value></string>
 <string><id>13315</id><value>Thumbnails aanmaken </value></string>
-<string><id>13316</id><value>Recursieve Thumbnails</value></string> 
+<string><id>13316</id><value>Recursieve thumbnails</value></string> 
 <string><id>13317</id><value>Bekijk schuifvoorstelling</value></string>
 <string><id>13318</id><value>Recursieve schuifvoorstelling</value></string>
 <string><id>13319</id><value>Willekeurig</value></string>
@@ -695,6 +715,27 @@
 <string><id>13356</id><value>Hardware Overlays</value></string>
 <string><id>13357</id><value>Hoge kwaliteit Pixel Shader</value></string>
 <string><id>13360</id><value>Automatisch thumbnails aanmaken</value></string>
+<string><id>13361</id><value>Stem inschakelen</value></string>
+<string><id>13362</id><value>Stemvervorming</value></string>
+<string><id>13363</id><value>- Spectrum Energy Weight inschakelen</value></string>
+<string><id>13364</id><value>-- Spectrum Energy Weight factor</value></string>
+<string><id>13365</id><value>- Stemhoogte veranderen</value></string>
+<string><id>13366</id><value>-- Stemhoogte factor</value></string>
+<string><id>13367</id><value>- Fluistereffect inschakelen</value></string>
+<string><id>13368</id><value>-- Fluistereffect factor</value></string>
+<string><id>13369</id><value>- Roboteffect inschakelen</value></string>
+<string><id>13370</id><value>-- Roboteffect factor</value></string>
+<string><id>13371</id><value>- Stem op poort 0</value></string>
+<string><id>13372</id><value>- Stem op poort 1</value></string>
+<string><id>13373</id><value>- Stem op poort 2</value></string>
+<string><id>13374</id><value>- Stem op poort 3</value></string>
+<string><id>13375</id><value>Apparaat inschakelen</value></string>
+<string><id>13376</id><value>Volume (%)</value></string>
+<string><id>13377</id><value>Standaard weergavemodus</value></string>
+<string><id>13378</id><value>Standaard helderheid</value></string>
+<string><id>13379</id><value>Standaard contrast</value></string>
+<string><id>13380</id><value>Standaard kleurbalans</value></string>
+<string><id>13381</id><value>Video hervatten</value></string>
 
 <string><id>14000</id><value>Samenvoegen: Uit</value></string>
 <string><id>14001</id><value>Samenvoegen: Aan</value></string> 
@@ -704,7 +745,7 @@
 <string><id>14005</id><value>Uitpakken streams lijst...</value></string>
 <string><id>14006</id><value>Downloaden van streams lijst mislukt</value></string> 
 <string><id>14007</id><value>Downloaden van playlist bestand mislukt</value></string>
-<string><id>14008</id><value>KAI berichten inschakelen</value></string> 
+<string><id>14008</id><value>Kai berichten inschakelen</value></string> 
 <string><id>14009</id><value>Speldirectory</value></string>
 <string><id>14010</id><value>Automatisch omschakelen naar thumbs baseren op</value></string> 
 <string><id>14011</id><value>Automatisch omschakelen naar thumbs</value></string> 
@@ -736,7 +777,7 @@
 <string><id>14039</id><value>XBMC moet herstarten om de netwerkinstellingen</value></string> 
 <string><id>14040</id><value>te wijzigen. Wil je nu herstarten?</value></string> 
 <string><id>14041</id><value>Voorbewerking</value></string>
-<string><id>14042</id><value>KAI engine IP adres</value></string>
+<string><id>14042</id><value>Kai engine IP adres</value></string>
 <string><id>14043</id><value>- Uitschakelen tijdens gebruik</value></string>
 <string><id>14044</id><value>%i min.</value></string> 
 <string><id>14045</id><value>%i sec</value></string> 
@@ -788,7 +829,7 @@
 <string><id>15027</id><value>Weergeven: Chat</value></string>
 <string><id>15028</id><value>Toetsenbord</value></string>
 <string><id>15029</id><value>Er is een wachtwoord nodig om deze arena te betreden.</value></string>
-<string><id>15030</id><value>Verbinding met de service verbroken</value></string>
+<string><id>15030</id><value>Verbinding verbroken</value></string>
 <string><id>15031</id><value>XLink Kai authentificatie</value></string>
 <string><id>15032</id><value>Je gebruikersnaam en wachwoord blijken volgens</value></string>
 <string><id>15033</id><value>de server onjuist de zijn. Controleer je configuratie.</value></string>
@@ -821,10 +862,11 @@
 <string><id>15060</id><value>Bericht hier</value></string>
 <string><id>15061</id><value>Je bent uitgenodigd %s te spelen.</value></string>
 <string><id>15062</id><value>Alternatieve mediaplayer gebruiken</value></string>
-<string><id>15100</id><value>Nav</value></string>
+<string><id>15100</id><value>Bibiotheek</value></string>
 <string><id>15101</id><value>Database</value></string>
 <string><id>15102</id><value>* Alle albums</value></string>
 <string><id>15103</id><value>* Alle artiesten</value></string>
 <string><id>15104</id><value>* Alle nummers</value></string>
-<string><id>15105</id><value>* All genres</value></string>
+<string><id>15105</id><value>* Alle genres</value></string>
+<string><id>15106</id><value>Geselecteerd bestand onthouden bij voorwaarts navigeren</value></string>
 </strings>
