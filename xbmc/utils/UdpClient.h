@@ -21,8 +21,9 @@ protected:
   bool Broadcast(int aPort, CStdString& aMessage);
   bool Send(CStdString aIpAddress, int aPort, CStdString& aMessage); 
   bool Send(SOCKADDR_IN aAddress, CStdString& aMessage); 
+  bool Send(SOCKADDR_IN aAddress, LPBYTE pMessage, DWORD dwSize); 
 
-  virtual void OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage){};
+  virtual void OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LPBYTE pMessage, DWORD dwMessageLength){};
 
 protected:
 
@@ -30,6 +31,8 @@ protected:
 	{
 		SOCKADDR_IN address;
 		CStdString  message;
+		LPBYTE		binary;
+		DWORD		binarySize;
 	};
 
 	void DispatchNextCommand();

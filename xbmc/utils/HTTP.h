@@ -32,7 +32,7 @@ public:
 	void 		SetCookie(const string& strCookie);
 	bool 		Get(string& strURL, string& strHTML);
 	bool 		Download(const string &strURL, const string &strFileName);
-	bool		GetHeader(CStdString strName, CStdString& strValue) const;
+	int			GetBytesRecvCount() { return m_RecvBytes; };
 	
 	string m_redirectedURL;
 
