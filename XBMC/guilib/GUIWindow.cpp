@@ -19,6 +19,7 @@
 #include "guiVideoControl.h"
 #include "GUIProgressControl.h"
 #include "GUISliderControl.h"
+#include "../xbmc/application.h"
 #include "../xbmc/util.h"
 
 #include<string>
@@ -325,6 +326,12 @@ void CGUIWindow::Render()
 
 void CGUIWindow::OnAction(const CAction &action)
 {
+	if ( !(g_application.IsPlayingVideo()))
+	  if (action.wID == REMOTE_9)
+	  {
+		CUtil::TakeScreenshot();
+	  }
+
   ivecControls i;
   for (i=m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
