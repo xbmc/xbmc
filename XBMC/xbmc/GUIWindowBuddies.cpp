@@ -1081,8 +1081,8 @@ void CGUIWindowBuddies::Enter(CArenaItem& aArena)
 /* IBuddyObserver methods */
 void CGUIWindowBuddies::OnEngineDetached()
 {
-	CStdString caption = "System";
-	CStdString description = "XLink Kai has disconnected";
+	CStdString caption = "XLink Kai";
+	CStdString description = "Service has disconnected";
 	g_application.SetKaiNotification(caption,description);
 }
 void CGUIWindowBuddies::OnAuthenticationFailed(CStdString& aUsername)
@@ -1099,9 +1099,16 @@ void CGUIWindowBuddies::OnAuthenticationFailed(CStdString& aUsername)
 
 void CGUIWindowBuddies::OnNetworkError(CStdString& aError)
 {
-	CStdString caption = "System";
+	CStdString caption = "XLink Kai";
 	g_application.SetKaiNotification(caption,aError);
 }
+
+void CGUIWindowBuddies::OnNetworkReachable(CStdString& aServerName)
+{
+	CStdString strCaption = "XLink Kai";
+	g_application.SetKaiNotification(strCaption,aServerName);
+}
+
 void CGUIWindowBuddies::OnContactOffline(CStdString& aFriend)
 {
 	CGUIList::GUILISTITEMS& list = m_friends.Lock();
@@ -1290,6 +1297,16 @@ void CGUIWindowBuddies::QueryInstalledGames()
 
 void CGUIWindowBuddies::Play(CStdString& aVector)
 {
+	if (!m_pKaiClient->IsNetworkReachable())
+	{
+		CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+		pDialog->SetHeading("XLink Kai");
+		pDialog->SetLine(0,L"XBMC is unable to confirm your network is reachable.");
+		pDialog->SetLine(1,L"You may experience difficulties joining or hosting games.");
+		pDialog->SetLine(2,L"");
+		pDialog->DoModal(GetID());
+	}
+
 	CStdString strGame;
 	CArenaItem::GetTier(CArenaItem::Game, aVector, strGame);
 
