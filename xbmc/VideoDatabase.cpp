@@ -208,7 +208,15 @@ long CVideoDatabase::GetFile(const CStdString& strFilenameAndPath, long &lPathId
         CStdString strFname= m_pDS->fv("strFilename").get_asString() ;
         if (bExact)
         {
-          if (strFname==strFileName) return true;
+          if (strFname==strFileName)
+		  {
+		    // was just returning 'true' here, but this caused problems with
+			// the bookmarks as these are stored by fileid. forza.
+			long lFileId=m_pDS->fv("idFile").get_asLong() ;
+			lMovieId=m_pDS->fv("idMovie").get_asLong() ;
+            return lFileId;
+			//return true;
+		  }
         }
         else
         {
