@@ -238,7 +238,10 @@ public:
 		bool			m_bUseCDDB;
 		int				m_iUIOffsetX;
 		int				m_iUIOffsetY;
-		bool			m_bSoften;
+    int       m_iFlickerFilterVideo; // 0..5
+    int       m_iFlickerFilterUI; // 0..5
+		bool			m_bSoftenVideo;
+		bool			m_bSoftenUI;
 		bool			m_bZoom;
 		bool			m_bStretch;
 		bool			m_bAutoWidescreenSwitching;
