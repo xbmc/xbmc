@@ -363,13 +363,10 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
 
 bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName)
 {
-	DWORD dwImageType=CXIMAGE_FORMAT_JPG;
+	DWORD dwImageType=CXIMAGE_FORMAT_UNKNOWN;
 
 	if (!strExtension.size()) return false;
 
-	auto_aptr<BYTE> pPicture(new BYTE[nBufSize]);
-	memcpy(pPicture.get(), pBuffer, nBufSize);
-	
 	if ( 0==CUtil::cmpnocase(strExtension.c_str(),"bmp") ) dwImageType=CXIMAGE_FORMAT_BMP;
 	if ( 0==CUtil::cmpnocase(strExtension.c_str(),"bitmap") ) dwImageType=CXIMAGE_FORMAT_BMP;
 	if ( 0==CUtil::cmpnocase(strExtension.c_str(),"gif") ) dwImageType=CXIMAGE_FORMAT_GIF;
@@ -383,6 +380,15 @@ bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize,
 	if ( 0==CUtil::cmpnocase(strExtension.c_str(),"tga") ) dwImageType=CXIMAGE_FORMAT_TGA;
 	if ( 0==CUtil::cmpnocase(strExtension.c_str(),"pcx") ) dwImageType=CXIMAGE_FORMAT_PCX;
 
+	if (dwImageType==CXIMAGE_FORMAT_UNKNOWN)
+	{
+		CLog::Log("PICTURE::createthumbnailfrommemory: Unknown filetype: %s\n", strExtension.c_str());
+		return false;
+	}
+
+	auto_aptr<BYTE> pPicture(new BYTE[nBufSize]);
+	memcpy(pPicture.get(), pBuffer, nBufSize);
+	
 	if (!m_bSectionLoaded)
 	{
 		CSectionLoader::Load("CXIMAGE");
