@@ -2589,7 +2589,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     { // this is the next cue sheet item, so we don't have to restart the player
       // just update our display etc.
       m_itemCurrentFile = item;
-      g_infoManager.SetCurrentItem(item);
+      g_infoManager.SetCurrentItem(m_itemCurrentFile);
       m_guiMusicOverlay.Update();
       m_guiVideoOverlay.Update();
       m_dwIdleTime = timeGetTime();
@@ -2625,7 +2625,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       //pause video until screen is setup
       m_pPlayer->Pause();
     }
-    g_infoManager.SetCurrentItem(item);
+    g_infoManager.SetCurrentItem(m_itemCurrentFile);
     m_guiMusicOverlay.Update();
     m_guiVideoOverlay.Update();
 

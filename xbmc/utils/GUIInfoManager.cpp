@@ -81,6 +81,11 @@ CStdString CGUIInfoManager::GetImage(const CStdString &strInfo)
     if (!g_application.IsPlayingAudio()) return "";
     return m_currentSong.HasThumbnail() ? m_currentSong.GetThumbnailImage() : "music.jpg";
   }
+  if (strTest == "videoplayer.cover")
+  {
+    if (!g_application.IsPlayingVideo()) return "";
+    return m_currentMovieThumb;
+  }
   return "";
 }
 
@@ -307,7 +312,14 @@ CStdString CGUIInfoManager::GetCurrentPlayTimeRemaining()
   return strTime;
 }
 
-void CGUIInfoManager::SetCurrentItem(const CFileItem &item)
+void CGUIInfoManager::ResetCurrentItem()
+{ 
+  m_currentSong.Clear();
+  m_currentMovie.Reset();
+  m_currentMovieThumb = "";
+}
+
+void CGUIInfoManager::SetCurrentItem(CFileItem &item)
 {
   ResetCurrentItem();
   if (item.IsAudio())
@@ -316,7 +328,7 @@ void CGUIInfoManager::SetCurrentItem(const CFileItem &item)
     SetCurrentMovie(item);
 }
 
-void CGUIInfoManager::SetCurrentSong(const CFileItem &item)
+void CGUIInfoManager::SetCurrentSong(CFileItem &item)
 {
   m_currentSong = item;
 
@@ -391,7 +403,7 @@ void CGUIInfoManager::SetCurrentSong(const CFileItem &item)
   m_currentSong.FillInDefaultIcon();
 }
 
-void CGUIInfoManager::SetCurrentMovie(const CFileItem &item)
+void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
 {
   CVideoDatabase dbs;
   dbs.Open();
@@ -405,6 +417,17 @@ void CGUIInfoManager::SetCurrentMovie(const CFileItem &item)
   { // at least fill in the filename
     m_currentMovie.m_strTitle = CUtil::GetTitleFromPath(item.m_strPath);
   }
+  // Find a thumb for this file.
+  item.SetThumb();
+  if (!item.HasThumbnail())
+  { // get IMDb thumb if we have one
+    CStdString strThumb;
+    CUtil::GetVideoThumbnail(m_currentMovie.m_strIMDBNumber, strThumb);
+    if (CUtil::FileExists(strThumb))
+      item.SetThumbnailImage(strThumb);
+  }
+  item.FillInDefaultIcon();
+  m_currentMovieThumb = item.GetThumbnailImage();
 }
 
 wstring CGUIInfoManager::GetSystemHeatInfo(const CStdString &strInfo)
