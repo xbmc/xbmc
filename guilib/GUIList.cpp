@@ -17,6 +17,8 @@ CGUIList::~CGUIList(void)
 
 CGUIItem* CGUIList::Find(CStdString aListItemLabel)
 {
+	EnterCriticalSection(&m_critical);
+
 	CGUIItem* pItem = NULL;
 
 	if (m_listitems.size()>0)
@@ -33,6 +35,8 @@ CGUIItem* CGUIList::Find(CStdString aListItemLabel)
 			iterator++;
 		}
 	}
+
+	LeaveCriticalSection(&m_critical);
 
 	return pItem;
 }
@@ -82,6 +86,17 @@ void CGUIList::Clear()
 	}
 
 	LeaveCriticalSection(&m_critical);
+}
+
+int CGUIList::Size()
+{
+	EnterCriticalSection(&m_critical);
+
+	int sizeOfList = m_listitems.size();
+
+	LeaveCriticalSection(&m_critical);
+
+	return sizeOfList;
 }
 
 void CGUIList::Release()

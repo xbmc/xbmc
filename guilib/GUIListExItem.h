@@ -31,6 +31,7 @@ public:
 		{
 			m_pButton = NULL;
 			m_pFont = NULL;
+			m_bActive = FALSE;
 			m_dwTextNormalColour = m_dwTextSelectedColour = 0x00000000;
 		};
 		virtual ~RenderContext(){};
@@ -39,16 +40,20 @@ public:
 		CGUIFont*			m_pFont;
 		DWORD				m_dwTextNormalColour;
 		DWORD				m_dwTextSelectedColour;
+		bool				m_bActive;
 	};
 	
 	CGUIListExItem(CStdString& aItemName);
 	virtual void OnPaint(CGUIItem::RenderContext* pContext);
 	void SetIcon(CGUIImage* pImage);
 	void SetIcon(INT aWidth, INT aHeight, const CStdString& aTexture);
+	DWORD GetFramesFocused() { return m_dwFocusedDuration; };
 
 protected:
 	void RenderText(FLOAT fPosX, FLOAT fPosY, FLOAT fMaxWidth, DWORD dwTextColor, WCHAR* wszText, CGUIFont* pFont);
 protected:
-	CGUIImage* m_pIcon;
+	CGUIImage*	m_pIcon;
+	DWORD		m_dwFocusedDuration;
+	DWORD		m_dwFrameCounter;
 };
 #endif

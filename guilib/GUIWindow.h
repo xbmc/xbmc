@@ -21,6 +21,12 @@ using namespace std;
 	m_mapClickEvents[i] = clickHandler; \
 } \
 
+#define ON_SELECTED_MESSAGE(i,c,m) \
+{ \
+	EventHandler<c, CGUIMessage&> selectedHandler(this, m); \
+	m_mapSelectedEvents[i] = selectedHandler; \
+} \
+
 // forward
 class TiXmlNode;
 class TiXmlElement;
@@ -85,6 +91,10 @@ protected:
 	typedef Event<CGUIMessage&> CLICK_EVENT; 
 	typedef map<int, CLICK_EVENT> MAPCONTROLCLICKEVENTS;
 	MAPCONTROLCLICKEVENTS m_mapClickEvents;
+
+	typedef Event<CGUIMessage&> SELECTED_EVENT; 
+	typedef map<int, SELECTED_EVENT> MAPCONTROLSELECTEDEVENTS;
+	MAPCONTROLSELECTEDEVENTS m_mapSelectedEvents;
 
 	typedef vector<struct stReferenceControl> VECREFERENCECONTOLS;
 	typedef vector<struct stReferenceControl>::iterator IVECREFERENCECONTOLS;
