@@ -500,6 +500,8 @@ bool CUtil::IsAudio(const CStdString& strFile)
 	{
 		return true;
 	}
+	if (strstr(strFile.c_str(), ".cdda") ) return true;
+
 	return false;
 }
 bool CUtil::IsVideo(const CStdString& strFile) 

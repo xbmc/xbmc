@@ -8,6 +8,8 @@
 #include "MusicInfoTag.h"
 #include "picture.h"
 #include "musicdatabase.h"
+#include "filesystem/CDDADirectory.h"
+#include "url.h"
 using namespace MUSIC_INFO;
 
 #define CONTROL_LOGO_PIC    1
@@ -112,7 +114,40 @@ void CGUIWindowMusicOverlay::Render()
 			CMusicDatabase dbs;
 			if (dbs.Open())
 			{
-				if (dbs.GetSongByFileName(strFile, song) )
+				bool bContinue(false);
+				CURL url(strFile);
+				if (url.GetProtocol()=="cdda" )
+				{
+					VECFILEITEMS  items;
+					CCDDADirectory dir;
+					if (dir.GetDirectory("D:",items))
+					{
+						for (int i=0; i < (int)items.size(); ++i)
+						{
+							CFileItem* pItem=items[i];
+							if (pItem->m_strPath==strFile)
+							{
+								SYSTEMTIME systime;
+								song.iTrack		=pItem->m_musicInfoTag.GetTrackNumber();
+								song.strAlbum =pItem->m_musicInfoTag.GetAlbum();
+								song.strArtist=pItem->m_musicInfoTag.GetArtist();
+								song.strFileName=strFile;
+								song.strGenre==pItem->m_musicInfoTag.GetGenre();
+								song.strTitle=pItem->m_musicInfoTag.GetTitle();
+								song.iDuration=pItem->m_musicInfoTag.GetDuration();
+								pItem->m_musicInfoTag.GetReleaseDate(systime);
+								song.iYear=systime.wYear;
+								bContinue=true;
+							}
+							delete pItem;
+						}
+					}
+				}
+				else
+				{
+					bContinue=dbs.GetSongByFileName(strFile, song);
+				}
+				if (bContinue)
 				{
 					if (song.strTitle.size())
 					{
