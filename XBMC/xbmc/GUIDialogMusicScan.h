@@ -23,13 +23,8 @@ protected:
 	virtual void		OnStateChanged(SCAN_STATE state);
 
 	CMusicInfoScanner				m_musicInfoScanner;
-	CStdString							m_strStartDir;
-	bool										m_bUpdateAll;
 	SCAN_STATE							m_ScanState;
-
 	CStdString							m_strCurrentDir;
-	CStdString							m_strScannedDir;
-	CStdString							m_strLastScannedDir;
 
 	CCriticalSection				m_critical;
 };

@@ -17,6 +17,7 @@ using namespace DIRECTORY;
 CMusicInfoScanner::CMusicInfoScanner()
 {
 	m_bRunning=false;
+	m_pObserver=NULL;
 }
 
 CMusicInfoScanner::~CMusicInfoScanner()
@@ -58,9 +59,7 @@ void CMusicInfoScanner::Process()
 			if (m_pObserver)
 				m_pObserver->OnStateChanged(REMOVING_OLD);
 
-			//m_musicDatabase.BeginTransaction();
 			bOKtoScan = m_musicDatabase.RemoveSongsFromPaths(strPaths);
-			//m_musicDatabase.CommitTransaction();
 		}
 
 		if (bOKtoScan)
@@ -70,9 +69,7 @@ void CMusicInfoScanner::Process()
 				if (m_pObserver)
 					m_pObserver->OnStateChanged(CLEANING_UP_DATABASE);
 
-				//m_musicDatabase.BeginTransaction();
 				bOKtoScan = m_musicDatabase.CleanupAlbumsArtistsGenres(strPaths);
-				//m_musicDatabase.CommitTransaction();
 			}
 
 			if (m_pObserver)
@@ -91,9 +88,7 @@ void CMusicInfoScanner::Process()
 					if (m_pObserver)
 						m_pObserver->OnStateChanged(COMPRESSING_DATABASE);
 
-					//m_musicDatabase.BeginTransaction();
 					m_musicDatabase.Compress();
-					//m_musicDatabase.CommitTransaction();
 				}
 			}
 
@@ -167,13 +162,8 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 
 	if (RetrieveMusicInfo(items, strDirectory)>0)
 	{
-		//m_musicDatabase.BeginTransaction();
 		m_musicDatabase.CheckVariousArtistsAndCoverArt();
-		//m_musicDatabase.CommitTransaction();
-	}
 
-	if (CUtil::GetFolderCount(items)!=items.size())
-	{
 		if (m_pObserver)
 			m_pObserver->OnDirectoryScanned(strDirectory);
 	}
@@ -185,14 +175,11 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 		if (m_bStop)
 			break;
 
-		if ( pItem->m_bIsFolder)
+		if (pItem->m_bIsFolder && pItem->GetLabel() != "..")
 		{
-			if (pItem->GetLabel() != "..")
+			if (!DoScan(pItem->m_strPath))
 			{
-				if (!DoScan(pItem->m_strPath))
-				{
-					m_bStop=true;
-				}
+				m_bStop=true;
 			}
 		}
 	}
