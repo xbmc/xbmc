@@ -41,7 +41,7 @@
 //  #define USE_RELEASE_LIBS
 
 #pragma comment (lib,"xbmc/lib/libXenium/XeniumSPIg.lib")
- #pragma comment (lib,"xbmc/lib/libSpeex/libSpeex.lib")
+#pragma comment (lib,"xbmc/lib/libSpeex/libSpeex.lib")
 
 #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
  #pragma comment (lib,"xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
@@ -895,66 +895,66 @@ HRESULT CApplication::Initialize()
   LoadSkin(g_guiSettings.GetString("LookAndFeel.Skin"));
 
   CLog::Log(LOGINFO, "initializing skin");
-  m_gWindowManager.Add(&m_guiHome);           // window id = 0
-  m_gWindowManager.Add(&m_guiPrograms);         // window id = 1
-  m_gWindowManager.Add(&m_guiPictures);         // window id = 2
-  m_gWindowManager.Add(&m_guiFileManager);       // window id = 3
-  m_gWindowManager.Add(&m_guiMyVideo);         // window id = 6
-  m_gWindowManager.Add(&m_guiSettings);         // window id = 4
-  m_gWindowManager.Add(&m_guiSystemInfo);        // window id = 7
-  m_gWindowManager.Add(&m_guiSettingsUICalibration);  // window id = 10
-  m_gWindowManager.Add(&m_guiSettingsScreenCalibration); // window id = 11
-  m_gWindowManager.Add(&m_guiSettingsCategory);    // window id = 12 slideshow:window id 2007
-  m_gWindowManager.Add(&m_guiScripts);         // window id = 20
-  m_gWindowManager.Add(&m_guiVideoGenre);        // window id = 21
-  m_gWindowManager.Add(&m_guiVideoActors);       // window id = 22
-  m_gWindowManager.Add(&m_guiVideoYear);         // window id = 23
-  m_gWindowManager.Add(&m_guiVideoTitle);         // window id = 25
-  m_gWindowManager.Add(&m_guiMyVideoPlayList);     // window id = 28
+  m_gWindowManager.Add(&m_guiHome);                     // window id = 0
+  m_gWindowManager.Add(&m_guiPrograms);                 // window id = 1
+  m_gWindowManager.Add(&m_guiPictures);                 // window id = 2
+  m_gWindowManager.Add(&m_guiFileManager);              // window id = 3
+  m_gWindowManager.Add(&m_guiMyVideo);                  // window id = 6
+  m_gWindowManager.Add(&m_guiSettings);                 // window id = 4
+  m_gWindowManager.Add(&m_guiSystemInfo);               // window id = 7
+  m_gWindowManager.Add(&m_guiSettingsUICalibration);    // window id = 10
+  m_gWindowManager.Add(&m_guiSettingsScreenCalibration);// window id = 11
+  m_gWindowManager.Add(&m_guiSettingsCategory);         // window id = 12 slideshow:window id 2007
+  m_gWindowManager.Add(&m_guiScripts);                  // window id = 20
+  m_gWindowManager.Add(&m_guiVideoGenre);               // window id = 21
+  m_gWindowManager.Add(&m_guiVideoActors);              // window id = 22
+  m_gWindowManager.Add(&m_guiVideoYear);                // window id = 23
+  m_gWindowManager.Add(&m_guiVideoTitle);               // window id = 25
+  m_gWindowManager.Add(&m_guiMyVideoPlayList);          // window id = 28
   m_gWindowManager.Add(&m_guiSettingsProfile);          // window id = 34
 
-	m_gWindowManager.Add(&m_guiDialogYesNo);							// window id = 100
-	m_gWindowManager.Add(&m_guiDialogProgress);						// window id = 101
-	m_gWindowManager.Add(&m_guiDialogInvite);						// window id = 102
-	m_gWindowManager.Add(&m_guiDialogKeyboard);						// window id = 103
-	m_gWindowManager.Add(&m_guiDialogVolumeBar);					// window id = 104
-	m_gWindowManager.Add(&m_guiDialogSubMenu);						// window id = 105
-	m_gWindowManager.Add(&m_guiDialogContextMenu);				// window id = 106
-	m_gWindowManager.Add(&m_guiDialogKaiToast);					// window id = 107
-	m_gWindowManager.Add(&m_guiDialogHost);						// window id = 108
-	m_gWindowManager.Add(&m_guiDialogNumeric);				// window id = 109
-	m_gWindowManager.Add(&m_guiDialogGamepad);				// window id = 110
-	m_gWindowManager.Add(&m_guiDialogButtonMenu);					// window id = 111
-	m_gWindowManager.Add(&m_guiDialogMusicScan);					// window id = 112
-//m_gWindowManager.Add(&m_guiDialogMuteBug);					  // window id = 113
-	m_gWindowManager.Add(&m_guiMyMusicPlayList);					// window id = 500
-	m_gWindowManager.Add(&m_guiMyMusicSongs);							// window id = 501
-	m_gWindowManager.Add(&m_guiMyMusicAlbum);							// window id = 502
-	m_gWindowManager.Add(&m_guiMyMusicArtists);						// window id = 503
-	m_gWindowManager.Add(&m_guiMyMusicGenres);						// window id = 504
-	m_gWindowManager.Add(&m_guiMyMusicTop100);						// window id = 505
-	m_gWindowManager.Add(&m_guiMyMusicNav);							// window id = 506
-//	m_gWindowManager.Add(&m_keyboard);										// window id = 1000
-	m_gWindowManager.Add(&m_guiDialogSelect);							// window id = 2000
-	m_gWindowManager.Add(&m_guiMusicInfo);								// window id = 2001
-	m_gWindowManager.Add(&m_guiDialogOK);									// window id = 2002
-	m_gWindowManager.Add(&m_guiVideoInfo);								// window id = 2003
-	m_gWindowManager.Add(&m_guiScriptsInfo);							// window id = 2004
-	m_gWindowManager.Add(&m_guiWindowFullScreen);					// window id = 2005
-	m_gWindowManager.Add(&m_guiWindowVisualisation);			// window id = 2006
-	m_gWindowManager.Add(&m_guiWindowSlideshow);					// window id = 2007
-	m_gWindowManager.Add(&m_guiDialogFileStacking);				// window id = 2008
-	m_gWindowManager.Add(&m_guiWindowOSD);						// window id = 2901
-	m_gWindowManager.Add(&m_guiWindowScreensaver);				// window id = 2900 Screensaver
-	m_gWindowManager.Add(&m_guiMyWeather);						    // window id = 2600 WEATHER
-	m_gWindowManager.Add(&m_guiMyBuddies);						    // window id = 2700 BUDDIES
+  m_gWindowManager.Add(&m_guiDialogYesNo);              // window id = 100
+  m_gWindowManager.Add(&m_guiDialogProgress);           // window id = 101
+  m_gWindowManager.Add(&m_guiDialogInvite);             // window id = 102
+  m_gWindowManager.Add(&m_guiDialogKeyboard);           // window id = 103
+  m_gWindowManager.Add(&m_guiDialogVolumeBar);          // window id = 104
+  m_gWindowManager.Add(&m_guiDialogSubMenu);            // window id = 105
+  m_gWindowManager.Add(&m_guiDialogContextMenu);        // window id = 106
+  m_gWindowManager.Add(&m_guiDialogKaiToast);           // window id = 107
+  m_gWindowManager.Add(&m_guiDialogHost);               // window id = 108
+  m_gWindowManager.Add(&m_guiDialogNumeric);            // window id = 109
+  m_gWindowManager.Add(&m_guiDialogGamepad);            // window id = 110
+  m_gWindowManager.Add(&m_guiDialogButtonMenu);         // window id = 111
+  m_gWindowManager.Add(&m_guiDialogMusicScan);          // window id = 112
+//m_gWindowManager.Add(&m_guiDialogMuteBug);            // window id = 113
+  m_gWindowManager.Add(&m_guiMyMusicPlayList);          // window id = 500
+  m_gWindowManager.Add(&m_guiMyMusicSongs);             // window id = 501
+  m_gWindowManager.Add(&m_guiMyMusicAlbum);             // window id = 502
+  m_gWindowManager.Add(&m_guiMyMusicArtists);           // window id = 503
+  m_gWindowManager.Add(&m_guiMyMusicGenres);            // window id = 504
+  m_gWindowManager.Add(&m_guiMyMusicTop100);            // window id = 505
+  m_gWindowManager.Add(&m_guiMyMusicNav);               // window id = 506
+//m_gWindowManager.Add(&m_keyboard);                    // window id = 1000
+  m_gWindowManager.Add(&m_guiDialogSelect);             // window id = 2000
+  m_gWindowManager.Add(&m_guiMusicInfo);                // window id = 2001
+  m_gWindowManager.Add(&m_guiDialogOK);                 // window id = 2002
+  m_gWindowManager.Add(&m_guiVideoInfo);                // window id = 2003
+  m_gWindowManager.Add(&m_guiScriptsInfo);              // window id = 2004
+  m_gWindowManager.Add(&m_guiWindowFullScreen);         // window id = 2005
+  m_gWindowManager.Add(&m_guiWindowVisualisation);      // window id = 2006
+  m_gWindowManager.Add(&m_guiWindowSlideshow);          // window id = 2007
+  m_gWindowManager.Add(&m_guiDialogFileStacking);       // window id = 2008
+  m_gWindowManager.Add(&m_guiWindowOSD);                // window id = 2901
+  m_gWindowManager.Add(&m_guiWindowScreensaver);        // window id = 2900 Screensaver
+  m_gWindowManager.Add(&m_guiMyWeather);                // window id = 2600 WEATHER
+  m_gWindowManager.Add(&m_guiMyBuddies);                // window id = 2700 BUDDIES
 
-	g_DownloadManager.Initialize();
-	CKaiClient::GetInstance()->SetObserver(&m_guiMyBuddies);
+  g_DownloadManager.Initialize();
+  CKaiClient::GetInstance()->SetObserver(&m_guiMyBuddies);
 
-	/* window id's 3000 - 3100 are reserved for python */
-	//CLog::Log(LOGINFO, "initializing virtual keyboard");
-	//m_keyboard.Initialize();
+  /* window id's 3000 - 3100 are reserved for python */
+  //CLog::Log(LOGINFO, "initializing virtual keyboard");
+  //m_keyboard.Initialize();
 
 
   m_ctrDpad.SetDelays(g_stSettings.m_iMoveDelayController, g_stSettings.m_iRepeatDelayController);
@@ -1297,7 +1297,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_guiMyBuddies.Load( "mybuddies.xml");
   m_guiPointer.Load("Pointer.xml");
   m_guiDialogMuteBug.Load("DialogMuteBug.xml");
-	
+
   // Load the user windows
   LoadUserWindows(strSkinPath);
 
@@ -1772,23 +1772,12 @@ void CApplication::OnKey(CKey& key)
   if (action.wID == ACTION_MUTE)
   {
     if (g_stSettings.m_bMute == false)
-    {
-      g_stSettings.m_iPreMuteVolumeLevel = g_stSettings.m_nVolumeLevel;
-      g_stSettings.m_bMute = true;
-      g_stSettings.m_nVolumeLevel = VOLUME_MINIMUM;
-
-			m_guiDialogMuteBug.Show(m_gWindowManager.GetActiveWindow());
-    }
+      Mute();
     else  // already muted
-    {
-      g_stSettings.m_bMute = false;
-      g_stSettings.m_nVolumeLevel = g_stSettings.m_iPreMuteVolumeLevel;   
-      
-      CGUIMessage msg(GUI_MSG_MUTE_OFF, 0, 0, 0, 0, NULL);
-	    m_gWindowManager.SendMessage(msg);
-    }
+      UnMute();
+    
     if (m_pPlayer)
-			m_pPlayer->SetVolume(g_stSettings.m_nVolumeLevel);
+      m_pPlayer->SetVolume(g_stSettings.m_nVolumeLevel);
   }
 
   // Check for global volume control
@@ -1797,13 +1786,7 @@ void CApplication::OnKey(CKey& key)
     if (g_stSettings.m_bMute == true)
     {
       if (action.wID == ACTION_VOLUME_UP)   // restore level only on volume up
-      {
-        g_stSettings.m_bMute = false;
-        g_stSettings.m_nVolumeLevel = g_stSettings.m_iPreMuteVolumeLevel;   
-      
-        CGUIMessage msg(GUI_MSG_MUTE_OFF, 0, 0, 0, 0, NULL);
-	      m_gWindowManager.SendMessage(msg);
-      }
+        UnMute();
     }
     else // regular volume change
     {
@@ -1813,10 +1796,16 @@ void CApplication::OnKey(CKey& key)
       else
         g_stSettings.m_nVolumeLevel -= (int)(action.fAmount1 * 100);
 
-      if (g_stSettings.m_nVolumeLevel > VOLUME_MAXIMUM)
+      // sanity check
+      if (g_stSettings.m_nVolumeLevel >= VOLUME_MAXIMUM)
+      {
         g_stSettings.m_nVolumeLevel = VOLUME_MAXIMUM;
-      if (g_stSettings.m_nVolumeLevel < VOLUME_MINIMUM)
+      }
+      if (g_stSettings.m_nVolumeLevel <= VOLUME_MINIMUM)
+      {
         g_stSettings.m_nVolumeLevel = VOLUME_MINIMUM;
+        Mute();   // activate mute when volume becomes 0
+      }
     }
 
     // tell our hardware to update the volume level...
@@ -3374,6 +3363,24 @@ const CStdString& CApplication::CurrentFile()
 const CFileItem& CApplication::CurrentFileItem()
 {
   return m_itemCurrentFile;
+}
+
+void CApplication::Mute(void)
+{
+  g_stSettings.m_iPreMuteVolumeLevel = g_stSettings.m_nVolumeLevel;
+  g_stSettings.m_bMute = true;
+  g_stSettings.m_nVolumeLevel = VOLUME_MINIMUM;
+
+  m_guiDialogMuteBug.Show(m_gWindowManager.GetActiveWindow());
+}
+
+void CApplication::UnMute(void)
+{
+  g_stSettings.m_bMute = false;
+  g_stSettings.m_nVolumeLevel = g_stSettings.m_iPreMuteVolumeLevel;   
+      
+  CGUIMessage msg(GUI_MSG_MUTE_OFF, 0, 0, 0, 0, NULL);
+  m_gWindowManager.SendMessage(msg);
 }
 
 void CApplication::SetVolume(int iPercent)
