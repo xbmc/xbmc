@@ -117,7 +117,12 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	//m_dwPacketSize		 = 1152 * (uiBitsPerSample/8) * iChannels;
 	//m_dwNumPackets = ( (m_wfx.nSamplesPerSec / ( m_dwPa2cketSize / ((uiBitsPerSample/8) * m_wfx.nChannels) )) / 2);
   m_dwPacketSize=1152;
-  m_dwNumPackets=16*iChannels;
+  m_dwNumPackets=8*iChannels;
+  CLog::Log("buffers:%i channels:%i samples/sec:%i bitspersample:%i", 
+                          m_dwNumPackets,
+                          iChannels,
+													uiSamplesPerSec,
+													uiBitsPerSample);
 
 	for (DWORD dwX=0; dwX < m_dwNumPackets ; dwX++)
 		m_pbSampleData[dwX] = (BYTE*)XPhysicalAlloc( m_dwPacketSize, MAXULONG_PTR,0,PAGE_READWRITE|PAGE_NOCACHE);
