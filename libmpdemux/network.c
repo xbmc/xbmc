@@ -494,8 +494,6 @@ http_send_request( URL_t *url, off_t pos ) {
 		if( server_url->port==0 ) server_url->port = 80;	// Default port for the web server
 		fd = connect2Server( server_url->hostname, server_url->port,1 );
 	}
-			printf("aaaaaaaaaaaaab");
-			printf("%i", fd);
 	if( fd<0 ) {
 		return -1; 
 	}
