@@ -38,7 +38,7 @@ void CGUIWindowVideoOverlay::Render()
 {
 	if (!g_application.m_pPlayer) return;
 	if (!g_application.m_pPlayer->HasVideo()) return;
-
+	
 	__int64 lPTS=g_application.m_pPlayer->GetPTS();
   //int hh = (lPTS / 36000) % 100;
   int mm = (int)((lPTS / 600) % 60);
