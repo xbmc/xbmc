@@ -183,7 +183,7 @@ extern "C" void dllprintf( const char *format, ... );
 int CAnimatedGifSet::LoadGIF (const char * szFileName)
 {
 	int n;
-  dllprintf("load:%s",szFileName);
+//  dllprintf("load:%s",szFileName);
 	// Global GIF variables:
 	int			GlobalBPP;							// Bits per Pixel.
 	COLOR * GlobalColorMap;					// Global colormap (allocate)
