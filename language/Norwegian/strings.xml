@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.176. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.177. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -299,7 +299,7 @@
   <string><id>367</id><value>Sortering: Kar.</value></string>
   <string><id>368</id><value>IMDB</value></string>
   <string><id>369</id><value>Tittel</value></string>
-  <string><id>370</id><value>Storm</value></string>
+  <string><id>370</id><value>Tordenstorm</value></string>
   <string><id>371</id><value>Delvis</value></string>
   <string><id>372</id><value>For det meste</value></string>
   <string><id>373</id><value>Solfylt</value></string>
@@ -529,18 +529,18 @@
   <string><id>1396</id><value>Forbigående</value></string>
   <string><id>1397</id><value>og</value></string>
   <string><id>1398</id><value>Kjølig</value></string>
-  <string><id>1399</id><value>N/A</value></string>
-  <string><id>1400</id><value>N/A</value></string>
-  <string><id>1401</id><value>N/A</value></string>
-  <string><id>1402</id><value>N/A</value></string>
-  <string><id>1403</id><value>N/A</value></string>
-  <string><id>1404</id><value>N/A</value></string>
-  <string><id>1405</id><value>N/A</value></string>
-  <string><id>1406</id><value>N/A</value></string>
-  <string><id>1407</id><value>N/A</value></string>
-  <string><id>1408</id><value>N/A</value></string>
-  <string><id>1409</id><value>N/A</value></string>
-  <string><id>1410</id><value>N/A</value></string>
+  <string><id>1399</id><value>Sene</value></string>
+  <string><id>1400</id><value>Isolerte</value></string>
+  <string><id>1401</id><value>Tordenbyger</value></string>
+  <string><id>1402</id><value>Torden</value></string>
+  <string><id>1403</id><value>Sol</value></string>
+  <string><id>1404</id><value>Tunge</value></string>
+  <string><id>1405</id><value>i</value></string>
+  <string><id>1406</id><value></value></string>
+  <string><id>1407</id><value>nærheten</value></string>
+  <string><id>1408</id><value>Is</value></string>
+  <string><id>1409</id><value>krystaller</value></string>
+  <string><id>1410</id><value>Stille</value></string>
 
   <string><id>10000</id><value>Forside</value></string>
   <string><id>10001</id><value>Programmer</value></string>
