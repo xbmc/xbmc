@@ -56,7 +56,7 @@ int									m_iBackBuffer=0;
 LPDIRECT3DTEXTURE8					m_pOverlay[2]={NULL,NULL};			// Overlay textures
 LPDIRECT3DSURFACE8					m_pSurface[2]={NULL,NULL};			// Overlay Surfaces
 bool								m_bFlip=false;
-
+bool                m_bRenderGUI=false;
 static RESOLUTION					m_iResolution=PAL_4x3;
 
 typedef struct directx_fourcc_caps
@@ -67,10 +67,11 @@ typedef struct directx_fourcc_caps
 } directx_fourcc_caps;
 
 
-#define DIRECT3D8CAPS VFCAP_CSP_SUPPORTED |VFCAP_OSD |VFCAP_HWSCALE_UP|VFCAP_HWSCALE_DOWN
+#define DIRECT3D8CAPS VFCAP_CSP_SUPPORTED_BY_HW |VFCAP_CSP_SUPPORTED |VFCAP_OSD |VFCAP_HWSCALE_UP|VFCAP_HWSCALE_DOWN|VFCAP_TIMER
 static directx_fourcc_caps g_ddpf[] =
 {
-    {"YV12 ",IMGFMT_YV12 ,DIRECT3D8CAPS},
+    //{"YV12 ",IMGFMT_YV12 ,DIRECT3D8CAPS},
+  {"YUY2 ",IMGFMT_YUY2 ,DIRECT3D8CAPS},
 };
 
   struct VERTEX 
@@ -524,6 +525,7 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
 //		OutputDebugString("Rendering Subs\n");
 		vo_draw_alpha_rgb32(w,h,src,srca,stride,((unsigned char *) subtitleimage) + subtitlestride*(SUBTITLE_TEXTURE_HEIGHT-h) + 4*xpos,subtitlestride);
 		iClearSubtitleRegion[m_iBackBuffer] = h;
+    m_bRenderGUI=true;
 		return;
 	}
 	vo_draw_alpha_yuy2(w,h,src,srca,stride,((unsigned char *) image) + dstride*y0 + 2*x0,dstride);
@@ -619,33 +621,7 @@ static unsigned int video_preinit(const char *arg)
 */
 static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,int h,int x,int y )
 {
-	IMAGE img;
-	img.y=src[0];
-	img.u=src[1];
-	img.v=src[2];
-  unsigned char *dst[4];
-  dst[0]=image+dstride*y+2*x;
-  dst[1]=dst[0];
-  dst[2]=dst[0];
-  dst[3]=dst[0];
-
-  unsigned int dststride[4];
-  dststride[0]=dstride;
-  dststride[1]=dststride[0];
-  dststride[2]=dststride[0];
-  dststride[3]=dststride[0];
-
-	while (w % 16) w++;
-	image_output( &img,									// image
-								 w,										// width
-								 h,										// height
-								 stride[0],						// edged_width=stride of Y plane
-								 dst,         
-								 dststride,							//	dst stride
-								 XVID_CSP_YUY2 ,0);
-  __asm emms;
-	if (y+h+16 >= (int)image_height) m_bFlip=true;
-//  yv12toyuy2(src[0],src[1],src[2],image + dstride*y + 2*x ,w,h,stride[0],stride[1],dstride);
+  OutputDebugString("video_draw_slice?? (should not happen)\n");
   return 0;
 }
 
@@ -699,16 +675,23 @@ static void video_flip_page(void)
 	{
 		if (g_graphicsContext.IsFullScreenVideo() )
 		{
-			g_graphicsContext.Lock();
-			g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
-			g_application.RenderFullScreen();
-			// update our subtitle position
-			xbox_video_update_subtitle_position();
-			xbox_video_render_subtitles(true);
-			g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      
-			g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_iBackBuffer], &rs, &rd, TRUE, 0x00010001  );
-			g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
-			g_graphicsContext.Unlock();
+      if (m_bRenderGUI||g_application.NeedRenderFullScreen())
+      {
+        m_bRenderGUI=true;
+			  g_graphicsContext.Lock();
+			  g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
+			  g_application.RenderFullScreen();
+			  // update our subtitle position
+			  xbox_video_update_subtitle_position();
+			  xbox_video_render_subtitles(true);
+      }
+      while (!g_graphicsContext.Get3DDevice()->GetOverlayUpdateStatus()) Sleep(10);
+      g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_iBackBuffer], &rs, &rd, TRUE, 0x00010001  );
+			if (m_bRenderGUI)
+      {
+			  g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
+        g_graphicsContext.Unlock();
+      }
 		}
 		else
 		{
@@ -773,42 +756,55 @@ void xbox_video_update(bool bPauseDrawing)
 */
 static unsigned int video_draw_frame(unsigned char *src[])
 {
-	IMAGE img;
-	img.y=src[0];
-	img.u=src[1];
-	img.v=src[2];
-  
-  unsigned char *dst[4];
-  dst[0]=image;
-  dst[1]=dst[0];
-  dst[2]=dst[0];
-  dst[3]=dst[0];
 
-  unsigned int dststride[4];
-  dststride[0]=dstride;
-  dststride[1]=dststride[0];
-  dststride[2]=dststride[0];
-  dststride[3]=dststride[0];
-
-	image_output( &img,									// image
-								 image_width,					// width
-								 image_height,				// height
-								 image_width,					// edged_width=stride of Y plane
-								 dst,         
-								 dststride,							//	dst stride
-								 XVID_CSP_YUY2 ,0);
-  __asm emms;
-	//yv12toyuy2(src[0],src[1],src[2],image,image_width,image_height,image_width,image_width>>1,dstride);
+  OutputDebugString("video_draw_frame?? (should not happen)\n");
   return 0;
 }
 
 static unsigned int get_image(mp_image_t *mpi)
 {
-	return 0;
+  while (!g_graphicsContext.Get3DDevice()->GetOverlayUpdateStatus()) Sleep(10);
+
+  if((2*mpi->width==dstride) || (mpi->flags&(MP_IMGFLAG_ACCEPT_STRIDE|MP_IMGFLAG_ACCEPT_WIDTH)))
+  {
+    if(mpi->flags&MP_IMGFLAG_PLANAR)
+    {
+    }
+    mpi->planes[0]=image;
+    mpi->stride[0]=dstride;
+    mpi->width=image_width;
+    mpi->height=image_height;
+    mpi->flags|=MP_IMGFLAG_DIRECT;
+    return VO_TRUE;
+  }
+	return VO_FALSE;
 }
 //********************************************************************************************************
 static unsigned int put_image(mp_image_t *mpi)
 {
+  while (!g_graphicsContext.Get3DDevice()->GetOverlayUpdateStatus()) Sleep(10);
+
+  if((mpi->flags&MP_IMGFLAG_DIRECT)||(mpi->flags&MP_IMGFLAG_DRAW_CALLBACK)) 
+  {
+      m_bFlip=true;
+      return VO_TRUE;
+  }
+
+  if (mpi->flags&MP_IMGFLAG_PLANAR)
+  {
+    for (int y=0; y < mpi->h; ++y)
+    {
+      memcpy(image+y*dstride,mpi->planes[0]+mpi->stride[0]*y,2*mpi->width);
+    }
+  }
+  else
+  {
+    //packed
+    memcpy( image, mpi->planes[0], image_height * dstride);
+  }
+
+  m_bFlip=true;
+#if 0
   unsigned int x = mpi->x;
   unsigned int y = mpi->y;
   unsigned int w = mpi->w;
@@ -839,8 +835,9 @@ static unsigned int put_image(mp_image_t *mpi)
 								 dst,         						
 								 dststride,			//	dst stride
 								 XVID_CSP_YUY2 ,0);
-  __asm emms;
+  //__asm emms;
 	//yv12toyuy2(src[0],src[1],src[2],image,image_width,image_height,image_width,image_width>>1,dstride);
+#endif
   return VO_TRUE;
 }
 /********************************************************************************************************
@@ -909,7 +906,7 @@ static unsigned int video_control(unsigned int request, void *data, ...)
 					//libmpcodecs Direct Rendering interface
 					//You need to update mpi (mp_image.h) structure, for example,
 					//look at vo_x11, vo_sdl, vo_xv or mga_common.
-		return VO_NOTIMPL;
+    return get_image((mp_image_t *)data);
 
     case VOCTRL_QUERY_FORMAT:
       return query_format(*((unsigned int*)data));
@@ -923,8 +920,8 @@ static unsigned int video_control(unsigned int request, void *data, ...)
 				Note: draw_slice is still mandatory, for per-slice rendering!
 		*/
 
-//      return put_image( (mp_image_t*)data );
-			return VO_NOTIMPL;
+      return put_image( (mp_image_t*)data );
+//			return VO_NOTIMPL;
 
     case VOCTRL_FULLSCREEN:
     {

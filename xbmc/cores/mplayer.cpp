@@ -131,6 +131,7 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
   CStdString strTmp;
   m_vecOptions.erase(m_vecOptions.begin(),m_vecOptions.end());
   m_vecOptions.push_back("xbmc.exe");
+  m_vecOptions.push_back("-dr");
 	if ( m_iChannels) 
   {
     m_vecOptions.push_back("-channels");

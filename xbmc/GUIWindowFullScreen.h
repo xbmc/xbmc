@@ -16,6 +16,7 @@ public:
   virtual void    OnAction(const CAction &action);
 	virtual void		Render();
 	void				    RenderFullScreen();
+  bool            NeedRenderFullScreen();
   bool            OSDVisible() const;
   
    virtual void   OnExecute(int iAction, const IOSDOption* option);

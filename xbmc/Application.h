@@ -86,6 +86,7 @@ public:
 	bool									IsPlayingVideo() const ;
 	void									OnKey(CKey& key);
 	void									RenderFullScreen();
+  bool                  NeedRenderFullScreen();
 	void									SpinHD();
 	void									ResetAllControls();
   virtual void          Process();
