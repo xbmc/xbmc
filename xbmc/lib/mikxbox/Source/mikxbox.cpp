@@ -68,7 +68,7 @@ BOOL mikxboxInit()
 	MikMod_RegisterAllLoaders();
 
 	/* initialize the library */
-	md_mode = DMODE_HQMIXER | DMODE_INTERP | DMODE_STEREO;
+	md_mode = DMODE_HQMIXER | DMODE_INTERP | DMODE_SURROUND | DMODE_STEREO;
     
 	pInfos = MikMod_InfoDriver();
 	initialised = !MikMod_Init(pInfos);
