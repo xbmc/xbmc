@@ -267,7 +267,7 @@ int CXbmcWeb::xbmcRemoteControl( int eid, webs_t wp, char_t *parameter)
 	while( xbmcRemoteControls[ cmd].xbmcIRCode != -1) {
 		// if we have a match
 		if( stricmp( parameter,xbmcRemoteControls[ cmd].xbmcRemoteParameter) == 0) {
-			g_application.m_DefaultIR_Remote.wPressedButtons = xbmcRemoteControls[ cmd].xbmcIRCode;
+			g_application.m_DefaultIR_Remote.wButtons = xbmcRemoteControls[ cmd].xbmcIRCode;
 			// send it to the application
 			g_application.FrameMove();
 			// return the number of characters written

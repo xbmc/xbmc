@@ -301,8 +301,6 @@ void CXBApplicationEx::ReadInput()
 					if( m_IR_Remote[i].hDevice)
 					{
 										m_DefaultIR_Remote.wButtons        = m_IR_Remote[i].wButtons;
-										m_DefaultIR_Remote.wPressedButtons = m_IR_Remote[i].wPressedButtons;
-										m_DefaultIR_Remote.wLastButtons    = m_IR_Remote[i].wLastButtons;
 					}
 				}
 

@@ -1,6 +1,6 @@
 #ifndef __COFFLDR_H_
 #define __COFFLDR_H_
-#pragma message("including coffldr.h")
+//#pragma message("including coffldr.h")
 #include "coff.h"
 #include <stdio.h>
 //#define DUMPING_DATA 1

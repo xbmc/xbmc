@@ -1,7 +1,7 @@
 #ifndef __COFF_H_
 #define __COFF_H_
 #pragma once
-#pragma message("including coff.h")
+//#pragma message("including coff.h")
 //  
 //      COFF -- Common Object File Format
 //          Used commonly by Un*x and is imbedded in Windows PE
