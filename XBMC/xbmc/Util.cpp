@@ -1446,3 +1446,19 @@ void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CSt
 	strPath     = strFileNameAndPath.Left(i);
 	strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i);
 }
+
+int CUtil::GetFolderCount(VECFILEITEMS &items)
+{
+	int nFolderCount=0;
+	for (int i = 0; i < (int)items.size(); i++) 
+	{
+		CFileItem* pItem = items[i];
+		if (pItem->m_bIsFolder) 
+			nFolderCount++;
+		else
+			break;
+	}
+
+	return nFolderCount;
+}
+

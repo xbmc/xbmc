@@ -40,6 +40,8 @@ public:
 };
 
 typedef vector<CSong>  VECSONGS;
+typedef map<CStdString,CSong>  MAPSONGS;
+typedef map<CStdString,CSong>::iterator  IMAPSONGS;
 typedef vector<CStdString> VECARTISTS;
 typedef vector<CStdString> VECGENRES;
 typedef vector<CAlbum> VECALBUMS;
@@ -88,6 +90,7 @@ public:
 	bool		GetSong(const CStdString& strTitle, CSong& song);
 	bool		GetSongByFileName(const CStdString& strFileName, CSong& song);
 	bool		GetSongsByPath(const CStdString& strPath, VECSONGS& songs);
+	bool		GetSongsByPath(const CStdString& strPath, MAPSONGS& songs);
 	bool		GetSongsByArtist(const CStdString strArtist, VECSONGS& songs);
 	bool		GetSongsByAlbum(const CStdString& strAlbum1, const CStdString& strPath1, VECSONGS& songs);
 	bool		GetSongsByGenre(const CStdString& strGenre, VECSONGS& songs);
