@@ -5,6 +5,7 @@
 #include "../filesystem/fileshoutcast.h"
 extern CFileShoutcast* m_pShoutCastRipper;
 extern "C" void dllReleaseAll( );
+#include "EMUkernel32.h"
 
 #define KEY_ENTER 13
 #define KEY_TAB 9
@@ -64,10 +65,12 @@ extern "C" void dllReleaseAll( );
 #define KEY_KPDEL (KEY_KEYPAD+12)
 #define KEY_KPENTER (KEY_KEYPAD+13)
 
+extern "C" void free_registry(void);
 
 CMPlayer::CMPlayer(IPlayerCallback& callback)
 :IPlayer(callback)
 {
+	criticalsection_head = NULL;
 	m_pDLL=NULL;
 	m_bIsPlaying=false;
 	m_bPaused=false;
@@ -75,6 +78,13 @@ CMPlayer::CMPlayer(IPlayerCallback& callback)
 
 CMPlayer::~CMPlayer()
 {
+	while( criticalsection_head )
+	{
+		CriticalSection_List * entry = criticalsection_head;
+		criticalsection_head = entry->Next;
+		delete entry;
+	}	//fix winnt and xbox critical data mismatch issue.
+	free_registry();	//free memory take by registry structures
 	m_bIsPlaying=false;
 	StopThread();
 	Unload();
@@ -221,7 +231,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		}
 	}
 
-	if (strAudioInfo.Find("chns:2") >= 0) 
+	if ((strAudioInfo.Find("chns:1") >= 0) || (strAudioInfo.Find("chns:2") >= 0)) 
 	{
 		mplayer_close_file();
 		int argc=8;
