@@ -22,6 +22,7 @@ class CGUIImage : public CGUIControl
 {
 public:
   CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTexture,DWORD dwColorKey=0);
+  CGUIImage(const CGUIImage &left);
   virtual ~CGUIImage(void);
   
   virtual void Render();
