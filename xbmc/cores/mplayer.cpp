@@ -1158,7 +1158,7 @@ extern void xbox_video_getRect(RECT& SrcRect, RECT& DestRect);
 extern void xbox_video_getAR(float& fAR);
 extern void xbox_video_update(bool bPauseDrawing);
 extern void xbox_video_update_subtitle_position();
-extern void xbox_video_render_subtitles(bool bUseBackBuffer);
+extern void xbox_video_render_subtitles();
 
 void CMPlayer::Update(bool bPauseDrawing)
 {
@@ -1203,7 +1203,7 @@ void CMPlayer::UpdateSubtitlePosition()
 
 void CMPlayer::RenderSubtitles()
 {
-	xbox_video_render_subtitles(false);
+	xbox_video_render_subtitles();
 }
 
 bool CMPlayer::CanRecord() 
