@@ -135,6 +135,7 @@ public:
 		bool			m_bAllowVideoSwitching;
 		bool			m_bAllowPAL60;
 		RECT			m_rectMovieCalibration[20];
+		bool			m_bAutoShufflePlaylist;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;
