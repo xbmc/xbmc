@@ -57,8 +57,17 @@ bool CGUIDialogOK::OnMessage(CGUIMessage& message)
 		}
 		break;
 	}
-	return CGUIDialog::OnMessage(message);
+  //only allow messages from or for this dialog
+  if (
+    (message.GetSenderId()  == GetID()) || 
+    (message.GetControlId() == GetID()) || 
+    (message.GetControlId() == 0)
+  ) {
+	  return CGUIDialog::OnMessage(message);
+  }
+  return false;
 }
+
 
 bool CGUIDialogOK::IsConfirmed() const
 {
