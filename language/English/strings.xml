@@ -1723,6 +1723,47 @@
 		<id>505</id>
 		<value>Loading media info from files...</value>
 	</string>
+
+	<string>
+		<id>600</id>
+		<value>Rip CD</value>
+	</string>
+	<string>
+		<id>601</id>
+		<value>Medium</value>
+	</string>
+	<string>
+		<id>602</id>
+		<value>Normal</value>
+	</string>
+	<string>
+		<id>603</id>
+		<value>Extreme</value>
+	</string>
+	<string>
+		<id>604</id>
+		<value>Constant Bit Rate</value>
+	</string>
+	<string>
+		<id>605</id>
+		<value>Ripping</value>
+	</string>
+	<string>
+		<id>606</id>
+		<value>Track Number:</value>
+	</string>
+	<string>
+		<id>607</id>
+		<value>To:</value>
+	</string>
+	<string>
+		<id>608</id>
+		<value>Could not rip CD or Track</value>
+	</string>
+	<string>
+		<id>609</id>
+		<value>CDDARipPath is not set in XboxMediaCenter.xml</value>
+	</string>
 	
 	<string>
 		<id>998</id>

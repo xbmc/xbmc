@@ -29,6 +29,14 @@ using namespace std;
 #define CACHE_VIDEO 1
 #define CACHE_VOB   2
 
+#define CDDARIP_ENCODER_LAME     0
+#define CDDARIP_ENCODER_WAV      1
+#define CDDARIP_ENCODER_VORBIS   2
+
+#define CDDARIP_QUALITY_CBR      0
+#define CDDARIP_QUALITY_MEDIUM   1
+#define CDDARIP_QUALITY_STANDARD 2
+#define CDDARIP_QUALITY_EXTREME  3
 
 /*!
 \ingroup windows
@@ -342,9 +350,15 @@ public:
 		int       m_iSambaDebugLevel;
 		char      m_strSambaWorkgroup[128];
 		char      m_strSambaWinsServer[32];
-		bool	  m_bHideExtensions;
+		bool      m_bHideExtensions;
 
-		char	  m_szFlipBiDiCharset[128];
+		bool      m_bRipWithTrackNumber;
+		int       m_iRipEncoder;
+		int       m_iRipQuality;
+		int       m_iRipBitRate;
+		char      m_strRipPath[MAX_PATH + 1];
+
+		char      m_szFlipBiDiCharset[128];
 	};
 
 	VECSHARES					m_vecMyProgramsBookmarks;
