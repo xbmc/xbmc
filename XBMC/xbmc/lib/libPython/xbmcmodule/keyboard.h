@@ -1,4 +1,5 @@
 #include "..\python.h"
+#include <string>
 #pragma once
 
 using namespace std;
@@ -11,7 +12,7 @@ namespace PYXBMC
 {
 	typedef struct {
     PyObject_HEAD
-		string strDefault;
+		std::string strDefault;
 	} Keyboard;
 
 	extern PyTypeObject Keyboard_Type;
