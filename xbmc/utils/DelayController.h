@@ -41,6 +41,7 @@ protected:
 	int					m_iCount;
 	DWORD				m_dwMoveDelay;
 	DWORD				m_dwRepeatDelay;
+  DWORD       m_dwLastTime;
 };
 
 
