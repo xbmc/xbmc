@@ -93,6 +93,10 @@ void CGUIWindowMusicTop100::GetDirectory(const CStdString &strDirectory, VECFILE
 
 	VECSONGS songs;
 	g_musicDatabase.GetTop100(songs);
+
+	// Display an error message if the database doesn't contain any top 100 songs
+	DisplayEmptyDatabaseMessage(songs.empty());
+
 	for (int i=0; i < (int)songs.size(); ++i)
 	{
 		CSong & song=songs[i];
