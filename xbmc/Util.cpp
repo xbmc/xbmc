@@ -112,6 +112,38 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
   return true;
 }
 
+//Make sure you have a full path in the filename, otherwise adds the base path before.
+void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename)
+{
+	CURL plItemUrl(strFilename);
+	CURL plBaseUrl(strBasePath);
+
+	if(plBaseUrl.GetProtocol().length()==0) //Base in local directory
+	{
+		if(plItemUrl.GetProtocol().length()==0 ) //Filename is local or not qualified
+		{
+			if (!( isalpha(strFilename.c_str()[0]) && strFilename.c_str()[1] == ':')) //Filename not fully qualified
+			{
+				if (strFilename.c_str()[0] == '\\') 
+					strFilename = strBasePath + strFilename.Replace('/','\\');
+				else
+					strFilename = strBasePath + '\\' + strFilename.Replace('/','\\');
+			}
+		}
+	}
+	else //Base is remote
+	{
+		if(plItemUrl.GetProtocol().length()==0 ) //Filename is local
+		{
+			if (strFilename.c_str()[0] == '/') //Begins with a slash.. not good.. but we try to make the best of it..
+				strFilename = strBasePath + strFilename.Replace('\\','/');
+			else
+				strFilename = strBasePath + '/' + strFilename;
+		}
+	}
+}
+
+
 //*********************************************************************************************
 void CUtil::LaunchXbe(char* szPath, char* szXbe, char* szParameters)
 {

@@ -28,8 +28,10 @@ CPlayListM3U::~CPlayListM3U(void)
 
 bool CPlayListM3U::Load(const CStdString& strFileName)
 {
+	CStdString strBasePath;
 	Clear();
 	m_strPlayListName=CUtil::GetFileName(strFileName);
+	CUtil::GetParentPath(strFileName,strBasePath);
 	CFile file;
 	if (!file.Open(strFileName,false) ) 
 	{
@@ -73,6 +75,7 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
 				{
 					CStdString strFileName=szLine;
 					CUtil::RemoveCRLF(strFileName);
+					CUtil::GetQualifiedFilename(strBasePath,strFileName);
 					CPlayListItem newItem(strInfo,strFileName,lDuration);
 					Add(newItem);
 				}
@@ -82,6 +85,15 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
 					break;
 				}
 			}
+		}
+		else
+		{
+			CStdString strFileName=szLine;
+			CUtil::RemoveCRLF(strFileName);
+			CUtil::GetQualifiedFilename(strBasePath,strFileName);
+			CUtil::GetFileName(
+			CPlayListItem newItem(strFileName, strFileName, 0);
+			Add(newItem);
 		}
 	}
 
