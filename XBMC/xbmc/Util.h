@@ -62,4 +62,6 @@ public:
 	static void ShortenFileName(CStdString& strFileNameAndPath);
 	static void GetIMDBInfo(const CStdString& strFileName, CStdString& strImbInfo);
 	static bool IsISO9660(const CStdString& strFile);
+	static void ConvertPathToUrl( const CStdString& strPath, const CStdString& strProtocol, CStdString& strOutUrl );
+	static void GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon );
 };

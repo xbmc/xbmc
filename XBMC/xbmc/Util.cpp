@@ -11,6 +11,7 @@
 #include "sectionloader.h"
 #include "lib/cximage/ximage.h"
 #include "filesystem/file.h"
+#include "DetectDVDType.h"
 
 using namespace XFILE;
 char g_szTitleIP[32];
@@ -1055,4 +1056,48 @@ void CUtil::GetIMDBInfo(const CStdString& strFileName, CStdString& strImbInfo)
 	crc.Reset();
   crc.Compute(strTmp.c_str(),strTmp.size());
 	strImbInfo.Format("%s\\%x.imdb",g_stSettings.m_szIMDBDirectory,crc);
+}
+
+void CUtil::ConvertPathToUrl( const CStdString& strPath, const CStdString& strProtocol, CStdString& strOutUrl )
+{
+	strOutUrl = strProtocol;
+	CStdString temp = strPath;
+	temp.Replace( '\\', '/' );
+	temp.Delete( 0, 3 );
+	strOutUrl += temp;
+}
+
+void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
+{
+	if ( !CDetectDVDMedia::IsDiscInDrive() ) {
+		strIcon="defaultDVDEmpty.png";
+		return;
+	}
+
+	if ( IsDVD(strPath) ) {
+		CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
+		//	xbox DVD
+		if ( pInfo != NULL && pInfo->IsUDFX( 1 ) ) {
+			strIcon="defaultXBOXDVD.png";
+			return;
+		}
+		strIcon="defaultDVDRom.png";
+		return;
+	}
+
+	if ( IsISO9660(strPath) ) {
+		CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
+		if ( pInfo != NULL && pInfo->IsVideoCd( 1 ) ) {
+			strIcon="defaultVCD.png";
+			return;
+		}
+		strIcon="defaultDVDRom.png";
+		return;
+	}
+	
+	if ( IsCDDA(strPath) ) {
+		strIcon="defaultCDDA.png";
+		return;
+	}
+	strIcon="defaultDVDEmpty.png";
 }
