@@ -22,6 +22,7 @@ protected:
 	virtual void				OnFileItemFormatLabel(CFileItem* pItem) {};
 	virtual void				OnRetrieveMusicInfo(VECFILEITEMS& items) {};
 	virtual void				OnItemLoaded(CFileItem* pItem);
+	virtual void				ClearFileItems();
 	virtual void				Update(const CStdString& strDirectory);
 
 					void				SavePlayList();
@@ -30,7 +31,6 @@ protected:
 					void				RemovePlayListItem(int iItem);
           void				MoveCurrentPlayListItem(int iAction); // up or down
 
-					SETPATHES		m_Pathes;
 					MAPSONGS		m_songsMap;
 					CStdString	m_strPrevPath;
 					CMusicInfoLoader m_tagloader;

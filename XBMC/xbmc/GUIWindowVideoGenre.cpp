@@ -107,8 +107,9 @@ struct SSortVideoGenreByName
 //****************************************************************************************************************************
 CGUIWindowVideoGenre::CGUIWindowVideoGenre()
 {
-	m_strDirectory="";
-  m_iItemSelected=-1;
+	m_Directory.m_strPath="";
+	m_Directory.m_bIsFolder=true;
+	m_iItemSelected=-1;
 	m_iLastControl=-1;
 }
 
@@ -140,7 +141,7 @@ bool CGUIWindowVideoGenre::OnMessage(CGUIMessage& message)
       int iControl=message.GetSenderId();
 			if (iControl==CONTROL_BTNSORTBY) // sort by
       {
-        if (m_strDirectory.size())
+        if (!m_Directory.IsVirtualDirectoryRoot())
         {
           g_stSettings.m_iMyVideoGenreSortMethod++;
           if (g_stSettings.m_iMyVideoGenreSortMethod>=3)
@@ -152,7 +153,7 @@ bool CGUIWindowVideoGenre::OnMessage(CGUIMessage& message)
       }
       else if (iControl==CONTROL_BTNSORTASC) // sort asc
       {
-				if (m_strDirectory.IsEmpty())
+				if (m_Directory.IsVirtualDirectoryRoot())
 					g_stSettings.m_bMyVideoGenreRootSortAscending=!g_stSettings.m_bMyVideoGenreRootSortAscending;
 				else
 					g_stSettings.m_bMyVideoGenreSortAscending=!g_stSettings.m_bMyVideoGenreSortAscending;
@@ -201,7 +202,7 @@ void CGUIWindowVideoGenre::FormatItemLabels()
 void CGUIWindowVideoGenre::SortItems(VECFILEITEMS& items)
 {
 	SSortVideoGenreByName sortmethod;
-	if (m_strDirectory.IsEmpty())
+	if (m_Directory.IsVirtualDirectoryRoot())
 	{
 		sortmethod.m_iSortMethod=g_stSettings.m_iMyVideoGenreRootSortMethod;
 		sortmethod.m_bSortAscending=g_stSettings.m_bMyVideoGenreRootSortAscending;
@@ -226,12 +227,12 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
 		if (pItem->m_bIsFolder && pItem->GetLabel() != "..")
 		{
 			strSelectedItem=pItem->m_strPath;
-			m_history.Set(strSelectedItem,m_strDirectory);
+			m_history.Set(strSelectedItem,m_Directory.m_strPath);
 		}
 	}
   ClearFileItems();
-  m_strDirectory=strDirectory;
-  if (m_strDirectory=="")
+  m_Directory.m_strPath=strDirectory;
+  if (m_Directory.IsVirtualDirectoryRoot())
   {
     VECMOVIEGENRES genres;
     m_database.GetGenres( genres);
@@ -259,7 +260,7 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
 		}
 		m_strParentPath = "";
 		VECMOVIES movies;
-		m_database.GetMoviesByGenre(m_strDirectory, movies);
+		m_database.GetMoviesByGenre(m_Directory.m_strPath, movies);
 		for (int i=0; i < (int)movies.size(); ++i)
 		{
 			CIMDBMovie movie=movies[i];
@@ -276,7 +277,7 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
 			pItem->m_stTime.wYear= movie.m_iYear;
 			m_vecItems.push_back(pItem);
 		}
-		SET_CONTROL_LABEL(LABEL_GENRE,m_strDirectory);
+		SET_CONTROL_LABEL(LABEL_GENRE,m_Directory.m_strPath);
   }
 	CUtil::SetThumbs(m_vecItems);
   SetIMDBThumbs(m_vecItems);
@@ -289,15 +290,14 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
 		strPath=pItem->m_strPath;
 		//	Fake a videofile
 		pItem->m_strPath=pItem->m_strPath+".avi";
-
-		CUtil::FillInDefaultIcon(pItem);
+		pItem->FillInDefaultIcon();
 		pItem->m_strPath=strPath;
 	}
 
 	OnSort();
   UpdateButtons();
 
-  strSelectedItem=m_history.Get(m_strDirectory);	
+  strSelectedItem=m_history.Get(m_Directory.m_strPath);	
 
 	m_iLastControl=GetFocusedControl();
 
@@ -385,13 +385,13 @@ void CGUIWindowVideoGenre::OnClick(int iItem)
 
 void CGUIWindowVideoGenre::OnInfo(int iItem)
 {
-  if ( m_strDirectory.IsEmpty() ) return;
+  if ( m_Directory.IsVirtualDirectoryRoot() ) return;
 	CGUIWindowVideoBase::OnInfo(iItem);
 }
 
 bool CGUIWindowVideoGenre::ViewByIcon()
 {
-  if ( m_strDirectory.IsEmpty() )
+  if ( m_Directory.IsVirtualDirectoryRoot() )
   {
     if (g_stSettings.m_iMyVideoGenreRootViewAsIcons != VIEW_AS_LIST) return true;
   }
@@ -404,7 +404,7 @@ bool CGUIWindowVideoGenre::ViewByIcon()
 
 bool CGUIWindowVideoGenre::ViewByLargeIcon()
 {
-  if ( m_strDirectory.IsEmpty() )
+  if ( m_Directory.IsVirtualDirectoryRoot() )
   {
     if (g_stSettings.m_iMyVideoGenreRootViewAsIcons == VIEW_AS_LARGEICONS) return true;
   }
@@ -417,7 +417,7 @@ bool CGUIWindowVideoGenre::ViewByLargeIcon()
 
 void CGUIWindowVideoGenre::SetViewMode(int iViewMode)
 {
-  if ( m_strDirectory.IsEmpty() )
+  if ( m_Directory.IsVirtualDirectoryRoot() )
     g_stSettings.m_iMyVideoGenreRootViewAsIcons = iViewMode;
   else
     g_stSettings.m_iMyVideoGenreViewAsIcons = iViewMode;
@@ -425,7 +425,7 @@ void CGUIWindowVideoGenre::SetViewMode(int iViewMode)
 
 int CGUIWindowVideoGenre::SortMethod()
 {
-	if (m_strDirectory.IsEmpty())
+	if (m_Directory.IsVirtualDirectoryRoot())
 		return g_stSettings.m_iMyVideoGenreRootSortMethod+365;
 	else
 		return g_stSettings.m_iMyVideoGenreSortMethod+365;
@@ -433,7 +433,7 @@ int CGUIWindowVideoGenre::SortMethod()
 
 bool CGUIWindowVideoGenre::SortAscending()
 {
-	if (m_strDirectory.IsEmpty())
+	if (m_Directory.IsVirtualDirectoryRoot())
 		return g_stSettings.m_bMyVideoGenreRootSortAscending;
 	else
 		return g_stSettings.m_bMyVideoGenreSortAscending;

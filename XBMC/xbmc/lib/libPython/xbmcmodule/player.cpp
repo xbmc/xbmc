@@ -79,14 +79,15 @@ namespace PYXBMC
 		}
 		else if (PyString_Check(pObject))
 		{
-			if (CUtil::IsPlayList(PyString_AsString(pObject)))
+			CFileItem item(PyString_AsString(pObject), false);
+			if (item.IsPlayList())
 			{
 				PyErr_SetString(PyExc_ValueError, "Only python playlists are supported (see xbmc.PlayList)");
 				return NULL;
 			}
 			else
 			{
-				g_applicationMessenger.MediaPlay(PyString_AsString(pObject));
+				g_applicationMessenger.MediaPlay(item.m_strPath);
 			}
 		}
 

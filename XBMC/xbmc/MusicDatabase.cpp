@@ -171,6 +171,8 @@ void CMusicDatabase::Close()
   if (NULL!=m_pDS.get()) m_pDS->close();
 	m_pDB->disconnect();
 	m_pDB.reset();
+	m_pDS.reset();
+	m_pDS2.reset();
 	//EmptyCache();
 }
 

@@ -100,7 +100,7 @@ SidPlayer::SidPlayer(IPlayerCallback& callback) :IPlayer(callback), m_name("SidP
 
 SidPlayer::~SidPlayer()
 {
-	closefile();
+	CloseFile();
 
 	m_driver.null.close();
 
@@ -346,23 +346,23 @@ bool SidPlayer::starttrack()
 	return true;
 }
 
-bool SidPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
+bool SidPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 {
-	closefile();
+	CloseFile();
 
-	if (!CUtil::IsHD(strFile))
+	if (!file.IsHD())
 	{
-		CFile file;
-		if (!file.Cache(strFile.c_str(),"Z:\\cachedsid",NULL,NULL))
+		CFile fileCopy;
+		if (!fileCopy.Cache(file.m_strPath.c_str(),"Z:\\cachedsid",NULL,NULL))
 		{
 			::DeleteFile("Z:\\cachedsid");
-			CLog::Log(LOGERROR, "ModPlayer: Unable to cache file %s\n", strFile.c_str());
+			CLog::Log(LOGERROR, "ModPlayer: Unable to cache file %s\n", file.m_strPath.c_str());
 			return false;
 		}
 		m_filename = strdup("Z:\\cachedsid");
 	}
 	else
-		m_filename = strdup(strFile.c_str());
+		m_filename = strdup(file.m_strPath.c_str());
 
 	m_driver.output = OUT_SOUNDCARD;
 	m_driver.file   = false;
@@ -432,7 +432,7 @@ bool SidPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 	return true;
 }
 
-bool SidPlayer::closefile()
+bool SidPlayer::CloseFile()
 {
 	m_bStopPlaying=true;
 	StopThread();

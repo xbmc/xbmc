@@ -58,13 +58,12 @@ protected:
 	bool							CanMove(int iList);
 	bool							CanDelete(int iList);
 	bool							CanNewFolder(int iList);
-	bool							IsReadOnly(const CStdString &strFile) const;
 	void							OnPopupMenu(int iList, int iItem);
 
 	CVirtualDirectory		m_rootDir;
   VECFILEITEMS				m_vecItems[2];
   typedef vector <CFileItem*> ::iterator ivecItems;
-  CStdString          m_strDirectory[2];
+  CFileItem           m_Directory[2];
 	CStdString					m_strParentPath[2];
   CGUIDialogProgress*	m_dlgProgress;
 	CDirectoryHistory		m_history[2];

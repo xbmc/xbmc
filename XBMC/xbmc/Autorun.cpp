@@ -213,14 +213,14 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
 		}
 		else
 		{
-			if ( CUtil::IsVideo( pItem->m_strPath ) && g_guiSettings.GetBool("Autorun.Video"))
+			if (pItem->IsVideo() && g_guiSettings.GetBool("Autorun.Video"))
 			{
 				bPlaying=true;
 				g_application.PlayFile( *pItem );
 				break;
 			}
 
-			if ( CUtil::IsAudio( pItem->m_strPath ) && g_guiSettings.GetBool("Autorun.Music"))
+			if (pItem->IsAudio() && g_guiSettings.GetBool("Autorun.Music"))
 			{
 				nAddedToPlaylist++;
 				CPlayList::CPlayListItem playlistItem;
@@ -230,7 +230,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
 				g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).Add(playlistItem);
 			}
 		
-			if ( CUtil::IsPicture( pItem->m_strPath ) && g_guiSettings.GetBool("Autorun.Pictures"))
+			if (pItem->IsPicture() && g_guiSettings.GetBool("Autorun.Pictures"))
 			{
 				bPlaying=true;
 				m_gWindowManager.ActivateWindow(WINDOW_PICTURES);

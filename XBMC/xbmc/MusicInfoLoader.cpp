@@ -51,7 +51,7 @@ void CMusicInfoLoader::Process()
 			if (m_bStop)
 				break;
 
-			if (pItem->m_bIsFolder || CUtil::IsPlayList(pItem->m_strPath) || CUtil::IsNFO(pItem->m_strPath) || CUtil::IsInternetStream(pItem->m_strPath))
+			if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsNFO() || pItem->IsInternetStream())
 				continue;
 
 			//	Fill in tag for the item
@@ -108,7 +108,7 @@ void CMusicInfoLoader::LoadItem(CFileItem* pItem)
 	{
 		pItem->m_musicInfoTag=it->second->m_musicInfoTag;
 	}
-	else if (CUtil::IsCDDA(pItem->m_strPath))
+	else if (pItem->IsCDDA())
 	{
 		//	We have cdda item...
 		VECFILEITEMS  items;

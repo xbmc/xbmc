@@ -2,6 +2,7 @@
 #include "stdstring.h"
 #include "IAudioCallback.h"
 #include "Key.h"
+#include "../FileItem.h"
 
 class IPlayerCallback
 {
@@ -17,8 +18,8 @@ public:
 	virtual ~IPlayer(){};
 	virtual void		RegisterAudioCallback(IAudioCallback* pCallback)=0;
 	virtual void		UnRegisterAudioCallback()=0;
-	virtual bool		openfile(const CStdString& strFile, __int64 iStartTime){return false;};
-	virtual bool		closefile(){return true;};
+	virtual bool		OpenFile(const CFileItem& file, __int64 iStartTime){return false;};
+	virtual bool		CloseFile(){return true;};
 	virtual bool		IsPlaying() const {return false;} ;
 	virtual void		Pause()=0;
 	virtual bool		IsPaused() const=0;

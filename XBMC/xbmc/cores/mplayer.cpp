@@ -620,13 +620,13 @@ void update_cache_dialog(const char* tmp)
 		}
 	}
 }
-bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
+bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 {
 	int iRet=-1;
 	m_bCanceling=false;
 	int iCacheSize=1024;
 	int iCacheSizeBackBuffer = 20; // 50 % backbuffer is mplayers default
-	closefile();
+	CloseFile();
 	bool bFileOnHD(false);
 	bool bFileOnISO(false);
 	bool bFileOnUDF(false);
@@ -635,20 +635,21 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 	bool bFileIsDVDImage(false);
 	bool bFileIsDVDIfoFile(false);
 
+	CStdString strFile=file.m_strPath;
 	m_strPath = strFile;
 	CURL url(strFile);
-	if ( CUtil::IsHD(strFile) )                  bFileOnHD=true;
-	else if ( CUtil::IsISO9660(strFile) )        bFileOnISO=true;
-	else if ( CUtil::IsDVD(strFile) )            bFileOnUDF=true;
-	else if ( CUtil::IsInternetStream(strFile) ) bFileOnInternet=true;
+	if ( file.IsHD() )                  bFileOnHD=true;
+	else if ( file.IsISO9660() )        bFileOnISO=true;
+	else if ( file.IsDVD() )            bFileOnUDF=true;
+	else if ( file.IsInternetStream() ) bFileOnInternet=true;
 	else bFileOnLAN=true;
 
-	bool bIsVideo =CUtil::IsVideo(strFile);
-	bool bIsAudio =CUtil::IsAudio(strFile);
+	bool bIsVideo =file.IsVideo();
+	bool bIsAudio =file.IsAudio();
 	bool bIsDVD(false);
 
-	bFileIsDVDImage = CUtil::IsDVDImage(strFile);
-	bFileIsDVDIfoFile = CUtil::IsDVDFile(strFile, false, true);
+	bFileIsDVDImage = file.IsDVDImage();
+	bFileIsDVDIfoFile = file.IsDVDFile(false, true);
 
 	CLog::DebugLog("file:%s IsDVDImage:%i IsDVDIfoFile:%i", strFile.c_str(),bFileIsDVDImage ,bFileIsDVDIfoFile);
 	if (strFile.Find("dvd://") >=0 || bFileIsDVDImage || bFileIsDVDIfoFile)
@@ -691,7 +692,7 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 		char *argv[30];
 		int argc=8;
 		//Options options;
-		if (CUtil::IsVideo(strFile))
+		if (file.IsVideo())
 		{
 			options.SetNonInterleaved(g_stSettings.m_currentVideoSettings.m_NonInterleaved);
 
@@ -708,7 +709,7 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 		bool bSupportsDTSOut=g_audioConfig.GetDTSEnabled();
 
 		// shoutcast is always stereo
-		if (CUtil::IsShoutCast(strFile) ) 
+		if (file.IsShoutCast() ) 
 		{
 			options.SetChannels(0);
       options.SetAC3PassTru(false);		
@@ -773,7 +774,7 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 			}
 		}
 
-		if (CUtil::IsRAR(strFile))
+		if (file.IsRAR())
 		{
 			options.SetNoIdx(true);
 			CLog::Log(LOGINFO, "Trying to play a rar file (%s). Setting -noidx", strFile.c_str());
@@ -851,7 +852,7 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 
 
 			// do we need 2 do frame rate conversions ?
-			if (g_stSettings.m_currentVideoSettings.m_AdjustFrameRate && CUtil::IsVideo(strFile) )
+			if (g_stSettings.m_currentVideoSettings.m_AdjustFrameRate && file.IsVideo() )
 			{
 				if (g_videoConfig.HasPAL())
 				{
@@ -973,7 +974,7 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 		CLog::Log(LOGERROR, "cmplayer::openfile() %s failed",strFile.c_str());
 		if (m_dlgCache) delete m_dlgCache;
 		m_dlgCache=NULL;  
-		closefile();
+		CloseFile();
 		return false;
 	}
 
@@ -987,7 +988,7 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 	return (iRet>0);
 }
 
-bool CMPlayer::closefile()
+bool CMPlayer::CloseFile()
 {
 	m_bIsPlaying=false;
 	StopThread();

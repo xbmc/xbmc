@@ -82,7 +82,8 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       SET_CONTROL_HIDDEN(CONTROL_DISC);
       CONTROL_DISABLE(CONTROL_DISC);
       int iItem=0;
-      if ( CUtil::IsISO9660(m_pMovie->m_strPath) || CUtil::IsDVD(m_pMovie->m_strPath) )
+			CFileItem movie(m_pMovie->m_strPath, false);
+      if ( movie.IsISO9660() || movie.IsDVD() )
       {
         SET_CONTROL_VISIBLE(CONTROL_DISC);
         CONTROL_ENABLE(CONTROL_DISC);

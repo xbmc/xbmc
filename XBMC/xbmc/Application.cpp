@@ -1153,7 +1153,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	if ( IsPlaying() )
 	{
 		CLog::Log(LOGINFO, " stop playing...");
-		m_pPlayer->closefile();
+		m_pPlayer->CloseFile();
 		m_itemCurrentFile.Clear();
 		delete m_pPlayer;
 		m_pPlayer=NULL;
@@ -2303,8 +2303,7 @@ void CApplication::Stop()
 
 bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 {
-	CStdString strFile = item.m_strPath;
-	if (CUtil::IsPlayList(strFile)) return false;
+	if (item.IsPlayList()) return false;
 
 	float AVDelay = 0;
 
@@ -2319,12 +2318,12 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 		g_stSettings.m_defaultVideoSettings.m_FilmGrain = g_guiSettings.GetBool("Filters.Noise") ? g_guiSettings.GetInt("Filters.NoiseLevel") : 0;
 		g_stSettings.m_currentVideoSettings = g_stSettings.m_defaultVideoSettings;
 		// see if we have saved options in the database
-		if (CUtil::IsVideo(strFile))
+		if (item.IsVideo())
 		{
 			CVideoDatabase dbs;
 			// open the d/b and retrieve the bookmarks for the current movie
 			dbs.Open();
-			dbs.GetVideoSettings(strFile, g_stSettings.m_currentVideoSettings);
+			dbs.GetVideoSettings(item.m_strPath, g_stSettings.m_currentVideoSettings);
 			dbs.Close();
 		}
 	}
@@ -2340,7 +2339,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 		strNewPlayer = "cdda";
 	}
 	else if (strcmp(g_stSettings.m_szExternalDVDPlayer, "dvdplayerbeta") == 0 &&
-	    (CUtil::IsDVD(strFile) || CUtil::IsDVDFile(strFile) || CUtil::IsDVDImage(strFile)))
+	    (item.IsDVD() || item.IsDVDFile() || item.IsDVDImage()))
 	{
 	  strNewPlayer = "dvdplayer";
 	}
@@ -2368,7 +2367,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 			m_itemCurrentFile=item;
 			g_infoManager.SetCurrentSong(item);
 			m_guiMusicOverlay.Update();
-			m_guiWindowVideoOverlay.SetCurrentFile(m_itemCurrentFile.m_strPath);
+			m_guiWindowVideoOverlay.SetCurrentFile(m_itemCurrentFile);
 
 			m_dwIdleTime=timeGetTime();
 			return true;
@@ -2380,7 +2379,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 	// (allows gapless cdda playback)
 	if (m_pPlayer && !(m_strCurrentPlayer == strNewPlayer && (m_strCurrentPlayer == "cdda" || m_strCurrentPlayer == "dvdplayer")))
 	{
-		if (1||m_strCurrentPlayer != strNewPlayer || !CUtil::IsAudio(m_itemCurrentFile.m_strPath) )
+		if (1||m_strCurrentPlayer != strNewPlayer || !m_itemCurrentFile.IsAudio() )
 		{
 			delete m_pPlayer;
 			m_pPlayer=NULL;
@@ -2395,7 +2394,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 		m_pPlayer = factory.CreatePlayer(strNewPlayer,*this);
 	}
 
-	bool bResult=m_pPlayer->openfile(m_itemCurrentFile.m_strPath, m_itemCurrentFile.m_lStartOffset*1000/75);
+	bool bResult=m_pPlayer->OpenFile(m_itemCurrentFile, m_itemCurrentFile.m_lStartOffset*1000/75);
 	if (bResult)
 	{
     if ( IsPlayingVideo())
@@ -2405,9 +2404,9 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     }
 		g_infoManager.SetCurrentSong(item);
 		m_guiMusicOverlay.Update();
-		m_guiWindowVideoOverlay.SetCurrentFile(m_itemCurrentFile.m_strPath);
+		m_guiWindowVideoOverlay.SetCurrentFile(m_itemCurrentFile);
 
-		if(CUtil::IsAudio(m_itemCurrentFile.m_strPath) && !CUtil::IsInternetStream(m_itemCurrentFile.m_strPath) && g_guiSettings.GetBool("Karaoke.Enabled"))
+		if(m_itemCurrentFile.IsAudio() && !m_itemCurrentFile.IsInternetStream() && g_guiSettings.GetBool("Karaoke.Enabled"))
 			m_CdgParser.Start(m_itemCurrentFile.m_strPath);
 
 		m_dwIdleTime=timeGetTime();
@@ -2491,7 +2490,7 @@ void CApplication::StopPlaying()
 		//	turn off visualisation window when stopping
 		if (iWin==WINDOW_VISUALISATION)
 			m_gWindowManager.PreviousWindow();
-		m_pPlayer->closefile();
+		m_pPlayer->CloseFile();
 	}
 	m_CdgParser.Free();
 	CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
@@ -2774,7 +2773,7 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
       //spin down harddisk when the current file being played is not on local harddrive and
       //duration is more then spindown timeoutsetting or duration is unknown (streams)
       if (
-        !CUtil::IsHD(m_itemCurrentFile.m_strPath) &&
+        !m_itemCurrentFile.IsHD() &&
         (
           (iSpinDown == SPIN_DOWN_VIDEO && IsPlayingVideo()) ||
           (iSpinDown == SPIN_DOWN_MUSIC && IsPlayingAudio()) ||
@@ -2828,7 +2827,7 @@ void CApplication::CheckHDSpindown()
   if (!m_bSpinDown &&
     (
       !IsPlaying() ||
-      (IsPlaying() && !CUtil::IsHD(m_itemCurrentFile.m_strPath))
+      (IsPlaying() && !m_itemCurrentFile.IsHD())
     )
   ) {
     m_bSpinDown        = true;
@@ -2879,14 +2878,13 @@ bool CApplication::OnMessage(CGUIMessage& message)
 	case GUI_MSG_PLAYBACK_ENDED:
 		{
 			m_dwIdleTime=timeGetTime();
-			CStdString strFile=m_itemCurrentFile.m_strPath;
 
 			// reset our infoManager details
 			g_infoManager.ResetCurrentSong();
 
 			if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
 			{
-				if (CUtil::IsVideo(strFile) && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO_TEMP)
+				if (m_itemCurrentFile.IsVideo() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO_TEMP)
 				{
 					//	Video stacking playback ended
 					CPlayList& playlist=g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO_TEMP);
@@ -2944,7 +2942,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 			}
 
 			//	DVD ejected while playing in vis ?
-			if (!IsPlayingAudio() && (CUtil::IsCDDA(strFile) || CUtil::IsDVD(strFile) || CUtil::IsISO9660(strFile))  && !CDetectDVDMedia::IsDiscInDrive() && m_gWindowManager.GetActiveWindow()==WINDOW_VISUALISATION)
+			if (!IsPlayingAudio() && (m_itemCurrentFile.IsCDDA() || m_itemCurrentFile.IsDVD() || m_itemCurrentFile.IsISO9660())  && !CDetectDVDMedia::IsDiscInDrive() && m_gWindowManager.GetActiveWindow()==WINDOW_VISUALISATION)
 			{
 				//	yes, disable vis
 				m_gWindowManager.PreviousWindow();
@@ -2998,27 +2996,27 @@ bool CApplication::OnMessage(CGUIMessage& message)
 		break;
 	case GUI_MSG_EXECUTE:
 		{	// user has asked for something to be executed
-			if (CUtil::IsPythonScript(message.GetStringParam()))
+			CFileItem item(message.GetStringParam(), false);
+
+			if (item.IsPythonScript())
 			{	// a python script
-				g_pythonParser.evalFile(message.GetStringParam().c_str());
+				g_pythonParser.evalFile(item.m_strPath.c_str());
 			}
-			else if (CUtil::IsXBE(message.GetStringParam()))
+			else if (item.IsXBE())
 			{	// an XBE
-				CUtil::RunXBE(message.GetStringParam().c_str());
+				CUtil::RunXBE(item.m_strPath.c_str());
 			}
-			else if (CUtil::IsAudio(message.GetStringParam()) || CUtil::IsVideo(message.GetStringParam()))
+			else if (item.IsAudio() || item.IsVideo())
 			{	// an audio or video file
-				CFileItem item(message.GetStringParam());
-				item.m_strPath = message.GetStringParam();
 				PlayFile(item);
 				if (IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
 				{
 					SwitchToFullScreen();
 				}
 			}
-			else if (CUtil::IsBuiltIn(message.GetStringParam()))
+			else if (CUtil::IsBuiltIn(item.m_strPath))
 			{
-				CUtil::ExecBuiltIn(message.GetStringParam());
+				CUtil::ExecBuiltIn(item.m_strPath);
 			}
 		}
 	}
@@ -3093,6 +3091,11 @@ void CApplication::Restart(bool bSamePosition)
 const CStdString& CApplication::CurrentFile()
 {
 	return m_itemCurrentFile.m_strPath;
+}
+
+const CFileItem& CApplication::CurrentFileItem()
+{
+	return m_itemCurrentFile;
 }
 
 void CApplication::SetVolume(int iPercent)
