@@ -1728,6 +1728,7 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 	{
 		OutputDebugString("new file set audiostream:0\n");
 		g_stSettings.m_iAudioStream=-1;
+		g_stSettings.m_iSubtitleStream=-1;
 		g_stSettings.m_bNoCache=false;
 		g_stSettings.m_bNonInterleaved=false;
 

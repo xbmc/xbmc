@@ -272,6 +272,7 @@ public:
 		bool      m_bFrameRateConversions;
 		bool      m_bUseDigitalOutput;
 		int       m_iAudioStream;
+		int       m_iSubtitleStream;
 
 		int			m_iMyVideoGenreViewAsIcons;
 		int			m_iMyVideoGenreRootViewAsIcons;

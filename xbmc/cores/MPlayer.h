@@ -32,6 +32,9 @@ public:
 		int          GetAudioStream() const;
 		void         SetAudioStream(int iStream);
 
+		int          GetSubtitleStream() const;
+		void         SetSubtitleStream(int iStream);
+
 		int          GetChannels() const;
 		void         SetChannels(int iChannels);
 
@@ -55,6 +58,7 @@ public:
 		float   m_fFPS;
 		int     m_iChannels;
 		int     m_iAudioStream;
+		int     m_iSubtitleStream;
 		int     m_iCacheSizeBackBuffer; // percent of cache used for back buffering
 		bool    m_bAC3PassTru;
 		float   m_fVolumeAmplification;
