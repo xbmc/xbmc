@@ -88,12 +88,14 @@ void CGUIWindowMusicOverlay::Render()
 	{
 		
 		const CGUIControl* pControl = GetControl(CONTROL_LOGO_PIC); 
-		int iXPos=pControl->GetXPosition();
-		int iYPos=pControl->GetYPosition();
+		float fXPos=(float)pControl->GetXPosition();
+		float fYPos=(float)pControl->GetYPosition();
 		int iWidth=pControl->GetWidth();
 		int iHeight=pControl->GetHeight();
+		g_graphicsContext.Correct(fXPos,fYPos);
+
 		CPicture picture;
-		picture.RenderImage(m_pTexture,iXPos,iYPos,iWidth,iHeight,m_iTextureWidth,m_iTextureHeight);
+		picture.RenderImage(m_pTexture,(int)fXPos,(int)fYPos,iWidth,iHeight,m_iTextureWidth,m_iTextureHeight);
 	}
 }
 

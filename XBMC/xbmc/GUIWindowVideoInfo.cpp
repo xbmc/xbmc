@@ -156,13 +156,14 @@ void  CGUIWindowVideoInfo::Render()
   if (!m_pTexture) return;
 
 	const CGUIControl* pControl=GetControl(CONTROL_IMAGE);
-	DWORD x=pControl->GetXPosition();
-	DWORD y=pControl->GetYPosition();
+	float x=(float)pControl->GetXPosition();
+	float y=(float)pControl->GetYPosition();
 	DWORD width=pControl->GetWidth();
 	DWORD height=pControl->GetHeight();
-
+	g_graphicsContext.Correct(x,y);
+	
 	CPicture picture;
-	picture.RenderImage(m_pTexture,x,y,width,height,m_iTextureWidth,m_iTextureHeight);
+	picture.RenderImage(m_pTexture,(int)x,(int)y,width,height,m_iTextureWidth,m_iTextureHeight);
 }
 
 
