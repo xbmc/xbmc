@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 08-08-2004 fixed: since last python update, all the python dialogs (like dialogok and dialogyesno) didn't work anymore
   - 07-08-2004 added: My Programs can now sort by most used programs
   - 06-08-2004 added: python unicodedata library to cvs (this means no more idna ecoding errors in scripts)
   - 06-08-2004 added: python scripts can now be started from my files to
