@@ -1043,3 +1043,23 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 	}
 	strIcon="defaultDVDEmpty.png";
 }
+
+void CUtil::RemoveTempFiles()
+{
+	WIN32_FIND_DATA wfd;
+	HANDLE hFind;
+	memset(&wfd,0,sizeof(wfd));
+	hFind = FindFirstFile("Q:\\albums\\*.tmp",&wfd);
+	if (hFind==INVALID_HANDLE_VALUE)
+		return ;
+	do
+	{
+		if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
+		{
+			string strFile="Q:\\albums\\";
+			strFile += wfd.cFileName;
+			DeleteFile(strFile.c_str());
+		}
+	} while (FindNextFile(hFind, &wfd));
+	FindClose( hFind );	  
+}
