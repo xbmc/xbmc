@@ -73,7 +73,7 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 		for (IVECREFERENCECONTOLS it = ControlsCache.begin(); it != ControlsCache.end(); ++it)
 		{
 			stReferenceControl stControl;
-			strcpy(stControl.m_szType,it->m_szType);
+			strcpy(stControl.m_szType, it->m_szType);
 			if (!strcmp(it->m_szType,"label"))
 			{
 				stControl.m_pControl = new CGUILabelControl(*((CGUILabelControl*)it->m_pControl));

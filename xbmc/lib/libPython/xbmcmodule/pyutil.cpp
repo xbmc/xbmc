@@ -104,7 +104,7 @@ namespace PYXBMC
 	{
 		if (pWindow == NULL)
 		{
-			PyErr_SetString(PyExc_RuntimeError, "Error: Window is NULL, this is not possible :-)");
+			PyErr_SetString(PyExc_SystemError, "Error: Window is NULL, this is not possible :-)");
 			return true;
 		}
 		return false;

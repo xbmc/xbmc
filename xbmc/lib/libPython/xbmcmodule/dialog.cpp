@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "dialog.h"
 #include "..\python.h"
 #include "pyutil.h"
 #include "..\..\..\application.h"
@@ -16,9 +17,27 @@ extern "C" {
 
 namespace PYXBMC
 {
-	typedef struct {
-    PyObject_HEAD
-	} Dialog;
+	PyObject* WindowDialog_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
+	{
+		WindowDialog *self;
+
+		self = (WindowDialog*)type->tp_alloc(type, 0);
+		if (!self) return NULL;
+
+		self->iWindowId = -1;
+
+		if (!PyArg_ParseTuple(args, "|i", &self->iWindowId)) return NULL;
+
+		// create new GUIWindow
+		if (!Window_CreateNewWindow((Window*)self, true))
+		{
+			// error is already set by Window_CreateNewWindow, just release the memory
+			self->ob_type->tp_free((PyObject*)self);
+			return NULL;
+		}
+
+		return (PyObject*)self;
+	}
 
 	PyDoc_STRVAR(ok__doc__,
 		"ok(heading, line 1[, line 2, line3]) -- Show a dialog 'OK'.\n"
@@ -119,10 +138,6 @@ namespace PYXBMC
 /*****************************************************************
  * start of dialog process methods and python objects
  *****************************************************************/
-
-	typedef struct {
-    PyObject_HEAD
-	} DialogProgress;
 
 	PyDoc_STRVAR(create__doc__,
 		"create(heading[, line 1, line 2, line3]) -- Create and show a progress dialog.\n"
@@ -227,7 +242,7 @@ namespace PYXBMC
 	}
 
 	/* xbmc Dialog functions for use in python */
-	PyMethodDef Dialog_methods[] = {
+	PyMethodDef WindowDialog_methods[] = {
 		{"yesno", (PyCFunction)Dialog_YesNo, METH_VARARGS, yesno__doc__},
 		{"select", (PyCFunction)Dialog_Select, METH_VARARGS, select__doc__},
 		{"ok", (PyCFunction)Dialog_OK, METH_VARARGS, ok__doc__},
@@ -243,7 +258,7 @@ namespace PYXBMC
 		{NULL, NULL, 0, NULL}
 	};
 
-	PyDoc_STRVAR(dialog__doc__,
+	PyDoc_STRVAR(windowDialog__doc__,
 		"Dialog class.\n");
 
 	PyDoc_STRVAR(dialogProgress__doc__,
@@ -255,13 +270,13 @@ namespace PYXBMC
 #pragma bss_seg()
 #pragma const_seg()
 
-	PyTypeObject DialogType = {
+	PyTypeObject WindowDialog_Type = {
 			PyObject_HEAD_INIT(NULL)
 			0,                         /*ob_size*/
-			"xbmcgui.Dialog",             /*tp_name*/
-			sizeof(Dialog),            /*tp_basicsize*/
+			"xbmcgui.WindowDialog",    /*tp_name*/
+			sizeof(WindowDialog),      /*tp_basicsize*/
 			0,                         /*tp_itemsize*/
-			0,                         /*tp_dealloc*/
+			(destructor)Window_Dealloc,/*tp_dealloc*/
 			0,                         /*tp_print*/
 			0,                         /*tp_getattr*/
 			0,                         /*tp_setattr*/
@@ -277,21 +292,30 @@ namespace PYXBMC
 			0,                         /*tp_setattro*/
 			0,                         /*tp_as_buffer*/
 			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-			dialog__doc__,             /* tp_doc */
+			windowDialog__doc__,       /* tp_doc */
 			0,		                     /* tp_traverse */
 			0,		                     /* tp_clear */
 			0,		                     /* tp_richcompare */
 			0,		                     /* tp_weaklistoffset */
 			0,		                     /* tp_iter */
 			0,		                     /* tp_iternext */
-			Dialog_methods,            /* tp_methods */
+			WindowDialog_methods,      /* tp_methods */
 			0,                         /* tp_members */
+			0,                         /* tp_getset */
+			&Window_Type,              /* tp_base */
+			0,                         /* tp_dict */
+			0,                         /* tp_descr_get */
+			0,                         /* tp_descr_set */
+			0,                         /* tp_dictoffset */
+			0,                         /* tp_init */
+			0,                         /* tp_alloc */
+			WindowDialog_New,          /* tp_new */
 	};
 
-	PyTypeObject DialogProgressType = {
+	PyTypeObject DialogProgress_Type = {
 			PyObject_HEAD_INIT(NULL)
 			0,                         /*ob_size*/
-			"xbmcgui.DialogProgress",     /*tp_name*/
+			"xbmcgui.DialogProgress",  /*tp_name*/
 			sizeof(DialogProgress),    /*tp_basicsize*/
 			0,                         /*tp_itemsize*/
 			0,                         /*tp_dealloc*/

@@ -30,19 +30,34 @@ namespace PYXBMC
  *****************************************************************/
 
 	PyDoc_STRVAR(output__doc__,
-		"output(string) -- Write a string to the debug window.\n");
+		"output(string) -- Write a string to xbmc's log file and the debug window.\n"
+		"\n"
+		"Strings are written to the log with log level 1 (NOTICE)");
 
 	PyObject* XBMC_Output(PyObject *self, PyObject *args)
 	{
 		char *s_line;
 		if (!PyArg_ParseTuple(args, "s:xb_output", &s_line))	return NULL;
 
-		// OutputDebugString(s_line);
 		CLog::Log(LOGINFO, s_line);
 
 		ThreadMessage tMsg = {TMSG_WRITE_SCRIPT_OUTPUT};
 		tMsg.strParam = s_line;
 		g_applicationMessenger.SendMessage(tMsg);
+
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	PyDoc_STRVAR(log__doc__,
+		"log(string) -- Write a string to xbmc's log file with log level 7.\n");
+
+	PyObject* XBMC_Log(PyObject *self, PyObject *args)
+	{
+		char *s_line;
+		if (!PyArg_ParseTuple(args, "s", &s_line))	return NULL;
+
+		CLog::Log(LOGNONE, s_line);
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -204,6 +219,7 @@ namespace PYXBMC
 	// define c functions to be used in python here
 	PyMethodDef xbmcMethods[] = {
 		{"output", (PyCFunction)XBMC_Output, METH_VARARGS, output__doc__},
+		{"log", (PyCFunction)XBMC_Log, METH_VARARGS, log__doc__},
 		{"executescript", (PyCFunction)XBMC_ExecuteScript, METH_VARARGS, executeScript__doc__},
 		{"shutdown", (PyCFunction)XBMC_Shutdown, METH_VARARGS, shutdown__doc__},
 		{"dashboard", (PyCFunction)XBMC_Dashboard, METH_VARARGS, dashboard__doc__},

@@ -49,6 +49,21 @@ namespace PYXBMC
 		self->ob_type->tp_free((PyObject*)self);
 	}
 
+	CGUIControl* ControlButton_Create(ControlButton* pControl)
+	{
+		pControl->pGUIControl = new CGUIButtonControl(pControl->iParentId, pControl->iControlId,
+				pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
+				pControl->strTextureFocus, pControl->strTextureNoFocus,
+				CONTROL_TEXT_OFFSET_X, CONTROL_TEXT_OFFSET_Y);
+
+		CGUIButtonControl* pGuiButtonControl = (CGUIButtonControl*)pControl->pGUIControl;
+
+		pGuiButtonControl->SetLabel(pControl->strFont, pControl->strText, pControl->dwTextColor);
+		pGuiButtonControl->SetDisabledColor(pControl->dwDisabledColor);
+
+		return pControl->pGUIControl;
+	}
+
 	PyDoc_STRVAR(setDisabledColor__doc__,
 		"setDisabledColor(string hexcolor) -- .\n"
 		"\n"

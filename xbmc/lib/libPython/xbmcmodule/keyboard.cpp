@@ -2,7 +2,7 @@
 #include "keyboard.h"
 #include "GUIWindowManager.h"
 #include "pyutil.h"
-#include "..\..\..\keyboard\virtualkeyboard.h"
+#include "..\..\..\guidialogkeyboard.h"
 #include "..\..\..\ApplicationMessenger.h"
 #include "..\..\..\util.h"
 
@@ -42,22 +42,19 @@ namespace PYXBMC
 
 	PyObject* Keyboard_DoModal(Keyboard *self, PyObject *args)
 	{
-		CXBVirtualKeyboard* pKeyboard = (CXBVirtualKeyboard*)m_gWindowManager.GetWindow(WINDOW_VIRTUAL_KEYBOARD);
+		CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
 		if(!pKeyboard)
 		{
 			PyErr_SetString(PyExc_SystemError, "Unable to load virtual keyboard");
 			return NULL;
 		}
 
-		pKeyboard->Reset();
-
-		WCHAR wsString[1024];
-		swprintf(wsString,L"%S", self->strDefault.c_str());
-		pKeyboard->SetText(wsString);
+		pKeyboard->CenterWindow();
+		pKeyboard->SetText(CStdString(self->strDefault));
 
 		// do modal of dialog
-		ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_VIRTUAL_KEYBOARD, m_gWindowManager.GetActiveWindow()};
-		g_applicationMessenger.SendMessage(tMsg, true);	
+		ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, m_gWindowManager.GetActiveWindow()};
+		g_applicationMessenger.SendMessage(tMsg, true);
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -73,16 +70,14 @@ namespace PYXBMC
 
 		self->strDefault = cLine ? cLine : "";
 
-		CXBVirtualKeyboard* pKeyboard = (CXBVirtualKeyboard*)m_gWindowManager.GetWindow(WINDOW_VIRTUAL_KEYBOARD);
+		CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
 		if(!pKeyboard)
 		{
 			PyErr_SetString(PyExc_SystemError, "Unable to load keyboard");
 			return NULL;
 		}
 
-		WCHAR wsString[1024];
-		swprintf(wsString,L"%S", self->strDefault.c_str());
-		pKeyboard->SetText(wsString);
+		pKeyboard->SetText(CStdString(self->strDefault));
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -96,17 +91,14 @@ namespace PYXBMC
 
 	PyObject* Keyboard_GetText(Keyboard *self, PyObject *args)
 	{
-		CXBVirtualKeyboard* pKeyboard = (CXBVirtualKeyboard*)m_gWindowManager.GetWindow(WINDOW_VIRTUAL_KEYBOARD);
+		CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
 		if(!pKeyboard)
 		{
 			PyErr_SetString(PyExc_SystemError, "Unable to load keyboard");
 			return NULL;
 		}
 
-		CStdString strAnsi;
-		CUtil::Unicode2Ansi(pKeyboard->GetText(),strAnsi);
-
-		return Py_BuildValue("s", strAnsi.c_str());
+		return Py_BuildValue("s", pKeyboard->GetText().c_str());
 	}
 
 	PyDoc_STRVAR(isConfirmed__doc__,
@@ -114,14 +106,14 @@ namespace PYXBMC
 
 	PyObject* Keyboard_IsConfirmed(Keyboard *self, PyObject *args)
 	{
-		CXBVirtualKeyboard* pKeyboard = (CXBVirtualKeyboard*)m_gWindowManager.GetWindow(WINDOW_VIRTUAL_KEYBOARD);
+		CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
 		if(!pKeyboard)
 		{
 			PyErr_SetString(PyExc_SystemError, "Unable to load keyboard");
 			return NULL;
 		}
 
-		return Py_BuildValue("b", pKeyboard->IsConfirmed());
+		return Py_BuildValue("b", pKeyboard->IsDirty());
 	}
 
 	PyMethodDef Keyboard_methods[] = {

@@ -80,6 +80,31 @@ namespace PYXBMC
 		self->ob_type->tp_free((PyObject*)self);
 	}
 
+	CGUIControl* ControlList_Create(ControlList* pControl)
+	{
+		pControl->pGUIControl = new CGUIListControl(pControl->iParentId, pControl->iControlId,
+				pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
+				pControl->strFont, pControl->pControlSpin->dwWidth, pControl->pControlSpin->dwHeight,
+				pControl->pControlSpin->strTextureUp, pControl->pControlSpin->strTextureDown, pControl->pControlSpin->strTextureUpFocus,
+				pControl->pControlSpin->strTextureDownFocus, pControl->pControlSpin->dwColor, pControl->pControlSpin->dwPosX,
+				pControl->pControlSpin->dwPosY, pControl->strFont, pControl->dwTextColor,
+				pControl->dwSelectedColor, pControl->strTextureButton, pControl->strTextureButtonFocus,
+				CONTROL_TEXT_OFFSET_X, CONTROL_TEXT_OFFSET_Y);
+
+		CGUIListControl* pListControl = (CGUIListControl*)pControl->pGUIControl;
+		pListControl->SetImageDimensions(pControl->dwImageWidth, pControl->dwImageHeight);
+		pListControl->SetItemHeight(pControl->dwItemHeight);
+		pListControl->SetSpace(pControl->dwSpace);
+
+		// set values for spincontrol
+		//CGUIListControl* c = (CGUIListControl*)pControl->pGUIControl;
+		pControl->pControlSpin->pGUIControl;// = (CGUIControl*) c->GetSpinControl();
+		pControl->pControlSpin->iControlId = pControl->iControlId;
+		pControl->pControlSpin->iParentId = pControl->iParentId;
+
+		return pControl->pGUIControl;
+	}
+
 	/*
 	 * ControlList_AddItem
 	 * (string label) / (ListItem)
