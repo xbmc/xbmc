@@ -432,8 +432,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiWindowVideoOverlay.FreeResources();
 	m_guiWindowVideoOverlay.ClearAll();
 
-	m_guiWindowOSD.FreeResources();
-	
 	m_guiMusicOverlay.FreeResources();
 	m_guiMusicOverlay.ClearAll();
 	
@@ -520,7 +518,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   CLog::Log("  initialize new skin...");
 	m_guiMusicOverlay.AllocResources();
 	m_guiWindowVideoOverlay.AllocResources();
-	m_guiWindowOSD.AllocResources();
 	m_gWindowManager.AddMsgTarget(this);
 	m_gWindowManager.AddMsgTarget(&g_playlistPlayer);
 	m_gWindowManager.SetCallback(*this);
@@ -1380,13 +1377,6 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
       }
       
     }
-
-    if ( !CUtil::IsHD(m_strCurrentFile) )
-		{
-      // no, then spindown should b possible
-			m_bSpinDown=true;
-      m_dwSpinDownTime=0;
-		}
   }
 	return bResult;
 }
@@ -1402,6 +1392,19 @@ void CApplication::OnPlayBackEnded()
 
 void CApplication::OnPlayBackStarted()
 {
+  //spin down harddisk when the current file being played is not on local harddrive and 
+  //duration is more then spindown timeoutsetting or duration is unknown (streams)
+  if ( 
+    !CUtil::IsHD(m_strCurrentFile) && 
+    (
+      (m_pPlayer->GetTotalTime() <= 0) || 
+      (m_pPlayer->GetTotalTime() > g_stSettings.m_iHDSpinDownTime*60)
+    )
+  )
+  {
+      m_bSpinDown      = true;
+      m_dwSpinDownTime = 0;
+	}
 }
 
 void CApplication::EnableOverlay()
@@ -1450,7 +1453,6 @@ void CApplication::StopPlaying()
   }
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
   m_gWindowManager.SendThreadMessage( msg );
-  m_strCurrentFile="";
 }
 
 
@@ -1476,7 +1478,6 @@ void CApplication::RenderFullScreen()
 
 void CApplication::ResetScreenSaver()
 {
-  m_dwSpinDownTime=timeGetTime();
   if (m_bInactive) 
   {
     m_dwSaverTick=timeGetTime();	// Start the timer going ...
@@ -1735,38 +1736,40 @@ bool CApplication::OnMessage(CGUIMessage& message)
 		}
 		break;
 
+		case GUI_MSG_PLAYBACK_STOPPED:
 		case GUI_MSG_PLAYBACK_ENDED:
-		{
+    {
 			m_dwIdleTime=timeGetTime();
       CStdString strFile=m_strCurrentFile;
+
       m_strCurrentFile="";
-
-      if (CUtil::IsVideo(strFile) && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO_TEMP)
+      if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED) 
       {
-				//	Video stacking playback ended
- 				CPlayList& playlist=g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO_TEMP);
+        if (CUtil::IsVideo(strFile) && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO_TEMP)
+        {
+				  //	Video stacking playback ended
+ 				  CPlayList& playlist=g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO_TEMP);
 
-				if (g_playlistPlayer.GetEntriesNotFound()<playlist.size())
-					g_playlistPlayer.PlayNext(true);
+				  if (g_playlistPlayer.GetEntriesNotFound()<playlist.size())
+					  g_playlistPlayer.PlayNext(true);
+        }
+        else
+        {
+				  //	Normal playback ended
+			    if (m_pPlayer) 
+			    {
+					  CPlayList& playlist=g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist());
 
-        if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow()==WINDOW_FULLSCREEN_VIDEO)
-				  m_gWindowManager.PreviousWindow();
+					  if (g_playlistPlayer.GetEntriesNotFound()<playlist.size())
+						  g_playlistPlayer.PlayNext(true);
+  					
+			    }
+        }
       }
-      else
-      {
-				//	Normal playback ended
-			  if (m_pPlayer) 
-			  {
-					CPlayList& playlist=g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist());
-
-					if (g_playlistPlayer.GetEntriesNotFound()<playlist.size())
-						g_playlistPlayer.PlayNext(true);
-					
-			  }
-			  if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow()==WINDOW_FULLSCREEN_VIDEO)
-				  m_gWindowManager.PreviousWindow();
+      if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow()==WINDOW_FULLSCREEN_VIDEO) {
+				m_gWindowManager.PreviousWindow();
       }
-		}
+    }
 		break;
 
 		case GUI_MSG_PLAYLIST_PLAY_NEXT_PREV:

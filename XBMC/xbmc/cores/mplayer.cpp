@@ -87,6 +87,7 @@ CMPlayer::Options::Options()
     m_bNonInterleaved=false;
     m_fSpeed=1.0f;
     m_iAudioStream=-1;
+	m_strDvdDevice="";
 }
 void  CMPlayer::Options::SetFPS(float fFPS)
 {
@@ -176,6 +177,10 @@ void CMPlayer::Options::SetChannelMapping(const string& strMapping)
   m_strChannelMapping=strMapping;
 }
 
+void CMPlayer::Options::SetDVDDevice(const string & strDevice)
+{
+	m_strDvdDevice=strDevice;
+}
 
 void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 {
@@ -342,7 +347,11 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     m_vecOptions.push_back("-ni");
   }
 
-
+  if(m_strDvdDevice.length()>0)
+  {
+	m_vecOptions.push_back("-dvd-device");
+	m_vecOptions.push_back(CStdString("""") + m_strDvdDevice + CStdString(""""));	
+  }
   m_vecOptions.push_back("1.avi");
 
   argc=(int)m_vecOptions.size();
@@ -417,6 +426,8 @@ bool CMPlayer::openfile(const CStdString& strFile)
   bool bFileOnUDF(false);
   bool bFileOnInternet(false);
   bool bFileOnLAN(false);
+  bool bFileIsDVDImage(false);
+  bool bFileIsDVDIfoFile(false);
   
   CURL url(strFile);
   if ( CUtil::IsHD(strFile) )           bFileOnHD=true;
@@ -431,7 +442,11 @@ bool CMPlayer::openfile(const CStdString& strFile)
   bool bIsVideo =CUtil::IsVideo(strFile);
   bool bIsAudio =CUtil::IsAudio(strFile);
   bool bIsDVD(false);
-  if (strFile.Find("dvd://") >=0 )
+
+  bFileIsDVDImage = CUtil::IsDVDImage(strFile);
+  bFileIsDVDIfoFile = CUtil::IsDVDFile(strFile, false, true);
+
+  if (strFile.Find("dvd://") >=0 || bFileIsDVDImage || bFileIsDVDIfoFile)
   {
     bIsDVD=true;
     bIsVideo=true;
@@ -499,11 +514,27 @@ bool CMPlayer::openfile(const CStdString& strFile)
       options.SetVolumeAmplification(g_stSettings.m_fVolumeAmplification);
     }
 
+	//Make sure we set the dvd-device parameter if we are playing dvdimages or dvdfolders
+	if(bFileIsDVDImage)
+	{
+		options.SetDVDDevice(strFile);
+		CLog::Log(" dvddevice: %s", strFile.c_str());
+	}
+	else if(bFileIsDVDIfoFile)
+	{
+		CStdString strTmp;
+		CUtil::GetPath(strFile,strTmp);
+		options.SetDVDDevice(strTmp);
+		CLog::Log(" dvddevice: %s", strTmp.c_str());
+	}	
     options.GetOptions(argc,argv);
     
     //CLog::Log("  open 1st time");
 	  mplayer_init(argc,argv);
     mplayer_setcache_size(iCacheSize);
+	if(bFileIsDVDImage || bFileIsDVDIfoFile)
+		iRet=mplayer_open_file(GetDVDArgument(strFile).c_str());
+	else
 	  iRet=mplayer_open_file(strFile.c_str());
 	  if (iRet < 0)
 	  {
@@ -667,6 +698,9 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			  load();
 			  mplayer_init(argc,argv);
         mplayer_setcache_size(iCacheSize);
+			if(bFileIsDVDImage || bFileIsDVDIfoFile)
+				iRet=mplayer_open_file(GetDVDArgument(strFile).c_str());
+			else
 			  iRet=mplayer_open_file(strFile.c_str());
 			  if (iRet < 0)
 			  {
@@ -1158,6 +1192,19 @@ int CMPlayer::GetCacheSize(bool bFileOnHD,bool bFileOnISO,bool bFileOnUDF,bool b
   return 1024;
 }
 
+CStdString CMPlayer::GetDVDArgument(const CStdString& strFile)
+{
+
+	int iTitle = CUtil::GetDVDIfoTitle(strFile);
+	if(iTitle==0)
+		return CStdString("dvd://");
+	else
+	{
+		CStdString strBuf;
+		strBuf.Format("dvd://%i",iTitle);
+		return strBuf;
+	}
+}
 void CMPlayer::ShowOSD(bool bOnoff)
 {
   if (bOnoff) mplayer_showosd(1);

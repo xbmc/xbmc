@@ -12,6 +12,8 @@ class CGUIWindowFullScreen :
 public:
   CGUIWindowFullScreen(void);
   virtual ~CGUIWindowFullScreen(void);
+  virtual void    AllocResources();
+  virtual void    FreeResources();
   virtual bool    OnMessage(CGUIMessage& message);
   virtual void    OnAction(const CAction &action);
 	virtual void		Render();

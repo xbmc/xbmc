@@ -209,10 +209,9 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 		case GUI_MSG_WINDOW_DEINIT:	// fired when OSD is hidden
 		{
 			OutputDebugString("OSD:DEINIT\n");
+      //hide the OSD
+      HIDE_CONTROL(GetID(), GetID());
 			if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(true);
-      // following line should stay. Problems with OSD not
-      // appearing are already fixed elsewhere
-			FreeResources();
 			return true;
 		}
 		break;
@@ -221,9 +220,6 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 		{
 
 			OutputDebugString("OSD:INIT\n");
-      // following line should stay. Problems with OSD not
-      // appearing are already fixed elsewhere
-			AllocResources();
 			if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(false);
 			ResetAllControls();							// make sure the controls are positioned relevant to the OSD Y offset
 			m_bSubMenuOn=false;
@@ -284,8 +280,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 				}
 				OutputDebugString("OSD:STOP\n");
 				g_application.m_guiWindowFullScreen.m_bOSDVisible = false;	// toggle the OSD off so parent window can de-init
-				g_application.m_pPlayer->closefile();						// close our media
-				m_gWindowManager.PreviousWindow();							// go back to the previous window
+        g_application.StopPlaying();						// close our media
 			}
 
 			if (iControl == OSD_REWIND)
