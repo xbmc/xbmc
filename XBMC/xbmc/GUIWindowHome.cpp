@@ -32,6 +32,8 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       {
 				SET_CONTROL_HIDDEN(GetID(), iControl);
       }
+			iControl=GetFocusedControl();
+			SET_CONTROL_FOCUS(GetID(), iControl);
 			return true;
     }
 
