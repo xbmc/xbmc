@@ -671,6 +671,7 @@ void CGUIWindowPictures::OnCreateThumbs()
   CSectionLoader::Load("CXIMAGE");
   // calculate the number of items to take thumbs of
   int iTotalItems = 0;
+  int iCurrentItem = 0;
   for (int i=0; i < (int)m_vecItems.size();++i)
   {
     CFileItem* pItem=m_vecItems[i];
@@ -683,9 +684,10 @@ void CGUIWindowPictures::OnCreateThumbs()
     CFileItem* pItem=m_vecItems[i];
     if (!pItem->m_bIsFolder)
     {	
+		iCurrentItem++;
 		WCHAR wstrProgress[128];
 			WCHAR wstrFile[128];
-      swprintf(wstrProgress,L"   progress:%i/%i", i,iTotalItems );
+      swprintf(wstrProgress,L"   progress:%i/%i", iCurrentItem,iTotalItems );
       swprintf(wstrFile,L"   picture:%S", pItem->GetLabel().c_str() );
 
 			if (m_dlgProgress)
