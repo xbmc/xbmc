@@ -165,7 +165,7 @@ bool CTextureBundle::OpenBundle()
 
 	struct DiskFileHeader_t
 	{
-		char Name[52];
+		char Name[116];
 		DWORD Offset;
 		DWORD UnpackedSize;
 		DWORD PackedSize;

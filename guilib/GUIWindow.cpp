@@ -22,8 +22,9 @@
 #include "GUIProgressControl.h"
 #include "GUISliderControl.h"
 #include "GUISelectButtonControl.h"
+#include "SkinInfo.h"
 #include "../xbmc/application.h"
-#include "../xbmc/util.h"
+//#include "../xbmc/util.h"
 
 #include<string>
 using namespace std;
@@ -48,27 +49,13 @@ void CGUIWindow::FlushReferenceCache()
 	ControlsCache.clear();
 }
 
-bool CGUIWindow::LoadReference(const CStdString& strFileName, VECREFERENCECONTOLS& controls)
+bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 {
 	// load references.xml
 	controls.clear();
 	TiXmlDocument xmlDoc;
-	int iPos = strFileName.ReverseFind('\\');
-	CStdString strReferenceFile=strFileName.Left(iPos);
-  DWORD dwStandard=XGetVideoStandard();
-  if (dwStandard==XC_VIDEO_STANDARD_PAL_I)
-  {
-    CStdString strFName;
-    strFName.Format("%s\\pal\\references.xml",strReferenceFile.c_str());
-    if (CUtil::FileExists(strFName) )
-    {
-      strReferenceFile=strFName;
-    }
-    else
-    	strReferenceFile += "\\references.xml";
-  }
-  else
-    strReferenceFile += "\\references.xml";
+	RESOLUTION res;
+	CStdString strReferenceFile = g_SkinInfo.GetSkinPath("references.xml", &res);
 
 	// this takes ages and happens about 20 times per skin load.
 	// caching the data speeds up skin loading by a factor of 2. :)
@@ -147,6 +134,7 @@ bool CGUIWindow::LoadReference(const CStdString& strFileName, VECREFERENCECONTOL
 		return true;
 	}
 
+	CLog::Log("Loading references file: %s", strReferenceFile.c_str());
 	if ( !xmlDoc.LoadFile(strReferenceFile.c_str()) )
 	{
     CLog::Log("unable to load:%s", strReferenceFile.c_str());
@@ -170,7 +158,7 @@ bool CGUIWindow::LoadReference(const CStdString& strFileName, VECREFERENCECONTOL
 		if (pNode)
 		{
 			strType = pNode->FirstChild()->Value();
-			CGUIControl* pGUIControl = factory.Create(m_dwWindowId,pControl,NULL,true);
+			CGUIControl* pGUIControl = factory.Create(m_dwWindowId,pControl,NULL,INVALID);
 			if (pGUIControl)
 			{	
 				struct stReferenceControl stControl;
@@ -258,45 +246,29 @@ bool CGUIWindow::LoadReference(const CStdString& strFileName, VECREFERENCECONTOL
 	return true;
 }
 
-bool CGUIWindow::Load(const CStdString& strFileNameAndPath)
+bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 {
-  m_vecPositions.erase(m_vecPositions.begin(),m_vecPositions.end());
-  CStdString strFileName=strFileNameAndPath;
+    m_vecPositions.erase(m_vecPositions.begin(),m_vecPositions.end());
 	TiXmlDocument xmlDoc;
-  CStdString strPath;
-  CStdString strFName;
-  CUtil::Split(strFileNameAndPath, strPath, strFName);
-  DWORD dwStandard=XGetVideoStandard();
-  if (dwStandard==XC_VIDEO_STANDARD_PAL_I)
-  {
-    // try PAL first
-    strFileName.Format("%s\\pal%s", strPath.c_str(), strFName.c_str());
-    if ( !xmlDoc.LoadFile(strFileName.c_str()) )
+	// Find appropriate skin folder + resolution to load from
+	RESOLUTION resToUse = INVALID;
+	CStdString strPath;
+	if (bContainsPath)
+		strPath = strFileName;
+	else
+		strPath = g_SkinInfo.GetSkinPath(strFileName, &resToUse);
+
+    if ( !xmlDoc.LoadFile(strPath.c_str()) )
     {
-      // fall back on ntsc version
-      strFileName=strFileNameAndPath;
-      if ( !xmlDoc.LoadFile(strFileName.c_str()) )
-      {
-        CLog::Log("unable to load:%s", strFileName.c_str());
-		    m_dwWindowId=9999;
+        CLog::Log("unable to load:%s", strPath.c_str());
+		m_dwWindowId=9999;
         return false;
-      }
     }
-  }
-  else
-  {
-    if ( !xmlDoc.LoadFile(strFileName.c_str()) )
-    {
-      CLog::Log("unable to load:%s", strFileName.c_str());
-		  m_dwWindowId=9999;
-      return false;
-    }
-  }
   TiXmlElement* pRootElement =xmlDoc.RootElement();
   CStdString strValue=pRootElement->Value();
   if (strValue!=CStdString("window")) 
   {
-    CLog::Log("file :%s doesnt contain <window>", strFileName.c_str());
+    CLog::Log("file :%s doesnt contain <window>", strPath.c_str());
     return false;
   }
   
@@ -304,7 +276,7 @@ bool CGUIWindow::Load(const CStdString& strFileNameAndPath)
 	
 	VECREFERENCECONTOLS  referencecontrols;
 	IVECREFERENCECONTOLS it;
-	LoadReference(strFileNameAndPath, referencecontrols);
+	LoadReference(referencecontrols);
  
   const TiXmlNode *pChild = pRootElement->FirstChild();
   while (pChild)
@@ -342,7 +314,7 @@ bool CGUIWindow::Load(const CStdString& strFileNameAndPath)
 						}
 					}
 					CGUIControlFactory factory;
-					CGUIControl* pGUIControl = factory.Create(m_dwWindowId,pControl,pGUIReferenceControl,false);
+					CGUIControl* pGUIControl = factory.Create(m_dwWindowId,pControl,pGUIReferenceControl, resToUse);
 					if (pGUIControl)
 					{
 						Add(pGUIControl);

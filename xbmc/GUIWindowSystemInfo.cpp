@@ -261,7 +261,7 @@ void  CGUIWindowSystemInfo::GetValues()
 	{
 
 		WCHAR wszText[128];
-		int  iResolution=g_stSettings.m_ScreenResolution;
+		int  iResolution=g_stSettings.m_GUIResolution;
 		swprintf(wszText,L"%ix%i %S %02.2f Hz.", 
 			g_settings.m_ResInfo[iResolution].iWidth, 
 			g_settings.m_ResInfo[iResolution].iHeight, 

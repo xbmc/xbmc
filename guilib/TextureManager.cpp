@@ -2,7 +2,6 @@
 #include "texturemanager.h"
 #include "graphiccontext.h"
 #include "animatedgif.h"
-#include "../xbmc/util.h"
 #include "../xbmc/utils/log.h"
 #include <xgraphics.h>
 #include "PackedTexture.h"
@@ -337,20 +336,13 @@ void CGUITextureManager::PreLoad(const CStdString& strTextureName)
 			return;
 	}
 
-	CStdString strPalTex("pal/");
-	strPalTex += strTextureName;
-
 	for (list<CStdString>::iterator i = m_PreLoadNames.begin(); i != m_PreLoadNames.end(); ++i)
 	{
-		if (*i == strTextureName || *i == strPalTex)
+		if (*i == strTextureName)
 			return;
 	}
 
-	DWORD dwStandard=XGetVideoStandard();
-
-	if ((dwStandard==XC_VIDEO_STANDARD_PAL_I) && m_TexBundle.HasFile(strPalTex))
-		m_PreLoadNames.push_back(strPalTex);
-	else if (m_TexBundle.HasFile(strTextureName))
+	if (m_TexBundle.HasFile(strTextureName))
 		m_PreLoadNames.push_back(strTextureName);
 }
 
@@ -373,16 +365,13 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 	if (strTextureName == "-")
 		return NULL;
 	
-	CStdString strPalTex("pal/");
-	strPalTex += strTextureName;
-
 	// first check of texture exists...
   for (int i=0; i < (int)m_vecTextures.size(); ++i)
   {
     CTextureMap *pMap=m_vecTextures[i];
     if (pMap->GetName() == strTextureName)
     {
-			if (m_iNextPreload != m_PreLoadNames.end() && (*m_iNextPreload == strTextureName || *m_iNextPreload == strPalTex))
+			if (m_iNextPreload != m_PreLoadNames.end() && (*m_iNextPreload == strTextureName))
 			{
 				++m_iNextPreload;
 				// preload next file
@@ -395,29 +384,20 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
   }
 
 #ifdef ALLOW_TEXTURE_COMPRESSION
-  DWORD dwStandard=XGetVideoStandard();
   LPDIRECT3DTEXTURE8 pTexture;
 	LPDIRECT3DPALETTE8 pPal = 0;
 
 	bool bBundled;
 	const CStdString* pstrBundleTex = NULL;
-	if (m_iNextPreload != m_PreLoadNames.end() && (*m_iNextPreload == strTextureName || *m_iNextPreload == strPalTex))
+	if (m_iNextPreload != m_PreLoadNames.end() && (*m_iNextPreload == strTextureName))// || *m_iNextPreload == strPalTex))
 	{
-		if (*m_iNextPreload == strPalTex)
-			pstrBundleTex = &strPalTex;
-		else
-			pstrBundleTex = &strTextureName;
+		pstrBundleTex = &strTextureName;
 
 		bBundled = true;
 		++m_iNextPreload;
 		// preload next file
 		if (m_iNextPreload != m_PreLoadNames.end())
 			m_TexBundle.PreloadFile(*m_iNextPreload);
-	}
-	else if ((dwStandard==XC_VIDEO_STANDARD_PAL_I) && m_TexBundle.HasFile(strPalTex))
-	{
-		pstrBundleTex = &strPalTex;
-		bBundled = true;
 	}
 	else if (m_TexBundle.HasFile(strTextureName))
 	{
@@ -434,25 +414,10 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 		if (strTextureName.c_str()[1] == ':')
 			strPath=strTextureName;
 		else
-		{
 			strPath.Format("%s\\media\\%s",g_graphicsContext.GetMediaDir().c_str(),strTextureName.c_str());
-			if (dwStandard==XC_VIDEO_STANDARD_PAL_I)
-			{
-				CStdString strPath1,strPath2;
-				strPath1.Format("%s\\pal\\media\\%s",g_graphicsContext.GetMediaDir().c_str(),strTextureName.c_str());
-				strPath2=strPath1+".xpr";
-				if (CUtil::FileExists(strPath1)||CUtil::FileExists(strPath2))
-				{
-					strPath=strPath1;
-				}
-			}
-		}
 	}
 	else
 		strPath=strTextureName;
-
-  //OutputDebugString(strPath.c_str());
-  //OutputDebugString("\n");
 
 	LARGE_INTEGER start;
 	QueryPerformanceCounter(&start);

@@ -31,7 +31,7 @@ class CGUIWindow
 public:
   CGUIWindow(DWORD dwID);
   virtual ~CGUIWindow(void);
-  bool            		Load(const CStdString& strFileName);
+  bool            		Load(const CStdString& strFileName, bool bContainsPath = false);
   virtual void    		Render();
   virtual void    		OnAction(const CAction &action);
   virtual bool    		OnMessage(CGUIMessage& message);
@@ -59,7 +59,7 @@ protected:
 	};
 	typedef vector<struct stReferenceControl> VECREFERENCECONTOLS;
 	typedef vector<struct stReferenceControl>::iterator IVECREFERENCECONTOLS;
-	bool LoadReference(const CStdString& strFileName, VECREFERENCECONTOLS& controls);
+	bool LoadReference(VECREFERENCECONTOLS& controls);
 	static CStdString CacheFilename;
 	static VECREFERENCECONTOLS ControlsCache;
 
