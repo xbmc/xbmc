@@ -385,13 +385,8 @@ void CGUIThumbnailPanel::PreAllocResources()
 	m_imgFolderFocus.PreAllocResources();
 }
 
-void CGUIThumbnailPanel::AllocResources()
+void CGUIThumbnailPanel::Calculate()
 {
-  if (!m_pFont) return;
-  CGUIControl::AllocResources();
-  m_upDown.AllocResources();
-  m_imgFolder.AllocResources();
-  m_imgFolderFocus.AllocResources();
 	m_imgFolder.SetWidth(m_iTextureWidth);
 	m_imgFolder.SetHeight(m_iTextureHeight);
 	m_imgFolderFocus.SetWidth(m_iTextureWidth);
@@ -416,6 +411,17 @@ void CGUIThumbnailPanel::AllocResources()
   if (m_vecItems.size() % iItemsPerPage) iPages++;
   m_upDown.SetRange(1,iPages);
   m_upDown.SetValue(1);
+}
+
+void CGUIThumbnailPanel::AllocResources()
+{
+  if (!m_pFont) return;
+  CGUIControl::AllocResources();
+  m_upDown.AllocResources();
+  m_imgFolder.AllocResources();
+  m_imgFolderFocus.AllocResources();
+  Calculate();
+
 }
 
 void CGUIThumbnailPanel::FreeResources()
@@ -789,4 +795,41 @@ int CGUIThumbnailPanel::GetSelectedItem(CStdString& strLabel)
    }
   }
   return iItem;
+}
+
+void CGUIThumbnailPanel::ShowBigIcons(bool bOnOff)
+{
+  if (bOnOff)
+  {
+    m_iItemWidth=m_iItemWidthBig;
+    m_iItemHeight=m_iItemHeightBig;
+	  m_iTextureWidth=m_iTextureWidthBig;
+	  m_iTextureHeight=m_iTextureHeightBig;
+    SetThumbDimensions(m_iThumbXPosBig,m_iThumbYPosBig,m_iThumbWidthBig,m_iThumbHeightBig);
+  }
+  else
+  {
+    m_iItemWidth=m_iItemWidthLow;
+    m_iItemHeight=m_iItemHeightLow;
+	  m_iTextureWidth=m_iTextureWidthLow;
+	  m_iTextureHeight=m_iTextureHeightLow;
+    SetThumbDimensions(m_iThumbXPosLow,m_iThumbYPosLow,m_iThumbWidthLow,m_iThumbHeightLow);
+  }
+  Calculate();
+}
+
+void CGUIThumbnailPanel::GetThumbDimensionsBig(int& iXpos, int& iYpos,int& iWidth, int& iHeight)
+{
+  iXpos=m_iThumbXPosBig;
+  iYpos=m_iThumbYPosBig;
+  iWidth=m_iThumbWidthBig;
+  iHeight=m_iThumbHeightBig;
+}
+
+void CGUIThumbnailPanel::GetThumbDimensionsLow(int& iXpos, int& iYpos,int& iWidth, int& iHeight)
+{
+  iXpos=m_iThumbXPosLow;
+  iYpos=m_iThumbYPosLow;
+  iWidth=m_iThumbWidthLow;
+  iHeight=m_iThumbHeightLow;
 }
