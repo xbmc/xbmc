@@ -388,7 +388,7 @@
   </string>
   <string>
     <id>167</id>
-    <value>FTP server aktivieren</value>
+    <value>FTP Server aktivieren</value>
   </string>
   <string>
     <id>168</id>
@@ -876,7 +876,7 @@
   </string>
   <string>
     <id>289</id>
-    <value>Größe</value>
+    <value>- Größe</value>
   </string>
   <string>
     <id>290</id>
@@ -1748,7 +1748,7 @@
   </string>
   <string>
     <id>508</id>
-    <value>Verknüpfungen und Durchsuchen deaktiviere</value>
+    <value>Verknüpfungen und Durchsuchen deaktivieren</value>
   </string>
   <string>
     <id>600</id>
@@ -1872,11 +1872,11 @@
   </string>
   <string>
     <id>706</id>
-    <value>HTTP Proxy Host</value>
+    <value>- HTTP Proxy Host</value>
   </string>
   <string>
     <id>707</id>
-    <value>HTTP Proxy Port</value>
+    <value>- HTTP Proxy Port</value>
   </string>
   <string>
     <id>708</id>
@@ -1924,19 +1924,19 @@
   </string>
   <string>
     <id>719</id>
-    <value>IP Addresse</value>
+    <value>- IP Addresse</value>
   </string>
   <string>
     <id>720</id>
-    <value>Netzmaske</value>
+    <value>- Netzmaske</value>
   </string>
   <string>
     <id>721</id>
-    <value>Standard Gateway</value>
+    <value>- Standard Gateway</value>
   </string>
   <string>
     <id>722</id>
-    <value>DNS Server</value>
+    <value>- DNS Server</value>
   </string>
   <string>
     <id>723</id>
@@ -1968,11 +1968,11 @@
   </string>
   <string>
     <id>730</id>
-    <value>Web Server Port</value>
+    <value>- Web Server Port</value>
   </string>
   <string>
     <id>731</id>
-    <value>Zeit Server Host</value>
+    <value>- Zeit Server Host</value>
   </string>
   <string>
     <id>732</id>
@@ -1980,7 +1980,7 @@
   </string>
   <string>
     <id>733</id>
-    <value>Web Server Passwort</value>
+    <value>- Web Server Passwort</value>
   </string>
   <string>
     <id>734</id>
@@ -1988,15 +1988,15 @@
   </string>
   <string>
     <id>735</id>
-    <value>Zeichentabelle</value>
+    <value>- Zeichentabelle</value>
   </string>
   <string>
     <id>736</id>
-    <value>Stil</value>
+    <value>- Stil</value>
   </string>
   <string>
     <id>737</id>
-    <value>Farbe</value>
+    <value>- Farbe</value>
   </string>
   <string>
     <id>738</id>
@@ -2316,11 +2316,11 @@
   </string>
   <string>
     <id>13299</id>
-    <value>Angestrebte Temperatur</value>
+    <value>- Angestrebte Temperatur</value>
   </string>
   <string>
     <id>13300</id>
-    <value>Geschwindigkeit in %</value>
+    <value>- Geschwindigkeit in %</value>
   </string>
   <string>
     <id>13301</id>
@@ -2520,15 +2520,15 @@
   </string>
   <string>
     <id>14012</id>
-    <value>Große Symbole verwenden</value>
+    <value>- Große Symbole verwenden</value>
   </string>
   <string>
     <id>14013</id>
-    <value>Methode</value>
+    <value>- Methode</value>
   </string>
   <string>
     <id>14014</id>
-    <value>Prozent</value>
+    <value>- Prozent</value>
   </string>
   <string>
     <id>14015</id>
@@ -2568,7 +2568,7 @@
   </string>
   <string>
     <id>14024</id>
-    <value>Bitte eine nächstgelege große Stadt oder einen US ZIP code eingeben</value>
+    <value>Bitte eine nächstgelegene große Stadt oder einen US ZIP code eingeben</value>
   </string>
   <string>
     <id>14025</id>
@@ -2580,7 +2580,7 @@
   </string>
   <string>
     <id>14027</id>
-    <value>Video vom lokalen Netzwerk</value>
+    <value>Video über lokales Netzwerk</value>
   </string>
   <string>
     <id>14028</id>
@@ -2596,7 +2596,7 @@
   </string>
   <string>
     <id>14031</id>
-    <value>Audio vom lokalen Netzwerk</value>
+    <value>Audio über lokales Netzwerk</value>
   </string>
   <string>
     <id>14032</id>
@@ -2612,7 +2612,7 @@
   </string>
   <string>
     <id>14035</id>
-    <value>DVD vom lokalen Netzwerk</value>
+    <value>DVD über lokales Netzwerk</value>
   </string>
   <string>
     <id>14036</id>
@@ -2641,5 +2641,9 @@
   <string>
     <id>14042</id>
     <value>Engine IP Addresse</value>
+  </string>
+  <string>
+    <id>14043</id>
+    <value>- Ausschalten wenn abgespielt wird</value>
   </string>
 </strings>
