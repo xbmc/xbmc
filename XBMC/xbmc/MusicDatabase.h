@@ -55,6 +55,7 @@ public:
 	CStdString strArtist;
 	CStdString strAlbum;
 	CStdString strGenre;
+  CStdString strThumb;
 	int iTrack;
 	int iDuration;
 	int iYear;
@@ -252,6 +253,7 @@ protected:
 	map<CStdString, CArtistCache> m_artistCache;
 	map<CStdString, CGenreCache> m_genreCache;
 	map<CStdString, CPathCache> m_pathCache;
+	map<CStdString, CPathCache> m_thumbCache;
 	map<CStdString, CAlbumCache> m_albumCache;
 	bool		m_bOpen;
 	int			m_iRefCount;
@@ -260,6 +262,7 @@ protected:
 	long		AddGenre(const CStdString& strGenre);
 	long		AddArtist(const CStdString& strArtist);
 	long		AddPath(const CStdString& strPath);
+  long    AddThumb(const CStdString& strThumb1);
 	void		AddExtraArtists(const VECARTISTS& vecArtists, long lSongId, long lAlbumId, bool bCheck=true);
 	void		AddExtraGenres(const VECGENRES& vecGenres, long lSongId, long lAlbumId, bool bCheck=true);
 	bool		AddAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs);
@@ -280,6 +283,8 @@ private:
 	bool		CleanupArtists();
 	bool		CleanupGenres();
 	bool		CleanupAlbumsFromPaths(const CStdString &strPathIds);
+  bool    UpdateOldVersion(float fVersion);
+
 	int			m_iSongsBeforeCommit;
 };
 

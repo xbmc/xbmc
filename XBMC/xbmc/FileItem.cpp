@@ -16,6 +16,7 @@ CFileItem::CFileItem(const CSong& song)
 	m_musicInfoTag.SetSong(song);
 	m_lStartOffset = song.iStartOffset;
 	m_lEndOffset = song.iEndOffset;
+  m_strThumbnailImage = song.strThumb;
 }
 
 CFileItem::CFileItem(const CAlbum& album)
