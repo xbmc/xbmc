@@ -3185,8 +3185,6 @@ if(auto_quality>0){
     osd_function = OSD_REW;
     if(ffrw_sstepnum >= ffrw_sstepframes && blit_frame)
     {
-      int ispeed = ffrw_speed; //Copy this as it might change during this loop
-
       //Don't seek forward, and only display frames every half second
       while(rel_seek_secs > -0.5f) 
       {
