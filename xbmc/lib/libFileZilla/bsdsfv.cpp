@@ -25,6 +25,9 @@
  $Id$
 
  $Log$
+ Revision 1.2  2004/02/15 03:37:42  butcheruk
+ no message
+
  Revision 1.1  2003/11/26 20:17:57  rjm2k1
  *** empty log message ***
 
@@ -254,7 +257,7 @@ int CSfvFile::CheckFile(LPCTSTR filename, unsigned long& returnCrc)
 
 
 
-long UpdateCRC (unsigned long CRC, const char *buffer, long count)
+unsigned long UpdateCRC (unsigned long CRC, const char *buffer, long count)
 {
   /* 
      Note: if you want to know how CRC32-checking works, I
@@ -262,7 +265,7 @@ long UpdateCRC (unsigned long CRC, const char *buffer, long count)
      There is not much you can change in this function, so
      if you need a CRC32-check yourself, feel free to rip.
    */
-  unsigned long CRCTABLE[] = {
+  static unsigned long CRCTABLE[] = {
 	0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419, 0x706af48f,
 	0xe963a535, 0x9e6495a3, 0x0edb8832, 0x79dcb8a4, 0xe0d5e91e, 0x97d2d988,
 	0x09b64c2b, 0x7eb17cbd, 0xe7b82d07, 0x90bf1d91, 0x1db71064, 0x6ab020f2,
