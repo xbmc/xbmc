@@ -62,6 +62,7 @@ namespace XFILE
 		virtual bool          OpenForWrite(const CURL& url, bool bBinary = true);
 	  virtual bool          Delete(const char* strFileName);
     virtual bool          Rename(const char* strFileName, const char* strNewFileName);
+    virtual char          GetDirectorySeperator() { return '/'; }
     
 	protected:
 	  bool                  IsValidFile(const CStdString& strFileName);
