@@ -272,7 +272,7 @@ dvd_reader_t *DVDOpen( const char *path )
     char *dev_name = 0;
 
     if( !path ) return 0;
-
+#ifndef _XBOX
     ret = stat( path, &fileinfo );
     if( ret < 0 ) {
 	/* If we can't stat the file, give up */
@@ -280,14 +280,21 @@ dvd_reader_t *DVDOpen( const char *path )
 	perror("");
 	return 0;
     }
+#endif //_XBOX
 
     /* Try to open libdvdcss or fall back to standard functions */
     have_css = DVDInputSetup();
 
+#ifdef _XBOX
+    // check if len > D:
+    if (strstr(path,".img") || strstr(path,".IMG") )
+    {
+#else
     /* First check if this is a block/char device or a file*/
     if( S_ISBLK( fileinfo.st_mode ) || 
 	S_ISCHR( fileinfo.st_mode ) || 
 	S_ISREG( fileinfo.st_mode ) ) {
+#endif
 
 	/**
 	 * Block devices and regular files are assumed to be DVD-Video images.
@@ -299,8 +306,11 @@ dvd_reader_t *DVDOpen( const char *path )
 #else
 	return DVDOpenImageFile( path, have_css );
 #endif
-
+#ifdef _XBOX
+    } else {
+#else
     } else if( S_ISDIR( fileinfo.st_mode ) ) {
+#endif
 	dvd_reader_t *auth_drive = 0;
 	char *path_copy;
 #if defined(SYS_BSD)
@@ -311,7 +321,7 @@ dvd_reader_t *DVDOpen( const char *path )
 
 	/* XXX: We should scream real loud here. */
 	if( !(path_copy = strdup( path ) ) ) return 0;
-
+#ifndef _XBOX
 	/* Resolve any symlinks and get the absolut dir name. */
 	{
 	    char *new_path;
@@ -330,7 +340,7 @@ dvd_reader_t *DVDOpen( const char *path )
 		}
 	    }
 	}
-	
+#endif //_XBOX
 	/**
 	 * If we're being asked to open a directory, check if that directory
 	 * is the mountpoint for a DVD-ROM which we can use instead.
@@ -468,6 +478,34 @@ static dvd_file_t *DVDOpenFileUDF( dvd_reader_t *dvd, char *filename )
  */
 static int findDirFile( const char *path, const char *file, char *filename ) 
 {
+#ifdef _XBOX
+  int ifd;
+  char *pvideots=strstr(path,"/VIDEO_TS/");
+  if (pvideots)
+  {
+    strcpy(filename, path);
+    if (path[2] = ':') //share from hd or dvd
+    {
+      filename[2] = '\\';
+      filename[11] = '\\';
+    }
+		sprintf(filename,"%s%s", filename, file);
+  }
+  else
+  {
+    sprintf(filename,"%s\\%s", path,file);
+  }
+  printf("FindDirFile %s", filename);
+  ifd=open(filename,O_BINARY);
+  if (ifd>=0)
+  {
+    printf(" found");
+    close(ifd);
+    return 0;
+  }
+    strcpy(filename,"");
+    printf("not found");
+#else
     DIR *dir;
     struct dirent *ent;
 
@@ -482,7 +520,7 @@ static int findDirFile( const char *path, const char *file, char *filename )
             return 0;
         }
     }
-
+#endif //_XBOX
     return -1;
 }
 

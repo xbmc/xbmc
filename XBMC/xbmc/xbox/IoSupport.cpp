@@ -385,9 +385,7 @@ HANDLE CIoSupport::OpenCDROM()
 {
 	HANDLE hDevice;
 
-
 	Remount("D:","Cdrom0");
-	Unmount("D:");
 
 	if( !m_rawXferBuffer )
 		return NULL;
