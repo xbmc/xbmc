@@ -239,7 +239,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
       }
  			else if (iControl==CONTROL_BTNSCAN)
 			{
-				OnScan(m_vecItems);
+				OnScan();
 			}
 
       else if (iControl==CONTROL_STACK)
@@ -918,7 +918,12 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(VECFILEITEMS& items)
   }
 }
 
-bool CGUIWindowVideoFiles::OnScan(VECFILEITEMS& items)
+void CGUIWindowVideoFiles::OnScan()
+{
+	DoScan(m_vecItems);
+}
+
+bool CGUIWindowVideoFiles::DoScan(VECFILEITEMS& items)
 {
 	// remove username + password from m_strDirectory for display in Dialog
 	CURL url(m_strDirectory);
@@ -966,7 +971,7 @@ bool CGUIWindowVideoFiles::OnScan(VECFILEITEMS& items)
 				m_rootDir.GetDirectory(pItem->m_strPath,subDirItems);
 				if (m_dlgProgress)
 					m_dlgProgress->Close();
-				if (!OnScan(subDirItems))
+				if (!DoScan(subDirItems))
 				{
 					bCancel=true;
 				}
