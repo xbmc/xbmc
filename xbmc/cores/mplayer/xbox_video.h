@@ -24,13 +24,13 @@ public:
 	// Functions called from mplayer
 	void					WaitForFlip();
 	unsigned int	QueryFormat(unsigned int format);
-	void					Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height);
+	unsigned int 	Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, unsigned int options, char *title, unsigned int format);
 	unsigned int	GetImage(mp_image_t *mpi);
 	unsigned int	PutImage(mp_image_t *mpi);
-	unsigned int	DrawFrame();
+	unsigned int	DrawFrame(unsigned char *src[]);
 	unsigned int	DrawSlice(unsigned char *src[], int stride[], int w,int h,int x,int y);
 	void					FlipPage();
-	unsigned int	PreInit();
+	unsigned int	PreInit(const char *arg);
 	void					UnInit();
 	void					DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,unsigned char *srca, int stride);
 
