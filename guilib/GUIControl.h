@@ -73,6 +73,7 @@ public:
   void          SetWidth(int iWidth);
   void          SetHeight(int iHeight);
   void          SetVisible(bool bVisible);
+  void			SetSelected(bool bSelected);
 	void					SetEnabled(bool bEnable);
 	virtual void			EnableCalibration(bool bOnOff);
 	bool					CalibrationEnabled() const;
@@ -117,6 +118,7 @@ protected:
   DWORD              m_dwHeight;
   DWORD              m_dwWidth;
   D3DCOLOR           m_colDiffuse;
+  DWORD				 m_dwAlpha;
   DWORD							 m_dwControlID;
   DWORD							 m_dwParentID;
   bool							 m_bHasFocus;

@@ -7,6 +7,8 @@
 CGUIListExItem::CGUIListExItem(CStdString& aItemName) : CGUIItem(aItemName)
 {
 	m_pIcon	= NULL;
+	m_dwFocusedDuration = 0;
+	m_dwFrameCounter = 0;
 }
 
 CGUIListExItem::~CGUIListExItem(void)
@@ -43,18 +45,21 @@ void CGUIListExItem::SetIcon(INT aWidth, INT aHeight, const CStdString& aTexture
 
 void CGUIListExItem::OnPaint(CGUIItem::RenderContext* pContext)
 {
-	// safely get a pointer to the derived (subclassed) context
-	//CGUIListExItem::RenderContext* pDC = dynamic_cast<CGUIListExItem::RenderContext*>(pContext);
+	m_dwFrameCounter++;
 
 	CGUIListExItem::RenderContext* pDC = (CGUIListExItem::RenderContext*)pContext;
 	if (pDC)
 	{
+		// if focused increment the frame counter, otherwise reset it 
+		m_dwFocusedDuration = pDC->m_bFocused ? (m_dwFocusedDuration+1) : 0;
+
 		int iPosX = pDC->m_iPositionX;
 		int iPosY = pDC->m_iPositionY;
 
 		if (pDC->m_pButton)
 		{
 			// render control
+			pDC->m_pButton->SetSelected(pDC->m_bActive);
 			pDC->m_pButton->SetFocus(pDC->m_bFocused);
 			pDC->m_pButton->SetPosition(iPosX, iPosY);	
 			pDC->m_pButton->Render();
@@ -75,9 +80,13 @@ void CGUIListExItem::OnPaint(CGUIItem::RenderContext* pContext)
 			// render the text
 			DWORD dwColor = pDC->m_bFocused ? pDC->m_dwTextSelectedColour : pDC->m_dwTextNormalColour;
 
-			CStdStringW strNameUnicode;
-			g_charsetConverter.stringCharsetToFontCharset(m_strName, strNameUnicode);
-			RenderText((FLOAT)iPosX, (FLOAT)iPosY+2, (FLOAT)pDC->m_pButton->GetWidth(), dwColor, (WCHAR*) strNameUnicode.c_str(), pDC->m_pFont);
+			CStdString strDisplayText;
+			GetDisplayText(strDisplayText);
+
+			CStdStringW strUnicode;
+			g_charsetConverter.stringCharsetToFontCharset(strDisplayText, strUnicode);
+
+			RenderText((FLOAT)iPosX, (FLOAT)iPosY+2, (FLOAT)pDC->m_pButton->GetWidth(), dwColor, (WCHAR*) strUnicode.c_str(), pDC->m_pFont);
 		}
 	}
 }

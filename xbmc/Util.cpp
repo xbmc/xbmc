@@ -597,6 +597,9 @@ void CUtil::LaunchXbe(char* szPath, char* szXbe, char* szParameters)
   helper.Unmount("D:");
   helper.Mount("D:",szPath);
 
+  // detach if connected to kai
+  CKaiClient::GetInstance()->RemoveObserver();
+
   CLog::Log(LOGINFO, "launch xbe:%s", szXbe);
 
   if (szParameters==NULL)
