@@ -73,6 +73,7 @@ CMPlayer::CMPlayer(IPlayerCallback& callback)
 
 CMPlayer::~CMPlayer()
 {
+	m_bIsPlaying=false;
 	StopThread();
 	Unload();
 }
