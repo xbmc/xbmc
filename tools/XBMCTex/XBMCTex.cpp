@@ -14,6 +14,8 @@ CBundler Bundler;
 
 UINT UncompressedSize;
 UINT CompressedSize;
+UINT TotalSrcPixels;
+UINT TotalDstPixels;
 
 // Round a number to the nearest power of 2 rounding up
 // runs pretty quickly - the only expensive op is the bsr
@@ -471,6 +473,10 @@ void ConvertFiles(const char* Dir, const char* Filename, double MaxMSE)
 				UINT Width = PadPow2(info.Width);
 				UINT Height = PadPow2(info.Height);
 
+				TotalSrcPixels += info.Width * info.Height;
+				TotalDstPixels += Width * Height;
+				float Waste = 100.f * (float)(Width * Height - info.Width * info.Height) / (float)(Width * Height);
+
 				UncompressedSize += Width * Height * 4;
 
 				// Special case for 256-colour files - just directly drop into a P8 xpr
@@ -504,6 +510,7 @@ void ConvertFiles(const char* Dir, const char* Filename, double MaxMSE)
 						TRACE2("CMSE=%05.2f, AMSE=%07.2f\n", CMSE, AMSE);
 						if (CMSE <= 1e-6 && AMSE <= 1e-6)
 						{
+							printf("DXT1     %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
 							TRACE0(" Selected Format: DXT1\n");
 							WriteXPR(OutFilename, info, pTempSurf, XB_D3DFMT_DXT1, NULL);
 
@@ -513,7 +520,7 @@ void ConvertFiles(const char* Dir, const char* Filename, double MaxMSE)
 						pTempSurf->Release();
 					}
 
-					printf("P8       %4dx%-4d\n", Width, Height);
+					printf("P8       %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
 					TRACE0(" Selected Format: P8\n");
 
 					LPDIRECT3DSURFACE8 pTempSurf;
@@ -535,7 +542,7 @@ void ConvertFiles(const char* Dir, const char* Filename, double MaxMSE)
 				// dxt is crap on small files anyway
 				if (Width * Height <= 1024)
 				{
-					printf("A8R8G8B8 %4dx%-4d\n", Width, Height);
+					printf("A8R8G8B8 %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
 					TRACE0(" Selected Format: A8R8G8B8\n");
 
 					WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_A8R8G8B8, NULL);
@@ -554,7 +561,7 @@ void ConvertFiles(const char* Dir, const char* Filename, double MaxMSE)
 				TRACE2("CMSE=%05.2f, AMSE=%07.2f\n", CMSE, AMSE[0]);
 				if (CMSE <= MaxMSE && AMSE[0] <= MaxMSE)
 				{
-					printf("DXT1     %4dx%-4d\n", Width, Height);
+					printf("DXT1     %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
 					TRACE0(" Selected Format: DXT1\n");
 
 					WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_DXT1, NULL);
@@ -566,7 +573,7 @@ void ConvertFiles(const char* Dir, const char* Filename, double MaxMSE)
 				DWORD pal[256];
 				if (ConvertP8(pSrcSurf, pTempSurf, pal))
 				{
-					printf("P8       %4dx%-4d\n", Width, Height);
+					printf("P8       %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
 					TRACE0(" Selected Format: P8\n");
 
 					WriteXPR(OutFilename, info, pTempSurf, XB_D3DFMT_P8, pal);
@@ -590,7 +597,7 @@ void ConvertFiles(const char* Dir, const char* Filename, double MaxMSE)
 				{
 					if (CMSE <= MaxMSE && AMSE[0] <= MaxMSE)
 					{
-						printf("DXT3     %4dx%-4d\n", Width, Height);
+						printf("DXT3     %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
 						TRACE0(" Selected Format: DXT3\n");
 
 						WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_DXT3, NULL);
@@ -601,7 +608,7 @@ void ConvertFiles(const char* Dir, const char* Filename, double MaxMSE)
 				{
 					if (CMSE <= MaxMSE && AMSE[1] <= MaxMSE)
 					{
-						printf("DXT5     %4dx%-4d\n", Width, Height);
+						printf("DXT5     %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
 						TRACE0(" Selected Format: DXT5\n");
 
 						WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_DXT5, NULL);
@@ -618,7 +625,7 @@ void ConvertFiles(const char* Dir, const char* Filename, double MaxMSE)
 				TRACE2("CMSE=%05.2f, AMSE=%07.2f\n", CMSE, AMSE[0]);
 				if (CMSE <= MaxMSE && AMSE[0] <= MaxMSE)
 				{
-					printf("A1R5G5B5 %4dx%-4d\n", Width, Height);
+					printf("A1R5G5B5 %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
 					TRACE0(" Selected Format: A1R5G5B5\n");
 
 					LPDIRECT3DSURFACE8 pTempSurf;
@@ -635,7 +642,7 @@ void ConvertFiles(const char* Dir, const char* Filename, double MaxMSE)
 				}
 
 				// Use A8R8G8B8
-				printf("A8R8G8B8 %4dx%-4d\n", Width, Height);
+				printf("A8R8G8B8 %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
 				TRACE0(" Selected Format: A8R8G8B8\n");
 
 				WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_A8R8G8B8, NULL);
@@ -715,6 +722,10 @@ void ConvertAnims(const char* Dir, const char* Filename, double MaxMSE)
 				XPRFile.AnimInfo->nLoops = Anim.nLoops;
 
 				int nActualImages = 0;
+
+				TotalSrcPixels += info.Width * info.Height * nImages;
+				TotalDstPixels += Width * Height * nImages;
+				float Waste = 100.f * (float)(Width * Height - info.Width * info.Height) / (float)(Width * Height);
 
 				// alloc hash buffer
 				BYTE (*HashBuf)[20] = new BYTE[nImages][20];
@@ -802,7 +813,7 @@ void ConvertAnims(const char* Dir, const char* Filename, double MaxMSE)
 
 				delete [] HashBuf;
 				
-				printf("(%5df) %4dx%-4d\n", nActualImages, Width, Height);
+				printf("(%5df) %4dx%-4d (%5.2f%% waste)\n", nActualImages, Width, Height, Waste);
 
 				CommitXPR(OutFilename);
 			}
@@ -971,8 +982,9 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	printf("\nUncompressed texture size: %6dkB\nCompressed texture size: %8dkB\nBundle size:             %8dkB\n",
-		(UncompressedSize + 1023) / 1024, (((CompressedSize + 1023) / 1024) + 3) & ~3, (BundleSize + 1023) / 1024);
+	printf("\nUncompressed texture size: %6dkB\nCompressed texture size: %8dkB\nBundle size:             %8dkB\n\nWasted Pixels: %u/%u (%5.2f%%)\n",
+		(UncompressedSize + 1023) / 1024, (((CompressedSize + 1023) / 1024) + 3) & ~3, (BundleSize + 1023) / 1024,
+		TotalDstPixels - TotalSrcPixels, TotalDstPixels, 100.f * (float)(TotalDstPixels - TotalSrcPixels) / (float)TotalDstPixels);
 
 	return 0;
 }
