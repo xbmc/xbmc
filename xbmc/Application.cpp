@@ -627,6 +627,9 @@ void CApplication::OnKey(CKey& key)
       if ( IsPlayingAudio() && !IsPlayingVideo())
       {
         m_pPlayer->closefile();
+				//	turn off visualisation window when stopping
+				if (iWin==WINDOW_VISUALISATION)
+					m_gWindowManager.PreviousWindow();
       }
 		  CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
 		  m_gWindowManager.SendThreadMessage( msg );
@@ -1200,9 +1203,13 @@ void CApplication::SpinHD()
       // music stopped.
 			if (m_gWindowManager.GetActiveWindow()==WINDOW_VISUALISATION)
 			{
-				if (g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size() ==0 || bTimeOut)
+				int nPlaylist=g_playlistPlayer.GetCurrentPlaylist();
+				if ((nPlaylist==PLAYLIST_MUSIC || nPlaylist==PLAYLIST_MUSIC_TEMP) || bTimeOut)
 				{
-					m_gWindowManager.ActivateWindow(WINDOW_HOME);//home.
+					if (g_playlistPlayer.GetPlaylist( nPlaylist ).size() ==0 || bTimeOut)
+					{
+						m_gWindowManager.PreviousWindow();
+					}
 				}
 			}
 

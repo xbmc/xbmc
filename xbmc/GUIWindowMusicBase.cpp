@@ -388,8 +388,17 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 				}
 				else if (pItem->m_bIsFolder) //	fill thumb for directory in albumwindow
 				{
-					strThumb="music.jpg";
-					pItem->SetIconImage("music.jpg");
+					CUtil::AddFileToFolder(pItem->m_strPath, "folder.jpg", strThumb);
+					if (CUtil::ThumbExists(strThumb, true))
+					{
+						pItem->SetIconImage(strThumb);
+						pItem->SetThumbnailImage(strThumb);
+					}
+					else
+					{
+						strThumb="music.jpg";
+						pItem->SetIconImage("music.jpg");
+					}
 				}
 				else
 				{
