@@ -246,7 +246,6 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res)
 			res = NTSC_4x3;
 	}
 	bool NeedReset = false;
-  int iOldRefreshRate=m_pd3dParams->FullScreen_RefreshRateInHz;
 	if (m_bFullScreenVideo)
 	{
 		if (m_pd3dParams->FullScreen_PresentationInterval != D3DPRESENT_INTERVAL_ONE)
@@ -287,10 +286,6 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res)
   }
 	if (NeedReset && m_pd3dDevice)
 	{
-    if (iOldRefreshRate != m_pd3dParams->FullScreen_RefreshRateInHz)
-    {
-      Sleep(1000);
-    }
 		m_pd3dDevice->Reset(m_pd3dParams);
 	}
   if (m_pd3dDevice)
