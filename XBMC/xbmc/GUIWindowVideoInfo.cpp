@@ -9,6 +9,7 @@
 #include "picture.h"
 #include "application.h"
 #include "videodatabase.h"
+#include "filesystem/directorycache.h"
 
 #define	CONTROL_TITLE					20
 #define	CONTROL_DIRECTOR			21
@@ -301,6 +302,7 @@ void  CGUIWindowVideoInfo::Render()
 
 void CGUIWindowVideoInfo::Refresh()
 {
+  CUtil::ClearCache();
   try
   {
     OutputDebugString("Refresh\n");
