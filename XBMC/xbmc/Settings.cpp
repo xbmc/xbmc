@@ -241,11 +241,9 @@ void CSettings::Load()
 
   if (g_stSettings.m_szShortcutDirectory[0])
   {
-		const WCHAR* szText;
-    szText=g_localizeStrings.Get(111).c_str();
     CShare share;
     share.strPath=g_stSettings.m_szShortcutDirectory;
-    CUtil::Unicode2Ansi(szText,share.strName);
+    share.strName="shortcuts";
      m_vecMyProgramsBookmarks.push_back(share);
   }
 
