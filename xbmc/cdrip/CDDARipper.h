@@ -10,7 +10,7 @@ class CCDDARipper
 {
 public:
 	CCDDARipper();
-	~CCDDARipper();
+	virtual ~CCDDARipper();
 
 	bool        RipTrack(CFileItem* pItem);
 	bool        RipCD();
