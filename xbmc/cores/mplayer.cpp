@@ -521,26 +521,28 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		}
 		options.SetNoCache(g_stSettings.m_bNoCache);
 
+		bool bSupportsSPDIFOut=(XGetAudioFlags() & (DSSPEAKER_ENABLE_AC3 | DSSPEAKER_ENABLE_DTS)) != 0;
+
 		// shoutcast is always stereo
 		if (CUtil::IsShoutCast(strFile) ) 
 		{
 			options.SetChannels(2);
+			bSupportsSPDIFOut = false;
 		}
 		else 
 		{
 			// if we are using analog output, then we only got 2 stereo output
 			options.SetChannels(0);
-		}
 
-		// if we're using digital out & ac3/dts pass-through is enabled
-		// then try opening file with ac3/dts pass-through 
-		bool bSupportsSPDIFOut=(XGetAudioFlags() & (DSSPEAKER_ENABLE_AC3 | DSSPEAKER_ENABLE_DTS)) != 0;
-		if (g_stSettings.m_bUseDigitalOutput && bSupportsSPDIFOut )
-		{
-			if ( g_stSettings.m_bDDStereoPassThrough || g_stSettings.m_bDD_DTSMultiChannelPassThrough)
+			// if we're using digital out & ac3/dts pass-through is enabled
+			// then try opening file with ac3/dts pass-through 
+			if (g_stSettings.m_bUseDigitalOutput && bSupportsSPDIFOut )
 			{
-				options.SetAC3PassTru(true);
-				options.SetChannels(6);
+				if ( g_stSettings.m_bDDStereoPassThrough || g_stSettings.m_bDD_DTSMultiChannelPassThrough)
+				{
+					options.SetAC3PassTru(true);
+					options.SetChannels(6);
+				}
 			}
 		}
 
