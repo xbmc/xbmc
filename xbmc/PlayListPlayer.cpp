@@ -13,6 +13,8 @@ CPlayListPlayer::CPlayListPlayer(void)
 {
 	m_iCurrentSong=-1;
 	m_bChanged=false;
+	m_iEntriesNotFound=0;
+	m_iCurrentPlayList=PLAYLIST_NONE;
 }
 
 CPlayListPlayer::~CPlayListPlayer(void)
@@ -21,6 +23,7 @@ CPlayListPlayer::~CPlayListPlayer(void)
 	m_PlaylistMusicTemp.Clear();
 	m_PlaylistVideo.Clear();
 	m_PlaylistVideoTemp.Clear();
+	m_PlaylistEmpty.Clear();
 }
 
 bool CPlayListPlayer::OnMessage(CGUIMessage &message)
@@ -29,7 +32,8 @@ bool CPlayListPlayer::OnMessage(CGUIMessage &message)
 	{
 		case GUI_MSG_PLAYBACK_STOPPED:
 		{
-			m_iCurrentSong=-1;
+			Reset();
+			m_iCurrentPlayList=PLAYLIST_NONE;
 		}
 		break;
 	}
@@ -37,16 +41,26 @@ bool CPlayListPlayer::OnMessage(CGUIMessage &message)
 	return true;
 }
 
+/// \brief Play next entry in current playlist
 void CPlayListPlayer::PlayNext(bool bAutoPlay)
 {
+	if (m_iCurrentPlayList==PLAYLIST_NONE)
+		return;
+
 	CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
 	if (playlist.size() <= 0) return;
 	int iSong=m_iCurrentSong;
 	iSong++;
+
 	if (iSong >= playlist.size() )
   {
-    if (m_iCurrentPlayList==PLAYLIST_VIDEO) return;
-    if (m_iCurrentPlayList==PLAYLIST_VIDEO_TEMP) return;
+		//	Is last element of video stacking playlist?
+    if (m_iCurrentPlayList==PLAYLIST_VIDEO_TEMP)
+		{
+			//	Disable playlist playback
+			m_iCurrentPlayList=PLAYLIST_NONE;
+			return;
+		}
 		iSong=0;
   }
 
@@ -61,8 +75,12 @@ void CPlayListPlayer::PlayNext(bool bAutoPlay)
 	Play(iSong);
 }
 
+/// \brief Play previous entry in current playlist
 void CPlayListPlayer::PlayPrevious()
 {
+	if (m_iCurrentPlayList==PLAYLIST_NONE)
+		return;
+
 	CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
 	if (playlist.size() <= 0) return;
 	int iSong=m_iCurrentSong;
@@ -74,8 +92,13 @@ void CPlayListPlayer::PlayPrevious()
 
 }
 
+/// \brief Start playing entry \e iSong in current playlist
+///	\param iSong Song in playlist
 void CPlayListPlayer::Play(int iSong)
 {
+	if (m_iCurrentPlayList==PLAYLIST_NONE)
+		return;
+
 	CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
 	if (playlist.size() <= 0) return;
 	if (iSong < 0) iSong=0;
@@ -91,15 +114,24 @@ void CPlayListPlayer::Play(int iSong)
 		CGUIMessage msg( GUI_MSG_PLAYLIST_PLAY_NEXT_PREV, 0, 0, GetCurrentPlaylist(), 0, (LPVOID)&item );
 		m_gWindowManager.SendThreadMessage( msg );
 	}
-	g_application.PlayFile( item.GetFileName() );	
+	if(!g_application.PlayFile(item.GetFileName()))
+	{
+		//	Count entries in current playlist
+		//	that couldn't be played
+		m_iEntriesNotFound++;
+	}
 }
 
+/// \brief Change the current song in playlistplayer.
+///	\param iSong Song in playlist
 void CPlayListPlayer::SetCurrentSong(int iSong)
 {
 	if (iSong >= -1 && iSong < GetPlaylist(GetCurrentPlaylist()).size() )
 		m_iCurrentSong=iSong;
 }
 
+/// \brief Returns to current song in active playlist.
+///	\return Current song
 int CPlayListPlayer::GetCurrentSong() const
 {
 	return m_iCurrentSong;
@@ -112,19 +144,43 @@ bool CPlayListPlayer::HasChanged()
 	return bResult;
 }
 
+/// \brief Returns the active playlist.
+///	\return Active playlist \n
+///	Return values can be: \n
+///	- PLAYLIST_NONE \n No playlist active
+///	- PLAYLIST_MUSIC \n Playlist from music playlist window 
+///	- PLAYLIST_MUSIC_TEMP \n Playlist started in a normal music window
+///	- PLAYLIST_VIDEO \n Playlist from music playlist window 
+///	- PLAYLIST_VIDEO_TEMP \n Playlist started in a normal video window
 int CPlayListPlayer::GetCurrentPlaylist()
 {
 	return m_iCurrentPlayList;
 }
 
+/// \brief Set active playlist.
+///	\param iPlayList Playlist to set active \n
+///	Values can be: \n
+///	- PLAYLIST_NONE \n No playlist active
+///	- PLAYLIST_MUSIC \n Playlist from music playlist window 
+///	- PLAYLIST_MUSIC_TEMP \n Playlist started in a normal music window
+///	- PLAYLIST_VIDEO \n Playlist from music playlist window 
+///	- PLAYLIST_VIDEO_TEMP \n Playlist started in a normal video window
 void CPlayListPlayer::SetCurrentPlaylist( int iPlayList )
 {
 	if (iPlayList == m_iCurrentPlayList)
 		return;
 	m_iCurrentPlayList=iPlayList;
+	m_iEntriesNotFound=0;
 	m_bChanged=true;
 }
 
+/// \brief Get the playlist object specified in \e nPlayList
+///	\param nPlayList Values can be: \n
+///	- PLAYLIST_MUSIC \n Playlist from music playlist window 
+///	- PLAYLIST_MUSIC_TEMP \n Playlist started in a normal music window
+///	- PLAYLIST_VIDEO \n Playlist from music playlist window 
+///	- PLAYLIST_VIDEO_TEMP \n Playlist started in a normal video window
+///	\return A reference to the CPlayList object.
 CPlayList& CPlayListPlayer::GetPlaylist( int nPlayList)
 {
 	switch ( nPlayList )
@@ -142,11 +198,14 @@ CPlayList& CPlayListPlayer::GetPlaylist( int nPlayList)
 		return m_PlaylistVideoTemp;
 		break;
 	default:
-		return m_PlaylistMusic;
+		m_PlaylistEmpty.Clear();
+		return m_PlaylistEmpty;
 		break;
 	}
 }
 
+/// \brief Removes any item from all playlists located on a removable share
+///	\return Number of items removed from PLAYLIST_MUSIC and PLAYLIST_VIDEO
 int CPlayListPlayer::RemoveDVDItems()
 {
 	int nRemovedM=m_PlaylistMusic.RemoveDVDItems();
@@ -157,13 +216,15 @@ int CPlayListPlayer::RemoveDVDItems()
 	return nRemovedM+nRemovedV;
 }
 
-void CPlayListPlayer::Shuffle()
-{
-	m_PlaylistMusic.Shuffle();
-	m_iCurrentSong=-1;
-}
-
+/// \brief Resets the playlistplayer, but the active playlist stays the same.
 void CPlayListPlayer::Reset()
 {
   m_iCurrentSong=-1;
+	m_iEntriesNotFound=0;
+}
+
+/// \brief Number of playlist entries of the active playlist couldn't be played.
+int CPlayListPlayer::GetEntriesNotFound()
+{
+	return m_iEntriesNotFound;
 }

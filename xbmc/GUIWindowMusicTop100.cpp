@@ -196,6 +196,8 @@ void CGUIWindowMusicTop100::OnClick(int iItem)
 	}
 
 	g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC_TEMP ).Clear();
+	g_playlistPlayer.Reset();
+
 	for ( int i = 0; i < (int) m_vecItems.size(); i++ ) 
 	{
 		CFileItem* pItem = m_vecItems[i];

@@ -6,6 +6,7 @@
 #include "GUIMessage.h"
 #include <vector>
 
+#define PLAYLIST_NONE			 -1
 #define PLAYLIST_MUSIC			0
 #define PLAYLIST_MUSIC_TEMP	1
 #define PLAYLIST_VIDEO			2
@@ -16,6 +17,10 @@ using namespace PLAYLIST;
 
 namespace PLAYLIST
 {
+	/*!
+		\ingroup windows 
+		\brief Manages playlist playing.
+		*/
 	class CPlayListPlayer : public IMsgTargetCallback
 	{
 	public:
@@ -32,9 +37,10 @@ namespace PLAYLIST
 		int					GetCurrentPlaylist();
 		CPlayList&	GetPlaylist( int nPlayList);
 		int					RemoveDVDItems();
-		virtual void Shuffle();
     void        Reset();
+		int					GetEntriesNotFound();
 	protected:
+		int					m_iEntriesNotFound;
 		bool				m_bChanged;
 		int					m_iCurrentSong;
 		int					m_iCurrentPlayList;
@@ -42,8 +48,14 @@ namespace PLAYLIST
 		CPlayList		m_PlaylistMusicTemp;
 		CPlayList		m_PlaylistVideo;
 		CPlayList		m_PlaylistVideoTemp;
+		CPlayList		m_PlaylistEmpty;
 	};
 
 };
+
+/*!
+	\ingroup windows 
+	\brief Global instance of playlist player
+	*/
 extern CPlayListPlayer g_playlistPlayer;
 
