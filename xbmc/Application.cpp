@@ -1238,8 +1238,8 @@ void CApplication::Render()
 #ifdef _DEBUG
 		// in debug mode, show freememory
 		CStdStringW wszText;
-		wszText.Format(L"FreeMem %i/%iMB",stat.dwAvailPhys  /(1024*1024),
-			stat.dwTotalPhys  /(1024*1024)  );
+		wszText.Format(L"FreeMem %d/%d",stat.dwAvailPhys,
+			stat.dwTotalPhys);
 
 		CGUIFont* pFont=g_fontManager.GetFont("font13");
 		if (pFont)
