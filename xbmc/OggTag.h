@@ -18,14 +18,11 @@ namespace MUSIC_INFO {
 		CStdString GetYear() { return m_strYear; }
 		CStdString GetAlbum() { return m_strAlbum; }
 		int GetTrackNum() { return m_nTrackNum; }
+		int GetDuration() { return m_nDuration; }
 		CStdString GetGenre() { return m_strGenre; }
 
 	protected:
-		virtual bool FindVobisTagHeader(void);
-
-		UINT ReadLength(void);
-		char* ReadString( int nLenght );
-		virtual bool ReadBit(void);
+		void ProcessVorbisComment(const char *pBuffer);
 
 		int parseTagEntry(CStdString& strTagEntry);
 		void SplitEntry(const CStdString& strTagEntry, CStdString& strTagType, CStdString& strTagValue);
@@ -36,6 +33,11 @@ namespace MUSIC_INFO {
 		CStdString m_strYear;
 		CStdString m_strAlbum;
 		int m_nTrackNum;
+		int m_nBitrate;
+		int m_nSamplesPerSec;
+		int m_nChannels;
+		__int64 m_nSamples;		// number of samples in file
+		int m_nDuration;		// duration in frames (75th of a second)
 		CStdString m_strGenre;
 
 	};

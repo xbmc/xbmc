@@ -35,9 +35,9 @@ bool CMusicInfoTagLoaderOgg::Load(const CStdString& strFileName, CMusicInfoTag& 
 			CStdString strArtist=myTag.GetArtist();
 			CStdString strAlbum=myTag.GetAlbum();
 			CStdString strGenre=myTag.GetGenre();
-			int nTrackNum=myTag.GetTrackNum();
 
-			tag.SetTrackNumber(nTrackNum);
+			tag.SetTrackNumber(myTag.GetTrackNum());
+			tag.SetDuration(myTag.GetDuration()/75);	// GetDuration() returns duration in frames
 
 			if (!strGenre.IsEmpty())
 			{
