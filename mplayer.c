@@ -91,10 +91,16 @@ void xbmc_update_subs();
 float fFPS=0.0f;
 static int m_iPlaySpeed=1;
 static __int64 iFramesBlitted=0;
-float orgplayback_speed=1.0;
+
 int oggsub_id = -1;
 int oggsub_ids[32];
 int oggsub_count = 0;
+
+float orgplayback_speed=1.0;
+static float ffrw_speed=0;
+static unsigned int ffrw_starttime=0;
+static float ffrw_startpts=0;
+static int ffrw_sstepframes=0;
 
 //override exit_player_with_rc macro :)
 #define exit_player_with_rc(a, b) \
@@ -3060,6 +3066,10 @@ if(time_frame>0.001 && !(vo_flags&256)){
 		voldpts=v_pts;
 		fFPS=0.0f;
 	}
+  else if (v_pts < voldpts)
+  {
+    voldpts=v_pts;
+  }
 #else
         if(!quiet)
           print_status(a_pts - audio_delay - delay, AV_delay, c_total);
@@ -3161,12 +3171,35 @@ if(auto_quality>0){
   }
 
 #ifdef _XBOX
+
   //We use step_sec in our FF/RW code
-  if(step_sec)
+  //We let it display two frames a second
+  if(ffrw_speed<0.0f)
   {
-    osd_function = step_sec > 0 ? OSD_FFW : OSD_REW;
-    rel_seek_secs+=step_sec;
+    osd_function = ffrw_sstep > 0 ? OSD_FFW : OSD_REW;
+    if(ffrw_sstepframes <= 0)
+    {
+      int newpts = (GetTimerMS() - ffrw_starttime)*ffrw_speed / 1000.0f + ffrw_startpts;
+      abs_seek_pos=1;
+      rel_seek_secs= (float)(newpts) + ffrw_speed/4.0f;
+      ffrw_sstepframes=2;
+      playback_speed=4/sh_video->fps; //Take it slow
+    }
+    else
+    {
+      ffrw_sstepframes--;
+      playback_speed=100; //full speed ahead
+    }
   }
+  else if(ffrw_speed>0.0f)
+  {
+    //If we diff more than 4 seconds from where we are supposed to be, adjust to correct pos.
+    int newpts = (GetTimerMS() - ffrw_starttime)*ffrw_speed/ 1000.0f + ffrw_startpts;
+    if( (newpts - voldpts) > 2.0f )
+        rel_seek_secs+= (newpts - voldpts) + ffrw_speed/2.0f; //Give it an headstart
+
+  }
+
 #else
   // handle -sstep
 if(step_sec>0) {
@@ -4964,15 +4997,19 @@ void mplayer_ToFFRW(int iSpeed)
   }
 
   //For video
-  if (iSpeed ==1)
+  if (iSpeed == 1)
   {
-      frame_dropping=1;
-      playback_speed = orgplayback_speed;
-      step_sec       = 0;
+      ffrw_startpts=0;
+      ffrw_starttime=0;
+      ffrw_sstep = 0;
+      ffrw_sstepframes = 0;
+      ffrw_speed=0;
+
       rel_seek_secs  = 0.1;  //to resync audio/video
       abs_seek_pos   = 0;
-      if(sh_video)
-        osd_function=OSD_PLAY;
+      osd_function=OSD_PLAY;
+
+      playback_speed = orgplayback_speed;
 
       printf("FFRW:normal play\n");
 
@@ -4981,39 +5018,36 @@ void mplayer_ToFFRW(int iSpeed)
 
       return;
   }
-
-  if (iSpeed >=1 && iSpeed <= 4) //Can be handled by normal speedup code
+  else if (iSpeed > 1) //Can be handled by normal speedup code
   {
-      frame_dropping=1;
-      playback_speed = orgplayback_speed*( (float)iSpeed );
+      ffrw_startpts=voldpts;
+      ffrw_starttime=GetTimerMS();
+      ffrw_sstepframes = 0;
 
       abs_seek_pos   = 0;
       rel_seek_secs  = 0; 
-      step_sec       = 0;
       osd_function   = OSD_FFW;
+
+      playback_speed = iSpeed;
+      ffrw_speed=playback_speed;
 
       printf("FF: speed:%i playspeed:%03.3f", iSpeed,playback_speed);
       return;
   }
-  else if (iSpeed >4)
-  {
-      printf("FF:play FF:%ix\n",iSpeed);
-      frame_dropping=0;
-      abs_seek_pos   = 0;
-      osd_function   = OSD_FFW;
-      step_sec       = iSpeed/2; //Start skipping nummer of seconds ahead each time.
-      playback_speed = 2/sh_video->fps; //adjust speed to show 2 frames per second
-
-      printf("FF: step_sec:%i playspeed:%03.3f", iSpeed,playback_speed);
-      return;
-  }
   else if (iSpeed < 0)
   {
-      printf("RW:play RW:%ix\n",iSpeed);
-      frame_dropping=0;
+      ffrw_startpts=voldpts;
+      ffrw_starttime=GetTimerMS();
+      ffrw_sstepframes = 0;
+
       abs_seek_pos   = 0;
-      step_sec       = iSpeed; //Start skipping
-      playback_speed = 1/sh_video->fps; //adjust speed accordingly
+      rel_seek_secs  = 0; 
+      osd_function   = OSD_REW;
+
+      playback_speed = 100; //Play att full speed, and let ffrw code keep sync
+      ffrw_speed = iSpeed;
+
+      printf("RW:play RW:%ix\n",iSpeed);
       return;
   }
 }

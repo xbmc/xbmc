@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 10-02-2005 improved: ff/rw should now work even better. needs testing. 
   - 07-02-2005 fixed: seeking in mpg's type video's sometimes reverted to beginning.
   - 01-02-2005 fixed: flac playback works sometimes but most times not
   - 01-02-2005 added: mplayer support for new system\players directory structure, enable Alternate mplayer core in settings to use it.
