@@ -20,10 +20,18 @@ CGUIWindowScriptsInfo::~CGUIWindowScriptsInfo(void)
 void CGUIWindowScriptsInfo::OnAction(const CAction &action)
 {
 	if (action.wID == ACTION_PREVIOUS_MENU)
-    {
+	{
 		Close();
 		return;
-    }
+	}
+	if (action.wID == ACTION_SHOW_INFO)
+	{
+		// erase debug screen
+		strInfo="";
+		CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),CONTROL_TEXTAREA);
+		msg.SetLabel(strInfo);
+		OnMessage(msg);
+	}
 	CGUIWindow::OnAction(action);
 }
 
