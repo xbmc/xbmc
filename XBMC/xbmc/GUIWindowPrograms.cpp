@@ -385,9 +385,6 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 		bOnlyOnePath=false;
 	
 	CUtil::Tokenize(strDir, pathArray, ",");
-	CLog::Log("bOnlyOnePath=true");
-	CLog::Log("strDir: %s", strDir.c_str());
-	CLog::Log("pathArray[0]: %s", pathArray[0].c_str());
 
     //CStdString strShortCutsDir = "Q:\\shortcuts";
 	CStdString strShortCutsDir = g_stSettings.m_szShortcutDirectory;

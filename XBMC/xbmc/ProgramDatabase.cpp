@@ -379,7 +379,6 @@ void CProgramDatabase::GetProgramsByBookmark(CStdString& strBookmark, VECFILEITE
 			strPathandFile.Replace("/","\\");
 			if (CUtil::FileExists(strPathandFile))
 			{
-				CLog::Log("strPathandFile: %s", strPathandFile.c_str());
 				CFileItem *pItem = new CFileItem(m_pDS->fv("files.xbedescription").get_asString());
 				pItem->m_strPath=strPathandFile;
 				pItem->m_bIsFolder=false;
