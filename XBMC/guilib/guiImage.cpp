@@ -47,13 +47,13 @@ void CGUIImage::Render(DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight
 		D3DSURFACE_DESC desc;
 		m_vecTextures[m_iCurrentImage]->GetLevelDesc(0,&desc);
 
-		m_iImageWidth = desc.Width/m_dwItems;
+		m_iImageWidth = desc.Width;
 		m_iImageHeight = desc.Height;
 	}
 
 	if (0==m_iTextureWidth|| 0==m_iTextureHeight)
 	{
-		m_iTextureWidth  = m_iImageWidth;
+		m_iTextureWidth  = m_iImageWidth/m_dwItems;
 		m_iTextureHeight = m_iImageHeight;
 
     if (m_iTextureHeight > (int)g_graphicsContext.GetHeight() )
@@ -100,24 +100,25 @@ void CGUIImage::Render(DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight
 //  vertex[3].tu = (float)iXOffset;
 //  vertex[3].tv = (float)m_iTextureHeight;
 
-	float u = float(m_iTextureWidth) / m_iImageWidth;
-	float v = float(m_iTextureHeight) / m_iImageHeight;
+	float uoffs = float(m_iBitmap * m_dwWidth) / float(m_iImageWidth);
+	float u = float(m_iTextureWidth) / float(m_iImageWidth);
+	float v = float(m_iTextureHeight) / float(m_iImageHeight);
 
 	vertex[0].p = D3DXVECTOR4( x - 0.5f,	y - 0.5f,		0, 0 );
-	vertex[0].tu = (float)m_iBitmap;
+	vertex[0].tu = uoffs;
 	vertex[0].tv = 0;
 
 	vertex[1].p = D3DXVECTOR4( x+nw - 0.5f,	y - 0.5f,		0, 0 );
-	vertex[1].tu = (float)m_iBitmap+u;
+	vertex[1].tu = uoffs+u;
 	vertex[1].tv = 0;
 
 	vertex[2].p = D3DXVECTOR4( x+nw - 0.5f,	y+nh - 0.5f,	0, 0 );
-	vertex[2].tu = (float)m_iBitmap+u;
-	vertex[2].tv = (float)v;
+	vertex[2].tu = uoffs+u;
+	vertex[2].tv = v;
 
 	vertex[3].p = D3DXVECTOR4( x - 0.5f,	y+nh - 0.5f,	0, 0 );
-	vertex[3].tu = (float)m_iBitmap;
-	vertex[3].tv = (float)v;
+	vertex[3].tu = uoffs;
+	vertex[3].tv = v;
 
  
   vertex[0].col = m_colDiffuse;
@@ -237,13 +238,13 @@ void CGUIImage::Update()
 		D3DSURFACE_DESC desc;
 		m_vecTextures[m_iCurrentImage]->GetLevelDesc(0,&desc);
 
-		m_iImageWidth = desc.Width/m_dwItems;
+		m_iImageWidth = desc.Width;
 		m_iImageHeight = desc.Height;
 	}
 
   if (0==m_iTextureWidth|| 0==m_iTextureHeight)
   {
-	  m_iTextureWidth  = m_iImageWidth;
+	  m_iTextureWidth  = m_iImageWidth/m_dwItems;
 		m_iTextureHeight = m_iImageHeight;
 
     if (m_iTextureHeight > (int)g_graphicsContext.GetHeight() )
@@ -319,24 +320,25 @@ void CGUIImage::Update()
 //  vertex[3].tu = (float)iXOffset;
 //  vertex[3].tv = (float)m_iTextureHeight;
 
+	float uoffs = float(m_iBitmap * m_dwWidth) / float(m_iImageWidth);
 	float u = float(m_iTextureWidth) / float(m_iImageWidth);
 	float v = float(m_iTextureHeight) / float(m_iImageHeight);
 
 	vertex[0].p = D3DXVECTOR4( x - 0.5f,	y - 0.5f,		0, 0 );
-	vertex[0].tu = (float)m_iBitmap;
+	vertex[0].tu = uoffs;
 	vertex[0].tv = 0;
 	
 	vertex[1].p = D3DXVECTOR4( x+nw - 0.5f,	y - 0.5f,		0, 0 );
-	vertex[1].tu = (float)m_iBitmap+u;
+	vertex[1].tu = uoffs+u;
 	vertex[1].tv = 0;
 	
 	vertex[2].p = D3DXVECTOR4( x+nw - 0.5f,	y+nh - 0.5f,	0, 0 );
-	vertex[2].tu = (float)m_iBitmap+u;
-	vertex[2].tv = (float)v;
+	vertex[2].tu = uoffs+u;
+	vertex[2].tv = v;
 	
 	vertex[3].p = D3DXVECTOR4( x - 0.5f,	y+nh - 0.5f,	0, 0 );
-	vertex[3].tu = (float)m_iBitmap;
-	vertex[3].tv = (float)v;
+	vertex[3].tu = uoffs;
+	vertex[3].tv = v;
 
  
   vertex[0].col = m_colDiffuse;
