@@ -318,7 +318,11 @@ typedef struct _SCSI_PASS_THROUGH_DIRECT
  * win32 aspi specific
  *****************************************************************************/
 
+#ifdef _XBOX
+#define WIN2K               1
+#else
 #define WIN2K               ( GetVersion() < 0x80000000 )
+#endif
 #define ASPI_HAID           0
 #define ASPI_TARGET         0
 #define DTYPE_CDROM         0x05
