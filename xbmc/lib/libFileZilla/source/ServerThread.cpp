@@ -93,7 +93,8 @@ BOOL CServerThread::InitInstance()
 		m_pExternalIpCheck = new CExternalIpCheck(this);
 	m_threadsync.Unlock();
 
-	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL);
+// this causes ftp 2 hangup
+//	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL);
 
 	return TRUE;
 }
