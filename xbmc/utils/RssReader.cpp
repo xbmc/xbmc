@@ -6,6 +6,7 @@
 #include "graphicContext.h"
 #include "RssReader.h"
 #include "Http.h"
+#include "../utils/HTMLUtil.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -120,31 +121,10 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode)
 
 			if (strName.Equals("title"))
 			{
-				CStdString title = childNode->FirstChild()->Value();		
-
-				// convert strings like "&#237;" 
-				CStdString strValue;
-				int iStart = title.Find("&#");
-				int iEnd = 0;
-				while (iStart > 0)
-				{
-					// get string end
-					iEnd = title.Find(";", iStart);
-
-					// convert
-					long lValue;
-					if (title[iStart + 2] != 'x') //decimal
-						lValue = strtol(title.substr(iStart + 2, iEnd - iStart - 2).c_str(), NULL, 10);
-					else //hex
-						lValue = strtol(title.substr(iStart + 3, iEnd - iStart - 3).c_str(), NULL, 16);
-
-					strValue = (char)(lValue & 0xFF);
-
-					// replace value with new character
-					title = title.erase(iStart, iEnd).insert(iStart, strValue);
-
-					iStart =title.Find("&#");
-				}
+				// convert html characters in title to ansi characters
+				string title;
+				HTML::CHTMLUtil html;
+				html.ConvertHTMLToAnsi(childNode->FirstChild()->Value(), title);
 
 				AddString(title, RSS_COLOR_HEADLINE);
 				title = " - ";
