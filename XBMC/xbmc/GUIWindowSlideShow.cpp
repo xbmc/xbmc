@@ -49,8 +49,8 @@ void CGUIWindowSlideShow::Reset()
  
 	m_iRotate=0;
 	m_iZoomFactor=1;
-	m_iPosX=0;
-	m_iPosY=0;
+	m_iZoomLeft=0;
+	m_iZoomTop=0;
 	m_dwFrameCounter=0;
 	m_iCurrentSlide=-1;
 	m_strBackgroundSlide="";
@@ -97,8 +97,8 @@ IDirect3DTexture8* CGUIWindowSlideShow::GetNextSlide(DWORD& dwWidth, DWORD& dwHe
 	}
 	m_iRotate=0;
 	m_iZoomFactor=1;
-	m_iPosX=0;
-	m_iPosY=0;
+	m_iZoomLeft=0;
+	m_iZoomTop=0;
 
 	strSlide=m_vecSlides[m_iCurrentSlide];
 	CPicture picture;
@@ -120,8 +120,8 @@ IDirect3DTexture8* CGUIWindowSlideShow::GetPreviousSlide(DWORD& dwWidth, DWORD& 
 	}
 	m_iRotate=0;
 	m_iZoomFactor=1;
-	m_iPosX=0;
-	m_iPosY=0;
+	m_iZoomLeft=0;
+	m_iZoomTop=0;
 
 	strSlide=m_vecSlides[m_iCurrentSlide];
 	CPicture picture;
@@ -232,15 +232,15 @@ void CGUIWindowSlideShow::Render()
 	int x,y,width,height;
 	GetOutputRect(m_dwWidthBackGround, m_dwHeightBackGround, x, y, width, height);
 	RECT source;
-	source.left=0;
-	source.top=0;
-	source.right=m_dwWidthBackGround;
-	source.bottom=m_dwHeightBackGround;
+	source.left=m_iZoomLeft;
+	source.top=m_iZoomTop;
+	source.right=source.left + m_iZoomWidth;
+	source.bottom=source.top + m_iZoomHeight;
 	RECT dest;
-	dest.left=x+m_iPosX;
-	dest.top=y+m_iPosY;
-	dest.right=dest.left+width*m_iZoomFactor;
-	dest.bottom=dest.top+height*m_iZoomFactor;
+	dest.left=x;
+	dest.top=y;
+	dest.right=dest.left+width;
+	dest.bottom=dest.top+height;
 	g_graphicsContext.Get3DDevice()->UpdateOverlay(m_pSurfaceBackGround, &source, &dest, true, 0x00010001);
 
 	if (m_pTextureCurrent) 
@@ -320,7 +320,7 @@ void CGUIWindowSlideShow::Render()
 			OnMessage(msg);
 		}
 		CStdString strZoomInfo;
-		strZoomInfo.Format("%ix (%i,%i)", m_iZoomFactor, m_iPosX, m_iPosY);
+		strZoomInfo.Format("%ix (%i,%i)", m_iZoomFactor, m_iZoomLeft, m_iZoomTop);
 		{
 			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2_EXTRA); 
 			msg.SetLabel(strZoomInfo); 
@@ -568,24 +568,26 @@ void CGUIWindowSlideShow::OnAction(const CAction &action)
 				ShowPrevious();
 		break;
 		case ACTION_MOVE_RIGHT:
-			if (m_iZoomFactor!=1)
-				m_iPosX-=25;
+			if (m_iZoomFactor!=1) m_iZoomLeft+=25;
+			if (m_iZoomLeft > (int)m_dwWidthBackGround - m_iZoomWidth) m_iZoomLeft = m_dwWidthBackGround - m_iZoomWidth;
 			m_lSlideTime=timeGetTime();
 		break;
       
 		case ACTION_MOVE_LEFT:
-			if (m_iZoomFactor!=1)
-				m_iPosX += 25;
+			if (m_iZoomFactor!=1) m_iZoomLeft-=25;
+			if (m_iZoomLeft < 0) m_iZoomLeft = 0;
 			m_lSlideTime=timeGetTime();
 		break;
 
 		case ACTION_MOVE_DOWN:
-			if (m_iZoomFactor > 1 ) m_iPosY-=25;
+			if (m_iZoomFactor > 1 ) m_iZoomTop+=25;
+			if (m_iZoomTop > (int)m_dwHeightBackGround - m_iZoomHeight) m_iZoomTop = m_dwHeightBackGround - m_iZoomHeight;
 			m_lSlideTime=timeGetTime();
 		break;
 
 		case ACTION_MOVE_UP:
-			if (m_iZoomFactor > 1 ) m_iPosY += 25;
+			if (m_iZoomFactor > 1 ) m_iZoomTop-=25;
+			if (m_iZoomTop < 0) m_iZoomTop = 0;
 			m_lSlideTime=timeGetTime();
 		break;
 
@@ -642,8 +644,12 @@ void CGUIWindowSlideShow::OnAction(const CAction &action)
 			{
 				if (m_iZoomFactor>1)
 				{
-					m_iPosX -= (int)fX;
-					m_iPosY += (int)fY;
+					m_iZoomLeft += (int)fX;
+					m_iZoomTop -= (int)fY;
+					if (m_iZoomTop < 0) m_iZoomTop = 0;
+					if (m_iZoomLeft < 0) m_iZoomLeft = 0;
+					if (m_iZoomTop > (int)m_dwHeightBackGround - m_iZoomHeight) m_iZoomTop = m_dwHeightBackGround - m_iZoomHeight;
+					if (m_iZoomLeft > (int)m_dwWidthBackGround - m_iZoomWidth) m_iZoomLeft = m_dwWidthBackGround - m_iZoomWidth;
 				}
 			}
 			m_lSlideTime=timeGetTime();
@@ -684,18 +690,18 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 
 void CGUIWindowSlideShow::RenderPause()
 {
-  static DWORD dwCounter=0;
-  dwCounter++;
-  if (dwCounter > 25)
-  {
-    dwCounter=0;
-  }
-  if (!m_bPause) return;
-  if (dwCounter <13) return;
+	static DWORD dwCounter=0;
+	dwCounter++;
+	if (dwCounter > 25)
+	{
+		dwCounter=0;
+	}
+	if (!m_bPause) return;
+	if (dwCounter <13) return;
 	CGUIFont* pFont=g_fontManager.GetFont("font13");
-  const WCHAR *szText;
+	const WCHAR *szText;
 	szText=g_localizeStrings.Get(112).c_str();
-  pFont->DrawShadowText(500.0,60.0,0xff000000,szText);
+	pFont->DrawShadowText(500.0,60.0,0xff000000,szText);
 }
 
 void CGUIWindowSlideShow::DoRotate()
@@ -708,7 +714,7 @@ void CGUIWindowSlideShow::DoRotate()
 	m_dwWidthBackGround=picture.GetWidth();
 	m_dwHeightBackGround=picture.GetHeight();
 	m_iZoomFactor=1;
-	m_iPosX=m_iPosY=0;
+	m_iZoomLeft=m_iZoomTop=0;
 	m_lSlideTime=timeGetTime();
 }
 
@@ -730,6 +736,25 @@ void CGUIWindowSlideShow::GetOutputRect(const int iSourceWidth, const int iSourc
 		height = iScreenHeight;
 		width = (int)(height * fOutputFrameAR);
 	}
+	m_iZoomWidth=iSourceWidth;
+	m_iZoomHeight=iSourceHeight;
+	// recalculate in case we're zooming
+	if (m_iZoomFactor != 1)
+	{
+		float fScaleWidthFactor = (float)width/iSourceWidth;
+		float fScaleHeightFactor = (float)height/iSourceHeight;
+		if (width*m_iZoomFactor<iScreenWidth)
+			width*=m_iZoomFactor;
+		else
+			width=iScreenWidth;
+		if (height*m_iZoomFactor<iScreenHeight)
+			height*=m_iZoomFactor;
+		else
+			height=iScreenHeight;
+		// OK, height and width are as required - now alter our source rectangle
+		m_iZoomWidth = (int)(width/(m_iZoomFactor*fScaleWidthFactor));
+		m_iZoomHeight = (int)(height/(m_iZoomFactor*fScaleHeightFactor));
+	}
 	x = (g_settings.m_ResInfo[iRes].Overscan.width - width)/2 + iOffsetX1;
 	y = (g_settings.m_ResInfo[iRes].Overscan.height - height)/2 + iOffsetY1;
 }
@@ -740,19 +765,24 @@ void CGUIWindowSlideShow::Zoom(int iZoom)
 		return;
 	int x,y,width,height;
 	GetOutputRect(m_dwWidthBackGround,m_dwHeightBackGround,x,y,width,height);
-	m_iPosX =-m_iPosX ;
-	m_iPosY =-m_iPosY;
-	float middlex = ((float)( m_iPosX+width/2 )) / ((float)m_iZoomFactor);
-	float middley = ((float)( m_iPosY+height/2)) / ((float)m_iZoomFactor);
+	float middlex = m_iZoomLeft + m_iZoomWidth*0.5f;
+	float middley = m_iZoomTop + m_iZoomHeight*0.5f;
 	m_iZoomFactor = iZoom;
 	if (m_iZoomFactor == 1)
 	{
-		m_iPosX=0;
-		m_iPosY=0;
+		m_iZoomLeft=0;
+		m_iZoomTop=0;
+		m_iZoomWidth=m_dwWidthBackGround;
+		m_iZoomHeight=m_dwHeightBackGround;
 	}
 	else
 	{
-		m_iPosX=-(int) ( middlex*((float)m_iZoomFactor) ) +width/2;
-		m_iPosY=-(int) ( middley*((float)m_iZoomFactor) )	+height/2;
+		GetOutputRect(m_dwWidthBackGround,m_dwHeightBackGround,x,y,width,height);
+		m_iZoomLeft = (int)(middlex - m_iZoomWidth*0.5f);
+		m_iZoomTop = (int)(middley - m_iZoomHeight*0.5f);
+		if (m_iZoomLeft < 0) m_iZoomLeft = 0;
+		if (m_iZoomTop < 0) m_iZoomTop = 0;
+		if (m_iZoomLeft > (int)m_dwWidthBackGround-m_iZoomWidth) m_iZoomLeft = m_dwWidthBackGround-m_iZoomWidth;
+		if (m_iZoomTop > (int)m_dwHeightBackGround-m_iZoomHeight) m_iZoomTop = m_dwHeightBackGround-m_iZoomHeight;
 	}
 }
