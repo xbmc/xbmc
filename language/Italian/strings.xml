@@ -523,6 +523,7 @@
   <string><id>758</id><value>Rimuovo Collegamento</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Gioco Online</value></string>
+  <string><id>1000</id><value>Anteprima Screensaver</value></string>
 
   <string><id>1396</id><value>Mutevole</value></string>
   <string><id>1397</id><value>e</value></string>
@@ -730,6 +731,23 @@
   <string><id>13356</id><value>Overlays Hardware</value></string>
   <string><id>13357</id><value>Pixel Shader Alta Qualità</value></string>
   <string><id>13360</id><value>Crea Icone Automaticamente</value></string>
+  <string><id>13361</id><value>Attiva Voce</value></string>
+  <string><id>13362</id><value>Mascheramento Voce</value></string>
+  <string><id>13363</id><value>- Attiva Peso Energia Spettro</value></string>
+  <string><id>13364</id><value>-- Valore Peso Energia Spettro</value></string>
+  <string><id>13365</id><value>- Attiva Picco Scalare</value></string>
+  <string><id>13366</id><value>-- Valore Picco Scalare</value></string>
+  <string><id>13367</id><value>- Attiva Fattore Sussurro</value></string>
+  <string><id>13368</id><value>-- Valore Fattore Sussurro</value></string>
+  <string><id>13369</id><value>- Attiva Fattore Robotico</value></string>
+  <string><id>13370</id><value>-- Valore Fattore Robotico</value></string>
+  <string><id>13371</id><value>- Porta 0 Voce</value></string>
+  <string><id>13372</id><value>- Porta 1 Voce</value></string>
+  <string><id>13373</id><value>- Porta 2 Voce</value></string>
+  <string><id>13374</id><value>- Porta 3 Voce</value></string>
+  <string><id>13375</id><value>Attiva Dispositivo</value></string>
+  <string><id>13376</id><value>Volume(%)</value></string>
+
 
   <string><id>14000</id><value>Unisci: Spento</value></string>
   <string><id>14001</id><value>Unisci: Semplice</value></string>
