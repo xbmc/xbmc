@@ -1,7 +1,7 @@
 #pragma once
 
 #include "tinyxml/tinyxml.h"
-#define CONFIG_VERSION 0x000A
+#define CONFIG_VERSION 0x000B
 
 #include <xtl.h>
 #include "stdstring.h"
@@ -105,7 +105,13 @@ public:
 		bool			m_bMyMusicGenresRootViewAsIcons;
 		bool			m_bMyMusicGenresViewAsIcons;
 		bool			m_bMyMusicPlaylistViewAsIcons;
-	  int				m_bMyMusicSortMethod;
+		bool			m_bMyMusicTop100ViewAsIcons;
+		int				m_bMyMusicSortMethod;
+	  int				m_bMyMusicSortAlbumsMethod;
+	  int				m_bMyMusicSortTracksMethod;
+	  int				m_bMyMusicSortArtistsMethod;
+	  int				m_bMyMusicSortGenresMethod;
+	  int				m_bMyMusicSortSongsMethod;
 	  bool			m_bMyMusicSortAscending;
 		int				m_iMyMusicViewMethod;
 

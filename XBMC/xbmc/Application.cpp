@@ -807,7 +807,7 @@ void CApplication::SpinHD()
 			// music stopped.
 			if (m_gWindowManager.GetActiveWindow()==2006)
 			{
-				if (g_playlistPlayer.size() ==0 || bTimeOut)
+				if (g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size() ==0 || bTimeOut)
 				{
 					m_gWindowManager.ActivateWindow(WINDOW_HOME);//home.
 				}
@@ -845,6 +845,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 					m_gWindowManager.SendMessage( msg );
 				}
 		}
+		break;
 
 		case GUI_MSG_PLAYBACK_ENDED:
 		{
@@ -853,6 +854,31 @@ bool CApplication::OnMessage(CGUIMessage& message)
 			if (m_pPlayer) 
 			{
 				g_playlistPlayer.PlayNext(true);
+			}
+		}
+		break;
+
+		case GUI_MSG_PLAYLIST_PLAY_NEXT_PREV:
+		{
+			if (message.GetParam1()==PLAYLIST_MUSIC || message.GetParam1()==PLAYLIST_MUSIC_TEMP)
+			{
+				CPlayList::CPlayListItem* item=(CPlayList::CPlayListItem*)message.GetLPVOID();
+
+				//	only Increment Top 100 Counter, if we have not clicked from inside the Top 100 view
+				if (g_stSettings.m_iMyMusicViewMethod==4 //=TYPE_TOP100
+						&& m_gWindowManager.GetActiveWindow()==WINDOW_MUSIC)
+				{
+					break;
+				}
+				else
+				{
+					CMusicDatabase db;
+					if (db.Open())
+					{
+						db.IncrTop100CounterByFileName(item->GetFileName());
+						db.Close();
+					}
+				}
 			}
 		}
 		break;

@@ -9,6 +9,12 @@ struct CSettings::stSettings g_stSettings;
 
 CSettings::CSettings(void)
 {
+	g_stSettings.m_bMyMusicTop100ViewAsIcons=false;
+	g_stSettings.m_bMyMusicSortAlbumsMethod=7;	//	Album
+	g_stSettings.m_bMyMusicSortTracksMethod=3;	//	Tracknum
+	g_stSettings.m_bMyMusicSortArtistsMethod=0;	//	Name
+	g_stSettings.m_bMyMusicSortGenresMethod=0;	//	Name
+	g_stSettings.m_bMyMusicSortSongsMethod=5;	//	Title
 	memset(m_movieCalibration,0, sizeof(m_movieCalibration));
 	g_stSettings.m_bAudioOnAllSpeakers=false;
 	g_stSettings.m_iChannels=2;
