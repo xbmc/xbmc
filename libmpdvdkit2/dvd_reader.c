@@ -482,32 +482,17 @@ static dvd_file_t *DVDOpenFileUDF( dvd_reader_t *dvd, char *filename )
 static int findDirFile( const char *path, const char *file, char *filename ) 
 {
 #ifdef _XBOX
-  int ifd;
-  char *pvideots=strstr(path,"/VIDEO_TS/");
-  if (pvideots)
-  {
-    strcpy(filename, path);
-    if (path[1] == ':') //share from hd or dvd
-    {
-      filename[2] = '\\';
-      filename[11] = '\\';
-    }
-		sprintf(filename,"%s%s", filename, file);
-  }
-  else
-  {
-    sprintf(filename,"%s\\%s", path,file);
-  }
-  printf("FindDirFile %s", filename);
-  ifd=open(filename,O_BINARY);
-  if (ifd>=0)
-  {
-    printf(" found");
-    close(ifd);
-    return 0;
-  }
-    strcpy(filename,"");
-    printf("not found");
+
+	if(path[strlen(path)-1]=='\\' || path[strlen(path)-1]=='/')
+		sprintf(filename, "%s%s", path, file);
+	else
+		sprintf(filename, "%s/%s", path, file);
+
+	struct stat fileinfo;
+
+	if(stat(filename, &fileinfo)==0)
+		return 0;
+
 #else
     DIR *dir;
     struct dirent *ent;
