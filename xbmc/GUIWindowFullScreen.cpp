@@ -213,13 +213,13 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 
 		case ACTION_SHOW_OSD:	// Show the OSD
     {	
-      CSingleLock lock(m_section);      
+      //CSingleLock lock(m_section);      
       OutputDebugString("CGUIWindowFullScreen:SHOWOSD\n");
       m_dwOSDTimeOut=timeGetTime();
-      m_bOSDVisible=true;
+      
 	    CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,0,0,NULL);
 	    g_application.m_guiWindowOSD.OnMessage(msg);	// Send an init msg to the OSD
-
+      m_bOSDVisible=true;
       
     }
     break;
