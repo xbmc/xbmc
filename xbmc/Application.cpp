@@ -1293,9 +1293,9 @@ void CApplication::UpdateLCD()
 				strTime.Format("%02.2i:%02.2i",mm,ss);
 			}
 			if (m_iPlaySpeed < 1) 
-				strIcon.Format("\3RW:%ix", m_iPlaySpeed);
+				strIcon.Format("\3 %ix", m_iPlaySpeed);
 			else if (m_iPlaySpeed > 1) 
-				strIcon.Format("\4FF:%ix", m_iPlaySpeed);
+				strIcon.Format("\4 %ix", m_iPlaySpeed);
 			else if (m_pPlayer->IsPaused())
 				strIcon.Format("\7");
 			else
@@ -1346,9 +1346,9 @@ void CApplication::UpdateLCD()
 				strTime.Format("%02.2i:%02.2i",mm,ss);
 			}
 			if (m_iPlaySpeed < 1) 
-				strIcon.Format("\3RW:%ix", m_iPlaySpeed);
+				strIcon.Format("\3:%ix", m_iPlaySpeed);
 			else if (m_iPlaySpeed > 1) 
-				strIcon.Format("\4FF:%ix", m_iPlaySpeed);
+				strIcon.Format("\4:%ix", m_iPlaySpeed);
 			else if (m_pPlayer->IsPaused())
 				strIcon.Format("\7");
 			else
@@ -1423,7 +1423,7 @@ void CApplication::UpdateLCD()
 				{
 					CStdString strLine;
 					wstring wstrLine;
-					wstrLine=g_localizeStrings.Get(10000+iWin);
+					wstrLine=g_localizeStrings.Get(iWin - 10003);
 					CUtil::Unicode2Ansi(wstrLine,strLine);
 					g_lcd->SetLine(0,strLine);
 
@@ -1449,6 +1449,12 @@ void CApplication::UpdateLCD()
 						{
 							CGUIThumbnailPanel* pThumbControl = (CGUIThumbnailPanel*)pControl;
 							pThumbControl->GetSelectedItem(strTmp);
+							g_lcd->SetLine(1,strTmp);
+						}
+						else if (pControl->GetControlType() == CGUIControl::GUICONTROL_LIST)
+						{
+							CGUIListControl* pListControl = (CGUIListControl*)pControl;
+							pListControl->GetSelectedItem(strTmp);
 							g_lcd->SetLine(1,strTmp);
 						}
 					}
