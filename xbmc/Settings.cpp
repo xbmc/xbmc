@@ -391,6 +391,9 @@ CSettings::CSettings(void)
 	g_stSettings.m_bShowFreeMem=false;
 
 	g_stSettings.m_iMusicOSDTimeout=5;
+
+	g_stSettings.m_bSlideShowShuffle = false;
+
   m_iLastLoadedProfileIndex = -1;
 
 	xbmcXmlLoaded = false;
@@ -1284,6 +1287,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetFloat(pElement, "moveamount", g_stSettings.m_fSlideShowMoveAmount,0.20f,0,0.5f);
 		GetFloat(pElement, "zoomamount", g_stSettings.m_fSlideShowZoomAmount,0.07f,0,0.5f);
 		GetFloat(pElement, "blackbarcompensation", g_stSettings.m_fSlideShowBlackBarCompensation,0.3f,0,0.5f);
+		GetBoolean(pElement, "shuffle", g_stSettings.m_bSlideShowShuffle);
 	}
 	// screen settings
 	pElement = pRootElement->FirstChildElement("screen");
@@ -1701,6 +1705,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	SetFloat(pNode, "moveamount", g_stSettings.m_fSlideShowMoveAmount);
 	SetFloat(pNode, "zoomamount", g_stSettings.m_fSlideShowZoomAmount);
 	SetFloat(pNode, "blackbarcompensation", g_stSettings.m_fSlideShowBlackBarCompensation);
+	SetBoolean(pNode, "shuffle", g_stSettings.m_bSlideShowShuffle);
 
 	// screen settings
 	TiXmlElement screenNode("screen");

@@ -95,6 +95,7 @@ public:
 	const wstring&				GetSuffix() const { return m_strSuffix;};
 	const CStdString			GetButtonFocusName() const { return m_imgButton.GetTexutureFocusName();};
 	const CStdString			GetButtonNoFocusName() const { return m_imgButton.GetTexutureNoFocusName();};
+	int										GetNumItems() const { return (int)m_vecItems.size(); };
 protected:
    
   void         					RenderText(float fPosX, float fPosY,float fMaxWidth, DWORD dwTextColor, WCHAR* wszText,bool bScroll );

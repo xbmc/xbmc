@@ -295,15 +295,19 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         {
 					OnPopupMenu(iItem);
         }
-        if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
+        else if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
 				{
 					OnClick(iItem);
 				}
-        if (iAction == ACTION_QUEUE_ITEM || iAction == ACTION_MOUSE_MIDDLE_CLICK)
+        else if (iAction == ACTION_QUEUE_ITEM || iAction == ACTION_MOUSE_MIDDLE_CLICK)
         {
 					OnQueueItem(iItem);
         }
-      }
+ 				else if (iAction==ACTION_SHOW_INFO)
+				{
+					OnInfo(iItem);
+				}
+			}
  			else if (iControl==CONTROL_IMDB)
 			{
 				OnManualIMDB();
