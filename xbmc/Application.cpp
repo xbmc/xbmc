@@ -690,7 +690,7 @@ HRESULT CApplication::Create()
 	{
 		// Oh uh - doesn't look good for starting in their wanted screenmode
 		CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
-    g_guiSettings.SetInt("LookAndFeel.Resolution", initialResolution);
+    g_guiSettings.m_LookAndFeelResolution = initialResolution;
 	}
   // Transfer the new resolution information to our graphics context
 	g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);

@@ -322,10 +322,11 @@ void  CGUIWindowSystemInfo::GetValues()
 	{
 
 		WCHAR wszText[128];
+    RESOLUTION res = g_graphicsContext.GetVideoResolution();
 		swprintf(wszText,L"%ix%i %S %02.2f Hz.", 
-			g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth, 
-			g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight, 
-			g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode,
+			g_settings.m_ResInfo[res].iWidth, 
+			g_settings.m_ResInfo[res].iHeight, 
+			g_settings.m_ResInfo[res].strMode,
 			m_fFPS);
 		SET_CONTROL_LABEL(14,wszText);
 	}

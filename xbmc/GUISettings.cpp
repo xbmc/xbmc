@@ -355,7 +355,7 @@ CGUISettings::CGUISettings(void)
 	AddGroup(7, 480);
 	AddCategory(7, "LookAndFeel", 14037);
 	AddString(1, "LookAndFeel.Skin", 166, "Project Mayhem", SPIN_CONTROL_TEXT);
-	AddInt(2, "LookAndFeel.Resolution", 169, (int)g_graphicsContext.GetVideoResolution(),(int)HDTV_1080i, 1, (int)PAL60_16x9, SPIN_CONTROL_TEXT);
+	AddInt(2, "LookAndFeel.Resolution", 169, (int)AUTORES,(int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
 	AddString(3, "LookAndFeel.Language", 248, "english", SPIN_CONTROL_TEXT);
 	AddString(4, "LookAndFeel.Font", 13303, "Default", SPIN_CONTROL_TEXT);
 	AddString(5, "LookAndFeel.CharSet", 735, "ISO-8859-1", SPIN_CONTROL_TEXT);
@@ -670,10 +670,22 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement)
 	g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)GetInt("LookAndFeel.Resolution");
 	CLog::Log(LOGNOTICE, "Checking resolution %i", g_guiSettings.m_LookAndFeelResolution);
 	g_videoConfig.PrintInfo();
-	if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
-	{
-		CLog::Log(LOGNOTICE, "Setting safe mode %i", g_videoConfig.GetSafeMode());
-		SetInt("LookAndFeel.Resolution", g_videoConfig.GetSafeMode());
+	if (
+    (g_guiSettings.m_LookAndFeelResolution == AUTORES) ||
+    (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
+  )	{
+    RESOLUTION newRes = g_videoConfig.GetBestMode();
+    if (g_guiSettings.m_LookAndFeelResolution == AUTORES)
+    {
+      //"LookAndFeel.Resolution" will stay at AUTORES, m_LookAndFeelResolution will be the real mode
+		  CLog::Log(LOGNOTICE, "Setting autoresolution mode %i", newRes);
+		  g_guiSettings.m_LookAndFeelResolution = newRes;
+    }
+    else
+    {
+      CLog::Log(LOGNOTICE, "Setting safe mode %i", newRes);
+		  SetInt("LookAndFeel.Resolution", newRes);
+    }
 	}
 }
 

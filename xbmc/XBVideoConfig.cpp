@@ -85,6 +85,46 @@ RESOLUTION XBVideoConfig::GetSafeMode() const
 	return NTSC_4x3;
 }
 
+RESOLUTION XBVideoConfig::GetBestMode() const
+{
+  RESOLUTION bestRes;
+  RESOLUTION resolutions[] = {HDTV_1080i, HDTV_720p, HDTV_480p_16x9, HDTV_480p_4x3, NTSC_16x9, NTSC_4x3, PAL_16x9, PAL_4x3, PAL60_16x9, PAL60_4x3, INVALID};
+  UCHAR i = 0;
+  while (resolutions[i] != INVALID)
+  {
+    if (IsValidResolution(resolutions[i]))
+    {
+      bestRes = resolutions[i];
+      break;
+    }
+    i++;
+  }
+  return bestRes;
+}
+
+bool XBVideoConfig::IsValidResolution(RESOLUTION res) const
+{
+	bool bCanDoWidescreen = HasWidescreen();
+	if (HasPAL())
+	{
+		bool bCanDoPAL60 = HasPAL60();
+		if (res == PAL_4x3) return true;
+		if (res == PAL_16x9 && bCanDoWidescreen) return true;
+		if (res == PAL60_4x3 && bCanDoPAL60) return true;
+		if (res == PAL60_16x9 && bCanDoPAL60 && bCanDoWidescreen) return true;
+	}
+	else	// NTSC Screenmodes
+	{
+		if (res == NTSC_4x3) return true;
+		if (res == NTSC_16x9 && bCanDoWidescreen) return true;
+		if (res == HDTV_480p_4x3 && Has480p()) return true;
+		if (res == HDTV_480p_16x9 && Has480p() && bCanDoWidescreen) return true;
+		if (res == HDTV_720p && Has720p()) return true;
+		if (res == HDTV_1080i && Has1080i()) return true;
+	}
+	return false;
+}
+
 //pre: XBVideoConfig::GetModes has been called before this function
 RESOLUTION XBVideoConfig::GetInitialMode(LPDIRECT3D8 pD3D, D3DPRESENT_PARAMETERS *p3dParams)
 {
