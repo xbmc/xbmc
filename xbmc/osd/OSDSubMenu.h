@@ -35,5 +35,6 @@ namespace OSD
 		int m_iXPos;
 		int m_iYPos;
     int m_iHeading;
+    bool m_bOptionSelected;
 	};
 };

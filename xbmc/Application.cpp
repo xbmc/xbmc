@@ -423,7 +423,10 @@ void CApplication::OnKey(CKey& key)
   {
     if (m_guiWindowFullScreen.OSDVisible() )
     {
-	    g_buttonTranslator.GetAction(WINDOW_HOME, key, action);
+      if (key.GetButtonCode()==KEY_BUTTON_BLACK)
+        action.wID=ACTION_SHOW_OSD;
+	    else 
+        g_buttonTranslator.GetAction(WINDOW_HOME, key, action);
     }
     else
     {
