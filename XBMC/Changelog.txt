@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-10-2004 fixed: cddb doesn't respond to mutiple exact matches
   - 12-10-2004 fixed: multi channel DTS software decode, major in mplayer dll tree
   - 12-10-2004 added: prelim. support for Xecutor LCD (untested) [ 1021947 ] + minor modifications
   - 12-10-2004 changed: System used to determine a single artist compilation (with contributing artists).
