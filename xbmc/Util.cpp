@@ -1425,6 +1425,11 @@ void CUtil::CacheSubtitles(const CStdString& strMovie)
     } while (FindNextFile((HANDLE)hFind, &wfd));
   }
 
+  CURL url(strMovie);
+  if (url.GetProtocol() =="http" || url.GetProtocol()=="HTTP") return ;
+  if (url.GetProtocol() =="shout" || url.GetProtocol()=="SHOUT") return ;
+  if (url.GetProtocol() =="mms" || url.GetProtocol()=="MMS") return ;
+  if (url.GetProtocol() =="rtp" || url.GetProtocol()=="RTP") return ;
   if (CUtil::IsPlayList(strMovie)) return;
   if (strlen(g_stSettings.m_szAlternateSubtitleDirectory)!=0) 
   {
