@@ -3,6 +3,7 @@
 #include "guiwindowmanager.h"
 #include "osd/osdmenu.h"
 #include "osd/iexecutor.h"
+#include "utils/CriticalSection.h"
 using namespace OSD;
 class CGUIWindowFullScreen :
   public CGUIWindow,
@@ -30,4 +31,5 @@ private:
 	FLOAT						m_fFPS;
   COSDMenu        m_osdMenu;
   bool            m_bOSDVisible;
+  CCriticalSection m_section;
 };
