@@ -130,6 +130,8 @@ void CGUIConsoleControl::Write(CStdString& aString, INT nPaletteIndex)
 
 void CGUIConsoleControl::WriteString(CStdString& aString, DWORD aColour)
 {
+  if (!m_pFont) return;
+
 	CStdString	strLine;
 	CStdStringW	strLineW;
 

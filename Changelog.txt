@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 22-02-2005 fixed: Crash when Kai is re-entered after a skin/font/etc. change.
   - 21-02-2005 fixed: Yet another weather localization fix.  Thanks KoTiX!
   - 21-02-2005 fixed: Updated system/players/mplayer/mplayer.dll to current CVS (includes flac fix + crash fix)
   - 21-02-2005 fixed: Music Database Cleanup would remove all songs from database.
