@@ -13,11 +13,12 @@
 #include "filesystem/file.h"
 #include "DetectDVDType.h"
 #include "autoptrhandle.h"
+#include "playlistfactory.h"
 
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;
 using namespace XFILE;
-
+using namespace PLAYLIST;
 char g_szTitleIP[32];
 
 CUtil::CUtil(void)
@@ -1018,14 +1019,22 @@ void CUtil::SetThumb(CFileItem* pItem)
 			CStdString strDir;
 			CStdString strFileName;
 			pItem->SetIconImage("defaultPlaylist.png");
-			strFileName=CUtil::GetFileName(pItem->m_strPath);
-			strDir.Format("%s\\playlists\\%s",g_stSettings.m_szAlbumDirectory,strFileName.c_str());
-			if ( strDir != pItem->m_strPath )
-			{
-				CFile file;
-				file.Cache(pItem->m_strPath, strDir,NULL,NULL);
-			}
+      CPlayListFactory factory;
+      auto_ptr<CPlayList> pPlayList (factory.Create(pItem->m_strPath) );
+      if (NULL != pPlayList.get() )
+      {
+        if (pPlayList->Load(pItem->m_strPath))
+        {
+			    strFileName=CUtil::GetFileName(pItem->m_strPath);
+			    strDir.Format("%s\\playlists\\%s",g_stSettings.m_szAlbumDirectory,strFileName.c_str());
+			    if ( strDir != pItem->m_strPath )
+			    {
+            pPlayList->Save(strDir) ;
+			    }
+        }
+      }
 		}
+
 		if (CUtil::IsShortCut(pItem->m_strPath) )
 		{
 			CStdString strDescription;
