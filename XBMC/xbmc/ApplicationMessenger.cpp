@@ -109,6 +109,9 @@ void CApplicationMessenger::ProcessMessages()
 							m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
 						m_gWindowManager.PreviousWindow();
 
+					g_application.ResetScreenSaver();
+					g_application.ResetScreenSaverWindow();
+
 					//g_application.StopPlaying();
 					// play file
 					CFileItem item;
@@ -128,6 +131,9 @@ void CApplicationMessenger::ProcessMessages()
 					if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
 						m_gWindowManager.PreviousWindow();
 
+					g_application.ResetScreenSaver();
+					g_application.ResetScreenSaverWindow();
+
 					g_graphicsContext.Lock();
 					pSlideShow->Reset();
 					if (m_gWindowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
@@ -146,13 +152,21 @@ void CApplicationMessenger::ProcessMessages()
 							m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
 						m_gWindowManager.PreviousWindow();
 
+					g_application.ResetScreenSaver();
+					g_application.ResetScreenSaverWindow();
+
 					// stop playing file
 					if(g_application.IsPlaying()) g_application.StopPlaying();
 				}
 				break;
 
 				case TMSG_MEDIA_PAUSE:
-					if (g_application.m_pPlayer) g_application.m_pPlayer->Pause();
+					if (g_application.m_pPlayer)
+					{
+						g_application.ResetScreenSaver();
+						g_application.ResetScreenSaverWindow();
+						g_application.m_pPlayer->Pause();
+					}
 				break;
 
 				case TMSG_EXECUTE_SCRIPT:
