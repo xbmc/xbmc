@@ -224,7 +224,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 
 			Update(m_strDirectory);
 
-			ShowThumbPanel();
+			UpdateThumbPanel();
 
 			if (m_iItemSelected >=0)
       {
@@ -241,22 +241,14 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       int iControl=message.GetSenderId();
       if (iControl==CONTROL_BTNVIEWASICONS)
       {
-				if ( m_strDirectory.IsEmpty() )
-				{
-					m_iViewAsIconsRoot++;
-					if (m_iViewAsIconsRoot > VIEW_AS_LARGEICONS) m_iViewAsIconsRoot=VIEW_AS_LIST;
-				}
-				else
-				{
-					m_iViewAsIcons++;
-					if (m_iViewAsIcons > VIEW_AS_LARGEICONS) m_iViewAsIcons=VIEW_AS_LIST;
-				}
-				ShowThumbPanel();
-        UpdateButtons();
-
-				g_stSettings.m_iMyPicturesRootViewAsIcons = m_iViewAsIconsRoot;
-				g_stSettings.m_iMyPicturesViewAsIcons = m_iViewAsIconsRoot;
+				// cycle LIST->ICONS->LARGEICONS
+				int iViewMode = VIEW_AS_ICONS;
+				if (ViewByIcon()) iViewMode = VIEW_AS_LARGEICONS;
+				if (ViewByLargeIcon()) iViewMode = VIEW_AS_LIST;
+				SetViewMode(iViewMode);
 				g_settings.Save();
+				UpdateThumbPanel();
+        UpdateButtons();
       }
       else if (iControl==CONTROL_BTNSORTBY) // sort by
       {
@@ -364,19 +356,7 @@ void CGUIWindowPictures::OnSort()
     }
   }
 
-  
-  SSortPicturesByName sortmethod;
-	if (m_strDirectory.IsEmpty())
-	{
-		sortmethod.m_iSortMethod=g_stSettings.m_iMyPicturesRootSortMethod;
-		sortmethod.m_bSortAscending=g_stSettings.m_bMyPicturesRootSortAscending;
-	}
-	else
-	{
-		sortmethod.m_iSortMethod=g_stSettings.m_iMyPicturesSortMethod;
-		sortmethod.m_bSortAscending=g_stSettings.m_bMyPicturesSortAscending;
-	}
-  sort(m_vecItems.begin(), m_vecItems.end(), sortmethod);
+	SortItems(m_vecItems);
 
   for (int i=0; i < (int)m_vecItems.size(); i++)
   {
@@ -457,34 +437,14 @@ void CGUIWindowPictures::UpdateButtons()
 		g_graphicsContext.SendMessage(msg2);  
 	}
 
-  ShowThumbPanel();
+  UpdateThumbPanel();
 	SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
 
 	//	Update sort by button
-	if (m_strDirectory.IsEmpty())
-	{
-		if (g_stSettings.m_iMyPicturesRootSortMethod==0)
-		{
-			SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyPicturesRootSortMethod+103);
-		}
-		else
-		{
-			SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,498);	//	Sort by: Type
-		}
-	}
-	else
-	{
-		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyPicturesSortMethod+103);
-	}
+	SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,SortMethod());
 
 	//	Update sorting control
-	bool bSortAscending=false;
-	if (m_strDirectory.IsEmpty())
-		bSortAscending=g_stSettings.m_bMyPicturesRootSortAscending;
-	else
-		bSortAscending=g_stSettings.m_bMyPicturesSortAscending;
-
-	if (bSortAscending)
+	if (SortAscending())
   {
     CGUIMessage msg(GUI_MSG_DESELECTED,GetID(), CONTROL_BTNSORTASC);
     g_graphicsContext.SendMessage(msg);
@@ -516,7 +476,7 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
 	{
 		m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
 
-		ShowThumbPanel();
+		UpdateThumbPanel();
 		UpdateButtons();
 
 		int iControl = CONTROL_LIST;
@@ -565,7 +525,7 @@ void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
 			SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
 		}
 	}
-	ShowThumbPanel();
+	UpdateThumbPanel();
 
 	for (int i=0; i < (int)m_vecItems.size(); ++i)
 	{
@@ -581,7 +541,6 @@ void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
 	}
 
 }
-
 
 void CGUIWindowPictures::OnClick(int iItem)
 {
@@ -671,6 +630,8 @@ void CGUIWindowPictures::AddDir(CGUIWindowSlideShow *pSlideShow,const CStdString
   if (!pSlideShow) return;
   VECFILEITEMS items;
   m_rootDir.GetDirectory(strPath,items);
+	SortItems(items);
+
   for (int i=0; i < (int)items.size();++i)
   {
     CFileItem* pItem=items[i];
@@ -815,6 +776,8 @@ bool CGUIWindowPictures::DoCreateFolderThumbs(CStdString &strFolder, int *iTotal
 	// calculate the number of items to take thumbs of
 	VECFILEITEMS items;
 	GetDirectory(strFolder, items);
+	SortItems(items);
+
 	*iTotalItems += CUtil::GetFileCount(items);
 
 	// now run through and create the thumbs
@@ -972,24 +935,19 @@ bool CGUIWindowPictures::ViewByLargeIcon()
   return false;
 }
 
-void CGUIWindowPictures::ShowThumbPanel()
+void CGUIWindowPictures::UpdateThumbPanel()
 {
-  int iItem=GetSelectedItem(); 
-  if ( ViewByLargeIcon() )
-  {
-    CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
-    pControl->ShowBigIcons(true);
-  }
-  else
-  {
-    CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
-    pControl->ShowBigIcons(false);
-  }
-  if (iItem>-1)
-  {
-    CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem);
-    CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem);
-  }
+  //int iItem=GetSelectedItem(); 
+
+	CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
+	if (pControl)
+    pControl->ShowBigIcons(ViewByLargeIcon());
+
+  //if (iItem>-1)
+  //{
+  //  CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem);
+  //  CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem);
+  //}
 }
 
 /// \brief Build a directory history string
@@ -1188,4 +1146,49 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
 		}
 	}
 	m_vecItems[iItem]->Select(false);
+}
+
+void CGUIWindowPictures::SetViewMode(int iViewMode)
+{
+  if ( m_strDirectory.IsEmpty() )
+    g_stSettings.m_iMyPicturesRootViewAsIcons=iViewMode;
+  else
+    g_stSettings.m_iMyPicturesViewAsIcons=iViewMode;
+}
+
+int CGUIWindowPictures::SortMethod()
+{
+	if (m_strDirectory.IsEmpty())
+	{
+		if (g_stSettings.m_iMyPicturesRootSortMethod==0)
+			return g_stSettings.m_iMyPicturesRootSortMethod+103;
+		else
+			return 498;	//	Sort by: Type
+	}
+	else
+		return g_stSettings.m_iMyPicturesSortMethod+103;
+}
+
+bool CGUIWindowPictures::SortAscending()
+{
+	if (m_strDirectory.IsEmpty())
+		return g_stSettings.m_bMyPicturesRootSortAscending;
+	else
+		return g_stSettings.m_bMyPicturesSortAscending;
+}
+
+void CGUIWindowPictures::SortItems(VECFILEITEMS& items)
+{
+	SSortPicturesByName sortmethod;
+	if (m_strDirectory.IsEmpty())
+	{
+		sortmethod.m_iSortMethod=g_stSettings.m_iMyPicturesRootSortMethod;
+		sortmethod.m_bSortAscending=g_stSettings.m_bMyPicturesRootSortAscending;
+	}
+	else
+	{
+		sortmethod.m_iSortMethod=g_stSettings.m_iMyPicturesSortMethod;
+		sortmethod.m_bSortAscending=g_stSettings.m_bMyPicturesSortAscending;
+	}
+  sort(items.begin(), items.end(), sortmethod);
 }
