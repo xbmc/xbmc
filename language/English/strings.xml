@@ -1142,4 +1142,8 @@
     <id>359</id>
     <value>Recent albums</value>
   </string>
+  <string>
+    <id>360</id>
+    <value>Screensaver</value>
+  </string>
 </strings>
