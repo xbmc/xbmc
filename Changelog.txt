@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 19-02-2005 cleanup: LCD progress bar code moved to LCD class
   - 18-02-2005 fixed: <allowoverlay> doesn't work in music songs
   - 18-02-2005 fixed: Localization of UV data in weather.
   - 18-02-2005 fixed: crash bug in thumbpanels when switching from large->small without resetting current focus.
