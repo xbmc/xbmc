@@ -895,10 +895,9 @@ void CGUIWindowSlideShow::Render()
 		if (m_Image[m_iCurrentPic].IsLoaded())
 		{
 			CStdString strFileInfo;
-			CStdString strFile, strPath;
-			CUtil::Split(m_vecSlides[m_iCurrentSlide], strPath, strFile);
-			strPath = strFile.Right(strFile.size()-1);
-			strFileInfo.Format("%ix%i %s", m_Image[m_iCurrentPic].GetOriginalWidth(), m_Image[m_iCurrentPic].GetOriginalHeight(), strPath.c_str());
+			CStdString strFile;
+			strFile = CUtil::GetFileName(m_vecSlides[m_iCurrentSlide]);
+			strFileInfo.Format("%ix%i %s", m_Image[m_iCurrentPic].GetOriginalWidth(), m_Image[m_iCurrentPic].GetOriginalHeight(), strFile.c_str());
 			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 
 			msg.SetLabel(strFileInfo); 
 			OnMessage(msg);

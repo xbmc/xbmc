@@ -2042,18 +2042,13 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   CStdString strFileNameNoExt;
   
   CUtil::Split(strMovie,strLookInPaths[0],strFileName);
-  strLookInPaths[0].TrimRight("\\");
-  strLookInPaths[0].TrimRight("/");
-
   ReplaceExtension(strFileName, "", strFileNameNoExt);
-
+  
 	if (strlen(g_stSettings.m_szAlternateSubtitleDirectory) != 0)
 	{
 		strLookInPaths[1] = g_stSettings.m_szAlternateSubtitleDirectory;
-    strLookInPaths[1].TrimLeft("./");
-    strLookInPaths[1].TrimLeft(".\\");
-    strLookInPaths[1].TrimRight("\\");
-    strLookInPaths[1].TrimRight("/");
+    if(!HasSlashAtEnd(strLookInPaths[1]))
+      strLookInPaths[1] += "/"; //Should work for both remote and local files
 	}
   else
     strLookInPaths[1] = "";
@@ -2076,7 +2071,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
       CFileItemList temp(items); //Releases memory when it goes out of scope
 
       CDirectory::GetDirectory(strLookInPaths[step],items);
-			int fnl = strFileNameNoExt.length();
+			int fnl = strFileNameNoExt.size();
 
 			for (int j=0; j < (int)items.size(); j++)
 			{
@@ -2100,8 +2095,8 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
           //Cache subtitle with same name as movie
 					if (strItem.Right(l) == sub_exts[i] && strItem.Left(fnl) == strFileNameNoExt)
 					{
-						strLExt = strItem.Right(strItem.GetLength() - fnl);
-						strDest.Format("Z:\\subtitle%s", strLExt);
+						strLExt = strItem.Right(strItem.size() - fnl - 1); //Disregard separator char
+            strDest.Format("Z:\\subtitle.%s", strLExt);
 						if (file.Cache(items[j]->m_strPath, strDest.c_str(),NULL,NULL))
 						{
               CLog::Log(LOGINFO, " cached subtitle %s->%s\n", strItem.c_str(), strDest.c_str());
@@ -2199,7 +2194,10 @@ void CUtil::GetPath(const CStdString& strFileName, CStdString& strPath)
 
   strPath=strFileName.Left(iPos1-1);
 }
-
+//Will from a full filename return the directory the file resides in.
+//has no trailing slash on result. Could lead to problems when reading from root on cd
+//ISO9660://filename.bla will result in path ISO9660:/ 
+//This behaviour should probably be changed, but it would break other things
 void CUtil::GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath)
 {
 	int iPos1=strFilePath.ReverseFind('/');
@@ -2215,7 +2213,9 @@ void CUtil::GetDirectory(const CStdString& strFilePath, CStdString& strDirectory
 		strDirectoryPath = strFilePath.Left(iPos1);
 	}
 }
-
+//Splits a full filename in path and file.
+//ex. smb://computer/share/directory/filename.ext -> strPath:smb://computer/share/directory/ and strFileName:filename.ext
+//Trailing slash will be preserved
 void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName)
 {
   strFileName="";
@@ -2227,7 +2227,7 @@ void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CSt
     if (ch==':' || ch=='/' || ch=='\\') break;
     else i--;
   }
-  strPath     = strFileNameAndPath.Left(i);
+  strPath     = strFileNameAndPath.Left(i + 1);
   strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i - 1);
 }
 
@@ -2664,11 +2664,11 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
 
   if (CUtil::IsInternetStream(pItem->m_strPath)) return;
 
-  CStdString strThumb, strPath, strFileName;
+  CStdString strThumb, strPath;
 
 	//	If item is not a folder, extract its path
   if (!pItem->m_bIsFolder)
-    CUtil::Split(pItem->m_strPath, strPath, strFileName);
+    CUtil::GetDirectory(pItem->m_strPath, strPath);
   else
 	{
     strPath=pItem->m_strPath;

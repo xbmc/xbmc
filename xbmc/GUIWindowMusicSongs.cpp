@@ -1237,8 +1237,8 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
         {
           // try finding it in the database
           CStdString strPathName;
-          CStdString strFileName;
-          CUtil::Split(pItem->m_strPath, strPathName, strFileName);
+          CUtil::GetDirectory(pItem->m_strPath, strPathName);
+
           if (strPathName != m_strDirectory)
           {
             if ( g_musicDatabase.GetSongByFileName(pItem->m_strPath, song) )
@@ -1340,8 +1340,8 @@ void CGUIWindowMusicSongs::OnSearchItemFound(const CFileItem* pSelItem)
 	}
 	else
 	{
-		CStdString strPath, strFileName;
-		CUtil::Split(pSelItem->m_strPath, strPath, strFileName);
+		CStdString strPath;
+		CUtil::GetDirectory(pSelItem->m_strPath, strPath);
 		
 		Update(strPath);
 

@@ -559,8 +559,8 @@ void CGUIWindowVideoPlaylist::GetDirectory(const CStdString &strDirectory, VECFI
 		const CPlayList::CPlayListItem& item = playlist[i];
 
 		CStdString strFileName   = item.GetFileName();
-		CStdString strPath,strFName;
-		CUtil::Split( strFileName, strPath, strFName);
+		//CStdString strPath;
+		//CUtil::GetDirectory( strFileName, strPath);
 		//m_Pathes.insert(strPath);
 		
 		CFileItem *pItem				 = new CFileItem(item.GetDescription());

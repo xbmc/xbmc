@@ -627,8 +627,8 @@ bool CProgramDatabase::IncTimesPlayed(const CStdString& strFileName1)
 		CStdString strFileName=strFileName1;
 		RemoveInvalidChars(strFileName);
 
-		CStdString strPath, strFName;
-		CUtil::Split(strFileName, strPath, strFName);
+		CStdString strPath;
+		CUtil::GetDirectory(strFileName, strPath);
 		strPath.Replace("\\","/");
 
 		if (NULL==m_pDB.get()) return false;
