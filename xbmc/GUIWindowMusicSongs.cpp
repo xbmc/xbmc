@@ -226,6 +226,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 					int nSong=g_playlistPlayer.GetCurrentSong();
 					const CPlayList::CPlayListItem item=g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP)[nSong];
 					g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Clear();
+					g_playlistPlayer.Reset();
 					int nFolderCount=0;
 					for (int i = 0; i < (int)m_vecItems.size(); i++) 
 					{
@@ -477,10 +478,18 @@ void CGUIWindowMusicSongs::LoadPlayList(const CStdString& strPlayList)
 	{
     // load it
 		if (!pPlayList->Load(strPlayList))
+		{
+			CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+			if (pDlgOK)
+			{
+				pDlgOK->SetHeading(6);
+				pDlgOK->SetLine(0,L"");
+				pDlgOK->SetLine(1,477);
+				pDlgOK->SetLine(2,L"");
+				pDlgOK->DoModal(GetID());
+			}
 			return; //hmmm unable to load playlist?
-
-    // clear current playlist
-		g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Clear();
+		}
 
     // how many songs are in the new playlist
     if (pPlayList->size() == 1)
@@ -491,6 +500,8 @@ void CGUIWindowMusicSongs::LoadPlayList(const CStdString& strPlayList)
       return;
     }
 
+    // clear current playlist
+		g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Clear();
 
 		//	if autoshuffle playlist on load option is enabled
     //  then shuffle the playlist
@@ -525,6 +536,8 @@ void CGUIWindowMusicSongs::LoadPlayList(const CStdString& strPlayList)
 		const CPlayList::CPlayListItem& item=playlist[0];
 
     // and start playing it
+		g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+		g_playlistPlayer.Reset();
 		g_playlistPlayer.Play(0);
 
     // and activate the playlist window if its not activated yet
@@ -719,6 +732,7 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
 			//play and add current directory to temporary playlist
 			int nFolderCount=0;
 			g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC_TEMP ).Clear();
+			g_playlistPlayer.Reset();
 			for ( int i = 0; i < (int) m_vecItems.size(); i++ ) 
 			{
 				CFileItem* pItem = m_vecItems[i];
