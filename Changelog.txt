@@ -5,7 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-
+  - 09-02-2005 updated: Finnish language file (Thnx to jutski)
   - 09-02-2005 fixed: wpl and b4s playlists do not work from other shares then local
   - 09-02-2005 updated: German language file
   - 09-02-2005 updated: Polish language file (Thnx to napek)
