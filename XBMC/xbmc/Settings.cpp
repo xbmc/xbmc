@@ -155,6 +155,11 @@ CSettings::CSettings(void)
   g_stSettings.m_iMyVideoYearSortMethod=0;
   g_stSettings.m_bMyVideoYearSortAscending=true;
 
+  g_stSettings.m_bMyVideoTitleViewAsIcons=true;
+  g_stSettings.m_bMyVideoTitleRootViewAsIcons=true;
+  g_stSettings.m_iMyVideoTitleSortMethod=0;
+  g_stSettings.m_bMyVideoTitleSortAscending=true;
+
 	g_stSettings.m_bMyFilesSourceViewAsIcons=false;
 	g_stSettings.m_bMyFilesSourceRootViewAsIcons=true;
 	g_stSettings.m_bMyFilesDestViewAsIcons=false;
@@ -733,7 +738,12 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetBoolean(pElement, "yearrooticons", g_stSettings.m_bMyVideoYearRootViewAsIcons);
 		GetInteger(pElement, "yearsortmethod",g_stSettings.m_iMyVideoYearSortMethod);
 		GetBoolean(pElement, "yearsortascending", g_stSettings.m_bMyVideoYearSortAscending);
-    
+
+    GetBoolean(pElement, "titleviewicons", g_stSettings.m_bMyVideoTitleViewAsIcons);
+		GetBoolean(pElement, "titlerooticons", g_stSettings.m_bMyVideoTitleRootViewAsIcons);
+		GetInteger(pElement, "titlesortmethod",g_stSettings.m_iMyVideoTitleSortMethod);
+		GetBoolean(pElement, "titlesortascending", g_stSettings.m_bMyVideoTitleSortAscending);
+
 		GetBoolean(pElement, "postprocessing", g_stSettings.m_bPostProcessing);
 		GetBoolean(pElement, "deinterlace", g_stSettings.m_bDeInterlace);
       
@@ -981,6 +991,11 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetBoolean(pNode, "yearrooticons", g_stSettings.m_bMyVideoYearRootViewAsIcons);
 	SetInteger(pNode, "yearsortmethod",g_stSettings.m_iMyVideoYearSortMethod);
 	SetBoolean(pNode, "yearsortascending", g_stSettings.m_bMyVideoYearSortAscending);
+
+	SetBoolean(pNode, "titleviewicons", g_stSettings.m_bMyVideoTitleViewAsIcons);
+	SetBoolean(pNode, "titlerooticons", g_stSettings.m_bMyVideoTitleRootViewAsIcons);
+	SetInteger(pNode, "titlesortmethod",g_stSettings.m_iMyVideoTitleSortMethod);
+	SetBoolean(pNode, "titlesortascending", g_stSettings.m_bMyVideoTitleSortAscending);
 
 	SetBoolean(pNode, "postprocessing", g_stSettings.m_bPostProcessing);
 	SetBoolean(pNode, "deinterlace", g_stSettings.m_bDeInterlace);

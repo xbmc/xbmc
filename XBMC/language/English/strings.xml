@@ -1177,5 +1177,9 @@
   <string>
     <id>368</id>
     <value>IMDB</value>
+  </string>   
+  <string>
+    <id>369</id>
+    <value>Title</value>
   </string>
 </strings>

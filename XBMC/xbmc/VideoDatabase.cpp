@@ -845,3 +845,35 @@ void CVideoDatabase::ClearBookMarksOfMovie(const CStdString& strFilenameAndPath)
   strSQL.Format("delete from bookmark where idFile=%i",lFileId);
 	m_pDS->exec(strSQL.c_str());
 }
+
+void  CVideoDatabase::GetMovies(VECMOVIES& movies)
+{	
+  movies.erase(movies.begin(),movies.end());
+	if (NULL==m_pDB.get()) return ;
+	if (NULL==m_pDS.get()) return ;
+  CStdString strSQL;
+  strSQL.Format("select * from movie,movieinfo,actors where movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor");
+
+  m_pDS->query( strSQL.c_str() );
+  if (m_pDS->num_rows() == 0)  return;
+  while (!m_pDS->eof()) 
+  {
+    CIMDBMovie details;
+    details.m_fRating=(float)atof(m_pDS->fv("movieinfo.fRating").get_asString().c_str()) ;
+	  details.m_strDirector=m_pDS->fv("actors.strActor").get_asString();
+	  details.m_strWritingCredits=m_pDS->fv("movieinfo.strCredits").get_asString();
+	  details.m_strTagLine=m_pDS->fv("movieinfo.strTagLine").get_asString();
+	  details.m_strPlotOutline=m_pDS->fv("movieinfo.strPlotOutline").get_asString();
+	  details.m_strPlot=m_pDS->fv("movieinfo.strPlot").get_asString();
+	  details.m_strVotes=m_pDS->fv("movieinfo.strVotes").get_asString();
+	  details.m_strCast=m_pDS->fv("movieinfo.strCast").get_asString();
+	  details.m_iYear=m_pDS->fv("movieinfo.iYear").get_asLong();
+    details.m_strGenre=m_pDS->fv("movieinfo.strGenre").get_asString();
+    details.m_strPictureURL=m_pDS->fv("movieinfo.strPictureURL").get_asString();
+    details.m_strTitle=m_pDS->fv("movieinfo.strTitle").get_asString();
+    long lMovieId=m_pDS->fv("movieinfo.idMovie").get_asLong();
+    details.m_strSearchString.Format("%i", lMovieId);
+    movies.push_back(details);
+    m_pDS->next();
+  }
+}
