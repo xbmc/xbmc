@@ -12,6 +12,7 @@ struct CSettings::stSettings g_stSettings;
 
 CSettings::CSettings(void)
 {
+  strcpy(g_stSettings.m_szExternalDVDPlayer,"");
   g_stSettings.m_bMyVideoVideoStack =false;
   g_stSettings.m_bMyVideoActorStack =false;
   g_stSettings.m_bMyVideoGenreStack =false;
@@ -239,6 +240,8 @@ bool CSettings::Load()
 
 	GetBoolean(pRootElement, "useFDrive", g_stSettings.m_bUseFDrive);
 	GetBoolean(pRootElement, "useGDrive", g_stSettings.m_bUseGDrive);
+
+  GetString(pRootElement, "dvdplayer", g_stSettings.m_szExternalDVDPlayer,"");
 
   CStdString strDir;
   strDir=g_stSettings.m_szShortcutDirectory;
