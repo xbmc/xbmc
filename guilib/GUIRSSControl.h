@@ -24,7 +24,7 @@ using namespace std;
 class CGUIRSSControl : public CGUIControl, public IRssObserver
 {
 public:
-	CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFontName, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, D3DCOLOR dwNormalColor, CStdString& strUrl);
+	CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFontName, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, D3DCOLOR dwNormalColor, CStdString& strUrl, CStdString& strRSSTags);
 	virtual ~CGUIRSSControl(void);
   
 	virtual void		Render();
@@ -35,6 +35,7 @@ public:
 	DWORD				GetNormalTextColor() const { return m_dwTextColor;};
 	const char *GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
 	const CStdString&	GetUrl() const { return m_strUrl; };
+	const CStdString& GetTags() const { return m_strRSSTags; };
 
 protected:
 
@@ -48,6 +49,7 @@ protected:
 	LPDWORD			m_pdwPalette;
 
 	CStdString		m_strUrl;
+	CStdString		m_strRSSTags;
 	D3DCOLOR		m_dwChannelColor;
 	D3DCOLOR		m_dwHeadlineColor;
 	D3DCOLOR		m_dwTextColor;

@@ -7,7 +7,7 @@
 
 extern CApplication g_application;
 
-CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFontName, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, D3DCOLOR dwNormalColor, CStdString& strUrl)
+CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFontName, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, D3DCOLOR dwNormalColor, CStdString& strUrl, CStdString& strRSSTags)
 :CGUIControl(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight)
 {
 	m_strUrl			= strUrl;
@@ -23,6 +23,7 @@ CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, i
 	if (m_pFont)
 		m_pFont->GetTextExtent(wTmp,&fWidth,&fHeight);
 	m_iLeadingSpaces	= (int) (dwWidth / fWidth);
+	m_strRSSTags = strRSSTags;
 	m_iCharIndex		= 0;
 	m_iStartFrame		= 0;
 	m_iScrollX			= 1;
@@ -56,6 +57,17 @@ void CGUIRSSControl::Render()
 	{
 		// Create RSS background/worker thread
 		m_pReader = new CRssReader();
+
+		if(m_strRSSTags != "")
+		{
+			CStdStringArray vecSplitTags;
+			int i;
+
+			StringUtils::SplitString(m_strRSSTags,",",vecSplitTags);
+
+			for (i=0;i<(int)vecSplitTags.size();i++)
+				m_pReader->AddTag(vecSplitTags[i]);
+		}
 		m_pReader->Create(this,m_strUrl,m_iLeadingSpaces);
 	}
 
