@@ -356,10 +356,13 @@ HRESULT CApplication::Initialize()
     m_guiDialogOK.DoModal(g_stSettings.m_iStartupWindow);
   }
 
-  if (g_stSettings.m_iLCDMode==LCD_MODE_NOTV)
+  if (g_stSettings.m_bLCDUsed)
   {
-    // jump to my music when we're in NO tv mode
-    m_gWindowManager.ActivateWindow(WINDOW_MUSIC_FILES);
+    if (g_stSettings.m_iLCDMode==LCD_MODE_NOTV)
+    {
+      // jump to my music when we're in NO tv mode
+      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_FILES);
+    }
   }
   CLog::Log("initialize done");	
   g_lcd.Initialize();
@@ -813,6 +816,8 @@ void CApplication::OnKey(CKey& key)
 void CApplication::UpdateLCD()
 {
   static lTickCount=0;
+  
+  if (!g_stSettings.m_bLCDUsed) return;
   long lTimeOut=1000;
   if ( m_iPlaySpeed != 1) lTimeOut=0;
   if ( ((long)GetTickCount()-lTickCount) >=lTimeOut)
