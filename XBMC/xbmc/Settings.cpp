@@ -83,6 +83,11 @@ CSettings::CSettings(void)
 	g_stSettings.m_bMyFilesDestViewAsIcons=false;
 	g_stSettings.m_bMyFilesDestRootViewAsIcons=true;
 
+	g_stSettings.m_bScriptsViewAsIcons = false;
+	g_stSettings.m_bScriptsRootViewAsIcons = false;
+	g_stSettings.m_bScriptsSortAscending = true;
+	g_stSettings.m_bScriptsSortMethod = 0;
+
 	g_stSettings.m_bMyFilesSortAscending=true;
 	g_stSettings.m_iUIOffsetX=0;
 	g_stSettings.m_iUIOffsetY=0;

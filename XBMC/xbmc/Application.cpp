@@ -45,7 +45,7 @@ CApplication::CApplication(void)
 {
 		m_bSpinDown=true;
 		m_bOverlayEnabled=true;
-		m_pPhytonParser=NULL;
+		m_pPythonParser=NULL;
 		m_pPlayer=NULL;
 		XSetProcessQuantumLength(5); //default=20msec
 		XSetFileCacheSize (256*1024);//default=64kb
@@ -208,6 +208,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiSettingsMovieCalibration);	// window id = 11
 	m_gWindowManager.Add(&m_guiSettingsSlideShow);				// window id = 12
 	m_gWindowManager.Add(&m_guiSettingsFilter);						// window id = 13
+	m_gWindowManager.Add(&m_guiScripts);									// window id = 20
 
   m_gWindowManager.Add(&m_guiDialogYesNo);							// window id = 100
   m_gWindowManager.Add(&m_guiDialogProgress);						// window id = 101
@@ -278,6 +279,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiSettingsFilter.Load( strSkinPath+"\\SettingsFilter.xml" );
 	m_guiWindowVideoOverlay.Load( strSkinPath+"\\videoOverlay.xml" );
 	m_guiWindowFullScreen.Load( strSkinPath+"\\videoFullScreen.xml" );
+	m_guiScripts.Load( strSkinPath+"\\myscripts.xml");
 }
 
 
@@ -731,19 +733,19 @@ void CApplication::FrameMove()
 
 void CApplication::Stop()
 {
-	if (m_pPhytonParser)
+	if (m_pPythonParser)
 	{
 		ivecScriptIds it=m_vecScriptIds.begin();
 		while (it != m_vecScriptIds.end())
 		{
 			int iScriptId = *it;
-			if ( !m_pPhytonParser->isDone(iScriptId) )
+			if ( !m_pPythonParser->isDone(iScriptId) )
 			{
-				m_pPhytonParser->stopScript(iScriptId);
+				m_pPythonParser->stopScript(iScriptId);
 			}
 		}
-		delete m_pPhytonParser;
-		m_pPhytonParser=NULL;
+		delete m_pPythonParser;
+		m_pPythonParser=NULL;
 	}
 	if (m_pPlayer)
 	{
@@ -764,40 +766,48 @@ void CApplication::Stop()
 
 void CApplication::ExecuteScript(const CStdString& strScript)
 {
-	if ( !m_pPhytonParser)
-	{
-		m_pPhytonParser=new Python(NULL);
-		int id=m_pPhytonParser->evalFile( (char*)strScript.c_str() );
-		m_vecScriptIds.push_back(id);
-	}
+	 /* PY_RW stay's loaded as longs as m_pPythonParser != NULL.
+	  * When someone runs a script for the first time both sections PYTHON and PY_RW
+	  * are loaded. After that script has finished only section PYTHON is unloaded
+	  * and m_pPythonParser is 'not' deleted.
+		* Only delete m_pPythonParser and unload PY_RW if you don't want to use Python
+		* anymore
+		*/
+	if(!g_sectionLoader.IsLoaded("PYTHON")) g_sectionLoader.Load("PYTHON");
+	if(!g_sectionLoader.IsLoaded("PY_RW")) g_sectionLoader.Load("PY_RW");
+	if (!m_pPythonParser)	m_pPythonParser=new XBPython();
+
+	//run script..
+	int id=m_pPythonParser->evalFile(strScript.c_str());
+	m_vecScriptIds.push_back(id);
 }
 
 void CApplication::ProcessScripts()
 {
-	if ( !m_pPhytonParser) return;
-	if ( m_vecScriptIds.size()==0) return;
+	if ( !m_pPythonParser || m_vecScriptIds.size() == 0) return;
 
 	ivecScriptIds it=m_vecScriptIds.begin();
 	while (it != m_vecScriptIds.end())
 	{
 		int iScriptId = *it;
-		if ( m_pPhytonParser->isDone(iScriptId) )
-		{
+		if (m_pPythonParser->isDone(iScriptId))
 			it=m_vecScriptIds.erase(it);
-		}
-		else
-		{
-			++it;
-		}
+		else ++it;
 	}
 	if ( m_vecScriptIds.size()==0)
-	{
-		delete m_pPhytonParser;
-		m_pPhytonParser=NULL;
-	}
+		//no scripts are running, it's safe to unload section PYTHON now
+		g_sectionLoader.Unload("PYTHON");
 }
 
+int CApplication::ScriptsSize()
+{
+	return m_vecScriptIds.size();
+}
 
+int CApplication::GetScriptId(int scriptPosition)
+{
+	return (int)m_vecScriptIds[scriptPosition];
+}
 
 bool CApplication::PlayFile(const CStdString& strFile)
 {
