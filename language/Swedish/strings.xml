@@ -826,4 +826,10 @@
   <string><id>15060</id><value>Meddelande här</value></string>
   <string><id>15061</id><value>Du är inbjuden att spela %s.</value></string>
   <string><id>15062</id><value>Använd alternativ mplayer.dll</value></string>
+  <string><id>15100</id><value>Nav</value></string>
+  <string><id>15101</id><value>Databas</value></string>
+  <string><id>15102</id><value>* Alla album</value></string>
+  <string><id>15103</id><value>* Alla artister</value></string>
+  <string><id>15104</id><value>* Alla låtar</value></string>
+  <string><id>15105</id><value>* Alla genres</value></string>
 </strings>
