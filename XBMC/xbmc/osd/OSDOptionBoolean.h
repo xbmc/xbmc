@@ -21,6 +21,7 @@ namespace OSD
     bool         GetValue() const;
     virtual int  GetMessage() const {return m_iAction;};
     virtual void SetValue(int iValue){};
+    virtual void SetLabel(const CStdString& strLabel){};
 	private:
     int                    m_iAction;
 		bool	                 m_bValue;

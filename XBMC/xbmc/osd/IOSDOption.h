@@ -1,5 +1,6 @@
 #pragma once
 #include "key.h"
+#include "stdstring.h"
 namespace OSD
 {
   class IExecutor;
@@ -13,6 +14,7 @@ namespace OSD
 		virtual bool OnAction(IExecutor& executor, const CAction& action)=0;
     virtual int  GetMessage() const=0;
     virtual void SetValue(int iValue)=0;
+    virtual void SetLabel(const CStdString& strLabel)=0;
   protected:
     int m_iHeading;
 	};

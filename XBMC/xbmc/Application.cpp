@@ -1124,3 +1124,8 @@ void CApplication::Restart(bool bSamePosition)
   }
 
 }
+
+const CStdString& CApplication::CurrentFile()
+{
+  return m_strCurrentFile;
+}

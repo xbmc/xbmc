@@ -153,6 +153,14 @@ int  COSDMenu::GetSelectedMenu() const
 }
 
 
+void COSDMenu::SetLabel(int iMessage, const CStdString& strLabel)
+{
+  for (int i=0; i < (int)m_vecSubMenus.size(); ++i)
+  {
+    COSDSubMenu* pSubMenu=m_vecSubMenus[i];
+    pSubMenu->SetLabel(iMessage,strLabel);
+  }
+}
 void COSDMenu::SetValue(int iMessage, int iValue)
 {
   for (int i=0; i < (int)m_vecSubMenus.size(); ++i)
