@@ -31,7 +31,10 @@ bool COggTag::ReadTag( CFile* file )
 
     // Check we've got an ogg file
     if (pBuffer[0]!='O' || pBuffer[1]!='g' || pBuffer[2]!='g' || pBuffer[3]!='S')
+		{
+				delete [] pBuffer;
         return false;
+		}
 
     int iNext=4; //Next page of data's offset
     int iOffset=0; //iOffset in file
@@ -85,6 +88,7 @@ bool COggTag::ReadTag( CFile* file )
 		m_nDuration = (int)((m_nSamples*75)/m_nSamplesPerSec);	// *75 for frames
     }
 
+	delete [] pBuffer;
 	return true;
 }
 
