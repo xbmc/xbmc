@@ -36,28 +36,32 @@ public:
 class CGUIWindow
 {
 public:
-  CGUIWindow(DWORD dwID);
-  virtual ~CGUIWindow(void);
-  bool            		Load(const CStdString& strFileName, bool bContainsPath = false);
-  virtual void			SetPosition(DWORD dwPosX, DWORD dwPosY);
-  virtual void    		Render();
-  virtual void    		OnAction(const CAction &action);
-  virtual bool    		OnMessage(CGUIMessage& message);
-  void            		Add(CGUIControl* pControl);
-	void								Remove(DWORD dwId);
-  int             		GetFocusControl();
-  void            		SelectNextControl();
-	void                SelectPreviousControl();
-  DWORD           		GetID(void) const;
-	void								SetID(DWORD dwID);
-	DWORD								GetPreviousWindowID(void) const;
-	const CGUIControl*	GetControl(int iControl) const;
-	void								ClearAll();
-	int									GetFocusedControl() const;
-	virtual void				AllocResources();
-  virtual void				FreeResources();
-	virtual void				ResetAllControls();
-	static void         FlushReferenceCache();
+	CGUIWindow(DWORD dwID);
+	virtual ~CGUIWindow(void);
+
+	bool            		Load(const CStdString& strFileName, bool bContainsPath = false);
+	virtual void			SetPosition(DWORD dwPosX, DWORD dwPosY);
+	void					CenterWindow();
+	virtual void    		Render();
+	virtual void    		OnAction(const CAction &action);
+	virtual bool    		OnMessage(CGUIMessage& message);
+	void            		Add(CGUIControl* pControl);
+	void					Remove(DWORD dwId);
+	int             		GetFocusControl();
+	void            		SelectNextControl();
+	void	                SelectPreviousControl();
+	void					SetID(DWORD dwID);
+	DWORD           		GetID(void) const;
+	DWORD					GetPreviousWindowID(void) const;
+	DWORD					GetWidth() { return m_dwWidth; };
+	DWORD					GetHeight() { return m_dwHeight; };
+	const CGUIControl*		GetControl(int iControl) const;
+	void					ClearAll();
+	int						GetFocusedControl() const;
+	virtual void			AllocResources();
+	virtual void			FreeResources();
+	virtual void			ResetAllControls();
+	static void		        FlushReferenceCache();
 protected:
   virtual void        OnWindowLoaded();
   virtual void			OnInitWindow();
@@ -86,6 +90,8 @@ protected:
   bool m_bRelativeCoords;
   DWORD m_dwPosX;
   DWORD m_dwPosY;
+  DWORD	m_dwWidth;
+  DWORD m_dwHeight;
 };
 
 #endif
