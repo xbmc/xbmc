@@ -306,23 +306,6 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 				// class first
 				CGUIWindowMusicBase::OnMessage(message);
 
-				/*
-				if (m_iState==SHOW_ROOT)
-				{
-					CLog::Log(LOGDEBUG,"Root view = %i",m_iViewAsIconsRoot);
-					m_iViewAsIconsRoot++;
-					if (m_iViewAsIconsRoot > VIEW_AS_LARGEICONS) m_iViewAsIconsRoot=VIEW_AS_LIST;
-					CLog::Log(LOGDEBUG,"  Changed = %i",m_iViewAsIconsRoot);
-				}
-				else
-				{
-					CLog::Log(LOGDEBUG,"Normal view = %i",m_iViewAsIcons);
-					m_iViewAsIcons++;
-					if (m_iViewAsIcons > VIEW_AS_LARGEICONS) m_iViewAsIcons=VIEW_AS_LIST;
-					CLog::Log(LOGDEBUG,"    Changed = %i",m_iViewAsIcons);
-				}
-				*/
-
 				if (m_iState==SHOW_ROOT)
 					g_stSettings.m_iMyMusicNavRootViewAsIcons=m_iViewAsIconsRoot;
 				else if (m_iState==SHOW_GENRES)
@@ -335,11 +318,6 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 					g_stSettings.m_iMyMusicNavSongsViewAsIcons=m_iViewAsIcons;
 
 				g_settings.Save();
-
-				/*
-				UpdateButtons();
-				ShowThumbPanel();
-				*/
 
 				return true;
 			}
@@ -380,47 +358,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 				// use play button to add folders of items to temp playlist
 				if (iAction==ACTION_MUSIC_PLAY)
 				{
-					// unlike additemtoplaylist, we need to check the items here
-					// before calling it since the current playlist will be stopped
-					// and cleared!
-
-					// root is not allowed
-					if (m_iState==SHOW_ROOT)
-						return true;
-
-					const CFileItem* pItem=m_vecItems[iItem];
-					// if its a folder, build a temp playlist
-					if (pItem->m_bIsFolder)
-					{
-						// skip ".."
-						if (pItem->GetLabel() == "..")
-							return true;
-					
-						// clear current temp playlist
-						g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Clear();
-						g_playlistPlayer.Reset();
-
-						// recursively add items to temp playlist
-						AddItemToTempPlayList(pItem);
-
-						// play!
-						g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC_TEMP);
-						if (g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC_TEMP))
-						{
-							// if shuffled dont start on first song
-							g_playlistPlayer.SetCurrentSong(0);
-							g_playlistPlayer.PlayNext();
-						}
-						else
-							g_playlistPlayer.Play(0);
-					}
-					// otherwise just play the song
-					else
-					{
-						OnClick(iItem);
-					}
-					// ACTION_MUSIC_PLAY is not in the base class
-					return true;
+					PlayItem(iItem);
 				}
 			}
 		}
@@ -474,7 +412,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 				pFileItem->m_bIsFolder=true;
 				items.push_back(pFileItem);
 			}
-			m_strParentPath = "";
+			m_strParentPath = g_localizeStrings.Get(135);
 
 			// get genres from the database
 			VECGENRES genres;	
@@ -518,7 +456,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 			if (m_iPath >= 8)
 				m_strParentPath = m_strGenre;
 			else
-				m_strParentPath = "";
+				m_strParentPath = g_localizeStrings.Get(135);
 
 			// get artists from the database
 			VECARTISTS artists;
@@ -562,7 +500,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 			if (m_iPath >= 4)
 				m_strParentPath = m_strArtist;
 			else
-				m_strParentPath = "";
+				m_strParentPath = g_localizeStrings.Get(132);
 
 			//	get albums from the database
 			VECALBUMS albums;
@@ -604,7 +542,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 			if (m_iPath >= 2)
 				m_strParentPath = m_strAlbum;
 			else
-				m_strParentPath = "";
+				m_strParentPath = g_localizeStrings.Get(134);
 
 			//	get songs from the database
 			VECSONGS songs;
@@ -631,6 +569,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 		}
 		break;
 	}
+	CLog::Log(LOGDEBUG,"CGUIWindowMusicNav::GetDirectory Done, m_iState = [%i], m_strParentPath = [%s]",m_iState,m_strParentPath.c_str());
 }
 
 void CGUIWindowMusicNav::UpdateButtons()
@@ -1167,7 +1106,7 @@ void CGUIWindowMusicNav::GoParentFolder()
 		m_strArtist.Empty();
 	}
 	// or back to genres?
-	else if (m_iPath && (1<<3))
+	else if (m_iPath & (1<<3))
 	{
 		m_iState = SHOW_GENRES;
 		m_strAlbum.Empty();
@@ -1189,8 +1128,44 @@ void CGUIWindowMusicNav::GoParentFolder()
 // i've not touched it because I see no problems
 void CGUIWindowMusicNav::GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString)
 {
+	/*
 	// set history to concat of Genre + Artist + Album
 	strHistoryString=m_strGenre+" / "+m_strArtist+" / "+m_strAlbum;
+	*/
+
+	// what was the previous item?
+	int iState = m_iState;
+	int iPath = m_iPath;
+	iPath -= iState;
+	
+	// do we go back to albums?
+	if (iPath & (1<<1))
+		iState = SHOW_ALBUMS;
+	// or back to artists?
+	else if (iPath & (1<<2))
+		iState = SHOW_ARTISTS;
+	// or back to genres?
+	else if (iPath & (1<<3))
+		iState = SHOW_GENRES;
+	else
+		iState = SHOW_ROOT;
+
+	switch (iState)
+	{
+		case SHOW_ROOT:
+			strHistoryString = "";
+		break;
+		case SHOW_GENRES:
+			strHistoryString = m_strGenre;
+		break;
+		case SHOW_ARTISTS:
+			strHistoryString = m_strArtist;
+		break;
+		case SHOW_ALBUMS:
+			strHistoryString = m_strAlbum;
+		break;
+	}
+	CLog::Log(LOGDEBUG,"strHistory = [%s]",strHistoryString.c_str());
 }
 
 /// \brief Add file or folder and its subfolders to playlist
@@ -1213,13 +1188,6 @@ void CGUIWindowMusicNav::AddItemToPlayList(const CFileItem* pItem)
 		CStdString strDirectory=m_Directory.m_strPath;
 		CStdString strOldParentPath=m_strParentPath;
 		int iViewAsIcons=m_iViewAsIcons;
-
-		/*
-		// get current filters
-		CStdString strGenre=m_strGenre;
-		CStdString strArtist=m_strArtist;
-		CStdString strAlbum=m_strAlbum;
-		*/
 
 		// update filter with currently selected item
 		switch (m_iState)
@@ -1272,21 +1240,6 @@ void CGUIWindowMusicNav::AddItemToPlayList(const CFileItem* pItem)
 		m_Directory.m_strPath=strDirectory;
 		m_strParentPath=strOldParentPath;
 		m_iViewAsIcons=iViewAsIcons;
-
-		/*
-		// get songs from the database using filter criteria
-		// and add to playlist
-		VECSONGS songs;
-		if (g_musicDatabase.GetSongsNav(songs,strGenre,strArtist,strAlbum))
-		{
-			for (int i=0; i < (int)songs.size(); ++i)
-			{
-				CSong &song = songs[i];
-				CFileItem* pFileItem = new CFileItem(song);
-				AddItemToPlayList(pFileItem);
-			}
-		}
-		*/
 	}
 	else
 	{
@@ -1315,13 +1268,6 @@ void CGUIWindowMusicNav::AddItemToTempPlayList(const CFileItem* pItem)
 		CStdString strOldParentPath=m_strParentPath;
 		int iViewAsIcons=m_iViewAsIcons;
 
-		/*
-		// get current filters
-		CStdString strGenre=m_strGenre;
-		CStdString strArtist=m_strArtist;
-		CStdString strAlbum=m_strAlbum;
-		*/
-
 		// update filter with currently selected item
 		switch (m_iState)
 		{
@@ -1373,21 +1319,6 @@ void CGUIWindowMusicNav::AddItemToTempPlayList(const CFileItem* pItem)
 		m_Directory.m_strPath=strDirectory;
 		m_strParentPath=strOldParentPath;
 		m_iViewAsIcons=iViewAsIcons;
-
-		/*
-		// get songs from the database using filter criteria
-		// and add to playlist
-		VECSONGS songs;
-		if (g_musicDatabase.GetSongsNav(songs,strGenre,strArtist,strAlbum))
-		{
-			for (int i=0; i < (int)songs.size(); ++i)
-			{
-				CSong &song = songs[i];
-				CFileItem* pFileItem = new CFileItem(song);
-				AddItemToPlayList(pFileItem);
-			}
-		}
-		*/
 	}
 	else
 	{
@@ -1397,5 +1328,49 @@ void CGUIWindowMusicNav::AddItemToTempPlayList(const CFileItem* pItem)
 			CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
 			g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Add(playlistItem);
 		}
+	}
+}
+
+
+void CGUIWindowMusicNav::PlayItem(int iItem)
+{
+	// unlike additemtoplaylist, we need to check the items here
+	// before calling it since the current playlist will be stopped
+	// and cleared!
+
+	// root is not allowed
+	if (m_iState==SHOW_ROOT)
+		return;
+
+	const CFileItem* pItem=m_vecItems[iItem];
+	// if its a folder, build a temp playlist
+	if (pItem->m_bIsFolder)
+	{
+		// skip ".."
+		if (pItem->GetLabel() == "..")
+			return;
+	
+		// clear current temp playlist
+		g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Clear();
+		g_playlistPlayer.Reset();
+
+		// recursively add items to temp playlist
+		AddItemToTempPlayList(pItem);
+
+		// play!
+		g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC_TEMP);
+		if (g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC_TEMP))
+		{
+			// if shuffled dont start on first song
+			g_playlistPlayer.SetCurrentSong(0);
+			g_playlistPlayer.PlayNext();
+		}
+		else
+			g_playlistPlayer.Play(0);
+	}
+	// otherwise just play the song
+	else
+	{
+		OnClick(iItem);
 	}
 }

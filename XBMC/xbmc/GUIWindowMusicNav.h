@@ -24,7 +24,8 @@ protected:
 	virtual void				GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
 	virtual void				AddItemToPlayList(const CFileItem* pItem);
 
-	// new method
+	// new methods
+	void						PlayItem(int iItem);
 	void						AddItemToTempPlayList(const CFileItem* pItem);
 
 	// state of the window
