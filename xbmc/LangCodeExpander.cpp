@@ -103,6 +103,9 @@ void CLangCodeExpander::LoadCodes(const TiXmlElement* pRootElement, CLangCodeExp
 {
   ClearMap(m_map);
 
+  int sLen, lLen;
+  char* sShort,* sLong;
+
 	TiXmlNode* pLangCode=pRootElement->FirstChild("code");
 	while (pLangCode)
 	{
@@ -111,14 +114,15 @@ void CLangCodeExpander::LoadCodes(const TiXmlElement* pRootElement, CLangCodeExp
     if(pShort && pLong)
     {
       //Only use one allocation, might gain something on that
-      const sLen = strlen(pShort->FirstChild()->Value());
-      const lLen = strlen(pLong->FirstChild()->Value());
-      char * sShort = new char[sLen + lLen + 2 ];
-      char * sLong = &(sShort[sLen + 1]);
-
+      sLen = strlen(pShort->FirstChild()->Value());
+      lLen = strlen(pLong->FirstChild()->Value());
+      
+      sShort = new char[sLen + lLen + 2 ];
+      sLong = &(sShort[sLen + 1]);
+      
       strcpy(sShort, pShort->FirstChild()->Value());
       strcpy(sLong, pLong->FirstChild()->Value());
-
+      strlwr(sShort); //Lowercase all keys for lookup
       m_map.insert(
         STRINGLOOKUPTABLE::value_type(
           sShort, 
@@ -137,6 +141,8 @@ void CLangCodeExpander::LoadCodes(const CStdString& strXMLFile, CLangCodeExpande
 	{
     if(xmlDoc.ErrorRow() > 0)
       CLog::Log(LOGERROR, "%s, Line %d\n%s", strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    else
+      CLog::Log(LOGERROR, "unable to load file %s", strXMLFile.c_str());
 
     return;
 	}
@@ -151,6 +157,7 @@ void CLangCodeExpander::LoadCodes(const CStdString& strXMLFile, CLangCodeExpande
 	}
 
   LoadCodes(pRootElement, m_map);
+  xmlDoc.Clear();
   CLog::Log(LOGNOTICE, "loaded %s", strXMLFile.c_str());
 }
 
@@ -158,7 +165,12 @@ void CLangCodeExpander::LoadCodes(const CStdString& strXMLFile, CLangCodeExpande
   inline bool CLangCodeExpander::LookupInMap(CStdString& desc, const CStdString& code, CLangCodeExpander::STRINGLOOKUPTABLE& slmap)
   {
     STRINGLOOKUPTABLE::iterator it;
-    it = slmap.find(code.c_str());
+    //Make sure we convert to lowercase before trying to find it
+    CStdString sCode(code);    
+    sCode.MakeLower();
+    sCode.TrimLeft();
+    sCode.TrimRight();
+    it = slmap.find(sCode.c_str());
     if(it != slmap.end())
     {
       desc = it->second;
