@@ -24,6 +24,7 @@ public:
   SYSTEMTIME    m_stTime;							// file creation date & time
   __int64       m_dwSize;							// file size (0 for folders)
   float         m_fRating;
+  CStdString    m_strDVDLabel;
 	CMusicInfoTag m_musicInfoTag;
 };
 

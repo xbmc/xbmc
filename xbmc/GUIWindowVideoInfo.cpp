@@ -119,7 +119,9 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
         if (iDVD<=0) iDVD=1;
         iItem=iDVD+1;
         
-        CLog::Log("IMDB:%s label:[%s] item:%i" ,m_pMovie->m_strPath.c_str(),m_pMovie->m_strDVDLabel.c_str(),iItem);
+        CLog::Log("IMDB:%s label:[%s] item:%i id:%s" ,
+          m_pMovie->m_strPath.c_str(),m_pMovie->m_strDVDLabel.c_str(),iItem,
+          m_pMovie->m_strSearchString.c_str());
       }
       else 
       {

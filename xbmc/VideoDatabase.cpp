@@ -8,7 +8,7 @@
 #include "utils/log.h"
 #include "util.h"
 
-#define VIDEODATABASE "Q:\\albums\\MyVideos1.db"
+#define VIDEODATABASE "Q:\\albums\\MyVideos2.db"
 //********************************************************************************************************************************
 CVideoDatabase::CVideoDatabase(void)
 {
@@ -124,7 +124,7 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE genrelinkmovie ( idGenre integer, idMovie integer)\n");
     
     CLog::Log("create movie table");
-    m_pDS->exec("CREATE TABLE movie ( idMovie integer primary key, idPath integer, hasSubtitles integer)\n");
+    m_pDS->exec("CREATE TABLE movie ( idMovie integer primary key, idPath integer, hasSubtitles integer, cdlabel text )\n");
     
     CLog::Log("create movieinfo table");
     m_pDS->exec("CREATE TABLE movieinfo ( idMovie integer, idDirector integer, strPlotOutline text, strPlot text, strTagLine text, strVotes text, fRating text,strCast text,strCredits text, iYear integer, strGenre text, strPictureURL text, strTitle text)\n");
@@ -136,7 +136,7 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE actors ( idActor integer primary key, strActor text )\n");
 
     CLog::Log("create path table");
-    m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, cdlabel text )\n");
+    m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text)\n");
     
     CLog::Log("create files table");
     m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, idMovie integer,strFilename text)\n");
@@ -231,7 +231,7 @@ long CVideoDatabase::GetFile(const CStdString& strFilenameAndPath, long &lPathId
 
 
 //********************************************************************************************************************************
-long CVideoDatabase::AddPath(const CStdString& strPath, const CStdString& strCdLabel)
+long CVideoDatabase::AddPath(const CStdString& strPath)
 {
   try
   {
@@ -243,8 +243,8 @@ long CVideoDatabase::AddPath(const CStdString& strPath, const CStdString& strCdL
 	  if (m_pDS->num_rows() == 0) 
 	  {
 		  // doesnt exists, add it
-		  strSQL.Format("insert into Path (idPath, strPath,cdlabel) values( NULL, '%s', '%s')",
-                        strPath.c_str(),strCdLabel.c_str());
+		  strSQL.Format("insert into Path (idPath, strPath) values( NULL, '%s')",
+                        strPath.c_str());
 		  m_pDS->exec(strSQL.c_str());
 		  long lPathId=sqlite_last_insert_rowid(m_pDB->getHandle());
 		  return lPathId;
@@ -259,7 +259,7 @@ long CVideoDatabase::AddPath(const CStdString& strPath, const CStdString& strCdL
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::AddPath(%s,%s) failed",strPath.c_str(),strCdLabel.c_str());
+    CLog::Log("CVideoDatabase::AddPath(%s) failed",strPath.c_str());
   }
 	return -1;
 }
@@ -318,10 +318,10 @@ long CVideoDatabase::AddMovie(const CStdString& strFilenameAndPath, const CStdSt
     {
 	    CStdString strSQL;
 
-      long lPathId = AddPath(strPath,strCDLabel);
+      long lPathId = AddPath(strPath);
       if (lPathId < 0) return -1;
-      strSQL.Format("insert into movie (idMovie, idPath, hasSubtitles) values( NULL, %i, %i)",
-	                                      lPathId,bHassubtitles);
+      strSQL.Format("insert into movie (idMovie, idPath, hasSubtitles, cdlabel) values( NULL, %i, %i, %s)",
+                    lPathId,bHassubtitles,strCDLabel.c_str());
 	    m_pDS->exec(strSQL.c_str());
       lMovieId=sqlite_last_insert_rowid(m_pDB->getHandle());
 
@@ -626,7 +626,7 @@ void CVideoDatabase::GetMoviesByGenre(CStdString& strGenre1, VECMOVIES& movies)
       details.m_strPictureURL=m_pDS->fv("movieinfo.strPictureURL").get_asString();
       details.m_strTitle=m_pDS->fv("movieinfo.strTitle").get_asString();
       details.m_strPath=m_pDS->fv("path.strPath").get_asString();
-      details.m_strDVDLabel=m_pDS->fv("path.cdlabel").get_asString();
+      details.m_strDVDLabel=m_pDS->fv("movie.cdlabel").get_asString();
       long lMovieId=m_pDS->fv("movieinfo.idMovie").get_asLong();
       details.m_strSearchString.Format("%i", lMovieId);
 
@@ -671,7 +671,7 @@ void CVideoDatabase::GetMoviesByActor(CStdString& strActor1, VECMOVIES& movies)
       details.m_strPictureURL=m_pDS->fv("movieinfo.strPictureURL").get_asString();
       details.m_strTitle=m_pDS->fv("movieinfo.strTitle").get_asString();
       details.m_strPath=m_pDS->fv("path.strPath").get_asString();
-      details.m_strDVDLabel=m_pDS->fv("path.cdlabel").get_asString();
+      details.m_strDVDLabel=m_pDS->fv("movie.cdlabel").get_asString();
 
       long lMovieId=m_pDS->fv("movieinfo.idMovie").get_asLong();
       details.m_strSearchString.Format("%i", lMovieId);
@@ -717,7 +717,7 @@ void CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath,CIMDBMovi
     details.m_strPictureURL=m_pDS->fv("movieinfo.strPictureURL").get_asString();
     details.m_strTitle=m_pDS->fv("movieinfo.strTitle").get_asString();
     details.m_strPath=m_pDS->fv("path.strPath").get_asString();
-    details.m_strDVDLabel=m_pDS->fv("path.cdlabel").get_asString();
+    details.m_strDVDLabel=m_pDS->fv("movie.cdlabel").get_asString();
 
     details.m_strSearchString.Format("%i", lMovieId);
 
@@ -980,7 +980,7 @@ void CVideoDatabase::GetMoviesByYear(CStdString& strYear, VECMOVIES& movies)
       details.m_strPictureURL=m_pDS->fv("movieinfo.strPictureURL").get_asString();
       details.m_strTitle=m_pDS->fv("movieinfo.strTitle").get_asString();
       details.m_strPath=m_pDS->fv("path.strPath").get_asString();
-      details.m_strDVDLabel=m_pDS->fv("path.cdlabel").get_asString();
+      details.m_strDVDLabel=m_pDS->fv("movie.cdlabel").get_asString();
       long lMovieId=m_pDS->fv("movieinfo.idMovie").get_asLong();
       details.m_strSearchString.Format("%i", lMovieId);
 
@@ -1096,7 +1096,7 @@ void  CVideoDatabase::GetMovies(VECMOVIES& movies)
       details.m_strPictureURL=m_pDS->fv("movieinfo.strPictureURL").get_asString();
       details.m_strTitle=m_pDS->fv("movieinfo.strTitle").get_asString();
       details.m_strPath=m_pDS->fv("path.strPath").get_asString();
-      details.m_strDVDLabel=m_pDS->fv("path.cdlabel").get_asString();
+      details.m_strDVDLabel=m_pDS->fv("movie.cdlabel").get_asString();
       long lMovieId=m_pDS->fv("movieinfo.idMovie").get_asLong();
       details.m_strSearchString.Format("%i", lMovieId);
       movies.push_back(details);
@@ -1156,18 +1156,11 @@ void CVideoDatabase::SetDVDLabel(long lMovieId, const CStdString& strDVDLabel1)
   {
     if (NULL==m_pDB.get()) return ;
 	  if (NULL==m_pDS.get()) return ;
+    CLog::Log("setdvdlabel:id:%i label:%s",lMovieId,strDVDLabel1.c_str());
 
 	  CStdString strSQL;
-    strSQL.Format("select * from path,movie where movie.idMovie=%i and path.idpath=movie.idpath",lMovieId);
-	  m_pDS->query(strSQL.c_str());
-	  if (m_pDS->num_rows() <= 0) 
-	  {
-      return;
-	  }
-    long lPathId = m_pDS->fv("path.idPath").get_asLong();
-    if (lPathId <0) return;
 
-    strSQL.Format("update path set cdlabel='%s' where idPath=%i", strDVDLabel1.c_str(), lPathId );
+    strSQL.Format("update movie set cdlabel='%s' where idMovie=%i", strDVDLabel1.c_str(), lMovieId );
     m_pDS->exec(strSQL.c_str());
   }
   catch(...)
