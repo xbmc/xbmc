@@ -32,6 +32,7 @@ CGUIListControl::CGUIListControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPo
 	m_iSpaceBetweenItems=4;
 	m_iTextOffsetX2=0;
 	m_iTextOffsetY2=0;
+	m_bUpDownVisible = true;	// show the spin control by default
 	
 	m_dwTextColor2=dwTextColor;
 	m_dwSelectedColor2=dwSelectedColor;
@@ -137,7 +138,7 @@ void CGUIListControl::Render()
       dwPosY += (DWORD)(m_iItemHeight+m_iSpaceBetweenItems);
     }
   }
-	m_upDown.Render();
+	if (m_bUpDownVisible) m_upDown.Render();
 }
 
 void CGUIListControl::RenderText(float fPosX, float fPosY, float fMaxWidth,DWORD dwTextColor, WCHAR* wszText,bool bScroll )
@@ -615,4 +616,10 @@ int CGUIListControl::GetSelectedItem(CStdString& strLabel)
    }
   }
   return iItem;
+}
+
+void CGUIListControl::SetPageControlVisible(bool bVisible)
+{
+	m_bUpDownVisible = bVisible;
+	return;
 }

@@ -14,6 +14,10 @@
 #include "stdstring.h"
 using namespace std;
 
+#define SPIN_CONTROL_TYPE_INT    1
+#define SPIN_CONTROL_TYPE_FLOAT  2
+#define SPIN_CONTROL_TYPE_TEXT   3
+
 /*!
 	\ingroup controls
 	\brief 
@@ -22,21 +26,40 @@ class CGUISliderControl :
   public CGUIControl
 {
 public:
-  CGUISliderControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strBackGroundTexture,const CStdString& strMidTexture);
-  virtual ~CGUISliderControl(void);
-  virtual void Render();
-  virtual bool CanFocus() const;  
+	CGUISliderControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strBackGroundTexture,const CStdString& strMidTexture,const CStdString& strMidTextureFocus,int iType);
+	virtual ~CGUISliderControl(void);
+	virtual void Render();
+	virtual bool CanFocus() const;  
+	virtual void 	OnAction(const CAction &action);
 	virtual void AllocResources();
-  virtual void FreeResources();
-  virtual bool OnMessage(CGUIMessage& message);
-	void				 SetPercentage(int iPercent);
-	int 				 GetPercentage() const;
+	virtual void FreeResources();
+	virtual void SetRange(int iStart, int iEnd);
+	virtual void SetFloatRange(float fStart, float fEnd);
+	virtual bool OnMessage(CGUIMessage& message);
+	void				SetPercentage(int iPercent);
+	int 				GetPercentage() const;
+	void				SetIntValue(int iValue);
+	int 				GetIntValue() const;
+	void				SetFloatValue(float fValue);
+	float 				GetFloatValue() const;
+	void				SetFloatInterval(float fInterval);
+	int 				GetType() const;
 	const CStdString& GetBackGroundTextureName() const { return m_guiBackground.GetFileName();};
 	const CStdString& GetBackTextureMidName() const { return m_guiMid.GetFileName();};
+
 protected:
-  virtual void       Update() ;
-	CGUIImage				m_guiBackground;
-	CGUIImage				m_guiMid;
-	int							m_iPercent;
+	virtual void	Update() ;
+	CGUIImage		m_guiBackground;
+	CGUIImage		m_guiMid;
+	CGUIImage		m_guiMidFocus;
+	int				m_iPercent;
+	int				m_iType;
+	int				m_iStart;
+	int				m_iEnd;
+	float			m_fStart;
+	float			m_fEnd;
+	int				m_iValue;
+	float			m_fValue;
+	float			m_fInterval;
 };
 #endif

@@ -40,6 +40,6 @@ protected:
 	CGUIImage				m_guiLeft;
 	CGUIImage				m_guiRight;
 	CGUIImage				m_guiMid;
-	int							m_iPercent;
+	int						m_iPercent;
 };
 #endif

@@ -888,23 +888,23 @@
   </string>
   <string>
     <id>294</id>
-    <value>1. Create bookmark</value>
+    <value>Create bookmark</value>
   </string>
   <string>
     <id>295</id>
-    <value>2. Cycle bookmarks</value>
+    <value>Cycle bookmarks</value>
   </string>
   <string>
     <id>296</id>
-    <value>3. Clear bookmarks</value>
+    <value>Clear bookmarks</value>
   </string>
   <string>
     <id>297</id>
-    <value>4. AVDelay</value>
+    <value>AVDelay</value>
   </string>
   <string>
     <id>298</id>
-    <value>5. Slider</value>
+    <value>Slider</value>
   </string>
   <string>
     <id>300</id>
@@ -920,19 +920,19 @@
   </string>
   <string>
     <id>303</id>
-    <value>1. Delay</value>
+    <value>Delay</value>
   </string>
   <string>
     <id>304</id>
-    <value>2. Language</value>
+    <value>Language</value>
   </string>
   <string>
     <id>305</id>
-    <value>3. On/Off</value>
+    <value>On/Off</value>
   </string>
   <string>
     <id>306</id>
-    <value>6. Non-Interleaved</value>
+    <value>Non-Interleaved</value>
   </string>
   <string>
     <id>307</id>
@@ -1080,7 +1080,7 @@
   </string>
   <string>
     <id>343</id>
-    <value>8. Adjust Framerate</value>
+    <value>Adjust Framerate</value>
   </string>
   <string>
     <id>344</id>
@@ -1388,7 +1388,7 @@
   </string>  
   <string>
     <id>431</id>
-    <value>7. No Cache</value>
+    <value>No Cache</value>
   </string>  
   <string>
     <id>432</id>
@@ -1494,6 +1494,26 @@
     <id>457</id>
     <value>Switch view</value>
   </string> 
+  <string>
+    <id>458</id>
+    <value>B/Mark</value>
+  </string>
+  <string>
+    <id>459</id>
+    <value>Subs</value>
+  </string>
+  <string>
+    <id>460</id>
+    <value>Audio Stream</value>
+  </string>
+  <string>
+    <id>461</id>
+    <value>[active]</value>
+  </string>
+  <string>
+    <id>462</id>
+    <value>Subtitle</value>
+  </string>
 <string><id>10000</id><value>Home</value></string>
 <string><id>10001</id><value>My Programs</value></string>
 <string><id>10002</id><value>My Pictures</value></string>
