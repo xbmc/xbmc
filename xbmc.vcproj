@@ -171,7 +171,7 @@
 				Name="VCPreLinkEventTool"/>
 			<Tool
 				Name="XboxDeploymentTool"
-				RemotePath="xe:\xbmc\default.xbe"/>
+				RemotePath="xe:\xbmc\xbmcfc.xbe"/>
 			<Tool
 				Name="XboxImageTool"
 				FileName="$(TargetDir)default.xbe"
@@ -317,7 +317,7 @@
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
 				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml"
-				PreprocessorDefinitions="NDEBUG;_XBOX"
+				PreprocessorDefinitions="NDEBUG;_XBOX;HAVE_MSWINDOWS"
 				StringPooling="FALSE"
 				BasicRuntimeChecks="0"
 				SmallerTypeCheck="FALSE"
@@ -337,6 +337,7 @@
 				AdditionalDependencies="xapilib.lib d3dx8.lib d3d8.lib xgraphics.lib dsound.lib xboxkrnl.lib xonline.lib "
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
+				IgnoreDefaultLibraryNames="libc"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				SubSystem="2"
@@ -1673,6 +1674,12 @@
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release Xbox  Debugging|Xbox">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\xbmc\cores\SidPlayer.cpp">
@@ -1691,6 +1698,13 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Xbox">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"
+						PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release Xbox  Debugging|Xbox">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"
@@ -1804,10 +1818,10 @@
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
@@ -1826,6 +1840,13 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"
+							PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release Xbox  Debugging|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"
@@ -1864,6 +1885,13 @@
 							PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS"/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="Release Xbox  Debugging|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"
+							PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS"/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="Debug Xbox No Memory Tracking|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1890,6 +1918,13 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"
+							PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release Xbox  Debugging|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
 							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"

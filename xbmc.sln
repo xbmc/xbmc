@@ -141,8 +141,8 @@ Global
 		{D33D36E6-6E4B-4C1B-A820-A12C94CB1411}.Profile Xbox.Build.0 = Debug|Xbox
 		{D33D36E6-6E4B-4C1B-A820-A12C94CB1411}.Profile_FastCap Win32.ActiveCfg = Debug|Xbox
 		{D33D36E6-6E4B-4C1B-A820-A12C94CB1411}.Profile_FastCap Win32.Build.0 = Debug|Xbox
-		{D33D36E6-6E4B-4C1B-A820-A12C94CB1411}.Profile_FastCap Xbox.ActiveCfg = Debug|Xbox
-		{D33D36E6-6E4B-4C1B-A820-A12C94CB1411}.Profile_FastCap Xbox.Build.0 = Debug|Xbox
+		{D33D36E6-6E4B-4C1B-A820-A12C94CB1411}.Profile_FastCap Xbox.ActiveCfg = Release|Xbox
+		{D33D36E6-6E4B-4C1B-A820-A12C94CB1411}.Profile_FastCap Xbox.Build.0 = Release|Xbox
 		{D33D36E6-6E4B-4C1B-A820-A12C94CB1411}.Release.ActiveCfg = Release|Xbox
 		{D33D36E6-6E4B-4C1B-A820-A12C94CB1411}.Release.Build.0 = Release|Xbox
 		{D33D36E6-6E4B-4C1B-A820-A12C94CB1411}.Release Win32.ActiveCfg = Release|Xbox
