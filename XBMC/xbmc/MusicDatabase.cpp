@@ -129,11 +129,11 @@ void CMusicDatabase::AddSong(const CSong& song1, bool bCheck)
 	RemoveInvalidChars(song.strAlbum);
 	RemoveInvalidChars(song.strGenre);
 	RemoveInvalidChars(song.strArtist);
-	RemoveInvalidChars(song.strFileName);
 	RemoveInvalidChars(song.strTitle);
 
 	CStdString strPath, strFileName;
 	CUtil::Split(song1.strFileName, strPath, strFileName); 
+	RemoveInvalidChars(strFileName);
 
 	if (NULL==m_pDB.get()) return;
 	if (NULL==m_pDS.get()) return;
@@ -339,7 +339,7 @@ long CMusicDatabase::AddArtist(const CStdString& strArtist1)
 
 	map <CStdString, CArtistCache>::const_iterator it;
 
-	it=m_artistCache.find(strArtist);
+	it=m_artistCache.find(strArtist1);
 	if (it!=m_artistCache.end())
 		return it->second.idArtist;
 
@@ -380,7 +380,7 @@ long CMusicDatabase::AddPath(const CStdString& strPath1)
 
 	map <CStdString, CPathCache>::const_iterator it;
 
-	it=m_pathCache.find(strPath);
+	it=m_pathCache.find(strPath1);
 	if (it!=m_pathCache.end())
 		return it->second.idPath;
 
