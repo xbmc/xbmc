@@ -378,8 +378,10 @@ void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
 					//	cddb information for display.
 					item=*pItem;
 				}
-				delete pItem;
 			}
+		}
+		{
+			CFileItemList itemlist(items);	//	cleanup everything
 		}
 	}
 	else
@@ -414,16 +416,7 @@ void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
 		{
 			//	...yes, this file is found in database
 			//	fill the tag of our fileitem
-			SYSTEMTIME systime;
-			systime.wYear=song.iYear;
-			tag.SetReleaseDate(systime);
-			tag.SetTrackNumber(song.iTrack);
-			tag.SetAlbum(song.strAlbum);
-			tag.SetArtist(song.strArtist);
-			tag.SetGenre(song.strGenre);
-			tag.SetTitle(song.strTitle);
-			tag.SetDuration(song.iDuration);
-			tag.SetLoaded(true);
+			tag.SetSong(song);
 		}
 	}
 

@@ -212,6 +212,8 @@ void CGUIWindowMusicTop100::OnClick(int iItem)
 	//	Save current window and directroy to know where the selected item was
 	m_nTempPlayListWindow=GetID();
 	m_strTempPlayListDirectory=m_strDirectory;
+	if (CUtil::HasSlashAtEnd(m_strTempPlayListDirectory))
+		m_strTempPlayListDirectory.Delete(m_strTempPlayListDirectory.size()-1);
 
 	g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC_TEMP);
 	g_playlistPlayer.Play(iItem);
@@ -270,4 +272,54 @@ void CGUIWindowMusicTop100::OnFileItemFormatLabel(CFileItem* pItem)
 void CGUIWindowMusicTop100::DoSort(VECFILEITEMS& items)
 {
 
+}
+
+void CGUIWindowMusicTop100::OnSearchItemFound(const CFileItem* pSelItem)
+{
+	for (int i=0; i<(int)m_vecItems.size(); i++)
+	{
+		CFileItem* pItem=m_vecItems[i];
+		if (pItem->m_strPath==pSelItem->m_strPath)
+		{
+			CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST, i);
+			CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS, i);
+			const CGUIControl* pControl=GetControl(CONTROL_LIST);
+			if (pControl->IsVisible())
+			{
+				SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+			}
+			else
+			{
+				SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
+			}
+			break;
+		}
+	}
+}
+
+/// \brief Search for a song or a artist with search string \e strSearch in the musicdatabase and return the found \e items
+/// \param strSearch The search string 
+/// \param items Items Found
+void CGUIWindowMusicTop100::DoSearch(const CStdString& strSearch,VECFILEITEMS& items)
+{
+	for (int i=0; i<(int)m_vecItems.size(); i++)
+	{
+		CFileItem* pItem=m_vecItems[i];
+		CMusicInfoTag& tag=pItem->m_musicInfoTag;
+
+		CStdString strArtist=tag.GetArtist();
+		strArtist.MakeLower();
+		CStdString strTitle=tag.GetTitle();
+		strTitle.MakeLower();
+		CStdString strAlbum=tag.GetAlbum();
+		strAlbum.MakeLower();
+
+		if (strArtist.Find(strSearch) >-1 || strTitle.Find(strSearch) >-1 || strAlbum.Find(strSearch) >-1 )
+		{
+			CStdString strSong=g_localizeStrings.Get(179);	//	Song
+			CFileItem* pNewItem=new CFileItem(*pItem);
+			pNewItem->SetLabel("[" + strSong + "] " + tag.GetTitle() + " - " + tag.GetArtist());
+			items.push_back(pNewItem);
+		}
+	}
 }

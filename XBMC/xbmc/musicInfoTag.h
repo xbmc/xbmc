@@ -1,6 +1,10 @@
 #pragma once
 
 #include "stdstring.h"
+
+class CSong;
+class CAlbum;
+
 namespace MUSIC_INFO
 {
 
@@ -32,6 +36,8 @@ namespace MUSIC_INFO
 		void							SetTrackNumber(int iTrack);
 		void							SetDuration(int iSec);
 		void							SetLoaded(bool bOnOff=true);
+		void							SetAlbum(const CAlbum& album);
+		void							SetSong(const CSong& song);
 	protected:
 		CStdString	m_strURL;
 		CStdString	m_strTitle;

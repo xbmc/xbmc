@@ -244,15 +244,31 @@ void CGUIWindowManager::DeInitialize()
 	m_vecMsgTargets.erase( m_vecMsgTargets.begin(), m_vecMsgTargets.end() );
 }
 
-void CGUIWindowManager::RouteToWindow(DWORD dwID)
+/// \brief Route to a window
+/// \param dwID Window to route to
+///	\return ID of the previous routed window, if no previous window exists returns WINDOW_INVALID. 
+DWORD CGUIWindowManager::RouteToWindow(DWORD dwID)
 {
-  m_pRouteWindow=GetWindow(dwID);
+	int iPrevRouteWindow=WINDOW_INVALID; 
+
+	if (m_pRouteWindow!=NULL)
+		iPrevRouteWindow=m_pRouteWindow->GetID();
+  
+	m_pRouteWindow=GetWindow(dwID);
+
+	return iPrevRouteWindow;
 }
 
-void CGUIWindowManager::UnRoute()
+/// \brief Unroute window
+/// \param dwID ID of the previous window routed to
+void CGUIWindowManager::UnRoute(DWORD dwID)
 {
-  m_pRouteWindow=NULL;
+	if (dwID==WINDOW_INVALID)
+		m_pRouteWindow=NULL;
+	else
+		m_pRouteWindow=GetWindow(dwID);
 }
+
 void CGUIWindowManager::SendThreadMessage(CGUIMessage& message)
 {
 	::EnterCriticalSection(&m_critSection );

@@ -9,7 +9,10 @@
 #include <set>
 #include <memory>
 #include "MusicDatabaseReorg.h"
+#include "MusicInfotag.h"
+
 using namespace std;
+using namespace MUSIC_INFO;
 
 /*!
 	\ingroup music
@@ -20,6 +23,7 @@ class CSong
 {
 public:
 	CSong() ;
+	CSong(CMusicInfoTag& tag);
 	virtual ~CSong(){};
 	void Clear() ;
 
@@ -169,9 +173,10 @@ public:
 	bool		GetSongsByPath(const CStdString& strPath, VECSONGS& songs);
 	bool		GetSongsByPath(const CStdString& strPath, MAPSONGS& songs);
 	bool		GetSongsByArtist(const CStdString strArtist, VECSONGS& songs);
-	bool		GetSongsByAlbum(const CStdString& strAlbum1, const CStdString& strPath1, VECSONGS& songs);
+	bool		GetSongsByAlbum(const CStdString& strAlbum, const CStdString& strPath, VECSONGS& songs);
 	bool		GetSongsByGenre(const CStdString& strGenre, VECSONGS& songs);
 	bool		GetArtists(VECARTISTS& artists);
+	bool		GetArtistsByName(const CStdString& strArtist, VECARTISTS& artists);
 	bool		GetAlbums(VECALBUMS& albums);
 	bool		GetGenres(VECGENRES& genres);
 	bool		GetTop100(VECSONGS& songs);
@@ -185,6 +190,9 @@ public:
 	bool		GetRecentlyPlayedAlbums(VECALBUMS& albums);
 	bool		GetSongsByPathes(SETPATHES& pathes, MAPSONGS& songs);
 	bool		GetAlbumByPath(const CStdString& strPath, CAlbum& album);
+	bool		FindAlbumsByName(const CStdString& strSearch, VECALBUMS& albums);
+	bool		FindSongsByName(const CStdString& strSearch, VECSONGS& songs);
+	bool		FindSongsByNameAndArtist(const CStdString& strSearch, VECSONGS& songs);
 protected:
 	auto_ptr<SqliteDatabase> m_pDB;
 	auto_ptr<Dataset>				 m_pDS;
