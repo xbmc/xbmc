@@ -463,7 +463,7 @@ void CSettings::ConvertHomeVar(CStdString& strText)
   if (pReplace!=NULL) 
 	{
 	  pReplace2 = pReplace + sizeof("$HOME")-1;
-	  strncpy(szTemp, pReplace2, sizeof("$HOME") - (szText-pReplace2) );
+	  strcpy(szTemp, pReplace2);
 	  strcpy(pReplace, strHomePath.c_str() );
 	  strcat(szText, szTemp);
   }
