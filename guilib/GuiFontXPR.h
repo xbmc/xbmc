@@ -36,7 +36,8 @@ public:
                              D3DCOLOR dwBackgroundColor = 0x00000000,
                              D3DCOLOR dwTextColor = 0xffffffff,
                              D3DFORMAT d3dFormat = D3DFMT_LIN_A8R8G8B8 );
-
+  virtual void Begin();
+  virtual void End();
 protected:
   virtual void DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
 							const WCHAR* strText, DWORD cchText, DWORD dwFlags = 0,

@@ -36,6 +36,15 @@ boolean CGUIFontXPR::Load(const CStdString& strFilename)
 	return false;
 }
 
+void CGUIFontXPR::Begin()
+{
+  m_font.Begin();
+}
+
+void CGUIFontXPR::End()
+{
+  m_font.End();
+}
 
 void CGUIFontXPR::DrawTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
 							const WCHAR* strText, DWORD cchText, DWORD dwFlags,

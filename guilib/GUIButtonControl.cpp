@@ -99,6 +99,7 @@ void CGUIButtonControl::Render()
 		CStdStringW strLabelUnicode;
 		g_charsetConverter.stringCharsetToFontCharset(m_strLabel, strLabelUnicode);
 
+    m_pFont->Begin();
 		if (IsDisabled())
 			m_pFont->DrawText( fPosX, fPosY, m_dwDisabledColor, strLabelUnicode.c_str(), m_dwTextAlignment);
 		else
@@ -117,6 +118,7 @@ void CGUIButtonControl::Render()
 			else
 				m_pFont->DrawText( fPosX, fPosY,m_dwTextColor,strLabelUnicode.c_str(),dwAlign);
 		}
+    m_pFont->End();
 	}
 	
 }
