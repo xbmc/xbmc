@@ -1512,6 +1512,10 @@
      <id>462</id>
      <value>Undertext</value>
    </string>
+   <string>
+     <id>463</id>
+     <value>Bakgrundsljus</value>
+   </string>
 
 
  <string><id>10000</id><value>Start</value></string>
