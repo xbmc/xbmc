@@ -1024,6 +1024,7 @@ void CUtil::FillInDefaultIcon(CFileItem* pItem)
       CStdString strDescription;
       CStdString strFName;
       strFName=CUtil::GetFileName(pItem->m_strPath);
+
       int iPos=strFName.ReverseFind(".");
       strDescription=strFName.Left(iPos);
       pItem->SetLabel(strDescription);
@@ -1138,29 +1139,58 @@ bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
 
 void CUtil::SetThumb(CFileItem* pItem)
 {
+  CStdString strThumb;
   // set the thumbnail for an file item
   
   // if it already has a thumbnail, then return
   if ( pItem->HasThumbnail() ) return;
-  
-  // get the path to the thumbnail (q:\thumb\agdhffh.tbn)
-  CStdString strThumb;
-  CUtil::GetThumbnail( pItem->m_strPath,strThumb);
 
-  // does thumb exists?
+  CStdString strFileName=pItem->m_strPath;
+
+  // if this is a shortcut, then get the real filename
+  if (CUtil::IsShortCut(strFileName))
+  {
+    CShortcut shortcut;
+    if ( shortcut.Create( strFileName ) )
+    {
+      strFileName=shortcut.m_strPath;
+    }
+  }
+
+  // get the path for the cached thumbnail (q:\thumb\agdhffh.tbn)
+  CUtil::GetThumbnail( strFileName,strThumb);
+  
+  // does a cached thumbnail exists?
   if (!CUtil::FileExists(strThumb) )
   {
-    // no thumb does NOT exits
+    // no cached thumb does NOT exits
     bool bGotIcon(false);
-    if (CUtil::IsRemote(pItem->m_strPath) )
+
+    if (CUtil::IsRemote(strFileName) )
     {
+      // cache remote thumbnail...
       CFile file;
       CStdString strThumbnailFileName;
-      CUtil::ReplaceExtension(pItem->m_strPath,".tbn", strThumbnailFileName);
+      CUtil::ReplaceExtension(strFileName,".tbn", strThumbnailFileName);
       if ( file.Cache(strThumbnailFileName.c_str(), strThumb.c_str(),NULL,NULL))
       {
         pItem->SetThumbnailImage(strThumb);
         bGotIcon=true;
+      }
+    }
+    else
+    {
+      // is it a local file
+      if (!pItem->m_bIsFolder)
+      {
+        // yes, check if file.tbn exists
+        CUtil::ReplaceExtension(strFileName,".tbn", strThumb);
+        if (CUtil::FileExists(strThumb))
+        {
+          // yes, then use it.
+          pItem->SetThumbnailImage(strThumb);
+          bGotIcon=true;
+        }
       }
     }
 
@@ -1171,7 +1201,7 @@ void CUtil::SetThumb(CFileItem* pItem)
       if (pItem->m_bIsFolder)
       {
         // yes, then get the folder thumbnail
-        if ( CUtil::GetFolderThumb(pItem->m_strPath, strThumb))
+        if ( CUtil::GetFolderThumb(strFileName, strThumb))
         {
           pItem->SetThumbnailImage(strThumb);
         }
@@ -1180,7 +1210,7 @@ void CUtil::SetThumb(CFileItem* pItem)
   }
   else
   {
-    // yes thumb exists, 
+    // yes cached thumbnail exists, use it
     pItem->SetThumbnailImage(strThumb);
   }
 }
