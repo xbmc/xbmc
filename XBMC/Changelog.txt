@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 26-02-2005 fixed: DVDImage/Folder playback could fail on remote drives (smb,ccx..) if password set with new player
   - 25-02-2005 fixed: My Music view resets to file view on restart if it was set to navigator view.
   - 25-02-2005 fixed: Stack overflow in ActivateWindow if it's called with an invalid window from a windows OnInit message handler.
   - 24-02-2005 added: My Music iPod-style Navigator. (Initial commit. Support for multiple artists and genres coming SOON!)

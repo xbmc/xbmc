@@ -103,9 +103,14 @@ bool  CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
 {
 	CSingleLock lock(m_cs);
 
-  CStdString strPath;
+  CStdString strPath, strFixedFile(strFile);
+  
+  //Fixup mismatched slashes in urls for local filenames
+  if( strFixedFile.Mid(1,1) == ":" )
+    strFixedFile.Replace('/','\\');
+
   bInCache=false;
-  CUtil::GetDirectory(strFile,strPath);
+  CUtil::GetDirectory(strFixedFile,strPath);
   ivecCache i=g_directoryCache.m_vecCache.begin();
   while (i != g_directoryCache.m_vecCache.end() )
   {
@@ -116,7 +121,7 @@ bool  CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
       for (int i=0; i < (int) dir.m_Items.size(); ++i)
       {
         CFileItem* pItem=dir.m_Items[i];
-        if ( CUtil::cmpnocase(pItem->m_strPath,strFile)==0)
+        if ( CUtil::cmpnocase(pItem->m_strPath,strFixedFile)==0)
         {
           return true;
         }
