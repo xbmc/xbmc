@@ -2158,24 +2158,35 @@ bool CSettings::SaveHomeButtons()
 	{
 		// create a new <button> entry
 		CStdString strLabel;
+		CStdString strDescription;
 		if (g_settings.m_buttonSettings.m_vecButtons[i]->m_dwLabel == -1)
+		{
 			strLabel = g_settings.m_buttonSettings.m_vecButtons[i]->m_strLabel;
+			strDescription = strLabel;
+		}
 		else
+		{
 			strLabel.Format("%i", g_settings.m_buttonSettings.m_vecButtons[i]->m_dwLabel);
+			strDescription = g_localizeStrings.Get(g_settings.m_buttonSettings.m_vecButtons[i]->m_dwLabel);
+		}
+		TiXmlText xmlDescription(strDescription);
 		TiXmlText xmlLabel(strLabel);
 		TiXmlText xmlExecute(g_settings.m_buttonSettings.m_vecButtons[i]->m_strExecute);
 		CStdString strIcon;
 		strIcon.Format("%i", g_settings.m_buttonSettings.m_vecButtons[i]->m_iIcon);
 		TiXmlText xmlIcon(strIcon);
+		TiXmlElement eDescription("description");
 		TiXmlElement eLabel("label");
 		TiXmlElement eExecute("execute");
 		TiXmlElement eIcon("icon");
 
+		eDescription.InsertEndChild(xmlDescription);
 		eLabel.InsertEndChild(xmlLabel);
 		eExecute.InsertEndChild(xmlExecute);
 		eIcon.InsertEndChild(xmlIcon);
 
 		TiXmlElement button("button");
+		button.InsertEndChild(eDescription);
 		button.InsertEndChild(eLabel);
 		button.InsertEndChild(eExecute);
 		button.InsertEndChild(eIcon);
