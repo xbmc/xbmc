@@ -1146,4 +1146,8 @@
     <id>360</id>
     <value>Screensaver</value>
   </string>
+  <string>
+    <id>361</id>
+    <value>R. SlideShow</value>
+  </string>   
 </strings>
