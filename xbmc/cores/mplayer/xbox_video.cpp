@@ -80,7 +80,7 @@ static DWORD                  m_hPixelShader = 0;
 static int                    m_iYUVDecodeBuffer;
 static int                    m_iRGBRenderBuffer;
 static int                    m_iRGBDecodeBuffer;
-
+static int                    m_bConfigured=false;
 typedef struct directx_fourcc_caps
 {
 	char*             img_format_name;      //human readable name
@@ -656,7 +656,7 @@ static unsigned int video_preinit(const char *arg)
 	m_iRGBDecodeBuffer = m_iYUVDecodeBuffer = 0;
 	m_bFlip=0;
 	fs=1;
-
+	m_bConfigured=false;
 	// Create the pixel shader
 	if (!m_hPixelShader)
 	{
@@ -1152,12 +1152,15 @@ void xbox_video_render_update()
 void xbox_video_update(bool bPauseDrawing)
 {
   m_bPauseDrawing = bPauseDrawing;
-	bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
-	g_graphicsContext.Lock();
-	g_graphicsContext.SetVideoResolution(bFullScreen ? m_iResolution:g_stSettings.m_GUIResolution);
-	g_graphicsContext.Unlock();
-	Directx_ManageDisplay();
-	xbox_video_render_update();
+	if(m_bConfigured) //Only do this if we have been inited.
+	{
+		bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
+		g_graphicsContext.Lock();
+		g_graphicsContext.SetVideoResolution(bFullScreen ? m_iResolution:g_stSettings.m_GUIResolution);
+		g_graphicsContext.Unlock();
+		Directx_ManageDisplay();
+		xbox_video_render_update();
+	}
 }
 
 
@@ -1293,6 +1296,7 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
 
 	Directx_ManageDisplay();
 	Directx_CreateOverlay(image_format);
+	m_bConfigured=true;
 	OutputDebugString("video_config() done\n");
 	return 0;
 }
