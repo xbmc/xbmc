@@ -719,6 +719,7 @@ Exp2Dll::~Exp2Dll()
 #define MODULE_HANDLE_ddraw     0xf3f30140			//ddraw.dll magic number
 #define MODULE_HANDLE_wininet   0xf3f30150			//WININET.dll magic number
 #define MODULE_HANDLE_advapi32  0xf3f30160			//ADVAPI32.dll magic number
+#define MODULE_HANDLE_ws2_32    0xf3f30170			  //WS2_32.dll magic number// winsock2
 
 extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file) 
 {
@@ -740,7 +741,8 @@ extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file)
 	if (strcmp(llibname, "ddraw.dll") == 0)    return (HMODULE)MODULE_HANDLE_ddraw;
 	if (strcmp(llibname, "wininet.dll") == 0)  return (HMODULE)MODULE_HANDLE_wininet;
 	if (strcmp(llibname, "advapi32.dll") == 0) return (HMODULE)MODULE_HANDLE_advapi32;
-
+	if (strcmp(llibname, "ws2_32.dll") == 0 || strcmp(llibname, "ws2_32") == 0) return (HMODULE)MODULE_HANDLE_ws2_32;
+  
 	char pfile[MAX_PATH+1];
 	if (strlen(file) > 1 && file[1] == ':') sprintf(pfile, "%s", (char *)file);
 	else sprintf(pfile, "%s\\%s", DEFAULT_DLLPATH ,(char *)libname);
@@ -856,14 +858,34 @@ extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file)
 	return (HMODULE) dllhandle;
 }
 
+#define DONT_RESOLVE_DLL_REFERENCES   0x00000001
+#define LOAD_LIBRARY_AS_DATAFILE      0x00000002
+#define LOAD_WITH_ALTERED_SEARCH_PATH 0x00000008
+#define LOAD_IGNORE_CODE_AUTHZ_LEVEL  0x00000010
+
+extern "C" HMODULE dllLoadLibraryExA(LPCSTR lpLibFileName, HANDLE hFile, DWORD dwFlags)
+{
+  char strFlags[1024];
+  strFlags[0] = '\0';
+  
+  if (dwFlags & DONT_RESOLVE_DLL_REFERENCES) strcat(strFlags, "\n - DONT_RESOLVE_DLL_REFERENCES");
+  if (dwFlags & LOAD_IGNORE_CODE_AUTHZ_LEVEL) strcat(strFlags, "\n - LOAD_IGNORE_CODE_AUTHZ_LEVEL");
+  if (dwFlags & LOAD_LIBRARY_AS_DATAFILE) strcat(strFlags, "\n - LOAD_LIBRARY_AS_DATAFILE");
+  if (dwFlags & LOAD_WITH_ALTERED_SEARCH_PATH) strcat(strFlags, "\n - LOAD_WITH_ALTERED_SEARCH_PATH");
+  
+  CLog::Log(LOGDEBUG, "LoadLibraryExA called with flags: %s", strFlags);
+  return dllLoadLibraryA(lpLibFileName);
+}
+
 extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
 {	
 	CLog::Log(LOGDEBUG,"FreeLibrary(0x%x)", hLibModule);
 	if (hLibModule == (HMODULE)MODULE_HANDLE_kernel32 ||
-		hLibModule == (HMODULE)MODULE_HANDLE_user32 ||
+    hLibModule == (HMODULE)MODULE_HANDLE_user32 ||
 		hLibModule == (HMODULE)MODULE_HANDLE_ddraw ||
 		hLibModule == (HMODULE)MODULE_HANDLE_wininet ||
-		hLibModule == (HMODULE)MODULE_HANDLE_advapi32)
+		hLibModule == (HMODULE)MODULE_HANDLE_advapi32 ||
+		hLibModule == (HMODULE)MODULE_HANDLE_ws2_32)
 		return 1;
 
 	DllLoader * dllhandle = (DllLoader *)hLibModule;
@@ -873,7 +895,7 @@ extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
 	}
 
 	EntryFunc * initdll = (EntryFunc *)dllhandle->EntryAddress;
-	(*initdll)((HINSTANCE) dllhandle->hModule, 0 ,0);	//call "DllMain" with DLL_PROCESS_DETACH
+	(*initdll)((HINSTANCE) dllhandle->hModule, DLL_PROCESS_DETACH ,0);	//call "DllMain" with DLL_PROCESS_DETACH
 
 	//Remove dll from m_vecDlls
 	for (vector<DllLoader*>::iterator iDll = m_vecDlls.begin(); iDll != m_vecDlls.end(); ++iDll)
@@ -952,6 +974,22 @@ extern "C" FARPROC __stdcall dllGetProcAddress( HMODULE hModule, LPCSTR function
 		}
 	}
 
+	if ( hModule == (HMODULE)MODULE_HANDLE_ws2_32 )
+	{
+		if (ResolveName("ws2_32.dll", (char *)function, &address)||
+        ResolveName("WS2_32.DLL", (char *)function, &address))
+    {
+			CLog::Log(LOGDEBUG,"KERNEL32!GetProcAddress (0x%x, '%s') => 0x%x", hModule, function, address);
+			return (FARPROC) address;
+		}
+		else
+		{
+			CLog::Log(LOGDEBUG,"KERNEL32!GetProcAddress(0x%x, '%s') => 0x%x", hModule, function, NULL);
+			return (FARPROC) NULL;
+		}
+	}
+
+
 	DllLoader * dllhandle = (DllLoader *)hModule;
 	dllhandle->ResolveExport((char *)function, &address);
 	CLog::Log(LOGDEBUG,"KERNEL32!GetProcAddress(0x%x, '%s') => 0x%x", hModule, function, address);
@@ -1017,7 +1055,11 @@ extern "C" HMODULE WINAPI dllGetModuleHandleA(LPCSTR lpModuleName)
 		CLog::Log(LOGDEBUG,"KERNEL32!GetModuleHandleA('%s') => 0x%x", lpModuleName, MODULE_HANDLE_advapi32);
 		return (HMODULE)MODULE_HANDLE_advapi32;
 	}
-
+	if (stricmp(strModuleName, "ws2_32.dll") == 0) {
+		CLog::Log(LOGDEBUG,"KERNEL32!GetModuleHandleA('%s') => 0x%x", lpModuleName, MODULE_HANDLE_ws2_32);
+		return (HMODULE)MODULE_HANDLE_ws2_32;
+	}
+	
 	delete []strModuleName;
 
 	CLog::Log(LOGDEBUG,"GetModuleHandleA(%s) .. looking up", lpModuleName);
