@@ -78,6 +78,9 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate,int
     strCachedFile=strFileName;
   }
 
+//	pTexture = LoadNative(strCachedFile);
+//	if (pTexture) return pTexture;
+
 	if (!m_bSectionLoaded)
 	{
 		CSectionLoader::Load("CXIMAGE");
@@ -153,6 +156,40 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate,int
 	else
 		pTexture=GetYUY2Texture(image);
 	return pTexture;
+}
+
+IDirect3DTexture8* CPicture::LoadNative(const CStdString& strFileName)
+{
+	CStdString strExtension;
+	CUtil::GetExtension(strFileName,strExtension);
+	if (!strExtension.size()) return NULL;
+
+	// TODO: Add other known stuff that D3DCreateTextureFromFileEx supports
+	if ( 0!=CUtil::cmpnocase(strExtension.c_str(),".jpg") &&
+				0!=CUtil::cmpnocase(strExtension.c_str(),".jpeg") &&
+				0!=CUtil::cmpnocase(strExtension.c_str(),".png") ) return NULL;
+
+  try
+  {
+		IDirect3DTexture8 *pTexture = NULL;
+		D3DXIMAGE_INFO info;
+		DWORD dwColorKey = 0;
+		if (D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(),strFileName.c_str(), D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED,
+				D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture) != D3D_OK)
+		{
+			CLog::Log(LOGERROR, "PICTURE::load: Unable to open image: %s\n", strFileName.c_str());
+		  return NULL;
+	  }
+
+		m_dwWidth  = info.Width;
+		m_dwHeight = info.Height;
+		return pTexture;
+  }
+  catch(...)
+  {
+		CLog::Log(LOGERROR, "PICTURE::load: Unable to open image: %s\n", strFileName.c_str());
+    return NULL;
+  }
 }
 
 DWORD	CPicture::GetWidth()  const
@@ -561,34 +598,36 @@ void CPicture::RenderImage(IDirect3DTexture8* pTexture,int x, int y, int width, 
   m_pVB->Unlock();
 
 
-    // Set state to render the image
-    g_graphicsContext.Get3DDevice()->SetTexture( 0, pTexture );
-    g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
-    g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-    g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-    g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_MODULATE );
-    g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-    g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
-    g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_COLOROP,   D3DTOP_DISABLE );
-    g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
-    g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSU,  D3DTADDRESS_CLAMP );
-    g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSV,  D3DTADDRESS_CLAMP );
+	// Set state to render the image
+	g_graphicsContext.Get3DDevice()->SetTexture( 0, pTexture );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_MODULATE );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_COLOROP,   D3DTOP_DISABLE );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSU,  D3DTADDRESS_CLAMP );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSV,  D3DTADDRESS_CLAMP );
 	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MAGFILTER,  g_stSettings.m_minFilter );
 	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MINFILTER,  g_stSettings.m_maxFilter );
-    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ZENABLE,      FALSE );
-    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGENABLE,    FALSE );
-    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
-    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FILLMODE,     D3DFILL_SOLID );
-    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_CULLMODE,     D3DCULL_CCW );
-    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
-    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA );
-    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-//	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_YUVENABLE, bRGB ? FALSE : TRUE);
-    g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_VERTEX );
-    // Render the image
-    g_graphicsContext.Get3DDevice()->SetStreamSource( 0, m_pVB, sizeof(VERTEX) );
-    g_graphicsContext.Get3DDevice()->DrawPrimitive( D3DPT_QUADLIST, 0, 1 );
-		m_pVB->Release();
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ZENABLE,      FALSE );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGENABLE,    FALSE );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FILLMODE,     D3DFILL_SOLID );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_CULLMODE,     D3DCULL_CCW );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_YUVENABLE, FALSE);
+	g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_VERTEX );
+	// Render the image
+	g_graphicsContext.Get3DDevice()->SetStreamSource( 0, m_pVB, sizeof(VERTEX) );
+	g_graphicsContext.Get3DDevice()->DrawPrimitive( D3DPT_QUADLIST, 0, 1 );
+	// reset texture state
+	g_graphicsContext.Get3DDevice()->SetTexture(0, NULL);
+	m_pVB->Release();
 }
 
 

@@ -29,6 +29,7 @@
 #include "FileSystem/DAAPDirectory.h"
 #include "utils/FanController.h"
 #include "utils/CharsetConverter.h"
+#include "XBVideoConfig.h"
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
@@ -144,7 +145,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 	CLog::Log(LOGWARNING, "Emergency recovery console starting...");
 
 	bool HaveGamepad = !InitD3D;
-	bool Pal = XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I;
+	bool Pal = g_videoConfig.HasPAL();
 	if (InitD3D)
 	{
 		CLog::Log(LOGINFO, "Init display in default mode: %s", Pal ? "PAL" : "NTSC");
