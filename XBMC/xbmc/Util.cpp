@@ -1092,18 +1092,17 @@ int	CUtil::GetResolution(int iWidth, int iHeight, bool bPAL, bool bPAL60)
 		{
 			if (iWidth==640 && iHeight==480) return 5;
 			if (iWidth==720 && iHeight==480) return 6;
-			if (iWidth==720 && iHeight==576) return 7;
 		}
 		else
 		{
-			if (iWidth==640 && iHeight==480) return 8;
-			if (iWidth==720 && iHeight==480) return 9;
-			if (iWidth==720 && iHeight==576) return 10;
+			if (iWidth==640 && iHeight==576) return 7;
+			if (iWidth==720 && iHeight==576) return 8;
 		}
 
 	}
 	return 0;
 }
+
 void	CUtil::GetResolutionParams(int m_iResolution,  int& iScreenWidth , int& iScreenHeight,bool& bPAL, bool& bPAL60)
 {
 	iScreenWidth=720;
@@ -1131,20 +1130,14 @@ void	CUtil::GetResolutionParams(int m_iResolution,  int& iScreenWidth , int& iSc
 			iScreenWidth=720; iScreenHeight=480; bPAL=true; bPAL60=true;
 		break;
 		case 7:
-			iScreenWidth=720; iScreenHeight=576; bPAL=true; bPAL60=true;
+			iScreenWidth=640; iScreenHeight=576; bPAL=true; bPAL60=false;
 		break;
-
 		case 8:
-			iScreenWidth=640; iScreenHeight=480; bPAL=true; bPAL60=false;
-		break;
-		case 9:
-			iScreenWidth=720; iScreenHeight=480; bPAL=true; bPAL60=false;
-		break;
-		case 10:
 			iScreenWidth=720; iScreenHeight=576; bPAL=true; bPAL60=false;
 		break;
 	}
 }
+
 // Following 6 routines added by JM to determine (possible) source type based
 // on frame size
 bool CUtil::IsNTSC_VCD(int iWidth, int iHeight)

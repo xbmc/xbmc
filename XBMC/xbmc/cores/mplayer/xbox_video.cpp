@@ -51,7 +51,8 @@ bool												m_bFlip=false;
 static int									m_iDeviceWidth;
 static int									m_iDeviceHeight;
 bool												m_bFullScreen=false;
-bool												m_bPal60Allowed=true;
+bool												m_bWidescreen=false;
+float												m_fFPS;
 static int									m_iResolution=0;
 
 typedef struct directx_fourcc_caps
@@ -68,19 +69,17 @@ static directx_fourcc_caps g_ddpf[] =
     {"YV12 ",IMGFMT_YV12 ,DIRECT3D8CAPS},
 };
 
-static float fScreenModePixelRatio[11] = 
+static float fScreenModePixelRatio[9] = 
 {
 		1.0f,							// 0 = invalid resolution. Does not exists
 		1.0f,							// 1 = 1920x1280
 		1.0f,							// 2 = 1280x720
 		1.0f,							// 3 = 640x480 NTSC
-		10.0f/11.0f,			// 4 = 720x480 NTSC
+		10.0f/11.0f,					// 4 = 720x480 NTSC
 		1.0f,							// 5 = 640x480 PAL  (PAL60)
-		10.0f/11.0f,			// 6 = 720x480 PAL  (PAL60)
-		59.0f/54.0f,			// 7 = 720x576 PAL  (PAL60)
-		1.0f,							// 8 = 640x480 PAL  (PAL50)
-		10.0f/11.0f,			// 9 = 720x480 PAL  (PAL50)
-		59.0f/54.0f				// 10= 720x576 PAL  (PAL50)
+		10.0f/11.0f,					// 6 = 720x480 PAL  (PAL60)
+		6.0f/5.0f,						// 7 = 640x576 PAL  (PAL50) (Not 100% sure on this one)
+		59.0f/54.0f						// 8 = 720x576 PAL  (PAL50)
 };
 
 #define NUM_FORMATS (sizeof(g_ddpf) / sizeof(g_ddpf[0]))
@@ -103,10 +102,18 @@ void restore_resolution()
 	}
 }
 
-//********************************************************************************************************
-void choose_best_resolution(bool bPal60Allowed)
+unsigned int get_resolution_width(int iRes)
 {
-  D3DPRESENT_PARAMETERS params, orgparams;
+	int iWidth[9] = { 0, 1920, 1280, 640, 720, 640, 720, 640, 720 };
+	int iOffsetX1 = g_stSettings.m_rectMovieCalibration[iRes].left;
+	int iOffsetX2 = g_stSettings.m_rectMovieCalibration[iRes].right;
+	return iWidth[iRes]+iOffsetX2-iOffsetX1;
+}
+
+//********************************************************************************************************
+void choose_best_resolution(float fps)
+{
+	D3DPRESENT_PARAMETERS params, orgparams;
 	g_application.GetD3DParameters(params);
 	g_application.GetD3DParameters(orgparams);
 	DWORD dwStandard = XGetVideoStandard();
@@ -114,18 +121,29 @@ void choose_best_resolution(bool bPal60Allowed)
 
 
 	bool bUsingPAL		= (dwStandard==XC_VIDEO_STANDARD_PAL_I);		// current video standard:PAL or NTSC 
-	bool bUsingPAL60  = (params.FullScreen_RefreshRateInHz==60);  // PAL60 already used?
+	bool bCanDoWidescreen = (dwFlags & XC_VIDEO_FLAGS_WIDESCREEN);		// can widescreen be enabled?
 
+	// Work out if the framerate suits PAL50 or PAL60
+	bool bPal60SuitsFrameRate = true;
+	if (floor(50.0f/fps)==50.0f/fps)
+		bPal60SuitsFrameRate = false;
+
+	// Work out if framesize suits 4:3 or 16:9
+	bool bShouldUseWidescreen = false;
+	if (bCanDoWidescreen && ((float)d_image_width/d_image_height > 4.0f/3.0f))
+	{
+		bShouldUseWidescreen = true;
+	}
 
 	bool bPal60=false;
-	bool bWideScreen=false;
-	if (params.Flags&D3DPRESENTFLAG_WIDESCREEN) bWideScreen=true;  // WIDESCREEN 16:9 ?
-	if (bUsingPAL && bPal60Allowed && (dwFlags&XC_VIDEO_FLAGS_PAL_60Hz) && !bWideScreen )
+	bool bUsingWidescreen=false;
+	if (params.Flags&D3DPRESENTFLAG_WIDESCREEN) bUsingWidescreen=true;  // WIDESCREEN 16:9 ?
+	if (bUsingPAL && bPal60SuitsFrameRate && g_stSettings.m_bAllowPAL60 && (dwFlags&XC_VIDEO_FLAGS_PAL_60Hz) && !bUsingWidescreen )
 	{
 		// yes we're in PAL
 		// yes PAL60 is allowed
 		// yes dashboard PAL60 settings is enabled
-		// yep, we're using 4:3 (pal60 doesnt work in widescreen 16:9)
+		// yep, we're using 4:3 (pal60 doesnt work in widescreen 16:9) <- CHECK THIS!!
 		bPal60=true;
 	}
 
@@ -136,25 +154,31 @@ void choose_best_resolution(bool bPal60Allowed)
 		    (! ( g_graphicsContext.IsFullScreenVideo()|| g_graphicsContext.IsCalibrating())  )
 			)
 	{
-		m_iDeviceWidth  = g_graphicsContext.GetWidth();
-		m_iDeviceHeight = g_graphicsContext.GetHeight();
-
-		// PAL 60 only worx with 720x480 & 640x480
-		if (m_iDeviceHeight > 480) bPal60=false;
 		if (bPal60)
 		{
+			params.BackBufferHeight = 480;			// PAL60 must have 480 lines
 			params.FullScreen_RefreshRateInHz=60;
+		}
+		else
+		{
+			params.BackBufferHeight = 576;			// PAL50 must have 576 lines
+			params.FullScreen_RefreshRateInHz=50;
 		}
 		if (params.FullScreen_RefreshRateInHz != orgparams.FullScreen_RefreshRateInHz)
 		{
 			g_graphicsContext.Get3DDevice()->Reset(&params);
 		}
+
+		m_iDeviceWidth  = params.BackBufferWidth;
+		m_iDeviceHeight = params.BackBufferHeight;
+
 		m_iResolution=CUtil::GetResolution( m_iDeviceWidth, m_iDeviceHeight, bUsingPAL, bPal60);
+		m_bWidescreen = bUsingWidescreen;
 		g_graphicsContext.SetVideoResolution(m_iResolution);
 		return;
 	}
 
-	if ( (dwFlags&XC_VIDEO_FLAGS_HDTV_1080i) && bWideScreen )
+	if ( (dwFlags&XC_VIDEO_FLAGS_HDTV_1080i) && bUsingWidescreen )
 	{
 		//1920x1080 16:9
 		if (bUsingPAL)
@@ -163,7 +187,8 @@ void choose_best_resolution(bool bPal60Allowed)
 			{
 				params.BackBufferWidth =1920;
 				params.BackBufferHeight=1080;
-				params.Flags=D3DPRESENTFLAG_WIDESCREEN;
+				params.Flags=D3DPRESENTFLAG_INTERLACED|D3DPRESENTFLAG_WIDESCREEN;
+				bShouldUseWidescreen=true;
 			}
 		}
 		else
@@ -172,15 +197,15 @@ void choose_best_resolution(bool bPal60Allowed)
 			{
 				params.BackBufferWidth =1920;
 				params.BackBufferHeight=1080;
-				params.Flags=D3DPRESENTFLAG_WIDESCREEN;
+				params.Flags=D3DPRESENTFLAG_INTERLACED|D3DPRESENTFLAG_WIDESCREEN;
+				bShouldUseWidescreen=true;
 			}
 		}
 	}
 
-
-	if ( (dwFlags&XC_VIDEO_FLAGS_HDTV_720p) &&bWideScreen )
+	if ( (dwFlags&XC_VIDEO_FLAGS_HDTV_720p) && bUsingWidescreen )
 	{
-			//1280x720 16:9
+		//1280x720 16:9
 		if (bUsingPAL)
 		{
 			if (image_width>720 || image_height>576)
@@ -188,6 +213,7 @@ void choose_best_resolution(bool bPal60Allowed)
 				params.BackBufferWidth =1280;
 				params.BackBufferHeight=720;
 				params.Flags=D3DPRESENTFLAG_WIDESCREEN|D3DPRESENTFLAG_PROGRESSIVE;
+				bShouldUseWidescreen=true;
 			}
 		}
 		else
@@ -197,49 +223,64 @@ void choose_best_resolution(bool bPal60Allowed)
 				params.BackBufferWidth =1280;
 				params.BackBufferHeight=720;
 				params.Flags=D3DPRESENTFLAG_WIDESCREEN|D3DPRESENTFLAG_PROGRESSIVE;
+				bShouldUseWidescreen=true;
 			}
 		}
 	}
 
-
 	if (bUsingPAL)
 	{
-		if (image_width <= 720)
-		{
-			params.BackBufferWidth = 720;
-			if (image_height <= 576) params.BackBufferHeight=576;
-			if (image_height <= 480) params.BackBufferHeight=480;
-		}
-		if (image_width <= 640 && image_height <=480)
-		{
-			params.BackBufferWidth =640;
-			params.BackBufferHeight=480;
-		}
-
-		// PAL60 only worx with 640x480 & 720x480
-		if (params.BackBufferHeight > 480)
-			bPal60=false;
-		if (bPal60)
+		if (bPal60)	// PAL60
 		{
 			params.FullScreen_RefreshRateInHz=60;
+			params.BackBufferWidth = 720;
+			params.BackBufferHeight = 480;
+			if (image_width <= get_resolution_width(5))
+			{
+				params.BackBufferWidth = 640;
+				params.BackBufferHeight = 480;
+			}
+			if (dwFlags&XC_VIDEO_FLAGS_HDTV_480p) params.Flags = D3DPRESENTFLAG_PROGRESSIVE;	// 480p
+		}
+		else				// PAL50
+		{
+			params.FullScreen_RefreshRateInHz=50;
+			params.BackBufferWidth = 720;
+			params.BackBufferHeight = 576;
+			if (image_width <= get_resolution_width(7))
+			{
+				params.BackBufferWidth = 640;
+				params.BackBufferHeight = 576;
+			}
 		}
 	}
-	else
+	else	// using NTSC
 	{
-		if (image_width <= 720)
-		{
-			params.BackBufferWidth =720;
-			params.BackBufferHeight=480;
-		}
-		if (image_width <= 640)
+		params.BackBufferWidth =720;
+		params.BackBufferHeight=480;
+		if (image_width <= get_resolution_width(3))
 		{
 			params.BackBufferWidth =640;
 			params.BackBufferHeight=480;
-		}
+		}		
+		if (dwFlags&XC_VIDEO_FLAGS_HDTV_480p) params.Flags = D3DPRESENTFLAG_PROGRESSIVE;
 	}
+	// turn on/off widescreen flag as necessary
+	if (bShouldUseWidescreen)
+	{
+		params.Flags |= D3DPRESENTFLAG_WIDESCREEN;
+		m_bWidescreen = true;
+	}
+	else // (!bShouldUseWidescreen)
+	{
+		params.Flags &= ~D3DPRESENTFLAG_WIDESCREEN;
+		m_bWidescreen = false;
+	}
+
 	if (params.BackBufferHeight != orgparams.BackBufferHeight ||
 		  params.BackBufferWidth  != orgparams.BackBufferWidth ||
-			params.FullScreen_RefreshRateInHz !=orgparams.FullScreen_RefreshRateInHz)
+			params.FullScreen_RefreshRateInHz !=orgparams.FullScreen_RefreshRateInHz ||
+				params.Flags != orgparams.Flags	)
 	{
 		g_graphicsContext.Get3DDevice()->Reset(&params);
 	}
@@ -376,6 +417,7 @@ static unsigned int Directx_ManageDisplay()
 		fOffsetX2    = 0.0f;
 		fOffsetY2    = 0.0f;
 	}
+
 	//if( g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() )
   {
 		if (g_stSettings.m_bStretch)
@@ -405,7 +447,7 @@ static unsigned int Directx_ManageDisplay()
 				// calculate AR compensation (see http://www.mir.com/DMG/aspect.html)
 
 				float fScreenPixelRatio = fScreenModePixelRatio[m_iResolution];
-				if (g_graphicsContext.IsWidescreen() && ((m_iResolution >= 3) || (m_iResolution <= 10)))
+				if (m_bWidescreen && ((m_iResolution >= 3) || (m_iResolution <= 8)))
 				      fScreenPixelRatio *= 4.0f/3.0f;
 
 				// Calculate frame ratio based on source frame size and pixel ratio (Added by JM)
@@ -462,7 +504,7 @@ static unsigned int Directx_ManageDisplay()
 		// and keep the aspect ratio (introduces with black bars)
 
 		float fScreenPixelRatio = fScreenModePixelRatio[m_iResolution];
-		if (g_graphicsContext.IsWidescreen() && ((m_iResolution >= 3) || (m_iResolution <= 10)))
+		if (m_bWidescreen && ((m_iResolution >= 3) || (m_iResolution <= 8)))
 		      fScreenPixelRatio *= 4.0f/3.0f;
 		
 	        // Calculate frame ratio based on source frame size and pixel ratio (Added by JM)
@@ -498,10 +540,10 @@ static unsigned int Directx_ManageDisplay()
 		float iPosX = iScreenWidth  - fNewWidth	;
 		iPosY /= 2; // center the movie
 		iPosX /= 2; // center the movie
-		rd.left   = (int)iPosX + (int)fOffsetX1;
-		rd.right  = (int)rd.left + (int)fNewWidth;
-		rd.top    = (int)iPosY  + (int)fOffsetY1;
-		rd.bottom = (int)rd.top + (int)fNewHeight + iSubTitleHeight;
+		rd.left   = (int)(iPosX + fOffsetX1 + 0.5f);
+		rd.right  = (int)(rd.left + fNewWidth + 0.5f);
+		rd.top    = (int)(iPosY + fOffsetY1 + 0.5f);
+		rd.bottom = (int)(rd.top + fNewHeight + iSubTitleHeight + 0.5f);
 
 		iSubTitlePos = image_height;
 		bClearSubtitleRegion= true;
@@ -701,7 +743,7 @@ static void video_flip_page(void)
 		g_graphicsContext.Lock();
 		if (m_bFullScreen) 
 		{
-			choose_best_resolution(m_bPal60Allowed);
+			choose_best_resolution(m_fFPS);
 		}
 		else 
 		{
@@ -717,6 +759,13 @@ void xbox_video_getRect(RECT& SrcRect, RECT& DestRect)
 	DestRect=rd;
 }
 
+float xbox_video_getAR()
+{
+	float fOutputPixelRatio = fScreenModePixelRatio[m_iResolution];
+	float fOutputFrameRatio = ((float)(rd.right-rd.left)) / ((float)(rd.bottom-rd.top));
+	return fOutputFrameRatio*fOutputPixelRatio;
+}
+
 void xbox_video_update()
 {
 	bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
@@ -726,7 +775,7 @@ void xbox_video_update()
 		g_graphicsContext.Lock();
 		if (m_bFullScreen) 
 		{
-			choose_best_resolution(m_bPal60Allowed);
+			choose_best_resolution(m_fFPS);
 		}
 		else 
 		{
@@ -832,27 +881,19 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
 	long tooearly, toolate;
 
 	mplayer_GetVideoInfo(strFourCC,strVideoCodec, &fps, &iWidth,&iHeight, &tooearly, &toolate);
-	m_bPal60Allowed=true;
-	if (fps == 25.0f)
-	{
-		m_bPal60Allowed=false;
-	}
-
-	if (!g_stSettings.m_bAllowPAL60)
-	{
-		m_bPal60Allowed=false;
-	}
 
 	OutputDebugString("video_config\n");
-  fs = options & 0x01;
-  image_format	 =  format;
-  image_width		 = width;
-  image_height	 = height;
-  d_image_width  = d_width;
-  d_image_height = d_height;
+	fs = options & 0x01;
+	image_format	 =  format;
+	image_width		 = width;
+	image_height	 = height;
+	d_image_width  = d_width;
+	d_image_height = d_height;
+	m_fFPS = fps;
 
 	m_bFullScreen=g_graphicsContext.IsFullScreenVideo();
-	choose_best_resolution(m_bPal60Allowed);
+
+	choose_best_resolution(m_fFPS);
 
 	// We don't need mplayer to try and calculate an output size for us, as
 	// mplayer knows nothing about non-square pixels.
