@@ -5,6 +5,12 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 11-01-2004 added: Third rendering method using overlays.  Added purely to help find the reason behind the
+                      quality improvements gained from the previous overlay method.  This new method is identical
+                      to the previous overlays method, except it uses mplayers builtin YV12->YUY2 fast convertor.
+                      Further info will be available later today in the thread:
+                        http://www.xboxmediaplayer.de/cgi-bin/forums/ikonboard.pl?;act=ST;f=3;t=3916
+                      NB: This output looks identical to my eyes as the output from the pixel shader.
   - 11-01-2004 changed: Webserver authentication now defaults to BASIC instead of DIGEST.  Solves Firefox issues.
   - 10-01-2004 added: Second rendering method using overlays.
                       Renderers can be switched from the GUI (Video Settings->Filters)

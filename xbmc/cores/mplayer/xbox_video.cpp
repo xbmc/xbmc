@@ -120,7 +120,9 @@ unsigned int CXBoxRenderManager::PreInit(const char *arg)
 		if (!m_pRenderer)
 		{	// no renderer
 			if (g_guiSettings.GetInt("Filters.RenderMethod") == RENDER_OVERLAYS)
+			{
 				m_pRenderer = new COverlayRenderer(g_graphicsContext.Get3DDevice());
+			}
 			else
 				m_pRenderer = new CPixelShaderRenderer(g_graphicsContext.Get3DDevice());
 		}

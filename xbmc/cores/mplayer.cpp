@@ -506,6 +506,12 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 	//Only display forced subs for dvds.
 	//m_vecOptions.push_back("-forcedsubsonly");
 
+	//  Rescaler for YUY2 output methods
+	if (g_guiSettings.GetInt("Filters.RenderMethod") == RENDER_OVERLAYS_FAST)
+	{
+		m_vecOptions.push_back("-sws");
+		m_vecOptions.push_back("0");
+	}
 	m_vecOptions.push_back("1.avi");
 
 	argc=(int)m_vecOptions.size();
