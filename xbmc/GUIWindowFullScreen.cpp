@@ -2,6 +2,7 @@
 #include "GUIWindowFullScreen.h"
 #include "settings.h"
 #include "application.h"
+#include "util.h"
 
 #define LABEL_ROW1 10
 #define LABEL_ROW2 11
@@ -130,7 +131,7 @@ void CGUIWindowFullScreen::Render()
 	
 	if (m_bShowStatus)
 	{
-		if ( (timeGetTime() - m_dwLastTime) >=3000)
+		if ( (timeGetTime() - m_dwLastTime) >=5000)
 		{
 			m_bShowStatus=false;
 			return;
@@ -141,9 +142,39 @@ void CGUIWindowFullScreen::Render()
 		else strStatus="Normal";
 
 		if (g_stSettings.m_bSoften)
-			strStatus += "  Soften";
+			strStatus += "  |  Soften";
 		else
-			strStatus += "  No Soften";
+			strStatus += "  |  No Soften";
+
+		RECT SrcRect;
+		RECT DestRect;
+		g_application.m_pPlayer->GetVideoRect(SrcRect, DestRect);
+		CStdString strRects;
+		float fAR= ((float)(DestRect.right-DestRect.left)) / ((float)(DestRect.bottom-DestRect.top));
+		strRects.Format(" | (%i,%i)-(%i,%i)->(%i,%i)-(%i,%i) AR:%2.2f", 
+											SrcRect.left,SrcRect.top,
+											SrcRect.right,SrcRect.bottom,
+											DestRect.left,DestRect.top,
+											DestRect.right,DestRect.bottom, fAR);
+		strStatus += strRects;
+
+		CStdString strStatus2;
+		int  iScreenWidth;
+		int  iScreenHeight;
+		bool bPAL,bPAL60;
+		int  iResolution=g_graphicsContext.GetVideoResolution();
+		CUtil::GetResolutionParams(iResolution, iScreenWidth,iScreenHeight,bPAL,bPAL60);
+		strStatus2.Format("%ix%i ", iScreenWidth,iScreenHeight);
+		if (bPAL) 
+		{
+			strStatus2 += "PAL";
+			if (bPAL60) strStatus2+= "60";
+		}
+		else
+		{
+			strStatus2 +="NTSC";
+		}
+
 
 		{
 			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 
@@ -152,7 +183,7 @@ void CGUIWindowFullScreen::Render()
 		}
 		{
 			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2); 
-			msg.SetLabel(""); 
+			msg.SetLabel(strStatus2); 
 			OnMessage(msg);
 		}
 		{
