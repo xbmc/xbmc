@@ -23,6 +23,8 @@ Global
 		Profile_FastCap Xbox = Profile_FastCap Xbox
 		Release Win32 = Release Win32
 		Release Xbox = Release Xbox
+		Release Xbox  Debugging Win32 = Release Xbox  Debugging Win32
+		Release Xbox  Debugging Xbox = Release Xbox  Debugging Xbox
 		Release_LTCG Win32 = Release_LTCG Win32
 		Release_LTCG Xbox = Release_LTCG Xbox
 	EndGlobalSection
@@ -43,6 +45,10 @@ Global
 		{9B28366B-79F0-4361-B5C5-4608DFA8CF17}.Release Win32.Build.0 = Release|Xbox
 		{9B28366B-79F0-4361-B5C5-4608DFA8CF17}.Release Xbox.ActiveCfg = Release|Xbox
 		{9B28366B-79F0-4361-B5C5-4608DFA8CF17}.Release Xbox.Build.0 = Release|Xbox
+		{9B28366B-79F0-4361-B5C5-4608DFA8CF17}.Release Xbox  Debugging Win32.ActiveCfg = Release Xbox  Debugging|Xbox
+		{9B28366B-79F0-4361-B5C5-4608DFA8CF17}.Release Xbox  Debugging Win32.Build.0 = Release Xbox  Debugging|Xbox
+		{9B28366B-79F0-4361-B5C5-4608DFA8CF17}.Release Xbox  Debugging Xbox.ActiveCfg = Release Xbox  Debugging|Xbox
+		{9B28366B-79F0-4361-B5C5-4608DFA8CF17}.Release Xbox  Debugging Xbox.Build.0 = Release Xbox  Debugging|Xbox
 		{9B28366B-79F0-4361-B5C5-4608DFA8CF17}.Release_LTCG Win32.ActiveCfg = Release_LTCG|Xbox
 		{9B28366B-79F0-4361-B5C5-4608DFA8CF17}.Release_LTCG Win32.Build.0 = Release_LTCG|Xbox
 		{9B28366B-79F0-4361-B5C5-4608DFA8CF17}.Release_LTCG Xbox.ActiveCfg = Release_LTCG|Xbox
@@ -63,6 +69,10 @@ Global
 		{31103E92-4EE8-4F94-B67A-092C7CEFDB3D}.Release Win32.Build.0 = Release|Xbox
 		{31103E92-4EE8-4F94-B67A-092C7CEFDB3D}.Release Xbox.ActiveCfg = Release|Xbox
 		{31103E92-4EE8-4F94-B67A-092C7CEFDB3D}.Release Xbox.Build.0 = Release|Xbox
+		{31103E92-4EE8-4F94-B67A-092C7CEFDB3D}.Release Xbox  Debugging Win32.ActiveCfg = Release Xbox  Debugging|Xbox
+		{31103E92-4EE8-4F94-B67A-092C7CEFDB3D}.Release Xbox  Debugging Win32.Build.0 = Release Xbox  Debugging|Xbox
+		{31103E92-4EE8-4F94-B67A-092C7CEFDB3D}.Release Xbox  Debugging Xbox.ActiveCfg = Release Xbox  Debugging|Xbox
+		{31103E92-4EE8-4F94-B67A-092C7CEFDB3D}.Release Xbox  Debugging Xbox.Build.0 = Release Xbox  Debugging|Xbox
 		{31103E92-4EE8-4F94-B67A-092C7CEFDB3D}.Release_LTCG Win32.ActiveCfg = Release_LTCG|Xbox
 		{31103E92-4EE8-4F94-B67A-092C7CEFDB3D}.Release_LTCG Win32.Build.0 = Release_LTCG|Xbox
 		{31103E92-4EE8-4F94-B67A-092C7CEFDB3D}.Release_LTCG Xbox.ActiveCfg = Release_LTCG|Xbox
@@ -83,6 +93,10 @@ Global
 		{4E289D75-A493-4175-99FA-A96B79A9E452}.Release Win32.Build.0 = Release|Xbox
 		{4E289D75-A493-4175-99FA-A96B79A9E452}.Release Xbox.ActiveCfg = Release|Xbox
 		{4E289D75-A493-4175-99FA-A96B79A9E452}.Release Xbox.Build.0 = Release|Xbox
+		{4E289D75-A493-4175-99FA-A96B79A9E452}.Release Xbox  Debugging Win32.ActiveCfg = Release Xbox  Debugging|Xbox
+		{4E289D75-A493-4175-99FA-A96B79A9E452}.Release Xbox  Debugging Win32.Build.0 = Release Xbox  Debugging|Xbox
+		{4E289D75-A493-4175-99FA-A96B79A9E452}.Release Xbox  Debugging Xbox.ActiveCfg = Release Xbox  Debugging|Xbox
+		{4E289D75-A493-4175-99FA-A96B79A9E452}.Release Xbox  Debugging Xbox.Build.0 = Release Xbox  Debugging|Xbox
 		{4E289D75-A493-4175-99FA-A96B79A9E452}.Release_LTCG Win32.ActiveCfg = Release_LTCG|Win32
 		{4E289D75-A493-4175-99FA-A96B79A9E452}.Release_LTCG Win32.Build.0 = Release_LTCG|Win32
 		{4E289D75-A493-4175-99FA-A96B79A9E452}.Release_LTCG Xbox.ActiveCfg = Release_LTCG|Xbox
