@@ -1,5 +1,5 @@
- 
-<!-- By NaPeK - www.xzone.com.pl -->
+
+<!-- By NaPeK - napek@poczta.fm -->
 
 <strings>
   <string>
@@ -26,10 +26,10 @@
     <id>5</id>
     <value>Ustawienia</value>
   </string>
-	<string>
-		<id>6</id>
-		<value>XBOX Media Center CVS build</value>
-	</string>
+  <string>
+    <id>6</id>
+    <value>XBOX Media Center CVS wersja</value>
+  </string>
   <string>
     <id>7</id>
     <value>Moje pliki</value>
@@ -66,13 +66,10 @@
     <id>17</id>
     <value>Niedziela</value>
   </string>
-  
-    
   <string>
     <id>21</id>
     <value>Styczen</value>
   </string>
-  
   <string>
     <id>22</id>
     <value>Luty</value>
@@ -1131,7 +1128,7 @@
   </string>
   <string>
     <id>354</id>
-    <value>Matrix Trails</value>
+    <value>Matrix'owe znaczki</value>
   </string>
   <string>
     <id>355</id>
@@ -1143,7 +1140,7 @@
   </string>
   <string>
     <id>357</id>
-    <value>Shutdown Idle Timeout</value>
+    <value>Czas do wylaczenia</value>
   </string>
   <string>
     <id>358</id>
@@ -1163,7 +1160,7 @@
   </string>   
   <string>
     <id>362</id>
-    <value>Screensaver Fade Level (%)</value>
+    <value>Poziom przezroczystosci wygaszacza (%)</value>
   </string>
   <string>
     <id>363</id>
@@ -1549,7 +1546,6 @@
     <id>469</id>
     <value>Pozycja OSD</value>
   </string>
-
 	<string>
 		<id>470</id>
 		<value>Podziekowania</value>
@@ -1608,11 +1604,11 @@
 	</string>
 	<string>
 		<id>484</id>
-		<value>Artist</value>
+		<value>Artysta</value>
 	</string>
 	<string>
 		<id>485</id>
-		<value>Delete album</value>
+		<value>Skasuj album</value>
 	</string>
 	<string>
 		<id>486</id>
@@ -1628,7 +1624,7 @@
 	</string>
 	<string>
 		<id>489</id>
-		<value>Use playlist in songs</value>
+		<value>Uzywaj playlist dla piosenek</value>
 	</string>
 	<string>
 		<id>490</id>
@@ -1652,7 +1648,7 @@
 	</string>
 	<string>
 		<id>495</id>
-		<value>Upsample videos to GUI resolution</value>
+		<value>Przesampluj video do rozdzielczosci GUI</value>
 	</string>
 	<string>
 		<id>496</id>
@@ -1678,6 +1674,148 @@
 		<id>501</id>
 		<value>Szukam nazw albumow...</value>
 	</string>
+	<string>
+		<id>502</id>
+		<value>Otwarty</value>
+	</string>
+	<string>
+		<id>503</id>
+		<value>Zajety</value>
+	</string>
+	<string>
+		<id>504</id>
+		<value>Pusty</value>
+	</string>
+	<string>
+		<id>505</id>
+		<value>Wczytuje informacje o mediach z plikow...</value>
+	</string>
+
+
+
+	<string>
+		<id>506</id>
+		<value>Uzyj nazw katalogow dla opisow</value>
+	</string> <string>
+		<id>600</id>
+		<value>Zgraj CD</value>
+	</string>
+	<string>
+		<id>601</id>
+		<value>Srednia</value>
+	</string>
+	<string>
+		<id>602</id>
+		<value>Standardowa</value>
+	</string>
+	<string>
+		<id>603</id>
+		<value>Extremalna</value>
+	</string>
+	<string>
+		<id>604</id>
+		<value>Staly Bit Rate</value>
+	</string>
+	<string>
+		<id>605</id>
+		<value>Zapisuje...</value>
+	</string>
+	<string>
+		<id>606</id>
+		<value>Numer sciezki:</value>
+	</string>
+	<string>
+		<id>607</id>
+		<value>Do:</value>
+	</string>
+	<string>
+		<id>608</id>
+		<value>Nie mozna zapisac CD lub Sciezki</value>
+	</string>
+	<string>
+		<id>609</id>
+		<value>CDDARipPath nie jest ustawiony w XboxMediaCenter.xml</value>
+	</string>
+	<string>
+		<id>620</id>
+		<value>Zgrywam CD</value>
+	</string>
+	<string>
+		<id>621</id>
+		<value>Encoder</value>
+	</string>
+	<string>
+		<id>622</id>
+		<value>Jakosc</value>
+	</string>
+	<string>
+		<id>623</id>
+		<value>Bit Rate</value>
+	</string>
+	<string>
+		<id>624</id>
+		<value>Dolacz sciezke numer</value>
+	</string>
+	<string>
+		<id>625</id>
+		<value>Wszystkie piosenki</value>
+	</string>
+	<string>
+		<id>629</id>
+		<value>Tryb wyswietlania</value>
+	</string>
+	<string>
+		<id>630</id>
+		<value>Normalny</value>
+	</string>
+	<string>
+		<id>631</id>
+		<value>Powiekszenie</value>
+	</string>
+	<string>
+		<id>632</id>
+		<value>Proporcje 4:3</value>
+	</string>
+	<string>
+		<id>633</id>
+		<value>Proporcje 14:9</value>
+	</string>
+	<string>
+		<id>634</id>
+		<value>Proporcje 16:9</value>
+	</string>
+	<string>
+		<id>635</id>
+		<value>Oryginalny rozmiar</value>
+	</string>
+	<string>
+		<id>636</id>
+		<value>Wlasny</value>
+	</string>
+	<string>
+		<id>700</id>
+		<value>Czyszczenie bazy danych</value>
+	</string>
+	<string>
+		<id>701</id>
+		<value>Usuwam stare piosenki z bazy danych</value>
+	</string>
+	<string>
+		<id>702</id>
+		<value>Ta sciezka byla juz skanowana.</value>
+	</string>
+	<string>
+		<id>703</id>
+		<value>Nacisnij TAK, zeby uaktualnic wszystkie piosenki w lokacji.</value>
+	</string>
+	<string>
+		<id>704</id>
+		<value>Nacisnij NIE aby dodac tylko nowe piosenki.</value>
+	</string>
+
+
+
+
 	<string>
 		<id>999</id>
 		<value>Rozgrywka Online</value>
@@ -1723,17 +1861,33 @@
 <string><id>10503</id><value>Moja muzyka/artysci</value></string>
 <string><id>10504</id><value>Moja muzyka/gatunki</value></string>
 <string><id>10505</id><value>Moja muzyka/top100</value></string>
-<string><id>11000</id><value>klawiatura</value></string>
+<string><id>11000</id><value>Klawiatura</value></string>
 <string><id>12000</id><value>Wybierz dialog</value></string>
 <string><id>12001</id><value>Moja muzyka/info</value></string>
 <string><id>12002</id><value>Dialog OK</value></string>
 <string><id>12003</id><value>Moje filmy/Info</value></string>
 <string><id>12004</id><value>Moje skrypty/Info</value></string>
-<string><id>12005</id><value>Fullscreen video</value></string>
-<string><id>12006</id><value>Audio visisalisation</value></string>
+<string><id>12005</id><value>Pelnoekranowe video</value></string>
+<string><id>12006</id><value>Wizualizacja dzwieku</value></string>
 <string><id>12007</id><value>Moje obrazy/slideshow</value></string>
-<string><id>12008</id><value>Filestacking dialog</value></string>
+<string><id>12008</id><value>Okienko Filestacking</value></string>
 <string><id>12600</id><value>Moja pogoda</value></string>
 <string><id>12900</id><value>Wygaszacz</value></string>
 <string><id>12901</id><value>Pelnoekranowe OSD</value></string>
+  <string><id>13000</id><value>System</value></string>
+  <string><id>13001</id><value>Natychmiastowe wylaczenie HDD</value></string>
+  <string><id>13002</id><value>Tylko Video</value></string>
+  <string><id>13003</id><value>- Opoznienie</value></string>
+  <string><id>13004</id><value>- Minimalny czas trawania</value></string>
+  <string><id>13100</id><value>Filtr Flicker</value></string>
+  <string><id>13200</id><value>Profile</value></string>
+  <string><id>13201</id><value>Usun profil '%s'?</value></string>
+  <string><id>13202</id><value>Zapisz bierzace ustawienie jako profil...</value></string>
+  <string><id>13203</id><value>Profil '%s' zaladowany pomyslnie</value></string>
+  <string><id>13204</id><value>Ostatnio zaladowany profil:</value></string>
+  <string><id>13205</id><value>Nieznany</value></string>
+  <string><id>13300</id><value>Predkosc wiatraka:</value></string>
+  <string><id>13301</id><value>Automatyczna kontrola temperatury</value></string>
+  <string><id>13302</id><value>Kontrola obrotow wiatraka</value></string>
+
 </strings>
