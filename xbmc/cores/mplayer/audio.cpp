@@ -192,14 +192,14 @@ static void audio_reset()
 
 //******************************************************************************************
 // stop playing, keep buffers (for pause)
-static void audio_pause()
+void audio_pause()
 {
 	m_pAudioDecoder->Pause();
 }
 
 //******************************************************************************************
 // resume playing, after audio_pause()
-static void audio_resume()
+void audio_resume()
 {
 	m_pAudioDecoder->Resume();
 }
