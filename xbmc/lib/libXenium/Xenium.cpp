@@ -4,7 +4,6 @@
 #define SPI0 0
 #define SPI1 1
 
-#pragma comment (lib,"XeniumSPIg.lib")    
 
 
 void Xenium::OutputByte(unsigned char data)
