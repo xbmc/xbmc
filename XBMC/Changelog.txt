@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 23-11-2004 fixed: kai pop-up killing speex audio while visible.
+  - 23-11-2004 added: modeless dialog rendering, kai pop-up less intrusive.
   - 23-11-2004 added: inline text editor control (for Kai text chat and all who want it).
   - 21-11-2004 added: Startup splash
   - 21-11-2004 added: Kai text chat (alpha - needs a little visual tidy up, to be improved with 'in-line' edit control). 

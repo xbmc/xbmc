@@ -17,8 +17,7 @@
 
 
 
-CGUIDialogKaiToast::CGUIDialogKaiToast(void)
-:CGUIDialog(0)
+CGUIDialogKaiToast::CGUIDialogKaiToast(void) : CGUIDialog(0)
 {
 	m_bNeedsScaling = true;	// make sure we scale this window, as it appears on different resolutions
 
@@ -56,15 +55,6 @@ bool CGUIDialogKaiToast::OnMessage(CGUIMessage& message)
 		{
 			//don't deinit, g_application handles it
 			return true;
-		}
-		break;
-
-		case GUI_MSG_CLICKED:
-		{
-			if (message.GetSenderId()==POPUP_NOTIFICATION_BUTTON)	// who else is it going to be??
-			{
-				return true;
-			}
 		}
 		break;
 	}
