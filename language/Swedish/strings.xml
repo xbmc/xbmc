@@ -2063,6 +2063,10 @@
  <id>746</id>
  <value>Ändra till Fil vy</value>
   </string> 
+ <string>
+ <id>747</id>
+ <value>Det finns för lite minne för att ladda bilden</value>
+ </string>
 
  <string>
  <id>998</id>
