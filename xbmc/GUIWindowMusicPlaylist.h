@@ -1,9 +1,10 @@
 #pragma once
 #include "GUIWindowMusicBase.h"
+#include "MusicInfoLoader.h"
 #include <map>
 #include <set>
 
-class CGUIWindowMusicPlayList : 	public CGUIWindowMusicBase
+class CGUIWindowMusicPlayList : 	public CGUIWindowMusicBase, public IMusicInfoLoaderObserver
 {
 public:
 	CGUIWindowMusicPlayList(void);
@@ -17,10 +18,11 @@ protected:
   virtual	void				UpdateButtons();
   virtual void				OnClick(int iItem);
 	virtual	void				OnQueueItem(int iItem);
-	virtual void				OnFileItemFormatLabel(CFileItem* pItem);
-	virtual	void				DoSort(VECFILEITEMS& items);
-	virtual void				OnRetrieveMusicInfo(VECFILEITEMS& items);
-					void				LoadItem(CFileItem* pItem);
+	virtual	void				DoSort(VECFILEITEMS& items) {};
+	virtual void				OnFileItemFormatLabel(CFileItem* pItem) {};
+	virtual void				OnRetrieveMusicInfo(VECFILEITEMS& items) {};
+	virtual void				OnItemLoaded(CFileItem* pItem);
+	virtual void				Update(const CStdString& strDirectory);
 
 					void				SavePlayList();
 					void				ClearPlayList();
@@ -31,4 +33,5 @@ protected:
 					SETPATHES		m_Pathes;
 					MAPSONGS		m_songsMap;
 					CStdString	m_strPrevPath;
+					CMusicInfoLoader m_tagloader;
 };

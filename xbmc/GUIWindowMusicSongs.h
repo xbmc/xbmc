@@ -30,6 +30,10 @@ protected:
 
 	virtual void				Update(const CStdString &strDirectory);
 
+					void				LoadDirectoryCache(const CStdString& strDirectory, MAPFILEITEMS& items);
+					void				SaveDirectoryCache(const CStdString& strDirectory, VECFILEITEMS& items);
+					void				DeleteDirectoryCache();
+
 	CStdString					m_strPrevDir;
 	bool								m_bScan;
 };
