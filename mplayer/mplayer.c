@@ -817,9 +817,19 @@ int blit_frame=0;
 //    /*eof=1; causes a crash for some reason*/
 //	xbmc_cancel=1;
 //}
-char* mplayer_getversion()
+const char* mplayer_getversion()
 {
   return "MPlayer " VERSION;
+}
+
+const char* mplayer_getcompiledate()
+{
+  return __DATE__;
+}
+
+const char* mplayer_getcompiletime()
+{
+  return __TIME__;
 }
 
 __int64 mplayer_get_pts()
