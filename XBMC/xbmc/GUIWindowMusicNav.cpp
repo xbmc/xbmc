@@ -39,12 +39,11 @@ struct SSortMusicNav
 		if (rpStart.GetLabel()=="..") return true;
 		if (rpEnd.GetLabel()=="..") return false;
 
-		int iPos;
-		iPos = rpStart.m_strPath.Find("SKIP ME!");
-		if (iPos>-1) return true;
+		if (rpStart.m_strPath.IsEmpty())
+			return true;
 
-		iPos = rpEnd.m_strPath.Find("SKIP ME!");
-		if (iPos>-1) return false;
+		if (rpEnd.m_strPath.IsEmpty())
+			return false;
 
 		bool bGreater=true;
 		if (m_bSortAscending) bGreater=false;
@@ -256,7 +255,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 				if (m_iState==SHOW_ROOT)
 				{
 					m_iViewAsIconsRoot++;
-					if (m_iViewAsIconsRoot > VIEW_AS_ICONS) m_iViewAsIconsRoot=VIEW_AS_LIST;
+					if (m_iViewAsIconsRoot > VIEW_AS_LARGEICONS) m_iViewAsIconsRoot=VIEW_AS_LIST;
 				}
 				else
 				{
@@ -332,9 +331,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 
 void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items)
 {
-	CLog::Log(LOGDEBUG,"CGUIWindowMusicNav::GetDirectory(%s)",strDirectory.c_str());
-	CLog::Log(LOGDEBUG,"CGUIWindowMusicNav::GetDirectory, m_iState = %i",m_iState);
-	CLog::Log(LOGDEBUG,"CGUIWindowMusicNav::GetDirectory, strGenre = [%]s, strArtist = [%s], strAlbum = [%s]",m_strGenre.c_str(),m_strArtist.c_str(),m_strAlbum.c_str());
+	CLog::Log(LOGDEBUG,"CGUIWindowMusicNav::GetDirectory, strGenre = [%s], strArtist = [%s], strAlbum = [%s]",m_strGenre.c_str(),m_strArtist.c_str(),m_strAlbum.c_str());
 
 	// cleanup items
 	if (items.size())
@@ -346,9 +343,6 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 	{
 		case SHOW_ROOT:
 		{
-			CLog::Log(LOGDEBUG,"CGUIWindowMusicNav::GetDirectory, m_iState = SHOW_ROOT!");
-			CLog::Log(LOGDEBUG,"CGUIWindowMusicNav::GetDirectory, TOTAL PATH = %i",m_iPath);
-
 			// we're at the zero point
 			// add the initial items to the fileitems
 			vector<CStdString> vecRoot;
@@ -368,9 +362,6 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 
 		case SHOW_GENRES:
 		{
-			CLog::Log(LOGDEBUG,"CGUIWindowMusicNav::GetDirectory, m_iState = SHOW_GENRES!");
-			CLog::Log(LOGDEBUG,"CGUIWindowMusicNav::GetDirectory, TOTAL PATH = %i",m_iPath);
-
 			m_iViewAsIcons=g_stSettings.m_iMyMusicNavGenresViewAsIcons;
 
 			// set parent directory
@@ -394,7 +385,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 			{
 				// add "* All Genres"
 				CFileItem* pFileItem = new CFileItem(g_localizeStrings.Get(15105));
-				pFileItem->m_strPath="ALL GENRES, SKIP ME!";
+				pFileItem->m_strPath="";
 				pFileItem->m_bIsFolder=true;
 				items.push_back(pFileItem);
 
@@ -412,9 +403,6 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 
 		case SHOW_ARTISTS:
 		{
-			CLog::Log(LOGDEBUG,"CGUIWindowMusicNav::GetDirectory, m_iState = SHOW_ARTISTS!");
-			CLog::Log(LOGDEBUG,"CGUIWindowMusicNav::GetDirectory, TOTAL PATH = %i",m_iPath);
-
 			m_iViewAsIcons=g_stSettings.m_iMyMusicNavArtistsViewAsIcons;
 
 			// set parent directory
@@ -441,7 +429,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 			{
 				// add "* All Artists"
 				CFileItem* pFileItem = new CFileItem(g_localizeStrings.Get(15103));
-				pFileItem->m_strPath="ALL ARTISTS, SKIP ME!";
+				pFileItem->m_strPath="";
 				pFileItem->m_bIsFolder=true;
 				items.push_back(pFileItem);
 
@@ -459,9 +447,6 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 
 		case SHOW_ALBUMS:
 		{
-			CLog::Log(LOGDEBUG,"CGUIWindowMusicNav::GetDirectory, m_iState = SHOW_ALBUMS!");
-			CLog::Log(LOGDEBUG,"CGUIWindowMusicNav::GetDirectory, TOTAL PATH = %i",m_iPath);
-
 			m_iViewAsIcons=g_stSettings.m_iMyMusicNavAlbumsViewAsIcons;
 
 			// set parent directory
@@ -488,7 +473,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 			{
 				// add "* All Albums"
 				CFileItem* pFileItem = new CFileItem(g_localizeStrings.Get(15102));
-				pFileItem->m_strPath="ALL ALBUMS, SKIP ME!";
+				pFileItem->m_strPath="";
 				pFileItem->m_bIsFolder=true;
 				items.push_back(pFileItem);
 
@@ -504,9 +489,6 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 
 		case SHOW_SONGS:
 		{
-			CLog::Log(LOGDEBUG,"CGUIWindowMusicNav::GetDirectory, m_iState = SHOW_SONGS!");
-			CLog::Log(LOGDEBUG,"CGUIWindowMusicNav::GetDirectory, TOTAL PATH = %i",m_iPath);
-
 			m_iViewAsIcons=g_stSettings.m_iMyMusicNavSongsViewAsIcons;
 
 			// set parent directory
@@ -533,7 +515,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 			{
 				// add "* All Songs"
 				CFileItem* pFileItem = new CFileItem(g_localizeStrings.Get(15104));
-				pFileItem->m_strPath="ALL SONGS, SKIP ME!";
+				pFileItem->m_strPath="";
 				pFileItem->m_bIsFolder=true;
 				items.push_back(pFileItem);
 
@@ -750,8 +732,7 @@ void CGUIWindowMusicNav::OnClick(int iItem)
 					m_strGenre = strPath;
 
 					// clicked on "All Genres" ?
-					int iPos = strPath.Find("SKIP ME!");
-					if (iPos>-1)
+					if (strPath.IsEmpty())
 						m_strGenre.Empty();
 				}
 				break;
@@ -763,8 +744,7 @@ void CGUIWindowMusicNav::OnClick(int iItem)
 					m_strArtist = strPath;
 
 					// clicked on "All Artists" ?
-					int iPos = strPath.Find("SKIP ME!");
-					if (iPos>-1)
+					if (strPath.IsEmpty())
 						m_strArtist.Empty();
 				}
 				break;
@@ -775,9 +755,9 @@ void CGUIWindowMusicNav::OnClick(int iItem)
 					m_iPath += m_iState;
 
 					// clicked on "All Albums" ?
-					int iPos = strPath.Find("SKIP ME!");
-					if (iPos>-1)
+					if (strPath.IsEmpty())
 						m_strAlbum.Empty();
+					// no, set the path to the album title
 					else
 					{
 						strPath = pItem->m_musicInfoTag.GetAlbum();
@@ -822,8 +802,7 @@ void CGUIWindowMusicNav::OnClick(int iItem)
 void CGUIWindowMusicNav::OnFileItemFormatLabel(CFileItem* pItem)
 {
 	// clear label for special directories
-	int iPos = pItem->m_strPath.Find("SKIP ME!");
-	if (iPos>-1)
+	if (pItem->m_strPath.IsEmpty())
 			pItem->SetLabel2("");
 	else if (pItem->m_bIsFolder)
 	{
@@ -1129,8 +1108,7 @@ void CGUIWindowMusicNav::AddItemToPlayList(const CFileItem* pItem)
 		{
 			case SHOW_GENRES:
 			{
-				int iPos = pItem->m_strPath.Find("SKIP ME!");
-				if (iPos>-1)
+				if (pItem->m_strPath.IsEmpty())
 					strGenre.Empty();
 				else
 					strGenre=pItem->m_strPath;
@@ -1139,8 +1117,7 @@ void CGUIWindowMusicNav::AddItemToPlayList(const CFileItem* pItem)
 
 			case SHOW_ARTISTS:
 			{
-				int iPos = pItem->m_strPath.Find("SKIP ME!");
-				if (iPos>-1)
+				if (pItem->m_strPath.IsEmpty())
 					strArtist.Empty();
 				else
 					strArtist=pItem->m_strPath;
@@ -1149,8 +1126,7 @@ void CGUIWindowMusicNav::AddItemToPlayList(const CFileItem* pItem)
 
 			case SHOW_ALBUMS:
 			{
-				int iPos = pItem->m_strPath.Find("SKIP ME!");
-				if (iPos>-1)
+				if (pItem->m_strPath.IsEmpty())
 					strAlbum.Empty();
 				else
 					strAlbum=pItem->m_musicInfoTag.GetAlbum();
@@ -1198,8 +1174,7 @@ void CGUIWindowMusicNav::AddItemToTempPlayList(const CFileItem* pItem)
 		{
 			case SHOW_GENRES:
 			{
-				int iPos = pItem->m_strPath.Find("SKIP ME!");
-				if (iPos>-1)
+				if (pItem->m_strPath.IsEmpty())
 					strGenre.Empty();
 				else
 					strGenre=pItem->m_strPath;
@@ -1208,8 +1183,7 @@ void CGUIWindowMusicNav::AddItemToTempPlayList(const CFileItem* pItem)
 
 			case SHOW_ARTISTS:
 			{
-				int iPos = pItem->m_strPath.Find("SKIP ME!");
-				if (iPos>-1)
+				if (pItem->m_strPath.IsEmpty())
 					strArtist.Empty();
 				else
 					strArtist=pItem->m_strPath;
@@ -1218,8 +1192,7 @@ void CGUIWindowMusicNav::AddItemToTempPlayList(const CFileItem* pItem)
 
 			case SHOW_ALBUMS:
 			{
-				int iPos = pItem->m_strPath.Find("SKIP ME!");
-				if (iPos>-1)
+				if (pItem->m_strPath.IsEmpty())
 					strAlbum.Empty();
 				else
 					strAlbum=pItem->m_musicInfoTag.GetAlbum();
