@@ -245,21 +245,22 @@ void ModPlayer::OnStartup()
 
 void ModPlayer::OnExit()
 {
-	Mod_Player_Free(m_pModule);
 	m_bIsPlaying = false;
+	Mod_Player_Free(m_pModule);
 }
 
 void ModPlayer::Process()
 {
-	while (!m_bStopPlaying)
+	m_callback.OnPlayBackStarted();
+	while (!m_bStopPlaying && Mod_Player_Active())
 		MikMod_Update();
-	OutputDebugString("Modplayer thread exit\n");
+	m_callback.OnPlayBackEnded();
 }	
 void ModPlayer::RegisterAudioCallback(IAudioCallback* pCallback)
 {
 	m_pCallback=pCallback;
 	if (m_bIsPlaying)
-		m_pCallback->OnInitialize(2, 44100, 16);
+		m_pCallback->OnInitialize(2, 48000, 16);
 }
 
 void ModPlayer::UnRegisterAudioCallback()
