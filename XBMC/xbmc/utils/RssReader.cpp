@@ -40,8 +40,6 @@ void CRssReader::Process()
 
 	int nRetries = 3;
 
-	http.SetHTTPVer(0);
-
 	while ( (!m_bStop) && (nRetries>0) )
 	{	
 		nRetries--;
