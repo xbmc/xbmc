@@ -121,18 +121,25 @@ void CGUIWindowManager::ActivateWindow(int iWindowID)
     m_iActiveWindow=-1;
   }
 
-  
   // activate the new window
   for (int i=0; i < (int)m_vecWindows.size(); i++)
   {
     CGUIWindow* pWindow=m_vecWindows[i];
     if (pWindow->GetID() == iWindowID) 
     {
-      m_iActiveWindow=i;
-	  int iPrevWindowId = m_vecWindows[iPrevActiveWindow]->GetID();
-      CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,iPrevWindowId);
-      pWindow->OnMessage(msg);
-			return;
+		m_iActiveWindow=i;
+		// Check to see that this window is not our previous window
+		if (m_vecWindows[iPrevActiveWindow]->GetPreviousWindowID() == iWindowID)
+		{	// we are going to the lsat window - don't update it's previous window id
+			CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,WINDOW_INVALID);
+			pWindow->OnMessage(msg);
+		}
+		else
+		{	// we are going to a new window - put our current window into it's previous window ID
+			CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,m_vecWindows[iPrevActiveWindow]->GetID());
+			pWindow->OnMessage(msg);
+		}
+		return;
     }
   }
 
