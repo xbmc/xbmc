@@ -45,8 +45,16 @@ public:
 
 protected:
 
+  wstring GetSystemHeatInfo(const CStdString &strInfo);
+
 	// Current playing song stuff
 	CFileItem m_currentSong;
+
+  // fan stuff
+  DWORD m_lastSysHeatInfoTime;
+  int   m_fanSpeed;
+  float m_gpuTemp;
+  float m_cpuTemp;
 };
 
 /*!
