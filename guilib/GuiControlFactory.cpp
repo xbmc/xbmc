@@ -101,12 +101,12 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	DWORD				dwAlign=XBFONT_LEFT;
 	CStdString  strTextureFocus,strTextureNoFocus;
 	CStdString	strTextureAltFocus,strTextureAltNoFocus;
-	DWORD				dwDisabledColor;
+	DWORD				dwDisabledColor=0xffffffff;;
 	int					iHyperLink=-1;
 	DWORD				dwItems;
 	CStdString  strUp,strDown;
 	CStdString  strUpFocus,strDownFocus;
-	DWORD				dwSpinColor;
+	DWORD				dwSpinColor=0xffffffff;
 	DWORD				dwSpinWidth,dwSpinHeight,dwSpinPosX,dwSpinPosY;
 	CStdString  strTextureCheckMark;
 	CStdString  strTextureCheckMarkNF;
