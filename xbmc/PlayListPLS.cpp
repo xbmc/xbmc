@@ -74,6 +74,10 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
 			{	
 				strInfo=strValue;
 			}
+      else 
+      {
+        strInfo=CUtil::GetFileName(strFilename);
+      }
 			if (strLeft.Left( (int)strlen("Length") ) == "length")
 			{	
 				strDuration=strValue;
