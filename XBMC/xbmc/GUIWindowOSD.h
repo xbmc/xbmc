@@ -35,7 +35,7 @@ protected:
 	virtual void	PopulateBookmarks();
 	virtual void	PopulateAudioStreams();
 	virtual void	PopulateSubTitles();
-  void      Reset();
+    void			Reset();
 	bool			m_bSubMenuOn;
 	int				m_iActiveMenu;
 	DWORD			m_iActiveMenuButtonID;
