@@ -1818,3 +1818,10 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
 	return 1;
 }
 
+void CUtil::GetVideoThumbnail(const CStdString& strIMDBID, CStdString& strThumb)
+{
+  char szThumbNail[1024];
+  sprintf(szThumbNail,"%s\\imdb\\imdb%s.jpg",g_stSettings.szThumbnailsDirectory,strIMDBID.c_str());
+  strThumb= szThumbNail;
+}
+
