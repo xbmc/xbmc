@@ -706,7 +706,11 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiHome);											// window id = 0
 	m_gWindowManager.Add(&m_guiPrograms);									// window id = 1
 	m_gWindowManager.Add(&m_guiPictures);									// window id = 2
+#ifdef NEW_FILEMANAGER
+	m_gWindowManager.Add(&m_guiFileManager);							// window id = 3
+#else
 	m_gWindowManager.Add(&m_guiMyFiles);									// window id = 3
+#endif
 	m_gWindowManager.Add(&m_guiMyVideo);									// window id = 6
 	m_gWindowManager.Add(&m_guiSettings);									// window id = 4
 	m_gWindowManager.Add(&m_guiSystemInfo);								// window id = 7
@@ -752,7 +756,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiDialogKeyboard);						// window id = 103
 	m_gWindowManager.Add(&m_guiDialogVolumeBar);					// window id = 104
 	m_gWindowManager.Add(&m_guiDialogSubMenu);						// window id = 105
-//	m_gWindowManager.Add(&m_guiDialogContextMenu);				// window id = 106
+	m_gWindowManager.Add(&m_guiDialogContextMenu);				// window id = 106
 	m_gWindowManager.Add(&m_guiMyMusicPlayList);					// window id = 500
 	m_gWindowManager.Add(&m_guiMyMusicSongs);							// window id = 501
 	m_gWindowManager.Add(&m_guiMyMusicAlbum);							// window id = 502
@@ -999,7 +1003,11 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 	m_guiPrograms.Load( "myprograms.xml");
 	m_guiPictures.Load( "mypics.xml");
+#ifdef NEW_FILEMANAGER
+	m_guiFileManager.Load( "filemanager.xml");
+#else
 	m_guiMyFiles.Load( "myfiles.xml");
+#endif
 	m_guiMyVideo.Load("myvideo.xml");
 	m_guiVideoGenre.Load("myvideogenre.xml");
 	m_guiVideoActors.Load("myvideoactors.xml");
@@ -1019,7 +1027,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiDialogProgress.Load("dialogProgress.xml");
 	m_guiDialogVolumeBar.Load("dialogVolumeBar.xml");
 	m_guiDialogSubMenu.Load("dialogSubMenu.xml");
-//	m_guiDialogContextMenu.Load("dialogContextMenu.xml");
+	m_guiDialogContextMenu.Load("dialogContextMenu.xml");
 	m_guiMyMusicPlayList.Load("mymusicplaylist.xml");
 	m_guiMyMusicSongs.Load("mymusicsongs.xml");
 	m_guiMyMusicAlbum.Load("mymusicalbum.xml");
@@ -1539,6 +1547,37 @@ void CApplication::UpdateLCD()
 					g_lcd->SetLine(iLine++,strLine);
 				}
 				while (iLine < 4) g_lcd->SetLine(iLine++,"");
+			}
+			else if (CUtil::IsCDDA(m_itemCurrentFile.m_strPath))
+			{
+				//	we have the tracknumber...
+				int iTrack=m_itemCurrentFile.m_musicInfoTag.GetTrackNumber();
+				//  ...and it's duration for display
+				int iDuration=m_itemCurrentFile.m_musicInfoTag.GetDuration();
+				// format the duration string
+				if (iDuration>0)
+				{
+					CStdString strDuration;
+					CUtil::SecondsToHMSString(iDuration, strDuration);
+					strLine.Format("%s %s/%s", strIcon.c_str(), strTime.c_str(),strDuration.c_str());
+				}
+				g_lcd->SetLine(0,strLine);
+				if (iTrack >=1)
+				{
+					CStdString strText=g_localizeStrings.Get(435);	//	"Track"
+					if (strText.GetAt(strText.size()-1) != ' ')
+						strText+=" ";
+					CStdString strTrack;
+					strTrack.Format(strText+"%i", iTrack);
+					g_lcd->SetLine(1,strTrack);
+				}
+				else
+				{
+					g_lcd->SetLine(1,"");
+				}
+				// fill in the others as blanks
+				g_lcd->SetLine(2,"");
+				g_lcd->SetLine(3,"");
 			}
 			else
 			{

@@ -508,10 +508,17 @@ void CGUIListControl::OnRight()
 {
 	if (m_iSelect==CONTROL_LIST) 
 	{	// Only move to up/down control if we have move than 1 page
-		if (m_upDown.GetMaximum() > 1)
-		{	// Move to updown control
-			m_iSelect=CONTROL_UPDOWN;
-			m_upDown.SetFocus(true);
+		if (m_bUpDownVisible)
+		{
+			if (m_upDown.GetMaximum() > 1)
+			{	// Move to updown control
+				m_iSelect=CONTROL_UPDOWN;
+				m_upDown.SetFocus(true);
+			}
+		}
+		else
+		{
+			CGUIControl::OnRight();
 		}
 	}
 	else
@@ -526,7 +533,7 @@ void CGUIListControl::OnLeft()
 		CGUIControl::OnLeft();
 	else
 		m_upDown.OnLeft();
-    if (!m_upDown.HasFocus()) 
+	if (!m_upDown.HasFocus()) 
 		m_iSelect=CONTROL_LIST;
 }
 
@@ -681,6 +688,11 @@ int CGUIListControl::GetSelectedItem(CStdString& strLabel)
    }
   }
   return iItem;
+}
+
+int CGUIListControl::GetSelectedItem()
+{
+  return m_iCursorY+m_iOffset;
 }
 
 bool CGUIListControl::SelectItemFromPoint(int iPosX, int iPosY)

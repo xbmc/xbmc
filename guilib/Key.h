@@ -170,7 +170,7 @@
 
 #define ACTION_MOVE_ITEM_UP     115  // move item up in playlist
 #define ACTION_MOVE_ITEM_DOWN   116  // move item down in playlist
-
+#define ACTION_CONTEXT_MENU			117		// pops up the context menu
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                 9999
