@@ -498,6 +498,9 @@
 				RelativePath=".\xbmc\MusicDatabase.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\MusicDatabaseReorg.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\musicInfoTag.cpp">
 			</File>
 			<File
@@ -717,6 +720,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\MusicDatabase.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\MusicDatabaseReorg.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\musicInfoTagLoaderFactory.h">
