@@ -124,6 +124,10 @@ extern int xinerama_screen;
 extern int nortc;
 #endif
 
+#ifdef _XBOX
+extern int limitedhwac3;
+#endif
+
 /* from libvo/aspect.c */
 extern float monitor_aspect;
 
@@ -421,10 +425,14 @@ m_option_t mplayer_opts[]={
 	{"noconsolecontrols", &noconsolecontrols, CONF_TYPE_FLAG, CONF_GLOBAL, 0, 1, NULL},
 	{"consolecontrols", &noconsolecontrols, CONF_TYPE_FLAG, CONF_GLOBAL, 0, 0, NULL},
 
+#ifdef _XBOX
+  {"limitedhwac3", &limitedhwac3, CONF_TYPE_FLAG, CONF_GLOBAL, 0, 1, NULL},
+#endif
+
 #define MAIN_CONF
 #include "cfg-common.h"
 #undef MAIN_CONF
-        
+
 	{"identify", &identify, CONF_TYPE_FLAG, CONF_GLOBAL, 0, 1, NULL},
 	{"really-quiet", &verbose, CONF_TYPE_FLAG, CONF_GLOBAL, 0, -10, NULL},
 	{"-help", help_text, CONF_TYPE_PRINT, CONF_NOCFG|CONF_GLOBAL, 0, 0, NULL},

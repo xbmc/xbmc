@@ -20,7 +20,9 @@
 
 #include "../liba52/a52.h"
 
-
+#ifdef _XBOX
+int limitedhwac3 = 0;
+#endif
 static int isdts = -1;
 
 static ad_info_t info = 
@@ -76,6 +78,23 @@ static int ac3dts_fillbuff(sh_audio_t *sh_audio)
       {
         mp_msg(MSGT_DECAUDIO, MSGL_STATUS, "hwac3: switched to AC3, %d bps, %d Hz\n", bit_rate, sample_rate);
         isdts = 0;
+#ifdef _XBOX
+        if(limitedhwac3)
+        {
+          switch(flags&A52_CHANNEL_MASK)
+          {
+            case A52_CHANNEL:
+            case A52_MONO:
+            case A52_STEREO:
+            case A52_CHANNEL1:
+            case A52_CHANNEL2:
+            case A52_DOLBY:
+              printf("hwac3: disabled hwac3 for AC3-2.0,1.0,DOLBY, allowing all speaker output.");
+              return -1;
+          }
+        }
+#endif
+
       }
       break; /* we're done.*/
     }
