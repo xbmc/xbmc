@@ -37,6 +37,8 @@ public:
   virtual void FreeResources() ;
   void         SetScrollySuffix(CStdString wstrSuffix);
 	void				 SetTextureDimensions(int iWidth, int iHeight);
+  void         SetThumbDimensions(int iXpos, int iYpos,int iWidth, int iHeight);
+  void         GetThumbDimensions(int& iXpos, int& iYpos,int& iWidth, int& iHeight);
 
 	DWORD									GetTextColor() const { return m_dwTextColor;};
 	DWORD									GetSelectedColor() const { return m_dwSelectedColor;};
@@ -84,6 +86,10 @@ protected:
 	int										m_iLastItem;
 	int										m_iTextureWidth;
 	int										m_iTextureHeight;
+  int                   m_iThumbXPos;
+  int                   m_iThumbYPos;
+  int                   m_iThumbWidth;
+  int                   m_iThumbHeight;
   CGUIFont*             m_pFont;
   CGUISpinControl       m_upDown;
   CGUIImage             m_imgFolder;

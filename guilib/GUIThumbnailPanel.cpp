@@ -4,6 +4,25 @@
 #define CONTROL_LIST		0
 #define CONTROL_UPDOWN	1
 
+/*
+total width/height for an item including space between items:
+  <itemWidth>128</itemWidth>
+	<itemHeight>128</itemHeight>
+  
+width/height of folder icon:
+  <textureWidth>80</textureWidth>
+  <textureHeight>80</textureHeight> 
+
+width/height of thumbnail
+  <thumbWidth>128</thumbWidth>
+  <thumbHeight>100</thumbHeight>
+
+relative position of thumbnail in the folder icon
+  <thumbPosX>4</thumbPosX>
+  <thumbPosY>16</thumbPosY>
+
+
+*/
 CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, 
                                  const CStdString& strFontName, 
                                  const CStdString& strImageIcon,
@@ -35,6 +54,10 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, DWOR
 	m_iLastItem=-1;
 	m_iTextureWidth=80;
 	m_iTextureHeight=80;
+  m_iThumbWidth=64;
+  m_iThumbHeight=64;
+  m_iThumbXPos=8;
+  m_iThumbYPos=8;
 }
 
 CGUIThumbnailPanel::~CGUIThumbnailPanel(void)
@@ -73,21 +96,21 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus,DWORD dwPosX, DWORD dwPosY, CGUI
 		CGUIImage *pImage=pItem->GetThumbnail();
 		if (!pImage )
     {
-			pImage=new CGUIImage(0,0,4+dwPosX,4+dwPosY,64,64,pItem->GetThumbnailImage(),0x0);
+			pImage=new CGUIImage(0,0,m_iThumbXPos+dwPosX,m_iThumbYPos+dwPosY,m_iThumbWidth,m_iThumbHeight,pItem->GetThumbnailImage(),0x0);
       pImage->SetKeepAspectRatio(true);
       pImage->AllocResources();
 			pItem->SetThumbnail(pImage);
-      int xOff=(64-pImage->GetWidth())/2;
-      int yOff=(64-pImage->GetHeight())/2;
-      pImage->SetPosition(4+dwPosX+xOff,10+dwPosY+yOff);
+      int xOff=(m_iThumbWidth-pImage->GetWidth())/2;
+      int yOff=(m_iThumbHeight-pImage->GetHeight())/2;
+      pImage->SetPosition(m_iThumbXPos+dwPosX+xOff,m_iThumbYPos+dwPosY+yOff);
     }
     else
     {
-      pImage->SetWidth(64);
-      pImage->SetHeight(64);
-      int xOff=(64-pImage->GetWidth())/2;
-      int yOff=(64-pImage->GetHeight())/2;
-      pImage->SetPosition(4+dwPosX+xOff,10+dwPosY+yOff);
+      pImage->SetWidth(m_iThumbWidth);
+      pImage->SetHeight(m_iThumbHeight);
+      int xOff=(m_iThumbWidth-pImage->GetWidth())/2;
+      int yOff=(m_iThumbHeight-pImage->GetHeight())/2;
+      pImage->SetPosition(m_iThumbXPos+dwPosX+xOff,m_iThumbYPos+dwPosY+yOff);
       pImage->Render();
     }
   }
@@ -667,4 +690,20 @@ void CGUIThumbnailPanel::SetTextureDimensions(int iWidth, int iHeight)
 {
 	m_iTextureWidth=iWidth;
 	m_iTextureHeight=iHeight;
+}
+
+
+void CGUIThumbnailPanel::SetThumbDimensions(int iXpos, int iYpos,int iWidth, int iHeight)
+{
+  m_iThumbWidth=iWidth;
+  m_iThumbHeight=iHeight;
+  m_iThumbXPos=iXpos;
+  m_iThumbYPos=iYpos;
+}
+void CGUIThumbnailPanel::GetThumbDimensions(int& iXpos, int& iYpos,int& iWidth, int& iHeight)
+{
+  iWidth=m_iThumbWidth;
+  iHeight=m_iThumbHeight;
+  iXpos=m_iThumbXPos;
+  iYpos=m_iThumbYPos;
 }
