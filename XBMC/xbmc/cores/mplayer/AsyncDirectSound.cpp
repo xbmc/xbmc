@@ -52,13 +52,13 @@ void CASyncDirectSound::StreamCallback(LPVOID pPacketContext, DWORD dwStatus)
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 //***********************************************************************************************
-CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample)
+CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, int iNumBuffers)
 {
   buffered_bytes=0;
   m_pCallback=pCallback;
   
   m_bResampleAudio = false;
-  if (bResample && uiSamplesPerSec != 48000)
+  if (bResample && g_stSettings.m_bResampleMusicAudio && uiSamplesPerSec != 48000)
 	  m_bResampleAudio = true;
 
   bool  bAudioOnAllSpeakers(false);
@@ -128,7 +128,12 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 
   //m_dwPacketSize     = 1152 * (uiBitsPerSample/8) * iChannels;
   //m_dwNumPackets = ( (m_wfx.nSamplesPerSec / ( m_dwPa2cketSize / ((uiBitsPerSample/8) * m_wfx.nChannels) )) / 2);
-  m_dwNumPackets=8*iChannels;
+
+  // if iNumBuffers is set, use this many buffers instead of the usual number (used for CDDAPlayer)
+  if (iNumBuffers)
+	  m_dwNumPackets = (DWORD)iNumBuffers;
+  else
+	m_dwNumPackets=8*iChannels;
   m_adwStatus    = new DWORD[ m_dwNumPackets ];
 
    
@@ -576,7 +581,10 @@ FLOAT CASyncDirectSound::GetDelay()
 //***********************************************************************************************
 DWORD CASyncDirectSound::GetChunkLen()
 {
-  return m_dwPacketSize;
+	if (m_bResampleAudio)
+		return m_Resampler.GetMaxInputSize();
+	else
+		return m_dwPacketSize;
 }
 //***********************************************************************************************
 int CASyncDirectSound::SetPlaySpeed(int iSpeed)

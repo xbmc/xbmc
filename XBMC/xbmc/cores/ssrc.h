@@ -132,6 +132,7 @@ public:
 	//---------------------------------------------------------------------------
 	int Cssrc::PutData(unsigned char *pInData, int iSize);
 
+	int Cssrc::GetMaxInputSize() {return m_iMaxInputSize;};
 	//---------------------------------------------------------------------------
 	// Converts some data-
 	// DataSize is adjusted
@@ -144,6 +145,7 @@ public:
 private:
 //	clsDataStream DataStream;
 
+	int m_iMaxInputSize;				// Total amount of data we take in at once
 	// The temporary output buffer
 	int m_iOutputBufferSize;			// Amount to output to next filter in the chain
 	int m_iResampleBufferSize;			// Total amount of room in the buffer
