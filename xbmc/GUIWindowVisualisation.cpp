@@ -29,13 +29,32 @@ const short* CAudioBuffer::Get() const
 	return m_pBuffer;
 }
 
-void CAudioBuffer::Set(const short* psBuffer, int iSize)
+void CAudioBuffer::Set(const unsigned char* psBuffer, int iSize, int iBitsPerSample)
 {
-	for (int i=0; i < iSize; ++i)
+	if (iBitsPerSample == 16)
 	{
-		if (i < m_iLen) m_pBuffer[i] = psBuffer[i];
+		iSize/=2;
+		for (int i=0; i < iSize, i<m_iLen; i++)
+		{// 16 bit -> convert to short directly
+			m_pBuffer[i] = ((short *)psBuffer)[i];
+		}
 	}
-	for (i=iSize; i < m_iLen;++i) m_pBuffer[i] = 0;
+	else if (iBitsPerSample == 8)
+	{
+		for (int i=0; i < iSize, i<m_iLen; i++)
+		{// 8 bit -> convert to signed short by multiplying by 256
+			m_pBuffer[i] = ((short)((char *)psBuffer)[i]) << 8;
+		}
+	}
+	else	// assume 24 bit data
+	{
+		iSize/=3;
+		for (int i=0; i < iSize, i < m_iLen; i++)
+		{// 24 bit -> ignore least significant byte and convert to signed short
+			m_pBuffer[i] = (((int)psBuffer[3*i+1])<<0) + (((int)((char *)psBuffer)[3*i+2]) << 8);
+		}
+	}
+	for (int i=iSize; i < m_iLen;++i) m_pBuffer[i] = 0;
 }
 
 CGUIWindowVisualisation::CGUIWindowVisualisation(void)
@@ -173,14 +192,10 @@ void CGUIWindowVisualisation::OnAudioData(const unsigned char* pAudioData, int i
 	if (!m_bInitialized) return;
 
 	CSingleLock lock(m_critSection);
-	
-	// Convert data to 16 bit shorts
-	const short *sAudioData = (const short *)pAudioData;
-	iAudioDataLength/=2;
 
 	// Save our audio data in the buffers
 	auto_ptr<CAudioBuffer> pBuffer ( new CAudioBuffer(2*AUDIO_BUFFER_SIZE) );
-	pBuffer->Set(sAudioData,iAudioDataLength);
+	pBuffer->Set(pAudioData,iAudioDataLength,m_iBitsPerSample);
 	m_vecBuffers.push_back( pBuffer.release() );
 
 	if ( (int)m_vecBuffers.size() < m_iNumBuffers) return;

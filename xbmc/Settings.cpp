@@ -286,7 +286,8 @@ CSettings::CSettings(void)
   g_stSettings.m_maxFilter= D3DTEXF_LINEAR;
 
 	g_stSettings.m_bDisplayRemoteCodes=false;
-	g_stSettings.m_bResample=false;
+	g_stSettings.m_bResampleMusicAudio=false;
+	g_stSettings.m_bResampleVideoAudio=false;
 	g_stSettings.m_iOSDTimeout = 5;		// OSD Timeout, default to 5 seconds
 }
 
@@ -1043,7 +1044,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetFloat(pElement, "volumeamp", g_stSettings.m_fVolumeAmplification,0.0f,-200.0f,60.0f);
 
     GetBoolean(pElement, "UseDigitalOutput", g_stSettings.m_bUseDigitalOutput);
-	GetBoolean(pElement, "highqualityresampling", g_stSettings.m_bResample);
+	GetBoolean(pElement, "HQmusicaudio", g_stSettings.m_bResampleMusicAudio);
+	GetBoolean(pElement, "HQvideoaudio", g_stSettings.m_bResampleVideoAudio);
 	}
 
   // post processing
@@ -1350,7 +1352,8 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   SetBoolean(pNode, "autoshuffleplaylist", g_stSettings.m_bAutoShufflePlaylist);
   SetFloat(pNode, "volumeamp", g_stSettings.m_fVolumeAmplification);
   SetBoolean(pNode, "UseDigitalOutput", g_stSettings.m_bUseDigitalOutput);
-	SetBoolean(pNode, "highqualityresampling", g_stSettings.m_bResample);
+	SetBoolean(pNode, "HQmusicaudio", g_stSettings.m_bResampleMusicAudio);
+	SetBoolean(pNode, "HQvideoaudio", g_stSettings.m_bResampleVideoAudio);
 
 	TiXmlElement postprocNode("PostProcessing");
 	pNode = pRoot->InsertEndChild(postprocNode);

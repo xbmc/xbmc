@@ -16,7 +16,7 @@ public:
 	CAudioBuffer(int iSize);
 	virtual ~CAudioBuffer();
 	const short* Get() const;
-	void Set(const short* psBuffer, int iSize);
+	void Set(const unsigned char* psBuffer, int iSize, int iBitsPerSample);
 private:
 	CAudioBuffer();
 	short* m_pBuffer;

@@ -135,7 +135,6 @@ static int audio_init(int rate,int channels,int format,int flags)
 			if (strstr(strAudioCodec,"SPDIF") && (g_stSettings.m_bDD_DTSMultiChannelPassThrough || g_stSettings.m_bDDStereoPassThrough))
 				bAC3PassThru=true;
 		}
-		pao_data=GetAOData();
 		if (bAC3PassThru)
 		{
 			channels=2;
@@ -143,14 +142,20 @@ static int audio_init(int rate,int channels,int format,int flags)
 			m_pAudioDecoder = new CAc97DirectSound(m_pAudioCallback,channels,rate,ao_format_bits);
 		}
 		else
-		{
-			m_pAudioDecoder = new CASyncDirectSound(m_pAudioCallback,channels,rate,ao_format_bits);
+		{	// check if we should resample this audio
+			// currently we don't do this for videos for fear of CPU issues
+			bool bResample(false);
+			if (g_stSettings.m_bResampleVideoAudio || (g_stSettings.m_bResampleMusicAudio && !mplayer_HasVideo()))
+			{
+				bResample = true;
+			}
+			m_pAudioDecoder = new CASyncDirectSound(m_pAudioCallback,channels,rate,ao_format_bits, bResample);
 		}
+		pao_data=GetAOData();
     pao_data->channels	= channels;
     pao_data->samplerate= rate;
     pao_data->format		= format;
     pao_data->bps				= channels*rate;
-		
     if(format != AFMT_U8 && format != AFMT_S8)
 		{
         pao_data->bps *= (ao_format_bits/8);
@@ -223,7 +228,11 @@ static float audio_get_delay()
 {
 	if (!m_pAudioDecoder) return 0;
 	FLOAT fDelay=m_pAudioDecoder->GetDelay();
-  fDelay += (float)(m_pAudioDecoder->GetBytesInBuffer() + pao_data->buffersize) / (float)pao_data->bps;
+	// check our output rate...
+  if (m_pAudioDecoder->IsResampling())
+	fDelay += (float)(m_pAudioDecoder->GetBytesInBuffer() + pao_data->buffersize) / (float)48000*pao_data->channels*2;
+  else
+	fDelay += (float)(m_pAudioDecoder->GetBytesInBuffer() + pao_data->buffersize) / (float)pao_data->bps;
 	return fDelay;
 
   //mplayer:
