@@ -89,7 +89,7 @@ public:
     virtual HRESULT Create();
     INT     Run();
     VOID    Destroy();
-
+    virtual void Process();
     // Internal constructor
     CXBApplicationEx();
 };

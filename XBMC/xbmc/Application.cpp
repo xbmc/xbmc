@@ -316,15 +316,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 void CApplication::Render()
 {
   static iBlinkRecord=0;
-	// process messages which have to be send to the gui
-	// (this can only be done after m_gWindowManager.Render())
-	g_applicationMessenger.ProcessWindowMessages();
-	// process any Python scripts
-	m_pythonParser.Process();
-
-	SpinHD();
-	// process messages, even if a movie is playing
-	g_applicationMessenger.ProcessMessages();
 	
 	// dont show GUI when playing full screen video
 	if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
@@ -637,9 +628,6 @@ void CApplication::FrameMove()
 		m_dwSpinDownTime=timeGetTime();
 	}
 
-	m_Autorun.HandleAutorun();
-
-	m_gWindowManager.DispatchThreadMessages();
 
 }
 
@@ -880,4 +868,22 @@ bool CApplication::OnMessage(CGUIMessage& message)
 	}
 
 	return true;
+}
+
+void CApplication::Process()
+{
+	m_Autorun.HandleAutorun();
+
+	m_gWindowManager.DispatchThreadMessages();
+
+  // process messages which have to be send to the gui
+	// (this can only be done after m_gWindowManager.Render())
+	g_applicationMessenger.ProcessWindowMessages();
+	// process any Python scripts
+	m_pythonParser.Process();
+
+	SpinHD();
+	// process messages, even if a movie is playing
+	g_applicationMessenger.ProcessMessages();
+
 }
