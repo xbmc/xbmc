@@ -440,6 +440,11 @@ public:
 		bool			m_bEnableRSS; // disable RSS feeds?
 		bool			m_bShowFreeMem;
 		int				m_iMusicOSDTimeout;  // music OSD timeout
+
+		bool		m_bIsCdgEnabled;
+		int		m_iCdgBgAlpha;
+		int		m_iCdgFgAlpha;
+		float		m_fCdgAVDelay;
 	};
 
 	// cache copies of these parsed values, to avoid re-parsing over and over

@@ -471,6 +471,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIWindowSettingsCache.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIWindowSettingsCdg.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIWindowSettingsCDRipper.cpp">
 				</File>
 				<File
@@ -678,6 +681,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\ButtonTranslator.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\Cdg.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\CdgParser.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\Crc32.cpp">
@@ -902,6 +911,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileSystem\cddb.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\Cdg.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\CdgParser.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\cdioSupport.h">
 			</File>
 			<File
@@ -1091,6 +1106,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\GUIWindowSettingsCache.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowSettingsCdg.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowSettingsFilter.h">
 			</File>
 			<File
@@ -1253,10 +1271,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\cores\ModPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
@@ -2064,34 +2082,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			<File
 				RelativePath=".\xbmc\visualizations\VisualisationFactory.h">
 			</File>
-			<Filter
-				Name="Xaraoke"
-				Filter="">
-				<File
-					RelativePath=".\xbmc\visualizations\Xaraoke\Cdg.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\visualizations\Xaraoke\Cdg.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\visualizations\Xaraoke\CdgReader.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\visualizations\Xaraoke\CdgReader.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\visualizations\Xaraoke\Timer.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\visualizations\Xaraoke\Timer.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\visualizations\Xaraoke\XaraokeVisualisation.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\visualizations\Xaraoke\XaraokeVisualisation.h">
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="libraries"
