@@ -573,6 +573,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\FlacTag.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\MusicInfoLoader.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\MusicInfoScanner.cpp">
 				</File>
 				<File
@@ -611,6 +614,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Filter="">
 				<File
 					RelativePath=".\xbmc\ApplicationMessenger.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\Archive.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\Autorun.cpp">
@@ -667,16 +673,16 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\KaiVector.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\utils\LED.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\utils\LED.h">
-				</File>
-				<File
 					RelativePath=".\xbmc\LangCodeExpander.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\LangCodeExpander.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\LED.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\LED.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\utils\MediaMonitor.cpp">
@@ -875,6 +881,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\ApplicationMessenger.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\Archive.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\ArenaItem.h">
@@ -1253,6 +1262,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\MusicDatabase.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\MusicInfoLoader.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\MusicInfoScanner.h">

@@ -1,18 +1,10 @@
-
 #include "stdafx.h"
 #include "GUIWindowMusicPlayList.h"
-#include "settings.h"
-#include "guiWindowManager.h"
 #include "localizestrings.h"
-#include "PlayListFactory.h"
 #include "util.h"
-#include "url.h"
 #include "PlayListM3U.h"
 #include "application.h"
 #include "playlistplayer.h"
-#include <algorithm>
-#include "GuiUserMessages.h"
-#include "filesystem/cddadirectory.h"
 
 #define CONTROL_BTNVIEWASICONS		2
 #define CONTROL_BTNSORTBY					3
@@ -37,7 +29,7 @@
 CGUIWindowMusicPlayList::CGUIWindowMusicPlayList(void)
 :CGUIWindowMusicBase()
 {
-
+	m_tagloader.SetObserver(this);
 }
 
 CGUIWindowMusicPlayList::~CGUIWindowMusicPlayList(void)
@@ -105,7 +97,17 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 					CONTROL_SELECT_ITEM(CONTROL_THUMBS,iSong);
 				}
 			}
+
+			//	Setup item cache for tagloader
+			m_tagloader.UseCacheOnHD("Z:\\MusicPlaylist.fi");
 			return true;
+		}
+		break;
+
+		case GUI_MSG_WINDOW_DEINIT:
+		{
+			if (m_tagloader.IsLoading())
+				m_tagloader.StopThread();
 		}
 		break;
 
@@ -138,6 +140,9 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 			}
 			else if (iControl==CONTROL_BTNCLEAR)
 			{
+				if (m_tagloader.IsLoading())
+					m_tagloader.StopThread();
+
 				ClearPlayList();
 			}
 			else if (iControl==CONTROL_BTNPLAY)
@@ -190,11 +195,25 @@ void CGUIWindowMusicPlayList::OnAction(const CAction &action)
 	}
   if (action.wID == ACTION_MOVE_ITEM_UP)
   {
+		bool bRestart=m_tagloader.IsLoading();
+		if (bRestart)
+			m_tagloader.StopThread();
+
     MoveCurrentPlayListItem(ACTION_MOVE_ITEM_UP);
+
+		if (bRestart)
+			m_tagloader.Load(m_vecItems);
   }
   if (action.wID == ACTION_MOVE_ITEM_DOWN)
   {
+		bool bRestart=m_tagloader.IsLoading();
+		if (bRestart)
+			m_tagloader.StopThread();
+
     MoveCurrentPlayListItem(ACTION_MOVE_ITEM_DOWN);
+
+		if (bRestart)
+			m_tagloader.Load(m_vecItems);
   }
 
 	CGUIWindowMusicBase::OnAction(action);
@@ -234,7 +253,6 @@ void CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iAction)
     }
 }
 
-
 void CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items)
 {
 	if (items.size()) 
@@ -255,13 +273,21 @@ void CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, VECFI
 	{
 		const CPlayList::CPlayListItem& item = playlist[i];
 
-		CStdString strFileName   = item.GetFileName();
+		CStdString strFileName = item.GetFileName();
 		CStdString strPath,strFName;
 		CUtil::Split( strFileName, strPath, strFName);
 		m_Pathes.insert(strPath);
 		
 		CFileItem *pItem = new CFileItem(item);
-/*
+
+		CStdString strLabel;
+		//	No label from Playlist, set filename as default
+		if (item.GetDescription().IsEmpty())
+			strLabel.Format("%02.2i. %s", i+1, strFName);
+		else
+			strLabel.Format("%02.2i. %s", i+1, item.GetDescription());
+		pItem->SetLabel(strLabel);
+
 		if (item.GetDuration())
 		{
 			int nDuration=item.GetDuration();
@@ -273,9 +299,13 @@ void CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, VECFI
 			}
 			else
 				pItem->SetLabel2("");
-		}*/
+		}
 		items.push_back(pItem);
 	}
+
+	//	Set default icons first,
+	//	the tagloader will load the thumbs later
+	CUtil::FillInDefaultIcons(m_vecItems);
 }
 
 void CGUIWindowMusicPlayList::SavePlayList()
@@ -516,8 +546,19 @@ void CGUIWindowMusicPlayList::OnQueueItem(int iItem)
 	RemovePlayListItem(iItem);
 }
 
-void CGUIWindowMusicPlayList::OnFileItemFormatLabel(CFileItem* pItem)
+void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
 {
+	//	FIXME: get the position of the item in the playlist
+	int iTrack=0;
+	for (int i=0; i<(int)m_vecItems.size(); ++i)
+	{
+		if (pItem==m_vecItems[i])
+		{
+			iTrack=i+1;
+			break;
+		}
+	}
+
 	if (pItem->m_musicInfoTag.Loaded())
 	{
 		//	set label 1
@@ -530,7 +571,6 @@ void CGUIWindowMusicPlayList::OnFileItemFormatLabel(CFileItem* pItem)
 			if (strArtist)
 			{
 				//int iTrack=tag.GetTrackNumber();
-				int iTrack = (int)m_lPlayListSeq;
 				if (iTrack>0 && !g_guiSettings.GetBool("MusicLists.HideTrackNumber"))
 					str.Format("%02.2i. %s - %s",iTrack, tag.GetArtist().c_str(), tag.GetTitle().c_str());
 				else 
@@ -539,7 +579,6 @@ void CGUIWindowMusicPlayList::OnFileItemFormatLabel(CFileItem* pItem)
 			else
 			{
 				//int iTrack=tag.GetTrackNumber();
-				int iTrack = (int)m_lPlayListSeq;
 				if (iTrack>0 && !g_guiSettings.GetBool("MusicLists.HideTrackNumber"))
 					str.Format("%02.2i. %s ",iTrack, tag.GetTitle().c_str());
 				else 
@@ -575,175 +614,23 @@ void CGUIWindowMusicPlayList::OnFileItemFormatLabel(CFileItem* pItem)
 			// No music info and it's not CDDA so we'll just show the filename
 			CStdString str;
 			str = CUtil::GetTitleFromPath(pItem->m_strPath);
-			str.Format("%02.2i. %s ", m_lPlayListSeq, str);
+			str.Format("%02.2i. %s ", iTrack, str);
 			pItem->SetLabel(str);
 		}
 	}
-	//	set thumbs and default icons
+
+	//	Remove default icons
+	pItem->FreeIcons();
+	//	and reset thumbs and default icons
 	CUtil::SetMusicThumb(pItem);
 	CUtil::FillInDefaultIcon(pItem);
 }
-
-void CGUIWindowMusicPlayList::DoSort(VECFILEITEMS& items)
+void  CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)
 {
+	if (m_tagloader.IsLoading())
+		m_tagloader.StopThread();
 
+	CGUIWindowMusicBase::Update(strDirectory);
+
+	m_tagloader.Load(m_vecItems);
 }
-
-void CGUIWindowMusicPlayList::OnRetrieveMusicInfo(VECFILEITEMS& items)
-{
-	if (items.size()<=0)
-		return;
-
-	m_strPrevPath.Empty();
-
-	bool bShowProgress=false;
-	bool bProgressVisible=false;
-
-	//	Show a progress dialog when playlist isn't loaded
-	//	after 1.5 secs 
-	if (!m_gWindowManager.IsRouted())
-		bShowProgress=true;
-
-	DWORD dwTick=timeGetTime();
-
-	CSong song;
-	for (int i=0; i<(int)items.size(); i++)
-	{
-		CFileItem* pItem=items[i];
-
-		CStdString strExtension;
-		CUtil::GetExtension(pItem->m_strPath,strExtension);
-
-		//	Should we init a progress dialog
-		if (bShowProgress && !bProgressVisible)
-		{
-			DWORD dwElapsed = timeGetTime() - dwTick;
-
-			//	if tag loading took more then 1.5 secs. till now
-			//	show the progress dialog 
-			if (dwElapsed>1500)
-			{
-				if (m_dlgProgress) 
-				{
-					m_dlgProgress->SetHeading(189);
-					m_dlgProgress->SetLine(0, 505);
-					m_dlgProgress->SetLine(1,"");
-					m_dlgProgress->SetLine(2,"");
-					m_dlgProgress->StartModal(GetID());
-					m_dlgProgress->ShowProgressBar(true);
-					m_dlgProgress->SetPercentage((i*100)/m_vecItems.size());
-					m_dlgProgress->Progress();
-					bProgressVisible=true;
-				}
-			}
-		}		
-
-		if (bProgressVisible && (i%10)==0 && i>0)
-		{
-			m_dlgProgress->SetPercentage((i*100)/items.size());
-			m_dlgProgress->Progress();
-		}
-
-		//	Progress key presses from controller or remote
-		if (bProgressVisible)
-			if (m_dlgProgress) m_dlgProgress->ProgressKeys();
-
-		//	Canceled by the user, finish
-		if (bProgressVisible && m_dlgProgress->IsCanceled())
-		{
-			if (m_dlgProgress) m_dlgProgress->Close();
-			return;
-		}
-
-		LoadItem(pItem);
-
-	}
-
-	m_songsMap.erase(m_songsMap.begin(),m_songsMap.end());
-
-	if (bShowProgress)
-	{
-		if (m_dlgProgress) m_dlgProgress->Close();
-		return;
-	}
-}
-
-
-void CGUIWindowMusicPlayList::LoadItem(CFileItem* pItem)
-{
-        CMusicInfoTag& tag=pItem->m_musicInfoTag;
-	if (tag.Loaded())
-            return;	// nothing to do here
-	
-        CStdString strFileName, strPath;
-	CUtil::Split(pItem->m_strPath, strPath, strFileName);
-
-	if (CUtil::IsCDDA(pItem->m_strPath))
-	{
-		//	We have cdda item...
-		VECFILEITEMS  items;
-		CCDDADirectory dir;
-		//	... use the directory of the cd to 
-		//	get its cddb information...
-		if (dir.GetDirectory("D:",items))
-		{
-			for (int i=0; i < (int)items.size(); ++i)
-			{
-				CFileItem* pCDDAItem=items[i];
-				if (pCDDAItem->m_strPath==pItem->m_strPath)
-				{
-					//	...and find current track to use
-					//	cddb information for display.
-					pItem->m_musicInfoTag=pCDDAItem->m_musicInfoTag;
-				}
-			}
-		}
-		{
-			CFileItemList itemlist(items);	//	cleanup everything
-		}
-	}
-	else
-	{
-		//	Have we loaded this item from database before
-		IMAPSONGS it=m_songsMap.find(pItem->m_strPath);
-		if (it!=m_songsMap.end())
-		{
-			CSong& song=it->second;
-			pItem->m_musicInfoTag.SetSong(song);
-			m_songsMap.erase(it);
-		}
-		else if (strPath!=m_strPrevPath)
-		{
-			//	The item is from another directory then the last one,
-			//	query the database for the new directory...
-			g_musicDatabase.GetSongsByPath(strPath, m_songsMap, true);
-
-			//	...and look if we find it
-			IMAPSONGS it=m_songsMap.find(pItem->m_strPath);
-			if (it!=m_songsMap.end())
-			{
-				CSong& song=it->second;
-				pItem->m_musicInfoTag.SetSong(song);
-				m_songsMap.erase(it);
-			}
-		}
-
-		//	Nothing found, load tag from file
-		if (g_guiSettings.GetBool("MyMusic.UseTags") && !pItem->m_musicInfoTag.Loaded())
-		{
-			// get correct tag parser
-			CMusicInfoTagLoaderFactory factory;
-			auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
-			if (NULL != pLoader.get())
-					// get id3tag
-				pLoader->Load(pItem->m_strPath,pItem->m_musicInfoTag);
-		}
-		else
-		{	// no ID3 tag stuff, so get the title from the current label (to remove extensions etc.)
-			pItem->SetLabel(CUtil::GetTitleFromPath(pItem->GetLabel()));
-		}
-	}
-
-	m_strPrevPath=strPath;
-}
-

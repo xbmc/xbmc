@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdstring.h"
+#include "utils/archive.h"
 
 class CSong;
 class CAlbum;
@@ -8,7 +9,7 @@ class CAlbum;
 namespace MUSIC_INFO
 {
 
-	class CMusicInfoTag
+	class CMusicInfoTag : public ISerializable
 	{
 	public:
 		CMusicInfoTag(void);
@@ -38,6 +39,8 @@ namespace MUSIC_INFO
 		void							SetLoaded(bool bOnOff=true);
 		void							SetAlbum(const CAlbum& album);
 		void							SetSong(const CSong& song);
+
+		virtual void			Serialize(CArchive& ar);
 	protected:
 		CStdString	m_strURL;
 		CStdString	m_strTitle;

@@ -120,12 +120,78 @@ void CFileItem::Clear()
 	m_iprogramCount=0;
 }
 
+void CFileItem::Serialize(CArchive& ar)
+{
+	if (ar.IsStoring())
+	{
+		ar << m_bIsFolder;
+		ar << m_strLabel;
+		ar << m_strLabel2;
+		ar << m_strThumbnailImage;
+		ar << m_strIcon;
+		ar << m_bSelected;
+		
+		ar << m_strPath;
+		ar << m_bIsShareOrDrive;
+		ar << m_iDriveType;
+		ar << m_stTime;
+		ar << m_dwSize;
+		ar << m_fRating;
+		ar << m_strDVDLabel;
+		ar << m_iprogramCount;
+		ar << m_idepth;
+		ar << m_lStartOffset;
+		ar << m_lEndOffset;
+		ar << m_iLockMode;
+		ar << m_strLockCode;
+		ar << m_iBadPwdCount;
+
+		ar << m_musicInfoTag;
+	}
+	else
+	{
+		ar >> m_bIsFolder;
+		ar >> m_strLabel;
+		ar >> m_strLabel2;
+		ar >> m_strThumbnailImage;
+		ar >> m_strIcon;
+		ar >> m_bSelected;
+		
+		ar >> m_strPath;
+		ar >> m_bIsShareOrDrive;
+		ar >> m_iDriveType;
+		ar >> m_stTime;
+		ar >> m_dwSize;
+		ar >> m_fRating;
+		ar >> m_strDVDLabel;
+		ar >> m_iprogramCount;
+		ar >> m_idepth;
+		ar >> m_lStartOffset;
+		ar >> m_lEndOffset;
+		ar >> m_iLockMode;
+		ar >> m_strLockCode;
+		ar >> m_iBadPwdCount;
+
+		ar >> m_musicInfoTag;
+	}
+}
+
 CFileItemList::CFileItemList(VECFILEITEMS& items)
 :m_items(items)
 {
 }
 
 CFileItemList::~CFileItemList()
+{
+	Clear();
+}
+
+VECFILEITEMS& CFileItemList::GetList() 
+{
+	return m_items;
+}
+
+void CFileItemList::Clear()
 {
 	if (m_items.size())
 	{
@@ -140,7 +206,38 @@ CFileItemList::~CFileItemList()
 	}
 }
 
-VECFILEITEMS& CFileItemList::GetList() 
+void CFileItemList::Serialize(CArchive& ar)
 {
-	return m_items;
+	if (ar.IsStoring())
+	{
+		int i=0;
+		if (m_items.size()>0 && m_items[0]->GetLabel()=="..")
+			i=1;
+
+		ar << (int)(m_items.size()-i);
+
+		for (i; i<(int)m_items.size(); ++i)
+		{
+			CFileItem* pItem=m_items[i];
+			ar << *pItem;
+		}
+	}
+	else
+	{
+		int iSize=0;
+		ar >> iSize;
+		if (iSize<=0)
+			return;
+
+		Clear();
+
+		m_items.reserve(iSize);
+
+		for (int i=0; i<iSize; ++i)
+		{
+			CFileItem* pItem=new CFileItem;
+			ar >> *pItem;
+			m_items.push_back(pItem);
+		}
+	}
 }
