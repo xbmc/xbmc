@@ -248,11 +248,11 @@ void CSettings::Save() const
 {
 	if (!SaveSettings("T:\\settings.xml"))
 	{
-    CLog::Log("Unable to T:\\settings.xml");
+    CLog::Log("Unable to save settings to T:\\settings.xml");
 	}
 	if (!SaveCalibration("T:\\calibration.xml"))
 	{
-		CLog::Log("Unable to T:\\calibration.xml");
+		CLog::Log("Unable to save calibration to T:\\calibration.xml");
 	}
 }
 
@@ -262,7 +262,7 @@ bool CSettings::Load()
   CLog::Log("loading T:\\settings.xml");
 	if (!LoadSettings("T:\\settings.xml"))
 	{
-    CLog::Log("Unable to load T:\\settings.xml");
+    CLog::Log("Unable to load T:\\settings.xml, creating new T:\\settings.xml with default values");
     Save();
     return Load();
 	}
@@ -280,7 +280,7 @@ bool CSettings::Load()
 	TiXmlDocument xmlDoc;
   if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) ) 
 	{
-    CLog::Log("unable to load:%s",strXMLFile.c_str());
+    CLog::Log("unable to load:%s (xml file is invalid)",strXMLFile.c_str());
 		return false;
 	}
 
