@@ -48,7 +48,6 @@
 	#pragma comment (lib,"xbmc/lib/libsmb/libsmbd.lib")      // SECTIONNAME=LIBSMB
 	#pragma comment (lib,"xbmc/lib/cximage/ImageLibd.lib")   // SECTIONNAME=CXIMAGE
 	#pragma comment (lib,"xbmc/lib/libID3/i3dlibd.lib")			 // SECTIONNAME=LIBID3
-	#pragma comment (lib,"xbmc/lib/libCDRip/cdripd.lib")		 // SECTIONNAME=LIBCDRIP
 	#pragma comment (lib,"xbmc/lib/libPython/pythond.lib")	 // SECTIONNAME=PYTHON,PY_RW
 	#pragma comment (lib,"xbmc/lib/libGoAhead/goaheadd.lib") // SECTIONNAME=LIBHTTP
 	#pragma comment (lib,"xbmc/lib/sqlLite/libSQLite3d.lib")
@@ -68,7 +67,6 @@
 	#pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")
 	#pragma comment (lib,"xbmc/lib/cximage/ImageLib.lib")
 	#pragma comment (lib,"xbmc/lib/libID3/i3dlib.lib")
-	#pragma comment (lib,"xbmc/lib/libCDRip/cdrip.lib")
 	#pragma comment (lib,"xbmc/lib/libPython/python.lib")
 	#pragma comment (lib,"xbmc/lib/libGoAhead/goahead.lib")
 	#pragma comment (lib,"xbmc/lib/sqlLite/libSQLite3.lib")
