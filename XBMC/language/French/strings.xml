@@ -1523,6 +1523,18 @@
     <id>466</id>
     <value>Gamma</value>
   </string>
+  <string>
+    <id>467</id>
+    <value>Type</value>
+  </string>
+  <string>
+    <id>468</id>
+    <value>Déplacez la barre pour changer la position d'affichage</value>
+  </string>
+  <string>
+    <id>469</id>
+    <value>Position OSD</value>
+  </string>
 <string><id>10000</id><value>Accueil</value></string>
 <string><id>10001</id><value>Mes Programes</value></string>
 <string><id>10002</id><value>Mes Images</value></string>
