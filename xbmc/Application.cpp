@@ -897,6 +897,7 @@ void CApplication::UpdateLCD()
         }
         g_lcd.SetLine(0,strLine);
         strLine=m_tagCurrentSong.GetTitle();
+        if (strLine=="") strLine=CUtil::GetFileName(m_strCurrentFile);
         if (iLine < 4 && strLine!="") g_lcd.SetLine(iLine++,strLine);
         strLine=m_tagCurrentSong.GetArtist();
         if (iLine < 4 && strLine!="") g_lcd.SetLine(iLine++,strLine);
@@ -912,7 +913,7 @@ void CApplication::UpdateLCD()
       else
       {
         g_lcd.SetLine(0,strLine);
-        g_lcd.SetLine(1,"");
+        g_lcd.SetLine(1,CUtil::GetFileName(m_strCurrentFile));
         g_lcd.SetLine(2,"");
         g_lcd.SetLine(3,"");
       }
