@@ -262,10 +262,10 @@ void CGUIWindowScripts::UpdateButtons()
     SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
   }
 
-  int iString=101;
+  int iString=100;
   if (!bViewIcon) 
   {
-    iString=100;
+    iString=101;
   }
 	SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
 	SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iScriptsSortMethod+103);
