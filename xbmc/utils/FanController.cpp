@@ -8,12 +8,13 @@
 #include "../xbox/XKExports.h"
 
 
-#define PIC_ADDRESS   0x20
-#define FAN_MODE      0x05 // Enable/ disable the custom fan speeds (0/1)
-#define FAN_REGISTER  0x06 // Set custom fan speeds (0-50)
-#define FAN_READBACK  0x10 // Current fan speed (0-50)
-#define GPU_TEMP      0x0A // GPU Temperature
-#define CPU_TEMP      0x09 // CPU Temperature
+#define PIC_ADDRESS      0x20
+#define XCALIBUR_ADDRESS 0xE0 // XCalibur/1.6 videochip
+#define FAN_MODE         0x05 // Enable/ disable the custom fan speeds (0/1)
+#define FAN_REGISTER     0x06 // Set custom fan speeds (0-50)
+#define FAN_READBACK     0x10 // Current fan speed (0-50)
+#define GPU_TEMP         0x0A // GPU Temperature
+#define CPU_TEMP         0x09 // CPU Temperature
 
 CFanController* CFanController::_Instance = NULL;
 
@@ -87,9 +88,14 @@ void CFanController::SetTargetTemperature(int targetTemperature)
 void  CFanController::RestoreStartupSpeed() 
 {
   SetFanSpeed(systemFanSpeed);
-	Sleep(100);
-  //disable custom fanmode
- 	HalWriteSMBusValue(PIC_ADDRESS, FAN_MODE, 0, 0);
+  Sleep(100);
+  //if it's not a 1.6 box disable custom fanmode
+  int iDummy;
+  if (HalReadSMBusValue(XCALIBUR_ADDRESS, 0, 0, (LPBYTE)&iDummy) != 0)
+  {
+    //disable custom fanmode
+    HalWriteSMBusValue(PIC_ADDRESS, FAN_MODE, 0, 0);
+  }
   inCustomMode = false;
 }
 
