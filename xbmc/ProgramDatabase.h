@@ -19,15 +19,15 @@ public:
   virtual ~CProgramDatabase(void);
   bool    Open() ;
   void	  Close() ;
-  long    AddProgram(const CStdString& strFilenameAndPath, const CStdString& strDescription, const CStdString& strBookmark);
+  long    AddProgram(const CStdString& strFilenameAndPath, const CStdString& strBookmarkDir, const CStdString& strDescription, const CStdString& strBookmark);
   long    GetPath(const CStdString& strPath);
-  void	  GetProgramsByBookmark(CStdString& strBookmark, VECFILEITEMS& programs, bool bOnlyDefaultXBE);
+  void	  GetProgramsByBookmark(CStdString& strBookmark, VECFILEITEMS& programs, CStdString& strBookmarkDir, bool bOnlyDefaultXBE, bool bOnlyOnePath);
 protected:
   auto_ptr<SqliteDatabase>  m_pDB;
 	auto_ptr<Dataset>				  m_pDS;
 
 
-  long    AddPath(const CStdString& strPath);
+  long    AddPath(const CStdString& strPath, const CStdString& strBookmarkDir);
   long    AddFile(long lProgramid, long lPathId, const CStdString& strFileName, const CStdString& strDescription);
 
   long	  AddBookMark(const CStdString& strBookmark);

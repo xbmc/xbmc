@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 25-07-2004 added: Added: My Programs now allows for multiple Paths per bookmark.  Use a comma-separated list in the <path> tag.
   - 23-07-2004 added: profiles for settings
   - 22-07-2004 fixed: album info from allmusic.com
   - 18-07-2004 changed: mplayer.conf updated to reflect improvements to playback smoothness observed by carlito

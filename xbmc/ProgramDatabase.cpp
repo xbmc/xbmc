@@ -126,7 +126,7 @@ bool CProgramDatabase::CreateTables()
 		m_pDS->exec("CREATE TABLE bookmark (idBookmark integer primary key, bookmarkName text)\n");
 
 		CLog::Log("create path table");
-		m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text)\n");
+		m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, strBookmarkDir text)\n");
 
 		CLog::Log("create files table");
 		m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, idProgram integer,strFilename text, xbedescription text, iTimesPlayed integer)\n");
@@ -210,7 +210,7 @@ long CProgramDatabase::AddBookMark(const CStdString& strBookmark)
 
 
 //********************************************************************************************************************************
-long CProgramDatabase::AddPath(const CStdString& strPath)
+long CProgramDatabase::AddPath(const CStdString& strPath, const CStdString& strBookmarkDir)
 {
   try
   {
@@ -222,8 +222,8 @@ long CProgramDatabase::AddPath(const CStdString& strPath)
     if (m_pDS->num_rows() == 0) 
     {
 	  // doesnt exists, add it
-	  strSQL.Format("insert into Path (idPath, strPath) values( NULL, '%s')",
-                    strPath.c_str());
+	  strSQL.Format("insert into Path (idPath, strPath, strBookmarkDir) values( NULL, '%s', '%s')",
+                    strPath.c_str(), strBookmarkDir.c_str());
 	  m_pDS->exec(strSQL.c_str());
 	  long lPathId=sqlite_last_insert_rowid(m_pDB->getHandle());
 	  return lPathId;
@@ -291,17 +291,22 @@ long CProgramDatabase::GetProgram(long lPathId)
 }
 
 //********************************************************************************************************************************
-long CProgramDatabase::AddProgram(const CStdString& strFilenameAndPath, const CStdString& strDescription, const CStdString& strBookmark)
+long CProgramDatabase::AddProgram(const CStdString& strFilenameAndPath, const CStdString& strBookmarkDir, const CStdString& strDescription, const CStdString& strBookmark)
 {
   try
   {
     if (NULL==m_pDB.get()) return -1;
 	if (NULL==m_pDS.get()) return -1;
-	CStdString strPath, strFileName, strDes=strDescription;
+	CStdString strPath, strFileName, strDes=strDescription, strBookmarkPath=strBookmarkDir;
 	Split(strFilenameAndPath, strPath, strFileName); 
     RemoveInvalidChars(strPath);
     RemoveInvalidChars(strFileName);
     RemoveInvalidChars(strDes);
+	RemoveInvalidChars(strBookmarkPath);
+	strPath.Replace("\\","/");
+	strFileName.Replace("\\","/");
+	strBookmarkPath.Replace("\\","/");
+
 	
 	long lPathId=GetPath(strPath);
 	
@@ -310,7 +315,7 @@ long CProgramDatabase::AddProgram(const CStdString& strFilenameAndPath, const CS
 	  
 	  CStdString strSQL;
 
-      lPathId = AddPath(strPath);
+      lPathId = AddPath(strPath, strBookmarkPath);
       if (lPathId < 0) return -1;
 	  long lBookMarkId = AddBookMark(strBookmark);
 	  if (lBookMarkId < 0) return -1;
@@ -336,7 +341,7 @@ long CProgramDatabase::AddProgram(const CStdString& strFilenameAndPath, const CS
 }
 
 //********************************************************************************************************************************
-void CProgramDatabase::GetProgramsByBookmark(CStdString& strBookmark, VECFILEITEMS& programs, bool bOnlyDefaultXBE)
+void CProgramDatabase::GetProgramsByBookmark(CStdString& strBookmark, VECFILEITEMS& programs, CStdString& strBookmarkDir, bool bOnlyDefaultXBE, bool bOnlyOnePath)
 {
 	try {	
 		VECPROGRAMPATHS todelete;
@@ -346,10 +351,22 @@ void CProgramDatabase::GetProgramsByBookmark(CStdString& strBookmark, VECFILEITE
 		if (NULL==m_pDS.get()) return ;
 		long lBookmarkId = AddBookMark(strBookmark);
 		CStdString strSQL;
+		CStdString strBookmarkPath=strBookmarkDir;
+		strBookmarkPath.Replace("\\", "/");
 		if (bOnlyDefaultXBE)
-			strSQL.Format("select * from program,files,path where program.idBookmark=%i and program.idPath=path.idPath and files.idPath=program.idPath and files.strFilename like '\\default.xbe'",lBookmarkId);
+		{
+			if (!bOnlyOnePath)
+				strSQL.Format("select * from program,files,path where program.idBookmark=%i and program.idPath=path.idPath and files.idPath=program.idPath and files.strFilename like '/default.xbe'",lBookmarkId);
+			else
+				strSQL.Format("select * from program,files,path where program.idBookmark=%i and program.idPath=path.idPath and files.idPath=program.idPath and path.strBookmarkDir like '%s' and files.strFilename like '/default.xbe'",lBookmarkId, strBookmarkPath.c_str());
+		} 
 		else
-			strSQL.Format("select * from program,files,path where program.idBookmark=%i and program.idPath=path.idPath and files.idPath=program.idPath",lBookmarkId);
+		{
+			if (!bOnlyOnePath)
+				strSQL.Format("select * from program,files,path where program.idBookmark=%i and program.idPath=path.idPath and files.idPath=program.idPath",lBookmarkId);
+			else
+				strSQL.Format("select * from program,files,path where program.idBookmark=%i and program.idPath=path.idPath and files.idPath=program.idPath and path.strBookmarkDir like '%s'",lBookmarkId, strBookmarkPath.c_str());
+		}
 		m_pDS->query(strSQL.c_str());
 		if (m_pDS->num_rows() == 0) return;
 		while (!m_pDS->eof())
@@ -359,8 +376,10 @@ void CProgramDatabase::GetProgramsByBookmark(CStdString& strBookmark, VECFILEITE
 			strPath=m_pDS->fv("path.strPath").get_asString();
 			strFile=m_pDS->fv("files.strFilename").get_asString();
 			strPathandFile=strPath+strFile;
+			strPathandFile.Replace("/","\\");
 			if (CUtil::FileExists(strPathandFile))
 			{
+				CLog::Log("strPathandFile: %s", strPathandFile.c_str());
 				CFileItem *pItem = new CFileItem(m_pDS->fv("files.xbedescription").get_asString());
 				pItem->m_strPath=strPathandFile;
 				pItem->m_bIsFolder=false;
