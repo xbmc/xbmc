@@ -56,10 +56,8 @@ struct CreditLine_t
 
 // Module sync notes
 // one row is (125*sngspd)/(bpm*50) seconds
-// the module used is 125 bpm, spd 6 (unless noted) so 6/50 = 0.12 seconds per row
-// speed 7: 0.14s/row
-// speed 8: 0.16s/row
-// song starts at pattern 18!
+// the module used is spd 6 (unless noted) so 6/50 = 0.12 seconds per row
+// bpm compensation done in code
 
 // The credits - these should be sorted by Time
 // x, y are percentage distance across the screen of the center point
@@ -67,94 +65,98 @@ struct CreditLine_t
 //    x,   y,   Time,    Dur,  InD, OutD,                        Effects, Font, Text
 CreditLine_t Credits[] = 
 {
-  // Intro  fadein 32 rows, on 46 rows, crossfade 4 rows
-  {  50,  25,      0,   5400, 3840,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   78, L"XBOX" },
-  {  50,  45,      0,   5400, 3840,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   78, L"MEDIA" },
-  {  50,  65,      0,   5400, 3840,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   78, L"CENTER" },
+  // Intro  fadein 32 rows, on 80 rows, fadeout 16 rows
+	{  50,  25,      0,   9600, 3840, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   78, L"XBOX" },
+	{  50,  45,      0,   9600, 3840, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   78, L"MEDIA" },
+	{  50,  65,      0,   9600, 3840, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   78, L"CENTER" },
 
-  // Lead dev  crossfade 4 rows, on 75 rows, fadeout 4 rows
-  {  50,  22,   9240,   9000,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Project Founders" },
-  {  50,  29,      0,   9000,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"and" },
-  {  50,  34,      0,   9000,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Lead Developers" },
-  {  50,  47,    240,   8760,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Frodo" },
-  {  50,  57,      0,   8760,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"RUNTiME" },
-  {  50,  67,      0,   8760,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"d7o3g4q" },
+  // Lead dev  fadein 2 rows, on 110 rows, fadeout 16 rows
+	{  50,  22,  15360,  13200,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Project Founders" },
+	{  50,  29,      0,  13200,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"and" },
+	{  50,  34,      0,  13200,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Lead Developers" },
+	{  50,  47,    720,  12480,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Frodo" },
+	{  50,  57,      0,  12480,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"RUNTiME" },
+	{  50,  67,      0,  12480,  240, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"d7o3g4q" },
 
-  // Devs  flash 0.5 rows, on 62 rows, crossfade 3.5 rows
-  {  50,  22,   9720,  15420,   60,  600, EFF_IN_FLASH  |EFF_OUT_FADE   ,   36, L"Developers" },
-  {  50,  35,      0,   7440,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Butcher" },
-  {  50,  45,      0,   7440,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Forza" },
-  {  50,  55,      0,   7440,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Bobbin007" },
-  {  50,  65,      0,   7440,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"J Marshall" },
-  //  crossfade 3.5, on 62, crossfade 3
-  {  50,  35,   7500,   7440,  420,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"jwnmulder" },
-  {  50,  45,      0,   7440,  420,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"monkeyhappy" },
-  {  50,  55,      0,   7440,  420,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Tslayer" },
+  // Devs  flash 0.5 rows, on 63 rows, crossfade 3.5 rows
+  {  50,  22,  14640,  13380,   60, 1920, EFF_IN_FLASH  |EFF_OUT_FADE   ,   36, L"Developers" },
+  {  50,  35,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Butcher" },
+  {  50,  45,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Forza" },
+  {  50,  55,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Bobbin007" },
+  {  50,  65,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"J Marshall" },
+  //  crossfade 3.5, on 45, fadeout 16
+  {  50,  35,   7620,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"jwnmulder" },
+  {  50,  45,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"monkeyhappy" },
+  {  50,  55,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Tslayer" },
 
-  // Project management crossfade 3, on 61, crossfade 3
-  {  50,  18,   7860,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Project Management" },
-  {  50,  28,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Gamester17" },
+  // Project management flash 0.5, on 63, crossfade 3.5
+	{  50,  18,   7740,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   36, L"Project Management" },
+	{  50,  28,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Gamester17" },
 
-  {  50,  40,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Tech Support Mods" },
-  {  50,  50,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Hullebulle aka Nuendo" },
-  {  50,  60,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Pike" },
-  {  50,  70,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"DDay" },
-  {  50,  80,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Poing" },
+	{  50,  40,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   36, L"Tech Support Mods" },
+	{  50,  50,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Hullebulle aka Nuendo" },
+	{  50,  60,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Pike" },
+	{  50,  70,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"DDay" },
+	{  50,  80,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Poing" },
 
-  // Testers crossfade 3, on 30(6),16(7), fadeout 8(8), gap 8(8)
-  {  50,  22,   7680,   5840,  360, 1280, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Testers" },
-  {  50,  35,      0,   5840,  360, 1280, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"MrMario64" },
-  {  50,  45,      0,   5840,  360, 1280, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Obstler" },
-  {  50,  55,      0,   5840,  360, 1280, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Shadow_Mx" },
-  {  50,  65,      0,   5840,  360, 1280, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"xAD/nIGHTFALL" },
-  {  50,  75,      0,   5840,  360, 1280, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"[XC]D-Ice" },
+  // Testers crossfade 3.5, on 45, fadeout 16
+  {  50,  22,   7620,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Testers" },
+	{  50,  35,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"MrMario64" },
+	{  50,  45,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Obstler" },
+	{  50,  55,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Shadow_Mx" },
+	{  50,  65,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"xAD/nIGHTFALL" },
+	{  50,  75,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"[XC]D-Ice" },
 
-  // Support  flash 0.5, on 46.5, crossfade 3.5
-  {  50,  22,   8760,   5580,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   36, L"Exceptional Patches" },
-  {  50,  35,      0,   5580,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Q-Silver" },
-  {  50,  45,      0,   5580,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"WiSo" },
-  {  50,  55,      0,   5580,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Tilmann" },
+  // Patches  flash 0.5, on 63, crossfade 3.5
+  {  50,  22,   7740,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   36, L"Exceptional Patches" },
+  {  50,  35,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Q-Silver" },
+  {  50,  45,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"WiSo" },
+  {  50,  55,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Tilmann" },
 
-  // Stream server  crossfade 3.5, on 12.5+36(1)+22 fadeout 4
-  {  50,  22,   5640,   4860,  420,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Stream Server" },
-  {  50,  35,      0,   4860,  420,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"[XC]D-Ice" },
-  {  50,  45,      0,   4860,  420,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"PuhPuh" },
-  {  50,  55,      0,   4860,  420,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Pope-X" },
+  // Stream server  crossfade 3.5, on 60 crossfade 3
+  {  50,  22,   7620,   7200,  420,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Stream Server" },
+  {  50,  35,      0,   7200,  420,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"[XC]D-Ice" },
+  {  50,  45,      0,   7200,  420,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"PuhPuh" },
+  {  50,  55,      0,   7200,  420,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Pope-X" },
 
-  // Website Hosts  flash 0.5, on 62.5, crossfade 3.5
-  {  50,  22,   5760,   7500,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   36, L"Website Hosting" },
-  {  50,  35,      0,   7500,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"HulleBulle aka Nuendo" },
-  {  50,  45,      0,   7500,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"MrX" },
-  {  50,  55,      0,   7500,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Team-XBMC" },
-  {  50,  65,      0,   7500,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"xAD/nIGHTFALL (ASP Site Upload)" },
-  {  50,  75,      0,   7500,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Sourceforge.net" },
+  // Website Hosts  crossfade 3, on 61, crossfade 3
+	{  50,  22,   7680,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Website Hosting" },
+	{  50,  35,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"HulleBulle aka Nuendo" },
+	{  50,  45,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"MrX" },
+	{  50,  55,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team-XBMC" },
+	{  50,  65,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"xAD/nIGHTFALL (ASP Site Upload)" },
+	{  50,  75,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Sourceforge.net" },
 
-  // Sponsors crossfade 3.5, on 60, crossfade 4
-  {  50,  22,   7560,   7200,  420,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Sponsors" },
-  {  50,  35,      0,   7200,  420,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team-Xecuter" },
-  {  50,  45,      0,   7200,  420,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team-SmartXX" },
-  {  50,  55,      0,   7200,  420,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team-OzXodus" },
+  // Sponsors crossfade 3, on 61, crossfade 3
+	{  50,  22,   7680,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Sponsors" },
+	{  50,  35,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team-Xecuter" },
+	{  50,  45,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team-SmartXX" },
+	{  50,  55,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team-OzXodus" },
 
-  // Current Skin crossfade 3.5, on 60, crossfade 4
-  {  50,  22,   7620,   7200,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"$SKINTITLE" },
-  {  50,  35,      0,   7200,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, NULL }, // skin names go in these 5
-  {  50,  45,      0,   7200,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, NULL },
-  {  50,  55,      0,   7200,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, NULL },
-  {  50,  65,      0,   7200,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, NULL },
-  {  50,  75,      0,   7200,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, NULL },
+  // Current Skin crossfade 3, on 61, crossfade 3
+	{  50,  22,   7680,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"$SKINTITLE" },
+	{  50,  35,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, NULL }, // skin names go in these 5
+	{  50,  45,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, NULL },
+	{  50,  55,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, NULL },
+	{  50,  65,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, NULL },
+	{  50,  75,      0,   7320,  360,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, NULL },
 
-  // Special Thanks crossfade 34, on 60, fadeout 4
-  {  50,  22,   7680,   7200,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Special Thanks to" },
-  {  50,  35,      0,   7200,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team Avalaunch (for help with some code)" },
-  {  50,  45,      0,   7200,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team Complex" },
-  {  50,  55,      0,   7200,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team EvoX" },
-  {  50,  65,      0,   7200,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Xbox-scene.com" },
-  {  50,  75,      0,   7200,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"bestplayer.de" },
+  // Special Thanks crossfade 3, on 46, fadeout 16
+	{  50,  22,   7680,   5520,  360, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Special Thanks to" },
+	{  50,  35,      0,   5520,  360, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team Avalaunch (for help with some code)" },
+	{  50,  43,      0,   5520,  360, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team Complex" },
+	{  50,  51,      0,   5520,  360, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team EvoX" },
+	{  50,  59,      0,   5520,  360, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Xbox-scene.com" },
+	{  50,  67,      0,   5520,  360, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"bestplayer.de" },
+	{  50,  75,      0,   5520,  360, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"modplug (credits music)" },
+
+	// empty block, can be used for more credits if needed
+	{   0,   0,   7800,  15360,    0,    0, EFF_IN_APPEAR |EFF_OUT_APPEAR ,   20, NULL },
 
   // All stuff after this just scrolls
 
   // Code credits
-  {  50,  50,   8500,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Code Credits" },
+  {  50,  50,  14400,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Code Credits" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"MPlayer" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"FFmpeg" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"XVID" },
@@ -179,7 +181,7 @@ CreditLine_t Credits[] =
   // JOKE section;-)
 
   // section Frodo
-	{  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Frodo" },
+	{  50,  50,   7040,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Frodo" },
 	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Special thanks to my dear friends" },
 	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Gandalf, Legolas, Gimli, Aragorn, Boromir" },
 	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Merry, Pippin and ofcourse Samwise" },
@@ -832,6 +834,11 @@ void RunCredits()
 
 	RESOLUTION res = g_graphicsContext.GetVideoResolution();
 	g_graphicsContext.SetVideoResolution(res, TRUE);
+	float fFrameTime;
+	if (res == PAL_4x3 || res == PAL_16x9)
+		fFrameTime = 50.0f / 1000;
+	else
+		fFrameTime = 59.94f / 1000;
 
 	D3DDevice::Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
 	D3DDevice::Present(0, 0, 0, 0);
@@ -918,6 +925,12 @@ void RunCredits()
 			Credits[i].Time += Time;
 			Time = Credits[i].Time;
 
+			// scaling for 124 bpm
+			Credits[i].Time = 125 * Credits[i].Time / 124;
+			Credits[i].Duration = 125 * Credits[i].Duration / 124;
+			Credits[i].InDuration = 125 * Credits[i].InDuration / 124;
+			Credits[i].OutDuration = 125 * Credits[i].OutDuration / 124;
+
 			if (Credits[i].Text && !wcsicmp(Credits[i].Text, L"$SKINTITLE"))
 				SkinOffset = i;
 		}
@@ -976,6 +989,7 @@ void RunCredits()
 				NextCredit = 0;
 				ActiveList.clear();
 			}
+			LastTime = Time;
 
 			// fade out if at the end
 			if (NextCredit == NUM_CREDITS && ActiveList.size() == 1)
@@ -1061,9 +1075,7 @@ void RunCredits()
 			D3DDevice::Clear(0, 0, D3DCLEAR_STENCIL | D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
 
 			// Background
-			RenderLogo((float)(Time - LastTime) / 1000.f);
-
-			LastTime = Time;
+			RenderLogo(fFrameTime);
 
 			Gamma = 0;
 
