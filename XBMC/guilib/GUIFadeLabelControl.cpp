@@ -14,9 +14,6 @@ CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, 
 	iLastItem=-1;
 	iFrames=0;
 	iStartFrame=0;
-	m_vecLabels.push_back(L"Guns 'n' Roses");
-	m_vecLabels.push_back(L"November Rain");;
-	m_vecLabels.push_back(L"1988");
 	m_bFadeIn=false;
 	m_iCurrentFrame=0;
 }

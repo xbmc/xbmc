@@ -1,5 +1,7 @@
 #include "..\python.h"
 #include "GUIControl.h"
+#include <vector>
+
 #pragma once
 
 #define PyObject_HEAD_XBMC_CONTROL		\
@@ -35,6 +37,13 @@ namespace PYXBMC
 
 	typedef struct {
     PyObject_HEAD_XBMC_CONTROL
+		string strFont;
+		DWORD dwTextColor;
+		std::vector<string> vecLabels;
+	} ControlFadeLabel;
+
+	typedef struct {
+    PyObject_HEAD_XBMC_CONTROL
 		string strFileName;
 		DWORD strColorKey;
 	} ControlImage;
@@ -55,6 +64,7 @@ namespace PYXBMC
 
 	extern PyTypeObject Control_Type;
 	extern PyTypeObject ControlLabel_Type;
+	extern PyTypeObject ControlFadeLabel_Type;
 	extern PyTypeObject ControlImage_Type;
 	extern PyTypeObject ControlButton_Type;
 }
