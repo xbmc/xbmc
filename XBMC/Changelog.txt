@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 28-09-2004 added: new tag to XBoxMediaCenter.xml to allow the controller deadzone to be adjusted
   - 28-09-2004 fixed: Volume bar was offscreen in PAL60 modes
   - 27-09-2004 updated: German language file
   - 27-09-2004 added: Extra checking for errors + debug info to thumbnail creation

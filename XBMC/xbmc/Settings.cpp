@@ -469,6 +469,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 		{
 			GetInteger(pControllerDelays, "move", g_stSettings.m_iMoveDelayController,220,1,INT_MAX);
 			GetInteger(pControllerDelays, "repeat", g_stSettings.m_iRepeatDelayController,220,1,INT_MAX);
+			GetFloat(pControllerDelays, "deadzone", g_stSettings.m_fAnalogDeadzoneController, 0.1f, 0.0f, 1.0f);
 		}
 	}
 
