@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+
+  - 02-03-2005 fixed: [ 1155038 ] "Video calibration" error
   - 02-03-2005 changed: moved cdda reading to CFileCdda class
   - 02-03-2005 fixed: cdda player, couldn't seek to the start of a track
   - 02-03-2005 fixed: cdda player, gui was choppy when seeking
