@@ -746,6 +746,9 @@
 					RelativePath=".\xbmc\GUIDialogInvite.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIDialogKeyboard.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIDialogOK.cpp">
 				</File>
 				<File
@@ -894,6 +897,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIDialogInvite.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIDialogKeyboard.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIDialogOK.h">
