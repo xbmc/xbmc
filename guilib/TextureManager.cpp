@@ -1,7 +1,10 @@
 #include "texturemanager.h"
 #include "graphiccontext.h"
 #include "animatedgif.h"
+#include "../xbmc/utils/log.h"
+
 extern "C" void dllprintf( const char *format, ... );
+
 CGUITextureManager g_TextureManager;
 
 CTexture::CTexture()
@@ -275,6 +278,9 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
   if (strTextureName.c_str()[1] == ':')
     strPath=strTextureName;
 
+  OutputDebugString(strPath.c_str());
+  OutputDebugString("\n");
+
   if (strPath.Right(4).ToLower()==".gif")
   {
  
@@ -282,6 +288,13 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
     int iImages=AnimatedGifSet.LoadGIF(strPath.c_str());
 		if (iImages==0)
 		{
+      CStdString strText=strPath;
+      strText.MakeLower();
+      // dont release skin textures, they are reloaded each time
+      if (strstr(strPath.c_str(),"q:\\skin") ) 
+      {
+        CLog::Log("Texture manager unable to find file:%s",strPath.c_str());
+      }
 			return 0;
 		}
     int iWidth = AnimatedGifSet.FrameWidth;
@@ -347,9 +360,13 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 		 D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
 		 D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture)!=D3D_OK)
 	{
-		OutputDebugString("Texture manager unable to find file: ");
-		OutputDebugString(strPath.c_str());
-		OutputDebugString("\n");
+      CStdString strText=strPath;
+      strText.MakeLower();
+      // dont release skin textures, they are reloaded each time
+      if (strstr(strPath.c_str(),"q:\\skin") ) 
+      {
+        CLog::Log("Texture manager unable to find file:%s",strPath.c_str());
+      }
 		return NULL;
 	}
 	//CStdString strLog;
@@ -364,6 +381,10 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 
 void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName, int iPicture)
 {
+  // dont release skin textures, they are reloaded each time
+  if (strTextureName.GetAt(1) != ':') return;
+  //CLog::Log("release:%s", strTextureName.c_str());
+
   ivecTextures i;
   i = m_vecTextures.begin();
   while (i != m_vecTextures.end())
