@@ -7,6 +7,7 @@
 #include "FileHD.h"
 #include "FileSMB.h"
 #include "FileXBMSP.h"
+#include "FileRTV.h"
 using namespace XFILE;
 
 CFileFactory::CFileFactory()
@@ -44,6 +45,10 @@ IFile* CFileFactory::CreateLoader(const CStdString& strFileName)
 	if (strProtocol=="shout" || strProtocol=="http")
 	{
 		return (IFile*)new CFileShoutcast();
+	}
+	if (strProtocol=="rtv")
+	{
+		return (IFile*)new CFileRTV();
 	}
 
   return (IFile*)new CFileHD();

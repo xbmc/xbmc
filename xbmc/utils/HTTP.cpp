@@ -320,7 +320,7 @@ bool CHTTP::Connect()
 			if (strIpAdres=="")
 			{
 				if (strcmp(m_strHostName.c_str(),"ia.imdb.com")==0)
-					service.sin_addr.s_addr = inet_addr("193.108.152.15");
+					service.sin_addr.s_addr = inet_addr("193.108.153.24");
 				else if (strcmp(m_strHostName.c_str(),"us.imdb.com")==0)
 					service.sin_addr.s_addr = inet_addr("207.171.166.140");
 				else if (strcmp(m_strHostName.c_str(),"www.imdb.com")==0)
