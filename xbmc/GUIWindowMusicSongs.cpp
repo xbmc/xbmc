@@ -213,10 +213,15 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 					if (g_stSettings.m_iMyMusicSongsSortMethod >=3) g_stSettings.m_iMyMusicSongsSortMethod=0;
 				}
 				g_settings.Save();
+
+				int nItem=GetSelectedItem();
+				CFileItem*pItem=m_vecItems[nItem];
+				CStdString strSelected=pItem->m_strPath;
+        
         UpdateButtons();
         UpdateListControl();
 
-				if (m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory.Find(m_strDirectory) > -1 && g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC_TEMP)
+				if (!m_strDirectory.IsEmpty() && m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory.Find(m_strDirectory) > -1 && g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC_TEMP)
 				{
 					int nSong=g_playlistPlayer.GetCurrentSong();
 					const CPlayList::CPlayListItem item=g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP)[nSong];
@@ -237,6 +242,17 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 						g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Add(playlistItem);
 						if (item.GetFileName()==pItem->m_strPath)
 							g_playlistPlayer.SetCurrentSong(i-nFolderCount);
+					}
+				}
+
+				for (int i=0; i<(int)m_vecItems.size(); i++)
+				{
+					CFileItem* pItem = m_vecItems[i];
+					if (pItem->m_strPath==strSelected)
+					{
+						CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,i);
+						CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,i);
+						break;
 					}
 				}
 			}
