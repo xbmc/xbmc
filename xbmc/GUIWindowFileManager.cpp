@@ -677,7 +677,6 @@ bool CGUIWindowFileManager::HaveBookmarkPermissions(CFileItem* pItem, const CStd
     else if (!bConfirmed && bCanceled)
     {
       // user canceled out
-      Refresh();  // update lockmode/badpwdcount values in both list panes
       return false;
     }
     else
@@ -688,7 +687,6 @@ bool CGUIWindowFileManager::HaveBookmarkPermissions(CFileItem* pItem, const CStd
       g_settings.UpdateBookmark(strType, strLabel, "badpwdcount", itoa(pItem->m_iBadPwdCount, buffer, 10));
     }
   }
-  Refresh();  // update lockmode/badpwdcount values in both list panes
   return true;
 }
 
