@@ -47,6 +47,7 @@
 #pragma comment (lib,"xbmc/lib/libsidplay/libsidplayd.lib")			// SECTIONNAME=SID_RW,SID_RX
 #pragma comment (lib,"xbmc/lib/libsidplay/libsidutilsd.lib")		// SECTIONNAME=SID_RW,SID_RX
 #pragma comment (lib,"xbmc/lib/libsidplay/resid_builderd.lib")	// SECTIONNAME=SID_RW,SID_RX
+#pragma comment (lib,"xbmc/lib/libmp4/libmp4v2d.lib")	// SECTIONNAME=LIBMP4
 #else
 #pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")
 #pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")
@@ -66,6 +67,7 @@
 #pragma comment (lib,"xbmc/lib/libsidplay/libsidplay.lib")    // SECTIONNAME=SID_RW,SID_RX
 #pragma comment (lib,"xbmc/lib/libsidplay/libsidutils.lib")   // SECTIONNAME=SID_RW,SID_RX
 #pragma comment (lib,"xbmc/lib/libsidplay/resid_builder.lib") // SECTIONNAME=SID_RW,SID_RX
+#pragma comment (lib,"xbmc/lib/libmp4/libmp4v2.lib")	// SECTIONNAME=LIBMP4
 #endif
 
 CStdString g_LoadErrorStr;
