@@ -110,19 +110,16 @@ void CApplicationMessenger::ProcessMessages()
 					CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
 					if (!pSlideShow) return;
 
-					if (g_application.IsPlayingVideo())
-					{
-						g_application.m_pPlayer->closefile();
-					}
+					// stop playing file
+					if(g_application.IsPlayingVideo()) g_application.StopPlaying();
 
 					if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
-					{
 						m_gWindowManager.PreviousWindow();
-					}
 
 					g_graphicsContext.Lock();
 					pSlideShow->Reset();
-					m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
+					if (m_gWindowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
+						m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
 					pSlideShow->Add(pMsg->strParam);
 					pSlideShow->Select(pMsg->strParam);
 					g_graphicsContext.Unlock();
@@ -138,9 +135,7 @@ void CApplicationMessenger::ProcessMessages()
 						m_gWindowManager.PreviousWindow();
 
 					// stop playing file
-					g_application.StopPlaying();
-					//g_application.DisableOverlay();
-					//if (g_application.m_pPlayer) g_application.StopPlaying();
+					if(g_application.IsPlaying()) g_application.StopPlaying();
 				}
 				break;
 
