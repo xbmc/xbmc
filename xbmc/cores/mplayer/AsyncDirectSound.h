@@ -49,7 +49,7 @@ public:
 	virtual void		RegisterAudioCallback(IAudioCallback* pCallback);
 	virtual DWORD		GetChunkLen();
 	virtual FLOAT		GetDelay();
-	CASyncDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample);
+	CASyncDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, int iNumBuffers = 0);
 	virtual ~CASyncDirectSound();
 
 	virtual DWORD 	AddPacketsResample(unsigned char* data, DWORD len);
