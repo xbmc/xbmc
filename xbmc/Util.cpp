@@ -531,7 +531,7 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
 void CUtil::RunXBE(const char* szPath1, char* szParameters)
 {
 	g_application.PrintXBEToLCD(szPath1);	//write to LCD
-	Sleep(300);								//and wait a little bit to execute
+	Sleep(600);								//and wait a little bit to execute
 
 	char szDevicePath[1024];
 	char szPath[1024];
