@@ -29,6 +29,9 @@ void XBPython::SendMessage(CGUIMessage& message)
 	evalFile(message.GetStringParam().c_str());
 }
 
+/**
+ * Should be called before executing a script
+ */
 void XBPython::Initialize()
 {
 	g_sectionLoader.Load("PYTHON");
@@ -80,9 +83,11 @@ void XBPython::Initialize()
 	}
 }
 
+/**
+ * Should be called when a script is finished
+ */
 void XBPython::Finalize()
 {
-	CloseHandle(m_hEvent);
 	g_sectionLoader.Unload("PYTHON");
 }
 
@@ -91,13 +96,26 @@ void XBPython::FreeResources()
 	if(bInitialized)
 	{
 		g_sectionLoader.Load("PYTHON");
+
+		// cleanup threads that are still running
+		EnterCriticalSection(&m_critSection );
 		PyList::iterator it = vecPyList.begin();
 		while (it != vecPyList.end())
 		{
 			it->pyThread->stop();
-			++it;
+
+			// wait 10 sec, should be enough for slow scripts :-)
+			if(!it->pyThread->WaitForThreadExit(10000))
+			{
+				// thread did not end, just kill it
+			}
+
+			delete it->pyThread;
+			it = vecPyList.erase(it);
+			Finalize();
 		}
-		Process();
+
+		LeaveCriticalSection(&m_critSection );
 
 		// shut down the interpreter
 		PyEval_AcquireLock();
@@ -108,6 +126,7 @@ void XBPython::FreeResources()
 		g_sectionLoader.Unload("PYTHON");
 		g_sectionLoader.Unload("PY_RW");
 	}
+	CloseHandle(m_hEvent);
 	DeleteCriticalSection(&m_critSection);
 }
 
@@ -116,14 +135,11 @@ void XBPython::Process()
 	// initialize if init was called from another thread
 	if (bThreadInitialize) Initialize();
 
-	// auto execute python scripts at startup
-	// todo, cron jobs
 	if (bStartup)
 	{
 		bStartup = false;
 		evalFile("Q:\\scripts\\autoexec.py");
 	}
-
 	if (!bInitialized) return;
 
 	EnterCriticalSection(&m_critSection );
@@ -134,10 +150,8 @@ void XBPython::Process()
 		//delete scripts which are done
 		if (it->bDone)
 		{
-			//wait 10 sec, should be enough for slow scripts :-)
-			it->pyThread->WaitForThreadExit(10000); 
 			delete it->pyThread;
-			vecPyList.erase(it);
+			it = vecPyList.erase(it);
 			Finalize();
 		}
 		else ++it;

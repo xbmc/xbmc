@@ -143,6 +143,7 @@ void XBPyThread::stop()
 	//PyEval_SetTrace(xbTrace, NULL);
 
 	threadState->c_tracefunc = xbTrace;
+	//arg threadState->c_traceobj
 	threadState->use_tracing = 1;
 	
 	PyEval_ReleaseLock();
