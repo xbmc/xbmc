@@ -57,11 +57,26 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 		return false;
 	}	
 
-	if ( !Connect() ) 
+	// seriously, you don't expect this to work first time around do ya? ;-)
+	INT nRetries = 3;
+	while(nRetries>0)
 	{
-		CLog::Log("unable to connect to:%s", m_strHostName.c_str());
+		if ( Connect() ) 
+		{
+			break;
+		}
+
+		nRetries--;
+	}
+
+	if (nRetries==0)
+	{
+		CStdString debugMessage;
+		debugMessage.Format( "Unable to connect to: %s", m_strHostName.c_str() );
+		CLog::Log(debugMessage.c_str());
 		return false;
 	}
+
 	// send request...
 	char szGet[1024];
 	char szHTTPHEADER[1024];
@@ -161,10 +176,11 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 			return false;
 		}
 
-    CLog::Log("Website returned an error code:%s",pszBuffer);
-
 		//printf("website didn't return 200\n");
 		pszBuffer[lReadTotal]=0;
+    
+		CLog::Log("Website returned an error code:%s",pszBuffer);
+
 		//printf("%s",szBuffer);
 		m_socket.reset();
 		
@@ -494,11 +510,26 @@ bool CHTTP::Download(const string &strURL, const string &strFileName)
 		return false;
 	}	
 
-	if ( !Connect() ) 
+	// seriously, you don't expect this to work first time around do ya? ;-)
+	INT nRetries = 3;
+	while(nRetries>0)
 	{
-    CLog::Log("unable to connect:%s",m_strHostName.c_str());
+		if ( Connect() ) 
+		{
+			break;
+		}
+
+		nRetries--;
+	}
+
+	if (nRetries==0)
+	{
+		CStdString debugMessage;
+		debugMessage.Format( "Unable to connect to: %s", m_strHostName.c_str() );
+		CLog::Log(debugMessage.c_str());
 		return false;
 	}
+
 	// send request...
 	char szGet[1024];
 	char szHTTPHEADER[1024];
