@@ -40,11 +40,12 @@ bool  CISO9660Directory::GetDirectory(const CStdString& strPath,VECFILEITEMS &it
 
 	    memset(&wfd,0,sizeof(wfd));
 
-	    CStdString strSearchMask=url.GetFileName();
-      if (strSearchMask!="") 
-			{
-				strSearchMask.Format("/%s",strSearchMask.c_str());
-			}
+		CStdString strSearchMask;
+		CStdString strDirectory=url.GetFileName();
+		if (strDirectory!="") 
+		{
+			strSearchMask.Format("/%s",strDirectory.c_str());
+		}
 
       FILETIME localTime;
 	    hFind = iso.FindFirstFile((char*)strSearchMask.c_str(),&wfd);
