@@ -20,8 +20,8 @@ using namespace std;
 #define LCD_MODE_NORMAL   0
 #define LCD_MODE_NOTV     1
 
-#define LCD_MODE_TYPE_LCD 0   
-#define LCD_MODE_TYPE_VFD 1   
+#define LCD_MODE_TYPE_LCD 0
+#define LCD_MODE_TYPE_VFD 1
 
 #define MODCHIP_SMARTXX   0
 #define MODCHIP_XENIUM    1
@@ -296,6 +296,7 @@ public:
 		bool			m_bAutorunVideo;
 		bool			m_bAutorunPictures;
 		char      szDefaultLanguage[256];
+		char			m_szSkinFontSet[256];
 		char      szDefaultVisualisation[256];
 		bool		  m_bUseFDrive;
 		bool		  m_bUseGDrive;
@@ -424,7 +425,7 @@ public:
 protected:
 	void GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName, bool& bValue);
 	void GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
-	void GetFloat(const TiXmlElement* pRootElement, const CStdString& strTagName, float& fValue, const float fDefault, const float fMin, const float fMax); 
+	void GetFloat(const TiXmlElement* pRootElement, const CStdString& strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);
 	void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, char* szValue, const CStdString& strDefaultValue);
 	void GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items, CStdString& strDefault);
 	void ConvertHomeVar(CStdString& strText);

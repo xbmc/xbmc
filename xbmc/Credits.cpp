@@ -63,7 +63,7 @@ struct CreditLine_t
 // x, y are percentage distance across the screen of the center point
 // Time is delay since last credit
 //    x,   y,   Time,    Dur,  InD, OutD,                        Effects, Font, Text
-CreditLine_t Credits[] = 
+CreditLine_t Credits[] =
 {
   // Intro  fadein 32 rows, on 80 rows, fadeout 16 rows
 	{  50,  25,      0,   9600, 3840, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   78, L"XBOX" },
@@ -85,10 +85,11 @@ CreditLine_t Credits[] =
   {  50,  55,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Bobbin007" },
   {  50,  65,      0,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"J Marshall" },
   //  crossfade 3.5, on 45, fadeout 16
-  {  50,  35,   7620,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"jwnmulder" },
-  {  50,  45,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"monkeyhappy" },
-  {  50,  55,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Tslayer" },
-  {  50,  65,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"elupus" },
+  {  50,  22,   7620,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"jwnmulder" },
+  {  50,  35,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"monkeyhappy" },
+  {  50,  45,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Tslayer" },
+  {  50,  55,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"elupus" },
+  {  50,  65,      0,   5400,  420, 1920, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"yuvalt" },
 
   // Project management flash 0.5, on 63, crossfade 3.5
 	{  50,  18,   7740,   7560,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   36, L"Project Management" },
@@ -178,6 +179,7 @@ CreditLine_t Credits[] =
 	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Samba" },
 	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Python" },
 	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"libid3" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"FriBiDi" },
 
   // JOKE section;-)
 
@@ -319,7 +321,7 @@ static BOOL s_bFadeMusic;
 static HANDLE s_hMusicStarted;
 
 // Logo rendering stuff
-static DWORD s_dwVertexDecl[] = 
+static DWORD s_dwVertexDecl[] =
 {
 	D3DVSD_STREAM( 0 ),
 	D3DVSD_REG( 0, D3DVSDT_FLOAT3 ),       // position
@@ -688,7 +690,7 @@ static void RenderCredits(const list<CreditLine_t*>& ActiveList, DWORD& Gamma, D
 						alpha = 0;
 						DWORD g = 255 * INPROPORTION;
 						if (Time + 20 >= pCredit->Time + pCredit->InDuration)
-							g = 255; // make sure last frame is 255 
+							g = 255; // make sure last frame is 255
 						if (g > Gamma)
 							Gamma = g;
 					}
@@ -736,7 +738,7 @@ static void RenderCredits(const list<CreditLine_t*>& ActiveList, DWORD& Gamma, D
 						alpha = 0;
 						DWORD g = 255 * OUTPROPORTION;
 						if (Time + 20 >= pCredit->Time + pCredit->InDuration + pCredit->OutDuration + pCredit->Duration)
-							g = 255; // make sure last frame is 255 
+							g = 255; // make sure last frame is 255
 						if (g > Gamma)
 							Gamma = g;
 					}
@@ -833,7 +835,7 @@ void RunCredits()
 	}
 
 	g_graphicsContext.Lock(); // exclusive access
-	
+
 	// Fade down display
 	D3DGAMMARAMP StartRamp, Ramp;
 	D3DDevice::GetGammaRamp(&StartRamp);

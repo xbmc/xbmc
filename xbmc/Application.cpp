@@ -919,7 +919,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 	CLog::Log(LOGINFO, "  load fonts for skin...");
 	g_graphicsContext.SetMediaDir(strSkinPath);
-	g_fontManager.LoadFonts();
+	g_fontManager.LoadFonts(CStdString(g_stSettings.m_szSkinFontSet));
 
 	LARGE_INTEGER start;
 	QueryPerformanceCounter(&start);
