@@ -34,7 +34,7 @@
 				AssemblerOutput="4"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="3"/>
+				DebugInformationFormat="4"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -423,6 +423,12 @@
 				RelativePath=".\xbmc\Application.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\ArenaItem.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\BuddyItem.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\Credits.cpp">
 			</File>
 			<File
@@ -549,6 +555,9 @@
 				Name="GUI Other"
 				Filter="">
 				<File
+					RelativePath=".\xbmc\GUIWindowBuddies.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIWindowFullScreen.cpp">
 				</File>
 				<File
@@ -669,10 +678,19 @@
 					RelativePath=".\xbmc\FileItem.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\utils\KaiClient.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\MediaMonitor.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\NfoFile.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\Picture.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\RssReader.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\SectionLoader.cpp">
@@ -685,6 +703,9 @@
 				</File>
 				<File
 					RelativePath=".\xbmc\ThumbnailCache.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\UdpClient.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\URL.cpp">
@@ -722,6 +743,9 @@
 					RelativePath=".\xbmc\GUIDialogFileStacking.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIDialogInvite.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIDialogOK.cpp">
 				</File>
 				<File
@@ -755,6 +779,9 @@
 				RelativePath=".\xbmc\ApplicationMessenger.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\ArenaItem.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\artistdatabase.h">
 			</File>
 			<File
@@ -771,6 +798,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\Autorun.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\BuddyItem.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\ButtonTranslator.h">
@@ -863,6 +893,9 @@
 				RelativePath=".\xbmc\GUIDialogFileStacking.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIDialogInvite.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIDialogOK.h">
 			</File>
 			<File
@@ -876,6 +909,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\GuiUserMessages.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowBuddies.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowFullScreen.h">
@@ -1061,10 +1097,16 @@
 				RelativePath=".\xbmc\FileSystem\ISO9660Directory.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\utils\KaiClient.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\cores\mplayer\keycodes.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\log.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\MediaMonitor.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\cores\ModPlayer.h">
@@ -1139,7 +1181,7 @@
 				RelativePath=".\xbmc\PlayListPLS.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\ProgramDatabase.h">
+				RelativePath=".\xbmc\utils\RssReader.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\RTVDirectory.h">
@@ -1173,6 +1215,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\ThumbnailCache.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\UdpClient.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\xbox\Undocumented.h">
@@ -1839,68 +1884,6 @@
 			Name="libraries"
 			Filter="">
 			<Filter
-				Name="libGoAhead"
-				Filter="">
-				<File
-					RelativePath=".\xbmc\lib\libGoAhead\includes.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\libGoAhead\SpyceModule.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\libGoAhead\SpyceModule.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\libGoAhead\WebServer.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\libGoAhead\WebServer.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\libGoAhead\XBMCConfiguration.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\libGoAhead\XBMCConfiguration.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\libGoAhead\XBMCweb.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\libGoAhead\XBMCweb.h">
-				</File>
-			</Filter>
-			<Filter
-				Name="sqlite"
-				Filter="">
-				<File
-					RelativePath=".\xbmc\lib\sqlLite\dataset.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\sqlLite\dataset.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\sqlLite\qry_dat.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\sqlLite\qry_dat.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\sqlLite\sqlite.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\sqlLite\sqlitedataset.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\sqlLite\sqlitedataset.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\sqlLite\stringhelper.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\sqlLite\stringhelper.h">
-				</File>
-			</Filter>
-			<Filter
 				Name="libPython"
 				Filter="">
 				<File
@@ -2000,6 +1983,68 @@
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\xbmcmodule.cpp">
 					</File>
 				</Filter>
+			</Filter>
+			<Filter
+				Name="libGoAhead"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\lib\libGoAhead\includes.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libGoAhead\SpyceModule.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libGoAhead\SpyceModule.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libGoAhead\WebServer.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libGoAhead\WebServer.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libGoAhead\XBMCConfiguration.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libGoAhead\XBMCConfiguration.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libGoAhead\XBMCweb.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libGoAhead\XBMCweb.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="sqlite"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\lib\sqlLite\dataset.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\sqlLite\dataset.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\sqlLite\qry_dat.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\sqlLite\qry_dat.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\sqlLite\sqlite.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\sqlLite\sqlitedataset.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\sqlLite\sqlitedataset.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\sqlLite\stringhelper.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\sqlLite\stringhelper.h">
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
