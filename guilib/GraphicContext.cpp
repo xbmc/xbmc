@@ -284,7 +284,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
 	    m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
 	    m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 	}
-	if (NeedReset)
+	if (NeedReset && m_pd3dDevice)
 	{
 		// These are only valid here and nowhere else
 		// set soften on/off
