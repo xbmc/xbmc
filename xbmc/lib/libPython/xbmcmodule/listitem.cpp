@@ -17,18 +17,56 @@ namespace PYXBMC
 	PyObject* ListItem_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
 	{
 		ListItem *self;
+        static char *keywords[] = {
+            "label", "label2", "iconImage", "thumbnailImage", NULL };
 		char* cLabel = NULL;
+        char* cLabel2 = NULL;
+        char* cIconImage = NULL;
+        char* cThumbnailImage = NULL;
 
 		// allocate new object
 		self = (ListItem*)type->tp_alloc(type, 0);
 		if (!self) return NULL;
+        self->item = NULL;
 
 		// parse user input
-		if (!PyArg_ParseTuple(args, "|s", &cLabel)) return NULL;
+		if (!PyArg_ParseTupleAndKeywords(
+            args,
+            kwds,
+            "|ssss",
+            keywords,
+            &cLabel,
+            &cLabel2,
+            &cIconImage,
+            &cThumbnailImage))
+        {
+            Py_DECREF( self );
+            return NULL;
+        }
 
 		// create CGUIListItem
-		if (cLabel) self->item = new CGUIListItem(cLabel);
-		else self->item = new CGUIListItem();
+        self->item = new CGUIListItem();
+        if (!self->item)
+        {
+            Py_DECREF( self );
+            return NULL;
+        }
+        if (cLabel)
+        {
+            self->item->SetLabel( cLabel );
+        }
+        if (cLabel2)
+        {
+            self->item->SetLabel2( cLabel2 );
+        }
+        if (cIconImage)
+        {
+            self->item->SetIconImage( cIconImage );
+        }
+        if (cThumbnailImage)
+        {
+            self->item->SetThumbnailImage( cThumbnailImage );
+        }
 
 		return (PyObject*)self;
 	}
@@ -43,6 +81,11 @@ namespace PYXBMC
 		if (!self) return NULL;
 
 		self->item = new CGUIListItem(strLabel);
+        if (!self->item)
+        {
+            Py_DECREF( self );
+            return NULL;
+        }
 
 		return self;
 	}
@@ -54,7 +97,7 @@ namespace PYXBMC
 	}
 
 	PyDoc_STRVAR(getLabel__doc__,
-		"getLabel() -- Return's the listitem label.");
+		"getLabel() -- Returns the listitem label.");
 
 	PyObject* ListItem_GetLabel(ListItem *self, PyObject *args)
 	{
@@ -67,8 +110,22 @@ namespace PYXBMC
 		return Py_BuildValue("s", cLabel);
 	}
 
+	PyDoc_STRVAR(getLabel2__doc__,
+		"getLabel2() -- Returns the listitem's second label.");
+
+	PyObject* ListItem_GetLabel2(ListItem *self, PyObject *args)
+	{
+		if (!self->item) return NULL;
+
+		PyGUILock();
+		const char *cLabel =  self->item->GetLabel2().c_str();
+		PyGUIUnlock();
+
+		return Py_BuildValue("s", cLabel);
+	}
+
 	PyDoc_STRVAR(setLabel__doc__,
-		"setLabel(string label) -- Set's the listitem label.");
+		"setLabel(string label) -- Sets the listitem's label.");
 
 	PyObject* ListItem_SetLabel(ListItem *self, PyObject *args)
 	{
@@ -86,16 +143,95 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(setLabel2__doc__,
+		"setLabel2(string label) -- Sets the listitem's second label.");
+
+	PyObject* ListItem_SetLabel2(ListItem *self, PyObject *args)
+	{
+		char *cLine = NULL;
+		if (!self->item) return NULL;
+
+		if (!PyArg_ParseTuple(args, "s", &cLine))	return NULL;
+
+		// set label
+		PyGUILock();
+		self->item->SetLabel2(cLine ? cLine : "");
+		PyGUIUnlock();
+		
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	PyDoc_STRVAR(setIconImage__doc__,
+		"setIconImage(string iconName) -- Sets the listitem's icon image.");
+
+	PyObject* ListItem_SetIconImage(ListItem *self, PyObject *args)
+	{
+		char *cLine = NULL;
+		if (!self->item) return NULL;
+
+		if (!PyArg_ParseTuple(args, "s", &cLine))	return NULL;
+
+		// set label
+		PyGUILock();
+		self->item->SetIconImage(cLine ? cLine : "");
+		PyGUIUnlock();
+		
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	PyDoc_STRVAR(setThumbnailImage__doc__,
+		"setThumbnailImage(string iconName) -- Sets the listitem's thumbnail image.");
+
+	PyObject* ListItem_SetThumbnailImage(ListItem *self, PyObject *args)
+	{
+		char *cLine = NULL;
+		if (!self->item) return NULL;
+
+		if (!PyArg_ParseTuple(args, "s", &cLine))	return NULL;
+
+		// set label
+		PyGUILock();
+		self->item->SetThumbnailImage(cLine ? cLine : "");
+		PyGUIUnlock();
+		
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
 	PyMethodDef ListItem_methods[] = {
-		{"getLabel", (PyCFunction)ListItem_GetLabel, METH_VARARGS, getLabel__doc__},
-		{"setLabel", (PyCFunction)ListItem_SetLabel, METH_VARARGS, setLabel__doc__},
+		{"getLabel",
+            (PyCFunction)ListItem_GetLabel,
+            METH_VARARGS,
+            getLabel__doc__},
+		{"setLabel",
+            (PyCFunction)ListItem_SetLabel,
+            METH_VARARGS,
+            setLabel__doc__},
+		{"getLabel2",
+            (PyCFunction)ListItem_GetLabel2,
+            METH_VARARGS,
+            getLabel2__doc__},
+		{"setLabel2",
+            (PyCFunction)ListItem_SetLabel2,
+            METH_VARARGS,
+            setLabel2__doc__},
+		{"setIconImage",
+            (PyCFunction)ListItem_SetIconImage,
+            METH_VARARGS,
+            setIconImage__doc__},
+		{"setThumbnailImage",
+            (PyCFunction)ListItem_SetThumbnailImage,
+            METH_VARARGS,
+            setThumbnailImage__doc__},
 		{NULL, NULL, 0, NULL}
 	};
 
 	PyDoc_STRVAR(listItem__doc__,
 		"ListItem class.\n"
 		"\n"
-		"ListItem([string label]) -- Creates a new ListItem.");
+		"ListItem([string label, string label2, string iconImage, string thumbnailImage]) -- Creates a new ListItem.");
 
 // Restore code and data sections to normal.
 #pragma code_seg()
