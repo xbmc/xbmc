@@ -2432,17 +2432,15 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
   }
 
 	//	Look for a file called "foldername".tbn
-	if (strFolderThumb.IsEmpty() && pItem->m_bIsFolder && pItem->GetLabel()!="..")
+	if (strFolderThumb.IsEmpty() && pItem->GetLabel()!="..")
 	{
-		CStdString strFolderTbn=pItem->m_strPath;
-		if (CUtil::HasSlashAtEnd(strFolderTbn))
-			strFolderTbn.Delete(strFolderTbn.size()-1);
+		CStdString strFolderTbn=strPath;
 		strFolderTbn+=".tbn";
 
 		if (CUtil::ThumbExists(strFolderTbn, true))
 		{
 			//	cache thumb to HDD
-			if (CUtil::IsRemote(pItem->m_strPath) || CUtil::IsDVD(pItem->m_strPath) || CUtil::IsISO9660(pItem->m_strPath))
+			if (CUtil::IsRemote(strPath) || CUtil::IsDVD(strPath) || CUtil::IsISO9660(strPath))
 			{
 				CStdString strCached;
 				CUtil::GetAlbumThumb(strPath, strCached, true);
@@ -2470,7 +2468,7 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
 		{
 			//	if we have a directory from album 
 			//	window, set the icon too.
-			if (!strAlbum.IsEmpty())
+			if (pItem->m_bIsFolder && !strAlbum.IsEmpty())
 				pItem->SetIconImage(strThumb);
 
 			pItem->SetThumbnailImage(strThumb);
