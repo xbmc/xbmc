@@ -114,11 +114,14 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
 				// create new ones.
 				Clear();
+				CStdString strDir=m_strDirectory;
+				m_strDirectory="C:";
 				rootDir.SetMask(".xbe");
 				rootDir.GetDirectory("C:\\",m_vecItems);
         OnScan(m_vecItems,iTotalApps);
 
 				Clear();
+				m_strDirectory="E:";
 				rootDir.SetMask(".xbe");
 				rootDir.GetDirectory("E:\\",m_vecItems);
         OnScan(m_vecItems,iTotalApps);
@@ -126,6 +129,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 				if (g_stSettings.m_bUseFDrive)
 				{
 					Clear();
+					m_strDirectory="F:";
 					rootDir.SetMask(".xbe");
 					rootDir.GetDirectory("F:\\",m_vecItems);
 					OnScan(m_vecItems,iTotalApps);
@@ -133,12 +137,13 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 				if (g_stSettings.m_bUseGDrive)
 				{
 					Clear();
+					m_strDirectory="G:";
 					rootDir.SetMask(".xbe");
 					rootDir.GetDirectory("G:\\",m_vecItems);
 					OnScan(m_vecItems,iTotalApps);
 				}
 				Clear();
-
+				m_strDirectory=strDir;
 				Update(m_strDirectory);
       }
       else if (iControl==CONTROL_BTNSORTMETHOD) // sort by
@@ -593,16 +598,19 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 	bool bFound=false;
 	CUtil::SetThumbs(items);
 	bool bOpen=true;
-	// first check all files
-	for (int i=0; i < (int)items.size(); ++i)
+	if (m_strDirectory[0] != 'C')
 	{
-		CFileItem *pItem= items[i];
-		if (! pItem->m_bIsFolder)
+		// first check all files
+		for (int i=0; i < (int)items.size(); ++i)
 		{
-			if (CUtil::IsXBE(pItem->m_strPath) )
+			CFileItem *pItem= items[i];
+			if (! pItem->m_bIsFolder)
 			{
-				bScanSubDirs=false;
-				break;
+				if (CUtil::IsXBE(pItem->m_strPath) )
+				{
+					bScanSubDirs=false;
+					break;
+				}
 			}
 		}
 	}
