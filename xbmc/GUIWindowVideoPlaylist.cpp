@@ -146,6 +146,20 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 				g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
 				g_playlistPlayer.PlayPrevious();
 			}
+      else if (iControl==CONTROL_LIST||iControl==CONTROL_THUMBS)  // list/thumb control
+      {
+        int iItem=GetSelectedItem();
+				int iAction=message.GetParam1();
+
+				if (iAction == ACTION_QUEUE_ITEM)
+        {
+					OnQueueItem(iItem);
+        }
+        else if (iAction==ACTION_SELECT_ITEM)
+        {
+          OnClick(iItem);
+        }
+      }
 		}
 		break;
 
@@ -528,4 +542,39 @@ void CGUIWindowVideoPlaylist::GetDirectoryHistoryString(const CFileItem* pItem, 
 
 	if (CUtil::HasSlashAtEnd(strHistoryString))
 		strHistoryString.Delete(strHistoryString.size()-1);
+}
+void CGUIWindowVideoPlaylist::OnClick(int iItem)
+{
+	CFileItem* pItem=m_vecItems[iItem];
+	CStdString strPath=pItem->m_strPath;
+	g_playlistPlayer.SetCurrentPlaylist( PLAYLIST_VIDEO);
+ 	g_playlistPlayer.Play( iItem );
+}
+
+void CGUIWindowVideoPlaylist::OnQueueItem(int iItem)
+{
+	RemovePlayListItem(iItem);
+}
+
+void CGUIWindowVideoPlaylist::RemovePlayListItem(int iItem)
+{
+	const CFileItem* pItem=m_vecItems[iItem];
+	CStdString strFileName=pItem->m_strPath;
+	g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).Remove(strFileName);
+	int iCount=0;
+	ivecItems it=m_vecItems.begin();
+	while (it!=m_vecItems.end())
+	{
+		if (iCount==iItem)
+		{
+			m_vecItems.erase(it);
+			break;
+		}
+		++it;
+		iCount++;
+	}
+	UpdateListControl();
+	UpdateButtons();
+	CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
+	CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
 }
