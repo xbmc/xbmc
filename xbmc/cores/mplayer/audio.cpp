@@ -300,3 +300,10 @@ void xbox_audio_wait_completion()
 		return;
 	m_pAudioDecoder->WaitCompletion();
 }
+
+void xbox_audio_do_work()
+{
+	if (!m_pAudioDecoder)
+		return;
+	m_pAudioDecoder->DoWork();
+}
