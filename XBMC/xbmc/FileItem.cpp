@@ -1179,6 +1179,23 @@ int CFileItemList::GetFileCount() const
   return nFileCount;
 }
 
+// Checks through our file list for the path specified in path.
+// Check is done case-insensitive
+bool CFileItemList::HasFileNoCase(CStdString& path)
+{
+  bool bFound = false;
+  for (unsigned int i = 0; i < m_items.size(); i++)
+  {
+    if (stricmp(m_items[i]->m_strPath.c_str(), path) == 0)
+    {
+      bFound = true;
+      path = m_items[i]->m_strPath;
+      break;
+    }
+  }
+  return bFound;
+}
+
 void CFileItemList::FilterCueItems()
 {
   // Handle .CUE sheet files...
@@ -1197,10 +1214,45 @@ void CFileItemList::FilterCueItems()
           VECSONGS newitems;
           cuesheet.GetSongs(newitems);
           // queue the cue sheet and the underlying media file for deletion
-          if (CUtil::FileExists(cuesheet.GetMediaPath()))
+          CStdString strMediaFile = cuesheet.GetMediaPath();
+          bool bFoundMediaFile = CUtil::FileExists(strMediaFile);
+          if (!bFoundMediaFile)
+          {
+            // try file in same dir, not matching case...
+            if (HasFileNoCase(strMediaFile))
+            {
+              bFoundMediaFile = true;
+            }
+            else
+            {
+              // try removing the .cue extension...
+              strMediaFile = pItem->m_strPath;
+              CUtil::RemoveExtension(strMediaFile);
+              CFileItem item(strMediaFile, false);
+              if (item.IsAudio() && HasFileNoCase(strMediaFile))
+              {
+                bFoundMediaFile = true;
+              }
+              else
+              { // try replacing the extension with one of our allowed ones.
+                CStdStringArray extensions;
+                StringUtils::SplitString(g_stSettings.m_szMyMusicExtensions, "|", extensions);
+                for (unsigned int i = 0; i < extensions.size(); i++)
+                {
+                  CUtil::ReplaceExtension(pItem->m_strPath, extensions[i], strMediaFile);
+                  if (HasFileNoCase(strMediaFile))
+                  {
+                    bFoundMediaFile = true;
+                    break;
+                  }
+                }
+              }
+            }
+          }
+          if (bFoundMediaFile)
           {
             itemstodelete.push_back(pItem->m_strPath);
-            itemstodelete.push_back(cuesheet.GetMediaPath());
+            itemstodelete.push_back(strMediaFile);
             // get the additional stuff (year, genre etc.) from the underlying media files tag.
             CMusicInfoTagLoaderFactory factory;
             CMusicInfoTag tag;

@@ -925,7 +925,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(&m_guiDialogGamepad);            // window id = 110
   m_gWindowManager.Add(&m_guiDialogButtonMenu);         // window id = 111
   m_gWindowManager.Add(&m_guiDialogMusicScan);          // window id = 112
-  //m_gWindowManager.Add(&m_guiDialogMuteBug);            // window id = 113
+  m_gWindowManager.Add(&m_guiDialogPlayerControls);     // window id = 113
   m_gWindowManager.Add(&m_guiMyMusicPlayList);          // window id = 500
   m_gWindowManager.Add(&m_guiMyMusicSongs);             // window id = 501
   m_gWindowManager.Add(&m_guiMyMusicAlbum);             // window id = 502
@@ -1286,6 +1286,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_guiDialogButtonMenu.Load("dialogButtonMenu.xml");
   m_guiDialogContextMenu.Load("dialogContextMenu.xml");
   m_guiDialogMusicScan.Load("dialogMusicScan.xml");
+  m_guiDialogPlayerControls.Load("PlayerControls.xml");
   m_guiMyMusicPlayList.Load("mymusicplaylist.xml");
   m_guiMyMusicSongs.Load("mymusicsongs.xml");
   m_guiMyMusicAlbum.Load("mymusicalbum.xml");
@@ -1386,7 +1387,7 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
     CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
     if (!xmlDoc.LoadFile(strFileName.c_str()))
     {
-      CLog::Log(LOGERROR, "unable to load:%s", strFileName.c_str());
+      CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
       continue;
     }
 
@@ -1531,6 +1532,9 @@ void CApplication::Render()
       m_guiMusicOverlay.Render();
     }
   }
+  // Now render any dialogs
+  m_gWindowManager.RenderDialogs();
+
   // Render the mouse pointer
   if (g_Mouse.IsActive())
   {
@@ -1784,6 +1788,16 @@ void CApplication::OnKey(CKey& key)
             SetPlaySpeed(iPlaySpeed);
           }
         }
+        else if (action.wID == ACTION_ANALOG_REWIND || action.wID == ACTION_ANALOG_FORWARD)
+        {
+          // calculate the speed based on the amount the button is held down
+          int iPower = (int)(action.fAmount1 * 5.0f + 0.5f);
+          // returns 0 -> 5
+          int iSpeed = 1 << iPower;
+          if (iSpeed != 1 && action.wID == ACTION_ANALOG_REWIND)
+            iSpeed = -iSpeed;
+          g_application.SetPlaySpeed(iSpeed);
+        }
       }
       // allow play to unpause
       else
@@ -1839,7 +1853,9 @@ void CApplication::OnKey(CKey& key)
       m_pPlayer->SetVolume(g_stSettings.m_nVolumeLevel);
     // show visual feedback of volume change...
     if (!m_guiDialogVolumeBar.IsRunning())
-      m_guiDialogVolumeBar.DoModal(m_gWindowManager.GetActiveWindow());
+      m_guiDialogVolumeBar.Show(m_gWindowManager.GetActiveWindow());
+    else
+      m_guiDialogVolumeBar.OnAction(action);
   }
 
 }
@@ -2159,70 +2175,72 @@ void CApplication::FrameMove()
 
   bool bGotKey = false;
 
+  static lastAnalogKey = 0;
+  bool bIsDown = false;
+
   // map all controller & remote actions to their keys
-  if (fabs(pGamepad->fX1) > g_stSettings.m_fAnalogDeadzoneController || fabs(pGamepad->fY1) > g_stSettings.m_fAnalogDeadzoneController)
+  if (pGamepad->fX1 || pGamepad->fY1)
   {
     bGotKey = true;
     CKey key(KEY_BUTTON_LEFT_THUMB_STICK, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
     OnKey(key);
   }
-
-  if ((pGamepad->fX2) > g_stSettings.m_fAnalogDeadzoneController || (pGamepad->fY2) > g_stSettings.m_fAnalogDeadzoneController)
+  if (pGamepad->fX2 || pGamepad->fY2)
   {
     bGotKey = true;
     CKey key(KEY_BUTTON_RIGHT_THUMB_STICK, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
     OnKey(key);
   }
   // direction specific keys (for defining different actions for each direction)
-  if (pGamepad->fY2 > g_stSettings.m_fAnalogDeadzoneController && pGamepad->fX2 < pGamepad->fY2 && -pGamepad->fX2 < pGamepad->fY2)
+  bIsDown = (pGamepad->fY2 > 0 && pGamepad->fX2 < pGamepad->fY2 && -pGamepad->fX2 < pGamepad->fY2);
+  if (lastAnalogKey == KEY_BUTTON_RIGHT_THUMB_STICK_UP || bIsDown)
   {
     bGotKey = true;
+    lastAnalogKey = bIsDown ? KEY_BUTTON_RIGHT_THUMB_STICK_UP : 0;
     CKey key(KEY_BUTTON_RIGHT_THUMB_STICK_UP, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
     OnKey(key);
   }
-  if (pGamepad->fY2 < -g_stSettings.m_fAnalogDeadzoneController && pGamepad->fX2 < -pGamepad->fY2 && -pGamepad->fX2 < -pGamepad->fY2)
+  bIsDown = (pGamepad->fY2 < 0 && pGamepad->fX2 < -pGamepad->fY2 && -pGamepad->fX2 < -pGamepad->fY2);
+  if (lastAnalogKey == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN || bIsDown)
   {
     bGotKey = true;
+    lastAnalogKey = bIsDown ? KEY_BUTTON_RIGHT_THUMB_STICK_DOWN : 0;
     CKey key(KEY_BUTTON_RIGHT_THUMB_STICK_DOWN, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, -pGamepad->fY2);
     OnKey(key);
   }
-  if (pGamepad->fX2 > g_stSettings.m_fAnalogDeadzoneController && pGamepad->fY2 < pGamepad->fX2 && -pGamepad->fY2 < pGamepad->fX2)
+  bIsDown = (pGamepad->fX2 > 0 && pGamepad->fY2 < pGamepad->fX2 && -pGamepad->fY2 < pGamepad->fX2);
+  if (lastAnalogKey == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT || bIsDown)
   {
     bGotKey = true;
+    lastAnalogKey = bIsDown ? KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT : 0;
     CKey key(KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
     OnKey(key);
   }
-  if (pGamepad->fX2 < -g_stSettings.m_fAnalogDeadzoneController && pGamepad->fY2 < -pGamepad->fX2 && -pGamepad->fY2 < -pGamepad->fX2)
+  bIsDown = (pGamepad->fX2 < 0 && pGamepad->fY2 < -pGamepad->fX2 && -pGamepad->fY2 < -pGamepad->fX2);
+  if (lastAnalogKey == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT || bIsDown)
   {
     bGotKey = true;
+    lastAnalogKey = bIsDown ? KEY_BUTTON_RIGHT_THUMB_STICK_LEFT : 0;
     CKey key(KEY_BUTTON_RIGHT_THUMB_STICK_LEFT, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, -pGamepad->fX2, pGamepad->fY2);
     OnKey(key);
   }
   // analog trigger detection
   // with code to make sure it resets on release
-  static bool TriggLeft=false, TriggRight=false;
-  if (bLeftTrigger || TriggLeft)
+  if (bLeftTrigger || lastAnalogKey == KEY_BUTTON_LEFT_ANALOG_TRIGGER)
   {
-    if(bLeftTrigger)
-      TriggLeft = true;
-    else
-      TriggLeft = false;
-
+    lastAnalogKey = bLeftTrigger ? KEY_BUTTON_LEFT_ANALOG_TRIGGER : 0;
     bGotKey = true;
     CKey key(KEY_BUTTON_LEFT_ANALOG_TRIGGER, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
     OnKey(key);
   }
-  if (bRightTrigger || TriggRight)
+  if (bRightTrigger || lastAnalogKey == KEY_BUTTON_RIGHT_ANALOG_TRIGGER)
   {
-    if(bRightTrigger)
-      TriggRight = true;
-    else
-      TriggRight = false;
-
+    lastAnalogKey = bRightTrigger ? KEY_BUTTON_RIGHT_ANALOG_TRIGGER : 0;
     bGotKey = true;
     CKey key(KEY_BUTTON_RIGHT_ANALOG_TRIGGER, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
     OnKey(key);
   }
+
   if ( wDir & DC_LEFTTRIGGER)
   {
     bGotKey = true;

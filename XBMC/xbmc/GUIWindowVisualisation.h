@@ -33,6 +33,7 @@ public:
   virtual void Render();
   virtual void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample);
   virtual void OnAudioData(const unsigned char* pAudioData, int iAudioDataLength);
+  void LoadVisualisation();
 
 private:
   void CreateBuffers();

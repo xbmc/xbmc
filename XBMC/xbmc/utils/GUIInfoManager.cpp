@@ -69,6 +69,29 @@ wstring CGUIInfoManager::GetLabel(const CStdString &strInfo)
   return strReturn;
 }
 
+// checks the condition and returns it as necessary.  Currently used for toggle button controls.
+bool CGUIInfoManager::GetBool(const CStdString &strCondition)
+{
+  CStdString strTest = strCondition;
+  strTest.ToLower();
+  if (g_application.IsPlaying())
+  {
+    if (strTest.Equals("Player.Paused"))
+    {
+      return g_application.m_pPlayer->IsPaused();
+    }
+    else if (strTest.Equals("Player.Rewinding"))
+    {
+      return g_application.GetPlaySpeed() < 1;
+    }
+    else if (strTest.Equals("Player.Forwarding"))
+    {
+      return g_application.GetPlaySpeed() > 1;
+    }
+  }
+  return false;
+}
+
 /// \brief Obtains the filename of the image to show from whichever subsystem is needed
 CStdString CGUIInfoManager::GetImage(const CStdString &strInfo)
 {

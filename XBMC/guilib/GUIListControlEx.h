@@ -57,10 +57,10 @@ public:
   const char* GetFontName2() const { if (!m_pFont2) return ""; else return m_pFont2->GetFontName().c_str(); };
 DWORD GetSpinWidth() const { return m_upDown.GetWidth() / 2; };
   DWORD GetSpinHeight() const { return m_upDown.GetHeight(); };
-  const CStdString& GetTexutureUpName() const { return m_upDown.GetTexutureUpName(); };
-  const CStdString& GetTexutureDownName() const { return m_upDown.GetTexutureDownName(); };
-  const CStdString& GetTexutureUpFocusName() const { return m_upDown.GetTexutureUpFocusName(); };
-  const CStdString& GetTexutureDownFocusName() const { return m_upDown.GetTexutureDownFocusName(); };
+  const CStdString& GetTextureUpName() const { return m_upDown.GetTextureUpName(); };
+  const CStdString& GetTextureDownName() const { return m_upDown.GetTextureDownName(); };
+  const CStdString& GetTextureUpFocusName() const { return m_upDown.GetTextureUpFocusName(); };
+  const CStdString& GetTextureDownFocusName() const { return m_upDown.GetTextureDownFocusName(); };
   DWORD GetSpinTextColor() const { return m_upDown.GetTextColor();};
   int GetSpinX() const { return m_upDown.GetXPosition();};
   int GetSpinY() const { return m_upDown.GetYPosition();};
@@ -73,8 +73,8 @@ DWORD GetSpinWidth() const { return m_upDown.GetWidth() / 2; };
   DWORD GetAlignmentY() const { return m_imgButton.GetTextAlign() & 0x00000004; };
 
   const wstring& GetSuffix() const { return m_strSuffix;};
-  const CStdString GetButtonFocusName() const { return m_imgButton.GetTexutureFocusName();};
-  const CStdString GetButtonNoFocusName() const { return m_imgButton.GetTexutureNoFocusName();};
+  const CStdString GetButtonFocusName() const { return m_imgButton.GetTextureFocusName();};
+  const CStdString GetButtonNoFocusName() const { return m_imgButton.GetTextureNoFocusName();};
 protected:
 
   virtual void OnRight();

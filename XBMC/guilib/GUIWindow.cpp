@@ -207,7 +207,7 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
   CLog::Log(LOGINFO, "Loading references file: %s", strReferenceFile.c_str());
   if ( !xmlDoc.LoadFile(strReferenceFile.c_str()) )
   {
-    CLog::Log(LOGERROR, "unable to load:%s", strReferenceFile.c_str());
+    CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strReferenceFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;
   }
 
@@ -385,7 +385,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 
   if ( !xmlDoc.LoadFile(strPath.c_str()) )
   {
-    CLog::Log(LOGERROR, "unable to load:%s", strPath.c_str());
+    CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     m_dwWindowId = WINDOW_INVALID;
     return false;
   }

@@ -309,6 +309,15 @@ HRESULT CXBApplicationEx::RenderGradientBackground( DWORD dwTopColor,
   return S_OK;
 }
 
+inline float DeadZone(float &f)
+{
+  if (f > g_stSettings.m_fAnalogDeadzoneController)
+    return (f - g_stSettings.m_fAnalogDeadzoneController)/(1.0f - g_stSettings.m_fAnalogDeadzoneController);
+  else if (f < -g_stSettings.m_fAnalogDeadzoneController)
+    return (f + g_stSettings.m_fAnalogDeadzoneController)/(1.0f - g_stSettings.m_fAnalogDeadzoneController);
+  else
+    return 0.0f;
+}
 
 void CXBApplicationEx::ReadInput()
 {
@@ -386,6 +395,12 @@ void CXBApplicationEx::ReadInput()
   m_DefaultGamepad.sThumbLY = SHORT( nThumbLY );
   m_DefaultGamepad.sThumbRX = SHORT( nThumbRX );
   m_DefaultGamepad.sThumbRY = SHORT( nThumbRY );
+
+  // Secure the deadzones of the analog sticks
+  m_DefaultGamepad.fX1 = DeadZone(m_DefaultGamepad.fX1);
+  m_DefaultGamepad.fY1 = DeadZone(m_DefaultGamepad.fY1);
+  m_DefaultGamepad.fX2 = DeadZone(m_DefaultGamepad.fX2);
+  m_DefaultGamepad.fY2 = DeadZone(m_DefaultGamepad.fY2);
 
 }
 

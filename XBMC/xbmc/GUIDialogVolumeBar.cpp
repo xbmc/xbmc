@@ -103,6 +103,5 @@ void CGUIDialogVolumeBar::Render()
   if (timeGetTime() - m_dwTimer > VOLUME_BAR_DISPLAY_TIME)
   {
     Close();
-    return ;
   }
 }
