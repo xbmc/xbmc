@@ -4333,7 +4333,7 @@ subtitle* mplayer_getCurrentSubtitle()
 
 int mplayer_isTextSubLoaded()
 {
-	return (subdata != NULL);
+	return (vo_vobsub == NULL);
 }
 #endif
 
