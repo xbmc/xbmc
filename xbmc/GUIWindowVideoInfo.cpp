@@ -10,6 +10,7 @@
 #include "application.h"
 #include "videodatabase.h"
 #include "filesystem/directorycache.h"
+#include "GUISettings.h"
 
 #define	CONTROL_TITLE				20
 #define	CONTROL_DIRECTOR			21
@@ -283,6 +284,13 @@ void  CGUIWindowVideoInfo::Render()
 
 void CGUIWindowVideoInfo::Refresh()
 {
+	// quietly return if Internet lookups are disabled
+	if (!g_guiSettings.GetBool("Network.EnableInternet"))
+	{
+		Update();
+		return;
+	}
+
   CUtil::ClearCache();
   try
   {
