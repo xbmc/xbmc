@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-02-2005 fixed: No space between date and time in system info
   - 13-02-2005 fixed: short date's day and month are not swapped like in settings set
   - 13-02-2005 fixed: album cover disappears if next song in a playlist is played
   - 13-02-2005 added: Keymapping for python debug - only runs from the Scripts window - thanks to EnderW + NotWired.
