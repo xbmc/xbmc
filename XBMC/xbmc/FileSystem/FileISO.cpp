@@ -181,3 +181,19 @@ bool CFileISO::ReadString(char *szLine, int iLineLength)
 	}
 	return false;
 }
+
+bool CFileISO::Exists(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport)
+{
+	string strFName="\\";
+	strFName+=strFileName;
+	for (int i=0; i < (int)strFName.size(); ++i )
+	{
+		if (strFName[i]=='/') strFName[i]='\\';
+	}
+	m_hFile=m_isoReader.OpenFile((char*)strFName.c_str());
+	if (m_hFile == INVALID_HANDLE_VALUE)
+		return false;
+
+  m_isoReader.CloseFile(m_hFile);
+	return true;
+}
