@@ -9,8 +9,8 @@
   <string><id>3</id><value>Filmy</value></string>
   <string><id>4</id><value>Przewodnik TV</value></string>
   <string><id>5</id><value>Ustawienia</value></string>
-  <string><id>7</id><value>Pliki</value></string>
   <!-- String with id 6 should not be set here, only in the english language file !-->
+  <string><id>7</id><value>Pliki</value></string>
   <string><id>8</id><value>Pogoda</value></string>
   <string><id>11</id><value>Poniedzia³ek</value></string>
   <string><id>12</id><value>Wtorek</value></string>
@@ -656,4 +656,11 @@
   <string><id>14048</id><value>%i kbps</value></string>
   <string><id>14049</id><value>%i kb</value></string>
   <string><id>14050</id><value>%i.0 dB</value></string>
+  <string><id>14051</id><value>Pokazuj dwunasto godzinny zegar</value></string>
+  <string><id>14052</id><value>Zamieñ miesi¹c z dat¹ za stronie startowej</value></string>
+  <string><id>14053</id><value>Filtry GUI</value></string>
+  <string><id>14054</id><value>W³¹cz Internet Lookups</value></string>
+  <string><id>14055</id><value>U¿yj skanowania w tle</value></string>
+  <string><id>14056</id><value>Zatrzymaj skanowanie</value></string>
+  <string><id>14057</id><value>Nie mo¿liwe dopuki wyszukujê informacje</value></string>
 </strings>
