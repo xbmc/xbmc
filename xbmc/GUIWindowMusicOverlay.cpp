@@ -64,6 +64,8 @@ void CGUIWindowMusicOverlay::OnAction(const CAction &action)
 					if (m_iFrames <= 0)
 					{
 						m_bShowInfo=true;
+						g_stSettings.m_bMyMusicSongInfoInVis = true;
+						g_stSettings.m_bMyMusicSongThumbInVis = true;
 						m_iFrameIncrement = 1;
 					}
 					else
@@ -164,6 +166,7 @@ void CGUIWindowMusicOverlay::Render()
 	if ( g_application.m_pPlayer->HasVideo()) return;
   if (m_iPosOrgIcon==0)
   {
+		m_bShowInfo = g_stSettings.m_bMyMusicSongInfoInVis;
     m_iPosOrgRectangle=GetControlYPosition(0);
     m_iPosOrgIcon=GetControlYPosition(CONTROL_LOGO_PIC);
     m_iPosOrgPlay=GetControlYPosition(CONTROL_PLAY_LOGO);
@@ -206,6 +209,8 @@ void CGUIWindowMusicOverlay::Render()
 			m_dwTimeout = 0;
 			m_iFrames = 0;
 			m_iFrameIncrement = 0;
+			g_stSettings.m_bMyMusicSongInfoInVis = false;
+			g_stSettings.m_bMyMusicSongThumbInVis = false;
 		}
 		else if (!m_bShowInfo && m_iFrames >= STEPS)
 		{
@@ -219,6 +224,8 @@ void CGUIWindowMusicOverlay::Render()
 			m_dwTimeout =  0;
 			m_iFrames = 0;
 			m_iFrameIncrement = 0;
+			g_stSettings.m_bMyMusicSongInfoInVis = false;
+			g_stSettings.m_bMyMusicSongThumbInVis = false;
 		}
 		else if (m_iFrames >= STEPS)
 		{
