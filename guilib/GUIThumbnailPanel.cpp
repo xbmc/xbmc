@@ -645,7 +645,7 @@ void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor,
     int iItem=m_iCursorX+m_iCursorY*m_iColumns+m_iOffset;
     if (fTextWidth > fMaxWidth)
     {
-				fMaxWidth+=50;
+				fMaxWidth+= (float) (m_iItemWidth * 0.1);
         WCHAR szText[1024];
 				if (iLastItem != iItem)
 				{
