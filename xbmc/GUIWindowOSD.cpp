@@ -442,10 +442,12 @@ void CGUIWindowOSD::SetVideoProgress()
 		CGUIProgressControl* pControl = (CGUIProgressControl*)GetControl(OSD_VIDEOPROGRESS);
 		if (pControl) pControl->SetPercentage(iValue);			// Update our progress bar accordingly ...
 
-      
-	  iValue=g_application.m_pPlayer->GetVolume();
-		CGUISliderControl* pSlider = (CGUISliderControl*)GetControl(OSD_VOLUMESLIDER);
-		if (pSlider) pSlider->SetPercentage(iValue);			// Update our progress bar accordingly ...
+ 		CGUISliderControl* pSlider = (CGUISliderControl*)GetControl(OSD_VIDEOPOS);
+		if (pSlider) pSlider->SetIntValue(iValue);				// Update our position bar accordingly ...
+
+		iValue=g_application.m_pPlayer->GetVolume();
+		pSlider = (CGUISliderControl*)GetControl(OSD_VOLUMESLIDER);
+		if (pSlider) pSlider->SetPercentage(iValue);			// Update our volume bar accordingly ...
 
 	}
 }

@@ -190,6 +190,12 @@ LONG CAc97DirectSound::GetCurrentVolume() const
 }
 
 //***********************************************************************************************
+void CAc97DirectSound::Mute(bool bMute)
+{
+	return;
+}
+
+//***********************************************************************************************
 HRESULT CAc97DirectSound::SetCurrentVolume(LONG nVolume)
 {
 	if (!m_bIsAllocated) return -1;
