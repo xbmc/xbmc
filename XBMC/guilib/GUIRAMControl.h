@@ -43,7 +43,12 @@ public:
 		bool		bValid;
 	};
 
-	CGUIRAMControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFontName, const CStdString& strFont2Name, D3DCOLOR dwTitleColor, D3DCOLOR dwNormalColor);
+	CGUIRAMControl(DWORD dwParentID, DWORD dwControlId,
+		DWORD dwPosX, DWORD dwPosY,	DWORD dwWidth, DWORD dwHeight, 
+		const CStdString& strFontName, const CStdString& strFont2Name,
+		D3DCOLOR dwTitleColor, D3DCOLOR dwNormalColor,
+		DWORD dwTextOffsetX, DWORD dwTextOffsetY);
+
 	virtual ~CGUIRAMControl(void);
   
 	virtual void		Render();
@@ -58,6 +63,8 @@ public:
 
 	DWORD				GetTitleTextColor() const { return m_dwTitleColor;};
 	DWORD				GetNormalTextColor() const { return m_dwTextColor;};
+	DWORD	GetTextOffsetX() const { return m_dwTextOffsetX;};
+	DWORD	GetTextOffsetY() const { return m_dwTextOffsetY;};
 	const CStdString&	GetFontName() const { return m_pFont->GetFontName(); };
 	const CStdString&	GetFont2Name() const { return m_pFont2->GetFontName(); };
 
@@ -84,6 +91,8 @@ protected:
 
 	D3DCOLOR		m_dwTitleColor;
 	D3DCOLOR		m_dwTextColor;
+	DWORD			m_dwTextOffsetX;
+	DWORD			m_dwTextOffsetY;
 	CGUIFont*		m_pFont;
 	CGUIFont*		m_pFont2;
 };

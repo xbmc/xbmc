@@ -4,7 +4,7 @@
 #include "guiWindowManager.h"
 #include "ActionManager.h"
 
-CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus)
+CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus, DWORD dwTextXOffset, DWORD dwTextYOffset)
 :CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight)
 ,m_imgFocus(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight, strTextureFocus)
 ,m_imgNoFocus(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight, strTextureNoFocus)
@@ -14,6 +14,8 @@ CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, DWORD 
 	m_strLabel=L""; 
 	m_dwTextColor	= 0xFFFFFFFF; 
 	m_dwDisabledColor	= 0xFF606060; 
+	m_dwTextOffsetX = dwTextXOffset;
+	m_dwTextOffsetY = dwTextYOffset;
 	m_pFont=NULL;
   m_lHyperLinkWindowID=-1;
 	m_strScriptAction="";
@@ -58,10 +60,14 @@ void CGUIButtonControl::Render()
 
 	if (m_strLabel.size() > 0 && m_pFont)
 	{
-    if (IsDisabled() )
-      m_pFont->DrawText((float)10+m_dwPosX, (float)2+m_dwPosY,m_dwDisabledColor,m_strLabel.c_str());
-    else
-      m_pFont->DrawText((float)10+m_dwPosX, (float)2+m_dwPosY,m_dwTextColor,m_strLabel.c_str());
+		if (IsDisabled() )
+		{
+			m_pFont->DrawText( (float)m_dwPosX+m_dwTextOffsetX, (float)m_dwPosY+m_dwTextOffsetY,m_dwDisabledColor,m_strLabel.c_str());
+		}
+		else
+		{
+			m_pFont->DrawText( (float)m_dwPosX+m_dwTextOffsetX, (float)m_dwPosY+m_dwTextOffsetY,m_dwTextColor,m_strLabel.c_str());
+		}
 	}
 
 }

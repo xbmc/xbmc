@@ -22,7 +22,11 @@ using namespace std;
 class CGUIButtonControl : public CGUIControl
 {
 public:
-  CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus);
+  CGUIButtonControl(DWORD dwParentID, DWORD dwControlId,
+	  DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight,
+	  const CStdString& strTextureFocus,const CStdString& strTextureNoFocus,
+	  DWORD dwTextXOffset, DWORD dwTextYOffset);
+
   virtual ~CGUIButtonControl(void);
   
   virtual void Render();
@@ -42,6 +46,8 @@ public:
 	void				SetScriptAction(const CStdString& strScriptAction);
 	const	CStdString& GetTexutureFocusName() const { return m_imgFocus.GetFileName(); };
 	const	CStdString& GetTexutureNoFocusName() const { return m_imgNoFocus.GetFileName(); };
+	DWORD	GetTextOffsetX() const { return m_dwTextOffsetX;};
+	DWORD	GetTextOffsetY() const { return m_dwTextOffsetY;};
 	DWORD							GetTextColor() const { return m_dwTextColor;};
 	DWORD							GetDisabledColor() const { return m_dwDisabledColor;};
 	const CStdString& GetFontName() const { return m_pFont->GetFontName(); };
@@ -54,6 +60,8 @@ protected:
   CGUIImage               m_imgFocus;
   CGUIImage               m_imgNoFocus;  
   DWORD                   m_dwFrameCounter;
+  DWORD					m_dwTextOffsetX;
+  DWORD					m_dwTextOffsetY;
 	wstring									m_strLabel;
 	CGUIFont*								m_pFont;
 	D3DCOLOR								m_dwTextColor;
