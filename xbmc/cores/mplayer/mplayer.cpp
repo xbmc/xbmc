@@ -7,7 +7,7 @@
 #include <vector>
 #include "../../utils/log.h"
 extern void* fs_seg;
-extern vector<DllLoader *> m_vecDlls;
+extern std::vector<DllLoader *> m_vecDlls;
 
 //deal wma, and wmv dlls in openfile, and closefile functions
 extern DllLoader * wmaDMOdll;
@@ -286,13 +286,15 @@ extern "C"
 			dllFreeLibrary( (HINSTANCE)wmsDMOdll );
 		wmsDMOdll = NULL;
 
-		// Unload unfreed dll's
+		// Unload unfreed dll's !!!there could be more dll's running, for example python dll's
+		/*
 		for (int i = m_vecDlls.size()-1; i >= 0; i--)
 		{
 			DllLoader * dll = m_vecDlls[i];			
 			CLog::Log(LOGDEBUG,"Freeing Unfreed DLL: %s handle: 0x%x", dll->GetDLLName(), dll);
 			dllFreeLibrary((HINSTANCE)dll);
-		}
+		}*/
+		
 
 		// Free allocated memory for FS segment
 		if (fs_seg != NULL) {
