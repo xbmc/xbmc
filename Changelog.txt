@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 02-02-2005 changed: cdda player is now based on libcdio 
   - 02-02-2005 updated: libcdio to version 0.72
   - 02-02-2005 added: Profile overwrite + context menu in profilewindow for overwrite/rename/delete.
   - 01-02-2005 added: mplayer support for new system\players directory structure, enable Alternate mplayer core in settings to use it.
