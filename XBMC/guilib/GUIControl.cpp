@@ -1,11 +1,13 @@
 #include "stdafx.h"
 #include "guicontrol.h"
+#include ".\guicontrol.h"
 
 
 CGUIControl::CGUIControl()
 {
   m_bHasFocus=false;
   m_dwControlID = 0;
+  m_iGroup=-1;
   m_dwParentID = 0;
 	m_bVisible=true;
 	m_bDisabled=false;
@@ -30,6 +32,7 @@ CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPo
   m_dwHeight=dwHeight;
   m_bHasFocus=false;
   m_dwControlID = dwControlId;
+  m_iGroup=-1;
   m_dwParentID = dwParentID;
 	m_bVisible=true;
 	m_bDisabled=false;
@@ -325,4 +328,14 @@ void CGUIControl::OnMouseOver()
 	if (g_Mouse.GetState() != MOUSE_STATE_DRAG)
 		g_Mouse.SetState(MOUSE_STATE_FOCUS);
 	SetFocus(true);
+}
+
+void CGUIControl::SetGroup(int iGroup)
+{
+  m_iGroup=iGroup;
+}
+
+int CGUIControl::GetGroup(void) const
+{
+  return m_iGroup;
 }

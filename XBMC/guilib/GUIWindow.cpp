@@ -304,6 +304,7 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 {
     m_vecPositions.erase(m_vecPositions.begin(),m_vecPositions.end());
+    m_vecGroups.erase(m_vecGroups.begin(),m_vecGroups.end());
 	TiXmlDocument xmlDoc;
 	// Find appropriate skin folder + resolution to load from
 	RESOLUTION resToUse = INVALID;
@@ -370,56 +371,33 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
     }
     else if (strValue=="controls")
     {
-       const TiXmlNode *pControl = pChild->FirstChild();
-       while (pControl)
-       {
-				 // get control type
-				 TiXmlNode* pNode=pControl->FirstChild("type");
-				 if (pNode)
-				 {
-					string strType = pNode->FirstChild()->Value();
-					 
-					// get reference control
-					CGUIControl* pGUIReferenceControl=NULL;
-					for (int i=0; i < (int)referencecontrols.size(); ++i)
-					{
-						struct stReferenceControl stControl=referencecontrols[i];
-						if (strType==stControl.m_szType)
-						{
-							pGUIReferenceControl=stControl.m_pControl;
-							break;
-						}
-					}
-					CGUIControlFactory factory;
-					CGUIControl* pGUIControl = factory.Create(m_dwWindowId,pControl,pGUIReferenceControl, resToUse);
-					if (pGUIControl)
-					{
-						Add(pGUIControl);
+      const TiXmlNode *pControl = pChild->FirstChild("control");
+      while (pControl)
+      {
+        LoadControl(pControl, -1, referencecontrols, resToUse);
+        pControl=pControl->NextSibling("control");
+      }
 
-						if (m_bRelativeCoords)
-						{
-							DWORD dwMaxX = pGUIControl->GetXPosition()+pGUIControl->GetWidth();
-							if (dwMaxX>m_dwWidth)
-							{
-								m_dwWidth=dwMaxX;
-							}
-							
-							DWORD dwMaxY = pGUIControl->GetYPosition()+pGUIControl->GetHeight();
-							if (dwMaxY>m_dwHeight)
-							{
-								m_dwHeight=dwMaxY;
-							}
-						}
-					}
-				}
-         pControl=pControl->NextSibling();
-       }
+      const TiXmlNode *pControlGroup = pChild->FirstChild("controlgroup");
+      int iGroup=0;
+      while (pControlGroup)
+      {
+        const TiXmlNode *pControl = pControlGroup->FirstChild("control");
+        // In this group no focus of the controls is remembered
+        m_vecGroups.push_back(-1);
+        while (pControl)
+        {
+          LoadControl(pControl, iGroup, referencecontrols, resToUse);
+	        pControl=pControl->NextSibling("control");
+        }
+        pControlGroup=pControlGroup->NextSibling("controlgroup");
+        iGroup++;
+      }
     }
 
-    pChild=pChild->NextSibling();
-  }
+		pChild=pChild->NextSibling();
+	}
 
-	
 	for (int i=0; i < (int)referencecontrols.size();++i)
 	{
 		struct stReferenceControl stControl=referencecontrols[i];
@@ -427,6 +405,50 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 	}
   OnWindowLoaded();
   return true;
+}
+
+void CGUIWindow::LoadControl(const TiXmlNode* pControl, int iGroup, VECREFERENCECONTOLS& referencecontrols,RESOLUTION& resToUse)
+{
+	// get control type
+	TiXmlNode* pNode=pControl->FirstChild("type");
+	if (pNode)
+	{
+		string strType = pNode->FirstChild()->Value();
+      
+		// get reference control
+		CGUIControl* pGUIReferenceControl=NULL;
+		for (int i=0; i < (int)referencecontrols.size(); ++i)
+		{
+			struct stReferenceControl stControl=referencecontrols[i];
+			if (strType==stControl.m_szType)
+			{
+				pGUIReferenceControl=stControl.m_pControl;
+				break;
+			}
+		}
+		CGUIControlFactory factory;
+		CGUIControl* pGUIControl = factory.Create(m_dwWindowId,pControl,pGUIReferenceControl, resToUse);
+		if (pGUIControl)
+		{
+      pGUIControl->SetGroup(iGroup);
+			Add(pGUIControl);
+
+			if (m_bRelativeCoords)
+			{
+				DWORD dwMaxX = pGUIControl->GetXPosition()+pGUIControl->GetWidth();
+				if (dwMaxX>m_dwWidth)
+				{
+					m_dwWidth=dwMaxX;
+				}
+        
+				DWORD dwMaxY = pGUIControl->GetYPosition()+pGUIControl->GetHeight();
+				if (dwMaxY>m_dwHeight)
+				{
+					m_dwHeight=dwMaxY;
+				}
+			}
+		}
+	}
 }
 
 void CGUIWindow::SetPosition(int iPosX, int iPosY)
@@ -648,7 +670,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
   switch ( message.GetMessage() )
   {
     case GUI_MSG_WINDOW_INIT:
-      {
+    {
         CStdString strLine;
         wstring wstrLine;
         wstrLine=g_localizeStrings.Get(10000+GetID());
@@ -656,14 +678,14 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
         OutputDebugString("------------------- GUI_MSG_WINDOW_INIT ");
         OutputDebugString(strLine.c_str());
         OutputDebugString("------------------- \n");
-        AllocResources();
-		    if (message.GetParam1()!=WINDOW_INVALID)
-		    {
-			    m_dwPreviousWindowId = message.GetParam1();
-		    }
-        CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwDefaultFocusControlID);
-        g_graphicsContext.SendMessage(msg);
-		OnInitWindow();
+      AllocResources();
+		  if (message.GetParam1()!=WINDOW_INVALID)
+		  {
+			  m_dwPreviousWindowId = message.GetParam1();
+		  }
+      CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwDefaultFocusControlID);
+      g_graphicsContext.SendMessage(msg);
+		  OnInitWindow();
       }
       return true;
     break;
@@ -709,20 +731,70 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
           {
             CGUIMessage msgLostFocus(GUI_MSG_LOSTFOCUS,GetID(),pControl->GetID(),message.GetControlId());
             pControl->OnMessage(msgLostFocus);
-
           }
         }
+
+        CGUIControl* pFocusedControl=NULL;
         for (i=m_vecControls.begin();i != m_vecControls.end(); ++i)
         {
           CGUIControl* pControl= *i;
+          if (pControl->GetID()==message.GetControlId() ) 
+            pFocusedControl=pControl;
+        }
 
-          if (pControl)
+        //  Handle control group changes
+        if (pFocusedControl)
+        {
+          int iOldControlGroup=-1;
+          int iOldControlId=message.GetSenderId();
+
+          //  Is Message sender a window?
+          if (iOldControlId>WINDOW_INVALID)
           {
-            if ( message.GetControlId() == pControl->GetID() )
+            iOldControlId=-1;
+          }
+          else
+          {
+            const CGUIControl* pOldFocusedControl=GetControl(message.GetSenderId());
+            if (pOldFocusedControl)
+              iOldControlGroup=pOldFocusedControl->GetGroup();
+          }
+
+          //  Save last control of the group if the group changes
+          if (iOldControlGroup>-1 && pFocusedControl->GetGroup()!=iOldControlGroup)
+            m_vecGroups[iOldControlGroup]=iOldControlId;
+          
+          //  if the control group changes...
+          if (pFocusedControl->GetGroup()>-1 && pFocusedControl->GetGroup()!=iOldControlGroup && iOldControlId>-1)
+          {
+            if (iOldControlId>-1)
             {
-              pControl->OnMessage(message);
+              //  ...get the last focused control of the new group...
+              int iLastFocusedControl=m_vecGroups[pFocusedControl->GetGroup()];
+              for (i=m_vecControls.begin();i != m_vecControls.end(); ++i)
+              {
+                CGUIControl* pControl= *i;
+                if (pControl->GetID()==iLastFocusedControl ) 
+                {
+                  //  ...and focus the saved control.
+
+                  //  Redirect our message to the new control and fake it a little
+                  //  by saying the new control is sender and target 
+                  //  at once to prevent a stack overflow.
+                  CGUIMessage newFocusMsg(GUI_MSG_SETFOCUS, pControl->GetID(), pControl->GetID()); 
+                  //  Remember new last control of group
+                  m_vecGroups[pControl->GetGroup()]=pControl->GetID();
+                  //  Send the message to the new focused 
+                  //  control throu the window.
+                  OnMessage(newFocusMsg);
+                  return true;
+                }
+              }
             }
           }
+
+          //  Old and new control have no group, just pass the message
+          pFocusedControl->OnMessage(message);
         }
       }
       return true;

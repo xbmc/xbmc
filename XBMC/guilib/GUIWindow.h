@@ -21,6 +21,8 @@ using namespace std;
 	m_mapClickEvents[i] = clickHandler; \
 } \
 
+// forward
+class TiXmlNode;
 
 class CPosition
 {
@@ -85,6 +87,7 @@ protected:
 	typedef vector<struct stReferenceControl> VECREFERENCECONTOLS;
 	typedef vector<struct stReferenceControl>::iterator IVECREFERENCECONTOLS;
 	bool LoadReference(VECREFERENCECONTOLS& controls);
+  void LoadControl(const TiXmlNode* pControl, int iGroup, VECREFERENCECONTOLS& referencecontrols,RESOLUTION& resToUse);
 	static CStdString CacheFilename;
 	static VECREFERENCECONTOLS ControlsCache;
 
@@ -99,6 +102,7 @@ protected:
   DWORD m_iPosY;
   DWORD	m_dwWidth;
   DWORD m_dwHeight;
+  vector<int> m_vecGroups;
 };
 
 #endif
