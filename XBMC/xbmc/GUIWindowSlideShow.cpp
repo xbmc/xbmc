@@ -746,9 +746,16 @@ void CGUIWindowSlideShow::GetOutputRect(const int iSourceWidth, const int iSourc
 	int iOffsetY1 = g_settings.m_ResInfo[iRes].Overscan.top;
 	int iScreenWidth = g_settings.m_ResInfo[iRes].Overscan.width;
 	int iScreenHeight = g_settings.m_ResInfo[iRes].Overscan.height;
+	float fPixelRatio = g_settings.m_ResInfo[iRes].fPixelRatio;
 
+	if (iRes == HDTV_1080i)
+	{	// change the overlay to 540p (Overlays don't work properly in 1080i)
+		iOffsetY1/=2;
+		iScreenHeight/=2;
+		fPixelRatio/=2;
+	}
 	float fSourceFrameAR = (float)iSourceWidth/iSourceHeight;
-	float fOutputFrameAR = fSourceFrameAR / g_settings.m_ResInfo[iRes].fPixelRatio;
+	float fOutputFrameAR = fSourceFrameAR / fPixelRatio;
 	width = iScreenWidth;
 	height = (int)(width / fOutputFrameAR);
 	if (height > iScreenHeight)
