@@ -121,7 +121,8 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
             {
                 int iTotalApps=0;
                 CStdString strDir=m_strDirectory;
-                m_strDirectory = "Q:\\shortcuts";
+				//m_strDirectory = "Q:\\shortcuts";
+				m_strDirectory = g_stSettings.m_szShortcutDirectory;
 
                 CHDDirectory rootDir;
 
@@ -419,7 +420,10 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 	CStdString strDir = strDirectory;
 
     Clear();
-    CStdString strShortCutsDir = "Q:\\shortcuts";
+    //CStdString strShortCutsDir = "Q:\\shortcuts";
+	CStdString strShortCutsDir = g_stSettings.m_szShortcutDirectory;
+	if (CUtil::HasSlashAtEnd(strShortCutsDir))
+		strShortCutsDir.Delete(strShortCutsDir.size()-1);
 
     bParentPath=CUtil::GetParentPath(strDir,strParentPath);
 	
@@ -794,7 +798,7 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
         m_dlgProgress->StartModal(GetID());
         m_dlgProgress->Progress();
     }
-    bool   bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
+    //bool   bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
     bool bScanSubDirs=true;
     bool bFound=false;
     DeleteThumbs(items);
@@ -845,7 +849,7 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
         }
         else
         {
-            if ( bOnlyDefaultXBE ? CUtil::IsDefaultXBE(pItem->m_strPath) : CUtil::IsXBE(pItem->m_strPath) )
+            if ( CUtil::IsXBE(pItem->m_strPath) )
             {
                 bFound=true;
                 CStdString strTotal;
