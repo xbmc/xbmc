@@ -2145,12 +2145,20 @@ bool CMusicDatabase::UpdateAlbumInfoSongs(long idAlbumInfo, const VECSONGS& song
 	return false;
 }
 
-bool CMusicDatabase::GetSubpathsFromPath(const CStdString &strPath, CStdString& strPathIds)
+bool CMusicDatabase::GetSubpathsFromPath(const CStdString &strPath1, CStdString& strPathIds)
 {
 	try
 	{
 		if (NULL==m_pDB.get()) return false;
 		if (NULL==m_pDS.get()) return false;
+
+		//	musicdatabase always stores directories
+		//	without a slash at the end
+		CStdString strPath=strPath1;
+		if (CUtil::HasSlashAtEnd(strPath))
+			strPath.Delete(strPath.size()-1);
+		RemoveInvalidChars(strPath);
+
 		CStdString strSQL;
 		// get all the path id's that are sub dirs of this directory
 		strSQL.Format("select idPath from path where strPath like '%s%%'", strPath.c_str());
