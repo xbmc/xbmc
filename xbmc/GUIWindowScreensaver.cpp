@@ -189,12 +189,14 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
 				m_pTexture = NULL;
 				m_bInit = false;
 			}
+			g_application.EnableOverlay();
 			m_bSaverActive = false;
 		}
 		break;
 
 		case GUI_MSG_WINDOW_INIT:
 		{
+			g_application.DisableOverlay();
 			InitMatrix();
 			m_bSaverActive = true;
 			CGUIWindow::OnMessage(message);
