@@ -18,7 +18,8 @@ public:
 
 	CStdString m_strVector;
 	CStdString m_strDescription;
-	CStdString m_strPassword;
+	CStdString m_strPassword; // arena password - cached
+
 	int m_nPlayers;
 	int m_nPlayerLimit;
 	bool m_bIsPrivate;

@@ -709,6 +709,7 @@ void CGUIWindowBuddies::OnEnterArenaFailed(CStdString& aVector, CStdString& aRea
 {
 	CLog::Log(LOGDEBUG, "CGUIWindowBuddies::OnEnterArenaFailed");
 
+	// TODO: we really ought to determine if this is always appropriate
 	CStdString strPassword = "";
 
 	if (CGUIDialogKeyboard::ShowAndGetInput(strPassword, aReason, false))
