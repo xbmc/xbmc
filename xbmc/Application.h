@@ -82,7 +82,7 @@ public:
 
 	void									Stop();
 	void									LoadSkin(const CStdString& strSkin);
-
+  const CStdString&     CurrentFile();
 	virtual bool					OnMessage(CGUIMessage& message);
 
 	virtual	void					OnPlayBackEnded();
@@ -102,6 +102,7 @@ public:
 	void									ResetAllControls();
   virtual void          Process();
   void                  ResetScreenSaver();
+  
 	CGUIWindowHome									m_guiHome;
   CGUIWindowPrograms							m_guiPrograms;
   CGUIWindowSettingsPrograms      m_guiSettingsPrograms;

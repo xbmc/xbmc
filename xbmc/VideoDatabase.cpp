@@ -805,7 +805,7 @@ void CVideoDatabase::GetBookMarksForMovie(const CStdString& strFilenameAndPath, 
 	if (NULL==m_pDS.get()) return ;
 
   CStdString strSQL;
-  strSQL.Format("select * from bookmark where idFile=%i order by fPercentage", lMovieId);
+  strSQL.Format("select * from bookmark where idFile=%i order by fPercentage", lFileId);
   m_pDS->query( strSQL.c_str() );
   if (m_pDS->num_rows() == 0)  return;
   while (!m_pDS->eof()) 

@@ -22,6 +22,7 @@ public:
   void						ChangetheSpeed(DWORD action);
   virtual void    OnExecute(int iAction, const IOSDOption* option);
 private:
+  void            Update();
   void            ShowOSD();
   void            HideOSD();
 
@@ -40,4 +41,5 @@ private:
 	int							m_strTimeStamp[5];
 	int							m_iTimeCodePosition;
 	int							m_iSpeed;
+  int             m_iCurrentBookmark;
 };
