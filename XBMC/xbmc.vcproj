@@ -57,7 +57,7 @@
 				StackSize="0x40000"
 				IncludeDebugInfo="TRUE"
 				NoLibWarn="TRUE"
-				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660"
+				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;LIBID3"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"/>
@@ -216,7 +216,7 @@
 				Name="XboxImageTool"
 				FileName="$(TargetDir)default.xbe"
 				StackSize="0x40000"
-				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660"
+				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;LIBID3"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"/>
@@ -335,6 +335,18 @@
 				RelativePath=".\xbmc\GUIWindowVideo.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\musicInfoTag.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\musicInfoTag.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\musicInfoTagLoaderFactory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\MusicInfoTagLoaderMP3.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\Picture.cpp">
 			</File>
 			<File
@@ -440,6 +452,15 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowVideo.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\ImusicInfoTagLoader.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\musicInfoTagLoaderFactory.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\MusicInfoTagLoaderMP3.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\Picture.h">
