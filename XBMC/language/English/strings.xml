@@ -838,4 +838,11 @@
   <string><id>15060</id><value>Message Here</value></string>
   <string><id>15061</id><value>You're invited to play %s.</value></string>
   <string><id>15062</id><value>Use alternate mplayer core</value></string>
+  <string><id>15100</id><value>Nav</value></string>
+  <string><id>15101</id><value>Database</value></string>
+  <string><id>15102</id><value>* All Albums</value></string>
+  <string><id>15103</id><value>* All Artists</value></string>
+  <string><id>15104</id><value>* All Songs</value></string>
+  <string><id>15105</id><value>* All Genres</value></string>
 </strings>
+

@@ -66,6 +66,7 @@
 #include "GUIWindowMusicArtists.h"
 #include "GUIWindowMusicGenres.h"
 #include "GUIWindowMusicTop100.h"
+#include "GUIWindowMusicNav.h"
 #include "GUIWindowBuddies.h"		//BUDDIES
 #include "GUIWindowWeather.h"		//WEATHER
 #include "GUIWindowPointer.h"		// Mouse pointer
@@ -152,21 +153,21 @@ public:
 	bool					ResetScreenSaverWindow();
 	void					SetKaiNotification(CStdString& aCaption, CStdString& aDescription, CGUIImage* aIcon=NULL);
 
-	CGUIWindowHome									m_guiHome;
-  CGUIWindowPrograms							m_guiPrograms;
-  CGUIWindowSettingsProfile       m_guiSettingsProfile;
+	CGUIWindowHome								m_guiHome;
+	CGUIWindowPrograms							m_guiPrograms;
+	CGUIWindowSettingsProfile				    m_guiSettingsProfile;
 	CGUIWindowPictures							m_guiPictures;
-	CGUIDialogInvite								m_guiDialogInvite;
+	CGUIDialogInvite							m_guiDialogInvite;
 	CGUIDialogHost								m_guiDialogHost;
 	CGUIDialogKeyboard							m_guiDialogKeyboard;
-	CGUIDialogYesNo									m_guiDialogYesNo;
+	CGUIDialogYesNo								m_guiDialogYesNo;
 	CGUIDialogProgress							m_guiDialogProgress;
-	CGUIDialogOK										m_guiDialogOK;
+	CGUIDialogOK								m_guiDialogOK;
 	CGUIDialogVolumeBar							m_guiDialogVolumeBar;
 	CGUIDialogKaiToast							m_guiDialogKaiToast;
-	CGUIDialogNumeric				m_guiDialogNumeric;
-	CGUIDialogGamepad				m_guiDialogGamepad;
-	CGUIDialogSubMenu								m_guiDialogSubMenu;
+	CGUIDialogNumeric							m_guiDialogNumeric;
+	CGUIDialogGamepad							m_guiDialogGamepad;
+	CGUIDialogSubMenu							m_guiDialogSubMenu;
 	CGUIDialogButtonMenu						m_guiDialogButtonMenu;
 	CGUIDialogContextMenu						m_guiDialogContextMenu;
 	CGUIDialogMusicScan							m_guiDialogMusicScan;
@@ -177,77 +178,79 @@ public:
 	CGUIWindowMusicInfo							m_guiMusicInfo;
 	CGUIWindowVideoInfo							m_guiVideoInfo;
 	CGUIWindowScriptsInfo						m_guiScriptsInfo;
-	CGUIWindowSettingsUICalibration	m_guiSettingsUICalibration;
-	CGUIWindowSettingsScreenCalibration m_guiSettingsScreenCalibration;
-	CGUIWindowSettingsCategory			m_guiSettingsCategory;
-	CGUIWindowScripts								m_guiScripts;
-	CGUIDialogSelect								m_guiDialogSelect;
-	CGUIDialogFileStacking					m_guiDialogFileStacking;
-	CGUIWindowMusicOverlay					m_guiMusicOverlay;
+	CGUIWindowSettingsUICalibration				m_guiSettingsUICalibration;
+	CGUIWindowSettingsScreenCalibration			m_guiSettingsScreenCalibration;
+	CGUIWindowSettingsCategory					m_guiSettingsCategory;
+	CGUIWindowScripts							m_guiScripts;
+	CGUIDialogSelect							m_guiDialogSelect;
+	CGUIDialogFileStacking						m_guiDialogFileStacking;
+	CGUIWindowMusicOverlay						m_guiMusicOverlay;
 	CGUIWindowFullScreen						m_guiWindowFullScreen;
-	CGUIWindowVideoOverlay					m_guiWindowVideoOverlay;
-	CGUIWindowVisualisation					m_guiWindowVisualisation;
+	CGUIWindowVideoOverlay						m_guiWindowVideoOverlay;
+	CGUIWindowVisualisation						m_guiWindowVisualisation;
 	CGUIWindowSlideShow							m_guiWindowSlideshow;
-  CGUIWindowMusicPlayList					m_guiMyMusicPlayList;
-  CGUIWindowVideoPlaylist         m_guiMyVideoPlayList;
+	CGUIWindowMusicPlayList						m_guiMyMusicPlayList;
+	CGUIWindowVideoPlaylist						m_guiMyVideoPlayList;
 	CGUIWindowMusicSongs						m_guiMyMusicSongs;
-  CGUIWindowMusicAlbum						m_guiMyMusicAlbum;
-	CGUIWindowMusicArtists					m_guiMyMusicArtists;
+	CGUIWindowMusicAlbum						m_guiMyMusicAlbum;
+	CGUIWindowMusicArtists						m_guiMyMusicArtists;
 	CGUIWindowMusicGenres						m_guiMyMusicGenres;
 	CGUIWindowMusicTop100						m_guiMyMusicTop100;
+	CGUIWindowMusicNav							m_guiMyMusicNav;
 	CGUIWindowScreensaver						m_guiWindowScreensaver;
-  CGUIWindowVideoGenre            m_guiVideoGenre;
-  CGUIWindowVideoActors           m_guiVideoActors;
-	CGUIWindowVideoYear             m_guiVideoYear;
-	CGUIWindowVideoTitle            m_guiVideoTitle;
-	CGUIWindowWeather								m_guiMyWeather;	//WEATHER
+	CGUIWindowVideoGenre			            m_guiVideoGenre;
+	CGUIWindowVideoActors						m_guiVideoActors;
+	CGUIWindowVideoYear							m_guiVideoYear;
+	CGUIWindowVideoTitle						m_guiVideoTitle;
+	CGUIWindowWeather							m_guiMyWeather;	//WEATHER
 	CGUIWindowBuddies						    m_guiMyBuddies;	//BUDDIES
-	CGUIWindowOSD										m_guiWindowOSD;
-	CGUIWindowPointer								m_guiPointer;
+	CGUIWindowOSD								m_guiWindowOSD;
+	CGUIWindowPointer							m_guiPointer;
 
-	CSNTPClient											m_sntpClient;
-	CDetectDVDMedia									m_DetectDVDType;
-	CAutorun												m_Autorun;
-	CDelayController								m_ctrDpad;
-	CDelayController								m_ctrIR;
-	CWebServer*											m_pWebServer;
-	CXBFileZilla*										m_pFileZilla;
-	IPlayer*												m_pPlayer;
+	CSNTPClient									m_sntpClient;
+	CDetectDVDMedia								m_DetectDVDType;
+	CAutorun									m_Autorun;
+	CDelayController							m_ctrDpad;
+	CDelayController							m_ctrIR;
+	CWebServer*									m_pWebServer;
+	CXBFileZilla*								m_pFileZilla;
+	IPlayer*									m_pPlayer;
 
-	bool		m_bSpinDown;
-  bool    m_bNetworkSpinDown;
-	DWORD		m_dwSpinDownTime;
-	DWORD		m_dwIdleTime;
-	bool		m_bInactive;	// CB: SCREENSAVER PATCH
-	bool		m_bScreenSave;	// CB: SCREENSAVER PATCH
-	DWORD		m_dwSaverTick;	// CB: SCREENSAVER PATCH
-	DWORD		m_dwSkinTime;
+	bool										m_bSpinDown;
+	bool										m_bNetworkSpinDown;
+	DWORD										m_dwSpinDownTime;
+	DWORD										m_dwIdleTime;
+	bool										m_bInactive;	// CB: SCREENSAVER PATCH
+	bool										m_bScreenSave;	// CB: SCREENSAVER PATCH
+	DWORD										m_dwSaverTick;	// CB: SCREENSAVER PATCH
+	DWORD										m_dwSkinTime;
 
-	char		m_CurrDAAPHost[64];
-	void		*m_DAAPPtr;
-	int			m_DAAPDBID;
-	void		*m_DAAPSong;
-	UINT64		m_DAAPSongSize;
-	void		*m_DAAPArtistPtr;
-	CCdgParser	m_CdgParser;
-  bool        m_bMasterLockPreviouslyEntered;
-  int         m_iMasterLockRetriesRemaining;
-  bool        m_bMasterLockOverridesLocalPasswords;
+	char										m_CurrDAAPHost[64];
+	void										*m_DAAPPtr;
+	int											m_DAAPDBID;
+	void										*m_DAAPSong;
+	UINT64										m_DAAPSongSize;
+	void										*m_DAAPArtistPtr;
+	CCdgParser									m_CdgParser;
+	bool								        m_bMasterLockPreviouslyEntered;
+	int											m_iMasterLockRetriesRemaining;
+	bool										m_bMasterLockOverridesLocalPasswords;
 
 protected:
-  CStdString							m_strCurrentPlayer;
-  void                    UpdateLCD();
-  bool					  SwitchToFullScreen();
-	void										FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork);
-  bool                    m_bXboxMediacenterLoaded,m_bSettingsLoaded;
-  CIMDBMovie              m_tagCurrentMovie;
-  int                     m_iPlaySpeed;
-  bool                    m_bAllSettingsLoaded;
-  CFileItem              m_itemCurrentFile;
-  D3DGAMMARAMP m_OldRamp;			// CB: SCREENSAVER PATCH
-  CSplash* m_splash;
-
-    static LONG WINAPI UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo);
+  CStdString									m_strCurrentPlayer;
+  void											UpdateLCD();
+  bool											SwitchToFullScreen();
+  void											FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork);
+  bool											m_bXboxMediacenterLoaded;
+  bool											m_bSettingsLoaded;
+  CIMDBMovie									m_tagCurrentMovie;
+  int											m_iPlaySpeed;
+  bool											m_bAllSettingsLoaded;
+  CFileItem										m_itemCurrentFile;
+  D3DGAMMARAMP									m_OldRamp;	// CB: SCREENSAVER PATCH
+  CSplash*										m_splash;
+  
+  static LONG WINAPI							UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo);
 };
 
 extern CApplication g_application;

@@ -241,6 +241,10 @@ public:
 	void		DeleteCDDBInfo();
 	void		Interupt();
 
+	bool		GetArtistsNav(VECARTISTS& artists, const CStdString &strGenre1);
+	bool		GetAlbumsNav(VECALBUMS& albums, const CStdString &strGenre1, const CStdString &strArtist1);
+	bool		GetSongsNav(VECSONGS& songs, const CStdString &strGenre1, const CStdString &strArtist1, const CStdString &strAlbum1);
+
 protected:
 	auto_ptr<SqliteDatabase> m_pDB;
 	auto_ptr<Dataset>				 m_pDS;

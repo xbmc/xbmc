@@ -213,6 +213,16 @@ CSettings::CSettings(void)
 	g_stSettings.m_bMyMusicGenresRootSortAscending=true;
 	g_stSettings.m_bMyMusicGenresSortAscending=true;
 
+	g_stSettings.m_bMyMusicNavGenresSortAscending=true;
+	g_stSettings.m_bMyMusicNavArtistsSortAscending=true;
+	g_stSettings.m_bMyMusicNavAlbumsSortAscending=true;
+	g_stSettings.m_bMyMusicNavSongsSortAscending=true;
+
+	// need defaults for these or the display is
+	// incorrect the first time Nav window is used
+	g_stSettings.m_iMyMusicNavAlbumsSortMethod=6;
+	g_stSettings.m_iMyMusicNavSongsSortMethod=3;
+
 	g_stSettings.m_iMyMusicPlaylistViewAsIcons=1;
 	g_stSettings.m_bMyMusicPlaylistRepeat=true;
 	g_stSettings.m_bMyMusicPlaylistShuffle=false;
@@ -265,8 +275,8 @@ CSettings::CSettings(void)
 	g_stSettings.m_iLogLevel = LOGNOTICE;
 	g_stSettings.m_bUnhandledExceptionToFatalError = false;
 	g_stSettings.m_bShowFreeMem=false;
-
-  m_iLastLoadedProfileIndex = -1;
+	
+	m_iLastLoadedProfileIndex = -1;
 
 	xbmcXmlLoaded = false;
 }
@@ -965,6 +975,24 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 			GetBoolean(pChild, "genresortascending",g_stSettings.m_bMyMusicGenresSortAscending);
 			GetBoolean(pChild, "genresortascendingroot",g_stSettings.m_bMyMusicGenresRootSortAscending);
 		}
+		pChild = pElement->FirstChildElement("nav");
+		if (pChild)
+		{
+			GetInteger(pChild, "navrootviewicons",g_stSettings.m_iMyMusicNavRootViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+			GetInteger(pChild, "navgenresviewicons",g_stSettings.m_iMyMusicNavGenresViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+			GetInteger(pChild, "navartistsviewicons",g_stSettings.m_iMyMusicNavArtistsViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+			GetInteger(pChild, "navalbumsviewicons",g_stSettings.m_iMyMusicNavAlbumsViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+			GetInteger(pChild, "navsongsviewicons",g_stSettings.m_iMyMusicNavSongsViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+
+			GetInteger(pChild, "navgenressortmethod",g_stSettings.m_iMyMusicNavRootSortMethod,0,0,0);
+			GetInteger(pChild, "navalbumssortmethod",g_stSettings.m_iMyMusicNavAlbumsSortMethod,6,6,7);
+			GetInteger(pChild, "navsongssortmethod",g_stSettings.m_iMyMusicNavSongsSortMethod,3,3,7);
+
+			GetBoolean(pChild, "navgenressortascending",g_stSettings.m_bMyMusicNavGenresSortAscending);
+			GetBoolean(pChild, "navartistssortascending",g_stSettings.m_bMyMusicNavArtistsSortAscending);
+			GetBoolean(pChild, "navalbumssortascending",g_stSettings.m_bMyMusicNavAlbumsSortAscending);
+			GetBoolean(pChild, "navsongssortascending",g_stSettings.m_bMyMusicNavSongsSortAscending);
+		}
 		pChild = pElement->FirstChildElement("top100");
 		if (pChild)
 		{
@@ -1214,6 +1242,26 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 		SetInteger(pChild, "genresortmethodroot",g_stSettings.m_iMyMusicGenresRootSortMethod);
 		SetBoolean(pChild, "genresortascending",g_stSettings.m_bMyMusicGenresSortAscending);
 		SetBoolean(pChild, "genresortascendingroot",g_stSettings.m_bMyMusicGenresRootSortAscending);
+	}
+	{
+		TiXmlElement childNode("nav");
+		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
+		if (!pChild) return false;
+
+		SetInteger(pChild, "navrootviewicons",g_stSettings.m_iMyMusicNavRootViewAsIcons);
+		SetInteger(pChild, "navgenresviewicons",g_stSettings.m_iMyMusicNavGenresViewAsIcons);
+		SetInteger(pChild, "navartistsviewicons",g_stSettings.m_iMyMusicNavArtistsViewAsIcons);
+		SetInteger(pChild, "navalbumsviewicons",g_stSettings.m_iMyMusicNavAlbumsViewAsIcons);
+		SetInteger(pChild, "navsongsviewicons",g_stSettings.m_iMyMusicNavSongsViewAsIcons);
+
+		SetInteger(pChild, "navgenressortmethod",g_stSettings.m_iMyMusicNavRootSortMethod);
+		SetInteger(pChild, "navalbumssortmethod",g_stSettings.m_iMyMusicNavAlbumsSortMethod);
+		SetInteger(pChild, "navsongssortmethod",g_stSettings.m_iMyMusicNavSongsSortMethod);
+
+		SetBoolean(pChild, "navgenressortascending",g_stSettings.m_bMyMusicNavGenresSortAscending);
+		SetBoolean(pChild, "navartistssortascending",g_stSettings.m_bMyMusicNavArtistsSortAscending);
+		SetBoolean(pChild, "navalbumssortascending",g_stSettings.m_bMyMusicNavAlbumsSortAscending);
+		SetBoolean(pChild, "navsongssortascending",g_stSettings.m_bMyMusicNavSongsSortAscending);
 	}
 	{
 		TiXmlElement childNode("top100");

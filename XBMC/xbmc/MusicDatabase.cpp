@@ -1955,7 +1955,7 @@ bool CMusicDatabase::FindSongsByNameAndArtist(const CStdString& strSearch1, VECS
 			setSongs.insert(GetSongFromDataset());
 			m_pDS->next();
 		}
-    m_pDS->close();
+		m_pDS->close();
 		// and then songs that match in primary artist
 		strSQL.Format("select * from song,path,album,artist,genre where artist.strArtist LIKE '%%%s%%' and song.idArtist=artist.idArtist and song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre", strSearch.c_str());
 		if (!m_pDS->query(strSQL.c_str())) return false;
@@ -1964,7 +1964,7 @@ bool CMusicDatabase::FindSongsByNameAndArtist(const CStdString& strSearch1, VECS
 			setSongs.insert(GetSongFromDataset());
 			m_pDS->next();
 		}
-    m_pDS->close();
+		m_pDS->close();
 		// and then songs that match in the secondary artists
     
 		strSQL.Format("select * from exartistsong join artist on exartistsong.idartist=artist.idartist join song on exartistsong.idsong=song.idsong join album on song.idalbum=album.idalbum join genre on song.idgenre=genre.idgenre join path on song.idpath=path.idpath where artist.strArtist like '%%%s%%'", strSearch.c_str());
@@ -2976,3 +2976,257 @@ void CMusicDatabaseReorg::DeleteSingleAlbum()
 
 }
 */
+
+
+bool CMusicDatabase::GetArtistsNav(VECARTISTS& artists, const CStdString &strGenre1)
+{
+	try
+	{
+		artists.erase(artists.begin(), artists.end());
+
+		if (NULL==m_pDB.get()) return false;
+		if (NULL==m_pDS.get()) return false;
+
+		// clean up strings
+		CStdString strGenre=strGenre1;
+		if (!strGenre.IsEmpty()) RemoveInvalidChars(strGenre);
+
+		// build query
+		CStdString strSQL = "select ";
+		if (!strGenre.IsEmpty())
+			strSQL += "distinct ";
+		strSQL += "strArtist from artist ";
+
+		CStdString strWhere;
+		if (!strGenre.IsEmpty())
+		{
+			// if getting artist by genre we need to join the song
+			// since thats the only table that relates them
+			strSQL += "join song on artist.idArtist = song.idArtist ";
+			strSQL += "join genre on song.idGenre = genre.idGenre ";
+	
+			CStdString strTemp;
+			strTemp.Format("genre.strGenre like '%s' ",strGenre.c_str());
+			strWhere = "where " + strTemp;
+
+			// set up sql queries:
+			// get artists based off extra genres
+			// get extra artists based off genres
+			// get extra artists based off extra genres
+		}
+
+		// skip various artists
+		CStdString strVariousArtists=g_localizeStrings.Get(340);
+		long lVariousArtistsId = AddArtist(strVariousArtists);
+		
+		CStdString strTemp;
+		strTemp.Format("artist.idArtist <> %i ",lVariousArtistsId);
+
+		if (strWhere.IsEmpty())
+			strWhere += "where ";
+		else
+			strWhere += "and ";
+		strWhere += strTemp;
+
+		strSQL += strWhere;
+
+		// run query
+		CLog::Log(LOGDEBUG,"CMusicDatabase::GetAristsNav() query: %s",strSQL.c_str());
+		if (!m_pDS->query(strSQL.c_str())) return false;
+		int iRowsFound = m_pDS->num_rows();
+		if (iRowsFound==0)
+		{
+			m_pDS->close();
+			return false;
+		}
+
+		// get data from returned rows
+		while (!m_pDS->eof())
+		{
+			CStdString strArtist = m_pDS->fv("strArtist").get_asString();
+			artists.push_back(strArtist);
+			m_pDS->next();
+		}
+		// cleanup
+		m_pDS->close();
+
+		return true;
+	}
+	catch(...)
+	{
+		CLog::Log(LOGERROR, "CMusicDatabase::GetArtistsNav() failed");
+	}
+	return false;
+}
+
+bool CMusicDatabase::GetAlbumsNav(VECALBUMS& albums, const CStdString &strGenre1, const CStdString &strArtist1)
+{
+	try
+	{
+		albums.erase(albums.begin(), albums.end());
+
+		if (NULL==m_pDB.get()) return false;
+		if (NULL==m_pDS.get()) return false;
+
+		// clean up strings
+		CStdString strGenre=strGenre1;
+		if (!strGenre.IsEmpty()) RemoveInvalidChars(strGenre);
+		CStdString strArtist=strArtist1;
+		if (!strArtist.IsEmpty()) RemoveInvalidChars(strArtist);
+
+		// build query
+		CStdString strSQL = "select ";
+		strSQL += "* from album ";
+		strSQL += "join path on album.idPath = path.idPath ";
+
+		// filtering
+		if (!strGenre.IsEmpty() || !strArtist.IsEmpty())
+		{
+			// albums with more than one artist is linked to "Various Artists"
+			// so to get albums by genre OR artist we need to join
+			// the song table since thats the only table that relates them
+			// correctly
+			strSQL += "join song on album.idAlbum = song.idAlbum ";
+		}
+
+		CStdString strWhere;
+		if (!strGenre.IsEmpty())
+		{
+			// link genre table to song table
+			strSQL += "join genre on song.idGenre = genre.idGenre ";
+
+			CStdString strTemp;
+			strTemp.Format("genre.strGenre like '%s' ",strGenre.c_str());
+			strWhere = "where " + strTemp;
+		}
+		if (!strArtist.IsEmpty())
+		{
+			// we're filtering by artist so link artist table to song table
+			strSQL += "join artist on song.idArtist = artist.idArtist ";
+
+			CStdString strTemp;
+			strTemp.Format("artist.strArtist like '%s' ",strArtist.c_str());
+			
+			if (strWhere.IsEmpty())
+				strWhere += "where ";
+			else
+				strWhere += "and ";
+			strWhere += strTemp;
+		}
+		else
+		{
+			// no artist filter so link artist table to album table
+			strSQL += "join artist on album.idArtist = artist.idArtist ";
+		}
+
+		strSQL += strWhere;
+		strSQL += "group by album.idAlbum ";
+	
+		// run query
+		CLog::Log(LOGDEBUG,"CMusicDatabase::GetAlbumsNav() query: %s",strSQL.c_str());
+		if (!m_pDS->query(strSQL.c_str())) return false;
+		int iRowsFound = m_pDS->num_rows();
+		if (iRowsFound==0)
+		{
+			m_pDS->close();
+			return false;
+		}
+
+		// get data from returned rows
+		while (!m_pDS->eof())
+		{
+			albums.push_back(GetAlbumFromDataset());
+			m_pDS->next();
+		}
+
+		// cleanup
+		m_pDS->close();
+		return true;
+	}
+	catch(...)
+	{
+		CLog::Log(LOGERROR, "CMusicDatabase::GetAlbumsNav() failed");
+	}
+	return false;
+}
+
+bool CMusicDatabase::GetSongsNav(VECSONGS& songs, const CStdString &strGenre1, const CStdString &strArtist1, const CStdString &strAlbum1)
+{
+	try
+	{
+		songs.erase(songs.begin(), songs.end());
+
+		if (NULL==m_pDB.get()) return false;
+		if (NULL==m_pDS.get()) return false;
+
+		// clean up strings
+		CStdString strGenre=strGenre1;
+		if (!strGenre.IsEmpty()) RemoveInvalidChars(strGenre);
+		CStdString strArtist=strArtist1;
+		if (!strArtist.IsEmpty()) RemoveInvalidChars(strArtist);
+		CStdString strAlbum=strAlbum1;
+		if (!strAlbum.IsEmpty()) RemoveInvalidChars(strAlbum);
+
+		// build query
+		CStdString strSQL = "select * from song ";
+		strSQL += "join path on song.idPath = path.idPath ";
+		strSQL += "join genre on song.idGenre = genre.idGenre ";
+		strSQL += "join artist on song.idArtist = artist.idArtist ";
+		strSQL += "join album on song.idAlbum = album.idAlbum ";
+
+		CStdString strWhere;
+		if (!strGenre.IsEmpty())
+		{
+			CStdString strTemp;
+			strTemp.Format("genre.strGenre like '%s' ",strGenre.c_str());
+			strWhere = "where " + strTemp;
+		}
+		if (!strArtist.IsEmpty())
+		{
+			CStdString strTemp;
+			strTemp.Format("artist.strArtist like '%s' ",strArtist.c_str());
+			if (strWhere.IsEmpty())
+				strWhere += "where ";
+			else
+				strWhere += "and ";
+			strWhere += strTemp;
+		}
+		if (!strAlbum.IsEmpty())
+		{
+			CStdString strTemp;
+			strTemp.Format("album.strAlbum like '%s' ",strAlbum.c_str());
+			if (strWhere.IsEmpty())
+				strWhere += "where ";
+			else
+				strWhere += "and ";
+			strWhere += strTemp;
+		}
+		strSQL += strWhere;
+
+		// run query
+		CLog::Log(LOGDEBUG,"CMusicDatabase::GetSongsNav() query: %s",strSQL.c_str());
+		if (!m_pDS->query(strSQL.c_str())) return false;
+		int iRowsFound = m_pDS->num_rows();
+		if (iRowsFound==0)
+		{
+			m_pDS->close();
+			return false;
+		}
+
+		// get data from returned rows
+		while (!m_pDS->eof())
+		{
+			songs.push_back(GetSongFromDataset());
+			m_pDS->next();
+		}
+
+		// cleanup
+		m_pDS->close();
+		return true;
+	}
+	catch(...)
+	{
+		CLog::Log(LOGERROR, "CMusicDatabase::GetSongsNav() failed");
+	}
+	return false;
+}
