@@ -2007,7 +2007,14 @@
  <id>732</id>
  <value>Spara inställningar</value>
  </string> 
-
+ <string>
+ <id>733</id>
+ <value>Web Server lösenord</value>
+ </string>
+ <string>
+ <id>734</id>
+ <value>Inget lösenord</value>
+ </string>
 
  <string>
  <id>998</id>
@@ -2347,6 +2354,11 @@
    <string>
 <id>13304</id>
 <value>Vänd Texthåll</value>
+</string>
+
+<string>
+<id>13305</id>
+<value>Aktivera RSS nyheter</value>
 </string>
 
 </strings>
