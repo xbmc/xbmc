@@ -119,7 +119,7 @@
   <string><id>185</id><value>Suche nach Album</value></string>
   <string><id>186</id><value>OK</value></string>
   <string><id>187</id><value>Kein Album gefunden!</value></string>
-  <string><id>188</id><value>Alle auswählen</value></string>
+  <string><id>188</id><value>Alles markieren</value></string>
   <string><id>189</id><value>Auslesen von Informationen</value></string>
   <string><id>190</id><value>Speichern</value></string>
   <string><id>191</id><value>Wdgb zufällig</value></string>
@@ -884,5 +884,5 @@
   <string><id>15103</id><value>* Alle Künstler</value></string> 
   <string><id>15104</id><value>* Alle Lieder</value></string> 
   <string><id>15105</id><value>* Alle Genres</value></string> 
-
+  <string><id>15106</id><value>Gewählte Datei bei weiterer Navigation merken</value></string>
 </strings>

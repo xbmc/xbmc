@@ -733,9 +733,30 @@
   <string><id>13356</id><value>Nak³adki YUY2</value></string>
   <string><id>13357</id><value>Kombinacja nak³adek i shader'a</value></string>
   <string><id>13360</id><value>Generuj miniaturki</value></string>
-  <string><id>14000</id><value>Stacking: Wy³.</value></string>
-  <string><id>14001</id><value>Stacking: Prosty</value></string>
-  <string><id>14002</id><value>Stacking: Rozmyty</value></string>
+  <string><id>13361</id><value>W³¹cz g³os</value></string>
+  <string><id>13362</id><value>Maska g³osu</value></string>
+  <string><id>13363</id><value>- W³¹cz wagê widma energii</value></string>
+  <string><id>13364</id><value>-- Wartoœæ wagi widma energii</value></string>
+  <string><id>13365</id><value>- W³¹cz podzia³kê skalowania</value></string>
+  <string><id>13366</id><value>-- W³¹cz wartoœæ skalowania</value></string>
+  <string><id>13367</id><value>- W³¹cz wspó³czynnik szeptu</value></string>
+  <string><id>13368</id><value>-- Wartoœæ wspó³czynnika szeptu</value></string>
+  <string><id>13369</id><value>- W³¹cz wspó³czynnik Robotic</value></string>
+  <string><id>13370</id><value>-- Wartoœæwspó³czynnika Robotic</value></string>
+  <string><id>13371</id><value>- Port 0 G³os</value></string>
+  <string><id>13372</id><value>- Port 1 G³os</value></string>
+  <string><id>13373</id><value>- Port 2 G³os</value></string>
+  <string><id>13374</id><value>- Port 3 G³os</value></string>
+  <string><id>13375</id><value>W³¹cz urz¹dzenie</value></string>
+  <string><id>13376</id><value>G³oœnoœæ(%)</value></string>
+  <string><id>13377</id><value>Domyœlny tryb wyœwietlania</value></string>
+  <string><id>13378</id><value>Domyœlna jasnoœæ</value></string>
+  <string><id>13379</id><value>Domyœlny kontrast</value></string>
+  <string><id>13380</id><value>Domyœlna gamma</value></string>
+  <string><id>13381</id><value>Przywróæ Video</value></string>
+  <string><id>14000</id><value>Kaskadowanie wy³.</value></string>
+  <string><id>14001</id><value>Kaskadowanie proste</value></string>
+  <string><id>14002</id><value>Kaskadowanie rozmyte</value></string>
   <string><id>14003</id><value>œci¹gam plik playlisty...</value></string>
   <string><id>14004</id><value>œci¹gam listê streamów...</value></string>
   <string><id>14005</id><value>Przetwarzam listê streamów...</value></string>
@@ -863,4 +884,5 @@
   <string><id>15103</id><value>* Wszyscy Artyœci</value></string>
   <string><id>15104</id><value>* Wszystkie Piosenki</value></string>
   <string><id>15105</id><value>* Wszystkie Gatunki</value></string>
+  <string><id>15106</id><value>Zapamiêtaj wybrany plik</value></string>
 </strings>
