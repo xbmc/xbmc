@@ -15,4 +15,5 @@ public:
 	void						SetLine(int iLine, int iString);
 	void						SetHeading(const wstring& strLine);
 	void						SetHeading(int iString);
+	virtual void		Close();
 };

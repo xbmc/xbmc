@@ -39,10 +39,8 @@
 // my music:
 //			- shoutcast
 //			- overlay 
-//					-show album info, title, artist
 //					-show playtime using large font
 //					-FFT
-//				  -album thumbnail
 //			    - status of FF/RWND
 //			- ff/rwnd
 //			- cancel search 

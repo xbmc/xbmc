@@ -9,7 +9,7 @@ public:
 	virtual ~CGUIDialog(void);
   virtual void    Render();
 	void						DoModal(DWORD dwParentId);
-	void						Close();
+	virtual void		Close();
 	
 protected:
 	DWORD						m_dwParentWindowID;
