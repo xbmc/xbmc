@@ -981,15 +981,22 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
   // check to see if the Resume Video button is applicable
   int startOffset = 0;
   pMenu->EnableButton(2, false);
-  if (m_vecItems[iItem]->IsVideo())
+  // grab any stacked files associated with this item
+  vector<CStdString> movies;
+  GetStackedFiles(m_vecItems[iItem]->m_strPath, movies);
+  if (!m_vecItems[iItem]->IsNFO() && !m_vecItems[iItem]->IsPlayList())
   { // ok, we have a video file at least
-    // grab the database info
-    CVideoSettings settings;
-    m_database.GetVideoSettings(m_vecItems[iItem]->m_strPath, settings);
-    if (settings.m_ResumeTime > 0)
+    // grab the database info.  If stacking is enabled, we may have to check multiple files...
+    for (unsigned int i=0; i < movies.size(); i++)
     {
-      startOffset = settings.m_ResumeTime;
-      pMenu->EnableButton(2, true);
+      CVideoSettings settings;
+      m_database.GetVideoSettings(movies[i], settings);
+      if (settings.m_ResumeTime > 0)
+      {
+        startOffset = settings.m_ResumeTime + 0x10000000 * i; // assume no more than 16 files are stacked
+        pMenu->EnableButton(2, true);
+        break;
+      }
     }
   }
   // turn off the now playing button if nothing is playing
@@ -1037,4 +1044,128 @@ void CGUIWindowVideoBase::OnPopupMenu(int iItem)
     break;
   }
   m_vecItems[iItem]->Select(bSelected);
+}
+
+void CGUIWindowVideoBase::GetStackedFiles(const CStdString &strFilePath, vector<CStdString> &movies)
+{
+  if (CUtil::IsNaturalNumber(strFilePath))
+  { // we have a database view
+    movies.clear();
+    m_database.GetFiles(atol(strFilePath.c_str()), movies);
+    sort(movies.begin(), movies.end(), SSortVideoListByName());
+    return;
+  }
+  // get the path and filename
+  CStdString strPath;
+  CStdString strFileName;
+  CUtil::Split(strFilePath, strPath, strFileName);
+  if (CUtil::HasSlashAtEnd(strPath))
+    strPath.Delete(strPath.size() - 1);
+  movies.clear();
+  if (g_stSettings.m_iMyVideoVideoStack == STACK_NONE)
+    return;
+
+  CStdString fileTitle;
+  CStdString volumePrefix;
+  int volumeNumber;
+  if (g_stSettings.m_iMyVideoVideoStack == STACK_SIMPLE)
+  {
+    if (!CUtil::GetVolumeFromFileName(strFileName, fileTitle, volumePrefix, volumeNumber))
+    {
+      // nothing to stack...
+      movies.push_back(strFilePath);
+      return;
+    }
+  }
+  // ok - we're good to go - let's search for stacked files
+  CFileItemList items;
+  m_rootDir.GetDirectory(strPath, items);
+  for (int i = 0; i < (int)items.Size(); ++i)
+  {
+    CFileItem *pItemTmp = items[i];
+    if (!pItemTmp->IsNFO() && !pItemTmp->IsPlayList() && pItemTmp->IsVideo())
+    {
+      CStdString fileNameTemp = CUtil::GetFileName(pItemTmp->m_strPath);
+      bool stackFile = false;
+
+      if (strFileName.Equals(fileNameTemp))
+      {
+        stackFile = true;
+      }
+      else if (g_stSettings.m_iMyVideoVideoStack == STACK_FUZZY)
+      {
+        // fuzzy stacking
+        double fPercentage = fstrcmp(fileNameTemp, strFileName, COMPARE_PERCENTAGE_MIN);
+        if (fPercentage >= COMPARE_PERCENTAGE)
+        {
+          stackFile = true;
+        }
+      }
+      else
+      {
+        // simple stacking
+        CStdString fileTitle2;
+        CStdString volumePrefix2;
+        int volumeNumber2;
+        if (CUtil::GetVolumeFromFileName(fileNameTemp, fileTitle2, volumePrefix2, volumeNumber2))
+        {
+          if (fileTitle.Equals(fileTitle2) && volumePrefix.Equals(volumePrefix2))
+          {
+            stackFile = true;
+          }
+        }
+      }
+
+      if (stackFile)
+      {
+        movies.push_back(pItemTmp->m_strPath);
+      }
+    }
+  }
+  // check if we have anything at all to stack
+  if (movies.empty())
+    movies.push_back(strFileName);
+  // sort them
+  sort(movies.begin(), movies.end(), SSortVideoListByName());
+}
+
+void CGUIWindowVideoBase::PlayMovies(VECMOVIESFILES &movies, long lStartOffset)
+{
+  if (movies.size() <= 0) return ;
+  if (!CheckMovie(movies[0])) return ;
+  int iSelectedFile = 1;
+  if (movies.size() > 1)
+  {
+    if (lStartOffset)
+    { // have a startoffset, figure out which file it is
+      iSelectedFile = ((lStartOffset & 0x10000000) >> 28) + 1;
+    }
+    else
+    {
+      CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
+      if (dlg)
+      {
+        dlg->SetNumberOfFiles(movies.size());
+        dlg->DoModal(GetID());
+        iSelectedFile = dlg->GetSelectedFile();
+        if (iSelectedFile < 1) return ;
+      }
+    }
+  }
+
+  g_playlistPlayer.Reset();
+  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
+  CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO_TEMP);
+  playlist.Clear();
+  for (int i = iSelectedFile - 1; i < (int)movies.size(); ++i)
+  {
+    CPlayList::CPlayListItem item;
+    item.SetFileName(movies[i]);
+    if (i == iSelectedFile - 1)
+      item.m_lStartOffset = lStartOffset & 0x0fffffff;
+    playlist.Add(item);
+  }
+
+  // play movie...
+  g_playlistPlayer.PlayNext();
 }
