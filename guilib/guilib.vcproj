@@ -131,7 +131,7 @@
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
-				DefaultCharIsUnsigned="TRUE"
+				DefaultCharIsUnsigned="FALSE"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
