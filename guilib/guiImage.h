@@ -54,16 +54,9 @@ protected:
   virtual void       Update();
   void    				   UpdateVB();
 	void							 Process();
-  struct VERTEX 
-	{ 
-    D3DXVECTOR4 p;
-		D3DCOLOR col; 
-		FLOAT tu, tv; 
-	};
-  static const DWORD FVF_VERTEX = D3DFVF_XYZRHW|D3DFVF_DIFFUSE|D3DFVF_TEX1;
+  static const DWORD FVF_VERTEX = D3DFVF_XYZRHW|D3DFVF_DIFFUSE|D3DFVF_TEX0;
 
   DWORD                   m_dwColorKey;
-  LPDIRECT3DVERTEXBUFFER8 m_pVB;
   CStdString              m_strFileName;
   int                     m_iTextureWidth;
   int                     m_iTextureHeight;
@@ -81,5 +74,14 @@ protected:
   int                     m_iRenderHeight;
 	bool										m_bWasVisible;
 	DWORD										m_dwAlpha[4];
+
+  //vertex values
+  float m_fX;
+  float m_fY;
+  float m_fUOffs;
+  float m_fU;
+  float m_fV;
+  float m_fNW;
+  float m_fNH;
 };
 #endif
