@@ -1060,7 +1060,7 @@ void CGUIWindowMusicBase::ShowThumbPanel()
     CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
 		if (pControl)
 		{
-			pControl->SetThumbDimensions(10,16,100,100);
+			pControl->SetThumbDimensions(14,14,100,100);
 			pControl->SetTextureDimensions(128,128);
 			pControl->SetItemHeight(150);
 			pControl->SetItemWidth(150);
@@ -1071,7 +1071,7 @@ void CGUIWindowMusicBase::ShowThumbPanel()
     CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
 		if (pControl)
 		{
-			pControl->SetThumbDimensions(4,10,64,64);
+			pControl->SetThumbDimensions(8,8,64,64);
 			pControl->SetTextureDimensions(80,80);
 			pControl->SetItemHeight(128);
 			pControl->SetItemWidth(128);
