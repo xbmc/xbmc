@@ -2,11 +2,12 @@
 #include <stdlib.h>
 
 #include <stdio.h>
+#include <memory>
 
 #include <string.h>
 #include "dll.h"
 #include "exp2dll.h"
-
+using namespace std;
 Exp2Dll *Head = 0;
 extern "C" void dummy_Unresolved(void);
 
@@ -414,15 +415,16 @@ Exp2Dll::~Exp2Dll()
 	}
 }           
 
-#define DEFAULT_DLLPATH "Q:\\dll"
+#define DEFAULT_DLLPATH "Q:\\mplayer\\codecs"
 
 extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR libname) 
 {
-	char * plibname = new char[strlen(libname)+20]; 
-	sprintf(plibname, "%s\\%s", DEFAULT_DLLPATH ,(char *)libname);
-	DllLoader * dllhandle = new DllLoader(plibname);
+	auto_ptr<char> plibname ( new char[strlen(libname)+120]); 
+	sprintf(plibname.get(), "%s\\%s", DEFAULT_DLLPATH ,(char *)libname);
+	DllLoader * dllhandle = new DllLoader(plibname.get());
 	dllhandle->Parse();
 	dllhandle->ResolveImports();
+
 
 	void * address = NULL;
 	dllhandle->ResolveExport("DllMain", &address);
