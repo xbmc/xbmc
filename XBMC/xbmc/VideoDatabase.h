@@ -6,6 +6,9 @@
 #include <memory>
 using namespace std;
 
+typedef vector<CStdString> VECMOVIEACTORS;
+typedef vector<CStdString> VECMOVIEGENRES;
+typedef vector<CIMDBMovie> VECMOVIES;
 
 class CVideoDatabase
 {
@@ -20,6 +23,11 @@ public:
   bool    HasMovieInfo(const CStdString& strFilenameAndPath);
   void    GetMovieInfo(const CStdString& strFilenameAndPath,CIMDBMovie& details);
   void    SetMovieInfo(const CStdString& strFilenameAndPath,const CIMDBMovie& details);
+  void    GetGenres(VECMOVIEGENRES& genres);
+  void    GetActors(VECMOVIEACTORS& actors);
+  void    GetMoviesByGenre(CStdString& strGenre, VECMOVIES& movies);
+  void    GetMoviesByActor(CStdString& strActor, VECMOVIES& movies);
+  void    DeleteMovieInfo(const CStdString& strFileNameAndPath);
 protected:
   auto_ptr<SqliteDatabase>  m_pDB;
 	auto_ptr<Dataset>				  m_pDS;

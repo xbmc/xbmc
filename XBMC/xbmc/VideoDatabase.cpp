@@ -58,7 +58,7 @@ bool CVideoDatabase::Open()
 
 	// test id dbs already exists, if not we need 2 create the tables
 	bool bDatabaseExists=false;
-	FILE* fd= fopen("Q:\\albums\\MyVideos.db","rb");
+	FILE* fd= fopen("Q:\\albums\\MyVideos1.db","rb");
 	if (fd)
 	{
 		bDatabaseExists=true;
@@ -66,7 +66,7 @@ bool CVideoDatabase::Open()
 	}
 
 	m_pDB.reset(new SqliteDatabase() ) ;
-  m_pDB->setDatabase("Q:\\albums\\MyVideos.db");
+  m_pDB->setDatabase("Q:\\albums\\MyVideos1.db");
 	
   m_pDS.reset(m_pDB->CreateDataset());
 	if ( m_pDB->connect() != DB_CONNECTION_OK) 
@@ -111,7 +111,7 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE genrelinkmovie ( idGenre integer, idMovie integer)\n");
     m_pDS->exec("CREATE TABLE movie ( idMovie integer primary key, idPath integer, hasSubtitles integer)\n");
     m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, strFilename text, cdlabel text )\n");
-    m_pDS->exec("CREATE TABLE movieinfo ( idMovie integer, idDirector integer, strPlotOutline text, strPlot text, strTagLine text, strVotes text, fRating text,strCast text,strCredits text, iYear integer)\n");
+    m_pDS->exec("CREATE TABLE movieinfo ( idMovie integer, idDirector integer, strPlotOutline text, strPlot text, strTagLine text, strVotes text, fRating text,strCast text,strCredits text, iYear integer, strGenre text, strPictureURL text, strTitle text)\n");
     m_pDS->exec("CREATE TABLE actorlinkmovie ( idActor integer, idMovie integer )\n");
     m_pDS->exec("CREATE TABLE actors ( idActor integer primary key, strActor text )\n");
   }
@@ -156,7 +156,7 @@ void CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath,CIMDBMovi
   {
     return ;
   }
-  details.m_fRating=atof(m_pDS->fv("movieinfo.fRating").get_asString().c_str()) ;
+  details.m_fRating=(float)atof(m_pDS->fv("movieinfo.fRating").get_asString().c_str()) ;
 	details.m_strDirector=m_pDS->fv("actors.strActor").get_asString();
 	details.m_strWritingCredits=m_pDS->fv("movieinfo.strCredits").get_asString();
 	details.m_strTagLine=m_pDS->fv("movieinfo.strTagLine").get_asString();
@@ -165,17 +165,10 @@ void CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath,CIMDBMovi
 	details.m_strVotes=m_pDS->fv("movieinfo.strVotes").get_asString();
 	details.m_strCast=m_pDS->fv("movieinfo.strCast").get_asString();
 	details.m_iYear=m_pDS->fv("movieinfo.iYear").get_asLong();
+  details.m_strGenre=m_pDS->fv("movieinfo.strGenre").get_asString();
+  details.m_strPictureURL=m_pDS->fv("movieinfo.strPictureURL").get_asString();
+  details.m_strTitle=m_pDS->fv("movieinfo.strTitle").get_asString();
 
-  strSQL.Format("select * from genre,genrelinkmovie where genre.idgenre=genrelinkmovie.idgenre and genrelinkmovie.idmovie=%i", lMovieId);
-	m_pDS->query(strSQL.c_str());
-  bool bAddSlash=false;
-  while (!m_pDS->eof()) 
-  {
-    if (bAddSlash) details.m_strGenre+="/";
-    details.m_strGenre+=m_pDS->fv("genre.strGenre").get_asString();
-    m_pDS->next();
-    bAddSlash=true;
-  }
 
 	//details.m_strSearchString;
 	//details.m_strTitle;
@@ -198,6 +191,7 @@ void CVideoDatabase::SetMovieInfo(const CStdString& strFilenameAndPath,const CIM
   RemoveInvalidChars(details1.m_strTitle);  
   RemoveInvalidChars(details1.m_strVotes);  
   RemoveInvalidChars(details1.m_strWritingCredits);  
+  RemoveInvalidChars(details1.m_strGenre);  
 
   // add director
   long lDirector=AddActor(details.m_strDirector);
@@ -271,15 +265,28 @@ void CVideoDatabase::SetMovieInfo(const CStdString& strFilenameAndPath,const CIM
 	m_pDS->query(strSQL.c_str());
 	if (m_pDS->num_rows() == 0) 
   {
-    strSQL.Format("insert into movieinfo ( idMovie,idDirector,strPlotOutline,strPlot,strTagLine,strVotes,fRating,strCast,strCredits , iYear  ) values(%i,%i,'%s','%s','%s','%s','%s','%s','%s',%i)",
-            lMovieId,lDirector,details1.m_strPlotOutline.c_str(),details1.m_strPlot.c_str(),details1.m_strTagLine.c_str(),details1.m_strVotes,strRating.c_str(),details1.m_strCast.c_str(),details1.m_strWritingCredits.c_str(),details1.m_iYear);
+    CStdString strTmp="";
+    strSQL.Format("insert into movieinfo ( idMovie,idDirector,strPlotOutline,strPlot,strTagLine,strVotes,fRating,strCast,strCredits , iYear  ,strGenre, strPictureURL, strTitle) values(%i,%i,'%s','%s','%s','%s','%s','%s','%s',%i,'%s','%s','%s')",
+            lMovieId,lDirector, details1.m_strPlotOutline.c_str(),
+            details1.m_strPlot.c_str(),details1.m_strTagLine.c_str(),
+            details1.m_strVotes.c_str(),strRating.c_str(),
+            details1.m_strCast.c_str(),details1.m_strWritingCredits.c_str(),
+            
+            details1.m_iYear, details1.m_strGenre.c_str(),
+            details1.m_strPictureURL.c_str(),details1.m_strTitle.c_str() );
+
 	  m_pDS->exec(strSQL.c_str());
               
   }
   else
   {
-    strSQL.Format("update movieinfo set idDirector=%i, strPlotOutline='%s', strPlot='%s', strTagLine='%s', strVotes='%s', fRating='%s', strCast='%s',strCredits='%s', iYear='%i' where idMovie=%i",
-            lDirector,details1.m_strPlotOutline.c_str(),details1.m_strPlot.c_str(),details1.m_strTagLine.c_str(),details1.m_strVotes,strRating.c_str(),details1.m_strCast.c_str(),details1.m_strWritingCredits.c_str(),details1.m_iYear,lMovieId);
+    strSQL.Format("update movieinfo set idDirector=%i, strPlotOutline='%s', strPlot='%s', strTagLine='%s', strVotes='%s', fRating='%s', strCast='%s',strCredits='%s', iYear=%i, strGenre='%s' strPictureURL='%s', strTitle='%s' where idMovie=%i",
+            lDirector,details1.m_strPlotOutline.c_str(),
+            details1.m_strPlot.c_str(),details1.m_strTagLine.c_str(),
+            details1.m_strVotes.c_str(),strRating.c_str(),
+            details1.m_strCast.c_str(),details1.m_strWritingCredits.c_str(),
+            details1.m_iYear,details1.m_strGenre.c_str(),
+            details1.m_strPictureURL.c_str(),details1.m_strTitle.c_str(),lMovieId);
 	  m_pDS->exec(strSQL.c_str());
   }
 }
@@ -469,7 +476,6 @@ void CVideoDatabase::AddGenreToMovie(long lMovieId, long lGenreId)
 //********************************************************************************************************************************
 void CVideoDatabase::AddActorToMovie(long lMovieId, long lActorId)
 {
-
 	if (NULL==m_pDB.get()) return ;
 	if (NULL==m_pDS.get()) return ;
 	CStdString strSQL;
@@ -481,4 +487,132 @@ void CVideoDatabase::AddActorToMovie(long lMovieId, long lActorId)
 		strSQL.Format ("insert into actorlinkmovie (idActor, idMovie) values( %i,%i)",lActorId,lMovieId);
 		m_pDS->exec(strSQL.c_str());
 	}
+}
+
+//********************************************************************************************************************************
+void CVideoDatabase::GetGenres(VECMOVIEGENRES& genres)
+{
+  genres.erase(genres.begin(),genres.end());
+	if (NULL==m_pDB.get()) return ;
+	if (NULL==m_pDS.get()) return ;
+  m_pDS->query("select * from genre");
+  if (m_pDS->num_rows() == 0)  return;
+  while (!m_pDS->eof()) 
+  {
+    genres.push_back( m_pDS->fv("strGenre").get_asString() );
+    m_pDS->next();
+  }
+}
+
+//********************************************************************************************************************************
+void CVideoDatabase::GetActors(VECMOVIEACTORS& actors)
+{
+  actors.erase(actors.begin(),actors.end());
+	if (NULL==m_pDB.get()) return ;
+	if (NULL==m_pDS.get()) return ;
+  m_pDS->query("select * from actors");
+  if (m_pDS->num_rows() == 0)  return;
+  while (!m_pDS->eof()) 
+  {
+    actors.push_back( m_pDS->fv("strActor").get_asString() );
+    m_pDS->next();
+  }
+}
+
+//********************************************************************************************************************************
+void CVideoDatabase::GetMoviesByGenre(CStdString& strGenre1, VECMOVIES& movies)
+{
+ 	CStdString strGenre=strGenre1;
+	RemoveInvalidChars(strGenre);
+
+  movies.erase(movies.begin(),movies.end());
+	if (NULL==m_pDB.get()) return ;
+	if (NULL==m_pDS.get()) return ;
+  CStdString strSQL;
+  strSQL.Format("select * from actorlinkmovie,genre,movie,path,movieinfo,actors where genre.idGenre=genrelinkmovie.idGenre and genrelinkmovie.idmovie=movie.idmovie and movie.idpath=path.idpath and movieinfo.idmovie=movie.idmovie and genre.strGenre='%s' and movieinfo.iddirector=actors.idActor", strGenre.c_str());
+  m_pDS->query( strSQL.c_str() );
+  if (m_pDS->num_rows() == 0)  return;
+  while (!m_pDS->eof()) 
+  {
+    CIMDBMovie details;
+    details.m_fRating=(float)atof(m_pDS->fv("movieinfo.fRating").get_asString().c_str()) ;
+	  details.m_strDirector=m_pDS->fv("actors.strActor").get_asString();
+	  details.m_strWritingCredits=m_pDS->fv("movieinfo.strCredits").get_asString();
+	  details.m_strTagLine=m_pDS->fv("movieinfo.strTagLine").get_asString();
+	  details.m_strPlotOutline=m_pDS->fv("movieinfo.strPlotOutline").get_asString();
+	  details.m_strPlot=m_pDS->fv("movieinfo.strPlot").get_asString();
+	  details.m_strVotes=m_pDS->fv("movieinfo.strVotes").get_asString();
+	  details.m_strCast=m_pDS->fv("movieinfo.strCast").get_asString();
+	  details.m_iYear=m_pDS->fv("movieinfo.iYear").get_asLong();
+    details.m_strGenre=m_pDS->fv("movieinfo.strGenre").get_asString();
+    details.m_strPictureURL=m_pDS->fv("movieinfo.strPictureURL").get_asString();
+    details.m_strTitle=m_pDS->fv("movieinfo.strTitle").get_asString();
+
+    movies.push_back(details);
+    m_pDS->next();
+  }
+}
+
+//********************************************************************************************************************************
+void CVideoDatabase::GetMoviesByActor(CStdString& strActor1, VECMOVIES& movies)
+{
+ 	CStdString strActor=strActor1;
+	RemoveInvalidChars(strActor);
+
+  movies.erase(movies.begin(),movies.end());
+	if (NULL==m_pDB.get()) return ;
+	if (NULL==m_pDS.get()) return ;
+  CStdString strSQL;
+  strSQL.Format("select * from actorlinkmovie,actors,movie,path,movieinfo where actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie and movie.idpath=path.idpath and movieinfo.idmovie=movie.idmovie and actors.stractor='%s'", strActor.c_str());
+  m_pDS->query( strSQL.c_str() );
+  if (m_pDS->num_rows() == 0)  return;
+  while (!m_pDS->eof()) 
+  {
+    CIMDBMovie details;
+    details.m_fRating=(float)atof(m_pDS->fv("movieinfo.fRating").get_asString().c_str()) ;
+	  details.m_strDirector=m_pDS->fv("actors.strActor").get_asString();
+	  details.m_strWritingCredits=m_pDS->fv("movieinfo.strCredits").get_asString();
+	  details.m_strTagLine=m_pDS->fv("movieinfo.strTagLine").get_asString();
+	  details.m_strPlotOutline=m_pDS->fv("movieinfo.strPlotOutline").get_asString();
+	  details.m_strPlot=m_pDS->fv("movieinfo.strPlot").get_asString();
+	  details.m_strVotes=m_pDS->fv("movieinfo.strVotes").get_asString();
+	  details.m_strCast=m_pDS->fv("movieinfo.strCast").get_asString();
+	  details.m_iYear=m_pDS->fv("movieinfo.iYear").get_asLong();
+    details.m_strGenre=m_pDS->fv("movieinfo.strGenre").get_asString();
+    details.m_strPictureURL=m_pDS->fv("movieinfo.strPictureURL").get_asString();
+    details.m_strTitle=m_pDS->fv("movieinfo.strTitle").get_asString();
+
+    movies.push_back(details);
+    m_pDS->next();
+  }
+}
+
+void CVideoDatabase::DeleteMovieInfo(const CStdString& strFileNameAndPath)
+{
+  if (NULL==m_pDB.get()) return ;
+	if (NULL==m_pDS.get()) return ;
+  
+	CStdString strPath, strFileName;
+	Split(strFileNameAndPath, strPath, strFileName); 
+  RemoveInvalidChars(strPath);
+  RemoveInvalidChars(strFileName);
+
+  // get path...
+ 	CStdString strSQL;
+  strSQL.Format("select * from movie,path,movieinfo where movieinfo.idmovie=movie.idmovie and movie.idpath=path.idpath and strPath like '%s' and strFilename like '%s'",strPath,strFileName);
+	m_pDS->query(strSQL.c_str());
+	if (m_pDS->num_rows() == 0) 
+  {
+    return;
+  }
+  long lMovieId = m_pDS->fv("movieinfo.idmovie").get_asLong();
+  strSQL.Format("delete from genrelinkmovie where idmovie=%i", lMovieId);
+  m_pDS->exec(strSQL.c_str());
+
+  strSQL.Format("delete from actorlinkmovie where idmovie=%i", lMovieId);
+  m_pDS->exec(strSQL.c_str());
+
+  
+  strSQL.Format("delete from movieinfo where idmovie=%i", lMovieId);
+  m_pDS->exec(strSQL.c_str());
 }

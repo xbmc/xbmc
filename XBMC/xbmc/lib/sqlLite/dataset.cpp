@@ -25,7 +25,7 @@
  * THE SOFTWARE.
  *
  **********************************************************************/
-
+#include <xtl.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <stdarg.h>
@@ -522,11 +522,13 @@ DbErrors::DbErrors(const char *msg, ...) {
   va_list vl;
   va_start(vl, msg);
   //cout << "In db\n\n";
-  //char buf[DB_BUFF_MAX]="";
-  //sprintf(buf, msg, vl);
-  //va_end(vl);
+  char buf[DB_BUFF_MAX]="";
+  sprintf(buf, msg, vl);
+  va_end(vl);
 
-  //fprintf(stderr, "\nDatabase Error: %s\n", buf);
+  OutputDebugString("\nDatabase Error:");
+  OutputDebugString(buf);
+  OutputDebugString("\n");
 }
 
 
