@@ -1637,7 +1637,8 @@ if(stream_cache_size>0){
 	return -1; //goto goto_next_file;
     }
 
-    if (strstr(filename,".mp3") || strstr(filename,"shout:") )
+		char* cExt = strrchr(filename, '.') + 1;
+		if (cExt != NULL && (stricmp(cExt,".mp3") == 0 || strstr(filename,"shout:")))
     {
         printf("open as audio stream\n");
         file_format=DEMUXER_TYPE_AUDIO;
