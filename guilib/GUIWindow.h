@@ -72,12 +72,13 @@ public:
   int GetFocusedControl() const;
   virtual void AllocResources();
   virtual void FreeResources();
+  virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void ResetAllControls();
   static void FlushReferenceCache();
   virtual bool IsDialog() { return false;};
 
 protected:
-  virtual void OnWindowLoaded() {};
+  virtual void OnWindowLoaded();
   virtual void OnInitWindow();
   struct stReferenceControl
   {

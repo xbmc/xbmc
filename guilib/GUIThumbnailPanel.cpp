@@ -491,6 +491,15 @@ void CGUIThumbnailPanel::FreeResources()
   m_imgFolder.FreeResources();
   m_imgFolderFocus.FreeResources();
 }
+
+void CGUIThumbnailPanel::DynamicResourceAlloc(bool bOnOff)
+{
+  CGUIControl::DynamicResourceAlloc(bOnOff);
+  m_upDown.DynamicResourceAlloc(bOnOff);
+  m_imgFolder.DynamicResourceAlloc(bOnOff);
+  m_imgFolderFocus.DynamicResourceAlloc(bOnOff);
+}
+
 bool CGUIThumbnailPanel::ValidItem(int iX, int iY)
 {
   if (iX >= m_iColumns) return false;

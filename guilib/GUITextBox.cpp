@@ -183,6 +183,12 @@ void CGUITextBox::FreeResources()
   m_upDown.FreeResources();
 }
 
+void CGUITextBox::DynamicResourceAlloc(bool bOnOff)
+{
+  CGUIControl::DynamicResourceAlloc(bOnOff);
+  m_upDown.DynamicResourceAlloc(bOnOff);
+}
+
 void CGUITextBox::OnRight()
 {
   m_upDown.OnRight();

@@ -152,6 +152,14 @@ void CGUIToggleButtonControl::FreeResources()
   m_imgAltNoFocus.FreeResources();
 }
 
+void CGUIToggleButtonControl::DynamicResourceAlloc(bool bOnOff)
+{
+  CGUIControl::DynamicResourceAlloc(bOnOff);
+  m_imgFocus.DynamicResourceAlloc(bOnOff);
+  m_imgNoFocus.DynamicResourceAlloc(bOnOff);
+  m_imgAltFocus.DynamicResourceAlloc(bOnOff);
+  m_imgAltNoFocus.DynamicResourceAlloc(bOnOff);
+}
 
 void CGUIToggleButtonControl::SetLabel(const CStdString& strFontName, const CStdString& strLabel, D3DCOLOR dwColor)
 {

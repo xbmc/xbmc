@@ -106,6 +106,16 @@ void CGUIProgressControl::FreeResources()
   m_guiOverlay.FreeResources();
 }
 
+void CGUIProgressControl::DynamicResourceAlloc(bool bOnOff)
+{
+  CGUIControl::DynamicResourceAlloc(bOnOff);
+  m_guiBackground.DynamicResourceAlloc(bOnOff);
+  m_guiMid.DynamicResourceAlloc(bOnOff);
+  m_guiRight.DynamicResourceAlloc(bOnOff);
+  m_guiLeft.DynamicResourceAlloc(bOnOff);
+  m_guiOverlay.DynamicResourceAlloc(bOnOff);
+}
+
 void CGUIProgressControl::PreAllocResources()
 {
   CGUIControl::PreAllocResources();
