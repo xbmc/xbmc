@@ -352,80 +352,85 @@ void CApplication::FrameMove()
 	WORD wDir = m_ctrDpad.DpadInput(wDpad,0!=pGamepad->bAnalogButtons[XINPUT_GAMEPAD_LEFT_TRIGGER],0!=pGamepad->bAnalogButtons[XINPUT_GAMEPAD_RIGHT_TRIGGER]);
 	wDir |= m_ctrIR.IRInput(wRemotes);
 
+	if ( pGamepad->fX1 || pGamepad->fY1 || pGamepad->fX2 || pGamepad->fY2)
+	{
+    CKey key(false,KEY_INVALID,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+    OnKey(key);   
+	}
   if ( wDir & DC_LEFTTRIGGER)
   {
-    CKey key(true,KEY_BUTTON_LEFT_TRIGGER,pGamepad->fX1,pGamepad->fY1);
+    CKey key(true,KEY_BUTTON_LEFT_TRIGGER,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
   if ( wDir & DC_RIGHTTRIGGER)
   {
-    CKey key(true,KEY_BUTTON_RIGHT_TRIGGER,pGamepad->fX1,pGamepad->fY1);
+    CKey key(true,KEY_BUTTON_RIGHT_TRIGGER,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
   if ( wDir & DC_LEFT )
   {
-    CKey key(true,KEY_BUTTON_DPAD_LEFT,pGamepad->fX1,pGamepad->fY1);
+    CKey key(true,KEY_BUTTON_DPAD_LEFT,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
   if ( wDir & DC_RIGHT)
   {
-    CKey key(true,KEY_BUTTON_DPAD_RIGHT,pGamepad->fX1,pGamepad->fY1);
+    CKey key(true,KEY_BUTTON_DPAD_RIGHT,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
   if ( wDir & DC_UP )
   {
-    CKey key(true,KEY_BUTTON_DPAD_UP,pGamepad->fX1,pGamepad->fY1);
+    CKey key(true,KEY_BUTTON_DPAD_UP,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
   if ( wDir & DC_DOWN )
   {
-    CKey key(true,KEY_BUTTON_DPAD_DOWN,pGamepad->fX1,pGamepad->fY1);
+    CKey key(true,KEY_BUTTON_DPAD_DOWN,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
 
   
 	if ( pGamepad->wPressedButtons & XINPUT_GAMEPAD_BACK )
   {
-    CKey key(true,KEY_BUTTON_BACK,pGamepad->fX1,pGamepad->fY1);
+    CKey key(true,KEY_BUTTON_BACK,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
 	if ( pGamepad->wPressedButtons & XINPUT_GAMEPAD_START)
   {
-    CKey key(true,KEY_BUTTON_START,pGamepad->fX1,pGamepad->fY1);
+    CKey key(true,KEY_BUTTON_START,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
 
 
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_A])
   {
-    CKey key(true,KEY_BUTTON_A,pGamepad->fX1,pGamepad->fY1);
+    CKey key(true,KEY_BUTTON_A,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_B])
   {
-    CKey key(true,KEY_BUTTON_B,pGamepad->fX1,pGamepad->fY1);
+    CKey key(true,KEY_BUTTON_B,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);
   }
   
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_X])
   {
-    CKey key(true,KEY_BUTTON_X,pGamepad->fX1,pGamepad->fY1);
+    CKey key(true,KEY_BUTTON_X,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);
 		
   }
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_Y])
   {
-    CKey key(true,KEY_BUTTON_Y,pGamepad->fX1,pGamepad->fY1);
+    CKey key(true,KEY_BUTTON_Y,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   } 
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_BLACK])
   {
-    CKey key(true,KEY_BUTTON_BLACK,pGamepad->fX1,pGamepad->fY1);
+    CKey key(true,KEY_BUTTON_BLACK,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   } 
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_WHITE])
   {
-    CKey key(true,KEY_BUTTON_WHITE,pGamepad->fX1,pGamepad->fY1);
+    CKey key(true,KEY_BUTTON_WHITE,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   } 
 	
