@@ -508,6 +508,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 {
 	int iRet=-1;
 	int iCacheSize=1024;
+	int iCacheSizeBackBuffer = 0; // 50 % backbuffer is mplayers default
 	closefile();
 	bool bFileOnHD(false);
 	bool bFileOnISO(false);
@@ -666,6 +667,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		//CLog::Log("  open 1st time");
 		mplayer_init(argc,argv);
 		mplayer_setcache_size(iCacheSize);
+		mplayer_setcache_backbuffer(iCacheSizeBackBuffer);
 		if(bFileIsDVDImage || bFileIsDVDIfoFile)
 			iRet=mplayer_open_file(GetDVDArgument(strFile).c_str());
 		else
@@ -767,6 +769,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 						load();
 						mplayer_init(argc,argv);
 						mplayer_setcache_size(iCacheSize);
+						mplayer_setcache_backbuffer(iCacheSizeBackBuffer);
 						if(bFileIsDVDImage || bFileIsDVDIfoFile)
 							iRet=mplayer_open_file(GetDVDArgument(strFile).c_str());
 						else
@@ -906,6 +909,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 				load();
 				mplayer_init(argc,argv);
 				mplayer_setcache_size(iCacheSize);
+				mplayer_setcache_backbuffer(iCacheSizeBackBuffer);
 				if(bFileIsDVDImage || bFileIsDVDIfoFile)
 					iRet=mplayer_open_file(GetDVDArgument(strFile).c_str());
 				else
