@@ -15,62 +15,199 @@
 #include "DelayController.h"
 
 
-//Currently set static till the need is established
-CDelayController::CDelayController(DWORD dwMoveDelay, DWORD dwRepeatDelay) :
+
+CDelayController::CDelayController( DWORD dwMoveDelay, DWORD dwRepeatDelay ) :
 	m_wLastDir(0),
-	m_dwRepeatDelayOrig(300), m_dwMoveDelay(50)
+	m_dwTimer(0),
+	m_iCount(0),
+	m_dwMoveDelay(dwMoveDelay),
+	m_dwRepeatDelay(dwRepeatDelay)
 {
 }
 
 void CDelayController::SetDelays( DWORD dwMoveDelay, DWORD dwRepeatDelay )
 {
-	//Not accepted anymore, cause not likly it is needed
-	//m_dwRepeatDelayOrig = dwRepeatDelay;
+	m_dwMoveDelay = dwMoveDelay;
+	m_dwRepeatDelay = dwRepeatDelay;
 }
 
 
 WORD    CDelayController::DirInput( WORD wDir )
 {
-	WORD wResult= 0;
-	if (!wDir) 
-		return 0;
+	WORD wResult = 0;
 
-	if(GetTickCount() > m_dwLastTime + m_dwMoveDelay || wDir != m_wLastDir) //New button or too much time
+	if ( m_dwRepeatDelay == 0 )
 	{
-		wResult = wDir;
-		m_wLastDir = wDir;
-		m_dwLastTime = GetTickCount();
-		m_bRepeat = false;
+		m_dwRepeatDelay = 200;
+	}
+	if ( m_dwMoveDelay == 0 )
+	{
+		m_dwMoveDelay = 700;
+	}
+
+	if ( wDir != m_wLastDir )
+	{
+		if ( wDir == DC_UP )
+		{
+			wResult |= DC_UP;
+			m_dwTimer = GetTickCount()+m_dwRepeatDelay;
+		}
+		else if ( wDir == DC_DOWN )
+		{
+			wResult |= DC_DOWN;
+			m_dwTimer = GetTickCount()+m_dwRepeatDelay;
+		}
+		else if ( wDir == DC_RIGHT )
+		{
+			wResult |= DC_RIGHT;
+			m_dwTimer = GetTickCount()+m_dwRepeatDelay;
+		}
+		else if ( wDir == DC_LEFT )
+		{
+			wResult |= DC_LEFT;
+			m_dwTimer = GetTickCount()+m_dwRepeatDelay;
+		}
+		else if ( wDir == DC_LEFTTRIGGER )
+		{
+			wResult |= DC_LEFTTRIGGER;
+			m_dwTimer = GetTickCount()+m_dwRepeatDelay;
+		}
+		else if ( wDir == DC_RIGHTTRIGGER )
+		{
+			wResult |= DC_RIGHTTRIGGER;
+			m_dwTimer = GetTickCount()+m_dwRepeatDelay;
+		}
+		else
+		{
+			m_dwTimer = GetTickCount();
+		}
+		m_iCount=0;
 	}
 	else
 	{
-		if(m_bRepeat) //We are in repeat mode
+		if ( m_iCount > 10 )
 		{
-			if(GetTickCount() > m_dwLastRepeat + m_dwRepeatDelay + 50) //Only allow key if enough time has passed
+			if ( wDir == DC_UP )
 			{
-
-				//Speed up the repeat rate each time we come in here
-				m_dwRepeatDelay = (DWORD)(m_dwRepeatDelay/1.5);
-
-				m_dwLastRepeat = GetTickCount();
-				wResult = wDir;
+				wResult |= DC_UP;
 			}
-			else 
-				wResult = 0;
-
+			else if ( wDir == DC_DOWN )
+			{
+				wResult |= DC_DOWN;
+			}
+			else if ( wDir == DC_LEFT )
+			{
+				wResult |= DC_LEFT;
+			}
+			else if ( wDir == DC_RIGHT )
+			{
+				wResult |= DC_RIGHT;
+			}
+			else if ( wDir == DC_LEFTTRIGGER )
+			{
+				wResult |= DC_LEFTTRIGGER;
+			}
+			else if ( wDir == DC_RIGHTTRIGGER )
+			{
+				wResult |= DC_RIGHTTRIGGER;
+			}
+			else
+			{
+				m_dwTimer = GetTickCount();
+				m_iCount=0;
+			}
 		}
-		else //Not in repeat mode, disallow key and enable repeat mode
+		else
 		{
-			m_bRepeat = true;
-			m_dwRepeatDelay = m_dwRepeatDelayOrig;
-			m_dwLastRepeat = GetTickCount();
-			wResult = 0;
+			if ( wDir == DC_UP )
+			{
+				if ( m_dwTimer < GetTickCount() )
+				{
+					wResult |= DC_UP;
+					m_iCount++;
+					m_dwTimer = GetTickCount()+m_dwMoveDelay;
+				}
+				else
+				{
+					wResult |= DC_SKIP;
+				}
+			}
+			else if ( wDir == DC_DOWN )
+			{
+				if ( m_dwTimer < GetTickCount() )
+				{
+					wResult |= DC_DOWN;
+					m_iCount++;
+					m_dwTimer = GetTickCount()+m_dwMoveDelay;
+				}
+				else
+				{
+					wResult |= DC_SKIP;
+				}
+			}
+			else if ( wDir == DC_LEFT )
+			{
+				if ( m_dwTimer < GetTickCount() )
+				{
+					wResult |= DC_LEFT;
+					m_iCount++;
+					m_dwTimer = GetTickCount()+m_dwMoveDelay;
+				}
+				else
+				{
+					wResult |= DC_SKIP;
+				}
+			}
+			else if ( wDir == DC_RIGHT )
+			{
+				if ( m_dwTimer < GetTickCount() )
+				{
+					wResult |= DC_RIGHT;
+					m_iCount++;
+					m_dwTimer = GetTickCount()+m_dwMoveDelay;
+				}
+				else
+				{
+					wResult |= DC_SKIP;
+				}
+			}
+			else if ( wDir == DC_RIGHTTRIGGER )
+			{
+				if ( m_dwTimer < GetTickCount() )
+				{
+					wResult |= DC_RIGHTTRIGGER;
+					m_iCount++;
+					m_dwTimer = GetTickCount()+m_dwMoveDelay;
+				}
+				else
+				{
+					wResult |= DC_SKIP;
+				}
+			}
+			else if ( wDir == DC_LEFTTRIGGER )
+			{
+				if ( m_dwTimer < GetTickCount() )
+				{
+					wResult |= DC_LEFTTRIGGER;
+					m_iCount++;
+					m_dwTimer = GetTickCount()+m_dwMoveDelay;
+				}
+				else
+				{
+					wResult |= DC_SKIP;
+				}
+			}
+			else
+			{
+				m_dwTimer = GetTickCount();
+				m_iCount=0;
+			}
 		}
 		
-		m_dwLastTime = GetTickCount();
 	}
-	
-	return wResult;}
+	m_wLastDir = wDir;
+	return wResult;
+}
 
 WORD	CDelayController::DpadInput( WORD wDpad,bool bLeftTrigger,bool bRightTrigger )
 {
@@ -99,19 +236,13 @@ WORD	CDelayController::DpadInput( WORD wDpad,bool bLeftTrigger,bool bRightTrigge
 	{
 		wDir = DC_RIGHTTRIGGER;
 	}
-	m_dwMoveDelay = 50;
+
 	return DirInput( wDir );
 }
 
 WORD	CDelayController::IRInput( WORD wIR )
 {
-	//Work around to allow faster navigation, with remotes
-	if(wIR >= XINPUT_IR_REMOTE_UP && wIR <= XINPUT_IR_REMOTE_LEFT)
-		m_dwMoveDelay = 100;
-	else
-		m_dwMoveDelay = 200;
-
-	return DirInput( wIR );
+	return DIRInput( wIR );
 }
 
 WORD	CDelayController::StickInput( int x, int y )
@@ -136,3 +267,83 @@ WORD	CDelayController::StickInput( int x, int y )
 	return DirInput( wDir );
 }
 
+WORD    CDelayController::DIRInput( WORD wDir )
+{
+	WORD wResult = 0;
+	if (!wDir) return 0;
+	if ( m_dwRepeatDelay == 0 )
+	{
+		m_dwRepeatDelay = 200;
+	}
+	if ( m_dwMoveDelay == 0 )
+	{
+		m_dwMoveDelay = 700;
+	}
+
+	if ( wDir != m_wLastDir )
+	{
+		// key pressed is different then previous key
+		if ( wDir >=DC_UP )
+		{
+			// key is pressed
+			wResult = wDir;
+			m_dwTimer = GetTickCount()+m_dwRepeatDelay;
+      m_dwLastTime= GetTickCount();
+		}
+		else
+		{
+			// no key is pressed
+			m_dwTimer = GetTickCount();
+		}
+		m_iCount=0;
+	}
+	else
+	{
+    long lTicks=GetTickCount() - m_dwLastTime;
+    if ( m_iCount > 0 && (lTicks > (long)m_dwMoveDelay ) )
+    {
+      m_iCount=0;
+      m_wLastDir=0;
+    }
+		// key pressed is the same as last time
+		if ( m_iCount > 10 )
+		{
+			if ( wDir >= DC_UP )
+			{
+				wResult = wDir;
+        m_dwLastTime= GetTickCount();
+			}
+			else
+			{
+				m_dwTimer = GetTickCount();
+				m_iCount=0;
+			}
+		}
+		else
+		{
+			if ( wDir >= DC_UP )
+			{
+				if ( m_dwTimer < GetTickCount() )
+				{
+					wResult = wDir;
+					m_iCount++;
+					m_dwTimer = GetTickCount()+m_dwMoveDelay;
+          m_dwLastTime= GetTickCount();
+				}
+				else
+				{
+					wResult = DC_SKIP;
+          m_dwLastTime= GetTickCount();
+				}
+			}
+			else
+			{
+				m_dwTimer = GetTickCount();
+				m_iCount=0;
+			}
+		}
+
+	}
+	m_wLastDir = wDir;
+	return wResult;
+}
