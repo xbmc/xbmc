@@ -1,0 +1,6 @@
+LIBRARY HTMLScraper
+DESCRIPTION This is my HTMLScraper DLL!
+
+EXPORTS
+    IMDbGetSearchResults	@1
+    IMDbGetDetails	@2
