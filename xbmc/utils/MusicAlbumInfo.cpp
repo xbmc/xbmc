@@ -273,10 +273,13 @@ bool	CMusicAlbumInfo::Parse(const CStdString& strHTML)
 				int iCols=row.GetColumns();
 				if (iCols >=5)
 				{
+					bool bSongReview=false;
 					CStdString strTrack;
 					for (int i=0; i < iCols;i++)
 					{
 						strTrack=row.GetColumValue(i);
+						if (strTrack.Find("review")>-1)
+							bSongReview=true;
 						int ipos=strTrack.Find(".");
 						if (ipos>=0)
 						{
@@ -292,7 +295,11 @@ bool	CMusicAlbumInfo::Parse(const CStdString& strHTML)
 							if (bok) break;
 						}
 					}
-					CStdString strNameAndDuration=row.GetColumValue(4);
+					CStdString strNameAndDuration;
+					if (bSongReview)
+						strNameAndDuration=row.GetColumValue(5);
+					else
+						strNameAndDuration=row.GetColumValue(4);
 
 					
 					CStdString strName,strDuration="0";
