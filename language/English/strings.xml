@@ -2297,9 +2297,9 @@
   <string><id>13325</id><value>Foreground Transparency</value></string>
   <string><id>13326</id><value>A/V delay</value></string>
   <string><id>13327</id><value>Karaoke</value></string>
-  <string><id>13328</id><value>not found.</value></string>
-  <string><id>13329</id><value>Error opening </value></string>
-  <string><id>13330</id><value>Unable to load </value></string>
+  <string><id>13328</id><value>%s not found.</value></string>
+  <string><id>13329</id><value>Error opening %s</value></string>
+  <string><id>13330</id><value>Unable to load %s</value></string>
   <string><id>13331</id><value>Error: out of memory.</value></string>
   <string><id>14000</id><value>Stacking: Off</value></string>
   <string><id>14001</id><value>Stacking: Simple</value></string>
