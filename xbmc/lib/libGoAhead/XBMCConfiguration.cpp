@@ -473,16 +473,9 @@ int CXbmcConfiguration::SetOption( int eid, webs_t wp, int argc, char_t **argv)
 bool CXbmcConfiguration::IsValidOption(char* option)
 {
 	if (!strcmp("home", option)) return true;
-	if (!strcmp("ipadres", option)) return true;
-	if (!strcmp("netmask", option)) return true;
-	if (!strcmp("defaultgateway", option)) return true;
-	if (!strcmp("nameserver", option)) return true;
 	if (!strcmp("CDDBIpAdres", option)) return true;
 	if (!strcmp("useFDrive", option)) return true;
 	if (!strcmp("useFDrive", option)) return true;
-	if (!strcmp("httpproxy", option)) return true;
-	if (!strcmp("httpproxyport", option)) return true;
-	if (!strcmp("timeserver", option)) return true;
 	if (!strcmp("dashboard", option)) return true;
 	if (!strcmp("dvdplayer", option)) return true;
 	if (!strcmp("subtitles", option)) return true;
