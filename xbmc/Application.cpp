@@ -276,14 +276,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 void CApplication::Render()
 {
-	if (!m_bSpinDown)
-	{
-			if (!m_pPlayer)  m_bSpinDown=true;
-			else if (!m_pPlayer->IsPlaying()) m_bSpinDown=true;
-			if (m_bSpinDown) m_dwSpinDownTime=timeGetTime();
-	}
-
-
+	SpinHD();
 	// process any phyton scripts...
 	ProcessScripts();
 
@@ -678,17 +671,6 @@ void CApplication::FrameMove()
 	{
 		m_dwSpinDownTime=timeGetTime();
 	}
-
-	// spin down HD after 3 mins of inactivity
-	if (m_bSpinDown)
-	{
-		if ( (timeGetTime() - m_dwSpinDownTime) > 3*60*1000)
-		{
-			m_dwSpinDownTime=timeGetTime();
-			CIoSupport helper;
-			helper.SpindownHarddisk();
-		}
-	}
 }
 
 void CApplication::Stop()
@@ -785,7 +767,7 @@ bool CApplication::PlayFile(const CStdString& strFile)
 
 void CApplication::OnPlayBackEnded()
 {
-	
+	m_dwSpinDownTime=timeGetTime();
 	if (!m_pPlayer) return;
 	g_playlistPlayer.PlayNext();
 }
@@ -829,4 +811,34 @@ void CApplication::GetD3DParameters(D3DPRESENT_PARAMETERS& params)
 void CApplication::RenderFullScreen()
 {
 	m_guiWindowFullScreen.Render();
+}
+void CApplication::SpinHD()
+{
+	if (!m_bSpinDown)
+	{
+		if (!m_pPlayer)  
+		{
+			m_bSpinDown=true;
+		}
+		else if (!m_pPlayer->IsPlaying()) 
+		{
+			m_bSpinDown=true;
+		}
+
+		if (m_bSpinDown) 
+		{
+			m_dwSpinDownTime=timeGetTime();
+		}
+	}
+
+	// spin down HD after 3 mins of inactivity
+	if (m_bSpinDown)
+	{
+		if ( (timeGetTime() - m_dwSpinDownTime) > 3*60*1000)
+		{
+			m_dwSpinDownTime=timeGetTime();
+			CIoSupport helper;
+			helper.SpindownHarddisk();
+		}
+	}
 }

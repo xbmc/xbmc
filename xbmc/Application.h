@@ -64,6 +64,7 @@ public:
 	void									OnKey(CKey& key);
 	void									GetD3DParameters(D3DPRESENT_PARAMETERS& params);
 	void									RenderFullScreen();
+	void									SpinHD();
   CGUIWindowHome									m_guiHome;
   CGUIWindowPrograms							m_guiPrograms;
 	CGUIWindowPictures							m_guiPictures;
