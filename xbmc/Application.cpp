@@ -82,10 +82,12 @@ HRESULT CApplication::Create()
 
 	string strSkinPath=strPath;
 	strSkinPath+=CStdString("\\skin");
-	
-  g_localizeStrings.Load(strSkinPath+string("\\strings.xml") );
 
 	g_settings.Load();
+	CStdString strLanguagePath;
+	strLanguagePath.Format("%s\\language\\%s\\strings.xml", strPath.c_str(),g_stSettings.szDefaultLanguage);
+	g_localizeStrings.Load(strLanguagePath );
+
 	DWORD dwStandard=XGetVideoStandard();
 	DWORD dwFlags=XGetVideoFlags();
 
