@@ -239,6 +239,10 @@ bool CGUIControl::IsDisabled() const
 	return m_bDisabled;
 }
 
+void CGUIControl::SetEnabled(bool bEnable)
+{
+	m_bDisabled = !bEnable;
+}
 
 void CGUIControl::SetPosition(int iPosX, int iPosY)
 {
