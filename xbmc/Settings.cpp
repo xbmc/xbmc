@@ -79,6 +79,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_iMoviesOffsetY1=0;
 	g_stSettings.m_iMoviesOffsetX2=0;
 	g_stSettings.m_iMoviesOffsetY2=0;
+	g_stSettings.m_bAllowVideoSwitching=true;
 }
 
 CSettings::~CSettings(void)

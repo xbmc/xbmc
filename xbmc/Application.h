@@ -28,6 +28,7 @@
 #include "GUIWindowMusicOverlay.h"
 #include "GUIWindowFullScreen.h"
 #include "GUIWindowVideoOverlay.h"
+#include "GUIWindowSettingsSlideShow.h"
 #include "LocalizeStrings.h"
 #include "utils/sntp.h"
 #include "utils/delaycontroller.h"
@@ -82,6 +83,7 @@ public:
 	CGUIWindowSettingsScreen				m_guiSettingsScreen;
 	CGUIWindowSettingsUICalibration	m_guiSettingsUICalibration;
 	CGUIWindowSettingsMovieCalibration m_guiSettingsMovieCalibration;
+	CGUIWindowSettingsSlideShow			m_guiSettingsSlideShow;
 	CGUIDialogSelect								m_guiDialogSelect;
 	CGUIWindowMusicOverlay					m_guiMusicOverlay;
 	CGUIWindowFullScreen						m_guiWindowFullScreen;
