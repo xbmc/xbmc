@@ -653,6 +653,7 @@ HRESULT CApplication::Create()
 			FatalErrorHandler(true, false, true);
 		}
 	}
+  
 
 	if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
 	{
@@ -699,6 +700,9 @@ HRESULT CApplication::Create()
 	CLog::Log(LOGINFO, "load language file:%s",strLanguagePath.c_str());
 	if (!g_localizeStrings.Load(strLanguagePath ))
 		FatalErrorHandler(false, false, true);
+
+  //Load language translation database
+  g_LangCodeExpander.LoadStandardCodes();
 
 	CLog::Log(LOGINFO, "load keymapping");
 	if (!g_buttonTranslator.Load())
