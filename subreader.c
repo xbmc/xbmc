@@ -1830,9 +1830,9 @@ char** sub_filenames(char* path, char *fname)
     
     // 2004-10-12, Jimmy
     
-    char strFindName[128];
+    char strFindName[256];
     char strLExt[128];
-    char strSubtitle[128];
+    char strSubtitle[256];
     int wild;
     for(i=0; sub_exts[i]; i++)
     {    		    
@@ -1847,7 +1847,6 @@ char** sub_filenames(char* path, char *fname)
           if (hFind != -1)
           {
               do {
-				  printf(strSubtitle, "Z:\\%s", FindFileData.name);
 	              sprintf(strSubtitle, "Z:\\%s", FindFileData.name);
 	              result2[s] = malloc(1024);
 	              strcpy(result2[s],strSubtitle);				    
