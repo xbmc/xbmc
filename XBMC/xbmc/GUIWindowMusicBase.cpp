@@ -1120,6 +1120,14 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem)
 {
 	if (pItem->m_bIsFolder)
 	{
+		//	Check if we add a locked share
+		if ( pItem->m_bIsShareOrDrive ) 
+		{
+			CFileItem item=*pItem;
+			if ( !HaveBookmarkPermissions( &item, "music" ) )
+				return;
+		}
+
 		// recursive
 		if (pItem->GetLabel() == "..") return;
 		CStdString strDirectory=m_strDirectory;

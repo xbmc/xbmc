@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 21-12-2004 fixed: locked shares can be added to the playlists
   - 21-12-2004 updated: Polish language file (Thnx to napek)
   - 21-12-2004 updated: Dutch language file (Thnx to joepmeloenx)
   - 21-12-2004 updated: Spanish language file (Thnx to elotrolado)
