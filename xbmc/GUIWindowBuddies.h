@@ -11,6 +11,7 @@
 #include "utils/UdpClient.h"
 #include "utils/KaiClient.h"
 
+#include "KaiVector.h"
 #include "BuddyItem.h"
 #include "ArenaItem.h"
 
@@ -133,6 +134,8 @@ protected:
 
 	typedef map<CStdString,Invitation> INVITETABLE;
 	INVITETABLE m_invitations;
+
+	CKaiVector m_vectors;
 
 	typedef map<CStdString,DWORD> TITLETABLE;
 	TITLETABLE m_titles;

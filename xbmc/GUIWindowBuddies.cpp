@@ -59,6 +59,7 @@
 #define CONTROL_KAI_TAB_CHAT	3083				// Chat tab button
 
 #define KAI_XBOX_ROOT		"Arena/XBox"
+#define KAI_VECTOR_MAP_XML  "Q:\\kai-vectors.xml"
 
 #define SET_CONTROL_DISABLED(dwSenderId, dwControlID) \
 { \
@@ -278,6 +279,7 @@ void CGUIWindowBuddies::OnInitWindow()
 void CGUIWindowBuddies::OnInitialise(CKaiClient* pClient)
 {
 	m_pKaiClient = pClient;
+	m_vectors.Load(KAI_VECTOR_MAP_XML);
 }
 
 CBuddyItem* CGUIWindowBuddies::GetBuddySelection()
@@ -730,6 +732,9 @@ void CGUIWindowBuddies::Render()
 	// Every minute
 	if(m_dwArenaUpdateTimer%3000==0)
 	{
+		// Save the vector table (if it changed).
+		m_vectors.Save(KAI_VECTOR_MAP_XML);
+
 		// Sort the arena.
 		m_arena.Sort();
 	}
@@ -800,7 +805,7 @@ void CGUIWindowBuddies::Render()
 	CStdString currentVector = m_pKaiClient->GetCurrentVector();
 	INT arenaDelimiter = currentVector.ReverseFind('/')+1;
 	CStdString arenaName = arenaDelimiter>0 ? currentVector.Mid(arenaDelimiter) : "Home" ;
-	if (arenaName.CompareNoCase("xbox")==0) arenaName = arenaName.ToUpper();
+	if (arenaName.CompareNoCase("xbox")==0) arenaName.ToUpper();
 	SET_CONTROL_LABEL(GetID(),  CONTROL_LABELUPDATED, arenaName);
 }
 
@@ -877,7 +882,7 @@ void CGUIWindowBuddies::UpdateArena()
 				break;
 			default:
 				pArena->GetTier(CArenaItem::Tier::Platform,strDescription);
-				strDescription = strDescription.ToUpper();
+				strDescription.ToUpper();
 				break;
 		}
 
@@ -1364,7 +1369,23 @@ void CGUIWindowBuddies::QueryInstalledGames()
 				if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 				{
 					DWORD titleId = strtoul((CHAR*)wfd.cFileName,NULL,16);
-					m_pKaiClient->QueryVector(titleId);
+
+					// is this a game title or some homebrew title?
+					CHAR firstChar = (CHAR)(titleId >> 24);
+					if (firstChar>=48 && firstChar<='z')
+					{
+						// if its a game title, do we have it in our local mapping file
+						CStdString strVector = "";
+						if (m_vectors.GetTitle(titleId,strVector))
+						{
+							OnSupportedTitle(titleId, strVector);
+						}
+						else
+						{
+							// no, so we need to ask kai to resolve it
+							m_pKaiClient->QueryVector(titleId);
+						}
+					}
 				}
 			}
 		} while (FindNextFile(hFind, &wfd));
@@ -1488,38 +1509,48 @@ bool CGUIWindowBuddies::GetGamePathFromTitleId(DWORD aTitleId, CStdString& aGame
 
 void CGUIWindowBuddies::OnSupportedTitle(DWORD aTitleId, CStdString& aVector)
 {
-	INT arenaDelimiter = aVector.ReverseFind('/')+1;
-	CStdString arenaLabel = aVector.Mid(arenaDelimiter);
-
-	CStdString strGame;
-	CArenaItem::GetTier(CArenaItem::Game, aVector, strGame);
-	m_titles[strGame] = aTitleId;
-
-	CGUIList::GUILISTITEMS& list = m_games.Lock();
-
-	CArenaItem* pArena = (CArenaItem*) m_games.Find(arenaLabel);
-	if (!pArena)
+	if (aVector.length()>0)
 	{
-		pArena = new CArenaItem(arenaLabel);
-		pArena->m_strVector = aVector;
-		pArena->SetIcon(16,16,"arenaitem-small.png");
-
-		if (!pArena->m_pAvatar)
+		if (!m_vectors.ContainsTitle(aTitleId))
 		{
-			CStdString strSafeVector = aVector;
-			strSafeVector.Replace(" ","%20");
-			strSafeVector.Replace(":","%3A");
-
-			CStdString aAvatarUrl;
-			aAvatarUrl.Format("http://www.teamxlink.co.uk/media/avatars/%s.jpg",strSafeVector);
-			pArena->SetAvatar(aAvatarUrl);
+			m_vectors.AddTitle(aTitleId,aVector);
 		}
 
-		m_games.Add(pArena);
-		m_games.Sort();
-	}
+		INT arenaDelimiter = aVector.ReverseFind('/')+1;
+		CStdString arenaLabel = aVector.Mid(arenaDelimiter);
 
-	m_games.Release();
+		CStdString strGame;
+		CArenaItem::GetTier(CArenaItem::Game, aVector, strGame);
+		m_titles[strGame] = aTitleId;
+
+		CGUIList::GUILISTITEMS& list = m_games.Lock();
+
+		CArenaItem* pArena = (CArenaItem*) m_games.Find(arenaLabel);
+		if (!pArena)
+		{
+			pArena = new CArenaItem(arenaLabel);
+			pArena->m_strVector = aVector;
+			pArena->SetIcon(16,16,"arenaitem-small.png");
+
+			if (!pArena->m_pAvatar)
+			{
+				CStdString strSafeVector = aVector;
+				strSafeVector.Replace(" ","%20");
+				strSafeVector.Replace(":","%3A");
+
+				CStdString aAvatarUrl;
+				aAvatarUrl.Format("http://www.teamxlink.co.uk/media/avatars/%s.jpg",strSafeVector);
+				pArena->SetAvatar(aAvatarUrl);
+			}
+
+			m_games.Add(pArena);
+			m_games.Sort();
+		}
+
+		m_games.Release();
+
+		m_pKaiClient->QueryVectorPlayerCount(aVector);
+	}
 }
 
 void CGUIWindowBuddies::OnEnterArena(CStdString& aVector, BOOL bCanHost)
@@ -1585,10 +1616,7 @@ void CGUIWindowBuddies::OnNewArena(	CStdString& aVector, CStdString& aDescriptio
 
 	m_arena.Release();
 
-	if (m_pKaiClient)
-	{
-		m_pKaiClient->JoinTextChat();
-	}
+	m_pKaiClient->JoinTextChat();
 }
 
 void CGUIWindowBuddies::OnUpdateArena(	CStdString& aVector, int nPlayers )
