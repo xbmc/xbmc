@@ -36,6 +36,7 @@ bool  CXBMSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 	if (!CUtil::HasSlashAtEnd(strPath) )
 		strRoot+="/";
 
+	VECFILEITEMS vecCacheItems;
   g_directoryCache.ClearDirectory(strPath);	
 
 	CcXstreamServerConnection conn = NULL;
@@ -128,48 +129,51 @@ bool  CXBMSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 		if (strstr(fileinfo, "<ATTRIB>directory</ATTRIB>"))
 				bIsDirectory=true;
 
-		if ( bIsDirectory || IsAllowed( filename) )
+		CFileItem* pItem = new CFileItem(filename);
+
+		char* pstrSizeStart=strstr(fileinfo, "<SIZE>");
+		char* pstrSizeEnd =strstr(fileinfo, "</SIZE>");
+		if (pstrSizeStart && pstrSizeEnd)
 		{
+			char szSize[128];
+			pstrSizeStart+=strlen("<SIZE>");
+			strncpy(szSize,pstrSizeStart, pstrSizeEnd-pstrSizeStart);
+			szSize[pstrSizeEnd-pstrSizeStart]=0;
+			pItem->m_dwSize = _atoi64(szSize);
+		}
 
-			CFileItem* pItem = new CFileItem(filename);
+		char* pstrAccessStart=strstr(fileinfo, "<ACCESS>");
+		char* pstrAccessEnd  =strstr(fileinfo, "</ACCESS>");
+		if (pstrAccessStart && pstrAccessEnd)
+		{
+			char szAccess[128];
+			pstrAccessStart+=strlen("<ACCESS>");
+			strncpy(szAccess,pstrAccessStart, pstrAccessEnd-pstrAccessStart);
+			szAccess[pstrAccessEnd-pstrAccessStart]=0;
+			__int64 lTimeDate= _atoi64(szAccess);
+	
+			FILETIME fileTime,localTime;
+			LONGLONG ll = Int32x32To64(lTimeDate, 10000000) + 116444736000000000;
+			fileTime.dwLowDateTime = (DWORD) ll;
+			fileTime.dwHighDateTime = (DWORD)(ll >>32);
 
-			char* pstrSizeStart=strstr(fileinfo, "<SIZE>");
-			char* pstrSizeEnd =strstr(fileinfo, "</SIZE>");
-			if (pstrSizeStart && pstrSizeEnd)
-			{
-				char szSize[128];
-				pstrSizeStart+=strlen("<SIZE>");
-				strncpy(szSize,pstrSizeStart, pstrSizeEnd-pstrSizeStart);
-				szSize[pstrSizeEnd-pstrSizeStart]=0;
-				pItem->m_dwSize = _atoi64(szSize);
-			}
+			FileTimeToLocalFileTime(&fileTime,&localTime);
+			FileTimeToSystemTime(&localTime, &pItem->m_stTime);
 
-			char* pstrAccessStart=strstr(fileinfo, "<ACCESS>");
-			char* pstrAccessEnd  =strstr(fileinfo, "</ACCESS>");
-			if (pstrAccessStart && pstrAccessEnd)
-			{
-				char szAccess[128];
-				pstrAccessStart+=strlen("<ACCESS>");
-				strncpy(szAccess,pstrAccessStart, pstrAccessEnd-pstrAccessStart);
-				szAccess[pstrAccessEnd-pstrAccessStart]=0;
-				__int64 lTimeDate= _atoi64(szAccess);
-		
-				FILETIME fileTime,localTime;
-				LONGLONG ll = Int32x32To64(lTimeDate, 10000000) + 116444736000000000;
-				fileTime.dwLowDateTime = (DWORD) ll;
-				fileTime.dwHighDateTime = (DWORD)(ll >>32);
-
-				FileTimeToLocalFileTime(&fileTime,&localTime);
-				FileTimeToSystemTime(&localTime, &pItem->m_stTime);
-
-			}
+		}
 
 			
-			pItem->m_strPath=strRoot;
-      pItem->m_strPath+=filename;
-			pItem->m_bIsFolder=bIsDirectory;
-			items.push_back(pItem);
+		pItem->m_strPath=strRoot;
+    pItem->m_strPath+=filename;
+		pItem->m_bIsFolder=bIsDirectory;
+
+		if ( bIsDirectory || IsAllowed( filename) )
+		{
+			items.push_back(new CFileItem(*pItem));
 		}
+
+		vecCacheItems.push_back(pItem);
+
 		free(filename);
 		free(fileinfo);
 	}
@@ -180,7 +184,6 @@ bool  CXBMSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 		cc_xstream_client_disconnect(conn);
 	
 	
-  g_directoryCache.SetDirectory(strPath,items);
-
+  g_directoryCache.SetDirectory(strPath,vecCacheItems);
 	return true;
 }

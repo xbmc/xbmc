@@ -20,6 +20,7 @@ namespace DIRECTORY
     static bool  GetDirectory(const CStdString& strPath,VECFILEITEMS &items);
     static void  SetDirectory(const CStdString& strPath,const VECFILEITEMS &items);
     static void  ClearDirectory(const CStdString& strPath);
+    static void  Clear();
     static bool  FileExists(const CStdString& strPath,bool& bInCache);
 protected:
     vector<CDir> m_vecCache;
