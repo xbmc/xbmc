@@ -325,6 +325,10 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         {
           OnClick(iItem);
         }
+				else if (iAction==ACTION_SHOW_INFO)
+				{
+					OnInfo(iItem);
+				}
       }
     }
 	}

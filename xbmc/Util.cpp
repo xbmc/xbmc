@@ -1695,14 +1695,11 @@ void CUtil::SetThumb(CFileItem* pItem)
 
   bool bGotIcon(false);
 
-
-  // get the path for the  thumbnail
-  CUtil::GetThumbnail( strFileName,strThumb);
-
-
   // does a cached thumbnail exists?
   if (!CUtil::FileExists(strCachedThumbnail) )
   {
+		// get the path for the  thumbnail
+		CUtil::GetThumbnail( strFileName,strThumb);
     // local cached thumb does not exists
     // check if strThumb exists
     if (CUtil::FileExists(strThumb))
@@ -3381,5 +3378,9 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
 	else if (execute == "Dashboard")
 	{
 		RunXBE(g_stSettings.szDashboard);
+	}
+	else if (execute == "Restart")
+	{
+		g_applicationMessenger.Restart();
 	}
 }

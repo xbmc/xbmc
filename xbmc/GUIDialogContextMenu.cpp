@@ -55,6 +55,7 @@ void CGUIDialogContextMenu::OnInitWindow()
 		pControl->SetVisible(false);
 	}
 	m_iClickedButton = -1;
+	CGUIDialog::OnInitWindow();
 }
 
 void CGUIDialogContextMenu::ClearButtons()
@@ -127,6 +128,9 @@ void CGUIDialogContextMenu::DoModal(DWORD dwParentId)
 	// update our default control
 	if (m_dwDefaultFocusControlID <= BUTTON_TEMPLATE || m_dwDefaultFocusControlID > (DWORD)(BUTTON_TEMPLATE+m_iNumButtons))
 		m_dwDefaultFocusControlID = BUTTON_TEMPLATE+1;
+	// check the default control has focus...
+	while (m_dwDefaultFocusControlID <= (DWORD)(BUTTON_TEMPLATE+m_iNumButtons) && !(GetControl(m_dwDefaultFocusControlID)->CanFocus()))
+		m_dwDefaultFocusControlID++;
 	CGUIDialog::DoModal(dwParentId);
 }
 

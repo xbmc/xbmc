@@ -29,17 +29,20 @@ protected:
   void							Clear();
 	void							Update(const CStdString &strDirectory);
 	void							OnShowPicture(const CStdString& strPicture);
+	void							OnSlideShow(const CStdString& strPicture);
 	void							OnSlideShow();
 	bool							OnCreateThumbs();
 	int								GetSelectedItem();
   bool							HaveDiscOrConnection( CStdString& strPath, int iDriveType );
+  void              OnSlideShowRecursive(const CStdString& strPicture);
   void              OnSlideShowRecursive();
   bool              ViewByIcon();
   void              ShowThumbPanel();
   bool              ViewByLargeIcon();
 	void              GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
 	void							SetHistoryForPath(const CStdString& strDirectory);
-
+	bool							DoCreateFolderThumbs(CStdString &strFolder, int *iTotalItems, int *iCurrentItem, bool bRecurse);
+	void							CreateFolderThumbs(bool bRecurse = false);
   void              AddDir(CGUIWindowSlideShow *pSlideShow,const CStdString& strPath);
 	CVirtualDirectory		m_rootDir;
   VECFILEITEMS				m_vecItems;
