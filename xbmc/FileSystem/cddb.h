@@ -31,7 +31,10 @@ namespace CDDB
 	#define	E_CDDB_max_users_reached				433
 	#define	E_CDDB_system_load_too_high	    434
 
-	#define CDDB_PORT 8880;
+	//	Errors for proto command
+	#define	E_CDDB_illegal_protocol_level		501
+
+	#define CDDB_PORT 8880
 
 	using namespace std;
 	using namespace MEDIA_DETECT;
