@@ -24,6 +24,7 @@ public:
   void            		SelectNextControl();
   DWORD           		GetID(void) const;
 	void								SetID(DWORD dwID);
+	DWORD				GetPreviousWindowID(void) const;
 	const CGUIControl*	GetControl(int iControl) const;
 	void								ClearAll();
 	int									GetFocusedControl() const;
@@ -35,6 +36,7 @@ protected:
   vector<CGUIControl*> m_vecControls;
   typedef vector<CGUIControl*>::iterator ivecControls;
   DWORD  m_dwWindowId;
+  DWORD  m_dwPreviousWindowId;
   DWORD  m_dwDefaultFocusControlID;
 };
 

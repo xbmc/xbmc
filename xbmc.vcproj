@@ -453,6 +453,9 @@
 				RelativePath=".\xbmc\GUIWindowSettingsUICalibration.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowSlideShow.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowSystemInfo.cpp">
 			</File>
 			<File
@@ -526,9 +529,6 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\Shortcut.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\SlideShow.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\URL.cpp">
@@ -650,6 +650,9 @@
 				RelativePath=".\xbmc\GUIWindowSettingsUICalibration.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowSlideShow.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowSystemInfo.h">
 			</File>
 			<File
@@ -705,9 +708,6 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\Shortcut.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\SlideShow.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\stdafx.h">

@@ -35,6 +35,7 @@
 #include "guiwindowsettingsmusic.h"
 #include "GUIWindowScripts.h"
 #include "GUIWindowVisualisation.h"
+#include "GUIWindowSlideshow.h"
 #include "LocalizeStrings.h"
 #include "utils/sntp.h"
 #include "utils/delaycontroller.h"
@@ -106,6 +107,7 @@ public:
 	CGUIWindowVideoOverlay					m_guiWindowVideoOverlay;
 	CGUIWindowVisualisation					m_guiWindowVisualisation;
 	CGUIWindowSettingsMusic					m_guiSettingsMusic;
+	CGUIWindowSlideShow						m_guiWindowSlideshow;
   CXBVirtualKeyboard   						m_keyboard;
 	CSNTPClient											m_sntpClient;
 	CDetectDVDMedia									m_DetectDVDType;

@@ -34,7 +34,7 @@ CGUIWindowMusicInfo::~CGUIWindowMusicInfo(void)
 
 void CGUIWindowMusicInfo::OnAction(const CAction &action)
 {
-	if (action.wID == ACTION_PARENT_MENU)
+	if (action.wID == ACTION_PREVIOUS_MENU)
     {
 		Close();
 		return;

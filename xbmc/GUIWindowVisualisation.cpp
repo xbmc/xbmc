@@ -54,8 +54,7 @@ void CGUIWindowVisualisation::OnAction(const CAction &action)
 	switch (action.wID)
 	{
 		case ACTION_SHOW_GUI:
-			// back 2 UI
-			m_gWindowManager.ActivateWindow(WINDOW_HOME); // back 2 home
+			m_gWindowManager.PreviousWindow();
 			break;
 	}
 	CGUIWindow::OnAction(action);

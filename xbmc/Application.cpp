@@ -255,7 +255,8 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiScriptsInfo);							// window id = 2004
 
 	m_gWindowManager.Add(&m_guiWindowVisualisation);			// window id = 2006
-																														
+	m_gWindowManager.Add(&m_guiWindowSlideshow);				// window id = 2007
+
 	/* window id's 3000 - 3100 are reserved for python */
   	
   m_keyboard.Initialize();
@@ -322,6 +323,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiScripts.Load( strSkinPath+"\\myscripts.xml");
 	m_guiWindowVisualisation.Load( strSkinPath+"\\musicVisualisation.xml");
 	m_guiSettingsMusic.Load( strSkinPath+"\\SettingsMusic.xml");
+	m_guiWindowSlideshow.Load( strSkinPath+"\\slideshow.xml");
 
 	m_guiMusicOverlay.AllocResources();
 	m_guiWindowVideoOverlay.AllocResources();
@@ -448,16 +450,9 @@ void CApplication::OnKey(CKey& key)
 	{
 		if (IsPlayingAudio() )
 		{
-			if (action.wID == ACTION_SHOW_GUI)
+			if (action.wID == ACTION_SHOW_GUI && m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION)
 			{
-				if (m_gWindowManager.GetActiveWindow()==WINDOW_VISUALISATION)
-				{
-					m_gWindowManager.ActivateWindow(WINDOW_HOME);//home.
-				}	
-				else
-				{
-					m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);//visz.
-				}
+				m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
 				return;
 			}
 		}

@@ -9,6 +9,7 @@ using namespace std;
 CGUIWindow::CGUIWindow(DWORD dwID)
 {
   m_dwWindowId=dwID;
+  m_dwPreviousWindowId=WINDOW_HOME;
   m_dwDefaultFocusControlID=0;
 }
 
@@ -168,6 +169,10 @@ void CGUIWindow::SetID(DWORD dwID)
 	m_dwWindowId = dwID;
 }
 
+DWORD CGUIWindow::GetPreviousWindowID(void) const
+{
+	return m_dwPreviousWindowId;
+}
 
 bool CGUIWindow::OnMessage(CGUIMessage& message)
 {
@@ -175,10 +180,13 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_WINDOW_INIT:
       {
-        AllocResources();        
+        AllocResources();
+		if (message.GetParam1()!=WINDOW_INVALID)
+		{
+			m_dwPreviousWindowId = message.GetParam1();
+		}
         CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwDefaultFocusControlID);
         g_graphicsContext.SendMessage(msg);
-
       }
       return true;
     break;
