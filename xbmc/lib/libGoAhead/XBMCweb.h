@@ -26,6 +26,8 @@ public:
 	DWORD		GetNavigatorState();
 	void		SetNavigatorState(DWORD state);
 
+	void		AddItemToPlayList(const CFileItem* pItem);
+
 	int			xbmcCommand( int eid, webs_t wp, int argc, char_t **argv);
 	int			xbmcConfiguration( int eid, webs_t wp, int argc, char_t **argv);
 	void		xbmcForm(webs_t wp, char_t *path, char_t *query);
@@ -48,7 +50,7 @@ private:
 	int			catalogItemCounter;
 	bool		xbmcCfgLoaded;
 	DIRECTORY::CVirtualDirectory *directory;
-
+	string	strCurrentMediaFile;
 };
 
 /*
