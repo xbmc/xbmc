@@ -55,17 +55,17 @@ namespace PYXBMC
 		{
 			// window id's 3000 - 3100 are reserved for python
 			// get first window id that is not in use
-			int id = 3000;
+			int id = WINDOW_PYTHON_START;
 			// if window 3099 is in use it means python can't create more windows
 			PyGUILock();
-			if (m_gWindowManager.GetWindow(3099))
+			if (m_gWindowManager.GetWindow(WINDOW_PYTHON_END))
 			{
 				PyGUIUnlock();
 				PyErr_SetString((PyObject*)self, "maximum number of windows reached");
 				self->ob_type->tp_free((PyObject*)self);
 				return NULL;
 			}
-			while(id < 3100 && m_gWindowManager.GetWindow(id) != NULL) id++;
+			while(id < WINDOW_PYTHON_END && m_gWindowManager.GetWindow(id) != NULL) id++;
 			PyGUIUnlock();
 
 			self->iWindowId = id;
@@ -98,7 +98,7 @@ namespace PYXBMC
 					m_gWindowManager.ActivateWindow(self->iOldWindowId);
 				}
 				// old window does not exist anymore, switch to home
-				else m_gWindowManager.ActivateWindow(0);
+				else m_gWindowManager.ActivateWindow(WINDOW_HOME);
 			}
 		}
 

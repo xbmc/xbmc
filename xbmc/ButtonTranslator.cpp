@@ -69,17 +69,14 @@ bool CButtonTranslator::Load()
 	{
 		buttonMap map;
 		TiXmlNode* pID = pWindow->FirstChild("id");
-		WORD wWindowID = -1;
+		WORD wWindowID = WINDOW_INVALID;
 		if (pID) 
     {
       if (pID->FirstChild())
-        wWindowID = (WORD)atol(pID->FirstChild()->Value());
+        wWindowID = WINDOW_HOME+(WORD)atol(pID->FirstChild()->Value());
     }
-		if (wWindowID>=0)
+		if (wWindowID!=WINDOW_INVALID)
 		{
-			//char szTmp[128];
-			//sprintf(szTmp,"WINDOW:%i\n", wWindowID);
-			//OutputDebugString(szTmp);
 			TiXmlNode* pAction =pWindow->FirstChild("action");
 			while (pAction)
 			{

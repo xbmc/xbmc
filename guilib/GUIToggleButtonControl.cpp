@@ -17,7 +17,7 @@ CGUIToggleButtonControl::CGUIToggleButtonControl(DWORD dwParentID, DWORD dwContr
 	m_dwTextColor	= 0xFFFFFFFF; 
 	m_dwDisabledColor	= 0xFF606060; 
 	m_pFont=NULL;
-  m_lHyperLinkWindowID=-1;
+  m_lHyperLinkWindowID=WINDOW_INVALID;
   m_dwTextOffsetX = 0;
   m_dwTextOffsetY = 0;
 	ControlType = GUICONTROL_TOGGLEBUTTON;
@@ -79,7 +79,7 @@ void CGUIToggleButtonControl::OnAction(const CAction &action)
 	if (action.wID == ACTION_SELECT_ITEM)
     {
 		m_bSelected=!m_bSelected;
-		if (m_lHyperLinkWindowID >=0)
+		if (m_lHyperLinkWindowID != WINDOW_INVALID)
 		{
 			m_gWindowManager.ActivateWindow(m_lHyperLinkWindowID);
 			return;
