@@ -1054,7 +1054,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem)
     if ( pItem->m_bIsShareOrDrive )
     {
       CFileItem item = *pItem;
-      if ( !CGUIPassword::IsItemUnlocked( &item, "music" ) )
+      if ( !g_passwordManager.IsItemUnlocked( &item, "music" ) )
         return ;
     }
 

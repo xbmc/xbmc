@@ -558,7 +558,7 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
     m_iItemSelected = -1;
     if ( pItem->m_bIsShareOrDrive )
     {
-      if ( !CGUIPassword::IsItemUnlocked( pItem, "files" ) )
+      if ( !g_passwordManager.IsItemUnlocked( pItem, "files" ) )
       {
         Refresh();
         return ;

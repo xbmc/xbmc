@@ -5,19 +5,18 @@
 #include "GUIDialogGamepad.h"
 #include "xbox/xkutils.h"
 
+CGUIPassword g_passwordManager;
+
 CGUIPassword::CGUIPassword(void)
-    : CGUIDialog(0)
 {
   m_bConfirmed = false;
   m_bCanceled = false;
-  CStdStringW m_strUserInput = L"";
-  CStdStringW m_strPassword = L"";
-  int m_iRetries = 0;
-  m_bUserInputCleanup = true;
+  m_SMBShare = "";
 }
 
 CGUIPassword::~CGUIPassword(void)
-{}
+{
+}
 
 /// \brief Tests if the user is allowed to access the share folder
 /// \param pItem The share folder item to access
@@ -322,4 +321,45 @@ bool CGUIPassword::IsConfirmed() const
 bool CGUIPassword::IsCanceled() const
 {
   return m_bCanceled;
+}
+
+void CGUIPassword::SetSMBShare(const CStdString &strPath)
+{
+  m_SMBShare = strPath;
+  m_bCanceled = false;
+}
+
+CStdString CGUIPassword::GetSMBShare()
+{
+  return m_SMBShare;
+}
+
+void CGUIPassword::GetSMBShareUserPassword()
+{
+  CURL url(m_SMBShare);
+  CStdString passcode;
+  CStdString username = url.GetUserName();
+  CStdString outusername = username;
+  CStdString share;
+  url.GetURLWithoutUserDetails(share);
+
+  CStdStringW header;
+  header.Format(L"%s %s", g_localizeStrings.Get(14062).c_str(), CStdStringW(share.c_str()).c_str());
+
+  if (!CGUIDialogKeyboard::ShowAndGetInput(outusername, header, false))
+  {
+    if (outusername.IsEmpty() || outusername != username) // just because the routine returns false when enter is hit and nothing was changed
+    {
+      m_bCanceled = true;
+      return;
+    }
+  }
+  if (!CGUIDialogKeyboard::ShowAndGetInput(passcode, g_localizeStrings.Get(12326), true))
+  {
+    m_bCanceled = true;
+    return;
+  }
+  url.SetPassword(passcode);
+  url.SetUserName(outusername);
+  url.GetURL(m_SMBShare);
 }

@@ -47,6 +47,7 @@ class CFileSMB : public IFile
 {
 public:
   CFileSMB();
+  int OpenFile(CStdString& strAuth);
   virtual ~CFileSMB();
   virtual void Close();
   virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);

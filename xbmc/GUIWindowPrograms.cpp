@@ -312,7 +312,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
         {
           CShare share = g_settings.m_vecMyProgramsBookmarks[iControl - 100];
           // do nothing if the bookmark is locked, and update the panel with new bookmark settings
-          if ( !CGUIPassword::IsItemUnlocked( &share, "myprograms" ) )
+          if ( !g_passwordManager.IsItemUnlocked( &share, "myprograms" ) )
           {
             UpdateDir("");
             return false;
@@ -720,7 +720,7 @@ void CGUIWindowPrograms::OnClick(int iItem)
   if (pItem->m_bIsFolder)
   {
     // do nothing if the bookmark is locked
-    if ( !CGUIPassword::IsItemUnlocked( pItem, "myprograms" ) )
+    if ( !g_passwordManager.IsItemUnlocked( pItem, "myprograms" ) )
       return ;
 
     if (m_Directory.IsVirtualDirectoryRoot())
