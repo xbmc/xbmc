@@ -747,6 +747,11 @@
   <string><id>13374</id><value>- Porta 3 Voce</value></string>
   <string><id>13375</id><value>Attiva Dispositivo</value></string>
   <string><id>13376</id><value>Volume(%)</value></string>
+  <string><id>13377</id><value>Modalità di Visione Predefinita</value></string>
+  <string><id>13378</id><value>Luminosità Predefinita</value></string>
+  <string><id>13379</id><value>Contrasto Predefinito</value></string>
+  <string><id>13380</id><value>Gamma Predefinita</value></string>
+  <string><id>13381</id><value>Resume Video</value></string>
 
 
   <string><id>14000</id><value>Unisci: Spento</value></string>
@@ -882,4 +887,5 @@
   <string><id>15103</id><value>* Tutti gli Artisti</value></string>
   <string><id>15104</id><value>* Tutte le Canzoni</value></string>
   <string><id>15105</id><value>* Tutti i Generi</value></string>
+  <string><id>15106</id><value>Ricorda file selezionato in navigazioni successive</value></string>
 </strings>
