@@ -6,6 +6,7 @@
 #include "player.h"
 #include "playlist.h"
 #include "keyboard.h"
+#include "localizestrings.h"
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
@@ -78,6 +79,14 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyObject* XBMC_GetLocalizedString(PyObject *self, PyObject *args)
+	{
+		int iString;
+		if (!PyArg_ParseTuple(args, "i", &iString))	return NULL;
+
+		return Py_BuildValue("u", g_localizeStrings.Get(iString).c_str());
+	}
+
 	PyObject* XBMC_GetSkinDir(PyObject *self, PyObject *args)
 	{
 		return PyString_FromString(g_stSettings.szDefaultSkin);
@@ -91,6 +100,7 @@ namespace PYXBMC
 		{"dashboard", (PyCFunction)XBMC_Dashboard, METH_VARARGS, ""},
 		{"restart", (PyCFunction)XBMC_Restart, METH_VARARGS, ""},
 		{"getSkinDir", (PyCFunction)XBMC_GetSkinDir, METH_VARARGS, ""},
+		{"getLocalizedString", (PyCFunction)XBMC_GetLocalizedString, METH_VARARGS, ""},
 		{NULL, NULL, 0, NULL}
 	};
 
