@@ -129,6 +129,12 @@ void CGUIButtonControl::FreeResources()
   m_imgNoFocus.FreeResources();
 }
 
+void CGUIButtonControl::SetText(CStdString aLabel)
+{
+	WCHAR wszText[1024];
+	swprintf(wszText,L"%S",aLabel.c_str());
+	m_strLabel=wszText;
+}
 
 void CGUIButtonControl::SetLabel(const CStdString& strFontName,const CStdString& strLabel,D3DCOLOR dwColor)
 {
