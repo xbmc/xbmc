@@ -84,10 +84,10 @@ bool CIMDB::FindMovie(const CStdString &strMovie,IMDB_MOVIELIST& movielist)
       OutputDebugString("Got movie:");
       OutputDebugString(pMovieTitle);
       OutputDebugString("url:" );
-      OutputDebugString(strURL.c_str());
+      OutputDebugString(m_http.m_redirectedURL.c_str());
       OutputDebugString("\n" );
 			url.m_strTitle = pMovieTitle;
-			url.m_strURL   = strURL;
+			url.m_strURL   = m_http.m_redirectedURL;
 			movielist.push_back(url);
 
 			delete [] szBuffer;
