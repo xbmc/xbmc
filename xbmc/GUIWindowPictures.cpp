@@ -15,6 +15,7 @@
 #include "sectionloader.h"
 #include "GUIThumbnailPanel.h"
 #include "AutoSwitch.h"
+#include "GUIPassword.h"
 
 #define VIEW_AS_LIST           0
 #define VIEW_AS_ICONS          1
@@ -544,7 +545,7 @@ void CGUIWindowPictures::OnClick(int iItem)
   CStdString strPath=pItem->m_strPath;
 	if (pItem->m_bIsFolder)
 	{
-    if ( !HaveBookmarkPermissions( pItem, "pictures" ) )
+    if ( !CGUIPassword::IsItemUnlocked( pItem, "pictures" ) )
       return;
 
     m_iItemSelected=-1;
@@ -600,117 +601,6 @@ bool CGUIWindowPictures::HaveDiscOrConnection( CStdString& strPath, int iDriveTy
 	}
 	else
 		return true;
-  return true;
-}
-
-/// \brief Tests if the user is allowed to access the share folder
-/// \param pItem The share folder item to access
-/// \param strType The type of share being accessed, e.g. "music", "videos", etc. See CSettings::UpdateBookmark
-/// \return If access is granted, returns \e true
-bool CGUIWindowPictures::HaveBookmarkPermissions(CFileItem* pItem, const CStdString &strType)
-{
-  while (0 < pItem->m_iLockMode)
-  {
-    CStdString strLabel = pItem->GetLabel();
-    bool bConfirmed = false;
-    bool bCanceled = false;
-    char buffer[33]; // holds 32 places plus sign character
-
-    if (0 != g_stSettings.m_iMasterLockMaxRetry && pItem->m_iBadPwdCount >= g_stSettings.m_iMasterLockMaxRetry)
-    {
-      // user previously exhausted all retries, show access denied error
-      CGUIDialogOK* pDialogOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-      pDialogOK->SetHeading( 12345 );
-      pDialogOK->SetLine( 0, 12346 );
-      pDialogOK->SetLine( 1, L"" );
-      pDialogOK->SetLine( 2, L"" );
-      pDialogOK->DoModal( GetID() );
-      //XKUtils::XBOXPowerOff();
-      return false;
-    }
-
-    // show the appropriate lock dialog, populate bConfirmed and bCanceled
-    if (LOCK_MODE_NUMERIC == pItem->m_iLockMode)
-    {
-      CGUIDialogPasswordNumeric *pDialog = &(g_application.m_guiDialogPasswordNumeric);
-      pDialog->m_strPassword = pItem->m_strLockCode;
-
-      if (1 > pItem->m_iBadPwdCount)
-      {
-        pDialog->m_iRetries = 0;
-      }
-      else
-      {
-        pDialog->m_iRetries = g_stSettings.m_iMasterLockMaxRetry - pItem->m_iBadPwdCount;
-      }
-      pDialog->SetHeading( 12325 );
-      pDialog->SetLine( 0, 12328 );
-      pDialog->SetLine( 1, 12329 );
-      pDialog->SetLine( 2, L"" );
-      pDialog->DoModal(GetID());
-      bConfirmed = pDialog->IsConfirmed();
-      bCanceled = pDialog->IsCanceled();
-    }
-    else if (LOCK_MODE_GAMEPAD == pItem->m_iLockMode)
-    {
-      CGUIDialogPasswordGamepad *pDialog = &(g_application.m_guiDialogPasswordGamepad);
-      pDialog->m_strPassword = pItem->m_strLockCode;
-
-      if (1 > pItem->m_iBadPwdCount)
-      {
-        pDialog->m_iRetries = 0;
-      }
-      else
-      {
-        pDialog->m_iRetries = g_stSettings.m_iMasterLockMaxRetry - pItem->m_iBadPwdCount;
-      }
-      pDialog->SetHeading( 12325 );
-      pDialog->SetLine( 0, 12330 );
-      pDialog->SetLine( 1, 12331 );
-      pDialog->SetLine( 2, L"" );
-      pDialog->DoModal(GetID());
-      bConfirmed = pDialog->IsConfirmed();
-      bCanceled = pDialog->IsCanceled();
-    }
-    else if (LOCK_MODE_QWERTY == pItem->m_iLockMode)
-    {   
-      CStdString strTextInput = "";
-      CStdStringW strHeading = g_localizeStrings.Get(12326);
-      if (!(1 > pItem->m_iBadPwdCount))
-      {
-				strHeading.Format(L"%s %i %s", g_localizeStrings.Get(12342).c_str(), g_stSettings.m_iMasterLockMaxRetry - pItem->m_iBadPwdCount, g_localizeStrings.Get(12343).c_str()); 
-      }
-      bCanceled = !CGUIDialogKeyboard::ShowAndGetInput(strTextInput, strHeading, false);
-      bConfirmed = (!bCanceled && (strTextInput == pItem->m_strLockCode));
-    }
-    else
-    {
-      // pItem->m_iLockMode isn't set to an implemented lock mode, so treat as unlocked
-      return true;
-    }
-
-    if (bConfirmed && !bCanceled)
-    {
-      // password entry succeeded
-      pItem->m_iLockMode = pItem->m_iLockMode * -1;
-      itoa(pItem->m_iLockMode, buffer, 10);
-      g_settings.UpdateBookmark(strType, strLabel, "lockmode", itoa(pItem->m_iLockMode, buffer, 10));
-      pItem->m_iBadPwdCount = 0;
-      g_settings.UpdateBookmark(strType, strLabel, "badpwdcount", itoa(pItem->m_iBadPwdCount, buffer, 10));
-    }
-    else if (!bConfirmed && bCanceled)
-    {
-      // user canceled out
-      return false;
-    }
-    else
-    {
-      // password entry failed
-      if (0 != g_stSettings.m_iMasterLockMaxRetry)
-        pItem->m_iBadPwdCount++;
-      g_settings.UpdateBookmark(strType, strLabel, "badpwdcount", itoa(pItem->m_iBadPwdCount, buffer, 10));
-    }
-  }
   return true;
 }
 

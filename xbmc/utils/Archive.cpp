@@ -109,6 +109,20 @@ CArchive& CArchive::operator<<(const CStdString& str)
 	return *this;
 }
 
+CArchive& CArchive::operator<<(const CStdStringW& str)
+{
+	*this << str.GetLength();
+
+	int size=str.GetLength();
+	if (m_BufferPos+size>=BUFFER_MAX)
+		FlushBuffer();
+
+	memcpy(&m_pBuffer[m_BufferPos], str.c_str(), size);
+	m_BufferPos+=size;
+
+	return *this;
+}
+
 CArchive& CArchive::operator<<(const SYSTEMTIME& time)
 {
 	int size=sizeof(SYSTEMTIME);
@@ -164,6 +178,18 @@ CArchive& CArchive::operator>>(bool& b)
 }
 
 CArchive& CArchive::operator>>(CStdString& str)
+{
+	int iLength=0;
+	*this >> iLength;
+	
+	m_pFile->Read((void*)str.GetBufferSetLength(iLength), iLength);
+	str.ReleaseBuffer();
+
+
+	return *this;
+}
+
+CArchive& CArchive::operator>>(CStdStringW& str)
 {
 	int iLength=0;
 	*this >> iLength;

@@ -3,6 +3,8 @@
 #include "guidialogyesno.h"
 #include "guiWindowManager.h"
 #include "localizeStrings.h"
+#include "application.h"
+#include "util.h"
 
 CGUIDialogYesNo::CGUIDialogYesNo(void)
 :CGUIDialog(0)
@@ -49,6 +51,43 @@ bool CGUIDialogYesNo::OnMessage(CGUIMessage& message)
 		break;
 	}
 	return CGUIDialog::OnMessage(message);
+}
+
+// \brief Show CGUIDialogYesNo dialog, then wait for user to dismiss it.
+// \param dlgHeading String shown on dialog title. Converts to localized string if contains a positive integer.
+// \param dlgLine0 String shown on dialog line 0. Converts to localized string if contains a positive integer.
+// \param dlgLine1 String shown on dialog line 1. Converts to localized string if contains a positive integer.
+// \param dlgLine2 String shown on dialog line 2. Converts to localized string if contains a positive integer.
+// \return true if user selects Yes, false if user selects No.
+bool CGUIDialogYesNo::ShowAndGetInput(const CStdStringW& dlgHeading, const CStdStringW& dlgLine0, 
+                                      const CStdStringW& dlgLine1, const CStdStringW& dlgLine2)
+{
+  CGUIDialogYesNo *pDialog = &(g_application.m_guiDialogYesNo);
+
+  // HACK: This won't work if the label specified is actually a positive numeric value, but that's very unlikely
+  if (!CUtil::IsNaturalNumber(dlgHeading))
+    pDialog->SetHeading( dlgHeading );
+  else
+    pDialog->SetHeading( _wtoi(dlgHeading.c_str()) );
+
+  if (!CUtil::IsNaturalNumber(dlgLine0))
+    pDialog->SetLine( 0, dlgLine0 );
+  else
+    pDialog->SetLine( 0, _wtoi(dlgLine0.c_str()) );
+
+  if (!CUtil::IsNaturalNumber(dlgLine1))
+    pDialog->SetLine( 1, dlgLine1 );
+  else
+    pDialog->SetLine( 1, _wtoi(dlgLine1.c_str()) );
+
+  if (!CUtil::IsNaturalNumber(dlgLine2))
+    pDialog->SetLine( 2, dlgLine2 );
+  else
+    pDialog->SetLine( 2, _wtoi(dlgLine2.c_str()) );
+
+  pDialog->DoModal(m_gWindowManager.GetActiveWindow());
+
+  return (pDialog->IsConfirmed()) ? true : false;
 }
 
 bool CGUIDialogYesNo::IsConfirmed() const

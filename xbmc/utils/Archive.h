@@ -21,6 +21,7 @@ public:
 	CArchive& operator<<(long l);
 	CArchive& operator<<(bool b);
 	CArchive& operator<<(const CStdString& str);
+	CArchive& operator<<(const CStdStringW& str);
 	CArchive& operator<<(const SYSTEMTIME& time);
 	CArchive& operator<<(ISerializable& obj);
 
@@ -31,6 +32,7 @@ public:
 	CArchive& operator>>(long& l);
 	CArchive& operator>>(bool& b);
 	CArchive& operator>>(CStdString& str);
+	CArchive& operator>>(CStdStringW& str);
 	CArchive& operator>>(SYSTEMTIME& time);
 	CArchive& operator>>(ISerializable& obj);
 

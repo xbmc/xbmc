@@ -49,7 +49,6 @@ protected:
 	void							DisplayEmptyDatabaseMessage(bool bDisplay);
 
   bool							HaveDiscOrConnection( CStdString& strPath, int iDriveType );
-  bool             	HaveBookmarkPermissions(CFileItem* pItem, const CStdString &strType);
   void              ShowIMDB(const CStdString& strMovie, const CStdString& strFile, const CStdString& strFolder, bool bFolder);
   void              OnManualIMDB();
   bool              CheckMovie(const CStdString& strFileName);

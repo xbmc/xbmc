@@ -345,6 +345,8 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 	{
 		GetInteger(pMasterLockElement, "maxretry", g_stSettings.m_iMasterLockMaxRetry , 0, 0, 100);
 		GetInteger(pMasterLockElement, "enableshutdown", g_stSettings.m_iMasterLockEnableShutdown , 0, 0, 1);
+		GetInteger(pMasterLockElement, "protectshares", g_stSettings.m_iMasterLockProtectShares , 0, 0, 1);
+		GetInteger(pMasterLockElement, "mastermode", g_stSettings.m_iMasterLockMode , 0, 0, 3);
 		GetString(pMasterLockElement, "mastercode", g_stSettings.szMasterLockCode, "");
 		GetInteger(pMasterLockElement, "startuplock", g_stSettings.m_iMasterLockStartupLock , 0, 0, 1);
 	}

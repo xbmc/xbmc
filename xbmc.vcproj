@@ -658,6 +658,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\FileItem.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIPassword.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUISettings.cpp">
 				</File>
 				<File
@@ -777,6 +780,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIDialogFileStacking.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIDialogGamepad.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIDialogHost.cpp">
 				</File>
 				<File
@@ -789,13 +795,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIDialogKeyboard.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIDialogNumeric.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIDialogOK.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIDialogPasswordGamepad.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIDialogPasswordNumeric.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIDialogProgress.cpp">
@@ -1027,6 +1030,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\GUIDialogFileStacking.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIDialogGamepad.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIDialogHost.h">
 			</File>
 			<File
@@ -1042,13 +1048,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\GUIDialogMusicScan.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIDialogNumeric.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIDialogOK.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIDialogPasswordGamepad.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIDialogPasswordNumeric.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIDialogProgress.h">
@@ -1064,6 +1067,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIDialogYesNo.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIPassword.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GuiUserMessages.h">
@@ -2022,10 +2028,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">

@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 14-01-2005 added: [ 1097753 ] Updated XBMC masterlock/share lock code (Thanks to slacker)
   - 13-01-2005 fixed: Album thumbs don't show as icon for folder in listview
   - 13-01-2005 updated: Finnish language file (Thnx to jutski)
   - 13-01-2005 updated: Norwegian language file (Thnx to vnmartinsen)
