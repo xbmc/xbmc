@@ -233,7 +233,7 @@ bool	CMusicAlbumInfo::Parse(const CStdString& strHTML)
 
 
 	// parse review/image
-	iStartOfTable=strHTMLLow.Find("review",0);
+	iStartOfTable=strHTML.Find("REVIEW",0);
 	if (iStartOfTable >= 0)
 	{
 		strTable=strHTML.Right((int)strHTML.size()-iStartOfTable);
@@ -251,6 +251,34 @@ bool	CMusicAlbumInfo::Parse(const CStdString& strHTML)
 				m_strReview=strReviewAndImage;
 				util.RemoveTags(m_strReview);
 				util.ConvertHTMLToAnsi(m_strReview, m_strReview);
+			}
+		}
+	}
+	else
+	{
+		iStartOfTable=strHTMLLow.Find("artist&nbsp;");
+		if (iStartOfTable>= 0)
+		{
+			iStartOfTable=strHTMLLow.Find("<table",iStartOfTable);
+			if (iStartOfTable >= 0)
+			{
+				CHTMLUtil  util;
+				CHTMLTable table;
+				CStdString strTable=strHTML.Right((int)strHTML.size()-iStartOfTable);
+				table.Parse(strTable);
+
+				int iRows=table.GetRows();
+				if (iRows > 0)
+				{
+					const CHTMLRow& row=table.GetRow(0);
+					int iColums=row.GetColumns();
+					if (iColums>=1)
+					{
+						const CStdString strColum1=row.GetColumValue(0);
+						if (strColum1.Find("<IMG") > -1)
+							util.getAttributeOfTag(strColum1,"src=",m_strImageURL);
+					}
+				}
 			}
 		}
 	}
