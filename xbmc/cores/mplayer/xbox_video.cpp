@@ -527,7 +527,7 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
 	while (m_pOSDYTexture[m_iOSDBuffer]->IsBusy()) Sleep(1);
 
 	// if it's down the bottom, use sub alpha blending
-	m_SubsOnOSD = (y0 > image_height * 4 / 5);
+	m_SubsOnOSD = (y0 > (int)image_height * 4 / 5);
 
 	// scale to fit screen
 	float xscale = float(rd.right - rd.left) / image_width;
@@ -580,13 +580,17 @@ static void video_uninit(void)
 	{
 		if (m_YTexture[i])
 			m_YTexture[i]->Release();
+		m_YTexture[i] = NULL;
 		if (m_UTexture[i])
 			m_UTexture[i]->Release();
+		m_UTexture[i] = NULL;
 		if (m_VTexture[i])
 			m_VTexture[i]->Release();
+		m_VTexture[i] = NULL;
 
 		if (m_RGBTexture[i])
 			m_RGBTexture[i]->Release();
+		m_RGBTexture[i] = NULL;
 	}
 	// subtitle and osd stuff
 	for (int i = 0; i < 2; ++i)
@@ -724,7 +728,7 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
   d=(BYTE*)lr.pBits + lr.Pitch*y + x;
   s=src[0];                           
   for(i=0;i<(DWORD)h;i++){
-    memcpy(d,s,w);                  
+    fast_memcpy(d,s,w);                  
     s+=stride[0];                  
     d+=lr.Pitch;
   }
@@ -737,7 +741,7 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
   d=(BYTE*)lr.pBits + lr.Pitch*y + x;
   s=src[1];
   for(i=0;i<(DWORD)h;i++){
-    memcpy(d,s,w);
+    fast_memcpy(d,s,w);
     s+=stride[1];
     d+=lr.Pitch;
   }
@@ -748,7 +752,7 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
   d=(BYTE*)lr.pBits + lr.Pitch*y + x;
   s=src[2];
   for(i=0;i<(DWORD)h;i++){
-    memcpy(d,s,w);
+    fast_memcpy(d,s,w);
     s+=stride[2];
     d+=lr.Pitch;
   }
