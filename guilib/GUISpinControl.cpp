@@ -316,6 +316,8 @@ void CGUISpinControl::Render()
                 swprintf(wszText,L"%s", m_vecLabels[m_iValue].c_str() );
             }
         }
+        else swprintf(wszText,L"?%i?",m_iValue);
+        
     }
 
     if ( m_dwAlign== XBFONT_LEFT)
@@ -388,8 +390,8 @@ void CGUISpinControl::Render()
 
         float fWidth,fHeight;
         m_pFont->GetTextExtent( wszText, &fWidth,&fHeight);
-        fHeight/=2;
-        float fPosY = (float)m_dwHeight/2;
+        fHeight/=2.0f;
+        float fPosY = ((float)m_dwHeight)/2.0f;
         fPosY-=fHeight;
         fPosY+=(float)m_dwPosY;
 
