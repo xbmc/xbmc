@@ -20,11 +20,16 @@ namespace MEDIA_DETECT
 		CAutorun();
 		virtual			~CAutorun();
 		void				HandleAutorun();
+		void				Enable();
+		void				Disable();
+		bool				IsEnabled();
 	protected:
 		void				ExecuteAutorun();
 		void				RunXboxCd();
 		void				RunCdda();
 		void				RunISOMedia();
 		bool				RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot);
+
+		bool				m_bEnable;
 	};
 }
