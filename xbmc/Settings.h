@@ -1,7 +1,7 @@
 #pragma once
 
 #include "tinyxml/tinyxml.h"
-#define CONFIG_VERSION 0x0007
+#define CONFIG_VERSION 0x0008
 
 #include <xtl.h>
 #include "stdstring.h"
@@ -106,6 +106,11 @@ public:
 		bool			m_bMyVideoRootViewAsIcons;
 	  int				m_bMyVideoSortMethod;
 	  bool			m_bMyVideoSortAscending;
+
+		bool			m_bScriptsViewAsIcons;
+		bool			m_bScriptsRootViewAsIcons;
+	  int				m_bScriptsSortMethod;
+	  bool			m_bScriptsSortAscending;
 
 		int				m_iMoveDelayIR;
 		int				m_iRepeatDelayIR;

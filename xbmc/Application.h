@@ -30,12 +30,12 @@
 #include "GUIWindowVideoOverlay.h"
 #include "GUIWindowSettingsSlideShow.h"
 #include "guiwindowsettingsfilter.h"
-
+#include "GUIWindowScripts.h"
 #include "LocalizeStrings.h"
 #include "utils/sntp.h"
 #include "utils/delaycontroller.h"
 #include "keyboard/virtualkeyboard.h"
-#include "lib/libPython/XboxPython.h"
+#include "lib/libPython/XBPython.h"
 #include "cores/IPlayer.h"
 #include "DetectDVDType.h"
 #include "Autorun.h"
@@ -58,6 +58,8 @@ public:
 	void									LoadSkin(const CStdString& strSkin);
 	void									ExecuteScript(const CStdString& strScript);
 	void									ProcessScripts();
+	int										ScriptsSize();
+	int										GetScriptId(int scriptPosition); 
 
 	virtual bool					OnMessage(CGUIMessage& message);
 
@@ -91,6 +93,7 @@ public:
 	CGUIWindowSettingsUICalibration	m_guiSettingsUICalibration;
 	CGUIWindowSettingsMovieCalibration m_guiSettingsMovieCalibration;
 	CGUIWindowSettingsSlideShow			m_guiSettingsSlideShow;
+	CGUIWindowScripts								m_guiScripts;
 	CGUIWindowSettingsFilter				m_guiSettingsFilter;
 	CGUIDialogSelect								m_guiDialogSelect;
 	CGUIWindowMusicOverlay					m_guiMusicOverlay;
@@ -102,7 +105,7 @@ public:
 	CAutorun												m_Autorun;
 	CDelayController								m_ctrDpad;
 	CDelayController								m_ctrIR;
-	Python*													m_pPhytonParser;
+	XBPython*												m_pPythonParser;
 	IPlayer*												m_pPlayer;
 	bool														m_bSpinDown;
 	DWORD														m_dwSpinDownTime;
