@@ -125,6 +125,7 @@ public:
 	virtual void    SetSubtitle(int iStream);
 	virtual bool    GetSubtitleVisible();
 	virtual void    SetSubtitleVisible(bool bVisible);
+  virtual bool    GetSubtitleExtension(CStdString &strSubtitleExtension); 
 
 	virtual int     GetAudioStreamCount();
 	virtual int     GetAudioStream();
@@ -137,6 +138,8 @@ public:
 	virtual void    ToFFRW(int iSpeed=0);
 	virtual void    ShowOSD(bool bOnoff);
   virtual void   DoAudioWork();
+  
+  CStdString _SubtitleExtension;
 protected:
 	int GetCacheSize(bool bFileOnHD,bool bFileOnISO,bool bFileOnUDF,bool bFileOnInternet,bool bFileOnLAN, bool bIsVideo, bool bIsAudio, bool bIsDVD);
 	CStdString GetDVDArgument(const CStdString& strFile);

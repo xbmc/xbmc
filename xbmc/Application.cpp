@@ -2059,10 +2059,28 @@ void CApplication::CheckShutdown()
 	return;
 }
 
+//Check if hd spindown must be blocked
+bool CApplication::MustBlockHDSpinDown(bool bCheckThisForNormalSpinDown) 
+{
+  if (IsPlayingVideo()) {
+    //allow normal hd spindown always if the movie is paused
+    if ((bCheckThisForNormalSpinDown) && (m_pPlayer->IsPaused())) {
+      return false;
+    }
+    //don't allow hd spindown when playing files with vobsub subtitles.
+    CStdString strSubTitelExtension;
+    if (m_pPlayer->GetSubtitleExtension(strSubTitelExtension)) {
+      return (strSubTitelExtension == ".idx");
+    }
+  }
+  return false;
+}
+
 void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
 {
   if (!g_stSettings.m_bHDRemoteplaySpinDownAudio && !g_stSettings.m_bHDRemoteplaySpinDownVideo) return;
   if (m_gWindowManager.IsRouted()) return;
+  if (MustBlockHDSpinDown(false)) return;
 
   if ((!m_bNetworkSpinDown) || playbackStarted)
   {
@@ -2125,6 +2143,7 @@ void CApplication::CheckHDSpindown()
 {
   if (!g_stSettings.m_iHDSpinDownTime) return;
   if (m_gWindowManager.IsRouted()) return;
+  if (MustBlockHDSpinDown()) return;
 
   if (!m_bSpinDown && 
     (

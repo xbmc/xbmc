@@ -99,7 +99,7 @@ public:
 	static bool IsPAL_DVD(int iWidth, int iHeight);
 	static bool IsShoutCast(const CStdString& strFileName);
 	static void RemoveIllegalChars( CStdString& strText);
-	static void CacheSubtitles(const CStdString& strMovie);
+	static void CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached);
 	static void ClearSubtitles();
 	static void SecondsToHMSString( long lSeconds, CStdString& strHMS);
   static void PrepareSubtitleFonts();
