@@ -958,7 +958,7 @@ void CMPlayer::GetVideoInfo( CStdString& strVideoInfo)
 	}
 	mplayer_GetVideoInfo(strFourCC,strVideoCodec, &fFPS, &iWidth,&iHeight, &lFrames2Early, &lFrames2Late);
 	strVideoInfo.Format("video:%s fps:%02.2f %ix%i early/late:%i/%i", 
-											strFourCC,fFPS,iWidth,iHeight,lFrames2Early,lFrames2Late);
+											strVideoCodec,fFPS,iWidth,iHeight,lFrames2Early,lFrames2Late);
 }
 
 
