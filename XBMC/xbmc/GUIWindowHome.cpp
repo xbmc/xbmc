@@ -113,6 +113,12 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 					RunCredits();
 				}
 				break;
+
+				case 14:
+				{
+					m_gWindowManager.ActivateWindow( WINDOW_BUDDIES );
+				}
+				break;
 			}
     }
     break;
