@@ -569,6 +569,24 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 
 void CGUIWindowMusicBase::OnRetrieveMusicInfo(VECFILEITEMS& items, bool bScan)
 {
+
+  //**** TO SPEED UP SCANNING *****
+  // We need to speedup scanning of music
+  // what we could do is:
+  // 1. cache all genres & artists (with name and id) in a map (read them @ start of this routine)
+  // 2. cache current path with database id
+  // 3. scan the entire dir and then if we find a new song:
+  // 4.   check if genre is known already (in cached map) if not then add it to database & map
+  // 4.   check if artist is known already (in cached map) if not then add it to database & map
+  // 5.   add the new song to the database 
+  //         we need a new version of musicdatabase::addsong() for this
+  //         which just adds the song (and not the artists/genre/path like musicdatabase::addsong does now!)
+  //
+  // this way we prevent that for each call to musicdatabase::addsong
+  //    -the genre id is looked up and or added
+  //    -the artist id is looked up and or added
+  //    -the path id is lookup and or added
+
 	CStdString strItem;
   
   // get all information for all files in current directory from database 
