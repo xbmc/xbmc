@@ -395,7 +395,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 
   CURL url(strFile);
   bool bStreamingAudio=false;
-  // for shoutcast, use cache of 256 kbyte
+  // for shoutcast, use cache of 512 kbyte
   if (url.GetProtocol()=="http") bStreamingAudio=true;
   if (url.GetProtocol()=="shout") bStreamingAudio=true;
   if (url.GetProtocol()=="mms") bStreamingAudio=true;
@@ -430,7 +430,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
     
     if (bStreamingAudio)
     {
-      iCacheSize=256;
+      iCacheSize=512;
     }
     
     //CLog::Log("  cache sizem:%i kbyte",iCacheSize);
@@ -647,7 +647,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 
     // if it turns out to b a video file after all, then 
     // make sure the cache is set to at least 1 meg
-    if (HasVideo() && iCacheSize==256)
+    if (HasVideo() && iCacheSize==512)
     {
       CLog::Log("update cache to 2 megs");
       if (!g_stSettings.m_bNoCache) mplayer_setcache_size(2048);
