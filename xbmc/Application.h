@@ -29,6 +29,7 @@
 #include "GUIWindowSettingsUICalibration.h"
 #include "GUIWindowSettingsScreenCalibration.h"
 #include "GUIWindowSettingsSubtitles.h"
+#include "GUIWindowScreensaver.h"		// CB: Matrix Screensaver
 #include "GUIWindowMusicInfo.h" 
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowScriptsInfo.h"
@@ -36,6 +37,7 @@
 #include "GUIWindowFullScreen.h"
 #include "GUIWindowVideoOverlay.h"
 #include "GUIWindowSettingsSlideShow.h"
+#include "GUIWindowSettingsScreensaver.h"
 #include "guiwindowsettingsfilter.h"
 #include "guiwindowsettingsmusic.h"
 #include "GUIWindowScripts.h"
@@ -94,6 +96,7 @@ public:
   bool                  NeedRenderFullScreen();
 	void									SpinHD();
 	void				CheckScreenSaver();		// CB: SCREENSAVER PATCH
+	void				CheckShutdown();
 	void									ResetAllControls();
   virtual void          Process();
 	CGUIWindowHome									m_guiHome;
@@ -115,6 +118,7 @@ public:
 	CGUIWindowSettingsUICalibration	m_guiSettingsUICalibration;
 	CGUIWindowSettingsScreenCalibration m_guiSettingsScreenCalibration;
 	CGUIWindowSettingsSlideShow			m_guiSettingsSlideShow;
+	CGUIWindowSettingsScreensaver			m_guiSettingsScreensaver;
 	CGUIWindowScripts								m_guiScripts;
 	CGUIWindowSettingsFilter				m_guiSettingsFilter;
 	CGUIDialogSelect								m_guiDialogSelect;
@@ -131,6 +135,7 @@ public:
 	CGUIWindowMusicArtists					m_guiMyMusicArtists;
 	CGUIWindowMusicGenres						m_guiMyMusicGenres;
 	CGUIWindowMusicTop100						m_guiMyMusicTop100;
+	CGUIWindowScreensaver					m_guiWindowScreensaver;
   CGUIWindowSettingsSubtitles     m_guiSettingsSubtitles;
   CGUIWindowVideoGenre            m_guiVideoGenre;
   CGUIWindowVideoActors           m_guiVideoActors;

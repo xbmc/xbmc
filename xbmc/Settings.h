@@ -145,7 +145,10 @@ public:
 		RESOLUTION		m_ScreenResolution;
 		int			  m_iHTTPProxyPort;
 		char		  m_szHTTPProxy[128];
+
+		int		m_iShutdownTime;
 		int		m_iScreenSaverTime;		// CB: SCREENSAVER PATCH
+		int		m_iScreenSaverMode;		// CB: SCREENSAVER
 
 		char			m_szDefaultMusic[128];
 		char			m_szDefaultPictures[128];

@@ -52,7 +52,9 @@ CSettings::CSettings(void)
 	g_stSettings.m_maxFilter=D3DTEXF_LINEAR;
 	g_stSettings.m_bAllowPAL60=true;
 	g_stSettings.m_iHDSpinDownTime=5; // minutes
-	g_stSettings.m_iScreenSaverTime=0;	// seconds - CB: SCREENSAVER PATCH
+	g_stSettings.m_iShutdownTime=0;	// minutes - 0 = none
+	g_stSettings.m_iScreenSaverTime=3;	// minutes - CB: SCREENSAVER PATCH
+	g_stSettings.m_iScreenSaverMode=1;	// 0=Off, 1=Fade to dim, 2=Fade to black, 3=Matrix Trails
 	g_stSettings.m_bAutoShufflePlaylist=true;
   g_stSettings.m_iSlideShowTransistionFrames=25;
   g_stSettings.m_iSlideShowStayTime=3000;
@@ -249,8 +251,6 @@ bool CSettings::Load()
   //GetString(pRootElement, "skin", g_stSettings.szDefaultSkin,"MediaCenter");
 	GetString(pRootElement, "home", g_stSettings.szHomeDir, "");
 	GetString(pRootElement, "dashboard", g_stSettings.szDashboard,"C:\\xboxdash.xbe");
-	
-	GetInteger(pRootElement, "screensavertime", g_stSettings.m_iScreenSaverTime);	// CB: SCREENSAVER PATCH
 	
 	GetString(pRootElement, "CDDBIpAdres", g_stSettings.m_szCDDBIpAdres,"194.97.4.18");
 	//g_stSettings.m_bUseCDDB=GetBoolean(pRootElement, "CDDBEnabled");
@@ -764,6 +764,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetBoolean(pElement, "autorunvideo", g_stSettings.m_bAutorunVideo);
 		GetBoolean(pElement, "autorunpictures", g_stSettings.m_bAutorunPictures);
 		GetString(pElement, "language", g_stSettings.szDefaultLanguage, g_stSettings.szDefaultLanguage);
+		GetInteger(pElement, "shutdowntime", g_stSettings.m_iShutdownTime);
+		GetInteger(pElement, "screensavertime", g_stSettings.m_iScreenSaverTime);	// CB: SCREENSAVER PATCH
+		GetInteger(pElement, "screensavermode", g_stSettings.m_iScreenSaverMode);	// CB: SCREENSAVER PATCH
 	}
 	// slideshow settings
 	pElement = pRootElement->FirstChildElement("slideshow");
@@ -1004,6 +1007,9 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetBoolean(pNode, "autorunvideo", g_stSettings.m_bAutorunVideo);
 	SetBoolean(pNode, "autorunpictures", g_stSettings.m_bAutorunPictures);
 	SetString(pNode, "language", g_stSettings.szDefaultLanguage);
+	SetInteger(pNode, "shutdowntime", g_stSettings.m_iShutdownTime);
+	SetInteger(pNode, "screensavertime", g_stSettings.m_iScreenSaverTime);	// CB: SCREENSAVER PATCH
+	SetInteger(pNode, "screensavermode", g_stSettings.m_iScreenSaverMode);	// CB: SCREENSAVER PATCH
 	// slideshow settings
 	TiXmlElement slideshowNode("slideshow");
 	pNode = pRoot->InsertEndChild(slideshowNode);
