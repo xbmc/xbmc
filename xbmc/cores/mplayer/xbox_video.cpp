@@ -516,8 +516,10 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
 {
 	// if we draw text on the bottom then it must b the subtitles
 	// if we're not in stretch mode try to put the subtitles below the video
-	if ( y0 > (int)(image_height/2)  )
+	if ( y0 > (int)(image_height/10)  )
 	{
+		if (w > SUBTITLE_TEXTURE_WIDTH) w = SUBTITLE_TEXTURE_WIDTH;
+		if (h > SUBTITLE_TEXTURE_HEIGHT) h = SUBTITLE_TEXTURE_HEIGHT;
 		int xpos = (SUBTITLE_TEXTURE_WIDTH-w)/2;
 //		OutputDebugString("Rendering Subs\n");
 		vo_draw_alpha_rgb32(w,h,src,srca,stride,((unsigned char *) subtitleimage) + subtitlestride*(SUBTITLE_TEXTURE_HEIGHT-h) + 4*xpos,subtitlestride);

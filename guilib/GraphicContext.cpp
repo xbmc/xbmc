@@ -247,7 +247,7 @@ void CGraphicContext::SetGUIResolution(RESOLUTION &res)
 	SetVideoResolution(res);
 	m_iScreenWidth=m_pd3dParams->BackBufferWidth ;
 	m_iScreenHeight=m_pd3dParams->BackBufferHeight;
-	m_bWidescreen=(m_pd3dParams->Flags & XC_VIDEO_FLAGS_WIDESCREEN)!=0;
+	m_bWidescreen=(m_pd3dParams->Flags & D3DPRESENTFLAG_WIDESCREEN)!=0;
 }
 
 void CGraphicContext::SetVideoResolution(RESOLUTION &res)
