@@ -136,8 +136,8 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
               g_settings.SaveSettingsToProfile(iItem);
               g_settings.Save();
               LoadList();
-              return true;
             }
+						return true;
           }
 					CStdString strPrevSkin = g_guiSettings.GetString("LookAndFeel.Skin");
 					int iPrevResolution = g_guiSettings.m_LookAndFeelResolution;
