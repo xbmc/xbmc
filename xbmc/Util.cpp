@@ -2833,7 +2833,10 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
 						//	no thumb exists, do we have a directory
 						//	from album window, use music.jpg as icon
 						if (!strAlbum.IsEmpty())
-							pItem->SetIconImage("MyMusic.jpg");
+						{
+							pItem->SetIconImage("Music.jpg");
+							pItem->SetThumbnailImage("Music.jpg");
+						}
 
 						strFolderThumb.Empty();
 					}
