@@ -31,10 +31,16 @@ const string iso9660::ParseName(struct	iso9660_Directory& isodir)
 {
 	string temp_text=(char*)isodir.FileName;
 	temp_text.resize(isodir.Len_Fi); 
-	if (isodir.FileName[isodir.Len_Fi] == 'R' && isodir.FileName[isodir.Len_Fi+1]=='R')
+	int iPos=isodir.Len_Fi;
+
+	if (isodir.FileName[iPos] == 0)
+	{
+		iPos++;
+	}
+	if (isodir.FileName[iPos] == 'R' && isodir.FileName[iPos+1]=='R')
 	{
 		// rockridge
-		int iPos=isodir.Len_Fi+5;
+		iPos+=5;
 		do
 		{
 			if (isodir.FileName[iPos]=='N'&& isodir.FileName[iPos+1]=='M')
