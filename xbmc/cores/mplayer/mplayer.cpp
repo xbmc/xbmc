@@ -41,9 +41,47 @@ void						(__cdecl* pGetAudioInfo)(char* strFourCC,char* strAudioCodec, long* bi
 void						(__cdecl* pGetVideoInfo)(char* strFourCC,char* strVideoCodec, float* fps, unsigned int* iWidth,unsigned int* iHeight, long* tooearly, long* toolate);
 void						(__cdecl* pGetGeneralInfo)(long* lFramesDropped, int* iQuality, int* iCacheFilled, float* fTotalCorrection, float* fAVDelay);
 
+void						(__cdecl* psetAVDelay)(float);
+void						(__cdecl* psetSubtitleDelay)(float);
+void						(__cdecl* psetPercentage)(int);
+
+
+float					  (__cdecl* pgetAVDelay)();
+float					  (__cdecl* pgetSubtitleDelay)();
+int 						(__cdecl* pgetPercentage)();
 
 extern "C" 
 {
+  void mplayer_setAVDelay(float fDelay)
+  {
+    psetAVDelay(fDelay);
+  }
+  
+  float mplayer_getAVDelay()
+  {
+    return pgetAVDelay();
+  }
+
+  void mplayer_setSubtitleDelay(float fDelay)
+  {
+    psetSubtitleDelay(fDelay);
+  }
+
+  float mplayer_getSubtitleDelay()
+  {
+    return pgetSubtitleDelay();
+  }
+
+  void mplayer_setPercentage(int iPercent)
+  {
+    psetPercentage(iPercent);
+  }
+
+  int mplayer_getPercentage(float fPercent)
+  {
+    return pgetPercentage();
+  }
+
 	void mplayer_GetAudioInfo(char* strFourCC,char* strAudioCodec, long* bitrate, long* samplerate, int* channels, int* bVBR)
 	{
 		pGetAudioInfo(strFourCC,strAudioCodec, bitrate, samplerate, channels, bVBR);
@@ -287,6 +325,23 @@ extern "C"
 		dll.ResolveExport("mplayer_GetGeneralInfo", &pProc);
 		pGetGeneralInfo=(void(__cdecl*)(long* lFramesDropped, int* iQuality, int* iCacheFilled, float* fTotalCorrection, float* fAVDelay))pProc;
 
+		dll.ResolveExport("mplayer_setAVDelay", &pProc);
+		psetAVDelay=(void(__cdecl*)(float))pProc;
+
+		dll.ResolveExport("mplayer_setSubtitleDelay", &pProc);
+		psetSubtitleDelay=(void(__cdecl*)(float))pProc;
+
+		dll.ResolveExport("mplayer_setPercentage", &pProc);
+		psetPercentage=(void(__cdecl*)(int))pProc;
+
+		dll.ResolveExport("mplayer_getAVDelay", &pProc);
+		pgetAVDelay=(float(__cdecl*)())pProc;
+
+		dll.ResolveExport("mplayer_getSubtitleDelay", &pProc);
+		pgetSubtitleDelay=(float(__cdecl*)())pProc;
+
+		dll.ResolveExport("mplayer_getPercentage", &pProc);
+		pgetPercentage=(int(__cdecl*)())pProc;
 
 		pSetVideoFunctions(&video_functions);
 		pSetAudioFunctions(&audio_functions);

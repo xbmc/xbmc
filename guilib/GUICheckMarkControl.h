@@ -33,6 +33,8 @@ public:
 	DWORD							GetCheckMarkHeight() const { return m_imgCheckMark.GetHeight(); };
 	const CStdString& GetCheckMarkTextureName() const { return m_imgCheckMark.GetFileName(); };
   const CStdString& GetCheckMarkTextureNameNF() const { return m_imgCheckMarkNoFocus.GetFileName(); };
+  void              SetSelected(bool bOnOff);
+  bool              GetSelected() const;
 protected:
   CGUIImage     m_imgCheckMark;
   CGUIImage     m_imgCheckMarkNoFocus;

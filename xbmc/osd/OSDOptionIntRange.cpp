@@ -5,24 +5,24 @@
 #include "guifont.h"
 #include "guifontmanager.h"
 using namespace OSD;
-COSDOptionIntRange::COSDOptionIntRange(int iHeading)
+COSDOptionIntRange::COSDOptionIntRange(int iAction,int iHeading)
 {
 	m_iMin=0;
   m_iMax=10;
   m_iValue=0;
-  m_iInterval=1;
-  
+  m_iInterval=1;  
   m_iHeading=iHeading;
+  m_iAction=iAction;
 }
 
-COSDOptionIntRange::COSDOptionIntRange(int iHeading,int iStart, int iEnd, int iInterval, int iValue)
+COSDOptionIntRange::COSDOptionIntRange(int iAction,int iHeading,int iStart, int iEnd, int iInterval, int iValue)
 {
 	m_iMin=iStart;
   m_iMax=iEnd;
   m_iValue=iValue;
-  m_iInterval=iInterval;
-  
+  m_iInterval=iInterval;  
   m_iHeading=iHeading;
+  m_iAction=iAction;
 }
 
 COSDOptionIntRange::COSDOptionIntRange(const COSDOptionIntRange& option)
@@ -39,6 +39,7 @@ const OSD::COSDOptionIntRange& COSDOptionIntRange::operator = (const COSDOptionI
   m_iValue=option.m_iValue;
   m_iInterval=option.m_iInterval;
   m_iHeading=option.m_iHeading;
+  m_iAction=option.m_iAction;
 	return *this;
 }
 
@@ -70,7 +71,7 @@ void COSDOptionIntRange::Draw(int x, int y, bool bFocus,bool bSelected)
   }
 }
 
-bool COSDOptionIntRange::OnAction(const CAction& action)
+bool COSDOptionIntRange::OnAction(IExecutor& executor, const CAction& action)
 {
 	if (action.wID==ACTION_MOVE_UP)
 	{

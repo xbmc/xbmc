@@ -17,7 +17,7 @@ namespace OSD
 
 		void Draw();
     void AddOption(const IOSDOption* option);
-		bool OnAction(const CAction& action);
+		bool OnAction(IExecutor& executor,const CAction& action);
 
 		int  GetX() const;
 		void SetX(int X);

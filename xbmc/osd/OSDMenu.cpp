@@ -78,13 +78,13 @@ void COSDMenu::Draw()
 //	g_graphicsContext.Get3DDevice()->SetFlickerFilter(g_stSettings.m_bSoften ? 5 : 1);
 }
 
-bool COSDMenu::OnAction(const CAction& action)
+bool COSDMenu::OnAction(IExecutor& executor,const CAction& action)
 {
 	if (m_iCurrentSubMenu >= (int)m_vecSubMenus.size()) return false; // invalid choice.
 	COSDSubMenu* pSubMenu=m_vecSubMenus[m_iCurrentSubMenu];
 
 	
-	if (pSubMenu->OnAction(action)) return true;
+	if (pSubMenu->OnAction(executor,action)) return true;
 
 	if (action.wID==ACTION_MOVE_LEFT)
 	{
