@@ -34,6 +34,9 @@ chmod +x configure && ./configure \
 --disable-termcap \
 --disable-iconv \
 --disable-freetype \
+--disable-edl \
+--disable-x264 \
+--disable-libdv \
 --enable-libdts \
 --enable-largefiles \
 --enable-winsock2 \
