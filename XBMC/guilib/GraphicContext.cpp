@@ -63,11 +63,21 @@ bool CGraphicContext::IsWidescreen() const
 	return m_bWidescreen;
 }
 
-
 void CGraphicContext::Correct(float& fCoordinateX, float& fCoordinateY)  const
 {
-	fCoordinateX  += (float)m_iScreenOffsetX;
-	fCoordinateY  += (float)m_iScreenOffsetY;
+	int	iOSDYOffset;
+
+	if (m_bFullScreenVideo)	// full screen video, so adjust with OSD offset instead
+	{
+		iOSDYOffset = m_pResInfo[m_Resolution].iOSDYOffset;
+		fCoordinateX  += (float)m_iScreenOffsetX;
+		fCoordinateY  += (float)iOSDYOffset;
+	}
+	else					// normal UI, adjust with UI offsets
+	{
+		fCoordinateX  += (float)m_iScreenOffsetX;
+		fCoordinateY  += (float)m_iScreenOffsetY;
+	}
 }
 
 void CGraphicContext::Scale(float& fCoordinateX, float& fCoordinateY, float& fWidth, float& fHeight) const
@@ -320,6 +330,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].Overscan.width = 1920;
 			m_pResInfo[res].Overscan.height = 1080;
 			m_pResInfo[res].iSubtitles = 1080;
+			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 1920;
 			m_pResInfo[res].iHeight = 1080;
 			m_pResInfo[res].dwFlags = D3DPRESENTFLAG_INTERLACED|D3DPRESENTFLAG_WIDESCREEN;
@@ -332,6 +343,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].Overscan.width = 1280;
 			m_pResInfo[res].Overscan.height = 720;
 			m_pResInfo[res].iSubtitles = 720;
+			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 1280;
 			m_pResInfo[res].iHeight = 720;
 			m_pResInfo[res].dwFlags = D3DPRESENTFLAG_PROGRESSIVE|D3DPRESENTFLAG_WIDESCREEN;
@@ -344,6 +356,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].Overscan.width = 720;
 			m_pResInfo[res].Overscan.height = 480;
 			m_pResInfo[res].iSubtitles = 480;
+			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 720;
 			m_pResInfo[res].iHeight = 480;
 			m_pResInfo[res].dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
@@ -356,6 +369,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].Overscan.width = 720;
 			m_pResInfo[res].Overscan.height = 480;
 			m_pResInfo[res].iSubtitles = 480;
+			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 720;
 			m_pResInfo[res].iHeight = 480;
 			m_pResInfo[res].dwFlags = D3DPRESENTFLAG_PROGRESSIVE|D3DPRESENTFLAG_WIDESCREEN;
@@ -368,6 +382,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].Overscan.width = 720;
 			m_pResInfo[res].Overscan.height = 480;
 			m_pResInfo[res].iSubtitles = 480;
+			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 720;
 			m_pResInfo[res].iHeight = 480;
 			m_pResInfo[res].dwFlags = 0;
@@ -380,6 +395,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].Overscan.width = 720;
 			m_pResInfo[res].Overscan.height = 480;
 			m_pResInfo[res].iSubtitles = 480;
+			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 720;
 			m_pResInfo[res].iHeight = 480;
 			m_pResInfo[res].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
@@ -392,6 +408,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].Overscan.width = 720;
 			m_pResInfo[res].Overscan.height = 576;
 			m_pResInfo[res].iSubtitles = 576;
+			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 720;
 			m_pResInfo[res].iHeight = 576;
 			m_pResInfo[res].dwFlags = 0;
@@ -404,6 +421,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].Overscan.width = 720;
 			m_pResInfo[res].Overscan.height = 576;
 			m_pResInfo[res].iSubtitles = 576;
+			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 720;
 			m_pResInfo[res].iHeight = 576;
 			m_pResInfo[res].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
@@ -416,6 +434,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].Overscan.width = 720;
 			m_pResInfo[res].Overscan.height = 480;
 			m_pResInfo[res].iSubtitles = 480;
+			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 720;
 			m_pResInfo[res].iHeight = 480;
 			m_pResInfo[res].dwFlags = 0;
@@ -428,6 +447,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].Overscan.width = 720;
 			m_pResInfo[res].Overscan.height = 480;
 			m_pResInfo[res].iSubtitles = 480;
+			m_pResInfo[res].iOSDYOffset = 0;
 			m_pResInfo[res].iWidth = 720;
 			m_pResInfo[res].iHeight = 480;
 			m_pResInfo[res].dwFlags = D3DPRESENTFLAG_WIDESCREEN;

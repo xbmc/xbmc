@@ -91,15 +91,16 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 {
 	if (m_bOSDVisible)
 	{
-		if (action.wID == ACTION_SHOW_OSD)	// hide the OSD
+		if (action.wID == ACTION_SHOW_OSD && !g_application.m_guiWindowOSD.SubMenuVisible())	// hide the OSD
 		{
 			CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0,0,0,NULL);
 			OnMessage(msg);	// Send a de-init msg to the OSD
 			m_bOSDVisible=!m_bOSDVisible;
-			return;
 		}
-
-		g_application.m_guiWindowOSD.OnAction(action);	// route keys to OSD window
+		else
+		{
+			g_application.m_guiWindowOSD.OnAction(action);	// route keys to OSD window
+		}
 		return;
 	}
     
@@ -365,7 +366,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       m_bOSDVisible=false;
       CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness,g_settings.m_iContrast,g_settings.m_iGamma,true);
 			CGUIWindow::OnMessage(message);
-      g_graphicsContext.Lock();
+			g_graphicsContext.Lock();
 			g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
 			g_graphicsContext.SetFullScreenVideo( true );
 			g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
