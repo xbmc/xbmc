@@ -96,6 +96,14 @@ void obtain_resolution_parameters(RESOLUTION iResolution, D3DPRESENT_PARAMETERS 
 	params.BackBufferWidth = resInfo[iResolution].iWidth;
 	params.BackBufferHeight = resInfo[iResolution].iHeight;
 	params.Flags = resInfo[iResolution].dwFlags;
+	if (iResolution == PAL60_4_3 || iResolution == PAL60_16_9)
+	{
+		params.FullScreen_RefreshRateInHz = 60;
+	}
+	else
+	{
+		params.FullScreen_RefreshRateInHz = 0;
+	}
 }
 
 //********************************************************************************************************
