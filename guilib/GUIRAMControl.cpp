@@ -220,11 +220,13 @@ void CGUIRAMControl::OnAction(const CAction &action)
 		case ACTION_SHOW_INFO:
 		{
 			UpdateTitle(m_current[m_iSelection].strFilepath, m_iSelection);
+			break;
 		}
 
 		case ACTION_SHOW_GUI:
 		{
 			UpdateAllTitles();
+			break;
 		}
 
 		default:
