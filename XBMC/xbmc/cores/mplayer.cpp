@@ -526,7 +526,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 {
 	int iRet=-1;
 	int iCacheSize=1024;
-	int iCacheSizeBackBuffer = 0; // 50 % backbuffer is mplayers default
+	int iCacheSizeBackBuffer = 20; // 50 % backbuffer is mplayers default
 	closefile();
 	bool bFileOnHD(false);
 	bool bFileOnISO(false);
