@@ -171,9 +171,8 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
                 }
 
                 m_strDirectory=strDir;
+                CUtil::ClearCache();
                 Update(m_strDirectory);
-                UpdateButtons();
-                OnSort();
             }
             else if (iControl==CONTROL_BTNSORTMETHOD) // sort by
             {
@@ -383,6 +382,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
     while (FindNextFile(hFind, &wfd));
 
 
+    CUtil::ClearCache();
     CUtil::SetThumbs(m_vecItems);
     CUtil::FillInDefaultIcons(m_vecItems);
 }
