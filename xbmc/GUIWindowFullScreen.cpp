@@ -562,8 +562,8 @@ void CGUIWindowFullScreen::RenderFullScreen()
 		{
 			CStdString strSizing;
 			strSizing.Format("Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1)", 
-												SrcRect.right,SrcRect.bottom,
-												DestRect.right,DestRect.bottom, g_stSettings.m_fZoomAmount, fAR*g_stSettings.m_fPixelRatio, g_stSettings.m_fPixelRatio);
+												SrcRect.right-SrcRect.left,SrcRect.bottom-SrcRect.top,
+												DestRect.right-DestRect.left,DestRect.bottom-DestRect.top, g_stSettings.m_fZoomAmount, fAR*g_stSettings.m_fPixelRatio, g_stSettings.m_fPixelRatio);
 			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2); 
 			msg.SetLabel(strSizing);
 			OnMessage(msg);
