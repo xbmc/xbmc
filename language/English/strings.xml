@@ -1402,4 +1402,16 @@
     <id>434</id>
     <value>the movie?</value>
   </string> 
+  <string>
+    <id>435</id>
+    <value>Track</value>
+  </string> 
+  <string>
+    <id>436</id>
+    <value>Year:</value>
+  </string> 
+  <string>
+    <id>437</id>
+    <value>Duration:</value>
+  </string> 
 </strings>
