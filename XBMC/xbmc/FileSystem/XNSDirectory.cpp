@@ -80,7 +80,7 @@ bool  CXNSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	}
 	
 	// allocate sufficient memory for the document
-	auto_ptr<char> lpszXml (new char[catalogueSize+10] );
+	auto_aptr<char> lpszXml (new char[catalogueSize+10] );
 	
 	// start pulling it down from the server
 	int bytesRead=0;
