@@ -484,7 +484,7 @@ static int findDirFile( const char *path, const char *file, char *filename )
   if (pvideots)
   {
     strcpy(filename, path);
-    if (path[2] = ':') //share from hd or dvd
+    if (path[2] == ':') //share from hd or dvd
     {
       filename[2] = '\\';
       filename[11] = '\\';
