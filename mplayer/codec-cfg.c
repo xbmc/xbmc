@@ -251,6 +251,7 @@ static short get_driver(char *s,int audioflag)
 		"alaw",
 		"msgsm",
 		"dshow",
+		"aiffpcm",
 		"dvdpcm",
 		"hwac3",
 		"libvorbis",
