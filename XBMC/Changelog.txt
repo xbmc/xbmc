@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 28-11-2004 fixed: weird bug whereby Kai friends list wasn't sorted correctly.
   - 28-11-2004 fixed: serialize Kai game titleid resolution and player count requests.
   - 28-11-2004 added: Movie runtime to IMDB info screen + combined Rating+Votes item
   - 28-11-2004 added: get current Kai player count for each game in the games view.

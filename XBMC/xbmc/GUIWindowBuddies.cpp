@@ -1255,11 +1255,14 @@ void CGUIWindowBuddies::OnContactOnline(CStdString& aFriend)
 
 void CGUIWindowBuddies::OnContactPing(CStdString& aFriend, CStdString& aVector, DWORD aPing, int aStatus, CStdString& aBearerCapability)
 {
+	bool bSort = false;
+
 	CGUIList::GUILISTITEMS& list = m_friends.Lock();
 
 	CBuddyItem* pBuddy = (CBuddyItem*) m_friends.Find(aFriend);
 	if (pBuddy)
 	{
+		bSort = (pBuddy->m_bIsOnline == false);
 		pBuddy->m_bIsOnline = true;
 		pBuddy->m_strVector = aVector;
 		pBuddy->m_dwPing	= aPing;
@@ -1270,6 +1273,11 @@ void CGUIWindowBuddies::OnContactPing(CStdString& aFriend, CStdString& aVector, 
 			pBuddy->m_bHeadset  = aBearerCapability.Find('2')>=0;
 			pBuddy->m_bKeyboard = aBearerCapability.Find('3')>=0;
 		}
+	}
+
+	if (bSort)
+	{
+		m_friends.Sort();
 	}
 
 	m_friends.Release();
