@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 21-03-2005 fixed: Homepage buttonscroller images were deallocated and reallocated every frame.  No decent workaround available at present, so they are always allocated.
   - 21-03-2005 fixed: After seek or ff/rw in music, first 1/4 of a second of audio is from another part of the file.
   - 21-03-2005 changed: Removed autosync=30 from mplayer.conf as it shouldn't be needed with the better audiorender accuracy.
   - 21-03-2005 changed: Improved xbmc's audio renderers accuracy in reporting correct amount in buffers. 
