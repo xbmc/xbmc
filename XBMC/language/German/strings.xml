@@ -288,7 +288,7 @@
   </string>
   <string>
     <id>144</id>
-    <value>Version:</value>
+    <value>Build:</value>
   </string>
   <string>
     <id>145</id>
@@ -364,7 +364,7 @@
   </string>
   <string>
     <id>163</id>
-    <value>einlesen..</value>
+    <value>einlesen...</value>
   </string>
   <string>
     <id>164</id>
@@ -420,7 +420,7 @@
   </string>
   <string>
     <id>177</id>
-    <value>Bericht:</value>
+    <value>Bewertung:</value>
   </string>
   <string>
     <id>178</id>
@@ -428,7 +428,7 @@
   </string>
   <string>
     <id>179</id>
-    <value>Lied</value>
+    <value>Song</value>
   </string>
   <string>
     <id>180</id>
@@ -444,7 +444,7 @@
   </string>
   <string>
     <id>183</id>
-    <value>Bericht</value>
+    <value>Bewertung</value>
   </string>
   <string>
     <id>184</id>
@@ -568,7 +568,7 @@
   </string>
   <string>
     <id>214</id>
-    <value>Bild Kalibrierung</value>
+    <value>Bildschirm kalibrieren</value>
   </string>
   <string>
     <id>215</id>
@@ -576,11 +576,11 @@
   </string>
   <string>
     <id>216</id>
-    <value>Vergrößern</value>
+    <value>Vergrößerungs Grad</value>
   </string>
   <string>
     <id>217</id>
-    <value>Strecken</value>
+    <value>Verhältnis</value>
   </string>
   <string>
     <id>218</id>
@@ -596,7 +596,7 @@
   </string>
   <string>
     <id>221</id>
-    <value>Keine Verbindung zum Netzwerk</value>
+    <value>Netzwerk ist nicht verbunden</value>
   </string>
   <string>
     <id>222</id>
@@ -624,7 +624,7 @@
   </string>
   <string>
     <id>228</id>
-    <value>Zufällige Wiedergabeliste</value>
+    <value>Playlisten shuffeln nach dem laden</value>
   </string>
   <string>
     <id>229</id>
@@ -696,7 +696,7 @@
   </string>
   <string>
     <id>247</id>
-    <value>Python Skripte</value>
+    <value>Skripte</value>
   </string>
   <string>
     <id>248</id>
@@ -760,7 +760,7 @@
   </string>
   <string>
     <id>263</id>
-    <value>HTTP Server:</value>
+    <value>HTTP Server aktivieren</value>
   </string>
   <string>
     <id>264</id>
@@ -844,7 +844,7 @@
   </string>
   <string>
     <id>284</id>
-    <value>Nicht gefunden</value>
+    <value>Suche lieferte keine Ergebnisse</value>
   </string>
   <string>
     <id>285</id>
@@ -868,7 +868,7 @@
   </string>
   <string>
     <id>290</id>
-    <value>Lautstärke (dB)</value>
+    <value>Verstärkung (dB)</value>
   </string>
   <string>
     <id>291</id>
@@ -1080,7 +1080,7 @@
   </string>
   <string>
     <id>344</id>
-    <value>Interpret</value>
+    <value>Darsteller</value>
   </string>
   <string>
     <id>345</id>
@@ -1152,7 +1152,7 @@
   </string>
   <string>
     <id>362</id>
-    <value>Dimmerungsstärke</value>
+    <value>Verdunkelung in %</value>
   </string>
   <string>
     <id>363</id>
@@ -1292,7 +1292,7 @@
   </string>
   <string>
     <id>397</id>
-    <value>Aktualisierungszeit</value>
+    <value>Aktualisieren alle </value>
   </string>
   <string>
     <id>398</id>
@@ -1352,7 +1352,7 @@
   </string>
   <string>
     <id>413</id>
-    <value>Handbuch</value>
+    <value>Manuell</value>
   </string>
   <string>
     <id>414</id>
@@ -1376,7 +1376,7 @@
   </string>
   <string>
     <id>419</id>
-    <value>Videos/Interpret</value>
+    <value>Videos/Darsteller</value>
   </string>
   <string>
     <id>420</id>
@@ -1388,19 +1388,19 @@
   </string>
   <string>
     <id>422</id>
-    <value>Lösche Albuminfo</value>
+    <value>Albuminfo löschen</value>
   </string>
   <string>
     <id>423</id>
-    <value>Lösche CDDB info</value>
+    <value>CDDB info löschen</value>
   </string>
   <string>
     <id>424</id>
-    <value>Start</value>
+    <value>Auswählen</value>
   </string>
   <string>
     <id>425</id>
-    <value>Keine Informationen zu diesem Album gefunden</value>
+    <value>Keine Albuminfomationen gefunden</value>
   </string>
   <string>
     <id>426</id>
@@ -1412,7 +1412,7 @@
   </string>
   <string>
     <id>428</id>
-    <value>Legen sie die korrekte CD/DVD ein</value>
+    <value>Bitte die korrekte CD/DVD einlegen</value>
   </string>
   <string>
     <id>429</id>
@@ -1424,7 +1424,7 @@
   </string>
   <string>
     <id>431</id>
-    <value>kein Speicher</value>
+    <value>Kein Cache</value>
   </string>
   <string>
     <id>432</id>
@@ -1432,11 +1432,11 @@
   </string>
   <string>
     <id>433</id>
-    <value>Soll der Film gelöscht werden?</value>
+    <value>Soll der Film gelöscht </value>
   </string>
   <string>
     <id>434</id>
-    <value></value>
+    <value>werden?</value>
   </string>
   <string>
     <id>435</id>
@@ -1456,7 +1456,7 @@
   </string>
   <string>
     <id>439</id>
-    <value>Speicher</value>
+    <value>Cache</value>
   </string>
   <string>
     <id>440</id>
@@ -1584,7 +1584,7 @@
   </string>
   <string>
     <id>470</id>
-    <value>Informationen</value>
+    <value>Credits</value>
   </string>
   <string>
     <id>471</id>
@@ -1596,7 +1596,7 @@
   </string>
   <string>
     <id>473</id>
-    <value>Abtastrate verbessern</value>
+    <value>High Quality Resampling</value>
   </string>
   <string>
     <id>474</id>
@@ -1612,7 +1612,7 @@
   </string>
   <string>
     <id>477</id>
-    <value>Wiedergabeliste konnte nicht geladen werden.</value>
+    <value>Playliste konnte nicht geladen werden.</value>
   </string>
   <string>
     <id>478</id>
@@ -1620,7 +1620,7 @@
   </string>
   <string>
     <id>479</id>
-    <value>Darstellung-Sprache</value>
+    <value>Skin und Sprache</value>
   </string>
   <string>
     <id>480</id>
@@ -1632,7 +1632,7 @@
   </string>
   <string>
     <id>482</id>
-    <value>Info über XBMC</value>
+    <value>Über XBMC</value>
   </string>
   <string>
     <id>483</id>
@@ -1656,11 +1656,11 @@
   </string>
   <string>
     <id>488</id>
-    <value>Wiedergabeliste wiederholen</value>
+    <value>Inhalt eines Ordners wiederholen</value>
   </string>
   <string>
     <id>489</id>
-    <value>Wiedergabeliste verwenden</value>
+    <value>Automatisch nächsten Song spielen</value>
   </string>
   <string>
     <id>490</id>
@@ -1684,7 +1684,7 @@
   </string>
   <string>
     <id>495</id>
-    <value>VideoAbtastrate erhöhen auf GUI Auflösung</value>
+    <value>Video in GUI Auflösung spielen</value>
   </string>
   <string>
     <id>496</id>
@@ -1800,7 +1800,7 @@
   </string>
   <string>
     <id>625</id>
-    <value>Alle Titel von</value>
+    <value>Alle Songs von</value>
   </string>
   <string>
     <id>629</id>
@@ -1848,11 +1848,11 @@
   </string>
   <string>
     <id>703</id>
-    <value>Drücke 'Ja' um alle Titel in diesem Pfad zu updaten</value>
+    <value>Drücke 'Ja' um alle Songs nocheinmal einzulesen</value>
   </string>
   <string>
     <id>704</id>
-    <value>Drücke 'Nein' um nur neue Titel hinzuzufügen</value>
+    <value>Drücke 'Nein' um nur neue Songs hinzuzufügen</value>
   </string>
   <string>
     <id>705</id>
@@ -1972,7 +1972,7 @@
   </string>
   <string>
     <id>734</id>
-    <value>Nicht möglich</value>
+    <value>Kein Passwort</value>
   </string>
   <string>
     <id>735</id>
@@ -2025,6 +2025,30 @@
   <string>
     <id>747</id>
     <value>Nicht genügend Speicher um das Bild zu laden</value>
+  </string>
+  <string>
+    <id>748</id>
+    <value>Pfad bearbeiten</value>
+  </string>
+  <string>
+    <id>749</id>
+    <value>Share hinzufügen</value>
+  </string>
+  <string>
+    <id>750</id>
+    <value>Bist du sicher?</value>
+  </string>
+  <string>
+    <id>751</id>
+    <value>Share entfernen</value>
+  </string>
+  <string>
+    <id>752</id>
+    <value>Share Pfad bearbeiten</value>
+  </string>
+  <string>
+    <id>753</id>
+    <value>Share Namen bearbeiten</value>
   </string>
   <string>
     <id>998</id>
@@ -2116,7 +2140,7 @@
   </string>
   <string>
     <id>10022</id>
-    <value>Videos/Interpret</value>
+    <value>Videos/Darsteller</value>
   </string>
   <string>
     <id>10023</id>
@@ -2140,7 +2164,7 @@
   </string>
   <string>
     <id>10028</id>
-    <value>Videos/Wiedergabeliste</value>
+    <value>Videos/Playlisten</value>
   </string>
   <string>
     <id>10029</id>
@@ -2152,11 +2176,11 @@
   </string>
   <string>
     <id>10101</id>
-    <value>inArbeit Dialog</value>
+    <value>Fortschritts Dialog</value>
   </string>
   <string>
     <id>10500</id>
-    <value>Musik/Wiedergabeliste</value>
+    <value>Musik/Playlist</value>
   </string>
   <string>
     <id>10501</id>
@@ -2184,7 +2208,7 @@
   </string>
   <string>
     <id>12000</id>
-    <value>Dialogauswahl</value>
+    <value>Auswahl Dialog</value>
   </string>
   <string>
     <id>12001</id>
@@ -2216,7 +2240,7 @@
   </string>
   <string>
     <id>12008</id>
-    <value>Dateikomprimierung</value>
+    <value>Verbinden Dialog</value>
   </string>
   <string>
     <id>12600</id>
