@@ -4,6 +4,7 @@
 #include "guiDialogProgress.h"
 #include "GUIDialogOK.h"
 #include "localizestrings.h"
+
 #include "util.h"
 #include <algorithm>
 
@@ -107,18 +108,24 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
 		break;
 
 		case GUI_MSG_WINDOW_INIT:
+    {
 				CGUIWindow::OnMessage(message);
-
-				pNowImage = new CGUIImage(GetID(), CONTROL_IMAGENOWICON, 220, 170, 128, 128, m_szNowIcon, 0);
+        int iYpos=170;
+        if (!UsingPAL()) iYpos=140;
+				pNowImage = new CGUIImage(GetID(), CONTROL_IMAGENOWICON, 220, iYpos, 128, 128, m_szNowIcon, 0);
 				Add(pNowImage);
 
+        
+        iYpos=445;
+        if (!UsingPAL()) iYpos=365;
 				for(int i=0; i<NUM_DAYS; i++) 
 				{
-					m_dfForcast[i].pImage = new CGUIImage(GetID(), CONTROL_IMAGED0IMG+(i*10), 220+(i*125), 455, 64, 64, m_dfForcast[i].m_szIcon, 0);
+					m_dfForcast[i].pImage = new CGUIImage(GetID(), CONTROL_IMAGED0IMG+(i*10), 180+(i*125), iYpos, 64, 64, m_dfForcast[i].m_szIcon, 0);
 					Add(m_dfForcast[i].pImage);
 				}
 
 				UpdateButtons();
+    }
 		break;
 
 		case GUI_MSG_CLICKED:
@@ -139,9 +146,12 @@ void CGUIWindowWeather::UpdateButtons()
 	SET_CONTROL_LABEL(GetID(), CONTROL_LABELLOCATION, m_szLocation);
 	SET_CONTROL_LABEL(GetID(), CONTROL_LABELUPDATED, m_szUpdated);
 
+
+  int iYpos=170;
+  if (!UsingPAL()) iYpos=140;
 	//urgh, remove, create then add image each refresh to update nicely
 	Remove(pNowImage->GetID());
-	pNowImage = new CGUIImage(GetID(), CONTROL_IMAGENOWICON, 220, 170, 128, 128, m_szNowIcon, 0);
+	pNowImage = new CGUIImage(GetID(), CONTROL_IMAGENOWICON, 220, iYpos, 128, 128, m_szNowIcon, 0);
 	Add(pNowImage);
 
 	SET_CONTROL_LABEL(GetID(), CONTROL_LABELNOWCOND, m_szNowCond);
@@ -161,6 +171,8 @@ void CGUIWindowWeather::UpdateButtons()
 	SET_CONTROL_LABEL(GetID(), CONTROL_STATICHUMI, 406);		//Humidity
 	
 
+  iYpos=445;
+  if (!UsingPAL()) iYpos=365;
 
 	for(int i=0; i<NUM_DAYS; i++)
 	{
@@ -171,7 +183,7 @@ void CGUIWindowWeather::UpdateButtons()
 		
 		//Seems a bit messy, but works. Remove, Create and then Add the image to update nicely
 		Remove(m_dfForcast[i].pImage->GetID());
-		m_dfForcast[i].pImage = new CGUIImage(GetID(), CONTROL_IMAGED0IMG+(i*10), 220+(i*125), 455, 64, 64, m_dfForcast[i].m_szIcon, 0);
+		m_dfForcast[i].pImage = new CGUIImage(GetID(), CONTROL_IMAGED0IMG+(i*10), 180+(i*125), iYpos, 64, 64, m_dfForcast[i].m_szIcon, 0);
 		Add(m_dfForcast[i].pImage);
 	}
 }
@@ -476,4 +488,11 @@ void CGUIWindowWeather::LocalizeDay(char *szDay)
 		strLocDay = "";
 
 	strcpy(szDay, strLocDay.GetBuffer(strLocDay.GetLength()));
+}
+
+bool CGUIWindowWeather::UsingPAL()
+{
+  DWORD dwStandard = XGetVideoStandard();
+  bool bUsingPAL   = (dwStandard==XC_VIDEO_STANDARD_PAL_I);    // current video standard:PAL or NTSC 
+  return bUsingPAL;
 }
