@@ -613,7 +613,7 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(VECFILEITEMS& items, bool bScan)
               break;
             }
           }
-          if (!bFound)
+          if (!bFound && !bScan)
           {
             // try finding it in the database
             CStdString strPathName;
@@ -659,7 +659,7 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(VECFILEITEMS& items, bool bScan)
 				}//if (strExtension!=".cdda" )
 			}//if (!tag.Loaded() )
 
-			if (tag.Loaded() && bScan)
+			if (tag.Loaded() && bScan && bNewFile)
 			{
 				SYSTEMTIME stTime;
 				tag.GetReleaseDate(stTime);
@@ -673,7 +673,7 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(VECFILEITEMS& items, bool bScan)
 				song.iTrack			= tag.GetTrackNumber();
 				song.iDuration	= tag.GetDuration();
 
-				m_database.AddSong(song);
+				m_database.AddSong(song,false);
 			}
 		}//if (!pItem->m_bIsFolder)
 	}
