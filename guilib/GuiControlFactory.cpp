@@ -275,6 +275,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	CStdString  strTitle="";
 	CStdString	strRSSTags="";
 
+  DWORD   dwThumbAlign = 0;
 	DWORD		dwThumbWidth = 80;
 	DWORD		dwThumbHeight = 128;
 	DWORD		dwThumbSpaceX = 6;
@@ -623,6 +624,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			iTextureWidth		= ((CGUIThumbnailPanel*)pReference)->GetTextureWidth();
 			iTextureHeight		= ((CGUIThumbnailPanel*)pReference)->GetTextureHeight();
 			strSuffix			= ((CGUIThumbnailPanel*)pReference)->GetSuffix();
+      dwThumbAlign	= ((CGUIThumbnailPanel*)pReference)->GetThumbAlign();
 			((CGUIThumbnailPanel*)pReference)->GetThumbDimensions(iThumbXPos, iThumbYPos,iThumbWidth, iThumbHeight);
 			((CGUIThumbnailPanel*)pReference)->GetThumbDimensionsBig(iThumbXPosBig, iThumbYPosBig,iThumbWidthBig, iThumbHeightBig);      
 		}
@@ -861,7 +863,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	if (GetInt(pControlNode,"thumbHeight",iThumbHeight)) g_graphicsContext.ScaleYCoord(iThumbHeight, res);
 	if (GetInt(pControlNode,"thumbPosX",iThumbXPos)) g_graphicsContext.ScaleXCoord(iThumbXPos, res);
 	if (GetInt(pControlNode,"thumbPosY",iThumbYPos)) g_graphicsContext.ScaleYCoord(iThumbYPos, res);
-  
+
+  GetAlignment(pControlNode,"thumbAlign", dwThumbAlign);
+
 	if (GetInt(pControlNode,"thumbWidthBig",iThumbWidthBig)) g_graphicsContext.ScaleXCoord(iThumbWidthBig, res);
 	if (GetInt(pControlNode,"thumbHeightBig",iThumbHeightBig)) g_graphicsContext.ScaleYCoord(iThumbHeightBig, res);
 	if (GetInt(pControlNode,"thumbPosXBig",iThumbXPosBig)) g_graphicsContext.ScaleXCoord(iThumbXPosBig, res);
@@ -1289,6 +1293,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		pControl->SetItemHeightLow(dwitemHeight);
 		pControl->SetThumbDimensionsLow(iThumbXPos, iThumbYPos,iThumbWidth, iThumbHeight);
 		pControl->SetThumbDimensionsBig(iThumbXPosBig, iThumbYPosBig,iThumbWidthBig, iThumbHeightBig);
+    pControl->SetThumbAlign(dwThumbAlign);
+
 		return pControl;
 	}
 	if (strType=="selectbutton")

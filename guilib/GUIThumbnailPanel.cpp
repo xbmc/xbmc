@@ -58,6 +58,7 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, int 
 	m_iLastItem=-1;
 	m_iTextureWidth=80;
 	m_iTextureHeight=80;
+  m_iThumbAlign = 0;
   m_iThumbWidth=64;
   m_iThumbHeight=64;
   m_iThumbXPos=8;
@@ -96,8 +97,15 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
         pImage->SetKeepAspectRatio(true);
         pImage->AllocResources();
         pItem->SetThumbnail(pImage);
-        int xOff=(m_iThumbWidth-pImage->GetRenderWidth())/2;
-        int yOff=(m_iThumbHeight-pImage->GetRenderHeight())/2;
+        int xOff = ((m_iThumbWidth - pImage->GetRenderWidth())/2);
+        int yOff = ((m_iThumbHeight - pImage->GetRenderHeight())/2);
+        //only supports center yet, 0 is default meaning use x/y position
+        if (m_iThumbAlign != 0)
+        {
+          xOff += ((m_iTextureWidth - m_iThumbWidth)/2);
+          yOff += ((m_iTextureHeight - m_iThumbHeight)/2);
+          //if thumbPosX or thumbPosX != 0 the thumb will be bumped off-center
+        }
         pImage->SetPosition(m_iThumbXPos+iCenteredPosX+xOff,m_iThumbYPos+iPosY+yOff);
         pImage->Render();
       }
@@ -105,8 +113,15 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus, int iPosX, int iPosY, CGUIListI
       {
         pImage->SetWidth(m_iThumbWidth);
         pImage->SetHeight(m_iThumbHeight);
-        int xOff=(m_iThumbWidth-pImage->GetRenderWidth())/2;
-        int yOff=(m_iThumbHeight-pImage->GetRenderHeight())/2;
+        int xOff = ((m_iThumbWidth - pImage->GetRenderWidth())/2);
+        int yOff = ((m_iThumbHeight - pImage->GetRenderHeight())/2);
+        //only supports center yet, 0 is default meaning use x/y position
+        if (m_iThumbAlign != 0)
+        {
+          xOff += ((m_iTextureWidth - m_iThumbWidth)/2);
+          yOff += ((m_iTextureHeight - m_iThumbHeight)/2);
+          //if thumbPosX or thumbPosX != 0 the thumb will be bumped off-center
+        }
         pImage->SetPosition(m_iThumbXPos+iCenteredPosX+xOff,m_iThumbYPos+iPosY+yOff);
         pImage->Render();
       }
@@ -775,6 +790,15 @@ void CGUIThumbnailPanel::SetTextureDimensions(int iWidth, int iHeight)
   m_imgFolderFocus.SetWidth(m_iTextureWidth);
 }
 
+void CGUIThumbnailPanel::SetThumbAlign(int align)
+{
+  m_iThumbAlign = align;
+}
+
+int CGUIThumbnailPanel::GetThumbAlign()
+{
+  return m_iThumbAlign;
+}
 
 void CGUIThumbnailPanel::SetThumbDimensions(int iXpos, int iYpos,int iWidth, int iHeight)
 {

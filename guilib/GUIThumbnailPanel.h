@@ -47,6 +47,8 @@ public:
   virtual void FreeResources() ;
   void         SetScrollySuffix(CStdString wstrSuffix);
 	void				 SetTextureDimensions(int iWidth, int iHeight);
+  void         SetThumbAlign(int align);
+  int          GetThumbAlign();
   void         SetThumbDimensions(int iXpos, int iYpos,int iWidth, int iHeight);
   void         GetThumbDimensions(int& iXpos, int& iYpos,int& iWidth, int& iHeight);
   void         GetThumbDimensionsBig(int& iXpos, int& iYpos,int& iWidth, int& iHeight);
@@ -149,6 +151,7 @@ protected:
 	int										m_iLastItem;
 	int										m_iTextureWidth;
 	int										m_iTextureHeight;
+  int                   m_iThumbAlign;
   int                   m_iThumbXPos;
   int                   m_iThumbYPos;
   int                   m_iThumbWidth;
