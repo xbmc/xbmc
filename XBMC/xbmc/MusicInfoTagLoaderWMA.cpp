@@ -134,7 +134,11 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 			tag.SetTitle(fixString(ansiString));	// titel
 			ansiString="";
 			g_charsetConverter.ucs2CharsetToStringCharset((LPWSTR)(pData.get()+iOffset+nTitleSize), ansiString);
-			tag.SetArtist(fixString(ansiString));
+			CStdString strArtist=fixString(ansiString);
+			//	Multiple artists are seperated with a ";" in Windows Media Player 
+			//	make sure it fits to our system using a " / " to separate them
+			strArtist.Replace(";", " / ");
+			tag.SetArtist(strArtist);
 
 			//General(ZT("Copyright"))=(LPWSTR)(pData.get()+iOffset+(nTitleSize+nAuthorSize));
 			//General(ZT("Comments"))=(LPWSTR)(pData.get()+iOffset+(nTitleSize+nAuthorSize+nCopyrightSize));
@@ -187,7 +191,7 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 			//Video[0](ZT("Codec"))=wxString((char*)C1,wxConvUTF8).c_str();
 		//}
 
-
+		   
 		//Read extended metadata
 		iOffset=0;
 		pDataI=(unsigned int*)pData.get();
@@ -221,143 +225,114 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 				int iValueSize=pData[iOffset]+(pData[iOffset+1]*0x100);
 				iOffset+=2;
 
-				//	Parse frame value
-				LPWSTR	pwszValue;
-				CStdString ansiStringValue;
-				CStdString ansiString;
-				BOOL		bValue;
-				DWORD		dwValue;
-				DWORD		qwValue;
-				WORD		wValue;
-				BYTE*		pValue;
-
-				if (iFrameType==WMT_TYPE_STRING)
+				//	Parse frame value and fill 
+				//	tag with extended metadata
+				if (iFrameType==WMT_TYPE_STRING && iValueSize>0)
 				{
-					pwszValue=(LPWSTR)(pData.get()+iOffset);
-					ansiString="";
+					LPWSTR pwszValue=(LPWSTR)(pData.get()+iOffset);
+					CStdString ansiString;
 					g_charsetConverter.ucs2CharsetToStringCharset(pwszValue, ansiString);
-					ansiStringValue=fixString(ansiString);
+					CStdString ansiStringValue=fixString(ansiString);
+					SetTagValueString(strFrameName, ansiStringValue, tag);
 				}
-				else if (iFrameType==WMT_TYPE_BINARY)
-					pValue=(BYTE*)(pData.get()+iOffset);	//	Raw data
-				else if (iFrameType==WMT_TYPE_BOOL)
-					bValue=(BOOL)pData[iOffset];
-				else if (iFrameType==WMT_TYPE_DWORD)
-					dwValue=pData[iOffset]+pData[iOffset+1]*0x100+pData[iOffset+2]*0x10000+pData[iOffset+3]*0x1000000;
-				else if (iFrameType==WMT_TYPE_QWORD)
-					qwValue=pData[iOffset]+pData[iOffset+1]*0x100+pData[iOffset+2]*0x10000+pData[iOffset+3]*0x1000000;
-				else if (iFrameType==WMT_TYPE_WORD)
-					wValue=pData[iOffset]+pData[iOffset+1]*0x100;
-
-				//	Fill tag with extended metadata
-				if (strFrameName=="WM/AlbumTitle" && iFrameType==WMT_TYPE_STRING && iValueSize>0)
+				else if (iFrameType==WMT_TYPE_BINARY && iValueSize>0)
 				{
-					tag.SetAlbum(ansiStringValue);
+					BYTE*	pValue=(BYTE*)(pData.get()+iOffset);	//	Raw data
+					SetTagValueBinary(strFrameName, pValue, tag);
 				}
-				else if (strFrameName=="WM/AlbumArtist" && iFrameType==WMT_TYPE_STRING && iValueSize>0)
+				else if (iFrameType==WMT_TYPE_BOOL && iValueSize>0)
 				{
-					if (tag.GetArtist().IsEmpty()) tag.SetArtist(ansiStringValue);
+					BOOL bValue=(BOOL)pData[iOffset];
+					SetTagValueBool(strFrameName, bValue, tag);
 				}
-				else if (strFrameName=="WM/TrackNumber" && iFrameType==WMT_TYPE_STRING && iValueSize>0)
+				else if (iFrameType==WMT_TYPE_DWORD && iValueSize>0)
 				{
-					if (tag.GetTrackNumber()<=0) tag.SetTrackNumber(_wtoi(pwszValue));
+					DWORD dwValue=pData[iOffset]+pData[iOffset+1]*0x100+pData[iOffset+2]*0x10000+pData[iOffset+3]*0x1000000;
+					SetTagValueDWORD(strFrameName, dwValue, tag);
 				}
-				else if (strFrameName=="WM/TrackNumber" && iFrameType==WMT_TYPE_DWORD && iValueSize>0)
+				else if (iFrameType==WMT_TYPE_QWORD && iValueSize>0)
 				{
-					if (tag.GetTrackNumber()<=0) tag.SetTrackNumber(dwValue);
+					DWORD qwValue=pData[iOffset]+pData[iOffset+1]*0x100+pData[iOffset+2]*0x10000+pData[iOffset+3]*0x1000000;
 				}
-				//else if (Nom=="WM/Track" && iAttrDataType==WMT_TYPE_STRING && iValueSize>0)	//	Old Tracknumber, should not be used anymore
-				else if (strFrameName=="WM/Year" && iFrameType==WMT_TYPE_STRING && iValueSize>0)
+				else if (iFrameType==WMT_TYPE_WORD && iValueSize>0)
 				{
-					SYSTEMTIME dateTime;
-					dateTime.wYear=_wtoi(pwszValue);
-					tag.SetReleaseDate(dateTime);
+					WORD wValue=pData[iOffset]+pData[iOffset+1]*0x100;
 				}
-				else if (strFrameName=="WM/Genre" && iFrameType==WMT_TYPE_STRING && iValueSize>0)
-				{
-					tag.SetGenre(ansiStringValue);
-				}
-				else if (strFrameName=="WM/Picture" && iFrameType==WMT_TYPE_BINARY && iValueSize>0)
-				{
-					WM_PICTURE picture;
-					int iPicOffset=0;
-
-					//	Picture types: http://msdn.microsoft.com/library/en-us/wmform/htm/wm_picture.asp
-					picture.bPictureType=(BYTE)pValue[iPicOffset];
-					iPicOffset+=1;
-
-					picture.dwDataLen=(DWORD)pValue[iPicOffset]+(pValue[iPicOffset+1]*0x100);
-					iPicOffset+=4;
-
-					picture.pwszMIMEType=(LPWSTR)(pValue+iPicOffset);
-					iPicOffset+=(wcslen(picture.pwszMIMEType)*2);
-					iPicOffset+=2;
-
-					picture.pwszDescription=(LPWSTR)(pValue+iPicOffset);
-					iPicOffset+=(wcslen(picture.pwszDescription)*2);
-					iPicOffset+=2;
-
-					picture.pbData=(pValue+iPicOffset);
-
-					if (picture.bPictureType==3) //	Cover Front
-					{
-						CStdString strExtension(picture.pwszMIMEType);
-						CStdString strCoverArt, strPath;
-						CUtil::GetDirectory(tag.GetURL(), strPath);
-						CUtil::GetAlbumThumb(tag.GetAlbum(), strPath, strCoverArt,true);
-						if (!CUtil::ThumbExists(strCoverArt))
-						{
-							int nPos=strExtension.Find('/');
-							if (nPos>-1)
-								strExtension.Delete(0, nPos+1);
-
-							if (picture.pbData!=NULL && picture.dwDataLen>0)
-							{
-								CPicture pic;
-								if (pic.CreateAlbumThumbnailFromMemory(picture.pbData, picture.dwDataLen, strExtension, strCoverArt))
-								{
-									CUtil::ThumbCacheAdd(strCoverArt, true);
-								}
-								else
-								{
-									CUtil::ThumbCacheAdd(strCoverArt, false);
-									CLog::Log(LOGERROR, "Tag loader wma: Unable to create album art for %s (extension=%s, size=%d)", tag.GetURL().c_str(), strExtension.c_str(), picture.dwDataLen);
-								}
-							}
-						}
-					}
-				}
-				//else if (strFrameName=="isVBR" && iFrameType==WMT_TYPE_BOOL && iValueSize>0 && bValue)
-				//{
-				//}
-				//else if (strFrameName=="WM/DRM" && iFrameType==WMT_TYPE_STRING && iValueSize>0)
-				//{
-				//	//	File is DRM protected
-				//	pwszValue;
-				//}
-				//else if (strFrameName=="WM/Codec" && iFrameType==WMT_TYPE_STRING && iValueSize>0)
-				//{
-				//	pwszValue;
-				//}
-				//else if (strFrameName=="WM/BeatsPerMinute" && iFrameType==WMT_TYPE_STRING && iValueSize>0)
-				//{
-				//	pwszValue;
-				//}
-				//else if (strFrameName=="WM/Mood" && iFrameType==WMT_TYPE_STRING && iValueSize>0)
-				//{
-				//	pwszValue;
-				//}
-				//else if (strFrameName=="WM/RadioStationName" && iFrameType==WMT_TYPE_STRING && iValueSize>0)
-				//{
-				//	pwszValue;
-				//}
-				//else if (strFrameName=="WM/RadioStationOwner" && iFrameType==WMT_TYPE_STRING && iValueSize>0)
-				//{
-				//	pwszValue;
-				//}
 
 				//	parse next frame
 				iOffset+=iValueSize;
+			}
+		}
+
+		//Read extended metadata 2
+		iOffset=0;
+		pDataI=(unsigned int*)pData.get();
+		while (!(pDataI[0]==0x44231C94 && pDataI[1]==0x49D19498 && pDataI[2]==0x131D41A1 && pDataI[3]==0x5470454E) && iOffset<=65536-4)
+		{
+			iOffset++;
+			pDataI=(unsigned int*)(pData.get()+iOffset);
+		}
+
+		if (iOffset<=65536-4)
+		{
+			iOffset+=24;
+
+			//	Walk through all frames in the file
+			int iNumOfFrames=pData[iOffset]+pData[iOffset+1]*0x100;
+			iOffset+=6;
+			for (int Pos=0; Pos<iNumOfFrames; Pos++)
+			{
+				int iFrameNameSize=pData[iOffset]+(pData[iOffset+1]*0x100);
+				iOffset+=2;
+
+				//	Get datatype of frame
+				int iFrameType=pData[iOffset]+pData[iOffset+1];
+				iOffset+=2;
+
+				//	Size of frame value
+				int iValueSize=pData[iOffset]+(pData[iOffset+1]*0x100);
+				iOffset+=4;
+
+				//	Get frame name
+				CStdString strFrameName((LPWSTR)(pData.get()+iOffset));
+				iOffset+=iFrameNameSize;
+
+				//	Parse frame value and fill 
+				//	tag with extended metadata
+				if (iFrameType==WMT_TYPE_STRING && iValueSize>0)
+				{
+					LPWSTR pwszValue=(LPWSTR)(pData.get()+iOffset);
+					CStdString ansiString;
+					g_charsetConverter.ucs2CharsetToStringCharset(pwszValue, ansiString);
+					CStdString ansiStringValue=fixString(ansiString);
+					SetTagValueString(strFrameName, ansiStringValue, tag);
+				}
+				else if (iFrameType==WMT_TYPE_BINARY && iValueSize>0)
+				{
+					BYTE*	pValue=(BYTE*)(pData.get()+iOffset);	//	Raw data
+					SetTagValueBinary(strFrameName, pValue, tag);
+				}
+				else if (iFrameType==WMT_TYPE_BOOL && iValueSize>0)
+				{
+					BOOL bValue=(BOOL)pData[iOffset];
+					SetTagValueBool(strFrameName, bValue, tag);
+				}
+				else if (iFrameType==WMT_TYPE_DWORD && iValueSize>0)
+				{
+					DWORD dwValue=pData[iOffset]+pData[iOffset+1]*0x100+pData[iOffset+2]*0x10000+pData[iOffset+3]*0x1000000;
+					SetTagValueDWORD(strFrameName, dwValue, tag);
+				}
+				else if (iFrameType==WMT_TYPE_QWORD && iValueSize>0)
+				{
+					DWORD qwValue=pData[iOffset]+pData[iOffset+1]*0x100+pData[iOffset+2]*0x10000+pData[iOffset+3]*0x1000000;
+				}
+				else if (iFrameType==WMT_TYPE_WORD && iValueSize>0)
+				{
+					WORD wValue=pData[iOffset]+pData[iOffset+1]*0x100;
+				}
+
+				//	parse next frame
+				iOffset+=iValueSize+4;
 			}
 		}
 
@@ -371,4 +346,140 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 
 	tag.SetLoaded(false);
 	return false;
+}
+
+void CMusicInfoTagLoaderWMA::SetTagValueString(const CStdString& strFrameName, const CStdString& strValue, CMusicInfoTag& tag)
+{
+	if (strFrameName=="WM/AlbumTitle")
+	{
+		tag.SetAlbum(strValue);
+	}
+	else if (strFrameName=="WM/AlbumArtist")
+	{
+		if (tag.GetArtist().IsEmpty()) tag.SetArtist(strValue);
+	}
+	else if (strFrameName=="Author")
+	{
+		//	Multiple artists are stored in multiple "Author" tags we have get them
+		//	separatly and merge them to our system
+		if (tag.GetArtist().IsEmpty()) 
+			tag.SetArtist(strValue);
+		else
+			tag.SetArtist(tag.GetArtist() + " / " + strValue);
+	}
+	else if (strFrameName=="WM/TrackNumber")
+	{
+		if (tag.GetTrackNumber()<=0) tag.SetTrackNumber(atoi(strValue.c_str()));
+	}
+	//else if (strFrameName=="WM/Track")	//	Old Tracknumber, should not be used anymore
+	else if (strFrameName=="WM/Year")
+	{
+		SYSTEMTIME dateTime;
+		dateTime.wYear=atoi(strValue.c_str());
+		tag.SetReleaseDate(dateTime);
+	}
+	else if (strFrameName=="WM/Genre")
+	{
+		//	Multiple genres are stared in multiple "WM/Genre" tags we have to get them
+		//	separatly and merge them to our system
+		if (tag.GetGenre().IsEmpty())
+			tag.SetGenre(strValue);
+		else
+			tag.SetGenre(tag.GetGenre() + " / " + strValue);
+	}
+	//else if (strFrameName=="WM/DRM")
+	//{
+	//	//	File is DRM protected
+	//	pwszValue;
+	//}
+	//else if (strFrameName=="WM/Codec")
+	//{
+	//	pwszValue;
+	//}
+	//else if (strFrameName=="WM/BeatsPerMinute")
+	//{
+	//	pwszValue;
+	//}
+	//else if (strFrameName=="WM/Mood")
+	//{
+	//	pwszValue;
+	//}
+	//else if (strFrameName=="WM/RadioStationName")
+	//{
+	//	pwszValue;
+	//}
+	//else if (strFrameName=="WM/RadioStationOwner")
+	//{
+	//	pwszValue;
+	//}
+}
+
+void CMusicInfoTagLoaderWMA::SetTagValueDWORD(const CStdString& strFrameName, DWORD dwValue, CMusicInfoTag& tag)
+{
+	if (strFrameName=="WM/TrackNumber")
+	{
+		if (tag.GetTrackNumber()<=0) 
+			tag.SetTrackNumber(dwValue);
+	}
+}
+
+void CMusicInfoTagLoaderWMA::SetTagValueBinary(const CStdString& strFrameName, const LPBYTE pValue, CMusicInfoTag& tag)
+{
+	if (strFrameName=="WM/Picture")
+	{
+		WM_PICTURE picture;
+		int iPicOffset=0;
+
+		//	Picture types: http://msdn.microsoft.com/library/en-us/wmform/htm/wm_picture.asp
+		picture.bPictureType=(BYTE)pValue[iPicOffset];
+		iPicOffset+=1;
+
+		picture.dwDataLen=(DWORD)pValue[iPicOffset]+(pValue[iPicOffset+1]*0x100);
+		iPicOffset+=4;
+
+		picture.pwszMIMEType=(LPWSTR)(pValue+iPicOffset);
+		iPicOffset+=(wcslen(picture.pwszMIMEType)*2);
+		iPicOffset+=2;
+
+		picture.pwszDescription=(LPWSTR)(pValue+iPicOffset);
+		iPicOffset+=(wcslen(picture.pwszDescription)*2);
+		iPicOffset+=2;
+
+		picture.pbData=(pValue+iPicOffset);
+
+		if (picture.bPictureType==3) //	Cover Front
+		{
+			CStdString strExtension(picture.pwszMIMEType);
+			CStdString strCoverArt, strPath;
+			CUtil::GetDirectory(tag.GetURL(), strPath);
+			CUtil::GetAlbumThumb(tag.GetAlbum(), strPath, strCoverArt,true);
+			if (!CUtil::ThumbExists(strCoverArt))
+			{
+				int nPos=strExtension.Find('/');
+				if (nPos>-1)
+					strExtension.Delete(0, nPos+1);
+
+				if (picture.pbData!=NULL && picture.dwDataLen>0)
+				{
+					CPicture pic;
+					if (pic.CreateAlbumThumbnailFromMemory(picture.pbData, picture.dwDataLen, strExtension, strCoverArt))
+					{
+						CUtil::ThumbCacheAdd(strCoverArt, true);
+					}
+					else
+					{
+						CUtil::ThumbCacheAdd(strCoverArt, false);
+						CLog::Log(LOGERROR, "Tag loader wma: Unable to create album art for %s (extension=%s, size=%d)", tag.GetURL().c_str(), strExtension.c_str(), picture.dwDataLen);
+					}
+				}
+			}
+		}
+	}
+}
+
+void CMusicInfoTagLoaderWMA::SetTagValueBool(const CStdString& strFrameName, BOOL bValue, CMusicInfoTag& tag)
+{
+	//else if (strFrameName=="isVBR")
+	//{
+	//}
 }
