@@ -40,7 +40,9 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
         const TiXmlNode *pChildText = pChild->FirstChild("value");
         DWORD dwID = atoi(pChildID->FirstChild()->Value());
         WCHAR wszText[1024];
-        swprintf(wszText, L"%S", pChildText->FirstChild()->Value() );
+        wszText[0]='\0';
+        if (!pChildText->NoChildren())
+          swprintf(wszText, L"%S", pChildText->FirstChild()->Value() );
         if (wcslen(wszText) > 0)
         {
           wstring strText = wszText;

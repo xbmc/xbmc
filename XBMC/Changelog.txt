@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 01-04-2005 fixed: crash when <value> of a <string> tag in a language file is empty
   - 01-04-2005 updated: Finnish language file (Thnx to jutski)
   - 01-04-2004 updated: Polish language file (Thnx to napek)
   - 01-04-2005 updated: Norwegian language file (Thnx to vnm)
