@@ -13,10 +13,17 @@
 #include "application.h"
 #include "filesystem/HDDirectory.h"
 #include "autoptrhandle.h"
+#include "GUIThumbnailPanel.h"
 #include <algorithm>
 
 using namespace AUTOPTR;
 using namespace DIRECTORY;
+
+#define VIEW_AS_LIST           0
+#define VIEW_AS_ICONS          1
+#define VIEW_AS_LARGEICONS     2
+
+
 #define CONTROL_BTNVIEWAS     2
 #define CONTROL_BTNSCAN       3
 #define CONTROL_BTNSORTMETHOD 4
@@ -81,6 +88,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
                 CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_iSelectedItem);
                 CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_iSelectedItem);
             }
+            ShowThumbPanel();
             return true;
         }
         break;
@@ -94,12 +102,12 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
             int iControl=message.GetSenderId();
             if (iControl==CONTROL_BTNVIEWAS)
             {
-                //CGUIDialog* pDialog=(CGUIDialog*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-                //pDialog->DoModal(GetID());
-
-                g_stSettings.m_bMyProgramsViewAsIcons=!g_stSettings.m_bMyProgramsViewAsIcons;
+                bool bLargeIcons(false);
+		            g_stSettings.m_iMyProgramsViewAsIcons++;
+                if (g_stSettings.m_iMyProgramsViewAsIcons > VIEW_AS_LARGEICONS) g_stSettings.m_iMyProgramsViewAsIcons=VIEW_AS_LIST;
                 g_settings.Save();
-
+                
+                ShowThumbPanel();
                 UpdateButtons();
             }
             else if (iControl==CONTROL_BTNSCAN) // button
@@ -633,24 +641,38 @@ void CGUIWindowPrograms::OnSort()
 
 void CGUIWindowPrograms::UpdateButtons()
 {
-    if (g_stSettings.m_bMyProgramsViewAsIcons)
+	  SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
+	  SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
+	  bool bViewIcon = false;
+    int iString;
+  	
+		switch (g_stSettings.m_iMyProgramsViewAsIcons)
     {
-        SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
-        SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
+      case VIEW_AS_LIST:
+        iString=100; // view as icons
+      break;
+      
+      case VIEW_AS_ICONS:
+        iString=417;  // view as large icons
+        bViewIcon=true;
+      break;
+      case VIEW_AS_LARGEICONS:
+        iString=101; // view as list
+        bViewIcon=true;
+      break;
+    }		
+	
+   if (bViewIcon) 
+    {
+      SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
     }
     else
     {
-        SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
-        SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
+      SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
     }
 
-    const WCHAR *szText;
-    int iString=101;
-    if (!g_stSettings.m_bMyProgramsViewAsIcons)
-    {
-        iString=100;
-    }
-    SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWAS,iString);
+		SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWAS,iString);
+
     SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTMETHOD,g_stSettings.m_iMyProgramsSortMethod+103);
 
 
@@ -673,7 +695,7 @@ void CGUIWindowPrograms::UpdateButtons()
             iItems--;
     }
     WCHAR wszText[20];
-    szText=g_localizeStrings.Get(127).c_str();
+    const WCHAR* szText=g_localizeStrings.Get(127).c_str();
     swprintf(wszText,L"%i %s", iItems,szText);
 
     SET_CONTROL_LABEL(GetID(), CONTROL_LABELFILES,wszText);
@@ -794,7 +816,7 @@ void CGUIWindowPrograms::DeleteThumbs(VECFILEITEMS& items)
 int CGUIWindowPrograms::GetSelectedItem()
 {
     int iControl;
-    if ( g_stSettings.m_bMyProgramsViewAsIcons)
+    if ( ViewByIcon())
     {
         iControl=CONTROL_THUMBS;
     }
@@ -805,4 +827,38 @@ int CGUIWindowPrograms::GetSelectedItem()
     g_graphicsContext.SendMessage(msg);
     int iItem=msg.GetParam1();
     return iItem;
+}
+
+
+bool CGUIWindowPrograms::ViewByIcon()
+{
+  if (g_stSettings.m_iMyProgramsViewAsIcons != VIEW_AS_LIST) return true;
+  return false;
+}
+
+bool CGUIWindowPrograms::ViewByLargeIcon()
+{
+ if (g_stSettings.m_iMyProgramsViewAsIcons== VIEW_AS_LARGEICONS) return true;
+ return false;
+}
+
+void CGUIWindowPrograms::ShowThumbPanel()
+{
+ 
+  if ( ViewByLargeIcon() )
+  {
+    CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
+    pControl->SetThumbDimensions(10,16,100,100);
+    pControl->SetTextureDimensions(128,128);
+    pControl->SetItemHeight(150);
+    pControl->SetItemWidth(150);
+  }
+  else
+  {
+    CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
+    pControl->SetThumbDimensions(4,10,64,64);
+    pControl->SetTextureDimensions(80,80);
+    pControl->SetItemHeight(128);
+    pControl->SetItemWidth(128);
+  }
 }

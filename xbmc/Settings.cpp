@@ -160,7 +160,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bAllowPAL60=true;
 	g_stSettings.m_bAutoShufflePlaylist=true;
 	g_stSettings.dwFileVersion =CONFIG_VERSION;
-	g_stSettings.m_bMyProgramsViewAsIcons=false;
+	g_stSettings.m_iMyProgramsViewAsIcons=1;
 	g_stSettings.m_bMyProgramsSortAscending=true;
 	g_stSettings.m_bMyProgramsFlatten=false;
 	g_stSettings.m_bMyProgramsDefaultXBE=false;
@@ -945,7 +945,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   pElement = pRootElement->FirstChildElement("myprograms");
   if (pElement)
   {
-	GetBoolean(pElement, "programsviewicons", g_stSettings.m_bMyProgramsViewAsIcons);
+	GetInteger(pElement, "programsviewicons", g_stSettings.m_iMyProgramsViewAsIcons,1,0,2);
 	GetInteger(pElement, "programssortmethod", g_stSettings.m_iMyProgramsSortMethod,0,0,2);
 	GetBoolean(pElement, "programssortascending", g_stSettings.m_bMyProgramsSortAscending);
 
@@ -966,7 +966,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	TiXmlElement programsNode("myprograms");
 	TiXmlNode *pNode = pRoot->InsertEndChild(programsNode);
 	if (!pNode) return false;
-	SetBoolean(pNode, "programsviewicons", g_stSettings.m_bMyProgramsViewAsIcons);
+	SetInteger(pNode, "programsviewicons", g_stSettings.m_iMyProgramsViewAsIcons);
 	SetInteger(pNode, "programssortmethod", g_stSettings.m_iMyProgramsSortMethod);
 	SetBoolean(pNode, "programssortascending", g_stSettings.m_bMyProgramsSortAscending);
 	SetBoolean(pNode, "flatten", g_stSettings.m_bMyProgramsFlatten);
