@@ -149,6 +149,7 @@ bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAdded
 		return false;
 	}
 
+  // check root...
   for (int i=0; i < (int)vecItems.size(); i++)
   {
 		CFileItem* pItem=vecItems[i];
@@ -200,14 +201,6 @@ bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAdded
 				    break;
           }
         }
-				else
-				{
-					if (RunDisc(pDir, pItem->m_strPath, nAddedToPlaylist,false)) 
-					{
-						bPlaying=true;
-						break;
-					}
-				}
 			}
 		}
 		else
@@ -240,6 +233,26 @@ bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAdded
 				break;
 			}
 		}
+  }
+
+  // check subdirs
+  if (!bPlaying)
+  {
+    for (int i=0; i < (int)vecItems.size(); i++)
+    {
+		  CFileItem* pItem=vecItems[i];
+		  if (pItem->m_bIsFolder)
+		  {
+			  if (pItem->m_strPath != "." && pItem->m_strPath != ".." )
+			  {
+          if (RunDisc(pDir, pItem->m_strPath, nAddedToPlaylist,false)) 
+					{
+						bPlaying=true;
+						break;
+					}
+        }
+      }
+    }
   }
 	return bPlaying;
 }
