@@ -12,6 +12,10 @@
 
 using namespace std;
 
+// Render Methods
+#define RENDER_PIXEL_SHADER				0
+#define RENDER_OVERLAYS						1
+
 // Subtitle colours
 
 #define SUBTITLE_COLOR_YELLOW			0
