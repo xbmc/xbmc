@@ -62,7 +62,7 @@ CApplication::CApplication(void)
 {
     m_iPlaySpeed=1;
     m_strCurrentFile="";
-		m_bSpinDown=true;
+		m_bSpinDown=false;
 		m_bOverlayEnabled=true;
 		m_pWebServer=NULL;
 		m_pFileZilla=NULL;
@@ -604,7 +604,6 @@ void CApplication::Render()
 void CApplication::OnKey(CKey& key)
 {
 	CAction action;
-
   // a key has been pressed. 
   // Reset the screensaver timer
   // but not for the analog thumbsticks
@@ -612,7 +611,9 @@ void CApplication::OnKey(CKey& key)
       key.GetButtonCode() != KEY_BUTTON_RIGHT_THUMB_STICK)
   {
     // reset harddisk spindown timer
-		m_dwSpinDownTime=timeGetTime();
+		m_bSpinDown=false;
+    
+    OutputDebugString("onkey:hd spindown disable\n");
 
     ResetScreenSaver();
 
@@ -1227,7 +1228,6 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 	}
 
 	m_strCurrentPlayer=strNewPlayer;
-	m_bSpinDown=true;
 	if (!m_pPlayer)
 	{
 		CPlayerCoreFactory factory;
@@ -1255,19 +1255,14 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 		    m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
       }
     }
-    
-		if ( CUtil::IsHD(m_strCurrentFile) )
+
+    if ( !CUtil::IsHD(m_strCurrentFile) )
 		{
-			m_bSpinDown=false;
+      // no, then spindown should b possible
+      OutputDebugString("play file:hd spindown enable\n");
+			m_bSpinDown=true;
+      m_dwSpinDownTime=0;
 		}
-    else
-    {
-      if (g_stSettings.m_iHDSpinDownTime!=0)
-      {
-        m_bSpinDown=true;
-        m_dwSpinDownTime=0;
-      }
-    }
   }
 	return bResult;
 }
@@ -1356,6 +1351,7 @@ void CApplication::RenderFullScreen()
 
 void CApplication::ResetScreenSaver()
 {
+  //OutputDebugString("reset sreensaver\n");
   m_dwSpinDownTime=timeGetTime();
   if (m_bInactive) 
   {
@@ -1518,18 +1514,30 @@ void CApplication::SpinHD()
 		{
       //not playing anymore, then spindown should b possible
 			m_bSpinDown=true;
+      m_dwSpinDownTime=timeGetTime();
+      OutputDebugString("spinhd() not playing1->enable spindown\n");
 		}
-		else if (!m_pPlayer->IsPlaying()) 
-		{
-      //not playing anymore, then spindown should b possible
-			m_bSpinDown=true;
-		}
-
-    // if spindown is enabled now, then reset the timer.
-		if (m_bSpinDown) 
-		{
-			m_dwSpinDownTime=timeGetTime();
-		}
+		else 
+    {
+      if (!m_pPlayer->IsPlaying()) 
+		  {
+        //not playing anymore, then spindown should b possible
+			  m_bSpinDown=true;
+        m_dwSpinDownTime=timeGetTime();
+        OutputDebugString("spinhd() not playing->enable spindown\n");
+		  }
+      else
+      {
+        // playing a file, is it from HD
+        if ( !CUtil::IsHD(m_strCurrentFile) )
+		    {
+          // no, then spindown should b possible
+			    m_bSpinDown=true;
+          m_dwSpinDownTime=timeGetTime();
+          OutputDebugString("spinhd() localfile enable spindown\n");
+		    }
+      }
+    }
 	}
 
 	// spin down HD after 3 mins of inactivity
@@ -1539,6 +1547,7 @@ void CApplication::SpinHD()
     // yes, then check the elapsed time
 		if ( (long)(timeGetTime() - m_dwSpinDownTime) >= ((long)g_stSettings.m_iHDSpinDownTime*60L*1000L) )
 		{
+      OutputDebugString("spinhd:SpinDown\n");
       // time has elapsed, spin it down
 			m_dwSpinDownTime=timeGetTime();
 			CIoSupport helper;
@@ -1607,7 +1616,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
 		case GUI_MSG_PLAYBACK_ENDED:
 		{
-			m_dwSpinDownTime=timeGetTime();
 			m_dwIdleTime=timeGetTime();
       CStdString strFile=m_strCurrentFile;
       m_strCurrentFile="";
