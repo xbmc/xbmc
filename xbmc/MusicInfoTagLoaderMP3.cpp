@@ -7,6 +7,7 @@
 #include "picture.h"
 #include "utils/log.h"
 #include "autoptrhandle.h"
+#include "utils/CharsetConverter.h"
 
 using namespace AUTOPTR;
 
@@ -88,15 +89,115 @@ CMusicInfoTagLoaderMP3::~CMusicInfoTagLoaderMP3()
 {
 }
 
+char* CMusicInfoTagLoaderMP3::GetString(const ID3_Frame *frame, ID3_FieldID fldName)
+{
+  char *text = NULL;
+
+  ID3_Field* fld;
+  if (NULL != frame && NULL != (fld = frame->GetField(fldName)))
+  {
+    ID3_TextEnc enc = fld->GetEncoding();
+
+	if (enc == ID3TE_ISO8859_1)
+	{
+	    size_t nText = fld->Size();
+		text = LEAKTESTNEW(char[nText + 1]);
+		fld->Get(text, nText + 1);
+	}
+	else if (enc == ID3TE_UTF16 || enc == ID3TE_UTF16BE)
+	{
+	    size_t nText = fld->Size();
+		unicode_t* textW = LEAKTESTNEW(unicode_t[nText + 1]);
+		fld->Get(textW, nText + 1);
+
+		CStdStringW s((wchar_t*) textW, nText + 1);
+		CStdStringA ansiString;
+		g_charsetConverter.ucs2CharsetToStringCharset(s, ansiString, true);
+		delete [] textW;
+
+		nText = strlen(ansiString.c_str());
+		text = LEAKTESTNEW(char[nText + 1]);
+		strncpy(text, ansiString.c_str(), nText);
+		text[nText] = '\0';
+	}
+	else if (enc == ID3TE_UTF8)
+	{
+	    size_t nText = fld->Size();
+		text = LEAKTESTNEW(char[nText + 1]);
+		fld->Get(text, nText + 1);
+
+		CStdStringA s(text, nText + 1);
+		CStdStringA ansiString;
+		g_charsetConverter.utf8ToStringCharset(s, ansiString);
+
+		nText = strlen(ansiString.c_str());
+		strncpy(text, ansiString.c_str(), nText);
+		text[nText] = '\0';		
+	}
+  }
+  return text;
+}
+
+char* CMusicInfoTagLoaderMP3::GetArtist(const ID3_Tag *tag)
+{
+  char *sArtist = NULL;
+  if (NULL == tag)
+  {
+    return sArtist;
+  }
+
+  ID3_Frame *frame = NULL;
+  if ((frame = tag->Find(ID3FID_LEADARTIST)) ||
+      (frame = tag->Find(ID3FID_BAND))       ||
+      (frame = tag->Find(ID3FID_CONDUCTOR))  ||
+      (frame = tag->Find(ID3FID_COMPOSER)))
+  {
+    sArtist = GetString(frame, ID3FN_TEXT);
+  }
+  return sArtist;
+}
+
+char* CMusicInfoTagLoaderMP3::GetAlbum(const ID3_Tag *tag)
+{
+  char *sAlbum = NULL;
+  if (NULL == tag)
+  {
+    return sAlbum;
+  }
+
+  ID3_Frame *frame = tag->Find(ID3FID_ALBUM);
+  if (frame != NULL)
+  {
+    sAlbum = GetString(frame, ID3FN_TEXT);
+  }
+  return sAlbum;
+}
+
+char* CMusicInfoTagLoaderMP3::GetTitle(const ID3_Tag *tag)
+{
+  char *sTitle = NULL;
+  if (NULL == tag)
+  {
+    return sTitle;
+  }
+
+  ID3_Frame *frame = tag->Find(ID3FID_TITLE);
+  if (frame != NULL)
+  {
+    sTitle = GetString(frame, ID3FN_TEXT);
+  }
+  return sTitle;
+}
+
 bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
 {
 	bool bResult= false;
 
 	SYSTEMTIME dateTime;
 	auto_aptr<char>pYear  (ID3_GetYear( &id3tag  ));
-	auto_aptr<char>pTitle (ID3_GetTitle( &id3tag ));
-	auto_aptr<char>pArtist(ID3_GetArtist( &id3tag));
-	auto_aptr<char>pAlbum (ID3_GetAlbum( &id3tag ));
+	auto_aptr<char>pTitle (GetTitle( &id3tag ));
+	auto_aptr<char>pArtist(GetArtist( &id3tag));
+	auto_aptr<char>pAlbum (GetAlbum( &id3tag ));
 	auto_aptr<char>pGenre (ID3_GetGenre( &id3tag ));
 	int nTrackNum=ID3_GetTrackNum( &id3tag );
 

@@ -19,7 +19,7 @@ public:
 
   void utf8ToStringCharset(const CStdStringA& strSource, CStdStringA& strDest);
 
-  void ucs2CharsetToStringCharset(const CStdStringW& strSource, CStdStringA& strDest);
+  void ucs2CharsetToStringCharset(const CStdStringW& strSource, CStdStringA& strDest, bool swap = false);
 
   vector<CStdString> getCharsetLabels();
   CStdString& getCharsetLabelByName(const CStdString& charsetName);
