@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "guiwindowscripts.h"
 #include "settings.h"
 #include "guiWindowManager.h"

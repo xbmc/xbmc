@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "xnsdirectory.h"
 #include "tinyxml/tinyxml.h"
 #include "../DNSNameCache.h"

@@ -1,8 +1,9 @@
+
+#include "../stdafx.h"
 // WindowsShortcut.cpp: implementation of the CWindowsShortcut class.
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
 #include "sc.h"
 #include "WindowsShortcut.h"
 

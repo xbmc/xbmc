@@ -3,6 +3,7 @@
 //  - if movie does not exists when play movie is called then show dialog asking to insert the correct CD
 //  - show if movie has subs
 
+#include "stdafx.h"
 #include "GUIWindowVideoYear.h"
 #include "settings.h"
 #include "guiWindowManager.h"

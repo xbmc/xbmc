@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "modplayer.h"
 #include "../util.h"
 #include "../application.h"

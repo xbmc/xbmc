@@ -25,7 +25,8 @@
  * THE SOFTWARE.
  *
  **********************************************************************/
-#include <xtl.h>
+
+#include "stdafx.h"
 #include <stdio.h>
 #include <ctype.h>
 #include <stdarg.h>
@@ -527,9 +528,9 @@ DbErrors::DbErrors(const char *msg, ...) {
   sprintf(buf, msg, vl);
   va_end(vl);
 
-  OutputDebugString("\nDatabase Error:");
-  OutputDebugString(buf);
-  OutputDebugString("\n");
+//  OutputDebugString("\nDatabase Error:");
+//  OutputDebugString(buf);
+  //OutputDebugString("\n");
 }
 
 

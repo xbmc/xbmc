@@ -1,4 +1,6 @@
 
+#include "stdafx.h"
+
 #include "FileFactory.h"
 #include "FileShoutcast.h"
 #include "../url.h"

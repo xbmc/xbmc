@@ -27,6 +27,7 @@
  **********************************************************************/
 
 
+#include "stdafx.h"
 #include <stdio.h>
 #include <ctype.h>
 #include <stdarg.h>

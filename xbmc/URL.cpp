@@ -1,4 +1,5 @@
 
+#include "stdafx.h"
 #include "url.h"
 
 CURL::CURL(const CStdString& strURL)

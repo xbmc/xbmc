@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include ".\osdmenu.h"
 #include "graphiccontext.h"
 #include "guifont.h"

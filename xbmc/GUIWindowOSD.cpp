@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "localizestrings.h"
 #include "GUIWindowOSD.h"
 #include "application.h"

@@ -1,4 +1,6 @@
 
+
+#include "stdafx.h"
 #include "GUIWindowMusicInfo.h"
 #include "graphiccontext.h"
 #include "localizestrings.h"

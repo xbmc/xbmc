@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "GUIWindowWeather.h"
 #include "settings.h"
 #include "guiWindowManager.h"

@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "ThumbnailCache.h"
 #include "util.h"
 

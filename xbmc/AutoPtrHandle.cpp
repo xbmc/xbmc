@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include ".\autoptrhandle.h"
 using namespace AUTOPTR;
 CAutoPtrHandle::CAutoPtrHandle(HANDLE hHandle)

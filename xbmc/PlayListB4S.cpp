@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "playlistb4s.h"
 #include "util.h"
 #include "tinyxml/tinyxml.h"

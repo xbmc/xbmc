@@ -1,4 +1,5 @@
 
+#include "stdafx.h"
 #include "GUIWindowVisualisation.h"
 #include "settings.h"
 #include "application.h"

@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "application.h"
 #include "util.h"
 #include "xbox/iosupport.h"

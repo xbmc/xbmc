@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "picture.h"
 #include "util.h"
 #include "sectionloader.h"

@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "hddirectory.h"
 #include "../url.h"
 #include "../util.h"

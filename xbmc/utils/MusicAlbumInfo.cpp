@@ -1,3 +1,5 @@
+
+#include "../stdafx.h"
 #include ".\musicalbuminfo.h"
 #include ".\htmltable.h"
 #include ".\htmlutil.h"

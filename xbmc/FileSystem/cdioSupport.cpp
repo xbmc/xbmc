@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "cdiosupport.h"
 #include <xtl.h>
 #include "../lib/libcdio/cdio.h"

@@ -1,4 +1,5 @@
 
+#include "stdafx.h"
 #include "GUIWindowVideoInfo.h"
 #include "graphiccontext.h"
 #include "localizestrings.h"

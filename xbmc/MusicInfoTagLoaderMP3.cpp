@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "musicinfotagloadermp3.h"
 #include "stdstring.h"
 #include "sectionloader.h"

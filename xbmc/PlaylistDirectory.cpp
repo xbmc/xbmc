@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "playlistdirectory.h"
 #include "settings.h"
 #include "filesystem/HDdirectory.h"

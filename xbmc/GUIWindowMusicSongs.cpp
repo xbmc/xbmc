@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "GUIWindowMusicSongs.h"
 #include "settings.h"
 #include "guiWindowManager.h"
