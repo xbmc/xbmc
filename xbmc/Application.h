@@ -237,6 +237,7 @@ protected:
   bool                    m_bSettingsLoaded;
   int                     m_iPlaySpeed;
   bool                    m_bAllSettingsLoaded;
+  bool                    m_bInitializing;
   CFileItem               m_itemCurrentFile;
   D3DGAMMARAMP            m_OldRamp;  // CB: SCREENSAVER PATCH
   CSplash*                m_splash;  
