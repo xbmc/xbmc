@@ -20,6 +20,7 @@ public:
 	void						DoModal(DWORD dwParentId);
 	virtual void		Close();
 	virtual bool    Load(const CStdString& strFileName, bool bContainsPath = false);
+	virtual bool		IsRunning() const { return m_bRunning; }
 	
 protected:
 	DWORD						m_dwParentWindowID;
