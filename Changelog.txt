@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 19-03-2005 added: <keepaspectratio> tag to images + infoimages.  Fixes SF bug 1162592.
   - 19-03-2005 changed: Games bookmark defaults to F: now (so that the <default> tag works correctly)
   - 19-03-2005 fixed: Progress control didn't offset from the window's <posx>, <posy> coordinates.  Skins that have worked around this bug need fixing.
   - 19-03-2005 fixed: Subtitle size in Hardware overlays mode.
