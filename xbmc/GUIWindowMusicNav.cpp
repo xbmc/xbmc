@@ -1203,11 +1203,23 @@ void CGUIWindowMusicNav::AddItemToPlayList(const CFileItem* pItem)
 	{
 		// skip ".."
 		if (pItem->GetLabel() == "..") return;
+		
+		// save state
+		int iOldState=m_iState;
+		int iOldPath=m_iPath;
+		CStdString strOldGenre=m_strGenre;
+		CStdString strOldArtist=m_strArtist;
+		CStdString strOldAlbum=m_strAlbum;
+		CStdString strDirectory=m_Directory.m_strPath;
+		CStdString strOldParentPath=m_strParentPath;
+		int iViewAsIcons=m_iViewAsIcons;
 
+		/*
 		// get current filters
 		CStdString strGenre=m_strGenre;
 		CStdString strArtist=m_strArtist;
 		CStdString strAlbum=m_strAlbum;
+		*/
 
 		// update filter with currently selected item
 		switch (m_iState)
@@ -1215,31 +1227,53 @@ void CGUIWindowMusicNav::AddItemToPlayList(const CFileItem* pItem)
 			case SHOW_GENRES:
 			{
 				if (pItem->m_strPath.IsEmpty())
-					strGenre.Empty();
+					m_strGenre.Empty();
 				else
-					strGenre=pItem->m_strPath;
+					m_strGenre=pItem->m_strPath;
 			}
 			break;
 
 			case SHOW_ARTISTS:
 			{
 				if (pItem->m_strPath.IsEmpty())
-					strArtist.Empty();
+					m_strArtist.Empty();
 				else
-					strArtist=pItem->m_strPath;
+					m_strArtist=pItem->m_strPath;
 			}
 			break;
 
 			case SHOW_ALBUMS:
 			{
 				if (pItem->m_strPath.IsEmpty())
-					strAlbum.Empty();
+					m_strAlbum.Empty();
 				else
-					strAlbum=pItem->m_musicInfoTag.GetAlbum();
+					m_strAlbum=pItem->m_musicInfoTag.GetAlbum();
 			}
 			break;
 		}
 
+		m_iState=SHOW_SONGS;
+		VECFILEITEMS items;
+		CFileItemList itemlist(items);
+		GetDirectory("Playlist", items);
+		DoSort(items);
+		for (int i=0; i < (int) items.size(); ++i)
+		{
+			if (!items[i]->m_strPath.IsEmpty())
+				AddItemToPlayList(items[i]);
+		}
+
+		// restore old state
+		m_iState=iOldState;
+		m_iPath=iOldPath;
+		m_strGenre=strOldGenre;
+		m_strArtist=strOldArtist;
+		m_strAlbum=strOldAlbum;
+		m_Directory.m_strPath=strDirectory;
+		m_strParentPath=strOldParentPath;
+		m_iViewAsIcons=iViewAsIcons;
+
+		/*
 		// get songs from the database using filter criteria
 		// and add to playlist
 		VECSONGS songs;
@@ -1252,6 +1286,7 @@ void CGUIWindowMusicNav::AddItemToPlayList(const CFileItem* pItem)
 				AddItemToPlayList(pFileItem);
 			}
 		}
+		*/
 	}
 	else
 	{
@@ -1270,10 +1305,22 @@ void CGUIWindowMusicNav::AddItemToTempPlayList(const CFileItem* pItem)
 {
 	if (pItem->m_bIsFolder)
 	{
+		// save state
+		int iOldState=m_iState;
+		int iOldPath=m_iPath;
+		CStdString strOldGenre=m_strGenre;
+		CStdString strOldArtist=m_strArtist;
+		CStdString strOldAlbum=m_strAlbum;
+		CStdString strDirectory=m_Directory.m_strPath;
+		CStdString strOldParentPath=m_strParentPath;
+		int iViewAsIcons=m_iViewAsIcons;
+
+		/*
 		// get current filters
 		CStdString strGenre=m_strGenre;
 		CStdString strArtist=m_strArtist;
 		CStdString strAlbum=m_strAlbum;
+		*/
 
 		// update filter with currently selected item
 		switch (m_iState)
@@ -1281,33 +1328,55 @@ void CGUIWindowMusicNav::AddItemToTempPlayList(const CFileItem* pItem)
 			case SHOW_GENRES:
 			{
 				if (pItem->m_strPath.IsEmpty())
-					strGenre.Empty();
+					m_strGenre.Empty();
 				else
-					strGenre=pItem->m_strPath;
+					m_strGenre=pItem->m_strPath;
 			}
 			break;
 
 			case SHOW_ARTISTS:
 			{
 				if (pItem->m_strPath.IsEmpty())
-					strArtist.Empty();
+					m_strArtist.Empty();
 				else
-					strArtist=pItem->m_strPath;
+					m_strArtist=pItem->m_strPath;
 			}
 			break;
 
 			case SHOW_ALBUMS:
 			{
 				if (pItem->m_strPath.IsEmpty())
-					strAlbum.Empty();
+					m_strAlbum.Empty();
 				else
-					strAlbum=pItem->m_musicInfoTag.GetAlbum();
+					m_strAlbum=pItem->m_musicInfoTag.GetAlbum();
 			}
 			break;
 		}
 
+		m_iState=SHOW_SONGS;
+		VECFILEITEMS items;
+		CFileItemList itemlist(items);
+		GetDirectory("Playlist", items);
+		DoSort(items);
+		for (int i=0; i < (int) items.size(); ++i)
+		{
+			if (!items[i]->m_strPath.IsEmpty())
+				AddItemToPlayList(items[i]);
+		}
+
+		// restore old state
+		m_iState=iOldState;
+		m_iPath=iOldPath;
+		m_strGenre=strOldGenre;
+		m_strArtist=strOldArtist;
+		m_strAlbum=strOldAlbum;
+		m_Directory.m_strPath=strDirectory;
+		m_strParentPath=strOldParentPath;
+		m_iViewAsIcons=iViewAsIcons;
+
+		/*
 		// get songs from the database using filter criteria
-		// and add to temp playlist
+		// and add to playlist
 		VECSONGS songs;
 		if (g_musicDatabase.GetSongsNav(songs,strGenre,strArtist,strAlbum))
 		{
@@ -1315,9 +1384,10 @@ void CGUIWindowMusicNav::AddItemToTempPlayList(const CFileItem* pItem)
 			{
 				CSong &song = songs[i];
 				CFileItem* pFileItem = new CFileItem(song);
-				AddItemToTempPlayList(pFileItem);
+				AddItemToPlayList(pFileItem);
 			}
 		}
+		*/
 	}
 	else
 	{
