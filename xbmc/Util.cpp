@@ -1629,9 +1629,10 @@ void CUtil::ClearSubtitles()
 	}
 }
 
-void CUtil::CacheSubtitles(const CStdString& strMovie)
+void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached )
 {
   char * sub_exts[] = {  ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx",".ifo", NULL};
+  strExtensionCached = "";
   int iPos=0;
   bool bFoundSubs=false;
   CStdString strPath,strFName;
@@ -1667,6 +1668,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie)
       if ( file.Cache(strSource.c_str(), strDest.c_str(),NULL,NULL))
       {
         CLog::Log(" cached subtitle %s->%s\n", strSource.c_str(), strDest.c_str());
+        strExtensionCached = (CStdString)sub_exts[iPos];
         bFoundSubs=true;
       }
       iPos++;
@@ -1690,6 +1692,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie)
     if ( file.Cache(strSource.c_str(), strDest.c_str(),NULL,NULL))
     {
       CLog::Log(" cached subtitle %s->%s\n", strSource.c_str(), strDest.c_str());
+      strExtensionCached = (CStdString)sub_exts[iPos];
       bFoundSubs=true;
     }
     iPos++;
