@@ -32,7 +32,6 @@ chmod +x configure && ./configure \
 --disable-vidix \
 --disable-inet6 \
 --disable-termcap \
---disable-iconv \
 --disable-freetype \
 --enable-libdts \
 --enable-largefiles \
