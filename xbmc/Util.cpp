@@ -1429,7 +1429,7 @@ bool CUtil::IsHD(const CStdString& strFileName)
 {
   if (strFileName.size()<=2) return false;
   char szDriveletter=tolower(strFileName.GetAt(0));
-  if ( (szDriveletter >= 'c'&& szDriveletter <= 'g') || (szDriveletter=='q')  )
+  if ( (szDriveletter >= 'c'&& szDriveletter <= 'g' && szDriveletter != 'd') || (szDriveletter=='q')  )
   {
     if (strFileName.GetAt(1)==':') return true;
   }
