@@ -203,16 +203,28 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         }
       }
     }
-    else
+  }
+  // check video first
+  if (!nAddedToPlaylist && !bPlaying && g_guiSettings.GetBool("Autorun.Video"))
+  {
+    for (int i = 0; i < vecItems.Size(); i++)
     {
-      if (pItem->IsVideo() && g_guiSettings.GetBool("Autorun.Video"))
+      CFileItem *pItem = vecItems[i];
+      if (!pItem->m_bIsFolder && pItem->IsVideo())
       {
         bPlaying = true;
         g_application.PlayFile( *pItem );
         break;
       }
-
-      if (pItem->IsAudio() && g_guiSettings.GetBool("Autorun.Music"))
+    }
+  }
+  // then music
+  if (!bPlaying && g_guiSettings.GetBool("Autorun.Music"))
+  {
+    for (int i = 0; i < vecItems.Size(); i++)
+    {
+      CFileItem *pItem = vecItems[i];
+      if (!pItem->m_bIsFolder && pItem->IsAudio())
       {
         nAddedToPlaylist++;
         CPlayList::CPlayListItem playlistItem;
@@ -221,8 +233,15 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         playlistItem.SetDuration( pItem->m_musicInfoTag.GetDuration() );
         g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).Add(playlistItem);
       }
-
-      if (pItem->IsPicture() && g_guiSettings.GetBool("Autorun.Pictures"))
+    }
+  }
+  // and finally pictures
+  if (!nAddedToPlaylist && !bPlaying && g_guiSettings.GetBool("Autorun.Pictures"))
+  {
+    for (int i = 0; i < vecItems.Size(); i++)
+    {
+      CFileItem *pItem = vecItems[i];
+      if (!pItem->m_bIsFolder && pItem->IsPicture())
       {
         bPlaying = true;
         m_gWindowManager.ActivateWindow(WINDOW_PICTURES);
