@@ -1205,11 +1205,11 @@
 	</string>
 	<string>
 		<id>376</id>
-		<value>Pluvieux</value>
+		<value>Pluie</value>
 	</string>
 	<string>
 		<id>377</id>
-		<value>Leger</value>
+		<value>Lumineux</value>
 	</string>
 	<string>
 		<id>378</id>
@@ -1243,6 +1243,46 @@
 		<id>385</id>
 		<value>Beau</value>
 	</string>
+        <string>
+                <id>386</id>
+                <value>Dégagé</value>
+        </string>
+        <string>
+                <id>387</id>
+                <value>Nuages</value>
+        </string>
+        <string>
+                <id>388</id>
+                <value>N/C</value>
+        </string>
+        <string>
+                <id>389</id>
+                <value>N/C</value>
+        </string>
+        <string>
+                <id>390</id>
+                <value>N/C</value>
+        </string>
+        <string>
+                <id>391</id>
+                <value>N/C</value>
+        </string>
+        <string>
+                <id>392</id>
+                <value>N/C</value>
+        </string>
+        <string>
+                <id>393</id>
+                <value>N/C</value>
+        </string>
+        <string>
+                <id>394</id>
+                <value>N/C</value>
+        </string>
+        <string>
+                <id>395</id>
+                <value>N/C</value>
+        </string>
 	<string>
 		<id>396</id>
 		<value>Choisir un lieux</value>
@@ -1627,6 +1667,18 @@
 		<id>492</id>
 		<value>Agrandir les sous-titres</value>
 	</string>
+        <string>
+                <id>493</id>
+                <value>Options avancés (Experts uniquement !)</value>
+        </string>
+        <string>
+                <id>494</id>
+                <value>Amplitude avant distortion (dB)</value>
+        </string>
+        <string>
+                <id>495</id>
+                <value>Ajuster les vidéos à la résolution</value>
+        </string>
 	<string>
 		<id>10000</id>
 		<value>Accueil</value>
