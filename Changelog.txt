@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-09-2004 fixed: left mouse doesn't work in my pictures
   - 13-09-2004 fixed: when adding a directory to a videoplaylist the files where added in reverse order
   - 13-09-2004 added: Korean language file (thanks kimp93)
   - 12-09-2004 added: properly display non-Latin file names from ISO 9660 file system
