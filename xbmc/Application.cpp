@@ -734,7 +734,7 @@ bool CApplication::PlayFile(const CStdString& strFile)
 	}
 	if (m_pPlayer)
 	{
-		if (m_strCurrentPlayer != strNewPlayer || !CUtil::IsAudio(strFile) )
+		if (1||m_strCurrentPlayer != strNewPlayer || !CUtil::IsAudio(strFile) )
 		{
 			delete m_pPlayer;
 			m_pPlayer=NULL;
