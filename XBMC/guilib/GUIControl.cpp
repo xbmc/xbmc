@@ -147,12 +147,7 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
       
       case GUI_MSG_LOSTFOCUS:
 			{
-				if (m_bHasFocus)
-				{
-					m_bHasFocus=false;
-					CGUIMessage msg(GUI_MSG_LOSTFOCUS,GetID(), GetParentID(),message.GetParam1());
-					g_graphicsContext.SendMessage(msg);
-				}
+				m_bHasFocus=false;
 				return true;
 			}
       break;
