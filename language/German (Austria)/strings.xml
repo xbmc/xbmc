@@ -155,7 +155,7 @@
   </string>   
   <string>
     <id>110</id>
-    <value>Abbild wird erstellt</value>
+    <value>Abbild wird erstellt.</value>
   </string>   
   <string>
     <id>111</id>
@@ -351,7 +351,7 @@
   </string> 
   <string>
     <id>159</id>
-    <value>Keine Verbindung</value>
+    <value>Keine Verbindung.</value>
   </string> 
   <string>
     <id>160</id>
@@ -479,7 +479,7 @@
   </string>  
   <string>
     <id>191</id>
-    <value>Zufällige Wdgb</value>
+    <value>Zufallsgenerator</value>
   </string>  
   <string>
     <id>192</id>
@@ -827,7 +827,7 @@
   </string>
   <string>
     <id>279</id>
-    <value>Einstellungen können nicht geladen werden</value>
+    <value>Einstellungen können nicht geladen werden!</value>
   </string>
   <string>
     <id>280</id>
@@ -835,15 +835,15 @@
   </string>
   <string>
     <id>281</id>
-    <value>Bitte die .xml Dateien überprüfen</value>
+    <value>Bitte die .xml Dateien überprüfen!</value>
   </string>
   <string>
     <id>282</id>
-    <value>%i Einträge gefunden</value>
+    <value>%i Einträge gefunden.</value>
   </string>
   <string>
     <id>283</id>
-    <value>Resultat der Suche</value>
+    <value>Resultat der Suche:</value>
   </string>
   <string>
     <id>284</id>
@@ -959,7 +959,7 @@
   </string>
   <string>
     <id>313</id>
-    <value>Reorganisiere Datenbank</value>
+    <value>Reorganisiere Datenbank..</value>
   </string>
   <string>
     <id>314</id>
@@ -967,7 +967,7 @@
   </string>
   <string>
     <id>315</id>
-    <value>Datenbank Fehler</value>
+    <value>Datenbank Fehler!</value>
   </string>
   <string>
     <id>316</id>
@@ -975,15 +975,15 @@
   </string>
   <string>
     <id>317</id>
-    <value>Reorganisation erfolgreich</value>
+    <value>Reorganisation erfolgreich.</value>
   </string>
   <string>
     <id>318</id>
-    <value>Markiere gelöschte Dateien</value>
+    <value>Markiere gelöschte Dateien..</value>
   </string>
   <string>
     <id>319</id>
-    <value>Fehler beim Reorganisieren</value>
+    <value>Fehler beim Reorganisieren!</value>
   </string>
   <string>
     <id>320</id>
@@ -991,7 +991,7 @@
   </string>
   <string>
     <id>321</id>
-    <value>Fehler beim Reorganisieren</value>
+    <value>Fehler beim Reorganisieren!</value>
   </string>
   <string>
     <id>322</id>
@@ -999,7 +999,7 @@
   </string>
   <string>
     <id>323</id>
-    <value>Fehler beim Reorganisieren</value>
+    <value>Fehler beim Reorganisieren!</value>
   </string>
   <string>
     <id>324</id>
@@ -1007,7 +1007,7 @@
   </string>
   <string>
     <id>325</id>
-    <value>Fehler beim Reorganisieren</value>
+    <value>Fehler beim Reorganisieren!</value>
   </string>
   <string>
     <id>326</id>
@@ -1015,7 +1015,7 @@
   </string>
   <string>
     <id>327</id>
-    <value>Fehler beim Reorganisieren</value>
+    <value>Fehler beim Reorganisieren!</value>
   </string>
   <string>
     <id>328</id>
@@ -1023,7 +1023,7 @@
   </string>
   <string>
     <id>329</id>
-    <value>Fehler beim Schreiben der Änderungen</value>
+    <value>Fehler beim Schreiben der Änderungen!</value>
   </string>
   <string>
     <id>330</id>
@@ -1035,7 +1035,7 @@
   </string>
   <string>
     <id>332</id>
-    <value>Fehler beim Komprimieren der Datenbank</value>
+    <value>Fehler beim Komprimieren der Datenbank!</value>
   </string>
   <string>
     <id>333</id>
@@ -1043,7 +1043,7 @@
   </string>
   <string>
     <id>334</id>
-    <value>Reorganisiere Musik-Datenbank</value>
+    <value>Reorganisiere Musik-Datenbank..</value>
   </string>
   <string>
     <id>335</id>
@@ -1335,7 +1335,7 @@
   </string> 
   <string>
     <id>407</id>
-    <value>von</value>
+    <value>-</value>
   </string>
   <string>
     <id>408</id>
@@ -1343,7 +1343,7 @@
   </string>      
   <string>
     <id>410</id>
-    <value>Initialisiere Weather.com</value>
+    <value>Initialisiere Weather.com..</value>
   </string>       
   <string>
     <id>411</id>
@@ -1351,7 +1351,7 @@
   </string> 
   <string>
     <id>412</id>
-    <value>Wetterinformationen nicht erhältlich</value>
+    <value>Wetterinformationen nicht erhältlich!</value>
   </string>    
   <string>
     <id>413</id>
@@ -1359,7 +1359,7 @@
   </string>    
   <string>
     <id>414</id>
-    <value>Keine Vorschau für dieses Album</value>
+    <value>Keine Vorschau für dieses Album!</value>
   </string>    
   <string>
     <id>415</id>
@@ -1367,7 +1367,7 @@
   </string> 
   <string>
     <id>416</id>
-    <value>Nicht verfügbar</value>
+    <value>Nicht verfügbar!</value>
   </string> 
   <string>
     <id>417</id>
@@ -1403,11 +1403,11 @@
   </string> 
   <string>
     <id>425</id>
-    <value>Keine Albuminfo gefunden</value>
+    <value>Keine Albuminfo gefunden!</value>
   </string> 
   <string>
     <id>426</id>
-    <value>Keine CDDBinfo gefunden</value>
+    <value>Keine CDDBinfo gefunden!</value>
   </string> 
   <string>
     <id>427</id>
@@ -1415,11 +1415,11 @@
   </string> 
   <string>
     <id>428</id>
-    <value>Legen sie die korrekte CD/DVD ein</value>
+    <value>Legen sie die korrekte CD/DVD ein.</value>
   </string> 
   <string>
     <id>429</id>
-    <value>Bitte folgende CD/DVD einlegen</value>
+    <value>Bitte folgende CD/DVD einlegen:</value>
   </string>  
   <string>
     <id>430</id>
@@ -1431,7 +1431,7 @@
   </string>  
   <string>
     <id>432</id>
-    <value>Lösche Film aus der Datenbank</value>
+    <value>Lösche Film aus der Datenbank..</value>
   </string>  
   <string>
     <id>433</id>
@@ -1505,10 +1505,10 @@
     <id>450</id>
     <value>Spalten:</value>
   </string>
-	<string>
-		<id>4501</id>
-		<value>LCD Typ</value>
-	</string>
+  <string>
+    <id>4501</id>
+  <value>LCD Typ</value>
+  </string>
   <string>
     <id>451</id>
     <value>Reihe 1:</value>
@@ -1579,7 +1579,7 @@
   </string> 
   <string>
     <id>468</id>
-    <value>Bewege die Leiste um die OSD Einstellung zu ändern</value>
+    <value>Bewege die Leiste um die OSD Einstellung zu ändern.</value>
   </string>
   <string>
     <id>469</id>
@@ -1615,7 +1615,7 @@
   </string>
   <string>
     <id>477</id>
-    <value>Wiedergabeliste konnte nicht geladen werden.</value>
+    <value>Wiedergabeliste konnte nicht geladen werden!</value>
   </string>
   <string>
     <id>478</id>
@@ -1703,15 +1703,15 @@
   </string>
   <string>
     <id>499</id>
-    <value>Verbinden mit www.allmusic.com nicht möglich</value>
+    <value>Verbinden mit www.allmusic.com nicht möglich!</value>
   </string>
   <string>
     <id>500</id>
-    <value>Fehler beim Erhalten der Albuminformationen</value>
+    <value>Fehler beim Erhalten der Albuminformationen!</value>
   </string>
   <string>
     <id>501</id>
-    <value>Albuminformationen werden gesucht</value>
+    <value>Albuminformationen werden gesucht..</value>
   </string>
   <string>
     <id>502</id>
@@ -1733,7 +1733,6 @@
   <id>506</id> 
   <value>Verzeichnisnamen verwenden</value> 
   </string>
-
   <string> 	 
     <id>507</id> 	 
     <value>n. Verw. ord.</value> 	 
@@ -1777,11 +1776,11 @@
   </string>
   <string>
     <id>608</id> 
-    <value>Unmöglich CD oder Titel zu rippen</value> 
+    <value>Unmöglich CD oder Titel zu rippen!</value> 
   </string>
   <string>
     <id>609</id> 
-    <value>CDDARipPfad fehlt in XboxMediaCenter.xml</value> 
+    <value>CDDARipPfad fehlt in XboxMediaCenter.xml!</value> 
   </string>
   <string>
     <id>620</id> 
@@ -1812,249 +1811,248 @@
     <value>View Mode</value>
   </string>
   <string>
-		<id>630</id>
-		<value>Normal</value>
+    <id>630</id>
+    <value>Normal</value>
   </string>
   <string>
-		<id>631</id>
-		<value>Zoom</value>
+    <id>631</id>
+    <value>Zoom</value>
   </string>
   <string>
-		<id>632</id>
-		<value>Stretch 4:3</value>
+    <id>632</id>
+    <value>Stretch 4:3</value>
   </string>
   <string>
-		<id>633</id>
-		<value>Stretch 14:9</value>
+    <id>633</id>
+    <value>Stretch 14:9</value>
   </string>
   <string>
-		<id>634</id>
-		<value>Stretch 16:9</value>
+    <id>634</id>
+    <value>Stretch 16:9</value>
   </string>
   <string>
-		<id>635</id>
-		<value>Original Größe</value>
+    <id>635</id>
+    <value>Original Größe</value>
   </string>
   <string>
-		<id>636</id>
-		<value>Benutzerdefiniert</value>
+    <id>636</id>
+    <value>Benutzerdefiniert</value>
   </string>
   <string>
-		<id>700</id>
-		<value>Datenbank säubern</value>
+    <id>700</id>
+    <value>Datenbank säubern</value>
   </string>
   <string>
-		<id>701</id>
-		<value>Lösche alte Musikdaten</value>
+    <id>701</id>
+    <value>Lösche alte Musikdaten</value>
   </string>
   <string>
-		<id>702</id>
-		<value>Pfad wurde bereits durchsucht</value>
+    <id>702</id>
+    <value>Dieser Pfad wurde bereits durchsucht!</value>
   </string>
   <string>
-		<id>703</id>
-		<value>Drücke JA - alle Titel neu einlesen</value>
+    <id>703</id>
+    <value>Drücke - JA - um alle Titel neu einzulesen,</value>
   </string>
   <string>
-		<id>704</id>
-		<value>Drücke NEIN - um nur neue Titel hinzuzufügen</value>
+    <id>704</id>
+    <value>Drücke - NEIN - um nur neue Titel hinzuzufügen.</value>
   </string>
   <string>
-		<id>705</id>
-		<value>Netzwerk</value>
+    <id>705</id>
+    <value>Netzwerk</value>
   </string>
   <string>
-		<id>706</id>
-		<value>HTTP Proxy Host</value>
+    <id>706</id>
+    <value>HTTP Proxy Host</value>
   </string>
   <string>
-		<id>707</id>
-		<value>HTTP Proxy Port</value>
+    <id>707</id>
+    <value>HTTP Proxy Port</value>
   </string>
   <string>
-		<id>708</id>
-		<value>Aktiviere HTTP Proxy</value>
+    <id>708</id>
+    <value>Aktiviere HTTP Proxy</value>
   </string>
   <string>
-		<id>709</id>
-		<value>XLink Kai XTag</value>
+    <id>709</id>
+    <value>XLink Kai XTag</value>
   </string>
   <string>
-		<id>710</id>
-		<value>XLink Kai Password</value>
+    <id>710</id>
+    <value>XLink Kai Password</value>
   </string>
   <string>
-		<id>711</id>
-		<value>Internet Protokoll (IP)</value>
+    <id>711</id>
+    <value>Internet Protokoll (IP)</value>
   </string>
   <string>
-		<id>712</id>
-		<value>Ungültiger Port wurde festgelegt. Der Wert muss zwischen 1 und 65535 liegen.</value>
+    <id>712</id>
+    <value>Ungültiger Port wurde festgelegt. Der Wert muss zwischen 1 und 65535 liegen.</value>
   </string>
   <string>
-		<id>713</id>
-		<value>HTTP Proxy</value>
+    <id>713</id>
+    <value>HTTP Proxy</value>
   </string>	
   <string>
-		<id>714</id>
-		<value>XLink KAI</value>
+    <id>714</id>
+    <value>XLink KAI</value>
   </string>	
   <string>
-		<id>715</id>
-		<value>Zuweisung</value>
+    <id>715</id>
+    <value>Zuweisung</value>
   </string>	
   <string>
-		<id>716</id>
-		<value>Automatisch (DHCP)</value>
+    <id>716</id>
+    <value>Automatisch (DHCP)</value>
   </string>	
   <string>
-		<id>717</id>
-		<value>Manuell (Statisch)</value>
+    <id>717</id>
+    <value>Manuell (Statisch)</value>
   </string>	
   <string>
-		<id>718</id>
-		<value>Standard (Dashboard)</value>
+    <id>718</id>
+    <value>Standard (Dashboard)</value>
   </string>	
   <string>
-		<id>719</id>
-		<value>IP Addresse</value>
+    <id>719</id>
+    <value>IP Addresse</value>
   </string>	
   <string>
-		<id>720</id>
-		<value>Netzmaske</value>
+    <id>720</id>
+    <value>Netzmaske</value>
   </string>	
   <string>
-		<id>721</id>
-		<value>Standard Gateway</value>
+    <id>721</id>
+    <value>Standard Gateway</value>
   </string>	
   <string>
-		<id>722</id>
-		<value>DNS Server</value>
+    <id>722</id>
+    <value>DNS Server</value>
   </string>
   <string>
-		<id>723</id>
-		<value>Sichern &amp; Neustarten</value>
+    <id>723</id>
+    <value>Sichern &amp; Neustarten</value>
   </string>
   <string>
-		<id>724</id>
-		<value>Ungültige Addresse angegeben. Werte müssen AAA.BBB.CCC.DDD sein</value>
+    <id>724</id>
+    <value>Ungültige Addresse angegeben. Werte müssen AAA.BBB.CCC.DDD sein.</value>
   </string>
   <string>
-		<id>725</id>
-		<value>mit Zahlen zwischen 0 und 255.</value>
+    <id>725</id>
+    <value>mit Zahlen zwischen 0 und 255.</value>
   </string>
   <string>
-		<id>726</id>
-		<value>Änderungen nicht gespeichert.Fortfahren?</value>
+    <id>726</id>
+    <value>Änderungen nicht gespeichert.Fortfahren?</value>
   </string>
   <string>
-		<id>727</id>
-		<value>Web Server</value>
+    <id>727</id>
+    <value>Web Server</value>
   </string>	
   <string>
-		<id>728</id>
-		<value>FTP Server</value>
+    <id>728</id>
+    <value>FTP Server</value>
   </string>	
   <string>
-		<id>729</id>
-		<value>Internet Zeit</value>
+    <id>729</id>
+    <value>Internet Zeit</value>
   </string>	
   <string>
-		<id>730</id>
-		<value>Web Server Port</value>
+    <id>730</id>
+    <value>Web Server Port</value>
   </string>	
   <string>
-		<id>731</id>
-		<value>Zeit Server Host</value>
+    <id>731</id>
+    <value>Zeit Server Host</value>
   </string>
   <string>
-		<id>732</id>
-		<value>Sichern &amp; Annehmen</value>
+    <id>732</id>
+    <value>Sichern &amp; Annehmen</value>
   </string>
   <string>
-		<id>733</id>
-		<value>Web Server Passwort</value>
+    <id>733</id>
+    <value>Web Server Passwort</value>
   </string>
   <string>
-		<id>734</id>
-		<value>ungesetzt</value>
-  </string>
-
-  <string>
-		<id>735</id>
-		<value>Symbol</value>
-  </string>	
-  <string>
-		<id>736</id>
-		<value>Stil</value>
-  </string>	
-  <string>
-		<id>737</id>
-		<value>Farbe</value>
+    <id>734</id>
+    <value>ungesetzt</value>
   </string>
   <string>
-		<id>738</id>
-		<value>Normal</value>
+    <id>735</id>
+    <value>Symbol</value>
   </string>	
   <string>
-		<id>739</id>
-		<value>Fett</value>
+    <id>736</id>
+    <value>Stil</value>
   </string>	
   <string>
-		<id>740</id>
-		<value>Kursiv</value>
-  </string>	
-  <string>
-		<id>741</id>
-		<value>Fett Kursiv</value>
-  </string>	
-  <string>
-		<id>742</id>
-		<value>Weiß</value>
-  </string>	
-  <string>
-		<id>743</id>
-		<value>Gelb</value>
+    <id>737</id>
+    <value>Farbe</value>
   </string>
   <string>
-		<id>744</id>
-		<value>Dateien</value>
+    <id>738</id>
+    <value>Normal</value>
+  </string>	
+  <string>
+    <id>739</id>
+    <value>Fett</value>
+  </string>	
+  <string>
+    <id>740</id>
+    <value>Kursiv</value>
+  </string>	
+  <string>
+    <id>741</id>
+    <value>Fett Kursiv</value>
+  </string>	
+  <string>
+    <id>742</id>
+    <value>Weiß</value>
+  </string>	
+  <string>
+    <id>743</id>
+    <value>Gelb</value>
+  </string>
+  <string>
+    <id>744</id>
+    <value>Dateien</value>
   </string>		
   <string>
-		<id>745</id>
-		<value>Keine Informationen für diese Ansicht</value>
+    <id>745</id>
+    <value>Keine Informationen für diese Ansicht!</value>
   </string>		
   <string>
-		<id>746</id>
-		<value>Wechsle zu Dateienansicht</value>
+    <id>746</id>
+    <value>Bitte wieder zu Ansicht "Dateien" wechseln.</value>
   </string>
   <string>
-		<id>747</id>
-		<value>Nicht genug Speicher um das Bilder zu laden</value>
+    <id>747</id>
+    <value>Nicht genügend Speicher um das Bilder zu laden!</value>
   </string>
   <string> 
-                   <id>748</id> 
-                   <value>Pfad ändern</value> 
+    <id>748</id> 
+    <value>Pfad ändern</value> 
   </string> 
   <string> 
-                   <id>749</id> 
-                   <value>Freigabe hinzufügen</value> 
+    <id>749</id> 
+    <value>Freigabe hinzufügen</value> 
   </string> 
   <string> 
-                   <id>750</id> 
-                   <value>Sind sie sicher?</value> 
+    <id>750</id> 
+    <value>Sind sie sicher?</value> 
   </string> 
   <string> 
-                   <id>751</id> 
-                   <value>Freigabe löschen</value> 
+    <id>751</id> 
+    <value>Freigabe löschen</value> 
   </string> 
   <string> 
-                   <id>752</id> 
-                   <value>Freigabe: Pfad ändern</value> 
+    <id>752</id> 
+    <value>Freigabe: Pfad ändern</value> 
   </string> 
   <string> 
-                   <id>753</id> 
-                   <value>Freigabe: Name ändern</value> 
+    <id>753</id> 
+    <value>Freigabe: Name ändern</value> 
   </string> 
 
   <string>	
@@ -2183,7 +2181,7 @@
   </string>
   <string>
     <id>10101</id>
-    <value>inArbeit Dialog</value>
+    <value>in Arbeit Dialog</value>
   </string>
   <string>
     <id>10500</id>
@@ -2282,8 +2280,6 @@
     <value>- minimale Datendauer</value> 
   </string>
 
-
-
   <string>
     <id>13100</id> 
     <value>Flimmerfilter</value> 
@@ -2344,10 +2340,10 @@
 <value>Titel Nummern ausblenden</value>
 </string> 
    <string><id>13308</id>
-<value>Möchten sie die XBox neustarten</value>
+<value>Drücke - JA - um die XBOX neu zu starten</value>
 </string>
    <string><id>13309</id>
-<value>anstelle eines Resets?</value>
+<value>Drücke - NEIN - um nur einen Reset auszuführen</value>
 </string>
     <string><id>13310</id>
 <value>Übergang streckend</value>
@@ -2374,10 +2370,10 @@
 <value>Diaschau</value>
 </string> 
      <string><id>13318</id>
-<value>Rekursive Diaschau</value>
+<value>rekurs. Diaschau</value>
 </string> 
      <string><id>13319</id>
-<value>Zufällige Diaschau</value>
+<value>Zufallsgenerator</value>
 </string> 
      <string><id>13320</id>
 <value>Stereo</value>
@@ -2387,6 +2383,35 @@
 </string> 
      <string><id>13322</id>
 <value>nur rechts</value>
+
+   <string><id>13323</id>
+<value>Aktiviere CD+G</value>
+</string> 
+     <string><id>13324</id>
+<value>Hintergrund Transparenz</value>
+</string> 
+     <string><id>13325</id>
+<value>Vordergrund Transparenz</value>
+</string> 
+     <string><id>13326</id>
+<value>A/V Verzögerung</value>
+</string> 
+     <string><id>13327</id>
+<value>Karaoke</value>
+</string> 
+     <string><id>13328</id>
+<value>%s nicht gefunden.</value>
+</string> 
+     <string><id>13329</id>
+<value>Fehler beim Öffnen von %s</value>
+</string> 
+     <string><id>13330</id>
+<value>Laden von %s nicht möglich</value>
+</string> 
+     <string><id>13331</id>
+<value>Fehler: Nicht genügend Speicher.</value>
+</string> 
+
 </string>
    <string><id>14000</id>
 <value>Verknüpfen: AUS</value>
@@ -2412,6 +2437,5 @@
      <string><id>14007</id>
 <value>Fehler beim Erhalt der Wiedergabeliste</value>
 </string> 
-
 
 </strings>

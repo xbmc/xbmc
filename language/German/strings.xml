@@ -2363,6 +2363,74 @@
     <value>Music OSD deaktivieren nach</value>
   </string>
   <string>
+    <id>13315</id>
+    <value>Thumbnails erstellen</value>
+  </string>
+  <string>
+    <id>13316</id>
+    <value>Rekursive Thumbnails</value>
+  </string>
+  <string>
+    <id>13317</id>
+    <value>Slideshow anzeigen</value>
+  </string>
+  <string>
+    <id>13318</id>
+    <value>Rekursive Slideshow</value>
+  </string>
+  <string>
+    <id>13319</id>
+    <value>Randomize</value>
+  </string>
+  <string>
+    <id>13320</id>
+    <value>Stereo</value>
+  </string>
+  <string>
+    <id>13321</id>
+    <value>Nur links</value>
+  </string>
+  <string>
+    <id>13322</id>
+    <value>Nur rechts</value>
+  </string>
+  <string>
+    <id>13323</id>
+    <value>CD+G aktivieren</value>
+  </string>
+  <string>
+    <id>13324</id>
+    <value>Hintergrundtransparenz</value>
+  </string>
+  <string>
+    <id>13325</id>
+    <value>Vordergrundtransparenz</value>
+  </string>
+  <string>
+    <id>13326</id>
+    <value>A/V Verzögerung</value>
+  </string>
+  <string>
+    <id>13327</id>
+    <value>Karaoke</value>
+  </string>
+  <string>
+    <id>13328</id>
+    <value>%s nicht gefunden</value>
+  </string>
+  <string>
+    <id>13329</id>
+    <value>Fehler beim öffnen von %s</value>
+  </string>
+  <string>
+    <id>13330</id>
+    <value>Laden von %s ist fehlgeschlagen</value>
+  </string>
+  <string>
+    <id>13331</id>
+    <value>Nicht genügend Speicher</value>
+  </string>
+  <string>
     <id>14000</id>
     <value>Stapeln: Aus</value>
   </string>

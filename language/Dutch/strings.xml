@@ -582,16 +582,39 @@
 <string><id>13305</id><value>RSS Feeds inschakelen</value></string>
 <string><id>13306</id><value>Verberg hoofdmapitems</value></string>
 <string><id>13307</id><value>Verberg tracknummers</value></string>
-<string><id>13308</id><value>Wilt u opnieuw opstarten (hardboot)</value></string>
+<string><id>13308</id><value>Wilt u opnieuw opstarten(hardboot)</value></string>
 <string><id>13309</id><value>In plaats van een herstart?(softboot)</value></string>
 <string><id>13310</id><value>Zoom Effect</value></string>
 <string><id>13311</id><value>Zweef Effect</value></string>
 <string><id>13312</id><value>Zwarte balk reductie</value></string>
 <string><id>13313</id><value>Reset/Reboot</value></string>
 <string><id>13314</id><value>Muziek OSD sluittijd</value></string>
-<string><id>14000</id><value>Delen Invoegen: Aan</value></string>
+<string><id>13315</id><value>Maak Thumbnails</value></string>
+	<string><id>13316</id><value>Recursive Thumbnails</value></string> 
+<string><id>13317</id><value>Bekijk Schuifvoorstelling</value></string>
+	<string><id>13318</id><value>Recursive Schuifvoorstelling</value></string>
+<string><id>13319</id><value>Willekeurige volgorde</value></string>
+<string><id>13320</id><value>Stereo</value></string>
+<string><id>13321</id><value>Alleen links</value></string> 
+<string><id>13322</id><value>Alleen rechts</value></string>
+<string><id>13323</id><value>CD+G Inschakelen</value></string>
+<string><id>13324</id><value>Achtergrond Doorzichtigheid</value></string> 
+<string><id>13325</id><value>Voorgrond Doorzichtigheid</value></string>
+<string><id>13326</id><value>A/V vertraging</value></string> 
+<string><id>13327</id><value>Karaoke</value></string>
+<string><id>13328</id><value>%s Niet Gevonden</value></string> 
+<string><id>13329</id><value>Fout tijdens openen %s</value></string> 
+<string><id>13330</id><value>%s Kan niet geladen worden</value></string>
+<string><id>13331</id><value>Fout: geheugen tekort.</value></string>
+<string><id>14000</id><value>Delen Invoegen: Uit</value></string>
 <string><id>14001</id><value>Delen Invoegen: Simpel</value></string> 
 <string><id>14002</id><value>Delen Invoegen: Fuzzy</value></string>
+<string><id>14003</id><value>Downloaden van playlist bestand...</value></string>
+<string><id>14004</id><value>Downloaden van streams lijst...</value></string>
+	<string><id>14005</id><value>Parsing streams lijst...</value></string>
+<string><id>14006</id><value>Downloaden van streams lijst mislukt</value></string> 
+<string><id>14007</id><value>Downloaden van playlist bestand mislukt</value></string>
+
 
 
 
