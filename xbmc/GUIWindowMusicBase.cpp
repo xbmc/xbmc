@@ -1374,8 +1374,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumI
 	  m_dlgProgress->SetLine(0,strAlbum);
 	  m_dlgProgress->SetLine(1,"");
 	  m_dlgProgress->SetLine(2,"");
-		if (!m_dlgProgress->IsRunning())
-			m_dlgProgress->StartModal(GetID());
+	  m_dlgProgress->StartModal(GetID());
 	  m_dlgProgress->Progress();
   }
 

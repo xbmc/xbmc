@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 05-01-2004 fixed: possible problems with progress dialogs
   - 05-01-2004 fixed: slow startup with DVD in drive
   - 04-01-2004 fixed: music/video info hang
   - 04-01-2004 fixed: [ 1092849 ] Cancel saving profile freezes the xbox
