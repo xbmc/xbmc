@@ -1230,4 +1230,8 @@
     <id>412</id>
     <value>Unable to get weather data</value>
   </string>    
+  <string>
+    <id>413</id>
+    <value>Manual</value>
+  </string>    
 </strings>

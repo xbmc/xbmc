@@ -22,7 +22,12 @@ public:
 	void						SetHeading(const wstring& strLine);
 	void						SetHeading(const string& strLine);
 	void						SetHeading(int iString);
+  void            EnableButton(bool bOnOff);
+  void            SetButtonLabel(int iString);
+  bool            IsButtonPressed();
 protected:
+  bool            m_bButtonEnabled;
+  bool            m_bButtonPressed;
 	int							m_iSelected;
 	vector<CGUIListItem*> m_vecList;
 };
