@@ -2334,4 +2334,32 @@
     <id>13307</id>
     <value>Track Nummern ausblenden</value>
   </string>
+  <string>
+    <id>13308</id>
+    <value>Möchten sie die XBox Neustarten</value>
+  </string>
+  <string>
+    <id>13309</id>
+    <value>anstelle eines Resets?</value>
+  </string>
+  <string>
+    <id>13310</id>
+    <value>Übergang streckend</value>
+  </string> 
+  <string>
+    <id>13311</id>
+    <value>Übergang gleitend</value>
+  </string> 
+  <string>
+    <id>13312</id>
+    <value>Ränderreduktion</value>
+  </string> 
+  <string>
+    <id>13313</id>
+    <value>Reset/Neustart</value>
+  </string>
+  <string>
+    <id>13314</id>
+    <value>Music OSD deaktivieren nach</value>
+  </string>
 </strings>

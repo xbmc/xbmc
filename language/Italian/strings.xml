@@ -22,7 +22,7 @@
  <string>
   <id>5</id> 
   <value>Impostazioni</value> 
-  </string>
+ </string>
  <string>
   <id>7</id> 
   <value>Files</value> 
@@ -1069,7 +1069,7 @@
   </string>
  <string>
   <id>342</id> 
-  <value>Video</value> 
+  <value>Filmati</value> 
   </string>
  <string>
   <id>343</id> 
@@ -1653,7 +1653,7 @@
   </string>
  <string>
   <id>489</id> 
-  <value>Utilizza playlist in Musica</value> 
+  <value>Utilizza playlist nelle cartelle</value> 
   </string>
  <string>
   <id>490</id> 
@@ -2021,7 +2021,30 @@
                <id>747</id> 
                <value>Memoria insufficiente per caricare l'immagine</value> 
            </string> 
-
+	<string>
+		<id>748</id>
+		<value>Modifica percorso</value>
+	</string>
+	<string>
+		<id>749</id>
+		<value>Aggiungi Condivisione</value>
+	</string>
+	<string>
+		<id>750</id>
+		<value>Sei sicuro?</value>
+	</string>
+	<string>
+		<id>751</id>
+		<value>Rimuovo condivisione</value>
+	</string>
+	<string>
+		<id>752</id>
+		<value>Modifica percorso condivisione</value>
+	</string>
+	<string>
+		<id>753</id>
+		<value>Modifica nome condivisione</value>
+	</string>
  <string>
   <id>998</id> 
   <value>XLink KAI</value> 
@@ -2297,5 +2320,37 @@
  <string>
 <id>13305</id>
 <value>Abilita i feed RSS</value>
+</string>
+<string>
+<id>13306</id>
+<value>Nascondi oggetti delle sottocartelle</value>
+</string>
+<string>
+<id>13307</id>
+<value>Nascondi numero traccia</value>
+</string>
+<string>
+<id>13308</id>
+<value>Vuoi fare un riavvio hardware</value>
+</string>
+<string>
+<id>13309</id>
+<value>invece di un reset?</value>
+</string>
+<string>
+<id>13310</id>
+<value>Zoom in Transizione</value>
+</string>
+<string>
+<id>13311</id>
+<value>Spostamento in Transizione</value>
+</string>
+<string>
+<id>13312</id>
+<value>Riduzione Bordo</value>
+</string>
+<string>
+<id>13313</id>
+<value>Reset/Riavvio</value>
 </string>
 </strings>
