@@ -245,7 +245,7 @@ int Xcddb::queryCDinfo(int inexact_list_select)
 	{
 		////writeLog("closeSocket OK");
 	}
-	return OK;
+	return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------

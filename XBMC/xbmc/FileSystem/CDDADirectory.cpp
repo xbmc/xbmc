@@ -69,7 +69,7 @@ bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 						//	How to handle?
 						pDlgSelect->Reset();
 						pDlgSelect->SetHeading(255);
-						int i=0;
+						int i=1;
 						while (1)
 						{
 							string strTitle=cddb.getInexactTitle(i++) ;
@@ -77,7 +77,14 @@ bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 							pDlgSelect->Add(strTitle);
 						}
 						pDlgSelect->DoModal(m_gWindowManager.GetActiveWindow());
-
+						int iSelectedCD= pDlgSelect->GetSelectedLabel();
+						if (iSelectedCD>= 0) 
+						{
+							if ( cddb.queryCDinfo(1+iSelectedCD))
+							{
+								b_cddb_names_ok=true;
+							}
+						}
 					}
 					else 
 					{
