@@ -4,6 +4,7 @@
 #include "XNSDirectory.h"
 #include "SMBDirectory.h"
 #include "XBMSDirectory.h"
+#include "CDDADirectory.h"
 #include "../url.h"
 
 CFactoryDirectory::CFactoryDirectory(void)
@@ -36,6 +37,10 @@ CDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 	if (strProtocol=="xbms")
 	{
 		return (CDirectory*)new CXBMSDirectory();
+	}
+	if (strProtocol=="cdda")
+	{
+		return (CDirectory*)new CCDDADirectory();
 	}
 
   return (CDirectory*)new CHDDirectory();

@@ -16,11 +16,6 @@ void	CDirectoryHistory::Set(const CStdString&  strSelectedItem, const CStdString
 {
 	if (strSelectedItem.size()==0) return;
 	if (strDirectory.size()==0) return;
-	OutputDebugString("Set:");
-	OutputDebugString(strDirectory.c_str());
-	OutputDebugString("=");
-	OutputDebugString(strSelectedItem.c_str());
-	OutputDebugString("\n");
 	CStdString strDir=strDirectory;
 	strDir.ToLower();
 	while (CUtil::HasSlashAtEnd(strDir) )
@@ -53,9 +48,6 @@ void	CDirectoryHistory::Set(const CStdString&  strSelectedItem, const CStdString
 
 const CStdString& CDirectoryHistory::Get(const CStdString& strDirectory) const
 {
-	OutputDebugString("Get:");
-	OutputDebugString(strDirectory.c_str());
-	OutputDebugString("=");
 	CStdString strDir=strDirectory;
 	strDir.ToLower();
 	while (CUtil::HasSlashAtEnd(strDir) )
@@ -67,12 +59,9 @@ const CStdString& CDirectoryHistory::Get(const CStdString& strDirectory) const
 		const CHistoryItem& item=m_vecHistory[i];
 		if (  strDir==item.m_strDirectory) 
 		{
-			OutputDebugString(item.m_strItem.c_str());
-			OutputDebugString("\n");
 
 			return item.m_strItem;
 		}
 	}
-	OutputDebugString("?\n");
 	return m_strNull;
 }
