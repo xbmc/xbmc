@@ -170,7 +170,7 @@ void CSettings::Load()
 		}
 	}
 
-  GetString(pRootElement, "skin", g_stSettings.szDefaultSkin,"MediaCenter");
+  //GetString(pRootElement, "skin", g_stSettings.szDefaultSkin,"MediaCenter");
 	GetString(pRootElement, "dashboard", g_stSettings.szDashboard,"C:\\xboxdash.xbe");
 	
 	
