@@ -109,7 +109,7 @@ public:
 
 protected:
   void                  Calculate();
-	void				          RenderItem(bool bFocus,int iPosX, int iPosY, CGUIListItem* pItem);
+	void				          RenderItem(bool bFocus,int iPosX, int iPosY, CGUIListItem* pItem, int iStage);
   void                  RenderText(float fPosX, float fPosY, DWORD dwTextColor, WCHAR* wszText,bool bScroll );
   virtual void          OnRight();
   virtual void          OnLeft();
