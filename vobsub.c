@@ -24,6 +24,7 @@
 #include "unrarlib.h"
 #endif
 
+
 #define MIN(a, b)	((a)<(b)?(a):(b))
 #define MAX(a, b)	((a)>(b)?(a):(b))
 
@@ -429,8 +430,8 @@ mpeg_run(mpeg_t *mpeg)
 		mp_msg(MSGT_VOBSUB,MSGL_ERR, "Bogus aid %d\n", mpeg->aid);
 		return -1;
 	    }
-	    mpeg->packet_size = len - ((unsigned int) mpeg_tell(mpeg) - idx);
-	    if (mpeg->packet_reserve < mpeg->packet_size) {
+ 	    mpeg->packet_size = len - ((unsigned int) mpeg_tell(mpeg) - idx);
+      if (mpeg->packet_reserve < mpeg->packet_size) {
 		if (mpeg->packet)
 		    free(mpeg->packet);
 		mpeg->packet = malloc(mpeg->packet_size);
@@ -497,6 +498,7 @@ typedef struct {
     unsigned char *data;
 #ifdef XBMC_VOBSUB
 	unsigned long offset;
+  char pagedout;      // indicates if we have paged the data out (1 = yes, 0 = no)
 #endif
 } packet_t;
 
@@ -525,6 +527,7 @@ packet_construct(packet_t *pkt)
 
 #ifdef XBMC_VOBSUB
 	pkt->offset = -1;
+  pkt->pagedout = 0;
 #endif
 }
 
@@ -669,6 +672,7 @@ static void packet_queue_pageout(packet_queue_t *queue, int id)
 			queue->pf_used += queue->packets[i].size;
 			free(queue->packets[i].data);
 			queue->packets[i].data = NULL;
+      queue->packets[i].pagedout = 1;
 		}
 	}
 	if (pos)
@@ -1303,14 +1307,15 @@ vobsub_open(const char *const name,const char *const ifo,const int force,void** 
 			if ((mpg->aid & 0xe0) == 0x20) {
 			    unsigned int sid = mpg->aid & 0x1f;
 #ifdef XBMC_VOBSUB
-							if (last_sid != 0xffffffff && last_sid != sid)
-							{
-								packet_queue_pageout(vob->spu_streams + last_sid, last_sid);
-							}
-							last_sid = sid;
+          // page out our data to disk.
+					if (last_sid != 0xffffffff && last_sid != sid)
+					{
+						packet_queue_pageout(vob->spu_streams + last_sid, last_sid);
+					}
+					last_sid = sid;
 #endif
 			    if (vobsub_ensure_spu_stream(vob, sid) >= 0)  {
-				packet_queue_t *queue = vob->spu_streams + sid;
+        packet_queue_t *queue = vob->spu_streams + sid;
 				/* get the packet to fill */
 				if (queue->packets_size == 0 && packet_queue_grow(queue)  < 0)
 				  abort();
@@ -1319,7 +1324,13 @@ vobsub_open(const char *const name,const char *const ifo,const int force,void** 
 				    ++queue->current_index;
 				if (queue->current_index < queue->packets_size) {
 				    packet_t *pkt;
+#ifdef XBMC_VOBSUB
+            // we have likely paged this data out already
+				    if (queue->packets[queue->current_index].data
+                || queue->packets[queue->current_index].pagedout == 1) {
+#else
 				    if (queue->packets[queue->current_index].data) {
+#endif
 					/* insert a new packet and fix the PTS ! */
 					packet_queue_insert(queue);
 					queue->packets[queue->current_index].pts100 =
@@ -1345,6 +1356,7 @@ vobsub_open(const char *const name,const char *const ifo,const int force,void** 
 			}
 		    }
 		}
+#ifdef XBMC_VOBSUB
         for (i = 0; i < vob->spu_streams_size; ++i)
         {
           unsigned long fd = pf_open(i + 256);
@@ -1357,6 +1369,7 @@ vobsub_open(const char *const name,const char *const ifo,const int force,void** 
 		        pf_close(fd);
 	        }
         }
+#endif //XBMC_VOBSUB
 
 		vob->spu_streams_current = vob->spu_streams_size;
 		while (vob->spu_streams_current-- > 0)

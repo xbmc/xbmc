@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 24-02-2005 fixed: Longstanding vobsubs bug.  Some long-ish (2 lines normally) subs weren't displayed.
   - 21-02-2005 fixed: read_font_desc() returned non-NULL when it should have been NULL.  Caused crash on exit of mplayer (particularly flac)
   - 21-02-2005 added: mplayer bugfix/patch for flac.c: http://www1.mplayerhq.hu/cgi-bin/cvsweb.cgi/ffmpeg/libavcodec/flac.c?cvsroot=FFMpeg&sortby=date
   - 10-02-2005 improved: ff/rw should now work even better. needs testing. 
