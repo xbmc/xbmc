@@ -225,6 +225,8 @@ bool CMusicDatabase::CreateTables()
 		m_pDS->exec("CREATE INDEX idxArtist ON artist(strArtist)");
     CLog::Log(LOGINFO, "create path index");
 		m_pDS->exec("CREATE INDEX idxPath ON path(strPath)");
+    CLog::Log(LOGINFO, "create song index");
+		m_pDS->exec("CREATE INDEX idxSong ON song(strTitle)");
 		//m_pDS->exec("CREATE INDEX idxSong ON song(dwFileNameCRC)");
 
 		//	Trigger
@@ -991,7 +993,7 @@ bool CMusicDatabase::GetSongsByArtist(const CStdString strArtist1, VECSONGS& son
 
 		// find the songs whose primary artist is this one
 		CStdString strSQL;
-		strSQL.Format("select * from song,album,path,artist,genre where artist.strArtist like '%s' and song.idArtist=artist.idArtist and song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre",strArtist.c_str() );
+    strSQL.Format("select * from song join artist on song.idartist=artist.idartist join album on song.idalbum=album.idalbum join genre on song.idgenre=genre.idgenre join path on song.idpath=path.idpath where artist.strArtist like '%s'",strArtist.c_str() );
 		if (!m_pDS->query(strSQL.c_str())) return false;
 		while (!m_pDS->eof())
 		{
@@ -1000,7 +1002,7 @@ bool CMusicDatabase::GetSongsByArtist(const CStdString strArtist1, VECSONGS& son
 		}
     m_pDS->close();
 		// find songs with this artist as secondary artist
-		strSQL.Format("select * from song,album,path,artist,exartistsong,genre where artist.strArtist like '%s' and exartistsong.idArtist=artist.idArtist and exartistsong.idSong=song.idSong and song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre",strArtist.c_str() );
+		strSQL.Format("select * from exartistsong join artist on exartistsong.idartist=artist.idartist join song on exartistsong.idsong=song.idsong join album on song.idalbum=album.idalbum join genre on song.idgenre=genre.idgenre join path on song.idpath=path.idpath where artist.strArtist like '%s'",strArtist.c_str() );
 		if (!m_pDS->query(strSQL.c_str())) return false;
 		int iRowsFound = m_pDS->num_rows();
 		while (!m_pDS->eof())
@@ -1036,7 +1038,7 @@ bool CMusicDatabase::GetSongsByAlbum(const CStdString& strAlbum1, const CStdStri
 		if (NULL==m_pDB.get()) return false;
 		if (NULL==m_pDS.get()) return false;
 		CStdString strSQL;
-		strSQL.Format("select * from song,path,album,artist,genre where album.strAlbum like '%s' and song.idAlbum=album.idAlbum and song.idPath=path.idPath and path.strPath='%s' and song.idArtist=artist.idArtist and song.idGenre=genre.idGenre order by song.iTrack", strAlbum, strPath );
+		strSQL.Format("select * from song join album on song.idalbum=album.idalbum join artist on song.idArtist=artist.idArtist join path on song.idPath=path.idPath join genre on song.idGenre=genre.idGenre where album.strAlbum like '%s' and path.strPath like '%s' order by song.iTrack", strAlbum, strPath );
 		if (!m_pDS->query(strSQL.c_str())) return false;
 		int iRowsFound = m_pDS->num_rows();
 		if (iRowsFound== 0)
@@ -1964,7 +1966,8 @@ bool CMusicDatabase::FindSongsByNameAndArtist(const CStdString& strSearch1, VECS
 		}
     m_pDS->close();
 		// and then songs that match in the secondary artists
-		strSQL.Format("select * from song,path,album,artist,exartistsong,genre where artist.strArtist LIKE '%%%s%%' and exartistsong.idArtist=artist.idArtist and exartistsong.idSong=song.idSong and song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre", strSearch.c_str());
+    
+		strSQL.Format("select * from exartistsong join artist on exartistsong.idartist=artist.idartist join song on exartistsong.idsong=song.idsong join album on song.idalbum=album.idalbum join genre on song.idgenre=genre.idgenre join path on song.idpath=path.idpath where artist.strArtist like '%%%s%%'", strSearch.c_str());
 		if (!m_pDS->query(strSQL.c_str())) return false;
 		while (!m_pDS->eof())
 		{
