@@ -35,13 +35,6 @@ typedef struct _XINPUT_STATEEX
 //-----------------------------------------------------------------------------
 struct XBIR_REMOTE : public XINPUT_IR_REMOTE
 {
-    // State of buttons tracked since last poll
-    WORD       wOlderButtons;
-    WORD       wOldButtons;
-	WORD       wLastButtons;
-    WORD       wPressedButtons;
-
-
     // Device properties
     XINPUT_CAPABILITIES caps;
     HANDLE     hDevice;

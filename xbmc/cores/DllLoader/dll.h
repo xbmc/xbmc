@@ -1,6 +1,6 @@
 #ifndef __DLL_H_
 #define __DLL_H_
-#pragma message("including dll.h")
+//#pragma message("including dll.h")
 #include <stdlib.h>
 
 #include "coffldr.h"

@@ -46,8 +46,8 @@ HRESULT XBInput_CreateIR_Remotes( )
             XINPUT_POLLING_PARAMETERS pollValues;
             pollValues.fAutoPoll       = TRUE;
             pollValues.fInterruptOut   = TRUE;
-            pollValues.bInputInterval  = 16;  
-            pollValues.bOutputInterval = 16;
+            pollValues.bInputInterval  = 255;  
+            pollValues.bOutputInterval = 0;
             pollValues.ReservedMBZ1    = 0;
             pollValues.ReservedMBZ2    = 0;
 
@@ -76,15 +76,19 @@ HRESULT XBInput_CreateIR_Remotes( )
 //-----------------------------------------------------------------------------
 VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote)
 {
-    if( NULL == pIR_Remote ) return;
+	if( NULL == pIR_Remote ) return;
 	if (pIR_Remote)
-		ZeroMemory( pIR_Remote, sizeof(XBIR_REMOTE) );
-	
+	{
+		for (int i=0; i < 4; ++i)
+		{
+			ZeroMemory( &pIR_Remote[i], sizeof(XBIR_REMOTE) );
+		}
+	}
     XINPUT_POLLING_PARAMETERS pollValues;
     pollValues.fAutoPoll       = TRUE;
     pollValues.fInterruptOut   = TRUE;
-    pollValues.bInputInterval  = 16;  
-    pollValues.bOutputInterval = 16;
+    pollValues.bInputInterval  = 255;  
+    pollValues.bOutputInterval = 0;
     pollValues.ReservedMBZ1    = 0;
     pollValues.ReservedMBZ2    = 0;
 
@@ -150,8 +154,6 @@ VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote)
 									// Copy remote to local structure
 									memcpy( &pIR_Remote[i], &g_InputStatesEx[i].IR_Remote, sizeof(XINPUT_IR_REMOTE) );
 									pIR_Remote[i].hDevice=(HANDLE)1;
-									pIR_Remote[i].wPressedButtons = pIR_Remote[i].wButtons;
-									pIR_Remote[i].wLastButtons = pIR_Remote[i].wButtons;				
 								}
 								
 							}

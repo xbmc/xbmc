@@ -489,7 +489,7 @@ void CApplication::FrameMove()
 	XBGAMEPAD*  pGamepad	= &m_DefaultGamepad;
 
 	WORD wButtons = pGamepad->wButtons;
-	WORD wRemotes = pRemote->wPressedButtons;
+	WORD wRemotes = pRemote->wButtons;
 	WORD wDpad = wButtons&(XINPUT_GAMEPAD_DPAD_UP|XINPUT_GAMEPAD_DPAD_DOWN|XINPUT_GAMEPAD_DPAD_LEFT|XINPUT_GAMEPAD_DPAD_RIGHT);
 
 	BYTE bLeftTrigger = pGamepad->bAnalogButtons[XINPUT_GAMEPAD_LEFT_TRIGGER];
