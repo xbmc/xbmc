@@ -528,9 +528,9 @@ DbErrors::DbErrors(const char *msg, ...) {
   sprintf(buf, msg, vl);
   va_end(vl);
 
-//  OutputDebugString("\nDatabase Error:");
-//  OutputDebugString(buf);
-  //OutputDebugString("\n");
+  OutputDebugString("SQLite Error:");
+  OutputDebugString(buf);
+  OutputDebugString("\n");
 }
 
 
