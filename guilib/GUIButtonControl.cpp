@@ -85,16 +85,16 @@ void CGUIButtonControl::OnAction(const CAction &action)
 			g_actionManager.CallScriptAction(message);
 		}
 
-		if (m_lHyperLinkWindowID != WINDOW_INVALID)
-		{
-			m_gWindowManager.ActivateWindow(m_lHyperLinkWindowID);
-			return;
-		}
 		// button selected.
 		// send a message
 		CGUIMessage message(GUI_MSG_CLICKED,GetID(), GetParentID() );
 		g_graphicsContext.SendMessage(message);
-    }
+
+		if (m_lHyperLinkWindowID != WINDOW_INVALID)
+		{
+			m_gWindowManager.ActivateWindow(m_lHyperLinkWindowID);
+		}
+	}
 }
 
 bool CGUIButtonControl::OnMessage(CGUIMessage& message)
