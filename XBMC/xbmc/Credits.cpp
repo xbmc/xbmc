@@ -85,7 +85,7 @@ CreditLine_t Credits[] =
   {  50,  35,      0,   7440,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Butcher" },
   {  50,  45,      0,   7440,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Forza" },
   {  50,  55,      0,   7440,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Bobbin007" },
-  {  50,  65,      0,   7440,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"JCMarshall" },
+  {  50,  65,      0,   7440,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"J Marshall" },
   //  crossfade 3.5, on 62, crossfade 3
   {  50,  35,   7500,   7440,  420,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"jwnmulder" },
   {  50,  45,      0,   7440,  420,  360, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"monkeyhappy" },
@@ -259,6 +259,14 @@ CreditLine_t Credits[] =
 	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"My girlfriend," },
 	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Lidl for selling the greatest" },
 	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"frozen salami pizza ever" },
+
+	{  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"J Marshall" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Thanks to Frodo,RUNTiME and d7o3g4q" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"for starting it all" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"My beautiful wife Keren" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"for supporting me while I spend" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"all my free time coding" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"and playing with my toys" },
 
 	{  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"RUNTiME" },
 	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"I asked for my own scroll-text" },
