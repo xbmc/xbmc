@@ -10,16 +10,14 @@ You'll need the following to build XBMC
 
 Next 
   - Install Visual Studio.NET
+      When installing VS.NET. Make sure to install all C++ stuff
   - Install XDK 5778 (or higher)
+      Make sure to do a full install of the XDK!!! Minimal or customized install wont work
   - use winrar or a similar program to uncompress xbmc.tar.gz into a folder
 
 Building
 -----------------
 Start Visual Studio.NET and open the xbmc.sln solution file
-Look @ the toolbar. There should b a dropdown box called 'Solution Configurations'
-It shows this when you hover over it with the mouse. In it it says either
-'Debug ' or 'Release'. If doesnt say 'Release' then change it so it says Release!
-
 Next build the solution with Build->Build Solution (Ctrl+Shift+B)
 Then when all is build, its time to install XBMC on your xbox!
 
