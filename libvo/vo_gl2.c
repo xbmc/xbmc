@@ -16,6 +16,10 @@
 #include "video_out_internal.h"
 #include "sub.h"
 
+#ifdef HAVE_NEW_GUI
+#include "../Gui/interface.h"
+#endif
+
 #include <GL/gl.h>
 #ifdef GL_WIN32
     #include <windows.h>
@@ -37,7 +41,12 @@
 #define NDEBUG
 //#undef NDEBUG
 
-#undef TEXTUREFORMAT_ALWAYS_RGB24
+#undef TEXTUREFORMAT_ALWAYS
+#undef TEXTUREFORMAT_ALWAYS_S
+#ifdef SYS_DARWIN
+#define TEXTUREFORMAT_ALWAYS GL_RGB8
+#define TEXTUREFORMAT_ALWAYS_S "GL_RGB8"
+#endif
 
 static vo_info_t info = 
 {
@@ -55,7 +64,6 @@ LIBVO_EXTERN(gl2)
 #define MODE_RGB 0
 
 /* local data */
-static unsigned char *ImageDataLocal=NULL;
 static unsigned char *ImageData=NULL;
 
 /* X11 related variables */
@@ -78,7 +86,7 @@ static int int_pause;
 
 static uint32_t texture_width;
 static uint32_t texture_height;
-static int texnumx, texnumy, memory_x_len, memory_x_start_offset, raw_line_len;
+static int texnumx, texnumy, raw_line_len;
 static GLfloat texpercx, texpercy;
 static struct TexSquare * texgrid;
 static GLint    gl_internal_format;
@@ -111,6 +119,8 @@ struct TexSquare
   int dirtyXoff, dirtyYoff, dirtyWidth, dirtyHeight;
 };
 
+static void resetTexturePointers(unsigned char *imageSource);
+
 static void CalcFlatPoint(int x,int y,GLfloat *px,GLfloat *py)
 {
   *px=(float)x*texpercx;
@@ -121,7 +131,6 @@ static void CalcFlatPoint(int x,int y,GLfloat *px,GLfloat *py)
 
 static int initTextures()
 {
-  unsigned char *line_1=0, *line_2=0, *mem_start=0;
   struct TexSquare *tsq=0;
   int e_x, e_y, s, i=0;
   int x=0, y=0;
@@ -206,14 +215,7 @@ static int initTextures()
   texgrid = (struct TexSquare *)
     calloc (texnumx * texnumy, sizeof (struct TexSquare));
 
-  line_1 = (unsigned char *) ImageDataLocal;
-  line_2 = (unsigned char *) ImageDataLocal+(image_width*image_bytes);
-
-  mem_start = (unsigned char *) ImageDataLocal;
-
-  raw_line_len = line_2 - line_1;
-
-  memory_x_len = raw_line_len / image_bytes;
+  raw_line_len = image_width * image_bytes;
 
   mp_msg (MSGT_VO, MSGL_DBG2, "[gl2] texture-usage %d*width=%d, %d*height=%d\n",
 		 (int) texnumx, (int) texture_width, (int) texnumy,
@@ -241,16 +243,6 @@ static int initTextures()
       CalcFlatPoint (x + 1, y, &(tsq->fx2), &(tsq->fy2));
       CalcFlatPoint (x + 1, y + 1, &(tsq->fx3), &(tsq->fy3));
       CalcFlatPoint (x, y + 1, &(tsq->fx4), &(tsq->fy4));
-
-      /* calculate the pixel store data,
-         to use the machine-bitmap for our texture 
-      */
-      memory_x_start_offset = 0 * image_bytes + 
-                              x * texture_width * image_bytes;
-
-      tsq->texture = line_1 +                           
-		     y * texture_height * raw_line_len +  
-		     memory_x_start_offset;           
 
       tsq->isDirty=GL_TRUE;
       tsq->isTexture=GL_FALSE;
@@ -291,38 +283,29 @@ static int initTextures()
 
     }	/* for all texnumx */
   }  /* for all texnumy */
+  resetTexturePointers (ImageData);
   
   return 0;
 }
 
 static void resetTexturePointers(unsigned char *imageSource)
 {
-  unsigned char *line_1=0, *line_2=0, *mem_start=0;
-  struct TexSquare *tsq=0;
+  unsigned char *texdata_start, *line_start;
+  struct TexSquare *tsq = texgrid;
   int x=0, y=0;
 
-  line_1 = (unsigned char *) imageSource;
-  line_2 = (unsigned char *) imageSource+(image_width*image_bytes);
-
-  mem_start = (unsigned char *) imageSource;
+  line_start = (unsigned char *) imageSource;
 
   for (y = 0; y < texnumy; y++)
   {
+    texdata_start = line_start;
     for (x = 0; x < texnumx; x++)
     {
-      tsq = texgrid + y * texnumx + x;
-
-      /* calculate the pixel store data,
-         to use the machine-bitmap for our texture 
-      */
-      memory_x_start_offset = 0 * image_bytes + 
-                              x * texture_width * image_bytes;
-
-      tsq->texture = line_1 +                           
-		     y * texture_height * raw_line_len +  
-		     memory_x_start_offset;           
-
+      tsq->texture = texdata_start;
+      texdata_start += texture_width * image_bytes;
+      tsq++;
     }	/* for all texnumx */
+    line_start += texture_height * raw_line_len;
   }  /* for all texnumy */
 }
 
@@ -662,6 +645,18 @@ static int choose_glx_visual(Display *dpy, int scr, XVisualInfo *res_vi)
 		w += val;
 		/* and finally, prefer DirectColor-ed visuals to allow color corrections */
 		if (vi_list[i].class != DirectColor) w += 100;
+
+		// avoid bad-looking visual with less that 8bit per color
+		res = glXGetConfig(dpy, vi_list + i, GLX_RED_SIZE, &val);
+		if (res) continue;
+		if (val < 8) w += 50;
+		res = glXGetConfig(dpy, vi_list + i, GLX_GREEN_SIZE, &val);
+		if (res) continue;
+		if (val < 8) w += 70;
+		res = glXGetConfig(dpy, vi_list + i, GLX_BLUE_SIZE, &val);
+		if (res) continue;
+		if (val < 8) w += 50;
+
 		if (w < best_weight) {
 			best_weight = w;
 			best_i = i;
@@ -672,7 +667,7 @@ static int choose_glx_visual(Display *dpy, int scr, XVisualInfo *res_vi)
 	return (best_weight < 1000000) ? 0 : -1;
 }
 
-static uint32_t config_glx(uint32_t width, uint32_t height, uint32_t d_width, uint32_t d_height, uint32_t flags, char *title, uint32_t format) {
+static int config_glx(uint32_t width, uint32_t height, uint32_t d_width, uint32_t d_height, uint32_t flags, char *title, uint32_t format) {
 	XSizeHints hint;
 	XVisualInfo *vinfo, vinfo_buf;
 	XEvent xev;
@@ -750,7 +745,6 @@ static uint32_t config_glx(uint32_t width, uint32_t height, uint32_t d_width, ui
 
         glXMakeCurrent( mDisplay,vo_window,wsGLXContext );
 
-	XFlush(mDisplay);
 	XSync(mDisplay, False);
 
 	//XSelectInput(mDisplay, vo_window, StructureNotifyMask); // !!!!
@@ -770,14 +764,43 @@ static uint32_t config_glx(uint32_t width, uint32_t height, uint32_t d_width, ui
         return 0;
 }
 
+#ifdef HAVE_NEW_GUI
+static int config_glx_gui(uint32_t d_width, uint32_t d_height) {
+  XWindowAttributes xw_attr;
+  XVisualInfo *vinfo, vinfo_template;
+  int tmp;
+  vo_dwidth = d_width;
+  vo_dheight = d_height;
+  guiGetEvent( guiSetShVideo,0 ); // the GUI will set up / resize the window
+  XGetWindowAttributes(mDisplay, vo_window, &xw_attr);
+  vinfo_template.visualid=XVisualIDFromVisual(xw_attr.visual);
+  vinfo = XGetVisualInfo(mDisplay, VisualIDMask, &vinfo_template, &tmp);
+
+  if ( vo_config_count ) glXDestroyContext( mDisplay,wsGLXContext );
+  wsGLXContext = glXCreateContext( mDisplay,vinfo,NULL,True );
+  if (wsGLXContext == NULL) {
+    mp_msg(MSGT_VO, MSGL_FATAL, "[gl2] Could not create GLX context!\n");
+    XFree(vinfo);
+    return -1;
+  }
+  glXMakeCurrent( mDisplay,vo_window,wsGLXContext );
+  XSync(mDisplay, False);
+
+  if (glXGetConfig(mDisplay,vinfo,GLX_RED_SIZE, &r_sz) != 0) r_sz = 0;
+  if (glXGetConfig(mDisplay,vinfo,GLX_GREEN_SIZE, &g_sz) != 0) g_sz = 0;
+  if (glXGetConfig(mDisplay,vinfo,GLX_BLUE_SIZE, &b_sz) != 0) b_sz = 0;
+  if (glXGetConfig(mDisplay,vinfo,GLX_ALPHA_SIZE, &a_sz) != 0) a_sz = 0;
+  XFree(vinfo);
+  return 0;
+}
+#endif
+
 #endif
 
 static int initGl(uint32_t d_width, uint32_t d_height)
 {
-  ImageDataLocal=malloc(image_width*image_height*image_bytes);
-  memset(ImageDataLocal,128,image_width*image_height*image_bytes);
-
-  ImageData=ImageDataLocal;
+  ImageData=malloc(image_width*image_height*image_bytes);
+  memset(ImageData,128,image_width*image_height*image_bytes);
 
   texture_width=image_width;
   texture_height=image_height;
@@ -790,7 +813,7 @@ static int initGl(uint32_t d_width, uint32_t d_height)
   glDepthMask(GL_FALSE);
   glDisable(GL_CULL_FACE);
 
-  glPixelStorei (GL_UNPACK_ROW_LENGTH, memory_x_len);
+  glPixelStorei (GL_UNPACK_ROW_LENGTH, image_width);
 
   /**
    * may give a little speed up for a kinda burst read ..
@@ -812,6 +835,9 @@ static int initGl(uint32_t d_width, uint32_t d_height)
   gl_set_bilinear(1);
   
   drawTextureDisplay ();
+
+  free (ImageData);
+  ImageData = NULL;
 
   mp_msg(MSGT_VO, MSGL_V, "[gl2] Using image_bpp=%d, image_bytes=%d, isBGR=%d, \n\tgl_bitmap_format=%s, gl_bitmap_type=%s, \n\tgl_alignment=%d, rgb_size=%d (%d,%d,%d), a_sz=%d, \n\tgl_internal_format=%s\n",
   	image_bpp, image_bytes, image_mode==MODE_BGR, 
@@ -846,6 +872,12 @@ config(uint32_t width, uint32_t height, uint32_t d_width, uint32_t d_height, uin
 
 	aspect(&d_width,&d_height,A_NOZOOM);
 
+#ifdef HAVE_NEW_GUI
+	if (use_gui) {
+	  if (config_glx_gui(d_width, d_height) == -1)
+	    return -1;
+	} else
+#endif
 #ifdef GL_WIN32
 	if (config_w32(width, height, d_width, d_height, flags, title, format) == -1)
 #else
@@ -912,9 +944,9 @@ config(uint32_t width, uint32_t height, uint32_t d_width, uint32_t d_height, uin
 	  gl_internal_format_s="GL_RGB";
   }
 
-#ifdef TEXTUREFORMAT_ALWAYS_RGB24
-  gl_internal_format=GL_RGB8;
-  gl_internal_format_s="GL_RGB8";
+#ifdef TEXTUREFORMAT_ALWAYS
+  gl_internal_format=TEXTUREFORMAT_ALWAYS;
+  gl_internal_format_s=TEXTUREFORMAT_ALWAYS_S;
 #endif
 
   if (IMGFMT_IS_BGR(format))
@@ -1058,7 +1090,10 @@ static void check_events(void)
 #endif
 
 static void draw_osd(void)
-{ vo_draw_text(image_width,image_height,draw_alpha_fnc); }
+{
+  if (ImageData)
+    vo_draw_text(image_width,image_height,draw_alpha_fnc);
+}
 
 static void
 flip_page(void)
@@ -1073,6 +1108,9 @@ flip_page(void)
 #else
   glXSwapBuffers( mDisplay,vo_window );
 #endif
+
+  if (vo_fs) // Avoid flickering borders in fullscreen mode
+    glClear (GL_COLOR_BUFFER_BIT);
 }
 
 //static inline uint32_t draw_slice_x11(uint8_t *src[], uint32_t slice_num)
@@ -1121,10 +1159,14 @@ static uint32_t
 query_format(uint32_t format)
 {
     switch(format){
+#ifdef SYS_DARWIN
+    case IMGFMT_RGB32:
+#else
     case IMGFMT_RGB24:
     case IMGFMT_BGR24:
 //    case IMGFMT_RGB32:
 //    case IMGFMT_BGR32:
+#endif
         return VFCAP_CSP_SUPPORTED | VFCAP_CSP_SUPPORTED_BY_HW | VFCAP_OSD;
     }
     return 0;
@@ -1160,6 +1202,8 @@ static uint32_t control(uint32_t request, void *data, ...)
   case VOCTRL_RESUME: return (int_pause=0);
   case VOCTRL_QUERY_FORMAT:
     return query_format(*((uint32_t*)data));
+  case VOCTRL_GUISUPPORT:
+        return VO_TRUE;
   case VOCTRL_ONTOP:
 #ifdef GL_WIN32
     vo_w32_ontop();

@@ -8,7 +8,7 @@ ifeq ($(XMMS_PLUGINS),yes)
 SRCS += demux_xmms.c
 endif 
 ifeq ($(MPLAYER_NETWORK),yes)
-SRCS += asf_streaming.c http.c network.c cookies.c asf_mmst_streaming.c pnm.c
+SRCS += asf_streaming.c http.c network.c cookies.c asf_mmst_streaming.c pnm.c rtp.c
 SRCS += realrtsp/asmrp.c realrtsp/real.c realrtsp/rmff.c realrtsp/rtsp.c realrtsp/rtsp_session.c realrtsp/sdpplin.c realrtsp/xbuffer.c
 ifeq ($(STREAMING_LIVE_DOT_COM),yes)
 CPLUSPLUSSRCS = demux_rtp.cpp demux_rtp_codec.cpp
@@ -16,8 +16,6 @@ CPLUSPLUSINCLUDE = -I$(LIVE_LIB_DIR)/liveMedia/include
 CPLUSPLUSINCLUDE += -I$(LIVE_LIB_DIR)/UsageEnvironment/include
 CPLUSPLUSINCLUDE += -I$(LIVE_LIB_DIR)/BasicUsageEnvironment/include
 CPLUSPLUSINCLUDE += -I$(LIVE_LIB_DIR)/groupsock/include
-else
-SRCS += rtp.c
 endif
 endif
 
@@ -57,6 +55,7 @@ all:	$(LIBNAME)
 
 $(LIBNAME):	$(OBJS)
 	$(AR) r $(LIBNAME) $(OBJS)
+	$(RANLIB) $(LIBNAME)
 
 test:	$(LIBNAME) test.c
 	$(CC) $(CFLAGS) test.c ../mp_msg.c ../osdep/shmem.c -o test ./libmpdemux.a ../libmpdvdkit2/libmpdvdkit.a ../libvo/aclib.o ../libmpcodecs/img_format.o ../libao2/afmt.o ../sub_cc.o ../m_option.o ../subreader.o $(ALSA_LIB) $(VORBIS_LIB) $(CDPARANOIA_LIB) -lz -lpthread

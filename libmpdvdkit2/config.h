@@ -23,7 +23,7 @@
 #undef DVD_STRUCT_IN_SYS_CDIO_H
 
 /* Define if <linux/cdrom.h> defines DVD_STRUCT. */
-#undef DVD_STRUCT_IN_LINUX_CDROM_H
+#define DVD_STRUCT_IN_LINUX_CDROM_H 1
 
 /* Define if <dvd.h> defines DVD_STRUCT. */
 #undef DVD_STRUCT_IN_DVD_H
@@ -38,7 +38,7 @@
 #undef SOLARIS_USCSI
 
 /* Define if Linux-like dvd_struct is defined. */
-#undef HAVE_LINUX_DVD_STRUCT
+#define HAVE_LINUX_DVD_STRUCT 1
 
 /* Define if BSD-like dvd_struct is defined. */
 #undef HAVE_BSD_DVD_STRUCT

@@ -16,21 +16,27 @@ char *ao_subdevice = NULL;
 #ifdef USE_OSS_AUDIO
 extern ao_functions_t audio_out_oss;
 #endif
+#ifdef MACOSX
+extern ao_functions_t audio_out_macosx;
+#endif
 #ifdef USE_ARTS
 extern ao_functions_t audio_out_arts;
 #endif
 #ifdef USE_ESD
 extern ao_functions_t audio_out_esd;
 #endif
+#ifdef USE_JACK
+extern ao_functions_t audio_out_jack;
+#endif
 extern ao_functions_t audio_out_null;
 #ifdef HAVE_ALSA5
  extern ao_functions_t audio_out_alsa5;
 #endif
 #ifdef HAVE_ALSA9
- extern ao_functions_t audio_out_alsa9;
+ extern ao_functions_t audio_out_alsa;
 #endif
 #ifdef HAVE_ALSA1X
- extern ao_functions_t audio_out_alsa1x;
+ extern ao_functions_t audio_out_alsa;
 #endif
 #ifdef HAVE_NAS
 extern ao_functions_t audio_out_nas;
@@ -46,9 +52,6 @@ extern ao_functions_t audio_out_sgi;
 #endif
 #ifdef HAVE_WIN32WAVEOUT
 extern ao_functions_t audio_out_win32;
-#endif
-#ifdef MACOSX
-extern ao_functions_t audio_out_macosx;
 #endif
 #ifdef HAVE_DXR2
 extern ao_functions_t audio_out_dxr2;
@@ -69,17 +72,14 @@ ao_functions_t* audio_out_drivers[] =
 #ifdef HAVE_WIN32WAVEOUT
         &audio_out_win32,
 #endif
-#ifdef MACOSX
-	&audio_out_macosx,
-#endif
 #ifdef USE_OSS_AUDIO
         &audio_out_oss,
 #endif
 #ifdef HAVE_ALSA1X
-	&audio_out_alsa1x,
+	&audio_out_alsa,
 #endif
 #ifdef HAVE_ALSA9
-	&audio_out_alsa9,
+	&audio_out_alsa,
 #endif
 #ifdef HAVE_ALSA5
 	&audio_out_alsa5,
@@ -97,11 +97,17 @@ ao_functions_t* audio_out_drivers[] =
 #ifdef USE_ESD
         &audio_out_esd,
 #endif
+#ifdef USE_JACK
+        &audio_out_jack,
+#endif
 #ifdef HAVE_NAS
 	&audio_out_nas,
 #endif
 #ifdef HAVE_SDL
         &audio_out_sdl,
+#endif
+#ifdef MACOSX
+	&audio_out_macosx,
 #endif
         &audio_out_null,
 // should not be auto-selected:

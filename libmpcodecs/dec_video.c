@@ -305,9 +305,6 @@ unsigned int t2;
 double tt;
 int ret;
 
-extern char* current_module;
-
-current_module = "decode_video_decode";
 //if(!(sh_video->ds->flags&1) || sh_video->ds->pack_no<5)
 mpi=mpvdec->decode(sh_video, start, in_size, drop_frame);
 
@@ -330,7 +327,6 @@ video_time_usage+=tt;
 
 if(!mpi || drop_frame) return 0; // error / skipped frame
 
-current_module = "decode_video_put_image";
 //vo_draw_image(video_out,mpi);
 vf=sh_video->vfilter;
 ret = vf->put_image(vf,mpi); // apply video filters and call the leaf vo/ve

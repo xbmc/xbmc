@@ -417,8 +417,6 @@ uint64_t time= rdtsc();
     s->flags= avctx->flags;
     s->flags2= avctx->flags2;
 
-    *data_size = 0;
-
     /* no supplementary picture */
     if (buf_size == 0) {
         /* special case for last picture */
@@ -625,7 +623,14 @@ retry:
     fprintf(f, "%d %d %f\n", buf_size, s->qscale, buf_size*(double)s->qscale);
 }
 #endif
-       
+
+#ifdef HAVE_MMX
+    if(s->codec_id == CODEC_ID_MPEG4 && s->xvid_build && avctx->idct_algo == FF_IDCT_AUTO && (mm_flags & MM_MMX) && !(s->flags&CODEC_FLAG_BITEXACT)){
+        avctx->idct_algo= FF_IDCT_LIBMPEG2MMX;
+        avctx->width= 0; // force reinit
+    }
+#endif
+
         /* After H263 & mpeg4 header decode we have the height, width,*/
         /* and other parameters. So then we could init the picture   */
         /* FIXME: By the way H263 decoder is evolving it should have */
@@ -653,7 +658,7 @@ retry:
     s->current_picture.key_frame= s->pict_type == I_TYPE;
 
     /* skip b frames if we dont have reference frames */
-    if(s->last_picture_ptr==NULL && s->pict_type==B_TYPE) return get_consumed_bytes(s, buf_size);
+    if(s->last_picture_ptr==NULL && (s->pict_type==B_TYPE || s->dropable)) return get_consumed_bytes(s, buf_size);
     /* skip b frames if we are in a hurry */
     if(avctx->hurry_up && s->pict_type==B_TYPE) return get_consumed_bytes(s, buf_size);
     /* skip everything if we are in a hurry>=5 */

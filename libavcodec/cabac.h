@@ -37,8 +37,9 @@ typedef struct CABACContext{
     uint8_t lps_range[2*64][4];   ///< rangeTabLPS
     uint8_t lps_state[2*64];      ///< transIdxLPS
     uint8_t mps_state[2*64];      ///< transIdxMPS
-    uint8_t *bytestream_start;
-    uint8_t *bytestream;
+    const uint8_t *bytestream_start;
+    const uint8_t *bytestream;
+    const uint8_t *bytestream_end;
     int bits_left;                ///<
     PutBitContext pb;
 }CABACContext;
@@ -48,7 +49,7 @@ extern const uint8_t ff_h264_mps_state[64];
 extern const uint8_t ff_h264_lps_state[64];
 
 void ff_init_cabac_encoder(CABACContext *c, uint8_t *buf, int buf_size);
-void ff_init_cabac_decoder(CABACContext *c, uint8_t *buf, int buf_size);
+void ff_init_cabac_decoder(CABACContext *c, const uint8_t *buf, int buf_size);
 void ff_init_cabac_states(CABACContext *c, uint8_t const (*lps_range)[4], 
                           uint8_t const *mps_state, uint8_t const *lps_state, int state_count);
 
@@ -253,7 +254,9 @@ static inline void renorm_cabac_decoder(CABACContext *c){
         c->range+= c->range;
         c->low+= c->low;
         if(--c->bits_left == 0){
-            c->low+= *c->bytestream++;
+            if(c->bytestream < c->bytestream_end)
+                c->low+= *c->bytestream;
+            c->bytestream++;
             c->bits_left= 8;
         }
     }
@@ -298,7 +301,9 @@ static inline int get_cabac_bypass(CABACContext *c){
     c->low += c->low;
 
     if(--c->bits_left == 0){
-        c->low+= *c->bytestream++;
+        if(c->bytestream < c->bytestream_end)
+            c->low+= *c->bytestream;
+        c->bytestream++;
         c->bits_left= 8;
     }
     

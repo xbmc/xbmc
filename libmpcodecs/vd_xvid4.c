@@ -55,9 +55,10 @@ m_option_t xvid_dec_opts[] = {
 	{ "deblock-chroma", &chromadeblock, CONF_TYPE_FLAG, 0, 0, 1, NULL},
 	{NULL, NULL, 0, 0, 0, 0, NULL}
 };
-void init_color_conversions()
-{
-}
+
+#ifdef _XBOX
+void init_color_conversions() {}
+#endif
 
 /*****************************************************************************
  * Module private data

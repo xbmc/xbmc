@@ -555,33 +555,38 @@ parse_textplain(play_tree_parser_t* p) {
 
   while((line = play_tree_parser_get_line(p)) != NULL) {
     strstrip(line);
-    if(line[0] == '\0')
+    if(line[0] == '\0' || line[0] == '#' || (line[0] == '/' && line[1] == '/'))
       continue;
 
-    //Special check for smil reference in file
+    //Special check for embedded smil or ram reference in file
     embedded = 0;
     if (strlen(line) > 5)
       for(c = line; c[0]; c++ )
-        if((c[0] == '.') && (tolower(c[1]) == 's') && (tolower(c[2])== 'm') && 
+        if ( ((c[0] == '.') && //start with . and next have smil with optional ? or &
+           (tolower(c[1]) == 's') && (tolower(c[2])== 'm') && 
            (tolower(c[3]) == 'i') && (tolower(c[4]) == 'l') &&
-           (!c[5] || c[5] == '?' || c[5] == '&')) {
+           (!c[5] || c[5] == '?' || c[5] == '&')) || // or
+          ((c[0] == '.') && // start with . and next have smi or ram with optional ? or &
+          ( ((tolower(c[1]) == 's') && (tolower(c[2])== 'm') && (tolower(c[3]) == 'i')) || 
+            ((tolower(c[1]) == 'r') && (tolower(c[2])== 'a') && (tolower(c[3]) == 'm')) )
+           && (!c[4] || c[4] == '?' || c[4] == '&')) ){
           entry=embedded_playlist_parse(line);
           embedded = 1;
           break;
         }
 
     if (!embedded) {      //regular file link
-    entry = play_tree_new();
-    play_tree_add_file(entry,line);
+      entry = play_tree_new();
+      play_tree_add_file(entry,line);
     }
 
     if (entry != NULL) {
-    if(!list)
-      list = entry;
-    else
-      play_tree_append_entry(last_entry,entry);
-    last_entry = entry;
-  }
+      if(!list)
+        list = entry;
+      else
+        play_tree_append_entry(last_entry,entry);
+      last_entry = entry;
+    }
   }
    
   if(!list) return NULL;
@@ -598,7 +603,7 @@ parse_playtree(stream_t *stream, int forced) {
 #ifdef MP_DEBUG
   assert(stream != NULL);
 #endif
-  
+
   p = play_tree_parser_new(stream,0);
   if(!p)
     return NULL;

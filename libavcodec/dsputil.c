@@ -2360,6 +2360,33 @@ static void h263_h_loop_filter_c(uint8_t *src, int stride, int qscale){
     }
 }
 
+static void h261_loop_filter_c(uint8_t *src, int stride){
+    int x,y,xy,yz;
+    int temp[64];
+
+    for(x=0; x<8; x++){
+        temp[x      ] = 4*src[x           ];
+        temp[x + 7*8] = 4*src[x + 7*stride];
+    }
+    for(y=1; y<7; y++){
+        for(x=0; x<8; x++){
+            xy = y * stride + x;
+            yz = y * 8 + x;
+            temp[yz] = src[xy - stride] + 2*src[xy] + src[xy + stride];
+        }
+    }
+        
+    for(y=0; y<8; y++){
+        src[  y*stride] = (temp[  y*8] + 2)>>2;
+        src[7+y*stride] = (temp[7+y*8] + 2)>>2;
+        for(x=1; x<7; x++){
+            xy = y * stride + x;
+            yz = y * 8 + x;
+            src[xy] = (temp[yz-1] + 2*temp[yz] + temp[yz+1] + 8)>>4;
+        }
+    }
+}
+
 static inline int pix_abs16_c(void *v, uint8_t *pix1, uint8_t *pix2, int line_size, int h)
 {
     int s, i;
@@ -2560,6 +2587,56 @@ static int pix_abs8_xy2_c(void *v, uint8_t *pix1, uint8_t *pix2, int line_size, 
     return s;
 }
 
+static int nsse16_c(MpegEncContext *c, uint8_t *s1, uint8_t *s2, int stride, int h){
+    int score1=0;
+    int score2=0;
+    int x,y;
+
+    for(y=0; y<h; y++){
+        for(x=0; x<16; x++){
+            score1+= (s1[x  ] - s2[x ])*(s1[x  ] - s2[x ]);
+        }
+        if(y+1<h){
+            for(x=0; x<15; x++){
+                score2+= ABS(  s1[x  ] - s1[x  +stride]
+                             - s1[x+1] + s1[x+1+stride])
+                        -ABS(  s2[x  ] - s2[x  +stride]
+                             - s2[x+1] + s2[x+1+stride]);
+            }
+        }
+        s1+= stride;
+        s2+= stride;
+    }
+
+    if(c) return score1 + ABS(score2)*c->avctx->nsse_weight;
+    else  return score1 + ABS(score2)*8;
+}
+
+static int nsse8_c(MpegEncContext *c, uint8_t *s1, uint8_t *s2, int stride, int h){
+    int score1=0;
+    int score2=0;
+    int x,y;
+    
+    for(y=0; y<h; y++){
+        for(x=0; x<8; x++){
+            score1+= (s1[x  ] - s2[x ])*(s1[x  ] - s2[x ]);
+        }
+        if(y+1<h){
+            for(x=0; x<7; x++){
+                score2+= ABS(  s1[x  ] - s1[x  +stride]
+                             - s1[x+1] + s1[x+1+stride])
+                        -ABS(  s2[x  ] - s2[x  +stride]
+                             - s2[x+1] + s2[x+1+stride]);
+            }
+        }
+        s1+= stride;
+        s2+= stride;
+    }
+    
+    if(c) return score1 + ABS(score2)*c->avctx->nsse_weight;
+    else  return score1 + ABS(score2)*8;
+}
+
 static int try_8x8basis_c(int16_t rem[64], int16_t weight[64], int16_t basis[64], int scale){
     int i;
     unsigned int sum=0;
@@ -2652,6 +2729,9 @@ void ff_set_cmp(DSPContext* c, me_cmp_func *cmp, int type){
             break;
         case FF_CMP_ZERO:
             cmp[i]= zero_cmp;
+            break;
+        case FF_CMP_NSSE:
+            cmp[i]= c->nsse[i];
             break;
         default:
             av_log(NULL, AV_LOG_ERROR,"internal error in cmp function selection\n");
@@ -3286,6 +3366,8 @@ void dsputil_init(DSPContext* c, AVCodecContext *avctx)
     c->vsad[4]= vsad_intra16_c;
     c->vsse[0]= vsse16_c;
     c->vsse[4]= vsse_intra16_c;
+    c->nsse[0]= nsse16_c;
+    c->nsse[1]= nsse8_c;
         
     c->add_bytes= add_bytes_c;
     c->diff_bytes= diff_bytes_c;
@@ -3294,6 +3376,8 @@ void dsputil_init(DSPContext* c, AVCodecContext *avctx)
     
     c->h263_h_loop_filter= h263_h_loop_filter_c;
     c->h263_v_loop_filter= h263_v_loop_filter_c;
+    
+    c->h261_loop_filter= h261_loop_filter_c;
     
     c->try_8x8basis= try_8x8basis_c;
     c->add_8x8basis= add_8x8basis_c;

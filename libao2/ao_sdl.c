@@ -35,6 +35,9 @@ static ao_info_t info =
 
 LIBAO_EXTERN(sdl)
 
+// turn this on if you want to use the slower SDL_MixAudio
+#define USE_SDL_INTERNAL_MIXER 1
+
 // Samplesize used by the SDLlib AudioSpec struct
 #ifdef WIN32
 #define SAMPLESIZE 2048
@@ -53,7 +56,9 @@ static unsigned int buf_read=0;
 static unsigned int buf_write=0;
 static unsigned int buf_read_pos=0;
 static unsigned int buf_write_pos=0;
+#ifdef USE_SDL_INTERNAL_MIXER
 static unsigned char volume=SDL_MIX_MAXVOLUME;
+#endif
 static int full_buffers=0;
 static int buffered_bytes=0;
 
@@ -87,7 +92,11 @@ static int read_buffer(unsigned char* data,int len){
     x=BUFFSIZE-buf_read_pos;
     if(x>len) x=len;
     if (x>buffered_bytes) x=buffered_bytes;
+#ifdef USE_SDL_INTERNAL_MIXER
     SDL_MixAudio(data+len2,buffer[buf_read]+buf_read_pos,x,volume);
+#else
+    memcpy(data+len2,buffer[buf_read]+buf_read_pos,x);
+#endif
     len2+=x; len-=x;
     buffered_bytes-=x; buf_read_pos+=x;
     if(buf_read_pos>=BUFFSIZE){
@@ -121,6 +130,7 @@ static void setenv(const char *name, const char *val, int _xx)
 
 // to set/get/query special features/parameters
 static int control(int cmd,void *arg){
+#ifdef USE_SDL_INTERNAL_MIXER
 	switch (cmd) {
 		case AOCONTROL_GET_VOLUME:
 		{
@@ -137,7 +147,8 @@ static int control(int cmd,void *arg){
 			return CONTROL_OK;
 		}
 	}
-	return -1;
+#endif
+	return CONTROL_UNKNOWN;
 }
 
 // SDL Callback function
@@ -196,8 +207,9 @@ static int init(int rate,int channels,int format,int flags){
 		aspec.format = AUDIO_U16MSB;
 	    break;
 	    default:
+                aspec.format = AUDIO_S16LSB;
+                ao_data.format = AFMT_S16_LE;
                 mp_msg(MSGT_AO,MSGL_WARN,"SDL: Unsupported audio format: 0x%x.\n", format);
-                return 0;
 	}
 
 	/* The desired audio frequency in samples-per-second. */

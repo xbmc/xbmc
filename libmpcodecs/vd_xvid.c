@@ -62,9 +62,9 @@ m_option_t xvid_dec_opts[] = {
   {NULL, NULL, 0, 0, 0, 0, NULL}
 };
 
-void init_color_conversions()
-{
-}
+#ifdef _XBOX
+void init_color_conversions() {}
+#endif
 
 // to set/get/query special features/parameters
 static int control(sh_video_t *sh,int cmd,void* arg,...){

@@ -369,23 +369,18 @@ while(1){
       priv->idx=malloc(priv->idx_size<<4);
 //      printf("\nindex to %p !!!!! (priv=%p)\n",priv->idx,priv);
       stream_read(demuxer->stream,(char*)priv->idx,priv->idx_size<<4);
-      for (i = 0; i < priv->idx_size; i++)	// swap index to machine endian
-	le2me_AVIINDEXENTRY((AVIINDEXENTRY*)priv->idx + i);
+      for (i = 0; i < priv->idx_size; i++) {	// swap index to machine endian
+	AVIINDEXENTRY *entry=(AVIINDEXENTRY*)priv->idx + i;
+	le2me_AVIINDEXENTRY(entry);
+	/*
+	 * We (ab)use the upper word for bits 32-47 of the offset, so
+	 * we'll clear them here.
+	 * FIXME: AFAIK no codec uses them, but if one does it will break
+	 */
+	entry->dwFlags&=0xffff;
+      }
       chunksize-=priv->idx_size<<4;
       if(verbose>=2) print_index(priv->idx,priv->idx_size);
-      /*
-       * Fixup index for files >4GB
-       */
-      for (i = 0; i < priv->idx_size; i++) {
-	AVIINDEXENTRY *idx = (AVIINDEXENTRY*)priv->idx + i;
-	idx->dwFlags &= 0xffff;
-	if (idx->dwChunkOffset < last_off) {
-	  mp_msg(MSGT_HEADER,MSGL_WARN,"Index offset going backwards (last=%08X, now=%08X), compensating...\n", last_off, idx->dwChunkOffset);
-	  base += 0x100000000LL;
-	}
-	idx->dwFlags |= base >> 16;
-	last_off = idx->dwChunkOffset;
-      }
     }
     break;
     /* added May 2002 */
@@ -441,6 +436,13 @@ while(1){
   if(chunksize>0) stream_skip(demuxer->stream,chunksize); else
   if((int)chunksize<0) mp_msg(MSGT_HEADER,MSGL_WARN,"chunksize=%u  (id=%.4s)\n",chunksize,(char *) &id);
   
+}
+
+if (priv->suidx_size > 0 && priv->idx_size == 0) {
+    /*
+     * No NEWAVIINDEX, but we got an OpenDML index.
+     */
+    priv->isodml = 1;
 }
 
 if (priv->isodml && (index_mode==-1 || index_mode==0)) {

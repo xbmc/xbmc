@@ -6,9 +6,7 @@
 
 include config.mak
 
-PRG = mplayer
 PRG_CFG = codec-cfg
-PRG_MENCODER = mencoder
 
 # Do not strip the binaries at installation
 ifeq ($(STRIPBINARIES),yes)
@@ -23,7 +21,7 @@ endif
 
 SRCS_COMMON = cpudetect.c codec-cfg.c spudec.c playtree.c playtreeparser.c asxparser.c vobsub.c subreader.c sub_cc.c find_sub.c m_config.c m_option.c parser-cfg.c m_struct.c
 SRCS_MENCODER = mencoder.c mp_msg-mencoder.c $(SRCS_COMMON) libao2/afmt.c divx4_vbr.c libvo/aclib.c libvo/osd.c libvo/sub.c libvo/font_load.c libvo/font_load_ft.c xvid_vbr.c parser-mecmd.c
-SRCS_MPLAYER = mplayer.c mp_msg.c $(SRCS_COMMON) mixer.c parser-mpcmd.c xbmc.c
+SRCS_MPLAYER = mplayer.c mp_msg.c $(SRCS_COMMON) mixer.c parser-mpcmd.c xbmcsys/xbmc_vobsub/xbmc.c
 
 ifeq ($(UNRARLIB),yes)
 SRCS_COMMON += unrarlib.c
@@ -33,11 +31,11 @@ OBJS_MENCODER = $(SRCS_MENCODER:.c=.o)
 OBJS_MPLAYER = $(SRCS_MPLAYER:.c=.o)
 
 VO_LIBS = $(AA_LIB) $(X_LIB) $(SDL_LIB) $(GGI_LIB) $(MP1E_LIB) $(MLIB_LIB) $(SVGA_LIB) $(DIRECTFB_LIB) $(CACA_LIB)
-AO_LIBS = $(ARTS_LIB) $(ESD_LIB) $(NAS_LIB) $(SGIAUDIO_LIB)
+AO_LIBS = $(ARTS_LIB) $(ESD_LIB) $(JACK_LIB) $(NAS_LIB) $(SGIAUDIO_LIB)
 CODEC_LIBS = $(AV_LIB) $(FAME_LIB) $(MAD_LIB) $(VORBIS_LIB) $(THEORA_LIB) $(FAAD_LIB) $(LIBLZO_LIB) $(DECORE_LIB) $(XVID_LIB) $(PNG_LIB) $(Z_LIB) $(JPEG_LIB) $(ALSA_LIB) $(XMMS_LIB) $(MATROSKA_LIB) 
-COMMON_LIBS = libmpcodecs/libmpcodecs.a mp3lib/libMP3.a liba52/liba52.a libmpeg2/libmpeg2.a $(W32_LIB) $(DS_LIB) libaf/libaf.a libmpdemux/libmpdemux.a input/libinput.a postproc/libswscale.a osdep/libosdep.a $(DVDREAD_LIB) $(CODEC_LIBS) $(FREETYPE_LIB) $(TERMCAP_LIB) $(CDPARANOIA_LIB) $(MPLAYER_NETWORK_LIB) $(WIN32_LIB) $(GIF_LIB) $(MACOSX_FRAMEWORKS) $(SMBSUPPORT_LIB) $(FRIBIDI_LIB) $(FONTCONFIG_LIB)
+COMMON_LIBS = libmpcodecs/libmpcodecs.a mp3lib/libMP3.a liba52/liba52.a libmpeg2/libmpeg2.a $(W32_LIB) $(DS_LIB) libaf/libaf.a libmpdemux/libmpdemux.a input/libinput.a postproc/libswscale.a osdep/libosdep.a $(DVDREAD_LIB) $(CODEC_LIBS) $(FREETYPE_LIB) $(TERMCAP_LIB) $(CDPARANOIA_LIB) $(MPLAYER_NETWORK_LIB) $(WIN32_LIB) $(GIF_LIB) $(MACOSX_FRAMEWORKS) $(SMBSUPPORT_LIB) $(FRIBIDI_LIB) $(FONTCONFIG_LIB) $(ENCA_LIB)
 
-CFLAGS = $(OPTFLAGS) -Ilibmpdemux -Iloader -Ilibvo $(FREETYPE_INC) $(EXTRA_INC) $(CDPARANOIA_INC) $(SDL_INC) $(X11_INC) $(FRIBIDI_INC) $(DVB_INC) $(XVID_INC) $(FONTCONFIG_INC) # -Wall
+CFLAGS = $(OPTFLAGS) -Ilibmpdemux -Iloader -Ilibvo $(FREETYPE_INC) $(EXTRA_INC) $(CDPARANOIA_INC) $(SDL_INC) $(X11_INC) $(FRIBIDI_INC) $(DVB_INC) $(XVID_INC) $(FONTCONFIG_INC) $(CACA_INC) # -Wall
 
 PARTS = libmpdemux libmpcodecs mp3lib liba52 libmpeg2 libavcodec libavformat libao2 drivers osdep postproc input libvo libaf
 ifeq ($(INTERNAL_FAAD),yes)
@@ -103,7 +101,7 @@ endif
 
 .SUFFIXES: .cc .c .o
 
-# .PHONY: $(COMMON_DEPS)
+#.PHONY: $(COMMON_DEPS)
 
 all:	version.h $(ALL_PRG)
 
@@ -195,7 +193,7 @@ else
 MENU_LIBS =
 endif
 
-MENCODER_DEP = $(OBJS_MENCODER) $(COMMON_DEPS)
+MENCODER_DEP = $(OBJS_MENCODER) $(COMMON_DEPS) libmpcodecs/libmpencoders.a
 
 ifeq ($(VIDIX),yes)
 VIDIX_LIBS = vidix/libvidix.a
@@ -203,8 +201,14 @@ else
 VIDIX_LIBS =
 endif
 
+ifeq ($(TARGET_WIN32),yes)
+OBJS_MPLAYER += osdep/mplayer-rc.o
+endif
+
 $(PRG):	$(MPLAYER_DEP)
-	./darwinfixlib.sh $(MPLAYER_DEP)
+    ifeq ($(TARGET_WIN32),yes)
+	windres -o osdep/mplayer-rc.o osdep/mplayer.rc
+    endif
 	$(CC) $(CFLAGS) -o $(PRG) $(OBJS_MPLAYER) libvo/libvo.a libao2/libao2.a $(MENU_LIBS) $(VIDIX_LIBS) $(GUI_LIBS) $(COMMON_LIBS) $(GTK_LIBS) $(VO_LIBS) $(AO_LIBS) $(EXTRA_LIB) $(LIRC_LIB) $(LIRCC_LIB) $(STATIC_LIB) $(ARCH_LIB) $(I18NLIBS) -lm
 
 mplayer.exe.spec.c: libmpcodecs/libmpcodecs.a
@@ -216,12 +220,10 @@ mplayer.exe.so:	$(MPLAYER_DEP) mplayer.exe.spec.c
 	$(CC) $(CFLAGS) -Wall -shared  -Wl,-rpath,/usr/local/lib -Wl,-Bsymbolic  -o mplayer.exe.so $(OBJS_MPLAYER) mplayer.exe.spec.c libvo/libvo.a libao2/libao2.a $(MENU_LIBS) $(VIDIX_LIBS) $(GUI_LIBS) $(COMMON_LIBS) $(GTK_LIBS) $(VO_LIBS) $(AO_LIBS) $(EXTRA_LIB) $(LIRC_LIB) $(LIRCC_LIB) $(STATIC_LIB) $(ARCH_LIB) -lwine -lm 
 
 mplayer_wine.so:	$(MPLAYER_DEP)
-	./darwinfixlib.sh $(MPLAYER_DEP)
 	$(CC) $(CFLAGS) -shared -Wl,-Bsymbolic -o mplayer_wine.so mplayer_wine.spec.c $(OBJS_MPLAYER) libvo/libvo.a libao2/libao2.a $(MENU_LIBS) $(VIDIX_LIBS) $(GUI_LIBS) $(COMMON_LIBS) $(GTK_LIBS) $(VO_LIBS) $(AO_LIBS) $(EXTRA_LIB) $(LIRC_LIB) $(LIRCC_LIB) $(STATIC_LIB) -lwine $(ARCH_LIB) -lm
 
 ifeq ($(MENCODER),yes)
 $(PRG_MENCODER): $(MENCODER_DEP)
-	./darwinfixlib.sh $(MENCODER_DEP) libmpcodecs/libmpencoders.a
 	$(CC) $(CFLAGS) -o $(PRG_MENCODER) $(OBJS_MENCODER) libmpcodecs/libmpencoders.a $(ENCORE_LIB) $(COMMON_LIBS) $(EXTRA_LIB) $(MLIB_LIB) $(LIRC_LIB) $(LIRCC_LIB) $(ARCH_LIB) $(I18NLIBS) -lm 
 endif
 
@@ -306,8 +308,6 @@ distclean:
 	-rm -f *~ $(PRG) $(PRG_MENCODER) $(PRG_CFG) $(OBJS)
 	-rm -f *.o *.a .depend configure.log codecs.conf.h
 	@for a in $(PARTS); do $(MAKE) -C $$a distclean; done
-	-$(MAKE) -C libavcodec distclean LIBPREF=lib LIBSUF=.a
-	-$(MAKE) -C libavformat distclean LIBPREF=lib LIBSUF=.a
 
 strip:
 	strip -s $(ALL_PRG)
@@ -324,22 +324,22 @@ config.h: configure
 	@echo "############################################################"
 	@echo "####### Please run ./configure again - it's changed! #######"
 	@echo "############################################################"
-ifeq ($(wildcard developer),)
+ifeq ($(wildcard .developer),)
 	@exit 1
 endif
 
-# do not rebuild after cvs commits if developer file is present!
+# do not rebuild after cvs commits if .developer file is present!
 
 # rebuild at every config.h/config.mak change:
 version.h:
 	./version.sh `$(CC) -dumpversion`
-ifeq ($(wildcard developer),)
+ifeq ($(wildcard .developer),)
 	$(MAKE) distclean
 endif
 	$(MAKE) depend
 
 # rebuild at every CVS update or config/makefile change:
-ifeq ($(wildcard developer),)
+ifeq ($(wildcard .developer),)
 ifneq ($(wildcard CVS/Entries),)
 version.h: CVS/Entries
 endif

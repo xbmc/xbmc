@@ -256,15 +256,16 @@ static int libc_open ( dvdcss_t dvdcss, char const *psz_device )
 #if defined( WIN32 )
 #ifdef _XBOX
 extern HANDLE xboxopendvdrom();
-#endif //_XBOX
+#endif //!_XBOX
 static int win2k_open ( dvdcss_t dvdcss, char const *psz_device )
 {
-    char psz_dvd[70];
 #ifdef _XBOX
-    strcpy(psz_dvd,"\\Device\\Cdrom0");
+    char psz_dvd[70];
+    strcpy(psz_dvd, "\\Device\\Cdrom0");
 #else
+    char psz_dvd[7];
     _snprintf( psz_dvd, 7, "\\\\.\\%c:", psz_device[0] );
-#endif //_XBOX
+#endif //!_XBOX
 
     /* To work around an M$ bug in IOCTL_DVD_READ_STRUCTURE, we need read
      * _and_ write access to the device (so we can make SCSI Pass Through
@@ -283,27 +284,27 @@ static int win2k_open ( dvdcss_t dvdcss, char const *psz_device )
     else
     {
       printf("open file\n");
-#endif //_XBOX
-      (HANDLE) dvdcss->i_fd =
+#endif //!_XBOX
+    (HANDLE) dvdcss->i_fd =
                 CreateFile( psz_dvd, GENERIC_READ | GENERIC_WRITE,
-                              FILE_SHARE_READ | FILE_SHARE_WRITE,
-                              NULL, OPEN_EXISTING,
-                              FILE_FLAG_RANDOM_ACCESS, NULL );
+                            FILE_SHARE_READ | FILE_SHARE_WRITE,
+                            NULL, OPEN_EXISTING,
+                            FILE_FLAG_RANDOM_ACCESS, NULL );
 
-    	if( (HANDLE) dvdcss->i_fd == INVALID_HANDLE_VALUE )
+    if( (HANDLE) dvdcss->i_fd == INVALID_HANDLE_VALUE )
         (HANDLE) dvdcss->i_fd =
                     CreateFile( psz_dvd, GENERIC_READ, FILE_SHARE_READ,
                                 NULL, OPEN_EXISTING,
                                 FILE_FLAG_RANDOM_ACCESS, NULL );
 
-    	if( (HANDLE) dvdcss->i_fd == INVALID_HANDLE_VALUE )
-    	{
+    if( (HANDLE) dvdcss->i_fd == INVALID_HANDLE_VALUE )
+    {
         _dvdcss_error( dvdcss, "failed opening device" );
         return -1;
-    	}
+    }
 #ifdef _XBOX
     }
-#endif //_XBOX
+#endif //!_XBOX
 
     dvdcss->i_pos = 0;
 

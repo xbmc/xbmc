@@ -4,7 +4,7 @@
 
 #include "cfg-common.h"
 
-extern int use_stdin;
+extern int noconsolecontrols;
 
 #if defined(HAVE_FBDEV)||defined(HAVE_VESA)
 extern char *monitor_hfreq_str;
@@ -77,11 +77,6 @@ extern int osd_level;
 
 extern char *ao_outputfilename;
 extern int ao_pcm_waveheader;
-
-#ifdef HAVE_DIRECTX
-extern int adapter_num;
-extern int refresh_rate;
-#endif
 
 #ifdef HAVE_X11
 extern char *mDisplayName;
@@ -417,10 +412,14 @@ m_option_t mplayer_opts[]={
 	{"softsleep", &softsleep, CONF_TYPE_FLAG, 0, 0, 1, NULL},
 #ifdef HAVE_RTC
 	{"nortc", &nortc, CONF_TYPE_FLAG, 0, 0, 1, NULL},
+	{"rtc", &nortc, CONF_TYPE_FLAG, 0, 0, 0, NULL},
+	{"rtc-device", &rtc_device, CONF_TYPE_STRING, 0, 0, 0, NULL},
 #endif
 
 	{"slave", &slave_mode, CONF_TYPE_FLAG,CONF_GLOBAL , 0, 1, NULL},
-	{"use-stdin", &use_stdin, CONF_TYPE_FLAG, CONF_GLOBAL, 0, 1, NULL},
+	{"use-stdin", "-use-stdin has been renamed to -noconsolecontrols, use that instead.", CONF_TYPE_PRINT, 0, 0, 0, NULL},
+	{"noconsolecontrols", &noconsolecontrols, CONF_TYPE_FLAG, CONF_GLOBAL, 0, 1, NULL},
+	{"consolecontrols", &noconsolecontrols, CONF_TYPE_FLAG, CONF_GLOBAL, 0, 0, NULL},
 
 #define MAIN_CONF
 #include "cfg-common.h"
