@@ -1528,6 +1528,22 @@
      <id>466</id>
      <value>Gamma</value>
    </string> 
+  <string>
+    <id>467</id>
+    <value>Typ</value>
+  </string> 
+  <string>
+    <id>468</id>
+    <value>Move the bar to change the osd position</value>
+  </string>
+  <string>
+    <id>469</id>
+    <value>OSD Position</value>
+  </string>
+   <string>
+     <id>470</id>
+     <value>Credits</value>
+   </string>
 
  <string><id>10000</id><value>Start</value></string>
  <string><id>10001</id><value>Mina Program</value></string>
