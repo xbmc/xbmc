@@ -29,16 +29,16 @@ void CGUIWindowSystemInfo::OnAction(const CAction &action)
 
 bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 {
-  switch ( message.GetMessage() )
-  {
-    case GUI_MSG_WINDOW_DEINIT:
-    break;
+	switch ( message.GetMessage() )
+	{
+	case GUI_MSG_WINDOW_DEINIT:
+		break;
 
-    case GUI_MSG_WINDOW_INIT:
+	case GUI_MSG_WINDOW_INIT:
 		{
-      m_dwFPSTime=timeGetTime();
-      m_dwFrames=0;
-      m_fFPS=0.0f;
+			m_dwFPSTime=timeGetTime();
+			m_dwFrames=0;
+			m_fFPS=0.0f;
 			m_dwlastTime=0;
 		}
 		break;
@@ -48,18 +48,18 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 
 void CGUIWindowSystemInfo::Render()
 {
-  
+
 	GetValues();
 	CGUIWindow::Render();
-  DWORD dwTimeSpan=timeGetTime()-  m_dwFPSTime;
-  if (dwTimeSpan >=1000)
-  {
-    m_fFPS= ((float)m_dwFrames*1000.0f) / ((float)dwTimeSpan);
-    m_dwFPSTime=timeGetTime();
-    m_dwFrames=0;
-  }
-  m_dwFrames++;
-  
+	DWORD dwTimeSpan=timeGetTime()-  m_dwFPSTime;
+	if (dwTimeSpan >=1000)
+	{
+		m_fFPS= ((float)m_dwFrames*1000.0f) / ((float)dwTimeSpan);
+		m_dwFPSTime=timeGetTime();
+		m_dwFrames=0;
+	}
+	m_dwFrames++;
+
 }
 
 void  CGUIWindowSystemInfo::GetValues()
@@ -68,25 +68,25 @@ void  CGUIWindowSystemInfo::GetValues()
 	{
 		m_dwlastTime =timeGetTime();
 		_outp(0xc004, (0x4c<<1)|0x01);
-    _outp(0xc008, 0x00);
-    _outpw(0xc000, _inpw(0xc000));
-    _outp(0xc002, (0) ? 0x0b : 0x0a);
-    while ((_inp(0xc000) & 8));
-    mbtemp = _inpw(0xc006);
+		_outp(0xc008, 0x00);
+		_outpw(0xc000, _inpw(0xc000));
+		_outp(0xc002, (0) ? 0x0b : 0x0a);
+		while ((_inp(0xc000) & 8));
+		mbtemp = _inpw(0xc006);
 
-	_outp(0xc004, (0x4c<<1)|0x01);
-    _outp(0xc008, 0x01);
-    _outpw(0xc000, _inpw(0xc000));
-    _outp(0xc002, (0) ? 0x0b : 0x0a);
-    while ((_inp(0xc000) & 8));
-    cputemp = _inpw(0xc006);
+		_outp(0xc004, (0x4c<<1)|0x01);
+		_outp(0xc008, 0x01);
+		_outpw(0xc000, _inpw(0xc000));
+		_outp(0xc002, (0) ? 0x0b : 0x0a);
+		while ((_inp(0xc000) & 8));
+		cputemp = _inpw(0xc006);
 
-	_outp(0xc004, (0x4c<<1)|0x01);
-    _outp(0xc008, 0x10);
-    _outpw(0xc000, _inpw(0xc000));
-    _outp(0xc002, (0) ? 0x0b : 0x0a);
-    while ((_inp(0xc000) & 8));
-    cpudec = _inpw(0xc006);
+		_outp(0xc004, (0x4c<<1)|0x01);
+		_outp(0xc008, 0x10);
+		_outpw(0xc000, _inpw(0xc000));
+		_outp(0xc002, (0) ? 0x0b : 0x0a);
+		while ((_inp(0xc000) & 8));
+		cpudec = _inpw(0xc006);
 
 		if (cpudec<10)
 			cpudec = cpudec * 100;
@@ -96,20 +96,20 @@ void  CGUIWindowSystemInfo::GetValues()
 	WCHAR CPUText[32];
 	WCHAR GPUText[32];
 	WCHAR wszText[1024];
-  float fTemp=(float)cputemp + ((float)cpudec)/1000.0f;
+	float fTemp=(float)cputemp + ((float)cpudec)/1000.0f;
 	swprintf(CPUText, L"%2.2f%cC", fTemp,176);	
 	swprintf(GPUText, L"%u.00%cC", mbtemp,176);	
-	
+
 	{
 		const WCHAR *psztext=g_localizeStrings.Get(140).c_str();
 		swprintf(wszText,L"%s %s", psztext,CPUText);
-	
+
 		SET_CONTROL_LABEL(GetID(), 2,wszText);
 	}
 	{
 		const WCHAR *psztext=g_localizeStrings.Get(141).c_str();
 		swprintf(wszText,L"%s %s", psztext,GPUText);
-	
+
 		SET_CONTROL_LABEL(GetID(), 3,wszText);
 	}
 
@@ -118,7 +118,7 @@ void  CGUIWindowSystemInfo::GetValues()
 		const WCHAR *psztext=g_localizeStrings.Get(144).c_str();
 		const WCHAR *pszbuild=g_localizeStrings.Get(6).c_str();
 		swprintf(wszText,L"%s %s", psztext,pszbuild);
-	
+
 		SET_CONTROL_LABEL(GetID(), 5,wszText);
 	}
 
@@ -126,10 +126,10 @@ void  CGUIWindowSystemInfo::GetValues()
 	{
 		const WCHAR *pszCurrent=g_localizeStrings.Get(143).c_str();
 		WCHAR wszTime[32];
-    SYSTEMTIME time;
-    GetLocalTime(&time);
-    swprintf(wszTime,L"%s %d:%02d:%02d %d-%d-%d",pszCurrent,time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
-	
+		SYSTEMTIME time;
+		GetLocalTime(&time);
+		swprintf(wszTime,L"%s %d:%02d:%02d %d-%d-%d",pszCurrent,time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
+
 		SET_CONTROL_LABEL(GetID(), 4,wszTime);
 	}
 
@@ -191,7 +191,7 @@ void  CGUIWindowSystemInfo::GetValues()
 	{
 		ULARGE_INTEGER lTotalFreeBytes;
 		WCHAR wszHD[64];
-		
+
 		const WCHAR *pszDrive=g_localizeStrings.Get(155).c_str();
 		const WCHAR *pszFree=g_localizeStrings.Get(160).c_str();
 		const WCHAR *pszUnavailable=g_localizeStrings.Get(161).c_str();
@@ -234,39 +234,39 @@ void  CGUIWindowSystemInfo::GetValues()
 	}
 	{
 
-			CIoSupport m_pIOhelp;
-			WCHAR wsztraystate[64];
-			const WCHAR *pszDrive=g_localizeStrings.Get(155).c_str();
-			swprintf(wsztraystate,L"%s D: ",pszDrive);
-			const WCHAR* pszStatus;
-			switch (m_pIOhelp.GetTrayState())
-			{
-			case TRAY_OPEN:
-				pszStatus=g_localizeStrings.Get(162).c_str();
-				break;
-			case DRIVE_NOT_READY:
-				pszStatus=g_localizeStrings.Get(163).c_str();
-				break;
-			case TRAY_CLOSED_NO_MEDIA:
-				pszStatus=g_localizeStrings.Get(164).c_str();
-				break;
-			case TRAY_CLOSED_MEDIA_PRESENT:
-				pszStatus=g_localizeStrings.Get(165).c_str();
-				break;
-			}
-			WCHAR wszStatus[128];
-			swprintf(wszStatus,L"%s %s", wsztraystate,pszStatus);
-			SET_CONTROL_LABEL(GetID(), 11,wszStatus);
+		CIoSupport m_pIOhelp;
+		WCHAR wsztraystate[64];
+		const WCHAR *pszDrive=g_localizeStrings.Get(155).c_str();
+		swprintf(wsztraystate,L"%s D: ",pszDrive);
+		const WCHAR* pszStatus;
+		switch (m_pIOhelp.GetTrayState())
+		{
+		case TRAY_OPEN:
+			pszStatus=g_localizeStrings.Get(162).c_str();
+			break;
+		case DRIVE_NOT_READY:
+			pszStatus=g_localizeStrings.Get(163).c_str();
+			break;
+		case TRAY_CLOSED_NO_MEDIA:
+			pszStatus=g_localizeStrings.Get(164).c_str();
+			break;
+		case TRAY_CLOSED_MEDIA_PRESENT:
+			pszStatus=g_localizeStrings.Get(165).c_str();
+			break;
+		}
+		WCHAR wszStatus[128];
+		swprintf(wszStatus,L"%s %s", wsztraystate,pszStatus);
+		SET_CONTROL_LABEL(GetID(), 11,wszStatus);
 	}
 	{
 
 		WCHAR wszText[128];
-    int  iResolution=g_stSettings.m_ScreenResolution;
-    swprintf(wszText,L"%ix%i %S %02.2f Hz.", 
-            g_settings.m_ResInfo[iResolution].iWidth, 
-            g_settings.m_ResInfo[iResolution].iHeight, 
-            g_settings.m_ResInfo[iResolution].strMode,
-            m_fFPS);
+		int  iResolution=g_stSettings.m_ScreenResolution;
+		swprintf(wszText,L"%ix%i %S %02.2f Hz.", 
+			g_settings.m_ResInfo[iResolution].iWidth, 
+			g_settings.m_ResInfo[iResolution].iHeight, 
+			g_settings.m_ResInfo[iResolution].strMode,
+			m_fFPS);
 		SET_CONTROL_LABEL(GetID(), 14,wszText);
 	}
 
@@ -276,7 +276,7 @@ void  CGUIWindowSystemInfo::GetValues()
 		const WCHAR* pszFreeMem=g_localizeStrings.Get(158).c_str();
 		GlobalMemoryStatus(&stat);
 		swprintf(wszText,L"%s %i/%iMB",pszFreeMem,stat.dwAvailPhys  /(1024*1024),
-																					stat.dwTotalPhys  /(1024*1024)  );
+			stat.dwTotalPhys  /(1024*1024)  );
 		SET_CONTROL_LABEL(GetID(), 15,wszText);
 	}
 
