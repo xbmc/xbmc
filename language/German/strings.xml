@@ -69,7 +69,7 @@
   </string>
   <string>
     <id>21</id>
-    <value>Jänner</value>
+    <value>Januar</value>
   </string>
   <string>
     <id>22</id>
@@ -381,19 +381,19 @@
   </string> 
   <string>
     <id>166</id>
-    <value>Darstellung:</value>
+    <value>Skin</value>
   </string> 
   <string>
     <id>167</id>
-    <value>FTP server:</value>
+    <value>FTP Server</value>
   </string> 
   <string>
     <id>168</id>
-    <value>Zeit Server:</value>
+    <value>Zeit Server</value>
   </string> 
   <string>
     <id>169</id>
-    <value>Auflösung:</value>
+    <value>Auflösung</value>
   </string> 
   <string>
     <id>170</id>
@@ -453,7 +453,7 @@
   </string> 
   <string>
     <id>184</id>
-    <value>Aktualisieren</value>
+    <value>Aktualis.</value>
   </string> 
   <string>
     <id>185</id>
@@ -525,11 +525,11 @@
   </string> 
   <string>
     <id>202</id>
-    <value>Kurzbeschreibung:</value>
+    <value>Beschreibung:</value>
   </string> 
   <string>
     <id>203</id>
-    <value>Handlungsauszug:</value>
+    <value>Handlung:</value>
   </string> 
   <string>
     <id>204</id>
@@ -765,7 +765,7 @@
   </string>
   <string>
     <id>263</id>
-    <value>HTTP Server:</value>
+    <value>HTTP Server</value>
   </string>
   <string>
     <id>264</id>
@@ -1157,7 +1157,7 @@
   </string>   
   <string>
     <id>362</id>
-    <value>DimmerungsStärke</value>
+    <value>Verdunkeln %</value>
   </string>
   <string>
     <id>363</id>
@@ -1505,31 +1505,31 @@
   </string> 
   <string>
     <id>450</id>
-    <value>Spalten:</value>
+    <value>Spalten</value>
   </string> 
   <string>
     <id>451</id>
-    <value>Reihe 1:</value>
+    <value>Reihe 1</value>
   </string> 
   <string>
     <id>452</id>
-    <value>Reihe 2:</value>
+    <value>Reihe 2</value>
   </string> 
   <string>
     <id>453</id>
-    <value>Reihe 3:</value>
+    <value>Reihe 3</value>
   </string> 
   <string>
     <id>454</id>
-    <value>Reihe 4:</value>
+    <value>Reihe 4</value>
   </string> 
   <string>
     <id>455</id>
-    <value>Reihen:</value>
+    <value>Reihen</value>
   </string> 
   <string>
     <id>456</id>
-    <value>Modus:</value>
+    <value>Modus</value>
   </string> 
   <string>
     <id>457</id>
@@ -1557,7 +1557,7 @@
   </string>
   <string>
     <id>463</id>
-    <value>Hintergrundlicht:</value>
+    <value>Hintergrundlicht</value>
   </string>
   <string>
     <id>464</id>
@@ -1589,7 +1589,7 @@
   </string>
   <string>
     <id>471</id>
-    <value>Modchip:</value>
+    <value>Modchip</value>
   </string>
   <string>
     <id>472</id>
@@ -1673,7 +1673,7 @@
   </string>
   <string>
     <id>492</id>
-    <value>Untertitel vergrößern</value>
+    <value>Untertitel Zoom</value>
   </string>
   <string>
     <id>493</id>
@@ -1903,4 +1903,72 @@
     <id>12901</id>
     <value>Vollbild OSD</value>
   </string>
+
+		<string>
+		<id>506</id>
+		<value>Ordnernamen für Aneige verwenden</value>
+	</string> 
+      <string> 	 
+            <id>507</id> 	 
+            <value>n. Zugriff ord.</value> 	 
+      </string>
+      <string>
+		<id>508</id>
+		<value>Shortcuts und Durchsuchen ausblenden</value>
+	</string>
+	<string>
+		<id>600</id>
+		<value>CD Rippen</value>
+	</string>
+
+	<string>
+		<id>4501</id>
+		<value>LCD Typ</value>
+	</string>
+
+	<string>
+		<id>620</id>
+		<value>CD Ripper</value>
+	</string>
+	<string>
+		<id>621</id>
+		<value>Encoder</value>
+	</string>
+	<string>
+		<id>622</id>
+		<value>Qualität</value>
+	</string>
+	<string>
+		<id>623</id>
+		<value>Bit Rate</value>
+	</string>
+	<string>
+		<id>624</id>
+		<value>Titelnummer verwenden</value>
+	</string>
+	<string>
+		<id>625</id>
+		<value>Alle Songs von</value>
+	</string>
+	<string>
+		<id>604</id>
+		<value>Konstante Bit Rate</value>
+	</string>
+
+
+<string><id>13000</id><value>System</value></string>
+  <string><id>13001</id><value>HD Abschaltzeit Medien</value></string>
+  <string><id>13002</id><value>nur Videos</value></string>
+  <string><id>13003</id><value>- Verzögerung</value></string>
+  <string><id>13004</id><value>- Minimale Dateigrösse</value></string>
+  <string><id>13100</id><value>Flicker Filter</value></string>
+  <string><id>13200</id><value>Profile</value></string>
+  <string><id>13201</id><value>Lösche Profil '%e'?</value></string>
+  <string><id>13202</id><value>Einstellungen als Profil sichern...</value></string>
+  <string><id>13203</id><value>Profil '%e' erfolgreich geladen</value></string>
+  <string><id>13204</id><value>Zuletzt geladenes Profil</value></string>
+  <string><id>13205</id><value>Unbekannt</value></string>
+  <string><id>13300</id><value>Lüftergeschw.:</value></string>
+  <string><id>13301</id><value>Auto Temperatur Kontrolle</value></string>
+  <string><id>13302</id><value>Lüftergeschw. Kontrolle</value></string>
 </strings>
