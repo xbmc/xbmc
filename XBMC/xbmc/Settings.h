@@ -323,7 +323,7 @@ public:
 		int       m_iSambaDebugLevel;
 		char      m_strSambaWorkgroup[128];
 		char      m_strSambaWinsServer[32];
-
+		bool	  m_bHideExtensions;
 	};
 
 	VECSHARES					m_vecMyProgramsBookmarks;

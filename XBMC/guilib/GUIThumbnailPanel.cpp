@@ -597,14 +597,23 @@ void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor,
 
   float fTextHeight,fTextWidth;
   m_pFont->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
-	float fMaxWidth=m_iItemWidth - m_iItemWidth/10.0f;
-  if (!bScroll || fTextWidth <= fMaxWidth)
+	float fMaxWidth=(float)m_iTextureWidth;
+  if (!bScroll)
   {
+	// Center text to make it look nicer...
+	if (fTextWidth <= fMaxWidth) fPosX+=(fMaxWidth-fTextWidth)/2;
     m_pFont->DrawTextWidth(fPosX,fPosY,dwTextColor,wszText,fMaxWidth);
     return;
   }
   else
 	{
+		if (fTextWidth <= fMaxWidth)
+		{	// Center text to make it look nicer...
+			fPosX+=(fMaxWidth-fTextWidth)/2;
+			m_pFont->DrawTextWidth(fPosX,fPosY,dwTextColor,wszText,fMaxWidth);
+			iLastItem = -1; // reset scroller
+			return;
+		}
 		float fPosCX=fPosX;
 		float fPosCY=fPosY;
 		g_graphicsContext.Correct(fPosCX, fPosCY);
@@ -616,13 +625,13 @@ void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor,
 			fHeight = g_graphicsContext.GetHeight() - fPosCY -1;
 		if (fHeight <= 0) return ;
 
-		float fwidth=fMaxWidth-5.0f;
+//		float fwidth=fMaxWidth-5.0f;
 
 		D3DVIEWPORT8 newviewport,oldviewport;
 		g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
 		newviewport.X      = (DWORD)fPosCX;
 		newviewport.Y			 = (DWORD)fPosCY;
-		newviewport.Width  = (DWORD)(fwidth);
+		newviewport.Width  = (DWORD)(fMaxWidth);
 		newviewport.Height = (DWORD)(fHeight);
 		newviewport.MinZ   = 0.0f;
 		newviewport.MaxZ   = 1.0f;
