@@ -32,7 +32,7 @@ void CSkinInfo::Load(CStdString& strSkinDir)
 		CStdString strValue=pRootElement->Value();
 		if (strValue!="skin") 
 		{
-			CLog::Log("file :%s doesnt contain <skin>", strFile.c_str());
+			CLog::Log(LOGERROR, "file :%s doesnt contain <skin>", strFile.c_str());
 		}
 		else
 		{	// get the default resolution
@@ -47,7 +47,7 @@ void CSkinInfo::Load(CStdString& strSkinDir)
 				else if (strDefaultDir == "720p") m_DefaultResolution = HDTV_720p;
 				else if (strDefaultDir == "1080i") m_DefaultResolution = HDTV_1080i;
 			}
-			CLog::Log("Default 4:3 resolution directory is %s%s", m_strBaseDir.c_str(), GetDirFromRes(m_DefaultResolution).c_str());
+			CLog::Log(LOGINFO, "Default 4:3 resolution directory is %s%s", m_strBaseDir.c_str(), GetDirFromRes(m_DefaultResolution).c_str());
 
 			pChild = pRootElement->FirstChild("defaultresolutionwide");
 			if (pChild)
@@ -62,7 +62,7 @@ void CSkinInfo::Load(CStdString& strSkinDir)
 			}
 			else
 				m_DefaultResolutionWide = m_DefaultResolution; // default to same as 4:3
-			CLog::Log("Default 16:9 resolution directory is %s%s", m_strBaseDir.c_str(), GetDirFromRes(m_DefaultResolutionWide).c_str());
+			CLog::Log(LOGINFO, "Default 16:9 resolution directory is %s%s", m_strBaseDir.c_str(), GetDirFromRes(m_DefaultResolutionWide).c_str());
 
 			// now load the credits information
 			pChild = pRootElement->FirstChild("credits");

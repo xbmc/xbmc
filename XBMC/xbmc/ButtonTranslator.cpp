@@ -21,7 +21,7 @@ bool CButtonTranslator::Load()
 	// load our xml file, and fill up our mapping tables
 	TiXmlDocument xmlDoc;
 
-  CLog::Log("Loading Q:\\keymap.xml");
+  CLog::Log(LOGINFO, "Loading Q:\\keymap.xml");
 	// Load the config file
 	if (!xmlDoc.LoadFile("Q:\\keymap.xml"))
 	{

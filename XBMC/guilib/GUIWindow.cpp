@@ -167,10 +167,10 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 		return true;
 	}
 
-	CLog::Log("Loading references file: %s", strReferenceFile.c_str());
+	CLog::Log(LOGINFO, "Loading references file: %s", strReferenceFile.c_str());
 	if ( !xmlDoc.LoadFile(strReferenceFile.c_str()) )
 	{
-    CLog::Log("unable to load:%s", strReferenceFile.c_str());
+    CLog::Log(LOGERROR, "unable to load:%s", strReferenceFile.c_str());
 		return false;
 	}
 
@@ -178,7 +178,7 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 	CStdString strValue=pRootElement->Value();
 	if (strValue!=CStdString("controls")) 
   {
-    CLog::Log("references.xml doesnt contain <controls>");
+    CLog::Log(LOGERROR, "references.xml doesn't contain <controls>");
     return false;
   }
 	CGUIControlFactory factory;
@@ -315,7 +315,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 
     if ( !xmlDoc.LoadFile(strPath.c_str()) )
     {
-        CLog::Log("unable to load:%s", strPath.c_str());
+        CLog::Log(LOGERROR, "unable to load:%s", strPath.c_str());
 		m_dwWindowId=WINDOW_INVALID;
         return false;
     }
@@ -323,7 +323,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   CStdString strValue=pRootElement->Value();
   if (strValue!=CStdString("window")) 
   {
-    CLog::Log("file :%s doesnt contain <window>", strPath.c_str());
+    CLog::Log(LOGERROR, "file :%s doesnt contain <window>", strPath.c_str());
     return false;
   }
   

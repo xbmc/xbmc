@@ -67,7 +67,7 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 	{
 		if (GetLength()<=0)
 		{
-			CLog::Log("FILE::cache: the file %s has a lenght of 0 bytes", strFileName);
+			CLog::Log(LOGWARNING, "FILE::cache: the file %s has a length of 0 bytes", strFileName);
 			Close();
 			return false;
 		}

@@ -166,7 +166,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	hr= DirectSoundCreate( NULL, &m_pDSound, NULL ) ;
 	if( DS_OK != hr  )
 	{
-		CLog::Log("DirectSoundCreate() Failed");
+		CLog::Log(LOGERROR, "DirectSoundCreate() Failed");
 		return;
 	}
 	m_nCurrentVolume = GetMaximumVolume();
@@ -256,7 +256,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 
 	if(DirectSoundCreateStream( &dssd, &m_pStream )!=DS_OK)
 	{
-		CLog::Log("*WARNING* Unable to create sound stream!");
+		CLog::Log(LOGERROR, "*WARNING* Unable to create sound stream!");
 	}
 
 	XMEDIAINFO info;

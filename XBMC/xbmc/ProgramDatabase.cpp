@@ -80,7 +80,7 @@ bool CProgramDatabase::Open()
 	m_pDS.reset(m_pDB->CreateDataset());
 	if ( m_pDB->connect() != DB_CONNECTION_OK) 
 	{
-		CLog::Log("programdatabase::unable to open %s",programDatabase.c_str());
+		CLog::Log(LOGINFO, "programdatabase::unable to open %s",programDatabase.c_str());
 		Close();
 		::DeleteFile(programDatabase.c_str());
 		return false;
@@ -90,7 +90,7 @@ bool CProgramDatabase::Open()
 	{
 		if (!CreateTables()) 
 		{
-			CLog::Log("programdatabase::unable to create %s",programDatabase.c_str());
+			CLog::Log(LOGINFO, "programdatabase::unable to create %s",programDatabase.c_str());
 			Close();
 			::DeleteFile(programDatabase.c_str());
 			return false;
@@ -119,29 +119,29 @@ bool CProgramDatabase::CreateTables()
 
 	try 
 	{
-		CLog::Log("create program table");
+		CLog::Log(LOGINFO, "create program table");
 		m_pDS->exec("CREATE TABLE program ( idProgram integer primary key, idPath integer, idBookmark integer)\n");
 
-		CLog::Log("create bookmark table");
+		CLog::Log(LOGINFO, "create bookmark table");
 		m_pDS->exec("CREATE TABLE bookmark (idBookmark integer primary key, bookmarkName text)\n");
 
-		CLog::Log("create path table");
+		CLog::Log(LOGINFO, "create path table");
 		m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, strBookmarkDir text)\n");
 
-		CLog::Log("create files table");
+		CLog::Log(LOGINFO, "create files table");
 		m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, idProgram integer,strFilename text, xbedescription text, iTimesPlayed integer)\n");
 	
-		CLog::Log("create bookmark index");
+		CLog::Log(LOGINFO, "create bookmark index");
 		m_pDS->exec("CREATE INDEX idxBookMark ON bookmark(bookmarkName)");
-		CLog::Log("create path index");
+		CLog::Log(LOGINFO, "create path index");
 		m_pDS->exec("CREATE INDEX idxPath ON path(strPath)");
-		CLog::Log("create files index");
+		CLog::Log(LOGINFO, "create files index");
 		m_pDS->exec("CREATE INDEX idxFiles ON files(strFilename)");
 	
 	}
 	catch (...) 
 	{ 
-		CLog::Log("programdatabase::unable to create tables:%i",GetLastError());
+		CLog::Log(LOGERROR, "programdatabase::unable to create tables:%i",GetLastError());
 		return false;
 	}
 
@@ -172,7 +172,7 @@ long CProgramDatabase::AddFile(long lProgramId, long lPathId, const CStdString& 
   }
   catch(...)
   {
-    CLog::Log("programdatabase:unable to addfile (%s)", strSQL.c_str());
+    CLog::Log(LOGERROR, "programdatabase:unable to addfile (%s)", strSQL.c_str());
   }
   return -1;
 }
@@ -203,7 +203,7 @@ long CProgramDatabase::AddBookMark(const CStdString& strBookmark)
 	}
 	catch(...)
 	{
-		CLog::Log("CProgramDatabase::AddBookMark(%s) failed",strBookmark.c_str());
+		CLog::Log(LOGERROR, "CProgramDatabase::AddBookMark(%s) failed",strBookmark.c_str());
 	}
 	return -1;
 }
@@ -238,7 +238,7 @@ long CProgramDatabase::AddPath(const CStdString& strPath, const CStdString& strB
   }
   catch(...)
   {
-    CLog::Log("CProgramDatabase::AddPath(%s) failed",strPath.c_str());
+    CLog::Log(LOGERROR, "CProgramDatabase::AddPath(%s) failed",strPath.c_str());
   }
 	return -1;
 }
@@ -262,7 +262,7 @@ long CProgramDatabase::GetPath(const CStdString& strPath)
   }
   catch(...)
   {
-    CLog::Log("CProgramDatabase::GetPath(%s) failed",strPath.c_str());
+    CLog::Log(LOGERROR, "CProgramDatabase::GetPath(%s) failed",strPath.c_str());
   }
 	return -1;
 }
@@ -285,7 +285,7 @@ long CProgramDatabase::GetProgram(long lPathId)
 	}
 	catch(...)
 	{
-		CLog::Log("CProgramDatabase::GetProgram(%i) failed",lPathId);
+		CLog::Log(LOGERROR, "CProgramDatabase::GetProgram(%i) failed",lPathId);
 	}
 	return -1;
 }
@@ -335,7 +335,7 @@ long CProgramDatabase::AddProgram(const CStdString& strFilenameAndPath, const CS
   }
   catch(...)
   {
-    CLog::Log("CProgramDatabase::AddProgram(%s,%s) failed",strFilenameAndPath.c_str() , strDescription.c_str() );
+    CLog::Log(LOGERROR, "CProgramDatabase::AddProgram(%s,%s) failed",strFilenameAndPath.c_str() , strDescription.c_str() );
   }
   return -1;
 }
@@ -406,7 +406,7 @@ void CProgramDatabase::GetProgramsByBookmark(CStdString& strBookmark, VECFILEITE
 	}
 	catch(...)
 	{
-		CLog::Log("CProgramDatabase::GetProgamsByBookmark() failed");
+		CLog::Log(LOGERROR, "CProgramDatabase::GetProgamsByBookmark() failed");
 	}
 
 }
@@ -438,7 +438,7 @@ void CProgramDatabase::DeleteProgram(const CStdString& strPath)
   }
   catch(...)
   {
-    CLog::Log("CProgramDatabase::DeleteProgram() failed");
+    CLog::Log(LOGERROR, "CProgramDatabase::DeleteProgram() failed");
   }
 }
 

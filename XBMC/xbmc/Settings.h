@@ -236,6 +236,7 @@ public:
 		int			  m_iHTTPProxyPort;
 		char		  m_szHTTPProxy[128];
 		int			  m_iWebServerPort;
+		int			  m_iLogLevel;
 
     bool  m_bAutoTemperature;
     int   m_iTargetTemperature;
