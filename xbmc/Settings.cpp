@@ -756,7 +756,7 @@ bool CSettings::LoadCalibration(const CStdString& strCalibrationFile)
 		GetString(pResolution, "description", m_ResInfo[iRes].strMode, m_ResInfo[iRes].strMode);
 		//		GetInteger(pResolution, "width", m_ResInfo[iRes].iWidth,720,640,10000);
 		//		GetInteger(pResolution, "height", m_ResInfo[iRes].iHeight,576,400,10000);
-		GetInteger(pResolution, "subtitles", m_ResInfo[iRes].iSubtitles,m_ResInfo[iRes].iHeight,m_ResInfo[iRes].iHeight*3/4,m_ResInfo[iRes].iHeight*5/4);
+		GetInteger(pResolution, "subtitles", m_ResInfo[iRes].iSubtitles,m_ResInfo[iRes].iHeight,m_ResInfo[iRes].iHeight/2,m_ResInfo[iRes].iHeight*5/4);
 		//		GetInteger(pResolution, "flags", (int &)m_ResInfo[iRes].dwFlags,0,INT_MIN,INT_MAX);
 		GetFloat(pResolution, "pixelratio", m_ResInfo[iRes].fPixelRatio,128.0f/117.0f,0.5f,2.0f);
 		GetInteger(pResolution, "osdyoffset", m_ResInfo[iRes].iOSDYOffset,0,-m_ResInfo[iRes].iHeight,m_ResInfo[iRes].iHeight);
@@ -767,8 +767,8 @@ bool CSettings::LoadCalibration(const CStdString& strCalibrationFile)
 		{
 			GetInteger(pOverscan, "left", m_ResInfo[iRes].Overscan.left,0,-g_settings.m_ResInfo[iRes].iWidth/4,g_settings.m_ResInfo[iRes].iWidth/4);
 			GetInteger(pOverscan, "top", m_ResInfo[iRes].Overscan.top,0,-g_settings.m_ResInfo[iRes].iHeight/4,g_settings.m_ResInfo[iRes].iHeight/4);
-			GetInteger(pOverscan, "width", m_ResInfo[iRes].Overscan.width,m_ResInfo[iRes].iWidth,m_ResInfo[iRes].iWidth*3/4,m_ResInfo[iRes].iWidth*5/4);
-			GetInteger(pOverscan, "height", m_ResInfo[iRes].Overscan.height,m_ResInfo[iRes].iHeight,m_ResInfo[iRes].iHeight*3/4,m_ResInfo[iRes].iHeight*5/4);
+			GetInteger(pOverscan, "width", m_ResInfo[iRes].Overscan.width,m_ResInfo[iRes].iWidth-m_ResInfo[iRes].Overscan.left,m_ResInfo[iRes].iWidth/2,m_ResInfo[iRes].iWidth*3/2);
+			GetInteger(pOverscan, "height", m_ResInfo[iRes].Overscan.height,m_ResInfo[iRes].iHeight-m_ResInfo[iRes].Overscan.top,m_ResInfo[iRes].iHeight/2,m_ResInfo[iRes].iHeight*3/2);
 		}
 		CLog::Log("  calibration for %s %ix%i",m_ResInfo[iRes].strMode,m_ResInfo[iRes].iWidth,m_ResInfo[iRes].iHeight);
 		CLog::Log("    subtitle yposition:%i pixelratio:%03.3f offset:(%i,%i) width:%i height:%i osdyoffset:%i", 
