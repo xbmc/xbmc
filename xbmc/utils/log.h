@@ -1,6 +1,5 @@
 #pragma once
-#include "stdstring.h"
-using namespace std;
+#include <stdio.h>
 
 class CLog
 {

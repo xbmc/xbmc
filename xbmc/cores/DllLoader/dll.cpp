@@ -9,6 +9,9 @@
 #include <string.h>
 #include "dll.h"
 #include "exp2dll.h"
+
+#include "../../utils/log.h"
+
 using namespace std;
 Exp2Dll *Head = 0;
 extern "C" int dummy_Unresolved(void);
@@ -24,7 +27,6 @@ static int ResolveName(char *Name, char* Function, void **Fixup);
 DllLoader * wmaDMOdll;
 DllLoader * wmvDMOdll;
 DllLoader * wmsDMOdll;
-
 
 // Allocation tracking for vis modules that leak
 
@@ -56,7 +58,7 @@ extern "C" void* __cdecl track_malloc(size_t s)
 	__asm mov eax,[ebp+4]
 	__asm mov loc,eax
 
-	std::map<unsigned,unsigned>* pList = get_track_list(loc);
+		std::map<unsigned,unsigned>* pList = get_track_list(loc);
 
 	void* p = malloc(s);
 	if (pList)
@@ -70,7 +72,7 @@ extern "C" void* __cdecl track_calloc(size_t n, size_t s)
 	__asm mov eax,[ebp+4]
 	__asm mov loc,eax
 
-	std::map<unsigned,unsigned>* pList = get_track_list(loc);
+		std::map<unsigned,unsigned>* pList = get_track_list(loc);
 
 	void* p = calloc(n, s);
 	if (pList)
@@ -84,7 +86,7 @@ extern "C" void* __cdecl track_realloc(void* p, size_t s)
 	__asm mov eax,[ebp+4]
 	__asm mov loc,eax
 
-	std::map<unsigned,unsigned>* pList = get_track_list(loc);
+		std::map<unsigned,unsigned>* pList = get_track_list(loc);
 
 	void* q = realloc(p, s);
 	if (pList)
@@ -102,13 +104,32 @@ extern "C" void __cdecl track_free(void* p)
 	__asm mov eax,[ebp+4]
 	__asm mov loc,eax
 
-	std::map<unsigned,unsigned>* pList = get_track_list(loc);
+		std::map<unsigned,unsigned>* pList = get_track_list(loc);
 
 	if (pList)
 		pList->erase((unsigned)p);
 	free(p);
 }
 
+
+// unresolved function tracking
+#ifdef _DEBUG
+std::map<unsigned, std::string> UnresolvedList;
+
+void LookupUnresolved(unsigned ret_addr, char* name, int len)
+{
+	unsigned call_ptr = *(unsigned*)(ret_addr-4) + (ret_addr-5);
+	unsigned reloc = *(unsigned*)(call_ptr+2);
+	std::map<unsigned, std::string>::iterator p = UnresolvedList.find(reloc);
+	if (p != UnresolvedList.end())
+	{
+		strncpy(name, p->second.c_str(), len-1);
+		name[len-1] = 0;
+	}
+	else
+		*name = 0;
+}
+#endif
 
 #ifdef DUMPING_DATA
 
@@ -275,7 +296,7 @@ int DllLoader::ResolveImports(void)
 						OutputDebugString(szBuf);
 						*Addr = (unsigned long) dummy_Unresolved;
 					} else { 
-					*Addr = (unsigned long)Fixup;  //woohoo!!
+						*Addr = (unsigned long)Fixup;  //woohoo!!
 					}
 				}     
 				else
@@ -287,23 +308,24 @@ int DllLoader::ResolveImports(void)
 					void *Fixup;
 					if( !ResolveName(Name, ImpName, &Fixup) )
 					{
-						char szBuf[128];
-						sprintf(szBuf,"unable to resolve %s %s\n",Name,ImpName);
-						OutputDebugString(szBuf);
-            if (strstr(Name,"KERNEL32")  || strstr(Name,"kernel32") )
-						  *Addr = (unsigned long) dummy_Kernel32Unresolved;
-            else if (strstr(Name,"USER32")  || strstr(Name,"user32") )
-						  *Addr = (unsigned long) dummy_User32Unresolved;
-            else if (strstr(Name,"ole32")  || strstr(Name,"ole32") )
-						  *Addr = (unsigned long) dummy_OLE32Unresolved;
-            else if (strstr(Name,"MSVCRT")  || strstr(Name,"msvcrt") )
-						  *Addr = (unsigned long) dummy_MSVCRTUnresolved;
-            else if (strstr(Name,"MSVCR71")  || strstr(Name,"msvcr71") )
-						  *Addr = (unsigned long) dummy_MSVCR71Unresolved;
-            else if (strstr(Name,"xbox_dx8")  || strstr(Name,"XBOX_DX8") )
-						  *Addr = (unsigned long) dummy_DX8Unresolved;
-            else
-						  *Addr = (unsigned long) dummy_Unresolved;
+						CLog::DebugLog("Unable to resolve %s %s",Name,ImpName);
+#ifdef _DEBUG
+						UnresolvedList[(unsigned)Addr] = ImpName;
+#endif
+						if (strstr(Name,"KERNEL32")  || strstr(Name,"kernel32") )
+							*Addr = (unsigned long) dummy_Kernel32Unresolved;
+						else if (strstr(Name,"USER32")  || strstr(Name,"user32") )
+							*Addr = (unsigned long) dummy_User32Unresolved;
+						else if (strstr(Name,"ole32")  || strstr(Name,"ole32") )
+							*Addr = (unsigned long) dummy_OLE32Unresolved;
+						else if (strstr(Name,"MSVCRT")  || strstr(Name,"msvcrt") )
+							*Addr = (unsigned long) dummy_MSVCRTUnresolved;
+						else if (strstr(Name,"MSVCR71")  || strstr(Name,"msvcr71") )
+							*Addr = (unsigned long) dummy_MSVCR71Unresolved;
+						else if (strstr(Name,"xbox_dx8")  || strstr(Name,"XBOX_DX8") )
+							*Addr = (unsigned long) dummy_DX8Unresolved;
+						else
+							*Addr = (unsigned long) dummy_Unresolved;
 						bResult=0;
 					} else {
 						if (pList)
@@ -496,13 +518,13 @@ DllLoader::~DllLoader()
 		delete entry->exp;
 		delete entry;
 	}/*
-	while(Head )
-	{
-		Exp2Dll* entry = Head;
-		Head = entry->Next;
-		delete entry;
-	}
-	Head=NULL;*/
+	 while(Head )
+	 {
+	 Exp2Dll* entry = Head;
+	 Head = entry->Next;
+	 delete entry;
+	 }
+	 Head=NULL;*/
 
 	for (TrackedDllsIter it = TrackedDlls.begin(); it != TrackedDlls.end(); ++it)
 	{
@@ -530,6 +552,9 @@ DllLoader::~DllLoader()
 	ImportDirTable = 0;
 	delete [] Dll;
 
+#ifdef _DEBUG
+	UnresolvedList.clear();
+#endif // _DEBUG
 }
 
 int DllLoader::Parse()
@@ -600,7 +625,7 @@ Exp2Dll::Exp2Dll(char* ObjName, char* FuncName, unsigned long Func)
 	while( *curr ) curr = &((*curr)->Next);
 	*curr = this;
 }                
- 
+
 Exp2Dll::~Exp2Dll()
 {
 
@@ -625,11 +650,11 @@ Exp2Dll::~Exp2Dll()
 
 extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR libname) 
 {
-	
+
 	if (strcmp(libname, "kernel32.dll") == 0 || strcmp(libname, "kernel32") == 0 ||
-		  strcmp(libname, "KERNEL32.DLL") == 0 || strcmp(libname, "KERNEL32") == 0 )
+		strcmp(libname, "KERNEL32.DLL") == 0 || strcmp(libname, "KERNEL32") == 0 )
 		return (HMODULE)MODULE_HANDLE_kernel32;
-	
+
 	char* plibname = new char[strlen(libname)+120]; 
 	sprintf(plibname, "%s\\%s", DEFAULT_DLLPATH ,(char *)libname);
 	DllLoader * dllhandle = new DllLoader(plibname);
@@ -646,7 +671,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR libname)
 	}
 
 	dllhandle->ResolveImports();
-	
+
 	//log bad guys who do not call Freelibrary 
 	if (strcmp(libname, "wmadmod.dll") == 0 || strcmp(libname, "WMADMOD.DLL") == 0 )
 		wmaDMOdll = dllhandle;
@@ -660,9 +685,9 @@ extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR libname)
 	dllhandle->ResolveExport("DllMain", &address);
 	if (address)
 		dllhandle->EntryAddress = (unsigned long)address;
-    EntryFunc * initdll = (EntryFunc *)dllhandle->EntryAddress;
+	EntryFunc * initdll = (EntryFunc *)dllhandle->EntryAddress;
 	(*initdll)( (HINSTANCE) dllhandle->hModule, 1 ,0);	//call "DllMian" with DLL_PROCESS_ATTACH
-	
+
 	//#define DLL_PROCESS_ATTACH   1    
 	//#define DLL_THREAD_ATTACH    2    
 	//#define DLL_THREAD_DETACH    3    
@@ -676,7 +701,7 @@ extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
 {
 	if ( hLibModule == (HMODULE)MODULE_HANDLE_kernel32 )
 		return 1;
-	
+
 	DllLoader * dllhandle = (DllLoader *)hLibModule;
 
 	EntryFunc * initdll = (EntryFunc *)dllhandle->EntryAddress;
@@ -691,13 +716,13 @@ extern "C" FARPROC __stdcall dllGetProcAddress( HMODULE hModule, LPCSTR function
 {
 	void * address = NULL;
 	if ( hModule == (HMODULE)MODULE_HANDLE_kernel32 )
-		{
+	{
 		if ( ResolveName("kernel32.dll", (char *)function, &address)||
-			 ResolveName("KERNEL32.DLL", (char *)function, &address) )
-			 return (FARPROC) address;
+			ResolveName("KERNEL32.DLL", (char *)function, &address) )
+			return (FARPROC) address;
 		else
 			return (FARPROC) NULL;
-		}
+	}
 
 	DllLoader * dllhandle = (DllLoader *)hModule;
 	dllhandle->ResolveExport((char *)function, &address);
@@ -705,88 +730,102 @@ extern "C" FARPROC __stdcall dllGetProcAddress( HMODULE hModule, LPCSTR function
 }
 //dummy functions used to catch unresolved function calls
 extern "C" int dummy_Unresolved(void) {
-		static int Count = 0;
-		DWORD rtn_addr;
-		char szBuf[128];
-		__asm { mov eax, [ebp+4] }
-		__asm { mov rtn_addr, eax }
-    sprintf(szBuf,"unresolved function called from %#08x, Count number %d\n",rtn_addr,Count++);
-		OutputDebugString(szBuf);
-		return 1;
+#ifdef _DEBUG
+	static int Count = 0;
+	DWORD rtn_addr;
+	__asm { mov eax, [ebp+4] }
+	__asm { mov rtn_addr, eax }
+	char name[32];
+	LookupUnresolved(rtn_addr, name, 32);
+	CLog::DebugLog("Unresolved function called from %#08x (%s), Count number %d", rtn_addr, name, Count++);
+#endif // _DEBUG
+	return 1;
 }
 //dummy functions used to catch unresolved function calls
 extern "C" int dummy_Kernel32Unresolved(void) {
-		static int Count = 0;
-		DWORD rtn_addr;
-		char szBuf[128];
-		__asm { mov eax, [ebp+4] }
-		__asm { mov rtn_addr, eax }
-    sprintf(szBuf,"kernel32:unresolved function called from %#08x, Count number %d\n",rtn_addr,Count++);
-		OutputDebugString(szBuf);
-		return 1;
+#ifdef _DEBUG
+	static int Count = 0;
+	DWORD rtn_addr;
+	__asm { mov eax, [ebp+4] }
+	__asm { mov rtn_addr, eax }
+	char name[32];
+	LookupUnresolved(rtn_addr, name, 32);
+	CLog::DebugLog("KERNEL32: Unresolved function called from %#08x (%s), Count number %d", rtn_addr, name, Count++);
+#endif // _DEBUG
+	return 1;
 }
 
 
 //dummy functions used to catch unresolved function calls
 extern "C" int dummy_User32Unresolved(void) {
-		static int Count = 0;
-		DWORD rtn_addr;
-		char szBuf[128];
-		__asm { mov eax, [ebp+4] }
-		__asm { mov rtn_addr, eax }
-    sprintf(szBuf,"user32:unresolved function called from %#08x, Count number %d\n",rtn_addr,Count++);
-		OutputDebugString(szBuf);
-		return 1;
+#ifdef _DEBUG
+	static int Count = 0;
+	DWORD rtn_addr;
+	__asm { mov eax, [ebp+4] }
+	__asm { mov rtn_addr, eax }
+	char name[32];
+	LookupUnresolved(rtn_addr, name, 32);
+	CLog::DebugLog("USER32: Unresolved function called from %#08x (%s), Count number %d", rtn_addr, name, Count++);
+#endif // _DEBUG
+	return 1;
 }
 
 //dummy functions used to catch unresolved function calls
 extern "C" int dummy_OLE32Unresolved(void) {
-		static int Count = 0;
-		DWORD rtn_addr;
-		char szBuf[128];
-		__asm { mov eax, [ebp+4] }
-		__asm { mov rtn_addr, eax }
-    sprintf(szBuf,"ole32:unresolved function called from %#08x, Count number %d\n",rtn_addr,Count++);
-		OutputDebugString(szBuf);
-		return 1;
+#ifdef _DEBUG
+	static int Count = 0;
+	DWORD rtn_addr;
+	__asm { mov eax, [ebp+4] }
+	__asm { mov rtn_addr, eax }
+	char name[32];
+	LookupUnresolved(rtn_addr, name, 32);
+	CLog::DebugLog("OLE32: Unresolved function called from %#08x (%s), Count number %d", rtn_addr, name, Count++);
+#endif // _DEBUG
+	return 1;
 }
 
 //dummy functions used to catch unresolved function calls
 extern "C" int dummy_MSVCRTUnresolved(void) {
-		static int Count = 0;
-		DWORD rtn_addr;
-		char szBuf[128];
-		__asm { mov eax, [ebp+4] }
-		__asm { mov rtn_addr, eax }
-    sprintf(szBuf,"ole32:unresolved function called from %#08x, Count number %d\n",rtn_addr,Count++);
-		OutputDebugString(szBuf);
-		return 1;
+#ifdef _DEBUG
+	static int Count = 0;
+	DWORD rtn_addr;
+	__asm { mov eax, [ebp+4] }
+	__asm { mov rtn_addr, eax }
+	char name[32];
+	LookupUnresolved(rtn_addr, name, 32);
+	CLog::DebugLog("MSVCRT: Unresolved function called from %#08x (%s), Count number %d", rtn_addr, name, Count++);
+#endif // _DEBUG
+	return 1;
 }
 
 
 //dummy functions used to catch unresolved function calls
 extern "C" int dummy_MSVCR71Unresolved(void) {
-		static int Count = 0;
-		DWORD rtn_addr;
-		char szBuf[128];
-		__asm { mov eax, [ebp+4] }
-		__asm { mov rtn_addr, eax }
-    sprintf(szBuf,"msvcr71.dll:unresolved function called from %#08x, Count number %d\n",rtn_addr,Count++);
-		OutputDebugString(szBuf);
-		return 1;
+#ifdef _DEBUG
+	static int Count = 0;
+	DWORD rtn_addr;
+	__asm { mov eax, [ebp+4] }
+	__asm { mov rtn_addr, eax }
+	char name[32];
+	LookupUnresolved(rtn_addr, name, 32);
+	CLog::DebugLog("MSVCRT71: Unresolved function called from %#08x (%s), Count number %d", rtn_addr, name, Count++);
+#endif // _DEBUG
+	return 1;
 }
 
 
 //dummy functions used to catch unresolved function calls
 extern "C" int dummy_DX8Unresolved(void) {
-		static int Count = 0;
-		DWORD rtn_addr;
-		char szBuf[128];
-		__asm { mov eax, [ebp+4] }
-		__asm { mov rtn_addr, eax }
-		sprintf(szBuf,"xbox_dx8.dll:unresolved function called from %#08x, Count number %d\n",rtn_addr,Count++);
-		OutputDebugString(szBuf);
-		return 1;
+#ifdef _DEBUG
+	static int Count = 0;
+	DWORD rtn_addr;
+	__asm { mov eax, [ebp+4] }
+	__asm { mov rtn_addr, eax }
+	char name[32];
+	LookupUnresolved(rtn_addr, name, 32);
+	CLog::DebugLog("DX8: Unresolved function called from %#08x (%s), Count number %d", rtn_addr, name, Count++);
+#endif // _DEBUG
+	return 1;
 }
 
 static int ResolveName(char *Name, char* Function, void **Fixup)
