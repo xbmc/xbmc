@@ -180,6 +180,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_WINDOW_INIT:
 		{
+			/*
 			//	This window is started by the home window.
 			//	Now we decide which my music window has to be shown and
 			//	switch to the my music window the user last activated.
@@ -188,14 +189,61 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
 				m_gWindowManager.ActivateWindow(g_stSettings.m_iVideoStartWindow);
 				return false;
 			}
+			*/
 
-			if (m_Directory.m_strPath=="?") 
+			// check for a passed destination path
+			CStdString strDestination = message.GetStringParam();
+			if (!strDestination.IsEmpty())
 			{
+				message.SetStringParam("");
+				g_stSettings.m_iVideoStartWindow = GetID();
+				CLog::Log(LOGINFO,"Attempting to quickpath to: %s",strDestination.c_str());
+			}
+
+			// unless we had a destination paramter switch to the last my music window
+			if (g_stSettings.m_iVideoStartWindow >0 && g_stSettings.m_iVideoStartWindow !=GetID() )
+			{
+				m_gWindowManager.ActivateWindow(g_stSettings.m_iVideoStartWindow);
+				return false;
+			}
+
+			// is this the first time accessing this window?
+			// a quickpath overrides the a default parameter
+			if (m_Directory.m_strPath=="?" && strDestination.IsEmpty())
+			{
+				strDestination = g_stSettings.m_szDefaultVideos;
+				CLog::Log(LOGINFO,"Attempting to default to: %s",strDestination.c_str());
+			}
+
+			// try to open the destination path
+			if (!strDestination.IsEmpty())
+			{
+				// default parameters if the jump fails
+				m_Directory.m_strPath="";
+
+				bool bIsBookmarkName = false;
+				int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyVideoShares, bIsBookmarkName);
+				if (iIndex>-1)
+				{
+					// set current directory to matching share
+					if (bIsBookmarkName)
+						m_Directory.m_strPath=g_settings.m_vecMyVideoShares[iIndex].strPath;
+					else
+						m_Directory.m_strPath=strDestination;
+					CLog::Log(LOGINFO,"  Success! Opened destination path: %s",strDestination.c_str());
+				}
+				else
+				{
+					CLog::Log(LOGERROR,"  Failed! Destination parameter (%s) does not match a valid share!",strDestination.c_str());
+				}
+
+				// need file filters or GetDirectory in SetHistoryPath fails
 				m_rootDir.SetMask(g_stSettings.m_szMyVideoExtensions);
 				m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
-				m_Directory.m_strPath=g_stSettings.m_szDefaultVideos;
+
 				SetHistoryForPath(m_Directory.m_strPath);
 			}
+
 
 			if (m_iViewAsIcons==-1 && m_iViewAsIconsRoot==-1)
 			{
@@ -328,7 +376,7 @@ void CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
 
 		int iFocusedControl=GetFocusedControl();
 
-		//ShowThumbPanel();
+		UpdateThumbPanel();
 		UpdateButtons();
 
 		if (iFocusedControl==CONTROL_LIST || iFocusedControl==CONTROL_THUMBS)
