@@ -577,7 +577,7 @@
 	</string>
 	<string>
 		<id>217</id>
-		<value>Etirer</value>
+		<value>Etirement</value>
 	</string>
 	<string>
 		<id>218</id>
@@ -713,7 +713,7 @@
 	</string>
 	<string>
 		<id>252</id>
-		<value>Utiliser tous les hauts-parleurs</value>
+		<value>- Utiliser tous les hauts-parleurs</value>
 	</string>
 	<string>
 		<id>253</id>
@@ -721,7 +721,7 @@
 	</string>
 	<string>
 		<id>254</id>
-		<value>Utiliser l'AC3</value>
+		<value>- Utiliser l'AC3</value>
 	</string>
 	<string>
 		<id>255</id>
@@ -929,23 +929,23 @@
 	</string>
 	<string>
 		<id>307</id>
-		<value>Auto</value>
+		<value>- post-traitement automatique</value>
 	</string>
 	<string>
 		<id>308</id>
-		<value>filtre vertical</value>
+		<value>- filtre vertical</value>
 	</string>
 	<string>
 		<id>309</id>
-		<value>filtre horizontal</value>
+		<value>- filtre horizontal</value>
 	</string>
 	<string>
 		<id>310</id>
-		<value>Ajuster lumière/contraste</value>
+		<value>- Ajuster lumière/contraste</value>
 	</string>
 	<string>
 		<id>311</id>
-		<value>Dering</value>
+		<value>- Dering</value>
 	</string>
 	<string>
 		<id>312</id>
@@ -1157,7 +1157,7 @@
 	</string>
 	<string>
 		<id>364</id>
-		<value>DD/DTS multicannal</value>
+		<value>- DD/DTS multicannal</value>
 	</string>
 	<string>
 		<id>365</id>
@@ -1649,7 +1649,7 @@
 	</string>
 	<string>
 		<id>488</id>
-		<value>Répéter le dossier de listes</value>
+		<value>Répéter la liste du dossier</value>
 	</string>
 	<string>
 		<id>489</id>
@@ -1661,7 +1661,7 @@
 	</string>
 	<string>
 		<id>491</id>
-		<value>Utiliser de grandes icones</value>
+		<value>- Utiliser de grandes icones</value>
 	</string>
 	<string>
 		<id>492</id>
@@ -1687,6 +1687,116 @@
         <id>497</id>
         <value>Masquer les extensions</value>
     </string>
+	<string>
+		<id>498</id>
+		<value>Lister : Type</value>
+	</string>
+	<string>
+		<id>499</id>
+		<value>Connexion impossible à www.allmusic.com</value>
+	</string>
+	<string>
+		<id>500</id>
+		<value>Échec du téléchargement des infos de l'album</value>
+	</string>
+	<string>
+		<id>501</id>
+		<value>Recherche des noms d'album...</value>
+	</string>
+	<string>
+		<id>502</id>
+		<value>Ouvert</value>
+	</string>
+	<string>
+		<id>503</id>
+		<value>Occupé</value>
+	</string>
+	<string>
+		<id>504</id>
+		<value>Vide</value>
+	</string>
+	<string>
+		<id>505</id>
+		<value>Chargement des infos...</value>
+	</string>
+	<string>
+		<id>506</id>
+		<value>Utiliser les noms des dossiers comme descrip.</value>
+	</string> <string>
+		<id>600</id>
+		<value>Importer CD</value>
+	</string>
+	<string>
+		<id>601</id>
+		<value>Moyenne</value>
+	</string>
+	<string>
+		<id>602</id>
+		<value>Standard</value>
+	</string>
+	<string>
+		<id>603</id>
+		<value>Excellente</value>
+	</string>
+	<string>
+		<id>604</id>
+		<value>Ratio constant</value>
+	</string>
+	<string>
+		<id>605</id>
+		<value>Importation en cours...</value>
+	</string>
+	<string>
+		<id>606</id>
+		<value>Numéro de piste :</value>
+	</string>
+	<string>
+		<id>607</id>
+		<value>A :</value>
+	</string>
+	<string>
+		<id>608</id>
+		<value>Impossible d'importer le CD ou la piste</value>
+	</string>
+	<string>
+		<id>609</id>
+		<value>La propriété CDDARipPath n'est pas définie dans XboxMediaCenter.xml</value>
+	</string>
+	<string>
+		<id>620</id>
+		<value>Importation de CD</value>
+	</string>
+	<string>
+		<id>621</id>
+		<value>Encodeur</value>
+	</string>
+	<string>
+		<id>622</id>
+		<value>Qualité</value>
+	</string>
+	<string>
+		<id>623</id>
+		<value>Ratio</value>
+	</string>
+	<string>
+		<id>624</id>
+		<value>Inclure le numéro de la piste</value>
+	</string>
+	<string>
+		<id>625</id>
+		<value>Toutes les chansons de</value>
+	</string>
+	
+	
+	<string>
+		<id>998</id>
+		<value>XLink KAI</value>
+	</string>
+	<string>
+		<id>999</id>
+		<value>Jeux en-ligne</value>
+	</string>
+
 	<string>
 		<id>10000</id>
 		<value>Accueil</value>
@@ -1879,4 +1989,57 @@
 		<id>12901</id>
 		<value>Réglages plein écran</value>
 	</string>
+    <string>
+        <id>13000</id>
+        <value>Système</value>
+    </string>
+    <string>
+        <id>13001</id>
+        <value>Ralentissement auto du DD</value>
+    </string>
+    <string>
+        <id>13002</id>
+        <value>Video seule</value>
+    </string>
+    <string>
+        <id>13003</id>
+        <value>- Delai</value>
+    </string>
+    <string>
+        <id>13004</id>
+        <value>- Durée mimimale du fichier</value>
+    </string>
+    <string>
+        <id>13100</id>
+        <value>Filtre de clignotement</value>
+    </string>
+    <string>
+        <id>13200</id>
+        <value>Profils</value>
+    </string>
+    <string>
+        <id>13201</id>
+        <value>Supprimer le profil '%s' ?</value>
+    </string>
+    <string>
+        <id>13202</id>
+        <value>Enregistrer comme profil...</value>
+    </string>
+    <string>
+        <id>13203</id>
+        <value>Le profil '%s' a été chargé avec succès</value>
+    </string>
+    <string>
+        <id>13300</id>
+        <value>Vitesse du ventilateur :</value>
+    </string>
+    <string>
+        <id>13301</id>
+        <value>Contrôleur de température</value>
+    </string>
+    <string>
+        <id>13302</id>
+        <value>Contrôle de la vitesse du ventilateur</value>
+    </string>
+
 </strings>
