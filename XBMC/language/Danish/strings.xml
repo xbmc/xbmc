@@ -1,5 +1,5 @@
 <!-- Danish language for XBMC            -->
-<!-- Based on 2003-04-19 english strings -->
+<!-- Based on 2003-06-11 english strings -->
 <!-- Translation done by Jan West        --> 
 
 <strings>
@@ -1638,6 +1638,67 @@
     <id>492</id>
     <value>Forstør VobSubs</value>
   </string>
+  <string>
+    <id>493</id>
+    <value>Avancerede indstillinger (Kun for kyndige!)</value>
+  </string>
+  <string>
+    <id>494</id>
+    <value>Lyd overstyringsreserve (dB)</value>
+  </string>
+  <string>
+    <id>495</id>
+    <value>Forstør film til grænseflade opløsning</value>
+  </string>
+  <string>
+    <id>496</id>
+    <value>Kalibrering</value>
+  </string>
+  <string>
+    <id>497</id>
+    <value>Skjul medietype navne</value>
+  </string>
+  <string>
+    <id>498</id>
+    <value>Sorter på: Type</value>
+  </string>
+  <string>
+    <id>499</id>
+    <value>Kan ikke etablere forbindelse til www.allmusic.com</value>
+  </string>
+  <string>
+    <id>500</id>
+    <value>Hentning af album oplysninger fejlede</value>
+  </string>
+  <string>
+    <id>501</id>
+    <value>Søger efter album navne...</value>
+  </string>
+  <string>
+    <id>502</id>
+    <value>Åben</value>
+  </string>
+  <string>
+    <id>503</id>
+    <value>Optaget</value>
+  </string>
+  <string>
+    <id>504</id>
+    <value>Tom</value>
+  </string>
+  <string>
+    <id>505</id>
+    <value>Henter medie info fra dokumenterne...</value>
+  </string>
+  
+  <string>
+    <id>998</id>
+    <value>XLink KAI</value>
+  </string>
+  <string>
+    <id>999</id>
+    <value>Online spil</value>
+  </string> 
 
 <string><id>10000</id><value>Forside</value></string>
 <string><id>10001</id><value>Programmer</value></string>
