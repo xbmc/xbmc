@@ -501,6 +501,9 @@ bool CUtil::HasSlashAtEnd(const CStdString& strFile)
 {
 	if (strFile.Left(2)=="D:" || strFile.Left(2)=="d:")
 		return true;
+  
+	if (strFile.Left(4)=="UDF:" || strFile.Left(4)=="udf:")
+		return true;
 
 	return false;
 }
@@ -1271,12 +1274,13 @@ void CUtil::RemoveTempFiles()
 
 bool CUtil::IsHD(const CStdString& strFileName)
 {
-	CURL url(strFileName);
-	CStdString strProtocol=url.GetProtocol();
-	strProtocol.ToLower();
-	if (strProtocol=="cdda" || strProtocol=="iso9660") return false;
-	if ( url.GetProtocol().size() ) return false;
-	return true;
+  if (strFileName.size()<=2) return false;
+  char szDriveletter=tolower(strFileName.GetAt(0));
+  if ( (szDriveletter >= 'c'&& szDriveletter <= 'g') || (szDriveletter=='q')  )
+  {
+    if (strFileName.GetAt(1)==':') return true;
+  }
+	return false;
 }
 
 // Following 6 routines added by JM to determine (possible) source type based
