@@ -14,6 +14,7 @@
 #include <algorithm>
 #include "GuiUserMessages.h"
 #include "SectionLoader.h"
+#include "cdrip/cddaripper.h"
 
 #define CONTROL_BTNVIEWASICONS		2
 #define CONTROL_BTNSORTBY					3
@@ -23,6 +24,7 @@
 #define CONTROL_BTNPLAYLISTS			7
 #define CONTROL_BTNSCAN						9
 #define CONTROL_BTNREC						10
+#define CONTROL_BTNRIP						11
 
 #define CONTROL_LABELFILES        12
 
@@ -330,6 +332,27 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 					}
 				}
 			}
+			else if (iControl == CONTROL_BTNRIP)
+			{
+				CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
+				if (CDetectDVDMedia::IsDiscInDrive() && pCdInfo && pCdInfo->IsAudio(1))
+				{
+					if (!CUtil::IsCDDA(g_application.CurrentFile()))
+					{
+						CCDDARipper ripper;
+						ripper.RipCD();
+					}
+					else
+					{
+						CGUIDialogOK*	pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+						pDlgOK->SetHeading(257); // Error
+						pDlgOK->SetLine(0, "Can't rip CD or Track while playing from CD"); // 
+						pDlgOK->SetLine(1, ""); // 
+						pDlgOK->SetLine(2, "");
+						pDlgOK->DoModal(GetID());
+					}
+				}
+			}
 		}
 		break;
 	}
@@ -590,6 +613,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
 	bool bIsPlaying=g_application.IsPlayingAudio();
 	bool bCanRecord=false;
 	bool bIsRecording=false;
+
 	if (bIsPlaying)
 	{
 		bCanRecord=g_application.m_pPlayer->CanRecord();
@@ -613,6 +637,17 @@ void CGUIWindowMusicSongs::UpdateButtons()
 	{
 		SET_CONTROL_LABEL(GetID(), CONTROL_BTNREC,264);//Record
 		CONTROL_DISABLE(GetID(), CONTROL_BTNREC);
+	}
+
+	// Update CDDA Rip button
+	CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
+	if (CDetectDVDMedia::IsDiscInDrive() && pCdInfo && pCdInfo->IsAudio(1))
+	{
+		CONTROL_ENABLE(GetID(), CONTROL_BTNRIP);
+	}
+	else
+	{
+		CONTROL_DISABLE(GetID(), CONTROL_BTNRIP);
 	}
 
 	//	Update sorting control

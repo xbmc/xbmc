@@ -2812,3 +2812,95 @@ fms_start_post:
 fms_exit_post:
 	}
 }
+
+// Function to create all directories at once instead
+// of calling CreateDirectory for every subdir.
+// Creates the directory and subdirectories if needed.
+bool CUtil::CreateDirectoryEx(const CStdString& strPath)
+{
+	HANDLE file;
+	WIN32_FIND_DATA	findData;
+	std::vector<string> strArray;
+	DWORD dwFileAttributes;
+
+	string path = strPath;
+	int iSize = strPath.size();
+	if (path.at(iSize-1) == '\\') path.erase(iSize-1, iSize-1); // remove slash at end
+
+	// return true if directory already exist
+	file = FindFirstFile(path.c_str(), &findData);
+	dwFileAttributes = findData.dwFileAttributes;
+	FindClose(file);
+	if(dwFileAttributes == FILE_ATTRIBUTE_DIRECTORY) return true;
+
+	/* split strPath up into an array
+	 * f:\\music\\album\\ will result in
+	 * f:\\music
+	 * f:\\music\\album
+	 */
+	int i = 2; // 2 to skip f:
+	while(i < iSize)
+	{
+		i = path.find('\\', i + 1);
+		if (i < 0) i = iSize; // get remaining chars
+		strArray.push_back(path.substr(0, i));
+	}
+
+	// create the directories
+	for(unsigned int i = 0; i < strArray.size(); i++)
+	{
+		CreateDirectory(strArray[i].c_str(),NULL);
+	}
+
+	// is the directory successfully created ?
+	file = FindFirstFile(path.c_str(),&findData);
+	dwFileAttributes = findData.dwFileAttributes;
+	FindClose(file);
+	strArray.clear();
+	if(dwFileAttributes != FILE_ATTRIBUTE_DIRECTORY) return false;
+
+	return true;
+}
+
+// check if the filename is a legal FATX one.
+// this means illegal chars will be removed from the string,
+// and the remaining string is stripped back to 42 chars if needed
+CStdString CUtil::MakeLegalFATXFileName(const char* strFile, bool bKeepExtension)
+{
+	if (NULL == strFile) return "";
+	char cIllegalChars[] = "<>=?:;\"*+,/\\|";
+	unsigned int iIllegalCharSize = strlen(cIllegalChars);
+	bool isIllegalChar;
+
+	unsigned int iSize = strlen(strFile);
+	unsigned int iNewStringSize = 0;
+	char* strNewString = new char[iSize + 1];
+
+	// only copy the legal characters to the new filename
+	for (unsigned int i = 0; i < iSize; i++)
+	{
+		isIllegalChar = false;
+		// check for illigal chars
+		for (unsigned j = 0; j < iIllegalCharSize; j++)
+			if (strFile[i] == cIllegalChars[j]) isIllegalChar = true;
+		// FATX only allows chars from 32 till 127
+		if (isIllegalChar == false &&
+				strFile[i] > 31 && strFile[i] < 127) strNewString[iNewStringSize++] = strFile[i];
+	}
+	strNewString[iNewStringSize] = '\0';
+
+	// no need to keep the extension, just strip it down to 42 characters
+	if (iNewStringSize > 42 && bKeepExtension == false) strNewString[42] = '\0';
+
+	// we want to keep the extension
+	else if (iNewStringSize > 42 && bKeepExtension == true)
+	{
+		char strExtension[42];
+		unsigned int iExtensionLenght = iNewStringSize - (strrchr(strNewString, '.') - strNewString);
+		strcpy(strExtension, (strNewString + iNewStringSize - iExtensionLenght));
+		
+		strcpy(strNewString + (42 - iExtensionLenght), strExtension);
+	}
+
+	return strNewString;
+}
