@@ -190,8 +190,6 @@ void CMediaMonitor::GetSharedMovies(VECSHARES& vecShares, MOVIELIST& movies)
 			{
 				Scan(directory, pItem->m_strPath, movies);
 			}
-
-			delete pItem;
 		}
 	}
 }
@@ -490,8 +488,6 @@ void CMediaMonitor::Scan(DIRECTORY::IDirectory& directory, CStdString& aPath, MO
 				//OutputDebugString("\n");
 			}
 		}
-
-		delete pItem;
 	}
 }
 
