@@ -310,7 +310,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 																												  iHeight, 
 																												  1, // levels
 																												  0, //usage
-																												  D3DFMT_LIN_A8R8G8B8 ,
+																												  D3DFMT_DXT3 ,
 																												  0,
 																												  &pTexture) == D3D_OK) 
 		  {
@@ -357,21 +357,45 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
     return pMap->size();
   } // of if (strPath.Right(4).ToLower()==".gif")
 
-  // normal picture
+	D3DXSetDXT3DXT5(TRUE);
+
 	D3DXIMAGE_INFO info;
-  if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), strPath.c_str(),
-		 D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
-		 D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture)!=D3D_OK)
+
+	int n = strPath.find_last_of('.');
+	if (strPath.Right(strPath.size()-n) == ".dds")
 	{
-      CStdString strText=strPath;
-      strText.MakeLower();
-      // dont release skin textures, they are reloaded each time
-      if (strstr(strPath.c_str(),"q:\\skin") ) 
-      {
-        CLog::Log("Texture manager unable to find file:%s",strPath.c_str());
-      }
-		return NULL;
+		if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), strPath.c_str(),
+			D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED,
+			D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture)!=D3D_OK)
+		{
+			CStdString strText = strPath;
+			strText.MakeLower();
+			// dont release skin textures, they are reloaded each time
+			if (strstr(strPath.c_str(),"q:\\skin") ) 
+			{
+				CLog::Log("Texture manager unable to find file:%s",strPath.c_str());
+			}
+			return NULL;
+		}
 	}
+	else
+	{
+		// normal picture
+		if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), strPath.c_str(),
+			D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_DXT3, D3DPOOL_MANAGED,
+			D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture)!=D3D_OK)
+		{
+			CStdString strText = strPath;
+			strText.MakeLower();
+			// dont release skin textures, they are reloaded each time
+			if (strstr(strPath.c_str(),"q:\\skin") ) 
+			{
+				CLog::Log("Texture manager unable to find file:%s",strPath.c_str());
+			}
+			return NULL;
+		}
+	}
+
 	//CStdString strLog;
 	//strLog.Format("%s %ix%i\n", strTextureName.c_str(),info.Width,info.Height);
 	//OutputDebugString(strLog.c_str());
