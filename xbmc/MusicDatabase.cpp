@@ -26,6 +26,7 @@ void CSong::Clear()
 
 CMusicDatabase::CMusicDatabase(void)
 {
+	m_bOpen=false;
 }
 
 CMusicDatabase::~CMusicDatabase(void)
@@ -90,7 +91,13 @@ bool CMusicDatabase::Open()
 	m_pDS->exec("PRAGMA synchronous='OFF'\n");
 	m_pDS->exec("PRAGMA count_changes='OFF'\n");
 //	m_pDS->exec("PRAGMA temp_store='MEMORY'\n");
+	m_bOpen=true;
 	return true;
+}
+
+bool CMusicDatabase::IsOpen()
+{
+	return m_bOpen;
 }
 
 void CMusicDatabase::Close()
@@ -98,6 +105,8 @@ void CMusicDatabase::Close()
 	if (NULL==m_pDB.get() ) return;
 	m_pDB->disconnect();
 	m_pDB.reset();
+	m_bOpen=false;
+	EmptyCache();
 }
 
 bool CMusicDatabase::CreateTables()

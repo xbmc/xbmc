@@ -57,7 +57,7 @@ protected:
 	typedef vector <CFileItem*>::iterator ivecItems;
 	CGUIDialogProgress*				m_dlgProgress;
 	CDirectoryHistory					m_history;
-	CMusicDatabase						m_database;
+	static CMusicDatabase			m_database;
 	int												m_iViewAsIcons;
 	int												m_iViewAsIconsRoot;
 	static int								m_nTempPlayListWindow;
