@@ -26,7 +26,7 @@ extern "C"
   struct Visualisation
   {
 public:
-    void (__cdecl* Create)(LPDIRECT3DDEVICE8 pd3dDevice, int iWidth, int iHeight, const char* szVisualisation);
+    void (__cdecl* Create)(LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisation);
     void (__cdecl* Start)(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
     void (__cdecl* AudioData)(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
     void (__cdecl* Render) ();
@@ -45,7 +45,7 @@ public:
   ~CVisualisation();
 
   // Things that MUST be supplied by the child classes
-  void Create();
+  void Create(int posx, int posy, int width, int height);
   void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const CStdString strSongName);
   void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
   void Render();
@@ -55,6 +55,12 @@ protected:
   auto_ptr<struct Visualisation> m_pVisz;
   auto_ptr<DllLoader> m_pLoader;
   CStdString m_strVisualisationName;
+
+  // position on screen
+  int m_posX;
+  int m_posY;
+  int m_width;
+  int m_height;
 };
 
 
