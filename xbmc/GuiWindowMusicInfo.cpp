@@ -2,6 +2,7 @@
 #include "GUIWindowMusicInfo.h"
 #include "Utils/HTTP.h"
 #include "Util.h"
+#include "GUIImage.h"
 
 #define	CONTROL_ALBUM		20
 #define	CONTROL_ARTIST	21

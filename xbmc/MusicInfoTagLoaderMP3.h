@@ -1,6 +1,5 @@
 #pragma once
 
-#include "musicinfotag.h"
 #include "IMusicInfoTagLoader.h"
 
 #include "lib/libID3/id3.h"

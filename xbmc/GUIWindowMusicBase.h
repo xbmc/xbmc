@@ -8,7 +8,6 @@
 #include "FileSystem/VirtualDirectory.h"
 #include "FileSystem/DirectoryHistory.h"
 #include "MusicDatabase.h"
-#include "FileItem.h"
 #include "PlayList.h"
 #include "MusicInfoTagLoaderFactory.h"
 #include "Utils/MusicInfoScraper.h"

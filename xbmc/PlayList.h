@@ -1,8 +1,6 @@
 #pragma once
 
-#include "musicInfoTag.h"
-
-using namespace MUSIC_INFO;
+#include "fileitem.h"
 
 namespace PLAYLIST
 {
