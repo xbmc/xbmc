@@ -394,8 +394,9 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
     }
     while (FindNextFile(hFind, &wfd));
 
-	CStdString strShortCutsDir = "Q:\\shortcuts";
-	if (bFlattenDir && strDirectory != strShortCutsDir) 
+	if (m_bookmarkName=="shortcuts")
+		bOnlyDefaultXBE=false;			// let's do this so that we don't only grab default.xbe from database when getting shortcuts
+	if (bFlattenDir) 
 		m_database.GetProgramsByBookmark(m_bookmarkName, m_vecItems, bOnlyDefaultXBE); 
     CUtil::ClearCache();
  	CUtil::SetThumbs(m_vecItems);
