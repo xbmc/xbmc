@@ -753,7 +753,7 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 
 void CApplication::OnPlayBackEnded()
 {
-  m_strCurrentFile="";
+  
   OutputDebugString("Playback has finished\n");
 	CGUIMessage msg( GUI_MSG_PLAYBACK_ENDED, 0, 0, 0, 0, NULL );
 	m_gWindowManager.SendThreadMessage( msg );
@@ -1015,7 +1015,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
 		{
 			m_dwSpinDownTime=timeGetTime();
 			m_dwIdleTime=timeGetTime();
-      if (CUtil::IsVideo(m_strCurrentFile))
+      CStdString strFile=m_strCurrentFile;
+      m_strCurrentFile="";
+      if (CUtil::IsVideo(strFile))
       {
         if (g_stSettings.m_bMyVideoVideoStack)
         {
