@@ -271,7 +271,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 			// otherwise, is this the first time accessing this window?
 			else if (m_Directory[0].m_strPath=="?")
 			{
-				strDestination = g_stSettings.m_szDefaultFiles;
+				m_Directory[0].m_strPath = strDestination = g_stSettings.m_szDefaultFiles;
 				CLog::Log(LOGINFO,"Attempting to default to: %s",strDestination.c_str());
 			}
 			// try to open the destination path
