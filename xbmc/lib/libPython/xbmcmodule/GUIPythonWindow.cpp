@@ -12,7 +12,7 @@ CGUIPythonWindow::CGUIPythonWindow(DWORD dwId)
 :CGUIWindow(dwId)
 {
 	pCallbackWindow = NULL;
-	m_actionEvent = CreateEvent(NULL, false, false, "pythonActionEvent");
+	m_actionEvent = CreateEvent(NULL, true, false, "pythonActionEvent");
 }
 
 CGUIPythonWindow::~CGUIPythonWindow(void)
@@ -38,7 +38,7 @@ void CGUIPythonWindow::OnAction(const CAction &action)
 
 bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
 {
-  switch ( message.GetMessage() )
+  switch (message.GetMessage())
   {
 		case GUI_MSG_WINDOW_DEINIT:
 		{
@@ -105,11 +105,12 @@ void CGUIPythonWindow::SetCallbackWindow(PyObject *object)
 void CGUIPythonWindow::WaitForActionEvent(DWORD timeout)
 {
 	WaitForSingleObject(m_actionEvent, timeout);
+	ResetEvent(m_actionEvent);
 }
 
 void CGUIPythonWindow::PulseActionEvent()
 {
-	PulseEvent(m_actionEvent);
+	SetEvent(m_actionEvent);
 }
 
 /*

@@ -3,7 +3,9 @@
 #include "..\structmember.h"
 #include "control.h"
 #include "window.h"
+#include "dialog.h"
 #include "pyutil.h"
+#include "guiwindowmanager.h"
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
@@ -16,9 +18,6 @@ extern "C" {
 
 namespace PYXBMC
 {
-	extern PyTypeObject DialogType;
-	extern PyTypeObject DialogProgressType;
-
 	PyDoc_STRVAR(lock__doc__,
 		"lock() -- Lock the gui until unlock is called.\n"
 		"\n"
@@ -42,10 +41,22 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(getCurrentWindowId__doc__,
+		"getCurrentWindowId() -- returns the id for the current 'active' window.\n");
+
+	PyObject* XBMCGUI_GetCurrentWindowId(PyObject *self, PyObject *args)
+	{
+		PyGUILock();
+		DWORD dwId = m_gWindowManager.GetActiveWindow();
+		PyGUIUnlock();
+		return Py_BuildValue("l", dwId);
+	}
+
 	// define c functions to be used in python here
 	PyMethodDef xbmcGuiMethods[] = {
 		{"lock", (PyCFunction)XBMCGUI_Lock, METH_VARARGS, lock__doc__},
 		{"unlock", (PyCFunction)XBMCGUI_Unlock, METH_VARARGS, unlock__doc__},
+		{"getCurrentWindowId", (PyCFunction)XBMCGUI_GetCurrentWindowId, METH_VARARGS, getCurrentWindowId__doc__},
 		{NULL, NULL, 0, NULL}
 	};
 
@@ -60,10 +71,10 @@ namespace PYXBMC
 		// init xbmc gui modules
 		PyObject* pXbmcGuiModule;
 
-		DialogType.tp_new = PyType_GenericNew;
-		DialogProgressType.tp_new = PyType_GenericNew;
+		DialogProgress_Type.tp_new = PyType_GenericNew;
 
 		if (PyType_Ready(&Window_Type) < 0 ||
+				PyType_Ready(&WindowDialog_Type) < 0 ||
 				PyType_Ready(&ListItem_Type) < 0 ||
 				PyType_Ready(&Control_Type) < 0 ||
 				PyType_Ready(&ControlSpin_Type) < 0 ||
@@ -73,11 +84,11 @@ namespace PYXBMC
 				PyType_Ready(&ControlButton_Type) < 0 ||
 				PyType_Ready(&ControlList_Type) < 0 ||
 				PyType_Ready(&ControlImage_Type) < 0 ||
-				PyType_Ready(&DialogType) < 0 ||
-				PyType_Ready(&DialogProgressType) < 0)
+				PyType_Ready(&DialogProgress_Type) < 0)
 			return;
 
 		Py_INCREF(&Window_Type);
+		Py_INCREF(&WindowDialog_Type);
 		Py_INCREF(&ListItem_Type);
 		Py_INCREF(&Control_Type);
 		Py_INCREF(&ControlSpin_Type);
@@ -87,14 +98,14 @@ namespace PYXBMC
 		Py_INCREF(&ControlButton_Type);
 		Py_INCREF(&ControlList_Type);
 		Py_INCREF(&ControlImage_Type);
-		Py_INCREF(&DialogType);
-		Py_INCREF(&DialogProgressType);
+		Py_INCREF(&DialogProgress_Type);
 
 		pXbmcGuiModule = Py_InitModule3("xbmcgui", xbmcGuiMethods, xbmcgui_module_documentation);
 
 		if (pXbmcGuiModule == NULL) return;
 
     PyModule_AddObject(pXbmcGuiModule, "Window", (PyObject*)&Window_Type);
+		PyModule_AddObject(pXbmcGuiModule, "WindowDialog", (PyObject*)&WindowDialog_Type);
 		PyModule_AddObject(pXbmcGuiModule, "ListItem", (PyObject*)&ListItem_Type);
 		//PyModule_AddObject(pXbmcGuiModule, "Control", (PyObject*)&Control_Type);
 		//PyModule_AddObject(pXbmcGuiModule, "ControlSpin", (PyObject*)&ControlSpin_Type);
@@ -104,8 +115,7 @@ namespace PYXBMC
 		PyModule_AddObject(pXbmcGuiModule, "ControlButton", (PyObject*)&ControlButton_Type);
 		PyModule_AddObject(pXbmcGuiModule, "ControlList", (PyObject*)&ControlList_Type);
 		PyModule_AddObject(pXbmcGuiModule, "ControlImage", (PyObject*)&	ControlImage_Type);
-		PyModule_AddObject(pXbmcGuiModule, "Dialog", (PyObject*)&DialogType);
-		PyModule_AddObject(pXbmcGuiModule, "DialogProgress", (PyObject *)&DialogProgressType);
+		PyModule_AddObject(pXbmcGuiModule, "DialogProgress", (PyObject *)&DialogProgress_Type);
 
 		// constants
 		PyModule_AddStringConstant(pXbmcGuiModule, "__author__",		PY_XBMC_AUTHOR);

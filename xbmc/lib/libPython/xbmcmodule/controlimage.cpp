@@ -42,6 +42,15 @@ namespace PYXBMC
 		self->ob_type->tp_free((PyObject*)self);
 	}
 
+	CGUIControl* ControlImage_Create(ControlImage* pControl)
+	{
+		pControl->pGUIControl = new CGUIImage(pControl->iParentId, pControl->iControlId,
+				pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
+				pControl->strFileName, pControl->strColorKey);
+
+		return pControl->pGUIControl;
+	}
+
 	PyMethodDef ControlImage_methods[] = {
 		{NULL, NULL, 0, NULL}
 	};

@@ -53,6 +53,27 @@ namespace PYXBMC
 		self->ob_type->tp_free((PyObject*)self);
 	}
 
+	CGUIControl* ControlTextBox_Create(ControlTextBox* pControl)
+	{
+		// create textbox
+		pControl->pGUIControl = new CGUITextBox(pControl->iParentId, pControl->iControlId,
+				pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
+				pControl->strFont, pControl->pControlSpin->dwWidth, pControl->pControlSpin->dwHeight,
+				pControl->pControlSpin->strTextureUp, pControl->pControlSpin->strTextureDown, pControl->pControlSpin->strTextureUpFocus,
+				pControl->pControlSpin->strTextureDownFocus, pControl->pControlSpin->dwColor, pControl->pControlSpin->dwPosX,
+				pControl->pControlSpin->dwPosY, pControl->strFont, pControl->dwTextColor);
+
+		// reset textbox
+		CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
+		pControl->pGUIControl->OnMessage(msg);
+
+		// set values for spincontrol
+		pControl->pControlSpin->iControlId = pControl->iControlId;
+		pControl->pControlSpin->iParentId = pControl->iParentId;
+
+		return pControl->pGUIControl;
+	}
+
 	PyDoc_STRVAR(setText__doc__,
 		"SetText(string text) -- Set's the text for this textbox.\n"
 		"\n"

@@ -43,6 +43,14 @@ namespace PYXBMC
 		self->ob_type->tp_free((PyObject*)self);
 	}
 
+	CGUIControl* ControlLabel_Create(ControlLabel* pControl)
+	{
+		pControl->pGUIControl = new CGUILabelControl(pControl->iParentId, pControl->iControlId,
+				pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
+				pControl->strFont, pControl->strText, pControl->dwTextColor, pControl->dwTextColor, 0, false);
+		return pControl->pGUIControl;
+	}
+
 	PyDoc_STRVAR(setLabel__doc__,
 		"setLabel(string label) -- Set's text for this label.\n"
 		"\n"
