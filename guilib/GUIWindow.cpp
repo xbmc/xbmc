@@ -1,4 +1,5 @@
 #include "guiwindow.h"
+#include "texturemanager.h"
 #include "tinyxml/tinyxml.h"
 #include "GUIControlFactory.h"
 
@@ -155,22 +156,31 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 
 void CGUIWindow::AllocResources()
 {
+  CStdString strLog;
+  strLog.Format("window:%i ::AllocResources()\n", GetID() );
+  OutputDebugString(strLog.c_str());
+
   ivecControls i;
   for (i=m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
     CGUIControl* pControl= *i;
     pControl->AllocResources();
   }
+  g_TextureManager.Dump();
 }
 
 void CGUIWindow::FreeResources()
 {
+  CStdString strLog;
+  strLog.Format("window:%i ::FreeResources()\n", GetID());
+  OutputDebugString(strLog.c_str());
   ivecControls i;
   for (i=m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
     CGUIControl* pControl= *i;
     pControl->FreeResources();
   }
+  g_TextureManager.Dump();
 }
 
 void CGUIWindow::Add(CGUIControl* pControl)

@@ -42,13 +42,15 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   return true;
 }
 
+static wstring wszEmptyString=L"";
+
 const wstring&  CLocalizeStrings::Get(DWORD dwCode)
 {
   ivecStrings i;
   i = m_vecStrings.find(dwCode);
   if (i==m_vecStrings.end())
   {
-    return L"";
+    return wszEmptyString;
   }
   return i->second;
 }
