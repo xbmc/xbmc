@@ -44,7 +44,9 @@ struct CreditLine_t
 // x, y are percentage distance across the screen of the center point
 // Time is delay since last credit
 //    x,   y,   Time,    Dur,  InD, OutD,                        Effects, Font, Text
-	CreditLine_t Credits[] = {
+	CreditLine_t Credits[] = 
+{
+
 	// Intro
 	{  50,  25,    400,  10000,  100,  800, EFF_IN_FLASH  |EFF_OUT_FADE   ,   78, L"XBOX" },
 	{  50,  45,      0,  10000,  100,  800, EFF_IN_FLASH  |EFF_OUT_FADE   ,   78, L"MEDIA" },
@@ -109,8 +111,35 @@ struct CreditLine_t
 	{  50,  35,    500,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"The Joker of Team Avalaunch" },
 	{  50,  45,    100,   7400,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team SmartXX" },
 	{  50,  55,    100,   7300,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team Xecuter" },
+	{  50,  65,    100,   7300,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team Ozxodus" },
 
-	// blank line as a pause
+  // JOKE section;-)
+
+  // joke section Frodo
+	{  50,  22,   9500,   8000,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   36, L"Frodo" },
+	{  50,  35,    500,   7500,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"Special thanks to my dear friends" },
+	{  50,  45,    100,   7400,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"Gandalf, Legolas, Gimli , Aragorn, Boromir" },
+	{  50,  55,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"Merry, Pippin and offcourse Samwise" },
+
+	// joke section mario64
+	{  50,  22,   9500,   8000,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   36, L"Mario64" },
+  {  50,  35,    500,   7500,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"Special thanks to:" },
+	{  50,  45,    100,   7400,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"The coyoty for never catching the road runner" },
+	{  50,  55,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"The pizza delivery guy" },
+	{  50,  65,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"Amstel & Heineiken" },
+	{  50,  75,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"Rob Hubbard for his great sid tunes" },
+
+
+  // joke section dday
+	{  50,  22,   9500,   8000,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   36, L"DDay" },
+  {  50,  35,    500,   7500,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"Special thanks to:" },
+	{  50,  45,    100,   7400,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"Frodo for not kicking in my skull when not thinking clearly" },
+	{  50,  55,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"god for pizza, beer and women" },
+	{  50,  65,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"Douglas Adams for making me smile each summer" },
+	{  50,  75,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"hitchhikers guide to the galaxy" },
+
+
+  // blank line as a pause
 	{   0,   0,  11500,      0,    0,    0, EFF_IN_APPEAR |EFF_OUT_APPEAR ,   20, L"" },
 };
 
