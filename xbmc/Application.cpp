@@ -1733,6 +1733,7 @@ void CApplication::UpdateLCD()
 		CStdString strTime;
 		CStdString strIcon;
 		CStdString strLine;
+		CStdString strProgressBar;
 		if (IsPlayingVideo())
 		{
 			// line 0: play symbol current time/total time
@@ -1772,11 +1773,17 @@ void CApplication::UpdateLCD()
 			g_lcd->SetLine(iLine++,strLine);
 
 			if (iLine<4 && m_tagCurrentMovie.m_strGenre!="") g_lcd->SetLine(iLine++,m_tagCurrentMovie.m_strGenre);
+
+			strProgressBar = g_infoManager.GetProgressBar("video");
+			g_lcd->SetLine(iLine++, strProgressBar);
+			/*
 			if (iLine<4 && m_tagCurrentMovie.m_iYear>1900)
 			{
 				strLine.Format("%i", m_tagCurrentMovie.m_iYear);
 				g_lcd->SetLine(iLine++,strLine);
 			}
+			*/
+
 			if (iLine < 4)
 			{
 				MEMORYSTATUS stat;
@@ -1817,8 +1824,12 @@ void CApplication::UpdateLCD()
 			if (iLine < 4 && strLine!="") g_lcd->SetLine(iLine++,strLine);
 			strLine = g_infoManager.GetMusicLabel("artist");
 			if (iLine < 4 && strLine!="") g_lcd->SetLine(iLine++,strLine);
-      strLine = g_infoManager.GetMusicLabel("album");
-      if (iLine < 4 && strLine!="")
+			strLine = g_infoManager.GetMusicLabel("album");
+
+			strProgressBar = g_infoManager.GetProgressBar("audio");
+			g_lcd->SetLine(iLine++, strProgressBar);
+	  
+			if (iLine < 4 && strLine!="")
 			{
 				CStdString strYear = g_infoManager.GetMusicLabel("year");
 				if (strYear.size())
