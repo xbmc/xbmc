@@ -2576,4 +2576,6 @@
    <string><id>14048</id><value>%i kbps</value></string>
    <string><id>14049</id><value>%i kb</value></string>
    <string><id>14050</id><value>%i.0 dB</value></string>
+   <string><id>14051</id><value>Visa 12 timmars klocka</value></string>
+   <string><id>14052</id><value>Byt plats på dag/månad på första sidan</value></string>
 </strings>
