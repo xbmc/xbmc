@@ -1753,7 +1753,7 @@ void CApplication::UpdateLCD()
 				strTotalTime=" ";
 			}
 
-			strTime = g_infoManager.GetMusicLabel("time");
+			strTime = g_infoManager.GetVideoLabel("time");
 
 			if (m_iPlaySpeed < 1)
 				strIcon.Format("\3 %ix", m_iPlaySpeed);
