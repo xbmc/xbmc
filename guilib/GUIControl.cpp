@@ -345,7 +345,11 @@ void CGUIControl::SetSelected(bool bSelected)
 }
 void CGUIControl::EnableCalibration(bool bOnOff)
 {
-	m_bCalibration=bOnOff;
+  if (m_bCalibration != bOnOff)
+  {
+	  m_bCalibration = bOnOff;
+    m_bInvalidated = true;
+  }
 }
 bool CGUIControl::CalibrationEnabled() const
 {
