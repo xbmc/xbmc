@@ -189,6 +189,8 @@ while(sh_audio->channels>0){
 
 static void uninit(sh_audio_t *sh)
 {
+    if( a52_samples ) free( a52_samples );
+    a52_samples = NULL;
 }
 
 static int control(sh_audio_t *sh,int cmd,void* arg, ...)
