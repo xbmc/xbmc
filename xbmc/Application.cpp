@@ -67,31 +67,15 @@ CApplication::~CApplication(void)
 
 HRESULT CApplication::Create()
 {
-	CStdString strPath;
-	CUtil::GetHomePath(strPath);
-	
-  CIoSupport helper;
-	
-	{
-		CHAR szDevicePath[1024];
-		helper.Mount("Q:","Harddisk0\\Partition2");
+	CIoSupport helper;
 
-		helper.GetPartition(strPath.c_str(),szDevicePath);
-		strcat(szDevicePath,&strPath.c_str()[2]);
-		helper.Unmount("Q:");
-		helper.Mount("Q:",szDevicePath);	
-	}
-
-
-	string strSkinPath=strPath;
-	strSkinPath+=CStdString("\\skin");
+	helper.Remap("C:,Harddisk0\\Partition2");
+	helper.Remap("E:,Harddisk0\\Partition1");
+	helper.Remount("D:","Cdrom0");
 
 	// Transfer the resolution information to our graphics context
 	g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
 	m_bSettingsLoaded=g_settings.Load();
-	helper.Remap("C:,Harddisk0\\Partition2");
-	helper.Remap("E:,Harddisk0\\Partition1");
-	helper.Remount("D:","Cdrom0");
 
 	if ( g_stSettings.m_bUseFDrive )
 	{
@@ -100,6 +84,37 @@ HRESULT CApplication::Create()
 	if ( g_stSettings.m_bUseGDrive )
 	{
 		helper.Remap("G:,Harddisk0\\Partition7"); // used for the LBA-48 hack allowing >120 gig
+	}
+
+	// check settings to see if another home dir is defined.
+	// if there is, we check if it's a xbmc dir and map to it Q:
+
+	CStdString strPath;
+	if (strlen(g_stSettings.szHomeDir) < 1)
+	{
+		CUtil::GetHomePath(strPath);
+	}
+	else
+	{
+		// home dir is defined in xboxmediacenter.xml
+		strPath = g_stSettings.szHomeDir;
+		strPath.TrimRight("\\");
+
+		if(access(strPath + "\\skin", 0))
+		{
+			// strPath + skin does not exist, maybe the user made a typo
+			CUtil::GetHomePath(strPath);
+		}
+	}
+
+	{
+		CHAR szDevicePath[1024];
+		helper.Mount("Q:","Harddisk0\\Partition2");
+
+		helper.GetPartition(strPath.c_str(),szDevicePath);
+		strcat(szDevicePath,&strPath.c_str()[2]);
+		helper.Unmount("Q:");
+		helper.Mount("Q:",szDevicePath);	
 	}
 
 	CStdString strLanguagePath;
@@ -116,50 +131,40 @@ HRESULT CApplication::Create()
 
 HRESULT CApplication::Initialize()
 {
-	CStdString strPath;
-	CUtil::GetHomePath(strPath);
-	string strSkinPath=strPath;
-	strSkinPath+=CStdString("\\skin");
   if (g_stSettings.szThumbnailsDirectory[0]==0)
   {
-    strcpy(g_stSettings.szThumbnailsDirectory,strPath.c_str());
-    strcat(g_stSettings.szThumbnailsDirectory,"\\thumbs");
+		strcpy(g_stSettings.szThumbnailsDirectory,"Q:\\thumbs");
   }
-
   if (g_stSettings.m_szShortcutDirectory[0]==0)
   {
-    strcpy(g_stSettings.m_szShortcutDirectory,strPath.c_str());
-    strcat(g_stSettings.m_szShortcutDirectory,"\\shortcuts");		
+		strcpy(g_stSettings.m_szShortcutDirectory,"Q:\\shortcuts");		
   }
   if (g_stSettings.m_szIMDBDirectory[0]==0)
   {
-    strcpy(g_stSettings.m_szIMDBDirectory,strPath.c_str());
-    strcat(g_stSettings.m_szIMDBDirectory,"\\imdb");		
+		strcpy(g_stSettings.m_szIMDBDirectory,"Q:\\imdb");		
   }
   if (g_stSettings.m_szAlbumDirectory[0]==0)
   {
-    strcpy(g_stSettings.m_szAlbumDirectory,strPath.c_str());
-    strcat(g_stSettings.m_szAlbumDirectory,"\\albums");		
+		strcpy(g_stSettings.m_szAlbumDirectory,"Q:\\albums");		
   }
 	if (g_stSettings.m_szMusicRecordingDirectory[0]==0)
   {
-    strcpy(g_stSettings.m_szMusicRecordingDirectory,strPath.c_str());
-    strcat(g_stSettings.m_szMusicRecordingDirectory,"\\recordings");		
+		strcpy(g_stSettings.m_szMusicRecordingDirectory,"Q:\\recordings");		
   }
 	CreateDirectory(g_stSettings.szThumbnailsDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szShortcutDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szIMDBDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szAlbumDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szMusicRecordingDirectory,NULL);
-	string strDir=strPath;
+
 	string strAlbumDir=g_stSettings.m_szAlbumDirectory;
 	CreateDirectory((strAlbumDir+"\\playlists").c_str(),NULL);
 	CreateDirectory((strAlbumDir+"\\cddb").c_str(),NULL);
 	CreateDirectory((strAlbumDir+"\\thumbs").c_str(),NULL); // contains the album thumbs
-	CreateDirectory((strDir+"\\python").c_str(),NULL);
-	CreateDirectory((strDir+"\\scripts").c_str(),NULL);
-	CreateDirectory((strDir+"\\language").c_str(),NULL);
-	CreateDirectory((strDir+"\\visualisations").c_str(),NULL);
+	CreateDirectory("Q:\\python",NULL);
+	CreateDirectory("Q:\\scripts",NULL);
+	CreateDirectory("Q:\\language",NULL);
+	CreateDirectory("Q:\\visualisations",NULL);
 
   if ( strlen(g_stSettings.m_szAlternateSubtitleDirectory) )
   {
@@ -255,10 +260,7 @@ HRESULT CApplication::Initialize()
 void CApplication::LoadSkin(const CStdString& strSkin)
 {
 	CStdString strHomePath;
-	string strSkinPath;
-	CUtil::GetHomePath(strHomePath);
-	strSkinPath=strHomePath;
-	strSkinPath+="\\skin\\";
+	string strSkinPath = "Q:\\skin\\";
 	strSkinPath+=strSkin;
 
 	m_guiWindowVideoOverlay.FreeResources();
