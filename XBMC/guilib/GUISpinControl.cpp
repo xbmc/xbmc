@@ -77,6 +77,7 @@ void CGUISpinControl::OnKey(const CKey& key)
 					MoveDown();
 				else
 					MoveUp();
+				return;
 			}
 			if (m_iSelect==SPIN_BUTTON_DOWN)
 			{
@@ -84,6 +85,7 @@ void CGUISpinControl::OnKey(const CKey& key)
 					MoveUp();
 				else
 					MoveDown();
+				return;
 			}
     }
   }
@@ -130,8 +132,11 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
 
 				if (m_iType==SPIN_CONTROL_TYPE_TEXT)
 				{
-					message.SetLabel( m_vecLabels[m_iValue]);
-					message.SetParam1(m_vecValues[m_iValue]);
+					if ( m_iValue>= 0 && m_iValue < (int)m_vecLabels.size() )
+						message.SetLabel( m_vecLabels[m_iValue]);
+					
+					if ( m_iValue>= 0 && m_iValue < (int)m_vecValues.size() )
+						message.SetParam1(m_vecValues[m_iValue]);
 				}
 				return true;
 			}
@@ -308,6 +313,7 @@ void CGUISpinControl::AddLabel(const wstring& strLabel, int iValue)
 
 const WCHAR* CGUISpinControl::GetLabel() const
 {
+	if (m_iValue >=0 && m_iValue < (int)m_vecLabels.size()) return L"";
 	const wstring strLabel=m_vecLabels[ m_iValue];
   return strLabel.c_str();
 }
