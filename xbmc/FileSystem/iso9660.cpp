@@ -368,6 +368,8 @@ iso9660::iso9660( )
 
 void iso9660::Scan()
 {
+	if (m_hCDROM!=NULL)
+		return;
 
   m_hCDROM = m_IoSupport.OpenCDROM();
 	
@@ -909,4 +911,10 @@ iso9660::isofile* iso9660::GetFileContext(HANDLE hFile)
     return m_isoFiles[iFile];
   }
   return NULL;
+}
+
+//************************************************************************************
+bool iso9660::IsScanned()
+{
+	return (m_hCDROM!=NULL);
 }

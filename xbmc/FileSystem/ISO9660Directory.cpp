@@ -21,6 +21,11 @@ bool  CISO9660Directory::GetDirectory(const CStdString& strPath,VECFILEITEMS &it
 	CStdString strRoot=strPath;
 	if (!CUtil::HasSlashAtEnd(strPath) )
 		strRoot+="/";
+
+	//	Scan active disc if not done before
+	if (!m_isoReader.IsScanned())
+		m_isoReader.Scan();
+
   CURL url(strPath);
   
   {
