@@ -15,6 +15,7 @@
 #include "Xbox/Undocumented.h"
 #include <algorithm>
 #include "utils/log.h"
+#include "programdatabase.h"
 
 #define KAI_CONSOLE_PEN_NORMAL	0	
 #define KAI_CONSOLE_PEN_ACTION	1
@@ -500,7 +501,7 @@ void CGUIWindowBuddies::OnClickListItem(CGUIMessage& aMessage)
 						CStdString strFormat=g_localizeStrings.Get(15008);
 						strMsg.Format(strFormat.c_str(),pBuddy->GetName()); // "You've been invited to join %s."
 					}
-				}
+				}		
 
 				CStdString strInviteMsg;
 				strInviteMsg.Format("You're invited to play %s.", strGame);
@@ -1461,18 +1462,37 @@ void CGUIWindowBuddies::Play(CStdString& aVector)
 	CStdString strGame;
 	CArenaItem::GetTier(CArenaItem::Game, aVector, strGame);
 
-	if (!g_guiSettings.GetString("XLinkKai.GamesDir").IsEmpty())
-	{
-		// Get TitleId from current vector
-		DWORD dwTitleId = m_titles[strGame];
-		if (dwTitleId!=0x00000000)
+	// Get TitleId from current vector
+	DWORD dwTitleId = m_titles[strGame];
+
+	//make sure we got an id
+	if (dwTitleId!=0x00000000)
+	{		   
+		bool foundPath = false;
+		CStdString strGamePath;
+
+		//first check with the db.
+		CProgramDatabase db;
+		if(db.Open())
 		{
-			CStdString strGamePath;
-			if (GetGamePathFromTitleId(dwTitleId,strGamePath))
-			{
-				CUtil::RunXBE(strGamePath);
-				return;
+			foundPath=db.GetXBEPathByTitleId(dwTitleId, strGamePath);			
+			db.Close();
+		}
+
+		if(!foundPath)
+		{
+			//else try the original way..last ditch effort
+			if (!g_guiSettings.GetString("XLinkKai.GamesDir").IsEmpty())
+			{ 
+				foundPath=GetGamePathFromTitleId(dwTitleId,strGamePath);
 			}
+		}
+    
+		//finally, if we found the game path..run it!
+		if (foundPath && !strGamePath.IsEmpty())
+		{
+			CUtil::RunXBE(strGamePath);
+			return;
 		}
 	}
 
@@ -1509,7 +1529,7 @@ bool CGUIWindowBuddies::GetGamePathFromTitleId(DWORD aTitleId, CStdString& aGame
 {
 	WIN32_FIND_DATA wfd;
 	memset(&wfd,0,sizeof(wfd));
-	
+
 	//split the string in case there are multiple dirs
 	CStdStringArray gamesDirs;
 	StringUtils::SplitString(g_guiSettings.GetString("XLinkKai.GamesDir"),";",gamesDirs);

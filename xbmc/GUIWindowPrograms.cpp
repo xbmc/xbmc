@@ -435,7 +435,8 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
 					}
 					else
 					{
-						m_database.AddProgram(strFile,strDescription,m_strBookmarkName);
+						DWORD titleId = CUtil::GetXbeID(strFile);
+						m_database.AddProgram(strFile,titleId,strDescription,m_strBookmarkName);
 					}
 				}
 
@@ -455,7 +456,8 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
 
 					else 
 					{
-						m_database.AddProgram(strFile,wfd.cFileName,m_strBookmarkName);
+						DWORD titleId = CUtil::GetXbeID(strFile);
+						m_database.AddProgram(strFile,titleId,wfd.cFileName,m_strBookmarkName);
 					}
 				}
 			}
@@ -634,8 +636,9 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 						m_vecItems.push_back(pItem);
 					}
 					else
-					{                                                                                                                                                                                                                                                                                                                                                                                    
-						m_database.AddProgram(vecPaths[j], strDescription, m_strBookmarkName);
+					{      
+						DWORD titleId = CUtil::GetXbeID(vecPaths[j]);    
+						m_database.AddProgram(vecPaths[j], titleId, strDescription, m_strBookmarkName);
 						m_database.GetFile(vecPaths[j],m_vecItems);
 					}
 				}

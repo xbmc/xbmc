@@ -12,6 +12,7 @@ typedef vector<CStdString> VECPROGRAMPATHS;
 #define COMPARE_PERCENTAGE     0.90f // 90%
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%
 
+#define PROGRAM_DATABASE_NAME "\\MyPrograms5.db"
 
 class CProgramDatabase
 {
@@ -20,10 +21,11 @@ public:
   virtual ~CProgramDatabase(void);
   bool    Open() ;
   void	  Close() ;
-  long    AddProgram(const CStdString& strFilenameAndPath, const CStdString& strDescription, const CStdString& strBookmark);
+  long    AddProgram(const CStdString& strFilenameAndPath, DWORD titleId, const CStdString& strDescription, const CStdString& strBookmark);
   long	  GetFile(const CStdString& strFilenameAndPath, VECFILEITEMS& programs);
   void	  GetProgramsByBookmark(CStdString& strBookmark, VECFILEITEMS& programs, bool bOnlyDefaultXBE);
   void	  GetProgramsByPath(const CStdString& strPath, VECFILEITEMS& programs, int idepth, bool bOnlyDefaultXBE);
+  bool    GetXBEPathByTitleId(const DWORD titleId, CStdString& strPathAndFilename);
   bool    IncTimesPlayed(const CStdString& strFileName1);
   bool	  EntryExists(const CStdString& strPath, const CStdString& strBookmark);
 protected:
@@ -32,7 +34,7 @@ protected:
 
 
   long    AddPath(const CStdString& strPath);
-  long    AddFile(long lPathId, const CStdString& strFileName, const CStdString& strDescription);
+  long    AddFile(long lPathId, const CStdString& strFileName, DWORD titleId , const CStdString& strDescription);
 
   long	  AddBookMark(const CStdString& strBookmark);
   long    GetProgram(long lPathId);
