@@ -27,7 +27,6 @@
     <id>7</id>
     <value>Explorer</value>
   </string>
-  
   <string>
     <id>11</id>
     <value>Montag</value>
@@ -693,7 +692,7 @@
   </string>
   <string>
     <id>247</id>
-    <value>Scripts</value>
+    <value>Skripte</value>
   </string>
   <string>
     <id>248</id>
@@ -753,11 +752,11 @@
   </string>
   <string>
     <id>262</id>
-    <value>Scripts Ausgabe</value>
+    <value>Skript Ausgabe</value>
   </string>
   <string>
     <id>263</id>
-    <value>HTTP server</value>
+    <value>HTTP Server</value>
   </string>
   <string>
     <id>264</id>
@@ -818,5 +817,233 @@
   <string>
     <id>278</id>
     <value>Ändere das Rechteck so das es ein perfektes Quadrat ergibt</value>
+  </string>
+</strings>
+    <id>279</id>
+    <value>Einstellungen können nicht geladen werden</value>
+  </string>
+  <string>
+    <id>280</id>
+    <value>Benutze Standarteinstellungen</value>
+  </string>
+  <string>
+    <id>281</id>
+    <value>Bitte die .xml Files überprüfen</value>
+  </string>
+  <string>
+    <id>282</id>
+    <value>%i Einträge gefunden</value>
+  </string>
+  <string>
+    <id>283</id>
+    <value>Resultat der Suche</value>
+  </string>
+  <string>
+    <id>284</id>
+    <value>Nicht gefunden</value>
+  </string>
+  <string>
+    <id>285</id>
+    <value>Deinterlace Filter</value>
+  </string>
+  <string>
+    <id>286</id>
+    <value>Postprocessing Filter</value>
+  </string>
+  <string>
+    <id>287</id>
+    <value>Untertitel</value>
+  </string>
+  <string>
+    <id>288</id>
+    <value>Font</value>
+  </string>
+  <string>
+    <id>289</id>
+    <value>Größe</value>
+  </string>
+  <string>
+    <id>290</id>
+    <value>Lautstärkenerhöhung (dB)</value>
+  </string>
+  <string>
+    <id>291</id>
+    <value>Video</value>
+  </string>
+  <string>
+    <id>292</id>
+    <value>Audio</value>
+  </string>
+  <string>
+    <id>293</id>
+    <value>Untertitel</value>
+  </string>
+  <string>
+    <id>294</id>
+    <value>1. Erstelle Lesezeichen</value>
+  </string>
+  <string>
+    <id>295</id>
+    <value>2. Wechsel Lesezeichen</value>
+  </string>
+  <string>
+    <id>296</id>
+    <value>3. Lösche Lesezeichen</value>
+  </string>
+  <string>
+    <id>297</id>
+    <value>4. AV-Verzögerung</value>
+  </string>
+  <string>
+    <id>298</id>
+    <value>5. Slider</value>
+  </string>
+  <string>
+    <id>300</id>
+    <value>1. Sprache</value>
+  </string>
+  <string>
+    <id>301</id>
+    <value>2. Lautstärke</value>
+  </string>
+  <string>
+    <id>302</id>
+    <value>3. Stream</value>
+  </string>
+  <string>
+    <id>303</id>
+    <value>1. Verzögerung</value>
+  </string>
+  <string>
+    <id>304</id>
+    <value>2. Sprache</value>
+  </string>
+  <string>
+    <id>305</id>
+    <value>3. Ein/Aus</value>
+  </string>
+  <string>
+    <id>306</id>
+    <value>6. Kein-Interleaved</value>
+  </string>
+  <string>
+    <id>307</id>
+    <value>Auto</value>
+  </string>
+  <string>
+    <id>308</id>
+    <value>Vertikaler Deblocking-Filter</value>
+  </string>
+  <string>
+    <id>309</id>
+    <value>Horizontaler Deblocking-Filter</value>
+  </string>
+  <string>
+    <id>310</id>
+    <value>Auto Helligkeit/Kontrast</value>
+  </string>
+  <string>
+    <id>311</id>
+    <value>Dering</value>
+  </string>
+  <string>
+    <id>312</id>
+    <value>(0=auto)</value>
+  </string>
+  <string>
+    <id>313</id>
+    <value>Reorginisiere Datenbank</value>
+  </string>
+  <string>
+    <id>314</id>
+    <value>Vorbereitung...</value>
+  </string>
+  <string>
+    <id>315</id>
+    <value>Datenbank Fehler</value>
+  </string>
+  <string>
+    <id>316</id>
+    <value>Durchsuche Lieder...</value>
+  </string>
+  <string>
+    <id>317</id>
+    <value>Reorganisation erfolgreich</value>
+  </string>
+  <string>
+    <id>318</id>
+    <value>Marking deleted songs</value>
+  </string>
+  <string>
+    <id>319</id>
+    <value>Fehler beim reorganisieren der Lieder</value>
+  </string>
+  <string>
+    <id>320</id>
+    <value>Durchsuche Künstler...</value>
+  </string>
+  <string>
+    <id>321</id>
+    <value>Fehler beim reorganisieren der Künstler</value>
+  </string>
+  <string>
+    <id>322</id>
+    <value>Durchsuche Genres...</value>
+  </string>
+  <string>
+    <id>323</id>
+    <value>Fehler beim reorganisieren der Genres</value>
+  </string>
+  <string>
+    <id>324</id>
+    <value>Durchsuche Pfade...</value>
+  </string>
+  <string>
+    <id>325</id>
+    <value>Fehler beim reorganisieren der Pfade</value>
+  </string>
+  <string>
+    <id>326</id>
+    <value>Suche in Alben...</value>
+  </string>
+  <string>
+    <id>327</id>
+    <value>Fehler beim reorganisieren der Alben</value>
+  </string>
+  <string>
+    <id>328</id>
+    <value>Schreibe Änderungen...</value>
+  </string>
+  <string>
+    <id>329</id>
+    <value>Fehler beim schreiben der Änderungen</value>
+  </string>
+  <string>
+    <id>330</id>
+    <value>Einen Moment Geduld...</value>
+  </string>
+  <string>
+    <id>331</id>
+    <value>Komrimiere Datenbank...</value>
+  </string>
+  <string>
+    <id>332</id>
+    <value>Fehler beim komprimieren der Datenbank</value>
+  </string>
+  <string>
+    <id>333</id>
+    <value>Willst du die Musik-Datenbank reorganisieren ?</value>
+  </string>
+  <string>
+    <id>334</id>
+    <value>Reorganisiere Musik-Datenbank</value>
+  </string>
+  <string>
+    <id>335</id>
+    <value>Start</value>
+  </string>
+  <string>
+    <id>336</id>
+    <value>Framerate anpassen</value>
   </string>
 </strings>
