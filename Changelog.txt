@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 04-04-2005 fixed: Scissors clipping crash in FullscreenVideo->GUI switch.
+  - 04-04-2005 changed: DVD/Video off DVD/LAN cache defaults to 4Mb.
+  - 04-04-2005 changed: Default regexps for filestacking.
+  - 04-04-2005 changed: Sort orders when sorting by Artist + Album now also include the album + artist + tracknumber info so everything is easier to find.
+  - 04-04-2005 added: Skin files for popup player controls.  Mapped to START by default.  Users of other skins may want to remap START back to the stop action.
   - 04-04-2005 changed: IMDb lookups return the list of found movies even if there is only 1 (allows manual lookup if it got it wrong.)
   - 04-04-2005 changed: Improved the analog stick + trigger response + allowed analog ffwd and analog rewd to be mapped globally (eg Right thumb stick left and right works nicely.)
   - 04-04-2005 added: Search for .cue sheet underlying media checks for cuesheetname.mp3 and the dropping of the .cue extension.

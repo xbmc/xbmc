@@ -141,6 +141,8 @@ void CGraphicContext::SetFullScreenViewWindow(RESOLUTION &res)
   m_videoRect.top = m_pResInfo[res].Overscan.top;
   m_videoRect.right = m_pResInfo[res].Overscan.right;
   m_videoRect.bottom = m_pResInfo[res].Overscan.bottom;
+  if (m_videoRect.left < 0) m_videoRect.left = 0;
+  if (m_videoRect.top < 0) m_videoRect.top = 0;
 }
 
 void CGraphicContext::SetFullScreenVideo(bool bOnOff)
