@@ -831,4 +831,220 @@
     <id>281</id>
     <value>Vérifiez le fichier .xml</value>
   </string>
+  <string>
+    <id>282</id>
+    <value>%i résultat(s) trouvé</value>
+  </string>
+  <string>
+    <id>283</id>
+    <value>Résultats de la recherche</value>
+  </string>
+  <string>
+    <id>284</id>
+    <value>Aucun résultat</value>
+  </string>
+  <string>
+    <id>285</id>
+    <value>Filtre d'entrelacement inversé</value>
+  </string>
+  <string>
+    <id>286</id>
+    <value>Filtre de rendu post-traitement</value>
+  </string>
+  <string>
+    <id>287</id>
+    <value>Sous-titres</value>
+  </string>
+  <string>
+    <id>288</id>
+    <value>Polices</value>
+  </string>
+  <string>
+    <id>289</id>
+    <value>Taille</value>
+  </string>
+  <string>
+    <id>290</id>
+    <value>Amplification du volume (dB)</value>
+  </string>
+  <string>
+    <id>291</id>
+    <value>Video</value>
+  </string>
+  <string>
+    <id>292</id>
+    <value>Audio</value>
+  </string>
+  <string>
+    <id>293</id>
+    <value>Sous-titres</value>
+  </string>
+  <string>
+    <id>294</id>
+    <value>1. Créer un signet</value>
+  </string>
+  <string>
+    <id>295</id>
+    <value>2. signets automatiques</value>
+  </string>
+  <string>
+    <id>296</id>
+    <value>3. Effacer les signets</value>
+  </string>
+  <string>
+    <id>297</id>
+    <value>4. Synchronisation audio/video</value>
+  </string>
+  <string>
+    <id>298</id>
+    <value>5. Défilement</value>
+  </string>
+  <string>
+    <id>300</id>
+    <value>1. Langue</value>
+  </string>
+  <string>
+    <id>301</id>
+    <value>2. Volume</value>
+  </string>
+  <string>
+    <id>302</id>
+    <value>3. Direct (streaming)</value>
+  </string>
+  <string>
+    <id>303</id>
+    <value>1. Mise en cache</value>
+  </string>
+  <string>
+    <id>304</id>
+    <value>2. Langue</value>
+  </string>
+  <string>
+    <id>305</id>
+    <value>3. On/Off</value>
+  </string>
+  <string>
+    <id>306</id>
+    <value>6. Non-Intercalé</value>
+  </string>
+  <string>
+    <id>307</id>
+    <value>Auto</value>
+  </string>
+  <string>
+    <id>308</id>
+    <value>filtre vertical de dégagement</value>
+  </string>
+  <string>
+    <id>309</id>
+    <value>filtre horizontal de dégagement</value>
+  </string>
+  <string>
+    <id>310</id>
+    <value>Ajustement automatique de la lumière/contraste</value>
+  </string>
+  <string>
+    <id>311</id>
+    <value>Dering</value>
+  </string>
+  <string>
+    <id>312</id>
+    <value>(0=auto)</value>
+  </string>
+  <string>
+    <id>313</id>
+    <value>Réorganisez la base de données</value>
+  </string>
+  <string>
+    <id>314</id>
+    <value>Préparation...</value>
+  </string>
+  <string>
+    <id>315</id>
+    <value>Erreur sur la base de données</value>
+  </string>
+  <string>
+    <id>316</id>
+    <value>Recherche des titres...</value>
+  </string>
+  <string>
+    <id>317</id>
+    <value>Réorganisation efféctuée</value>
+  </string>
+  <string>
+    <id>318</id>
+    <value>Marquage des titres supprimés</value>
+  </string>
+  <string>
+    <id>319</id>
+    <value>Erreur sur la réorganisation des titres</value>
+  </string>
+  <string>
+    <id>320</id>
+    <value>Recherche des artistes</value>
+  </string>
+  <string>
+    <id>321</id>
+    <value>Erreur sur la réorganisation des artistes</value>
+  </string>
+  <string>
+    <id>322</id>
+    <value>Recherche de genres</value>
+  </string>
+  <string>
+    <id>323</id>
+    <value>Erreur sur la réorganisation des genres</value>
+  </string>
+  <string>
+    <id>324</id>
+    <value>Recherche de chemins de fichier</value>
+  </string>
+  <string>
+    <id>325</id>
+    <value>Erreur dans la réorganisation des chemins de fichier</value>
+  </string>
+  <string>
+    <id>326</id>
+    <value>Recherche d'albums</value>
+  </string>
+  <string>
+    <id>327</id>
+    <value>Erreur dans la réorganisation des albums</value>
+  </string>
+  <string>
+    <id>328</id>
+    <value>Enregistrement des modifications...</value>
+  </string>
+  <string>
+    <id>329</id>
+    <value>Erreur sur l'enregistrement des modifications...</value>
+  </string>
+  <string>
+    <id>330</id>
+    <value>Cette opération peut durer un moment</value>
+  </string>
+  <string>
+    <id>331</id>
+    <value>Compression de la base de données</value>
+  </string>
+  <string>
+    <id>332</id>
+    <value>Erreur sur la compréssion de la base de données</value>
+  </string>
+  <string>
+    <id>333</id>
+    <value>Voulez vous réorganiser votre base de données musicale ?</value>
+  </string>
+  <string>
+    <id>334</id>
+    <value>Réorganiser la base de données de mes musiques</value>
+  </string>
+  <string>
+    <id>335</id>
+    <value>Commencer</value>
+  </string>
+  <string>
+    <id>336</id>
+    <value>Ajuster le taux de rafraichissement</value>
+  </string>
 </strings>
