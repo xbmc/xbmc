@@ -31,49 +31,49 @@ using namespace std;
 
 
 /*!
-	\ingroup windows
-	\brief Represents a share.
-	\sa VECSHARES, IVECSHARES
-	*/
+\ingroup windows
+\brief Represents a share.
+\sa VECSHARES, IVECSHARES
+*/
 class CShare
 {
-	public:
-    CShare(){};
-    virtual ~CShare(){};
-		CStdString strName;	///< Name of the share, can be choosen freely.
-		CStdString strPath;	///< Path of the share, eg. iso9660:// or F:
-		int        m_iBufferSize;		///< Cachesize of the share
+public:
+	CShare(){};
+	virtual ~CShare(){};
+	CStdString strName;	///< Name of the share, can be choosen freely.
+	CStdString strPath;	///< Path of the share, eg. iso9660:// or F:
+	int        m_iBufferSize;		///< Cachesize of the share
 
-		/*!
-			\brief The type of the share.
+	/*!
+	\brief The type of the share.
 
-				Value can be:
-				- SHARE_TYPE_UNKNOWN \n
-					Unknown share, maybe a wrong path.
-				- SHARE_TYPE_LOCAL \n
-					Harddisk share.
-				- SHARE_TYPE_DVD \n
-					DVD-ROM share of the build in drive, strPath may vary.
-				- SHARE_TYPE_VIRTUAL_DVD \n
-					DVD-ROM share, strPath is fix.
-				- SHARE_TYPE_REMOTE \n
-					Network share.
-			*/
-		int        m_iDriveType;
+	Value can be:
+	- SHARE_TYPE_UNKNOWN \n
+	Unknown share, maybe a wrong path.
+	- SHARE_TYPE_LOCAL \n
+	Harddisk share.
+	- SHARE_TYPE_DVD \n
+	DVD-ROM share of the build in drive, strPath may vary.
+	- SHARE_TYPE_VIRTUAL_DVD \n
+	DVD-ROM share, strPath is fix.
+	- SHARE_TYPE_REMOTE \n
+	Network share.
+	*/
+	int        m_iDriveType;
 
 };
 /*!
-	\ingroup windows
-	\brief A vector to hold CShare objects.
-	\sa CShare, IVECSHARES
-	*/
+\ingroup windows
+\brief A vector to hold CShare objects.
+\sa CShare, IVECSHARES
+*/
 typedef vector<CShare> VECSHARES;
 
 /*!
-	\ingroup windows
-	\brief Iterator of VECSHARES.
-	\sa CShare, VECSHARES
-	*/
+\ingroup windows
+\brief Iterator of VECSHARES.
+\sa CShare, VECSHARES
+*/
 typedef vector<CShare>::iterator IVECSHARES;
 
 class CFileTypeIcon
@@ -90,83 +90,83 @@ typedef vector<CFileTypeIcon>::iterator IVECFILETYPEICONS;
 class CSettings
 {
 public:
-  CSettings(void);
-  virtual ~CSettings(void);
+	CSettings(void);
+	virtual ~CSettings(void);
 
 	bool	Load(bool& bXboxMediacenter, bool& bSettings, bool &bCalibration);
 	void	Save() const;
 
-  struct stSettings
-  {
-  public:
-	  unsigned long dwFileVersion;
-    char	    szDefaultSkin[1024];
+	struct stSettings
+	{
+	public:
+		unsigned long dwFileVersion;
+		char	    szDefaultSkin[1024];
 		char			szHomeDir[1024];
-  
-	  int				m_iMyProgramsSortMethod;
-	  bool			m_bMyProgramsSortAscending;
-	  int       m_iMyProgramsViewAsIcons;
-	  bool			m_bMyProgramsFlatten;
-	  bool			m_bMyProgramsDefaultXBE;
-		
-    char      szThumbnailsDirectory[1024];
-	char      szDashboard[1024];
-    int       m_iStartupWindow;
-    
 
-    char      m_strLocalIPAdres[32];
-    char      m_strLocalNetmask[32];
-    char      m_strGateway[32];
-    char      m_strNameServer[128];
-    char      m_strTimeServer[128];
+		int				m_iMyProgramsSortMethod;
+		bool			m_bMyProgramsSortAscending;
+		int       m_iMyProgramsViewAsIcons;
+		bool			m_bMyProgramsFlatten;
+		bool			m_bMyProgramsDefaultXBE;
 
-	  int       m_iMyPicturesViewAsIcons;
-	  int       m_iMyPicturesRootViewAsIcons;
-	  int				m_iMyPicturesSortMethod;
-	  bool			m_bMyPicturesSortAscending;
+		char      szThumbnailsDirectory[1024];
+		char      szDashboard[1024];
+		int       m_iStartupWindow;
+
+
+		char      m_strLocalIPAdres[32];
+		char      m_strLocalNetmask[32];
+		char      m_strGateway[32];
+		char      m_strNameServer[128];
+		char      m_strTimeServer[128];
+
+		int       m_iMyPicturesViewAsIcons;
+		int       m_iMyPicturesRootViewAsIcons;
+		int				m_iMyPicturesSortMethod;
+		bool			m_bMyPicturesSortAscending;
 
 		char      m_szMyPicturesExtensions[256];
 		char      m_szMyMusicExtensions[256];
 		char      m_szMyVideoExtensions[256];
-    char      m_szShortcutDirectory[256];
+		char      m_szShortcutDirectory[256];
 		char      m_szAlbumDirectory[256];
 		char	  m_szScreenshotsDirectory[256];
 
-	  bool			m_bMyFilesSourceViewAsIcons;
-	  bool			m_bMyFilesSourceRootViewAsIcons;
-	  bool			m_bMyFilesDestViewAsIcons;
-	  bool			m_bMyFilesDestRootViewAsIcons;
-	  int				m_iMyFilesSortMethod;
-	  bool			m_bMyFilesSortAscending;
+		bool			m_bMyFilesSourceViewAsIcons;
+		bool			m_bMyFilesSourceRootViewAsIcons;
+		bool			m_bMyFilesDestViewAsIcons;
+		bool			m_bMyFilesDestRootViewAsIcons;
+		int				m_iMyFilesSortMethod;
+		bool			m_bMyFilesSortAscending;
 
 		int				m_iMyMusicSongsRootViewAsIcons;
 		int				m_iMyMusicSongsViewAsIcons;
-	  bool			m_bMyMusicSongsRootSortAscending;
-	  bool			m_bMyMusicSongsSortAscending;
-	  int				m_iMyMusicSongsSortMethod;
+		bool			m_bMyMusicSongsRootSortAscending;
+		bool			m_bMyMusicSongsSortAscending;
+		int				m_iMyMusicSongsSortMethod;
 		int				m_iMyMusicSongsRootSortMethod;
 		bool			m_bMyMusicSongsUsePlaylist;
 		bool			m_bMyMusicSongsAutoSwitchThumbsList;
 		bool			m_bMyMusicSongsAutoSwitchBigThumbs;
 		int				m_iMyMusicAlbumRootViewAsIcons;
 		int				m_iMyMusicAlbumViewAsIcons;
-	  bool			m_bMyMusicAlbumRootSortAscending;
-	  bool			m_bMyMusicAlbumSortAscending;
-	  int				m_iMyMusicAlbumSortMethod;
-	  int				m_iMyMusicAlbumRootSortMethod;
+		bool			m_bMyMusicAlbumRootSortAscending;
+		bool			m_bMyMusicAlbumSortAscending;
+		int				m_iMyMusicAlbumSortMethod;
+		int				m_iMyMusicAlbumRootSortMethod;
 		bool			m_bMyMusicAlbumShowRecent;
 		int				m_iMyMusicArtistsRootViewAsIcons;
 		int				m_iMyMusicArtistsViewAsIcons;
-	  bool			m_bMyMusicArtistsRootSortAscending;
-	  bool			m_bMyMusicArtistsSortAscending;
-	  int				m_iMyMusicArtistsSortMethod;
-	  int				m_iMyMusicArtistsRootSortMethod;
+		bool			m_bMyMusicArtistsRootSortAscending;
+		bool			m_bMyMusicArtistsSortAscending;
+		int				m_iMyMusicArtistsSortMethod;
+		int				m_iMyMusicArtistsRootSortMethod;
 		int				m_iMyMusicGenresRootViewAsIcons;
 		int				m_iMyMusicGenresViewAsIcons;
-	  bool			m_bMyMusicGenresRootSortAscending;
-	  bool			m_bMyMusicGenresSortAscending;
-	  int				m_iMyMusicGenresSortMethod;
-	  int				m_iMyMusicGenresRootSortMethod;
+		bool			m_bMyMusicGenresRootSortAscending;
+		bool			m_bMyMusicGenresSortAscending;
+		int				m_iMyMusicGenresSortMethod;
+		int				m_iMyMusicGenresRootSortMethod;
 		int				m_iMyMusicPlaylistViewAsIcons;
 		bool			m_bMyMusicPlaylistRepeat;
 		int				m_iMyMusicTop100ViewAsIcons;
@@ -175,20 +175,20 @@ public:
 
 		int 			m_iMyVideoViewAsIcons;
 		int 			m_iMyVideoRootViewAsIcons;
-	  int				m_iMyVideoSortMethod;
-	  bool			m_bMyVideoSortAscending;
+		int				m_iMyVideoSortMethod;
+		bool			m_bMyVideoSortAscending;
 
 		bool			m_bScriptsViewAsIcons;
 		bool			m_bScriptsRootViewAsIcons;
-	  int				m_iScriptsSortMethod;
-	  bool			m_bScriptsSortAscending;
+		int				m_iScriptsSortMethod;
+		bool			m_bScriptsSortAscending;
 
 		int				m_iMoveDelayIR;
 		int				m_iRepeatDelayIR;
 
 		int				m_iMoveDelayController;
 		int				m_iRepeatDelayController;
-			
+
 		bool			m_bTimeServerEnabled;
 		bool			m_bFTPServerEnabled;
 		bool			m_bHTTPServerEnabled;
@@ -218,7 +218,7 @@ public:
 		bool			m_bAllowVideoSwitching;
 		bool			m_bAllowPAL60;
 
-    bool			m_bAutoShufflePlaylist;
+		bool			m_bAutoShufflePlaylist;
 		int			  m_iHDSpinDownTime;
 		DWORD     m_minFilter ;
 		DWORD     m_maxFilter ;
@@ -239,93 +239,94 @@ public:
 		bool			m_bDDStereoPassThrough;
 		bool			m_bUseID3;
 		char			m_szMusicRecordingDirectory[128];
-    char      m_szAlternateSubtitleDirectory[128];
-    bool      m_bPostProcessing;
-    bool      m_bDeInterlace;
-    char      m_szSubtitleFont[40];
-    int       m_iSubtitleHeight;
-    float     m_fVolumeAmplification;
-    bool      m_bNonInterleaved;
-    bool      m_bPPAuto;
-    bool      m_bPPVertical;
-    bool      m_bPPHorizontal;
-    bool      m_bPPAutoLevels;
-    int       m_iPPHorizontal;
-    int       m_iPPVertical;
-    bool      m_bPPdering;
-    bool      m_bFrameRateConversions;
-    bool      m_bUseDigitalOutput;
-    int       m_iAudioStream;
+		char      m_szAlternateSubtitleDirectory[128];
+		bool      m_bPostProcessing;
+		bool      m_bDeInterlace;
+		char      m_szSubtitleFont[40];
+		int       m_iSubtitleHeight;
+		bool      m_bEnlargeSubtitles;
+		float     m_fVolumeAmplification;
+		bool      m_bNonInterleaved;
+		bool      m_bPPAuto;
+		bool      m_bPPVertical;
+		bool      m_bPPHorizontal;
+		bool      m_bPPAutoLevels;
+		int       m_iPPHorizontal;
+		int       m_iPPVertical;
+		bool      m_bPPdering;
+		bool      m_bFrameRateConversions;
+		bool      m_bUseDigitalOutput;
+		int       m_iAudioStream;
 
 		int			m_iMyVideoGenreViewAsIcons;
 		int			m_iMyVideoGenreRootViewAsIcons;
-	  int				m_iMyVideoGenreSortMethod;
-	  bool			m_bMyVideoGenreSortAscending;
+		int				m_iMyVideoGenreSortMethod;
+		bool			m_bMyVideoGenreSortAscending;
 
 		int			m_iMyVideoActorViewAsIcons;
 		int			m_iMyVideoActorRootViewAsIcons;
-	  int				m_iMyVideoActorSortMethod;
-	  bool			m_bMyVideoActorSortAscending;
+		int				m_iMyVideoActorSortMethod;
+		bool			m_bMyVideoActorSortAscending;
 
 		int			m_iMyVideoYearViewAsIcons;
 		int			m_iMyVideoYearRootViewAsIcons;
-	  int				m_iMyVideoYearSortMethod;
-	  bool			m_bMyVideoYearSortAscending;
+		int				m_iMyVideoYearSortMethod;
+		bool			m_bMyVideoYearSortAscending;
 
 		int			m_iMyVideoTitleViewAsIcons;
 		int			m_iMyVideoTitleRootViewAsIcons;
-	  int				m_iMyVideoTitleSortMethod;
-	  bool			m_bMyVideoTitleSortAscending;
+		int				m_iMyVideoTitleSortMethod;
+		bool			m_bMyVideoTitleSortAscending;
 
-    bool			m_bMyVideoVideoStack;
-    bool			m_bMyVideoActorStack;
-    bool			m_bMyVideoGenreStack;
-    bool			m_bMyVideoYearStack;
+		bool			m_bMyVideoVideoStack;
+		bool			m_bMyVideoActorStack;
+		bool			m_bMyVideoGenreStack;
+		bool			m_bMyVideoYearStack;
 
-    int       m_iVideoStartWindow;
-	char			m_szWeatherArea[3][10];	//WEATHER
-	char			m_szWeatherFTemp[2];	//WEATHER
-	char			m_szWeatherFSpeed[2];	//WEATHER
-	int				m_iWeatherRefresh;		//WEATHER
-	char			m_szExternalDVDPlayer[128];
-  bool      m_bNoCache;
-  int       m_iSmallStepBackSeconds;
-  int       m_iSmallStepBackTries;
-  int       m_iSmallStepBackDelay;
-  int       m_iCacheSizeHD[3];
-  int       m_iCacheSizeUDF[3];
-  int       m_iCacheSizeISO[3];
-  int       m_iCacheSizeLAN[3];
-  int       m_iCacheSizeInternet[3];
-  int       m_iMyVideoPlaylistViewAsIcons;
-	bool			m_bMyVideoPlaylistRepeat;
-  bool      m_bLCDUsed;
-  int       m_iLCDColumns;
-  int       m_iLCDRows;
-  int       m_iLCDAdress[4];
-  int       m_iLCDMode;
-  int       m_iLCDBackLight;
-  int       m_iLCDType;
-  int       m_iLCDBrightness;
-	bool			m_bDisplayRemoteCodes;	// Remote code debug info
-	bool			m_bResampleMusicAudio;	// resample using SSRC
-	bool			m_bResampleVideoAudio;	// separate from music, as it causes a CPU hit
-  int       m_iLCDModChip;
-  int		m_iOSDTimeout;		// OSD timeout in seconds
-	char      szOnlineUsername[32]; // KAITAG (username)
-	char      szOnlinePassword[32]; // corresponding password
-  };
+		int       m_iVideoStartWindow;
+		char			m_szWeatherArea[3][10];	//WEATHER
+		char			m_szWeatherFTemp[2];	//WEATHER
+		char			m_szWeatherFSpeed[2];	//WEATHER
+		int				m_iWeatherRefresh;		//WEATHER
+		char			m_szExternalDVDPlayer[128];
+		bool      m_bNoCache;
+		int       m_iSmallStepBackSeconds;
+		int       m_iSmallStepBackTries;
+		int       m_iSmallStepBackDelay;
+		int       m_iCacheSizeHD[3];
+		int       m_iCacheSizeUDF[3];
+		int       m_iCacheSizeISO[3];
+		int       m_iCacheSizeLAN[3];
+		int       m_iCacheSizeInternet[3];
+		int       m_iMyVideoPlaylistViewAsIcons;
+		bool			m_bMyVideoPlaylistRepeat;
+		bool      m_bLCDUsed;
+		int       m_iLCDColumns;
+		int       m_iLCDRows;
+		int       m_iLCDAdress[4];
+		int       m_iLCDMode;
+		int       m_iLCDBackLight;
+		int       m_iLCDType;
+		int       m_iLCDBrightness;
+		bool			m_bDisplayRemoteCodes;	// Remote code debug info
+		bool			m_bResampleMusicAudio;	// resample using SSRC
+		bool			m_bResampleVideoAudio;	// separate from music, as it causes a CPU hit
+		int       m_iLCDModChip;
+		int		m_iOSDTimeout;		// OSD timeout in seconds
+		char      szOnlineUsername[32]; // KAITAG (username)
+		char      szOnlinePassword[32]; // corresponding password
+	};
 
-  VECSHARES					m_vecMyProgramsBookmarks;
+	VECSHARES					m_vecMyProgramsBookmarks;
 	VECSHARES					m_vecMyPictureShares;
-  VECSHARES					m_vecMyFilesShares;
-  VECSHARES					m_vecMyMusicShares;
-  VECSHARES					m_vecMyVideoShares;
-  VECFILETYPEICONS	m_vecIcons;
+	VECSHARES					m_vecMyFilesShares;
+	VECSHARES					m_vecMyMusicShares;
+	VECSHARES					m_vecMyVideoShares;
+	VECFILETYPEICONS	m_vecIcons;
 	RESOLUTION_INFO			m_ResInfo[10];
-  int               m_iBrightness;
-  int               m_iContrast;
-  int               m_iGamma;
+	int               m_iBrightness;
+	int               m_iContrast;
+	int               m_iGamma;
 protected:
 	void GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName, bool& bValue);
 	void GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
