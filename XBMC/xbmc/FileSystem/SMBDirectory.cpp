@@ -53,15 +53,9 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	CStdString strRoot=strPath;
 	if (!CUtil::HasSlashAtEnd(strPath) )
 		strRoot+="/";
-
 	{
-		
-	  
-		
-		{
 
 			SMB smb ;
-
 			CStdString strPassword=url.GetPassWord();
 			CStdString strUserName=url.GetUserName();
 			CStdString strDirectory=url.GetFileName();
@@ -132,12 +126,8 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 
 			    
 				}
-		  
 				smb.closedir(fd);
   		}
-
-		}
-		
 	}
 	return bResult;
 }
