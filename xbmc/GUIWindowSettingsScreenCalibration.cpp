@@ -58,6 +58,7 @@ void CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 	{
 		x = 0;
 		y = (g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight + g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
+    
 	}
 	else // (m_iControl == CONTROL_PIXEL_RATIO)
 	{
@@ -203,6 +204,10 @@ void CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 		break;
 		case CONTROL_OSD:
 			g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset = (y - g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight);
+      
+      g_graphicsContext.SetFullScreenVideo(true);
+      g_application.m_guiWindowOSD.ResetAllControls();
+      g_graphicsContext.SetFullScreenVideo(false);
 		break;
 		case CONTROL_PIXEL_RATIO:
 			float fPixelRatio = (float)y/x;
@@ -220,6 +225,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
   {
 		case GUI_MSG_WINDOW_DEINIT:
 		{
+      g_application.m_guiWindowOSD.FreeResources();
 			g_application.EnableOverlay();
 			g_settings.Save();
 			g_graphicsContext.SetCalibrating(false);
@@ -277,6 +283,10 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
 			  pControl->EnableCalibration(false);
 			  m_fPixelRatioBoxHeight=(float)pControl->GetHeight();
       }
+      g_application.m_guiWindowOSD.AllocResources();
+      g_graphicsContext.SetFullScreenVideo(true);
+      g_application.m_guiWindowOSD.ResetAllControls();
+      g_graphicsContext.SetFullScreenVideo(false);
 			return true;
 		}
 		break;
@@ -393,6 +403,7 @@ void CGUIWindowSettingsScreenCalibration::Render()
 
 		case CONTROL_OSD:
 		{
+      g_application.m_guiWindowOSD.Render();
 			iXOff = g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.left;
 			iYOff = g_settings.m_ResInfo[m_Res[m_iCurRes]].iSubtitles;
 			iYOff = (g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight + g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
