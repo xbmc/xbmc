@@ -2292,6 +2292,15 @@
   <string><id>13320</id><value>Stereo</value></string>
   <string><id>13321</id><value>Left Only</value></string>
   <string><id>13322</id><value>Right Only</value></string>
+  <string><id>13323</id><value>Enable CD+G</value></string>
+  <string><id>13324</id><value>Background Transparency</value></string>
+  <string><id>13325</id><value>Foreground Transparency</value></string>
+  <string><id>13326</id><value>A/V delay</value></string>
+  <string><id>13327</id><value>Karaoke</value></string>
+  <string><id>13328</id><value>not found.</value></string>
+  <string><id>13329</id><value>Error opening </value></string>
+  <string><id>13330</id><value>Unable to load </value></string>
+  <string><id>13331</id><value>Error: out of memory.</value></string>
   <string><id>14000</id><value>Stacking: Off</value></string>
   <string><id>14001</id><value>Stacking: Simple</value></string>
   <string><id>14002</id><value>Stacking: Fuzzy</value></string>
