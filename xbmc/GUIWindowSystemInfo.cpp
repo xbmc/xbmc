@@ -52,9 +52,9 @@ DWORD WINAPI GetMPlayerVersionW( LPVOID lpParam )
 		
 		//see if we have compiledate and or version
 		if (wszVersion[0]!=0 && wszCompileDate[0]!=0)
-			swprintf((wchar_t *)lpParam, 50, L"%s (%s)", wszVersion, wszCompileDate);
+			_snwprintf((wchar_t *)lpParam, 50, L"%s (%s)", wszVersion, wszCompileDate);
 		else if (wszVersion[0]!=0)
-			swprintf((wchar_t *)lpParam, 50, L"%s", wszVersion);
+			_snwprintf((wchar_t *)lpParam, 50, L"%s", wszVersion);
 	}
 	delete mplayerDll;
 	mplayerDll=NULL;
