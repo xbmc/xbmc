@@ -103,7 +103,8 @@ public:
   void StopFtpServer();
   void StartTimeServer();
   void StopTimeServer();
-
+  void StartLEDControl(bool switchoff = false);
+  
 	void					Stop();
 	void					RestartApp();
 	void					LoadSkin(const CStdString& strSkin);
