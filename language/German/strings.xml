@@ -319,12 +319,12 @@
   <string><id>385</id><value>schön</value></string>
   <string><id>386</id><value>klar</value></string>
   <string><id>387</id><value>Wolken</value></string>
-  <string><id>388</id><value>N/A</value></string>
-  <string><id>389</id><value>N/A</value></string>
-  <string><id>390</id><value>N/A</value></string>
-  <string><id>391</id><value>N/A</value></string>
-  <string><id>392</id><value>N/A</value></string>
-  <string><id>393</id><value>N/A</value></string>
+  <string><id>388</id><value>Früh</value></string>
+  <string><id>389</id><value>Regen</value></string>
+  <string><id>390</id><value>Böen</value></string>
+  <string><id>391</id><value>niederig</value></string>
+  <string><id>392</id><value>mittel</value></string>
+  <string><id>393</id><value>hoch</value></string>
   <string><id>394</id><value>N/A</value></string>
   <string><id>395</id><value>N/A</value></string>
   <string><id>396</id><value>Ortauswahl</value></string>
@@ -753,6 +753,7 @@
   <string><id>14059</id><value>Thumbnails von Netzwerk Freigaben laden</value></string>
   <string><id>14060</id><value>Unbekannter Typ Cache - Internet</value></string>
   <string><id>14061</id><value>Automatisch</value></string>
+  <string><id>14062</id><value>Bitte Benutzernamen für</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Keine Verbindung zu Kai XLink, möchtest du versuchen</value></string>

@@ -316,12 +316,12 @@
   <string><id>385</id><value>Bello</value></string>
   <string><id>386</id><value>Chiaro</value></string>
   <string><id>387</id><value>Nuvoloso</value></string>
-  <string><id>388</id><value>N/A</value></string>
-  <string><id>389</id><value>N/A</value></string>
-  <string><id>390</id><value>N/A</value></string>
-  <string><id>391</id><value>N/A</value></string>
-  <string><id>392</id><value>N/A</value></string>
-  <string><id>393</id><value>N/A</value></string>
+  <string><id>388</id><value>Presto</value></string>
+  <string><id>389</id><value>Acquazzone</value></string>
+  <string><id>390</id><value>Nevischio</value></string>
+  <string><id>391</id><value>Bassa</value></string>
+  <string><id>392</id><value>Media</value></string>
+  <string><id>393</id><value>Alta</value></string>
   <string><id>394</id><value>N/A</value></string>
   <string><id>395</id><value>N/A</value></string>
   <string><id>396</id><value>Seleziona Località</value></string>
@@ -614,7 +614,6 @@
   <string><id>12353</id><value>Riattiva Blocco</value></string>
   <string><id>12354</id><value>Salta blocco cartelle fino al prossimo avvio?</value></string>
   <string><id>12355</id><value>riabiliterà automaticamente il blocco cartelle.)</value></string>
-
   <string><id>12600</id><value>Meteo</value></string>
   <string><id>12900</id><value>Screensaver</value></string>
   <string><id>12901</id><value>OSD a schermo intero</value></string>
@@ -758,6 +757,7 @@
   <string><id>14059</id><value>Cerca Icone Personalizzate nelle Condivisioni Remote</value></string>
   <string><id>14060</id><value>Cache di tipo Sconosciuto - Internet</value></string>
   <string><id>14061</id><value>Auto</value></string>
+  <string><id>14062</id><value>Inserire Nome Utente per</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Il servizio non è connesso, vuoi riprovare</value></string>
@@ -796,8 +796,8 @@
   <string><id>15034</id><value>è appena entrato</value></string>
   <string><id>15035</id><value>ha iniziato una chat vocale</value></string>
   <string><id>15036</id><value>ti ha mandato un invito</value></string>
-  <string><id>15037</id><value>XBMC non può accertare che la tua rete sia raggiungibile.</value></string>
-  <string><id>15038</id><value>Potresti incontrare difficultà ad unirti od ospitare i giochi.</value></string>
+  <string><id>15037</id><value>XBMC non assicura che la tua rete sia raggiungibile.</value></string>
+  <string><id>15038</id><value>Potresti avere difficoltà ad unirti od ospitare i giochi.</value></string>
   <string><id>15039</id><value>XBMC non riesce a trovare il gioco automaticamente.</value></string>
   <string><id>15040</id><value>Inserisci il disco del gioco nella tua XBOX o premi 'A' per</value></string>
   <string><id>15041</id><value>annullare e lanciare il gioco manualmente.</value></string>
