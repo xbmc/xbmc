@@ -53,7 +53,7 @@ EXPORTS
 	mplayer_getCurrentTime @ 51 ;
 	mplayer_showosd @ 52 ;
 	mplayer_getAudioStreamInfo @ 53 ;
-	mplayer_getSubtitleStreamInfo @ 54 ;
+	mplayer_getSubtitleInfo @ 54 ;
  	mplayer_get_current_module @ 55 ;
  	mplayer_setcache_backbuffer @ 56 ;
 	exit_player @ 57 ;
@@ -63,3 +63,4 @@ EXPORTS
 	mplayer_setTimeMs @ 61 ;
 	mplayer_getCurrentSubtitle @ 62 ;
 	mplayer_isTextSubLoaded @ 63 ;
+  

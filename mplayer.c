@@ -1593,7 +1593,9 @@ else
       free(buf);
     }
     if(vo_vobsub){
+#ifndef _XBOX //We still want to support both
       sub_auto=0; // don't do autosub for textsubs if vobsub found
+#endif
       inited_flags|=INITED_VOBSUB;
       vobsub_set_from_lang(vo_vobsub, dvdsub_lang);
       // check if vobsub requested only to display forced subtitles
@@ -2031,11 +2033,15 @@ if(sh_video) {
         add_subtitles (NULL, sh_video->fps, 1);
 #endif
   }
+#ifdef _XBOX
+  if (set_of_sub_size > 0 && !vo_vobsub && !vo_spudec ) {
+      //osd_show_sub_changed = sh_video->fps;
+      subdata = set_of_subtitles[set_of_sub_pos=0];
+#else
   if (set_of_sub_size > 0)  {
       //osd_show_sub_changed = sh_video->fps;
       subdata = set_of_subtitles[set_of_sub_pos=0];
 
-#ifndef _XBOX
       if(stream_dump_type==3) list_sub_file(subdata);
       if(stream_dump_type==4) dump_mpsub(subdata, sh_video->fps);
       if(stream_dump_type==6) dump_srt(subdata, sh_video->fps);
@@ -4357,7 +4363,13 @@ subtitle* mplayer_getCurrentSubtitle()
 
 int mplayer_isTextSubLoaded()
 {
-	return (vo_vobsub == NULL);
+	xbmc_subtitle *sub; //because XBMC need know which subtitle is text format for render by XBMC
+    
+	sub = &xbmc_subtitles[xbmc_sub_current];    
+ 	if (sub->type == XBMC_SUBTYPE_VOBSUB)
+    		return FALSE;
+	else
+		return TRUE;
 }
 #endif
 
@@ -4462,8 +4474,7 @@ int mplayer_getPercentage()
 
 int mplayer_getSubtitleCount()
 {
-	//if(!xbmc_sub_count)
-		xbmc_update_subs();
+	xbmc_update_subs();
 	return xbmc_sub_count;
 }
 int mplayer_getSubtitle()
@@ -4471,7 +4482,6 @@ int mplayer_getSubtitle()
 	if(!xbmc_sub_count)
 		xbmc_update_subs();
 	return xbmc_sub_current;
-
 }
 void mplayer_setSubtitle(int iSubtitle)
 {
@@ -4481,6 +4491,21 @@ void mplayer_setSubtitle(int iSubtitle)
 	if(iSubtitle > xbmc_sub_count) return;
 	xbmc_sub_current = iSubtitle;
 	xbmc_subtitle* sub = &xbmc_subtitles[iSubtitle];
+
+	//Turn off any other subtitles
+	dvdsub_id=-1; //Dvd subs
+	oggsub_id = -1; //Ogg subs
+	vobsub_id = -1; //Vobsubs
+
+  #ifdef USE_SUB
+    set_of_sub_pos = -1;
+	  subdata = NULL;
+	  vo_sub = NULL;
+  #endif
+  
+	if(demuxer->sub)
+		demuxer->sub->id=-1;
+
 	if(sub->type == XBMC_SUBTYPE_DVDSUB)
 	{
 		printf("changed dvdsubid to %i from %i\n",sub->id,dvdsub_id );
@@ -4488,76 +4513,39 @@ void mplayer_setSubtitle(int iSubtitle)
 
 		//Need a better way of changing subs
 		demuxer->sub->id=dvdsub_id;
-		spudec_reset(vo_spudec);
-#ifdef USE_SUB
-		//Disable any extra subtitles
-		set_of_sub_pos = -1;
-		subdata = NULL;
-		vo_sub = NULL;
-#endif
-
 	}
 	else if(sub->type == XBMC_SUBTYPE_VOBSUB)
 	{
 		printf("changed vobsubid to %i from %i\n", sub->id,vobsub_id);
 		vobsub_id = sub->id;
-        osd_show_vobsub_changed = 9;
-
-#ifdef USE_SUB
-		//Disable any extra subtitles
-		set_of_sub_pos = -1;
-		subdata = NULL;
-		vo_sub = NULL;
-#endif
-
 	}
 	else if(sub->type == XBMC_SUBTYPE_OGGSUB)
 	{
 		printf("changed oggsubid to %d from %d\n", iSubtitle, oggsub_id);
 		oggsub_id=iSubtitle;
 		demuxer->sub->id = sub->id;
-		vo_sub = NULL;
-        vo_osd_changed(OSDTYPE_SUBTITLE);
-
-#ifdef USE_SUB
-		//Disable any extra subtitles
-		set_of_sub_pos = -1;
-		subdata = NULL;
-#endif
-
 	}
 	else if(sub->type == XBMC_SUBTYPE_MKVSUB)
 	{
 		printf("changed matroska sub to %d from %d\n", sub->id, demuxer->sub->id);
 		demuxer->sub->id = sub->id;
-		vo_sub = NULL;
-        vo_osd_changed(OSDTYPE_SUBTITLE);
 	}
 #ifdef USE_SUB
 	else if(sub->type == XBMC_SUBTYPE_STANDARD )
 	{
+    printf("changed subtitleto %i/%i\n", set_of_sub_pos,set_of_sub_size );
 		//change subtitle file
-        set_of_sub_pos = sub->id ;
-        subdata = set_of_subtitles[set_of_sub_pos];
-        osd_show_sub_changed = sh_video->fps;
-        vo_sub = NULL;
-        vo_osd_changed(OSDTYPE_SUBTITLE);
-        printf("changed subtitleto %i/%i\n", set_of_sub_pos,set_of_sub_size );
-
-		//Turn off any other subtitles
-		dvdsub_id=-1; //Dvd subs
-		oggsub_id = -1; //Ogg subs
-		vobsub_id = -1; //Vobsubs
-
-		if(demuxer->sub)
-		{
-			demuxer->sub->id=-1;
-			spudec_reset(vo_spudec);
-		}
-
+    set_of_sub_pos = sub->id ;
+    subdata = set_of_subtitles[set_of_sub_pos];
 	}
 #endif
 
+  if (vo_spudec) spudec_reset(vo_spudec);
+
+  snprintf(osd_show_text_buffer, 63, "Subtitles: (%d) %s", iSubtitle, sub->name ? sub->name : "unknown");
+  osd_show_text = sh_video->fps;
+  vo_sub = NULL;
+  vo_osd_changed(OSDTYPE_SUBTITLE);
 }
 
 void mplayer_showSubtitle(int bOnOff)
@@ -4860,42 +4848,20 @@ int mplayer_getAudioStreamInfo(int iStream, stream_language_t* stream_info)
 //
 //}
 
-int mplayer_getSubtitleStreamInfo(int iStream, stream_language_t* stream_info)
+char* mplayer_getSubtitleInfo(int iStream, xbmc_subtitle* sub)
 {
 	if(!xbmc_sub_count)
 		xbmc_update_subs();
 
-	if(iStream > xbmc_sub_count) return -1;
-	xbmc_subtitle* sub = &xbmc_subtitles[iStream];
-	if(stream_info)
-	{
+	if(iStream >= xbmc_sub_count) return NULL;
+  
+  sub->id = xbmc_subtitles[iStream].id;
+  sub->invalid = xbmc_subtitles[iStream].invalid;
+  strncpy(sub->name, xbmc_subtitles[iStream].name, MAX_XBMC_NAME);
+  sub->type = xbmc_subtitles[iStream].type;
+  sub->desc = xbmc_subtitles[iStream].desc;
 
-		stream_info->id=sub->id;
-		stream_info->language=0;
-		stream_info->type=0;
-		stream_info->channels=0;
-		if(sub->type == XBMC_SUBTYPE_DVDSUB)
-		{
-			stream_info->language=sub->name[1]|(sub->name[0]<<8);
-			stream_info->type=0;
-			stream_info->channels=0;
-		}
-		if(sub->type == XBMC_SUBTYPE_VOBSUB)
-		{
-			stream_info->language=sub->name[1]|(sub->name[0]<<8);
-			stream_info->type=0;
-			stream_info->channels=0;
-		}
-		if(sub->type == XBMC_SUBTYPE_MKVSUB)
-		{
-			stream_info->language=sub->name[1]|(sub->name[0]<<8);
-			stream_info->type=0;
-			stream_info->channels=0;
-		}
-
-	}
-	return sub->id;
-
+  return sub->name;
 }
 
 void mplayer_SetAudioStream(int iStream)
@@ -4913,6 +4879,34 @@ void mplayer_SetAudioStream(int iStream)
 
 }
 
+void get_lang_ext(char *filename, char *lang)			// Jimmy
+{
+	int i,l;
+	int p1 = 0;
+	int p2 = 0;
+	char ch;
+	
+	strcpy(lang,"");
+	l = strlen(filename);
+	for(i=0; i<l; i++)
+	{
+		ch = filename[i];
+		if (ch == '.')
+		{
+			p2 = p1;
+			p1 = i;		
+		}
+	}
+
+	if (p2)
+		p2++;	
+	l = p1 - p2;
+	if ((p1 > 0) && (p2 > 0) && (l < MAX_XBMC_NAME))
+	{
+		strncpy(lang,filename+p2,l);
+		lang[l] = 0;
+	}	
+}
 
 
 void xbmc_update_subs()
@@ -4957,14 +4951,16 @@ void xbmc_update_subs()
 		{
 			xbmc_addsub(oggsub_ids[i], NULL, XBMC_SUBTYPE_OGGSUB,0);
 		}
-		if(oggsub_id >= 0)
-			xbmc_sub_current = oggsub_id;
+		if(demuxer->sub && demuxer->sub->id>=0)
+			xbmc_sub_current = xbmc_num_from_sid(demuxer->sub->id, XBMC_SUBTYPE_OGGSUB); //Set currently playing
 	}
 
 	if(demuxer->type == DEMUXER_TYPE_MATROSKA)
 	{
 		printf("Building sub database for MKV");
 		xbmc_mkv_updatesubs(demuxer->priv);
+		if(demuxer->sub && demuxer->sub->id>=0)
+			xbmc_sub_current = xbmc_num_from_sid(demuxer->sub->id, XBMC_SUBTYPE_MKVSUB); //Set currently playing
 	}
 
 	if (vo_vobsub) // Vobsubs
@@ -4983,17 +4979,18 @@ void xbmc_update_subs()
 	}
 
 #ifdef USE_SUB
-	update_set_of_subtitles();
+	char lang_ext[MAX_XBMC_NAME];  // Jimmy
+	//update_set_of_subtitles(); //Shouldn't be needed
 	if(set_of_sub_size > 0) //Standard sub files
 	{
 		int i;
 		for(i=0;i<set_of_sub_size;i++)
 		{
-			xbmc_addsub(i, NULL, XBMC_SUBTYPE_STANDARD, 0);
+			get_lang_ext(set_of_subtitles[i]->filename,lang_ext);	// 2004-10-12, Jimmy			
+			xbmc_addsub(i, lang_ext, XBMC_SUBTYPE_STANDARD, 0);
 		}
 		if(set_of_sub_pos >= 0)
-			xbmc_sub_current = set_of_sub_pos;
-
+      xbmc_sub_current = xbmc_num_from_sid(set_of_sub_pos, XBMC_SUBTYPE_STANDARD);       	
 	}
 #endif
 }
