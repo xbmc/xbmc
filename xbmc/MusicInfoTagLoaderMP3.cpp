@@ -163,7 +163,7 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
 				size_t nBufSize=0;
 				const BYTE* pPic=ID3_GetPictureBufferOfPicType(&id3tag, nPicTyp, &nBufSize );
 
-				if (pPic!=NULL)
+				if (pPic!=NULL && nBufSize>0)
 				{
 					CPicture pic;
 					if (pic.CreateAlbumThumbnailFromMemory(pPic, nBufSize, strExtension, strCoverArt))
