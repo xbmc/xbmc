@@ -893,21 +893,10 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
 				CUtil::GetFileSize(pItem->m_dwSize, strFileSize);
 				pItem->SetLabel2(strFileSize);
 			}
-			if ((nMyMusicSortMethod==0 || nMyMusicSortMethod==8) && pItem->m_musicInfoTag.Loaded()) 
+			if (nMyMusicSortMethod==0 || nMyMusicSortMethod==8) 
 			{
 				int nDuration=pItem->m_musicInfoTag.GetDuration();
-				if (nDuration)
-				{
-					CStdString strDuration;
-					CUtil::SecondsToHMSString(nDuration, strDuration);
-					pItem->SetLabel2(strDuration);
-				}
-			}
-			//	cdda items always have duration
-			if ((nMyMusicSortMethod==0 || nMyMusicSortMethod==8) && CStdString(CUtil::GetExtension(pItem->m_strPath))==".cdda")
-			{
-				int nDuration=pItem->m_musicInfoTag.GetDuration();
-				if (nDuration)
+				if (nDuration>0)
 				{
 					CStdString strDuration;
 					CUtil::SecondsToHMSString(nDuration, strDuration);
