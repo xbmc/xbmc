@@ -12,6 +12,7 @@ using namespace std;
 class CGUIWindowOSD : public CGUIWindow
 {
 public:
+
 	CGUIWindowOSD(void);
 	virtual ~CGUIWindowOSD(void);
 	
@@ -21,7 +22,7 @@ public:
 	virtual bool	SubMenuVisible();
 	virtual void	ResetAllControls();
 
-private:
+protected:
 	virtual void	Get_TimeInfo();
 	virtual void	SetVideoProgress();
 	virtual void	ToggleButton(DWORD iButtonID, bool bSelected);

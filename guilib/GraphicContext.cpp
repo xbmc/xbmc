@@ -69,19 +69,8 @@ bool CGraphicContext::IsWidescreen() const
 
 void CGraphicContext::Correct(float& fCoordinateX, float& fCoordinateY)  const
 {
-	int	iOSDYOffset;
-
-	if (m_bOSDOn)	// full screen video, so adjust with OSD offset instead
-	{
-		iOSDYOffset = m_pResInfo[m_Resolution].iOSDYOffset;
-		fCoordinateX  += (float)m_iScreenOffsetX;
-		fCoordinateY  += (float)iOSDYOffset;
-	}
-	else					// normal UI, adjust with UI offsets
-	{
-		fCoordinateX  += (float)m_iScreenOffsetX;
-		fCoordinateY  += (float)m_iScreenOffsetY;
-	}
+	fCoordinateX  += (float)m_iScreenOffsetX;
+	fCoordinateY  += (float)m_iScreenOffsetY;
 }
 
 void CGraphicContext::Scale(float& fCoordinateX, float& fCoordinateY, float& fWidth, float& fHeight) const

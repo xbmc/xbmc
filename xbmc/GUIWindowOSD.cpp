@@ -200,7 +200,6 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
       OutputDebugString("OSD:DEINIT\n");
 			if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(true);
 			CGUIWindow::OnMessage(message);
-      g_graphicsContext.SetOSDOn(false);
 			return true;
 		}
 		break;
@@ -212,7 +211,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
       CGUIWindow::OnMessage(message);
 			if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(false);
 			ResetAllControls();							// make sure the controls are positioned relevant to the OSD Y offset
-      g_graphicsContext.SetOSDOn(true);
+      
 			m_bSubMenuOn=false;
 	    m_iActiveMenuButtonID=0;
 		  m_iActiveMenu=0;
@@ -942,9 +941,52 @@ void CGUIWindowOSD::PopulateSubTitles()
 
 void	CGUIWindowOSD::ResetAllControls()
 {
-  g_graphicsContext.SetOSDOn(true);
+  //reset all
+
+  
+  bool bOffScreen(false);
+  int iResolution  =g_graphicsContext.GetVideoResolution();
+  int iCalibrationY=g_settings.m_ResInfo[iResolution].iOSDYOffset;
+  int iTop = g_settings.m_ResInfo[iResolution].Overscan.top;
+  int iMin=0;
+  
+  for (int i=0; i < (int)m_vecPositions.size();++i)
+  {
+    CPosition pos=m_vecPositions[i];
+    pos.pControl->SetPosition(pos.x,pos.y+iCalibrationY);
+  }
+  int dummy=10;
+  for (int i=0;i < (int)m_vecControls.size(); ++i)
+  {
+    CGUIControl* pControl= m_vecControls[i];
+    
+    int dwPosY=pControl->GetYPosition();
+    if (pControl->IsVisible())
+    {
+      if ( dwPosY < iTop)
+      {
+        int iSize=iTop-dwPosY;
+        if ( iSize > iMin) iMin=iSize;
+        bOffScreen=true;
+      }
+    }
+	}
+  if (bOffScreen) 
+  {
+
+    for (int i=0;i < (int)m_vecControls.size(); ++i)
+    {
+      CGUIControl* pControl= m_vecControls[i];
+      int dwPosX=pControl->GetXPosition();
+      int dwPosY=pControl->GetYPosition();
+      if ( dwPosY < (int)100)
+      {
+        dwPosY+=abs(iMin);
+        pControl->SetPosition(dwPosX,dwPosY);
+      }
+	  }
+  }
   CGUIWindow::ResetAllControls();
-  g_graphicsContext.SetOSDOn(false);
 }
 
 void CGUIWindowOSD::Reset()
