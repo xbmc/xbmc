@@ -1,7 +1,6 @@
 // guiTest.cpp : Defines the entry point for the application.
 //
 // graphics:
-//			- default icons voor filetypes
 //
 // need 2 test: 
 //      - tijd van files (loopt 1 uur voor/achter??)

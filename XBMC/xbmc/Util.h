@@ -31,5 +31,8 @@ public:
 	static bool IsDVD(const CStdString& strFile);
 	static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
 	static void RemoveCRLF(CStdString& strLine);
+	static bool IsPicture(const CStdString& strLine) ;
+	static bool IsAudio(const CStdString& strLine) ;
+	static bool IsVideo(const CStdString& strLine) ;
   virtual ~CUtil(void);
 };

@@ -34,6 +34,8 @@ CSettings::CSettings(void)
 	g_stSettings.m_iMoveDelayController=220;
 	g_stSettings.m_iRepeatDelayController=220;
 	strcpy(g_stSettings.m_szMyPicturesExtensions,".bmp|.jpg|.png|.gif|.pcx|.tif|.jpeg");
+	strcpy(g_stSettings.m_szMyMusicExtensions,".ac3|.aac|.nfo|.pls|.rm|.sc|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u");
+	strcpy(g_stSettings.m_szMyVideoExtensions,".nfo|.rm|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli");
 }
 
 CSettings::~CSettings(void)
@@ -110,6 +112,9 @@ void CSettings::Load()
   GetString(pRootElement, "shortcuts", g_stSettings.m_szShortcutDirectory,"");
 	GetString(pRootElement, "pictureextensions", g_stSettings.m_szMyPicturesExtensions,".bmp|.jpg|.png|.gif|.pcx|.tif|.jpeg");
   
+	GetString(pRootElement, "musicextensions", g_stSettings.m_szMyMusicExtensions,".ac3|.aac|.nfo|.pls|.rm|.sc|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u");
+	GetString(pRootElement, "videoextensions", g_stSettings.m_szMyVideoExtensions,".nfo|.rm|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli");
+
 	g_stSettings.m_iStartupWindow=GetInteger(pRootElement, "startwindow");
 	g_stSettings.m_bFTPServer=GetBoolean(pRootElement,"enabled");
 

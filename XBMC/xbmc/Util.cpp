@@ -420,3 +420,38 @@ void CUtil::RemoveCRLF(CStdString& strLine)
 	}
 
 }
+bool CUtil::IsPicture(const CStdString& strFile) 
+{
+	CStdString strExtension;
+	CUtil::GetExtension(strFile,strExtension);
+  CUtil::Lower(strExtension);
+	if ( strstr( g_stSettings.m_szMyPicturesExtensions, strExtension.c_str() ) )
+	{
+		return true;
+	}
+	return false;
+
+}
+
+bool CUtil::IsAudio(const CStdString& strFile) 
+{
+	CStdString strExtension;
+	CUtil::GetExtension(strFile,strExtension);
+  CUtil::Lower(strExtension);
+	if ( strstr( g_stSettings.m_szMyMusicExtensions, strExtension.c_str() ) )
+	{
+		return true;
+	}
+	return false;
+}
+bool CUtil::IsVideo(const CStdString& strFile) 
+{
+	CStdString strExtension;
+	CUtil::GetExtension(strFile,strExtension);
+  CUtil::Lower(strExtension);
+	if ( strstr( g_stSettings.m_szMyVideoExtensions, strExtension.c_str() ) )
+	{
+		return true;
+	}
+	return false;
+}

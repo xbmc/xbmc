@@ -86,10 +86,25 @@ void  CVirtualDirectory::CacheThumbs(VECFILEITEMS &items)
   for (int i=0; i < (int)items.size(); ++i)
   {
     CFileItem* pItem=items[i];
-
+		
 		if (pItem->m_bIsFolder)
 		{
 			pItem->SetIconImage("icon-folder.png");
+		}
+		else
+		{
+			if (CUtil::IsPicture(pItem->m_strPath) )
+			{
+				pItem->SetIconImage("defaultPicture.png");
+			}
+			if (CUtil::IsAudio(pItem->m_strPath) )
+			{
+				pItem->SetIconImage("defaultAudio.png");
+			}
+			if (CUtil::IsVideo(pItem->m_strPath) )
+			{
+				pItem->SetIconImage("defaultVideo.png");
+			}
 		}
 		
 		if (pItem->HasThumbnail() )
@@ -121,6 +136,19 @@ void  CVirtualDirectory::CacheThumbs(VECFILEITEMS &items)
 				pItem->SetThumbnailImage(strThumb);
 			}
 		}
-		
+
+		if (pItem->GetThumbnailImage()=="")
+		{
+			if (pItem->GetIconImage()!="")
+			{
+				CStdString strBig;
+				int iPos=pItem->GetIconImage().Find(".");
+				strBig=pItem->GetIconImage().Left(iPos);
+				strBig+="Big";
+				strBig+=pItem->GetIconImage().Right(pItem->GetIconImage().size()-(iPos));
+				pItem->SetThumbnailImage(strBig);
+
+			}
+		}
   }
 }
