@@ -204,6 +204,8 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 
 			CGUIWindowMusicBase::OnMessage(message);
 
+			AutoSwitchControlThumbList();
+
 			return true;
 		}
 		break;
