@@ -49,7 +49,7 @@ namespace PYXBMC
 	{
 		pControl->pGUIControl = new CGUIFadeLabelControl(pControl->iParentId, pControl->iControlId,
 				pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
-				pControl->strFont, pControl->dwTextColor, (XBFONT_LEFT | XBFONT_CENTER_Y));
+				pControl->strFont, pControl->dwTextColor, XBFONT_LEFT);
 
 		CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
 		pControl->pGUIControl->OnMessage(msg);

@@ -47,7 +47,7 @@ namespace PYXBMC
 	{
 		pControl->pGUIControl = new CGUILabelControl(pControl->iParentId, pControl->iControlId,
 				pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
-				pControl->strFont, pControl->strText, pControl->dwTextColor, pControl->dwTextColor, (XBFONT_LEFT | XBFONT_CENTER_Y), false);
+				pControl->strFont, pControl->strText, pControl->dwTextColor, pControl->dwTextColor, XBFONT_LEFT, false);
 		return pControl->pGUIControl;
 	}
 
