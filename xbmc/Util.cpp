@@ -1445,7 +1445,10 @@ void CUtil::FillInDefaultIcon(CFileItem* pItem)
 						if (!(url.GetProtocol() =="http" || url.GetProtocol()=="HTTP") &&
 								!(url.GetProtocol() =="shout" || url.GetProtocol()=="SHOUT") &&
 								!(url.GetProtocol() =="mms" || url.GetProtocol()=="MMS")  &&
-								!(url.GetProtocol() =="rtp" || url.GetProtocol()=="RTP"))
+								!(url.GetProtocol() =="rtp" || url.GetProtocol()=="RTP") && 
+								!(url.GetProtocol() =="ftp" || url.GetProtocol()=="FTP") && 
+								!(url.GetProtocol() =="udp" || url.GetProtocol()=="UDP") && 
+								!(url.GetProtocol() =="rtsp" || url.GetProtocol()=="RTSP"))
 						{
 							pPlayList->Save(strDir);
 						}
@@ -1626,6 +1629,9 @@ bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
     if (url.GetProtocol() =="shout" || url.GetProtocol()=="SHOUT") return false;
     if (url.GetProtocol() =="mms" || url.GetProtocol()=="MMS") return false;
     if (url.GetProtocol() =="rtp" || url.GetProtocol()=="RTP") return false;
+    if (url.GetProtocol() =="ftp" || url.GetProtocol()=="FTP") return false;
+    if (url.GetProtocol() =="udp" || url.GetProtocol()=="UDP") return false;
+    if (url.GetProtocol() =="rtsp" || url.GetProtocol()=="RTSP") return false;
 
     CUtil::GetThumbnail( strFolderImage,strThumb);
     // if local cache of thumb doesnt exists yet
@@ -2020,6 +2026,9 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   if (url.GetProtocol() =="shout" || url.GetProtocol()=="SHOUT") return ;
   if (url.GetProtocol() =="mms" || url.GetProtocol()=="MMS") return ;
   if (url.GetProtocol() =="rtp" || url.GetProtocol()=="RTP") return ;
+  if (url.GetProtocol() =="ftp" || url.GetProtocol()=="FTP") return ;
+  if (url.GetProtocol() =="udp" || url.GetProtocol()=="UDP") return ;
+  if (url.GetProtocol() =="rtsp" || url.GetProtocol()=="RTSP") return ;
   if (CUtil::IsPlayList(strMovie)) return;
   if (!CUtil::IsVideo(strMovie)) return;
 
@@ -2641,6 +2650,9 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
     if (url.GetProtocol() =="shout" || url.GetProtocol()=="SHOUT") return ;
     if (url.GetProtocol() =="mms" || url.GetProtocol()=="MMS") return ;
     if (url.GetProtocol() =="rtp" || url.GetProtocol()=="RTP") return ;
+    if (url.GetProtocol() =="ftp" || url.GetProtocol()=="FTP") return ;
+    if (url.GetProtocol() =="udp" || url.GetProtocol()=="UDP") return ;
+    if (url.GetProtocol() =="rtsp" || url.GetProtocol()=="RTSP") return ;
   }
   CStdString strThumb, strPath, strFileName;
 
