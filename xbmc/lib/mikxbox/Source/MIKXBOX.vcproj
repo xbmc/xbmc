@@ -68,7 +68,7 @@
 				PreprocessorDefinitions="WIN32;_XBOX;_DEBUG;DRV_DS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
-				SmallerTypeCheck="TRUE"
+				SmallerTypeCheck="FALSE"
 				RuntimeLibrary="1"
 				BufferSecurityCheck="TRUE"
 				EnableEnhancedInstructionSet="1"
@@ -197,6 +197,9 @@
 							PreprocessorDefinitions=""
 							BrowseInformation="1"/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\drivers\drv_xbox.cpp">
 				</File>
 			</Filter>
 			<Filter

@@ -18,7 +18,7 @@
 *	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 *	02111-1307, USA.
 *
-*	Mikwin unofficial mikmod port. / XBOX PORT
+*	mikxbox unofficial mikmod port. / XBOX PORT
 *
 ***********************************************************************************************************************************************************
 *   Last Revision : Rev 2.1 6/21/2003
@@ -50,367 +50,216 @@
 #include "mikmod_internals.h"
 #include "mikwin.h"
 
-/*Variable export/import----------------------------------------------------------------------------------------------------------------------------------*/ 
-static SAMPLE *sfxRing[UF_MAXCHAN];
-static BYTE firstSfxVoice;
-static BYTE currentSfxVoice;
-static BYTE resMusicChannels;
-static BYTE resSfxChannels;
 
-#ifdef WIN32
-extern void set_ds_hwnd(HWND wnd);
-extern BOOL DS_Init(void);
-extern void DS_Exit(void);
-extern void set_ds_buffersize(int);
-#endif
-/*-------------------------------------------------------------------------------------------------------------------------------------------------------*/
-
-
-#define DEFAULT_MIXFREQ 22500
 /********************************************************************************************************************************************************** 
 
-																	... mikwinInit(...) ...
+																	... mikxboxInit(...) ...
 
 ***********************************************************************************************************************************************************/
-BOOL mikwinInit(UWORD mixfreq, BOOL stereo, BOOL bits16, BOOL interpolation,BYTE reservedMusicChannels,BYTE reservedSfxChannels,BYTE soundDelay )
+BOOL mikxboxInit()
 {
-	UWORD options;
 	char *pInfos;
 	BOOL initialised;
 
 	/* register all the drivers */
-	#ifdef WIN32
-	set_ds_buffersize(soundDelay);
-	MikMod_RegisterDriver(&drv_ds_raw);
-	#endif
+	MikMod_RegisterDriver(&drv_xbox);
 
     /* register all the module loaders */
 	MikMod_RegisterAllLoaders();
 
 	/* initialize the library */
-	if (mixfreq == 0) mixfreq = DEFAULT_MIXFREQ;
-	md_mixfreq = mixfreq;
-	options = DMODE_SOFT_MUSIC | DMODE_SOFT_SNDFX | DMODE_HQMIXER;
-	if (stereo) options |= DMODE_STEREO;
-	if (bits16) options |= DMODE_16BITS;
-	if (interpolation) options |= DMODE_INTERP;
-
-	md_mode = options;
+	md_mode = 0;
     
-	
-	#ifndef _XBOX
-	set_ds_hwnd(GetActiveWindow());
-	#endif
-	
 	pInfos = MikMod_InfoDriver();
 	initialised = !MikMod_Init(pInfos);
 
-	if (reservedMusicChannels > UF_MAXCHAN)
-		reservedMusicChannels = UF_MAXCHAN;
-	if (reservedSfxChannels > UF_MAXCHAN)
-		reservedSfxChannels = UF_MAXCHAN;
-
-	resMusicChannels = reservedMusicChannels;
-	resSfxChannels = reservedSfxChannels;
-
-	firstSfxVoice = reservedMusicChannels;
-	currentSfxVoice = 0;
-	memset(sfxRing,0,sizeof(SAMPLE*)*UF_MAXCHAN);
-
 	if (initialised){
-		MikMod_SetNumVoices(reservedMusicChannels,reservedSfxChannels);          
+		MikMod_SetNumVoices(127,0);          
 		MikMod_EnableOutput();
 	}
 	return initialised;
 }
 /********************************************************************************************************************************************************** 
 
-																		... mikwinExit(...) ...
+																		... mikxboxExit(...) ...
 
 ***********************************************************************************************************************************************************/
-void mikwinExit()
+void mikxboxExit()
 {
 	MikMod_Exit();
 }
 /********************************************************************************************************************************************************** 
 
-																	... mikwinSetSoundDelay(...) ...
-
-  Note: Depending on the system it is sometime preferable to allow delay (bigger sound buffer size) to avoid glitches.
-		For instance 8 is a value for good configs and 14 works nice almost everywhere.
-		For Ultrasounds running with latest beta drivers (WIN) that value should be 40! :( 
-		really big delay there but that works.
+																	... mikxboxSetErrno(...) ...
 
 ***********************************************************************************************************************************************************/
-void	mikwinSetSoundDelay(BYTE soundDelay)
-{
-	DS_Exit();
-	set_ds_buffersize(soundDelay);
-	DS_Init();
-	
-}
-/********************************************************************************************************************************************************** 
-
-																	... mikwinSetErrno(...) ...
-
-***********************************************************************************************************************************************************/
-void	mikwinSetErrno(int errno)
+void	mikxboxSetErrno(int errno)
 {
 	MikMod_errno = errno;
 }
 /********************************************************************************************************************************************************** 
 
-																	... mikwinGetErrno(...) ...
+																	... mikxboxGetErrno(...) ...
 
 ***********************************************************************************************************************************************************/
-int		mikwinGetErrno(void)
+int		mikxboxGetErrno(void)
 {
 	return MikMod_errno;
 }
 /********************************************************************************************************************************************************** 
 
-																	... mikwinSetMasterVolume(...) ...
+																	... mikxboxSetMasterVolume(...) ...
 
 ***********************************************************************************************************************************************************/
-void	mikwinSetMasterVolume(UBYTE vol)
+void	mikxboxSetMasterVolume(UBYTE vol)
 {
 	md_volume = vol;
 }
 /********************************************************************************************************************************************************** 
 
-																	... mikwinGetMasterVolume(...) ...
+																	... mikxboxGetMasterVolume(...) ...
 
 ***********************************************************************************************************************************************************/
-UBYTE	mikwinGetMasterVolume(void)
+UBYTE	mikxboxGetMasterVolume(void)
 {
 	return md_volume;
 }
 /********************************************************************************************************************************************************** 
 
-																	... mikwinSetMusicVolume(...) ...
+																	... mikxboxSetMusicVolume(...) ...
 
   note: when playing music + sfx that's better to use 75% volume onto music coz sfx volume is a bit low by default.
 
 ***********************************************************************************************************************************************************/
-void	mikwinSetMusicVolume(UBYTE vol)
+void	mikxboxSetMusicVolume(UBYTE vol)
 {
 	md_musicvolume = vol;
 }
 /********************************************************************************************************************************************************** 
 
-																	... mikwinGetMusicVolume(...) ...
+																	... mikxboxGetMusicVolume(...) ...
 
 ***********************************************************************************************************************************************************/
-UBYTE	mikwinGetMusicVolume(void)
+UBYTE	mikxboxGetMusicVolume(void)
 {
 	return md_musicvolume;
 }
 /********************************************************************************************************************************************************** 
 
-																	... mikwinSetSfxVolume(...) ...
+																	... mikxboxSetSfxVolume(...) ...
 
 ***********************************************************************************************************************************************************/
-void	mikwinSetSfxVolume(UBYTE vol)
+void	mikxboxSetSfxVolume(UBYTE vol)
 {
 	md_sndfxvolume = vol;
 }
 /********************************************************************************************************************************************************** 
 
-																	... mikwinGetSfxVolume(...) ...
+																	... mikxboxGetSfxVolume(...) ...
 
 ***********************************************************************************************************************************************************/
-UBYTE	mikwinGetSfxVolume(void)
+UBYTE	mikxboxGetSfxVolume(void)
 {
 	return md_sndfxvolume;
 }
 /********************************************************************************************************************************************************** 
 
-																	... mikwinSetMasterReverb(...) ...
+																	... mikxboxSetMasterReverb(...) ...
 
 ***********************************************************************************************************************************************************/
-void	mikwinSetMasterReverb(UBYTE rev)
+void	mikxboxSetMasterReverb(UBYTE rev)
 {
 	md_reverb = rev;
 }
 /********************************************************************************************************************************************************** 
 
-																	... mikwinGetMasterReverb(...) ...
+																	... mikxboxGetMasterReverb(...) ...
 
 ***********************************************************************************************************************************************************/
-UBYTE	mikwinGetMasterReverb(void)
+UBYTE	mikxboxGetMasterReverb(void)
 {
 	return md_reverb;
 }
 /********************************************************************************************************************************************************** 
 
-																	... mikwinSetPanning(...) ...
+																	... mikxboxSetPanning(...) ...
 
 ***********************************************************************************************************************************************************/
-void	mikwinSetPanning(UBYTE pan)
+void	mikxboxSetPanning(UBYTE pan)
 {
 	md_pansep = pan;
 }
 /********************************************************************************************************************************************************** 
 
-																	... mikwinGetPanning(...) ...
+																	... mikxboxGetPanning(...) ...
 
 ***********************************************************************************************************************************************************/
-UBYTE	mikwinGetPanning(void)
+UBYTE	mikxboxGetPanning(void)
 {
 	return md_pansep;
 }
 /********************************************************************************************************************************************************** 
 
-																	... mikwinSetMasterDevice(...) ...
+																	... mikxboxSetMasterDevice(...) ...
 
 ***********************************************************************************************************************************************************/
-void	mikwinSetMasterDevice(UWORD dev)
+void	mikxboxSetMasterDevice(UWORD dev)
 {
 	md_device = dev;
 }
 /********************************************************************************************************************************************************** 
 
-																	... mikwinGetMasterDevice(...) ...
+																	... mikxboxGetMasterDevice(...) ...
 
 ***********************************************************************************************************************************************************/
-UWORD	mikwinGetMasterDevice(void)
+UWORD	mikxboxGetMasterDevice(void)
 {
 	return md_device;
 }
 /********************************************************************************************************************************************************** 
 
-																	... mikwinSetMixFrequency(...) ...
+																	... mikxboxSetMixFrequency(...) ...
 
 ***********************************************************************************************************************************************************/
-void	mikwinSetMixFrequency(UWORD freq)
+void	mikxboxSetMixFrequency(UWORD freq)
 {
 	md_mixfreq = freq;
 }
 /********************************************************************************************************************************************************** 
 
-																	... mikwinGetMixFrequency(...) ...
+																	... mikxboxGetMixFrequency(...) ...
 
 ***********************************************************************************************************************************************************/
-UWORD	mikwinGetMixFrequency(void)
+UWORD	mikxboxGetMixFrequency(void)
 {
 	return md_mixfreq;
 }
 /********************************************************************************************************************************************************** 
 
-																		... mikwinSetMode(...) ...
+																		... mikxboxSetMode(...) ...
 
 ***********************************************************************************************************************************************************/
-void	mikwinSetMode(UWORD mode)
+void	mikxboxSetMode(UWORD mode)
 {
 	md_mode = mode;
 }
 /********************************************************************************************************************************************************** 
 
-																		... mikwinGetMode(...) ...
+																		... mikxboxGetMode(...) ...
 
 ***********************************************************************************************************************************************************/
-UWORD	mikwinGetMode(void)
+UWORD	mikxboxGetMode(void)
 {
 	return md_mode;
-}
-/********************************************************************************************************************************************************** 
-
-																	... mikwinPlaySfx(...) ...
-
-  Note: Unfortunately, effects are applyed on the sample itself and not on the voice where it is played.
-		Thus, multiple instances of a sfx with different types of effects should sound eh... weird.
-
-***********************************************************************************************************************************************************/
-SWORD mikwinPlaySfx(SAMPLE *pSample,ULONG flags,UWORD pan,UWORD vol,ULONG frequency)
-{
-	SWORD voice; 
-	ULONG startPos=0;
-	BYTE i;
-
-	if (pSample == NULL)
-		return -1;
-
-	voice = firstSfxVoice+currentSfxVoice;
-
-	for (i=0; i < resSfxChannels;i++){
-		voice = firstSfxVoice+i;
-		if(sfxRing[i] == NULL){
-			sfxRing[i] = pSample;
-			goto skipVoiceInc;
-		}
-		else{
-			if (Voice_Stopped((CHAR)voice)){
-				sfxRing[i] = pSample;
-				goto skipVoiceInc;
-			}
-		}
-	}
-
-	sfxRing[currentSfxVoice++] = pSample;
-	currentSfxVoice %= resSfxChannels;
-
-skipVoiceInc:
-
-	pSample->loopstart = 0;
-	pSample->loopend = pSample->length;
-
-	if (pSample->flags&SF_16BITS)
-		pSample->loopend <<=1;
-
-	if (flags&SF_LOOP){
-		pSample->flags |= SF_LOOP;
-	}
-	if (flags&SF_BIDI){
-		pSample->flags |= SF_BIDI;
-	}
-	if (flags&SF_REVERSE){
-		pSample->flags |= SF_REVERSE;
-		startPos = pSample->loopend;
-	}
-	
-	Voice_Play((CHAR)voice,pSample,startPos);
-	Voice_SetPanning((CHAR)voice,pan);
-	Voice_SetVolume((CHAR)voice,vol);
-	if (frequency)
-		Voice_SetFrequency((CHAR)voice,frequency);
-
-	return voice;
-}
-/********************************************************************************************************************************************************** 
-
-																		... mikwinStopSfx(...) ...
-
-***********************************************************************************************************************************************************/
-void mikwinStopSfx(SWORD voice)
-{
-	if ((voice < resMusicChannels) || (voice >= (firstSfxVoice+resSfxChannels)))
-		return;
-
-	sfxRing[voice-firstSfxVoice] = NULL;
-	Voice_Stop((CHAR)voice);
-}
-/********************************************************************************************************************************************************** 
-
-																		... mikwinGetSfx(...) ...
-
-***********************************************************************************************************************************************************/
-SAMPLE* mikwinGetSfx(SWORD voice)
-{
-	if ((voice < resMusicChannels) || (voice >= (firstSfxVoice+resSfxChannels)))
-		return NULL;
-
-	return sfxRing[voice-firstSfxVoice];
 }
 
 
 __int64 mikxboxGetPTS()
 {
-	extern __int64 get_ds_pts();
-	return get_ds_pts();
+	extern __int64 XB_GetPTS();
+	return XB_GetPTS();
 }
 
 void mikxboxSetCallback(void (*p)(unsigned char*, int))
 {
-	void set_ds_callback(void (*p)(unsigned char*, int));
-	set_ds_callback(p);
 }

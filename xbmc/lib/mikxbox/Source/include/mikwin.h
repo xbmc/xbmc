@@ -18,7 +18,7 @@
 *	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 *	02111-1307, USA.
 *
-*	Mikwin unofficial mikmod port.
+*	mikxbox unofficial mikmod port.
 *
 ***********************************************************************************************************************************************************
 *
@@ -44,8 +44,8 @@
 *
 *
 **TABULATION 4*******RESOLUTION : 1280*1024 ***************************************************************************************************************/
-#ifndef _MIKWIN_H_
-#define _MIKWIN_H_
+#ifndef _mikxbox_H_
+#define _mikxbox_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -53,35 +53,35 @@ extern "C" {
 
 #define DEFAULT_MIXFREQ 22500
 
-BOOL	mikwinInit(UWORD mixfreq, BOOL stereo, BOOL bits16, BOOL interpolation,BYTE reserveMusicChannels,BYTE reservedSfxChannels, BYTE soundDelay);
-void	mikwinExit(void);
-void	mikwinSetSoundDelay(BYTE soundDelay);
+BOOL	mikxboxInit();
+void	mikxboxExit(void);
+void	mikxboxSetSoundDelay(BYTE soundDelay);
 
-void	mikwinSetErrno(int errno);
-int		mikwinGetErrno(void);
-void	mikwinSetMasterVolume(UBYTE vol);
-UBYTE	mikwinGetMasterVolume(void);
-void	mikwinSetMusicVolume(UBYTE vol);
-UBYTE	mikwinGetMusicVolume(void);
-void	mikwinSetSfxVolume(UBYTE vol);
-UBYTE	mikwinGetSfxVolume(void);
-void	mikwinSetMasterReverb(UBYTE rev);
-UBYTE	mikwinGetMasterReverb(void);
-void	mikwinSetPanning(UBYTE pan);
-UBYTE	mikwinGetPanning(void);
-void	mikwinSetMasterDevice(UWORD dev);
-UWORD	mikwinGetMasterDevice(void);
-void	mikwinSetMixFrequency(UWORD freq);
-UWORD	mikwinGetMixFrequency(void);
-void	mikwinSetMode(UWORD mode);
-UWORD	mikwinGetMode(void);
+void	mikxboxSetErrno(int errno);
+int		mikxboxGetErrno(void);
+void	mikxboxSetMasterVolume(UBYTE vol);
+UBYTE	mikxboxGetMasterVolume(void);
+void	mikxboxSetMusicVolume(UBYTE vol);
+UBYTE	mikxboxGetMusicVolume(void);
+void	mikxboxSetSfxVolume(UBYTE vol);
+UBYTE	mikxboxGetSfxVolume(void);
+void	mikxboxSetMasterReverb(UBYTE rev);
+UBYTE	mikxboxGetMasterReverb(void);
+void	mikxboxSetPanning(UBYTE pan);
+UBYTE	mikxboxGetPanning(void);
+void	mikxboxSetMasterDevice(UWORD dev);
+UWORD	mikxboxGetMasterDevice(void);
+void	mikxboxSetMixFrequency(UWORD freq);
+UWORD	mikxboxGetMixFrequency(void);
+void	mikxboxSetMode(UWORD mode);
+UWORD	mikxboxGetMode(void);
 
 __int64 mikxboxGetPTS();
 void mikxboxSetCallback(void (*p)(unsigned char*, int));
 
-SWORD mikwinPlaySfx(SAMPLE *pSample,ULONG flags,UWORD pan,UWORD vol,ULONG frequency);
-void mikwinStopSfx(SWORD voice);
-SAMPLE* mikwinGetSfx(SWORD voice);
+SWORD mikxboxPlaySfx(SAMPLE *pSample,ULONG flags,UWORD pan,UWORD vol,ULONG frequency);
+void mikxboxStopSfx(SWORD voice);
+SAMPLE* mikxboxGetSfx(SWORD voice);
 
 
 
@@ -90,5 +90,5 @@ SAMPLE* mikwinGetSfx(SWORD voice);
 #endif
 
 
-#endif /* _MIKWIN_H */
+#endif /* _mikxbox_H */
 
