@@ -129,9 +129,8 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath)
 	// now remove the extension if needed
 	if (g_stSettings.m_bHideExtensions)
 	{
-		int iPos = strFilename.ReverseFind(".");
-		if (iPos>0)
-			return strFilename.Left(iPos);
+		RemoveExtension(strFilename);
+		return strFilename;
 	}
 	return strFilename;
 }
@@ -141,16 +140,29 @@ void CUtil::RemoveExtension(CFileItem *pItem)
 	if (pItem->m_bIsFolder)
 		return;
 	CStdString strLabel = pItem->GetLabel();
-	int iPos = strLabel.ReverseFind(".");
-	if (iPos>0)
-		pItem->SetLabel(strLabel.Left(iPos));
+	RemoveExtension(strLabel);
+	pItem->SetLabel(strLabel);
 }
 
 void CUtil::RemoveExtension(CStdString& strFileName)
 {
 	int iPos = strFileName.ReverseFind(".");
+	//	Extension found
 	if (iPos>0)
-		strFileName=strFileName.Left(iPos);
+	{
+		CStdString strExtension;
+		CUtil::GetExtension(strFileName,strExtension);
+		CUtil::Lower(strExtension);
+
+		CStdString strFileMask;
+		strFileMask=g_stSettings.m_szMyMusicExtensions;
+		strFileMask+=g_stSettings.m_szMyPicturesExtensions;
+		strFileMask+=g_stSettings.m_szMyVideoExtensions;
+
+		//	Only remove if its a valid media extension
+		if (strFileMask.Find(strExtension.c_str())>=0)
+			strFileName=strFileName.Left(iPos);
+	}
 }
 
 // Remove the extensions from the filenames
