@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 14-02-2005 fixed: Possible crashes in ListControl + RssControl.
+  - 14-02-2005 fixed: Listcontrols weren't cleared correctly in some views during UpdateDir().
+  - 14-02-2005 fixed: Temperature label now shown correctly for weather using infolabels.
   - 13-02-2005 fixed: No space between date and time in system info
   - 13-02-2005 fixed: short date's day and month are not swapped like in settings set
   - 13-02-2005 fixed: album cover disappears if next song in a playlist is played

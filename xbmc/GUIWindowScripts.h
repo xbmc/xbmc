@@ -24,7 +24,7 @@ protected:
   void							OnSort();
 	void							OnInfo();
   void							UpdateButtons();
-  void							Clear();
+  void							ClearFileItems();
 	void							Update(const CStdString &strDirectory);
 	int								GetSelectedItem();
   bool							HaveDiscOrConnection( CStdString& strPath, int iDriveType );

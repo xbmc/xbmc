@@ -34,7 +34,7 @@ wstring CGUIInfoManager::GetLabel(const CStdString &strInfo)
 	if (strTest == "weather.conditions")
 		strLabel = g_weatherManager.GetLabel(WEATHER_LABEL_CURRENT_COND);
 	else if (strTest == "weather.temperature")
-		strLabel = g_weatherManager.GetLabel(WEATHER_LABEL_CURRENT_COND);
+		strLabel = g_weatherManager.GetLabel(WEATHER_LABEL_CURRENT_TEMP);
 	else if (strTest == "weather.location")
 		strLabel = g_weatherManager.GetLabel(WEATHER_LABEL_LOCATION);
 	else if (strTest == "system.time")
