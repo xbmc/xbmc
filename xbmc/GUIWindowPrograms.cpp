@@ -28,7 +28,7 @@ using namespace DIRECTORY;
 CGUIWindowPrograms::CGUIWindowPrograms(void)
 :CGUIWindow(0)
 {
-  m_strDirectory="";
+   m_strDirectory="?";
   
 }
 
@@ -49,7 +49,9 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
     {
 			CGUIWindow::OnMessage(message);
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-			m_strDirectory = "Q:\\shortcuts";
+			if (m_strDirectory=="?")
+				m_strDirectory=g_stSettings.m_szDefaultPrograms;
+
       // make controls 100-110 invisible...
 			for (int i=100; i < 110; i++)
       {
