@@ -1591,6 +1591,10 @@ void CGUIWindowMusicBase::SetLabelFromTag(CFileItem *pItem)
 		{	// year
 			str = tag.GetYear();
 		}
+		else if (strFormat[iPos2+1] == 'F')
+		{	// filename
+			str = CUtil::GetTitleFromPath(pItem->m_strPath);
+		}
 		else if (strFormat[iPos2+1] == '%')
 		{	// %% to print %
 			str = '%';
