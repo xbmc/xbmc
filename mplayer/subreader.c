@@ -2293,7 +2293,7 @@ void sub_free( sub_data * subd )
 	free_subtitles( subd->subtitles + i );
 
     if(subd->subtitles) free( subd->subtitles);
- //   if (subd->filename) free( subd->filename );
+    if (subd->filename) free( subd->filename );
     free( subd );
 }
 
