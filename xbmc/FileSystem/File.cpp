@@ -125,8 +125,15 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 			iRead = Read(buffer.get(), iBytesToRead);
 			if (iRead > 0)
 			{
-				//DWORD dwWrote;
-				newFile.Write(buffer.get(), iRead);
+				int iWrote = newFile.Write(buffer.get(), iRead);
+				// iWrote contains num bytes read - make sure it's the same as numbytes written
+        if (iWrote != iRead)
+        { // failed!
+ 				  Close();
+          newFile.Close();
+          newFile.Delete(szDest);
+				  return false;
+        }
 				llFileSize -= iRead;
 				llPos += iRead;
 				float fPercent =(float)llPos;
@@ -141,7 +148,8 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 						{
 							// canceled
 							Close();
-							CFile::Delete(szDest);
+              newFile.Close();
+							newFile.Delete(szDest);
 							return false;
 						}
 					}
@@ -150,7 +158,8 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 			if (iRead != iBytesToRead) 
 			{
 				Close();
-				CFile::Delete(szDest);
+        newFile.Close();
+				newFile.Delete(szDest);
 				return false;
 			}
 		}
