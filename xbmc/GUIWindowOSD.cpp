@@ -92,7 +92,6 @@ CGUIWindowOSD::CGUIWindowOSD(void)
 	m_iActiveMenuButtonID = 0;
 	m_iCurrentBookmark = 0;
 	// enable relative coordinates
-	m_bRelativeCoords = true;
 	m_bNeedsScaling = true;
 }
 
@@ -111,6 +110,7 @@ void CGUIWindowOSD::OnWindowLoaded()
   //  Do not free resources of invisible controls
   //  or hdd will spin up when entering a osd submenu
   DynamicResourceAlloc(false);
+  m_bRelativeCoords=true;
 }
 
 void CGUIWindowOSD::Render()
