@@ -103,9 +103,9 @@ bool  CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
 {
 	CSingleLock lock(m_cs);
 
-  CStdString strPath,strFileName;
+  CStdString strPath;
   bInCache=false;
-  CUtil::Split(strFile,strPath,strFileName);
+  CUtil::GetDirectory(strFile,strPath);
   ivecCache i=g_directoryCache.m_vecCache.begin();
   while (i != g_directoryCache.m_vecCache.end() )
   {

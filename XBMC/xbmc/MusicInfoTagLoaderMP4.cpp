@@ -145,8 +145,8 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
 
 			if (pCover && nSize>0)
 			{
-				CStdString strCoverArt, strPath, strFileName;
-				CUtil::Split(tag.GetURL(), strPath, strFileName);
+				CStdString strCoverArt, strPath;
+				CUtil::GetDirectory(tag.GetURL(), strPath);
 				CUtil::GetAlbumThumb(tag.GetAlbum(), strPath, strCoverArt,true);
 
 				CPicture pic;

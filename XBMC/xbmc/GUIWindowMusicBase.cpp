@@ -728,8 +728,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 	}
 	else
 	{
-		CStdString strFileName;
-		CUtil::Split(pItem->m_strPath, strPath, strFileName);
+		CUtil::GetDirectory(pItem->m_strPath, strPath);
 	}
 
 	//	Try to find an album name for this item.

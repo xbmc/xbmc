@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 10-01-2004 fixed: Slideshow info shows part of directory instead of filename in osd
+  - 10-01-2004 fixed: subtitles wouldn't display if on CD/DVD
   - 09-01-2004 updated: Greek language file (Thnx to modon)
   - 09-01-2005 fixed: fullscreen video view mode info, soften setting for video was not displayed
   - 09-01-2005 updated: Chinese (Traditional) language file (Thnx to iikii)
