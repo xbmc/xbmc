@@ -153,6 +153,8 @@ bool CSettings::Load()
 	if (!LoadSettings("T:\\settings.xml"))
 	{
     CLog::Log("Unable to load T:\\settings.xml");
+    Save();
+    return Load();
 	}
 	// load calibration file...
   CLog::Log("loading T:\\calibration.xml");
