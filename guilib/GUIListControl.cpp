@@ -427,7 +427,9 @@ void CGUIListControl::OnUp()
     }
     else
     {
-      return CGUIControl::OnKey(key);
+			// move 2 last item in list
+			CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), GetID(), m_vecItems.size() -1); 
+			OnMessage(msg);
     }
   }
   else
@@ -467,6 +469,12 @@ void CGUIListControl::OnDown()
 				}
 				m_upDown.SetValue(iPage);
 			}
+			else
+			{
+				// move first item in list
+				CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), GetID(), 0); 
+				OnMessage(msg);
+			}
     }
   }
   else
@@ -496,6 +504,11 @@ void CGUIListControl::OnPageUp()
     m_upDown.SetValue(iPage);
     m_iOffset=(m_upDown.GetValue()-1)*m_iItemsPerPage;
   }
+	else 
+	{
+		// already on page 1, then select the 1st item
+		m_iCursorY=0;
+	}
 }
 
 void CGUIListControl::OnPageDown()
@@ -510,6 +523,12 @@ void CGUIListControl::OnPageDown()
     m_upDown.SetValue(iPage);
     m_iOffset=(m_upDown.GetValue()-1)*m_iItemsPerPage;
   }
+	else
+	{
+		// already on last page, move 2 last item in list
+		CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), GetID(), m_vecItems.size() -1); 
+		OnMessage(msg);
+	}
   if (m_iOffset+m_iCursorY >= (int)m_vecItems.size() )
   {
     m_iCursorY = (m_vecItems.size()-m_iOffset)-1;
