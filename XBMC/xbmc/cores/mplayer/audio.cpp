@@ -86,10 +86,10 @@ static int audio_init(int rate,int channels,int format,int flags)
 
 		pao_data=GetAOData();
 		bool bSupportsSPDIFOut=(XGetAudioFlags() & (DSSPEAKER_ENABLE_AC3 | DSSPEAKER_ENABLE_DTS)) != 0;
-		if (bAC3File && bSupportsSPDIFOut && g_stSettings.m_bAC3PassThru && channels==6)
+		if (bAC3File && bSupportsSPDIFOut && g_stSettings.m_bAC3PassThru && channels==2)
 		{
 			// ac3 passthru
-			m_pAudioDecoder = new CAc97DirectSound(m_pAudioCallback,channels,rate,audio_out_format_bits(format));
+			m_pAudioDecoder = new CAc97DirectSound(m_pAudioCallback,2,rate,audio_out_format_bits(format));
 		}
 		else
 		{

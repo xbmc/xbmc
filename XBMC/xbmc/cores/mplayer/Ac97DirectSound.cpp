@@ -110,7 +110,7 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback,int iChannels, unsi
 	}
 	
 	bool bEnableSPDIFOut=true;
-	m_pDigitalOutput->SetMode(bEnableSPDIFOut ? DSAC97_MODE_ENCODED : DSAC97_MODE_PCM);
+	hr=m_pDigitalOutput->SetMode(bEnableSPDIFOut ? DSAC97_MODE_ENCODED : DSAC97_MODE_PCM);
 	m_bIsAllocated   = true;
 }
 
