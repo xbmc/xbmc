@@ -25,6 +25,7 @@
 #define MENU_ACTION_SUBTITLELANGUAGE 5
 #define MENU_ACTION_INTERLEAVED 6
 #define MENU_ACTION_FRAMERATECONVERSIONS 7
+#define MENU_ACTION_AUDIO_STREAM 8
 
 #define IMG_PAUSE     16
 
@@ -461,6 +462,9 @@ void CGUIWindowFullScreen::ShowOSD()
   
 
   COSDSubMenu audioMenu(292,100,100);
+  iValue=g_application.m_pPlayer->GetAudioStreamCount()-1;
+  COSDOptionIntRange   optionAudioStream(MENU_ACTION_AUDIO_STREAM,302,false,0,iValue,1,g_stSettings.m_iAudioStream);
+  audioMenu.AddOption(&optionAudioStream);
 
   COSDSubMenu SubtitleMenu(293,100,100);
   fValue=g_application.m_pPlayer->GetSubTitleDelay();
@@ -555,6 +559,17 @@ void CGUIWindowFullScreen::OnExecute(int iAction, const IOSDOption* option)
 		    g_application.Restart(true);
         return;	  
     }
+    break;
+    case MENU_ACTION_AUDIO_STREAM:
+      const COSDOptionIntRange* intOption = (const COSDOptionIntRange*)option;
+      g_stSettings.m_iAudioStream=(intOption->GetValue());
+      char szTmp[128];
+      sprintf(szTmp,"got audio stream:%i\n", g_stSettings.m_iAudioStream);
+      OutputDebugString(szTmp);
+
+      HideOSD();
+      m_bOSDVisible=false;
+      g_application.Restart(true);
     break;
   }
 }
