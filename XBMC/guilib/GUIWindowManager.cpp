@@ -291,14 +291,16 @@ void CGUIWindowManager::DispatchThreadMessages()
 
 	if ( m_vecThreadMessages.size() > 0 ) 
 	{
-		for (int i=0; i < (int) m_vecThreadMessages.size(); i++ ) 
+		vector<CGUIMessage*>::iterator it = m_vecThreadMessages.begin();
+		while (it != m_vecThreadMessages.end())
 		{
-			CGUIMessage* pMsg = m_vecThreadMessages[i];
+			CGUIMessage* pMsg = *it;
+			// first remove the message from the queue,
+			// else the message could be processed more then once
+			it = m_vecThreadMessages.erase(it);
 			SendMessage( *pMsg );
 			delete pMsg;
 		}
-
-		m_vecThreadMessages.erase( m_vecThreadMessages.begin(), m_vecThreadMessages.end() );
 	}
 
 	::LeaveCriticalSection(&m_critSection );
