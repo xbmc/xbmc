@@ -228,7 +228,8 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
 			CSectionLoader::Load("LIBID3");
 
-			g_musicDatabase.Open();
+			if (!g_musicDatabase.IsOpen())
+				g_musicDatabase.Open();
 
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
