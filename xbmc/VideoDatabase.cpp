@@ -6,7 +6,6 @@
 #include ".\videodatabase.h"
 #include "utils/fstrcmp.h"
 
-#define COMPARE_PERCENTAGE 0.90f // 90%
 //********************************************************************************************************************************
 CVideoDatabase::CVideoDatabase(void)
 {
@@ -108,7 +107,7 @@ bool CVideoDatabase::CreateTables()
 
   try 
 	{
-    m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idMovie integer, fPercentage text)\n");
+    m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, fPercentage text)\n");
 		m_pDS->exec("CREATE TABLE genre ( idGenre integer primary key, strGenre text)\n");
     m_pDS->exec("CREATE TABLE genrelinkmovie ( idGenre integer, idMovie integer)\n");
     m_pDS->exec("CREATE TABLE movie ( idMovie integer primary key, idPath integer, hasSubtitles integer)\n");
@@ -149,7 +148,7 @@ long CVideoDatabase::AddFile(long lMovieId, long lPathId, const CStdString& strF
 
 
 //********************************************************************************************************************************
-long CVideoDatabase::GetFile(const CStdString& strFilenameAndPath, long &lPathId, long& lMovieId)
+long CVideoDatabase::GetFile(const CStdString& strFilenameAndPath, long &lPathId, long& lMovieId, bool bExact)
 {
   lPathId=-1;
   lMovieId=-1;
@@ -170,12 +169,19 @@ long CVideoDatabase::GetFile(const CStdString& strFilenameAndPath, long &lPathId
     while (!m_pDS->eof()) 
     {
       CStdString strFname= m_pDS->fv("strFilename").get_asString() ;
-      double fPercentage=fstrcmp(strFname.c_str(),strFileName.c_str(), 0.20f );
-      if ( fPercentage >=COMPARE_PERCENTAGE)
+      if (bExact)
       {
-        long lFileId=m_pDS->fv("idFile").get_asLong() ;
-        lMovieId=m_pDS->fv("idMovie").get_asLong() ;
-        return lFileId;
+        if (strFname==strFileName) return true;
+      }
+      else
+      {
+        double fPercentage=fstrcmp(strFname.c_str(),strFileName.c_str(), COMPARE_PERCENTAGE_MIN );
+        if ( fPercentage >=COMPARE_PERCENTAGE)
+        {
+          long lFileId=m_pDS->fv("idFile").get_asLong() ;
+          lMovieId=m_pDS->fv("idMovie").get_asLong() ;
+          return lFileId;
+        }
       }
       m_pDS->next();
     }
@@ -786,4 +792,56 @@ void CVideoDatabase::GetMoviesByYear(CStdString& strYear, VECMOVIES& movies)
     movies.push_back(details);
     m_pDS->next();
   }
+}
+
+//********************************************************************************************************************************
+void CVideoDatabase::GetBookMarksForMovie(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks)
+{
+  long lPathId, lMovieId;
+  long lFileId=GetFile(strFilenameAndPath, lPathId, lMovieId, true);
+  if (lFileId < 0) return;
+  bookmarks.erase(bookmarks.begin(),bookmarks.end());
+	if (NULL==m_pDB.get()) return ;
+	if (NULL==m_pDS.get()) return ;
+
+  CStdString strSQL;
+  strSQL.Format("select * from bookmark where idFile=%i order by fPercentage", lMovieId);
+  m_pDS->query( strSQL.c_str() );
+  if (m_pDS->num_rows() == 0)  return;
+  while (!m_pDS->eof()) 
+  {
+    float fPercentage=m_pDS->fv("fPercentage").get_asFloat();
+    bookmarks.push_back(fPercentage);
+    m_pDS->next();
+  }
+}
+
+//********************************************************************************************************************************
+void CVideoDatabase::AddBookMarkToMovie(const CStdString& strFilenameAndPath, float fPercentage)
+{
+  long lPathId, lMovieId;
+  long lFileId=GetFile(strFilenameAndPath, lPathId, lMovieId, true);
+  if (lFileId < 0) return;
+	if (NULL==m_pDB.get()) return ;
+	if (NULL==m_pDS.get()) return ;
+  CStdString strSQL;
+  strSQL.Format("select * from bookmark where idFile=%i and fPercentage=%03.3f",lFileId,fPercentage);
+  m_pDS->query( strSQL.c_str() );
+  if (m_pDS->num_rows() != 0)  return;
+
+	strSQL.Format ("insert into bookmark (idBookmark, idFile, fPercentage) values(NULL,%i,%03.3f)", lFileId,fPercentage);
+	m_pDS->exec(strSQL.c_str());
+}
+
+//********************************************************************************************************************************
+void CVideoDatabase::ClearBookMarksOfMovie(const CStdString& strFilenameAndPath)
+{
+  long lPathId, lMovieId;
+  long lFileId=GetFile(strFilenameAndPath, lPathId, lMovieId, true);
+  if (lFileId < 0) return;
+	if (NULL==m_pDB.get()) return ;
+	if (NULL==m_pDS.get()) return ;
+  CStdString strSQL;
+  strSQL.Format("delete from bookmark where idFile=%i",lFileId);
+	m_pDS->exec(strSQL.c_str());
 }

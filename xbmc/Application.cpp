@@ -933,12 +933,25 @@ bool CApplication::OnMessage(CGUIMessage& message)
 		{
 			m_dwSpinDownTime=timeGetTime();
 			m_dwIdleTime=timeGetTime();
-			if (m_pPlayer) 
-			{
-				g_playlistPlayer.PlayNext(true);
-			}
-			if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow()==WINDOW_FULLSCREEN_VIDEO)
-				m_gWindowManager.PreviousWindow();
+      if (CUtil::IsVideo(m_strCurrentFile))
+      {
+        if (g_stSettings.m_bMyVideoVideoStack)
+        {
+          // do file stacking
+          g_playlistPlayer.PlayNext(true);
+        }
+        if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow()==WINDOW_FULLSCREEN_VIDEO)
+				  m_gWindowManager.PreviousWindow();
+      }
+      else
+      {
+			  if (m_pPlayer) 
+			  {
+				  g_playlistPlayer.PlayNext(true);
+			  }
+			  if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow()==WINDOW_FULLSCREEN_VIDEO)
+				  m_gWindowManager.PreviousWindow();
+      }
 		}
 		break;
 

@@ -1379,3 +1379,21 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
   }
   strResult += strFile;
 }
+bool CUtil::IsNFO(const CStdString& strFile)
+{
+  char *pExtension=CUtil::GetExtension(strFile);
+  if (!pExtension) return false;
+  if (CUtil::cmpnocase(pExtension,".nfo")==0) return true;
+  return false;
+}
+
+void CUtil::GetPath(const CStdString& strFileName, CStdString& strPath)
+{
+  int iPos1=strFileName.Find("/");
+  int iPos2=strFileName.Find("\\");
+  int iPos3=strFileName.Find(":");
+  if (iPos2>iPos1) iPos1=iPos2;
+  if (iPos3>iPos1) iPos1=iPos3;
+
+  strPath=strFileName.Left(iPos1-1);
+}
