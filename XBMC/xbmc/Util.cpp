@@ -655,12 +655,10 @@ void CUtil::GetThumbnail(const CStdString& strFileName, CStdString& strThumb)
     }
   }
 
-  char szThumbNail[1024];
   Crc32 crc;
-  crc.Reset();
-  crc.Compute(strFileName.c_str(),strlen(strFileName.c_str()));
-  sprintf(szThumbNail,"%s\\%x.tbn",g_stSettings.szThumbnailsDirectory,crc);
-  strThumb= szThumbNail;
+  crc.ComputeFromLowerCase(strFileName);
+
+  strThumb.Format("%s\\%x.tbn",g_stSettings.szThumbnailsDirectory,crc);
 }
 
 void CUtil::GetFileSize(__int64 dwFileSize, CStdString& strFileSize)
@@ -1174,16 +1172,14 @@ void CUtil::SaveDateTime(SYSTEMTIME& dateTime, FILE *fd)
 void CUtil::GetSongInfo(const CStdString& strFileName, CStdString& strSongCacheName)
 {
   Crc32 crc;
-  crc.Reset();
-  crc.Compute(strFileName.c_str(),strlen(strFileName.c_str()));
+  crc.Compute(strFileName);
   strSongCacheName.Format("%s\\songinfo\\%x.si",g_stSettings.m_szAlbumDirectory,crc);
 }
 
 void CUtil::GetAlbumFolderThumb(const CStdString& strFileName, CStdString& strThumb, bool bTempDir /*=false*/)
 {
   Crc32 crc;
-  crc.Reset();
-  crc.Compute(strFileName.c_str(),strlen(strFileName.c_str()));
+  crc.ComputeFromLowerCase(strFileName);
   if (bTempDir)
     strThumb.Format("%s\\thumbs\\temp\\%x.tbn",g_stSettings.m_szAlbumDirectory,crc);
   else
@@ -1209,7 +1205,6 @@ void CUtil::GetAlbumThumb(const CStdString& strAlbumName, const CStdString& strF
 bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
 {
   // check if thumbnail already exists
-  char szThumbNail[1024];
 	CStdString strPath="";
 	CStdString strFileName="";
 	CStdString defaultTbn;
@@ -1221,15 +1216,13 @@ bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
 	if (CUtil::IsDVD(strFilePath))		// create CRC for DVD as we can't store default.tbn on DVD
 	{
 	  Crc32 crc;
-    crc.Reset();
-    crc.Compute(strFilePath.c_str(),strlen(strFilePath.c_str()));
-    sprintf(szThumbNail,"%s\\%x.tbn",g_stSettings.szThumbnailsDirectory,crc);
+ 	  crc.Compute(strFilePath);
+	  strIcon.Format("%s\\%x.tbn",g_stSettings.szThumbnailsDirectory,crc);
 	}
 	else
 	{
-    sprintf(szThumbNail, "%s\\%s", strPath.c_str(), defaultTbn.c_str());
+	  strIcon.Format("%s\\%s", strPath.c_str(), defaultTbn.c_str());
 	}
-	strIcon=szThumbNail;
 	if (CUtil::FileExists(strIcon) && !CUtil::IsDVD(strFilePath))   // always create thumbnail for DVD.
   {
     //yes, just return
@@ -1716,8 +1709,7 @@ void CUtil::SetThumb(CFileItem* pItem)
 	// get filename of cached thumbnail like Q:\thumbs\aed638.tbn
   CStdString strCachedThumbnail;
   Crc32 crc;
-  crc.Reset();
-  crc.Compute(strFileName.c_str(),strlen(strFileName.c_str()));
+  crc.ComputeFromLowerCase(strFileName);
   strCachedThumbnail.Format("%s\\%x.tbn",g_stSettings.szThumbnailsDirectory,crc);
 
   bool bGotIcon(false);
