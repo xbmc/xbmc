@@ -1122,7 +1122,7 @@ void CApplication::UpdateLCD()
 
 void CApplication::FrameMove()
 {
-	UpdateLCD();
+	if (g_lcd) UpdateLCD();
 	// read raw input from controller & remote control
 	ReadInput();
 	XBIR_REMOTE* pRemote	= &m_DefaultIR_Remote;
