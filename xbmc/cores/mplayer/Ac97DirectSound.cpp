@@ -71,8 +71,8 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback,int iChannels, unsi
 													&m_wfx
 													);
 
-  m_dwPacketSize=1152* (iChannels*2);
-  m_dwNumPackets=8*iChannels;
+  m_dwPacketSize=1152;
+  m_dwNumPackets=16*iChannels;
 
 	// Create enough samples to hold approx 2 sec worth of audio.
 //	m_dwNumPackets = ( (m_wfx.nSamplesPerSec / ( m_dwPacketSize / ((uiBitsPerSample/8) * m_wfx.nChannels) )) / 2);
