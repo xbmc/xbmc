@@ -178,6 +178,7 @@ wstring CGUIInfoManager::GetTime(bool bSeconds)
 
 CStdString CGUIInfoManager::GetMusicLabel(const CStdString &strItem)
 {
+  if (!g_application.IsPlayingAudio()) return "";
 	CMusicInfoTag& tag = m_currentSong.m_musicInfoTag;
 	if (!tag.Loaded()) return "";
 	if (strItem == "title") return tag.GetTitle();
@@ -221,6 +222,7 @@ CStdString CGUIInfoManager::GetMusicLabel(const CStdString &strItem)
 
 CStdString CGUIInfoManager::GetVideoLabel(const CStdString &strItem)
 {
+  if (!g_application.IsPlayingVideo()) return "";
   if (strItem == "title") return m_currentMovie.m_strTitle;
   else if (strItem == "genre") return m_currentMovie.m_strGenre;
   else if (strItem == "director") return m_currentMovie.m_strDirector;
