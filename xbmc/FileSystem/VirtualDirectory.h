@@ -1,5 +1,4 @@
 #pragma once
-#include "../fileitem.h"
 #include "idirectory.h"
 
 namespace DIRECTORY

@@ -2,7 +2,6 @@
 #include "GUIWindow.h"
 #include "filesystem/VirtualDirectory.h"
 #include "filesystem/DirectoryHistory.h"
-#include "FileItem.h"
 #include "GUIWindowSlideShow.h"
 
 using namespace DIRECTORY;

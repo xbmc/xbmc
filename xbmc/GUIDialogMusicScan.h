@@ -3,6 +3,8 @@
 #include "MusicInfoScanner.h"
 #include "utils/CriticalSection.h"
 
+using namespace MUSIC_INFO;
+
 class CGUIDialogMusicScan: public CGUIDialog, public IMusicInfoScannerObserver
 {
 public:

@@ -1,5 +1,4 @@
 #pragma once
-#include "fileitem.h"
 #include "playlist.h"
 
 struct network_info

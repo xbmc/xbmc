@@ -1,6 +1,5 @@
 #pragma once
 #include "GUIWindow.h"
-#include "FileItem.h"
 #include "filesystem/VirtualDirectory.h"
 #include "filesystem/DirectoryHistory.h"
 

@@ -1,6 +1,8 @@
 #pragma once
 #include "../filesystem/file.h"
 
+using namespace XFILE;
+
 class CArchive;
 
 class ISerializable

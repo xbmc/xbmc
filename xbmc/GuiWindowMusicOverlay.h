@@ -1,8 +1,5 @@
 #pragma once
 #include "GUIWindow.h"
-#include "MusicInfoTag.h"
-
-using namespace MUSIC_INFO;
 
 class CGUIWindowMusicOverlay: 	public CGUIWindow
 {

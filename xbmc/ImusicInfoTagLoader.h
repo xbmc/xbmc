@@ -1,9 +1,5 @@
 #pragma once
 
-#include "musicinfotag.h"
-
-using namespace MUSIC_INFO;
-
 namespace MUSIC_INFO
 {
 
