@@ -796,6 +796,7 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
 	CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem+1);
 	if (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() && !g_application.IsPlayingAudio() )
 	{
+		g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
 		g_playlistPlayer.Play(0);
 	}
 }
