@@ -7,6 +7,7 @@ CGUIListItem::CGUIListItem(const CGUIListItem& item)
 
 CGUIListItem::CGUIListItem(void)
 {
+  m_bIsFolder=false;
   m_strLabel2="";
   m_strLabel="";
   m_pThumbnailImage=NULL;
@@ -18,6 +19,7 @@ CGUIListItem::CGUIListItem(void)
 
 CGUIListItem::CGUIListItem(const CStdString& strLabel)
 {
+  m_bIsFolder=false;
   m_strLabel2="";
   m_strLabel=strLabel;
   m_pThumbnailImage=NULL;
@@ -138,6 +140,7 @@ const CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
   m_bSelected=item.m_bSelected;
   m_strIcon=item.m_strIcon;
   m_strThumbnailImage=item.m_strThumbnailImage;
+  m_bIsFolder=item.m_bIsFolder;
 	return *this;
 }
 
