@@ -456,10 +456,6 @@ void CGUIWindowPrograms::OnClick(int iItem)
 
 		strcat(szDevicePath,szDirectory);
 		wsprintf(szXbePath,"d:\\%s",szXbe);
-
-
-		m_gWindowManager.DeInitialize();
-
 		g_application.Stop();
     if (strlen(szParameters))
       CUtil::LaunchXbe(szDevicePath,szXbePath,szParameters);
