@@ -15,6 +15,7 @@
 #include "SectionLoader.h"
 #include "cdrip/cddaripper.h"
 #include "cuedocument.h"
+#include "AutoSwitch.h"
 
 #define CONTROL_BTNVIEWASICONS		2
 #define CONTROL_BTNSORTBY					3
@@ -384,7 +385,7 @@ void CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, VECFILEI
 		if ( bParentExists )
 		{
 			// yes
-			if (!g_stSettings.m_bHideParentDirItems)
+			if (!g_guiSettings.GetBool("MusicLists.HideParentDirItems"))
 			{
 				CFileItem *pItem = new CFileItem("..");
 				pItem->m_strPath=strParentPath;
@@ -399,7 +400,7 @@ void CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, VECFILEI
 	{
 		// yes, this is the root of a share
 		// add parent path to the virtual directory
-		if (!g_stSettings.m_bHideParentDirItems)
+		if (!g_guiSettings.GetBool("MusicLists.HideParentDirItems"))
 		{
 			CFileItem *pItem = new CFileItem("..");
 			pItem->m_strPath="";
@@ -629,7 +630,7 @@ void CGUIWindowMusicSongs::LoadPlayList(const CStdString& strPlayList)
 		CStdString strFileName;
 		if ((*pPlayList).size())
 			strFileName=(*pPlayList)[0].GetFileName();
-		if (!CUtil::IsShoutCast(strFileName) && g_stSettings.m_bAutoShufflePlaylist)
+		if (!CUtil::IsShoutCast(strFileName) && g_guiSettings.GetBool("MusicLibrary.ShufflePlaylistsOnLoad"))
 			pPlayList->Shuffle();
 
     // add each item of the playlist to the playlistplayer
@@ -878,7 +879,7 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
 		}
 		else
 		{
-			if (g_stSettings.m_bMyMusicSongsUsePlaylist)
+			if (g_guiSettings.GetBool("MyMusic.AutoPlayNextItem"))
 			{
 				//play and add current directory to temporary playlist
 				int nFolderCount=0;
@@ -934,7 +935,7 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
 			if (strArtist)
 			{
 				int iTrack=tag.GetTrackNumber();
-				if (iTrack>0 && !g_stSettings.m_bMyMusicHideTrackNumber)
+				if (iTrack>0 && !g_guiSettings.GetBool("MusicLists.HideTrackNumber"))
 					str.Format("%02.2i. %s - %s",iTrack, tag.GetArtist().c_str(), tag.GetTitle().c_str());
 				else 
 					str.Format("%s - %s", tag.GetArtist().c_str(), tag.GetTitle().c_str());
@@ -952,7 +953,7 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
 	}
 	else
 	{	// No tag, so we disable the file extension if it has one
-		if (g_stSettings.m_bHideExtensions)
+		if (g_guiSettings.GetBool("MusicLists.HideExtensions"))
 			CUtil::RemoveExtension(pItem);
 	}
 
@@ -1078,7 +1079,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 	if (!m_bScan)
 	{
 		// Nothing in database and id3 tags disabled; dont load tags from cdda files
-		if ((songsMap.size()==0 && !g_stSettings.m_bUseID3) || CUtil::IsCDDA(m_strDirectory))
+		if ((songsMap.size()==0 && !g_guiSettings.GetBool("MyMusic.UseTags")) || CUtil::IsCDDA(m_strDirectory))
 		{
 			g_application.ResetScreenSaver();
 			return;
@@ -1182,7 +1183,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 				{
           // if id3 tag scanning is turned on OR we're scanning the directory
           // then parse id3tag from file
-					if (g_stSettings.m_bUseID3 || m_bScan)
+					if (g_guiSettings.GetBool("MyMusic.UseTags") || m_bScan)
 					{
             // get correct tag parser
 						CMusicInfoTagLoaderFactory factory;
@@ -1328,65 +1329,20 @@ void CGUIWindowMusicSongs::DoSearch(const CStdString& strSearch,VECFILEITEMS& it
 	}
 }
 
-void CGUIWindowMusicSongs::AutoSwitchControlThumbList()
-{
-	if (!m_strDirectory.IsEmpty() && g_stSettings.m_bMyMusicSongsAutoSwitchThumbsList)
-	{
-		DWORD dwControlId=GetFocusedControl();
-		if (CUtil::GetFolderCount(m_vecItems)==m_vecItems.size())
-		{
-			bool bAlbums=false;
-			for (int i=0; i<(int)m_vecItems.size(); i++)
-			{
-				CFileItem* pItem=m_vecItems[i];
-				if (pItem->GetThumbnailImage()!="defaultFolderBig.png" && pItem->GetThumbnailImage()!="defaultFolderBackBig.png")
-				{
-					bAlbums=true;
-					break;
-				}
-			}
-			if (bAlbums)
-			{
-				if (g_stSettings.m_bMyMusicSongsAutoSwitchBigThumbs)
-					m_iViewAsIcons=VIEW_AS_LARGEICONS;
-				else
-					m_iViewAsIcons=VIEW_AS_ICONS;
-
-				ShowThumbPanel();
-				UpdateButtons();
-				if (dwControlId==CONTROL_LIST)
-				{
-					SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
-				}
-			}
-			else
-			{
-				m_iViewAsIcons=VIEW_AS_LIST;
-				ShowThumbPanel();
-				UpdateButtons();
-				if (dwControlId==CONTROL_THUMBS)
-				{
-					SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
-				}
-			}
-		}
-		else
-		{
-			m_iViewAsIcons=VIEW_AS_LIST;
-			ShowThumbPanel();
-			UpdateButtons();
-			if (dwControlId==CONTROL_THUMBS)
-			{
-				SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
-			}
-		}
-	}
-}
-
 void CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
 {
 	CGUIWindowMusicBase::Update(strDirectory);
-	AutoSwitchControlThumbList();
+	if (!m_strDirectory.IsEmpty() && g_guiSettings.GetBool("MusicLists.UseAutoSwitching"))
+	{
+		m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
+
+		ShowThumbPanel();
+		UpdateButtons();
+
+		int iControl = CONTROL_LIST;
+		if (m_iViewAsIcons != VIEW_AS_LIST) iControl = CONTROL_THUMBS;
+		SET_CONTROL_FOCUS(GetID(), iControl, 0);
+	}
 }
 
 void CGUIWindowMusicSongs::GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString)

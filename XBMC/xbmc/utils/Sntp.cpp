@@ -708,12 +708,12 @@ void CSNTPClient::OnExit()
 
 void CSNTPClient::Process()
 {
-	if (!g_stSettings.m_bTimeServerEnabled) return;
+	if (!g_guiSettings.GetBool("Servers.TimeServer")) return;
 	int nTries = 0;
-	while (!m_bStop && g_stSettings.m_bTimeServerEnabled)
+	while (!m_bStop && g_guiSettings.GetBool("Servers.TimeServer"))
 	{
 		NtpServerResponse response;
-		if (GetServerTime( g_stSettings.m_strTimeServer, response))
+		if (GetServerTime( g_guiSettings.GetString("Servers.TimeAddress"), response))
 		{
 			SYSTEMTIME st1 = response.m_OriginateTime;
 			SYSTEMTIME st2 = response.m_ReceiveTime;
@@ -735,7 +735,7 @@ void CSNTPClient::Process()
 		for (int i=0; i < 600; i++) 
 		{
 			Sleep(500);
-			if (m_bStop || false==g_stSettings.m_bTimeServerEnabled) break;
+			if (m_bStop || false==g_guiSettings.GetBool("Servers.TimeServer")) break;
 		}
 	}
 }

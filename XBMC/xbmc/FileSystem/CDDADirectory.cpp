@@ -60,7 +60,7 @@ bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 	bool bCddbInfoLoaded=false;
 
 	//	Do we have to look for cddb information
-	if (pCdInfo->HasCDDBInfo() && g_stSettings.m_bUseCDDB)
+	if (pCdInfo->HasCDDBInfo() && g_guiSettings.GetBool("MyMusic.UseCDDB"))
 	{
 		bool bCloseProgress(false);
 		//	Show progress dialog if we have to connect to freedb.org

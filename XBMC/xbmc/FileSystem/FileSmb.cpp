@@ -39,7 +39,11 @@ void CSMB::Init()
 	if(!binitialized)
 	{
 		// set ip and subnet
-		set_xbox_interface(g_stSettings.m_strLocalIPAdres, g_stSettings.m_strLocalNetmask);
+		char szIPAddress[20];
+		char szNetMask[20];
+		strcpy(szIPAddress, g_guiSettings.GetString("Network.IPAddress").c_str());
+		strcpy(szNetMask, g_guiSettings.GetString("Network.IPAddress").c_str());
+		set_xbox_interface(szIPAddress, szNetMask);
 		// set log function
 		set_log_callback(xb_smbc_log);
 

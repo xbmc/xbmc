@@ -23,17 +23,17 @@ bool CEncoderVorbis::Init(const char* strFile, int iInChannels, int iInRate, int
 	if (!CEncoder::Init(strFile, iInChannels, iInRate, iInBits)) return false;
 
 	float fQuality = 0.5f;
-	if (g_stSettings.m_iRipQuality == CDDARIP_QUALITY_MEDIUM) fQuality = 0.4f;
-	if (g_stSettings.m_iRipQuality == CDDARIP_QUALITY_STANDARD) fQuality = 0.5f;
-	if (g_stSettings.m_iRipQuality == CDDARIP_QUALITY_EXTREME) fQuality = 0.7f;
+	if (g_guiSettings.GetInt("CDDARipper.Quality") == CDDARIP_QUALITY_MEDIUM) fQuality = 0.4f;
+	if (g_guiSettings.GetInt("CDDARipper.Quality") == CDDARIP_QUALITY_STANDARD) fQuality = 0.5f;
+	if (g_guiSettings.GetInt("CDDARipper.Quality") == CDDARIP_QUALITY_EXTREME) fQuality = 0.7f;
 
 	g_sectionLoader.Load("LIBOGGVO");
 
 	vorbis_info_init(&m_sVorbisInfo);
-	if (g_stSettings.m_iRipQuality == CDDARIP_QUALITY_CBR)
+	if (g_guiSettings.GetInt("CDDARipper.Quality") == CDDARIP_QUALITY_CBR)
 	{
 		// not realy cbr, but abr in this case
-		int iBitRate = g_stSettings.m_iRipBitRate * 1000;
+		int iBitRate = g_guiSettings.GetInt("CDDARipper.Bitrate") * 1000;
 		vorbis_encode_init(&m_sVorbisInfo, m_iInChannels, m_iInSampleRate, -1, iBitRate, -1);
 	}
 	else

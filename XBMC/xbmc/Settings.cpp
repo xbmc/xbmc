@@ -9,6 +9,7 @@
 #include "GraphicContext.h"
 #include "GUIWindowMusicBase.h"
 #include "utils/FanController.h"
+
 using namespace std;
 
 class CSettings g_settings;
@@ -18,41 +19,6 @@ extern CStdString g_LoadErrorStr;
 
 CSettings::CSettings(void)
 {
-
-	g_stSettings.m_iLCDModChip=MODCHIP_SMARTXX;
-	g_stSettings.m_bLCDUsed=false;
-	g_stSettings.m_iLCDMode=0;
-	g_stSettings.m_iLCDColumns=20;
-	g_stSettings.m_iLCDRows=4;
-    g_stSettings.m_iLCDBackLight=80;
-    g_stSettings.m_iLCDContrast=80;
-	g_stSettings.m_iLCDBrightness=100;
-	g_stSettings.m_iLCDType=LCD_MODE_TYPE_LCD;
-	g_stSettings.m_iLCDAdress[0]=0x0;
-	g_stSettings.m_iLCDAdress[1]=0x40;
-	g_stSettings.m_iLCDAdress[2]=0x14;
-	g_stSettings.m_iLCDAdress[3]=0x54;
-
-	g_stSettings.m_iCacheSizeHD[CACHE_AUDIO] = 256;
-	g_stSettings.m_iCacheSizeHD[CACHE_VIDEO] = 1024;
-	g_stSettings.m_iCacheSizeHD[CACHE_VOB]   = 16384;
-
-	g_stSettings.m_iCacheSizeUDF[CACHE_AUDIO] = 256;
-	g_stSettings.m_iCacheSizeUDF[CACHE_VIDEO] = 8192;
-	g_stSettings.m_iCacheSizeUDF[CACHE_VOB]   = 16384;
-
-	g_stSettings.m_iCacheSizeISO[CACHE_AUDIO] = 256;
-	g_stSettings.m_iCacheSizeISO[CACHE_VIDEO] = 8192;
-	g_stSettings.m_iCacheSizeISO[CACHE_VOB]   = 16384;
-
-	g_stSettings.m_iCacheSizeLAN[CACHE_AUDIO] = 256;
-	g_stSettings.m_iCacheSizeLAN[CACHE_VIDEO] = 8192;
-	g_stSettings.m_iCacheSizeLAN[CACHE_VOB]   = 16384;
-
-	g_stSettings.m_iCacheSizeInternet[CACHE_AUDIO] = 512;
-	g_stSettings.m_iCacheSizeInternet[CACHE_VIDEO] = 2048;
-	g_stSettings.m_iCacheSizeInternet[CACHE_VOB]   = 16384;
-
 	m_ResInfo[HDTV_1080i].Overscan.left = 0;
 	m_ResInfo[HDTV_1080i].Overscan.top = 0;
 	m_ResInfo[HDTV_1080i].Overscan.right = 1920;
@@ -202,75 +168,21 @@ CSettings::CSettings(void)
 	for (int i = 0; i < (int)g_settings.m_szMyVideoCleanTokensArray.size(); i++)
 		g_settings.m_szMyVideoCleanTokensArray[i].MakeLower();
 
-	g_stSettings.m_bPPAuto=true;//only has effect if m_bPostProcessing = true
-	g_stSettings.m_bPPVertical=false;
-	g_stSettings.m_bPPHorizontal=false;
-	g_stSettings.m_bPPAutoLevels=false;
-	g_stSettings.m_bPPdering=false;
-	g_stSettings.m_bFrameRateConversions=false;
-	g_stSettings.m_bUseDigitalOutput=false;
-
-	strcpy(g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
-	g_stSettings.m_iSubtitleTTFStyle = XFONT_BOLD;
-	g_stSettings.m_iSubtitleTTFColor = 0xFFFFFF;
-	strcpy(g_stSettings.m_szSubtitleCharset, "ISO-8859-1");
-	strcpy(g_stSettings.m_szStringCharset, "ISO-8859-1");
-	g_stSettings.m_bFlipBiDiCharset = true;
-	g_stSettings.m_iEnlargeSubtitlePercent = 0;
-	g_stSettings.m_bPostProcessing=false;
-	g_stSettings.m_bDeInterlace=false;
 	g_stSettings.m_bNonInterleaved=false;
 	g_stSettings.m_bNoCache=false;
-	g_stSettings.m_bAudioOnAllSpeakers=false;
-	g_stSettings.m_bUseID3=false;
-	g_stSettings.m_bAutorunPictures=true;
-	g_stSettings.m_bAutorunMusic=true;
-	g_stSettings.m_bAutorunVideo=true;
-	g_stSettings.m_bAutorunDVD=true;
-	g_stSettings.m_bAutorunVCD=true;
-	g_stSettings.m_bAutorunCdda=true;
-	g_stSettings.m_bAutorunXbox=true;
 	g_stSettings.m_bUseFDrive=true;
 	g_stSettings.m_bUseGDrive=false;
 	g_stSettings.m_bUsePCDVDROM=false;
 	g_stSettings.m_bDetectAsIso=false;
-	strcpy(g_stSettings.szDefaultLanguage,"english");
-	strcpy(g_stSettings.szDefaultVisualisation,"goom.vis");
-	strcpy(g_stSettings.m_szSkinFontSet, "Default");
-	g_stSettings.m_bAllowPAL60=false;
-	g_stSettings.m_bAutoShufflePlaylist=true;
 	g_stSettings.dwFileVersion =CONFIG_VERSION;
 	g_stSettings.m_iMyProgramsViewAsIcons=1;
 	g_stSettings.m_iMyVideoPlaylistViewAsIcons=1;
 	g_stSettings.m_bMyVideoPlaylistRepeat=true;
 	g_stSettings.m_bMyProgramsSortAscending=true;
-	g_stSettings.m_bMyProgramsFlatten=true;
-	g_stSettings.m_bMyProgramsDefaultXBE=true;
-	g_stSettings.m_bMyProgramsDirectoryName=false;
-	g_stSettings.m_bMyProgramsNoShortcuts=true;
 	strcpy(g_stSettings.szDashboard,"C:\\xboxdash.xbe");
 	strcpy(g_stSettings.m_szAlternateSubtitleDirectory,"");
-	strcpy(g_stSettings.m_strIPAssignment, "dash");
-	strcpy(g_stSettings.m_strLocalIPAdres,"");
-	strcpy(g_stSettings.m_strLocalNetmask,"");
-	strcpy(g_stSettings.m_strGateway,"");
-	strcpy(g_stSettings.m_strNameServer,"");
-	strcpy(g_stSettings.m_strTimeServer,"");
-	strcpy(g_stSettings.szOnlineUsername,"");
-	strcpy(g_stSettings.szOnlinePassword,"");
-	strcpy(g_stSettings.szOnlineGamesDir,"f:\\games");
 	strcpy(g_stSettings.szOnlineArenaPassword,"");
 	strcpy(g_stSettings.szOnlineArenaDescription,"It's Good To Play Together!");
-	strcpy(g_stSettings.szOnlineKaiServer,"");
-	g_stSettings.m_bOnlineNotifications=true;
-	g_stSettings.m_bTimeServerEnabled=false;
-	g_stSettings.m_bFTPServerEnabled=true;
-	g_stSettings.m_bHTTPServerEnabled=false;
-	g_stSettings.m_iWebServerPort=80;
-	g_stSettings.m_bHTTPProxyEnabled=false;
-	strcpy(g_stSettings.m_szHTTPProxy,"");
-	g_stSettings.m_iHTTPProxyPort=8080;
-	strcpy(g_stSettings.szDefaultSkin,"Project Mayhem");
 	strcpy(g_stSettings.szHomeDir,"");
 
 	strcpy(g_stSettings.m_szMyPicturesExtensions,".bmp|.jpg|.png|.gif|.pcx|.tif|.jpeg");
@@ -284,19 +196,12 @@ CSettings::CSettings(void)
 	strcpy( g_stSettings.m_szDefaultVideos, "");
 	strcpy( g_stSettings.m_szCDDBIpAdres,"");
 	strcpy (g_stSettings.m_szMusicRecordingDirectory,"");
-	g_stSettings.m_bUseCDDB=false;
 
-	g_stSettings.m_bMyMusicRepeat=true;
 	g_stSettings.m_bMyMusicSongInfoInVis=true;
 	g_stSettings.m_bMyMusicSongThumbInVis=true;
 
-	g_stSettings.m_bMyMusicPlaylistRepeat=true;
-
 	g_stSettings.m_bMyMusicSongsRootSortAscending=true;
 	g_stSettings.m_bMyMusicSongsSortAscending=true;
-	g_stSettings.m_bMyMusicSongsUsePlaylist=true;
-	g_stSettings.m_bMyMusicSongsAutoSwitchThumbsList=false;
-	g_stSettings.m_bMyMusicSongsAutoSwitchBigThumbs=true;
 
 	g_stSettings.m_bMyMusicAlbumRootSortAscending=true;
 	g_stSettings.m_bMyMusicAlbumSortAscending=true;
@@ -309,7 +214,6 @@ CSettings::CSettings(void)
 
 	g_stSettings.m_bMyMusicGenresRootSortAscending=true;
 	g_stSettings.m_bMyMusicGenresSortAscending=true;
-	g_stSettings.m_bMyMusicHideTrackNumber=false;
 
 	g_stSettings.m_bMyVideoSortAscending=true;
 	g_stSettings.m_bMyVideoRootSortAscending=true;
@@ -341,71 +245,22 @@ CSettings::CSettings(void)
 	g_stSettings.m_bMyFilesSourceRootSortAscending=true;
 	g_stSettings.m_bMyFilesDestSortAscending=true;
 	g_stSettings.m_bMyFilesDestRootSortAscending=true;
-  g_stSettings.m_iFlickerFilterVideo=0;
-	g_stSettings.m_bSoftenVideo=false;
-  g_stSettings.m_iFlickerFilterUI=5;
-	g_stSettings.m_bSoftenUI=false;
 	g_stSettings.m_iViewMode = VIEW_MODE_NORMAL;
 	g_stSettings.m_fZoomAmount = 1.0f;
 	g_stSettings.m_fPixelRatio = 1.0f;
 	g_stSettings.m_fCustomZoomAmount=1.0f;
 	g_stSettings.m_fCustomPixelRatio=1.0f;
 
-	g_stSettings.m_bAutoWidescreenSwitching=false;
-	g_stSettings.m_bUpsampleVideo=true;
-	strcpy(g_stSettings.m_szWeatherArea[0], "UKXX0085");	//default WEATHER 1 to London for no good reason
-	strcpy(g_stSettings.m_szWeatherArea[1], "NLXX0002");	//default WEATHER 2 to Amsterdam for no good reason
-	strcpy(g_stSettings.m_szWeatherArea[2], "CAXX0343");	//default WEATHER 3 to Ottawa for no good reason
-	strcpy(g_stSettings.m_szWeatherFTemp, "C");			//default WEATHER temp units
-	strcpy(g_stSettings.m_szWeatherFSpeed, "K");		//default WEATHER speed units
-	g_stSettings.m_iWeatherRefresh = 30;
-
-	g_stSettings.m_minFilter= D3DTEXF_LINEAR;
-	g_stSettings.m_maxFilter= D3DTEXF_LINEAR;
-
 	g_stSettings.m_bDisplayRemoteCodes=false;
-	g_stSettings.m_bResampleMusicAudio=false;
-	g_stSettings.m_bResampleVideoAudio=false;
-	g_stSettings.m_bPCMPassthrough=false;
-	g_stSettings.m_iOSDTimeout = 5;		// OSD Timeout, default to 5 seconds
-	g_stSettings.m_bHDRemoteplaySpinDownAudio = false;
-	g_stSettings.m_bHDRemoteplaySpinDownVideo = false;
-	g_stSettings.m_iHDRemoteplaySpinDownTime = 20;//seconds
-  g_stSettings.m_iHDRemoteplaySpinDownMinDuration = 20;//minutes
 	g_stSettings.m_mplayerDebug=false;
 	g_stSettings.m_iSambaDebugLevel = 0;
 	strcpy(g_stSettings.m_strSambaWorkgroup, "WORKGROUP");
 	strcpy(g_stSettings.m_strSambaWinsServer, "");
-	g_stSettings.m_bHideExtensions = false;
-	g_stSettings.m_bHideParentDirItems = false;
-
-  g_stSettings.m_bAutoTemperature   = false;
-  g_stSettings.m_iTargetTemperature = 55;
-  g_stSettings.m_bFanSpeedControl   = false;
-  g_stSettings.m_iFanSpeed          = CFanController::Instance()->GetFanSpeed();
-
-	g_stSettings.m_bRipWithTrackNumber = true;
-	g_stSettings.m_iRipEncoder = CDDARIP_ENCODER_LAME;
-	g_stSettings.m_iRipQuality = CDDARIP_QUALITY_CBR;
-	g_stSettings.m_iRipBitRate = 192;
-	strcpy(g_stSettings.m_strRipPath, "");
 
 	g_stSettings.m_nVolumeLevel = 0;
 	g_stSettings.m_iLogLevel = LOGNOTICE;
 
-	g_stSettings.m_bEnableRSS=true;
 	g_stSettings.m_bShowFreeMem=false;
-
-	g_stSettings.m_bIsCdgEnabled = false;
-	g_stSettings.m_iCdgBgAlpha = 0;
-	g_stSettings.m_iCdgFgAlpha = 255;
-	g_stSettings.m_fCdgAVDelay = 0.8f;
-
-	g_stSettings.m_iMusicOSDTimeout=5;
-
-	g_stSettings.m_bSlideShowShuffle = false;
-
-	strcpy(g_stSettings.szDefaultScreenSaver, "pyro.xbs");
 
   m_iLastLoadedProfileIndex = -1;
 
@@ -443,14 +298,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 		Save();
 		if (!(bSettings=LoadSettings("T:\\settings.xml", true)))
 			return false;
-	}
-
-	// This is for backward compatibility since we deleted "Hebrew" from the PM fontset
-	if (stricmp(g_stSettings.m_szSkinFontSet, "Hebrew") == 0)
-	{
-		strcpy(g_stSettings.m_szSkinFontSet, "Arial TTF");
-		strcpy(g_stSettings.m_szStringCharset, "CP1255");
-		g_stSettings.m_bFlipBiDiCharset = true;
 	}
 
 	// load xml file...
@@ -516,7 +363,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 		}
 	}
 
-	//GetString(pRootElement, "skin", g_stSettings.szDefaultSkin,"MediaCenter");
 	GetString(pRootElement, "home", g_stSettings.szHomeDir, "");
 	while ( CUtil::HasSlashAtEnd(g_stSettings.szHomeDir) )
 	{
@@ -995,51 +841,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     }
   }
 
-	TiXmlElement *pElement = pRootElement->FirstChildElement("lcdsettings");
-	if (pElement)
-	{
-		GetBoolean(pElement, "lcdon", g_stSettings.m_bLCDUsed);
-		GetInteger(pElement, "lcdmode",g_stSettings.m_iLCDMode,0,0,1);
-		GetInteger(pElement, "lcdcolums",g_stSettings.m_iLCDColumns,20,1,20);
-		GetInteger(pElement, "lcdrows",g_stSettings.m_iLCDRows,4,1,4);
-		GetInteger(pElement, "lcdbacklight",g_stSettings.m_iLCDBackLight,80,0,100);
-		GetInteger(pElement, "lcdbrightness",g_stSettings.m_iLCDBrightness,100,0,100);
-		GetInteger(pElement, "lcdtype",g_stSettings.m_iLCDType,0,0,1);
-		GetInteger(pElement, "lcdrow1",g_stSettings.m_iLCDAdress[0],0,0,0x400);
-		GetInteger(pElement, "lcdrow2",g_stSettings.m_iLCDAdress[1],0x40,0,0x400);
-		GetInteger(pElement, "lcdrow3",g_stSettings.m_iLCDAdress[2],0x14,0,0x400);
-		GetInteger(pElement, "lcdrow4",g_stSettings.m_iLCDAdress[3],0x54,0,0x400);
-		GetInteger(pElement, "lcdchip",g_stSettings.m_iLCDModChip,0,0,10);
-		GetInteger(pElement, "lcdcontrast",g_stSettings.m_iLCDContrast,100,0,100);
-	}
-
-	// cache settings
-	pElement = pRootElement->FirstChildElement("cachesettings");
-	if (pElement)
-	{
-		GetInteger(pElement, "hdcacheaudio",g_stSettings.m_iCacheSizeHD[CACHE_AUDIO],256,0,16384);
-		GetInteger(pElement, "hdcachevideo",g_stSettings.m_iCacheSizeHD[CACHE_VIDEO],1024,0,16384);
-		GetInteger(pElement, "hdcachevob",g_stSettings.m_iCacheSizeHD[CACHE_VOB],16384,0,16384);
-
-		GetInteger(pElement, "udfcacheaudio",g_stSettings.m_iCacheSizeUDF[CACHE_AUDIO],256,0,16384);
-		GetInteger(pElement, "udfcachevideo",g_stSettings.m_iCacheSizeUDF[CACHE_VIDEO],8192,0,16384);
-		GetInteger(pElement, "udfcachevob",g_stSettings.m_iCacheSizeUDF[CACHE_VOB],16384,0,16384);
-
-		GetInteger(pElement, "isocacheaudio",g_stSettings.m_iCacheSizeISO[CACHE_AUDIO],256,0,16384);
-		GetInteger(pElement, "isocachevideo",g_stSettings.m_iCacheSizeISO[CACHE_VIDEO],8192,0,16384);
-		GetInteger(pElement, "isocachevob",g_stSettings.m_iCacheSizeISO[CACHE_VOB],16384,0,16384);
-
-		GetInteger(pElement, "lancacheaudio",g_stSettings.m_iCacheSizeLAN[CACHE_AUDIO],256,0,16384);
-		GetInteger(pElement, "lancachevideo",g_stSettings.m_iCacheSizeLAN[CACHE_VIDEO],8192,0,16384);
-		GetInteger(pElement, "lancachevob",g_stSettings.m_iCacheSizeLAN[CACHE_VOB],16384,0,16384);
-
-		GetInteger(pElement, "inetcacheaudio",g_stSettings.m_iCacheSizeInternet[CACHE_AUDIO],512,0,16384);
-		GetInteger(pElement, "inetcachevideo",g_stSettings.m_iCacheSizeInternet[CACHE_VIDEO],2048,0,16384);
-		GetInteger(pElement, "inetcachevob",g_stSettings.m_iCacheSizeInternet[CACHE_VOB],16384,0,16384);
-
-	}
 	// mypictures
-	pElement = pRootElement->FirstChildElement("mypictures");
+	TiXmlElement *pElement = pRootElement->FirstChildElement("mypictures");
 	if (pElement)
 	{
 		GetInteger(pElement, "picturesviewicons", g_stSettings.m_iMyPicturesViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
@@ -1088,9 +891,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 			GetInteger(pChild, "songssortmethodroot",g_stSettings.m_iMyMusicSongsRootSortMethod,0,0,9);
 			GetBoolean(pChild, "songssortascending",g_stSettings.m_bMyMusicSongsSortAscending);
 			GetBoolean(pChild, "songssortascendingroot",g_stSettings.m_bMyMusicSongsRootSortAscending);
-			GetBoolean(pChild, "songsuseplaylist",g_stSettings.m_bMyMusicSongsUsePlaylist);
-			GetBoolean(pChild, "songsautoswitchthumbslist",g_stSettings.m_bMyMusicSongsAutoSwitchThumbsList);
-			GetBoolean(pChild, "songsautoswitchbigicons",g_stSettings.m_bMyMusicSongsAutoSwitchBigThumbs);
 		}
 		pChild = pElement->FirstChildElement("album");
 		if (pChild)
@@ -1137,13 +937,10 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		if (pChild)
 		{
 			GetInteger(pChild, "playlistrooticons", g_stSettings.m_iMyMusicPlaylistViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
-			GetBoolean(pChild, "playlistrepeat",g_stSettings.m_bMyMusicPlaylistRepeat);
 		}
-		GetBoolean(pElement, "repeat",g_stSettings.m_bMyMusicRepeat);
 		GetInteger(pElement, "startwindow",g_stSettings.m_iMyMusicStartWindow,WINDOW_MUSIC_FILES,WINDOW_MUSIC_FILES,WINDOW_MUSIC_TOP100);//501; view songs
 		GetBoolean(pElement, "songinfoinvis",g_stSettings.m_bMyMusicSongInfoInVis);
     GetBoolean(pElement, "songthumbinvis", g_stSettings.m_bMyMusicSongThumbInVis);
-		GetBoolean(pElement, "hidetracknumber", g_stSettings.m_bMyMusicHideTrackNumber);
 	}
 	// myvideos settings
 	pElement = pRootElement->FirstChildElement("myvideos");
@@ -1208,16 +1005,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetInteger(pElement, "titlesortmethod",g_stSettings.m_iMyVideoTitleSortMethod,0,0,3);
 		GetBoolean(pElement, "titlesortascending", g_stSettings.m_bMyVideoTitleSortAscending);
 
-		GetBoolean(pElement, "postprocessing", g_stSettings.m_bPostProcessing);
-		GetBoolean(pElement, "deinterlace", g_stSettings.m_bDeInterlace);
-
-		GetInteger(pElement, "enlargesubtitlepercent",g_stSettings.m_iEnlargeSubtitlePercent, 0, 0, 200);
-		GetInteger(pElement, "subtitleheight",g_stSettings.m_iSubtitleHeight,28,1,128);
-		GetString(pElement, "subtitlefont", g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
-		GetInteger(pElement, "subtitlettfstyle", g_stSettings.m_iSubtitleTTFStyle, XFONT_BOLD, 1, 4);
-		GetHex(pElement, "subtitlettfcolor", g_stSettings.m_iSubtitleTTFColor, 0xffffff);
-		GetString(pElement, "subtitlecharset", g_stSettings.m_szSubtitleCharset, "ISO-8859-1");
-		GetString(pElement, "stringcharset", g_stSettings.m_szStringCharset, "ISO-8859-1");
 		GetInteger(pElement, "smallstepbackseconds", g_stSettings.m_iSmallStepBackSeconds,7,1,INT_MAX);
 		GetInteger(pElement, "smallstepbacktries", g_stSettings.m_iSmallStepBackTries,3,1,10);
 		GetInteger(pElement, "smallstepbackdelay", g_stSettings.m_iSmallStepBackDelay,300,100,5000); //MS
@@ -1235,143 +1022,25 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 	pElement = pRootElement->FirstChildElement("general");
 	if (pElement)
 	{
-		GetString(pElement, "skin", g_stSettings.szDefaultSkin, g_stSettings.szDefaultSkin);
-		GetBoolean(pElement, "timeserver", g_stSettings.m_bTimeServerEnabled);
-		GetBoolean(pElement, "ftpserver", g_stSettings.m_bFTPServerEnabled);
-		GetBoolean(pElement, "httpserver", g_stSettings.m_bHTTPServerEnabled);
-		GetBoolean(pElement, "cddb", g_stSettings.m_bUseCDDB);
-		GetInteger(pElement, "hdspindowntime", g_stSettings.m_iHDSpinDownTime,5,0,INT_MAX);
-		GetBoolean(pElement, "autohdspindownaudio", g_stSettings.m_bHDRemoteplaySpinDownAudio);
-		GetBoolean(pElement, "autohdspindownvideo", g_stSettings.m_bHDRemoteplaySpinDownVideo);
-		GetInteger(pElement, "autohdspindowntime", g_stSettings.m_iHDRemoteplaySpinDownTime,20,5,INT_MAX);
-		GetInteger(pElement, "autohdspindownminduration", g_stSettings.m_iHDRemoteplaySpinDownMinDuration,20,0,INT_MAX);
-
-		GetBoolean(pElement, "autorundvd", g_stSettings.m_bAutorunDVD);
-		GetBoolean(pElement, "autorunvcd", g_stSettings.m_bAutorunVCD);
-		GetBoolean(pElement, "autoruncdda", g_stSettings.m_bAutorunCdda);
-		GetBoolean(pElement, "autorunxbox", g_stSettings.m_bAutorunXbox);
-		GetBoolean(pElement, "autorunmusic", g_stSettings.m_bAutorunMusic);
-		GetBoolean(pElement, "autorunvideo", g_stSettings.m_bAutorunVideo);
-		GetBoolean(pElement, "autorunpictures", g_stSettings.m_bAutorunPictures);
-		GetString(pElement, "language", g_stSettings.szDefaultLanguage, g_stSettings.szDefaultLanguage);
-		GetString(pElement, "skinfontset", g_stSettings.m_szSkinFontSet, g_stSettings.m_szSkinFontSet);
-
-
-		GetBoolean(pElement, "flipbidicharset", g_stSettings.m_bFlipBiDiCharset);
-
-		GetInteger(pElement, "shutdowntime", g_stSettings.m_iShutdownTime,0,0,INT_MAX);
-		GetBoolean(pElement, "enablerss", g_stSettings.m_bEnableRSS);
-
-    GetBoolean(pElement, "autotemperature",   g_stSettings.m_bAutoTemperature);
-    GetInteger(pElement, "targettemperature", g_stSettings.m_iTargetTemperature, 55, 40, 68);
-    GetBoolean(pElement, "fanspeedcontrol",   g_stSettings.m_bFanSpeedControl);
-    GetInteger(pElement, "fanspeed",          g_stSettings.m_iFanSpeed, g_stSettings.m_iFanSpeed, 5, 50);
-
-		GetInteger(pElement, "screensavertime", g_stSettings.m_iScreenSaverTime,3,1,INT_MAX);	// CB: SCREENSAVER PATCH
-		GetInteger(pElement, "screensavermode", g_stSettings.m_iScreenSaverMode,1,0,3);	// 0=Off, 1=Fade to dim, 2=Fade to black, 3=Matrix Trails
-		GetInteger(pElement, "screensaverfade", g_stSettings.m_iScreenSaverFadeLevel,20,1,100);	// default to 20%
-		GetString(pElement, "screensaver", g_stSettings.szDefaultScreenSaver, g_stSettings.szDefaultScreenSaver);
 		GetInteger(pElement, "audiostream",g_stSettings.m_iAudioStream,-1,-1,INT_MAX);
-		GetInteger(pElement, "weatherrefresh", g_stSettings.m_iWeatherRefresh, 15, 15, 120);	//WEATHER SETTINGS
-		GetString(pElement, "weathertemp", g_stSettings.m_szWeatherFTemp, "C");					//WEATHER SETTINGS
-		GetString(pElement, "weatherspeed", g_stSettings.m_szWeatherFSpeed, "K");				//WEATHER SETTINGS
-		GetString(pElement, "areacode1", g_stSettings.m_szWeatherArea[0], "UKXX0085");			//WEATHER SETTINGS
-		GetString(pElement, "areacode2", g_stSettings.m_szWeatherArea[1], "NLXX0002");			//WEATHER SETTINGS
-		GetString(pElement, "areacode3", g_stSettings.m_szWeatherArea[2], "CAXX0343");			//WEATHER SETTINGS
-		GetInteger(pElement, "osdtimeout", g_stSettings.m_iOSDTimeout,5,0,INT_MAX);
-		GetInteger(pElement, "musicosdtimeout", g_stSettings.m_iMusicOSDTimeout,5,0,INT_MAX);
-		GetBoolean(pElement, "hideextensions", g_stSettings.m_bHideExtensions);
-		GetBoolean(pElement, "hideparentdiritem", g_stSettings.m_bHideParentDirItems);
 
-		GetString(pElement, "ipassignment", g_stSettings.m_strIPAssignment, "dash");
-		GetString(pElement, "ipadres", g_stSettings.m_strLocalIPAdres, "192.168.0.3");
-		GetString(pElement, "netmask", g_stSettings.m_strLocalNetmask, "255.255.255.0");
-		GetString(pElement, "defaultgateway", g_stSettings.m_strGateway, "192.168.0.1");
-		GetString(pElement, "nameserver", g_stSettings.m_strNameServer, "0.0.0.0");
-
-		GetBoolean(pElement, "httpproxyenabled", g_stSettings.m_bHTTPProxyEnabled);
-		GetString(pElement, "httpproxyhost", g_stSettings.m_szHTTPProxy, "");
-		GetInteger(pElement, "httpproxyport", g_stSettings.m_iHTTPProxyPort, 8080, 1, 65535);
-
-		GetString(pElement, "kaiusername",	g_stSettings.szOnlineUsername, "");
-		GetString(pElement, "kaipassword",	g_stSettings.szOnlinePassword, "");
-		GetString(pElement, "kaigamesdir",	g_stSettings.szOnlineGamesDir, "");
-		GetBoolean(pElement,"kainotify",	g_stSettings.m_bOnlineNotifications);
 		GetString(pElement, "kaiarenapass",	g_stSettings.szOnlineArenaPassword, "");
 		GetString(pElement, "kaiarenadesc",	g_stSettings.szOnlineArenaDescription, "");
-		GetString(pElement, "kaiserver",	g_stSettings.szOnlineKaiServer, "");
-
-		GetString(pElement, "timeserverhost", g_stSettings.m_strTimeServer, "207.46.130.100");
-
-		GetInteger(pElement, "webserverport", g_stSettings.m_iWebServerPort, 80, 0, 65535);
 	}
 
-	// slideshow settings
-	pElement = pRootElement->FirstChildElement("slideshow");
-	if (pElement)
-	{
-		GetInteger(pElement, "transistiontime", g_stSettings.m_iSlideShowTransistionTime,1500,500,INT_MAX);
-		GetInteger(pElement, "staytime", g_stSettings.m_iSlideShowStayTime,9000,500,INT_MAX);
-		GetFloat(pElement, "moveamount", g_stSettings.m_fSlideShowMoveAmount,0.20f,0,0.5f);
-		GetFloat(pElement, "zoomamount", g_stSettings.m_fSlideShowZoomAmount,0.07f,0,0.5f);
-		GetFloat(pElement, "blackbarcompensation", g_stSettings.m_fSlideShowBlackBarCompensation,0.3f,0,0.5f);
-		GetBoolean(pElement, "shuffle", g_stSettings.m_bSlideShowShuffle);
-	}
 	// screen settings
 	pElement = pRootElement->FirstChildElement("screen");
 	if (pElement)
 	{
-		GetInteger(pElement, "resolution",(int &)g_stSettings.m_GUIResolution,(int)g_graphicsContext.GetVideoResolution(),(int)HDTV_1080i,(int)PAL60_16x9);
-		GetInteger(pElement, "uioffsetx",g_stSettings.m_iUIOffsetX,0,INT_MIN,INT_MAX);
-		GetInteger(pElement, "uioffsety",g_stSettings.m_iUIOffsetY,0,INT_MIN,INT_MAX);
-    GetInteger(pElement, "flickerfiltervideo", g_stSettings.m_iFlickerFilterVideo, 1, 0, 5);
-    GetInteger(pElement, "flickerfilterui", g_stSettings.m_iFlickerFilterUI, 5, 0, 5);
-		GetBoolean(pElement, "softenvideo", g_stSettings.m_bSoftenVideo);
-		GetBoolean(pElement, "softenui", g_stSettings.m_bSoftenUI);
-		GetBoolean(pElement, "framerateconversion", g_stSettings.m_bFrameRateConversions);
 		GetInteger(pElement, "viewmode", g_stSettings.m_iViewMode, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, VIEW_MODE_CUSTOM);
 		GetFloat(pElement, "zoomamount", g_stSettings.m_fCustomZoomAmount, 1.0f, 1.0f, 2.0f);
 		GetFloat(pElement, "pixelratio", g_stSettings.m_fCustomPixelRatio, 1.0f, 0.5f, 2.0f);
-		GetBoolean(pElement, "allowswitching", g_stSettings.m_bAutoWidescreenSwitching);
-		GetBoolean(pElement, "upsamplevideo", g_stSettings.m_bUpsampleVideo);
-		GetBoolean(pElement, "allowpal60", g_stSettings.m_bAllowPAL60);
-		GetInteger(pElement, "minfilter", (int &)g_stSettings.m_minFilter, D3DTEXF_LINEAR, D3DTEXF_LINEAR,D3DTEXF_GAUSSIANCUBIC);
-		GetInteger(pElement, "maxfilter", (int &)g_stSettings.m_maxFilter, D3DTEXF_LINEAR, D3DTEXF_LINEAR,D3DTEXF_GAUSSIANCUBIC);
 	}
 	// audio settings
 	pElement = pRootElement->FirstChildElement("audio");
 	if (pElement)
 	{
-		GetBoolean(pElement, "audioonallspeakers", g_stSettings.m_bAudioOnAllSpeakers);
-		GetInteger(pElement, "channels",g_stSettings.m_iChannels,2,0,INT_MAX);
-		GetBoolean(pElement, "useid3", g_stSettings.m_bUseID3);
-		GetString(pElement, "visualisation", g_stSettings.szDefaultVisualisation, g_stSettings.szDefaultVisualisation);
-		GetBoolean(pElement, "autoshuffleplaylist", g_stSettings.m_bAutoShufflePlaylist);
-		GetFloat(pElement, "volumeamp", g_stSettings.m_fVolumeAmplification,0.0f,-200.0f,60.0f);
-		GetFloat(pElement, "headroom", g_stSettings.m_fVolumeHeadroom,6.0f,0.0f,12.0f);
-		GetBoolean(pElement, "UseDigitalOutput", g_stSettings.m_bUseDigitalOutput);
-		GetBoolean(pElement, "HQmusicaudio", g_stSettings.m_bResampleMusicAudio);
-		//DON'T ALLOW AUDIO RESAMPLING FOR VIDEO AT ALL. ALLWAYS LET IT BE DISBLED
-		//GetBoolean(pElement, "HQvideoaudio", g_stSettings.m_bResampleVideoAudio);
-		GetBoolean(pElement, "PCMpassthrough", g_stSettings.m_bPCMPassthrough);
 		GetInteger(pElement, "volumelevel", g_stSettings.m_nVolumeLevel, VOLUME_MAXIMUM, VOLUME_MINIMUM, VOLUME_MAXIMUM);
-	}
-
-	// post processing
-	pElement = pRootElement->FirstChildElement("PostProcessing");
-	if (pElement)
-	{
-		GetBoolean(pElement, "PPAuto", g_stSettings.m_bPPAuto);
-		GetBoolean(pElement, "PPVertical", g_stSettings.m_bPPVertical);
-		GetBoolean(pElement, "PPHorizontal", g_stSettings.m_bPPHorizontal);
-		GetBoolean(pElement, "PPAutoLevels", g_stSettings.m_bPPAutoLevels);
-		GetBoolean(pElement, "PPdering", g_stSettings.m_bPPdering);
-		GetInteger(pElement, "PPHorizontalVal",g_stSettings.m_iPPHorizontal,0,INT_MIN,INT_MAX);
-		GetInteger(pElement, "PPVerticalVal",g_stSettings.m_iPPVertical,0,INT_MIN,INT_MAX);
-
-		g_stSettings.m_iPPHorizontal=0;
-		g_stSettings.m_iPPVertical=0;
-
 	}
 
 	// my programs
@@ -1381,35 +1050,11 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetInteger(pElement, "programsviewicons", g_stSettings.m_iMyProgramsViewAsIcons,1,0,2);
 		GetInteger(pElement, "programssortmethod", g_stSettings.m_iMyProgramsSortMethod,0,0,3);
 		GetBoolean(pElement, "programssortascending", g_stSettings.m_bMyProgramsSortAscending);
-
-		GetBoolean(pElement, "flatten", g_stSettings.m_bMyProgramsFlatten);
-		GetBoolean(pElement, "defaultxbe", g_stSettings.m_bMyProgramsDefaultXBE);
-		GetBoolean(pElement, "directoryname", g_stSettings.m_bMyProgramsDirectoryName);
-		GetBoolean(pElement, "noshortcuts", g_stSettings.m_bMyProgramsNoShortcuts);
-	}
-
-	// cdda ripper settings
-	pElement = pRootElement->FirstChildElement("cddaripper");
-	if (pElement)
-	{
-		GetBoolean(pElement, "ripwithtracknumber", g_stSettings.m_bRipWithTrackNumber);
-		GetInteger(pElement, "ripencoder", g_stSettings.m_iRipEncoder, CDDARIP_ENCODER_LAME, 0, 9);
-		GetInteger(pElement, "ripquality", g_stSettings.m_iRipQuality, CDDARIP_QUALITY_CBR, 0, 9);
-		GetInteger(pElement, "ripbitrate", g_stSettings.m_iRipBitRate, 192, 64, 512);
-	}
-
-	// Cd+g settings
-	pElement = pRootElement->FirstChildElement("cdg");
-	if (pElement)
-	{
-		GetBoolean(pElement, "EnableCdg", g_stSettings.m_bIsCdgEnabled);
-		GetInteger(pElement, "CdgFgAlpha", g_stSettings.m_iCdgFgAlpha,255, 0, 255);
-		GetInteger(pElement, "CdgBgAlpha", g_stSettings.m_iCdgBgAlpha,255, 0, 255);
-		GetFloat(pElement,"CdgAVDelay",g_stSettings.m_fCdgAVDelay,0.8f,-3.0f,3.0f);
 	}
 
 	LoadCalibration(pRootElement, strSettingsFile);
 
+	g_guiSettings.LoadXML(pRootElement);
 	return true;
 }
 
@@ -1425,59 +1070,13 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
     SaveProfiles(pRoot);
   }
 
-	TiXmlElement LCDNode("lcdsettings");
-	TiXmlNode *pNode = pRoot->InsertEndChild(LCDNode);
-	if (!pNode) return false;
-	SetBoolean(pNode, "lcdon", g_stSettings.m_bLCDUsed);
-	SetInteger(pNode, "lcdmode",g_stSettings.m_iLCDMode);
-	SetInteger(pNode, "lcdcolums",g_stSettings.m_iLCDColumns);
-	SetInteger(pNode, "lcdrows",g_stSettings.m_iLCDRows);
-	SetInteger(pNode, "lcdbacklight",g_stSettings.m_iLCDBackLight);
-	SetInteger(pNode, "lcdbrightness",g_stSettings.m_iLCDBrightness);
-	SetInteger(pNode, "lcdtype",g_stSettings.m_iLCDType);
-	SetInteger(pNode, "lcdrow1",g_stSettings.m_iLCDAdress[0]);
-	SetInteger(pNode, "lcdrow2",g_stSettings.m_iLCDAdress[1]);
-	SetInteger(pNode, "lcdrow3",g_stSettings.m_iLCDAdress[2]);
-	SetInteger(pNode, "lcdrow4",g_stSettings.m_iLCDAdress[3]);
-	SetInteger(pNode, "lcdchip",g_stSettings.m_iLCDModChip);
-	SetInteger(pNode, "lcdcontrast",g_stSettings.m_iLCDContrast);
-
 	// myprograms settings
 	TiXmlElement programsNode("myprograms");
-	pNode = pRoot->InsertEndChild(programsNode);
+	TiXmlNode *pNode = pRoot->InsertEndChild(programsNode);
 	if (!pNode) return false;
 	SetInteger(pNode, "programsviewicons", g_stSettings.m_iMyProgramsViewAsIcons);
 	SetInteger(pNode, "programssortmethod", g_stSettings.m_iMyProgramsSortMethod);
 	SetBoolean(pNode, "programssortascending", g_stSettings.m_bMyProgramsSortAscending);
-	SetBoolean(pNode, "flatten", g_stSettings.m_bMyProgramsFlatten);
-	SetBoolean(pNode, "defaultxbe", g_stSettings.m_bMyProgramsDefaultXBE);
-	SetBoolean(pNode, "directoryname", g_stSettings.m_bMyProgramsDirectoryName);
-	SetBoolean(pNode, "noshortcuts", g_stSettings.m_bMyProgramsNoShortcuts);
-
-
-	// cache settings
-	TiXmlElement cacheNode("cachesettings");
-	pNode = pRoot->InsertEndChild(cacheNode);
-	if (!pNode) return false;
-	SetInteger(pNode, "hdcacheaudio",g_stSettings.m_iCacheSizeHD[CACHE_AUDIO]);
-	SetInteger(pNode, "hdcachevideo",g_stSettings.m_iCacheSizeHD[CACHE_VIDEO]);
-	SetInteger(pNode, "hdcachevob",g_stSettings.m_iCacheSizeHD[CACHE_VOB]);
-
-	SetInteger(pNode, "udfcacheaudio",g_stSettings.m_iCacheSizeUDF[CACHE_AUDIO]);
-	SetInteger(pNode, "udfcachevideo",g_stSettings.m_iCacheSizeUDF[CACHE_VIDEO]);
-	SetInteger(pNode, "udfcachevob",g_stSettings.m_iCacheSizeUDF[CACHE_VOB]);
-
-	SetInteger(pNode, "isocacheaudio",g_stSettings.m_iCacheSizeISO[CACHE_AUDIO]);
-	SetInteger(pNode, "isocachevideo",g_stSettings.m_iCacheSizeISO[CACHE_VIDEO]);
-	SetInteger(pNode, "isocachevob",g_stSettings.m_iCacheSizeISO[CACHE_VOB]);
-
-	SetInteger(pNode, "lancacheaudio",g_stSettings.m_iCacheSizeLAN[CACHE_AUDIO]);
-	SetInteger(pNode, "lancachevideo",g_stSettings.m_iCacheSizeLAN[CACHE_VIDEO]);
-	SetInteger(pNode, "lancachevob",g_stSettings.m_iCacheSizeLAN[CACHE_VOB]);
-
-	SetInteger(pNode, "inetcacheaudio",g_stSettings.m_iCacheSizeInternet[CACHE_AUDIO]);
-	SetInteger(pNode, "inetcachevideo",g_stSettings.m_iCacheSizeInternet[CACHE_VIDEO]);
-	SetInteger(pNode, "inetcachevob",g_stSettings.m_iCacheSizeInternet[CACHE_VOB]);
 
 	// mypictures settings
 	TiXmlElement picturesNode("mypictures");
@@ -1531,9 +1130,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 		SetInteger(pChild, "songssortmethodroot",g_stSettings.m_iMyMusicSongsRootSortMethod);
 		SetBoolean(pChild, "songssortascending",g_stSettings.m_bMyMusicSongsSortAscending);
 		SetBoolean(pChild, "songssortascendingroot",g_stSettings.m_bMyMusicSongsRootSortAscending);
-		SetBoolean(pChild, "songsuseplaylist",g_stSettings.m_bMyMusicSongsUsePlaylist);
-		SetBoolean(pChild, "songsautoswitchthumbslist",g_stSettings.m_bMyMusicSongsAutoSwitchThumbsList);
-		SetBoolean(pChild, "songsautoswitchbigicons",g_stSettings.m_bMyMusicSongsAutoSwitchBigThumbs);
 	}
 	{
 		TiXmlElement childNode("album");
@@ -1585,14 +1181,11 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
 		if (!pChild) return false;
 		SetInteger(pChild, "playlistrooticons", g_stSettings.m_iMyMusicPlaylistViewAsIcons);
-		SetBoolean(pChild, "playlistrepeat",g_stSettings.m_bMyMusicPlaylistRepeat);
 	}
 
-	SetBoolean(pNode, "repeat",g_stSettings.m_bMyMusicRepeat);
 	SetInteger(pNode, "startwindow",g_stSettings.m_iMyMusicStartWindow);
 	SetBoolean(pNode, "songinfoinvis",g_stSettings.m_bMyMusicSongInfoInVis);
   SetBoolean(pNode, "songthumbinvis", g_stSettings.m_bMyMusicSongThumbInVis);
-	SetBoolean(pNode, "hidetracknumber", g_stSettings.m_bMyMusicHideTrackNumber);
 
 	// myvideos settings
 	TiXmlElement videosNode("myvideos");
@@ -1646,16 +1239,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	SetInteger(pNode, "titlesortmethod",g_stSettings.m_iMyVideoTitleSortMethod);
 	SetBoolean(pNode, "titlesortascending", g_stSettings.m_bMyVideoTitleSortAscending);
 
-	SetBoolean(pNode, "postprocessing", g_stSettings.m_bPostProcessing);
-	SetBoolean(pNode, "deinterlace", g_stSettings.m_bDeInterlace);
-
-	SetInteger(pNode, "enlargesubtitlepercent",g_stSettings.m_iEnlargeSubtitlePercent);
-	SetInteger(pNode, "subtitleheight",g_stSettings.m_iSubtitleHeight);
-	SetString(pNode, "subtitlefont", g_stSettings.m_szSubtitleFont);
-	SetInteger(pNode, "subtitlettfstyle", g_stSettings.m_iSubtitleTTFStyle);
-	SetHex(pNode, "subtitlettfcolor", g_stSettings.m_iSubtitleTTFColor);
-	SetString(pNode, "subtitlecharset", g_stSettings.m_szSubtitleCharset);
-	SetString(pNode, "stringcharset", g_stSettings.m_szStringCharset);
 	SetInteger(pNode, "smallstepbackseconds", g_stSettings.m_iSmallStepBackSeconds);
 	SetInteger(pNode, "smallstepbacktries", g_stSettings.m_iSmallStepBackTries);
 	SetInteger(pNode, "smallstepbackdelay", g_stSettings.m_iSmallStepBackDelay);
@@ -1673,154 +1256,27 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	TiXmlElement generalNode("general");
 	pNode = pRoot->InsertEndChild(generalNode);
 	if (!pNode) return false;
-	SetString(pNode, "skin", g_stSettings.szDefaultSkin);
-	SetBoolean(pNode, "timeserver", g_stSettings.m_bTimeServerEnabled);
-	SetBoolean(pNode, "ftpserver", g_stSettings.m_bFTPServerEnabled);
-	SetBoolean(pNode, "httpserver", g_stSettings.m_bHTTPServerEnabled);
-	SetBoolean(pNode, "cddb", g_stSettings.m_bUseCDDB);
-	SetInteger(pNode, "hdspindowntime", g_stSettings.m_iHDSpinDownTime);
-	SetBoolean(pNode, "autohdspindownaudio", g_stSettings.m_bHDRemoteplaySpinDownAudio);
-	SetBoolean(pNode, "autohdspindownvideo", g_stSettings.m_bHDRemoteplaySpinDownVideo);
-	SetInteger(pNode, "autohdspindowntime", g_stSettings.m_iHDRemoteplaySpinDownTime);
-	SetInteger(pNode, "autohdspindownminduration", g_stSettings.m_iHDRemoteplaySpinDownMinDuration);
-	SetBoolean(pNode, "autorundvd", g_stSettings.m_bAutorunDVD);
-	SetBoolean(pNode, "autorunvcd", g_stSettings.m_bAutorunVCD);
-	SetBoolean(pNode, "autoruncdda", g_stSettings.m_bAutorunCdda);
-	SetBoolean(pNode, "autorunxbox", g_stSettings.m_bAutorunXbox);
-	SetBoolean(pNode, "autorunmusic", g_stSettings.m_bAutorunMusic);
-	SetBoolean(pNode, "autorunvideo", g_stSettings.m_bAutorunVideo);
-	SetBoolean(pNode, "autorunpictures", g_stSettings.m_bAutorunPictures);
-	SetString(pNode, "language", g_stSettings.szDefaultLanguage);
-	SetString(pNode, "skinfontset", g_stSettings.m_szSkinFontSet);
-	SetBoolean(pNode, "flipbidicharset", g_stSettings.m_bFlipBiDiCharset);
-
-	SetInteger(pNode, "shutdowntime", g_stSettings.m_iShutdownTime);
-	SetBoolean(pNode, "enablerss", g_stSettings.m_bEnableRSS);
-
-  SetBoolean(pNode, "autotemperature",   g_stSettings.m_bAutoTemperature);
-  SetInteger(pNode, "targettemperature", g_stSettings.m_iTargetTemperature);
-  SetBoolean(pNode, "fanspeedcontrol",   g_stSettings.m_bFanSpeedControl);
-  SetInteger(pNode, "fanspeed",          g_stSettings.m_iFanSpeed);
-
-
-	SetInteger(pNode, "screensavertime", g_stSettings.m_iScreenSaverTime);	// CB: SCREENSAVER PATCH
-	SetInteger(pNode, "screensavermode", g_stSettings.m_iScreenSaverMode);	// CB: SCREENSAVER PATCH
-	SetInteger(pNode, "screensaverfade", g_stSettings.m_iScreenSaverFadeLevel);
-	SetString(pNode, "screensaver", g_stSettings.szDefaultScreenSaver);
-	SetInteger(pNode, "audiostream",g_stSettings.m_iAudioStream);
-	SetInteger(pNode, "weatherrefresh", g_stSettings.m_iWeatherRefresh);	//WEATHER SETTINGS
-	SetString(pNode, "weathertemp", g_stSettings.m_szWeatherFTemp);			//WEATHER SETTINGS
-	SetString(pNode, "weatherspeed", g_stSettings.m_szWeatherFSpeed);		//WEATHER SETTINGS
-	SetString(pNode, "areacode1", g_stSettings.m_szWeatherArea[0]);			//WEATHER SETTINGS
-	SetString(pNode, "areacode2", g_stSettings.m_szWeatherArea[1]);			//WEATHER SETTINGS
-	SetString(pNode, "areacode3", g_stSettings.m_szWeatherArea[2]);			//WEATHER SETTINGS
-	SetInteger(pNode, "osdtimeout", g_stSettings.m_iOSDTimeout);
-	SetInteger(pNode, "musicosdtimeout", g_stSettings.m_iMusicOSDTimeout);
-	SetBoolean(pNode, "hideextensions", g_stSettings.m_bHideExtensions);
-	SetBoolean(pNode, "hideparentdiritem", g_stSettings.m_bHideParentDirItems);
-
-	SetString(pNode, "ipassignment", g_stSettings.m_strIPAssignment);
-	SetString(pNode, "ipadres", g_stSettings.m_strLocalIPAdres);
-	SetString(pNode, "netmask", g_stSettings.m_strLocalNetmask);
-	SetString(pNode, "defaultgateway", g_stSettings.m_strGateway);
-	SetString(pNode, "nameserver", g_stSettings.m_strNameServer);
-
-	SetBoolean(pNode, "httpproxyenabled", g_stSettings.m_bHTTPProxyEnabled);
-	SetString(pNode, "httpproxyhost", g_stSettings.m_szHTTPProxy);
-	SetInteger(pNode, "httpproxyport", g_stSettings.m_iHTTPProxyPort);
-
-	SetString(pNode, "kaiusername",		g_stSettings.szOnlineUsername);
-	SetString(pNode, "kaipassword",		g_stSettings.szOnlinePassword);
-	SetString(pNode, "kaigamesdir",		g_stSettings.szOnlineGamesDir);
-	SetBoolean(pNode,"kainotify",		g_stSettings.m_bOnlineNotifications);
 	SetString(pNode, "kaiarenapass",	g_stSettings.szOnlineArenaPassword);
 	SetString(pNode, "kaiarenadesc",	g_stSettings.szOnlineArenaDescription);
-	SetString(pNode, "kaiserver",		g_stSettings.szOnlineKaiServer);
-
-	SetString(pNode, "timeserverhost", g_stSettings.m_strTimeServer);
-
-	SetInteger(pNode, "webserverport", g_stSettings.m_iWebServerPort);
-
-	// slideshow settings
-	TiXmlElement slideshowNode("slideshow");
-	pNode = pRoot->InsertEndChild(slideshowNode);
-	if (!pNode) return false;
-	SetInteger(pNode, "transistiontime", g_stSettings.m_iSlideShowTransistionTime);
-	SetInteger(pNode, "staytime", g_stSettings.m_iSlideShowStayTime);
-	SetFloat(pNode, "moveamount", g_stSettings.m_fSlideShowMoveAmount);
-	SetFloat(pNode, "zoomamount", g_stSettings.m_fSlideShowZoomAmount);
-	SetFloat(pNode, "blackbarcompensation", g_stSettings.m_fSlideShowBlackBarCompensation);
-	SetBoolean(pNode, "shuffle", g_stSettings.m_bSlideShowShuffle);
 
 	// screen settings
 	TiXmlElement screenNode("screen");
 	pNode = pRoot->InsertEndChild(screenNode);
 	if (!pNode) return false;
-	SetInteger(pNode, "resolution", (int)g_stSettings.m_GUIResolution);
-	SetInteger(pNode, "uioffsetx",g_stSettings.m_iUIOffsetX);
-	SetInteger(pNode, "uioffsety",g_stSettings.m_iUIOffsetY);
-  SetInteger(pNode, "flickerfiltervideo", g_stSettings.m_iFlickerFilterVideo);
-  SetInteger(pNode, "flickerfilterui", g_stSettings.m_iFlickerFilterUI);
-	SetBoolean(pNode, "softenvideo", g_stSettings.m_bSoftenVideo);
-	SetBoolean(pNode, "softenui", g_stSettings.m_bSoftenUI);
-	SetBoolean(pNode, "framerateconversion", g_stSettings.m_bFrameRateConversions);
 	SetInteger(pNode, "viewmode", g_stSettings.m_iViewMode);
 	SetFloat(pNode, "zoomamount", g_stSettings.m_fCustomZoomAmount);
 	SetFloat(pNode, "pixelratio", g_stSettings.m_fCustomPixelRatio);
-	SetBoolean(pNode, "allowswitching", g_stSettings.m_bAutoWidescreenSwitching);
-	SetBoolean(pNode, "upsamplevideo", g_stSettings.m_bUpsampleVideo);
-	SetBoolean(pNode, "allowpal60", g_stSettings.m_bAllowPAL60);
-	SetInteger(pNode, "minfilter", g_stSettings.m_minFilter);
-	SetInteger(pNode, "maxfilter", g_stSettings.m_maxFilter);
 
 	// audio settings
 	TiXmlElement audioNode("audio");
 	pNode = pRoot->InsertEndChild(audioNode);
 	if (!pNode) return false;
-	SetBoolean(pNode, "audioonallspeakers", g_stSettings.m_bAudioOnAllSpeakers);
-	SetInteger(pNode, "channels",g_stSettings.m_iChannels);
-	SetBoolean(pNode, "useid3", g_stSettings.m_bUseID3);
-	SetString(pNode, "visualisation", g_stSettings.szDefaultVisualisation);
-	SetBoolean(pNode, "autoshuffleplaylist", g_stSettings.m_bAutoShufflePlaylist);
-	SetFloat(pNode, "volumeamp", g_stSettings.m_fVolumeAmplification);
-	SetFloat(pNode, "headroom", g_stSettings.m_fVolumeHeadroom);
-	SetBoolean(pNode, "UseDigitalOutput", g_stSettings.m_bUseDigitalOutput);
-	SetBoolean(pNode, "HQmusicaudio", g_stSettings.m_bResampleMusicAudio);
-	SetBoolean(pNode, "HQvideoaudio", g_stSettings.m_bResampleVideoAudio);
+
 	SetInteger(pNode, "volumelevel", g_stSettings.m_nVolumeLevel);
-	SetBoolean(pNode, "PCMpassthrough", g_stSettings.m_bPCMPassthrough);
-
-	TiXmlElement postprocNode("PostProcessing");
-	pNode = pRoot->InsertEndChild(postprocNode);
-	if (!pNode) return false;
-	SetBoolean(pNode, "PPAuto", g_stSettings.m_bPPAuto);
-	SetBoolean(pNode, "PPVertical", g_stSettings.m_bPPVertical);
-	SetBoolean(pNode, "PPHorizontal", g_stSettings.m_bPPHorizontal);
-	SetBoolean(pNode, "PPAutoLevels", g_stSettings.m_bPPAutoLevels);
-	SetBoolean(pNode, "PPdering", g_stSettings.m_bPPdering);
-	SetInteger(pNode, "PPHorizontalVal",g_stSettings.m_iPPHorizontal);
-	SetInteger(pNode, "PPVerticalVal",g_stSettings.m_iPPVertical);
-
-	// cdda ripper settings
-	TiXmlElement cddaripperNode("cddaripper");
-	pNode = pRoot->InsertEndChild(cddaripperNode);
-	if (!pNode) return false;
-	SetBoolean(pNode, "ripwithtracknumber", g_stSettings.m_bRipWithTrackNumber);
-	SetInteger(pNode, "ripencoder", g_stSettings.m_iRipEncoder);
-	SetInteger(pNode, "ripquality", g_stSettings.m_iRipQuality);
-	SetInteger(pNode, "ripbitrate", g_stSettings.m_iRipBitRate);
-
-	// Cd+g settings
-	TiXmlElement CdgNode("cdg");
-	pNode = pRoot->InsertEndChild(CdgNode);
-	if (!pNode) return false;
-	SetBoolean(pNode, "EnableCdg", g_stSettings.m_bIsCdgEnabled);
-	SetInteger(pNode, "CdgBgAlpha", g_stSettings.m_iCdgBgAlpha);
-	SetInteger(pNode, "CdgFgAlpha", g_stSettings.m_iCdgFgAlpha);
-	SetFloat(pNode,"CdgAVDelay",g_stSettings.m_fCdgAVDelay);
 
   SaveCalibration(pRoot);
 
+	g_guiSettings.SaveXML(pRoot);
 	// save the file
 	return xmlDoc.SaveFile(strSettingsFile);
 }
@@ -2119,7 +1575,7 @@ void CSettings::LoadHomeButtons(TiXmlElement* pRootElement)
 			char temp[1024];
 			int iIcon;
 			GetString(pChild, "execute", temp, "");
-			GetInteger(pChild, "icon", iIcon, ICON_TYPE_NONE, ICON_TYPE_NONE, ICON_TYPE_SETTINGS);
+			GetInteger(pChild, "icon", iIcon, ICON_TYPE_NONE, ICON_TYPE_NONE, ICON_TYPE_NONE+19);
 			char temp2[1024];
 			GetString(pChild, "label", temp2, "");
 			CButtonScrollerSettings::CButton *pButton = NULL;

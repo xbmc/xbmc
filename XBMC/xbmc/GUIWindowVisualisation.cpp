@@ -143,7 +143,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 			CVisualisationFactory factory;
 			CStdString strVisz;
 			OutputDebugString("Load Visualisation\n");
-			strVisz.Format("Q:\\visualisations\\%s", g_stSettings.szDefaultVisualisation);
+			strVisz.Format("Q:\\visualisations\\%s", g_guiSettings.GetString("MyMusic.Visualisation"));
 			m_pVisualisation=factory.LoadVisualisation(strVisz.c_str());
 			if (m_pVisualisation) 
 			{

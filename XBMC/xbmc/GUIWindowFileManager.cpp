@@ -1089,7 +1089,7 @@ void CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirecto
 		if ( bParentExists )
 		{
 			// yes
-			if (!g_stSettings.m_bHideParentDirItems)
+			if (!g_guiSettings.GetBool("FileLists.HideParentDirItems"))
 			{
 				CFileItem *pItem = new CFileItem("..");
 				pItem->m_strPath=strParentPath;
@@ -1104,7 +1104,7 @@ void CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirecto
   {
 		// yes, this is the root of a share
 		// add parent path to the virtual directory
-		if (!g_stSettings.m_bHideParentDirItems)
+		if (!g_guiSettings.GetBool("FileLists.HideParentDirItems"))
 		{
 			CFileItem *pItem = new CFileItem("..");
 			pItem->m_strPath="";

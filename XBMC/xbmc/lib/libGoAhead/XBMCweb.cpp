@@ -1016,7 +1016,7 @@ void CXbmcWeb::SetCurrentMediaItem(CFileItem& newItem)
 			bFound=g_musicDatabase.GetSongByFileName(newItem.m_strPath, song);
 			g_musicDatabase.Close();
 		}
-		if (!bFound && g_stSettings.m_bUseID3)
+		if (!bFound && g_guiSettings.GetBool("MyMusic.UseTags"))
 		{
 			//	...no, try to load the tag of the file.
 			CMusicInfoTagLoaderFactory factory;

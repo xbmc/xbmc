@@ -27,6 +27,7 @@
 #include "GUIMoverControl.h"
 #include "GUIResizeControl.h"
 #include "GUIButtonScroller.h"
+#include "GUISpinControlEx.h"
 
 CGUIControlFactory::CGUIControlFactory(void)
 {
@@ -197,7 +198,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	CStdString  strUp,strDown;
 	CStdString  strUpFocus,strDownFocus;
 	DWORD		dwSpinColor=0xffffffff;
-	DWORD		dwSpinWidth,dwSpinHeight;
+	DWORD		dwSpinWidth=16;
+	DWORD		dwSpinHeight=16;
 	int			iSpinPosX,iSpinPosY;
 	CStdString  strTextureCheckMark;
 	CStdString  strTextureCheckMarkNF;
@@ -625,6 +627,28 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			iAlpha						= ((CGUIButtonScroller*)pReference)->GetAlpha();
 			bWrapAround				= ((CGUIButtonScroller*)pReference)->GetWrapAround();
 			bSmoothScrolling	= ((CGUIButtonScroller*)pReference)->GetSmoothScrolling();
+		}
+		else if (strType=="spincontrolex")
+		{
+			strFont				= ((CGUISpinControlEx*)pReference)->GetFontName();
+			dwTextColor			= ((CGUISpinControlEx*)pReference)->GetTextColor();
+			dwAlignY			= ((CGUISpinControlEx*)pReference)->GetAlignment();
+			strUp				= ((CGUISpinControlEx*)pReference)->GetTexutureUpName();
+			strDown				= ((CGUISpinControlEx*)pReference)->GetTexutureDownName();
+			strUpFocus			= ((CGUISpinControlEx*)pReference)->GetTexutureUpFocusName();
+			strDownFocus		= ((CGUISpinControlEx*)pReference)->GetTexutureDownFocusName();
+			iType				= ((CGUISpinControlEx*)pReference)->GetType();
+			dwSpinWidth				= ((CGUISpinControlEx*)pReference)->GetSpinWidth();
+			dwSpinHeight			= ((CGUISpinControlEx*)pReference)->GetSpinHeight();
+			dwWidth				= ((CGUISpinControlEx*)pReference)->GetWidth();
+			dwHeight			= ((CGUISpinControlEx*)pReference)->GetHeight();
+			dwDisabledColor		= ((CGUISpinControlEx*)pReference)->GetDisabledColor();
+			lTextOffsetX		= ((CGUISpinControlEx*)pReference)->GetTextOffsetX();
+			lTextOffsetY		= ((CGUISpinControlEx*)pReference)->GetTextOffsetY();
+
+			strTextureFocus		= ((CGUISpinControlEx*)pReference)->GetTextureFocusName();
+			strTextureNoFocus	= ((CGUISpinControlEx*)pReference)->GetTextureNoFocusName();
+			strLabel			= ((CGUISpinControlEx*)pReference)->GetLabel();
 		}
 	}
 	
@@ -1223,6 +1247,21 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 					strTextureFocus,strTextureNoFocus,lTextOffsetX,lTextOffsetY,dwAlign|dwAlignY);
 		pControl->SetFont(strFont, dwTextColor);
 		pControl->SetNavigation(up,down,left,right);
+		return pControl;
+	}
+ 	if (strType=="spincontrolex")
+	{
+		CGUISpinControlEx* pControl = new CGUISpinControlEx(
+					dwParentId,dwID,iPosX,iPosY,dwWidth,dwHeight,dwSpinWidth,dwSpinHeight,
+					strTextureFocus, strTextureNoFocus, strUp,strDown,strUpFocus,strDownFocus,
+					strFont,dwTextColor,lTextOffsetX,lTextOffsetY,dwAlignY,iType);
+
+		pControl->SetNavigation(up,down,left,right);
+		pControl->SetColourDiffuse(dwColorDiffuse);
+		pControl->SetVisible(bVisible);
+		pControl->SetReverse(bReverse);
+		pControl->SetDisabledColor(dwDisabledColor);
+		pControl->SetLabel(strLabel);
 		return pControl;
 	}
 

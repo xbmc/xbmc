@@ -173,7 +173,7 @@ namespace PYXBMC
 
 	PyObject* XBMC_GetSkinDir(PyObject *self, PyObject *args)
 	{
-		return PyString_FromString(g_stSettings.szDefaultSkin);
+		return PyString_FromString(g_guiSettings.GetString("LookAndFeel.Skin"));
 	}
 
 	PyDoc_STRVAR(getLanguage__doc__,
@@ -181,7 +181,7 @@ namespace PYXBMC
 
 	PyObject* XBMC_GetLanguage(PyObject *self, PyObject *args)
 	{
-		return PyString_FromString(g_stSettings.szDefaultLanguage);
+		return PyString_FromString(g_guiSettings.GetString("LookAndFeel.Language"));
 	}
 
 	PyDoc_STRVAR(getIPAddress__doc__,

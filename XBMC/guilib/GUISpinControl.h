@@ -76,12 +76,13 @@ public:
   void 					SetFloatValue(float fValue);
   int  					GetValue() const;
   float					GetFloatValue() const;
-  virtual void SetDisabledColor(D3DCOLOR color);
-  DWORD							GetDisabledColor() const { return m_dwDisabledColor;};
+  virtual void	SetDisabledColor(D3DCOLOR color);
+  DWORD					GetDisabledColor() const { return m_dwDisabledColor;};
   void					AddLabel(const wstring& strLabel, int  iValue);
   void					AddLabel(CStdString aLabel, int iValue);
-  const WCHAR*	GetLabel() const;
+  const wstring	GetLabel() const;
   virtual void	SetFocus(bool bOnOff);
+  virtual void	SetVisible(bool bVisible);
 	void					SetReverse(bool bOnOff);
   int           GetMaximum() const;
   int           GetMinimum() const;
@@ -99,6 +100,7 @@ public:
 	const CStdString& GetFontName() const { return m_strFont; };
 	DWORD							GetAlignment() const { return m_dwAlign;};
 	int								GetType() const { return m_iType;};
+	void							SetType(int iType) { m_iType = iType; };
 	DWORD							GetSpinWidth() const { return m_imgspinUp.GetWidth(); };
 	DWORD							GetSpinHeight() const { return m_imgspinUp.GetHeight(); };
   void              SetFloatInterval(float fInterval);

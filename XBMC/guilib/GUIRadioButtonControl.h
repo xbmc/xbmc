@@ -27,6 +27,7 @@ public:
 	virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
+	virtual void SetPosition(int iPosX, int iPosY);
 	const	CStdString& GetTexutureRadioFocusName() const { return m_imgRadioFocus.GetFileName(); };
 	const	CStdString& GetTexutureRadioNoFocusName() const { return m_imgRadioNoFocus.GetFileName(); };
 protected:

@@ -28,6 +28,7 @@ protected:
   void							UpdateButtons();
   void							Clear();
 	void							Update(const CStdString &strDirectory);
+	void							UpdateDir(const CStdString &strDirectory);
 	void							OnShowPicture(const CStdString& strPicture);
 	void							OnSlideShow(const CStdString& strPicture);
 	void							OnSlideShow();
@@ -52,4 +53,7 @@ protected:
   int                 m_iItemSelected;
 	int									m_iLastControl;
 	CStdString					m_strParentPath;
+
+	int									m_iViewAsIcons;
+	int									m_iViewAsIconsRoot;
 };

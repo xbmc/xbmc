@@ -325,8 +325,8 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
 	{
 		// These are only valid here and nowhere else
 		// set soften on/off
-    m_pd3dDevice->SetSoftDisplayFilter(m_bFullScreenVideo ? g_stSettings.m_bSoftenVideo : g_stSettings.m_bSoftenUI);
-    m_pd3dDevice->SetFlickerFilter(m_bFullScreenVideo ? g_stSettings.m_iFlickerFilterVideo : g_stSettings.m_iFlickerFilterUI);
+    m_pd3dDevice->SetSoftDisplayFilter(m_bFullScreenVideo ? g_guiSettings.GetBool("Filters.Soften") : g_guiSettings.GetBool("UIFilters.Soften"));
+    m_pd3dDevice->SetFlickerFilter(m_bFullScreenVideo ? g_guiSettings.GetInt("Filters.Flicker") : g_guiSettings.GetInt("UIFilters.Flicker"));
 	}
 	Unlock();
 	m_Resolution=res;

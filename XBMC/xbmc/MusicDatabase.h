@@ -234,6 +234,7 @@ public:
 	bool		CleanupAlbumsArtistsGenres(const CStdString &strPathIds);
 	bool		Compress();
 	int			Cleanup(CGUIDialogProgress *pDlgProgress);
+	void		Clean();
 	void		DeleteAlbumInfo();
 	void		DeleteCDDBInfo();
 
