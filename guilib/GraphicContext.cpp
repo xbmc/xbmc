@@ -191,3 +191,20 @@ int CGraphicContext::GetVideoResolution() const
 {
 	return m_iVideoResolution;
 }
+
+void CGraphicContext::ScaleRectToScreenResolution(DWORD& left, DWORD&  top, DWORD& right, DWORD& bottom)
+{
+	float fPercentX = ((float)m_iScreenWidth ) / 720.0f;
+	float fPercentY = ((float)m_iScreenHeight) / 576.0f;
+	left   = (DWORD) ( (float(left))	 * fPercentX); 
+	top    = (DWORD) ( (float(top))		 * fPercentY); 
+	right  = (DWORD) ( (float(right))	 * fPercentX); 
+	bottom = (DWORD) ( (float(bottom)) * fPercentY); 
+}
+void CGraphicContext::ScalePosToScreenResolution(DWORD& x, DWORD&  y)
+{
+	float fPercentX = ((float)m_iScreenWidth ) / 720.0f;
+	float fPercentY = ((float)m_iScreenHeight) / 576.0f;
+	x  = (DWORD) ( (float(x))		 * fPercentX); 
+	y  = (DWORD) ( (float(y))		 * fPercentY); 
+}
