@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 03-02-2005 fixed: sometimes unreadable discs will be detected as audio cd's
   - 03-02-2005 fixed: [ 1095048 Part 2 ] Icon for folder displayed using XBE's icon (also fixed some stupidities).
   - 02-02-2005 updated: Italian language file (Thnx to kotix)
   - 02-02-2005 updated: German language file
