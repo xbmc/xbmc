@@ -1,6 +1,7 @@
 #include "mplayer.h"
 #include "mplayer/mplayer.h"
 #include "../util.h"
+#include "../settings.h"
 extern "C" void dllReleaseAll( );
 
 #define KEY_ENTER 13
@@ -107,11 +108,10 @@ bool CMPlayer::openfile(const CStdString& strFile)
 
 
 
-		int argc=6;
-		char *argv[] = {"xbmc.xbe", "-autoq", "6", "-vf", "pp", "1.avi",NULL};
-		OutputDebugString("cmplayer::openfile() call init\n");
-		mplayer_init(argc,argv);
-		
+		char szChannels[12];
+		sprintf(szChannels,"%i", g_stSettings.m_iChannels);
+		char *argv[] = {"xbmc.xbe", "-channels",szChannels,"-autoq", "6", "-vf", "pp", "1.avi",NULL};
+		mplayer_init(8,argv);
 		Create();
 	}
 

@@ -157,6 +157,7 @@ public:
 		bool		  m_bUseFDrive;
 		bool		  m_bUseGDrive;
 		bool			m_bAudioOnAllSpeakers;
+		int				m_iChannels;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;
