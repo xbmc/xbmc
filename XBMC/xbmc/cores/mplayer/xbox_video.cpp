@@ -53,8 +53,6 @@ static int									m_iDeviceHeight;
 bool												m_bFullScreen=false;
 bool												m_bPal60Allowed=true;
 static int									m_iResolution=0;
-static float                m_fImageAR;
-static float                fARcompensation_final;
 
 typedef struct directx_fourcc_caps
 {
@@ -70,9 +68,9 @@ static directx_fourcc_caps g_ddpf[] =
     {"YV12 ",IMGFMT_YV12 ,DIRECT3D8CAPS},
 };
 
-static float fARcompensation[11] = 
+static float fScreenModePixelRatio[11] = 
 {
-		1.0f,							// 0 = invalid resolution. Does not exist
+		1.0f,							// 0 = invalid resolution. Does not exists
 		1.0f,							// 1 = 1920x1280
 		1.0f,							// 2 = 1280x720
 		1.0f,							// 3 = 640x480 NTSC
@@ -406,23 +404,22 @@ static unsigned int Directx_ManageDisplay()
 
 				// calculate AR compensation (see http://www.mir.com/DMG/aspect.html)
 
-				float fARcompensation_final = fARcompensation[m_iResolution];
+				float fScreenPixelRatio = fScreenModePixelRatio[m_iResolution];
 				if (g_graphicsContext.IsWidescreen() && ((m_iResolution >= 3) || (m_iResolution <= 10)))
-				      fARcompensation_final *= 4.0f/3.0f;
+				      fScreenPixelRatio *= 4.0f/3.0f;
 
 				// Calculate frame ratio based on source frame size and pixel ratio (Added by JM)
 				float fSourcePixelRatio = GetSourcePixelRatio(image_width, image_height, d_image_width, d_image_height);
-				float fAR = (float)image_width/((float)image_height)*fSourcePixelRatio / fARcompensation_final; 
-
-			
+				float fOutputFrameRatio = (float)image_width/((float)image_height)*fSourcePixelRatio / fScreenPixelRatio; 
 				float fNewWidth;
 				float fNewHeight;
 				float fHorzBorder=0;
 				float fVertBorder=0;
+
 				if ( image_width >= image_height)
 				{	
-					fNewHeight=(float)iScreenHeight;	// 538
-					fNewWidth = fNewHeight*fAR;				// 968.4
+					fNewHeight=(float)iScreenHeight;	  // 538
+					fNewWidth = fNewHeight*fOutputFrameRatio; // 968.4
 					fHorzBorder= (fNewWidth-(float)iScreenWidth)/2.0f;
 
 					float fFactor = fNewWidth / ((float)image_width);
@@ -431,7 +428,7 @@ static unsigned int Directx_ManageDisplay()
 				else
 				{
 					fNewWidth  = (float)( iScreenWidth);
-					fNewHeight = fNewWidth/fAR;
+					fNewHeight = fNewWidth/fOutputFrameRatio;
 					fVertBorder= (fNewHeight-(float)iScreenHeight)/2.0f;
 					float fFactor = fNewWidth / ((float)image_width);
 					fVertBorder = fVertBorder/fFactor;
@@ -440,7 +437,7 @@ static unsigned int Directx_ManageDisplay()
 				{
 					fHorzBorder=0;
 					fNewWidth  = (float)( iScreenWidth);
-					fNewHeight = fNewWidth/fAR;
+					fNewHeight = fNewWidth/fOutputFrameRatio;
 					fVertBorder= (fNewHeight-(float)iScreenHeight)/2.0f;
 					float fFactor = fNewWidth / ((float)image_width);
 					fVertBorder = fVertBorder/fFactor;
@@ -464,22 +461,22 @@ static unsigned int Directx_ManageDisplay()
 		// scale up image as much as possible
 		// and keep the aspect ratio (introduces with black bars)
 
-		float fARcompensation_final = fARcompensation[m_iResolution];
+		float fScreenPixelRatio = fScreenModePixelRatio[m_iResolution];
 		if (g_graphicsContext.IsWidescreen() && ((m_iResolution >= 3) || (m_iResolution <= 10)))
-		      fARcompensation_final *= 4.0f/3.0f;
+		      fScreenPixelRatio *= 4.0f/3.0f;
 		
 	        // Calculate frame ratio based on source frame size and pixel ratio (Added by JM)
 		float fSourcePixelRatio = GetSourcePixelRatio(image_width, image_height, d_image_width, d_image_height);
-		float fAR = (float)image_width/((float)image_height)*fSourcePixelRatio/fARcompensation_final; 
+		float fOutputFrameRatio = (float)image_width/((float)image_height)*fSourcePixelRatio/fScreenPixelRatio; 
 
 		// maximize the movie width
 		float fNewWidth  = (float)(iScreenWidth);
-		float fNewHeight = fNewWidth/fAR;
+		float fNewHeight = fNewWidth/fOutputFrameRatio;
 
 		if (fNewHeight > iScreenHeight)
 		{
 			fNewHeight = (float)iScreenHeight;   // POSSIBLY CORRECT FOR SUBTITLE HEIGHT AS WELL
-			fNewWidth = fNewHeight*fAR;
+			fNewWidth = fNewHeight*fOutputFrameRatio;
 		}
 
 		// this shouldnt happen, but just make sure that everything still fits onscreen
@@ -833,7 +830,7 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
 	float fps;
 	unsigned int iWidth,iHeight;
 	long tooearly, toolate;
-	m_fImageAR = (float)d_width / (float) d_height;
+
 	mplayer_GetVideoInfo(strFourCC,strVideoCodec, &fps, &iWidth,&iHeight, &tooearly, &toolate);
 	m_bPal60Allowed=true;
 	if (fps == 25.0f)
@@ -857,10 +854,12 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
 	m_bFullScreen=g_graphicsContext.IsFullScreenVideo();
 	choose_best_resolution(m_bPal60Allowed);
 
-	aspect_save_orig(image_width,image_height);
-  aspect_save_prescale(d_image_width,d_image_height);
-  aspect_save_screenres( m_iDeviceWidth, m_iDeviceHeight );
-  aspect(&d_image_width,&d_image_height,A_NOZOOM);
+	// We don't need mplayer to try and calculate an output size for us, as
+	// mplayer knows nothing about non-square pixels.
+	/*	aspect_save_orig(image_width,image_height);
+	aspect_save_prescale(d_image_width,d_image_height);
+	aspect_save_screenres( m_iDeviceWidth, m_iDeviceHeight );
+	aspect(&d_image_width,&d_image_height,A_NOZOOM);*/
 
 	fs=1;//fullscreen
 
