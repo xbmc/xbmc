@@ -280,6 +280,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 				dwSpinColor		= ((CGUITextBox*)pReference)->GetSpinTextColor();
 				dwSpinPosX		= ((CGUITextBox*)pReference)->GetSpinX();
 				dwSpinPosY		= ((CGUITextBox*)pReference)->GetSpinY();
+				dwSpinWidth			=	((CGUITextBox*)pReference)->GetSpinWidth();
+				dwSpinHeight		=	((CGUITextBox*)pReference)->GetSpinHeight();
 		}
 		if (strType=="thumbnailpanel")
 		{
