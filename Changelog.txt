@@ -6,6 +6,8 @@
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
   - 05-04-2005 removed: My Music Albums, Artists, and Genres views.  Use My Music Library instead.
+  - 05-04-2005 updated: Norwegian language file (Thnx to vnm)
+  - 05-04-2005 updated: German (Austrian) language file (Thnx to CEOMR)
   - 05-04-2005 added: Python patches [ 1166891 ] and [ 1176789 ] from gimblefoot.
   - 05-04-2005 fixed: List/thumb controls couldn't move right off the spincontrol.
   - 05-04-2005 fixed: Search for home dir checks for keymap.xml as well as the skin folder.
