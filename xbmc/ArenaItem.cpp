@@ -32,6 +32,16 @@ void CArenaItem::SetIcons(INT aWidth, INT aHeight, const CStdString& aPrivateTex
 	}
 }
 
+void CArenaItem::FreeIcons()
+{
+	if (m_pPrivateIcon)
+	{
+		m_pPrivateIcon->FreeResources();
+		delete m_pPrivateIcon;
+		m_pPrivateIcon=NULL;
+	}
+}
+
 CArenaItem::Tier CArenaItem::GetTier()
 {
 	int tier = 0;
