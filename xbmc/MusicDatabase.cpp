@@ -3378,8 +3378,6 @@ bool CMusicDatabase::UpdateOldVersion(float fVersion)
         long idSong = m_pDS2->fv("song.idSong").get_asLong();
         // add any found thumb
         CStdString strThumb = item.GetThumbnailImage();
-        if (strThumb.IsEmpty())
-          strThumb = "NONE";
         long lThumb = AddThumb(strThumb);
         CStdString strSQL;
 	      strSQL.Format("UPDATE song SET idThumb=%i where idSong=%i", lThumb, idSong);
@@ -3413,6 +3411,8 @@ long CMusicDatabase::AddThumb(const CStdString& strThumb1)
 	try
 	{
 		CStdString strThumb=strThumb1;
+		if (strThumb.IsEmpty())
+			strThumb = "NONE";
 		RemoveInvalidChars(strThumb);
 
 		if (NULL==m_pDB.get()) return -1;
@@ -3451,7 +3451,7 @@ long CMusicDatabase::AddThumb(const CStdString& strThumb1)
 	}
 	catch(...)
 	{
-		CLog::Log(LOGERROR, "musicdatabase:unable to addpath (%s)", strSQL.c_str());
+		CLog::Log(LOGERROR, "musicdatabase:unable to addthumb (%s)", strSQL.c_str());
 	}
 
 	return -1;
