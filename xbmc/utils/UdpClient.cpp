@@ -20,25 +20,35 @@ bool CUdpClient::Create(void)
 
 	InitializeCriticalSection(&critical_section);
 
+	CLog::Log(LOGINFO, "UDPCLIENT: Creating UDP socket...");	
+
 	// Create a UDP socket
 	client_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	if (client_socket == SOCKET_ERROR)
 	{
-		CLog::Log(LOGERROR, "UDPCLIENT: Unable to create socket.");	
+		CLog::Log(LOGINFO, "UDPCLIENT: Unable to create socket.");	
 		return false;
 	}
+
+	CLog::Log(LOGINFO, "UDPCLIENT: Setting broadcast socket option...");	
 
 	unsigned int value =  1;
 	if( setsockopt( client_socket, SOL_SOCKET, SO_BROADCAST, (char*) &value, sizeof( unsigned int ) ) == SOCKET_ERROR)
 	{
-		CLog::Log(LOGERROR, "UDPCLIENT: Unable to set socket option.");
+		CLog::Log(LOGINFO, "UDPCLIENT: Unable to set socket option.");
 		return false;
 	}
+
+	CLog::Log(LOGINFO, "UDPCLIENT: Setting non-blocking socket options...");	
 
 	unsigned long nonblocking=1;
 	ioctlsocket(client_socket, FIONBIO, &nonblocking);
 
+	CLog::Log(LOGINFO, "UDPCLIENT: Spawning listener thread...");	
 	CThread::Create(false);
+
+	CLog::Log(LOGINFO, "UDPCLIENT: Ready.");	
+
 	return true;
 }
 
@@ -56,7 +66,7 @@ bool CUdpClient::Broadcast(int aPort, CStdString& aMessage)
 	addr.sin_port = htons(aPort);
 	addr.sin_addr.s_addr = INADDR_BROADCAST;
 
-	UdpCommand broadcast = {addr,aMessage};
+	UdpCommand broadcast = {addr,aMessage,NULL,NULL};
 	commands.push_back(broadcast);
 
 	LeaveCriticalSection(&critical_section);
@@ -73,7 +83,7 @@ bool CUdpClient::Send(CStdString aIpAddress, int aPort, CStdString& aMessage)
 	addr.sin_port = htons(aPort);
 	addr.sin_addr.s_addr = inet_addr(aIpAddress);
 
-	UdpCommand transmit = {addr,aMessage};
+	UdpCommand transmit = {addr,aMessage,NULL,NULL};
 	commands.push_back(transmit);
 
 	LeaveCriticalSection(&critical_section);
@@ -84,7 +94,18 @@ bool CUdpClient::Send(SOCKADDR_IN aAddress, CStdString& aMessage)
 {
 	EnterCriticalSection(&critical_section);
 
-	UdpCommand transmit = {aAddress,aMessage};
+	UdpCommand transmit = {aAddress,aMessage,NULL,NULL};
+	commands.push_back(transmit);
+
+	LeaveCriticalSection(&critical_section);
+    return true;
+}
+
+bool CUdpClient::Send(SOCKADDR_IN aAddress, LPBYTE pMessage, DWORD dwSize)
+{
+	EnterCriticalSection(&critical_section);
+
+	UdpCommand transmit = {aAddress,"",pMessage,dwSize};
 	commands.push_back(transmit);
 
 	LeaveCriticalSection(&critical_section);
@@ -94,10 +115,10 @@ bool CUdpClient::Send(SOCKADDR_IN aAddress, CStdString& aMessage)
 
 void CUdpClient::Process() 
 {
-	CLog::Log(LOGNOTICE, "UDPCLIENT: Listening.");	
+	CLog::Log(LOGINFO, "UDPCLIENT: Listening.");	
 
 	SOCKADDR_IN remoteAddress;
-	char messageBuffer[513];
+	char messageBuffer[1024];
 	DWORD dataAvailable;
 
 	while ( !m_bStop ) 
@@ -127,7 +148,7 @@ void CUdpClient::Process()
 				// to protect access to graphics resources.  
 
 				g_graphicsContext.Lock();
-				OnMessage(remoteAddress,message);
+				OnMessage(remoteAddress,message,(LPBYTE)messageBuffer,messageLength);
 				g_graphicsContext.Unlock();
 			}
 			else
@@ -158,11 +179,8 @@ void CUdpClient::DispatchNextCommand()
 	{
 		LeaveCriticalSection(&critical_section);
 
-		// wait for 1/2 second - not strictly necessary but gives some cpu back
-		// and allows several kai engine responses to queue up so we can read them
-		// in on go, as opposed to in real time (which isn't all that visually appealing
-		// in the current usage model).
-		Sleep(500);
+		// relinquish the remainder of this threads time slice
+		Sleep(0);
 		return;
 	}
 
@@ -171,7 +189,16 @@ void CUdpClient::DispatchNextCommand()
 	commands.erase(it);
 	LeaveCriticalSection(&critical_section);
 
-	int ret = sendto(client_socket, command.message, command.message.GetLength(), 0, (struct sockaddr *) &command.address, sizeof(command.address));
+	int ret;
+	if (command.binarySize>0)
+	{
+		ret = sendto(client_socket, (LPCSTR) command.binary, command.binarySize, 0, (struct sockaddr *) &command.address, sizeof(command.address));
+		delete[] command.binary;
+	}
+	else
+	{
+		ret = sendto(client_socket, command.message, command.message.GetLength(), 0, (struct sockaddr *) &command.address, sizeof(command.address));
+	}
 	if(ret == SOCKET_ERROR)
 	{
 		CLog::Log(LOGERROR, "UDPCLIENT: Unable to transmit data to host.");	
