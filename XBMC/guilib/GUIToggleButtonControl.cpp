@@ -2,6 +2,7 @@
 #include "GUIToggleButtonControl.h"
 #include "guifontmanager.h"
 #include "guiWindowManager.h"
+#include "guiDialog.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
 CGUIToggleButtonControl::CGUIToggleButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus, const CStdString& strAltTextureFocus,const CStdString& strAltTextureNoFocus)
@@ -80,17 +81,28 @@ void CGUIToggleButtonControl::OnAction(const CAction &action)
 {
 	CGUIControl::OnAction(action);
 	if (action.wID == ACTION_SELECT_ITEM)
-    {
+	{
 		m_bSelected=!m_bSelected;
-		if (m_lHyperLinkWindowID != WINDOW_INVALID)
-		{
-			m_gWindowManager.ActivateWindow(m_lHyperLinkWindowID);
-			return;
-		}
-		// button selected.
-		// send a message
+		//	Save value, SEND_CLICK_MESSAGE may deactivate the window
+		long lHyperLinkWindowID=m_lHyperLinkWindowID;
+
+		// button selected, send a message
 		SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
-    }
+
+		if (lHyperLinkWindowID != WINDOW_INVALID)
+		{
+			CGUIWindow *pWindow = m_gWindowManager.GetWindow(lHyperLinkWindowID);
+			if (pWindow && pWindow->IsDialog())
+			{
+				CGUIDialog *pDialog = (CGUIDialog *)pWindow;
+				pDialog->DoModal(m_gWindowManager.GetActiveWindow());
+			}
+			else
+			{
+				m_gWindowManager.ActivateWindow(lHyperLinkWindowID);
+			}
+		}
+	}
 }
 
 bool CGUIToggleButtonControl::OnMessage(CGUIMessage& message)

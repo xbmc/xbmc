@@ -128,28 +128,34 @@ void CGUIButtonControl::OnAction(const CAction &action)
 	CGUIControl::OnAction(action);
 	if (action.wID == ACTION_SELECT_ITEM)
 	{
-		if (m_strExecuteAction.length() > 0)
-		{
-			CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
-			message.SetStringParam(m_strExecuteAction);
-			g_graphicsContext.SendMessage(message);
-		}
-
-		if (m_lHyperLinkWindowID != WINDOW_INVALID)
-		{
-			CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_lHyperLinkWindowID);
-			if (pWindow && pWindow->IsDialog())
-			{
-				CGUIDialog *pDialog = (CGUIDialog *)pWindow;
-				pDialog->DoModal(GetParentID());
-			}
-			else			{
-				m_gWindowManager.ActivateWindow(m_lHyperLinkWindowID);
-			}
-		}
+		//	Save values, SEND_CLICK_MESSAGE may deactivate the window
+		long lHyperLinkWindowID=m_lHyperLinkWindowID;
+		CStdString strExecuteAction=m_strExecuteAction;
 
 		// button selected, send a message
 		SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
+
+		if (strExecuteAction.length() > 0)
+		{
+			CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
+			message.SetStringParam(strExecuteAction);
+			g_graphicsContext.SendMessage(message);
+			return;
+		}
+
+		if (lHyperLinkWindowID != WINDOW_INVALID)
+		{
+			CGUIWindow *pWindow = m_gWindowManager.GetWindow(lHyperLinkWindowID);
+			if (pWindow && pWindow->IsDialog())
+			{
+				CGUIDialog *pDialog = (CGUIDialog *)pWindow;
+				pDialog->DoModal(m_gWindowManager.GetActiveWindow());
+			}
+			else
+			{
+				m_gWindowManager.ActivateWindow(lHyperLinkWindowID);
+			}
+		}
 	}
 }
 
