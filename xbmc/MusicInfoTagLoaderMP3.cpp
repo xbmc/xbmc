@@ -264,6 +264,7 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
 	int nDuration=0;
 	int nPrependedBytes=0;
 	unsigned char* xing;
+	unsigned char* vbri;
 	unsigned char buffer[8193];
 
 	/* Make sure file has a ID3v2 tag */
@@ -425,6 +426,9 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
 					xing = buffer + i + 17;
 			}
 
+			/* calculate position of VBRI header */
+			vbri = buffer + i + 32;
+
 			//	Do we have a Xing header
 			if (xing[0]=='X' &&
 					xing[1]=='i' &&
@@ -436,55 +440,29 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
 						frame_count = BYTES2INT(xing[8], xing[8+1], xing[8+2], xing[8+3]);
 				}
 			}
+			if (vbri[0]=='V' &&
+					vbri[1]=='B' &&
+					vbri[2]=='R' &&
+					vbri[3]=='I')
+			{
+						frame_count = BYTES2INT(vbri[14], vbri[14+1],
+																		vbri[14+2], vbri[14+3]);
+			}
 			//	We are done!
 			break;
 		}
 	}
 
+	//	Calculate duration if we have a Xing/VBRI VBR file
 	if (frame_count > 0)
 	{
 		double d=tpf * frame_count;
 		return (int)d;
 	}
 
-
-	//	Check for VBRI mp3 file
-	//	Untested due to lack of VBRI files
-	//for (i=nPrependedBytes; i<65500; i++)
-	//{
-	//	if (buffer[i]=='V' &&
-	//		buffer[i+1]=='B' &&
-	//		buffer[i+2]=='R' &&
-	//		buffer[i+3]=='I')
-	//	{
-	//		for ( ; i<65500;i++)
-	//		{
-	//			unsigned long mpegheader=(unsigned long)(
-	//																		( (buffer[i] & 255) << 24) |
-	//																		( (buffer[i+1] & 255) << 16) |
-	//																		( (buffer[i+2] & 255) <<  8) |
-	//																		( (buffer[i+3] & 255)      )
-	//																	); 
-
-	//			if (is_mp3frameheader(mpegheader))
-	//			{
-	//				frame_count = BYTES2INT(buffer[i+14], buffer[i+14+1],
-	//																buffer[i+14+2], buffer[i+14+3]);
-	//			}
-	//		}
-	//	}
-	//}
-
-	//if (frame_count > 0)
-	//{
-	//	double duration=tpf * frame_count;
-	//	return (int)duration;
-	//}
-
-
 	//	Normal mp3 with constant bitrate duration
-	//	Now song length is ((filesize)/(bytes per frame))*(time per frame) 
-	double d=(double)nMp3DataSize / bpf * tpf;
+	//	Now song length is (filesize without id3v1/v2 tag)/((bitrate)/(8)) 
+	double d=(double)(nMp3DataSize / ((bitrate*1000) / 8));
 	return (int)d;
 
 }
