@@ -147,6 +147,7 @@ public:
 	int						GetPlaySpeed() const;
 	void					SetPlaySpeed(int iSpeed);
 	bool					IsButtonDown(DWORD code);
+	bool					AnyButtonDown();
 	bool					ResetScreenSaverWindow();
 	void					SetKaiNotification(CStdString& aCaption, CStdString& aDescription, CGUIImage* aIcon=NULL);
 
