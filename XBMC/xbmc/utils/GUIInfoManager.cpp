@@ -257,14 +257,14 @@ CStdString CGUIInfoManager::GetCurrentPlayTime()
 	CStdString strTime;
 	if (g_application.IsPlayingAudio())
 	{
-		__int64 lPTS=g_application.m_pPlayer->GetPTS() - (g_infoManager.GetCurrentSongStart()*10)/75;
+		__int64 lPTS=g_application.m_pPlayer->GetTime() - (g_infoManager.GetCurrentSongStart()*(__int64)1000)/75;
     if (lPTS < 0) lPTS = 0;
-		CUtil::SecondsToHMSString((long)(lPTS/10), strTime);
+		CUtil::SecondsToHMSString((long)(lPTS/1000), strTime);
 	}
 	else if (g_application.IsPlayingVideo())
 	{
-		__int64 lPTS=10*g_application.m_pPlayer->GetTime();
-		CUtil::SecondsToHMSString((long)(lPTS/10), strTime, true);
+		__int64 lPTS=g_application.m_pPlayer->GetTime();
+		CUtil::SecondsToHMSString((long)(lPTS/1000), strTime, true);
 	}
 	return strTime;
 }
@@ -280,9 +280,9 @@ CStdString CGUIInfoManager::GetCurrentPlayTimeRemaining()
 		else if (iTotalTime<0)
 			iTotalTime=0;
 
-		__int64 lPTS=g_application.m_pPlayer->GetPTS() - (g_infoManager.GetCurrentSongStart()*10)/75;
+		__int64 lPTS=g_application.m_pPlayer->GetTime() - (g_infoManager.GetCurrentSongStart()*(__int64)1000)/75;
     if (lPTS < 0) lPTS = 0;
-		int iReverse=iTotalTime-(int)(lPTS/10);
+		int iReverse=iTotalTime-(int)(lPTS/1000);
 		CUtil::SecondsToHMSString(iReverse, strTime);
 	}
 	else if (g_application.IsPlayingVideo())
@@ -291,7 +291,7 @@ CStdString CGUIInfoManager::GetCurrentPlayTimeRemaining()
 		if (iTotalTime<0)
 			iTotalTime=0;
 
-		int iReverse=iTotalTime-(int)g_application.m_pPlayer->GetTime();
+		int iReverse=iTotalTime-(int)(g_application.m_pPlayer->GetTime()/1000);
 		CUtil::SecondsToHMSString(iReverse, strTime, true);
 	}
 	return strTime;

@@ -543,7 +543,7 @@ void CGUIWindowOSD::Get_TimeInfo()
 	SYSTEMTIME time;
 	WCHAR szETATime[32];
 	GetLocalTime(&time);
-	unsigned int tmpvar = time.wHour * 3600 + time.wMinute * 60 + g_application.m_pPlayer->GetTotalTime() - (unsigned int)g_application.m_pPlayer->GetTime();
+	unsigned int tmpvar = time.wHour * 3600 + time.wMinute * 60 + g_application.m_pPlayer->GetTotalTime() - (unsigned int)(g_application.m_pPlayer->GetTime()/1000);
 	if(tmpvar != 0)
 	{
 		int iHour = tmpvar / 3600;
@@ -880,10 +880,10 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 
 		case OSD_CREATEBOOKMARK:
 		{
-			_int64 lPTS1=g_application.m_pPlayer->GetTime();			// get the current playing time position
+			__int64 lPTS1=g_application.m_pPlayer->GetTime();			// get the current playing time position
 
 			dbs.Open();													// open the bookmark d/b
-			dbs.AddBookMarkToMovie(strMovie, (float)lPTS1);				// add the current timestamp
+			dbs.AddBookMarkToMovie(strMovie, 0.001f * lPTS1);				// add the current timestamp
 			dbs.Close();												// close the d/b
 			PopulateBookmarks();										// refresh our list control
 		}

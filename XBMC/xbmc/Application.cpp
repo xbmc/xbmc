@@ -41,7 +41,7 @@
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
 
-//#define USE_RELEASE_LIBS
+//  #define USE_RELEASE_LIBS
 
 	#pragma comment (lib,"xbmc/lib/libXenium/XeniumSPIg.lib")
 	#pragma comment (lib,"xbmc/lib/libSpeex/libSpeex.lib")
@@ -1417,8 +1417,7 @@ void CApplication::Render()
 	// check that we haven't passed the end of the file (for queue sheets)
   if ((m_pPlayer != NULL) && m_pPlayer->IsPlaying())
   {
-	  __int64 iPTS = m_pPlayer->GetPTS();
-	  int timeinsecs = (int)(iPTS / 10);
+	  int timeinsecs = (int)(m_pPlayer->GetTime()/1000);
 	  if (m_itemCurrentFile.m_lEndOffset && m_itemCurrentFile.m_lEndOffset/75 < timeinsecs)
 	  {	// time to stop the file...
 		  OnPlayBackEnded();
@@ -1818,7 +1817,7 @@ void CApplication::UpdateLCD()
 
 			if (iLine<4 && m_tagCurrentMovie.m_strGenre!="") g_lcd->SetLine(iLine++,m_tagCurrentMovie.m_strGenre);
 
-			strProgressBar = g_lcd->GetProgressBar((double)g_application.m_pPlayer->GetPTS(),
+			strProgressBar = g_lcd->GetProgressBar((double)g_application.m_pPlayer->GetTime()*0.001f,
                                                     (double)g_application.m_pPlayer->GetTotalTime());
 			g_lcd->SetLine(iLine++, strProgressBar);
 			/*
@@ -1871,7 +1870,7 @@ void CApplication::UpdateLCD()
 			if (iLine < 4 && strLine!="") g_lcd->SetLine(iLine++,strLine);
 			strLine = g_infoManager.GetMusicLabel("album");
 
-			strProgressBar = g_lcd->GetProgressBar( (double)g_application.m_pPlayer->GetPTS()/10 - (g_infoManager.GetCurrentSongStart())/75,
+			strProgressBar = g_lcd->GetProgressBar( (double)(g_application.m_pPlayer->GetTime()*0.001f - g_infoManager.GetCurrentSongStart()/75.0f),
  		                                                  (double)g_application.m_pPlayer->GetTotalTime());
 
       g_lcd->SetLine(iLine++, strProgressBar);
@@ -2492,7 +2491,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 	// 3.  next item's startoffset>0
 	// 4.  next item start offset == current items end offset
 	// 5.  current and next item based on same media file.
-	if (m_pPlayer && (m_pPlayer->GetPTS() > m_itemCurrentFile.m_lEndOffset*10/75))
+	if (m_pPlayer && (m_pPlayer->GetTime() > m_itemCurrentFile.m_lEndOffset*(__int64)1000/75))
 	{
 		if (item.m_lStartOffset > 0 && item.m_lStartOffset == m_itemCurrentFile.m_lEndOffset &&
 			item.m_strPath == m_itemCurrentFile.m_strPath && m_pPlayer)
@@ -2640,7 +2639,7 @@ void CApplication::StopPlaying()
 			m_gWindowManager.PreviousWindow();
     if ( IsPlayingVideo() )
     { // save our position for resuming at a later date
-      g_stSettings.m_currentVideoSettings.m_ResumeTime = (int)m_pPlayer->GetTime() * 75; // need it in frames (75ths of a second)
+      g_stSettings.m_currentVideoSettings.m_ResumeTime = (int)(m_pPlayer->GetTime() * 75 / 1000); // need it in frames (75ths of a second)
     }
 		m_pPlayer->CloseFile();
 	}
@@ -3292,11 +3291,6 @@ void CApplication::SetPlaySpeed(int iSpeed)
   }
 	m_iPlaySpeed=iSpeed;
 
-	//__int64 iTime;
-	//if ( IsPlayingVideo())
-	//  iTime= m_pPlayer->GetPTS(); // for VIDEO pts are accurate during FF/RW
-	//else
-	//  iTime= m_pPlayer->GetTime() / (__int64)10; // for AUDIO the playtime is accurate during FF/RW
 	m_pPlayer->ToFFRW(m_iPlaySpeed);
 //	if (m_pAudioDecoder)
 	{
@@ -3355,7 +3349,7 @@ double CApplication::GetTime() const
 
     if (IsPlaying() && m_pPlayer)
     {
-        rc = static_cast<double>(m_pPlayer->GetTime());
+        rc = static_cast<double>(m_pPlayer->GetTime()*0.001f);
     }
 
     return rc;

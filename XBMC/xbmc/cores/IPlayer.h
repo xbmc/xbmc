@@ -28,7 +28,6 @@ public:
 	virtual bool		HasAudio()=0;
 	virtual void		ToggleOSD()=0;
 	virtual void		SwitchToNextLanguage()=0;
-	virtual __int64	GetPTS() =0;
 	virtual void		ToggleSubtitles()=0;
 	virtual void		ToggleFrameDrop()=0;
 	virtual void		SubtitleOffset(bool bPlus=true)=0;	
@@ -73,7 +72,7 @@ public:
   virtual void    SetAudioStream(int iStream){};
 
   virtual void	  SeekTime(__int64 iTime=0){};
-  virtual __int64 GetTime(){return 0;};
+  virtual __int64   GetTime(){return 0;};
   virtual int	    GetTotalTime(){return 0;};
   virtual void	  ToFFRW(int iSpeed=0){};
   virtual void    ShowOSD(bool bOnoff){};
