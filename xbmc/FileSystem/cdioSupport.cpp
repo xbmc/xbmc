@@ -32,7 +32,7 @@ signature_t CCdIoSupport::sigs[] =
     {4,     0, "VIDEO_CD",   "VIDEO CD"}, 
     {4,     0, "SUPERVCD",   "Chaoji VCD"}, 
     {0,     0, "MICROSOFT*XBOX*MEDIA", "UDFX CD"},
-    { 0 }
+		{0,     1, "BEA01",     "UDF"}
   };
 
 #undef DEBUG_CDIO
@@ -169,6 +169,10 @@ void CCdIoSupport::PrintAnalysis(int fs, int num_audio)
   int need_lf;
   
   switch(fs & FS_MASK) {
+  case FS_UDF:
+    sprintf(buf, "CD-ROM with UDF filesystem");
+	OutputDebugString( buf );
+    break;
   case FS_NO_DATA:
     sprintf(buf, "CDDA Disk");
 	OutputDebugString( buf );
@@ -374,6 +378,9 @@ int CCdIoSupport::GuessFilesystem(int start_session, track_t track_num)
   if (ReadBlock(ISO_SUPERBLOCK_SECTOR, start_session, 0, track_num) < 0)
     return FS_UNKNOWN;
     
+	if ( IsIt(IS_UDF) )
+		return FS_UDF;
+
   /* filesystem */
   if (IsIt(IS_CD_I) && IsIt(IS_CD_RTOS) 
       && !IsIt(IS_BRIDGE) && !IsIt(IS_XA)) {
