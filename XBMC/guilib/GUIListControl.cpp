@@ -178,7 +178,7 @@ void CGUIListControl::RenderText(float fPosX, float fPosY, float fMaxWidth,DWORD
 	newviewport.MaxZ   = 1.0f;
 	g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
 
-  if (!bScroll || fTextWidth <= fMaxWidth)
+  if (!bScroll)
   {
     m_pFont->DrawTextWidth(fPosX,fPosY,dwTextColor,wszText,fMaxWidth);
 		g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
@@ -186,6 +186,13 @@ void CGUIListControl::RenderText(float fPosX, float fPosY, float fMaxWidth,DWORD
   }
   else
   {
+	  if (fTextWidth <= fMaxWidth)
+	  {	// don't need to scroll
+		m_pFont->DrawTextWidth(fPosX,fPosY,dwTextColor,wszText,fMaxWidth);
+		g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
+		iLastItem = -1; // reset scroller
+		return;
+	  }
     // scroll
     int iItem=m_iCursorY+m_iOffset;
     WCHAR wszOrgText[1024];

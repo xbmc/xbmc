@@ -532,7 +532,7 @@ void CGUIWindowMusicSongs::LoadPlayList(const CStdString& strPlayList)
 			const CPlayList::CPlayListItem& playListItem =(*pPlayList)[i];
 			CStdString strLabel=playListItem.GetDescription();
 			if (strLabel.size()==0) 
-				strLabel=CUtil::GetFileName(playListItem.GetFileName());
+				strLabel=CUtil::GetTitleFromPath(playListItem.GetFileName());
 
 			CPlayList::CPlayListItem playlistItem;
 			playlistItem.SetFileName(playListItem.GetFileName());

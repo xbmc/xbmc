@@ -178,8 +178,8 @@ void CGUIWindowVideoOverlay::Render()
 			}
 			if (!bLoaded)
 			{
-				CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-				msg1.SetLabel( CUtil::GetFileName(strFile) );
+				CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO);
+				msg1.SetLabel( CUtil::GetTitleFromPath(strFile) );
 				OnMessage(msg1);
 			}
 		}
