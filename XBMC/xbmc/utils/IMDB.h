@@ -39,6 +39,7 @@ class CIMDBMovie
 		CStdString m_strVotes;
 		CStdString m_strCast;
 		CStdString m_strSearchString;
+    CStdString m_strFile;
 		int				 m_iTop250;
 		int    		 m_iYear;
 		float  		 m_fRating;
