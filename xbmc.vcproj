@@ -1525,6 +1525,12 @@
 				RelativePath=".\xbmc\osd\OSDOptionBoolean.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\osd\OSDOptionButton.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\osd\OSDOptionButton.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\osd\OSDOptionFloatRange.cpp">
 			</File>
 			<File

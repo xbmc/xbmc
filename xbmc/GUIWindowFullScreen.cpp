@@ -6,8 +6,10 @@
 #include "osd/OSDOptionFloatRange.h"
 #include "osd/OSDOptionIntRange.h"
 #include "osd/OSDOptionBoolean.h"
+#include "osd/OSDOptionButton.h"
 #include "cores/mplayer/mplayer.h"
 #include "utils/singlelock.h"
+#include "videodatabase.h"
 #include <stdio.h>
 
 #define BLUE_BAR    0
@@ -27,6 +29,10 @@
 #define MENU_ACTION_INTERLEAVED 6
 #define MENU_ACTION_FRAMERATECONVERSIONS 7
 #define MENU_ACTION_AUDIO_STREAM 8
+
+#define MENU_ACTION_NEW_BOOKMARK  9
+#define MENU_ACTION_NEXT_BOOKMARK  10
+#define MENU_ACTION_CLEAR_BOOKMARK  11
 
 #define IMG_PAUSE     16
 #define IMG_2X	      17
@@ -56,9 +62,9 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
   //  - stream
 
   // video
-  //  - Create Bookmark
-  //  - Cycle bookmarks
-  //  - Clear bookmarks
+  //  - Create Bookmark (294)
+  //  - Cycle bookmarks (295)
+  //  - Clear bookmarks (296)
   //  - jump to specific time
   //  - slider
   //  - av delay
@@ -305,6 +311,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 			if (g_application.m_pPlayer)
 				g_application.m_pPlayer->Update();
       HideOSD();
+      m_iCurrentBookmark=0;
 			return true;
 		}
 		case GUI_MSG_WINDOW_DEINIT:
@@ -318,6 +325,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 			Sleep(100);
       m_bOSDVisible=false;
       m_iSpeed=1;
+      m_iCurrentBookmark=0;
       HideOSD();
 		}
 	}
@@ -620,6 +628,12 @@ void CGUIWindowFullScreen::ShowOSD()
   CSingleLock lock(m_section);      
 	m_osdMenu.Clear();
   COSDSubMenu videoMenu(291,100,100);
+
+  COSDOptionButton    optionNewBookmark(MENU_ACTION_NEW_BOOKMARK,294);
+  COSDOptionButton    optionNextBookmark(MENU_ACTION_NEXT_BOOKMARK, 295);
+  COSDOptionButton    optionClearbookmarks(MENU_ACTION_CLEAR_BOOKMARK, 296);
+
+
   float fValue=g_application.m_pPlayer->GetAVDelay();
   COSDOptionFloatRange optionAVDelay(MENU_ACTION_AVDELAY,297,-10.0f,10.0f,0.01f,fValue);
 
@@ -627,6 +641,10 @@ void CGUIWindowFullScreen::ShowOSD()
   COSDOptionIntRange   optionPercentage(MENU_ACTION_SEEK,298,true,0,100,1,iValue);
   COSDOptionBoolean    optionNonInterleaved(MENU_ACTION_INTERLEAVED,306, g_stSettings.m_bNonInterleaved);
   COSDOptionBoolean    optionFrameRateConversions(MENU_ACTION_FRAMERATECONVERSIONS, 343, g_stSettings.m_bFrameRateConversions);
+
+  videoMenu.AddOption(&optionNewBookmark);
+  videoMenu.AddOption(&optionNextBookmark);
+  videoMenu.AddOption(&optionClearbookmarks);
 
   videoMenu.AddOption(&optionAVDelay);
   videoMenu.AddOption(&optionPercentage);
@@ -672,6 +690,7 @@ void CGUIWindowFullScreen::ShowOSD()
   SET_CONTROL_HIDDEN(GetID(),LABEL_ROW2);
   SET_CONTROL_HIDDEN(GetID(),LABEL_ROW3);
   SET_CONTROL_HIDDEN(GetID(),BLUE_BAR);
+  Update();
 }
 
 bool CGUIWindowFullScreen::OSDVisible() const
@@ -741,6 +760,7 @@ void CGUIWindowFullScreen::OnExecute(int iAction, const IOSDOption* option)
     }
     break;
     case MENU_ACTION_AUDIO_STREAM:
+    {
       const COSDOptionIntRange* intOption = (const COSDOptionIntRange*)option;
       g_stSettings.m_iAudioStream=intOption->GetValue()-1;
       m_iAudioStreamIDX=mplayer_getAudioStream(g_stSettings.m_iAudioStream);
@@ -751,7 +771,54 @@ void CGUIWindowFullScreen::OnExecute(int iAction, const IOSDOption* option)
       HideOSD();
       m_bOSDVisible=false;
       g_application.Restart(true);
+    }
     break;
+
+    case MENU_ACTION_NEW_BOOKMARK:
+    {
+      float fPercentage=(float)g_application.m_pPlayer->GetPercentage();
+      const CStdString& strMovie=g_application.CurrentFile();
+      CVideoDatabase dbs;
+      dbs.Open();
+      dbs.AddBookMarkToMovie(strMovie, fPercentage);
+      dbs.Close();
+      Update();
+    }
+    break;
+
+    case MENU_ACTION_NEXT_BOOKMARK:
+    {
+      VECBOOKMARKS bookmarks;
+      const CStdString& strMovie=g_application.CurrentFile();
+      CVideoDatabase dbs;
+      dbs.Open();
+      dbs.GetBookMarksForMovie(strMovie, bookmarks);
+      dbs.Close();
+      if (bookmarks.size()<=0) return;
+
+      if (m_iCurrentBookmark >= (int)bookmarks.size())
+      {
+        m_iCurrentBookmark =0;
+      }
+      float fPercentage =bookmarks[m_iCurrentBookmark];
+      g_application.m_pPlayer->SeekPercentage( (int)fPercentage );
+      m_iCurrentBookmark++;
+      Update();
+    }
+    break;
+
+    case MENU_ACTION_CLEAR_BOOKMARK:
+    {
+      const CStdString& strMovie=g_application.CurrentFile();
+      CVideoDatabase dbs;
+      dbs.Open();
+      dbs.ClearBookMarksOfMovie(strMovie);
+      dbs.Close();
+      m_iCurrentBookmark=0;
+      Update();
+    }
+    break;
+
   }
 }
 void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
@@ -801,3 +868,17 @@ void CGUIWindowFullScreen::ChangetheSpeed(DWORD action)
 		m_iSpeed = 1;
 	g_application.m_pPlayer->ToFFRW(m_iSpeed);
 }	
+
+void CGUIWindowFullScreen::Update()
+{
+  VECBOOKMARKS bookmarks;
+  const CStdString& strMovie=g_application.CurrentFile();
+  CVideoDatabase dbs;
+  dbs.Open();
+  dbs.GetBookMarksForMovie(strMovie, bookmarks);
+  dbs.Close();
+
+  CStdString strValue;
+  strValue.Format("%i/%i", 1+m_iCurrentBookmark,bookmarks.size());
+  m_osdMenu.SetLabel(MENU_ACTION_NEXT_BOOKMARK,strValue);
+}

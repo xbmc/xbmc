@@ -22,6 +22,7 @@ namespace OSD
     
     virtual int  GetMessage() const {return m_iAction;};
     virtual void SetValue(int iValue){};
+    virtual void SetLabel(const CStdString& strLabel){};
 	private:
     CGUISliderControl m_slider;
     int m_iAction;

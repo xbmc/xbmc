@@ -154,6 +154,17 @@ void COSDSubMenu::AddOption(const IOSDOption* option)
 }
 
 
+void COSDSubMenu::SetLabel(int iMessage, const CStdString& strLabel)
+{
+  for (int i=0; i < (int)m_vecOptions.size(); ++i)
+  {
+    IOSDOption* pOption=m_vecOptions[i];
+    if (pOption->GetMessage()==iMessage)
+    {
+      pOption->SetLabel(strLabel);
+    }
+  }
+}
 void COSDSubMenu::SetValue(int iMessage, int iValue)
 {
   for (int i=0; i < (int)m_vecOptions.size(); ++i)

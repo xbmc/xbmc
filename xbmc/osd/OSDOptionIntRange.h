@@ -22,6 +22,7 @@ namespace OSD
     int GetValue() const;
     virtual int  GetMessage() const {return m_iAction;};
     virtual void SetValue(int iValue){m_iValue=iValue;};
+    virtual void SetLabel(const CStdString& strLabel){};
 	private:
     CGUISliderControl m_slider;
     bool m_bPercent;
