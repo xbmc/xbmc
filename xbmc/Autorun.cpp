@@ -160,12 +160,10 @@ bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAdded
 				{
 					if ( g_stSettings.m_bAutorunDVD ) 
 					{
-						CStdString strFileName;
-						strFileName.Format("%s%cVIDEO_TS.IFO",pItem->m_strPath.c_str(),szSlash);
 						g_TextureManager.Flush();
 						g_graphicsContext.SetFullScreenVideo(true);
 						m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
-						g_application.PlayFile( strFileName );
+            g_application.PlayFile( "dvd://1" );
 						bPlaying=true;
 						break;
 					}
