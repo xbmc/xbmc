@@ -174,38 +174,6 @@ BOOL XB_Init(void)
 		if (md_mode & DMODE_SURROUND)
 		{
 			OutputChans = 4;
-			DirectSoundOverrideSpeakerConfig(DSSPEAKER_SURROUND);
-		}
-		else
-		{
-			OutputChans = 2;
-			DirectSoundOverrideSpeakerConfig(DSSPEAKER_STEREO);
-		}
-	}
-	else
-	{
-		OutputChans = 2;
-		DirectSoundOverrideSpeakerConfig(DSSPEAKER_MONO);
-	}
-
-	ReverseStereo = (md_mode & DMODE_REVERSE) ? TRUE : FALSE;
-
-	DWORD flags = XGetAudioFlags();
-
-	switch (XC_AUDIO_FLAGS_BASIC(flags))
-	{
-	case XC_AUDIO_FLAGS_MONO:
-		md_mode &= ~DMODE_STEREO;
-	case XC_AUDIO_FLAGS_STEREO:
-		md_mode &= ~DMODE_SURROUND;
-		break;
-	}
-
-	if (md_mode & DMODE_STEREO)
-	{
-		if (md_mode & DMODE_SURROUND)
-		{
-			OutputChans = 4;
 			if (XC_AUDIO_FLAGS_BASIC(flags) != XC_AUDIO_FLAGS_SURROUND)
 				DirectSoundOverrideSpeakerConfig(DSSPEAKER_SURROUND);
 		}
@@ -261,7 +229,7 @@ BOOL XB_Reset(void)
 // PTS for xbmc
 __int64 XB_GetPTS()
 {
-	return 10 * PTS / CounterFreq.QuadPart;
+	return 1000 * PTS / CounterFreq.QuadPart;
 }
 
 BOOL XB_PlayStart(void)
