@@ -39,11 +39,11 @@ void CAutorun::ExecuteAutorun()
 	{
 		RunCdda();
 	}
-	else if (  pInfo->IsUDFX( 1 ) || pInfo->IsUDF(1) )
+	else if (pInfo->IsUDFX( 1 ) || pInfo->IsUDF(1))
 	{
 		RunXboxCd();
 	}
-	else if ( pInfo->IsIso9660( 1 ) || pInfo->IsIso9660Interactive( 1 ) ) 
+	else if (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1)) 
 	{
 		RunISOMedia();
 	}
