@@ -548,18 +548,29 @@ void CGUIListControl::SetScrollySuffix(const CStdString& wstrSuffix)
   m_strSuffix=wsSuffix;
 }
 
-// scrolls the said amount (should be able to use this for OnPageUp() and OnPageDown() as well...
+// scrolls the said amount
 void CGUIListControl::Scroll(int iAmount)
 {
 	m_iOffset += iAmount;
-	if (m_iOffset > (int)m_vecItems.size()-m_iItemsPerPage) m_iOffset = m_vecItems.size()-m_iItemsPerPage;
+	if (m_iOffset > (int)m_vecItems.size())
+	{	// occurs when a page down event happens when we're already on the last page
+		m_iCursorY = m_iItemsPerPage-1;	// choose the last item.
+	}
+	if (m_iOffset == -m_iItemsPerPage)
+	{	// occurs when a page up event happens when we're already on the first page...
+		m_iCursorY = 0;
+	}
+	if (m_iOffset > (int)m_vecItems.size()-m_iItemsPerPage)
+	{
+		m_iOffset = m_vecItems.size()-m_iItemsPerPage;
+	}
 	if (m_iOffset<0) m_iOffset = 0;
 }
 
 // returns which page we are on
 int CGUIListControl::GetPage()
 {
-	if (m_iOffset >= (int)m_vecItems.size()-m_iItemsPerPage)
+	if (m_iOffset > (int)m_vecItems.size()-m_iItemsPerPage)
 	{
 		m_iOffset = m_vecItems.size()-m_iItemsPerPage;
 		if (m_iOffset < 0) m_iOffset = 0;
