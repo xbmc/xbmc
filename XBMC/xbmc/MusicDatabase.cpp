@@ -62,6 +62,7 @@ CMusicDatabase::CMusicDatabase(void)
 {
 	m_bOpen=false;
 	m_iRefCount=0;
+	m_iSongsBeforeCommit = 0;
 }
 
 CMusicDatabase::~CMusicDatabase(void)
@@ -246,10 +247,10 @@ void CMusicDatabase::AddSong(const CSong& song1, bool bCheck)
 
 		// split our (possibly) multiple artist string into individual artists
 		CStdStringArray vecArtists;
-		int iNumArtists = StringUtils::SplitString(song.strArtist,"/",vecArtists);
+		int iNumArtists = StringUtils::SplitString(song.strArtist," / ",vecArtists);
 		// and the same for our genres
 		CStdStringArray vecGenres;
-		int iNumGenres = StringUtils::SplitString(song.strGenre,"/",vecGenres);
+		int iNumGenres = StringUtils::SplitString(song.strGenre," / ",vecGenres);
 		// add the primary artist/genre (and pop off of the vectors)
 		long lArtistId = AddArtist(vecArtists[0]);
 		long lGenreId = AddGenre(vecGenres[0]);
@@ -292,6 +293,12 @@ void CMusicDatabase::AddSong(const CSong& song1, bool bCheck)
 		// add artists and genres (don't need to add to exgenrealbum table - it's only used for albuminfo)
 		AddExtraArtists(vecArtists, lSongId, lAlbumId, bCheck);
 		AddExtraGenres(vecGenres, lSongId, 0, bCheck);
+
+		// increment the number of songs we've added since the last commit, and check if we should commit
+		if (m_iSongsBeforeCommit++ > NUM_SONGS_BEFORE_COMMIT)
+		{
+			CommitTransaction();
+		}
 	}
 	catch(...)
 	{
@@ -322,7 +329,7 @@ long CMusicDatabase::AddAlbum(const CStdString& strAlbum1, const long lArtistId,
 		if (m_pDS->num_rows() == 0)
 		{
 			// doesnt exists, add it
-			strSQL.Format("insert into album (idAlbum, strAlbum, idArtist, iNumArtists, idPath) valueS( NULL, '%s', %i, %i, %i)", strAlbum, lArtistId, iNumArtists, lPathId);
+			strSQL.Format("insert into album (idAlbum, strAlbum, idArtist, iNumArtists, idPath) values( NULL, '%s', %i, %i, %i)", strAlbum, lArtistId, iNumArtists, lPathId);
 			m_pDS->exec(strSQL.c_str());
 
 			CAlbumCache album;
@@ -384,8 +391,8 @@ void CMusicDatabase::CheckVariousArtistsAndCoverArt()
 
 				CStdStringArray vecArtists, vecArtists1;
 				CStdString strArtist, strArtist1;
-				int iNumArtists=StringUtils::SplitString(song.strArtist, "/", vecArtists);
-				int iNumArtists1=StringUtils::SplitString(song1.strArtist, "/", vecArtists1);
+				int iNumArtists=StringUtils::SplitString(song.strArtist, " / ", vecArtists);
+				int iNumArtists1=StringUtils::SplitString(song1.strArtist, " / ", vecArtists1);
 				strArtist=vecArtists[0];
 				strArtist1=vecArtists1[0];
 				strArtist.TrimRight();
@@ -399,8 +406,11 @@ void CMusicDatabase::CheckVariousArtistsAndCoverArt()
 					bVarious=true;
 					break;
 				}
-				else if (iNumArtists>1 && iNumArtists1>1)
+				else if (iNumArtists>1 && iNumArtists1>1 && song.strArtist!=song1.strArtist)
 				{
+					// Artists don't all agree.  Instead of some complex function to compare all
+					// the artists of each particular track, let's just take the first artist
+					// and just use that.
 					bSingleArtistCompilation=true;
 					lArtistsId = AddArtist(vecArtists[0]);
 				}
@@ -423,7 +433,7 @@ void CMusicDatabase::CheckVariousArtistsAndCoverArt()
 			for (int i=0; i<(int)songs.size(); i++)
 			{
 				CStdStringArray vecTemp;
-				StringUtils::SplitString(songs[i].strArtist, "/", vecTemp);
+				StringUtils::SplitString(songs[i].strArtist, " / ", vecTemp);
 				for (int j=0; j<(int)vecTemp.size(); j++)
 					vecArtists.push_back(vecTemp[j]);
 			}
@@ -446,7 +456,7 @@ void CMusicDatabase::CheckVariousArtistsAndCoverArt()
 			for (int i=0; i<(int)songs.size(); i++)
 			{
 				CStdStringArray vecTemp;
-				StringUtils::SplitString(songs[i].strArtist, "/", vecTemp);
+				StringUtils::SplitString(songs[i].strArtist, " / ", vecTemp);
 				for (int j=1; j<(int)vecTemp.size(); j++)
 					vecArtists.push_back(vecTemp[j]);
 			}
@@ -733,7 +743,7 @@ long CMusicDatabase::AddPath(const CStdString& strPath1)
 		if (m_pDS->num_rows() == 0)
 		{
 			// doesnt exists, add it
-			strSQL.Format("insert into path (idPath, strPath) valueS ( NULL, '%s' )", strPath);
+			strSQL.Format("insert into path (idPath, strPath) values( NULL, '%s' )", strPath);
 			m_pDS->exec(strSQL.c_str());
 
 			CPathCache path;
@@ -792,6 +802,7 @@ CAlbum CMusicDatabase::GetAlbumFromDataset()
   CAlbum album;
   album.strAlbum  = m_pDS->fv("album.strAlbum").get_asString();
   album.strArtist = m_pDS->fv("artist.strArtist").get_asString();
+	int test = m_pDS->fv("album.iNumArtists").get_asLong();
   if (m_pDS->fv("album.iNumArtists").get_asLong() > 1)
     GetExtraArtistsForAlbum(m_pDS->fv("album.idAlbum").get_asLong(), album.strArtist);
   album.strPath   = m_pDS->fv("path.strPath").get_asString();
@@ -846,7 +857,7 @@ bool CMusicDatabase::GetExtraArtistsForSong(long lSongId, CStdString &strArtist)
 	if (NULL==m_pDS2.get() || !m_pDS2->query(strSQL.c_str())) return false;
 	while (!m_pDS2->eof())
     {
-		strArtist += "/" + m_pDS2->fv("artist.strArtist").get_asString();
+		strArtist += " / " + m_pDS2->fv("artist.strArtist").get_asString();
 		m_pDS2->next();
     }
 	m_pDS2->close();
@@ -861,7 +872,7 @@ bool CMusicDatabase::GetExtraGenresForSong(long lSongId, CStdString &strGenre)
 	if (NULL==m_pDS2.get() || !m_pDS2->query(strSQL.c_str())) return false;
 	while (!m_pDS2->eof())
     {
-		strGenre += "/" + m_pDS2->fv("genre.strGenre").get_asString();
+		strGenre += " / " + m_pDS2->fv("genre.strGenre").get_asString();
 		m_pDS2->next();
     }
 	m_pDS2->close();
@@ -876,7 +887,7 @@ bool CMusicDatabase::GetExtraArtistsForAlbum(long lAlbumId, CStdString &strArtis
 	if (NULL==m_pDS2.get() || !m_pDS2->query(strSQL.c_str())) return false;
 	while (!m_pDS2->eof())
     {
-		strArtist += "/" + m_pDS2->fv("artist.strArtist").get_asString();
+		strArtist += " / " + m_pDS2->fv("artist.strArtist").get_asString();
 		m_pDS2->next();
     }
 	return true;
@@ -890,7 +901,7 @@ bool CMusicDatabase::GetExtraGenresForAlbum(long lAlbumId, CStdString &strGenre)
 	if (NULL==m_pDS2.get() || !m_pDS2->query(strSQL.c_str())) return false;
 	while (!m_pDS2->eof())
     {
-		strGenre += "/" + m_pDS2->fv("genre.strGenre").get_asString();
+		strGenre += " / " + m_pDS2->fv("genre.strGenre").get_asString();
 		m_pDS2->next();
     }
 	m_pDS2->close();
@@ -1156,10 +1167,10 @@ long CMusicDatabase::AddAlbumInfo(const CAlbum& album1)
 
 		// split our (possibly) multiple artist string into individual artists
 		CStdStringArray vecArtists;
-		int iNumArtists = StringUtils::SplitString(album.strArtist,"/",vecArtists);
+		int iNumArtists = StringUtils::SplitString(album.strArtist," / ",vecArtists);
 		// split our (possibly) multiple genre string into individual genres
 		CStdStringArray vecGenres;
-		int iNumGenres = StringUtils::SplitString(album.strGenre,"/",vecGenres);
+		int iNumGenres = StringUtils::SplitString(album.strGenre," / ",vecGenres);
 		// add the primary artist/genre
 		long lArtistId = AddArtist(vecArtists[0]);
 		long lGenreId = AddGenre(vecGenres[0]);
@@ -1481,6 +1492,7 @@ bool CMusicDatabase::CommitTransaction()
     CLog::Log(LOGERROR, "musicdatabase:committransaction failed");
 		return false;
 	}
+	m_iSongsBeforeCommit = 0;
 	return true;
 }
 
@@ -1819,10 +1831,10 @@ long CMusicDatabase::UpdateAlbumInfo(const CAlbum& album1)
 
 		// split our (possibly) multiple artist string into single artists.
 		CStdStringArray vecArtists;
-		long iNumArtists = StringUtils::SplitString(album.strArtist, "/", vecArtists);
+		long iNumArtists = StringUtils::SplitString(album.strArtist, " / ", vecArtists);
 		// and also the multiple genre string into single genres.
 		CStdStringArray vecGenres;
-		long iNumGenres = StringUtils::SplitString(album.strGenre, "/", vecGenres);
+		long iNumGenres = StringUtils::SplitString(album.strGenre, " / ", vecGenres);
 
 		long lArtistId = AddArtist(vecArtists[0]);
 		long lGenreId = AddGenre(vecGenres[0]);
@@ -2281,7 +2293,7 @@ void CMusicDatabase::DeleteAlbumInfo()
 			if (NULL==pDS.get() || !pDS->query(strSQL.c_str())) return;
 			while (!pDS->eof())
 			{
-				album.strArtist += "/" + pDS->fv("artist.strArtist").get_asString();
+				album.strArtist += " / " + pDS->fv("artist.strArtist").get_asString();
 				pDS->next();
 			}
 			pDS->close();

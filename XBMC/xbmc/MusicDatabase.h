@@ -27,6 +27,8 @@ using namespace MUSIC_INFO;
 #define ERROR_WRITING_CHANGES		329	
 #define ERROR_COMPRESSING			332
 
+#define NUM_SONGS_BEFORE_COMMIT	500
+
 /*!
 	\ingroup music
 	\brief Class to store and read song information from CMusicDatabase
@@ -267,6 +269,7 @@ private:
 	bool		CleanupArtists();
 	bool		CleanupGenres();
 	bool		CleanupAlbumsFromPaths(const CStdString &strPathIds);
+	int			m_iSongsBeforeCommit;
 };
 
 extern CMusicDatabase	g_musicDatabase;

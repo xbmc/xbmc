@@ -281,7 +281,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 				else if (iAction==ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
 				{
 					bool bDeselect(false);
-					if (!NumSelected(list))
+					if (!NumSelected(list) && m_vecItems[list][iItem]->GetLabel() != "..")
 					{
 						m_vecItems[list][iItem]->Select(true);
 						bDeselect = true;
