@@ -1145,3 +1145,34 @@ void	CUtil::GetResolutionParams(int m_iResolution,  int& iScreenWidth , int& iSc
 		break;
 	}
 }
+// Following 6 routines added by JM to determine (possible) source type based
+// on frame size
+bool CUtil::IsNTSC_VCD(int iWidth, int iHeight)
+{
+  return (iWidth==352 && iHeight==240);
+}
+
+bool CUtil::IsNTSC_SVCD(int iWidth, int iHeight)
+{
+  return (iWidth==480 && iHeight==480);
+}
+
+bool CUtil::IsNTSC_DVD(int iWidth, int iHeight)
+{
+  return (iWidth==720 && iHeight==480);
+}
+
+bool CUtil::IsPAL_VCD(int iWidth, int iHeight)
+{
+  return (iWidth==352 && iHeight==488);
+}
+
+bool CUtil::IsPAL_SVCD(int iWidth, int iHeight)
+{
+  return (iWidth==480 && iHeight==576);
+}
+
+bool CUtil::IsPAL_DVD(int iWidth, int iHeight)
+{
+  return (iWidth==720 && iHeight==576);
+}

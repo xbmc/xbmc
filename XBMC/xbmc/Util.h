@@ -68,4 +68,11 @@ public:
 	static void RemoveTempFiles();
 	static void	GetResolutionParams(int m_iResolution,  int& iScreenWidth , int& iScreenHeight,bool& bPAL, bool& bPAL60);
 	static int	GetResolution(int iWidth, int iHeight, bool bPAL, bool bPAL60);
+	// Added by JM to determine possible type of file from framesize
+	static bool IsNTSC_VCD(int iWidth, int iHeight);
+	static bool IsNTSC_SVCD(int iWidth, int iHeight);
+	static bool IsNTSC_DVD(int iWidth, int iHeight);
+	static bool IsPAL_VCD(int iWidth, int iHeight);
+	static bool IsPAL_SVCD(int iWidth, int iHeight);
+	static bool IsPAL_DVD(int iWidth, int iHeight);	
 };
