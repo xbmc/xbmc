@@ -370,9 +370,6 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 /// \param strFile Audiofile to set.
 void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
 {
-	//	Reset frame counter for window fading
-  m_iFrames=0;
-
 	//	Release previously shown album 
 	//	thumb, if any
 	if (m_pTexture)
@@ -625,17 +622,13 @@ void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
 
 	if (g_stSettings.m_bMyMusicSongInfoInVis && m_gWindowManager.GetActiveWindow()==WINDOW_VISUALISATION)
 	{
-		m_dwTimeout = 0;  // reset the timeout
-		
-		if (g_stSettings.m_iOSDTimeout <= 0)	//	Overlay should be shown permanent
+		//reset timeout
+		m_dwTimeout = 0;
+
+		//if we're not at the top, start moving up
+		if (m_iFrames < STEPS)
 		{
-			// reset to defaults
-			m_iFrames = STEPS;
-			m_iFrameIncrement = 0;
-		}
-		else if (m_iFrames < STEPS)  // check that we're not at the top of the movement
-		{
-			m_iFrameIncrement = 1;  // start moving back up to show the new file info...
+			m_iFrameIncrement = 1;
 		}
 	}
 }
