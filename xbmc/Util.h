@@ -29,6 +29,7 @@ public:
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
   static void LaunchXbe(char* szPath, char* szXbe, char* szParameters);
   static bool FileExists(const CStdString& strFileName);
+  static void GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath);
   static void GetThumbnail(const CStdString& strFileName, CStdString& strThumb);
   static void GetFileSize(__int64 dwFileSize, CStdString& strFileSize);
   static void GetDate(SYSTEMTIME stTime, CStdString& strDateTime);

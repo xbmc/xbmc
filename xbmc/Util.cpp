@@ -1695,6 +1695,22 @@ void CUtil::GetPath(const CStdString& strFileName, CStdString& strPath)
   strPath=strFileName.Left(iPos1-1);
 }
 
+void CUtil::GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath)
+{
+	int iPos1=strFilePath.ReverseFind('/');
+	int iPos2=strFilePath.ReverseFind('\\');
+
+	if (iPos2>iPos1)
+	{
+		iPos1=iPos2;
+	}
+	
+	if (iPos1>0)
+	{
+		strDirectoryPath = strFilePath.Left(iPos1);
+	}	
+}
+
 void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName)
 {
   strFileName="";

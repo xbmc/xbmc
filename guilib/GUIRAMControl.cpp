@@ -2,9 +2,10 @@
 #include "guiRAMControl.h"
 #include "guifontmanager.h"
 #include "guiWindowManager.h"
-#include "..\xbmc\Application.h"
-#include "..\xbmc\Utils\Log.h"
 #include "..\xbmc\Util.h"
+#include "..\xbmc\Utils\Log.h"
+#include "..\xbmc\Utils\fstrcmp.h"
+#include "..\xbmc\Application.h"
 #include "..\xbmc\PlayListPlayer.h"
 
 extern CApplication g_application;
@@ -220,12 +221,7 @@ void CGUIRAMControl::OnAction(const CAction &action)
 
 		case ACTION_SELECT_ITEM:
 		{
-			//int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
-			//CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
-			//m_gWindowManager.SendMessage( msg );
-			//g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-			//g_playlistPlayer.Play(nSize);
-			g_application.PlayFile( m_current[m_iSelection].strFilepath );
+			PlayMovie( m_current[m_iSelection].strFilepath );
 			break;
 		}
 
@@ -247,6 +243,107 @@ void CGUIRAMControl::OnAction(const CAction &action)
 			break;
 		}
 	}
+}
+
+struct CGUIRAMControl::SSortVideoListByName
+{
+	bool operator()(CStdString& strItem1, CStdString& strItem2)
+	{
+    return strcmp(strItem1.c_str(),strItem2.c_str())<0;
+  }
+};
+
+void CGUIRAMControl::PlayMovie(CStdString& strFilePath)
+{
+	// is video stacking enabled?	
+	if (g_stSettings.m_bMyVideoVideoStack)
+	{
+		CStdString strDirectory;
+		CUtil::GetDirectory(strFilePath,strDirectory);
+
+		// create a list of associated movie files (some movies span across multiple files!)
+		vector<CStdString> movies;
+		{
+			// create a list of all the files in the same directory
+			VECFILEITEMS items;
+			CVirtualDirectory dir;
+			dir.SetShares(g_settings.m_vecMyVideoShares);
+			dir.SetMask(g_stSettings.m_szMyVideoExtensions);
+			dir.GetDirectory(strDirectory,items);
+
+			// iterate through all the files, adding any files that appear similar to the selected movie file
+			for (int i=0; i < (int)items.size(); ++i)
+			{
+				CFileItem *pItemTmp=items[i];
+				if (!CUtil::IsNFO( pItemTmp->m_strPath) && !CUtil::IsPlayList(pItemTmp->m_strPath) )
+				{
+					double fPercentage=fstrcmp(CUtil::GetFileName(pItemTmp->m_strPath),CUtil::GetFileName(strFilePath),COMPARE_PERCENTAGE_MIN);
+					if (fPercentage >=COMPARE_PERCENTAGE)
+					{
+						if (CUtil::IsVideo(pItemTmp->m_strPath))
+						{
+							movies.push_back(pItemTmp->m_strPath);
+						}
+					}
+				}
+			}
+			
+			CFileItemList itemlist(items); // will clean up everything
+		}
+		
+		// if for some strange reason we couldn't find any matching files (can't think of any reason why!)
+		if (movies.size() <=0)
+		{
+			CLog::Log("*WARNING* Wibble! CGUIRAMControl was unable to find matching file!");
+
+			// might as well play the file that we do know about!
+			g_application.PlayFile( strFilePath );
+			return;
+		}
+    
+		// if this movie was split into multiple files
+		int iSelectedFile=1;
+		if (movies.size()>1)
+		{
+			// sort the files in alphabetical order
+			sort(movies.begin(), movies.end(), SSortVideoListByName());
+
+			// prompt the user to select a file from which to start playback (playback then continues across the
+			// selected file and the remainder of the files).
+			CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
+			if (dlg)
+			{
+				dlg->SetNumberOfFiles(movies.size());
+				dlg->DoModal(m_dwParentID);
+				iSelectedFile = dlg->GetSelectedFile();
+				if (iSelectedFile < 1)
+				{
+					// the user decided to cancel playback
+					return;
+				}
+			}
+		}
+
+		// create a playlist containing the appropriate movie files
+		g_playlistPlayer.Reset();
+		g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
+		CPlayList& playlist=g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO_TEMP);
+		playlist.Clear();
+		for (int i=iSelectedFile-1; i < (int)movies.size(); ++i)
+		{
+			CStdString strFileName = movies[i];
+			CPlayList::CPlayListItem item;
+			item.SetFileName(strFileName);
+			playlist.Add(item);
+		}
+
+		// play the first file on the playlist
+		g_playlistPlayer.PlayNext();
+		return;
+	}
+
+	// stacking disabled, just play the movie
+	g_application.PlayFile(strFilePath);
 }
 
 
