@@ -970,3 +970,10 @@ int CMPlayer::GetTime()
 {
   return mplayer_getTime();
 }
+
+void CMPlayer::ToFFRW(int iSpeed)
+{
+  mplayer_ToFFRW( iSpeed);
+  //SwitchToThread();
+  //xbox_video_wait();
+}

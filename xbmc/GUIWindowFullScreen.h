@@ -19,6 +19,7 @@ public:
   bool            NeedRenderFullScreen();
   bool            OSDVisible() const;
   void						ChangetheTimeCode(DWORD remote);  
+  void						ChangetheSpeed(DWORD action);
   virtual void    OnExecute(int iAction, const IOSDOption* option);
 private:
   void            ShowOSD();
@@ -38,4 +39,5 @@ private:
   bool            m_bLastRender;
 	int							m_strTimeStamp[5];
 	int							m_iTimeCodePosition;
+	int							m_iSpeed;
 };

@@ -98,6 +98,7 @@ public:
   virtual int     GetAudioStreamCount();
   virtual void	  SeekTime(int iTime=0);
   virtual int	  GetTime();
+  virtual void	  ToFFRW(int iSpeed=0);
 protected:
   bool                load();
 	virtual void				OnStartup();
