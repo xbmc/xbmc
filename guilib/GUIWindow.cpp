@@ -19,7 +19,7 @@ CGUIWindow::~CGUIWindow(void)
 
 
 
-bool CGUIWindow::LoadReference(const CStdString& strFileName, map<string,CGUIControl*>& controls)
+bool CGUIWindow::LoadReference(const CStdString& strFileName, VECREFERENCECONTOLS& controls)
 {
 	// load references.xml
 	controls.erase(controls.begin(), controls.end());
@@ -39,17 +39,23 @@ bool CGUIWindow::LoadReference(const CStdString& strFileName, map<string,CGUICon
 	CStdString strValue=pRootElement->Value();
 	if (strValue!=CStdString("controls")) return false;
 
+	CGUIControlFactory factory;
 	string strType;
 	const TiXmlNode *pControl = pRootElement->FirstChild();
 	while (pControl)
 	{
-		CGUIControlFactory factory;
-		CGUIControl* pGUIControl = factory.Create(m_dwWindowId,pControl,NULL,true);
-		if (pGUIControl)
+		TiXmlNode* pNode=pControl->FirstChild("type");
+		if (pNode)
 		{
-			TiXmlNode* pNode=pControl->FirstChild("type");
 			strType = pNode->FirstChild()->Value();
-			controls[strType]=pGUIControl;
+			CGUIControl* pGUIControl = factory.Create(m_dwWindowId,pControl,NULL,true);
+			if (pGUIControl)
+			{	
+				struct stReferenceControl stControl;
+				strcpy(stControl.m_szType,strType.c_str());
+				stControl.m_pControl=pGUIControl;
+				controls.push_back(stControl);
+			}
 		}
 		pControl=pControl->NextSibling();
 	}
@@ -73,8 +79,8 @@ bool CGUIWindow::Load(const CStdString& strFileName)
   
   m_dwDefaultFocusControlID=0;
 	
-	map<string,CGUIControl*> referencecontrols;
-	map<string,CGUIControl*>::iterator it;
+	VECREFERENCECONTOLS  referencecontrols;
+	IVECREFERENCECONTOLS it;
 	LoadReference(strFileName, referencecontrols);
  
   const TiXmlNode *pChild = pRootElement->FirstChild();
@@ -103,12 +109,14 @@ bool CGUIWindow::Load(const CStdString& strFileName)
 					 
 					// get reference control
 					CGUIControl* pGUIReferenceControl=NULL;
-					it = referencecontrols.find(strType);
-					if (it != referencecontrols.end() )
+					for (int i=0; i < (int)referencecontrols.size(); ++i)
 					{
-						pGUIReferenceControl=it->second;
+						struct stReferenceControl stControl=referencecontrols[i];
+						if (strType==stControl.m_szType)
+						{
+							pGUIReferenceControl=stControl.m_pControl;
+						}
 					}
-
 					CGUIControlFactory factory;
 					CGUIControl* pGUIControl = factory.Create(m_dwWindowId,pControl,pGUIReferenceControl,false);
 					if (pGUIControl)
@@ -124,12 +132,10 @@ bool CGUIWindow::Load(const CStdString& strFileName)
   }
 
 	
-	it=referencecontrols.begin();
-	while (it != referencecontrols.end() )
+	for (int i=0; i < (int)referencecontrols.size();++i)
 	{
-		CGUIControl* pControl = it->second;
-		delete pControl ;
-		it = referencecontrols.erase(it);
+		struct stReferenceControl stControl=referencecontrols[i];
+		delete stControl.m_pControl ;
 	}
   return true;
 }
