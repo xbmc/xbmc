@@ -121,7 +121,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
   {
     iCacheSize=8192;
   }
-  if (CUtil::IsAudio(strFile) )
+  if (CUtil::IsAudio(strFile) && !IsVideo(strFile) )
   {
     iCacheSize=0;
   }
