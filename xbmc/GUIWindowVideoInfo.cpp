@@ -110,12 +110,24 @@ void CGUIWindowVideoInfo::SetMovie(CIMDBMovie& album)
 void CGUIWindowVideoInfo::Update()
 {
 	if (!m_pMovie) return;
-	SetLabel(CONTROL_TITLE, m_pMovie->m_strTitle );
-	SetLabel(CONTROL_DIRECTOR, m_pMovie->m_strDirector );
-	SetLabel(CONTROL_CREDITS, m_pMovie->m_strWritingCredits );
-	SetLabel(CONTROL_GENRE, m_pMovie->m_strGenre );
-	SetLabel(CONTROL_TAGLINE, m_pMovie->m_strTagLine);
-	SetLabel(CONTROL_PLOTOUTLINE, m_pMovie->m_strPlotOutline );
+  CStdString strTmp;
+  strTmp=m_pMovie->m_strTitle; strTmp.Trim();
+  SetLabel(CONTROL_TITLE, strTmp.c_str() );
+
+  strTmp=m_pMovie->m_strDirector; strTmp.Trim();
+  SetLabel(CONTROL_DIRECTOR, strTmp.c_str() );
+
+  strTmp=m_pMovie->m_strWritingCredits; strTmp.Trim();
+	SetLabel(CONTROL_CREDITS, strTmp.c_str() );
+
+	strTmp=m_pMovie->m_strGenre; strTmp.Trim();
+	SetLabel(CONTROL_GENRE,  strTmp.c_str() );
+
+  strTmp=m_pMovie->m_strTagLine; strTmp.Trim();
+	SetLabel(CONTROL_TAGLINE, strTmp.c_str() );
+
+	strTmp=m_pMovie->m_strPlotOutline; strTmp.Trim();
+	SetLabel(CONTROL_PLOTOUTLINE, strTmp.c_str() );
 
 	CStdString strYear;
 	strYear.Format("%i", m_pMovie->m_iYear);
@@ -124,17 +136,22 @@ void CGUIWindowVideoInfo::Update()
 	CStdString strRating;
 	strRating.Format("%04.2f", m_pMovie->m_fRating);
 	SetLabel(CONTROL_RATING, strRating );
-	SetLabel(CONTROL_VOTES, m_pMovie->m_strVotes );
+
+  
+	strTmp=m_pMovie->m_strVotes; strTmp.Trim();
+	SetLabel(CONTROL_VOTES, strTmp.c_str() );
 	//SetLabel(CONTROL_CAST, m_pMovie->m_strCast );
 
 	if (m_bViewReview)
 	{
-			SET_CONTROL_LABEL(GetID(), CONTROL_TEXTAREA,m_pMovie->m_strPlot);
+      strTmp=m_pMovie->m_strPlot; strTmp.Trim();
+			SET_CONTROL_LABEL(GetID(), CONTROL_TEXTAREA,strTmp.c_str() );
 			SET_CONTROL_LABEL(GetID(), CONTROL_BTN_TRACKS,206);
 	}
 	else
 	{
-			SET_CONTROL_LABEL(GetID(), CONTROL_TEXTAREA,m_pMovie->m_strCast);
+      strTmp=m_pMovie->m_strCast; strTmp.Trim();
+			SET_CONTROL_LABEL(GetID(), CONTROL_TEXTAREA,strTmp.c_str() );
 			SET_CONTROL_LABEL(GetID(), CONTROL_BTN_TRACKS,207);
 		
 	}
