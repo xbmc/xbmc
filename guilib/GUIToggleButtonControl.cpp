@@ -18,6 +18,8 @@ CGUIToggleButtonControl::CGUIToggleButtonControl(DWORD dwParentID, DWORD dwContr
 	m_dwDisabledColor	= 0xFF606060; 
 	m_pFont=NULL;
   m_lHyperLinkWindowID=-1;
+  m_dwTextOffsetX = 0;
+  m_dwTextOffsetY = 0;
 }
 
 CGUIToggleButtonControl::~CGUIToggleButtonControl(void)
@@ -60,11 +62,12 @@ void CGUIToggleButtonControl::Render()
   
 
 	if (m_strLabel.size() > 0 && m_pFont)
-	{
-    if (IsDisabled() )
-      m_pFont->DrawText((float)10+m_dwPosX, (float)2+m_dwPosY,m_dwDisabledColor,m_strLabel.c_str());
-    else
-      m_pFont->DrawText((float)10+m_dwPosX, (float)2+m_dwPosY,m_dwTextColor,m_strLabel.c_str());
+	{	
+		float fTextX = (float)10+m_dwPosX+m_dwTextOffsetX;
+		float fTextY = (float) 2+m_dwPosY+m_dwTextOffsetY;
+
+		m_pFont->DrawText(fTextX, fTextY, 
+			IsDisabled() ? m_dwDisabledColor : m_dwTextColor, m_strLabel.c_str() );
 	}
 
 }
