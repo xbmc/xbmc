@@ -306,6 +306,8 @@ public:
 	bool			m_bResampleVideoAudio;	// separate from music, as it causes a CPU hit
   int       m_iLCDModChip;
   int		m_iOSDTimeout;		// OSD timeout in seconds
+	char      szOnlineUsername[32]; // KAITAG (username)
+	char      szOnlinePassword[32]; // corresponding password
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;
