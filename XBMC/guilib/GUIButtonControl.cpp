@@ -3,7 +3,7 @@
 #include "guifontmanager.h"
 #include "guiWindowManager.h"
 #include "guiDialog.h"
-#include "ActionManager.h"
+//#include "ActionManager.h"
 
 CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus, DWORD dwTextXOffset, DWORD dwTextYOffset, DWORD dwAlign)
 :CGUIControl(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight)
@@ -20,7 +20,7 @@ CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, int iP
 	m_dwTextAlignment = dwAlign;
 	m_pFont=NULL;
   m_lHyperLinkWindowID=WINDOW_INVALID;
-	m_strScriptAction="";
+	m_strExecuteAction="";
 	ControlType = GUICONTROL_BUTTON;
 }
 
@@ -64,15 +64,18 @@ void CGUIButtonControl::Render()
 	if (m_strLabel.size() > 0 && m_pFont)
 	{
 		float fPosX = (float)m_iPosX+m_dwTextOffsetX;
-		if (m_dwTextAlignment == XBFONT_CENTER_X)
+		float fPosY = (float)m_iPosY+m_dwTextOffsetY;
+		if (m_dwTextAlignment & XBFONT_CENTER_X)
 			fPosX = (float)m_iPosX + m_dwWidth/2;
+		if (m_dwTextAlignment & XBFONT_CENTER_Y)
+			fPosY = (float)m_iPosY + m_dwHeight/2;
 		if (IsDisabled() )
 		{
-			m_pFont->DrawText( fPosX, (float)m_iPosY+m_dwTextOffsetY,m_dwDisabledColor,m_strLabel.c_str(), m_dwTextAlignment);
+			m_pFont->DrawText( fPosX, fPosY,m_dwDisabledColor,m_strLabel.c_str(), m_dwTextAlignment);
 		}
 		else
 		{
-			m_pFont->DrawText( fPosX, (float)m_iPosY+m_dwTextOffsetY,m_dwTextColor,m_strLabel.c_str(),m_dwTextAlignment);
+			m_pFont->DrawText( fPosX, fPosY,m_dwTextColor,m_strLabel.c_str(),m_dwTextAlignment);
 		}
 	}
 
@@ -83,11 +86,12 @@ void CGUIButtonControl::OnAction(const CAction &action)
 	CGUIControl::OnAction(action);
 	if (action.wID == ACTION_SELECT_ITEM)
 	{
-		if (m_strScriptAction.length() > 0)
+		if (m_strExecuteAction.length() > 0)
 		{
-			CGUIMessage message(GUI_MSG_CLICKED,GetID(), GetParentID());
-			message.SetStringParam(m_strScriptAction);
-			g_actionManager.CallScriptAction(message);
+			CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
+			message.SetStringParam(m_strExecuteAction);
+			g_graphicsContext.SendMessage(message);
+//			g_actionManager.CallScriptAction(message);
 		}
 
 		// button selected.
@@ -213,9 +217,9 @@ void CGUIButtonControl::SetHyperLink(long dwWindowID)
   m_lHyperLinkWindowID=dwWindowID;
 }
 
-void CGUIButtonControl::SetScriptAction(const CStdString& strScriptAction)
+void CGUIButtonControl::SetExecuteAction(const CStdString& strExecuteAction)
 {
-	m_strScriptAction = strScriptAction;
+	m_strExecuteAction = strExecuteAction;
 }
 
 void CGUIButtonControl::OnMouseClick(DWORD dwButton)

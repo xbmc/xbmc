@@ -508,13 +508,12 @@ void CGUIWindowPrograms::OnClick(int iItem)
 
 		// launch xbe...
 		char szPath[1024];
-		char szDevicePath[1024];
-		char szXbePath[1024];
 		char szParameters[1024];
 		if (g_stSettings.m_bMyProgramsFlatten)
 			m_database.IncTimesPlayed(pItem->m_strPath);
 		m_database.Close();
 		memset(szParameters,0,sizeof(szParameters));
+
 		strcpy(szPath,pItem->m_strPath.c_str());
 
 		if (CUtil::IsShortCut(pItem->m_strPath) )
@@ -538,12 +537,6 @@ void CGUIWindowPrograms::OnClick(int iItem)
 				}
 
 				strcpy( szPath, shortcut.m_strPath.c_str() );
-				strcpy( szDevicePath, shortcut.m_strPath.c_str() );
-
-				CHAR* szXbe = strrchr(szDevicePath,'\\');
-				*szXbe++=0x00;
-
-				wsprintf(szXbePath,"d:\\%s",szXbe);
 
 				CHAR szMode[16];
 				strcpy( szMode, shortcut.m_strVideo.c_str() );
@@ -564,25 +557,10 @@ void CGUIWindowPrograms::OnClick(int iItem)
 				strcat(szParameters, shortcut.m_strParameters.c_str());
 			}
 		}
-		char* szBackslash = strrchr(szPath,'\\');
-		*szBackslash=0x00;
-		char* szXbe = &szBackslash[1];
-
-		char* szColon = strrchr(szPath,':');
-		*szColon=0x00;
-		char* szDrive = szPath;
-		char* szDirectory = &szColon[1];
-
-		CIoSupport helper;
-		helper.GetPartition( (LPCSTR) szDrive, szDevicePath);
-
-		strcat(szDevicePath,szDirectory);
-		wsprintf(szXbePath,"d:\\%s",szXbe);
-		g_application.Stop();
 		if (strlen(szParameters))
-			CUtil::LaunchXbe(szDevicePath,szXbePath,szParameters);
+			CUtil::RunXBE(szPath, szParameters);
 		else
-			CUtil::LaunchXbe(szDevicePath,szXbePath,NULL);
+			CUtil::RunXBE(szPath);
 	}
 }
 
