@@ -16,6 +16,7 @@ public:
   virtual ~CGUIImage(void);
   
   virtual void Render();
+  virtual void Render(DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight);
   virtual void OnKey(const CKey& key) ;
   virtual bool OnMessage(CGUIMessage& message);
   virtual void AllocResources();

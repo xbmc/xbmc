@@ -61,9 +61,9 @@ public:
   CKey(const CKey& key);
 
   virtual ~CKey(void);
-  bool IsButton() const;
-  DWORD GetButtonCode() const;
   const CKey& operator=(const CKey& key);
+  bool				IsButton() const;
+  DWORD				GetButtonCode() const;
 
 private:
   bool  m_bIsButton;

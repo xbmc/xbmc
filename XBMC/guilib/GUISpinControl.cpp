@@ -57,12 +57,12 @@ void CGUISpinControl::OnKey(const CKey& key)
       {
         case SPIN_CONTROL_TYPE_INT:
         {
-          if (m_iSelect==SPIN_BUTTON_DOWN)
+          if (m_iSelect==SPIN_BUTTON_UP)
           {
             if (m_iValue-1 >= m_iStart)
               m_iValue--;
           }
-          if (m_iSelect==SPIN_BUTTON_UP)
+          if (m_iSelect==SPIN_BUTTON_DOWN)
           {
             if (m_iValue+1 <= m_iEnd)
               m_iValue++;
@@ -75,12 +75,12 @@ void CGUISpinControl::OnKey(const CKey& key)
       
         case SPIN_CONTROL_TYPE_FLOAT:
         {
-          if (m_iSelect==SPIN_BUTTON_DOWN)
+          if (m_iSelect==SPIN_BUTTON_UP)
           {
             if (m_fValue-0.1 >= m_fStart)
               m_fValue-=0.1f;
           }
-          if (m_iSelect==SPIN_BUTTON_UP)
+          if (m_iSelect==SPIN_BUTTON_DOWN)
           {
             if (m_fValue+0.1 <= m_fEnd)
               m_fValue+=0.1f;
@@ -93,12 +93,12 @@ void CGUISpinControl::OnKey(const CKey& key)
 
         case SPIN_CONTROL_TYPE_TEXT:
         {
-          if (m_iSelect==SPIN_BUTTON_DOWN)
+          if (m_iSelect==SPIN_BUTTON_UP)
           {
             if (m_iValue-1 >= 0)
               m_iValue--;
           }
-          if (m_iSelect==SPIN_BUTTON_UP)
+          if (m_iSelect==SPIN_BUTTON_DOWN)
           {
             if (m_iValue+1 < (int)m_vecLabels.size() )
               m_iValue++;

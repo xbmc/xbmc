@@ -1,15 +1,13 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="guilib"
-	ProjectGUID="{18B69AC4-1E0E-4DB1-B9B2-EBB47D51FD50}"
+	ProjectGUID="{9B28366B-79F0-4361-B5C5-4608DFA8CF17}"
 	Keyword="XboxProj">
 	<Platforms>
 		<Platform
 			Name="Xbox"/>
-		<Platform
-			Name="Win32"/>
 	</Platforms>
 	<Configurations>
 		<Configuration
@@ -22,7 +20,6 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="../"
 				PreprocessorDefinitions="_DEBUG;_XBOX;_LIB"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -44,31 +41,6 @@
 				Name="VCPreBuildEventTool"/>
 			<Tool
 				Name="VCPreLinkEventTool"/>
-		</Configuration>
-		<Configuration
-			Name="Debug|Win32"
-			IntermediateDirectory="Debug"
-			ConfigurationType="1">
-			<Tool
-				Name="VCCLCompilerTool"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLinkerTool"/>
-			<Tool
-				Name="VCMIDLTool"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-			<Tool
-				Name="VCResourceCompilerTool"/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
 		</Configuration>
 		<Configuration
 			Name="Profile|Xbox"
@@ -102,31 +74,6 @@
 				Name="VCPreBuildEventTool"/>
 			<Tool
 				Name="VCPreLinkEventTool"/>
-		</Configuration>
-		<Configuration
-			Name="Profile|Win32"
-			IntermediateDirectory="Profile"
-			ConfigurationType="1">
-			<Tool
-				Name="VCCLCompilerTool"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLinkerTool"/>
-			<Tool
-				Name="VCMIDLTool"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-			<Tool
-				Name="VCResourceCompilerTool"/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
 		</Configuration>
 		<Configuration
 			Name="Profile_FastCap|Xbox"
@@ -163,31 +110,6 @@
 				Name="VCPreLinkEventTool"/>
 		</Configuration>
 		<Configuration
-			Name="Profile_FastCap|Win32"
-			IntermediateDirectory="Profile_FastCap"
-			ConfigurationType="1">
-			<Tool
-				Name="VCCLCompilerTool"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLinkerTool"/>
-			<Tool
-				Name="VCMIDLTool"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-			<Tool
-				Name="VCResourceCompilerTool"/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
-		</Configuration>
-		<Configuration
 			Name="Release|Xbox"
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
@@ -219,31 +141,6 @@
 				Name="VCPreBuildEventTool"/>
 			<Tool
 				Name="VCPreLinkEventTool"/>
-		</Configuration>
-		<Configuration
-			Name="Release|Win32"
-			IntermediateDirectory="Release"
-			ConfigurationType="1">
-			<Tool
-				Name="VCCLCompilerTool"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLinkerTool"/>
-			<Tool
-				Name="VCMIDLTool"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-			<Tool
-				Name="VCResourceCompilerTool"/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release_LTCG|Xbox"
@@ -279,316 +176,235 @@
 			<Tool
 				Name="VCPreLinkEventTool"/>
 		</Configuration>
-		<Configuration
-			Name="Release_LTCG|Win32"
-			IntermediateDirectory="Release_LTCG"
-			ConfigurationType="1">
-			<Tool
-				Name="VCCLCompilerTool"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLinkerTool"/>
-			<Tool
-				Name="VCMIDLTool"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-			<Tool
-				Name="VCResourceCompilerTool"/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
-		</Configuration>
-		<Configuration
-			Name="DebugWin32|Xbox"
-			OutputDirectory="DebugWin32"
-			IntermediateDirectory="DebugWin32"
-			ConfigurationType="4"
-			CharacterSet="2">
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				OptimizeForProcessor="2"
-				PreprocessorDefinitions="_DEBUG;_LIB"
-				MinimalRebuild="TRUE"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
-				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="4"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/$(ProjectName).lib"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-		</Configuration>
-		<Configuration
-			Name="DebugWin32|Win32"
-			OutputDirectory="DebugWin32"
-			IntermediateDirectory="DebugWin32"
-			ConfigurationType="4">
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				PreprocessorDefinitions="_DEBUG;_LIB"
-				DebugInformationFormat="4"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="debugwin32/guilib.lib"/>
-			<Tool
-				Name="VCMIDLTool"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-			<Tool
-				Name="VCResourceCompilerTool"/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
-			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
+			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath="AnimatedGif.cpp">
+				RelativePath=".\AnimatedGif.cpp">
 			</File>
 			<File
-				RelativePath="GUIButtonControl.cpp">
+				RelativePath=".\GraphicContext.cpp">
 			</File>
 			<File
-				RelativePath="GUICheckMarkControl.cpp">
+				RelativePath=".\GUIButtonControl.cpp">
 			</File>
 			<File
-				RelativePath="GUIControl.cpp">
+				RelativePath=".\GUICheckMarkControl.cpp">
 			</File>
 			<File
-				RelativePath="GUIDialog.cpp">
+				RelativePath=".\GUIControl.cpp">
 			</File>
 			<File
-				RelativePath="GUIFont.cpp">
+				RelativePath=".\GuiControlFactory.cpp">
 			</File>
 			<File
-				RelativePath="GUIFontManager.cpp">
+				RelativePath=".\GUIDialog.cpp">
 			</File>
 			<File
-				RelativePath="GUILabelControl.cpp">
+				RelativePath=".\GUIFont.cpp">
 			</File>
 			<File
-				RelativePath="GUIListControl.cpp">
+				RelativePath=".\GUIFontManager.cpp">
 			</File>
 			<File
-				RelativePath="GUIListItem.cpp">
+				RelativePath=".\guiImage.cpp">
 			</File>
 			<File
-				RelativePath="GUIMButtonControl.cpp">
+				RelativePath=".\GUILabelControl.cpp">
 			</File>
 			<File
-				RelativePath="GUIMessage.cpp">
+				RelativePath=".\GUIListControl.cpp">
 			</File>
 			<File
-				RelativePath="GUIRadioButtonControl.cpp">
+				RelativePath=".\GUIListItem.cpp">
 			</File>
 			<File
-				RelativePath="GUISpinControl.cpp">
+				RelativePath=".\GUIMButtonControl.cpp">
 			</File>
 			<File
-				RelativePath="GUIThumbnailPanel.cpp">
+				RelativePath=".\GUIMessage.cpp">
 			</File>
 			<File
-				RelativePath="GUIToggleButtonControl.cpp">
+				RelativePath=".\GUIRadioButtonControl.cpp">
 			</File>
 			<File
-				RelativePath="GUIWindow.cpp">
+				RelativePath=".\GUISpinControl.cpp">
 			</File>
 			<File
-				RelativePath="GUIWindowManager.cpp">
+				RelativePath=".\GUIThumbnailPanel.cpp">
 			</File>
 			<File
-				RelativePath="GraphicContext.cpp">
+				RelativePath=".\GUIToggleButtonControl.cpp">
 			</File>
 			<File
-				RelativePath="GuiControlFactory.cpp">
+				RelativePath=".\GUIWindow.cpp">
 			</File>
 			<File
-				RelativePath="IWindowManagerCallback.cpp">
+				RelativePath=".\GUIWindowManager.cpp">
 			</File>
 			<File
-				RelativePath="Key.cpp">
+				RelativePath=".\IWindowManagerCallback.cpp">
 			</File>
 			<File
-				RelativePath="LocalizeStrings.cpp">
+				RelativePath=".\Key.cpp">
 			</File>
 			<File
-				RelativePath="TextureManager.cpp">
+				RelativePath=".\LocalizeStrings.cpp">
 			</File>
 			<File
-				RelativePath="guiImage.cpp">
+				RelativePath=".\TextureManager.cpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl;inc">
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
-				RelativePath="AnimatedGif.h">
+				RelativePath=".\AnimatedGif.h">
 			</File>
 			<File
-				RelativePath="GUIButtonControl.h">
+				RelativePath=".\GraphicContext.h">
 			</File>
 			<File
-				RelativePath="GUICheckMarkControl.h">
+				RelativePath=".\gui3d.h">
 			</File>
 			<File
-				RelativePath="GUIControl.h">
+				RelativePath=".\GUIButtonControl.h">
 			</File>
 			<File
-				RelativePath="GUIDialog.h">
+				RelativePath=".\GUICheckMarkControl.h">
 			</File>
 			<File
-				RelativePath="GUIFont.h">
+				RelativePath=".\GUIControl.h">
 			</File>
 			<File
-				RelativePath="GUIFontManager.h">
+				RelativePath=".\GuiControlFactory.h">
 			</File>
 			<File
-				RelativePath="GUILabelControl.h">
+				RelativePath=".\GUIDialog.h">
 			</File>
 			<File
-				RelativePath="GUIListControl.h">
+				RelativePath=".\GUIFont.h">
 			</File>
 			<File
-				RelativePath="GUIListItem.h">
+				RelativePath=".\GUIFontManager.h">
 			</File>
 			<File
-				RelativePath="GUIMButtonControl.h">
+				RelativePath=".\guiImage.h">
 			</File>
 			<File
-				RelativePath="GUIMessage.h">
+				RelativePath=".\GUILabelControl.h">
 			</File>
 			<File
-				RelativePath="GUIRadioButtonControl.h">
+				RelativePath=".\GUIListControl.h">
 			</File>
 			<File
-				RelativePath="GUISpinControl.h">
+				RelativePath=".\GUIListItem.h">
 			</File>
 			<File
-				RelativePath="GUIThumbnailPanel.h">
+				RelativePath=".\GUIMButtonControl.h">
 			</File>
 			<File
-				RelativePath="GUIToggleButtonControl.h">
+				RelativePath=".\GUIMessage.h">
 			</File>
 			<File
-				RelativePath="GUIWindow.h">
+				RelativePath=".\GUIRadioButtonControl.h">
 			</File>
 			<File
-				RelativePath="GUIWindowManager.h">
+				RelativePath=".\GUISpinControl.h">
 			</File>
 			<File
-				RelativePath="GraphicContext.h">
+				RelativePath=".\GUIThumbnailPanel.h">
 			</File>
 			<File
-				RelativePath="GuiControlFactory.h">
+				RelativePath=".\GUIToggleButtonControl.h">
 			</File>
 			<File
-				RelativePath="IMsgSenderCallback.h">
+				RelativePath=".\GUIWindow.h">
 			</File>
 			<File
-				RelativePath="IWindowManagerCallback.h">
+				RelativePath=".\GUIWindowManager.h">
 			</File>
 			<File
-				RelativePath="Key.h">
+				RelativePath=".\IMsgSenderCallback.h">
 			</File>
 			<File
-				RelativePath="LocalizeStrings.h">
+				RelativePath=".\IWindowManagerCallback.h">
 			</File>
 			<File
-				RelativePath="StdString.h">
+				RelativePath=".\Key.h">
 			</File>
 			<File
-				RelativePath="TextureManager.h">
+				RelativePath=".\LocalizeStrings.h">
 			</File>
 			<File
-				RelativePath="gui3d.h">
+				RelativePath=".\StdString.h">
 			</File>
 			<File
-				RelativePath="guiImage.h">
-			</File>
-		</Filter>
-		<Filter
-			Name="tinyXML"
-			Filter="">
-			<File
-				RelativePath="tinyXML\tinystr.cpp">
-			</File>
-			<File
-				RelativePath="tinyXML\tinystr.h">
-			</File>
-			<File
-				RelativePath="tinyXML\tinyxml.cpp">
-			</File>
-			<File
-				RelativePath="tinyXML\tinyxml.h">
-			</File>
-			<File
-				RelativePath="tinyXML\tinyxmlerror.cpp">
-			</File>
-			<File
-				RelativePath="tinyXML\tinyxmlparser.cpp">
+				RelativePath=".\TextureManager.h">
 			</File>
 		</Filter>
 		<Filter
 			Name="common"
 			Filter="">
 			<File
-				RelativePath="common\xbfont.cpp">
+				RelativePath=".\common\uix.h">
 			</File>
 			<File
-				RelativePath="common\xbfont.h">
+				RelativePath=".\common\xbfont.cpp">
 			</File>
 			<File
-				RelativePath="common\xbfont32.cpp">
+				RelativePath=".\common\xbfont.h">
 			</File>
 			<File
-				RelativePath="common\xbfont32.h">
+				RelativePath=".\common\xbinput.cpp">
 			</File>
 			<File
-				RelativePath="common\xbinput.cpp">
+				RelativePath=".\common\xbinput.h">
 			</File>
 			<File
-				RelativePath="common\xbinput.h">
+				RelativePath=".\common\xbresource.cpp">
 			</File>
 			<File
-				RelativePath="common\xbresource.cpp">
+				RelativePath=".\common\xbresource.h">
 			</File>
 			<File
-				RelativePath="common\xbresource.h">
+				RelativePath=".\common\xbutil.cpp">
 			</File>
 			<File
-				RelativePath="common\xbutil.cpp">
-			</File>
-			<File
-				RelativePath="common\xbutil.h">
+				RelativePath=".\common\xbutil.h">
 			</File>
 		</Filter>
+		<Filter
+			Name="tinyXML"
+			Filter="">
+			<File
+				RelativePath=".\tinyXML\tinystr.cpp">
+			</File>
+			<File
+				RelativePath=".\tinyXML\tinystr.h">
+			</File>
+			<File
+				RelativePath=".\tinyXML\tinyxml.cpp">
+			</File>
+			<File
+				RelativePath=".\tinyXML\tinyxml.h">
+			</File>
+			<File
+				RelativePath=".\tinyXML\tinyxmlerror.cpp">
+			</File>
+			<File
+				RelativePath=".\tinyXML\tinyxmlparser.cpp">
+			</File>
+		</Filter>
+		<File
+			RelativePath=".\ReadMe.txt">
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

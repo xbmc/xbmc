@@ -4,30 +4,38 @@ CGUIListItem::CGUIListItem(void)
 {
   m_strLabel2="";
   m_strLabel="";
-  m_bImage=false;
-  m_pImage=NULL;
+  m_pThumbnailImage=NULL;
+  m_pIconImage=NULL;
   m_bSelected=false;
+  m_strIcon="";
+  m_strThumbnailImage="";
 }
 
-CGUIListItem::CGUIListItem(bool bHasImage, const CStdString& strLabel)
+CGUIListItem::CGUIListItem(const CStdString& strLabel)
 {
   m_strLabel2="";
-  m_bImage=bHasImage;
   m_strLabel=strLabel;
-  m_pImage=NULL;
+  m_pThumbnailImage=NULL;
+  m_pIconImage=NULL;
   m_bSelected=false;
+  m_strIcon="";
+  m_strThumbnailImage="";
 }
 
 CGUIListItem::~CGUIListItem(void)
 {
-  if (m_pImage) 
+  if (m_pThumbnailImage) 
   {
-    m_pImage->FreeResources();
-    delete m_pImage;
-    m_pImage=NULL;
+    m_pThumbnailImage->FreeResources();
+    delete m_pThumbnailImage;
+    m_pThumbnailImage=NULL;
   }
 }
 
+void CGUIListItem::SetLabel(const CStdString& strLabel) 
+{
+  m_strLabel = strLabel;
+}
 
 const CStdString& CGUIListItem::GetLabel() const
 {
@@ -35,12 +43,76 @@ const CStdString& CGUIListItem::GetLabel() const
 }
 
 
+void CGUIListItem::SetLabel2(const CStdString& strLabel2) 
+{
+  m_strLabel2 = strLabel2;
+}
+
 const CStdString& CGUIListItem::GetLabel2() const
 {
   return m_strLabel2;
 }
 
-bool CGUIListItem::HasImage() const
+void CGUIListItem::SetThumbnailImage(const CStdString& strThumbnail)
 {
-  return m_bImage;
+	m_strThumbnailImage=strThumbnail;
+}
+
+const CStdString&	CGUIListItem::GetThumbnailImage() const
+{
+	return m_strThumbnailImage;
+}
+
+void CGUIListItem::SetIconImage(const CStdString& strIcon)
+{
+	m_strIcon=strIcon;
+}
+
+const CStdString& CGUIListItem::GetIconImage() const
+{
+	return m_strIcon;
+}
+
+
+void CGUIListItem::Select(bool bOnOff)
+{
+	m_bSelected=bOnOff;
+}
+
+bool CGUIListItem::HasIcon() const
+{
+	return (m_strIcon.size() != 0);
+}
+
+
+bool CGUIListItem::HasThumbnail() const
+{
+	return (m_strThumbnailImage.size() != 0);
+}
+
+bool CGUIListItem::IsSelected() const
+{
+	return m_bSelected;
+}
+
+CGUIImage* CGUIListItem::GetThumbnail()
+{
+	return m_pThumbnailImage;
+}
+
+CGUIImage* CGUIListItem::GetIcon()
+{
+	return m_pIconImage;
+}
+
+
+void CGUIListItem::SetThumbnail(CGUIImage* pImage)
+{
+  m_pThumbnailImage=pImage;
+}
+
+
+void CGUIListItem::SetIcon(CGUIImage* pImage)
+{
+  m_pIconImage=pImage;
 }

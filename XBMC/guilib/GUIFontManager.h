@@ -16,9 +16,9 @@ class GUIFontManager
 public:
   GUIFontManager(void);
   virtual ~GUIFontManager(void);
-	CGUIFont*  Load(const CStdString& strFontName,const CStdString& strFilename);
-  void       LoadFonts(const CStdString& strFilename);
-  CGUIFont*	GetFont(const CStdString& strFontName);
+	CGUIFont*				Load(const CStdString& strFontName,const CStdString& strFilename);
+  void						LoadFonts(const CStdString& strFilename);
+  CGUIFont*				GetFont(const CStdString& strFontName);
 protected:
   vector<CGUIFont*> m_vecFonts;
 };

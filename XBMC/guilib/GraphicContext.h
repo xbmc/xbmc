@@ -14,15 +14,15 @@ class CGraphicContext
 public:
   CGraphicContext(void);
   ~CGraphicContext(void);
-  LPDIRECT3DDEVICE8 Get3DDevice();
-  void              Set(LPDIRECT3DDEVICE8 p3dDevice, int iWidth, int iHeight);
-  int               GetWidth() const;
-  int               GetHeight() const;
-  void              SendMessage(CGUIMessage& message);
-  void              setMessageSender(IMsgSenderCallback* pCallback);
-  DWORD             GetNewID();
-  const CStdString&     GetMediaDir();
-  void              SetMediaDir(const CStdString& strMediaDir);
+  LPDIRECT3DDEVICE8			Get3DDevice();
+  void									Set(LPDIRECT3DDEVICE8 p3dDevice, int iWidth, int iHeight);
+  int										GetWidth() const;
+  int										GetHeight() const;
+  void									SendMessage(CGUIMessage& message);
+  void									setMessageSender(IMsgSenderCallback* pCallback);
+  DWORD									GetNewID();
+  const CStdString&     GetMediaDir() const;
+  void									SetMediaDir(const CStdString& strMediaDir);
 
 protected:
   IMsgSenderCallback*     m_pCallback;

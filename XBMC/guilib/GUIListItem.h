@@ -12,17 +12,40 @@ class CGUIListItem
 {
 public:
   CGUIListItem(void);
-  CGUIListItem(bool bHasImage, const CStdString& strLabel);
+  CGUIListItem(const CStdString& strLabel);
   virtual ~CGUIListItem(void);
 
+  void							SetLabel(const CStdString& strLabel);
   const CStdString& GetLabel() const;
+  
+  void							SetLabel2(const CStdString& strLabel);
   const CStdString& GetLabel2() const;
-  bool              HasImage() const;
-  CStdString        m_strLabel;
-  CStdString        m_strLabel2;
-  CStdString        m_strThumbnailImage;
-  bool              m_bImage;
-  CGUIImage*        m_pImage;
-  bool              m_bSelected;
+  
+  void							SetIconImage(const CStdString& strIcon);
+  const CStdString&	GetIconImage() const;
+
+  void							SetThumbnailImage(const CStdString& strThumbnail);
+  const CStdString&	GetThumbnailImage() const;
+
+  void							Select(bool bOnOff);
+  bool							IsSelected() const;
+
+  bool							HasIcon() const;
+  bool							HasThumbnail() const;
+  
+  void							SetThumbnail(CGUIImage*	pImage);
+  CGUIImage*				GetThumbnail();
+
+  void							SetIcon(CGUIImage*	pImage);
+  CGUIImage*				GetIcon();
+
+protected:  
+  CStdString        m_strLabel;						// text of column1
+  CStdString        m_strLabel2;					// text of column2
+  CStdString        m_strThumbnailImage;	// filename of thumbnail 
+  CStdString        m_strIcon;						// filename of icon
+  CGUIImage*        m_pThumbnailImage;		// pointer to CImage containing the thumbnail
+  CGUIImage*        m_pIconImage;					// pointer to CImage containing the icon
+  bool              m_bSelected;					// item is selected or not
 };
 #endif
