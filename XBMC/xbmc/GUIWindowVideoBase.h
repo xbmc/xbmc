@@ -47,7 +47,8 @@ protected:
   bool CheckMovie(const CStdString& strFileName);
   void OnQueueItem(int iItem);
   void AddItemToPlayList(const CFileItem* pItem);
-
+  void GetStackedFiles(const CStdString &strFileName, vector<CStdString> &movies);
+  void PlayMovies(VECMOVIESFILES &movies, long lStartOffset);
   CVirtualDirectory m_rootDir;
   CFileItemList m_vecItems;
   CFileItem m_Directory;

@@ -236,6 +236,13 @@ long CVideoDatabase::GetFile(const CStdString& strFilenameAndPath, long &lPathId
     Split(strFilenameAndPath, strPath, strFileName);
     RemoveInvalidChars(strPath);
 
+    // check for a stackable file
+    CStdString fileTitle;
+    CStdString volumePrefix;
+    int volumeNumber;
+    if (!bExact && !CUtil::GetVolumeFromFileName(strFileName, fileTitle, volumePrefix, volumeNumber))
+      bExact = true;  // can't stack this file
+
     lPathId = GetPath(strPath);
     if (lPathId < 0) return -1;
 
@@ -262,14 +269,27 @@ long CVideoDatabase::GetFile(const CStdString& strFilenameAndPath, long &lPathId
         }
         else
         {
-          double fPercentage = fstrcmp(strFname.c_str(), strFileName.c_str(), COMPARE_PERCENTAGE_MIN );
+          CStdString fileTitle2;
+          CStdString volumePrefix2;
+          int volumeNumber2;
+          if (CUtil::GetVolumeFromFileName(strFname, fileTitle2, volumePrefix2, volumeNumber2))
+          {
+            if (fileTitle.Equals(fileTitle2) && volumePrefix.Equals(volumePrefix2))
+            { // found a file already
+              long lFileId = m_pDS->fv("idFile").get_asLong() ;
+              lMovieId = m_pDS->fv("idMovie").get_asLong() ;
+              m_pDS->close();
+              return lFileId;
+            }
+          }
+/*          double fPercentage = fstrcmp(strFname.c_str(), strFileName.c_str(), COMPARE_PERCENTAGE_MIN );
           if ( fPercentage >= COMPARE_PERCENTAGE)
           {
             long lFileId = m_pDS->fv("idFile").get_asLong() ;
             lMovieId = m_pDS->fv("idMovie").get_asLong() ;
             m_pDS->close();
             return lFileId;
-          }
+          }*/
         }
         m_pDS->next();
       }
@@ -350,8 +370,7 @@ long CVideoDatabase::GetMovie(const CStdString& strFilenameAndPath)
 {
   long lPathId;
   long lMovieId;
-  // changed by JM 8 Mar 2005 to ignore fuzzy stacking
-  if (GetFile(strFilenameAndPath, lPathId, lMovieId, true) < 0)
+  if (GetFile(strFilenameAndPath, lPathId, lMovieId) < 0)
   {
     return -1;
   }
@@ -1149,8 +1168,7 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath)
     long lMovieId;
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    // changed by JM 8 Mar 2005 to ignore fuzzy stacking
-    if (GetFile(strFilenameAndPath, lPathId, lMovieId, true) < 0)
+    if (GetFile(strFilenameAndPath, lPathId, lMovieId) < 0)
     {
       return ;
     }

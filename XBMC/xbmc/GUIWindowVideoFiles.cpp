@@ -285,7 +285,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         //   1 : simple stacking
         //   2 : fuzzy stacking
         g_stSettings.m_iMyVideoVideoStack++;
-        if (g_stSettings.m_iMyVideoVideoStack > STACK_FUZZY) g_stSettings.m_iMyVideoVideoStack = STACK_NONE;
+        if (g_stSettings.m_iMyVideoVideoStack > STACK_SIMPLE) g_stSettings.m_iMyVideoVideoStack = STACK_NONE;
         if (g_stSettings.m_iMyVideoVideoStack != STACK_NONE)
           g_stSettings.m_bMyVideoCleanTitles = true;
         else
@@ -632,118 +632,15 @@ void CGUIWindowVideoFiles::OnClick(int iItem)
       LoadPlayList(pItem->m_strPath);
       return ;
     }
-    if (!CheckMovie(pItem->m_strPath)) return ;
-    if (g_stSettings.m_iMyVideoVideoStack != STACK_NONE)
+    if (!CheckMovie(pItem->m_strPath)) return;
+    vector<CStdString> movies;
+    GetStackedFiles(pItem->m_strPath, movies);
+    for (int i = 0; i < (int)movies.size(); ++i)
     {
-      CStdString fileName = CUtil::GetFileName(pItem->m_strPath);
-
-      CStdString fileTitle;
-      CStdString volumePrefix;
-      int volumeNumber;
-      bool fileStackable = true;
-      if (g_stSettings.m_iMyVideoVideoStack == STACK_SIMPLE)
-      {
-        if (!CUtil::GetVolumeFromFileName(fileName, fileTitle, volumePrefix, volumeNumber))
-          fileStackable = false;
-      }
-
-      vector<CStdString> movies;
-      {
-        if (fileStackable)
-        {
-          CFileItemList items;
-          m_rootDir.GetDirectory(m_Directory.m_strPath, items);
-          for (int i = 0; i < (int)items.Size(); ++i)
-          {
-            CFileItem *pItemTmp = items[i];
-            if (!pItemTmp->IsNFO() && !pItemTmp->IsPlayList())
-            {
-              if (pItemTmp->IsVideo())
-              {
-                CStdString fileNameTemp = CUtil::GetFileName(pItemTmp->m_strPath);
-                bool stackFile = false;
-
-                if (fileName.Equals(fileNameTemp))
-                {
-                  stackFile = true;
-                }
-                else if (g_stSettings.m_iMyVideoVideoStack == STACK_FUZZY)
-                {
-                  // fuzzy stacking
-                  double fPercentage = fstrcmp(fileNameTemp, fileName, COMPARE_PERCENTAGE_MIN);
-                  if (fPercentage >= COMPARE_PERCENTAGE)
-                  {
-                    stackFile = true;
-                  }
-                }
-                else
-                {
-                  // simple stacking
-                  CStdString fileTitle2;
-                  CStdString volumePrefix2;
-                  int volumeNumber2;
-                  if (CUtil::GetVolumeFromFileName(fileNameTemp, fileTitle2, volumePrefix2, volumeNumber2))
-                  {
-                    if (fileTitle.Equals(fileTitle2) && volumePrefix.Equals(volumePrefix2))
-                    {
-                      stackFile = true;
-                    }
-                  }
-                }
-
-                if (stackFile)
-                {
-                  movies.push_back(pItemTmp->m_strPath);
-                }
-              }
-            }
-          }
-        }
-        else
-        {
-          // file is not stackable - simply add it as the only item in the list
-          movies.push_back(pItem->m_strPath);
-        }
-      }
-      if (movies.size() <= 0) return ;
-      int iSelectedFile = 1;
-      if (movies.size() > 1)
-      {
-        sort(movies.begin(), movies.end(), SSortVideoListByName());
-        for (int i = 0; i < (int)movies.size(); ++i)
-        {
-          CFileItem item(movies[i], false);
-          AddFileToDatabase(&item);
-        }
-
-        CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
-        if (dlg)
-        {
-          dlg->SetNumberOfFiles(movies.size());
-          dlg->DoModal(GetID());
-          iSelectedFile = dlg->GetSelectedFile();
-          if (iSelectedFile < 1) return ;
-        }
-        g_playlistPlayer.Reset();
-        g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
-        CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO_TEMP);
-        playlist.Clear();
-        for (int i = iSelectedFile - 1; i < (int)movies.size(); ++i)
-        {
-          CPlayList::CPlayListItem item;
-          item.SetFileName(movies[i]);
-          playlist.Add(item);
-        }
-
-        // play movie...
-        g_playlistPlayer.PlayNext();
-        return ;
-      }
+      CFileItem item(movies[i], false);
+      AddFileToDatabase(&item);
     }
-
-    // play movie...
-    AddFileToDatabase(pItem);
-    g_application.PlayFile(*pItem);
+    PlayMovies(movies, pItem->m_lStartOffset);
   }
 }
 
@@ -790,11 +687,13 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
     }
   }
 
-  CFileItem item(strMovie);
-  item.m_strPath = strFile;
-
-  AddFileToDatabase(&item);
-
+  vector<CStdString> movies;
+  GetStackedFiles(strFile, movies);
+  for (unsigned int i = 0; i < movies.size(); i++)
+  {
+    CFileItem item(movies[i], false);
+    AddFileToDatabase(&item);
+  }
 
   ShowIMDB(strMovie, strFile, strFolder, bFolder);
   CONTROL_SELECT_ITEM(CONTROL_LIST, iSelectedItem);
@@ -880,7 +779,14 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
           m_dlgProgress->Progress();
           if (m_dlgProgress->IsCanceled()) return ;
         }
-        AddFileToDatabase(pItem);
+        // get stacked items
+        vector<CStdString> movies;
+        GetStackedFiles(pItem->m_strPath, movies);
+        for (unsigned int i = 0; i < movies.size(); i++)
+        {
+          CFileItem item(movies[i], false);
+          AddFileToDatabase(&item);
+        }
         if (!m_database.HasMovieInfo(pItem->m_strPath))
         {
           // do IMDB lookup...
@@ -921,8 +827,9 @@ void CGUIWindowVideoFiles::OnRetrieveVideoInfo(CFileItemList& items)
               CUtil::ClearCache();
               if ( IMDB.GetDetails(url, movieDetails) )
               {
-                // get & save thumbnail
+                // add to all movies in the stacked set
                 m_database.SetMovieInfo(pItem->m_strPath, movieDetails);
+                // get & save thumbnail
                 CStdString strThumb = "";
                 CStdString strImage = movieDetails.m_strPictureURL;
                 if (strImage.size() > 0 && movieDetails.m_strSearchString.size() > 0)
@@ -1364,4 +1271,3 @@ void CGUIWindowVideoFiles::OnPopupMenu(int iItem)
   }
   CGUIWindowVideoBase::OnPopupMenu(iItem);
 }
-
