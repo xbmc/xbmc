@@ -23,7 +23,8 @@ protected:
   void    DisplayBuildCustomChars() ;
   void    DisplayOut(unsigned char data, unsigned char command) ;
   void    wait_us(unsigned int value) ;
-  unsigned int m_iColumns;				// display rows each line
+  unsigned int m_iColumns;				// display columns for each line
+  unsigned int m_iRows;				// total number of rows
   unsigned int m_iRow1adr ;
   unsigned int m_iRow2adr ;
   unsigned int m_iRow3adr ;

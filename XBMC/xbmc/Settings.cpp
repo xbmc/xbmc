@@ -15,6 +15,7 @@ CSettings::CSettings(void)
 
 	g_stSettings.m_bLCDUsed=false;
   g_stSettings.m_iLCDColumns=20;
+  g_stSettings.m_iLCDRows=4;
   g_stSettings.m_iLCDAdress[0]=0x0;
   g_stSettings.m_iLCDAdress[1]=0x40;
   g_stSettings.m_iLCDAdress[2]=0x14;
@@ -756,6 +757,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 	{
 		GetBoolean(pElement, "lcdon", g_stSettings.m_bLCDUsed);
     GetInteger(pElement, "lcdcolums",g_stSettings.m_iLCDColumns,20,1,20);
+    GetInteger(pElement, "lcdrows",g_stSettings.m_iLCDRows,4,1,4);
     GetInteger(pElement, "lcdrow1",g_stSettings.m_iLCDAdress[0],0,0,0x400);
     GetInteger(pElement, "lcdrow2",g_stSettings.m_iLCDAdress[1],0x40,0,0x400);
     GetInteger(pElement, "lcdrow3",g_stSettings.m_iLCDAdress[2],0x14,0,0x400);
@@ -1038,6 +1040,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	if (!pNode) return false;
 	SetBoolean(pNode, "lcdon", g_stSettings.m_bLCDUsed);
   SetInteger(pNode, "lcdcolums",g_stSettings.m_iLCDColumns);
+  SetInteger(pNode, "lcdrows",g_stSettings.m_iLCDRows);
   SetInteger(pNode, "lcdrow1",g_stSettings.m_iLCDAdress[0]);
   SetInteger(pNode, "lcdrow2",g_stSettings.m_iLCDAdress[1]);
   SetInteger(pNode, "lcdrow3",g_stSettings.m_iLCDAdress[2]);
