@@ -194,6 +194,10 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 		// Create the gamepad devices
 //		HaveGamepad = (XBInput_CreateGamepads(&m_Gamepad) == S_OK);
 	}
+  if (m_splash)
+  {
+    m_splash->Stop();
+  }
 	m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
 
 	// D3D is up, load default font
@@ -475,7 +479,49 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 
 HRESULT CApplication::Create()
 {
-	CIoSupport helper;
+  HRESULT hr;
+
+ 	CLog::Log(LOGINFO, "setup DirectX");
+  // Create the Direct3D object
+  if( NULL == ( m_pD3D = Direct3DCreate8(D3D_SDK_VERSION) ) )
+  {
+      CLog::Log(LOGFATAL,  "XBAppEx: Unable to create Direct3D!" );
+      return E_FAIL;
+  }
+  //list available videomodes
+	g_videoConfig.GetModes(m_pD3D);
+  //init the present parameters with values that are supported
+  RESOLUTION initialResolution = g_videoConfig.GetInitialMode(m_pD3D, &m_d3dpp);
+
+  if( FAILED( hr = m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL, 
+                                      D3DCREATE_HARDWARE_VERTEXPROCESSING, 
+                                      &m_d3dpp, &m_pd3dDevice ) ) )
+  {
+      CLog::Log(LOGFATAL, "XBAppEx: Could not create D3D device!" );
+      CLog::Log(LOGFATAL, " width/height:(%ix%i)" , m_d3dpp.BackBufferWidth,m_d3dpp.BackBufferHeight);
+      CLog::Log(LOGFATAL, " refreshrate:%i" , m_d3dpp.FullScreen_RefreshRateInHz);
+      if (m_d3dpp.Flags & D3DPRESENTFLAG_WIDESCREEN)
+        CLog::Log(LOGFATAL, " 16:9 widescreen");  
+      else
+        CLog::Log(LOGFATAL, " 4:3");  
+
+      if (m_d3dpp.Flags & D3DPRESENTFLAG_INTERLACED)
+        CLog::Log(LOGFATAL, " interlaced");  
+      if (m_d3dpp.Flags & D3DPRESENTFLAG_PROGRESSIVE)
+        CLog::Log(LOGFATAL, " progressive");  
+      return hr;
+  }
+  m_pd3dDevice->GetBackBuffer( 0, 0, &m_pBackBuffer );
+	g_graphicsContext.SetD3DDevice(m_pd3dDevice);
+  // Transfer the resolution information to our graphics context
+	g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
+	// set filters
+	g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MINFILTER, g_stSettings.m_minFilter );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MAGFILTER, g_stSettings.m_maxFilter );
+  g_graphicsContext.SetGUIResolution(initialResolution);
+	CUtil::InitGamma();
+
+  CIoSupport helper;
 	CStdString strPath;
 	char szDevicePath[1024];
 
@@ -494,13 +540,17 @@ HRESULT CApplication::Create()
 	CLog::Log(LOGNOTICE, "starting...");
 	CLog::Log(LOGNOTICE, "Q is mapped to:%s",szDevicePath);
 
-	// Initialize core peripheral port support. Note: If these parameters
+  //start splash, if xbmc is set as dash throug a copy .xbe, splash will 
+  //fail here and run again after loading of the settings
+  m_splash = new CSplash("Q:\\media\\splash.png");
+  m_splash->Start();
+
+  // Initialize core peripheral port support. Note: If these parameters
 	// are 0 and NULL, respectively, then the default number and types of
 	// controllers will be initialized.
 	XInitDevices( m_dwNumInputDeviceTypes, m_InputDeviceTypes );
 
 	// Create the gamepad devices
-	HRESULT hr;
 	if( FAILED(hr = XBInput_CreateGamepads(&m_Gamepad)) )
 	{
 		CLog::Log(LOGERROR, "XBAppEx: Call to CreateGamepads() failed!" );
@@ -534,10 +584,16 @@ HRESULT CApplication::Create()
 	g_LoadErrorStr = "Unable to load settings";
 	m_bAllSettingsLoaded=g_settings.Load(m_bXboxMediacenterLoaded,m_bSettingsLoaded);
 	if (!m_bAllSettingsLoaded)
-		FatalErrorHandler(true, true, true);
+		FatalErrorHandler(false, true, true);
 
-  // Transfer the resolution information to our graphics context
+  // Transfer the new resolution information from settings to our graphics context
 	g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
+	if (!g_graphicsContext.IsValidResolution(g_stSettings.m_GUIResolution))
+	{
+		// Oh uh - doesn't look good for starting in their wanted screenmode
+		CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
+    g_stSettings.m_GUIResolution = initialResolution;
+	}
 
 	CLog::Log(LOGINFO, "map drives...");
 	CLog::Log(LOGINFO, "  map drive C:");
@@ -582,6 +638,10 @@ HRESULT CApplication::Create()
 			::MoveFile("Q:\\xbmc.log","Q:\\xbmc.old.log");
 			CLog::Close();
 			CLog::Log(LOGNOTICE, "Q is mapped to:%s",szDevicePath);
+      if (!m_splash->IsRunning())
+      {
+        m_splash->Start();
+      }
 		}
 		else
 		{
@@ -595,16 +655,13 @@ HRESULT CApplication::Create()
 
 	CLog::Log(LOGINFO, "load language file:%s",strLanguagePath.c_str());
 	if (!g_localizeStrings.Load(strLanguagePath ))
-		FatalErrorHandler(true, false, true);
+		FatalErrorHandler(false, false, true);
 
 	CLog::Log(LOGINFO, "load keymapping");
 	if (!g_buttonTranslator.Load())
-		FatalErrorHandler(true, false, true);
+		FatalErrorHandler(false, false, true);
 
-	CLog::Log(LOGINFO, "setup DirectX");
-	g_graphicsContext.SetGUIResolution(g_stSettings.m_GUIResolution);
-	g_graphicsContext.SetOffset(g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY);
-
+  
 	int  iResolution=g_stSettings.m_GUIResolution;
 	CLog::Log(LOGINFO, " GUI format %ix%i %s",
 		g_settings.m_ResInfo[iResolution].iWidth,
@@ -614,7 +671,7 @@ HRESULT CApplication::Create()
 	m_gWindowManager.Initialize();
 	g_actionManager.SetScriptActionCallback(&g_pythonParser);
 
-	return CXBApplicationEx::Create();
+  return CXBApplicationEx::Create();
 }
 
 HRESULT CApplication::Initialize()
@@ -707,12 +764,6 @@ HRESULT CApplication::Initialize()
 		CLog::Log(LOGERROR, "initialize network failed");
 	}
 
-	// set filters
-	g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MINFILTER, g_stSettings.m_minFilter );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MAGFILTER, g_stSettings.m_maxFilter );
-
-	g_graphicsContext.SetD3DDevice(m_pd3dDevice);
-
   StartServices();
 
   CLog::Log(LOGNOTICE, "load default skin:[%s]",g_stSettings.szDefaultSkin);
@@ -804,6 +855,11 @@ HRESULT CApplication::Initialize()
 	m_ctrDpad.SetDelays(g_stSettings.m_iMoveDelayController,g_stSettings.m_iRepeatDelayController);
 	m_ctrIR.SetDelays(g_stSettings.m_iMoveDelayIR,g_stSettings.m_iRepeatDelayIR);
 
+  SAFE_DELETE(m_splash);
+
+	g_graphicsContext.SetGUIResolution(g_stSettings.m_GUIResolution);
+	g_graphicsContext.SetOffset(g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY);
+
 	m_gWindowManager.ActivateWindow(g_stSettings.m_iStartupWindow);
 	CLog::Log(LOGINFO, "removing tempfiles");
 	CUtil::RemoveTempFiles();
@@ -821,7 +877,6 @@ HRESULT CApplication::Initialize()
 	}
 
 	CLog::Log(LOGNOTICE, "initialize done");
-	CUtil::InitGamma();
 	if (g_stSettings.m_bLCDUsed)
 	{
 		if (g_stSettings.m_iLCDMode==LCD_MODE_NOTV)
