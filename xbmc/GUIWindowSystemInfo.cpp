@@ -96,9 +96,9 @@ void  CGUIWindowSystemInfo::GetValues()
 	WCHAR CPUText[32];
 	WCHAR GPUText[32];
 	WCHAR wszText[1024];
-  float fTemp=(float)cputemp + ((float)cpudec)/100.0f;
+  float fTemp=(float)cputemp + ((float)cpudec)/1000.0f;
 	swprintf(CPUText, L"%2.2f%cC", fTemp,176);	
-	swprintf(GPUText, L"%u.2%cC", mbtemp,176);	
+	swprintf(GPUText, L"%u.00%cC", mbtemp,176);	
 	
 	{
 		const WCHAR *psztext=g_localizeStrings.Get(140).c_str();
