@@ -649,7 +649,7 @@ CMPlayer::~CMPlayer()
 		delete entry;
 	}	//fix winnt and xbox critical data mismatch issue.
 	free_registry();	//free memory take by registry structures
-	g_smb.Purge(); // close any open smb sessions
+	smb.Purge(); // close any open smb sessions
 }
 bool CMPlayer::load()
 {
