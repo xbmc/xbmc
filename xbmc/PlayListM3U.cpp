@@ -69,7 +69,7 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
 				iComma++;
 				CStdString strInfo=strLine.Right((int)strLine.size()-iComma);
 				long lDuration=atoi(strLength.c_str());
-				lDuration*=1000;
+				//lDuration*=1000;
 
 				if (file.ReadString(szLine,1024 ) )
 				{
