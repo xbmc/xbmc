@@ -131,9 +131,11 @@ protected:
 	bool createSidEmu(SIDEMUS emu);
 	void displayError (const char *error);
 	void event(void);
+	bool starttrack();
 
 	bool						m_bPaused;
 	bool						m_bIsPlaying;
 	bool						m_bStopPlaying;
-	__int64 m_PTS;
+	__int64					m_PTS;
+	CRITICAL_SECTION	m_CS;
 };
