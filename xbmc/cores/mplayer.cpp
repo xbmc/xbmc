@@ -1489,6 +1489,7 @@ int     CMPlayer::GetAudioStream()
 void     CMPlayer::GetAudioStreamName(int iStream, CStdString& strStreamName)
 {
 	stream_language_t slt;
+  memset(&slt, 0, sizeof(stream_language_t));
 	mplayer_getAudioStreamInfo(iStream, &slt);
 	if(slt.language != 0)
 	{               
@@ -1496,11 +1497,11 @@ void     CMPlayer::GetAudioStreamName(int iStream, CStdString& strStreamName)
     if(!g_LangCodeExpander.LookupDVDLangCode(strName, slt.language))
     {
       strName = "UNKNOWN:";
-			strName += (char)(slt.language>>8);
+			strName += (char)(slt.language>>8)&255;
 			strName += (char)(slt.language&255);
     }
 
-		strStreamName.Format("%s - %s(%s)",strName,dvd_audio_stream_types[slt.type],dvd_audio_stream_channels[slt.channels]);
+		strStreamName.Format("%s - %s(%s)",strName.c_str(),dvd_audio_stream_types[slt.type],dvd_audio_stream_channels[slt.channels]);
 	}
 	else
 	{
