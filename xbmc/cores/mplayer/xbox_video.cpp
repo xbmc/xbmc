@@ -974,7 +974,7 @@ static void video_flip_page(void)
 	g_graphicsContext.Unlock();
 
 	m_bFlipped=true;
-
+#if 0
 	// when movie is running,
 	// check the FPS again after 50 frames
 	// after 50 frames mplayer has determined the REAL fps instead of just the one mentioned in the header
@@ -993,6 +993,7 @@ static void video_flip_page(void)
 			choose_best_resolution(fps);
 		}
 	}
+#endif
 }
 
 //********************************************************************************************************
