@@ -92,26 +92,7 @@ void CAutorun::RunCdda()
 
 	if (g_stSettings.m_szExternalCDDAPlayer[0])
 	{
-		char szPath[1024];
-		char szDevicePath[1024];
-		char szXbePath[1024];
-		char szParameters[1024];
-		memset(szParameters,0,sizeof(szParameters));
-		strcpy(szPath,g_stSettings.m_szExternalCDDAPlayer);
-		char* szBackslash = strrchr(szPath,'\\');
-		*szBackslash=0x00;
-		char* szXbe = &szBackslash[1];
-		char* szColon = strrchr(szPath,':');
-		*szColon=0x00;
-		char* szDrive = szPath;
-		char* szDirectory = &szColon[1];
-		CIoSupport helper;
-		helper.GetPartition( (LPCSTR) szDrive, szDevicePath);
-		strcat(szDevicePath,szDirectory);
-		wsprintf(szXbePath,"d:\\%s",szXbe);
-
-		g_application.Stop();
-		CUtil::LaunchXbe(szDevicePath,szXbePath,NULL);
+		CUtil::RunXBE(g_stSettings.m_szExternalCDDAPlayer);
 	}
 	else
 	{

@@ -56,26 +56,7 @@ void CGUIDialogSubMenu::OnClickShutdown(CGUIMessage& aMessage)
 
 void CGUIDialogSubMenu::OnClickDashboard(CGUIMessage& aMessage)
 {
-	char* szBackslash = strrchr(g_stSettings.szDashboard,'\\');
-	*szBackslash=0x00;
-	char* szXbe = &szBackslash[1];
-
-	char* szColon = strrchr(g_stSettings.szDashboard,':');
-	*szColon=0x00;
-	char* szDrive = g_stSettings.szDashboard;
-	char* szDirectory = &szColon[1];
-
-	char szDevicePath[1024];
-	char szXbePath[1024];
-	CIoSupport helper;
-	helper.GetPartition( (LPCSTR) szDrive, szDevicePath);
-
-	strcat(szDevicePath,szDirectory);
-	wsprintf(szXbePath,"d:\\%s",szXbe);
-
-	g_application.Stop();
-
-	CUtil::LaunchXbe(szDevicePath,szXbePath,NULL);
+	CUtil::RunXBE(g_stSettings.szDashboard);
 }
 
 void CGUIDialogSubMenu::OnClickReboot(CGUIMessage& aMessage)
