@@ -388,7 +388,7 @@ bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 					// Remove any tags that may appear in the text
 					bool inTag = false;
 					int iPlot = 0;
-					char* strPlot = new char[strlen(strPlotStart)];
+					char* strPlot = new char[strlen(strPlotStart)+1];
 					for (int i = 0; i < strlen(strPlotStart); i++)
 					{
 						if (strPlotStart[i] == '<')
