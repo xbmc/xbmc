@@ -3,6 +3,7 @@
 #include "StdString.h"
 #include <vector>
 #include <memory>
+#include "MusicDatabaseReorg.h"
 using namespace std;
 
 class CSong
@@ -44,6 +45,7 @@ typedef vector<CAlbum> VECALBUMS;
 
 class CMusicDatabase
 {
+	friend class CMusicDatabaseReorg;
 public:
 	CMusicDatabase(void);
 	virtual ~CMusicDatabase(void);
