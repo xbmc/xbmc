@@ -1,6 +1,6 @@
 <!-- Finnish - language resource  -->
-<!-- Finnish Translation 2004-3-23 by Nanite1000 -->
-<!-- Based on CVS revision 2004-3-23 YYYY-MM-DD -->
+<!-- Finnish Translation 2004-4-12 by Nanite1000 -->
+<!-- Based on CVS revision 2004-4-12 YYYY-MM-DD -->
 <!-- For comments PM me in xboxmediacenter forum -->
 <!-- Kommentteja voi lähetellä xboxmediacentterin foorumin kautta -->
 <!-- Not all weather strings are tranlated, cant get it to look correct/too long -->
@@ -552,7 +552,7 @@
   </string> 
   <string>
     <id>208</id>
-    <value>Toista</value>
+    <value>Soita</value>
   </string> 
   <string>
     <id>209</id>
@@ -640,7 +640,7 @@
   </string> 
   <string>
     <id>230</id>
-    <value>Filtterit...</value>
+    <value>Filtterit</value>
   </string> 
   <string>
     <id>231</id>
@@ -676,31 +676,31 @@
   </string>
   <string>
     <id>240</id>
-    <value>Toista automaattisesti DVD-Video</value>
+    <value>Näytä DVD-Video levyt automaattisesti</value>
   </string>
   <string>
     <id>241</id>
-    <value>Toista automaattisesti VCD/SVCD</value>
+    <value>Näytä VCD/SVCD levyt automaattisesti</value>
   </string>
   <string>
     <id>242</id>
-    <value>Toista automaattisesti Audio-CD</value>
+    <value>Soita Audio-CD levyt automaattisesti</value>
   </string>
   <string>
     <id>243</id>
-    <value>Toista automaattisesti XBOX Pelit</value>
+    <value>Käynnistä XBOX Pelit automaattisesti</value>
   </string>
   <string>
     <id>244</id>
-    <value>Toista automaattisesti Videot</value>
+    <value>Näytä Videot automaattisesti</value>
   </string>
   <string>
     <id>245</id>
-    <value>Toista automaattisesti Musiikki</value>
+    <value>Soita Musiikki automaattisesti</value>
   </string>
   <string>
     <id>246</id>
-    <value>Toista automaattisesti Kuvat</value>
+    <value>Näytä Kuvat automaattisesti</value>
   </string>
   <string>
     <id>247</id>
@@ -708,7 +708,7 @@
   </string>
   <string>
     <id>248</id>
-    <value>Language Kieli</value>
+    <value>Kieli (Language)</value>
   </string>
   <string>
     <id>249</id>
@@ -864,7 +864,7 @@
   </string>
   <string>
     <id>287</id>
-    <value>Tekstitys...</value>
+    <value>Tekstitys</value>
   </string>
   <string>
     <id>288</id>
@@ -932,7 +932,7 @@
   </string>
   <string>
     <id>305</id>
-    <value>On/Off</value>
+    <value>Tekstitys</value>
   </string>
   <string>
     <id>306</id>
@@ -980,7 +980,7 @@
   </string>
   <string>
     <id>317</id>
-    <value>Uudelleenjärjestely onnistui</value>
+    <value>Päivitys valmis</value>
   </string>
   <string>
     <id>318</id>
@@ -988,7 +988,7 @@
   </string>
   <string>
     <id>319</id>
-    <value>Virhe kappaleiden uudelleenjärjestelyssä</value>
+    <value>Virhe kappaleiden päivityksessä</value>
   </string>
   <string>
     <id>320</id>
@@ -996,7 +996,7 @@
   </string>
   <string>
     <id>321</id>
-    <value>Virhe esittäjien uudelleenjärjestelyssä</value>
+    <value>Virhe esittäjien päivityksessä</value>
   </string>
   <string>
     <id>322</id>
@@ -1004,7 +1004,7 @@
   </string>
   <string>
     <id>323</id>
-    <value>Virhe tyylilajien uudelleenjärjestelyssä</value>
+    <value>Virhe tyylilajien päivityksessä</value>
   </string>
   <string>
     <id>324</id>
@@ -1012,7 +1012,7 @@
   </string>
   <string>
     <id>325</id>
-    <value>Virhe tiedostopolkujen uudelleenjärjestelyssä</value>
+    <value>Virhe tiedostopolkujen päivityksessä</value>
   </string>
   <string>
     <id>326</id>
@@ -1020,7 +1020,7 @@
   </string>
   <string>
     <id>327</id>
-    <value>Virhe albumien uudelleenjärjestelyssä</value>
+    <value>Virhe albumien päivityksessä</value>
   </string>
   <string>
     <id>328</id>
@@ -1036,19 +1036,19 @@
   </string>
   <string>
     <id>331</id>
-    <value>Tiivistetään tietokanta...</value>
+    <value>Päivitetään tietokanta...</value>
   </string>
   <string>
     <id>332</id>
-    <value>Virhe tietokannan tiivistyksessä</value>
+    <value>Virhe tietokannan päivityksessä</value>
   </string>
   <string>
     <id>333</id>
-    <value>Haluatko uudelleenjärjestää musiikkitietokannan?</value>
+    <value>Haluatko päivittää musiikkitietokannan?</value>
   </string>
   <string>
     <id>334</id>
-    <value>Musiikkitietokannan uudelleenjärj.</value>
+    <value>Musiikkitietokannan päivitys</value>
   </string>
   <string>
     <id>335</id>
@@ -1076,7 +1076,7 @@
   </string>
   <string>
     <id>341</id>
-    <value>Toista DVD</value>
+    <value>Näytä DVD</value>
   </string>
   <string>
     <id>342</id>
@@ -1152,7 +1152,7 @@
   </string>
   <string>
     <id>360</id>
-    <value>Näytönsäästäjä...</value>
+    <value>Näytönsäästäjä</value>
   </string>
   <string>
     <id>361</id>
@@ -1580,8 +1580,65 @@
   </string>
   <string>
     <id>478</id>
-    <value>Kuvaruutuvalikko...</value>
+    <value>Kuvaruutuvalikko</value>
   </string>
+  <string>
+    <id>479</id>
+    <value>Skini ja Kielivalinnat</value>
+  </string>
+  <string>
+    <id>480</id>
+    <value>Käyttöliittymä</value>
+  </string>
+  <string>
+    <id>481</id>
+    <value>Ääniasetukset</value>
+  </string>
+  <string>
+    <id>482</id>
+    <value>XBMC Tekijät</value>
+  </string>
+  <string>
+    <id>483</id>
+    <value>Albumi</value>
+  </string>
+  <string>
+    <id>484</id>
+    <value>Artisti</value>
+  </string>
+  <string>
+    <id>485</id>
+    <value>Poista albumin id tiedot</value>
+  </string>
+  <string>
+    <id>486</id>
+    <value>Toista</value>
+  </string>
+  <string>
+    <id>487</id>
+    <value>Toista yksi</value>
+  </string>
+  <string>
+    <id>488</id>
+    <value>Toista hakemisto soittolista</value>
+  </string>
+  <string>
+    <id>489</id>
+    <value>Käytä soittolistaa kappaleissa</value>
+  </string>
+  <string>
+    <id>490</id>
+    <value>Vaihda automaattisesti lista/kuvat kappaleissa</value>
+  </string>
+  <string>
+    <id>491</id>
+    <value>Isoina kuvina</value>
+  </string>
+  <string>
+    <id>492</id>
+    <value>Suurenna tekstitys</value>
+  </string>
+
 <string><id>10000</id><value>Paavalikko</value></string>
 <string><id>10001</id><value>Ohjelmat</value></string>
 <string><id>10002</id><value>Kuvat</value></string>
