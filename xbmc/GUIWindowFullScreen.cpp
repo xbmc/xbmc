@@ -255,7 +255,8 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
           g_application.SetPlaySpeed(1);
         }
       }
-		m_bShowCurrentTime = !m_bShowCurrentTime;
+		m_bShowCurrentTime = true;
+    m_dwTimeCodeTimeout=timeGetTime();
 		break;
 		case ACTION_REWIND:
 			ChangetheSpeed(ACTION_REWIND);
@@ -528,6 +529,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
 		if ( (timeGetTime() - m_dwTimeCodeTimeout) >=2500)
 		{
 			m_bShowTime=false;
+      m_bShowCurrentTime = false;
 			m_iTimeCodePosition = 0;
 			return;
 		}
@@ -619,15 +621,25 @@ void CGUIWindowFullScreen::RenderFullScreen()
 	// Render current time if requested
 	if (m_bShowCurrentTime)
 	{
+    CStdString strTime;
 		bRenderGUI =true;
 		SET_CONTROL_VISIBLE(GetID(),LABEL_CURRENT_TIME);
-		WCHAR szCurrentTime[32];
-		SYSTEMTIME time;
-		GetLocalTime(&time);
-		swprintf(szCurrentTime,L"%02d:%02d",time.wHour,time.wMinute);
+    __int64 lPTS=10*g_application.m_pPlayer->GetTime();
+    int hh = (int)(lPTS / 36000) % 100;
+    int mm = (int)((lPTS / 600) % 60);
+    int ss = (int)((lPTS /  10) % 60);
+    
+	  if (hh>=1)
+		  strTime.Format("%02.2i:%02.2i:%02.2i",hh,mm,ss);
+	  else
+		  strTime.Format("%02.2i:%02.2i",mm,ss);
 		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_CURRENT_TIME); 
-		msg.SetLabel(szCurrentTime); 
+		msg.SetLabel(strTime); 
 		OnMessage(msg); 
+    if ( (timeGetTime() - m_dwTimeCodeTimeout) >=2500)
+		{
+      m_bShowCurrentTime = false;
+		}
 	}
 	else
 	{
