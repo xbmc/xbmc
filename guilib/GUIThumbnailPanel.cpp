@@ -435,8 +435,11 @@ void CGUIThumbnailPanel::OnRight()
       return;
     }
 
-    m_iSelect=CONTROL_UPDOWN;
-    m_upDown.SetFocus(true);
+    if (m_upDown.GetMaximum() > 1)
+    {
+      m_iSelect=CONTROL_UPDOWN;
+      m_upDown.SetFocus(true);
+    }
   }
   else
   {
