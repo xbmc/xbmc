@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 18-08-2004 updated: tinyxml to v2.3.2
   - 18-08-2004 fixed: stack overflow when navigating in a <direction> to a disabled control and on<direction> property points to itself
   - 18-08-2004 added: more python objects and functions to control xbmc
   - 17-08-2004 added: Romanian Language file by bompy
