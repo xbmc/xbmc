@@ -301,7 +301,7 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 		m_RGBTexture[i]->UnlockRect(0);
 	}
 
-  m_iOSDTextureWidth = float(normalFullScreenVideoDisplayRect.right - normalFullScreenVideoDisplayRect.left);
+  m_iOSDTextureWidth = normalFullScreenVideoDisplayRect.right - normalFullScreenVideoDisplayRect.left;
 	// Create osd textures
 	for (int i = 0; i < 2; ++i)
 	{
