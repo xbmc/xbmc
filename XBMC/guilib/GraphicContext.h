@@ -100,8 +100,8 @@ public:
 	void									Lock();
 	void									Unlock();
 	void									EnablePreviewWindow(bool bEnable);
-	void									ScalePosToScreenResolution(DWORD& x, DWORD&  y);
-	void									ScaleRectToScreenResolution(DWORD& left, DWORD&  top, DWORD& right, DWORD& bottom);
+	void									ScalePosToScreenResolution(DWORD& x, DWORD&  y, RESOLUTION res);
+	void									ScaleRectToScreenResolution(DWORD& left, DWORD&  top, DWORD& right, DWORD& bottom, RESOLUTION res);
 protected:
 	CRITICAL_SECTION			  m_critSection;
   IMsgSenderCallback*     m_pCallback;

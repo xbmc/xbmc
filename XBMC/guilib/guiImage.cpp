@@ -325,7 +325,7 @@ void CGUIImage::Update()
 
   if (m_bKeepAspectRatio && m_iTextureWidth && m_iTextureHeight)
   {
-    int iResolution=g_stSettings.m_ScreenResolution;
+    int iResolution=g_stSettings.m_GUIResolution;
     float fSourceFrameRatio = ((float)m_iTextureWidth) / ((float)m_iTextureHeight);
     float fOutputFrameRatio = fSourceFrameRatio / g_settings.m_ResInfo[iResolution].fPixelRatio; 
     if (iResolution == HDTV_1080i) fOutputFrameRatio *= 2;

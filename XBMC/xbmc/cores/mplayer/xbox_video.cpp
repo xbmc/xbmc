@@ -129,7 +129,7 @@ void choose_best_resolution(float fps)
 	bool bCanDoWidescreen = (dwFlags & XC_VIDEO_FLAGS_WIDESCREEN)!=0; // can widescreen be enabled?
 
 	// check if widescreen is used by the GUI
-	int iGUIResolution=g_stSettings.m_ScreenResolution;
+	int iGUIResolution=g_stSettings.m_GUIResolution;
 	if (  (g_settings.m_ResInfo[iGUIResolution].dwFlags&D3DPRESENTFLAG_WIDESCREEN)==0)
 	{
 		// NO, then if 'Choose Best Resolution' option is disabled
@@ -1060,7 +1060,7 @@ void xbox_video_update(bool bPauseDrawing)
   m_bPauseDrawing = bPauseDrawing;
 	bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
 	g_graphicsContext.Lock();
-	g_graphicsContext.SetVideoResolution(bFullScreen ? m_iResolution:g_stSettings.m_ScreenResolution);
+	g_graphicsContext.SetVideoResolution(bFullScreen ? m_iResolution:g_stSettings.m_GUIResolution);
 	g_graphicsContext.Unlock();
 	Directx_ManageDisplay();
 	xbox_video_render_update();
