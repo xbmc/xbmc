@@ -5,6 +5,7 @@
 #include "util.h"
 #include "url.h"
 #include "picture.h"
+#include "application.h"
 #include <algorithm>
 
 #define CONTROL_BTNVIEWASICONS		2
@@ -105,6 +106,10 @@ void CGUIWindowPictures::OnKey(const CKey& key)
   if (m_slideShow.IsPlaying() )
   {
     m_slideShow.OnKey(key);
+		if (!m_slideShow.IsPlaying())
+		{
+			g_application.EnableOverlay();
+		}
     return;
   }
   else
@@ -397,6 +402,7 @@ void CGUIWindowPictures::OnClick(int iItem)
 
 void CGUIWindowPictures::OnShowPicture(const CStdString& strPicture)
 {
+	g_application.DisableOverlay();
   m_slideShow.Reset();
   for (int i=0; i < (int)m_vecItems.size();++i)
   {
@@ -411,6 +417,7 @@ void CGUIWindowPictures::OnShowPicture(const CStdString& strPicture)
 
 void CGUIWindowPictures::OnSlideShow()
 {
+	g_application.DisableOverlay();
 	m_slideShow.Reset();
   for (int i=0; i < (int)m_vecItems.size();++i)
   {

@@ -51,6 +51,8 @@ public:
 	virtual	void					OnPlayBackEnded();
 	virtual	void					OnPlayBackStarted();
 	bool									PlayFile(const CStdString& strFile);
+	void									EnableOverlay();
+	void									DisableOverlay();
 
   CGUIWindowHome        m_guiHome;
   CGUIWindowPrograms    m_guiPrograms;
@@ -75,6 +77,7 @@ public:
 	Python*									m_pPhytonParser;
 	IPlayer*								m_pPlayer;
 protected:
+	bool										m_bOverlayEnabled;
 	vector<int>							m_vecScriptIds;
 	typedef vector<int>::iterator ivecScriptIds;
 };

@@ -1,4 +1,4 @@
-
+#include <xtl.h>
 #include <stdlib.h>
 
 #include <stdio.h>
@@ -165,7 +165,9 @@ int DllLoader::ResolveImports(void)
 					void *Fixup;
 					if( !ResolveName(Name, ImpName, &Fixup) )
 					{
-						printf("unable to resolve %s %s\n",Name,ImpName);
+						char szBuf[128];
+						sprintf(szBuf,"unable to resolve %s %s\n",Name,ImpName);
+						OutputDebugString(szBuf);
 						bResult=0;
 					}
 					*Addr = (unsigned long)Fixup;
