@@ -371,7 +371,8 @@ const field_value Dataset::get_field_value(const char *f_name) {
     else
       for (int i=0; i < fields_object->size(); i++) 
 			{
-			//	printf("%s\n", (*fields_object)[i].props.name.c_str());
+			  //OutputDebugString( (*fields_object)[i].props.name.c_str());
+        //OutputDebugString( "\n");
 				if ((*fields_object)[i].props.name == f_name)
 					return (*fields_object)[i].val;
 			}

@@ -1021,6 +1021,7 @@ void CUtil::SetThumbs(VECFILEITEMS &items)
 			CUtil::GetThumbnail( pItem->m_strPath,strThumb);
 			if (!CUtil::FileExists(strThumb) )
 			{
+        bool bGotIcon(false);
 				if (CUtil::IsRemote(strThumb) )
 				{
 					CFile file;
@@ -1029,8 +1030,35 @@ void CUtil::SetThumbs(VECFILEITEMS &items)
 					if ( file.Cache(strThumbnailFileName.c_str(), strThumb.c_str(),NULL,NULL))
 					{
 						pItem->SetThumbnailImage(strThumb);
+            bGotIcon=true;
 					}
 				}
+        if (!bGotIcon)
+        {
+          CStdString strFolderImage=pItem->m_strPath;
+          
+          if (!CUtil::HasSlashAtEnd(strFolderImage)) 
+          {
+            if (pItem->m_strPath.Find("//")>=0 )
+              strFolderImage+="/";
+            else
+              strFolderImage+="\\";
+          }
+          strFolderImage += "folder.jpg";
+          if (CUtil::IsRemote(pItem->m_strPath) )
+          {
+            CUtil::GetThumbnail( strFolderImage,strThumb);
+            CFile file;
+            if ( file.Cache(strFolderImage.c_str(), strThumb.c_str(),NULL,NULL))
+					  {
+						  pItem->SetThumbnailImage(strThumb);
+					  }
+          }
+          else if (CUtil::FileExists(strFolderImage) )
+          {
+            pItem->SetThumbnailImage(strFolderImage);
+          }
+        }
 			}
 			else
 			{

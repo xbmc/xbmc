@@ -554,14 +554,15 @@ void CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath,CIMDBMovi
   details.m_strGenre=m_pDS->fv("movieinfo.strGenre").get_asString();
   details.m_strPictureURL=m_pDS->fv("movieinfo.strPictureURL").get_asString();
   details.m_strTitle=m_pDS->fv("movieinfo.strTitle").get_asString();
-  
+  details.m_strSearchString.Format("%i", lMovieId);
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::SetMovieInfo(const CStdString& strFilenameAndPath,const CIMDBMovie& details)
+void CVideoDatabase::SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMovie& details)
 {
   long lMovieId=GetMovie(strFilenameAndPath);
   if (lMovieId< 0) return;
+  details.m_strSearchString.Format("%i", lMovieId);
 
   CIMDBMovie details1=details;
   RemoveInvalidChars(details1.m_strCast);
@@ -669,5 +670,46 @@ void CVideoDatabase::SetMovieInfo(const CStdString& strFilenameAndPath,const CIM
             details1.m_iYear,details1.m_strGenre.c_str(),
             details1.m_strPictureURL.c_str(),details1.m_strTitle.c_str(),lMovieId);
 	  m_pDS->exec(strSQL.c_str());
+  }
+}
+
+
+//********************************************************************************************************************************
+void CVideoDatabase::GetMoviesByPath(CStdString& strPath1, VECMOVIES& movies)
+{
+ 	CStdString strPath=strPath1;
+	RemoveInvalidChars(strPath);
+
+  movies.erase(movies.begin(),movies.end());
+	if (NULL==m_pDB.get()) return ;
+	if (NULL==m_pDS.get()) return ;
+  long lPathId = GetPath(strPath);
+  if (lPathId< 0) return;
+
+  CStdString strSQL;
+  strSQL.Format("select * from files,genrelinkmovie,genre,movie,movieinfo,actors where files.idmovie=movie.idmovie and genrelinkmovie.idGenre=genre.idGenre and genrelinkmovie.idmovie=movie.idmovie and movieinfo.idmovie=movie.idmovie and movie.idpath=%i and movieinfo.iddirector=actors.idActor", lPathId);
+
+  m_pDS->query( strSQL.c_str() );
+  if (m_pDS->num_rows() == 0)  return;
+  while (!m_pDS->eof()) 
+  {
+    CIMDBMovie details;
+    details.m_fRating=(float)atof(m_pDS->fv("movieinfo.fRating").get_asString().c_str()) ;
+	  details.m_strDirector=m_pDS->fv("actors.strActor").get_asString();
+	  details.m_strWritingCredits=m_pDS->fv("movieinfo.strCredits").get_asString();
+	  details.m_strTagLine=m_pDS->fv("movieinfo.strTagLine").get_asString();
+	  details.m_strPlotOutline=m_pDS->fv("movieinfo.strPlotOutline").get_asString();
+	  details.m_strPlot=m_pDS->fv("movieinfo.strPlot").get_asString();
+	  details.m_strVotes=m_pDS->fv("movieinfo.strVotes").get_asString();
+	  details.m_strCast=m_pDS->fv("movieinfo.strCast").get_asString();
+	  details.m_iYear=m_pDS->fv("movieinfo.iYear").get_asLong();
+    details.m_strGenre=m_pDS->fv("movieinfo.strGenre").get_asString();
+    details.m_strPictureURL=m_pDS->fv("movieinfo.strPictureURL").get_asString();
+    details.m_strTitle=m_pDS->fv("movieinfo.strTitle").get_asString();
+    details.m_strFile=m_pDS->fv("files.strFilename").get_asString();
+    long lMovieId=m_pDS->fv("movieinfo.idMovie").get_asLong();
+    details.m_strSearchString.Format("%i", lMovieId);
+    movies.push_back(details);
+    m_pDS->next();
   }
 }

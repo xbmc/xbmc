@@ -1,7 +1,10 @@
-//todo: 
-// - directory history
-// - if movie is directory then show files in directory...
-// - if movie does not exists when play movie is called then show dialog asking to insert the correct CD
+// Todo: 
+//  - directory history
+//  - if user selects movie, then show directory...
+//  - if movie does not exists when play movie is called then show dialog asking to insert the correct CD
+//  - show if movie has subs
+//  - show thumbnails for all files of a movie...
+//  - oninfo() -> just show imdb info...
 
 #include "guiwindowVideoGenre.h"
 #include "settings.h"
@@ -22,16 +25,17 @@
 #include "filesystem/file.h"
 #include "xbox/iosupport.h"
 
-#define CONTROL_BTNVIEWASICONS		2
-#define CONTROL_BTNSORTBY					3
-#define CONTROL_BTNSORTASC				4
-#define CONTROL_MOVIES            5
-#define CONTROL_PLAY_DVD          6
+#define CONTROL_BTNVIEWASICONS		 2
+#define CONTROL_BTNSORTBY					 3
+#define CONTROL_BTNSORTASC				 4
+#define CONTROL_MOVIES             5
+#define CONTROL_PLAY_DVD           6
 #define CONTROL_LIST							10
 #define CONTROL_THUMBS						11
-#define CONTROL_LABELFILES         12
-#define LABEL_GENRE               100
+#define CONTROL_LABELFILES        12
+#define LABEL_GENRE              100
 
+//****************************************************************************************************************************
 struct SSortVideoGenreByName
 {
 	bool operator()(CFileItem* pStart, CFileItem* pEnd)
@@ -104,18 +108,19 @@ struct SSortVideoGenreByName
 	}
 };
 
-
+//****************************************************************************************************************************
 CGUIWindowVideoGenre::CGUIWindowVideoGenre()
 {
 	m_strDirectory="";
   m_iItemSelected=-1;
 }
 
+//****************************************************************************************************************************
 CGUIWindowVideoGenre::~CGUIWindowVideoGenre()
 {
 }
 
-
+//****************************************************************************************************************************
 void CGUIWindowVideoGenre::OnAction(const CAction &action)
 {
   	if (action.wID == ACTION_PARENT_DIR)
@@ -132,6 +137,7 @@ void CGUIWindowVideoGenre::OnAction(const CAction &action)
 	CGUIWindow::OnAction(action);
 }
 
+//****************************************************************************************************************************
 bool CGUIWindowVideoGenre::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
@@ -252,7 +258,7 @@ bool CGUIWindowVideoGenre::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-
+//****************************************************************************************************************************
 void CGUIWindowVideoGenre::UpdateButtons()
 {
 
@@ -306,12 +312,13 @@ void CGUIWindowVideoGenre::UpdateButtons()
 
 }
 
+//****************************************************************************************************************************
 void CGUIWindowVideoGenre::Clear()
 {
 	CFileItemList itemlist(m_vecItems); // will clean up everything
-
 }
 
+//****************************************************************************************************************************
 void CGUIWindowVideoGenre::OnSort()
 {
  CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_LIST,0,0,NULL);
@@ -362,6 +369,7 @@ void CGUIWindowVideoGenre::OnSort()
   }
 }
 
+//****************************************************************************************************************************
 void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
 {
   Clear();
@@ -405,6 +413,7 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
       SET_CONTROL_LABEL(GetID(), LABEL_GENRE,m_strDirectory);
   }
 	CUtil::SetThumbs(m_vecItems);
+  SetIMDBThumbs(m_vecItems);
 	CUtil::FillInDefaultIcons(m_vecItems);
   OnSort();
   UpdateButtons();
@@ -423,11 +432,13 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
 	}
 }
 
+//****************************************************************************************************************************
 void CGUIWindowVideoGenre::Render()
 {
 	CGUIWindow::Render();
 }
 
+//****************************************************************************************************************************
 void CGUIWindowVideoGenre::OnClick(int iItem)
 {
   CFileItem* pItem=m_vecItems[iItem];
