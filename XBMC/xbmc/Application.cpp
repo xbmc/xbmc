@@ -667,8 +667,9 @@ void CApplication::OnKey(CKey& key)
 		  if (action.wID == ACTION_SHOW_GUI && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
 		  {
 			  // then switch to fullscreen mode
-			  g_TextureManager.Flush();
 			  m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+			  g_TextureManager.Flush();
+        g_TextureManager.Dump();
 			  return;
 		  }
     }
@@ -831,6 +832,15 @@ void CApplication::UpdateLCD()
       {
         strLine.Format("%i", m_tagCurrentMovie.m_iYear);
         g_lcd.SetLine(iLine++,strLine);
+      }
+      if (iLine < 4)
+      {
+        MEMORYSTATUS stat;
+        GlobalMemoryStatus(&stat);
+        DWORD dwMegFree=stat.dwAvailPhys / (1024*1024);
+        strTime.Format("Freemem:%i meg", dwMegFree);
+        g_lcd.SetLine(iLine++,strTime);
+
       }
       while (iLine < 4) g_lcd.SetLine(iLine++,"");
 

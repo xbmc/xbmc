@@ -35,6 +35,7 @@ CTexture::~CTexture()
 
 void CTexture::Dump() const
 {
+  if (!m_iReferenceCount) return;
   CStdString strLog;
   strLog.Format("refcount:%i\n:", m_iReferenceCount);
   OutputDebugString(strLog.c_str());
@@ -131,8 +132,9 @@ CTextureMap::~CTextureMap()
 
 void CTextureMap::Dump() const
 {
+  if (IsEmpty()) return;
   CStdString strLog;
-  strLog.Format("  texure:%s size:%i\n", m_strTextureName.c_str(), m_vecTexures.size());
+  strLog.Format("  texure:%s has %i frames\n", m_strTextureName.c_str(), m_vecTexures.size());
   OutputDebugString(strLog.c_str());
 
   for (int i=0; i < (int)m_vecTexures.size(); ++i)
@@ -156,7 +158,7 @@ int CTextureMap::size() const
   return  m_vecTexures.size();
 }
 
-int CTextureMap::IsEmpty() const
+bool CTextureMap::IsEmpty() const
 {
   int iRef=0;
   for (int i=0; i < (int)m_vecTexures.size(); ++i)
@@ -224,6 +226,7 @@ CGUITextureManager::~CGUITextureManager(void)
 
 LPDIRECT3DTEXTURE8 CGUITextureManager::GetTexture(const CStdString& strTextureName,int iItem, int& iWidth, int& iHeight)
 {
+//  CLog::Log(" refcount++ for  GetTexture(%s)\n", strTextureName.c_str());
   for (int i=0; i < (int)m_vecTextures.size(); ++i)
   {
     CTextureMap *pMap=m_vecTextures[i];
@@ -387,7 +390,7 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName, int iP
   if (dwMegFree>29)
   {
     // dont release skin textures, they are reloaded each time
-    if (strTextureName.GetAt(1) != ':') return;
+    //if (strTextureName.GetAt(1) != ':') return;
     //CLog::Log("release:%s", strTextureName.c_str());
   }
 
@@ -402,6 +405,7 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName, int iP
 
       if (pMap->IsEmpty() )
       {
+        //CLog::Log("  cleanup:%s", strTextureName.c_str());
         delete pMap;
         i=m_vecTextures.erase(i);
       }
@@ -439,10 +443,12 @@ void CGUITextureManager::Dump() const
   for (int i=0; i < (int)m_vecTextures.size(); ++i)
   {
     const CTextureMap* pMap= m_vecTextures[i];
-   
-    strLog.Format("map:%i\n", i);
-    OutputDebugString(strLog.c_str());
-    pMap->Dump();
+    if (!pMap->IsEmpty())
+    {
+      strLog.Format("map:%i\n", i);
+      OutputDebugString(strLog.c_str());
+      pMap->Dump();
+    }
   }
 }
 
