@@ -238,7 +238,7 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.m_szMyMusicExtensions,".ac3|.aac|.pls|.strm|.rm|.sc|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u");
 	strcpy(g_stSettings.m_szMyVideoExtensions,".nfo|.rm|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli");
 
-	strcpy( g_stSettings.m_szDefaultPrograms, "Q:\\shortcuts");
+	strcpy( g_stSettings.m_szDefaultPrograms, "");
 	strcpy( g_stSettings.m_szDefaultMusic, "");	
 	strcpy( g_stSettings.m_szDefaultPictures, "");	
 	strcpy( g_stSettings.m_szDefaultFiles, "");	
