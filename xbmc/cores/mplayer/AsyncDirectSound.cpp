@@ -233,13 +233,14 @@ bool CASyncDirectSound::GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, 
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 //***********************************************************************************************
-CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, int iNumBuffers, char* strAudioCodec)
+CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, int iNumBuffers, char* strAudioCodec, bool bDelayFirstAudioPacket)
 {
 	buffered_bytes=0;
 	m_pCallback=pCallback;
 
-  m_bFirstPacketDone = false;
-	m_bResampleAudio = false;
+  m_bFirstPacketDone       = false;
+  m_bDelayFirstAudioPacket = bDelayFirstAudioPacket;
+	m_bResampleAudio         = false;
 	if (bResample && g_guiSettings.GetBool("AudioOutput.HighQualityResampling") && uiSamplesPerSec != 48000)
 		m_bResampleAudio = true;
 
@@ -689,7 +690,7 @@ DWORD CASyncDirectSound::AddPackets(unsigned char *data, DWORD len)
   if(!m_bFirstPacketDone)
   {
     m_bFirstPacketDone=true;
-    if(mplayer_HasVideo()) return 0;
+    if(m_bDelayFirstAudioPacket) return 0;
   }
 
 	// Check if we are resampling using SSRC
