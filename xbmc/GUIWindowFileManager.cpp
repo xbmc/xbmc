@@ -679,7 +679,8 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
 				if (strDestFileShortened.GetAt(i) == ',') strDestFileShortened.SetAt(i,'_');
 			}
       CFile file;
-      file.Cache(strFile.c_str(), strDestFileShortened.c_str(), this, NULL);
+      if (!file.Cache(strFile.c_str(), strDestFileShortened.c_str(), this, NULL))
+        return false;
     }
     break;
 
@@ -705,6 +706,8 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
 				{
 					CFile::Delete(strFile.c_str());
 				}
+        else
+          return false;
 			}
     }
     break;
@@ -1307,11 +1310,11 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
 			OnNewFolder(list);
 			break;
 		default:
-			if (bDeselect)
-			{	// deselect item as we didn't do anything
-				m_vecItems[list][item]->Select(false);
-			}
 			break;
+		}
+		if (bDeselect)
+		{	// deselect item as we didn't do anything
+			m_vecItems[list][item]->Select(false);
 		}
 	}
 }
