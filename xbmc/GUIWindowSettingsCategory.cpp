@@ -979,11 +979,15 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 		CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControlID,0,0,NULL);
 		g_graphicsContext.SendMessage(msg);
 		RESOLUTION newRes = (RESOLUTION)msg.GetParam1();//((CGUISpinControlEx *)GetControl(iControlID))->GetValue();
-		if (newRes != g_guiSettings.m_LookAndFeelResolution)
+		if (newRes != g_guiSettings.GetInt("LookAndFeel.Resolution"))
 		{
 			// change the resolution on the fly
-			g_graphicsContext.SetGUIResolution(newRes);
+      //set our option
 			g_guiSettings.SetInt("LookAndFeel.Resolution", newRes);
+      //set the gui resolution, if newRes is AUTORES newRes will be set to the highest available resolution
+			g_graphicsContext.SetGUIResolution(newRes);
+      //set our lookandfeelres to the resolution set in graphiccontext
+      g_guiSettings.m_LookAndFeelResolution = newRes;
 			g_application.LoadSkin(g_guiSettings.GetString("LookAndFeel.Skin"));
 			m_gWindowManager.ActivateWindow(GetID());
 		}
@@ -1492,7 +1496,14 @@ void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting)
 	for (vector<RESOLUTION>::iterator it=res.begin(); it !=res.end();it++)
 	{
 		RESOLUTION res = *it;
-		pControl->AddLabel(g_settings.m_ResInfo[res].strMode, res);
+    if (res == AUTORES)
+    {
+		  pControl->AddLabel(g_localizeStrings.Get(14061), res);
+    }
+    else
+    {
+		  pControl->AddLabel(g_settings.m_ResInfo[res].strMode, res);
+    }
 		if (pSettingInt->GetData()==res)
 			iCurrentRes=iLabel;
 		iLabel++;

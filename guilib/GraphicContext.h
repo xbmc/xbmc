@@ -30,7 +30,8 @@ enum RESOLUTION {
 	PAL_4x3 = 6,
 	PAL_16x9 = 7,
 	PAL60_4x3 = 8,
-	PAL60_16x9 = 9
+	PAL60_16x9 = 9,
+  AUTORES = 10
 };
 
 /*!
