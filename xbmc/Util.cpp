@@ -10,7 +10,7 @@
 #include "xbox/undocumented.h"
 #include "url.h"
 #include "shortcut.h"
-#include "common/xbresource.h"
+#include "xbresource.h"
 #include "graphiccontext.h"
 #include "sectionloader.h"
 #include "lib/cximage/ximage.h"
