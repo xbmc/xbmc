@@ -17,10 +17,6 @@
 #include "AutoSwitch.h"
 #include "GUIFontManager.h"
 
-#define VIEW_AS_LIST           0
-#define VIEW_AS_ICONS          1
-#define VIEW_AS_LARGEICONS     2
-
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY     3
 #define CONTROL_BTNSORTASC    4
@@ -130,6 +126,8 @@ CGUIWindowVideoBase::CGUIWindowVideoBase()
   m_Directory.m_bIsFolder = true;
   m_iItemSelected = -1;
   m_iLastControl = -1;
+  m_iViewAsIcons = -1;
+  m_iViewAsIconsRoot = -1;
   m_bDisplayEmptyDatabaseMessage = false;
 }
 
@@ -170,10 +168,9 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
       }
       else
       {
-        int iItem = GetSelectedItem();
+        int iItem = m_viewControl.GetSelectedItem();
         Update( m_Directory.m_strPath );
-        CONTROL_SELECT_ITEM(CONTROL_LIST, iItem)
-        CONTROL_SELECT_ITEM(CONTROL_THUMBS, iItem)
+        m_viewControl.SetSelectedItem(iItem);
       }
     }
     break;
@@ -182,16 +179,15 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
     {
       if ( m_Directory.IsVirtualDirectoryRoot() )
       {
-        int iItem = GetSelectedItem();
+        int iItem = m_viewControl.GetSelectedItem();
         Update( m_Directory.m_strPath );
-        CONTROL_SELECT_ITEM(CONTROL_LIST, iItem)
-        CONTROL_SELECT_ITEM(CONTROL_THUMBS, iItem)
+        m_viewControl.SetSelectedItem(iItem);
       }
     }
     break;
   case GUI_MSG_WINDOW_DEINIT:
     m_iLastControl = GetFocusedControl();
-    m_iItemSelected = GetSelectedItem();
+    m_iItemSelected = m_viewControl.GetSelectedItem();
     ClearFileItems();
     m_database.Close();
     break;
@@ -201,6 +197,8 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
       int iLastControl = m_iLastControl;
       CGUIWindow::OnMessage(message);
 
+      LoadViewMode();
+
       m_database.Open();
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
@@ -209,7 +207,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 
       Update(m_Directory.m_strPath);
 
-      UpdateThumbPanel();
+ //     UpdateThumbPanel();
 
       if (iLastControl > -1)
       {
@@ -222,8 +220,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 
       if (m_iItemSelected >= 0)
       {
-        CONTROL_SELECT_ITEM(CONTROL_LIST, m_iItemSelected)
-        CONTROL_SELECT_ITEM(CONTROL_THUMBS, m_iItemSelected)
+        m_viewControl.SetSelectedItem(m_iItemSelected);
       }
       return true;
     }
@@ -235,12 +232,18 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
       if (iControl == CONTROL_BTNVIEWASICONS)
       {
         // cycle LIST->ICONS->LARGEICONS
-        int iViewMode = VIEW_AS_ICONS;
-        if (ViewByIcon()) iViewMode = VIEW_AS_LARGEICONS;
-        if (ViewByLargeIcon()) iViewMode = VIEW_AS_LIST;
-        SetViewMode(iViewMode);
-        g_settings.Save();
-        UpdateThumbPanel();
+        if (m_Directory.IsVirtualDirectoryRoot())
+        {
+          m_iViewAsIconsRoot++;
+          if (m_iViewAsIconsRoot > VIEW_AS_LARGE_ICONS) m_iViewAsIconsRoot = VIEW_AS_LIST;
+        }
+        else
+        {
+          m_iViewAsIcons++;
+          if (m_iViewAsIcons > VIEW_AS_LARGE_ICONS) m_iViewAsIcons = VIEW_AS_LIST;
+        }
+        SaveViewMode();
+//        UpdateThumbPanel();
         UpdateButtons();
       }
       else if (iControl == CONTROL_PLAY_DVD)
@@ -285,10 +288,10 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 
         return true;
       }
-      else if (iControl == CONTROL_LIST || iControl == CONTROL_THUMBS)  // list/thumb control
+      else if (m_viewControl.HasView(iControl))  // list/thumb control
       {
         // get selected item
-        int iItem = GetSelectedItem();
+        int iItem = m_viewControl.GetSelectedItem();
         int iAction = message.GetParam1();
 
         // iItem is checked for validity inside these routines
@@ -316,6 +319,16 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
     }
   }
   return CGUIWindow::OnMessage(message);
+}
+
+void CGUIWindowVideoBase::OnWindowLoaded()
+{
+  m_viewControl.Reset();
+  m_viewControl.SetParentWindow(GetID());
+  m_viewControl.AddView(VIEW_AS_LIST, GetControl(CONTROL_LIST));
+  m_viewControl.AddView(VIEW_AS_ICONS, GetControl(CONTROL_THUMBS));
+  m_viewControl.AddView(VIEW_AS_LARGE_ICONS, GetControl(CONTROL_THUMBS));
+  m_viewControl.SetViewControlID(CONTROL_BTNVIEWASICONS);
 }
 
 void CGUIWindowVideoBase::UpdateButtons()
@@ -354,14 +367,7 @@ void CGUIWindowVideoBase::UpdateButtons()
   if (g_stSettings.m_iVideoStartWindow == WINDOW_VIDEO_TITLE) nWindow = 4;
   CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, nWindow);
 
-  int iString = 101; // view as list
-  if (ViewByIcon())
-    iString = 100;  // view as icon
-  if (ViewByLargeIcon())
-    iString = 417;  // view as large icon
-
-  SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS, iString);
-  UpdateThumbPanel();
+//  UpdateThumbPanel();
 
   // disable scan and manual imdb controls if internet lookups are disabled
   if (g_guiSettings.GetBool("Network.EnableInternet"))
@@ -375,16 +381,10 @@ void CGUIWindowVideoBase::UpdateButtons()
     CONTROL_DISABLE(CONTROL_IMDB);
   }
 
-  if (ViewByIcon())
-  {
-    SET_CONTROL_VISIBLE(CONTROL_THUMBS);
-    SET_CONTROL_HIDDEN(CONTROL_LIST);
-  }
+  if ( m_Directory.IsVirtualDirectoryRoot() )
+    m_viewControl.SetCurrentView(m_iViewAsIconsRoot);
   else
-  {
-    SET_CONTROL_VISIBLE(CONTROL_LIST);
-    SET_CONTROL_HIDDEN(CONTROL_THUMBS);
-  }
+    m_viewControl.SetCurrentView(m_iViewAsIcons);
 
   SET_CONTROL_LABEL(CONTROL_BTNSORTBY, SortMethod());
 
@@ -413,52 +413,15 @@ void CGUIWindowVideoBase::UpdateButtons()
 
 void CGUIWindowVideoBase::OnSort()
 {
-  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg);
-
-  CGUIMessage msg2(GUI_MSG_LABEL_RESET, GetID(), CONTROL_THUMBS, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg2);
-
   FormatItemLabels();
   SortItems(m_vecItems);
-
-  for (int i = 0; i < m_vecItems.Size(); i++)
-  {
-    CFileItem* pItem = m_vecItems[i];
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_LIST, 0, 0, (void*)pItem);
-    g_graphicsContext.SendMessage(msg);
-    CGUIMessage msg2(GUI_MSG_LABEL_ADD, GetID(), CONTROL_THUMBS, 0, 0, (void*)pItem);
-    g_graphicsContext.SendMessage(msg2);
-  }
+  m_viewControl.SetItems(m_vecItems);
 }
 
 void CGUIWindowVideoBase::ClearFileItems()
 {
-  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg);
-
-  CGUIMessage msg2(GUI_MSG_LABEL_RESET, GetID(), CONTROL_THUMBS, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg2);
-
+  m_viewControl.Clear();
   m_vecItems.Clear(); // will clean up everything
-}
-
-int CGUIWindowVideoBase::GetSelectedItem()
-{
-  int iControl;
-  if ( ViewByIcon() )
-  {
-    iControl = CONTROL_THUMBS;
-  }
-  else
-    iControl = CONTROL_LIST;
-
-  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg);
-  int iItem = msg.GetParam1();
-  if (iItem >= m_vecItems.Size())
-    return -1;
-  return iItem;
 }
 
 bool CGUIWindowVideoBase::HaveDiscOrConnection( CStdString& strPath, int iDriveType )
@@ -477,10 +440,9 @@ bool CGUIWindowVideoBase::HaveDiscOrConnection( CStdString& strPath, int iDriveT
         dlg->SetLine( 2, L"" );
         dlg->DoModal( GetID() );
       }
-      int iItem = GetSelectedItem();
+      int iItem = m_viewControl.GetSelectedItem();
       Update( m_Directory.m_strPath );
-      CONTROL_SELECT_ITEM(CONTROL_LIST, iItem)
-      CONTROL_SELECT_ITEM(CONTROL_THUMBS, iItem)
+      m_viewControl.SetSelectedItem(iItem);
       return false;
     }
   }
@@ -738,7 +700,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
 
   if (bUpdate)
   {
-    int iSelectedItem = GetSelectedItem();
+    int iSelectedItem = m_viewControl.GetSelectedItem();
 
     // Refresh all items
     for (int i = 0; i < m_vecItems.Size(); ++i)
@@ -755,18 +717,8 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
     // autoswitch between list/thumb control
     if (GetID() == WINDOW_VIDEOS && !m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("VideoLists.UseAutoSwitching"))
     {
-      SetViewMode(CAutoSwitch::GetView(m_vecItems));
-
-      int iFocusedControl = GetFocusedControl();
-
+      m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
       UpdateButtons();
-
-      if (iFocusedControl == CONTROL_LIST || iFocusedControl == CONTROL_THUMBS)
-      {
-        int iControl = CONTROL_LIST;
-        if (ViewByIcon() || ViewByLargeIcon()) iControl = CONTROL_THUMBS;
-        SET_CONTROL_FOCUS(iControl, 0);
-      }
     }
   }
 }
@@ -816,37 +768,6 @@ void CGUIWindowVideoBase::OnManualIMDB()
 
   ShowIMDB(strInput, "Z:\\", "Z:\\", false);
   return ;
-}
-
-bool CGUIWindowVideoBase::ViewByIcon()
-{
-  if ( m_Directory.IsVirtualDirectoryRoot() )
-  {
-    if (g_stSettings.m_iMyVideoRootViewAsIcons != VIEW_AS_LIST) return true;
-  }
-  else
-  {
-    if (g_stSettings.m_iMyVideoViewAsIcons != VIEW_AS_LIST) return true;
-  }
-  return false;
-}
-
-void CGUIWindowVideoBase::UpdateThumbPanel()
-{
-  // uncommented the code to set the selected item to correct autoswitching.
-  // for some reason when the thumbpanel is using large thumbs,
-  // the selected item would change!
-  int iItem = GetSelectedItem();
-
-  CGUIThumbnailPanel* pControl = (CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
-  if (pControl)
-    pControl->ShowBigIcons(ViewByLargeIcon());
-
-  if (iItem > -1)
-  {
-    CONTROL_SELECT_ITEM(CONTROL_LIST, iItem);
-    CONTROL_SELECT_ITEM(CONTROL_THUMBS, iItem);
-  }
 }
 
 bool CGUIWindowVideoBase::IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel)

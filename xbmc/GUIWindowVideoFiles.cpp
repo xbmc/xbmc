@@ -18,10 +18,6 @@
 #include "GUIPassword.h"
 #include "GUIFontManager.h"
 
-#define VIEW_AS_LIST           0
-#define VIEW_AS_ICONS          1
-#define VIEW_AS_LARGEICONS     2
-
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY     3
 #define CONTROL_BTNSORTASC    4
@@ -353,22 +349,15 @@ void CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
 
     int iFocusedControl = GetFocusedControl();
 
-    UpdateThumbPanel();
+//    UpdateThumbPanel();
     UpdateButtons();
-
-    if (iFocusedControl == CONTROL_LIST || iFocusedControl == CONTROL_THUMBS)
-    {
-      int iControl = CONTROL_LIST;
-      if (m_iViewAsIcons != VIEW_AS_LIST) iControl = CONTROL_THUMBS;
-      SET_CONTROL_FOCUS(iControl, 0);
-    }
   }
 }
 
 void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 {
   // get selected item
-  int iItem = GetSelectedItem();
+  int iItem = m_viewControl.GetSelectedItem();
   CStdString strSelectedItem = "";
   if (iItem >= 0 && iItem < (int)m_vecItems.Size())
   {
@@ -547,19 +536,6 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
   UpdateButtons();
 
   strSelectedItem = m_history.Get(m_Directory.m_strPath);
-
-  if (m_iLastControl == CONTROL_THUMBS || m_iLastControl == CONTROL_LIST)
-  {
-    if ( ViewByIcon() )
-    {
-      SET_CONTROL_FOCUS(CONTROL_THUMBS, 0);
-    }
-    else
-    {
-      SET_CONTROL_FOCUS(CONTROL_LIST, 0);
-    }
-  }
-
   for (int i = 0; i < (int)m_vecItems.Size(); ++i)
   {
     CFileItem* pItem = m_vecItems[i];
@@ -567,8 +543,7 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
     GetDirectoryHistoryString(pItem, strHistory);
     if (strHistory == strSelectedItem)
     {
-      CONTROL_SELECT_ITEM(CONTROL_LIST, i);
-      CONTROL_SELECT_ITEM(CONTROL_THUMBS, i);
+      m_viewControl.SetSelectedItem(i);
       break;
     }
   }
@@ -608,7 +583,7 @@ void CGUIWindowVideoFiles::OnClick(int iItem)
     g_playlistPlayer.Reset();
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
     // Set selected item
-    m_iItemSelected = GetSelectedItem();
+    m_iItemSelected = m_viewControl.GetSelectedItem();
     if (pItem->IsPlayList())
     {
       LoadPlayList(pItem->m_strPath);
@@ -631,7 +606,7 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
   if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return ;
   bool bFolder(false);
   CStdString strFolder = "";
-  int iSelectedItem = GetSelectedItem();
+  int iSelectedItem = m_viewControl.GetSelectedItem();
   CFileItem* pItem = m_vecItems[iItem];
   CStdString strFile = pItem->m_strPath;
   CStdString strMovie = pItem->GetLabel();
@@ -663,8 +638,7 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
       // then just lookup IMDB info and show it
       ShowIMDB(strMovie, strFolder, strFolder, true /*false*/);  // true for bFolder will save the thumb to the local disk (if applicable)
       // this should happen for the case where a folder only contains a bunch of folders as well.
-      CONTROL_SELECT_ITEM(CONTROL_LIST, iSelectedItem);
-      CONTROL_SELECT_ITEM(CONTROL_THUMBS, iSelectedItem);
+      m_viewControl.SetSelectedItem(iSelectedItem);
       return ;
     }
   }
@@ -678,8 +652,7 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
   }
 
   ShowIMDB(strMovie, strFile, strFolder, bFolder);
-  CONTROL_SELECT_ITEM(CONTROL_LIST, iSelectedItem);
-  CONTROL_SELECT_ITEM(CONTROL_THUMBS, iSelectedItem);
+  m_viewControl.SetSelectedItem(iSelectedItem);
 }
 
 void CGUIWindowVideoFiles::Render()
@@ -960,32 +933,6 @@ void CGUIWindowVideoFiles::SetIMDBThumbs(CFileItemList& items)
   }
 }
 
-bool CGUIWindowVideoFiles::ViewByIcon()
-{
-  if ( m_Directory.IsVirtualDirectoryRoot() )
-  {
-    if (m_iViewAsIconsRoot != VIEW_AS_LIST) return true;
-  }
-  else
-  {
-    if (m_iViewAsIcons != VIEW_AS_LIST) return true;
-  }
-  return false;
-}
-
-bool CGUIWindowVideoFiles::ViewByLargeIcon()
-{
-  if ( m_Directory.IsVirtualDirectoryRoot() )
-  {
-    if (m_iViewAsIconsRoot == VIEW_AS_LARGEICONS) return true;
-  }
-  else
-  {
-    if (m_iViewAsIcons == VIEW_AS_LARGEICONS) return true;
-  }
-  return false;
-}
-
 bool CGUIWindowVideoFiles::SortAscending()
 {
   if (m_Directory.IsVirtualDirectoryRoot())
@@ -1207,16 +1154,6 @@ void CGUIWindowVideoFiles::SetHistoryForPath(const CStdString& strDirectory)
   }
 }
 
-void CGUIWindowVideoFiles::SetViewMode(int iViewMode)
-{
-  if ( m_Directory.IsVirtualDirectoryRoot() )
-    g_stSettings.m_iMyVideoRootViewAsIcons = iViewMode;
-  else
-    g_stSettings.m_iMyVideoViewAsIcons = iViewMode;
-  m_iViewAsIcons = g_stSettings.m_iMyVideoViewAsIcons;
-  m_iViewAsIconsRoot = g_stSettings.m_iMyVideoRootViewAsIcons;
-}
-
 void CGUIWindowVideoFiles::OnPopupMenu(int iItem)
 {
   // calculate our position
@@ -1252,4 +1189,17 @@ void CGUIWindowVideoFiles::OnPopupMenu(int iItem)
     return ;
   }
   CGUIWindowVideoBase::OnPopupMenu(iItem);
+}
+
+void CGUIWindowVideoFiles::LoadViewMode()
+{
+  m_iViewAsIconsRoot = g_stSettings.m_iMyVideoRootViewAsIcons;
+  m_iViewAsIcons = g_stSettings.m_iMyVideoViewAsIcons;
+}
+
+void CGUIWindowVideoFiles::SaveViewMode()
+{
+  g_stSettings.m_iMyVideoRootViewAsIcons = m_iViewAsIconsRoot;
+  g_stSettings.m_iMyVideoViewAsIcons = m_iViewAsIcons;
+  g_settings.Save();
 }
