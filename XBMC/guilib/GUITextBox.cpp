@@ -17,6 +17,7 @@ CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWOR
   m_iOffset=0;
   m_iItemsPerPage=10;
   m_iItemHeight=10;
+	m_iMaxPages=50;
   m_pFont=g_fontManager.GetFont(strFontName);
   m_dwTextColor=dwTextColor;
 	ControlType = GUICONTROL_TEXTBOX;
@@ -133,6 +134,9 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
       m_vecItems.erase(m_vecItems.begin(),m_vecItems.end());
       m_upDown.SetRange(1,1);
       m_upDown.SetValue(1);
+
+			// set max pages (param1)
+			if (message.GetParam1() > 0) m_iMaxPages = message.GetParam1();
 			SetText( message.GetLabel() );
     }
 
@@ -242,7 +246,6 @@ void CGUITextBox::OnDown()
   }  
 }
 
-
 void CGUITextBox::OnPageUp()
 {
   int iPage = m_upDown.GetValue();
@@ -271,24 +274,31 @@ void CGUITextBox::SetText(const wstring &strText)
 {
 	m_vecItems.erase(m_vecItems.begin(),m_vecItems.end());
 	// start wordwrapping
-   // Set a flag so we can determine initial justification effects
+  // Set a flag so we can determine initial justification effects
   BOOL bStartingNewLine = TRUE;
 	BOOL bBreakAtSpace = FALSE;
   int pos=0;
+	int iTextSize = (int)strText.size();
 	int lpos=0;
 	int iLastSpace=-1;
 	int iLastSpaceInLine=-1;
 	char szLine[1024];
-  while( pos < (int)strText.size() )
+	WCHAR wsTmp[1024];
+	int iTotalLines = 0;
+  while(pos < iTextSize)
   {
     // Get the current letter in the string
     char letter = (char)strText[pos];
+
+		// break if we get more pages then maxpages
+		if (((iTotalLines + 1) / m_iItemsPerPage) > (m_iMaxPages - 1)) break;
 
     // Handle the newline character
     if (letter == '\n' )
     {
 			CGUIListItem item(szLine);
 			m_vecItems.push_back(item);
+			iTotalLines++;
 			iLastSpace=-1;
 			iLastSpaceInLine=-1;
 			lpos=0;
@@ -303,13 +313,12 @@ void CGUITextBox::SetText(const wstring &strText)
 
 			if (lpos < 0 || lpos >1023)
 			{
-				OutputDebugString("ERRROR\n");
+				OutputDebugString("CGUITextBox::SetText -> ERRROR\n");
 			}
 			szLine[lpos]=letter;
 			szLine[lpos+1]=0;
 
 			FLOAT fwidth,fheight;
-			WCHAR wsTmp[1024];
 			swprintf(wsTmp,L"%S",szLine);
 			m_pFont->GetTextExtent(wsTmp,&fwidth,&fheight);
 			if (fwidth > m_dwWidth)
@@ -321,6 +330,7 @@ void CGUITextBox::SetText(const wstring &strText)
 				}
 				CGUIListItem item(szLine);
 				m_vecItems.push_back(item);
+				iTotalLines++;
 				iLastSpaceInLine=-1;
 				iLastSpace=-1;
 				lpos=0;
@@ -332,12 +342,13 @@ void CGUITextBox::SetText(const wstring &strText)
 		}
 		pos++;
 	}
+
 	if (lpos > 0)
 	{
 		CGUIListItem item(szLine);
 		m_vecItems.push_back(item);
+		iTotalLines++;
 	}
-
 
   int iPages=m_vecItems.size() / m_iItemsPerPage;
   if (m_vecItems.size() % m_iItemsPerPage) iPages++;
