@@ -98,7 +98,6 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       int iItem=0;
       if ( CUtil::IsISO9660(m_pMovie->m_strPath) || CUtil::IsDVD(m_pMovie->m_strPath) )
       {
-        CLog::Log("IMDB:%s label:%s" ,m_pMovie->m_strPath.c_str(),m_pMovie->m_strDVDLabel.c_str());
         CONTROL_ENABLE(GetID(),CONTROL_DISC);
         char szNumber[1024];
         int iPos=0;
@@ -112,10 +111,15 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
             szNumber[iPos]=0;
           }
         }
-        int iDVD;
-        sscanf(szNumber,"%i", &iDVD);
+        int iDVD=0;
+        if (strlen(szNumber))
+        {
+          sscanf(szNumber,"%i", &iDVD);
+        }
         if (iDVD<=0) iDVD=1;
         iItem=iDVD+1;
+        
+        CLog::Log("IMDB:%s label:[%s] item:%i" ,m_pMovie->m_strPath.c_str(),m_pMovie->m_strDVDLabel.c_str(),iItem);
       }
       else 
       {
