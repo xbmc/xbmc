@@ -112,6 +112,12 @@ HRESULT CXBApplicationEx::Create()
         return hr;
     }
 
+		// set soften and flicker filters
+		m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0, 1.0f, 0L );
+		m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+		m_pd3dDevice->SetSoftDisplayFilter(true);
+		m_pd3dDevice->SetFlickerFilter(5);
+
     // Allow global access to the device
     g_pd3dDevice = m_pd3dDevice;
 
