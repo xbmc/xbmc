@@ -448,7 +448,7 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
         pItem->m_bIsShareOrDrive=false;
 
         CStdString strThumb;
-        CUtil::GetThumbnail(movie.m_strSearchString,strThumb);
+        CUtil::GetVideoThumbnail(movie.m_strIMDBNumber,strThumb);
         pItem->SetThumbnailImage(strThumb);
         pItem->m_fRating     = movie.m_fRating; 
         pItem->m_stTime.wYear= movie.m_iYear;

@@ -188,6 +188,10 @@ HRESULT CApplication::Initialize()
   }
 
 	CreateDirectory(g_stSettings.szThumbnailsDirectory,NULL);
+  CStdString strThumbIMDB=g_stSettings.szThumbnailsDirectory;
+  strThumbIMDB+="\\imdb";
+  CreateDirectory(strThumbIMDB.c_str(),NULL);
+
 	CreateDirectory(g_stSettings.m_szShortcutDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szAlbumDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szMusicRecordingDirectory,NULL);
