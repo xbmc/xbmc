@@ -245,6 +245,11 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
     case GUI_MSG_WINDOW_INIT:
 		{
 			CGUIWindow::OnMessage(message);
+			// default sort methods
+			g_stSettings.m_iMyFilesSourceRootSortMethod = 0;
+			g_stSettings.m_bMyFilesSourceRootSortAscending = true;
+			g_stSettings.m_iMyFilesSourceSortMethod = 0;
+			g_stSettings.m_bMyFilesSourceSortAscending = true;
 
 			CGUIListControl *pControl = (CGUIListControl *)GetControl(CONTROL_LEFT_LIST);
 			if (pControl) pControl->SetPageControlVisible(false);
