@@ -5,6 +5,13 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 10-01-2004 added: Second rendering method using overlays.
+                      Renderers can be switched from the GUI (Video Settings->Filters)
+                      Known Issues: 1080i may not be 100% in terms of Aspect ratio - it hasn't been tested
+                                    Renderers cannot be switched on the fly - change will take effect at
+                                    next movie play.
+                                    Overlays method is much slower than the pixel shader method - reason is
+                                    mostly to do with the software YV12->YUY2 conversion done by mplayer.
   - 10-01-2004 fixed: [ 1059668 ] OSD and scene skip bug.
   - 10-01-2004 fixed: Slideshow info shows part of directory instead of filename in osd
   - 10-01-2004 fixed: subtitles wouldn't display if on CD/DVD

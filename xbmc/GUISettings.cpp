@@ -313,6 +313,7 @@ CGUISettings::CGUISettings(void)
 	AddCategory(5, "Filters", 230);
 	AddInt(1, "Filters.Flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT);
 	AddBool(2, "Filters.Soften", 215, false);
+	AddInt(3, "Filters.RenderMethod", 13354, RENDER_PIXEL_SHADER, RENDER_PIXEL_SHADER, 1, RENDER_OVERLAYS, SPIN_CONTROL_TEXT);
 
 	AddCategory(5, "Subtitles", 287);
 	AddString(1, "Subtitles.Font", 288, "arial-iso-8859-1", SPIN_CONTROL_TEXT);
@@ -664,23 +665,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement)
 	SetBool("AudioOutput.DTSPassThrough", g_audioConfig.GetDTSEnabled());
 	g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)GetInt("LookAndFeel.Resolution");
 	CLog::Log(LOGNOTICE, "Checking resolution %i", g_guiSettings.m_LookAndFeelResolution);
-	DWORD dwAVPack = XGetAVPack();
-	CStdString strAVPack;
-	if (dwAVPack == XC_AV_PACK_SCART) strAVPack = "Scart";
-	else if (dwAVPack == XC_AV_PACK_HDTV) strAVPack = "HDTV";
-	else if (dwAVPack == XC_AV_PACK_RFU) strAVPack = "RF Unit";
-	else if (dwAVPack == XC_AV_PACK_SVIDEO) strAVPack = "S-Video";
-	else if (dwAVPack == XC_AV_PACK_STANDARD) strAVPack = "Standard";
-	else strAVPack = "Unknown";
-	CLog::Log(LOGNOTICE, "AV Pack: %s", strAVPack.c_str());
-	CStdString strAVFlags;
-	if (g_videoConfig.HasWidescreen()) strAVFlags += "Widescreen,";
-	if (g_videoConfig.HasPAL60()) strAVFlags += "Pal60,";
-	if (g_videoConfig.Has480p()) strAVFlags += "480p,";
-	if (g_videoConfig.Has720p()) strAVFlags += "720p,";
-	if (g_videoConfig.Has1080i()) strAVFlags += "1080i,";
-	if (strAVFlags.size() > 1) strAVFlags = strAVFlags.Left(strAVFlags.size()-1);
-	CLog::Log(LOGNOTICE, "AV Flags: %s", strAVFlags.c_str());
+	g_videoConfig.PrintInfo();
 	if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
 	{
 		CLog::Log(LOGNOTICE, "Setting safe mode %i", g_videoConfig.GetSafeMode());
