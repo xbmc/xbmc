@@ -219,7 +219,7 @@ long CProgramDatabase::AddFile(long lPathId, const CStdString& strFileName, cons
       lFileId=m_pDS->fv("idFile").get_asLong() ;
       return lFileId;
     }
-	  strSQL.Format ("insert into files (idFile, idPath, strFileName, xbedescription, iTimesPlayed) values(NULL, %i, '%s',\"%s\",%i)", lPathId, strFileName.c_str(),strDescription.c_str(),0);
+	  strSQL.Format ("insert into files (idFile, idPath, strFileName, xbedescription, iTimesPlayed) values(NULL, %i, '%s','%s',%i)", lPathId, strFileName.c_str(),strDescription.c_str(),0);
 	  m_pDS->exec(strSQL.c_str());
     lFileId=sqlite_last_insert_rowid( m_pDB->getHandle() );
     return lFileId;
