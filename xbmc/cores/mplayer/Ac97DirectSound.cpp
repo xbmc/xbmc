@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include "Ac97DirectSound.h"
 #include "../../settings.h"
-
+#include "../../util.h"
 
 #define VOLUME_MIN		-6000
 #define VOLUME_MAX		DSBVOLUME_MAX
@@ -282,7 +282,7 @@ DWORD CAc97DirectSound::AddPackets(unsigned char *data, DWORD len)
 			xmpAudio.prtTimestamp     = NULL;
 			xmpAudio.pContext         = NULL;
 
-			memcpy(xmpAudio.pvBuffer,&data[iBytesCopied],iSize);
+			fast_memcpy(xmpAudio.pvBuffer,&data[iBytesCopied],iSize);
 
 			// no need to do analogue out - analogue should be disabled as we're
 			// passing non-PCM streams only using AC97

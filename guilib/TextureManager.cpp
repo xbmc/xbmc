@@ -5,6 +5,7 @@
 #include "../xbmc/utils/log.h"
 #include <xgraphics.h>
 #include "PackedTexture.h"
+#include "../xbmc/Util.h"
 
 extern "C" void dllprintf( const char *format, ... );
 
@@ -495,7 +496,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 			PALETTEENTRY* pal;
 			pPal->Lock((D3DCOLOR**)&pal, 0);
 
-			memcpy(pal, AnimatedGifSet.m_vecimg[0]->Palette, sizeof(PALETTEENTRY)*256);
+			fast_memcpy(pal, AnimatedGifSet.m_vecimg[0]->Palette, sizeof(PALETTEENTRY)*256);
 			for (int i = 0; i < 256; i++)
 				pal[i].peFlags = 0xff; // alpha
 			if (AnimatedGifSet.m_vecimg[0]->Transparency && AnimatedGifSet.m_vecimg[0]->Transparent >= 0)
