@@ -11,7 +11,8 @@ CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPo
         ,m_imgspinUpFocus(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight,strUpFocus)
         ,m_imgspinDownFocus(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight,strDownFocus)
 {
-    m_bReverse=false;
+	m_fMaxTextWidth = 0;
+	m_bReverse=false;
     m_iStart=0;
     m_iEnd=100;
     m_fStart=0.0f;
@@ -29,12 +30,37 @@ CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPo
     m_bShowRange=false;
     m_iTypedPos=0;
     strcpy(m_szTyped,"");
-	m_dwBuddyControlID = 0;
+m_dwBuddyControlID = 0;
 	m_bBuddyDisabled = false;
+}
+
+void CGUISpinControl::SetNonProportional(bool bOnOff)
+{
+	m_fMaxTextWidth = 0;
+
+	if ((bOnOff) && (m_pFont))
+	{
+		m_bShowRange = false;
+
+	    WCHAR wszText[1024];
+        float fTextHeight,fTextWidth;
+
+		for(int i=0;i<(int)m_vecLabels.size();i++)
+		{
+			swprintf(wszText,L"%s", m_vecLabels[m_iValue].c_str() );
+			m_pFont->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
+			
+			if (fTextWidth>m_fMaxTextWidth)
+			{
+				m_fMaxTextWidth = fTextWidth;
+			}
+		}
+	}
 }
 
 CGUISpinControl::~CGUISpinControl(void)
 {}
+
 
 void CGUISpinControl::OnAction(const CAction &action)
 {
@@ -185,9 +211,16 @@ void CGUISpinControl::OnAction(const CAction &action)
     CGUIControl::OnAction(action);
 }
 
+void CGUISpinControl::Clear()
+{
+    m_vecLabels.erase(m_vecLabels.begin(),m_vecLabels.end());
+	m_vecValues.erase(m_vecValues.begin(),m_vecValues.end());
+	SetValue(0);
+}
 
 bool CGUISpinControl::OnMessage(CGUIMessage& message)
 {
+
     if (CGUIControl::OnMessage(message) )
     {
         if (!HasFocus())
@@ -207,9 +240,7 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
 
         case GUI_MSG_LABEL_RESET:
             {
-                m_vecLabels.erase(m_vecLabels.begin(),m_vecLabels.end());
-                m_vecValues.erase(m_vecValues.begin(),m_vecValues.end());
-                SetValue(0);
+				Clear();
                 return true;
             }
             break;
@@ -355,18 +386,24 @@ void CGUISpinControl::Render()
         
     }
 
-    if ( m_dwAlign== XBFONT_LEFT)
+	if (m_fMaxTextWidth>0)
+	{
+		m_imgspinUpFocus.SetPosition((DWORD)m_fMaxTextWidth + 5+dwPosX+ m_imgspinDown.GetWidth(), m_dwPosY);
+		m_imgspinUp.SetPosition((DWORD)m_fMaxTextWidth + 5+dwPosX+ m_imgspinDown.GetWidth(), m_dwPosY);
+		m_imgspinDownFocus.SetPosition((DWORD)m_fMaxTextWidth + 5+dwPosX, m_dwPosY);
+		m_imgspinDown.SetPosition((DWORD)m_fMaxTextWidth + 5+dwPosX, m_dwPosY);
+	}
+    else if (( m_dwAlign== XBFONT_LEFT) && (m_pFont))
     {
-        if (m_pFont)
-        {
-            float fTextHeight,fTextWidth;
-            m_pFont->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
-            m_imgspinUpFocus.SetPosition((DWORD)fTextWidth + 5+dwPosX+ m_imgspinDown.GetWidth(), m_dwPosY);
-            m_imgspinUp.SetPosition((DWORD)fTextWidth + 5+dwPosX+ m_imgspinDown.GetWidth(), m_dwPosY);
-            m_imgspinDownFocus.SetPosition((DWORD)fTextWidth + 5+dwPosX, m_dwPosY);
-            m_imgspinDown.SetPosition((DWORD)fTextWidth + 5+dwPosX, m_dwPosY);
-        }
+        float fTextHeight,fTextWidth;
+		m_pFont->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
+            
+		m_imgspinUpFocus.SetPosition((DWORD)fTextWidth + 5+dwPosX+ m_imgspinDown.GetWidth(), m_dwPosY);
+		m_imgspinUp.SetPosition((DWORD)fTextWidth + 5+dwPosX+ m_imgspinDown.GetWidth(), m_dwPosY);
+		m_imgspinDownFocus.SetPosition((DWORD)fTextWidth + 5+dwPosX, m_dwPosY);
+		m_imgspinDown.SetPosition((DWORD)fTextWidth + 5+dwPosX, m_dwPosY);
     }
+
     if (m_iSelect==SPIN_BUTTON_UP)
     {
         if (m_bReverse)
@@ -430,11 +467,14 @@ void CGUISpinControl::Render()
         fPosY-=fHeight;
         fPosY+=(float)m_dwPosY;
 
-		if ( HasFocus() )
-			m_pFont->DrawText((float)m_dwPosX-3, (float)fPosY,m_dwTextColor,wszText,m_dwAlign);
-		else
-			m_pFont->DrawText((float)m_dwPosX-3, (float)fPosY,m_dwDisabledColor,wszText,m_dwAlign);
+        if ( HasFocus() )
+                m_pFont->DrawText((float)m_dwPosX-3, (float)fPosY,m_dwTextColor,wszText,m_dwAlign);
+	else
+		m_pFont->DrawText((float)m_dwPosX-3, (float)fPosY,m_dwDisabledColor,wszText,m_dwAlign);
     }
+
+
+
 }
 
 
@@ -478,6 +518,16 @@ void CGUISpinControl::AddLabel(const wstring& strLabel, int iValue)
     m_vecLabels.push_back(strLabel);
     m_vecValues.push_back(iValue);
 }
+
+void CGUISpinControl::AddLabel(CStdString aLabel, int iValue)
+{
+    WCHAR wszText[1024];
+	swprintf(wszText,L"%S",aLabel.c_str());	
+	wstring strLabel = wszText;
+	m_vecLabels.push_back(strLabel);
+    m_vecValues.push_back(iValue);
+ }
+
 
 const WCHAR* CGUISpinControl::GetLabel() const
 {
@@ -762,7 +812,6 @@ int CGUISpinControl::GetMaximum() const
   }
   return 100;
 }
-
 void CGUISpinControl::SetBuddyControlID(DWORD dwBuddyControlID)
 {
 	m_dwBuddyControlID = dwBuddyControlID;
