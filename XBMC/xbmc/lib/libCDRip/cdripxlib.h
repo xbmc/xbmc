@@ -79,28 +79,30 @@ struct cdtoc {
 class CCDRipX
 {
 protected:
-	
-	LONG										nNumBytesRead;
-	LONG										nTotalBytes;
+	DWORD					m_dwSeekSpeed;
+	LONG					nNumBytesRead;
+	LONG					nTotalBytes;
 	IDirectSoundStream*     m_pDestXMO;
 	WAVEFORMATEX            m_wfxSourceFormat; 
-	BYTE*										m_pvSourceBuffer[1+WAVSTRM_PACKET_COUNT]; 
-	HRESULT									hr;
+	BYTE*										m_pvSourceBuffer[WAVSTRM_PACKET_COUNT]; 
+	HRESULT					hr;
 	HRESULT                 m_hrOpenResult; 
-	DWORD                   m_adwStatus[1+WAVSTRM_PACKET_COUNT];
-	BYTE*										pbtStream;
-	LONG										nBufferSize;
-	BOOL										m_init;
-	int											m_nNumTracks;
-
-	HRESULT									pGetTrackInfo();
-	unsigned long						CalculateDiscID();
-	int											Ripperinit(int ntrack);
-	int											Playerinit();
-	int											CreateStream();
-	HRESULT									ProcessSound( DWORD dwPacketIndex );
-	BOOL										FindFreePacket( DWORD* pdwPacketIndex );
-	cdtoc										CDCon[1+TRACK_LIST];
+	DWORD                   m_adwStatus[WAVSTRM_PACKET_COUNT];
+	BYTE*					pbtStream;
+	LONG					nBufferSize;
+	BOOL					m_init;
+	int						m_nNumTracks;
+	DWORD					m_dwStartSector;
+	DWORD					m_dwEndSector;
+	DWORD					m_dwSeekOffset;
+	HRESULT					pGetTrackInfo();
+	unsigned long			CalculateDiscID();
+	int						Ripperinit(int ntrack);
+	int						Playerinit();
+	int						CreateStream();
+	HRESULT					ProcessSound( DWORD dwPacketIndex );
+	BOOL					FindFreePacket( DWORD* pdwPacketIndex );
+	cdtoc					CDCon[TRACK_LIST];
 	
 #ifdef _WITHENC
 	BOOL					rip_in_progress;
@@ -111,13 +113,14 @@ public:
 	cdtoc					oCDCon[TRACK_LIST];
 	bool					IsAudioTrack( int nTrack );
 
-	HRESULT				Init();
+	HRESULT					Init();
 	int						GetNumTocEntries();
 	cdtoc					GetTrackInfo(int ntrack);
-	HRESULT				playTrack(int nTrack);
+	HRESULT					playTrack(int nTrack);
 	int						Process( DWORD* pTimeplayed = NULL );
 	void					Pause(DWORD dwPause);
 	void					Stop();
+	void					Seek(DWORD dwSpeed);
 
 #ifdef _WITHENC
 	int						RipToOgg(	int				ntrack,
@@ -129,7 +132,7 @@ public:
 #endif
 		
 	CCDRipX();
-	virtual ~CCDRipX();
+	~CCDRipX();
 	
 	void		RegisterAudioCallback(ICDAudioCallback* pCallback);
 	void		UnRegisterAudioCallback();
