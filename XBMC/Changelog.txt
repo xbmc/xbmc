@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 11-01-2004 changed: Webserver authentication now defaults to BASIC instead of DIGEST.  Solves Firefox issues.
   - 10-01-2004 added: Second rendering method using overlays.
                       Renderers can be switched from the GUI (Video Settings->Filters)
                       Known Issues: 1080i may not be 100% in terms of Aspect ratio - it hasn't been tested
