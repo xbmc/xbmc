@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "guiwindowmanager.h"
-
+#include "../xbmc/utils/log.h"
 CGUIWindowManager     m_gWindowManager;
 
 CGUIWindowManager::CGUIWindowManager(void)
@@ -79,6 +79,7 @@ void CGUIWindowManager::Remove(DWORD dwID)
 void CGUIWindowManager::PreviousWindow()
 {
 	// deactivate any window
+	CLog::DebugLog("CGUIWindowManager::PreviousWindow: Deactivate");
 	int iPrevActiveWindow=m_iActiveWindow;
 	int iPrevActiveWindowID=0;
 	if (m_iActiveWindow >=0)
@@ -94,12 +95,14 @@ void CGUIWindowManager::PreviousWindow()
     }
 	}
 
+	CLog::DebugLog("CGUIWindowManager::PreviousWindow: Activate new");
 	// activate the new window
 	for (int i=0; i < (int)m_vecWindows.size(); i++)
 	{
 		CGUIWindow* pWindow=m_vecWindows[i];
 		if (pWindow->GetID() == iPrevActiveWindowID) 
 		{
+			CLog::DebugLog("CGUIWindowManager::PreviousWindow: Activating");
 			m_iActiveWindow=i;
 			CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,WINDOW_INVALID);
 			pWindow->OnMessage(msg);
@@ -107,6 +110,7 @@ void CGUIWindowManager::PreviousWindow()
 		}
 	}
 
+	CLog::DebugLog("CGUIWindowManager::PreviousWindow: No previous");
 	// previous window doesnt exists. (maybe .xml file is invalid or doesnt exists)
 	// so we go back to the previous window
 	m_iActiveWindow=0;
