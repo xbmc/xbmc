@@ -21,10 +21,12 @@ cp credits/* $dest/credits >/dev/null 2>&1
 mkdir $dest/media
 cp -r xbmc/keyboard/Media/* $dest/media
 cp -r visualisations $dest
-cp -r mplayer $dest
+cp -r system $dest
 
-# win32 DLLs for wmv8/9, realmedia support (see XBMC/mplayer/codecs/readme.txt)
-cp /xbmc/win_dlls/*dll $dest/mplayer/codecs
+# win32 DLLs for wmv8/9, realmedia and quicktime support 
+# (see XBMC/system/players/mplayer/codecs/readme.txt)
+cp /xbmc/win_dlls/*dll $dest/system/players/mplayer/codecs/
+cp /xbmc/win_dlls/QuickTime* $dest/system/players/mplayer/codecs/
 
 # images and other files needed for the webserver built into xbmc
 mkdir $dest/web
