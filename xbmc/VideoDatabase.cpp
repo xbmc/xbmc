@@ -375,7 +375,7 @@ void CVideoDatabase::GetGenres(VECMOVIEGENRES& genres)
   genres.erase(genres.begin(),genres.end());
 	if (NULL==m_pDB.get()) return ;
 	if (NULL==m_pDS.get()) return ;
-  m_pDS->query("select * from genre");
+  m_pDS->query("select * from genre order by strGenre");
   if (m_pDS->num_rows() == 0)  return;
   while (!m_pDS->eof()) 
   {
@@ -692,28 +692,16 @@ void CVideoDatabase::GetMoviesByPath(CStdString& strPath1, VECMOVIES& movies)
   if (lPathId< 0) return;
 
   CStdString strSQL;
-  strSQL.Format("select * from files,genrelinkmovie,genre,movie,movieinfo,actors where files.idmovie=movie.idmovie and genrelinkmovie.idGenre=genre.idGenre and genrelinkmovie.idmovie=movie.idmovie and movieinfo.idmovie=movie.idmovie and movie.idpath=%i and movieinfo.iddirector=actors.idActor", lPathId);
+  strSQL.Format("select * from files where files.idpath=%i", lPathId);
 
   m_pDS->query( strSQL.c_str() );
   if (m_pDS->num_rows() == 0)  return;
   while (!m_pDS->eof()) 
   {
     CIMDBMovie details;
-    details.m_fRating=(float)atof(m_pDS->fv("movieinfo.fRating").get_asString().c_str()) ;
-	  details.m_strDirector=m_pDS->fv("actors.strActor").get_asString();
-	  details.m_strWritingCredits=m_pDS->fv("movieinfo.strCredits").get_asString();
-	  details.m_strTagLine=m_pDS->fv("movieinfo.strTagLine").get_asString();
-	  details.m_strPlotOutline=m_pDS->fv("movieinfo.strPlotOutline").get_asString();
-	  details.m_strPlot=m_pDS->fv("movieinfo.strPlot").get_asString();
-	  details.m_strVotes=m_pDS->fv("movieinfo.strVotes").get_asString();
-	  details.m_strCast=m_pDS->fv("movieinfo.strCast").get_asString();
-	  details.m_iYear=m_pDS->fv("movieinfo.iYear").get_asLong();
-    details.m_strGenre=m_pDS->fv("movieinfo.strGenre").get_asString();
-    details.m_strPictureURL=m_pDS->fv("movieinfo.strPictureURL").get_asString();
-    details.m_strTitle=m_pDS->fv("movieinfo.strTitle").get_asString();
-    details.m_strFile=m_pDS->fv("files.strFilename").get_asString();
-    long lMovieId=m_pDS->fv("movieinfo.idMovie").get_asLong();
+    long lMovieId=m_pDS->fv("idMovie").get_asLong();
     details.m_strSearchString.Format("%i", lMovieId);
+    details.m_strFile=m_pDS->fv("strFilename").get_asString();
     movies.push_back(details);
     m_pDS->next();
   }
@@ -740,6 +728,62 @@ void CVideoDatabase::GetFiles(long lMovieId, VECMOVIESFILES& movies)
     strPath=m_pDS->fv("path.strPath").get_asString();
     strFile=strPath+strFile;
     movies.push_back(strFile);
+    m_pDS->next();
+  }
+}
+
+//********************************************************************************************************************************
+void CVideoDatabase::GetYears(VECMOVIEYEARS& years)
+{
+  years.erase(years.begin(),years.end());
+	if (NULL==m_pDB.get()) return ;
+	if (NULL==m_pDS.get()) return ;
+  m_pDS->query("select * from movieinfo");
+  if (m_pDS->num_rows() == 0)  return;
+  while (!m_pDS->eof()) 
+  {
+    CStdString strYear=m_pDS->fv("iYear").get_asString();
+    bool bAdd=true;
+    for (int i=0; i < (int)years.size();++i)
+    {
+      if (strYear == years[i]) bAdd=false;
+    }
+    if (bAdd) years.push_back( strYear);
+    m_pDS->next();
+  }
+}
+
+//********************************************************************************************************************************
+void CVideoDatabase::GetMoviesByYear(CStdString& strYear, VECMOVIES& movies)
+{
+	int iYear = atoi(strYear.c_str());
+  movies.erase(movies.begin(),movies.end());
+	if (NULL==m_pDB.get()) return ;
+	if (NULL==m_pDS.get()) return ;
+  CStdString strSQL;
+  strSQL.Format("select * from movie,movieinfo,actors where movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor and movieinfo.iYear=%i",iYear);
+
+  m_pDS->query( strSQL.c_str() );
+  if (m_pDS->num_rows() == 0)  return;
+  while (!m_pDS->eof()) 
+  {
+    CIMDBMovie details;
+    details.m_fRating=(float)atof(m_pDS->fv("movieinfo.fRating").get_asString().c_str()) ;
+	  details.m_strDirector=m_pDS->fv("actors.strActor").get_asString();
+	  details.m_strWritingCredits=m_pDS->fv("movieinfo.strCredits").get_asString();
+	  details.m_strTagLine=m_pDS->fv("movieinfo.strTagLine").get_asString();
+	  details.m_strPlotOutline=m_pDS->fv("movieinfo.strPlotOutline").get_asString();
+	  details.m_strPlot=m_pDS->fv("movieinfo.strPlot").get_asString();
+	  details.m_strVotes=m_pDS->fv("movieinfo.strVotes").get_asString();
+	  details.m_strCast=m_pDS->fv("movieinfo.strCast").get_asString();
+	  details.m_iYear=m_pDS->fv("movieinfo.iYear").get_asLong();
+    details.m_strGenre=m_pDS->fv("movieinfo.strGenre").get_asString();
+    details.m_strPictureURL=m_pDS->fv("movieinfo.strPictureURL").get_asString();
+    details.m_strTitle=m_pDS->fv("movieinfo.strTitle").get_asString();
+    long lMovieId=m_pDS->fv("movieinfo.idMovie").get_asLong();
+    details.m_strSearchString.Format("%i", lMovieId);
+
+    movies.push_back(details);
     m_pDS->next();
   }
 }

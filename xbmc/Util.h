@@ -14,6 +14,7 @@ public:
   static char* GetFileName(const CStdString& strFileNameAndPath);
 	static bool  IsHD(const CStdString& strFileName);
   static bool  IsXBE(const CStdString& strFileName);
+  static bool  IsDefaultXBE(const CStdString& strFileName);
   static bool  IsShortCut(const CStdString& strFileName);
   static int   cmpnocase(const char* str1,const char* str2);
   static bool  GetParentPath(const CStdString& strPath, CStdString& strParent);

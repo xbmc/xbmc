@@ -60,6 +60,7 @@ public:
 	  bool			m_bMyProgramsSortAscending;
 	  bool			m_bMyProgramsViewAsIcons;
 	  bool			m_bMyProgramsFlatten;
+	  bool			m_bMyProgramsDefaultXBE;
 		
     char	    szThumbnailsDirectory[1024];
     char      szDashboard[1024];
@@ -201,6 +202,23 @@ public:
 		bool			m_bMyVideoGenreRootViewAsIcons;
 	  int				m_iMyVideoGenreSortMethod;
 	  bool			m_bMyVideoGenreSortAscending;
+
+		bool			m_bMyVideoActorViewAsIcons;
+		bool			m_bMyVideoActorRootViewAsIcons;
+	  int				m_iMyVideoActorSortMethod;
+	  bool			m_bMyVideoActorSortAscending;
+
+		bool			m_bMyVideoYearViewAsIcons;
+		bool			m_bMyVideoYearRootViewAsIcons;
+	  int				m_iMyVideoYearSortMethod;
+	  bool			m_bMyVideoYearSortAscending;
+
+
+    bool			m_bMyVideoVideoStack;
+    bool			m_bMyVideoActorStack;
+    bool			m_bMyVideoGenreStack;
+    bool			m_bMyVideoYearStack;
+
     int       m_iMyProgramsSelectedItem;
   };
 
