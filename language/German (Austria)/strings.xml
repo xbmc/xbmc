@@ -7,7 +7,6 @@
   <string><id>3</id><value>Eigene Videos</value></string>
   <string><id>4</id><value>TV Programm</value></string>
   <string><id>5</id><value>Einstellungen</value></string>
-  <!-- String with id 6 should not be set here, only in the english language file !-->
   <string><id>7</id><value>Eigene Dateien</value></string>
   <string><id>8</id><value>Wetterbericht</value></string>
   <string><id>11</id><value>Montag</value></string>
@@ -565,6 +564,43 @@
   <string><id>12006</id><value>Audio Visualisation</value></string>
   <string><id>12007</id><value>Bilder/Diaschau</value></string>
   <string><id>12008</id><value>Dateikomprimierung</value></string>
+  <string><id>12310</id><value>0</value></string> 
+  <string><id>12311</id><value>1</value></string> 
+  <string><id>12312</id><value>2</value></string> 
+  <string><id>12313</id><value>3</value></string> 
+  <string><id>12314</id><value>4</value></string> 
+  <string><id>12315</id><value>5</value></string> 
+  <string><id>12316</id><value>6</value></string> 
+  <string><id>12317</id><value>7</value></string> 
+  <string><id>12318</id><value>8</value></string> 
+  <string><id>12319</id><value>9</value></string> 
+  <string><id>12320</id><value>C</value></string> 
+  <string><id>12321</id><value>OK</value></string> 
+  <string><id>12322</id><value>*</value></string> 
+  <string><id>12324</id><value>XBMC Zugriffskontrolle</value></string> 
+  <string><id>12325</id><value>Verzeichnis gesperrt</value></string> 
+  <string><id>12326</id><value>Kennwort eingeben</value></string> 
+  <string><id>12327</id><value>Kennwort eingeben und E drücken,</value></string> 
+  <string><id>12328</id><value>Kennwort eingeben und E drücken,</value></string> 
+  <string><id>12329</id><value>oder für Abbruch C drücken</value></string> 
+  <string><id>12330</id><value>Gamepad Tastenkombination eingeben</value></string> 
+  <string><id>12331</id><value>und Start drücken, für Abbruch Back</value></string> 
+  <string><id>12332</id><value>Freigabe sperren</value></string> 
+  <string><id>12333</id><value>Freigabe entsperren</value></string> 
+  <string><id>12334</id><value>Freigabesperre zurücksetzen</value></string> 
+  <string><id>12335</id><value>Freigabesperre entfernen</value></string> 
+  <string><id>12336</id><value>Kennwortart wählen:</value></string> 
+  <string><id>12337</id><value>Zahlen Eingabe</value></string> 
+  <string><id>12338</id><value>Gamepad Tastenkombination</value></string> 
+  <string><id>12339</id><value>Volltext Eingabe</value></string> 
+  <string><id>12340</id><value>Neues Kennwort eingeben</value></string> 
+  <string><id>12341</id><value>Neues Kennwort erneut eingeben</value></string> 
+  <string><id>12342</id><value>Falsches Kennwort,</value></string> 
+  <string><id>12343</id><value>übrige Versuche </value></string> 
+  <string><id>12344</id><value>Kennwörter stimmen nicht überein.</value></string> 
+  <string><id>12345</id><value>Zugriff verweigert</value></string> 
+  <string><id>12346</id><value>Kennwort Eingabelimit erreicht.</value></string> 
+  <string><id>12347</id><value>XBOX wird ausgeschaltet.</value></string> 
   <string><id>12600</id><value>Wetter</value></string>
   <string><id>12900</id><value>Bildschirmschoner</value></string>
   <string><id>12901</id><value>Vollbild OSD</value></string>
@@ -573,6 +609,8 @@
   <string><id>13002</id><value>Video</value></string>
   <string><id>13003</id><value>- Verzögerung</value></string>
   <string><id>13004</id><value>- minimale Datendauer</value></string>
+  <string><id>13005</id><value>XBOX MediaCenter ausschalten</value></string> 
+  <string><id>13006</id><value>Dashboard</value></string> 
   <string><id>13100</id><value>Flimmerfilter</value></string>
   <string><id>13200</id><value>Profile</value></string>
   <string><id>13201</id><value>Profil löschen '%s'?</value></string>
@@ -594,7 +632,7 @@
   <string><id>13310</id><value>- Übergang streckend</value></string>
   <string><id>13311</id><value>- Übergang gleitend</value></string>
   <string><id>13312</id><value>Ränderreduktion</value></string>
-  <string><id>13313</id><value>XBOX MediaCenter Neustart</value></string>
+  <string><id>13313</id><value>XBOX MediaCenter neustarten</value></string>
   <string><id>13314</id><value>OSD Einblendzeit</value></string>
   <string><id>13315</id><value>Miniaturansicht erst.</value></string>
   <string><id>13316</id><value>rekurs. Miniaturansicht</value></string>
@@ -626,7 +664,12 @@
   <string><id>13342</id><value>Orange</value></string> 
   <string><id>13343</id><value>Rot</value></string> 
   <string><id>13344</id><value>Zyklus</value></string> 
-  <string><id>13345</id><value>LED ausschalten während Wiedergabe</value></string> 
+  <string><id>13345</id><value>- ausschalten während Wiedergabe</value></string>
+  <string><id>13346</id><value>Film Informationen</value></string> 
+  <string><id>13347</id><value>Wiedergabeliste hinzuf.</value></string> 
+  <string><id>13348</id><value>IMDb Abfrage</value></string> 
+  <string><id>13349</id><value>InfoAbfrage für alle Dateien</value></string> 
+  <string><id>13350</id><value>Aktuelle Wiedergabe</value></string> 
   <string><id>14000</id><value>Koppeln deakt.</value></string>
   <string><id>14001</id><value>Koppeln einfach</value></string>
   <string><id>14002</id><value>Koppeln unpräz.</value></string>
@@ -644,7 +687,7 @@
   <string><id>14014</id><value>- Prozentanteil</value></string>
   <string><id>14015</id><value>ohne Dateien -> Miniaturansicht</value></string>
   <string><id>14016</id><value>ohne Ordner -> Listenansicht</value></string>
-  <string><id>14017</id><value>Anteil der Symbole</value></string>
+  <string><id>14017</id><value>Anteil der Miniaturansichten</value></string>
   <string><id>14018</id><value>Ansicht</value></string>
   <string><id>14019</id><value>- Ortskennzahl 1</value></string>
   <string><id>14020</id><value>- Ortskennzahl 2</value></string>
@@ -652,17 +695,17 @@
   <string><id>14022</id><value>Datenbank</value></string>
   <string><id>14023</id><value>Kein TV</value></string>
   <string><id>14024</id><value>Stadt oder US Postleitzahl eingeben</value></string>
-  <string><id>14025</id><value>Video von Festplatte</value></string>
-  <string><id>14026</id><value>Video von DVD Laufwerk</value></string>
-  <string><id>14027</id><value>Video über lokales Netzwerk</value></string>
-  <string><id>14028</id><value>Video aus dem Internet</value></string>
-  <string><id>14029</id><value>Audio von Festplatte</value></string>
-  <string><id>14030</id><value>Audio von DVD Laufwerk</value></string>
-  <string><id>14031</id><value>Audio über lokales Netzwerk</value></string>
-  <string><id>14032</id><value>Audio aus dem Internet</value></string>
-  <string><id>14033</id><value>DVD von Festplatte</value></string>
-  <string><id>14034</id><value>DVD von DVD Laufwerk</value></string>
-  <string><id>14035</id><value>DVD über lokales Netzwerk</value></string>
+  <string><id>14025</id><value>Video Cache   - Festplatte</value></string>
+  <string><id>14026</id><value>              - DVD Laufwerk</value></string>
+  <string><id>14027</id><value>              - lokales Netzwerk</value></string>
+  <string><id>14028</id><value>              - Internet</value></string>
+  <string><id>14029</id><value>Audio Cache   - Festplatte</value></string>
+  <string><id>14030</id><value>              - DVD Laufwerk</value></string>
+  <string><id>14031</id><value>              - lokales Netzwerk</value></string>
+  <string><id>14032</id><value>              - Internet</value></string>
+  <string><id>14033</id><value>DVD Cache     - Festplatte</value></string>
+  <string><id>14034</id><value>              - DVD Laufwerk</value></string>
+  <string><id>14035</id><value>              - lokales Netzwerk</value></string>
   <string><id>14036</id><value>Server</value></string>
   <string><id>14037</id><value>Darstellung</value></string>
   <string><id>14038</id><value>Netzwerkeinstellungen wurden geändert!</value></string>
@@ -681,5 +724,8 @@
   <string><id>14051</id><value>12 Stundenformat anzeigen</value></string>
   <string><id>14052</id><value>Europäische Datumsanzeige</value></string>
   <string><id>14053</id><value>GUI Filter</value></string>
-  <string><id>14054</id><value>Internetsuche aktivieren</value></string>
+  <string><id>14054</id><value>Internetmenüpunkte aktivieren</value></string>
+  <string><id>14055</id><value>Durchsuchen im Hintergrund aktivieren</value></string> 
+  <string><id>14056</id><value>Durchsuchen anhalten</value></string> 
+  <string><id>14057</id><value>Nicht möglich während Suche nach Medieninfos</value></string> 
 </strings>
