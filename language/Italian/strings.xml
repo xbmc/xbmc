@@ -521,6 +521,7 @@
   <string><id>756</id><value>Modifica Nome Programma</value></string>
   <string><id>757</id><value>Modifica Depth Percorso</value></string>
   <string><id>758</id><value>Rimuovo Collegamento</value></string>
+  <string><id>759</id><value>Lista Grande</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Gioco Online</value></string>
   <string><id>1000</id><value>Anteprima Screensaver</value></string>
@@ -528,18 +529,18 @@
   <string><id>1396</id><value>Mutevole</value></string>
   <string><id>1397</id><value>e</value></string>
   <string><id>1398</id><value>Gelata</value></string>
-  <string><id>1399</id><value>N/A</value></string>
-  <string><id>1400</id><value>N/A</value></string>
-  <string><id>1401</id><value>N/A</value></string>
-  <string><id>1402</id><value>N/A</value></string>
-  <string><id>1403</id><value>N/A</value></string>
-  <string><id>1404</id><value>N/A</value></string>
-  <string><id>1405</id><value>N/A</value></string>
-  <string><id>1406</id><value>N/A</value></string>
-  <string><id>1407</id><value>N/A</value></string>
-  <string><id>1408</id><value>N/A</value></string>
-  <string><id>1409</id><value>N/A</value></string>
-  <string><id>1410</id><value>N/A</value></string>
+  <string><id>1399</id><value>Tardi</value></string>
+  <string><id>1400</id><value>Isolati</value></string>
+  <string><id>1401</id><value>Acquazzoni</value></string>
+  <string><id>1402</id><value>Fulmini</value></string>
+  <string><id>1403</id><value>Sole</value></string>
+  <string><id>1404</id><value>Intensi</value></string>
+  <string><id>1405</id><value>Nelle</value></string>
+  <string><id>1406</id><value>-</value></string>
+  <string><id>1407</id><value>Vicinanze</value></string>
+  <string><id>1408</id><value>Ghiaccio</value></string>
+  <string><id>1409</id><value>Cristalli</value></string>
+  <string><id>1410</id><value>Calmo</value></string>
 
   <string><id>10000</id><value>Home</value></string>
   <string><id>10001</id><value>Programmi</value></string>
@@ -881,7 +882,7 @@
   <string><id>15060</id><value>Messaggio Qui</value></string>
   <string><id>15061</id><value>Sei stato invitato a giocare %s.</value></string> 
   <string><id>15062</id><value>Usa mplayer alternativo</value></string>
-  <string><id>15100</id><value>Nav</value></string>
+  <string><id>15100</id><value>Archivio</value></string>
   <string><id>15101</id><value>Database</value></string>
   <string><id>15102</id><value>* Tutti gli Albums</value></string>
   <string><id>15103</id><value>* Tutti gli Artisti</value></string>
