@@ -122,6 +122,8 @@ void CGUIWindowHome::Render()
 
 VOID CGUIWindowHome::GetDate(WCHAR* wszDate, LPSYSTEMTIME pTime)
 {
+	if (!pTime) return;
+	if (!wszDate) return;
 	const WCHAR* day;
 	switch (pTime->wDayOfWeek)
 	{
@@ -151,11 +153,16 @@ VOID CGUIWindowHome::GetDate(WCHAR* wszDate, LPSYSTEMTIME pTime)
 		default:	month= g_localizeStrings.Get(32).c_str();	break;
 	}
 
-	swprintf(wszDate,L"%s, %s %d", day, month, pTime->wDay);
+	if (day && month)
+		swprintf(wszDate,L"%s, %s %d", day, month, pTime->wDay);
+	else
+		swprintf(wszDate,L"no date");
 }
 
 VOID CGUIWindowHome::GetTime(WCHAR* szTime, LPSYSTEMTIME pTime)
 {
+	if (!szTime) return;
+	if (!pTime) return;
 	INT iHour = pTime->wHour;
 	swprintf(szTime,L"%02d:%02d", iHour, pTime->wMinute);
 }
