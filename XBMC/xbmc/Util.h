@@ -123,3 +123,5 @@ public:
   static void ClearCache();
 	static void SortFileItemsByName(VECFILEITEMS& items, bool bSortAscending=true);
 };
+
+void fast_memcpy(void* d, const void* s, unsigned n);

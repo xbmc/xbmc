@@ -24,6 +24,7 @@
 #include "../../settings.h"
 #include "../../utils/log.h"
 #include "MPlayer.h"
+#include "../../util.h"
 
 #define VOLUME_MIN    DSBVOLUME_MIN
 #define VOLUME_MAX    DSBVOLUME_MAX
@@ -52,7 +53,7 @@ void CASyncDirectSound::StreamCallback(LPVOID pPacketContext, DWORD dwStatus)
 	{
 		if (m_VisBytes + m_dwPacketSize <= m_VisMaxBytes)
 		{
-			memcpy(m_VisBuffer + m_VisBytes, pPacketContext, m_dwPacketSize);
+			fast_memcpy(m_VisBuffer + m_VisBytes, pPacketContext, m_dwPacketSize);
 			m_VisBytes += m_dwPacketSize;
 		}
 		else
@@ -500,7 +501,12 @@ DWORD CASyncDirectSound::AddPacketsResample(unsigned char *pData, DWORD iLeft)
 				}
 				else
 				{	// put more data into the resampler
+					static __int64 timer = 0;
+					LARGE_INTEGER start, end;
+					QueryPerformanceCounter(&start);
 					DWORD iSize = m_Resampler.PutData(&pData[iBytesCopied], iLeft);
+					QueryPerformanceCounter(&end);
+
 					if (iSize == -1)
 					{	// Failed - we don't have enough data
 						return iBytesCopied;
@@ -509,6 +515,20 @@ DWORD CASyncDirectSound::AddPacketsResample(unsigned char *pData, DWORD iLeft)
 					{	// Success - update the amount that we have processed
 						iBytesCopied+=iSize;
 						iLeft -=iSize;
+
+						timer += end.QuadPart - start.QuadPart;
+						static DWORD n = 0;
+						n += iSize;
+						if (n >= 48000 * 2)
+						{
+							LARGE_INTEGER freq;
+							QueryPerformanceFrequency(&freq);
+							float secs = (float)n / float(48000 * 2);
+							CLog::DebugLog("Resampler: %.2fms/sec", (1000.0f * timer / freq.QuadPart) / secs);
+							n = 0;
+							timer = 0;
+						}
+
 					}
 					// Now loop back around and output data, or read more in
 				}
@@ -556,7 +576,7 @@ DWORD CASyncDirectSound::AddPackets(unsigned char *data, DWORD len)
 			xmpAudio.prtTimestamp     = NULL;
 			xmpAudio.pContext         = m_pbSampleData[dwIndex];
 
-			memcpy(xmpAudio.pvBuffer,&data[iBytesCopied],iSize/m_iAudioSkip);
+			fast_memcpy(xmpAudio.pvBuffer,&data[iBytesCopied],iSize/m_iAudioSkip);
 //			if (m_pCallback)
 //			{
 //				m_pCallback->OnAudioData(&data[iBytesCopied],iSize/m_iAudioSkip);
