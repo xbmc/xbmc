@@ -14,7 +14,7 @@ namespace PLAYLIST
 	public:
 		CPlayListPlayer(void);
 		virtual ~CPlayListPlayer(void);
-		void			PlayNext();
+		void			PlayNext(bool bAutoPlay=false);
 		void			PlayPrevious();
 		void			Play(int iSong);
 		int				GetCurrentSong() const;
