@@ -28,7 +28,7 @@ bool CGUIDialogYesNo::OnMessage(CGUIMessage& message)
     {
       int iControl=message.GetSenderId();
 			int iAction=message.GetParam1();
-			if (ACTION_SELECT_ITEM==iAction)
+			if (1||ACTION_SELECT_ITEM==iAction)
 			{
 				if (iControl==10)
 				{
