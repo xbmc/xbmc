@@ -8,6 +8,10 @@
 
 #pragma comment(lib,"xbmc/lib/liblzo/lzo.lib")
 
+// alignment of file blocks - should be a multiple of the sector size of the disk and a power of 2
+// HDD sector = 512 bytes, DVD/CD sector = 2048 bytes
+#define ALIGN (2048)
+
 enum XPR_FLAGS
 {
 	XPRFLAG_PALETTE = 0x00000001,
@@ -97,14 +101,14 @@ bool CTextureBundle::OpenBundle()
 		return false;
 	}
 
-	CAutoBuffer HeaderBuf(512);
+	CAutoBuffer HeaderBuf(ALIGN);
 	DWORD n;
 
 	m_Ovl[0].Offset = 0;
 	m_Ovl[0].OffsetHigh = 0;
-	if (!ReadFile(m_hFile, HeaderBuf, 512, &n, &m_Ovl[0]) && GetLastError() != ERROR_IO_PENDING)
+	if (!ReadFile(m_hFile, HeaderBuf, ALIGN, &n, &m_Ovl[0]) && GetLastError() != ERROR_IO_PENDING)
 		goto LoadError;
-	if (!GetOverlappedResult(m_hFile, &m_Ovl[0], &n, TRUE) || n < 512)
+	if (!GetOverlappedResult(m_hFile, &m_Ovl[0], &n, TRUE) || n < ALIGN)
 		goto LoadError;
 
 	XPR_HEADER* pXPRHeader = (XPR_HEADER*)(BYTE*)HeaderBuf;
@@ -115,11 +119,11 @@ bool CTextureBundle::OpenBundle()
 		goto LoadError;
 
 	DWORD HeaderSize = pXPRHeader->dwHeaderSize;
-	HeaderSize = (HeaderSize - 1) & ~511; // align to sector, but remove the first sector
-	HeaderBuf.Resize(HeaderSize + 512);
+	HeaderSize = (HeaderSize - 1) & ~(ALIGN-1); // align to sector, but remove the first sector
+	HeaderBuf.Resize(HeaderSize + ALIGN);
 
-	m_Ovl[0].Offset = 512;
-	if (!ReadFile(m_hFile, HeaderBuf + 512, HeaderSize, &n, &m_Ovl[0]) && GetLastError() != ERROR_IO_PENDING)
+	m_Ovl[0].Offset = ALIGN;
+	if (!ReadFile(m_hFile, HeaderBuf + ALIGN, HeaderSize, &n, &m_Ovl[0]) && GetLastError() != ERROR_IO_PENDING)
 		goto LoadError;
 	if (!GetOverlappedResult(m_hFile, &m_Ovl[0], &n, TRUE) || n < HeaderSize)
 		goto LoadError;
@@ -224,7 +228,7 @@ bool CTextureBundle::PreloadFile(const CStdString& Filename)
 		}
 
 		// preload texture
-		DWORD ReadSize = (m_CurFileHeader[m_PreloadIdx]->second.PackedSize + 511) & ~511;
+		DWORD ReadSize = (m_CurFileHeader[m_PreloadIdx]->second.PackedSize + (ALIGN-1)) & ~(ALIGN-1);
 		m_PreLoadBuffer[m_PreloadIdx] = (BYTE*)malloc(ReadSize);
 
 		if (m_PreLoadBuffer[m_PreloadIdx])
