@@ -35,55 +35,49 @@
 #define SUBTITLE_TEXTURE_WIDTH  720
 #define SUBTITLE_TEXTURE_HEIGHT 120
 
-// >2 doesn't work :(
-#define NUM_BUFFERS (2)
+#define NUM_BUFFERS (3)
 
-static RECT             rd;                             //rect of our stretched image
-static RECT             rs;                             //rect of our source image
-static unsigned int     image_width, image_height;      //image width and height
-static unsigned int     d_image_width, d_image_height;  //image width and height zoomed
-//static unsigned char*   image=NULL;                     //image data
-static unsigned int     image_format=0;                 //image format
-static unsigned int     primary_image_format;
-static float            fSourceFrameRatio=0;            //frame aspect ratio of video
-static unsigned int     fs = 0;                         //display in window or fullscreen
-//static unsigned int     dstride;                        //surface stride
+static RECT                    rd;                             //rect of our stretched image
+static RECT                    rs;                             //rect of our source image
+static unsigned int            image_width, image_height;      //image width and height
+static unsigned int            d_image_width, d_image_height;  //image width and height zoomed
+static unsigned int            image_format=0;                 //image format
+static unsigned int            primary_image_format;
+static float                   fSourceFrameRatio=0;            //frame aspect ratio of video
+static unsigned int            fs = 0;                         //display in window or fullscreen
 static bool                    m_bPauseDrawing=false;          // whether we have paused drawing or not
 static int                     iClearSubtitleRegion[2]={0};  // amount of subtitle region to clear
 static LPDIRECT3DTEXTURE8      m_pSubtitleTexture[2]={NULL};
-static unsigned char*   subtitleimage=NULL;             //image data
-static unsigned int     subtitlestride;                 //surface stride
+static unsigned char*          subtitleimage=NULL;             //image data
+static unsigned int            subtitlestride;                 //surface stride
 static LPDIRECT3DVERTEXBUFFER8 m_pSubtitleVB;                  // vertex buffer for subtitles
 static int                     m_iBackBuffer=0;								// subtitles only
-//LPDIRECT3DTEXTURE8      m_pOverlay[2]={NULL,NULL};      // Overlay textures
-//LPDIRECT3DSURFACE8      m_pSurface[2]={NULL,NULL};      // Overlay Surfaces
-static bool                    m_bFlip=false;
+static int                     m_bFlip=0;
 static bool                    m_bRenderGUI=false;
-static RESOLUTION       m_iResolution=PAL_4x3;
+static RESOLUTION              m_iResolution=PAL_4x3;
 static bool                    m_bFlipped;
-//static bool					          m_bHasDimView;		// Screensaver
 static float                   m_fps;
 static __int64                 m_lFrameCounter;
 
 // Video size stuff
-static float m_fOffsetX1;
-static float m_fOffsetY1;
-static float m_iScreenWidth;
-static float m_iScreenHeight;
-static bool m_bStretch;
-static bool m_bZoom;
+static float                    m_fOffsetX1;
+static float                    m_fOffsetY1;
+static float                    m_iScreenWidth;
+static float                    m_iScreenHeight;
+static bool                     m_bStretch;
+static bool                     m_bZoom;
 
 // YV12 decoder textures
-static LPDIRECT3DVERTEXBUFFER8 m_pVideoVB;
-static D3DTexture m_YTexture[NUM_BUFFERS];
-static D3DTexture m_UTexture[NUM_BUFFERS];
-static D3DTexture m_VTexture[NUM_BUFFERS];
-static void* m_TextureBuffer[NUM_BUFFERS];
-static DWORD m_hPixelShader = 0;
-static int ytexture_pitch;
-static int uvtexture_pitch;
-static int m_iRenderBuffer;
-static int m_iDecodeBuffer;
+static LPDIRECT3DVERTEXBUFFER8  m_pVideoVB;
+static D3DTexture               m_YTexture[NUM_BUFFERS];
+static D3DTexture               m_UTexture[NUM_BUFFERS];
+static D3DTexture               m_VTexture[NUM_BUFFERS];
+static void*                    m_TextureBuffer[NUM_BUFFERS];
+static DWORD                    m_hPixelShader = 0;
+static int                      ytexture_pitch;
+static int                      uvtexture_pitch;
+static int                      m_iRenderBuffer;
+static int                      m_iDecodeBuffer;
 
 typedef struct directx_fourcc_caps
 {
@@ -333,19 +327,6 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 	//      U = -0.168736 * R + -0.331264 * G + 0.5 * B
 	//      V = 0.5 * R + -0.418688 * G + -0.081312 * B 
 	//  */
-	//  for (int i=0; i <=1; i++)
-	//  {
-	//    if ( m_pSurface[i]) m_pSurface[i]->Release();
-	//    if ( m_pOverlay[i]) m_pOverlay[i]->Release();
-	//
-	//    g_graphicsContext.Get3DDevice()->CreateTexture( image_width,
-	//                                                    image_height,
-	//                                                    1,
-	//                                                    0,
-	//                                                    D3DFMT_YUY2,
-	//                                                    0,
-	//                                                    &m_pOverlay[i] ) ;
-	//    m_pOverlay[i]->GetSurfaceLevel( 0, &m_pSurface[i] );
 
 	g_graphicsContext.Lock();
 
@@ -674,11 +655,6 @@ unsigned int Directx_ManageDisplay()
 }
 
 //***********************************************************************************************************
-//***********************************************************************************************************
-//***********************************************************************************************************
-//***********************************************************************************************************
-//***********************************************************************************************************
-//***********************************************************************************************************
 static void vo_draw_alpha_rgb32_shadow(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride)
 {
 	register int y;
@@ -702,6 +678,7 @@ static void vo_draw_alpha_rgb32_shadow(int w,int h, unsigned char* src, unsigned
 	}
 }
 
+//********************************************************************************************************
 static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned char *srca, int stride)
 {
 	// if we draw text on the bottom then it must b the subtitles
@@ -721,37 +698,13 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
 	//vo_draw_alpha_yuy2(w,h,src,srca,stride,((unsigned char *) image) + dstride*y0 + 2*x0,dstride);
 }
 
-/********************************************************************************************************
-draw_osd(): this displays subtitles and OSD.
-It's a bit tricky to use it, since it's a callback-style stuff.
-It should call vo_draw_text() with screen dimension and your
-draw_alpha implementation for the pixelformat (function pointer).
-The vo_draw_text() checks the characters to draw, and calls
-draw_alpha() for each. As a help, osd.c contains draw_alpha for
-each pixelformats, use this if possible!
-NOTE: this one will be obsolete soon! But it's still usefull when
-you want to do tricks, like rendering osd _after_ hardware scaling
-(tdfxfb) or render subtitles under of the image (vo_mpegpes, sdl)
-*/
+//********************************************************************************************************
 static void video_draw_osd(void)
 {
 	vo_draw_text(image_width, image_height, draw_alpha);
 }
 
-/********************************************************************************************************
-VOCTRL_QUERY_FORMAT  -  queries if a given pixelformat is supported.
-It also returns various flags decsirbing the capabilities
-of the driver with teh given mode. for the flags, see file vfcaps.h !
-the most important flags, every driver must properly report
-these:
-0x1  -  supported (with or without conversion)
-0x2  -  supported without conversion (define 0x1 too!)
-0x100  -  driver/hardware handles timing (blocking)
-also SET sw/hw scaling and osd support flags, and flip,
-and accept_stride if you implement VOCTRL_DRAW_IMAGE (see bellow)
-NOTE: VOCTRL_QUERY_FORMAT may be called _before_ first config()
-but is always called between preinit() and uninit()
-*/
+//********************************************************************************************************
 static unsigned int query_format(unsigned int format)
 {
 	unsigned int i=0;
@@ -765,7 +718,6 @@ static unsigned int query_format(unsigned int format)
 }
 
 //********************************************************************************************************
-//      Uninit the whole system, this is on the same "level" as preinit.
 static void video_uninit(void)
 {
 	OutputDebugString("video_uninit\n");  
@@ -773,10 +725,6 @@ static void video_uninit(void)
 //	g_graphicsContext.Get3DDevice()->EnableOverlay(FALSE);
 	for (int i=0; i < NUM_BUFFERS; i++)
 	{
-//		if ( m_pSurface[i]) m_pSurface[i]->Release();
-//		if ( m_pOverlay[i]) m_pOverlay[i]->Release();
-//		m_pSurface[i]=NULL;
-//		m_pOverlay[i]=NULL;
 		if (m_TextureBuffer[i]) D3D_FreeContiguousMemory(m_TextureBuffer[i]);
 		m_TextureBuffer[i] = NULL;
 	}
@@ -799,7 +747,6 @@ static void video_check_events(void)
 }
 
 //***********************************************************************************************************
-/*init the video system (to support querying for supported formats)*/
 static unsigned int video_preinit(const char *arg)
 {
 	m_iResolution=PAL_4x3;
@@ -807,7 +754,7 @@ static unsigned int video_preinit(const char *arg)
 	for (int i=0; i<NUM_BUFFERS; i++) iClearSubtitleRegion[i] = 0;
 	m_iBackBuffer=0;
 	m_iRenderBuffer = m_iDecodeBuffer = 0;
-	m_bFlip=false;
+	m_bFlip=0;
 	fs=1;
 
 	// Create the pixel shader
@@ -819,18 +766,15 @@ static unsigned int video_preinit(const char *arg)
 
 	return 0;
 }
-/********************************************************************************************************
-draw_slice(): this displays YV12 pictures (3 planes, one full sized that
-contains brightness (Y), and 2 quarter-sized which the colour-info
-(U,V). MPEG codecs (libmpeg2, opendivx) use this. This doesn't have
-to display the whole frame, only update small parts of it.
-*/
+//********************************************************************************************************
 static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,int h,int x,int y )
 {
   BYTE *s;
   BYTE *d;
   DWORD i=0;
-  
+  int   iBottom=y+h;
+  int iOrgY=y;
+  int iOrgH=h;
   // copy Y
   d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer]+ytexture_pitch*y+x;                
   s=src[0];                           
@@ -843,7 +787,6 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
 	w/=2;h/=2;x/=2;y/=2;
 	
 	// copy U
-  // d=image+dstride*image_height + uvstride*y+x;
   d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer] + ytexture_pitch*image_height+ uvtexture_pitch*y+x;
   s=src[1];
   for(i=0;i<(DWORD)h;i++){
@@ -851,15 +794,23 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
       s+=stride[1];
       d+=uvtexture_pitch;
   }
-	
 	// copy V
-  //d=image+dstride*image_height +uvstride*(image_height/2) + uvstride*y+x;
   d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer] + ytexture_pitch*image_height + uvtexture_pitch*(image_height/2)+ uvtexture_pitch*y+x;;
   s=src[2];
   for(i=0;i<(DWORD)h;i++){
     memcpy(d,s,w);
     s+=stride[2];
     d+=uvtexture_pitch;
+  }
+
+  if (iBottom+15>=(int)image_height)
+  {
+    ++m_iDecodeBuffer %= NUM_BUFFERS;
+    m_bFlip++;
+    //char szTmp[128];
+    //sprintf(szTmp,"slice%i->%i decodebuf:%i renderbuf:%i flip:%i\n", 
+    //    iOrgY,iOrgY+iOrgH,m_iDecodeBuffer ,m_iRenderBuffer, m_bFlip);
+    //OutputDebugString(szTmp);
   }
   return 0;
 }
@@ -902,7 +853,6 @@ void xbox_video_render_subtitles(bool bUseBackBuffer)
 
 }
 //********************************************************************************************************
-
 void RenderVideo()
 {
 	if (!m_TextureBuffer[m_iRenderBuffer])
@@ -941,11 +891,16 @@ void RenderVideo()
 //************************************************************************************
 static void video_flip_page(void)
 {
-	if (!m_bFlip) return;
-	m_bFlip=false;
-	
-  m_iRenderBuffer =m_iDecodeBuffer;
-  ++m_iDecodeBuffer %= NUM_BUFFERS;
+	if (m_bFlip<=0) 
+  {
+    return;
+  }
+	m_bFlip--;
+
+
+  //char szTmp[128];
+  //sprintf(szTmp,"render decodebuf:%i renderbuf:%i flip:%i\n", m_iDecodeBuffer ,m_iRenderBuffer, m_bFlip);
+  //OutputDebugString(szTmp);
 
 	m_pSubtitleTexture[m_iBackBuffer]->UnlockRect(0);
 
@@ -956,43 +911,32 @@ static void video_flip_page(void)
 
 		if (g_graphicsContext.IsFullScreenVideo())
 		{
-			g_graphicsContext.Lock();
-
 			if (g_application.NeedRenderFullScreen())
 				m_bRenderGUI = true;
 
+		  g_graphicsContext.Lock();
 			g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
 
 			// render first so the subtitle overlay works
 			RenderVideo();
-
+  
 			if (m_bRenderGUI)
 			{
-				g_graphicsContext.Lock();
 				g_application.RenderFullScreen();
 				// update our subtitle position
 				xbox_video_update_subtitle_position();
 				xbox_video_render_subtitles(true);
-				g_graphicsContext.Unlock();
 			}
 
-
-//		if (m_bRenderGUI)
-//		{
+	    g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      
 			g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
-//		}
 			g_graphicsContext.Unlock();
 			m_bRenderGUI=false;
 		}
 		else // of if (g_graphicsContext.IsFullScreenVideo())
 		{
-//			g_graphicsContext.Lock();
-//			//g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_iBackBuffer], &rs, &rd, TRUE, 0x00010001  );
-//			RenderVideo(m_iBackBuffer);
-//			g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
-//			g_graphicsContext.Unlock();
 		}
-	}
+	} // of if (!m_bPauseDrawing)
 
 
 	m_iBackBuffer = 1-m_iBackBuffer;
@@ -1031,6 +975,7 @@ static void video_flip_page(void)
 			choose_best_resolution(fps);
 		}
 	}
+  ++m_iRenderBuffer %= NUM_BUFFERS;
 }
 
 //********************************************************************************************************
@@ -1051,46 +996,10 @@ void xbox_video_getRect(RECT& SrcRect, RECT& DestRect)
 	DestRect=rd;
 }
 
+//********************************************************************************************************
 void xbox_video_CheckScreenSaver()
 {
 	// Called from CMPlayer::Process() (mplayer.cpp) when in 'pause' mode
-//	D3DLOCKED_RECT lr;
-
-//	if (g_application.m_bScreenSave && !m_bHasDimView)
-//	{
-//		if ( D3D_OK == m_pSurface[m_iBackBuffer]->LockRect( &lr, NULL, 0 ))
-//		{
-//			// Drop brightness of current surface to 20%
-//			DWORD strideScreen=lr.Pitch;
-//			for (DWORD y=0; y < UINT (rs.top + rs.bottom); y++)
-//			{
-//				BYTE *pDest = (BYTE*)lr.pBits + strideScreen*y;
-//				for (DWORD x=0; x < UINT ((rs.left + rs.right)>>1); x++)
-//				{
-//					pDest[0] = BYTE (pDest[0] * 0.20f);	// Y1
-//					pDest[1] = BYTE ((pDest[1] - 128) * 0.20f) + 128;	// U (with 128 shift!)
-//					pDest[2] = BYTE (pDest[2] * 0.20f);	// Y2
-//					pDest[3] = BYTE ((pDest[3] - 128) * 0.20f) + 128;	// V (with 128 shift!)
-//					pDest += 4;
-//				}
-//			}
-//			m_pSurface[m_iBackBuffer]->UnlockRect();
-//
-//			// Commit to screen
-//			g_graphicsContext.Lock();
-//			while (!g_graphicsContext.Get3DDevice()->GetOverlayUpdateStatus()) Sleep(10);
-//			g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_iBackBuffer], &rs, &rd, TRUE, 0x00010001  );
-//			g_graphicsContext.Unlock();
-//		}
-
-		// set screensaver dim constant
-//		g_graphicsContext.Lock();
-//		RenderVideo(m_iBackBuffer);
-//		g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
-//		g_graphicsContext.Unlock();
-
-//		m_bHasDimView = true;
-//	}
 
 	return;
 }
@@ -1130,6 +1039,7 @@ void xbox_video_update(bool bPauseDrawing)
 	//  OutputDebugString("Done \n");
 }
 
+//********************************************************************************************************
 void xbox_video_render_update()
 {
 	if (m_pVideoVB && m_TextureBuffer[m_iRenderBuffer])
@@ -1140,12 +1050,7 @@ void xbox_video_render_update()
 	}
 }
 
-/********************************************************************************************************
-draw_frame(): this is the older interface, this displays only complete
-frames, and can do only packed format (YUY2, RGB/BGR).
-Win32 codecs use this (DivX, Indeo, etc).
-If you implement VOCTRL_DRAW_IMAGE, you can left draw_frame.
-*/
+//********************************************************************************************************
 static unsigned int video_draw_frame(unsigned char *src[])
 {
   byte* image=(BYTE*)m_TextureBuffer[m_iDecodeBuffer];
@@ -1188,15 +1093,6 @@ static unsigned int put_image(mp_image_t *mpi)
 
 	if((mpi->flags&MP_IMGFLAG_DIRECT)||(mpi->flags&MP_IMGFLAG_DRAW_CALLBACK)) 
 	{
-
-		if (mpi->flags & MP_IMGFLAG_READABLE)
-		{
-			// flush the cpu cache to make sure the texture is updated
-			__asm {
-				wbinvd
-			}
-		}
-    m_bFlip=true;
 		return VO_TRUE;
 	}
   DWORD  i = 0;
@@ -1209,8 +1105,8 @@ static unsigned int put_image(mp_image_t *mpi)
 
 	if (mpi->flags&MP_IMGFLAG_PLANAR)
 	{
-    if(image_format!=IMGFMT_YVU9) video_draw_slice( mpi->planes,(int*)&mpi->stride[0],mpi->w,mpi->h,0,0);
-    else
+    //if(image_format!=IMGFMT_YVU9) video_draw_slice( mpi->planes,(int*)&mpi->stride[0],mpi->w,mpi->h,0,0);
+    //else
     {
       // copy Y
       byte* image=(byte*)m_TextureBuffer[m_iDecodeBuffer];
@@ -1258,29 +1154,16 @@ static unsigned int put_image(mp_image_t *mpi)
     memcpy( m_TextureBuffer[m_iBackBuffer], mpi->planes[0], image_height * ytexture_pitch);
 	}
 
-	m_bFlip=true;
+  ++m_iDecodeBuffer %= NUM_BUFFERS;
+  m_bFlip++;
+
+  //char szTmp[128];
+  //sprintf(szTmp,"putimage decodebuf:%i renderbuf:%i flip:%i\n", m_iDecodeBuffer ,m_iRenderBuffer, m_bFlip);
+  //OutputDebugString(szTmp);
 	return VO_TRUE;
 }
-/********************************************************************************************************
-Set up the video system. You get the dimensions and flags.
-width, height: size of the source image
-d_width, d_height: wanted scaled/display size (it's a hint)
-Flags:
-0x01  - force fullscreen (-fs)
-0x02  - allow mode switching (-vm)
-0x04  - allow software scaling (-zoom)
-0x08  - flipping (-flip)
-They're defined as VOFLAG_* (see libvo/video_out.h)
 
-IMPORTAMT NOTE: config() may be called 0 (zero), 1 or more (2,3...)
-times between preinit() and uninit() calls. You MUST handle it, and
-you shouldn't crash at second config() call or at uninit() without
-any config() call! To make your life easier, vo_config_count is
-set to the number of previous config() call, counted from preinit().
-It's set by the caller (vf_vo.c), you don't have to increase it!
-So, you can check for vo_config_count>0 in uninit() when freeing
-resources allocated in config() to avoid crash!
-*/
+//********************************************************************************************************
 static unsigned int video_config(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, unsigned int options, char *title, unsigned int format)
 {
 	char strFourCC[12];
@@ -1335,8 +1218,8 @@ static unsigned int video_control(unsigned int request, void *data, ...)
 		Note: draw_slice is still mandatory, for per-slice rendering!
 		*/
 
-		return put_image( (mp_image_t*)data );
-		//      return VO_NOTIMPL;
+		//return put_image( (mp_image_t*)data );
+		return VO_FALSE;//NOTIMPL;
 
 	case VOCTRL_FULLSCREEN:
 		{
@@ -1357,6 +1240,7 @@ static unsigned int video_control(unsigned int request, void *data, ...)
 }
 
 
+//********************************************************************************************************
 static vo_info_t video_info =
 {
 	"XBOX Direct3D8 YV12 renderer",
