@@ -65,7 +65,7 @@
   <string><id>133</id><value>음악가</value></string>
   <string><id>134</id><value>음악</value></string>
   <string><id>135</id><value>장르</value></string>
-  <string><id>136</id><value>연주목록</value></string>
+  <string><id>136</id><value>재생목록</value></string>
   <string><id>137</id><value>검색</value></string>
   <string><id>138</id><value>시스템 정보</value></string>
   <string><id>139</id><value>장치온도</value></string>
@@ -437,6 +437,7 @@
   <string><id>506</id><value>설명을 디렉토리 이름으로 사용</value></string>
   <string><id>507</id><value>정렬: 사용빈도</value></string>
   <string><id>508</id><value>바로가기나 검색을 사용하지 않음</value></string>
+  <string><id>509</id><value>프로그램 미리보기 캐시</value></string>
   <string><id>600</id><value>시디 추출</value></string>
   <string><id>601</id><value>중간</value></string>
   <string><id>602</id><value>표준</value></string>
@@ -498,7 +499,7 @@
   <string><id>734</id><value>암호 없음</value></string>
   <string><id>735</id><value>- 문자셋</value></string>
   <string><id>736</id><value>- 스타일</value></string>  
-  <string><id>737</id><value>색상:</value></string>
+  <string><id>737</id><value>- 색상</value></string>
   <string><id>738</id><value>보통</value></string>  
   <string><id>739</id><value>굵게</value></string>  
   <string><id>740</id><value>기울임꼴</value></string>  
@@ -508,13 +509,18 @@
   <string><id>744</id><value>파일</value></string>    
   <string><id>745</id><value>현재 보기에서 검색 결과 없음</value></string>    
   <string><id>746</id><value>파일 보기로 변경</value></string>
-  <string><id>747</id><value>메모리가 부족해 이미지를 불러올 수 없습니다</value></string>
+  <string><id>747</id><value>이미지 불러오기 오류</value></string>
   <string><id>748</id><value>경로 변경</value></string>
   <string><id>749</id><value>공유 추가</value></string>
   <string><id>750</id><value>확실합니까?</value></string>
   <string><id>751</id><value>공유 제거</value></string>  
   <string><id>752</id><value>공유 경로 변경</value></string>
   <string><id>753</id><value>공유 이름 변경</value></string>
+  <string><id>754</id><value>프로그램 연결 추가</value></string>
+  <string><id>755</id><value>프로그램 경로 변경</value></string>
+  <string><id>756</id><value>프로그램 이름 변경</value></string>
+  <string><id>757</id><value>하위 경로 수 변경</value></string>
+  <string><id>758</id><value>프로그램 연결 제거</value></string>  
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>온라인 게이밍</value></string>
   <string><id>10000</id><value>홈</value></string>
@@ -541,7 +547,7 @@
   <string><id>10023</id><value>비디오/제작년도</value></string>
   <string><id>10024</id><value>설정-&gt;프로그램</value></string>
   <string><id>10025</id><value>비디오/제목</value></string>
-  <string><id>10026</id><value>설정-&gt;일반-&gt;캐쉬</value></string>
+  <string><id>10026</id><value>설정-&gt;일반-&gt;캐시</value></string>
   <string><id>10027</id><value>설정-&gt;일반-&gt;자동실행</value></string>
   <string><id>10028</id><value>비디오/재생목록</value></string>
   <string><id>10029</id><value>설정-&gt;일반-&gt;LCD</value></string>
@@ -584,10 +590,10 @@
   <string><id>12329</id><value>- C 버튼을 누르면 취소</value></string>
   <string><id>12330</id><value>XBOX 패드 조합을 입력한 후</value></string>
   <string><id>12331</id><value>start버튼을 누르십시오 - back버튼을 누르면 취소</value></string>
-  <string><id>12332</id><value>공유 잠금</value></string>
-  <string><id>12333</id><value>공유 잠금 해제</value></string>
-  <string><id>12334</id><value>공유 잠금 초기화</value></string>
-  <string><id>12335</id><value>공유 잠금 제거</value></string>
+  <string><id>12332</id><value>잠금 설정</value></string>
+  <string><id>12333</id><value>잠금 해제</value></string>
+  <string><id>12334</id><value>잠금 초기화</value></string>
+  <string><id>12335</id><value>잠금 제거</value></string>
   <string><id>12336</id><value>사용할 잠금 방법 선택:</value></string>
   <string><id>12337</id><value>숫자 비밀번호</value></string>
   <string><id>12338</id><value>패드 버튼 조합</value></string>
@@ -605,7 +611,7 @@
   <string><id>12350</id><value>(설정 항목을 열게되면 자동적으로</value></string>
   <string><id>12351</id><value>전체 잠금 기능이 작동됩니다)</value></string>
   <string><id>12352</id><value>전체 잠금 코드를 입력 하고</value></string>
-  <string><id>12353</id><value>공유 잠금을 활성화 하십시오</value></string>
+  <string><id>12353</id><value> 잠금을 활성화 하십시오</value></string>
   <string><id>12354</id><value>다음 시작까지 공유잠금을 해제합니까?</value></string>
   <string><id>12355</id><value>폴더 잠금기능이 활성화됩니다)</value></string>
   <string><id>12600</id><value>날씨</value></string>
@@ -624,7 +630,9 @@
   <string><id>13202</id><value>현재 세팅을 프로파일로 저장...</value></string>
   <string><id>13203</id><value>프로파일 '%s' 성공적으로 읽어들임</value></string>
   <string><id>13204</id><value>마지막으로 읽어들인 프로파일:</value></string>
-  <string><id>13205</id><value>알려지지 않음</value></string>
+  <string><id>13205</id><value>알수없음</value></string>
+  <string><id>13206</id><value>덮어쓰기</value></string>
+  <string><id>13207</id><value>'%s'프로필을 덮어씁니까?</value></string>
   <string><id>13299</id><value>목표 온도</value></string>
   <string><id>13300</id><value>팬 속도:</value></string>
   <string><id>13301</id><value>자동 온도 조절</value></string>
@@ -633,7 +641,7 @@
   <string><id>13304</id><value>역방향 문자열의 뒤집기 활성화</value></string>
   <string><id>13305</id><value>RSS 피드 활성화</value></string>
   <string><id>13306</id><value>상위 폴더 항목 숨기기</value></string>
-  <string><id>13307</id><value>트랙 번호 숨기기</value></string>
+  <string><id>13307</id><value>트랙 이름 템플릿</value></string>
   <string><id>13308</id><value>XBMC만 재시작하는 대신에</value></string>
   <string><id>13309</id><value>XBOX를 재시작하기를 원하십니까?</value></string>
   <string><id>13310</id><value>확대 효과</value></string>
@@ -673,7 +681,7 @@
   <string><id>13344</id><value>순환</value></string>
   <string><id>13345</id><value>재생시 LED 끔</value></string>
   <string><id>13346</id><value>영화 정보</value></string>
-  <string><id>13347</id><value>대기 항목</value></string>
+  <string><id>13347</id><value>대기 항목 추가</value></string>
   <string><id>13348</id><value>IMDb 검색...</value></string>
   <string><id>13349</id><value>전체 파일 검색</value></string>
   <string><id>13350</id><value>지금 재생...</value></string>
@@ -681,10 +689,12 @@
   <string><id>13352</id><value>폴더를 검색해 데이터베이스에 입력</value></string>
   <string><id>13353</id><value>검색 중지</value></string>
   <string><id>13354</id><value>렌더링 방식</value></string>
-  <string><id>13355</id><value>픽셀 쉐이더</value></string>
+  <string><id>13355</id><value>저화질 픽셀 쉐이더</value></string>
   <string><id>13356</id><value>YUY2 오버레이</value></string>
-  <string><id>13357</id><value>빠른 YUY2 오버레이</value></string>
-  
+  <string><id>13357</id><value>오버레이/쉐이더 조합</value></string>
+  <string><id>13358</id><value>고화질 픽셀 쉐이더</value></string>
+  <string><id>13359</id><value>중간화질 픽셀 쉐이더</value></string>  
+
   <string><id>14000</id><value>연속 재생: 끔</value></string>
   <string><id>14001</id><value>연속 재생: 간단</value></string>
   <string><id>14002</id><value>연속 재생: 자동</value></string>
@@ -710,17 +720,15 @@
   <string><id>14022</id><value>라이브러리</value></string>
   <string><id>14023</id><value>TV 사용안함</value></string>
   <string><id>14024</id><value>근방의 도시나 우편번호(US ZIP)입력</value></string>
-  <string><id>14025</id><value>비디오 캐쉬   - 하드디스크</value></string>
-  <string><id>14026</id><value>              - DVD롬</value></string>
-  <string><id>14027</id><value>              - 로컬 네트워크</value></string>
-  <string><id>14028</id><value>              - 인터넷</value></string>
-  <string><id>14029</id><value>오디오 캐쉬   - 하드디스크</value></string>
-  <string><id>14030</id><value>              - DVD롬</value></string>
-  <string><id>14031</id><value>              - 로컬 네트워크</value></string>
-  <string><id>14032</id><value>              - 인터넷</value></string>
-  <string><id>14033</id><value>DVD 캐쉬      - 하드디스크</value></string>
-  <string><id>14034</id><value>              - DVD롬</value></string>
-  <string><id>14035</id><value>              - 로컬 네트워크</value></string>
+  <string><id>14025</id><value>비디오/오디오/DVD 캐시 - 하드디스크</value></string>
+  <string><id>14026</id><value>비디오 캐시 - DVD롬</value></string>
+  <string><id>14027</id><value>- 로컬 네트워크</value></string>
+  <string><id>14028</id><value>- 인터넷</value></string>
+  <string><id>14030</id><value>오디오 캐시 - DVD롬</value></string>
+  <string><id>14031</id><value>- 로컬 네트워크</value></string>
+  <string><id>14032</id><value>- 인터넷</value></string>
+  <string><id>14034</id><value>DVD 캐시 - DVD롬</value></string>
+  <string><id>14035</id><value>- 로컬 네트워크</value></string>
   <string><id>14036</id><value>서버</value></string>
   <string><id>14037</id><value>보기와 느낌</value></string>
   <string><id>14038</id><value>네트워크 설정이 변경되었습니다</value></string>
@@ -743,4 +751,72 @@
   <string><id>14055</id><value>백그라운드 검색 사용</value></string>
   <string><id>14056</id><value>검색 중지</value></string>
   <string><id>14057</id><value>미디어 정보 검색중에는 사용 불가</value></string>
+  <string><id>14058</id><value>필름 효과</value></string>
+  <string><id>14059</id><value>원격 공유에서 사용자 미리보기 검색</value></string>
+  <string><id>14060</id><value>알수 없는 캐시 - 인터넷</value></string>
+  <string><id>14061</id><value>자동</value></string>
+
+  <string><id>15000</id><value>XLink Kai</value></string>
+  <string><id>15001</id><value>서비스가 연결되지 않았습니다</value></string>
+  <string><id>15002</id><value>다시 시도해 보시겠습니까?</value></string>
+  <string><id>15003</id><value>메시지 입력</value></string>
+  <string><id>15004</id><value>%s 게임에 초대 되었습니다</value></string>
+  <string><id>15005</id><value>일시: %s</value></string>
+  <string><id>15006</id><value>발신: %s</value></string>
+  <string><id>15007</id><value>초대</value></string>
+  <string><id>15008</id><value>%s 에 초대 되었습니다</value></string>
+  <string><id>15009</id><value>연결안됨</value></string>
+  <string><id>15010</id><value>친구</value></string>
+  <string><id>15011</id><value>보기: 친구</value></string>
+  <string><id>15012</id><value>참가</value></string>
+  <string><id>15013</id><value>음성</value></string>
+  <string><id>15014</id><value>초대</value></string>
+  <string><id>15015</id><value>제거</value></string>
+  <string><id>15016</id><value>게임</value></string>
+  <string><id>15017</id><value>보기: 게임</value></string>
+  <string><id>15018</id><value>입력</value></string>
+  <string><id>15019</id><value>추가</value></string>
+  <string><id>15020</id><value>호스트</value></string>
+  <string><id>15021</id><value>아레나</value></string>
+  <string><id>15022</id><value>보기: 아레나</value></string>
+  <string><id>15023</id><value>시작</value></string>
+  <string><id>15024</id><value>추가</value></string>
+  <string><id>15025</id><value>호스트</value></string>
+  <string><id>15026</id><value>채트</value></string>
+  <string><id>15027</id><value>보기: 채트</value></string>
+  <string><id>15028</id><value>키보드</value></string>
+  <string><id>15029</id><value>현재 아래나에 참가하려면 비밀번호가 필요합니다</value></string>
+  <string><id>15030</id><value>서비스 연결이 끊겼습니다</value></string>
+  <string><id>15031</id><value>XLink Kai 사용자 확인</value></string>
+  <string><id>15032</id><value>사용자명 혹은 비밀번호가 잘못되었습니다</value></string>
+  <string><id>15033</id><value>설정을 확인하십시오</value></string>
+  <string><id>15034</id><value>로그인</value></string>
+  <string><id>15035</id><value>음성 대화에 당신을 초대했습니다</value></string>
+  <string><id>15036</id><value>당신을 초대했습니다</value></string>
+  <string><id>15037</id><value>XBMC가 네트워크 연결을 확인할 수 없습니다</value></string>
+  <string><id>15038</id><value>게임 호스트 및 참가시 문제가 생길 수 있습니다</value></string>
+  <string><id>15039</id><value>XBMC가 게임을 찾지 못했습니다</value></string>
+  <string><id>15040</id><value>게임 디스크를 삽입하십시오 - 취소는 'A'버튼</value></string>
+  <string><id>15041</id><value>수동으로 게임을 실행해야합니다</value></string>
+  <string><id>15042</id><value>접근 거부</value></string>
+  <string><id>15043</id><value>%s 대화에 참여</value></string>
+  <string><id>15044</id><value>%s 대화를 끝냄</value></string>
+  <string><id>15045</id><value>메시지를 입력하십시오</value></string>
+  <string><id>15046</id><value>현재 아레나</value></string>
+  <string><id>15047</id><value>아레나를 위한 비밀번호를 입력하십시오</value></string>
+  <string><id>15048</id><value>아레나를 위한 설명을 입력하십시오</value></string>
+  <string><id>15049</id><value>게임 호스트</value></string>
+  <string><id>15050</id><value>비밀 아레나 호스트</value></string>
+  <string><id>15051</id><value>인원 제한</value></string>
+  <string><id>15052</id><value>비밀번호</value></string>
+  <string><id>15053</id><value>설명</value></string>
+  <string><id>15054</id><value>초대 문구</value></string>
+  <string><id>15055</id><value>게임 선택:</value></string>
+  <string><id>15056</id><value>메시지 입력:</value></string>
+  <string><id>15057</id><value>보내기</value></string>
+  <string><id>15058</id><value>호스트</value></string>
+  <string><id>15059</id><value>초대가 수락됨!</value></string>
+  <string><id>15060</id><value>메시지</value></string>
+  <string><id>15061</id><value>%s 게임에 초대 되었습니다</value></string>
+  <string><id>15062</id><value>대체 mplayer 코어 사용</value></string>
 </strings>
