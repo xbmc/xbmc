@@ -15,6 +15,7 @@
 //#include "cores/mplayer/mplayer.h"
 #include "utils/log.h"
 #include "utils/GUIInfoManager.h"
+#include "cores/mplayer/xbox_video.h"
 
 #define OSD_VIDEOPROGRESS 101
 #define OSD_SKIPBWD 210
@@ -752,7 +753,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 			if (pControl)
 			{
 				g_stSettings.m_currentVideoSettings.m_CustomZoomAmount = (float)pControl->GetFloatValue();
-				g_application.m_guiWindowFullScreen.SetViewMode(VIEW_MODE_CUSTOM);
+				g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
 			}
 		}
 		break;
@@ -762,7 +763,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 			if (pControl)
 			{
 				g_stSettings.m_currentVideoSettings.m_CustomPixelRatio = (float)pControl->GetFloatValue();
-				g_application.m_guiWindowFullScreen.SetViewMode(VIEW_MODE_CUSTOM);
+				g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
 			}
 		}
 		break;
