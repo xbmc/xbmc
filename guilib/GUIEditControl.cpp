@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "guiEditControl.h"
 #include "guifontmanager.h"
+#include "../xbmc/util.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
 CGUIEditControl::CGUIEditControl(DWORD dwParentID, DWORD dwControlId,
@@ -10,11 +11,17 @@ CGUIEditControl::CGUIEditControl(DWORD dwParentID, DWORD dwControlId,
 :CGUILabelControl(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight, strFont, strLabel, dwTextColor, dwDisabledColor, 0, false)
 {
 	ControlType = GUICONTROL_EDIT;
+	m_pObserver = NULL;
 	ShowCursor(true);
 }
 
 CGUIEditControl::~CGUIEditControl(void)
 {
+}
+
+void CGUIEditControl::SetObserver(IEditControlObserver* aObserver)
+{
+	m_pObserver = aObserver;
 }
 
 void CGUIEditControl::OnKeyPress(WORD wKeyId)
@@ -40,21 +47,42 @@ void CGUIEditControl::OnKeyPress(WORD wKeyId)
 		char ch = wKeyId & 0xFF;
 		switch (ch)
 		{
-		case 27:	// escape
-			break;
-		case 10:	// enter
-			break;
-		case 8:		// backspace or delete??
-			if (m_iCursorPos>0)
-			{
-				m_strLabel.erase(m_iCursorPos-1,1);
-				m_iCursorPos--;
+			case 27:
+			{	// escape
+				m_strLabel.clear();
+				m_iCursorPos = 0;
+				break;
 			}
-			break;
-		default:	// use character input
-			m_strLabel.insert( m_strLabel.begin() + m_iCursorPos, (wchar_t)ch);
-			m_iCursorPos++;
-			break;
+			case 10:
+			{
+				// enter
+				if (m_pObserver)
+				{
+					CStdString strLineOfText;
+					CUtil::Unicode2Ansi(m_strLabel,strLineOfText);
+					m_strLabel.clear();
+					m_iCursorPos = 0;
+					m_pObserver->OnEditTextComplete(strLineOfText);
+				}
+				break;
+			}
+			case 8:
+			{
+				// backspace or delete??
+				if (m_iCursorPos>0)
+				{
+					m_strLabel.erase(m_iCursorPos-1,1);
+					m_iCursorPos--;
+				}
+				break;
+			}
+			default:
+			{
+				// use character input
+				m_strLabel.insert( m_strLabel.begin() + m_iCursorPos, (wchar_t)ch);
+				m_iCursorPos++;
+				break;
+			}
 		}
 	}
 }
