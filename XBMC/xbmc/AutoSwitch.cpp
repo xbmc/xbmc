@@ -77,12 +77,12 @@ int CAutoSwitch::GetView(VECFILEITEMS &vecItems)
 
 		case WINDOW_PROGRAMS:
 		{
-			iSortMethod = g_guiSettings.GetInt("Programs.AutoSwitchMethod");
-			bBigThumbs = g_guiSettings.GetBool("Programs.AutoSwitchUseLargeThumbs");
-			bHideParentFolderItems = g_guiSettings.GetBool("Programs.HideParentDirItems");
+			iSortMethod = g_guiSettings.GetInt("ProgramsLists.AutoSwitchMethod");
+			bBigThumbs = g_guiSettings.GetBool("ProgramsLists.AutoSwitchUseLargeThumbs");
+			bHideParentFolderItems = g_guiSettings.GetBool("ProgramsLists.HideParentDirItems");
 			if ( iSortMethod == METHOD_BYTHUMBPERCENT )
 			{
-				iPercent = g_guiSettings.GetInt("Programs.AutoSwitchPercentage");
+				iPercent = g_guiSettings.GetInt("ProgramsLists.AutoSwitchPercentage");
 			}
 		}
 		break;

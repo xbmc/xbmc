@@ -74,7 +74,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 				m_shareDirectory=g_stSettings.m_szDefaultPrograms;
 				m_iDepth=1;
 				m_strBookmarkName="default";
-				if (g_guiSettings.GetBool("Programs.NoShortcuts") && g_stSettings.m_szShortcutDirectory[0])	// let's remove shortcuts from vector
+				if (g_guiSettings.GetBool("MyPrograms.NoShortcuts") && g_stSettings.m_szShortcutDirectory[0])	// let's remove shortcuts from vector
 					g_settings.m_vecMyProgramsBookmarks.erase(g_settings.m_vecMyProgramsBookmarks.begin());
 			}
 
@@ -89,7 +89,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 				m_iViewAsIcons=g_stSettings.m_iMyProgramsViewAsIcons;
 			}
 
-			if (g_guiSettings.GetBool("Programs.NoShortcuts"))				// let's hide Scan button
+			if (g_guiSettings.GetBool("MyPrograms.NoShortcuts"))				// let's hide Scan button
 			{
 				SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNSCAN);
 			}
@@ -299,9 +299,9 @@ void CGUIWindowPrograms::OnAction(const CAction &action)
 void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idepth)
 {
 	WIN32_FIND_DATA wfd;
-	bool bOnlyDefaultXBE=g_guiSettings.GetBool("Programs.DefaultXBEOnly");
-	bool bFlattenDir=g_guiSettings.GetBool("Programs.Flatten");
-	bool bUseDirectoryName=g_guiSettings.GetBool("Programs.UseDirectoryName");
+	bool bOnlyDefaultXBE=g_guiSettings.GetBool("MyPrograms.DefaultXBEOnly");
+	bool bFlattenDir=g_guiSettings.GetBool("MyPrograms.Flatten");
+	bool bUseDirectoryName=g_guiSettings.GetBool("MyPrograms.UseDirectoryName");
 
 	memset(&wfd,0,sizeof(wfd));
 	CStdString strRootDir=strDirectory;
@@ -414,7 +414,7 @@ void CGUIWindowPrograms::Clear()
 void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 {
 	UpdateDir(strDirectory);
-	if (g_guiSettings.GetBool("Programs.UseAutoSwitching"))
+	if (g_guiSettings.GetBool("ProgramsLists.UseAutoSwitching"))
 	{
 		m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
 
@@ -430,8 +430,8 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 
 void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 {
-	bool bFlattenDir=g_guiSettings.GetBool("Programs.Flatten");
-	bool bOnlyDefaultXBE=g_guiSettings.GetBool("Programs.DefaultXBEOnly");
+	bool bFlattenDir=g_guiSettings.GetBool("MyPrograms.Flatten");
+	bool bOnlyDefaultXBE=g_guiSettings.GetBool("MyPrograms.DefaultXBEOnly");
 	bool bParentPath(false);
 	bool bPastBookMark(true);
 	CStdString strParentPath;
@@ -475,7 +475,7 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 
 	CUtil::Tokenize(strDir, vecPaths, ",");			
 
-	if (!g_guiSettings.GetBool("Programs.NoShortcuts"))
+	if (!g_guiSettings.GetBool("MyPrograms.NoShortcuts"))
 	{
 		if (CUtil::HasSlashAtEnd(strShortCutsDir))
 			strShortCutsDir.Delete(strShortCutsDir.size()-1);
@@ -518,7 +518,7 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 
 	if (strDirectory!="")
 	{
-			if (!g_guiSettings.GetBool("Programs.HideParentDirItems"))
+			if (!g_guiSettings.GetBool("ProgramsLists.HideParentDirItems"))
 			{
 				CFileItem *pItem = new CFileItem("..");
 				pItem->m_strPath=strParentPath;
@@ -566,7 +566,7 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 
 	CUtil::ClearCache();
 	CUtil::SetThumbs(m_vecItems);
-	if (g_guiSettings.GetBool("Programs.HideExtensions"))
+	if (g_guiSettings.GetBool("MyPrograms.HideExtensions"))
 		CUtil::RemoveExtensions(m_vecItems);
 	CUtil::FillInDefaultIcons(m_vecItems);
 
@@ -604,7 +604,7 @@ void CGUIWindowPrograms::OnClick(int iItem)
 		// launch xbe...
 		char szPath[1024];
 		char szParameters[1024];
-		if (g_guiSettings.GetBool("Programs.Flatten"))
+		if (g_guiSettings.GetBool("MyPrograms.Flatten"))
 			m_database.IncTimesPlayed(pItem->m_strPath);
 		m_database.Close();
 		memset(szParameters,0,sizeof(szParameters));
@@ -910,7 +910,7 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 		m_dlgProgress->SetLine(2,strStrippedPath);
 		m_dlgProgress->Progress();
 	}
-	//bool   bOnlyDefaultXBE=g_guiSettings.GetBool("Programs.DefaultXBEOnly");
+	//bool   bOnlyDefaultXBE=g_guiSettings.GetBool("MyPrograms.DefaultXBEOnly");
 	bool bScanSubDirs=true;
 	bool bFound=false;
 	DeleteThumbs(items);

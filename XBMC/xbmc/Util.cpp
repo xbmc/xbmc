@@ -1437,7 +1437,7 @@ void CUtil::FillInDefaultIcon(CFileItem* pItem)
 
   CStdString strThumb;
   CStdString strExtension;
-  bool bOnlyDefaultXBE=g_guiSettings.GetBool("Programs.DefaultXBEOnly");
+  bool bOnlyDefaultXBE=g_guiSettings.GetBool("MyPrograms.DefaultXBEOnly");
   if (!pItem->m_bIsFolder)
   {
     CStdString strExtension;
@@ -1573,7 +1573,7 @@ void CUtil::CreateShortcuts(VECFILEITEMS &items)
 
 void CUtil::CreateShortcut(CFileItem* pItem)
 {
-	bool bOnlyDefaultXBE=g_guiSettings.GetBool("Programs.DefaultXBEOnly");
+	bool bOnlyDefaultXBE=g_guiSettings.GetBool("MyPrograms.DefaultXBEOnly");
 	if ( bOnlyDefaultXBE ? CUtil::IsDefaultXBE(pItem->m_strPath) : CUtil::IsXBE(pItem->m_strPath) )
 	{
 		// xbe

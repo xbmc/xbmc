@@ -153,16 +153,19 @@ CGUISettings::CGUISettings(void)
 	AddInt(5,"Pictures.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 	// Programs settings
 	AddGroup(1, 0);
-	AddCategory(1, "Programs", 0);
-	AddBool(1,"Programs.Flatten", 348, true);
-	AddBool(2,"Programs.DefaultXBEOnly", 349, true);
-	AddBool(3,"Programs.UseDirectoryName", 506, false);
-	AddBool(4,"Programs.NoShortcuts", 508, true);
-	AddBool(5,"Programs.HideParentDirItems", 13306, true);
-	AddBool(6,"Programs.UseAutoSwitching", 14011, false);
-	AddBool(7,"Programs.AutoSwitchUseLargeThumbs", 14012, false);
-	AddInt(8,"Programs.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
-	AddInt(9,"Programs.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+	AddCategory(1, "MyPrograms", 0);
+	AddBool(1,"MyPrograms.Flatten", 348, true);
+	AddBool(2,"MyPrograms.DefaultXBEOnly", 349, true);
+	AddBool(3,"MyPrograms.UseDirectoryName", 506, false);
+	AddBool(4,"MyPrograms.NoShortcuts", 508, true);
+
+	AddCategory(1, "ProgramsLists", 14018);
+	AddBool(1,"ProgramsLists.HideParentDirItems", 13306, true);
+	AddBool(2,"ProgramsLists.UseAutoSwitching", 14011, false);
+	AddBool(3,"ProgramsLists.AutoSwitchUseLargeThumbs", 14012, false);
+	AddInt(4,"ProgramsLists.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
+	AddInt(5,"ProgramsLists.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+	
 	AddCategory(1, "XLinkKai", 714);
 	AddBool(1,"XLinkKai.EnableNotifications", 14008, true);
 	AddString(2,"XLinkKai.GamesDir", 14009, "f:\\games");
