@@ -127,7 +127,7 @@ void CGUIListControl::Render()
       if (strLabel2.size()>0)
       {
 				dwColor=m_dwTextColor2;
-				if (bSelected)
+				if (pItem->IsSelected())
 				{
 					dwColor=m_dwSelectedColor2;
 				}
