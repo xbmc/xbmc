@@ -30,6 +30,7 @@
 #include "GUIWindowVideoTitle.h"
 #include "GUIWindowSettings.h"
 #include "GUIDialogInvite.h"
+#include "GUIDialogKeyboard.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogProgress.h"
@@ -136,6 +137,7 @@ public:
   CGUIWindowSettingsPrograms      m_guiSettingsPrograms;
 	CGUIWindowPictures							m_guiPictures;
 	CGUIDialogInvite								m_guiDialogInvite;
+	CGUIDialogKeyboard								m_guiDialogKeyboard;
 	CGUIDialogYesNo									m_guiDialogYesNo;
 	CGUIDialogProgress							m_guiDialogProgress;
 	CGUIDialogOK										m_guiDialogOK;
