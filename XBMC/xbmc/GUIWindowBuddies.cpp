@@ -632,6 +632,19 @@ bool CGUIWindowBuddies::OnMessage(CGUIMessage &message)
   {
 		case GUI_MSG_WINDOW_DEINIT:
 		{
+			if (m_pCurrentAvatar)
+			{
+				m_pCurrentAvatar->FreeResources();
+				m_pCurrentAvatar = NULL;
+			}
+
+			if (m_pMe)
+			{
+				m_pMe->m_pAvatar->FreeResources();
+				delete m_pMe;
+				m_pMe=NULL;
+			}
+
 			CBuddyItem::FreeIcons();
 			CArenaItem::FreeIcons();
 		}
