@@ -125,14 +125,17 @@ static int audio_init(int rate,int channels,int format,int flags)
 		BOOL bVBR;
 		bool bAC3PassThru=false;
 
+    mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
 		int ao_format_bits = audio_out_format_bits(format); 
 		if (format==AFMT_AC3) ao_format_bits=16;
+
+    //Make sure we only output as many channels as we how. don't try to create any virtual.
+    if (channels > iChannels) channels = iChannels; 
 
 		// Check whether we are passing digital output direct through.
 		// Anything with 48kHz 2 channel audio can be passed direct.
 		if (g_stSettings.m_bUseDigitalOutput)
 		{
-			mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
 			// Check that we are allowed to pass through DD or DTS
 			if (strstr(strAudioCodec,"SPDIF"))
 				bAC3PassThru=true;
@@ -151,7 +154,7 @@ static int audio_init(int rate,int channels,int format,int flags)
 			{
 				bResample = true;
 			}
-			m_pAudioDecoder = new CASyncDirectSound(m_pAudioCallback,channels,rate,ao_format_bits, bResample);
+			m_pAudioDecoder = new CASyncDirectSound(m_pAudioCallback,channels,rate,ao_format_bits, bResample,0, strAudioCodec);
 		}
 		pao_data=GetAOData();
     pao_data->channels	= channels;

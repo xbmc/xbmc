@@ -41,6 +41,9 @@ public:
 		bool         GetAC3PassTru();
 		void         SetAC3PassTru(bool bOnOff);
 
+    bool         GetDTSPassTru();
+		void         SetDTSPassTru(bool bOnOff);
+
 		const string GetChannelMapping() const;
 		void         SetChannelMapping(const string& strMapping);
 		void         SetSpeed(float fSpeed);
@@ -62,6 +65,7 @@ public:
 		int     m_iSubtitleStream;
 		int     m_iCacheSizeBackBuffer; // percent of cache used for back buffering
 		bool    m_bAC3PassTru;
+    bool    m_bDTSPassTru;
 		float   m_fVolumeAmplification;
 		bool    m_bNonInterleaved;
 		string  m_strChannelMapping;
