@@ -163,7 +163,7 @@ static DWORD LastUpdate = 0;
 __int64	ModPlayer::GetPTS()
 {
 	if (!m_bIsPlaying) return 0;
-	return mikxboxGetPTS();
+	return mikxboxGetPTS() / 100;
 }
 
 bool ModPlayer::HasVideo()

@@ -18,9 +18,15 @@ const CStdString& CGUIFont::GetFontName() const
 
 bool CGUIFont::Load(const CStdString& strFontName,const CStdString& strFilename)
 {
-  CStdString strPath=g_graphicsContext.GetMediaDir();
-	strPath+="\\fonts\\";
-  strPath+=strFilename;
+  CStdString strPath;
+	if (strFilename[1] != ':')
+	{
+		strPath=g_graphicsContext.GetMediaDir();
+		strPath+="\\fonts\\";
+		strPath+=strFilename;
+	}
+	else
+		strPath=strFilename;
   m_strFontName=strFontName;
   CLog::Log("Load font:%s path:%s", m_strFontName.c_str(), strPath.c_str());
   bool bResult= (CXBFont::Create(strPath.c_str())==S_OK);
