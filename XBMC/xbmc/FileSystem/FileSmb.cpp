@@ -36,7 +36,7 @@ void CSMB::Init()
 		if(!smbc_init(xb_smbc_auth, 1/*Debug Level*/))
 		{
 			// set wins nameserver
-			lp_do_parameter((-1), "wins server", g_stSettings.m_strNameServer);
+			lp_do_parameter(-1, "wins server", g_stSettings.m_strNameServer);
 			binitialized = true;
 		}
 	}
