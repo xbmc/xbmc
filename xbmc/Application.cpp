@@ -677,7 +677,7 @@ HRESULT CApplication::Initialize()
 	{
 		strcpy(g_stSettings.szThumbnailsDirectory,"Q:\\thumbs");
 	}
-	if (g_stSettings.m_szShortcutDirectory[0]==0 && !g_guiSettings.GetBool("Programs.NoShortcuts"))
+	if (g_stSettings.m_szShortcutDirectory[0]==0 && !g_guiSettings.GetBool("MyPrograms.NoShortcuts"))
 	{
 		strcpy(g_stSettings.m_szShortcutDirectory,"Q:\\shortcuts");
 	}
@@ -702,7 +702,7 @@ HRESULT CApplication::Initialize()
 	strThumbKai+="\\kai";
 	CreateDirectory(strThumbKai.c_str(),NULL);
 
-	if (!g_guiSettings.GetBool("Programs.NoShortcuts"))
+	if (!g_guiSettings.GetBool("MyPrograms.NoShortcuts"))
 		CreateDirectory(g_stSettings.m_szShortcutDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szAlbumDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szMusicRecordingDirectory,NULL);

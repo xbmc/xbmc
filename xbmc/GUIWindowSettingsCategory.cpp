@@ -271,7 +271,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
 		AddSetting(pSetting, iPosX, iPosY, iWidth, CONTROL_START_CONTROL+i);
 		// special cases...
 		CStdString strSetting = pSetting->GetSetting();
-		if (strSetting == "Pictures.AutoSwitchMethod" || strSetting == "Programs.AutoSwitchMethod" || strSetting == "MusicLists.AutoSwitchMethod" || strSetting == "VideoLists.AutoSwitchMethod")
+		if (strSetting == "Pictures.AutoSwitchMethod" || strSetting == "ProgramsLists.AutoSwitchMethod" || strSetting == "MusicLists.AutoSwitchMethod" || strSetting == "VideoLists.AutoSwitchMethod")
 		{
 			CSettingInt *pSettingInt = (CSettingInt*)pSetting;
 			CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -478,15 +478,15 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 			CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
 			if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Pictures.UseAutoSwitching") && g_guiSettings.GetInt("Pictures.AutoSwitchMethod") == 2);
 		}
-		else if (strSetting == "Programs.AutoSwitchUseLargeThumbs" || strSetting == "Programs.AutoSwitchMethod")
+		else if (strSetting == "ProgramsLists.AutoSwitchUseLargeThumbs" || strSetting == "ProgramsLists.AutoSwitchMethod")
 		{
 			CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-			if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Programs.UseAutoSwitching"));
+			if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("ProgramsLists.UseAutoSwitching"));
 		}
-		else if (strSetting == "Programs.AutoSwitchPercentage")
+		else if (strSetting == "ProgramsLists.AutoSwitchPercentage")
 		{	// set visibility based on our other setting...
 			CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-			if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("Programs.UseAutoSwitching") && g_guiSettings.GetInt("Programs.AutoSwitchMethod") == 2);
+			if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("ProgramsLists.UseAutoSwitching") && g_guiSettings.GetInt("ProgramsLists.AutoSwitchMethod") == 2);
 		}
 		else if (strSetting == "MusicLists.AutoSwitchUseLargeThumbs" || strSetting == "MusicLists.AutoSwitchMethod")
 		{
@@ -670,7 +670,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 	// call the control to do it's thing
 	pSettingControl->OnClick();
 	// ok, now check the various special things we need to do
-	if (strSetting == "Programs.UseDirectoryName")
+	if (strSetting == "MyPrograms.UseDirectoryName")
 	{	// delete the program database.
 		// TODO: Should this actually be done here??
 		CStdString programDatabase=g_stSettings.m_szAlbumDirectory;
