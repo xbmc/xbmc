@@ -56,7 +56,7 @@
 				Name="VCPreLinkEventTool"/>
 			<Tool
 				Name="XboxDeploymentTool"
-				RemotePath="xe:\XBMC\xbmcd.xbe"/>
+				RemotePath="xe:\guilib\default.xbe"/>
 			<Tool
 				Name="XboxImageTool"
 				FileName="$(TargetDir)default.xbe"
@@ -608,10 +608,22 @@
 				Name="infoTagReaders"
 				Filter="">
 				<File
+					RelativePath=".\xbmc\FlacTag.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FlacTag.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\musicInfoTag.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\musicInfoTagLoaderFactory.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\MusicInfoTagLoaderFlac.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\MusicInfoTagLoaderFlac.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\MusicInfoTagLoaderMP3.cpp">

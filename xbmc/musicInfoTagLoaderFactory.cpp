@@ -5,6 +5,7 @@
 #include "MusicInfoTagLoaderMP3.h"
 #include "MusicInfoTagLoaderOgg.h"
 #include "MusicInfoTagLoaderWMA.h"
+#include "MusicInfoTagLoaderFlac.h"
 #include "util.h"
 #include "url.h"
 
@@ -34,14 +35,19 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
 		CMusicInfoTagLoaderMP3 *pTagLoader= new CMusicInfoTagLoaderMP3();
 		return (IMusicInfoTagLoader*)pTagLoader;
 	}
-	if (strExtension==".ogg")
+	else if (strExtension==".ogg")
 	{
 		CMusicInfoTagLoaderOgg *pTagLoader= new CMusicInfoTagLoaderOgg();
 		return (IMusicInfoTagLoader*)pTagLoader;
 	}
-	if (strExtension==".wma")
+	else if (strExtension==".wma")
 	{
 		CMusicInfoTagLoaderWMA *pTagLoader= new CMusicInfoTagLoaderWMA();
+		return (IMusicInfoTagLoader*)pTagLoader;
+	}
+	else if (strExtension==".flac")
+	{
+		CMusicInfoTagLoaderFlac *pTagLoader= new CMusicInfoTagLoaderFlac();
 		return (IMusicInfoTagLoader*)pTagLoader;
 	}
 	return NULL;
