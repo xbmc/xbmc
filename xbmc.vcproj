@@ -1303,10 +1303,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\cores\ModPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
@@ -1442,9 +1442,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\VirtualDirectory.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\keyboard\virtualkeyboard.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\xbox\VoiceCommunicator.h">
@@ -1630,9 +1627,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			Filter="">
 			<File
 				RelativePath=".\xbmc\GUIWindowSettingsScreenCalibration.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\keyboard\virtualkeyboard.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -1993,10 +1987,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
