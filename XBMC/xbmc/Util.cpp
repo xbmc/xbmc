@@ -1184,7 +1184,8 @@ void CUtil::RemoveTempFiles()
 	{
 		if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
 		{
-			string strFile="Q:\\albums\\";
+			CStdString strFile;
+			strFile.Format("%s\\thumbs\\temp\\",g_stSettings.m_szAlbumDirectory);
 			strFile += wfd.cFileName;
 			DeleteFile(strFile.c_str());
 		}
