@@ -115,7 +115,7 @@ void choose_best_resolution(bool bPal60Allowed)
 	bool bPal60=false;
 	bool bWideScreen=false;
 	if (params.Flags&D3DPRESENTFLAG_WIDESCREEN) bWideScreen=true;
-	if (bPal60Allowed&& (dwFlags&XC_VIDEO_FLAGS_PAL_60Hz) && !bWideScreen )
+	if (bPal60Allowed && /*(dwFlags&XC_VIDEO_FLAGS_PAL_60Hz) && */!bWideScreen )
 	{
 		bPal60=true;
 	}
@@ -650,10 +650,17 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
 	unsigned int iWidth,iHeight;
 	long tooearly, toolate;
 	mplayer_GetVideoInfo(strFourCC,strVideoCodec, &fps, &iWidth,&iHeight, &tooearly, &toolate);
+	m_bPal60Allowed=true;
 	if (fps == 25.0f)
 	{
 		m_bPal60Allowed=false;
 	}
+
+	if (!g_stSettings.m_bAllowPAL60)
+	{
+		m_bPal60Allowed=false;
+	}
+
 	OutputDebugString("video_config\n");
   fs = options & 0x01;
   image_format	 =  format;
