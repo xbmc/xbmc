@@ -733,6 +733,7 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
 			int nFolderCount=0;
 			g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC_TEMP ).Clear();
 			g_playlistPlayer.Reset();
+			int iNoSongs=0;
 			for ( int i = 0; i < (int) m_vecItems.size(); i++ ) 
 			{
 				CFileItem* pItem = m_vecItems[i];
@@ -749,6 +750,8 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
 				  playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
 				  g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Add(playlistItem);
         }
+				else if (i<=iItem)
+					iNoSongs++;
 			}
 
 			//	Save current window and directory to know where the selected item was
@@ -756,7 +759,7 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
 			m_strTempPlayListDirectory=m_strDirectory;
 
 			g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC_TEMP);
-			g_playlistPlayer.Play(iItem-nFolderCount);
+			g_playlistPlayer.Play(iItem-nFolderCount-iNoSongs);
 		}
 	}
 }
