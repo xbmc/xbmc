@@ -2949,8 +2949,8 @@ CIMDBMovie* CApplication::GetCurrentMovie()
 
 // SwitchToFullScreen() returns true if a switch is made, else returns false
 bool CApplication::SwitchToFullScreen()
-{	// don't switch if there is a dialog on screen
-	if (m_gWindowManager.IsRouted()) return false;
+{	// don't switch if there is a dialog on screen or the slideshow is active
+	if (m_gWindowManager.IsRouted() || m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW) return false;
 	// See if we're playing a video, and are in GUI mode
 	if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
 	{
