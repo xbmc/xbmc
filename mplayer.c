@@ -99,8 +99,9 @@ int oggsub_count = 0;
 float orgplayback_speed=1.0;
 static float ffrw_speed=0;
 static unsigned int ffrw_starttime=0;
-static float ffrw_startpts=0;
+static int ffrw_startpts=0;
 static int ffrw_sstepframes=0;
+static int ffrw_sstepnum=0;
 
 //override exit_player_with_rc macro :)
 #define exit_player_with_rc(a, b) \
@@ -3172,33 +3173,105 @@ if(auto_quality>0){
 #ifdef _XBOX
 
   //We use step_sec in our FF/RW code
-  //We let it display two frames a second
+  //We let it display a couple of frames then seek
   if(ffrw_speed<0.0f)
   {
-    osd_function = ffrw_speed > 0 ? OSD_FFW : OSD_REW;
-    if(ffrw_sstepframes <= 0)
+    float v_pts = v_pts=sh_video ? sh_video->pts : d_video->pts;
+
+    osd_function = OSD_REW;
+    if(ffrw_sstepnum <= 0)
     {
-      int newpts = (GetTimerMS() - ffrw_starttime)*ffrw_speed / 1000.0f + ffrw_startpts;
-      rel_seek_secs= (float)(newpts - voldpts) + ffrw_speed/2.0f;
-      ffrw_sstepframes=2;
-      playback_speed=4/sh_video->fps; //Take it slow
+      //Don't seek forward
+      while(rel_seek_secs > -0.5f) 
+      {
+        float newpts = (GetTimerMS() - ffrw_starttime)*ffrw_speed / 1000.0f + (float)ffrw_startpts;     
+        rel_seek_secs= newpts - v_pts;
+        usec_sleep(0);
+      }
+      ffrw_sstepnum=ffrw_sstepframes;
+      playback_speed=2/sh_video->fps; //Take it slow
     }
     else
     {
-      ffrw_sstepframes--;
+      ffrw_sstepnum--;
       playback_speed=100; //full speed ahead
     }
-  }
-  else if(ffrw_speed>0.0f)
-  {
-    //If we diff more than 4 seconds from where we are supposed to be, adjust to correct pos.
-    int newpts = (GetTimerMS() - ffrw_starttime)*ffrw_speed/ 1000.0f + ffrw_startpts;
-    if( (newpts - voldpts) > 2.0f )
-        rel_seek_secs+= (newpts - voldpts) + ffrw_speed/2.0f; //Give it an headstart
 
+    //Beginning of file, seek absolute instead
+    if(v_pts + rel_seek_secs < 0.0f)
+    {
+      abs_seek_pos=1;
+      rel_seek_secs=0;
+    }
+
+    osd_visible=sh_video->fps; // 1 sec
     vo_osd_progbar_type=0;
 	  vo_osd_progbar_value=demuxer_get_percent_pos(demuxer) * 256 / 100;
 	  vo_osd_changed(OSDTYPE_PROGBAR);
+  }
+  else if(ffrw_speed>0.0f)
+  {
+    //If we diff more than 2 seconds from where we are supposed to be, adjust to correct pos.
+    float v_pts = v_pts=sh_video ? sh_video->pts : d_video->pts;
+    float newpts = (GetTimerMS() - ffrw_starttime)*ffrw_speed / 1000.0f + (float)ffrw_startpts;    
+    if( (newpts - v_pts) > 2.0f && ffrw_sstepnum >= ffrw_sstepframes)
+    {
+        rel_seek_secs= newpts - v_pts + ffrw_speed/8.0f; //Give it an headstart
+    }
+    else
+    {
+      ffrw_sstepnum++;
+    }
+
+    osd_function = OSD_FFW;
+    osd_visible=sh_video->fps; // 1 sec
+    vo_osd_progbar_type=0;
+	  vo_osd_progbar_value=demuxer_get_percent_pos(demuxer) * 256 / 100;
+	  vo_osd_changed(OSDTYPE_PROGBAR);
+  }
+  else if(ffrw_sstepframes==-1 && sh_video && d_video && sh_audio && d_audio) //Set to tell mplayer to resync audio & video
+  {
+    //Reset variables as these may have gone nuts during FF/RW
+    c_total=0;
+    drop_frame_cnt=0;
+    too_slow_frame_cnt=0;
+    too_fast_frame_cnt=0;
+    
+    //Video pts
+    float v_pts = v_pts=sh_video ? sh_video->pts : d_video->pts;
+    //Skip packets till we are almost in sync with audio
+    //This will only affect FF as RW will skip all the time.
+
+    audio_out->reset();
+
+    int i=0;
+    while(1){      
+      if(sh_audio && !d_audio->eof){
+
+        float a_pts=d_audio->pts + (ds_tell_pts(d_audio)-sh_audio->a_in_buffer_len)/(float)sh_audio->i_bps;
+        if(v_pts > a_pts && i<1000000){ //Check sync, and have failsafe for demuxer that don't implement skip frame
+          skip_audio_frame(sh_audio); // skip current audio frame
+          sh_audio->delay = 0;
+          i++;
+          continue;
+        }
+      }
+      if(i>0)
+        printf("Skipped %d audio frames to catch audio up to video", i);
+      break;
+    }
+
+    //Reset differnt part so they resync
+    if(vo_spudec) spudec_reset(vo_spudec);
+    if(vo_vobsub) vobsub_reset(vo_vobsub);
+
+    //Show progbar for 1 second.
+    osd_visible=sh_video->fps; // 1 sec
+    vo_osd_progbar_type=0;
+	  vo_osd_progbar_value=demuxer_get_percent_pos(demuxer) * 256 / 100;
+	  vo_osd_changed(OSDTYPE_PROGBAR);
+
+    ffrw_sstepframes=0;
   }
 
 #else
@@ -4989,7 +5062,8 @@ void mplayer_ToFFRW(int iSpeed)
     return;
   }
 
-  if(!sh_video) 
+  //Audio part
+  if(!sh_video && sh_audio) 
   {
     if(iSpeed == 1)
     {
@@ -5012,22 +5086,20 @@ void mplayer_ToFFRW(int iSpeed)
   //For video
   if (iSpeed == 1)
   {
-      if(ffrw_speed != 0) {//We where rewinding or fastforwarding before        
-        rel_seek_secs  = 0.1;
-        abs_seek_pos   = 0;
-        //Dump audio buffer immidiatly      
-        audio_out->reset();
+      if(ffrw_speed != 0) {//We where rewinding or fastforwarding before                
+        ffrw_sstepframes=-1; //Tell our system to resync
       }
       else {
         //Make sure we get rid of the big delay that might have gone by in pause
         //fixes autosync problems in pause
         GetRelativeTime(); 
+        ffrw_sstepframes=0;
       }
-
+      ffrw_speed=0;
+      ffrw_sstepnum=0;
       ffrw_startpts=0;
       ffrw_starttime=0;
-      ffrw_speed=0;
-
+    
 
       osd_function=OSD_PLAY;
 
@@ -5039,9 +5111,11 @@ void mplayer_ToFFRW(int iSpeed)
   }
   else if (iSpeed > 1) //Can be handled by normal speedup code
   {
+      ffrw_speed = 0; //To make sure we don't happen to modify stuff while in use
       ffrw_startpts=voldpts;
       ffrw_starttime=GetTimerMS();
-      ffrw_sstepframes = 0;
+      ffrw_sstepnum=0;
+      ffrw_sstepframes = 20; //Minimum frames rendered before next seek again
 
       abs_seek_pos   = 0;
       rel_seek_secs  = 0; 
@@ -5055,9 +5129,11 @@ void mplayer_ToFFRW(int iSpeed)
   }
   else if (iSpeed < 0)
   {
+      ffrw_speed=0; //To make sure we don't happen to modify stuff while in use
       ffrw_startpts=voldpts;
       ffrw_starttime=GetTimerMS();
-      ffrw_sstepframes = 0;
+      ffrw_sstepnum=0;
+      ffrw_sstepframes = 2; //Minimum frames rendered before next seek
 
       abs_seek_pos   = 0;
       rel_seek_secs  = 0; 
