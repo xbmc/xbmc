@@ -53,6 +53,7 @@ void GUIFontManager::Clear()
 
 void GUIFontManager::LoadFonts(const CStdString& strFilename)
 {
+  CLog::Log("Loading fonts from %s",strFilename.c_str());
   TiXmlDocument xmlDoc;
   if ( !xmlDoc.LoadFile(strFilename.c_str()) )
   {
