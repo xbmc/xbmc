@@ -74,6 +74,8 @@ namespace XISO9660 {
 		int ms_offset;		//	Multisession Offset
 		int isofs_size;		//	Size of the ISO9660 Filesystem
 		int nFrames;		//	Can be used for cddb query 
+		int nMins;			//	minutes playtime part of Track
+		int nSecs;			//	seconds playtime part of Track
 	} trackinfo;
 
 
@@ -82,7 +84,7 @@ namespace XISO9660 {
 	public:
 		CCdInfo() { ZeroMemory( (void*)&m_ti, sizeof( m_ti ) ); m_nLenght = m_nFirstTrack = m_nNumTrack = m_nNumAudio = m_nFirstAudio = m_nNumData = m_nFirstData = 0; }
 		virtual ~CCdInfo() {}
-		int GetTrackInformation( int nTrack ) { return m_ti[nTrack-1].nfsInfo; }
+		trackinfo GetTrackInformation( int nTrack ) { return m_ti[nTrack-1]; }
 		bool HasDataTracks() { return (m_nNumData > 0); }
 		bool HasAudioTracks() { return (m_nNumAudio > 0); }
 		int GetFirstTrack() { return m_nFirstTrack; }
@@ -173,7 +175,7 @@ namespace XISO9660 {
 		void SetFirstDataTrack( int nTrack ) { m_nFirstData = nTrack; }
 		void SetDataTrackCount( int nCount ) { m_nNumData = nCount; }
 		void SetAudioTrackCount( int nCount ) { m_nNumAudio = nCount; }
-		void SetTrackInformation( int nTrack, trackinfo nInfo ) { m_ti[nTrack-1] = nInfo; }
+		void SetTrackInformation( int nTrack, trackinfo nInfo ) { if ( nTrack > 0 && nTrack <= 99  ) m_ti[nTrack-1] = nInfo; }
 
 		void SetCddbDiscId( ULONG ulCddbDiscId ) { m_ulCddbDiscId = ulCddbDiscId; }
 		void SetDiscLength( int nLenght ) { m_nLenght = nLenght; }

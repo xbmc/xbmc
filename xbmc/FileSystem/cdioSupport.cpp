@@ -468,18 +468,23 @@ CCdInfo* CCdIoSupport::GetCdInfo()
 			char buf[1024];
 			trackinfo ti;
 			ti.nfsInfo = FS_UNKNOWN;
+			ti.ms_offset = 0;
+			ti.isofs_size = 0;
+			ti.nJolietLevel = 0;
+			ti.nFrames = 0;
 			info->SetTrackInformation( i, ti );
 			sprintf( buf, "cdio_track_msf for track %i failed, I give up.\n", i);
 			OutputDebugString( buf );
 			return NULL;
 		}
 
+		trackinfo ti;
 		if (TRACK_FORMAT_AUDIO == cdio_get_track_format(cdio, i)) {
 			m_nNumAudio++;
-			trackinfo ti;
 			ti.nfsInfo = FS_NO_DATA;
-			ti.nFrames = cdio_get_track_lba(cdio, i);
-			info->SetTrackInformation( i, ti );
+			cdio_get_track_msf(cdio, i, &msf);
+			ti.nMins = msf.m;
+			ti.nSecs = msf.s;
 			if (-1 == m_nFirstAudio)
 				m_nFirstAudio = i;
 		} else {
@@ -487,6 +492,11 @@ CCdInfo* CCdIoSupport::GetCdInfo()
 			if (-1 == m_nFirstData)
 				m_nFirstData = i;
 		}
+		ti.ms_offset = 0;
+		ti.isofs_size = 0;
+		ti.nJolietLevel = 0;
+		ti.nFrames = cdio_get_track_lba(cdio, i);
+		info->SetTrackInformation( i, ti );
 		/* skip to leadout? */
 		if (i == m_nNumTracks) i = CDIO_CDROM_LEADOUT_TRACK-1;
 	}
@@ -537,7 +547,11 @@ CCdInfo* CCdIoSupport::GetCdInfo()
 		case TRACK_FORMAT_AUDIO:
 			trackinfo ti;
 			ti.nfsInfo = FS_NO_DATA;
-			info->SetTrackInformation( i, ti );
+			ti.ms_offset = 0;
+			ti.isofs_size = 0;
+			ti.nJolietLevel = 0;
+			ti.nFrames = cdio_get_track_lba(cdio, i);
+			info->SetTrackInformation( i + 1, ti );
 		case TRACK_FORMAT_ERROR:
 			break;
 		case TRACK_FORMAT_CDI:
@@ -563,6 +577,7 @@ CCdInfo* CCdIoSupport::GetCdInfo()
 	ti.ms_offset = m_nMsOffset;
 	ti.isofs_size = m_nIsofsSize;
 	ti.nJolietLevel = m_nJolietLevel;
+	ti.nFrames = cdio_get_track_lba(cdio, i);
 
 
 	if (i > 1) {

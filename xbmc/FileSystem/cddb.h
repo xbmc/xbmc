@@ -6,6 +6,7 @@
 #include <sstream>
 #include <iostream>
 #include <strstream>
+#include "../DetectDVDType.h"
 
 namespace CDDB
 {
@@ -51,9 +52,11 @@ namespace CDDB
 
 			int								queryCDinfo(int real_track_count, toc cdtoc[]);
 			int 							queryCDinfo(int inexact_list_select);
+			int								queryCDinfo(CCdInfo* pInfo);
 			int 							getLastError() const;
 			const char *			getLastErrorText() const;
 			const CStdString&	getYear() const;
+			const CStdString&	getGenre() const;
 			const CStdString& getTrackArtist(int track) const;
 			const CStdString& getTrackTitle(int track) const;
 			void 							getDiskArtist(CStdString& strdisk_artist) const;
@@ -65,6 +68,7 @@ namespace CDDB
 			bool 							queryCache( unsigned long discid );
 			bool 							writeCacheFile( const char* pBuffer, unsigned long discid );
 			bool 							isCDCached( int nr_of_tracks, toc cdtoc[] );
+			bool							isCDCached( CCdInfo* pInfo );
 
 	protected:
 		CStdString						m_strNull;
