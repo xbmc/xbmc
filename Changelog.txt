@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 27-10-2004 fixed: Thumb aspect ratios now default to the pixel ratio standards (rather than the video settings pixel ratio), making skinning more predictable.
+  - 27-10-2004 added: In slideshow/pictures viewing, thumbnails are automatically generated as each picture is displayed.
   - 27-10-2004 fixed: filemanager didn't display computername in path
   - 27-10-2004 fixed: selecting Xecuter3 LCD would cause errors when running in debug mode
   - 27-10-2004 fixed: selecting Xenium LCD would show up as having selected Xecuter3 and the 

@@ -56,7 +56,7 @@ void CBackgroundPicLoader::Process()
 			{
 				CPicture pic;
 				int iOriginalWidth, iOriginalHeight;
-				D3DTexture *pTexture = pic.Load(m_strFileName, iOriginalWidth, iOriginalHeight, m_maxWidth, m_maxHeight);
+				D3DTexture *pTexture = pic.Load(m_strFileName, iOriginalWidth, iOriginalHeight, m_maxWidth, m_maxHeight, true);
 				// tell our parent
 				bool bFullSize = ((int)pic.GetWidth() < m_maxWidth) && ((int)pic.GetHeight() < m_maxHeight);
 				if (!bFullSize && pic.GetWidth() == MAX_PICTURE_WIDTH) bFullSize = true;
