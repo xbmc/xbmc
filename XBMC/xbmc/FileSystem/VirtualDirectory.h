@@ -22,6 +22,6 @@ namespace DIRECTORY
   
   protected:
     void          CacheThumbs(VECFILEITEMS &items);
-    VECSHARES     m_vecShares;
+    VECSHARES*     m_vecShares;
   };
 };

@@ -6,11 +6,8 @@
 #include "stdstring.h"
 #include "application.h"
 #include "MusicInfoTag.h"
-#include "albumdatabase.h"
 #include "picture.h"
 
-
-using namespace DATABASE;
 using namespace MUSIC_INFO;
 
 #define CONTROL_LOGO_PIC    1
@@ -175,7 +172,7 @@ void CGUIWindowMusicOverlay::Render()
 					OnMessage(msg1);
 			}
 		}
-	
+#if 0
 		CAlbumDatabase albumDatabase(strAlbum);
 		if (albumDatabase.Load())
 		{
@@ -202,4 +199,5 @@ void CGUIWindowMusicOverlay::Render()
 				}
 			}
 		}
+#endif
 	}

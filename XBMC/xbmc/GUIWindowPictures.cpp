@@ -7,6 +7,8 @@
 #include "picture.h"
 #include "application.h"
 #include <algorithm>
+#include "GUIDialogOK.h"
+#include "DetectDVDType.h"
 
 #define CONTROL_BTNVIEWASICONS		2
 #define CONTROL_BTNSORTBY					3
@@ -90,11 +92,12 @@ struct SSortPicturesByName
 	}
 };
 
-
 CGUIWindowPictures::CGUIWindowPictures(void)
 :CGUIWindow(0)
 {
 	m_strDirectory="";
+  m_bDVDDiscChanged = false;
+  m_bDVDDiscEjected = false;
 }
 
 CGUIWindowPictures::~CGUIWindowPictures(void)
@@ -135,6 +138,22 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
+	case GUI_MSG_DVDDRIVE_EJECTED_CD:
+		//	Message send by a thread.
+		//	We have to process it later
+		//	(in Render()), if we have shares
+		//	visible
+		if ( m_strDirectory.IsEmpty() )
+			m_bDVDDiscEjected = true;
+		break;
+	case GUI_MSG_DVDDRIVE_CHANGED_CD:
+		//	Message send by a thread.
+		//	We have to process it later
+		//	(in Render()), if we have shares
+		//	visible
+		if ( m_strDirectory.IsEmpty() )
+			m_bDVDDiscChanged = true;
+		break;
     case GUI_MSG_WINDOW_DEINIT:
       Clear();
 			m_slideShow.Reset();
@@ -394,15 +413,50 @@ void CGUIWindowPictures::OnClick(int iItem)
 {
   CFileItem* pItem=m_vecItems[iItem];
   CStdString strPath=pItem->m_strPath;
-  if (pItem->m_bIsFolder)
-  {
-    Update(strPath);
-  }
+	if (pItem->m_bIsFolder)
+	{
+		if ( pItem->m_bIsShareOrDrive ) {
+			if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )
+				return;
+		}
+		Update(strPath);
+	}
 	else
 	{
 		// show picture
 		OnShowPicture(strPath);
 	}
+}
+
+bool CGUIWindowPictures::HaveDiscOrConnection( CStdString& strPath, int iDriveType )
+{
+	if ( iDriveType == SHARE_TYPE_DVD ) {
+		CDetectDVDMedia::WaitMediaReady();
+		if ( !CDetectDVDMedia::IsDiscInDrive() ) {
+			CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(2002);
+			dlg->SetHeading( 218 );
+			dlg->SetLine( 0, 219 );
+			dlg->SetLine( 1, L"" );
+			dlg->SetLine( 2, L"" );
+			dlg->DoModal( GetID() );
+			return false;
+		}
+	}
+	else if ( iDriveType == SHARE_TYPE_REMOTE ) {
+			// TODO: Handle not connected to a remote share
+		if ( !CUtil::IsEthernetConnected() ) {
+			CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(2002);
+			dlg->SetHeading( 220 );
+			dlg->SetLine( 0, 221 );
+			dlg->SetLine( 1, L"" );
+			dlg->SetLine( 2, L"" );
+			dlg->DoModal( GetID() );
+			return false;
+		}
+	}
+	else
+		return true;
+  return true;
 }
 
 void CGUIWindowPictures::OnShowPicture(const CStdString& strPicture)
@@ -464,6 +518,24 @@ void CGUIWindowPictures::OnCreateThumbs()
 
 void CGUIWindowPictures::Render()
 {
+	//	Process GUI_MSG_DVDDRIVE_CHANGE_CD message, if we have shares
+	if ( m_bDVDDiscEjected && m_strDirectory.IsEmpty() ) {
+		int iItem = GetSelectedItem();
+		Update( m_strDirectory );
+		CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
+		CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
+		m_bDVDDiscEjected = false;
+	}
+
+	//	Process GUI_MSG_DVDDRIVED_CHANGE_CD message, if we have shares
+	if ( m_bDVDDiscChanged && m_strDirectory.IsEmpty() ) {
+		int iItem = GetSelectedItem();
+		Update( m_strDirectory );
+		CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
+		CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
+		m_bDVDDiscChanged = false;
+	}
+
 	CGUIWindow::Render();
 	m_slideShow.Render();
 }

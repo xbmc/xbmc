@@ -31,6 +31,7 @@ protected:
 	void							OnSlideShow();
 	void							OnCreateThumbs();
 	int								GetSelectedItem();
+  bool							HaveDiscOrConnection( CStdString& strPath, int iDriveType );
 
 	CSlideShow					m_slideShow;
 	CVirtualDirectory		m_rootDir;
@@ -38,4 +39,6 @@ protected:
 	CStdString					m_strDirectory;
 	CGUIDialogProgress*	m_dlgProgress;
 	CDirectoryHistory		m_history;
+	bool								m_bDVDDiscChanged;
+	bool								m_bDVDDiscEjected;
 };
