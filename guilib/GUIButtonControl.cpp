@@ -144,8 +144,7 @@ void CGUIButtonControl::OnAction(const CAction &action)
 				CGUIDialog *pDialog = (CGUIDialog *)pWindow;
 				pDialog->DoModal(GetParentID());
 			}
-			else
-			{
+			else			{
 				m_gWindowManager.ActivateWindow(m_lHyperLinkWindowID);
 			}
 		}

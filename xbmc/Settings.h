@@ -18,6 +18,14 @@ using namespace std;
 #define SHARE_TYPE_VIRTUAL_DVD	3
 #define SHARE_TYPE_REMOTE				4
 
+#define LOCK_MODE_UNKNOWN           -1
+#define LOCK_MODE_EVERYONE          0
+#define LOCK_MODE_NUMERIC           1
+#define LOCK_MODE_GAMEPAD            2
+#define LOCK_MODE_QWERTY          3
+#define LOCK_MODE_SAMBA         4
+#define LOCK_MODE_EEPROM_PARENTAL   5
+
 #define CACHE_AUDIO 0
 #define CACHE_VIDEO 1
 #define CACHE_VOB   2
@@ -89,6 +97,28 @@ public:
 	*/
 	int        m_iDriveType;
 
+	/*!
+	\brief The type of Lock UI to show when accessing the share.
+
+	Value can be:
+	- LOCK_MODE_EVERYONE \n
+	Default value.  No lock UI is shown, user can freely access the share.
+	- LOCK_MODE_NUMERIC \n
+	Lock code is entered via OSD numpad or IrDA remote buttons.
+	- LOCK_MODE_GAMEPAD \n
+	Lock code is entered via XBOX gamepad buttons.
+	- LOCK_MODE_QWERTY \n
+	Lock code is entered via OSD keyboard or PC USB keyboard.
+	- LOCK_MODE_SAMBA \n
+	Lock code is entered via OSD keyboard or PC USB keyboard and passed directly to SMB for authentication.
+	- LOCK_MODE_EEPROM_PARENTAL \n
+	Lock code is retrieved from XBOX EEPROM and entered via XBOX gamepad or remote.
+	- LOCK_MODE_UNKNOWN \n
+	Value is unknown or unspecified.
+	*/
+    int        m_iLockMode;
+	CStdString m_strLockCode;	///< Input code for Lock UI to verify, can be chosen freely.
+    int        m_iBadPwdCount; ///< Number of wrong passwords user has entered since share was last unlocked
 };
 /*!
 \ingroup windows
@@ -175,9 +205,10 @@ public:
   bool SaveSettingsToProfile(int index);
   void DeleteProfile(int index);
 
-	bool UpdateBookmark(const CStdString &strType, const CStdString &strOldName, const CStdString &strName, const CStdString &strPath);
+	bool UpdateBookmark(const CStdString &strType, const CStdString &strOldName, const CStdString &strUpdateChild, const CStdString &strUpdateValue);
 	bool DeleteBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath);
 	bool AddBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath);
+  bool SetBookmarkLocks(const CStdString& strType, bool bEngageLocks);
 	bool SaveHomeButtons();
 
 	bool LoadFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders);
@@ -291,8 +322,8 @@ public:
 		int				m_iMyMusicGenresSortMethod;
 		int				m_iMyMusicGenresRootSortMethod;
 		int				m_iMyMusicPlaylistViewAsIcons;
-		bool			m_bMyMusicPlaylistRepeat;
-		bool			m_bMyMusicPlaylistShuffle;
+        bool            m_bMyMusicPlaylistRepeat;
+        bool            m_bMyMusicPlaylistShuffle;
 		int				m_iMyMusicTop100ViewAsIcons;
 		int				m_iMyMusicStartWindow;
 
@@ -339,7 +370,7 @@ public:
 
 		int       m_iMyVideoPlaylistViewAsIcons;
 		bool			m_bMyVideoPlaylistRepeat;
-		bool			m_bMyVideoPlaylistShuffle;
+        bool            m_bMyVideoPlaylistShuffle;
 
 		int       m_iVideoStartWindow;
 
@@ -368,6 +399,13 @@ public:
 		char      szOnlineArenaDescription[64]; // private arena description
 
 		bool      m_mplayerDebug;
+
+   	int       m_iMasterLockMaxRetry; // maximum # of password retries a user gets for all locked shares
+		int       m_iMasterLockStartupLock; // prompts user for szMasterLockCode on startup if true
+   	char      szMasterLockCode[128]; // password to check for on startup
+  	int       m_iMasterLockEnableShutdown; // allows XBMC Master Lock to shut off XBOX if true
+   	int       m_iMasterLockProtectShares; // prompts for mastercode when editing shares with context menu if true
+
 		int       m_iSambaDebugLevel;
 		char      m_strSambaWorkgroup[128];
 		char      m_strSambaWinsServer[32];

@@ -38,7 +38,7 @@ CHTTP::CHTTP()
 {
 	m_bProxyEnabled=g_guiSettings.GetBool("Network.UseHTTPProxy");
 	m_strProxyServer=g_guiSettings.GetString("Network.HTTPProxyServer").c_str();
-	m_iProxyPort=g_guiSettings.GetInt("Network.HTTPProxyPort");
+	m_iProxyPort=atoi(g_guiSettings.GetString("Network.HTTPProxyPort").c_str());
 	m_strCookie="";
 	hEvent = WSA_INVALID_EVENT;
 	m_RecvBytes = 0;

@@ -866,6 +866,9 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
 	{
 		if ( pItem->m_bIsShareOrDrive ) 
 		{
+      if ( !HaveBookmarkPermissions( pItem, "music" ) )
+        return;
+
 			if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )
 				return;
 		}
@@ -1524,7 +1527,7 @@ void CGUIWindowMusicSongs::OnPopupMenu(int iItem)
 		// mark the item
 		m_vecItems[iItem]->Select(true);
 		// and do the popup menu
-		if (CGUIDialogContextMenu::BookmarksMenu("music", m_vecItems[iItem]->GetLabel(), m_vecItems[iItem]->m_strPath, iPosX, iPosY))
+		if (CGUIDialogContextMenu::BookmarksMenu("music", m_vecItems[iItem]->GetLabel(), m_vecItems[iItem]->m_strPath, m_vecItems[iItem]->m_iLockMode, !(m_vecItems[iItem]->m_iBadPwdCount < g_stSettings.m_iMasterLockMaxRetry), iPosX, iPosY))
 		{
 			m_rootDir.SetShares(g_settings.m_vecMyMusicShares);
 			Update(m_strDirectory);
