@@ -45,11 +45,14 @@ bool CGUIWindowMusicTop100::OnMessage(CGUIMessage& message)
 		{
 			CGUIWindowMusicBase::OnMessage(message);
 
-			m_bViewAsIconsRoot=g_stSettings.m_bMyMusicTop100ViewAsIcons;
+			m_iViewAsIconsRoot=g_stSettings.m_iMyMusicTop100ViewAsIcons;
 
 			Update(m_strDirectory);
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_nSelectedItem);
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_nSelectedItem);
+			if (m_nSelectedItem>-1)
+			{
+				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_nSelectedItem);
+				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_nSelectedItem);
+			}
 			return true;
 		}
 		break;
@@ -65,10 +68,14 @@ bool CGUIWindowMusicTop100::OnMessage(CGUIMessage& message)
 
       if (iControl==CONTROL_BTNVIEWASICONS)
       {
-				g_stSettings.m_bMyMusicTop100ViewAsIcons = !g_stSettings.m_bMyMusicTop100ViewAsIcons;
-				m_bViewAsIconsRoot=g_stSettings.m_bMyMusicTop100ViewAsIcons;
+				m_iViewAsIconsRoot++;
+				if (m_iViewAsIconsRoot > VIEW_AS_ICONS) m_iViewAsIconsRoot=VIEW_AS_LIST;
+				Update("");
+
+				g_stSettings.m_iMyMusicTop100ViewAsIcons=m_iViewAsIconsRoot;
 				g_settings.Save();
-				UpdateButtons();
+				SET_CONTROL_FOCUS(GetID(), CONTROL_BTNVIEWASICONS);
+				return true;
 			}
 		}
 		break;
@@ -76,6 +83,7 @@ bool CGUIWindowMusicTop100::OnMessage(CGUIMessage& message)
 
 	return CGUIWindowMusicBase::OnMessage(message);
 }
+
 void CGUIWindowMusicTop100::OnAction(const CAction &action)
 {
   if (action.wID==ACTION_PREVIOUS_MENU)
@@ -125,7 +133,7 @@ void CGUIWindowMusicTop100::UpdateButtons()
 	CONTROL_DISABLE(GetID(), CONTROL_BTNSORTBY);
 	CONTROL_DISABLE(GetID(), CONTROL_BTNSORTASC);
 
-	//	Update listcontrol and and view by icon/list button
+	//	Update listcontrol and view by icon/list button
 	const CGUIControl* pControl=GetControl(CONTROL_THUMBS);
   if (pControl)
   {
@@ -152,14 +160,28 @@ void CGUIWindowMusicTop100::UpdateButtons()
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
 
-	int iString=100;
-	if ( m_bViewAsIconsRoot ) {
-		SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
-		iString=101;
-	}
-	else {
-		SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
-	}
+	bool bViewIcon = false;
+  int iString;
+	switch (m_iViewAsIconsRoot)
+  {
+    case VIEW_AS_LIST:
+      iString=100; // view as icons
+    break;
+    
+    case VIEW_AS_ICONS:
+      iString=101; // view as list
+      bViewIcon=true;
+    break;
+  }
+
+	if (bViewIcon) 
+  {
+    SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
+  }
+  else
+  {
+    SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
+  }
 
 	SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
 

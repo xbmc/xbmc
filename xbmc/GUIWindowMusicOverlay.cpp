@@ -410,6 +410,7 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 			CUtil::GetAlbumThumb(strAlbum+strPath,strThumb);
 			if (CUtil::ThumbExists(strThumb) )
 			{
+				//	show albums thumb
 				CPicture picture;
 				m_pTexture=picture.Load(strThumb);
 				m_iTextureWidth=picture.GetWidth();
@@ -425,6 +426,7 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 				CUtil::GetAlbumThumb(strAlbum+strPath,strThumb,true);
 				if (CUtil::ThumbExists(strThumb) )
 				{
+					//	show temporary albums thumb
 					CPicture picture;
 					m_pTexture=picture.Load(strThumb);
 					m_iTextureWidth=picture.GetWidth();
@@ -433,6 +435,24 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 					{							
 						CGUIMessage msg1(GUI_MSG_HIDDEN, GetID(), CONTROL_LOGO_PIC); 
 						OnMessage(msg1);
+					}
+				}
+				else
+				{
+					CStdString strFolderjpg;
+					CUtil::AddFileToFolder(strPath, "folder.jpg", strFolderjpg);
+					if(CUtil::ThumbExists(strFolderjpg,true))
+					{
+						//	show albums folder jpeg
+						CPicture picture;
+						m_pTexture=picture.Load(strFolderjpg);
+						m_iTextureWidth=picture.GetWidth();
+						m_iTextureHeight=picture.GetHeight();
+						if (m_pTexture)
+						{							
+							CGUIMessage msg1(GUI_MSG_HIDDEN, GetID(), CONTROL_LOGO_PIC); 
+							OnMessage(msg1);
+						}
 					}
 				}
 			}

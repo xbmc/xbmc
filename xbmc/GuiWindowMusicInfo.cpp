@@ -132,7 +132,7 @@ void CGUIWindowMusicInfo::Update()
 			CStdString strTmp;
 			strTmp.Format("%i. %-30s\n",
 							song.GetTrack(), 
-							song.GetSongName().c_str());
+							song.GetSongName());
 			strLine+=strTmp;
 		};
 

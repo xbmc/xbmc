@@ -252,7 +252,7 @@ bool	CMusicAlbumInfo::Parse(const CStdString& strHTML)
 	}
 
 	if (m_strReview.IsEmpty())
-		m_strReview=" ";
+		m_strReview=g_localizeStrings.Get(414);
 
 	// parse songs...
 	iStartOfTable=strHTMLLow.Find("htrk1.gif",0);
@@ -423,4 +423,9 @@ void CMusicAlbumInfo::SetAlbumPath(const CStdString& strAlbumPath)
 const CStdString& CMusicAlbumInfo::GetAlbumPath()
 {
 	return m_strAlbumPath;
+}
+
+void CMusicAlbumInfo::SetSongs(vector<CMusicSong> songs)
+{
+	m_vecSongs=songs;
 }
