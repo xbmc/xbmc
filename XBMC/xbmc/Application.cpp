@@ -11,7 +11,6 @@
 #include "url.h"
 #include "autorun.h"
 #include "ActionManager.h"
-
 #ifdef _DEBUG
 //	#pragma comment (lib,"lib/filezilla/xbfilezillad.lib") // SECTIONNAME=FILEZILL
 	#pragma comment (lib,"xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
@@ -276,6 +275,8 @@ HRESULT CApplication::Initialize()
 
 	//	Start Thread for DVD Mediatype detection
 	m_DetectDVDType.Create( false);
+
+
 
 	return S_OK;
 }

@@ -2,7 +2,9 @@
 #include "../settings.h"
 #include "../util.h"
 #include "stdstring.h"
-
+#include "../MusicInfoTagLoaderMP3.h"
+#include "file.h"
+using namespace XFILE;
 	CShoutcastRipFile::CShoutcastRipFile()
 	{
 		m_recState.bRecording = false;
@@ -154,11 +156,18 @@
 			fclose(m_ripFile);
 			m_ripFile=NULL;
 			//	Write collected ID3 Data to file
-/*			ID3_Tag id3TagFile;
-			id3TagFile.Clear();
-			id3TagFile.Link( m_szFilteredFileName );
-			id3TagFile = m_id3Tag;
-			id3TagFile.Update();*/
+			CFile file;
+			if ( file.Open( m_szFilteredFileName ) ) 
+			{
+					ID3_XIStreamReader reader( file );
+					ID3_Tag id3TagFile;
+					id3TagFile.Clear();
+					id3TagFile.Link( reader);
+					id3TagFile = m_id3Tag;
+					file.Close();
+					id3TagFile.Update(m_szFilteredFileName);
+			}
+			
 		}
 	}
 

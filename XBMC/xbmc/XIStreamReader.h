@@ -1,3 +1,6 @@
+#ifndef XISTREAMREADER_H
+#define XISTREAMREADER_H
+
 #pragma once
 
 class ID3_XIStreamReader : public ID3_Reader  
@@ -97,3 +100,4 @@ public:
 		CFile& getReader() const { return _stream; }
 
 };
+#endif
