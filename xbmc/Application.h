@@ -244,6 +244,8 @@ protected:
   CFileItem              m_itemCurrentFile;
   D3DGAMMARAMP m_OldRamp;			// CB: SCREENSAVER PATCH
   CSplash* m_splash;
+
+    static LONG WINAPI UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo);
 };
 
 extern CApplication g_application;
