@@ -452,6 +452,12 @@
 				RelativePath=".\xbmc\GUIWindowSettings.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowSettingsCache.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsCache.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowSettingsFilter.cpp">
 			</File>
 			<File
