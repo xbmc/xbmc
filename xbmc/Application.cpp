@@ -13,6 +13,7 @@
 #include "url.h"
 #include "autorun.h"
 #include "ActionManager.h"
+#include "cores/ModPlayer.h"
 #include "cores/mplayer/ASyncDirectSound.h"
 #ifdef _DEBUG
 //	#pragma comment (lib,"lib/filezilla/xbfilezillad.lib") // SECTIONNAME=FILEZILL
@@ -29,6 +30,7 @@
 	#pragma comment (lib, "xbmc/lib/libcdio/libcdiod.lib" )
 	#pragma comment (lib, "xbmc/lib/libshout/libshoutd.lib" )
 	#pragma comment (lib,"xbmc/lib/libRTV/libRTVd.lib")    // SECTIONNAME=LIBRTV
+	#pragma comment (lib,"xbmc/lib/mikxbox/mikxboxd.lib")
 #else
 //  #pragma comment (lib,"lib/filezilla/xbfilezilla.lib")
 	#pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")          
@@ -44,6 +46,7 @@
 	#pragma comment (lib, "xbmc/lib/libcdio/libcdio.lib" )
 	#pragma comment (lib, "xbmc/lib/libshout/libshout.lib" )
 	#pragma comment (lib,"xbmc/lib/libRTV/libRTV.lib")
+	#pragma comment (lib,"xbmc/lib/mikxbox/mikxbox.lib")
 #endif
 
 extern IDirectSoundRenderer* m_pAudioDecoder;
@@ -942,6 +945,10 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 	if ( url.GetProtocol() == "cdda")
 	{
 		strNewPlayer = "cdda";
+	}
+	else if (ModPlayer::IsSupportedFormat(url.GetFileType()))
+	{
+		strNewPlayer = "mod";
 	}
 	if (m_pPlayer)
 	{
