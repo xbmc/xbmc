@@ -2363,6 +2363,10 @@ void CApplication::CheckShutdown()
 		{
 			m_bInactive=false;
 		}
+		else if (m_pFileZilla && m_pFileZilla->GetNoConnections() != 0)	// is FTP active ?
+		{
+			m_bInactive=false;
+		}
 		else				// nothing doing here, so start the timer going
 		{
 			m_bInactive=true;
@@ -2377,13 +2381,17 @@ void CApplication::CheckShutdown()
 	{
 		if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_stSettings.m_iShutdownTime*60*1000L) )
 		{
-			if (m_pPlayer && m_pPlayer->IsPlaying())	// if we're playing something don't spindown
+			if (m_pPlayer && m_pPlayer->IsPlaying())	// if we're playing something don't shutdown
+			{
+				m_dwSaverTick=timeGetTime();
+			}
+			else if (m_pFileZilla && m_pFileZilla->GetNoConnections() != 0)	// is FTP active ?
 			{
 				m_dwSaverTick=timeGetTime();
 			}
 			else										// not playing
 			{
-        g_applicationMessenger.Shutdown(); // Turn off the box
+				g_applicationMessenger.Shutdown(); // Turn off the box
 			}
 		}
 	}
