@@ -43,7 +43,7 @@ extern void UnRegisterAudioCallback();
 class CAc97DirectSound : public IDirectSoundRenderer
 {
 public:
-	CAc97DirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample);
+	CAc97DirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bAC3DTS);
 	virtual ~CAc97DirectSound();
 
 	virtual void 		UnRegisterAudioCallback();
@@ -69,7 +69,7 @@ public:
 private:
 	IAudioCallback* m_pCallback;
 	LONG						m_lFadeVolume;
-
+	bool						m_bAC3DTS;
 	bool									FindFreePacket( DWORD& pdwIndex );
 
 	LPAC97MEDIAOBJECT			m_pAnalogOutput;
