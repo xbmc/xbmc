@@ -48,6 +48,7 @@ void CGUIDialogContextMenu::OnInitWindow()
 	{
 		pControl->SetVisible(false);
 	}
+	m_iClickedButton = -1;
 }
 
 void CGUIDialogContextMenu::ClearButtons()
