@@ -413,6 +413,11 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       HideOSD();
       return true;
 		}
+    case GUI_MSG_SETFOCUS:
+    case GUI_MSG_LOSTFOCUS:
+      if (m_bOSDVisible) return true;
+      if (message.GetSenderId() != WINDOW_FULLSCREEN_VIDEO) return true;
+    break;
 	}
 	return CGUIWindow::OnMessage(message);
 }
