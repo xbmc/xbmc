@@ -12,6 +12,9 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 {
 	m_bShowInfo=false;
 	m_dwLastTime=0;
+	m_fFPS=0;
+	m_fFrameCounter=0.0f;
+	m_dwFPSTime=timeGetTime();
 }
 
 CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
@@ -111,6 +114,15 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
 void CGUIWindowFullScreen::Render()
 {
+	m_fFrameCounter+=1.0f;
+	FLOAT fTimeSpan=(float)(timeGetTime()-m_dwFPSTime);
+	if (fTimeSpan >=1000.0f)
+	{
+		fTimeSpan/=1000.0f;
+		m_fFPS=(m_fFrameCounter/fTimeSpan);
+		m_dwFPSTime=timeGetTime();
+		m_fFrameCounter=0;
+	}
 	if (!g_application.m_pPlayer) return;
 	
 	if (m_bShowStatus)
@@ -169,8 +181,10 @@ void CGUIWindowFullScreen::Render()
 	// show general info
 	g_application.m_pPlayer->GetGeneralInfo(strGeneral);
 	{	
+		CStdString strGeneralFPS;
+		strGeneralFPS.Format("fps:%02.2f %s", m_fFPS, strGeneral.c_str() );
 		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3); 
-		msg.SetLabel(strGeneral); 
+		msg.SetLabel(strGeneralFPS); 
 		OnMessage(msg);
 	}
 	CGUIWindow::Render();
