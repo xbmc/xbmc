@@ -78,6 +78,11 @@ static int audio_init(int rate,int channels,int format,int flags)
 		int	 iChannels;
 		BOOL bVBR;
 		bool bAC3PassThru=false;
+		
+		//ugly hacks only for AC3 passthrough AV sync. After mplayer fix this bug, 
+		//this line should be changed
+		int ao_format_bits = ((format==AFMT_AC3)?2:1)*audio_out_format_bits(format); 
+
 		mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
 		if (strstr(strAudioCodec,"SPDIF"))
 		{
@@ -89,11 +94,11 @@ static int audio_init(int rate,int channels,int format,int flags)
 		{
 			channels=2;
 			// ac3 passthru
-			m_pAudioDecoder = new CAc97DirectSound(m_pAudioCallback,channels,rate,audio_out_format_bits(format));
+			m_pAudioDecoder = new CAc97DirectSound(m_pAudioCallback,channels,rate,ao_format_bits);
 		}
 		else
 		{
-			m_pAudioDecoder = new CASyncDirectSound(m_pAudioCallback,channels,rate,audio_out_format_bits(format));
+			m_pAudioDecoder = new CASyncDirectSound(m_pAudioCallback,channels,rate,ao_format_bits);
 		}
     pao_data->channels	= channels;
     pao_data->samplerate= rate;
@@ -102,15 +107,12 @@ static int audio_init(int rate,int channels,int format,int flags)
 		
     if(format != AFMT_U8 && format != AFMT_S8)
 		{
-        pao_data->bps *= (audio_out_format_bits(format)/8);
+        pao_data->bps *= (ao_format_bits/8);
 		}
-    if(format== AFMT_AC3)
+
+	if(pao_data->buffersize==-1)
     {
-        pao_data->bps *=2;
-    }
-    if(pao_data->buffersize==-1)
-    {
-        pao_data->buffersize  = audio_out_format_bits(format)/8;
+        pao_data->buffersize  = ao_format_bits/8;
         pao_data->buffersize *= channels;
         pao_data->buffersize *= m_pAudioDecoder->GetChunkLen();
     }
