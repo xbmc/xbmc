@@ -150,8 +150,8 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
       }
       else if (iControl==CONTROL_BTNSORTMETHOD) // sort by
       {
-        g_stSettings.m_bMyProgramsSortMethod++;
-        if (g_stSettings.m_bMyProgramsSortMethod >=3) g_stSettings.m_bMyProgramsSortMethod=0;
+        g_stSettings.m_iMyProgramsSortMethod++;
+        if (g_stSettings.m_iMyProgramsSortMethod >=3) g_stSettings.m_iMyProgramsSortMethod=0;
 				g_settings.Save();
         UpdateButtons();
         OnSort();
@@ -429,7 +429,7 @@ struct SSortProgramsByName
 			char szfilename1[1024];
 			char szfilename2[1024];
 
-			switch ( g_stSettings.m_bMyProgramsSortMethod ) 
+			switch ( g_stSettings.m_iMyProgramsSortMethod ) 
 			{
 				case 0:	//	Sort by Filename
 					strcpy(szfilename1, rpStart.GetLabel().c_str());
@@ -500,7 +500,7 @@ void CGUIWindowPrograms::OnSort()
   for (int i=0; i < (int)m_vecItems.size(); i++)
   {
     CFileItem* pItem=m_vecItems[i];
-    if (g_stSettings.m_bMyProgramsSortMethod==0||g_stSettings.m_bMyProgramsSortMethod==2)
+    if (g_stSettings.m_iMyProgramsSortMethod==0||g_stSettings.m_iMyProgramsSortMethod==2)
     {
 			if (pItem->m_bIsFolder) pItem->SetLabel2("");
       else 
@@ -560,7 +560,7 @@ void CGUIWindowPrograms::UpdateButtons()
       iString=100;
     }
 		SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWAS,iString);
-		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTMETHOD,g_stSettings.m_bMyProgramsSortMethod+103);
+		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTMETHOD,g_stSettings.m_iMyProgramsSortMethod+103);
 
 
     if ( g_stSettings.m_bMyProgramsSortAscending)

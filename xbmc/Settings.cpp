@@ -10,11 +10,11 @@ struct CSettings::stSettings g_stSettings;
 CSettings::CSettings(void)
 {
 	g_stSettings.m_bMyMusicTop100ViewAsIcons=false;
-	g_stSettings.m_bMyMusicSortAlbumsMethod=7;	//	Album
-	g_stSettings.m_bMyMusicSortTracksMethod=3;	//	Tracknum
-	g_stSettings.m_bMyMusicSortArtistsMethod=0;	//	Name
-	g_stSettings.m_bMyMusicSortGenresMethod=0;	//	Name
-	g_stSettings.m_bMyMusicSortSongsMethod=5;	//	Title
+	g_stSettings.m_iMyMusicAlbumSortMethod=7;	//	Album
+	g_stSettings.m_iMyMusicTracksSortMethod=3;	//	Tracknum
+	g_stSettings.m_iMyMusicArtistSortMethod=0;	//	Name
+	g_stSettings.m_iMyMusicGenresSortMethod=0;	//	Name
+	g_stSettings.m_iMyMusicSongsSortMethod=5;	//	Title
 	g_stSettings.m_bAudioOnAllSpeakers=false;
 	g_stSettings.m_iChannels=2;
 	g_stSettings.m_bUseID3=true;
@@ -32,7 +32,6 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.szDefaultVisualisation,"goom.vis");
 	g_stSettings.m_minFilter=D3DTEXF_LINEAR;
 	g_stSettings.m_maxFilter=D3DTEXF_LINEAR;
-	g_stSettings.m_iSoften=1;
 	g_stSettings.m_bAllowPAL60=true;
 	g_stSettings.m_iHDSpinDownTime=5; // minutes
 	g_stSettings.m_bAutoShufflePlaylist=true;
@@ -41,7 +40,7 @@ CSettings::CSettings(void)
 	g_stSettings.dwFileVersion =CONFIG_VERSION;
 	g_stSettings.m_bMyProgramsViewAsIcons=false;
 	g_stSettings.m_bMyProgramsSortAscending=true;
-	g_stSettings.m_bMyProgramsSortMethod=0;
+	g_stSettings.m_iMyProgramsSortMethod=0;
 	g_stSettings.m_bMyProgramsFlatten=false;
   strcpy(g_stSettings.szDashboard,"C:\\xboxdash.xbe");
   strcpy(g_stSettings.m_szAlternateSubtitleDirectory,"");
@@ -61,7 +60,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bMyPicturesViewAsIcons=false;
 	g_stSettings.m_bMyPicturesRootViewAsIcons=true;
 	g_stSettings.m_bMyPicturesSortAscending=true;
-	g_stSettings.m_bMyPicturesSortMethod=0;
+	g_stSettings.m_iMyPicturesSortMethod=0;
 
 	g_stSettings.m_iMoveDelayIR=220;
 	g_stSettings.m_iRepeatDelayIR=220;
@@ -101,7 +100,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bScriptsViewAsIcons = false;
 	g_stSettings.m_bScriptsRootViewAsIcons = false;
 	g_stSettings.m_bScriptsSortAscending = true;
-	g_stSettings.m_bScriptsSortMethod = 0;
+	g_stSettings.m_iScriptsSortMethod = 0;
 
 	g_stSettings.m_bMyFilesSortAscending=true;
 	g_stSettings.m_iUIOffsetX=0;
@@ -120,62 +119,29 @@ CSettings::~CSettings(void)
 
 void CSettings::Save() const
 {
-	FILE* systemSettings = fopen("T:\\system.bin","wb+");
-	if (systemSettings!=NULL)
+	if (!SaveSettings("T:\\settings.xml"))
 	{
-		fwrite(&g_stSettings,sizeof(g_stSettings),1,systemSettings);
-		fclose(systemSettings);
+		OutputDebugString("Unable to save settings file\n");
 	}
-	FILE *calibrationSettings = fopen("T:\\Calibration.bin","wb+");
-    if (calibrationSettings!=NULL)
+	if (!SaveCalibration("T:\\calibration.xml"))
 	{
-		fwrite(m_ResInfo,sizeof(m_ResInfo),1,calibrationSettings);
-		fclose(calibrationSettings);
+		OutputDebugString("Unable to save calibration file\n");
 	}
 }
 
 void CSettings::Load()
 {
-  struct CSettings::stSettings settings;
-	FILE* systemSettings = fopen("T:\\system.bin","rb");
-	if (systemSettings!=NULL)
+	// load settings file...
+	if (!LoadSettings("T:\\settings.xml"))
 	{
-		OutputDebugString("found system.bin\n");
-		fread(&settings,sizeof(settings),1,systemSettings);
-		fclose(systemSettings);
-		if (settings.dwFileVersion==CONFIG_VERSION) 
-    {
-			OutputDebugString("version is ok\n");
-		  FILE* systemSettings = fopen("T:\\system.bin","rb");
-		  fread(&g_stSettings,sizeof(g_stSettings),1,systemSettings);
-		  fclose(systemSettings);
-    }
-		else
-		{
-			OutputDebugString("version is wrong\n");
-		}
-	}
-	else
-	{
-		OutputDebugString("settings not found\n");
-	}
-	// Reset to defaults
-	for (int i=0;i<10; i++)
-	{
-		g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
+		OutputDebugString("LoadSettings() Failed\n");
 	}
 	// load calibration file...
-	FILE* calibrationSettings = fopen("T:\\Calibration.bin","rb");
-	if (calibrationSettings!=NULL)
+	if (!LoadCalibration("T:\\calibration.xml"))
 	{
-		OutputDebugString("found Calibration.bin\n");
-		fread(m_ResInfo,sizeof(m_ResInfo),1,calibrationSettings);
-		fclose(calibrationSettings);
+		OutputDebugString("LoadCalibration() Failed\n");
 	}
-	else
-	{
-		OutputDebugString("Calibration.bin not found\n");
-	}
+
 	// load xml file...
 	CStdString strXMLFile;
 	strXMLFile+="Q:\\XboxMediaCenter.xml";
@@ -212,14 +178,14 @@ void CSettings::Load()
 		TiXmlElement* pControllerDelays =pDelaysElement->FirstChildElement("controller");
 		if (pRemoteDelays)
 		{
-			g_stSettings.m_iMoveDelayIR=GetInteger(pRemoteDelays, "move");
-			g_stSettings.m_iRepeatDelayIR=GetInteger(pRemoteDelays, "repeat");
+			GetInteger(pRemoteDelays, "move", g_stSettings.m_iMoveDelayIR);
+			GetInteger(pRemoteDelays, "repeat", g_stSettings.m_iRepeatDelayIR);
 		}
 
 		if (pControllerDelays)
 		{
-			g_stSettings.m_iMoveDelayController=GetInteger(pControllerDelays, "move");
-			g_stSettings.m_iRepeatDelayController=GetInteger(pControllerDelays, "repeat");
+			GetInteger(pControllerDelays, "move", g_stSettings.m_iMoveDelayController);
+			GetInteger(pControllerDelays, "repeat", g_stSettings.m_iRepeatDelayController);
 		}
 	}
 
@@ -249,11 +215,11 @@ void CSettings::Load()
 	GetString(pRootElement, "musicextensions", g_stSettings.m_szMyMusicExtensions,".ac3|.aac|.nfo|.pls|.rm|.sc|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u");
 	GetString(pRootElement, "videoextensions", g_stSettings.m_szMyVideoExtensions,".nfo|.rm|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli");
 
-	g_stSettings.m_iStartupWindow=GetInteger(pRootElement, "startwindow");
-	g_stSettings.m_iHTTPProxyPort=GetInteger(pRootElement, "httpproxyport");
+	GetInteger(pRootElement, "startwindow", g_stSettings.m_iStartupWindow);
+	GetInteger(pRootElement, "httpproxyport", g_stSettings.m_iHTTPProxyPort);
 
-	g_stSettings.m_bUseFDrive=GetBoolean(pRootElement, "useFDrive");
-	g_stSettings.m_bUseGDrive=GetBoolean(pRootElement, "useGDrive");
+	GetBoolean(pRootElement, "useFDrive", g_stSettings.m_bUseFDrive);
+	GetBoolean(pRootElement, "useGDrive", g_stSettings.m_bUseGDrive);
 
   CStdString strDir;
   strDir=g_stSettings.m_szShortcutDirectory;
@@ -416,24 +382,466 @@ void CSettings::GetString(const TiXmlElement* pRootElement, const CStdString& st
 	}
 }
 
-int CSettings::GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName)
+void CSettings::GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue)
 {
 	const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
 	if (pChild)
 	{
-		return atoi( pChild->FirstChild()->Value() );
+		iValue = atoi( pChild->FirstChild()->Value() );
 	}
-	return 0;
 }
 
-bool CSettings::GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName)
+void CSettings::GetFloat(const TiXmlElement* pRootElement, const CStdString& strTagName, float& fValue)
+{
+	const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
+	if (pChild)
+	{
+		fValue = (float)atof( pChild->FirstChild()->Value() );
+	}
+}
+
+void CSettings::GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName, bool& bValue)
 {
 	char szString[128];
 	GetString(pRootElement,strTagName,szString,"");
 	if ( CUtil::cmpnocase(szString,"enabled")==0 ||
 			 CUtil::cmpnocase(szString,"yes")==0 ||
 			 CUtil::cmpnocase(szString,"on")==0 ||
-			 CUtil::cmpnocase(szString,"true")==0 ) return true;
+			 CUtil::cmpnocase(szString,"true")==0 )
+	{
+		bValue = true;
+		return;
+	}
+	if (strlen(szString)!=0) bValue = false;
+}
 
-	return false;
+void CSettings::SetString(TiXmlNode* pRootNode, const CStdString& strTagName, const CStdString& strValue) const
+{
+	TiXmlElement newElement(strTagName);
+	TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
+	if (pNewNode)
+	{
+		TiXmlText value(strValue);
+		pNewNode->InsertEndChild(value);
+	}
+}
+
+void CSettings::SetInteger(TiXmlNode* pRootNode, const CStdString& strTagName, int iValue) const
+{
+	CStdString strValue;
+	strValue.Format("%d",iValue);
+	SetString(pRootNode, strTagName, strValue);
+}
+
+void CSettings::SetFloat(TiXmlNode* pRootNode, const CStdString& strTagName, float fValue) const
+{
+	CStdString strValue;
+	strValue.Format("%f",fValue);
+	SetString(pRootNode, strTagName, strValue);
+}
+
+void CSettings::SetBoolean(TiXmlNode* pRootNode, const CStdString& strTagName, bool bValue) const
+{
+	if (bValue)
+		SetString(pRootNode, strTagName, "true");
+	else
+		SetString(pRootNode, strTagName, "false");
+}
+
+bool CSettings::LoadCalibration(const CStdString& strCalibrationFile)
+{
+	// reset the calibration to the defaults
+	for (int i=0; i<10; i++)
+		g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
+	// now load the xml file
+	TiXmlDocument xmlDoc;
+	if (!xmlDoc.LoadFile(strCalibrationFile))
+	{
+		OutputDebugString("Unable to load:");
+		OutputDebugString(strCalibrationFile.c_str());
+		OutputDebugString("\n");
+		return false;
+	}
+	TiXmlElement *pRootElement = xmlDoc.RootElement();
+	if (CUtil::cmpnocase(pRootElement->Value(),"calibration")!=0)
+	{
+		return false;
+	}
+	TiXmlElement *pResolution = pRootElement->FirstChildElement("resolution");
+	while (pResolution)
+	{
+		// get the data for this resolution
+		int iRes = -1;
+		GetInteger(pResolution, "id", iRes);
+		if (iRes < 0 || iRes >= 10)//MAX_RESOLUTION)
+		{
+			return false;
+		}
+
+		GetString(pResolution, "description", m_ResInfo[iRes].strMode, m_ResInfo[iRes].strMode);
+		GetInteger(pResolution, "width", m_ResInfo[iRes].iWidth);
+		GetInteger(pResolution, "height", m_ResInfo[iRes].iHeight);
+		GetInteger(pResolution, "subtitles", m_ResInfo[iRes].iSubtitles);
+		GetInteger(pResolution, "flags", (int &)m_ResInfo[iRes].dwFlags);
+		GetFloat(pResolution, "pixelratio", m_ResInfo[iRes].fPixelRatio);
+
+		// get the overscan info		
+		TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
+		if (pOverscan)
+		{
+			GetInteger(pOverscan, "left", m_ResInfo[iRes].Overscan.left);
+			GetInteger(pOverscan, "top", m_ResInfo[iRes].Overscan.top);
+			GetInteger(pOverscan, "width", m_ResInfo[iRes].Overscan.width);
+			GetInteger(pOverscan, "height", m_ResInfo[iRes].Overscan.height);
+		}
+		// iterate around
+		pResolution = pResolution->NextSiblingElement("resolution");
+	}
+	return true;
+}
+
+bool CSettings::SaveCalibration(const CStdString& strCalibrationFile) const
+{
+	TiXmlDocument xmlDoc;
+	TiXmlElement xmlRootElement("calibration");
+	TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
+	if (!pRoot) return false;
+	for (int i=0; i<10; i++)
+	{
+		// Write the resolution tag
+		TiXmlElement resElement("resolution");
+		TiXmlNode *pNode = pRoot->InsertEndChild(resElement);
+		if (!pNode) return false;
+		// Now write each of the pieces of information we need...
+		SetString(pNode, "description", m_ResInfo[i].strMode);
+		SetInteger(pNode, "id", i);
+		SetInteger(pNode, "width", m_ResInfo[i].iWidth);
+		SetInteger(pNode, "height", m_ResInfo[i].iHeight);
+		SetInteger(pNode, "subtitles", m_ResInfo[i].iSubtitles);
+		SetInteger(pNode, "flags", m_ResInfo[i].dwFlags);
+		SetFloat(pNode, "pixelratio", m_ResInfo[i].fPixelRatio);
+		// create the overscan child
+		TiXmlElement overscanElement("overscan");
+		TiXmlNode *pOverscanNode = pNode->InsertEndChild(overscanElement);
+		if (!pOverscanNode) return false;
+		SetInteger(pOverscanNode, "left", m_ResInfo[i].Overscan.left);
+		SetInteger(pOverscanNode, "top", m_ResInfo[i].Overscan.top);
+		SetInteger(pOverscanNode, "width", m_ResInfo[i].Overscan.width);
+		SetInteger(pOverscanNode, "height", m_ResInfo[i].Overscan.height);
+	}
+	return xmlDoc.SaveFile(strCalibrationFile);
+}
+
+bool CSettings::LoadSettings(const CStdString& strSettingsFile)
+{
+	// load the xml file
+	TiXmlDocument xmlDoc;
+	if (!xmlDoc.LoadFile(strSettingsFile))
+	{
+		OutputDebugString("Unable to load:");
+		OutputDebugString(strSettingsFile.c_str());
+		OutputDebugString("\n");
+		return false;
+	}
+	TiXmlElement *pRootElement = xmlDoc.RootElement();
+	if (CUtil::cmpnocase(pRootElement->Value(),"settings")!=0)
+	{
+		return false;
+	}
+	// mypictures
+	TiXmlElement *pElement = pRootElement->FirstChildElement("mypictures");
+	if (pElement)
+	{
+		GetBoolean(pElement, "viewicons", g_stSettings.m_bMyPicturesViewAsIcons);
+		GetBoolean(pElement, "rooticons", g_stSettings.m_bMyPicturesRootViewAsIcons);
+		GetInteger(pElement, "sortmethod",g_stSettings.m_iMyPicturesSortMethod);
+		GetBoolean(pElement, "sortascending", g_stSettings.m_bMyPicturesSortAscending);
+	}
+	// myfiles
+	pElement = pRootElement->FirstChildElement("myfiles");
+	if (pElement)
+	{
+		TiXmlElement *pChild = pElement->FirstChildElement("source");
+		if (pChild)
+		{
+			GetBoolean(pChild, "viewicons", g_stSettings.m_bMyFilesSourceViewAsIcons);
+			GetBoolean(pChild, "rooticons", g_stSettings.m_bMyFilesSourceRootViewAsIcons);
+		}
+		pChild = pElement->FirstChildElement("dest");
+		if (pChild)
+		{
+			GetBoolean(pChild, "viewicons", g_stSettings.m_bMyFilesDestViewAsIcons);
+			GetBoolean(pChild, "rooticons", g_stSettings.m_bMyFilesDestRootViewAsIcons);
+		}
+		GetInteger(pElement, "sortmethod",g_stSettings.m_iMyFilesSortMethod);
+		GetBoolean(pElement, "sortascending", g_stSettings.m_bMyFilesSortAscending);
+	}
+	// mymusic settings
+	pElement = pRootElement->FirstChildElement("mymusic");
+	if (pElement)
+	{
+		TiXmlElement *pChild = pElement->FirstChildElement("songs");
+		if (pChild)
+		{
+			GetBoolean(pChild, "viewicons", g_stSettings.m_bMyMusicSongsViewAsIcons);
+			GetBoolean(pChild, "rooticons", g_stSettings.m_bMyMusicSongsRootViewAsIcons);
+			GetInteger(pChild, "sortmethod",g_stSettings.m_iMyMusicSongsSortMethod);
+		}
+		pChild = pElement->FirstChildElement("album");
+		if (pChild)
+		{
+			GetBoolean(pChild, "viewicons", g_stSettings.m_bMyMusicAlbumViewAsIcons);
+			GetBoolean(pChild, "rooticons", g_stSettings.m_bMyMusicAlbumRootViewAsIcons);
+			GetInteger(pChild, "sortmethod",g_stSettings.m_iMyMusicAlbumSortMethod);
+		}
+		pElement = pElement->FirstChildElement("artist");
+		if (pChild)
+		{
+			GetBoolean(pChild, "viewicons", g_stSettings.m_bMyMusicArtistViewAsIcons);
+			GetBoolean(pChild, "rooticons", g_stSettings.m_bMyMusicArtistRootViewAsIcons);
+			GetInteger(pChild, "sortmethod",g_stSettings.m_iMyMusicArtistSortMethod);
+		}
+		pChild = pElement->FirstChildElement("genre");
+		if (pChild)
+		{
+			GetBoolean(pChild, "viewicons", g_stSettings.m_bMyMusicGenresViewAsIcons);
+			GetBoolean(pChild, "rooticons", g_stSettings.m_bMyMusicGenresRootViewAsIcons);
+			GetInteger(pChild, "sortmethod",g_stSettings.m_iMyMusicGenresSortMethod);
+		}
+		GetBoolean(pElement, "playlistviewicons", g_stSettings.m_bMyMusicPlaylistViewAsIcons);
+		GetBoolean(pElement, "top100viewicons", g_stSettings.m_bMyMusicTop100ViewAsIcons);
+		GetInteger(pElement, "sortmethod",g_stSettings.m_iMyMusicSortMethod);
+		GetInteger(pElement, "trackssortmethod",g_stSettings.m_iMyMusicTracksSortMethod);
+		GetBoolean(pElement, "sortascending", g_stSettings.m_bMyMusicSortAscending);
+		GetInteger(pElement, "viewmethod",g_stSettings.m_iMyMusicViewMethod);
+	}
+	// myvideos settings
+	pElement = pRootElement->FirstChildElement("myvideos");
+	if (pElement)
+	{
+		GetBoolean(pElement, "viewicons", g_stSettings.m_bMyVideoViewAsIcons);
+		GetBoolean(pElement, "rooticons", g_stSettings.m_bMyVideoRootViewAsIcons);
+		GetInteger(pElement, "sortmethod",g_stSettings.m_iMyVideoSortMethod);
+		GetBoolean(pElement, "sortascending", g_stSettings.m_bMyVideoSortAscending);
+	}
+	// myscripts settings
+	pElement = pRootElement->FirstChildElement("myscripts");
+	if (pElement)
+	{
+		GetBoolean(pElement, "viewicons", g_stSettings.m_bScriptsViewAsIcons);
+		GetBoolean(pElement, "rooticons", g_stSettings.m_bScriptsRootViewAsIcons);
+		GetInteger(pElement, "sortmethod",g_stSettings.m_iScriptsSortMethod);
+		GetBoolean(pElement, "sortascending", g_stSettings.m_bScriptsSortAscending);
+	}
+	// general settings
+	pElement = pRootElement->FirstChildElement("general");
+	if (pElement)
+	{
+		GetString(pElement, "skin", g_stSettings.szDefaultSkin, g_stSettings.szDefaultSkin);
+		GetBoolean(pElement, "timeserver", g_stSettings.m_bTimeServerEnabled);
+		GetBoolean(pElement, "ftpserver", g_stSettings.m_bFTPServerEnabled);
+		GetBoolean(pElement, "httpserver", g_stSettings.m_bHTTPServerEnabled);
+		GetBoolean(pElement, "cddb", g_stSettings.m_bUseCDDB);
+		GetInteger(pElement, "hdspindowntime", g_stSettings.m_iHDSpinDownTime);
+		GetBoolean(pElement, "autorundvd", g_stSettings.m_bAutorunDVD);
+		GetBoolean(pElement, "autorunvcd", g_stSettings.m_bAutorunVCD);
+		GetBoolean(pElement, "autoruncdda", g_stSettings.m_bAutorunCdda);
+		GetBoolean(pElement, "autorunxbox", g_stSettings.m_bAutorunXbox);
+		GetBoolean(pElement, "autorunmusic", g_stSettings.m_bAutorunMusic);
+		GetBoolean(pElement, "autorunvideo", g_stSettings.m_bAutorunVideo);
+		GetBoolean(pElement, "autorunpictures", g_stSettings.m_bAutorunPictures);
+		GetString(pElement, "language", g_stSettings.szDefaultLanguage, g_stSettings.szDefaultLanguage);
+	}
+	// slideshow settings
+	pElement = pRootElement->FirstChildElement("slideshow");
+	if (pElement)
+	{
+		GetInteger(pElement, "transistionframes", g_stSettings.m_iSlideShowTransistionFrames);
+		GetInteger(pElement, "staytime", g_stSettings.m_iSlideShowStayTime);
+	}
+	// screen settings
+	pElement = pRootElement->FirstChildElement("screen");
+	if (pElement)
+	{
+		int iRes = (int)g_stSettings.m_ScreenResolution;
+		GetInteger(pElement, "resolution", iRes);
+		if (iRes >=0 || iRes <= 10) g_stSettings.m_ScreenResolution = (RESOLUTION)iRes;
+		GetInteger(pElement, "uioffsetx",g_stSettings.m_iUIOffsetX);
+		GetInteger(pElement, "uioffsety",g_stSettings.m_iUIOffsetY);
+		GetBoolean(pElement, "soften", g_stSettings.m_bSoften);
+		GetBoolean(pElement, "zoom", g_stSettings.m_bZoom);
+		GetBoolean(pElement, "stretch", g_stSettings.m_bStretch);
+		GetBoolean(pElement, "allowswitching", g_stSettings.m_bAllowVideoSwitching);
+		GetBoolean(pElement, "allowpal60", g_stSettings.m_bAllowPAL60);
+		GetInteger(pElement, "minfilter", (int &)g_stSettings.m_minFilter);
+		GetInteger(pElement, "maxfilter", (int &)g_stSettings.m_maxFilter);
+	}
+	// audio settings
+	pElement = pRootElement->FirstChildElement("audio");
+	if (pElement)
+	{
+		GetBoolean(pElement, "audioonallspeakers", g_stSettings.m_bAudioOnAllSpeakers);
+		GetInteger(pElement, "channels",g_stSettings.m_iChannels);
+		GetBoolean(pElement, "ac3passthru", g_stSettings.m_bAC3PassThru);
+		GetBoolean(pElement, "useid3", g_stSettings.m_bUseID3);
+		GetString(pElement, "visualisation", g_stSettings.szDefaultVisualisation, g_stSettings.szDefaultVisualisation);
+		GetBoolean(pElement, "autoshuffleplaylist", g_stSettings.m_bAutoShufflePlaylist);
+	}
+	return true;
+}
+
+bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
+{
+	TiXmlDocument xmlDoc;
+	TiXmlElement xmlRootElement("settings");
+	TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
+	if (!pRoot) return false;
+	// write our tags one by one - just a big list for now (can be flashed up later)
+	// myprograms settings
+	TiXmlElement programsNode("myprograms");
+	TiXmlNode *pNode = pRoot->InsertEndChild(programsNode);
+	if (!pNode) return false;
+	SetBoolean(pNode, "viewicons", g_stSettings.m_bMyProgramsViewAsIcons);
+	SetInteger(pNode, "sortmethod", g_stSettings.m_iMyProgramsSortMethod);
+	SetBoolean(pNode, "sortascending", g_stSettings.m_bMyProgramsSortAscending);
+	SetBoolean(pNode, "flatten", g_stSettings.m_bMyProgramsFlatten);
+	// mypictures settings
+	TiXmlElement picturesNode("mypictures");
+	pNode = pRoot->InsertEndChild(picturesNode);
+	if (!pNode) return false;
+	SetBoolean(pNode, "viewicons", g_stSettings.m_bMyPicturesViewAsIcons);
+	SetBoolean(pNode, "rooticons", g_stSettings.m_bMyPicturesRootViewAsIcons);
+	SetInteger(pNode, "sortmethod",g_stSettings.m_iMyPicturesSortMethod);
+	SetBoolean(pNode, "sortascending", g_stSettings.m_bMyPicturesSortAscending);
+	// myfiles settings
+	TiXmlElement filesNode("myfiles");
+	pNode = pRoot->InsertEndChild(filesNode);
+	if (!pNode) return false;
+	{
+		TiXmlElement childNode("source");
+		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
+		if (!pChild) return false;
+		SetBoolean(pChild, "viewicons", g_stSettings.m_bMyFilesSourceViewAsIcons);
+		SetBoolean(pChild, "rooticons", g_stSettings.m_bMyFilesSourceRootViewAsIcons);
+	}
+	{
+		TiXmlElement childNode("dest");
+		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
+		if (!pChild) return false;
+		SetBoolean(pChild, "viewicons", g_stSettings.m_bMyFilesDestViewAsIcons);
+		SetBoolean(pChild, "rooticons", g_stSettings.m_bMyFilesDestRootViewAsIcons);
+	}
+	SetInteger(pNode, "sortmethod",g_stSettings.m_iMyFilesSortMethod);
+	SetBoolean(pNode, "sortascending", g_stSettings.m_bMyFilesSortAscending);
+	// mymusic settings
+	TiXmlElement musicNode("mymusic");
+	pNode = pRoot->InsertEndChild(musicNode);
+	if (!pNode) return false;
+	{
+		TiXmlElement childNode("songs");
+		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
+		if (!pChild) return false;
+		SetBoolean(pChild, "viewicons", g_stSettings.m_bMyMusicSongsViewAsIcons);
+		SetBoolean(pChild, "rooticons", g_stSettings.m_bMyMusicSongsRootViewAsIcons);
+		SetInteger(pChild, "sortmethod",g_stSettings.m_iMyMusicSongsSortMethod);
+	}
+	{
+		TiXmlElement childNode("album");
+		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
+		if (!pChild) return false;
+		SetBoolean(pChild, "viewicons", g_stSettings.m_bMyMusicAlbumViewAsIcons);
+		SetBoolean(pChild, "rooticons", g_stSettings.m_bMyMusicAlbumRootViewAsIcons);
+		SetInteger(pChild, "sortmethod",g_stSettings.m_iMyMusicAlbumSortMethod);
+	}
+	{
+		TiXmlElement childNode("artist");
+		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
+		if (!pChild) return false;
+		SetBoolean(pChild, "viewicons", g_stSettings.m_bMyMusicArtistViewAsIcons);
+		SetBoolean(pChild, "rooticons", g_stSettings.m_bMyMusicArtistRootViewAsIcons);
+		SetInteger(pChild, "sortmethod",g_stSettings.m_iMyMusicArtistSortMethod);
+	}
+	{
+		TiXmlElement childNode("genre");
+		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
+		if (!pChild) return false;
+		SetBoolean(pChild, "viewicons", g_stSettings.m_bMyMusicGenresViewAsIcons);
+		SetBoolean(pChild, "rooticons", g_stSettings.m_bMyMusicGenresRootViewAsIcons);
+		SetInteger(pChild, "sortmethod",g_stSettings.m_iMyMusicGenresSortMethod);
+	}
+
+	SetBoolean(pNode, "playlistviewicons", g_stSettings.m_bMyMusicPlaylistViewAsIcons);
+	SetBoolean(pNode, "top100viewicons", g_stSettings.m_bMyMusicTop100ViewAsIcons);
+
+	SetInteger(pNode, "sortmethod",g_stSettings.m_iMyMusicSortMethod);
+	SetInteger(pNode, "trackssortmethod",g_stSettings.m_iMyMusicTracksSortMethod);
+	SetBoolean(pNode, "sortascending", g_stSettings.m_bMyMusicSortAscending);
+	SetInteger(pNode, "viewmethod",g_stSettings.m_iMyMusicViewMethod);
+	// myvideos settings
+	TiXmlElement videosNode("myvideos");
+	pNode = pRoot->InsertEndChild(videosNode);
+	if (!pNode) return false;
+	SetBoolean(pNode, "viewicons", g_stSettings.m_bMyVideoViewAsIcons);
+	SetBoolean(pNode, "rooticons", g_stSettings.m_bMyVideoRootViewAsIcons);
+	SetInteger(pNode, "sortmethod",g_stSettings.m_iMyVideoSortMethod);
+	SetBoolean(pNode, "sortascending", g_stSettings.m_bMyVideoSortAscending);
+	// myscripts settings
+	TiXmlElement scriptsNode("myscripts");
+	pNode = pRoot->InsertEndChild(scriptsNode);
+	if (!pNode) return false;
+	SetBoolean(pNode, "viewicons", g_stSettings.m_bScriptsViewAsIcons);
+	SetBoolean(pNode, "rooticons", g_stSettings.m_bScriptsRootViewAsIcons);
+	SetInteger(pNode, "sortmethod",g_stSettings.m_iScriptsSortMethod);
+	SetBoolean(pNode, "sortascending", g_stSettings.m_bScriptsSortAscending);
+	// general settings
+	TiXmlElement generalNode("general");
+	pNode = pRoot->InsertEndChild(generalNode);
+	if (!pNode) return false;
+	SetString(pNode, "skin", g_stSettings.szDefaultSkin);
+	SetBoolean(pNode, "timeserver", g_stSettings.m_bTimeServerEnabled);
+	SetBoolean(pNode, "ftpserver", g_stSettings.m_bFTPServerEnabled);
+	SetBoolean(pNode, "httpserver", g_stSettings.m_bHTTPServerEnabled);
+	SetBoolean(pNode, "cddb", g_stSettings.m_bUseCDDB);
+	SetInteger(pNode, "hdspindowntime", g_stSettings.m_iHDSpinDownTime);
+	SetBoolean(pNode, "autorundvd", g_stSettings.m_bAutorunDVD);
+	SetBoolean(pNode, "autorunvcd", g_stSettings.m_bAutorunVCD);
+	SetBoolean(pNode, "autoruncdda", g_stSettings.m_bAutorunCdda);
+	SetBoolean(pNode, "autorunxbox", g_stSettings.m_bAutorunXbox);
+	SetBoolean(pNode, "autorunmusic", g_stSettings.m_bAutorunMusic);
+	SetBoolean(pNode, "autorunvideo", g_stSettings.m_bAutorunVideo);
+	SetBoolean(pNode, "autorunpictures", g_stSettings.m_bAutorunPictures);
+	SetString(pNode, "language", g_stSettings.szDefaultLanguage);
+	// slideshow settings
+	TiXmlElement slideshowNode("slideshow");
+	pNode = pRoot->InsertEndChild(slideshowNode);
+	if (!pNode) return false;
+	SetInteger(pNode, "transistionframes", g_stSettings.m_iSlideShowTransistionFrames);
+	SetInteger(pNode, "staytime", g_stSettings.m_iSlideShowStayTime);
+	// screen settings
+	TiXmlElement screenNode("screen");
+	pNode = pRoot->InsertEndChild(screenNode);
+	if (!pNode) return false;
+	SetInteger(pNode, "resolution", (int)g_stSettings.m_ScreenResolution);
+	SetInteger(pNode, "uioffsetx",g_stSettings.m_iUIOffsetX);
+	SetInteger(pNode, "uioffsety",g_stSettings.m_iUIOffsetY);
+	SetBoolean(pNode, "soften", g_stSettings.m_bSoften);
+	SetBoolean(pNode, "zoom", g_stSettings.m_bZoom);
+	SetBoolean(pNode, "stretch", g_stSettings.m_bStretch);
+	SetBoolean(pNode, "allowswitching", g_stSettings.m_bAllowVideoSwitching);
+	SetBoolean(pNode, "allowpal60", g_stSettings.m_bAllowPAL60);
+	SetInteger(pNode, "minfilter", g_stSettings.m_minFilter);
+	SetInteger(pNode, "maxfilter", g_stSettings.m_maxFilter);
+	// audio settings
+	TiXmlElement audioNode("audio");
+	pNode = pRoot->InsertEndChild(audioNode);
+	if (!pNode) return false;
+	SetBoolean(pNode, "audioonallspeakers", g_stSettings.m_bAudioOnAllSpeakers);
+	SetInteger(pNode, "channels",g_stSettings.m_iChannels);
+	SetBoolean(pNode, "ac3passthru", g_stSettings.m_bAC3PassThru);
+	SetBoolean(pNode, "useid3", g_stSettings.m_bUseID3);
+	SetString(pNode, "visualisation", g_stSettings.szDefaultVisualisation);
+    SetBoolean(pNode, "autoshuffleplaylist", g_stSettings.m_bAutoShufflePlaylist);
+
+	// save the file
+	return xmlDoc.SaveFile(strSettingsFile);
 }

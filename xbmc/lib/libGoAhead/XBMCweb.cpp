@@ -122,7 +122,7 @@ struct SSortWebFilesByName
 			char szfilename1[1024];
 			char szfilename2[1024];
 
-			switch ( g_stSettings.m_bMyFilesSortMethod ) 
+			switch ( g_stSettings.m_iMyFilesSortMethod ) 
 			{
 				case 0:	//	Sort by Filename
 					strcpy(szfilename1, rpStart.GetLabel().c_str());

@@ -36,7 +36,7 @@ struct SSortPicturesByName
 			char szfilename1[1024];
 			char szfilename2[1024];
 
-			switch ( g_stSettings.m_bMyPicturesSortMethod ) 
+			switch ( g_stSettings.m_iMyPicturesSortMethod ) 
 			{
 				case 0:	//	Sort by Filename
 					strcpy(szfilename1, rpStart.GetLabel().c_str());
@@ -223,8 +223,8 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       }
       else if (iControl==CONTROL_BTNSORTBY) // sort by
       {
-        g_stSettings.m_bMyPicturesSortMethod++;
-        if (g_stSettings.m_bMyPicturesSortMethod >=3) g_stSettings.m_bMyPicturesSortMethod=0;
+        g_stSettings.m_iMyPicturesSortMethod++;
+        if (g_stSettings.m_iMyPicturesSortMethod >=3) g_stSettings.m_iMyPicturesSortMethod=0;
 				g_settings.Save();
         UpdateButtons();
         OnSort();
@@ -276,7 +276,7 @@ void CGUIWindowPictures::OnSort()
   for (int i=0; i < (int)m_vecItems.size(); i++)
   {
     CFileItem* pItem=m_vecItems[i];
-    if (g_stSettings.m_bMyPicturesSortMethod==0||g_stSettings.m_bMyPicturesSortMethod==2)
+    if (g_stSettings.m_iMyPicturesSortMethod==0||g_stSettings.m_iMyPicturesSortMethod==2)
     {
 			if (pItem->m_bIsFolder) pItem->SetLabel2("");
       else 
@@ -343,7 +343,7 @@ void CGUIWindowPictures::UpdateButtons()
       iString=100;
     }
 		SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
-		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_bMyPicturesSortMethod+103);
+		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyPicturesSortMethod+103);
 
     if ( g_stSettings.m_bMyPicturesSortAscending)
     {
