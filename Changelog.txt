@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 20-12-2004 fixed: imdb thumb not always saved due to imdb url changes.
   - 21-12-2004 fixed: Button Scroller Mouse bugs
   - 20-12-2004 fixed: Video Database bug introduced in the last update(s).
   - 20-12-2004 fixed: IMDb changed their site + urls today. XBMC updated to suit.
