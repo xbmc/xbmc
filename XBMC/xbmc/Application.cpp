@@ -61,6 +61,7 @@ HRESULT CApplication::Create()
   helper.Remap("C:,Harddisk0\\Partition2");
   helper.Remap("E:,Harddisk0\\Partition1");
   helper.Remap("F:,Harddisk0\\Partition6");
+  helper.Remap("G:,Harddisk0\\Partition7"); // used for the LBA-48 hack allowing >120 gig
   helper.Remount("D:","Cdrom0");
 	
 	{
