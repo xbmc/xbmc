@@ -37,6 +37,10 @@ extern "C" {
 #include <sys/types.h>
 #endif 
 
+#ifdef _XBOX
+#include "inttypes.h"
+#endif
+
 #if defined(HAVE_STDINT_H)
 # include <stdint.h>
 #elif defined(HAVE_INTTYPES_H)
@@ -228,12 +232,7 @@ extern "C" {
   
   /*! The type of a track number 0..99. */
   typedef uint8_t track_t;
-  
-  /*! 
-    Constant for invalid track number
-  */
-#define CDIO_INVALID_TRACK   0xFF
-  
+
   /*! The type of a session number 0..99. */
   typedef uint8_t session_t;
   
@@ -306,8 +305,6 @@ extern "C" {
 #define CDIO_DRIVE_CAP_MISC_MULTI_SESSION  0x00020 /**< read sessions>1 */
 #define CDIO_DRIVE_CAP_MISC_MEDIA_CHANGED  0x00080 /**< media changed */
 #define CDIO_DRIVE_CAP_MISC_RESET          0x00100 /**< hard reset device */
-#define CDIO_DRIVE_CAP_MCN                 0x00200 /**< can read MCN      */
-#define CDIO_DRIVE_CAP_ISRC                0x00200 /**< can read ISRC     */
 #define CDIO_DRIVE_CAP_MISC_FILE           0x20000 /**< drive is really a file,
                                                       i.e a CD file image */
 
@@ -324,6 +321,10 @@ extern "C" {
 #define CDIO_DRIVE_CAP_READ_DVD_RW      0x00200 /**< drive can read DVD-RW  */
 #define CDIO_DRIVE_CAP_READ_DVD_RPW     0x00400 /**< drive can read DVD+RW  */
 #define CDIO_DRIVE_CAP_READ_C2_ERRS     0x00800 /**< has C2 error correction */
+#define CDIO_DRIVE_CAP_READ_MODE2_FORM1 0x01000 /**< can read mode 2 form 1 */
+#define CDIO_DRIVE_CAP_READ_MODE2_FORM2 0x02000 /**< can read mode 2 form 2 */
+#define CDIO_DRIVE_CAP_READ_MCN         0x04000 /**< can read MCN      */
+#define CDIO_DRIVE_CAP_READ_ISRC        0x08000 /**< can read ISRC     */
 
   /*! Writing masks.. */
 #define CDIO_DRIVE_CAP_WRITE_CD_R       0x00001 /**< drive can write CD-R */

@@ -2,6 +2,7 @@
     $Id$
 
     Copyright (C) 2000, 2004 Herbert Valerio Riedel <hvr@gnu.org>
+    Copyright (C) 2005 Rocky Bernstein <rocky@panix.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,52 +18,74 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-/* Note: this header will is slated to get removed and libcdio will use 
+
+/** \file ds.h 
+ *  \brief  The top-level header for list-related data structures.
+
+    Note: this header will is slated to get removed and libcdio will use 
    glib.h routines instead. 
 */
+
 
 #ifndef __CDIO_DS_H__
 #define __CDIO_DS_H__
 
 #include <types.h>
 
-/* opaque... */
-typedef struct _CdioList CdioList;
-typedef struct _CdioListNode CdioListNode;
+/** opaque types... */
+typedef struct _CdioList CdioList_t;
+typedef struct _CdioListNode CdioListNode_t;
 
-typedef int (*_cdio_list_cmp_func) (void *data1, void *data2);
+typedef int (*_cdio_list_cmp_func_t) (void *p_data1, void *p_data2);
+typedef int (*_cdio_list_iterfunc_t) (void *p_data, void *p_user_data);
 
-typedef int (*_cdio_list_iterfunc) (void *data, void *user_data);
+/** The below are given compatibility with old code. Please use
+    the above type names, not these. */
+#define CdioList CdioList_t
+#define CdioListNode CdioListNode_t
+#define _cdio_list_cmp_func _cdio_list_cmp_func_t
+#define _cdio_list_iterfunc _cdio_list_iterfunc_t
 
-/* methods */
-CdioList *_cdio_list_new (void);
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
-void _cdio_list_free (CdioList *list, int free_data);
+/** methods */
+CdioList_t *_cdio_list_new (void);
 
-unsigned _cdio_list_length (const CdioList *list);
+void _cdio_list_free (CdioList_t *p_list, int free_data);
 
-void _cdio_list_prepend (CdioList *list, void *data);
+unsigned _cdio_list_length (const CdioList_t *list);
 
-void _cdio_list_append (CdioList *list, void *data);
+void _cdio_list_prepend (CdioList_t *p_list, void *p_data);
 
-void _cdio_list_foreach (CdioList *list, _cdio_list_iterfunc func, void *user_data);
+void _cdio_list_append (CdioList_t *p_list, void *p_data);
 
-CdioListNode *_cdio_list_find (CdioList *list, _cdio_list_iterfunc cmp_func, void *user_data);
+void _cdio_list_foreach (CdioList_t *p_list, _cdio_list_iterfunc_t func, 
+                         void *p_user_data);
+
+CdioListNode_t *_cdio_list_find (CdioList_t *p_list, 
+                                 _cdio_list_iterfunc_t cmp_func, 
+                                 void *p_user_data);
 
 #define _CDIO_LIST_FOREACH(node, list) \
  for (node = _cdio_list_begin (list); node; node = _cdio_list_node_next (node))
 
-/* node ops */
+/** node operations */
 
-CdioListNode *_cdio_list_begin (const CdioList *list);
+CdioListNode *_cdio_list_begin (const CdioList_t *p_list);
 
-CdioListNode *_cdio_list_end (CdioList *list);
+CdioListNode *_cdio_list_end (CdioList_t *p_list);
 
-CdioListNode *_cdio_list_node_next (CdioListNode *node);
+CdioListNode *_cdio_list_node_next (CdioListNode_t *p_node);
 
-void _cdio_list_node_free (CdioListNode *node, int free_data);
+void _cdio_list_node_free (CdioListNode_t *p_node, int i_free_data);
 
-void *_cdio_list_node_data (CdioListNode *node);
+void *_cdio_list_node_data (CdioListNode_t *p_node);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __CDIO_DS_H__ */
 
