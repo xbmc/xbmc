@@ -109,8 +109,12 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 
 			iOffset+=10;
 
-			tag.SetTitle((LPWSTR)(pData.get()+iOffset));	// titel
-			tag.SetArtist((LPWSTR)(pData.get()+iOffset+nTitleSize)); //	author
+			CStdString ansiString;
+			CUtil::Unicode2Ansi((LPWSTR)(pData.get()+iOffset), ansiString);
+			tag.SetTitle(ansiString);	// titel
+			CUtil::Unicode2Ansi((LPWSTR)(pData.get()+iOffset+nTitleSize), ansiString);
+			tag.SetArtist(ansiString);
+
 			//General(ZT("Copyright"))=(LPWSTR)(pData.get()+iOffset+(nTitleSize+nAuthorSize));
 			//General(ZT("Comments"))=(LPWSTR)(pData.get()+iOffset+(nTitleSize+nAuthorSize+nCopyrightSize));
 		}
@@ -198,6 +202,7 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 
 				//	Parse frame value
 				LPWSTR	pwszValue;
+				CStdString ansiStringValue;
 				BOOL		bValue;
 				DWORD		dwValue;
 				DWORD		qwValue;
@@ -205,7 +210,10 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 				BYTE*		pValue;
 
 				if (iFrameType==WMT_TYPE_STRING)
+				{
 					pwszValue=(LPWSTR)(pData.get()+iOffset);
+					CUtil::Unicode2Ansi(pwszValue, ansiStringValue);
+				}
 				else if (iFrameType==WMT_TYPE_BINARY)
 					pValue=(BYTE*)(pData.get()+iOffset);	//	Raw data
 				else if (iFrameType==WMT_TYPE_BOOL)
@@ -220,11 +228,11 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 				//	Fill tag with extended metadata
 				if (strFrameName=="WM/AlbumTitle" && iFrameType==WMT_TYPE_STRING && iValueSize>0)
 				{
-					tag.SetAlbum(pwszValue);
+					tag.SetAlbum(ansiStringValue);
 				}
 				else if (strFrameName=="WM/AlbumArtist" && iFrameType==WMT_TYPE_STRING && iValueSize>0)
 				{
-					if (tag.GetArtist().IsEmpty()) tag.SetArtist(pwszValue);
+					if (tag.GetArtist().IsEmpty()) tag.SetArtist(ansiStringValue);
 				}
 				else if (strFrameName=="WM/TrackNumber" && iFrameType==WMT_TYPE_STRING && iValueSize>0)
 				{
@@ -243,7 +251,7 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 				}
 				else if (strFrameName=="WM/Genre" && iFrameType==WMT_TYPE_STRING && iValueSize>0)
 				{
-					tag.SetGenre(pwszValue);
+					tag.SetGenre(ansiStringValue);
 				}
 				else if (strFrameName=="WM/Picture" && iFrameType==WMT_TYPE_BINARY && iValueSize>0)
 				{
