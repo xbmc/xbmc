@@ -495,16 +495,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIViewControl.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\GUIWindowMusicAlbum.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowMusicArtists.cpp">
-				</File>
-				<File
 					RelativePath=".\xbmc\GUIWindowMusicBase.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowMusicGenres.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\GuiWindowMusicInfo.cpp">
@@ -1147,16 +1138,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\GUIWindowHome.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\GUIWindowMusicAlbum.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowMusicArtists.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\GUIWindowMusicBase.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowMusicGenres.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GuiWindowMusicInfo.h">
@@ -2106,10 +2088,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">

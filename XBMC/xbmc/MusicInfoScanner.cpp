@@ -74,6 +74,10 @@ void CMusicInfoScanner::Process()
           m_pObserver->OnStateChanged(CLEANING_UP_DATABASE);
 
         bOKtoScan = m_musicDatabase.CleanupAlbumsArtistsGenres(strPaths);
+
+        // clear the thumb cache before scanning
+        CUtil::ThumbCacheClear();
+        g_directoryCache.ClearMusicThumbCache();
       }
 
       if (m_pObserver)
