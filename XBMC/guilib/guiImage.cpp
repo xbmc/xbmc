@@ -7,7 +7,7 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dw
 :CGUIControl(dwParentID, dwControlId,dwPosX, dwPosY, dwWidth, dwHeight)
 {
   m_colDiffuse	= 0xFFFFFFFF;  
-  m_pTexture=NULL;
+  
   m_pVB=NULL;
   m_strFileName=strTexture;
   m_iTextureWidth=0;
@@ -15,22 +15,28 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dw
   m_dwColorKey=dwColorKey;
   m_iBitmap=0;
   m_dwItems=1;
+	m_iCurrentImage=0;
+	m_dwFrameCounter=0;
 }
 
 
 CGUIImage::~CGUIImage(void)
 {
 }
+
 void CGUIImage::Render()
 {
   if (!IsVisible()) return;
-	if (!m_pTexture)
+  if (!m_vecTextures.size())
 		return ;
 	if (!m_pVB)
 		return ;
 
+	
+	Process();
+
     // Set state to render the image
-    g_graphicsContext.Get3DDevice()->SetTexture( 0, m_pTexture );
+    g_graphicsContext.Get3DDevice()->SetTexture( 0, m_vecTextures[m_iCurrentImage] );
     g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
     g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
     g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
@@ -69,12 +75,19 @@ void CGUIImage::AllocResources()
 {
   FreeResources();
 
+	m_dwFrameCounter=0;
+	m_iCurrentImage=0;
   // Create a vertex buffer for rendering the image
   g_graphicsContext.Get3DDevice()->CreateVertexBuffer( 4*sizeof(CGUIImage::VERTEX), D3DUSAGE_WRITEONLY, 0L, D3DPOOL_DEFAULT, &m_pVB );
 
-  // load texture...
-  m_pTexture=g_TextureManager.GetTexture(m_strFileName,m_dwColorKey);
-  if (!m_pTexture) return;
+  int iImages = g_TextureManager.Load(m_strFileName, m_dwColorKey);
+  if (!iImages) return;
+  for (int i=0; i < iImages; i++)
+  {
+    LPDIRECT3DTEXTURE8 pTexture;
+    pTexture=g_TextureManager.GetTexture(m_strFileName,i);
+    m_vecTextures.push_back(pTexture);
+  }
 
   // Set state to render the image
   Update();
@@ -88,18 +101,20 @@ void CGUIImage::FreeResources()
 		m_pVB=NULL;
 	}
 
-  if (m_pTexture)
-	{
-	  m_pTexture->Release();
-		m_pTexture= NULL;
-	}
+  for (int i=0; i < (int)m_vecTextures.size(); ++i)
+  {
+    g_TextureManager.ReleaseTexture(m_strFileName,i);
+  }
+
+  m_vecTextures.erase(m_vecTextures.begin(),m_vecTextures.end());
+	m_iCurrentImage=0;
 }
 
 
 void CGUIImage::Update()
 {
   if (!m_pVB) return;
-  if (!m_pTexture) return;
+  if (m_vecTextures.size()==0) return;
 
   CGUIImage::VERTEX* vertex=NULL;
   m_pVB->Lock( 0, 0, (BYTE**)&vertex, 0L );
@@ -110,7 +125,7 @@ void CGUIImage::Update()
   if (0==m_iTextureWidth|| 0==m_iTextureHeight)
   {
     D3DSURFACE_DESC desc;
-	  m_pTexture->GetLevelDesc(0,&desc);
+    m_vecTextures[m_iCurrentImage]->GetLevelDesc(0,&desc);
 
 	  m_iTextureWidth  = (DWORD) desc.Width/m_dwItems;
 	  m_iTextureHeight = (DWORD) desc.Height;
@@ -174,4 +189,20 @@ void CGUIImage::Select(int iBitmap)
 void CGUIImage::SetItems(int iItems)
 {
   m_dwItems=iItems;
+}
+
+void CGUIImage::Process()
+{
+	m_dwFrameCounter++;
+  DWORD dwDelay = g_TextureManager.GetDelay(m_strFileName,m_iCurrentImage);
+	if (!dwDelay) dwDelay=100;
+	if (m_dwFrameCounter*40 >= dwDelay)
+	{
+		m_dwFrameCounter=0;
+		m_iCurrentImage++;
+    if (m_iCurrentImage >= (int)m_vecTextures.size() )
+		{
+			m_iCurrentImage=0;
+		}
+	}
 }

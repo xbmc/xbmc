@@ -6,6 +6,7 @@
 #include "guicontrol.h"
 #include "guimessage.h"
 #include "stdstring.h"
+#include <vector>
 using namespace std;
 
 class CGUIImage : public CGUIControl
@@ -25,7 +26,7 @@ public:
 
 protected:
   virtual void       Update();
-
+	void							 Process();
   struct VERTEX 
 	{ 
     D3DXVECTOR4 p;
@@ -35,12 +36,14 @@ protected:
   static const DWORD FVF_VERTEX = D3DFVF_XYZRHW|D3DFVF_DIFFUSE|D3DFVF_TEX1;
 
   DWORD                   m_dwColorKey;
-  LPDIRECT3DTEXTURE8      m_pTexture;
   LPDIRECT3DVERTEXBUFFER8 m_pVB;
-  CStdString                  m_strFileName;
+  CStdString              m_strFileName;
   int                     m_iTextureWidth;
   int                     m_iTextureHeight;
   int                     m_iBitmap;
   DWORD                   m_dwItems;
+	int										  m_iCurrentImage;
+	DWORD										m_dwFrameCounter;
+  vector <LPDIRECT3DTEXTURE8> m_vecTextures;
 };
 #endif
