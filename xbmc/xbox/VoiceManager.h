@@ -108,7 +108,9 @@ protected:
     HRESULT OnCompletedPacket( DWORD dwControllerPort, VOID* pvData, DWORD dwSize );
     HRESULT OnCommunicatorInserted( DWORD dwControllerPort );
     HRESULT OnCommunicatorRemoved( DWORD dwControllerPort );
-    HRESULT CheckDeviceChanges();
+
+    static VOID CheckDeviceChangesLite();
+	HRESULT CheckDeviceChanges();
 
     // Internal-only functions for dealing with chatters
     HRESULT InitChatter( REMOTE_CHATTER*            pChatter, 
@@ -135,12 +137,13 @@ protected:
     // Chatter list
     REMOTE_CHATTER*             m_pChatters;
     BOOL                        m_bIsInChatSession;
+	BOOL						m_bResetDeviceState;
     REMOTE_CHATTER*             m_pLoopbackChatters;
 
     // Communicator info
     DWORD                       m_dwConnectedCommunicators;
-    DWORD                       m_dwMicrophoneState;
-    DWORD                       m_dwHeadphoneState;
+    static DWORD                m_dwMicrophoneState;
+    static DWORD                m_dwHeadphoneState;
     DWORD                       m_dwLoopback;
     DWORD                       m_dwEnabled;
     CVoiceCommunicator          m_aVoiceCommunicators[XGetPortCount()];
