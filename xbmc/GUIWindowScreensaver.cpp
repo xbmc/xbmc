@@ -60,7 +60,10 @@ void CGUIWindowScreensaver::Render()
 
 void CGUIWindowScreensaver::OnAction(const CAction &action)
 {
-	// We're just a screen saver, nothing to do here ...	
+	// We're just a screen saver, nothing to do here except maybe take screenshots
+  // of the guys' hardwork :)
+  if (action.wID == ACTION_TAKE_SCREENSHOT)
+    CGUIWindow::OnAction(action);
 }
 
 // called when the mouse is moved/clicked etc. etc.
@@ -84,6 +87,8 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
 				
 				OutputDebugString("delete ScreenSaver()\n");
 				delete m_pScreenSaver;
+
+        g_graphicsContext.ApplyStateBlock();
 			}
 			m_pScreenSaver=NULL;
 			m_bInitialized = false;
@@ -106,6 +111,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
 			{
 				m_pScreenSaver->Stop();
 				delete m_pScreenSaver;
+				g_graphicsContext.ApplyStateBlock();
 			}
 			m_pScreenSaver = NULL;
 			m_bInitialized = false;
@@ -119,6 +125,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
 			if (m_pScreenSaver) 
 			{
 				OutputDebugString("ScreenSaver::Create()\n");
+				g_graphicsContext.CaptureStateBlock();
 				m_pScreenSaver->Create();
 			}
 

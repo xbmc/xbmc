@@ -219,7 +219,7 @@ CGUISettings::CGUISettings(void)
 	AddBool(1,"Karaoke.Enabled", 13323, false);
 	AddInt(2,"Karaoke.BackgroundAlpha", 13324, 0, 0, 5, 255, SPIN_CONTROL_INT);
 	AddInt(3,"Karaoke.ForegroundAlpha", 13325, 255, 0, 5, 255, SPIN_CONTROL_INT);
-	AddFloat(4,"Karaoke.SyncDelay", 13326, 0.8f, -3.0f, 0.1f, 3.0f, SPIN_CONTROL_FLOAT);
+	AddFloat(4,"Karaoke.SyncDelay", 13326, -0.8f, -3.0f, 0.1f, 3.0f, SPIN_CONTROL_FLOAT);
 
 	AddCategory(3, "AudioOutput", 481);
 	AddInt(2,"AudioOutput.Mode", 337, AUDIO_ANALOG, AUDIO_ANALOG, 1, AUDIO_DIGITAL, SPIN_CONTROL_TEXT);
@@ -375,6 +375,7 @@ CGUISettings::CGUISettings(void)
 	AddString(1, "ScreenSaver.Mode", 356, "Dim", SPIN_CONTROL_TEXT);
 	AddInt(2, "ScreenSaver.Time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
 	AddInt(3, "ScreenSaver.DimLevel", 362, 20, 10, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+	AddString(4, "ScreenSaver.Preview", 1000, "", BUTTON_CONTROL_STANDARD);
 
 	AddCategory(7, "UIFilters", 14053);
 	AddInt(1, "UIFilters.Flicker", 13100, 5, 0, 1, 5, SPIN_CONTROL_INT);
