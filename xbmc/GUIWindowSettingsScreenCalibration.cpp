@@ -60,7 +60,6 @@ void CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 	{
 		x = 0;
 		y = (g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight + g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
-    
 	}
 	else // (m_iControl == CONTROL_PIXEL_RATIO)
 	{
@@ -187,30 +186,38 @@ void CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 	switch (m_iControl)
 	{
 		case CONTROL_TOP_LEFT:
-			if (x < 0) x=0;
-			if (y < 0) y=0;
-			if (x > 128) x=128;
-			if (y > 128) y=128;
+			if (x < -g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth/4) x= -g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth/4;
+			if (y < -g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight/4) y= -g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight/4;
+			if (x > g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth/4) x=g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth/4;
+			if (y > g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight/4) y=g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight/4;
 			g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.width += g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.left-x;
 			g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.height+= g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.top-y;
 			g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.left=x; 
 			g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.top=y;
 		break;
 		case CONTROL_BOTTOM_RIGHT:
-			if (x > g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth) x=g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth;
-			if (y > g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight) y=g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight;
-			if (x < g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth-128) x=g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth-128;
-			if (y < g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight-128) y=g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight-128;
+			if (x > g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth*5/4) x=g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth*5/4;
+			if (y > g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight*5/4) y=g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight*5/4;
+			if (x < g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth*3/4) x=g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth*3/4;
+			if (y < g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight*3/4) y=g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight*3/4;
 			g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.width=x-g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.left;
 			g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.height=y-g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.top;
 		break;
 		case CONTROL_SUBTITLES:
-			if (y > g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight) y=g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight;
-			if (y < g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight-128) y=g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight-128;
+			if (y > g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight*5/4) y=g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight*5/4;
+			if (y < g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight*3/4) y=g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight*3/4;
 			g_settings.m_ResInfo[m_Res[m_iCurRes]].iSubtitles=y;
 		break;
 		case CONTROL_OSD:
-			g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset = (y - g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight);
+			{
+				int Top = g_application.m_guiWindowOSD.m_vecPositions[0].y;
+				int maxoffs = g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.height+g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.top - Top - 2;
+				if (y < g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.top + g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight - Top)
+					y = g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.top + g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight - Top;
+				if (y > g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.height+g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.top + maxoffs)
+					y = g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.height+g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.top + maxoffs;
+				g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset = (y - g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight);
+			}
       
       g_application.m_guiWindowOSD.ResetAllControls();
 		break;

@@ -742,14 +742,14 @@ bool CSettings::LoadCalibration(const CStdString& strCalibrationFile)
 		GetInteger(pResolution, "subtitles", m_ResInfo[iRes].iSubtitles,m_ResInfo[iRes].iHeight,m_ResInfo[iRes].iHeight*3/4,m_ResInfo[iRes].iHeight*5/4);
 		//		GetInteger(pResolution, "flags", (int &)m_ResInfo[iRes].dwFlags,0,INT_MIN,INT_MAX);
 		GetFloat(pResolution, "pixelratio", m_ResInfo[iRes].fPixelRatio,128.0f/117.0f,0.5f,2.0f);
-		GetInteger(pResolution, "osdyoffset", m_ResInfo[iRes].iOSDYOffset,0,-(m_ResInfo[iRes].iHeight + 20),m_ResInfo[iRes].iHeight + 20);
+		GetInteger(pResolution, "osdyoffset", m_ResInfo[iRes].iOSDYOffset,0,-m_ResInfo[iRes].iHeight,m_ResInfo[iRes].iHeight);
 
 		// get the overscan info		
 		TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
 		if (pOverscan)
 		{
-			GetInteger(pOverscan, "left", m_ResInfo[iRes].Overscan.left,0,-128,128);
-			GetInteger(pOverscan, "top", m_ResInfo[iRes].Overscan.top,0,-128,128);
+			GetInteger(pOverscan, "left", m_ResInfo[iRes].Overscan.left,0,-g_settings.m_ResInfo[iRes].iWidth/4,g_settings.m_ResInfo[iRes].iWidth/4);
+			GetInteger(pOverscan, "top", m_ResInfo[iRes].Overscan.top,0,-g_settings.m_ResInfo[iRes].iHeight/4,g_settings.m_ResInfo[iRes].iHeight/4);
 			GetInteger(pOverscan, "width", m_ResInfo[iRes].Overscan.width,m_ResInfo[iRes].iWidth,m_ResInfo[iRes].iWidth*3/4,m_ResInfo[iRes].iWidth*5/4);
 			GetInteger(pOverscan, "height", m_ResInfo[iRes].Overscan.height,m_ResInfo[iRes].iHeight,m_ResInfo[iRes].iHeight*3/4,m_ResInfo[iRes].iHeight*5/4);
 		}
