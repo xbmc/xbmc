@@ -997,6 +997,20 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
         bNeed2Restart = true;
       }
       
+	  //Solve 3/5/>6 channels issue, all AC3/DTS passthrough exception code need place before
+	  //this block, because here we need decisive answer to passthrough or not.
+	  //bNeed2Restart Catch those SPDIF codec need to restart case, when restart they changed 
+	  //to none passthrough mode
+	  if( strstr(strAudioCodec,"SPDIF") == 0 || bNeed2Restart)
+		if( iChannels==5 || iChannels>6 )
+		{
+			options.SetChannelMapping("channels=6");
+			bNeed2Restart = true;
+		}else if( iChannels==3 )
+		{
+			options.SetChannelMapping("channels=4");
+			bNeed2Restart = true;
+		}
 
 			if (bNeed2Restart)
 			{
