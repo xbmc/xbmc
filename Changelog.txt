@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 30-03-2005 fixed: Srt subtitles out of sync with framerateadjuster enabled after last fix
   - 30-03-2005 changed: Stacking now uses Regular Expressions for finding where to stack.  They're specified in XBoxMediaCenter.xml.  Most people probably don't need to change the defaults.
   - 30-03-2005 changed: Sorting in Video views is a little more intelligent.  Sorts numbers separately (eg Disk 1... Disk 10) are sorted correctly).
   - 30-03-2005 fixed: Correctly retrieve movie title + movie writing credits from IMDb.
