@@ -453,10 +453,10 @@ int CCdIoSupport::GuessFilesystem(int start_session, track_t track_num)
 				//m_strDiscLabel=buffer[5]+25;
 				ret=FS_ISO_UDF;
 			}
-#if 0
+/*
       if (IsRockridge())
 				ret |= ROCKRIDGE;
-#endif
+*/
 
       if (ReadBlock(BOOT_SECTOR, start_session, 3, track_num) < 0)
 				return ret;

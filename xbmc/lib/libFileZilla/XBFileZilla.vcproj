@@ -332,7 +332,7 @@
 						<Tool
 							Name="VCCLCompilerTool"
 							Optimization="2"
-							AdditionalIncludeDirectories=""
+							AdditionalIncludeDirectories="../../../guilib"
 							PreprocessorDefinitions=""/>
 					</FileConfiguration>
 					<FileConfiguration
