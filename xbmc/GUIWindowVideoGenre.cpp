@@ -229,7 +229,7 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
 			m_history.Set(strSelectedItem,m_strDirectory);
 		}
 	}
-  Clear();
+  ClearFileItems();
   m_strDirectory=strDirectory;
   if (m_strDirectory=="")
   {

@@ -119,11 +119,14 @@ void CGUIListControl::Render()
           pItem->SetIcon(pImage);
         }
 
-        pImage->SetWidth(m_iImageWidth);
-        pImage->SetHeight(m_iImageHeight);
-        // center vertically
-        pImage->SetPosition(iPosX + 8, iPosY + (m_iItemHeight - m_iImageHeight)/2);
-        pImage->Render();
+				if (pImage)
+				{
+					pImage->SetWidth(m_iImageWidth);
+					pImage->SetHeight(m_iImageHeight);
+					// center vertically
+					pImage->SetPosition(iPosX + 8, iPosY + (m_iItemHeight - m_iImageHeight)/2);
+					pImage->Render();
+				}
       }
       iPosY += m_iItemHeight + m_iSpaceBetweenItems;
     }

@@ -26,7 +26,7 @@ protected:
 	void							OnPopupMenu(int iItem);
   void							OnSort();
   void							UpdateButtons();
-  void							Clear();
+  void							ClearFileItems();
 	void							Update(const CStdString &strDirectory);
 	void							UpdateDir(const CStdString &strDirectory);
 	void							OnShowPicture(const CStdString& strPicture);
