@@ -268,6 +268,8 @@ void CButtonTranslator::MapAction(WORD wAction, const CStdString &strAction, TiX
 			if (strButton == "recorededtv")			wButtonCode = XINPUT_IR_REMOTE_RECORDED_TV;
 			if (strButton == "guide")				wButtonCode = XINPUT_IR_REMOTE_TITLE;   // same as title
 			if (strButton == "livetv")				wButtonCode = XINPUT_IR_REMOTE_LIVE_TV;
+			if (strButton == "star")				wButtonCode = XINPUT_IR_REMOTE_STAR;
+			if (strButton == "hash")				wButtonCode = XINPUT_IR_REMOTE_HASH;
 			if (strButton == "clear")				wButtonCode = XINPUT_IR_REMOTE_CLEAR;
 			if (strButton == "enter")				wButtonCode = XINPUT_IR_REMOTE_SELECT;  // same as select
 			if (strButton == "xbox")				wButtonCode = XINPUT_IR_REMOTE_DISPLAY; // same as display
