@@ -2,6 +2,7 @@
 #include "XBPython.h"
 #include "..\..\sectionLoader.h"
 #include "ActionManager.h"
+#include "..\..\utils\log.h"
 
 	 /* PY_RW stay's loaded as longs as m_pPythonParser != NULL.
 	  * When someone runs a script for the first time both sections PYTHON and PY_RW
@@ -76,6 +77,22 @@ void XBPython::UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback)
 }
 
 /**
+ * Check for file and print an error if needed
+ */
+bool XBPython::FileExist(const char* strFile)
+{
+  if (!strFile) return false;
+  
+  if (access(strFile, 0) != 0)
+  {
+    CLog::Log(LOGERROR, "Python: Cannot find '%s'", strFile);
+    return false;
+  }
+  
+  return true;
+}
+
+/**
  * Should be called before executing a script
  */
 void XBPython::Initialize()
@@ -85,6 +102,19 @@ void XBPython::Initialize()
 	{
 		if(dThreadId == GetCurrentThreadId())
 		{
+		  // first we check if all necessary files are installed
+		  if (!FileExist("Q:\\python\\python23.zlib") ||
+		      !FileExist("Q:\\python\\Lib\\_sre.pyd") ||
+		      !FileExist("Q:\\python\\Lib\\_ssl.pyd") ||
+		      !FileExist("Q:\\python\\Lib\\_symtable.pyd") ||
+		      !FileExist("Q:\\python\\Lib\\pyexpat.pyd") ||
+		      !FileExist("Q:\\python\\Lib\\unicodedata.pyd") ||
+		      !FileExist("Q:\\python\\Lib\\zlib.pyd"))
+		  {
+		    CLog::Log(LOGERROR, "Python: Missing files, unable to execute script");
+		    return;
+		  }
+		  
 			g_sectionLoader.Load("PY_RW");
 
 			Py_Initialize();
@@ -216,6 +246,8 @@ int XBPython::evalFile(const char *src)
 
 	Initialize();
 
+  if (!bInitialized) return -1;
+
 	nextid++;
 	XBPyThread *pyThread = new XBPyThread(this, mainThreadState, nextid);
 	pyThread->evalFile(src);
@@ -234,6 +266,9 @@ int XBPython::evalFile(const char *src)
 
 int XBPython::evalString(const char *src)
 {
+  Initialize();
+  
+  if (!bInitialized) return -1;
 	/*
 	nextid++;
 	if (!Py_IsInitialized()) return -1;
