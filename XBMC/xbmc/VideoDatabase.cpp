@@ -488,6 +488,9 @@ void CVideoDatabase::GetMoviesByGenre(CStdString& strGenre1, VECMOVIES& movies)
     details.m_strGenre=m_pDS->fv("movieinfo.strGenre").get_asString();
     details.m_strPictureURL=m_pDS->fv("movieinfo.strPictureURL").get_asString();
     details.m_strTitle=m_pDS->fv("movieinfo.strTitle").get_asString();
+    long lMovieId=m_pDS->fv("movieinfo.idMovie").get_asLong();
+    details.m_strSearchString.Format("%i", lMovieId);
+
     movies.push_back(details);
     m_pDS->next();
   }
@@ -522,6 +525,8 @@ void CVideoDatabase::GetMoviesByActor(CStdString& strActor1, VECMOVIES& movies)
     details.m_strGenre=m_pDS->fv("movieinfo.strGenre").get_asString();
     details.m_strPictureURL=m_pDS->fv("movieinfo.strPictureURL").get_asString();
     details.m_strTitle=m_pDS->fv("movieinfo.strTitle").get_asString();
+    long lMovieId=m_pDS->fv("movieinfo.idMovie").get_asLong();
+    details.m_strSearchString.Format("%i", lMovieId);
 
     movies.push_back(details);
     m_pDS->next();
