@@ -164,10 +164,6 @@ void choose_best_resolution(float fps)
 	{
 		bWidescreen = true;
 	}
-	// dont use widescreen on mpeg1 resolutions (always use 4:3)
-	if (d_image_width==352 && d_image_height==240) bWidescreen = false;
-	if (d_image_width==352 && d_image_height==288) bWidescreen = false;
-	if (d_image_width==480 && d_image_height==480) bWidescreen = false;
 
 	// if video switching is not allowed then use current resolution (with pal 60 if needed)
 	// if we're not in fullscreen mode then use current resolution 
@@ -527,15 +523,14 @@ unsigned int Directx_ManageDisplay()
 		if (g_stSettings.m_bStretch)
 		{
 			// stretch the movie so it occupies the entire screen (aspect ratio = gone)
-//			rs.left   = 0;
-//			rs.top    = 0;
-//			rs.right  = image_width;
-//			rs.bottom = image_height ;
-//
-//			rd.left   = (int)fOffsetX1;
-//			rd.right  = (int)rd.left+(int)iScreenWidth;
-//			rd.top    = (int)fOffsetY1;
-//			rd.bottom = (int)rd.top+(int)iScreenHeight;
+			rs.left   = 0;
+			rs.top    = 0;
+			rs.right  = image_width;
+			rs.bottom = image_height ;
+			rd.left   = (int)fOffsetX1;
+			rd.right  = (int)rd.left+(int)iScreenWidth;
+			rd.top    = (int)fOffsetY1;
+			rd.bottom = (int)rd.top+(int)iScreenHeight;
 
 			vertex[0].p = D3DXVECTOR4(fOffsetX1,              fOffsetY1, 0, 0);
 			vertex[1].p = D3DXVECTOR4(fOffsetX1+iScreenWidth, fOffsetY1, 0, 0);
@@ -584,15 +579,15 @@ unsigned int Directx_ManageDisplay()
 				fFactor = fNewWidth / ((float)image_width);
 				fVertBorder = fVertBorder/fFactor;
 			}
-//			rs.left   = (int)fHorzBorder;
-//			rs.top    = (int)fVertBorder;
-//			rs.right  = (int)image_width  - (int)fHorzBorder;
-//			rs.bottom = (int)image_height - (int)fVertBorder;
-//
-//			rd.left   = (int)fOffsetX1;
-//			rd.right  = (int)rd.left + (int)iScreenWidth;
-//			rd.top    = (int)fOffsetY1;
-//			rd.bottom = (int)rd.top + (int)iScreenHeight;
+			rs.left   = (int)fHorzBorder;
+			rs.top    = (int)fVertBorder;
+			rs.right  = (int)image_width  - (int)fHorzBorder;
+			rs.bottom = (int)image_height - (int)fVertBorder;
+			rd.left   = (int)fOffsetX1;
+			rd.right  = (int)rd.left + (int)iScreenWidth;
+			rd.top    = (int)fOffsetY1;
+			rd.bottom = (int)rd.top + (int)iScreenHeight;
+
 			vertex[0].p = D3DXVECTOR4(fOffsetX1,              fOffsetY1, 0, 0);
 			vertex[1].p = D3DXVECTOR4(fOffsetX1+iScreenWidth, fOffsetY1, 0, 0);
 			vertex[2].p = D3DXVECTOR4(fOffsetX1+iScreenWidth, fOffsetY1+iScreenHeight, 0, 0);
@@ -643,15 +638,15 @@ unsigned int Directx_ManageDisplay()
 		float iPosX = (iScreenWidth  - fNewWidth)/2;
 
 		// source rect
-//		rs.left   = 0;
-//		rs.top    = 0;
-//		rs.right  = image_width;
-//		rs.bottom = image_height;
-//
-//		rd.left   = (int)(iPosX + fOffsetX1);
-//		rd.right  = (int)(rd.left + fNewWidth + 0.5f);
-//		rd.top    = (int)(iPosY + fOffsetY1);
-//		rd.bottom = (int)(rd.top + fNewHeight + 0.5f);
+		rs.left   = 0;
+		rs.top    = 0;
+		rs.right  = image_width;
+		rs.bottom = image_height;
+		rd.left   = (int)(iPosX + fOffsetX1);
+		rd.right  = (int)(rd.left + fNewWidth + 0.5f);
+		rd.top    = (int)(iPosY + fOffsetY1);
+		rd.bottom = (int)(rd.top + fNewHeight + 0.5f);
+
 		vertex[0].p = D3DXVECTOR4(iPosX+fOffsetX1,                iPosY+fOffsetY1, 0, 0);
 		vertex[1].p = D3DXVECTOR4(iPosX+fOffsetX1+fNewWidth+0.5f, iPosY+fOffsetY1, 0, 0);
 		vertex[2].p = D3DXVECTOR4(iPosX+fOffsetX1+fNewWidth+0.5f, iPosY+fOffsetY1+fNewHeight+0.5f, 0, 0);
@@ -1036,8 +1031,6 @@ void xbox_video_CheckScreenSaver()
 void xbox_video_getAR(float& fAR)
 {
 	float fOutputPixelRatio = g_settings.m_ResInfo[m_iResolution].fPixelRatio;
-//	if (m_iResolution == HDTV_1080i)
-//		fOutputPixelRatio /= 2;
 	float fWidth = (float)(rd.right - rd.left);
 	float fHeight = (float)(rd.bottom - rd.top);
 	fAR = fWidth/fHeight*fOutputPixelRatio;
