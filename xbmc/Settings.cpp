@@ -1313,7 +1313,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 	pElement = pRootElement->FirstChildElement("screen");
 	if (pElement)
 	{
-		GetInteger(pElement, "resolution",(int &)g_stSettings.m_GUIResolution,(int)PAL_4x3,(int)HDTV_1080i,(int)PAL60_16x9);
+		GetInteger(pElement, "resolution",(int &)g_stSettings.m_GUIResolution,(int)g_graphicsContext.GetVideoResolution(),(int)HDTV_1080i,(int)PAL60_16x9);
 		GetInteger(pElement, "uioffsetx",g_stSettings.m_iUIOffsetX,0,INT_MIN,INT_MAX);
 		GetInteger(pElement, "uioffsety",g_stSettings.m_iUIOffsetY,0,INT_MIN,INT_MAX);
     GetInteger(pElement, "flickerfiltervideo", g_stSettings.m_iFlickerFilterVideo, 1, 0, 5);

@@ -105,6 +105,7 @@
 #include "GUIWindowSettingsProfile.h"
 #include "GUIWindowSettingsCdg.h"
 #include "CdgParser.h"
+#include "utils/Splash.h"
 
 using namespace std;
 using namespace MEDIA_DETECT;
@@ -283,6 +284,7 @@ protected:
   bool                    m_bAllSettingsLoaded;
   CFileItem              m_itemCurrentFile;
   D3DGAMMARAMP m_OldRamp;			// CB: SCREENSAVER PATCH
+  CSplash* m_splash;
 };
 
 extern CApplication g_application;
