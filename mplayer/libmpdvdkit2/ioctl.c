@@ -376,6 +376,26 @@ int ioctl_ReadDiscKey( int i_fd, int *pi_agid, uint8_t *p_key )
 #elif defined( WIN32 )
     if( WIN2K ) /* NT/2k/XP */
     {
+    	/*
+    	// the next piece of code will read the disc key on the xbox for all drives (samsung included)
+    	// but for some reason it takes 15 - 20 seconds longer to load a dvd if mplayer has the dvd key
+    	// so we let this part fail and will only use the modified ioctl_ReadTitleKey code.
+#ifdef _XBOX
+        DWORD dwBytesRead;
+        DVD_READ_STRUCTURE st;
+        char buffer[2048+4];
+				
+        st.BlockByteOffset.QuadPart = 0;
+        st.SessionId = *pi_agid;
+        st.Format = DvdDiskKeyDescriptor;
+				
+        i_ret = DeviceIoControl((HANDLE) i_fd, IOCTL_DVD_READ_STRUCTURE, &st, sizeof(st), buffer, 2048+4, &dwBytesRead, NULL );
+        if( i_ret < 0 )
+        {
+          return i_ret;
+        }
+        memcpy( p_key, &(buffer[4]), 2048);*/
+//#else
         DWORD tmp;
         uint8_t buffer[DVD_DISK_KEY_LENGTH];
         PDVD_COPY_PROTECT_KEY key = (PDVD_COPY_PROTECT_KEY) &buffer;
@@ -396,6 +416,7 @@ int ioctl_ReadDiscKey( int i_fd, int *pi_agid, uint8_t *p_key )
         }
 
         memcpy( p_key, key->KeyData, DVD_DISCKEY_SIZE );
+//#endif
     }
     else
     {
@@ -544,6 +565,22 @@ int ioctl_ReadTitleKey( int i_fd, int *pi_agid, int i_pos, uint8_t *p_key )
 #elif defined( WIN32 )
     if( WIN2K ) /* NT/2k/XP */
     {
+#ifdef _XBOX
+        DWORD dwBytesRead;
+        DVD_READ_STRUCTURE st;
+        char buffer[2048+4];
+				
+        st.BlockByteOffset.QuadPart = (LONGLONG) i_pos * 2048 /*DVDCSS_BLOCK_SIZE*/;
+        st.SessionId = *pi_agid;
+        st.Format = DvdDiskKeyDescriptor;
+				
+        i_ret = DeviceIoControl((HANDLE) i_fd, IOCTL_DVD_READ_STRUCTURE, &st, sizeof(st), buffer, 2048+4, &dwBytesRead, NULL );
+        if( i_ret < 0 )
+        {
+          return i_ret;
+        }
+        memcpy( p_key, &(buffer[4]), 2048);
+#else
         DWORD tmp;
         uint8_t buffer[DVD_TITLE_KEY_LENGTH];
         PDVD_COPY_PROTECT_KEY key = (PDVD_COPY_PROTECT_KEY) &buffer;
@@ -561,6 +598,7 @@ int ioctl_ReadTitleKey( int i_fd, int *pi_agid, int i_pos, uint8_t *p_key )
                 key->KeyLength, key, key->KeyLength, &tmp, NULL ) ? 0 : -1;
 
         memcpy( p_key, key->KeyData, DVD_KEY_SIZE );
+#endif
     }
     else
     {
