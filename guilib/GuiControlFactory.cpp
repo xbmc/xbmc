@@ -7,6 +7,7 @@
 #include "guiSpinControl.h"
 #include "guiRSSControl.h"
 #include "guiRAMControl.h"
+#include "guiConsoleControl.h"
 #include "guiListControl.h"
 #include "guiListControlEx.h"
 #include "guiImage.h"
@@ -321,6 +322,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
 			((CGUIRAMControl*)pReference)->GetThumbAttributes(dwThumbWidth,dwThumbHeight,dwThumbSpaceX,dwThumbSpaceY,strDefaultThumb);
 
+		}
+		else if (strType=="console")
+		{
+			strFont				= ((CGUIConsoleControl*)pReference)->GetFontName();
+			dwTextColor			= ((CGUIConsoleControl*)pReference)->GetNormalColor();
+			dwTextColor3		= ((CGUIConsoleControl*)pReference)->GetActionColor();
+			dwSelectedColor		= ((CGUIConsoleControl*)pReference)->GetSpecialColor();
 		}
 		else if (strType=="button")
 		{
@@ -875,6 +883,16 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
 		pControl->SetTextSpacing(dwTextSpaceY);
 		pControl->SetThumbAttributes(dwThumbWidth,dwThumbHeight,dwThumbSpaceX,dwThumbSpaceY,strDefaultThumb);
+		pControl->SetColourDiffuse(dwColorDiffuse);
+		pControl->SetVisible(bVisible);
+	    pControl->SetNavigation(up,down,left,right);
+		return pControl;
+	}
+	if (strType=="console")
+	{
+		CGUIConsoleControl* pControl = new CGUIConsoleControl(
+					dwParentId,dwID,iPosX,iPosY,dwWidth,dwHeight,
+					strFont,dwTextColor3,dwTextColor,dwSelectedColor);
 		pControl->SetColourDiffuse(dwColorDiffuse);
 		pControl->SetVisible(bVisible);
 	    pControl->SetNavigation(up,down,left,right);
