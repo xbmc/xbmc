@@ -172,7 +172,7 @@ CSettings::CSettings(void)
   g_stSettings.m_bUseDigitalOutput=false;
 
   strcpy(g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
-  g_stSettings.m_bPostProcessing=false;
+  g_stSettings.m_bPostProcessing=true;
   g_stSettings.m_bDeInterlace=false;
   g_stSettings.m_bNonInterleaved=false;
   g_stSettings.m_bNoCache=false;
