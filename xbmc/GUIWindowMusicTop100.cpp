@@ -17,6 +17,7 @@ CGUIWindowMusicTop100::CGUIWindowMusicTop100(void)
     : CGUIWindowMusicBase()
 {
 }
+
 CGUIWindowMusicTop100::~CGUIWindowMusicTop100(void)
 {
 }
@@ -110,51 +111,7 @@ void CGUIWindowMusicTop100::UpdateButtons()
   CONTROL_DISABLE(CONTROL_BTNSORTBY);
   CONTROL_DISABLE(CONTROL_BTNSORTASC);
 
-  // Update listcontrol and view by icon/list button
-  const CGUIControl* pControl = GetControl(CONTROL_THUMBS);
-  if (pControl)
-  {
-    if (!pControl->IsVisible())
-    {
-      CONTROL_SELECT_ITEM(CONTROL_THUMBS, GetSelectedItem());
-    }
-  }
-  pControl = GetControl(CONTROL_LIST);
-  if (pControl)
-  {
-    if (!pControl->IsVisible())
-    {
-      CONTROL_SELECT_ITEM(CONTROL_LIST, GetSelectedItem());
-    }
-  }
-
-  SET_CONTROL_HIDDEN(CONTROL_LIST);
-  SET_CONTROL_HIDDEN(CONTROL_THUMBS);
-
-  bool bViewIcon = false;
-  int iString;
-  switch (m_iViewAsIconsRoot)
-  {
-  case VIEW_AS_LIST:
-    iString = 101; // view as list
-    break;
-
-  case VIEW_AS_ICONS:
-    iString = 100; // view as icons
-    bViewIcon = true;
-    break;
-  }
-
-  if (bViewIcon)
-  {
-    SET_CONTROL_VISIBLE(CONTROL_THUMBS);
-  }
-  else
-  {
-    SET_CONTROL_VISIBLE(CONTROL_LIST);
-  }
-
-  SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS, iString);
+  m_viewControl.SetCurrentView(m_iViewAsIconsRoot);
 
   // Update object count label
   int iItems = m_vecItems.Size();
@@ -232,18 +189,8 @@ void CGUIWindowMusicTop100::OnSearchItemFound(const CFileItem* pSelItem)
     CFileItem* pItem = m_vecItems[i];
     if (pItem->m_strPath == pSelItem->m_strPath)
     {
-      CONTROL_SELECT_ITEM(CONTROL_LIST, i);
-      CONTROL_SELECT_ITEM(CONTROL_THUMBS, i);
-      const CGUIControl* pControl = GetControl(CONTROL_LIST);
-      if (pControl->IsVisible())
-      {
-        SET_CONTROL_FOCUS(CONTROL_LIST, 0);
-      }
-      else
-      {
-        SET_CONTROL_FOCUS(CONTROL_THUMBS, 0);
-      }
-      break;
+      m_viewControl.SetSelectedItem(i);
+      m_viewControl.SetFocused();
     }
   }
 }

@@ -913,8 +913,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
   TiXmlElement *pElement = pRootElement->FirstChildElement("mypictures");
   if (pElement)
   {
-    GetInteger(pElement, "picturesviewicons", g_stSettings.m_iMyPicturesViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
-    GetInteger(pElement, "picturesrooticons", g_stSettings.m_iMyPicturesRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
+    GetInteger(pElement, "picturesviewicons", g_stSettings.m_iMyPicturesViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
+    GetInteger(pElement, "picturesrooticons", g_stSettings.m_iMyPicturesRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
     GetInteger(pElement, "picturessortmethod", g_stSettings.m_iMyPicturesSortMethod, 0, 0, 2);
     GetInteger(pElement, "picturessortmethodroot", g_stSettings.m_iMyPicturesRootSortMethod, 0, 0, 3);
     GetBoolean(pElement, "picturessortascending", g_stSettings.m_bMyPicturesSortAscending);
@@ -953,8 +953,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     TiXmlElement *pChild = pElement->FirstChildElement("songs");
     if (pChild)
     {
-      GetInteger(pChild, "songsviewicons", g_stSettings.m_iMyMusicSongsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
-      GetInteger(pChild, "songsrooticons", g_stSettings.m_iMyMusicSongsRootViewAsIcons, VIEW_AS_ICONS, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
+      GetInteger(pChild, "songsviewicons", g_stSettings.m_iMyMusicSongsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
+      GetInteger(pChild, "songsrooticons", g_stSettings.m_iMyMusicSongsRootViewAsIcons, VIEW_AS_ICONS, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
       GetInteger(pChild, "songssortmethod", g_stSettings.m_iMyMusicSongsSortMethod, 0, 0, 8);
       GetInteger(pChild, "songssortmethodroot", g_stSettings.m_iMyMusicSongsRootSortMethod, 0, 0, 9);
       GetBoolean(pChild, "songssortascending", g_stSettings.m_bMyMusicSongsSortAscending);
@@ -974,9 +974,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     pChild = pElement->FirstChildElement("artist");
     if (pChild)
     {
-      GetInteger(pChild, "artistsongsviewicons", g_stSettings.m_iMyMusicArtistsSongsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
-      GetInteger(pChild, "artistalbumsviewicons", g_stSettings.m_iMyMusicArtistsAlbumsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
-      GetInteger(pChild, "artistrooticons", g_stSettings.m_iMyMusicArtistsRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
+      GetInteger(pChild, "artistsongsviewicons", g_stSettings.m_iMyMusicArtistsSongsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
+      GetInteger(pChild, "artistalbumsviewicons", g_stSettings.m_iMyMusicArtistsAlbumsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
+      GetInteger(pChild, "artistrooticons", g_stSettings.m_iMyMusicArtistsRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
       GetInteger(pChild, "artistallsongssortmethod", g_stSettings.m_iMyMusicArtistsAllSongsSortMethod, 4, 5, 5); //title
       GetInteger(pChild, "artistsortmethodroot", g_stSettings.m_iMyMusicArtistsRootSortMethod, 0, 0, 0); //Only name (??)
       GetInteger(pChild, "artistalbumsortmethod", g_stSettings.m_iMyMusicArtistsAlbumsSortMethod, 7, 6, 7);
@@ -989,8 +989,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     pChild = pElement->FirstChildElement("genre");
     if (pChild)
     {
-      GetInteger(pChild, "genreviewicons", g_stSettings.m_iMyMusicGenresViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
-      GetInteger(pChild, "genrerooticons", g_stSettings.m_iMyMusicGenresRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
+      GetInteger(pChild, "genreviewicons", g_stSettings.m_iMyMusicGenresViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
+      GetInteger(pChild, "genrerooticons", g_stSettings.m_iMyMusicGenresRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
       GetInteger(pChild, "genresortmethod", g_stSettings.m_iMyMusicGenresSortMethod, 5, 4, 5);  //  titel
       GetInteger(pChild, "genresortmethodroot", g_stSettings.m_iMyMusicGenresRootSortMethod, 0, 0, 0); // Only name (??)
       GetBoolean(pChild, "genresortascending", g_stSettings.m_bMyMusicGenresSortAscending);
@@ -999,11 +999,11 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     pChild = pElement->FirstChildElement("nav");
     if (pChild)
     {
-      GetInteger(pChild, "navrootviewicons", g_stSettings.m_iMyMusicNavRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
-      GetInteger(pChild, "navgenresviewicons", g_stSettings.m_iMyMusicNavGenresViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
-      GetInteger(pChild, "navartistsviewicons", g_stSettings.m_iMyMusicNavArtistsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
-      GetInteger(pChild, "navalbumsviewicons", g_stSettings.m_iMyMusicNavAlbumsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
-      GetInteger(pChild, "navsongsviewicons", g_stSettings.m_iMyMusicNavSongsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
+      GetInteger(pChild, "navrootviewicons", g_stSettings.m_iMyMusicNavRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
+      GetInteger(pChild, "navgenresviewicons", g_stSettings.m_iMyMusicNavGenresViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
+      GetInteger(pChild, "navartistsviewicons", g_stSettings.m_iMyMusicNavArtistsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
+      GetInteger(pChild, "navalbumsviewicons", g_stSettings.m_iMyMusicNavAlbumsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_LIST);
+      GetInteger(pChild, "navsongsviewicons", g_stSettings.m_iMyMusicNavSongsViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
 
       GetInteger(pChild, "navgenressortmethod", g_stSettings.m_iMyMusicNavRootSortMethod, 0, 0, 0);
       GetInteger(pChild, "navalbumssortmethod", g_stSettings.m_iMyMusicNavAlbumsSortMethod, 6, 6, 7);
@@ -1017,12 +1017,12 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     pChild = pElement->FirstChildElement("top100");
     if (pChild)
     {
-      GetInteger(pChild, "top100rooticons", g_stSettings.m_iMyMusicTop100ViewAsIcons, VIEW_AS_LIST, VIEW_AS_ICONS, VIEW_AS_ICONS);
+      GetInteger(pChild, "top100rooticons", g_stSettings.m_iMyMusicTop100ViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_ICONS);
     }
     pChild = pElement->FirstChildElement("playlist");
     if (pChild)
     {
-      GetInteger(pChild, "playlistrooticons", g_stSettings.m_iMyMusicPlaylistViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
+      GetInteger(pChild, "playlistrooticons", g_stSettings.m_iMyMusicPlaylistViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
       GetBoolean(pChild, "repeat", g_stSettings.m_bMyMusicPlaylistRepeat);
       GetBoolean(pChild, "shuffle", g_stSettings.m_bMyMusicPlaylistShuffle);
     }
@@ -1060,39 +1060,39 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
     for (int i = 0; i < (int)g_settings.m_szMyVideoCleanTokensArray.size(); i++)
       g_settings.m_szMyVideoCleanTokensArray[i].MakeLower();
 
-    GetInteger(pElement, "videoplaylistviewicons", g_stSettings.m_iMyVideoPlaylistViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
+    GetInteger(pElement, "videoplaylistviewicons", g_stSettings.m_iMyVideoPlaylistViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
     GetBoolean(pElement, "videoplaylistrepeat", g_stSettings.m_bMyVideoPlaylistRepeat);
     GetBoolean(pElement, "videoplaylistshuffle", g_stSettings.m_bMyVideoPlaylistShuffle);
-    GetInteger(pElement, "videoviewicons", g_stSettings.m_iMyVideoViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
-    GetInteger(pElement, "videorooticons", g_stSettings.m_iMyVideoRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
+    GetInteger(pElement, "videoviewicons", g_stSettings.m_iMyVideoViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
+    GetInteger(pElement, "videorooticons", g_stSettings.m_iMyVideoRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
     GetInteger(pElement, "videosortmethod", g_stSettings.m_iMyVideoSortMethod, 0, 0, 2);
     GetInteger(pElement, "videosortmethodroot", g_stSettings.m_iMyVideoRootSortMethod, 0, 0, 3);
     GetBoolean(pElement, "videosortascending", g_stSettings.m_bMyVideoSortAscending);
     GetBoolean(pElement, "videosortascendingroot", g_stSettings.m_bMyVideoRootSortAscending);
 
-    GetInteger(pElement, "genreviewicons", g_stSettings.m_iMyVideoGenreViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
-    GetInteger(pElement, "genrerooticons", g_stSettings.m_iMyVideoGenreRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
+    GetInteger(pElement, "genreviewicons", g_stSettings.m_iMyVideoGenreViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
+    GetInteger(pElement, "genrerooticons", g_stSettings.m_iMyVideoGenreRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
     GetInteger(pElement, "genresortmethod", g_stSettings.m_iMyVideoGenreSortMethod, 0, 0, 2);
     GetInteger(pElement, "genresortmethodroot", g_stSettings.m_iMyVideoGenreRootSortMethod, 0, 0, 0); //  by label only
     GetBoolean(pElement, "genresortascending", g_stSettings.m_bMyVideoGenreSortAscending);
     GetBoolean(pElement, "genresortascendingroot", g_stSettings.m_bMyVideoGenreRootSortAscending);
 
-    GetInteger(pElement, "actorviewicons", g_stSettings.m_iMyVideoActorViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
-    GetInteger(pElement, "actorrooticons", g_stSettings.m_iMyVideoActorRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
+    GetInteger(pElement, "actorviewicons", g_stSettings.m_iMyVideoActorViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
+    GetInteger(pElement, "actorrooticons", g_stSettings.m_iMyVideoActorRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
     GetInteger(pElement, "actorsortmethod", g_stSettings.m_iMyVideoActorSortMethod, 0, 0, 2);
     GetInteger(pElement, "actorsortmethodroot", g_stSettings.m_iMyVideoActorRootSortMethod, 0, 0, 0); //  by label only
     GetBoolean(pElement, "actorsortascending", g_stSettings.m_bMyVideoActorSortAscending);
     GetBoolean(pElement, "actorsortascendingroot", g_stSettings.m_bMyVideoActorRootSortAscending);
 
-    GetInteger(pElement, "yearviewicons", g_stSettings.m_iMyVideoYearViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
-    GetInteger(pElement, "yearrooticons", g_stSettings.m_iMyVideoYearRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
+    GetInteger(pElement, "yearviewicons", g_stSettings.m_iMyVideoYearViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
+    GetInteger(pElement, "yearrooticons", g_stSettings.m_iMyVideoYearRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
     GetInteger(pElement, "yearsortmethod", g_stSettings.m_iMyVideoYearSortMethod, 0, 0, 2);
     GetInteger(pElement, "yearsortmethodroot", g_stSettings.m_iMyVideoYearRootSortMethod, 0, 0, 0); //  by label only
     GetBoolean(pElement, "yearsortascending", g_stSettings.m_bMyVideoYearSortAscending);
     GetBoolean(pElement, "yearsortascendingroot", g_stSettings.m_bMyVideoYearRootSortAscending);
 
-    GetInteger(pElement, "titleviewicons", g_stSettings.m_iMyVideoTitleViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
-    GetInteger(pElement, "titlerooticons", g_stSettings.m_iMyVideoTitleRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGEICONS);
+    GetInteger(pElement, "titleviewicons", g_stSettings.m_iMyVideoTitleViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
+    GetInteger(pElement, "titlerooticons", g_stSettings.m_iMyVideoTitleRootViewAsIcons, VIEW_AS_LIST, VIEW_AS_LIST, VIEW_AS_LARGE_ICONS);
     GetInteger(pElement, "titlesortmethod", g_stSettings.m_iMyVideoTitleSortMethod, 0, 0, 3);
     GetBoolean(pElement, "titlesortascending", g_stSettings.m_bMyVideoTitleSortAscending);
 

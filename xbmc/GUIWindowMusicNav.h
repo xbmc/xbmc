@@ -1,5 +1,6 @@
 #pragma once
 #include "GUIWindowMusicBase.h"
+#include "GUIViewControl.h"
 
 class CGUIWindowMusicNav : public CGUIWindowMusicBase
 {
