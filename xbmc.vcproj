@@ -459,9 +459,6 @@
 				RelativePath=".\xbmc\SlideShow.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\stdafx.cpp">
-			</File>
-			<File
 				RelativePath=".\xbmc\URL.cpp">
 			</File>
 			<File
@@ -975,6 +972,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\cores\CDDAPlayer.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\EMUDX8.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\cores\EMUkernel32.cpp">

@@ -22,7 +22,7 @@ protected:
   void            UpdateButtons();
   void            Clear();
 	CGUIDialogProgress*	m_dlgProgress;  
-  vector <CFileItem*> m_vecItems;
+  VECFILEITEMS				 m_vecItems;
   CStdString          m_strDirectory;
   
 };

@@ -8,6 +8,21 @@
 #define AUDIO_BUFFER_SIZE 1024	// MUST BE A POWER OF 2!!!
 #define MAX_AUDIO_BUFFERS 32
 
+#include <list>
+using namespace std;
+class CAudioBuffer
+{
+public:
+	CAudioBuffer(int iSize);
+	virtual ~CAudioBuffer();
+	const short* Get() const;
+	void Set(const short* psBuffer, int iSize);
+private:
+	CAudioBuffer();
+	short* m_pBuffer;
+	int    m_iLen;
+};
+
 class CGUIWindowVisualisation :
   public CGUIWindow, public IAudioCallback
 {
@@ -28,11 +43,11 @@ private:
 	int								m_iChannels;
 	int								m_iSamplesPerSec;
 	int								m_iBitsPerSample;
-	short							m_pBuffer[MAX_AUDIO_BUFFERS][2*AUDIO_BUFFER_SIZE];		// Audio data buffers
-	int								m_iBuffer;									// Current buffer
+	list<CAudioBuffer*>	m_vecBuffers;
 	int								m_iNumBuffers;								// Number of Audio buffers
-	float							m_pFreq[2*AUDIO_BUFFER_SIZE];									// Frequency data
+	bool							m_bWantsFreq;
+	float							m_fFreq[2*AUDIO_BUFFER_SIZE];									// Frequency data
 	bool							m_bCalculate_Freq;							// True if the vis wants freq data
-	CCriticalSection	m_critSection;
 	bool							m_bInitialized;
+	CCriticalSection	m_critSection;
 };

@@ -9,6 +9,9 @@
 #pragma once
 #include "filesystem/factoryDirectory.h"
 
+#include <memory>
+using namespace std;
+
 class CAutorun
 {
 public:

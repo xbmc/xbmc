@@ -10,6 +10,9 @@
 #endif // _MSC_VER > 1000
 #include <xtl.h>
 #include "../cores/DllLoader/dll.h"
+#include <memory>
+using namespace std;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -31,7 +34,7 @@ public:
 	void (__cdecl* Render) ();
 	void (__cdecl* Stop)();
 	void (__cdecl* GetInfo)(VIS_INFO *info);
-};
+} ;
 
 #ifdef __cplusplus
 };
@@ -46,13 +49,13 @@ public:
 	// Things that MUST be supplied by the child classes
 	void Create();
 	void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample);
-	void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
+	void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
 	void Render();
 	void Stop();
 	void GetInfo(VIS_INFO *info);
 private:
-	struct Visualisation* m_pVisz;
-	DllLoader* m_pLoader;
+	auto_ptr<struct Visualisation> m_pVisz;
+	auto_ptr<DllLoader> m_pLoader;
 };
 
 

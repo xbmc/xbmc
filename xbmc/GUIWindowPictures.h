@@ -35,7 +35,7 @@ protected:
 
 	CSlideShow					m_slideShow;
 	CVirtualDirectory		m_rootDir;
-  vector <CFileItem*> m_vecItems;
+  VECFILEITEMS				m_vecItems;
 	CStdString					m_strDirectory;
 	CGUIDialogProgress*	m_dlgProgress;
 	CDirectoryHistory		m_history;

@@ -102,6 +102,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 				// remove shortcuts...
 				rootDir.SetMask(".cut");
 				rootDir.GetDirectory(m_strDirectory,m_vecItems);
+				
 				for (int i=0; i < (int)m_vecItems.size(); ++i)
 				{
 					CFileItem* pItem=m_vecItems[i];
@@ -286,12 +287,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
 
 void CGUIWindowPrograms::Clear()
 {
-  for (int i=0; i < (int)m_vecItems.size(); i++)
-  {
-    CFileItem* pItem=m_vecItems[i];
-    delete pItem;
-  }
-   m_vecItems.erase(m_vecItems.begin(),m_vecItems.end() );
+	CFileItemList itemlist(m_vecItems); // will clean up everything
 }
 
 void CGUIWindowPrograms::Update(const CStdString &strDirectory)
@@ -624,17 +620,13 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 				{
 					m_strDirectory=pItem->m_strPath;
 					VECFILEITEMS subDirItems;
+					CFileItemList itemlist(subDirItems); // will clean up everything
 					CHDDirectory rootDir;
 					rootDir.SetMask(".xbe");
 					rootDir.GetDirectory(pItem->m_strPath,subDirItems);
 					bOpen=false;	
 					m_dlgProgress->Close();
 					OnScan(subDirItems,iTotalAppsFound);
-					for (int x=0; x < (int)subDirItems.size(); ++x)
-					{
-						CFileItem *pSubItem= subDirItems[x];
-						delete pSubItem;
-					}
 					m_strDirectory=strDir;
 				}
 			}

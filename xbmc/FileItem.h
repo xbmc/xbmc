@@ -28,3 +28,13 @@ public:
 
 typedef vector<CFileItem*> VECFILEITEMS;
 typedef vector<CFileItem*>::iterator IVECFILEITEMS;
+
+class CFileItemList
+{
+public:
+	CFileItemList(VECFILEITEMS& items);
+	virtual ~CFileItemList();
+	VECFILEITEMS& GetList() ;
+private:
+	VECFILEITEMS& m_items;
+};

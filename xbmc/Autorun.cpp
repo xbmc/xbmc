@@ -70,24 +70,23 @@ void CAutorun::RunXboxCd()
 
 	int nAddedToPlaylist = 0;
 	CFactoryDirectory factory;
-	CDirectory* pDir = factory.Create( "D:\\" );
-	bool bPlaying=RunDisc(pDir, "D:\\",nAddedToPlaylist,true);
+	auto_ptr<CDirectory> pDir ( factory.Create( "D:\\" ) );
+	bool bPlaying=RunDisc(pDir.get(), "D:\\",nAddedToPlaylist,true);
 	if ( !bPlaying && nAddedToPlaylist > 0 )
 	{
 		CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
 		m_gWindowManager.SendMessage( msg );
 		g_playlistPlayer.Play( 0 );
 	}
-
-	delete pDir;
 }
 
 void CAutorun::RunCdda()
 {
 	VECFILEITEMS	vecItems;
+	CFileItemList itemlist(vecItems);
 
 	CFactoryDirectory factory;
-	CDirectory* pDir = factory.Create( "cdda://local/" );
+	auto_ptr<CDirectory> pDir ( factory.Create( "cdda://local/" ) );
 	if ( !pDir->GetDirectory( "cdda://local/", vecItems ) )
 		return;
 
@@ -110,14 +109,6 @@ void CAutorun::RunCdda()
 	m_gWindowManager.SendMessage( msg );
 
 	g_playlistPlayer.Play( nSize );
-
-	// cleanup
-	for (int i=0; i < (int)vecItems.size(); i++)
-	{
-		CFileItem* pItem=vecItems[i];
-		delete pItem;
-	}
-
 }
 
 void CAutorun::RunISOMedia()
@@ -125,25 +116,22 @@ void CAutorun::RunISOMedia()
 	if ( !g_stSettings.m_bAutorunDVD && !g_stSettings.m_bAutorunVCD && !g_stSettings.m_bAutorunVideo && !g_stSettings.m_bAutorunMusic && !g_stSettings.m_bAutorunPictures )
 		return;
 
-	VECFILEITEMS	vecItems;
-
 	int nAddedToPlaylist = 0;
 	CFactoryDirectory factory;
-	CDirectory* pDir = factory.Create( "iso9660://" );
-	bool bPlaying=RunDisc(pDir, "iso9660://",nAddedToPlaylist,true);
+	auto_ptr<CDirectory> pDir ( factory.Create( "iso9660://" ));
+	bool bPlaying=RunDisc(pDir.get(), "iso9660://",nAddedToPlaylist,true);
 	if ( !bPlaying && nAddedToPlaylist > 0 )
 	{
 		CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
 		m_gWindowManager.SendMessage( msg );
 		g_playlistPlayer.Play( 0 );
 	}
-
-	delete pDir;
 }
 bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot)
 {
 	bool bPlaying(false);
 	VECFILEITEMS vecItems;
+	CFileItemList itemlist(vecItems);
 	char szSlash='\\';
 	if (strDrive.Find("iso9660") != -1) szSlash='/';
 
@@ -227,14 +215,6 @@ bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAdded
 			}
 		}
   }
-/*
-*/
-	// cleanup
-	for (int i=0; i < (int)vecItems.size(); i++)
-	{
-		CFileItem* pItem=vecItems[i];
-		delete pItem;
-	}
 	return bPlaying;
 }
 

@@ -29,7 +29,7 @@ protected:
 
   bool							HaveDiscOrConnection( CStdString& strPath, int iDriveType );
 	CVirtualDirectory		m_rootDir;
-  vector <CFileItem*> m_vecItems;
+  VECFILEITEMS				m_vecItems;
 	CStdString					m_strDirectory;
 	CDirectoryHistory		m_history;
 	bool								m_bDVDDiscChanged;
