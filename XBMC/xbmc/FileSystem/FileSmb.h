@@ -39,7 +39,10 @@ namespace XFILE
 		virtual bool					Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport, bool bBinary=true);
 		virtual offset_t			GetLength();
 		virtual offset_t			GetPosition();
-
+		void									Lock();
+		void									Unlock();
+		void									SetLogin(const char* strLogin, const char* strPassword);
+		SMB*									GetSMB();
 	protected:
 		static SMB*			m_pSMB;
 		static int			m_iReferences;

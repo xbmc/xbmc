@@ -1,6 +1,7 @@
 #pragma once
 #include "directory.h"
-
+#include "FileSmb.h"
+using namespace XFILE;
 using namespace DIRECTORY;
 namespace DIRECTORY
 {
@@ -11,5 +12,7 @@ namespace DIRECTORY
     CSMBDirectory(void);
     virtual ~CSMBDirectory(void);
     virtual bool  GetDirectory(const CStdString& strPath,VECFILEITEMS &items);
+	private:
+		CFileSMB smbFile;
   };
 }
