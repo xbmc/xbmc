@@ -67,7 +67,7 @@
 #define WEBS_AUTH_BASIC			0x10000		/* Basic authentication request */
 #define WEBS_AUTH_DIGEST		0x20000		/* Digest authentication request */
 #define WEBS_HEADER_DONE		0x40000		/* Already output the HTTP header */
-
+#define WEBS_SPY						0x80000		/* Spyce request */
 /*
  *	URL handler flags
  */
@@ -136,6 +136,7 @@ extern int		 websAccept(int sid, char *ipaddr, int port, int listenSid);
 extern int 		 websAspDefine(char_t *name, 
 					int (*fn)(int ejid, webs_t wp, int argc, char_t **argv));
 extern int 		 websAspRequest(webs_t wp, char_t *lpath);
+extern int		 websSpyRequest(webs_t wp, char_t *lpath);
 extern void		 websCloseListen();
 extern int 		 websDecode64(char_t *outbuf, char_t *string, int buflen);
 extern void		 websDecodeUrl(char_t *token, char_t *decoded, int len);

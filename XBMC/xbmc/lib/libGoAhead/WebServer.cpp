@@ -12,6 +12,10 @@
 #include "WebServer.h"
 #include "XBMCWeb.h"
 
+#ifdef SPYCE_SUPPORT
+#include "SpyceModule.h"
+#endif
+
 #pragma code_seg("WEB_TEXT")
 #pragma data_seg("WEB_DATA")
 #pragma bss_seg("WEB_BSS")
@@ -163,6 +167,11 @@ int CWebServer::initWebs()
 		umRestore("umconfig.txt");
 	#endif
 
+	#ifdef SPYCE_SUPPORT
+		setSpyOpenCallback(WEBS_SPYCE::spyceOpen);
+		setSpyCloseCallback(WEBS_SPYCE::spyceClose);
+		setSpyRequestCallback(WEBS_SPYCE::spyceRequest);
+	#endif
 	/*
 	 *	Define the local Ip address, host name, default home page and the 
 	 *	root web directory.
