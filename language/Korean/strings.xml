@@ -562,4 +562,91 @@
   <string><id>13303</id><value>스킨 폰트</value></string>
   <string><id>13304</id><value>Flipping Bi-Directional 문자열 활성화</value></string>
   <string><id>13305</id><value>RSS Feeds 활성화</value></string>
+  <string><id>13306</id><value>부모 폴더 항목 감춤</value></string>
+  <string><id>13307</id><value>트랙 숫자 감춤</value></string>
+  <string><id>13308</id><value>XBMC만 재시작하는 대신에</value></string>
+  <string><id>13309</id><value>XBOX를 재시작하기를 원하십니까?</value></string>
+  <string><id>13310</id><value>확대 효과</value></string>
+  <string><id>13311</id><value>Float 효과</value></string>
+  <string><id>13312</id><value>Black Bar 감소</value></string>
+  <string><id>13313</id><value>리셋/재시작</value></string>
+  <string><id>13314</id><value>음악 OSD 타임아웃</value></string>
+  <string><id>13315</id><value>썸네일 생성</value></string>
+  <string><id>13316</id><value>재귀 썸네일</value></string>
+  <string><id>13317</id><value>슬라이드쇼 보기</value></string>
+  <string><id>13318</id><value>재귀 슬라이드쇼</value></string>
+  <string><id>13319</id><value>무작위</value></string>
+  <string><id>13320</id><value>스테레오</value></string>
+  <string><id>13321</id><value>왼쪽만</value></string>
+  <string><id>13322</id><value>오른쪽만</value></string>
+  <string><id>13323</id><value>CD+G 활성화</value></string>
+  <string><id>13324</id><value>배경 투명도</value></string>
+  <string><id>13325</id><value>전경 투명도</value></string>
+  <string><id>13326</id><value>A/V 지연</value></string>
+  <string><id>13327</id><value>가라오케</value></string>
+  <string><id>13328</id><value>%s not found.</value></string>
+  <string><id>13329</id><value>Error opening %s</value></string>
+  <string><id>13330</id><value>Unable to load %s</value></string>
+  <string><id>13331</id><value>에러: 메모리 부족</value></string>
+  <string><id>13332</id><value>위로 이동</value></string>
+  <string><id>13333</id><value>아래로 이동</value></string>
+  <string><id>13334</id><value>라벨 편집</value></string>
+  <string><id>13335</id><value>기본값으로 만듬</value></string>
+  <string><id>13336</id><value>버튼 제거</value></string>
+  <string><id>13337</id><value>- 2 채널 PCM Passthrough</value></string>
+  <string><id>14000</id><value>연속 재생: Off</value></string>
+  <string><id>14001</id><value>연속 재생: Simple</value></string>
+  <string><id>14002</id><value>연속 재생: Fuzzy</value></string>
+  <string><id>14003</id><value>재생목록 파일 다운로드하는 중...</value></string>
+  <string><id>14004</id><value>스트림 목록 다운로드하는 중...</value></string>
+  <string><id>14005</id><value>스트림 목록 분석하는 중...</value></string>
+  <string><id>14006</id><value>스트림 목록 다운로드 실패</value></string>
+  <string><id>14007</id><value>재생목록 파일 다운로드 실패</value></string>
+  <string><id>14008</id><value>Kai 알림 활성화</value></string>
+  <string><id>14009</id><value>게임 디렉토리</value></string>
+  <string><id>14010</id><value>Autoswitch to Thumbs based on</value></string>
+  <string><id>14011</id><value>Enable Autoswitching to Thumbs View</value></string>
+  <string><id>14012</id><value>- 큰 아이콘 사용하기</value></string>
+  <string><id>14013</id><value>- Switch Based on</value></string>
+  <string><id>14014</id><value>- 퍼센트</value></string>
+  <string><id>14015</id><value>No Files and at least one Thumb</value></string>
+  <string><id>14016</id><value>At least one File and Thumb</value></string>
+  <string><id>14017</id><value>Percentage of Thumbs</value></string>
+  <string><id>14018</id><value>옵션 보기</value></string>
+  <string><id>14019</id><value>지역코드 1 변경</value></string>
+  <string><id>14020</id><value>지역코드 2 변경</value></string>
+  <string><id>14021</id><value>지역코드 3 변경</value></string>
+  <string><id>14022</id><value>Library</value></string>
+  <string><id>14023</id><value>No TV</value></string>
+  <string><id>14024</id><value>Enter the nearest large town or US ZIP code</value></string>
+  <string><id>14025</id><value>비디오 캐쉬   - 하드디스크</value></string>
+  <string><id>14026</id><value>              - DVD롬</value></string>
+  <string><id>14027</id><value>              - 지역 네트워크</value></string>
+  <string><id>14028</id><value>              - 인터넷</value></string>
+  <string><id>14029</id><value>오디오 캐쉬   - 하드디스크</value></string>
+  <string><id>14030</id><value>              - DVD롬</value></string>
+  <string><id>14031</id><value>              - 지역 네트워크</value></string>
+  <string><id>14032</id><value>              - 인터넷</value></string>
+  <string><id>14033</id><value>DVD 캐쉬      - 하드디스크</value></string>
+  <string><id>14034</id><value>              - DVD롬</value></string>
+  <string><id>14035</id><value>              - 지역 네트워크</value></string>
+  <string><id>14036</id><value>서버들</value></string>
+  <string><id>14037</id><value>보기와 느낌</value></string>
+  <string><id>14038</id><value>네트워크 설정이 변경되었습니다.</value></string>
+  <string><id>14039</id><value>변경값을 적용하려면 XBMC를 재시작해야 합니다.</value></string>
+  <string><id>14040</id><value>지금 재시작하시겠습니까?</value></string>
+  <string><id>14041</id><value>Post Processing</value></string>
+  <string><id>14042</id><value>Engine IP 주소</value></string>
+  <string><id>14043</id><value>- 재생하는 동안에 종료하기</value></string>
+  <string><id>14044</id><value>%i 분</value></string>
+  <string><id>14045</id><value>%i 초</value></string>
+  <string><id>14046</id><value>%i 밀리초</value></string>
+  <string><id>14047</id><value>%i %%</value></string>
+  <string><id>14048</id><value>%i kbps</value></string>
+  <string><id>14049</id><value>%i kb</value></string>
+  <string><id>14050</id><value>%i.0 dB</value></string>
+  <string><id>14051</id><value>12 시간 시계로 보여주기</value></string>
+  <string><id>14052</id><value>초기 화면에서 월과 일을 뒤바꾸기</value></string>
+  <string><id>14053</id><value>GUI 필터</value></string>
+  <string><id>14054</id><value>인터넷 찾기 활성화</value></string>
 </strings>
