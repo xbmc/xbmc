@@ -32,7 +32,7 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="3"/>
+				DebugInformationFormat="4"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -54,7 +54,7 @@
 				Name="VCPreLinkEventTool"/>
 			<Tool
 				Name="XboxDeploymentTool"
-				RemotePath="xe:\guilib\default.xbe"/>
+				RemotePath="xe:\xbmc\xbmcd.xbe"/>
 			<Tool
 				Name="XboxImageTool"
 				FileName="$(TargetDir)default.xbe"
@@ -75,6 +75,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
+				GlobalOptimizations="TRUE"
+				FavorSizeOrSpeed="2"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
 				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE"
@@ -221,7 +223,7 @@
 				Name="VCPreLinkEventTool"/>
 			<Tool
 				Name="XboxDeploymentTool"
-				RemotePath="xe:\guilib\default.xbe"/>
+				RemotePath="xe:\xbmc\default.xbe"/>
 			<Tool
 				Name="XboxImageTool"
 				FileName="$(TargetDir)default.xbe"
@@ -332,7 +334,7 @@
 				Name="VCPreLinkEventTool"/>
 			<Tool
 				Name="XboxDeploymentTool"
-				RemotePath="xe:\guilib\default.xbe"/>
+				RemotePath="xe:\xbmc\default.xbe"/>
 			<Tool
 				Name="XboxImageTool"
 				FileName="$(TargetDir)default.xbe"
@@ -1263,6 +1265,12 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\cores\IPlayer.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\ModPlayer.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\ModPlayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\cores\mplayer.cpp">
