@@ -794,6 +794,24 @@ bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
 }
 
 
+bool CUtil::GetDirectoryName(const CStdString& strFileName, CStdString& strDescription)
+{
+	CStdString strFName=CUtil::GetFileName(strFileName);
+	strDescription=strFileName.Left(strFileName.size()-strFName.size());
+	if (CUtil::HasSlashAtEnd(strDescription) )
+	{
+		strDescription=strDescription.Left(strDescription.size()-1);
+	}
+	int iPos=strDescription.ReverseFind("\\");
+	if (iPos < 0)
+		iPos=strDescription.ReverseFind("/");
+	if (iPos >=0)
+	{
+		strDescription=strDescription.Right(strDescription.size()-iPos);
+	}
+	else strDescription=strFName;
+	return true;
+}
 bool CUtil::GetXBEDescription(const CStdString& strFileName, CStdString& strDescription)
 {
 

@@ -283,7 +283,11 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
                                     CStdString strSubFile=strFile;
                                     strSubFile+="\\";
                                     strSubFile+=subwfd.cFileName;
-                                    CUtil::GetXBEDescription(strSubFile, strSubDescription);
+									if (!CUtil::GetXBEDescription(strSubFile, strSubDescription)) {
+										CUtil::GetDirectoryName(strSubFile, strSubDescription);
+										CUtil::ShortenFileName(strSubDescription);
+										CUtil::RemoveIllegalChars(strSubDescription);
+									}
                                     CFileItem *pItem = new CFileItem(strSubDescription);
                                     pItem->m_strPath=strSubFile;
                                     pItem->m_bIsFolder=false;
@@ -305,7 +309,11 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
                 if (bOnlyDefaultXBE ? CUtil::IsDefaultXBE(strFileName) : CUtil::IsXBE(strFileName))
                 {
                     CStdString strDescription;
-                    CUtil::GetXBEDescription(strFile,strDescription);
+					if (!CUtil::GetXBEDescription(strFile,strDescription)) {
+						CUtil::GetDirectoryName(strFile, strDescription);
+						CUtil::ShortenFileName(strDescription);
+						CUtil::RemoveIllegalChars(strDescription);
+					}
                     CFileItem *pItem = new CFileItem(strDescription);
                     pItem->m_strPath=strFile;
                     pItem->m_bIsFolder=false;
