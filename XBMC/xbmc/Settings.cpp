@@ -212,9 +212,13 @@ bool CSettings::Load()
 	GetString(pRootElement, "dashboard", g_stSettings.szDashboard,"C:\\xboxdash.xbe");
 	
 	GetString(pRootElement, "CDDBIpAdres", g_stSettings.m_szCDDBIpAdres,"194.97.4.18");
+	if (g_stSettings.m_szCDDBIpAdres == "194.97.4.18")
+		GetString(pRootElement, "CDDBIpAddress", g_stSettings.m_szCDDBIpAdres,"194.97.4.18");
 	//g_stSettings.m_bUseCDDB=GetBoolean(pRootElement, "CDDBEnabled");
 
 	GetString(pRootElement, "ipadres", g_stSettings.m_strLocalIPAdres,"");
+	if (g_stSettings.m_strLocalIPAdres != "")
+		GetString(pRootElement, "ip", g_stSettings.m_strLocalIPAdres,"");
 	GetString(pRootElement, "netmask", g_stSettings.m_strLocalNetmask,"");
 	GetString(pRootElement, "defaultgateway", g_stSettings.m_strGateway,"");
 	GetString(pRootElement, "nameserver", g_stSettings.m_strNameServer,"");
