@@ -687,10 +687,11 @@ static unsigned int video_preinit(const char *arg)
 	// Create the pixel shader
 	if (!m_hPixelShader)
 	{
-		//D3DPIXELSHADERDEF* ShaderBuffer = (D3DPIXELSHADERDEF*)((char*)XLoadSection("PXLSHADER") + 4);
+		D3DPIXELSHADERDEF* ShaderBuffer = (D3DPIXELSHADERDEF*)((char*)XLoadSection("PXLSHADER") + 4);
+		g_graphicsContext.Get3DDevice()->CreatePixelShader(ShaderBuffer, &m_hPixelShader);
 
 		// shader to interleave separate Y U and V planes into a single YUV output
-		const char* shader =
+/*		const char* shader =
 			"xps.1.1\n"
 			"def c0,1,0,0,0\n"
 			"def c1,0,1,0,0\n"
@@ -700,11 +701,10 @@ static unsigned int video_preinit(const char *arg)
 			"tex t2\n"
 			"xmma discard,discard,r0, t0,c0, t1,c1\n"
 			"mad r0, t2,c2,r0\n";
-
 		XGBuffer* pShader;
 		XGAssembleShader("XBMCShader", shader, strlen(shader), 0, NULL, &pShader, NULL, NULL, NULL, NULL, NULL);
 		g_graphicsContext.Get3DDevice()->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_hPixelShader);
-		pShader->Release();
+		pShader->Release();*/
 	}
 
 	return 0;
@@ -845,11 +845,13 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
 	D3DLOCKED_RECT lr;
 
   // copy Y
+	static int minY = 16;
+	static int maxY = 234;
 	m_YTexture[m_iYUVDecodeBuffer]->LockRect(0, &lr, NULL, 0);
   d=(BYTE*)lr.pBits + lr.Pitch*y + x;
   s=src[0];
   for(i=0;i<h;i++){
-    fast_memcpy(d,s,w);
+		fast_memcpy(d,s,w);
     s+=stride[0];
     d+=lr.Pitch;
   }
@@ -862,7 +864,7 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
   d=(BYTE*)lr.pBits + lr.Pitch*y + x;
   s=src[1];
   for(i=0;i<h;i++){
-    fast_memcpy(d,s,w);
+		fast_memcpy(d,s,w);
     s+=stride[1];
     d+=lr.Pitch;
   }
@@ -873,7 +875,7 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
   d=(BYTE*)lr.pBits + lr.Pitch*y + x;
   s=src[2];
   for(i=0;i<h;i++){
-    fast_memcpy(d,s,w);
+		fast_memcpy(d,s,w);
     s+=stride[2];
     d+=lr.Pitch;
   }
@@ -1087,7 +1089,7 @@ void xbox_video_render()
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_ONE );
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_ZERO );
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_YUVENABLE, TRUE );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_YUVENABLE, FALSE /*TRUE*/ );
 	g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_YV12VERTEX );
 	g_graphicsContext.Get3DDevice()->SetPixelShader( m_hPixelShader );
 	// Render the image
@@ -1334,8 +1336,8 @@ static unsigned int put_image(mp_image_t *mpi)
 		d=(BYTE*)lr.pBits + lr.Pitch*y + x;
     s=mpi->planes[0];
     for(i=0;i<h;i++)
-    {
-      fast_memcpy(d,s,w);
+		{
+			fast_memcpy(d,s,w);
       s+=mpi->stride[0];
       d+=lr.Pitch;
     }
