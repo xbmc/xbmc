@@ -368,6 +368,9 @@ void CGUIWindowVideoTitle::OnClick(int iItem)
     m_iItemSelected=-1;
 		if ( pItem->m_bIsShareOrDrive ) 
 		{
+      if ( !HaveBookmarkPermissions( pItem, "videos" ) )
+        return;
+
 			if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )
 				return;
 		}

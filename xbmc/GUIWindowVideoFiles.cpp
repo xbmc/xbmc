@@ -588,6 +588,9 @@ void CGUIWindowVideoFiles::OnClick(int iItem)
     m_iItemSelected=-1;
 		if ( pItem->m_bIsShareOrDrive ) 
 		{
+      if ( !HaveBookmarkPermissions( pItem, "videos" ) )
+        return;
+
 			if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )
 				return;
 		}
@@ -1300,7 +1303,7 @@ void CGUIWindowVideoFiles::OnPopupMenu(int iItem)
 		// mark the item
 		m_vecItems[iItem]->Select(true);
 		// and do the popup menu
-		if (CGUIDialogContextMenu::BookmarksMenu("videos", m_vecItems[iItem]->GetLabel(), m_vecItems[iItem]->m_strPath, iPosX, iPosY))
+		if (CGUIDialogContextMenu::BookmarksMenu("videos", m_vecItems[iItem]->GetLabel(), m_vecItems[iItem]->m_strPath, m_vecItems[iItem]->m_iLockMode, !(m_vecItems[iItem]->m_iBadPwdCount < g_stSettings.m_iMasterLockMaxRetry), iPosX, iPosY))
 		{
 			m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
 			Update(m_strDirectory);

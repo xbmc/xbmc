@@ -338,6 +338,15 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 		m_vecIcons.push_back(icon);
 		pFileType=pFileType->NextSibling();
 	}
+    
+	TiXmlElement* pMasterLockElement =pRootElement->FirstChildElement("masterlock");
+	if (pMasterLockElement)
+	{
+		GetInteger(pMasterLockElement, "maxretry", g_stSettings.m_iMasterLockMaxRetry , 0, 0, 100);
+		GetInteger(pMasterLockElement, "enableshutdown", g_stSettings.m_iMasterLockEnableShutdown , 0, 0, 1);
+		GetString(pMasterLockElement, "mastercode", g_stSettings.szMasterLockCode, "");
+		GetInteger(pMasterLockElement, "startuplock", g_stSettings.m_iMasterLockStartupLock , 0, 0, 1);
+	}
 
 	TiXmlElement* pSambaElement =pRootElement->FirstChildElement("samba");
 	if (pSambaElement)
@@ -524,6 +533,9 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 				const TiXmlNode *pPathName=pChild->FirstChild("path");
 				const TiXmlNode *pCacheNode=pChild->FirstChild("cache");
 				const TiXmlNode *pDepthNode=pChild->FirstChild("depth");
+				const TiXmlNode *pLockMode=pChild->FirstChild("lockmode");
+				const TiXmlNode *pLockCode=pChild->FirstChild("lockcode");
+				const TiXmlNode *pBadPwdCount=pChild->FirstChild("badpwdcount");
 				if (pNodeName && pPathName)
 				{
 					const char* szName=pNodeName->FirstChild()->Value();
@@ -536,6 +548,9 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 					share.strPath=szPath;
 					share.m_iBufferSize=0;
 					share.m_iDepthSize=1;
+         	share.m_iLockMode=LOCK_MODE_EVERYONE;
+         	share.m_strLockCode="";
+         	share.m_iBadPwdCount=0;
 					CStdString strPath=share.strPath;
 					strPath.ToUpper();
 					if (strPath.Left(4)=="UDF:")
@@ -567,6 +582,20 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 						share.m_iDepthSize=atoi( pDepthNode->FirstChild()->Value() );
 					}
 
+				 	if (pLockMode)
+				 	{
+						share.m_iLockMode=atoi( pLockMode->FirstChild()->Value() );
+					}
+
+         	if (pLockCode)
+         	{                        
+           	share.m_strLockCode=pLockCode->FirstChild()->Value();
+          }
+
+				 	if (pBadPwdCount)
+				 	{
+					 	share.m_iBadPwdCount=atoi( pBadPwdCount->FirstChild()->Value() );
+				 	}
 
 					ConvertHomeVar(share.strPath);
 
@@ -1413,11 +1442,12 @@ bool CSettings::LoadXml()
 	return true;
 }
 
-bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString &strOldName, const CStdString &strName, const CStdString &strPath)
+bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString &strOldName, const CStdString &strUpdateElement, const CStdString &strUpdateText)
 {
 	if (!LoadXml()) return false;
 
 	VECSHARES *pShares = NULL;
+	if (strType == "programs") pShares = &m_vecMyProgramsBookmarks;
 	if (strType == "files") pShares = &m_vecMyFilesShares;
 	if (strType == "music") pShares = &m_vecMyMusicShares;
 	if (strType == "videos") pShares = &m_vecMyVideoShares;
@@ -1429,8 +1459,18 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString &strO
 	{
 		if ((*it).strName == strOldName)
 		{
-			(*it).strName = strName;
-			(*it).strPath = strPath;
+     	if ("name" == strUpdateElement)
+       	(*it).strName = strUpdateText;
+     	else if ("path" == strUpdateElement)
+       	(*it).strPath = strUpdateText;
+     	else if ("lockmode" == strUpdateElement)
+       	(*it).m_iLockMode = atoi(strUpdateText);
+     	else if ("lockcode" == strUpdateElement)
+       	(*it).m_strLockCode = strUpdateText;
+     	else if ("badpwdcount" == strUpdateElement)
+       	(*it).m_iBadPwdCount = atoi(strUpdateText);
+     	else
+       	return false;
 		}
 	}
 	// Return bookmark of
@@ -1449,11 +1489,19 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString &strO
 			TiXmlNode *pChild = pIt->FirstChild("name");
 			if (pChild && pChild->FirstChild()->Value() == strOldName)
 			{
-				pChild->FirstChild()->SetValue(strName);
-				pChild = pIt->FirstChild("path");
+				pChild = pIt->FirstChild(strUpdateElement);
 				if (pChild)
-					pIt->FirstChild("path")->FirstChild()->SetValue(strPath);
-				break;
+       	{
+        	pIt->FirstChild(strUpdateElement)->FirstChild()->SetValue(strUpdateText);
+       	}
+      	else
+       	{
+        	TiXmlText xmlText(strUpdateText);
+        	TiXmlElement eElement(strUpdateElement);
+        	eElement.InsertEndChild(xmlText);
+        	pIt->ToElement()->InsertEndChild(eElement);
+        }
+       	break;
 			}
 			else
 				pIt = pIt->NextSibling("bookmark");
@@ -1575,6 +1623,66 @@ bool CSettings::AddBookmark(const CStdString &strType, const CStdString &strName
 		pNode->ToElement()->InsertEndChild(bookmark);
 	}
 	return xbmcXml.SaveFile();
+}
+
+bool CSettings::SetBookmarkLocks(const CStdString &strType, bool bEngageLocks)
+{
+ 	if (!LoadXml()) return false;
+
+	VECSHARES *pShares = NULL;
+	if (strType == "files") pShares = &g_settings.m_vecMyFilesShares;
+	if (strType == "music") pShares = &g_settings.m_vecMyMusicShares;
+	if (strType == "videos") pShares = &g_settings.m_vecMyVideoShares;
+	if (strType == "pictures") pShares = &g_settings.m_vecMyPictureShares;
+	if (strType == "myprograms") pShares = &g_settings.m_vecMyProgramsBookmarks;
+
+	if (!pShares) return false;
+
+    for (IVECSHARES it = pShares->begin(); it != pShares->end(); it++)
+    {
+        if ((*it).m_iLockMode < 0 && bEngageLocks)
+            (*it).m_iLockMode = (*it).m_iLockMode * -1;
+        else if ((*it).m_iLockMode > 0 && !bEngageLocks)
+            (*it).m_iLockMode = (*it).m_iLockMode * -1;
+    }
+    // Return bookmark of
+    TiXmlElement *pRootElement = xbmcXml.RootElement();
+    TiXmlNode *pNode = NULL;
+    TiXmlNode *pIt = NULL;
+
+    pNode = pRootElement->FirstChild(strType);
+    bool bXmlChanged = false;
+
+    // if valid bookmark, find child at pos (id)
+    if (pNode)
+    {
+        pIt = pNode->FirstChild("bookmark");
+        while (pIt)
+        {
+            TiXmlNode *pChild = pIt->FirstChild("lockmode");
+            if (pChild)
+            {
+                CStdString strLockModeValue = pChild->FirstChild()->Value();
+                if (strLockModeValue.Mid(0, 1) == "-" && bEngageLocks)
+                {
+                    strLockModeValue = strLockModeValue.Mid(1, strlen(strLockModeValue) - 1);
+                    pIt->FirstChild("lockmode")->FirstChild()->SetValue(strLockModeValue);
+                    bXmlChanged = true;
+                }
+                else if (strLockModeValue.Mid(0, 1) != "-" && !bEngageLocks)
+                {
+                    strLockModeValue = "-" + strLockModeValue;
+                    pIt->FirstChild("lockmode")->FirstChild()->SetValue(strLockModeValue);
+                    bXmlChanged = true;
+                }
+            }
+            pIt = pIt->NextSibling("bookmark");
+        }
+    }
+    if (bXmlChanged)
+        return xbmcXml.SaveFile();
+    else
+        return true;
 }
 
 void CSettings::LoadHomeButtons(TiXmlElement* pRootElement)
