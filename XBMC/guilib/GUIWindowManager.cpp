@@ -249,20 +249,17 @@ void CGUIWindowManager::OnAction(const CAction &action)
 
 void CGUIWindowManager::Render()
 {
+	if (m_iActiveWindow >= 0)
+	{
+		CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
+		pWindow->Render();
+	}
+
 	if (m_pRouteWindow)
 	{
 		m_pRouteWindow->Render();
-		return;
 	}
   
-	if (m_iActiveWindow < 0)
-	{
-		return;
-	}
-  
-	CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
-	pWindow->Render();
-
 	// render modeless windows
 	int nWindow = 0;
 	int nWindowsPre;
