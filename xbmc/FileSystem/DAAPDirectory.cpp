@@ -26,7 +26,9 @@
 #include "directorycache.h"
 #include "../lib/libsmb/xbLibSmb.h"
 #include "../application.h"
-#include "../utils/CharsetConverter.h"
+// using the smb library for UTF-8 conversion
+#include "../lib/libsmb/xbLibSmb.h"
+//#include "../utils/CharsetConverter.h"
 
 CDAAPDirectory::CDAAPDirectory(void)
 {
@@ -74,6 +76,7 @@ void  CDAAPDirectory::CloseDAAP(void)
 bool  CDAAPDirectory::GetDirectory(const CStdString& strPath, VECFILEITEMS &items)
 {
 	int c;
+	wchar_t wStrFile[1024]; // buffer for converting strings
 
 	CURL url(strPath);
   
@@ -152,9 +155,15 @@ bool  CDAAPDirectory::GetDirectory(const CStdString& strPath, VECFILEITEMS &item
 			{
 				CStdString strThisRoot = m_thisHost->dbplaylists->playlists[c].itemname;
 				CStdString strFile;
+				size_t strLen;
 
 				// convert from UTF8 to charset string
 				//g_charsetConverter.utf8ToStringCharset(strThisRoot, strFile);
+
+				// convert from UTF8 to wide string
+				strLen = convert_string(CH_UTF8, CH_UCS2, strThisRoot, strThisRoot.length(), wStrFile, 1024, false);
+				wStrFile[(strLen/2)] = 0;
+				CUtil::Unicode2Ansi(wStrFile, strFile);
 
 				// Add item to directory list
 				CFileItem* pItem = new CFileItem(strFile);
