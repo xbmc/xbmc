@@ -182,6 +182,8 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
   
   // enable direct rendering (mplayer directly draws on xbmc's overlay texture)
   m_vecOptions.push_back("-dr");    
+  //m_vecOptions.push_back("-verbose");    
+ // m_vecOptions.push_back("1");    
 
   if (m_bNoCache)
   {
