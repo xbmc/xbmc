@@ -1258,10 +1258,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\cores\ModPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
@@ -1930,6 +1930,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\mplayer\audio.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\mplayer\ComboRenderer.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\mplayer\ComboRenderer.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\mplayer\mplayer.cpp">

@@ -15,7 +15,7 @@ using namespace std;
 // Render Methods
 #define RENDER_PIXEL_SHADER				0
 #define RENDER_OVERLAYS						1
-#define RENDER_OVERLAYS_FAST			2
+#define RENDER_COMBO							2
 
 // Subtitle colours
 
