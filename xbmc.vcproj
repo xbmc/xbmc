@@ -1284,6 +1284,12 @@
 				RelativePath=".\xbmc\utils\IMDB.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\utils\lcd.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\LCD.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\utils\log.cpp">
 			</File>
 			<File
