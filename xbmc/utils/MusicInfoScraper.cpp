@@ -95,7 +95,7 @@ bool CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum)
 				util.RemoveTags(strAlbum);
 				strAlbumName=strAlbum + " " + strAlbumName;
 			}
-			if (iCol==5 && strColum.Find("a onclick=\"z('") >= 0)
+			if (iCol==5 && strColum.Find("a href=\"javascript:j('") >= 0)
 			{
 				int iPos=strColum.Find(">");
 				if (iPos >= 0)
