@@ -238,7 +238,6 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 			m_iLastControl=GetFocusedControl();
 			m_iItemSelected=GetSelectedItem(m_iLastControl-CONTROL_LEFT_LIST);
 			Clear();
-			g_application.EnableOverlay();
 		}	
     break;
 
@@ -274,7 +273,6 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 				CONTROL_SELECT_ITEM(GetID(), CONTROL_LEFT_LIST+i, iItem)
 			}
 
-			g_application.DisableOverlay();
 			return true;
 		}
     break;

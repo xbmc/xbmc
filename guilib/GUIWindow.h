@@ -105,6 +105,7 @@ protected:
   DWORD	m_dwWidth;
   DWORD m_dwHeight;
   vector<int> m_vecGroups;
+  int m_iOverlayAllowed;
 };
 
 #endif

@@ -43,11 +43,11 @@ CGUIWindowVideoInfo::~CGUIWindowVideoInfo(void)
 void CGUIWindowVideoInfo::OnAction(const CAction &action)
 {
 	if (action.wID == ACTION_PREVIOUS_MENU)
-    {
+  {
 		Close();
 		return;
-    }
-	CGUIWindow::OnAction(action);
+  }
+	CGUIDialog::OnAction(action);
 }
 
 bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
@@ -57,15 +57,13 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 		case GUI_MSG_WINDOW_DEINIT:
 		{
 			m_pMovie=NULL;
-			g_application.EnableOverlay();
 		}
 		break;
 
     case GUI_MSG_WINDOW_INIT:
     {
       m_bRefresh=false;
-			CGUIWindow::OnMessage(message);
-			g_application.DisableOverlay();
+			CGUIDialog::OnMessage(message);
 			m_bViewReview=true;
       CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_DISC,0,0,NULL);
       g_graphicsContext.SendMessage(msg);         
@@ -183,7 +181,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
     break;
   }
 
-  return CGUIWindow::OnMessage(message);
+  return CGUIDialog::OnMessage(message);
 }
 
 void CGUIWindowVideoInfo::SetMovie(CIMDBMovie& album)

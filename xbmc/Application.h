@@ -140,8 +140,6 @@ public:
 	bool					PlayFile(const CFileItem& item,bool bRestart=false);
 	void					StopPlaying();
 	void					Restart(bool bSamePosition=true);
-	void					EnableOverlay();
-	void					DisableOverlay();
 	bool					IsPlaying() const ;
 	bool					IsPlayingAudio() const ;
 	bool					IsPlayingVideo() const ;
@@ -275,7 +273,6 @@ protected:
   bool                    m_bXboxMediacenterLoaded,m_bSettingsLoaded;
   CIMDBMovie              m_tagCurrentMovie;
   int                     m_iPlaySpeed;
-	bool										m_bOverlayEnabled;
   bool                    m_bAllSettingsLoaded;
   CFileItem              m_itemCurrentFile;
   D3DGAMMARAMP m_OldRamp;			// CB: SCREENSAVER PATCH

@@ -24,6 +24,7 @@ CGraphicContext::CGraphicContext(void)
   m_strMediaDir="D:\\media";
 	m_bShowPreviewWindow=false;
 	m_bCalibrating=false;
+  m_bShowOverlay=true;
 	m_Resolution=INVALID;
 	m_pCallback=NULL;
 }
@@ -172,6 +173,16 @@ bool CGraphicContext::IsCalibrating() const
 void CGraphicContext::SetCalibrating(bool bOnOff)
 {
 	m_bCalibrating=bOnOff;
+}
+
+bool CGraphicContext::IsOverlayAllowed() const
+{
+	return m_bShowOverlay;
+}
+
+void CGraphicContext::SetOverlay(bool bOnOff)
+{
+	m_bShowOverlay=bOnOff;
 }
 
 bool CGraphicContext::IsValidResolution(RESOLUTION res)

@@ -11,6 +11,7 @@ CGUIDialog::CGUIDialog(DWORD dwID)
 	m_pParentWindow=NULL;
 	m_dwPrevRouteWindow=WINDOW_INVALID;
 	m_pPrevRouteWindow=NULL;
+  m_bPrevOverlayAllowed=true;
 }
 
 CGUIDialog::~CGUIDialog(void)
@@ -45,6 +46,27 @@ bool CGUIDialog::Load(const CStdString& strFileName, bool bContainsPath)
 	return true;
 }
 
+bool CGUIDialog::OnMessage(CGUIMessage& message)
+{
+  switch ( message.GetMessage() )
+  {
+    case GUI_MSG_WINDOW_INIT:
+    {
+      m_bPrevOverlayAllowed=g_graphicsContext.IsOverlayAllowed();
+      CGUIWindow::OnMessage(message);
+      return true;
+    }
+    break;
+
+    case GUI_MSG_WINDOW_DEINIT:
+    {
+      g_graphicsContext.SetOverlay(m_bPrevOverlayAllowed);
+    }
+    break;
+  }
+
+  return CGUIWindow::OnMessage(message);
+}
 
 void CGUIDialog::Render()
 {

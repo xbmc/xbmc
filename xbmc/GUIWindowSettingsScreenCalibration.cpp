@@ -89,9 +89,9 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
 		{
 			CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0,0,0,NULL);
 			g_application.m_guiWindowOSD.OnMessage(msg);	// Send an init msg to the OSD
-			g_application.EnableOverlay();
 			g_settings.Save();
 			g_graphicsContext.SetCalibrating(false);
+			g_graphicsContext.SetOverlay(true);
 			// reset our screen resolution to what it was initially
 			g_graphicsContext.SetGUIResolution(g_stSettings.m_GUIResolution);
 			// Inform the player so we can update the resolution
@@ -103,7 +103,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
 		case GUI_MSG_WINDOW_INIT:
 		{
 			CGUIWindow::OnMessage(message);
-			g_application.DisableOverlay();
+			g_graphicsContext.SetOverlay(false);
 			g_graphicsContext.SetCalibrating(true);
 			// Inform the player so we can update the resolution
 			if (g_application.IsPlayingVideo())
