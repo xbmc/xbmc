@@ -164,7 +164,14 @@ bool CIMDB::FindMovie(const CStdString &strMovie,IMDB_MOVIELIST& movielist)
 						pURLQuestion++;
 						*pURLQuestion=0;
 					}
-          strcpy(szURL, pAHREF);
+ 					char *pURLQuote=strstr(pAHREF, "\"");
+					if (pURLQuote)
+					{
+						*pURLQuote=0;
+						pURLQuote++;
+						*pURLQuote=0;
+					}
+         strcpy(szURL, pAHREF);
 					if (pURLEnd)  
           {
             *pURLEnd=0;
