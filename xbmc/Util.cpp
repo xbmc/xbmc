@@ -2099,19 +2099,44 @@ CStdString CUtil::GetNextFilename(const char* fn_template, int max)
 	return ""; // no fn generated
 }
 
-void CUtil::FlashScreen(bool bImmediate)
+#define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x))
+// Valid ranges:
+//  brightness -1 -> 1
+//  contrast    0 -> 2
+//  gamma     0.5 -> 3.5
+void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate)
 {
-	g_graphicsContext.Lock();
-	D3DGAMMARAMP oldramp, ramp;
-	g_graphicsContext.Get3DDevice()->GetGammaRamp(&ramp);
-	memcpy(&oldramp, &ramp, sizeof(D3DGAMMARAMP));
-	for (int i = 0; i < 255; ++i)
+	// calculate ramp
+	D3DGAMMARAMP ramp;
+
+	Gamma = 1.0f / Gamma;
+	for (int i = 0; i < 256; ++i)
 	{
-		ramp.blue[i] = 255 - ramp.blue[i];
-		ramp.green[i] = 255 - ramp.green[i];
-		ramp.red[i] = 255 - ramp.red[i];
+		float f = (powf((float)i / 255.f, Gamma) * Contrast + Brightness)*255.f;
+		ramp.blue[i] = ramp.green[i] = ramp.red[i] = clamp(f);
 	}
+
+	// set ramp next v sync
+	g_graphicsContext.Lock();
 	g_graphicsContext.Get3DDevice()->SetGammaRamp(bImmediate ? D3DSGR_IMMEDIATE : 0, &ramp);
+	g_graphicsContext.Unlock();
+}
+
+void CUtil::FlashScreen(bool bImmediate, bool bOn)
+{
+	static bool bInFlash = false;
+	static D3DGAMMARAMP oldramp;
+	if (bInFlash == bOn)
+		return;
+	bInFlash = bOn;
+	g_graphicsContext.Lock();
+	if (bOn)
+	{
+		g_graphicsContext.Get3DDevice()->GetGammaRamp(&oldramp);
+		SetBrightnessContrastGamma(0.5f, 1.2f, 2.0f, bImmediate);
+	}
+	else
+		g_graphicsContext.Get3DDevice()->SetGammaRamp(bImmediate ? D3DSGR_IMMEDIATE : 0, &oldramp);
 	g_graphicsContext.Unlock();
 }
 
@@ -2130,7 +2155,6 @@ void CUtil::TakeScreenshot()
 		{
 			g_graphicsContext.Lock();
 			g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
-			FlashScreen(true);
 			if (SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer(-1, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
 			{
 				if (FAILED(XGWriteSurfaceToFile(lpSurface, fn)))
@@ -2143,8 +2167,12 @@ void CUtil::TakeScreenshot()
 				}
 				lpSurface->Release();
 			}	
-			FlashScreen(true);
 			g_graphicsContext.Unlock();
+			g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
+			FlashScreen(true, true);
+			Sleep(10);
+			g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
+			FlashScreen(true, false);
 		}
 		else
 		{
