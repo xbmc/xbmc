@@ -1,5 +1,5 @@
-<!-- Translation date: 10/29/2004 -->
-<!-- Translation Version: v1.114 -->
+<!-- Translation date: 11/11/2004 -->
+<!-- Translation Version: v1.122 -->
 <!-- Language: Portuguese Brazil (pt_BR )-->
 <strings>
   <string>
@@ -2049,11 +2049,41 @@
 <string><id>13305</id><value>Ativar Notícias RSS</value></string>
 <string><id>13306</id><value>Esconder ítens de pastas relacionadas</value></string>
 <string><id>13307</id><value>Esconder número da pista</value></string>
-<string><id>13308</id><value>Deseja fazer um reinicio forçado?</value></string>
-<string><id>13309</id><value>Ao invés de Reset</value></string>
+<string><id>13308</id><value>Deseja reiniciar o Xbox</value></string>
+<string><id>13309</id><value>Ao invés do XBMC?</value></string>
 <string><id>13310</id><value>Efeito de Zoom</value></string>
 <string><id>13311</id><value>Efeito de Flutuação</value></string>
 <string><id>13312</id><value>Redução de Borda Preta</value></string>
 <string><id>13313</id><value>Resetar/Reiniciar</value></string>
 <string><id>13314</id><value>Intervalo de Parada da Música OSD</value></string>
+<string><id>13315</id><value>Criar Ícones</value></string>
+<string><id>13316</id><value>Ícones Recursivos</value></string>
+<string><id>13317</id><value>Ver Slideshow</value></string>
+<string><id>13318</id><value>Slideshow Recursivo</value></string>
+<string><id>13319</id><value>Misturar Slideshow</value></string>
+<string><id>13320</id><value>Stereo</value></string>
+<string><id>13321</id><value>Apenas Esquerda</value></string>
+<string><id>13322</id><value>Apenas Direita</value></string>
+<string><id>13323</id><value>Ativar CD+G</value></string>
+<string><id>13324</id><value>Transparência do Fundo</value></string>
+<string><id>13325</id><value>Transparência do Primeiro Plano</value></string>
+<string><id>13326</id><value>Atraso A/V</value></string>
+<string><id>13327</id><value>Karaoke</value></string>
+<string><id>13328</id><value>%s não encontrado.</value></string>
+<string><id>13329</id><value>Erro ao abrir %s</value></string>
+<string><id>13330</id><value>Erro ao carregar %s</value></string>
+<string><id>13331</id><value>Erro: sem memória.</value></string>
+<string><id>13332</id><value>Mover Cima</value></string>
+<string><id>13333</id><value>Mover Baixo</value></string>
+<string><id>13334</id><value>Editar Etiqueta</value></string>
+<string><id>13335</id><value>Fazer Padrão</value></string>
+<string><id>13336</id><value>Remover Botão</value></string>
+<string><id>14000</id><value>Stacking: Off</value></string>
+<string><id>14001</id><value>Stacking: Simple</value></string>
+<string><id>14002</id><value>Stacking: Fuzzy</value></string>
+<string><id>14003</id><value>Baixando arquivo da lista de execução...</value></string>
+<string><id>14004</id><value>Baixando lista de streams...</value></string>
+<string><id>14005</id><value>Conferindo lista de streams...</value></string>
+<string><id>14006</id><value>Não foi possível baixar a lista de streams</value></string>
+<string><id>14007</id><value>Não foi possível baixar a lista de arquivos</value></string>
 </strings>
