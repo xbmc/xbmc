@@ -1,6 +1,6 @@
 <!-- Finnish - language resource  -->
-<!-- Finnish Translation 2004-8-25 by Nanite1000 -->
-<!-- Based on CVS revision 2004-8-24 YYYY-MM-DD -->
+<!-- Finnish Translation 2004-9-10 by Nanite1000 -->
+<!-- Based on CVS revision 2004-9-10 YYYY-MM-DD -->
 <!-- For comments PM me in xboxmediacenter forum or IRC: nanite1k @ #xbmc on efnet-->
 <!--   or send email to: nanite1000 _at_ users _dot_ sourceforge _dot_ net  -->
 <!-- Kommentteja voi lähetellä xboxmediacentterin foorumin kautta -->
@@ -388,11 +388,11 @@
   </string> 
   <string>
     <id>167</id>
-    <value>FTP palvelin</value>
+    <value>FTP palvelin käytössä</value>
   </string> 
   <string>
     <id>168</id>
-    <value>Synkronoi aika</value>
+    <value>Synkronoi aika internetistä (NTP)</value>
   </string> 
   <string>
     <id>169</id>
@@ -584,11 +584,11 @@
   </string> 
   <string>
     <id>216</id>
-    <value>Zoomausmäärä</value>
+    <value>Suurennus</value>
   </string> 
   <string>
     <id>217</id>
-    <value>Kuvapisteen kokosuhde</value>
+    <value>Kuvasuhde</value>
   </string> 
   <string>
     <id>218</id>
@@ -768,7 +768,7 @@
   </string>
   <string>
     <id>263</id>
-    <value>HTTP palvelin</value>
+    <value>Web-palvelin (HTTP) käytössä</value>
   </string>
   <string>
     <id>264</id>
@@ -816,7 +816,7 @@
   </string>
   <string>
     <id>275</id>
-    <value>Kuvapisteen kokosuhteen säätö</value>
+    <value>Kuvasuhteen säätö</value>
   </string>
   <string>
     <id>276</id>
@@ -1862,10 +1862,130 @@
     <id>704</id>
     <value>Ei: Lisää vain uudet kappaleet.</value>
   </string>
+  <string>
+    <id>705</id>
+    <value>Verkkoasetukset</value>
+  </string>
+  <string>
+    <id>706</id>
+    <value>HTTP Välityspalvelin</value>
+  </string>
+  <string>
+  <id>707</id>
+  <value>HTTP Välitysp. Portti</value>
+  </string>
+  <string>
+    <id>708</id>
+    <value>HTTP Välityspalvelin Käytössä</value>
+  </string>
+  <string>
+    <id>709</id>
+    <value>XLink Kai XTag Tunnus</value>
+  </string>
+  <string>
+    <id>710</id>
+    <value>XLink Kai Salasana</value>
+  </string>
+  <string>
+    <id>711</id>
+    <value>IP-verkkoasetukset</value>
+  </string>
+  <string>
+    <id>712</id>
+    <value>Portin on oltava välillä 1 - 65535.</value>
+  </string>
+  <string>
+    <id>713</id>
+    <value>HTTP Välityspalvelin</value>
+  </string>	
+  <string>
+    <id>714</id>
+    <value>XLink Kai</value>
+  </string>	
+  <string>
+    <id>715</id>
+    <value>Määritetty</value>
+  </string>	
+  <string>
+    <id>716</id>
+    <value>Automaattisesti (DHCP)</value>
+  </string>	
+  <string>
+    <id>717</id>
+    <value>Manuaallisesti (Static)</value>
+  </string>  
+  <string>
+    <id>718</id>
+    <value>Vakioasetuksista (Dashboard)</value>
+  </string>  
+  <string>
+    <id>719</id>
+    <value>IP Osoite</value>
+  </string>  
+  <string>
+    <id>720</id>
+    <value>Aliverkon Peite</value>
+  </string>  
+  <string>
+    <id>721</id>
+    <value>Oletus Yhdyskäytävä</value>
+  </string>  
+  <string>
+    <id>722</id>
+    <value>Nimipalvelin (DNS)</value>
+  </string>
+  <string>
+    <id>723</id>
+    <value>Tallenna &amp; Uudelleenkäynnistä</value>
+  </string>
+  <string>
+    <id>724</id>
+    <value>Osoite oltava muotoa AAA.BBB.CCC.DDD</value>
+  </string>
+  <string>
+    <id>725</id>
+    <value>Numerot väliltä 0 - 255.</value>
+  </string>
+  <string>
+    <id>726</id>
+    <value>Poistu tallentamatta muutoksia?</value>
+  </string>
+  <string>
+    <id>727</id>
+    <value>Web Palvelin</value>
+  </string>  
+  <string>
+    <id>728</id>
+    <value>FTP Palvelin</value>
+  </string>  
+  <string>
+    <id>729</id>
+    <value>Internet Aika</value>
+  </string>  
+  <string>
+    <id>730</id>
+    <value>Web Palvelimen Portti</value>
+  </string>  
+  <string>
+    <id>731</id>
+    <value>Internet Aikapalvelin</value>
+  </string>
+  <string>
+    <id>732</id>
+    <value>Tallenna &amp; Ota Käyttöön</value>
+  </string>
+  <string>
+    <id>733</id>
+    <value>Web Palvelimen Salasana</value>
+  </string>
+  <string>
+    <id>734</id>
+    <value>Ei salasanaa</value>
+  </string>
 
   <string>
     <id>998</id>
-    <value>XLink KAI</value>
+    <value>XLink Kai</value>
   </string>
   <string>
     <id>999</id>
@@ -1937,9 +2057,9 @@
 <string><id>13300</id><value>Tuuletin:</value></string>
 <string><id>13301</id><value>Automaattinen lämpötilan säätö</value></string>
 <string><id>13302</id><value>Tuulettimen nopeus</value></string>
-
 <string><id>13303</id><value>Skinin merkistö:</value></string>
 <string><id>13304</id><value>Käänteinen merkistö:</value></string>
+<string><id>13305</id><value>RSS Uutispalvelu käytössä</value></string>
 
 </strings>
 
