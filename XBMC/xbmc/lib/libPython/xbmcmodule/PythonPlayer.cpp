@@ -27,6 +27,12 @@ void CPythonPlayer::OnPlayBackEnded()
 	Py_AddPendingCall(Py_XBMC_Event_OnPlayBackEnded, pCallback);
 }
 
+void CPythonPlayer::OnPlayBackStopped()
+{
+	// aquire lock?
+	Py_AddPendingCall(Py_XBMC_Event_OnPlayBackStopped, pCallback);
+}
+
 void CPythonPlayer::SetCallback(PyObject *object)
 {
 	pCallback = object;
@@ -50,3 +56,13 @@ int Py_XBMC_Event_OnPlayBackEnded(void* playerObject)
 	if (playerObject != NULL) PyObject_CallMethod((PyObject*)playerObject, "onPlayBackEnded", NULL);
 	return 0;
 }
+
+/*
+ * called from python library!
+ */
+int Py_XBMC_Event_OnPlayBackStopped(void* playerObject)
+{
+ 	if (playerObject != NULL) PyObject_CallMethod((PyObject*)playerObject, "onPlayBackStopped", NULL );
+ 	return 0;
+}
+
