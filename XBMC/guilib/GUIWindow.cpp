@@ -271,6 +271,21 @@ void CGUIWindow::Add(CGUIControl* pControl)
   m_vecControls.push_back(pControl);
 }
 
+void CGUIWindow::Remove(DWORD dwId)
+{
+	ivecControls i = m_vecControls.begin();
+  while(i != m_vecControls.end())
+  {
+    CGUIControl* pControl= *i;
+		if (pControl->GetID() == dwId)
+    {
+			m_vecControls.erase(i);
+			return;
+    }
+		++i;
+  }
+}
+
 int CGUIWindow::GetFocusControl()
 {
   for (int i=0; i < (int)m_vecControls.size(); ++i)

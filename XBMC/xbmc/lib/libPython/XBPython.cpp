@@ -16,12 +16,12 @@ XBPython::XBPython()
 {
 	bInitialized = false;
 	bThreadInitialize = false;
+	bStartup = true;
 	nextid = 0;
 	mainThreadState = NULL;
 	InitializeCriticalSection(&m_critSection);
 	m_hEvent = CreateEvent(NULL, false, false, "pythonEvent");
 	dThreadId = GetCurrentThreadId();
-	
 }
 
 void XBPython::SendMessage(CGUIMessage& message)
@@ -112,7 +112,17 @@ void XBPython::FreeResources()
 
 void XBPython::Process()
 {
+	// initialize if init was called from another thread
 	if (bThreadInitialize) Initialize();
+
+	// auto execute python scripts at startup
+	// todo, cron jobs
+	if (bStartup)
+	{
+		bStartup = false;
+		evalFile("Q:\\scripts\\autoexec.py");
+	}
+
 	if (!bInitialized) return;
 
 	EnterCriticalSection(&m_critSection );
@@ -135,8 +145,12 @@ void XBPython::Process()
 	LeaveCriticalSection(&m_critSection );
 }
 
+// execute script, returns -1 if script doesn't exist
 int XBPython::evalFile(const char *src)
 {
+	// return if file doesn't exist
+	if(access(src, 0) == -1) return -1;
+
 	Initialize();
 
 	nextid++;

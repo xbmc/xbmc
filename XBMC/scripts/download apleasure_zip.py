@@ -5,7 +5,7 @@ remotedir = 'planet/games/quake/maps'
 remotefile = 'apleasure.zip'
 localfile = 'Q:\\apleasure1.zip'
 
-import sys, socket, xbmc
+import sys, socket, xbmc, xbmcgui
 from ftplib import FTP
 
 class writer:
@@ -16,12 +16,10 @@ class writer:
 		f.write(data)
 		self.copied = self.copied + len(data)
 		dialog.update((self.copied * 100)/ self.size)
-		if (dialog.iscanceled()):
-			ftp.quit()
 
 pwriter = writer()
 
-dialog = xbmc.DialogProgress()
+dialog = xbmcgui.DialogProgress()
 
 dialog.create("connecting",adres)
 ftp = FTP(adres) # connect to host, default port

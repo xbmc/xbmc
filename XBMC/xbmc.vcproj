@@ -357,9 +357,6 @@
 				RelativePath=".\xbmc\ApplicationMessenger.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\ApplicationMessenger.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\Autorun.cpp">
 			</File>
 			<File
@@ -564,6 +561,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\Application.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\ApplicationMessenger.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\artistdatabase.h">
@@ -1244,13 +1244,46 @@
 					Name="xbmcmodule"
 					Filter="">
 					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\control.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\control.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\controlimage.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\controllabel.cpp">
+					</File>
+					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\dialog.cpp">
 					</File>
 					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\player.cpp">
 					</File>
 					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\util.cpp">
+						<FileConfiguration
+							Name="Debug|Xbox">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Xbox">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\util.h">
+					</File>
+					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\window.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\window.h">
 					</File>
 					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\xbmcmodule.cpp">

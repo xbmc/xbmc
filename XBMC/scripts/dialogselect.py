@@ -1,6 +1,6 @@
-import xbmc
+import xbmc, xbmcgui
 
-dialog = xbmc.Dialog()
+dialog = xbmcgui.Dialog()
 
 list = ['yes','no','cancel','movies','f:\\music\\test','test','67','true']
 list.append('last item')
