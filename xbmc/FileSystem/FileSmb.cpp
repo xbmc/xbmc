@@ -69,6 +69,27 @@ void CSMB::Purge()
 	Unlock();
 }
 
+/*
+ * For each new connection samba creates a new session
+ * But this is not what we want, we just want to have one session at the time
+ * This means that we have to call smbc_purge() if samba created a new session
+ * Samba will create a new session when:
+ * - connecting to another server
+ * - connecting to another share on the same server (share, not a different folder!)
+ *
+ * We try to avoid lot's of purge commands because it slow samba down.
+ */
+void CSMB::PurgeEx(const CURL& url)
+{
+	CStdString strShare = url.GetFileName().substr(0, url.GetFileName().Find('/'));
+
+	if (m_strLastShare.length() > 0 && (m_strLastShare != strShare || m_strLastHost != url.GetHostName()))
+		smbc_purge();
+
+	m_strLastShare = strShare;
+	m_strLastHost = url.GetHostName();
+}
+
 void CSMB::Lock()
 {
 	::EnterCriticalSection(&m_critSection);
@@ -113,19 +134,14 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
 {
 	m_bBinary = bBinary;
 
-	// since the syntax of the new smb is a little different, the workgroup is now specified
-	// as workgroup;username:pass@pc/share (strUserName contains workgroup;username)
-	// instead of username:pass@workgroup/pc/share
-	// this means that if no password and username is provided szFileName doesn't have the workgroup.
-	// should be fixed.
+	Close();
 
 	// we can't open files like smb://file.f or smb://server/file.f
-	
-	if (!url.GetFileName().Find('/'))
-	{
-		m_fd = -1;
-		return false;
-	}
+	// if a file matches the if below return false, it can't exist on a samba share.
+	if (url.GetFileName().Find('/') < 0 ||
+			url.GetFileName().at(0) == '.' ||
+			url.GetFileName().Find("/.") >= 0) return false;
+
 	CStdString strFileName;
 	url.GetURL(strFileName);
 
@@ -133,8 +149,6 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
 	char strUtfFileName[1024];
 	int strLen = convert_string(CH_DOS, CH_UTF8, strFileName.c_str(), (size_t)strFileName.length(), strUtfFileName, 1024, false);
 	strUtfFileName[strLen] = 0;
-
-	Close();
 
 	smb.Lock();
 
@@ -146,18 +160,7 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
 
 	if(m_fd == -1)
 	{
-		// file failed to open. If we tried to open a file in a share
-		// we should close all sessions available. It is slow, so don't
-		// just do it if opening a file fails.
-		char* cPos = strchr(strFileName, '/');
-		if(cPos)
-		{
-			if (strlen(cPos) > 0 && !strchr(cPos+1, '/'))
-			{
-				//we have a file in a share, close sessions
-				smbc_purge();
-			}
-		}
+		smb.PurgeEx(url);
 		smb.Unlock();
 		// write error to logfile
 		int nt_error = map_nt_error_from_unix(errno);
@@ -170,6 +173,7 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
 	if( ret < 0 )
 	{
 		smbc_close(m_fd);
+		smb.PurgeEx(url);
 		m_fd = -1;
 		smb.Unlock();
 		return false;
@@ -180,6 +184,7 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
 	if( ret < 0 )
 	{
 		smbc_close(m_fd);
+		smb.PurgeEx(url);
 		m_fd = -1;
 		smb.Unlock();
 		return false;
@@ -191,11 +196,11 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
 
 bool CFileSMB::Exists(const CURL& url)
 {
-	if (url.GetFileName().Find('/')<0)
-	{
-		m_fd = -1;
-		return false;
-	}
+	// if a file matches the if below return false, it can't exist on a samba share.
+	if (url.GetFileName().Find('/') < 0 ||
+			url.GetFileName().at(0) == '.' ||
+			url.GetFileName().Find("/.") >= 0) return false;
+
 	CStdString strFileName;
 	url.GetURL(strFileName);
 
@@ -207,23 +212,16 @@ bool CFileSMB::Exists(const CURL& url)
 	struct __stat64 info;
 
 	smb.Lock();
-	int i = smbc_stat(strUtfFileName, &info);
+	int iResult = smbc_stat(strUtfFileName, &info);
+	smb.PurgeEx(url);
 	smb.Unlock();
 	
-	if (i<0) {
-		m_fd = -1;
-		return false;
-	}
+	if (iResult < 0) return false;
 	return true;
 }
 
 int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 {
-	if (!url.GetFileName().Find('/'))
-	{
-		m_fd = -1;
-		return false;
-	}
 	CStdString strFileName;
 	url.GetURL(strFileName);
 
@@ -233,9 +231,11 @@ int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 	strUtfFileName[strLen] = 0;
 
 	smb.Lock();
-	int i = smbc_stat(strUtfFileName, buffer);
+	int iResult = smbc_stat(strUtfFileName, buffer);
+	smb.PurgeEx(url);
 	smb.Unlock();
-	return i;
+
+	return iResult;
 }
 
 unsigned int CFileSMB::Read(void *lpBuf, __int64 uiBufSize)
@@ -329,9 +329,8 @@ void CFileSMB::Close()
 	{
 		smb.Lock();
 		smbc_close(m_fd);
-		// we could close all sessions that are open now, but it will slow things down if we
-		// have more open / close to do on the same server
-		//smbc_purge();
+		// file is not needed anymore, just purge all open connections
+		smbc_purge();
 		smb.Unlock();
 	}
 	m_fd = -1;
@@ -340,8 +339,7 @@ void CFileSMB::Close()
 int CFileSMB::Write(const void* lpBuf, __int64 uiBufSize)
 {
 	if (m_fd == -1) return -1;
-
-	DWORD dwNumberOfBytesWritten=0;
+	DWORD dwNumberOfBytesWritten = 0;
 
 	// lpBuf can be safely casted to void* since xmbc_write will only read from it.
 	smb.Lock();

@@ -5,6 +5,7 @@
 CURL::CURL(const CStdString& strURL)
 {
 	m_strHostName="";
+	m_strDomain="";
 	m_strUserName="";
 	m_strPassword="";
 	m_strFileName="";

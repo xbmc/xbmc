@@ -33,7 +33,6 @@ CSMBDirectory::~CSMBDirectory(void)
 bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 {
 	// We accept smb://[[[domain;]user[:password@]]server[/share[/path[/file]]]]
-
 	VECFILEITEMS vecCacheItems;
   g_directoryCache.ClearDirectory(strPath);
 
@@ -190,6 +189,6 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 		smb.Unlock();
 	}
   g_directoryCache.SetDirectory(strPath,vecCacheItems);
-	smbc_purge();
+	smb.PurgeEx(CURL(strPath));
 	return true;
 }
