@@ -79,6 +79,8 @@ bool CIMDB::FindMovie(const CStdString &strMovie,IMDB_MOVIELIST& movielist)
 	</LI>
 	*/
 
+	CHTMLUtil html;
+
 	char *pStartOfMovieList=strstr(szBuffer," Titles</b>");
 	if (!pStartOfMovieList)
 	{	// We don't have the "Titles</b>" tag, try "Matches)</b>
@@ -105,7 +107,7 @@ bool CIMDB::FindMovie(const CStdString &strMovie,IMDB_MOVIELIST& movielist)
       OutputDebugString("url:" );
       OutputDebugString(m_http.m_redirectedURL.c_str());
       OutputDebugString("\n" );
-			url.m_strTitle = pMovieTitle;
+			html.ConvertHTMLToAnsi(pMovieTitle, url.m_strTitle);
 			url.m_strURL   = m_http.m_redirectedURL;
 			movielist.push_back(url);
 
@@ -127,8 +129,6 @@ bool CIMDB::FindMovie(const CStdString &strMovie,IMDB_MOVIELIST& movielist)
 //		delete [] szBuffer;
 	//	return false;
 	}
-
-	CHTMLUtil html;
 
 	*pEndOfMovieList=0;
 	while(1)
