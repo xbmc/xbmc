@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 20-08-2004 fixed: allow percentage seeking in realmedia
   - 20-08-2004 fixed: disable fflush in mp_msg.c for now, to allow mplayerdebug
   - 20-08-2004 added: void mplayer_setTimeMs(__int64 iTime), for more precision
   - 20-08-2004 changed: only use alternative way of calculating progressbar as a fallback
