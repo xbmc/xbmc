@@ -494,8 +494,8 @@ HRESULT CXBFont::Begin()
             D3DDevice::GetRenderState( D3DRS_ZENABLE,          &m_dwSavedState[8] );
             D3DDevice::GetRenderState( D3DRS_STENCILENABLE,    &m_dwSavedState[9] );
             D3DDevice::GetRenderState( D3DRS_EDGEANTIALIAS,    &m_dwSavedState[10] );
-            D3DDevice::GetTextureStageState( 0, D3DTSS_MINFILTER, &m_dwSavedState[11] );
-            D3DDevice::GetTextureStageState( 0, D3DTSS_MAGFILTER, &m_dwSavedState[12] );
+            //D3DDevice::GetTextureStageState( 0, D3DTSS_MINFILTER, &m_dwSavedState[11] );
+            //D3DDevice::GetTextureStageState( 0, D3DTSS_MAGFILTER, &m_dwSavedState[12] );
         }
 
         // Set the necessary render states
@@ -513,8 +513,8 @@ HRESULT CXBFont::Begin()
         D3DDevice::SetRenderState( D3DRS_ZENABLE,          FALSE );
         D3DDevice::SetRenderState( D3DRS_STENCILENABLE,    FALSE );
         D3DDevice::SetRenderState( D3DRS_EDGEANTIALIAS,    FALSE );
-        D3DDevice::SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
-        D3DDevice::SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
+        //D3DDevice::SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
+        //D3DDevice::SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
 
         // Begin the drawing of vertices
         D3DDevice::Begin( D3DPT_QUADLIST );
@@ -720,8 +720,8 @@ HRESULT CXBFont::End()
         D3DDevice::SetRenderState( D3DRS_ZENABLE,          m_dwSavedState[8] );
         D3DDevice::SetRenderState( D3DRS_STENCILENABLE,    m_dwSavedState[9] );
         D3DDevice::SetRenderState( D3DRS_EDGEANTIALIAS,    m_dwSavedState[10] );
-        D3DDevice::SetTextureStageState( 0, D3DTSS_MINFILTER, m_dwSavedState[11] );
-        D3DDevice::SetTextureStageState( 0, D3DTSS_MAGFILTER, m_dwSavedState[12] );
+        //D3DDevice::SetTextureStageState( 0, D3DTSS_MINFILTER, m_dwSavedState[11] );
+        //D3DDevice::SetTextureStageState( 0, D3DTSS_MAGFILTER, m_dwSavedState[12] );
     }
 
     return S_OK;

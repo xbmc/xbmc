@@ -23,11 +23,11 @@
 				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml"
 				PreprocessorDefinitions="_DEBUG;_XBOX"
 				MinimalRebuild="TRUE"
-				BasicRuntimeChecks="3"
-				SmallerTypeCheck="TRUE"
+				BasicRuntimeChecks="0"
+				SmallerTypeCheck="FALSE"
 				RuntimeLibrary="1"
-				BufferSecurityCheck="TRUE"
-				EnableEnhancedInstructionSet="1"
+				BufferSecurityCheck="FALSE"
+				EnableEnhancedInstructionSet="0"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -346,6 +346,12 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettings.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsFilter.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsFilter.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettingsGeneral.cpp">
