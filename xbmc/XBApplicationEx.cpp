@@ -230,6 +230,7 @@ INT CXBApplicationEx::Run()
         // Animate and render a frame
         //-----------------------------------------
 
+        Process();
         // Frame move the scene
         FrameMove();
 
@@ -355,4 +356,8 @@ void CXBApplicationEx::ReadInput()
         m_DefaultGamepad.sThumbRY = SHORT( nThumbRY );
 
         
+}
+
+void CXBApplicationEx::Process()
+{
 }

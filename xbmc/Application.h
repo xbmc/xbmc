@@ -87,6 +87,7 @@ public:
 	void									RenderFullScreen();
 	void									SpinHD();
 	void									ResetAllControls();
+  virtual void          Process();
 	CGUIWindowHome									m_guiHome;
   CGUIWindowPrograms							m_guiPrograms;
 	CGUIWindowPictures							m_guiPictures;
