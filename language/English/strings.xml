@@ -1504,6 +1504,10 @@
 		<value>Columns</value>
 	</string>
 	<string>
+		<id>4501</id>
+		<value>LCD Type</value>
+	</string>
+	<string>
 		<id>451</id>
 		<value>Row 1 adress</value>
 	</string>
@@ -1727,12 +1731,7 @@
 		<string>
 		<id>506</id>
 		<value>Use directory names for description</value>
-	</string> 
-	<string>
-		<id>507</id>
-		<value>Sort by: Usage</value>
-	</string>
-	<string>
+	</string> <string>
 		<id>600</id>
 		<value>Rip CD</value>
 	</string>
