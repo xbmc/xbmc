@@ -2,6 +2,7 @@
 #include "guiwindow.h"
 #include "FileItem.h"
 #include "GUIDialogProgress.h"
+#include "programdatabase.h"
 
 class CGUIWindowPrograms :
   public CGUIWindow
@@ -31,5 +32,7 @@ protected:
   CStdString          m_strDirectory;
 	int							m_iLastControl;
 	int							m_iSelectedItem;
+	CStdString		  m_bookmarkName;
+	CProgramDatabase      m_database;
   
 };
