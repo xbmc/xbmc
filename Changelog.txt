@@ -5,7 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-
+  - 04-01-2004 fixed: music/video info hang
   - 04-01-2004 fixed: [ 1092849 ] Cancel saving profile freezes the xbox
   - 04-01-2004 fixed: [ 1092854 ] Music slide/shutdown menu freeze
   - 04-01-2004 changed: modal dialogs are completely rendered by the window manager now
