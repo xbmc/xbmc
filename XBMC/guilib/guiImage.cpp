@@ -352,7 +352,7 @@ void CGUIImage::SetItems(int iItems)
 
 void CGUIImage::Process()
 {
-  if (m_vecTextures.size() <= 1 || IsAllocated())
+  if (m_vecTextures.size() <= 1)
     return ;
 
   if (!m_bWasVisible)
