@@ -964,39 +964,6 @@ void CUtil::FillInDefaultIcon(CFileItem* pItem)
     {
       // xbe
       pItem->SetIconImage("defaultProgram.png");
-      if ( !CUtil::IsDVD(pItem->m_strPath) )
-      {
-        CStdString strDescription;
-        if (! CUtil::GetXBEDescription(pItem->m_strPath,strDescription))
-        {
-          CStdString strFName=CUtil::GetFileName(pItem->m_strPath);
-          strDescription=pItem->m_strPath.Left(pItem->m_strPath.size()-strFName.size());
-          if (CUtil::HasSlashAtEnd(strDescription) )
-          {
-            strDescription=strDescription.Left(strDescription.size()-1);
-          }
-          int iPos=strDescription.ReverseFind("\\");
-          if (iPos < 0)
-            iPos=strDescription.ReverseFind("/");
-          if (iPos >=0)
-          {
-            strDescription=strDescription.Right(strDescription.size()-iPos);
-          }
-          else strDescription=strFName;
-        }
-        if (strDescription.size())
-        {
-          CStdString strFname;
-          strFname=CUtil::GetFileName(pItem->m_strPath);
-          strFname.ToLower();
-          if (strFname!="dashupdate.xbe" && strFname!="downloader.xbe" && strFname != "update.xbe")
-          {
-            CShortcut cut;
-            cut.m_strPath=pItem->m_strPath;
-            cut.Save(strDescription);
-          }
-        }
-      }
     }
     else if (CUtil::IsVideo(pItem->m_strPath) )
     {
@@ -1082,6 +1049,60 @@ void CUtil::FillInDefaultIcon(CFileItem* pItem)
     }
   }
 }
+
+void CUtil::CreateShortcuts(VECFILEITEMS &items)
+{
+	for (int i=0; i < (int)items.size(); ++i)
+	{
+		CFileItem* pItem=items[i];
+		CreateShortcut(pItem);
+
+	}
+}
+
+void CUtil::CreateShortcut(CFileItem* pItem)
+{
+	bool bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
+	if ( bOnlyDefaultXBE ? CUtil::IsDefaultXBE(pItem->m_strPath) : CUtil::IsXBE(pItem->m_strPath) )
+	{
+		// xbe
+		pItem->SetIconImage("defaultProgram.png");
+		if ( !CUtil::IsDVD(pItem->m_strPath) )
+		{
+			CStdString strDescription;
+			if (! CUtil::GetXBEDescription(pItem->m_strPath,strDescription))
+			{
+				CStdString strFName=CUtil::GetFileName(pItem->m_strPath);
+				strDescription=pItem->m_strPath.Left(pItem->m_strPath.size()-strFName.size());
+				if (CUtil::HasSlashAtEnd(strDescription) )
+				{
+					strDescription=strDescription.Left(strDescription.size()-1);
+				}
+				int iPos=strDescription.ReverseFind("\\");
+				if (iPos < 0)
+					iPos=strDescription.ReverseFind("/");
+				if (iPos >=0)
+				{
+					strDescription=strDescription.Right(strDescription.size()-iPos);
+				}
+				else strDescription=strFName;
+			}
+			if (strDescription.size())
+			{
+				CStdString strFname;
+				strFname=CUtil::GetFileName(pItem->m_strPath);
+				strFname.ToLower();
+				if (strFname!="dashupdate.xbe" && strFname!="downloader.xbe" && strFname != "update.xbe")
+				{
+					CShortcut cut;
+					cut.m_strPath=pItem->m_strPath;
+					cut.Save(strDescription);
+				}
+			}
+		}
+	}
+}
+
 
 void CUtil::SetThumbs(VECFILEITEMS &items)
 {
