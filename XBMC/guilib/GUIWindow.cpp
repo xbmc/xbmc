@@ -43,7 +43,7 @@ bool CGUIWindow::LoadReference(const CStdString& strFileName, map<string,CGUICon
 	while (pControl)
 	{
 		CGUIControlFactory factory;
-		CGUIControl* pGUIControl = factory.Create(m_dwWindowId,pControl,NULL);
+		CGUIControl* pGUIControl = factory.Create(m_dwWindowId,pControl,NULL,true);
 		if (pGUIControl)
 		{
 			TiXmlNode* pNode=pControl->FirstChild("type");
@@ -109,7 +109,7 @@ bool CGUIWindow::Load(const CStdString& strFileName)
 					}
 
 					CGUIControlFactory factory;
-					CGUIControl* pGUIControl = factory.Create(m_dwWindowId,pControl,pGUIReferenceControl);
+					CGUIControl* pGUIControl = factory.Create(m_dwWindowId,pControl,pGUIReferenceControl,false);
 					if (pGUIControl)
 					{
 						Add(pGUIControl);

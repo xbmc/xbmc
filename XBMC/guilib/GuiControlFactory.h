@@ -11,7 +11,7 @@ class CGUIControlFactory
 public:
   CGUIControlFactory(void);
   virtual ~CGUIControlFactory(void);
-  CGUIControl* Create(DWORD dwParentId,const TiXmlNode* pControlNode, CGUIControl* pReference);
+  CGUIControl* Create(DWORD dwParentId,const TiXmlNode* pControlNode, CGUIControl* pReference,bool bLoadReferences);
 private:
 	bool GetDWORD(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwDWORDValue);
 	bool GetHex(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwHexValue);

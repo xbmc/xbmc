@@ -82,7 +82,7 @@ bool CGUIControlFactory::GetAlignment(const TiXmlNode* pRootNode, const char* st
 	return true;
 }
 
-CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pControlNode, CGUIControl* pReference)
+CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pControlNode, CGUIControl* pReference, bool bLoadReferences)
 {
 	CStdString strType;
 	GetString(pControlNode,"type",strType);
@@ -404,6 +404,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
   if (strType=="label")
   {
+			if (!bLoadReferences) if (!bLoadReferences) g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight);
       CGUILabelControl* pControl = new CGUILabelControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strFont,strLabel,dwTextColor,dwAlign, bHasPath);
       pControl->SetColourDiffuse(dwColorDiffuse);
       pControl->SetVisible(bVisible);
@@ -412,12 +413,14 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
   if (strType=="videowindow")
   {
+		if (!bLoadReferences) g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight);
     CGUIVideoControl* pControl = new CGUIVideoControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight);
     return pControl;
   }
 
 	if (strType=="fadelabel")
   {
+			if (!bLoadReferences) g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight);
       CGUIFadeLabelControl* pControl = new CGUIFadeLabelControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strFont,dwTextColor,dwAlign);
       pControl->SetColourDiffuse(dwColorDiffuse);
       pControl->SetVisible(bVisible);
@@ -426,6 +429,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
   if (strType=="button")
 	{
+			if (!bLoadReferences) g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight);
       CGUIButtonControl* pControl = new CGUIButtonControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strTextureFocus,strTextureNoFocus);
       pControl->SetLabel(strFont,strLabel,dwTextColor);
       pControl->SetDisabledColor(dwDisabledColor);
@@ -438,6 +442,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
   
   if (strType=="togglebutton")
   {
+			if (!bLoadReferences) g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight);
       CGUIToggleButtonControl* pControl = new CGUIToggleButtonControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strTextureFocus,strTextureNoFocus,strTextureAltFocus,strTextureAltNoFocus);
       pControl->SetLabel(strFont,strLabel,dwTextColor);
       pControl->SetDisabledColor(dwDisabledColor);
@@ -450,6 +455,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
   if (strType=="buttonM")
   {
+			if (!bLoadReferences) g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight);
       CGUIMButtonControl* pControl = new CGUIMButtonControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,dwItems,strTextureFocus,strTextureNoFocus);
       pControl->SetLabel(strFont,strLabel,dwTextColor);
       pControl->SetDisabledColor(dwDisabledColor);
@@ -462,6 +468,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
   
   if (strType=="checkmark")
   {
+			if (!bLoadReferences) g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight);
 			CGUICheckMarkControl* pControl = new CGUICheckMarkControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strTextureCheckMark,dwCheckWidth,dwCheckHeight,dwAlign);
       pControl->SetLabel(strFont,strLabel,dwTextColor);
       pControl->SetDisabledColor(dwDisabledColor);
@@ -474,6 +481,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
   if (strType=="radiobutton")
   {
+			if (!bLoadReferences) g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight);
       CGUIRadioButtonControl* pControl = new CGUIRadioButtonControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strTextureFocus,strTextureNoFocus, strTextureRadioFocus,strTextureRadioNoFocus);
       pControl->SetLabel(strFont,strLabel,dwTextColor);
       pControl->SetDisabledColor(dwDisabledColor);
@@ -487,6 +495,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
   if (strType=="spincontrol")
   {
+			if (!bLoadReferences) g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight);
 
       CGUISpinControl* pControl = new CGUISpinControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strUp,strDown,strUpFocus,strDownFocus,strFont,dwTextColor,iType,dwAlign);
       pControl->SetNavigation(up,down,left,right);
@@ -498,6 +507,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
   if (strType=="progress")
   {
+			if (!bLoadReferences) g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight);
       CGUIProgressControl* pControl= new CGUIProgressControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strTextureBg,strLeft,strMid,strRight);
       pControl->SetVisible(bVisible);
       return pControl;
@@ -505,7 +515,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
   if (strType=="image")
   {
-
+			if (!bLoadReferences) g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight);
 			CGUIImage* pControl = new CGUIImage(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strTexture,dwColorKey);
       pControl->SetNavigation(up,down,left,right);
       pControl->SetColourDiffuse(dwColorDiffuse);
@@ -514,7 +524,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
   }
  if (strType=="listcontrol")
  {
-
+			if (!bLoadReferences) g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight);
       CGUIListControl* pControl = new CGUIListControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,
                                                       strFont,
                                                       dwSpinWidth,dwSpinHeight,
@@ -538,6 +548,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
  if (strType=="textbox")
  {
+			if (!bLoadReferences) g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight);
       
       CGUITextBox* pControl = new CGUITextBox(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,
                                                       strFont,
@@ -554,6 +565,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
  if (strType=="thumbnailpanel")
  {
+			if (!bLoadReferences) g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight);
       CGUIThumbnailPanel* pControl = new CGUIThumbnailPanel(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,
                                                       strFont,
                                                       strImage,strImageFocus,
