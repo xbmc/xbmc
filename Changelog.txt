@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 15-08-2004 fixed: crash in X community when navigating
   - 15-08-2004 fixed: album info broken, allmusic changed site again
   - 15-08-2004 added: G: drive freespace in system info
   - 15-08-2004 added: Last loaded profile label in profile screen

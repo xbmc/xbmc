@@ -252,9 +252,6 @@ void CGUIListControlEx::FreeResources()
 
 void CGUIListControlEx::OnRight()
 {
-  CKey key(KEY_BUTTON_DPAD_RIGHT);
-  CAction action;
-  action.wID = ACTION_MOVE_RIGHT;
   if (m_iSelect==CONTROL_LIST) 
   {
     if (m_upDown.GetMaximum() > 1)
@@ -269,7 +266,7 @@ void CGUIListControlEx::OnRight()
   }
   else
   {
-    m_upDown.OnAction(action);
+    m_upDown.OnRight();
     if (!m_upDown.HasFocus()) 
     {
       m_iSelect=CONTROL_LIST;
@@ -279,12 +276,9 @@ void CGUIListControlEx::OnRight()
 
 void CGUIListControlEx::OnLeft()
 {
-  CKey key(KEY_BUTTON_DPAD_LEFT);
-  CAction action;
-  action.wID = ACTION_MOVE_LEFT;
   if (m_iSelect==CONTROL_LIST) 
   {
-    CGUIControl::OnAction(action);
+    CGUIControl::OnLeft();
     if (!m_upDown.HasFocus()) 
     {
       m_iSelect=CONTROL_LIST;
@@ -292,7 +286,7 @@ void CGUIListControlEx::OnLeft()
   }
   else
   {
-    m_upDown.OnAction(action);
+    m_upDown.OnLeft();
     if (!m_upDown.HasFocus()) 
     {
       m_iSelect=CONTROL_LIST;
@@ -302,10 +296,6 @@ void CGUIListControlEx::OnLeft()
 
 void CGUIListControlEx::OnUp()
 {
-
-  CKey key(KEY_BUTTON_DPAD_UP);
-  CAction action;
-  action.wID = ACTION_MOVE_UP;
   if (m_iSelect==CONTROL_LIST) 
   {
     if (m_iCursorY > 0) 
@@ -327,7 +317,7 @@ void CGUIListControlEx::OnUp()
   }
   else
   {
-    m_upDown.OnAction(action);
+    m_upDown.OnUp();
     if (!m_upDown.HasFocus()) 
     {
       m_iSelect=CONTROL_LIST;
@@ -337,10 +327,6 @@ void CGUIListControlEx::OnUp()
 
 void CGUIListControlEx::OnDown()
 {
-	CKey key(KEY_BUTTON_DPAD_DOWN);
-	CAction action;
-	action.wID = ACTION_MOVE_DOWN;
-
 	if ((m_iSelect==CONTROL_LIST) && (m_pList))
 	{
 		CGUIList::GUILISTITEMS& list = m_pList->Lock();
@@ -384,10 +370,10 @@ void CGUIListControlEx::OnDown()
 	}
 	else
 	{
-		m_upDown.OnAction(action);
+		m_upDown.OnRight();
 		if (!m_upDown.HasFocus()) 
 		{
-			CGUIControl::OnAction(action);
+			CGUIControl::OnRight();
 		}  
 	}
 }
