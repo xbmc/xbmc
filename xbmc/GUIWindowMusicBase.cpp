@@ -155,8 +155,6 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 			CSectionLoader::Load("LIBID3");
 
 			m_database.Open();
-			//	Keep database in transaction mode to increase speed
-			m_database.BeginTransaction();
 
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(101);
 
