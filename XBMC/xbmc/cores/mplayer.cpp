@@ -128,10 +128,9 @@ bool CMPlayer::openfile(const CStdString& strFile)
 //	char *argv[] = {"xbmc.xbe", "-channels",szChannels,"-autoq", "6", "-vf", "pp", "1.avi",NULL};
 
 	int argc=8;
-	char *argv[] = {"xbmc.xbe", "-channels","6","-autoq", "6", "-vf", "pp", "1.avi",NULL};
+	char *argv[] = {"xbmc.xbe","-channels","6","-autoq", "6", "-vf", "pp", "1.avi",NULL};
 
 	mplayer_init(argc,argv);
-
 	
 	mplayer_setcache_size(1024);
 	if (CUtil::IsAudio(strFile) )
@@ -143,7 +142,6 @@ bool CMPlayer::openfile(const CStdString& strFile)
 	{
 		mplayer_setcache_size(256);
 	}
-
 	
 	int iRet=mplayer_open_file(strFile.c_str());
 	if (iRet < 0)
@@ -154,26 +152,29 @@ bool CMPlayer::openfile(const CStdString& strFile)
 	}
 	m_bIsPlaying= true;
 
-	CStdString strAudioInfo;
-	GetAudioInfo( strAudioInfo);
+	char strFourCC[10];
+	char strAudioCodec[128];
+	long lBitRate;
+	long lSampleRate;
+	int	 iChannels;
+	BOOL bVBR;
+	mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
 
 	// if AC3 pass Thru is enabled
 	bool bSupportsSPDIFOut=(XGetAudioFlags() & (DSSPEAKER_ENABLE_AC3 | DSSPEAKER_ENABLE_DTS)) != 0;
-//	if (CUtil::IsAudio(strFile)) bSupportsSPDIFOut=false;
+ 
 	if (bSupportsSPDIFOut && g_stSettings.m_bAC3PassThru )
 	{
 		// and the movie has an AC3 audio stream
-		if ( strAudioInfo.Find("AC3") >=0  )
+		if ( strstr(strAudioCodec,"AC3-liba52") && (lSampleRate==48000) )
 		{
-			//then close file and 
-			//reopen it, but now enable the AC3 pass thru audio filter
+			//then close file and reopen it, 
+			//but now enable the AC3 passthru audio codecs hwac3
 			mplayer_close_file();
-			//int argc=10;
-			//char *argv[] = {"xbmc.xbe", "-channels","2", "-ac","hwac3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
-			int argc=8;
-			char *argv[] = {"xbmc.xbe", "-ac","hwac3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
+			int argc=10;
+			char *argv[] = {"xbmc.xbe", "-channels","2", "-ac","hwac3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
 			load();
-      mplayer_init(argc,argv);
+			mplayer_init(argc,argv);
 			mplayer_setcache_size(1024);
 			if (CUtil::IsAudio(strFile) )
 			{
@@ -186,16 +187,17 @@ bool CMPlayer::openfile(const CStdString& strFile)
 				closefile();
 				return false;
 			}
+			m_bIsPlaying= true;
 		}
 	}
 
-	if( (strAudioInfo.Find("DMO") >= 0) && (strAudioInfo.Find("chns:6") >= 0)  )
+	if( strstr(strAudioCodec,"DMO") && (iChannels==6) )
 	{
 		mplayer_close_file();
 		int argc=10;
 		char *argv[] = {"xbmc.xbe", "-channels","6","-af","channels=6:6:0:0:1:1:2:4:3:5:4:2:5:3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
 		load();
-    mplayer_init(argc,argv);
+		mplayer_init(argc,argv);
 		mplayer_setcache_size(1024);
 		if (CUtil::IsAudio(strFile) )
 		{
@@ -208,9 +210,91 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			closefile();
 			return false;
 		}
+		m_bIsPlaying= true;
 	}	
 
-	m_bIsPlaying=true;
+	mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
+
+	if ( !strstr(strAudioCodec,"SPDIF") ) 
+	{
+		int iRet,argc;
+	    char * argv1[] = {"xbmc.xbe", "-channels","szChannels","-autoq", "6", "-vf", "pp", "1.avi",NULL};
+		char * argv2[] = {"xbmc.xbe", "-channels","6","-af","channels=6:5:0:0:1:1:2:2:3:3:4:4:5:5","-autoq", "6", "-vf", "pp", "1.avi",NULL};
+		char * argv3[] = {"xbmc.xbe", "-channels","4","-af","channels=4:4:0:0:1:1:2:2:2:3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
+
+		switch(iChannels)
+		{
+			case 1:
+			case 2:
+			case 4:
+				mplayer_close_file();
+				char szChannels[12];
+				sprintf(szChannels,"%i", iChannels);
+				argc=8;
+				argv1[2] = szChannels;
+				load();
+				mplayer_init(argc,argv1);
+				mplayer_setcache_size(1024);
+				if (CUtil::IsAudio(strFile) )
+				{
+					mplayer_setcache_size(0);
+				}
+				iRet=mplayer_open_file(strFile.c_str());
+				if (iRet < 0)
+				{
+					OutputDebugString("cmplayer::openfile() openfile failed\n");
+					closefile();
+					return false;
+				}
+				m_bIsPlaying= true;
+			break;
+			
+			case 5:
+				mplayer_close_file();
+				argc=10;
+				load();
+				mplayer_init(argc,argv2);
+				mplayer_setcache_size(1024);
+				if (CUtil::IsAudio(strFile) )
+				{
+					mplayer_setcache_size(0);
+				}
+				iRet=mplayer_open_file(strFile.c_str());
+				if (iRet < 0)
+				{
+					OutputDebugString("cmplayer::openfile() openfile failed\n");
+					closefile();
+					return false;
+				}
+				m_bIsPlaying= true;
+			break;
+
+			case 3:
+				mplayer_close_file();
+				argc=10;
+				load();
+				mplayer_init(argc,argv3);
+				mplayer_setcache_size(1024);
+				if (CUtil::IsAudio(strFile) )
+				{
+					mplayer_setcache_size(0);
+				}
+				iRet=mplayer_open_file(strFile.c_str());
+				if (iRet < 0)
+				{
+					OutputDebugString("cmplayer::openfile() openfile failed\n");
+					closefile();
+					return false;
+				}
+				m_bIsPlaying= true;
+			break;
+			
+			case 6:
+			default:
+			break;
+		}
+	}
+
 	if ( ThreadHandle() == NULL)
 	{
 		Create();
