@@ -158,8 +158,6 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 			// switch back to the menu
 			OutputDebugString("Switching to GUI\n");
 			m_gWindowManager.PreviousWindow();
-			if (g_application.m_pPlayer)
-				g_application.m_pPlayer->Update();
 			OutputDebugString("Now in GUI\n");
 
 			return;
@@ -473,6 +471,8 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 				m_subtitleFont = NULL;
 			}
 
+			if (g_application.m_pPlayer)
+				g_application.m_pPlayer->Update();	
 			return true;
 		}
     case GUI_MSG_SETFOCUS:
