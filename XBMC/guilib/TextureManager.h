@@ -20,7 +20,7 @@ class CTexture
 {
   public:
     CTexture();
-    CTexture(LPDIRECT3DTEXTURE8 pTexture,int iWidth, int iHeight, int iDelay=100, LPDIRECT3DPALETTE8 pPalette = NULL);
+    CTexture(LPDIRECT3DTEXTURE8 pTexture,int iWidth, int iHeight, bool Cached, int iDelay=100, LPDIRECT3DPALETTE8 pPalette = NULL);
     virtual   ~CTexture();
     bool                Release();
     LPDIRECT3DTEXTURE8  GetTexture(int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal);
@@ -32,6 +32,8 @@ class CTexture
     void                SetLoops(int iLoops);
     int                 GetLoops() const;
   protected:
+		void FreeTexture();
+
     LPDIRECT3DTEXTURE8  m_pTexture;
 		LPDIRECT3DPALETTE8  m_pPalette;
     int                 m_iReferenceCount;
@@ -39,6 +41,7 @@ class CTexture
 		int									m_iWidth;
 		int									m_iHeight;
     int                 m_iLoops;
+		bool                m_bCached;
 };
 
 /*!
