@@ -87,8 +87,8 @@ void CGraphicContext::Correct(FLOAT& fCoordinateX, FLOAT& fCoordinateY, FLOAT& f
 	fCoordinateX  += (float)m_iScreenOffsetX;
 	fCoordinateY  += (float)m_iScreenOffsetY;
 	
-	fCoordinateX2 += (float)m_iScreenOffsetX;
-	fCoordinateY2 += (float)m_iScreenOffsetY;
+//	fCoordinateX2 += (float)m_iScreenOffsetX;
+//	fCoordinateY2 += (float)m_iScreenOffsetY;
 
 }
 

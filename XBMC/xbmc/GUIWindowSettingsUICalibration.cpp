@@ -120,15 +120,15 @@ void CGUIWindowSettingsUICalibration::OnKey(const CKey& key)
 		}
   }
 
-	float fX=2*key.GetThumbX();
-	float fY=2*key.GetThumbY();
-	if ( (fX<=-1 || fX >=1) || (fY<=-1 || fY >=1) )
+	float fX=2*key.GetLeftThumbX();
+	float fY=2*key.GetLeftThumbY();
+	if ( fX || fY )
 	{
 		iXOff += (int)fX;
 		if ( iXOff < -128	 ) iXOff=-128;
 		if ( iXOff > 128 ) iXOff=128;
 
-		iYOff += (int)fY;
+		iYOff -= (int)fY;
 		if ( iYOff < -128	 ) iYOff=-128;
 		if ( iYOff > 128 ) iYOff=128;
 

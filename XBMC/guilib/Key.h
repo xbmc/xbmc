@@ -59,20 +59,24 @@ class CKey
 {
 public:
   CKey(void);
-  CKey(bool bButton, DWORD dwButtonCode=KEY_INVALID, float fThumbX=0.0f, float fThumbY=0.0f);
+  CKey(bool bButton, DWORD dwButtonCode=KEY_INVALID, float fLeftThumbX=0.0f, float fLeftThumbY=0.0f, float fRightThumbX=0.0f, float fRightThumbY=0.0f);
   CKey(const CKey& key);
 
   virtual ~CKey(void);
   const CKey& operator=(const CKey& key);
   bool				IsButton() const;
   DWORD				GetButtonCode() const;
-	float				GetThumbX() const;
-	float				GetThumbY() const;
+	float				GetLeftThumbX() const;
+	float				GetLeftThumbY() const;
+	float				GetRightThumbX() const;
+	float				GetRightThumbY() const;
 	
 private:
 	bool			m_bIsButton;
   DWORD			m_dwButtonCode;
-	float			m_fThumbX;
-	float			m_fThumbY;
+	float			m_fLeftThumbX;
+	float			m_fLeftThumbY;
+	float			m_fRightThumbX;
+	float			m_fRightThumbY;
 };
 #endif
