@@ -30,7 +30,7 @@ typedef unsigned (WINAPI *PBEGINTHREADEX_THREADFUNC)(LPVOID lpThreadParameter);
 CThread::CThread()
 {
 	m_bStop=false;
-	m_bStopped=false;
+	
 	m_bAutoDelete = false;
 	m_dwThreadId = 0;
 	m_ThreadHandle = NULL; 
@@ -54,7 +54,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
 	//DBG"thread:: call onexit");
 	pThread->OnExit();
 	//DBG"thread:: onexit done");
-	pThread->m_bStopped=true;
+	pThread->m_eventStop.Set();
 	if ( bDelete ) 
 	{
 		//DBG"thread:: delete");
@@ -70,7 +70,7 @@ void CThread::Create(bool bAutoDelete)
 {
 	//DBG"Create thread");
 	m_bAutoDelete = bAutoDelete;
-	m_bStopped=false;
+	m_eventStop.Reset();	
 	m_bStop=false;
 	//m_ThreadHandle = (HANDLE)_beginthreadex(NULL, 0, (PBEGINTHREADEX_THREADFUNC)staticThread, (void*)this, 0, (unsigned*)&m_dwThreadId);
 	m_ThreadHandle = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)staticThread,(LPVOID)this,0,&m_dwThreadId);
@@ -85,7 +85,7 @@ bool CThread::IsAutoDelete() const
 void CThread::StopThread()
 {
 	m_bStop=true;
-	while (!m_bStopped) return;
+	m_eventStop.Wait();
 }
 
 unsigned long CThread::ThreadId() const 

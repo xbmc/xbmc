@@ -434,6 +434,15 @@ bool CUtil::HasSlashAtEnd(const CStdString& strFile)
 		return true;
 	return false;
 }
+ bool CUtil::IsCDDA(const CStdString& strFile)
+{
+	CStdString strLeft=strFile.Left(5);
+	strLeft.ToLower();
+	if (strFile=="cdda:")
+		return true;
+	return false;
+}
+
 void CUtil::GetFileAndProtocol(const CStdString& strURL, CStdString& strDir)
 {
 	strDir=strURL;

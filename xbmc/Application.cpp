@@ -5,6 +5,7 @@
 #include "sectionLoader.h"
 #include "texturemanager.h"
 #include "stdstring.h"
+#include "cores/playercorefactory.h"
 
 
 
@@ -17,6 +18,7 @@
 	#pragma comment (lib,"xbmc/lib/libCDRip/cdripd.lib")		 // SECTIONNAME=LIBCDRIP
 	#pragma comment (lib,"xbmc/lib/libPython/pythond.lib")	 // SECTIONNAME=PYTHON
 	#pragma comment (lib,"guilib/debug/guiLib.lib")				   // -
+	#pragma comment (lib,"xbmc/cores/dllLoader/debug/dllloader.lib")				   // -
 	
 #else
 //  #pragma comment (lib,"lib/filezilla/xbfilezilla.lib")
@@ -27,6 +29,7 @@
 	#pragma comment (lib,"xbmc/lib/libCDRip/cdrip.lib")						
 	#pragma comment (lib,"xbmc/lib/libPython/python.lib")		 
 	#pragma comment (lib,"guiLib/release/guiLib.lib")
+	#pragma comment (lib,"xbmc/cores/dllLoader/release/dllloader.lib")				   // -
 #endif
 
 
@@ -35,6 +38,7 @@ CApplication::CApplication(void)
 ,m_ctrIR(220,220)
 {
 		m_pPhytonParser=NULL;
+		m_pPlayer=NULL;
 }	
 
 CApplication::~CApplication(void)
@@ -243,7 +247,9 @@ void CApplication::Render()
 {
   // Clear the backbuffer to a blue color
   m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0xff202020, 1.0f, 0L );
-  m_gWindowManager.Render();
+  
+	
+	m_gWindowManager.Render();
   
   {
 	  MEMORYSTATUS stat;
@@ -521,6 +527,11 @@ void CApplication::Stop()
 		delete m_pPhytonParser;
 		m_pPhytonParser=NULL;
 	}
+	if (m_pPlayer)
+	{
+		delete m_pPlayer;
+		m_pPlayer=NULL;
+	}
 	m_sntpClient.StopThread();
 	g_fontManager.Clear();
 	m_gWindowManager.DeInitialize();
@@ -562,4 +573,16 @@ void CApplication::ProcessScripts()
 		delete m_pPhytonParser;
 		m_pPhytonParser=NULL;
 	}
+}
+
+
+
+bool CApplication::PlayFile(const CStdString& strFile)
+{
+	if (!m_pPlayer)
+	{
+		CPlayerCoreFactory factory;
+		m_pPlayer = factory.CreatePlayer("mplayer");
+	}
+	return m_pPlayer->openfile(strFile);
 }
