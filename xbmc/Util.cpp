@@ -1,5 +1,6 @@
 #include "util.h"
 #include "xbox/iosupport.h"
+#include "xbox/xbeheader.h"
 #include "crc32.h"
 #include "settings.h"
 #include "utils/log.h"
@@ -727,6 +728,17 @@ bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
   bool bFoundThumbnail=false;
   CStdString szFileName;
   szFileName.Format("E:\\UDATA\\%08x\\TitleImage.xbx", GetXbeID( strFilePath ) );
+  if (!CUtil::FileExists(szFileName))
+  {
+    // extract icon from .xbe
+    CXBE xbeReader;
+    ::DeleteFile("T:\\1.xpr");
+    if ( !xbeReader.ExtractIcon(strFilePath, "T:\\1.xpr"))
+    {
+      return false;
+    }
+    szFileName="T:\\1.xpr";
+  }
       
   CXBPackedResource* pPackedResource = new CXBPackedResource();
   if( SUCCEEDED( pPackedResource->Create( szFileName.c_str(), 1, NULL ) ) )
