@@ -22,6 +22,8 @@ public:
 	virtual bool	SubMenuVisible();
 	virtual void	ResetAllControls();
 
+	friend class CGUIWindowSettingsScreenCalibration;
+
 protected:
 	virtual void	Get_TimeInfo();
 	virtual void	SetVideoProgress();
