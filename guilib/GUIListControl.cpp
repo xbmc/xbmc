@@ -383,9 +383,8 @@ bool CGUIListControl::OnMessage(CGUIMessage& message)
       {
         m_iOffset=(m_upDown.GetValue()-1)*m_iItemsPerPage;
 				while (m_iOffset+m_iCursorY >= (int)m_vecItems.size()) m_iCursorY--;
-
 				//	moving to the last page
-				if (m_iOffset+m_iItemsPerPage>(int)m_vecItems.size() && (int)m_vecItems.size()-1>m_iItemsPerPage)
+				if (m_iOffset+m_iItemsPerPage>(int)m_vecItems.size() && (int)m_vecItems.size()>=m_iItemsPerPage)
 				{
 					m_iOffset=m_vecItems.size()-m_iItemsPerPage;
 					m_iCursorY=m_iItemsPerPage-1;
@@ -639,7 +638,7 @@ void CGUIListControl::Scroll(int iAmount)
 // returns which page we are on
 int CGUIListControl::GetPage()
 {
-	if (m_iOffset > (int)m_vecItems.size()-m_iItemsPerPage)
+	if (m_iOffset >= (int)m_vecItems.size()-m_iItemsPerPage)
 	{
 		m_iOffset = m_vecItems.size()-m_iItemsPerPage;
 		if (m_iOffset < 0) m_iOffset = 0;

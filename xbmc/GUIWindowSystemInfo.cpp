@@ -1,4 +1,3 @@
-
 #include "stdafx.h"
 #include "guiwindowsysteminfo.h"
 #include "settings.h"
@@ -10,6 +9,7 @@
 #include "cores/DllLoader/dll.h"
 
 extern char g_szTitleIP[32];
+
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 :CGUIWindow(0)
 {
@@ -33,19 +33,19 @@ void CGUIWindowSystemInfo::OnAction(const CAction &action)
 DWORD WINAPI GetMPlayerVersionW( LPVOID lpParam )
 {
 	wchar_t wszVersion[50];
-    wchar_t wszCompileDate[50];	
-
+	wchar_t wszCompileDate[50];
 	const char* (__cdecl* pMplayerGetVersion)();
 	const char* (__cdecl* pMplayerGetCompileDate)();
 	wszVersion[0] = 0; wszCompileDate[0] = 0;
 		
 	DllLoader* mplayerDll = new DllLoader("Q:\\mplayer\\mplayer.dll");
+
 	if( mplayerDll->Parse() )
 	{		
 		//try to resolve and call mplayer_getversion
 		if (mplayerDll->ResolveExport("mplayer_getversion", (void**)&pMplayerGetVersion))
 			mbstowcs(wszVersion, pMplayerGetVersion(), sizeof(wszVersion));
-		
+
 		//try to resolve and call mplayer_getcompiledate
 		if (mplayerDll->ResolveExport("mplayer_getcompiledate", (void**)&pMplayerGetCompileDate))
 			mbstowcs(wszCompileDate, pMplayerGetCompileDate(), sizeof(wszCompileDate));
@@ -58,9 +58,8 @@ DWORD WINAPI GetMPlayerVersionW( LPVOID lpParam )
 	}
 	delete mplayerDll;
 	mplayerDll=NULL;
-
-    return 0; 
-} 
+	return 0;
+}
 
 bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 {
