@@ -121,6 +121,20 @@ struct SSortMusicNav
           strEnd = strEnd.Mid(4);
         strcpy(szfilename1, strStart.c_str());
         strcpy(szfilename2, strEnd.c_str());
+        // concat the album...
+        strStart = rpStart.m_musicInfoTag.GetAlbum();
+        strEnd = rpEnd.m_musicInfoTag.GetAlbum();
+        if (strStart.Left(4).Equals("The "))
+          strStart = strStart.Mid(4);
+        if (strEnd.Left(4).Equals("The "))
+          strEnd = strEnd.Mid(4);
+        strcat(szfilename1, strStart.c_str());
+        strcat(szfilename2, strEnd.c_str());
+        // and finally the track number
+        strStart.Format("%02i", rpStart.m_musicInfoTag.GetTrackNumber());
+        strEnd.Format("%02i", rpEnd.m_musicInfoTag.GetTrackNumber());
+        strcat(szfilename1, strStart.c_str());
+        strcat(szfilename2, strEnd.c_str());
         break;
 
       case 7:   // Sort by Album
@@ -133,6 +147,20 @@ struct SSortMusicNav
           strEnd = strEnd.Mid(4);
         strcpy(szfilename1, strStart.c_str());
         strcpy(szfilename2, strEnd.c_str());
+        // concat the artist (could have multiple Greatest Hits albums for instance)
+        strStart = rpStart.m_musicInfoTag.GetArtist();
+        strEnd = rpEnd.m_musicInfoTag.GetArtist();
+        if (strStart.Left(4).Equals("The "))
+          strStart = strStart.Mid(4);
+        if (strEnd.Left(4).Equals("The "))
+          strEnd = strEnd.Mid(4);
+        strcat(szfilename1, strStart.c_str());
+        strcat(szfilename2, strEnd.c_str());
+        // and concat the track number
+        strStart.Format("%02i", rpStart.m_musicInfoTag.GetTrackNumber());
+        strEnd.Format("%02i", rpEnd.m_musicInfoTag.GetTrackNumber());
+        strcat(szfilename1, strStart.c_str());
+        strcat(szfilename2, strEnd.c_str());
         break;
 
       case 8:   // Label without "The "
