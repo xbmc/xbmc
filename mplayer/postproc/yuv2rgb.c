@@ -607,6 +607,14 @@ SwsFunc yuv2rgb_get_func_ptr (SwsContext *c)
 	if(t) return t;
     }
 #endif
+#ifdef HAVE_ALTIVEC
+    if (c->flags & SWS_CPU_CAPS_ALTIVEC)
+    {
+	SwsFunc t = yuv2rgb_init_altivec(c);
+	if(t) return t;
+    }
+#endif
+
     MSG_WARN("No accelerated colorspace conversion found\n");
 
     switch(c->dstFormat){
@@ -642,7 +650,7 @@ static int div_round (int dividend, int divisor)
 
 int yuv2rgb_c_init_tables (SwsContext *c, const int inv_table[4], int fullRange, int brightness, int contrast, int saturation)
 {  
-    const int isRgb = IMGFMT_IS_RGB(c->dstFormat);
+    const int isRgb = IMGFMT_IS_BGR(c->dstFormat);
     const int bpp = isRgb?IMGFMT_RGB_DEPTH(c->dstFormat):IMGFMT_BGR_DEPTH(c->dstFormat);
     int i;
     uint8_t table_Y[1024];

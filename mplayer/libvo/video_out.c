@@ -43,6 +43,7 @@ float vo_panscan = 0.0f;
 int vo_ontop = 0;
 int vo_adapter_num=0;
 int vo_refresh_rate=0;
+int vo_keepaspect=1;
 
 int vo_pts=0; // for hw decoding
 float vo_fps=0; // for mp1e rte
@@ -130,6 +131,9 @@ vo_functions_t* video_out_drivers[] =
 #endif
 #ifdef HAVE_DIRECTX
         &video_out_directx,
+#endif
+#ifdef MACOSX
+	&video_out_quartz,
 #endif
 #ifdef HAVE_XMGA
         &video_out_xmga,
@@ -234,9 +238,6 @@ vo_functions_t* video_out_drivers[] =
 #endif
 #ifdef HAVE_TGA
         &video_out_tga,
-#endif
-#ifdef MACOSX
-	&video_out_quartz,
 #endif
         NULL
 };

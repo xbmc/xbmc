@@ -2,8 +2,8 @@
 
 include ../config.mak
 
-MAJOR_VERSION = 0
-MINOR_VERSION = 1
+MAJOR_VERSION = 1
+MINOR_VERSION = 0
 VERSION = $(MAJOR_VERSION).$(MINOR_VERSION) 
 
 
@@ -15,7 +15,7 @@ SONAME_FLAGS = -Wl,-soname,$(SHORTNAME)
 #SHORTNAME = libdha.so
 VSHORTNAME = libdha.so
 endif
-ifeq ($(TARGET_MINGW32),yes)
+ifeq ($(TARGET_WIN32),yes)
 LIBNAME = libdha.a
 SHORTNAME = libdha.a
 else
@@ -48,7 +48,7 @@ endif
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 $(LIBNAME):     $(OBJS)
-ifeq ($(TARGET_MINGW32),yes)
+ifeq ($(TARGET_WIN32),yes)
 	$(AR) r $(LIBNAME) $(OBJS)
 else
 	#$(CC) -shared $(SONAME_FLAGS) -o $(LIBNAME) $(OBJS) $(LIBS)
@@ -60,7 +60,7 @@ endif
 all:    $(LIBNAME) $(SHORTNAME)
 
 pci_names.c:
-	$(AWK) -f pci_db2c.awk oth/pci.db
+	LC_ALL=C $(AWK) -f pci_db2c.awk oth/pci.db
 
 test:
 	$(CC) test.c -o test $(SHORTNAME)

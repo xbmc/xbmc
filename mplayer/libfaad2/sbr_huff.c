@@ -1,6 +1,6 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
-** Copyright (C) 2003 M. Bakker, Ahead Software AG, http://www.nero.com
+** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -22,7 +22,9 @@
 ** Commercial non-GPL licensing of this software is possible.
 ** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
 **
+** Initially modified for use with MPlayer by Arpad Gereöffy on 2003/08/30
 ** $Id$
+** detailed CVS changelog at http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
 **/
 
 #include "common.h"
@@ -220,7 +222,7 @@ static const int8_t t_huffman_noise_bal_3_0dB[24][2] = {
 };
 
 
-INLINE int16_t sbr_huff_dec(bitfile *ld, sbr_huff_tab t_huff)
+static INLINE int16_t sbr_huff_dec(bitfile *ld, sbr_huff_tab t_huff)
 {
     uint8_t bit;
     int16_t index = 0;
@@ -241,17 +243,10 @@ void sbr_envelope(bitfile *ld, sbr_info *sbr, uint8_t ch)
     int8_t delta = 0;
     sbr_huff_tab t_huff, f_huff;
 
-#ifdef DRM
-    if (sbr->Is_DRM_SBR)
-        sbr->amp_res[ch] = sbr->bs_amp_res;
+    if ((sbr->L_E[ch] == 1) && (sbr->bs_frame_class[ch] == FIXFIX))
+        sbr->amp_res[ch] = 0;
     else
-#endif
-    {
-        if ((sbr->L_E[ch] == 1) && (sbr->bs_frame_class[ch] == FIXFIX))
-            sbr->amp_res[ch] = 0;
-        else
-            sbr->amp_res[ch] = sbr->bs_amp_res;
-    }
+        sbr->amp_res[ch] = sbr->bs_amp_res;
 
     if ((sbr->bs_coupling) && (ch == 1))
     {
@@ -284,19 +279,19 @@ void sbr_envelope(bitfile *ld, sbr_info *sbr, uint8_t ch)
             {
                 if (sbr->amp_res[ch])
                 {
-                    sbr->E[ch][0][env] = (faad_getbits(ld, 5
+                    sbr->E[ch][0][env] = (uint16_t)(faad_getbits(ld, 5
                         DEBUGVAR(1,272,"sbr_envelope(): bs_data_env")) << delta);
                 } else {
-                    sbr->E[ch][0][env] = (faad_getbits(ld, 6
+                    sbr->E[ch][0][env] = (uint16_t)(faad_getbits(ld, 6
                         DEBUGVAR(1,273,"sbr_envelope(): bs_data_env")) << delta);
                 }
             } else {
                 if (sbr->amp_res[ch])
                 {
-                    sbr->E[ch][0][env] = (faad_getbits(ld, 6
+                    sbr->E[ch][0][env] = (uint16_t)(faad_getbits(ld, 6
                         DEBUGVAR(1,274,"sbr_envelope(): bs_data_env")) << delta);
                 } else {
-                    sbr->E[ch][0][env] = (faad_getbits(ld, 7
+                    sbr->E[ch][0][env] = (uint16_t)(faad_getbits(ld, 7
                         DEBUGVAR(1,275,"sbr_envelope(): bs_data_env")) << delta);
                 }
             }

@@ -29,6 +29,7 @@ static DWORD WINAPI ThreadProc(void* s);
 #include "mp_msg.h"
 
 #include "stream.h"
+extern int xbmc_cancel;
 
 int stream_fill_buffer(stream_t *s);
 int stream_seek_long(stream_t *s,off_t pos);
@@ -62,6 +63,16 @@ typedef struct {
 static int min_fill=0;
 
 int cache_fill_status=0;
+
+#ifdef _XBOX
+int cache_back_buffer = 50;
+// back buffer size in %
+// default = 50
+void mplayer_setcache_backbuffer(int iSize)
+{
+	cache_back_buffer = iSize;
+}
+#endif
 
 void cache_stats(cache_vars_t* s){
   int newb=s->max_filepos-s->read_filepos; // new bytes in the buffer
@@ -208,7 +219,11 @@ cache_vars_t* cache_init(int size,int sector){
   s->buffer=malloc(s->buffer_size);
 #endif
   s->fill_limit=8*sector;
+#ifdef _XBOX
+  s->back_size = (size / 100) * cache_back_buffer;
+#else
   s->back_size=size/2;
+#endif
   s->prefill=size/20; // default: 5%
   return s;
 }
@@ -292,9 +307,17 @@ int stream_enable_cache(stream_t *stream,int size,int min,int prefill){
 			}
 			Sleep(20);
     }
+#ifdef _XBOX
+	if(xbmc_cancel) // make sure we exit it with a failure if something canceled.
+	{
+		printf("Cache: User canceled"); 
+		return 0;
+	}
+#endif
 		float fPercent=100.0*(float)(s->max_filepos-s->read_filepos)/(float)(s->buffer_size);
 		mp_msg(MSGT_CACHE,MSGL_STATUS,"Cache filled: %5.2f%% (%d bytes) starting...\n",fPercent,s->max_filepos-s->read_filepos);
-    return 1; // parent exits
+
+	return 1; // parent exits
   }
   
 #ifdef WIN32
@@ -306,7 +329,11 @@ static DWORD WINAPI ThreadProc(void*s){
   signal(SIGTERM,exit_sighandler); // kill
 	cache_vars_t* pCacheVars=(cache_vars_t*)s;
   SetThreadPriority( GetCurrentThread(),THREAD_PRIORITY_ABOVE_NORMAL);
+#ifdef _XBOX
+  while( pCacheVars->m_bRunning && !xbmc_cancel)
+#else
   while( pCacheVars->m_bRunning)
+#endif
 	{
     if(!cache_fill((cache_vars_t*)s))
 		{
@@ -314,6 +341,9 @@ static DWORD WINAPI ThreadProc(void*s){
     }
 	 //cache_stats( pCacheVars->cache_data);
   }
+#ifdef _XBOX
+	pCacheVars->m_bRunning=0;
+#endif
 	pCacheVars->m_bStopped=1;
 }
 

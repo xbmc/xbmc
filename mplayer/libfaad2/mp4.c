@@ -1,6 +1,6 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
-** Copyright (C) 2003 M. Bakker, Ahead Software AG, http://www.nero.com
+** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -22,7 +22,9 @@
 ** Commercial non-GPL licensing of this software is possible.
 ** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
 **
+** Initially modified for use with MPlayer by Arpad Gereöffy on 2003/08/30
 ** $Id$
+** detailed CVS changelog at http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
 **/
 
 #include "common.h"
@@ -58,7 +60,11 @@ static uint8_t ObjectTypesTable[32] = {
 #else
     0, /*  5 SBR */
 #endif
+#ifdef SCALABLE_DEC
+    1, /*  6 AAC Scalable */
+#else
     0, /*  6 AAC Scalable */
+#endif
     0, /*  7 TwinVQ */
     0, /*  8 CELP */
     0, /*  9 HVXC */
@@ -79,7 +85,11 @@ static uint8_t ObjectTypesTable[32] = {
 #else
     0, /* 19 ER AAC LTP */
 #endif
+#ifdef SCALABLE_DEC
+    1, /* 20 ER AAC scalable */
+#else
     0, /* 20 ER AAC scalable */
+#endif
     0, /* 21 ER TwinVQ */
     0, /* 22 ER BSAC */
 #ifdef LD_DEC

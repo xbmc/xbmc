@@ -3,11 +3,8 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <io.h>
 
 #include "mp_msg.h"
 #include "stream.h"
@@ -44,16 +41,16 @@ static int write_buffer(stream_t *s, char* buffer, int len) {
   return (r <= 0) ? -1 : r;
 }
 
-static int seek(stream_t *s,__int64 newpos) {
+static int seek(stream_t *s,off_t newpos) {
   s->pos = newpos;
-  if(_lseeki64(s->fd,s->pos,SEEK_SET)<0) {
+  if(lseek(s->fd,s->pos,SEEK_SET)<0) {
     s->eof=1;
     return 0;
   }
   return 1;
 }
 
-static int seek_forward(stream_t *s,__int64 newpos) {
+static int seek_forward(stream_t *s,off_t newpos) {
   if(newpos<s->pos){
     mp_msg(MSGT_STREAM,MSGL_INFO,"Cannot seek backward in linear streams!\n");
     return 0;
@@ -68,6 +65,7 @@ static int seek_forward(stream_t *s,__int64 newpos) {
   return 1;
 }
 
+#ifdef _XBOX
 void close_f(struct stream_st *s)
 {
 	if (!s) return;
@@ -75,11 +73,12 @@ void close_f(struct stream_st *s)
 	close(s->fd);
 	s->fd=0;
 }
+#endif
 
 static int open_f(stream_t *stream,int mode, void* opts, int* file_format) {
   int f;
   mode_t m = 0;
-  __int64 len;
+  off_t len;
   struct stream_priv_s* p = (struct stream_priv_s*)opts;
 
   if(mode == STREAM_READ)
@@ -91,7 +90,8 @@ static int open_f(stream_t *stream,int mode, void* opts, int* file_format) {
     m_struct_free(&stream_opts,opts);
     return STREAM_UNSUPORTED;
   }
-#if 0
+
+#ifndef _XBOX
   if(!p->filename) {
     mp_msg(MSGT_OPEN,MSGL_ERR, "[file] No filename\n");
     m_struct_free(&stream_opts,opts);
@@ -102,7 +102,8 @@ static int open_f(stream_t *stream,int mode, void* opts, int* file_format) {
 #if defined(__CYGWIN__)|| defined(__MINGW32__)
   m |= O_BINARY;
 #endif    
-/*
+
+#ifndef _XBOX
   if(!strcmp(p->filename,"-")){
     if(mode == STREAM_READ) {
       // read from stdin
@@ -113,21 +114,21 @@ static int open_f(stream_t *stream,int mode, void* opts, int* file_format) {
       f=1;
     }
   } else {
-*/
-    f=open(stream->url,m);
+    f=open(p->filename,m);
+#else
+	f=open(stream->url,m);
+#endif
     if(f<0) {
       mp_msg(MSGT_OPEN,MSGL_ERR,MSGTR_FileNotFound,p->filename);
       m_struct_free(&stream_opts,opts);
       return STREAM_ERROR;
     }
-/*
+#ifndef _XBOX
   }
-*/
-  printf("find begin/end\n");
-  len=_lseeki64(f,0,SEEK_END); _lseeki64(f,0,SEEK_SET);
-  if(len == -1) 
-  {
-    printf("set mode to stream\n");
+#endif
+
+  len=lseek(f,0,SEEK_END); lseek(f,0,SEEK_SET);
+  if(len == -1) {
     stream->seek = seek_forward;
     stream->type = STREAMTYPE_STREAM; // Must be move to STREAMTYPE_FILE
     stream->flags |= STREAM_SEEK_FW;
@@ -146,7 +147,10 @@ static int open_f(stream_t *stream,int mode, void* opts, int* file_format) {
   stream->fd = f;
   stream->fill_buffer = fill_buffer;
   stream->write_buffer = write_buffer;
-	stream->close=close_f;
+#ifdef _XBOX
+  stream->close=close_f;
+#endif
+
   m_struct_free(&stream_opts,opts);
   return STREAM_OK;
 }

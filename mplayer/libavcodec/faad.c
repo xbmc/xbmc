@@ -28,6 +28,10 @@
 #include "avcodec.h"
 #include "faad.h"
 
+#ifndef FAADAPI
+#define FAADAPI
+#endif
+
 /*
  * when CONFIG_FAADBIN is defined the libfaad will be opened at runtime
  */
@@ -116,6 +120,9 @@ static int faac_init_mp4(AVCodecContext *avctx)
     if (r < 0)
 	av_log(avctx, AV_LOG_ERROR, "faacDecInit2 failed r:%d   sr:%ld  ch:%ld  s:%d\n",
 		r, samplerate, (long)channels, avctx->extradata_size);
+    avctx->sample_rate = samplerate;
+    avctx->channels = channels;
+
     return r;
 }
 

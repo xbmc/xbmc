@@ -89,6 +89,8 @@ extern vf_info_t vf_info_rgbtest;
 extern vf_info_t vf_info_qp;
 extern vf_info_t vf_info_phase;
 extern vf_info_t vf_info_divtc;
+extern vf_info_t vf_info_harddup;
+extern vf_info_t vf_info_softskip;
 
 // list of available filters:
 static vf_info_t* filter_list[]={
@@ -171,6 +173,8 @@ static vf_info_t* filter_list[]={
 #endif
     &vf_info_phase,
     &vf_info_divtc,
+    &vf_info_harddup,
+    &vf_info_softskip,
     NULL
 };
 
@@ -213,12 +217,19 @@ void vf_mpi_clear(mp_image_t* mpi,int x0,int y0,int w,int h){
 	    unsigned int* p=(unsigned int*) dst;
 	    int size=(mpi->bpp>>3)*w/4;
 	    int i;
+#ifdef WORDS_BIGENDIAN
+#define CLEAR_PACKEDYUV_PATTERN 0x00800080
+#define CLEAR_PACKEDYUV_PATTERN_SWAPPED 0x80008000
+#else
+#define CLEAR_PACKEDYUV_PATTERN 0x80008000
+#define CLEAR_PACKEDYUV_PATTERN_SWAPPED 0x00800080
+#endif
 	    if(mpi->flags&MP_IMGFLAG_SWAPPED){
-	        for(i=0;i<size;i+=4) p[i]=p[i+1]=p[i+2]=p[i+3]=0x00800080;
-		for(;i<size;i++) p[i]=0x00800080;
+	        for(i=0;i<size-3;i+=4) p[i]=p[i+1]=p[i+2]=p[i+3]=CLEAR_PACKEDYUV_PATTERN_SWAPPED;
+		for(;i<size;i++) p[i]=CLEAR_PACKEDYUV_PATTERN_SWAPPED;
 	    } else {
-	        for(i=0;i<size;i+=4) p[i]=p[i+1]=p[i+2]=p[i+3]=0x80008000;
-		for(;i<size;i++) p[i]=0x80008000;
+	        for(i=0;i<size-3;i+=4) p[i]=p[i+1]=p[i+2]=p[i+3]=CLEAR_PACKEDYUV_PATTERN;
+		for(;i<size;i++) p[i]=CLEAR_PACKEDYUV_PATTERN;
 	    }
 	} else
 	    memset(dst,0,(mpi->bpp>>3)*w);

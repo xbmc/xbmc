@@ -150,9 +150,15 @@ extern dvdcss_t dvdcss_open ( char *psz_target )
     char psz_buffer[PATH_MAX];
     int i_ret;
 
+#ifdef _XBOX
+    char *psz_method = "key";
+    char *psz_verbose = "3";
+    char *psz_cache = NULL;
+#else
     char *psz_method = getenv( "DVDCSS_METHOD" );
     char *psz_verbose = getenv( "DVDCSS_VERBOSE" );
     char *psz_cache = getenv( "DVDCSS_CACHE" );
+#endif //!_XBOX
 #ifndef WIN32
     char *psz_raw_device = getenv( "DVDCSS_RAW_DEVICE" );
 #endif

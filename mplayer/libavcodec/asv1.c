@@ -403,8 +403,6 @@ static int decode_frame(AVCodecContext *avctx,
     AVFrame * const p= (AVFrame*)&a->picture;
     int mb_x, mb_y;
 
-    *data_size = 0;
-
     /* special case for last picture */
     if (buf_size == 0) {
         return 0;
@@ -613,8 +611,6 @@ static int decode_end(AVCodecContext *avctx){
     av_freep(&a->picture.qscale_table);
     a->bitstream_buffer_size=0;
     
-    avcodec_default_free_buffers(avctx);
-
     return 0;
 }
 

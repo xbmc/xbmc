@@ -145,8 +145,8 @@ typedef struct
 	int64_t time_base;
 	int64_t last_time_base;
 	int64_t last_non_b_time;
-	uint32_t time_pp;
-	uint32_t time_bp;
+	int32_t time_pp;
+	int32_t time_bp;
 	uint32_t low_delay;			/* low_delay flage (1 means no B_VOP) */
 	uint32_t low_delay_default;	/* default value for low_delay flag */
 

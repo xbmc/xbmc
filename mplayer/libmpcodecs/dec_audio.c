@@ -59,11 +59,7 @@ int init_audio_codec(sh_audio_t *sh_audio)
   // Set up some common usefull defaults. ad->preinit() can override these:
   
   sh_audio->samplesize=2;
-#ifdef WORDS_BIGENDIAN
-  sh_audio->sample_format=AFMT_S16_BE;
-#else
-  sh_audio->sample_format=AFMT_S16_LE;
-#endif
+  sh_audio->sample_format=AFMT_S16_NE;
   sh_audio->samplerate=0;
   sh_audio->channels=0;
   sh_audio->i_bps=0;  // input rate (bytes/sec)
@@ -294,7 +290,7 @@ int preinit_audio_filters(sh_audio_t *sh_audio,
   // output format: same as ao driver's input format (if missing, fallback to input)
   afs->output.rate   = *out_samplerate ? *out_samplerate : afs->input.rate;
   afs->output.nch    = *out_channels ? *out_channels : afs->input.nch;
-  afs->output.format = af_format_decode(*out_format ? *out_format : afs->input.format);
+  afs->output.format = *out_format ? af_format_decode(*out_format) : afs->input.format;
   afs->output.bps    = out_bps ? out_bps : afs->input.bps;
 
   // filter config:  

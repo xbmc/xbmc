@@ -9,7 +9,7 @@
 #include "../input/input.h"
 
 int mp_input_win32_slave_cmd_func(int fd,char* dest,int size){
-#if 0
+#ifndef _XBOX
   DWORD i,retval;
   int x=0;
   HANDLE stdin = GetStdHandle(STD_INPUT_HANDLE);
@@ -24,7 +24,7 @@ int mp_input_win32_slave_cmd_func(int fd,char* dest,int size){
     }
   }
   if(x)return x;
-#endif
+#endif //!_XBOX
   return MP_INPUT_NOTHING;
 }
 
@@ -38,11 +38,11 @@ static HANDLE stdin;
 static int getch2_status=0;
 
 int getch2(int time){
-#if 0
+#ifndef _XBOX
 	INPUT_RECORD eventbuffer[128];
     DWORD retval;
    	int i=0;
-    if(!getch2_status)return -1;    
+    if(!getch2_status)return -1;
     /*check if there are input events*/
 	if(!GetNumberOfConsoleInputEvents(stdin,&retval))
 	{
@@ -50,18 +50,18 @@ int getch2(int time){
 		return -1;
 	}
     if(retval<=0)return -1;
-    
-	/*read all events*/	
+
+	/*read all events*/
 	if(!ReadConsoleInput(stdin,eventbuffer,128,&retval))
 	{
 		printf("getch: can't read input events\n");
 		return -1;
 	}
- 
+
 	/*filter out keyevents*/
-    for (i = 0; i < retval; i++) 
+    for (i = 0; i < retval; i++)
     {
-		switch(eventbuffer[i].EventType) 
+		switch(eventbuffer[i].EventType)
 		{
 			case KEY_EVENT:
 				/*only a pressed key is interresting for us*/
@@ -97,34 +97,34 @@ int getch2(int time){
 					case VK_DOWN:
 						return KEY_DOWN;
                     case VK_SHIFT:
-                        continue;              
+                        continue;
 					}
 					/*check for function keys*/
         			if(0x87 >= eventbuffer[i].Event.KeyEvent.wVirtualKeyCode >= 0x70)
 						return (KEY_F + 1 + eventbuffer[i].Event.KeyEvent.wVirtualKeyCode - 0x70);
- 						
+
 					/*only characters should be remaining*/
-					//printf("getch2: YOU PRESSED \"%c\" \n",eventbuffer[i].Event.KeyEvent.uChar.AsciiChar); 
+					//printf("getch2: YOU PRESSED \"%c\" \n",eventbuffer[i].Event.KeyEvent.uChar.AsciiChar);
 				    return eventbuffer[i].Event.KeyEvent.uChar.AsciiChar;
 				}
-				break; 
-			
+				break;
+
 			case MOUSE_EVENT:
-            case WINDOW_BUFFER_SIZE_EVENT: 
-            case FOCUS_EVENT:  
+            case WINDOW_BUFFER_SIZE_EVENT:
+            case FOCUS_EVENT:
             case MENU_EVENT:
             default:
-				//printf("getch2: unsupported event type"); 
-			    break; 
-        } 
+				//printf("getch2: unsupported event type");
+			    break;
+        }
     }
-#endif
+#endif //!_XBOX
 	return -1;
 }
 
 
 void getch2_enable(){
-#if 0
+#ifndef _XBOX
 	DWORD retval;
     stdin = GetStdHandle(STD_INPUT_HANDLE);
    	if(!GetNumberOfConsoleInputEvents(stdin,&retval))
@@ -133,7 +133,7 @@ void getch2_enable(){
 		getch2_status = 0;
 	}
     else getch2_status=1;
-#endif
+#endif //!_XBOX
 }
 
 void getch2_disable(){

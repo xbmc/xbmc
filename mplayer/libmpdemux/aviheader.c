@@ -222,12 +222,9 @@ while(1){
       if(verbose>=1) print_strh(&h);
       break; }
     case mmioFOURCC('i', 'n', 'd', 'x'): {
-      DWORD i;
+      uint32_t i;
       unsigned msize = 0;
       avisuperindex_chunk *s;
-      // FIXME: do not use odml index for files that don't need it.
-      // apparently the odml code is buggy!
-      if (demuxer->movi_end < 0x7fffffff) break;
       priv->suidx_size++;
       priv->suidx = realloc(priv->suidx, priv->suidx_size * sizeof (avisuperindex_chunk));
       s = &priv->suidx[priv->suidx_size-1];
@@ -262,7 +259,6 @@ while(1){
 		  (s->dwChunkId), i,
 		  (uint64_t)s->aIndex[i].qwOffset, s->aIndex[i].dwSize, s->aIndex[i].dwDuration);
       }
-      priv->isodml++;
 
       break; }
     case ckidSTREAMFORMAT: {      // read 'strf'
@@ -334,7 +330,7 @@ while(1){
     }
     case mmioFOURCC('v', 'p', 'r', 'p'): {
 	VideoPropHeader *vprp = malloc(chunksize);
-	int i;
+	unsigned int i;
 	stream_read(demuxer->stream, (void*)vprp, chunksize);
 	le2me_VideoPropHeader(vprp);
 	chunksize -= sizeof(*vprp)-sizeof(vprp->FieldInfo);
@@ -373,23 +369,18 @@ while(1){
       priv->idx=malloc(priv->idx_size<<4);
 //      printf("\nindex to %p !!!!! (priv=%p)\n",priv->idx,priv);
       stream_read(demuxer->stream,(char*)priv->idx,priv->idx_size<<4);
-      for (i = 0; i < priv->idx_size; i++)	// swap index to machine endian
-	le2me_AVIINDEXENTRY((AVIINDEXENTRY*)priv->idx + i);
+      for (i = 0; i < priv->idx_size; i++) {	// swap index to machine endian
+	AVIINDEXENTRY *entry=(AVIINDEXENTRY*)priv->idx + i;
+	le2me_AVIINDEXENTRY(entry);
+	/*
+	 * We (ab)use the upper word for bits 32-47 of the offset, so
+	 * we'll clear them here.
+	 * FIXME: AFAIK no codec uses them, but if one does it will break
+	 */
+	entry->dwFlags&=0xffff;
+      }
       chunksize-=priv->idx_size<<4;
       if(verbose>=2) print_index(priv->idx,priv->idx_size);
-      /*
-       * Fixup index for files >4GB
-       */
-      for (i = 0; i < priv->idx_size; i++) {
-	AVIINDEXENTRY *idx = (AVIINDEXENTRY*)priv->idx + i;
-	idx->dwFlags &= 0xffff;
-	if (idx->dwChunkOffset < last_off) {
-	  mp_msg(MSGT_HEADER,MSGL_WARN,"Index offset going backwards (last=%08X, now=%08X), compensating...\n", last_off, idx->dwChunkOffset);
-	  base += 0x100000000LL;
-	}
-	idx->dwFlags |= base >> 16;
-	last_off = idx->dwChunkOffset;
-      }
     }
     break;
     /* added May 2002 */
@@ -401,6 +392,15 @@ while(1){
 	if (strncmp(riff_type, "AVIX", sizeof riff_type))
 	    mp_msg(MSGT_HEADER, MSGL_WARN,
 		   "** warning: this is no extended AVI header..\n");
+	else {
+		/*
+		 * We got an extended AVI header, so we need to switch to
+		 * ODML to get seeking to work, provided we got indx chunks
+		 * in the header (suidx_size > 0).
+		 */
+		if (priv->suidx_size > 0)
+			priv->isodml = 1;
+	}
 	chunksize = 0;
 	list_end = 0; /* a new list will follow */
 	break; }
@@ -436,6 +436,13 @@ while(1){
   if(chunksize>0) stream_skip(demuxer->stream,chunksize); else
   if((int)chunksize<0) mp_msg(MSGT_HEADER,MSGL_WARN,"chunksize=%u  (id=%.4s)\n",chunksize,(char *) &id);
   
+}
+
+if (priv->suidx_size > 0 && priv->idx_size == 0) {
+    /*
+     * No NEWAVIINDEX, but we got an OpenDML index.
+     */
+    priv->isodml = 1;
 }
 
 if (priv->isodml && (index_mode==-1 || index_mode==0)) {

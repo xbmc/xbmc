@@ -356,7 +356,7 @@ static inline void yuv2yuvXinC(int16_t *lumFilter, int16_t **lumSrc, int lumFilt
 			((uint8_t*)dest)[3]= r[Y2];\
 			((uint8_t*)dest)[4]= g[Y2];\
 			((uint8_t*)dest)[5]= b[Y2];\
-			((uint8_t*)dest)+=6;\
+			dest+=6;\
 		}\
 		break;\
 	case IMGFMT_BGR24:\
@@ -367,7 +367,7 @@ static inline void yuv2yuvXinC(int16_t *lumFilter, int16_t **lumSrc, int lumFilt
 			((uint8_t*)dest)[3]= b[Y2];\
 			((uint8_t*)dest)[4]= g[Y2];\
 			((uint8_t*)dest)[5]= r[Y2];\
-			((uint8_t*)dest)+=6;\
+			dest+=6;\
 		}\
 		break;\
 	case IMGFMT_RGB16:\
@@ -449,7 +449,7 @@ static inline void yuv2yuvXinC(int16_t *lumFilter, int16_t **lumSrc, int lumFilt
 				acc+= acc + g[((buf0[i+6]*yalpha1+buf1[i+6]*yalpha)>>19) + d128[6]];\
 				acc+= acc + g[((buf0[i+7]*yalpha1+buf1[i+7]*yalpha)>>19) + d128[7]];\
 				((uint8_t*)dest)[0]= acc;\
-				((uint8_t*)dest)++;\
+				dest++;\
 			}\
 \
 /*\
@@ -539,7 +539,7 @@ static inline void yuv2packedXinC(SwsContext *c, int16_t *lumFilter, int16_t **l
 			((uint8_t*)dest)[3]= r[Y2];
 			((uint8_t*)dest)[4]= g[Y2];
 			((uint8_t*)dest)[5]= b[Y2];
-			((uint8_t*)dest)+=6;
+			dest+=6;
 		}
 		break;
 	case IMGFMT_BGR24:
@@ -550,7 +550,7 @@ static inline void yuv2packedXinC(SwsContext *c, int16_t *lumFilter, int16_t **l
 			((uint8_t*)dest)[3]= b[Y2];
 			((uint8_t*)dest)[4]= g[Y2];
 			((uint8_t*)dest)[5]= r[Y2];
-			((uint8_t*)dest)+=6;
+			dest+=6;
 		}
 		break;
 	case IMGFMT_RGB16:
@@ -645,7 +645,7 @@ static inline void yuv2packedXinC(SwsContext *c, int16_t *lumFilter, int16_t **l
 				acc+= acc + g[Y2+d128[(i+1)&7]];
 				if((i&7)==6){
 					((uint8_t*)dest)[0]= acc;
-					((uint8_t*)dest)++;
+					dest++;
 				}
 			}
 		}
@@ -1726,7 +1726,10 @@ int sws_setColorspaceDetails(SwsContext *c, const int inv_table[4], int srcRange
 
 	yuv2rgb_c_init_tables(c, inv_table, srcRange, brightness, contrast, saturation);
 	//FIXME factorize
-	
+
+#ifdef HAVE_ALTIVEC
+	yuv2rgb_altivec_init_tables (c, inv_table);
+#endif	
 	return 0;
 }
 
@@ -1905,6 +1908,18 @@ SwsContext *sws_getContext(int srcW, int srcH, int origSrcFormat, int dstW, int 
 				    c->swScale= PlanarToUyvyWrapper;
 			}
 		}
+
+#ifdef HAVE_ALTIVEC
+		if ((c->flags & SWS_CPU_CAPS_ALTIVEC) &&
+		    ((srcFormat == IMGFMT_YV12 && 
+		      (dstFormat == IMGFMT_YUY2 || dstFormat == IMGFMT_UYVY)))) {
+		  // unscaled YV12 -> packed YUV, we want speed
+		  if (dstFormat == IMGFMT_YUY2)
+		    c->swScale= yv12toyuy2_unscaled_altivec;
+		  else
+		    c->swScale= yv12touyvy_unscaled_altivec;
+		}
+#endif
 
 		/* simple copy */
 		if(   srcFormat == dstFormat

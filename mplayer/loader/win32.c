@@ -2666,7 +2666,7 @@ static int WINAPI expGetWindowThreadProcessId(HWND win, int *pid_data)
     dbgprintf("GetWindowThreadProcessId(0x%x, 0x%x) => %d\n",
 	win, pid_data, tid);
     if (pid_data)
-	(int)*pid_data = tid;
+	*(int*)pid_data = tid;
     return tid;
 }
 
@@ -3579,6 +3579,14 @@ static HANDLE WINAPI expCreateFileA(LPCSTR cs1,DWORD i1,DWORD i2,
 	}
 	r=open(tmp, flg);
 	free(tmp);
+	return r;
+    }
+
+    // Needed by wnvplay1.dll
+    if (strstr(cs1, "WINNOV.bmp"))
+    {
+	int r;
+	r=open("/dev/null", 0);
 	return r;
     }
 

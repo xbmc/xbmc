@@ -22,11 +22,16 @@
 #include <winsock2.h>
 #endif
 
+#ifndef USE_SETLOCAL
 #undef USE_ICONV
+#endif
 
 #ifdef USE_ICONV
-#include <locale.h>
 #include <iconv.h>
+#ifdef USE_LANGINFO
+#include <langinfo.h>
+#endif
+#include <locale.h>
 #endif
 
 #include "url.h"
@@ -80,6 +85,41 @@ static void send_command (int s, int command, uint32_t switches,
 			  uint32_t extra, int length,
 			  char *data) 
 {
+#ifdef _XBOX
+	// when using command_t on the xbox the memory is not getting allocated some way or another.
+	// seems it works this way.
+	command_t* cmd = (command_t*)malloc(sizeof(command_t));
+  int        len8;
+
+  len8 = (length + 7) / 8;
+
+  cmd->num_bytes = 0;
+
+  put_32 (cmd, 0x00000001); /* start sequence */
+  put_32 (cmd, 0xB00BFACE); /* #-)) */
+  put_32 (cmd, len8*8 + 32);
+  put_32 (cmd, 0x20534d4d); /* protocol type "MMS " */
+  put_32 (cmd, len8 + 4);
+  put_32 (cmd, seq_num);
+  seq_num++;
+  put_32 (cmd, 0x0);        /* unknown */
+  put_32 (cmd, 0x0);
+  put_32 (cmd, len8+2);
+  put_32 (cmd, 0x00030000 | command); /* dir | command */
+  put_32 (cmd, switches);
+  put_32 (cmd, extra);
+
+  memcpy (&cmd->buf[48], data, length);
+  if (length & 7)
+    memset(&cmd->buf[48 + length], 0, 8 - (length & 7));
+
+  if (send (s, cmd->buf, len8*8+48, 0) != (len8*8+48)) {
+    printf ("write error\n");
+  }
+	free(cmd);
+	
+#else//_XBOX
+
   command_t  cmd;
   int        len8;
 
@@ -108,6 +148,7 @@ static void send_command (int s, int command, uint32_t switches,
   if (send (s, cmd.buf, len8*8+48, 0) != (len8*8+48)) {
     printf ("write error\n");
   }
+#endif //_XBOX
 }
 
 #ifdef USE_ICONV
@@ -173,7 +214,7 @@ static int get_data (int s, char *buf, size_t count)
 
     len = recv (s, &buf[total], count-total, 0);
 
-    if (len<0) {
+    if (len<=0) {
       perror ("read error:");
       return 0;
     }
@@ -462,7 +503,7 @@ int asf_mmst_streaming_start(stream_t *stream)
   uint8_t              asf_header[8192];
   int                  asf_header_len;
   int                  len, i, packet_length;
-  char                *path;
+  char                *path, *unescpath;
   URL_t *url1 = stream->streaming_ctrl->url;
   int s = stream->fd;
 
@@ -474,9 +515,22 @@ int asf_mmst_streaming_start(stream_t *stream)
   /* parse url */
   path = strchr(url1->file,'/') + 1;
 
+  /* mmst filename are not url_escaped by MS MediaPlayer and are expected as
+   * "plain text" by the server, so need to decode it here
+   */
+  unescpath=malloc(strlen(path)+1);
+  if (!unescpath) {
+	mp_msg(MSGT_NETWORK,MSGL_FATAL,"Memory allocation failed!\n");
+	return -1; 
+  }
+  url_unescape_string(unescpath,path);
+  path=unescpath;
+  
+
   url1->port=1755;
   s = connect2Server( url1->hostname, url1->port, 1);
   if( s<0 ) {
+	  free(path);
 	  return s;
   }
   printf ("connected\n");
@@ -492,7 +546,11 @@ int asf_mmst_streaming_start(stream_t *stream)
   /* prepare for the url encoding conversion */
 #ifdef USE_ICONV
   setlocale(LC_CTYPE, "");
+#ifdef USE_LANGINFO
+  url_conv = iconv_open("UTF-16LE",nl_langinfo(CODESET));
+#else
   url_conv = iconv_open("UTF-16LE",setlocale(LC_CTYPE, NULL));
+#endif
 #endif
 
   snprintf (str, 1023, "\034\003NSPlayer/7.0.0.1956; {33715801-BAB3-9D85-24E9-03B90328270A}; Host: %s", url1->hostname);
@@ -522,6 +580,7 @@ int asf_mmst_streaming_start(stream_t *stream)
   string_utf16 (&data[8], path, strlen(path));
   memset (data, 0, 8);
   send_command (s, 5, 0, 0, strlen(path)*2+10, data);
+  free(path);
 
   get_answer (s);
 
@@ -540,6 +599,7 @@ int asf_mmst_streaming_start(stream_t *stream)
 
   asf_header_len = get_header (s, asf_header, stream->streaming_ctrl);
 //  printf("---------------------------------- asf_header %d\n",asf_header);
+  if (asf_header_len==0) return -1; //error reading header
   packet_length = interp_header (asf_header, asf_header_len);
 
 

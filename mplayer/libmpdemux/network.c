@@ -32,9 +32,7 @@
 #include "cookies.h"
 #include "url.h"
 #include "asf.h"
-#ifndef STREAMING_LIVE_DOT_COM
 #include "rtp.h"
-#endif
 #include "pnm.h"
 #include "realrtsp/rtsp_session.h"
 
@@ -94,7 +92,8 @@ static struct {
 	// OGG Streaming
 	{ "application/x-ogg", DEMUXER_TYPE_OGG },
 	// NullSoft Streaming Video
-	{ "video/nsv", DEMUXER_TYPE_NSV}
+	{ "video/nsv", DEMUXER_TYPE_NSV},
+	{ "misc/ultravox", DEMUXER_TYPE_NSV}
 
 };
 
@@ -148,7 +147,6 @@ streaming_ctrl_free( streaming_ctrl_t *streaming_ctrl ) {
 	free( streaming_ctrl );
 }
 
-#ifndef STREAMING_LIVE_DOT_COM
 int
 read_rtp_from_server(int fd, char *buffer, int length) {
 	struct rtpheader rh;
@@ -168,7 +166,6 @@ read_rtp_from_server(int fd, char *buffer, int length) {
 	memcpy(buffer, data, len);
 	return(len);
 }
-#endif
 
 
 // Converts an address family constant to a string
@@ -283,7 +280,13 @@ connect2Server_with_af(char *host, int port, int af,int verb) {
 	}
 
 #if defined(USE_ATON) || defined(HAVE_WINSOCK2)
+#ifdef _XBOX
+	//inet_ntoa is buggy in XBMC, fix it
+	//for now, just copy the host
+	strcpy(buf, host);
+#else
 	strncpy( buf, inet_ntoa( *((struct in_addr*)our_s_addr) ), 255);
+#endif
 #else
 	inet_ntop(af, our_s_addr, buf, 255);
 #endif
@@ -296,7 +299,11 @@ connect2Server_with_af(char *host, int port, int af,int verb) {
 	val = 1;
 	ioctlsocket( socket_server_fd, FIONBIO, &val );
 #endif
+#ifdef _XBOX
+	if( connect( socket_server_fd, (struct sockaddr*)&server_address.four, sizeof(server_address.four) )==-1 ) {
+#else
 	if( connect( socket_server_fd, (struct sockaddr*)&server_address, server_address_size )==-1 ) {
+#endif
 #ifndef HAVE_WINSOCK2
 		if( errno!=EINPROGRESS ) {
 #else
@@ -336,6 +343,8 @@ connect2Server_with_af(char *host, int port, int af,int verb) {
 	val = 0;
 	ioctlsocket( socket_server_fd, FIONBIO, &val );
 #endif
+
+#ifndef _XBOX //XBOX doesnt support SO_ERROR option for getsockopt
 	// Check if there were any error
 	err_len = sizeof(int);
 	ret =  getsockopt(socket_server_fd,SOL_SOCKET,SO_ERROR,&err,&err_len);
@@ -347,6 +356,7 @@ connect2Server_with_af(char *host, int port, int af,int verb) {
 		mp_msg(MSGT_NETWORK,MSGL_ERR,"Connect error : %s\n",strerror(err));
 		return -1;
 	}
+#endif
 	
 	return socket_server_fd;
 }
@@ -448,7 +458,10 @@ http_send_request( URL_t *url, off_t pos ) {
 		server_url = url;
 		http_set_uri( http_hdr, server_url->file );
 	}
-	snprintf(str, 256, "Host: %s", server_url->hostname );
+	if (server_url->port && server_url->port != 80)
+	    snprintf(str, 256, "Host: %s:%d", server_url->hostname, server_url->port );
+	else
+	    snprintf(str, 256, "Host: %s", server_url->hostname );
 	http_set_field( http_hdr, str);
 	if (network_useragent)
 	{
@@ -466,7 +479,7 @@ http_send_request( URL_t *url, off_t pos ) {
 	    
 	if (network_cookies_enabled) cookies_set( http_hdr, server_url->hostname, server_url->url );
 	
-	http_set_field( http_hdr, "Connection: closed");
+	http_set_field( http_hdr, "Connection: close");
 	http_add_basic_authentication( http_hdr, url->username, url->password );
 	if( http_build_request( http_hdr )==NULL ) {
 		return -1;
@@ -700,8 +713,7 @@ extension=NULL;
 #endif
 		}
 
-#ifndef STREAMING_LIVE_DOT_COM
-	// Old, hacked RTP support, which works for MPEG Program Streams
+	// Old, hacked RTP support, which works for MPEG Streams
 	//   RTP streams only:
 		// Checking for RTP
 		if( !strcasecmp(url->protocol, "rtp") ) {
@@ -711,7 +723,6 @@ extension=NULL;
 			}
 			return 0;
 		}
-#endif
 
 		// Checking for ASF
 		if( !strncasecmp(url->protocol, "mms", 3) ) {
@@ -769,7 +780,7 @@ extension=NULL;
 						// If content-type == video/nsv we most likely have a winamp video stream 
 						// otherwise it should be mp3. if there are more types consider adding mime type 
 						// handling like later
-				                if ( (field_data = http_get_field(http_hdr, "content-type")) != NULL && !strcmp(field_data, "video/nsv"))
+				                if ( (field_data = http_get_field(http_hdr, "content-type")) != NULL && (!strcmp(field_data, "video/nsv") || !strcmp(field_data, "misc/ultravox")))
 							*file_format = DEMUXER_TYPE_NSV;
 						else
 							*file_format = DEMUXER_TYPE_AUDIO;
@@ -1040,6 +1051,8 @@ realrtsp_streaming_start( stream_t *stream ) {
 		if(fd<0) return -1;
 		
 		mrl = malloc(sizeof(char)*(strlen(stream->streaming_ctrl->url->hostname)+strlen(stream->streaming_ctrl->url->file)+16));
+		if (stream->streaming_ctrl->url->file[0] == '/')
+		    stream->streaming_ctrl->url->file++;
 		sprintf(mrl,"rtsp://%s:%i/%s",stream->streaming_ctrl->url->hostname,port,stream->streaming_ctrl->url->file);
 		rtsp = rtsp_session_start(fd,&mrl, stream->streaming_ctrl->url->file,
 			stream->streaming_ctrl->url->hostname, port, &redirected);
@@ -1069,9 +1082,8 @@ realrtsp_streaming_start( stream_t *stream ) {
 }
 
 
-#ifndef STREAMING_LIVE_DOT_COM
 // Start listening on a UDP port. If multicast, join the group.
-int
+static int
 rtp_open_socket( URL_t *url ) {
 	int socket_server_fd, rxsockbufsz;
 	int err, err_len;
@@ -1079,6 +1091,7 @@ rtp_open_socket( URL_t *url ) {
 	struct sockaddr_in server_address;
 	struct ip_mreq mcast;
         struct timeval tv;
+	struct hostent *hp;
 
 	mp_msg(MSGT_NETWORK,MSGL_V,"Listening for traffic on %s:%d ...\n", url->hostname, url->port );
 
@@ -1090,12 +1103,16 @@ rtp_open_socket( URL_t *url ) {
 	}
 
 	if( isalpha(url->hostname[0]) ) {
-		struct hostent *hp =(struct hostent*)gethostbyname( url->hostname );
+#ifndef HAVE_WINSOCK2
+		hp =(struct hostent*)gethostbyname( url->hostname );
 		if( hp==NULL ) {
 			mp_msg(MSGT_NETWORK,MSGL_ERR,"Counldn't resolve name: %s\n", url->hostname);
 			return -1;
 		}
 		memcpy( (void*)&server_address.sin_addr.s_addr, (void*)hp->h_addr, hp->h_length );
+#else
+		server_address.sin_addr.s_addr = htonl(INADDR_ANY);
+#endif
 	} else {
 #ifndef HAVE_WINSOCK2
 #ifdef USE_ATON
@@ -1104,8 +1121,7 @@ rtp_open_socket( URL_t *url ) {
 		inet_pton(AF_INET, url->hostname, &server_address.sin_addr);
 #endif
 #else
-		unsigned int addr = inet_addr(url->hostname);
-		memcpy( (void*)&server_address.sin_addr, (void*)&addr, sizeof(addr) );
+		server_address.sin_addr.s_addr = htonl(INADDR_ANY);
 #endif
 	}
 	server_address.sin_family=AF_INET;
@@ -1122,6 +1138,20 @@ rtp_open_socket( URL_t *url ) {
 			return -1;
 		}
 	}
+	
+#ifdef HAVE_WINSOCK2
+	if (isalpha(url->hostname[0])) {
+		hp =(struct hostent*)gethostbyname( url->hostname );
+		if( hp==NULL ) {
+			mp_msg(MSGT_NETWORK,MSGL_ERR,"Counldn't resolve name: %s\n", url->hostname);
+			return -1;
+		}
+		memcpy( (void*)&server_address.sin_addr.s_addr, (void*)hp->h_addr, hp->h_length );
+	} else {
+		unsigned int addr = inet_addr(url->hostname);
+		memcpy( (void*)&server_address.sin_addr, (void*)&addr, sizeof(addr) );
+	}
+#endif
 
 	// Increase the socket rx buffer size to maximum -- this is UDP
 	rxsockbufsz = 240 * 1024;
@@ -1146,6 +1176,7 @@ rtp_open_socket( URL_t *url ) {
 	if( select(socket_server_fd+1, &set, NULL, NULL, &tv)>0 ) {
         //if( select(socket_server_fd+1, &set, NULL, NULL, NULL)>0 ) {
 		err_len = sizeof( err );
+#ifndef _XBOX //XBOX doesnt support SO_ERROR option for getsockopt
 		getsockopt( socket_server_fd, SOL_SOCKET, SO_ERROR, &err, &err_len );
 		if( err ) {
 			mp_msg(MSGT_NETWORK,MSGL_ERR,"Timeout! No data from host %s\n", url->hostname );
@@ -1153,16 +1184,17 @@ rtp_open_socket( URL_t *url ) {
 			closesocket(socket_server_fd);
 			return -1;
 		}
+#endif
 	}
 	return socket_server_fd;
 }
 
-int
+static int
 rtp_streaming_read( int fd, char *buffer, int size, streaming_ctrl_t *streaming_ctrl ) {
     return read_rtp_from_server( fd, buffer, size );
 }
 
-int
+static int
 rtp_streaming_start( stream_t *stream ) {
 	streaming_ctrl_t *streaming_ctrl;
 	int fd;
@@ -1184,7 +1216,6 @@ rtp_streaming_start( stream_t *stream ) {
 	streaming_ctrl->status = streaming_playing_e;
 	return 0;
 }
-#endif
 
 int
 streaming_start(stream_t *stream, int *demuxer_type, URL_t *url) {
@@ -1216,7 +1247,6 @@ streaming_start(stream_t *stream, int *demuxer_type, URL_t *url) {
 	// Get the bandwidth available
 	stream->streaming_ctrl->bandwidth = network_bandwidth;
 	
-#ifndef STREAMING_LIVE_DOT_COM
 	// For RTP streams, we usually don't know the stream type until we open it.
 	if( !strcasecmp( stream->streaming_ctrl->url->protocol, "rtp")) {
 		if(stream->fd >= 0) {
@@ -1226,7 +1256,6 @@ streaming_start(stream_t *stream, int *demuxer_type, URL_t *url) {
 		stream->fd = -1;
 		ret = rtp_streaming_start( stream );
 	} else
-#endif
 
 	if( !strcasecmp( stream->streaming_ctrl->url->protocol, "pnm")) {
 		stream->fd = -1;
@@ -1259,8 +1288,20 @@ try_livedotcom:
 			// so we need to pass demuxer_type too
 			ret = asf_streaming_start( stream, demuxer_type );
 			if( ret<0 ) {
+                                //sometimes a file is just on a webserver and it is not streamed.
+				//try loading them default method as last resort for http protocol
+                                if ( !strcasecmp(stream->streaming_ctrl->url->protocol, "http") ) {
+                                mp_msg(MSGT_NETWORK,MSGL_STATUS,"Trying default streaming for http protocol\n ");
+                                //reset stream
+                                close(stream->fd);
+		                stream->fd=-1;
+                                ret=nop_streaming_start(stream);
+                                }
+
+                         if (ret<0) {
 				mp_msg(MSGT_NETWORK,MSGL_ERR,"asf_streaming_start failed\n");
                                 mp_msg(MSGT_NETWORK,MSGL_STATUS,"Check if this is a playlist which requires -playlist option\nExample: mplayer -playlist <url>\n");
+                               }
 			}
 			break;
 #ifdef STREAMING_LIVE_DOT_COM

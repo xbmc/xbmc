@@ -79,7 +79,7 @@ desc->fpath = dn; // search in the same dir as fonts.desc
 desc->charspace=2;
 desc->spacewidth=12;
 desc->height=0;
-for(i=0;i<512;i++) desc->start[i]=desc->width[i]=desc->font[i]=-1;
+for(i=0;i<65536;i++) desc->start[i]=desc->width[i]=desc->font[i]=-1;
 
 section[0]=0;
 
@@ -156,42 +156,40 @@ while(fgets(sor,1020,f)){
       }
   } else    
 
-  if(strcmp(section,"[files]")==0)
-	{
-      char *default_dir=MPLAYER_DATADIR "\\font";
-      if(pdb==2 && strcmp(p[0],"alpha")==0)
-			{
+  if(strcmp(section,"[files]")==0){
+      char *default_dir=MPLAYER_DATADIR "/font";
+      if(pdb==2 && strcmp(p[0],"alpha")==0){
     	  char *cp;
-				if (!(cp=malloc(strlen(desc->fpath)+strlen(p[1])+2))) return NULL;
+	  if (!(cp=malloc(strlen(desc->fpath)+strlen(p[1])+2))) return NULL;
 
-				snprintf(cp,strlen(desc->fpath)+strlen(p[1])+2,"%s\\%s",desc->fpath,p[1]);
-				if(!((desc->pic_a[fontdb]=load_raw(cp,verbose))))
-				{
-					free(cp);
-					if (!(cp=malloc(strlen(default_dir)+strlen(p[1])+2))) 
-						return NULL;
-					snprintf(cp,strlen(default_dir)+strlen(p[1])+2,"%s\\%s", default_dir,p[1]);
-					if (!((desc->pic_a[fontdb]=load_raw(cp,verbose))))
-					{
-						printf("Can't load font bitmap: %s\n",p[1]);
-						free(cp);
-						return NULL;
-					}
-				}
-				free(cp);
-        continue;
+	  snprintf(cp,strlen(desc->fpath)+strlen(p[1])+2,"%s/%s",
+		desc->fpath,p[1]);
+          if(!((desc->pic_a[fontdb]=load_raw(cp,verbose)))){
+		free(cp);
+		if (!(cp=malloc(strlen(default_dir)+strlen(p[1])+2))) 
+		   return NULL;
+		snprintf(cp,strlen(default_dir)+strlen(p[1])+2,"%s/%s",
+			 default_dir,p[1]);
+		if (!((desc->pic_a[fontdb]=load_raw(cp,verbose)))){
+		   printf("Can't load font bitmap: %s\n",p[1]);
+		   free(cp);
+		   return NULL;
+		}
+          }
+	  free(cp);
+          continue;
       }
       if(pdb==2 && strcmp(p[0],"bitmap")==0){
     	  char *cp;
 	  if (!(cp=malloc(strlen(desc->fpath)+strlen(p[1])+2))) return NULL;
 
-	  snprintf(cp,strlen(desc->fpath)+strlen(p[1])+2,"%s\\%s",
+	  snprintf(cp,strlen(desc->fpath)+strlen(p[1])+2,"%s/%s",
 		desc->fpath,p[1]);
           if(!((desc->pic_b[fontdb]=load_raw(cp,verbose)))){
 		free(cp);
 		if (!(cp=malloc(strlen(default_dir)+strlen(p[1])+2))) 
 		   return NULL;
-		snprintf(cp,strlen(default_dir)+strlen(p[1])+2,"%s\\%s",
+		snprintf(cp,strlen(default_dir)+strlen(p[1])+2,"%s/%s",
 			 default_dir,p[1]);
 		if (!((desc->pic_b[fontdb]=load_raw(cp,verbose)))){
 		   printf("Can't load font bitmap: %s\n",p[1]);
@@ -202,8 +200,7 @@ while(fgets(sor,1020,f)){
 	  free(cp);
           continue;
       }
-  } 
-	else
+  } else
 
   if(strcmp(section,"[info]")==0){
       if(pdb==2 && strcmp(p[0],"name")==0){
@@ -248,9 +245,18 @@ while(fgets(sor,1020,f)){
       }
   }
   printf("Syntax error in font desc: %s\n",sor);
+  free(desc);
+  fclose(f);
+  return NULL;
 
 }
 fclose(f);
+
+ if (first == 1) {
+   printf("%s is empty or a directory, ignoring\n", fname);
+   free(desc);
+   return NULL;
+ }
 
 //printf("font: pos of U = %d\n",desc->start[218]);
 
@@ -298,7 +304,7 @@ for(i=0;i<=fontdb;i++){
 }
 
 j='_';if(desc->font[j]<0) j='?';
-for(i=0;i<512;i++)
+for(i=0;i<65536;i++)
   if(desc->font[i]<0){
       desc->start[i]=desc->start[j];
       desc->width[i]=desc->width[j];

@@ -254,10 +254,18 @@ static int libc_open ( dvdcss_t dvdcss, char const *psz_device )
 }
 
 #if defined( WIN32 )
+#ifdef _XBOX
+extern HANDLE xboxopendvdrom();
+#endif //!_XBOX
 static int win2k_open ( dvdcss_t dvdcss, char const *psz_device )
 {
+#ifdef _XBOX
+    char psz_dvd[70];
+    strcpy(psz_dvd, "\\Device\\Cdrom0");
+#else
     char psz_dvd[7];
     _snprintf( psz_dvd, 7, "\\\\.\\%c:", psz_device[0] );
+#endif //!_XBOX
 
     /* To work around an M$ bug in IOCTL_DVD_READ_STRUCTURE, we need read
      * _and_ write access to the device (so we can make SCSI Pass Through
@@ -267,6 +275,16 @@ static int win2k_open ( dvdcss_t dvdcss, char const *psz_device )
      * won't send back the right result).
      * (See Microsoft Q241374: Read and Write Access Required for SCSI
      * Pass Through Requests) */
+#ifdef _XBOX
+    if (!dvdcss->b_file)
+    {
+      printf("open dvdrom\n");
+     (HANDLE) dvdcss->i_fd = xboxopendvdrom();
+    }
+    else
+    {
+      printf("open file\n");
+#endif //!_XBOX
     (HANDLE) dvdcss->i_fd =
                 CreateFile( psz_dvd, GENERIC_READ | GENERIC_WRITE,
                             FILE_SHARE_READ | FILE_SHARE_WRITE,
@@ -284,6 +302,9 @@ static int win2k_open ( dvdcss_t dvdcss, char const *psz_device )
         _dvdcss_error( dvdcss, "failed opening device" );
         return -1;
     }
+#ifdef _XBOX
+    }
+#endif //!_XBOX
 
     dvdcss->i_pos = 0;
 

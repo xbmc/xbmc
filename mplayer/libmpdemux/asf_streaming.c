@@ -35,11 +35,6 @@ int asf_http_streaming_start( stream_t *stream, int *demuxer_type );
 int asf_mmst_streaming_start( stream_t *stream );
 
 
-// ASF streaming support several network protocol.
-// One use UDP, not known, yet!
-// Another is HTTP, this one is known.
-// So for now, we use the HTTP protocol.
-// 
 // We can try several protocol for asf streaming
 // * first the UDP protcol, if there is a firewall, UDP
 //   packets will not come back, so the mmsu will failed.
@@ -48,36 +43,38 @@ int asf_mmst_streaming_start( stream_t *stream );
 //   through
 // * Then we can try HTTP.
 // 
-// Note: 	MMS/HTTP support is now a "well known" support protocol,
-// 		it has been tested for while, not like MMST support.
-// 		WMP sequence is MMSU then MMST and then HTTP.
-// 		In MPlayer case since HTTP support is more reliable,
-// 		we are doing HTTP first then we try MMST if HTTP fail.
+// Note: Using 	WMP sequence  MMSU then MMST and then HTTP.
+
 int
 asf_streaming_start( stream_t *stream, int *demuxer_type) {
 	char proto_s[10];
-	int fd = -1;
+	int protolen, fd = -1;
 	
 	strncpy( proto_s, stream->streaming_ctrl->url->protocol, 10 );
+    protolen=strlen(proto_s);
 
-	if( 	!strncasecmp( proto_s, "http", 4) || 
-		(!strncasecmp( proto_s, "mms", 3) && strncasecmp( proto_s, "mmst", 4)) || 
-		!strncasecmp( proto_s, "http_proxy", 10)
-		) {
-		mp_msg(MSGT_NETWORK,MSGL_V,"Trying ASF/HTTP...\n");
-		fd = asf_http_streaming_start( stream, demuxer_type );
-		if( fd>-1 ) return fd;
-		mp_msg(MSGT_NETWORK,MSGL_V,"  ===> ASF/HTTP failed\n");
-		if( fd==-2 ) return -1;
-	}
-	if( !strncasecmp( proto_s, "mms", 3) && strncasecmp( proto_s, "mmst", 4) ) {
+    // Is protocol even valid mms,mmsu,mmst,http,http_proxy?
+    if (!(
+        (protolen==4 && (!strcasecmp( proto_s, "mmst") || !strcasecmp (proto_s,"mmsu") ||
+        !strcasecmp( proto_s, "http"))) ||
+        (protolen==3 && !strcasecmp(proto_s,"mms")) ||
+        (protolen==10 && !strcasecmp(proto_s,"http_proxy"))
+        )) {
+        mp_msg(MSGT_NETWORK,MSGL_ERR,"Unknown protocol: %s\n", proto_s );
+        return -1;
+    }
+
+    // Is protocol mms or mmsu?
+    if ( protolen==3 || (protolen==4 &&  !strcasecmp( proto_s, "mmsu")) ) {
 		mp_msg(MSGT_NETWORK,MSGL_V,"Trying ASF/UDP...\n");
 		//fd = asf_mmsu_streaming_start( stream );
-		if( fd>-1 ) return fd;
+		if( fd>-1 ) return fd; //mmsu support is not implemented yet - using this code
 		mp_msg(MSGT_NETWORK,MSGL_V,"  ===> ASF/UDP failed\n");
 		if( fd==-2 ) return -1;
 	}
-	if( !strncasecmp( proto_s, "mms", 3) ) {
+
+    //Is protocol mms or mmst?
+    if (protolen==3 ||  (protolen==4 && !strcasecmp( proto_s, "mmst")) ) {
 		mp_msg(MSGT_NETWORK,MSGL_V,"Trying ASF/TCP...\n");
 		fd = asf_mmst_streaming_start( stream );
 		if( fd>-1 ) return fd;
@@ -85,10 +82,16 @@ asf_streaming_start( stream_t *stream, int *demuxer_type) {
 		if( fd==-2 ) return -1;
 	}
 
-        if (!strncasecmp( proto_s, "mms", 3) ||  !strncasecmp( proto_s, "http", 4) || !strncasecmp( proto_s, "mmst", 4) || !strncasecmp( proto_s, "http_proxy", 10) )
-        mp_msg(MSGT_NETWORK,MSGL_ERR,"Used protocol %s\n",proto_s );
-	else
-	mp_msg(MSGT_NETWORK,MSGL_ERR,"Unknown protocol: %s\n", proto_s );
+    //Is protocol http, http_proxy, or mms? 
+    if  (protolen==10 || protolen==3 || (protolen==4 && !strcasecmp(proto_s,"http")) ) {
+		mp_msg(MSGT_NETWORK,MSGL_V,"Trying ASF/HTTP...\n");
+		fd = asf_http_streaming_start( stream, demuxer_type );
+		if( fd>-1 ) return fd;
+		mp_msg(MSGT_NETWORK,MSGL_V,"  ===> ASF/HTTP failed\n");
+		if( fd==-2 ) return -1;
+	}
+
+    //everything failed
 	return -1;
 }
 
@@ -444,7 +447,7 @@ asf_http_streaming_type(char *content_type, char *features, HTTP_header_t *http_
 				mp_msg(MSGT_NETWORK,MSGL_V,"=====> ASF Plain text\n");
 				return ASF_PlainText_e;
 			} else if( (!strcasecmp(content_type, "text/html")) ) {
-				mp_msg(MSGT_NETWORK,MSGL_V,"=====> HTML, mplayer is not a browser...yet!\n");
+				mp_msg(MSGT_NETWORK,MSGL_V,"=====> HTML, MPlayer is not a browser...yet!\n");
 				return ASF_Unknown_e;
 			} else {
 				mp_msg(MSGT_NETWORK,MSGL_V,"=====> ASF Redirector\n");
@@ -541,7 +544,7 @@ asf_http_request(streaming_ctrl_t *streaming_ctrl) {
 			if(asf_http_ctrl->n_video > 0) {
 				for( i=0; i<asf_http_ctrl->n_video ; i++ ) {
 					stream_id = asf_http_ctrl->video_streams[i];
-					if(stream_id == asf_http_ctrl->video_id) {
+					if(stream_id == asf_http_ctrl->video_id || !asf_http_ctrl->video_id) {
 						enable = 0;
 					} else {
 						enable = 2;

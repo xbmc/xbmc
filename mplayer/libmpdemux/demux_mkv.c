@@ -20,6 +20,10 @@
 #include "matroska.h"
 #include "bswap.h"
 
+#ifdef _XBOX
+void xbmc_addsub(int id, char* name, int type, int invalid);
+#include "xbmc.h"
+#endif
 #include "../subreader.h"
 #include "../libvo/sub.h"
 
@@ -37,6 +41,12 @@
 #include "../libmpcodecs/native/minilzo.h"
 #endif
 
+#if !defined(MIN)
+#define MIN(a, b)	((a)<(b)?(a):(b))
+#endif
+#if !defined(MAX)
+#define MAX(a, b)	((a)>(b)?(a):(b))
+#endif
 
 typedef struct
 {
@@ -89,6 +99,9 @@ typedef struct mkv_track
   /* generic content encoding support */
   mkv_content_encoding_t *encodings;
   int num_encodings;
+
+  /* For VobSubs */
+  mkv_sh_sub_t sh_sub;
 } mkv_track_t;
 
 typedef struct mkv_index
@@ -219,6 +232,19 @@ typedef struct __attribute__((__packed__))
 extern char *dvdsub_lang;
 extern char *audio_lang;
 
+#ifdef _XBOX
+void xbmc_update_matroskasubs(void *mkvdemuxer)
+{
+  mkv_demuxer_t *d = (mkv_demuxer_t*)mkvdemuxer;
+  int i, id;
+  for (i=0, id=0; i < d->num_tracks; i++)
+    if (d->tracks[i] != NULL && d->tracks[i]->type == MATROSKA_TRACK_SUBTITLE)
+	{
+		id++;
+		xbmc_addsub(d->tracks[i]->tnum, d->tracks[i]->language, XBMC_SUBTYPE_MKVSUB, 0);
+	}
+}
+#endif
 
 static mkv_track_t *
 demux_mkv_find_track_by_num (mkv_demuxer_t *d, int n, int type)
@@ -300,6 +326,177 @@ aac_get_sample_rate_index (uint32_t sample_rate)
     return 10;
   else
     return 11;
+}
+
+
+static int
+vobsub_parse_size (mkv_track_t *t, const char *start)
+{
+  if (sscanf(&start[6], "%dx%d", &t->sh_sub.width, &t->sh_sub.height) == 2)
+    {
+      mp_msg(MSGT_DEMUX, MSGL_V, "[mkv] VobSub size: %ux%u\n",
+             t->sh_sub.width, t->sh_sub.height);
+      return 1;
+    }
+  return 0;
+}
+
+static int
+vobsub_parse_palette (mkv_track_t *t, const char *start)
+{
+  int i, r, g, b, y, u, v, tmp;
+
+  start += 8;
+  while (isspace(*start))
+    start++;
+  for (i = 0; i < 16; i++)
+    {
+      if (sscanf(start, "%06x", &tmp) != 1)
+        break;
+      r = tmp >> 16 & 0xff;
+      g = tmp >> 8 & 0xff;
+      b = tmp & 0xff;
+      y = MIN(MAX((int)(0.1494 * r + 0.6061 * g + 0.2445 * b), 0),
+              0xff);
+      u = MIN(MAX((int)(0.6066 * r - 0.4322 * g - 0.1744 * b) + 128,
+                  0), 0xff);
+      v = MIN(MAX((int)(-0.08435 * r - 0.3422 * g + 0.4266 * b) +
+                  128, 0), 0xff);
+      t->sh_sub.palette[i] = y << 16 | u << 8 | v;
+      start += 6;
+      while ((*start == ',') || isspace(*start))
+        start++;
+    }
+  if (i == 16)
+    {
+      mp_msg(MSGT_DEMUX, MSGL_V, "[mkv] VobSub palette: %06x,%06x,"
+             "%06x,%06x,%06x,%06x,%06x,%06x,%06x,%06x,%06x,%06x,%06x,"
+             "%06x,%06x,%06x\n", t->sh_sub.palette[0],
+             t->sh_sub.palette[1], t->sh_sub.palette[2],
+             t->sh_sub.palette[3], t->sh_sub.palette[4],
+             t->sh_sub.palette[5], t->sh_sub.palette[6],
+             t->sh_sub.palette[7], t->sh_sub.palette[8],
+             t->sh_sub.palette[9], t->sh_sub.palette[10],
+             t->sh_sub.palette[11], t->sh_sub.palette[12],
+             t->sh_sub.palette[13], t->sh_sub.palette[14],
+             t->sh_sub.palette[15]);
+      return 2;
+    }
+  return 0;
+}
+
+static int
+vobsub_parse_custom_colors (mkv_track_t *t, const char *start)
+{
+  int use_custom_colors, i;
+
+  start += 14;
+  while (isspace(*start))
+    start++;
+   if (!strncasecmp(start, "ON", 2) || (*start == '1'))
+     use_custom_colors = 1;
+   else if (!strncasecmp(start, "OFF", 3) || (*start == '0'))
+     use_custom_colors = 0;
+   mp_msg(MSGT_DEMUX, MSGL_V, "[mkv] VobSub custom colors: %s\n",
+          use_custom_colors ? "ON" : "OFF");
+   if ((start = strstr(start, "colors:")) != NULL)
+     {
+       start += 7;
+       while (isspace(*start))
+         start++;
+       for (i = 0; i < 4; i++)
+         {
+           if (sscanf(start, "%06x", &t->sh_sub.colors[i]) != 1)
+             break;
+           start += 6;
+           while ((*start == ',') || isspace(*start))
+             start++;
+         }
+       if (i == 4)
+         {
+           t->sh_sub.custom_colors = 4;
+           mp_msg(MSGT_DEMUX, MSGL_V, "[mkv] VobSub colors: %06x,"
+                  "%06x,%06x,%06x\n", t->sh_sub.colors[0],
+                  t->sh_sub.colors[1], t->sh_sub.colors[2],
+                  t->sh_sub.colors[3]);
+         }
+     }
+   if (!use_custom_colors)
+     t->sh_sub.custom_colors = 0;
+   return 4;
+}
+
+static int
+vobsub_parse_forced_subs (mkv_track_t *t, const char *start)
+{
+  start += 12;
+  while (isspace(*start))
+    start++;
+  if (!strncasecmp(start, "on", 2) || (*start == '1'))
+    t->sh_sub.forced_subs_only = 1;
+  else if (!strncasecmp(start, "off", 3) || (*start == '0'))
+    t->sh_sub.forced_subs_only = 0;
+  else
+    return 0;
+  mp_msg(MSGT_DEMUX, MSGL_V, "[mkv] VobSub forced subs: %d\n",
+         t->sh_sub.forced_subs_only);
+  return 8;
+}
+
+static int
+demux_mkv_parse_idx (mkv_track_t *t)
+{
+  int things_found, last;
+  char *buf, *pos, *start;
+
+  if ((t->private_data == NULL) || (t->private_size == 0))
+    return 0;
+
+  things_found = 0;
+  buf = (char *)malloc(t->private_size + 1);
+  if (buf == NULL)
+    return 0;
+  memcpy(buf, t->private_data, t->private_size);
+  buf[t->private_size] = 0;
+  t->sh_sub.type = 'v';
+
+  pos = buf;
+  start = buf;
+  last = 0;
+  do
+    {
+      if ((*pos == 0) || (*pos == '\r') || (*pos == '\n'))
+        {
+          if (*pos == 0)
+            last = 1;
+          *pos = 0;
+
+          if (!strncasecmp(start, "size: ", 6))
+            things_found |= vobsub_parse_size(t, start);
+          else if (!strncasecmp(start, "palette:", 8))
+            things_found |= vobsub_parse_palette(t, start);
+          else if (!strncasecmp(start, "custom colors:", 14))
+            things_found |= vobsub_parse_custom_colors(t, start);
+          else if (!strncasecmp(start, "forced subs:", 12))
+            things_found |= vobsub_parse_forced_subs(t, start);
+
+          if (last)
+            break;
+          do
+            {
+              pos++;
+            }
+          while ((*pos == '\r') || (*pos == '\n'));
+          start = pos;
+        }
+      else
+        pos++;
+    }
+  while (!last && (*start != 0));
+
+  free(buf);
+
+  return (things_found & 3) == 3;
 }
 
 
@@ -1808,6 +2005,12 @@ demux_mkv_open_sub (demuxer_t *demuxer, mkv_track_t *track)
               free (track->private_data);
               track->private_data = buffer;
             }
+          if (demux_mkv_parse_idx (track))
+            {
+              demuxer->sub->sh = malloc(sizeof(mkv_sh_sub_t));
+              if (demuxer->sub->sh != NULL)
+                memcpy(demuxer->sub->sh, &track->sh_sub, sizeof(mkv_sh_sub_t));
+            }
         }
     }
   else
@@ -1832,7 +2035,7 @@ demux_mkv_open (demuxer_t *demuxer)
   char *str;
 
 #ifdef USE_ICONV
-  subcp_open();
+  subcp_open_noenca();
 #endif
 
   stream_seek(s, s->start_pos);
@@ -2518,8 +2721,15 @@ handle_block (demuxer_t *demuxer, uint8_t *block, uint64_t length,
   clear_subtitles(demuxer, tc, 0);
 
   for (i=0; i<mkv_d->num_tracks; i++)
-    if (mkv_d->tracks[i]->tnum == num)
+    if (mkv_d->tracks[i]->tnum == num) {
       track = mkv_d->tracks[i];
+      break;
+    }
+  if (track == NULL)
+    {
+      free(lace_size);
+      return 1;
+    }
   if (num == demuxer->audio->id)
     {
       ds = demuxer->audio;
