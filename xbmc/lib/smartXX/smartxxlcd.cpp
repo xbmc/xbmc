@@ -146,7 +146,7 @@ void CSmartXXLCD::SetLine(int iLine, const CStdString& strLine)
   
   CStdString strLineLong=strLine;
   strLineLong.Trim();
-	CUtil::StringToLCDCharSet(strLineLong);
+	StringToLCDCharSet(strLineLong);
 
   while (strLineLong.size() < m_iColumns) strLineLong+=" ";
   if (strLineLong != m_strLine[iLine])
@@ -182,7 +182,7 @@ void CSmartXXLCD::DisplayOut(unsigned char data, unsigned char command)
 	unsigned char odatlow;
   static DWORD dwTick=0;
 
-  if ((GetTickCount()-dwTick) ==0)
+  if ((GetTickCount()-dwTick) < 3)
   {
     Sleep(1);
   }

@@ -34,7 +34,7 @@
 				AssemblerOutput="4"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="4"/>
+				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -236,7 +236,9 @@
 				Name="VCPostBuildEventTool"/>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="$(ProjectDir)xbelogo\makeimages.bat"/>
+				CommandLine="bundler xbelogo\titleimage.rdf -o xbelogo\titleimage.xbx
+bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
+"/>
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
@@ -1527,6 +1529,9 @@
 				Name="LCD"
 				Filter="">
 				<File
+					RelativePath=".\xbmc\utils\LCD.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\utils\LCD.h">
 				</File>
 				<File
@@ -1821,10 +1826,10 @@
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
