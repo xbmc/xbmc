@@ -836,15 +836,20 @@ bool CGUIWindowVideoBase::ViewByIcon()
 
 void CGUIWindowVideoBase::UpdateThumbPanel()
 {
-//	int iItem=GetSelectedItem(); 
+	// uncommented the code to set the selected item to correct autoswitching.
+	// for some reason when the thumbpanel is using large thumbs,
+	// the selected item would change!
+	int iItem=GetSelectedItem(); 
+
 	CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
 	if (pControl)
-    pControl->ShowBigIcons(ViewByLargeIcon());
-/*  if (iItem>-1)
-  {
-    CONTROL_SELECT_ITEM(CONTROL_LIST, iItem);
-    CONTROL_SELECT_ITEM(CONTROL_THUMBS, iItem);
-  }*/
+		pControl->ShowBigIcons(ViewByLargeIcon());
+	
+	if (iItem>-1)
+	{
+		CONTROL_SELECT_ITEM(CONTROL_LIST, iItem);
+		CONTROL_SELECT_ITEM(CONTROL_THUMBS, iItem);
+	}
 }
 
 bool CGUIWindowVideoBase::IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel) 
