@@ -3027,7 +3027,7 @@ void CUtil::ClearCache()
   CStdString strThumb=g_stSettings.m_szAlbumDirectory;
   strThumb+="\\thumbs";
   g_directoryCache.ClearDirectory(strThumb);
-  g_directoryCache.ClearDirectory(strThumb+"\temp");
+  g_directoryCache.ClearDirectory(strThumb+"\\temp");
 
   strThumb=g_stSettings.szThumbnailsDirectory;
   g_directoryCache.ClearDirectory(strThumb);
