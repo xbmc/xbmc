@@ -77,7 +77,8 @@ public:
 													DWORD dwWidth, DWORD dwHeight, 
 													const CStdString& strButtonFocus, const CStdString& strButton,
 													const CStdString& strSelectBackground,
-													const CStdString& strSelectArrowLeft, const CStdString& strSelectArrowRight);
+													const CStdString& strSelectArrowLeft, const CStdString& strSelectArrowLeftFocus,
+													const CStdString& strSelectArrowRight, const CStdString& strSelectArrowRightFocus);
   virtual ~CGUISelectButtonControl(void);
   virtual void						Render();
   virtual void						OnAction(const CAction &action) ;
@@ -87,8 +88,12 @@ public:
   virtual void						FreeResources();
 	///	\brief Return the texture of the left arrow that is shown, when the control is in select mode
 	const CStdString				GetTextureLeft() const { return m_imgLeft.GetFileName();};
+	///	\brief Return the texture of the left arrow focused that is shown, when the control is in select mode
+	const CStdString				GetTextureLeftFocus() const { return m_imgLeftFocus.GetFileName();};
 	///	\brief Return the texture of the right arrow that is shown, when the control is in select mode
 	const CStdString				GetTextureRight() const { return m_imgRight.GetFileName();};
+	///	\brief Return the texture of the right arrow focused that is shown, when the control is in select mode
+	const CStdString				GetTextureRightFocus() const { return m_imgRightFocus.GetFileName();};
 	///	\brief Return the texture of the background that is shown, when the control is in select mode
 	const CStdString				GetTextureBackground() const { return m_imgBackground.GetFileName();};
 
@@ -97,8 +102,13 @@ protected:
 	bool										m_bShowSelect;
 	CGUIImage								m_imgBackground;
 	CGUIImage								m_imgLeft;
+	CGUIImage								m_imgLeftFocus;
 	CGUIImage								m_imgRight;
+	CGUIImage								m_imgRightFocus;
 	vector<wstring>					m_vecItems;
 	int											m_iCurrentItem;
+	int											m_iStartFrame;
+	bool										m_bLeftSelected;
+	bool										m_bRightSelected;
 };
 #endif

@@ -9,14 +9,21 @@ CGUISelectButtonControl::CGUISelectButtonControl(DWORD dwParentID, DWORD dwContr
 																								 const CStdString& strButton,
 																								 const CStdString& strSelectBackground,
 																								 const CStdString& strSelectArrowLeft,
-																								 const CStdString& strSelectArrowRight)
+																								 const CStdString& strSelectArrowLeftFocus,
+																								 const CStdString& strSelectArrowRight,
+																								 const CStdString& strSelectArrowRightFocus)
 :CGUIButtonControl(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight, strButtonFocus, strButton)
 ,m_imgBackground(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight,strSelectBackground)
 ,m_imgLeft(dwParentID, dwControlId, dwPosX, dwPosY, 16, 16,strSelectArrowLeft)
+,m_imgLeftFocus(dwParentID, dwControlId, dwPosX, dwPosY, 16, 16,strSelectArrowLeftFocus)
 ,m_imgRight(dwParentID, dwControlId, dwPosX, dwPosY, 16, 16,strSelectArrowRight)
+,m_imgRightFocus(dwParentID, dwControlId, dwPosX, dwPosY, 16, 16,strSelectArrowRightFocus)
 {
 	m_bShowSelect=false;
 	m_iCurrentItem=-1;
+	m_iStartFrame=0;
+	m_bLeftSelected=false;
+	m_bRightSelected=false;
 }
 
 CGUISelectButtonControl::~CGUISelectButtonControl(void)
@@ -37,10 +44,47 @@ void CGUISelectButtonControl::Render()
 	{
 		//	Yes, render the select control
 
-		//	Render background, left and right arrow
+		//	background, left and right arrow
+
 		m_imgBackground.Render();
-		m_imgLeft.Render();
-		m_imgRight.Render();
+
+		//	User has moved left...
+		if(m_bLeftSelected)
+		{
+			//	...render focused arrow
+			m_iStartFrame++;
+			if(m_iStartFrame>=20)
+			{
+				m_iStartFrame=0;
+				m_bLeftSelected=false;
+			}
+			m_imgLeftFocus.Render();
+		}
+		else
+		{
+			//	Render none focused arrow
+			m_imgLeft.Render();
+		}
+
+
+		//	User has moved right...
+		if(m_bRightSelected)
+		{
+			//	...render focused arrow
+			m_iStartFrame++;
+			if(m_iStartFrame>=20)
+			{
+				m_iStartFrame=0;
+				m_bRightSelected=false;
+			}
+			m_imgRightFocus.Render();
+		}
+		else
+		{
+			//	Render none focused arrow
+			m_imgRight.Render();
+		}
+
 
 		//	Render text if a current item is available
 		if (m_iCurrentItem>=0 && m_pFont)
@@ -100,6 +144,8 @@ void CGUISelectButtonControl::OnAction(const CAction &action)
 		}
 		else if (action.wID == ACTION_MOVE_LEFT)
 		{
+			//	Set for visual feedback
+			m_bLeftSelected=true;
 			//	Switch to previous item
 			if (m_vecItems.size()>0)
 			{
@@ -111,6 +157,8 @@ void CGUISelectButtonControl::OnAction(const CAction &action)
 		}
 		else if (action.wID == ACTION_MOVE_RIGHT)
 		{
+			//	Set for visual feedback
+			m_bRightSelected=true;
 			//	Switch to next item
 			if (m_vecItems.size()>0)
 			{
@@ -135,8 +183,12 @@ void CGUISelectButtonControl::FreeResources()
 	CGUIButtonControl::FreeResources();
 
 	m_imgBackground.FreeResources();
+
 	m_imgLeft.FreeResources();
+	m_imgLeftFocus.FreeResources();
+
 	m_imgRight.FreeResources();
+	m_imgRightFocus.FreeResources();
 
 	m_bShowSelect=false;
 }
@@ -146,17 +198,23 @@ void CGUISelectButtonControl::AllocResources()
 	CGUIButtonControl::AllocResources();
 
 	m_imgBackground.AllocResources();
+	
 	m_imgLeft.AllocResources();
+	m_imgLeftFocus.AllocResources();
+
 	m_imgRight.AllocResources();
+	m_imgRightFocus.AllocResources();
 
 	//	Position right arrow
 	DWORD dwPosX=(m_dwPosX+m_dwWidth-8) - 16;
   DWORD dwPosY=m_dwPosY+(m_dwHeight-16)/2;
   m_imgRight.SetPosition(dwPosX,dwPosY);
+  m_imgRightFocus.SetPosition(dwPosX,dwPosY);
 
 	//	Position left arrow
 	dwPosX=m_dwPosX+8;
 	m_imgLeft.SetPosition(dwPosX, dwPosY);
+	m_imgLeftFocus.SetPosition(dwPosX, dwPosY);
 }
 
 void CGUISelectButtonControl::Update()

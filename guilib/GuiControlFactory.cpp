@@ -117,6 +117,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	bool				bReverse=false;
   bool        bShadow;
 	CStdString	strTextureBg, strLeft,strRight,strMid;
+	CStdString	strLeftFocus, strRightFocus;
 	CStdString	strTexture;
 	DWORD 			dwColorKey=0xffffffff;
 	DWORD 			dwSelectedColor;
@@ -325,7 +326,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		{
 			strTextureBg  	 = ((CGUISelectButtonControl*)pReference)->GetTextureBackground();
 			strLeft          = ((CGUISelectButtonControl*)pReference)->GetTextureLeft();
+			strLeftFocus     = ((CGUISelectButtonControl*)pReference)->GetTextureLeftFocus();
 			strRight         = ((CGUISelectButtonControl*)pReference)->GetTextureRight();
+			strRightFocus    = ((CGUISelectButtonControl*)pReference)->GetTextureRightFocus();
 			strTextureFocus	 = ((CGUISelectButtonControl*)pReference)->GetTexutureFocusName();
 			strTextureNoFocus= ((CGUISelectButtonControl*)pReference)->GetTexutureNoFocusName();
 			strFont					 = ((CGUISelectButtonControl*)pReference)->GetFontName();
@@ -372,6 +375,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
 	GetString(pControlNode,"textureLeft",strLeft);
 	GetString(pControlNode,"textureRight",strRight);
+	GetString(pControlNode,"textureLeftFocus",strLeftFocus);
+	GetString(pControlNode,"textureRightFocus",strRightFocus);
 
 	GetHex(pControlNode,"spinColor",dwSpinColor);
 	GetDWORD(pControlNode,"spinWidth",dwSpinWidth);
@@ -639,7 +644,12 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	if (strType=="selectbutton")
 	{
 		if (!bLoadReferences) g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight);
-		CGUISelectButtonControl* pControl = new CGUISelectButtonControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strTextureFocus,strTextureNoFocus, strTextureBg, strLeft, strRight);
+		CGUISelectButtonControl* pControl = new CGUISelectButtonControl(dwParentId,dwID,dwPosX,dwPosY,
+																																		dwWidth, dwHeight,
+																																		strTextureFocus,strTextureNoFocus, 
+																																		strTextureBg, 
+																																		strLeft, strLeftFocus, 
+																																		strRight, strRightFocus);
 		pControl->SetLabel(strFont,strLabel,dwTextColor);
     pControl->SetDisabledColor(dwDisabledColor);
     pControl->SetNavigation(up,down,left,right);
