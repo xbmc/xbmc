@@ -114,7 +114,7 @@ typedef _sigset_t	sigset_t;
 
 #ifndef _SSIZE_T_
 #define _SSIZE_T_
-typedef int _ssize_t;
+typedef unsigned _ssize_t;
 
 #ifndef	_NO_OLDNAMES
 typedef _ssize_t ssize_t;
