@@ -582,6 +582,34 @@ void CApplication::Render()
 			}
 		}
 
+		// If we have the remote codes enabled, then show them
+		if (g_stSettings.m_bDisplayRemoteCodes)
+		{
+			XBIR_REMOTE* pRemote	= &m_DefaultIR_Remote;
+		    static iRemoteCode=0;
+			static iShowRemoteCode=0;
+			if (pRemote->wButtons)
+			{
+				iRemoteCode = 255-pRemote->wButtons;	// remote OBC code is 255-wButtons
+				iShowRemoteCode = 50;
+			}
+			if (iShowRemoteCode > 0)
+			{
+				CStdStringW wszText;
+				wszText.Format(L"Remote Code: %i",iRemoteCode);
+				CGUIFont* pFont=g_fontManager.GetFont("font13");
+				if (pFont)
+				{
+#ifdef _DEBUG		
+					pFont->DrawText( 60, 60, 0xffffffff, wszText);
+#else
+					pFont->DrawText( 60, 40, 0xffffffff, wszText);
+#endif
+				}
+				iShowRemoteCode--;
+			}
+		}
+
 #ifdef _DEBUG		
     // in debug mode, show freememory
 		CStdStringW wszText;
