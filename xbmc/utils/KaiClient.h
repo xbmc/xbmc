@@ -5,7 +5,6 @@
 #include "KaiVoice.h"
 #include "../Xbox/VoiceManager.h"
 #include "../Xbox/MediaPacketQueue.h"
-
 #include "xbstopwatch.h"
 
 #define KAI_SYSTEM_PORT		34522
@@ -14,7 +13,8 @@
 using namespace std;
 #include <vector>
 
-class CKaiClient; 
+class CKaiClient;
+class CKaiRequestList;
 
 class IBuddyObserver
 {
@@ -67,10 +67,13 @@ public:
 	void Chat(CStdString& aMessage);
 	void ExitVector();
 	void GetSubVectors(CStdString& aVector);
+
 	void QueryVector(DWORD aTitleId);
 	void QueryVectorPlayerCount(CStdString& aVector);
+	
 	void QueryAvatar(CStdString& aPlayerName);
 	void QueryUserProfile(CStdString& aPlayerName);
+
 	void AddContact(CStdString& aContact);
 	void RemoveContact(CStdString& aContact);
 	void Invite(CStdString& aPlayer, CStdString& aVector, CStdString& aMessage);
@@ -137,4 +140,7 @@ private:
     LPDIRECTSOUND8		m_pDSound;
 	CMediaPacketQueue*	m_pEgress;
     CXBStopWatch		m_VoiceTimer;
+
+	// KAI Requests
+	CKaiRequestList*	m_pRequestList;
 };

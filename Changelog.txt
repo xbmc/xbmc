@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 28-11-2004 fixed: serialize Kai game titleid resolution and player count requests.
   - 28-11-2004 added: Movie runtime to IMDB info screen + combined Rating+Votes item
   - 28-11-2004 added: get current Kai player count for each game in the games view.
   - 28-11-2004 added: ability to force specific Kai arena - game title id mappings.

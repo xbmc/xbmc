@@ -269,8 +269,6 @@ void CGUIWindowBuddies::OnInitWindow()
 			{
 				m_pKaiClient->QueryAvatar(strXtag);
 			}
-	
-			QueryInstalledGames();
 		}
 	}
 }
@@ -280,6 +278,7 @@ void CGUIWindowBuddies::OnInitialise(CKaiClient* pClient)
 {
 	m_pKaiClient = pClient;
 	m_vectors.Load(KAI_VECTOR_MAP_XML);
+	QueryInstalledGames();
 }
 
 CBuddyItem* CGUIWindowBuddies::GetBuddySelection()
