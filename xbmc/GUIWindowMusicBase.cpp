@@ -1547,8 +1547,8 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
 	// turn off the now playing button if nothing is playing
 	if (!g_application.IsPlayingAudio())
 		pMenu->EnableButton(3, false);
-	// turn off the Scan button if we're not in files view
-	if (GetID() != WINDOW_MUSIC_FILES)
+	// turn off the Scan button if we're not in files view or a internet stream
+	if (GetID() != WINDOW_MUSIC_FILES || CUtil::IsInternetStream(m_strDirectory))
 		pMenu->EnableButton(5, false);
 	// position it correctly
 	pMenu->SetPosition(iPosX-pMenu->GetWidth()/2, iPosY-pMenu->GetHeight()/2);
