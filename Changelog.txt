@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 02-09-2004 added: grouping of controls
   - 02-09-2004 added: virtual keyboard now supports data entry with the numbers just like a cell phone. Also pressing "back" is same as backspace.
   - 02-09-2004 added: network settings in the GUI and remove them from XBoxMediaCenter.xml
   - 29-08-2004 added: applied patch for LCD-MOD contrast changes with minor modification.
