@@ -344,6 +344,8 @@ public:
     int m_iSmallStepBackSeconds;
     int m_iSmallStepBackTries;
     int m_iSmallStepBackDelay;
+    float m_fSubsDelayRange;
+    float m_fAudioDelayRange;
 
     CVideoSettings m_defaultVideoSettings;
     CVideoSettings m_currentVideoSettings;
