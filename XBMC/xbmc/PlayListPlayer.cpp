@@ -84,7 +84,7 @@ void CPlayListPlayer::PlayNext(bool bAutoPlay)
 			return;
 		}
 	}
-	Play(iSong);
+	Play(iSong, bAutoPlay);
 }
 
 /// \brief Play previous entry in current playlist
@@ -109,7 +109,7 @@ void CPlayListPlayer::PlayPrevious()
 
 /// \brief Start playing entry \e iSong in current playlist
 ///	\param iSong Song in playlist
-void CPlayListPlayer::Play(int iSong)
+void CPlayListPlayer::Play(int iSong, bool bAutoPlay)
 {
 	if (m_iCurrentPlayList==PLAYLIST_NONE)
 		return;
@@ -129,7 +129,7 @@ void CPlayListPlayer::Play(int iSong)
 		CGUIMessage msg( GUI_MSG_PLAYLIST_PLAY_NEXT_PREV, 0, 0, GetCurrentPlaylist(), MAKELONG(m_iCurrentSong, iPreviousSong), (LPVOID)&item );
 		m_gWindowManager.SendThreadMessage( msg );
 	}
-	if(!g_application.PlayFile(item.GetFileName()))
+	if(!g_application.PlayFile(item.GetFileName(), bAutoPlay))
 	{
 		//	Count entries in current playlist
 		//	that couldn't be played

@@ -72,14 +72,13 @@ private:
 	LONG						m_lFadeVolume;
 	bool									FindFreePacket( DWORD& pdwIndex );
 
-	LPAC97MEDIAOBJECT			m_pAnalogOutput;
 	LPAC97MEDIAOBJECT			m_pDigitalOutput;
 	WAVEFORMATEX				  m_wfx;
 	LONG								  m_nCurrentVolume;
 	DWORD									m_dwPacketSize;
 	bool									m_AudioEOF;
 	DWORD									m_dwNumPackets;
-	PBYTE									m_pbSampleData[150];
+	PBYTE									m_pbSampleData[64];
 	DWORD*								m_adwStatus;
 	bool									m_bPause;
 	bool									m_bIsAllocated;

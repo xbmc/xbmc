@@ -29,7 +29,7 @@ namespace PLAYLIST
 		virtual bool OnMessage(CGUIMessage &message);
 		void			PlayNext(bool bAutoPlay=false);
 		void			PlayPrevious();
-		void			Play(int iSong);
+		void			Play(int iSong, bool bAutoPlay = false);
 		int				GetCurrentSong() const;
 		void					SetCurrentSong(int iSong);
 		bool			HasChanged();

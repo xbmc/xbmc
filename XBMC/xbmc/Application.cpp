@@ -1337,6 +1337,7 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
   if (strExtension==".m3u") return false;
   if (strExtension==".b4s") return false;
 
+	float AVDelay = 0;
 
   m_tagCurrentSong.SetLoaded(false);
   m_tagCurrentMovie.Reset();
@@ -1352,8 +1353,11 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
     g_settings.m_iBrightness=50;
     g_settings.m_iContrast=50;
     g_settings.m_iGamma=20;
-    
   }
+	else
+	{
+		AVDelay = m_pPlayer->GetAVDelay();
+	}
   m_strCurrentFile=strFile;
   
 	CURL url(m_strCurrentFile);
@@ -1395,6 +1399,11 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 	
 	  m_dwIdleTime=timeGetTime();
 
+		if (bRestart)
+		{
+			m_pPlayer->SetAVDelay(AVDelay);
+		}
+
     // if file happens to contain video stream
     if ( IsPlayingVideo())
     {
@@ -1412,7 +1421,7 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 			else
 			{
 				g_graphicsContext.SetFullScreenVideo(false);
-                        }
+      }
 
     }
   }

@@ -35,7 +35,7 @@
 #define SUBTITLE_TEXTURE_WIDTH  720
 #define SUBTITLE_TEXTURE_HEIGHT 120
 
-#define NUM_BUFFERS (3)
+#define NUM_BUFFERS (2)
 
 static RECT                    rd;                             //rect of our stretched image
 static RECT                    rs;                             //rect of our source image
