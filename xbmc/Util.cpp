@@ -1667,6 +1667,9 @@ void CUtil::SetThumb(CFileItem* pItem)
   // if it already has a thumbnail, then return
   if ( pItem->HasThumbnail() ) return;
 
+  //  No thumb for parent folder items
+  if (pItem->GetLabel()=="..") return;
+
 
   CStdString strFileName=pItem->m_strPath;
 
