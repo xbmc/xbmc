@@ -1,41 +1,48 @@
 XBMC key mappings:
 --------------------------
 
-general key mappings:
-	page up/down																	controller: L/R trigger			remote		: REVERSE/FORWARD
-  up/down/left/right														controller: use DPAD				remote    : use up/down/left/right
-	selecting stuff:															controller: A button 				remote    : select 
-	back to previous menu													controller: back		 				remote    : back
-	goto previous folder													controller: B
-				
+general key mappings in GUI:
+  page up/down                                  controller: L/R trigger     remote    : REVERSE/FORWARD
+  up/down/left/right                            controller: use DPAD        remote    : use up/down/left/right
+  selecting stuff:                              controller: A button        remote    : select 
+  back to previous menu                         controller: back            remote    : back
+  goto previous folder                          controller: B               remote    : ?
+        
 Keymappings when playing audio songs:
-	stop song																			controller: ?								remote    : stop
-	next/previous song														controller: ?								remote    : skip- and skip+
-	pause song																		controller: ?								remote    : pause
-					
+  next/previous song                            controller: ?               remote    : skip- and skip+
+  pause song                                    controller: ?               remote    : pause
+  stop song                                     controller: ?               remote    : stop
+          
 Keymappings when playing movies:
-	switch between fullscreen video/GUI:					controller: X button				remote:   : menu button					
-	in fullscreen mode:zoom/stretch/normal				controller: START button    remote    : DISPLAY button
-	pause																					controller: ?								remote    : pause
-	stop     																			controller: ?								remote    : stop
-					
+  switch between fullscreen video/GUI:          controller: X button        remote:   : menu button         
+  in fullscreen mode:
+    zoom/stretch/normal                         controller: START button    remote    : DISPLAY button
+    pause                                       controller: BACK            remote    : pause
+    stop                                        controller: A               remote    : stop
+    step forward  +1 min                        controller: DPAD right      remote    : right
+    step backward -1 min                        controller: DPAD left       remote    : left    
+    step forward  +10 min                       controller: DPAD up         remote    : up
+    step backward -10 min                       controller: DPAD down       remote    : down
+    toggle OSD                                  controller: black           remote    : info
+    toggle subtitles                            controller: white           remote    : title
+  
 My Pictures when viewing a slideshow or picture:
-  move when in zoom mode												controller: DPAD						remote		: use up/down/left/right or thumbstick left
-  next/prev picture															controller: DPAD L/R				remote		: use left/right
-  show file info																controller: black						remote    : info
-  pause/continue																controller: start						remote    : pause
-  zoom out																			controller: X								remote    : 0-9
-  zoom in																				controller: A								remote    : 0-9
+  move when in zoom mode                        controller: DPAD            remote    : use up/down/left/right or thumbstick left
+  next/prev picture                             controller: DPAD L/R        remote    : use left/right
+  show file info                                controller: black           remote    : info
+  pause/continue                                controller: start           remote    : pause
+  zoom out                                      controller: X               remote    : 0-9
+  zoom in                                       controller: A               remote    : 0-9
    
 my files:
-  switch between source/destination window			controller:BLACK						remote    :DISPLAY
-  (de)select files/directory										controller: Y button				remote    : play button
+  switch between source/destination window      controller: BLACK           remote    : DISPLAY
+  (de)select files/directory                    controller: Y button        remote    : play button
    
 my music:
-	switch between files & playlist								controller:BLACK						remote    :DISPLAY
-	add/remove file 2/from playlist								controller: Y button				remote    : play button
-	find album info for file											controller: WHITE button		remote    : info button	
-			
+  switch between files & playlist               controller: BLACK           remote    : DISPLAY
+  add/remove file 2/from playlist               controller: Y button        remote    : play button
+  find album info for file                      controller: WHITE button    remote    : info button 
+      
 my videos:
-	find IMDB info for file												controller: WHITE button		remote    : info button	
-			
+  find IMDB info for file                       controller: WHITE button    remote    : info button 
+  
