@@ -43,6 +43,7 @@ public:
   void							SetIcon(CGUIImage*	pImage);
   CGUIImage*				GetIcon();
 	void							FreeIcons();
+  void              FreeMemory();
 protected:  
   CStdString        m_strLabel;						// text of column1
   CStdString        m_strLabel2;					// text of column2

@@ -29,18 +29,7 @@ CGUIListItem::CGUIListItem(const CStdString& strLabel)
 
 CGUIListItem::~CGUIListItem(void)
 {
-  if (m_pThumbnailImage) 
-  {
-    m_pThumbnailImage->FreeResources();
-    delete m_pThumbnailImage;
-    m_pThumbnailImage=NULL;
-  }
-	if (m_pIconImage)
-	{
-    m_pIconImage->FreeResources();
-    delete m_pIconImage;
-    m_pThumbnailImage=NULL;
-	}
+  FreeMemory();
 }
 
 void CGUIListItem::SetLabel(const CStdString& strLabel) 
@@ -119,12 +108,22 @@ CGUIImage* CGUIListItem::GetIcon()
 
 void CGUIListItem::SetThumbnail(CGUIImage* pImage)
 {
+  if (m_pThumbnailImage)
+  {
+    m_pThumbnailImage->FreeResources();
+    delete m_pThumbnailImage;
+  }
   m_pThumbnailImage=pImage;
 }
 
 
 void CGUIListItem::SetIcon(CGUIImage* pImage)
 {
+  if (m_pIconImage)
+  {
+    m_pIconImage->FreeResources();
+    delete m_pIconImage;
+  }
   m_pIconImage=pImage;
 }
 
@@ -144,6 +143,13 @@ const CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
 
 void CGUIListItem::FreeIcons()
 {
+  FreeMemory();
+	m_strThumbnailImage="";
+	m_strIcon="";
+}
+
+void CGUIListItem::FreeMemory()
+{
   if (m_pThumbnailImage) 
   {
     m_pThumbnailImage->FreeResources();
@@ -154,8 +160,6 @@ void CGUIListItem::FreeIcons()
 	{
     m_pIconImage->FreeResources();
     delete m_pIconImage;
-    m_pThumbnailImage=NULL;
+    m_pIconImage=NULL;
 	}
-	m_strThumbnailImage="";
-	m_strIcon="";
 }
