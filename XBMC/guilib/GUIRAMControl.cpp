@@ -70,16 +70,16 @@ void CGUIRAMControl::Render()
 	{
 		Movie& movie = m_current[i];
 
-		bool bIsNewImageAvailable = m_new[i].bValid;
+		bool bIsNewTitleAvailable = m_new[i].bValid;
 	
 		if (movie.bValid && movie.pImage)
 		{
 			dwImageX -= m_dwThumbnailWidth + m_dwThumbnailSpaceX;
 
-			movie.nAlpha += bIsNewImageAvailable ? -4:4;
+			movie.nAlpha += bIsNewTitleAvailable ? -4:4;
 			
 			int nLowWatermark = 64;
-			if (bIsNewImageAvailable && !m_new[i].pImage)
+			if (bIsNewTitleAvailable && !m_new[i].pImage)
 			{
 				nLowWatermark = 1;
 			}
@@ -102,7 +102,7 @@ void CGUIRAMControl::Render()
 				movie.pImage->Render();		
 			}
 		}
-		else if (bIsNewImageAvailable)
+		else if (bIsNewTitleAvailable)
 		{
 			m_current[i] = m_new[i];
 			m_new[i].bValid = false;
@@ -270,6 +270,11 @@ void CGUIRAMControl::OnMediaUpdate(	INT nIndex, CStdString& strFilepath,
 	CLog::Log( "OnMediaUpdate: " );
 	CLog::Log( strFilepath.c_str() );
 	
+ 	if (strTitle.GetLength()>64)
+	{
+		strTitle = strTitle.Mid(0,63);
+	}
+
 	if ( (m_current[nIndex].strFilepath.Equals(strFilepath)) &&
 		(m_current[nIndex].strTitle.Equals(strTitle)) )
 	{
