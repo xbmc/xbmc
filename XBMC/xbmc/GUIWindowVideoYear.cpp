@@ -545,7 +545,8 @@ void CGUIWindowVideoYear::Update(const CStdString &strDirectory)
 
         CStdString strThumb;
         CUtil::GetVideoThumbnail(movie.m_strIMDBNumber,strThumb);
-        pItem->SetThumbnailImage(strThumb);
+				if (CUtil::FileExists(strThumb))
+					pItem->SetThumbnailImage(strThumb);
         pItem->m_fRating     = movie.m_fRating; 
         pItem->m_stTime.wYear= movie.m_iYear;
 			  m_vecItems.push_back(pItem);
@@ -554,7 +555,20 @@ void CGUIWindowVideoYear::Update(const CStdString &strDirectory)
   }
 	CUtil::SetThumbs(m_vecItems);
   SetIMDBThumbs(m_vecItems);
-	CUtil::FillInDefaultIcons(m_vecItems);
+
+	// Fill in default icons
+	CStdString strPath;
+	for (int i=0; i<(int)m_vecItems.size(); i++)
+	{
+		CFileItem* pItem=m_vecItems[i];
+		strPath=pItem->m_strPath;
+		//	Fake a videofile
+		pItem->m_strPath=pItem->m_strPath+".avi";
+
+		CUtil::FillInDefaultIcon(pItem);
+		pItem->m_strPath=strPath;
+	}
+
   OnSort();
   UpdateButtons();
   strSelectedItem=m_history.Get(m_strDirectory);	
