@@ -13,6 +13,7 @@ public:
 
   bool                CreateThumnail(const CStdString& strFileName);
   bool                CreateAlbumThumbnail(const CStdString& strFileName, const CStdString& strAlbum);
+	bool								CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName);
 	bool                Convert(const CStdString& strSource,const CStdString& strDest);
 	DWORD								GetWidth() const;
 	DWORD								GetHeight() const;

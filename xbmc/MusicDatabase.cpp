@@ -274,12 +274,11 @@ void CMusicDatabase::CheckVariousArtistsAndCoverArt()
 		CStdString strTempCoverArt;
 		CStdString strCoverArt;
 		CUtil::GetAlbumThumb(album.strAlbum+album.strPath, strTempCoverArt, true);
-		if (CUtil::FileExists(strTempCoverArt))
+		//	Was the thumb of this album read during scan?
+		if (CUtil::ThumbCached(strTempCoverArt))
 		{
 			CUtil::GetAlbumThumb(album.strAlbum+album.strPath, strCoverArt);
-			if (CUtil::FileExists(strCoverArt))
-				::DeleteFile(strCoverArt);
-			::MoveFile(strTempCoverArt, strCoverArt);
+			::MoveFileEx(strTempCoverArt, strCoverArt, MOVEFILE_REPLACE_EXISTING);
 		}
 	}
 
@@ -489,7 +488,7 @@ bool CMusicDatabase::GetSongsByArtist(const CStdString strArtist1, VECSONGS& son
 	if (NULL==m_pDS.get()) return false;
 
 	CStdString strSQL;
-	strSQL.Format("select * from song,album,genre,artist,path where song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and artist.strArtist like '%s'",strArtist.c_str() );
+	strSQL.Format("select song.strTitle, song.iYear, song.iDuration, song.iTrack, song.iTimesPlayed, song.strFileName, path.strPath, genre.strGenre, album.strAlbum, artist.strArtist from song,album,genre,artist,path where song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and artist.strArtist like '%s'",strArtist.c_str() );
 	if (!m_pDS->query(strSQL.c_str())) return false;
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound== 0) return false;
@@ -526,7 +525,7 @@ bool CMusicDatabase::GetSongsByAlbum(const CStdString& strAlbum1, const CStdStri
 	if (NULL==m_pDB.get()) return false;
 	if (NULL==m_pDS.get()) return false;
 	CStdString strSQL;
-	strSQL.Format("select * from song,album,genre,artist,path where song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and album.strAlbum like '%s' and path.strPath like '%s'", strAlbum, strPath );
+	strSQL.Format("select song.strTitle, song.iYear, song.iDuration, song.iTrack, song.iTimesPlayed, song.strFileName, path.strPath, genre.strGenre, album.strAlbum, artist.strArtist from song,path,album,genre,artist where song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and album.strAlbum like '%s' and path.strPath like '%s'", strAlbum, strPath );
 	if (!m_pDS->query(strSQL.c_str())) return false;
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound== 0) return false;
@@ -677,7 +676,7 @@ bool CMusicDatabase::GetSongsByGenre(const CStdString& strGenre, VECSONGS& songs
 	if (NULL==m_pDB.get()) return false;
 	if (NULL==m_pDS.get()) return false;
 	CStdString strSQL;
-	strSQL.Format("select * from song,album,genre,artist,path where song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and genre.strGenre like '%s'",strSQLGenre.c_str() );
+	strSQL.Format("select song.strTitle, song.iYear, song.iDuration, song.iTrack, song.iTimesPlayed, song.strFileName, path.strPath, genre.strGenre, album.strAlbum, artist.strArtist from song,genre,album,artist,path where song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and genre.strGenre like '%s'",strSQLGenre.c_str() );
 	if (!m_pDS->query(strSQL.c_str())) return false;
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound== 0) return false;
@@ -724,12 +723,14 @@ bool CMusicDatabase::GetGenres(VECGENRES& genres)
 	return true;
 }
 
-bool CMusicDatabase::GetAlbumInfo(const CStdString& strAlbum1, CAlbum& album)
+bool CMusicDatabase::GetAlbumInfo(const CStdString& strAlbum1, const CStdString& strPath1, CAlbum& album)
 {
 	CStdString strAlbum = strAlbum1;
+	CStdString strPath = strPath1;
 	RemoveInvalidChars(strAlbum);
+	RemoveInvalidChars(strPath);
 	CStdString strSQL;
-	strSQL.Format("select * from albuminfo,album,genre,artist where albuminfo.idAlbum=album.idAlbum and albuminfo.idGenre=genre.idGenre and albuminfo.idArtist=artist.idArtist and strAlbum like '%s'",strAlbum.c_str() );
+	strSQL.Format("select * from albuminfo,album,path,genre,artist where albuminfo.idAlbum=album.idAlbum and albuminfo.idGenre=genre.idGenre and albuminfo.idArtist=artist.idArtist and album.strAlbum like '%s' and path.strPath like '%s'",strAlbum, strPath );
 	if (!m_pDS->query(strSQL.c_str())) return false;
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound!= 0) 
@@ -743,6 +744,7 @@ bool CMusicDatabase::GetAlbumInfo(const CStdString& strAlbum1, CAlbum& album)
 		album.strReview	= m_pDS->fv("albuminfo.strReview").get_asString();
 		album.strStyles	= m_pDS->fv("albuminfo.strStyles").get_asString();
 		album.strTones	= m_pDS->fv("albuminfo.strTones").get_asString();
+		album.strPath   = m_pDS->fv("path.strPath").get_asString();
 		return true;
 	}
 	return false;
@@ -833,7 +835,7 @@ bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, VECSONGS& songs)
 	if (NULL==m_pDB.get()) return false;
 	if (NULL==m_pDS.get()) return false;
 	CStdString strSQL;
-	strSQL.Format("select * from song,album,genre,artist,path where song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and path.strPath like '%s'",strPath.c_str() );
+	strSQL.Format("select * from song,path,album,genre,artist where song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and path.strPath like '%s'",strPath.c_str() );
 	if (!m_pDS->query(strSQL.c_str())) return false;
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound== 0) return false;
@@ -868,7 +870,7 @@ bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, MAPSONGS& songs)
 	if (NULL==m_pDB.get()) return false;
 	if (NULL==m_pDS.get()) return false;
 	CStdString strSQL;
-	strSQL.Format("select * from song,album,genre,artist,path where song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and path.strPath like '%s'",strPath.c_str() );
+	strSQL.Format("select song.strTitle, song.iYear, song.iDuration, song.iTrack, song.iTimesPlayed, song.strFileName, path.strPath, genre.strGenre, album.strAlbum, artist.strArtist from song,path,album,genre,artist where song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and path.strPath like '%s'",strPath.c_str() );
 	if (!m_pDS->query(strSQL.c_str())) return false;
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound== 0) return false;

@@ -402,8 +402,10 @@ void CGUIWindowMusicSongs::OnScan()
 {
 	DWORD dwTick=timeGetTime();
 
+	g_application.DisableOverlay();
+
 	m_dlgProgress->SetHeading(189);
-	m_dlgProgress->SetLine(0,"");
+	m_dlgProgress->SetLine(0, 414);
 	m_dlgProgress->SetLine(1,"");
 	m_dlgProgress->SetLine(2,m_strDirectory );
 	m_dlgProgress->StartModal(GetID());
@@ -411,15 +413,19 @@ void CGUIWindowMusicSongs::OnScan()
 	// Preload section for ID3 cover art reading
 	CSectionLoader::Load("CXIMAGE");
 
+	CUtil::ThumbCacheClear();
+
 	m_database.BeginTransaction();
 
 	// enable scan mode in OnRetrieveMusicInfo()
 	m_bScan=true;
+
 	if (DoScan(m_vecItems))
 	{
 		m_dlgProgress->SetLine(0,328);
 		m_dlgProgress->SetLine(1,"");
 		m_dlgProgress->SetLine(2,330 );
+		m_dlgProgress->Progress();
 		m_database.CommitTransaction();
 	}
 	else
@@ -432,17 +438,23 @@ void CGUIWindowMusicSongs::OnScan()
 	// disable scan mode
 	m_bScan=false;
 
+	CUtil::ThumbCacheClear();
+
+	g_application.EnableOverlay();
+
 	m_dlgProgress->Close();
 
 	dwTick = timeGetTime() - dwTick;
-	CStdString strTmp;
-	strTmp.Format("OnScan() took %imsec\n",dwTick); 
+	CStdString strTmp, strTmp1;
+	CUtil::SecondsToHMSString(dwTick/1000, strTmp1);
+	strTmp.Format("OnScan() took %s\n", strTmp1); 
 	OutputDebugString(strTmp.c_str());
 }
 
 bool CGUIWindowMusicSongs::DoScan(VECFILEITEMS& items)
 {
 	m_dlgProgress->SetLine(2,m_strDirectory );
+	m_dlgProgress->Progress();
 
 	OnRetrieveMusicInfo(items);
 	m_database.CheckVariousArtistsAndCoverArt();
@@ -851,7 +863,6 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
   // get all information for all files in current directory from database 
   m_database.GetSongsByPath(m_strDirectory,songsMap);
 
-	int j=1;
   // for every file found, but skip folder
   for (int i=nFolderCount; i < (int)items.size(); ++i)
 	{
@@ -859,18 +870,8 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 		CStdString strExtension;
 		CUtil::GetExtension(pItem->m_strPath,strExtension);
 
-		if (m_bScan && !pItem->m_bIsFolder)
-		{
-			strItem.Format("%i/%i", j++, nFileCount);
-			if (m_dlgProgress) 
-      {
-        m_dlgProgress->SetLine(0,strItem);
-			  m_dlgProgress->SetLine(1,CUtil::GetFileName(pItem->m_strPath) );
-			  m_dlgProgress->Progress();
-			  if (m_dlgProgress->IsCanceled()) return;
-      }
-		}
-
+		if (m_bScan)
+			m_dlgProgress->ProgressKeys();
 
     // dont try reading id3tags for folders or playlists
 		if (!pItem->m_bIsFolder && !CUtil::IsPlayList(pItem->m_strPath) )
