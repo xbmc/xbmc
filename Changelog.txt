@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 04-01-2004 fixed: [ 1092854 ] Music slide/shutdown menu freeze
+  - 04-01-2004 changed: modal dialogs are completely rendered by the window manager now
   - 04-01-2004 fixed: play a song in a folder, goto videos, start a movie, when movie ends the songs is played again
   - 03-01-2004 updated: Chinese (Simple) language file (Thnx to iikii)
   - 02-01-2005 changed: my music, background scanner can be canceled during its first operations 
