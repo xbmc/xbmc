@@ -139,23 +139,40 @@ void CGUIWindowBuddies::OnInitWindow()
 
 		CGUIMessage msgb(GUI_MSG_LABEL_BIND,GetID(),CONTROL_LISTEX,0,0,&m_friends);
 		g_graphicsContext.SendMessage(msgb);
+	}
 
-		if (!m_pKaiClient->IsEngineConnected())
+	while(!m_pKaiClient->IsEngineConnected())
+	{
+		SET_CONTROL_DISABLED(GetID(), CONTROL_BTNMODE);	
+
+		CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+		pDialog->SetHeading("XLink Kai");
+		pDialog->SetLine(0,L"The service is not connected, would you like to attempt");
+		pDialog->SetLine(1,L"reconnecting it with Xbox Media Center?");
+		pDialog->SetLine(2,L"");
+		pDialog->DoModal(m_gWindowManager.GetActiveWindow());
+
+		if (pDialog->IsConfirmed())
 		{
-			SET_CONTROL_DISABLED(GetID(), CONTROL_BTNMODE);	
-
-			CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-			pDialog->SetHeading("XLink Kai Service Unavailable");
-			pDialog->SetLine(0,L"Please ensure that both XBOX network and Kai engine");
-			pDialog->SetLine(1,L"are available and configured correctly before restarting.");
-			pDialog->SetLine(2,L"");
-			pDialog->DoModal(GetID());
+			m_pKaiClient->Reattach();
+			Sleep(2000);
 		}
 		else
 		{
+			m_gWindowManager.PreviousWindow();
+			break;
+		}
+	}
+
+	if (m_pKaiClient->IsEngineConnected())
+	{
+		SET_CONTROL_ENABLED(GetID(), CONTROL_BTNMODE);	
+
+		if (m_pMe==NULL)
+		{
 			CStdString strXtag = g_stSettings.szOnlineUsername;
 			m_pMe = new CBuddyItem(strXtag);
-			
+				
 			if (m_pMe->IsAvatarCached())
 			{
 				m_pMe->UseCachedAvatar();
@@ -164,7 +181,7 @@ void CGUIWindowBuddies::OnInitWindow()
 			{
 				m_pKaiClient->QueryAvatar(strXtag);
 			}
-
+	
 			QueryInstalledGames();
 		}
 	}
@@ -877,24 +894,9 @@ void CGUIWindowBuddies::Enter(CArenaItem& aArena)
 /* IBuddyObserver methods */
 void CGUIWindowBuddies::OnEngineDetached()
 {
-	if (g_graphicsContext.IsFullScreenVideo())
-	{
-		m_gWindowManager.PreviousWindow();
-		if (g_application.m_pPlayer)
-			g_application.m_pPlayer->Update();
-	}
-
-	CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-	pDialog->SetHeading("XLink Kai Disconnected");
-	pDialog->SetLine(0,L"The service has disconnected, would you like to attempt");
-	pDialog->SetLine(1,L"reconnecting it with Xbox Media Center?");
-	pDialog->SetLine(2,L"");
-	pDialog->DoModal(m_gWindowManager.GetActiveWindow());
-
-	if (pDialog->IsConfirmed())
-	{
-		m_pKaiClient->Reattach();
-	}
+	CStdString caption = "System";
+	CStdString description = "XLink Kai has disconnected";
+	g_application.SetKaiNotification(caption,description);
 }
 
 void CGUIWindowBuddies::OnAuthenticationFailed(CStdString& aUsername)
