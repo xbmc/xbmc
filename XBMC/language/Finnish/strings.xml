@@ -1,6 +1,6 @@
 <!-- Finnish - language resource  -->
-<!-- Finnish Translation 2004-3-1 by Nanite1000 -->
-<!-- Based on CVS revision 2004-3-1 YYYY-MM-DD -->
+<!-- Finnish Translation 2004-3-7 by Nanite1000 -->
+<!-- Based on CVS revision 2004-3-7 YYYY-MM-DD -->
 <!-- For comments PM me in xboxmediacenter forum -->
 <!-- Kommentteja voi lähetellä xboxmediacentterin foorumin kautta -->
 <!-- Not all weather strings are tranlated, cant get it to look correct/too long -->
@@ -1496,7 +1496,7 @@
   </string>
   <string>
     <id>457</id>
-    <value>Vaihda:</value>
+    <value>Vaihda näkymä</value>
   </string> 
   <string>
     <id>458</id>
@@ -1518,35 +1518,63 @@
     <id>462</id>
     <value>Tekstitys</value>
   </string>
-<string><id>10000</id><value>Päävalikko</value></string>
+  <string>
+    <id>463</id>
+    <value>Taustavalo:</value>
+  </string>
+  <string>
+    <id>464</id>
+    <value>Kirkkaus</value>
+  </string> 
+  <string>
+    <id>465</id>
+    <value>Kontrasti</value>
+  </string> 
+  <string>
+    <id>466</id>
+    <value>Gamma</value>
+  </string> 
+  <string>
+    <id>467</id>
+    <value>Tyyppi:</value>
+  </string> 
+  <string>
+    <id>468</id>
+    <value>Siirtämällä palkkia, voit määrittää videovalikon sijainnin</value>
+  </string>
+  <string>
+    <id>469</id>
+    <value>Videovalikon sijainti</value>
+  </string>
+<string><id>10000</id><value>Paavalikko</value></string>
 <string><id>10001</id><value>Ohjelmat</value></string>
 <string><id>10002</id><value>Kuvat</value></string>
 <string><id>10003</id><value>Tiedostohallinta</value></string>
 <string><id>10004</id><value>Asetukset</value></string>
 <string><id>10005</id><value>Musiikki</value></string>
 <string><id>10006</id><value>Videot</value></string>
-<string><id>10007</id><value>Järjestelmä</value></string>
+<string><id>10007</id><value>Jarjestelma</value></string>
 <string><id>10008</id><value>Asetukset->Yleiset</value></string>
-<string><id>10009</id><value>Asetukset->Näyttö</value></string>
-<string><id>10010</id><value>Asetukset->Näyttö->Menunäytön paikka</value></string>
-<string><id>10011</id><value>Asetukset->Näyttö->Kuvaruudun Säätö</value></string>
+<string><id>10009</id><value>Asetukset->Naytto</value></string>
+<string><id>10010</id><value>Asetukset->Naytto->Menunayton paikka</value></string>
+<string><id>10011</id><value>Asetukset->Naytto->Kuvaruudun Saato</value></string>
 <string><id>10012</id><value>Asetukset->Diaesitys</value></string>
-<string><id>10013</id><value>Asetukset->Näyttö->Filtterit</value></string>
+<string><id>10013</id><value>Asetukset->Naytto->Filtterit</value></string>
 <string><id>10014</id><value>Asetukset->Musiikki</value></string>
-<string><id>10015</id><value>Asetukset->Näyttö->Tekstitys</value></string>
-<string><id>10016</id><value>Asetukset->Näyttö->Näytönsäästäjä</value></string>
-<string><id>10017</id><value>Asetukset->Sää</value></string>
+<string><id>10015</id><value>Asetukset->Naytto->Tekstitys</value></string>
+<string><id>10016</id><value>Asetukset->Naytto->Naytonsaastaja</value></string>
+<string><id>10017</id><value>Asetukset->Saa</value></string>
 <string><id>10020</id><value>Asetukset->Scriptit</value></string>
 <string><id>10021</id><value>Videot/tyylit</value></string>
-<string><id>10022</id><value>Videot/näyttelijät</value></string>
+<string><id>10022</id><value>Videot/nayttelijat</value></string>
 <string><id>10023</id><value>Videot/vuosi</value></string>
 <string><id>10024</id><value>Asetukset->Ohjelmat</value></string>
 <string><id>10025</id><value>Videot/nimi</value></string>
-<string><id>10026</id><value>Asetukset->Yleiset->Välimuisti</value></string>
+<string><id>10026</id><value>Asetukset->Yleiset->Valimuisti</value></string>
 <string><id>10027</id><value>Asetukset->Yleiset->Autorun</value></string>
 <string><id>10028</id><value>Videot/soittolista</value></string>
 <string><id>10029</id><value>Asetukset->Yleiset->LCD</value></string>
-<string><id>10100</id><value>Kyllä/ei dialogi</value></string>
+<string><id>10100</id><value>Kylla/ei dialogi</value></string>
 <string><id>10101</id><value>Toiminnan dialogi</value></string>
 <string><id>10500</id><value>Musiikki/soittolista</value></string>
 <string><id>10501</id><value>Musiikki/tiedostot</value></string>
@@ -1554,18 +1582,18 @@
 <string><id>10503</id><value>Musiikki/artistit</value></string>
 <string><id>10504</id><value>Musiikki/tyylit</value></string>
 <string><id>10505</id><value>Musiikki/top100</value></string>
-<string><id>11000</id><value>näppäimistö</value></string>
+<string><id>11000</id><value>nappaimisto</value></string>
 <string><id>12000</id><value>Valinta dialogi</value></string>
 <string><id>12001</id><value>Musiikki/info</value></string>
 <string><id>12002</id><value>Dialogi OK</value></string>
 <string><id>12003</id><value>Videot/Info</value></string>
 <string><id>12004</id><value>Scriptit/Info</value></string>
 <string><id>12005</id><value>Kokoruudun video</value></string>
-<string><id>12006</id><value>Äänen visualisointi</value></string>
+<string><id>12006</id><value>Äanen visualisointi</value></string>
 <string><id>12007</id><value>Kuvat/diaesitys</value></string>
 <string><id>12008</id><value>Pinoamisen dialogi</value></string>
-<string><id>12600</id><value>Säätila</value></string>
-<string><id>12900</id><value>Näytönsäästäjä</value></string>
+<string><id>12600</id><value>Saatila</value></string>
+<string><id>12900</id><value>Naytonsaastaja</value></string>
 <string><id>12901</id><value>Kokoruudun valikko</value></string>
 </strings>
 
