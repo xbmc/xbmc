@@ -13,6 +13,7 @@
 CGUIWindowHome::CGUIWindowHome(void)
 :CGUIWindow(0)
 {
+  m_iLastControl=-1;
 }
 
 CGUIWindowHome::~CGUIWindowHome(void)
@@ -26,20 +27,28 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_WINDOW_INIT:
     {
+      int iFocusControl=m_iLastControl;
 			CGUIWindow::OnMessage(message);
       // make controls 101-110 invisible...
       for (int iControl=102; iControl < 110; iControl++)
       {
 				SET_CONTROL_HIDDEN(GetID(), iControl);
       }
-			iControl=GetFocusedControl();
-			SET_CONTROL_FOCUS(GetID(), iControl);
+	    if (iFocusControl<0)
+      {
+        iFocusControl=GetFocusedControl();
+		    m_iLastControl=iFocusControl;
+	    }
+
+	    SET_CONTROL_FOCUS(GetID(), iFocusControl);
+
 			return true;
     }
 
     case GUI_MSG_SETFOCUS:
     {
       int iControl=message.GetControlId();
+      m_iLastControl=iControl;
       if (iControl>=2 && iControl <=8)
       {
         // make controls 101-110 invisible...
@@ -55,7 +64,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     case GUI_MSG_CLICKED:
     {
       int iControl=message.GetSenderId();
-      
+      m_iLastControl=iControl;
       switch (iControl)
       {
 
