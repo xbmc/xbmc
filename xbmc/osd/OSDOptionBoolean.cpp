@@ -18,7 +18,7 @@ COSDOptionBoolean::COSDOptionBoolean(int iAction,int iHeading)
 COSDOptionBoolean::COSDOptionBoolean(int iAction,int iHeading,bool bValue)
 :m_image(0, 1, 0, 0, 0, 0, "check-box.png","check-boxNF.png",16,16)
 {
-  iHeading=iHeading;
+  m_iHeading=iHeading;
 	m_bValue=bValue;
   m_iAction=iAction;
 }
@@ -84,4 +84,9 @@ bool COSDOptionBoolean::OnAction(IExecutor& executor, const CAction& action)
 		return true;
 	}
   return false;
+}
+
+bool COSDOptionBoolean::GetValue() const
+{
+  return m_bValue;
 }

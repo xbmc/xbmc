@@ -24,12 +24,13 @@ void CGUISliderControl::Render()
 	m_guiBackground.Render();
 	m_guiBackground.SetHeight(iHeight);
 
-  float fWidth=(float)m_guiBackground.GetTextureWidth();
+  float fWidth=(float)m_guiBackground.GetTextureWidth()-20.0f;
   
   float fPos = (float)m_iPercent;
   fPos /=100.0f;
   fPos *= fWidth;
   fPos += (float) m_guiBackground.GetXPosition();
+  fPos += 10.0f;
 	if ((int)fWidth > 1)
 	{
 		m_guiMid.SetPosition((int)fPos, m_guiBackground.GetYPosition() );

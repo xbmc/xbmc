@@ -44,14 +44,41 @@ void						(__cdecl* pGetGeneralInfo)(long* lFramesDropped, int* iQuality, int* i
 void						(__cdecl* psetAVDelay)(float);
 void						(__cdecl* psetSubtitleDelay)(float);
 void						(__cdecl* psetPercentage)(int);
-
+void						(__cdecl* psetSubtitle)(int);
+void						(__cdecl* pshowSubtitle)(int);
 
 float					  (__cdecl* pgetAVDelay)();
 float					  (__cdecl* pgetSubtitleDelay)();
 int 						(__cdecl* pgetPercentage)();
-
+int             (__cdecl* pgetSubtitle)();
+int             (__cdecl* pgetSubtitleCount)();
+int             (__cdecl* pgetSubtitleVisible)();
 extern "C" 
 {
+  int mplayer_getSubtitle()
+  {
+    return pgetSubtitle();
+  }
+  int mplayer_getSubtitleCount()
+  {
+    return pgetSubtitleCount();
+  }
+
+  void mplayer_setSubtitle(int iSubtitle)
+  {
+     psetSubtitle(iSubtitle);
+  }
+
+  void mplayer_showSubtitle(int bOnOff)
+  {
+    pshowSubtitle(bOnOff);
+  }
+
+  int mplayer_SubtitleVisible()
+  {
+    return pgetSubtitleVisible();
+  }
+
   void mplayer_setAVDelay(float fDelay)
   {
     psetAVDelay(fDelay);
@@ -342,6 +369,26 @@ extern "C"
 
 		dll.ResolveExport("mplayer_getPercentage", &pProc);
 		pgetPercentage=(int(__cdecl*)())pProc;
+
+    dll.ResolveExport("mplayer_getSubtitle", &pProc);
+		pgetSubtitle=(int(__cdecl*)())pProc;
+
+		dll.ResolveExport("mplayer_getSubtitleCount", &pProc);
+		pgetSubtitleCount=(int(__cdecl*)())pProc;
+
+		dll.ResolveExport("mplayer_SubtitleVisible", &pProc);
+		pgetSubtitleVisible=(int(__cdecl*)())pProc;
+
+
+		dll.ResolveExport("mplayer_setPercentage", &pProc);
+		psetPercentage=(void(__cdecl*)(int))pProc;
+
+		dll.ResolveExport("mplayer_setSubtitle", &pProc);
+		psetSubtitle=(void(__cdecl*)(int))pProc;
+
+		dll.ResolveExport("mplayer_showSubtitle", &pProc);
+		pshowSubtitle=(void(__cdecl*)(int))pProc;
+    
 
 		pSetVideoFunctions(&video_functions);
 		pSetAudioFunctions(&audio_functions);

@@ -6,6 +6,7 @@
 #include "osd/OSDOptionFloatRange.h"
 #include "osd/OSDOptionIntRange.h"
 #include "osd/OSDOptionBoolean.h"
+#include "cores/mplayer/mplayer.h"
 
 #define BLUE_BAR    0
 #define LABEL_ROW1 10
@@ -20,6 +21,7 @@
 #define MENU_ACTION_SEEK          2
 #define MENU_ACTION_SUBTITLEDELAY 3
 #define MENU_ACTION_SUBTITLEONOFF 4
+#define MENU_ACTION_SUBTITLELANGUAGE 5
 
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 :CGUIWindow(0)
@@ -113,20 +115,44 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 		}
 		break;
 		case ACTION_STEP_BACK:
-			g_application.m_pPlayer->Seek(false,false);
+    {
+      int iPercent=g_application.m_pPlayer->GetPercentage();
+      if (iPercent>=2)
+      {
+        g_application.m_pPlayer->SeekPercentage(iPercent-2);
+      }
+    }
 		break;
 
 		case ACTION_STEP_FORWARD:
-			g_application.m_pPlayer->Seek(true,false);
-		break;
+    {      
+      int iPercent=g_application.m_pPlayer->GetPercentage();
+			if (iPercent+2<=100)
+      {
+        g_application.m_pPlayer->SeekPercentage(iPercent+2);
+      }
+    }
+    break;
 
 		case ACTION_BIG_STEP_BACK:
-			g_application.m_pPlayer->Seek(false,true);
-		break;
+    {
+      int iPercent=g_application.m_pPlayer->GetPercentage();
+			if (iPercent>=10)
+      {
+        g_application.m_pPlayer->SeekPercentage(iPercent-10);
+      }
+    }
+    break;
 
 		case ACTION_BIG_STEP_FORWARD:
-			g_application.m_pPlayer->Seek(true,true);
-		break;
+    {
+      int iPercent=g_application.m_pPlayer->GetPercentage();
+			if (iPercent+10<=100)
+      {
+        g_application.m_pPlayer->SeekPercentage(iPercent+10);
+      }
+    }
+    break;
 
 		case ACTION_SHOW_OSD:
 			//g_application.m_pPlayer->ToggleOSD();
@@ -339,7 +365,7 @@ void CGUIWindowFullScreen::ShowOSD()
   COSDOptionFloatRange optionAVDelay(MENU_ACTION_AVDELAY,297,-10.0f,10.0f,0.01f,fValue);
 
   int iValue=g_application.m_pPlayer->GetPercentage();
-  COSDOptionIntRange   optionPercentage(MENU_ACTION_SEEK,298,0,100,1,iValue);
+  COSDOptionIntRange   optionPercentage(MENU_ACTION_SEEK,298,true,0,100,1,iValue);
   videoMenu.AddOption(&optionAVDelay);
   videoMenu.AddOption(&optionPercentage);
   
@@ -349,9 +375,15 @@ void CGUIWindowFullScreen::ShowOSD()
   COSDSubMenu SubtitleMenu(293,100,100);
   fValue=g_application.m_pPlayer->GetSubTitleDelay();
   COSDOptionFloatRange optionSubtitleDelay(MENU_ACTION_SUBTITLEDELAY,303,-10.0f,10.0f,0.01f,fValue);
-  COSDOptionBoolean    optionEnable(MENU_ACTION_SUBTITLEONOFF,305);
+  
+  iValue=mplayer_getSubtitle();
+  COSDOptionIntRange   optionSubtitleLanguage(MENU_ACTION_SUBTITLELANGUAGE,304,false,0,mplayer_getSubtitleCount()-1,1,iValue);
+
+  iValue=mplayer_SubtitleVisible();
+  COSDOptionBoolean    optionEnable(MENU_ACTION_SUBTITLEONOFF,305, (iValue!=0));
 
   SubtitleMenu.AddOption(&optionSubtitleDelay);
+  SubtitleMenu.AddOption(&optionSubtitleLanguage);
   SubtitleMenu.AddOption(&optionEnable);
 
   m_osdMenu.AddSubMenu(videoMenu);
@@ -396,6 +428,21 @@ void CGUIWindowFullScreen::OnExecute(int iAction, const IOSDOption* option)
       const COSDOptionFloatRange* floatOption = (const COSDOptionFloatRange*)option;
       g_application.m_pPlayer->SetSubTittleDelay(floatOption->GetValue());
     }
+    break;
+
+    
+    case MENU_ACTION_SUBTITLEONOFF:
+    {
+      const COSDOptionBoolean* boolOption = (const COSDOptionBoolean*)option;
+      mplayer_showSubtitle(boolOption->GetValue());
+    }
+    break;
+    
+    case MENU_ACTION_SUBTITLELANGUAGE:
+    {
+      const COSDOptionIntRange* intOption = (const COSDOptionIntRange*)option;
+      mplayer_setSubtitle(intOption->GetValue());
+   }
     break;
   }
 }

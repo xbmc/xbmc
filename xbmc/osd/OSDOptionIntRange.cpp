@@ -5,7 +5,7 @@
 #include "guifont.h"
 #include "guifontmanager.h"
 using namespace OSD;
-COSDOptionIntRange::COSDOptionIntRange(int iAction,int iHeading)
+COSDOptionIntRange::COSDOptionIntRange(int iAction,int iHeading, bool bPercent)
 :m_slider(0, 1, 0, 0, 0, 0, "osd-pnl-bar.bmp","xb-ctl-nibv.bmp")
 {
 	m_iMin=0;
@@ -14,9 +14,10 @@ COSDOptionIntRange::COSDOptionIntRange(int iAction,int iHeading)
   m_iInterval=1;  
   m_iHeading=iHeading;
   m_iAction=iAction;
+  m_bPercent=bPercent;
 }
 
-COSDOptionIntRange::COSDOptionIntRange(int iAction,int iHeading,int iStart, int iEnd, int iInterval, int iValue)
+COSDOptionIntRange::COSDOptionIntRange(int iAction,int iHeading, bool bPercent,int iStart, int iEnd, int iInterval, int iValue)
 :m_slider(0, 1, 0, 0, 0, 0, "osd-pnl-bar.bmp","xb-ctl-nibv.bmp")
 {
 	m_iMin=iStart;
@@ -25,6 +26,7 @@ COSDOptionIntRange::COSDOptionIntRange(int iAction,int iHeading,int iStart, int 
   m_iInterval=iInterval;  
   m_iHeading=iHeading;
   m_iAction=iAction;
+  m_bPercent=bPercent;
 }
 
 COSDOptionIntRange::COSDOptionIntRange(const COSDOptionIntRange& option)
@@ -43,6 +45,7 @@ const OSD::COSDOptionIntRange& COSDOptionIntRange::operator = (const COSDOptionI
   m_iInterval=option.m_iInterval;
   m_iHeading=option.m_iHeading;
   m_iAction=option.m_iAction;
+  m_bPercent=option.m_bPercent;
 	return *this;
 }
 
@@ -67,6 +70,21 @@ void COSDOptionIntRange::Draw(int x, int y, bool bFocus,bool bSelected)
     wstring strHeading=g_localizeStrings.Get(m_iHeading);
     pFont13->DrawShadowText( (float)x,(float)y, dwColor,
                               strHeading.c_str(), 0,
+                              0, 
+                              5, 
+                              5,
+                              0xFF020202);
+    WCHAR strValue[128];
+    if (m_bPercent)
+    {
+      swprintf(strValue,L"%i%%",m_iValue);
+    }
+    else
+    {
+      swprintf(strValue,L"%i/%i",m_iValue, (m_iMax-m_iMin)/m_iInterval);
+    }
+    pFont13->DrawShadowText( (float)x+150,(float)y, dwColor,
+                              strValue, 0,
                               0, 
                               5, 
                               5,
