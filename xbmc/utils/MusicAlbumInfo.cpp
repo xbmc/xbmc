@@ -30,6 +30,15 @@ CMusicAlbumInfo::~CMusicAlbumInfo(void)
 
 CMusicAlbumInfo::CMusicAlbumInfo(const CStdString& strAlbumInfo, const CStdString& strAlbumURL)
 {
+	m_strArtist="";
+	m_strDateOfRelease="";
+	m_strGenre="";
+	m_strTones="";
+	m_strStyles="";
+	m_strReview="";
+	m_strTitle2="";
+	m_iRating=0;
+	m_bLoaded=false;
 	m_strTitle2		= strAlbumInfo;
 	m_strAlbumURL	= strAlbumURL;
 }

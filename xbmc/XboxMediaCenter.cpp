@@ -23,9 +23,7 @@
 //      - show selected image in file browser
 //
 // my music:
-//			- album : change gui
 //			- search
-//			- playlists
 //			- shoutcast
 //		  - cddb
 //			- when playing : show album info/playtime/... in leftbottom corner
