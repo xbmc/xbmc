@@ -265,7 +265,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
     if (iChannels == 1)
       DirectSoundOverrideSpeakerConfig(DSSPEAKER_MONO);
     else
-      DirectSoundOverrideSpeakerConfig(DSSPEAKER_SURROUND);
+      DirectSoundOverrideSpeakerConfig(DSSPEAKER_USE_DEFAULT);
   }
 
 	LARGE_INTEGER qwTicksPerSec;
