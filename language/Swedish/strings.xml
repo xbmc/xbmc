@@ -436,7 +436,7 @@
   <string><id>506</id><value>Använd mapp namn för beskrivning</value></string>
   <string><id>507</id><value>Användning</value></string>
   <string><id>508</id><value>Använd inte shortcuts eller scan</value></string>
-  <string><id>600</id><value>Rippa CD</value></string>
+  <string><id>600</id><value>Rippa Audio-CD</value></string>
   <string><id>601</id><value>Medium</value></string>
   <string><id>602</id><value>Normal</value></string>
   <string><id>603</id><value>Extrem</value></string>
@@ -662,6 +662,14 @@
   <string><id>13343</id><value>Röd</value></string>
   <string><id>13344</id><value>Rotera</value></string>
   <string><id>13345</id><value>Stäng av LED vid uppspelning</value></string>
+  <string><id>13346</id><value>Film information</value></string>
+  <string><id>13347</id><value>Lägg till i spellistan</value></string>
+  <string><id>13348</id><value>Sök på IMDb...</value></string>
+  <string><id>13349</id><value>Sök för alla filer</value></string>
+  <string><id>13350</id><value>Nu spelas...</value></string>
+  <string><id>13351</id><value>Album Information</value></string>
+  <string><id>13352</id><value>Scanna mappen till databasen</value></string>
+  <string><id>13353</id><value>Stoppa scanning</value></string>
   <string><id>14000</id><value>Stacking Av</value></string>
   <string><id>14001</id><value>Stacking enkel</value></string>
   <string><id>14002</id><value>Stacking luddig</value></string>
@@ -717,4 +725,7 @@
   <string><id>14052</id><value>Byt plats på dag/månad i datum</value></string>
   <string><id>14053</id><value>GUI Filter</value></string>
   <string><id>14054</id><value>Aktivera Internet hämtning av info</value></string>
+  <string><id>14055</id><value>Använd bakgrundscanning</value></string>
+  <string><id>14056</id><value>Stoppa scan</value></string>
+  <string><id>14057</id><value>Inte möjligt medans du scannar för mediainfo</value></string>
 </strings>
