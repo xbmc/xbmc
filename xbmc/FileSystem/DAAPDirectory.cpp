@@ -103,15 +103,23 @@ bool  CDAAPDirectory::GetDirectory(const CStdString& strPath, VECFILEITEMS &item
 	if (!m_thisHost)
 	{
 		m_thisHost = DAAP_Client_AddHost(m_thisClient, (char *) url.GetHostName().c_str(), "A", "A");
-		strcpy(g_application.m_CurrDAAPHost, m_thisHost->host);
 
 		// If no host object returned then the connection failed
-		if (!m_thisHost) return false;		// tidy ups?
+		if (!m_thisHost)
+		{
+			CloseDAAP();
+			return false;
+		}
 
-		if (DAAP_ClientHost_Connect(m_thisHost) < 0) return false;		// tidy ups?
+		if (DAAP_ClientHost_Connect(m_thisHost) < 0)
+		{
+			CloseDAAP();
+			return false;
+		}
 
 		DAAP_Client_GetDatabases(m_thisHost);
 		g_application.m_DAAPDBID =  m_thisHost->databases[0].id;
+		strcpy(g_application.m_CurrDAAPHost, m_thisHost->host);
 	}
 
 	// if we have at least one database we should show it's contents
@@ -194,27 +202,40 @@ bool  CDAAPDirectory::GetDirectory(const CStdString& strPath, VECFILEITEMS &item
 					int j;
 					for (j = 0; j < m_thisHost->dbplaylists->playlists[c].count; j++)
 					{
-						// the id returned from the playlist entry can be used to go directly
-						// to the song entry in the songs collection. the base song id needs
-						// subtracting so we can get to a zero based index.
-						int id = (m_thisHost->dbplaylists->playlists[c].items[j].id - m_currentSongItems[0].id);
-						CFileItem* pItem = new CFileItem(m_currentSongItems[id].itemname);
-						pItem->m_strPath.Format("daap://%s/%d.%s", m_thisHost->host, m_currentSongItems[id].id,
-							m_currentSongItems[id].songformat);
-						pItem->m_bIsFolder = false;
-						pItem->m_dwSize = m_currentSongItems[id].songsize;
-
-						pItem->m_musicInfoTag.SetURL(pItem->m_strPath);
-						pItem->m_musicInfoTag.SetTitle(m_currentSongItems[id].itemname);
-						pItem->m_musicInfoTag.SetArtist(m_currentSongItems[id].songartist);
-						pItem->m_musicInfoTag.SetAlbum(m_currentSongItems[id].songalbum);
-						//pItem->m_musicInfoTag.SetTrackNumber(m_currentSongItems[id].songtracknumber);
-						//pItem->m_musicInfoTag.SetTrackNumber(m_thisHost->dbplaylists->playlists[c].items[j].songid);
-						pItem->m_musicInfoTag.SetTrackNumber(j+1);
-						pItem->m_musicInfoTag.SetDuration((int) (m_currentSongItems[id].songtime / 1000));
-						pItem->m_musicInfoTag.SetLoaded(true);
+						// the playlist id is the song id, these do not directly match the array
+						// position so we've no choice but to cycle through all the songs until
+						// we find the one we want.
+						int i, idx;
+						idx = -1;
+						for (i = 0; i < m_currentSongItemCount; i ++)
+						{
+							if (m_currentSongItems[i].id == m_thisHost->dbplaylists->playlists[c].items[j].id)
+							{
+								idx = i;
+								break;
+							}
+						}
 						
-						items.push_back(new CFileItem(*pItem));
+						if (idx > -1)
+						{
+							CFileItem* pItem = new CFileItem(m_currentSongItems[idx].itemname);
+							pItem->m_strPath.Format("daap://%s/%d.%s", m_thisHost->host, m_currentSongItems[idx].id,
+								m_currentSongItems[idx].songformat);
+							pItem->m_bIsFolder = false;
+							pItem->m_dwSize = m_currentSongItems[idx].songsize;
+
+							pItem->m_musicInfoTag.SetURL(pItem->m_strPath);
+							pItem->m_musicInfoTag.SetTitle(m_currentSongItems[idx].itemname);
+							pItem->m_musicInfoTag.SetArtist(m_currentSongItems[idx].songartist);
+							pItem->m_musicInfoTag.SetAlbum(m_currentSongItems[idx].songalbum);
+							//pItem->m_musicInfoTag.SetTrackNumber(m_currentSongItems[idx].songtracknumber);
+							pItem->m_musicInfoTag.SetTrackNumber(m_thisHost->dbplaylists->playlists[c].items[j].songid);
+							//pItem->m_musicInfoTag.SetTrackNumber(j+1);
+							pItem->m_musicInfoTag.SetDuration((int) (m_currentSongItems[idx].songtime / 1000));
+							pItem->m_musicInfoTag.SetLoaded(true);
+							
+							items.push_back(new CFileItem(*pItem));
+						}
 					}
 				}
 			}
