@@ -76,10 +76,11 @@ void CGUIDialog::Render()
 	// render the parent window
 	if (m_bModal)
 	{
-		if (m_pParentWindow)
-		{
-			m_pParentWindow->Render();
-		}
+		//Parent is rendered by the WindowManager
+		//if (m_pParentWindow)
+		//{
+		//	m_pParentWindow->Render();
+		//}
 
 		// render the previous route window
 		if (m_pPrevRouteWindow)
