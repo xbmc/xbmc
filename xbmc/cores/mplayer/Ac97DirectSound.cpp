@@ -79,7 +79,6 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback, int iChannels, uns
   for ( DWORD j = 0; j < m_dwNumPackets; j++ )
     m_adwStatus[ j ] = XMEDIAPACKET_STATUS_SUCCESS;
 
-
   m_pDigitalOutput = NULL;
   hr = Ac97CreateMediaObject(DSAC97_CHANNEL_DIGITAL, NULL, NULL, &m_pDigitalOutput);
   if ( hr != DS_OK )
@@ -100,7 +99,7 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback, int iChannels, uns
 
   hr = m_pDigitalOutput->SetMode(bAC3DTS ? DSAC97_MODE_ENCODED : DSAC97_MODE_PCM);
   m_bIsAllocated = true;
-
+  m_dwTotalBytesAdded=0;
   if (m_bResampleAudio)
   {
     m_Resampler.InitConverter(uiSamplesPerSec, uiBitsPerSample, iChannels, 48000, 16, m_dwPacketSize);
@@ -158,6 +157,22 @@ HRESULT CAc97DirectSound::Resume()
 HRESULT CAc97DirectSound::Stop()
 {
   if (m_bPause) return S_OK;
+
+  if (m_pDigitalOutput)
+  {
+    m_pDigitalOutput->Flush();
+  }
+  for ( DWORD i = 0; i < m_dwNumPackets; i++ )
+  {
+    m_adwStatus[ i ] = XMEDIAPACKET_STATUS_SUCCESS;
+  }
+
+  //Set our counter to current position
+  DWORD m_dwPos=0;
+  m_pDigitalOutput->GetCurrentPosition(&m_dwPos);
+  m_dwTotalBytesAdded = m_dwPos;
+
+
   return S_OK;
 }
 
@@ -273,6 +288,7 @@ DWORD CAc97DirectSound::AddPacketsResample(unsigned char *pData, DWORD iLeft)
           // Process the audio
           if (DS_OK != m_pDigitalOutput->Process( &xmpAudio, NULL ))
           {
+            m_dwTotalBytesAdded+=m_dwPacketSize;
             return iBytesCopied;
           }
           // Okay - we've done this bit, update our data info
@@ -350,6 +366,7 @@ DWORD CAc97DirectSound::AddPackets(unsigned char *data, DWORD len)
       hr = m_pDigitalOutput->Process( &xmpAudio, NULL );
       //  hr=m_pAnalogOutput->Process( &xmpAudio, NULL );
 
+      m_dwTotalBytesAdded+=iSize;
       iBytesCopied += iSize;
       len -= iSize;
     }
@@ -357,24 +374,16 @@ DWORD CAc97DirectSound::AddPackets(unsigned char *data, DWORD len)
     {
       break;
     }
-  }
-
+  }  
   return iBytesCopied;
 }
 
 //***********************************************************************************************
 DWORD CAc97DirectSound::GetBytesInBuffer()
 {
-  DWORD dwBytesInBuffer = 0;
-  for ( DWORD i = 0; i < m_dwNumPackets; i++ )
-  {
-    // If we find a non-pending packet, return it
-    if ( m_adwStatus[ i ] == XMEDIAPACKET_STATUS_PENDING)
-    {
-      dwBytesInBuffer += m_dwPacketSize;
-    }
-  }
-  return dwBytesInBuffer;
+  DWORD m_dwPos=0;
+  m_pDigitalOutput->GetCurrentPosition(&m_dwPos);
+  return max(0, m_dwTotalBytesAdded - m_dwPos);
 }
 
 //***********************************************************************************************

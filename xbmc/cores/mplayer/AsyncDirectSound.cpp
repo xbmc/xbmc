@@ -45,6 +45,8 @@ void CALLBACK CASyncDirectSound::StaticStreamCallback(LPVOID pStreamContext, LPV
 //***********************************************************************************************
 void CASyncDirectSound::StreamCallback(LPVOID pPacketContext, DWORD dwStatus)
 {
+  QueryPerformanceCounter(&m_LastPacketCompletedAt);
+
   buffered_bytes -= m_dwPacketSize;
   if (buffered_bytes < 0) buffered_bytes = 0;
 
@@ -271,7 +273,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
 
   LARGE_INTEGER qwTicksPerSec;
   QueryPerformanceFrequency( &qwTicksPerSec );   // ticks/sec
-  m_dwTicksPerSec = qwTicksPerSec.QuadPart;
+  m_TicksPerSec = qwTicksPerSec.QuadPart;
 
   m_bPause = false;
   m_iAudioSkip = 1;
@@ -280,7 +282,6 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
   m_pDSound = NULL;
   m_adwStatus = NULL;
   m_pStream = NULL;
-  m_adwStatus = NULL;
   m_iCurrentAudioStream = 0;
   if (m_bResampleAudio)
   {
@@ -292,6 +293,9 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback, int iChannels, u
     m_uiSamplesPerSec = uiSamplesPerSec;
     m_uiBitsPerSample = uiBitsPerSample;
   }
+  m_uiChannels = iChannels;
+  QueryPerformanceCounter(&m_LastPacketCompletedAt);
+
   m_bFirstPackets = true;
   m_iCalcDelay = CALC_DELAY_START;
   m_fCurDelay = (FLOAT)0.001;
@@ -531,7 +535,6 @@ HRESULT CASyncDirectSound::Stop()
 {
   buffered_bytes = 0;
   if (m_bPause) return S_OK;
-  m_bPause = true;
 
   // Check the status of each packet
   //mp_msg(0,0,"CASyncDirectSound::Stop");
@@ -539,13 +542,13 @@ HRESULT CASyncDirectSound::Stop()
   if (m_pStream)
   {
     m_pStream->Flush();
-    m_pStream->Pause( DSSTREAMPAUSE_PAUSE );
   }
   for ( DWORD i = 0; i < m_dwNumPackets; i++ )
   {
     m_adwStatus[ i ] = XMEDIAPACKET_STATUS_SUCCESS;
   }
   m_VisBytes = 0;
+  m_LastPacketCompletedAt.QuadPart=0;
 
   m_bFirstPackets = true;
   return S_OK;
@@ -769,18 +772,15 @@ DWORD CASyncDirectSound::AddPackets(unsigned char *data, DWORD len)
 //***********************************************************************************************
 DWORD CASyncDirectSound::GetBytesInBuffer()
 {
+  //Calculate how much of current packet that has been played, so we can adjust with that
+  LARGE_INTEGER llPerfCount;
+  QueryPerformanceCounter(&llPerfCount);
+
+  LONGLONG adjustbytes = (llPerfCount.QuadPart-m_LastPacketCompletedAt.QuadPart) * m_uiChannels * m_uiSamplesPerSec / m_TicksPerSec;
+  if( adjustbytes < m_dwPacketSize )
+    return buffered_bytes - (DWORD)adjustbytes;
+
   return buffered_bytes;
-  /*
-  DWORD dwBytesInBuffer=0;
-  for( DWORD i = 0; i < m_dwNumPackets; i++ )
-  {
-  // If we find a non-pending packet, return it
-  if( m_adwStatus[ i ] == XMEDIAPACKET_STATUS_PENDING)
-  {
-  dwBytesInBuffer+=m_dwPacketSize;
-  }
-  }
-  return dwBytesInBuffer;*/
 }
 
 //***********************************************************************************************
