@@ -18,6 +18,7 @@ CGUILabelControl::~CGUILabelControl(void)
 
 void CGUILabelControl::Render()
 {
+	if (!IsVisible() ) return;
   if (m_pFont)
   {
     m_pFont->DrawText((float)m_dwPosX, (float)m_dwPosY,m_dwTextColor,m_strLabel.c_str(),m_dwdwTextAlign); 

@@ -38,7 +38,8 @@ void CGUISpinControl::OnKey(const CKey& key)
     {
       if (m_iSelect==SPIN_BUTTON_UP) 
       {
-        m_iSelect=SPIN_BUTTON_DOWN;
+				if (CanMoveDown() )
+					m_iSelect=SPIN_BUTTON_DOWN;
         return;
       }
     }
@@ -46,7 +47,8 @@ void CGUISpinControl::OnKey(const CKey& key)
     {
       if (m_iSelect==SPIN_BUTTON_DOWN) 
       {
-        m_iSelect=SPIN_BUTTON_UP;
+				if (CanMoveUp() )
+					m_iSelect=SPIN_BUTTON_UP;
         return;
       }
     }
@@ -215,14 +217,26 @@ void CGUISpinControl::Render()
 			m_imgspinDown.SetPosition((DWORD)fTextWidth + 5+dwPosX, m_dwPosY);
 		}
 	}
+	if (m_iSelect==SPIN_BUTTON_UP) 
+	{
+		if ( !CanMoveUp() )
+			m_iSelect=SPIN_BUTTON_DOWN;
+	}
+
+	if (m_iSelect==SPIN_BUTTON_DOWN) 
+	{
+		if ( !CanMoveDown() )
+			m_iSelect=SPIN_BUTTON_UP;
+	}
+
 	if ( HasFocus() )
 	{
-		if (m_iSelect==SPIN_BUTTON_UP) 
+		if (m_iSelect==SPIN_BUTTON_UP && CanMoveUp() ) 
       m_imgspinUpFocus.Render();
     else 
       m_imgspinUp.Render();
 
-    if (m_iSelect==SPIN_BUTTON_DOWN) 
+    if (m_iSelect==SPIN_BUTTON_DOWN && CanMoveDown()) 
 		  m_imgspinDownFocus.Render();
     else
       m_imgspinDown.Render();
@@ -320,4 +334,58 @@ void CGUISpinControl::SetFocus(bool bOnOff)
 {
   CGUIControl::SetFocus(bOnOff);
   m_iSelect=SPIN_BUTTON_DOWN;
+}
+
+bool CGUISpinControl::CanMoveUp()
+{
+	switch (m_iType)
+	{
+		case SPIN_CONTROL_TYPE_INT:
+		{
+			if (m_iValue-1 >= m_iStart) return true;
+			return false;
+		}
+		break;
+
+		case SPIN_CONTROL_TYPE_FLOAT:
+		{
+			if (m_fValue-0.1 >= m_fStart) return true;
+			return false;
+		}
+		break;
+
+		case SPIN_CONTROL_TYPE_TEXT:
+		{
+			if (m_iValue-1 >= 0) return true;
+			return false;
+		}
+		break;
+	}
+}
+
+bool CGUISpinControl::CanMoveDown()
+{
+	switch (m_iType)
+	{
+		case SPIN_CONTROL_TYPE_INT:
+		{
+			if (m_iValue+1 <= m_iEnd) return true;
+			return false;
+		}
+		break;
+
+	case SPIN_CONTROL_TYPE_FLOAT:
+		{
+			if (m_fValue+0.1 <= m_fEnd) return true;
+			return false;
+		}
+		break;
+
+	case SPIN_CONTROL_TYPE_TEXT:
+		{
+			if (m_iValue+1 < (int)m_vecLabels.size()) return true;
+			return false;
+		}
+		break;
+	}
 }

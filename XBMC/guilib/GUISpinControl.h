@@ -37,6 +37,8 @@ public:
   const WCHAR*	GetLabel() const;
   virtual void	SetFocus(bool bOnOff);
 protected:
+	bool			CanMoveDown();
+	bool			CanMoveUp();
   int       m_iStart;
   int       m_iEnd;
   float     m_fStart;
