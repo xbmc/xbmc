@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 08-01-2005 fixed: thumb cache was not cleared
   - 08-01-2005 changed: minor GUIListControl performance tweaks
   - 08-01-2005 changed: minor guiImage & xprfont performance tweaks
   - 07-01-2005 changed: Removed TITLE mapping to playlist view in My Music and My Videos - it's on the context menu anyway.
