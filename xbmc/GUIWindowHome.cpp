@@ -1,5 +1,3 @@
-
-
 #include "stdafx.h"
 #include "guiwindowhome.h"
 #include "localizestrings.h"
@@ -11,6 +9,7 @@
 #include "sectionloader.h"
 #include "util.h"
 #include "application.h"
+#include "Credits.h"
 
 CGUIWindowHome::CGUIWindowHome(void)
 :CGUIWindow(0)
