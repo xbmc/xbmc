@@ -2351,6 +2351,8 @@ void CControlSocket::ProcessTransferMsg()
 	}
 	else if (status==5)
 		Send("425 Can't open data connection");
+	else if (status==6)
+		Send("451 Out of memory.");
 	if (status>=0 && m_bWaitGoOffline)
 		ForceClose(0);
 	else if (m_bQuitCommand)
