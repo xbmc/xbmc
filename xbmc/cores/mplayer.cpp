@@ -586,14 +586,21 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			
     }
 
-    // if we dont use ac3 passtru and we got an movie with AC3 audio
-    // then set the default avdelay to 130msec.
-    if (!options.GetAC3PassTru())
+    if (!g_stSettings.m_bUseDigitalOutput)
     {
+      // if we're playing an movie with AC3 audio and are using the analog output
+      // then set the default avdelay to -130msec.
       if ( strstr(strAudioCodec,"AC3-liba52") )
       {
-        OutputDebugString("set default avdelay to -130msec\n");
-        SetAVDelay( -0.130f);
+         SetAVDelay( -0.130f);
+      }
+      // if we're playing an mpeg movie and are using the analog output
+      // then set the avdelay to -130msec.
+      CStdString strExtension;
+      CUtil::GetExtension(strFile,strExtension);
+      if (CUtil::cmpnocase(strExtension,".mpg")==0)
+      {
+         SetAVDelay( -0.130f );
       }
     }
   }
