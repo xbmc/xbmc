@@ -35,7 +35,6 @@ protected:
 	bool							OnCreateThumbs();
 	int								GetSelectedItem();
   bool							HaveDiscOrConnection( CStdString& strPath, int iDriveType );  
-  bool             	HaveBookmarkPermissions(CFileItem* pItem, const CStdString &strType);
   void              OnSlideShowRecursive(const CStdString& strPicture);
   void              OnSlideShowRecursive();
   bool              ViewByIcon();

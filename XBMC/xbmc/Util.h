@@ -156,6 +156,7 @@ public:
 	static char GetDirectorySeperator(const CStdString& strFile);
 
 	static bool IsNaturalNumber(const CStdString& str);
+  static bool IsNaturalNumber(const CStdStringW& str);
 	static bool IsUsingTTFSubtitles();
 	static void SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam);
 	static bool IsDefaultThumb(const CStdString& strThumb);

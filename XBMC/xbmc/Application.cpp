@@ -112,7 +112,9 @@ CApplication::CApplication(void)
 	m_DAAPSong = NULL;
 	m_DAAPPtr = NULL;
 	m_DAAPArtistPtr = NULL;
-	m_iMasterCodeRetriesRemaining    = 0;
+	m_iMasterLockRetriesRemaining    = 0;
+	m_bMasterLockPreviouslyEntered = false;
+	m_bMasterLockOverridesLocalPasswords = false;
 }
 
 CApplication::~CApplication(void)
@@ -732,7 +734,12 @@ HRESULT CApplication::Create()
   g_settings.SetBookmarkLocks("files", true);
   g_settings.SetBookmarkLocks("music", true);
   g_settings.SetBookmarkLocks("video", true);
-	m_iMasterCodeRetriesRemaining = g_stSettings.m_iMasterLockMaxRetry;
+
+	m_iMasterLockRetriesRemaining = g_stSettings.m_iMasterLockMaxRetry;
+  
+  if (LOCK_MODE_EVERYONE == g_stSettings.m_iMasterLockMode)
+    // masterlock is disabled, so disable all share locks too
+    m_bMasterLockOverridesLocalPasswords = true;
 
   return CXBApplicationEx::Create();
 }
@@ -870,8 +877,8 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiDialogContextMenu);				// window id = 106
 	m_gWindowManager.Add(&m_guiDialogKaiToast);					// window id = 107
 	m_gWindowManager.Add(&m_guiDialogHost);						// window id = 108
-	m_gWindowManager.Add(&m_guiDialogPasswordNumeric);				// window id = 109
-	m_gWindowManager.Add(&m_guiDialogPasswordGamepad);				// window id = 110
+	m_gWindowManager.Add(&m_guiDialogNumeric);				// window id = 109
+	m_gWindowManager.Add(&m_guiDialogGamepad);				// window id = 110
 	m_gWindowManager.Add(&m_guiDialogButtonMenu);					// window id = 111
 	m_gWindowManager.Add(&m_guiDialogMusicScan);					// window id = 112
 	m_gWindowManager.Add(&m_guiMyMusicPlayList);					// window id = 500
@@ -1168,8 +1175,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiDialogProgress.Load("dialogProgress.xml");
 	m_guiDialogVolumeBar.Load("dialogVolumeBar.xml");
 	m_guiDialogKaiToast.Load("dialogKaiToast.xml");
-	m_guiDialogPasswordNumeric.Load("dialogNumeric.xml");
-	m_guiDialogPasswordGamepad.Load("dialogGamepad.xml");
+	m_guiDialogNumeric.Load("dialogNumeric.xml");
+	m_guiDialogGamepad.Load("dialogGamepad.xml");
 	m_guiDialogSubMenu.Load("dialogSubMenu.xml");
 	m_guiDialogButtonMenu.Load("dialogButtonMenu.xml");
 	m_guiDialogContextMenu.Load("dialogContextMenu.xml");

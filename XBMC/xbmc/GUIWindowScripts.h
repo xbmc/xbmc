@@ -28,7 +28,6 @@ protected:
 	void							Update(const CStdString &strDirectory);
 	int								GetSelectedItem();
   bool							HaveDiscOrConnection( CStdString& strPath, int iDriveType );
-  bool            	HaveBookmarkPermissions(CFileItem* pItem, const CStdString &strType);
 
 	CVirtualDirectory		m_rootDir;
   VECFILEITEMS				m_vecItems;

@@ -48,7 +48,6 @@ protected:
 	void							Refresh(int iList);
   int				        GetSelectedItem(int iList);
   bool				      HaveDiscOrConnection( CStdString& strPath, int iDriveType );
-  bool             	HaveBookmarkPermissions(CFileItem* pItem, const CStdString &strType);
 	void              GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
 	void							GetDirectory(int iList, const CStdString &strDirectory, VECFILEITEMS &items);
 	int								NumSelected(int iList);
