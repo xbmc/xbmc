@@ -2006,28 +2006,44 @@
 		<value>Jaune</value>
 	</string>
 	<string>
+		<id>744</id>
+		<value>Fichiers</value>
+	</string>		
+	<string>
+		<id>745</id>
+		<value>Aucune information trouvée pour cet affichage</value>
+	</string>		
+	<string>
+		<id>746</id>
+		<value>Passez à l'affichage fichiers</value>
+  	</string>
+	<string>
+		<id>747</id>
+		<value>Mémoire insuffisante au chargement de l'image</value>
+  	</string>
+  	<string>
 		<id>748</id>
-		<value>Editer le chemin</value>
+		<value>Éditer le chemin</value>
 	</string>
-		<string>
+	<string>
 		<id>749</id>
-		<value>Ajouter un Partage</value>
+		<value>Ajouter un partage</value>
 	</string>
 	<string>
 		<id>750</id>
-		<value>Etes vous sure?</value>
+		<value>Êtes vous sûr ?</value>
 	</string>
 	<string>
 		<id>751</id>
-		<value>Supprimer le Partage</value>
+		<value>Supprimer le partage</value>
 	</string>
 	<string>
 		<id>752</id>
-		<value>Editer le Chemin du Partage</value>
+		<value>Éditer le chemin du partage</value>
 	</string>
 	<string>
 		<id>753</id>
-		<value>Editer le Nom du Partage</value>
+		<value>Éditer le nom du partage</value>
 	</string>
 	<string>
 		<id>998</id>
@@ -2300,5 +2316,57 @@
     <string>
         <id>13305</id>
         <value>Activer les flux RSS</value>
+    </string>
+    <string>
+        <id>13306</id>
+        <value>Masquer les éléments du répertoire parent</value>
+    </string>
+    <string>
+        <id>13307</id>
+        <value>Masquer les numéros des pistes</value>
+    </string>
+    <string>
+        <id>13307</id>
+        <value>Reset/Reboot</value>
+    </string>
+    <string>
+        <id>13308</id>
+        <value>Voulez vous faire un reboot</value>
+    </string>
+    <string>
+        <id>13309</id>
+        <value>plutôt qu'un reset ?</value>
+    </string>
+    <string>
+        <id>13310</id>
+        <value>Zoom</value>
+    </string>
+    <string>
+        <id>13311</id>
+        <value>Flottement</value>
+    </string>
+    <string>
+        <id>13312</id>
+        <value>réduction de la barre noire</value>
+    </string>
+    <string>
+        <id>13313</id>
+        <value>Reset/Reboot</value>
+    </string>
+    <string>
+        <id>13314</id>
+        <value>Timeout panneau musique</value>
+    </string>
+    <string>
+        <id>14000</id>
+        <value>Stacking : désactivé</value>
+    </string>
+    <string>
+        <id>14001</id>
+        <value>Stacking : simple</value>
+    </string>
+    <string>
+        <id>14002</id>
+        <value>Stacking : brouillé</value>
     </string>
 </strings>
