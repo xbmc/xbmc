@@ -27,10 +27,10 @@ public:
 
   // todo:
   void    GetMovieInfo(const CStdString& strFilenameAndPath,CIMDBMovie& details);
-  void    SetMovieInfo(const CStdString& strFilenameAndPath,const CIMDBMovie& details);
+  void    SetMovieInfo(const CStdString& strFilenameAndPath,CIMDBMovie& details);
   void    GetMoviesByGenre(CStdString& strGenre, VECMOVIES& movies);
   void    GetMoviesByActor(CStdString& strActor, VECMOVIES& movies);
-
+  void    GetMoviesByPath(CStdString& strPath1, VECMOVIES& movies);
 protected:
   auto_ptr<SqliteDatabase>  m_pDB;
 	auto_ptr<Dataset>				  m_pDS;
