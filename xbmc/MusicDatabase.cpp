@@ -13,6 +13,7 @@
 #include "GUIDialogProgress.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogSelect.h"
+#include "GUIDialogMusicScan.h"
 #include "musicInfoTag.h"
 #include "filesystem/cddb.h"
 #include "filesystem/directorycache.h"
@@ -92,7 +93,6 @@ void CMusicDatabase::RemoveInvalidChars(CStdString& strTxt)
 
 bool CMusicDatabase::Open()
 {
-
 	CStdString musicDatabase=g_stSettings.m_szAlbumDirectory;
 	musicDatabase+="\\MyMusic6.db";
 
@@ -137,11 +137,11 @@ bool CMusicDatabase::Open()
 	}
 
 	m_pDS->exec("PRAGMA cache_size=8192\n");
-	m_pDS->exec("PRAGMA synchronous='OFF'\n");
+	m_pDS->exec("PRAGMA synchronous='NORMAL'\n");
 	m_pDS->exec("PRAGMA count_changes='OFF'\n");
 //	m_pDS->exec("PRAGMA temp_store='MEMORY'\n");
 	m_pDS2->exec("PRAGMA cache_size=8192\n");
-	m_pDS2->exec("PRAGMA synchronous='OFF'\n");
+	m_pDS2->exec("PRAGMA synchronous='NORMAL'\n");
 	m_pDS2->exec("PRAGMA count_changes='OFF'\n");
 //	m_pDS2->exec("PRAGMA temp_store='MEMORY'\n");
 	m_bOpen=true;
@@ -298,7 +298,7 @@ void CMusicDatabase::AddSong(const CSong& song1, bool bCheck)
 										strFileName.c_str(), 0, song.iStartOffset, song.iEndOffset);
 
 			m_pDS->exec(strSQL.c_str());
-			lSongId = sqlite_last_insert_rowid(m_pDB->getHandle());
+			lSongId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
 		}
 
 		// add artists and genres (don't need to add to exgenrealbum table - it's only used for albuminfo)
@@ -346,7 +346,7 @@ long CMusicDatabase::AddAlbum(const CStdString& strAlbum1, const long lArtistId,
 			m_pDS->exec(strSQL.c_str());
 
 			CAlbumCache album;
-			album.idAlbum  = sqlite_last_insert_rowid(m_pDB->getHandle());
+			album.idAlbum  = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
 			album.strPath  = strPath;
 			album.idPath   = lPathId;
 			album.strAlbum = strAlbum1;
@@ -544,7 +544,7 @@ long CMusicDatabase::AddGenre(const CStdString& strGenre1)
 			m_pDS->exec(strSQL.c_str());
 
 			CGenreCache genre;
-			genre.idGenre = sqlite_last_insert_rowid(m_pDB->getHandle());
+			genre.idGenre = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
 			genre.strGenre = strGenre1;
 			m_genreCache.insert(pair<CStdString, CGenreCache>(genre.strGenre, genre));
 			return genre.idGenre;
@@ -597,7 +597,7 @@ long CMusicDatabase::AddArtist(const CStdString& strArtist1)
 			strSQL .Format("insert into artist (idArtist, strArtist) valueS( NULL, '%s' )", strArtist);
 			m_pDS->exec(strSQL.c_str());
 			CArtistCache artist;
-			artist.idArtist = sqlite_last_insert_rowid(m_pDB->getHandle());
+			artist.idArtist = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
 			artist.strArtist = strArtist1;
 			m_artistCache.insert(pair<CStdString, CArtistCache>(artist.strArtist, artist));
 			return artist.idArtist;
@@ -770,7 +770,7 @@ long CMusicDatabase::AddPath(const CStdString& strPath1)
 			m_pDS->exec(strSQL.c_str());
 
 			CPathCache path;
-			path.idPath = sqlite_last_insert_rowid(m_pDB->getHandle());
+			path.idPath = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
 			path.strPath = strPath1;
 			m_pathCache.insert(pair<CStdString, CPathCache>(path.strPath, path));
 			return path.idPath;
@@ -1247,6 +1247,8 @@ long CMusicDatabase::AddAlbumInfo(const CAlbum& album1, const VECSONGS& songs)
 		if (NULL==m_pDB.get()) return -1;
 		if (NULL==m_pDS.get()) return -1;
 
+		BeginTransaction();
+
 		// split our (possibly) multiple artist string into individual artists
 		CStdStringArray vecArtists;
 		int iNumArtists = StringUtils::SplitString(album.strArtist," / ",vecArtists);
@@ -1285,9 +1287,15 @@ long CMusicDatabase::AddAlbumInfo(const CAlbum& album1, const VECSONGS& songs)
 												album.iYear);
 		m_pDS->exec(strSQL.c_str());
 
-		long lAlbumInfoId=sqlite_last_insert_rowid(m_pDB->getHandle());
+		long lAlbumInfoId=(long)sqlite3_last_insert_rowid(m_pDB->getHandle());
 
-		AddAlbumInfoSongs(lAlbumInfoId, songs);
+		if (AddAlbumInfoSongs(lAlbumInfoId, songs))
+			CommitTransaction();
+		else
+		{
+			RollbackTransaction();
+			lAlbumInfoId=-1;
+		}
 
 		return lAlbumInfoId;
 	}
@@ -1295,6 +1303,8 @@ long CMusicDatabase::AddAlbumInfo(const CAlbum& album1, const VECSONGS& songs)
 	{
     CLog::Log(LOGERROR, "musicdatabase:unable to addalbuminfo (%s)", strSQL.c_str());
 	}
+
+	RollbackTransaction();
 
 	return -1;
 }
@@ -2036,6 +2046,8 @@ long CMusicDatabase::UpdateAlbumInfo(const CAlbum& album1, const VECSONGS& songs
 		if (NULL==m_pDB.get()) return -1;
 		if (NULL==m_pDS.get()) return -1;
 
+		BeginTransaction();
+
 		// split our (possibly) multiple artist string into single artists.
 		CStdStringArray vecArtists;
 		long iNumArtists = StringUtils::SplitString(album.strArtist, " / ", vecArtists);
@@ -2057,8 +2069,14 @@ long CMusicDatabase::UpdateAlbumInfo(const CAlbum& album1, const VECSONGS& songs
 		int iRowsFound = m_pDS->num_rows();
 		if (iRowsFound== 0)
 		{
-      m_pDS->close();
-			return AddAlbumInfo(album1, songs);
+			m_pDS->close();
+			long idAlbumInfo=AddAlbumInfo(album1, songs);
+			if (idAlbumInfo>-1)
+				CommitTransaction();
+			else
+				RollbackTransaction();
+
+			return idAlbumInfo;
 		}
 
 		long idAlbumInfo=m_pDS->fv("idAlbumInfo").get_asLong();
@@ -2076,7 +2094,13 @@ long CMusicDatabase::UpdateAlbumInfo(const CAlbum& album1, const VECSONGS& songs
 												idAlbumInfo);
 		m_pDS->exec(strSQL.c_str());
 
-		UpdateAlbumInfoSongs(idAlbumInfo, songs);
+		if (UpdateAlbumInfoSongs(idAlbumInfo, songs))
+			CommitTransaction();
+		else
+		{
+			RollbackTransaction();
+			idAlbumInfo=-1;
+		}
 
 		return idAlbumInfo;
 	}
@@ -2084,6 +2108,8 @@ long CMusicDatabase::UpdateAlbumInfo(const CAlbum& album1, const VECSONGS& songs
 	{
     CLog::Log(LOGERROR, "musicdatabase:unable to updatealbuminfo (%s)", strSQL.c_str());
 	}
+
+	RollbackTransaction();
 
 	return -1;
 }
@@ -2510,6 +2536,23 @@ void CMusicDatabase::DeleteAlbumInfo()
 	if (NULL==m_pDB.get()) return;
 	if (NULL==m_pDS.get()) return;
 
+	//	If we are scanning for music info in the background,
+	//	other writing access to the database is prohibited.
+	CGUIDialogMusicScan* dlgMusicScan = (CGUIDialogMusicScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+	if (dlgMusicScan->IsRunning())
+	{
+		CGUIDialogOK *pDlg= (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+		if (pDlg)
+		{
+			pDlg->SetHeading(189);
+			pDlg->SetLine(0, 14057);
+			pDlg->SetLine(1, "");
+			pDlg->SetLine(2, "");
+			pDlg->DoModal(m_gWindowManager.GetActiveWindow());
+			return;
+		}
+	}
+
 	CStdString strSQL;
 	strSQL.Format("select * from albuminfo,album,path,artist where album.idPath=path.idPath and albuminfo.idAlbum=album.idAlbum and album.idArtist=artist.idArtist order by album.strAlbum");
 	if (!m_pDS->query(strSQL.c_str())) return;
@@ -2677,6 +2720,23 @@ void CMusicDatabase::DeleteCDDBInfo()
 
 void CMusicDatabase::Clean()
 {
+	//	If we are scanning for music info in the background,
+	//	other writing access to the database is prohibited.
+	CGUIDialogMusicScan* dlgMusicScan = (CGUIDialogMusicScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+	if (dlgMusicScan->IsRunning())
+	{
+		CGUIDialogOK *pDlg= (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+		if (pDlg)
+		{
+			pDlg->SetHeading(189);
+			pDlg->SetLine(0, 14057);
+			pDlg->SetLine(1, "");
+			pDlg->SetLine(2, "");
+			pDlg->DoModal(m_gWindowManager.GetActiveWindow());
+			return;
+		}
+	}
+
 	CGUIDialogYesNo* dlgYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
 	if (dlgYesNo)
 	{

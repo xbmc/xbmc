@@ -319,7 +319,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				FavorSizeOrSpeed="2"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml"
+				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="NDEBUG;_XBOX;HAVE_MSWINDOWS"
 				StringPooling="FALSE"
 				BasicRuntimeChecks="0"
@@ -337,7 +337,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xapilib.lib d3dx8.lib d3d8.lib xgraphics.lib dsound.lib xboxkrnl.lib xonline.lib  xkbd.lib"
+				AdditionalDependencies="xapilib.lib d3dx8.lib d3d8.lib xgraphics.lib dsound.lib xboxkrnl.lib xonline.lib  xkbd.lib xvoice.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="libc"
@@ -480,6 +480,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="GUI Music"
 				Filter="">
 				<File
+					RelativePath=".\xbmc\GUIDialogMusicScan.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIWindowMusicAlbum.cpp">
 				</File>
 				<File
@@ -568,6 +571,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\FlacTag.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\MusicInfoScanner.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\musicInfoTag.cpp">
@@ -1018,6 +1024,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\GUIDialogKeyboard.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIDialogMusicScan.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIDialogOK.h">
 			</File>
 			<File
@@ -1238,6 +1247,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\MusicDatabase.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\MusicInfoScanner.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicInfoScraper.h">

@@ -177,7 +177,7 @@ long CVideoDatabase::AddFile(long lMovieId, long lPathId, const CStdString& strF
     m_pDS->close();
 	  strSQL.Format ("insert into files (idFile, idMovie,idPath, strFileName) values(NULL, %i,%i,'%s')", lMovieId,lPathId, strFileName.c_str() );
 	  m_pDS->exec(strSQL.c_str());
-    lFileId=sqlite_last_insert_rowid( m_pDB->getHandle() );
+    lFileId=(long)sqlite3_last_insert_rowid( m_pDB->getHandle() );
     return lFileId;
   }
   catch(...)
@@ -266,7 +266,7 @@ long CVideoDatabase::AddPath(const CStdString& strPath)
 		  strSQL.Format("insert into Path (idPath, strPath) values( NULL, '%s')",
                         strPath.c_str());
 		  m_pDS->exec(strSQL.c_str());
-		  long lPathId=sqlite_last_insert_rowid(m_pDB->getHandle());
+		  long lPathId=(long)sqlite3_last_insert_rowid(m_pDB->getHandle());
 		  return lPathId;
 	  }
 	  else
@@ -382,7 +382,7 @@ long CVideoDatabase::AddMovie(const CStdString& strFilenameAndPath, const CStdSt
       strSQL.Format("insert into movie (idMovie, idPath, hasSubtitles, cdlabel) values( NULL, %i, %i, '%s')",
                     lPathId,bHassubtitles,strCDLabel.c_str());
 	    m_pDS->exec(strSQL.c_str());
-      lMovieId=sqlite_last_insert_rowid(m_pDB->getHandle());
+      lMovieId=(long)sqlite3_last_insert_rowid(m_pDB->getHandle());
       AddFile(lMovieId,lPathId,strFileName);
     }
     else
@@ -423,7 +423,7 @@ long CVideoDatabase::AddGenre(const CStdString& strGenre1)
 		  strSQL += strGenre;
 		  strSQL += "')";
 		  m_pDS->exec(strSQL.c_str());
-		  long lGenreId=sqlite_last_insert_rowid(m_pDB->getHandle());
+		  long lGenreId=(long)sqlite3_last_insert_rowid(m_pDB->getHandle());
 		  return lGenreId;
 	  }
 	  else
@@ -465,7 +465,7 @@ long CVideoDatabase::AddActor(const CStdString& strActor1)
 		  strSQL += strActor;
 		  strSQL += "')";
 		  m_pDS->exec(strSQL.c_str());
-		  long lActorId=sqlite_last_insert_rowid(m_pDB->getHandle());
+		  long lActorId=(long)sqlite3_last_insert_rowid(m_pDB->getHandle());
 		  return lActorId;
 	  }
 	  else

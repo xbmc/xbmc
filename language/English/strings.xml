@@ -725,4 +725,7 @@
   <string><id>14052</id><value>Swap month and day in home screen</value></string>
   <string><id>14053</id><value>GUI Filters</value></string>
   <string><id>14054</id><value>Enable Internet Lookups</value></string>
+  <string><id>14055</id><value>Use Background Scanning</value></string>
+  <string><id>14056</id><value>Stop Scan</value></string>
+  <string><id>14057</id><value>Not possible while scanning for media info</value></string>
 </strings>
