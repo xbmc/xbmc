@@ -226,7 +226,12 @@ VOID CGUIWindowHome::GetDate(WCHAR* wszDate, LPSYSTEMTIME pTime)
 	}
 
 	if (day && month)
-		swprintf(wszDate,L"%s, %s %d", day, month, pTime->wDay);
+	{
+		if (g_guiSettings.GetBool("LookAndFeel.SwapMonthAndDay"))
+			swprintf(wszDate,L"%s, %d. %s", day, pTime->wDay, month);
+		else
+			swprintf(wszDate,L"%s, %s %d", day, month, pTime->wDay);
+	}
 	else
 		swprintf(wszDate,L"no date");
 }
@@ -236,7 +241,19 @@ VOID CGUIWindowHome::GetTime(WCHAR* szTime, LPSYSTEMTIME pTime)
 	if (!szTime) return;
 	if (!pTime) return;
 	INT iHour = pTime->wHour;
-	swprintf(szTime,L"%02d:%02d", iHour, pTime->wMinute);
+
+	if (g_guiSettings.GetBool("LookAndFeel.Clock12Hour"))
+	{
+		if (iHour>12)
+		{
+			iHour-=12;
+			swprintf(szTime,L"%02d:%02d PM", iHour, pTime->wMinute);
+		}
+		else
+			swprintf(szTime,L"%02d:%02d AM", iHour, pTime->wMinute);
+	}
+	else
+		swprintf(szTime,L"%02d:%02d", iHour, pTime->wMinute);
 }
 
 void CGUIWindowHome::UpdateButtonScroller()

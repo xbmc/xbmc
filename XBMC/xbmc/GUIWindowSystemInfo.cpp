@@ -144,7 +144,9 @@ void  CGUIWindowSystemInfo::GetValues()
 	{
 		const WCHAR *psztext=g_localizeStrings.Get(144).c_str();
 		const WCHAR *pszbuild=g_localizeStrings.Get(6).c_str();
-		swprintf(wszText,L"%s %s\n%s", psztext,pszbuild,m_wszMPlayerVersion);
+    WCHAR wszDate[32];
+		mbstowcs(wszDate, __DATE__, sizeof(wszDate));
+		swprintf(wszText,L"%s %s (%s)\n%s", psztext,pszbuild,wszDate,m_wszMPlayerVersion);
 
 		SET_CONTROL_LABEL(GetID(), 5,wszText);
 	}
@@ -155,7 +157,18 @@ void  CGUIWindowSystemInfo::GetValues()
 		WCHAR wszTime[32];
 		SYSTEMTIME time;
 		GetLocalTime(&time);
-		swprintf(wszTime,L"%s %d:%02d:%02d %d-%d-%d",pszCurrent,time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
+		if (g_guiSettings.GetBool("LookAndFeel.Clock12Hour"))
+		{
+			if (time.wHour>12)
+			{
+				time.wHour-=12;
+				swprintf(wszTime,L"%s %d:%02d:%02d PM %d-%d-%d",pszCurrent,time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
+			}
+			else
+				swprintf(wszTime,L"%s %d:%02d:%02d AM %d-%d-%d",pszCurrent,time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
+		}
+		else
+			swprintf(wszTime,L"%s %d:%02d:%02d %d-%d-%d",pszCurrent,time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
 
 		SET_CONTROL_LABEL(GetID(), 4,wszTime);
 	}
