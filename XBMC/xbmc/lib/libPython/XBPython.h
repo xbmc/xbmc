@@ -12,14 +12,12 @@
 
 #include "XBPyThread.h"
 #include "OutputBuffer.h"
-#include "messages.h"
 
 using namespace std;
 
-VOID WINAPI PyThreadNotifyProc(BOOL fCreate);
-
 typedef struct {
 	int id;
+	bool bDone;
 	char strFile[1024];
 	XBPyThread *pyThread;
 }PyElem;
@@ -37,6 +35,9 @@ public:
 	bool	isRunning(int scriptId);
 	bool  isStopping(int scriptId);
 	bool  isDone(int scriptId);
+	void	setDone(int id);
+
+	//only should be called from thread which is running the script
 	void  stopScript(int scriptId);
 
 	// returns NULL if script doesn't exist or if script doesn't have a filename
@@ -51,15 +52,14 @@ public:
 	char*	getOutputLine(int nr);
 
   PyThreadState *getMainThreadState();
-	void setThreadNotification(bool bRegister);
-
+	
 	//Vector with list of threads used for running scripts
 	PyList vecPyList;
 	OutputBuffer *outputBuffer;
+	CRITICAL_SECTION	m_critSection;
 private:
-	int nextid;
-	PyThreadState *mainThreadState;
-	bool bNotificating;
+	int								nextid;
+	PyThreadState*		mainThreadState;
 };	
 
 #endif //XBPYTHON_H_
