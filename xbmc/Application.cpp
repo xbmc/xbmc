@@ -461,7 +461,10 @@ void CApplication::OnKey(CKey& key)
 		{
 			if (action.wID == ACTION_SHOW_GUI && m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION)
 			{
-				m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
+        if ( !m_gWindowManager.IsRouted())
+        {
+				  m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
+        }
 				return;
 			}
 		}
