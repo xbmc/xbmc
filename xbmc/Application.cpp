@@ -1423,7 +1423,7 @@ void CApplication::UpdateLCD()
 				{
 					CStdString strLine;
 					wstring wstrLine;
-					wstrLine=g_localizeStrings.Get(iWin - 10003);
+					wstrLine=g_localizeStrings.Get(iWin);
 					CUtil::Unicode2Ansi(wstrLine,strLine);
 					g_lcd->SetLine(0,strLine);
 
