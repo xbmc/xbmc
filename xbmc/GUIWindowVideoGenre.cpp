@@ -1,10 +1,12 @@
 // Todo: 
 //  - directory history
-//  - if user selects movie, then show directory...
+//  - if user selects movie, then do file stacking...
 //  - if movie does not exists when play movie is called then show dialog asking to insert the correct CD
 //  - show if movie has subs
-//  - show thumbnails for all files of a movie...
 //  - oninfo() -> just show imdb info...
+//  - sort by:
+//     - name
+//     - date (should sort on year)
 
 #include "guiwindowVideoGenre.h"
 #include "settings.h"
