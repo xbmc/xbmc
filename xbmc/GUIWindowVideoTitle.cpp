@@ -23,7 +23,7 @@
 #include "xbox/iosupport.h"
 #include "playlistplayer.h"
 #include "GUIThumbnailPanel.h"
-
+#include "GUIDialogYesNo.h"
 #define VIEW_AS_LIST           0
 #define VIEW_AS_ICONS          1
 #define VIEW_AS_LARGEICONS     2
@@ -163,7 +163,32 @@ CGUIWindowVideoTitle::~CGUIWindowVideoTitle()
 //****************************************************************************************************************************
 void CGUIWindowVideoTitle::OnAction(const CAction &action)
 {
-  	if (action.wID == ACTION_PARENT_DIR)
+  if (action.wID == ACTION_DELETE_ITEM)
+  {
+    int iItem=GetSelectedItem();
+    if (iItem < 0|| iItem >= (int)m_vecItems.size()) return;
+	  
+		CFileItem* pItem=m_vecItems[iItem];
+    if (pItem->m_bIsFolder) return;
+      
+    CGUIDialogYesNo* pDialog= (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    if (!pDialog) return;
+    pDialog->SetHeading(432);
+    pDialog->SetLine(0,433);
+    pDialog->SetLine(1,434);
+    pDialog->SetLine(2,L"");
+    pDialog->DoModal(GetID());
+    if (!pDialog->IsConfirmed()) return;
+		VECMOVIESFILES movies;
+    m_database.GetFiles(atol(pItem->m_strPath),movies);
+		if (movies.size() <=0) return;
+    m_database.DeleteMovie(movies[0]);
+    Update( m_strDirectory );
+    return;
+
+  }
+
+  if (action.wID == ACTION_PARENT_DIR)
 	{
 		GoParentFolder();
 		return;
