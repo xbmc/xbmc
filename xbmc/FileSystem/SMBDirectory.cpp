@@ -50,7 +50,9 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	    SMBC_FILE=8,
 	    SMBC_LINK=9,
 */
+	VECFILEITEMS vecCacheItems;
   g_directoryCache.ClearDirectory(strPath);
+
 	// note, samba uses UTF8 strings internal,
 	// that's why we have to convert strings and wstrings to UTF8.
 	char strUtfPath[1024];
@@ -168,20 +170,23 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 					if(!CUtil::HasSlashAtEnd(pItem->m_strPath)) pItem->m_strPath += '/';
 					pItem->m_bIsFolder = true;
 					FileTimeToSystemTime(&localTime, &pItem->m_stTime);  
-					items.push_back(pItem);
+					vecCacheItems.push_back(pItem);
+					items.push_back(new CFileItem(*pItem));
 				}
 				else
 				{
+					CFileItem *pItem = new CFileItem(wStrFile);
+					pItem->m_strPath = strRoot;
+					pItem->m_strPath += wStrFile;
+					pItem->m_bIsFolder = false;
+					pItem->m_dwSize = iSize;
+					FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+		        
+					vecCacheItems.push_back(pItem);
+
 					if (IsAllowed(wStrFile))
 					{
-						CFileItem *pItem = new CFileItem(wStrFile);
-						pItem->m_strPath = strRoot;
-						pItem->m_strPath += wStrFile;
-						pItem->m_bIsFolder = false;
-						pItem->m_dwSize = iSize;
-						FileTimeToSystemTime(&localTime, &pItem->m_stTime);
-		        
-						items.push_back(pItem);
+						items.push_back(new CFileItem(*pItem));
 					}
 				}
 			}
@@ -193,6 +198,6 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 		smbc_closedir(fd);
 		smb.Unlock();
 	}
-  g_directoryCache.SetDirectory(strPath,items);
+  g_directoryCache.SetDirectory(strPath,vecCacheItems);
 	return true;
 }
