@@ -1,6 +1,6 @@
 <!-- Finnish - language resource  -->
-<!-- Finnish Translation 2004-9-10 by Nanite1000 -->
-<!-- Based on CVS revision 2004-9-10 YYYY-MM-DD -->
+<!-- Finnish Translation 2004-10-07 by Nanite1000 -->
+<!-- Based on CVS revision 2004-10-07 YYYY-MM-DD -->
 <!-- For comments PM me in xboxmediacenter forum or IRC: nanite1k @ #xbmc on efnet-->
 <!--   or send email to: nanite1000 _at_ users _dot_ sourceforge _dot_ net  -->
 <!-- Kommentteja voi lähetellä xboxmediacentterin foorumin kautta -->
@@ -1982,7 +1982,82 @@
     <id>734</id>
     <value>Ei salasanaa</value>
   </string>
-
+  <string>
+    <id>735</id>
+    <value>Merkistö:</value>
+  </string>	
+  <string>
+    <id>736</id>
+    <value>Tyyli:</value>
+  </string>	
+  <string>
+    <id>737</id>
+    <value>Väri:</value>
+  </string>
+  <string>
+    <id>738</id>
+    <value>Normaali</value>
+  </string>	
+  <string>
+    <id>739</id>
+    <value>Lihavoitu</value>
+  </string>	
+  <string>
+    <id>740</id>
+    <value>Kursivoitu</value>
+  </string>	
+  <string>
+    <id>741</id>
+    <value>Lihavoitu Kursivoitu</value>
+  </string>	
+  <string>
+    <id>742</id>
+    <value>Valkoinen</value>
+  </string>	
+  <string>
+    <id>743</id>
+    <value>Keltainen</value>
+  </string>
+  <string>
+    <id>744</id>
+    <value>Tiedostot</value>
+  </string>		
+  <string>
+    <id>745</id>
+    <value>Tälle näkymälle ei ole haettu median tietoja</value>
+  </string>		
+  <string>
+    <id>746</id>
+    <value>Vaihda Tiedostot-näkymään</value>
+  </string>
+  <string>
+    <id>747</id>
+    <value>Muistia ei tarpeeksi kuvan lataamiseen</value>
+  </string>
+  <string>
+    <id>748</id>
+    <value>Muokkaa Polkua</value>
+  </string>
+  <string>
+    <id>749</id>
+    <value>Lisää Asema</value>
+  </string>
+  <string>
+    <id>750</id>
+    <value>Oletko varma?</value>
+  </string>
+  <string>
+    <id>751</id>
+    <value>Poistetaan Asema</value>
+  </string>
+  <string>
+    <id>752</id>
+    <value>Muokkaa Aseman Polku</value>
+  </string>
+  <string>
+    <id>753</id>
+    <value>Muokkaa Aseman Nimi</value>
+  </string>
   <string>
     <id>998</id>
     <value>XLink Kai</value>
@@ -2057,8 +2132,8 @@
 <string><id>13300</id><value>Tuuletin:</value></string>
 <string><id>13301</id><value>Automaattinen lämpötilan säätö</value></string>
 <string><id>13302</id><value>Tuulettimen nopeus</value></string>
-<string><id>13303</id><value>Skinin merkistö:</value></string>
-<string><id>13304</id><value>Käänteinen merkistö:</value></string>
+<string><id>13303</id><value>Skinin fontti:</value></string>
+<string><id>13304</id><value>Kaksisuuntainen merkistö käytössä</value></string>
 <string><id>13305</id><value>RSS Uutispalvelu käytössä</value></string>
 
 </strings>
