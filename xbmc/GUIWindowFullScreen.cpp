@@ -21,6 +21,7 @@ void CGUIWindowFullScreen::OnKey(const CKey& key)
 		{
 			g_stSettings.m_bZoom=false;
 			g_stSettings.m_bStretch=true;
+			g_settings.Save();
 			return;
 		}
 		// stretch->normal
@@ -28,11 +29,13 @@ void CGUIWindowFullScreen::OnKey(const CKey& key)
 		{
 			g_stSettings.m_bZoom=false;
 			g_stSettings.m_bStretch=false;
+			g_settings.Save();
 			return;
 		}
 		// normal->zoom
 		g_stSettings.m_bZoom=true;
 		g_stSettings.m_bStretch=false;
+		g_settings.Save();
 		return;
 
 	}

@@ -285,6 +285,7 @@ void CApplication::Render()
 		g_graphicsContext.EnablePreviewWindow(false);
 	}
 
+	g_graphicsContext.Lock();
 	// draw GUI (always enable soften filter when displaying the UI)
   m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
 	m_pd3dDevice->SetSoftDisplayFilter(false);
@@ -315,8 +316,11 @@ void CApplication::Render()
 
   }
   // Present the backbuffer contents to the display
-  m_pd3dDevice->BlockUntilVerticalBlank();      
-  m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+
+	m_pd3dDevice->BlockUntilVerticalBlank();      
+	m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+	g_graphicsContext.Unlock();
+		
 }
 
 void CApplication::OnKey(CKey& key)
@@ -326,8 +330,9 @@ void CApplication::OnKey(CKey& key)
 		if ( key.GetButtonCode() == KEY_BUTTON_X  || key.GetButtonCode() == KEY_REMOTE_MENU)
 		{
 			// switch between fullscreen & normal video screen
+			g_graphicsContext.Lock();
 			g_graphicsContext.SetFullScreenVideo( !g_graphicsContext.IsFullScreenVideo() );
-			ResetVideoWindow();
+			g_graphicsContext.Unlock();
 			return;
 		}
 		if (g_graphicsContext.IsFullScreenVideo())
@@ -723,4 +728,9 @@ void	CApplication::ResetVideoWindow()
 {
 	if (!m_pPlayer) return;
 	m_pPlayer->VideoWindowChanged();
+}
+
+void CApplication::GetD3DParameters(D3DPRESENT_PARAMETERS& params)
+{
+	memcpy(&params, &m_d3dpp, sizeof(params));
 }
