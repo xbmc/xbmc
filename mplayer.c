@@ -4627,18 +4627,6 @@ void mplayer_ToFFRW(int iSpeed)
   m_iPlaySpeed=iSpeed;
     if (iSpeed ==1)
     {
-        int ipercentage;
-        if(softsleep)
-		{
-			softsleep=0;
-			printf("Softsleep disabled");
-		}
-		else
-		{
-			softsleep=1;
-			printf("Softsleep enabled");
-		}
-
         frame_dropping=1;
         printf("FFRW:normal play\n");
         playback_speed = orgplayback_speed;
@@ -4653,7 +4641,6 @@ void mplayer_ToFFRW(int iSpeed)
     if (iSpeed >=1 && iSpeed <= 4)
     {
         printf("FF1:play FF:%ix\n",iSpeed);
-        //softsleep=0;
         frame_dropping=1;
         playback_speed = orgplayback_speed*( (float)iSpeed );
         if (mplayer_HasVideo())
@@ -4666,7 +4653,6 @@ void mplayer_ToFFRW(int iSpeed)
     else if (iSpeed >4)
     {
         printf("FF:play FF:%ix\n",iSpeed);
-        //softsleep=0;
         frame_dropping=0;
         playback_speed = orgplayback_speed;
         if (mplayer_HasVideo())
@@ -4697,7 +4683,6 @@ void mplayer_ToFFRW(int iSpeed)
     else if (iSpeed < 0)
     {
         printf("RW:play RW:%ix\n",iSpeed);
-        //softsleep=0;
         frame_dropping=0;
         switch (iSpeed)
         {
@@ -4846,6 +4831,13 @@ int mplayer_getSubtitleStreamInfo(int iStream, stream_language_t* stream_info)
 			stream_info->type=0;
 			stream_info->channels=0;
 		}
+		if(sub->type == XBMC_SUBTYPE_VOBSUB)
+		{
+			stream_info->language=sub->name[1]|(sub->name[0]<<8);
+			stream_info->type=0;
+			stream_info->channels=0;
+		}
+
 	}
 	return sub->id;
 
