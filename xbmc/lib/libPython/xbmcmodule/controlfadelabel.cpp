@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "..\python.h"
-#include "..\..\..\application.h"
 #include "GuiLabelControl.h"
-#include <vector>
 #include "control.h"
 #include "pyutil.h"
 

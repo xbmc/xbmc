@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\..\..\application.h"
+#include "..\..\..\applicationmessenger.h"
 #include "..\..\..\playlistplayer.h"
 #include "..\..\..\util.h"
 #include "player.h"
