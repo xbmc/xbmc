@@ -29,17 +29,8 @@ bool CGUIDialogMusicScan::OnMessage(CGUIMessage& message)
 			m_ScanState=PREPARING;
 
 			m_strCurrentDir.Empty();
-			m_strScannedDir.Empty();
 
-			CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),CONTROL_LABELSTATUS);
-			msg.SetLabel("");
-			OnMessage(msg);
-
-			CGUIMessage msg1(GUI_MSG_LABEL_SET,GetID(),CONTROL_LABELDIRECTORY);
-			msg1.SetLabel("");
-			OnMessage(msg1);
-
-			m_musicInfoScanner.Start(m_strStartDir, m_bUpdateAll);
+			UpdateState();
 			return true;
 		}
 		break;
@@ -72,10 +63,9 @@ void CGUIDialogMusicScan::OnStateChanged(SCAN_STATE state)
 
 void CGUIDialogMusicScan::StartScanning(const CStdString& strDirectory, bool bUpdateAll)
 {
-	m_strStartDir=strDirectory;
-	m_bUpdateAll=bUpdateAll;
-
 	Show(m_gWindowManager.GetActiveWindow());
+
+	m_musicInfoScanner.Start(strDirectory, bUpdateAll);
 }
 
 void CGUIDialogMusicScan::StopScanning()
@@ -88,9 +78,9 @@ void CGUIDialogMusicScan::StopScanning()
 
 void CGUIDialogMusicScan::OnDirectoryScanned(const CStdString& strDirectory)
 {
-	CSingleLock lock(m_critical);
-
-	m_strScannedDir=strDirectory;
+	CGUIMessage msg(GUI_MSG_DIRECTORY_SCANNED, 0, 0, 0);
+	msg.SetStringParam(strDirectory);
+	m_gWindowManager.SendThreadMessage(msg);
 }
 
 void CGUIDialogMusicScan::OnFinished()
@@ -107,17 +97,7 @@ void CGUIDialogMusicScan::UpdateState()
 	{
 		CSingleLock lock(m_critical);
 
-		CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),CONTROL_LABELSTATUS);
-		msg.SetLabel(g_localizeStrings.Get(GetStateString()));
-		OnMessage(msg);
-
-		if (!m_strScannedDir.IsEmpty())
-		{
-			CGUIMessage msg(GUI_MSG_DIRECTORY_SCANNED, 0, 0, 0);
-			msg.SetStringParam(m_strScannedDir);
-			m_gWindowManager.SendThreadMessage(msg);
-			m_strScannedDir.Empty();
-		}
+		SET_CONTROL_LABEL(CONTROL_LABELSTATUS, GetStateString());
 
 		if (m_ScanState==READING_MUSIC_INFO)
 		{
@@ -125,15 +105,11 @@ void CGUIDialogMusicScan::UpdateState()
 			CStdString strStrippedPath;
 			url.GetURLWithoutUserDetails(strStrippedPath);
 
-			CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),CONTROL_LABELDIRECTORY);
-			msg.SetLabel(strStrippedPath);
-			OnMessage(msg);
+			SET_CONTROL_LABEL(CONTROL_LABELDIRECTORY, strStrippedPath);
 		}
 		else
 		{
-			CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),CONTROL_LABELDIRECTORY);
-			msg.SetLabel("");
-			OnMessage(msg);
+			SET_CONTROL_LABEL(CONTROL_LABELDIRECTORY, "");
 		}
 	}
 }
