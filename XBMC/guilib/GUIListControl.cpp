@@ -453,6 +453,12 @@ void CGUIListControl::OnDown()
 			{
 				m_iCursorY++;
 			}
+			else
+			{
+				// move first item in list
+				CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), GetID(), 0); 
+				OnMessage(msg);
+			}
     }
     else 
     {
