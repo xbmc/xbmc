@@ -19,6 +19,7 @@
 #include "guiVideoControl.h"
 #include "GUIProgressControl.h"
 #include "GUISliderControl.h"
+#include "GUISelectButtonControl.h"
 #include "../xbmc/application.h"
 #include "../xbmc/util.h"
 
@@ -121,6 +122,10 @@ bool CGUIWindow::LoadReference(const CStdString& strFileName, VECREFERENCECONTOL
 			else if (!strcmp(it->m_szType,"thumbnailpanel"))
 			{
 				stControl.m_pControl = new CGUIThumbnailPanel(*((CGUIThumbnailPanel*)it->m_pControl));
+			}
+			else if (!strcmp(it->m_szType,"selectbutton"))
+			{
+				stControl.m_pControl = new CGUISelectButtonControl(*((CGUISelectButtonControl*)it->m_pControl));
 			}
 			controls.push_back(stControl);
 		}
@@ -227,6 +232,10 @@ bool CGUIWindow::LoadReference(const CStdString& strFileName, VECREFERENCECONTOL
 		else if (!strcmp(it->m_szType,"thumbnailpanel"))
 		{
 			stControl.m_pControl = new CGUIThumbnailPanel(*((CGUIThumbnailPanel*)it->m_pControl));
+		}
+		else if (!strcmp(it->m_szType,"selectbutton"))
+		{
+			stControl.m_pControl = new CGUISelectButtonControl(*((CGUISelectButtonControl*)it->m_pControl));
 		}
 		ControlsCache.push_back(stControl);
 	}
