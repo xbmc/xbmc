@@ -99,7 +99,7 @@ int first=1;
 desc=malloc(sizeof(font_desc_t));if(!desc) return NULL;
 memset(desc,0,sizeof(font_desc_t));
 
-f=fopen(fname,"rt");if(!f){ printf("font: can't open file: %s\n",fname); return NULL;}
+f=fopen(fname,"rt");if(!f){ printf("font: can't open file: %s\n",fname);if(desc) free(desc);return NULL;}
 
 i = strlen (fname) - 9;
 if ((dn = malloc(i+1))){
