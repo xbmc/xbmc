@@ -911,7 +911,7 @@ int CGUIWindow::GetFocusControl()
 
 void CGUIWindow::SelectPreviousControl()
 {
-  int i=GetFocusControl()+1;
+  int i=GetFocusControl();
   while (1)
   {
     if ( i < 0 || i >= (int)m_vecControls.size() )
