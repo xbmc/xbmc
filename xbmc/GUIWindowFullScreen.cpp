@@ -385,12 +385,17 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   {
     if (g_application.m_pPlayer->IsPaused() )return true;
   }
+  
+  if (g_application.GetPlaySpeed() != 1) 
+  {
+		m_bShowCurrentTime = true;
+    m_dwTimeCodeTimeout=timeGetTime();
+  }
   if (m_bShowTime) return true;
   if (m_bShowStatus) return true;
   if (m_bShowInfo) return true;
   if (m_bShowCurrentTime) return true;
   if (m_bOSDVisible) return true;
-  if (g_application.GetPlaySpeed() != 1) return true;
   if (m_bLastRender)
   {
     m_bLastRender=false;
@@ -405,6 +410,12 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
 
 void CGUIWindowFullScreen::RenderFullScreen()
 {
+  if (g_application.GetPlaySpeed() != 1) 
+  {
+		m_bShowCurrentTime = true;
+    m_dwTimeCodeTimeout=timeGetTime();
+  }
+
   m_bLastRender=true;
 	m_fFrameCounter+=1.0f;
 	FLOAT fTimeSpan=(float)(timeGetTime()-m_dwFPSTime);
@@ -529,7 +540,6 @@ void CGUIWindowFullScreen::RenderFullScreen()
 		if ( (timeGetTime() - m_dwTimeCodeTimeout) >=2500)
 		{
 			m_bShowTime=false;
-      m_bShowCurrentTime = false;
 			m_iTimeCodePosition = 0;
 			return;
 		}
