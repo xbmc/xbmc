@@ -217,6 +217,7 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 			}
 		}
 
+		tag.SetURL(strFileName);
 		tag.SetLoaded(true);
 		return true;
 	}
