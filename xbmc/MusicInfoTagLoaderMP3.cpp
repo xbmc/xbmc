@@ -171,10 +171,6 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
 						CLog::Log("Tag loader mp3: Unable to create album art for %s", tag.GetURL().c_str());
 					}
 				}
-				else
-				{
-					CLog::Log("Tag loader mp3: Albumart is found in file %s, but no picture data", tag.GetURL().c_str());
-				}
 			}
 		}
 		else
