@@ -756,6 +756,7 @@ void CGUIWindowSlideShow::Render()
 
 	int iSlides= m_vecSlides.size();
 	if (!iSlides) return;
+  g_graphicsContext.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
 
 	// Create our background loader if necessary
 	if (!m_pBackgroundLoader)
