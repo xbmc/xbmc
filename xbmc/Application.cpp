@@ -1240,19 +1240,6 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 		m_guiMusicOverlay.SetCurrentFile(m_strCurrentFile);
 		m_guiWindowVideoOverlay.SetCurrentFile(m_strCurrentFile);
 
-		if ( CUtil::IsHD(m_strCurrentFile) )
-		{
-			m_bSpinDown=false;
-		}
-    else
-    {
-      if (g_stSettings.m_iHDSpinDownTime!=0)
-      {
-        m_bSpinDown=true;
-        CIoSupport helper;
-			  helper.SpindownHarddisk();
-      }
-    }
 	
 	  m_dwIdleTime=timeGetTime();
 
@@ -1266,6 +1253,19 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
         g_TextureManager.Flush();
 		    g_graphicsContext.SetFullScreenVideo(true);
 		    m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+      }
+    }
+    
+		if ( CUtil::IsHD(m_strCurrentFile) )
+		{
+			m_bSpinDown=false;
+		}
+    else
+    {
+      if (g_stSettings.m_iHDSpinDownTime!=0)
+      {
+        m_bSpinDown=true;
+        m_dwSpinDownTime=0;
       }
     }
   }
