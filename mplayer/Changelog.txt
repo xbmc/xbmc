@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 14-01-2005 changed: improved FF/RW in video's, should display 2fps during 8x-32x modes. 
+                        still some problems when decoding using ffmpeg, ff/rw work, but no picture.
+  - 14-01-2005 fixed: FF/RW in mp3/wma
   - 02-01-2005 new: initial pre6 import, some bugs still remain
   - 25-12-2004 changed: dvd subtitles sould now be allocated nomatter settings in mplayer.conf
   - 25-12-2004 fixed: srt subtitles wouldn't auto load properly

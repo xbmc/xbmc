@@ -1172,7 +1172,7 @@ int mplayer_init(int argc, char* argv[])
 
     seek_to_sec=NULL;
     seek_to_byte=0;
-    step_sec=1;
+    step_sec=0;
     loop_times=-1;
     loop_seek=0;
     autosync=0;
@@ -2727,7 +2727,7 @@ while(sh_audio){
 if(!sh_video) {
   // handle audio-only case:
 #ifdef _XBOX
-  aoldpts= 10 * sh_audio->delay-audio_out->get_delay();
+  aoldpts= 10 * (sh_audio->delay - audio_out->get_delay());
 #else
   if(!quiet) {
     float a_pos = sh_audio->delay - audio_out->get_delay() * playback_speed;
@@ -3160,15 +3160,20 @@ if(auto_quality>0){
 #endif
   }
 
-// handle -sstep
-#ifdef _XBOX //Needed otherwise we allways start up in fastforward for some reason.
-if(step_sec != 1) {
+#ifdef _XBOX
+  //We use step_sec in our FF/RW code
+  if(step_sec)
+  {
+    osd_function = step_sec > 0 ? OSD_FFW : OSD_REW;
+    rel_seek_secs+=step_sec;
+  }
 #else
+  // handle -sstep
 if(step_sec>0) {
-#endif
 	osd_function=OSD_FFW;
 	rel_seek_secs+=step_sec;
 }
+#endif
 
 #ifdef USE_DVDNAV
 if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
@@ -4909,7 +4914,7 @@ __int64 mplayer_getCurrentTime()
 {
   if (sh_video ||d_video)
   {
-    if (step_sec != 1.0f ||  playback_speed != orgplayback_speed)
+    if (step_sec != 0 ||  playback_speed != orgplayback_speed)
     {
       return sh_video ? sh_video->pts : d_video->pts;;
     }
@@ -4939,90 +4944,78 @@ int mplayer_getTime()
 void mplayer_ToFFRW(int iSpeed)
 {
   m_iPlaySpeed=iSpeed;
-    if (iSpeed ==1)
+  
+  if(!sh_video) 
+  {
+    if(iSpeed == 1)
     {
-        frame_dropping=1;
-        printf("FFRW:normal play\n");
-        playback_speed = orgplayback_speed;
-        step_sec       = 1.0f;
-        rel_seek_secs  = 0.1;
-        abs_seek_pos=0;
-        if (mplayer_HasVideo())
-            osd_function=OSD_PLAY;
-        return;
+      playback_speed = orgplayback_speed;
+      abs_seek_pos=1; //Absolute seek since something goes wrong when ff/rw
+      rel_seek_secs = aoldpts/10+1; //for some reason pts is multiplied by 10, and somewhat to small
+      
+      //Dump audio buffer immidiatly      
+      audio_out->reset();
     }
+    else
+    {
+      playback_speed = orgplayback_speed*(float)iSpeed;
+    }
+    return;
+  }
 
-    if (iSpeed >=1 && iSpeed <= 4)
-    {
-        printf("FF1:play FF:%ix\n",iSpeed);
-        frame_dropping=1;
-        playback_speed = orgplayback_speed*( (float)iSpeed );
-        if (mplayer_HasVideo())
-            osd_function   = OSD_FFW;
-        abs_seek_pos   = 0;
-        step_sec       = 1.0f;
-        printf("FF: speed:%i playspeed:%03.3f", iSpeed,playback_speed);
-        return;
-    }
-    else if (iSpeed >4)
-    {
-        printf("FF:play FF:%ix\n",iSpeed);
-        frame_dropping=0;
-        playback_speed = orgplayback_speed;
-        if (mplayer_HasVideo())
-            osd_function   = OSD_FFW;
-        switch (iSpeed)
-        {
-        case 4:
-            iSpeed=2;
-            break;
-        case 8:
-            iSpeed=4;
-            break;
-        case 16:
-            iSpeed=8;
-            break;
-        case 32:
-            iSpeed=12;
-            break;
-        case 64:
-            iSpeed=16;
-            break;
-        }
-        abs_seek_pos   = 0;
-        step_sec       = ((float)iSpeed);
-        printf("FF: speed:%i playspeed:%03.3f", iSpeed,playback_speed);
-        return;
-    }
-    else if (iSpeed < 0)
-    {
-        printf("RW:play RW:%ix\n",iSpeed);
-        frame_dropping=0;
-        switch (iSpeed)
-        {
-        case -2:
-            iSpeed=-2;
-            break;
-        case -4:
-            iSpeed=-4;
-            break;
-        case -8:
-            iSpeed=-8;
-            break;
-        case -16:
-            iSpeed=-12;
-            break;
-        case -32:
-            iSpeed=-16;
-            break;
-        }
-        abs_seek_pos   = 0;
-        if (mplayer_HasVideo())
-            osd_function   = OSD_REW;
-        step_sec = ((float)iSpeed);
-        playback_speed = orgplayback_speed;
-        return;
-    }
+  //For video
+  if (iSpeed ==1)
+  {
+      frame_dropping=1;
+      playback_speed = orgplayback_speed;
+      step_sec       = 0;
+      rel_seek_secs  = 0.1;  //to resync audio/video
+      abs_seek_pos   = 0;
+      if(sh_video)
+        osd_function=OSD_PLAY;
+
+      printf("FFRW:normal play\n");
+
+      //Dump audio buffer immidiatly      
+      audio_out->reset();
+
+      return;
+  }
+
+  if (iSpeed >=1 && iSpeed <= 4) //Can be handled by normal speedup code
+  {
+      frame_dropping=1;
+      playback_speed = orgplayback_speed*( (float)iSpeed );
+
+      abs_seek_pos   = 0;
+      rel_seek_secs  = 0; 
+      step_sec       = 0;
+      osd_function   = OSD_FFW;
+
+      printf("FF: speed:%i playspeed:%03.3f", iSpeed,playback_speed);
+      return;
+  }
+  else if (iSpeed >4)
+  {
+      printf("FF:play FF:%ix\n",iSpeed);
+      frame_dropping=0;
+      abs_seek_pos   = 0;
+      osd_function   = OSD_FFW;
+      step_sec       = iSpeed/2; //Start skipping nummer of seconds ahead each time.
+      playback_speed = 2/sh_video->fps; //adjust speed to show 2 frames per second
+
+      printf("FF: step_sec:%i playspeed:%03.3f", iSpeed,playback_speed);
+      return;
+  }
+  else if (iSpeed < 0)
+  {
+      printf("RW:play RW:%ix\n",iSpeed);
+      frame_dropping=0;
+      abs_seek_pos   = 0;
+      step_sec       = iSpeed; //Start skipping
+      playback_speed = 1/sh_video->fps; //adjust speed accordingly
+      return;
+  }
 }
 
 void mplayer_showosd(int bonoff)
