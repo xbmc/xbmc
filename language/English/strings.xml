@@ -1266,4 +1266,24 @@
     <id>421</id>
     <value>My Videos/Title</value>
   </string> 
+  <string>
+    <id>422</id>
+    <value>Delete albuminfo</value>
+  </string> 
+  <string>
+    <id>423</id>
+    <value>Delete CDDB info</value>
+  </string> 
+  <string>
+    <id>424</id>
+    <value>Select</value>
+  </string> 
+  <string>
+    <id>425</id>
+    <value>No albuminfo found.</value>
+  </string> 
+  <string>
+    <id>426</id>
+    <value>No CDDB info found.</value>
+  </string> 
 </strings>
