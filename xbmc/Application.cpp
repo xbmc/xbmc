@@ -1398,6 +1398,7 @@ const CStdString& CApplication::CurrentFile()
 void CApplication::SetPlaySpeed(int iSpeed)
 {
   if (!IsPlayingAudio() && !IsPlayingVideo()) return;
+  if (m_iPlaySpeed==iSpeed) return;
   m_iPlaySpeed=iSpeed;
 
   __int64 iTime;
