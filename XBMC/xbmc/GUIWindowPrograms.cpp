@@ -41,8 +41,9 @@ CGUIWindowPrograms::CGUIWindowPrograms(void)
         :CGUIWindow(0)
 {
     m_strDirectory="?";
-		m_iLastControl=-1;
+	m_iLastControl=-1;
 }
+
 
 CGUIWindowPrograms::~CGUIWindowPrograms(void)
 {}
@@ -70,6 +71,8 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
                 m_strDirectory=g_stSettings.m_szDefaultPrograms;
 				m_iDepth=1;
 				m_strBookmarkName="default";
+				if (g_stSettings.m_bMyProgramsNoShortcuts)		// let's remove shortcuts from vector
+					g_settings.m_vecMyProgramsBookmarks.erase(g_settings.m_vecMyProgramsBookmarks.begin());
 			}
 
             // make controls 100-110 invisible...
@@ -78,14 +81,10 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 	                SET_CONTROL_HIDDEN(GetID(), i);
             }
 
-
-
            
-			if (g_stSettings.m_bMyProgramsNoShortcuts)				// let's remove shortcuts from vector
-			{
-				g_settings.m_vecMyProgramsBookmarks.erase(g_settings.m_vecMyProgramsBookmarks.begin());
+			if (g_stSettings.m_bMyProgramsNoShortcuts)				// let's hide Scan button
 				SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNSCAN);
-			}
+			
 
 			int iStartID=100;
 
