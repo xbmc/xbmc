@@ -35,7 +35,8 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 		CShare& share=m_vecShares->at(i);
 		if ( share.strPath == strPath.Left( share.strPath.size() )  ||
 			   share.strPath == strPath2.Left( share.strPath.size() )  ||
-				 share.strPath == strPath3.Left( share.strPath.size() ) )
+				 share.strPath == strPath3.Left( share.strPath.size() ) ||
+         strPath.Left(2)=="Q:" || strPath.Left(2)=="q:")
 		{
 #if 0
 			//	Check if cd is detected already before
