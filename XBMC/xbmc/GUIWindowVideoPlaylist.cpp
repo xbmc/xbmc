@@ -175,6 +175,12 @@ void CGUIWindowVideoPlaylist::OnAction(const CAction &action)
 		return;
 	}
 
+  if (action.wID==ACTION_PREVIOUS_MENU)
+  {
+		m_gWindowManager.ActivateWindow(WINDOW_HOME);
+		return;
+  }
+
 	if (action.wID==ACTION_SHOW_PLAYLIST)
 	{
     OutputDebugString("leave videplaylist!\n");
