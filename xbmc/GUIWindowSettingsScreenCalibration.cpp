@@ -383,6 +383,7 @@ void CGUIWindowSettingsScreenCalibration::Render()
 	SET_CONTROL_LABEL(GetID(), CONTROL_LABEL_ROW1,  strText);
 
 	CGUIWindow::Render();
+
 	// render the subtitles
 	if (g_application.m_pPlayer)
 	{
