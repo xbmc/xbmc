@@ -5,44 +5,16 @@
 #include "../util.h"
 #include "../sectionLoader.h"
 
-static char szUserName[256];
-static char szPassWd[256];
 
 CSMBDirectory::CSMBDirectory(void)
 {
-	CSectionLoader::Load("LIBSMB");
+	
 } 
 
 CSMBDirectory::~CSMBDirectory(void)
 {
-	CSectionLoader::Unload("LIBSMB");
+	
 }
-
-
-class MyCallback : public SmbAnswerCallback
-{
-protected:
-	// Warning: don't use a fixed size buffer in a real application.
-	// This is a security hazard.
-	char buf[200];
-public:
-	char *getAnswer(int type, const char *optmessage) {
-		switch (type) {
-			case ANSWER_USER_NAME:
-				strcpy(buf, szUserName);
-				break;
-			case ANSWER_USER_PASSWORD:
-//				cout<<"Password for user "<<optmessage<<": ";
-//				cin>>buf;
-				strcpy(buf, szPassWd);
-				break;
-			case ANSWER_SERVICE_PASSWORD:
-				strcpy(buf, szPassWd);
-				break;
-		}
-		return buf;
-	}
-} cb;
 
 
 bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
@@ -55,11 +27,14 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 		strRoot+="/";
 	{
 
-			SMB smb ;
+			SMB* psmb =smbFile.GetSMB();
+			smbFile.Lock();
 			CStdString strPassword=url.GetPassWord();
 			CStdString strUserName=url.GetUserName();
 			CStdString strDirectory=url.GetFileName();
 
+			char szUserName[256];
+			char szPassWd[256];
 			if (strUserName.size() )
 				strcpy(szUserName, strUserName.c_str());
 			else
@@ -70,19 +45,19 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 			else
 				strcpy(szPassWd, "");
 
+//			psmb->setNBNSAddress(g_stSettings.m_strNameServer);
+	//		psmb->setPasswordCallback(&cb);
+			smbFile.SetLogin(szUserName,szPassWd);
 			SMBdirent* dirEnt;
-			smb.setNBNSAddress(g_stSettings.m_strNameServer);
-			smb.setPasswordCallback(&cb);
-
 			CStdString strFile = strPath.Right( strPath.size() -  strlen("smb://") );
-			int fd = smb.opendir( strFile.c_str()  );
+			int fd = psmb->opendir( strFile.c_str()  );
 			if (fd < 0) 
 			{
 				bResult=false;
 			}
 			else
 			{
-				while ((dirEnt = smb.readdir(fd))) 
+				while ((dirEnt = psmb->readdir(fd))) 
 				{
 	    		
 	    		
@@ -126,8 +101,10 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 
 			    
 				}
-				smb.closedir(fd);
+				psmb->closedir(fd);
+
   		}
+			smbFile.Unlock();
 	}
 	return bResult;
 }

@@ -15,6 +15,7 @@ int XFILE::CFileSMB::m_iReferences=0;
 
 static char szPassWd[128];
 static char szUserName[128];
+static CRITICAL_SECTION	m_critSection;
 
 class MyFileCallback : public SmbAnswerCallback
 {
@@ -45,8 +46,17 @@ CFileSMB::CFileSMB()
 {
 	if (!m_iReferences)
 	{
+		InitializeCriticalSection(&m_critSection);
 		CSectionLoader::Load("LIBSMB");
-		m_pSMB=NULL;
+		if (!m_pSMB)
+		{
+			m_pSMB = new SMB();
+		}
+		if( g_stSettings.m_strNameServer[0] != 0x00 )
+			m_pSMB->setNBNSAddress(g_stSettings.m_strNameServer);
+
+		m_pSMB->setPasswordCallback(&cb);
+
 	}
 	m_iReferences++;
 	m_fd = -1;
@@ -62,6 +72,7 @@ CFileSMB::~CFileSMB()
 			delete m_pSMB;
 		m_pSMB=NULL;
 		CSectionLoader::Unload("LIBSMB");
+		DeleteCriticalSection(&m_critSection);
 	}
 }
 
@@ -71,7 +82,9 @@ offset_t CFileSMB::GetPosition()
 {
 	if (!m_pSMB) return 0;
 	if (m_fd <0) return 0;
+	::EnterCriticalSection(&m_critSection );
 	int pos = m_pSMB->lseek(m_fd, 0, SEEK_CUR);
+	::LeaveCriticalSection(&m_critSection );
 	if( pos < 0 )
 		return 0;
 	return (offset_t)pos;
@@ -87,15 +100,7 @@ offset_t CFileSMB::GetLength()
 bool CFileSMB::Open(const char* strUserName, const char* strPassword,const char *strHostName, const char *strFileName,int iport, bool bBinary)
 {
 	Close();
-	
-	if (!m_pSMB)
-	{
-		m_pSMB = new SMB();
-	}
-	if( g_stSettings.m_strNameServer[0] != 0x00 )
-		m_pSMB->setNBNSAddress(g_stSettings.m_strNameServer);
-
-	m_pSMB->setPasswordCallback(&cb);
+	::EnterCriticalSection(&m_critSection );
 
 	// have to convert dos line termination ourselves.
 	char szFileName[1024];
@@ -124,7 +129,7 @@ bool CFileSMB::Open(const char* strUserName, const char* strPassword,const char 
 
 	if( m_fd < 0 )
 	{
-		
+		::LeaveCriticalSection(&m_critSection );	
 		return false;
 	}
 	INT64 ret = m_pSMB->lseek(m_fd, 0, SEEK_END);
@@ -133,6 +138,7 @@ bool CFileSMB::Open(const char* strUserName, const char* strPassword,const char 
 	{
 		m_pSMB->close(m_fd);
 		m_fd = -1;
+		::LeaveCriticalSection(&m_critSection );	
 		return false;
 	}
 
@@ -142,9 +148,11 @@ bool CFileSMB::Open(const char* strUserName, const char* strPassword,const char 
 	{
 		m_pSMB->close(m_fd);
 		m_fd = -1;
+		::LeaveCriticalSection(&m_critSection );	
 		return false;
 	}
 	// We've successfully opened the file!
+	::LeaveCriticalSection(&m_critSection );	
 	return true;
 }
 
@@ -152,7 +160,9 @@ unsigned int CFileSMB::Read(void *lpBuf, offset_t uiBufSize)
 {
 	if (!m_pSMB) return 0;
 	if (m_fd <0) return 0;
+	::EnterCriticalSection(&m_critSection );	
 	int bytesRead = m_pSMB->read(m_fd, lpBuf, (int)uiBufSize);
+	::LeaveCriticalSection(&m_critSection );	
 	if( bytesRead <= 0 )
 	{
 		char szTmp[128];
@@ -170,7 +180,9 @@ bool CFileSMB::ReadString(char *szLine, int iLineLength)
 	if (m_fd <0) return false;
 	offset_t iFilePos=GetPosition();
 
+	::EnterCriticalSection(&m_critSection );	
 	int iBytesRead=m_pSMB->read(m_fd, (unsigned char*)szLine, iLineLength);
+	::LeaveCriticalSection(&m_critSection );	
 	if (iBytesRead <= 0)
 	{
 		return false;
@@ -227,7 +239,9 @@ offset_t CFileSMB::Seek(offset_t iFilePosition, int iWhence)
 	if (!m_pSMB) return 0;
 	if (m_fd <0) return 0;
 
+	::EnterCriticalSection(&m_critSection );	
 	INT64 pos = m_pSMB->lseek(m_fd, (int)iFilePosition, iWhence);
+	::LeaveCriticalSection(&m_critSection );	
 
 	if( pos < 0 )
 
@@ -243,8 +257,30 @@ void CFileSMB::Close()
 {
 	if (m_fd>=0)
 	{
+		::EnterCriticalSection(&m_critSection );	
 		m_pSMB->close(m_fd);
+		::LeaveCriticalSection(&m_critSection );	
 	}
 	m_fd = -1;
 }
 
+
+void CFileSMB::Lock()
+{
+	::EnterCriticalSection(&m_critSection );	
+}
+
+void CFileSMB::Unlock()
+{
+	::LeaveCriticalSection(&m_critSection );	
+}
+
+SMB* CFileSMB::GetSMB()
+{
+	return m_pSMB;
+}
+void CFileSMB::SetLogin(const char* strLogin, const char* strPassword)
+{
+	strcpy(szUserName,strLogin);
+	strcpy(szPassWd,strPassword);
+}
