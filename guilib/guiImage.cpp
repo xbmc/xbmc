@@ -93,7 +93,7 @@ void CGUIImage::Render()
 		return ;
 	
 	Process();
-  UpdateVB();
+  if (m_bInvalidated) UpdateVB();
 
 	// Set state to render the image
 #ifdef ALLOW_TEXTURE_COMPRESSION
@@ -110,6 +110,7 @@ void CGUIImage::Render()
 	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
 	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSU,  D3DTADDRESS_CLAMP );
 	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSV,  D3DTADDRESS_CLAMP );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAKILL, D3DTALPHAKILL_ENABLE );
 
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ZENABLE,      FALSE );
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGENABLE,    FALSE );
@@ -127,9 +128,11 @@ void CGUIImage::Render()
 
 	// unset the texture and palette or the texture caching crashes because the runtime still has a reference
 	g_graphicsContext.Get3DDevice()->SetTexture( 0, NULL);
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAKILL, D3DTALPHAKILL_DISABLE );
 #ifdef ALLOW_TEXTURE_COMPRESSION
 	g_graphicsContext.Get3DDevice()->SetPalette( 0, NULL);
 #endif
+  CGUIControl::Render();
 }
 
 void CGUIImage::OnAction(const CAction &action) 
@@ -149,6 +152,7 @@ void CGUIImage::PreAllocResources()
 
 void CGUIImage::AllocResources()
 {
+  CGUIControl::AllocResources();
   FreeResources();
 
 	m_dwFrameCounter=0;
@@ -207,10 +211,6 @@ void CGUIImage::UpdateVB()
 
   CGUIImage::VERTEX* vertex=NULL;
   
-  g_graphicsContext.Lock(); 
-  m_pVB->Lock( 0, 0, (BYTE**)&vertex, 0L );
-  g_graphicsContext.Unlock(); 
-
   float x=(float)m_iPosX;
   float y=(float)m_iPosY;
 #ifdef ALLOW_TEXTURE_COMPRESSION
@@ -298,6 +298,9 @@ void CGUIImage::UpdateVB()
 	{
 		g_graphicsContext.Correct(x, y);
 	}
+  g_graphicsContext.Lock(); 
+  m_pVB->Lock( 0, 0, (BYTE**)&vertex, 0L );
+  g_graphicsContext.Unlock(); 
 #ifdef ALLOW_TEXTURE_COMPRESSION
 	float uoffs = float(m_iBitmap * m_dwWidth) / float(m_iImageWidth);
 	float u = float(m_iTextureWidth) / float(m_iImageWidth);
@@ -357,8 +360,12 @@ bool CGUIImage::CanFocus() const
 
 void CGUIImage::Select(int iBitmap)
 {
-  m_iBitmap=iBitmap;
-  Update();
+  if (m_iBitmap != iBitmap)
+  {
+    m_iBitmap=iBitmap;
+    Update();
+    m_bInvalidated = true;
+  }
 }
 
 void CGUIImage::SetItems(int iItems)
@@ -411,13 +418,21 @@ void CGUIImage::Process()
 }
 void CGUIImage::SetTextureWidth(int iWidth)
 {
-	m_iTextureWidth=iWidth;
-	Update();
+  if (m_iTextureWidth != iWidth)
+  {
+	  m_iTextureWidth=iWidth;
+	  Update();
+    m_bInvalidated = true;
+  }
 }
 void CGUIImage::SetTextureHeight(int iHeight)
 {
-	m_iTextureHeight=iHeight;
-	Update();
+  if (m_iTextureHeight != iHeight)
+  {
+	  m_iTextureHeight=iHeight;
+	  Update();
+    m_bInvalidated = true;
+  }
 }
 int	CGUIImage::GetTextureWidth() const
 {
@@ -430,7 +445,11 @@ int CGUIImage::GetTextureHeight() const
 
 void CGUIImage::SetKeepAspectRatio(bool bOnOff)
 {
-  m_bKeepAspectRatio=bOnOff;
+  if (m_bKeepAspectRatio != bOnOff)
+  {
+    m_bKeepAspectRatio=bOnOff;
+    m_bInvalidated = true;
+  }
 }
 bool CGUIImage::GetKeepAspectRatio() const
 {
@@ -456,9 +475,18 @@ void CGUIImage::SetFileName(const CStdString& strFileName)
 
 void CGUIImage::SetCornerAlpha(DWORD dwLeftTop, DWORD dwRightTop, DWORD dwLeftBottom, DWORD dwRightBottom)
 {
-	m_dwAlpha[0] = dwLeftTop;
-	m_dwAlpha[1] = dwRightTop;
-	m_dwAlpha[2] = dwLeftBottom;
-	m_dwAlpha[3] = dwRightBottom;
+  if (
+	  m_dwAlpha[0] != dwLeftTop ||
+	  m_dwAlpha[1] != dwRightTop ||
+	  m_dwAlpha[2] != dwLeftBottom ||
+	  m_dwAlpha[3] != dwRightBottom
+  )
+  {
+	  m_dwAlpha[0] = dwLeftTop;
+	  m_dwAlpha[1] = dwRightTop;
+	  m_dwAlpha[2] = dwLeftBottom;
+	  m_dwAlpha[3] = dwRightBottom;
+    m_bInvalidated = true;
+  }
 }
 

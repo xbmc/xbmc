@@ -511,6 +511,9 @@ HRESULT CApplication::Create()
 {
   HRESULT hr;
 
+  //floating point precision to 24 bits (faster performance)
+  _controlfp(_PC_24, _MCW_PC);
+
  	CLog::Log(LOGINFO, "setup DirectX");
   // Create the Direct3D object
   if( NULL == ( m_pD3D = Direct3DCreate8(D3D_SDK_VERSION) ) )
@@ -1444,7 +1447,10 @@ void CApplication::Render()
 	g_graphicsContext.Lock();
 
 	// draw GUI
-	m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, 0x00010001, 1.0f, 0L );
+  //if Clear needs to be enabled here for some reason, remove them from Render in GUIWindowScreensaver and GUIWindowVisualisation
+	//m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, 0x00010001, 1.0f, 0L );
+  //SWATHWIDTH of 2 improves fillrates (performance investigator)
+  m_pd3dDevice->SetRenderState(D3DRS_SWATHWIDTH, 2);
 
 	// render current window/dialog
 	m_gWindowManager.Render();
