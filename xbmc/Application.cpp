@@ -66,6 +66,9 @@
 	#pragma comment (lib,"xbmc/lib/libsidplay/resid_builder.lib")	// SECTIONNAME=SID_RW,SID_RX
 #endif
 
+void xbox_audio_do_work();
+
+
 extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void)
 :m_ctrDpad(220,220)
@@ -552,6 +555,9 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 void CApplication::Render()
 {
+	// update sound
+	xbox_audio_do_work();
+
 	// dont show GUI when playing full screen video
 	if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
 	{
@@ -1868,7 +1874,6 @@ void CApplication::Process()
 
 	// process messages, even if a movie is playing
 	g_applicationMessenger.ProcessMessages();
-
 }
 void CApplication::Restart(bool bSamePosition)
 {

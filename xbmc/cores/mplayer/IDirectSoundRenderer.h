@@ -65,7 +65,9 @@ public:
 	virtual bool		SupportsSurroundSound()  const=0;
 	virtual int			SetPlaySpeed(int iSpeed)=0;
 	virtual void    WaitCompletion()=0;
+	virtual void		DoWork() {}
 
-private:};
+private:
+};
 
 #endif // !defined(AFX_IAUDIORENDERER_H__B590A94D_D15E_43A6_A41D_527BD441B5F5__INCLUDED_)
