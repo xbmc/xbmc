@@ -9,6 +9,7 @@
 #include "GUICheckMarkControl.h"
 #include "GUIThumbnailPanel.h"
 #include "GUIMButtonControl.h"
+#include "GUIToggleButtonControl.h" 
 
 CGUIControlFactory::CGUIControlFactory(void)
 {
@@ -99,6 +100,44 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       strFont=pControlNode->FirstChild("font")->FirstChild()->Value();
 
       CGUIButtonControl* pControl = new CGUIButtonControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strTextureFocus,strTextureNoFocus);
+      pControl->SetLabel(strFont,strLabel,dwTextColor);
+      pControl->SetDisabledColor(dwDisabledColor);
+      pControl->SetNavigation(up,down,left,right);
+      pControl->SetColourDiffuse(dwColorDiffuse);
+
+      pNode = pControlNode->FirstChild("hyperlink");
+      if (pNode) 
+      {
+        int iHyperLink=atoi(pNode->FirstChild()->Value());
+        pControl->SetHyperLink(iHyperLink);
+      }
+      return pControl;
+  }
+  
+  if (strType=="togglebutton")
+  {
+      wstring strLabel;
+      string strFont,strTextureFocus,strTextureNoFocus;
+      string strTextureAltFocus,strTextureAltNoFocus;
+      D3DCOLOR dwTextColor;
+      D3DCOLOR dwDisabledColor;
+      sscanf(pControlNode->FirstChild("disabledcolor" )->FirstChild()->Value(),"%x",&dwDisabledColor);
+      sscanf(pControlNode->FirstChild("textcolor" )->FirstChild()->Value(),"%x",&dwTextColor);
+      strTextureFocus=pControlNode->FirstChild("textureFocus")->FirstChild()->Value();
+      strTextureNoFocus=pControlNode->FirstChild("textureNoFocus")->FirstChild()->Value();
+      strTextureAltFocus=pControlNode->FirstChild("AltTextureFocus")->FirstChild()->Value();
+      strTextureAltNoFocus=pControlNode->FirstChild("AltTextureNoFocus")->FirstChild()->Value();
+      const char *szLabel=pControlNode->FirstChild("label")->FirstChild()->Value();
+      if (szLabel[0]!='-')
+      {
+        DWORD dwLabelID=atol(pControlNode->FirstChild("label")->FirstChild()->Value());
+        strLabel=g_localizeStrings.Get(dwLabelID);
+      }
+      else strLabel=L"";
+
+      strFont=pControlNode->FirstChild("font")->FirstChild()->Value();
+
+      CGUIToggleButtonControl* pControl = new CGUIToggleButtonControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strTextureFocus,strTextureNoFocus,strTextureAltFocus,strTextureAltNoFocus);
       pControl->SetLabel(strFont,strLabel,dwTextColor);
       pControl->SetDisabledColor(dwDisabledColor);
       pControl->SetNavigation(up,down,left,right);

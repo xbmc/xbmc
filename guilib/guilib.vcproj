@@ -411,6 +411,9 @@
 				RelativePath="GUIThumbnailPanel.cpp">
 			</File>
 			<File
+				RelativePath="GUIToggleButtonControl.cpp">
+			</File>
+			<File
 				RelativePath="GUIWindow.cpp">
 			</File>
 			<File
@@ -482,6 +485,9 @@
 			</File>
 			<File
 				RelativePath="GUIThumbnailPanel.h">
+			</File>
+			<File
+				RelativePath="GUIToggleButtonControl.h">
 			</File>
 			<File
 				RelativePath="GUIWindow.h">
