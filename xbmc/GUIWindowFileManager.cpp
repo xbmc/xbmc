@@ -239,6 +239,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_WINDOW_INIT:
 		{
+      int iLastControl=m_iLastControl;
 			CGUIWindow::OnMessage(message);
 			// default sort methods
 			g_stSettings.m_iMyFilesSourceRootSortMethod = 0;
@@ -300,6 +301,15 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 				Update(i, m_Directory[i].m_strPath);
 				CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST+i, iItem)
 			}
+
+			if (iLastControl>-1)
+      {
+				SET_CONTROL_FOCUS(iLastControl, 0);
+      }
+      else
+      {
+        SET_CONTROL_FOCUS(m_dwDefaultFocusControlID, 0);
+      }
 
 			return true;
 		}

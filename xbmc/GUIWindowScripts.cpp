@@ -140,6 +140,7 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_WINDOW_INIT:
 		{
+      int iLastControl=m_iLastControl;
 			shares.erase(shares.begin(),shares.end());
 			CGUIWindow::OnMessage(message);
 			if (m_Directory.m_strPath=="?") m_Directory.m_strPath="Q:\\scripts";//g_stSettings.m_szDefaultScripts;
@@ -155,10 +156,16 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
 
 			m_rootDir.SetShares(shares);//g_settings.m_vecScriptShares);
 
-			if (m_iLastControl>-1)
-				SET_CONTROL_FOCUS(m_iLastControl, 0);
-
 			Update(m_Directory.m_strPath);
+
+			if (iLastControl>-1)
+      {
+				SET_CONTROL_FOCUS(iLastControl, 0);
+      }
+      else
+      {
+        SET_CONTROL_FOCUS(m_dwDefaultFocusControlID, 0);
+      }
 
 			if (m_iSelectedItem>-1)
 			{
