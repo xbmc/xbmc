@@ -2777,36 +2777,59 @@ void init_vlc_rl(RLTable *rl)
 }
 
 /* uninit vlcs */
-void h263_decode_uninit_vlc()
+static uninit_vlc_rl(RLTable *rl)
 {
-    int q;     
+    int q;
     for(q=0; q<32; q++){
-    	
-    	if(rl_inter.rl_vlc[q]) {
-	av_free(rl_inter.rl_vlc[q]);
-	rl_inter.rl_vlc[q]= NULL;
-	}
-
-    	if(rl_intra.rl_vlc[q]) {
-	av_free(rl_intra.rl_vlc[q]);
-	rl_intra.rl_vlc[q]= NULL;
-	}
-
-    	if(rvlc_rl_inter.rl_vlc[q]) {
-	av_free(rvlc_rl_inter.rl_vlc[q]);
-	rvlc_rl_inter.rl_vlc[q]= NULL;
-	}
-
-    	if(rvlc_rl_intra.rl_vlc[q]) {
-	av_free(rvlc_rl_intra.rl_vlc[q]);
-	rvlc_rl_intra.rl_vlc[q]= NULL;
-	}
-
-    	if(rl_intra_aic.rl_vlc[q]) {
-	av_free(rl_intra_aic.rl_vlc[q]);
-	rl_intra_aic.rl_vlc[q]= NULL;
+    	if(rl->rl_vlc[q]) {
+	av_free(rl->rl_vlc[q]);
+	rl->rl_vlc[q]= NULL;
 	}
     }
+    free_vlc(&rl->vlc);
+}
+
+static uninit_rl(RLTable *rl)
+{
+    int q;
+    for(q=0; q<2; q++)  {	
+    	if(rl->max_level[q]){
+    		av_free(rl->max_level[q]);
+    		rl->max_level[q] = NULL;
+    	}
+    	if(rl->max_run[q]){
+    		av_free(rl->max_run[q]);
+    		rl->max_run[q] = NULL;
+    	}
+    	if(rl->index_run[q]){
+    		av_free(rl->index_run[q]);
+    		rl->index_run[q] = NULL;
+    	}
+    }
+}
+
+void h263_decode_uninit_vlc()
+{
+    free_vlc(&intra_MCBPC_vlc);
+    free_vlc(&inter_MCBPC_vlc);
+    free_vlc(&cbpy_vlc);
+    free_vlc(&mv_vlc);
+    uninit_rl(&rl_inter);
+    uninit_rl(&rl_intra);
+    uninit_rl(&rvlc_rl_inter);
+    uninit_rl(&rvlc_rl_intra);
+    uninit_rl(&rl_intra_aic);
+    uninit_vlc_rl(&rl_inter);
+    uninit_vlc_rl(&rl_intra);
+    uninit_vlc_rl(&rvlc_rl_inter);
+    uninit_vlc_rl(&rvlc_rl_intra);
+    uninit_vlc_rl(&rl_intra_aic);
+    free_vlc(&dc_lum);
+    free_vlc(&dc_chrom);
+    free_vlc(&sprite_trajectory);
+    free_vlc(&mb_type_b_vlc);
+    free_vlc(&h263_mbtype_b_vlc);
+    free_vlc(&cbpc_b_vlc);
 }
 
 /* init vlcs */
