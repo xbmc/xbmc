@@ -513,7 +513,7 @@ namespace PYXBMC
 		
 
 		PyGUILock();
-		iControlId = pWindow->GetFocusControl();
+		iControlId = pWindow->GetFocusedControl();
 		PyGUIUnlock();
 
 		if(iControlId == -1)
