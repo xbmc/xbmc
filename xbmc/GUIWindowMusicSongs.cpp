@@ -151,7 +151,6 @@ CGUIWindowMusicSongs::CGUIWindowMusicSongs(void)
 :CGUIWindowMusicBase()
 {
 	m_Directory.m_strPath="?";
-	m_bScan=false;
 	m_iViewAsIcons=-1;
 	m_iViewAsIconsRoot=-1;
 
@@ -480,203 +479,33 @@ void CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, VECFILEI
 
 void CGUIWindowMusicSongs::OnScan()
 {
-	if (1 /*g_guiSettings.GetBool("MusicLibrary.UseBackgroundScanner")*/)
+	if (g_application.m_guiDialogMusicScan.IsRunning())
 	{
-		if (g_application.m_guiDialogMusicScan.IsRunning())
-		{
-			g_application.m_guiDialogMusicScan.StopScanning();
-			UpdateButtons();
-			return;
-		}
-		// check whether we have scanned here before
-		bool bUpdateAll = false;
-		CStdString strPaths;
-		g_musicDatabase.GetSubpathsFromPath(m_Directory.m_strPath, strPaths);
-		if (strPaths.length() > 2)
-		{	// yes, we have, we should prompt the user to ask if they want
-			// to do a full scan, or just add new items...
-			CGUIDialogYesNo *pDialog = &(g_application.m_guiDialogYesNo);
-			pDialog->SetHeading(189);
-			pDialog->SetLine(0,702);
-			pDialog->SetLine(1,703);
-			pDialog->SetLine(2,704);
-			pDialog->DoModal(GetID());
-			if (pDialog->IsConfirmed())	bUpdateAll = true;
-		}
-
-		g_application.m_guiDialogMusicScan.StartScanning(m_Directory.m_strPath, bUpdateAll);
+		g_application.m_guiDialogMusicScan.StopScanning();
 		UpdateButtons();
 		return;
 	}
-	else
-	{
-		// remove username + password from m_strDirectory for display in Dialog
-		CURL url(m_Directory.m_strPath);
-		CStdString strStrippedPath;
-		url.GetURLWithoutUserDetails(strStrippedPath);
 
-		DWORD dwTick=timeGetTime();
-
-		// check whether we have scanned here before
-		bool m_bUpdateAll = false;
-		CStdString strPaths;
-		g_musicDatabase.GetSubpathsFromPath(m_Directory.m_strPath, strPaths);
-		if (strPaths.length() > 2)
-		{	// yes, we have, we should prompt the user to ask if they want
-			// to do a full scan, or just add new items...
-			CGUIDialogYesNo *pDialog = &(g_application.m_guiDialogYesNo);
-			pDialog->SetHeading(189);
-			pDialog->SetLine(0,702);
-			pDialog->SetLine(1,703);
-			pDialog->SetLine(2,704);
-			pDialog->DoModal(GetID());
-			if (pDialog->IsConfirmed())	m_bUpdateAll = true;
-		}
-
-		m_dlgProgress->SetHeading(189);
-		m_dlgProgress->SetLine(0, 330);
-		m_dlgProgress->SetLine(1,"");
-		m_dlgProgress->SetLine(2,strStrippedPath );
-		m_dlgProgress->StartModal(GetID());
-		m_dlgProgress->Progress();
-
-		// Preload section for ID3 cover art reading
-		CSectionLoader::Load("CXIMAGE");
-		CSectionLoader::Load("LIBMP4");
-
-		CUtil::ThumbCacheClear();
-
-		bool bOverlayAllowed=g_graphicsContext.IsOverlayAllowed();
-
-		if (bOverlayAllowed)
-			g_graphicsContext.SetOverlay(false);
-
-		g_musicDatabase.BeginTransaction();
-
-		bool bOKtoScan = true;
-		if (m_bUpdateAll)
-		{
-			m_dlgProgress->SetLine(2,701);
-			m_dlgProgress->Progress();
-			bOKtoScan = g_musicDatabase.RemoveSongsFromPaths(strPaths);
-		}
-		// enable scan mode in OnRetrieveMusicInfo()
-		m_bScan=true;
-
-		if (bOKtoScan)
-		{
-			if (m_bUpdateAll)
-			{
-				m_dlgProgress->SetLine(2,700);
-				m_dlgProgress->Progress();
-				bOKtoScan = g_musicDatabase.CleanupAlbumsArtistsGenres(strPaths);
-			}
-
-			bool bCommit = false;
-			if (bOKtoScan)
-				bCommit = DoScan(m_vecItems);
-
-			if (bCommit)
-			{
-				g_musicDatabase.CommitTransaction();
-				if (m_bUpdateAll)
-				{
-					m_dlgProgress->SetLine(2,331);
-					m_dlgProgress->Progress();
-					g_musicDatabase.Compress();
-				}
-			}
-			else
-				g_musicDatabase.RollbackTransaction();
-			m_dlgProgress->SetLine(0,328);
-			m_dlgProgress->SetLine(1,"");
-			m_dlgProgress->SetLine(2,330 );
-			m_dlgProgress->Progress();
-		}
-		else
-			g_musicDatabase.RollbackTransaction();
-
-		g_musicDatabase.EmptyCache();
-
-		CSectionLoader::Unload("CXIMAGE");
-		CSectionLoader::Unload("LIBMP4");
-
-		// disable scan mode
-		m_bScan=false;
-
-		CUtil::ThumbCacheClear();
-
-		if (bOverlayAllowed)
-			g_graphicsContext.SetOverlay(true);
-
-		m_dlgProgress->Close();
-
-		int iItem=GetSelectedItem();
-		Update(m_Directory.m_strPath);
-		CONTROL_SELECT_ITEM(CONTROL_LIST, iItem);
-		CONTROL_SELECT_ITEM(CONTROL_THUMBS, iItem);
-
-		dwTick = timeGetTime() - dwTick;
-		CStdString strTmp, strTmp1;
-		CUtil::SecondsToHMSString(dwTick/1000, strTmp1);
-		strTmp.Format("My Music: Scanning for music info without worker thread, operation took %s", strTmp1); 
-		CLog::Log(LOGNOTICE,strTmp.c_str());
+	// check whether we have scanned here before
+	bool bUpdateAll = false;
+	CStdString strPaths;
+	g_musicDatabase.GetSubpathsFromPath(m_Directory.m_strPath, strPaths);
+	if (strPaths.length() > 2)
+	{	// yes, we have, we should prompt the user to ask if they want
+		// to do a full scan, or just add new items...
+		CGUIDialogYesNo *pDialog = &(g_application.m_guiDialogYesNo);
+		pDialog->SetHeading(189);
+		pDialog->SetLine(0,702);
+		pDialog->SetLine(1,703);
+		pDialog->SetLine(2,704);
+		pDialog->DoModal(GetID());
+		if (pDialog->IsConfirmed())	bUpdateAll = true;
 	}
-}
 
-bool CGUIWindowMusicSongs::DoScan(VECFILEITEMS& items)
-{
-	// remove username + password from m_strDirectory for display in Dialog
-	CURL url(m_Directory.m_strPath);
-	CStdString strStrippedPath;
-	url.GetURLWithoutUserDetails(strStrippedPath);
-
-	m_dlgProgress->SetLine(2,strStrippedPath );
-	m_dlgProgress->Progress();
-
-	OnRetrieveMusicInfo(items);
-	g_musicDatabase.CheckVariousArtistsAndCoverArt();
-	
-	if (m_dlgProgress->IsCanceled()) return false;
-	
-	bool bCancel=false;
-	for (int i=0; i < (int)items.size(); ++i)
-	{
-    g_application.ResetScreenSaver();
-		CFileItem *pItem= items[i];
-		if (m_dlgProgress->IsCanceled())
-		{
-			bCancel=true;
-			break;
-		}
-		if ( pItem->m_bIsFolder)
-		{
-			if (pItem->GetLabel() != "..")
-			{
-        // grab the music thumb (makes sure it's cached to our local drive)
-        // references to (cached) thumbs are stored in the database.
-        pItem->SetMusicThumb();
-				// load subfolder
-				CStdString strDir=m_Directory.m_strPath;
-				m_Directory.m_strPath=pItem->m_strPath;
-				VECFILEITEMS subDirItems;
-				CFileItemList itemlist(subDirItems);
-				m_rootDir.GetDirectory(pItem->m_strPath,subDirItems);
-				// filter items in the sub dir (for .cue sheet support)
-				FilterItems(subDirItems);
-				DoSort(subDirItems);
-				if (!DoScan(subDirItems))
-				{
-					bCancel=true;
-				}
-				
-				m_Directory.m_strPath=strDir;
-				if (bCancel) break;
-			}
-		}
-	}
-	
-	return !bCancel;
+	//	Start background loader
+	g_application.m_guiDialogMusicScan.StartScanning(m_Directory.m_strPath, bUpdateAll);
+	UpdateButtons();
+	return;
 }
 
 void CGUIWindowMusicSongs::LoadPlayList(const CStdString& strPlayList)
@@ -1129,68 +958,71 @@ void CGUIWindowMusicSongs::DoSort(VECFILEITEMS& items)
 
 void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 {
-
-  //**** TO SPEED UP SCANNING *****
-  // We need to speedup scanning of music
-  // what we could do is:
-  // 1. cache all genres & artists (with name and id) in a map (read them @ start of this routine)
-  // 2. cache current path with database id
-  // 3. scan the entire dir and then if we find a new song:
-  // 4.   check if genre is known already (in cached map) if not then add it to database & map
-  // 4.   check if artist is known already (in cached map) if not then add it to database & map
-  // 5.   add the new song to the database 
-  //         we need a new version of musicdatabase::addsong() for this
-  //         which just adds the song (and not the artists/genre/path like musicdatabase::addsong does now!)
-  //
-  // this way we prevent that for each call to musicdatabase::addsong
-  //    -the genre id is looked up and or added
-  //    -the artist id is looked up and or added
-  //    -the path id is lookup and or added
-
 	int nFolderCount=CUtil::GetFolderCount(items);
 	// Skip items with folders only
 	if (nFolderCount == (int)items.size())
 		return;
 
-	int nFileCount=(int)items.size()-nFolderCount;
+	MAPSONGS songsMap;
+	// get all information for all files in current directory from database 
+	g_musicDatabase.GetSongsByPath(m_Directory.m_strPath,songsMap);
 
-	int iTagsLoaded=0;
-	CStdString strItem;
-  MAPSONGS songsMap;
+	// Nothing in database and id3 tags disabled; dont load tags from cdda files
+	if ((songsMap.size()==0 && !g_guiSettings.GetBool("MyMusic.UseTags")) || m_Directory.IsCDDA())
+		return;
+
+	//	Do we have cached items
 	MAPFILEITEMS itemsMap;
-  // get all information for all files in current directory from database 
-  if (!g_musicDatabase.GetSongsByPath(m_Directory.m_strPath,songsMap) && !m_bScan)
-	{
-		//	Directory not in database, do we have cached items
-		LoadDirectoryCache(m_Directory.m_strPath, itemsMap);
-	}
-
-	if (!m_bScan)
-	{
-		// Nothing in database and id3 tags disabled; dont load tags from cdda files
-		if ((songsMap.size()==0 && !g_guiSettings.GetBool("MyMusic.UseTags")) || m_Directory.IsCDDA())
-		{
-			g_application.ResetScreenSaver();
-			return;
-		}
-	}
+	LoadDirectoryCache(m_Directory.m_strPath, itemsMap);
 
 	bool bShowProgress=false;
 	bool bProgressVisible=false;
-
-	//	When loading a directory not in database show a progress dialog
-	if (songsMap.size()==0 && !m_bScan && !m_gWindowManager.IsRouted())
+	if (!m_gWindowManager.IsRouted())
 		bShowProgress=true;
 
 	DWORD dwTick=timeGetTime();
+	int iTaglessFiles=0;
 
 	// for every file found, but skip folder
-  for (int i=0; i < (int)items.size(); ++i)
+	for (int i=0; i < (int)items.size(); ++i)
 	{
-    g_application.ResetScreenSaver();
 		CFileItem* pItem=items[i];
-		CStdString strExtension;
-		CUtil::GetExtension(pItem->m_strPath,strExtension);
+
+		// dont try reading tags for folders, playlists or shoutcast streams
+		if (pItem->m_bIsFolder && pItem->IsPlayList() && pItem->IsInternetStream())
+		{
+			iTaglessFiles++;
+			continue;
+		}
+
+		// is the tag for this file already loaded?
+		if (!pItem->m_musicInfoTag.Loaded())
+		{
+			// no, then we gonna load it.
+			IMAPSONGS itSong;
+			IMAPFILEITEMS itItem;
+
+			//	Is items load from the database
+			if ((itSong=songsMap.find(pItem->m_strPath))!=songsMap.end())
+			{
+				CSong song=itSong->second;
+				pItem->m_musicInfoTag.SetSong(song);
+				pItem->SetThumbnailImage(song.strThumb);
+			}	//	Query map if we previously cached the file on HD
+			else if ((itItem=itemsMap.find(pItem->m_strPath))!=itemsMap.end() && CUtil::CompareSystemTime(&itItem->second->m_stTime, &pItem->m_stTime)==0)
+			{
+				pItem->m_musicInfoTag=itItem->second->m_musicInfoTag;
+				pItem->SetThumbnailImage(itItem->second->GetThumbnailImage());
+			}	//	if id3 tag scanning is turned on
+			else if (g_guiSettings.GetBool("MyMusic.UseTags"))
+			{
+				// then parse tag from file
+				CMusicInfoTagLoaderFactory factory;
+				auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
+				if (NULL != pLoader.get())
+					pLoader->Load(pItem->m_strPath, pItem->m_musicInfoTag);	// get tag from file
+			}
+		}//	if (!tag.Loaded() )
 
 		//	Should we init a progress dialog
 		if (bShowProgress && !bProgressVisible)
@@ -1219,117 +1051,25 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 			}
 		}		
 
-		if (bProgressVisible && (i%10)==0 && i>0)
+		if (bProgressVisible && ((i%10)==0 || i==items.size()-1))
 		{
 			m_dlgProgress->SetPercentage((i*100)/items.size());
 			m_dlgProgress->Progress();
 		}
 
 		//	Progress key presses from controller or remote
-		if (bProgressVisible || m_bScan)
-			if (m_dlgProgress) m_dlgProgress->ProgressKeys();
+		if (bProgressVisible && m_dlgProgress)
+			m_dlgProgress->ProgressKeys();
 
 		//	Canceled by the user, finish
-		if (bProgressVisible && m_dlgProgress->IsCanceled())
-		{
-			if (m_dlgProgress) m_dlgProgress->Close();
-			return;
-		}
+		if (bProgressVisible && m_dlgProgress && m_dlgProgress->IsCanceled())
+			break;
 
-    // dont try reading id3tags for folders, playlists or shoutcast streams
-		if (!pItem->m_bIsFolder && !pItem->IsPlayList() && !pItem->IsShoutCast() )
-		{
-      // is tag for this file already loaded?
-			bool bNewFile=false;
-			CMusicInfoTag& tag=pItem->m_musicInfoTag;
-			if (!tag.Loaded())
-			{
-        // no, then we gonna load it.
-        // first search for file in our list of the current directory
-				CSong song;
-        bool bFound(false);
-        bool bFoundInHddCache(false);
-				IMAPSONGS it=songsMap.find(pItem->m_strPath);
-				if (it!=songsMap.end())
-				{
-					song=it->second;
-					bFound=true;
-				}
-				if (!bFound && !m_bScan)
-				{
-					//	Query cached items previously cached on HD
-					IMAPFILEITEMS it=itemsMap.find(pItem->m_strPath);
-					if (it!=itemsMap.end())
-					{
-						pItem->m_musicInfoTag=it->second->m_musicInfoTag;
-						bFoundInHddCache=true;
-						bFound=true;
-					}
-				}
-        if (!bFound && !m_bScan)
-        {
-          // try finding it in the database
-          CStdString strPathName;
-          CUtil::GetDirectory(pItem->m_strPath, strPathName);
+	}//	for (int i=0; i < (int)items.size(); ++i)
 
-          if (strPathName != m_Directory.m_strPath)
-          {
-            if ( g_musicDatabase.GetSongByFileName(pItem->m_strPath, song) )
-            {
-              bFound=true;
-            }
-          }
-        }
-				if ( !bFound )
-				{
-          // if id3 tag scanning is turned on OR we're scanning the directory
-          // then parse id3tag from file
-					if (g_guiSettings.GetBool("MyMusic.UseTags") || m_bScan)
-					{
-            // get correct tag parser
-						CMusicInfoTagLoaderFactory factory;
-						auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
-						if (NULL != pLoader.get())
-						{						
-                // get id3tag
-							if ( pLoader->Load(pItem->m_strPath,tag))
-							{
-								bNewFile=true;
-								iTagsLoaded++;
-							}
-						}
-					}
-				} // of if ( !bFound )
-				else if (!tag.Loaded() && !bFoundInHddCache) //	Loaded from cache?
-				{
-					tag.SetSong(song);
-          pItem->SetThumbnailImage(song.strThumb);
-				}
-			}//if (!tag.Loaded() )
-			else if (m_bScan)
-			{
-				IMAPSONGS it=songsMap.find(pItem->m_strPath);
-				if (it==songsMap.end())
-					bNewFile=true;
-			}
-
-			if (tag.Loaded() && m_bScan && bNewFile)
-			{
-				CSong song(tag);
-				song.iStartOffset = pItem->m_lStartOffset;
-				song.iEndOffset = pItem->m_lEndOffset;
-        // get the thumb as well
-        pItem->SetMusicThumb();
-        song.strThumb = pItem->GetThumbnailImage();
-				g_musicDatabase.AddSong(song,false);
-			}
-		}//if (!pItem->m_bIsFolder)
-	}
-
-	if (iTagsLoaded>0 && !m_bScan)
-	{
-		SaveDirectoryCache(m_Directory.m_strPath, m_vecItems);
-	}
+	//	Save the hdd cache if there are more songs in this directory then loaded from database 
+	if ((m_dlgProgress && !m_dlgProgress->IsCanceled()) && songsMap.size()!=(items.size()-iTaglessFiles))
+		SaveDirectoryCache(m_Directory.m_strPath, items);
 
 	//	cleanup cache loaded from HD
 	IMAPFILEITEMS it=itemsMap.begin();
@@ -1340,11 +1080,8 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 	}
 	itemsMap.erase(itemsMap.begin(), itemsMap.end());
 
-	if (bShowProgress)
-	{
-		if (m_dlgProgress) m_dlgProgress->Close();
-		return;
-	}
+	if (bShowProgress && m_dlgProgress)
+		m_dlgProgress->Close();
 }
 
 void CGUIWindowMusicSongs::OnSearchItemFound(const CFileItem* pSelItem)
@@ -1361,7 +1098,7 @@ void CGUIWindowMusicSongs::OnSearchItemFound(const CFileItem* pSelItem)
 
 		strPath=pSelItem->m_strPath;
 		CURL url(strPath);
-		if (url.GetProtocol()=="smb" && !CUtil::HasSlashAtEnd(strPath))
+		if (pSelItem->IsSmb() && !CUtil::HasSlashAtEnd(strPath))
 			strPath+="/";
 
 		for (int i=0; i<(int)m_vecItems.size(); i++)
@@ -1675,8 +1412,12 @@ void CGUIWindowMusicSongs::OnPopupMenu(int iItem)
 
 void CGUIWindowMusicSongs::LoadDirectoryCache(const CStdString& strDirectory, MAPFILEITEMS& items)
 {
+	CStdString strDir=strDirectory;
+	if (CUtil::HasSlashAtEnd(strDir))
+		strDir.Delete(strDir.size()-1);
+
 	Crc32 crc;
-	crc.ComputeFromLowerCase(strDirectory);
+	crc.ComputeFromLowerCase(strDir);
 
 	CStdString strFileName;
 	strFileName.Format("Z:\\%x.fi", crc);
@@ -1705,8 +1446,12 @@ void CGUIWindowMusicSongs::SaveDirectoryCache(const CStdString& strDirectory, VE
 	if (iSize<=0)
 		return;
 
+	CStdString strDir=strDirectory;
+	if (CUtil::HasSlashAtEnd(strDir))
+		strDir.Delete(strDir.size()-1);
+
 	Crc32 crc;
-	crc.ComputeFromLowerCase(strDirectory);
+	crc.ComputeFromLowerCase(strDir);
 
 	CStdString strFileName;
 	strFileName.Format("Z:\\%x.fi", crc);

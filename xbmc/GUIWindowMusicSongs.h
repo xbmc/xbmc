@@ -25,7 +25,6 @@ protected:
 	virtual void				OnRetrieveMusicInfo(VECFILEITEMS& items);
 
 	virtual void				OnScan();
-					bool				DoScan(VECFILEITEMS& items);
 					void				LoadPlayList(const CStdString& strPlayList);
 
 	virtual void				Update(const CStdString &strDirectory);
@@ -35,5 +34,4 @@ protected:
 					void				DeleteDirectoryCache();
 
 	CStdString					m_strPrevDir;
-	bool								m_bScan;
 };

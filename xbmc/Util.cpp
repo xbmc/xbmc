@@ -810,6 +810,13 @@ void CUtil::ConvertTimeTToFileTime(__int64 sec, long nsec, FILETIME &ftTime)
   ftTime.dwHighDateTime = (DWORD)(l64Result>>32);
 }
 
+__int64 CUtil::CompareSystemTime(const SYSTEMTIME *a, const SYSTEMTIME *b)
+{
+	ULARGE_INTEGER ula, ulb;
+	SystemTimeToFileTime(a, (FILETIME*) &ula);
+	SystemTimeToFileTime(b, (FILETIME*) &ulb);
+	return ulb.QuadPart-ula.QuadPart;
+}
 
 void CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension, CStdString& strChangedFile)
 {

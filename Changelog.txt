@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 09-03-2005 removed: old scanning code in music
   - 08-03-2005 fixed: IMDb thumb was not saved for folder lookups if the folder contained no files.
   - 08-03-2005 fixed: Removed "fuzzy matching" code in video database - fixes same thumb used for The Matrix and The Matrix 2.
   - 08-03-2005 added: Dim LCD backlight if LED is set to off on video playback.  Thanks to Babyblue.
