@@ -335,6 +335,7 @@ typedef struct SAMPLE {
 	ULONG  loopend;     /* repeat end */
 	ULONG  susbegin;    /* sustain loop begin (in samples) \  Not Supported */
 	ULONG  susend;      /* sustain loop end                /      Yet! */
+	ULONG  c5frq;
 
 	/* Variables used by the module player only! (ignored for sound effects) */
 	UBYTE  globvol;     /* global volume */
@@ -647,7 +648,7 @@ struct MDRIVER* next;
 	BOOL        (*PlayStart)        (void);
 	void        (*PlayStop)         (void);
 	void        (*Update)           (void);
-	void		(*Pause)			(void);
+	void        (*Pause)            (void);
 	void        (*VoiceSetVolume)   (UBYTE,UWORD);
 	UWORD       (*VoiceGetVolume)   (UBYTE);
 	void        (*VoiceSetFrequency)(UBYTE,ULONG);
@@ -708,6 +709,10 @@ MIKMODAPI extern struct MDRIVER drv_ds;     /* Win32 DirectSound driver */
 MIKMODAPI extern struct MDRIVER drv_win;    /* Win32 multimedia API driver */
 
 //MIKMODAPI extern struct MDRIVER drv_mac;    /* Macintosh Sound Manager driver */
+
+#ifdef _XBOX
+MIKMODAPI extern struct MDRIVER drv_xbox;   /* Xbox hardware accelerated driver */
+#endif
 
 /*========== Virtual channel mixer interface (for user-supplied drivers only) */
 

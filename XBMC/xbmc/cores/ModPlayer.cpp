@@ -60,20 +60,19 @@ ModPlayer::ModPlayer(IPlayerCallback& callback) :IPlayer(callback)
 	CSectionLoader::Load("MOD_RX");
 	CSectionLoader::Load("MOD_RW");
 
-	if (!mikwinInit(44100, true, true, true, 32, 32, 20))
+	if (!mikxboxInit())
 	{
-		CLog::Log("ModPlayer: Could not initialize sound, reason: %s", MikMod_strerror(mikwinGetErrno()));
+		CLog::Log("ModPlayer: Could not initialize sound, reason: %s", MikMod_strerror(mikxboxGetErrno()));
 	}
 
-	mikwinSetMusicVolume(120);
-	mikwinSetSfxVolume(127);
+	mikxboxSetMusicVolume(127);
 	mikxboxSetCallback(ModCallback);
 }
 
 ModPlayer::~ModPlayer()
 {
 	closefile();
-	mikwinExit();
+	mikxboxExit();
 
 	CSectionLoader::Unload("MOD_RX");
 	CSectionLoader::Unload("MOD_RW");
@@ -98,7 +97,7 @@ bool ModPlayer::openfile(const CStdString& strFile)
 	else
 		str = strdup(strFile.c_str());
 
-	m_pModule = Mod_Player_Load(str, 32, 0);
+	m_pModule = Mod_Player_Load(str, 127, 0);
 	free(str);
 
 	if (m_pModule)
@@ -107,7 +106,7 @@ bool ModPlayer::openfile(const CStdString& strFile)
 	}
 	else
 	{
-		CLog::Log("ModPlayer: Could not load module %s: %s\n", strFile.c_str(), MikMod_strerror(mikwinGetErrno()));
+		CLog::Log("ModPlayer: Could not load module %s: %s\n", strFile.c_str(), MikMod_strerror(mikxboxGetErrno()));
 		return false;
 	}
 
@@ -129,6 +128,10 @@ bool ModPlayer::closefile()
 		Pause();
 
 	m_bStopPlaying=true;
+	// bit nasty but trying to do it with events locks the xbox hard
+	while (m_bIsPlaying)
+		Sleep(5);
+	Mod_Player_Stop();
 	StopThread();
 	return true;
 }
@@ -160,20 +163,6 @@ static DWORD LastUpdate = 0;
 __int64	ModPlayer::GetPTS()
 {
 	if (!m_bIsPlaying) return 0;
-#ifdef _DEBUG		
-	// in debug mode, show mod update time
-	if (NumUpdates)
-	{
-		CStdStringW wszText;
-		wszText.Format(L"ModUpdate: %2dms/%2dms", LastUpdate, AveUpdate / NumUpdates);
-
-		CGUIFont* pFont=g_fontManager.GetFont("font13");
-		if (pFont)
-		{
-			pFont->DrawText( 480, 40, LastUpdate > 30 ? 0xffff0f0f : 0xffffffff, wszText);
-		}
-	}
-#endif
 	return mikxboxGetPTS();
 }
 
@@ -257,30 +246,14 @@ void ModPlayer::OnStartup()
 void ModPlayer::OnExit()
 {
 	Mod_Player_Free(m_pModule);
+	m_bIsPlaying = false;
 }
 
 void ModPlayer::Process()
 {
-	//this thing should get pumped at least once a frame at 30 fps
-	DWORD dwQuantum = 1000 / 35;
-#ifdef _DEBUG
-	AveUpdate = 0;
-	NumUpdates = 0;
-#endif // _DEBUG
 	while (!m_bStopPlaying)
-	{
-		DWORD t = timeGetTime();
 		MikMod_Update();
-		t = timeGetTime() - t;
-#ifdef _DEBUG
-		LastUpdate = t;
-		AveUpdate += t;
-		++NumUpdates;
-#endif // _DEBUG
-
-		if (t < dwQuantum)
-			Sleep(dwQuantum - t);
-	}
+	OutputDebugString("Modplayer thread exit\n");
 }	
 void ModPlayer::RegisterAudioCallback(IAudioCallback* pCallback)
 {
