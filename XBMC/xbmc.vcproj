@@ -909,6 +909,12 @@
 				RelativePath=".\xbmc\FileSystem\FileRelax.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\FileRTV.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FileRTV.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\FileShoutcast.cpp">
 			</File>
 			<File
@@ -949,6 +955,12 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\ISO9660Directory.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\RTVDirectory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\RTVDirectory.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\ShoutcastRipFile.cpp">
