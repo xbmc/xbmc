@@ -774,7 +774,8 @@ static unsigned int video_preinit(const char *arg)
 	m_bPauseDrawing=false;
 	for (int i=0; i<NUM_BUFFERS; i++) iClearSubtitleRegion[i] = 0;
 	m_iBackBuffer=0;
-	m_iRenderBuffer = m_iDecodeBuffer = 0;
+	m_iRenderBuffer = -1;
+  m_iDecodeBuffer = 0;
 	m_bFlip=0;
 	fs=1;
 
@@ -880,8 +881,8 @@ void xbox_video_render_subtitles(bool bUseBackBuffer)
 //********************************************************************************************************
 void RenderVideo()
 {
-	if (!m_TextureBuffer[m_iRenderBuffer])
-		return;
+  if (m_iRenderBuffer<0 || m_iRenderBuffer >= NUM_BUFFERS) return;
+	if (!m_TextureBuffer[m_iRenderBuffer]) return;
   g_graphicsContext.Get3DDevice()->SetTexture( 0, &m_YTexture[m_iRenderBuffer]);
 	g_graphicsContext.Get3DDevice()->SetTexture( 1, &m_UTexture[m_iRenderBuffer]);
 	g_graphicsContext.Get3DDevice()->SetTexture( 2, &m_VTexture[m_iRenderBuffer]);
@@ -915,54 +916,42 @@ void RenderVideo()
 //************************************************************************************
 static void video_flip_page(void)
 {
+  if (m_bPauseDrawing) return;
+  
 	if (m_bFlip<=0) 
   {
     return;
   }
 	m_bFlip--;
-
-
-  //char szTmp[128];
-  //sprintf(szTmp,"render decodebuf:%i renderbuf:%i flip:%i\n", m_iDecodeBuffer ,m_iRenderBuffer, m_bFlip);
-  //OutputDebugString(szTmp);
-
+  ++m_iRenderBuffer %= NUM_BUFFERS;
 	m_pSubtitleTexture[m_iBackBuffer]->UnlockRect(0);
+  
 
 	Directx_ManageDisplay();
-	if (!m_bPauseDrawing)
+	if (g_graphicsContext.IsFullScreenVideo())
 	{
-//		m_bHasDimView = false;		// reset for next screensaver event
+		if (g_application.NeedRenderFullScreen())
+			m_bRenderGUI = true;
 
-		if (g_graphicsContext.IsFullScreenVideo())
+		g_graphicsContext.Lock();
+		g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
+
+		// render first so the subtitle overlay works
+		RenderVideo();
+
+		if (m_bRenderGUI)
 		{
-			if (g_application.NeedRenderFullScreen())
-				m_bRenderGUI = true;
-
-		  g_graphicsContext.Lock();
-			g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
-
-			// render first so the subtitle overlay works
-			RenderVideo();
-  
-			if (m_bRenderGUI)
-			{
-				// update our subtitle position
-				xbox_video_update_subtitle_position();
-				xbox_video_render_subtitles(true);
-				g_application.RenderFullScreen();
-			}
-
-	    //g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      
-			g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
-			g_graphicsContext.Unlock();
-			m_bRenderGUI=false;
+			// update our subtitle position
+			xbox_video_update_subtitle_position();
+			xbox_video_render_subtitles(true);
+			g_application.RenderFullScreen();
 		}
-		else // of if (g_graphicsContext.IsFullScreenVideo())
-		{
-		}
-	} // of if (!m_bPauseDrawing)
 
-
+	  //g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      
+		g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
+		g_graphicsContext.Unlock();
+		m_bRenderGUI=false;
+	}
 	m_iBackBuffer = 1-m_iBackBuffer;
 	g_graphicsContext.Lock();
 	D3DLOCKED_RECT rectLocked2;
@@ -999,7 +988,6 @@ static void video_flip_page(void)
 			choose_best_resolution(fps);
 		}
 	}
-  ++m_iRenderBuffer %= NUM_BUFFERS;
 }
 
 //********************************************************************************************************
@@ -1040,33 +1028,9 @@ void xbox_video_getAR(float& fAR)
 }
 
 //********************************************************************************************************
-void xbox_video_update(bool bPauseDrawing)
-{
-//	OutputDebugString("xbox_video_update()");
-	m_bRenderGUI=true;
-	m_bPauseDrawing = bPauseDrawing;
-	bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
-	g_graphicsContext.Lock();
-	g_graphicsContext.SetVideoResolution(bFullScreen ? m_iResolution:g_stSettings.m_ScreenResolution);
-	g_graphicsContext.Unlock();
-	Directx_ManageDisplay();
-	if (m_pVideoVB)
-	{
-		if (m_TextureBuffer[m_iRenderBuffer])
-		{
-			g_graphicsContext.Lock();
-			RenderVideo();
-			g_graphicsContext.Get3DDevice()->Present(0, 0, 0, 0);
-			g_graphicsContext.Unlock();
-		}
-	}
-	//  OutputDebugString("Done \n");
-}
-
-//********************************************************************************************************
 void xbox_video_render_update()
 {
-//  OutputDebugString("xbox_video_render_update()");
+  if (m_iRenderBuffer < 0 | m_iRenderBuffer >=NUM_BUFFERS) return;
 	if (m_pVideoVB && m_TextureBuffer[m_iRenderBuffer])
 	{
 		g_graphicsContext.Lock();
@@ -1074,6 +1038,21 @@ void xbox_video_render_update()
 		g_graphicsContext.Unlock();
 	}
 }
+
+
+//********************************************************************************************************
+void xbox_video_update(bool bPauseDrawing)
+{
+	m_bRenderGUI=true;
+  m_bPauseDrawing = bPauseDrawing;
+	bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
+	g_graphicsContext.Lock();
+	g_graphicsContext.SetVideoResolution(bFullScreen ? m_iResolution:g_stSettings.m_ScreenResolution);
+	g_graphicsContext.Unlock();
+	Directx_ManageDisplay();
+	xbox_video_render_update();
+}
+
 
 //********************************************************************************************************
 static unsigned int video_draw_frame(unsigned char *src[])
