@@ -562,8 +562,17 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		{
 			if (strTmp[0] != '-') 
 			{
-				DWORD dwLabelID=atol(strTmp);
-				strLabel=g_localizeStrings.Get(dwLabelID);
+				if ((strTmp[0]>='A')&&(strTmp[0]<='z'))
+				{
+					WCHAR wszTmp[256];
+					swprintf(wszTmp,L"%S",strTmp.c_str());
+					strLabel = wszTmp;
+				}
+				else
+				{
+					DWORD dwLabelID=atol(strTmp);
+					strLabel=g_localizeStrings.Get(dwLabelID);
+				}
 			}
 		}
 	}
