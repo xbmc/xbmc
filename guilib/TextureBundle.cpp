@@ -94,6 +94,16 @@ bool CTextureBundle::OpenBundle()
 	CStdString strPath=g_graphicsContext.GetMediaDir();
 	strPath += "\\media\\Textures.xpr";
 
+	if (GetFileAttributes(strPath.c_str()) == -1)
+		return false;
+
+	if (ALIGN % XGetDiskSectorSize(strPath.Left(3).c_str()))
+	{
+		CLog::Log("Disk sector size is not supported, caching textures.xpr");
+		CopyFile(strPath, "Z:\\Textures.xpr", FALSE);
+		strPath = "Z:\\Textures.xpr";
+	}
+
 	m_hFile = CreateFile(strPath.c_str(), GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, 0, OPEN_EXISTING, FILE_FLAG_NO_BUFFERING|FILE_FLAG_OVERLAPPED, 0);
 	if (m_hFile == INVALID_HANDLE_VALUE)
 	{
