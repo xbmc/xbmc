@@ -5,6 +5,7 @@
 CGUIDialogProgress::CGUIDialogProgress(void)
 :CGUIDialog(0)
 {
+	m_bCanceled=false;
 }
 
 CGUIDialogProgress::~CGUIDialogProgress(void)
@@ -14,7 +15,7 @@ CGUIDialogProgress::~CGUIDialogProgress(void)
 
 void CGUIDialogProgress::StartModal(DWORD dwParentId)
 {
-
+	m_bCanceled=false;
 	m_dwParentWindowID=dwParentId;
 	m_pParentWindow=m_gWindowManager.GetWindow( m_dwParentWindowID);
 	if (!m_pParentWindow)
@@ -78,4 +79,28 @@ void	CGUIDialogProgress::SetLine(int iLine, int iString)
 void CGUIDialogProgress::Close()
 {
 	CGUIDialog::Close();
+}
+
+bool CGUIDialogProgress::OnMessage(CGUIMessage& message)
+{
+	switch ( message.GetMessage() )
+  {
+
+    case GUI_MSG_CLICKED:
+    {
+      int iControl=message.GetSenderId();
+			if (iControl==10)
+			{
+				m_bCanceled=true;
+				return true;
+			}
+		}
+		break;
+	}
+	return CGUIDialog::OnMessage(message);
+}
+
+bool CGUIDialogProgress::IsCanceled() const
+{
+	return m_bCanceled;
 }
