@@ -1187,30 +1187,6 @@
 				Name="libPython"
 				Filter="">
 				<File
-					RelativePath=".\xbmc\lib\libPython\socketutil.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\libPython\socketutil.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\libPython\util.cpp">
-					<FileConfiguration
-						Name="Debug|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Xbox">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\xbmc\lib\libPython\util.h">
-				</File>
-				<File
 					RelativePath=".\xbmc\lib\libPython\xbmcmodule.cpp">
 				</File>
 				<File
