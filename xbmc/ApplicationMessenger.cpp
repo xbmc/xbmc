@@ -1,6 +1,7 @@
 #include "ApplicationMessenger.h"
 #include "application.h"
 #include "xbox/xkutils.h"
+#include "texturemanager.h"
 
 CApplicationMessenger g_applicationMessenger;
 
@@ -69,37 +70,61 @@ void CApplicationMessenger::ProcessMessages()
 				case TMSG_SHUTDOWN:
 					g_application.Stop();
 					XKUtils::XBOXPowerOff();
-					break;
+				break;
 
 				case TMSG_DASHBOARD:
-					break;
+				break;
 
 				case TMSG_RESTART:
 					g_application.Stop();
 					XKUtils::XBOXPowerCycle();
-					break;
+				break;
 
 				case TMSG_MEDIA_PLAY:
 					g_application.PlayFile(pMsg->strParam);
 					if (g_application.IsPlayingVideo())
 					{
 						g_graphicsContext.Lock();
+						g_TextureManager.Flush();
 						g_graphicsContext.SetFullScreenVideo(true);
+						m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
 						g_graphicsContext.Unlock();
 					}
-					break;
+				break;
+
+				case TMSG_PICTURE_SHOW:
+				{
+					CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+					if (!pSlideShow) return;
+
+					if (g_application.IsPlayingVideo())
+					{
+						g_graphicsContext.Lock();
+						m_gWindowManager.ActivateWindow(pSlideShow->GetPreviousWindowID());
+						g_graphicsContext.Unlock();
+						g_application.m_pPlayer->closefile();
+					}
+
+					g_graphicsContext.Lock();
+					pSlideShow->Reset();
+					m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
+					pSlideShow->Add(pMsg->strParam);
+					pSlideShow->Select(pMsg->strParam);
+					g_graphicsContext.Unlock();
+				}
+				break;
 
 				case TMSG_MEDIA_STOP:
 					if (g_application.m_pPlayer) g_application.m_pPlayer->closefile();
-					break;
+				break;
 
 				case TMSG_MEDIA_PAUSE:
 					if (g_application.m_pPlayer) g_application.m_pPlayer->Pause();
-					break;
+				break;
 
 				case TMSG_EXECUTE_SCRIPT:
 					m_pythonParser.evalFile(pMsg->strParam.c_str());
-					break;
+				break;
 			}
 			if (pMsg->hWaitEvent)
 			{
@@ -170,6 +195,13 @@ void CApplicationMessenger::MediaPause()
 {
 		ThreadMessage tMsg = {TMSG_MEDIA_PAUSE};
 		SendMessage(tMsg);
+}
+
+void CApplicationMessenger::PictureShow(string filename)
+{
+	ThreadMessage tMsg = {TMSG_PICTURE_SHOW};
+	tMsg.strParam = filename;
+	SendMessage(tMsg);
 }
 
 void CApplicationMessenger::Shutdown()

@@ -188,6 +188,7 @@ CXbmcWeb::CXbmcWeb()
 	navigatorState = 0;
 	directory = NULL;
 	xbmcCfgLoaded = false;
+	strCurrentMediaFile = "";
 }
 
 CXbmcWeb::~CXbmcWeb()
@@ -223,6 +224,42 @@ DWORD CXbmcWeb::GetNavigatorState()
 void CXbmcWeb::SetNavigatorState(DWORD state)
 {
 	navigatorState = state;
+}
+
+void CXbmcWeb::AddItemToPlayList(const CFileItem* pItem)
+{
+	if (pItem->m_bIsFolder)
+	{
+		// recursive
+		if (pItem->GetLabel() == "..") return;
+		CStdString strDirectory=pItem->m_strPath;
+		VECFILEITEMS items;
+		directory->GetDirectory(strDirectory, items);
+		for (int i=0; i < (int) items.size(); ++i)
+		{
+			AddItemToPlayList(items[i]);
+			delete items[i];
+		}
+	}
+	else
+	{
+		//selected item is a file, add it to playlist
+		PLAYLIST::CPlayList::CPlayListItem playlistItem;
+		playlistItem.SetFileName(pItem->m_strPath);
+		playlistItem.SetDescription(pItem->GetLabel());
+		playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
+
+		switch(GetNavigatorState())
+		{
+			case WEB_NAV_VIDEOS:
+				g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).Add(playlistItem);
+			break;
+			
+			case WEB_NAV_MUSIC:
+				g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Add(playlistItem);
+			break;
+		}
+	}
 }
 
 /************************************* Code ***********************************/
@@ -592,44 +629,13 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 					// attempt to enque the selected directory or file
 
 					CFileItem *itm = webDirItems[selectionNumber];
-					if (!itm) return 0;
-
-					if (itm->m_bIsFolder)
-					{
-						//selected item is a folder, get folder items and add them to playlist
-						// recursive
-						if (itm->GetLabel() == "..") return 0;
-						CStdString strDirectory=itm->m_strPath;
-						VECFILEITEMS items;
-						
-						DIRECTORY::CVirtualDirectory dir;
-						dir.GetDirectory(strDirectory, items);
-						for (int i=0; i < (int) items.size(); ++i)
-						{
-							itm = items[i];
-							CStdString description = itm->GetLabel();
-							CStdString filename = itm->m_strPath;
-
-							PLAYLIST::CPlayList::CPlayListItem playlistItem(description, filename /*, duration*/);
-							g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).Add(playlistItem);
-							delete items[i];
-						}
-					}
-					else
-					{
-						//selected item is a file, add it to playlist
-						CStdString description = itm->GetLabel();
-						CStdString filename = itm->m_strPath;
-						if (description == "..") return 0;
-
-						PLAYLIST::CPlayList::CPlayListItem playlistItem(description, filename /*, duration*/);
-						g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).Add(playlistItem);
-					}
+					AddItemToPlayList(itm);
+					g_playlistPlayer.HasChanged();
 				}
 				else if (strstr( parameter, XBMC_CAT_UNQUE) != NULL)
 				{
 					// attemt to unque item from playlist.
-					g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).Remove(g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC )[selectionNumber].GetFileName());
+					//g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Remove(g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC )[selectionNumber].GetFileName());
 				}
 				else
 				{
@@ -678,18 +684,18 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 					{
 						//no directory, execute file
 						SetCurrentItem(selectionNumber);
-
+						CFileItem *itm = webDirItems[selectionNumber];
 						if (GetNavigatorState() == WEB_NAV_VIDEOS ||
 								GetNavigatorState() == WEB_NAV_MUSIC)
 						{
-							CFileItem *itm = webDirItems[selectionNumber];
+							strCurrentMediaFile = itm->m_strPath;
 							g_applicationMessenger.MediaPlay(itm->m_strPath);
 						}
 						else
 						{
 							if (GetNavigatorState() == WEB_NAV_PICTURES)
 							{
-//								g_application.WebMessage(XBMC_PICTURE_SHOW, itm->m_strPath.c_str());
+								g_applicationMessenger.PictureShow(itm->m_strPath);
 							}
 						}
 					}
@@ -704,7 +710,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 /* Configurtion for XBMC (xml files and xbmc settings) */
 int CXbmcWeb::xbmcConfiguration( int eid, webs_t wp, int argc, char_t **argv)
 {
-
+/*
 	char xboxmediacenter[][32] = {
 			"skin", "ipadres", "netmask",	"defaultgateway",	"nameserver", "CDDBIpAdres",
 			"CDDBEnabled", "httpproxy", "httpproxyport", "timeserver", "dashboard", "startwindow",
@@ -730,7 +736,7 @@ int CXbmcWeb::xbmcConfiguration( int eid, webs_t wp, int argc, char_t **argv)
 
 	if(!strcmp(command, WEB_LOAD))
 	{
-		/* Load configuration */
+		/* Load configuration *
 		if (!xbmcCfgLoaded)
 		{
 			if (!xbmcCfg.LoadFile("Q:\\XboxMediaCenter.xml"))
@@ -759,7 +765,7 @@ int CXbmcWeb::xbmcConfiguration( int eid, webs_t wp, int argc, char_t **argv)
 		//count types
 		if (xbmcCfgLoaded)
 		{
-			/* return number of */
+			/* return number of *
 			TiXmlElement *pRootElement = xbmcCfg.RootElement();
 			TiXmlNode *pNode = NULL;
 			TiXmlNode *pIt = NULL;
@@ -768,35 +774,35 @@ int CXbmcWeb::xbmcConfiguration( int eid, webs_t wp, int argc, char_t **argv)
 
 			if (!strcmp(type, WEB_MUSIC_BOOKMARK))
 			{
-				/* music bookmarks */
+				/* music bookmarks *
 				pNode = pRootElement->FirstChild("music");
 				while(pIt = pNode->IterateChildren("bookmark", pIt))	count++;
 				ejSetResult( eid, itoa(count, buffer, 10));
 			}
 			else if (!strcmp(type, WEB_PICTURE_BOOKMARK))
 			{
-				/* picture bookmarks */
+				/* picture bookmarks *
 				pNode = pRootElement->FirstChild("pictures");
 				while(pIt = pNode->IterateChildren("bookmark", pIt))	count++;
 				ejSetResult( eid, itoa(count, buffer, 10));
 			}
 			else if (!strcmp(type, WEB_VIDEO_BOOKMARK))
 			{
-				/* video bookmarks */
+				/* video bookmarks *
 				pNode = pRootElement->FirstChild("video");
 				while(pIt = pNode->IterateChildren("bookmark", pIt))	count++;
 				ejSetResult( eid, itoa(count, buffer, 10));
 			}
 			else if (!strcmp(type, WEB_FILE_BOOKMARK))
 			{
-				/* file bookmarks */
+				/* file bookmarks *
 				pNode = pRootElement->FirstChild("files");
 				while(pIt = pNode->IterateChildren("bookmark", pIt))	count++;
 				ejSetResult( eid, itoa(count, buffer, 10));
 			}
 			else if (!strcmp(type, WEB_PROGRAM_BOOKMARK))
 			{
-				/* program bookmarks */
+				/* program bookmarks *
 				pNode = pRootElement->FirstChild("myprograms");
 				while(pIt = pNode->IterateChildren("bookmark", pIt))	count++;
 				ejSetResult( eid, itoa(count, buffer, 10));
@@ -829,25 +835,25 @@ int CXbmcWeb::xbmcConfiguration( int eid, webs_t wp, int argc, char_t **argv)
 
 		if (xbmcCfgLoaded)
 		{
-			/* Return bookmark of */
+			/* Return bookmark of *
 			TiXmlElement *pRootElement = xbmcCfg.RootElement();
 			TiXmlNode *pNode = NULL;
 			TiXmlNode *pIt = NULL;
 
 			if (!strcmp(type, WEB_MUSIC_BOOKMARK)) {
-				/* music bookmarks */
+				/* music bookmarks *
 				pNode = pRootElement->FirstChild("music");
 			} else if (!strcmp(type, WEB_PICTURE_BOOKMARK)) {
-				/* picture bookmarks */
+				/* picture bookmarks *
 				pNode = pRootElement->FirstChild("pictures");
 			} else if (!strcmp(type, WEB_VIDEO_BOOKMARK)) {
-				/* video bookmarks */
+				/* video bookmarks *
 				pNode = pRootElement->FirstChild("video");
 			} else if (!strcmp(type, WEB_PROGRAM_BOOKMARK)) {
-				/* apps bookmarks */
+				/* apps bookmarks *
 				pNode = pRootElement->FirstChild("myprograms");
 			} else if (!strcmp(type, WEB_FILE_BOOKMARK)) {
-				/* apps bookmarks */
+				/* apps bookmarks *
 				pNode = pRootElement->FirstChild("files");
 			}
 
@@ -938,19 +944,19 @@ int CXbmcWeb::xbmcConfiguration( int eid, webs_t wp, int argc, char_t **argv)
 			TiXmlNode *pIt = NULL;
 
 			if (!strcmp(type, WEB_MUSIC_BOOKMARK)) {
-				/* music bookmarks */
+				/* music bookmarks *
 				pNode = pRootElement->FirstChild("music");
 			} else if (!strcmp(type, WEB_PICTURE_BOOKMARK)) {
-				/* picture bookmarks */
+				/* picture bookmarks *
 				pNode = pRootElement->FirstChild("pictures");
 			} else if (!strcmp(type, WEB_VIDEO_BOOKMARK)) {
-				/* video bookmarks */
+				/* video bookmarks *
 				pNode = pRootElement->FirstChild("video");
 			} else if (!strcmp(type, WEB_PROGRAM_BOOKMARK)) {
-				/* apps bookmarks */
+				/* apps bookmarks *
 				pNode = pRootElement->FirstChild("myprograms");
 			} else if (!strcmp(type, WEB_FILE_BOOKMARK)) {
-				/* apps bookmarks */
+				/* apps bookmarks *
 				pNode = pRootElement->FirstChild("files");
 			}
 
@@ -1006,19 +1012,19 @@ int CXbmcWeb::xbmcConfiguration( int eid, webs_t wp, int argc, char_t **argv)
 			TiXmlNode *pIt = NULL;
 
 			if (!strcmp(type, WEB_MUSIC_BOOKMARK)) {
-				/* music bookmarks */
+				/* music bookmarks *
 				pNode = pRootElement->FirstChild("music");
 			} else if (!strcmp(type, WEB_PICTURE_BOOKMARK)) {
-				/* picture bookmarks */
+				/* picture bookmarks *
 				pNode = pRootElement->FirstChild("pictures");
 			} else if (!strcmp(type, WEB_VIDEO_BOOKMARK)) {
-				/* video bookmarks */
+				/* video bookmarks *
 				pNode = pRootElement->FirstChild("video");
 			} else if (!strcmp(type, WEB_PROGRAM_BOOKMARK)) {
-				/* apps bookmarks */
+				/* apps bookmarks *
 				pNode = pRootElement->FirstChild("myprograms");
 			} else if (!strcmp(type, WEB_FILE_BOOKMARK)) {
-				/* apps bookmarks */
+				/* apps bookmarks *
 				pNode = pRootElement->FirstChild("files");
 			}
 
@@ -1046,7 +1052,7 @@ int CXbmcWeb::xbmcConfiguration( int eid, webs_t wp, int argc, char_t **argv)
 				return -1;
 			}
 		}
-		/* Save configuration to file */
+		/* Save configuration to file *
 		if (filename)	xbmcCfg.SaveFile(filename);
 	}
 	else if (!strcmp(command, WEB_EDIT) && xbmcCfgLoaded)
@@ -1083,7 +1089,7 @@ int CXbmcWeb::xbmcConfiguration( int eid, webs_t wp, int argc, char_t **argv)
 				i++;
 			}
 		}
-	}
+	}*/
 	// return the number of characters written
 	return 0;
 }
@@ -1092,11 +1098,7 @@ int CXbmcWeb::xbmcConfiguration( int eid, webs_t wp, int argc, char_t **argv)
 /* Play */
 int CXbmcWeb::xbmcPlayerPlay( int eid, webs_t wp, char_t *parameter)
 {
-	CFileItem *itm = webDirItems[GetCurrentItem()];
-	if (!itm->m_bIsFolder)
-	{
-		g_applicationMessenger.MediaPlay(itm->m_strPath);
-	}
+	g_applicationMessenger.MediaPlay(strCurrentMediaFile);
 	return 0;
 }
 
