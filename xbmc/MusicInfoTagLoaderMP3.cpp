@@ -4,6 +4,9 @@
 #include "Util.h"
 #include "picture.h"
 #include "utils/log.h"
+#include "autoptrhandle.h"
+
+using namespace AUTOPTR;
 
 const uchar* ID3_GetPictureBufferOfPicType(ID3_Tag* tag, ID3_PictureType pictype, size_t* pBufSize )
 {
@@ -88,11 +91,11 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
 	bool bResult= false;
 
 	SYSTEMTIME dateTime;
-	auto_ptr<char>pYear  (ID3_GetYear( &id3tag  ));
-	auto_ptr<char>pTitle (ID3_GetTitle( &id3tag ));
-	auto_ptr<char>pArtist(ID3_GetArtist( &id3tag));
-	auto_ptr<char>pAlbum (ID3_GetAlbum( &id3tag ));
-	auto_ptr<char>pGenre (ID3_GetGenre( &id3tag ));
+	auto_aptr<char>pYear  (ID3_GetYear( &id3tag  ));
+	auto_aptr<char>pTitle (ID3_GetTitle( &id3tag ));
+	auto_aptr<char>pArtist(ID3_GetArtist( &id3tag));
+	auto_aptr<char>pAlbum (ID3_GetAlbum( &id3tag ));
+	auto_aptr<char>pGenre (ID3_GetGenre( &id3tag ));
 	int nTrackNum=ID3_GetTrackNum( &id3tag );
 
 	tag.SetTrackNumber(nTrackNum);
@@ -127,11 +130,11 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
 		ID3_PictureType nPicTyp=ID3PT_COVERFRONT;
 		CStdString strExtension;
 		bool bFound=false;
-		auto_ptr<char>pMimeTyp (ID3_GetMimeTypeOfPicType(&id3tag, nPicTyp));
+		auto_aptr<char>pMimeTyp (ID3_GetMimeTypeOfPicType(&id3tag, nPicTyp));
 		if (pMimeTyp.get() == NULL)
 		{
 			nPicTyp=ID3PT_OTHER;
-			auto_ptr<char>pMimeTyp (ID3_GetMimeTypeOfPicType(&id3tag, nPicTyp));
+			auto_aptr<char>pMimeTyp (ID3_GetMimeTypeOfPicType(&id3tag, nPicTyp));
 			if (pMimeTyp.get() != NULL)
 			{
 				strExtension=pMimeTyp.get();
