@@ -138,6 +138,7 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
 				for(int i=0; i<NUM_DAYS; i++) 
 					m_dfForcast[i].pImage = (CGUIImage*)GetControl(CONTROL_IMAGED0IMG+(i*10));
 				UpdateButtons();
+
 				m_lRefreshTime = timeGetTime() - (g_stSettings.m_iWeatherRefresh*60000) + 2000; //refresh in 2 seconds
 			LoadLocalizedToken();
 		break;
@@ -213,9 +214,16 @@ void CGUIWindowWeather::UpdateButtons()
 	for(int i=0; i<MAX_LOCATION; i++)
 	{
 		if(strlen(m_szLocation[i]) > 1)							//got the location string yet?
-			msg2.SetLabel(m_szLocation[i]);
+		{
+			CStdString strLabel = m_szLocation[i];
+			int iPos = strLabel.ReverseFind(", ");
+			if (iPos) strLabel=strLabel.Left(iPos);	// strip off the country part
+			msg2.SetLabel(strLabel);				// so we just display the town
+		}
 		else
-		msg2.SetLabel(g_stSettings.m_szWeatherArea[i]);
+		{
+			msg2.SetLabel(g_stSettings.m_szWeatherArea[i]);
+		}
 		g_graphicsContext.SendMessage(msg2);
 	}
 
