@@ -9,6 +9,7 @@
 #include "IAudioCallback.h"
 #include "../../settings.h"
 #include "mplayer.h"
+#include "../../utils/log.h"
 IDirectSoundRenderer* m_pAudioDecoder=NULL;
 
 static IAudioCallback* m_pAudioCallback=NULL;
@@ -128,8 +129,26 @@ static int audio_init(int rate,int channels,int format,int flags)
     audio_uninit(1); //Make sure nothing else was uninted first. mplayer sometimes forgets.
 
     mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
-		int ao_format_bits = audio_out_format_bits(format); 
-		if (format==AFMT_AC3) ao_format_bits=16;
+
+    int ao_format_bits;
+
+    //Make sure we only accept formats that we can handle
+    switch(format){
+	    case AFMT_AC3:
+        ao_format_bits=16;
+        break;
+	    case AFMT_S24_LE:
+	    case AFMT_S16_LE:
+	    case AFMT_S8:
+      case AFMT_U8: //Not sure about this one, added as we have handling for it later
+		    ao_format_bits = audio_out_format_bits(format); 
+        break;
+	    default:
+        CLog::Log(LOGDEBUG, "ao_win32: format %d not supported defaulting to Signed 16-bit Little-Endian\n",format);
+		    format=AFMT_S16_LE;
+        ao_format_bits = audio_out_format_bits(format); 
+    }   	
+
 
 	pao_data=GetAOData();
 
