@@ -523,7 +523,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 			if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("System.RemotePlayHDSpinDown") != SPIN_DOWN_NONE);
 		}
 		else if (strSetting == "System.ShutDownWhilePlaying")
-		{	// only visible if we have spin down enabled
+		{	// only visible if we have shutdown enabled
 			CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
 			if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("System.ShutDownTime") != 0);
 		}
