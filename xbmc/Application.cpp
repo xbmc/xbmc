@@ -754,6 +754,16 @@ void CApplication::OnKey(CKey& key)
 
 void CApplication::FrameMove()
 {
+  static lTickCount=0;
+  if (GetTickCount()-lTickCount >=1000)
+  {
+    SYSTEMTIME time;
+	  GetLocalTime(&time);
+    CStdString strTime;
+    strTime.Format("%02.2i:%02.2i:%02.2i %02.2i-%02.2i-%02.2i", time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
+    g_lcd.SetLine(1,strTime);
+    lTickCount=GetTickCount();
+  }
   // read raw input from controller & remote control
 	ReadInput();
 	XBIR_REMOTE* pRemote	= &m_DefaultIR_Remote;
