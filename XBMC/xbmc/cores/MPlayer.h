@@ -16,8 +16,11 @@ public:
 	virtual bool		IsPlaying() const;
 	virtual void		Pause();
 	virtual bool		IsPaused() const;
-	void						Unload();
+	virtual void		Unload();
 	virtual __int64	GetPTS();
+	virtual bool		HasVideo();
+	virtual bool		HasAudio();
+
 protected:
 	virtual void		OnStartup();
 	virtual void		OnExit();

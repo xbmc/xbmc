@@ -12,8 +12,6 @@
 //			- in debug mode CSMBDirectory gives an stack corruption
 //
 // general:
-//			- MPLAYER
-//					- other formats like matroska,...
 //			- python scripts GUI
 //			- CDDB query : show dialogs
 //			- keep groups together when sorting (hd, shares,...)

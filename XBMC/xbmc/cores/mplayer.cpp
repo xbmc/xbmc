@@ -1,4 +1,5 @@
 #include "mplayer.h"
+#include "mplayer/mplayer.h"
 
 extern "C" void dllReleaseAll( );
 
@@ -173,4 +174,14 @@ __int64	CMPlayer::GetPTS()
 	if (!m_pDLL) return 0;
 	if (!m_bIsPlaying) return 0;
 	return m_iPTS;
+}
+
+bool CMPlayer::HasVideo()
+{
+	return (mplayer_HasVideo()==TRUE);
+}
+
+bool CMPlayer::HasAudio()
+{
+	return (mplayer_HasAudio()==TRUE);
 }

@@ -19,6 +19,8 @@ public:
 	virtual void		Pause()=0;
 	virtual bool		IsPaused() const=0;
 	virtual __int64	GetPTS() =0;
+	virtual bool		HasVideo()=0;
+	virtual bool		HasAudio()=0;
 protected:
 	IPlayerCallback& m_callback;
 };
