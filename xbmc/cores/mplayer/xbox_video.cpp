@@ -72,7 +72,7 @@ static directx_fourcc_caps g_ddpf[] =
 
 static float fARcompensation[11] = 
 {
-		0.0f,							// 0 = invalid resolution. Does not exists
+		1.0f,							// 0 = invalid resolution. Does not exist
 		1.0f,							// 1 = 1920x1280
 		1.0f,							// 2 = 1280x720
 		1.0f,							// 3 = 640x480 NTSC
@@ -289,6 +289,75 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 	g_graphicsContext.Get3DDevice()->EnableOverlay(TRUE);
 }
 
+//***************************************************************************************
+// GetSourcePixelRatio()
+//
+// Considers the source frame size and output frame size (as suggested by mplayer)
+// to determine if the pixels in the source are not square.  It returns the pixel
+// ratio.  We consider the cases of VCD, SVCD and DVD separately, as these are intended
+// to be viewed on a non-square pixel TV set, so the pixels are defined to be the same
+// ratio as the intended display pixels.  These formats are determined by frame size.
+//***************************************************************************************
+static float GetSourcePixelRatio(int iSourceWidth, int iSourceHeight, int iOutputWidth, int iOutputHeight)
+{
+  float fSourcePixelRatio = 1.0f;
+
+  // Check whether mplayer has decided that the size of the video file should be changed
+  // This indicates either a scaling has taken place (which we didn't ask for) or it has
+  // found an aspect ratio parameter from the file, and is changing the frame size based
+  // on that.
+  if (iSourceWidth == iOutputWidth && iSourceHeight == iOutputHeight)
+    return fSourcePixelRatio;
+
+  // mplayer is scaling in one or both directions.  We must alter our Source Pixel Ratio
+
+  // First check our input data isn't going to cause problems such as divisions by zero
+  // and the like.
+  if (iSourceWidth == 0 || iSourceHeight == 0 || iOutputWidth == 0 || iOutputHeight == 0)
+    return fSourcePixelRatio;
+  
+  // Calculate the ratio of the output frame 
+  float fOutputFrameRatio = (float)iOutputWidth/iOutputHeight;
+
+  // Calculate the ratio of the input frame
+  float fSourceFrameRatio = (float)iSourceWidth/iSourceHeight;
+
+  // Use output frame ratio and source frame ratio to determine the pixel ratio
+  fSourcePixelRatio = fOutputFrameRatio / fSourceFrameRatio;
+
+  // OK, most sources will be correct now, except those that are intended
+  // to be displayed on non-square pixel based output devices (ie PAL or NTSC TVs)
+  // This includes VCD, SVCD, and DVD (and possibly others that we are not doing yet)
+  // For this, we can base the pixel ratio on the pixel ratios of PAL and NTSC,
+  // though we will need to adjust for anamorphic sources (ie those whose
+  // output frame ratio is not 4:3) and for SVCDs which have 2/3rds the
+  // horizontal resolution of the default NTSC or PAL frame sizes
+
+  // The following are the defined standard ratios for PAL and NTSC pixels
+  float fPALPixelRatio = 59.0f/54.0f;
+  float fNTSCPixelRatio = 10.0f/11.0f;
+
+  // Calculate the correction needed for anamorphic sources
+  float fNon4by3Correction = (float)fOutputFrameRatio/(4.0f/3.0f);
+
+  // Now use the helper functions to check for a VCD, SVCD or DVD frame size
+  if (CUtil::IsNTSC_VCD(iSourceWidth,iSourceHeight))
+     fSourcePixelRatio = fNTSCPixelRatio;
+  if (CUtil::IsNTSC_SVCD(iSourceWidth,iSourceHeight))
+     fSourcePixelRatio = 3.0f/2.0f*fNTSCPixelRatio*fNon4by3Correction;
+  if (CUtil::IsNTSC_DVD(iSourceWidth,iSourceHeight))
+     fSourcePixelRatio = fNTSCPixelRatio*fNon4by3Correction;
+  if (CUtil::IsPAL_VCD(iSourceWidth,iSourceHeight))
+     fSourcePixelRatio = fPALPixelRatio;
+  if (CUtil::IsPAL_SVCD(iSourceWidth,iSourceHeight))
+     fSourcePixelRatio = 3.0f/2.0f*fPALPixelRatio*fNon4by3Correction;
+  if (CUtil::IsPAL_DVD(iSourceWidth,iSourceHeight))
+     fSourcePixelRatio = fPALPixelRatio*fNon4by3Correction;
+
+  // Done, return the result
+  return fSourcePixelRatio;
+}
+
 //********************************************************************************************************
 static unsigned int Directx_ManageDisplay()
 {
@@ -340,8 +409,10 @@ static unsigned int Directx_ManageDisplay()
 				float fARcompensation_final = fARcompensation[m_iResolution];
 				if (g_graphicsContext.IsWidescreen() && ((m_iResolution >= 3) || (m_iResolution <= 10)))
 				      fARcompensation_final *= 4.0f/3.0f;
-		
-				float fAR = ( (float)image_width ) / ( ( (float)image_height) * fARcompensation_final ); 
+
+				// Calculate frame ratio based on source frame size and pixel ratio (Added by JM)
+				float fSourcePixelRatio = GetSourcePixelRatio(image_width, image_height, d_image_width, d_image_height);
+				float fAR = (float)image_width/((float)image_height)*fSourcePixelRatio / fARcompensation_final; 
 
 			
 				float fNewWidth;
@@ -397,10 +468,12 @@ static unsigned int Directx_ManageDisplay()
 		if (g_graphicsContext.IsWidescreen() && ((m_iResolution >= 3) || (m_iResolution <= 10)))
 		      fARcompensation_final *= 4.0f/3.0f;
 		
-		float fAR = ( (float)image_width ) / ( ( (float)image_height) * fARcompensation_final ); 
+	        // Calculate frame ratio based on source frame size and pixel ratio (Added by JM)
+		float fSourcePixelRatio = GetSourcePixelRatio(image_width, image_height, d_image_width, d_image_height);
+		float fAR = (float)image_width/((float)image_height)*fSourcePixelRatio/fARcompensation_final; 
 
 		// maximize the movie width
-		float fNewWidth  = (float)( iScreenWidth);
+		float fNewWidth  = (float)(iScreenWidth);
 		float fNewHeight = fNewWidth/fAR;
 
 		if (fNewHeight > iScreenHeight)
@@ -446,6 +519,7 @@ static unsigned int Directx_ManageDisplay()
 	}
 	return 0;
 }
+
 
 //***********************************************************************************************************
 //***********************************************************************************************************
