@@ -205,7 +205,7 @@ INT CXBApplicationEx::Run()
           CLog::Log(LOGERROR, "exception in CApplication::FrameMove()");
         }
 
-         Render the scene
+        // Render the scene
         try
         {
           Render();
