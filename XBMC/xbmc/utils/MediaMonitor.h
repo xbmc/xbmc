@@ -12,6 +12,7 @@
 #include "Thread.h"
 #include "StdString.h"
 #include "IMDB.h"
+#include "../Settings.h"
 #include "../FileItem.h"
 #include "../FileSystem/Directory.h"
 #include "../VideoDatabase.h"
@@ -42,11 +43,12 @@ public:
 	};
 
 	typedef std::vector<Movie> MOVIELIST;
+	typedef std::vector<Movie> ::iterator MOVIELISTITERATOR;
 
 	CMediaMonitor();
 	virtual ~CMediaMonitor();
 
-	enum CommandType {Refresh,Update};
+	enum CommandType {Seed,Refresh,Update};
 
 	struct Command
 	{
@@ -58,6 +60,7 @@ public:
 
 	void Create(IMediaObserver* aObserver);
 	void QueueCommand(CMediaMonitor::Command& aCommand);
+	bool IsBusy();
 
 protected:
 
@@ -66,12 +69,17 @@ protected:
 	void DispatchNextCommand();
 
 private:
+	void OnStartup();
 	void Process();
 	void InitializeObserver();
-	void Scan();
-	void Scan(DIRECTORY::CDirectory& directory, CStdString& aPath);
+	void Scan(bool bUpdateAllMovies=false);
+	void Scan(DIRECTORY::CDirectory& directory, CStdString& aPath, MOVIELIST& movies);
+	void GetSharedMovies(VECSHARES& vecShares, MOVIELIST& movies);
+	void FilterDuplicates(MOVIELIST& movies);
+
 	void UpdateTitle(INT nIndex, CStdString& strTitle, CStdString& strFilepath);
-	bool GetMovieInfo(CStdString& strFilepath, CIMDBMovie& aMovieRecord);
+	void UpdateObserver(Movie& aMovie, IMediaObserver* pObserver, INT nIndex, bool bForceUpdate);
+	bool GetMovieInfo(CStdString& strFilepath, CIMDBMovie& aMovieRecord, bool bRefresh);
 	bool imdb_GetMovieInfo(CStdString& strTitle, CIMDBMovie& aMovieRecord);
 	bool imdb_GetMovieArt(CStdString& strIMDBNumber, CStdString& strPictureUrl, CStdString& strImagePath);
 
@@ -84,10 +92,10 @@ private:
 	static long parse_AggregateValue(CStdString& strFilepath);
 
 	IMediaObserver*		m_pObserver;
-	MOVIELIST			m_movies;
 	CVideoDatabase		m_database;
 	CRITICAL_SECTION	m_critical_section;
 	HANDLE				m_hCommand;
+	bool				m_bBusy;
 };
 
 #endif // !defined(AFX_MediaMonitor_H__157FED93_0CDE_4295_A9AF_75BEF4E81761__INCLUDED_)

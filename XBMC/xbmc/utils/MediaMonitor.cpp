@@ -8,7 +8,6 @@
 #include "Log.h"
 #include "../Picture.h"
 #include "../Util.h"
-#include "../Settings.h"
 #include "../FileSystem/VirtualDirectory.h"
 
 //////////////////////////////////////////////////////////////////////
@@ -28,6 +27,7 @@ bool CMediaMonitor::SortMoviesByDateAndTime(Movie aMovie1, Movie aMovie2)
 CMediaMonitor::CMediaMonitor() : CThread()
 {
 	m_pObserver = NULL;
+	m_bBusy = false;
 }
 
 CMediaMonitor::~CMediaMonitor()
@@ -47,6 +47,11 @@ void CMediaMonitor::Create(IMediaObserver* aObserver)
 	CThread::Create(false);
 }
 
+void CMediaMonitor::OnStartup()
+{
+	SetPriority( THREAD_PRIORITY_LOWEST );
+}
+
 void CMediaMonitor::Process() 
 {
 	InitializeObserver();
@@ -60,23 +65,32 @@ void CMediaMonitor::Process()
 		switch ( WaitForSingleObject(m_hCommand,INFINITE) )
 		{
 			case WAIT_OBJECT_0:
+				m_bBusy = true;
 				DispatchNextCommand();
+				m_bBusy = false;
 				break;
 		}
 	}
 }
 
+/// This method queues a command for processing by the thread when it is next available
 void CMediaMonitor::QueueCommand(CMediaMonitor::Command& aCommand)
 {
 	EnterCriticalSection(&m_critical_section);
 
 	m_commands.push_back(aCommand);
-
+	
 	LeaveCriticalSection(&m_critical_section);
 
 	SetEvent(m_hCommand);
 }
 
+bool CMediaMonitor::IsBusy()
+{
+	return m_bBusy;
+}
+
+/// This method checks the list of pending commands and executes the next command
 void CMediaMonitor::DispatchNextCommand()
 {
 	if (m_commands.size()<=0)
@@ -94,26 +108,77 @@ void CMediaMonitor::DispatchNextCommand()
 
 	switch(command.rCommand)
 	{
+		case CommandType::Seed:
+		{
+			// update all movie information
+			CLog::Log("Seeding database... started.");
+			Scan(true);
+			CLog::Log("Seeding database... completed.");
+			break;
+		}
+
 		case CommandType::Refresh:
 		{
-			Scan();
+			// get information for the latest 3 movies
+			CLog::Log("Refreshing latest movies... started.");
+			Scan(false);
+			CLog::Log("Refreshing latest movies... completed.");
 			break;
 		}
 
 		case CommandType::Update:
 		{
+			// update the information for a specific movie
+			CLog::Log("Updating movie... started.");
 			UpdateTitle(command.nParam1,command.strParam1,command.strParam2);
+			CLog::Log("Updating movie... completed.");
 			break;
 		}
 	}
 }
 
-void CMediaMonitor::Scan()
-{
-	VECSHARES& vecShares = g_settings.m_vecMyVideoShares;
 
+/// This method scans all remote shares and determines the latest 3 movies
+/// If bUpdateAllMovies is true then IMDB is queried for each and every movie found
+//  otherwise queries are limited to the 3 latest movies.
+void CMediaMonitor::Scan(bool bUpdateAllMovies)
+{
+	MOVIELIST movies;
+	GetSharedMovies(g_settings.m_vecMyVideoShares, movies);
+
+	// sort files by creation date
+	sort(movies.begin(), movies.end(), CMediaMonitor::SortMoviesByDateAndTime );
+
+	// remove duplicates
+	FilterDuplicates(movies);
+
+	// Update movies if necessary
+	if (bUpdateAllMovies)
+	{
+		// query imdb for new info
+		for(int iMovie=0; iMovie<(int)movies.size(); iMovie++)
+		{
+			UpdateObserver(movies[iMovie],NULL,0,false);
+			Sleep(50);
+		}
+	}
+
+	// Select the 3 newest files (remove similar filenames from consideration):
+	int iLatestMovie = (int) movies.size()-1;
+	int iOlderMovie = iLatestMovie - RECENT_MOVIES;
+	for(int iMovie = iLatestMovie; (iMovie>=0) && (iMovie>iOlderMovie); iMovie--)
+	{
+		UpdateObserver(movies[iMovie],m_pObserver,iLatestMovie-iMovie,false);
+	}
+
+	movies.clear();
+}
+
+
+void CMediaMonitor::GetSharedMovies(VECSHARES& vecShares, MOVIELIST& movies)
+{
 	DIRECTORY::CVirtualDirectory directory;
-	directory.SetShares(g_settings.m_vecMyVideoShares);
+	directory.SetShares(vecShares);
 	directory.SetMask(g_stSettings.m_szMyVideoExtensions);
 
 	CStdString path;
@@ -125,103 +190,101 @@ void CMediaMonitor::Scan()
 			CFileItem* pItem = items.at(i);
 			if (pItem->m_iDriveType == SHARE_TYPE_REMOTE)
 			{
-				Scan(directory, pItem->m_strPath);
+				Scan(directory, pItem->m_strPath, movies);
 			}
 
 			delete pItem;
 		}
 	}
+}
 
-	// sort files by creation date
-	sort(m_movies.begin(), m_movies.end(), CMediaMonitor::SortMoviesByDateAndTime );
+void CMediaMonitor::FilterDuplicates(MOVIELIST& movies)
+{
+	MOVIELISTITERATOR current = movies.begin();
+	MOVIELISTITERATOR previous = current;
 
-	// select the 3 newest files (remove similar filenames from consideration):
-	int i = m_movies.size()-1;
-
-	int selections[RECENT_MOVIES];
-	int sel = 0;
-    
-	while ((i>=0) && (sel<RECENT_MOVIES))
+	while(current!=movies.end())
 	{
-		Movie aMovie = m_movies.at(i);
-
-		if (sel>0)
+		if (previous!=current)
 		{
 			// ensure at least less than 75% similar compared to the previous selection
-			if (!parse_Similar(	aMovie.strFilepath,
-								m_movies.at(selections[sel-1]).strFilepath, 75))
-			{
-				selections[sel++] = i;
-			}
-			else
+			if (parse_Similar(	(*current).strFilepath, (*previous).strFilepath, 75))
 			{
 				// items are similar, find out which one is more likely to be CD1
-				long valueA = parse_AggregateValue(aMovie.strFilepath);
-				long valueB = parse_AggregateValue(m_movies.at(selections[sel-1]).strFilepath);
+				long valueA = parse_AggregateValue((*current).strFilepath);
+				long valueB = parse_AggregateValue((*previous).strFilepath);
 
 				if (valueA<valueB)
 				{
-					m_movies.at(selections[sel-1]).strFilepath = aMovie.strFilepath;
+					*previous = *current;
 				}
+
+				current = movies.erase(current);
+				continue;
 			}
 		}
-		else
-		{
-			selections[sel++] = i;
-		}
 
-		i--;
+		previous = current;
+		current++;
 	}
-
-	m_database.Open();
-
-	// we have selected up to 3 new files
-	for(i=0;i<sel;i++)
-	{
-		CStdString strImagePath;
-		CIMDBMovie details;  
-		Movie aMovie = m_movies.at(selections[i]);
-
-		if (GetMovieInfo(aMovie.strFilepath, details))
-		{
- 			if (!details.m_strPictureURL.IsEmpty())
-			{
-				imdb_GetMovieArt(details.m_strIMDBNumber,details.m_strPictureURL,strImagePath);
-			}
-		}
-		else
-		{
-			details.m_strTitle = CUtil::GetFileName(aMovie.strFilepath);
-		}
-
-		if (m_pObserver)
-		{
-			g_graphicsContext.Lock();
-			m_pObserver->OnMediaUpdate(i,aMovie.strFilepath, details.m_strTitle, strImagePath);
-			g_graphicsContext.Unlock();
-		}
-	}
-
-	m_database.Close();
-	m_movies.clear();
 }
 
-
-
-
-
-bool CMediaMonitor::GetMovieInfo(CStdString& strFilepath, CIMDBMovie& aMovieRecord)
+/// This method gets information for the specified movie and notifies the specified
+/// observer.
+void CMediaMonitor::UpdateObserver(Movie& aMovie, IMediaObserver* pObserver, INT nIndex, bool bForceUpdate)
 {
+	CStdString strImagePath;
+	CIMDBMovie details;  
+
+	if ( GetMovieInfo(aMovie.strFilepath, details, bForceUpdate) )
+	{
+		if (!details.m_strPictureURL.IsEmpty())
+		{
+			imdb_GetMovieArt(details.m_strIMDBNumber,details.m_strPictureURL,strImagePath);
+		}
+	}
+	else
+	{
+		details.m_strTitle = CUtil::GetFileName(aMovie.strFilepath);
+	}
+
+	if (pObserver)
+	{
+		g_graphicsContext.Lock();
+		pObserver->OnMediaUpdate(nIndex,aMovie.strFilepath, details.m_strTitle, strImagePath);
+		g_graphicsContext.Unlock();
+	}
+}
+
+/// This method looks for information in the localdatabase, checking IMDB for new information
+/// if none is available in the localdatabase or bRefresh is true.
+bool CMediaMonitor::GetMovieInfo(CStdString& strFilepath, CIMDBMovie& aMovieRecord, bool bRefresh)
+{
+	m_database.Open();
+
 	// Return the record stored in local database
 	if (m_database.HasMovieInfo(strFilepath))
 	{
-		m_database.GetMovieInfo(strFilepath, aMovieRecord);
-		return true;
+		if (bRefresh)
+		{
+			m_database.DeleteMovie(strFilepath);
+		}
+		else
+		{
+			m_database.GetMovieInfo(strFilepath, aMovieRecord);
+			m_database.Close();
+			return true;
+		}
 	}
 
 	// Clean up filename in an attempt to get an idea of the movie name
 	CStdString strName = CUtil::GetFileName(strFilepath);
 	parse_Clean(strName);
+
+	if (strName.IsEmpty())
+	{
+		strName = CUtil::GetFileName(strFilepath);
+	}
 
 	CStdString debug;
 	debug.Format("New filepath: %s\nQuerying: %s",strFilepath.c_str(),strName.c_str());
@@ -237,13 +300,16 @@ bool CMediaMonitor::GetMovieInfo(CStdString& strFilepath, CIMDBMovie& aMovieReco
 			m_database.SetMovieInfo(strFilepath, aMovieRecord);
 		}
 
+		m_database.Close();
 		return true;
 	}
 
 	// We failed to find any information
+	m_database.Close();
 	return false;
 }
 
+/// This method queries imdb for movie information associated with a title
 bool CMediaMonitor::imdb_GetMovieInfo(CStdString& strTitle, CIMDBMovie& aMovieRecord)
 {
 	CIMDB imdb;
@@ -264,6 +330,7 @@ bool CMediaMonitor::imdb_GetMovieInfo(CStdString& strTitle, CIMDBMovie& aMovieRe
 	return false;
 }
 
+/// This method queries imdb for movie poster art associated with an imdb number
 bool CMediaMonitor::imdb_GetMovieArt(CStdString& strIMDBNumber, CStdString& strPictureUrl, CStdString& strImagePath)
 {
 	CStdString strThum;
@@ -277,6 +344,11 @@ bool CMediaMonitor::imdb_GetMovieArt(CStdString& strIMDBNumber, CStdString& strP
 
 	CStdString strExtension;
 	CUtil::GetExtension(strPictureUrl,strExtension);
+	
+	if (strExtension.IsEmpty())
+	{
+		return false;
+	}
 
 	CStdString strTemp;
 	strTemp.Format("Z:\\ram_temp%s",strExtension.c_str());
@@ -306,7 +378,8 @@ bool CMediaMonitor::imdb_GetMovieArt(CStdString& strIMDBNumber, CStdString& strP
 	return false;
 }
 
-
+/// This method queries forcibly updates an existing movies information by querying 
+/// imdb with the specified title
 void CMediaMonitor::UpdateTitle(INT nIndex, CStdString& strTitle, CStdString& strFilepath)
 {
 	m_database.Open();
@@ -348,52 +421,36 @@ void CMediaMonitor::UpdateTitle(INT nIndex, CStdString& strTitle, CStdString& st
 }
 
 
-
+/// This method queries the local database for the last movies added
 void CMediaMonitor::InitializeObserver()
 {
 	m_database.Open();
 
 	long lzMovieId[RECENT_MOVIES];
-
 	int count = m_database.GetRecentMovies(lzMovieId,RECENT_MOVIES);
+	
+	m_database.Close();
 
 	for(int i=0;i<count;i++)
 	{
+		m_database.Open();
+
 		VECMOVIESFILES paths;
 		m_database.GetFiles(lzMovieId[i],paths);
 
+		m_database.Close();
+
 		if (paths.size()>0)
 		{
-			CStdString filePath = paths[0];
-			CStdString strImagePath;
-
-			CIMDBMovie details;  
-			if (GetMovieInfo(filePath, details))
-			{
- 				if (!details.m_strPictureURL.IsEmpty())
-				{
-					imdb_GetMovieArt(details.m_strIMDBNumber,details.m_strPictureURL,strImagePath);
-				}
-			}
-			else
-			{
-				details.m_strTitle = CUtil::GetFileName(filePath);
-			}
-
-			if (m_pObserver)
-			{
-				g_graphicsContext.Lock();
-				m_pObserver->OnMediaUpdate(i, filePath, details.m_strTitle, strImagePath);
-				g_graphicsContext.Unlock();
-			}
+			Movie movie;
+			movie.strFilepath = paths[0];
+			UpdateObserver(movie,m_pObserver,i,false);
 		}
 	}
-
-	m_database.Close();
 }
 
 
-void CMediaMonitor::Scan(DIRECTORY::CDirectory& directory, CStdString& aPath)
+void CMediaMonitor::Scan(DIRECTORY::CDirectory& directory, CStdString& aPath, MOVIELIST& movies)
 {
 	// dispatch any pending commands first before scanning this directory!
 	DispatchNextCommand();
@@ -410,7 +467,7 @@ void CMediaMonitor::Scan(DIRECTORY::CDirectory& directory, CStdString& aPath)
 		
 		if (pItem->m_bIsFolder)
 		{
-			Scan(directory, pItem->m_strPath);
+			Scan(directory, pItem->m_strPath, movies);
 		}
 		else
 		{
@@ -429,7 +486,7 @@ void CMediaMonitor::Scan(DIRECTORY::CDirectory& directory, CStdString& aPath)
 				aMovie.wTime		= (( (pItem->m_stTime.wHour & 0x00FF)	<< 8 )  |
 									(pItem->m_stTime.wMinute & 0x00FF) );
 
-				m_movies.push_back(aMovie);
+				movies.push_back(aMovie);
 
 				//OutputDebugString(pItem->GetLabel().c_str());
 				//OutputDebugString("\n");
@@ -443,7 +500,7 @@ void CMediaMonitor::Scan(DIRECTORY::CDirectory& directory, CStdString& aPath)
 ///////////////////////////////////////////////////////////////////////////
 // Filename parsing functions
 
-const char seps[]   = ",._-";
+const char seps[]   = ",._- ";
 const char* keywords[]   = {"xvid","divx","hdtv","pdtv","dvdrip","dvd","ts","scr",0};
 
 int CMediaMonitor::parse_GetStart(char* szText)
@@ -516,7 +573,7 @@ int CMediaMonitor::parse_GetLength(char* szText, int start)
 			}
 		}
 
-		if (nCapital>=nHalfWord)
+		if ((nCapital>=nHalfWord) && (nWordLen>3))
 		{
 			break;
 		}
@@ -540,9 +597,11 @@ int CMediaMonitor::parse_GetLength(char* szText, int start)
 		}
 	}
 
-	int delimiter = strlen(szText);
+	int delimiter = 0;
 	if (token!=NULL)
 		delimiter = (int)(token - szCopy);
+	if (delimiter == 0)
+		delimiter = strlen(&szText[start]);
 
 	return delimiter;
 }
@@ -557,7 +616,7 @@ void CMediaMonitor::parse_Clean(CStdString& strFilename)
 
 	if (length<0)
 	{
-		length = strlen(szBuffer);
+		length = strlen(&szBuffer[start]);
 	}
 
 	char lc = 0;
