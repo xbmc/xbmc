@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 06-04-2005 fixed: Python checkmark controls.
+  - 06-04-2005 added: Left thumbstick individual direction keymappings.
   - 06-04-2005 changed: Visualisations now accept a position on screen parameter.  !!XBMC WILL CRASH IF YOU DON'T UPDATE YOUR VISUALISATIONS!!
   - 06-04-2005 fixed: Stack overflow in volumebar/playcontrol combination.
   - 06-04-2005 updated: Italian language file (Thnx to kotix)

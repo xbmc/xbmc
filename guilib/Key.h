@@ -42,6 +42,11 @@
 #define KEY_BUTTON_LEFT_ANALOG_TRIGGER      278
 #define KEY_BUTTON_RIGHT_ANALOG_TRIGGER     279
 
+#define KEY_BUTTON_LEFT_THUMB_STICK_UP      280 // left thumb stick directions
+#define KEY_BUTTON_LEFT_THUMB_STICK_DOWN    281 // for defining different actions per direction
+#define KEY_BUTTON_LEFT_THUMB_STICK_LEFT    282
+#define KEY_BUTTON_LEFT_THUMB_STICK_RIGHT   283
+
 // 0xF000 -> 0xF1FF is reserved for the keyboard
 #define KEY_VKEY            0xF000
 #define KEY_ASCII           0xF100

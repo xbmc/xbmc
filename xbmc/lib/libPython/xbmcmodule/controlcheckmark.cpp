@@ -24,7 +24,7 @@ namespace PYXBMC
 			"x", "y", "width", "height", "label", "focusTexture", "noFocusTexture", 
 			"checkWidth", "checkHeight", "alignment", "font", "textColor", "disabledColor", NULL };
 		ControlCheckMark *self;
-        char* cFont = NULL;
+    char* cFont = NULL;
 		char* cTextureFocus = NULL;
 		char* cTextureNoFocus = NULL;
 		char* cTextColor = NULL;
@@ -37,8 +37,8 @@ namespace PYXBMC
 
 		// set up default values in case they are not supplied
 		self->dwCheckWidth = 30;
-        self->dwCheckHeight = 30;
-        self->dwAlign = XBFONT_RIGHT;
+    self->dwCheckHeight = 30;
+    self->dwAlign = XBFONT_RIGHT;
 		self->strTextureFocus = PyGetDefaultImage( "checkmark", "textureFocus", "check-box.png" );
 		self->strTextureNoFocus = PyGetDefaultImage( "checkmark", "textureNoFocus", "check-boxNF.png" );
 		self->strFont = "font13";
@@ -47,23 +47,23 @@ namespace PYXBMC
 
 		// parse arguments to constructor
 		if (!PyArg_ParseTupleAndKeywords(
-			args,
-			kwds,
-			"llll|Osslll:ControlCheckMark",
-			keywords,
-            &self->dwPosX,
-            &self->dwPosY,
-            &self->dwWidth,
-            &self->dwHeight,
-			&pObjectText,
-            &cTextureFocus,
-            &cTextureNoFocus,
-            &self->dwCheckWidth,
-            &self->dwCheckHeight,
-            &self->dwAlign,
-			&cFont,
-			&cTextColor,
-			&cDisabledColor ))
+      args,
+      kwds,
+      "llll|Osslllsss:ControlCheckMark",
+      keywords,
+      &self->dwPosX,
+      &self->dwPosY,
+      &self->dwWidth,
+      &self->dwHeight,
+      &pObjectText,
+      &cTextureFocus,
+      &cTextureNoFocus,
+      &self->dwCheckWidth,
+      &self->dwCheckHeight,
+      &self->dwAlign,
+      &cFont,
+      &cTextColor,
+      &cDisabledColor ))
 		{
 			Py_DECREF( self );
 			return NULL;
@@ -74,12 +74,12 @@ namespace PYXBMC
 			return NULL;
 		}
 
-        if (cFont) self->strFont = cFont;
+    if (cFont) self->strFont = cFont;
 		if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
-        if (cDisabledColor)
-        {
-            sscanf( cDisabledColor, "%x", &self->dwDisabledColor );
-        }
+    if (cDisabledColor)
+    {
+        sscanf( cDisabledColor, "%x", &self->dwDisabledColor );
+    }
 
 		return (PyObject*)self;
 	}
