@@ -1,5 +1,5 @@
 <!-- German (AUSTRIA) language for XBMC -->
-<!--     Translation done by CEOMR       --> 
+<!--     Translation done by CEOMR      --> 
 
 <strings>
   <string>
@@ -111,7 +111,15 @@
     <id>32</id>
     <value>Dezember</value>
   </string>
-  
+
+  <string> 
+    <id>98</id> 
+    <value>Autom.Ansicht</value> 
+  </string> 
+  <string> 
+    <id>99</id> 
+    <value>Autom.gr.Symbol</value> 
+  </string> 
   <string>
     <id>100</id>
     <value>Symbolansicht</value>
@@ -150,11 +158,11 @@
   </string>   
   <string>
     <id>109</id>
-    <value>Abbild erstellen</value>
+    <value>Miniaturansicht</value>
   </string>   
   <string>
     <id>110</id>
-    <value>Abbild wird erstellt.</value>
+    <value>Miniaturansicht wird erstellt.</value>
   </string>   
   <string>
     <id>111</id>
@@ -534,7 +542,7 @@
   </string>
   <string> 
     <id>2050</id> 
-    <value>Länge:</value> 
+    <value>Spieldauer:</value> 
   </string>
   <string>
     <id>205</id>
@@ -570,11 +578,11 @@
   </string> 
   <string>
     <id>213</id>
-    <value>UI Kalibrierung</value>
+    <value>Bild zentrieren</value>
   </string> 
   <string>
     <id>214</id>
-    <value>Kalibrierung</value>
+    <value>Bildschirm kalibrieren</value>
   </string> 
   <string>
     <id>215</id>
@@ -858,7 +866,7 @@
   </string>
   <string>
     <id>286</id>
-    <value>Postprocessing Filter</value>
+    <value>Post Processing Filter</value>
   </string>
   <string>
     <id>287</id>
@@ -1506,7 +1514,7 @@
   </string> 
   <string>
     <id>450</id>
-    <value>Spalten:</value>
+    <value>Spalten</value>
   </string>
   <string>
     <id>4501</id>
@@ -1514,27 +1522,27 @@
   </string>
   <string>
     <id>451</id>
-    <value>Reihe 1:</value>
+    <value>Reihe 1</value>
   </string> 
   <string>
     <id>452</id>
-    <value>Reihe 2:</value>
+    <value>Reihe 2</value>
   </string> 
   <string>
     <id>453</id>
-    <value>Reihe 3:</value>
+    <value>Reihe 3</value>
   </string> 
   <string>
     <id>454</id>
-    <value>Reihe 4:</value>
+    <value>Reihe 4</value>
   </string> 
   <string>
     <id>455</id>
-    <value>Reihen:</value>
+    <value>Reihen</value>
   </string> 
   <string>
     <id>456</id>
-    <value>Modus:</value>
+    <value>Modus</value>
   </string> 
   <string>
     <id>457</id>
@@ -1562,7 +1570,7 @@
   </string>
   <string>
     <id>463</id>
-    <value>Hintergrundlicht:</value>
+    <value>Hintergrundlicht</value>
   </string>
   <string>
     <id>464</id>
@@ -1594,7 +1602,7 @@
   </string>
   <string>
     <id>471</id>
-    <value>Modchip:</value>
+    <value>Modchip</value>
   </string>
   <string>
     <id>472</id>
@@ -1678,7 +1686,7 @@
   </string>
   <string>
     <id>492</id>
-    <value>Untertitel</value>
+    <value>VobUntertitel vergr.</value>
   </string>
   <string>
     <id>493</id>
@@ -1718,7 +1726,7 @@
   </string>
   <string>
     <id>502</id>
-    <value>Offen</value>
+    <value>offen</value>
   </string>
   <string>
     <id>503</id>
@@ -2027,7 +2035,7 @@
   </string>		
   <string>
     <id>746</id>
-    <value>Bitte wieder zu Ansicht "Dateien" wechseln.</value>
+    <value>Bitte wieder zur Ansicht "Dateien" wechseln.</value>
   </string>
   <string>
     <id>747</id>
@@ -2314,8 +2322,12 @@
     <value>Unbekannt</value>
   </string>
   <string>
+    <id>13299</id>
+    <value>Anzustrebende Temperatur:</value>
+  </string>
+  <string>
     <id>13300</id>
-    <value>Lüfter Geschw.:</value>
+    <value>Geschwindigkeit in %</value>
   </string>
   <string>
     <id>13301</id>
@@ -2323,7 +2335,7 @@
   </string>
   <string>
     <id>13302</id>
-    <value>Lüftergeschwindigkeit</value>
+    <value>Lüftereinstellung</value>
   </string>
   <string>
     <id>13303</id>
@@ -2466,6 +2478,39 @@
 </string> 
      <string><id>14009</id>
 <value>Spieleverzeichnis</value>
-</string> 
+</string>
+     <string><id>14010</id><value>Ansichtenänderung</value></string> 
+     <string><id>14011</id><value>Automatische Ansicht aktivieren</value></string> 
+     <string><id>14012</id><value>Große Symbole verwenden</value></string> 
+     <string><id>14013</id><value>Vorgehensweise:</value></string> 
+     <string><id>14014</id><value>Prozentanteil:</value></string> 
+     <string><id>14015</id><value>Miniaturansicht wenn keine Dateien vorhanden</value></string> 
+     <string><id>14016</id><value>Listenansicht wenn keine Ordner vorhanden</value></string> 
+     <string><id>14017</id><value>Prozentanteil an Miniaturbildern</value></string> 
+     <string><id>14018</id><value>Anzeige-Optionen</value></string> 
+     <string><id>14019</id><value>Ortskennzahl 1</value></string> 
+     <string><id>14020</id><value>Ortskennzahl 2</value></string> 
+     <string><id>14021</id><value>Ortskennzahl 3</value></string> 
+     <string><id>14022</id><value>Datenbank</value></string> 
+     <string><id>14023</id><value>Kein TV</value></string> 
+     <string><id>14024</id><value>Stadt oder US Postleitzahl eingeben</value></string> 
+     <string><id>14025</id><value>Video von Festplatte</value></string> 
+     <string><id>14026</id><value>Video von DVDLaufwerk</value></string> 
+     <string><id>14027</id><value>Video über lokales Netzwerk</value></string> 
+     <string><id>14028</id><value>Video aus dem Internet</value></string> 
+     <string><id>14029</id><value>Audio von Festplatte</value></string> 
+     <string><id>14030</id><value>Audio von DVDLauferk</value></string> 
+     <string><id>14031</id><value>Audio über lokales Netzwerk</value></string> 
+     <string><id>14032</id><value>Audio aus dem Internet</value></string> 
+     <string><id>14033</id><value>DVD von Festplatte</value></string> 
+     <string><id>14034</id><value>DVD von DVDLaufwerk</value></string> 
+     <string><id>14035</id><value>DVD über lokales Netzwerk</value></string> 
+     <string><id>14036</id><value>Server</value></string> 
+     <string><id>14037</id><value>Darstellung</value></string> 
+     <string><id>14038</id><value>Netzwerkeinstellungen wurden geändert!</value></string> 
+     <string><id>14039</id><value>Die Änderungen werden erst wirksam, wenn sie die</value></string> 
+     <string><id>14040</id><value>XBOX neu starten. Möchten sie jetzt neu starten?</value></string> 
+     <string><id>14041</id><value>Post Processing</value></string> 
+   <string><id>14042</id><value>Gerät IP Addresse</value></string>
 
 </strings>
