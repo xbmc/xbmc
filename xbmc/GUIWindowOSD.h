@@ -35,4 +35,5 @@ private:
 	int				m_iActiveMenu;
 	DWORD			m_iActiveMenuButtonID;
 	int       m_iCurrentBookmark;
+  DWORD     m_dwTimeOut;
 };
