@@ -9,11 +9,10 @@
 // bugs: 
 //			- reboot button blinks 1/2 speed???
 //		  - reboot doesnt work on some biosses
-//
+//			- in debug mode CSMBDirectory gives an stack corruption
 //
 // general:
 //			- MPLAYER
-//					- play from network
 //					- other formats like ogg,matroska,...
 //
 //			- CDDB query : show dialogs
@@ -38,7 +37,8 @@
 // my music:
 //			- shoutcast
 //			- when playing : show album info/playtime/... in leftbottom corner
-//			- pause/ff/rwnd/stop
+//			- ff/rwnd
+//			- status of FF/RWND/pause
 //
 // my videos:
 //		  - control panel like in xbmp

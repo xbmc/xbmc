@@ -20,7 +20,7 @@ namespace PLAYLIST
 		int				GetCurrentSong() const;
 		bool			HasChanged() ;
 	protected:
-		int				m_bChanged;
+		bool			m_bChanged;
 		int				m_iCurrentSong;
 	};
 
