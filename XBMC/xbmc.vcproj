@@ -741,12 +741,6 @@
 				RelativePath=".\xbmc\FileSystem\ISO9660Directory.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\FileSystem\IsoDir.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\FileSystem\IsoDir.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\FileSystem\SMBDirectory.cpp">
 			</File>
 			<File
