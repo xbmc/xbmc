@@ -81,15 +81,18 @@ void CApplicationMessenger::ProcessMessages()
 				break;
 
 				case TMSG_MEDIA_PLAY:
+				{
 					g_application.PlayFile(pMsg->strParam);
 					if (g_application.IsPlayingVideo())
 					{
-						g_graphicsContext.Lock();
+						if (m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
+							m_gWindowManager.PreviousWindow();
+
 						g_TextureManager.Flush();
 						g_graphicsContext.SetFullScreenVideo(true);
 						m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
-						g_graphicsContext.Unlock();
 					}
+				}
 				break;
 
 				case TMSG_PICTURE_SHOW:
@@ -99,10 +102,12 @@ void CApplicationMessenger::ProcessMessages()
 
 					if (g_application.IsPlayingVideo())
 					{
-						g_graphicsContext.Lock();
-						m_gWindowManager.ActivateWindow(pSlideShow->GetPreviousWindowID());
-						g_graphicsContext.Unlock();
 						g_application.m_pPlayer->closefile();
+					}
+
+					if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+					{
+						m_gWindowManager.PreviousWindow();
 					}
 
 					g_graphicsContext.Lock();
@@ -115,7 +120,14 @@ void CApplicationMessenger::ProcessMessages()
 				break;
 
 				case TMSG_MEDIA_STOP:
+				{
 					if (g_application.m_pPlayer) g_application.m_pPlayer->closefile();
+					
+					if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+					{
+						m_gWindowManager.PreviousWindow();
+					}
+				}
 				break;
 
 				case TMSG_MEDIA_PAUSE:
