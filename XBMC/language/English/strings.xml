@@ -669,7 +669,6 @@
   <string><id>13348</id><value>Search IMDb...</value></string>
   <string><id>13349</id><value>Query Info For All Files</value></string>
   <string><id>13350</id><value>Now Playing...</value></string>
-
   <string><id>14000</id><value>Stacking: Off</value></string>
   <string><id>14001</id><value>Stacking: Simple</value></string>
   <string><id>14002</id><value>Stacking: Fuzzy</value></string>
@@ -699,11 +698,11 @@
   <string><id>14026</id><value>              - DVDRom</value></string>
   <string><id>14027</id><value>              - Local Network</value></string>
   <string><id>14028</id><value>              - Internet</value></string>
-  <string><id>14029</id><value>Audio Chache  - Harddisk</value></string>
+  <string><id>14029</id><value>Audio Cache   - Harddisk</value></string>
   <string><id>14030</id><value>              - DVDRom</value></string>
   <string><id>14031</id><value>              - Local Network</value></string>
   <string><id>14032</id><value>              - Internet</value></string>
-  <string><id>14033</id><value>DVD Chache    - Harddisk</value></string>
+  <string><id>14033</id><value>DVD Cache     - Harddisk</value></string>
   <string><id>14034</id><value>              - DVDRom</value></string>
   <string><id>14035</id><value>              - Local Network</value></string>
   <string><id>14036</id><value>Servers</value></string>
