@@ -367,7 +367,7 @@ void CApplication::Render()
 		}
 	}
 
-  if (IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
+  if (IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO && !m_bScreenSave)
 	{
 		g_graphicsContext.EnablePreviewWindow(true);
 	}
