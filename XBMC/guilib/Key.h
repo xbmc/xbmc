@@ -49,78 +49,78 @@
 #define ACTION_FORWARD								16
 #define ACTION_REWIND									17
 
-#define ACTION_SHOW_GUI								18
-#define ACTION_ASPECT_RATIO						19
-#define ACTION_STEP_FORWARD						20
-#define ACTION_STEP_BACK							21
-#define ACTION_BIG_STEP_FORWARD				22
-#define ACTION_BIG_STEP_BACK					23
-#define ACTION_SHOW_OSD								24
-#define ACTION_SHOW_SUBTITLES					25
-#define ACTION_NEXT_SUBTITLE					26
-#define ACTION_SHOW_CODEC							27
-#define ACTION_NEXT_PICTURE						28
-#define ACTION_PREV_PICTURE						29
-#define ACTION_ZOOM_OUT								30
-#define ACTION_ZOOM_IN								31
-#define ACTION_TOGGLE_SOURCE_DEST			32
-#define ACTION_SHOW_PLAYLIST					33
-#define ACTION_QUEUE_ITEM							34
-#define	ACTION_REMOVE_ITEM						35
-#define ACTION_SHOW_FULLSCREEN				36
-#define ACTION_ZOOM_LEVEL_NORMAL			37
-#define ACTION_ZOOM_LEVEL_1						38
-#define ACTION_ZOOM_LEVEL_2						39
-#define ACTION_ZOOM_LEVEL_3						40
-#define ACTION_ZOOM_LEVEL_4						41
-#define ACTION_ZOOM_LEVEL_5						42
-#define ACTION_ZOOM_LEVEL_6						43
-#define ACTION_ZOOM_LEVEL_7						44
-#define ACTION_ZOOM_LEVEL_8						45
-#define ACTION_ZOOM_LEVEL_9						46
-#define ACTION_CALIBRATE_SWAP_ARROWS	47
-#define ACTION_CALIBRATE_RESET				48
-#define ACTION_ANALOG_MOVE						49
-#define ACTION_ROTATE_PICTURE					50
-#define ACTION_CLOSE_DIALOG						51
-#define ACTION_SUBTITLE_DELAY_MIN			52
-#define ACTION_SUBTITLE_DELAY_PLUS		53
-#define ACTION_AUDIO_DELAY_MIN				54
-#define ACTION_AUDIO_DELAY_PLUS				55
-#define ACTION_AUDIO_NEXT_LANGUAGE		56
-#define ACTION_CHANGE_RESOLUTION		57
+#define ACTION_SHOW_GUI								18 // toggle between GUI and movie or GUI and visualisation. 
+#define ACTION_ASPECT_RATIO						19 // toggle between zoom/stretch/normal during a movie. Can b used in videoFullScreen.xml window id=2005 
+#define ACTION_STEP_FORWARD						20 // seek +1% in the movie. Can b used in videoFullScreen.xml window id=2005 
+#define ACTION_STEP_BACK							21 // seek -1% in the movie. Can b used in videoFullScreen.xml window id=2005 
+#define ACTION_BIG_STEP_FORWARD				22 // seek +10% in the movie. Can b used in videoFullScreen.xml window id=2005 
+#define ACTION_BIG_STEP_BACK					23 // seek -10% in the movie. Can b used in videoFullScreen.xml window id=2005 
+#define ACTION_SHOW_OSD								24 // show/hide OSD. Can b used in videoFullScreen.xml window id=2005 
+#define ACTION_SHOW_SUBTITLES					25 // turn subtitles on/off. Can b used in videoFullScreen.xml window id=2005 
+#define ACTION_NEXT_SUBTITLE					26 // switch to next subtitle of movie. Can b used in videoFullScreen.xml window id=2005 
+#define ACTION_SHOW_CODEC							27 // show information about file. Can b used in videoFullScreen.xml window id=2005 and in slideshow.xml window id=2007
+#define ACTION_NEXT_PICTURE						28 // show next picture of slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_PREV_PICTURE						29 // show previous picture of slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_ZOOM_OUT								30 // zoom in picture during slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_ZOOM_IN								31 // zoom out picture during slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_TOGGLE_SOURCE_DEST			32 // used to toggle between source view and destination view. Can be used in myfiles.xml window id=3 
+#define ACTION_SHOW_PLAYLIST					33 // used to toggle between current view and playlist view. Can b used in all mymusic xml files
+#define ACTION_QUEUE_ITEM							34 // used to queue a item to the playlist. Can b used in all mymusic xml files
+#define	ACTION_REMOVE_ITEM						35 // not used anymore
+#define ACTION_SHOW_FULLSCREEN				36 // not used anymore
+#define ACTION_ZOOM_LEVEL_NORMAL			37 // zoom 1x picture during slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_ZOOM_LEVEL_1						38 // zoom 2x picture during slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_ZOOM_LEVEL_2						39 // zoom 3x picture during slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_ZOOM_LEVEL_3						40 // zoom 4x picture during slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_ZOOM_LEVEL_4						41 // zoom 5x picture during slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_ZOOM_LEVEL_5						42 // zoom 6x picture during slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_ZOOM_LEVEL_6						43 // zoom 7x picture during slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_ZOOM_LEVEL_7						44 // zoom 8x picture during slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_ZOOM_LEVEL_8						45 // zoom 9x picture during slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_ZOOM_LEVEL_9						46 // zoom 10x picture during slideshow. Can b used in slideshow.xml window id=2007
+
+#define ACTION_CALIBRATE_SWAP_ARROWS	47 // select next arrow. Can b used in: settingsScreenCalibration.xml windowid=11
+#define ACTION_CALIBRATE_RESET				48 // reset calibration to defaults. Can b used in: settingsScreenCalibration.xml windowid=11/settingsUICalibration.xml windowid=10
+#define ACTION_ANALOG_MOVE						49 // analog thumbstick move. Can b used in: slideshow.xml window id=2007/settingsScreenCalibration.xml windowid=11/settingsUICalibration.xml windowid=10
+#define ACTION_ROTATE_PICTURE					50 // rotate current picture during slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_CLOSE_DIALOG						51 // action for closing the dialog. Can b used in any dialog
+#define ACTION_SUBTITLE_DELAY_MIN			52 // Decrease subtitle/movie Delay.  Can b used in videoFullScreen.xml window id=2005
+#define ACTION_SUBTITLE_DELAY_PLUS		53 // Increase subtitle/movie Delay.  Can b used in videoFullScreen.xml window id=2005
+#define ACTION_AUDIO_DELAY_MIN				54 // Increase avsync delay.  Can b used in videoFullScreen.xml window id=2005
+#define ACTION_AUDIO_DELAY_PLUS				55 // Decrease avsync delay.  Can b used in videoFullScreen.xml window id=2005
+#define ACTION_AUDIO_NEXT_LANGUAGE		56 // Select next language in movie.  Can b used in videoFullScreen.xml window id=2005
+#define ACTION_CHANGE_RESOLUTION		  57 // switch 2 next resolution. Can b used during screen calibration settingsScreenCalibration.xml windowid=11
 
 
-#define REMOTE_0						58
-#define REMOTE_1						59
-#define REMOTE_2						60
-#define REMOTE_3						61
-#define REMOTE_4						62
-#define REMOTE_5						63
-#define REMOTE_6						64
-#define REMOTE_7						65
-#define REMOTE_8						66
-#define REMOTE_9						67
-#define ACTION_PLAY						68
+#define REMOTE_0						        58  // remote keys 0-9. are used by multiple windows
+#define REMOTE_1						        59  // for example in videoFullScreen.xml window id=2005 you can
+#define REMOTE_2						        60  // enter time (mmss) to jump to particular point in the movie
+#define REMOTE_3						        61
+#define REMOTE_4						        62  // with spincontrols you can enter 3digit number to quickly set
+#define REMOTE_5						        63  // spincontrol to desired value
+#define REMOTE_6						        64
+#define REMOTE_7						        65
+#define REMOTE_8						        66
+#define REMOTE_9						        67
 
+#define ACTION_PLAY						      68  // Play current movie. Unpauses movie and sets playspeed to 1x.  Can b used in videoFullScreen.xml window id=2005
+#define ACTION_OSD_SHOW_LEFT        69  // Move left in OSD. Can b used in videoFullScreen.xml window id=2005
+#define ACTION_OSD_SHOW_RIGHT       70  // Move right in OSD. Can b used in videoFullScreen.xml window id=2005
+#define ACTION_OSD_SHOW_UP          71  // Move up in OSD. Can b used in videoFullScreen.xml window id=2005
+#define ACTION_OSD_SHOW_DOWN        72  // Move down in OSD. Can b used in videoFullScreen.xml window id=2005
+#define ACTION_OSD_SHOW_SELECT      73  // toggle/select option in OSD. Can b used in videoFullScreen.xml window id=2005
+#define ACTION_OSD_SHOW_VALUE_PLUS  74  // increase value of current option in OSD. Can b used in videoFullScreen.xml window id=2005
+#define ACTION_OSD_SHOW_VALUE_MIN   75  // decrease value of current option in OSD. Can b used in videoFullScreen.xml window id=2005
+#define ACTION_SMALL_STEP_BACK      76  // jumps a few seconds back during playback of movie. Can b used in videoFullScreen.xml window id=2005
 
-#define ACTION_OSD_SHOW_LEFT        69
-#define ACTION_OSD_SHOW_RIGHT       70
-#define ACTION_OSD_SHOW_UP          71
-#define ACTION_OSD_SHOW_DOWN        72
-#define ACTION_OSD_SHOW_SELECT      73
-#define ACTION_OSD_SHOW_VALUE_PLUS  74
-#define ACTION_OSD_SHOW_VALUE_MIN   75
-#define ACTION_SMALL_STEP_BACK      76
+#define ACTION_MUSIC_FORWARD        77  // FF in current song. global action, can be used anywhere
+#define ACTION_MUSIC_REWIND         78  // RW in current song. global action, can be used anywhere
+#define ACTION_MUSIC_PLAY           79  // Play current song. Unpauses song and sets playspeed to 1x. global action, can be used anywhere
 
-#define ACTION_MUSIC_FORWARD        77
-#define ACTION_MUSIC_REWIND         78
-#define ACTION_MUSIC_PLAY           79
-
-#define ACTION_DELETE_ITEM          80
-#define ACTION_COPY_ITEM            81
-#define ACTION_MOVE_ITEM            82
-#define ACTION_SHOW_MPLAYER_OSD     83
+#define ACTION_DELETE_ITEM          80  // delete current selected item. Can be used in myfiles.xml window id=3 and in myvideoTitle.xml window id=25
+#define ACTION_COPY_ITEM            81  // copy current selected item. Can be used in myfiles.xml window id=3 
+#define ACTION_MOVE_ITEM            82  // move current selected item. Can be used in myfiles.xml window id=3
+#define ACTION_SHOW_MPLAYER_OSD     83  // toggles mplayers OSD. Can be used in videofullscreen.xml window id=2005
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID								-1
