@@ -4,6 +4,7 @@
 #include "..\python.h"
 #include "player.h"
 #include "playlist.h"
+#include "keyboard.h"
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
@@ -103,10 +104,12 @@ namespace PYXBMC
 		// init general xbmc modules
 		PyObject* pXbmcModule;
 
-		if (PyType_Ready(&Player_Type) < 0 ||
+		if (PyType_Ready(&Keyboard_Type) < 0 ||
+				PyType_Ready(&Player_Type) < 0 ||
 				PyType_Ready(&PlayList_Type) < 0 ||
 				PyType_Ready(&PlayListItem_Type)) return;
 		
+		Py_INCREF(&Keyboard_Type);
 		Py_INCREF(&Player_Type);
 		Py_INCREF(&PlayList_Type);
 		Py_INCREF(&PlayListItem_Type);
@@ -114,6 +117,7 @@ namespace PYXBMC
 		pXbmcModule = Py_InitModule("xbmc", xbmcMethods);
 		if (pXbmcModule == NULL) return;
 
+		PyModule_AddObject(pXbmcModule, "Keyboard", (PyObject*)&Keyboard_Type);
 		PyModule_AddObject(pXbmcModule, "Player", (PyObject*)&Player_Type);
 		PyModule_AddObject(pXbmcModule, "PlayList", (PyObject*)&PlayList_Type);
 		PyModule_AddObject(pXbmcModule, "PlayListItem", (PyObject*)&PlayListItem_Type);
