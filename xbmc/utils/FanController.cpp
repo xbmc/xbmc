@@ -28,6 +28,7 @@ CFanController* CFanController::Instance()
 
 CFanController::CFanController()
 {
+  inCustomMode       = false;
   systemFanSpeed     = GetFanSpeed();
   currentFanSpeed    = systemFanSpeed;
   calculatedFanSpeed = systemFanSpeed;
