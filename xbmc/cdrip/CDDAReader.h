@@ -6,7 +6,7 @@
 #define CDDARIP_DONE  2
 
 #include "..\utils\thread.h"
-#include "..\lib\libcdrip\cdrip.h"
+#include "../lib/libcdio/cdio.h"
 
 struct RipBuffer{
 	int iRipError;
@@ -19,7 +19,7 @@ class CCDDAReader : public CThread
 {
 public:
 	CCDDAReader();
-	~CCDDAReader();
+	virtual ~CCDDAReader();
 	int         GetData(BYTE** stream, long& lBytes);
 	bool        Init(int iTrack);
 	bool        DeInit();
@@ -28,7 +28,6 @@ protected:
 	void        Process();
 	int         ReadChunk();
 
-	int         m_iPercent;
 	long        m_lBufferSize;
 
 	RipBuffer   m_sRipBuffer[2]; // hold space for 2 buffers
@@ -40,7 +39,11 @@ protected:
 
 	bool				m_iInitialized;
 
-	CDROMPARAMS m_cdParams;
+	CdIo_t*			m_pCdIo;
+
+	lsn_t				m_lsnStart;
+	lsn_t				m_lsnEnd;
+	lsn_t				m_lsnCurrent;
 };
 
 #endif // _CCDDAREADER_H
