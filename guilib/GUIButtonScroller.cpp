@@ -77,7 +77,7 @@ bool CGUIButtonScroller::OnMessage(CGUIMessage &message)
 {
 	if (message.GetMessage() == GUI_MSG_SETFOCUS)
 	{
-		if (message.GetSenderId() != GetID())
+		if (message.GetSenderId() == GetParentID())
 		{
 			OnChangeFocus();
 		}
