@@ -57,7 +57,10 @@
 				StackSize="0x40000"
 				IncludeDebugInfo="TRUE"
 				NoLibWarn="TRUE"
-				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660"/>
+				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660"
+				TitleID="0xFACE008"
+				MediaTypes="0x80000007"
+				TitleName="Xbox Media Center"/>
 		</Configuration>
 		<Configuration
 			Name="Profile|Xbox"
@@ -106,7 +109,10 @@
 				Name="XboxImageTool"
 				StackSize="65536"
 				IncludeDebugInfo="TRUE"
-				NoLibWarn="TRUE"/>
+				NoLibWarn="TRUE"
+				TitleID="0xFACE008"
+				MediaTypes="0x80000007"
+				TitleName="Xbox Media Center"/>
 		</Configuration>
 		<Configuration
 			Name="Profile_FastCap|Xbox"
@@ -156,7 +162,10 @@
 				Name="XboxImageTool"
 				StackSize="65536"
 				IncludeDebugInfo="TRUE"
-				NoLibWarn="TRUE"/>
+				NoLibWarn="TRUE"
+				TitleID="0xFACE008"
+				MediaTypes="0x80000007"
+				TitleName="Xbox Media Center"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Xbox"
@@ -169,6 +178,7 @@
 				Optimization="3"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
+				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml"
 				PreprocessorDefinitions="NDEBUG;_XBOX"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
@@ -203,7 +213,12 @@
 				Name="XboxDeploymentTool"/>
 			<Tool
 				Name="XboxImageTool"
-				StackSize="65536"/>
+				FileName="$(TargetDir)default.xbe"
+				StackSize="0x40000"
+				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660"
+				TitleID="0xFACE008"
+				MediaTypes="0x80000007"
+				TitleName="Xbox Media Center"/>
 		</Configuration>
 		<Configuration
 			Name="Release_LTCG|Xbox"
@@ -251,7 +266,10 @@
 				Name="XboxDeploymentTool"/>
 			<Tool
 				Name="XboxImageTool"
-				StackSize="65536"/>
+				StackSize="65536"
+				TitleID="0xFACE008"
+				MediaTypes="0x80000007"
+				TitleName="Xbox Media Center"/>
 		</Configuration>
 	</Configurations>
 	<References>
@@ -647,6 +665,22 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\lib\common\xbstopwatch.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="utils"
+			Filter="">
+			<File
+				RelativePath=".\xbmc\utils\Sntp.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\Sntp.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\Thread.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\Thread.h">
 			</File>
 		</Filter>
 	</Files>

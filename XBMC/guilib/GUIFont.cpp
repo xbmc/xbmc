@@ -50,11 +50,18 @@ void CGUIFont::DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
   
   float fTextHeight,fTextWidth;
   GetTextExtent( wszText, &fTextWidth,&fTextHeight);
+	if (fTextWidth <=fMaxWidth)
+	{
+		CXBFont::DrawText(fOriginX,fOriginY,dwColor,wszText);
+		return;
+	}
 
   while (fTextWidth >= fMaxWidth)
   {
     wszText[ wcslen(wszText)-1 ] = 0;
     GetTextExtent( wszText, &fTextWidth,&fTextHeight);
   }
+
   CXBFont::DrawText(fOriginX,fOriginY,dwColor,wszText);
+	
 }

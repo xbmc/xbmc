@@ -32,7 +32,7 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, DWOR
 	m_bScrollUp=false;
 	m_bScrollDown=false;
 	m_iScrollCounter=0;
-
+	m_iLastItem=-1;
 }
 
 CGUIThumbnailPanel::~CGUIThumbnailPanel(void)
@@ -305,6 +305,7 @@ void CGUIThumbnailPanel::AllocResources()
   m_upDown.AllocResources();
   m_imgFolder.AllocResources();
   m_imgFolderFocus.AllocResources();
+	m_iLastItem=-1;
   float fWidth,fHeight;
   
   // height of 1 item = folder image height + text row height + space in between
@@ -477,6 +478,17 @@ void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor,
   }
   else
   {
+		D3DVIEWPORT8 oldviewport, newviewport;
+		g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
+
+		newviewport.X      = (DWORD)fPosX;
+		newviewport.Y			 = (DWORD)fPosY;
+		newviewport.Width  = (DWORD)(fMaxWidth-5.0f);
+		newviewport.Height = 60;
+		newviewport.MinZ   = 0.0f;
+		newviewport.MaxZ   = 1.0f;
+		g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
+
     // scroll
     WCHAR wszOrgText[1024];
     wcscpy(wszOrgText, wszText);
@@ -486,6 +498,7 @@ void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor,
     int iItem=m_iCursorX+m_iCursorY*m_iColumns+m_iOffset;
     if (fTextWidth > fMaxWidth)
     {
+				fMaxWidth+=50;
         WCHAR szText[1024];
 				if (iLastItem != iItem)
 				{
@@ -538,6 +551,8 @@ void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor,
               m_pFont->DrawTextWidth(fPosX,fPosY,m_dwTextColor,wszText,fMaxWidth);
 					}
     }
+		g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
+
   }
 }
 

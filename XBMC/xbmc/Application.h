@@ -17,6 +17,7 @@
 #include "GUIDialogYesNo.h"
 #include "GUIDialogProgress.h"
 #include "LocalizeStrings.h"
+#include "utils/sntp.h"
 #include "keyboard/virtualkeyboard.h"
 
 class CApplication :
@@ -26,9 +27,9 @@ public:
   CApplication(void);
   virtual ~CApplication(void);
   virtual HRESULT Initialize();
-  virtual void FrameMove();
-  virtual void Render();
-
+  virtual void		FrameMove();
+  virtual void		Render();
+	void						Stop();
 
   CGUIWindowHome        m_guiHome;
   CGUIWindowPrograms    m_guiPrograms;
@@ -40,4 +41,7 @@ public:
 	CGUIWindowVideo				m_guiMyVideo;
 	CGUIWindowSettings		m_guiSettings;
   CXBVirtualKeyboard    m_keyboard;
+	CSNTPClient						m_sntpClient;
 };
+
+extern CApplication g_application;
