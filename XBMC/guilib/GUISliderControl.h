@@ -47,6 +47,10 @@ public:
 	int 				GetType() const;
 	const CStdString& GetBackGroundTextureName() const { return m_guiBackground.GetFileName();};
 	const CStdString& GetBackTextureMidName() const { return m_guiMid.GetFileName();};
+  	DWORD	GetControlOffsetX() const { return m_dwControlOffsetX;};
+	DWORD	GetControlOffsetY() const { return m_dwControlOffsetY;};
+  	void	SetControlOffsetX(DWORD dwControlOffsetX) { m_dwControlOffsetX=dwControlOffsetX;};
+	void	SetControlOffsetY(DWORD dwControlOffsetY) { m_dwControlOffsetY=dwControlOffsetY;};
 
 protected:
 	virtual void	Update() ;
@@ -62,5 +66,7 @@ protected:
 	int				m_iValue;
 	float			m_fValue;
 	float			m_fInterval;
+	DWORD			m_dwControlOffsetX;
+	DWORD			m_dwControlOffsetY;
 };
 #endif
