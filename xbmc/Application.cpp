@@ -771,6 +771,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiDialogSubMenu);						// window id = 105
 	m_gWindowManager.Add(&m_guiDialogContextMenu);				// window id = 106
 	m_gWindowManager.Add(&m_guiDialogKaiToast);					// window id = 107
+	m_gWindowManager.Add(&m_guiDialogHost);						// window id = 108
 	m_gWindowManager.Add(&m_guiMyMusicPlayList);					// window id = 500
 	m_gWindowManager.Add(&m_guiMyMusicSongs);							// window id = 501
 	m_gWindowManager.Add(&m_guiMyMusicAlbum);							// window id = 502
@@ -1085,6 +1086,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiSettingsUserInterface.Load("SettingsUserInterface.xml");	// User Interface settings
 	m_guiSettingsAudio.Load("SettingsAudioOptions.xml");			// Audio Options
 	m_guiDialogInvite.Load( "dialogInvite.xml" );
+	m_guiDialogHost.Load( "dialogHost.xml" );
 	m_guiDialogKeyboard.Load( "dialogKeyboard.xml" );
 	m_guiMyBuddies.Load( "mybuddies.xml");
 	m_guiSettingsCDRipper.Load("SettingsCDRipper.xml");

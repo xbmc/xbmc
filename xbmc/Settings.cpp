@@ -259,6 +259,8 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.szOnlineUsername,"");
 	strcpy(g_stSettings.szOnlinePassword,"");
 	strcpy(g_stSettings.szOnlineGamesDir,"f:\\games");
+	strcpy(g_stSettings.szOnlineArenaPassword,"");
+	strcpy(g_stSettings.szOnlineArenaDescription,"It's Good To Play Together!");
 	g_stSettings.m_bOnlineNotifications=true;
 	g_stSettings.m_bTimeServerEnabled=false;
 	g_stSettings.m_bFTPServerEnabled=true;
@@ -1288,6 +1290,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetString(pElement, "kaipassword",	g_stSettings.szOnlinePassword, "");
 		GetString(pElement, "kaigamesdir",	g_stSettings.szOnlineGamesDir, "");
 		GetBoolean(pElement,"kainotify",	g_stSettings.m_bOnlineNotifications);
+		GetString(pElement, "kaiarenapass",	g_stSettings.szOnlineArenaPassword, "");
+		GetString(pElement, "kaiarenadesc",	g_stSettings.szOnlineArenaDescription, "");
 
 		GetString(pElement, "timeserverhost", g_stSettings.m_strTimeServer, "207.46.130.100");
 
@@ -1721,6 +1725,8 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	SetString(pNode, "kaipassword", g_stSettings.szOnlinePassword);
 	SetString(pNode, "kaigamesdir", g_stSettings.szOnlineGamesDir);
 	SetBoolean(pNode,"kainotify",	g_stSettings.m_bOnlineNotifications);
+	SetString(pNode, "kaiarenapass", g_stSettings.szOnlineArenaPassword);
+	SetString(pNode, "kaiarenadesc", g_stSettings.szOnlineArenaDescription);
 
 	SetString(pNode, "timeserverhost", g_stSettings.m_strTimeServer);
 
