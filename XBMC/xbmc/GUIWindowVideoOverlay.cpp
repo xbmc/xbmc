@@ -23,18 +23,6 @@ CGUIWindowVideoOverlay::~CGUIWindowVideoOverlay()
 {
 }
 
-
-void CGUIWindowVideoOverlay::OnAction(const CAction &action)
-{
-  CGUIWindow::OnAction(action);
-}
-
-bool CGUIWindowVideoOverlay::OnMessage(CGUIMessage& message)
-{
-  return CGUIWindow::OnMessage(message);
-}
-
-
 void CGUIWindowVideoOverlay::Render()
 {
 	if (!g_application.m_pPlayer) return;
@@ -60,117 +48,78 @@ void CGUIWindowVideoOverlay::Render()
 	SET_CONTROL_LABEL(CONTROL_BIG_PLAYTIME, g_infoManager.GetLabel("videoplayer.time")); 
 	SET_CONTROL_LABEL(CONTROL_PLAYTIME, g_infoManager.GetLabel("videoplayer.timespeed"));
 
-	HideControl(CONTROL_PLAY_LOGO); 
-  HideControl(CONTROL_PAUSE_LOGO); 
-  HideControl( CONTROL_FF_LOGO); 
-  HideControl( CONTROL_RW_LOGO); 
+	SET_CONTROL_HIDDEN(CONTROL_PLAY_LOGO); 
+  SET_CONTROL_HIDDEN(CONTROL_PAUSE_LOGO); 
+  SET_CONTROL_HIDDEN( CONTROL_FF_LOGO); 
+  SET_CONTROL_HIDDEN( CONTROL_RW_LOGO); 
 	if (g_application.m_pPlayer->IsPaused() )
 	{
-      ShowControl( CONTROL_PAUSE_LOGO); 
+      SET_CONTROL_VISIBLE( CONTROL_PAUSE_LOGO); 
 	}
 	else
 	{
     int iSpeed = g_application.GetPlaySpeed();
     if (iSpeed > 1)
     {
-      ShowControl( CONTROL_FF_LOGO); 
+      SET_CONTROL_VISIBLE( CONTROL_FF_LOGO); 
     }
     else if (iSpeed < 0)
     {
-      ShowControl( CONTROL_RW_LOGO); 
+      SET_CONTROL_VISIBLE( CONTROL_RW_LOGO); 
     }
     else
     {
-		  ShowControl( CONTROL_PLAY_LOGO); 
+		  SET_CONTROL_VISIBLE( CONTROL_PLAY_LOGO); 
     }
 	}
 	CGUIWindow::Render();
 }
 
+void CGUIWindowVideoOverlay::Update()
+{
+  // reset the control_info control
+  CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_INFO); 
+	OnMessage(msg1);
 
-	void CGUIWindowVideoOverlay::SetCurrentFile(const CFileItem& item)
+  CIMDBMovie movieDetails = g_infoManager.GetCurrentMovie();
+	// title
+	if ( movieDetails.m_strTitle.size() > 0)
 	{
-		bool bLoaded=false;
-		if (item.IsVideo())
-		{
-			CStdString strFile=item.m_strPath;
-			CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_INFO); 
-			OnMessage(msg1);
-
-      CVideoDatabase dbs;
-			CIMDBMovie movieDetails;
-      bool bMovieInfoFound(false);
-      dbs.Open();
-      if (dbs.HasMovieInfo(strFile))
-      {
-        dbs.GetMovieInfo(strFile,movieDetails);
-        bMovieInfoFound=true;
-      }
-      dbs.Close();
-			if (bMovieInfoFound)
-			{
-        g_application.SetCurrentMovie(movieDetails);
-				// title
-				if ( movieDetails.m_strTitle.size() > 0)
-				{
-					CStdString strLabel=movieDetails.m_strTitle;
-					bLoaded=true;
-					CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-					msg1.SetLabel(strLabel );
-					OnMessage(msg1);				
-				}
-
-				// genre
-				if ( movieDetails.m_strGenre.size() > 0)
-				{
-					const WCHAR* wsGenre=g_localizeStrings.Get(174).c_str();
-					WCHAR wsTmp[1024];
-					swprintf(wsTmp,L"%s %S", wsGenre, movieDetails.m_strGenre.c_str());
-					CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-					msg1.SetLabel(wsTmp );
-					OnMessage(msg1);				
-				}
-
-				// year
-				if ( movieDetails.m_iYear > 1900)
-				{
-					const WCHAR* wsYear=g_localizeStrings.Get(201).c_str();
-					WCHAR wsTmp[1024];
-					swprintf(wsTmp,L"%s %i", wsYear, movieDetails.m_iYear);
-					CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-					msg1.SetLabel(wsTmp );
-					OnMessage(msg1);				
-				}
-
-				// director
-				if ( movieDetails.m_strDirector.size() > 0)
-				{
-					const WCHAR* wsDirector=g_localizeStrings.Get(199).c_str();
-					WCHAR wsTmp[1024];
-					swprintf(wsTmp,L"%s %S", wsDirector, movieDetails.m_strDirector.c_str() );
-					CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-					msg1.SetLabel(wsTmp );
-					OnMessage(msg1);		
-				}
-			}
-			if (!bLoaded)
-			{
-				CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO);
-				msg1.SetLabel( CUtil::GetTitleFromPath(strFile) );
-				OnMessage(msg1);
-			}
-		}
+		CStdString strLabel=movieDetails.m_strTitle;
+		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+		msg1.SetLabel(strLabel );
+		OnMessage(msg1);				
+	}
+	// genre
+	if ( movieDetails.m_strGenre.size() > 0)
+	{
+		const WCHAR* wsGenre=g_localizeStrings.Get(174).c_str();
+		WCHAR wsTmp[1024];
+		swprintf(wsTmp,L"%s %S", wsGenre, movieDetails.m_strGenre.c_str());
+		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+		msg1.SetLabel(wsTmp );
+		OnMessage(msg1);				
 	}
 
-  
-void CGUIWindowVideoOverlay::ShowControl(int iControl)
-{
-  CGUIMessage msg(GUI_MSG_VISIBLE, GetID(), iControl); 
-	OnMessage(msg); 
-}
+	// year
+	if ( movieDetails.m_iYear > 1900)
+	{
+		const WCHAR* wsYear=g_localizeStrings.Get(201).c_str();
+		WCHAR wsTmp[1024];
+		swprintf(wsTmp,L"%s %i", wsYear, movieDetails.m_iYear);
+		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+		msg1.SetLabel(wsTmp );
+		OnMessage(msg1);				
+	}
 
-void CGUIWindowVideoOverlay::HideControl(int iControl)
-{
-  CGUIMessage msg(GUI_MSG_HIDDEN, GetID(), iControl); 
-	OnMessage(msg); 
+	// director
+	if ( movieDetails.m_strDirector.size() > 0)
+	{
+		const WCHAR* wsDirector=g_localizeStrings.Get(199).c_str();
+		WCHAR wsTmp[1024];
+		swprintf(wsTmp,L"%s %S", wsDirector, movieDetails.m_strDirector.c_str() );
+		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+		msg1.SetLabel(wsTmp );
+		OnMessage(msg1);		
+	}
 }

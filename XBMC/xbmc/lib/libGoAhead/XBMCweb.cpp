@@ -21,6 +21,7 @@
 #include "..\..\playlistplayer.h"
 #include "..\..\filesystem\CDDADirectory.h"
 #include "..\..\playlistfactory.h"
+#include "..\..\utils\GUIInfoManager.h"
 
 #pragma code_seg("WEB_TEXT")
 #pragma data_seg("WEB_DATA")
@@ -1005,7 +1006,7 @@ void CXbmcWeb::SetCurrentMediaItem(CFileItem& newItem)
 	//	If we have tag information, ...
 	if (tag.Loaded())
 	{
-		g_application.SetCurrentSong(tag);
+		g_infoManager.SetCurrentSongTag(tag);
 	}
 		/*
 		//	display only, if we have a title
