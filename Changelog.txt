@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 04-03-2005 added: Thumbs table clean up on cleanup of the music library.
   - 04-03-2005 fixed: Small thumbs in list controls weren't centered + other small graphical glitches here and there.
   - 04-03-2005 changed: Zoom in my pictures now goes in steps of 1.0, 1.2, 1.5, 2.0, 2.8, 4.0, 6.0, 9.0, 13.5 and 20.
   - 04-03-2005 changed: Pictures have more scope for being larger.  Previously they were limited to 2048 in either direction.  The limitation now is 4096 in either direction, with the number of pixels being less than 4Mp (can't have more than this without rewriting the imagelib due to RAM constraints).  Should give better detail when zoomed.
