@@ -1769,6 +1769,9 @@ int CMPlayer::GetCacheSize(bool bFileOnHD,bool bFileOnISO,bool bFileOnUDF,bool b
 		if ( bIsDVD  ) return g_stSettings.m_iCacheSizeInternet[CACHE_VOB];
 		if ( bIsVideo) return g_stSettings.m_iCacheSizeInternet[CACHE_VIDEO];
 		if ( bIsAudio) return g_stSettings.m_iCacheSizeInternet[CACHE_AUDIO];
+		//File is on internet however we don't know what type.
+		//Apperently fixes DreamBox playback.
+		return 4096; 
 	}
 	if (bFileOnLAN)
 	{
