@@ -84,6 +84,7 @@ static int parse_flag(m_option_t* opt,char *name, char *param, void* dst, int sr
 	!strcasecmp(param, "i") ||
 	!strcasecmp(param, "tak") ||
 	!strcasecmp(param, "ja") ||
+	!strcasecmp(param, "true") ||
 	!strcmp(param, "1")) {
       if(dst) VAL(dst) = opt->max;
     } else if (!strcasecmp(param, "no") ||
@@ -94,6 +95,7 @@ static int parse_flag(m_option_t* opt,char *name, char *param, void* dst, int sr
 	       !strcasecmp(param, "n") ||
 	       !strcasecmp(param, "nie") ||
 	       !strcasecmp(param, "nej") ||
+	       !strcasecmp(param, "false") ||
 	       !strcmp(param, "0")) {
       if(dst) VAL(dst) = opt->min;
     } else {
@@ -278,15 +280,15 @@ m_option_type_t m_option_type_float = {
 
 ///////////// Position
 #undef VAL
-#define VAL(x) (*(__int64*)(x))
+#define VAL(x) (*(off_t*)(x))
 
 static int parse_position(m_option_t* opt,char *name, char *param, void* dst, int src) {
-  __int64 tmp_off;
+  off_t tmp_off;
   char dummy;
 
   if (param == NULL)
     return M_OPT_MISSING_PARAM;
-  if (sscanf(param, sizeof(__int64) == sizeof(int) ?
+  if (sscanf(param, sizeof(off_t) == sizeof(int) ?
 	     "%d%c" : "%lld%c", &tmp_off, &dummy) != 1) {
     mp_msg(MSGT_CFGPARSER, MSGL_ERR, "The %s option must be an integer: %s\n",opt->name,param);
     return M_OPT_INVALID;
@@ -295,20 +297,20 @@ static int parse_position(m_option_t* opt,char *name, char *param, void* dst, in
   if (opt->flags & M_OPT_MIN)
     if (tmp_off < opt->min) {
       mp_msg(MSGT_CFGPARSER, MSGL_ERR,
-	     (sizeof(__int64) == sizeof(int) ?
+	     (sizeof(off_t) == sizeof(int) ?
 	      "The %s option must be >= %d: %s\n" :
 	      "The %s option must be >= %lld: %s\n"),
-	     name, (__int64) opt->min, param);
+	     name, (off_t) opt->min, param);
       return M_OPT_OUT_OF_RANGE;
     }
 
   if (opt->flags & M_OPT_MAX)
     if (tmp_off > opt->max) {
       mp_msg(MSGT_CFGPARSER, MSGL_ERR,
-	     (sizeof(__int64) == sizeof(int) ?
+	     (sizeof(off_t) == sizeof(int) ?
 	      "The %s option must be <= %d: %s\n" :
 	      "The %s option must be <= %lld: %s\n"),
-	     name, (__int64) opt->max, param);
+	     name, (off_t) opt->max, param);
       return M_OPT_OUT_OF_RANGE;
     }
 
@@ -318,13 +320,13 @@ static int parse_position(m_option_t* opt,char *name, char *param, void* dst, in
 }
 
 static char* print_position(m_option_t* opt,  void* val) {
-  return dup_printf(sizeof(__int64) == sizeof(int) ?  "%d" : "%lld",VAL(val));
+  return dup_printf(sizeof(off_t) == sizeof(int) ?  "%d" : "%lld",VAL(val));
 }
 
 m_option_type_t m_option_type_position = {
   "Position",
-  "Integer (__int64)",
-  sizeof(__int64),
+  "Integer (off_t)",
+  sizeof(off_t),
   0,
   parse_position,
   print_position,
@@ -1389,15 +1391,15 @@ static int parse_obj_settings_list(m_option_t* opt,char *name,
       prefix[len-1] = '\0';
       mp_msg(MSGT_VFILTER,MSGL_ERR, "Option %s: unknown postfix %s\n"
 	     "Supported postfixes are:\n"
-	     "  %3$s-add\n"
+	     "  %s-add\n"
 	     " Append the given list to the current list\n\n"
-	     "  %3$s-pre\n"
+	     "  %s-pre\n"
 	     " Prepend the given list to the current list\n\n"
-	     "  %3$s-del x,y,...\n"
+	     "  %s-del x,y,...\n"
 	     " Remove the given elements. Take the list element index (starting from 0).\n"
 	     " Negative index can be used (i.e. -1 is the last element)\n\n"
-	     "  %3$s-clr\n"
-	     " Clear the current list.\n",name,n,prefix);
+	     "  %s-clr\n"
+	     " Clear the current list.\n",name,n,prefix,prefix,prefix,prefix);
       
       return M_OPT_UNKNOWN;
     }

@@ -20,12 +20,17 @@
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
+#include "config.h"
+
 #ifdef __MINGW32__
 #define        SIGQUIT 3
 #endif
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 #include <sys/time.h>
 
-#include "config.h"
 
 #include "version.h"
 #include "mp_msg.h"
@@ -55,7 +60,7 @@
 #include "libmpcodecs/vf.h"
 
 // for MPEGLAYER3WAVEFORMAT:
-#include "loader/wine/mmreg.h"
+#include "libmpdemux/ms_hdr.h"
 
 #ifdef HAVE_MP3LAME
 #undef CDECL
@@ -189,6 +194,7 @@ float sub_last_pts = -303;
 #endif
 
 int auto_expand=1;
+int encode_duplicates=1;
 
 // infos are empty by default
 char *info_name=NULL;
@@ -218,6 +224,9 @@ int lame_param_ratio=-1; // unset
 float lame_param_scale=-1; // unset
 int lame_param_lowpassfreq = 0; //auto
 int lame_param_highpassfreq = 0; //auto
+int lame_param_free_format = 0; //disabled
+int lame_param_br_min = 0; //not specified
+int lame_param_br_max = 0; //not specified
 
 #if HAVE_MP3LAME >= 392
 int lame_param_fast=0; // unset
@@ -654,7 +663,7 @@ case VCODEC_COPY:
 	mux_v->bih=sh_video->bih;
     else
     {
-	mux_v->bih=malloc(sizeof(BITMAPINFOHEADER));
+	mux_v->bih=calloc(1,sizeof(BITMAPINFOHEADER));
 	mux_v->bih->biSize=sizeof(BITMAPINFOHEADER);
 	mux_v->bih->biWidth=sh_video->disp_w;
 	mux_v->bih->biHeight=sh_video->disp_h;
@@ -668,7 +677,7 @@ case VCODEC_COPY:
 	mux_v->bih->biBitCount, mux_v->bih->biCompression);
     break;
 case VCODEC_FRAMENO:
-    mux_v->bih=malloc(sizeof(BITMAPINFOHEADER));
+    mux_v->bih=calloc(1,sizeof(BITMAPINFOHEADER));
     mux_v->bih->biSize=sizeof(BITMAPINFOHEADER);
     mux_v->bih->biWidth=sh_video->disp_w;
     mux_v->bih->biHeight=sh_video->disp_h;
@@ -1001,10 +1010,13 @@ lame_set_in_samplerate(lame,mux_a->wf->nSamplesPerSec);
 lame_set_num_channels(lame,mux_a->wf->nChannels);
 lame_set_out_samplerate(lame,mux_a->wf->nSamplesPerSec);
 lame_set_quality(lame,lame_param_algqual); // 0 = best q
+if(lame_param_free_format) lame_set_free_format(lame,1);
 if(lame_param_vbr){  // VBR:
     lame_set_VBR(lame,lame_param_vbr); // vbr mode
     lame_set_VBR_q(lame,lame_param_quality); // 0 = best vbr q  5=~128k
     if(lame_param_br>0) lame_set_VBR_mean_bitrate_kbps(lame,lame_param_br);
+    if(lame_param_br_min>0) lame_set_VBR_min_bitrate_kbps(lame,lame_param_br_min);
+    if(lame_param_br_max>0) lame_set_VBR_max_bitrate_kbps(lame,lame_param_br_max);
 } else {    // CBR:
     if(lame_param_br>0) lame_set_brate(lame,lame_param_br);
 }
@@ -1288,14 +1300,16 @@ case VCODEC_FRAMENO:
     break;
 default:
     // decode_video will callback down to ve_*.c encoders, through the video filters
-    blit_frame=decode_video(sh_video,start,in_size,(skip_flag>0)?1:0);
+    blit_frame=decode_video(sh_video,start,in_size,
+      skip_flag>0 && (!sh_video->vfilter || ((vf_instance_t *)sh_video->vfilter)->control(sh_video->vfilter, VFCTRL_SKIP_NEXT_FRAME, 0) != CONTROL_TRUE));
     if(!blit_frame){
       badframes++;
       if(skip_flag<=0){
 	// unwanted skipping of a frame, what to do?
 	if(skip_limit==0){
 	    // skipping not allowed -> write empty frame:
-	    muxer_write_chunk(mux_v,0,0);
+	    if (!encode_duplicates || !sh_video->vfilter || ((vf_instance_t *)sh_video->vfilter)->control(sh_video->vfilter, VFCTRL_DUPLICATE_FRAME, 0) != CONTROL_TRUE)
+	      muxer_write_chunk(mux_v,0,0);
 	} else {
 	    // skipping allowed -> skip it and distriubute timer error:
 	    v_timer_corr-=(float)mux_v->h.dwScale/mux_v->h.dwRate;
@@ -1312,7 +1326,8 @@ if(skip_flag<0){
 	if(file_format != DEMUXER_TYPE_TV && !verbose) printf(MSGTR_DuplicateFrames,-skip_flag);
     while(skip_flag<0){
 	duplicatedframes++;
-	muxer_write_chunk(mux_v,0,0);
+	if (!encode_duplicates || !sh_video->vfilter || ((vf_instance_t *)sh_video->vfilter)->control(sh_video->vfilter, VFCTRL_DUPLICATE_FRAME, 0) != CONTROL_TRUE)
+	    muxer_write_chunk(mux_v,0,0);
 	++skip_flag;
     }
 } else

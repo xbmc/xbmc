@@ -19,6 +19,10 @@
 #include "mp_msg.h"
 #include "subreader.h"
 
+#ifdef HAVE_ENCA
+#include <enca.h>
+#endif
+
 #define ERR ((void *) -1)
 
 #ifdef USE_ICONV
@@ -1037,12 +1041,32 @@ extern float sub_fps;
 #ifdef USE_ICONV
 static iconv_t icdsc = (iconv_t)(-1);
 
-void	subcp_open (void)
+#ifdef HAVE_ENCA
+void	subcp_open_noenca ()
+{
+    char enca_lang[100], enca_fallback[100];
+    if (sub_cp) {
+	if (sscanf(sub_cp, "enca:%2s:%s", enca_lang, enca_fallback) == 2
+	    || sscanf(sub_cp, "ENCA:%2s:%s", enca_lang, enca_fallback) == 2) {
+	    subcp_open(enca_fallback);
+	} else {
+	    subcp_open(sub_cp);
+	}
+    }
+}
+#else
+void	subcp_open_noenca ()
+{
+    subcp_open(sub_cp);
+}
+#endif
+
+void	subcp_open (char *current_sub_cp)
 {
 	char *tocp = "UTF-8";
 
-	if (sub_cp){
-		if ((icdsc = iconv_open (tocp, sub_cp)) != (iconv_t)(-1)){
+	if (current_sub_cp){
+		if ((icdsc = iconv_open (tocp, current_sub_cp)) != (iconv_t)(-1)){
 			mp_msg(MSGT_SUBREADER,MSGL_V,"SUB: opened iconv descriptor.\n");
 			sub_utf8 = 2;
 		} else
@@ -1109,7 +1133,7 @@ subtitle* subcp_recode1 (subtitle *sub)
   while (l){
      char *ip = icbuffer;
      char *op = sub->text[--l];
-     strcpy(ip, op);
+     strlcpy(ip, op, ICBUFFSIZE);
      ileft = strlen(ip);
      oleft = ICBUFFSIZE - 1;
 		
@@ -1155,7 +1179,11 @@ subtitle* sub_fribidi (subtitle *sub, int sub_utf8)
       break;
     }
     len = fribidi_charset_to_unicode (char_set_num, ip, len, logical);
+#ifdef _XBOX
+	base = FRIBIDI_TYPE_L;
+#else
     base = FRIBIDI_TYPE_ON;
+#endif
     log2vis = fribidi_log2vis (logical, len, &base,
 			       /* output */
 			       visual, NULL, NULL, NULL);
@@ -1246,13 +1274,56 @@ struct subreader {
     const char *name;
 };
 
+#ifdef HAVE_ENCA
+#define MAX_GUESS_BUFFER_SIZE (256*1024)
+void* guess_cp(FILE *fd, char *preferred_language, char *fallback)
+{
+    const char **languages;
+    size_t langcnt, buflen;
+    EncaAnalyser analyser;
+    EncaEncoding encoding;
+    unsigned char *buffer;
+    char *detected_sub_cp = NULL;
+    int i;
+
+    buffer = (unsigned char*)malloc(MAX_GUESS_BUFFER_SIZE*sizeof(char));
+    buflen = fread(buffer, 1, MAX_GUESS_BUFFER_SIZE, fd);
+
+    languages = enca_get_languages(&langcnt);
+    mp_msg(MSGT_SUBREADER, MSGL_V, "ENCA supported languages: ");
+    for (i = 0; i < langcnt; i++) {
+	mp_msg(MSGT_SUBREADER, MSGL_V, "%s ", languages[i]);
+    }
+    mp_msg(MSGT_SUBREADER, MSGL_V, "\n");
+    
+    for (i = 0; i < langcnt; i++) {
+	if (strcasecmp(languages[i], preferred_language) != 0) continue;
+	analyser = enca_analyser_alloc(languages[i]);
+	encoding = enca_analyse_const(analyser, buffer, buflen);
+	mp_msg(MSGT_SUBREADER, MSGL_INFO, "ENCA detected charset: %s\n", enca_charset_name(encoding.charset, ENCA_NAME_STYLE_ICONV));
+	detected_sub_cp = strdup(enca_charset_name(encoding.charset, ENCA_NAME_STYLE_ICONV));
+	enca_analyser_free(analyser);
+    }
+    
+    free(languages);
+    free(buffer);
+    rewind(fd);
+
+    if (!detected_sub_cp) detected_sub_cp = strdup(fallback);
+
+    return detected_sub_cp;
+}
+#endif
+
 sub_data* sub_read_file (char *filename, float fps) {
         //filename is assumed to be malloc'ed,  free() is used in sub_free()
     FILE *fd;
     int n_max, n_first, i, j, sub_first, sub_orig;
     subtitle *first, *second, *sub, *return_sub;
     sub_data *subt_data;
+    char enca_lang[100], enca_fallback[100];
     int uses_time = 0, sub_num = 0, sub_errs = 0;
+    char *current_sub_cp=NULL;
     struct subreader sr[]=
     {
 	    { sub_read_line_microdvd, NULL, "microdvd" },
@@ -1281,9 +1352,24 @@ sub_data* sub_read_file (char *filename, float fps) {
     srp=sr+sub_format;
     mp_msg(MSGT_SUBREADER,MSGL_INFO,"SUB: Detected subtitle file format: %s\n", srp->name);
     
-    fseek (fd,0,SEEK_SET);
+#ifdef _XBOX
+	fseek (fd,0,SEEK_SET);
+#else
+    rewind (fd);
+#endif
 
 #ifdef USE_ICONV
+#ifdef HAVE_ENCA
+    if (sscanf(sub_cp, "enca:%2s:%s", enca_lang, enca_fallback) == 2
+	|| sscanf(sub_cp, "ENCA:%2s:%s", enca_lang, enca_fallback) == 2) {
+	current_sub_cp = guess_cp(fd, enca_lang, enca_fallback);
+    } else {
+	current_sub_cp = sub_cp ? strdup(sub_cp) : NULL;
+    }
+#else
+    current_sub_cp = sub_cp ? strdup(sub_cp) : NULL;
+#endif
+
     sub_utf8_prev=sub_utf8;
     {
 	    int l,k;
@@ -1296,9 +1382,10 @@ sub_data* sub_read_file (char *filename, float fps) {
 			    break;
 			}
 	    }
-	    if (k<0) subcp_open();
+	    if (k<0) subcp_open(current_sub_cp);
     }
 #endif
+    if (current_sub_cp) free(current_sub_cp);
 
     sub_num=0;n_max=32;
     first=(subtitle *)malloc(n_max*sizeof(subtitle));
@@ -1718,42 +1805,44 @@ char** sub_filenames(char* path, char *fname)
     char *f_dir, *f_fname, *f_fname_noext, *f_fname_trim, *tmp, *tmp_sub_id;
     char *tmp_fname_noext, *tmp_fname_trim, *tmp_fname_ext, *tmpresult;
  
-    int len, pos, found, i, j, subcnt;
-    char * sub_exts[] = {  "utf", "utf8", "utf-8", "sub", "srt", "smi", "rt", "txt", "ssa", "aqt", "jss", "ass", NULL};
+    int len, pos, found, i, j;
+    char * sub_exts[] = {  "utf", "utf8", "utf-8", "sub", "srt", "smi", "rt", "txt", "ssa", "aqt", "jss", "js", "ass", NULL};
     subfn *result;
     char **result2;
-
-		for (subcnt=0; sub_exts[subcnt]; subcnt++)
-		{
-		}
-
-		printf("support %i subtitle formats\n", subcnt);
-    result2 = (char**)malloc(sizeof(char*)*(subcnt+1));
     
-		char szFileName[1024];
-		strcpy(szFileName, fname);
-		i=strlen(szFileName)-1;
-		while (i >= 0)
+#ifdef _XBOX
+	//count sub formats
+	for (j=0; sub_exts[j]; j++)
+	{
+	}
+
+	printf("support %i subtitle formats\n", j);
+	result2 = (char**)malloc(sizeof(char*)*(j+1));
+
+	char szFileName[1024];
+	strcpy(szFileName, fname);
+	i=strlen(szFileName)-1;
+	while (i >= 0)
+	{
+		if (szFileName[i]=='.')
 		{
-			if (szFileName[i]=='.')
-			{
-				szFileName[i]=0;
-				break;
-			}
-			else i--;
+			szFileName[i]=0;
+			break;
 		}
+		else i--;
+	}
 
-    for (i = 0; i < subcnt; i++) 
-		{
-			result2[i] = malloc(1024);
-			//strcpy(result2[i],szFileName);
-			//strcat(result2[i],".");
-			strcpy(result2[i],"Z:\\subtitle.");
-			strcat(result2[i],sub_exts[i]);
+    for (i = 0; i < j; i++)
+	{
+		result2[i] = malloc(1024);
+		//strcpy(result2[i],szFileName);
+		//strcat(result2[i],".");
+		strcpy(result2[i],"Z:\\subtitle.");
+		strcat(result2[i],sub_exts[i]);
     }
-    result2[subcnt] = NULL;
-
-#if 0    
+    result2[j] = NULL;
+    return result2;
+#else
     int subcnt;
  
     FILE *f;
@@ -1821,7 +1910,11 @@ char** sub_filenames(char* path, char *fname)
 		// does it end with a subtitle extension?
 		found = 0;
 #ifdef USE_ICONV
+#ifdef HAVE_ENCA
+		for (i = ((sub_cp && strncasecmp(sub_cp, "enca", 4) != 0) ? 3 : 0); sub_exts[i]; i++) {
+#else
 		for (i = (sub_cp ? 3 : 0); sub_exts[i]; i++) {
+#endif
 #else
 		for (i = 0; sub_exts[i]; i++) {
 #endif
@@ -1918,8 +2011,9 @@ char** sub_filenames(char* path, char *fname)
     result2[subcnt] = NULL;
     
     free(result);
-#endif
+
     return result2;
+#endif //!_XBOX
 }
 
 void list_sub_file(sub_data* subd){
