@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 09-12-2004 added: [ 1081938 ] Updated strings.xml files to single-line format, thanks to slacker.
   - 09-12-2004 fixed: Issue with autorun videos/music (strings mix up)
   - 09-12-2004 added: Skin language version.  Currently set at v1.2.  XBMC will not load any skin
                       that doesn't have a <version>1.2</version> tag in it's skin.xml

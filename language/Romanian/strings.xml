@@ -1,2270 +1,570 @@
 <strings>
-	<string>
-		<id>0</id>
-		<value>Programe</value>
-	</string>
-	<string>
-		<id>1</id>
-		<value>Imagini</value>
-	</string>
-	<string>
-		<id>2</id>
-		<value>Muzica</value>
-	</string>
-	<string>
-		<id>3</id>
-		<value>Filme</value>
-	</string>
-	<string>
-		<id>4</id>
-		<value>Ghid TV</value>
-	</string>
-	<string>
-		<id>5</id>
-		<value>Configurare</value>
-	</string>
-	<string>
-		<id>7</id>
-		<value>Fisiere</value>
-	</string>
-	<string>
-		<id>8</id>
-		<value>Vremea</value>
-	</string>
-	<string>
-		<id>11</id>
-		<value>Luni</value>
-	</string>
-	<string>
-		<id>12</id>
-		<value>Marti</value>
-	</string>
-	<string>
-		<id>13</id>
-		<value>Miercuri</value>
-	</string>
-	<string>
-		<id>14</id>
-		<value>Joi</value>
-	</string>
-	<string>
-		<id>15</id>
-		<value>Vineri</value>
-	</string>
-	<string>
-		<id>16</id>
-		<value>Sambata</value>
-	</string>
-	<string>
-		<id>17</id>
-		<value>Duminica</value>
-	</string>
-	<string>
-		<id>21</id>
-		<value>Ianuarie</value>
-	</string>
-	<string>
-		<id>22</id>
-		<value>Februarie</value>
-	</string>
-	<string>
-		<id>23</id>
-		<value>Martie</value>
-	</string>
-	<string>
-		<id>24</id>
-		<value>Aprilie</value>
-	</string>
-	<string>
-		<id>25</id>
-		<value>Mai</value>
-	</string>
-	<string>
-		<id>26</id>
-		<value>Iunie</value>
-	</string>
-	<string>
-		<id>27</id>
-		<value>Iulie</value>
-	</string>
-	<string>
-		<id>28</id>
-		<value>August</value>
-	</string>
-	<string>
-		<id>29</id>
-		<value>Septembrie</value>
-	</string>
-	<string>
-		<id>30</id>
-		<value>Octombrie</value>
-	</string>
-	<string>
-		<id>31</id>
-		<value>Noiembrie</value>
-	</string>
-	<string>
-		<id>32</id>
-		<value>Decembrie</value>
-	</string>
-	<string>
-		<id>98</id>
-		<value>Aranjare: Automatic</value>
-	</string>
-	<string>
-		<id>99</id>
-		<value>Aranjare: Automatic mare</value>
-	</string>
-	<string>
-		<id>100</id>
-		<value>Aranjare: Icoane</value>
-	</string>
-	<string>
-		<id>101</id>
-		<value>Aranjare: Lista</value>
-	</string>
-	<string>
-		<id>102</id>
-		<value>Cauta</value>
-	</string>
-	<string>
-		<id>103</id>
-		<value>Sortare dupa: Nume</value>
-	</string>
-	<string>
-		<id>104</id>
-		<value>Sortare dupa: Data</value>
-	</string>
-	<string>
-		<id>105</id>
-		<value>Sortare dupa: Marime</value>
-	</string>
-	<string>
-		<id>106</id>
-		<value>Nu</value>
-	</string>
-	<string>
-		<id>107</id>
-		<value>Da</value>
-	</string>
-	<string>
-		<id>108</id>
-		<value>Rulare automata</value>
-	</string>
-	<string>
-		<id>109</id>
-		<value>Creare Thumbs</value>
-	</string>
-	<string>
-		<id>110</id>
-		<value>Creare Thumbnails</value>
-	</string>
-	<string>
-		<id>111</id>
-		<value>Scurtaturi</value>
-	</string>
-	<string>
-		<id>112</id>
-		<value>PAUZA</value>
-	</string>
-	<string>
-		<id>113</id>
-		<value>Fisiere : Sursa</value>
-	</string>
-	<string>
-		<id>114</id>
-		<value>Fisiere : Destinatie</value>
-	</string>
-	<string>
-		<id>115</id>
-		<value>Copiaza</value>
-	</string>
-	<string>
-		<id>116</id>
-		<value>Muta</value>
-	</string>
-	<string>
-		<id>117</id>
-		<value>Sterge</value>
-	</string>
-	<string>
-		<id>118</id>
-		<value>Redenumeste</value>
-	</string>
-	<string>
-		<id>119</id>
-		<value>Director nou</value>
-	</string>
-	<string>
-		<id>120</id>
-		<value>Confirma copierea fisierului</value>
-	</string>
-	<string>
-		<id>121</id>
-		<value>Confirma mutarea fisierului</value>
-	</string>
-	<string>
-		<id>122</id>
-		<value>Confirma stegerea fisierului</value>
-	</string>
-	<string>
-		<id>123</id>
-		<value>Copiezi aceste fisiere?</value>
-	</string>
-	<string>
-		<id>124</id>
-		<value>Muti aceste fisiere?</value>
-	</string>
-	<string>
-		<id>125</id>
-		<value>Stergi aceste fisiere?</value>
-	</string>
-	<string>
-		<id>126</id>
-		<value>Stare</value>
-	</string>
-	<string>
-		<id>127</id>
-		<value>Obiecte</value>
-	</string>
-	<string>
-		<id>128</id>
-		<value>General</value>
-	</string>
-	<string>
-		<id>129</id>
-		<value>Derulare automata</value>
-	</string>
-	<string>
-		<id>130</id>
-		<value>Informatii de sistem</value>
-	</string>
-	<string>
-		<id>131</id>
-		<value>Ecran</value>
-	</string>
-	<string>
-		<id>132</id>
-		<value>Albume</value>
-	</string>
-	<string>
-		<id>133</id>
-		<value>Artisti</value>
-	</string>
-	<string>
-		<id>134</id>
-		<value>Cantece</value>
-	</string>
-	<string>
-		<id>135</id>
-		<value>Tipuri</value>
-	</string>
-	<string>
-		<id>136</id>
-		<value>Liste</value>
-	</string>
-	<string>
-		<id>137</id>
-		<value>Cautare</value>
-	</string>
-	<string>
-		<id>138</id>
-		<value>Infromatii de sistem</value>
-	</string>
-	<string>
-		<id>139</id>
-		<value>Temperaturi:</value>
-	</string>
-	<string>
-		<id>140</id>
-		<value>CPU:</value>
-	</string>
-	<string>
-		<id>141</id>
-		<value>GPU:</value>
-	</string>
-	<string>
-		<id>142</id>
-		<value>Timp:</value>
-	</string>
-	<string>
-		<id>143</id>
-		<value>Actual:</value>
-	</string>
-	<string>
-		<id>144</id>
-		<value>Build:</value>
-	</string>
-	<string>
-		<id>145</id>
-		<value>Retea:</value>
-	</string>
-	<string>
-		<id>146</id>
-		<value>Tip:</value>
-	</string>
-	<string>
-		<id>147</id>
-		<value>Static</value>
-	</string>
-	<string>
-		<id>148</id>
-		<value>DHCP</value>
-	</string>
-	<string>
-		<id>149</id>
-		<value>MAC</value>
-	</string>
-	<string>
-		<id>150</id>
-		<value>IP</value>
-	</string>
-	<string>
-		<id>151</id>
-		<value>Link:</value>
-	</string>
-	<string>
-		<id>152</id>
-		<value>Half duplex</value>
-	</string>
-	<string>
-		<id>153</id>
-		<value>Full duplex</value>
-	</string>
-	<string>
-		<id>154</id>
-		<value>Depozit</value>
-	</string>
-	<string>
-		<id>155</id>
-		<value>Partitia</value>
-	</string>
-	<string>
-		<id>156</id>
-		<value>Liber</value>
-	</string>
-	<string>
-		<id>157</id>
-		<value>Video</value>
-	</string>
-	<string>
-		<id>158</id>
-		<value>Memorie libera</value>
-	</string>
-	<string>
-		<id>159</id>
-		<value>Nu exista link</value>
-	</string>
-	<string>
-		<id>160</id>
-		<value>Liber</value>
-	</string>
-	<string>
-		<id>161</id>
-		<value>Indisponibil</value>
-	</string>
-	<string>
-		<id>162</id>
-		<value>Tray deschis</value>
-	</string>
-	<string>
-		<id>163</id>
-		<value>Citesc</value>
-	</string>
-	<string>
-		<id>164</id>
-		<value>No Disc</value>
-	</string>
-	<string>
-		<id>165</id>
-		<value>Disc Prezent</value>
-	</string>
-	<string>
-		<id>166</id>
-		<value>Skin:</value>
-	</string>
-	<string>
-		<id>167</id>
-		<value>FTP server:</value>
-	</string>
-	<string>
-		<id>168</id>
-		<value>Sincronizare Timp:</value>
-	</string>
-	<string>
-		<id>169</id>
-		<value>Rezolutie:</value>
-	</string>
-	<string>
-		<id>170</id>
-		<value>Album:</value>
-	</string>
-	<string>
-		<id>171</id>
-		<value>Artist:</value>
-	</string>
-	<string>
-		<id>172</id>
-		<value>Data of Release-ului:</value>
-	</string>
-	<string>
-		<id>173</id>
-		<value>Rating:</value>
-	</string>
-	<string>
-		<id>174</id>
-		<value>Tip:</value>
-	</string>
-	<string>
-		<id>175</id>
-		<value>Tonuri:</value>
-	</string>
-	<string>
-		<id>176</id>
-		<value>Stiluri:</value>
-	</string>
-	<string>
-		<id>177</id>
-		<value>Review:</value>
-	</string>
-	<string>
-		<id>178</id>
-		<value>Piste:</value>
-	</string>
-	<string>
-		<id>179</id>
-		<value>Cantec</value>
-	</string>
-	<string>
-		<id>180</id>
-		<value>Durata</value>
-	</string>
-	<string>
-		<id>181</id>
-		<value>Selecteaza album</value>
-	</string>
-	<string>
-		<id>182</id>
-		<value>Piste</value>
-	</string>
-	<string>
-		<id>183</id>
-		<value>Review</value>
-	</string>
-	<string>
-		<id>184</id>
-		<value>Actualizare</value>
-	</string>
-	<string>
-		<id>185</id>
-		<value>Caut album</value>
-	</string>
-	<string>
-		<id>186</id>
-		<value>OK</value>
-	</string>
-	<string>
-		<id>187</id>
-		<value>Nici un album gasit!</value>
-	</string>
-	<string>
-		<id>188</id>
-		<value>Selecteaza tot</value>
-	</string>
-	<string>
-		<id>189</id>
-		<value>Scanez media info</value>
-	</string>
-	<string>
-		<id>190</id>
-		<value>Salveaza</value>
-	</string>
-	<string>
-		<id>191</id>
-		<value>Arbitrar</value>
-	</string>
-	<string>
-		<id>192</id>
-		<value>Clarifica</value>
-	</string>
-	<string>
-		<id>193</id>
-		<value>Scaneaza</value>
-	</string>
-	<string>
-		<id>194</id>
-		<value>Caut...</value>
-	</string>
-	<string>
-		<id>195</id>
-		<value>Nu am gasit IMDB info!</value>
-	</string>
-	<string>
-		<id>196</id>
-		<value>Selecteaza film:</value>
-	</string>
-	<string>
-		<id>197</id>
-		<value>Intreb IMDB info</value>
-	</string>
-	<string>
-		<id>198</id>
-		<value>Incarc detalii despre film</value>
-	</string>
-	<string>
-		<id>199</id>
-		<value>Director:</value>
-	</string>
-	<string>
-		<id>200</id>
-		<value>Autor:</value>
-	</string>
-	<string>
-		<id>201</id>
-		<value>An:</value>
-	</string>
-	<string>
-		<id>202</id>
-		<value>Tagline:</value>
-	</string>
-	<string>
-		<id>203</id>
-		<value>Plot outline:</value>
-	</string>
-	<string>
-		<id>204</id>
-		<value>Rating:</value>
-	</string>
-	<string>
-		<id>2050</id>
-		<value>Runtime:</value>
-	</string>
-	<string>
-		<id>205</id>
-		<value>Voturi:</value>
-	</string>
-	<string>
-		<id>206</id>
-		<value>Distributie</value>
-	</string>
-	<string>
-		<id>207</id>
-		<value>Plot</value>
-	</string>
-	<string>
-		<id>208</id>
-		<value>Play</value>
-	</string>
-	<string>
-		<id>209</id>
-		<value>Urmator</value>
-	</string>
-	<string>
-		<id>210</id>
-		<value>Anterior</value>
-	</string>
-	<string>
-		<id>211</id>
-		<value>Cauta aplicatii</value>
-	</string>
-	<string>
-		<id>212</id>
-		<value>aplicatii gasite</value>
-	</string>
-	<string>
-		<id>213</id>
-		<value>Calibrare UI</value>
-	</string>
-	<string>
-		<id>214</id>
-		<value>Calibrare ecran</value>
-	</string>
-	<string>
-		<id>215</id>
-		<value>Atenuat</value>
-	</string>
-	<string>
-		<id>216</id>
-		<value>Marit</value>
-	</string>
-	<string>
-		<id>217</id>
-		<value>Ingustat</value>
-	</string>
-	<string>
-		<id>218</id>
-		<value>Partitia DVD</value>
-	</string>
-	<string>
-		<id>219</id>
-		<value>Introdu discul</value>
-	</string>
-	<string>
-		<id>220</id>
-		<value>Remote Share</value>
-	</string>
-	<string>
-		<id>221</id>
-		<value>Nu este conectat la retea</value>
-	</string>
-	<string>
-		<id>222</id>
-		<value>Anuleaza</value>
-	</string>
-	<string>
-		<id>223</id>
-		<value>Schimbare automata ecran lat</value>
-	</string>
-	<string>
-		<id>224</id>
-		<value>Viteza</value>
-	</string>
-	<string>
-		<id>225</id>
-		<value>Timp de tranzitie</value>
-	</string>
-	<string>
-		<id>226</id>
-		<value>Activeaza PAL60</value>
-	</string>
-	<string>
-		<id>227</id>
-		<value>Activeaza CDDB</value>
-	</string>
-	<string>
-		<id>228</id>
-		<value>Amesteca lista la pornire</value>
-	</string>
-	<string>
-		<id>229</id>
-		<value>Timpul HD Spindown (minute)</value>
-	</string>
-	<string>
-		<id>230</id>
-		<value>Filtre</value>
-	</string>
-	<string>
-		<id>231</id>
-		<value>Nimic</value>
-	</string>
-	<string>
-		<id>232</id>
-		<value>Punct</value>
-	</string>
-	<string>
-		<id>233</id>
-		<value>Liniar</value>
-	</string>
-	<string>
-		<id>234</id>
-		<value>Anizotropic</value>
-	</string>
-	<string>
-		<id>235</id>
-		<value>Quincunx</value>
-	</string>
-	<string>
-		<id>236</id>
-		<value>Gaussian Cubic</value>
-	</string>
-	<string>
-		<id>237</id>
-		<value>Deamplificare:</value>
-	</string>
-	<string>
-		<id>238</id>
-		<value>Amplificare:</value>
-	</string>
-	<string>
-		<id>240</id>
-		<value>Pornire automata DVD-Video</value>
-	</string>
-	<string>
-		<id>241</id>
-		<value>Pornire automata VCD/SVCD</value>
-	</string>
-	<string>
-		<id>242</id>
-		<value>Pornire automata CD-Audio</value>
-	</string>
-	<string>
-		<id>243</id>
-		<value>Pornire automata joc XBOX</value>
-	</string>
-	<string>
-		<id>244</id>
-		<value>Pornire automata filme</value>
-	</string>
-	<string>
-		<id>245</id>
-		<value>Pornire automata muzica</value>
-	</string>
-	<string>
-		<id>246</id>
-		<value>Pornire automata poze</value>
-	</string>
-	<string>
-		<id>247</id>
-		<value>Scripturi</value>
-	</string>
-	<string>
-		<id>248</id>
-		<value>Limba</value>
-	</string>
-	<string>
-		<id>249</id>
-		<value>Muzica</value>
-	</string>
-	<string>
-		<id>250</id>
-		<value>Vizualizare</value>
-	</string>
-	<string>
-		<id>251</id>
-		<value>Selecteaza director destinatie</value>
-	</string>
-	<string>
-		<id>252</id>
-		<value>Iesire pe toate difuzoarele</value>
-	</string>
-	<string>
-		<id>253</id>
-		<value>Numarul canalelor</value>
-	</string>
-	<string>
-		<id>254</id>
-		<value>DD Stereo Passthrough</value>
-	</string>
-	<string>
-		<id>255</id>
-		<value>CDDB</value>
-	</string>
-	<string>
-		<id>256</id>
-		<value>Intreb freedb pt CDDB info</value>
-	</string>
-	<string>
-		<id>257</id>
-		<value>Eroare</value>
-	</string>
-	<string>
-		<id>258</id>
-		<value>Activeaza ID3 tags</value>
-	</string>
-	<string>
-		<id>259</id>
-		<value>Deschidere</value>
-	</string>
-	<string>
-		<id>260</id>
-		<value>Shoutcast</value>
-	</string>
-	<string>
-		<id>261</id>
-		<value>Asteptati startul....</value>
-	</string>
-	<string>
-		<id>262</id>
-		<value>Iesire scripturi</value>
-	</string>
-	<string>
-		<id>263</id>
-		<value>Server HTTP:</value>
-	</string>
-	<string>
-		<id>264</id>
-		<value>Inregistrare</value>
-	</string>
-	<string>
-		<id>265</id>
-		<value>Opreste inr.</value>
-	</string>
-	<string>
-		<id>266</id>
-		<value>Sortare dupa: Pista</value>
-	</string>
-	<string>
-		<id>267</id>
-		<value>Sortare dupa: Data</value>
-	</string>
-	<string>
-		<id>268</id>
-		<value>Sortare dupa: Titlu</value>
-	</string>
-	<string>
-		<id>269</id>
-		<value>Sortare dupa: Artist</value>
-	</string>
-	<string>
-		<id>270</id>
-		<value>Sortare dupa: Album</value>
-	</string>
-	<string>
-		<id>271</id>
-		<value>Top 100</value>
-	</string>
-	<string>
-		<id>272</id>
-		<value>Compensare Overscan stanga-sus</value>
-	</string>
-	<string>
-		<id>273</id>
-		<value>Compensare Overscan dreapta-jos</value>
-	</string>
-	<string>
-		<id>274</id>
-		<value>Pozitie subtitlu</value>
-	</string>
-	<string>
-		<id>275</id>
-		<value>Ajustarea ratei pixel</value>
-	</string>
-	<string>
-		<id>276</id>
-		<value>Muta sageata pt schimbarea overscan-ului</value>
-	</string>
-	<string>
-		<id>277</id>
-		<value>Muta sageata pt schimbarea pozitiei subtitlului</value>
-	</string>
-	<string>
-		<id>278</id>
-		<value>Modifica patratul astfel incat sa fie drept</value>
-	</string>
-	<string>
-		<id>279</id>
-		<value>Incarcarea configuratiei este imposibila</value>
-	</string>
-	<string>
-		<id>280</id>
-		<value>folosire a fallbacks implicite</value>
-	</string>
-	<string>
-		<id>281</id>
-		<value>Te rog verifica fisierele .xml</value>
-	</string>
-	<string>
-		<id>282</id>
-		<value>%i unitati gasite</value>
-	</string>
-	<string>
-		<id>283</id>
-		<value>Rezultatele cautarii</value>
-	</string>
-	<string>
-		<id>284</id>
-		<value>N-am gasit nimic</value>
-	</string>
-	<string>
-		<id>285</id>
-		<value>Filtru de deinterlace</value>
-	</string>
-	<string>
-		<id>286</id>
-		<value>Filtru de postprocessing</value>
-	</string>
-	<string>
-		<id>287</id>
-		<value>Subtitluri SRT</value>
-	</string>
-	<string>
-		<id>288</id>
-		<value>Font</value>
-	</string>
-	<string>
-		<id>289</id>
-		<value>Marime</value>
-	</string>
-	<string>
-		<id>290</id>
-		<value>Amplificare volum (dB)</value>
-	</string>
-	<string>
-		<id>291</id>
-		<value>Video</value>
-	</string>
-	<string>
-		<id>292</id>
-		<value>Audio</value>
-	</string>
-	<string>
-		<id>293</id>
-		<value>Subtitluri</value>
-	</string>
-	<string>
-		<id>294</id>
-		<value>Creare Bookmark</value>
-	</string>
-	<string>
-		<id>295</id>
-		<value>Ciclare Bookmarks</value>
-	</string>
-	<string>
-		<id>296</id>
-		<value>Stergere Bookmarks</value>
-	</string>
-	<string>
-		<id>297</id>
-		<value>Intarziere AV</value>
-	</string>
-	<string>
-		<id>298</id>
-		<value>Slider</value>
-	</string>
-	<string>
-		<id>300</id>
-		<value>1. Limba</value>
-	</string>
-	<string>
-		<id>301</id>
-		<value>2. Volum</value>
-	</string>
-	<string>
-		<id>302</id>
-		<value>3. Stream</value>
-	</string>
-	<string>
-		<id>303</id>
-		<value>Intarziere</value>
-	</string>
-	<string>
-		<id>304</id>
-		<value>Limba</value>
-	</string>
-	<string>
-		<id>305</id>
-		<value>Activat</value>
-	</string>
-	<string>
-		<id>306</id>
-		<value>Non-Interleaved</value>
-	</string>
-	<string>
-		<id>307</id>
-		<value>Automat</value>
-	</string>
-	<string>
-		<id>308</id>
-		<value>filtru deblocare verticala</value>
-	</string>
-	<string>
-		<id>309</id>
-		<value>filtru deblocare orizontala</value>
-	</string>
-	<string>
-		<id>310</id>
-		<value>Lumina/Contrast automat</value>
-	</string>
-	<string>
-		<id>311</id>
-		<value>Dering</value>
-	</string>
-	<string>
-		<id>312</id>
-		<value>(0=auto)</value>
-	</string>
-	<string>
-		<id>313</id>
-		<value>Reorganizare baza date</value>
-	</string>
-	<string>
-		<id>314</id>
-		<value>Preparare...</value>
-	</string>
-	<string>
-		<id>315</id>
-		<value>Eroare in baza de date</value>
-	</string>
-	<string>
-		<id>316</id>
-		<value>Caut muzica...</value>
-	</string>
-	<string>
-		<id>317</id>
-		<value>Reorganizare cu success</value>
-	</string>
-	<string>
-		<id>318</id>
-		<value>Marcare cantece pt stergere</value>
-	</string>
-	<string>
-		<id>319</id>
-		<value>Eroare la reorganizarea muzicii</value>
-	</string>
-	<string>
-		<id>320</id>
-		<value>Caut artisti...</value>
-	</string>
-	<string>
-		<id>321</id>
-		<value>Eroare reorganizare dupa artisti</value>
-	</string>
-	<string>
-		<id>322</id>
-		<value>Cautare dupa tip...</value>
-	</string>
-	<string>
-		<id>323</id>
-		<value>Eroare reorganizare dupa tip</value>
-	</string>
-	<string>
-		<id>324</id>
-		<value>Cautare cale...</value>
-	</string>
-	<string>
-		<id>325</id>
-		<value>Eroare reorganizare dupa cale</value>
-	</string>
-	<string>
-		<id>326</id>
-		<value>Cautare albume...</value>
-	</string>
-	<string>
-		<id>327</id>
-		<value>Eroare reorganizare dupa album</value>
-	</string>
-	<string>
-		<id>328</id>
-		<value>Salvare...</value>
-	</string>
-	<string>
-		<id>329</id>
-		<value>Eroare la salvare</value>
-	</string>
-	<string>
-		<id>330</id>
-		<value>Dureaza putin...</value>
-	</string>
-	<string>
-		<id>331</id>
-		<value>Compresie baza de date...</value>
-	</string>
-	<string>
-		<id>332</id>
-		<value>Eroare la compresia bazei de date</value>
-	</string>
-	<string>
-		<id>333</id>
-		<value>Vrei sa reorganizezi baza de date cu muzica?</value>
-	</string>
-	<string>
-		<id>334</id>
-		<value>Reorganizare baza de date cu muzica</value>
-	</string>
-	<string>
-		<id>335</id>
-		<value>Start</value>
-	</string>
-	<string>
-		<id>336</id>
-		<value>Ajustare Framerate</value>
-	</string>
-	<string>
-		<id>337</id>
-		<value>Iesire audio:</value>
-	</string>
-	<string>
-		<id>338</id>
-		<value>Analog</value>
-	</string>
-	<string>
-		<id>339</id>
-		<value>Digital</value>
-	</string>
-	<string>
-		<id>340</id>
-		<value>Various Artists</value>
-	</string>
-	<string>
-		<id>341</id>
-		<value>Play DVD</value>
-	</string>
-	<string>
-		<id>342</id>
-		<value>File</value>
-	</string>
-	<string>
-		<id>343</id>
-		<value>Ajustare Framerate</value>
-	</string>
-	<string>
-		<id>344</id>
-		<value>Actori</value>
-	</string>
-	<string>
-		<id>345</id>
-		<value>An</value>
-	</string>
-	<string>
-		<id>346</id>
-		<value>Stiva</value>
-	</string>
-	<string>
-		<id>347</id>
-		<value>Amestecat</value>
-	</string>
-	<string>
-		<id>348</id>
-		<value>Flatten Directory Hierarchy</value>
-	</string>
-	<string>
-		<id>349</id>
-		<value>Arata numai Default.xbe</value>
-	</string>
-	<string>
-		<id>350</id>
-		<value>Programe</value>
-	</string>
-	<string>
-		<id>351</id>
-		<value>Oprit</value>
-	</string>
-	<string>
-		<id>352</id>
-		<value>Dim</value>
-	</string>
-	<string>
-		<id>353</id>
-		<value>Black</value>
-	</string>
-	<string>
-		<id>354</id>
-		<value>Matrix Trails</value>
-	</string>
-	<string>
-		<id>355</id>
-		<value>Screensaver Idle Timeout</value>
-	</string>
-	<string>
-		<id>356</id>
-		<value>Tip screensaver</value>
-	</string>
-	<string>
-		<id>357</id>
-		<value>Timp de asteptare pt shutdown</value>
-	</string>
-	<string>
-		<id>358</id>
-		<value>Toate albumele</value>
-	</string>
-	<string>
-		<id>359</id>
-		<value>Albume recente</value>
-	</string>
-	<string>
-		<id>360</id>
-		<value>Screensaver</value>
-	</string>
-	<string>
-		<id>361</id>
-		<value>R. SlideShow</value>
-	</string>
-	<string>
-		<id>362</id>
-		<value>Nivel Fade screensaver (%)</value>
-	</string>
-	<string>
-		<id>363</id>
-		<value>Sortare dupa: Fisier</value>
-	</string>
-	<string>
-		<id>364</id>
-		<value>DD/DTS Multichannel Passthrough</value>
-	</string>
-	<string>
-		<id>365</id>
-		<value>Sortare dupa: Nume</value>
-	</string>
-	<string>
-		<id>366</id>
-		<value>Sortare dupa: An</value>
-	</string>
-	<string>
-		<id>367</id>
-		<value>Sortare dupa: Rating</value>
-	</string>
-	<string>
-		<id>368</id>
-		<value>IMDB</value>
-	</string>
-	<string>
-		<id>369</id>
-		<value>Titlu</value>
-	</string>
-	<string>
-		<id>370</id>
-		<value>T-Storms</value>
-	</string>
-	<string>
-		<id>371</id>
-		<value>Partial</value>
-	</string>
-	<string>
-		<id>372</id>
-		<value>In special</value>
-	</string>
-	<string>
-		<id>373</id>
-		<value>Insorit</value>
-	</string>
-	<string>
-		<id>374</id>
-		<value>Innourat</value>
-	</string>
-	<string>
-		<id>375</id>
-		<value>Zapada</value>
-	</string>
-	<string>
-		<id>376</id>
-		<value>Ploaie</value>
-	</string>
-	<string>
-		<id>377</id>
-		<value>Luminos</value>
-	</string>
-	<string>
-		<id>378</id>
-		<value>AM</value>
-	</string>
-	<string>
-		<id>379</id>
-		<value>PM</value>
-	</string>
-	<string>
-		<id>380</id>
-		<value>Averse de ploaie</value>
-	</string>
-	<string>
-		<id>381</id>
-		<value>Putine</value>
-	</string>
-	<string>
-		<id>382</id>
-		<value>Imprastiat</value>
-	</string>
-	<string>
-		<id>383</id>
-		<value>Vant</value>
-	</string>
-	<string>
-		<id>384</id>
-		<value>Puternic</value>
-	</string>
-	<string>
-		<id>385</id>
-		<value>Placut</value>
-	</string>
-	<string>
-		<id>386</id>
-		<value>Clar</value>
-	</string>
-	<string>
-		<id>387</id>
-		<value>Nori</value>
-	</string>
-	<string>
-		<id>388</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>389</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>390</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>391</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>392</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>393</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>394</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>395</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>396</id>
-		<value>Selecteaza Locatia</value>
-	</string>
-	<string>
-		<id>397</id>
-		<value>Regleaza Timpul</value>
-	</string>
-	<string>
-		<id>398</id>
-		<value>Unitatea de temperatura</value>
-	</string>
-	<string>
-		<id>399</id>
-		<value>Unitatea de viteza</value>
-	</string>
-	<string>
-		<id>400</id>
-		<value>Vremea</value>
-	</string>
-	<string>
-		<id>401</id>
-		<value>Temp</value>
-	</string>
-	<string>
-		<id>402</id>
-		<value>Simte ca</value>
-	</string>
-	<string>
-		<id>403</id>
-		<value>UV Index</value>
-	</string>
-	<string>
-		<id>404</id>
-		<value>Vant</value>
-	</string>
-	<string>
-		<id>405</id>
-		<value>Punct de topire</value>
-	</string>
-	<string>
-		<id>406</id>
-		<value>Umiditate</value>
-	</string>
-	<string>
-		<id>407</id>
-		<value>De la</value>
-	</string>
-	<string>
-		<id>408</id>
-		<value>la</value>
-	</string>
-	<string>
-		<id>410</id>
-		<value>Accesez Weather.com</value>
-	</string>
-	<string>
-		<id>411</id>
-		<value>Aflare vreme pt:</value>
-	</string>
-	<string>
-		<id>412</id>
-		<value>Nu se pot afla date despre vreme</value>
-	</string>
-	<string>
-		<id>413</id>
-		<value>Manual</value>
-	</string>
-	<string>
-		<id>414</id>
-		<value>Nici un review pt acest album</value>
-	</string>
-	<string>
-		<id>415</id>
-		<value>Downloadez thumbnail...</value>
-	</string>
-	<string>
-		<id>416</id>
-		<value>Indisponibil</value>
-	</string>
-	<string>
-		<id>417</id>
-		<value>Vizualizare: Icoane mari</value>
-	</string>
-	<string>
-		<id>418</id>
-		<value>Filme/Tipuri</value>
-	</string>
-	<string>
-		<id>419</id>
-		<value>Filme/Actori</value>
-	</string>
-	<string>
-		<id>420</id>
-		<value>Filme/Ani</value>
-	</string>
-	<string>
-		<id>421</id>
-		<value>Filme/Titluri</value>
-	</string>
-	<string>
-		<id>422</id>
-		<value>Sterge albuminfo</value>
-	</string>
-	<string>
-		<id>423</id>
-		<value>Sterge CDDB info</value>
-	</string>
-	<string>
-		<id>424</id>
-		<value>Selecteaza</value>
-	</string>
-	<string>
-		<id>425</id>
-		<value>Nu am gasit albuminfo.</value>
-	</string>
-	<string>
-		<id>426</id>
-		<value>Nu am gasit CDDB info.</value>
-	</string>
-	<string>
-		<id>427</id>
-		<value>Disc:</value>
-	</string>
-	<string>
-		<id>428</id>
-		<value>Introdu CD/DVD-ul corect</value>
-	</string>
-	<string>
-		<id>429</id>
-		<value>Te rog insereaza CD/DVD-ul urmator</value>
-	</string>
-	<string>
-		<id>430</id>
-		<value>Sortare dupa: DVD#</value>
-	</string>
-	<string>
-		<id>431</id>
-		<value>Fara Cache</value>
-	</string>
-	<string>
-		<id>432</id>
-		<value>Sterge film din baza de date</value>
-	</string>
-	<string>
-		<id>433</id>
-		<value>Esti sigur ca vrei sa stergi</value>
-	</string>
-	<string>
-		<id>434</id>
-		<value>filmul?</value>
-	</string>
-	<string>
-		<id>435</id>
-		<value>Pista</value>
-	</string>
-	<string>
-		<id>436</id>
-		<value>An:</value>
-	</string>
-	<string>
-		<id>437</id>
-		<value>Durata:</value>
-	</string>
-	<string>
-		<id>438</id>
-		<value>Se deschide fisierul</value>
-	</string>
-	<string>
-		<id>439</id>
-		<value>Cache</value>
-	</string>
-	<string>
-		<id>440</id>
-		<value>Harddisk</value>
-	</string>
-	<string>
-		<id>441</id>
-		<value>UDF</value>
-	</string>
-	<string>
-		<id>442</id>
-		<value>LAN</value>
-	</string>
-	<string>
-		<id>443</id>
-		<value>Internet</value>
-	</string>
-	<string>
-		<id>444</id>
-		<value>video</value>
-	</string>
-	<string>
-		<id>445</id>
-		<value>audio</value>
-	</string>
-	<string>
-		<id>446</id>
-		<value>DVD</value>
-	</string>
-	<string>
-		<id>447</id>
-		<value>Autorun</value>
-	</string>
-	<string>
-		<id>448</id>
-		<value>LCD</value>
-	</string>
-	<string>
-		<id>449</id>
-		<value>Activat</value>
-	</string>
-	<string>
-		<id>450</id>
-		<value>Coloane</value>
-	</string>
-	<string>
-		<id>4501</id>
-		<value>Tip LCD</value>
-	</string>
-	<string>
-		<id>451</id>
-		<value>Adresa liniei 1:</value>
-	</string>
-	<string>
-		<id>452</id>
-		<value>Adresa liniei 2:</value>
-	</string>
-	<string>
-		<id>453</id>
-		<value>Adresa liniei 3:</value>
-	</string>
-	<string>
-		<id>454</id>
-		<value>Adresa liniei 4:</value>
-	</string>
-	<string>
-		<id>455</id>
-		<value>Linii:</value>
-	</string>
-	<string>
-		<id>456</id>
-		<value>Mod</value>
-	</string>
-	<string>
-		<id>457</id>
-		<value>Schimba vizualizare</value>
-	</string>
-	<string>
-		<id>458</id>
-		<value>B/Mark</value>
-	</string>
-	<string>
-		<id>459</id>
-		<value>Subtitluri</value>
-	</string>
-	<string>
-		<id>460</id>
-		<value>Stream Audio</value>
-	</string>
-	<string>
-		<id>461</id>
-		<value>[activ]</value>
-	</string>
-	<string>
-		<id>462</id>
-		<value>Subtitlu</value>
-	</string>
-	<string>
-		<id>463</id>
-		<value>Backlight</value>
-	</string>
-	<string>
-		<id>464</id>
-		<value>Luminozitate</value>
-	</string>
-	<string>
-		<id>465</id>
-		<value>Contrast</value>
-	</string>
-	<string>
-		<id>466</id>
-		<value>Gama</value>
-	</string>
-	<string>
-		<id>467</id>
-		<value>Tip</value>
-	</string>
-	<string>
-		<id>468</id>
-		<value>Muta bara pt a-i schimba pozitia pe ecran</value>
-	</string>
-	<string>
-		<id>469</id>
-		<value>Pozitia OSD-ului</value>
-	</string>
-	<string>
-		<id>470</id>
-		<value>Credite</value>
-	</string>
-	<string>
-		<id>471</id>
-		<value>Modchip</value>
-	</string>
-	<string>
-		<id>472</id>
-		<value>OSD Timeout</value>
-	</string>
-	<string>
-		<id>473</id>
-		<value>High Quality Resampling</value>
-	</string>
-	<string>
-		<id>474</id>
-		<value>Oprit</value>
-	</string>
-	<string>
-		<id>475</id>
-		<value>Numai Muzica</value>
-	</string>
-	<string>
-		<id>476</id>
-		<value>Muzica &amp; Filme</value>
-	</string>
-	<string>
-		<id>477</id>
-		<value>Nu se poate incarca lista</value>
-	</string>
-	<string>
-		<id>478</id>
-		<value>OSD</value>
-	</string>
-	<string>
-		<id>479</id>
-		<value>Skin si Limba</value>
-	</string>
-	<string>
-		<id>480</id>
-		<value>Interfata</value>
-	</string>
-	<string>
-		<id>481</id>
-		<value>Configurare Audio</value>
-	</string>
-	<string>
-		<id>482</id>
-		<value>Despre XBMC</value>
-	</string>
-	<string>
-		<id>483</id>
-		<value>Album</value>
-	</string>
-	<string>
-		<id>484</id>
-		<value>Artist</value>
-	</string>
-	<string>
-		<id>485</id>
-		<value>Sterge album</value>
-	</string>
-	<string>
-		<id>486</id>
-		<value>Repeta</value>
-	</string>
-	<string>
-		<id>487</id>
-		<value>Repeta o data</value>
-	</string>
-	<string>
-		<id>488</id>
-		<value>Repeta acest director</value>
-	</string>
-	<string>
-		<id>489</id>
-		<value>Foloseste lista de cantece</value>
-	</string>
-	<string>
-		<id>490</id>
-		<value>Auto switch list and icons in songs</value>
-	</string>
-	<string>
-		<id>491</id>
-		<value>Foloseste icoane mari</value>
-	</string>
-	<string>
-		<id>492</id>
-		<value>Marire subtitluri</value>
-	</string>
-	<string>
-		<id>493</id>
-		<value>Optiuni avansate (Pt experti!)</value>
-	</string>
-	<string>
-		<id>494</id>
-		<value>Overall Audio Headroom (dB)</value>
-	</string>
-	<string>
-		<id>495</id>
-		<value>Reformatare filme la rezoluitia definita</value>
-	</string>
-	<string>
-		<id>496</id>
-		<value>Calibrare</value>
-	</string>
-	<string>
-		<id>497</id>
-		<value>Ascunde extensiile fisierulor</value>
-	</string>
-	<string>
-		<id>498</id>
-		<value>Sortare dupa: Tip</value>
-	</string>
-	<string>
-		<id>499</id>
-		<value>Eroare la conectare cu www.allmusic.com</value>
-	</string>
-	<string>
-		<id>500</id>
-		<value>Downloadare album eronata</value>
-	</string>
-	<string>
-		<id>501</id>
-		<value>Cautare dupa nume de albume...</value>
-	</string>
-	<string>
-		<id>502</id>
-		<value>Deschide</value>
-	</string>
-	<string>
-		<id>503</id>
-		<value>Ocupat</value>
-	</string>
-	<string>
-		<id>504</id>
-		<value>Gol</value>
-	</string>
-	<string>
-		<id>505</id>
-		<value>Loading media info from files...</value>
-	</string>
-
-		<string>
-		<id>506</id>
-		<value>Pt descriere foloseste numele directorului</value>
-	</string> 
-      <string> 	 
-            <id>507</id> 	 
-            <value>Sorteaza dupa: Folosire</value> 	 
-      </string>
-      <string>
-		<id>508</id>
-		<value>Nu folosi Scurtaturi sau Scanare</value>
-	</string>
-	<string>
-		<id>600</id>
-		<value>Rip CD</value>
-	</string>
-	<string>
-		<id>601</id>
-		<value>Media</value>
-	</string>
-	<string>
-		<id>602</id>
-		<value>Standard</value>
-	</string>
-	<string>
-		<id>603</id>
-		<value>Extrem</value>
-	</string>
-	<string>
-		<id>604</id>
-		<value>Constant Bit Rate</value>
-	</string>
-	<string>
-		<id>605</id>
-		<value>Se copiaza...</value>
-	</string>
-	<string>
-		<id>606</id>
-		<value>Pista numarul:</value>
-	</string>
-	<string>
-		<id>607</id>
-		<value>La:</value>
-	</string>
-	<string>
-		<id>608</id>
-		<value>Nu se poate copia CD sau Pista</value>
-	</string>
-	<string>
-		<id>609</id>
-		<value>CDDARipPath nu este setat in XboxMediaCenter.xml</value>
-	</string>
-	<string>
-		<id>620</id>
-		<value>Copiere CD</value>
-	</string>
-	<string>
-		<id>621</id>
-		<value>Encoder</value>
-	</string>
-	<string>
-		<id>622</id>
-		<value>Calitate</value>
-	</string>
-	<string>
-		<id>623</id>
-		<value>Bit Rate</value>
-	</string>
-	<string>
-		<id>624</id>
-		<value>Include numar pista</value>
-	</string>
-	<string>
-		<id>625</id>
-		<value>Toate cantecele lui</value>
-	</string>
-	<string>
-		<id>629</id>
-		<value>Mod vizualizare</value>
-	</string>
-	<string>
-		<id>630</id>
-		<value>Normal</value>
-	</string>
-	<string>
-		<id>631</id>
-		<value>Zoom</value>
-	</string>
-	<string>
-		<id>632</id>
-		<value>Extinde 4:3</value>
-	</string>
-	<string>
-		<id>633</id>
-		<value>Extinde 14:9</value>
-	</string>
-	<string>
-		<id>634</id>
-		<value>Extinde 16:9</value>
-	</string>
-	<string>
-		<id>635</id>
-		<value>Original</value>
-	</string>
-	<string>
-		<id>636</id>
-		<value>Personal</value>
-	</string>
-	<string>
-		<id>700</id>
-		<value>Stergere baza de date</value>
-	</string>
-	<string>
-		<id>701</id>
-		<value>Stergere muzica veche din baza de date</value>
-	</string>
-	<string>
-		<id>702</id>
-		<value>Acest director a fost scanat mai devereme.</value>
-	</string>
-	<string>
-		<id>703</id>
-		<value>Selecteaza YES pt actualizarea directorului selectat.</value>
-	</string>
-	<string>
-		<id>704</id>
-		<value>Selecteaza NO pt adaugare cantece noi.</value>
-	</string>
-	<string>
-		<id>705</id>
-		<value>Retea</value>
-	</string>
-	<string>
-		<id>706</id>
-		<value>HTTP Proxy Host:</value>
-	</string>
-	<string>
-		<id>707</id>
-		<value>HTTP Proxy Port:</value>
-	</string>
-	<string>
-		<id>708</id>
-		<value>Activare HTTP Proxy</value>
-	</string>
-	<string>
-		<id>709</id>
-		<value>XTag XLink Kai:</value>
-	</string>
-	<string>
-		<id>710</id>
-		<value>Parola XLink Kai:</value>
-	</string>
-	<string>
-		<id>711</id>
-		<value>Setari Protocol Internet (IP)</value>
-	</string>
-	<string>
-		<id>712</id>
-		<value>Portul sepcificat este invalid. Selectati o valoare cuprinsa intre 1 si 65535.</value>
-	</string>
-	<string>
-		<id>713</id>
-		<value>Setari HTTP Proxy</value>
-	</string>	
-	<string>
-		<id>714</id>
-		<value>Setari XLink Kai</value>
-	</string>	
-	<string>
-		<id>715</id>
-		<value>Atribuire:</value>
-	</string>	
-	<string>
-		<id>716</id>
-		<value>Automatic (DHCP)</value>
-	</string>	
-	<string>
-		<id>717</id>
-		<value>Manual (Static)</value>
-	</string>	
-	<string>
-		<id>718</id>
-		<value>Implicit (Dashboard)</value>
-	</string>	
-	<string>
-		<id>719</id>
-		<value>Adresa IP:</value>
-	</string>	
-	<string>
-		<id>720</id>
-		<value>Netmask:</value>
-	</string>	
-	<string>
-		<id>721</id>
-		<value>Gateway Implicit:</value>
-	</string>	
-	<string>
-		<id>722</id>
-		<value>Server DNS:</value>
-	</string>
-	<string>
-		<id>723</id>
-		<value>Salvare setari si reset XBox</value>
-	</string>
-	<string>
-		<id>724</id>
-		<value>Adresa selectata este invalida. Valoarea trebuie sa fie gen: AAA.BBB.CCC.DDD</value>
-	</string>
-	<string>
-		<id>725</id>
-		<value>cu numere cuprinse intre 0 si 255.</value>
-	</string>
-	<string>
-		<id>726</id>
-		<value>Schmbarile nu au fost salvate. Continuati?</value>
-	</string>
-	<string>
-		<id>727</id>
-		<value>Web Server</value>
-	</string>	
-	<string>
-		<id>728</id>
-		<value>FTP Server</value>
-	</string>	
-	<string>
-		<id>729</id>
-		<value>Timp Internet</value>
-	</string>	
-	<string>
-		<id>730</id>
-		<value>Port-ul Web Server-ului</value>
-	</string>	
-	<string>
-		<id>731</id>
-		<value>Host-ul Time Server-ului</value>
-	</string>
-	<string>
-		<id>732</id>
-		<value>Salvare &amp; Apply</value>
-	</string>
-	<string>
-		<id>733</id>
-		<value>Parola Web Server-ului</value>
-	</string>
-	<string>
-		<id>734</id>
-		<value>Fara parola</value>
-	</string>
-	<string>
-		<id>735</id>
-		<value>Set de caractere:</value>
-	</string>	
-	<string>
-		<id>736</id>
-		<value>Stil:</value>
-	</string>	
-	<string>
-		<id>737</id>
-		<value>Culoare:</value>
-	</string>
-	<string>
-		<id>738</id>
-		<value>Normal</value>
-	</string>	
-	<string>
-		<id>739</id>
-		<value>Ingrosat</value>
-	</string>	
-	<string>
-		<id>740</id>
-		<value>Italics</value>
-	</string>	
-	<string>
-		<id>741</id>
-		<value>Italics Ingrosat</value>
-	</string>	
-	<string>
-		<id>742</id>
-		<value>Alb</value>
-	</string>	
-	<string>
-		<id>743</id>
-		<value>Galben</value>
-	</string>
-	<string>
-		<id>744</id>
-		<value>Fisiere</value>
-	</string>		
-	<string>
-		<id>745</id>
-		<value>Nici o informatie scanata pt aceasta vizualizare</value>
-	</string>		
-	<string>
-		<id>746</id>
-		<value>Schibare la vizualizare fisiere</value>
-	</string>
-	<string>
-		<id>747</id>
-		<value>Nu este memorie indeajuns pt a incarca imaginea</value>
-	</string>
-	<string>
-		<id>748</id>
-		<value>Editeaza calea</value>
-	</string>
-	<string>
-		<id>749</id>
-		<value>Adauga share</value>
-	</string>
-	<string>
-		<id>750</id>
-		<value>Esti sigur?</value>
-	</string>
-	<string>
-		<id>751</id>
-		<value>Sterge Share</value>
-	</string>
-	<string>
-		<id>752</id>
-		<value>Editeaza calea share</value>
-	</string>
-	<string>
-		<id>753</id>
-		<value>Editeaza nume Share</value>
-	</string>
-	<string>
-		<id>998</id>
-		<value>XLink Kai</value>
-	</string>
-	<string>
-		<id>999</id>
-		<value>Jocuri Online</value>
-	</string> 
-	
-	<string>
-		<id>10000</id>
-		<value>Acasa</value>
-	</string>
-	<string>
-		<id>10001</id>
-		<value>Programe</value>
-	</string>
-	<string>
-		<id>10002</id>
-		<value>Imagini</value>
-	</string>
-	<string>
-		<id>10003</id>
-		<value>Fisiere</value>
-	</string>
-	<string>
-		<id>10004</id>
-		<value>Configurare</value>
-	</string>
-	<string>
-		<id>10005</id>
-		<value>Muzica</value>
-	</string>
-	<string>
-		<id>10006</id>
-		<value>Filme</value>
-	</string>
-	<string>
-		<id>10007</id>
-		<value>Informatii sistem</value>
-	</string>
-	<string>
-		<id>10008</id>
-		<value>Configurare-&gt;General</value>
-	</string>
-	<string>
-		<id>10009</id>
-		<value>Configurare-&gt;Ecran</value>
-	</string>
-	<string>
-		<id>10010</id>
-		<value>Configurare-&gt;Ecran-&gt;Calibrare interfata</value>
-	</string>
-	<string>
-		<id>10011</id>
-		<value>Configurare-&gt;Ecran-&gt;Calibrare ecran</value>
-	</string>
-	<string>
-		<id>10012</id>
-		<value>Configurare-&gt;SlideShow</value>
-	</string>
-	<string>
-		<id>10013</id>
-		<value>Configurare-&gt;Ecran-&gt;Filtre</value>
-	</string>
-	<string>
-		<id>10014</id>
-		<value>Configurare-&gt;Muzica</value>
-	</string>
-	<string>
-		<id>10015</id>
-		<value>Configurare-&gt;Ecran-&gt;Subtitluri</value>
-	</string>
-	<string>
-		<id>10016</id>
-		<value>Configurare-&gt;Ecran-&gt;Screensaver</value>
-	</string>
-	<string>
-		<id>10017</id>
-		<value>Configurare-&gt;Vreme</value>
-	</string>
-	<string>
-		<id>10020</id>
-		<value>Configurare-&gt;Scripturi</value>
-	</string>
-	<string>
-		<id>10021</id>
-		<value>Filme/tip</value>
-	</string>
-	<string>
-		<id>10022</id>
-		<value>Filme/actor</value>
-	</string>
-	<string>
-		<id>10023</id>
-		<value>Filme/an</value>
-	</string>
-	<string>
-		<id>10024</id>
-		<value>Configurare-&gt;Programe</value>
-	</string>
-	<string>
-		<id>10025</id>
-		<value>Filme/titlu</value>
-	</string>
-	<string>
-		<id>10026</id>
-		<value>Configurare-&gt;General-&gt;Cache</value>
-	</string>
-	<string>
-		<id>10027</id>
-		<value>Configurare-&gt;General-&gt;Autorun</value>
-	</string>
-	<string>
-		<id>10028</id>
-		<value>Filme/playlist</value>
-	</string>
-	<string>
-		<id>10029</id>
-		<value>Configurare-&gt;General-&gt;LCD</value>
-	</string>
-	<string>
-		<id>10100</id>
-		<value>Da/Nu dialog</value>
-	</string>
-	<string>
-		<id>10101</id>
-		<value>Dialog progres</value>
-	</string>
-	<string>
-		<id>10500</id>
-		<value>Muzica/playlist</value>
-	</string>
-	<string>
-		<id>10501</id>
-		<value>Muzica/fisiere</value>
-	</string>
-	<string>
-		<id>10502</id>
-		<value>Muzica/albume</value>
-	</string>
-	<string>
-		<id>10503</id>
-		<value>Muzica/artisti</value>
-	</string>
-	<string>
-		<id>10504</id>
-		<value>Muzica/tipuri</value>
-	</string>
-	<string>
-		<id>10505</id>
-		<value>Muzica/top100</value>
-	</string>
-	<string>
-		<id>11000</id>
-		<value>tastatura</value>
-	</string>
-	<string>
-		<id>12000</id>
-		<value>Dialog selectare</value>
-	</string>
-	<string>
-		<id>12001</id>
-		<value>Muzica/info</value>
-	</string>
-	<string>
-		<id>12002</id>
-		<value>Dialog OK</value>
-	</string>
-	<string>
-		<id>12003</id>
-		<value>Filme/Info</value>
-	</string>
-	<string>
-		<id>12004</id>
-		<value>Scripturi/Info</value>
-	</string>
-	<string>
-		<id>12005</id>
-		<value>Afisare tot ecranul</value>
-	</string>
-	<string>
-		<id>12006</id>
-		<value>Vizualizare Audio</value>
-	</string>
-	<string>
-		<id>12007</id>
-		<value>Imagine/slideshow</value>
-	</string>
-	<string>
-		<id>12008</id>
-		<value>Dialog fisier/stiva</value>
-	</string>
-	<string>
-		<id>12600</id>
-		<value>Vremea</value>
-	</string>
-	<string>
-		<id>12900</id>
-		<value>Screensaver</value>
-	</string>
-	<string>
-		<id>12901</id>
-		<value>Afisare OSD pe tot ecranul</value>
-	</string>
+  <string><id>0</id><value>Programe</value></string>
+  <string><id>1</id><value>Imagini</value></string>
+  <string><id>2</id><value>Muzica</value></string>
+  <string><id>3</id><value>Filme</value></string>
+  <string><id>4</id><value>Ghid TV</value></string>
+  <string><id>5</id><value>Configurare</value></string>
+  <string><id>7</id><value>Fisiere</value></string>
+  <string><id>8</id><value>Vremea</value></string>
+  <string><id>11</id><value>Luni</value></string>
+  <string><id>12</id><value>Marti</value></string>
+  <string><id>13</id><value>Miercuri</value></string>
+  <string><id>14</id><value>Joi</value></string>
+  <string><id>15</id><value>Vineri</value></string>
+  <string><id>16</id><value>Sambata</value></string>
+  <string><id>17</id><value>Duminica</value></string>
+  <string><id>21</id><value>Ianuarie</value></string>
+  <string><id>22</id><value>Februarie</value></string>
+  <string><id>23</id><value>Martie</value></string>
+  <string><id>24</id><value>Aprilie</value></string>
+  <string><id>25</id><value>Mai</value></string>
+  <string><id>26</id><value>Iunie</value></string>
+  <string><id>27</id><value>Iulie</value></string>
+  <string><id>28</id><value>August</value></string>
+  <string><id>29</id><value>Septembrie</value></string>
+  <string><id>30</id><value>Octombrie</value></string>
+  <string><id>31</id><value>Noiembrie</value></string>
+  <string><id>32</id><value>Decembrie</value></string>
+  <string><id>98</id><value>Aranjare: Automatic</value></string>
+  <string><id>99</id><value>Aranjare: Automatic mare</value></string>
+  <string><id>100</id><value>Aranjare: Icoane</value></string>
+  <string><id>101</id><value>Aranjare: Lista</value></string>
+  <string><id>102</id><value>Cauta</value></string>
+  <string><id>103</id><value>Sortare dupa: Nume</value></string>
+  <string><id>104</id><value>Sortare dupa: Data</value></string>
+  <string><id>105</id><value>Sortare dupa: Marime</value></string>
+  <string><id>106</id><value>Nu</value></string>
+  <string><id>107</id><value>Da</value></string>
+  <string><id>108</id><value>Rulare automata</value></string>
+  <string><id>109</id><value>Creare Thumbs</value></string>
+  <string><id>110</id><value>Creare Thumbnails</value></string>
+  <string><id>111</id><value>Scurtaturi</value></string>
+  <string><id>112</id><value>PAUZA</value></string>
+  <string><id>113</id><value>Fisiere : Sursa</value></string>
+  <string><id>114</id><value>Fisiere : Destinatie</value></string>
+  <string><id>115</id><value>Copiaza</value></string>
+  <string><id>116</id><value>Muta</value></string>
+  <string><id>117</id><value>Sterge</value></string>
+  <string><id>118</id><value>Redenumeste</value></string>
+  <string><id>119</id><value>Director nou</value></string>
+  <string><id>120</id><value>Confirma copierea fisierului</value></string>
+  <string><id>121</id><value>Confirma mutarea fisierului</value></string>
+  <string><id>122</id><value>Confirma stegerea fisierului</value></string>
+  <string><id>123</id><value>Copiezi aceste fisiere?</value></string>
+  <string><id>124</id><value>Muti aceste fisiere?</value></string>
+  <string><id>125</id><value>Stergi aceste fisiere?</value></string>
+  <string><id>126</id><value>Stare</value></string>
+  <string><id>127</id><value>Obiecte</value></string>
+  <string><id>128</id><value>General</value></string>
+  <string><id>129</id><value>Derulare automata</value></string>
+  <string><id>130</id><value>Informatii de sistem</value></string>
+  <string><id>131</id><value>Ecran</value></string>
+  <string><id>132</id><value>Albume</value></string>
+  <string><id>133</id><value>Artisti</value></string>
+  <string><id>134</id><value>Cantece</value></string>
+  <string><id>135</id><value>Tipuri</value></string>
+  <string><id>136</id><value>Liste</value></string>
+  <string><id>137</id><value>Cautare</value></string>
+  <string><id>138</id><value>Infromatii de sistem</value></string>
+  <string><id>139</id><value>Temperaturi:</value></string>
+  <string><id>140</id><value>CPU:</value></string>
+  <string><id>141</id><value>GPU:</value></string>
+  <string><id>142</id><value>Timp:</value></string>
+  <string><id>143</id><value>Actual:</value></string>
+  <string><id>144</id><value>Build:</value></string>
+  <string><id>145</id><value>Retea:</value></string>
+  <string><id>146</id><value>Tip:</value></string>
+  <string><id>147</id><value>Static</value></string>
+  <string><id>148</id><value>DHCP</value></string>
+  <string><id>149</id><value>MAC</value></string>
+  <string><id>150</id><value>IP</value></string>
+  <string><id>151</id><value>Link:</value></string>
+  <string><id>152</id><value>Half duplex</value></string>
+  <string><id>153</id><value>Full duplex</value></string>
+  <string><id>154</id><value>Depozit</value></string>
+  <string><id>155</id><value>Partitia</value></string>
+  <string><id>156</id><value>Liber</value></string>
+  <string><id>157</id><value>Video</value></string>
+  <string><id>158</id><value>Memorie libera</value></string>
+  <string><id>159</id><value>Nu exista link</value></string>
+  <string><id>160</id><value>Liber</value></string>
+  <string><id>161</id><value>Indisponibil</value></string>
+  <string><id>162</id><value>Tray deschis</value></string>
+  <string><id>163</id><value>Citesc</value></string>
+  <string><id>164</id><value>No Disc</value></string>
+  <string><id>165</id><value>Disc Prezent</value></string>
+  <string><id>166</id><value>Skin:</value></string>
+  <string><id>167</id><value>FTP server:</value></string>
+  <string><id>168</id><value>Sincronizare Timp:</value></string>
+  <string><id>169</id><value>Rezolutie:</value></string>
+  <string><id>170</id><value>Album:</value></string>
+  <string><id>171</id><value>Artist:</value></string>
+  <string><id>172</id><value>Data of Release-ului:</value></string>
+  <string><id>173</id><value>Rating:</value></string>
+  <string><id>174</id><value>Tip:</value></string>
+  <string><id>175</id><value>Tonuri:</value></string>
+  <string><id>176</id><value>Stiluri:</value></string>
+  <string><id>177</id><value>Review:</value></string>
+  <string><id>178</id><value>Piste:</value></string>
+  <string><id>179</id><value>Cantec</value></string>
+  <string><id>180</id><value>Durata</value></string>
+  <string><id>181</id><value>Selecteaza album</value></string>
+  <string><id>182</id><value>Piste</value></string>
+  <string><id>183</id><value>Review</value></string>
+  <string><id>184</id><value>Actualizare</value></string>
+  <string><id>185</id><value>Caut album</value></string>
+  <string><id>186</id><value>OK</value></string>
+  <string><id>187</id><value>Nici un album gasit!</value></string>
+  <string><id>188</id><value>Selecteaza tot</value></string>
+  <string><id>189</id><value>Scanez media info</value></string>
+  <string><id>190</id><value>Salveaza</value></string>
+  <string><id>191</id><value>Arbitrar</value></string>
+  <string><id>192</id><value>Clarifica</value></string>
+  <string><id>193</id><value>Scaneaza</value></string>
+  <string><id>194</id><value>Caut...</value></string>
+  <string><id>195</id><value>Nu am gasit IMDB info!</value></string>
+  <string><id>196</id><value>Selecteaza film:</value></string>
+  <string><id>197</id><value>Intreb IMDB info</value></string>
+  <string><id>198</id><value>Incarc detalii despre film</value></string>
+  <string><id>199</id><value>Director:</value></string>
+  <string><id>200</id><value>Autor:</value></string>
+  <string><id>201</id><value>An:</value></string>
+  <string><id>202</id><value>Tagline:</value></string>
+  <string><id>203</id><value>Plot outline:</value></string>
+  <string><id>204</id><value>Rating:</value></string>
+  <string><id>2050</id><value>Runtime:</value></string>
+  <string><id>205</id><value>Voturi:</value></string>
+  <string><id>206</id><value>Distributie</value></string>
+  <string><id>207</id><value>Plot</value></string>
+  <string><id>208</id><value>Play</value></string>
+  <string><id>209</id><value>Urmator</value></string>
+  <string><id>210</id><value>Anterior</value></string>
+  <string><id>211</id><value>Cauta aplicatii</value></string>
+  <string><id>212</id><value>aplicatii gasite</value></string>
+  <string><id>213</id><value>Calibrare UI</value></string>
+  <string><id>214</id><value>Calibrare ecran</value></string>
+  <string><id>215</id><value>Atenuat</value></string>
+  <string><id>216</id><value>Marit</value></string>
+  <string><id>217</id><value>Ingustat</value></string>
+  <string><id>218</id><value>Partitia DVD</value></string>
+  <string><id>219</id><value>Introdu discul</value></string>
+  <string><id>220</id><value>Remote Share</value></string>
+  <string><id>221</id><value>Nu este conectat la retea</value></string>
+  <string><id>222</id><value>Anuleaza</value></string>
+  <string><id>223</id><value>Schimbare automata ecran lat</value></string>
+  <string><id>224</id><value>Viteza</value></string>
+  <string><id>225</id><value>Timp de tranzitie</value></string>
+  <string><id>226</id><value>Activeaza PAL60</value></string>
+  <string><id>227</id><value>Activeaza CDDB</value></string>
+  <string><id>228</id><value>Amesteca lista la pornire</value></string>
+  <string><id>229</id><value>Timpul HD Spindown (minute)</value></string>
+  <string><id>230</id><value>Filtre</value></string>
+  <string><id>231</id><value>Nimic</value></string>
+  <string><id>232</id><value>Punct</value></string>
+  <string><id>233</id><value>Liniar</value></string>
+  <string><id>234</id><value>Anizotropic</value></string>
+  <string><id>235</id><value>Quincunx</value></string>
+  <string><id>236</id><value>Gaussian Cubic</value></string>
+  <string><id>237</id><value>Deamplificare:</value></string>
+  <string><id>238</id><value>Amplificare:</value></string>
+  <string><id>240</id><value>Pornire automata DVD-Video</value></string>
+  <string><id>241</id><value>Pornire automata VCD/SVCD</value></string>
+  <string><id>242</id><value>Pornire automata CD-Audio</value></string>
+  <string><id>243</id><value>Pornire automata joc XBOX</value></string>
+  <string><id>244</id><value>Pornire automata filme</value></string>
+  <string><id>245</id><value>Pornire automata muzica</value></string>
+  <string><id>246</id><value>Pornire automata poze</value></string>
+  <string><id>247</id><value>Scripturi</value></string>
+  <string><id>248</id><value>Limba</value></string>
+  <string><id>249</id><value>Muzica</value></string>
+  <string><id>250</id><value>Vizualizare</value></string>
+  <string><id>251</id><value>Selecteaza director destinatie</value></string>
+  <string><id>252</id><value>Iesire pe toate difuzoarele</value></string>
+  <string><id>253</id><value>Numarul canalelor</value></string>
+  <string><id>254</id><value>DD Stereo Passthrough</value></string>
+  <string><id>255</id><value>CDDB</value></string>
+  <string><id>256</id><value>Intreb freedb pt CDDB info</value></string>
+  <string><id>257</id><value>Eroare</value></string>
+  <string><id>258</id><value>Activeaza ID3 tags</value></string>
+  <string><id>259</id><value>Deschidere</value></string>
+  <string><id>260</id><value>Shoutcast</value></string>
+  <string><id>261</id><value>Asteptati startul....</value></string>
+  <string><id>262</id><value>Iesire scripturi</value></string>
+  <string><id>263</id><value>Server HTTP:</value></string>
+  <string><id>264</id><value>Inregistrare</value></string>
+  <string><id>265</id><value>Opreste inr.</value></string>
+  <string><id>266</id><value>Sortare dupa: Pista</value></string>
+  <string><id>267</id><value>Sortare dupa: Data</value></string>
+  <string><id>268</id><value>Sortare dupa: Titlu</value></string>
+  <string><id>269</id><value>Sortare dupa: Artist</value></string>
+  <string><id>270</id><value>Sortare dupa: Album</value></string>
+  <string><id>271</id><value>Top 100</value></string>
+  <string><id>272</id><value>Compensare Overscan stanga-sus</value></string>
+  <string><id>273</id><value>Compensare Overscan dreapta-jos</value></string>
+  <string><id>274</id><value>Pozitie subtitlu</value></string>
+  <string><id>275</id><value>Ajustarea ratei pixel</value></string>
+  <string><id>276</id><value>Muta sageata pt schimbarea overscan-ului</value></string>
+  <string><id>277</id><value>Muta sageata pt schimbarea pozitiei subtitlului</value></string>
+  <string><id>278</id><value>Modifica patratul astfel incat sa fie drept</value></string>
+  <string><id>279</id><value>Incarcarea configuratiei este imposibila</value></string>
+  <string><id>280</id><value>folosire a fallbacks implicite</value></string>
+  <string><id>281</id><value>Te rog verifica fisierele .xml</value></string>
+  <string><id>282</id><value>%i unitati gasite</value></string>
+  <string><id>283</id><value>Rezultatele cautarii</value></string>
+  <string><id>284</id><value>N-am gasit nimic</value></string>
+  <string><id>285</id><value>Filtru de deinterlace</value></string>
+  <string><id>286</id><value>Filtru de postprocessing</value></string>
+  <string><id>287</id><value>Subtitluri SRT</value></string>
+  <string><id>288</id><value>Font</value></string>
+  <string><id>289</id><value>Marime</value></string>
+  <string><id>290</id><value>Amplificare volum (dB)</value></string>
+  <string><id>291</id><value>Video</value></string>
+  <string><id>292</id><value>Audio</value></string>
+  <string><id>293</id><value>Subtitluri</value></string>
+  <string><id>294</id><value>Creare Bookmark</value></string>
+  <string><id>295</id><value>Ciclare Bookmarks</value></string>
+  <string><id>296</id><value>Stergere Bookmarks</value></string>
+  <string><id>297</id><value>Intarziere AV</value></string>
+  <string><id>298</id><value>Slider</value></string>
+  <string><id>300</id><value>1. Limba</value></string>
+  <string><id>301</id><value>2. Volum</value></string>
+  <string><id>302</id><value>3. Stream</value></string>
+  <string><id>303</id><value>Intarziere</value></string>
+  <string><id>304</id><value>Limba</value></string>
+  <string><id>305</id><value>Activat</value></string>
+  <string><id>306</id><value>Non-Interleaved</value></string>
+  <string><id>307</id><value>Automat</value></string>
+  <string><id>308</id><value>filtru deblocare verticala</value></string>
+  <string><id>309</id><value>filtru deblocare orizontala</value></string>
+  <string><id>310</id><value>Lumina/Contrast automat</value></string>
+  <string><id>311</id><value>Dering</value></string>
+  <string><id>312</id><value>(0=auto)</value></string>
+  <string><id>313</id><value>Reorganizare baza date</value></string>
+  <string><id>314</id><value>Preparare...</value></string>
+  <string><id>315</id><value>Eroare in baza de date</value></string>
+  <string><id>316</id><value>Caut muzica...</value></string>
+  <string><id>317</id><value>Reorganizare cu success</value></string>
+  <string><id>318</id><value>Marcare cantece pt stergere</value></string>
+  <string><id>319</id><value>Eroare la reorganizarea muzicii</value></string>
+  <string><id>320</id><value>Caut artisti...</value></string>
+  <string><id>321</id><value>Eroare reorganizare dupa artisti</value></string>
+  <string><id>322</id><value>Cautare dupa tip...</value></string>
+  <string><id>323</id><value>Eroare reorganizare dupa tip</value></string>
+  <string><id>324</id><value>Cautare cale...</value></string>
+  <string><id>325</id><value>Eroare reorganizare dupa cale</value></string>
+  <string><id>326</id><value>Cautare albume...</value></string>
+  <string><id>327</id><value>Eroare reorganizare dupa album</value></string>
+  <string><id>328</id><value>Salvare...</value></string>
+  <string><id>329</id><value>Eroare la salvare</value></string>
+  <string><id>330</id><value>Dureaza putin...</value></string>
+  <string><id>331</id><value>Compresie baza de date...</value></string>
+  <string><id>332</id><value>Eroare la compresia bazei de date</value></string>
+  <string><id>333</id><value>Vrei sa reorganizezi baza de date cu muzica?</value></string>
+  <string><id>334</id><value>Reorganizare baza de date cu muzica</value></string>
+  <string><id>335</id><value>Start</value></string>
+  <string><id>336</id><value>Ajustare Framerate</value></string>
+  <string><id>337</id><value>Iesire audio:</value></string>
+  <string><id>338</id><value>Analog</value></string>
+  <string><id>339</id><value>Digital</value></string>
+  <string><id>340</id><value>Various Artists</value></string>
+  <string><id>341</id><value>Play DVD</value></string>
+  <string><id>342</id><value>File</value></string>
+  <string><id>343</id><value>Ajustare Framerate</value></string>
+  <string><id>344</id><value>Actori</value></string>
+  <string><id>345</id><value>An</value></string>
+  <string><id>346</id><value>Stiva</value></string>
+  <string><id>347</id><value>Amestecat</value></string>
+  <string><id>348</id><value>Flatten Directory Hierarchy</value></string>
+  <string><id>349</id><value>Arata numai Default.xbe</value></string>
+  <string><id>350</id><value>Programe</value></string>
+  <string><id>351</id><value>Oprit</value></string>
+  <string><id>352</id><value>Dim</value></string>
+  <string><id>353</id><value>Black</value></string>
+  <string><id>354</id><value>Matrix Trails</value></string>
+  <string><id>355</id><value>Screensaver Idle Timeout</value></string>
+  <string><id>356</id><value>Tip screensaver</value></string>
+  <string><id>357</id><value>Timp de asteptare pt shutdown</value></string>
+  <string><id>358</id><value>Toate albumele</value></string>
+  <string><id>359</id><value>Albume recente</value></string>
+  <string><id>360</id><value>Screensaver</value></string>
+  <string><id>361</id><value>R. SlideShow</value></string>
+  <string><id>362</id><value>Nivel Fade screensaver (%)</value></string>
+  <string><id>363</id><value>Sortare dupa: Fisier</value></string>
+  <string><id>364</id><value>DD/DTS Multichannel Passthrough</value></string>
+  <string><id>365</id><value>Sortare dupa: Nume</value></string>
+  <string><id>366</id><value>Sortare dupa: An</value></string>
+  <string><id>367</id><value>Sortare dupa: Rating</value></string>
+  <string><id>368</id><value>IMDB</value></string>
+  <string><id>369</id><value>Titlu</value></string>
+  <string><id>370</id><value>T-Storms</value></string>
+  <string><id>371</id><value>Partial</value></string>
+  <string><id>372</id><value>In special</value></string>
+  <string><id>373</id><value>Insorit</value></string>
+  <string><id>374</id><value>Innourat</value></string>
+  <string><id>375</id><value>Zapada</value></string>
+  <string><id>376</id><value>Ploaie</value></string>
+  <string><id>377</id><value>Luminos</value></string>
+  <string><id>378</id><value>AM</value></string>
+  <string><id>379</id><value>PM</value></string>
+  <string><id>380</id><value>Averse de ploaie</value></string>
+  <string><id>381</id><value>Putine</value></string>
+  <string><id>382</id><value>Imprastiat</value></string>
+  <string><id>383</id><value>Vant</value></string>
+  <string><id>384</id><value>Puternic</value></string>
+  <string><id>385</id><value>Placut</value></string>
+  <string><id>386</id><value>Clar</value></string>
+  <string><id>387</id><value>Nori</value></string>
+  <string><id>388</id><value>N/A</value></string>
+  <string><id>389</id><value>N/A</value></string>
+  <string><id>390</id><value>N/A</value></string>
+  <string><id>391</id><value>N/A</value></string>
+  <string><id>392</id><value>N/A</value></string>
+  <string><id>393</id><value>N/A</value></string>
+  <string><id>394</id><value>N/A</value></string>
+  <string><id>395</id><value>N/A</value></string>
+  <string><id>396</id><value>Selecteaza Locatia</value></string>
+  <string><id>397</id><value>Regleaza Timpul</value></string>
+  <string><id>398</id><value>Unitatea de temperatura</value></string>
+  <string><id>399</id><value>Unitatea de viteza</value></string>
+  <string><id>400</id><value>Vremea</value></string>
+  <string><id>401</id><value>Temp</value></string>
+  <string><id>402</id><value>Simte ca</value></string>
+  <string><id>403</id><value>UV Index</value></string>
+  <string><id>404</id><value>Vant</value></string>
+  <string><id>405</id><value>Punct de topire</value></string>
+  <string><id>406</id><value>Umiditate</value></string>
+  <string><id>407</id><value>De la</value></string>
+  <string><id>408</id><value>la</value></string>
+  <string><id>410</id><value>Accesez Weather.com</value></string>
+  <string><id>411</id><value>Aflare vreme pt:</value></string>
+  <string><id>412</id><value>Nu se pot afla date despre vreme</value></string>
+  <string><id>413</id><value>Manual</value></string>
+  <string><id>414</id><value>Nici un review pt acest album</value></string>
+  <string><id>415</id><value>Downloadez thumbnail...</value></string>
+  <string><id>416</id><value>Indisponibil</value></string>
+  <string><id>417</id><value>Vizualizare: Icoane mari</value></string>
+  <string><id>418</id><value>Filme/Tipuri</value></string>
+  <string><id>419</id><value>Filme/Actori</value></string>
+  <string><id>420</id><value>Filme/Ani</value></string>
+  <string><id>421</id><value>Filme/Titluri</value></string>
+  <string><id>422</id><value>Sterge albuminfo</value></string>
+  <string><id>423</id><value>Sterge CDDB info</value></string>
+  <string><id>424</id><value>Selecteaza</value></string>
+  <string><id>425</id><value>Nu am gasit albuminfo.</value></string>
+  <string><id>426</id><value>Nu am gasit CDDB info.</value></string>
+  <string><id>427</id><value>Disc:</value></string>
+  <string><id>428</id><value>Introdu CD/DVD-ul corect</value></string>
+  <string><id>429</id><value>Te rog insereaza CD/DVD-ul urmator</value></string>
+  <string><id>430</id><value>Sortare dupa: DVD#</value></string>
+  <string><id>431</id><value>Fara Cache</value></string>
+  <string><id>432</id><value>Sterge film din baza de date</value></string>
+  <string><id>433</id><value>Esti sigur ca vrei sa stergi</value></string>
+  <string><id>434</id><value>filmul?</value></string>
+  <string><id>435</id><value>Pista</value></string>
+  <string><id>436</id><value>An:</value></string>
+  <string><id>437</id><value>Durata:</value></string>
+  <string><id>438</id><value>Se deschide fisierul</value></string>
+  <string><id>439</id><value>Cache</value></string>
+  <string><id>440</id><value>Harddisk</value></string>
+  <string><id>441</id><value>UDF</value></string>
+  <string><id>442</id><value>LAN</value></string>
+  <string><id>443</id><value>Internet</value></string>
+  <string><id>444</id><value>video</value></string>
+  <string><id>445</id><value>audio</value></string>
+  <string><id>446</id><value>DVD</value></string>
+  <string><id>447</id><value>Autorun</value></string>
+  <string><id>448</id><value>LCD</value></string>
+  <string><id>449</id><value>Activat</value></string>
+  <string><id>450</id><value>Coloane</value></string>
+  <string><id>4501</id><value>Tip LCD</value></string>
+  <string><id>451</id><value>Adresa liniei 1:</value></string>
+  <string><id>452</id><value>Adresa liniei 2:</value></string>
+  <string><id>453</id><value>Adresa liniei 3:</value></string>
+  <string><id>454</id><value>Adresa liniei 4:</value></string>
+  <string><id>455</id><value>Linii:</value></string>
+  <string><id>456</id><value>Mod</value></string>
+  <string><id>457</id><value>Schimba vizualizare</value></string>
+  <string><id>458</id><value>B/Mark</value></string>
+  <string><id>459</id><value>Subtitluri</value></string>
+  <string><id>460</id><value>Stream Audio</value></string>
+  <string><id>461</id><value>[activ]</value></string>
+  <string><id>462</id><value>Subtitlu</value></string>
+  <string><id>463</id><value>Backlight</value></string>
+  <string><id>464</id><value>Luminozitate</value></string>
+  <string><id>465</id><value>Contrast</value></string>
+  <string><id>466</id><value>Gama</value></string>
+  <string><id>467</id><value>Tip</value></string>
+  <string><id>468</id><value>Muta bara pt a-i schimba pozitia pe ecran</value></string>
+  <string><id>469</id><value>Pozitia OSD-ului</value></string>
+  <string><id>470</id><value>Credite</value></string>
+  <string><id>471</id><value>Modchip</value></string>
+  <string><id>472</id><value>OSD Timeout</value></string>
+  <string><id>473</id><value>High Quality Resampling</value></string>
+  <string><id>474</id><value>Oprit</value></string>
+  <string><id>475</id><value>Numai Muzica</value></string>
+  <string><id>476</id><value>Muzica &amp; Filme</value></string>
+  <string><id>477</id><value>Nu se poate incarca lista</value></string>
+  <string><id>478</id><value>OSD</value></string>
+  <string><id>479</id><value>Skin si Limba</value></string>
+  <string><id>480</id><value>Interfata</value></string>
+  <string><id>481</id><value>Configurare Audio</value></string>
+  <string><id>482</id><value>Despre XBMC</value></string>
+  <string><id>483</id><value>Album</value></string>
+  <string><id>484</id><value>Artist</value></string>
+  <string><id>485</id><value>Sterge album</value></string>
+  <string><id>486</id><value>Repeta</value></string>
+  <string><id>487</id><value>Repeta o data</value></string>
+  <string><id>488</id><value>Repeta acest director</value></string>
+  <string><id>489</id><value>Foloseste lista de cantece</value></string>
+  <string><id>490</id><value>Auto switch list and icons in songs</value></string>
+  <string><id>491</id><value>Foloseste icoane mari</value></string>
+  <string><id>492</id><value>Marire subtitluri</value></string>
+  <string><id>493</id><value>Optiuni avansate (Pt experti!)</value></string>
+  <string><id>494</id><value>Overall Audio Headroom (dB)</value></string>
+  <string><id>495</id><value>Reformatare filme la rezoluitia definita</value></string>
+  <string><id>496</id><value>Calibrare</value></string>
+  <string><id>497</id><value>Ascunde extensiile fisierulor</value></string>
+  <string><id>498</id><value>Sortare dupa: Tip</value></string>
+  <string><id>499</id><value>Eroare la conectare cu www.allmusic.com</value></string>
+  <string><id>500</id><value>Downloadare album eronata</value></string>
+  <string><id>501</id><value>Cautare dupa nume de albume...</value></string>
+  <string><id>502</id><value>Deschide</value></string>
+  <string><id>503</id><value>Ocupat</value></string>
+  <string><id>504</id><value>Gol</value></string>
+  <string><id>505</id><value>Loading media info from files...</value></string>
+  <string><id>506</id><value>Pt descriere foloseste numele directorului</value></string>
+  <string><id>507</id><value>Sorteaza dupa: Folosire</value></string>
+  <string><id>508</id><value>Nu folosi Scurtaturi sau Scanare</value></string>
+  <string><id>600</id><value>Rip CD</value></string>
+  <string><id>601</id><value>Media</value></string>
+  <string><id>602</id><value>Standard</value></string>
+  <string><id>603</id><value>Extrem</value></string>
+  <string><id>604</id><value>Constant Bit Rate</value></string>
+  <string><id>605</id><value>Se copiaza...</value></string>
+  <string><id>606</id><value>Pista numarul:</value></string>
+  <string><id>607</id><value>La:</value></string>
+  <string><id>608</id><value>Nu se poate copia CD sau Pista</value></string>
+  <string><id>609</id><value>CDDARipPath nu este setat in XboxMediaCenter.xml</value></string>
+  <string><id>620</id><value>Copiere CD</value></string>
+  <string><id>621</id><value>Encoder</value></string>
+  <string><id>622</id><value>Calitate</value></string>
+  <string><id>623</id><value>Bit Rate</value></string>
+  <string><id>624</id><value>Include numar pista</value></string>
+  <string><id>625</id><value>Toate cantecele lui</value></string>
+  <string><id>629</id><value>Mod vizualizare</value></string>
+  <string><id>630</id><value>Normal</value></string>
+  <string><id>631</id><value>Zoom</value></string>
+  <string><id>632</id><value>Extinde 4:3</value></string>
+  <string><id>633</id><value>Extinde 14:9</value></string>
+  <string><id>634</id><value>Extinde 16:9</value></string>
+  <string><id>635</id><value>Original</value></string>
+  <string><id>636</id><value>Personal</value></string>
+  <string><id>700</id><value>Stergere baza de date</value></string>
+  <string><id>701</id><value>Stergere muzica veche din baza de date</value></string>
+  <string><id>702</id><value>Acest director a fost scanat mai devereme.</value></string>
+  <string><id>703</id><value>Selecteaza YES pt actualizarea directorului selectat.</value></string>
+  <string><id>704</id><value>Selecteaza NO pt adaugare cantece noi.</value></string>
+  <string><id>705</id><value>Retea</value></string>
+  <string><id>706</id><value>HTTP Proxy Host:</value></string>
+  <string><id>707</id><value>HTTP Proxy Port:</value></string>
+  <string><id>708</id><value>Activare HTTP Proxy</value></string>
+  <string><id>709</id><value>XTag XLink Kai:</value></string>
+  <string><id>710</id><value>Parola XLink Kai:</value></string>
+  <string><id>711</id><value>Setari Protocol Internet (IP)</value></string>
+  <string><id>712</id><value>Portul sepcificat este invalid. Selectati o valoare cuprinsa intre 1 si 65535.</value></string>
+  <string><id>713</id><value>Setari HTTP Proxy</value></string>
+  <string><id>714</id><value>Setari XLink Kai</value></string>
+  <string><id>715</id><value>Atribuire:</value></string>
+  <string><id>716</id><value>Automatic (DHCP)</value></string>
+  <string><id>717</id><value>Manual (Static)</value></string>
+  <string><id>718</id><value>Implicit (Dashboard)</value></string>
+  <string><id>719</id><value>Adresa IP:</value></string>
+  <string><id>720</id><value>Netmask:</value></string>
+  <string><id>721</id><value>Gateway Implicit:</value></string>
+  <string><id>722</id><value>Server DNS:</value></string>
+  <string><id>723</id><value>Salvare setari si reset XBox</value></string>
+  <string><id>724</id><value>Adresa selectata este invalida. Valoarea trebuie sa fie gen: AAA.BBB.CCC.DDD</value></string>
+  <string><id>725</id><value>cu numere cuprinse intre 0 si 255.</value></string>
+  <string><id>726</id><value>Schmbarile nu au fost salvate. Continuati?</value></string>
+  <string><id>727</id><value>Web Server</value></string>
+  <string><id>728</id><value>FTP Server</value></string>
+  <string><id>729</id><value>Timp Internet</value></string>
+  <string><id>730</id><value>Port-ul Web Server-ului</value></string>
+  <string><id>731</id><value>Host-ul Time Server-ului</value></string>
+  <string><id>732</id><value>Salvare &amp; Apply</value></string>
+  <string><id>733</id><value>Parola Web Server-ului</value></string>
+  <string><id>734</id><value>Fara parola</value></string>
+  <string><id>735</id><value>Set de caractere:</value></string>
+  <string><id>736</id><value>Stil:</value></string>
+  <string><id>737</id><value>Culoare:</value></string>
+  <string><id>738</id><value>Normal</value></string>
+  <string><id>739</id><value>Ingrosat</value></string>
+  <string><id>740</id><value>Italics</value></string>
+  <string><id>741</id><value>Italics Ingrosat</value></string>
+  <string><id>742</id><value>Alb</value></string>
+  <string><id>743</id><value>Galben</value></string>
+  <string><id>744</id><value>Fisiere</value></string>
+  <string><id>745</id><value>Nici o informatie scanata pt aceasta vizualizare</value></string>
+  <string><id>746</id><value>Schibare la vizualizare fisiere</value></string>
+  <string><id>747</id><value>Nu este memorie indeajuns pt a incarca imaginea</value></string>
+  <string><id>748</id><value>Editeaza calea</value></string>
+  <string><id>749</id><value>Adauga share</value></string>
+  <string><id>750</id><value>Esti sigur?</value></string>
+  <string><id>751</id><value>Sterge Share</value></string>
+  <string><id>752</id><value>Editeaza calea share</value></string>
+  <string><id>753</id><value>Editeaza nume Share</value></string>
+  <string><id>998</id><value>XLink Kai</value></string>
+  <string><id>999</id><value>Jocuri Online</value></string>
+  <string><id>10000</id><value>Acasa</value></string>
+  <string><id>10001</id><value>Programe</value></string>
+  <string><id>10002</id><value>Imagini</value></string>
+  <string><id>10003</id><value>Fisiere</value></string>
+  <string><id>10004</id><value>Configurare</value></string>
+  <string><id>10005</id><value>Muzica</value></string>
+  <string><id>10006</id><value>Filme</value></string>
+  <string><id>10007</id><value>Informatii sistem</value></string>
+  <string><id>10008</id><value>Configurare-&gt;General</value></string>
+  <string><id>10009</id><value>Configurare-&gt;Ecran</value></string>
+  <string><id>10010</id><value>Configurare-&gt;Ecran-&gt;Calibrare interfata</value></string>
+  <string><id>10011</id><value>Configurare-&gt;Ecran-&gt;Calibrare ecran</value></string>
+  <string><id>10012</id><value>Configurare-&gt;SlideShow</value></string>
+  <string><id>10013</id><value>Configurare-&gt;Ecran-&gt;Filtre</value></string>
+  <string><id>10014</id><value>Configurare-&gt;Muzica</value></string>
+  <string><id>10015</id><value>Configurare-&gt;Ecran-&gt;Subtitluri</value></string>
+  <string><id>10016</id><value>Configurare-&gt;Ecran-&gt;Screensaver</value></string>
+  <string><id>10017</id><value>Configurare-&gt;Vreme</value></string>
+  <string><id>10020</id><value>Configurare-&gt;Scripturi</value></string>
+  <string><id>10021</id><value>Filme/tip</value></string>
+  <string><id>10022</id><value>Filme/actor</value></string>
+  <string><id>10023</id><value>Filme/an</value></string>
+  <string><id>10024</id><value>Configurare-&gt;Programe</value></string>
+  <string><id>10025</id><value>Filme/titlu</value></string>
+  <string><id>10026</id><value>Configurare-&gt;General-&gt;Cache</value></string>
+  <string><id>10027</id><value>Configurare-&gt;General-&gt;Autorun</value></string>
+  <string><id>10028</id><value>Filme/playlist</value></string>
+  <string><id>10029</id><value>Configurare-&gt;General-&gt;LCD</value></string>
+  <string><id>10100</id><value>Da/Nu dialog</value></string>
+  <string><id>10101</id><value>Dialog progres</value></string>
+  <string><id>10500</id><value>Muzica/playlist</value></string>
+  <string><id>10501</id><value>Muzica/fisiere</value></string>
+  <string><id>10502</id><value>Muzica/albume</value></string>
+  <string><id>10503</id><value>Muzica/artisti</value></string>
+  <string><id>10504</id><value>Muzica/tipuri</value></string>
+  <string><id>10505</id><value>Muzica/top100</value></string>
+  <string><id>11000</id><value>tastatura</value></string>
+  <string><id>12000</id><value>Dialog selectare</value></string>
+  <string><id>12001</id><value>Muzica/info</value></string>
+  <string><id>12002</id><value>Dialog OK</value></string>
+  <string><id>12003</id><value>Filme/Info</value></string>
+  <string><id>12004</id><value>Scripturi/Info</value></string>
+  <string><id>12005</id><value>Afisare tot ecranul</value></string>
+  <string><id>12006</id><value>Vizualizare Audio</value></string>
+  <string><id>12007</id><value>Imagine/slideshow</value></string>
+  <string><id>12008</id><value>Dialog fisier/stiva</value></string>
+  <string><id>12600</id><value>Vremea</value></string>
+  <string><id>12900</id><value>Screensaver</value></string>
+  <string><id>12901</id><value>Afisare OSD pe tot ecranul</value></string>
   <string><id>13000</id><value>Sistem</value></string>
   <string><id>13001</id><value>Immediate HD Spindown</value></string>
   <string><id>13002</id><value>Numai Video</value></string>

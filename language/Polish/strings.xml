@@ -1,2128 +1,618 @@
-
 <!-- T≥umaczenie:   NaPeK -->
 <!-- Kontakt:       napek@poczta.fm -->
-
-
 <strings>
-  <string>
-    <id>0</id>
-    <value>Programy</value>
-</string>
-  <string>
-    <id>1</id>
-    <value>Obrazy</value>
-</string>
-  <string>
-    <id>2</id>
-    <value>Muzyka</value>
-</string>
-  <string>
-    <id>3</id>
-    <value>Filmy</value>
-</string>
-  <string>
-    <id>4</id>
-    <value>Przewodnik TV</value>
-</string>
-  <string>
-    <id>5</id>
-    <value>Ustawienia</value>
-</string>
-  <string>
-    <id>7</id>
-    <value>Pliki</value>
-</string>
-  <string>
-	<id>8</id>
-	<value>Pogoda</value>
-</string>
-  <string>
-    <id>11</id>
-    <value>Poniedzia≥ek</value>
-</string>
-  <string>
-    <id>12</id>
-    <value>Wtorek</value>
-</string>
-  <string>
-    <id>13</id>
-    <value>åroda</value>
-</string>
-  <string>
-    <id>14</id>
-    <value>Czwartek</value>
-</string>
-  <string>
-    <id>15</id>
-    <value>Piπtek</value>
-</string>
-  <string>
-    <id>16</id>
-    <value>Sobota</value>
-</string>  
-  <string>
-    <id>17</id>
-    <value>Niedziela</value>
-</string>
-  <string>
-    <id>21</id>
-    <value>StyczeÒ</value>
-</string>
-  <string>
-    <id>22</id>
-    <value>Luty</value>
-</string>  
-  <string>
-    <id>23</id>
-    <value>Marzec</value>
-</string>  
-  <string>
-    <id>24</id>
-    <value>KwiecieÒ</value>
-</string>  
-  <string>
-    <id>25</id>
-    <value>Maj</value>
-</string>  
-  <string>
-    <id>26</id>
-    <value>Czerwiec</value>
-</string>  
-  <string>
-    <id>27</id>
-    <value>Lipiec</value>
-</string>  
-  <string>
-    <id>28</id>
-    <value>SierpieÒ</value>
-</string>  
-  <string>
-    <id>29</id>
-    <value>WrzesieÒ</value>
-</string>  
-  <string>
-    <id>30</id>
-    <value>Paüdziernik</value>
-</string>  
-  <string>
-    <id>31</id>
-    <value>Listopad</value>
-</string>  
-  <string>
-    <id>32</id>
-    <value>GrudzieÒ</value>
-</string>  
-  <string>
-    <id>100</id>
-    <value>Ikony</value>
-</string>  
-  <string>
-    <id>101</id>
-    <value>Lista</value>
-</string>  
-  <string>
-    <id>102</id>
-    <value>Skanuj</value>
-</string>  
-  <string>
-    <id>103</id>
-    <value>Sortuj wed≥ug nazw</value>
-</string> 
-  <string>
-    <id>104</id>
-    <value>Sortuj wed≥ug dat</value>
-</string>    
-  <string>
-    <id>105</id>
-    <value>Sortuj wed≥ug rozmiarÛw</value>
-</string>      
-  <string>
-    <id>106</id>
-    <value>Nie</value>
-</string>     
-  <string>
-    <id>107</id>
-    <value>Tak</value>
-</string>   
-  <string>
-    <id>108</id>
-    <value>Slajdy</value>
-</string>   
-  <string>
-    <id>109</id>
-    <value>UtwÛrz miniaturki</value>
-</string>   
-  <string>
-    <id>110</id>
-    <value>UtwÛrz miniaturki</value>
-</string>   
-  <string>
-    <id>111</id>
-    <value>SkrÛty</value>
-</string>   
-  <string>
-    <id>112</id>
-    <value>PAUZA</value>
-</string>   
-  <string>
-    <id>113</id>
-    <value>Moje pliki : èrÛd≥o</value>
-</string>   
-  <string>
-    <id>114</id>
-    <value>Moje pliki : Katalog docelowy</value>
-</string>   
-  <string>
-    <id>115</id>
-    <value>Kopiuj</value>
-</string>   
-  <string>
-    <id>116</id>
-    <value>Przenieú</value>
-</string>   
-  <string>
-    <id>117</id>
-    <value>Skasuj</value>
-</string>   
-  <string>
-    <id>118</id>
-    <value>ZmieÒ nazwÍ</value>
-</string>   
-  <string>
-    <id>119</id>
-    <value>Nowy katalog</value>
-</string>   
-  <string>
-    <id>120</id>
-    <value>Potwierdü kopiowanie pliku</value>
-</string>   
-  <string>
-    <id>121</id>
-    <value>Potwierdü przenoszenie pliku</value>
-</string>   
-  <string>
-    <id>122</id>
-    <value>Potwierdü kasowanie pliku</value>
-</string>   
-  <string>
-    <id>123</id>
-    <value>SkopiowaÊ te pliki?</value>
-</string>   
-  <string>
-    <id>124</id>
-    <value>PrzenieúÊ te pliki?</value>
-</string>   
-  <string>
-    <id>125</id>
-    <value>SkasowaÊ te pliki?</value>
-</string>  
-  <string>
-    <id>126</id>
-    <value>Status</value>
-</string>  
-  <string>
-    <id>127</id>
-    <value>ObiektÛw</value>
-</string>  
-  <string>
-    <id>128</id>
-    <value>OgÛlne</value>
-</string> 
-  <string>
-    <id>129</id>
-    <value>Slajdy</value>
-</string> 
-  <string>
-    <id>130</id>
-    <value>System info</value>
-</string>  
-  <string>
-    <id>131</id>
-    <value>Ekran</value>
-</string>  
-  <string>
-    <id>132</id>
-    <value>Albumy</value>
-</string>  
-  <string>
-    <id>133</id>
-    <value>Artyúci</value>
-</string>  
-  <string>
-    <id>134</id>
-    <value>Pokaz utwory</value>
-</string>  
-  <string>
-    <id>135</id>
-    <value>Gatunki</value>
-</string>  
-  <string>
-    <id>136</id>
-    <value>Play listy</value>
-</string>  
-  <string>
-    <id>137</id>
-    <value>Szukaj</value>
-</string>  
-  <string>
-    <id>138</id>
-    <value>Informacje systemowe</value>
-</string>  
-  <string>
-    <id>139</id>
-    <value>Temperatury:</value>
-</string> 
-  <string>
-    <id>140</id>
-    <value>CPU:</value>
-</string> 
-  <string>
-    <id>141</id>
-    <value>GPU:</value>
-</string> 
-  <string>
-    <id>142</id>
-    <value>Czas:</value>
-</string> 
-  <string>
-    <id>143</id>
-    <value>Obecny:</value>
-</string> 
-  <string>
-    <id>144</id>
-    <value>Wersja:</value>
-</string> 
-  <string>
-    <id>145</id>
-    <value>Siec:</value>
-</string> 
-  <string>
-    <id>146</id>
-    <value>Typ:</value>
-</string> 
-  <string>
-    <id>147</id>
-    <value>Statyczny</value>
-</string> 
-  <string>
-    <id>148</id>
-    <value>Dynamiczny</value>
-</string> 
-  <string>
-    <id>149</id>
-    <value>MAC</value>
-</string> 
-  <string>
-    <id>150</id>
-    <value>IP:</value>
-</string> 
-  <string>
-    <id>151</id>
-    <value>Po≥πczenie:</value>
-</string> 
-  <string>
-    <id>152</id>
-    <value>PÛ≥ duplex</value>
-</string> 
-  <string>
-    <id>153</id>
-    <value>Pe≥ny duplex</value>
-</string> 
-  <string>
-    <id>154</id>
-    <value>Dyski</value>
-</string> 
-  <string>
-    <id>155</id>
-    <value>Dysk</value>
-</string> 
-  <string>
-    <id>156</id>
-    <value>Wolne</value>
-</string> 
-  <string>
-    <id>157</id>
-    <value>Obraz</value>
-</string> 
-  <string>
-    <id>158</id>
-    <value>Wolnej pamiÍci</value>
-</string> 
-  <string>
-    <id>159</id>
-    <value>Nie ma po≥πczenia</value>
-</string> 
-  <string>
-    <id>160</id>
-    <value>Wolne</value>
-</string> 
-  <string>
-    <id>161</id>
-    <value>NiedostÍpny</value>
-</string> 
-  <string>
-    <id>162</id>
-    <value>Tacka napÍdu jest otwarta</value>
-</string> 
-  <string>
-    <id>163</id>
-    <value>Czytam</value>
-</string> 
-  <string>
-    <id>164</id>
-    <value>Nie ma dysku</value>
-</string> 
-  <string>
-    <id>165</id>
-    <value>Jest dysk</value>
-</string> 
-  <string>
-    <id>166</id>
-    <value>SkÛrka:</value>
-</string> 
-  <string>
-    <id>167</id>
-    <value>Serwer FTP:</value>
-</string> 
-  <string>
-    <id>168</id>
-    <value>Serwer czasu:</value>
-</string> 
-  <string>
-    <id>169</id>
-    <value>RozdzielczoúÊ:</value>
-</string> 
-  <string>
-    <id>170</id>
-    <value>Album:</value>
-</string> 
-  <string>
-    <id>171</id>
-    <value>Artysta:</value>
-</string> 
-  <string>
-    <id>172</id>
-    <value>Data wydania:</value>
-</string> 
-  <string>
-    <id>173</id>
-    <value>Ocena:</value>
-</string> 
-  <string>
-    <id>174</id>
-    <value>Gatunek:</value>
-</string> 
-  <string>
-    <id>175</id>
-    <value>Tony:</value>
-</string> 
-  <string>
-    <id>176</id>
-    <value>Style:</value>
-</string> 
-  <string>
-    <id>177</id>
-    <value>Przeglπd:</value>
-</string> 
-  <string>
-    <id>178</id>
-    <value>Scieøki:</value>
-</string> 
-  <string>
-    <id>179</id>
-    <value>UtwÛr</value>
-</string> 
-  <string>
-    <id>180</id>
-    <value>Czas trwania</value>
-</string> 
-  <string>
-    <id>181</id>
-    <value>Wybierz album</value>
-</string> 
-  <string>
-    <id>182</id>
-    <value>Scieøki</value>
-</string> 
-  <string>
-    <id>183</id>
-    <value>Przeglπd</value>
-</string> 
-  <string>
-    <id>184</id>
-    <value>Odúwieø</value>
-</string> 
-  <string>
-    <id>185</id>
-    <value>Wyszukuje album</value>
-</string> 
-  <string>
-    <id>186</id>
-    <value>OK</value>
-</string>  
-  <string>
-    <id>187</id>
-    <value>Nie znalaz≥em albumÛw!</value>
-</string>  
-  <string>
-    <id>188</id>
-    <value>Wybierz wszystko</value>
-</string>  
-  <string>
-    <id>189</id>
-    <value>Wyszukuje informacje</value>
-</string>  
-  <string>
-    <id>190</id>
-    <value>Zapisz</value>
-</string>  
-  <string>
-    <id>191</id>
-    <value>Losowo</value>
-</string>  
-  <string>
-    <id>192</id>
-    <value>WyczyúÊ</value>
-</string>  
-  <string>
-    <id>193</id>
-    <value>Skanuj</value>
-</string>  
-  <string>
-    <id>194</id>
-    <value>Szukam...</value>
-</string> 
-  <string>
-    <id>195</id>
-    <value>Nie odnaleziono informacji IMDB!</value>
-</string> 
-  <string>
-    <id>196</id>
-    <value>Wybierz film:</value>
-</string> 
-  <string>
-    <id>197</id>
-    <value>Odczytuje informacje IMDB</value>
-</string> 
-  <string>
-    <id>198</id>
-    <value>Wczytuje...</value>
-</string> 
-  <string>
-    <id>199</id>
-    <value>Reøyser</value>
-</string> 
-  <string>
-    <id>200</id>
-    <value>PodziÍkowania</value>
-</string> 
-  <string>
-    <id>201</id>
-    <value>Rok</value>
-</string> 
-  <string>
-    <id>202</id>
-    <value>Linia Tag</value>
-</string> 
-  <string>
-    <id>203</id>
-    <value>Plot outline</value>
-</string> 
-  <string>
-    <id>204</id>
-    <value>Ocena</value>
-</string> 
-  <string>
-    <id>205</id>
-    <value>Glosy</value>
-</string> 
-  <string>
-    <id>206</id>
-    <value>Obsada</value>
-</string> 
-  <string>
-    <id>207</id>
-    <value>Plot</value>
-</string> 
-  <string>
-    <id>208</id>
-    <value>Odtwarzaj</value>
-</string> 
-  <string>
-    <id>209</id>
-    <value>Dalej</value>
-</string> 
-  <string>
-    <id>210</id>
-    <value>WrÛÊ</value>
-</string> 
-  <string>
-    <id>211</id>
-    <value>Wyszukuje programy</value>
-</string> 
-  <string>
-    <id>212</id>
-    <value>znaleziono programy</value>
-</string> 
-  <string>
-    <id>213</id>
-    <value>Kalibracja interfejsu</value>
-</string> 
-  <string>
-    <id>214</id>
-    <value>Kalibracja ekranu</value>
-</string> 
-  <string>
-    <id>215</id>
-    <value>Wyg≥adü</value>
-</string> 
-  <string>
-    <id>216</id>
-    <value>PowiÍksz</value>
-</string> 
-  <string>
-    <id>217</id>
-    <value>Rozciπgnij</value>
-</string> 
-  <string>
-    <id>218</id>
-    <value>NapÍd DVD</value>
-</string> 
-  <string>
-    <id>219</id>
-    <value>ProszÍ w≥oøyÊ dysk</value>
-</string> 
-  <string>
-    <id>220</id>
-    <value>Zdalny dostÍp</value>
-</string> 
-  <string>
-    <id>221</id>
-    <value>Siec nie jest pod≥πczona</value>
-</string> 
-  <string>
-    <id>222</id>
-    <value>Anuluj</value>
-</string> 
-  <string>
-    <id>223</id>
-    <value>Wybierz najlepsza rozdzielczoúÊ dla filmÛw</value>
-</string> 
-  <string>
-    <id>224</id>
-    <value>SzybkoúÊ</value>
-</string> 
-  <string>
-    <id>225</id>
-    <value>Czas trwania</value>
-</string> 
-  <string>
-    <id>226</id>
-    <value>W≥πcz PAL60</value>
-</string> 
-  <string>
-    <id>227</id>
-    <value>W≥πcz CDDB</value>
-</string> 
-  <string>
-    <id>228</id>
-    <value>Mieszaj Playliste po wczytaniu</value>
-</string> 
-  <string>
-    <id>229</id>
-    <value>Wy≥πcz HDD po (min)</value>
-</string> 
-  <string>
-    <id>230</id>
-    <value>Filtry</value>
-</string> 
-  <string>
-    <id>231</id>
-    <value>Øaden</value>
-</string> 
-  <string>
-    <id>232</id>
-    <value>Punktowy</value>
-</string> 
-  <string>
-    <id>233</id>
-    <value>Liniowy</value>
-</string> 
-  <string>
-    <id>234</id>
-    <value>Anizotropowy</value>
-</string> 
-  <string>
-    <id>235</id>
-    <value>Quincunx</value>
-</string> 
-  <string>
-    <id>236</id>
-    <value>Gaussian Cubic</value>
-</string> 
-  <string>
-    <id>237</id>
-    <value>Pomniejszenie:</value>
-</string> 
-  <string>
-    <id>238</id>
-    <value>PowiÍkszenie:</value>
-</string>
-  <string>
-    <id>240</id>
-    <value>Automatycznie odtwarzaj DVD-Video</value>
-</string>
-  <string>
-    <id>241</id>
-    <value>Automatycznie odtwarzaj VCD/SVCD</value>
-</string>
-  <string>
-    <id>242</id>
-    <value>Automatycznie odtwarzaj Audio-CD</value>
-</string>
-  <string>
-    <id>243</id>
-    <value>Automatycznie odtwarzaj Gry XboX</value>
-</string>
-  <string>
-    <id>244</id>
-    <value>Automatycznie odtwarzaj Video</value>
-</string>
-  <string>
-    <id>245</id>
-    <value>Automatycznie odtwarzaj MuzykÍ</value>
-</string>
-  <string>
-    <id>246</id>
-    <value>Automatycznie odtwarzaj Obrazy</value>
-</string>
-  <string>
-    <id>247</id>
-    <value>Skrypty</value>
-</string>
-  <string>
-    <id>248</id>
-    <value>JÍzyk</value>
-</string>
-  <string>
-    <id>249</id>
-    <value>Muzyka</value>
-</string>
-  <string>
-    <id>250</id>
-    <value>Wizualizacja</value>
-</string>
-  <string>
-    <id>251</id>
-    <value>Wybierz katalog docelowy</value>
-</string>
-  <string>
-    <id>252</id>
-    <value>Wyjúcie na wszystkie g≥oúniki</value>
-</string>
-  <string>
-    <id>253</id>
-    <value>Liczba kana≥Ûw</value>
-</string>
-  <string>
-    <id>254</id>
-    <value>AC3 Passthru</value>
-</string>
-  <string>
-    <id>255</id>
-    <value>CDDB</value>
-</string>
-  <string>
-    <id>256</id>
-    <value>Odczytuje informacje z CDDB</value>
-</string>
-  <string>
-    <id>257</id>
-    <value>B≥πd</value>
-</string>
-  <string>
-    <id>258</id>
-    <value>W≥πcz tagi ID3</value>
-</string>
-  <string>
-    <id>259</id>
-    <value>Otwieram</value>
-</string>
-  <string>
-    <id>260</id>
-    <value>Shoutcast</value>
-</string>
-  <string>
-    <id>261</id>
-    <value>Czekam na start....</value>
-</string>
-  <string>
-    <id>262</id>
-    <value>Wyjúcie SkryptÛw</value>
-</string>
-  <string>
-    <id>263</id>
-    <value>Serwer HTTP:</value>
-</string>
-  <string>
-    <id>264</id>
-    <value>Nagrywaj</value>
-</string>
-  <string>
-    <id>265</id>
-    <value>Zatrzymaj nagrywanie</value>
-</string>
-  <string>
-    <id>266</id>
-    <value>Sortuj wed≥ug scieøek</value>
-</string>
-  <string>
-    <id>267</id>
-    <value>Sortuj wed≥ug czasu</value>
-</string>
-  <string>
-    <id>268</id>
-    <value>Sortuj wed≥ug tytu≥u</value>
-</string>
-  <string>
-    <id>269</id>
-    <value>Sortuj wed≥ug artysty</value>
-</string>
-  <string>
-    <id>270</id>
-    <value>Sortuj wed≥ug albumu</value>
-</string>
-  <string>
-    <id>271</id>
-    <value>Top 100</value>
-</string>
-  <string>
-    <id>272</id>
-    <value>GÛrny lewy rÛg ekranu</value>
-</string>
-  <string>
-    <id>273</id>
-    <value>Dolny prawy rÛg ekranu</value>
-</string>
-  <string>
-    <id>274</id>
-    <value>Pozycja napisÛw</value>
-</string>
-  <string>
-    <id>275</id>
-    <value>Ustawienia Pixel Ratio</value>
-</string>
-  <string>
-    <id>276</id>
-    <value>Poruszaj strza≥ka aby zmieniÊ pozycje rogÛw ekranu</value>
-</string>
-  <string>
-    <id>277</id>
-    <value>PrzesuÒ linie aby zmieniÊ pozycje napisÛw</value>
-</string>
-  <string>
-    <id>278</id>
-    <value>ZmieÒ prostokπt w idealny kwadrat</value>
-</string>
-  <string>
-    <id>279</id>
-    <value>Nie mogÍ wczytaÊ ustawieÒ</value>
-</string>
-  <string>
-    <id>280</id>
-    <value>uøywam standardowych przejúÊ</value>
-</string>
-  <string>
-    <id>281</id>
-    <value>ProszÍ sprawdzi≥ pliki .xml</value>
-</string>
-  <string>
-    <id>282</id>
-    <value>znalaz≥em %i</value>
-</string>
-  <string>
-    <id>283</id>
-    <value>Rezultaty wyszukiwania</value>
-</string>
-  <string>
-    <id>284</id>
-    <value>Nie znaleziono</value>
-</string>
-  <string>
-    <id>285</id>
-    <value>Filtr Deinterlace</value>
-</string>
-  <string>
-    <id>286</id>
-    <value>Filtr Postprocessing</value>
-</string>
-  <string>
-    <id>287</id>
-    <value>Napisy</value>
-</string>
-  <string>
-    <id>288</id>
-    <value>Czcionka</value>
-</string>
-  <string>
-    <id>289</id>
-    <value>Rozmiar</value>
-</string>
-  <string>
-    <id>290</id>
-    <value>Amplifikacja g≥oúnoúci (dB)</value>
-</string>
-  <string>
-    <id>291</id>
-    <value>Obraz</value>
-</string>
-  <string>
-    <id>292</id>
-    <value>DüwiÍk</value>
-</string>
-  <string>
-    <id>293</id>
-    <value>Napisy</value>
-</string>
-  <string>
-    <id>294</id>
-    <value>1. UtwÛrz zak≥adkÍ</value>
-</string>
-  <string>
-    <id>295</id>
-    <value>2. Przewin zak≥adki</value>
-</string>
-  <string>
-    <id>296</id>
-    <value>3. WyczyúÊ zak≥adki</value>
-</string>
-  <string>
-    <id>297</id>
-    <value>4. OpÛünienie AV</value>
-</string>
-  <string>
-    <id>298</id>
-    <value>5. Przewijanie</value>
-</string>
-  <string>
-    <id>300</id>
-    <value>1. JÍzyk</value>
-</string>
-  <string>
-    <id>301</id>
-    <value>2. GloúnoúÊ</value>
-</string>
-  <string>
-    <id>302</id>
-    <value>3. StrumieÒ</value>
-</string>
-  <string>
-    <id>303</id>
-    <value>1. OpÛünienie</value>
-</string>
-  <string>
-    <id>304</id>
-    <value>2. JÍzyk</value>
-</string>
-  <string>
-    <id>305</id>
-    <value>3. Wl/wyl</value>
-</string>
-  <string>
-    <id>306</id>
-    <value>6. Non-Interleaved</value>
-</string>
-  <string>
-    <id>307</id>
-    <value>Auto</value>
-</string>
-  <string>
-    <id>308</id>
-    <value>filtr vertical deblocking</value>
-</string>
-  <string>
-    <id>309</id>
-    <value>filtr horizontal deblocking</value>
-</string>
-  <string>
-    <id>310</id>
-    <value>Automatyczna jasnoúÊ/kontrast</value>
-</string>
-  <string>
-    <id>311</id>
-    <value>Dering</value>
-</string>
-  <string>
-    <id>312</id>
-    <value>(0=auto)</value>
-</string>
-  <string>
-    <id>313</id>
-    <value>Reorganizuj bazÍ danych</value>
-</string>
-  <string>
-    <id>314</id>
-    <value>Przygotowuje...</value>
-</string>
-  <string>
-    <id>315</id>
-    <value>B≥πd bazy danych</value>
-</string>
-  <string>
-    <id>316</id>
-    <value>Przeszukuje utwory...</value>
-</string>
-  <string>
-    <id>317</id>
-    <value>Reorganizacja zakoÒczona</value>
-</string>
-  <string>
-    <id>318</id>
-    <value>Oznaczam skasowane utwory</value>
-</string>
-  <string>
-    <id>319</id>
-    <value>B≥πd przy reorganizacji utworÛw</value>
-</string>
-  <string>
-    <id>320</id>
-    <value>Wyszukuje artystÛw.</value>
-</string>
-  <string>
-    <id>321</id>
-    <value>B≥πd przy reorganizacji artystÛw</value>
-</string>
-  <string>
-    <id>322</id>
-    <value>Wyszukuje gatunki...</value>
-</string>
-  <string>
-    <id>323</id>
-    <value>B≥πd przy reorganizacji gatunkÛw</value>
-</string>
-  <string>
-    <id>324</id>
-    <value>Wyszukuje scieøki...</value>
-</string>
-  <string>
-    <id>325</id>
-    <value>B≥πd przy reorganizacji scieøek</value>
-</string>
-  <string>
-    <id>326</id>
-    <value>Wyszukuje albumy.</value>
-</string>
-  <string>
-    <id>327</id>
-    <value>B≥πd przy reorganizacji albumÛw</value>
-</string>
-  <string>
-    <id>328</id>
-    <value>Zapisuje zmiany...</value>
-</string>
-  <string>
-    <id>329</id>
-    <value>B≥πd podczas zapisu zmian</value>
-</string>
-  <string>
-    <id>330</id>
-    <value>To zajmie chwilkÍ...</value>
-</string>
-  <string>
-    <id>331</id>
-    <value>Kompresuje bazÍ danych...</value>
-</string>
-  <string>
-    <id>332</id>
-    <value>B≥πd kompresji bazy danych</value>
-</string>
-  <string>
-    <id>333</id>
-    <value>Czy chcesz zreorganizowaÊ bazÍ danych muzyki?</value>
-</string>
-  <string>
-    <id>334</id>
-    <value>Reorganizuj bazÍ danych mojej muzyki</value>
-</string>
-  <string>
-    <id>335</id>
-    <value>Start</value>
-</string>
-  <string>
-    <id>336</id>
-    <value>Ustaw liczbÍ klatek</value>
-</string>
-  <string>
-    <id>337</id>
-    <value>Wyjúcie Audio:</value>
-</string>
-  <string>
-    <id>338</id>
-    <value>Analogowe</value>
-</string>
-  <string>
-    <id>339</id>
-    <value>Cyfrowe</value>
-</string>
-  <string>
-    <id>340</id>
-    <value>Roøni artyúci</value>
-</string>
- <string>
-    <id>341</id>
-    <value>Odtwarzaj DVD</value>
-</string>
-  <string>
-    <id>342</id>
-    <value>Filmy</value>
-</string>
-  <string>
-    <id>343</id>
-    <value>Ustaw liczbÍ klatek</value>
-</string>
-  <string>
-    <id>344</id>
-    <value>Obsada</value>
-</string>
-  <string>
-    <id>345</id>
-    <value>Rok</value>
-</string>
-  <string>
-    <id>346</id>
-    <value>Stack</value>
-</string>
-  <string>
-    <id>347</id>
-    <value>Unstack</value>
-</string>
-  <string>
-    <id>348</id>
-    <value>Sp≥aszczona hierarchia katalogÛw</value>
-</string>
-  <string>
-    <id>349</id>
-    <value>Pokazuj tylko Default.xbe</value>
-</string>
-  <string>
-    <id>350</id>
-    <value>Programy</value>
-</string>
-  <string>
-    <id>351</id>
-    <value>Wy≥πcz</value>
-</string>
-  <string>
-    <id>9999999</id>
-    <value>www.xZoNe.com.pl</value>
-</string>
-  <string>
-    <id>352</id>
-    <value>PrzyÊmiony</value>
-</string>
-  <string>
-    <id>353</id>
-    <value>Czarny</value>
-</string>
-  <string>
-    <id>354</id>
-    <value>Matrix'owe znaczki</value>
-</string>
-  <string>
-    <id>355</id>
-    <value>Czas oczekiwania wygaszacza</value>
-</string>
-  <string>
-    <id>356</id>
-    <value>Tryb wygaszacza</value>
-</string>
-  <string>
-    <id>357</id>
-    <value>Czas do wy≥πczenia</value>
-</string>
-  <string>
-    <id>358</id>
-    <value>Wszystkie albumy</value>
-</string>
-  <string>
-    <id>359</id>
-    <value>Ostatnie albumy</value>
-</string>
-  <string>
-    <id>360</id>
-    <value>Wygaszacz</value>
-</string>
-  <string>
-    <id>361</id>
-    <value>R. SlideShow</value>
-</string>   
-  <string>
-    <id>362</id>
-    <value>Poziom przezroczystoúci wygaszacza (%)</value>
-</string>
-  <string>
-    <id>363</id>
-    <value>Sortuj: Plikami</value>
-</string>   
-  <string>
-    <id>364</id>
-    <value>DD/DTS Multichannel Passthrough</value>
-</string>   
-  <string>
-    <id>365</id>
-    <value>Sortuj: Nazwami</value>
-</string>   
-  <string>
-    <id>366</id>
-    <value>Sortuj: Latami</value>
-</string>   
-  <string>
-    <id>367</id>
-    <value>Sortuj: Ocenami</value>
-</string>   
-  <string>
-    <id>368</id>
-    <value>IMDB</value>
-</string>   
-  <string>
-    <id>369</id>
-    <value>Tytu≥</value>
-</string>
-  <string>
-    <id>370</id>
-    <value>T-Storms</value>
-</string>
-  <string>
-    <id>371</id>
-    <value>CzÍúciowo</value>
-</string>
-  <string>
-    <id>372</id>
-    <value>G≥ownie</value>
-</string>
-  <string>
-    <id>373</id>
-    <value>S≥onecznie</value>
-</string>
-  <string>
-    <id>374</id>
-    <value>Pochmurnie</value>
-</string>
-  <string>
-    <id>375</id>
-    <value>ånieg</value>
-</string>
-  <string>
-    <id>376</id>
-    <value>Deszcz</value>
-</string>
-  <string>
-    <id>377</id>
-    <value>Pogodnie</value>
-</string>
-  <string>
-    <id>378</id>
-    <value>Rano</value>
-</string>
-  <string>
-    <id>379</id>
-    <value>Wieczorem</value>
-</string>
-  <string>
-    <id>380</id>
-    <value>Opady</value>
-</string>
-  <string>
-    <id>381</id>
-    <value>Niewielkie</value>
-</string>
-  <string>
-    <id>382</id>
-    <value>Sporadyczne</value>
-</string>
-  <string>
-    <id>383</id>
-    <value>Wiatr</value>
-</string>
-  <string>
-    <id>384</id>
-    <value>Silny</value>
-</string>
-  <string>
-    <id>385</id>
-    <value>£agodny</value>
-</string>
-  <string>
-  <id>396</id> 
-  <value>Wybierz Lokacje</value> 
-</string>
-  <string>
-  <id>397</id> 
-  <value>Odúwieø czas</value> 
-</string>
-  <string>
-  <id>398</id> 
-  <value>Jednostki temperatury</value> 
-</string>
-  <string>
-  <id>399</id> 
-  <value>jednostki prÍdkoúci</value> 
-</string>
-  <string>
-  <id>400</id> 
-  <value>Pogoda</value> 
-</string>
-  <string>
-    <id>401</id>
-    <value>Temperatura</value>
-</string>   
-  <string>
-    <id>402</id>
-    <value>Samopoczucie</value>
-</string> 
-  <string>
-    <id>403</id>
-    <value>Wskaünik UV</value>
-</string>
-  <string>
-    <id>404</id>
-    <value>Wiatr</value>
-</string>   
-  <string>
-    <id>405</id>
-    <value>Punkt rosy</value>
-</string> 
-  <string>
-    <id>406</id>
-    <value>WilgotnoúÊ</value>
-</string> 
-  <string>
-    <id>407</id>
-    <value>Z</value>
-</string>
-  <string>
-    <id>408</id>
-    <value>na</value>
-</string>      
-  <string>
-    <id>410</id>
-    <value>Kontaktuje siÍ z Weather.com</value>
-</string>       
-  <string>
-    <id>411</id>
-    <value>Pobieram pogodÍ dla:</value>
-</string> 
-  <string>
-    <id>412</id>
-    <value>Nie mogÍ uzyskaÊ danych pogodowych</value>
-</string>    
-  <string>
-    <id>413</id>
-    <value>RÍcznie</value>
-</string>    
-  <string>
-    <id>414</id>
-    <value>Nie ma podglπdu dla tego albumu</value>
-</string>    
-  <string>
-    <id>415</id>
-    <value>åciπgam miniaturki...</value>
-</string> 
-  <string>
-    <id>416</id>
-    <value>Nie dostÍpne</value>
-</string> 
-  <string>
-    <id>417</id>
-    <value>Pokazuj: Duøe ikony</value>
-</string> 
-  <string>
-    <id>418</id>
-    <value>Moje Filmy/Gatunki</value>
-</string> 
-  <string>
-    <id>419</id>
-    <value>Moje Filmy/Aktorzy</value>
-</string> 
-  <string>
-    <id>420</id>
-    <value>Moje Filmy/Lata</value>
-</string> 
-  <string>
-    <id>421</id>
-    <value>Moje Filmy/Tytu≥</value>
-</string> 
-  <string>
-    <id>422</id>
-    <value>kasuj informacje o albumie</value>
-</string> 
-  <string>
-    <id>423</id>
-    <value>Kasuj informacje z CDDB</value>
-</string> 
-  <string>
-    <id>424</id>
-    <value>Wybierz</value>
-</string>  
-  <string>
-    <id>425</id>
-    <value>Nie znalaz≥em informacji o albumie.</value>
-</string> 
-  <string>
-    <id>426</id>
-    <value>Nie znalaz≥em informacji CDDB.</value>
-</string> 
-  <string>
-    <id>427</id>
-    <value>Dysk:</value>
-</string> 
-  <string>
-    <id>428</id>
-    <value>Wsadü poprawny CD/DVD</value>
-</string> 
-  <string>
-    <id>429</id>
-    <value>Wsadü niestepujπcy CD/DVD</value>
-</string>  
-  <string>
-    <id>430</id>
-    <value>Sortuj po: DVD#</value>
-</string>  
-  <string>
-    <id>431</id>
-    <value>Nie do pamiÍci podrÍcznej</value>
-</string>  
-  <string>
-    <id>432</id>
-    <value>Skasuj film z bazy danych</value>
-</string>  
-  <string>
-    <id>433</id>
-    <value>Jesteú pewny, ze chcesz usunπÊ</value>
-</string>  
-  <string>
-    <id>434</id>
-    <value>film?</value>
-</string> 
-  <string>
-    <id>435</id>
-    <value>åcieøka</value>
-</string> 
-  <string>
-    <id>436</id>
-    <value>Rok:</value>
-</string> 
-  <string>
-    <id>437</id>
-    <value>Czas trwania:</value>
-</string> 
-  <string>
-    <id>438</id>
-    <value>Otwieram plik</value>
-</string> 
-  <string>
-    <id>439</id>
-    <value>PamiÍÊ podrÍczna</value>
-</string> 
-  <string>
-    <id>440</id>
-    <value>Dysk twardy</value>
-</string> 
-  <string>
-    <id>441</id>
-    <value>UDF</value>
-</string> 
-  <string>
-    <id>442</id>
-    <value>LAN</value>
-</string> 
-  <string>
-    <id>443</id>
-    <value>Internet</value>
-</string> 
-  <string>
-    <id>444</id>
-    <value>video</value>
-</string> 
-  <string>
-    <id>445</id>
-    <value>audio</value>
-</string> 
-  <string>
-    <id>446</id>
-    <value>DVD</value>
-</string> 
-  <string>
-    <id>447</id>
-    <value>Autorun</value>
-</string> 
-  <string>
-    <id>448</id>
-    <value>LCD</value>
-</string> 
-  <string>
-    <id>449</id>
-    <value>W≥πczone</value>
-</string> 
-  <string>
-    <id>450</id>
-    <value>Kolumn</value>
-</string> 
-  <string>
-    <id>451</id>
-    <value>Row 1 adress:</value>
-</string> 
-  <string>
-    <id>452</id>
-    <value>Row 2 adress:</value>
-</string> 
-  <string>
-    <id>453</id>
-    <value>Row 3 adress:</value>
-</string> 
-  <string>
-    <id>454</id>
-    <value>Row 4 adress:</value>
-</string> 
-  <string>
-    <id>455</id>
-    <value>Linijek:</value>
-</string> 
-  <string>
-    <id>456</id>
-    <value>Tryb:</value>
-</string> 
-  <string>
-    <id>457</id>
-    <value>Prze≥πcz obraz</value>
-</string> 
-  <string>
-    <id>458</id>
-    <value>B/Mark</value>
-</string>
-  <string>
-    <id>459</id>
-    <value>Napisy</value>
-</string>
-  <string>
-    <id>460</id>
-    <value>StrumieÒ Audio</value>
-</string>
-  <string>
-    <id>461</id>
-    <value>[active]</value>
-</string>
-  <string>
-    <id>462</id>
-    <value>Napisy</value>
-</string>
-  <string>
-    <id>463</id>
-    <value>Podúwietlenie</value>
-</string>
-  <string>
-    <id>464</id>
-    <value>JasnoúÊ</value>
-</string> 
-  <string>
-    <id>465</id>
-    <value>Kontrast</value>
-</string> 
-  <string>
-    <id>466</id>
-    <value>Gamma</value>
-</string> 
-  <string>
-    <id>467</id>
-    <value>Typ</value>
-</string> 
-  <string>
-    <id>468</id>
-    <value>PrzesuÒ belkÍ aby zmieniÊ pozycje osd</value>
-</string>
-  <string>
-    <id>469</id>
-    <value>Pozycja OSD</value>
-</string>
-	<string>
-		<id>470</id>
-		<value>PodziÍkowania</value>
-	</string>
-	<string>
-		<id>471</id>
-		<value>Modchip</value>
-	</string>
-	<string>
-		<id>472</id>
-		<value>OSD Timeout</value>
-	</string>
-	<string>
-		<id>473</id>
-		<value>Resamplowanie w wysokiej jakoúci</value>
-	</string>
-	<string>
-		<id>474</id>
-		<value>Wy≥πcz</value>
-	</string>
-	<string>
-		<id>475</id>
-		<value>Tylko muzyka</value>
-	</string>
-	<string>
-		<id>476</id>
-		<value>Music &amp; Video</value>
-	</string>
-	<string>
-		<id>477</id>
-		<value>Nie mogÍ za≥adowaÊ play listy</value>
-	</string>
-	<string>
-		<id>478</id>
-		<value>OSD</value>
-	</string>
-	<string>
-		<id>479</id>
-		<value>Skora i jÍzyk</value>
-	</string>
-	<string>
-		<id>480</id>
-		<value>Interfejs uøytkownika</value>
-	</string>
-	<string>
-		<id>481</id>
-		<value>Opcje Audio</value>
-	</string>
-	<string>
-		<id>482</id>
-		<value>O XBMC...</value>
-	</string>
-	<string>
-		<id>483</id>
-		<value>Album</value>
-	</string>
-	<string>
-		<id>484</id>
-		<value>Artysta</value>
-	</string>
-	<string>
-		<id>485</id>
-		<value>Skasuj album</value>
-	</string>
-	<string>
-		<id>486</id>
-		<value>Powtarzaj</value>
-	</string>
-	<string>
-		<id>487</id>
-		<value>PowtÛrz raz</value>
-	</string>
-	<string>
-		<id>488</id>
-		<value>Repeat folder play list</value>
-	</string>
-	<string>
-		<id>489</id>
-		<value>Uøywaj play list dla piosenek</value>
-	</string>
-	<string>
-		<id>490</id>
-		<value>Auto switch list and icons in songs</value>
-	</string>
-	<string>
-		<id>491</id>
-		<value>Uøywaj duøych ikon</value>
-	</string>
-	<string>
-		<id>492</id>
-		<value>PowiÍksz napisy</value>
-	</string>
-	<string>
-		<id>493</id>
-		<value>Zaawansowane opcje</value>
-	</string>
-	<string>
-		<id>494</id>
-		<value>Overall Audio Headroom (dB)</value>
-	</string>
-	<string>
-		<id>495</id>
-		<value>Przesampluj video do rozdzielczoúci GUI</value>
-	</string>
-	<string>
-		<id>496</id>
-		<value>Kalibracja</value>
-	</string>
-	<string>
-		<id>497</id>
-		<value>Ukryj rozszerzenia plikÛw</value>
-	</string>
-	<string>
-		<id>498</id>
-		<value>Sortuj typami</value>
-	</string>
-	<string>
-		<id>499</id>
-		<value>Nie mogÍ po≥πczyÊ siÍ z www.allmusic.com</value>
-	</string>
-	<string>
-		<id>500</id>
-		<value>åciπganie informacji o albumie nie powiod≥o siÍ</value>
-	</string>
-	<string>
-		<id>501</id>
-		<value>Szukam nazw albumÛw...</value>
-	</string>
-	<string>
-		<id>502</id>
-		<value>Otwarty</value>
-	</string>
-	<string>
-		<id>503</id>
-		<value>ZajÍty</value>
-	</string>
-	<string>
-		<id>504</id>
-		<value>Pusty</value>
-	</string>
-	<string>
-		<id>505</id>
-		<value>Wczytuje informacje o mediach z plikÛw...</value>
-	</string>
-	<string>
-		<id>506</id>
-		<value>Uøyj nazw katalogÛw dla opisÛw</value>
-	</string> <string>
-		<id>600</id>
-		<value>Zgraj CD</value>
-	</string>
-	<string>
-		<id>601</id>
-		<value>årednia</value>
-	</string>
-	<string>
-		<id>602</id>
-		<value>Standardowa</value>
-	</string>
-	<string>
-		<id>603</id>
-		<value>Ekstremalna</value>
-	</string>
-	<string>
-		<id>604</id>
-		<value>Sta≥y Bit Rate</value>
-	</string>
-	<string>
-		<id>605</id>
-		<value>Zapisuje...</value>
-	</string>
-	<string>
-		<id>606</id>
-		<value>Numer scieøki:</value>
-	</string>
-	<string>
-		<id>607</id>
-		<value>Do:</value>
-	</string>
-	<string>
-		<id>608</id>
-		<value>Nie moøna zapisaÊ CD lub Scieøki</value>
-	</string>
-	<string>
-		<id>609</id>
-		<value>CDDARipPath nie jest ustawiony w XboxMediaCenter.xml</value>
-	</string>
-	<string>
-		<id>620</id>
-		<value>Zgrywam CD</value>
-	</string>
-	<string>
-		<id>621</id>
-		<value>Encoder</value>
-	</string>
-	<string>
-		<id>622</id>
-		<value>JakoúÊ</value>
-	</string>
-	<string>
-		<id>623</id>
-		<value>Bit Rate</value>
-	</string>
-	<string>
-		<id>624</id>
-		<value>Do≥πcz úcieøkÍ numer</value>
-	</string>
-	<string>
-		<id>625</id>
-		<value>Wszystkie piosenki</value>
-	</string>
-	<string>
-		<id>629</id>
-		<value>Tryb wyúwietlania</value>
-	</string>
-	<string>
-		<id>630</id>
-		<value>Normalny</value>
-	</string>
-	<string>
-		<id>631</id>
-		<value>PowiÍkszenie</value>
-	</string>
-	<string>
-		<id>632</id>
-		<value>Proporcje 4:3</value>
-	</string>
-	<string>
-		<id>633</id>
-		<value>Proporcje 14:9</value>
-	</string>
-	<string>
-		<id>634</id>
-		<value>Proporcje 16:9</value>
-	</string>
-	<string>
-		<id>635</id>
-		<value>Oryginalny rozmiar</value>
-	</string>
-	<string>
-		<id>636</id>
-		<value>W≥asny</value>
-	</string>
-	<string>
-		<id>700</id>
-		<value>Czyszczenie bazy danych</value>
-	</string>
-	<string>
-		<id>701</id>
-		<value>Usuwam stare piosenki z bazy danych</value>
-	</string>
-	<string>
-		<id>702</id>
-		<value>Ta úcieøka by≥a juz skanowana.</value>
-	</string>
-	<string>
-		<id>703</id>
-		<value>Naciúnij TAK, øeby uaktualniÊ wszystkie piosenki w lokacji.</value>
-	</string>
-	<string>
-		<id>704</id>
-		<value>Naciúnij NIE aby dodaÊ tylko nowe piosenki.</value>
-	</string>
-	<string>
-		<id>705</id>
-		<value>Siec</value>
-	</string>
-	<string>
-		<id>706</id>
-		<value>HTTP Proxy Host:</value>
-	</string>
-	<string>
-		<id>707</id>
-		<value>HTTP Proxy Port:</value>
-	</string>
-	<string>
-		<id>708</id>
-		<value>W≥πcz HTTP Proxy</value>
-	</string>
-	<string>
-		<id>709</id>
-		<value>XLink Kai XTag:</value>
-	</string>
-	<string>
-		<id>710</id>
-		<value>Has≥o XLink Kai:</value>
-	</string>
-	<string>
-		<id>711</id>
-		<value>Ustawienia protoko≥u internetowego(IP)</value>
-	</string>
-	<string>
-		<id>712</id>
-		<value>Wybrano nieprawid≥owy port. WartoúÊ musi byÊ z przedzia≥u 1 do 65535.</value>
-	</string>
-	<string>
-		<id>713</id>
-		<value>Ustawienia HTTP Proxy</value>
-	</string>	
-	<string>
-		<id>714</id>
-		<value>Ustawienia XLink Kai</value>
-	</string>	
-	<string>
-		<id>715</id>
-		<value>Przypisanie:</value>
-	</string>	
-	<string>
-		<id>716</id>
-		<value>Automatyczne (DHCP)</value>
-	</string>	
-	<string>
-		<id>717</id>
-		<value>RÍczne (Statyczny)</value>
-	</string>	
-	<string>
-		<id>718</id>
-		<value>Domyúlny (Dashboard)</value>
-	</string>	
-	<string>
-		<id>719</id>
-		<value>Adres IP:</value>
-	</string>	
-	<string>
-		<id>720</id>
-		<value>Maska podsieci:</value>
-	</string>	
-	<string>
-		<id>721</id>
-		<value>Domyúlna bramka:</value>
-	</string>	
-	<string>
-		<id>722</id>
-		<value>Serwer DNS:</value>
-	</string>
-	<string>
-		<id>723</id>
-		<value>Zapisz ustawienia i zresetuj XBox'a</value>
-	</string>
-	<string>
-		<id>724</id>
-		<value>Wpisano nieprawid≥owy adres. WartoúÊ musi byÊ w formacie AAA.BBB.CCC.DDD</value>
-	</string>
-	<string>
-		<id>725</id>
-		<value>gdzie numery sπ z przedzia≥u 0 do 255.</value>
-	</string>
-	<string>
-		<id>726</id>
-		<value>Zmiany nie zosta≥y zapisane. KontynuowaÊ bez zapisywania?</value>
-	</string>
-	<string>
-		<id>727</id>
-		<value>Web Serwer</value>
-	</string>	
-	<string>
-		<id>728</id>
-		<value>Serwer FTP</value>
-	</string>	
-	<string>
-		<id>729</id>
-		<value>Czas z internetu</value>
-	</string>	
-	<string>
-		<id>730</id>
-		<value>Port Web Serwera</value>
-	</string>	
-	<string>
-		<id>731</id>
-		<value>Host serwera czasu</value>
-	</string>
-	<string>
-		<id>732</id>
-		<value>Zapisz &amp; Zastosuj</value>
-	</string>
-	<string>
-		<id>733</id>
-		<value>Has≥o do Web Serwera</value>
-	</string>
-	<string>
-		<id>734</id>
-		<value>Bez has≥a</value>
-	</string>
-	<string>
-		<id>735</id>
-		<value>Czcionka:</value>
-	</string>	
-	<string>
-		<id>736</id>
-		<value>Styl:</value>
-	</string>	
-	<string>
-		<id>737</id>
-		<value>Kolor:</value>
-	</string>
-	<string>
-		<id>738</id>
-		<value>Normalna</value>
-	</string>	
-	<string>
-		<id>739</id>
-		<value>Pogrubiona</value>
-	</string>	
-	<string>
-		<id>740</id>
-		<value>Pochylona</value>
-	</string>	
-	<string>
-		<id>741</id>
-		<value>Pogrubiona i pochylona</value>
-	</string>	
-	<string>
-		<id>742</id>
-		<value>Bia≥y</value>
-	</string>	
-	<string>
-		<id>743</id>
-		<value>ØÛ≥ty</value>
-	</string>
-	<string>
-		<id>744</id>
-		<value>Pliki</value>
-	</string>		
-	<string>
-		<id>745</id>
-		<value>Nie znaleziono informacji</value>
-	</string>		
-	<string>
-		<id>746</id>
-		<value>Prze≥πcz do widoku plikÛw</value>
-	</string>
-	<string>
-		<id>747</id>
-		<value>Za ma≥o pamiÍci øeby wyúwietliÊ obrazek</value>
-	</string>
-	<string>
-		<id>748</id>
-		<value>Edytuj úcieøkÍ</value>
-	</string>
-	<string>
-		<id>749</id>
-		<value>Dodaj udzia≥</value>
-	</string>
-	<string>
-		<id>750</id>
-		<value>Czy jesteú pewny?</value>
-	</string>
-	<string>
-		<id>751</id>
-		<value>UsuÒ udzia≥</value>
-	</string>
-	<string>
-		<id>752</id>
-		<value>Edytuj úcieøkÍ udzia≥u</value>
-	</string>
-	<string>
-		<id>753</id>
-		<value>Edytuj nazwÍ udzia≥u</value>
-	</string>
-
-	<string>
-		<id>999</id>
-		<value>Rozgrywka Online</value>
-	</string> 
-	<string>
-		<id>998</id>
-		<value>XLink KAI</value>
-	</string>
-
-<string><id>10000</id><value>Home</value></string>
-<string><id>10001</id><value>Moje programy</value></string>
-<string><id>10002</id><value>Moje obrazy</value></string>
-<string><id>10003</id><value>Moje pliki</value></string>
-<string><id>10004</id><value>Ustawienia</value></string>
-<string><id>10005</id><value>Moja muzyka</value></string>
-<string><id>10006</id><value>Moje filmy</value></string>
-<string><id>10007</id><value>Informacje systemowe</value></string>
-<string><id>10008</id><value>Ustawienia->OgÛlne</value></string>
-<string><id>10009</id><value>Ustawienia->Ekran</value></string>
-<string><id>10010</id><value>Ustawienia->Ekran->UI Calibration</value></string>
-<string><id>10011</id><value>Ustawienia->Ekran->Screen Calibration</value></string>
-<string><id>10012</id><value>Ustawienia->SlideShow</value></string>
-<string><id>10013</id><value>Ustawienia->Ekran->Filtry</value></string>
-<string><id>10014</id><value>Ustawienia->Muzyka</value></string>
-<string><id>10015</id><value>Ustawienia->Ekran->Napisy</value></string>
-<string><id>10016</id><value>Ustawienia->Ekran->Wygaszacz</value></string>
-<string><id>10017</id><value>Ustawienia->Pogoda</value></string>
-<string><id>10020</id><value>Ustawienia->Skrypty</value></string>
-<string><id>10021</id><value>Moje filmy/gatunek</value></string>
-<string><id>10022</id><value>Moje filmy/aktor</value></string>
-<string><id>10023</id><value>Moje filmy/rok</value></string>
-<string><id>10024</id><value>Ustawienia->Programy</value></string>
-<string><id>10025</id><value>Moje filmy/tytu≥</value></string>
-<string><id>10026</id><value>Ustawienia->OgÛlne->Cache</value></string>
-<string><id>10027</id><value>Ustawienia->OgÛlne->Autorun</value></string>
-<string><id>10028</id><value>Moje filmy/play lista</value></string>
-<string><id>10029</id><value>Ustawienia->ogÛlne->LCD</value></string>
-<string><id>10100</id><value>Tak/nie dialog</value></string>
-<string><id>10101</id><value>Okienko postÍpu</value></string>
-<string><id>10500</id><value>Moja muzyka/play lista</value></string>
-<string><id>10501</id><value>Moja muzyka/pliki</value></string>
-<string><id>10502</id><value>Moja muzyka/albumy</value></string>
-<string><id>10503</id><value>Moja muzyka/artyúci</value></string>
-<string><id>10504</id><value>Moja muzyka/gatunki</value></string>
-<string><id>10505</id><value>Moja muzyka/top100</value></string>
-<string><id>11000</id><value>Klawiatura</value></string>
-<string><id>12000</id><value>Wybierz dialog</value></string>
-<string><id>12001</id><value>Moja muzyka/info</value></string>
-<string><id>12002</id><value>Dialog OK</value></string>
-<string><id>12003</id><value>Moje filmy/Info</value></string>
-<string><id>12004</id><value>Moje skrypty/Info</value></string>
-<string><id>12005</id><value>Pe≥no ekranowe video</value></string>
-<string><id>12006</id><value>Wizualizacja düwiÍku</value></string>
-<string><id>12007</id><value>Moje obrazy/slideshow</value></string>
-<string><id>12008</id><value>Okienko Filestacking</value></string>
-<string><id>12600</id><value>Moja pogoda</value></string>
-<string><id>12900</id><value>Wygaszacz</value></string>
-<string><id>12901</id><value>Pe≥no ekranowe OSD</value></string>
-<string><id>13000</id><value>System</value></string>
-<string><id>13001</id><value>Natychmiastowe wy≥πczenie HDD</value></string>
-<string><id>13002</id><value>Tylko Video</value></string>
-<string><id>13003</id><value>- OpÛünienie</value></string>
-<string><id>13004</id><value>- Minimalny czas trwania</value></string>
-<string><id>13100</id><value>Filtr Flicker</value></string>
-<string><id>13200</id><value>Profile</value></string>
-<string><id>13201</id><value>UsuÒ profil '%s'?</value></string>
-<string><id>13202</id><value>Zapisz bierzπce ustawienie jako profil...</value></string>
-<string><id>13203</id><value>Profil '%s' za≥adowany pomyúlnie</value></string>
-<string><id>13204</id><value>Ostatnio za≥adowany profil:</value></string>
-<string><id>13205</id><value>Nieznany</value></string>
-<string><id>13300</id><value>PrÍdkoúÊ wiatraka:</value></string>
-<string><id>13301</id><value>Automatyczna kontrola temperatury</value></string>
-<string><id>13302</id><value>Kontrola obrotÛw wiatraka</value></string>
-<string><id>13303</id><value>Czcionka skorki</value></string>
-<string><id>13304</id><value>OdwrÛÊ znaki</value></string>
-<string><id>13305</id><value>W≥πcz wiadomoúci RSS</value></string>
-<string><id>13306</id><value>Ukryj elementy folderu nadrzÍdnego</value></string>
-<string><id>13307</id><value>Ukryj numery scieøek</value></string>
-<string><id>13308</id><value>Czy chcesz wykonaÊ pe≥ny reset</value></string>
-<string><id>13309</id><value>zamiast zwyk≥ego resetu?</value></string>
-<string><id>13310</id><value>Efekt Zoom</value></string>
-<string><id>13311</id><value>Efekt Float</value></string>
-<string><id>13312</id><value>Redukcja czarnego paska</value></string>
-<string><id>13313</id><value>Reset/Restart</value></string>
-<string><id>13314</id><value>Czas wyúwietlania OSD muzyki</value></string>
-<string><id>13315</id><value>StwÛrz miniaturki</value></string>
-<string><id>13316</id><value>Rekurencyjne miniaturki</value></string>
-<string><id>13317</id><value>Pokaz slajdÛw</value></string>
-<string><id>13318</id><value>Rekurencyjny pokaz slajdÛw</value></string>
-<string><id>13319</id><value>Losowo</value></string>
-<string><id>13320</id><value>Stereo</value></string>
-<string><id>13321</id><value>Tylko lewy</value></string>
-<string><id>13322</id><value>Tylko prawy</value></string>
-<string><id>13323</id><value>W≥πcz CD+G</value></string>
-<string><id>13324</id><value>PrzezroczystoúÊ t≥a</value></string>
-<string><id>13325</id><value>PrzezroczystoúÊ pierwszego planu</value></string>
-<string><id>13326</id><value>OpÛünienie A/V</value></string>
-<string><id>13327</id><value>Karaoke</value></string>
-<string><id>13328</id><value>%s nie znaleziono.</value></string>
-<string><id>13329</id><value>B≥πd otwierania %s</value></string>
-<string><id>13330</id><value>Nie mogÍ za≥adowaÊ %s</value></string>
-<string><id>13331</id><value>B≥πd: za ma≥o pamiÍci.</value></string>
-<string><id>13332</id><value>PrzesuÒ w gÛre</value></string>
-<string><id>13333</id><value>PrzesuÒ w dÛ≥</value></string>
-<string><id>13334</id><value>Edytuj nazwÍ</value></string>
-<string><id>13335</id><value>ustaw jako domyúlny</value></string>
-<string><id>13336</id><value>UsuÒ przycisk</value></string>
-<string><id>13337</id><value>Przejúcie PCM dwu kana≥owe</value></string>
-<string><id>14000</id><value>Stacking: Wy≥.</value></string>
-<string><id>14001</id><value>Stacking: Prosty</value></string>
-<string><id>14002</id><value>Stacking: Rozmyty</value></string>
-<string><id>14003</id><value>åciπgam plik playlisty...</value></string>
-<string><id>14004</id><value>åciπgam listÍ streamÛw...</value></string>
-<string><id>14005</id><value>Przetwarzam listÍ streamÛw...</value></string>
-<string><id>14006</id><value>åciπganie listy streamÛw siÍ nie powiod≥o</value></string>
-<string><id>14007</id><value>åciπganie play listy siÍ nie powiod≥o</value></string>
-<string><id>14008</id><value>W≥πcz zawiadomienia w Kai</value></string>
-<string><id>14009</id><value>Katalog z grami</value></string>
-<string><id>14010</id><value>Opcje automatycznego prze≥πczania</value></string>
+  <string><id>0</id><value>Programy</value></string>
+  <string><id>1</id><value>Obrazy</value></string>
+  <string><id>2</id><value>Muzyka</value></string>
+  <string><id>3</id><value>Filmy</value></string>
+  <string><id>4</id><value>Przewodnik TV</value></string>
+  <string><id>5</id><value>Ustawienia</value></string>
+  <string><id>7</id><value>Pliki</value></string>
+  <string><id>8</id><value>Pogoda</value></string>
+  <string><id>11</id><value>Poniedzia≥ek</value></string>
+  <string><id>12</id><value>Wtorek</value></string>
+  <string><id>13</id><value>åroda</value></string>
+  <string><id>14</id><value>Czwartek</value></string>
+  <string><id>15</id><value>Piπtek</value></string>
+  <string><id>16</id><value>Sobota</value></string>
+  <string><id>17</id><value>Niedziela</value></string>
+  <string><id>21</id><value>StyczeÒ</value></string>
+  <string><id>22</id><value>Luty</value></string>
+  <string><id>23</id><value>Marzec</value></string>
+  <string><id>24</id><value>KwiecieÒ</value></string>
+  <string><id>25</id><value>Maj</value></string>
+  <string><id>26</id><value>Czerwiec</value></string>
+  <string><id>27</id><value>Lipiec</value></string>
+  <string><id>28</id><value>SierpieÒ</value></string>
+  <string><id>29</id><value>WrzesieÒ</value></string>
+  <string><id>30</id><value>Paüdziernik</value></string>
+  <string><id>31</id><value>Listopad</value></string>
+  <string><id>32</id><value>GrudzieÒ</value></string>
+  <string><id>100</id><value>Ikony</value></string>
+  <string><id>101</id><value>Lista</value></string>
+  <string><id>102</id><value>Skanuj</value></string>
+  <string><id>103</id><value>Sortuj wed≥ug nazw</value></string>
+  <string><id>104</id><value>Sortuj wed≥ug dat</value></string>
+  <string><id>105</id><value>Sortuj wed≥ug rozmiarÛw</value></string>
+  <string><id>106</id><value>Nie</value></string>
+  <string><id>107</id><value>Tak</value></string>
+  <string><id>108</id><value>Slajdy</value></string>
+  <string><id>109</id><value>UtwÛrz miniaturki</value></string>
+  <string><id>110</id><value>UtwÛrz miniaturki</value></string>
+  <string><id>111</id><value>SkrÛty</value></string>
+  <string><id>112</id><value>PAUZA</value></string>
+  <string><id>113</id><value>Moje pliki : èrÛd≥o</value></string>
+  <string><id>114</id><value>Moje pliki : Katalog docelowy</value></string>
+  <string><id>115</id><value>Kopiuj</value></string>
+  <string><id>116</id><value>Przenieú</value></string>
+  <string><id>117</id><value>Skasuj</value></string>
+  <string><id>118</id><value>ZmieÒ nazwÍ</value></string>
+  <string><id>119</id><value>Nowy katalog</value></string>
+  <string><id>120</id><value>Potwierdü kopiowanie pliku</value></string>
+  <string><id>121</id><value>Potwierdü przenoszenie pliku</value></string>
+  <string><id>122</id><value>Potwierdü kasowanie pliku</value></string>
+  <string><id>123</id><value>SkopiowaÊ te pliki?</value></string>
+  <string><id>124</id><value>PrzenieúÊ te pliki?</value></string>
+  <string><id>125</id><value>SkasowaÊ te pliki?</value></string>
+  <string><id>126</id><value>Status</value></string>
+  <string><id>127</id><value>ObiektÛw</value></string>
+  <string><id>128</id><value>OgÛlne</value></string>
+  <string><id>129</id><value>Slajdy</value></string>
+  <string><id>130</id><value>System info</value></string>
+  <string><id>131</id><value>Ekran</value></string>
+  <string><id>132</id><value>Albumy</value></string>
+  <string><id>133</id><value>Artyúci</value></string>
+  <string><id>134</id><value>Pokaz utwory</value></string>
+  <string><id>135</id><value>Gatunki</value></string>
+  <string><id>136</id><value>Play listy</value></string>
+  <string><id>137</id><value>Szukaj</value></string>
+  <string><id>138</id><value>Informacje systemowe</value></string>
+  <string><id>139</id><value>Temperatury:</value></string>
+  <string><id>140</id><value>CPU:</value></string>
+  <string><id>141</id><value>GPU:</value></string>
+  <string><id>142</id><value>Czas:</value></string>
+  <string><id>143</id><value>Obecny:</value></string>
+  <string><id>144</id><value>Wersja:</value></string>
+  <string><id>145</id><value>Siec:</value></string>
+  <string><id>146</id><value>Typ:</value></string>
+  <string><id>147</id><value>Statyczny</value></string>
+  <string><id>148</id><value>Dynamiczny</value></string>
+  <string><id>149</id><value>MAC</value></string>
+  <string><id>150</id><value>IP:</value></string>
+  <string><id>151</id><value>Po≥πczenie:</value></string>
+  <string><id>152</id><value>PÛ≥ duplex</value></string>
+  <string><id>153</id><value>Pe≥ny duplex</value></string>
+  <string><id>154</id><value>Dyski</value></string>
+  <string><id>155</id><value>Dysk</value></string>
+  <string><id>156</id><value>Wolne</value></string>
+  <string><id>157</id><value>Obraz</value></string>
+  <string><id>158</id><value>Wolnej pamiÍci</value></string>
+  <string><id>159</id><value>Nie ma po≥πczenia</value></string>
+  <string><id>160</id><value>Wolne</value></string>
+  <string><id>161</id><value>NiedostÍpny</value></string>
+  <string><id>162</id><value>Tacka napÍdu jest otwarta</value></string>
+  <string><id>163</id><value>Czytam</value></string>
+  <string><id>164</id><value>Nie ma dysku</value></string>
+  <string><id>165</id><value>Jest dysk</value></string>
+  <string><id>166</id><value>SkÛrka:</value></string>
+  <string><id>167</id><value>Serwer FTP:</value></string>
+  <string><id>168</id><value>Serwer czasu:</value></string>
+  <string><id>169</id><value>RozdzielczoúÊ:</value></string>
+  <string><id>170</id><value>Album:</value></string>
+  <string><id>171</id><value>Artysta:</value></string>
+  <string><id>172</id><value>Data wydania:</value></string>
+  <string><id>173</id><value>Ocena:</value></string>
+  <string><id>174</id><value>Gatunek:</value></string>
+  <string><id>175</id><value>Tony:</value></string>
+  <string><id>176</id><value>Style:</value></string>
+  <string><id>177</id><value>Przeglπd:</value></string>
+  <string><id>178</id><value>Scieøki:</value></string>
+  <string><id>179</id><value>UtwÛr</value></string>
+  <string><id>180</id><value>Czas trwania</value></string>
+  <string><id>181</id><value>Wybierz album</value></string>
+  <string><id>182</id><value>Scieøki</value></string>
+  <string><id>183</id><value>Przeglπd</value></string>
+  <string><id>184</id><value>Odúwieø</value></string>
+  <string><id>185</id><value>Wyszukuje album</value></string>
+  <string><id>186</id><value>OK</value></string>
+  <string><id>187</id><value>Nie znalaz≥em albumÛw!</value></string>
+  <string><id>188</id><value>Wybierz wszystko</value></string>
+  <string><id>189</id><value>Wyszukuje informacje</value></string>
+  <string><id>190</id><value>Zapisz</value></string>
+  <string><id>191</id><value>Losowo</value></string>
+  <string><id>192</id><value>WyczyúÊ</value></string>
+  <string><id>193</id><value>Skanuj</value></string>
+  <string><id>194</id><value>Szukam...</value></string>
+  <string><id>195</id><value>Nie odnaleziono informacji IMDB!</value></string>
+  <string><id>196</id><value>Wybierz film:</value></string>
+  <string><id>197</id><value>Odczytuje informacje IMDB</value></string>
+  <string><id>198</id><value>Wczytuje...</value></string>
+  <string><id>199</id><value>Reøyser</value></string>
+  <string><id>200</id><value>PodziÍkowania</value></string>
+  <string><id>201</id><value>Rok</value></string>
+  <string><id>202</id><value>Linia Tag</value></string>
+  <string><id>203</id><value>Plot outline</value></string>
+  <string><id>204</id><value>Ocena</value></string>
+  <string><id>205</id><value>Glosy</value></string>
+  <string><id>206</id><value>Obsada</value></string>
+  <string><id>207</id><value>Plot</value></string>
+  <string><id>208</id><value>Odtwarzaj</value></string>
+  <string><id>209</id><value>Dalej</value></string>
+  <string><id>210</id><value>WrÛÊ</value></string>
+  <string><id>211</id><value>Wyszukuje programy</value></string>
+  <string><id>212</id><value>znaleziono programy</value></string>
+  <string><id>213</id><value>Kalibracja interfejsu</value></string>
+  <string><id>214</id><value>Kalibracja ekranu</value></string>
+  <string><id>215</id><value>Wyg≥adü</value></string>
+  <string><id>216</id><value>PowiÍksz</value></string>
+  <string><id>217</id><value>Rozciπgnij</value></string>
+  <string><id>218</id><value>NapÍd DVD</value></string>
+  <string><id>219</id><value>ProszÍ w≥oøyÊ dysk</value></string>
+  <string><id>220</id><value>Zdalny dostÍp</value></string>
+  <string><id>221</id><value>Siec nie jest pod≥πczona</value></string>
+  <string><id>222</id><value>Anuluj</value></string>
+  <string><id>223</id><value>Wybierz najlepsza rozdzielczoúÊ dla filmÛw</value></string>
+  <string><id>224</id><value>SzybkoúÊ</value></string>
+  <string><id>225</id><value>Czas trwania</value></string>
+  <string><id>226</id><value>W≥πcz PAL60</value></string>
+  <string><id>227</id><value>W≥πcz CDDB</value></string>
+  <string><id>228</id><value>Mieszaj Playliste po wczytaniu</value></string>
+  <string><id>229</id><value>Wy≥πcz HDD po (min)</value></string>
+  <string><id>230</id><value>Filtry</value></string>
+  <string><id>231</id><value>Øaden</value></string>
+  <string><id>232</id><value>Punktowy</value></string>
+  <string><id>233</id><value>Liniowy</value></string>
+  <string><id>234</id><value>Anizotropowy</value></string>
+  <string><id>235</id><value>Quincunx</value></string>
+  <string><id>236</id><value>Gaussian Cubic</value></string>
+  <string><id>237</id><value>Pomniejszenie:</value></string>
+  <string><id>238</id><value>PowiÍkszenie:</value></string>
+  <string><id>240</id><value>Automatycznie odtwarzaj DVD-Video</value></string>
+  <string><id>241</id><value>Automatycznie odtwarzaj VCD/SVCD</value></string>
+  <string><id>242</id><value>Automatycznie odtwarzaj Audio-CD</value></string>
+  <string><id>243</id><value>Automatycznie odtwarzaj Gry XboX</value></string>
+  <string><id>244</id><value>Automatycznie odtwarzaj Video</value></string>
+  <string><id>245</id><value>Automatycznie odtwarzaj MuzykÍ</value></string>
+  <string><id>246</id><value>Automatycznie odtwarzaj Obrazy</value></string>
+  <string><id>247</id><value>Skrypty</value></string>
+  <string><id>248</id><value>JÍzyk</value></string>
+  <string><id>249</id><value>Muzyka</value></string>
+  <string><id>250</id><value>Wizualizacja</value></string>
+  <string><id>251</id><value>Wybierz katalog docelowy</value></string>
+  <string><id>252</id><value>Wyjúcie na wszystkie g≥oúniki</value></string>
+  <string><id>253</id><value>Liczba kana≥Ûw</value></string>
+  <string><id>254</id><value>AC3 Passthru</value></string>
+  <string><id>255</id><value>CDDB</value></string>
+  <string><id>256</id><value>Odczytuje informacje z CDDB</value></string>
+  <string><id>257</id><value>B≥πd</value></string>
+  <string><id>258</id><value>W≥πcz tagi ID3</value></string>
+  <string><id>259</id><value>Otwieram</value></string>
+  <string><id>260</id><value>Shoutcast</value></string>
+  <string><id>261</id><value>Czekam na start....</value></string>
+  <string><id>262</id><value>Wyjúcie SkryptÛw</value></string>
+  <string><id>263</id><value>Serwer HTTP:</value></string>
+  <string><id>264</id><value>Nagrywaj</value></string>
+  <string><id>265</id><value>Zatrzymaj nagrywanie</value></string>
+  <string><id>266</id><value>Sortuj wed≥ug scieøek</value></string>
+  <string><id>267</id><value>Sortuj wed≥ug czasu</value></string>
+  <string><id>268</id><value>Sortuj wed≥ug tytu≥u</value></string>
+  <string><id>269</id><value>Sortuj wed≥ug artysty</value></string>
+  <string><id>270</id><value>Sortuj wed≥ug albumu</value></string>
+  <string><id>271</id><value>Top 100</value></string>
+  <string><id>272</id><value>GÛrny lewy rÛg ekranu</value></string>
+  <string><id>273</id><value>Dolny prawy rÛg ekranu</value></string>
+  <string><id>274</id><value>Pozycja napisÛw</value></string>
+  <string><id>275</id><value>Ustawienia Pixel Ratio</value></string>
+  <string><id>276</id><value>Poruszaj strza≥ka aby zmieniÊ pozycje rogÛw ekranu</value></string>
+  <string><id>277</id><value>PrzesuÒ linie aby zmieniÊ pozycje napisÛw</value></string>
+  <string><id>278</id><value>ZmieÒ prostokπt w idealny kwadrat</value></string>
+  <string><id>279</id><value>Nie mogÍ wczytaÊ ustawieÒ</value></string>
+  <string><id>280</id><value>uøywam standardowych przejúÊ</value></string>
+  <string><id>281</id><value>ProszÍ sprawdzi≥ pliki .xml</value></string>
+  <string><id>282</id><value>znalaz≥em %i</value></string>
+  <string><id>283</id><value>Rezultaty wyszukiwania</value></string>
+  <string><id>284</id><value>Nie znaleziono</value></string>
+  <string><id>285</id><value>Filtr Deinterlace</value></string>
+  <string><id>286</id><value>Filtr Postprocessing</value></string>
+  <string><id>287</id><value>Napisy</value></string>
+  <string><id>288</id><value>Czcionka</value></string>
+  <string><id>289</id><value>Rozmiar</value></string>
+  <string><id>290</id><value>Amplifikacja g≥oúnoúci (dB)</value></string>
+  <string><id>291</id><value>Obraz</value></string>
+  <string><id>292</id><value>DüwiÍk</value></string>
+  <string><id>293</id><value>Napisy</value></string>
+  <string><id>294</id><value>1. UtwÛrz zak≥adkÍ</value></string>
+  <string><id>295</id><value>2. Przewin zak≥adki</value></string>
+  <string><id>296</id><value>3. WyczyúÊ zak≥adki</value></string>
+  <string><id>297</id><value>4. OpÛünienie AV</value></string>
+  <string><id>298</id><value>5. Przewijanie</value></string>
+  <string><id>300</id><value>1. JÍzyk</value></string>
+  <string><id>301</id><value>2. GloúnoúÊ</value></string>
+  <string><id>302</id><value>3. StrumieÒ</value></string>
+  <string><id>303</id><value>1. OpÛünienie</value></string>
+  <string><id>304</id><value>2. JÍzyk</value></string>
+  <string><id>305</id><value>3. Wl/wyl</value></string>
+  <string><id>306</id><value>6. Non-Interleaved</value></string>
+  <string><id>307</id><value>Auto</value></string>
+  <string><id>308</id><value>filtr vertical deblocking</value></string>
+  <string><id>309</id><value>filtr horizontal deblocking</value></string>
+  <string><id>310</id><value>Automatyczna jasnoúÊ/kontrast</value></string>
+  <string><id>311</id><value>Dering</value></string>
+  <string><id>312</id><value>(0=auto)</value></string>
+  <string><id>313</id><value>Reorganizuj bazÍ danych</value></string>
+  <string><id>314</id><value>Przygotowuje...</value></string>
+  <string><id>315</id><value>B≥πd bazy danych</value></string>
+  <string><id>316</id><value>Przeszukuje utwory...</value></string>
+  <string><id>317</id><value>Reorganizacja zakoÒczona</value></string>
+  <string><id>318</id><value>Oznaczam skasowane utwory</value></string>
+  <string><id>319</id><value>B≥πd przy reorganizacji utworÛw</value></string>
+  <string><id>320</id><value>Wyszukuje artystÛw.</value></string>
+  <string><id>321</id><value>B≥πd przy reorganizacji artystÛw</value></string>
+  <string><id>322</id><value>Wyszukuje gatunki...</value></string>
+  <string><id>323</id><value>B≥πd przy reorganizacji gatunkÛw</value></string>
+  <string><id>324</id><value>Wyszukuje scieøki...</value></string>
+  <string><id>325</id><value>B≥πd przy reorganizacji scieøek</value></string>
+  <string><id>326</id><value>Wyszukuje albumy.</value></string>
+  <string><id>327</id><value>B≥πd przy reorganizacji albumÛw</value></string>
+  <string><id>328</id><value>Zapisuje zmiany...</value></string>
+  <string><id>329</id><value>B≥πd podczas zapisu zmian</value></string>
+  <string><id>330</id><value>To zajmie chwilkÍ...</value></string>
+  <string><id>331</id><value>Kompresuje bazÍ danych...</value></string>
+  <string><id>332</id><value>B≥πd kompresji bazy danych</value></string>
+  <string><id>333</id><value>Czy chcesz zreorganizowaÊ bazÍ danych muzyki?</value></string>
+  <string><id>334</id><value>Reorganizuj bazÍ danych mojej muzyki</value></string>
+  <string><id>335</id><value>Start</value></string>
+  <string><id>336</id><value>Ustaw liczbÍ klatek</value></string>
+  <string><id>337</id><value>Wyjúcie Audio:</value></string>
+  <string><id>338</id><value>Analogowe</value></string>
+  <string><id>339</id><value>Cyfrowe</value></string>
+  <string><id>340</id><value>Roøni artyúci</value></string>
+  <string><id>341</id><value>Odtwarzaj DVD</value></string>
+  <string><id>342</id><value>Filmy</value></string>
+  <string><id>343</id><value>Ustaw liczbÍ klatek</value></string>
+  <string><id>344</id><value>Obsada</value></string>
+  <string><id>345</id><value>Rok</value></string>
+  <string><id>346</id><value>Stack</value></string>
+  <string><id>347</id><value>Unstack</value></string>
+  <string><id>348</id><value>Sp≥aszczona hierarchia katalogÛw</value></string>
+  <string><id>349</id><value>Pokazuj tylko Default.xbe</value></string>
+  <string><id>350</id><value>Programy</value></string>
+  <string><id>351</id><value>Wy≥πcz</value></string>
+  <string><id>9999999</id><value>www.xZoNe.com.pl</value></string>
+  <string><id>352</id><value>PrzyÊmiony</value></string>
+  <string><id>353</id><value>Czarny</value></string>
+  <string><id>354</id><value>Matrix'owe znaczki</value></string>
+  <string><id>355</id><value>Czas oczekiwania wygaszacza</value></string>
+  <string><id>356</id><value>Tryb wygaszacza</value></string>
+  <string><id>357</id><value>Czas do wy≥πczenia</value></string>
+  <string><id>358</id><value>Wszystkie albumy</value></string>
+  <string><id>359</id><value>Ostatnie albumy</value></string>
+  <string><id>360</id><value>Wygaszacz</value></string>
+  <string><id>361</id><value>R. SlideShow</value></string>
+  <string><id>362</id><value>Poziom przezroczystoúci wygaszacza (%)</value></string>
+  <string><id>363</id><value>Sortuj: Plikami</value></string>
+  <string><id>364</id><value>DD/DTS Multichannel Passthrough</value></string>
+  <string><id>365</id><value>Sortuj: Nazwami</value></string>
+  <string><id>366</id><value>Sortuj: Latami</value></string>
+  <string><id>367</id><value>Sortuj: Ocenami</value></string>
+  <string><id>368</id><value>IMDB</value></string>
+  <string><id>369</id><value>Tytu≥</value></string>
+  <string><id>370</id><value>T-Storms</value></string>
+  <string><id>371</id><value>CzÍúciowo</value></string>
+  <string><id>372</id><value>G≥ownie</value></string>
+  <string><id>373</id><value>S≥onecznie</value></string>
+  <string><id>374</id><value>Pochmurnie</value></string>
+  <string><id>375</id><value>ånieg</value></string>
+  <string><id>376</id><value>Deszcz</value></string>
+  <string><id>377</id><value>Pogodnie</value></string>
+  <string><id>378</id><value>Rano</value></string>
+  <string><id>379</id><value>Wieczorem</value></string>
+  <string><id>380</id><value>Opady</value></string>
+  <string><id>381</id><value>Niewielkie</value></string>
+  <string><id>382</id><value>Sporadyczne</value></string>
+  <string><id>383</id><value>Wiatr</value></string>
+  <string><id>384</id><value>Silny</value></string>
+  <string><id>385</id><value>£agodny</value></string>
+  <string><id>396</id><value>Wybierz Lokacje</value></string>
+  <string><id>397</id><value>Odúwieø czas</value></string>
+  <string><id>398</id><value>Jednostki temperatury</value></string>
+  <string><id>399</id><value>jednostki prÍdkoúci</value></string>
+  <string><id>400</id><value>Pogoda</value></string>
+  <string><id>401</id><value>Temperatura</value></string>
+  <string><id>402</id><value>Samopoczucie</value></string>
+  <string><id>403</id><value>Wskaünik UV</value></string>
+  <string><id>404</id><value>Wiatr</value></string>
+  <string><id>405</id><value>Punkt rosy</value></string>
+  <string><id>406</id><value>WilgotnoúÊ</value></string>
+  <string><id>407</id><value>Z</value></string>
+  <string><id>408</id><value>na</value></string>
+  <string><id>410</id><value>Kontaktuje siÍ z Weather.com</value></string>
+  <string><id>411</id><value>Pobieram pogodÍ dla:</value></string>
+  <string><id>412</id><value>Nie mogÍ uzyskaÊ danych pogodowych</value></string>
+  <string><id>413</id><value>RÍcznie</value></string>
+  <string><id>414</id><value>Nie ma podglπdu dla tego albumu</value></string>
+  <string><id>415</id><value>åciπgam miniaturki...</value></string>
+  <string><id>416</id><value>Nie dostÍpne</value></string>
+  <string><id>417</id><value>Pokazuj: Duøe ikony</value></string>
+  <string><id>418</id><value>Moje Filmy/Gatunki</value></string>
+  <string><id>419</id><value>Moje Filmy/Aktorzy</value></string>
+  <string><id>420</id><value>Moje Filmy/Lata</value></string>
+  <string><id>421</id><value>Moje Filmy/Tytu≥</value></string>
+  <string><id>422</id><value>kasuj informacje o albumie</value></string>
+  <string><id>423</id><value>Kasuj informacje z CDDB</value></string>
+  <string><id>424</id><value>Wybierz</value></string>
+  <string><id>425</id><value>Nie znalaz≥em informacji o albumie.</value></string>
+  <string><id>426</id><value>Nie znalaz≥em informacji CDDB.</value></string>
+  <string><id>427</id><value>Dysk:</value></string>
+  <string><id>428</id><value>Wsadü poprawny CD/DVD</value></string>
+  <string><id>429</id><value>Wsadü niestepujπcy CD/DVD</value></string>
+  <string><id>430</id><value>Sortuj po: DVD#</value></string>
+  <string><id>431</id><value>Nie do pamiÍci podrÍcznej</value></string>
+  <string><id>432</id><value>Skasuj film z bazy danych</value></string>
+  <string><id>433</id><value>Jesteú pewny, ze chcesz usunπÊ</value></string>
+  <string><id>434</id><value>film?</value></string>
+  <string><id>435</id><value>åcieøka</value></string>
+  <string><id>436</id><value>Rok:</value></string>
+  <string><id>437</id><value>Czas trwania:</value></string>
+  <string><id>438</id><value>Otwieram plik</value></string>
+  <string><id>439</id><value>PamiÍÊ podrÍczna</value></string>
+  <string><id>440</id><value>Dysk twardy</value></string>
+  <string><id>441</id><value>UDF</value></string>
+  <string><id>442</id><value>LAN</value></string>
+  <string><id>443</id><value>Internet</value></string>
+  <string><id>444</id><value>video</value></string>
+  <string><id>445</id><value>audio</value></string>
+  <string><id>446</id><value>DVD</value></string>
+  <string><id>447</id><value>Autorun</value></string>
+  <string><id>448</id><value>LCD</value></string>
+  <string><id>449</id><value>W≥πczone</value></string>
+  <string><id>450</id><value>Kolumn</value></string>
+  <string><id>451</id><value>Row 1 adress:</value></string>
+  <string><id>452</id><value>Row 2 adress:</value></string>
+  <string><id>453</id><value>Row 3 adress:</value></string>
+  <string><id>454</id><value>Row 4 adress:</value></string>
+  <string><id>455</id><value>Linijek:</value></string>
+  <string><id>456</id><value>Tryb:</value></string>
+  <string><id>457</id><value>Prze≥πcz obraz</value></string>
+  <string><id>458</id><value>B/Mark</value></string>
+  <string><id>459</id><value>Napisy</value></string>
+  <string><id>460</id><value>StrumieÒ Audio</value></string>
+  <string><id>461</id><value>[active]</value></string>
+  <string><id>462</id><value>Napisy</value></string>
+  <string><id>463</id><value>Podúwietlenie</value></string>
+  <string><id>464</id><value>JasnoúÊ</value></string>
+  <string><id>465</id><value>Kontrast</value></string>
+  <string><id>466</id><value>Gamma</value></string>
+  <string><id>467</id><value>Typ</value></string>
+  <string><id>468</id><value>PrzesuÒ belkÍ aby zmieniÊ pozycje osd</value></string>
+  <string><id>469</id><value>Pozycja OSD</value></string>
+  <string><id>470</id><value>PodziÍkowania</value></string>
+  <string><id>471</id><value>Modchip</value></string>
+  <string><id>472</id><value>OSD Timeout</value></string>
+  <string><id>473</id><value>Resamplowanie w wysokiej jakoúci</value></string>
+  <string><id>474</id><value>Wy≥πcz</value></string>
+  <string><id>475</id><value>Tylko muzyka</value></string>
+  <string><id>476</id><value>Music &amp; Video</value></string>
+  <string><id>477</id><value>Nie mogÍ za≥adowaÊ play listy</value></string>
+  <string><id>478</id><value>OSD</value></string>
+  <string><id>479</id><value>Skora i jÍzyk</value></string>
+  <string><id>480</id><value>Interfejs uøytkownika</value></string>
+  <string><id>481</id><value>Opcje Audio</value></string>
+  <string><id>482</id><value>O XBMC...</value></string>
+  <string><id>483</id><value>Album</value></string>
+  <string><id>484</id><value>Artysta</value></string>
+  <string><id>485</id><value>Skasuj album</value></string>
+  <string><id>486</id><value>Powtarzaj</value></string>
+  <string><id>487</id><value>PowtÛrz raz</value></string>
+  <string><id>488</id><value>Repeat folder play list</value></string>
+  <string><id>489</id><value>Uøywaj play list dla piosenek</value></string>
+  <string><id>490</id><value>Auto switch list and icons in songs</value></string>
+  <string><id>491</id><value>Uøywaj duøych ikon</value></string>
+  <string><id>492</id><value>PowiÍksz napisy</value></string>
+  <string><id>493</id><value>Zaawansowane opcje</value></string>
+  <string><id>494</id><value>Overall Audio Headroom (dB)</value></string>
+  <string><id>495</id><value>Przesampluj video do rozdzielczoúci GUI</value></string>
+  <string><id>496</id><value>Kalibracja</value></string>
+  <string><id>497</id><value>Ukryj rozszerzenia plikÛw</value></string>
+  <string><id>498</id><value>Sortuj typami</value></string>
+  <string><id>499</id><value>Nie mogÍ po≥πczyÊ siÍ z www.allmusic.com</value></string>
+  <string><id>500</id><value>åciπganie informacji o albumie nie powiod≥o siÍ</value></string>
+  <string><id>501</id><value>Szukam nazw albumÛw...</value></string>
+  <string><id>502</id><value>Otwarty</value></string>
+  <string><id>503</id><value>ZajÍty</value></string>
+  <string><id>504</id><value>Pusty</value></string>
+  <string><id>505</id><value>Wczytuje informacje o mediach z plikÛw...</value></string>
+  <string><id>506</id><value>Uøyj nazw katalogÛw dla opisÛw</value></string>
+  <string><id>600</id><value>Zgraj CD</value></string>
+  <string><id>601</id><value>årednia</value></string>
+  <string><id>602</id><value>Standardowa</value></string>
+  <string><id>603</id><value>Ekstremalna</value></string>
+  <string><id>604</id><value>Sta≥y Bit Rate</value></string>
+  <string><id>605</id><value>Zapisuje...</value></string>
+  <string><id>606</id><value>Numer scieøki:</value></string>
+  <string><id>607</id><value>Do:</value></string>
+  <string><id>608</id><value>Nie moøna zapisaÊ CD lub Scieøki</value></string>
+  <string><id>609</id><value>CDDARipPath nie jest ustawiony w XboxMediaCenter.xml</value></string>
+  <string><id>620</id><value>Zgrywam CD</value></string>
+  <string><id>621</id><value>Encoder</value></string>
+  <string><id>622</id><value>JakoúÊ</value></string>
+  <string><id>623</id><value>Bit Rate</value></string>
+  <string><id>624</id><value>Do≥πcz úcieøkÍ numer</value></string>
+  <string><id>625</id><value>Wszystkie piosenki</value></string>
+  <string><id>629</id><value>Tryb wyúwietlania</value></string>
+  <string><id>630</id><value>Normalny</value></string>
+  <string><id>631</id><value>PowiÍkszenie</value></string>
+  <string><id>632</id><value>Proporcje 4:3</value></string>
+  <string><id>633</id><value>Proporcje 14:9</value></string>
+  <string><id>634</id><value>Proporcje 16:9</value></string>
+  <string><id>635</id><value>Oryginalny rozmiar</value></string>
+  <string><id>636</id><value>W≥asny</value></string>
+  <string><id>700</id><value>Czyszczenie bazy danych</value></string>
+  <string><id>701</id><value>Usuwam stare piosenki z bazy danych</value></string>
+  <string><id>702</id><value>Ta úcieøka by≥a juz skanowana.</value></string>
+  <string><id>703</id><value>Naciúnij TAK, øeby uaktualniÊ wszystkie piosenki w lokacji.</value></string>
+  <string><id>704</id><value>Naciúnij NIE aby dodaÊ tylko nowe piosenki.</value></string>
+  <string><id>705</id><value>Siec</value></string>
+  <string><id>706</id><value>HTTP Proxy Host:</value></string>
+  <string><id>707</id><value>HTTP Proxy Port:</value></string>
+  <string><id>708</id><value>W≥πcz HTTP Proxy</value></string>
+  <string><id>709</id><value>XLink Kai XTag:</value></string>
+  <string><id>710</id><value>Has≥o XLink Kai:</value></string>
+  <string><id>711</id><value>Ustawienia protoko≥u internetowego(IP)</value></string>
+  <string><id>712</id><value>Wybrano nieprawid≥owy port. WartoúÊ musi byÊ z przedzia≥u 1 do 65535.</value></string>
+  <string><id>713</id><value>Ustawienia HTTP Proxy</value></string>
+  <string><id>714</id><value>Ustawienia XLink Kai</value></string>
+  <string><id>715</id><value>Przypisanie:</value></string>
+  <string><id>716</id><value>Automatyczne (DHCP)</value></string>
+  <string><id>717</id><value>RÍczne (Statyczny)</value></string>
+  <string><id>718</id><value>Domyúlny (Dashboard)</value></string>
+  <string><id>719</id><value>Adres IP:</value></string>
+  <string><id>720</id><value>Maska podsieci:</value></string>
+  <string><id>721</id><value>Domyúlna bramka:</value></string>
+  <string><id>722</id><value>Serwer DNS:</value></string>
+  <string><id>723</id><value>Zapisz ustawienia i zresetuj XBox'a</value></string>
+  <string><id>724</id><value>Wpisano nieprawid≥owy adres. WartoúÊ musi byÊ w formacie AAA.BBB.CCC.DDD</value></string>
+  <string><id>725</id><value>gdzie numery sπ z przedzia≥u 0 do 255.</value></string>
+  <string><id>726</id><value>Zmiany nie zosta≥y zapisane. KontynuowaÊ bez zapisywania?</value></string>
+  <string><id>727</id><value>Web Serwer</value></string>
+  <string><id>728</id><value>Serwer FTP</value></string>
+  <string><id>729</id><value>Czas z internetu</value></string>
+  <string><id>730</id><value>Port Web Serwera</value></string>
+  <string><id>731</id><value>Host serwera czasu</value></string>
+  <string><id>732</id><value>Zapisz &amp; Zastosuj</value></string>
+  <string><id>733</id><value>Has≥o do Web Serwera</value></string>
+  <string><id>734</id><value>Bez has≥a</value></string>
+  <string><id>735</id><value>Czcionka:</value></string>
+  <string><id>736</id><value>Styl:</value></string>
+  <string><id>737</id><value>Kolor:</value></string>
+  <string><id>738</id><value>Normalna</value></string>
+  <string><id>739</id><value>Pogrubiona</value></string>
+  <string><id>740</id><value>Pochylona</value></string>
+  <string><id>741</id><value>Pogrubiona i pochylona</value></string>
+  <string><id>742</id><value>Bia≥y</value></string>
+  <string><id>743</id><value>ØÛ≥ty</value></string>
+  <string><id>744</id><value>Pliki</value></string>
+  <string><id>745</id><value>Nie znaleziono informacji</value></string>
+  <string><id>746</id><value>Prze≥πcz do widoku plikÛw</value></string>
+  <string><id>747</id><value>Za ma≥o pamiÍci øeby wyúwietliÊ obrazek</value></string>
+  <string><id>748</id><value>Edytuj úcieøkÍ</value></string>
+  <string><id>749</id><value>Dodaj udzia≥</value></string>
+  <string><id>750</id><value>Czy jesteú pewny?</value></string>
+  <string><id>751</id><value>UsuÒ udzia≥</value></string>
+  <string><id>752</id><value>Edytuj úcieøkÍ udzia≥u</value></string>
+  <string><id>753</id><value>Edytuj nazwÍ udzia≥u</value></string>
+  <string><id>999</id><value>Rozgrywka Online</value></string>
+  <string><id>998</id><value>XLink KAI</value></string>
+  <string><id>10000</id><value>Home</value></string>
+  <string><id>10001</id><value>Moje programy</value></string>
+  <string><id>10002</id><value>Moje obrazy</value></string>
+  <string><id>10003</id><value>Moje pliki</value></string>
+  <string><id>10004</id><value>Ustawienia</value></string>
+  <string><id>10005</id><value>Moja muzyka</value></string>
+  <string><id>10006</id><value>Moje filmy</value></string>
+  <string><id>10007</id><value>Informacje systemowe</value></string>
+  <string><id>10008</id><value>Ustawienia->OgÛlne</value></string>
+  <string><id>10009</id><value>Ustawienia->Ekran</value></string>
+  <string><id>10010</id><value>Ustawienia->Ekran->UI Calibration</value></string>
+  <string><id>10011</id><value>Ustawienia->Ekran->Screen Calibration</value></string>
+  <string><id>10012</id><value>Ustawienia->SlideShow</value></string>
+  <string><id>10013</id><value>Ustawienia->Ekran->Filtry</value></string>
+  <string><id>10014</id><value>Ustawienia->Muzyka</value></string>
+  <string><id>10015</id><value>Ustawienia->Ekran->Napisy</value></string>
+  <string><id>10016</id><value>Ustawienia->Ekran->Wygaszacz</value></string>
+  <string><id>10017</id><value>Ustawienia->Pogoda</value></string>
+  <string><id>10020</id><value>Ustawienia->Skrypty</value></string>
+  <string><id>10021</id><value>Moje filmy/gatunek</value></string>
+  <string><id>10022</id><value>Moje filmy/aktor</value></string>
+  <string><id>10023</id><value>Moje filmy/rok</value></string>
+  <string><id>10024</id><value>Ustawienia->Programy</value></string>
+  <string><id>10025</id><value>Moje filmy/tytu≥</value></string>
+  <string><id>10026</id><value>Ustawienia->OgÛlne->Cache</value></string>
+  <string><id>10027</id><value>Ustawienia->OgÛlne->Autorun</value></string>
+  <string><id>10028</id><value>Moje filmy/play lista</value></string>
+  <string><id>10029</id><value>Ustawienia->ogÛlne->LCD</value></string>
+  <string><id>10100</id><value>Tak/nie dialog</value></string>
+  <string><id>10101</id><value>Okienko postÍpu</value></string>
+  <string><id>10500</id><value>Moja muzyka/play lista</value></string>
+  <string><id>10501</id><value>Moja muzyka/pliki</value></string>
+  <string><id>10502</id><value>Moja muzyka/albumy</value></string>
+  <string><id>10503</id><value>Moja muzyka/artyúci</value></string>
+  <string><id>10504</id><value>Moja muzyka/gatunki</value></string>
+  <string><id>10505</id><value>Moja muzyka/top100</value></string>
+  <string><id>11000</id><value>Klawiatura</value></string>
+  <string><id>12000</id><value>Wybierz dialog</value></string>
+  <string><id>12001</id><value>Moja muzyka/info</value></string>
+  <string><id>12002</id><value>Dialog OK</value></string>
+  <string><id>12003</id><value>Moje filmy/Info</value></string>
+  <string><id>12004</id><value>Moje skrypty/Info</value></string>
+  <string><id>12005</id><value>Pe≥no ekranowe video</value></string>
+  <string><id>12006</id><value>Wizualizacja düwiÍku</value></string>
+  <string><id>12007</id><value>Moje obrazy/slideshow</value></string>
+  <string><id>12008</id><value>Okienko Filestacking</value></string>
+  <string><id>12600</id><value>Moja pogoda</value></string>
+  <string><id>12900</id><value>Wygaszacz</value></string>
+  <string><id>12901</id><value>Pe≥no ekranowe OSD</value></string>
+  <string><id>13000</id><value>System</value></string>
+  <string><id>13001</id><value>Natychmiastowe wy≥πczenie HDD</value></string>
+  <string><id>13002</id><value>Tylko Video</value></string>
+  <string><id>13003</id><value>- OpÛünienie</value></string>
+  <string><id>13004</id><value>- Minimalny czas trwania</value></string>
+  <string><id>13100</id><value>Filtr Flicker</value></string>
+  <string><id>13200</id><value>Profile</value></string>
+  <string><id>13201</id><value>UsuÒ profil '%s'?</value></string>
+  <string><id>13202</id><value>Zapisz bierzπce ustawienie jako profil...</value></string>
+  <string><id>13203</id><value>Profil '%s' za≥adowany pomyúlnie</value></string>
+  <string><id>13204</id><value>Ostatnio za≥adowany profil:</value></string>
+  <string><id>13205</id><value>Nieznany</value></string>
+  <string><id>13300</id><value>PrÍdkoúÊ wiatraka:</value></string>
+  <string><id>13301</id><value>Automatyczna kontrola temperatury</value></string>
+  <string><id>13302</id><value>Kontrola obrotÛw wiatraka</value></string>
+  <string><id>13303</id><value>Czcionka skorki</value></string>
+  <string><id>13304</id><value>OdwrÛÊ znaki</value></string>
+  <string><id>13305</id><value>W≥πcz wiadomoúci RSS</value></string>
+  <string><id>13306</id><value>Ukryj elementy folderu nadrzÍdnego</value></string>
+  <string><id>13307</id><value>Ukryj numery scieøek</value></string>
+  <string><id>13308</id><value>Czy chcesz wykonaÊ pe≥ny reset</value></string>
+  <string><id>13309</id><value>zamiast zwyk≥ego resetu?</value></string>
+  <string><id>13310</id><value>Efekt Zoom</value></string>
+  <string><id>13311</id><value>Efekt Float</value></string>
+  <string><id>13312</id><value>Redukcja czarnego paska</value></string>
+  <string><id>13313</id><value>Reset/Restart</value></string>
+  <string><id>13314</id><value>Czas wyúwietlania OSD muzyki</value></string>
+  <string><id>13315</id><value>StwÛrz miniaturki</value></string>
+  <string><id>13316</id><value>Rekurencyjne miniaturki</value></string>
+  <string><id>13317</id><value>Pokaz slajdÛw</value></string>
+  <string><id>13318</id><value>Rekurencyjny pokaz slajdÛw</value></string>
+  <string><id>13319</id><value>Losowo</value></string>
+  <string><id>13320</id><value>Stereo</value></string>
+  <string><id>13321</id><value>Tylko lewy</value></string>
+  <string><id>13322</id><value>Tylko prawy</value></string>
+  <string><id>13323</id><value>W≥πcz CD+G</value></string>
+  <string><id>13324</id><value>PrzezroczystoúÊ t≥a</value></string>
+  <string><id>13325</id><value>PrzezroczystoúÊ pierwszego planu</value></string>
+  <string><id>13326</id><value>OpÛünienie A/V</value></string>
+  <string><id>13327</id><value>Karaoke</value></string>
+  <string><id>13328</id><value>%s nie znaleziono.</value></string>
+  <string><id>13329</id><value>B≥πd otwierania %s</value></string>
+  <string><id>13330</id><value>Nie mogÍ za≥adowaÊ %s</value></string>
+  <string><id>13331</id><value>B≥πd: za ma≥o pamiÍci.</value></string>
+  <string><id>13332</id><value>PrzesuÒ w gÛre</value></string>
+  <string><id>13333</id><value>PrzesuÒ w dÛ≥</value></string>
+  <string><id>13334</id><value>Edytuj nazwÍ</value></string>
+  <string><id>13335</id><value>ustaw jako domyúlny</value></string>
+  <string><id>13336</id><value>UsuÒ przycisk</value></string>
+  <string><id>13337</id><value>Przejúcie PCM dwu kana≥owe</value></string>
+  <string><id>14000</id><value>Stacking: Wy≥.</value></string>
+  <string><id>14001</id><value>Stacking: Prosty</value></string>
+  <string><id>14002</id><value>Stacking: Rozmyty</value></string>
+  <string><id>14003</id><value>åciπgam plik playlisty...</value></string>
+  <string><id>14004</id><value>åciπgam listÍ streamÛw...</value></string>
+  <string><id>14005</id><value>Przetwarzam listÍ streamÛw...</value></string>
+  <string><id>14006</id><value>åciπganie listy streamÛw siÍ nie powiod≥o</value></string>
+  <string><id>14007</id><value>åciπganie play listy siÍ nie powiod≥o</value></string>
+  <string><id>14008</id><value>W≥πcz zawiadomienia w Kai</value></string>
+  <string><id>14009</id><value>Katalog z grami</value></string>
+  <string><id>14010</id><value>Opcje automatycznego prze≥πczania</value></string>
   <string><id>14011</id><value>W≥πczyÊ automatyczne prze≥πczanie?</value></string>
   <string><id>14012</id><value>Uøyj duøych ikon</value></string>
   <string><id>14013</id><value>Metoda:</value></string>
