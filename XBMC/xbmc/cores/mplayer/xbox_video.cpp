@@ -165,7 +165,7 @@ void choose_best_resolution()
 			if (image_height <= 576) params.BackBufferHeight=576;
 			if (image_height <= 480) params.BackBufferHeight=480;
 		}
-		if (image_width <= 640)
+		if (image_width <= 640 && image_height <=480)
 		{
 			params.BackBufferWidth =640;
 			params.BackBufferHeight=480;
@@ -325,6 +325,11 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
 		{
 			fNewHeight=(float)iScreenHeight - (float)iSubTitleHeight;
 			fNewWidth = fNewHeight*fAR;
+		}
+		if (fNewWidth > iScreenWidth || fNewHeight > iScreenHeight)
+		{
+			fNewWidth=(float)image_width;
+			fNewHeight=(float)image_height;
 		}
 
 		rs.left		= 0;
