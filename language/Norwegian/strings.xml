@@ -1,4 +1,4 @@
-  <!-- Based on version 1.146 of the English xml. Last updated by vnmartinsen !-->
+  <!-- Based on version 1.150 of the English xml. Last updated by vnmartinsen !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -601,6 +601,14 @@
   <string><id>12345</id><value>Tilgang nektet</value></string>
   <string><id>12346</id><value>Grense for antall forsøk er nådd.</value></string>
   <string><id>12347</id><value>XBOX'en skrur seg nå av.</value></string>
+  <string><id>12348</id><value>Låst objekt</value></string>
+  <string><id>12349</id><value>Husk masterkode inntil neste oppstart?</value></string>
+  <string><id>12350</id><value>(Å åpne et valg under instillinger vill</value></string>
+  <string><id>12351</id><value>automatisk reaktivere masterkoden.)</value></string>
+  <string><id>12352</id><value>Skriv inn masterkode knappekombinasjon og </value></string>
+  <string><id>12353</id><value>Reaktiver lås</value></string>
+  <string><id>12354</id><value>Overstyr mappelåser inntil neste oppstart?</value></string>
+  <string><id>12355</id><value>automatisk reaktiver mappelåser.)</value></string>
   <string><id>12600</id><value>Været</value></string>
   <string><id>12900</id><value>Skjermbeskytter</value></string>
   <string><id>12901</id><value>Fullskjerm OSD</value></string>
@@ -609,6 +617,8 @@
   <string><id>13002</id><value>Kun video</value></string>
   <string><id>13003</id><value>- Forsinkelse</value></string>
   <string><id>13004</id><value>- Minimum filvarighet</value></string>
+  <string><id>13005</id><value>Slå av</value></string>
+  <string><id>13006</id><value>Dashbord</value></string>
   <string><id>13100</id><value>Flimmerfilter</value></string>
   <string><id>13200</id><value>Profiler</value></string>
   <string><id>13201</id><value>Vil du slette profilen '%s'?</value></string>
@@ -621,9 +631,7 @@
   <string><id>13301</id><value>Automatisk temperaturkontroll</value></string>
   <string><id>13302</id><value>Viftehastighetskontroll</value></string>
   <string><id>13303</id><value>Skrifttype for utseende</value></string>
-<!-- x-halez: This is probably the worst entry to translate, a bit shaky I'd say this translation is. I've also constructed a new meaning to it: 'Flip strings with characterset'. It is too long in PAL/NTSC 4:3 & 480p though, but really this is purely asthetics, 'cause it won't be used by Norwegians anyway... !-->
   <string><id>13304</id><value>Snu tekstsstrenger med karaktersett</value></string>
-<!-- x-halez: TODO: Should probably be a better word than 'news' at the end here... !-->
   <string><id>13305</id><value>Aktivér RSS-nyheter</value></string>
   <string><id>13306</id><value>Skjul innhold i overordnet mappe</value></string>
   <string><id>13307</id><value>Skjul spornummer</value></string>
@@ -736,4 +744,5 @@
   <string><id>14055</id><value>Bruk bakgrunnsskanning</value></string>
   <string><id>14056</id><value>Stopp skanning</value></string>
   <string><id>14057</id><value>Ikke mulig når det skannes etter mediainformasjon</value></string>
+  <string><id>14058</id><value>Kornete filmeffekt</value></string>
 </strings>
