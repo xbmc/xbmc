@@ -158,8 +158,9 @@ void CGUIWindowVisualisation::OnInitialize(int iChannels, int iSamplesPerSec, in
 	m_iBitsPerSample = iBitsPerSample;
 
 	// Start the visualisation (this loads settings etc.)
+  CStdString strFile=CUtil::GetFileName(g_application.CurrentFile());
 	OutputDebugString("Visualisation::Start()\n");
-	m_pVisualisation->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample);
+	m_pVisualisation->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample,strFile);
 	m_bInitialized=true;
 
 }
