@@ -20,8 +20,6 @@ public:
 	~CXbmcWeb();
 	char*		GetCurrentDir();
 	void		SetCurrentDir(const char* newDir);
-	int			GetCurrentItem();
-	void		SetCurrentItem(int);
 	DWORD		GetNavigatorState();
 	void		SetNavigatorState(DWORD state);
 
@@ -37,20 +35,22 @@ public:
 	int			xbmcPlayerPrevious( int eid, webs_t wp, char_t *parameter);
 	int			xbmcPlayerNext( int eid, webs_t wp, char_t *parameter);
 	int 		xbmcNavigate( int eid, webs_t wp, char_t *parameter);
+	int 		xbmcNavigatorState( int eid, webs_t wp, char_t *parameter);
 	int 		xbmcCatalog( int eid, webs_t wp, char_t *parameter);
 	int 		xbmcRemoteControl( int eid, webs_t wp, char_t *parameter);
 	int 		xbmcSubtitles( int eid, webs_t wp, char_t *parameter);
 
+	void		SetCurrentMediaItem(CFileItem& newItem);
+
 private:
 	DWORD		navigatorState;
 	char		currentDir[1024];
-	int			currentItem;
 	bool		wroteHeader;
 	bool		wroteFooter;
 	VECFILEITEMS webDirItems;
 	int			catalogItemCounter;
 	DIRECTORY::CVirtualDirectory *directory;
-	string	strCurrentMediaFile;
+	CFileItem	currentMediaItem;
 };
 
 /*
@@ -88,12 +88,13 @@ typedef struct {
 #define XBMC_PICTURE_SHOW	16
 
 //navigator states
-#define WEB_NAV_VIDEOS 6
-#define WEB_NAV_MUSIC 5
-#define WEB_NAV_PICTURES 2
 #define WEB_NAV_PROGRAMS 1
+#define WEB_NAV_PICTURES 2
 #define WEB_NAV_FILES 3
-#define WEB_NAV_PLAYLIST 10
+#define WEB_NAV_MUSIC 5
+#define WEB_NAV_VIDEOS 6
+#define WEB_NAV_MUSICPLAYLIST 10
+#define WEB_NAV_VIDEOPLAYLIST 11
 
 /* defines for use in xbmc */
 #define WEBSERVER_UPDATE	1
