@@ -12,7 +12,6 @@ rem ---------------------------------------------
 rem Remove 'rem' from %NET% to compile and/or clean the solution prior packing it.
 rem Remove 'rem' from 'xcopy web/python' to copy these to the BUILD directory.
 rem ---------------------------------------------
-
 TITLE XBMC Build Prepare Script
 ECHO Wait while preparing the build.
 ECHO ------------------------------
@@ -24,10 +23,12 @@ rem	CONFIG START
 	set RAR=C:\Progra~1\Winrar\rar.exe
 	set RAROPS=a -r -idp -inul -m5 XBMC.rar BUILD
 	set SKINS=..\Skins
+	set CODECS=..\Codecs
 rem	CONFIG END
 rem ---------------------------------------------
 ECHO Compiling Solution...
-rem %NET% %CLEAN%
+%NET% %CLEAN%
+del release\xbmc.map
 %NET% %OPTS%
 ECHO Done!
 ECHO ------------------------------
@@ -43,10 +44,11 @@ xcopy skin BUILD\skin /E /Q /I /Y
 xcopy language BUILD\language /E /Q /I /Y
 xcopy xbmc\keyboard\media BUILD\media /E /Q /I /Y
 xcopy visualisations BUILD\visualisations /E /Q /I /Y
+xcopy weather BUILD\weather /E /Q /I /Y
 rem xcopy web BUILD\web /E /Q /I /Y
 rem xcopy python BUILD\python /E /Q /I /Y
-rem xcopy weather BUILD\weather /E /Q /I /Y
-xcopy %SKINS% Build\Skin /E /Q /I /Y
+rem xcopy %SKINS% Build\Skin /E /Q /I /Y
+rem xcopy %CODECS% Build\mplayer\codecs /E /Q /I /Y
 ECHO ------------------------------
 ECHO Rarring...
 %RAR% %RAROPS%
