@@ -1,1721 +1,581 @@
-<!-- Turkish - XBMC language resource  -->
-<!-- Translation by Horoz / GeminiServer -->
-<!-- Last edited on 18.04.2004-->
+<!-Turkish XBMC language resource  -->
+<!-Translation by Horoz / GeminiServer -->
+<!-Contact: Melih@gmx.li -->
+<!-Last edited on 05.10.2004-->
 <strings>
-    <string>
-        <id>0</id>
-        <value>Programlarim</value>
-    </string>
-    <string>
-        <id>1</id>
-        <value>Resimlerim</value>
-    </string>
-    <string>
-        <id>2</id>
-        <value>Müziklerim</value>
-    </string>
-    <string>
-        <id>3</id>
-        <value>Videolarim</value>
-    </string>
-    <string>
-        <id>4</id>
-        <value>TV Programi</value>
-    </string>
-    <string>
-        <id>5</id>
-        <value>Ayarlar</value>
-    </string>
-    <string>
-        <id>6</id>
-        <value>XBMC CVS BUILD 1.0.0</value>
-    </string>
-    <string>
-        <id>7</id>
-        <value>Explorer</value>
-    </string>
-    <string>
-        <id>8</id>
-        <value>Hava Durumu</value>
-    </string>
-    <string>
-        <id>11</id>
-        <value>Pazartesi</value>
-    </string>
-    <string>
-        <id>12</id>
-        <value>Sali</value>
-    </string>
-    <string>
-        <id>13</id>
-        <value>Carsamba</value>
-    </string>
-    <string>
-        <id>14</id>
-        <value>Persembe</value>
-    </string>
-    <string>
-        <id>15</id>
-        <value>Cuma</value>
-    </string>
-    <string>
-        <id>16</id>
-        <value>Cumartesi</value>
-    </string>
-    <string>
-        <id>17</id>
-        <value>Pazar</value>
-    </string>
-    <string>
-        <id>21</id>
-        <value>Ocak</value>
-    </string>
-    <string>
-        <id>22</id>
-        <value>Subat</value>
-    </string>
-    <string>
-        <id>23</id>
-        <value>Mart</value>
-    </string>
-    <string>
-        <id>24</id>
-        <value>Nisan</value>
-    </string>
-    <string>
-        <id>25</id>
-        <value>Mayis</value>
-    </string>
-    <string>
-        <id>26</id>
-        <value>Haziran</value>
-    </string>
-    <string>
-        <id>27</id>
-        <value>Temmuz</value>
-    </string>
-    <string>
-        <id>28</id>
-        <value>Agustos</value>
-    </string>
-    <string>
-        <id>29</id>
-        <value>Eylül</value>
-    </string>
-    <string>
-        <id>30</id>
-        <value>Ekim</value>
-    </string>
-    <string>
-        <id>31</id>
-        <value>Kasim</value>
-    </string>
-    <string>
-        <id>32</id>
-        <value>Aralik</value>
-    </string>
-    <string>
-        <id>100</id>
-        <value>Semboller</value>
-    </string>
-    <string>
-        <id>101</id>
-        <value>Listeler</value>
-    </string>
-    <string>
-        <id>102</id>
-        <value>Scannen</value>
-    </string>
-    <string>
-        <id>103</id>
-        <value>isme göre degistir</value>
-    </string>
-    <string>
-        <id>104</id>
-        <value>Tarihe göre degistir</value>
-    </string>
-    <string>
-        <id>105</id>
-        <value>büyüklüge göre</value>
-    </string>
-    <string>
-        <id>106</id>
-        <value>Hayir</value>
-    </string>
-    <string>
-        <id>107</id>
-        <value>Evet</value>
-    </string>
-    <string>
-        <id>108</id>
-        <value>SlideShow</value>
-    </string>
-    <string>
-        <id>109</id>
-        <value>Thumbs olustur</value>
-    </string>
-    <string>
-        <id>110</id>
-        <value>Thumbnails olustur</value>
-    </string>
-    <string>
-        <id>111</id>
-        <value>Shortcuts</value>
-    </string>
-    <string>
-        <id>112</id>
-        <value>Ara</value>
-    </string>
-    <string>
-        <id>113</id>
-        <value>Data: Kaynak</value>
-    </string>
-    <string>
-        <id>114</id>
-        <value>Data: Ziel</value>
-    </string>
-    <string>
-        <id>115</id>
-        <value>Kopyala</value>
-    </string>
-    <string>
-        <id>116</id>
-        <value>Kaydir</value>
-    </string>
-    <string>
-        <id>117</id>
-        <value>Sil</value>
-    </string>
-    <string>
-        <id>118</id>
-        <value>ismi degistir</value>
-    </string>
-    <string>
-        <id>119</id>
-        <value>Yeni Dosya</value>
-    </string>
-    <string>
-        <id>120</id>
-        <value>Kopyala.....</value>
-    </string>
-    <string>
-        <id>121</id>
-        <value>Kaydir.....</value>
-    </string>
-    <string>
-        <id>122</id>
-        <value>Silmek istiyormusunuz Silinsin mi ?</value>
-    </string>
-    <string>
-        <id>123</id>
-        <value>Kopyalasin mi ?</value>
-    </string>
-    <string>
-        <id>124</id>
-        <value>Kaydirilsin mi ?</value>
-    </string>
-    <string>
-        <id>125</id>
-        <value>Silinsin mi ?</value>
-    </string>
-    <string>
-        <id>126</id>
-        <value>Statüs</value>
-    </string>
-    <string>
-        <id>127</id>
-        <value>Objekler</value>
-    </string>
-    <string>
-        <id>128</id>
-        <value>Genel</value>
-    </string>
-    <string>
-        <id>129</id>
-        <value>SlideShow</value>
-    </string>
-    <string>
-        <id>130</id>
-        <value>Sistem Info</value>
-    </string>
-    <string>
-        <id>131</id>
-        <value>Ekran</value>
-    </string>
-    <string>
-        <id>132</id>
-        <value>Albümler</value>
-    </string>
-    <string>
-        <id>133</id>
-        <value>Sanatci</value>
-    </string>
-    <string>
-        <id>134</id>
-        <value>Sarki ismi</value>
-    </string>
-    <string>
-        <id>135</id>
-        <value>Tür</value>
-    </string>
-    <string>
-        <id>136</id>
-        <value>Playlist</value>
-    </string>
-    <string>
-        <id>137</id>
-        <value>Arama</value>
-    </string>
-    <string>
-        <id>138</id>
-        <value>Sistem Bilgisi</value>
-    </string>
-    <string>
-        <id>139</id>
-        <value>Sicaklik:</value>
-    </string>
-    <string>
-        <id>140</id>
-        <value>CPU:</value>
-    </string>
-    <string>
-        <id>141</id>
-        <value>GPU:</value>
-    </string>
-    <string>
-        <id>142</id>
-        <value>Zaman:</value>
-    </string>
-    <string>
-        <id>143</id>
-        <value>Simdi:</value>
-    </string>
-    <string>
-        <id>144</id>
-        <value>Versiyon:</value>
-    </string>
-    <string>
-        <id>145</id>
-        <value>Sebeke:</value>
-    </string>
-    <string>
-        <id>146</id>
-        <value>Tip:</value>
-    </string>
-    <string>
-        <id>147</id>
-        <value>Statik</value>
-    </string>
-    <string>
-        <id>148</id>
-        <value>DHCP</value>
-    </string>
-    <string>
-        <id>149</id>
-        <value>MAC</value>
-    </string>
-    <string>
-        <id>150</id>
-        <value>IP</value>
-    </string>
-    <string>
-        <id>151</id>
-        <value>Baglanti</value>
-    </string>
-    <string>
-        <id>152</id>
-        <value>Half duplex</value>
-    </string>
-    <string>
-        <id>153</id>
-        <value>Full duplex</value>
-    </string>
-    <string>
-        <id>154</id>
-        <value>Sürücüler:</value>
-    </string>
-    <string>
-        <id>156</id>
-        <value>Serbest</value>
-    </string>
-    <string>
-        <id>157</id>
-        <value>Filmler:</value>
-    </string>
-    <string>
-        <id>158</id>
-        <value>Bos Hard Disk</value>
-    </string>
-    <string>
-        <id>159</id>
-        <value>Baglanti yok</value>
-    </string>
-    <string>
-        <id>160</id>
-        <value>bos</value>
-    </string>
-    <string>
-        <id>161</id>
-        <value>su an mevcut degil</value>
-    </string>
-    <string>
-        <id>162</id>
-        <value>cekmece acik</value>
-    </string>
-    <string>
-        <id>163</id>
-        <value>Okuyor</value>
-    </string>
-    <string>
-        <id>164</id>
-        <value>Disk yok</value>
-    </string>
-    <string>
-        <id>165</id>
-        <value>Disk icinde</value>
-    </string>
-    <string>
-        <id>166</id>
-        <value>Arayüz</value>
-    </string>
-    <string>
-        <id>167</id>
-        <value>FTP Server</value>
-    </string>
-    <string>
-        <id>168</id>
-        <value>Zaman Server</value>
-    </string>
-    <string>
-        <id>169</id>
-        <value>cözünürlük</value>
-    </string>
-    <string>
-        <id>170</id>
-        <value>Albüm:</value>
-    </string>
-    <string>
-        <id>171</id>
-        <value>Sanatci:</value>
-    </string>
-    <string>
-        <id>172</id>
-        <value>Tarih:</value>
-    </string>
-    <string>
-        <id>173</id>
-        <value>Degerlendirme</value>
-    </string>
-    <string>
-        <id>174</id>
-        <value>Türler:</value>
-    </string>
-    <string>
-        <id>175</id>
-        <value>Sesler:</value>
-    </string>
-    <string>
-        <id>176</id>
-        <value>Stiller:</value>
-    </string>
-    <string>
-        <id>177</id>
-        <value>Rapor:</value>
-    </string>
-    <string>
-        <id>178</id>
-        <value>Baslik</value>
-    </string>
-    <string>
-        <id>179</id>
-        <value>Sarki</value>
-    </string>
-    <string>
-        <id>180</id>
-        <value>Süreci</value>
-    </string>
-    <string>
-        <id>181</id>
-        <value>Albüm sec</value>
-    </string>
-    <string>
-        <id>182</id>
-        <value>Baslik</value>
-    </string>
-    <string>
-        <id>183</id>
-        <value>Rapor</value>
-    </string>
-    <string>
-        <id>184</id>
-        <value>Yenile</value>
-    </string>
-    <string>
-        <id>185</id>
-        <value>Albüm ara</value>
-    </string>
-    <string>
-        <id>186</id>
-        <value>OK</value>
-    </string>
-    <string>
-        <id>187</id>
-        <value>Albüm bulunamadi !</value>
-    </string>
-    <string>
-        <id>188</id>
-        <value>Hepsini sec</value>
-    </string>
-    <string>
-        <id>189</id>
-        <value>Medya Bilgiara</value>
-    </string>
-    <string>
-        <id>190</id>
-        <value>Kaydet</value>
-    </string>
-    <string>
-        <id>191</id>
-        <value>Rastgele</value>
-    </string>
-    <string>
-        <id>192</id>
-        <value>Sil</value>
-    </string>
-    <string>
-        <id>193</id>
-        <value>Scannen</value>
-    </string>
-    <string>
-        <id>194</id>
-        <value>Ara ...</value>
-    </string>
-    <string>
-        <id>195</id>
-        <value>Hicbir kayit bulunamadi !</value>
-    </string>
-    <string>
-        <id>196</id>
-        <value>Film sec:</value>
-    </string>
-    <string>
-        <id>197</id>
-        <value>IMDB Info sor</value>
-    </string>
-    <string>
-        <id>198</id>
-        <value>Film Detaylarini yükle</value>
-    </string>
-    <string>
-        <id>199</id>
-        <value>Rejisör:</value>
-    </string>
-    <string>
-        <id>200</id>
-        <value>Senarist:</value>
-    </string>
-    <string>
-        <id>201</id>
-        <value>Sene:</value>
-    </string>
-    <string>
-        <id>202</id>
-        <value>Slogan:</value>
-    </string>
-    <string>
-        <id>203</id>
-        <value>Filmin icerigi:</value>
-    </string>
-    <string>
-        <id>204</id>
-        <value>Quoten:</value>
-    </string>
-    <string>
-        <id>205</id>
-        <value>Voting:</value>
-    </string>
-    <string>
-        <id>206</id>
-        <value>Filmin Kadrosu</value>
-    </string>
-    <string>
-        <id>207</id>
-        <value>icerik </value>
-    </string>
-    <string>
-        <id>208</id>
-        <value>Oynat</value>
-    </string>
-    <string>
-        <id>209</id>
-        <value>Sonraki</value>
-    </string>
-    <string>
-        <id>210</id>
-        <value>Önceki</value>
-    </string>
-    <string>
-        <id>211</id>
-        <value>Arama</value>
-    </string>
-    <string>
-        <id>212</id>
-        <value>Program bulundu</value>
-    </string>
-    <string>
-        <id>213</id>
-        <value>Kalibrasyon</value>
-    </string>
-    <string>
-        <id>214</id>
-        <value>TV Kalibrasyonu</value>
-    </string>
-    <string>
-        <id>215</id>
-        <value>Yumusak göster</value>
-    </string>
-    <string>
-        <id>216</id>
-        <value>Zoom</value>
-    </string>
-    <string>
-        <id>217</id>
-        <value>Genislet</value>
-    </string>
-    <string>
-        <id>218</id>
-        <value>DVD Sürücü</value>
-    </string>
-    <string>
-        <id>219</id>
-        <value>CD koy</value>
-    </string>
-    <string>
-        <id>220</id>
-        <value>Netzwerk Stream</value>
-    </string>
-    <string>
-        <id>221</id>
-        <value>Netzwerk bagli degil</value>
-    </string>
-    <string>
-        <id>222</id>
-        <value>OK</value>
-    </string>
-    <string>
-        <id>223</id>
-        <value>otomatik cözünürlük</value>
-    </string>
-    <string>
-        <id>224</id>
-        <value>Resim göster</value>
-    </string>
-    <string>
-        <id>225</id>
-        <value>Gecis zamani</value>
-    </string>
-    <string>
-        <id>226</id>
-        <value>PAL60 Aktif</value>
-    </string>
-    <string>
-        <id>227</id>
-        <value>CDDB Aktif</value>
-    </string>
-    <string>
-        <id>228</id>
-        <value>Rastgele liste</value>
-    </string>
-    <string>
-        <id>229</id>
-        <value>Harddisk kapat</value>
-    </string>
-    <string>
-        <id>230</id>
-        <value>Filtreler</value>
-    </string>
-    <string>
-        <id>231</id>
-        <value>Yok</value>
-    </string>
-    <string>
-        <id>232</id>
-        <value>Nokta</value>
-    </string>
-    <string>
-        <id>233</id>
-        <value>esit sekilde</value>
-    </string>
-    <string>
-        <id>234</id>
-        <value>Anisotropic</value>
-    </string>
-    <string>
-        <id>235</id>
-        <value>Quincunx</value>
-    </string>
-    <string>
-        <id>236</id>
-        <value>Gaussian Cubic</value>
-    </string>
-    <string>
-        <id>237</id>
-        <value>Minification:</value>
-    </string>
-    <string>
-        <id>238</id>
-        <value>Magnification:</value>
-    </string>
-    <string>
-        <id>240</id>
-        <value>Autostart DVD</value>
-    </string>
-    <string>
-        <id>241</id>
-        <value>Autostart VCD/SVCD</value>
-    </string>
-    <string>
-        <id>242</id>
-        <value>Autostart Audio-CD</value>
-    </string>
-    <string>
-        <id>243</id>
-        <value>Autostart XBox Oyunlari</value>
-    </string>
-    <string>
-        <id>244</id>
-        <value>Autostart Videolar</value>
-    </string>
-    <string>
-        <id>245</id>
-        <value>Autostart Müzik</value>
-    </string>
-    <string>
-        <id>246</id>
-        <value>Autostart Resimler</value>
-    </string>
-    <string>
-        <id>247</id>
-        <value>Py. Skripte</value>
-    </string>
-    <string>
-        <id>248</id>
-        <value>Lisan</value>
-    </string>
-    <string>
-        <id>249</id>
-        <value>Kendi Müziklerim</value>
-    </string>
-    <string>
-        <id>250</id>
-        <value>Visualisierung</value>
-    </string>
-    <string>
-        <id>251</id>
-        <value>Farkli kaydet</value>
-    </string>
-    <string>
-        <id>252</id>
-        <value>Bütün kolonlara cikis ver</value>
-    </string>
-    <string>
-        <id>253</id>
-        <value>Kanallarin numarasi</value>
-    </string>
-    <string>
-        <id>254</id>
-        <value>AC3 Passthru</value>
-    </string>
-    <string>
-        <id>255</id>
-        <value>CDDB</value>
-    </string>
-    <string>
-        <id>256</id>
-        <value>FreeDB de CDDB bilgisi ara</value>
-    </string>
-    <string>
-        <id>257</id>
-        <value>Hata</value>
-    </string>
-    <string>
-        <id>258</id>
-        <value>ID3 tag göster</value>
-    </string>
-    <string>
-        <id>259</id>
-        <value>Aciniz</value>
-    </string>
-    <string>
-        <id>260</id>
-        <value>Shoutcast</value>
-    </string>
-    <string>
-        <id>261</id>
-        <value>Start i bekle....</value>
-    </string>
-    <string>
-        <id>262</id>
-        <value>Skript cikisi</value>
-    </string>
-    <string>
-        <id>263</id>
-        <value>HTTP Server</value>
-    </string>
-    <string>
-        <id>264</id>
-        <value>Kaydet</value>
-    </string>
-    <string>
-        <id>265</id>
-        <value>Stop </value>
-    </string>
-    <string>
-        <id>266</id>
-        <value>Track göre yerlestir</value>
-    </string>
-    <string>
-        <id>267</id>
-        <value>Zaman a göre yerlestir</value>
-    </string>
-    <string>
-        <id>268</id>
-        <value>isme göre yerlestir</value>
-    </string>
-    <string>
-        <id>269</id>
-        <value>Sanatciya göre yerlestir</value>
-    </string>
-    <string>
-        <id>270</id>
-        <value>Albüme göre yerlestir</value>
-    </string>
-    <string>
-        <id>271</id>
-        <value>Top 100</value>
-    </string>
-    <string>
-        <id>272</id>
-        <value>Overscan üst sag tarafi ayarla</value>
-    </string>
-    <string>
-        <id>273</id>
-        <value>Overscan alt sag tarafi ayarla</value>
-    </string>
-    <string>
-        <id>274</id>
-        <value>Altyazi posizyonu</value>
-    </string>
-    <string>
-        <id>275</id>
-        <value>Pixel Ratio ayarla</value>
-    </string>
-    <string>
-        <id>276</id>
-        <value>Oku Overscan ayar icin oynat</value>
-    </string>
-    <string>
-        <id>277</id>
-        <value>Sütunu Altyaziyi ayarlamak icin oynat</value>
-    </string>
-    <string>
-        <id>278</id>
-        <value>Dikdörtgeni tam bir kare olacak sekilde ayarla</value>
-    </string>
-    <string>
-        <id>279</id>
-        <value>Ayarlar yüklenemedi</value>
-    </string>
-    <string>
-        <id>280</id>
-        <value>Standart ayarlari kullan</value>
-    </string>
-    <string>
-        <id>281</id>
-        <value>Lütfen .xml Fileleri kontrol ediniz</value>
-    </string>
-    <string>
-        <id>282</id>
-        <value>%i Kayit bulundu</value>
-    </string>
-    <string>
-        <id>283</id>
-        <value>Arama sonucu</value>
-    </string>
-    <string>
-        <id>284</id>
-        <value>Hic birsey bulunamadi</value>
-    </string>
-    <string>
-        <id>285</id>
-        <value>Deinterlace Filter</value>
-    </string>
-    <string>
-        <id>286</id>
-        <value>Postprocessing Filter</value>
-    </string>
-    <string>
-        <id>287</id>
-        <value>Altyaz</value>
-    </string>
-    <string>
-        <id>288</id>
-        <value>Yazi</value>
-    </string>
-    <string>
-        <id>289</id>
-        <value>Büyüklük</value>
-    </string>
-    <string>
-        <id>290</id>
-        <value>Volum (dB)</value>
-    </string>
-    <string>
-        <id>291</id>
-        <value>Video</value>
-    </string>
-    <string>
-        <id>292</id>
-        <value>Audio</value>
-    </string>
-    <string>
-        <id>293</id>
-        <value>Altyazi</value>
-    </string>
-    <string>
-        <id>294</id>
-        <value>Okuma isareti yarat</value>
-    </string>
-    <string>
-        <id>295</id>
-        <value>Okuma isareti degistir</value>
-    </string>
-    <string>
-        <id>296</id>
-        <value>Okuma isaretini sil</value>
-    </string>
-    <string>
-        <id>297</id>
-        <value>AV-Delay</value>
-    </string>
-    <string>
-        <id>298</id>
-        <value>Slider</value>
-    </string>
-    <string>
-        <id>300</id>
-        <value>Lisan</value>
-    </string>
-    <string>
-        <id>301</id>
-        <value>Volum</value>
-    </string>
-    <string>
-        <id>302</id>
-        <value>Stream</value>
-    </string>
-    <string>
-        <id>303</id>
-        <value>Delay</value>
-    </string>
-    <string>
-        <id>304</id>
-        <value>Lisan</value>
-    </string>
-    <string>
-        <id>305</id>
-        <value>Acik\Kapali</value>
-    </string>
-    <string>
-        <id>306</id>
-        <value>Not Interleaved</value>
-    </string>
-    <string>
-        <id>307</id>
-        <value>Auto</value>
-    </string>
-    <string>
-        <id>308</id>
-        <value>Düsey Deblocking-Filter</value>
-    </string>
-    <string>
-        <id>309</id>
-        <value>Yatay Deblocking-Filter</value>
-    </string>
-    <string>
-        <id>310</id>
-        <value>Auto Isik/Kontrast</value>
-    </string>
-    <string>
-        <id>311</id>
-        <value>Dering</value>
-    </string>
-    <string>
-        <id>312</id>
-        <value>(0=auto)</value>
-    </string>
-    <string>
-        <id>313</id>
-        <value>Databanki reorganize et</value>
-    </string>
-    <string>
-        <id>314</id>
-        <value>Hazirlik...</value>
-    </string>
-    <string>
-        <id>315</id>
-        <value>Databank Hatasi</value>
-    </string>
-    <string>
-        <id>316</id>
-        <value>Sarkilari ara...</value>
-    </string>
-    <string>
-        <id>317</id>
-        <value>Reorganisazyon basarili</value>
-    </string>
-    <string>
-        <id>318</id>
-        <value>Isaretli sarkilari sil</value>
-    </string>
-    <string>
-        <id>319</id>
-        <value>Sarkilarin Reorganisazyon da hata olustu</value>
-    </string>
-    <string>
-        <id>320</id>
-        <value>Sanatcilari ara...</value>
-    </string>
-    <string>
-        <id>321</id>
-        <value>Sanatcilarin Reorganisazyon da hata olustu</value>
-    </string>
-    <string>
-        <id>322</id>
-        <value>Genreleri ara...</value>
-    </string>
-    <string>
-        <id>323</id>
-        <value>Genrelerin reorganisazyon da hata olustu</value>
-    </string>
-    <string>
-        <id>324</id>
-        <value>Yollari ara...</value>
-    </string>
-    <string>
-        <id>325</id>
-        <value>Yollarin Reorganisazyon da hata olustu</value>
-    </string>
-    <string>
-        <id>326</id>
-        <value>Albümlerde ara...</value>
-    </string>
-    <string>
-        <id>327</id>
-        <value>Albümlerin Reorganisazyon da hata olustu</value>
-    </string>
-    <string>
-        <id>328</id>
-        <value>Degisiklikleri yaz...</value>
-    </string>
-    <string>
-        <id>329</id>
-        <value>Degisiklikleri yazmada da hata olustu</value>
-    </string>
-    <string>
-        <id>330</id>
-        <value>Biraz bekleyiniz...</value>
-    </string>
-    <string>
-        <id>331</id>
-        <value>Bilgi bankasi kompresyonu...</value>
-    </string>
-    <string>
-        <id>332</id>
-        <value>Bilgi bankasinin kompresyonunda hata olustu</value>
-    </string>
-    <string>
-        <id>333</id>
-        <value>Müzik-Bilgi bankasini reorganize edilsin mi ?</value>
-    </string>
-    <string>
-        <id>334</id>
-        <value>Müzik-Bilgi bankasini reorganize yap</value>
-    </string>
-    <string>
-        <id>335</id>
-        <value>Baslat</value>
-    </string>
-    <string>
-        <id>336</id>
-        <value>Frame optimasyon</value>
-    </string>
-    <string>
-        <id>337</id>
-        <value>Ses cikisi</value>
-    </string>
-    <string>
-        <id>338</id>
-        <value>Analog</value>
-    </string>
-    <string>
-        <id>339</id>
-        <value>Dijital</value>
-    </string>
-    <string>
-        <id>340</id>
-        <value>Degisik Sanatcilar</value>
-    </string>
-    <string>
-        <id>341</id>
-        <value>DVD baslat</value>
-    </string>
-    <string>
-        <id>342</id>
-        <value>Filmler</value>
-    </string>
-    <string>
-        <id>343</id>
-        <value>Frame optimasyonu</value>
-    </string>
-    <string>
-        <id>344</id>
-        <value>Oyuncu</value>
-    </string>
-    <string>
-        <id>345</id>
-        <value>Sene</value>
-    </string>
-    <string>
-        <id>346</id>
-        <value>Bütün Film</value>
-    </string>
-    <string>
-        <id>347</id>
-        <value>Film bölünmüs</value>
-    </string>
-    <string>
-        <id>348</id>
-        <value>Dosya sakla</value>
-    </string>
-    <string>
-        <id>349</id>
-        <value>Sadece default.xbe göster</value>
-    </string>
-    <string>
-        <id>350</id>
-        <value>Programlar</value>
-    </string>
-    <string>
-        <id>351</id>
-        <value>Kapa</value>
-    </string>
-    <string>
-        <id>352</id>
-        <value>Ekrani karart</value>
-    </string>
-    <string>
-        <id>353</id>
-        <value>Karanlik Ekran</value>
-    </string>
-    <string>
-        <id>354</id>
-        <value>Matrix Trails</value>
-    </string>
-    <string>
-        <id>355</id>
-        <value>Ekran koruyucu baslat</value>
-    </string>
-    <string>
-        <id>356</id>
-        <value>Resim koruyucu sec </value>
-    </string>
-    <string>
-        <id>357</id>
-        <value>XBox kapat</value>
-    </string>
-    <string>
-        <id>358</id>
-        <value>Bütün Albümler</value>
-    </string>
-    <string>
-        <id>359</id>
-        <value>Yeni Albümler</value>
-    </string>
-    <string>
-        <id>360</id>
-        <value>Resim koruyucu</value>
-    </string>
-    <string>
-        <id>361</id>
-        <value>XXL SlideShow</value>
-    </string>
-    <string>
-        <id>362</id>
-        <value>Ekran koruyucu karalt (%)</value>
-    </string>
-    <string>
-        <id>363</id>
-        <value>Dosya ya göre sirala</value>
-    </string>
-    <string>
-        <id>364</id>
-        <value>DD/DTS Multichannel Passthrough</value>
-    </string>
-    <string>
-        <id>365</id>
-        <value>isim</value>
-    </string>
-    <string>
-        <id>366</id>
-        <value>Sene</value>
-    </string>
-    <string>
-        <id>367</id>
-        <value>Notlar</value>
-    </string>
-    <string>
-        <id>368</id>
-        <value>Ara</value>
-    </string>
-    <string>
-        <id>369</id>
-        <value>Baslik</value>
-    </string>
-    <string>
-        <id>370</id>
-        <value>rüzgarli</value>
-    </string>
-    <string>
-        <id>371</id>
-        <value>parcali</value>
-    </string>
-    <string>
-        <id>372</id>
-        <value>cogunluk</value>
-    </string>
-    <string>
-        <id>373</id>
-        <value>Günesli</value>
-    </string>
-    <string>
-        <id>374</id>
-        <value>bulutlu</value>
-    </string>
-    <string>
-        <id>375</id>
-        <value>Kar</value>
-    </string>
-    <string>
-        <id>376</id>
-        <value>Yagmurlu</value>
-    </string>
-    <string>
-        <id>377</id>
-        <value>parcali</value>
-    </string>
-    <string>
-        <id>378</id>
-        <value>Ögleden Önce</value>
-    </string>
-    <string>
-        <id>379</id>
-        <value>Ögleden sonra</value>
-    </string>
-    <string>
-        <id>380</id>
-        <value>Saganak</value>
-    </string>
-    <string>
-        <id>381</id>
-        <value>Az</value>
-    </string>
-    <string>
-        <id>382</id>
-        <value>daginik</value>
-    </string>
-    <string>
-        <id>383</id>
-        <value>Rüzgar</value>
-    </string>
-    <string>
-        <id>384</id>
-        <value>kuvvetli</value>
-    </string>
-    <string>
-        <id>385</id>
-        <value>Acik</value>
-    </string>
-    <string>
-        <id>396</id>
-        <value>ikamet ettigin yer</value>
-    </string>
-    <string>
-        <id>397</id>
-        <value>Aktüellestir</value>
-    </string>
-    <string>
-        <id>398</id>
-        <value>Sicaklik</value>
-    </string>
-    <string>
-        <id>399</id>
-        <value>HIZ</value>
-    </string>
-    <string>
-        <id>400</id>
-        <value>Hava Durumu</value>
-    </string>
-    <string>
-        <id>401</id>
-        <value>Sicaklik:</value>
-    </string>
-    <string>
-        <id>402</id>
-        <value>Hissedilen:</value>
-    </string>
-    <string>
-        <id>403</id>
-        <value>UV Uyarisi:</value>
-    </string>
-    <string>
-        <id>404</id>
-        <value>Rüzgar HIZI:</value>
-    </string>
-    <string>
-        <id>405</id>
-        <value>Donma Noktasi:</value>
-    </string>
-    <string>
-        <id>406</id>
-        <value>Nem Orani:</value>
-    </string>
-    <string>
-        <id>407</id>
-        <value>Von</value>
-    </string>
-    <string>
-        <id>408</id>
-        <value>/</value>
-    </string>
-    <string>
-        <id>410</id>
-        <value>Weather.com a giris</value>
-    </string>
-    <string>
-        <id>411</id>
-        <value>Hava durumunu ..... icin yükle:</value>
-    </string>
-    <string>
-        <id>412</id>
-        <value>Hava Durumu Yüklenemedi</value>
-    </string>
-    <string>
-        <id>413</id>
-        <value>manüel</value>
-    </string>
-    <string>
-        <id>414</id>
-        <value>Bu Albüm icin herhangi bir Bilgi bulunamadi </value>
-    </string>
-    <string>
-        <id>415</id>
-        <value>Ön ve Arka Kapak Resmi indir...</value>
-    </string>
-    <string>
-        <id>416</id>
-        <value>Mevcut degil</value>
-    </string>
-    <string>
-        <id>417</id>
-        <value>Büyük Semboller</value>
-    </string>
-    <string>
-        <id>418</id>
-        <value>Tür</value>
-    </string>
-    <string>
-        <id>419</id>
-        <value>Aktör</value>
-    </string>
-    <string>
-        <id>420</id>
-        <value>Sene</value>
-    </string>
-    <string>
-        <id>421</id>
-        <value>Baslik</value>
-    </string>
-    <string>
-        <id>422</id>
-        <value>Albüm Bilgilerini sil</value>
-    </string>
-    <string>
-        <id>423</id>
-        <value>CDDB bilgisini sil</value>
-    </string>
-    <string>
-        <id>424</id>
-        <value>OK</value>
-    </string>
-    <string>
-        <id>425</id>
-        <value>Albüm Bilgisi bulunamadi</value>
-    </string>
-    <string>
-        <id>426</id>
-        <value>CDDB Bilgisi bulunamadi</value>
-    </string>
-    <string>
-        <id>428</id>
-        <value>Lütfen dogru CD/DVD yi koyunuz</value>
-    </string>
-    <string>
-        <id>429</id>
-        <value>Lütfen öteki CD/DVD yi koyunuz</value>
-    </string>
-    <string>
-        <id>430</id>
-        <value>DVD</value>
-    </string>
-    <string>
-        <id>431</id>
-        <value>No Cache</value>
-    </string>
-    <string>
-        <id>432</id>
-        <value>Filmi Bilgibankasi ndan uzaklastir</value>
-    </string>
-    <string>
-        <id>433</id>
-        <value>Gercekten silmek istiyormusunuz ?</value>
-    </string>
-    <string>
-        <id>434</id>
-        <value>Filmi ?</value>
-    </string>
-    <string>
-        <id>435</id>
-        <value>Track</value>
-    </string>
-    <string>
-        <id>436</id>
-        <value>Sene:</value>
-    </string>
-    <string>
-        <id>437</id>
-        <value>Süre:</value>
-    </string>
-    <string>
-        <id>438</id>
-        <value>Dosya ac</value>
-    </string>
-    <string>
-        <id>439</id>
-        <value>Cache</value>
-    </string>
-    <string>
-        <id>440</id>
-        <value>Sabit Diske</value>
-    </string>
-    <string>
-        <id>441</id>
-        <value>UDF</value>
-    </string>
-    <string>
-        <id>442</id>
-        <value>Sebeke</value>
-    </string>
-    <string>
-        <id>443</id>
-        <value>Internet</value>
-    </string>
-    <string>
-        <id>444</id>
-        <value>Video</value>
-    </string>
-    <string>
-        <id>445</id>
-        <value>Audio</value>
-    </string>
-    <string>
-        <id>446</id>
-        <value>DVD</value>
-    </string>
-    <string>
-        <id>447</id>
-        <value>Autostart</value>
-    </string>
-    <string>
-        <id>448</id>
-        <value>LCD Display</value>
-    </string>
-    <string>
-        <id>449</id>
-        <value>Aktif</value>
-    </string>
-    <string>
-        <id>450</id>
-        <value>Spaltlar</value>
-    </string>
-    <string>
-        <id>451</id>
-        <value>Sira 1 Adresi:</value>
-    </string>
-    <string>
-        <id>452</id>
-        <value>Sira 2 Adresi:</value>
-    </string>
-    <string>
-        <id>453</id>
-        <value>Sira 3 Adresi:</value>
-    </string>
-    <string>
-        <id>454</id>
-        <value>Sira 4 Adresi:</value>
-    </string>
-    <string>
-        <id>455</id>
-        <value>SIRALAR:</value>
-    </string>
-    <string>
-        <id>456</id>
-        <value>Modus:</value>
-    </string>
-    <string>
-        <id>457</id>
-        <value>Yerlestir</value>
-    </string>
-    <string>
-        <id>458</id>
-        <value>isaretle</value>
-    </string>
-    <string>
-        <id>459</id>
-        <value>Subs</value>
-    </string>
-    <string>
-        <id>460</id>
-        <value>Audio Stream</value>
-    </string>
-    <string>
-        <id>461</id>
-        <value>[aktif]</value>
-    </string>
-    <string>
-        <id>462</id>
-        <value>Altyazi</value>
-    </string>
-    <string>
-        <id>463</id>
-        <value>Arkaplan isigi</value>
-    </string>
-    <string>
-        <id>464</id>
-        <value>ISIK</value>
-    </string>
-    <string>
-        <id>465</id>
-        <value>Kontrast</value>
-    </string>
-    <string>
-        <id>466</id>
-        <value>Gamma</value>
-    </string>
-    <string>
-        <id>10000</id>
-        <value>Baslangic Sayfasi</value>
-    </string>
-    <string>
-        <id>10001</id>
-        <value>Programlar</value>
-    </string>
-    <string>
-        <id>10002</id>
-        <value>REsimlerim</value>
-    </string>
-    <string>
-        <id>10003</id>
-        <value>Explorer</value>
-    </string>
-    <string>
-        <id>10004</id>
-        <value>XBMC Ayarlari</value>
-    </string>
-    <string>
-        <id>10005</id>
-        <value>Müziklerim</value>
-    </string>
-    <string>
-        <id>10006</id>
-        <value>Videolarim</value>
-    </string>
-    <string>
-        <id>10007</id>
-        <value>Sistem Bilgileri</value>
-    </string>
-    <string>
-        <id>10008</id>
-        <value>XBMC Ayarlari-&gt;Genel</value>
-    </string>
-    <string>
-        <id>10009</id>
-        <value>XBMC Ayarlari-&gt;Ekran-&gt;</value>
-    </string>
-    <string>
-        <id>10010</id>
-        <value>XBMC Ayarlari-&gt;Ekran-&gt;Kalibrasyon</value>
-    </string>
-    <string>
-        <id>10011</id>
-        <value>XBMC Ayarlari-&gt;Ekran-&gt;Video Kalibrasyon</value>
-    </string>
-    <string>
-        <id>10012</id>
-        <value>XBMC Ayarlari-&gt;SlideShow</value>
-    </string>
-    <string>
-        <id>10013</id>
-        <value>XBMC Ayarlari-&gt;Ekran-&gt;Filtreler</value>
-    </string>
-    <string>
-        <id>10014</id>
-        <value>XBMC Ayarlari-&gt;Müziklerim</value>
-    </string>
-    <string>
-        <id>10015</id>
-        <value>XBMC Ayarlari-&gt;Ekran-&gt;Altyazi</value>
-    </string>
-    <string>
-        <id>10016</id>
-        <value>XBMC Ayarlari-&gt;Ekran-&gt;Ekran Koruyucu</value>
-    </string>
-    <string>
-        <id>10017</id>
-        <value>XBMC Ayarlari-&gt;Hava Durumu</value>
-    </string>
-    <string>
-        <id>10020</id>
-        <value>XBMC Ayarlari-&gt;Ph. Skriptler</value>
-    </string>
-    <string>
-        <id>10021</id>
-        <value>Viedeolarim/Türler</value>
-    </string>
-    <string>
-        <id>10022</id>
-        <value>ViedeolarimEigene Videos/Aktörler</value>
-    </string>
-    <string>
-        <id>10023</id>
-        <value>Viedeolarim/Sene</value>
-    </string>
-    <string>
-        <id>10024</id>
-        <value>XBMC Ayarlari-&gt;Programlar</value>
-    </string>
-    <string>
-        <id>10025</id>
-        <value>Viedeolarim/Baslik</value>
-    </string>
-    <string>
-        <id>10026</id>
-        <value>XBMC Ayarlari-&gt;Genel-&gt;Cache</value>
-    </string>
-    <string>
-        <id>10027</id>
-        <value>XBMC Ayarlari-&gt;Genel-&gt;Autostart</value>
-    </string>
-    <string>
-        <id>10028</id>
-        <value>Viedeolarim/Playlist</value>
-    </string>
-    <string>
-        <id>10029</id>
-        <value>XBMC Ayarlari-&gt;Genel-&gt;LCD Display</value>
-    </string>
-    <string>
-        <id>10100</id>
-        <value>Evet/Hayir</value>
-    </string>
-    <string>
-        <id>10101</id>
-        <value>islem mesaji</value>
-    </string>
-    <string>
-        <id>10500</id>
-        <value>Müziklerim/Playlist</value>
-    </string>
-    <string>
-        <id>10501</id>
-        <value>Müziklerim/Explorer</value>
-    </string>
-    <string>
-        <id>10502</id>
-        <value>Müziklerim/Albümler</value>
-    </string>
-    <string>
-        <id>10503</id>
-        <value>Müziklerim/Sanatcilar</value>
-    </string>
-    <string>
-        <id>10504</id>
-        <value>Müziklerim/Türler</value>
-    </string>
-    <string>
-        <id>10505</id>
-        <value>Müziklerim/Top100</value>
-    </string>
-    <string>
-        <id>11000</id>
-        <value>Klavye</value>
-    </string>
-    <string>
-        <id>12000</id>
-        <value>Evet\Hayir Mesaji</value>
-    </string>
-    <string>
-        <id>12001</id>
-        <value>Müziklerim/Info</value>
-    </string>
-    <string>
-        <id>12002</id>
-        <value>OK Mesaji</value>
-    </string>
-    <string>
-        <id>12003</id>
-        <value>Viedeolarim/Info</value>
-    </string>
-    <string>
-        <id>12004</id>
-        <value>Ph. Scripte/Info</value>
-    </string>
-    <string>
-        <id>12005</id>
-        <value>Tam Ekran Video</value>
-    </string>
-    <string>
-        <id>12006</id>
-        <value>Audio Görsel</value>
-    </string>
-    <string>
-        <id>12007</id>
-        <value>Resimlerim/SlideShow</value>
-    </string>
-    <string>
-        <id>12008</id>
-        <value>Filestacking Mesaji</value>
-    </string>
-    <string>
-        <id>12600</id>
-        <value>Hava Durumu</value>
-    </string>
-    <string>
-        <id>12900</id>
-        <value>Ekran koruyucu</value>
-    </string>
-    <string>
-        <id>12901</id>
-        <value>OSD Tam Ekran</value>
-    </string>
+<string><id>0</id><value>Proðramlarým</value></string>
+<string><id>1</id><value>Resimlerim</value></string>
+<string><id>2</id><value>Müziklerim</value></string>
+<string><id>3</id><value>Videolarým</value></string>
+<string><id>4</id><value>TV Proðramlarý</value></string>
+<string><id>5</id><value>Ayarlar</value></string>
+<string><id>7</id><value>Dosyalar</value></string>
+<string><id>8</id><value>Hava Durumu</value></string>
+<string><id>11</id><value>Pazartesi</value></string>
+<string><id>12</id><value>Salý</value></string>
+<string><id>13</id><value>Çarþamba</value></string>
+<string><id>14</id><value>Perþembe</value></string>
+<string><id>15</id><value>Cuma</value></string>
+<string><id>16</id><value>Cumartesi</value></string>
+<string><id>17</id><value>Pazar</value></string>
+<string><id>21</id><value>Ocak</value></string>
+<string><id>22</id><value>Þubat</value></string>
+<string><id>23</id><value>Mart</value></string>
+<string><id>24</id><value>Nisan</value></string>
+<string><id>25</id><value>Mayýs</value></string>
+<string><id>26</id><value>Haziran</value></string>
+<string><id>27</id><value>Temmuz</value></string>
+<string><id>28</id><value>Aðustos</value></string>
+<string><id>29</id><value>Eylül</value></string>
+<string><id>30</id><value>Ekim</value></string>
+<string><id>31</id><value>Kasým</value></string>
+<string><id>32</id><value>Aralýk</value></string>
+<string><id>100</id><value>Sembol Görüntüsü</value></string>
+<string><id>101</id><value>Liste Görüntüsü</value></string>
+<string><id>102</id><value>Araþtýr</value></string>
+<string><id>103</id><value>Ýsme Göre</value></string>
+<string><id>104</id><value>Tarihe Göre</value></string>
+<string><id>105</id><value>Büyüklüðe Göre</value></string>
+<string><id>106</id><value>Hazýr</value></string>
+<string><id>107</id><value>Evet</value></string>
+<string><id>108</id><value>Slayt Show</value></string>
+<string><id>109</id><value>Kopyala</value></string>
+<string><id>110</id><value>Kopyalanýyor </value></string>
+<string><id>111</id><value>Baðlantýlar</value></string>
+<string><id>112</id><value>DURDURULDU</value></string>
+<string><id>113</id><value>Dosya: Kaynak</value></string>
+<string><id>114</id><value>Dosya: Hedef</value></string>
+<string><id>115</id><value>Kopyala</value></string>
+<string><id>116</id><value>Kaydýr</value></string>
+<string><id>117</id><value>Sil</value></string>
+<string><id>118</id><value>Ýsmi Deðiþtir</value></string>
+<string><id>119</id><value>Yeni Dosya</value></string>
+<string><id>120</id><value>Kopya Onayla</value></string>
+<string><id>121</id><value>Kaydýr Onayý.</value></string>
+<string><id>122</id><value>Sil Onayý.</value></string>
+<string><id>123</id><value>Dosyalar kopyalansýn mý?</value></string>
+<string><id>124</id><value>Dosyalar kaydýrýlsýn mý?</value></string>
+<string><id>125</id><value>Dosyalar Silinsin mi?</value></string>
+<string><id>126</id><value>Statüs</value></string>
+<string><id>127</id><value>Objektler</value></string>
+<string><id>128</id><value>Genel</value></string>
+<string><id>129</id><value>Slayt Show</value></string>
+<string><id>130</id><value>Sistem Bilgisi</value></string>
+<string><id>131</id><value>Ekran</value></string>
+<string><id>132</id><value>Albümler</value></string>
+<string><id>133</id><value>Sanatçýlar</value></string>
+<string><id>134</id><value>Baþlýk</value></string>
+<string><id>135</id><value>Türü</value></string>
+<string><id>136</id><value>Çalma Listesi</value></string>
+<string><id>137</id><value>Arama</value></string>
+<string><id>138</id><value>Sistem Bilgileri</value></string>
+<string><id>139</id><value>Isý:</value></string>
+<string><id>140</id><value>CPU:</value></string>
+<string><id>141</id><value>GPU:</value></string>
+<string><id>142</id><value>Zaman:</value></string>
+<string><id>143</id><value>Lokal:</value></string>
+<string><id>144</id><value>Versiyon:</value></string>
+<string><id>145</id><value>Þebeke:</value></string>
+<string><id>146</id><value>Typ:</value></string>
+<string><id>147</id><value>Statik</value></string>
+<string><id>148</id><value>DHCP</value></string>
+<string><id>149</id><value>MAC</value></string>
+<string><id>150</id><value>IP</value></string>
+<string><id>151</id><value>Baðlantý:</value></string>
+<string><id>152</id><value>Half duplex</value></string>
+<string><id>153</id><value>Full duplex</value></string>
+<string><id>154</id><value>Hafýza:</value></string>
+<string><id>155</id><value>Sürücüler</value></string>
+<string><id>156</id><value>Boþ</value></string>
+<string><id>157</id><value>Ekran:</value></string>
+<string><id>158</id><value>Boþ Hafýza</value></string>
+<string><id>159</id><value>Baðlantý Yok</value></string>
+<string><id>160</id><value>Boþ</value></string>
+<string><id>161</id><value>Yok</value></string>
+<string><id>162</id><value>Sürücü Açýk</value></string>
+<string><id>163</id><value>okuyor......</value></string>
+<string><id>164</id><value>Disk yok</value></string>
+<string><id>165</id><value>Disk içinde</value></string>
+<string><id>166</id><value>Arayüz</value></string>
+<string><id>167</id><value>FTP Serveri aktifleþtir </value></string>
+<string><id>168</id><value>Zaman Senkronize</value></string>
+<string><id>169</id><value>Çözünürlük</value></string>
+<string><id>170</id><value>Albümler:</value></string>
+<string><id>171</id><value>Sanatçý:</value></string>
+<string><id>172</id><value>Çýkýþ Tarihi:</value></string>
+<string><id>173</id><value>Deðerlendirme:</value></string>
+<string><id>174</id><value>Tür:</value></string>
+<string><id>175</id><value>Sound:</value></string>
+<string><id>176</id><value>Sitil:</value></string>
+<string><id>177</id><value>Rapor:</value></string>
+<string><id>178</id><value>Baþlýk:</value></string>
+<string><id>179</id><value>Þarký</value></string>
+<string><id>180</id><value>Süre</value></string>
+<string><id>181</id><value>Albüm Seç</value></string>
+<string><id>182</id><value>Þarký Ýsmi</value></string>
+<string><id>183</id><value>Rapor</value></string>
+<string><id>184</id><value>Aktüelleþtir</value></string>
+<string><id>185</id><value>Albüm Ara</value></string>
+<string><id>186</id><value>TAMAM</value></string>
+<string><id>187</id><value>Albüm Bulunamadý!</value></string>
+<string><id>188</id><value>Hepsini Seç</value></string>
+<string><id>189</id><value>Medya Bilgisi Ara</value></string>
+<string><id>190</id><value>Hafýzaya Kaydet</value></string>
+<string><id>191</id><value>Atla</value></string>
+<string><id>192</id><value>Sil</value></string>
+<string><id>193</id><value>Ara</value></string>
+<string><id>194</id><value>...Arýyor</value></string>
+<string><id>195</id><value>IMDB kaydý bulunamadý!</value></string>
+<string><id>196</id><value>Video seç:</value></string>
+<string><id>197</id><value>IMDB Bilgisini sor</value></string>
+<string><id>198</id><value>Video Bilgilerini yükle</value></string>
+<string><id>199</id><value>Rejisör:</value></string>
+<string><id>200</id><value>Hazýrlayan:</value></string>
+<string><id>201</id><value>Sene:</value></string>
+<string><id>202</id><value>Hakkýnda:</value></string>
+<string><id>203</id><value>Ýçerik:</value></string>
+<string><id>204</id><value>Beðeni Notu:</value></string>
+<string><id>205</id><value>Oylama:</value></string>
+<string><id>206</id><value>Oyuncu Kadrosu</value></string>
+<string><id>207</id><value>Ýçerik</value></string>
+<string><id>208</id><value>Oynat</value></string>
+<string><id>209</id><value>Sonraki</value></string>
+<string><id>210</id><value>Önceki</value></string>
+<string><id>211</id><value>Proðram Ara</value></string>
+<string><id>212</id><value>Proðram bulundu</value></string>
+<string><id>213</id><value>UI Ayarý</value></string>
+<string><id>214</id><value>Görüntü Ayarý</value></string>
+<string><id>215</id><value>Yumuþak Görüntü</value></string>
+<string><id>216</id><value>Büyültmek</value></string>
+<string><id>217</id><value>Sündürmek</value></string>
+<string><id>218</id><value>DVD Sürücü</value></string>
+<string><id>219</id><value>CD/DVD Koy</value></string>
+<string><id>220</id><value>Paylaþým</value></string>
+<string><id>221</id><value>Þebeke Baðlantýsý yok</value></string>
+<string><id>222</id><value>Terk Et</value></string>
+<string><id>223</id><value>Auto Widescreen aç</value></string>
+<string><id>224</id><value>Hýzý</value></string>
+<string><id>225</id><value>Geçiþ Zamaný</value></string>
+<string><id>226</id><value>PAL60 Aktif et</value></string>
+<string><id>227</id><value>CDDB Aktif et</value></string>
+<string><id>228</id><value>Rastgele Çalma Listesi</value></string>
+<string><id>229</id><value>HDD kapatma Zamaný(min)</value></string>
+<string><id>230</id><value>Filter</value></string>
+<string><id>231</id><value>Hiç</value></string>
+<string><id>232</id><value>Nokta</value></string>
+<string><id>233</id><value>Hat</value></string>
+<string><id>234</id><value>Anisotrop</value></string>
+<string><id>235</id><value>Quincunx</value></string>
+<string><id>236</id><value>Gaussian Cubic</value></string>
+<string><id>237</id><value>Küçültme:</value></string>
+<string><id>238</id><value>Büyültme:</value></string>
+<string><id>240</id><value>Autostart DVD</value></string>
+<string><id>241</id><value>Autostart VCD/SVCD</value></string>
+<string><id>242</id><value>Autostart Audio-CD</value></string>
+<string><id>243</id><value>Autostart XBox Oyunlarý</value></string>
+<string><id>244</id><value>Autostart Videolar</value></string>
+<string><id>245</id><value>Autostart Müzik</value></string>
+<string><id>246</id><value>Autostart Resimler</value></string>
+<string><id>247</id><value>Python Skripte</value></string>
+<string><id>248</id><value>Lisan</value></string>
+<string><id>249</id><value>Müzik</value></string>
+<string><id>250</id><value>Visual Efektler</value></string>
+<string><id>251</id><value>Kaydet-Dosya nereye</value></string>
+<string><id>252</id><value>- Stereo bütün Kolonlara ver</value></string>
+<string><id>253</id><value>Kanallarýn sayýsý</value></string>
+<string><id>254</id><value>- Alýcýnýz DTS destekliyor</value></string>
+<string><id>255</id><value>CDDB</value></string>
+<string><id>256</id><value>CDDB Bilgilerini FreeDB de ara</value></string>
+<string><id>257</id><value>Hata</value></string>
+<string><id>258</id><value>ID3-TAG Göster</value></string>
+<string><id>259</id><value>Aç</value></string>
+<string><id>260</id><value>Shoutcast</value></string>
+<string><id>261</id><value>...Start ý bekle</value></string>
+<string><id>262</id><value>Skript-Çýkýþý</value></string>
+<string><id>263</id><value>HTTP Server:</value></string>
+<string><id>264</id><value>Kayýt etmek</value></string>
+<string><id>265</id><value>Kayýt Durdur</value></string>
+<string><id>266</id><value>Track Nosuna Göre</value></string>
+<string><id>267</id><value>Zamana Göre</value></string>
+<string><id>268</id><value>Þarkýya Göre</value></string>
+<string><id>269</id><value>Sanatçýya Göre</value></string>
+<string><id>270</id><value>Albüme Göre</value></string>
+<string><id>271</id><value>Top 100</value></string>
+<string><id>272</id><value>Üst Sol Kýsým Resim Ayarý</value></string>
+<string><id>273</id><value>Alt Sað Kýsým Resim Ayarý</value></string>
+<string><id>274</id><value>AltYazý Pozisyonu</value></string>
+<string><id>275</id><value>Pixel Oran Ayarý</value></string>
+<string><id>276</id><value>Oku Resmi Ayarlamak için oynat</value></string>
+<string><id>277</id><value>AltYazý Pozisyonu ayarlamak için Sütunu oynat</value></string>
+<string><id>278</id><value>Dikdörtgeni,Kare olacak þekilde ayarla</value></string>
+<string><id>279</id><value>Ayarlar Yüklenemiyor</value></string>
+<string><id>280</id><value>Standart Ayarlarý kullan</value></string>
+<string><id>281</id><value>Lütfen .xml Dosyasýný kontrol ediniz</value></string>
+<string><id>282</id><value>% kayýt bulundu</value></string>
+<string><id>283</id><value>Arama Sonucu</value></string>
+<string><id>284</id><value>Bulunamadý</value></string>
+<string><id>285</id><value>Deinterlace Filter</value></string>
+<string><id>286</id><value>Postprocessing Filter</value></string>
+<string><id>287</id><value>SRT Altyazý</value></string>
+<string><id>288</id><value>Yazý Türü</value></string>
+<string><id>289</id><value>Büyüklük</value></string>
+<string><id>290</id><value>Volum (dB)</value></string>
+<string><id>291</id><value>Video</value></string>
+<string><id>292</id><value>Audio</value></string>
+<string><id>293</id><value>Altyazý</value></string>
+<string><id>294</id><value>yer imi yap</value></string>
+<string><id>295</id><value>yer imi deðiþ</value></string>
+<string><id>296</id><value>yer imini sil</value></string>
+<string><id>297</id><value>AV gecikme.</value></string>
+<string><id>298</id><value>kaydýrýcý</value></string>
+<string><id>300</id><value>1.Lisan</value></string>
+<string><id>301</id><value>2.Volum</value></string>
+<string><id>302</id><value>3. Stream</value></string>
+<string><id>303</id><value>AY. geciktirme</value></string>
+<string><id>304</id><value>Lisan</value></string>
+<string><id>305</id><value>Aktif</value></string>
+<string><id>306</id><value>Audio/Video üstüleme</value></string>
+<string><id>307</id><value>- Otomatik soniþlemci</value></string>
+<string><id>308</id><value>- Dikey Deblocking-Filter</value></string>
+<string><id>309</id><value>- Yatay Deblocking-Filter</value></string>
+<string><id>310</id><value>- Auto Aydýnlýk/Kontrast</value></string>
+<string><id>311</id><value>- Dering</value></string>
+<string><id>312</id><value>(0=auto)</value></string>
+<string><id>313</id><value>Databank toparlanýyor</value></string>
+<string><id>314</id><value>Hazýrlýk...</value></string>
+<string><id>315</id><value>Databank Hatasý</value></string>
+<string><id>316</id><value>Þarkýlarý ara...</value></string>
+<string><id>317</id><value>Ýþlem Baþarýlý </value></string>
+<string><id>318</id><value>Ýsme...</value></string>
+<string><id>319</id><value>Reorganizasyon da hata oluþtu</value></string>
+<string><id>320</id><value>Sanatçýlar...</value></string>
+<string><id>321</id><value>Reorganizasyon hatasý</value></string>
+<string><id>322</id><value>Türler...</value></string>
+<string><id>323</id><value>Reorganizasyon da hata oluþtu</value></string>
+<string><id>324</id><value>eriþim...</value></string>
+<string><id>325</id><value>Eriþim temizleme hatasý</value></string>
+<string><id>326</id><value>Albümler...</value></string>
+<string><id>327</id><value>Albüm temizleme hatasý</value></string>
+<string><id>328</id><value>Deðiþiklikleri Yaz...</value></string>
+<string><id>329</id><value>Deðiþiklikleri Yazarken Hata oluþtur</value></string>
+<string><id>330</id><value>Lütfen Bekleyiniz...</value></string>
+<string><id>331</id><value>Databank Kompresyonu...</value></string>
+<string><id>332</id><value>Databank Kompresyonunda Hata oluþtu</value></string>
+<string><id>333</id><value>Müzik-Databank temizlemek istiyormusunuz?</value></string>
+<string><id>334</id><value>Müzik-Databanký temizle</value></string>
+<string><id>335</id><value>Baþlat</value></string>
+<string><id>336</id><value>Frame sayýsý uyumlat</value></string>
+<string><id>337</id><value>Audio Çýkýþý</value></string>
+<string><id>338</id><value>Analog</value></string>
+<string><id>339</id><value>Dijital</value></string>
+<string><id>340</id><value>Deðiþik Sanatçýlar</value></string>
+<string><id>341</id><value>DVD Oynat</value></string>
+<string><id>342</id><value>Filimler</value></string>
+<string><id>343</id><value>Çerçeve hýzýný uyarla</value></string>
+<string><id>344</id><value>Sanatçý</value></string>
+<string><id>345</id><value>Sene</value></string>
+<string><id>346</id><value>Birleþtir</value></string>
+<string><id>347</id><value>Tekle</value></string>
+<string><id>348</id><value>Sade Default.xbe</value></string>
+<string><id>349</id><value>Sacece Default.xbe göster</value></string>
+<string><id>350</id><value>Programlar</value></string>
+<string><id>351</id><value>Kapalý</value></string>
+<string><id>352</id><value>Karart</value></string>
+<string><id>353</id><value>Siyah</value></string>
+<string><id>354</id><value>Matrix Görüntü Ýzi</value></string>
+<string><id>355</id><value>Boþ Kalma Süresi</value></string>
+<string><id>356</id><value>Modus</value></string>
+<string><id>357</id><value>Kapatým Süresi</value></string>
+<string><id>358</id><value>Tüm Albümler</value></string>
+<string><id>359</id><value>Favoriler</value></string>
+<string><id>360</id><value>Ekran Koruyucu</value></string>
+<string><id>361</id><value>Slayt Gösterisi</value></string>
+<string><id>362</id><value>Karaltma Ayarý</value></string>
+<string><id>363</id><value>Dosyaya göre</value></string>
+<string><id>364</id><value>-Alýcýnýz AC3 destekliyor</value></string>
+<string><id>365</id><value>Ýsme göre</value></string>
+<string><id>366</id><value>Seneye göre</value></string>
+<string><id>367</id><value>Rating</value></string>
+<string><id>368</id><value>IMDB</value></string>
+<string><id>369</id><value>Baþlýk</value></string>
+<string><id>370</id><value>Gökgürültülü</value></string>
+<string><id>371</id><value>Parçalý</value></string>
+<string><id>372</id><value>Genelde</value></string>
+<string><id>373</id><value>Güneþli</value></string>
+<string><id>374</id><value>Bulutlu</value></string>
+<string><id>375</id><value>Kar</value></string>
+<string><id>376</id><value>Yaðmur</value></string>
+<string><id>377</id><value>hafif</value></string>
+<string><id>378</id><value>öðleden önce</value></string>
+<string><id>379</id><value>öðleden sonra</value></string>
+<string><id>380</id><value>Yaðýþlý</value></string>
+<string><id>381</id><value>daha az</value></string>
+<string><id>382</id><value>bazen</value></string>
+<string><id>383</id><value>Rüzgar</value></string>
+<string><id>384</id><value>kuvvetli</value></string>
+<string><id>385</id><value>güzel</value></string>
+<string><id>386</id><value>açýk</value></string>
+<string><id>387</id><value>Bulutlu</value></string>
+<string><id>388</id><value>N/A</value></string>
+<string><id>389</id><value>N/A</value></string>
+<string><id>390</id><value>N/A</value></string>
+<string><id>391</id><value>N/A</value></string>
+<string><id>392</id><value>N/A</value></string>
+<string><id>393</id><value>N/A</value></string>
+<string><id>394</id><value>N/A</value></string>
+<string><id>395</id><value>N/A</value></string>
+<string><id>396</id><value>Yer Seçimi</value></string>
+<string><id>397</id><value>Aktüelletirme zamaný</value></string>
+<string><id>398</id><value>Temperatur birimi</value></string>
+<string><id>399</id><value>Rüzgar hýz birimi</value></string>
+<string><id>400</id><value>Hava</value></string>
+<string><id>401</id><value>Hava Sýcaklýðý</value></string>
+<string><id>402</id><value>Subjektiv</value></string>
+<string><id>403</id><value>UV deðeri</value></string>
+<string><id>404</id><value>Rüzgar</value></string>
+<string><id>405</id><value>Donma Noktasý</value></string>
+<string><id>406</id><value>Nem Oraný</value></string>
+<string><id>407</id><value>ondan</value></string>
+<string><id>408</id><value>ile</value></string>
+<string><id>410</id><value>weather.com ile baðlan</value></string>
+<string><id>411</id><value>Hava Durumu bilgileri alýnýyor:</value></string>
+<string><id>412</id><value>Hava Durumu bilgileri alýnamýyor</value></string>
+<string><id>413</id><value>El Kitabý</value></string>
+<string><id>414</id><value>Albüm için Önizlem yok</value></string>
+<string><id>415</id><value>Önizlem yükleniyor...</value></string>
+<string><id>416</id><value>Ulaþýlamýyor</value></string>
+<string><id>417</id><value>Büyük Semboller</value></string>
+<string><id>418</id><value>Videolar/Türler</value></string>
+<string><id>419</id><value>Videolar/Sanatçý</value></string>
+<string><id>420</id><value>Videolar/Sene</value></string>
+<string><id>421</id><value>Videolar/Baþlýk</value></string>
+<string><id>422</id><value>Albüm Bilgisini Sil</value></string>
+<string><id>423</id><value>CDDB Bilgisini Sil</value></string>
+<string><id>424</id><value>Baþlat</value></string>
+<string><id>425</id><value>Albüm Bilgi Kayýtý bulunamadý</value></string>
+<string><id>426</id><value>CDDB Bilgisi bulunamýyor</value></string>
+<string><id>427</id><value>Disk:</value></string>
+<string><id>428</id><value>Lütfen doðru CD/DVD koyunuz</value></string>
+<string><id>429</id><value>Lütfen sonraki CD/DVD koyunuz</value></string>
+<string><id>430</id><value>DVD ye göre</value></string>
+<string><id>431</id><value>Hafýza yok</value></string>
+<string><id>432</id><value>Filmi Databank tan sil</value></string>
+<string><id>433</id><value>Silmeye hazýrmýsýn?</value></string>
+<string><id>434</id><value>Filmi?</value></string>
+<string><id>435</id><value>Track</value></string>
+<string><id>436</id><value>Sene:</value></string>
+<string><id>437</id><value>Süre:</value></string>
+<string><id>438</id><value>Dosya Aç</value></string>
+<string><id>439</id><value>Hafýza</value></string>
+<string><id>440</id><value>HDD</value></string>
+<string><id>441</id><value>UDF</value></string>
+<string><id>442</id><value>LAN</value></string>
+<string><id>443</id><value>Internet</value></string>
+<string><id>444</id><value>Video</value></string>
+<string><id>445</id><value>Audio</value></string>
+<string><id>446</id><value>DVD</value></string>
+<string><id>447</id><value>Autostart</value></string>
+<string><id>448</id><value>LCD</value></string>
+<string><id>449</id><value>Aktifleþtir</value></string>
+<string><id>450</id><value>Sütunlar</value></string>
+<string><id>4501</id><value>LCD Typ</value></string>
+<string><id>451</id><value>1.Sýra</value></string>
+<string><id>452</id><value>2.Sýra</value></string>
+<string><id>453</id><value>3.Sýra</value></string>
+<string><id>454</id><value>4.Sýra</value></string>
+<string><id>455</id><value>Sýralama:</value></string>
+<string><id>456</id><value>Modus</value></string>
+<string><id>457</id><value>Görüntüyü deðiþtir</value></string>
+<string><id>458</id><value>B/Markala</value></string>
+<string><id>459</id><value>Altyazý</value></string>
+<string><id>460</id><value>Ses kanalý</value></string>
+<string><id>461</id><value>[aktif]</value></string>
+<string><id>462</id><value>Altyazý</value></string>
+<string><id>463</id><value>Arka Iþýklandýrma</value></string>
+<string><id>464</id><value>Aydýnlýk</value></string>
+<string><id>465</id><value>Kontrast</value></string>
+<string><id>466</id><value>Gamma</value></string>
+<string><id>467</id><value>Tip</value></string>
+<string><id>468</id><value>OSD Ayarýný deðiþtirmek için Çubuðu oynat </value></string>
+<string><id>469</id><value>OSD Pozisyonu</value></string>
+<string><id>470</id><value>Bilgiler</value></string>
+<string><id>471</id><value>Modchip</value></string>
+<string><id>472</id><value>OSD zaman aþýmý</value></string>
+<string><id>473</id><value>Kaliteyi iyileþtir</value></string>
+<string><id>474</id><value>KAPALI</value></string>
+<string><id>475</id><value>sadece Müzik</value></string>
+<string><id>476</id><value>Müzik &amp; Video</value></string>
+<string><id>477</id><value>Çalma Listesi yüklenemedi.</value></string>
+<string><id>478</id><value>OSD</value></string>
+<string><id>479</id><value>Arayüz-Lisaný</value></string>
+<string><id>480</id><value>Kullanýcý Önyüzü</value></string>
+<string><id>481</id><value>Ses Ayarlarý</value></string>
+<string><id>482</id><value>XBMC üstüne Bilgiler</value></string>
+<string><id>483</id><value>Albüm</value></string>
+<string><id>484</id><value>Sanatçý</value></string>
+<string><id>485</id><value>Albümü sil</value></string>
+<string><id>486</id><value>Tekrarlamak</value></string>
+<string><id>487</id><value>Tekrarla</value></string>
+<string><id>488</id><value>Çalma Listesini tekrarla</value></string>
+<string><id>489</id><value>Çalma Listesini kullan</value></string>
+<string><id>490</id><value>Liste veya Sembol Görünümü </value></string>
+<string><id>491</id><value>- Büyük Sembol seç</value></string>
+<string><id>492</id><value>Altyazý büyült</value></string>
+<string><id>493</id><value>Geniþletilmiþ Optiyonlar [sadece Expertler için]:</value></string>
+<string><id>494</id><value>Audio Headroom (dB)</value></string>
+<string><id>495</id><value>Video GUI kalitesini yükselt </value></string>
+<string><id>496</id><value>Kalibrasyon</value></string>
+<string><id>497</id><value>Dosya tanýmlamayý kapat</value></string>
+<string><id>498</id><value>Tipe göre</value></string>
+<string><id>499</id><value>www.allmusic.com ile baðlantý mümkün deðil</value></string>
+<string><id>500</id><value>Albüm Bilgileri yüklenirken hata oluþtu</value></string>
+<string><id>501</id><value>Albüm Bilgileri aranýyor</value></string>
+<string><id>502</id><value>Açýk</value></string>
+<string><id>503</id><value>Þuan Meþgul</value></string>
+<string><id>504</id><value>Boþ</value></string>
+<string><id>505</id><value>Medya Bilgileri Yükleniyor...</value></string>
+<string><id>506</id><value>Dosya isimlerini kullan</value></string>
+<string><id>507</id><value>Kullanýcýya göre</value></string>
+<string><id>508</id><value>Arama ve Baðlantý fonksiyonlarýný deaktive et</value></string>
+<string><id>600</id><value>CD Rippen</value></string>
+<string><id>601</id><value>Medium</value></string>
+<string><id>602</id><value>Standard</value></string>
+<string><id>603</id><value>En Yüksek</value></string>
+<string><id>604</id><value>konstant Bitrate</value></string>
+<string><id>605</id><value>Ripping...</value></string>
+<string><id>606</id><value>Baþlýk:</value></string>
+<string><id>607</id><value>Nach:</value></string>
+<string><id>608</id><value>CD veya Track könnte nicht gerippt werden</value></string>
+<string><id>609</id><value>XboxMediaCenter.xml de CDDARip bulunmadý</value></string>
+<string><id>620</id><value>CD Ripping</value></string>
+<string><id>621</id><value>Encoder</value></string>
+<string><id>622</id><value>Kalite</value></string>
+<string><id>623</id><value>Bitrate</value></string>
+<string><id>624</id><value>Titelnummer einbeziehen</value></string>
+<string><id>625</id><value>Alle Titel von</value></string>
+<string><id>629</id><value>View Mode</value></string>
+<string><id>630</id><value>Normal</value></string>
+<string><id>631</id><value>Zoom</value></string>
+<string><id>632</id><value>Stretch 4:3</value></string>
+<string><id>633</id><value>Stretch 14:9</value></string>
+<string><id>634</id><value>Stretch 16:9</value></string>
+<string><id>635</id><value>Orjinal Büyüklük </value></string>
+<string><id>636</id><value>Kullanýcýya göre</value></string>
+<string><id>700</id><value>Databankasýný temizle</value></string>
+<string><id>701</id><value>Eski Müzik Dosyalarýný temizle</value></string>
+<string><id>702</id><value>Pfad wurde bereits durchsucht</value></string>
+<string><id>703</id><value>Drücke 'Ja' um alle Titel in diesem Pfad zu updaten</value></string>
+<string><id>704</id><value>Drücke 'Nein' um nur neue Titel hinzuzufügen</value></string>
+<string><id>705</id><value>Þebeke</value></string>
+<string><id>706</id><value>HTTP Proxy Host</value></string>
+<string><id>707</id><value>HTTP Proxy Port</value></string>
+<string><id>708</id><value>HTTP Proxy Aktifleþtir </value></string>
+<string><id>709</id><value>XLink Kai XTag</value></string>
+<string><id>710</id><value>XLink Kai Þifresi</value></string>
+<string><id>711</id><value>Ýnternet Protokolu (IP)</value></string>
+<string><id>712</id><value>Geçersiz bir Port seçildi,Veriler 1 ile 65535 arasýnda olmasý lazým</value></string>
+<string><id>713</id><value>HTTP Proxy</value></string>
+<string><id>714</id><value>XLink Kai</value></string>
+<string><id>715</id><value>Zuweisung</value></string>
+<string><id>716</id><value>Otomatik (DHCP)</value></string>
+<string><id>717</id><value>Manuell (Statisch)</value></string>
+<string><id>718</id><value>Standard (Dashboard)</value></string>
+<string><id>719</id><value>IP Adresi</value></string>
+<string><id>720</id><value>Netzmaske</value></string>
+<string><id>721</id><value>Standard Gateway</value></string>
+<string><id>722</id><value>DNS Server</value></string>
+<string><id>723</id><value>Sichern &amp; Neustarten</value></string>
+<string><id>724</id><value>Geçersiz Adres.Veriler AAA.BBB.CCC.DDD olmasý lazým</value></string>
+<string><id>725</id><value>0 ve 255 arasýnda bir rakam seçiniz.</value></string>
+<string><id>726</id><value>Deðiþikliler kaydedilmedi.Böyle devam mý?</value></string>
+<string><id>727</id><value>Web Server</value></string>
+<string><id>728</id><value>FTP Server</value></string>
+<string><id>729</id><value>Internet Time</value></string>
+<string><id>730</id><value>Web Server Port</value></string>
+<string><id>731</id><value>Time Server Host</value></string>
+<string><id>732</id><value>Sichern &amp; Übernehmen</value></string>
+<string><id>733</id><value>Web Server Þifresi</value></string>
+<string><id>734</id><value>Mümkün Deðil</value></string>
+<string><id>735</id><value>Ýþaret Tablosu</value></string>
+<string><id>736</id><value>Sitil:</value></string>
+<string><id>737</id><value>Renk:</value></string>
+<string><id>738</id><value>Normal</value></string>
+<string><id>739</id><value>Kalýn</value></string>
+<string><id>740</id><value>Kursiv</value></string>
+<string><id>741</id><value>Kalýn Kursiv</value></string>
+<string><id>742</id><value>Beyaz</value></string>
+<string><id>743</id><value>Sarý</value></string>
+<string><id>744</id><value>Dosyalar</value></string>
+<string><id>745</id><value>Bu Arayüz için bilgi yok</value></string>
+<string><id>746</id><value>Dosya Görüntüsüne dön</value></string>
+<string><id>747</id><value>Resmi yüklemek için yeterli Hafýza yok</value></string>
+<string><id>998</id><value>XLink KAI</value></string>
+<string><id>999</id><value>Online Oynamak</value></string>
+<string><id>10000</id><value>Hauptmenü</value></string>
+<string><id>10001</id><value>Programme</value></string>
+<string><id>10002</id><value>Resimler</value></string>
+<string><id>10003</id><value>Dosya</value></string>
+<string><id>10004</id><value>Ayarlar</value></string>
+<string><id>10005</id><value>Müzik</value></string>
+<string><id>10006</id><value>Videolar</value></string>
+<string><id>10007</id><value>Sistem Bilgileri</value></string>
+<string><id>10008</id><value>Ayarlar-&gt;Genel</value></string>
+<string><id>10009</id><value>Ayarlar-&gt;Ekran</value></string>
+<string><id>10010</id><value>Ayarlar-&gt;Ekran-&gt;UI-Kalibrierung</value></string>
+<string><id>10011</id><value>Ayarlar-&gt;Ekran-&gt;Kalibrasyon</value></string>
+<string><id>10012</id><value>Ayarlar-&gt;DiaShow</value></string>
+<string><id>10013</id><value>Ayarlar-&gt;Ekran-&gt;Filtre</value></string>
+<string><id>10014</id><value>Ayarlar-&gt;Müzik</value></string>
+<string><id>10015</id><value>Ayarlar-&gt;Ekran-&gt;Altyazý</value></string>
+<string><id>10016</id><value>Ayarlar-&gt;Ekran-&gt;Ekran Koruyucu</value></string>
+<string><id>10017</id><value>Ayarlar-&gt;Hava</value></string>
+<string><id>10020</id><value>Ayarlar-&gt;Skripte</value></string>
+<string><id>10021</id><value>Video/Tür</value></string>
+<string><id>10022</id><value>Video/Sanatçý</value></string>
+<string><id>10023</id><value>Video/Sene</value></string>
+<string><id>10024</id><value>Ayarlar-&gt;Proðramlar</value></string>
+<string><id>10025</id><value>Video/Baþlýk</value></string>
+<string><id>10026</id><value>Ayarlar-&gt;Genel-&gt;Hafýza</value></string>
+<string><id>10027</id><value>Ayarlar-&gt;Genel-&gt;Autostart</value></string>
+<string><id>10028</id><value>Video/Þarký listesi</value></string>
+<string><id>10029</id><value>Ayarlar-&gt;Genel-&gt;LCD</value></string>
+<string><id>10100</id><value>EVET/HAYIR Diyaloðu</value></string>
+<string><id>10101</id><value>Ýþlem Diyaloðu</value></string>
+<string><id>10500</id><value>Müzik/ÇalmaListesi</value></string>
+<string><id>10501</id><value>Müzik/Dosyalar</value></string>
+<string><id>10502</id><value>Müzik/Albümler</value></string>
+<string><id>10503</id><value>Müzik/Sanatçý</value></string>
+<string><id>10504</id><value>Müzik/Türe</value></string>
+<string><id>10505</id><value>Müzik/Top100</value></string>
+<string><id>11000</id><value>Klavye</value></string>
+<string><id>12000</id><value>Diyalog Seçimi</value></string>
+<string><id>12001</id><value>Musik/Bilgi</value></string>
+<string><id>12002</id><value>Diyalog OK</value></string>
+<string><id>12003</id><value>Videolar/Bilgi</value></string>
+<string><id>12004</id><value>Skriptler/Bilgi</value></string>
+<string><id>12005</id><value>Tam Ekran-Video</value></string>
+<string><id>12006</id><value>Audio-Visualisation</value></string>
+<string><id>12007</id><value>Resimler/Slayt Show</value></string>
+<string><id>12008</id><value>Dosya sýkýþtýrma</value></string>
+<string><id>12600</id><value>Hava</value></string>
+<string><id>12900</id><value>Ekran Koruyucu</value></string>
+<string><id>12901</id><value>Tam Ekran OSD</value></string>
+<string><id>13000</id><value>Sistem</value></string>
+<string><id>13001</id><value>HDD hemen kapat</value></string>
+<string><id>13002</id><value>sadece Video</value></string>
+<string><id>13003</id><value>- Geciktirme</value></string>
+<string><id>13004</id><value>- minimal Dosya Süresi</value></string>
+<string><id>13100</id><value>Titreme filtresi</value></string>
+<string><id>13200</id><value>Profiller</value></string>
+<string><id>13201</id><value>Profil '%' Silinsin mi?</value></string>
+<string><id>13202</id><value>Ayarlarý Profil olarak kaydet ...</value></string>
+<string><id>13203</id><value>Profil '%' yüklendi</value></string>
+<string><id>13204</id><value>En Son yüklenen Profil:</value></string>
+<string><id>13205</id><value>Bilinmiyor</value></string>
+<string><id>13300</id><value>Fan Hýzý.:</value></string>
+<string><id>13301</id><value>Autom. Isý Kontrolü</value></string>
+<string><id>13302</id><value>Fan Hýzý</value></string>
+<string><id>13303</id><value>Önyüz Yazý Çeþidi</value></string>
+<string><id>13304</id><value>Aktiviere Bi-Direktionale Karakter dizini aktifleþtir</value></string>
+<string><id>13305</id><value>RSS Feed aktifleþtir [Haberler]</value></string>
 </strings>

@@ -1,7 +1,7 @@
 <!-- Translator: Wellington Terumi Uemura -->
 <!-- Email: wellingtonuemura@hotmail.com -->
-<!-- Translation date: 11/9/2004 -->
-<!-- Translation for XBMC version: 2004-09-09 -->
+<!-- Translation date: 16/09/2004 -->
+<!-- Translation Version: v1.104 -->
 <!-- Language: Portuguese Brazil (pt_BR )-->
 <strings>
   <string>
@@ -1903,8 +1903,40 @@
 		<value>Sem Senha</value>
 	</string>
 	<string>
-			<id>998</id>
-		<value>XLink Kai</value>
+    <id>736</id>
+   <value>Estilo:</value>
+  </string>
+  <string>
+    <id>737</id>
+  <value>Cor:</value>
+  </string>
+  <string>
+    <id>738</id>
+  <value>Normal</value>
+  </string>
+  <string>
+    <id>739</id>
+  <value>Negrito</value>
+  </string>
+  <string>
+     <id>740</id>
+  <value>Itálico</value>
+  </string>
+  <string>
+     <id>741</id>
+  <value>Negrito e Itálico</value>
+  </string>
+  <string>
+     <id>742</id>
+  <value>Branco</value>
+  </string>
+  <string>
+     <id>743</id>
+  <value>Amarelo</value>
+  </string>
+	<string>
+		<id>998</id>
+	<value>XLink Kai</value>
 	</string>
 	<string>
 		<id>999</id>

@@ -160,7 +160,7 @@
   </string>
   <string>
     <id>112</id>
-    <value>ANGEHALTEN</value>
+    <value>PAUSE</value>
   </string>
   <string>
     <id>113</id>
@@ -192,15 +192,15 @@
   </string>
   <string>
     <id>120</id>
-    <value>Kopieren best.</value>
+    <value>Kopieren bestätigen</value>
   </string>
   <string>
     <id>121</id>
-    <value>Verschieben best.</value>
+    <value>Verschieben bestätigen</value>
   </string>
   <string>
     <id>122</id>
-    <value>Löschen best.</value>
+    <value>Löschen bestätigen</value>
   </string>
   <string>
     <id>123</id>
@@ -1844,15 +1844,15 @@
   </string>
   <string>
     <id>702</id>
-    <value>Pfad wurde bereits durchsucht</value>
+    <value>Der Pfad wurde bereits durchsucht</value>
   </string>
   <string>
     <id>703</id>
-    <value>Drücke 'Ja' um alle Songs nocheinmal einzulesen</value>
+    <value>Drücke 'Ja' um alle Songs nocheinmal einzulesen.</value>
   </string>
   <string>
     <id>704</id>
-    <value>Drücke 'Nein' um nur neue Songs hinzuzufügen</value>
+    <value>Drücke 'Nein' um nur neue Songs hinzuzufügen.</value>
   </string>
   <string>
     <id>705</id>
