@@ -34,6 +34,7 @@
 #include "GUIStandardWindow.h"
 #include "utils/LED.h"
 #include "LangCodeExpander.h"
+#include "utils/GUIInfoManager.h"
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
@@ -1752,18 +1753,8 @@ void CApplication::UpdateLCD()
 				strTotalTime=" ";
 			}
 
-			__int64 lPTS=10*g_application.m_pPlayer->GetTime();
-			int hh = (int)(lPTS / 36000) % 100;
-			int mm = (int)((lPTS / 600) % 60);
-			int ss = (int)((lPTS /  10) % 60);
-			if (hh >=1)
-			{
-				strTime.Format("%02.2i:%02.2i:%02.2i",hh,mm,ss);
-			}
-			else
-			{
-				strTime.Format("%02.2i:%02.2i",mm,ss);
-			}
+			strTime = g_infoManager.GetMusicLabel("time");
+
 			if (m_iPlaySpeed < 1)
 				strIcon.Format("\3 %ix", m_iPlaySpeed);
 			else if (m_iPlaySpeed > 1)
@@ -1805,18 +1796,9 @@ void CApplication::UpdateLCD()
 			// line 1: song title
 			// line 2: artist
 			// line 3: release date
-			__int64 lPTS=g_application.m_pPlayer->GetPTS() - (m_itemCurrentFile.m_lStartOffset*10)/75;
-			int hh = (int)(lPTS / 36000) % 100;
-			int mm = (int)((lPTS / 600) % 60);
-			int ss = (int)((lPTS /  10) % 60);
-			if (hh >=1)
-			{
-				strTime.Format("%02.2i:%02.2i:%02.2i",hh,mm,ss);
-			}
-			else
-			{
-				strTime.Format("%02.2i:%02.2i",mm,ss);
-			}
+			strTime = g_infoManager.GetMusicLabel("time");
+			CStdString strDuration = g_infoManager.GetMusicLabel("duration");
+
 			if (m_iPlaySpeed < 1)
 				strIcon.Format("\3:%ix", m_iPlaySpeed);
 			else if (m_iPlaySpeed > 1)
@@ -1825,80 +1807,32 @@ void CApplication::UpdateLCD()
 				strIcon.Format("\7");
 			else
 				strIcon.Format("\5");
-			strLine.Format("%s %s", strIcon.c_str(), strTime.c_str());
-
+			if (strDuration.size())
+				strLine.Format("%s %s/%s", strIcon.c_str(), strTime.c_str(),strDuration.c_str());
+			else
+				strLine.Format("%s %s", strIcon.c_str(), strTime.c_str());
+			g_lcd->SetLine(0,strLine);
 			int iLine=1;
-			if (m_itemCurrentFile.m_musicInfoTag.Loaded())
+			strLine = g_infoManager.GetMusicLabel("title");
+			if (iLine < 4 && strLine!="") g_lcd->SetLine(iLine++,strLine);
+			strLine = g_infoManager.GetMusicLabel("artist");
+			if (iLine < 4 && strLine!="") g_lcd->SetLine(iLine++,strLine);
+      strLine = g_infoManager.GetMusicLabel("album");
+      if (iLine < 4 && strLine!="")
 			{
-				int iDuration=m_itemCurrentFile.m_musicInfoTag.GetDuration();
-				if (iDuration>0)
+				CStdString strYear = g_infoManager.GetMusicLabel("year");
+				if (strYear.size())
 				{
-					CStdString strDuration;
-					CUtil::SecondsToHMSString(iDuration, strDuration);
-					strLine.Format("%s %s/%s", strIcon.c_str(), strTime.c_str(),strDuration.c_str());
-				}
-				g_lcd->SetLine(0,strLine);
-				strLine=m_itemCurrentFile.m_musicInfoTag.GetTitle();
-				if (strLine=="") strLine=CUtil::GetTitleFromPath(m_itemCurrentFile.m_strPath);
-				if (iLine < 4 && strLine!="") g_lcd->SetLine(iLine++,strLine);
-				strLine=m_itemCurrentFile.m_musicInfoTag.GetArtist();
-				if (iLine < 4 && strLine!="") g_lcd->SetLine(iLine++,strLine);
-        strLine=m_itemCurrentFile.m_musicInfoTag.GetAlbum();
-				SYSTEMTIME systemtime;
-        m_itemCurrentFile.m_musicInfoTag.GetReleaseDate(systemtime);
-        if (iLine < 4 && strLine!="")
-				{
-					if (systemtime.wYear>=1900)
-					{
-						CStdString strYearLine;
-						strYearLine.Format("%s (%i)", strLine.c_str(), systemtime.wYear);
-						g_lcd->SetLine(iLine++,strYearLine);
-					}
-					else
-					{
-						g_lcd->SetLine(iLine++,strLine);
-					}
-				}
-				while (iLine < 4) g_lcd->SetLine(iLine++,"");
-			}
-			else if (CUtil::IsCDDA(m_itemCurrentFile.m_strPath))
-			{
-				//	we have the tracknumber...
-				int iTrack=m_itemCurrentFile.m_musicInfoTag.GetTrackNumber();
-				//  ...and it's duration for display
-				int iDuration=m_itemCurrentFile.m_musicInfoTag.GetDuration();
-				// format the duration string
-				if (iDuration>0)
-				{
-					CStdString strDuration;
-					CUtil::SecondsToHMSString(iDuration, strDuration);
-					strLine.Format("%s %s/%s", strIcon.c_str(), strTime.c_str(),strDuration.c_str());
-				}
-				g_lcd->SetLine(0,strLine);
-				if (iTrack >=1)
-				{
-					CStdString strText=g_localizeStrings.Get(435);	//	"Track"
-					if (strText.GetAt(strText.size()-1) != ' ')
-						strText+=" ";
-					CStdString strTrack;
-					strTrack.Format(strText+"%i", iTrack);
-					g_lcd->SetLine(1,strTrack);
+					CStdString strYearLine;
+					strYearLine.Format("%s (%s)", strLine.c_str(), strYear.c_str());
+					g_lcd->SetLine(iLine++,strYearLine);
 				}
 				else
 				{
-					g_lcd->SetLine(1,"");
+					g_lcd->SetLine(iLine++,strLine);
 				}
-				// fill in the others as blanks
-				g_lcd->SetLine(2,"");
-				g_lcd->SetLine(3,"");
 			}
-			else
-			{
-				g_lcd->SetLine(0,strLine);
-				g_lcd->SetLine(1,CUtil::GetTitleFromPath(m_itemCurrentFile.m_strPath));
-				g_lcd->SetLine(2,"");
-				g_lcd->SetLine(3,"");
-			}
+			while (iLine < 4) g_lcd->SetLine(iLine++,"");
 		}
 		else
 		{
@@ -1909,21 +1843,8 @@ void CApplication::UpdateLCD()
 				// line 2: free memory (megs)
 				// line 3: GUI resolution
 				g_lcd->SetLine(0,"XBMC running...");
-				SYSTEMTIME time;
-				GetLocalTime(&time);
-				if (g_guiSettings.GetBool("LookAndFeel.Clock12Hour"))
-				{
-					int hour = (time.wHour > 12) ? time.wHour-12 : time.wHour;
-					if (hour == 0) hour = 12;
-					strTime.Format("%02.2i:%02.2i %s", hour, time.wMinute, time.wHour>12 ? "PM" : "AM");
-				}
-				else
-					strTime.Format("%02.2i:%02.2i:%02.2i", time.wHour,time.wMinute,time.wSecond);
 				CStdString strDateTime;
-				if (g_guiSettings.GetBool("LookAndFeel.SwapMonthAndDay"))
-					strDateTime.Format("%s %02.2i-%02.2i-%02.2i",strTime.c_str(), time.wMonth,time.wDay,time.wYear);
-				else
-					strDateTime.Format("%s %02.2i-%02.2i-%02.2i",strTime.c_str(), time.wDay,time.wMonth,time.wYear);
+				CUtil::Unicode2Ansi(g_infoManager.GetTime() + L" " + g_infoManager.GetDate(true), strDateTime);
 				g_lcd->SetLine(1,strDateTime);
 				MEMORYSTATUS stat;
 				GlobalMemoryStatus(&stat);
@@ -1983,29 +1904,14 @@ void CApplication::UpdateLCD()
 						}
 					}
 					else g_lcd->SetLine(1," ");
-					SYSTEMTIME time;
-					GetLocalTime(&time);
-					CStdString strTime;
-					if (g_guiSettings.GetBool("LookAndFeel.Clock12Hour"))
-					{
-						int hour = (time.wHour > 12) ? time.wHour-12 : time.wHour;
-						if (hour == 0) hour = 12;
-						strTime.Format("%02.2i:%02.2i %s", hour, time.wMinute, time.wHour>12 ? "PM" : "AM");
-					}
-					else
-						strTime.Format("%02.2i:%02.2i:%02.2i", time.wHour,time.wMinute,time.wSecond);
 					CStdString strDateTime;
-					if (g_guiSettings.GetBool("LookAndFeel.SwapMonthAndDay"))
-						strDateTime.Format("%s %02.2i-%02.2i-%02.2i",strTime.c_str(), time.wMonth,time.wDay,time.wYear);
-					else
-						strDateTime.Format("%s %02.2i-%02.2i-%02.2i",strTime.c_str(), time.wDay,time.wMonth,time.wYear);
+					CUtil::Unicode2Ansi(g_infoManager.GetTime() + L" " + g_infoManager.GetDate(true), strDateTime);
 					g_lcd->SetLine(2,strDateTime);
 					MEMORYSTATUS stat;
 					GlobalMemoryStatus(&stat);
 					DWORD dwMegFree=stat.dwAvailPhys / (1024*1024);
 					strLine.Format("Freemem:%i meg", dwMegFree);
 					g_lcd->SetLine(3,strLine);
-
 				}
 			}
 		}
@@ -2430,7 +2336,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 		{	// this is the next cue sheet item, so we don't have to restart the player
 			// just update our display etc.
 			m_itemCurrentFile=item;
-			m_guiMusicOverlay.SetCurrentFile(m_itemCurrentFile);
+			g_infoManager.SetCurrentSong(item);
+			m_guiMusicOverlay.Update();
 			m_guiWindowVideoOverlay.SetCurrentFile(m_itemCurrentFile.m_strPath);
 
 			m_dwIdleTime=timeGetTime();
@@ -2461,7 +2368,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 	bool bResult=m_pPlayer->openfile(m_itemCurrentFile.m_strPath, m_itemCurrentFile.m_lStartOffset*1000/75);
 	if (bResult)
 	{
-		m_guiMusicOverlay.SetCurrentFile(m_itemCurrentFile);
+		g_infoManager.SetCurrentSong(item);
+		m_guiMusicOverlay.Update();
 		m_guiWindowVideoOverlay.SetCurrentFile(m_itemCurrentFile.m_strPath);
 
 		if(CUtil::IsAudio(m_itemCurrentFile.m_strPath) && !CUtil::IsInternetStream(m_itemCurrentFile.m_strPath) && g_guiSettings.GetBool("Karaoke.Enabled"))
@@ -2985,6 +2893,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
 				}
 			}
 
+			// reset our infoManager details
+			g_infoManager.ResetCurrentSong();
 			if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow()==WINDOW_FULLSCREEN_VIDEO)
 			{
 				m_gWindowManager.PreviousWindow();

@@ -104,7 +104,7 @@ void CFileItem::Clear()
 	m_bSelected=false;
 	m_strIcon="";
 	m_strThumbnailImage="";
-	m_musicInfoTag.SetLoaded(false);
+	m_musicInfoTag.Clear();
 	m_fRating=0.0f;
 	m_strDVDLabel="";
 	m_strPath = "";

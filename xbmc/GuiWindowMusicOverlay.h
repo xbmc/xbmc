@@ -15,14 +15,11 @@ public:
   virtual void				OnAction(const CAction &action);
 	virtual void				OnMouse();
   virtual void				Render();
-	void								SetID3Tag(ID3_Tag& tag);
-	void								SetCurrentFile(CFileItem& item);
-	IDirect3DTexture8* 	m_pTexture;
-	int									m_iTextureWidth;
-	int									m_iTextureHeight;
   virtual void				FreeResources();
-protected:
+	void								Update();
 	void								UpdateInfo(const CMusicInfoTag &tag);
+	
+protected:
 	long								m_lStartOffset;
   int                 m_iFrames;
   bool                m_bShowInfo;

@@ -7,15 +7,7 @@ using namespace MUSIC_INFO;
 
 CMusicInfoTag::CMusicInfoTag(void)
 {
-	m_strURL="";
-	m_strArtist="";
-	m_strAlbum="";
-	m_strGenre="";
-	m_strTitle="";
-	m_iDuration=0;
-	m_iTrack=0;
-	m_bLoaded=false;
-	memset(&m_dwReleaseDate,0,sizeof(m_dwReleaseDate) );
+	Clear();
 }
 
 CMusicInfoTag::CMusicInfoTag(const CMusicInfoTag& tag)
@@ -81,6 +73,13 @@ const CStdString& CMusicInfoTag::GetGenre() const
 void CMusicInfoTag::GetReleaseDate(SYSTEMTIME& dateTime) const
 {
 	memcpy(&dateTime,&m_dwReleaseDate,sizeof(m_dwReleaseDate) );
+}
+
+CStdString CMusicInfoTag::GetYear() const
+{
+	CStdString strReturn;
+	strReturn.Format("%i", m_dwReleaseDate.wYear);
+	return m_dwReleaseDate.wYear>1900 ? strReturn : "";
 }
 
 void CMusicInfoTag::SetTitle(const CStdString& strTitle) 
@@ -230,4 +229,17 @@ void CMusicInfoTag::Serialize(CArchive& ar)
 		ar >> m_bLoaded;
 		ar >> m_dwReleaseDate;
 	}
+}
+
+void CMusicInfoTag::Clear()
+{
+	m_strURL="";
+	m_strArtist="";
+	m_strAlbum="";
+	m_strGenre="";
+	m_strTitle="";
+	m_iDuration=0;
+	m_iTrack=0;
+	m_bLoaded=false;
+	memset(&m_dwReleaseDate,0,sizeof(m_dwReleaseDate) );
 }

@@ -7,6 +7,7 @@
 #include <ConIo.h>
 #include "utils/FanController.h"
 #include "cores/DllLoader/dll.h"
+#include "utils/GUIInfoManager.h"
 
 extern char g_szTitleIP[32];
 
@@ -168,26 +169,7 @@ void  CGUIWindowSystemInfo::GetValues()
 	}
 
 	// time current
-	{
-		const WCHAR *pszCurrent=g_localizeStrings.Get(143).c_str();
-		WCHAR wszTime[32];
-		SYSTEMTIME time;
-		GetLocalTime(&time);
-		if (g_guiSettings.GetBool("LookAndFeel.Clock12Hour"))
-		{
-			if (time.wHour>12)
-			{
-				time.wHour-=12;
-				swprintf(wszTime,L"%s %d:%02d:%02d PM %d-%d-%d",pszCurrent,time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
-			}
-			else
-				swprintf(wszTime,L"%s %d:%02d:%02d AM %d-%d-%d",pszCurrent,time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
-		}
-		else
-			swprintf(wszTime,L"%s %d:%02d:%02d %d-%d-%d",pszCurrent,time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
-
-		SET_CONTROL_LABEL(4,wszTime);
-	}
+	SET_CONTROL_LABEL(4,g_infoManager.GetTime() + g_infoManager.GetDate(true));
 
 	{
 		XNADDR net_stat;
