@@ -21,6 +21,8 @@
 
 #include "stdafx.h"
 #include "filezilla server.h"
+#include "OptionsDlg.h"
+#include "OptionsPage.h"
 #include "OptionsSecurityPage.h"
 
 #ifdef _DEBUG
@@ -33,8 +35,8 @@ static char THIS_FILE[] = __FILE__;
 // Dialogfeld COptionsSecurityPage 
 
 
-COptionsSecurityPage::COptionsSecurityPage(CWnd* pParent /*=NULL*/)
-	: CSAPrefsSubDlg(COptionsSecurityPage::IDD, pParent)
+COptionsSecurityPage::COptionsSecurityPage(COptionsDlg *pOptionsDlg, CWnd* pParent /*=NULL*/)
+	: COptionsPage(pOptionsDlg, COptionsSecurityPage::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(COptionsSecurityPage)
 	m_bInFxp = FALSE;
@@ -47,7 +49,7 @@ COptionsSecurityPage::COptionsSecurityPage(CWnd* pParent /*=NULL*/)
 
 void COptionsSecurityPage::DoDataExchange(CDataExchange* pDX)
 {
-	CSAPrefsSubDlg::DoDataExchange(pDX);
+	COptionsPage::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(COptionsSecurityPage)
 	DDX_Control(pDX, IDC_OUTFXPSTRICT, m_cOutFxpStrict);
 	DDX_Control(pDX, IDC_INFXPSTRICT, m_cInFxpStrict);
@@ -59,7 +61,7 @@ void COptionsSecurityPage::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(COptionsSecurityPage, CSAPrefsSubDlg)
+BEGIN_MESSAGE_MAP(COptionsSecurityPage, COptionsPage)
 	//{{AFX_MSG_MAP(COptionsSecurityPage)
 	ON_BN_CLICKED(IDC_INFXP, OnInfxp)
 	ON_BN_CLICKED(IDC_OUTFXP, OnOutfxp)
@@ -84,11 +86,27 @@ void COptionsSecurityPage::OnOutfxp()
 
 BOOL COptionsSecurityPage::OnInitDialog() 
 {
-	CSAPrefsSubDlg::OnInitDialog();
+	COptionsPage::OnInitDialog();
 	
 	m_cInFxpStrict.EnableWindow(m_bInFxp);
 	m_cOutFxpStrict.EnableWindow(m_bOutFxp);
 	
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX-Eigenschaftenseiten sollten FALSE zurückgeben
+}
+
+void COptionsSecurityPage::LoadData()
+{
+	m_bInFxp = !m_pOptionsDlg->GetOptionVal(OPTION_INFXP);
+	m_bOutFxp = !m_pOptionsDlg->GetOptionVal(OPTION_OUTFXP);
+	m_bInFxpStrict = m_pOptionsDlg->GetOptionVal(OPTION_NOINFXPSTRICT);
+	m_bOutFxpStrict = m_pOptionsDlg->GetOptionVal(OPTION_NOOUTFXPSTRICT);
+}
+
+void COptionsSecurityPage::SaveData()
+{
+	m_pOptionsDlg->SetOption(OPTION_INFXP, !m_bInFxp);
+	m_pOptionsDlg->SetOption(OPTION_OUTFXP, !m_bOutFxp);
+	m_pOptionsDlg->SetOption(OPTION_NOINFXPSTRICT, m_bInFxpStrict);
+	m_pOptionsDlg->SetOption(OPTION_NOOUTFXPSTRICT, m_bOutFxpStrict);
 }

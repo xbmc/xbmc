@@ -1,14 +1,3 @@
-/*
-  This file has been modified for use in XBFileZilla.
-
-  Taken from FileZilla Server 0.8.3 release
-
-  changes:
-  - made ShowStatus() virtual in order to allow subclassing for local notification interface
-  - made OnServerMessage() virtual in order to allow subclassing for local notification interface
-  
-
-*/
 // Server.h: Schnittstelle für die Klasse CServer.
 //
 //////////////////////////////////////////////////////////////////////
@@ -61,6 +50,7 @@ protected:
 	_int64 m_nSendCount;
 
 	virtual LRESULT OnServerMessage(WPARAM wParam, LPARAM lParam);
+
 private:
 	static LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 	HWND m_hWnd;

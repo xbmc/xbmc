@@ -1,12 +1,3 @@
-/*
-  This file has been modified for use in XBFileZilla.
-
-  Taken from FileZilla Server 0.8.3 release
-
-  changes:
-  - added feature to show drives at root level
-
-*/
 // FileZilla Server - a Windows ftp server
 
 // Copyright (C) 2002 - Tim Kosse <tim.kosse@gmx.de>
@@ -108,7 +99,6 @@ CControlSocket::~CControlSocket()
 
 	delete [] m_pSendBuffer;
 	m_nSendBufferLen = 0;
-
 #ifndef NOLAYERS
 	RemoveAllLayers();
 	delete m_pGssLayer;
@@ -238,6 +228,7 @@ BOOL CControlSocket::GetCommand(CStdString &command, CStdString &args)
 	command.MakeUpper();
 	return TRUE;
 }
+
 
 #if defined(_XBOX)
 BOOL CControlSocket::GetCommandFromString(const CStdString& source, CStdString &command,CStdString &args)
@@ -446,7 +437,7 @@ typedef struct
 #if defined(_XBOX)
 	char command[9];
 #else
-  char command[5];
+	char command[5];
 #endif
 	BOOL bHasargs;
 	BOOL bValidBeforeLogon;
@@ -488,6 +479,7 @@ static const t_command commands[]={	COMMAND_USER, "USER", TRUE,	 TRUE,
 									COMMAND_ADAT, "ADAT", TRUE,  TRUE,
 									COMMAND_PBSZ, "PBSZ", TRUE,  TRUE, 
 									COMMAND_PROT, "PROT", TRUE,  TRUE
+
                 #if defined(_XBOX)
                   ,
                   COMMAND_SITE,     "SITE", TRUE, FALSE
@@ -502,8 +494,6 @@ static const t_command site_commands[]={
     SITE_REBOOT,   "REBOOT", FALSE, FALSE,
     SITE_SHUTDOWN, "SHUTDOWN", FALSE, FALSE
 };
-
-                
 #endif
 
 void CControlSocket::ParseCommand()
@@ -768,8 +758,7 @@ void CControlSocket::ParseCommand()
 #if defined(_XBOX)
       }
 #endif
-
-		}
+      }
 		break;
 	case COMMAND_PWD:
 	case COMMAND_XPWD:
@@ -834,8 +823,26 @@ void CControlSocket::ParseCommand()
 			unsigned int port = 0;
 			CStdString ip;
 			unsigned int retries = 3;
-			while (retries > 0) {
-				if (m_pOwner->m_pOptions->GetOptionVal(OPTION_CUSTOMPASVENABLE)) {
+			if (m_pOwner->m_pOptions->GetOptionVal(OPTION_CUSTOMPASVIPTYPE))
+				ip = m_pOwner->GetExternalIP();
+
+			if (ip == "")
+			{
+				//Get the ip of the control socket
+				SOCKADDR_IN sockAddr;
+				memset(&sockAddr, 0, sizeof(sockAddr));
+				
+				int nSockAddrLen = sizeof(sockAddr);
+				BOOL bResult = GetSockName((SOCKADDR*)&sockAddr, &nSockAddrLen);
+				if (bResult)
+					ip = inet_ntoa(sockAddr.sin_addr);
+
+			}
+
+			while (retries > 0)
+			{
+				if (m_pOwner->m_pOptions->GetOptionVal(OPTION_USECUSTOMPASVPORT))
+				{
 					static UINT customPort = 0;
 					unsigned int minPort = (unsigned int)m_pOwner->m_pOptions->GetOptionVal(OPTION_CUSTOMPASVMINPORT);
 					unsigned int maxPort = (unsigned int)m_pOwner->m_pOptions->GetOptionVal(OPTION_CUSTOMPASVMAXPORT);
@@ -848,17 +855,10 @@ void CControlSocket::ParseCommand()
 						customPort = minPort;
 					}
 					port = customPort;
-					ip = m_pOwner->m_pOptions->GetOption(OPTION_CUSTOMPASVIP);
+
 					++customPort;
 				} else {
-					//Get the ip of the control socket
-					SOCKADDR_IN sockAddr;
-					memset(&sockAddr, 0, sizeof(sockAddr));
-					
-					int nSockAddrLen = sizeof(sockAddr);
-					BOOL bResult = GetSockName((SOCKADDR*)&sockAddr, &nSockAddrLen);
-					if (bResult)
-						ip = inet_ntoa(sockAddr.sin_addr);
+					port = 0;
 				}
 				if (m_transferstatus.socket->Create(port, SOCK_STREAM, FD_ACCEPT))
 					break;
@@ -870,7 +870,6 @@ void CControlSocket::ParseCommand()
 				Send("421 Can't create socket");
 				break;
 			}
-
 #ifndef NOLAYERS
 			if (m_pGssLayer && m_pGssLayer->AuthSuccessful())
 				m_transferstatus.socket->UseGSS(m_pGssLayer);
@@ -1065,50 +1064,10 @@ void CControlSocket::ParseCommand()
 					CTransferSocket *transfersocket=new CTransferSocket(this);
 					m_transferstatus.socket=transfersocket;
 					transfersocket->Init(pResult, TRANSFERMODE_LIST );
-					
-					/* Create socket
-					 * First try control connection port - 1, if that fails try
-					 * control connection port + 1. If that fails as well, let 
-					 * the OS decide.
-					 */
-					BOOL bCreated = FALSE;
-					// Get local port
-					SOCKADDR_IN addr;
-					int len = sizeof(addr);
-					if (GetSockName((SOCKADDR *)&addr, &len))
-					{
-						int nPort = ntohs(addr.sin_port);
-						// Try create control conn. port - 1
-						if (nPort > 1)
-							if (transfersocket->Create(nPort - 1, SOCK_STREAM, FD_CONNECT))
-								bCreated = TRUE;
-						// Try create control conn. port + 1 if necessary
-						if (!bCreated && nPort < 65535)
-							if (transfersocket->Create(nPort + 1, SOCK_STREAM, FD_CONNECT))
-								bCreated = TRUE;
-					}
-					if (!bCreated)
-						// Let the OS find a valid port
-						if (!transfersocket->Create(0, SOCK_STREAM, FD_CONNECT))
-						{
-							// Give up
-							Send("421 Can't create socket");
-							ResetTransferstatus();
-							return;
-						}			
-#ifndef NOLAYERS
-						if (m_pGssLayer && m_pGssLayer->AuthSuccessful())
-						m_transferstatus.socket->UseGSS(m_pGssLayer);
-#endif
-					if (transfersocket->Connect(m_transferstatus.ip,m_transferstatus.port)==0)
-					{
-						if (GetLastError() != WSAEWOULDBLOCK)
-						{
-							Send("425 Can't open data connection");
-							ResetTransferstatus();
-							break;
-						}
-					}						
+
+					if (!CreateTransferSocket(transfersocket))
+						break;
+
 					Send("150 Opening data channel for directory list.");
 				}
 				else
@@ -1118,8 +1077,8 @@ void CControlSocket::ParseCommand()
 				}
 			}
 			
-			}
-			break;
+		}
+		break;
 	case COMMAND_REST:
 		{
 			BOOL error=FALSE;
@@ -1156,7 +1115,6 @@ void CControlSocket::ParseCommand()
       else
       {
 #endif
-
 			if (!res)
 			{
 				CStdString str;
@@ -1178,7 +1136,8 @@ void CControlSocket::ParseCommand()
 #if defined(_XBOX)
       }
 #endif
-		}
+
+	  }
 		break;
 	case COMMAND_RETR:
 		{
@@ -1218,28 +1177,15 @@ void CControlSocket::ParseCommand()
 			{
 				if (!m_transferstatus.pasv)
 				{
+					if (m_transferstatus.socket)
+						delete m_transferstatus.socket;
 					CTransferSocket *transfersocket=new CTransferSocket(this);
-					transfersocket->Init(result, TRANSFERMODE_SEND, m_transferstatus.rest);
 					m_transferstatus.socket=transfersocket;
-					if (!transfersocket->Create(0, SOCK_STREAM, FD_CONNECT))
-					{
-						Send("421 Can't create socket");
-						ResetTransferstatus();
+					transfersocket->Init(result, TRANSFERMODE_SEND, m_transferstatus.rest);
+
+					if (!CreateTransferSocket(transfersocket))
 						break;
-					}
-#ifndef NOLAYERS
-					if (m_pGssLayer && m_pGssLayer->AuthSuccessful())
-						m_transferstatus.socket->UseGSS(m_pGssLayer);
-#endif
-					if (transfersocket->Connect(m_transferstatus.ip,m_transferstatus.port)==0)
-					{
-						if (GetLastError()!=WSAEWOULDBLOCK)
-						{
-							Send("425 Can't open data connection");
-							ResetTransferstatus();
-							break;
-						}
-					}
+					
 					Send("150 Opening data channel for file transfer.");
 				}
 				else
@@ -1301,25 +1247,9 @@ void CControlSocket::ParseCommand()
 					CTransferSocket *transfersocket=new CTransferSocket(this);
 					transfersocket->Init(result,TRANSFERMODE_RECEIVE,m_transferstatus.rest);
 					m_transferstatus.socket=transfersocket;
-					if (!transfersocket->Create(0, SOCK_STREAM, FD_CONNECT))
-					{
-						Send("421 Can't create socket");
-						ResetTransferstatus();
+					
+					if (!CreateTransferSocket(transfersocket))
 						break;
-					}
-#ifndef NOLAYERS
-					if (m_pGssLayer && m_pGssLayer->AuthSuccessful())
-						m_transferstatus.socket->UseGSS(m_pGssLayer);
-#endif
-					if (transfersocket->Connect(m_transferstatus.ip,m_transferstatus.port)==0)
-					{
-						if (GetLastError()!=WSAEWOULDBLOCK)
-						{
-							Send("425 Can't open data connection");
-							ResetTransferstatus();
-							break;
-						}
-					}
 					Send("150 Opening data channel for file transfer.");
 				}
 				else
@@ -1366,7 +1296,6 @@ void CControlSocket::ParseCommand()
 				Send( _T("501 Syntax error") );
 				break;
 			}
-
 #if defined(_XBOX)
 			// in case of xbox => deny all operations apart from cwd in xbox-root
 			CUser user;
@@ -1402,7 +1331,6 @@ void CControlSocket::ParseCommand()
 				Send( _T("501 Syntax error") );
 				break;
 			}
-
 #if defined(_XBOX)
 			// in case of xbox => deny all operations apart from cwd in xbox-root
 			CUser user;
@@ -1413,7 +1341,6 @@ void CControlSocket::ParseCommand()
 				break;
 			}
 #endif
-
 			CStdString result;
 			int error = m_pOwner->m_pPermissions->GetDirName(m_status.user,args,m_CurrentDir,DOP_DELETE,result);
 			if (error & 1)
@@ -1443,7 +1370,6 @@ void CControlSocket::ParseCommand()
 				Send( _T("501 Syntax error") );
 				break;
 			}
-
 #if defined(_XBOX)
 			// in case of xbox => deny all operations apart from cwd in xbox-root
 			CUser user;
@@ -1509,7 +1435,6 @@ void CControlSocket::ParseCommand()
 				break;
 			}
 #endif
-
 			RenName = "";
 
 			CStdString result;
@@ -1684,26 +1609,10 @@ void CControlSocket::ParseCommand()
 					CTransferSocket *transfersocket = new CTransferSocket(this);
 					transfersocket->Init(result,TRANSFERMODE_RECEIVE, m_transferstatus.rest);
 					m_transferstatus.socket=transfersocket;
-					if (!transfersocket->Create(0, SOCK_STREAM, FD_CONNECT))
-					{
-						Send("421 Can't create socket");
-						ResetTransferstatus();
+					
+					if (!CreateTransferSocket(transfersocket))
 						break;
-					}
-#ifndef NOLAYERS
 
-					if (m_pGssLayer && m_pGssLayer->AuthSuccessful())
-						m_transferstatus.socket->UseGSS(m_pGssLayer);
-#endif
-					if (transfersocket->Connect(m_transferstatus.ip,m_transferstatus.port)==0)
-					{
-						if (GetLastError() != WSAEWOULDBLOCK)
-						{
-							Send("425 Can't open data connection");
-							ResetTransferstatus();
-							break;
-						}
-					}
 					CStdString str;
 					str.Format("150 Opening data channel for file transfer, restarting at offset %I64d",size);
 					Send(str);
@@ -1860,25 +1769,10 @@ void CControlSocket::ParseCommand()
 					CTransferSocket *transfersocket = new CTransferSocket(this);
 					m_transferstatus.socket = transfersocket;
 					transfersocket->Init(pResult, TRANSFERMODE_NLST);
-					if (!transfersocket->Create(0, SOCK_STREAM, FD_CONNECT))
-					{
-						Send("421 Can't create socket");
-						ResetTransferstatus();
+
+					if (!CreateTransferSocket(transfersocket))
 						break;
-					}
-#ifndef NOLAYERS
-					if (m_pGssLayer && m_pGssLayer->AuthSuccessful())
-						m_transferstatus.socket->UseGSS(m_pGssLayer);
-#endif
-					if (transfersocket->Connect(m_transferstatus.ip,m_transferstatus.port)==0)
-					{
-						if (GetLastError()!=WSAEWOULDBLOCK)
-						{
-							Send("425 Can't open data connection");
-							ResetTransferstatus();
-							break;
-						}
-					}						
+					
 					Send("150 Opening data channel for directory list.");
 				}
 				else
@@ -1933,7 +1827,7 @@ void CControlSocket::ParseCommand()
 			unsigned int port = 0;
 			unsigned int retries = 3;
 			while (retries > 0) {
-				if (m_pOwner->m_pOptions->GetOptionVal(OPTION_CUSTOMPASVENABLE)) {
+				if (m_pOwner->m_pOptions->GetOptionVal(OPTION_USECUSTOMPASVPORT)) {
 					static UINT customPort = 0;
 					unsigned int minPort = (unsigned int)m_pOwner->m_pOptions->GetOptionVal(OPTION_CUSTOMPASVMINPORT);
 					unsigned int maxPort = (unsigned int)m_pOwner->m_pOptions->GetOptionVal(OPTION_CUSTOMPASVMAXPORT);
@@ -2117,13 +2011,14 @@ void CControlSocket::ParseCommand()
 			strcpy(command1, command);
 			strupr(command1);
 			strcpy(args1, args);
-		
+			
 			m_pGssLayer->ProcessCommand(command1, args1, sendme);
 			Send(sendme);
 			
 			break;
 		}
 #endif
+
 #if defined(_XBOX)
   case COMMAND_SITE:
     {
@@ -2320,6 +2215,9 @@ void CControlSocket::ProcessTransferMsg()
 	if (m_transferstatus.socket)
 		if (m_transferstatus.socket->GetMode()==TRANSFERMODE_SEND || m_transferstatus.socket->GetMode()==TRANSFERMODE_RECEIVE)
 			GetSystemTime(&m_LastTransferTime);
+
+	if (status == 2 && m_transferstatus.pasv)
+		m_pOwner->ExternalIPFailed();
 
 #if defined(_XBOX)
 
@@ -2865,4 +2763,53 @@ int CControlSocket::GetSpeedLimit(int nMode)
 		
 		return nLimit;
 	}
+}
+
+CControlSocket::CreateTransferSocket(CTransferSocket *pTransferSocket)
+{
+	/* Create socket
+	 * First try control connection port - 1, if that fails try
+	 * control connection port + 1. If that fails as well, let 
+	 * the OS decide.
+	 */
+	BOOL bCreated = FALSE;
+	// Get local port
+	SOCKADDR_IN addr;
+	int len = sizeof(addr);
+	if (GetSockName((SOCKADDR *)&addr, &len))
+	{
+		int nPort = ntohs(addr.sin_port);
+		// Try create control conn. port - 1
+		if (nPort > 1)
+			if (pTransferSocket->Create(nPort - 1, SOCK_STREAM, FD_CONNECT))
+				bCreated = TRUE;
+			// Try create control conn. port + 1 if necessary
+			if (!bCreated && nPort < 65535)
+				if (pTransferSocket->Create(nPort + 1, SOCK_STREAM, FD_CONNECT))
+					bCreated = TRUE;
+	}
+	if (!bCreated)
+		// Let the OS find a valid port
+		if (!pTransferSocket->Create(0, SOCK_STREAM, FD_CONNECT))
+		{
+			// Give up
+			Send("421 Can't create socket");
+			ResetTransferstatus();
+			return FALSE;
+		}			
+#ifndef NOLAYERS
+	if (m_pGssLayer && m_pGssLayer->AuthSuccessful())
+		m_transferstatus.socket->UseGSS(m_pGssLayer);
+#endif		
+	if (pTransferSocket->Connect(m_transferstatus.ip,m_transferstatus.port)==0)
+	{
+		if (GetLastError() != WSAEWOULDBLOCK)
+		{
+			Send("425 Can't open data connection");
+			ResetTransferstatus();
+			return FALSE;
+		}
+	}
+
+	return TRUE;
 }

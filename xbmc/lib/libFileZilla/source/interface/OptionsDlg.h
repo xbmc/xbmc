@@ -24,46 +24,36 @@
 #endif // _MSC_VER > 1000
 // Options.h : Header-Datei
 //
-#include "OptionsSecurityPage.h"
-#include "OptionsGeneralPage.h"
-#include "OptionsGeneralWelcomemessagePage.h"
-#include "OptionsMiscPage.h"
-#include "OptionsAdminInterfacePage.h"
-#include "OptionsLoggingPage.h"
-#include "OptionsGSSPage.h"
-#include "OptionsSpeedLimitPage.h"
 #include "..\OptionTypes.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // Dialogfeld COptions 
 
 class COptions;
+class COptionsPage;
+class COptionsSpeedLimitPage;
 class COptionsDlg : public CSAPrefsDialog
 {
 // Konstruktion
 public:
 	CString GetOption(int nOptionID);
 	int GetOptionVal(int nOptionID);
+	void SetOption(int nOptionID, CString value);
+	void SetOption(int nOptionID, int value);
 	BOOL Show();
 	COptionsDlg(COptions *pInterfaceOptions);
 	virtual ~COptionsDlg();
-	COptionsGeneralPage m_OptionsGeneralPage;
-	COptionsSecurityPage m_OptionsSecurityPage;
-	COptionsMiscPage m_OptionsMiscPage;
-	COptionsGeneralWelcomemessagePage m_OptionsGeneralWelcomemessagePage;
-	COptionsAdminInterfacePage m_OptionsAdminInterfacePage;
-	COptionsLoggingPage m_OptionsLoggingPage;
-	COptionsGSSPage m_OptionsGSSPage;
-	COptionsSpeedLimitPage m_OptionsSpeedLimitPage;
 	BOOL Init(unsigned char *pData, DWORD dwDataLength);
 	BOOL GetAsCommand(char **pBuffer, DWORD *nBufferLength);
+	COptions *m_pInterfaceOptions;
 	
 protected:
-	COptions *m_pInterfaceOptions;
-	static bool IsNumeric(LPCTSTR str);
 
-	void SetOption(int nOptionID, CString value);
-	void SetOption(int nOptionID, int value);
+	std::list<COptionsPage *> m_PageList;
+
+	COptionsSpeedLimitPage *m_pOptionsSpeedLimitPage;
+
+	static bool IsNumeric(LPCTSTR str);
 	
 	struct t_OptionsCache
 	{

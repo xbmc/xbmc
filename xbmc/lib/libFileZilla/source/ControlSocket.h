@@ -1,13 +1,3 @@
-/*
-  This file has been modified for use in XBFileZilla.
-
-  Taken from FileZilla Server 0.8.3 release
-
-  changes:
-  - added method GetCommandFromString
-  - added CSfvFile member
-
-*/
 // FileZilla Server - a Windows ftp server
 
 // Copyright (C) 2002 - Tim Kosse <tim.kosse@gmx.de>
@@ -37,7 +27,6 @@
 #if defined(_XBOX)
   #include "bsdsfv.h"
 #endif
-
 class CAsyncGssSocketLayer;
 class CTransferSocket;
 /////////////////////////////////////////////////////////////////////////////
@@ -80,6 +69,12 @@ public:
 // Implementierung
 protected:
 	BOOL DoUserLogin(char* sendme);
+	BOOL UnquoteArgs(CStdString &args);
+	static int GetUserCount(const CStdString &user);
+	static void IncUserCount(const CStdString &user);
+	static void DecUserCount(const CStdString &user);
+	void ResetTransferstatus();
+	BOOL CreateTransferSocket(CTransferSocket *pTransferSocket);
 
 	CAsyncGssSocketLayer *m_pGssLayer;
 
@@ -90,13 +85,8 @@ protected:
 	int m_nSendBufferLen;
 
 	int m_nTelnetSkip;
-	BOOL UnquoteArgs(CStdString &args);
-	void ResetTransferstatus();
 	BOOL m_bQuitCommand;
 	SYSTEMTIME m_LastCmdTime, m_LastTransferTime, m_LoginTime;
-	static int GetUserCount(const CStdString &user);
-	static void IncUserCount(const CStdString &user);
-	static void DecUserCount(const CStdString &user);
 	static std::map<CStdString, int> m_UserCount;
 	CStdString m_CurrentDir;
 	static CCriticalSectionWrapper m_Sync;

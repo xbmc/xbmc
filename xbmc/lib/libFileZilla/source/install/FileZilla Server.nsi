@@ -14,7 +14,7 @@
 ;--------------------------------
 ;Product Info
 
-  !define VERSION "0.8.7" ;Define your own software version here
+  !define VERSION "0.8.8" ;Define your own software version here
   Name "FileZilla Server ${VERSION}" ;Define your own software name here
 
 ;StartOptions Page strings
@@ -25,6 +25,14 @@ LangString StartOptionsTitle ${LANG_ENGLISH} ": Server startup settings"
   !system 'upx --best -f -q "..\release\FileZilla Server.exe" "..\interface\release\FileZilla Server Interface.exe" "SettingsConverter.dll"' ignore
   !packhdr temp.dat "upx.exe --best temp.dat"
 
+;--------------------------------
+;Modern UI Configuration
+
+  !define MUI_ABORTWARNING
+  
+  !define MUI_ICON "..\res\filezilla server.ico"
+  !define MUI_UNICON "uninstall.ico"
+  
 ;--------------------------------
 ;Pages
 
@@ -37,14 +45,6 @@ LangString StartOptionsTitle ${LANG_ENGLISH} ": Server startup settings"
   !insertmacro MUI_UNPAGE_CONFIRM
   !insertmacro MUI_UNPAGE_INSTFILES
 
-;--------------------------------
-;Modern UI Configuration
-
-  !define MUI_ABORTWARNING
-  
-  !define MUI_ICON "..\res\filezilla server.ico"
-  !define MUI_UNICON "uninstall.ico"
-  
 ;--------------------------------
 ;Languages
  
@@ -109,6 +109,8 @@ Section "FileZilla Server (required)" SecFileZillaServer
   Delete "$INSTDIR\FileZilla Server.exe"
   Rename $R1 "$INSTDIR\FileZilla Server.exe"
  copy_main_done:
+
+  File "..\Release\FileZilla server.pdb"
 
   ; Stopping interface
   DetailPrint "Closing interface..."

@@ -28,11 +28,15 @@
 /////////////////////////////////////////////////////////////////////////////
 // Dialogfeld COptionsLoggingPage 
 
-class COptionsLoggingPage : public CSAPrefsSubDlg
+class COptionsDlg;
+class COptionsLoggingPage : public COptionsPage
 {
 // Konstruktion
 public:
-	COptionsLoggingPage(CWnd* pParent = NULL);   // Standardkonstruktor
+	COptionsLoggingPage(COptionsDlg *pOptionsDlg, CWnd* pParent = NULL);   // Standardkonstruktor
+
+	virtual void SaveData();
+	virtual void LoadData();
 
 // Dialogfelddaten
 	//{{AFX_DATA(COptionsLoggingPage)

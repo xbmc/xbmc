@@ -21,6 +21,8 @@
 
 #include "stdafx.h"
 #include "filezilla server.h"
+#include "OptionsDlg.h"
+#include "OptionsPage.h"
 #include "OptionsAdminInterfacePage.h"
 
 #ifdef _DEBUG
@@ -33,8 +35,8 @@ static char THIS_FILE[] = __FILE__;
 // Dialogfeld COptionsAdminInterfacePage 
 
 
-COptionsAdminInterfacePage::COptionsAdminInterfacePage(CWnd* pParent /*=NULL*/)
-	: CSAPrefsSubDlg(COptionsAdminInterfacePage::IDD, pParent)
+COptionsAdminInterfacePage::COptionsAdminInterfacePage(COptionsDlg *pOptionsDlg, CWnd* pParent /*=NULL*/)
+	: COptionsPage(pOptionsDlg, COptionsAdminInterfacePage::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(COptionsAdminInterfacePage)
 	m_Port = _T("");
@@ -49,7 +51,7 @@ COptionsAdminInterfacePage::COptionsAdminInterfacePage(CWnd* pParent /*=NULL*/)
 
 void COptionsAdminInterfacePage::DoDataExchange(CDataExchange* pDX)
 {
-	CSAPrefsSubDlg::DoDataExchange(pDX);
+	COptionsPage::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(COptionsAdminInterfacePage)
 	DDX_Control(pDX, IDC_OPTIONS_ADMININTERFACE_CHANGEPASS, m_cChangePass);
 	DDX_Control(pDX, IDC_OPTIONS_ADMININTERFACE_NEWPASS2, m_cNewPass2);
@@ -65,7 +67,7 @@ void COptionsAdminInterfacePage::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(COptionsAdminInterfacePage, CSAPrefsSubDlg)
+BEGIN_MESSAGE_MAP(COptionsAdminInterfacePage, COptionsPage)
 	//{{AFX_MSG_MAP(COptionsAdminInterfacePage)
 	ON_BN_CLICKED(IDC_OPTIONS_ADMININTERFACE_CHANGEPASS, OnOptionsAdmininterfaceChangepass)
 	//}}AFX_MSG_MAP
@@ -84,7 +86,7 @@ void COptionsAdminInterfacePage::OnOptionsAdmininterfaceChangepass()
 
 BOOL COptionsAdminInterfacePage::OnInitDialog() 
 {
-	CSAPrefsSubDlg::OnInitDialog();
+	COptionsPage::OnInitDialog();
 	
 	if (m_NewPass != "")
 	{
@@ -99,4 +101,124 @@ BOOL COptionsAdminInterfacePage::OnInitDialog()
 	
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX-Eigenschaftenseiten sollten FALSE zurückgeben
+}
+
+BOOL COptionsAdminInterfacePage::IsDataValid()
+{
+	if (!UpdateData(TRUE))
+		return FALSE;
+
+	if (_ttoi(m_Port) < 1 || _ttoi(m_Port) > 65535)
+	{
+		m_pOptionsDlg->ShowPage(this);
+		GetDlgItem(IDC_OPTIONS_ADMININTERFACE_PORT)->SetFocus();
+		AfxMessageBox(_T("The port for the admin interface has to be in the range from 1 to 65535."));
+		return FALSE;
+	}
+
+	CString bindIPs = m_IpBindings;
+	CString sub;
+	std::list<CString> ipBindList;
+	for (int i = 0; i<bindIPs.GetLength(); i++)
+	{
+		char cur = bindIPs[i];
+		if ((cur<'0' || cur>'9') && cur!='.')
+		{
+			if (sub=="" && cur=='*')
+			{
+				ipBindList.clear();
+				ipBindList.push_back("*");
+				break;
+			}
+
+			if (sub != "")
+			{
+				//Parse IP
+				SOCKADDR_IN sockAddr;
+				memset(&sockAddr,0,sizeof(sockAddr));
+			
+				sockAddr.sin_family = AF_INET;
+				sockAddr.sin_addr.s_addr = inet_addr(sub);
+			
+				if (sockAddr.sin_addr.s_addr != INADDR_NONE)
+				{
+					sub = inet_ntoa(sockAddr.sin_addr);
+					std::list<CString>::iterator iter;
+					for (iter = ipBindList.begin(); iter!=ipBindList.end(); iter++)
+						if (*iter==sub)
+							break;
+					if (iter == ipBindList.end())
+						ipBindList.push_back(sub);
+				}
+				sub = "";
+			}
+		}
+		else
+			sub += cur;
+	}
+	if (sub != "")
+	{
+		//Parse IP
+		SOCKADDR_IN sockAddr;
+		memset(&sockAddr,0,sizeof(sockAddr));
+		
+		sockAddr.sin_family = AF_INET;
+		sockAddr.sin_addr.s_addr = inet_addr(sub);
+		
+		if (sockAddr.sin_addr.s_addr != INADDR_NONE)
+		{
+			sub = inet_ntoa(sockAddr.sin_addr);
+			std::list<CString>::iterator iter;
+			for (iter = ipBindList.begin(); iter!=ipBindList.end(); iter++)
+				if (*iter==sub)
+					break;
+			if (iter == ipBindList.end())
+				ipBindList.push_back(sub);
+		}
+		sub = "";
+	}
+	bindIPs = "";
+	for (std::list<CString>::iterator iter = ipBindList.begin(); iter!=ipBindList.end(); iter++)
+		if (*iter != "127.0.0.1")
+			bindIPs += *iter + " ";
+
+	bindIPs.TrimRight(" ");
+					
+	m_IpBindingsResult = bindIPs;
+
+	if (m_bChangePass && m_IpAddresses!="")
+	{
+		if (m_NewPass.GetLength() < 6)
+		{
+			m_pOptionsDlg->ShowPage(this);
+			GetDlgItem(IDC_OPTIONS_ADMININTERFACE_NEWPASS)->SetFocus();
+			AfxMessageBox(_T("The admin password has to be at least 6 characters long,"));
+			return FALSE;
+		}
+		if (m_NewPass != m_NewPass2)
+		{
+			m_pOptionsDlg->ShowPage(this);
+			GetDlgItem(IDC_OPTIONS_ADMININTERFACE_NEWPASS)->SetFocus();
+			AfxMessageBox(_T("Admin passwords do not match."));
+			return FALSE;
+		}
+	}
+	return TRUE;
+}
+
+void COptionsAdminInterfacePage::SaveData()
+{
+	m_pOptionsDlg->SetOption(OPTION_ADMINPORT, _ttoi(m_Port));
+	m_pOptionsDlg->SetOption(OPTION_ADMINIPBINDINGS, m_IpBindingsResult);
+	m_pOptionsDlg->SetOption(OPTION_ADMINIPADDRESSES, m_IpAddresses);
+	if (m_bChangePass)
+		m_pOptionsDlg->SetOption(OPTION_ADMINPASS, m_NewPass);
+}
+
+void COptionsAdminInterfacePage::LoadData()
+{
+	m_Port.Format(_T("%d"), m_pOptionsDlg->GetOptionVal(OPTION_ADMINPORT));
+	m_IpBindings = m_pOptionsDlg->GetOption(OPTION_ADMINIPBINDINGS);
+	m_IpAddresses = m_pOptionsDlg->GetOption(OPTION_ADMINIPADDRESSES);
+	m_NewPass = m_pOptionsDlg->GetOption(OPTION_ADMINPASS);
 }

@@ -508,39 +508,21 @@ BEGIN
                     IDC_STATIC,13,178,259,16
 END
 
-IDD_OPTIONS_MISC DIALOGEX 0, 0, 286, 208
+IDD_OPTIONS_MISC DIALOG DISCARDABLE  0, 0, 286, 208
 STYLE DS_CONTROL | WS_CHILD
-FONT 8, "MS Sans Serif", 0, 0, 0x1
+FONT 8, "MS Sans Serif"
 BEGIN
     CONTROL         "&Don't show passwords in message log",
                     IDC_OPTIONS_MISC_DONTSHOWPASS,"Button",BS_AUTOCHECKBOX | 
                     WS_TABSTOP,7,7,135,10
     CONTROL         "&Start minimized",IDC_OPTIONS_MISC_STARTMINIMIZED,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,22,63,10
-    GROUPBOX        "Custom PASV settings",IDC_STATIC,7,37,272,68
-    CONTROL         "&Enable custom PASV settings",
-                    IDC_OPTIONS_MISC_CUSTOM_PASV,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,13,49,109,10
-    LTEXT           "&IP Address:",IDC_STATIC,13,67,37,8
-    EDITTEXT        IDC_OPTIONS_MISC_CUSTOM_PASV_IP,53,64,68,14,
-                    ES_AUTOHSCROLL
-    LTEXT           "---.---.---.---",IDC_STATIC,125,67,31,8
-    LTEXT           "&Port range:",IDC_STATIC,13,85,36,8
-    EDITTEXT        IDC_OPTIONS_MISC_CUSTOM_PASV_MIN_PORT,53,82,27,14,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,26,63,10
+    LTEXT           "Transfer &buffer size:",IDC_STATIC,7,51,63,8
+    EDITTEXT        IDC_OPTIONS_TRANSFERBUFFERSIZE,73,49,40,14,
                     ES_AUTOHSCROLL | ES_NUMBER
-    CTEXT           "-",IDC_STATIC,83,84,8,8
-    EDITTEXT        IDC_OPTIONS_MISC_CUSTOM_PASV_MAX_PORT,94,82,27,14,
-                    ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "(1-65535)",IDC_STATIC,126,85,31,8
-    EDITTEXT        IDC_OPTIONS_MISC_CUSTOM_PASV_TEXT,160,46,113,54,
-                    ES_MULTILINE | ES_READONLY | ES_WANTRETURN | NOT 
-                    WS_BORDER | WS_VSCROLL,WS_EX_STATICEDGE
-    LTEXT           "Transfer &buffer size:",IDC_STATIC,7,123,63,8
-    EDITTEXT        IDC_OPTIONS_TRANSFERBUFFERSIZE,73,121,40,14,
-                    ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "(default: 4096)",IDC_STATIC,118,123,46,8
+    LTEXT           "(default: 4096)",IDC_STATIC,118,51,46,8
     LTEXT           "Adjust this value,  if you get very slow transferrates",
-                    IDC_STATIC,7,137,159,8
+                    IDC_STATIC,7,65,159,8
 END
 
 IDD_OPTIONS_GENERAL_WELCOMEMESSAGE DIALOG DISCARDABLE  0, 0, 286, 208
@@ -716,6 +698,41 @@ BEGIN
                     ES_NUMBER
 END
 
+IDD_OPTIONS_PASV DIALOGEX 0, 0, 286, 208
+STYLE DS_CONTROL | WS_CHILD
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "External Server &IP Address for passive mode transfers:",
+                    IDC_STATIC,7,7,123,19
+    CONTROL         "&Default",IDC_OPTIONS_PASV_IPTYPE1,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP,7,26,39,10
+    CONTROL         "&Use the following IP:",IDC_OPTIONS_PASV_IPTYPE2,"Button",
+                    BS_AUTORADIOBUTTON,7,38,81,10
+    CONTROL         "&Retrieve external IP address from:",
+                    IDC_OPTIONS_PASV_IPTYPE3,"Button",BS_AUTORADIOBUTTON,8,
+                    77,122,10
+    EDITTEXT        IDC_OPTIONS_PASV_IP,19,48,115,14,ES_AUTOHSCROLL | 
+                    WS_GROUP
+    LTEXT           "You can also enter hostnames",IDC_STATIC,20,65,96,8
+    EDITTEXT        IDC_OPTIONS_PASV_URL,20,89,115,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_OPTIONS_PASV_TEXT,152,25,119,79,ES_MULTILINE | 
+                    ES_READONLY | NOT WS_BORDER | WS_VSCROLL,
+                    WS_EX_STATICEDGE
+    LTEXT           "Information for users with dynamic IPs: If your external IP changes, it might take up to 5 minutes after the next failed transfer until FileZilla Server recognizes the changed IP.\nIn most cases, the IP is updated within 30s after a failed transfer.",
+                    IDC_STATIC,7,107,272,27
+    CONTROL         "D&on't use external IP for local connections",
+                    IDC_OPTIONS_PASV_NOLOCAL,"Button",BS_AUTOCHECKBOX | NOT 
+                    WS_VISIBLE | WS_TABSTOP,7,137,255,10
+    CONTROL         "Use custom &port range:",IDD_OPTIONS_PASV_USEPORTRANGE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,149,89,10
+    EDITTEXT        IDC_OPTIONS_PASV_PORTMIN,15,162,27,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    CTEXT           "-",IDC_STATIC,43,165,8,8
+    EDITTEXT        IDC_OPTIONS_PASV_PORTMAX,54,162,27,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    LTEXT           "(1-65535)",IDC_STATIC,86,165,31,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -819,6 +836,16 @@ BEGIN
         RIGHTMARGIN, 179
         TOPMARGIN, 7
         BOTTOMMARGIN, 95
+    END
+
+    IDD_OPTIONS_PASV, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 279
+        VERTGUIDE, 14
+        VERTGUIDE, 152
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 201
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -1012,8 +1039,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,8,7,0
- PRODUCTVERSION 0,8,7,0
+ FILEVERSION 8,8,0,0
+ PRODUCTVERSION 8,8,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -1031,14 +1058,14 @@ BEGIN
             VALUE "Comments", "Open Source FTP server for Windows\0"
             VALUE "CompanyName", "\0"
             VALUE "FileDescription", "FileZilla Server\0"
-            VALUE "FileVersion", "0, 8, 7, 0\0"
+            VALUE "FileVersion", "8, 8, 0, 0\0"
             VALUE "InternalName", "FileZilla Server\0"
             VALUE "LegalCopyright", "Copyright (C) 2001-2003\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "FileZilla server.EXE\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "FileZilla Server\0"
-            VALUE "ProductVersion", "0, 8, 7, 0\0"
+            VALUE "ProductVersion", "8, 8, 0, 0\0"
             VALUE "SpecialBuild", "\0"
         END
     END
@@ -1087,6 +1114,7 @@ BEGIN
     IDS_OPTIONSPAGE_MISC    "Miscellaneous"
     IDS_OPTIONSPAGE_SECURITY "Security settings"
     IDS_OPTIONSPAGE_SPEEDLIMIT "Speed Limits"
+    IDS_OPTIONSPAGE_PASV    "Passive mode settings"
 END
 
 STRINGTABLE PRELOAD DISCARDABLE 
@@ -1185,8 +1213,7 @@ END
 
 STRINGTABLE DISCARDABLE 
 BEGIN
-    IDC_OPTIONS_MISC_CUSTOM_PASV_TEXT 
-                            "Use custom PASV settings if you are operating the server from behind a NAT router or a firewall. In that case, the IP address of the server is not accessible from outside of the router, so you should fill in the correct address here. Use the port range to limit the number of ports that will need to be forwarded through the router."
+    IDC_OPTIONS_PASV_TEXT   "Use custom PASV settings if you are operating the server from behind a NAT router or a firewall. In that case, the IP address of the server is not accessible from outside of the router, so you should fill in the correct address here. Use the port range to limit the number of ports that will need to be forwarded through the router."
 END
 
 #endif    // Deutsch (Deutschland) resources
@@ -1209,7 +1236,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 IDD_SAPREFS DIALOG DISCARDABLE  0, 0, 394, 234
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Prefs"
+CAPTION "FileZilla Server Options"
 FONT 8, "MS Sans Serif"
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,11,174,73,14

@@ -195,6 +195,9 @@ public:
 
 	//Attaches a new layer to the socket.
 	BOOL AddLayer(CAsyncSocketExLayer *pLayer);
+
+	//Is a layer attached to the socket?
+	BOOL IsLayerAttached() const;
 #endif //NOLAYERS
 
 	//Returns the handle of the socket.

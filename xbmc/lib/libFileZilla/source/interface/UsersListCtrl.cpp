@@ -168,7 +168,8 @@ BOOL CUsersListCtrl::ParseUserControlCommand(unsigned char *pData, DWORD dwDataL
 			return FALSE;
 		else
 		{
-			for (int i=0;i<GetItemCount();i++)
+			int i;
+			for (i=0;i<GetItemCount();i++)
 				delete (t_connectiondata *)GetItemData(i);
 			DeleteAllItems();
 			int num=pData[1]*256 + pData[2];

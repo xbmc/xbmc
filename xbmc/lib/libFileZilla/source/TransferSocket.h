@@ -1,12 +1,3 @@
-/*
-  This file has been modified for use in XBFileZilla.
-
-  Taken from FileZilla Server 0.8.3 release
-
-  changes:
-  - made protected members public to allow notifications
-
-*/
 // FileZilla Server - a Windows ftp server
 
 // Copyright (C) 2002 - Tim Kosse <tim.kosse@gmx.de>
@@ -46,7 +37,7 @@ struct t_dirlisting;
 
 /////////////////////////////////////////////////////////////////////////////
 // Befehlsziel CTransferSocket 
-#ifndef _XBOX
+#ifndef NOLAYERS
 class CAsyncGssSocketLayer;
 #endif
 
@@ -60,11 +51,9 @@ public:
 	CTransferSocket(CControlSocket *pOwner);
 	void Init(t_dirlisting *pDir, int nMode);
 	void Init(CStdString filename, int nMode, _int64 rest, BOOL bBinary=TRUE);
-
-#ifndef _XBOX
+#ifndef NOLAYERS
 	void UseGSS(CAsyncGssSocketLayer *pGssLayer);
 #endif
-
 	virtual ~CTransferSocket();
 
 // Überschreibungen
@@ -88,8 +77,8 @@ public:
 	virtual void OnAccept(int nErrorCode);
 	virtual void OnReceive(int nErrorCode);
 
-#ifndef _XBOX
-	OnLayerCallback(const CAsyncSocketExLayer *pLayer, int nType, int nParam1, int nParam2);
+#ifndef NOLAYERS
+	virtual int OnLayerCallback(const CAsyncSocketExLayer *pLayer, int nType, int nParam1, int nParam2);
 #endif
 
 	t_dirlisting *m_pDirListing;

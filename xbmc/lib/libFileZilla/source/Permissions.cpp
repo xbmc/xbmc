@@ -1,14 +1,3 @@
-/*
-  This file has been modified for use in XBFileZilla.
-
-  Taken from FileZilla Server 0.8.3 release
-
-  changes:
-  - GetShortcutTarget(): disabled shortcut handling for xbox
-  - ChangeCurrentDir(): added permission to show drives at rootlevel
-  - GetDirectoryListing(): always send time instead of year, because some ftp clients do not like
-      years that lie in the future
-*/
 // FileZilla Server - a Windows ftp server
 
 // Copyright (C) 2002 - Tim Kosse <tim.kosse@gmx.de>
@@ -298,8 +287,10 @@ int CPermissions::GetDirectoryListing(LPCTSTR user, CStdString dir, t_dirlisting
 		}
 		else
 		{
-			memcpy(pDir->buffer + pDir->len, "-xw", 3);
-			pDir->len += 3;
+			pDir->buffer[pDir->len++] = '-';
+			pDir->buffer[pDir->len++] = directory.bFileRead ? 'r' : '-';
+			pDir->buffer[pDir->len++] = directory.bFileWrite ? 'w' : '-';
+			
 			BOOL isexe = FALSE;
 			CStdString ext = fn.Right(4);
 			ext.MakeLower();
@@ -313,10 +304,10 @@ int CPermissions::GetDirectoryListing(LPCTSTR user, CStdString dir, t_dirlisting
 					isexe = TRUE;
 			}
 			pDir->buffer[pDir->len++] = isexe ? 'x' : '-';
-			pDir->buffer[pDir->len++] = 'r';
+			pDir->buffer[pDir->len++] = directory.bFileRead ? 'r' : '-';
 			pDir->buffer[pDir->len++] = '-';
 			pDir->buffer[pDir->len++] = isexe ? 'x' : '-';
-			pDir->buffer[pDir->len++] = 'r';
+			pDir->buffer[pDir->len++] = directory.bFileRead ? 'r' : '-';
 			pDir->buffer[pDir->len++] = '-';
 			pDir->buffer[pDir->len++] = isexe ? 'x' : '-';
 		}
@@ -448,7 +439,6 @@ int CPermissions::GetDirectoryListing(LPCTSTR user, CStdString dir, t_dirlisting
 		_int64 t2 = ((_int64)fTime.dwHighDateTime<<32) + fTime.dwLowDateTime;
 		const char months[][4]={"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
 		pDir->len += sprintf(pDir->buffer + pDir->len, " %s %02d ", months[sFileTime.wMonth-1], sFileTime.wDay);
-
 #if !defined(_XBOX)
     // bug: wrong (future) year causes some ftp clients (e.g. flashfxp, cuteftp) 
     //      to not display directory entries
@@ -1107,7 +1097,6 @@ int CPermissions::ChangeCurrentDir(LPCTSTR user, CStdString &currentdir, CStdStr
 		return 0;
 	}
 #endif
-
 	//Get the physical path
 	t_directory directory;
 	BOOL truematch;
@@ -1195,7 +1184,6 @@ CStdString CPermissions::GetShortcutTarget(LPCTSTR filename)
 #else
   return "";
 #endif
-
 }
 
 BOOL CPermissions::GetUser(CStdString user, CUser &userdata) const
@@ -1841,23 +1829,27 @@ BOOL CPermissions::Init()
 						if (user.nIpLimit<0 || user.nIpLimit>999999999)
 							user.nIpLimit=0;
 					}
+
+					if (user.group != _T(""))
+					{
+						for (t_GroupsList::iterator groupiter = m_sGroupsList.begin(); groupiter != m_sGroupsList.end(); groupiter++)
+							if (groupiter->group == user.group)
+							{
+								user.pOwner = &(*groupiter);
+								break;
+							}
+						
+						if (!user.pOwner)
+							user.group = "";
+					}
 					
 					BOOL bGotHome = FALSE;
 					ReadPermissions(pXML, user, bGotHome);
 					
 					//Set a home dir if no home dir could be read
-					if (!bGotHome && !user.permissions.empty())
+					if (!bGotHome && !user.pOwner)
 					{
-						if (user.group != _T(""))
-						{
-							for (t_GroupsList::iterator groupiter=m_sGroupsList.begin(); groupiter!=m_sGroupsList.end(); groupiter++)
-								if (groupiter->group == user.group)
-								{
-									bGotHome = TRUE;
-									break;
-								}
-						}
-						if (!bGotHome)
+						if (!user.permissions.empty())
 							user.permissions.begin()->bIsHome = TRUE;
 					}
 					
@@ -2346,4 +2338,183 @@ void CPermissions::SaveSpeedLimits(CMarkupSTL *pXML, const t_group &group)
 	pXML->OutOfElem();
 	
 	pXML->OutOfElem();
+}
+
+void CPermissions::ReloadConfig()
+{
+	m_UsersList.clear();
+	m_GroupsList.clear();
+
+	CMarkupSTL *pXML = COptions::GetXML();
+	if (pXML)
+	{
+		if (!pXML->FindChildElem(_T("Groups")))
+			pXML->AddChildElem(_T("Groups"));
+		pXML->IntoElem();
+		while (pXML->FindChildElem(_T("Group")))
+		{
+			t_group group;
+			group.nIpLimit = group.nIpLimit = group.nUserLimit = 0;
+			group.nBypassUserLimit = group.nLnk = group.nRelative = 2;
+			group.group = pXML->GetChildAttrib(_T("Name"));
+			if (group.group!="")
+			{
+				pXML->IntoElem();
+				
+				while (pXML->FindChildElem(_T("Option")))
+				{
+					CStdString name = pXML->GetChildAttrib(_T("Name"));
+					CStdString value = pXML->GetChildData();
+					if (name==_T("Resolve Shortcuts"))
+						group.nLnk = _ttoi(value);
+					else if (name == _T("Relative"))
+						group.nRelative = _ttoi(value);
+					else if (name == _T("Bypass server userlimit"))
+						group.nBypassUserLimit = _ttoi(value);
+					else if (name == _T("User Limit"))
+						group.nUserLimit = _ttoi(value);
+					else if (name == _T("IP Limit"))
+						group.nIpLimit = _ttoi(value);
+						
+					if (group.nUserLimit<0 || group.nUserLimit>999999999)
+						group.nUserLimit=0;
+					if (group.nIpLimit<0 || group.nIpLimit>999999999)
+						group.nIpLimit=0;
+				}
+					
+				BOOL bGotHome = FALSE;
+				ReadPermissions(pXML, group, bGotHome);
+				//Set a home dir if no home dir could be read
+				if (!bGotHome && !group.permissions.empty())
+					group.permissions.begin()->bIsHome = TRUE;
+
+				ReadSpeedLimits(pXML, group);
+					
+				m_GroupsList.push_back(group);
+				pXML->OutOfElem();
+			}
+		}
+		pXML->OutOfElem();
+		pXML->ResetChildPos();
+			
+		if (!pXML->FindChildElem(_T("Users")))
+			pXML->AddChildElem(_T("Users"));
+		pXML->IntoElem();
+
+		while (pXML->FindChildElem(_T("User")))
+		{
+			CUser user;
+			user.nIpLimit = user.nIpLimit = user.nUserLimit = 0;
+			user.nBypassUserLimit = user.nLnk = user.nRelative = 2;
+			user.user=pXML->GetChildAttrib(_T("Name"));
+			if (user.user!="")
+			{
+				pXML->IntoElem();
+
+				while (pXML->FindChildElem(_T("Option")))
+				{
+					CStdString name = pXML->GetChildAttrib(_T("Name"));
+					CStdString value = pXML->GetChildData();
+					if (name == _T("Pass"))
+						user.password = value;
+					else if (name==_T("Resolve Shortcuts"))
+						user.nLnk = _ttoi(value);
+					else if (name == _T("Relative"))
+						user.nRelative = _ttoi(value);
+					else if (name == _T("Bypass server userlimit"))
+						user.nBypassUserLimit = _ttoi(value);
+					else if (name == _T("User Limit"))
+						user.nUserLimit = _ttoi(value);
+					else if (name == _T("IP Limit"))
+						user.nIpLimit = _ttoi(value);
+					else if (name == _T("Group"))
+						user.group = value;
+
+					if (user.nUserLimit<0 || user.nUserLimit>999999999)
+						user.nUserLimit=0;
+					if (user.nIpLimit<0 || user.nIpLimit>999999999)
+						user.nIpLimit=0;
+				}
+
+				if (user.group != _T(""))
+				{
+					for (t_GroupsList::iterator groupiter = m_GroupsList.begin(); groupiter != m_GroupsList.end(); groupiter++)
+						if (groupiter->group == user.group)
+						{
+							user.pOwner = &(*groupiter);
+							break;
+						}
+					
+					if (!user.pOwner)
+						user.group = "";
+				}
+					
+				BOOL bGotHome = FALSE;
+				ReadPermissions(pXML, user, bGotHome);
+					
+				//Set a home dir if no home dir could be read
+				if (!bGotHome && !user.pOwner)
+				{
+					if (!user.permissions.empty())
+						user.permissions.begin()->bIsHome = TRUE;
+				}
+				
+				std::vector<t_directory>::iterator iter;
+				for (iter = user.permissions.begin(); iter != user.permissions.end(); iter++)
+				{
+					if (iter->bIsHome)
+					{
+						user.homedir = iter->dir;
+						break;
+					}
+				}
+				if (user.homedir=="" && user.pOwner)
+				{
+					for (iter = user.pOwner->permissions.begin(); iter != user.pOwner->permissions.end(); iter++)
+					{
+						if (iter->bIsHome)
+						{
+							user.homedir = iter->dir;
+							break;
+						}
+					}
+				}
+					
+				ReadSpeedLimits(pXML, user);
+
+				m_UsersList.push_back(user);
+				pXML->OutOfElem();
+			}
+		}
+		COptions::FreeXML(pXML);
+	}
+
+	m_sync.Lock();
+
+	m_sGroupsList.clear();
+	for (t_GroupsList::iterator groupiter = m_GroupsList.begin(); groupiter != m_GroupsList.end(); groupiter++)
+		m_sGroupsList.push_back(*groupiter);
+
+	m_sUsersList.clear();
+	for (t_UsersList::iterator iter = m_UsersList.begin(); iter != m_UsersList.end(); iter++)
+	{
+		CUser user = *iter;
+		user.pOwner = NULL;
+		if (user.group != _T(""))
+		{
+			for (t_GroupsList::iterator groupiter = m_GroupsList.begin(); groupiter != m_GroupsList.end(); groupiter++)
+				if (groupiter->group == user.group)
+				{
+					user.pOwner = &(*groupiter);
+					break;
+				}
+		}
+		m_sUsersList.push_back(user);
+	}
+
+	UpdateInstances();
+
+	m_sync.Unlock();
+	
+	return;
 }

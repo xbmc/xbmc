@@ -35,7 +35,7 @@
 #define OPTION_NOOUTFXPSTRICT 9
 #define OPTION_LOGINTIMEOUT 10
 #define OPTION_LOGSHOWPASS 11
-#define OPTION_CUSTOMPASVENABLE 12
+#define OPTION_CUSTOMPASVIPTYPE 12
 #define OPTION_CUSTOMPASVIP 13
 #define OPTION_CUSTOMPASVMINPORT 14
 #define OPTION_CUSTOMPASVMAXPORT 15
@@ -55,8 +55,10 @@
 #define OPTION_DOWNLOADSPEEDLIMIT 29
 #define OPTION_UPLOADSPEEDLIMIT 30
 #define OPTION_BUFFERSIZE 31
+#define OPTION_CUSTOMPASVIPSERVER 32
+#define OPTION_USECUSTOMPASVPORT 33
 
-#define OPTIONS_NUM 31
+#define OPTIONS_NUM 33
 
 struct t_Option
 {
@@ -65,7 +67,7 @@ struct t_Option
 	BOOL bOnlyLocal; //If TRUE, setting can only be changed from local connections
 };
 
-const DWORD SERVER_VERSION = 0x00080700;
+const DWORD SERVER_VERSION = 0x00080800;
 const DWORD PROTOCOL_VERSION = 0x00010400;
 
 
@@ -80,7 +82,7 @@ static const t_Option m_Options[OPTIONS_NUM]={	_T("Serverport"),				1,	FALSE,
 												_T("No Strict Out FXP"),		1,	FALSE,
 												_T("Login Timeout"),			1,	FALSE,
 												_T("Show Pass in Log"),			1,	FALSE,
-												_T("Custom PASV Enable"),		1,	FALSE,
+												_T("Custom PASV IP type"),		1,	FALSE,
 												_T("Custom PASV IP"),			0,	FALSE,
 												_T("Custom PASV min port"),		1,	FALSE,
 												_T("Custom PASV max port"),		1,	FALSE,
@@ -99,7 +101,9 @@ static const t_Option m_Options[OPTIONS_NUM]={	_T("Serverport"),				1,	FALSE,
 												_T("Upload Speedlimit Type"),	1,	FALSE,
 												_T("Download Speedlimit"),		1,	FALSE,
 												_T("Upload Speedlimit"),		1,	FALSE,
-												_T("Buffer Size"),				1,	FALSE
+												_T("Buffer Size"),				1,	FALSE,
+												_T("Custom PASV IP server"),	0,	FALSE,
+												_T("Use custom PASV ports"),	1,	FALSE
 											};
 
 #endif // OPTION_TYPES_INCLUDED

@@ -990,7 +990,8 @@ CStdString CMarkupSTL::x_TextFromDoc( int nLeft, int nRight ) const
 		if ( pSource[nChar] == _T('&') )
 		{
 			// Look for matching &code;
-			for ( int nMatch = 0; nMatch < 5; ++nMatch )
+			int nMatch;
+			for ( nMatch = 0; nMatch < 5; ++nMatch )
 			{
 				if ( nChar <= nRight - anCodeLen[nMatch]
 					&& _tcsncmp(szaCode[nMatch],&pSource[nChar+1],anCodeLen[nMatch]) == 0 )

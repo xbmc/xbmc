@@ -28,11 +28,15 @@
 /////////////////////////////////////////////////////////////////////////////
 // Dialogfeld COptionsSecurityPage 
 
-class COptionsSecurityPage : public CSAPrefsSubDlg
+class COptionsDlg;
+class COptionsSecurityPage : public COptionsPage
 {
 // Konstruktion
 public:
-	COptionsSecurityPage(CWnd* pParent = NULL);   // Standardkonstruktor
+	COptionsSecurityPage(COptionsDlg *pOptionsDlg, CWnd* pParent = NULL);   // Standardkonstruktor
+
+	virtual void SaveData();
+	virtual void LoadData();
 
 // Dialogfelddaten
 	//{{AFX_DATA(COptionsSecurityPage)
