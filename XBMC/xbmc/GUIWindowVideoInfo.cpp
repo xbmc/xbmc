@@ -243,6 +243,7 @@ void CGUIWindowVideoInfo::Refresh()
 		    CUtil::GetExtension(strImage,strExtension);
 		    CStdString strTemp="T:\\temp";
 		    strTemp+=strExtension;
+        ::DeleteFile(strTemp.c_str());
 		    http.Download(strImage, strTemp);
 
         try
@@ -255,6 +256,7 @@ void CGUIWindowVideoInfo::Refresh()
           OutputDebugString("...\n");
           ::DeleteFile(strThumb.c_str());
         }
+        ::DeleteFile(strTemp.c_str());
 	    }
 	    CUtil::GetThumbnail(m_pMovie->m_strSearchString,strThumb);
     }
