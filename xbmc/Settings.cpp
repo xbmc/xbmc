@@ -3,6 +3,8 @@
 #include "utils/log.h"
 #include "localizestrings.h"
 #include "stdstring.h"
+#include "GraphicContext.h"
+#include "GUIWindowMusicBase.h"
 using namespace std;
 
 class CSettings g_settings;
@@ -16,26 +18,19 @@ CSettings::CSettings(void)
   g_stSettings.m_bMyVideoYearStack =false;
 
 
-  g_stSettings.m_iMyProgramsSelectedItem=0;
-  g_stSettings.m_iAudioStream=0;
   g_stSettings.m_bPPAuto=true;
   g_stSettings.m_bPPVertical=false;
   g_stSettings.m_bPPHorizontal=false;
   g_stSettings.m_bPPAutoLevels=false;
   g_stSettings.m_bPPdering=false;
-  g_stSettings.m_iPPHorizontal=0;
-  g_stSettings.m_iPPVertical=0;
   g_stSettings.m_bFrameRateConversions=false;
   g_stSettings.m_bUseDigitalOutput=false;
 
   strcpy(g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
-  g_stSettings.m_iSubtitleHeight=28;
-  g_stSettings.m_fVolumeAmplification=0.0f;
   g_stSettings.m_bPostProcessing=true;
   g_stSettings.m_bDeInterlace=false;
   g_stSettings.m_bNonInterleaved=false;
 	g_stSettings.m_bAudioOnAllSpeakers=false;
-	g_stSettings.m_iChannels=2;
 	g_stSettings.m_bUseID3=true;
 	g_stSettings.m_bDD_DTSMultiChannelPassThrough=false;
 	g_stSettings.m_bDDStereoPassThrough=false;
@@ -50,27 +45,15 @@ CSettings::CSettings(void)
 	g_stSettings.m_bUseGDrive=false;
 	strcpy(g_stSettings.szDefaultLanguage,"english");
 	strcpy(g_stSettings.szDefaultVisualisation,"goom.vis");
-	g_stSettings.m_minFilter=D3DTEXF_LINEAR;
-	g_stSettings.m_maxFilter=D3DTEXF_LINEAR;
 	g_stSettings.m_bAllowPAL60=true;
-	g_stSettings.m_iHDSpinDownTime=5; // minutes
-	g_stSettings.m_iShutdownTime=0;	// minutes - 0 = none
-	g_stSettings.m_iScreenSaverTime=3;	// minutes - CB: SCREENSAVER PATCH
-	g_stSettings.m_iScreenSaverMode=1;	// 0=Off, 1=Fade to dim, 2=Fade to black, 3=Matrix Trails
-	g_stSettings.m_iScreenSaverFadeLevel = 20;	// default to 20%
 	g_stSettings.m_bAutoShufflePlaylist=true;
-  g_stSettings.m_iSlideShowTransistionFrames=25;
-  g_stSettings.m_iSlideShowStayTime=3000;
 	g_stSettings.dwFileVersion =CONFIG_VERSION;
 	g_stSettings.m_bMyProgramsViewAsIcons=false;
 	g_stSettings.m_bMyProgramsSortAscending=true;
-	g_stSettings.m_iMyProgramsSortMethod=0;
 	g_stSettings.m_bMyProgramsFlatten=false;
 	g_stSettings.m_bMyProgramsDefaultXBE=false;
   strcpy(g_stSettings.szDashboard,"C:\\xboxdash.xbe");
   strcpy(g_stSettings.m_szAlternateSubtitleDirectory,"");
-  g_stSettings.m_iStartupWindow=0;
-  g_stSettings.m_ScreenResolution=PAL_4x3;
   strcpy(g_stSettings.m_strLocalIPAdres,"");
   strcpy(g_stSettings.m_strLocalNetmask,"");
   strcpy(g_stSettings.m_strGateway,"");
@@ -79,19 +62,13 @@ CSettings::CSettings(void)
 	g_stSettings.m_bTimeServerEnabled=false;
 	g_stSettings.m_bFTPServerEnabled=false;
 	g_stSettings.m_bHTTPServerEnabled=false;
-	g_stSettings.m_iHTTPProxyPort=0;
 	strcpy(g_stSettings.m_szHTTPProxy,"");
   strcpy(g_stSettings.szDefaultSkin,"MediaCenter");
 	strcpy(g_stSettings.szHomeDir,"");
 	g_stSettings.m_bMyPicturesViewAsIcons=false;
 	g_stSettings.m_bMyPicturesRootViewAsIcons=true;
 	g_stSettings.m_bMyPicturesSortAscending=true;
-	g_stSettings.m_iMyPicturesSortMethod=0;
 
-	g_stSettings.m_iMoveDelayIR=220;
-	g_stSettings.m_iRepeatDelayIR=220;
-	g_stSettings.m_iMoveDelayController=220;
-	g_stSettings.m_iRepeatDelayController=220;
 	strcpy(g_stSettings.m_szMyPicturesExtensions,".bmp|.jpg|.png|.gif|.pcx|.tif|.jpeg");
 	strcpy(g_stSettings.m_szMyMusicExtensions,".ac3|.aac|.pls|.rm|.sc|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u");
 	strcpy(g_stSettings.m_szMyVideoExtensions,".nfo|.rm|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli");
@@ -105,64 +82,27 @@ CSettings::CSettings(void)
 	strcpy (g_stSettings.m_szMusicRecordingDirectory,"");
 	g_stSettings.m_bUseCDDB=false;
 
-	g_stSettings.m_iMyMusicStartWindow=501;//view songs
-	g_stSettings.m_iVideoStartWindow=0;
-
-	g_stSettings.m_iMyMusicSongsRootViewAsIcons=1;
-	g_stSettings.m_iMyMusicSongsViewAsIcons=0;
 	g_stSettings.m_bMyMusicSongsRootSortAscending=true;
 	g_stSettings.m_bMyMusicSongsSortAscending=true;
-	g_stSettings.m_iMyMusicSongsRootSortMethod=0; //	name
-	g_stSettings.m_iMyMusicSongsSortMethod=0;	//	name
 
-	g_stSettings.m_iMyMusicAlbumRootViewAsIcons=0;
-	g_stSettings.m_iMyMusicAlbumViewAsIcons=0;
 	g_stSettings.m_bMyMusicAlbumRootSortAscending=true;
 	g_stSettings.m_bMyMusicAlbumSortAscending=true;
-	g_stSettings.m_iMyMusicAlbumRootSortMethod=7; //	album
-	g_stSettings.m_iMyMusicAlbumSortMethod=3;	//	tracknum
 	g_stSettings.m_bMyMusicAlbumShowRecent=false;
 
-	g_stSettings.m_iMyMusicArtistsRootViewAsIcons = 0;
-	g_stSettings.m_iMyMusicArtistsViewAsIcons = 0;
 	g_stSettings.m_bMyMusicArtistsRootSortAscending=true;
 	g_stSettings.m_bMyMusicArtistsSortAscending=true;
-	g_stSettings.m_iMyMusicArtistsSortMethod=5;	//	titel
-	g_stSettings.m_iMyMusicArtistsRootSortMethod=0;	//	name
 
-	g_stSettings.m_iMyMusicGenresRootViewAsIcons = 0;
-	g_stSettings.m_iMyMusicGenresViewAsIcons = 0;
 	g_stSettings.m_bMyMusicGenresRootSortAscending=true;
 	g_stSettings.m_bMyMusicGenresSortAscending=true;
-	g_stSettings.m_iMyMusicGenresSortMethod=5;	//	titel
-	g_stSettings.m_iMyMusicGenresRootSortMethod=0;	//	name
 
-	g_stSettings.m_iMyMusicPlaylistViewAsIcons = 0;
-
-	g_stSettings.m_iMyMusicTop100ViewAsIcons=0;
-
-	g_stSettings.m_iMyVideoViewAsIcons=0;
-	g_stSettings.m_iMyVideoRootViewAsIcons=0;
 	g_stSettings.m_bMyVideoSortAscending=true;
 
-  g_stSettings.m_iMyVideoGenreViewAsIcons=0;
-  g_stSettings.m_iMyVideoGenreRootViewAsIcons=0;
-  g_stSettings.m_iMyVideoGenreSortMethod=0;
   g_stSettings.m_bMyVideoGenreSortAscending=true;
 
-  g_stSettings.m_iMyVideoActorViewAsIcons=0;
-  g_stSettings.m_iMyVideoActorRootViewAsIcons=0;
-  g_stSettings.m_iMyVideoActorSortMethod=0;
   g_stSettings.m_bMyVideoActorSortAscending=true;
 
-  g_stSettings.m_iMyVideoYearViewAsIcons=0;
-  g_stSettings.m_iMyVideoYearRootViewAsIcons=0;
-  g_stSettings.m_iMyVideoYearSortMethod=0;
   g_stSettings.m_bMyVideoYearSortAscending=true;
 
-  g_stSettings.m_iMyVideoTitleViewAsIcons=0;
-  g_stSettings.m_iMyVideoTitleRootViewAsIcons=0;
-  g_stSettings.m_iMyVideoTitleSortMethod=0;
   g_stSettings.m_bMyVideoTitleSortAscending=true;
 
 	g_stSettings.m_bMyFilesSourceViewAsIcons=false;
@@ -173,11 +113,8 @@ CSettings::CSettings(void)
 	g_stSettings.m_bScriptsViewAsIcons = false;
 	g_stSettings.m_bScriptsRootViewAsIcons = false;
 	g_stSettings.m_bScriptsSortAscending = true;
-	g_stSettings.m_iScriptsSortMethod = 0;
 
 	g_stSettings.m_bMyFilesSortAscending=true;
-	g_stSettings.m_iUIOffsetX=0;
-	g_stSettings.m_iUIOffsetY=0;
 	g_stSettings.m_bSoften=false;
 	g_stSettings.m_bZoom=false;
 	g_stSettings.m_bStretch=false;
@@ -257,14 +194,14 @@ bool CSettings::Load()
 		TiXmlElement* pControllerDelays =pDelaysElement->FirstChildElement("controller");
 		if (pRemoteDelays)
 		{
-			GetInteger(pRemoteDelays, "move", g_stSettings.m_iMoveDelayIR);
-			GetInteger(pRemoteDelays, "repeat", g_stSettings.m_iRepeatDelayIR);
+			GetInteger(pRemoteDelays, "move", g_stSettings.m_iMoveDelayIR,220,1,INT_MAX);
+			GetInteger(pRemoteDelays, "repeat", g_stSettings.m_iRepeatDelayIR,220,1,INT_MAX);
 		}
 
 		if (pControllerDelays)
 		{
-			GetInteger(pControllerDelays, "move", g_stSettings.m_iMoveDelayController);
-			GetInteger(pControllerDelays, "repeat", g_stSettings.m_iRepeatDelayController);
+			GetInteger(pControllerDelays, "move", g_stSettings.m_iMoveDelayController,220,1,INT_MAX);
+			GetInteger(pControllerDelays, "repeat", g_stSettings.m_iRepeatDelayController,220,1,INT_MAX);
 		}
 	}
 
@@ -293,8 +230,8 @@ bool CSettings::Load()
 	GetString(pRootElement, "musicextensions", g_stSettings.m_szMyMusicExtensions,".ac3|.aac|.pls|.rm|.sc|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u");
 	GetString(pRootElement, "videoextensions", g_stSettings.m_szMyVideoExtensions,".nfo|.rm|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli");
 
-	GetInteger(pRootElement, "startwindow", g_stSettings.m_iStartupWindow);
-	GetInteger(pRootElement, "httpproxyport", g_stSettings.m_iHTTPProxyPort);
+	GetInteger(pRootElement, "startwindow", g_stSettings.m_iStartupWindow,0,0,INT_MAX);
+	GetInteger(pRootElement, "httpproxyport", g_stSettings.m_iHTTPProxyPort,0,0,INT_MAX);
 
 	GetBoolean(pRootElement, "useFDrive", g_stSettings.m_bUseFDrive);
 	GetBoolean(pRootElement, "useGDrive", g_stSettings.m_bUseGDrive);
@@ -474,22 +411,28 @@ void CSettings::GetString(const TiXmlElement* pRootElement, const CStdString& st
 	}
 }
 
-void CSettings::GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue)
+void CSettings::GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue, const int iDefault, const int iMin, const int iMax)
 {
 	const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
 	if (pChild)
 	{
 		iValue = atoi( pChild->FirstChild()->Value() );
-	}
+		if ((iValue<iMin) || (iValue>iMax)) iValue=iDefault;
+	} 
+	else
+		iValue=iDefault;
 }
 
-void CSettings::GetFloat(const TiXmlElement* pRootElement, const CStdString& strTagName, float& fValue)
+void CSettings::GetFloat(const TiXmlElement* pRootElement, const CStdString& strTagName, float& fValue, const float fDefault, const float fMin, const float fMax)
 {
 	const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
 	if (pChild)
 	{
 		fValue = (float)atof( pChild->FirstChild()->Value() );
-	}
+		if ((fValue<fMin) || (fValue>fMax)) fValue=fDefault;
+	} 
+	else
+		fValue=fDefault;
 }
 
 void CSettings::GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName, bool& bValue)
@@ -563,28 +506,23 @@ bool CSettings::LoadCalibration(const CStdString& strCalibrationFile)
 	while (pResolution)
 	{
 		// get the data for this resolution
-		int iRes = -1;
-		GetInteger(pResolution, "id", iRes);
-		if (iRes < 0 || iRes >= 10)//MAX_RESOLUTION)
-		{
-			return false;
-		}
-
+		int iRes;
+		GetInteger(pResolution, "id", iRes, (int)PAL_4x3, HDTV_1080i, PAL60_16x9); //PAL4x3 as default data
 		GetString(pResolution, "description", m_ResInfo[iRes].strMode, m_ResInfo[iRes].strMode);
-		GetInteger(pResolution, "width", m_ResInfo[iRes].iWidth);
-		GetInteger(pResolution, "height", m_ResInfo[iRes].iHeight);
-		GetInteger(pResolution, "subtitles", m_ResInfo[iRes].iSubtitles);
-		GetInteger(pResolution, "flags", (int &)m_ResInfo[iRes].dwFlags);
-		GetFloat(pResolution, "pixelratio", m_ResInfo[iRes].fPixelRatio);
+		GetInteger(pResolution, "width", m_ResInfo[iRes].iWidth,720,640,10000);
+		GetInteger(pResolution, "height", m_ResInfo[iRes].iHeight,576,400,10000);
+		GetInteger(pResolution, "subtitles", m_ResInfo[iRes].iSubtitles,576,m_ResInfo[iRes].iHeight-128,m_ResInfo[iRes].iHeight);
+		GetInteger(pResolution, "flags", (int &)m_ResInfo[iRes].dwFlags,0,INT_MIN,INT_MAX);
+		GetFloat(pResolution, "pixelratio", m_ResInfo[iRes].fPixelRatio,128.0f/117.0f,0.5f,2.0f);
 
 		// get the overscan info		
 		TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
 		if (pOverscan)
 		{
-			GetInteger(pOverscan, "left", m_ResInfo[iRes].Overscan.left);
-			GetInteger(pOverscan, "top", m_ResInfo[iRes].Overscan.top);
-			GetInteger(pOverscan, "width", m_ResInfo[iRes].Overscan.width);
-			GetInteger(pOverscan, "height", m_ResInfo[iRes].Overscan.height);
+			GetInteger(pOverscan, "left", m_ResInfo[iRes].Overscan.left,0,0,128);
+			GetInteger(pOverscan, "top", m_ResInfo[iRes].Overscan.top,0,0,128);
+			GetInteger(pOverscan, "width", m_ResInfo[iRes].Overscan.width,720,640,10000);
+			GetInteger(pOverscan, "height", m_ResInfo[iRes].Overscan.height,576,400,10000);
 		}
 		// iterate around
 		pResolution = pResolution->NextSiblingElement("resolution");
@@ -645,7 +583,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 	{
 		GetBoolean(pElement, "picturesviewicons", g_stSettings.m_bMyPicturesViewAsIcons);
 		GetBoolean(pElement, "picturesrooticons", g_stSettings.m_bMyPicturesRootViewAsIcons);
-		GetInteger(pElement, "picturessortmethod",g_stSettings.m_iMyPicturesSortMethod);
+		GetInteger(pElement, "picturessortmethod",g_stSettings.m_iMyPicturesSortMethod,0,0,2);
 		GetBoolean(pElement, "picturessortascending", g_stSettings.m_bMyPicturesSortAscending);
 	}
 	// myfiles
@@ -664,7 +602,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 			GetBoolean(pChild, "dstfilesviewicons", g_stSettings.m_bMyFilesDestViewAsIcons);
 			GetBoolean(pChild, "dstfilesrooticons", g_stSettings.m_bMyFilesDestRootViewAsIcons);
 		}
-		GetInteger(pElement, "filessortmethod",g_stSettings.m_iMyFilesSortMethod);
+		GetInteger(pElement, "filessortmethod",g_stSettings.m_iMyFilesSortMethod,0,0,2);
 		GetBoolean(pElement, "filessortascending", g_stSettings.m_bMyFilesSortAscending);
 	}
 
@@ -675,20 +613,20 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		TiXmlElement *pChild = pElement->FirstChildElement("songs");
 		if (pChild)
 		{
-			GetInteger(pChild, "songsviewicons", g_stSettings.m_iMyMusicSongsViewAsIcons);
-			GetInteger(pChild, "songsrooticons", g_stSettings.m_iMyMusicSongsRootViewAsIcons);
-			GetInteger(pChild, "songssortmethod",g_stSettings.m_iMyMusicSongsSortMethod);
-			GetInteger(pChild, "songssortmethodroot",g_stSettings.m_iMyMusicSongsRootSortMethod);
+			GetInteger(pChild, "songsviewicons", g_stSettings.m_iMyMusicSongsViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+			GetInteger(pChild, "songsrooticons", g_stSettings.m_iMyMusicSongsRootViewAsIcons,VIEW_AS_ICONS,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+			GetInteger(pChild, "songssortmethod",g_stSettings.m_iMyMusicSongsSortMethod,0,0,2);
+			GetInteger(pChild, "songssortmethodroot",g_stSettings.m_iMyMusicSongsRootSortMethod,0,0,2);
 			GetBoolean(pChild, "songssortascending",g_stSettings.m_bMyMusicSongsSortAscending);
 			GetBoolean(pChild, "songssortascendingroot",g_stSettings.m_bMyMusicSongsRootSortAscending);
 		}
 		pChild = pElement->FirstChildElement("album");
 		if (pChild)
 		{
-			GetInteger(pChild, "albumviewicons", g_stSettings.m_iMyMusicAlbumViewAsIcons);
-			GetInteger(pChild, "albumrooticons", g_stSettings.m_iMyMusicAlbumRootViewAsIcons);
-			GetInteger(pChild, "albumsortmethod",g_stSettings.m_iMyMusicAlbumSortMethod);
-			GetInteger(pChild, "albumsortmethodroot",g_stSettings.m_iMyMusicAlbumRootSortMethod);
+			GetInteger(pChild, "albumviewicons", g_stSettings.m_iMyMusicAlbumViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_ICONS);
+			GetInteger(pChild, "albumrooticons", g_stSettings.m_iMyMusicAlbumRootViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_ICONS);
+			GetInteger(pChild, "albumsortmethod",g_stSettings.m_iMyMusicAlbumSortMethod,3,3,5);
+			GetInteger(pChild, "albumsortmethodroot",g_stSettings.m_iMyMusicAlbumRootSortMethod,7,6,7);
 			GetBoolean(pChild, "albumsortascending",g_stSettings.m_bMyMusicAlbumSortAscending);
 			GetBoolean(pChild, "albumsortascendingroot",g_stSettings.m_bMyMusicAlbumRootSortAscending);
 			GetBoolean(pChild, "albumshowrecentalbums",g_stSettings.m_bMyMusicAlbumShowRecent);
@@ -696,75 +634,74 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		pChild = pElement->FirstChildElement("artist");
 		if (pChild)
 		{
-			GetInteger(pChild, "artistviewicons", g_stSettings.m_iMyMusicArtistsViewAsIcons);
-			GetInteger(pChild, "artistrooticons", g_stSettings.m_iMyMusicArtistsRootViewAsIcons);
-			GetInteger(pChild, "artistsortmethod",g_stSettings.m_iMyMusicArtistsSortMethod);
-			GetInteger(pChild, "artistsortmethodroot",g_stSettings.m_iMyMusicArtistsRootSortMethod);
+			GetInteger(pChild, "artistviewicons", g_stSettings.m_iMyMusicArtistsViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+			GetInteger(pChild, "artistrooticons", g_stSettings.m_iMyMusicArtistsRootViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+			GetInteger(pChild, "artistsortmethod",g_stSettings.m_iMyMusicArtistsSortMethod,4,5,5); //title
+			GetInteger(pChild, "artistsortmethodroot",g_stSettings.m_iMyMusicArtistsRootSortMethod,0,0,0); //Only name (??)
 			GetBoolean(pChild, "artistsortascending",g_stSettings.m_bMyMusicArtistsSortAscending);
 			GetBoolean(pChild, "artistsortascendingroot",g_stSettings.m_bMyMusicArtistsRootSortAscending);
 		}
 		pChild = pElement->FirstChildElement("genre");
 		if (pChild)
 		{
-			GetInteger(pChild, "genreviewicons", g_stSettings.m_iMyMusicGenresViewAsIcons);
-			GetInteger(pChild, "genrerooticons", g_stSettings.m_iMyMusicGenresRootViewAsIcons);
-			GetInteger(pChild, "genresortmethod",g_stSettings.m_iMyMusicGenresSortMethod);
-			GetInteger(pChild, "genresortmethodroot",g_stSettings.m_iMyMusicGenresRootSortMethod);
+			GetInteger(pChild, "genreviewicons", g_stSettings.m_iMyMusicGenresViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+			GetInteger(pChild, "genrerooticons", g_stSettings.m_iMyMusicGenresRootViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+			GetInteger(pChild, "genresortmethod",g_stSettings.m_iMyMusicGenresSortMethod,5,4,5);	//	titel
+			GetInteger(pChild, "genresortmethodroot",g_stSettings.m_iMyMusicGenresRootSortMethod,0,0,0); // Only name (??)
 			GetBoolean(pChild, "genresortascending",g_stSettings.m_bMyMusicGenresSortAscending);
 			GetBoolean(pChild, "genresortascendingroot",g_stSettings.m_bMyMusicGenresRootSortAscending);
 		}
 		pChild = pElement->FirstChildElement("top100");
 		if (pChild)
 		{
-			GetInteger(pChild, "top100rooticons", g_stSettings.m_iMyMusicTop100ViewAsIcons);
+			GetInteger(pChild, "top100rooticons", g_stSettings.m_iMyMusicTop100ViewAsIcons,VIEW_AS_LIST,VIEW_AS_ICONS,VIEW_AS_ICONS);
 		}
 		pChild = pElement->FirstChildElement("playlist");
 		if (pChild)
 		{
-			GetInteger(pChild, "playlistrooticons", g_stSettings.m_iMyMusicPlaylistViewAsIcons);
+			GetInteger(pChild, "playlistrooticons", g_stSettings.m_iMyMusicPlaylistViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
 		}
-		GetInteger(pElement, "startwindow",g_stSettings.m_iMyMusicStartWindow);
+		GetInteger(pElement, "startwindow",g_stSettings.m_iMyMusicStartWindow,WINDOW_MUSIC_FILES,WINDOW_MUSIC_FILES,WINDOW_MUSIC_TOP100);//501; view songs
 	}
 	// myvideos settings
 	pElement = pRootElement->FirstChildElement("myvideos");
 	if (pElement)
 	{ 
-    GetInteger(pElement, "startwindow",g_stSettings.m_iVideoStartWindow);
-    
+    GetInteger(pElement, "startwindow",g_stSettings.m_iVideoStartWindow,0,0,INT_MAX);
     GetBoolean(pElement, "stackvideo", g_stSettings.m_bMyVideoVideoStack);
     GetBoolean(pElement, "stackgenre", g_stSettings.m_bMyVideoGenreStack);
     GetBoolean(pElement, "stackactor", g_stSettings.m_bMyVideoActorStack);
     GetBoolean(pElement, "stackyear", g_stSettings.m_bMyVideoYearStack);
     
-		GetInteger(pElement, "videoviewicons", g_stSettings.m_iMyVideoViewAsIcons);
-		GetInteger(pElement, "videorooticons", g_stSettings.m_iMyVideoRootViewAsIcons);
-		GetInteger(pElement, "videosortmethod",g_stSettings.m_iMyVideoSortMethod);
+		GetInteger(pElement, "videoviewicons", g_stSettings.m_iMyVideoViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+		GetInteger(pElement, "videorooticons", g_stSettings.m_iMyVideoRootViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+		GetInteger(pElement, "videosortmethod",g_stSettings.m_iMyVideoSortMethod,0,0,2);
 		GetBoolean(pElement, "videosortascending", g_stSettings.m_bMyVideoSortAscending);
 
-		GetInteger(pElement, "genreviewicons", g_stSettings.m_iMyVideoGenreViewAsIcons);
-		GetInteger(pElement, "genrerooticons", g_stSettings.m_iMyVideoGenreRootViewAsIcons);
-		GetInteger(pElement, "genresortmethod",g_stSettings.m_iMyVideoGenreSortMethod);
+		GetInteger(pElement, "genreviewicons", g_stSettings.m_iMyVideoGenreViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+		GetInteger(pElement, "genrerooticons", g_stSettings.m_iMyVideoGenreRootViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+		GetInteger(pElement, "genresortmethod",g_stSettings.m_iMyVideoGenreSortMethod,0,0,2);
 		GetBoolean(pElement, "genresortascending", g_stSettings.m_bMyVideoGenreSortAscending);
 
-		GetInteger(pElement, "actorviewicons", g_stSettings.m_iMyVideoActorViewAsIcons);
-		GetInteger(pElement, "actorrooticons", g_stSettings.m_iMyVideoActorRootViewAsIcons);
-		GetInteger(pElement, "actorsortmethod",g_stSettings.m_iMyVideoActorSortMethod);
+		GetInteger(pElement, "actorviewicons", g_stSettings.m_iMyVideoActorViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+		GetInteger(pElement, "actorrooticons", g_stSettings.m_iMyVideoActorRootViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+		GetInteger(pElement, "actorsortmethod",g_stSettings.m_iMyVideoActorSortMethod,0,0,2);
 		GetBoolean(pElement, "actorsortascending", g_stSettings.m_bMyVideoActorSortAscending);
     
-		GetInteger(pElement, "yearviewicons", g_stSettings.m_iMyVideoYearViewAsIcons);
-		GetInteger(pElement, "yearrooticons", g_stSettings.m_iMyVideoYearRootViewAsIcons);
-		GetInteger(pElement, "yearsortmethod",g_stSettings.m_iMyVideoYearSortMethod);
+		GetInteger(pElement, "yearviewicons", g_stSettings.m_iMyVideoYearViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+		GetInteger(pElement, "yearrooticons", g_stSettings.m_iMyVideoYearRootViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+		GetInteger(pElement, "yearsortmethod",g_stSettings.m_iMyVideoYearSortMethod,0,0,2);
 		GetBoolean(pElement, "yearsortascending", g_stSettings.m_bMyVideoYearSortAscending);
 
-    GetInteger(pElement, "titleviewicons", g_stSettings.m_iMyVideoTitleViewAsIcons);
-		GetInteger(pElement, "titlerooticons", g_stSettings.m_iMyVideoTitleRootViewAsIcons);
-		GetInteger(pElement, "titlesortmethod",g_stSettings.m_iMyVideoTitleSortMethod);
+    GetInteger(pElement, "titleviewicons", g_stSettings.m_iMyVideoTitleViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+		GetInteger(pElement, "titlerooticons", g_stSettings.m_iMyVideoTitleRootViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+		GetInteger(pElement, "titlesortmethod",g_stSettings.m_iMyVideoTitleSortMethod,0,0,2);
 		GetBoolean(pElement, "titlesortascending", g_stSettings.m_bMyVideoTitleSortAscending);
 
 		GetBoolean(pElement, "postprocessing", g_stSettings.m_bPostProcessing);
 		GetBoolean(pElement, "deinterlace", g_stSettings.m_bDeInterlace);
       
-		GetInteger(pElement, "subtitleheight",g_stSettings.m_iSubtitleHeight);
+		GetInteger(pElement, "subtitleheight",g_stSettings.m_iSubtitleHeight,28,1,128);
 		GetString(pElement, "subtitlefont", g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
 	}
 	// myscripts settings
@@ -773,7 +710,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 	{
 		GetBoolean(pElement, "scriptsviewicons", g_stSettings.m_bScriptsViewAsIcons);
 		GetBoolean(pElement, "scriptsrooticons", g_stSettings.m_bScriptsRootViewAsIcons);
-		GetInteger(pElement, "scriptssortmethod",g_stSettings.m_iScriptsSortMethod);
+		GetInteger(pElement, "scriptssortmethod",g_stSettings.m_iScriptsSortMethod,0,0,2);
 		GetBoolean(pElement, "scriptssortascending", g_stSettings.m_bScriptsSortAscending);
 	}
 	// general settings
@@ -785,7 +722,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetBoolean(pElement, "ftpserver", g_stSettings.m_bFTPServerEnabled);
 		GetBoolean(pElement, "httpserver", g_stSettings.m_bHTTPServerEnabled);
 		GetBoolean(pElement, "cddb", g_stSettings.m_bUseCDDB);
-		GetInteger(pElement, "hdspindowntime", g_stSettings.m_iHDSpinDownTime);
+		GetInteger(pElement, "hdspindowntime", g_stSettings.m_iHDSpinDownTime,5,0,INT_MAX);
 		GetBoolean(pElement, "autorundvd", g_stSettings.m_bAutorunDVD);
 		GetBoolean(pElement, "autorunvcd", g_stSettings.m_bAutorunVCD);
 		GetBoolean(pElement, "autoruncdda", g_stSettings.m_bAutorunCdda);
@@ -794,48 +731,47 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetBoolean(pElement, "autorunvideo", g_stSettings.m_bAutorunVideo);
 		GetBoolean(pElement, "autorunpictures", g_stSettings.m_bAutorunPictures);
 		GetString(pElement, "language", g_stSettings.szDefaultLanguage, g_stSettings.szDefaultLanguage);
-		GetInteger(pElement, "shutdowntime", g_stSettings.m_iShutdownTime);
-		GetInteger(pElement, "screensavertime", g_stSettings.m_iScreenSaverTime);	// CB: SCREENSAVER PATCH
-		GetInteger(pElement, "screensavermode", g_stSettings.m_iScreenSaverMode);	// CB: SCREENSAVER PATCH
-		GetInteger(pElement, "screensaverfade", g_stSettings.m_iScreenSaverFadeLevel);
+		GetInteger(pElement, "shutdowntime", g_stSettings.m_iShutdownTime,0,0,INT_MAX);
+		GetInteger(pElement, "screensavertime", g_stSettings.m_iScreenSaverTime,3,1,INT_MAX);	// CB: SCREENSAVER PATCH
+		GetInteger(pElement, "screensavermode", g_stSettings.m_iScreenSaverMode,1,0,3);	// 0=Off, 1=Fade to dim, 2=Fade to black, 3=Matrix Trails
+		GetInteger(pElement, "screensaverfade", g_stSettings.m_iScreenSaverFadeLevel,20,1,100);	// default to 20%
+		GetInteger(pElement, "audiostream",g_stSettings.m_iAudioStream,0,0,INT_MAX);
 	}
 	// slideshow settings
 	pElement = pRootElement->FirstChildElement("slideshow");
 	if (pElement)
 	{
-		GetInteger(pElement, "transistionframes", g_stSettings.m_iSlideShowTransistionFrames);
-		GetInteger(pElement, "staytime", g_stSettings.m_iSlideShowStayTime);
+		GetInteger(pElement, "transistionframes", g_stSettings.m_iSlideShowTransistionFrames,25,1,INT_MAX);
+		GetInteger(pElement, "staytime", g_stSettings.m_iSlideShowStayTime,3000,500,INT_MAX);
 	}
 	// screen settings
 	pElement = pRootElement->FirstChildElement("screen");
 	if (pElement)
 	{
-		int iRes = (int)g_stSettings.m_ScreenResolution;
-		GetInteger(pElement, "resolution", iRes);
-		if (iRes >=0 || iRes <= 10) g_stSettings.m_ScreenResolution = (RESOLUTION)iRes;
-		GetInteger(pElement, "uioffsetx",g_stSettings.m_iUIOffsetX);
-		GetInteger(pElement, "uioffsety",g_stSettings.m_iUIOffsetY);
+		GetInteger(pElement, "resolution",(int &)g_stSettings.m_ScreenResolution,(int)PAL_4x3,(int)HDTV_1080i,(int)PAL60_16x9);
+		GetInteger(pElement, "uioffsetx",g_stSettings.m_iUIOffsetX,0,INT_MIN,INT_MAX);
+		GetInteger(pElement, "uioffsety",g_stSettings.m_iUIOffsetY,0,INT_MIN,INT_MAX);
 		GetBoolean(pElement, "soften", g_stSettings.m_bSoften);
     GetBoolean(pElement, "framerateconversion", g_stSettings.m_bFrameRateConversions);
 		GetBoolean(pElement, "zoom", g_stSettings.m_bZoom);
 		GetBoolean(pElement, "stretch", g_stSettings.m_bStretch);
 		GetBoolean(pElement, "allowswitching", g_stSettings.m_bAllowVideoSwitching);
 		GetBoolean(pElement, "allowpal60", g_stSettings.m_bAllowPAL60);
-		GetInteger(pElement, "minfilter", (int &)g_stSettings.m_minFilter);
-		GetInteger(pElement, "maxfilter", (int &)g_stSettings.m_maxFilter);
+		GetInteger(pElement, "minfilter", (int &)g_stSettings.m_minFilter,D3DTEXF_LINEAR,INT_MIN,INT_MAX);
+		GetInteger(pElement, "maxfilter", (int &)g_stSettings.m_maxFilter,D3DTEXF_LINEAR,INT_MIN,INT_MAX);
 	}
 	// audio settings
 	pElement = pRootElement->FirstChildElement("audio");
 	if (pElement)
 	{
 		GetBoolean(pElement, "audioonallspeakers", g_stSettings.m_bAudioOnAllSpeakers);
-		GetInteger(pElement, "channels",g_stSettings.m_iChannels);
+		GetInteger(pElement, "channels",g_stSettings.m_iChannels,2,0,INT_MAX);
 		GetBoolean(pElement, "ac3passthru51", g_stSettings.m_bDD_DTSMultiChannelPassThrough);
 		GetBoolean(pElement, "ac3passthru21", g_stSettings.m_bDDStereoPassThrough);
 		GetBoolean(pElement, "useid3", g_stSettings.m_bUseID3);
 		GetString(pElement, "visualisation", g_stSettings.szDefaultVisualisation, g_stSettings.szDefaultVisualisation);
 		GetBoolean(pElement, "autoshuffleplaylist", g_stSettings.m_bAutoShufflePlaylist);
-    GetFloat(pElement, "volumeamp", g_stSettings.m_fVolumeAmplification);
+    GetFloat(pElement, "volumeamp", g_stSettings.m_fVolumeAmplification,0.0f,-200.0f,60.0f);
 
     GetBoolean(pElement, "UseDigitalOutput", g_stSettings.m_bUseDigitalOutput);
 	}
@@ -849,18 +785,23 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 	  GetBoolean(pElement, "PPHorizontal", g_stSettings.m_bPPHorizontal);
 	  GetBoolean(pElement, "PPAutoLevels", g_stSettings.m_bPPAutoLevels);
 	  GetBoolean(pElement, "PPdering", g_stSettings.m_bPPdering);
-	  GetInteger(pElement, "PPHorizontalVal",g_stSettings.m_iPPHorizontal);
-	  GetInteger(pElement, "PPVerticalVal",g_stSettings.m_iPPVertical);
-  }
+	  GetInteger(pElement, "PPHorizontalVal",g_stSettings.m_iPPHorizontal,0,INT_MIN,INT_MAX);
+	  GetInteger(pElement, "PPVerticalVal",g_stSettings.m_iPPVertical,0,INT_MIN,INT_MAX);
+
+  g_stSettings.m_iPPHorizontal=0;
+  g_stSettings.m_iPPVertical=0;
+	
+}
 
   // my programs
   pElement = pRootElement->FirstChildElement("myprograms");
   if (pElement)
   {
-	  GetBoolean(pElement, "programsviewicons", g_stSettings.m_bMyProgramsViewAsIcons);
-	  GetInteger(pElement, "programssortmethod", g_stSettings.m_iMyProgramsSortMethod);
-	  GetBoolean(pElement, "programssortascending", g_stSettings.m_bMyProgramsSortAscending);
-    GetInteger(pElement, "selecteditem",g_stSettings.m_iMyProgramsSelectedItem);
+	GetBoolean(pElement, "programsviewicons", g_stSettings.m_bMyProgramsViewAsIcons);
+	GetInteger(pElement, "programssortmethod", g_stSettings.m_iMyProgramsSortMethod,0,0,2);
+	GetBoolean(pElement, "programssortascending", g_stSettings.m_bMyProgramsSortAscending);
+	GetInteger(pElement, "selecteditem",g_stSettings.m_iMyProgramsSelectedItem,0,0,INT_MAX);
+
 	  GetBoolean(pElement, "flatten", g_stSettings.m_bMyProgramsFlatten);
    	GetBoolean(pElement, "defaultxbe", g_stSettings.m_bMyProgramsDefaultXBE);
   }
@@ -1052,6 +993,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetInteger(pNode, "screensavertime", g_stSettings.m_iScreenSaverTime);	// CB: SCREENSAVER PATCH
 	SetInteger(pNode, "screensavermode", g_stSettings.m_iScreenSaverMode);	// CB: SCREENSAVER PATCH
 	SetInteger(pNode, "screensaverfade", g_stSettings.m_iScreenSaverFadeLevel);
+	SetInteger(pNode, "audiostream",g_stSettings.m_iAudioStream);
 
   // slideshow settings
 	TiXmlElement slideshowNode("slideshow");
