@@ -39,7 +39,7 @@ public:
 	CGUIWindow(DWORD dwID);
 	virtual ~CGUIWindow(void);
 
-	bool            		Load(const CStdString& strFileName, bool bContainsPath = false);
+	virtual bool      Load(const CStdString& strFileName, bool bContainsPath = false);
 	virtual void			SetPosition(DWORD dwPosX, DWORD dwPosY);
 	void					CenterWindow();
 	virtual void    		Render();

@@ -11,6 +11,7 @@ CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, DW
 ,m_guiRight(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight,strRightTexture)
 {
 	m_iPercent=0;
+	ControlType = GUICONTROL_PROGRESS;
 }
 
 CGUIProgressControl::~CGUIProgressControl(void)

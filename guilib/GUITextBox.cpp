@@ -19,6 +19,7 @@ CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWOR
   m_iItemHeight=10;
   m_pFont=g_fontManager.GetFont(strFontName);
   m_dwTextColor=dwTextColor;
+	ControlType = GUICONTROL_TEXTBOX;
 }
 
 CGUITextBox::~CGUITextBox(void)

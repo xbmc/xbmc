@@ -20,6 +20,7 @@ CGUIToggleButtonControl::CGUIToggleButtonControl(DWORD dwParentID, DWORD dwContr
   m_lHyperLinkWindowID=-1;
   m_dwTextOffsetX = 0;
   m_dwTextOffsetY = 0;
+	ControlType = GUICONTROL_TOGGLEBUTTON;
 }
 
 CGUIToggleButtonControl::~CGUIToggleButtonControl(void)
