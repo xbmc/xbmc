@@ -226,7 +226,7 @@ void CCharsetConverter::utf8ToStringCharset(const CStdStringA& strSource, CStdSt
 		size_t inBytes = strSource.length() + 1;
 
 		char *dst = strDest.SetBuf(inBytes);
-		size_t outBytes = inBytes;
+		size_t outBytes = inBytes-1;
 
 		if (iconv(m_iconvUtf8ToStringCharset, &src, &inBytes, &dst, &outBytes) == -1)
 		{
