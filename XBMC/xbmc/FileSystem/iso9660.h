@@ -167,6 +167,7 @@ protected:
 	string											GetThinText(WCHAR* strTxt, int iLen );
 	bool												ReadSectorFromCache(DWORD sector, byte** ppBuffer);
 	void												ReleaseSectorFromCache(DWORD sector);
+	const string								ParseName(struct	iso9660_Directory& isodir);
 
 	struct iso_dirtree*					m_dirtree;
 	struct iso9660info					m_info;
