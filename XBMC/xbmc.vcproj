@@ -1031,10 +1031,10 @@
 				RelativePath=".\xbmc\cores\ModPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
@@ -1251,6 +1251,12 @@
 				RelativePath=".\xbmc\FileSystem\FileSmb.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\FileSndtrk.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FileSndtrk.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\FileXBMSP.cpp">
 			</File>
 			<File
@@ -1273,6 +1279,12 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\SMBDirectory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\SndtrkDirectory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\SndtrkDirectory.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\VirtualDirectory.cpp">
@@ -1637,10 +1649,10 @@
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
