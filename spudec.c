@@ -772,7 +772,14 @@ void spudec_draw_scaled(void *me, unsigned int dxs, unsigned int dys, void (*dra
     if( (spu->forced_subs_only) && !(spu->is_forced_sub) ){ 
 	return;
     }
-
+#ifdef _XBOX //Never let mplayer do any scaling of the vobsubs, leave that up to xbmc
+  if (spu->image)
+  {
+    draw_alpha(spu->start_col, spu->start_row, spu->width, spu->height,
+    spu->image, spu->aimage, spu->stride);
+    spu->spu_changed = 0;
+  }
+#else
     if (!(spu_aamode&16) && (spu->orig_frame_width == 0 || spu->orig_frame_height == 0
 	|| (spu->orig_frame_width == dxs && spu->orig_frame_height == dys))) {
       if (spu->image)
@@ -1091,6 +1098,7 @@ nothing_to_do:
 	spu->spu_changed = 0;
       }
     }
+#endif //XBOX
   }
   else
   {
