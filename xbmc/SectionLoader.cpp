@@ -92,8 +92,7 @@ void CSectionLoader::UnloadAll()
   while (i != g_sectionLoader.m_vecLoadedSections.end())
   {
     CSection& section=*i;
-    
-    g_sectionLoader.m_vecLoadedSections.erase(i);
+    //g_sectionLoader.m_vecLoadedSections.erase(i);
     OutputDebugString("FreeSection:");
 		OutputDebugString(section.m_strSectionName.c_str());
     OutputDebugString("\n");
