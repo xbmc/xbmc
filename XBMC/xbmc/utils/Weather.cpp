@@ -52,8 +52,10 @@
 #define PARTNER_KEY				"079f24145f208494"		//weather.com partner key
 
 #define MAX_LOCATION			3
-#define LOCALIZED_TOKEN_FIRSTID	370
-#define LOCALIZED_TOKEN_LASTID	395
+#define LOCALIZED_TOKEN_FIRSTID	  370
+#define LOCALIZED_TOKEN_LASTID	  395
+#define LOCALIZED_TOKEN_FIRSTID2	1396
+#define LOCALIZED_TOKEN_LASTID2	  1410
 /*
 FIXME'S
 >strings are not centered
@@ -245,7 +247,7 @@ void CWeather::LocalizeOverview(char *szStr)
 	LocalizeOverviewToken(szToken);								//localize
 	strcpy(loc+strlen(loc), szToken);							//add it to the end of loc
 	strcpy(szStr, loc);											//copy loc over the original input string
-	SplitLongString(szStr, 8, 15);				//split to 2 lines if needed
+	SplitLongString(szStr, 7, 15);				//split to 2 lines if needed
 }
 
 bool CWeather::LoadWeather(const CStdString &strWeatherFile)
@@ -467,7 +469,8 @@ void CWeather::LoadLocalizedToken()
 			const TiXmlNode *pChildID = pChild->FirstChild("id");
 			const TiXmlNode *pChildText = pChild->FirstChild("value");
 			DWORD dwID=atoi(pChildID->FirstChild()->Value());
-			if (LOCALIZED_TOKEN_FIRSTID <= dwID && dwID <= LOCALIZED_TOKEN_LASTID)
+			if ( (LOCALIZED_TOKEN_FIRSTID <= dwID && dwID <= LOCALIZED_TOKEN_LASTID) ||
+           (LOCALIZED_TOKEN_FIRSTID2 <= dwID && dwID <= LOCALIZED_TOKEN_LASTID2) )
 			{
 				WCHAR wszText[1024];
 				swprintf(wszText,L"%S", pChildText->FirstChild()->Value() );

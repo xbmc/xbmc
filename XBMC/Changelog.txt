@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 21-02-2005 fixed: Yet another weather localization fix.  Thanks KoTiX!
   - 21-02-2005 fixed: Updated system/players/mplayer/mplayer.dll to current CVS (includes flac fix + crash fix)
   - 21-02-2005 fixed: Music Database Cleanup would remove all songs from database.
   - 21-02-2005 fixed: iTunes sharing caused crash if no connection (or iTunes sharing) was available.
