@@ -356,7 +356,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings, bool &bCalibration
 	TiXmlDocument xmlDoc;
 	if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) ) 
 	{
-		g_LoadErrorStr.Format("%s: %s", strXMLFile.c_str(), xmlDoc.GetErrorDesc());
+		g_LoadErrorStr.Format("%s, Line %d\n%s", strXMLFile.c_str(), xmlDoc.GetLineNo(), xmlDoc.GetErrorDesc());
 		return false;
 	}
 
@@ -364,7 +364,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings, bool &bCalibration
 	CStdString strValue=pRootElement->Value();
 	if ( strValue != "xboxmediacenter") 
 	{
-		g_LoadErrorStr.Format("%s doesn't start with <xboxmediacenter>",strXMLFile.c_str());
+		g_LoadErrorStr.Format("%s Doesn't contain <xboxmediacenter>",strXMLFile.c_str());
 		return false;
 	}
 
@@ -744,13 +744,13 @@ bool CSettings::LoadCalibration(const CStdString& strCalibrationFile)
 	TiXmlDocument xmlDoc;
 	if (!xmlDoc.LoadFile(strCalibrationFile))
 	{
-		g_LoadErrorStr.Format("%s: %s", strCalibrationFile.c_str(), xmlDoc.GetErrorDesc());
+		g_LoadErrorStr.Format("%s, Line %d\n%s", strCalibrationFile.c_str(), xmlDoc.GetLineNo(), xmlDoc.GetErrorDesc());
 		return false;
 	}
 	TiXmlElement *pRootElement = xmlDoc.RootElement();
 	if (CUtil::cmpnocase(pRootElement->Value(),"calibration")!=0)
 	{
-		g_LoadErrorStr.Format("%s doesn't start with <calibration>", strCalibrationFile.c_str());
+		g_LoadErrorStr.Format("%s Doesn't contain <calibration>", strCalibrationFile.c_str());
 		return false;
 	}
 	TiXmlElement *pResolution = pRootElement->FirstChildElement("resolution");
@@ -828,13 +828,13 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 	TiXmlDocument xmlDoc;
 	if (!xmlDoc.LoadFile(strSettingsFile))
 	{
-		g_LoadErrorStr.Format("%s: %s", strSettingsFile.c_str(), xmlDoc.GetErrorDesc());
+		g_LoadErrorStr.Format("%s, Line %d\n%s", strSettingsFile.c_str(), xmlDoc.GetLineNo(), xmlDoc.GetErrorDesc());
 		return false;
 	}
 	TiXmlElement *pRootElement = xmlDoc.RootElement();
 	if (CUtil::cmpnocase(pRootElement->Value(),"settings")!=0)
 	{
-		g_LoadErrorStr.Format("%s doesn't contain <settings>",strSettingsFile.c_str());
+		g_LoadErrorStr.Format("%s\nDoesn't contain <settings>",strSettingsFile.c_str());
 		return false;
 	}
 
