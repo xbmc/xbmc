@@ -1147,7 +1147,7 @@ void CGUIWindowMusicSongs::AutoSwitchControlThumbList()
 			for (int i=0; i<(int)m_vecItems.size(); i++)
 			{
 				CFileItem* pItem=m_vecItems[i];
-				if (pItem->GetThumbnailImage()!="defaultFolderBig.jpg" && pItem->GetThumbnailImage()!="defaultFolderBackBig.jpg")
+				if (pItem->GetThumbnailImage()!="defaultFolderBig.png" && pItem->GetThumbnailImage()!="defaultFolderBackBig.png")
 				{
 					bAlbums=true;
 					break;
