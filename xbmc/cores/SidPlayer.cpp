@@ -4,6 +4,8 @@
 #include "../utils/log.h"
 #include <sidplay/builders/resid.h>
 #include "../SectionLoader.h"
+#include "../util.h"
+#include "../FileSystem/File.h"
 
 #pragma comment(linker,"/merge:SID_RD=SID_RX")
 #pragma comment(linker,"/section:SID_RX,REN")
@@ -58,7 +60,6 @@ SidPlayer::SidPlayer(IPlayerCallback& callback) :IPlayer(callback), m_name("SidP
 	m_speed.max      = 32;
 
 	// Read default configuration
-	m_iniCfg.read ();
 	m_engCfg = m_engine.config ();
 
 	// Load ini settings
@@ -270,8 +271,21 @@ bool SidPlayer::openfile(const CStdString& strFile)
 	m_driver.file   = false;
 	m_driver.sid    = EMU_RESID;
 
+	if (!CUtil::IsHD(strFile))
+	{
+		CFile file;
+		if (!file.Cache(strFile.c_str(),"Z:\\cachedsid",NULL,NULL))
+		{
+			::DeleteFile("Z:\\cachedsid");
+			CLog::Log("ModPlayer: Unable to cache file %s\n", strFile.c_str());
+			return false;
+		}
+		m_filename = strdup("Z:\\cachedsid");
+	}
+	else
+		m_filename = strdup(strFile.c_str());
+
 	// Load the tune
-	m_filename = strdup(strFile.c_str());
 	m_tune.load (m_filename);
 	if (!m_tune)
 	{
@@ -397,6 +411,9 @@ bool SidPlayer::openfile(const CStdString& strFile)
 
 bool SidPlayer::closefile()
 {
+	m_bStopPlaying=true;
+	StopThread();
+
 	m_engine.stop   ();
 	if (m_state == playerExit)
 	{   // Natural finish
@@ -413,8 +430,6 @@ bool SidPlayer::closefile()
 	if (m_filename)
 		free(m_filename);
 	
-	m_bStopPlaying=true;
-	StopThread();
 	return true;
 }
 
