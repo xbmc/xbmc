@@ -152,6 +152,8 @@ bool CFileShoutcast::Open(const char* strUserName, const char* strPassword,const
 								OPT_ADD_ID3;
 
 	CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+	if (dlgProgress->IsRunning())
+		dlgProgress = NULL; // don't use progress if it's already running
 
 	strcpy(m_opt.output_directory, "./");
 	m_opt.proxyurl[0] = (char)NULL;

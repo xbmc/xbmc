@@ -416,7 +416,8 @@ void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
 			bFound=g_musicDatabase.GetSongByFileName(strFile, song);
 			g_musicDatabase.Close();
 		}
-		if (!bFound && g_stSettings.m_bUseID3)
+		// always get id3 info for the overlay
+		if (!bFound)// && g_stSettings.m_bUseID3)
 		{
 			//	...no, try to load the tag of the file.
 			CMusicInfoTagLoaderFactory factory;
