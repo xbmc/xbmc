@@ -312,8 +312,11 @@ CSettings::CSettings(void)
 	g_stSettings.m_bSoftenVideo=false;
   g_stSettings.m_iFlickerFilterUI=5;
 	g_stSettings.m_bSoftenUI=false;
-	g_stSettings.m_fZoomAmount=1.0f;
-	g_stSettings.m_fUserPixelRatio=1.0f;
+	g_stSettings.m_iViewMode = VIEW_MODE_NORMAL;
+	g_stSettings.m_fZoomAmount = 1.0f;
+	g_stSettings.m_fPixelRatio = 1.0f;
+	g_stSettings.m_fCustomZoomAmount=1.0f;
+	g_stSettings.m_fCustomPixelRatio=1.0f;
 
 	g_stSettings.m_bAutoWidescreenSwitching=false;
 	g_stSettings.m_bUpsampleVideo=true;
@@ -1189,8 +1192,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetBoolean(pElement, "softenvideo", g_stSettings.m_bSoftenVideo);
 		GetBoolean(pElement, "softenui", g_stSettings.m_bSoftenUI);
 		GetBoolean(pElement, "framerateconversion", g_stSettings.m_bFrameRateConversions);
-		GetFloat(pElement, "zoomamount", g_stSettings.m_fZoomAmount, 1.0f, 1.0f, 2.0f);
-		GetFloat(pElement, "pixelratio", g_stSettings.m_fUserPixelRatio, 1.0f, 0.5f, 2.0f);
+		GetInteger(pElement, "viewmode", g_stSettings.m_iViewMode, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, VIEW_MODE_CUSTOM);
+		GetFloat(pElement, "zoomamount", g_stSettings.m_fCustomZoomAmount, 1.0f, 1.0f, 2.0f);
+		GetFloat(pElement, "pixelratio", g_stSettings.m_fCustomPixelRatio, 1.0f, 0.5f, 2.0f);
 		GetBoolean(pElement, "allowswitching", g_stSettings.m_bAutoWidescreenSwitching);
 		GetBoolean(pElement, "upsamplevideo", g_stSettings.m_bUpsampleVideo);
 		GetBoolean(pElement, "allowpal60", g_stSettings.m_bAllowPAL60);
@@ -1569,8 +1573,9 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	SetBoolean(pNode, "softenvideo", g_stSettings.m_bSoftenVideo);
 	SetBoolean(pNode, "softenui", g_stSettings.m_bSoftenUI);
 	SetBoolean(pNode, "framerateconversion", g_stSettings.m_bFrameRateConversions);
-	SetFloat(pNode, "zoomamount", g_stSettings.m_fZoomAmount);
-	SetFloat(pNode, "pixelratio", g_stSettings.m_fUserPixelRatio);
+	SetInteger(pNode, "viewmode", g_stSettings.m_iViewMode);
+	SetFloat(pNode, "zoomamount", g_stSettings.m_fCustomZoomAmount);
+	SetFloat(pNode, "pixelratio", g_stSettings.m_fCustomPixelRatio);
 	SetBoolean(pNode, "allowswitching", g_stSettings.m_bAutoWidescreenSwitching);
 	SetBoolean(pNode, "upsamplevideo", g_stSettings.m_bUpsampleVideo);
 	SetBoolean(pNode, "allowpal60", g_stSettings.m_bAllowPAL60);
