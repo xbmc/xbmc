@@ -7,6 +7,7 @@
 #include "../xbmc/util.h"
 #include "GUIControlFactory.h"
 #include "guiButtonControl.h"
+#include "guiConditionalButtonControl.h"
 #include "guiSpinButtonControl.h"
 #include "guiRadioButtonControl.h"
 #include "guiSpinControl.h"
@@ -102,6 +103,10 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 			else if (!strcmp(it->m_szType,"button"))
 			{
 				stControl.m_pControl = new CGUIButtonControl(*((CGUIButtonControl*)it->m_pControl));
+			}
+			else if (!strcmp(it->m_szType,"conditionalbutton"))
+			{
+				stControl.m_pControl = new CGUIConditionalButtonControl(*((CGUIConditionalButtonControl*)it->m_pControl));
 			}
 			else if (!strcmp(it->m_szType,"rss"))
 			{
@@ -247,6 +252,10 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 		else if (!strcmp(it->m_szType,"button"))
 		{
 			stControl.m_pControl = new CGUIButtonControl(*((CGUIButtonControl*)it->m_pControl));
+		}
+		else if (!strcmp(it->m_szType,"conditionalbutton"))
+		{
+			stControl.m_pControl = new CGUIConditionalButtonControl(*((CGUIConditionalButtonControl*)it->m_pControl));
 		}
 		else if (!strcmp(it->m_szType,"rss"))
 		{

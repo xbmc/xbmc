@@ -253,6 +253,9 @@
 				RelativePath=".\GUICheckMarkControl.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIConditionalButtonControl.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIConsoleControl.cpp">
 			</File>
 			<File
@@ -427,6 +430,9 @@
 			</File>
 			<File
 				RelativePath=".\GUICheckMarkControl.h">
+			</File>
+			<File
+				RelativePath=".\GUIConditionalButtonControl.h">
 			</File>
 			<File
 				RelativePath=".\GUIConsoleControl.h">
