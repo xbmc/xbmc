@@ -300,11 +300,10 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 			}
 			else if (iControl==CONTROL_LIST||iControl==CONTROL_THUMBS)  // list/thumb control
       {
-         // get selected item
-        CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
-        g_graphicsContext.SendMessage(msg);         
-        int iItem=msg.GetParam1();
+        int iItem=GetSelectedItem();
 				int iAction=message.GetParam1();
+
+				// iItem is checked for validity inside these routines
 				if (iAction==ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
 				{
 					OnClick(iItem);
@@ -547,6 +546,7 @@ void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
 
 void CGUIWindowPictures::OnClick(int iItem)
 {
+	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
   CFileItem* pItem=m_vecItems[iItem];
   CStdString strPath=pItem->m_strPath;
 	if (pItem->m_bIsFolder)
@@ -908,6 +908,8 @@ int CGUIWindowPictures::GetSelectedItem()
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
   g_graphicsContext.SendMessage(msg);         
   int iItem=msg.GetParam1();
+	if (iItem >= (int)m_vecItems.size())
+		return -1;
 	return iItem;
 }
 
@@ -1091,8 +1093,6 @@ void CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, VECFILEITE
 
 void CGUIWindowPictures::OnPopupMenu(int iItem)
 {
-	// mark the item
-	m_vecItems[iItem]->Select(true);
 	// calculate our position
 	int iPosX=200;
 	int iPosY=100;
@@ -1104,6 +1104,12 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
 	}	
 	if ( m_strDirectory.IsEmpty() )
 	{
+		if (iItem < 0)
+		{	// we should add the option here of adding shares
+			return;
+		}
+		// mark the item
+		m_vecItems[iItem]->Select(true);
 		bool bMaxRetryExceeded=false;
 		if (g_stSettings.m_iMasterLockMaxRetry!=0)
 			bMaxRetryExceeded=!(m_vecItems[iItem]->m_iBadPwdCount < g_stSettings.m_iMasterLockMaxRetry);
@@ -1116,8 +1122,10 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
 			return;
 		}
 	}
-	else
+	else if (iItem >=0)
 	{
+		// mark the item
+		m_vecItems[iItem]->Select(true);
 		// popup the context menu
 		CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
 		if (!pMenu) return;

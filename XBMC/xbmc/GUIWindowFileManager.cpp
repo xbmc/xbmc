@@ -289,6 +289,8 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 				int list = iControl - CONTROL_LEFT_LIST;
 				int iItem = GetSelectedItem(list);
 				int iAction=message.GetParam1();
+
+				// iItem is checked for validity inside these routines
 				if (iAction==ACTION_HIGHLIGHT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
 				{
 					OnMark(list, iItem);
@@ -299,8 +301,8 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 							g_graphicsContext.SendMessage(msg);         
 					}
 				}
-        else if (iAction==ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_DOUBLE_CLICK)
-        {
+				else if (iAction==ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_DOUBLE_CLICK)
+				{
 					OnClick(list, iItem);
 				}
 				else if (iAction==ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
@@ -509,6 +511,9 @@ void CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 
 void CGUIWindowFileManager::OnClick(int iList, int iItem)
 {
+	if ( iList < 0 || iList > 2) return;
+	if ( iItem < 0 || iItem >= (int)m_vecItems[iList].size() ) return;
+
 	CFileItem *pItem=m_vecItems[iList][iItem];
 
   if (pItem->m_bIsFolder)
@@ -1024,7 +1029,7 @@ void CGUIWindowFileManager::Refresh()
 int CGUIWindowFileManager::GetSelectedItem(int iControl)
 {
 	CGUIListControl *pControl = (CGUIListControl *)GetControl(iControl+CONTROL_LEFT_LIST);
-	if (!pControl) return -1;
+	if (!pControl || !m_vecItems[iControl].size()) return -1;
 	return pControl->GetSelectedItem();
 }
 
@@ -1224,6 +1229,7 @@ int CGUIWindowFileManager::GetFocusedList() const
 
 void CGUIWindowFileManager::OnPopupMenu(int list, int item)
 {
+	if (list < 0 || list > 2) return;
 	bool bDeselect = SelectItem(list, item);
 	// calculate the position for our menu
 	int iPosX=200;
@@ -1236,6 +1242,10 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
 	}	
 	if (m_strDirectory[list] == "")
 	{
+		if (item < 0)
+		{	// TODO: We should add the option here for shares to be added if there aren't any
+			return;
+		}
 		bool bMaxRetryExceeded=false;
 		if (g_stSettings.m_iMasterLockMaxRetry!=0)
 			bMaxRetryExceeded=!(m_vecItems[list][item]->m_iBadPwdCount < g_stSettings.m_iMasterLockMaxRetry);
@@ -1253,6 +1263,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
 		m_vecItems[list][item]->Select(false);
 		return;
 	}
+	if (item < 0 || item >= (int)m_vecItems[list].size()) return;
 	// popup the context menu
 	CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
 	if (pMenu)
