@@ -417,6 +417,9 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings, bool &bCalibration
 		GetString(pSambaElement, "workgroup", g_stSettings.m_strSambaWorkgroup, "WORKGROUP");
 		GetString(pSambaElement, "winsserver", g_stSettings.m_strSambaWinsServer, "");
 		GetInteger(pSambaElement, "debuglevel", g_stSettings.m_iSambaDebugLevel , 0, 0, 100);
+		GetString(pSambaElement, "defaultusername", g_stSettings.m_strSambaDefaultUserName, "");
+		GetString(pSambaElement, "defaultpassword", g_stSettings.m_strSambaDefaultPassword, "");
+
 	}
 
 	TiXmlElement* pDelaysElement =pRootElement->FirstChildElement("delays");

@@ -12,9 +12,12 @@ class CURL
 {
 public:
 	CURL(const CStdString& strURL);
+	CURL(const CURL& url);
 	virtual ~CURL(void);
   void							SetFileName(const CStdString& strFileName);
 	void							SetHostName(const CStdString& strHostName);
+	void SetUserName(const CStdString& strUserName);
+	void SetPassword(const CStdString& strPassword);
 	bool							HasPort() const;
 	int								GetPort() const;
 	const CStdString& GetHostName() const;
@@ -26,6 +29,8 @@ public:
 	const CStdString& GetFileType() const;
   void							GetURL(CStdString& strURL) const;
 	void							GetURLWithoutUserDetails(CStdString& strURL) const;
+	CURL& operator= (const CURL& source);
+
 
 protected:
 	int				 m_iPort;
@@ -36,4 +41,5 @@ protected:
 	CStdString m_strFileName;
 	CStdString m_strProtocol;
 	CStdString m_strFileType;
+	
 };
