@@ -573,35 +573,34 @@ void CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL)
 			}
 		}
     	char kar=strMovie[i];
-		if (kar =='.') kar=' ';
+		  if (kar =='.') kar=' ';
     	if (kar ==32) kar = '+';
-		if (kar == '[' || kar=='(' ) bSkip=true;			//skip everthing between () and []
-		else if (kar == ']' || kar==')' ) bSkip=false;
-		else if (!bSkip)
-		{
-			if (ipos > 0)
-			{
-				if (!isalnum(kar)) 
-				{
-					if (szMovie[ipos-1] != '+')
-					kar='+';
-					else 
-					kar='.';
-				}
-			}
-			if (isalnum(kar) ||kar==' ' || kar=='+')
-			{
-				szMovie[ipos]=kar;
-				szMovie[ipos+1]=0;
-				ipos++;
-			}
-		}
-	
+		  if (kar == '[' || kar=='(' ) bSkip=true;			//skip everthing between () and []
+		  else if (kar == ']' || kar==')' ) bSkip=false;
+		  else if (!bSkip)
+		  {
+			  if (ipos > 0)
+			  {
+				  if (!isalnum(kar)) 
+				  {
+					  if (szMovie[ipos-1] != '+')
+					  kar='+';
+					  else 
+					  kar='.';
+				  }
+			  }
+			  if (isalnum(kar) ||kar==' ' || kar=='+')
+			  {
+				  szMovie[ipos]=kar;
+				  szMovie[ipos+1]=0;
+				  ipos++;
+			  }
+		  }
 	}
 
 	CStdString strTmp=szMovie;
-	strTmp.ToLower();
-	strTmp.Trim();
+	strTmp=strTmp.ToLower();
+	strTmp=strTmp.Trim();
 	strcpy(szMovie,strTmp.c_str());
 
 	RemoveAllAfter(szMovie," divx ");
@@ -617,6 +616,20 @@ void CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL)
 	RemoveAllAfter(szMovie," proper ");
 	RemoveAllAfter(szMovie," limited ");
 	RemoveAllAfter(szMovie," rerip ");
+
+	RemoveAllAfter(szMovie,"+divx+");
+	RemoveAllAfter(szMovie,"+xvid+");
+	RemoveAllAfter(szMovie,"+dvd+");
+	RemoveAllAfter(szMovie,"+svcd+");
+	RemoveAllAfter(szMovie,"+ac3+");
+	RemoveAllAfter(szMovie,"+ogg+");
+	RemoveAllAfter(szMovie,"+ogm+");
+	RemoveAllAfter(szMovie,"+internal+");
+	RemoveAllAfter(szMovie,"+fragment+");
+	RemoveAllAfter(szMovie,"+dvdrip+");
+	RemoveAllAfter(szMovie,"+proper+");
+	RemoveAllAfter(szMovie,"+limited+");
+	RemoveAllAfter(szMovie,"+rerip+");
   
 	CStdString strHTML;
 	sprintf(szURL,"http://us.imdb.com/Tsearch?title=%s", szMovie);
