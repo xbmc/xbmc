@@ -254,6 +254,13 @@ void CHTMLUtil::ConvertHTMLToAnsi(const CStdString& strHTML, string& strStripped
         else if (strcmp(szKey, "yacute") == 0) szAnsi[iAnsiPos++] = (char)0xFD;
         else if (strcmp(szKey, "thorn") == 0) szAnsi[iAnsiPos++] = (char)0xFE;
         else if (strcmp(szKey, "yuml") == 0) szAnsi[iAnsiPos++] = (char)0xFF;
+        else
+        {
+          // its not an ampersand code, so just copy the contents
+          szAnsi[iAnsiPos++] = '&';
+          for (unsigned int iLen=0; iLen<strlen(szKey); iLen++)
+            szAnsi[iAnsiPos++] = (unsigned char)szKey[iLen];
+        }
       }
     }
     else
