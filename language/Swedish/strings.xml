@@ -741,4 +741,5 @@
   <string><id>14055</id><value>Använd bakgrundscanning</value></string>
   <string><id>14056</id><value>Stoppa scan</value></string>
   <string><id>14057</id><value>Inte möjligt medans du scannar för mediainfo</value></string>
+  <string><id>14058</id><value>Inställning för grynighet i film</value></string>
 </strings>
