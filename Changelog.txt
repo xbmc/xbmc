@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 18-11-2004 fixed: handes high-volume of Kai app_specific requests.
   - 18-11-2004 fixed: Various crashes when subtitle font was set to TTF
   - 18-11-2004 added: Comprehensive Kai hosting options.
   - 18-11-2004 fixed: Less aggressive Kai player profile requesting.
