@@ -8,15 +8,18 @@
 class CoffLoader {
 protected:
 
-// Allocated structures...
+	//Pointers to somewhere in hModule, do not free these pointers
     COFF_FileHeader_t       *CoffFileHeader;
     OptionHeader_t          *OptionHeader;
     WindowsHeader_t         *WindowsHeader;
     Image_Data_Directory_t  *Directory;
     SectionHeader_t         *SectionHeader;
+
+	// Allocated structures...
     SymbolTable_t           *SymTable;
     char                    *StringTable;
     char                    **SectionData;
+    char                    **SectionData_M;
 
 // Unnecessary data
 //  This is data that is used only during linking and is not necessary
@@ -27,6 +30,7 @@ protected:
     int                     SizeOfStringTable;
     int                     NumOfDirectories;
     int                     NumOfSections;
+	int						FileHeaderOffset;
 
 #ifdef DUMPING_DATA
 // Members for printing the structures
@@ -40,13 +44,10 @@ protected:
 #endif
 
 // Members for Loading the Different structures
-
-    int LoadCoffFileHeader(FILE *fp);
+	int LoadCoffHModule(FILE * fp);
     int LoadSymTable(FILE *fp);
     int LoadStringTable(FILE *fp);
-    int LoadOptionHeaders(FILE *fp);
-    int LoadDirectories(FILE *fp);
-    int LoadSectionHeaders(FILE *fp);
+    int LoadSections(FILE *fp);
 
 // Members for access some of the Data
 
@@ -59,6 +60,8 @@ protected:
     void PerformFixups(void);
 
 public:
+	void	*hModule;			//standard windows HINSTANCE handle
+	unsigned long EntryAddress;	//Initialize entry point
     int ParseCoff(FILE *fp);
     CoffLoader();
     ~CoffLoader();

@@ -8,6 +8,7 @@
 #include "exp2dll.h"
 
 Exp2Dll *Head = 0;
+extern "C" void dummy_Unresolved(void);
 
 #ifdef DUMPING_DATA
 
@@ -168,9 +169,11 @@ int DllLoader::ResolveImports(void)
 						char szBuf[128];
 						sprintf(szBuf,"unable to resolve %s %s\n",Name,ImpName);
 						OutputDebugString(szBuf);
+						*Addr = (unsigned long) dummy_Unresolved;
 						bResult=0;
+					} else {
+                        *Addr = (unsigned long)Fixup;
 					}
-					*Addr = (unsigned long)Fixup;
 				}
 				Table++;
 				Addr++;
@@ -342,39 +345,10 @@ DllLoader::~DllLoader()
 int DllLoader::Parse()
 {                                  
 	FILE *fp;
-	char Sig[4];
 
 	fp = fopen(Dll, "rb");
 	if( fp == NULL )
 		return 0;
-
-
-	rewind(fp); 
-	memset(Sig, 0, sizeof(Sig));
-	fread(Sig, 1, 2, fp);
-	if (strncmp(Sig, "MZ", 2) != 0)
-	{
-		fclose(fp);
-		return 0;  
-	}
-
-	int Offset = 0;
-	fseek(fp, 0x3c, SEEK_SET);
-	fread(&Offset, sizeof(int),1, fp);
-	if (Offset <= 0)
-	{
-		fclose(fp);
-		return 0;  
-	}
-
-	fseek(fp, Offset, SEEK_SET);
-	memset(Sig, 0, sizeof(Sig));
-	fread(Sig, 1, 4, fp);
-	if (strncmp(Sig, "PE\0\0", 4) != 0)
-	{
-		fclose(fp);
-		return 0;
-	}
 
 	if( !CoffLoader::ParseCoff(fp) )
 	{                               
@@ -438,5 +412,58 @@ Exp2Dll::~Exp2Dll()
 		*curr = Next;
 		Next = 0;
 	}
-}            
+}           
 
+#define DEFAULT_DLLPATH "Q:\\dll"
+
+extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR libname) 
+{
+	char * plibname = new char[strlen(libname)+20]; 
+	sprintf(plibname, "%s\\%s", DEFAULT_DLLPATH ,(char *)libname);
+	DllLoader * dllhandle = new DllLoader(plibname);
+	dllhandle->Parse();
+	dllhandle->ResolveImports();
+
+	void * address = NULL;
+	dllhandle->ResolveExport("DllMain", &address);
+	if (address)
+		dllhandle->EntryAddress = (unsigned long)address;
+    EntryFunc * initdll = (EntryFunc *)dllhandle->EntryAddress;
+	(*initdll)( (HINSTANCE) dllhandle->hModule, 1 ,0);	//call "DllMian" with DLL_PROCESS_ATTACH
+	
+	//#define DLL_PROCESS_ATTACH   1    
+	//#define DLL_THREAD_ATTACH    2    
+	//#define DLL_THREAD_DETACH    3    
+	//#define DLL_PROCESS_DETACH   0    
+	//#define DLL_PROCESS_VERIFIER 4   
+
+	return (HMODULE) dllhandle;
+}
+
+extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
+{
+	DllLoader * dllhandle = (DllLoader *)hLibModule;
+
+	EntryFunc * initdll = (EntryFunc *)dllhandle->EntryAddress;
+	(*initdll)( (HINSTANCE) dllhandle->hModule, 0 ,0);	//call "DllMian" with DLL_PROCESS_DETACH
+
+	if ( dllhandle )
+		delete dllhandle;
+	return 1;
+}
+
+extern "C" FARPROC __stdcall dllGetProcAddress( HMODULE hModule, LPCSTR function )
+{
+	DllLoader * dllhandle = (DllLoader *)hModule;
+	void * address = NULL;
+	dllhandle->ResolveExport((char *)function, &address);
+	return (FARPROC) address;
+}
+
+//dummy functions used to catch unresolved function calls
+extern "C" void dummy_Unresolved(void) {
+		static int Count = 0;
+		char szBuf[128];
+		sprintf(szBuf,"unresolved function called, Count number %d\n",Count++);
+		OutputDebugString(szBuf);
+}
