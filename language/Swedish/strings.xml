@@ -1665,35 +1665,90 @@
  <value>Nerladdning av album info misslyckades</value>
  </string>
 
-	<string>
-		<id>501</id>
-		<value>Letar efter album namn...</value>
-	</string>
-	<string>
-		<id>502</id>
-		<value>Öppna</value>
-	</string>
-	<string>
-		<id>503</id>
-		<value>Upptagen</value>
-	</string>
-	<string>
-		<id>504</id>
-		<value>Tom</value>
-	</string>
-	<string>
-		<id>505</id>
-		<value>Ladder mediainfo från filer...</value>
-	</string>
+ <string>
+ <id>501</id>
+ <value>Letar efter album namn...</value>
+ </string>
 
-	<string>
-		<id>998</id>
-		<value>XLink KAI</value>
-	</string>
-	<string>
-		<id>999</id>
-		<value>Online Spel</value>
-	</string> 
+ <string>
+ <id>502</id>
+ <value>Öppna</value>
+ </string>
+
+ <string>
+ <id>503</id>
+ <value>Upptagen</value>
+ </string>
+
+ <string>
+ <id>504</id>
+ <value>Tom</value>
+ </string>
+
+ <string>
+ <id>505</id>
+ <value>Ladder mediainfo från filer...</value>
+ </string>
+
+ <string>
+ <id>600</id>
+ <value>Rippa CD</value>
+ </string>
+
+ <string>
+ <id>601</id>
+ <value>Medium</value>
+ </string>
+
+ <string>
+ <id>602</id>
+ <value>Normal</value>
+ </string>
+
+ <string>
+ <id>603</id>
+ <value>Extrem</value>
+ </string>
+
+ <string>
+ <id>604</id>
+ <value>Konstant BitRate</value>
+ </string>
+
+ <string>
+ <id>605</id>
+ <value>Rippar</value>
+ </string>
+
+ <string>
+ <id>606</id>
+ <value>Track Nummer:</value>
+ </string>
+
+ <string>
+ <id>607</id>
+ <value>Till:</value>
+ </string>
+
+ <string>
+ <id>608</id>
+ <value>Kunde inte rippa CD eller Spår</value>
+ </string>
+
+ <string>
+ <id>609</id>
+ <value>CDDARipPath är inte satt i XboxMediaCenter.xml</value>
+ </string>
+
+ <string>
+ <id>998</id>
+ <value>XLink KAI</value>
+ </string>
+
+ <string>
+ <id>999</id>
+ <value>Online Spel</value>
+ </string> 
 
 
  <string><id>10000</id><value>Start</value></string>
