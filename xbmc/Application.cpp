@@ -477,9 +477,24 @@ void CApplication::OnKey(CKey& key)
   }
 	// get the current window to send to
 	int iWin = m_gWindowManager.GetActiveWindow();
-  g_buttonTranslator.GetAction(iWin, key, action);
-	// now translate our key into an action id (Transfer into button translator!!)
+  if (iWin==WINDOW_FULLSCREEN_VIDEO)
+  {
+    CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)m_gWindowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
+    if ( pFSWin->OSDVisible() )
+    {
+      g_buttonTranslator.GetAction(WINDOW_OSD, key, action);
+    }
+    else 
+    {
+      g_buttonTranslator.GetAction(iWin, key, action);
+    }
+  }
+  else 
+  {
+    g_buttonTranslator.GetAction(iWin, key, action);
+  }
 
+	// now translate our key into an action id (Transfer into button translator!!)
 	if ( IsPlayingVideo() )
 	{
     if ( !m_gWindowManager.IsRouted())

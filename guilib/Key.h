@@ -89,6 +89,8 @@
 #define ACTION_AUDIO_DELAY_PLUS				55
 #define ACTION_AUDIO_NEXT_LANGUAGE		56
 #define ACTION_CHANGE_RESOLUTION		57
+
+
 #define REMOTE_0						58
 #define REMOTE_1						59
 #define REMOTE_2						60
@@ -100,6 +102,15 @@
 #define REMOTE_8						66
 #define REMOTE_9						67
 #define ACTION_PLAY						68
+
+
+#define ACTION_OSD_SHOW_LEFT        69
+#define ACTION_OSD_SHOW_RIGHT       70
+#define ACTION_OSD_SHOW_UP          71
+#define ACTION_OSD_SHOW_DOWN        72
+#define ACTION_OSD_SHOW_SELECT      73
+#define ACTION_OSD_SHOW_VALUE_PLUS  74
+#define ACTION_OSD_SHOW_VALUE_MIN   75
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID								-1
@@ -142,6 +153,7 @@
 #define WINDOW_SLIDESHOW							2007
 #define WINDOW_DIALOG_FILESTACKING		2008
 #define WINDOW_SCREENSAVER				2900
+#define WINDOW_OSD                2901
 
 struct CAction {
 	WORD wID;
