@@ -46,6 +46,7 @@
 #define IMG_16X       20
 #define IMG_32X       21
 
+#define LABEL_CURRENT_TIME 22
 extern IDirectSoundRenderer* m_pAudioDecoder;
 extern int m_iAudioStreamIDX;
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
@@ -55,6 +56,7 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 	m_iTimeCodePosition=0;
 	m_bShowTime=false;
 	m_bShowInfo=false;
+	m_bShowCurrentTime=false;
 	m_dwTimeStatusShowTime=0;
 	m_dwTimeCodeTimeout=0;
 	m_fFPS=0;
@@ -253,6 +255,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
           g_application.SetPlaySpeed(1);
         }
       }
+		m_bShowCurrentTime = !m_bShowCurrentTime;
 		break;
 		case ACTION_REWIND:
 			ChangetheSpeed(ACTION_REWIND);
@@ -384,6 +387,7 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   if (m_bShowTime) return true;
   if (m_bShowStatus) return true;
   if (m_bShowInfo) return true;
+  if (m_bShowCurrentTime) return true;
   if (m_bOSDVisible) return true;
   if (g_application.GetPlaySpeed() != 1) return true;
   if (m_bLastRender)
@@ -610,6 +614,24 @@ void CGUIWindowFullScreen::RenderFullScreen()
 		SET_CONTROL_HIDDEN(GetID(),IMG_8X);
 		SET_CONTROL_HIDDEN(GetID(),IMG_16X);
 		SET_CONTROL_HIDDEN(GetID(),IMG_32X);
+	}
+
+	// Render current time if requested
+	if (m_bShowCurrentTime)
+	{
+		bRenderGUI =true;
+		SET_CONTROL_VISIBLE(GetID(),LABEL_CURRENT_TIME);
+		WCHAR szCurrentTime[32];
+		SYSTEMTIME time;
+		GetLocalTime(&time);
+		swprintf(szCurrentTime,L"%02d:%02d",time.wHour,time.wMinute);
+		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_CURRENT_TIME); 
+		msg.SetLabel(szCurrentTime); 
+		OnMessage(msg); 
+	}
+	else
+	{
+		SET_CONTROL_HIDDEN(GetID(),LABEL_CURRENT_TIME);
 	}
 
   if ( bRenderGUI)
