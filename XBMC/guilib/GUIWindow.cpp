@@ -335,10 +335,10 @@ void CGUIWindow::Render()
 
 void CGUIWindow::OnAction(const CAction &action)
 {
-	  if (action.wID == ACTION_TAKE_SCREENSHOT)
-	  {
+	if (action.wID == ACTION_TAKE_SCREENSHOT)
+	{
 		CUtil::TakeScreenshot();
-	  }
+	}
 
   ivecControls i;
   for (i=m_vecControls.begin();i != m_vecControls.end(); ++i)

@@ -81,6 +81,7 @@ CApplication::~CApplication(void)
 	
 }
 
+
 HRESULT CApplication::Create()
 {
 	CIoSupport helper;

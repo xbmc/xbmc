@@ -2099,6 +2099,21 @@ CStdString CUtil::GetNextFilename(const char* fn_template, int max)
 	return ""; // no fn generated
 }
 
+void CUtil::FlashScreen(bool bImmediate)
+{
+	g_graphicsContext.Lock();
+	D3DGAMMARAMP oldramp, ramp;
+	g_graphicsContext.Get3DDevice()->GetGammaRamp(&ramp);
+	memcpy(&oldramp, &ramp, sizeof(D3DGAMMARAMP));
+	for (int i = 0; i < 255; ++i)
+	{
+		ramp.blue[i] = 255 - ramp.blue[i];
+		ramp.green[i] = 255 - ramp.green[i];
+		ramp.red[i] = 255 - ramp.red[i];
+	}
+	g_graphicsContext.Get3DDevice()->SetGammaRamp(bImmediate ? D3DSGR_IMMEDIATE : 0, &ramp);
+	g_graphicsContext.Unlock();
+}
 
 void CUtil::TakeScreenshot()
 {
@@ -2113,7 +2128,10 @@ void CUtil::TakeScreenshot()
 
 		if (strlen(fn))
 		{
-			if (SUCCEEDED(g_pd3dDevice->GetBackBuffer(-1, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
+			g_graphicsContext.Lock();
+			g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
+			FlashScreen(true);
+			if (SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer(-1, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
 			{
 				if (FAILED(XGWriteSurfaceToFile(lpSurface, fn)))
 				{
@@ -2125,6 +2143,8 @@ void CUtil::TakeScreenshot()
 				}
 				lpSurface->Release();
 			}	
+			FlashScreen(true);
+			g_graphicsContext.Unlock();
 		}
 		else
 		{
