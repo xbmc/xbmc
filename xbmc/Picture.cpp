@@ -272,7 +272,7 @@ bool CPicture::CreateAlbumThumbnail(const CStdString& strFileName, const CStdStr
   return DoCreateThumbnail(strFileName, strThumbnail, MAX_ALBUM_THUMB_WIDTH, MAX_ALBUM_THUMB_HEIGHT);
 }
 
-bool CPicture::CreateThumnail(const CStdString& strFileName)
+bool CPicture::CreateThumbnail(const CStdString& strFileName)
 {
   CStdString strThumbnail;
   CUtil::GetThumbnail(strFileName, strThumbnail);
