@@ -87,18 +87,39 @@ bool CGUIWindowOSD::SubMenuVisible()
 
 void CGUIWindowOSD::Render()
 {
+  
 	SetVideoProgress();			// get the percentage of playback complete so far
 	Get_TimeInfo();				// show the time elapsed/total playing time
 	CGUIWindow::Render();		// render our controls to the screen
+  if (timeGetTime() - m_dwTimeOut > 5000)
+  {
+    if (m_bSubMenuOn)	// sub menu currently active ?
+		{
+			SET_CONTROL_FOCUS(GetID(), m_iActiveMenuButtonID, 0);	// set focus to last menu button
+			ToggleSubMenu(0, m_iActiveMenu);						// hide the currently active sub-menu
+		}
+		g_application.m_guiWindowFullScreen.m_bOSDVisible = false;	// toggle the OSD off so parent window can de-init
+    if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(false);
+  }
 }
 
 void CGUIWindowOSD::OnAction(const CAction &action)
 {
 	switch (action.wID)
 	{
+
+    case ACTION_OSD_SHOW_LEFT:
+    case ACTION_OSD_SHOW_RIGHT:
+    case ACTION_OSD_SHOW_UP:
+    case ACTION_OSD_SHOW_DOWN:
+    case ACTION_OSD_SHOW_SELECT:
+      m_dwTimeOut=timeGetTime();
+      break;
+
 		case ACTION_OSD_HIDESUBMENU:
 		case ACTION_SHOW_OSD:
 		{
+      m_dwTimeOut=timeGetTime();
 			if (m_bSubMenuOn)						// is sub menu on?
 			{
 				SET_CONTROL_FOCUS(GetID(), m_iActiveMenuButtonID, 0);	// set focus to last menu button
@@ -110,6 +131,7 @@ void CGUIWindowOSD::OnAction(const CAction &action)
 
 		case ACTION_PAUSE:
 		{
+      m_dwTimeOut=timeGetTime();
 			// push a message through to this window to handle the remote control button
 			CGUIMessage msgSet(GUI_MSG_CLICKED,OSD_PLAY,OSD_PLAY,0,0,NULL);
 			OnMessage(msgSet);
@@ -119,6 +141,7 @@ void CGUIWindowOSD::OnAction(const CAction &action)
 
 		case ACTION_MUSIC_PLAY:
 		{
+      m_dwTimeOut=timeGetTime();
 			// push a message through to this window to handle the remote control button
 			CGUIMessage msgSet(GUI_MSG_CLICKED,OSD_PLAY,OSD_PLAY,0,0,NULL);
 			OnMessage(msgSet);
@@ -128,6 +151,7 @@ void CGUIWindowOSD::OnAction(const CAction &action)
 
 		case ACTION_STOP:
 		{
+      m_dwTimeOut=timeGetTime();
 			// push a message through to this window to handle the remote control button
 			CGUIMessage msgSet(GUI_MSG_CLICKED,OSD_STOP,OSD_STOP,0,0,NULL);
 			OnMessage(msgSet);
@@ -137,6 +161,7 @@ void CGUIWindowOSD::OnAction(const CAction &action)
 
 		case ACTION_FORWARD:
 		{
+      m_dwTimeOut=timeGetTime();
 			// push a message through to this window to handle the remote control button
 			CGUIMessage msgSet(GUI_MSG_CLICKED,OSD_FFWD,OSD_FFWD,0,0,NULL);
 			OnMessage(msgSet);
@@ -146,6 +171,7 @@ void CGUIWindowOSD::OnAction(const CAction &action)
 
 		case ACTION_REWIND:
 		{
+      m_dwTimeOut=timeGetTime();
 			// push a message through to this window to handle the remote control button
 			CGUIMessage msgSet(GUI_MSG_CLICKED,OSD_REWIND,OSD_REWIND,0,0,NULL);
 			OnMessage(msgSet);
@@ -155,6 +181,7 @@ void CGUIWindowOSD::OnAction(const CAction &action)
 
 		case ACTION_OSD_SHOW_VALUE_PLUS:
 		{
+      m_dwTimeOut=timeGetTime();
 			// push a message through to this window to handle the remote control button
 			CGUIMessage msgSet(GUI_MSG_CLICKED,OSD_SKIPFWD,OSD_SKIPFWD,0,0,NULL);
 			OnMessage(msgSet);
@@ -164,6 +191,7 @@ void CGUIWindowOSD::OnAction(const CAction &action)
 
 		case ACTION_OSD_SHOW_VALUE_MIN:
 		{
+      m_dwTimeOut=timeGetTime();
 			// push a message through to this window to handle the remote control button
 			CGUIMessage msgSet(GUI_MSG_CLICKED,OSD_SKIPBWD,OSD_SKIPBWD,0,0,NULL);
 			OnMessage(msgSet);
@@ -196,12 +224,19 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 			if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(false);
 			SET_CONTROL_FOCUS(GetID(), OSD_PLAY, 0);	// set focus to play button by default when window is shown
 			ResetAllControls();							// make sure the controls are positioned relevant to the OSD Y offset
+      m_dwTimeOut=timeGetTime();
 			return true;
 		}
 		break;
 
+    case GUI_MSG_SETFOCUS:
+    case GUI_MSG_LOSTFOCUS:
+      m_dwTimeOut=timeGetTime();
+    break;
+
 		case GUI_MSG_CLICKED:
 		{
+      m_dwTimeOut=timeGetTime();
 			int iControl=message.GetSenderId();		// get the ID of the control sending us a message
 
 			if (iControl >= OSD_VOLUMESLIDER)		// one of the settings (sub menu) controls is sending us a message
