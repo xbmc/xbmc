@@ -159,11 +159,12 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_WINDOW_INIT:
 		{
+			shares.erase(shares.begin(),shares.end());
 			CGUIWindow::OnMessage(message);
-			if (m_strDirectory=="?") m_strDirectory="";//g_stSettings.m_szDefaultScripts;
+			if (m_strDirectory=="?") m_strDirectory="Q:\\scripts";//g_stSettings.m_szDefaultScripts;
 
 			m_rootDir.SetMask("*.py");
-			
+
 			CShare share;
 			share.strName = "Q Drive";
 			share.strPath = "Q:\\scripts";
