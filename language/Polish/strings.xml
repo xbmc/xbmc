@@ -1,5 +1,7 @@
+
 <!-- T³umaczenie:   NaPeK -->
 <!-- Kontakt:       napek@poczta.fm -->
+
 <strings>
   <string><id>0</id><value>Programy</value></string>
   <string><id>1</id><value>Obrazy</value></string>
@@ -7,12 +9,12 @@
   <string><id>3</id><value>Filmy</value></string>
   <string><id>4</id><value>Przewodnik TV</value></string>
   <string><id>5</id><value>Ustawienia</value></string>
-  <!-- String with id 6 should not be set here, only in the english language file !-->
   <string><id>7</id><value>Pliki</value></string>
+  <!-- String with id 6 should not be set here, only in the english language file !-->
   <string><id>8</id><value>Pogoda</value></string>
   <string><id>11</id><value>Poniedzia³ek</value></string>
   <string><id>12</id><value>Wtorek</value></string>
-  <string><id>13</id><value>Œroda</value></string>
+  <string><id>13</id><value>œroda</value></string>
   <string><id>14</id><value>Czwartek</value></string>
   <string><id>15</id><value>Pi¹tek</value></string>
   <string><id>16</id><value>Sobota</value></string>
@@ -74,7 +76,7 @@
   <string><id>142</id><value>Czas:</value></string>
   <string><id>143</id><value>Obecny:</value></string>
   <string><id>144</id><value>Wersja:</value></string>
-  <string><id>145</id><value>Siec:</value></string>
+  <string><id>145</id><value>Sieæ:</value></string>
   <string><id>146</id><value>Typ:</value></string>
   <string><id>147</id><value>Statyczny</value></string>
   <string><id>148</id><value>Dynamiczny</value></string>
@@ -303,7 +305,7 @@
   <string><id>372</id><value>G³ownie</value></string>
   <string><id>373</id><value>S³onecznie</value></string>
   <string><id>374</id><value>Pochmurnie</value></string>
-  <string><id>375</id><value>Œnieg</value></string>
+  <string><id>375</id><value>œnieg</value></string>
   <string><id>376</id><value>Deszcz</value></string>
   <string><id>377</id><value>Pogodnie</value></string>
   <string><id>378</id><value>Rano</value></string>
@@ -332,7 +334,7 @@
   <string><id>412</id><value>Nie mogê uzyskaæ danych pogodowych</value></string>
   <string><id>413</id><value>Rêcznie</value></string>
   <string><id>414</id><value>Nie ma podgl¹du dla tego albumu</value></string>
-  <string><id>415</id><value>Œci¹gam miniaturki...</value></string>
+  <string><id>415</id><value>œci¹gam miniaturki...</value></string>
   <string><id>416</id><value>Nie dostêpne</value></string>
   <string><id>417</id><value>Pokazuj: Du¿e ikony</value></string>
   <string><id>418</id><value>Moje Filmy/Gatunki</value></string>
@@ -352,7 +354,7 @@
   <string><id>432</id><value>Skasuj film z bazy danych</value></string>
   <string><id>433</id><value>Jesteœ pewny, ze chcesz usun¹æ</value></string>
   <string><id>434</id><value>film?</value></string>
-  <string><id>435</id><value>Œcie¿ka</value></string>
+  <string><id>435</id><value>œcie¿ka</value></string>
   <string><id>436</id><value>Rok:</value></string>
   <string><id>437</id><value>Czas trwania:</value></string>
   <string><id>438</id><value>Otwieram plik</value></string>
@@ -417,7 +419,7 @@
   <string><id>497</id><value>Ukryj rozszerzenia plików</value></string>
   <string><id>498</id><value>Sortuj typami</value></string>
   <string><id>499</id><value>Nie mogê po³¹czyæ siê z www.allmusic.com</value></string>
-  <string><id>500</id><value>Œci¹ganie informacji o albumie nie powiod³o siê</value></string>
+  <string><id>500</id><value>œci¹ganie informacji o albumie nie powiod³o siê</value></string>
   <string><id>501</id><value>Szukam nazw albumów...</value></string>
   <string><id>502</id><value>Otwarty</value></string>
   <string><id>503</id><value>Zajêty</value></string>
@@ -606,11 +608,11 @@
   <string><id>14000</id><value>Stacking: Wy³.</value></string>
   <string><id>14001</id><value>Stacking: Prosty</value></string>
   <string><id>14002</id><value>Stacking: Rozmyty</value></string>
-  <string><id>14003</id><value>Œci¹gam plik playlisty...</value></string>
-  <string><id>14004</id><value>Œci¹gam listê streamów...</value></string>
+  <string><id>14003</id><value>œci¹gam plik playlisty...</value></string>
+  <string><id>14004</id><value>œci¹gam listê streamów...</value></string>
   <string><id>14005</id><value>Przetwarzam listê streamów...</value></string>
-  <string><id>14006</id><value>Œci¹ganie listy streamów siê nie powiod³o</value></string>
-  <string><id>14007</id><value>Œci¹ganie play listy siê nie powiod³o</value></string>
+  <string><id>14006</id><value>œci¹ganie listy streamów siê nie powiod³o</value></string>
+  <string><id>14007</id><value>œci¹ganie play listy siê nie powiod³o</value></string>
   <string><id>14008</id><value>W³¹cz zawiadomienia w Kai</value></string>
   <string><id>14009</id><value>Katalog z grami</value></string>
   <string><id>14010</id><value>Opcje automatycznego prze³¹czania</value></string>
@@ -645,4 +647,13 @@
   <string><id>14039</id><value>XBMC wymaga restartu aby zmienic twoje</value></string>
   <string><id>14040</id><value>ustawienia sieciowe.  Would you like to restart now?</value></string>
   <string><id>14041</id><value>Post Processing</value></string>
+  <string><id>14042</id><value>Adresy IP</value></string>
+  <string><id>14043</id><value>- Wy³¹cz kiedy odtwarza</value></string>
+  <string><id>14044</id><value>%i minut</value></string>
+  <string><id>14045</id><value>%i sekund</value></string>
+  <string><id>14046</id><value>%i ms</value></string>
+  <string><id>14047</id><value>%i %%</value></string>
+  <string><id>14048</id><value>%i kbps</value></string>
+  <string><id>14049</id><value>%i kb</value></string>
+  <string><id>14050</id><value>%i.0 dB</value></string>
 </strings>
