@@ -320,8 +320,8 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiDialogFileStacking);				// window id = 2008
 
 	m_gWindowManager.Add(&m_guiWindowScreensaver);				// window id = 2900 Screensaver
-	m_gWindowManager.Add(&m_guiMyWeather);						// window id = 2600 WEATHER
-	m_gWindowManager.Add(&m_guiSettingsWeather);				// window id = 17 WEATHER SETTINGS
+	m_gWindowManager.Add(&m_guiMyWeather);						    // window id = 2600 WEATHER
+	m_gWindowManager.Add(&m_guiSettingsWeather);				  // window id = 17 WEATHER SETTINGS
 
 	/* window id's 3000 - 3100 are reserved for python */
   CLog::Log("initializing virtual keyboard");	
