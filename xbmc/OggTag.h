@@ -21,16 +21,14 @@ namespace MUSIC_INFO {
 		CStdString GetGenre() { return m_strGenre; }
 
 	protected:
-		bool FindVobisTagHeader(void);
+		virtual bool FindVobisTagHeader(void);
 
 		UINT ReadLength(void);
 		char* ReadString( int nLenght );
-		bool ReadBit(void);
+		virtual bool ReadBit(void);
 
 		int parseTagEntry(CStdString& strTagEntry);
 		void SplitEntry(const CStdString& strTagEntry, CStdString& strTagType, CStdString& strTagValue);
-
-	private:
 		CFile* m_file;
 
 		CStdString m_strTitle;
@@ -39,5 +37,6 @@ namespace MUSIC_INFO {
 		CStdString m_strAlbum;
 		int m_nTrackNum;
 		CStdString m_strGenre;
+
 	};
 };
