@@ -79,7 +79,7 @@ void CGUIWindowMusicBase::OnAction(const CAction& action)
 /*!
 	\brief Handle messages on window.
 	\param message GUI Message that can be reacted on.
-	\return if a message can't be processed, return false
+	\return if a message can't be processed, return \e false
 
 	On these messages this class reacts.\n
 	When retrieving...
@@ -214,12 +214,41 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 			m_iLastControl=GetFocusedControl();
       ClearFileItems();
 			CSectionLoader::Unload("LIBID3");
+			
+			//	Remove labels from the window selection
+			CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_BTNTYPE);
+			g_graphicsContext.SendMessage(msg);
 		}
 		break;
 
     case GUI_MSG_WINDOW_INIT:
 		{
 			CGUIWindow::OnMessage(message);
+
+			//	Add labels to the window selection
+			CStdString strItem=g_localizeStrings.Get(134);	//	Songs
+			CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_BTNTYPE);
+			msg2.SetLabel(strItem);
+			g_graphicsContext.SendMessage(msg2);
+
+			strItem=g_localizeStrings.Get(132);	//	Album
+			msg2.SetLabel(strItem);
+			g_graphicsContext.SendMessage(msg2);
+
+			strItem=g_localizeStrings.Get(133);	//	Artist
+			msg2.SetLabel(strItem);
+			g_graphicsContext.SendMessage(msg2);
+
+			strItem=g_localizeStrings.Get(135);	//	Genre
+			msg2.SetLabel(strItem);
+			g_graphicsContext.SendMessage(msg2);
+
+			strItem=g_localizeStrings.Get(271);	//	Top 100
+			msg2.SetLabel(strItem);
+			g_graphicsContext.SendMessage(msg2);
+
+			//	Select the current window as default item 
+			CONTROL_SELECT_ITEM(GetID(), CONTROL_BTNTYPE, g_stSettings.m_iMyMusicStartWindow-WINDOW_MUSIC_FILES);
 
 			CSectionLoader::Load("LIBID3");
 
@@ -259,12 +288,19 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 			}
 			else if (iControl==CONTROL_BTNTYPE)
 			{
-				g_stSettings.m_iMyMusicStartWindow++;
-				if (g_stSettings.m_iMyMusicStartWindow>WINDOW_MUSIC_TOP100) g_stSettings.m_iMyMusicStartWindow=WINDOW_MUSIC_FILES;
-				g_settings.Save();
+				CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(),CONTROL_BTNTYPE);
+				m_gWindowManager.SendMessage(msg);
 
+				int nWindow=WINDOW_MUSIC_FILES+msg.GetParam1();
+
+				if (nWindow==GetID())
+					return true;
+
+				g_stSettings.m_iMyMusicStartWindow=nWindow;
+				g_settings.Save();
 				m_gWindowManager.ActivateWindow(g_stSettings.m_iMyMusicStartWindow);
 				SET_CONTROL_FOCUS(g_stSettings.m_iMyMusicStartWindow, CONTROL_BTNTYPE, 0);
+				return true;
 			}
 			else if (iControl==CONTROL_BTNSEARCH)
 			{
@@ -294,7 +330,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-/// \brief Remove items from list/thumb control and \c m_vecItems.
+/// \brief Remove items from list/thumb control and \e m_vecItems.
 void CGUIWindowMusicBase::ClearFileItems()
 {
   CGUIMessage msg1(GUI_MSG_LABEL_RESET,GetID(),CONTROL_LIST,0,0,NULL);
@@ -468,7 +504,7 @@ void CGUIWindowMusicBase::GoParentFolder()
 /// \brief Tests if a network/removeable share is available
 /// \param strPath Root share to go into
 /// \param iDriveType If share is remote, dvd or hd. See: CShare
-/// \return If drive is available return true 
+/// \return If drive is available, returns \e true 
 /// \todo Handle not connected to a remote share
 bool CGUIWindowMusicBase::HaveDiscOrConnection( CStdString& strPath, int iDriveType )
 {
@@ -517,6 +553,7 @@ bool CGUIWindowMusicBase::HaveDiscOrConnection( CStdString& strPath, int iDriveT
 }
 
 /// \brief Retrieves music info for albums from allmusic.com and displays them in CGUIWindowMusicInfo
+/// \param iItem Item in list/thumb control
 void CGUIWindowMusicBase::OnInfo(int iItem)
 {
 	int iSelectedItem=GetSelectedItem();
@@ -714,7 +751,7 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(VECFILEITEMS& items)
 
 }
 
-/// \brief Retrieve tag information for \c m_vecItems
+/// \brief Retrieve tag information for \e m_vecItems
 void CGUIWindowMusicBase::RetrieveMusicInfo()
 {
 	DWORD dwTick=timeGetTime();
@@ -728,7 +765,7 @@ void CGUIWindowMusicBase::RetrieveMusicInfo()
 }
 
 /// \brief Add selected list/thumb control item to playlist and start playing
-/// \param iItem Selected Item
+/// \param iItem Selected Item in list/thumb control
 void CGUIWindowMusicBase::OnQueueItem(int iItem)
 {
 	// add item 2 playlist
@@ -782,7 +819,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem)
 /// \param strDir directory to search 
 /// \param strSearch The search string 
 /// \param items Items Found
-/// \return Returns false if search is canceled
+/// \return Returns \e false, if search is canceled
 bool CGUIWindowMusicBase::DoSearch(const CStdString strDir,const CStdString& strSearch,VECFILEITEMS& items)
 {
   if (m_dlgProgress) 
@@ -978,7 +1015,7 @@ bool CGUIWindowMusicBase::GetKeyboard(CStdString& strInput)
 }
 
 /// \brief Is thumb or list control visible
-/// \return Returns true, if thumb control is visible
+/// \return Returns \e true, if thumb control is visible
 bool CGUIWindowMusicBase::ViewByIcon()
 {
   if ( m_strDirectory.IsEmpty() )
@@ -993,7 +1030,7 @@ bool CGUIWindowMusicBase::ViewByIcon()
 }
 
 /// \brief Is thumb control in large icons mode
-/// \return Returns true, if thumb control is in large icons mode
+/// \return Returns \e true, if thumb control is in large icons mode
 bool CGUIWindowMusicBase::ViewByLargeIcon()
 {
   if ( m_strDirectory.IsEmpty() )

@@ -121,7 +121,7 @@ protected:
 			- #VIEW_AS_LARGEICONS\n
 				Thumb control is visible and in large icon mode
 		*/
-	int												m_iViewAsIconsRoot;	///< Is list, thumb or thumb control with large icons for root items shown 
+	int												m_iViewAsIconsRoot;
 	static int								m_nTempPlayListWindow;	///< Window the temporary playlist was started
 	static CStdString					m_strTempPlayListDirectory;	///< The directory the temporary playlist was started
 	int												m_nSelectedItem;	///< Backups the last selected item before window is deinitialized

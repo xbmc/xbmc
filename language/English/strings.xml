@@ -252,7 +252,7 @@
   </string>  
   <string>
     <id>134</id>
-    <value>View Songs</value>
+    <value>Songs</value>
   </string>  
   <string>
     <id>135</id>
@@ -1489,6 +1489,10 @@
   <string>
     <id>456</id>
     <value>Mode:</value>
+  </string> 
+  <string>
+    <id>457</id>
+    <value>Switch view</value>
   </string> 
 <string><id>10000</id><value>Home</value></string>
 <string><id>10001</id><value>My Programs</value></string>

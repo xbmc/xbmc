@@ -308,6 +308,9 @@
 				RelativePath=".\GUIWindowManager.cpp">
 			</File>
 			<File
+				RelativePath=".\GUISelectButtonControl.cpp">
+			</File>
+			<File
 				RelativePath=".\IWindowManagerCallback.cpp">
 			</File>
 			<File
@@ -407,6 +410,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIWindowManager.h">
+			</File>
+			<File
+				RelativePath=".\GUISelectButtonControl.h">
 			</File>
 			<File
 				RelativePath=".\IMsgSenderCallback.h">
