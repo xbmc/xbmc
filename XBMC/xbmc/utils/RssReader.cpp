@@ -7,6 +7,7 @@
 #include "RssReader.h"
 #include "Http.h"
 #include "../utils/HTMLUtil.h"
+#include <map>
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -95,6 +96,11 @@ void CRssReader::getFeed(CStdString& strText, LPBYTE& pbColors)
 	}
 }
 
+void CRssReader::AddTag(const CStdString aString) 
+{
+	m_tagSet.push_back(aString);
+}
+
 void CRssReader::AddString(CStdString aString, int aColour)
 {
 	m_strFeed += aString;
@@ -111,45 +117,54 @@ void CRssReader::AddString(CStdString aString, int aColour)
 
 void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode)
 {
-	TiXmlElement * itemNode = channelXmlNode->FirstChildElement("item");
-	while (itemNode>0)
-	{
-		TiXmlNode* childNode = itemNode->FirstChild();
-		while (childNode>0)
-		{
-			CStdString strName = childNode->Value();
+ 	TiXmlElement * itemNode = channelXmlNode->FirstChildElement("item");
+	map <CStdString, CStdString> mTagElements;
+	typedef pair <CStdString, CStdString> StrPair;
+	list <CStdString>::iterator i;
 
-			if (strName.Equals("title"))
-			{
-				// convert html characters in title to ansi characters
-				string title;
-				HTML::CHTMLUtil html;
-				html.ConvertHTMLToAnsi(childNode->FirstChild()->Value(), title);
+	// Add the title tag in if we didn't pass any tags in at all
+	// Represents default behaviour before configurability
 
-				AddString(title, RSS_COLOR_HEADLINE);
-				title = " - ";
-				AddString(title, RSS_COLOR_BODY);
-			}
-/*
-			if (strName.Equals("description"))
+	if(m_tagSet.empty())
+		AddTag("title");
+
+ 	while (itemNode>0)
+ 	{
+ 		TiXmlNode* childNode = itemNode->FirstChild();
+		mTagElements.clear();
+ 		while (childNode>0)
+		{	
+ 			CStdString strName = childNode->Value();
+ 
+			for(i=m_tagSet.begin(); i!= m_tagSet.end(); i++)
 			{
-				CStdString description;
-				description.Format("%s     ", childNode->FirstChild()->Value());
-				
-				if (description.GetLength()>127)
+				if(i->Equals(strName))
 				{
-					description = description.Mid(0,127);
+					mTagElements.insert(StrPair(*i,childNode->FirstChild()->Value()));
 				}
-
-				AddString(description, RSS_COLOR_BODY);
 			}
-*/
-			childNode = childNode->NextSibling();
-		}
-		
+ 			childNode = childNode->NextSibling();
+ 		}
 
-		itemNode = itemNode->NextSiblingElement("item");
-	}
+		int rsscolour = RSS_COLOR_HEADLINE;
+		for (i=m_tagSet.begin();i!=m_tagSet.end();i++)
+		{
+			CStdString text;
+			HTML::CHTMLUtil html;
+			map <CStdString, CStdString>::iterator j = mTagElements.find(*i);
+ 		
+			if(j == mTagElements.end())
+				continue;
+ 
+			html.ConvertHTMLToAnsi(j->second, text);
+			
+			AddString(text, rsscolour);
+			rsscolour=RSS_COLOR_BODY;
+			text = " - ";
+			AddString(text, rsscolour);
+		}
+ 		itemNode = itemNode->NextSiblingElement("item");
+ 	}
 }
 
 bool CRssReader::Load(CStdString& aFile)
