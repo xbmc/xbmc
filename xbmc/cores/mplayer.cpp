@@ -399,6 +399,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
   if (url.GetProtocol()=="http") bStreamingAudio=true;
   if (url.GetProtocol()=="shout") bStreamingAudio=true;
   if (url.GetProtocol()=="mms") bStreamingAudio=true;
+  if (url.GetProtocol()=="rtp") bStreamingAudio=true;
   try
   {
     if (bStreamingAudio)
