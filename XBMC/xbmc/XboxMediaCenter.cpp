@@ -70,7 +70,8 @@
 //		  - screen:
 //					- UI screen calibration offsets
 //					- movies screen calibration 
-//					- filter on/off
+//					- soften on/off
+//					- stretch / zoom
 //
 
 #include "stdafx.h"

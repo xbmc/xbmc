@@ -6,6 +6,7 @@
 #include "guiListControl.h"
 #include "guiImage.h"
 #include "GUILabelControl.h"
+#include "GUIFadeLabelControl.h"
 #include "GUICheckMarkControl.h"
 #include "GUIThumbnailPanel.h"
 #include "GUIMButtonControl.h"
@@ -85,6 +86,26 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       }
 
       CGUILabelControl* pControl = new CGUILabelControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strFont,strLabel,dwTextColor,dwAlign);
+      pControl->SetColourDiffuse(dwColorDiffuse);
+      pControl->SetVisible(bVisible);
+      return pControl;
+  }
+	if (strType=="fadelabel")
+  {
+      CStdString  strFont;
+      D3DCOLOR dwTextColor;
+      sscanf(pControlNode->FirstChild("textcolor" )->FirstChild()->Value(),"%x",&dwTextColor);
+      strFont=pControlNode->FirstChild("font")->FirstChild()->Value();
+
+      DWORD dwAlign=XBFONT_LEFT;
+      pNode=pControlNode->FirstChild("align");
+      if (pNode)
+      {
+        CStdString strAlign=pControlNode->FirstChild("align")->FirstChild()->Value();      
+        if (strAlign=="right") dwAlign=XBFONT_RIGHT;
+      }
+
+      CGUIFadeLabelControl* pControl = new CGUIFadeLabelControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strFont,dwTextColor,dwAlign);
       pControl->SetColourDiffuse(dwColorDiffuse);
       pControl->SetVisible(bVisible);
       return pControl;

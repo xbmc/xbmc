@@ -206,6 +206,9 @@
 				RelativePath=".\GUIDialog.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIFadeLabelControl.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIFont.cpp">
 			</File>
 			<File
@@ -290,6 +293,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIDialog.h">
+			</File>
+			<File
+				RelativePath=".\GUIFadeLabelControl.h">
 			</File>
 			<File
 				RelativePath=".\GUIFont.h">
