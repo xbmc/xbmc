@@ -110,8 +110,11 @@ static int ac3dts_fillbuff(sh_audio_t *sh_audio)
   sh_audio->a_in_buffer_len = length;
     
   // TODO: is DTS also checksummed?
-  if(isdts == 0 && crc16_block(sh_audio->a_in_buffer + 2, length - 2) != 0)
+  if(isdts == 0 && crc16_block(sh_audio->a_in_buffer + 2, length - 2) != 0) 
+  {
     mp_msg(MSGT_DECAUDIO, MSGL_STATUS, "a52: CRC check failed!  \n");
+    return -1;
+  }
     
   return length;
 }
