@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 22-09-2004 fixed: Bookmarks failed to work if stacking was enabled and a single file video was played.
   - 21-09-2004 fixed: Album lookup would show "Unable to connect to www.allmusic.com" when actually no matching album was found on allmusic.
   - 20-09-2004 changed: Database views now show a message if the database is empty.
   - 20-09-2004 changed: Songs and Movies view renamed to Files view as it's more consistent.
