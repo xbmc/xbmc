@@ -22,6 +22,9 @@ public:
     bool         GetNoCache() const;
     void         SetNoCache(bool bOnOff) ;
 
+    bool         GetNoIdx() const;
+    void         SetNoIdx(bool bOnOff) ;
+
     float        GetVolumeAmplification() const;
     void         SetVolumeAmplification(float fDB) ;
 
@@ -46,6 +49,7 @@ public:
     private:
 	  bool	m_bResampleAudio;
       bool    m_bNoCache;
+      bool    m_bNoIdx;
       float   m_fSpeed;
       float   m_fFPS;
       int     m_iChannels;
