@@ -8,6 +8,8 @@
 #include "GUIImage.h"
 #include "GUIFontManager.h"
 #include "key.h"
+#include "utils/imdb.h"
+
 #include "GUIWindowHome.h"
 #include "GUIWindowPrograms.h"
 #include "GUIWindowSettingsPrograms.h"
@@ -68,12 +70,13 @@
 #include "Autorun.h"
 #include "IMsgTargetCallback.h"
 #include "ButtonTranslator.h"
-
+#include "musicInfoTag.h"
 #include <vector>
 #include <memory>
 
 using namespace std;
 using namespace MEDIA_DETECT;
+using namespace MUSIC_INFO;
 
 class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback
 {
@@ -105,8 +108,10 @@ public:
 	void									RenderFullScreen();
   bool                  NeedRenderFullScreen();
 	void									SpinHD();
-	void				CheckScreenSaver();		// CB: SCREENSAVER PATCH
-	void				CheckShutdown();
+	void				          CheckScreenSaver();		// CB: SCREENSAVER PATCH
+	void				          CheckShutdown();
+  void                  SetCurrentSong(const CMusicInfoTag& tag);
+  void                  SetCurrentMovie(const CIMDBMovie& tag);
 	void									ResetAllControls();
   virtual void          Process();
   void                  ResetScreenSaver();
@@ -177,6 +182,9 @@ public:
   CGUIWindowSettingsCache         m_guiSettingsCache;
 	DWORD					                  m_dwSkinTime;
 protected:
+  void                    UpdateLCD();
+  CIMDBMovie              m_tagCurrentMovie;
+  CMusicInfoTag           m_tagCurrentSong;
   int                     m_iPlaySpeed;
 	bool										m_bOverlayEnabled;
 	CStdString							m_strCurrentPlayer;

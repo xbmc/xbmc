@@ -26,6 +26,7 @@ typedef vector<CIMDBUrl> IMDB_MOVIELIST;
 class CIMDBMovie
 {
 	public:
+    void        Reset();
 		bool 				Load(const CStdString& strFileName);
 		void 				Save(const CStdString& strFileName);
 		CStdString m_strDirector;
