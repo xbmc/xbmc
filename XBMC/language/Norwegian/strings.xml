@@ -715,17 +715,15 @@
   <string><id>14022</id><value>Bibliotek</value></string>
   <string><id>14023</id><value>Ingen TV</value></string>
   <string><id>14024</id><value>Skriv inn nærmeste store by eller US ZIP kode</value></string>
-  <string><id>14025</id><value>Video fra     - harddisk</value></string>
-  <string><id>14026</id><value>              - DVD-spiller</value></string>
-  <string><id>14027</id><value>              - lokalt nettverk</value></string>
-  <string><id>14028</id><value>              - internett</value></string>
-  <string><id>14029</id><value>Lyd fra       - harddisk</value></string>
-  <string><id>14030</id><value>              - DVD-spiller</value></string>
-  <string><id>14031</id><value>              - lokalt nettverk</value></string>
-  <string><id>14032</id><value>              - internett</value></string>
-  <string><id>14033</id><value>DVD fra       - harddisk</value></string>
-  <string><id>14034</id><value>              - DVD-spiller</value></string>
-  <string><id>14035</id><value>              - lokalt nettverk</value></string>
+  <string><id>14025</id><value>Video/lyd/DVD-cache - harddisk</value></string>
+  <string><id>14026</id><value>Video-cache - DVD-spiller</value></string>
+  <string><id>14027</id><value>- lokalt nettverk</value></string>
+  <string><id>14028</id><value>- internett</value></string>
+  <string><id>14030</id><value>Lyd-cache - DVD-spiller</value></string>
+  <string><id>14031</id><value>- lokalt nettverk</value></string>
+  <string><id>14032</id><value>- internett</value></string>
+  <string><id>14034</id><value>DVD-cache - DVD-spiller</value></string>
+  <string><id>14035</id><value>- lokalt nettverk</value></string>
   <string><id>14036</id><value>Tjenere</value></string>
   <string><id>14037</id><value>Utseende</value></string>
   <string><id>14038</id><value>Nettverksinstillingene er forandret</value></string>
@@ -749,6 +747,8 @@
   <string><id>14056</id><value>Stopp skanning</value></string>
   <string><id>14057</id><value>Ikke mulig når det skannes etter mediainformasjon</value></string>
   <string><id>14058</id><value>Kornete filmeffekt</value></string>
+  <string><id>14059</id><value>Se etter miniatyrbilder i nettverksmapper</value></string>
+  <string><id>14060</id><value>Ukjent type cache - internett</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Tjenesten er ikke tilkoblet, vil du forsøke</value></string>
