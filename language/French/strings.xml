@@ -1936,8 +1936,8 @@
  	<string>
 		<id>726</id>
 		<value>Les changements n'ont pas été enregistrés. Continuer sans sauvegarder ?</value>
+    </string>
 	</string>
-	<string>
 		<id>727</id>
 		<value>Serveur Web</value>
 	</string>	
@@ -1961,6 +1961,50 @@
 		<id>732</id>
 		<value>Enregistrer et appliquer</value>
 	</string>	
+    <string>
+        <id>733</id>
+        <value>Mot de passe du serveur web</value>
+    </string>
+    <string>
+        <id>734</id>
+        <value>Pas de mot de passe</value>
+    </string>
+    <string>
+        <id>735</id>
+        <value>Encodage :</value>
+    </string>
+  	<string>
+		<id>736</id>
+		<value>Style :</value>
+	</string>	
+	<string>
+		<id>737</id>
+		<value>Couleur :</value>
+	</string>
+	<string>
+		<id>738</id>
+		<value>Normal</value>
+	</string>	
+	<string>
+		<id>739</id>
+		<value>Gras</value>
+	</string>	
+	<string>
+		<id>740</id>
+		<value>Italiques</value>
+	</string>	
+	<string>
+		<id>741</id>
+		<value>Gras italiques</value>
+	</string>	
+	<string>
+		<id>742</id>
+		<value>Blanc</value>
+	</string>	
+	<string>
+		<id>743</id>
+		<value>Jaune</value>
+	</string>
 
 	<string>
 		<id>998</id>
@@ -2228,7 +2272,11 @@
         <value>Fonte du thème</value>
     </string>
     <string>
-        <id>13303</id>
-        <value>Encodage de caractère</value>
+        <id>13304</id>
+        <value>Activer les basculements de chaînes bi-directionnelle</value>
+    </string>
+    <string>
+        <id>13305</id>
+        <value>Activer les flux RSS</value>
     </string>
 </strings>
