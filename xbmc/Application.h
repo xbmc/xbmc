@@ -117,6 +117,7 @@ public:
 	IPlayer*												m_pPlayer;
 	bool														m_bSpinDown;
 	DWORD														m_dwSpinDownTime;
+	DWORD														m_dwIdleTime;
 protected:
 	bool										m_bOverlayEnabled;
 	vector<int>							m_vecScriptIds;

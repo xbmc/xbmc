@@ -87,8 +87,9 @@ static int audio_init(int rate,int channels,int format,int flags)
 		pao_data=GetAOData();
 		if (bAC3PassThru)
 		{
+			channels=2;
 			// ac3 passthru
-			m_pAudioDecoder = new CAc97DirectSound(m_pAudioCallback,2,rate,audio_out_format_bits(format));
+			m_pAudioDecoder = new CAc97DirectSound(m_pAudioCallback,channels,rate,audio_out_format_bits(format));
 		}
 		else
 		{

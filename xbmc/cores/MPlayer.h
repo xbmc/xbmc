@@ -41,14 +41,11 @@ public:
 	virtual void		GetVideoRect(RECT& SrcRect, RECT& DestRect);
 	virtual float		GetVideoAspectRatio();
 protected:
-	virtual void		OnStartup();
-	virtual void		OnExit();
-	virtual void		Process();
-	bool						m_bPaused;
-	bool						m_bIsPlaying;
-	bool						m_bStopPlaying;
-	DllLoader*			m_pDLL;
-	CEvent					m_startEvent;
-	__int64					m_iPTS;
-	DWORD						m_dwTime;
+	virtual void				OnStartup();
+	virtual void				OnExit();
+	virtual void				Process();
+	bool								m_bPaused;
+	bool								m_bIsPlaying;
+	DllLoader*					m_pDLL;
+	__int64							m_iPTS;
 };

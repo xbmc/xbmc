@@ -85,11 +85,18 @@ bool CThread::IsAutoDelete() const
 void CThread::StopThread()
 {
 	m_bStop=true;
+	while(m_ThreadHandle)
+	{
+		DWORD dwExitCode;
+		GetExitCodeThread(m_ThreadHandle,&dwExitCode);
+		if (dwExitCode != STILL_ACTIVE) break;
+		Sleep(10);
+	} 
 	if (m_ThreadHandle)
 	{
-		m_eventStop.Wait();
+		CloseHandle(m_ThreadHandle);
+		m_ThreadHandle=NULL;
 	}
-	m_ThreadHandle=NULL;
 }
 
 unsigned long CThread::ThreadId() const 
