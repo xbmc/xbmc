@@ -507,6 +507,9 @@
 				RelativePath=".\IMsgSenderCallback.h">
 			</File>
 			<File
+				RelativePath=".\IMsgTargetCallback.h">
+			</File>
+			<File
 				RelativePath=".\IWindowManagerCallback.h">
 			</File>
 			<File
