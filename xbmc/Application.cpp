@@ -38,6 +38,7 @@ CApplication::CApplication(void)
 :m_ctrDpad(220,220)
 ,m_ctrIR(220,220)
 {
+		m_bOverlayEnabled=true;
 		m_pPhytonParser=NULL;
 		m_pPlayer=NULL;
 }	
@@ -255,7 +256,7 @@ void CApplication::Render()
 	
 	m_gWindowManager.Render();
 
-	if (m_pPlayer)
+	if (m_pPlayer && m_bOverlayEnabled)
 	{
 		if (m_pPlayer->IsPlaying() )
 		{
@@ -630,4 +631,13 @@ void CApplication::OnPlayBackEnded()
 
 void CApplication::OnPlayBackStarted()
 {
+}
+
+void CApplication::EnableOverlay()
+{
+	m_bOverlayEnabled=true;
+}
+void CApplication::DisableOverlay()
+{
+	m_bOverlayEnabled=false;
 }

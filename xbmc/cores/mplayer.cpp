@@ -31,9 +31,11 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		}
 		if( !m_pDLL->ResolveImports()  )
 		{
+#ifndef _DEBUG
 			delete m_pDLL;
 			m_pDLL=false;
 			return false;
+#endif
 		}
 
 		mplayer_load_dll(*m_pDLL);
