@@ -403,7 +403,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 	  mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
     mplayer_GetVideoInfo(strVidFourCC,strVideoCodec, &fFPS, &iWidth,&iHeight, &lFrames2Early, &lFrames2Late);
 
-    if (g_stSettings.m_bFrameRateConversions)
+    if (g_stSettings.m_bFrameRateConversions && CUtil::IsVideo(strFile) )
     {
       DWORD dwVideoStandard=XGetVideoStandard();
       if (dwVideoStandard==XC_VIDEO_STANDARD_PAL_I)
