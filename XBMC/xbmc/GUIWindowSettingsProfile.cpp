@@ -6,6 +6,7 @@
 #include "../guilib/GUIListItem.h"
 #include "util.h"
 #include "application.h"
+#include "GUIListControl.h"
 
 #define CONTROL_PROFILES 2
 #define CONTROL_LASTLOADED_PROFILE 3
@@ -27,50 +28,6 @@ void CGUIWindowSettingsProfile::OnAction(const CAction &action)
 		m_gWindowManager.PreviousWindow();
 		return;
 	}
-  else if (action.wID == ACTION_RENAME_ITEM)
-  {
-    int i = GetSelectedItem();
-    if (i < (int)g_settings.m_vecProfiles.size())  // do nothing when <new profile> is selected
-    {
-      CStdString strProfileName;
-      if (GetKeyboard(strProfileName)) {
-        CProfile& profile = g_settings.m_vecProfiles.at(i);
-        profile.setName(strProfileName);
-        g_settings.Save();
-        LoadList();
-      }
-    }
-    return;
-  }
-  else if (action.wID == ACTION_DELETE_ITEM)
-  {
-    int i = GetSelectedItem();
-    if (i < (int)g_settings.m_vecProfiles.size())  // do nothing when <new profile> is selected
-    {
-      {
-        CGUIDialogYesNo* dlgYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-        if (dlgYesNo)
-        {
-          CStdString message;
-          CStdString str = g_localizeStrings.Get(13201);
-          message.Format(str.c_str(), g_settings.m_vecProfiles.at(i).getName());
-          dlgYesNo->SetHeading(13200);
-          dlgYesNo->SetLine(0, message);
-          dlgYesNo->SetLine(1, "");
-          dlgYesNo->SetLine(2, "");
-          dlgYesNo->DoModal(GetID());
-
-          if (dlgYesNo->IsConfirmed())
-          {
-            //delete profile
-            g_settings.DeleteProfile(i);
-            LoadList();
-          }
-        }
-      }
-    }
-    return;
-  }
 
 	CGUIWindow::OnAction(action);
 }
@@ -83,6 +40,106 @@ int CGUIWindowSettingsProfile::GetSelectedItem()
 	return msg.GetParam1();
 }
 
+void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
+{
+	// calculate our position
+	int iPosX=200;
+	int iPosY=100;
+	CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_PROFILES);
+	if (pList)
+	{
+		iPosX = pList->GetXPosition()+pList->GetWidth()/2;
+		iPosY = pList->GetYPosition()+pList->GetHeight()/2;
+	}	
+	// popup the context menu
+	CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+	if (!pMenu) return;
+	// clean any buttons not needed
+	pMenu->ClearButtons();
+	// add the needed buttons
+	pMenu->AddButton(13206);// Overwrite
+	pMenu->AddButton(118);	// Rename
+	pMenu->AddButton(117);	// Delete
+
+	// position it correctly
+	pMenu->SetPosition(iPosX-pMenu->GetWidth()/2, iPosY-pMenu->GetHeight()/2);
+	pMenu->DoModal(GetID());
+	switch (pMenu->GetButton())
+	{
+	case 1:	// Overwrite
+		DoOverwrite(iItem);
+		break;
+	case 2:	// Rename
+		DoRename(iItem);
+		break;
+	case 3:	// Delete
+		DoDelete(iItem);
+		break;
+	}
+}
+
+void CGUIWindowSettingsProfile::DoRename(int iItem)
+{
+  if (iItem < (int)g_settings.m_vecProfiles.size())  // do nothing when <new profile> is selected
+  {
+    CStdString strProfileName;
+    if (GetKeyboard(strProfileName)) {
+      CProfile& profile = g_settings.m_vecProfiles.at(iItem);
+      profile.setName(strProfileName);
+      g_settings.Save();
+      LoadList();
+    }
+  }
+}
+
+void CGUIWindowSettingsProfile::DoDelete(int iItem)
+{
+  if (iItem < (int)g_settings.m_vecProfiles.size())  // do nothing when <new profile> is selected
+  {
+    {
+      CGUIDialogYesNo* dlgYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+      if (dlgYesNo)
+      {
+        CStdString message;
+        CStdString str = g_localizeStrings.Get(13201);
+        message.Format(str.c_str(), g_settings.m_vecProfiles.at(iItem).getName());
+        dlgYesNo->SetHeading(13200);
+        dlgYesNo->SetLine(0, message);
+        dlgYesNo->SetLine(1, "");
+        dlgYesNo->SetLine(2, "");
+        dlgYesNo->DoModal(GetID());
+
+        if (dlgYesNo->IsConfirmed())
+        {
+          //delete profile
+          g_settings.DeleteProfile(iItem);
+          LoadList();
+        }
+      }
+    }
+  }
+}
+
+void CGUIWindowSettingsProfile::DoOverwrite(int iItem)
+{
+  CGUIDialogYesNo* dlgYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+  if (dlgYesNo)
+  {
+    CStdString message;
+    CStdString str = g_localizeStrings.Get(13207);
+    message.Format(str.c_str(), g_settings.m_vecProfiles.at(iItem).getName());
+    dlgYesNo->SetHeading(13200);
+    dlgYesNo->SetLine(0, message);
+    dlgYesNo->SetLine(1, "");
+    dlgYesNo->SetLine(2, "");
+    dlgYesNo->DoModal(GetID());
+
+    if (dlgYesNo->IsConfirmed())
+    {
+      g_settings.SaveSettingsToProfile(iItem);
+    }
+  }
+}
 
 bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
 {
@@ -113,11 +170,24 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
       if (iControl==CONTROL_PROFILES)
       {
         int iAction=message.GetParam1();
-        if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK) {
+        if (
+          iAction == ACTION_SELECT_ITEM || 
+          iAction == ACTION_MOUSE_LEFT_CLICK || 
+          iAction == ACTION_CONTEXT_MENU || 
+          iAction == ACTION_MOUSE_RIGHT_CLICK
+        ) {
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_PROFILES,0,0,NULL);
           g_graphicsContext.SendMessage(msg);
           int iItem=msg.GetParam1();
-          if (iItem > (int)g_settings.m_vecProfiles.size() - 1) {
+          if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK) 
+          {
+            //contextmenu
+            if (iItem <= (int)g_settings.m_vecProfiles.size() - 1) {
+					    OnPopupMenu(iItem);
+            }
+            return true;
+          }
+          else if (iItem > (int)g_settings.m_vecProfiles.size() - 1) {
             //new profile
             CStdString strProfileName;
             if (GetKeyboard(strProfileName)) {
@@ -139,6 +209,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
             }
 						return true;
           }
+          //load profile
 					CStdString strPrevSkin = g_guiSettings.GetString("LookAndFeel.Skin");
 					int iPrevResolution = g_guiSettings.m_LookAndFeelResolution;
           CSettings::stSettings prevSettings = g_stSettings;
