@@ -295,6 +295,8 @@ ULONG VC1_VoiceGetPanning(UBYTE voice)
 
 void VC1_VoiceSetFrequency(UBYTE voice,ULONG frq)
 {
+	if (voice <= 1 && vinf[voice].frq != frq)
+		XB_Log("SetFrq:    c=%02d, frq=%03d", voice, frq);
 	vinf[voice].frq=frq;
 }
 
@@ -312,6 +314,9 @@ void VC1_VoicePlay(UBYTE voice,SWORD handle,ULONG start,ULONG size,ULONG reppos,
 	vinf[voice].reppos   = reppos;
 	vinf[voice].repend   = repend;
 	vinf[voice].kick     = 1;
+
+	if (voice <= 1)
+		XB_Log("VoicePlay: c=%02d, s=%02d, play=%05d-%05d, loop=%05d-%05d, flags=%02x", voice, handle, start, size, reppos, repend, flags >> 8);
 }
 
 void VC1_VoiceStop(UBYTE voice)
@@ -334,6 +339,8 @@ void VC1_VoiceSetVolume(UBYTE voice,UWORD vol)
 	/* protect against clicks if volume variation is too high */
 	if(abs((int)vinf[voice].vol-(int)vol)>32)
 		vinf[voice].rampvol=CLICK_BUFFER;
+	if (voice <= 1 && vinf[voice].vol != vol)
+		XB_Log("SetVolume: c=%02d, vol=%03d", voice, vol);
 	vinf[voice].vol=vol;
 }
 
@@ -342,6 +349,8 @@ void VC1_VoiceSetPanning(UBYTE voice,ULONG pan)
 	/* protect against clicks if panning variation is too high */
 	if(abs((int)vinf[voice].pan-(int)pan)>48)
 		vinf[voice].rampvol=CLICK_BUFFER;
+	if (voice <= 1 && vinf[voice].pan != pan)
+		XB_Log("SetPan:    c=%02d, pan=%03d", voice, pan);
 	vinf[voice].pan=pan;
 }
 

@@ -41,6 +41,7 @@
 #else
 #include <stdlib.h>
 #endif
+#undef XB_LOG
 #include "mikmod.h"
 #include "mikmod_internals.h"
 
@@ -1055,6 +1056,8 @@ static int DoS3MEffectA(UWORD tick, UWORD flags, MP_CONTROL *a, MODULE *mod, SWO
 {
 	UBYTE speed;
 
+	XB_Log("S3m: EffectA: chan %d", channel);
+
 	speed = UniGetByte();
 
 	if (tick || mod->patdly2)
@@ -1104,6 +1107,8 @@ static void DoS3MVolSlide(UWORD tick, UWORD flags, MP_CONTROL *a, UBYTE inf)
 
 static int DoS3MEffectD(UWORD tick, UWORD flags, MP_CONTROL *a, MODULE *mod, SWORD channel)
 {
+	XB_Log("S3m: EffectD: chan %d", channel);
+
 	DoS3MVolSlide(tick, flags, a, UniGetByte());
 
 	return 1;
@@ -1134,6 +1139,8 @@ static void DoS3MSlideDn(UWORD tick, MP_CONTROL *a, UBYTE inf)
 static int DoS3MEffectE(UWORD tick, UWORD flags, MP_CONTROL *a, MODULE *mod, SWORD channel)
 {
 	UBYTE dat;
+
+	XB_Log("S3m: EffectE: chan %d", channel);
 
 	dat=UniGetByte();
 	if (a->main.period)
@@ -1166,6 +1173,8 @@ static int DoS3MEffectF(UWORD tick, UWORD flags, MP_CONTROL *a, MODULE *mod, SWO
 {
 	UBYTE dat;
 
+	XB_Log("S3m: EffectF: chan %d", channel);
+
 	dat=UniGetByte();
 	if (a->main.period)
 		DoS3MSlideUp(tick, a,dat);
@@ -1176,6 +1185,8 @@ static int DoS3MEffectF(UWORD tick, UWORD flags, MP_CONTROL *a, MODULE *mod, SWO
 static int DoS3MEffectI(UWORD tick, UWORD flags, MP_CONTROL *a, MODULE *mod, SWORD channel)
 {
 	UBYTE inf, on, off;
+
+	XB_Log("S3m: EffectI: chan %d", channel);
 
 	inf = UniGetByte();
 	if (inf)
@@ -1202,6 +1213,8 @@ static int DoS3MEffectI(UWORD tick, UWORD flags, MP_CONTROL *a, MODULE *mod, SWO
 static int DoS3MEffectQ(UWORD tick, UWORD flags, MP_CONTROL *a, MODULE *mod, SWORD channel)
 {
 	UBYTE inf;
+
+	XB_Log("S3m: EffectQ: chan %d", channel);
 
 	inf = UniGetByte();
 	if (a->main.period) {
@@ -1265,6 +1278,8 @@ static int DoS3MEffectR(UWORD tick, UWORD flags, MP_CONTROL *a, MODULE *mod, SWO
 	UBYTE dat, q;
 	UWORD temp=0;	/* silence warning */
 
+	XB_Log("S3m: EffectR: chan %d", channel);
+
 	dat = UniGetByte();
 	if (!tick) {
 		if (dat&0x0f) a->trmdepth=dat&0xf;
@@ -1312,6 +1327,8 @@ static int DoS3MEffectT(UWORD tick, UWORD flags, MP_CONTROL *a, MODULE *mod, SWO
 {
 	UBYTE tempo;
 
+	XB_Log("S3m: EffectT: chan %d", channel);
+
 	tempo = UniGetByte();
 
 	if (tick || mod->patdly2)
@@ -1326,6 +1343,8 @@ static int DoS3MEffectU(UWORD tick, UWORD flags, MP_CONTROL *a, MODULE *mod, SWO
 {
 	UBYTE dat, q;
 	UWORD temp = 0;	/* silence warning */
+
+	XB_Log("S3m: EffectU: chan %d", channel);
 
 	dat = UniGetByte();
 	if (!tick) {
