@@ -159,7 +159,7 @@ void CGUIWindowVideoOverlay::Render()
 				{
 					const WCHAR* wsYear=g_localizeStrings.Get(201).c_str();
 					WCHAR wsTmp[1024];
-					swprintf(wsTmp,L"%s: %i", wsYear, movieDetails.m_iYear);
+					swprintf(wsTmp,L"%s %i", wsYear, movieDetails.m_iYear);
 					CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
 					msg1.SetLabel(wsTmp );
 					OnMessage(msg1);				
@@ -170,7 +170,7 @@ void CGUIWindowVideoOverlay::Render()
 				{
 					const WCHAR* wsDirector=g_localizeStrings.Get(199).c_str();
 					WCHAR wsTmp[1024];
-					swprintf(wsTmp,L"%s: %S", wsDirector, movieDetails.m_strDirector.c_str() );
+					swprintf(wsTmp,L"%s %S", wsDirector, movieDetails.m_strDirector.c_str() );
 					CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
 					msg1.SetLabel(wsTmp );
 					OnMessage(msg1);		
