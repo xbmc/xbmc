@@ -30,4 +30,6 @@ protected:
   int                 m_iPosOrgRectangle;
   void                SetPosition(int iControl, int iStep, int iMaxSteps,int iOrgPos);
   int                 GetControlYPosition(int iControl);
+  void                ShowControl(int iControl);
+  void                HideControl(int iControl);
 };

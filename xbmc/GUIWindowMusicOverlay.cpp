@@ -22,6 +22,8 @@ using namespace MUSIC_INFO;
 #define CONTROL_PAUSE_LOGO  4
 #define CONTROL_INFO			  5
 #define CONTROL_BIG_PLAYTIME 6
+#define CONTROL_FF_LOGO  7
+#define CONTROL_RW_LOGO  8
 
 CGUIWindowMusicOverlay::CGUIWindowMusicOverlay()
 :CGUIWindow(0)
@@ -44,6 +46,18 @@ void CGUIWindowMusicOverlay::OnAction(const CAction &action)
 bool CGUIWindowMusicOverlay::OnMessage(CGUIMessage& message)
 {
   return CGUIWindow::OnMessage(message);
+}
+
+void CGUIWindowMusicOverlay::ShowControl(int iControl)
+{
+  CGUIMessage msg(GUI_MSG_VISIBLE, GetID(), iControl); 
+	OnMessage(msg); 
+}
+
+void CGUIWindowMusicOverlay::HideControl(int iControl)
+{
+  CGUIMessage msg(GUI_MSG_HIDDEN, GetID(), iControl); 
+	OnMessage(msg); 
 }
 
 void CGUIWindowMusicOverlay::SetPosition(int iControl, int iStep, int iSteps,int iOrgPos)
@@ -76,13 +90,16 @@ void CGUIWindowMusicOverlay::Render()
     m_iPosOrgInfo=GetControlYPosition(CONTROL_INFO);
     m_iPosOrgPlayTime=GetControlYPosition(CONTROL_PLAYTIME);
     m_iPosOrgBigPlayTime=GetControlYPosition(CONTROL_BIG_PLAYTIME);
-  }  
+  }
+  int iSteps=25;
   if ( m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION)
   {
     SetPosition(0, 50,50,m_iPosOrgRectangle);
     SetPosition(CONTROL_LOGO_PIC, 50,50,m_iPosOrgIcon);
     SetPosition(CONTROL_PLAY_LOGO, 50,50,m_iPosOrgPlay);
     SetPosition(CONTROL_PAUSE_LOGO, 50,50,m_iPosOrgPause);
+    SetPosition(CONTROL_FF_LOGO, 50,50,m_iPosOrgPause);
+    SetPosition(CONTROL_RW_LOGO, 50,50,m_iPosOrgPause);
     SetPosition(CONTROL_INFO, 50,50,m_iPosOrgInfo);
     SetPosition(CONTROL_PLAYTIME, 50,50,m_iPosOrgPlayTime);
     SetPosition(CONTROL_BIG_PLAYTIME, 50,50,m_iPosOrgBigPlayTime);
@@ -90,7 +107,6 @@ void CGUIWindowMusicOverlay::Render()
   }
   else
   {
-    int iSteps=25;
     if (m_iFrames < iSteps)
     {
       // scroll up
@@ -98,6 +114,8 @@ void CGUIWindowMusicOverlay::Render()
       SetPosition(CONTROL_LOGO_PIC, m_iFrames,iSteps,m_iPosOrgIcon);
       SetPosition(CONTROL_PLAY_LOGO, m_iFrames,iSteps,m_iPosOrgPlay);
       SetPosition(CONTROL_PAUSE_LOGO, m_iFrames,iSteps,m_iPosOrgPause);
+      SetPosition(CONTROL_FF_LOGO, m_iFrames,iSteps,m_iPosOrgPause);
+      SetPosition(CONTROL_RW_LOGO, m_iFrames,iSteps,m_iPosOrgPause);
       SetPosition(CONTROL_INFO, m_iFrames,iSteps,m_iPosOrgInfo);
       SetPosition(CONTROL_PLAYTIME, m_iFrames,iSteps,m_iPosOrgPlayTime);
       SetPosition(CONTROL_BIG_PLAYTIME, m_iFrames,iSteps,m_iPosOrgBigPlayTime);
@@ -110,6 +128,8 @@ void CGUIWindowMusicOverlay::Render()
       SetPosition(CONTROL_LOGO_PIC, iSteps,iSteps,m_iPosOrgIcon);
       SetPosition(CONTROL_PLAY_LOGO, iSteps,iSteps,m_iPosOrgPlay);
       SetPosition(CONTROL_PAUSE_LOGO, iSteps,iSteps,m_iPosOrgPause);
+      SetPosition(CONTROL_FF_LOGO, iSteps,iSteps,m_iPosOrgPause);
+      SetPosition(CONTROL_RW_LOGO, iSteps,iSteps,m_iPosOrgPause);
       SetPosition(CONTROL_INFO, iSteps,iSteps,m_iPosOrgInfo);
       SetPosition(CONTROL_PLAYTIME, iSteps,iSteps,m_iPosOrgPlayTime);
       SetPosition(CONTROL_BIG_PLAYTIME, iSteps,iSteps,m_iPosOrgBigPlayTime);
@@ -126,6 +146,8 @@ void CGUIWindowMusicOverlay::Render()
       SetPosition(CONTROL_LOGO_PIC,     5*iSteps+2*iSteps-m_iFrames,iSteps,m_iPosOrgIcon);
       SetPosition(CONTROL_PLAY_LOGO,    5*iSteps+2*iSteps-m_iFrames,iSteps,m_iPosOrgPlay);
       SetPosition(CONTROL_PAUSE_LOGO,   5*iSteps+2*iSteps-m_iFrames,iSteps,m_iPosOrgPause);
+      SetPosition(CONTROL_FF_LOGO,   5*iSteps+2*iSteps-m_iFrames,iSteps,m_iPosOrgPause);
+      SetPosition(CONTROL_RW_LOGO,   5*iSteps+2*iSteps-m_iFrames,iSteps,m_iPosOrgPause);
       SetPosition(CONTROL_INFO,         5*iSteps+2*iSteps-m_iFrames,iSteps,m_iPosOrgInfo);
       SetPosition(CONTROL_PLAYTIME,     5*iSteps+2*iSteps-m_iFrames,iSteps,m_iPosOrgPlayTime);
       SetPosition(CONTROL_BIG_PLAYTIME, 5*iSteps+2*iSteps-m_iFrames,iSteps,m_iPosOrgBigPlayTime);
@@ -148,29 +170,50 @@ void CGUIWindowMusicOverlay::Render()
 		sprintf(szTime,"%02.2i:%02.2i",mm,ss);
 	}
 	{
-		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_PLAYTIME); 
-		msg.SetLabel(szTime); 
-		OnMessage(msg); 
-	}
-	{
 		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_BIG_PLAYTIME); 
 		msg.SetLabel(szTime); 
 		OnMessage(msg); 
 	}
 
+  int iSpeed=g_application.GetPlaySpeed();
+  if (iSpeed !=1)
+  {
+    char szTmp[32];
+    sprintf(szTmp,"(%ix)", iSpeed);
+    strcat(szTime,szTmp);
+    m_iFrames =iSteps ;
+  }
+
+  {
+		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_PLAYTIME); 
+		msg.SetLabel(szTime); 
+		OnMessage(msg); 
+	}
+
+
+	HideControl( CONTROL_PLAY_LOGO); 
+	HideControl( CONTROL_PAUSE_LOGO);
+	HideControl( CONTROL_FF_LOGO); 
+	HideControl( CONTROL_RW_LOGO);  
 	if (g_application.m_pPlayer->IsPaused() )
 	{
-		CGUIMessage msg1(GUI_MSG_HIDDEN, GetID(), CONTROL_PLAY_LOGO); 
-		OnMessage(msg1);
-		CGUIMessage msg2(GUI_MSG_VISIBLE, GetID(), CONTROL_PAUSE_LOGO); 
-		OnMessage(msg2); 
+		ShowControl(CONTROL_PAUSE_LOGO);
 	}
 	else
 	{
-		CGUIMessage msg1(GUI_MSG_VISIBLE, GetID(), CONTROL_PLAY_LOGO); 
-		OnMessage(msg1);
-		CGUIMessage msg2(GUI_MSG_HIDDEN, GetID(), CONTROL_PAUSE_LOGO); 
-		OnMessage(msg2); 
+    int iSpeed=g_application.GetPlaySpeed();
+    if (iSpeed==1)
+    {
+		  ShowControl( CONTROL_PLAY_LOGO); 
+    }
+    else if (iSpeed>1)
+    {
+		  ShowControl(CONTROL_FF_LOGO); 
+    }
+		else
+    {
+      ShowControl(CONTROL_RW_LOGO);  
+    }
 	}
 	CGUIWindow::Render();
 
@@ -446,13 +489,12 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 						//	show albums folder jpeg
 						CPicture picture;
 						m_pTexture=picture.Load(strFolderjpg);
-						m_iTextureWidth=picture.GetWidth();
-						m_iTextureHeight=picture.GetHeight();
-						if (m_pTexture)
-						{							
-							CGUIMessage msg1(GUI_MSG_HIDDEN, GetID(), CONTROL_LOGO_PIC); 
-							OnMessage(msg1);
-						}
+					m_iTextureWidth=picture.GetWidth();
+					m_iTextureHeight=picture.GetHeight();
+					if (m_pTexture)
+					{							
+						CGUIMessage msg1(GUI_MSG_HIDDEN, GetID(), CONTROL_LOGO_PIC); 
+						OnMessage(msg1);
 					}
 				}
 			}
