@@ -60,6 +60,8 @@ protected:
   CStdString              m_strFileName;
   int                     m_iTextureWidth;
   int                     m_iTextureHeight;
+	int m_iImageWidth;
+	int m_iImageHeight;
   int                     m_iBitmap;
   DWORD                   m_dwItems;
   int                     m_iCurrentLoop;
