@@ -116,6 +116,7 @@ public:
 	float									GetPixelRatio(RESOLUTION iRes) const;
 	void									CaptureStateBlock();
 	void									ApplyStateBlock();
+  void                  Clear();
 
 protected:
 	CRITICAL_SECTION			  m_critSection;
