@@ -50,8 +50,7 @@ void CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 		case ACTION_CALIBRATE_RESET:
 			g_graphicsContext.ResetScreenParameters(m_Res[m_iCurRes]);
 			ResetControls();
-			g_application.m_guiWindowOSD.ResetAllControls();
-//			g_application.m_guiWindowOSD.SetPosition(0,g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
+			g_application.m_guiWindowOSD.SetPosition(0,g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
 			return;
 		break;
 
@@ -63,8 +62,7 @@ void CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 			Sleep(1000);
 			g_graphicsContext.SetGUIResolution(m_Res[m_iCurRes]);      
 			ResetControls();
-//			g_application.m_guiWindowOSD.SetPosition(0,g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
-			g_application.m_guiWindowOSD.ResetAllControls();
+			g_application.m_guiWindowOSD.SetPosition(0,g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
 			return;
 		break;
 	}
@@ -237,10 +235,8 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
 	if (pControl)
 	{
 		pControl->EnableCalibration(false);
-		int Top = g_application.m_guiWindowOSD.m_vecPositions[0].y;
-		int MaxOffs = g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.bottom - Top - 2;
-		pControl->SetLimits(0,g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.top + g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight - Top,
-							0,g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.bottom + MaxOffs);
+		pControl->SetLimits(0,g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight/2,
+							0,g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight*5/4);
 		pControl->SetPosition((g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth-pControl->GetWidth())/2,
 							g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight + g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset-(int)pControl->GetHeight());
 		pControl->SetLocation(0, g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight + g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset, false);
@@ -326,7 +322,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
 					CUtil::Unicode2Ansi(g_localizeStrings.Get(479).c_str(),strMode);
 					strStatus.Format("%s (%i, Offset=%i)",strMode,pControl->GetYLocation(),g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
 					SET_CONTROL_LABEL(GetID(), CONTROL_LABEL_ROW2,	468);
-					g_application.m_guiWindowOSD.ResetAllControls();
+					g_application.m_guiWindowOSD.SetPosition(0,g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
 				}
 				break;
 			}

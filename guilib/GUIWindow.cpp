@@ -45,6 +45,7 @@ CGUIWindow::CGUIWindow(DWORD dwID)
   m_dwPreviousWindowId=WINDOW_HOME;
   m_dwDefaultFocusControlID=0;
   m_bRelativeCoords = false;
+	m_bNeedsScaling = false;
   m_iPosX = m_iPosY = m_dwWidth = m_dwHeight = 0;
 }
 
@@ -303,7 +304,6 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 
 bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 {
-    m_vecPositions.erase(m_vecPositions.begin(),m_vecPositions.end());
     m_vecGroups.erase(m_vecGroups.begin(),m_vecGroups.end());
 	TiXmlDocument xmlDoc;
 	// Find appropriate skin folder + resolution to load from
@@ -468,23 +468,34 @@ void CGUIWindow::CenterWindow()
 
 void CGUIWindow::Render()
 {
-	ivecControls i;
+	// calculate necessary scalings
+	float fFromWidth = (float)g_settings.m_ResInfo[g_stSettings.m_GUIResolution].iWidth;
+	float fFromHeight = (float)g_settings.m_ResInfo[g_stSettings.m_GUIResolution].iHeight;
+	float fToWidth = (float)g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iWidth;
+	float fToHeight = (float)g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iHeight;
+	float fScaleX = fToWidth/fFromWidth;
+	float fScaleY = fToHeight/fFromHeight;
 
-	for (i=m_vecControls.begin();i != m_vecControls.end(); ++i)
+	for (int i=0; i<(int)m_vecControls.size(); i++)
 	{
-		CGUIControl* pControl= *i;
-
-		if (m_bRelativeCoords)
-		{			
+		CGUIControl *pControl = m_vecControls[i];
+		if (pControl)
+		{
 			int iPosX = pControl->GetXPosition();
 			int iPosY = pControl->GetYPosition();
-			pControl->SetPosition(iPosX+m_iPosX, iPosY+m_iPosY);
+			DWORD width = pControl->GetWidth();
+			DWORD height = pControl->GetHeight();
+			if (m_bNeedsScaling)
+			{
+				pControl->SetWidth((DWORD)(fScaleX*width+0.5f));
+				pControl->SetHeight((DWORD)(fScaleY*height+0.5f));
+				pControl->SetPosition((int)(fScaleX*iPosX+0.5f), (int)(fScaleY*iPosY+0.5f));
+			}
+			pControl->SetPosition(pControl->GetXPosition()+m_iPosX, pControl->GetYPosition()+m_iPosY);
 			pControl->Render();
+			pControl->SetWidth(width);
+			pControl->SetHeight(height);
 			pControl->SetPosition(iPosX, iPosY);
-		}
-		else
-		{
-			pControl->Render();
 		}
 	}
 }
@@ -544,11 +555,27 @@ void CGUIWindow::OnAction(const CAction &action)
 
 // OnMouseAction - called by OnAction()
 void CGUIWindow::OnMouseAction()
-{	// correct the mouse coordinates if we are using relative coordinates
+{	
+	// save the mouse coordinates as we will need to change them for
+	// relative coordinates or if the window is scaled
+	int iPosX = g_Mouse.iPosX;
+	int iPosY = g_Mouse.iPosY;
+	if (m_bNeedsScaling)
+	{
+		// calculate necessary scalings
+		float fFromWidth = (float)g_settings.m_ResInfo[g_stSettings.m_GUIResolution].iWidth;
+		float fFromHeight = (float)g_settings.m_ResInfo[g_stSettings.m_GUIResolution].iHeight;
+		float fToWidth = (float)g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iWidth;
+		float fToHeight = (float)g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iHeight;
+		float fScaleX = fToWidth/fFromWidth;
+		float fScaleY = fToHeight/fFromHeight;
+		g_Mouse.iPosX = (int)((float)iPosX/fScaleX+0.5f);
+		g_Mouse.iPosY = (int)((float)iPosY/fScaleY+0.5f);
+	}
 	if (m_bRelativeCoords)
 	{
-		g_Mouse.iPosX -= m_iPosX;
-		g_Mouse.iPosY -= m_iPosY;
+		g_Mouse.iPosX = iPosX - m_iPosX;
+		g_Mouse.iPosY = iPosY - m_iPosY;
 	}
 	bool bHandled = false;
 	// check if we have exclusive access
@@ -558,13 +585,7 @@ void CGUIWindow::OnMouseAction()
 		if (pControl)
 		{	// this control has exclusive access to the mouse
 			HandleMouse(pControl);
-			// re-correct the mouse coordinates if we are using relative coordinates
-			if (m_bRelativeCoords)
-			{
-				g_Mouse.iPosX += m_iPosX;
-				g_Mouse.iPosY += m_iPosY;
-			}
-			return;
+			goto finished;
 		}
 	}
 
@@ -588,12 +609,11 @@ void CGUIWindow::OnMouseAction()
 	{	// haven't handled this action - call the window message handlers
 		OnMouse();
 	}
-	// correct the mouse coordinates if we are using relative coordinates
-	if (m_bRelativeCoords)
-	{
-		g_Mouse.iPosX += m_iPosX;
-		g_Mouse.iPosY += m_iPosY;
-	}
+
+finished:
+	// correct the mouse coordinates back to what they were
+	g_Mouse.iPosX = iPosX;
+	g_Mouse.iPosY = iPosY;
 }
 
 // Handles any mouse actions that are not handled by a control
@@ -957,19 +977,5 @@ void CGUIWindow::ResetAllControls()
   {
     CGUIControl* pControl= m_vecControls[i];
 		pControl->SetWidth( pControl->GetWidth() );
-	}
-}
-
-void CGUIWindow::OnWindowLoaded()
-{
-  m_vecPositions.erase(m_vecPositions.begin(),m_vecPositions.end());
-	for (int i=0;i < (int)m_vecControls.size(); ++i)
-  {
-    CGUIControl* pControl= m_vecControls[i];
-    CPosition pos;
-    pos.pControl=pControl;
-    pos.x=pControl->GetXPosition();
-    pos.y=pControl->GetYPosition();
-    m_vecPositions.push_back(pos);
 	}
 }
