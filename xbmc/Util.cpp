@@ -2579,6 +2579,21 @@ void CUtil::StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat)
 	result->st_ctime = stat->st_ctime;
 }
 
+void CUtil::Stat64ToStat(struct _stat *result, struct __stat64 *stat)
+{
+	result->st_dev = stat->st_dev;
+	result->st_ino = stat->st_ino;
+	result->st_mode = stat->st_mode;
+	result->st_nlink = stat->st_nlink;
+	result->st_uid = stat->st_uid;
+	result->st_gid = stat->st_gid;
+	result->st_rdev = stat->st_rdev;
+	result->st_size = (_off_t)stat->st_size;
+	result->st_atime = (time_t)stat->st_atime;
+	result->st_mtime = (time_t)stat->st_mtime;
+	result->st_ctime = (time_t)stat->st_ctime;
+}
+
 // around 50% faster than memcpy
 // only worthwhile if the destination buffer is not likely to be read back immediately
 // and the number of bytes copied is >16
