@@ -4,6 +4,7 @@
 	Version="7.10"
 	Name="xbmc"
 	ProjectGUID="{31103E92-4EE8-4F94-B67A-092C7CEFDB3D}"
+	RootNamespace="xbmc"
 	Keyword="XboxProj">
 	<Platforms>
 		<Platform
@@ -54,12 +55,13 @@
 				Name="VCPreLinkEventTool"/>
 			<Tool
 				Name="XboxDeploymentTool"
-				RemotePath="xe:\MyXBMC\xbmcd.xbe"/>
+				RemotePath="xe:\XBMC\xbmcd.xbe"/>
 			<Tool
 				Name="XboxImageTool"
 				FileName="$(TargetDir)default.xbe"
 				StackSize="0x60000"
 				IncludeDebugInfo="TRUE"
+				InsertFile="$(TargetDir)YV12toRGB.xpu,PXLSHADER,R"
 				NoLibWarn="TRUE"
 				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP"
 				TitleID="0xFACE008"
@@ -115,6 +117,7 @@
 				Name="XboxImageTool"
 				StackSize="65536"
 				IncludeDebugInfo="TRUE"
+				InsertFile="$(TargetDir)YV12toRGB.xpu,PXLSHADER,R"
 				NoLibWarn="TRUE"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
@@ -168,6 +171,7 @@
 				Name="XboxImageTool"
 				StackSize="65536"
 				IncludeDebugInfo="TRUE"
+				InsertFile="$(TargetDir)YV12toRGB.xpu,PXLSHADER,R"
 				NoLibWarn="TRUE"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
@@ -228,6 +232,7 @@
 				Name="XboxImageTool"
 				FileName="$(TargetDir)default.xbe"
 				StackSize="0x80000"
+				InsertFile="$(TargetDir)YV12toRGB.xpu,PXLSHADER,R"
 				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
@@ -280,6 +285,7 @@
 			<Tool
 				Name="XboxImageTool"
 				StackSize="65536"
+				InsertFile="$(TargetDir)YV12toRGB.xpu,PXLSHADER,R"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"/>
@@ -339,6 +345,7 @@
 				Name="XboxImageTool"
 				FileName="$(TargetDir)default.xbe"
 				StackSize="0x80000"
+				InsertFile="$(TargetDir)YV12toRGB.xpu,PXLSHADER,R"
 				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
@@ -961,10 +968,10 @@
 				RelativePath=".\xbmc\cores\ModPlayer.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
@@ -1448,6 +1455,57 @@
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\mplayer\xbox_video.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\mplayer\YV12toRGB.pxl">
+					<FileConfiguration
+						Name="Debug|Xbox">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="$(InputFileName)"
+							CommandLine="xsasm /nologo /P $(InputPath) $(TargetDir)$(InputName).xpu"
+							Outputs="$(TargetDir)$(InputName).xpu"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Profile|Xbox">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="$(InputFileName)"
+							CommandLine="xsasm /nologo /P $(InputPath) $(TargetDir)$(InputName).xpu"
+							Outputs="$(TargetDir)$(InputName).xpu"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Profile_FastCap|Xbox">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="$(InputFileName)"
+							CommandLine="xsasm /nologo /P $(InputPath) $(TargetDir)$(InputName).xpu"
+							Outputs="$(TargetDir)$(InputName).xpu"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Xbox">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="$(InputFileName)"
+							CommandLine="xsasm /nologo /P $(InputPath) $(TargetDir)$(InputName).xpu"
+							Outputs="$(TargetDir)$(InputName).xpu"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release_LTCG|Xbox">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="$(InputFileName)"
+							CommandLine="xsasm /nologo /P $(InputPath) $(TargetDir)$(InputName).xpu"
+							Outputs="$(TargetDir)$(InputName).xpu"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release Xbox  Debugging|Xbox">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="$(InputFileName)"
+							CommandLine="xsasm /nologo /P $(InputPath) $(TargetDir)$(InputName).xpu"
+							Outputs="$(TargetDir)$(InputName).xpu"/>
+					</FileConfiguration>
 				</File>
 			</Filter>
 		</Filter>

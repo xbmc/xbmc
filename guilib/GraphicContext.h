@@ -67,17 +67,17 @@ class CGraphicContext
 public:
   CGraphicContext(void);
   virtual ~CGraphicContext(void);
-  LPDIRECT3DDEVICE8			Get3DDevice();
+	LPDIRECT3DDEVICE8			Get3DDevice() {  return m_pd3dDevice; }
   void									SetD3DDevice(LPDIRECT3DDEVICE8 p3dDevice);
 //  void									GetD3DParameters(D3DPRESENT_PARAMETERS &params);
   void									SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams, RESOLUTION_INFO *pResInfo);
-  int										GetWidth() const;
-  int										GetHeight() const;
+	int										GetWidth() const { return m_iScreenWidth; }
+  int										GetHeight() const { return m_iScreenHeight; }
   void									SendMessage(CGUIMessage& message);
   void									setMessageSender(IMsgSenderCallback* pCallback);
   DWORD									GetNewID();
-  const CStdString&     GetMediaDir() const;
-  void									SetMediaDir(const CStdString& strMediaDir);
+	const CStdString&     GetMediaDir() const { return m_strMediaDir; }
+	void									SetMediaDir(const CStdString& strMediaDir) { m_strMediaDir=strMediaDir; }
 	bool									IsWidescreen() const;
 	void									Correct(float& fCoordinateX, float& fCoordinateY) const;	
 	void									Scale(float& fCoordinateX, float& fCoordinateY, float& fWidth, float& fHeight) const;
