@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 12-10-2004 fixed: multi Channel DTS decoding should be full functional
   - 12-10-2004 changed/fixed: decss code. should now decrypt instead of cracking encryption on all DVD-drives [ 1011174 ]
 
   - 20-09-2004 added: new commandline option limitedhwac3, disables hwac3 for 2ch streams to let a52 decode it.
