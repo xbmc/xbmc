@@ -7,7 +7,22 @@
 #include "LocalizeStrings.h"
 #include "util.h"
 #include "utils/log.h"
+#include "musicInfoTag.h"
 #define MUSIC_DATABASE "Q:\\albums\\MyMusic5.db"
+
+CSong::CSong(CMusicInfoTag& tag)
+{
+	SYSTEMTIME stTime;
+	tag.GetReleaseDate(stTime);
+	strTitle		= tag.GetTitle();
+	strGenre		= tag.GetGenre();
+	strFileName	= tag.GetURL();
+	strArtist		= tag.GetArtist();
+	strAlbum		= tag.GetAlbum();
+	iYear				=	stTime.wYear;
+	iTrack			= tag.GetTrackNumber();
+	iDuration		= tag.GetDuration();
+}
 
 CSong::CSong()
 {
@@ -521,6 +536,7 @@ bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName1, CSong& so
 		song.strTitle     = m_pDS->fv("song.strTitle").get_asString() ;
 		song.iTimedPlayed = m_pDS->fv("song.iTimesPlayed").get_asLong();
 		song.strFileName  = strFileName1;
+		m_pDS->close();	//	cleanup recordset data
 		return true;
 	}
 	catch(...)
@@ -561,6 +577,7 @@ bool CMusicDatabase::GetSong(const CStdString& strTitle1, CSong& song)
 		CStdString strFileName = m_pDS->fv("path.strPath").get_asString();
 		strFileName += m_pDS->fv("song.strFileName").get_asString();
 		song.strFileName = strFileName;
+		m_pDS->close();	//	cleanup recordset data
 		return true;
 	}
 	catch(...)
@@ -606,6 +623,7 @@ bool CMusicDatabase::GetSongsByArtist(const CStdString strArtist1, VECSONGS& son
 			m_pDS->next();
 		}
 
+		m_pDS->close();	//	cleanup recordset data
 		return true;
 	}
 	catch(...)
@@ -657,6 +675,7 @@ bool CMusicDatabase::GetSongsByAlbum(const CStdString& strAlbum1, const CStdStri
 			m_pDS->next();
 		}
 
+		m_pDS->close();	//	cleanup recordset data
 		return true;
 	}
 	catch(...)
@@ -691,6 +710,44 @@ bool CMusicDatabase::GetArtists(VECARTISTS& artists)
 			m_pDS->next();
 		}
 
+		m_pDS->close();	//	cleanup recordset data
+		return true;
+	}
+	catch(...)
+	{
+    CLog::Log("CMusicDatabase:GetArtists() failed");
+	}
+
+	return false;
+}
+
+bool CMusicDatabase::GetArtistsByName(const CStdString& strArtist1, VECARTISTS& artists)
+{
+	try
+	{
+		CStdString strArtist=strArtist1;
+		RemoveInvalidChars(strArtist);
+		artists.erase(artists.begin(), artists.end());
+
+		if (NULL==m_pDB.get()) return false;
+		if (NULL==m_pDS.get()) return false;
+
+		// Exclude "Various Artists"
+		CStdString strVariousArtists=g_localizeStrings.Get(340);
+		long lVariousArtistId=AddArtist(strVariousArtists);
+		CStdString strSQL;
+		strSQL.Format("select * from artist where strArtist like '%%%s%%' and idArtist <> %i ", strArtist, lVariousArtistId );
+		if (!m_pDS->query(strSQL.c_str())) return false;
+		int iRowsFound = m_pDS->num_rows();
+		if (iRowsFound== 0) return false;
+		while (!m_pDS->eof()) 
+		{
+			CStdString strArtist = m_pDS->fv("strArtist").get_asString();
+			artists.push_back(strArtist);
+			m_pDS->next();
+		}
+
+		m_pDS->close();	//	cleanup recordset data
 		return true;
 	}
 	catch(...)
@@ -723,6 +780,7 @@ bool CMusicDatabase::GetAlbums(VECALBUMS& albums)
 			m_pDS->next();
 		}
 
+		m_pDS->close();	//	cleanup recordset data
 		return true;
 	}
 	catch(...)
@@ -755,6 +813,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
 			m_pDS->next();
 		}
 
+		m_pDS->close();	//	cleanup recordset data
 		return true;
 	}
 	catch(...)
@@ -851,6 +910,7 @@ bool CMusicDatabase::GetSongsByGenre(const CStdString& strGenre, VECSONGS& songs
 			m_pDS->next();
 		}
 
+		m_pDS->close();	//	cleanup recordset data
 		return true;
 	}
 	catch(...)
@@ -880,6 +940,7 @@ bool CMusicDatabase::GetGenres(VECGENRES& genres)
 			m_pDS->next();
 		}
 
+		m_pDS->close();	//	cleanup recordset data
 		return true;
 	}
 	catch(...)
@@ -918,6 +979,7 @@ bool CMusicDatabase::GetAlbumInfo(const CStdString& strAlbum1, const CStdString&
 			album.strStyles	= m_pDS->fv("albuminfo.strStyles").get_asString();
 			album.strTones	= m_pDS->fv("albuminfo.strTones").get_asString();
 			album.strPath   = m_pDS->fv("path.strPath").get_asString();
+			m_pDS->close();	//	cleanup recordset data
 			return true;
 		}
 		return false;
@@ -964,6 +1026,7 @@ bool CMusicDatabase::GetTop100(VECSONGS& songs)
 			m_pDS->next();
 		}
 
+		m_pDS->close();	//	cleanup recordset data
 		return true;
 	}
 	catch(...)
@@ -1055,6 +1118,7 @@ bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, VECSONGS& songs)
 			m_pDS->next();
 		}
 
+		m_pDS->close();	//	cleanup recordset data
 		return true;
 	}
 	catch(...)
@@ -1103,6 +1167,7 @@ bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, MAPSONGS& songs)
 			m_pDS->next();
 		}
 
+		m_pDS->close();	//	cleanup recordset data
 		return true;
 	}
 	catch(...)
@@ -1218,6 +1283,7 @@ bool CMusicDatabase::GetSongsByPathes(SETPATHES& pathes, MAPSONGS& songs)
 			m_pDS->next();
 		}
 
+		m_pDS->close();	//	cleanup recordset data
 		return true;
 	}
 	catch(...)
@@ -1251,11 +1317,139 @@ bool CMusicDatabase::GetAlbumByPath(const CStdString& strPath1, CAlbum& album)
 		album.strArtist = m_pDS->fv("artist.strArtist").get_asString();
 		album.strPath   = m_pDS->fv("path.strPath").get_asString();
 
+		m_pDS->close();	//	cleanup recordset data
 		return true;
 	}
 	catch(...)
 	{
     CLog::Log("CMusicDatabase:GetAlbumByPath() for %s failed", strPath1.c_str());
+	}
+
+	return false;
+}
+
+bool CMusicDatabase::FindSongsByName(const CStdString& strSearch1, VECSONGS& songs)
+{
+	try
+	{
+		songs.erase(songs.begin(),songs.end());
+		CStdString strSearch=strSearch1;
+		RemoveInvalidChars(strSearch);
+
+		if (NULL==m_pDB.get()) return false;
+		if (NULL==m_pDS.get()) return false;
+		CStdString strSQL;
+		strSQL.Format("select * from song,path,album,genre,artist where song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and song.strTitle like '%%%s%%'", strSearch.c_str(), strSearch.c_str());
+		if (!m_pDS->query(strSQL.c_str())) return false;
+		int iRowsFound = m_pDS->num_rows();
+		if (iRowsFound== 0) return false;
+		while (!m_pDS->eof()) 
+		{
+			CSong song;
+			song.strArtist    = m_pDS->fv("artist.strArtist").get_asString();
+			song.strAlbum     = m_pDS->fv("album.strAlbum").get_asString();
+			song.strGenre     = m_pDS->fv("genre.strGenre").get_asString();
+			song.iTrack       = m_pDS->fv("song.iTrack").get_asLong() ;
+			song.iDuration    = m_pDS->fv("song.iDuration").get_asLong() ;
+			song.iYear        = m_pDS->fv("song.iYear").get_asLong() ;
+			song.strTitle     = m_pDS->fv("song.strTitle").get_asString();
+			song.iTimedPlayed = m_pDS->fv("song.iTimesPlayed").get_asLong();
+			
+			CStdString strFileName = m_pDS->fv("path.strPath").get_asString() ;
+			strFileName += m_pDS->fv("song.strFileName").get_asString() ;
+			song.strFileName = strFileName;
+			
+			songs.push_back(song);
+			m_pDS->next();
+		}
+
+		m_pDS->close();
+		return true;
+	}
+	catch(...)
+	{
+    CLog::Log("CMusicDatabase:GetSongsByName() failed");
+	}
+
+	return false;
+}
+
+bool CMusicDatabase::FindSongsByNameAndArtist(const CStdString& strSearch1, VECSONGS& songs)
+{
+	try
+	{
+		songs.erase(songs.begin(),songs.end());
+		CStdString strSearch=strSearch1;
+		RemoveInvalidChars(strSearch);
+
+		if (NULL==m_pDB.get()) return false;
+		if (NULL==m_pDS.get()) return false;
+		CStdString strSQL;
+		strSQL.Format("select * from song,path,album,genre,artist where song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and (song.strTitle like '%%%s%%' or artist.strArtist like '%%%s%%')", strSearch.c_str(), strSearch.c_str());
+		if (!m_pDS->query(strSQL.c_str())) return false;
+		int iRowsFound = m_pDS->num_rows();
+		if (iRowsFound== 0) return false;
+		while (!m_pDS->eof()) 
+		{
+			CSong song;
+			song.strArtist    = m_pDS->fv("artist.strArtist").get_asString();
+			song.strAlbum     = m_pDS->fv("album.strAlbum").get_asString();
+			song.strGenre     = m_pDS->fv("genre.strGenre").get_asString();
+			song.iTrack       = m_pDS->fv("song.iTrack").get_asLong() ;
+			song.iDuration    = m_pDS->fv("song.iDuration").get_asLong() ;
+			song.iYear        = m_pDS->fv("song.iYear").get_asLong() ;
+			song.strTitle     = m_pDS->fv("song.strTitle").get_asString();
+			song.iTimedPlayed = m_pDS->fv("song.iTimesPlayed").get_asLong();
+			
+			CStdString strFileName = m_pDS->fv("path.strPath").get_asString() ;
+			strFileName += m_pDS->fv("song.strFileName").get_asString() ;
+			song.strFileName = strFileName;
+			
+			songs.push_back(song);
+			m_pDS->next();
+		}
+
+		m_pDS->close();
+		return true;
+	}
+	catch(...)
+	{
+    CLog::Log("CMusicDatabase:GetSongsByName() failed");
+	}
+
+	return false;
+}
+
+bool CMusicDatabase::FindAlbumsByName(const CStdString& strSearch1, VECALBUMS& albums)
+{
+	try
+	{
+		CStdString strSearch=strSearch1;
+		RemoveInvalidChars(strSearch);
+		albums.erase(albums.begin(), albums.end());
+		if (NULL==m_pDB.get()) return false;
+		if (NULL==m_pDS.get()) return false;
+		CStdString strSQL;
+		strSQL.Format("select * from album,artist,path where album.idArtist=artist.idArtist and album.idPath=path.idPath and (album.strAlbum like '%%%s%%' or artist.strArtist like '%%%s%%')", strSearch.c_str(), strSearch.c_str());
+		if (!m_pDS->query(strSQL.c_str())) return false;
+		int iRowsFound = m_pDS->num_rows();
+		if (iRowsFound== 0) return false;
+		while (!m_pDS->eof()) 
+		{
+			CAlbum album;
+			album.strAlbum  = m_pDS->fv("album.strAlbum").get_asString();
+			album.strArtist = m_pDS->fv("artist.strArtist").get_asString();
+			album.strPath   = m_pDS->fv("path.strPath").get_asString();
+			albums.push_back(album);
+			m_pDS->next();
+		}
+
+		m_pDS->close();
+		return true;
+	}
+	catch(...)
+	{
+    CLog::Log("CMusicDatabase:GetAlbumsByName() failed");
 	}
 
 	return false;

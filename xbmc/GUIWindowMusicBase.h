@@ -83,7 +83,8 @@ protected:
 					void							AddItemToPlayList(const CFileItem* pItem) ;
 					int								GetSelectedItem();
 					void							OnSearch();
-					bool							DoSearch(const CStdString strDir,const CStdString& strSearch,VECFILEITEMS& items);
+	virtual	void							OnSearchItemFound(const CFileItem* pItem);
+	virtual void							DoSearch(const CStdString& strSearch,VECFILEITEMS& items);
 					bool							HaveDiscOrConnection( CStdString& strPath, int iDriveType );
 					bool							GetKeyboard(CStdString& strInput);
 	virtual	void							GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);

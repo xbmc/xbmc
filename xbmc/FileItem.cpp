@@ -3,6 +3,22 @@
 #include "fileitem.h"
 #include "settings.h"
 
+CFileItem::CFileItem(const CSong& song)
+{
+	m_strLabel=song.strTitle;
+	m_strPath=song.strFileName;
+	m_bIsFolder=false;
+	m_musicInfoTag.SetSong(song);
+}
+
+CFileItem::CFileItem(const CAlbum& album)
+{
+	m_strLabel=album.strAlbum;
+	m_strPath=album.strPath;
+	m_bIsFolder=true;
+	m_strLabel2=album.strArtist;
+	m_musicInfoTag.SetAlbum(album);
+}
 
 CFileItem::CFileItem(const CFileItem& item)
 {

@@ -15,6 +15,9 @@ protected:
 	virtual void				OnFileItemFormatLabel(CFileItem* pItem);
   virtual void				OnClick(int iItem);
 	virtual void				DoSort(VECFILEITEMS& items);
+	virtual	void				DoSearch(const CStdString& strSearch,VECFILEITEMS& items);
+	virtual	void				OnSearchItemFound(const CFileItem* pItem);
+
 	virtual void				OnRetrieveMusicInfo(VECFILEITEMS& items);
 
 					void				OnScan();

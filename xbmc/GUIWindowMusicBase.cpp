@@ -121,7 +121,10 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 		case GUI_MSG_PLAYBACK_ENDED:
 		case GUI_MSG_PLAYBACK_STOPPED:
 		{
-			if ((m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory.Find(m_strDirectory) > -1)
+			CStdString strDirectory=m_strDirectory;
+			if (CUtil::HasSlashAtEnd(strDirectory))
+				strDirectory.Delete(strDirectory.size()-1);
+			if ((m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory==strDirectory)
 					|| (GetID()==WINDOW_MUSIC_PLAYLIST) )
 			{
 				for (int i=0; i < (int)m_vecItems.size(); ++i)
@@ -141,7 +144,10 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 		{
 			// started playing another song...
 			int nCurrentPlaylist=message.GetParam1();
-			if ((nCurrentPlaylist==PLAYLIST_MUSIC_TEMP && m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory.Find(m_strDirectory) > -1 )
+			CStdString strDirectory=m_strDirectory;
+			if (CUtil::HasSlashAtEnd(strDirectory))
+				strDirectory.Delete(strDirectory.size()-1);
+			if ((nCurrentPlaylist==PLAYLIST_MUSIC_TEMP && m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory==strDirectory )
 					|| (GetID()==WINDOW_MUSIC_PLAYLIST && nCurrentPlaylist==PLAYLIST_MUSIC))
 			{
 				int nCurrentItem=LOWORD(message.GetParam2());
@@ -445,7 +451,10 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 
 	int iCurrentPlaylistSong=-1;
 	//	Search current playlist item
-	if ((m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory.Find(m_strDirectory) > -1 && g_application.IsPlayingAudio() 
+	CStdString strCurrentDirectory=m_strDirectory;
+	if (CUtil::HasSlashAtEnd(strCurrentDirectory))
+		strCurrentDirectory.Delete(strCurrentDirectory.size()-1);
+	if ((m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory==strCurrentDirectory && g_application.IsPlayingAudio() 
 			&& g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC_TEMP) 
 			|| (GetID()==WINDOW_MUSIC_PLAYLIST && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC && g_application.IsPlayingAudio()) )
 	{
@@ -876,129 +885,12 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem)
 	}
 }
 
-/// \brief Search the files of a directory \e strDir for a search string \e strSearch in the CMusicInfoTag of the file and return the found \e items
-/// \param strDir directory to search 
+/// \brief Make the actual search for the OnSearch function.
 /// \param strSearch The search string 
 /// \param items Items Found
-/// \return Returns \e false, if search is canceled
-bool CGUIWindowMusicBase::DoSearch(const CStdString strDir,const CStdString& strSearch,VECFILEITEMS& items)
+void CGUIWindowMusicBase::DoSearch(const CStdString& strSearch,VECFILEITEMS& items)
 {
-  if (m_dlgProgress) 
-  {
-	  m_dlgProgress->SetLine(0,strSearch);
-	  m_dlgProgress->SetLine(2,strDir );
-	  m_dlgProgress->Progress();
-	  if (m_dlgProgress->IsCanceled()) return false;
-  }
 
-	VECFILEITEMS subDirItems;
-	CFileItemList itemlist(subDirItems);
-	GetDirectory(strDir,subDirItems);
-	OnRetrieveMusicInfo(subDirItems);
-	DoSort(subDirItems);
-
-	bool bOpen=true;	
-	bool bCancel=false;
-	for (int i=0; i < (int)subDirItems.size(); ++i)
-	{
-		CFileItem *pItem= subDirItems[i];
-		if ( pItem->m_bIsFolder)
-		{
-			if (pItem->GetLabel() != "..")
-			{
-				// search subfolder
-        if (m_dlgProgress)
-        {
-				  if (m_dlgProgress->IsCanceled()) 
-				  {
-					  bCancel=true;
-					  break;
-				  }
-        }
-				if (!DoSearch(pItem->m_strPath,strSearch, items))
-				{
-					bCancel=true;
-					break;
-				}
-				if (m_dlgProgress)
-        {
-				  if (m_dlgProgress->IsCanceled()) 
-				  {
-					  bCancel=true;
-					  break;
-				  }
-        }
-			}
-		}
-		else
-		{
-			bool bFound(false);
-			CMusicInfoTag& tag=pItem->m_musicInfoTag;
-
-			if (tag.Loaded())
-			{
-				// search title,artist,album...
-				CStdString strTitle=tag.GetTitle();
-				CStdString strAlbum=tag.GetAlbum();
-				CStdString strArtist=tag.GetArtist();
-				strTitle.ToLower();
-				strAlbum.ToLower();
-				strArtist.ToLower();
-				if ( strTitle.Find(strSearch) >=0)
-				{
-					bFound=true;
-				}
-				if ( strAlbum.Find(strSearch) >=0)
-				{
-					bFound=true;
-				}
-				if ( strArtist.Find(strSearch) >=0)
-				{
-					bFound=true;
-				}
-			}
-
-			if (!bFound)
-			{
-				// search path name
-				CStdString strFileName=CUtil::GetFileName(pItem->m_strPath);
-				strFileName.ToLower();
-				if ( strFileName.Find(strSearch)>=0 )
-				{
-					bFound=true;
-				}
-			}
-
-			if (bFound)
-			{
-				if (items.size()==0)
-				{
-					CFileItem *pItem = new CFileItem("..");
-					pItem->m_strPath=m_strDirectory;
-					pItem->m_bIsFolder=true;
-					pItem->m_bIsShareOrDrive=false;
-					items.push_back(pItem);
-				}
-
-				CFileItem* pNewItem = new CFileItem(*pItem);
-				items.push_back(pNewItem);
-				CStdString strFormat=g_localizeStrings.Get(282);
-				CStdString strResult;
-				strResult.Format(strFormat, items.size());
-				if (m_dlgProgress)
-        {
-          m_dlgProgress->SetLine(1,strResult);
-				  m_dlgProgress->Progress();
-				  if (m_dlgProgress->IsCanceled()) 
-				  {
-					  bCancel=true;
-					  break;
-				  }
-        }
-			}
-		}
-	}
-	return !bCancel;
 }
 
 /// \brief Search the current directory for a string got from the virtual keyboard
@@ -1008,40 +900,56 @@ void CGUIWindowMusicBase::OnSearch()
 	if ( !GetKeyboard(strSearch) )
 		return;
 
-  CStdString strResult;
-	CStdString strFormat=g_localizeStrings.Get(282);
-	strResult.Format(strFormat, 0);
 	strSearch.ToLower();
 	if (m_dlgProgress)
   {
     m_dlgProgress->SetHeading(194);
 	  m_dlgProgress->SetLine(0,strSearch);
-	  m_dlgProgress->SetLine(1,strResult);
-	  m_dlgProgress->SetLine(2,m_strDirectory );
+	  m_dlgProgress->SetLine(1,L"");
+	  m_dlgProgress->SetLine(2,L"");
 	  m_dlgProgress->StartModal(GetID());
 	  m_dlgProgress->Progress();
   }
 	VECFILEITEMS items;
-	DoSearch(m_strDirectory,	strSearch, items);
-	if (m_dlgProgress) m_dlgProgress->Close();
+	DoSearch(strSearch, items);
 
 	if (items.size())
 	{
-		m_strDirectory=g_localizeStrings.Get(283);
-		ClearFileItems();
-		for (int i=0; i < (int)items.size(); i++)
+		CGUIDialogSelect* pDlgSelect=(CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+		pDlgSelect->Reset();
+		pDlgSelect->SetHeading(283);
+		CUtil::SortFileItemsByName(items);
+
+		for (int i=0; i<(int)items.size(); i++)
 		{
 			CFileItem* pItem=items[i];
-			CFileItem* pNewItem=new CFileItem(*pItem);
-			m_vecItems.push_back(pNewItem);
+			pDlgSelect->Add(pItem->GetLabel());
 		}
-		CUtil::SetMusicThumbs(m_vecItems);
-		CUtil::FillInDefaultIcons(m_vecItems);
-		UpdateListControl();
-		UpdateButtons();
+
+		pDlgSelect->DoModal(GetID());
+
+		int iItem=pDlgSelect->GetSelectedLabel();
+		if (iItem < 0)
+		{
+			if (m_dlgProgress) m_dlgProgress->Close();
+			return;
+		}
+
+		CFileItem* pSelItem=new CFileItem(*items[iItem]);
+
+		{
+			CFileItemList itemlist(items);	//	will cleanup everything
+		}
+
+		OnSearchItemFound(pSelItem);
+
+		delete pSelItem;
+		if (m_dlgProgress) m_dlgProgress->Close();
 	}
 	else
 	{
+		if (m_dlgProgress) m_dlgProgress->Close();
+
 		CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
     if (dlg)
     {
@@ -1069,6 +977,9 @@ bool CGUIWindowMusicBase::GetKeyboard(CStdString& strInput)
 	{
 		const WCHAR* pSearchString=pKeyboard->GetText();
 		CUtil::Unicode2Ansi(pSearchString,strInput);
+		if (strInput.IsEmpty())
+			return false;
+
 		return true;
 	}
 
@@ -1175,4 +1086,11 @@ void CGUIWindowMusicBase::UpdateButtons()
 
 	//	Select the current window as default item 
 	CONTROL_SELECT_ITEM(GetID(), CONTROL_BTNTYPE, g_stSettings.m_iMyMusicStartWindow-WINDOW_MUSIC_FILES);
+}
+
+///	\brief React on the selected search item
+///	\param pItem Search result item
+void CGUIWindowMusicBase::OnSearchItemFound(const CFileItem* pItem)
+{
+
 }

@@ -531,6 +531,9 @@ void CGUIWindowMusicPlayList::OnRetrieveMusicInfo(VECFILEITEMS& items)
 					}
 				}
 			}
+			{
+				CFileItemList itemlist(items);	//	cleanup everything
+			}
 		}
 		else
 		{
