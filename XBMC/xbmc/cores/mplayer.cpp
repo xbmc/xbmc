@@ -11,6 +11,7 @@
 #include "../FileSystem/FileSmb.h"
 #include "../FileSystem/File.h"
 #include "../XBAudioConfig.h"
+#include "../XBVideoConfig.h"
 #include "../utils/CharsetConverter.h"
 #define KEY_ENTER 13
 #define KEY_TAB 9
@@ -950,7 +951,7 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 			if (g_stSettings.m_bFrameRateConversions && CUtil::IsVideo(strFile) )
 			{
 				DWORD dwVideoStandard=XGetVideoStandard();
-				if (dwVideoStandard==XC_VIDEO_STANDARD_PAL_I)
+				if (g_videoConfig.HasPAL())
 				{
 					// PAL. Framerate for pal=25.0fps
 					// do frame rate conversions for NTSC movie playback under PAL
