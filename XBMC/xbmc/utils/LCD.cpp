@@ -10,7 +10,18 @@ void ILCD::StringToLCDCharSet(CStdString& strText)
 	{
 		// display is not supporting all asci characters.
 		cTest = strText.at(i);
-		if (cTest >= 127)
+
+		if (cTest >= 91 && cTest <= 95)
+		{
+			if (cTest == 91) cLCD = char(250); // fix for [
+			if (cTest == 92) cLCD = char(251); // fix for backslash
+			if (cTest == 93) cLCD = char(252); // fix for ]
+			if (cTest == 95) cLCD = char(196); // fix for _
+			
+			strText.SetAt(i, cLCD);
+		}
+
+		else if (cTest >= 127)
 		{
 			if (cTest == 228) cLCD = char(225);      // fix for ä
 			else if (cTest == 246) cLCD = char(239); // fix for ö
