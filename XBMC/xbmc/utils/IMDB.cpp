@@ -232,9 +232,9 @@ bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 	char *szBuffer= new char[strHTML.size()+1];
 	strcpy(szBuffer,strHTML.c_str());
 	
-  int idx = strURL.Find('?');
-  if (idx != -1) {
-    strURL = strURL.Left(idx);
+  int idxUrlParams = strURL.Find('?');
+  if (idxUrlParams != -1) {
+    strURL = strURL.Left(idxUrlParams);
   }
   char szURL[1024];
   strcpy(szURL, strURL.c_str());
@@ -418,7 +418,12 @@ bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 
 	if (pPlot)
 	{
-		CStdString strPlotURL= url.m_strURL + "plotsummary";
+		CStdString strPlotURL = url.m_strURL;
+    if (idxUrlParams != -1)
+    {
+      strPlotURL = strPlotURL.Left(idxUrlParams);
+    }
+    strPlotURL = strPlotURL + "plotsummary";
 		CStdString strPlotHTML;
 		if ( m_http.Get(strPlotURL,strPlotHTML))
 		{
