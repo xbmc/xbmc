@@ -2209,17 +2209,17 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
 		m_dwIdleTime=timeGetTime();
 
-		if (bRestart)
-		{
-			m_pPlayer->SetAVDelay(AVDelay);
-		}
+		//if (bRestart)
+		//{
+		//	m_pPlayer->SetAVDelay(AVDelay);
+		//}
 
-		// if file happens to contain video stream
-		if ( IsPlayingVideo())
-		{
-			// then switch to fullscreen video mode if we can
-			SwitchToFullScreen();
-		}
+		//// if file happens to contain video stream
+		//if ( IsPlayingVideo())
+		//{
+		//	// then switch to fullscreen video mode if we can
+		//	SwitchToFullScreen();
+		//}
 	}
 	return bResult;
 }
@@ -2955,15 +2955,6 @@ bool CApplication::SwitchToFullScreen()
 		return true;
 	}
 	return false;
-}
-
-/// \brief Restarts XBMC
-void CApplication::RestartApp()
-{
-	char szXBEFileName[1024];
-	CIoSupport helper;
-	helper.GetXbePath(szXBEFileName);
-	CUtil::RunXBE(szXBEFileName);
 }
 
 const CStdString& CApplication::GetCurrentPlayer()
