@@ -35,6 +35,8 @@ public:
   virtual void OnMouseClick(DWORD dwButton);
   virtual bool OnMessage(CGUIMessage& message);
 
+  virtual bool CanFocus() const;
+
   virtual void PreAllocResources();
   virtual void AllocResources() ;
   virtual void FreeResources() ;
