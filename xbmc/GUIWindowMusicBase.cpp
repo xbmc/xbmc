@@ -288,6 +288,8 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 
 	GetDirectory(m_strDirectory, m_vecItems);
 
+	RetrieveMusicInfo();
+
   UpdateListControl();
 	UpdateButtons();
 
@@ -627,150 +629,9 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 	}
 }
 
-void CGUIWindowMusicBase::OnRetrieveMusicInfo(VECFILEITEMS& items, bool bScan)
+void CGUIWindowMusicBase::OnRetrieveMusicInfo(VECFILEITEMS& items)
 {
 
-  //**** TO SPEED UP SCANNING *****
-  // We need to speedup scanning of music
-  // what we could do is:
-  // 1. cache all genres & artists (with name and id) in a map (read them @ start of this routine)
-  // 2. cache current path with database id
-  // 3. scan the entire dir and then if we find a new song:
-  // 4.   check if genre is known already (in cached map) if not then add it to database & map
-  // 4.   check if artist is known already (in cached map) if not then add it to database & map
-  // 5.   add the new song to the database 
-  //         we need a new version of musicdatabase::addsong() for this
-  //         which just adds the song (and not the artists/genre/path like musicdatabase::addsong does now!)
-  //
-  // this way we prevent that for each call to musicdatabase::addsong
-  //    -the genre id is looked up and or added
-  //    -the artist id is looked up and or added
-  //    -the path id is lookup and or added
-
-  
-	int nFolderCount=CUtil::GetFolderCount(items);
-	// Skip items with folders only
-	if (nFolderCount == (int)items.size())
-		return;
-
-	int nFileCount=(int)items.size()-nFolderCount;
-
-	CStdString strItem;
-  MAPSONGS songsMap;
-  // get all information for all files in current directory from database 
-  m_database.GetSongsByPath(m_strDirectory,songsMap);
-
-	int j=1;
-  // for every file found, but skip folder
-  for (int i=nFolderCount; i < (int)items.size(); ++i)
-	{
-		CFileItem* pItem=items[i];
-		CStdString strExtension;
-		CUtil::GetExtension(pItem->m_strPath,strExtension);
-
-		if (bScan && !pItem->m_bIsFolder)
-		{
-			strItem.Format("%i/%i", j++, nFileCount);
-			if (m_dlgProgress) 
-      {
-        m_dlgProgress->SetLine(0,strItem);
-			  m_dlgProgress->SetLine(1,CUtil::GetFileName(pItem->m_strPath) );
-			  m_dlgProgress->Progress();
-			  if (m_dlgProgress->IsCanceled()) return;
-      }
-		}
-
-
-    // dont try reading id3tags for folders or playlists
-		if (!pItem->m_bIsFolder && !CUtil::IsPlayList(pItem->m_strPath) )
-		{
-      // is tag for this file already loaded?
-			bool bNewFile=false;
-			CMusicInfoTag& tag=pItem->m_musicInfoTag;
-			if (!tag.Loaded() )
-			{
-        // no, then we gonna load it. But dont load tags from cdda files
-				if (strExtension!=".cdda" )
-				{
-          // first search for file in our list of the current directory
-					CSong song;
-          bool bFound(false);
-					IMAPSONGS it=songsMap.find(pItem->m_strPath);
-					if (it!=songsMap.end())
-					{
-						song=it->second;
-						bFound=true;
-					}
-          if (!bFound && !bScan)
-          {
-            // try finding it in the database
-            CStdString strPathName;
-            CStdString strFileName;
-            CUtil::Split(pItem->m_strPath, strPathName, strFileName);
-            if (strPathName != m_strDirectory)
-            {
-              if ( m_database.GetSongByFileName(pItem->m_strPath, song) )
-              {
-                bFound=true;
-              }
-            }
-          }
-					if ( !bFound )
-					{
-            // if id3 tag scanning is turned on OR we're scanning the directory
-            // then parse id3tag from file
-						if (g_stSettings.m_bUseID3 || bScan)
-						{
-              // get correct tag parser
-							CMusicInfoTagLoaderFactory factory;
-							auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
-							if (NULL != pLoader.get())
-							{						
-                 // get id3tag
-								if ( pLoader->Load(pItem->m_strPath,tag))
-								{
-									bNewFile=true;
-								}
-							}
-						}
-					}
-					else // of if ( !bFound )
-					{
-						tag.SetAlbum(song.strAlbum);
-						tag.SetArtist(song.strArtist);
-						tag.SetGenre(song.strGenre);
-						tag.SetDuration(song.iDuration);
-						tag.SetTitle(song.strTitle);
-						tag.SetTrackNumber(song.iTrack);
-						tag.SetLoaded(true);
-					}
-				}//if (strExtension!=".cdda" )
-			}//if (!tag.Loaded() )
-			else if (bScan)
-			{
-				IMAPSONGS it=songsMap.find(pItem->m_strPath);
-				if (it==songsMap.end())
-					bNewFile=true;
-			}
-
-			if (tag.Loaded() && bScan && bNewFile)
-			{
-				SYSTEMTIME stTime;
-				tag.GetReleaseDate(stTime);
-				CSong song;
-				song.strTitle		= tag.GetTitle();
-				song.strGenre		= tag.GetGenre();
-				song.strFileName= pItem->m_strPath;
-				song.strArtist	= tag.GetArtist();
-				song.strAlbum		= tag.GetAlbum();
-				song.iYear			=	stTime.wYear;
-				song.iTrack			= tag.GetTrackNumber();
-				song.iDuration	= tag.GetDuration();
-
-				m_database.AddSong(song,false);
-			}
-		}//if (!pItem->m_bIsFolder)
-	}
 }
 
 void CGUIWindowMusicBase::RetrieveMusicInfo()
@@ -811,6 +672,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem)
 		VECFILEITEMS items;
 		CFileItemList itemlist(items);
 		GetDirectory(strDirectory, items);
+		DoSort(items);
 		for (int i=0; i < (int) items.size(); ++i)
 		{
 			AddItemToPlayList(items[i]);
@@ -952,7 +814,7 @@ bool CGUIWindowMusicBase::DoSearch(const CStdString strDir,const CStdString& str
 void CGUIWindowMusicBase::OnSearch()
 {
 	CStdString strSearch;
-	if ( GetKeyboard(strSearch) )
+	if ( !GetKeyboard(strSearch) )
 		return;
 
   CStdString strResult;
@@ -1015,9 +877,8 @@ bool CGUIWindowMusicBase::GetKeyboard(CStdString& strInput)
 	{
 		const WCHAR* pSearchString=pKeyboard->GetText();
 		CUtil::Unicode2Ansi(pSearchString,strInput);
+		return true;
 	}
-	else
-		return false;
 
-	return true;
+	return false;
 }

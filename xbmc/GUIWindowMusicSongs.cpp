@@ -45,7 +45,7 @@ struct SSortMusicSongs
 
 			switch ( m_iSortMethod ) 
 			{
-				case 0:	//	Sort by Filename
+				case 0:	//	Sort by Listlabel
 					strcpy(szfilename1, rpStart.GetLabel().c_str());
 					strcpy(szfilename2, rpEnd.GetLabel().c_str());
 				break;
@@ -104,6 +104,11 @@ struct SSortMusicSongs
 					strcpy(szfilename2, rpEnd.m_musicInfoTag.GetAlbum());
         break;
 
+        case 8:	//	Sort by FileName
+ 					strcpy(szfilename1, rpStart.m_strPath);
+					strcpy(szfilename2, rpEnd.m_strPath);
+        break;
+
 				default:	//	Sort by Filename by default
 					strcpy(szfilename1, rpStart.GetLabel().c_str());
 					strcpy(szfilename2, rpEnd.GetLabel().c_str());
@@ -138,6 +143,7 @@ CGUIWindowMusicSongs::CGUIWindowMusicSongs(void)
 :CGUIWindowMusicBase()
 {
 	m_strDirectory="?";
+	m_bScan=false;
 }
 CGUIWindowMusicSongs::~CGUIWindowMusicSongs(void)
 {
@@ -211,7 +217,8 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 				else
 				{
 					g_stSettings.m_iMyMusicSongsSortMethod++;
-					if (g_stSettings.m_iMyMusicSongsSortMethod >=3) g_stSettings.m_iMyMusicSongsSortMethod=0;
+					if (g_stSettings.m_iMyMusicSongsSortMethod >=9) g_stSettings.m_iMyMusicSongsSortMethod=0;
+					if (g_stSettings.m_iMyMusicSongsSortMethod >=3) g_stSettings.m_iMyMusicSongsSortMethod=8;
 				}
 				g_settings.Save();
 
@@ -315,6 +322,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 
 	return CGUIWindowMusicBase::OnMessage(message);
 }
+
 void CGUIWindowMusicSongs::OnAction(const CAction &action)
 {
 	if (action.wID==ACTION_PARENT_DIR)
@@ -383,8 +391,6 @@ void CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, VECFILEI
 	}
 	m_rootDir.GetDirectory(strDirectory,items);
 
-	RetrieveMusicInfo();
-
 	if (strPlayListDir!=strDirectory) 
 	{
 		m_strPrevDir=strDirectory;
@@ -407,6 +413,8 @@ void CGUIWindowMusicSongs::OnScan()
 
 	m_database.BeginTransaction();
 
+	// enable scan mode in OnRetrieveMusicInfo()
+	m_bScan=true;
 	if (DoScan(m_vecItems))
 	{
 		m_dlgProgress->SetLine(0,328);
@@ -421,6 +429,9 @@ void CGUIWindowMusicSongs::OnScan()
 
 	CSectionLoader::Unload("CXIMAGE");
 
+	// disable scan mode
+	m_bScan=false;
+
 	m_dlgProgress->Close();
 
 	dwTick = timeGetTime() - dwTick;
@@ -433,7 +444,7 @@ bool CGUIWindowMusicSongs::DoScan(VECFILEITEMS& items)
 {
 	m_dlgProgress->SetLine(2,m_strDirectory );
 
-	OnRetrieveMusicInfo(items,true);
+	OnRetrieveMusicInfo(items);
 	m_database.CheckVariousArtistsAndCoverArt();
 	
 	if (m_dlgProgress->IsCanceled()) return false;
@@ -563,7 +574,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
     g_graphicsContext.SendMessage(msg);
   }
 
-	//	Update listcontrol and and view by icon/list button
+	//	Update listcontrol and view by icon/list button
 	const CGUIControl* pControl=GetControl(CONTROL_THUMBS);
   if (pControl)
   {
@@ -634,13 +645,21 @@ void CGUIWindowMusicSongs::UpdateButtons()
 	//	Update sort by button
 	if (m_strDirectory.IsEmpty())
 	{
-		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyMusicSongsRootSortMethod+103);
+			SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyMusicSongsRootSortMethod+103);
 	}
 	else
 	{
-		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyMusicSongsSortMethod+103);
+		if (g_stSettings.m_iMyMusicSongsSortMethod<=2)
+		{
+			//	Sort by Name(ItemLabel), Date, Size
+			SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyMusicSongsSortMethod+103);
+		}
+		else
+		{
+			//	Sort by FileName
+			SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,363);
+		}
 	}
-
 }
 
 void CGUIWindowMusicSongs::OnClick(int iItem)
@@ -731,7 +750,7 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
 	else
 		nMyMusicSortMethod=g_stSettings.m_iMyMusicSongsSortMethod;
 
-	if (nMyMusicSortMethod==0||nMyMusicSortMethod==2)
+	if (nMyMusicSortMethod==0||nMyMusicSortMethod==2||nMyMusicSortMethod==8)
 	{
 			if (pItem->m_bIsFolder) 
 				pItem->SetLabel2("");
@@ -743,7 +762,7 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
 					CUtil::GetFileSize(pItem->m_dwSize, strFileSize);
 					pItem->SetLabel2(strFileSize);
 				}
-				if (nMyMusicSortMethod==0 && pItem->m_musicInfoTag.Loaded()) 
+				if ((nMyMusicSortMethod==0 || nMyMusicSortMethod==8) && pItem->m_musicInfoTag.Loaded()) 
 				{
 					int nDuration=pItem->m_musicInfoTag.GetDuration();
 					if (nDuration)
@@ -754,7 +773,7 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
 					}
 				}
 				//	cdda items always have duration
-				if (nMyMusicSortMethod==0 && CStdString(CUtil::GetExtension(pItem->m_strPath))==".cdda")
+				if ((nMyMusicSortMethod==0 || nMyMusicSortMethod==8) && CStdString(CUtil::GetExtension(pItem->m_strPath))==".cdda")
 				{
 					int nDuration=pItem->m_musicInfoTag.GetDuration();
 					if (nDuration)
@@ -798,3 +817,150 @@ void CGUIWindowMusicSongs::DoSort(VECFILEITEMS& items)
 
 	sort(items.begin(), items.end(), sortmethod);
 }
+
+void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
+{
+
+  //**** TO SPEED UP SCANNING *****
+  // We need to speedup scanning of music
+  // what we could do is:
+  // 1. cache all genres & artists (with name and id) in a map (read them @ start of this routine)
+  // 2. cache current path with database id
+  // 3. scan the entire dir and then if we find a new song:
+  // 4.   check if genre is known already (in cached map) if not then add it to database & map
+  // 4.   check if artist is known already (in cached map) if not then add it to database & map
+  // 5.   add the new song to the database 
+  //         we need a new version of musicdatabase::addsong() for this
+  //         which just adds the song (and not the artists/genre/path like musicdatabase::addsong does now!)
+  //
+  // this way we prevent that for each call to musicdatabase::addsong
+  //    -the genre id is looked up and or added
+  //    -the artist id is looked up and or added
+  //    -the path id is lookup and or added
+
+  
+	int nFolderCount=CUtil::GetFolderCount(items);
+	// Skip items with folders only
+	if (nFolderCount == (int)items.size())
+		return;
+
+	int nFileCount=(int)items.size()-nFolderCount;
+
+	CStdString strItem;
+  MAPSONGS songsMap;
+  // get all information for all files in current directory from database 
+  m_database.GetSongsByPath(m_strDirectory,songsMap);
+
+	int j=1;
+  // for every file found, but skip folder
+  for (int i=nFolderCount; i < (int)items.size(); ++i)
+	{
+		CFileItem* pItem=items[i];
+		CStdString strExtension;
+		CUtil::GetExtension(pItem->m_strPath,strExtension);
+
+		if (m_bScan && !pItem->m_bIsFolder)
+		{
+			strItem.Format("%i/%i", j++, nFileCount);
+			if (m_dlgProgress) 
+      {
+        m_dlgProgress->SetLine(0,strItem);
+			  m_dlgProgress->SetLine(1,CUtil::GetFileName(pItem->m_strPath) );
+			  m_dlgProgress->Progress();
+			  if (m_dlgProgress->IsCanceled()) return;
+      }
+		}
+
+
+    // dont try reading id3tags for folders or playlists
+		if (!pItem->m_bIsFolder && !CUtil::IsPlayList(pItem->m_strPath) )
+		{
+      // is tag for this file already loaded?
+			bool bNewFile=false;
+			CMusicInfoTag& tag=pItem->m_musicInfoTag;
+			if (!tag.Loaded() )
+			{
+        // no, then we gonna load it. But dont load tags from cdda files
+				if (strExtension!=".cdda" )
+				{
+          // first search for file in our list of the current directory
+					CSong song;
+          bool bFound(false);
+					IMAPSONGS it=songsMap.find(pItem->m_strPath);
+					if (it!=songsMap.end())
+					{
+						song=it->second;
+						bFound=true;
+					}
+          if (!bFound && !m_bScan)
+          {
+            // try finding it in the database
+            CStdString strPathName;
+            CStdString strFileName;
+            CUtil::Split(pItem->m_strPath, strPathName, strFileName);
+            if (strPathName != m_strDirectory)
+            {
+              if ( m_database.GetSongByFileName(pItem->m_strPath, song) )
+              {
+                bFound=true;
+              }
+            }
+          }
+					if ( !bFound )
+					{
+            // if id3 tag scanning is turned on OR we're scanning the directory
+            // then parse id3tag from file
+						if (g_stSettings.m_bUseID3 || m_bScan)
+						{
+              // get correct tag parser
+							CMusicInfoTagLoaderFactory factory;
+							auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
+							if (NULL != pLoader.get())
+							{						
+                 // get id3tag
+								if ( pLoader->Load(pItem->m_strPath,tag))
+								{
+									bNewFile=true;
+								}
+							}
+						}
+					}
+					else // of if ( !bFound )
+					{
+						tag.SetAlbum(song.strAlbum);
+						tag.SetArtist(song.strArtist);
+						tag.SetGenre(song.strGenre);
+						tag.SetDuration(song.iDuration);
+						tag.SetTitle(song.strTitle);
+						tag.SetTrackNumber(song.iTrack);
+						tag.SetLoaded(true);
+					}
+				}//if (strExtension!=".cdda" )
+			}//if (!tag.Loaded() )
+			else if (m_bScan)
+			{
+				IMAPSONGS it=songsMap.find(pItem->m_strPath);
+				if (it==songsMap.end())
+					bNewFile=true;
+			}
+
+			if (tag.Loaded() && m_bScan && bNewFile)
+			{
+				SYSTEMTIME stTime;
+				tag.GetReleaseDate(stTime);
+				CSong song;
+				song.strTitle		= tag.GetTitle();
+				song.strGenre		= tag.GetGenre();
+				song.strFileName= pItem->m_strPath;
+				song.strArtist	= tag.GetArtist();
+				song.strAlbum		= tag.GetAlbum();
+				song.iYear			=	stTime.wYear;
+				song.iTrack			= tag.GetTrackNumber();
+				song.iDuration	= tag.GetDuration();
+
+				m_database.AddSong(song,false);
+			}
+		}//if (!pItem->m_bIsFolder)
+	}
+}
+

@@ -6,6 +6,7 @@
 #include "FileItem.h"
 #include "GUIDialogProgress.h"
 #include "playlist.h"
+#include "musicInfoTagLoaderFactory.h"
 
 #include "stdstring.h"
 #include <vector>
@@ -26,12 +27,12 @@ protected:
 	virtual	void							DoSort(VECFILEITEMS& items)=0;
   virtual	void							UpdateButtons()=0;
 	virtual	void							OnQueueItem(int iItem);
+	virtual void							OnRetrieveMusicInfo(VECFILEITEMS& items);
 					void							GoParentFolder();
 					void							RetrieveMusicInfo();
 					void							OnInfo(int iItem);
 					void							ClearFileItems();
 					void							Update(const CStdString &strDirectory);
-					void							OnRetrieveMusicInfo(VECFILEITEMS& items, bool bScan=false);
 					void							UpdateListControl();
 					void							AddItemToPlayList(const CFileItem* pItem) ;
 					int								GetSelectedItem();

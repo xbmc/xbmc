@@ -1154,4 +1154,8 @@
     <id>362</id>
     <value>Screensaver Fade Level (%)</value>
   </string>
+  <string>
+    <id>363</id>
+    <value>Sort by File</value>
+  </string>   
 </strings>
