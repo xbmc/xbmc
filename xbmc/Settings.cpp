@@ -10,6 +10,7 @@ struct CSettings::stSettings g_stSettings;
 CSettings::CSettings(void)
 {
 	memset(g_stSettings.m_rectMovieCalibration,0, sizeof(g_stSettings.m_rectMovieCalibration));
+	g_stSettings.m_bAudioOnAllSpeakers=false;
 	g_stSettings.m_bAutorunPictures=true;
 	g_stSettings.m_bAutorunMusic=true;
 	g_stSettings.m_bAutorunVideo=true;

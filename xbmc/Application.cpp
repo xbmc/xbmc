@@ -209,6 +209,7 @@ HRESULT CApplication::Initialize()
 			m_sntpClient.Create();                      
     
   }
+	g_graphicsContext.Set(m_pd3dDevice,m_d3dpp.BackBufferWidth,m_d3dpp.BackBufferHeight, g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY, (m_d3dpp.Flags&D3DPRESENTFLAG_WIDESCREEN) !=0 );
 	LoadSkin(g_stSettings.szDefaultSkin);
   m_gWindowManager.Add(&m_guiHome);											// window id = 0
   m_gWindowManager.Add(&m_guiPrograms);									// window id = 1
@@ -236,7 +237,6 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiVideoInfo);								// window id = 2003
 	m_gWindowManager.Add(&m_guiWindowVisualisation);			// window id = 2006
 	
-  g_graphicsContext.Set(m_pd3dDevice,m_d3dpp.BackBufferWidth,m_d3dpp.BackBufferHeight, g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY, (m_d3dpp.Flags&D3DPRESENTFLAG_WIDESCREEN) !=0 );
   m_keyboard.Initialize();
 	m_ctrDpad.SetDelays(g_stSettings.m_iMoveDelayController,g_stSettings.m_iRepeatDelayController);
 	m_ctrIR.SetDelays(g_stSettings.m_iMoveDelayIR,g_stSettings.m_iRepeatDelayIR);
