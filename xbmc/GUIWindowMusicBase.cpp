@@ -448,6 +448,7 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 			SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
 		}
 	}
+	ShowThumbPanel();
 
 	int iCurrentPlaylistSong=-1;
 	//	Search current playlist item
@@ -1094,6 +1095,12 @@ bool CGUIWindowMusicBase::FindAlbumInfo(CStdString& strAlbum, CMusicAlbumInfo& a
 						CStdString strNewAlbum=strAlbum;
 						if (!GetKeyboard(strNewAlbum)) return false;
 						if (strNewAlbum=="") return false;
+						if (m_dlgProgress) 
+						{
+							m_dlgProgress->SetLine(0,strNewAlbum);
+							m_dlgProgress->Progress();
+						}
+
 						return FindAlbumInfo(strNewAlbum, album);
 					}
         }
