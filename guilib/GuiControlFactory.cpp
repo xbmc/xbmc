@@ -1,10 +1,14 @@
 #include "stdafx.h"
 #include "guicontrolfactory.h"
 #include "localizestrings.h"
-#include "guibuttoncontrol.h"
+#include "guiButtoncontrol.h"
+#include "guiSpinButtonControl.h"
 #include "guiRadiobuttoncontrol.h"
 #include "guiSpinControl.h"
+#include "guiRSSControl.h"
+#include "guiRAMControl.h"
 #include "guiListControl.h"
+#include "guiListControlEx.h"
 #include "guiImage.h"
 #include "GUILabelControl.h"
 #include "GUIFadeLabelControl.h"
@@ -110,7 +114,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	CStdString  strTmp;
 	DWORD     	dwTextColor=0xFFFFFFFF;
 	DWORD				dwAlign=XBFONT_LEFT;
-	CStdString  strTextureFocus,strTextureNoFocus;
+	CStdString  strTextureFocus,strTextureNoFocus,strTextureUpFocus,strTextureDownFocus;
 	CStdString	strTextureAltFocus,strTextureAltNoFocus;
 	DWORD				dwDisabledColor=0xffffffff;;
 	int					iHyperLink=-1;
@@ -144,7 +148,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
   DWORD       textureHeightBig=128;
   DWORD       itemWidthBig=150;
   DWORD       itemHeightBig=150;
+  DWORD			dwDisposition=0;
 	DWORD			 	dwTextColor2=dwTextColor;
+	DWORD				dwTextColor3=dwTextColor;
 	DWORD			 	dwSelectedColor2;
 	int        	iSpace=2;
 	int				 	iTextureHeight=30;
@@ -152,6 +158,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	int				 	iTextureWidth=80;
 	bool				bHasPath=false;
 	CStdString	strScriptAction="";
+	CStdString	strRSSUrl="";
+	CStdString  strTitle="";
+
   int         iThumbXPos=4;
   int         iThumbYPos=10;
   int         iThumbWidth=64;
@@ -186,6 +195,21 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwTextColor = ((CGUIFadeLabelControl*)pReference)->GetTextColor();
 			dwAlign			= ((CGUIFadeLabelControl*)pReference)->GetAlignment();
 		}
+		if (strType=="rss")
+		{
+			strFont			= ((CGUIRSSControl*)pReference)->GetFontName();
+			strRSSUrl		= ((CGUIRSSControl*)pReference)->GetUrl();
+			dwTextColor3	= ((CGUIRSSControl*)pReference)->GetChannelTextColor();
+			dwTextColor2	= ((CGUIRSSControl*)pReference)->GetHeadlineTextColor();
+			dwTextColor		= ((CGUIRSSControl*)pReference)->GetNormalTextColor();
+		}
+		if (strType=="ram")
+		{
+			strFont			= ((CGUIRAMControl*)pReference)->GetFontName();
+			strFont2		= ((CGUIRAMControl*)pReference)->GetFont2Name();
+			dwTextColor3	= ((CGUIRAMControl*)pReference)->GetTitleTextColor();
+			dwTextColor		= ((CGUIRAMControl*)pReference)->GetNormalTextColor();
+		}
 		if (strType=="button")
 		{
 			strTextureFocus	 = ((CGUIButtonControl*)pReference)->GetTexutureFocusName();
@@ -196,6 +220,17 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwDisabledColor  = ((CGUIButtonControl*)pReference)->GetDisabledColor() ;
 			iHyperLink			 = ((CGUIButtonControl*)pReference)->GetHyperLink();
 			strScriptAction	 = ((CGUIButtonControl*)pReference)->GetScriptAction();
+		}
+		if (strType=="spinbutton")
+		{
+			iType				= ((CGUISpinButtonControl*)pReference)->GetType();
+			strTextureDownFocus	= ((CGUISpinButtonControl*)pReference)->GetTexutureDownFocusName();
+			strTextureUpFocus	= ((CGUISpinButtonControl*)pReference)->GetTexutureUpFocusName();
+			strTextureFocus		= ((CGUISpinButtonControl*)pReference)->GetTexutureFocusName();
+			strTextureNoFocus	= ((CGUISpinButtonControl*)pReference)->GetTexutureNoFocusName();
+			strFont				= ((CGUISpinButtonControl*)pReference)->GetFontName();
+			dwTextColor			= ((CGUISpinButtonControl*)pReference)->GetTextColor();
+			dwDisabledColor		= ((CGUISpinButtonControl*)pReference)->GetDisabledColor() ;
 		}
 		if (strType=="togglebutton")
 		{
@@ -305,6 +340,35 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwSelectedColor2=	((CGUIListControl*)pReference)->GetSelectedColor2();
 			strFont2				=	((CGUIListControl*)pReference)->GetFontName2();
 		}
+		if (strType=="listcontrolex")
+		{
+			strFont					=	((CGUIListControlEx*)pReference)->GetFontName();
+			dwSpinWidth			=	((CGUIListControlEx*)pReference)->GetSpinWidth();
+			dwSpinHeight		=	((CGUIListControlEx*)pReference)->GetSpinHeight();
+			strUp						=	((CGUIListControlEx*)pReference)->GetTexutureUpName();
+			strDown					=	((CGUIListControlEx*)pReference)->GetTexutureDownName();
+			strUpFocus			=	((CGUIListControlEx*)pReference)->GetTexutureUpFocusName();
+			strDownFocus		=	((CGUIListControlEx*)pReference)->GetTexutureDownFocusName();
+			dwSpinColor			=	((CGUIListControlEx*)pReference)->GetSpinTextColor();
+			dwSpinPosX			=	((CGUIListControlEx*)pReference)->GetSpinX();
+			dwSpinPosY			=	((CGUIListControlEx*)pReference)->GetSpinY();
+			dwTextColor			=	((CGUIListControlEx*)pReference)->GetTextColor();
+			dwSelectedColor = ((CGUIListControlEx*)pReference)->GetSelectedColor();
+			strButton				=	((CGUIListControlEx*)pReference)->GetButtonNoFocusName();
+			strButtonFocus	=	((CGUIListControlEx*)pReference)->GetButtonFocusName();
+			strSuffix				=	((CGUIListControlEx*)pReference)->GetSuffix();
+			iTextXOff				=	((CGUIListControlEx*)pReference)->GetTextOffsetX();
+			iTextYOff				=	((CGUIListControlEx*)pReference)->GetTextOffsetY();
+			iTextXOff2			=	((CGUIListControlEx*)pReference)->GetTextOffsetX2();
+			iTextYOff2			=	((CGUIListControlEx*)pReference)->GetTextOffsetY2();
+			dwitemWidth			=	((CGUIListControlEx*)pReference)->GetImageWidth();
+			dwitemHeight		=	((CGUIListControlEx*)pReference)->GetImageHeight();
+			iTextureHeight	=	((CGUIListControlEx*)pReference)->GetItemHeight();
+			iSpace					=	((CGUIListControlEx*)pReference)->GetSpace();
+			dwTextColor2		=	((CGUIListControlEx*)pReference)->GetTextColor2(); 
+			dwSelectedColor2=	((CGUIListControlEx*)pReference)->GetSelectedColor2();
+			strFont2				=	((CGUIListControlEx*)pReference)->GetFontName2();
+		}
 		if (strType=="textbox")
 		{
 				strFont				= ((CGUITextBox*)pReference)->GetFontName();
@@ -387,6 +451,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	GetInt(pControlNode,"hyperlink",iHyperLink);
 	GetString(pControlNode,"script", strScriptAction);
 	GetHex(pControlNode,"disabledcolor",dwDisabledColor);
+	GetPath(pControlNode,"textureDownFocus",strTextureDownFocus);
+	GetPath(pControlNode,"textureUpFocus",strTextureUpFocus);
 	GetPath(pControlNode,"textureFocus",strTextureFocus);
 	GetPath(pControlNode,"textureNoFocus",strTextureNoFocus);
 	GetPath(pControlNode,"AltTextureFocus",strTextureAltFocus);
@@ -416,13 +482,18 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	GetDWORD(pControlNode,"MarkWidth",dwCheckWidth);
 	GetDWORD(pControlNode,"MarkHeight",dwCheckHeight);
 	GetPath(pControlNode,"textureCheckmark",strTextureCheckMark);
-	GetPath(pControlNode,"textureCheckmarkNoFocus",strTextureCheckMarkNF);
+        GetPath(pControlNode,"textureCheckmarkNoFocus",strTextureCheckMarkNF);
 	GetPath(pControlNode,"textureRadioFocus",strTextureRadioFocus);
 	GetPath(pControlNode,"textureRadioNoFocus",strTextureRadioNoFocus);
 
 	GetPath(pControlNode,"textureSliderBar", strTextureBg);
 	GetPath(pControlNode,"textureSliderNib", strMid);
 	GetPath(pControlNode,"textureSliderNibFocus", strMidFocus);
+	GetDWORD(pControlNode,"disposition",dwDisposition);
+	GetString(pControlNode,"feed",strRSSUrl);
+	GetString(pControlNode,"title",strTitle);
+	GetHex(pControlNode, "headlinecolor", dwTextColor2);
+	GetHex(pControlNode, "titlecolor", dwTextColor3);
 
 	if (GetString(pControlNode,"subtype",strSubType))
 	{
@@ -431,6 +502,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		else if ( strSubType=="float") iType=SPIN_CONTROL_TYPE_FLOAT;
 		else iType=SPIN_CONTROL_TYPE_TEXT;
 	}
+
 	GetBoolean(pControlNode,"reverse",bReverse);
 
 	GetPath(pControlNode,"texturebg",strTextureBg);
@@ -520,7 +592,38 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       pControl->SetVisible(bVisible);
       return pControl;
   }
+  
+  
+	if (strType=="spinbutton")
+	{
+	        g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
 
+		CGUISpinButtonControl* pControl = new CGUISpinButtonControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth,dwHeight,strTextureNoFocus,strTextureFocus,strTextureUpFocus,strTextureDownFocus,strFont,dwTextColor,(int)dwDisposition);
+		pControl->SetDisabledColor(dwDisabledColor);
+		pControl->SetNavigation(up,down,left,right);
+		pControl->SetColourDiffuse(dwColorDiffuse);
+		pControl->SetVisible(bVisible);
+		return pControl;
+	}
+  
+	if (strType=="rss")
+	{
+	        g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
+      
+		CGUIRSSControl* pControl = new CGUIRSSControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strFont,dwTextColor3,dwTextColor2,dwTextColor,strRSSUrl);
+		pControl->SetColourDiffuse(dwColorDiffuse);
+		pControl->SetVisible(bVisible);
+		return pControl;
+	}
+	if (strType=="ram")
+	{
+	        g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
+      
+		CGUIRAMControl* pControl = new CGUIRAMControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strFont,strFont2,dwTextColor3,dwTextColor);
+		pControl->SetColourDiffuse(dwColorDiffuse);
+		pControl->SetVisible(bVisible);
+		return pControl;
+	}
   if (strType=="button")
 	{
 	g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
@@ -597,7 +700,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       pControl->SetNavigation(up,down,left,right);
       pControl->SetColourDiffuse(dwColorDiffuse);
       pControl->SetVisible(bVisible);
-	  pControl->SetReverse(bReverse);
+			pControl->SetReverse(bReverse);
 	  pControl->SetBuddyControlID(dwBuddyControlID);
 	  pControl->SetDisabledColor(dwDisabledColor);
       return pControl;
@@ -633,6 +736,30 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
  {
 			g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
       CGUIListControl* pControl = new CGUIListControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,
+                                                      strFont,
+                                                      dwSpinWidth,dwSpinHeight,
+                                                      strUp,strDown,
+                                                      strUpFocus,strDownFocus,
+                                                      dwSpinColor,dwSpinPosX,dwSpinPosY,
+                                                      strFont,dwTextColor,dwSelectedColor,
+                                                      strButton,strButtonFocus);
+      pControl->SetNavigation(up,down,left,right);
+      pControl->SetColourDiffuse(dwColorDiffuse);
+      pControl->SetScrollySuffix(strSuffix);
+			pControl->SetTextOffsets(iTextXOff,iTextYOff, iTextXOff2,iTextYOff2);
+      pControl->SetVisible(bVisible);
+			pControl->SetImageDimensions(dwitemWidth, dwitemHeight);
+			pControl->SetItemHeight(iTextureHeight);
+			pControl->SetSpace(iSpace);
+			pControl->SetColors2(dwTextColor2, dwSelectedColor2);
+			pControl->SetFont2( strFont2 );
+      return pControl;
+  }
+ if (strType=="listcontrolex")
+ {
+      g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
+
+      CGUIListControlEx* pControl = new CGUIListControlEx(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,
                                                       strFont,
                                                       dwSpinWidth,dwSpinHeight,
                                                       strUp,strDown,
