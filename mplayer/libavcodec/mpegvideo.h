@@ -883,6 +883,7 @@ void ff_set_mpeg4_time(MpegEncContext * s, int picture_number);
 void mpeg4_encode_picture_header(MpegEncContext *s, int picture_number);
 void h263_encode_init(MpegEncContext *s);
 void h263_decode_init_vlc(MpegEncContext *s);
+void h263_decode_uninit_vlc(void);
 int h263_decode_picture_header(MpegEncContext *s);
 int ff_h263_decode_gob_header(MpegEncContext *s);
 int ff_mpeg4_decode_picture_header(MpegEncContext * s, GetBitContext *gb);
@@ -930,6 +931,7 @@ void msmpeg4_encode_mb(MpegEncContext * s,
 int msmpeg4_decode_picture_header(MpegEncContext * s);
 int msmpeg4_decode_ext_header(MpegEncContext * s, int buf_size);
 int ff_msmpeg4_decode_init(MpegEncContext *s);
+void ff_msmpeg4_decode_uninit(void);
 void ff_msmpeg4_encode_init(MpegEncContext *s);
 int ff_wmv2_decode_picture_header(MpegEncContext * s);
 int ff_wmv2_decode_secondary_picture_header(MpegEncContext * s);
