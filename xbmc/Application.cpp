@@ -1077,32 +1077,8 @@ void CApplication::OnKey(CKey& key)
 	{
 		// reset harddisk spindown timer
 		m_bSpinDown=false;
-
-
 		ResetScreenSaver();
-
-		m_bInactive=false;		// reset the inactive flag as a key has been pressed
-		// if Screen saver is active
-		if (m_bScreenSave)		
-		{
-			// disable screensaver
-			m_bScreenSave = false;	
-
-			// if matrix trails screensaver is active
-			int iWin = m_gWindowManager.GetActiveWindow();
-			if (iWin  == WINDOW_SCREENSAVER)	
-			{
-				// then show previous window
-				m_gWindowManager.PreviousWindow();
-			}
-			else										
-			{
-				// Fade to dim or black screensaver is active
-				// just un-dim the screen
-				m_pd3dDevice->SetGammaRamp(0, &m_OldRamp);	// put the old gamma ramp back in place
-			}
-			return;
-		}
+		if (ResetScreenSaverWindow()) return;
 	}
 
 	// get the current active window 
@@ -1924,6 +1900,36 @@ void CApplication::ResetScreenSaver()
 	if (m_bInactive) 
 	{
 		m_dwSaverTick=timeGetTime();	// Start the timer going ...
+	}
+}
+
+bool CApplication::ResetScreenSaverWindow()
+{
+	m_bInactive=false;		// reset the inactive flag as a key has been pressed
+	// if Screen saver is active
+	if (m_bScreenSave)		
+	{
+		// disable screensaver
+		m_bScreenSave = false;	
+
+		// if matrix trails screensaver is active
+		int iWin = m_gWindowManager.GetActiveWindow();
+		if (iWin  == WINDOW_SCREENSAVER)	
+		{
+			// then show previous window
+			m_gWindowManager.PreviousWindow();
+		}
+		else										
+		{
+			// Fade to dim or black screensaver is active
+			// just un-dim the screen
+			m_pd3dDevice->SetGammaRamp(0, &m_OldRamp);	// put the old gamma ramp back in place
+		}
+		return true;
+	}
+	else
+	{
+		return false;
 	}
 }
 
