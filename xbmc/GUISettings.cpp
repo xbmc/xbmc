@@ -159,6 +159,7 @@ CGUISettings::CGUISettings(void)
 	AddBool(2,"MyPrograms.DefaultXBEOnly", 349, true);
 	AddBool(3,"MyPrograms.UseDirectoryName", 506, false);
 	AddBool(4,"MyPrograms.NoShortcuts", 508, true);
+	AddBool(5,"MyPrograms.CacheProgramThumbs", 509, true);
 
 	AddCategory(1, "ProgramsLists", 14018);
 	AddBool(1,"ProgramsLists.HideParentDirItems", 13306, true);
