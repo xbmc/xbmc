@@ -50,6 +50,7 @@ public:
 
 protected:
   virtual void       Update();
+  void    				   UpdateVB();
 	void							 Process();
   struct VERTEX 
 	{ 
