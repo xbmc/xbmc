@@ -5,6 +5,13 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 02-03-2005 updated: German language file (Thnx to klapperx)
+  - 02-03-2005 updated: Norwegian language file (Thnx to vnm)
+  - 02-03-2005 updated: Italian language file (Thnx to kotix)
+  - 02-03-2005 updated: German (Austrian) language file (Thnx to CEOMR)
+  - 02-03-2005 updated: Finnish language file (Thnx to jutski)
+  - 02-03-2004 updated: Polish language file (Thnx to napek)
+  - 02-03-2004 updated: Dutch language file (Thnx to tijmengozer)
   - 01-03-2005 added: Screensaver screenshot ability.
   - 01-03-2005 fixed: Changed Karaoke default delay from 80 to -80 as per SF bug report [1101736].
   - 01-03-2005 added: Patches [1153934] and [1153884] thanks to MrC.

@@ -324,8 +324,8 @@
   <string><id>391</id><value>niedrig</value></string>
   <string><id>392</id><value>mittel</value></string>
   <string><id>393</id><value>hoch</value></string>
-  <string><id>394</id><value>N/A</value></string>
-  <string><id>395</id><value>N/A</value></string>
+  <string><id>394</id><value>Nebel</value></string>
+  <string><id>395</id><value>Dunst</value></string>
   <string><id>396</id><value>Ortsauswahl</value></string>
   <string><id>397</id><value>Aktualisierungszeit</value></string>
   <string><id>398</id><value>Temperatureinheit</value></string>
@@ -525,6 +525,21 @@
   <string><id>758</id><value>Verknüpfung löschen</value></string> 
   <string><id>998</id><value>Online spielen</value></string>
   <string><id>999</id><value>Online spielen</value></string>
+  <string><id>1396</id><value>Verwehungen</value></string> 
+  <string><id>1397</id><value>und</value></string> 
+  <string><id>1398</id><value>Gefrierend</value></string> 
+  <string><id>1399</id><value>N/A</value></string> 
+  <string><id>1400</id><value>N/A</value></string> 
+  <string><id>1401</id><value>N/A</value></string> 
+  <string><id>1402</id><value>N/A</value></string> 
+  <string><id>1403</id><value>N/A</value></string> 
+  <string><id>1404</id><value>N/A</value></string> 
+  <string><id>1405</id><value>N/A</value></string> 
+  <string><id>1406</id><value>N/A</value></string> 
+  <string><id>1407</id><value>N/A</value></string> 
+  <string><id>1408</id><value>N/A</value></string> 
+  <string><id>1409</id><value>N/A</value></string> 
+  <string><id>1410</id><value>N/A</value></string> 
   <string><id>10000</id><value>Hauptmenü</value></string>
   <string><id>10001</id><value>Programme</value></string>
   <string><id>10002</id><value>Bilder</value></string>
@@ -561,6 +576,25 @@
   <string><id>10503</id><value>Musik/Interpret</value></string>
   <string><id>10504</id><value>Musik/Genre</value></string>
   <string><id>10505</id><value>Musik/Top100</value></string>
+  <string><id>10506</id><value>Anwendungen</value></string>
+  <string><id>10507</id><value>Einstellungen</value></string>
+  <string><id>10508</id><value>Wetterbericht</value></string> 
+  <string><id>10509</id><value>Netzwerk spielen</value></string> 
+  <string><id>10510</id><value>Erweiterungen</value></string>
+  <string><id>10511</id><value>System Info</value></string> 
+  <string><id>10512</id><value>Musik - Alben</value></string> 
+  <string><id>10513</id><value>Musik - Künstler</value></string> 
+  <string><id>10514</id><value>Musik - Genres</value></string> 
+  <string><id>10515</id><value>Musik - Top 100</value></string> 
+  <string><id>10516</id><value>Musik - Datenbank</value></string> 
+  <string><id>10517</id><value>Musik - Wiedergabeliste</value></string> 
+  <string><id>10518</id><value>Videos - Darsteller</value></string> 
+  <string><id>10519</id><value>Videos - Genres</value></string> 
+  <string><id>10520</id><value>Videos - Titel</value></string> 
+  <string><id>10521</id><value>Videos - Jahr</value></string> 
+  <string><id>10522</id><value>Videos - Wiedergabeliste</value></string> 
+  <string><id>10523</id><value>Album Info</value></string> 
+  <string><id>10524</id><value>Film Info</value></string> 
   <string><id>11000</id><value>Tastatur</value></string>
   <string><id>12000</id><value>Dialogauswahl</value></string>
   <string><id>12001</id><value>Musik/Info</value></string>
@@ -692,10 +726,9 @@
   <string><id>13353</id><value>Suche anhalten</value></string>
   <string><id>13354</id><value>Wiedergabe</value></string> 
   <string><id>13355</id><value>Pixel Shader (niedrige Qualität)</value></string> 
-  <string><id>13356</id><value>YUY2 Overlay</value></string> 
-  <string><id>13357</id><value>Kombination aus Overlay/Shader</value></string>
-  <string><id>13358</id><value>Pixel Shader (hohe Qualität)</value></string>
-  <string><id>13359</id><value>Pixel Shader (mittlere Qualität)</value></string>
+  <string><id>13356</id><value>Hardware Overlay</value></string> 
+  <string><id>13357</id><value>Pixel Shader (hohe Qualität)</value></string>
+
   <string><id>13360</id><value>Miniaturansichten erstellen</value></string>
   <string><id>14000</id><value>Koppeln deakt.</value></string>
   <string><id>14001</id><value>Koppeln einfach</value></string>
@@ -726,11 +759,9 @@
   <string><id>14026</id><value>Video Cache  - DVD Laufwerk</value></string>
   <string><id>14027</id><value>Video Cache  - lokales Netzwerk</value></string>
   <string><id>14028</id><value>Video Cache  - Internet</value></string>
-
   <string><id>14030</id><value>Audio Cache  - DVD Laufwerk</value></string>
   <string><id>14031</id><value>Audio Cache  - lokales Netzwerk</value></string>
   <string><id>14032</id><value>Audio Cache  - Internet</value></string>
-
   <string><id>14034</id><value>DVD Cache    - DVD Laufwerk</value></string>
   <string><id>14035</id><value>DVD Cache    - lokales Netzwerk</value></string>
   <string><id>14036</id><value>Server</value></string>
@@ -823,4 +854,10 @@
   <string><id>15060</id><value>Nachricht:</value></string> 
   <string><id>15061</id><value>Einladung bei %s mitzuspielen.</value></string>
   <string><id>15062</id><value>Alternativen MediaPlayer verwenden</value></string>
+  <string><id>15100</id><value>Navigation</value></string> 
+  <string><id>15101</id><value>Datenbank</value></string> 
+  <string><id>15102</id><value>* Alle Alben</value></string> 
+  <string><id>15103</id><value>* Alle Künstler</value></string> 
+  <string><id>15104</id><value>* Alle Lieder</value></string> 
+  <string><id>15105</id><value>* Alle Genres</value></string> 
 </strings>
