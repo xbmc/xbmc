@@ -23,6 +23,7 @@
 #include "../applicationmessenger.h"
 #include "../GUIWindowManager.h"
 #include "../GUIDialogOk.h"
+#include "directorycache.h"
 
 CSMBDirectory::CSMBDirectory(void)
 {
@@ -49,7 +50,7 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	    SMBC_FILE=8,
 	    SMBC_LINK=9,
 */
-
+  g_directoryCache.ClearDirectory(strPath);
 	// note, samba uses UTF8 strings internal,
 	// that's why we have to convert strings and wstrings to UTF8.
 	char strUtfPath[1024];
@@ -192,5 +193,6 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 		smbc_closedir(fd);
 		smb.Unlock();
 	}
+  g_directoryCache.SetDirectory(strPath,items);
 	return true;
 }
