@@ -5,6 +5,18 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 08-08-2004 fixed: the OSD (positions of the new sliders - didnt work for all resolutions)
+  - 08-08-2004 fixed: the settings -> my videos items positions for all resolutions
+  - 08-08-2004 added: UI calibration helpers in settings -> UI calbration
+  - 08-08-2004 fixed: all thumbpanels and listcontrols for all resoulutions to fit in the calibation
+  - 08-08-2004 changed: the fontsizes for thumbpanels, listcontrols and RSS feeds in PAL (both resos) and NTSC 4:3
+  - 08-08-2004 fixed: the position of shutdown/reboot/dash/xlink buttons and time/date/rss in the main menu for all resolutions
+  - 08-08-2004 changed: the screen calibration textures
+  - 08-08-2004 changed: switched positions of the CD-Rip and Record button (record button was covered by the overlays)
+  - 08-08-2004 changed: virtual keyboard skin now matching project mayhem
+  - 08-08-2004 changed: voulume sliders for the new volume control
+  - 08-08-2004 changed: the flicker filter test.png (added a new one for widescreen too) - old one was not very good  to test the soften filter
+  - 08-08-2004 fixed: the <onup> on the OSD brightness slider
   - 08-08-2004 fixed: since last python update, all the python dialogs (like dialogok and dialogyesno) didn't work anymore
   - 07-08-2004 added: My Programs can now sort by most used programs
   - 06-08-2004 added: python unicodedata library to cvs (this means no more idna ecoding errors in scripts)
