@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 23-08-2004 updated: Spanish string.xml (thnx ezar2003)
   - 23-08-2004 added: mplayer.dll version info to SystemInfo screen when available.
   - 23-08-2004 fixed: Custom thumbnails will always be used if the thumbnail is on the Xbox.
   - 23-08-2004 changed: A bit or reorganization and formatting changes for My Programs.
