@@ -1,14 +1,9 @@
-/*
- * XbmcHttp.c -- HTTP API v0.81 6 February 2005
- *
- */
 
 /******************************** Description *********************************/
 
 /*
  *	This module provides an API over HTTP between the web server and XBMC
  *
- *								written by NAD
  *						heavily based on XBMCweb.cpp
  */
 
@@ -27,9 +22,13 @@
 #include "..\..\filesystem\HDDirectory.h" 
 #include "..\..\filesystem\CDDADirectory.h"
 #include "..\..\videodatabase.h"
+#include "..\..\guilib\GUIThumbnailPanel.h"
+#include "..\..\guilib\GUIButtonControl.h"
+#include "..\..\guilib\GUISpinControl.h"
+#include "..\..\guilib\GUIListControl.h"
 #include "..\..\utils\GUIInfoManager.h"
-
-
+//#include "..\..\guilib\key.h"
+//#include "..\..\url.h" 
 
 #pragma code_seg("WEB_TEXT")
 #pragma data_seg("WEB_DATA")
@@ -105,10 +104,10 @@ void encodeblock( unsigned char in[3], unsigned char out[4], int len )
 **
 ** base64 encode a stream adding padding and line breaks as per spec.
 */
-CStdString encode( CStdString inFilename, int linesize )
+CStdString encodeFileToBase64( CStdString inFilename, int linesize )
 {
-    unsigned char in[3], out[4];
-    int i, len, blocksout = 0;
+  unsigned char in[3], out[4];
+  int i, len, blocksout = 0;
 	CStdString strBase64="";
 	FILE *infile;
 
@@ -144,7 +143,77 @@ CStdString encode( CStdString inFilename, int linesize )
 	return strBase64;
 }
 
+/*
+** Translation Table to decode (created by author)
+*/
+static const char cd64[]="|$$$}rstuvwxyz{$$$$$$$>?@ABCDEFGHIJKLMNOPQRSTUVW$$$$$$XYZ[\\]^_`abcdefghijklmnopq";
 
+
+/*
+** decodeblock
+**
+** decode 4 '6-bit' characters into 3 8-bit binary bytes
+*/
+void decodeblock( unsigned char in[4], unsigned char out[3] )
+{   
+    out[ 0 ] = (unsigned char ) ((in[0] << 2 | in[1] >> 4) & 255);
+    out[ 1 ] = (unsigned char ) ((in[1] << 4 | in[2] >> 2) & 255);
+    out[ 2 ] = (unsigned char ) (((in[2] << 6) & 0xc0) | in[3]);
+}
+
+/*
+** decode
+**
+** decode a base64 encoded stream discarding padding, line breaks and noise
+*/
+bool decodeBase64ToFile( CStdString inString, CStdString outfilename )
+{
+    unsigned char in[4], out[3], v;
+	bool ret=true;
+    int i, len ;
+	unsigned int ptr=0;
+	FILE *outfile;
+	//char_t *outString;
+	//websDecode64(outString,inString.c_str(),outfilename.length());
+	try
+	{
+		outfile= fopen( outfilename.c_str(), "wb" );
+		while( ptr < inString.length() ) {
+			for( len = 0, i = 0; i < 4 && ptr < inString.length(); i++ ) {
+				v = 0;
+				while( ptr < inString.length() && v == 0 ) {
+					v = (unsigned char) inString[ptr];
+					ptr++;
+					v = (unsigned char) ((v < 43 || v > 122) ? 0 : cd64[ v - 43 ]);
+					if( v ) {
+						v = (unsigned char) ((v == '$') ? 0 : v - 61);
+					}
+				}
+				if( ptr < inString.length() ) {
+					len++;
+					if( v ) {
+						in[ i ] = (unsigned char) (v - 1);
+					}
+				}
+				else {
+					in[i] = 0;
+				}
+			}
+			if( len ) {
+				decodeblock( in, out );
+				for( i = 0; i < len - 1; i++ ) {
+					putc( out[i], outfile );
+				}
+			}
+		}
+		fclose(outfile);
+	}
+	catch (...)
+	{
+		ret=false;
+	}
+	return ret;
+}
 
 
 
@@ -368,13 +437,7 @@ void LoadPlayList(const CStdString& strPlayList, int playList)
 			playlistItem.SetDuration(playListItem.GetDuration());
 			playlist.Add(playlistItem);
 		}
-	//} 
 
-
-	//if (g_playlistPlayer.GetPlaylist( playList ).size() )
-	//{
-
-		//const CPlayList::CPlayListItem& item=playlist[0];
 		g_playlistPlayer.SetCurrentPlaylist(playList);
 		g_applicationMessenger.PlayListPlayerPlay(0);
 		
@@ -382,7 +445,6 @@ void LoadPlayList(const CStdString& strPlayList, int playList)
 		CFileItem item(playlist[0].GetDescription());
 		item.m_strPath = playlist[0].GetFileName();
 		SetCurrentMediaItem(item);
-	//}
 	}
 
 }
@@ -766,6 +828,55 @@ int CXbmcHttp::xbmcGetVolume( webs_t wp)
 	return 0;
 }
 
+int CXbmcHttp::xbmcGetGUIStatus( webs_t wp)
+{
+	websHeader(wp);
+	websWrite(wp, "<li>ActiveWindow: %i\n",m_gWindowManager.GetActiveWindow());
+	CStdString strTmp;
+	int iWin=m_gWindowManager.GetActiveWindow();
+	CGUIWindow* pWindow=m_gWindowManager.GetWindow(iWin);
+	if (pWindow)
+	{
+		CStdString strLine;
+		wstring wstrLine;
+		wstrLine=g_localizeStrings.Get(iWin);
+		CUtil::Unicode2Ansi(wstrLine,strLine);
+		websWrite(wp, "<li>ActiveWindowName:%s",strLine.c_str()) ; 
+		int iControl=pWindow->GetFocusedControl();
+		CGUIControl* pControl=(CGUIControl* )pWindow->GetControl(iControl);
+		if (pControl)
+		{
+			if (pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
+				websWrite(wp, "<li>ControlButton:%s",((CGUIButtonControl*)pControl)->GetLabel().c_str());
+			else if (pControl->GetControlType() == CGUIControl::GUICONTROL_SPIN)
+			{
+				CGUISpinControl* pSpinControl = (CGUISpinControl*)pControl;
+				strTmp.Format("%i/%i", 1+pSpinControl->GetValue(), pSpinControl->GetMaximum());
+				websWrite(wp, "<li>ControlSpin:%s",strTmp.c_str());
+			}
+			else if (pControl->GetControlType() == CGUIControl::GUICONTROL_LABEL)
+			{
+				CGUIListControl* pListControl = (CGUIListControl*)pControl;
+				pListControl->GetSelectedItem(strTmp);
+				websWrite(wp, "<li>ControlLabel:%s",strTmp.c_str());
+			}
+			else if (pControl->GetControlType() == CGUIControl::GUICONTROL_THUMBNAIL)
+			{
+				CGUIThumbnailPanel* pThumbControl = (CGUIThumbnailPanel*)pControl;
+				pThumbControl->GetSelectedItem(strTmp);
+				websWrite(wp, "<li>ControlThumNail:%s",strTmp.c_str());
+			}
+			else if (pControl->GetControlType() == CGUIControl::GUICONTROL_LIST)
+			{
+				CGUIListControl* pListControl = (CGUIListControl*)pControl;
+				pListControl->GetSelectedItem(strTmp);
+				websWrite(wp, "<li>ControlList:%s",strTmp.c_str());
+			}
+		}
+  }
+  websFooter(wp);
+  return 0;
+}
 int CXbmcHttp::xbmcGetThumb(webs_t wp, char_t *parameter)
 {
 	websHeader(wp);
@@ -775,10 +886,9 @@ int CXbmcHttp::xbmcGetThumb(webs_t wp, char_t *parameter)
 		CStdString strDest="Z:\\xbmcDownloadFile.tmp";
 		CFile file;
 		file.Cache(parameter, strDest.c_str(),NULL,NULL) ;
-		//::CopyFile(parameter,strDest.c_str(),FALSE);
 		if (CUtil::FileExists(strDest))
 		{
-			thumb=encode(strDest,80);
+			thumb=encodeFileToBase64(strDest,80);
 			::DeleteFile(strDest.c_str());
 		}
 		else
@@ -789,7 +899,7 @@ int CXbmcHttp::xbmcGetThumb(webs_t wp, char_t *parameter)
 		}
 	}
 	else
-		thumb=encode(parameter,80);
+		thumb=encodeFileToBase64(parameter,80);
 	websWriteBlock(wp, (char_t *) thumb.c_str(), thumb.length()) ;
 	websFooter(wp);
 	return 0;
@@ -1061,8 +1171,17 @@ int CXbmcHttp::xbmcExit( webs_t wp, int theAction)
 	case 3:
 		websWrite(wp, "<li>OK\n");
 		websFooter(wp);
-		//CUtil::RunXBE(g_stSettings.szDashboard);
 		g_applicationMessenger.RebootToDashBoard();
+		break;
+	case 4:
+		websWrite(wp, "<li>OK\n");
+		websFooter(wp);
+		g_applicationMessenger.Reset();
+		break;
+	case 5:
+		websWrite(wp, "<li>OK\n");
+		websFooter(wp);
+		g_applicationMessenger.RestartApp();
 		break;
 	default:
 		websWrite(wp, "<li>Error\n");
@@ -1077,8 +1196,8 @@ int	CXbmcHttp::xbmcLookupAlbum(webs_t wp, char_t *parameter)
 	CMusicInfoScraper scraper;
 
 	websHeader(wp);
-try
-{
+	try
+	{
 	  if (scraper.FindAlbuminfo(parameter))
 	  {
 		  // did we found at least 1 album?
@@ -1093,11 +1212,11 @@ try
 			websWriteBlock(wp, (char_t *) albums.c_str(), albums.length()) ;
 		  }
 	  }
-}
-catch (...)
-{
-	websWrite(wp,"<li>Error");
-}
+	}
+	catch (...)
+	{
+		websWrite(wp,"<li>Error");
+	}
 
 	websFooter(wp);
 	return 0;
@@ -1108,22 +1227,22 @@ int	CXbmcHttp::xbmcChooseAlbum(webs_t wp, char_t *parameter)
 	CStdString output="";
 
 	websHeader(wp);
-try
-{
-	CMusicAlbumInfo musicInfo("",parameter) ;
-	if (musicInfo.Load())
+	try
 	{
-		output="<li>image:" + musicInfo.GetImageURL() + "\n";
-		output+="<li>review:" + musicInfo.GetReview()+ "\n";
-		websWriteBlock(wp, (char_t *) output.c_str(), output.length()) ;
+		CMusicAlbumInfo musicInfo("",parameter) ;
+		if (musicInfo.Load())
+		{
+			output="<li>image:" + musicInfo.GetImageURL() + "\n";
+			output+="<li>review:" + musicInfo.GetReview()+ "\n";
+			websWriteBlock(wp, (char_t *) output.c_str(), output.length()) ;
+		}
+		else
+			websWrite(wp,"<li>Error");
 	}
-	else
+	catch (...)
+	{
 		websWrite(wp,"<li>Error");
-}
-catch (...)
-{
-	websWrite(wp,"<li>Error");
-}
+	}
 	websFooter(wp);
 	return 0;
 }
@@ -1156,14 +1275,13 @@ int	CXbmcHttp::xbmcDownloadInternetFile(webs_t wp, char_t *parameter)
 				CHTTP http;
 				http.Download(src,dest);
 				CStdString encoded="";
-				//encoded=encode((char_t *) dest.c_str(),80);
-				encoded=encode(dest,80);
+				encoded=encodeFileToBase64(dest,80);
 				if (encoded=="")
 					websWrite(wp,"<li>Error: Nothing downloaded");
 				{
 					websWriteBlock(wp, (char_t *) encoded.c_str(), encoded.length()) ;
 					if (dest=="Z:\\xbmcDownloadInternetFile.tmp")
-					::DeleteFile(dest.c_str());
+					::DeleteFile(dest);
 				}
 			}
 			catch (...)
@@ -1176,41 +1294,198 @@ int	CXbmcHttp::xbmcDownloadInternetFile(webs_t wp, char_t *parameter)
 	return 0;
 
 }
+int	CXbmcHttp::xbmcSetFile(webs_t wp, char_t *parameter)
+//parameter = destFilename ; base64String
+{
+	CStdString destAndb64String=parameter, b64String="", dest="";
+	int p ;
+
+	websHeader(wp);
+	if (destAndb64String=="none")
+		websWrite(wp,"<li>Error: Missing parameter");
+	else
+	{
+		p=destAndb64String.Find(";");
+		if (p>=0) {
+			dest=destAndb64String.Left(p);
+			b64String=destAndb64String.Right(destAndb64String.size()-p-1);
+			if (dest=="" || b64String=="")
+				websWrite(wp,"<li>Error: Missing parameter");
+			else
+			{
+				decodeBase64ToFile(b64String, "Z:\\xbmcTemp.tmp");
+				CFile file;
+				file.Cache("Z:\\xbmcTemp.tmp", dest,NULL,NULL) ;
+				::DeleteFile("Z:\\xbmcTemp.tmp");
+				websWrite(wp, "<li>OK\n");
+			}
+		}
+		else 
+			websWrite(wp,"<li>Error: Missing parameter");
+	}
+	websFooter(wp);
+	return 0;
+}
+
+int	CXbmcHttp::xbmcCopyFile(webs_t wp, char_t *parameter)
+//parameter = srcFilename ; destFilename
+// both file names are relative to the XBox not the calling client
+{
+	CStdString srcAndDest=parameter, src="", dest="";
+	int p ;
+
+	websHeader(wp);
+	if (srcAndDest=="none")
+		websWrite(wp,"<li>Error: Missing parameter");
+	else
+	{
+		p=srcAndDest.Find(";");
+		if (p>=0) {
+			src=srcAndDest.Left(p);
+			dest=srcAndDest.Right(srcAndDest.size()-p-1);
+			if (dest=="" || src=="")
+				websWrite(wp,"<li>Error: Missing parameter");
+			else
+			{
+				CFile file;
+				if (file.Exists(src))
+				{
+					file.Cache(src, dest,NULL,NULL) ;
+					websWrite(wp, "<li>OK\n");
+				}
+				else
+					websWrite(wp, "<li>Error:Source file not found\n");
+			}
+		}
+		else 
+			websWrite(wp,"<li>Error: Missing parameter");
+	}
+	websFooter(wp);
+	return 0;
+}
+
+int	CXbmcHttp::xbmcDeleteFile(webs_t wp, char_t *parameter)
+{
+	websHeader(wp);
+	if ((*parameter==0) || !strcmp(parameter,"none")) 
+		websWrite(wp,"<li>Error: Missing parameter");
+	else
+	{
+		try
+		{
+			CFile file;
+			if (file.Exists(parameter))
+			{
+				::DeleteFile(parameter);
+				websWrite(wp, "<li>OK\n");
+			}
+			else
+				websWrite(wp, "<li>Error:File not found\n");
+		}
+		catch (...)
+		{
+			websWrite(wp,"<li>Error");
+		}
+	}
+	websFooter(wp);
+	return 0;
+}
+
+int	CXbmcHttp::xbmcFileExists(webs_t wp, char_t *parameter)
+{
+	websHeader(wp);
+	if ((*parameter==0) || !strcmp(parameter,"none")) 
+		websWrite(wp,"<li>Error: Missing parameter");
+	else
+	{
+		try
+		{
+			CFile file;
+			if (file.Exists(parameter))
+			{
+				websWrite(wp, "<li>True\n");
+			}
+			else
+				websWrite(wp, "<li>False\n");
+		}
+		catch (...)
+		{
+			websWrite(wp,"<li>Error");
+		}
+	}
+	websFooter(wp);
+	return 0;
+}
+
+int	CXbmcHttp::xbmcShowPicture(webs_t wp, char_t *parameter)
+{
+	websHeader(wp);
+	if ((*parameter==0) || !strcmp(parameter,"none")) 
+		websWrite(wp,"<li>Error: Missing parameter");
+	else
+	{
+		CStdString filename = parameter;
+		g_applicationMessenger.PictureShow(filename);
+		websWrite(wp, "<li>OK\n");
+	}
+	websFooter(wp);
+	return 0;
+}
+
+int	CXbmcHttp::xbmcHelp(webs_t wp)
+{
+	websHeader(wp);
+
+  websWrite(wp, "<p><b>XBMC HTTP API Commands</b></p><p><b>Syntax: http://xbox/xbmcCmds/xbmcHttp?command=</b>one_of_the_following_commands<b>&ampparameter=</b>first_parameter<b>;</b>second_parameter<b>;...</b></p><p>Note the use of the semi colon to separate multiple parameters</p><p>For more information see the readme.txt and the source code of the demo client application on SourceForge.</p>");
+
+	websWrite(wp, "<li>clearplaylist\n<li>addtoplaylist\n<li>playfile\n<li>pause\n<li>stop\n<li>restart\n<li>shutdown\n<li>exit\n<li>reset\n<li>restartapp\n<li>getcurrentlyplaying\n<li>getdirectory\n<li>gettagfromfilename\n<li>getcurrentplaylist\n<li>setcurrentplaylist\n<li>getplaylistcontents\n<li>removefromplaylist\n<li>setplaylistsong\n<li>getplaylistsong\n<li>playlistnext\n<li>playlistprev\n<li>getpercentage\n<li>seekpercentage\n<li>setvolume\n<li>getvolume\n<li>getthumb\n<li>getthumbfilename\n<li>lookupalbum\n<li>choosealbum\n<li>downloadinternetfile\n<li>getmoviedetails\n<li>showpicture\n<li>setkey\n<li>deletefile\n<li>copyfile\n<li>fileexists\n<li>setfile\n<li>getguistatus\n<li>help");
+
+	websFooter(wp);
+	return 0;
+}
 
 /* Parse an XBMC HTTP API command */
 int CXbmcHttp::xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *parameter)
 {
-	if (!strcmp(command, "clearplaylist"))				return xbmcClearPlayList(wp, parameter);  
-	else if (!strcmp(command, "addtoplaylist"))			return xbmcAddToPlayList(wp, parameter);  
-	else if (!strcmp(command, "playfile"))				return xbmcPlayerPlayFile(wp, parameter); 
-	else if (!strcmp(command, "pause"))					return xbmcAction(wp,1);
-	else if (!strcmp(command, "stop"))					return xbmcAction(wp,2);
-	else if (!strcmp(command, "restart"))				return xbmcExit(wp,1);
-	else if (!strcmp(command, "shutdown"))				return xbmcExit(wp,2);
-	else if (!strcmp(command, "exit"))					return xbmcExit(wp,3);
-	else if (!strcmp(command, "getcurrentlyplaying"))	return xbmcGetCurrentlyPlaying(wp); 
-	else if (!strcmp(command, "getdirectory"))			return xbmcGetDirectory(wp, parameter); 
-	else if (!strcmp(command, "gettagfromfilename"))	return xbmcGetTagFromFilename(wp, parameter);
-	else if (!strcmp(command, "getcurrentplaylist"))	return xbmcGetCurrentPlayList(wp);
-	else if (!strcmp(command, "setcurrentplaylist"))	return xbmcSetCurrentPlayList(wp, parameter);
-	else if (!strcmp(command, "getplaylistcontents"))	return xbmcGetPlayListContents(wp, parameter);
-	else if (!strcmp(command, "removefromplaylist"))	return xbmcRemoveFromPlayList(wp, parameter);
-	else if (!strcmp(command, "setplaylistsong"))		return xbmcSetPlayListSong(wp, parameter);
-	else if (!strcmp(command, "getplaylistsong"))		return xbmcGetPlayListSong(wp, parameter);
-	else if (!strcmp(command, "playlistnext"))			return xbmcPlayListNext(wp);
-	else if (!strcmp(command, "playlistprev"))			return xbmcPlayListPrev(wp);
-	else if (!strcmp(command, "getpercentage"))			return xbmcGetPercentage(wp);
-	else if (!strcmp(command, "seekpercentage"))		return xbmcSeekPercentage(wp, parameter);
-	else if (!strcmp(command, "setvolume"))				return xbmcSetVolume(wp, parameter);
-	else if (!strcmp(command, "getvolume"))				return xbmcGetVolume(wp);
-	else if (!strcmp(command, "getthumb"))				return xbmcGetThumb(wp, parameter);
-	else if (!strcmp(command, "getthumbfilename"))		return xbmcGetThumbFilename(wp, parameter);
-	else if (!strcmp(command, "lookupalbum"))			return xbmcLookupAlbum(wp, parameter);
-	else if (!strcmp(command, "choosealbum"))			return xbmcChooseAlbum(wp, parameter);
+	if (!strcmp(command, "clearplaylist"))              return xbmcClearPlayList(wp, parameter);  
+	else if (!strcmp(command, "addtoplaylist"))         return xbmcAddToPlayList(wp, parameter);  
+	else if (!strcmp(command, "playfile"))              return xbmcPlayerPlayFile(wp, parameter); 
+	else if (!strcmp(command, "pause"))                 return xbmcAction(wp,1);
+	else if (!strcmp(command, "stop"))					        return xbmcAction(wp,2);
+	else if (!strcmp(command, "restart"))				        return xbmcExit(wp,1);
+	else if (!strcmp(command, "shutdown"))				      return xbmcExit(wp,2);
+	else if (!strcmp(command, "exit"))					        return xbmcExit(wp,3);
+	else if (!strcmp(command, "reset"))					        return xbmcExit(wp,4);
+	else if (!strcmp(command, "restartapp"))			  		return xbmcExit(wp,5);
+	else if (!strcmp(command, "getcurrentlyplaying"))	  return xbmcGetCurrentlyPlaying(wp); 
+	else if (!strcmp(command, "getdirectory"))			    return xbmcGetDirectory(wp, parameter); 
+	else if (!strcmp(command, "gettagfromfilename"))  	return xbmcGetTagFromFilename(wp, parameter);
+	else if (!strcmp(command, "getcurrentplaylist"))	  return xbmcGetCurrentPlayList(wp);
+	else if (!strcmp(command, "setcurrentplaylist"))	  return xbmcSetCurrentPlayList(wp, parameter);
+	else if (!strcmp(command, "getplaylistcontents"))	  return xbmcGetPlayListContents(wp, parameter);
+	else if (!strcmp(command, "removefromplaylist"))  	return xbmcRemoveFromPlayList(wp, parameter);
+	else if (!strcmp(command, "setplaylistsong"))		    return xbmcSetPlayListSong(wp, parameter);
+	else if (!strcmp(command, "getplaylistsong"))	    	return xbmcGetPlayListSong(wp, parameter);
+	else if (!strcmp(command, "playlistnext"))			    return xbmcPlayListNext(wp);
+	else if (!strcmp(command, "playlistprev"))			    return xbmcPlayListPrev(wp);
+	else if (!strcmp(command, "getpercentage"))		    	return xbmcGetPercentage(wp);
+	else if (!strcmp(command, "seekpercentage"))	    	return xbmcSeekPercentage(wp, parameter);
+	else if (!strcmp(command, "setvolume"))				      return xbmcSetVolume(wp, parameter);
+	else if (!strcmp(command, "getvolume"))			      	return xbmcGetVolume(wp);
+	else if (!strcmp(command, "getthumb"))			      	return xbmcGetThumb(wp, parameter);
+	else if (!strcmp(command, "getthumbfilename"))  		return xbmcGetThumbFilename(wp, parameter);
+	else if (!strcmp(command, "lookupalbum"))			      return xbmcLookupAlbum(wp, parameter);
+	else if (!strcmp(command, "choosealbum"))			      return xbmcChooseAlbum(wp, parameter);
 	else if (!strcmp(command, "downloadinternetfile"))	return xbmcDownloadInternetFile(wp, parameter);
-	else if (!strcmp(command, "getmoviedetails"))		return xbmcGetMovieDetails(wp, parameter);
-	else if (!strcmp(command, "setkey"))				return xbmcSetKey(wp, parameter);
-
+	else if (!strcmp(command, "getmoviedetails"))		    return xbmcGetMovieDetails(wp, parameter);
+	else if (!strcmp(command, "showpicture"))			      return xbmcShowPicture(wp, parameter);
+	else if (!strcmp(command, "setkey"))				        return xbmcSetKey(wp, parameter);
+	else if (!strcmp(command, "deletefile"))		      	return xbmcDeleteFile(wp, parameter);
+	else if (!strcmp(command, "copyfile"))			      	return xbmcCopyFile(wp, parameter);
+	else if (!strcmp(command, "fileexists"))		      	return xbmcFileExists(wp, parameter);
+	else if (!strcmp(command, "setfile"))				        return xbmcSetFile(wp, parameter);
+	else if (!strcmp(command, "getguistatus"))			    return xbmcGetGUIStatus(wp);
+  else if (!strcmp(command, "help"))			            return xbmcHelp(wp);
 	else {
 		websHeader(wp);
 		websWrite(wp, "<li>Error: unknown command\n");
@@ -1218,6 +1493,7 @@ int CXbmcHttp::xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *
 	}
 	return 0;
 }
+
 
 /* XBMC form for posted data (in-memory CGI). 
  */
