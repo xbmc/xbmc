@@ -12,7 +12,6 @@
 #include "GUIWindowPrograms.h"
 #include "GUIWindowPictures.h"
 #include "GUIWindowMyFiles.h"
-#include "GUIWindowMusic.h"
 #include "GUIWindowVideo.h"
 #include "GUIWindowSettings.h"
 #include "GUIDialogYesNo.h"
