@@ -10,6 +10,7 @@
 #include "dlgcache.h"
 #include "../FileSystem/FileSmb.h"
 #include "../FileSystem/File.h"
+#include "../XBAudioConfig.h"
 
 #define KEY_ENTER 13
 #define KEY_TAB 9
@@ -491,7 +492,7 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 		// and if it fails try a52 filter (used for ac3 software decoding) and if that fails
 		// try the other audio codecs (mp3, wma,...)
 		m_vecOptions.push_back("-ac");
-		m_vecOptions.push_back("hwac3,a52,");
+		m_vecOptions.push_back("hwdts,hwac3,");
 	}
 
 	if (m_strFlipBiDiCharset.length()>0)
@@ -687,7 +688,7 @@ void update_cache_dialog(const char* tmp)
 		}
 	}
 }
-bool CMPlayer::openfile(const CStdString& strFile, int iStartTime)
+bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 {
 	int iRet=-1;
 	m_bCanceling=false;
@@ -769,8 +770,8 @@ bool CMPlayer::openfile(const CStdString& strFile, int iStartTime)
 		}
 
 
-		bool bSupportsAC3Out=(XGetAudioFlags() & DSSPEAKER_ENABLE_AC3) != 0;
-		bool bSupportsDTSOut=(XGetAudioFlags() & DSSPEAKER_ENABLE_DTS) != 0;
+		bool bSupportsAC3Out=g_audioConfig.GetAC3Enabled();
+		bool bSupportsDTSOut=g_audioConfig.GetDTSEnabled();
 
 		// shoutcast is always stereo
 		if (CUtil::IsShoutCast(strFile) ) 
@@ -854,13 +855,13 @@ bool CMPlayer::openfile(const CStdString& strFile, int iStartTime)
 			options.SetSubtitleStream(g_stSettings.m_iSubtitleStream);
 
 
-    //force mplayer to play ac3 and dts files with correct codec
-    if (strExtension == ".ac3") {
-      options.SetRawAudioFormat("0x2000");
-    }
-    else if (strExtension == ".dts") {
-      options.SetRawAudioFormat("0x2001");
-    }
+		//force mplayer to play ac3 and dts files with correct codec
+		if (strExtension == ".ac3") {
+			options.SetRawAudioFormat("0x2000");
+		}
+		else if (strExtension == ".dts") {
+			options.SetRawAudioFormat("0x2001");
+		}
 
 		options.GetOptions(argc,argv);
 		
@@ -936,87 +937,40 @@ bool CMPlayer::openfile(const CStdString& strFile, int iStartTime)
 				}
 			}
 			// check if the codec is AC3 or DTS
-			bool bDTS = false;
-			if (strstr(strAudioCodec,"AC3")==NULL &&
-				!(bDTS = !(strstr(strAudioCodec,"DTS")==NULL)))
-			{
-				// no make sure AC3 passthru is off (used below)
-				options.SetAC3PassTru(false);
-			}
-			else
-			{
-				// should we be using passthrough??
-				// if the sample rate is not 48kHz, it could be a DTS file
-				// DTS files are reported as AC3 in mplayer as at 30/4/2004
-				// This may be changed at a later date, so it'll pay to keep an eye
-				// on things.
-				if (bDTS || (lSampleRate!=48000 && g_stSettings.m_bUseDigitalOutput && bSupportsDTSOut))
-				{
-					if (bDTS)
-					{
-						if (lSampleRate==48000 && g_stSettings.m_bUseDigitalOutput && bSupportsDTSOut)
-						{
-							// DTS, woohoo, change to passthrough mode
+			bool bDTS = strstr(strAudioCodec,"DTS")!=0;
+			bool bAC3 = strstr(strAudioCodec,"AC3")!=0;
+			
+			// should we be using passthrough??
+			// code updated to work with mplayer-pre5 + libdts 0.0.2
+			options.SetAC3PassTru(false);
+			if (g_stSettings.m_bUseDigitalOutput)
+			{	// can only use passthrough with 48kHz audio
+				if (lSampleRate == 48000)
+				{	// do we support AC3 out?
+					if (bAC3 && bSupportsAC3Out)
+					{	// multichannel is all go
+						if (iChannels > 2)
+						{	// fine
 							options.SetAC3PassTru(true);
-							bNeed2Restart=true;
-						}
-					}
-					else
-					{
-						// Could be DTS - lets restart to see
-						options.SetAC3PassTru(true);
-						options.SetChannels(6);
-						CLog::Log(LOGINFO, "  --------------- restart to test for DTS ---------------");
-						mplayer_close_file();
-						options.GetOptions(argc,argv);
-						load();
-						mplayer_init(argc,argv);
-						mplayer_setcache_size(iCacheSize);
-						mplayer_setcache_backbuffer(iCacheSizeBackBuffer);
-						if(bFileIsDVDImage || bFileIsDVDIfoFile)
-							iRet=mplayer_open_file(GetDVDArgument(strFile).c_str());
-						else
-							iRet=mplayer_open_file(strFile.c_str());
-						if (iRet <= 0 || m_bCanceling)
-						{
-							throw iRet;
-						}
-						// Seek to the correct starting position
-						if (iStartTime) SeekTime(iStartTime);
-						// OK, now check what we've got now...
-						long lNewSampleRate;
-						int iNewChannels;
-						mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lNewSampleRate, &iNewChannels, &bVBR);
-						if (lNewSampleRate==48000)
-						{	// yep - was DTS after all!
+							options.SetChannels(2);
+							bNeed2Restart = true;
+						}	// stereo/mono needs checking against the Output Stereo To All Speakers setting
+						if (!g_stSettings.m_bAudioOnAllSpeakers)
+						{	// fine
 							options.SetAC3PassTru(true);
-							//options.SetChannels(2);
-							bNeed2Restart=false;
+							options.SetChannels(2);
+							bNeed2Restart = true;
 						}
-						else
-						{	// nope - must be non-48kHz AC3 or something else...
-							options.SetAC3PassTru(false);
-							iChannels = iNewChannels;
-							bNeed2Restart=true;
-						}
-					}
-				}
-				else if (lSampleRate==48000 && g_stSettings.m_bUseDigitalOutput && bSupportsAC3Out)
-				{	// sample rate is OK
-					if (iChannels == 2 && g_stSettings.m_bDDStereoPassThrough)
-					{	// YES - change to pass through mode
+					}	// DTS should be passed through (no stereo DTS files??)
+					if (bDTS && bSupportsDTSOut)
+					{	// fine
 						options.SetAC3PassTru(true);
-						//options.SetChannels(2);
-						bNeed2Restart=true;
-					}
-					if (iChannels > 2 && g_stSettings.m_bDD_DTSMultiChannelPassThrough)
-					{	// YES - change to pass through mode
-						options.SetAC3PassTru(true);
-						//options.SetChannels(2);
-						bNeed2Restart=true;
+						options.SetChannels(2);
+						bNeed2Restart = true;
 					}
 				}
 			}
+
 			// if we dont have ac3 passtru enabled
 			if (!options.GetAC3PassTru())
 			{
@@ -1025,6 +979,7 @@ bool CMPlayer::openfile(const CStdString& strFile, int iStartTime)
 				if( strstr(strAudioCodec,"DMO") && (iChannels==6) )
 				{
 					options.SetChannels(6);
+				
 					options.SetChannelMapping("channels=6:6:0:0:1:1:2:4:3:5:4:2:5:3");
 					bNeed2Restart=true;
 					CLog::Log(LOGINFO, "  --restart cause speaker mapping needs fixing");
@@ -1065,10 +1020,9 @@ bool CMPlayer::openfile(const CStdString& strFile, int iStartTime)
 					CLog::Log(LOGINFO, "  --restart cause speaker mapping needs fixing");		
 				}
 
-
 				// if xbox only got stereo output, then limit number of channels to 2
 				// same if xbox got digital output, but we're listening to the analog output
-				if (!bSupportsAC3Out || !g_stSettings.m_bUseDigitalOutput)
+				if (!g_audioConfig.HasDigitalOutput() || !g_stSettings.m_bUseDigitalOutput)
 				{
 					if (iChannels > 2) 
 					{
@@ -1717,9 +1671,9 @@ void     CMPlayer::SetAudioStream(int iStream)
 }
 
 
-void CMPlayer::SeekTime(int iTime)
+void CMPlayer::SeekTime(__int64 iTime)
 {
-	mplayer_setTime( iTime);
+	mplayer_setTimeMs(iTime);
 	if (HasVideo())
 	{
 		SwitchToThread();

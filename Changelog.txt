@@ -5,6 +5,13 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 20-08-2004 changed: Used new seeking for better accuracy for .cue files.
+  - 20-08-2004 fixed:   Album view - some albums weren't treated as folders.
+  - 20-08-2004 changed: Passthrough of AC3/DTS is always used unless samplerate != 48kHz
+                        or Output to all channels is enabled, and the source is stereo.
+  - 20-08-2004 changed: Audio settings now sets MS Dash settings for AC3 and DTS
+  - 20-08-2004 changed: Music Database Reorg now Clean Music Database - just removes moved/deleted songs.
+  - 20-08-2004 changed: Database updates for My music to better streamline queries + size.
   - 20-08-2004 fixed: Pause then play causes slowmotion for a few seconds.  Due to autosync=30 in mplayer.conf
   - 18-08-2004 fixed: cdg support, some cdgs (corrupted?) were able to make a crash and some scrolling issues fixed (Thx to stcogolin)
   - 18-08-2004 updated: tinyxml to v2.3.2

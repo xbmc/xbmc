@@ -817,7 +817,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 				dbs.Close();											// close the d/b
 				if (bookmarks.size()<=0) return;						// no bookmarks? leave if so ...
 
-				g_application.m_pPlayer->SeekTime((long) bookmarks[m_iCurrentBookmark]);	// set mplayers play position
+				g_application.m_pPlayer->SeekTime((__int64)bookmarks[m_iCurrentBookmark]*1000);	// set mplayers play position
 				PopulateBookmarks();
 			}
 		}

@@ -15,7 +15,7 @@ public:
 	virtual ~IPlayer(){};
 	virtual void		RegisterAudioCallback(IAudioCallback* pCallback)=0;
 	virtual void		UnRegisterAudioCallback()=0;
-	virtual bool		openfile(const CStdString& strFile, int iStartTime){return false;};
+	virtual bool		openfile(const CStdString& strFile, __int64 iStartTime){return false;};
 	virtual bool		closefile(){return true;};
 	virtual bool		IsPlaying() const {return false;} ;
 	virtual void		Pause()=0;
@@ -68,7 +68,7 @@ public:
   virtual void	  GetAudioStreamName(int iStream, CStdString &strStreamName){};
   virtual void    SetAudioStream(int iStream){};
 
-  virtual void	  SeekTime(int iTime=0){};
+  virtual void	  SeekTime(__int64 iTime=0){};
   virtual __int64 GetTime(){return 0;};
   virtual int	    GetTotalTime(){return 0;};
   virtual void	  ToFFRW(int iSpeed=0){};

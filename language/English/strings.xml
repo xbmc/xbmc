@@ -717,7 +717,7 @@
 	</string>
 	<string>
 		<id>252</id>
-		<value>- Output to all speakers</value>
+		<value>- Output Stereo to all speakers</value>
 	</string>
 	<string>
 		<id>253</id>
@@ -725,7 +725,7 @@
 	</string>
 	<string>
 		<id>254</id>
-		<value>- DD Stereo Passthrough</value>
+		<value>- DTS Capable Receiver</value>
 	</string>
 	<string>
 		<id>255</id>
@@ -957,7 +957,7 @@
 	</string>
 	<string>
 		<id>313</id>
-		<value>Reorganize database</value>
+		<value>Cleaning database</value>
 	</string>
 	<string>
 		<id>314</id>
@@ -973,47 +973,47 @@
 	</string>
 	<string>
 		<id>317</id>
-		<value>Reorganization successfull</value>
+		<value>Cleaning database successful</value>
 	</string>
 	<string>
 		<id>318</id>
-		<value>Marking deleted songs</value>
+		<value>Cleaning songs...</value>
 	</string>
 	<string>
 		<id>319</id>
-		<value>Error reorganizing songs</value>
+		<value>Error cleaning songs</value>
 	</string>
 	<string>
 		<id>320</id>
-		<value>Searching artists...</value>
+		<value>Cleaning artists...</value>
 	</string>
 	<string>
 		<id>321</id>
-		<value>Error reorganizing artists</value>
+		<value>Error cleaning artists</value>
 	</string>
 	<string>
 		<id>322</id>
-		<value>Searching genres...</value>
+		<value>Cleaning genres...</value>
 	</string>
 	<string>
 		<id>323</id>
-		<value>Error reorganizing genres</value>
+		<value>Error cleaning genres</value>
 	</string>
 	<string>
 		<id>324</id>
-		<value>Searching pathes...</value>
+		<value>Cleaning pathes...</value>
 	</string>
 	<string>
 		<id>325</id>
-		<value>Error reorganizing pathes</value>
+		<value>Error cleaning pathes</value>
 	</string>
 	<string>
 		<id>326</id>
-		<value>Searching albums...</value>
+		<value>Cleaning albums...</value>
 	</string>
 	<string>
 		<id>327</id>
-		<value>Error reorganizing albums</value>
+		<value>Error cleaning albums</value>
 	</string>
 	<string>
 		<id>328</id>
@@ -1037,11 +1037,11 @@
 	</string>
 	<string>
 		<id>333</id>
-		<value>Do you want to reorganize my music database?</value>
+		<value>Do you want to clean the music database?</value>
 	</string>
 	<string>
 		<id>334</id>
-		<value>Reorganize my music database</value>
+		<value>Clean the music database</value>
 	</string>
 	<string>
 		<id>335</id>
@@ -1161,7 +1161,7 @@
 	</string>
 	<string>
 		<id>364</id>
-		<value>- DD/DTS Multichannel Passthrough</value>
+		<value>- AC3 Capable Receiver</value>
 	</string>
 	<string>
 		<id>365</id>
@@ -1836,7 +1836,26 @@
 		<id>636</id>
 		<value>Custom</value>
 	</string>
-	<!-- please leave up to 639 free to add more options here -->
+	<string>
+		<id>700</id>
+		<value>Cleaning up Database</value>
+	</string>
+	<string>
+		<id>701</id>
+		<value>Removing old songs from the Database</value>
+	</string>
+	<string>
+		<id>702</id>
+		<value>This path has been scanned before.</value>
+	</string>
+	<string>
+		<id>703</id>
+		<value>Press Yes to update all songs in this path.</value>
+	</string>
+	<string>
+		<id>704</id>
+		<value>Press No to just add new songs.</value>
+	</string>
 	
 	<string>
 		<id>998</id>

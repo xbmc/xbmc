@@ -1928,7 +1928,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 		m_pPlayer = factory.CreatePlayer(strNewPlayer,*this);
 	}
 
-	bool bResult=m_pPlayer->openfile(m_itemCurrentFile.m_strPath, m_itemCurrentFile.m_lStartOffset/75);	// TODO: Change so SeekTime() supports fractions of a second
+	bool bResult=m_pPlayer->openfile(m_itemCurrentFile.m_strPath, m_itemCurrentFile.m_lStartOffset*1000/75);
 	if (bResult) 
 	{
 		m_guiMusicOverlay.SetCurrentFile(m_itemCurrentFile);
