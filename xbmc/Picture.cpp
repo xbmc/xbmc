@@ -7,6 +7,9 @@
 #define MAX_THUMB_WIDTH 64
 #define MAX_THUMB_HEIGHT 64
 
+#define MAX_ALBUM_THUMB_WIDTH 74
+#define MAX_ALBUM_THUMB_HEIGHT 74
+
 CPicture::CPicture(void)
 {
 	m_bSectionLoaded=false;
@@ -216,7 +219,21 @@ IDirect3DTexture8* CPicture::GetYUY2Texture( CxImage& image  )
 	return pTexture;
 }
 
+bool CPicture::CreateAlbumThumbnail(const CStdString& strFileName, const CStdString& strAlbum)
+{
+  CStdString strThumbnail;
+	CUtil::GetAlbumThumb(strAlbum, strThumbnail);
+	return DoCreateThumbnail(strFileName, strThumbnail, MAX_ALBUM_THUMB_WIDTH, MAX_ALBUM_THUMB_HEIGHT);
+}
+
 bool CPicture::CreateThumnail(const CStdString& strFileName)
+{
+  CStdString strThumbnail;
+  CUtil::GetThumbnail(strFileName, strThumbnail);
+	return DoCreateThumbnail(strFileName, strThumbnail, MAX_THUMB_WIDTH, MAX_THUMB_HEIGHT);
+}
+
+bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, int nMaxWidth, int nMaxHeight)
 {
 	CStdString strExtension;
 	CStdString strCachedFile;
@@ -243,10 +260,10 @@ bool CPicture::CreateThumnail(const CStdString& strFileName)
 	CFile file;
 	if ( !file.Cache(strFileName.c_str(),strCachedFile.c_str(),NULL,NULL) )
 	{
-			OutputDebugString("Unable to cache image:");
-			OutputDebugString(strFileName.c_str());
-			OutputDebugString("\n");
-		return NULL;
+		OutputDebugString("Unable to cache image:");
+		OutputDebugString(strFileName.c_str());
+		OutputDebugString("\n");
+		return false;
 	}
 
 	if (!m_bSectionLoaded)
@@ -271,14 +288,14 @@ bool CPicture::CreateThumnail(const CStdString& strFileName)
     bool bResize=false;
     float fAspect= ((float)m_dwWidth) / ((float)m_dwHeight);
 		
-    if (m_dwWidth > (DWORD)MAX_THUMB_WIDTH )
+    if (m_dwWidth > (DWORD)nMaxWidth )
     {
       bResize=true;
-      m_dwWidth  = MAX_THUMB_WIDTH;
+      m_dwWidth  = nMaxWidth;
       m_dwHeight = (DWORD)( ( (float)m_dwWidth) / fAspect);
     }
 
-    if (m_dwHeight > (DWORD)MAX_THUMB_HEIGHT )
+    if (m_dwHeight > (DWORD)nMaxHeight )
     {
       bResize=true;
       m_dwHeight =MAX_THUMB_HEIGHT;
@@ -292,10 +309,7 @@ bool CPicture::CreateThumnail(const CStdString& strFileName)
 			m_dwHeight=image.GetHeight();
 		}
 
-    CStdString strThumbnail;
-    CUtil::GetThumbnail(strFileName, strThumbnail);
-		
-		image.Save(strThumbnail.c_str(),CXIMAGE_FORMAT_JPG);
+		image.Save(strThumbFileName.c_str(),CXIMAGE_FORMAT_JPG);
 	}
 
 	return true;

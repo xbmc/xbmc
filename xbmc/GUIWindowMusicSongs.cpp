@@ -11,6 +11,7 @@
 #include "playlistplayer.h"
 #include <algorithm>
 #include "GuiUserMessages.h"
+#include "SectionLoader.h"
 
 #define CONTROL_BTNVIEWASICONS		2
 #define CONTROL_BTNSORTBY					3
@@ -294,11 +295,16 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 			}
  			else if (iControl==CONTROL_BTNSCAN)
 			{
+				// Preload section for ID3 cover art reading
+				CSectionLoader::Load("CXIMAGE");
+
 				m_database.BeginTransaction();
 				if (OnScan(m_vecItems))
 					m_database.CommitTransaction();
 				else
 					m_database.RollbackTransaction();
+
+				CSectionLoader::Unload("CXIMAGE");
 			}
 			else if (iControl==CONTROL_BTNREC)
 			{

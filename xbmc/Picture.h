@@ -12,10 +12,14 @@ public:
 	IDirect3DTexture8*	Load(const CStdString& strFilename, int iRotate=0, int iMaxWidth=128, int iMaxHeight=128, bool bRGB=true);
 
   bool                CreateThumnail(const CStdString& strFileName);
+  bool                CreateAlbumThumbnail(const CStdString& strFileName, const CStdString& strAlbum);
 	bool                Convert(const CStdString& strSource,const CStdString& strDest);
 	DWORD								GetWidth() const;
 	DWORD								GetHeight() const;
 	void								RenderImage(IDirect3DTexture8* pTexture, int x, int y, int width, int height, int iTextureWidth, int iTextureHeight, bool bRGB=true);
+
+protected:
+	bool								DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, int nMaxWidth, int nMaxHeight);
 
 private:
   struct VERTEX 
