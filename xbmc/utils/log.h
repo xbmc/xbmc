@@ -8,6 +8,7 @@ class CLog
 public:
   CLog();
   virtual ~CLog(void);
+  static void Close();
   static void Log(const char *format, ... );
 	static void DebugLog(const char *format, ...);
 };
