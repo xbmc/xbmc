@@ -616,11 +616,11 @@
   </string>
   <string>
     <id>226</id>
-    <value>Aktiviere PAL60</value>
+    <value>PAL60 aktivieren</value>
   </string>
   <string>
     <id>227</id>
-    <value>Aktiviere CDDB</value>
+    <value>CDDB aktivieren</value>
   </string>
   <string>
     <id>228</id>
@@ -1292,7 +1292,7 @@
   </string>
   <string>
     <id>397</id>
-    <value>Aktualisieren alle </value>
+    <value>Aktualisieren nach </value>
   </string>
   <string>
     <id>398</id>
@@ -1664,7 +1664,7 @@
   </string>
   <string>
     <id>490</id>
-    <value>Zwischen Listen und Symbolansicht wechseln</value>
+    <value>Zwischen Listen- und Symbolansicht wechseln</value>
   </string>
   <string>
     <id>491</id>
@@ -1684,7 +1684,7 @@
   </string>
   <string>
     <id>495</id>
-    <value>Video in GUI Auflösung spielen</value>
+    <value>Videos in GUI Auflösung abspielen</value>
   </string>
   <string>
     <id>496</id>
@@ -1736,7 +1736,7 @@
   </string>
   <string>
     <id>508</id>
-    <value>Deaktiviere Verknüpfungen und Durchsuchen</value>
+    <value>Verknüpfungen und Durchsuchen deaktiviere</value>
   </string>
   <string>
     <id>600</id>
@@ -1868,7 +1868,7 @@
   </string>
   <string>
     <id>708</id>
-    <value>Aktiviere HTTP Proxy</value>
+    <value>HTTP Proxy aktivieren</value>
   </string>
   <string>
     <id>709</id>
@@ -1960,7 +1960,7 @@
   </string>
   <string>
     <id>731</id>
-    <value>Time Server Host</value>
+    <value>Zeit Server Host</value>
   </string>
   <string>
     <id>732</id>
@@ -2320,11 +2320,11 @@
   </string>
   <string>
     <id>13304</id>
-    <value>Aktiviere Bi-Direktionale Zeichenfolge</value>
+    <value>Bi-Direktionale Zeichenfolgen aktivieren</value>
   </string>
   <string>
     <id>13305</id>
-    <value>RSS Feed aktivieren [Newsflash]</value>
+    <value>RSS Feed [Newsflash] aktivieren</value>
   </string>
   <string>
     <id>13306</id>
