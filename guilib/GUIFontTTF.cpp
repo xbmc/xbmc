@@ -3,10 +3,15 @@
 #include "guifontttf.h"
 #include "../xbmc/utils/log.h"
 
+LPDIRECT3DSURFACE8 CGUIFontTTF::m_pSurface = NULL;
+int CGUIFontTTF::m_iCountSurface = 0;
+
 CGUIFontTTF::CGUIFontTTF(const CStdString& strFontName) : CGUIFont(strFontName)
 {
 	m_pTrueTypeFont = NULL;
-	m_pSurface = NULL;
+	m_iCountSurface++;
+	if(m_pSurface == NULL && m_iCountSurface==1 )
+	D3DDevice::GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &m_pSurface);
 }
 
 CGUIFontTTF::~CGUIFontTTF(void)
@@ -14,7 +19,8 @@ CGUIFontTTF::~CGUIFontTTF(void)
 	if (m_pTrueTypeFont)
 		XFONT_Release(m_pTrueTypeFont);
 
-	if (m_pSurface)
+	m_iCountSurface--;
+	if (m_pSurface && m_iCountSurface==0)
 		m_pSurface->Release();
 }
 
@@ -23,6 +29,9 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
 {
 	m_iHeight = iHeight;
 	m_iStyle = iStyle;
+	
+	if (m_pTrueTypeFont)
+		XFONT_Release(m_pTrueTypeFont);
 
     // size of the font cache in bytes
     DWORD dwFontCacheSize = 64 * 1024;
@@ -32,8 +41,7 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
 	WCHAR wszFilename[256];
 	swprintf(wszFilename, L"%S", strFilename.c_str());
 
-	if( FAILED( XFONT_OpenTrueTypeFont ( wszFilename,
-										dwFontCacheSize,&m_pTrueTypeFont ) ) )
+	if( FAILED( XFONT_OpenTrueTypeFont ( wszFilename,dwFontCacheSize,&m_pTrueTypeFont ) ) )
 		return false;
 
 	m_pTrueTypeFont->SetTextHeight( iHeight );
@@ -160,10 +168,10 @@ void CGUIFontTTF::DrawTrueType(LONG nPosX, LONG nPosY, WCHAR* text, int len)
 {
 	if (!m_pTrueTypeFont)
 		return;
-
+/*	do not grab buffer per draw basis.
 	if (!m_pSurface)
 		D3DDevice::GetBackBuffer(0,D3DBACKBUFFER_TYPE_MONO, &m_pSurface);
-
+*/	
 	// draw to back buffer
 	m_pTrueTypeFont->TextOut(m_pSurface, text, len, nPosX, nPosY);
 }
