@@ -1,9 +1,9 @@
 /**********************************************************************
- * Copyright (c) 2002, Leo Seib, Hannover
+ * Copyright (c) 2004, Leo Seib, Hannover
  *
  * Project:Dataset C++ Dynamic Library
  * Module: FieldValue class and result sets classes header file
- * Author: Leo Seib      E-Mail: lev@almaty.pointstrike.net
+ * Author: Leo Seib      E-Mail: leoseib@web.de
  * Begin: 5/04/2002
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,14 +27,19 @@
  **********************************************************************/
 
 
-#include <string>
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <map>
 #include <vector>
 #include <iostream>
+#include <string>
+
+#ifndef _QRYDAT_H
+#define _QRYDAT_H
+
+
 using namespace std;
+
+namespace dbiplus {
+
 enum fType { 
 	ft_String,
 	ft_Boolean,
@@ -213,4 +218,6 @@ struct result_set {
   query_data records;
 };
 
+} // namespace
 
+#endif

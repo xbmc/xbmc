@@ -1,9 +1,9 @@
 /**********************************************************************
- * Copyright (c) 2002, Leo Seib, Hannover
+ * Copyright (c) 2004, Leo Seib, Hannover
  *
  * Project: C++ Dynamic Library
  * Module: FieldValue class realisation file
- * Author: Leo Seib      E-Mail: lev@almaty.pointstrike.net
+ * Author: Leo Seib      E-Mail: leoseib@web.de
  * Begin: 5/04/2002
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,11 +26,12 @@
  *
  **********************************************************************/
 
-#include "stdafx.h"
 #include "qry_dat.h"
+
 #pragma warning (disable:4800)
-#pragma warning (disable:4244)
 #pragma warning (disable:4715)
+
+namespace dbiplus {
 
 //Constructors 
 field_value::field_value(){
@@ -424,7 +425,7 @@ unsigned long field_value::get_asULong() const {
 float field_value::get_asFloat() const {
     switch (field_type) {
     case ft_String: {
-      return atof(str_value.c_str());
+      return (float)atof(str_value.c_str());
     }
     case ft_Boolean:{
       return (float)bool_value;
@@ -625,3 +626,4 @@ string field_value::gft() {
     }
   }
 
+} //namespace 

@@ -13,6 +13,7 @@
 
 using namespace std;
 using namespace MUSIC_INFO;
+using namespace dbiplus;
 
 //	return codes of Cleaning up the Database
 //	numbers are strings from strings.xml
@@ -230,7 +231,7 @@ public:
 	bool		FindAlbumsByName(const CStdString& strSearch, VECALBUMS& albums);
 	bool		FindSongsByName(const CStdString& strSearch, VECSONGS& songs);
 	bool		FindSongsByNameAndArtist(const CStdString& strSearch, VECSONGS& songs);
-	CStdString	GetSubpathsFromPath(const CStdString &strPath);
+	bool		GetSubpathsFromPath(const CStdString &strPath, CStdString& strPathIds);
 	bool		RemoveSongsFromPaths(const CStdString &strPathIds);
 	bool		CleanupAlbumsArtistsGenres(const CStdString &strPathIds);
 	bool		Compress();
@@ -238,6 +239,7 @@ public:
 	void		Clean();
 	void		DeleteAlbumInfo();
 	void		DeleteCDDBInfo();
+	void		Interupt();
 
 protected:
 	auto_ptr<SqliteDatabase> m_pDB;
