@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 24-09-2004 fixed: [ 1034040 ] Pressing x while calibrating screen causes blackscreen
+  - 24-09-2004 fixed: Spin controls don't remember which arrow was focused
   - 24-09-2004 fixed: CDDA Player was using too much processor - added Sleep()
   - 24-09-2004 fixed: [ 973399 ] Vizualisations are not in sync with audio
   - 24-09-2004 fixed: [ 991442 ] .cda incorrect numbering
