@@ -320,29 +320,6 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 	return CGUIWindowMusicBase::OnMessage(message);
 }
 
-void CGUIWindowMusicSongs::OnAction(const CAction &action)
-{
-	if (action.wID==ACTION_PARENT_DIR)
-	{
-		GoParentFolder();
-		return;
-	}
-
-  if (action.wID==ACTION_PREVIOUS_MENU)
-  {
-		m_gWindowManager.ActivateWindow(WINDOW_HOME);
-		return;
-  }
-
-	if (action.wID==ACTION_SHOW_PLAYLIST)
-	{
-		m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
-		return;
-	}
-
-	CGUIWindowMusicBase::OnAction(action);
-}
-
 void CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items)
 {
 	if (items.size() )
