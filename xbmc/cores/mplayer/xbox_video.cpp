@@ -76,6 +76,8 @@ static void*                    m_TextureBuffer[NUM_BUFFERS];
 static DWORD                    m_hPixelShader = 0;
 static int                      ytexture_pitch;
 static int                      uvtexture_pitch;
+static int											ytexture_height; // aligned heights
+static int											uvtexture_height;
 static int                      m_iRenderBuffer;
 static int                      m_iDecodeBuffer;
 typedef struct directx_fourcc_caps
@@ -337,20 +339,25 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 
 	for (int i = 0; i < NUM_BUFFERS; ++i)
 	{
+		int yw = (image_width + 1) & ~1; // make sure it's even
+		int uvw = (image_width/2 + 1) & ~1; // make sure it's even
+		ytexture_height = (image_height + 1) & ~1; // make sure it's even
+		uvtexture_height = (image_height/2 + 1) & ~1; // make sure it's even
+
 		// Create texture buffer
 		if (m_TextureBuffer[i])
 			XPhysicalFree(m_TextureBuffer[i]);
-		m_TextureBuffer[i] = (BYTE*)XPhysicalAlloc(ytexture_pitch*image_height + uvtexture_pitch*image_height, MAXULONG_PTR, 128, PAGE_READWRITE);
+		m_TextureBuffer[i] = (BYTE*)XPhysicalAlloc(ytexture_pitch*ytexture_height + uvtexture_pitch*uvtexture_height*2, MAXULONG_PTR, 128, PAGE_READWRITE);
 
 		// blank the textures (just in case)
-		memset(m_TextureBuffer[i], 0, ytexture_pitch*image_height);
-		memset((char*)m_TextureBuffer[i] + ytexture_pitch*image_height, 128, uvtexture_pitch*image_height);
+		memset(m_TextureBuffer[i], 0, ytexture_pitch*ytexture_height);
+		memset((char*)m_TextureBuffer[i] + ytexture_pitch*ytexture_height, 128, uvtexture_pitch*uvtexture_height*2);
 
 		// setup textures as linear luminance only textures, the pixel shader handles translation to RGB
 		// YV12 is Y plane then V plane then U plane, U and V are half as wide and high
-		XGSetTextureHeader(image_width, image_height, 1, 0, D3DFMT_LIN_L8, 0, &m_YTexture[i], 0, ytexture_pitch);
-		XGSetTextureHeader(image_width/2, image_height/2, 1, 0, D3DFMT_LIN_L8, 0, &m_UTexture[i], ytexture_pitch*image_height, uvtexture_pitch);
-		XGSetTextureHeader(image_width/2, image_height/2, 1, 0, D3DFMT_LIN_L8, 0, &m_VTexture[i], ytexture_pitch*image_height+uvtexture_pitch*(image_height/2), uvtexture_pitch);
+		XGSetTextureHeader(yw, ytexture_height, 1, 0, D3DFMT_LIN_L8, 0, &m_YTexture[i], 0, ytexture_pitch);
+		XGSetTextureHeader(uvw, uvtexture_height, 1, 0, D3DFMT_LIN_L8, 0, &m_UTexture[i], ytexture_pitch*ytexture_height, uvtexture_pitch);
+		XGSetTextureHeader(uvw, uvtexture_height, 1, 0, D3DFMT_LIN_L8, 0, &m_VTexture[i], ytexture_pitch*ytexture_height+uvtexture_pitch*uvtexture_height, uvtexture_pitch);
 		m_YTexture[i].Register(m_TextureBuffer[i]);
 		m_UTexture[i].Register(m_TextureBuffer[i]);
 		m_VTexture[i].Register(m_TextureBuffer[i]);
@@ -800,7 +807,7 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
 	w/=2;h/=2;x/=2;y/=2;
 	
 	// copy U
-  d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer] + ytexture_pitch*image_height+ uvtexture_pitch*y+x;
+  d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer] + ytexture_pitch*ytexture_height+ uvtexture_pitch*y+x;
   s=src[1];
   for(i=0;i<(DWORD)h;i++){
       memcpy(d,s,w);
@@ -808,7 +815,7 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
       d+=uvtexture_pitch;
   }
 	// copy V
-  d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer] + ytexture_pitch*image_height + uvtexture_pitch*(image_height/2)+ uvtexture_pitch*y+x;;
+  d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer] + ytexture_pitch*ytexture_height + uvtexture_pitch*uvtexture_height+ uvtexture_pitch*y+x;
   s=src[2];
   for(i=0;i<(DWORD)h;i++){
     memcpy(d,s,w);
@@ -1089,8 +1096,8 @@ static unsigned int get_image(mp_image_t *mpi)
 		{
       
 			mpi->planes[0]=(BYTE*)m_TextureBuffer[m_iRenderBuffer];
-			mpi->planes[1]=(BYTE*)m_TextureBuffer[m_iRenderBuffer] + ytexture_pitch*image_height;
-			mpi->planes[2]=(BYTE*)m_TextureBuffer[m_iRenderBuffer] + ytexture_pitch*image_height + uvtexture_pitch*(image_height/2);
+			mpi->planes[1]=(BYTE*)m_TextureBuffer[m_iRenderBuffer] + ytexture_pitch*ytexture_height;
+			mpi->planes[2]=(BYTE*)m_TextureBuffer[m_iRenderBuffer] + ytexture_pitch*ytexture_height + uvtexture_pitch*uvtexture_height;
       
 			mpi->stride[0]=ytexture_pitch;
 			mpi->stride[1]=uvtexture_pitch;
@@ -1151,7 +1158,7 @@ static unsigned int put_image(mp_image_t *mpi)
       // copy V
       //d=image+dstride*image_height + dstride*y/4+x;
       dstride=uvtexture_pitch;
-      d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer] + ytexture_pitch*image_height + dstride*y+x;
+      d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer] + ytexture_pitch*ytexture_height + dstride*y+x;
       s=mpi->planes[1];
       for(i=0;i<h;i++){
         memcpy(d,s,w);
@@ -1162,7 +1169,7 @@ static unsigned int put_image(mp_image_t *mpi)
 
       // copy U
       //d=image+dstride*image_height + dstride*image_height/16 + dstride/4*y+x;
-      d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer] + ytexture_pitch*image_height + uvtexture_pitch*(image_height/2) + dstride*y+x;
+      d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer] + ytexture_pitch*ytexture_height + uvtexture_pitch*uvtexture_height + dstride*y+x;
       s=mpi->planes[2];
       for(i=0;i<h;i++){
         memcpy(d,s,w);
@@ -1174,7 +1181,7 @@ static unsigned int put_image(mp_image_t *mpi)
 	else
 	{
 		//packed
-    memcpy( m_TextureBuffer[m_iBackBuffer], mpi->planes[0], image_height * ytexture_pitch);
+    memcpy( m_TextureBuffer[m_iBackBuffer], mpi->planes[0], ytexture_height * ytexture_pitch);
 	}
 
   // flush CPU cache. This way all data is back in memory and GPU (pixelshader) can access it
