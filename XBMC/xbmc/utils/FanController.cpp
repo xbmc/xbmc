@@ -28,9 +28,10 @@ CFanController* CFanController::Instance()
 
 CFanController::CFanController()
 {
-  systemFanSpeed  = GetFanSpeed();
-  currentFanSpeed = systemFanSpeed;
-  lastFanSpeed    = systemFanSpeed;
+  systemFanSpeed     = GetFanSpeed();
+  currentFanSpeed    = systemFanSpeed;
+  calculatedFanSpeed = systemFanSpeed;
+  SetFanSpeed(systemFanSpeed-1);//hack to get it going, without this it won't set the fanspeed on boot
 }
 
 
@@ -67,9 +68,9 @@ void CFanController::Process()
       sensor = ST_GPU;
     }
 
-    currentFanSpeed = CalcSpeed(targetTemp);
+    CalcSpeed(targetTemp);
 
-    SetFanSpeed(currentFanSpeed);
+    SetFanSpeed(calculatedFanSpeed);
 
     cpuLastTemp = cpuTemp;
     gpuLastTemp = gpuTemp;
@@ -99,8 +100,8 @@ void CFanController::Stop()
 {
   StopThread();
   RestoreStartupSpeed();
-  //lock the fan
- 	HalWriteSMBusValue(PIC_ADDRESS, FAN_MODE, 0, 0);
+  //lock the fan, this sets the speed back to bios value
+ 	//HalWriteSMBusValue(PIC_ADDRESS, FAN_MODE, 0, 0);
 }
 
 int CFanController::GetFanSpeed()
@@ -114,12 +115,12 @@ void CFanController::GetFanSpeedInternal()
   HalReadSMBusValue(PIC_ADDRESS, FAN_READBACK, 0, (LPBYTE)&currentFanSpeed);
 }
 
-void CFanController::SetFanSpeed(int fanspeed)
+void CFanController::SetFanSpeed(const int fanspeed)
 {
   if (fanspeed < 0) return;
   if (fanspeed > 50) return;
-  if (fanspeed == lastFanSpeed) return;
-  lastFanSpeed = currentFanSpeed;
+  if (currentFanSpeed == fanspeed) return;
+  currentFanSpeed = fanspeed;
   //enable custom fanspeeds
  	HalWriteSMBusValue(PIC_ADDRESS, FAN_MODE, 0, 1);
 	Sleep(10);
@@ -171,7 +172,7 @@ void CFanController::GetCPUTempInternal()
 }
 
 
-int CFanController::CalcSpeed(int targetTemp) {
+void CFanController::CalcSpeed(int targetTemp) {
   float temp;
   float tempOld;
   float targetTempFloor;
@@ -193,10 +194,10 @@ int CFanController::CalcSpeed(int targetTemp) {
     tooHotLoopCount  = 0;
     tooColdLoopCount = 0;
     if (temp > tempOld) {
-      currentFanSpeed++;
+      calculatedFanSpeed++;
     }
     else if (temp < tempOld) {
-      currentFanSpeed--;
+      calculatedFanSpeed--;
     }
   }
 
@@ -209,8 +210,8 @@ int CFanController::CalcSpeed(int targetTemp) {
       tooColdLoopCount--;
     }
     if ((temp < tempOld) || (tooColdLoopCount == 12)) {
-      currentFanSpeed--;
-      //CLog::DebugLog("Lowering fanspeed to %i, tooHotLoopCount=%i tooColdLoopCount=%i", currentFanSpeed, tooHotLoopCount, tooColdLoopCount);
+      calculatedFanSpeed--;
+      //CLog::DebugLog("Lowering fanspeed to %i, tooHotLoopCount=%i tooColdLoopCount=%i", calculatedFanSpeed, tooHotLoopCount, tooColdLoopCount);
       tooColdLoopCount = 0;
     }
   }
@@ -224,13 +225,12 @@ int CFanController::CalcSpeed(int targetTemp) {
       tooHotLoopCount--;
     }
     if ((temp > tempOld) || (tooHotLoopCount == 12)) {
-      currentFanSpeed++;
-      //CLog::DebugLog("Increasing fanspeed to %i, tooHotLoopCount=%i tooColdLoopCount=%i", currentFanSpeed, tooHotLoopCount, tooColdLoopCount);
+      calculatedFanSpeed++;
+      //CLog::DebugLog("Increasing fanspeed to %i, tooHotLoopCount=%i tooColdLoopCount=%i", calculatedFanSpeed, tooHotLoopCount, tooColdLoopCount);
       tooHotLoopCount = 0;
     }
   }
 
- 	if (currentFanSpeed < 1) {currentFanSpeed = 1;} // always keep the fan running
-	if (currentFanSpeed > 50) {currentFanSpeed = 50;}
-  return currentFanSpeed;
+ 	if (calculatedFanSpeed < 1) {calculatedFanSpeed = 1;} // always keep the fan running
+	if (calculatedFanSpeed > 50) {calculatedFanSpeed = 50;}
 }
