@@ -531,6 +531,9 @@ if(strncmp("dvd://",filename,6) == 0){
 		printf("protocol:%s",url->protocol);
 		if (stricmp(url->protocol, "http") ==0||
 			stricmp(url->protocol, "mms") ==0||
+			stricmp(url->protocol, "ftp") ==0||
+			stricmp(url->protocol, "udp") ==0||
+			stricmp(url->protocol, "rtsp") ==0||
 			stricmp(url->protocol, "rtp") ==0//||
 //			stricmp(url->protocol, "shout") ==0
 			)
