@@ -383,6 +383,7 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
 	catch(...)
 	{
 		CLog::Log(LOGERROR, "PICTURE::docreatethumbnail: exception: %s\n", strCachedFile.c_str());
+		return false;
 	}
 	return true;
 }
