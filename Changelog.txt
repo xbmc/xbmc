@@ -5,7 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-  - 25-25-2004 fixed: huge memleak in vobsub loader code, fixes large vobsubs and decreases footprint of vobsubs
+  - 25-12-2004 changed: dvd subtitles sould now be allocated nomatter settings in mplayer.conf
+  - 25-12-2004 fixed: srt subtitles wouldn't auto load properly
+  - 25-12-2004 fixed: huge memleak in vobsub loader code, fixes large vobsubs and decreases footprint of vobsubs
   - 20-12-2004 added: support for multiple subtitles, with language extension ie: filename.eng.sub
   - 20-12-2004 changed: new subtitle name interface for xbmc
   - 29-10-2004 added: display and switching of audiostreams in matroska
