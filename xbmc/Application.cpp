@@ -1526,7 +1526,7 @@ void CApplication::OnKey(CKey& key)
 	// change this if we have a dialog up
 	if (m_gWindowManager.IsRouted())
 	{
-		iWin = m_gWindowManager.m_pRouteWindow->GetID();
+		iWin = m_gWindowManager.GetTopMostRoutedWindowID();
 	}
 	if (iWin==WINDOW_FULLSCREEN_VIDEO)
 	{

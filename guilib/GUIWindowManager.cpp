@@ -9,7 +9,6 @@ CGUIWindowManager::CGUIWindowManager(void)
 	InitializeCriticalSection(&m_critSection);
 
 	m_pCallback		= NULL;
-	m_pRouteWindow	= NULL;
 	m_iActiveWindow	= -1;
 }
 
@@ -37,11 +36,11 @@ void CGUIWindowManager::SendMessage(CGUIMessage& message)
 		}
 	}
 
-	//	Have we a routed window...
-	if (m_pRouteWindow)
+	//	Have we routed windows...
+	if (m_vecModalWindows.size()>0)
 	{
-		//	...send the message to it.
-		m_pRouteWindow->OnMessage(message);
+		//	...send the message to the top most.
+		m_vecModalWindows[m_vecModalWindows.size()-1]->OnMessage(message);
 
 		if (m_iActiveWindow < 0)
 		{
@@ -86,7 +85,6 @@ void CGUIWindowManager::AddModeless(CGUIWindow* pWindow)
 {
 	m_vecModelessWindows.push_back(pWindow);
 }
-
 
 void CGUIWindowManager::Remove(DWORD dwID)
 {
@@ -229,12 +227,13 @@ void CGUIWindowManager::ActivateWindow(int iWindowID)
 	}
 }
 
-
 void CGUIWindowManager::OnAction(const CAction &action)
 {
-	if (m_pRouteWindow)
+	//	Have we have routed windows...
+	if (m_vecModalWindows.size()>0)
 	{
-		m_pRouteWindow->OnAction(action);
+		//	...send the action to the top most.
+		m_vecModalWindows[m_vecModalWindows.size()-1]->OnAction(action);
 	}
 	else if (m_iActiveWindow >= 0)
 	{
@@ -255,14 +254,25 @@ void CGUIWindowManager::Render()
 		pWindow->Render();
 	}
 
-	if (m_pRouteWindow)
-	{
-		m_pRouteWindow->Render();
-	}
-  
-	// render modeless windows
+	// render modal windows
 	int nWindow = 0;
 	int nWindowsPre;
+
+	// continuously evaluate if there are more windows in our list to process
+	while ( nWindow < (nWindowsPre = m_vecModalWindows.size()) )
+	{
+		m_vecModalWindows[nWindow]->Render();
+
+		// if the modal dialog hasn't closed, and removed itself from the list
+		if (nWindowsPre==m_vecModalWindows.size())
+		{
+			// try the next window
+			nWindow++;
+		}
+	}
+
+	// render modeless windows
+	nWindow = 0;
 
 	// continuously evaluate if there are more windows in our list to process
 	while ( nWindow < (nWindowsPre = m_vecModelessWindows.size()) )
@@ -311,7 +321,6 @@ void CGUIWindowManager::Process()
 	}
 }
 
-
 void CGUIWindowManager::SetCallback(IWindowManagerCallback& callback) 
 {
 	m_pCallback=&callback;
@@ -328,8 +337,6 @@ void CGUIWindowManager::DeInitialize()
 		pWindow->ClearAll();
 	}
 
-	m_pRouteWindow=NULL;
-
 	m_vecMsgTargets.erase( m_vecMsgTargets.begin(), m_vecMsgTargets.end() );
 
 	// destroy our custom windows...
@@ -344,34 +351,45 @@ void CGUIWindowManager::DeInitialize()
 }
 
 /// \brief Route to a window
-/// \param dwID Window to route to
-///	\return ID of the previous routed window, if no previous window exists returns WINDOW_INVALID. 
-DWORD CGUIWindowManager::RouteToWindow(DWORD dwID)
+/// \param pWindow Window to route to
+void CGUIWindowManager::RouteToWindow(CGUIWindow* pWindow)
 {
-	int iPrevRouteWindow=WINDOW_INVALID; 
-
-	if (m_pRouteWindow!=NULL)
-	{
-		iPrevRouteWindow = m_pRouteWindow->GetID();
-	}
-  
-	m_pRouteWindow = GetWindow(dwID);
-
-	return iPrevRouteWindow;
+	m_vecModalWindows.push_back(pWindow);
 }
 
 /// \brief Unroute window
-/// \param dwID ID of the previous window routed to
+/// \param dwID ID of the window routed
 void CGUIWindowManager::UnRoute(DWORD dwID)
 {
-	if (dwID==WINDOW_INVALID)
+	vector<CGUIWindow*>::reverse_iterator it = m_vecModalWindows.rbegin();
+	while (it != m_vecModalWindows.rend())
 	{
-		m_pRouteWindow = NULL;
+		CGUIWindow* pWindow = *it;
+		if(pWindow->GetID() == dwID)
+		{
+			m_vecModalWindows.erase((++it).base());
+			it = m_vecModalWindows.rend();
+		}
+		else it++;
 	}
-	else
-	{
-		m_pRouteWindow = GetWindow(dwID);
-	}
+}
+
+bool CGUIWindowManager::IsRouted() const
+{
+	if (m_vecModalWindows.size()>0)
+		return true;
+
+	return false;
+}
+
+/// \brief Get the ID of the top most routed window
+/// \return dwID ID of the window or WINDOW_INVALID if no routed window available
+int CGUIWindowManager::GetTopMostRoutedWindowID() const
+{
+	if (m_vecModalWindows.size()<=0)
+		return WINDOW_INVALID;
+
+	return m_vecModalWindows[m_vecModalWindows.size()-1]->GetID();
 }
 
 void CGUIWindowManager::SendThreadMessage(CGUIMessage& message)
@@ -410,7 +428,6 @@ void CGUIWindowManager::AddMsgTarget( IMsgTargetCallback* pMsgTarget )
 	m_vecMsgTargets.push_back( pMsgTarget );
 }
 
-
 int CGUIWindowManager::GetActiveWindow() const
 {
 	if (m_iActiveWindow < 0)
@@ -421,14 +438,4 @@ int CGUIWindowManager::GetActiveWindow() const
 	CGUIWindow* pWindow = m_vecWindows[m_iActiveWindow];
 	
 	return pWindow->GetID();
-}
-
-bool CGUIWindowManager::IsRouted() const
-{
-	if (m_pRouteWindow)
-	{
-		return true;
-	}
-
-	return false;
 }
