@@ -129,7 +129,7 @@ CSettings::CSettings(void)
   g_stSettings.m_bMyVideoYearStack =false;
 
 
-  g_stSettings.m_bPPAuto=true;
+  g_stSettings.m_bPPAuto=false;
   g_stSettings.m_bPPVertical=false;
   g_stSettings.m_bPPHorizontal=false;
   g_stSettings.m_bPPAutoLevels=false;
