@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 05-03-2005 added: ActivateWindow() function now accepts a path parameter or bookmark name for bookmark jumping. Valid windows ID's for this are 1,2,3,6,501.  Example: ActivateWindow(6,F:\Videos) or ActivateWindow(501,Music Server). Valid windows ID's for this are 1,2,3,6,501
+  - 05-03-2005 added: the default tag for the each section's bookmark can now be a bookmark name
   - 05-03-2005 changed: minor gui rendering tweaks
   - 05-03-2005 fixed: playback from any source when cache dialog was visible locks xbmc up (internet streams)
   - 04-03-2005 added: my music nav window now supports files with tagged with multipe artists and genres
