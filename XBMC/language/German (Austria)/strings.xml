@@ -1091,7 +1091,7 @@
   </string>
   <string>
     <id>346</id>
-    <value>Verbinden</value>
+    <value>Verknüpfen</value>
   </string>
   <string>
     <id>347</id>
@@ -2344,7 +2344,7 @@
 <value>Titel Nummern ausblenden</value>
 </string> 
    <string><id>13308</id>
-<value>Möchten sie die XBox Neustarten</value>
+<value>Möchten sie die XBox neustarten</value>
 </string>
    <string><id>13309</id>
 <value>anstelle eines Resets?</value>
@@ -2361,5 +2361,18 @@
    <string><id>13313</id>
 <value>Reset/Neustart</value>
 </string>
+   <string><id>13314</id>
+<value>Musik OSD Einblendzeit</value>
+</string>
+   <string><id>14000</id>
+<value>Verknüpfen: AUS</value>
+</string> 
+   <string><id>14001</id>
+<value>Verknüpfen: Einfach</value>
+</string> 
+   <string><id>14002</id>
+<value>Verknüpfen: Komplex</value>
+</string> 
+
 
 </strings>

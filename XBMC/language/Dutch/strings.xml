@@ -589,6 +589,10 @@
 <string><id>13312</id><value>Zwarte balk reductie</value></string>
 <string><id>13313</id><value>Reset/Reboot</value></string>
 <string><id>13314</id><value>Muziek OSD sluittijd</value></string>
+<string><id>14000</id><value>Delen Invoegen: Aan</value></string>
+<string><id>14001</id><value>Delen Invoegen: Simpel</value></string> 
+<string><id>14002</id><value>Delen Invoegen: Fuzzy</value></string>
+
 
 
 </strings>
