@@ -1,6 +1,5 @@
 #include <xtl.h>
 #include <XGraphics.h>
-
 #include "packedtexture.h"
 
 HRESULT LoadPackedTexture(LPDIRECT3DDEVICE8 pDevice, const char* szFilename, D3DXIMAGE_INFO* pInfo, LPDIRECT3DTEXTURE8* ppTexture,

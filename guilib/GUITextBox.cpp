@@ -157,6 +157,13 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
   return false;
 }
 
+void CGUITextBox::PreAllocResources()
+{
+	if (!m_pFont) return;
+	CGUIControl::PreAllocResources();
+	m_upDown.PreAllocResources();
+}
+
 void CGUITextBox::AllocResources()
 {
   if (!m_pFont) return;

@@ -101,6 +101,16 @@ bool CGUIToggleButtonControl::OnMessage(CGUIMessage& message)
   return false;
 }
 
+void CGUIToggleButtonControl::PreAllocResources()
+{
+	CGUIControl::PreAllocResources();
+	m_dwFrameCounter=0;
+	m_imgFocus.PreAllocResources();
+	m_imgNoFocus.PreAllocResources();
+	m_imgAltFocus.PreAllocResources();
+	m_imgAltNoFocus.PreAllocResources();
+}
+
 void CGUIToggleButtonControl::AllocResources()
 {
   CGUIControl::AllocResources();

@@ -3,27 +3,36 @@
 
 #include "stdafx.h"
 #include "AnimatedGif.h"
+#include "Bundler.h"
 
 extern "C" void SHA1(const BYTE* buf, DWORD len, BYTE hash[20]);
 
 LPDIRECT3D8 pD3D;
 LPDIRECT3DDEVICE8 pD3DDevice;
 
+CBundler Bundler;
+
 UINT UncompressedSize;
 UINT CompressedSize;
 
-char HomeDir[MAX_PATH];
-const char* InputDir;
-const char* OutputDir;
-
-UINT RoundPow2(UINT s)
+// Round a number to the nearest power of 2 rounding up
+// runs pretty quickly - the only expensive op is the bsr
+// alternive would be to dec the source, round down and double the result
+// which is slightly faster but rounds 1 to 2
+DWORD __forceinline __stdcall PadPow2(DWORD x)
 {
-	for (unsigned i = 0; i < 32; ++i)
-	{
-		if ((1u << i) >= s)
-			return (1u << i);
+	__asm {
+		mov edx,x    // put the value in edx
+			xor ecx,ecx  // clear ecx - if x is 0 bsr doesn't alter it
+			bsr ecx,edx  // find MSB position
+			mov eax,1    // shift 1 by result effectively
+			shl eax,cl   // doing a round down to power of 2
+			cmp eax,edx  // check if x was already a power of two
+			adc ecx,0    // if it wasn't then CF is set so add to ecx
+			mov eax,1    // shift 1 by result again, this does a round
+			shl eax,cl   // up as a result of adding CF to ecx
 	}
-	return 0xffffffffu;
+	// return result in eax
 }
 
 #pragma pack(push,1)
@@ -94,7 +103,7 @@ bool GetFormatMSE(const D3DXIMAGE_INFO& info, LPDIRECT3DSURFACE8 pSrcSurf, D3DFO
 	HRESULT hr;
 
 	// Compress
-	int Width = RoundPow2(info.Width), Height = RoundPow2(info.Height);
+	int Width = PadPow2(info.Width), Height = PadPow2(info.Height);
 	hr = pD3DDevice->CreateImageSurface(Width, Height, fmt, &pCompSurf);
 	CheckHR(hr);
 
@@ -145,9 +154,10 @@ bool GetFormatMSE(const D3DXIMAGE_INFO& info, LPDIRECT3DSURFACE8 pSrcSurf, D3DFO
 	return true;
 }
 
+
 struct XPRFile_t
 {
-	XPR_HEADER* XPRHeader;
+	DWORD HeaderSize;
 	DWORD* flags;
 	struct AnimInfo_t {
 		DWORD nLoops;
@@ -173,62 +183,24 @@ enum XPR_FLAGS
 };
 
 #undef CheckHR
-#define CheckHR(hr) if (FAILED(hr)) { printf("ERROR: %08x\n", hr); continue; }
 
 void CommitXPR(const char* Filename)
 {
 	if (!XPRFile.nImages)
 		return;
 
-	DWORD DataSize = XPRFile.Data - XPRFile.DataStart;
-	XPRFile.XPRHeader->dwTotalSize = XPRFile.XPRHeader->dwHeaderSize + DataSize;
+	const void* Buffers[2] = { XPRFile.OutputBuf, XPRFile.DataStart };
+	DWORD Sizes[2] = { XPRFile.HeaderSize, XPRFile.Data - XPRFile.DataStart };
+	if (!Bundler.AddFile(Filename, 2, Buffers, Sizes))
+		printf("ERROR: Unable to compress data (out of memory?)\n");
 
-	if (OutputDir)
-	{
-		SetCurrentDirectory(HomeDir);
-		SetCurrentDirectory(OutputDir);
-	}
-
-	HANDLE hFile = CreateFile(Filename, GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-	if (hFile == INVALID_HANDLE_VALUE)
-	{
-		printf("ERROR: %08x\n", GetLastError());
-		return;
-	}
-
-	DWORD n;
-	if (!WriteFile(hFile, XPRFile.OutputBuf, XPRFile.XPRHeader->dwHeaderSize, &n, NULL) || n != XPRFile.XPRHeader->dwHeaderSize)
-	{
-		printf("ERROR: %08x\n", GetLastError());
-		CloseHandle(hFile);
-		DeleteFile(Filename);
-		return;
-	}
-
-	if (!WriteFile(hFile, XPRFile.DataStart, DataSize, &n, NULL) || n != DataSize)
-	{
-		printf("ERROR: %08x\n", GetLastError());
-		CloseHandle(hFile);
-		DeleteFile(Filename);
-		return;
-	}
-
-	CloseHandle(hFile);
 	VirtualAlloc(XPRFile.OutputBuf, XPRFile.Data - XPRFile.OutputBuf, MEM_RESET, PAGE_NOACCESS);
-
-	if (OutputDir)
-	{
-		SetCurrentDirectory(HomeDir);
-		if (InputDir)
-			SetCurrentDirectory(InputDir);
-	}
 }
 
 void WriteXPRHeader(DWORD* pal, int nImages, DWORD nLoops = 0)
 {
 	// Set header pointers
-	XPRFile.XPRHeader = (XPR_HEADER*)XPRFile.OutputBuf;
-	XPRFile.flags = (DWORD*)(XPRFile.XPRHeader + 1);
+	XPRFile.flags = (DWORD*)XPRFile.OutputBuf;
 	void* next = XPRFile.flags + 1;
 	if (nImages > 1)
 	{
@@ -240,7 +212,7 @@ void WriteXPRHeader(DWORD* pal, int nImages, DWORD nLoops = 0)
 	if (pal)
 	{
 		XPRFile.D3DPal = (D3DPalette*)next;
-		next = XPRFile.D3DPal + 1;;
+		next = XPRFile.D3DPal + 1;
 	}
 	else
 		XPRFile.D3DPal = NULL;
@@ -253,9 +225,8 @@ void WriteXPRHeader(DWORD* pal, int nImages, DWORD nLoops = 0)
 	VirtualAlloc(XPRFile.OutputBuf, XPRFile.Data - XPRFile.OutputBuf, MEM_COMMIT, PAGE_READWRITE);
 
 	// setup headers for xpr
-	XPRFile.XPRHeader->dwMagic = XPR_MAGIC_VALUE | (1 << 24); // version 1
-	XPRFile.XPRHeader->dwHeaderSize = XPRFile.Data - XPRFile.OutputBuf;
-	*XPRFile.flags = 0;
+	XPRFile.HeaderSize = ((XPRFile.Data - XPRFile.OutputBuf) + 127) & ~127;
+	*XPRFile.flags = (nImages << 16);
 
 	if (nImages > 1)
 	{
@@ -461,7 +432,7 @@ bool ConvertP8(LPDIRECT3DSURFACE8 pSrcSurf, LPDIRECT3DSURFACE8& pDstSurf, DWORD*
 #undef CheckHR
 #define CheckHR(hr) if (FAILED(hr)) { printf("ERROR: %08x\n", hr); continue; }
 
-void ConvertFiles(const char* Filename, double MaxMSE)
+void ConvertFiles(const char* Dir, const char* Filename, double MaxMSE)
 {
 	HRESULT hr;
 
@@ -473,15 +444,18 @@ void ConvertFiles(const char* Filename, double MaxMSE)
 		do {
 			if (!(FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
 			{
-				printf("%s: ", FindData.cFileName);
-				TRACE1("%s:\n", FindData.cFileName);
+				char OutFilename[52];
+				if (Dir)
+					_snprintf(OutFilename, 52, "%s/%s", Dir, FindData.cFileName);
+				else
+					_snprintf(OutFilename, 52, "%s", FindData.cFileName);
+				OutFilename[51] = 0;
 
-				int n = (int)strlen(FindData.cFileName);
-				char* OutputFile = (char*)_alloca(n + 5);
-				memcpy(OutputFile, FindData.cFileName, n);
-				strcpy(OutputFile + n, ".xpr");
+				printf("%s: ", OutFilename);
+				TRACE1("%s:\n", OutFilename);
+				int n = strlen(OutFilename);
 				if (n < 40)
-					printf("%*c", 40 - n, ' ');
+					printf("%*c", 40-n, ' ');
 
 				if (pSrcSurf)
 					pSrcSurf->Release();
@@ -494,8 +468,8 @@ void ConvertFiles(const char* Filename, double MaxMSE)
 
 				PrintImageInfo(info);
 
-				UINT Width = RoundPow2(info.Width);
-				UINT Height = RoundPow2(info.Height);
+				UINT Width = PadPow2(info.Width);
+				UINT Height = PadPow2(info.Height);
 
 				UncompressedSize += Width * Height * 4;
 
@@ -531,7 +505,7 @@ void ConvertFiles(const char* Filename, double MaxMSE)
 						if (CMSE <= 1e-6 && AMSE <= 1e-6)
 						{
 							TRACE0(" Selected Format: DXT1\n");
-							WriteXPR(OutputFile, info, pTempSurf, XB_D3DFMT_DXT1, NULL);
+							WriteXPR(OutFilename, info, pTempSurf, XB_D3DFMT_DXT1, NULL);
 
 							pTempSurf->Release();
 							continue;
@@ -546,7 +520,7 @@ void ConvertFiles(const char* Filename, double MaxMSE)
 					DWORD pal[256];
 					ConvertP8(pSrcSurf, pTempSurf, pal);
 
-					WriteXPR(OutputFile, info, pTempSurf, XB_D3DFMT_P8, pal);
+					WriteXPR(OutFilename, info, pTempSurf, XB_D3DFMT_P8, pal);
 					pTempSurf->Release();
 					continue;
 				}
@@ -564,7 +538,7 @@ void ConvertFiles(const char* Filename, double MaxMSE)
 					printf("A8R8G8B8 %4dx%-4d\n", Width, Height);
 					TRACE0(" Selected Format: A8R8G8B8\n");
 
-					WriteXPR(OutputFile, info, pSrcSurf, XB_D3DFMT_A8R8G8B8, NULL);
+					WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_A8R8G8B8, NULL);
 					continue;
 				}
 
@@ -583,7 +557,7 @@ void ConvertFiles(const char* Filename, double MaxMSE)
 					printf("DXT1     %4dx%-4d\n", Width, Height);
 					TRACE0(" Selected Format: DXT1\n");
 
-					WriteXPR(OutputFile, info, pSrcSurf, XB_D3DFMT_DXT1, NULL);
+					WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_DXT1, NULL);
 					continue;
 				}
 
@@ -595,7 +569,7 @@ void ConvertFiles(const char* Filename, double MaxMSE)
 					printf("P8       %4dx%-4d\n", Width, Height);
 					TRACE0(" Selected Format: P8\n");
 
-					WriteXPR(OutputFile, info, pTempSurf, XB_D3DFMT_P8, pal);
+					WriteXPR(OutFilename, info, pTempSurf, XB_D3DFMT_P8, pal);
 					pTempSurf->Release();
 					continue;
 				}
@@ -619,7 +593,7 @@ void ConvertFiles(const char* Filename, double MaxMSE)
 						printf("DXT3     %4dx%-4d\n", Width, Height);
 						TRACE0(" Selected Format: DXT3\n");
 
-						WriteXPR(OutputFile, info, pSrcSurf, XB_D3DFMT_DXT3, NULL);
+						WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_DXT3, NULL);
 						continue;
 					}
 				}
@@ -630,7 +604,7 @@ void ConvertFiles(const char* Filename, double MaxMSE)
 						printf("DXT5     %4dx%-4d\n", Width, Height);
 						TRACE0(" Selected Format: DXT5\n");
 
-						WriteXPR(OutputFile, info, pSrcSurf, XB_D3DFMT_DXT5, NULL);
+						WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_DXT5, NULL);
 						continue;
 					}
 				}
@@ -654,7 +628,7 @@ void ConvertFiles(const char* Filename, double MaxMSE)
 					hr = D3DXLoadSurfaceFromSurface(pTempSurf, NULL, NULL, pSrcSurf, NULL, NULL, D3DX_FILTER_NONE, 0);
 					CheckHR(hr);
 
-					WriteXPR(OutputFile, info, pTempSurf, XB_D3DFMT_A1R5G5B5, NULL);
+					WriteXPR(OutFilename, info, pTempSurf, XB_D3DFMT_A1R5G5B5, NULL);
 
 					pTempSurf->Release();
 					continue;
@@ -664,7 +638,7 @@ void ConvertFiles(const char* Filename, double MaxMSE)
 				printf("A8R8G8B8 %4dx%-4d\n", Width, Height);
 				TRACE0(" Selected Format: A8R8G8B8\n");
 
-				WriteXPR(OutputFile, info, pSrcSurf, XB_D3DFMT_A8R8G8B8, NULL);
+				WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_A8R8G8B8, NULL);
 			}
 		} while (FindNextFile(hFind, &FindData));
 		FindClose(hFind);
@@ -675,7 +649,7 @@ void ConvertFiles(const char* Filename, double MaxMSE)
 }
 
 // only works for gifs or other 256-colour anims
-void ConvertAnims(const char* Filename, double MaxMSE)
+void ConvertAnims(const char* Dir, const char* Filename, double MaxMSE)
 {
 	HRESULT hr;
 
@@ -687,15 +661,18 @@ void ConvertAnims(const char* Filename, double MaxMSE)
 		do {
 			if (!(FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
 			{
-				printf("%s: ", FindData.cFileName);
-				TRACE1("%s:\n", FindData.cFileName);
+				char OutFilename[52];
+				if (Dir)
+					_snprintf(OutFilename, 52, "%s/%s", Dir, FindData.cFileName);
+				else
+					_snprintf(OutFilename, 52, "%s", FindData.cFileName);
+				OutFilename[51] = 0;
 
-				int n = (int)strlen(FindData.cFileName);
-				char* OutputFile = (char*)_alloca(n + 5);
-				memcpy(OutputFile, FindData.cFileName, n);
-				strcpy(OutputFile + n, ".xpr");
+				printf("%s: ", OutFilename);
+				TRACE1("%s:\n", OutFilename);
+				int n = strlen(OutFilename);
 				if (n < 40)
-					printf("%*c", 40 - n, ' ');
+					printf("%*c", 40-n, ' ');
 
 				// Load up the file
 				CAnimatedGifSet Anim;
@@ -705,11 +682,16 @@ void ConvertAnims(const char* Filename, double MaxMSE)
 					puts("ERROR: Unable to load gif (file corrupt?)");
 					continue;
 				}
+				if (nImages > 65535)
+				{
+					printf("ERROR: Too many frames in gif (%d > 65535)\n", nImages);
+					continue;
+				}
 
 				PrintAnimInfo(Anim);
 
-				UINT Width = RoundPow2(Anim.FrameWidth);
-				UINT Height = RoundPow2(Anim.FrameHeight);
+				UINT Width = PadPow2(Anim.FrameWidth);
+				UINT Height = PadPow2(Anim.FrameHeight);
 
 				D3DXIMAGE_INFO info;
 				info.Width = Anim.FrameWidth;
@@ -822,7 +804,7 @@ void ConvertAnims(const char* Filename, double MaxMSE)
 				
 				printf("(%5df) %4dx%-4d\n", nActualImages, Width, Height);
 
-				CommitXPR(OutputFile);
+				CommitXPR(OutFilename);
 			}
 		} while (FindNextFile(hFind, &FindData));
 		FindClose(hFind);
@@ -837,7 +819,7 @@ void Usage()
 	puts("Usage:");
 	puts("  -help            Show this screen.");
 	puts("  -input <dir>     Input directory. Default: current dir");
-	puts("  -output <dir>    Output directory. Default: current dir");
+	puts("  -output <dir>    Output directory/filename. Default: Textures.xpr");
 	puts("  -quality <qual>  Quality setting (min, low, normal, high, max). Default: normal");
 }
 
@@ -849,6 +831,10 @@ int main(int argc, char* argv[])
 		Usage();
 		return 1;
 	}
+
+	const char* InputDir = NULL;
+	const char* OutputFilename = "Textures.xpr";
+
 	for (int i = 1; i < argc; ++i)
 	{
 		if (!stricmp(argv[i], "-help") || !stricmp(argv[i], "-h") || !stricmp(argv[i], "-?"))
@@ -862,7 +848,7 @@ int main(int argc, char* argv[])
 		}
 		else if (!stricmp(argv[i], "-output") || !stricmp(argv[i], "-o"))
 		{
-			OutputDir = argv[++i];
+			OutputFilename = argv[++i];
 		}
 		else if (!stricmp(argv[i], "-quality") || !stricmp(argv[i], "-q"))
 		{
@@ -928,15 +914,13 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
+	char HomeDir[MAX_PATH];
 	GetCurrentDirectory(MAX_PATH, HomeDir);
-
-	if (OutputDir)
-		CreateDirectory(OutputDir, NULL);
 
 	if (InputDir)
 		SetCurrentDirectory(InputDir);
 
-	XPRFile.OutputBuf = (char*)VirtualAlloc(0, 512 * 1024 * 1024, MEM_RESERVE, PAGE_NOACCESS);
+	XPRFile.OutputBuf = (char*)VirtualAlloc(0, 64 * 1024 * 1024, MEM_RESERVE, PAGE_NOACCESS);
 	if (!XPRFile.OutputBuf)
 	{
 		printf("Memory allocation failure: %08x\n", GetLastError());
@@ -945,20 +929,50 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	ConvertFiles("*.png", MaxMSE);
-	ConvertFiles("*.bmp", MaxMSE);
-	ConvertFiles("*.tga", MaxMSE);
-	ConvertFiles("*.jpg", MaxMSE);
-	ConvertFiles("*.dds", MaxMSE);
-	ConvertAnims("*.gif", MaxMSE);
+	Bundler.StartBundle();
+
+	ConvertFiles(NULL, "*.png", MaxMSE);
+	ConvertFiles(NULL, "*.bmp", MaxMSE);
+	ConvertFiles(NULL, "*.tga", MaxMSE);
+	ConvertFiles(NULL, "*.jpg", MaxMSE);
+	ConvertFiles(NULL, "*.dds", MaxMSE);
+	ConvertAnims(NULL, "*.gif", MaxMSE);
+
+	DWORD attr = GetFileAttributes("pal");
+	if (attr != -1 && (attr & FILE_ATTRIBUTE_DIRECTORY))
+	{
+		SetCurrentDirectory("pal");
+		ConvertFiles("pal", "*.png", MaxMSE);
+		ConvertFiles("pal", "*.bmp", MaxMSE);
+		ConvertFiles("pal", "*.tga", MaxMSE);
+		ConvertFiles("pal", "*.jpg", MaxMSE);
+		ConvertFiles("pal", "*.dds", MaxMSE);
+		ConvertAnims("pal", "*.gif", MaxMSE);
+	}
 
 	VirtualFree(XPRFile.OutputBuf, 0, MEM_RELEASE);
 
 	pD3DDevice->Release();
 	pD3D->Release();
 
-	printf("\nUncompressed texture size: %6dkB\nCompressed texture size: %8dkB\n",
-		(UncompressedSize + 1023) / 1024, (((CompressedSize + 1023) / 1024) + 3) & ~3);
+	SetCurrentDirectory(HomeDir);
+	attr = GetFileAttributes(OutputFilename);
+	if (attr != -1 && (attr & FILE_ATTRIBUTE_DIRECTORY))
+	{
+		SetCurrentDirectory(OutputFilename);
+		OutputFilename = "Textures.xpr";
+	}
+
+	printf("\nWriting bundle: %s", OutputFilename);
+	int BundleSize = Bundler.WriteBundle(OutputFilename);
+	if (BundleSize == -1)
+	{
+		printf("\nERROR: %08x\n", GetLastError());
+		return 1;
+	}
+
+	printf("\nUncompressed texture size: %6dkB\nCompressed texture size: %8dkB\nBundle size:             %8dkB\n",
+		(UncompressedSize + 1023) / 1024, (((CompressedSize + 1023) / 1024) + 3) & ~3, (BundleSize + 1023) / 1024);
 
 	return 0;
 }

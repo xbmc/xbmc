@@ -5,11 +5,14 @@
 
 #ifndef GUILIB_TEXTUREMANAGER_H
 #define GUILIB_TEXTUREMANAGER_H
-#include "gui3d.h"
 
 #include <vector>
+#include <list>
 #include "stdstring.h"
 using namespace std;
+
+#include "gui3d.h"
+#include "TextureBundle.h"
 
 #pragma once
 /*!
@@ -80,6 +83,10 @@ public:
   CGUITextureManager(void);
   virtual ~CGUITextureManager(void);
 
+	void               StartPreLoad();
+	void               PreLoad(const CStdString& strTextureName);
+	void               EndPreLoad();
+	void               FlushPreLoad();
   int                Load(const CStdString& strTextureName,DWORD dwColorKey=0);
   LPDIRECT3DTEXTURE8 GetTexture(const CStdString& strTextureName, int iItem,int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal);
   int                GetDelay(const CStdString& strTextureName, int iPicture=0) const;
@@ -91,7 +98,9 @@ public:
 protected:
   vector<CTextureMap*> m_vecTextures;
   typedef   vector<CTextureMap*>::iterator ivecTextures;
-
+	CTextureBundle	m_TexBundle;
+	list<CStdString> m_PreLoadNames;
+	list<CStdString>::iterator m_iNextPreload;
 };
 
 /*!

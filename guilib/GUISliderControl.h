@@ -31,6 +31,7 @@ public:
 	virtual void Render();
 	virtual bool CanFocus() const;  
 	virtual void 	OnAction(const CAction &action);
+	virtual void PreAllocResources();
 	virtual void AllocResources();
 	virtual void FreeResources();
 	virtual void SetRange(int iStart, int iEnd);

@@ -363,6 +363,14 @@ bool CGUIListControl::OnMessage(CGUIMessage& message)
   return false;
 }
 
+void CGUIListControl::PreAllocResources()
+{
+	if (!m_pFont) return;
+	CGUIControl::PreAllocResources();
+	m_upDown.PreAllocResources();
+	m_imgButton.PreAllocResources();
+}
+
 void CGUIListControl::AllocResources()
 {
   if (!m_pFont) return;

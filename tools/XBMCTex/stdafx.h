@@ -15,6 +15,7 @@
 #include <malloc.h>
 
 #include <vector>
+#include <list>
 
 // Thses must be the DX SDK (8.1+) versions, not the XDK versions
 #include "/DX90SDK/Include/D3D8.h"
