@@ -149,7 +149,7 @@
   <string><id>213</id><value>GUI zentrieren...</value></string>
   <string><id>214</id><value>Bildschirm kalibrieren...</value></string>
   <string><id>215</id><value>Weichzeichnen</value></string>
-  <string><id>216</id><value>Vergrößerungs Grad</value></string>
+  <string><id>216</id><value>Vergrößerung</value></string>
   <string><id>217</id><value>Verhältnis</value></string>
   <string><id>218</id><value>DVD Laufwerk</value></string>
   <string><id>219</id><value>CD/DVD einlegen</value></string>
@@ -291,7 +291,7 @@
   <string><id>357</id><value>Automatisch ausschalten nach</value></string>
   <string><id>358</id><value>Alle Alben</value></string>
   <string><id>359</id><value>Favoriten</value></string>
-  <string><id>360</id><value>Bildschirmschoner</value></string>
+  <string><id>360</id><value>Bildschirmsch.</value></string>
   <string><id>361</id><value>Rekurs. Diaschau</value></string>
   <string><id>362</id><value>Verdunkelung</value></string>
   <string><id>363</id><value>Nach Datei</value></string>
@@ -438,7 +438,7 @@
   <string><id>504</id><value>Leer</value></string>
   <string><id>505</id><value>Medien-Informationen werden geladen...</value></string>
   <string><id>506</id><value>Verzeichnisnamen als Beschreibung verwenden</value></string>
-  <string><id>507</id><value>Nach Verwendung</value></string>
+  <string><id>507</id><value>Nach Gebrauch</value></string>
   <string><id>508</id><value>Verknüpfungen und Durchsuchen deaktivieren</value></string>
   <string><id>600</id><value>CD Rippen</value></string>
   <string><id>601</id><value>Medium</value></string>
@@ -636,7 +636,7 @@
   <string><id>13304</id><value>links-/rechtsläufige Zeichenfolgen ermöglichen</value></string>
   <string><id>13305</id><value>RSS Feed [Newsflash] aktivieren</value></string>
   <string><id>13306</id><value>Eintrag zum übergeordneten Verzeichnis ausblenden</value></string>
-  <string><id>13307</id><value>Track Nummern ausblenden</value></string>
+  <string><id>13307</id><value>Formatvorlage für Track Namen</value></string>
   <string><id>13308</id><value>Drücke 'Ja' um die XBOX neu zu starten</value></string>
   <string><id>13309</id><value>Drücke 'Nein' um XBMC neu zu laden</value></string>
   <string><id>13310</id><value>Übergang streckend</value></string>
@@ -678,7 +678,7 @@
   <string><id>13346</id><value>Film Informationen</value></string>
   <string><id>13347</id><value>Zur Playliste hinzufügen</value></string>
   <string><id>13348</id><value>In IMDb suchen...</value></string>
-  <string><id>13349</id><value>Suche für alle Dateien</value></string>
+  <string><id>13349</id><value>Für alle Dateien</value></string>
   <string><id>13350</id><value>Now Playing...</value></string>
   <string><id>13351</id><value>Album Informationen</value></string>
   <string><id>13352</id><value>Ordner Durchsuchen</value></string>
@@ -713,17 +713,15 @@
   <string><id>14022</id><value>Bibliothek</value></string>
   <string><id>14023</id><value>Kein TV</value></string>
   <string><id>14024</id><value>Bitte eine nächstgelegene große Stadt oder einen US ZIP code eingeben</value></string>
-  <string><id>14025</id><value>Video Cache   - Festplatte</value></string>
-  <string><id>14026</id><value>              - DVD-Rom</value></string>
-  <string><id>14027</id><value>              - Lokales Netzwerk</value></string>
-  <string><id>14028</id><value>              - Internet</value></string>
-  <string><id>14029</id><value>Audio Cache   - Festplatte</value></string>
-  <string><id>14030</id><value>              - DVD-Rom</value></string>
-  <string><id>14031</id><value>              - Lokales Netzwerk</value></string>
-  <string><id>14032</id><value>              - Internet</value></string>
-  <string><id>14033</id><value>DVD Cache     - Festplatte</value></string>
-  <string><id>14034</id><value>              - DVD-Rom</value></string>
-  <string><id>14035</id><value>              - Lokales Netzwerk</value></string>
+  <string><id>14025</id><value>Video/Audio/DVD - Festplatte</value></string>
+  <string><id>14026</id><value>Video Cache - DVD-Rom</value></string>
+  <string><id>14027</id><value>- Lokales Netzwerk</value></string>
+  <string><id>14028</id><value>- Internet</value></string>
+  <string><id>14030</id><value>Audio Cache - DVD-Rom</value></string>
+  <string><id>14031</id><value>- Lokales Netzwerk</value></string>
+  <string><id>14032</id><value>- Internet</value></string>
+   <string><id>14034</id><value>DVD Cache - DVD-Rom</value></string>
+  <string><id>14035</id><value>- Lokales Netzwerk</value></string>
   <string><id>14036</id><value>Server</value></string>
   <string><id>14037</id><value>Darstellung</value></string>
   <string><id>14038</id><value>Netwerkeinstellungen verändert</value></string>
@@ -747,6 +745,9 @@
   <string><id>14056</id><value>Stop</value></string>
   <string><id>14057</id><value>Nicht möglich während des Durchsuchens</value></string>
   <string><id>14058</id><value>Filmkörnungseffekt</value></string>
+  <string><id>14059</id><value>Thumbnails von Netzwerk Freigaben laden</value></string>
+  <string><id>14060</id><value>Unbekannter Typ Cache - Internet</value></string>
+  <string><id>14061</id><value>Automatisch</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Keine Verbindung zu Kai XLink, möchtest du versuchen</value></string>
