@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 15-03-2005 changed: list, listex and thumbcontrol can not be focused anymore if they have no items
   - 15-03-2005 fixed: actions where sent to focused controls if they are invisible
   - 15-03-2005 fixed: video/music playlist, no control is focused when all items from a playlist are removed
   - 15-03-2005 changed: Controls free their resources when they are not visible -> more freemem in most screens
