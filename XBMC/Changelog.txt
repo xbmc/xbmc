@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 02-02-2005 changed: removed libcdrip from project, libcdio replaces it
   - 02-02-2005 changed: cd ripper now uses libcdio for ripping
   - 02-02-2005 changed: cdda player is now based on libcdio 
   - 02-02-2005 updated: libcdio to version 0.72
