@@ -550,10 +550,24 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 					CUtil::RemoveIllegalChars(strDescription);
 				}
 
-				m_database.AddProgram(vecPaths[j], strDescription, m_strBookmarkName);
-
-				m_database.GetFile(vecPaths[j],m_vecItems);
-
+				if (CUtil::IsDVD(vecPaths[j]))
+				{
+					WIN32_FILE_ATTRIBUTE_DATA FileAttributeData;
+					FILETIME localTime;
+					CFileItem *pItem = new CFileItem(strDescription);
+					pItem->m_strPath=vecPaths[j];
+					pItem->m_bIsFolder=false;
+					GetFileAttributesEx(pItem->m_strPath, GetFileExInfoStandard, &FileAttributeData);
+					FileTimeToLocalFileTime(&FileAttributeData.ftLastWriteTime,&localTime);
+					FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+					pItem->m_dwSize=FileAttributeData.nFileSizeLow;
+					m_vecItems.push_back(pItem);
+				}
+				else
+				{                                                                                                                                                                                                                                                                                                                                                                                    
+					m_database.AddProgram(vecPaths[j], strDescription, m_strBookmarkName);
+					m_database.GetFile(vecPaths[j],m_vecItems);
+				}
 			}
 		}
 		else
