@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 16-09-2004 changed: add thin outline to TTF subtitles
   - 16-09-2004 changed: Start services (ftp/web etc.) before loading the skin on startup
   - 16-09-2004 added: Make Music Info stay onscreen in vis by hitting INFO again. (sf patch #1028895 by kraqh3d)
   - 16-09-2004 fixed: HTTP Proxy use in Weather screens (sf patch #1028936 by kusskowe)

@@ -862,6 +862,8 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
 			float x = (float) g_settings.m_ResInfo[m_iResolution].iWidth / 2;
 			float y = (float) g_settings.m_ResInfo[m_iResolution].iSubtitles - h;
 
+			m_subtitleFont->DrawText(x-1, y-1, 0, subtitleText.c_str(), XBFONT_CENTER_X);
+			m_subtitleFont->DrawText(x+1, y+1, 0, subtitleText.c_str(), XBFONT_CENTER_X);
 			m_subtitleFont->DrawText(x, y, g_stSettings.m_iSubtitleTTFColor, subtitleText.c_str(), XBFONT_CENTER_X);
 		}
 	}
