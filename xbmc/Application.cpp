@@ -982,17 +982,18 @@ void CApplication::UpdateLCD()
               pThumbControl->GetSelectedItem(strTmp);
               g_lcd.SetLine(1,strTmp);
             }
-            SYSTEMTIME time;
-	          GetLocalTime(&time);
-            strLine.Format("%02.2i:%02.2i:%02.2i %02.2i-%02.2i-%02.2i", time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
-            g_lcd.SetLine(2,strLine);
-	          MEMORYSTATUS stat;
-	          GlobalMemoryStatus(&stat);
-		        DWORD dwMegFree=stat.dwAvailPhys / (1024*1024);
-            strLine.Format("Freemem:%i meg", dwMegFree);
-            g_lcd.SetLine(3,strLine);
-
           }
+          else g_lcd.SetLine(1," ");
+          SYSTEMTIME time;
+	        GetLocalTime(&time);
+          strLine.Format("%02.2i:%02.2i:%02.2i %02.2i-%02.2i-%02.2i", time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
+          g_lcd.SetLine(2,strLine);
+	        MEMORYSTATUS stat;
+	        GlobalMemoryStatus(&stat);
+		      DWORD dwMegFree=stat.dwAvailPhys / (1024*1024);
+          strLine.Format("Freemem:%i meg", dwMegFree);
+          g_lcd.SetLine(3,strLine);
+
         }
       }
     }
