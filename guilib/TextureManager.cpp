@@ -389,6 +389,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
       return pMap->size();
     }
   }
+#if ALLOW_TEXTURE_COMPRESSION
   LPDIRECT3DTEXTURE8 pTexture;
   CStdString strPath=g_graphicsContext.GetMediaDir();
 	strPath+="\\media\\";
@@ -600,6 +601,115 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 	CTexture* pclsTexture = new CTexture(pTexture,info.Width,info.Height, Cached);
   pMap->Add(pclsTexture);
   m_vecTextures.push_back(pMap);
+#else
+  LPDIRECT3DTEXTURE8 pTexture;
+  CStdString strPath=g_graphicsContext.GetMediaDir();
+	strPath+="\\media\\";
+  strPath+=strTextureName;
+  if (strTextureName.c_str()[1] == ':')
+    strPath=strTextureName;
+
+  //OutputDebugString(strPath.c_str());
+  //OutputDebugString("\n");
+
+  if (strPath.Right(4).ToLower()==".gif")
+  {
+ 
+  	CAnimatedGifSet		AnimatedGifSet;
+    int iImages=AnimatedGifSet.LoadGIF(strPath.c_str());
+		if (iImages==0)
+		{
+      CStdString strText=strPath;
+      strText.MakeLower();
+      // dont release skin textures, they are reloaded each time
+      if (strstr(strPath.c_str(),"q:\\skin") ) 
+      {
+        CLog::Log("Texture manager unable to find file:%s",strPath.c_str());
+      }
+			return 0;
+		}
+    int iWidth = AnimatedGifSet.FrameWidth;
+		int iHeight= AnimatedGifSet.FrameHeight;
+
+    CTextureMap* pMap = new CTextureMap(strTextureName);
+	  for (int iImage=0; iImage < iImages; iImage++)
+    {
+      if (g_graphicsContext.Get3DDevice()->CreateTexture( iWidth, 
+																												  iHeight, 
+																												  1, // levels
+																												  0, //usage
+																												  D3DFMT_LIN_A8R8G8B8 ,
+																												  0,
+																												  &pTexture) == D3D_OK) 
+		  {
+        CAnimatedGif* pImage=AnimatedGifSet.m_vecimg[iImage];
+        //dllprintf("%s loops:%i", strTextureName.c_str(),AnimatedGifSet.nLoops);
+        D3DLOCKED_RECT lr;
+	      if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
+	      {
+		      DWORD strideScreen=lr.Pitch;
+		      for (DWORD y=0; y <(DWORD)pImage->Height; y++)
+		      {
+			      BYTE *pDest = (BYTE*)lr.pBits + strideScreen*y;
+			      for (DWORD x=0;x <(DWORD)pImage->Width; x++)
+			      {
+				      byte byAlpha=0xff;
+				      byte iPaletteColor=(byte)pImage->Pixel( x, y);
+              if (pImage->Transparency)
+              {
+                int iTransparentColor=pImage->Transparent;
+                if (iTransparentColor<0) iTransparentColor=0;
+				        if (iPaletteColor==iTransparentColor)
+				        {
+					        byAlpha=0x0;
+				        }
+              }
+				      COLOR& Color= pImage->Palette[iPaletteColor];
+      				
+				      *pDest++ = Color.b;
+				      *pDest++ = Color.g;
+				      *pDest++ = Color.r;
+              *pDest++ = byAlpha;
+			      } // of for (DWORD x=0; x < (DWORD)pImage->Width; x++)
+		      } // of for (DWORD y=0; y < (DWORD)pImage->Height; y++)
+		      pTexture->UnlockRect( 0 );
+	      } // of if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
+        CTexture* pclsTexture = new CTexture(pTexture,iWidth,iHeight,false);
+        pclsTexture->SetDelay(pImage->Delay);
+        pclsTexture->SetLoops(AnimatedGifSet.nLoops);
+
+        pMap->Add(pclsTexture);
+		  } // of if (g_graphicsContext.Get3DDevice()->CreateTexture
+    } // of for (int iImage=0; iImage < iImages; iImage++)
+    m_vecTextures.push_back(pMap);
+    return pMap->size();
+  } // of if (strPath.Right(4).ToLower()==".gif")
+
+  // normal picture
+	D3DXIMAGE_INFO info;
+  if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), strPath.c_str(),
+		 D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
+		 D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture)!=D3D_OK)
+	{
+      CStdString strText=strPath;
+      strText.MakeLower();
+      // dont release skin textures, they are reloaded each time
+      if (strstr(strPath.c_str(),"q:\\skin") ) 
+      {
+        CLog::Log("Texture manager unable to find file:%s",strPath.c_str());
+      }
+		return NULL;
+	}
+	//CStdString strLog;
+	//strLog.Format("%s %ix%i\n", strTextureName.c_str(),info.Width,info.Height);
+	//OutputDebugString(strLog.c_str());
+  CTextureMap* pMap = new CTextureMap(strTextureName);
+	CTexture* pclsTexture = new CTexture(pTexture,info.Width,info.Height,false);
+  pMap->Add(pclsTexture);
+  m_vecTextures.push_back(pMap);
+  return 1;
+
+#endif
   return 1;
 }
 
