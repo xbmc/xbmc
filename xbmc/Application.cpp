@@ -290,6 +290,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiVideoYear);							  // window id = 23
   m_gWindowManager.Add(&m_guiSettingsPrograms);					// window id = 24
 	m_gWindowManager.Add(&m_guiVideoTitle);							  // window id = 25
+  m_gWindowManager.Add(&m_guiSettingsCache);						// window id = 26
 
   m_gWindowManager.Add(&m_guiDialogYesNo);							// window id = 100
   m_gWindowManager.Add(&m_guiDialogProgress);						// window id = 101
@@ -420,6 +421,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiSettingsSlideShow.Load( strSkinPath+"\\SettingsSlideShow.xml" );
 	m_guiSettingsScreensaver.Load( strSkinPath+"\\SettingsScreensaver.xml" );
 	m_guiSettingsFilter.Load( strSkinPath+"\\SettingsFilter.xml" );
+  m_guiSettingsCache.Load( strSkinPath+"\\SettingsCache.xml" );
 	m_guiWindowVideoOverlay.Load( strSkinPath+"\\videoOverlay.xml" );
 	m_guiWindowFullScreen.Load( strSkinPath+"\\videoFullScreen.xml" );
 	m_guiScripts.Load( strSkinPath+"\\myscripts.xml");

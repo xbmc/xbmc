@@ -1418,4 +1418,36 @@
     <id>438</id>
     <value>Opening file</value>
   </string> 
+  <string>
+    <id>439</id>
+    <value>Cache</value>
+  </string> 
+  <string>
+    <id>440</id>
+    <value>Harddisk</value>
+  </string> 
+  <string>
+    <id>441</id>
+    <value>UDF</value>
+  </string> 
+  <string>
+    <id>442</id>
+    <value>LAN</value>
+  </string> 
+  <string>
+    <id>443</id>
+    <value>Internet</value>
+  </string> 
+  <string>
+    <id>444</id>
+    <value>video</value>
+  </string> 
+  <string>
+    <id>445</id>
+    <value>audio</value>
+  </string> 
+  <string>
+    <id>446</id>
+    <value>DVD</value>
+  </string> 
 </strings>
