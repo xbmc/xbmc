@@ -32,7 +32,7 @@
 #include <malloc.h>
 
 #define INBUF_SIZE 4096
-#define BUFFER_SIZE 8192
+#define BUFFER_SIZE 24576
 #define HEADER_SIZE 14
 
 #ifdef LIBDTS_FIXED
