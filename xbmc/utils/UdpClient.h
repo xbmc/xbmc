@@ -14,10 +14,13 @@ public:
 protected:
   
   bool Create();
+
+  void OnStartup();
+  void Process();
+
   bool Broadcast(int aPort, CStdString& aMessage);
   bool Send(CStdString aIpAddress, int aPort, CStdString& aMessage); 
   bool Send(SOCKADDR_IN aAddress, CStdString& aMessage); 
-  void Process();
 
   virtual void OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage){};
 
