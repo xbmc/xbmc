@@ -10,13 +10,14 @@
 
 
 #include "cddb.h"
+#include "../dnsnamecache.h"
 using namespace CDDB;
 //-------------------------------------------------------------------------------------------------------------------
 Xcddb::Xcddb() 
 :m_cddb_socket(INVALID_SOCKET)
 {
 	m_lastError=0;
-	cddb_ip_adress="194.97.4.18";
+	cddb_ip_adress="freedb.freedb.org";
 	cCacheDir="";
 	m_strNull="";
 }
@@ -36,7 +37,10 @@ bool Xcddb::openSocket()
 	service.sin_family = AF_INET;
 	
 	// connect to site directly
-	service.sin_addr.s_addr = inet_addr(cddb_ip_adress.c_str());
+  CStdString strIpadres;
+  CDNSNameCache::Lookup(cddb_ip_adress,strIpadres);
+  if (strIpadres=="") strIpadres="64.71.163.204";
+	service.sin_addr.s_addr = inet_addr(strIpadres.c_str());
 	service.sin_port = htons(port);
 	m_cddb_socket.attach( socket(AF_INET,SOCK_STREAM,IPPROTO_TCP));
 
