@@ -79,7 +79,8 @@ bool CFileDAAP::Open(const CURL& url, bool bBinary)
 	const char* strHostName = url.GetHostName().c_str();
 	const char* strFileName = url.GetFileName().c_str();
 	const char* strFileFormat = url.GetFileType().c_str();
-
+	
+	strncpy(m_strFileFormat, strFileFormat, 16);
 	// only able to open mp3's or m4a's ...
 	if (url.GetFileType() != "mp3" && url.GetFileType() != "m4a") return(false);
 	// not protected drm'd iTunes songs yet
@@ -93,10 +94,10 @@ bool CFileDAAP::Open(const CURL& url, bool bBinary)
 	m_filePos = 0;
 	m_fileSize = 0;
 
-	int fileID;
+	//int fileID;
 	//int dbID;
 	char szFormat[120];
-	sscanf(strFileName,"%i.%s", &fileID, szFormat);
+	sscanf(strFileName,"%i.%s", &m_iFileID, szFormat);
 	//dbID = 0x22;
 	
 	OutputDebugString("daap:open:");
@@ -141,19 +142,74 @@ bool CFileDAAP::Open(const CURL& url, bool bBinary)
 		if (DAAP_ClientHost_Connect(m_thisHost) < 0) return false;		// tidy ups?
 	}
 
+	/*
 	if (m_thisHost)
 	{	
-		if (DAAP_ClientHost_GetAudioFile(m_thisHost, g_application.m_DAAPDBID, fileID, (char *) strFileFormat, &m_song) < 0)
+		//if (DAAP_ClientHost_GetAudioFile(m_thisHost, g_application.m_DAAPDBID, fileID, (char *) strFileFormat, &m_song) < 0)
+		if (DAAP_ClientHost_GetAudioFileAsync(m_thisHost, g_application.m_DAAPDBID, fileID, (char *) strFileFormat, &m_song) < 0)
 		{
 			DestroyDAAP();
 			return false;
 		}
+
+		// sleep for a moment to allow the thread to start
+		Sleep(100);
+	}
+
+
+	// if the stream thread is active wait until
+	// we have the intended size of the file ...
+	while(GetStreamThreadStatus() && m_song.size == 0)
+	{
+		Sleep(100);
+	}
+
+	m_fileSize = m_song.size;
+	g_application.m_DAAPSongSize = m_song.size;
+	g_application.m_DAAPSong = m_song.data;
+	*/
+
+	// don't start streaming yet, we'll only do that once 
+	// part of the file is actually required.
+	m_bStreaming = false;
+	m_bOpened = true;
+	return true;
+}
+
+bool CFileDAAP::StartAudioStream()
+{
+	if (m_thisHost)
+	{	
+		//if (DAAP_ClientHost_GetAudioFile(m_thisHost, g_application.m_DAAPDBID, fileID, (char *) strFileFormat, &m_song) < 0)
+		if (DAAP_ClientHost_GetAudioFileAsync(m_thisHost, g_application.m_DAAPDBID, m_iFileID, (char *) m_strFileFormat, &m_song) < 0)
+		{
+			DestroyDAAP();
+			return false;
+		}
+
+		// sleep for a moment to allow the thread to start
+		Sleep(100);
+	}
+
+
+	// if the stream thread is active wait until
+	// we have the intended size of the file ...
+	while(GetStreamThreadStatus() && m_song.size == 0)
+	{
+		Sleep(100);
+	}
+
+	// wait until we have at least 250kb of this file, or all of it if smaller
+	while(GetStreamThreadStatus() && m_song.streamlen < 256000 && m_song.streamlen < m_song.size)
+	{
+		Sleep(100);
 	}
 
 	m_fileSize = m_song.size;
 	g_application.m_DAAPSongSize = m_song.size;
 	g_application.m_DAAPSong = m_song.data;
 	m_bOpened = true;
+	m_bStreaming = true;
 	return true;
 }
 
@@ -189,6 +245,11 @@ unsigned int CFileDAAP::Read(void *lpBuf, __int64 uiBufSize)
 
 	if (!m_bOpened) return 0;
 
+	if (!m_bStreaming) StartAudioStream();
+
+	// check to see we have enough data in the stream buffer
+	if ((m_filePos + uiBufSize) > m_song.streamlen) return 0;
+
 	buf = (unsigned char *) m_song.data;
 	buf += m_filePos;
 
@@ -209,6 +270,26 @@ void CFileDAAP::Close()
 	if (m_bOpened) 
 	{
 		OutputDebugString("daap:close:\n");
+
+		// if we are still streaming we need to wait until
+		// we've finished. Not ideal, but iTunes does NOT
+		// like having it's stream cut mid-flow :)
+		if(m_bStreaming)
+		{
+			while(GetStreamThreadStatus())
+			{
+				Sleep(100);
+			}
+		}
+
+		/*
+		if (GetStreamThreadStatus())
+		{
+			DAAP_ClientHost_StopAudioFileAsync(m_thisHost);
+			if (m_thisClient) DAAP_Client_Release(m_thisClient);
+		}
+		*/
+
 		if (m_song.data) free(m_song.data);
 		m_song.size = 0;
 		m_fileSize = 0;
@@ -227,6 +308,7 @@ __int64 CFileDAAP::Seek(__int64 iFilePosition, int iWhence)
 	UINT64 newpos;
 
 	if (!m_bOpened) return -1;
+	if (!m_bStreaming) StartAudioStream();
 
 	switch(iWhence) 
 	{
@@ -245,6 +327,10 @@ __int64 CFileDAAP::Seek(__int64 iFilePosition, int iWhence)
 	}
 	if (newpos < 0)       		newpos = 0;
 	if (newpos >= m_song.size)	newpos = m_song.size;
+
+	// if we try to seek beyond the data we have streamed so far
+	// we should return with error (?)
+	if (newpos > m_song.streamlen) return -1;
 	
 	m_filePos = newpos;
 	return m_filePos;

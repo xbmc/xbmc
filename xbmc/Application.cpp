@@ -104,6 +104,7 @@ CApplication::CApplication(void)
 	m_dwSkinTime  = 0;
 	m_DAAPSong = NULL;
 	m_DAAPPtr = NULL;
+	m_DAAPArtistPtr = NULL;
 }
 
 CApplication::~CApplication(void)
