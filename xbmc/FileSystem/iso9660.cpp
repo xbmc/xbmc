@@ -218,6 +218,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 				if ( m_info.joliet ) 
 				{
 					bContinue=true;
+					isodir.FileName[isodir.Len_Fi]=isodir.FileName[isodir.Len_Fi+1]=0;	//put terminator by its length
 					temp_text = GetThinText((WCHAR*)(isodir.FileName), isodir.Len_Fi );
 //					temp_text.resize(isodir.Len_Fi);
 				}
