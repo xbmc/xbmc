@@ -88,7 +88,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 			for (int i=1; i < 100; ++i)
 			{
 				CStdString strItem;
-        strItem.Format("DVD#%i", i);
+        strItem.Format("DVD#%02.2i", i);
 				CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_DISC,0,0);
 				msg2.SetLabel(strItem);
 				g_graphicsContext.SendMessage(msg2);    
