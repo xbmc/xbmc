@@ -104,6 +104,7 @@ private:
 	DWORD*								m_adwStatus;
 	bool									m_bPause;
 	bool									m_bIsPlaying;
+  bool                  m_bFirstPacketDone;
 	bool									m_bIsAllocated;
 	bool									m_bFirstPackets;
 	PBYTE									m_VisBuffer;
