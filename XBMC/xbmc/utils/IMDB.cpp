@@ -4,6 +4,7 @@
 
 #include "IMDB.h"
 #include "../util.h"
+#include "log.h"
 #include "HTMLUtil.h"
 using namespace HTML;
 #pragma warning (disable:4018)
@@ -36,19 +37,18 @@ bool CIMDB::FindMovie(const CStdString &strMovie,IMDB_MOVIELIST& movielist)
 
 	CStdString strURL,strHTML;
 	GetURL(strMovie,strURL);
-  OutputDebugString("Retrieve:");
-  OutputDebugString(strURL.c_str());
-  OutputDebugString("\n");
+  CLog::Log("Retrieve:%s",strURL.c_str());
 	if (!m_http.Get(strURL,strHTML))
 	{
-		OutputDebugString("Unable to retrieve web page: ");
-		OutputDebugString(strURL.c_str());
-		OutputDebugString("\n");
-
+    CLog::Log("Unable to retrieve web page:%%s ",strURL.c_str());
 		return false;
 	}
 
-	if (strHTML.size()==0) return false;
+	if (strHTML.size()==0) 
+  {
+    CLog::Log("empty document returned");
+    return false;
+  }
 
 	char *szBuffer= new char [strHTML.size()+1];
 	if (!szBuffer) return false;
@@ -476,53 +476,21 @@ void CIMDB::ParseGenres(const char *ahref, CStdString &strURL, CStdString &strTi
 bool CIMDB::Download(const CStdString &strURL, const CStdString &strFileName)
 {
 	CStdString strHTML;
-	if (!m_http.Download(strURL,strFileName)) return false;
+	if (!m_http.Download(strURL,strFileName)) 
+  {
+    CLog::Log("failed to download %s -> %s", strURL.c_str(), strFileName.c_str());
+    return false;
+  }
 
 	return true;
 }
 
 void CIMDBMovie::Save(const CStdString &strFileName)
 {
-	FILE* fd=fopen(strFileName.c_str(), "wb+");
-	if (!fd) return;
-	CUtil::SaveString(m_strDirector,fd);
-	CUtil::SaveString(m_strGenre,fd);
-	CUtil::SaveString(m_strPictureURL,fd);
-	CUtil::SaveString(m_strPlot,fd);
-	CUtil::SaveString(m_strPlotOutline,fd);
-	CUtil::SaveString(m_strTagLine,fd);
-	CUtil::SaveString(m_strWritingCredits,fd);
-	CUtil::SaveString(m_strTitle,fd);
-	CUtil::SaveString(m_strVotes,fd);
-	CUtil::SaveString(m_strCast,fd);
-
-	fwrite(&m_iYear,1,sizeof(int),fd);
-	fwrite(&m_fRating,1,sizeof(float),fd);
-	fwrite(&m_iTop250,1,sizeof(int),fd);
-	
-	fclose(fd);
 }
 
 bool CIMDBMovie::Load(const CStdString& strFileName)
 {
-
-	FILE* fd=fopen(strFileName.c_str(), "rb+");
-	if (!fd) return false;
-	CUtil::LoadString(m_strDirector,fd);
-	CUtil::LoadString(m_strGenre,fd);
-	CUtil::LoadString(m_strPictureURL,fd);
-	CUtil::LoadString(m_strPlot,fd);
-	CUtil::LoadString(m_strPlotOutline,fd);
-	CUtil::LoadString(m_strTagLine,fd);
-	CUtil::LoadString(m_strWritingCredits,fd);
-	CUtil::LoadString(m_strTitle,fd);
-	CUtil::LoadString(m_strVotes,fd);
-	CUtil::LoadString(m_strCast,fd);
-		
-	fread(&m_iYear,1,sizeof(int),fd);
-	fread(&m_fRating,1,sizeof(float),fd);
-	fread(&m_iTop250,1,sizeof(int),fd);
-	fclose(fd);
 
 	return true;
 }

@@ -227,21 +227,25 @@ HRESULT CApplication::Initialize()
                             g_stSettings.m_strGateway,
                             g_stSettings.m_strNameServer) )
   {
-      CLog::Log("start timeserver thread");
-			m_sntpClient.Create(); 
-	
-      CLog::Log("start webserver");
+      if (g_stSettings.m_bTimeServerEnabled)
+      {
+        CLog::Log("start timeserver thread");
+			  m_sntpClient.Create(); 
+      }
+      
 			if (g_stSettings.m_bHTTPServerEnabled)
 			{
+        CLog::Log("start webserver");
 				CSectionLoader::Load("LIBHTTP");
 				m_pWebServer = new CWebServer();
 				CStdString ipadres;
 				CUtil::GetTitleIP(ipadres);
 				m_pWebServer->Start(ipadres.c_str(), 80, "Q:\\web");
-			}  
-      CLog::Log("start ftpserver");
+			} 
+
       if (g_stSettings.m_bFTPServerEnabled)
 			{
+        CLog::Log("start ftpserver");
 				m_pFileZilla = new CXBFileZilla("Q:\\");
 				m_pFileZilla->Start();
 			}
@@ -252,7 +256,7 @@ HRESULT CApplication::Initialize()
     CLog::Log("initialize network failed");
   }
 	g_graphicsContext.SetD3DDevice(m_pd3dDevice);
-  CLog::Log("load skin:%s",g_stSettings.szDefaultSkin);
+  CLog::Log("load default skin:[%s]",g_stSettings.szDefaultSkin);
 	LoadSkin(g_stSettings.szDefaultSkin);
 
   CLog::Log("initializing skin");
