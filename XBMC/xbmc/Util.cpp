@@ -2202,9 +2202,9 @@ void CUtil::SetBrightnessContrastGammaPercent(int iBrightNess, int iContrast, in
   if (iGamma >100) iGamma=100;
 
   float fBrightNess=(((float)iBrightNess)/50.0f) -1.0f;
-  float fContrast=(((float)iContrast)/33.3f);
+  float fContrast=(((float)iContrast)/50.0f);
   float fGamma=(((float)iGamma)/33.3f)+0.5f;
-  CUtil::SetBrightnessContrastGamma(fBrightNess, fContrast, fGamma, bImmediate);
+//  CUtil::SetBrightnessContrastGamma(fBrightNess, fContrast, fGamma, bImmediate);
 }
 
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x))
