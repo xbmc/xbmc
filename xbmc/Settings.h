@@ -25,6 +25,7 @@ using namespace std;
 
 #define MODCHIP_SMARTXX   0
 #define MODCHIP_XENIUM    1
+#define MODCHIP_XECUTER3  2
 
 #define CACHE_AUDIO 0
 #define CACHE_VIDEO 1

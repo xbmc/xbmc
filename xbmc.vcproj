@@ -1684,6 +1684,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\lib\smartXX\smartxxLCD.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\lib\x3lcd\x3lcd.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\x3lcd\x3lcd.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\lib\libXenium\Xenium.cpp">
 				</File>
 				<File
