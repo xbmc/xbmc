@@ -44,6 +44,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bMyProgramsSortMethod=0;
 	g_stSettings.m_bMyProgramsFlatten=false;
   strcpy(g_stSettings.szDashboard,"C:\\xboxdash.xbe");
+  strcpy(g_stSettings.m_szAlternateSubtitleDirectory,"");
   g_stSettings.m_iStartupWindow=0;
   g_stSettings.m_ScreenResolution=PAL_4x3;
   strcpy(g_stSettings.m_strLocalIPAdres,"");
@@ -241,6 +242,7 @@ void CSettings::Load()
 	
 	GetString(pRootElement, "imdb", g_stSettings.m_szIMDBDirectory,"");
 	GetString(pRootElement, "albums", g_stSettings.m_szAlbumDirectory,"");
+  GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory,"");
 
 	GetString(pRootElement, "pictureextensions", g_stSettings.m_szMyPicturesExtensions,".bmp|.jpg|.png|.gif|.pcx|.tif|.jpeg");
   
@@ -282,6 +284,11 @@ void CSettings::Load()
     share.strName="shortcuts";
      m_vecMyProgramsBookmarks.push_back(share);
   }
+
+  strDir=g_stSettings.m_szAlternateSubtitleDirectory;
+  ConvertHomeVar(strDir);
+  strcpy( g_stSettings.m_szAlternateSubtitleDirectory, strDir.c_str() );
+
 
   // parse my programs bookmarks...
 	CStdString strDefault;

@@ -1134,6 +1134,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie)
 {
 	char * sub_exts[] = {  ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx",NULL};
 	int iPos=0;
+  bool bFoundSubs=false;
 	while (sub_exts[iPos])
 	{
 		CStdString strSource,strDest;
@@ -1144,6 +1145,31 @@ void CUtil::CacheSubtitles(const CStdString& strMovie)
 		{
 			strSource=strMovie;
 			CUtil::ReplaceExtension(strMovie,sub_exts[iPos],strSource);
+			CFile file;
+			if ( file.Cache(strSource.c_str(), strDest.c_str(),NULL,NULL))
+      {
+        bFoundSubs=true;
+      }
+		}
+		iPos++;
+	}
+  if (bFoundSubs) return;
+
+  // check alternate subtitle directory
+  if (strlen(g_stSettings.m_szAlternateSubtitleDirectory)==0) return;
+
+  iPos=0;
+	while (sub_exts[iPos])
+	{
+		CStdString strSource,strDest;
+		strDest.Format("T:\\subtitle%s", sub_exts[iPos]);
+
+		if (CUtil::IsVideo(strMovie))
+		{
+      CStdString strFname;
+      strFname=CUtil::GetFileName(strMovie);
+			strSource.Format("%s\\%s", g_stSettings.m_szAlternateSubtitleDirectory,strFname.c_str());
+			CUtil::ReplaceExtension(strSource,sub_exts[iPos],strSource);
 			CFile file;
 			file.Cache(strSource.c_str(), strDest.c_str(),NULL,NULL);
 		}
