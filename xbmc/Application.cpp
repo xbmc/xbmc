@@ -420,6 +420,14 @@ void CApplication::OnKey(CKey& key)
 
 	/* handle extra global presses */
   
+	if (action.wID == ACTION_PAUSE)
+	{
+		if (m_pPlayer) m_pPlayer->Pause();
+	}
+	if (action.wID == ACTION_STOP)
+	{
+		if (m_pPlayer) m_pPlayer->closefile();
+	}
 	if (action.wID == ACTION_PREV_ITEM)
 	{
 		g_playlistPlayer.PlayPrevious();
