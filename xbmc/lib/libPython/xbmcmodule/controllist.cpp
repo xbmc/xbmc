@@ -50,7 +50,6 @@ namespace PYXBMC
 		self->strTextureButton = cTextureButton ? cTextureButton : PyGetDefaultImage("listcontrol", "textureNoFocus", "list-nofocus.png");		
 		self->strTextureButtonFocus = cTextureButtonFocus ? cTextureButtonFocus : PyGetDefaultImage("listcontrol", "textureFocus", "list-focus.png");	
 
-		self->dwAlignment = 0;
 		self->dwImageHeight = 10;
 		self->dwImageWidth = 10;
 		self->dwItemHeight = 27;
@@ -96,7 +95,8 @@ namespace PYXBMC
 		pListControl->SetImageDimensions(pControl->dwImageWidth, pControl->dwImageHeight);
 		pListControl->SetItemHeight(pControl->dwItemHeight);
 		pListControl->SetSpace(pControl->dwSpace);
-		pListControl->SetAlignmentY(pControl->dwAlignment);
+		pListControl->SetAlignmentY(XBFONT_CENTER_Y);
+
 
 		// set values for spincontrol
 		//CGUIListControl* c = (CGUIListControl*)pControl->pGUIControl;
