@@ -18,7 +18,7 @@
 
 #include "defines.h"
 #define SOCK_DFT_SVC_TIME	20
-#define SPYCE_SUPPORT
+//#define SPYCE_SUPPORT
 
 #ifdef __cplusplus
 extern "C" {
