@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  
+  - 21-08-2004 added: Two bugs to bugs.txt
   - 21-08-2004 added:    Hebrew xpr fonts
   - 21-08-2004 changed:  Flip BiDi Charset has moved from XboxMediaCenter.xml to the GUI
   - 21-08-2004 added:  Support for multiple font sets in a skin, switched from the GUI
