@@ -1269,7 +1269,7 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
     // switch 2 default settings...
     g_settings.m_iBrightness=50;
     g_settings.m_iContrast=50;
-    g_settings.m_iGamma=17;
+    g_settings.m_iGamma=20;
     
   }
   m_strCurrentFile=strFile;
