@@ -1,4 +1,3 @@
-
 #include "stdafx.h"
 #include "KaiClient.h"
 #include "Log.h"
@@ -124,7 +123,12 @@ void CKaiClient::EnterVector(CStdString& aVector)
 	if (client_state==State::Authenticated)
 	{
 		CStdString strVectorMessage;
-		strVectorMessage.Format("KAI_CLIENT_VECTOR;%s;",aVector);
+
+		//////////////////////////////////////////////////////////////////////////////////////////
+		// AJS - Extra ; - empty segment (is used for "password") - blank for all public arenas //
+		//////////////////////////////////////////////////////////////////////////////////////////
+		strVectorMessage.Format("KAI_CLIENT_VECTOR;%s;;",aVector);
+
 		Send(server_addr, strVectorMessage);
 	}
 }
@@ -353,6 +357,22 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage)
 					observer->OnNewArena(strVector);
 				}
 			}
+			
+			///////////////////////////////////////////////////////////////////////////
+			// AJS - Added this extra opcode for user created arenas - treat them    //
+			// just like you would a normal arena - they have different segments     //
+			// past seg2, but you dont use those anyway :)                           //
+			///////////////////////////////////////////////////////////////////////////
+
+			else if (strcmp(szMessage,"KAI_CLIENT_USER_SUB_VECTOR")==0)
+			{
+				CStdString strVector = strtok(NULL, ";");  
+				if (observer!=NULL)
+				{
+					observer->OnNewArena(strVector);
+				}
+			}
+
 			else if (strcmp(szMessage,"KAI_CLIENT_JOINS_VECTOR")==0)
 			{
 				if (observer!=NULL)
