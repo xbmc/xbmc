@@ -8,6 +8,7 @@
 #include "stdstring.h"
 #include "GraphicContext.h"
 #include "GUIWindowMusicBase.h"
+#include "utils/FanController.h"
 using namespace std;
 
 class CSettings g_settings;
@@ -338,6 +339,11 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.m_strSambaWorkgroup, "WORKGROUP");
 	strcpy(g_stSettings.m_strSambaWinsServer, "");
 	g_stSettings.m_bHideExtensions = false;
+  
+  g_stSettings.m_bAutoTemperature   = false;
+  g_stSettings.m_iTargetTemperature = 55;
+  g_stSettings.m_bFanSpeedControl   = false;
+  g_stSettings.m_iFanSpeed          = CFanController::Instance()->GetFanSpeed();
 
 	g_stSettings.m_bRipWithTrackNumber = true;
 	g_stSettings.m_iRipEncoder = CDDARIP_ENCODER_LAME;
@@ -1138,6 +1144,12 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetBoolean(pElement, "autorunpictures", g_stSettings.m_bAutorunPictures);
 		GetString(pElement, "language", g_stSettings.szDefaultLanguage, g_stSettings.szDefaultLanguage);
 		GetInteger(pElement, "shutdowntime", g_stSettings.m_iShutdownTime,0,0,INT_MAX);
+    
+    GetBoolean(pElement, "autotemperature",   g_stSettings.m_bAutoTemperature);
+    GetInteger(pElement, "targettemperature", g_stSettings.m_iTargetTemperature, 55, 40, 68);
+    GetBoolean(pElement, "fanspeedcontrol",   g_stSettings.m_bFanSpeedControl);
+    GetInteger(pElement, "fanspeed",          g_stSettings.m_iFanSpeed, g_stSettings.m_iFanSpeed, 5, 50);
+
 		GetInteger(pElement, "screensavertime", g_stSettings.m_iScreenSaverTime,3,1,INT_MAX);	// CB: SCREENSAVER PATCH
 		GetInteger(pElement, "screensavermode", g_stSettings.m_iScreenSaverMode,1,0,3);	// 0=Off, 1=Fade to dim, 2=Fade to black, 3=Matrix Trails
 		GetInteger(pElement, "screensaverfade", g_stSettings.m_iScreenSaverFadeLevel,20,1,100);	// default to 20%
@@ -1508,6 +1520,13 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	SetBoolean(pNode, "autorunpictures", g_stSettings.m_bAutorunPictures);
 	SetString(pNode, "language", g_stSettings.szDefaultLanguage);
 	SetInteger(pNode, "shutdowntime", g_stSettings.m_iShutdownTime);
+  
+  SetBoolean(pNode, "autotemperature",   g_stSettings.m_bAutoTemperature);
+  SetInteger(pNode, "targettemperature", g_stSettings.m_iTargetTemperature);
+  SetBoolean(pNode, "fanspeedcontrol",   g_stSettings.m_bFanSpeedControl);
+  SetInteger(pNode, "fanspeed",          g_stSettings.m_iFanSpeed);
+
+
 	SetInteger(pNode, "screensavertime", g_stSettings.m_iScreenSaverTime);	// CB: SCREENSAVER PATCH
 	SetInteger(pNode, "screensavermode", g_stSettings.m_iScreenSaverMode);	// CB: SCREENSAVER PATCH
 	SetInteger(pNode, "screensaverfade", g_stSettings.m_iScreenSaverFadeLevel);

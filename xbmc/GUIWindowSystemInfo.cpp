@@ -6,6 +6,7 @@
 #include "localizestrings.h"
 #include "xbox/iosupport.h"
 #include <ConIo.h>
+#include "utils/FanController.h"
 
 extern char g_szTitleIP[32];
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
@@ -66,39 +67,22 @@ void  CGUIWindowSystemInfo::GetValues()
 {
 	if(timeGetTime() - m_dwlastTime >= 1000)
 	{
-		m_dwlastTime =timeGetTime();
-		_outp(0xc004, (0x4c<<1)|0x01);
-		_outp(0xc008, 0x00);
-		_outpw(0xc000, _inpw(0xc000));
-		_outp(0xc002, (0) ? 0x0b : 0x0a);
-		while ((_inp(0xc000) & 8));
-		mbtemp = _inpw(0xc006);
-
-		_outp(0xc004, (0x4c<<1)|0x01);
-		_outp(0xc008, 0x01);
-		_outpw(0xc000, _inpw(0xc000));
-		_outp(0xc002, (0) ? 0x0b : 0x0a);
-		while ((_inp(0xc000) & 8));
-		cputemp = _inpw(0xc006);
-
-		_outp(0xc004, (0x4c<<1)|0x01);
-		_outp(0xc008, 0x10);
-		_outpw(0xc000, _inpw(0xc000));
-		_outp(0xc002, (0) ? 0x0b : 0x0a);
-		while ((_inp(0xc000) & 8));
-		cpudec = _inpw(0xc006);
-
-		if (cpudec<10)
-			cpudec = cpudec * 100;
-		if (cpudec<100)
-			cpudec = cpudec *10; 
+		m_dwlastTime = timeGetTime();
+    mbtemp   = CFanController::Instance()->GetGPUTemp();
+    cputemp  = CFanController::Instance()->GetCPUTemp();
+    fanSpeed = CFanController::Instance()->GetFanSpeed();
 	}
 	WCHAR CPUText[32];
 	WCHAR GPUText[32];
 	WCHAR wszText[1024];
-	float fTemp=(float)cputemp + ((float)cpudec)/1000.0f;
-	swprintf(CPUText, L"%2.2f%cC", fTemp,176);	
-	swprintf(GPUText, L"%u.00%cC", mbtemp,176);	
+  if(g_stSettings.m_szWeatherFTemp[0] == 'F') {
+    swprintf(CPUText, L"%2.2f%cF", ((9.0 / 5.0) * cputemp) + 32.0, 176);	
+    swprintf(GPUText, L"%2.2f%cF", ((9.0 / 5.0) * mbtemp) + 32.0,  176);	
+  }
+  else {
+    swprintf(CPUText, L"%2.2f%cC", cputemp, 176);	
+    swprintf(GPUText, L"%2.2f%cC", mbtemp,  176);	
+  }
 
 	{
 		const WCHAR *psztext=g_localizeStrings.Get(140).c_str();
@@ -280,5 +264,11 @@ void  CGUIWindowSystemInfo::GetValues()
 		SET_CONTROL_LABEL(GetID(), 15,wszText);
 	}
 
-
+  //fanspeed
+  {
+    CStdString strItem;
+    CStdString lbl = g_localizeStrings.Get(13300);
+    strItem.Format("%s %i%%", lbl.c_str(), fanSpeed * 2);
+		SET_CONTROL_LABEL(GetID(), 16, strItem);
+  }
 }
