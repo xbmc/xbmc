@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 01-10-2004 fixed: [ 987004 ] Cancel doesn't work from remote when streaming
   - 01-10-2004 fixed: Remote control not functioning properly when XBMC is loaded
   - 30-09-2004 fixed: [ 1013492 ] vobsubs display incorrectly, but work in mplayer 1.0pre5
   - 30-09-2004 fixed: [ 1026946 ] Back did not work in My Programs when Flattening was off
