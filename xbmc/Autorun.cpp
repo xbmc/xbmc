@@ -174,6 +174,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
             CDirectory::GetDirectory(pItem->m_strPath, items, ".dat");
             if (items.Size())
             {
+              g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Clear();
               CUtil::SortFileItemsByName(items);
               for (int i=0; i<items.Size(); ++i)
               {
@@ -198,6 +199,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
             CDirectory::GetDirectory(pItem->m_strPath, items, ".mpg");
             if (items.Size())
             {
+              g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Clear();
               CUtil::SortFileItemsByName(items);
               for (int i=0; i<items.Size(); ++i)
               {
