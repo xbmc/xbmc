@@ -23,6 +23,7 @@
 #include "utils/CharsetConverter.h"
 #include "cores/mplayer/xbox_video.h"
 #include "shortcut.h"
+#include "playlistplayer.h"
 
 bool CUtil::m_bNetworkUp = false;
 
@@ -2908,6 +2909,19 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
 	{
 		CUtil::RunXBE(parameter.c_str());
 	}
+	else if (execute.Equals("PlayMedia"))
+	{
+    if (parameter.IsEmpty())
+    {
+			CLog::Log(LOGERROR,"XBMC.PlayMedia called with empty parameter");
+      return;
+    }
+    CFileItem item(parameter, false);
+    if (!g_application.PlayMedia(item, PLAYLIST_MUSIC_TEMP))
+    {
+      CLog::Log(LOGERROR,"XBMC.PlayMedia could not play media: %s", parameter.c_str());
+    }
+  }
 }
 
 void usleep(int t)
