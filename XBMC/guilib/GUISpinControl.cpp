@@ -96,7 +96,10 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
 
 	if (CGUIControl::OnMessage(message) ) 
   {
-    if (!HasFocus()) m_iSelect=SPIN_BUTTON_DOWN;
+    if (!HasFocus())
+			m_iSelect=SPIN_BUTTON_DOWN;
+		else
+			m_iSelect = message.GetParam1() == SPIN_BUTTON_UP ? SPIN_BUTTON_UP : SPIN_BUTTON_DOWN;
     return true;
   }
   if (message.GetControlId() == GetID() )
