@@ -73,8 +73,8 @@ public:
     char      m_strNameServer[128];
     char      m_strTimeServer[128];
 
-	  bool			m_bMyPicturesViewAsIcons;
-	  bool			m_bMyPicturesRootViewAsIcons;
+	  int       m_iMyPicturesViewAsIcons;
+	  int       m_iMyPicturesRootViewAsIcons;
 	  int				m_iMyPicturesSortMethod;
 	  bool			m_bMyPicturesSortAscending;
 

@@ -5,11 +5,16 @@
 #include "util.h"
 #include "url.h"
 #include "picture.h"
+#include "utils/log.h"
 #include "application.h"
 #include <algorithm>
 #include "GUIDialogOK.h"
 #include "DetectDVDType.h"
 #include "sectionloader.h"
+#include "GUIThumbnailPanel.h"
+#define VIEW_AS_LIST           0
+#define VIEW_AS_ICONS          1
+#define VIEW_AS_LARGEICONS     2
 
 #define CONTROL_BTNVIEWASICONS		2
 #define CONTROL_BTNSORTBY					3
@@ -181,13 +186,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 			m_rootDir.SetMask(g_stSettings.m_szMyPicturesExtensions);
 			int iControl=CONTROL_LIST;
 
-			bool bViewAsIcon=false;
-			if ( m_strDirectory.IsEmpty() )
-				bViewAsIcon = g_stSettings.m_bMyPicturesRootViewAsIcons;
-			else
-				bViewAsIcon = g_stSettings.m_bMyPicturesViewAsIcons;
-
-      if (!bViewAsIcon) iControl=CONTROL_THUMBS;
+      if (!ViewByIcon()) iControl=CONTROL_THUMBS;
 			SET_CONTROL_HIDDEN(GetID(), iControl);
 
       if ( g_stSettings.m_bMyPicturesSortAscending)
@@ -217,15 +216,21 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       int iControl=message.GetSenderId();
       if (iControl==CONTROL_BTNVIEWASICONS)
       {
-				//CGUIDialog* pDialog=(CGUIDialog*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-				//pDialog->DoModal(GetID());
 
-		  if ( m_strDirectory.IsEmpty() )
-				g_stSettings.m_bMyPicturesRootViewAsIcons=!g_stSettings.m_bMyPicturesRootViewAsIcons;
-		  else
-				g_stSettings.m_bMyPicturesViewAsIcons=!g_stSettings.m_bMyPicturesViewAsIcons;
+        bool bLargeIcons(false);
+		    if ( m_strDirectory.IsEmpty() )
+        {
+		      g_stSettings.m_iMyPicturesRootViewAsIcons++;
+          if (g_stSettings.m_iMyPicturesRootViewAsIcons > VIEW_AS_LARGEICONS) g_stSettings.m_iMyPicturesRootViewAsIcons=VIEW_AS_LIST;
+        }
+		    else
+        {
+		      g_stSettings.m_iMyPicturesViewAsIcons++;
+          if (g_stSettings.m_iMyPicturesViewAsIcons > VIEW_AS_LARGEICONS) g_stSettings.m_iMyPicturesViewAsIcons=VIEW_AS_LIST;
+        }
 
 				g_settings.Save();
+        ShowThumbPanel();
 				
         UpdateButtons();
       }
@@ -334,26 +339,61 @@ void CGUIWindowPictures::UpdateButtons()
 
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
-	bool bViewAsIcon=false;
-	if ( m_strDirectory.IsEmpty() )
-		bViewAsIcon = g_stSettings.m_bMyPicturesRootViewAsIcons;
-	else
-		bViewAsIcon = g_stSettings.m_bMyPicturesViewAsIcons;
+	bool bViewIcon = false;
+  int iString;
+	if ( m_strDirectory.IsEmpty() ) 
+  {
+		switch (g_stSettings.m_iMyPicturesRootViewAsIcons)
+    {
+      case VIEW_AS_LIST:
+        iString=100; // view as icons
+      break;
+      
+      case VIEW_AS_ICONS:
+        iString=417;  // view as large icons
+        bViewIcon=true;
+      break;
+      case VIEW_AS_LARGEICONS:
+        iString=101; // view as list
+        bViewIcon=true;
+      break;
 
-    if (bViewAsIcon) 
-    {
-			SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
+      default:
+        iString=100; // view as icons
+      break;
     }
-    else
+	}
+	else 
+  {
+		switch (g_stSettings.m_iMyPicturesViewAsIcons)
     {
-			SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
-    }
+      case VIEW_AS_LIST:
+        iString=100; // view as icons
+      break;
+      
+      case VIEW_AS_ICONS:
+        iString=417;  // view as large icons
+        bViewIcon=true;
+      break;
+      case VIEW_AS_LARGEICONS:
+        iString=101; // view as list
+        bViewIcon=true;
+      break;
+      default:
+        iString=100; // view as icons
+      break;
 
-    int iString=101;
-    if (!bViewAsIcon) 
-    {
-      iString=100;
-    }
+    }		
+	}
+  if (bViewIcon) 
+  {
+    SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
+  }
+  else
+  {
+    SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
+  }
+
 		SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
 		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyPicturesSortMethod+103);
 
@@ -434,13 +474,9 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
   UpdateButtons();
 
 	strSelectedItem=m_history.Get(m_strDirectory);	
-	bool bViewAsIcon = false;
-	if ( m_strDirectory.IsEmpty() )
-		bViewAsIcon = g_stSettings.m_bMyPicturesRootViewAsIcons;
-	else
-		bViewAsIcon = g_stSettings.m_bMyPicturesViewAsIcons;
 
-	if ( bViewAsIcon ) {	
+	if ( ViewByIcon() ) 
+  {	
 		SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS);
 	}
 	else {
@@ -537,7 +573,7 @@ void CGUIWindowPictures::OnShowPicture(const CStdString& strPicture)
     CFileItem* pItem=m_vecItems[i];
     if (!pItem->m_bIsFolder)
     {
-		pSlideShow->Add(pItem->m_strPath);
+		  pSlideShow->Add(pItem->m_strPath);
     }
   }
 	pSlideShow->Select(strPicture);
@@ -607,6 +643,7 @@ void CGUIWindowPictures::OnCreateThumbs()
     m_dlgProgress->SetHeading(110);
 	  m_dlgProgress->StartModal(GetID());
   }
+  CSectionLoader::Load("CXIMAGE");
   for (int i=0; i < (int)m_vecItems.size();++i)
   {
     CFileItem* pItem=m_vecItems[i];
@@ -629,6 +666,7 @@ void CGUIWindowPictures::OnCreateThumbs()
       picture.CreateThumnail(pItem->m_strPath);
     }
   }
+  CSectionLoader::Unload("CXIMAGE");
 	if (m_dlgProgress) m_dlgProgress->Close();
   Update(m_strDirectory);
 }
@@ -643,14 +681,10 @@ int CGUIWindowPictures::GetSelectedItem()
 {
 	int iControl;
 	bool bViewAsIcon=false;
-	if ( m_strDirectory.IsEmpty() )
-		bViewAsIcon = g_stSettings.m_bMyPicturesRootViewAsIcons;
-	else
-		bViewAsIcon = g_stSettings.m_bMyPicturesViewAsIcons;
 
-    if (bViewAsIcon) 
+  if ( ViewByIcon()) 
 		iControl=CONTROL_THUMBS;
-    else
+  else
 		iControl=CONTROL_LIST;
 
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
@@ -672,4 +706,51 @@ void CGUIWindowPictures::GoParentFolder()
 			Update(strPath);
 		}
 	}
+}
+
+bool CGUIWindowPictures::ViewByIcon()
+{
+  if ( m_strDirectory.IsEmpty() )
+  {
+    if (g_stSettings.m_iMyPicturesRootViewAsIcons != VIEW_AS_LIST) return true;
+  }
+  else
+  {
+    if (g_stSettings.m_iMyPicturesViewAsIcons != VIEW_AS_LIST) return true;
+  }
+  return false;
+}
+
+bool CGUIWindowPictures::ViewByLargeIcon()
+{
+  if ( m_strDirectory.IsEmpty() )
+  {
+    if (g_stSettings.m_iMyPicturesRootViewAsIcons == VIEW_AS_LARGEICONS) return true;
+  }
+  else
+  {
+    if (g_stSettings.m_iMyPicturesViewAsIcons== VIEW_AS_LARGEICONS) return true;
+  }
+  return false;
+}
+
+void CGUIWindowPictures::ShowThumbPanel()
+{
+ 
+  if ( ViewByLargeIcon() )
+  {
+    CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
+    pControl->SetThumbDimensions(10,16,100,100);
+    pControl->SetTextureDimensions(128,128);
+    pControl->SetItemHeight(150);
+    pControl->SetItemWidth(150);
+  }
+  else
+  {
+    CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
+    pControl->SetThumbDimensions(4,10,64,64);
+    pControl->SetTextureDimensions(80,80);
+    pControl->SetItemHeight(128);
+    pControl->SetItemWidth(128);
+  }
 }
