@@ -502,9 +502,11 @@ void CApplication::Render()
         {
 	        g_graphicsContext.Lock();
           m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
+					extern void RenderVideo();
+					RenderVideo();
           RenderFullScreen();
           m_gWindowManager.Render();
-	        m_pd3dDevice->BlockUntilVerticalBlank();      
+	        //m_pd3dDevice->BlockUntilVerticalBlank();      
 	        m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 	        g_graphicsContext.Unlock();
           return;
@@ -625,7 +627,7 @@ void CApplication::Render()
 
   }
   // Present the backbuffer contents to the display
-	m_pd3dDevice->BlockUntilVerticalBlank();      
+	//m_pd3dDevice->BlockUntilVerticalBlank();      
 	m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
 	g_graphicsContext.Unlock();
 
