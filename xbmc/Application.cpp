@@ -635,8 +635,8 @@ HRESULT CApplication::Create()
     // home dir is defined in xboxmediacenter.xml
     strHomePath = g_stSettings.szHomeDir;
   }
-  CLog::Log(LOGINFO, "Checking skinpath existance:%s...", (strHomePath + "\\skin").c_str());
-  if (!access(strHomePath + "\\skin", 0))
+  CLog::Log(LOGINFO, "Checking skinpath existance, and existence of keymap.xml:%s...", (strHomePath + "\\skin").c_str());
+  if (!access(strHomePath + "\\skin", 0) && !access(strHomePath + "\\keymap.xml", 0))
   {
     if (strHomePath != "Q:")
     {
@@ -654,7 +654,7 @@ HRESULT CApplication::Create()
   }
   else
   {
-    CLog::Log(LOGNOTICE, "skinpath %s does not exist, trying defaults", (strHomePath + "\\skin").c_str());
+    CLog::Log(LOGNOTICE, "skinpath %s does not exist (or no keymap.xml), trying defaults", (strHomePath + "\\skin").c_str());
     // failed - lets try defaults:
     // E:\apps\xbmc
     // E:\xbmc
@@ -664,7 +664,7 @@ HRESULT CApplication::Create()
     for (int i = 0; i < NUM_HOME_PATHS; i++)
     {
       strHomePath = szHomePaths[i];
-      if (!access(strHomePath + "\\skin", 0))
+      if (!access(strHomePath + "\\skin", 0) && !access(strHomePath + "\\keymap.xml", 0))
       {
         bFoundHomePath = true;
         break;
@@ -686,7 +686,7 @@ HRESULT CApplication::Create()
     }
     else
     {
-      g_LoadErrorStr = "Invalid or missing <home> tag in xml - no skins found";
+      g_LoadErrorStr = "Invalid or missing <home> tag in xml - no skins found, or no keymap.xml found";
       FatalErrorHandler(true, false, true);
     }
   }

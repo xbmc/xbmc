@@ -13,9 +13,8 @@ public:
 private:
   virtual void SetIMDBThumbs(CFileItemList& items);
 protected:
-  virtual bool ViewByLargeIcon();
-  virtual bool ViewByIcon();
-  virtual void SetViewMode(int iMode);
+  virtual void SaveViewMode();
+  virtual void LoadViewMode();
   virtual int SortMethod();
   virtual bool SortAscending();
   virtual void AddFileToDatabase(const CFileItem* pItem);
@@ -36,7 +35,4 @@ protected:
   virtual void GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
   void SetHistoryForPath(const CStdString& strDirectory);
-
-  int m_iViewAsIconsRoot;
-  int m_iViewAsIcons;
 };

@@ -14,10 +14,6 @@
 #include "GUIThumbnailPanel.h"
 #include "GUIPassword.h"
 
-#define VIEW_AS_LIST           0
-#define VIEW_AS_ICONS          1
-#define VIEW_AS_LARGEICONS     2
-
 #define CONTROL_BTNVIEWASICONS   2
 #define CONTROL_BTNSORTBY      3
 #define CONTROL_BTNSORTASC     4
@@ -207,7 +203,7 @@ void CGUIWindowVideoGenre::SortItems(CFileItemList& items)
 void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
 {
   // get selected item
-  int iItem = GetSelectedItem();
+  int iItem = m_viewControl.GetSelectedItem();
   CStdString strSelectedItem = "";
   if (iItem >= 0 && iItem < (int)m_vecItems.Size())
   {
@@ -286,28 +282,12 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
   UpdateButtons();
 
   strSelectedItem = m_history.Get(m_Directory.m_strPath);
-
-  m_iLastControl = GetFocusedControl();
-
-  if (m_iLastControl == CONTROL_THUMBS || m_iLastControl == CONTROL_LIST)
-  {
-    if ( ViewByIcon() )
-    {
-      SET_CONTROL_FOCUS(CONTROL_THUMBS, 0);
-    }
-    else
-    {
-      SET_CONTROL_FOCUS(CONTROL_LIST, 0);
-    }
-  }
-
   for (int i = 0; i < (int)m_vecItems.Size(); ++i)
   {
     CFileItem* pItem = m_vecItems[i];
     if (pItem->m_strPath == strSelectedItem)
     {
-      CONTROL_SELECT_ITEM(CONTROL_LIST, i);
-      CONTROL_SELECT_ITEM(CONTROL_THUMBS, i);
+      m_viewControl.SetSelectedItem(i);
       break;
     }
   }
@@ -338,7 +318,7 @@ void CGUIWindowVideoGenre::OnClick(int iItem)
   }
   else
   {
-    m_iItemSelected = GetSelectedItem();
+    m_iItemSelected = m_viewControl.GetSelectedItem();
     int iSelectedFile = 1;
     VECMOVIESFILES movies;
     m_database.GetFiles(atol(pItem->m_strPath), movies);
@@ -352,38 +332,17 @@ void CGUIWindowVideoGenre::OnInfo(int iItem)
   CGUIWindowVideoBase::OnInfo(iItem);
 }
 
-bool CGUIWindowVideoGenre::ViewByIcon()
+void CGUIWindowVideoGenre::LoadViewMode()
 {
-  if ( m_Directory.IsVirtualDirectoryRoot() )
-  {
-    if (g_stSettings.m_iMyVideoGenreRootViewAsIcons != VIEW_AS_LIST) return true;
-  }
-  else
-  {
-    if (g_stSettings.m_iMyVideoGenreViewAsIcons != VIEW_AS_LIST) return true;
-  }
-  return false;
+  m_iViewAsIconsRoot = g_stSettings.m_iMyVideoGenreRootViewAsIcons;
+  m_iViewAsIcons = g_stSettings.m_iMyVideoGenreViewAsIcons;
 }
 
-bool CGUIWindowVideoGenre::ViewByLargeIcon()
+void CGUIWindowVideoGenre::SaveViewMode()
 {
-  if ( m_Directory.IsVirtualDirectoryRoot() )
-  {
-    if (g_stSettings.m_iMyVideoGenreRootViewAsIcons == VIEW_AS_LARGEICONS) return true;
-  }
-  else
-  {
-    if (g_stSettings.m_iMyVideoGenreViewAsIcons == VIEW_AS_LARGEICONS) return true;
-  }
-  return false;
-}
-
-void CGUIWindowVideoGenre::SetViewMode(int iViewMode)
-{
-  if ( m_Directory.IsVirtualDirectoryRoot() )
-    g_stSettings.m_iMyVideoGenreRootViewAsIcons = iViewMode;
-  else
-    g_stSettings.m_iMyVideoGenreViewAsIcons = iViewMode;
+  g_stSettings.m_iMyVideoGenreRootViewAsIcons = m_iViewAsIconsRoot;
+  g_stSettings.m_iMyVideoGenreViewAsIcons = m_iViewAsIcons;
+  g_settings.Save();
 }
 
 int CGUIWindowVideoGenre::SortMethod()

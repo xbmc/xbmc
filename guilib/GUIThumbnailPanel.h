@@ -40,6 +40,7 @@ public:
   virtual void AllocResources() ;
   virtual void FreeResources() ;
   virtual void DynamicResourceAlloc(bool bOnOff);
+  virtual void SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight);
   void SetScrollySuffix(CStdString wstrSuffix);
   void SetTextureDimensions(int iWidth, int iHeight);
   void SetThumbAlign(int align);

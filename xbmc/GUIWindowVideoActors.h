@@ -10,9 +10,8 @@ public:
   virtual void OnAction(const CAction &action);
 
 protected:
-  virtual bool ViewByLargeIcon();
-  virtual bool ViewByIcon();
-  virtual void SetViewMode(int iMode);
+  virtual void SaveViewMode();
+  virtual void LoadViewMode();
   virtual int SortMethod();
   virtual bool SortAscending();
 
