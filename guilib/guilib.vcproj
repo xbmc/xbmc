@@ -4,6 +4,7 @@
 	Version="7.10"
 	Name="guilib"
 	ProjectGUID="{9B28366B-79F0-4361-B5C5-4608DFA8CF17}"
+	RootNamespace="guilib"
 	Keyword="XboxProj">
 	<Platforms>
 		<Platform
@@ -20,6 +21,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				OptimizeForProcessor="2"
+				AdditionalIncludeDirectories="&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="_DEBUG;_XBOX;_LIB"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -127,6 +129,7 @@
 				FavorSizeOrSpeed="2"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
+				AdditionalIncludeDirectories="&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="NDEBUG;_XBOX;_LIB"
 				StringPooling="FALSE"
 				MinimalRebuild="FALSE"
@@ -523,72 +526,18 @@
 			</File>
 			<File
 				RelativePath=".\common\xbfont.cpp">
-				<FileConfiguration
-					Name="Debug|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\common\xbfont.h">
 			</File>
 			<File
 				RelativePath=".\common\xbinput.cpp">
-				<FileConfiguration
-					Name="Debug|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\common\xbinput.h">
 			</File>
 			<File
-				RelativePath=".\common\xbresource.cpp">
-				<FileConfiguration
-					Name="Debug|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\common\xbresource.h">
-			</File>
-			<File
 				RelativePath=".\common\xbutil.cpp">
-				<FileConfiguration
-					Name="Debug|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\common\xbutil.h">
@@ -614,6 +563,16 @@
 			</File>
 			<File
 				RelativePath=".\tinyXML\tinyxmlparser.cpp">
+			</File>
+		</Filter>
+		<Filter
+			Name="xdk Files"
+			Filter="">
+			<File
+				RelativePath="$(XDK)\Samples\Xbox\Common\Src\xbresource.cpp">
+			</File>
+			<File
+				RelativePath="$(XDK)\Samples\Xbox\Common\Include\xbresource.h">
 			</File>
 		</Filter>
 	</Files>
