@@ -201,7 +201,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bUseGDrive=false;
 	strcpy(g_stSettings.szDefaultLanguage,"english");
 	strcpy(g_stSettings.szDefaultVisualisation,"goom.vis");
-	g_stSettings.m_bAllowPAL60=true;
+	g_stSettings.m_bAllowPAL60=false;
 	g_stSettings.m_bAutoShufflePlaylist=true;
 	g_stSettings.dwFileVersion =CONFIG_VERSION;
 	g_stSettings.m_iMyProgramsViewAsIcons=1;
