@@ -412,29 +412,40 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 {
     bool   bFlattenDir=g_stSettings.m_bMyProgramsFlatten;
     bool   bParentPath(false);
-    bool   bPastBookMark(false);
+    bool   bPastBookMark(true);
     CStdString strParentPath;
+	CStdString strDir = strDirectory;
 
     Clear();
     CStdString strShortCutsDir = "Q:\\shortcuts";
 
-    bParentPath=CUtil::GetParentPath(strDirectory,strParentPath);
-
+    bParentPath=CUtil::GetParentPath(strDir,strParentPath);
+	
     for (int i=0; i < (int)g_settings.m_vecMyProgramsBookmarks.size(); ++i)
     {
         CShare& share = g_settings.m_vecMyProgramsBookmarks[i];
-        if ( strParentPath==share.strPath)
-            bPastBookMark=true;
-		if (strDirectory==share.strPath)
+		if (CUtil::HasSlashAtEnd(share.strPath))
+		{
+			share.strPath.Delete(share.strPath.size()-1);
+		}
+		if (CUtil::HasSlashAtEnd(strDir))
+		{
+			strDir.Delete(strDir.size()-1);
+		}
+
+		if (strDir==share.strPath) {
 			m_bookmarkName=share.strName;
+			if (strParentPath!=share.strPath)
+				bPastBookMark=false;
+		}
     }
 
-	if (strDirectory==strShortCutsDir)
+	if (strDir==strShortCutsDir)
 		m_bookmarkName="shortcuts";
 
-    if ( strParentPath.size() && bParentPath && !bFlattenDir && !bPastBookMark)
+    if ( strParentPath.size() && bParentPath && !bFlattenDir && bPastBookMark)
     {
-        if (strDirectory != strShortCutsDir)
+        if (strDir != strShortCutsDir)
         {
             CFileItem *pItem = new CFileItem("..");
             pItem->m_strPath=strParentPath;
@@ -444,7 +455,7 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
         }
     }
 
-	LoadDirectory(strDirectory);
+	LoadDirectory(strDir);
 	OnSort();
 	UpdateButtons();
 }
