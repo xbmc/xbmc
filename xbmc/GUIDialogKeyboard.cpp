@@ -8,13 +8,15 @@
 #include <vector>
 using namespace std;
 
-// TODO: Add support for caps lock, shift, lower case, and symbols.
+// TODO: Add support for symbols.
 
 #define CTL_BUTTON_DONE		300
 #define CTL_BUTTON_CANCEL	301
 #define CTL_BUTTON_SHIFT	302
 #define CTL_BUTTON_CAPS		303
 #define CTL_BUTTON_SYMBOLS	304
+#define CTL_BUTTON_LEFT		305
+#define CTL_BUTTON_RIGHT	306
 
 #define CTL_LABEL_EDIT		310
 
@@ -53,16 +55,7 @@ void CGUIDialogKeyboard::OnInitWindow()
 	}
 
 	// set alphabetic (capitals)
-	for (iButton=65; iButton<=90; iButton++)
-	{
-		CGUIButtonControl* pButton = ((CGUIButtonControl*)GetControl(iButton));
-		
-		if(pButton)
-		{
-			aLabel[0]=iButton;
-			pButton->SetText(aLabel);
-		}
-	}
+	UpdateButtons();
 
 	CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
 	if (pEdit)
@@ -113,7 +106,7 @@ bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
 					Close();
 					break;
 				case CTL_BUTTON_SHIFT:
-					m_bShift = true;
+					m_bShift = !m_bShift;
 					UpdateButtons();
 					break;
 				case CTL_BUTTON_CAPS:
@@ -121,6 +114,24 @@ bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
 					UpdateButtons();
 					break;
 				case CTL_BUTTON_SYMBOLS:
+					break;
+				case CTL_BUTTON_LEFT:
+					{
+						CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
+						if (pEdit)
+						{
+							pEdit->SetCursorPos(pEdit->GetCursorPos()-1);
+						}
+					}
+					break;
+				case CTL_BUTTON_RIGHT:
+					{
+						CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
+						if (pEdit)
+						{
+							pEdit->SetCursorPos(pEdit->GetCursorPos()+1);
+						}
+					}
 					break;
 				default:
 					OnClickButton(iControl);
@@ -142,6 +153,11 @@ void CGUIDialogKeyboard::SetText(CStdString& aTextString)
 	if (pEdit)
 	{
 		pEdit->SetText(aTextString);
+		// Set the cursor position to the end of the edit control
+		if (pEdit->GetCursorPos() >= 0)
+		{
+			pEdit->SetCursorPos(aTextString.length());
+		}
 	}
 }
 
@@ -151,13 +167,11 @@ void CGUIDialogKeyboard::Character(WCHAR wch)
 	if (pEdit)
 	{
 		m_bDirty = true;
-		wstring label = pEdit->GetLabel();
-		if ((m_bCapsLock && m_bShift) || (!m_bCapsLock && !m_bShift))
-		{	// make lower case
-			wch += 32;
-		}
-		label+=wch;
-		pEdit->SetText(label);
+		CStdString strLabel = pEdit->GetLabel();
+		int iPos = pEdit->GetCursorPos();
+		strLabel.Insert(iPos, (TCHAR)wch);
+		pEdit->SetText(strLabel);
+		pEdit->SetCursorPos(iPos+1);
 	}
 }
 
@@ -166,33 +180,45 @@ void CGUIDialogKeyboard::Backspace()
 	CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
 	if (pEdit)
 	{
-		wstring label = pEdit->GetLabel();
-		int characters = label.length();
-		if(characters>0)
+		CStdString strLabel = pEdit->GetLabel();
+		if (pEdit->GetCursorPos()>0)
 		{
 			m_bDirty = true;
-			label[characters-1]=(WCHAR)0;
-			pEdit->SetText(label);
+			strLabel.erase(pEdit->GetCursorPos()-1,1);
+			pEdit->SetText(strLabel);
+			pEdit->SetCursorPos(pEdit->GetCursorPos()-1);
 		}
 	}
 }
 
 void CGUIDialogKeyboard::OnClickButton(int iButtonControl)
 {
-	bool bChar = ((	(iButtonControl>=48) && (iButtonControl<=57))	||
-				  (	(iButtonControl>=65) && (iButtonControl<=90))	||
-				    (iButtonControl==32)							);
-
-	if (bChar)
-	{
+	if ( ((iButtonControl>=48) && (iButtonControl<=57)) || (iButtonControl==32) )
+	{	// number or space
 		Character((WCHAR)iButtonControl);
-		m_bShift = false;	// turn off the shift key
-		UpdateButtons();
+	}
+	else if ((iButtonControl>=65) && (iButtonControl<=90))
+	{	// letter
+		Character(GetCharacter(iButtonControl));
 	}
 	else if (iButtonControl==CTL_BUTTON_BACKSPACE)
 	{
 		Backspace();
 	}
+}
+
+WCHAR CGUIDialogKeyboard::GetCharacter(int iButton)
+{
+	if ((m_bCapsLock && m_bShift) || (!m_bCapsLock && !m_bShift))
+	{	// make lower case
+		iButton += 32;
+	}
+	if (m_bShift)
+	{	// turn off the shift key
+		m_bShift = false;
+		UpdateButtons();
+	}
+	return (WCHAR) iButton;
 }
 
 void CGUIDialogKeyboard::UpdateButtons()
@@ -216,5 +242,30 @@ void CGUIDialogKeyboard::UpdateButtons()
 	{
 		CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CTL_BUTTON_CAPS);
 		OnMessage(msg);
+	}
+
+	// set correct alphabet characters...
+	char szLabel[2];
+	szLabel[0]=32;
+	szLabel[1]=0;
+	CStdString aLabel = szLabel;
+
+	for (int iButton=65; iButton<=90; iButton++)
+	{
+		CGUIButtonControl* pButton = ((CGUIButtonControl*)GetControl(iButton));
+		
+		if(pButton)
+		{
+			// set the correct case...
+			if ((m_bCapsLock && m_bShift) || (!m_bCapsLock && !m_bShift))
+			{	// make lower case
+				aLabel[0] = iButton + 32;
+			}
+			else
+			{
+				aLabel[0] = iButton;
+			}
+			pButton->SetText(aLabel);
+		}
 	}
 }

@@ -33,6 +33,7 @@ private:
 
   bool						m_bShowTime;
 	int							m_iShowInfo;
+	DWORD						m_dwShowInfoTimeout;
 	bool						m_bShowCurrentTime;
 	DWORD						m_dwTimeCodeTimeout;
 	DWORD						m_dwFPSTime;
@@ -46,4 +47,5 @@ private:
 	int							m_iTimeCodePosition;
   int             m_iCurrentBookmark;
   DWORD           m_dwOSDTimeOut;
+  int				m_iViewMode;
 };

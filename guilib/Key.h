@@ -64,6 +64,7 @@
 #define ACTION_REWIND                 17
 
 #define ACTION_SHOW_GUI               18 // toggle between GUI and movie or GUI and visualisation. 
+#define ACTION_ASPECT_RATIO			  19 // toggle quick-access zoom modes. Can b used in videoFullScreen.zml window id=2005
 #define ACTION_STEP_FORWARD           20 // seek +1% in the movie. Can b used in videoFullScreen.xml window id=2005 
 #define ACTION_STEP_BACK              21 // seek -1% in the movie. Can b used in videoFullScreen.xml window id=2005 
 #define ACTION_BIG_STEP_FORWARD       22 // seek +10% in the movie. Can b used in videoFullScreen.xml window id=2005 
