@@ -124,7 +124,7 @@ CreditLine_t Credits[] =
   {  50,  35,      0,   7500,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"HulleBulle" },
   {  50,  45,      0,   7500,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"MrX" },
   {  50,  55,      0,   7500,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Team-XBMC" },
-  {  50,  65,      0,   7500,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"xAD/nIGHTFALL (ASP Interface Site Upload)" },
+  {  50,  65,      0,   7500,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"xAD/nIGHTFALL (ASP Site Upload)" },
   {  50,  75,      0,   7500,   60,  420, EFF_IN_FLASH  |EFF_OUT_FADE   ,   20, L"Sourceforge.net" },
 
   // Sponsors crossfade 3.5, on 60, crossfade 4
@@ -176,13 +176,14 @@ CreditLine_t Credits[] =
   // section Frodo
 	{  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Frodo" },
 	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Special thanks to my dear friends" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Gandalf, Legolas, Gimli , Aragorn, Boromir" },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Merry, Pippin and offcourse Samwise" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Gandalf, Legolas, Gimli, Aragorn, Boromir" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Merry, Pippin and ofcourse Samwise" },
 
   // section mario64
   {  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Mario64" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Special thanks to:" },
-  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"The coyote for never catching the road runner" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"The coyote for never" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"catching the road runner" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"The pizza delivery guy" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Amstel & Heineken" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Rob Hubbard for his great sid tunes" },
@@ -192,8 +193,9 @@ CreditLine_t Credits[] =
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Special thanks to:" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Frodo for not kicking in my skull" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"God for pizza, beer and women" },
-  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Douglas Adams for making me smile each summer" },
-  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"when reading Hitchhikers Guide To The Galaxy" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Douglas Adams for making me smile" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"each summer when reading" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Hitchhikers Guide To The Galaxy" },
 
   // section [XC]D-Ice
   {  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"[XC]D-Ice" },
@@ -214,19 +216,23 @@ CreditLine_t Credits[] =
   // section Obstler
   {  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Obstler" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Special thanks to runtime and duo for" },
-  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"starting with xbmp -- which made me buy and" },
-  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"mod the xbox the very day it was first announced" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"starting with xbmp, which made me buy and" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"mod the xbox the very day it" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"was first announced" },
 
   // section gamestr17
   {  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Gamestr17" },
-  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Special thanks to everyone on the XBMC/XBMP-Team," },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Special thanks to everyone on the" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"XBMC/XBMP-Team," },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"and users who don't complain" },
-  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Real men don't make backups, but they cry often" },
+  {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Real men don't make backups," },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L" but they cry often" },
 
   // section pike
   {  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Pike" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Microsoft for the XBOX," },
-	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"which we have turned into the best Mediaplayer!" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"which we have turned into" },
+	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"the best Mediaplayer!" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Trance & other uplifting music" },
 	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"for making my days more enjoyable!" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"And remember - best things in life are free" },
@@ -855,10 +861,12 @@ void RunCredits()
 	WaitForSingleObject(s_hMusicStarted, INFINITE);
 	CloseHandle(s_hMusicStarted);
 
+#ifdef _DEBUG
 	LARGE_INTEGER freq, start, end, start2, end2;
 	__int64 rendertime = 0;
 	QueryPerformanceFrequency(&freq);
 	QueryPerformanceCounter(&start2);
+#endif // _DEBUG
 
 	// Start credits loop
 	for (;;)
@@ -879,7 +887,9 @@ void RunCredits()
 		int n = 0;
 		while (NextCredit < NUM_CREDITS || !ActiveList.empty())
 		{
+#ifdef _DEBUG
 			QueryPerformanceCounter(&start);
+#endif // _DEBUG
 
 			if (WaitForSingleObject(hMusicThread, 0) == WAIT_TIMEOUT)
 				Time = (DWORD)mikxboxGetPTS();
@@ -920,7 +930,8 @@ void RunCredits()
 
 				while (Time > pCredit->Time + pCredit->InDuration + pCredit->OutDuration + pCredit->Duration)
 				{
-					(*iCredit)->pTex->Release();
+					if ((*iCredit)->pTex)
+						(*iCredit)->pTex->Release();
 					iCredit = ActiveList.erase(iCredit);
 					if (iCredit == ActiveList.end())
 						break;
@@ -981,7 +992,7 @@ void RunCredits()
 
 			Gamma = 0;
 
-			RenderCredits(ActiveList, Gamma, Time);
+			RenderCredits(ActiveList, Gamma, Time, g_graphicsContext.GetHeight() / 480.0f);
 
 			if (Gamma)
 			{
@@ -1030,17 +1041,29 @@ void RunCredits()
 				return;
 			}
 
+#ifdef _DEBUG
+			static wchar_t FPS[80];
 			QueryPerformanceCounter(&end);
 			rendertime += end.QuadPart - start.QuadPart;
 			if (++n == 50)
 			{
 				QueryPerformanceCounter(&end2);
-//				CLog::DebugLog("Frame rate: %.2ffps", 50.0f * freq.QuadPart / float(end2.QuadPart - start2.QuadPart));
-//				CLog::DebugLog("Render: %.2f%%", 100.f * rendertime / float(end2.QuadPart - start2.QuadPart));
+
+				MEMORYSTATUS stat;
+				GlobalMemoryStatus(&stat);
+				float f = float(end2.QuadPart - start2.QuadPart);
+				swprintf(FPS, L"Render: %.2f fps (%.2f%%)\nFreeMem: %.1f/%uMB", 50.0f * freq.QuadPart / f, 100.f * rendertime / f,
+					float(stat.dwAvailPhys) / (1024.0f*1024.0f), stat.dwTotalPhys / (1024*1024));
+
 				rendertime = 0;
 				n = 0;
 				QueryPerformanceCounter(&start2);
 			}
+
+			CGUIFont* pFont = g_fontManager.GetFont("font13");
+			if (pFont)
+				pFont->DrawText(50, 30, 0xffffffff, FPS);
+#endif
 
 			// present scene
 			D3DDevice::BlockUntilVerticalBlank();
