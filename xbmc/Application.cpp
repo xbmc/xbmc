@@ -41,11 +41,13 @@ CApplication::CApplication(void)
 :m_ctrDpad(220,220)
 ,m_ctrIR(220,220)
 {
+		m_bSpinDown=true;
 		m_bOverlayEnabled=true;
 		m_pPhytonParser=NULL;
 		m_pPlayer=NULL;
 		XSetProcessQuantumLength(5); //default=20msec
 		XSetFileCacheSize (256*1024);//default=64kb
+		m_dwSpinDownTime=timeGetTime();
 }	
 
 CApplication::~CApplication(void)
@@ -274,6 +276,14 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 void CApplication::Render()
 {
+	if (!m_bSpinDown)
+	{
+			if (!m_pPlayer)  m_bSpinDown=true;
+			else if (!m_pPlayer->IsPlaying()) m_bSpinDown=true;
+			if (m_bSpinDown) m_dwSpinDownTime=timeGetTime();
+	}
+
+
 	// process any phyton scripts...
 	ProcessScripts();
 
@@ -374,38 +384,47 @@ void CApplication::FrameMove()
 	WORD wDir = m_ctrDpad.DpadInput(wDpad,0!=pGamepad->bAnalogButtons[XINPUT_GAMEPAD_LEFT_TRIGGER],0!=pGamepad->bAnalogButtons[XINPUT_GAMEPAD_RIGHT_TRIGGER]);
 	wDir |= m_ctrIR.IRInput(wRemotes);
 
+	bool bGotKey=false;
+
 	if ( pGamepad->fX1 || pGamepad->fY1 || pGamepad->fX2 || pGamepad->fY2)
 	{
     CKey key(false,KEY_INVALID,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
 	}
-  if ( wDir & DC_LEFTTRIGGER)
+
+	if ( wDir & DC_LEFTTRIGGER)
   {
+		bGotKey=true;
     CKey key(true,KEY_BUTTON_LEFT_TRIGGER,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
   if ( wDir & DC_RIGHTTRIGGER)
   {
+		bGotKey=true;
     CKey key(true,KEY_BUTTON_RIGHT_TRIGGER,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
   if ( wDir & DC_LEFT )
   {
+		bGotKey=true;
     CKey key(true,KEY_BUTTON_DPAD_LEFT,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
   if ( wDir & DC_RIGHT)
   {
+		bGotKey=true;
     CKey key(true,KEY_BUTTON_DPAD_RIGHT,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
   if ( wDir & DC_UP )
   {
+		bGotKey=true;
     CKey key(true,KEY_BUTTON_DPAD_UP,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
   if ( wDir & DC_DOWN )
   {
+		bGotKey=true;
     CKey key(true,KEY_BUTTON_DPAD_DOWN,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
@@ -413,11 +432,13 @@ void CApplication::FrameMove()
   
 	if ( pGamepad->wPressedButtons & XINPUT_GAMEPAD_BACK )
   {
+		bGotKey=true;
     CKey key(true,KEY_BUTTON_BACK,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
 	if ( pGamepad->wPressedButtons & XINPUT_GAMEPAD_START)
   {
+		bGotKey=true;
     CKey key(true,KEY_BUTTON_START,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
@@ -425,33 +446,39 @@ void CApplication::FrameMove()
 
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_A])
   {
+		bGotKey=true;
     CKey key(true,KEY_BUTTON_A,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_B])
   {
+		bGotKey=true;
     CKey key(true,KEY_BUTTON_B,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);
   }
   
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_X])
   {
+		bGotKey=true;
     CKey key(true,KEY_BUTTON_X,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);
 		
   }
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_Y])
   {
+		bGotKey=true;
     CKey key(true,KEY_BUTTON_Y,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   } 
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_BLACK])
   {
+		bGotKey=true;
     CKey key(true,KEY_BUTTON_BLACK,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   } 
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_WHITE])
   {
+		bGotKey=true;
     CKey key(true,KEY_BUTTON_WHITE,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   } 
@@ -460,48 +487,56 @@ void CApplication::FrameMove()
 	{
 		case XINPUT_IR_REMOTE_MENU:
     {
+			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_MENU);
       OnKey(key);   
 		  break;
     }
 		case XINPUT_IR_REMOTE_BACK:
     {
+			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_BACK);
       OnKey(key);   
 		  break;
     }
 		case XINPUT_IR_REMOTE_SELECT:
     {
+			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_SELECT);
       OnKey(key);   
 		  break;
     }
 		case XINPUT_IR_REMOTE_DISPLAY:
     {
+			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_DISPLAY);
       OnKey(key);   
 		  break;
     }
 		case XINPUT_IR_REMOTE_TITLE:
     {
+			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_TITLE);
       OnKey(key);   
 		  break;
     }
 		case XINPUT_IR_REMOTE_INFO:
     {
+			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_INFO);
       OnKey(key);   
 		  break;
     }
 		case XINPUT_IR_REMOTE_PLAY:
     {
+			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_PLAY);
       OnKey(key);   
 		  break;
     }
 		case XINPUT_IR_REMOTE_PAUSE:
     {
+			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_PAUSE);
       OnKey(key);   
 			if (m_pPlayer)
@@ -515,6 +550,7 @@ void CApplication::FrameMove()
     }
 		case XINPUT_IR_REMOTE_STOP:
     {
+			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_STOP);
       OnKey(key);   
 			if (m_pPlayer)
@@ -528,6 +564,7 @@ void CApplication::FrameMove()
     }
 		case XINPUT_IR_REMOTE_SKIP_MINUS:
     {
+			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_SKIPMINUS);
       OnKey(key);   
 			if (m_pPlayer && g_playlistPlayer.size() )
@@ -538,6 +575,7 @@ void CApplication::FrameMove()
     }
 		case XINPUT_IR_REMOTE_SKIP_PLUS:
     {
+			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_SKIPPLUS);
       OnKey(key);   
 			if (m_pPlayer && g_playlistPlayer.size() )
@@ -549,60 +587,70 @@ void CApplication::FrameMove()
 
 	case XINPUT_IR_REMOTE_0:
     {
+			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_0);
       OnKey(key);   
 		  break;
     }
     case XINPUT_IR_REMOTE_1:
     {
+			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_1);
       OnKey(key);   
 		  break;
     }
     case XINPUT_IR_REMOTE_2:
     {
+			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_2);
       OnKey(key);   
 		  break;
     }
     case XINPUT_IR_REMOTE_3:
     {
+			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_3);
       OnKey(key);   
 		  break;
     }
     case XINPUT_IR_REMOTE_4:
     {
+			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_4);
       OnKey(key);   
 		  break;
     }
     case XINPUT_IR_REMOTE_5:
     {
+			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_5);
       OnKey(key);   
 		  break;
     }
     case XINPUT_IR_REMOTE_6:
     {
+			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_6);
       OnKey(key);   
 		  break;
     }
     case XINPUT_IR_REMOTE_7:
     {
+			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_7);
       OnKey(key);   
 		  break;
     }
     case XINPUT_IR_REMOTE_8:
     {
+			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_8);
       OnKey(key);   
 		  break;
     }
     case XINPUT_IR_REMOTE_9:
     {
+			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_9);
       OnKey(key);   
 		  break;
@@ -610,6 +658,7 @@ void CApplication::FrameMove()
 
     case XINPUT_IR_REMOTE_REVERSE:
     {
+			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_REVERSE);
       OnKey(key);   
 		  break;
@@ -617,14 +666,31 @@ void CApplication::FrameMove()
 
     case XINPUT_IR_REMOTE_FORWARD:
     {
+			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_FORWARD);
       OnKey(key);   
 		  break;
     }
-
 	}
+
 	
+	if (bGotKey) 
+	{
+		m_dwSpinDownTime=timeGetTime();
+	}
+
+	// spin down HD after 3 mins of inactivity
+	if (m_bSpinDown)
+	{
+		if ( (timeGetTime() - m_dwSpinDownTime) > 3*60*1000)
+		{
+			m_dwSpinDownTime=timeGetTime();
+			CIoSupport helper;
+			helper.SpindownHarddisk();
+		}
+	}
 }
+
 void CApplication::Stop()
 {
 	if (m_pPhytonParser)
@@ -697,6 +763,7 @@ void CApplication::ProcessScripts()
 
 bool CApplication::PlayFile(const CStdString& strFile)
 {
+	m_bSpinDown=true;
 	if (!m_pPlayer)
 	{
 		CPlayerCoreFactory factory;
@@ -708,10 +775,9 @@ bool CApplication::PlayFile(const CStdString& strFile)
 		m_guiMusicOverlay.SetCurrentFile(strFile);
 		m_guiWindowVideoOverlay.SetCurrentFile(strFile);
 
-		if ( CUtil::IsRemote(strFile) || CUtil::IsDVD(strFile) || CUtil::IsCDDA(strFile) || CUtil::IsISO9660(strFile) )
+		if ( CUtil::IsHD(strFile) )
 		{
-			CIoSupport helper;
-			//helper.SpindownHarddisk();
+			m_bSpinDown=false;
 		}
 	}
 	return bResult;
@@ -719,6 +785,7 @@ bool CApplication::PlayFile(const CStdString& strFile)
 
 void CApplication::OnPlayBackEnded()
 {
+	
 	if (!m_pPlayer) return;
 	g_playlistPlayer.PlayNext();
 }

@@ -12,6 +12,7 @@ public:
   virtual ~CUtil(void);
   static char* GetExtension(const CStdString& strFileName);
   static char* GetFileName(const CStdString& strFileNameAndPath);
+	static bool  IsHD(const CStdString& strFileName);
   static bool  IsXBE(const CStdString& strFileName);
   static bool  IsShortCut(const CStdString& strFileName);
   static int   cmpnocase(const char* str1,const char* str2);

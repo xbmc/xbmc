@@ -1065,3 +1065,13 @@ void CUtil::RemoveTempFiles()
 	} while (FindNextFile(hFind, &wfd));
 	FindClose( hFind );	  
 }
+
+bool CUtil::IsHD(const CStdString& strFileName)
+{
+	CURL url(strFileName);
+	CStdString strProtocol=url.GetProtocol();
+	strProtocol.ToLower();
+	if (strProtocol=="cdda" || strProtocol=="iso9660") return false;
+	if ( url.GetProtocol().size() ) return false;
+	return true;
+}

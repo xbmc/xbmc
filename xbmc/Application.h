@@ -92,6 +92,8 @@ public:
 	CDelayController								m_ctrIR;
 	Python*													m_pPhytonParser;
 	IPlayer*												m_pPlayer;
+	bool														m_bSpinDown;
+	DWORD														m_dwSpinDownTime;
 protected:
 	bool										m_bOverlayEnabled;
 	vector<int>							m_vecScriptIds;
