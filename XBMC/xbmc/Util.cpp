@@ -1694,8 +1694,8 @@ void CUtil::SetThumb(CFileItem* pItem)
 
 
   CStdString strFileName=pItem->m_strPath;
-
-	if (!CUtil::IsRemote(strFileName))
+  if (CUtil::IsXBE(strFileName) && pItem->m_bIsFolder) return;  // case where we have multiple paths with XBE
+  if (!CUtil::IsRemote(strFileName))
 	{
 		CStdString strFile;
 		CUtil::ReplaceExtension(strFileName, ".tbn", strFile);
