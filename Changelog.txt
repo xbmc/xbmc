@@ -5,7 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-
+  - 15-11-2004 fixed: Crash in dialogs if some dialog skin files weren't present.
   - 15-11-2004 fixed: Less intrusive warning on Kai disconnection and better reconnection facilities.
   - 14-11-2004 updated: Romanian language file (Thnx to bompy)
   - 14-11-2004 fixed: Reconnection to Kai engine after disconnection.
