@@ -22,7 +22,7 @@ public:
   long    AddProgram(const CStdString& strFilenameAndPath, const CStdString& strDescription, const CStdString& strBookmark);
   long	  GetFile(const CStdString& strFilenameAndPath, VECFILEITEMS& programs);
   void	  GetProgramsByBookmark(CStdString& strBookmark, VECFILEITEMS& programs, bool bOnlyDefaultXBE);
-  void	  GetProgramsByPath(const CStdString& strPath, VECFILEITEMS& programs, bool bOnlyDefaultXBE);
+  void	  GetProgramsByPath(const CStdString& strPath, VECFILEITEMS& programs, int idepth, bool bOnlyDefaultXBE);
   bool    IncTimesPlayed(const CStdString& strFileName1);
   bool	  EntryExists(const CStdString& strPath, const CStdString& strBookmark);
 protected:
