@@ -34,16 +34,16 @@ namespace XFILE
 	  CFile();
 	  virtual ~CFile();
 
-	  unsigned int	Read(void* lpBuf, offset_t uiBufSize);
-		int						Write(const void* lpBuf, offset_t uiBufSize);
+	  unsigned int	Read(void* lpBuf, __int64 uiBufSize);
+		int						Write(const void* lpBuf, __int64 uiBufSize);
 	  bool					Open(const char* strFileName, bool bBinary=true);
 		bool					Cache(const char* strFileName, const char* szDest, XFILE::IFileCallback* pCallback, void* pContext);
 	  bool					ReadString(char *szLine, int iLineLength);
-	  offset_t			Seek(offset_t iFilePosition, int iWhence=SEEK_SET);
+	  __int64			  Seek(__int64 iFilePosition, int iWhence=SEEK_SET);
 	  void					Close();
   	
-	  offset_t			GetPosition();
-	  offset_t			GetLength();
+	  __int64			  GetPosition();
+	  __int64			  GetLength();
   	
   private:
 	  IFile*				m_pFile;

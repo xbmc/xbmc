@@ -27,7 +27,7 @@ public:
 				return END_OF_READER; 
 			}
 			int_type buf = 0;
-			offset_t i = _stream.GetPosition();
+			__int64 i = _stream.GetPosition();
 
 			buf = (int_type)this->readChar();
 			_stream.Seek( i );
@@ -44,7 +44,7 @@ public:
 			{ 
 				return END_OF_READER; 
 			}
-			offset_t pt = _stream.GetPosition();
+			__int64 pt = _stream.GetPosition();
 			size_type st = (_stream.Read((void*) buf, (int) len));
 			_stream.Seek( pt + st );
 			return st;

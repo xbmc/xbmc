@@ -63,7 +63,7 @@ bool CFileISO::Open(const char* strUserName, const char* strPassword,const char*
 }
 
 //*********************************************************************************************
-unsigned int CFileISO::Read(void *lpBuf, offset_t uiBufSize)
+unsigned int CFileISO::Read(void *lpBuf, __int64 uiBufSize)
 {
 	if (!m_pIsoReader) return 0;
 	if (m_cache.Size() > 0)
@@ -109,7 +109,7 @@ void CFileISO::Close()
 }
 
 //*********************************************************************************************
-offset_t CFileISO::Seek(offset_t iFilePosition, int iWhence)
+__int64 CFileISO::Seek(__int64 iFilePosition, int iWhence)
 {
 	if (!m_pIsoReader) return -1;
 	m_pIsoReader->Seek(1,iFilePosition,iWhence);
@@ -118,14 +118,14 @@ offset_t CFileISO::Seek(offset_t iFilePosition, int iWhence)
 }
 
 //*********************************************************************************************
-offset_t CFileISO::GetLength()
+__int64 CFileISO::GetLength()
 {
 	if (!m_pIsoReader) return -1;
 	return m_pIsoReader->GetFileSize();
 }
 
 //*********************************************************************************************
-offset_t CFileISO::GetPosition()
+__int64 CFileISO::GetPosition()
 {
 	if (!m_pIsoReader) return -1;
 	return m_pIsoReader->GetFilePosition();
@@ -137,7 +137,7 @@ bool CFileISO::ReadString(char *szLine, int iLineLength)
 {
 	if (!m_pIsoReader) return false;
 	int iBytesRead=0;
-	offset_t iPrevFilePos = GetPosition();
+	__int64 iPrevFilePos = GetPosition();
 	strcpy(szLine,"");
 	while (1)
 	{

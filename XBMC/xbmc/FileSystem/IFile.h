@@ -15,7 +15,7 @@
 #include <windows.h>
 #endif
 
-typedef __int64 offset_t;
+//typedef __int64 __int64;
 
 #include "stdstring.h"
 using namespace std;
@@ -29,13 +29,13 @@ namespace XFILE
 	  IFile();
 	  virtual ~IFile();
 	  virtual bool					Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName, int iport,bool bBinary=true)=0;
-	  virtual unsigned int	Read(void* lpBuf, offset_t uiBufSize)=0;
-		virtual int						Write(const void* lpBuf, offset_t uiBufSize) {return -1;};
+	  virtual unsigned int	Read(void* lpBuf, __int64 uiBufSize)=0;
+		virtual int						Write(const void* lpBuf, __int64 uiBufSize) {return -1;};
 	  virtual bool					ReadString(char *szLine, int iLineLength)=0;
-	  virtual offset_t			Seek(offset_t iFilePosition, int iWhence=SEEK_SET)=0;
+	  virtual __int64			  Seek(__int64 iFilePosition, int iWhence=SEEK_SET)=0;
 	  virtual void					Close()=0;
-	  virtual offset_t			GetPosition()=0;
-	  virtual offset_t			GetLength()=0;
+	  virtual __int64			  GetPosition()=0;
+	  virtual __int64			  GetLength()=0;
 	  virtual bool          CanSeek() {return true;};
   };
 };
