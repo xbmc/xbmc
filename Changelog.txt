@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 01-11-2004 updated: Dutch language file (Thnx to joepmeloenx)
+  - 01-11-2004 updated: German (Austrian) language file (Thnx to CEOMR)
   - 31-10-2004 updated: Dutch language file (Thnx to joepmeloenx)
   - 31-10-2004 fixed: album info is not displayed in songs
   - 31-10-2004 updated: German language file
