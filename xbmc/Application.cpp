@@ -613,7 +613,6 @@ void CApplication::OnKey(CKey& key)
     // reset harddisk spindown timer
 		m_bSpinDown=false;
     
-    OutputDebugString("onkey:hd spindown disable\n");
 
     ResetScreenSaver();
 
@@ -1259,7 +1258,6 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
     if ( !CUtil::IsHD(m_strCurrentFile) )
 		{
       // no, then spindown should b possible
-      OutputDebugString("play file:hd spindown enable\n");
 			m_bSpinDown=true;
       m_dwSpinDownTime=0;
 		}
@@ -1514,7 +1512,6 @@ void CApplication::SpinHD()
       //not playing anymore, then spindown should b possible
 			m_bSpinDown=true;
       m_dwSpinDownTime=timeGetTime();
-      OutputDebugString("spinhd() not playing1->enable spindown\n");
 		}
 		else 
     {
@@ -1523,7 +1520,6 @@ void CApplication::SpinHD()
         //not playing anymore, then spindown should b possible
 			  m_bSpinDown=true;
         m_dwSpinDownTime=timeGetTime();
-        OutputDebugString("spinhd() not playing->enable spindown\n");
 		  }
       else
       {
@@ -1533,7 +1529,6 @@ void CApplication::SpinHD()
           // no, then spindown should b possible
 			    m_bSpinDown=true;
           m_dwSpinDownTime=timeGetTime();
-          OutputDebugString("spinhd() localfile enable spindown\n");
 		    }
       }
     }
@@ -1544,9 +1539,9 @@ void CApplication::SpinHD()
 	if (m_bSpinDown)
 	{
     // yes, then check the elapsed time
-		if ( (long)(timeGetTime() - m_dwSpinDownTime) >= ((long)g_stSettings.m_iHDSpinDownTime*60L*1000L) )
+    DWORD dwTimeSpan=timeGetTime() - m_dwSpinDownTime;
+		if ( m_dwSpinDownTime==0 || (dwTimeSpan >= ((DWORD)g_stSettings.m_iHDSpinDownTime*60UL*1000UL))  )
 		{
-      OutputDebugString("spinhd:SpinDown\n");
       // time has elapsed, spin it down
 			m_dwSpinDownTime=timeGetTime();
 			CIoSupport helper;
