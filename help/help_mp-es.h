@@ -4,7 +4,7 @@
 // Sefanja Ruijsenaars <sefanja at gmx.net>,
 // Andoni Zubimendi <andoni at lpsat.net>
 
-// Updated to help_mp-en.h v1.119
+// Updated to help_mp-en.h v1.126
 
 // ========================= MPlayer help ===========================
 
@@ -56,7 +56,8 @@ static char help_text[]=
 
 // mplayer.c: 
 
-#define MSGTR_Exiting "\nSaliendo... (%s)\n"
+#define MSGTR_Exiting "\nSaliendo...\n"
+#define MSGTR_ExitingHow "\nSaliendo... (%s)\n"
 #define MSGTR_Exit_quit "Salida."
 #define MSGTR_Exit_eof "Fin del archivo."
 #define MSGTR_Exit_error "Error fatal."
@@ -64,27 +65,20 @@ static char help_text[]=
 #define MSGTR_NoHomeDir "No se puede encontrar el directorio HOME.\n"
 #define MSGTR_GetpathProblem "Problema en get_path(\"config\").\n"
 #define MSGTR_CreatingCfgFile "Creando archivo de configuración: %s.\n"
-#define MSGTR_InvalidVOdriver "Nombre del driver de salida de vídeo incorrecto: %s\nUsa '-vo help' para obtener la lista de drivers de salida de vídeo disponibles.\n"
 #define MSGTR_InvalidAOdriver "Nombre del driver de salida de audio incorrecto: %s\nUsa '-ao help' para obtener la lista de drivers de salida de audio disponibles.\n"
 #define MSGTR_CopyCodecsConf "Copia o enlaza <árbol del código fuente de MPlayer>/etc/codecs.conf a ~/.mplayer/codecs.conf\n"
 #define MSGTR_BuiltinCodecsConf "Usando codecs.conf interno por defecto.\n" 
 #define MSGTR_CantLoadFont "No se puede cargar fuente: %s.\n"
 #define MSGTR_CantLoadSub "No se puede cargar la subtítulación: %s.\n"
-#define MSGTR_ErrorDVDkey "Error procesando la clave del DVD.\n"
-#define MSGTR_CmdlineDVDkey "Se usará la clave DVD solicitada para la descodificación.\n"
-#define MSGTR_DVDauthOk "La secuencia de autorización del DVD parece estar bien.\n"
 #define MSGTR_DumpSelectedStreamMissing "dump: FATAL: No se encuentra el stream seleccionado.\n"
 #define MSGTR_CantOpenDumpfile "No se puede abrir el archivo de dump.\n"
 #define MSGTR_CoreDumped "Core dumped.\n"
 #define MSGTR_FPSnotspecified "FPS no especificado (o inválido) en la cabecera! Usa la opción -fps.\n"
 #define MSGTR_TryForceAudioFmtStr "Tratando de forzar la familia de codecs de audio %d...\n"
-#define MSGTR_CantFindAfmtFallback "No se encuentra codec de audio para la familia forzada, se usarán otros drivers.\n"
 #define MSGTR_RTFMCodecs "Lea el archivo DOCS/HTML/es/codecs.html!\n"
 #define MSGTR_CantFindAudioCodec "No se encuentra codec para el formato de audio 0x%X!\n"
-#define MSGTR_CouldntInitAudioCodec "No se pudo inicializar el codec de audio, no se reproducirá sonido!\n"
 #define MSGTR_TryForceVideoFmtStr "Tratando de forzar la familia de codecs de vídeo %d...\n"
 #define MSGTR_CantFindVideoCodec "No se encuentra codec para el formato de vídeo 0x%X!\n"
-#define MSGTR_VOincompCodec "Disculpe, el dispositivo de salida de vídeo es incompatible con este codec.\n"
 #define MSGTR_CannotInitVO "FATAL: No se puede inicializar el driver de vídeo!\n"
 #define MSGTR_CannotInitAO "No se puede abrir o inicializar dispositivo de audio, no se reproducirá sonido.\n"
 #define MSGTR_StartPlaying "Empezando reproducción...\n"
@@ -109,7 +103,7 @@ static char help_text[]=
 "  - Intente con -cache 8192.\n"\
 "- Esta usando -cache para reproducir archivos AVI no entrelazados?\n"\
 "  - Intente con -nocache.\n"\
-"Lea DOCS/HTML/es/devices.html para consejos de ajuste o mayor velocidad.\n"\
+"Lea DOCS/HTML/es/video.html para consejos de ajuste o mayor velocidad.\n"\
 "Si nada de eso sirve, lee DOCS/HTML/es/bugreports.html\n\n"
 
 #define MSGTR_NoGui "MPlayer fue compilado sin soporte para interfaz gráfica.\n"
@@ -120,7 +114,6 @@ static char help_text[]=
 
 #define MSGTR_CompiledWithRuntimeDetection "Compilado con detección en tiempo de ejecución de CPU - esto no es óptimo! Para obtener mejor rendimiento, recompila MPlayer con --disable-runtime-cpudetection.\n"
 #define MSGTR_CompiledWithCPUExtensions "Compilado para CPU x86 con extensiones:"
-#define MSGTR_AvailableVideoOutputPlugins "Plugins de salida de vídeo disponibles:\n"
 #define MSGTR_AvailableVideoOutputDrivers "Drivers de salida de vídeo disponibles:\n"
 #define MSGTR_AvailableAudioOutputDrivers "Drivers de salida de audio disponibles:\n"
 #define MSGTR_AvailableAudioCodecs "Codecs de audio disponibles:\n"
@@ -131,12 +124,9 @@ static char help_text[]=
 #define MSGTR_UsingRTCTiming "Usando el RTC timing por hardware de Linux (%ldHz).\n"
 #define MSGTR_CannotReadVideoProperties "Vídeo: no se puede leer las propiedades.\n"
 #define MSGTR_NoStreamFound "No se ha encontrado stream.\n"
-#define MSGTR_InitializingAudioCodec "Inicializando codec de audio...\n"
 #define MSGTR_ErrorInitializingVODevice "Error abriendo/inicializando el dispositivo de la salida de vídeo (-vo)!\n"
 #define MSGTR_ForcedVideoCodec "Forzado el codec de vídeo: %s.\n"
 #define MSGTR_ForcedAudioCodec "Forzado el codec de audio: %s\n"
-#define MSGTR_AODescription_AOAuthor "AO: Descripción: %s\nAO: Autor: %s.\n"
-#define MSGTR_AOComment "AO: Comentario: %s.\n"
 #define MSGTR_Video_NoVideo "Vídeo: no hay vídeo!\n"
 #define MSGTR_NotInitializeVOPorVO "\nFATAL: No se pudieron inicializar los filtros de vídeo (-vf) o de salida de vídeo (-vo)!\n"
 #define MSGTR_Paused "\n  =====  PAUSA  =====\r"
@@ -163,12 +153,26 @@ static char help_text[]=
 "  se encuentran. No podemos y no lo ayudaremos a menos que nos provea esa\n"\
 "  información cuando este reportando algún posible defecto.\n"
 
+#define MSGTR_EdlCantUseBothModes "Imposible usar -edl y -edlout al mismo tiempo.\n"
+#define MSGTR_EdlOutOfMem "No hay memoria suficiente para almacenar los datos EDL.\n"
+#define MSGTR_EdlRecordsNo "Leidas %d acciones EDL.\n"
+#define MSGTR_EdlQueueEmpty "No hay acciones EDL de las que ocuparse.\n"
+#define MSGTR_EdlCantOpenForWrite "Error tratando de escribir en [%s].\n"
+#define MSGTR_EdlCantOpenForRead "Error tratando de leer desde [%s].\n"
+#define MSGTR_EdlNOsh_video "Imposible usar EDL sin video.\n"
+#define MSGTR_EdlNOValidLine "Linea EDL inválida: %s\n"
+#define MSGTR_EdlBadlyFormattedLine "Ignorando linea EDL mal formateada [%d].\n"
+#define MSGTR_EdlBadLineOverlap "Ultima posición de parada fue [%f]; próxima "\
+"posición de partida es [%f]. Las operaciones deben estar en orden cronológico"\
+", sin sobreponerse, ignorando.\n"
+#define MSGTR_EdlBadLineBadStop "La posición de parada debe ser posterior a la"\
+" posición de partida.\n"
+
 // mencoder.c:
 
 #define MSGTR_UsingPass3ControllFile "Usando el archivo de control pass3: %s\n"
 #define MSGTR_MissingFilename "\nFalta el nombre del archivo.\n\n"
 #define MSGTR_CannotOpenFile_Device "No se pudo abrir el archivo o el dispositivo.\n"
-#define MSGTR_ErrorDVDAuth "Error en la autorización DVD...\n"
 #define MSGTR_CannotOpenDemuxer "No se pudo abrir el demuxer.\n"
 #define MSGTR_NoAudioEncoderSelected \
 "\nNo se ha selecciono codificador de audio (-oac).\n"\
@@ -176,7 +180,6 @@ static char help_text[]=
 #define MSGTR_NoVideoEncoderSelected \
 "\nNo se ha selecciono codificador de video (-ovc). \n"\
 "  Escoge uno (mira -ovc help)\n"
-#define MSGTR_InitializingAudioCodec "Inicializando codec de audio...\n"
 #define MSGTR_CannotOpenOutputFile "No se puede abrir el archivo de salida'%s'.\n"
 #define MSGTR_EncoderOpenFailed "No se pudo abrir el codificador.\n"
 #define MSGTR_ForcingOutputFourcc "Forzando salida fourcc a %x [%.4s].\n"
@@ -189,6 +192,135 @@ static char help_text[]=
 #define MSGTR_RecommendedVideoBitrate "Bitrate recomendado para %s CD: %d.\n"
 #define MSGTR_VideoStreamResult "\nStream de vídeo: %8.3f kbit/s (%d bps), tamaño: %d bytes, %5.3f segundos, %d frames\n"
 #define MSGTR_AudioStreamResult "\nStream de audio: %8.3f kbit/s (%d bps), tamaño: %d bytes, %5.3f segundos\n"
+#define MSGTR_OpenedStream "exito: formato: %d  datos: 0x%X - 0x%x\n"
+#define MSGTR_VCodecFramecopy "codec de video: copia de cuadro (%dx%d %dbpp fourcc=%x)\n"
+#define MSGTR_ACodecFramecopy "codec de audio: copia de cuadro (formato=%x canales=%d razón=%ld bits=%d bps=%ld muestra-%ld)\n"
+#define MSGTR_CBRPCMAudioSelected "audio PCM CBR seleccionado\n"
+#define MSGTR_MP3AudioSelected "audio MP3 seleccionado\n"
+#define MSGTR_CannotAllocateBytes "No se pueden asignar %d bytes\n"
+#define MSGTR_SettingAudioDelay "Ajustando el RETRASO DEL AUDIO a %5.3f\n"
+#define MSGTR_SettingAudioInputGain "Ajustando la ganancia de entrada de audio input a %f\n"
+#define MSGTR_LamePresetEquals "\npreconfiguración=%s\n\n"
+#define MSGTR_LimitingAudioPreload "Limitando la pre-carda de audio a 0.4s\n"
+#define MSGTR_IncreasingAudioDensity "Incrementando la densidad de audio a 4\n"
+#define MSGTR_ZeroingAudioPreloadAndMaxPtsCorrection "Forzando la precarga de audio a 0, puntos máximos de corrección ajustado a 0\n"
+#define MSGTR_CBRAudioByterate "\n\naudio CBR: %ld bytes/seg, %d bytes/bloque\n"
+#define MSGTR_LameVersion "versión de LAME %s (%s)\n\n"
+#define MSGTR_InvalidBitrateForLamePreset "Error: La tasa de bits especificada esta fuera de los rangos de valor para esta preconfiguración\n"\
+"\n"\
+"Cuando usa este modo debe ingresar un valor entre \"8\" y \"320\"\n"\
+"\n"\
+"Para mayor informción prueba: \"-lameopts preset=help\"\n"
+#define MSGTR_InvalidLamePresetOptions "Error: No ingreso un perfil valido y/o opciones con una preconfiguración\n"\
+"\n"\
+"Los perfiles disponibles son:\n"\
+"\n"\
+"   <fast>        standard\n"\
+"   <fast>        extreme\n"\
+"                 insane\n"\
+"   <cbr> (Modo ABR) - Implica el Modo ABR Mode. Para usarlo,\n"\
+"                      solamente especifique la tasa de bits.. Por ejemplo:\n"\
+"                      \"preset=185\" activates esta\n"\
+"                      preconfiguración y usa 185 como el kbps promedio.\n"\
+"\n"\
+"    Algunos ejemplos:\n"\
+"\n"\
+"    \"-lameopts fast:preset=standard  \"\n"\
+" o  \"-lameopts  cbr:preset=192       \"\n"\
+" o  \"-lameopts      preset=172       \"\n"\
+" o  \"-lameopts      preset=extreme   \"\n"\
+"\n"\
+"Para mayor información pruebe: \"-lameopts preset=help\"\n"
+#define MSGTR_LamePresetsLongInfo "\n"\
+"Las opciones de preconfiguración estan hechas para proveer la mayor calidad posible.\n"\
+"\n"\
+"Estas han sido en su mayor sometidas y ajustadas por medio de pruebas rigurosas de\n"\
+"doble escucha ciega (double blind listening) para verificar y lograr este objetivo\n"\
+"\n"\
+"Son continuamente actualizadas para con el desarrollo actual que esta\n"\
+"ocurriendo y como resultado debería proveer practicamente la mejor calidad\n"\
+"actualmente posible de LAME.\n"\
+"\n"\
+"Para activar estas preconfiguración:\n"\
+"\n"\
+"   For modos VBR (en general mayor calidad):\n"\
+"\n"\
+"     \"preset=standard\" Esta preconfiguración generalmente debería ser transparente\n"\
+"                             para la mayoría de la genta en la música y ya es bastante\n"\
+"                             buena en calidad.\n"\
+"\n"\
+"     \"preset=extreme\" Si tiene un oido extramademente bueno y un equipo\n"\
+"                             similar, esta preconfiguración normalmente le\n"\
+"                             proveera una calidad levemente superior al modo "\
+                               "\"standard\"\n"\
+"\n"\
+"   Para 320kbps CBR (la mayor calidad posible desde las preconfiguraciones):\n"\
+"\n"\
+"     \"preset=insane\"  Esta preconfiguración será excesiva para la mayoria\n"\
+"                             de la gente en la mayoria de las ocasiones, pero si debe\n"\
+"                             tener la mayor calidad posible sin tener en cuenta el\n"\
+"                             tamaño del archivo, esta es la opción definitiva.\n"\
+"\n"\
+"   Para modos ABR (alta calidad por tasa de bits dado pero no tan alto como modo VBR):\n"\
+"\n"\
+"     \"preset=<kbps>\"  Usando esta preconfiguración normalmente obtendrá buena\n"\
+"                             calidad a la tasa de bits especificada. Dependiendo de\n"\
+"                             la tasa de bits ingresada, esta preconfiguración determinará\n"\
+"                             las opciones optimas para esa situación particular.\n"\
+"                             A pessar que funciona, no es tan flexible como el modo\n"\
+"                             VBR, y normalmente no llegarán a obtener el mismo nivel\n"\
+"                             de calidad del modo VBR a mayores tasas de bits.\n"\
+"\n"\
+"Las siguientes opciones también están disponibles para los correspondientes perfiles:\n"\
+"\n"\
+"   <fast>        standard\n"\
+"   <fast>        extreme\n"\
+"                 insane\n"\
+"   <cbr> (Modo ABR) - Implica el Modo ABR Mode. Para usarlo,\n"\
+"                      solamente especifique la tasa de bits.. Por ejemplo:\n"\
+"                      \"preset=185\" activates esta\n"\
+"                      preconfiguración y usa 185 como el kbps promedio.\n"\
+"\n"\
+"   \"fast\" - Activa el nuevo modo rápido VBR para un perfil en particular. La\n"\
+"            desventaja al cambio de velocidad es que muchas veces la tasa de\n"\
+"            bits será levemente más alta respecto del modo normal y la calidad\n"\
+"            puede llegar a ser un poco más baja también.\n"\
+"Advertencia: con la versión actual las preconfiruaciones \"fast\" puede llegar a\n"\
+"             dar como resultado tasas de bits demasiado altas comparadas a los normales.\n"\
+"\n"\
+"   \"cbr\"  - Si usa el modo ABR (ver más arriba) con una tasa de bits significativa\n"\
+"            como 80, 96, 112, 128, 160, 192, 224, 256, 320,\n"\
+"            puede usar la opción \"cbr\" para forzar la codificación en modo CBR\n"\
+"            en lugar del modo por omisión ABR. ABR provee mayor calidad pero\n"\
+"            CBR podría llegar a ser util en  situaciones tales como cuando se\n"\
+"            recibe un flujo mp3 a través de internet.\n"\
+"\n"\
+"    Por ejemplo:\n"\
+"\n"\
+"    \"-lameopts fast:preset=standard  \"\n"\
+" o  \"-lameopts  cbr:preset=192       \"\n"\
+" o  \"-lameopts      preset=172       \"\n"\
+" o  \"-lameopts      preset=extreme   \"\n"\
+"\n"\
+"\n"\
+"Unos poco alias estan disponibles para el modo ABR:\n"\
+"phone => 16kbps/mono        phon+/lw/mw-eu/sw => 24kbps/mono\n"\
+"mw-us => 40kbps/mono        voice => 56kbps/mono\n"\
+"fm/radio/tape => 112kbps    hifi => 160kbps\n"\
+"cd => 192kbps               studio => 256kbps"
+#define MSGTR_ConfigfileError "error en archivo de configuración"
+#define MSGTR_ErrorParsingCommandLine "error en parametros de la línea de comando"
+#define MSGTR_VideoStreamRequired "¡El flujo de video es obligatorio!\n"
+#define MSGTR_ForcingInputFPS "en su lugar los cuadros por segundos de entrada serán interpretados como %5.2f\n"
+#define MSGTR_RawvideoDoesNotSupportAudio "El formato de archivo de salida RAWVIDEO no soporta audio - desactivando audio\n"
+#define MSGTR_DemuxerDoesntSupportNosound "Este demuxer todavía no soporta -nosound.\n"
+#define MSGTR_MemAllocFailed "falló la asignación de memoria"
+#define MSGTR_NoMatchingFilter "¡No se encontró filtro o formato de salida concordante!\n"
+#define MSGTR_MP3WaveFormatSizeNot30 "sizeof(MPEGLAYER3WAVEFORMAT)==%d!=30, ¿quiza este fallado el compilador de C?\n"
+#define MSGTR_NoLavcAudioCodecName "LAVC Audio,¡falta el nombre del codec!\n"
+#define MSGTR_LavcAudioCodecNotFound "LAVC Audio, no se encuentra el codificador para el codec %s\n"
+#define MSGTR_CouldntAllocateLavcContext "LAVC Audio, ¡no se puede asignar contexto!\n"
+#define MSGTR_CouldntOpenCodec "No se puede abrir el codec %s, br=%d\n"
 
 // cfg-mencoder.h
 
@@ -367,10 +499,16 @@ static char help_text[]=
 #define MSGTR_MovieAspectIsSet "Aspecto es %.2f:1 - prescalando a aspecto correcto.\n"
 #define MSGTR_MovieAspectUndefined "Aspecto de película no es definido - no se ha aplicado prescalado.\n"
 
+// vd_dshow.c, vd_dmo.c
+#define MSGTR_DownloadCodecPackage "Necesita actualizar/instalar el paquete binario con codecs.\n Dirijase a http://mplayerhq.hu/homepage/dload.html\n"
+#define MSGTR_DShowInitOK "INFO: Inicialización correcta de codec de vídeo Win32/DShow.\n"
+#define MSGTR_DMOInitOK "INFO: Inicialización correcta de codec de vídeo Win32/DMO.\n"
+
 // x11_common.c
 #define MSGTR_EwmhFullscreenStateFailed "\nX11: ¡No se pudo enviar evento de pantalla completa EWMH!\n"
 
-#define MSGTR_NeedAfVolume "Mixer: Este controlador de salida de audio necesita \"-af volumén\" para cambiar el volumén.\n"
+#define MSGTR_InsertingAfVolume "[Mixer] No mezclador de volumen por hardware, insertando filtro de volumen.\n"
+#define MSGTR_NoVolume "[Mixer] Na hay control de volumen disponible.\n"
 
 // ====================== GUI messages/buttons ========================
 
@@ -388,8 +526,7 @@ static char help_text[]=
 #define MSGTR_SkinBrowser "Navegador de skins"
 #define MSGTR_Network "Streaming por red..."
 #define MSGTR_Preferences "Preferencias"
-#define MSGTR_OSSPreferences "Configuración del driver OSS"
-#define MSGTR_SDLPreferences "Configuración del driver SDL"
+#define MSGTR_AudioPreferences "Configuración de controlador de Audio"
 #define MSGTR_NoMediaOpened "no se abrió audio/vídeo"
 #define MSGTR_VCDTrack "pista VCD %d"
 #define MSGTR_NoChapter "sin capítulo"
@@ -433,7 +570,6 @@ static char help_text[]=
 #define MSGTR_SKIN_FONT_FontImageNotFound "Archivo de imagen de fuente noi encontrado.\n"
 #define MSGTR_SKIN_FONT_NonExistentFontID "identificador de fuente no existente (%s).\n"
 #define MSGTR_SKIN_UnknownParameter "parámetro desconocido (%s)\n"
-#define MSGTR_SKINBROWSER_NotEnoughMemory "[skinbrowser] no hay suficiente memoria\n"
 #define MSGTR_SKIN_SKINCFG_SkinNotFound "Skin no encontrado (%s).\n"
 #define MSGTR_SKIN_SKINCFG_SkinCfgReadError "Error de lectura del archivo de configuración del skin (%s).\n"
 #define MSGTR_SKIN_LABEL "Skins:"
@@ -516,6 +652,7 @@ static char help_text[]=
 #define MSGTR_PREFERENCES_Misc "Misc"
 
 #define MSGTR_PREFERENCES_None "Ninguno"
+#define MSGTR_PREFERENCES_DriverDefault "controlador por omisión"
 #define MSGTR_PREFERENCES_AvailableDrivers "Drivers disponibles:"
 #define MSGTR_PREFERENCES_DoNotPlaySound "No reproducir sonido"
 #define MSGTR_PREFERENCES_NormalizeSound "Normalizar sonido"
@@ -556,9 +693,9 @@ static char help_text[]=
 #define MSGTR_PREFERENCES_FRAME_CodecDemuxer "Codec y demuxer"
 #define MSGTR_PREFERENCES_FRAME_Cache "Cache"
 #define MSGTR_PREFERENCES_FRAME_Misc "Misc"
-#define MSGTR_PREFERENCES_OSS_Device "Dispositivo:"
-#define MSGTR_PREFERENCES_OSS_Mixer "Mezclador:"
-#define MSGTR_PREFERENCES_SDL_Driver "Controlador:"
+#define MSGTR_PREFERENCES_Audio_Device "Dispositivo:"
+#define MSGTR_PREFERENCES_Audio_Mixer "Mezclador:"
+#define MSGTR_PREFERENCES_Audio_MixerChannel "Canal del Mezclador:"
 #define MSGTR_PREFERENCES_Message "Algunas opciones requieren reiniciar la reproducción."
 #define MSGTR_PREFERENCES_DXR3_VENC "Codificador de vídeo:"
 #define MSGTR_PREFERENCES_DXR3_LAVC "Usar LAVC (FFmpeg)"
@@ -619,3 +756,149 @@ static char help_text[]=
 #define MSGTR_MSGBOX_LABEL_Warning "Advertencia"
 
 #endif
+
+// ======================= VO Video Output drivers ========================
+
+#define MSGTR_VOincompCodec "Disculpe, el dispositivo de salida de vídeo es incompatible con este codec.\n"
+#define MSGTR_VO_GenericError "Este error ha ocurrido"
+#define MSGTR_VO_UnableToAccess "No es posible acceder"
+#define MSGTR_VO_ExistsButNoDirectory "ya existe, pero no es un directorio."
+#define MSGTR_VO_DirExistsButNotWritable "El directorio ya existe, pero no se puede escribir en él."
+#define MSGTR_VO_DirExistsAndIsWritable "El directorio ya existe y se puede escribir en él."
+#define MSGTR_VO_CantCreateDirectory "No es posible crear el directorio de salida."
+#define MSGTR_VO_DirectoryCreateSuccess "Directorio de salida creado exitosamente."
+
+// vo_jpeg.c - desde aqui hasta abajo se ha sincronizado con help_mp-en (1.148)
+#define MSGTR_VO_JPEG_ProgressiveJPEG "JPEG progresivo habilitado."
+#define MSGTR_VO_JPEG_NoProgressiveJPEG "JPEG progresivo deshabilitado."
+#define MSGTR_VO_JPEG_BaselineJPEG "Baseline JPEG habilitado."
+#define MSGTR_VO_JPEG_NoBaselineJPEG "Baseline JPEG deshabilitado."
+
+// vo_pnm.c
+#define MSGTR_VO_PNM_ASCIIMode "modo ASCII habilitado."
+#define MSGTR_VO_PNM_RawMode "Raw mode habilitado."
+#define MSGTR_VO_PNM_PPMType "Escribiré archivos PPM."
+#define MSGTR_VO_PNM_PGMType "Escribiré archivos PGM."
+#define MSGTR_VO_PNM_PGMYUVType "Escribiré archivos PGMYUV."
+ 
+// vo_yuv4mpeg.c
+#define MSGTR_VO_YUV4MPEG_InterlacedHeightDivisibleBy4 "Modo interlaceado requiere que la altura de la imagen sea divisible por 4."
+#define MSGTR_VO_YUV4MPEG_InterlacedLineBufAllocFail "No se pudo reservar buffer de línea para el modo interlaceado."
+#define MSGTR_VO_YUV4MPEG_InterlacedInputNotRGB "Entrada no es RGB, imposible separar crominancia por campos!"
+#define MSGTR_VO_YUV4MPEG_WidthDivisibleBy2 "El ancho de la imagen debe ser divisible por 2."
+#define MSGTR_VO_YUV4MPEG_NoMemRGBFrameBuf "No hay memoria suficiente para reservar framebuffer RGB."
+#define MSGTR_VO_YUV4MPEG_OutFileOpenError "Imposible obtener memoria o descriptor de archivos para escribir \"stream.yuv\"!"
+#define MSGTR_VO_YUV4MPEG_OutFileWriteError "Error escribiendo imagen a la salida!"
+#define MSGTR_VO_YUV4MPEG_UnknownSubDev "Se desconoce el subdevice: %s"
+#define MSGTR_VO_YUV4MPEG_InterlacedTFFMode "Usando modo de salida interlaceado, top-field primero."
+#define MSGTR_VO_YUV4MPEG_InterlacedBFFMode "Usando modo de salida interlaceado, bottom-field primero."
+#define MSGTR_VO_YUV4MPEG_ProgressiveMode "Usando (por defecto) modo de cuadro progresivo."
+
+// Viejos vo drivers que han sido reemplazados
+
+#define MSGTR_VO_PGM_HasBeenReplaced "El controlador de salida pgm ha sido reemplazado por -vo pnm:pgmyuv.\n"
+#define MSGTR_VO_MD5_HasBeenReplaced "El controlador de salida md5 ha sido reemplazado por -vo md5sum.\n"
+
+// ======================= AO Audio Output drivers ========================
+
+// libao2
+
+// audio_out.c
+#define MSGTR_AO_ALSA9_1x_Removed "audio_out: los módulos alsa9 y alsa1x fueron eliminados, use -ao alsa.\n"
+
+// ao_oss.c
+#define MSGTR_AO_OSS_CantOpenMixer "[AO OSS] audio_setup: Imposible abrir dispositivo mezclador %s: %s\n"
+#define MSGTR_AO_OSS_ChanNotFound "[AO OSS] audio_setup: El mezclador de la tarjeta de audio no tiene el canal '%s' usando valor por omisión.\n"
+#define MSGTR_AO_OSS_CantOpenDev "[AO OSS] audio_setup: Imposible abrir dispositivo de audio %s: %s\n"
+#define MSGTR_AO_OSS_CantMakeFd "[AO OSS] audio_setup: Imposible crear descriptor de archivo, bloqueando: %s\n"
+#define MSGTR_AO_OSS_CantSetAC3 "[AO OSS] Imposible configurar dispositivo de audio %s a salida AC3, tratando S16...\n"
+#define MSGTR_AO_OSS_CantSetChans "[AO OSS] audio_setup: Imposible configurar dispositivo de audio a %d channels.\n"
+#define MSGTR_AO_OSS_CantUseGetospace "[AO OSS] audio_setup: El controlador no soporta SNDCTL_DSP_GETOSPACE :-(\n"
+#define MSGTR_AO_OSS_CantUseSelect "[AO OSS]\n   ***  Su controlador de audio no soporta select()  ***\n Recompile MPlayer con #undef HAVE_AUDIO_SELECT en config.h !\n\n"
+#define MSGTR_AO_OSS_CantReopen "[AO OSS]\n Error fatal: *** Imposible RE-ABRIR / RESETEAR DISPOSITIVO DE AUDIO *** %s\n"
+
+// ao_arts.c
+#define MSGTR_AO_ARTS_CantInit "[AO ARTS] %s\n"
+#define MSGTR_AO_ARTS_ServerConnect "[AO ARTS] Conectado al servidor de sonido.\n"
+#define MSGTR_AO_ARTS_CantOpenStream "[AO ARTS] Imposible abrir stream.\n"
+#define MSGTR_AO_ARTS_StreamOpen "[AO ARTS] Stream Abierto.\n"
+#define MSGTR_AO_ARTS_BufferSize "[AO ARTS] Tamaño del buffer: %d\n"
+
+// ao_dxr2.c
+#define MSGTR_AO_DXR2_SetVolFailed "[AO DXR2] Fallo Seteando volumen en %d.\n"
+#define MSGTR_AO_DXR2_UnsupSamplerate "[AO DXR2] dxr2: %d Hz no soportado, trate \"-aop list=resample\"\n"
+
+// ao_esd.c
+#define MSGTR_AO_ESD_CantOpenSound "[AO ESD] Fallo en esd_open_sound: %s\n"
+#define MSGTR_AO_ESD_LatencyInfo "[AO ESD] latencia: [servidor: %0.2fs, red: %0.2fs] (ajuste %0.2fs)\n"
+#define MSGTR_AO_ESD_CantOpenPBStream "[AO ESD] Fallo abriendo playback stream esd: %s\n"
+
+// ao_mpegpes.c
+#define MSGTR_AO_MPEGPES_CantSetMixer "[AO MPEGPES] Fallo configurando mezclador de audio DVB:%s\n"
+#define MSGTR_AO_MPEGPES_UnsupSamplerate "[AO MPEGPES] %d Hz no soportado, trate de resamplear...\n"
+ 
+// ao_null.c
+
+// ao_pcm.c
+#define MSGTR_AO_PCM_FileInfo "[AO PCM] Archivo: %s (%s)\nPCM: Samplerate: %iHz Canales: %s Formato %s\n"
+#define MSGTR_AO_PCM_HintInfo "[AO PCM] Info: El volcado más rápido se logra con -vc dummy -vo null\nPCM: Info: Para escribir archivos de onda (WAVE) use -waveheader (valor por omisión).\n"
+#define MSGTR_AO_PCM_CantOpenOutputFile "[AO PCM] Imposible abrir %s para escribir!\n"
+
+// ao_sdl.c
+#define MSGTR_AO_SDL_INFO "[AO SDL] Samplerate: %iHz Canales: %s Formato %s\n"
+#define MSGTR_AO_SDL_DriverInfo "[AO SDL] usando controlador de audio: %s .\n"
+#define MSGTR_AO_SDL_UnsupportedAudioFmt "[AO SDL] Formato de audio no soportado: 0x%x.\n"
+#define MSGTR_AO_SDL_CantInit "[AO SDL] Error inicializando audio SDL: %s\n"
+#define MSGTR_AO_SDL_CantOpenAudio "[AO SDL] Imposible abrir audio: %s\n"
+
+// ao_sgi.c
+#define MSGTR_AO_SGI_INFO "[AO SGI] control.\n"
+#define MSGTR_AO_SGI_InitInfo "[AO SGI] init: Samplerate: %iHz Canales: %s Formato %s\n"
+#define MSGTR_AO_SGI_InvalidDevice "[AO SGI] play: dispositivo inválido.\n"
+#define MSGTR_AO_SGI_CantSetParms_Samplerate "[AO SGI] init: fallo en setparams: %s\nImposble configurar samplerate deseado.\n"
+#define MSGTR_AO_SGI_CantSetAlRate "[AO SGI] init: AL_RATE No fue aceptado en el recurso dado.\n"
+#define MSGTR_AO_SGI_CantGetParms "[AO SGI] init: fallo en getparams: %s\n"
+#define MSGTR_AO_SGI_SampleRateInfo "[AO SGI] init: samplerate es ahora %lf (el deseado es %lf)\n"
+#define MSGTR_AO_SGI_InitConfigError "[AO SGI] init: %s\n"
+#define MSGTR_AO_SGI_InitOpenAudioFailed "[AO SGI] init: Imposible abrir canal de audio: %s\n"
+#define MSGTR_AO_SGI_Uninit "[AO SGI] uninit: ...\n"
+ #define MSGTR_AO_SGI_Reset "[AO SGI] reseteando: ...\n"
+#define MSGTR_AO_SGI_PauseInfo "[AO SGI] audio_pausa: ...\n"
+#define MSGTR_AO_SGI_ResumeInfo "[AO SGI] audio_continuar: ...\n"
+
+// ao_sun.c
+#define MSGTR_AO_SUN_RtscSetinfoFailed "[AO SUN] rtsc: Fallo en SETINFO.\n"
+#define MSGTR_AO_SUN_RtscWriteFailed "[AO SUN] rtsc: Fallo escribiendo."
+#define MSGTR_AO_SUN_CantOpenAudioDev "[AO SUN] Imposible abrir dispositivo de audio %s, %s -> nosound.\n"
+#define MSGTR_AO_SUN_UnsupSampleRate "[AO SUN] audio_setup: Su tarjeta no soporta el canal %d, %s, %d Hz samplerate.\n"
+#define MSGTR_AO_SUN_CantUseSelect "[AO SUN]\n   ***  Su controlador de audio no soporta select()  ***\nRecompile MPlayer con #undef HAVE_AUDIO_SELECT en config.h !\n\n"
+#define MSGTR_AO_SUN_CantReopenReset "[AO SUN]\nError fatal: *** IMPOSIBLE RE-ABRIR / RESETEAR DISPOSITIVO DE AUDIO (%s) ***\n"
+
+// ao_alsa5.c
+#define MSGTR_AO_ALSA5_InitInfo "[AO ALSA5] alsa-init: formato solicitado: %d Hz, %d canales, %s\n"
+#define MSGTR_AO_ALSA5_SoundCardNotFound "[AO ALSA5] alsa-init: No se encontró tarjeta de sonido alguna.\n"
+#define MSGTR_AO_ALSA5_InvalidFormatReq "[AO ALSA5] alsa-init: formato inválido (%s) solicitado - deshabilitando salida.\n"
+#define MSGTR_AO_ALSA5_PlayBackError "[AO ALSA5] alsa-init: Fallo en playback open: %s\n"
+#define MSGTR_AO_ALSA5_PcmInfoError "[AO ALSA5] alsa-init: Error en pcm info: %s\n"
+#define MSGTR_AO_ALSA5_SoundcardsFound "[AO ALSA5] alsa-init: %d tarjeta(s) de sonido encontrada(s), using: %s\n"
+#define MSGTR_AO_ALSA5_PcmChanInfoError "[AO ALSA5] alsa-init: Error en la información del canal PCM: %s\n"
+#define MSGTR_AO_ALSA5_CantSetParms "[AO ALSA5] alsa-init: Error configurando parámetros: %s\n"
+#define MSGTR_AO_ALSA5_CantSetChan "[AO ALSA5] alsa-init: Error configurando canal: %s\n"
+#define MSGTR_AO_ALSA5_ChanPrepareError "[AO ALSA5] alsa-init: Error preparando canal: %s\n"
+#define MSGTR_AO_ALSA5_DrainError "[AO ALSA5] alsa-uninit: Error de 'playback drain': %s\n"
+#define MSGTR_AO_ALSA5_FlushError "[AO ALSA5] alsa-uninit: Error de 'playback flush': %s\n"
+#define MSGTR_AO_ALSA5_PcmCloseError "[AO ALSA5] alsa-uninit: Error cerrando pcm: %s\n"
+#define MSGTR_AO_ALSA5_ResetDrainError "[AO ALSA5] alsa-reset: Error de 'playback drain': %s\n"
+#define MSGTR_AO_ALSA5_ResetFlushError "[AO ALSA5] alsa-reset: Error de 'playback flush': %s\n"
+#define MSGTR_AO_ALSA5_ResetChanPrepareError "[AO ALSA5] alsa-reset: Error preparando canal: %s\n"
+#define MSGTR_AO_ALSA5_PauseDrainError "[AO ALSA5] alsa-pause: Error de 'playback drain': %s\n"
+#define MSGTR_AO_ALSA5_PauseFlushError "[AO ALSA5] alsa-pause: Error de 'playback flush': %s\n"
+#define MSGTR_AO_ALSA5_ResumePrepareError "[AO ALSA5] alsa-resume: Error preparando canal: %s\n"
+#define MSGTR_AO_ALSA5_Underrun "[AO ALSA5] alsa-play: alsa underrun, reseteando stream.\n"
+#define MSGTR_AO_ALSA5_PlaybackPrepareError "[AO ALSA5] alsa-play: Error preparando playback: %s\n"
+#define MSGTR_AO_ALSA5_WriteErrorAfterReset "[AO ALSA5] alsa-play: Error de escritura despues de resetear: %s - me rindo!.\n"
+#define MSGTR_AO_ALSA5_OutPutError "[AO ALSA5] alsa-play: Error de salida: %s\n"
+
+// ao_plugin.c
+
+ #define MSGTR_AO_PLUGIN_InvalidPlugin "[AO PLUGIN] Plugin inválido: %s\n"

@@ -218,10 +218,16 @@ static uint32_t SAVED_OV0_GRAPHICS_KEY_MSK = 0;
 static uint32_t SAVED_OV0_VID_KEY_CLR = 0;
 static uint32_t SAVED_OV0_VID_KEY_MSK = 0;
 static uint32_t SAVED_OV0_KEY_CNTL = 0;
-#if defined(RAGE128) && (WORDS_BIGENDIAN)
+#ifdef WORDS_BIGENDIAN
 static uint32_t SAVED_CONFIG_CNTL = 0;
+#if defined(RAGE128)
 #define APER_0_BIG_ENDIAN_16BPP_SWAP (1<<0)
 #define APER_0_BIG_ENDIAN_32BPP_SWAP (2<<0)
+#else
+#define RADEON_SURFACE_CNTL                 0x0b00
+#define RADEON_NONSURF_AP0_SWP_16BPP (1 << 20)
+#define RADEON_NONSURF_AP0_SWP_32BPP (1 << 21)
+#endif
 #endif
 
 #define GETREG(TYPE,PTR,OFFZ)		(*((volatile TYPE*)((PTR)+(OFFZ))))
@@ -301,6 +307,19 @@ static uint32_t radeon_get_yres( void )
   v_total = INREG(CRTC_V_TOTAL_DISP);
   yres = (v_total >> 16) & 0xffff;
   return yres + 1;
+}
+
+/* get flat panel x resolution*/
+static uint32_t radeon_get_fp_xres( void ){
+  uint32_t xres=(INREG(FP_HORZ_STRETCH)&0x00fff000)>>16;
+  xres=(xres+1)*8;
+  return xres;
+}
+
+/* get flat panel y resolution*/
+static uint32_t radeon_get_fp_yres( void ){
+  uint32_t yres=(INREG(FP_VERT_STRETCH)&0x00fff000)>>12;
+  return yres+1;
 }
 
 static void radeon_wait_vsync(void)
@@ -854,6 +873,7 @@ static unsigned short ati_card_ids[] =
  DEVICE_ATI_RADEON_R200_QJ,
  DEVICE_ATI_RADEON_R200_QK,
  DEVICE_ATI_RADEON_R200_QL,
+ DEVICE_ATI_RADEON_R200_QM,
  DEVICE_ATI_RADEON_R200_QH2,
  DEVICE_ATI_RADEON_R200_QI2,
  DEVICE_ATI_RADEON_R200_QJ2,
@@ -1026,6 +1046,7 @@ int vixProbe( int verbose,int force )
             case DEVICE_ATI_RADEON_R200_QJ:
             case DEVICE_ATI_RADEON_R200_QK:
             case DEVICE_ATI_RADEON_R200_QL:
+            case DEVICE_ATI_RADEON_R200_QM:
             case DEVICE_ATI_RADEON_R200_QH2:
             case DEVICE_ATI_RADEON_R200_QI2:
             case DEVICE_ATI_RADEON_R200_QJ2:
@@ -1172,7 +1193,8 @@ int vixInit( void )
 #endif
 
 /* XXX: hack, but it works for me (tm) */
-#if defined(RAGE128) && (WORDS_BIGENDIAN)
+#ifdef WORDS_BIGENDIAN
+#if defined(RAGE128) 
     /* code from gatos */
     {
 	SAVED_CONFIG_CNTL = INREG(CONFIG_CNTL);
@@ -1182,6 +1204,22 @@ int vixInit( void )
 //	printf("saved: %x, current: %x\n", SAVED_CONFIG_CNTL,
 //	    INREG(CONFIG_CNTL));
     }
+#else
+    /*code from radeon_video.c*/
+    {
+    	SAVED_CONFIG_CNTL = INREG(RADEON_SURFACE_CNTL);
+/*	OUTREG(RADEON_SURFACE_CNTL, (SAVED_CONFIG_CNTL |
+		RADEON_NONSURF_AP0_SWP_32BPP) & ~RADEON_NONSURF_AP0_SWP_16BPP);
+*/
+	OUTREG(RADEON_SURFACE_CNTL, SAVED_CONFIG_CNTL & ~(RADEON_NONSURF_AP0_SWP_32BPP
+						   | RADEON_NONSURF_AP0_SWP_16BPP));
+
+/*
+	OUTREG(RADEON_SURFACE_CNTL, (SAVED_CONFIG_CNTL | RADEON_NONSURF_AP0_SWP_32BPP)
+				    & ~RADEON_NONSURF_AP0_SWP_16BPP);
+*/
+    }
+#endif
 #endif
 
   if(__verbose > 1) radeon_vid_dump_regs();
@@ -1199,10 +1237,14 @@ void vixDestroy( void )
   OUTREG(OV0_KEY_CNTL, SAVED_OV0_KEY_CNTL);
   printf(RADEON_MSG" Restored overlay colorkey settings\n");
 
-#if defined(RAGE128) && (WORDS_BIGENDIAN)
+#ifdef WORDS_BIGENDIAN
+#if defined(RAGE128)
     OUTREG(CONFIG_CNTL, SAVED_CONFIG_CNTL);
 //    printf("saved: %x, restored: %x\n", SAVED_CONFIG_CNTL,
 //	INREG(CONFIG_CNTL));
+#else
+    OUTREG(RADEON_SURFACE_CNTL, SAVED_CONFIG_CNTL);
+#endif
 #endif
 
   unmap_phys_mem(radeon_mem_base,radeon_ram_size);
@@ -1265,6 +1307,7 @@ static void radeon_vid_dump_regs( void )
   printf(RADEON_MSG"radeon_overlay_off=%08X\n",radeon_overlay_off);
   printf(RADEON_MSG"radeon_ram_size=%08X\n",radeon_ram_size);
   printf(RADEON_MSG"video mode: %ux%u@%u\n",radeon_get_xres(),radeon_get_yres(),radeon_vid_get_dbpp());
+  printf(RADEON_MSG"flatpanel size: %ux%u\n",radeon_get_fp_xres(),radeon_get_fp_yres());
   printf(RADEON_MSG"*** Begin of OV0 registers dump ***\n");
   for(i=0;i<sizeof(vregs)/sizeof(video_registers_t);i++)
 	printf(RADEON_MSG"%s = %08X\n",vregs[i].sname,INREG(vregs[i].name));
@@ -1289,6 +1332,38 @@ static void radeon_vid_stop_video( void )
 static void radeon_vid_display_video( void )
 {
     int bes_flags;
+    /** workaround for Xorg-6.8 not saving the surface registers on bigendian architectures */
+#ifdef WORDS_BIGENDIAN
+#if defined(RAGE128) 
+    /* code from gatos */
+    {
+	SAVED_CONFIG_CNTL = INREG(CONFIG_CNTL);
+	OUTREG(CONFIG_CNTL, SAVED_CONFIG_CNTL &
+	    ~(APER_0_BIG_ENDIAN_16BPP_SWAP|APER_0_BIG_ENDIAN_32BPP_SWAP));
+	    
+//	printf("saved: %x, current: %x\n", SAVED_CONFIG_CNTL,
+//	    INREG(CONFIG_CNTL));
+    }
+#else
+    /*code from radeon_video.c*/
+    {
+    	SAVED_CONFIG_CNTL = INREG(RADEON_SURFACE_CNTL);
+/*	OUTREG(RADEON_SURFACE_CNTL, (SAVED_CONFIG_CNTL |
+		RADEON_NONSURF_AP0_SWP_32BPP) & ~RADEON_NONSURF_AP0_SWP_16BPP);
+*/
+	OUTREG(RADEON_SURFACE_CNTL, SAVED_CONFIG_CNTL & ~(RADEON_NONSURF_AP0_SWP_32BPP
+						   | RADEON_NONSURF_AP0_SWP_16BPP));
+
+/*
+	OUTREG(RADEON_SURFACE_CNTL, (SAVED_CONFIG_CNTL | RADEON_NONSURF_AP0_SWP_32BPP)
+				    & ~RADEON_NONSURF_AP0_SWP_16BPP);
+*/
+    }
+#endif
+#endif
+
+
+ 
     radeon_fifo_wait(2);
     OUTREG(OV0_REG_LOAD_CNTL,		REG_LD_CTL_LOCK);
     radeon_engine_idle();
@@ -1510,7 +1585,12 @@ static int radeon_vid_init_video( vidix_playback_t *config )
     if(radeon_is_dbl_scan()) dest_h *= 2;
     besr.dest_bpp = radeon_vid_get_dbpp();
     besr.fourcc = config->fourcc;
-    besr.v_inc = (src_h << 20) / dest_h;
+
+    /* flat panel */
+    if(INREG(FP_VERT_STRETCH)&VERT_STRETCH_ENABLE){
+      besr.v_inc = (src_h * radeon_get_yres() / radeon_get_fp_yres() << 20) / dest_h;
+    }
+    else besr.v_inc = (src_h << 20) / dest_h;
     if(radeon_is_interlace()) besr.v_inc *= 2;
     h_inc = (src_w << 12) / dest_w;
 

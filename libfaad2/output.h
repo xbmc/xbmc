@@ -34,7 +34,7 @@
 extern "C" {
 #endif
 
-void* output_to_PCM(faacDecHandle hDecoder,
+void* output_to_PCM(NeAACDecHandle hDecoder,
                     real_t **input,
                     void *samplebuffer,
                     uint8_t channels,

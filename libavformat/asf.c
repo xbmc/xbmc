@@ -196,9 +196,9 @@ static int asf_read_header(AVFormatContext *s, AVFormatParameters *ap)
             if (!asf_st)
                 goto fail;
             st->priv_data = asf_st;
-            st->start_time = asf->hdr.preroll / (10000000 / AV_TIME_BASE);
-	    st->duration = (asf->hdr.send_time - asf->hdr.preroll) / 
-                (10000000 / AV_TIME_BASE);
+            st->start_time = asf->hdr.preroll * (int64_t)AV_TIME_BASE / 1000;
+            st->duration = asf->hdr.send_time / 
+                (10000000 / AV_TIME_BASE) - st->start_time;
             get_guid(pb, &g);
             if (!memcmp(&g, &audio_stream, sizeof(GUID))) {
                 type = CODEC_TYPE_AUDIO;
@@ -218,7 +218,7 @@ static int asf_read_header(AVFormatContext *s, AVFormatParameters *ap)
             get_le32(pb);
 	    st->codec.codec_type = type;
             /* 1 fps default (XXX: put 0 fps instead) */
-            st->codec.frame_rate = 1; 
+            st->codec.frame_rate = 1000; 
             st->codec.frame_rate_base = 1;
             if (type == CODEC_TYPE_AUDIO) {
                 get_wav_header(pb, &st->codec, type_specific_size);
@@ -274,7 +274,7 @@ static int asf_read_header(AVFormatContext *s, AVFormatParameters *ap)
 		url_fskip(pb, 20);
 		if (size > 40) {
 		    st->codec.extradata_size = size - 40;
-		    st->codec.extradata = av_mallocz(st->codec.extradata_size);
+		    st->codec.extradata = av_mallocz(st->codec.extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
 		    get_buffer(pb, st->codec.extradata, st->codec.extradata_size);
 		}
 
@@ -295,6 +295,8 @@ static int asf_read_header(AVFormatContext *s, AVFormatParameters *ap)
 
                 st->codec.codec_tag = tag1;
 		st->codec.codec_id = codec_get_id(codec_bmp_tags, tag1);
+                if(tag1 == MKTAG('D', 'V', 'R', ' '))
+                    st->need_parsing = 1;
             }
             pos2 = url_ftell(pb);
             url_fskip(pb, gsize - (pos2 - pos1 + 24));
@@ -597,7 +599,7 @@ static int asf_read_packet(AVFormatContext *s, AVPacket *pkt)
 	    /* new packet */
 	    av_new_packet(&asf_st->pkt, asf->packet_obj_size);
 	    asf_st->seq = asf->packet_seq;
-	    asf_st->pkt.pts = asf->packet_frag_timestamp - asf->hdr.preroll;
+	    asf_st->pkt.pts = asf->packet_frag_timestamp;
 	    asf_st->pkt.stream_index = asf->stream_index;
             asf_st->packet_pos= asf->packet_pos;            
 //printf("new packet: stream:%d key:%d packet_key:%d audio:%d size:%d\n", 
@@ -757,14 +759,14 @@ static int64_t asf_read_pts(AVFormatContext *s, int stream_index, int64_t *ppos,
     return pts;
 }
 
-static int asf_read_seek(AVFormatContext *s, int stream_index, int64_t pts)
+static int asf_read_seek(AVFormatContext *s, int stream_index, int64_t pts, int flags)
 {
     ASFContext *asf = s->priv_data;
     
     if (asf->packet_size <= 0)
         return -1;
 
-    if(av_seek_frame_binary(s, stream_index, pts)<0)
+    if(av_seek_frame_binary(s, stream_index, pts, flags)<0)
         return -1;
 
     asf_reset_header(s);

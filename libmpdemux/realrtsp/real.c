@@ -55,7 +55,9 @@ const unsigned char xor_table[] = {
 
 #define BE_32(x)  be2me_32(*(uint32_t*)(x))
 
+#ifndef MAX
 #define MAX(x,y) ((x>y) ? x : y)
+#endif
 
 #ifdef LOG
 static void hexdump (const char *buf, int length) {
@@ -540,8 +542,10 @@ rmff_header_t *real_parse_sdp(char *data, char **stream_rules, uint32_t bandwidt
       *stream_rules = xbuffer_strcat(*stream_rules, b);
     }
 
-    if (!desc->stream[i]->mlti_data) return NULL;
-
+    if (!desc->stream[i]->mlti_data) {
+	len = 0;
+	buf = NULL;
+    } else
     len=select_mlti_data(desc->stream[i]->mlti_data, desc->stream[i]->mlti_data_size, rulematches[0], &buf);
     
     header->streams[i]=rmff_new_mdpr(
@@ -609,13 +613,17 @@ int real_get_rdt_chunk(rtsp_t *rtsp_session, char **buffer) {
     printf("rdt chunk not recognized: got 0x%02x\n", header[0]);
     return 0;
   }
-  size=(header[1]<<12)+(header[2]<<8)+(header[3]);
+  size=(header[1]<<16)+(header[2]<<8)+(header[3]);
   flags1=header[4];
   if ((flags1!=0x40)&&(flags1!=0x42))
   {
 #ifdef LOG
     printf("got flags1: 0x%02x\n",flags1);
 #endif
+    if(header[6] == 0x06) {
+      printf("Stream EOF detected\n");
+      return -1;
+    }
     header[0]=header[5];
     header[1]=header[6];
     header[2]=header[7];
@@ -632,7 +640,7 @@ int real_get_rdt_chunk(rtsp_t *rtsp_session, char **buffer) {
   }
   flags2=header[7];
   // header[5..6] == frame number in stream
-  unknown1=(header[5]<<12)+(header[6]<<8)+(header[7]);
+  unknown1=(header[5]<<16)+(header[6]<<8)+(header[7]);
   n=rtsp_read_data(rtsp_session, header, 6);
   if (n<6) return 0;
   ts=BE_32(header);
@@ -683,6 +691,8 @@ int convert_timestamp(char *str, int *sec, int *msec) {
   return 1;
 }
 
+//! maximum size of the rtsp description, must be < INT_MAX
+#define MAX_DESC_BUF (20 * 1024 * 1024)
 rmff_header_t  *real_setup_and_get_header(rtsp_t *rtsp_session, uint32_t bandwidth) {
 
   char *description=NULL;
@@ -733,13 +743,21 @@ rmff_header_t  *real_setup_and_get_header(rtsp_t *rtsp_session, uint32_t bandwid
   else
     size=atoi(rtsp_search_answers(rtsp_session,"Content-length"));
 
+  // as size is unsigned this also catches the case (size < 0)
+  if (size > MAX_DESC_BUF) {
+    printf("real: Content-length for description too big (> %uMB)!\n",
+            MAX_DESC_BUF/(1024*1024) );
+    xbuffer_free(buf);
+    return NULL;
+  }
+
   if (!rtsp_search_answers(rtsp_session,"ETag"))
     printf("real: got no ETag!\n");
   else
     session_id=strdup(rtsp_search_answers(rtsp_session,"ETag"));
     
 #ifdef LOG
-  printf("real: Stream description size: %i\n", size);
+  printf("real: Stream description size: %u\n", size);
 #endif
 
   description=malloc(sizeof(char)*(size+1));

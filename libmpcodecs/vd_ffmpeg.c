@@ -103,6 +103,9 @@ static int lavc_param_debug=0;
 static int lavc_param_vismv=0;
 static int lavc_param_skip_top=0;
 static int lavc_param_skip_bottom=0;
+static int lavc_param_fast=0;
+static int lavc_param_lowres=0;
+static char *lavc_param_lowres_str=NULL;
 
 m_option_t lavc_decode_opts_conf[]={
 	{"bug", &lavc_param_workaround_bugs, CONF_TYPE_INT, CONF_RANGE, -1, 999999, NULL},
@@ -115,6 +118,10 @@ m_option_t lavc_decode_opts_conf[]={
 	{"vismv", &lavc_param_vismv, CONF_TYPE_INT, CONF_RANGE, 0, 9999999, NULL},
 	{"st", &lavc_param_skip_top, CONF_TYPE_INT, CONF_RANGE, 0, 999, NULL},
 	{"sb", &lavc_param_skip_bottom, CONF_TYPE_INT, CONF_RANGE, 0, 999, NULL},
+#ifdef CODEC_FLAG2_FAST
+        {"fast", &lavc_param_fast, CONF_TYPE_FLAG, 0, 0, CODEC_FLAG2_FAST, NULL},
+#endif
+	{"lowres", &lavc_param_lowres_str, CONF_TYPE_STRING, 0, 0, 0, NULL},
 	{NULL, NULL, 0, 0, 0, 0, NULL}
 };
 
@@ -157,6 +164,9 @@ static int init(sh_video_t *sh){
     AVCodecContext *avctx;
     vd_ffmpeg_ctx *ctx;
     AVCodec *lavc_codec;
+#if LIBAVCODEC_BUILD >= 4722
+    int lowres_w=0;
+#endif
     int do_vis_debug= lavc_param_vismv || (lavc_param_debug&(FF_DEBUG_VIS_MB_TYPE|FF_DEBUG_VIS_QP));
 
     if(!avcodec_inited){
@@ -179,7 +189,7 @@ static int init(sh_video_t *sh){
     if(vd_use_slices && (lavc_codec->capabilities&CODEC_CAP_DRAW_HORIZ_BAND) && !do_vis_debug)
 	ctx->do_slices=1;
  
-    if(lavc_codec->capabilities&CODEC_CAP_DR1 && !do_vis_debug)
+    if(lavc_codec->capabilities&CODEC_CAP_DR1 && !do_vis_debug && lavc_codec->id != CODEC_ID_H264)
 	ctx->do_dr1=1;
     ctx->b_age= ctx->ip_age[0]= ctx->ip_age[1]= 256*256*256*64;
     ctx->ip_count= ctx->b_count= 0;
@@ -233,6 +243,9 @@ static int init(sh_video_t *sh){
     avctx->workaround_bugs= lavc_param_workaround_bugs;
     avctx->error_resilience= lavc_param_error_resilience;
     if(lavc_param_gray) avctx->flags|= CODEC_FLAG_GRAY;
+#ifdef CODEC_FLAG2_FAST
+    avctx->flags2|= lavc_param_fast;
+#endif
     avctx->codec_tag= sh->format;
 #if LIBAVCODEC_BUILD >= 4679
     avctx->stream_codec_tag= sh->video.fccHandler;
@@ -248,6 +261,15 @@ static int init(sh_video_t *sh){
 #if LIBAVCODEC_BUILD >= 4717
     avctx->skip_top   = lavc_param_skip_top;
     avctx->skip_bottom= lavc_param_skip_bottom;
+#endif    
+#if LIBAVCODEC_BUILD >= 4722
+    if(lavc_param_lowres_str != NULL)
+    {
+        sscanf(lavc_param_lowres_str, "%d,%d", &lavc_param_lowres, &lowres_w);
+        if(lavc_param_lowres < 1 || lavc_param_lowres > 16 || (lowres_w > 0 && avctx->width < lowres_w))
+            lavc_param_lowres = 0;
+        avctx->lowres = lavc_param_lowres;
+    }
 #endif    
     mp_dbg(MSGT_DECVIDEO,MSGL_DBG2,"libavcodec.size: %d x %d\n",avctx->width,avctx->height);
     /* AVRn stores huffman table in AVI header */
@@ -291,9 +313,9 @@ static int init(sh_video_t *sh){
         } else {
 	    /* has extra slice header (demux_rm or rm->avi streamcopy) */
 	    unsigned int* extrahdr=(unsigned int*)(sh->bih+1);
-	    ((uint32_t*)avctx->extradata)[0] = extrahdr[0];
-	    avctx->sub_id=
-	    ((uint32_t*)avctx->extradata)[1] = extrahdr[1];
+	    ((uint32_t*)avctx->extradata)[0] = be2me_32(extrahdr[0]);
+	    avctx->sub_id= extrahdr[1];
+	    ((uint32_t*)avctx->extradata)[1] = be2me_32(extrahdr[1]);
 	}
 
 //        printf("%X %X %d %d\n", extrahdr[0], extrahdr[1]);
@@ -302,6 +324,7 @@ static int init(sh_video_t *sh){
 	(sh->format == mmioFOURCC('M','4','S','2') ||
 	 sh->format == mmioFOURCC('M','P','4','S') ||
 	 sh->format == mmioFOURCC('H','F','Y','U') ||
+	 sh->format == mmioFOURCC('F','F','V','H') ||
 	 sh->format == mmioFOURCC('W','M','V','2') ||
 	 sh->format == mmioFOURCC('A','S','V','1') ||
 	 sh->format == mmioFOURCC('A','S','V','2') ||
@@ -309,7 +332,9 @@ static int init(sh_video_t *sh){
 	 sh->format == mmioFOURCC('M','S','Z','H') ||
 	 sh->format == mmioFOURCC('Z','L','I','B') ||
 	 sh->format == mmioFOURCC('M','P','4','V') ||
-	 sh->format == mmioFOURCC('F','L','I','C')
+	 sh->format == mmioFOURCC('F','L','I','C') ||
+	 sh->format == mmioFOURCC('S','N','O','W') ||
+	 sh->format == mmioFOURCC('a','v','c','1')
          ))
     {
 	avctx->extradata_size = sh->bih->biSize-sizeof(BITMAPINFOHEADER);
@@ -333,7 +358,7 @@ static int init(sh_video_t *sh){
 #endif
     if (sh->ImageDesc &&
 	 sh->format == mmioFOURCC('S','V','Q','3')){
-	avctx->extradata_size = *(int*)sh->ImageDesc;
+	avctx->extradata_size = (*(int*)sh->ImageDesc) - sizeof(int);
 	avctx->extradata = malloc(avctx->extradata_size);
 	memcpy(avctx->extradata, ((int*)sh->ImageDesc)+1, avctx->extradata_size);
     }
@@ -381,13 +406,20 @@ static void uninit(sh_video_t *sh){
     if(avctx->slice_offset!=NULL) 
         free(avctx->slice_offset);
     avctx->slice_offset=NULL;
-
+#ifdef _XBOX //they have been allocated with the memalign hack
+    if (avctx)
+	av_free(avctx);
+    if (ctx->pic)
+	av_free(ctx->pic);
+#else
     if (avctx)
 	free(avctx);
     if (ctx->pic)
 	free(ctx->pic);
+#endif
     if (ctx)
 	free(ctx);
+
 }
 
 static void draw_slice(struct AVCodecContext *s,
@@ -400,7 +432,7 @@ static void draw_slice(struct AVCodecContext *s,
     sh_video_t * sh = s->opaque;
     int start=0, i;
     int width= s->width;
-    int skip_stride= (width+15)>>4;
+    int skip_stride= ((width<<lavc_param_lowres)+15)>>4;
     uint8_t *skip= &s->coded_frame->mbskip_table[(y>>4)*skip_stride];
     int threshold= s->coded_frame->age;
 #if LIBAVCODEC_BUILD >= 4670
@@ -677,6 +709,7 @@ typedef struct dp_hdr_s {
     uint32_t chunktab;	// offset to chunk offset array
 } dp_hdr_t;
 
+
 // decode a frame
 static mp_image_t* decode(sh_video_t *sh,void* data,int len,int flags){
     int got_picture=0;
@@ -686,8 +719,14 @@ static mp_image_t* decode(sh_video_t *sh,void* data,int len,int flags){
     AVCodecContext *avctx = ctx->avctx;
     mp_image_t* mpi=NULL;
     int dr1= ctx->do_dr1;
+    unsigned char *buf = NULL;
 
     if(len<=0) return NULL; // skipped frame
+
+#ifdef _XBOX
+    extern char* current_module;
+    current_module = "ffmpeg_decode_get_image";
+#endif
 
 #if LIBAVCODEC_BUILD < 4707
 
@@ -735,8 +774,12 @@ static mp_image_t* decode(sh_video_t *sh,void* data,int len,int flags){
         data+= sizeof(dp_hdr_t);
     }
 
+#ifdef _XBOX
+	current_module = "ffmpeg_decode_decode";
+#endif
     ret = avcodec_decode_video(avctx, pic,
 	     &got_picture, data, len);
+
     dr1= ctx->do_dr1;
     if(ret<0) mp_msg(MSGT_DECVIDEO,MSGL_WARN, "Error while decoding frame!\n");
 //printf("repeat: %d\n", pic->repeat_pict);
@@ -770,8 +813,8 @@ static mp_image_t* decode(sh_video_t *sh,void* data,int len,int flags){
 	// average MB quantizer
 	{
 	    int x, y;
-	    int w = (avctx->width+15) >> 4;
-	    int h = (avctx->height+15) >> 4;
+	    int w = ((avctx->width  << lavc_param_lowres)+15) >> 4;
+	    int h = ((avctx->height << lavc_param_lowres)+15) >> 4;
 	    int8_t *q = pic->qscale_table;
 	    for( y = 0; y < h; y++ ) {
 		for( x = 0; x < w; x++ )
@@ -816,6 +859,10 @@ static mp_image_t* decode(sh_video_t *sh,void* data,int len,int flags){
 //--
 
     if(!got_picture) return NULL;	// skipped image
+
+#ifdef _XBOX
+	current_module = "ffmpeg_decode_got_picture";
+#endif
 
     if(init_vo(sh,avctx->pix_fmt) < 0) return NULL;
 

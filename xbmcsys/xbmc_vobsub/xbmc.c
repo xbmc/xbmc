@@ -1,33 +1,31 @@
 #include "xbmc.h"
 #include "string.h"
 
-inline int xbmc_sid_from_num(int num)
+void get_lang_ext(char *filename, char *lang)
 {
-	if(num<xbmc_sub_count)
-		return xbmc_subtitles[num].id;
-	else
-		return -1;
-}
-
-inline int xbmc_num_from_sid(int sid, int type)
-{
-	int i;
-	for(i=0;i<xbmc_sub_count;i++)
+	int i,l;
+	int p1 = 0;
+	int p2 = 0;
+	char ch;
+	
+	strcpy(lang,"");
+	l = strlen(filename);
+	for(i=0; i<l; i++)
 	{
-		if(xbmc_subtitles[i].id==sid && xbmc_subtitles[i].type==type)
-			return i;
+		ch = filename[i];
+		if (ch == '.')
+		{
+			p2 = p1;
+			p1 = i;		
+		}
 	}
-	return -1;
-}
 
-void xbmc_addsub(int id, char* name, int type,int invalid)
-{
-	xbmc_subtitles[xbmc_sub_count].id = id;
-	if(name)
-		strncpy(xbmc_subtitles[xbmc_sub_count].name,name, MAX_XBMC_NAME);
-	else
-		xbmc_subtitles[xbmc_sub_count].name[0] = 0;
-	xbmc_subtitles[xbmc_sub_count].type = type;
-	xbmc_subtitles[xbmc_sub_count].invalid = invalid;
-	xbmc_sub_count++;
+	if (p2)
+		p2++;	
+	l = p1 - p2;
+	if ((p1 > 0) && (p2 > 0) && (l < MAX_XBMC_NAME))
+	{
+		strncpy(lang,filename+p2,l);
+		lang[l] = 0;
+	}	
 }

@@ -109,9 +109,19 @@ static int open_f(stream_t *stream,int mode, void* opts, int* file_format) {
       // read from stdin
       mp_msg(MSGT_OPEN,MSGL_INFO,MSGTR_ReadSTDIN);
       f=0; // 0=stdin
+#ifndef _XBOX
+#ifdef __MINGW32__
+	  setmode(fileno(stdin),O_BINARY);
+#endif
+#endif
     } else {
       mp_msg(MSGT_OPEN,MSGL_INFO,"Writing to stdout\n");
       f=1;
+#ifndef _XBOX
+#ifdef __MINGW32__
+	  setmode(fileno(stdout),O_BINARY);
+#endif
+#endif
     }
   } else {
     f=open(p->filename,m);
@@ -128,7 +138,16 @@ static int open_f(stream_t *stream,int mode, void* opts, int* file_format) {
 #endif
 
   len=lseek(f,0,SEEK_END); lseek(f,0,SEEK_SET);
+#ifdef _XBOX //our file device might be zero at times
   if(len == -1) {
+#else
+#ifdef __MINGW32__
+  if(f==0 || len == -1) {
+#else
+  if(len == -1) {
+#endif
+#endif
+
     stream->seek = seek_forward;
     stream->type = STREAMTYPE_STREAM; // Must be move to STREAMTYPE_FILE
     stream->flags |= STREAM_SEEK_FW;

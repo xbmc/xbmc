@@ -221,13 +221,21 @@ static int hpel_motion_search(MpegEncContext * s,
 }
 #endif
 
-static int inline get_mb_score(MpegEncContext * s, int mx, int my, int src_index,
-                               int ref_index)
+static int no_sub_motion_search(MpegEncContext * s,
+          int *mx_ptr, int *my_ptr, int dmin,
+                                  int src_index, int ref_index,
+                                  int size, int h)
+{
+    (*mx_ptr)<<=1;
+    (*my_ptr)<<=1;
+    return dmin;
+}
+
+int inline ff_get_mb_score(MpegEncContext * s, int mx, int my, int src_index,
+                               int ref_index, int size, int h, int add_rate)
 {
 //    const int check_luma= s->dsp.me_sub_cmp != s->dsp.mb_cmp;
     MotionEstContext * const c= &s->me;
-    const int size= 0;
-    const int h= 16;
     const int penalty_factor= c->mb_penalty_factor;
     const int flags= c->mb_flags;
     const int qpel= flags & FLAG_QPEL;
@@ -242,12 +250,12 @@ static int inline get_mb_score(MpegEncContext * s, int mx, int my, int src_index
     cmp_sub= s->dsp.mb_cmp[size];
     chroma_cmp_sub= s->dsp.mb_cmp[size+1];
     
-    assert(!c->skip);
-    assert(c->avctx->me_sub_cmp != c->avctx->mb_cmp);
+//    assert(!c->skip);
+//    assert(c->avctx->me_sub_cmp != c->avctx->mb_cmp);
 
     d= cmp(s, mx>>(qpel+1), my>>(qpel+1), mx&mask, my&mask, size, h, ref_index, src_index, cmp_sub, chroma_cmp_sub, flags);
     //FIXME check cbp before adding penalty for (0,0) vector
-    if(mx || my || size>0)
+    if(add_rate && (mx || my || size>0))
         d += (mv_penalty[mx - pred_x] + mv_penalty[my - pred_y])*penalty_factor;
         
     return d;
@@ -851,15 +859,13 @@ static always_inline int diamond_search(MpegEncContext * s, int *best, int dmin,
 
 static always_inline int epzs_motion_search_internal(MpegEncContext * s, int *mx_ptr, int *my_ptr,
                              int P[10][2], int src_index, int ref_index, int16_t (*last_mv)[2], 
-                             int ref_mv_scale, int flags)
+                             int ref_mv_scale, int flags, int size, int h)
 {
     MotionEstContext * const c= &s->me;
     int best[2]={0, 0};
     int d, dmin;
     int map_generation;
-    const int penalty_factor= c->penalty_factor;
-    const int size=0;
-    const int h=16;
+    int penalty_factor;
     const int ref_mv_stride= s->mb_stride; //pass as arg  FIXME
     const int ref_mv_xy= s->mb_x + s->mb_y*ref_mv_stride; //add to last_mv beforepassing FIXME
     me_cmp_func cmpf, chroma_cmpf;
@@ -867,11 +873,19 @@ static always_inline int epzs_motion_search_internal(MpegEncContext * s, int *mx
     LOAD_COMMON
     LOAD_COMMON2
     
-    cmpf= s->dsp.me_cmp[size];
-    chroma_cmpf= s->dsp.me_cmp[size+1];
+    if(c->pre_pass){
+        penalty_factor= c->pre_penalty_factor;
+        cmpf= s->dsp.me_pre_cmp[size];
+        chroma_cmpf= s->dsp.me_pre_cmp[size+1];
+    }else{
+        penalty_factor= c->penalty_factor;
+        cmpf= s->dsp.me_cmp[size];
+        chroma_cmpf= s->dsp.me_cmp[size+1];
+    }
     
     map_generation= update_map_generation(c);
 
+    assert(cmpf);
     dmin= cmp(s, 0, 0, 0, 0, size, h, ref_index, src_index, cmpf, chroma_cmpf, flags);
     map[0]= map_generation;
     score_map[0]= dmin;
@@ -882,7 +896,7 @@ static always_inline int epzs_motion_search_internal(MpegEncContext * s, int *mx
         CHECK_CLIPED_MV((last_mv[ref_mv_xy][0]*ref_mv_scale + (1<<15))>>16, 
                         (last_mv[ref_mv_xy][1]*ref_mv_scale + (1<<15))>>16)
     }else{
-        if(dmin<256 && ( P_LEFT[0]    |P_LEFT[1]
+        if(dmin<h*h && ( P_LEFT[0]    |P_LEFT[1]
                         |P_TOP[0]     |P_TOP[1]
                         |P_TOPRIGHT[0]|P_TOPRIGHT[1])==0){
             *mx_ptr= 0;
@@ -891,7 +905,7 @@ static always_inline int epzs_motion_search_internal(MpegEncContext * s, int *mx
             return dmin;
         }
         CHECK_MV(P_MEDIAN[0]>>shift, P_MEDIAN[1]>>shift)
-        if(dmin>256*2){
+        if(dmin>h*h*2){
             CHECK_CLIPED_MV((last_mv[ref_mv_xy][0]*ref_mv_scale + (1<<15))>>16, 
                             (last_mv[ref_mv_xy][1]*ref_mv_scale + (1<<15))>>16)
             CHECK_MV(P_LEFT[0]    >>shift, P_LEFT[1]    >>shift)
@@ -899,7 +913,7 @@ static always_inline int epzs_motion_search_internal(MpegEncContext * s, int *mx
             CHECK_MV(P_TOPRIGHT[0]>>shift, P_TOPRIGHT[1]>>shift)
         }
     }
-    if(dmin>256*4){
+    if(dmin>h*h*4){
         if(c->pre_pass){
             CHECK_CLIPED_MV((last_mv[ref_mv_xy-1][0]*ref_mv_scale + (1<<15))>>16, 
                             (last_mv[ref_mv_xy-1][1]*ref_mv_scale + (1<<15))>>16)
@@ -948,19 +962,18 @@ static always_inline int epzs_motion_search_internal(MpegEncContext * s, int *mx
 }
 
 //this function is dedicated to the braindamaged gcc
-static inline int epzs_motion_search(MpegEncContext * s, int *mx_ptr, int *my_ptr,
+inline int ff_epzs_motion_search(MpegEncContext * s, int *mx_ptr, int *my_ptr,
                              int P[10][2], int src_index, int ref_index, int16_t (*last_mv)[2], 
-                             int ref_mv_scale)
+                             int ref_mv_scale, int size, int h)
 {
     MotionEstContext * const c= &s->me;
 //FIXME convert other functions in the same way if faster
-    switch(c->flags){
-    case 0:
-        return epzs_motion_search_internal(s, mx_ptr, my_ptr, P, src_index, ref_index, last_mv, ref_mv_scale, 0);
+    if(c->flags==0 && h==16 && size==0){
+        return epzs_motion_search_internal(s, mx_ptr, my_ptr, P, src_index, ref_index, last_mv, ref_mv_scale, 0, 0, 16);
 //    case FLAG_QPEL:
 //        return epzs_motion_search_internal(s, mx_ptr, my_ptr, P, src_index, ref_index, last_mv, ref_mv_scale, FLAG_QPEL);
-    default:
-        return epzs_motion_search_internal(s, mx_ptr, my_ptr, P, src_index, ref_index, last_mv, ref_mv_scale, c->flags);
+    }else{
+        return epzs_motion_search_internal(s, mx_ptr, my_ptr, P, src_index, ref_index, last_mv, ref_mv_scale, c->flags, size, h);
     }
 }
 

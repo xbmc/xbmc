@@ -144,7 +144,7 @@ static int dvvideo_init(AVCodecContext *avctx)
         /* NOTE: as a trick, we use the fact the no codes are unused
            to accelerate the parsing of partial codes */
         init_vlc(&dv_vlc, TEX_VLC_BITS, j, 
-                 new_dv_vlc_len, 1, 1, new_dv_vlc_bits, 2, 2);
+                 new_dv_vlc_len, 1, 1, new_dv_vlc_bits, 2, 2, 0);
 
         dv_rl_vlc = av_malloc(dv_vlc.table_size * sizeof(RL_VLC_ELEM));
 	if (!dv_rl_vlc) {
@@ -394,8 +394,7 @@ static inline void dv_decode_video_segment(DVVideoContext *s,
 	    init_get_bits(&gb, buf_ptr, last_index);
             
             /* get the dc */
-            dc = get_bits(&gb, 9);
-            dc = (dc << (32 - 9)) >> (32 - 9);
+            dc = get_sbits(&gb, 9);
             dct_mode = get_bits1(&gb);
             mb->dct_mode = dct_mode;
             mb->scan_table = s->dv_zigzag[dct_mode];

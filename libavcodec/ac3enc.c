@@ -515,7 +515,7 @@ static int encode_exp(uint8_t encoded_exp[N/2],
                       int nb_exps,
                       int exp_strategy)
 {
-    int group_size, nb_groups, i, j, k, recurse, exp_min, delta;
+    int group_size, nb_groups, i, j, k, exp_min;
     uint8_t exp1[N/2];
 
     switch(exp_strategy) {
@@ -550,25 +550,13 @@ static int encode_exp(uint8_t encoded_exp[N/2],
     if (exp1[0] > 15)
         exp1[0] = 15;
 
-    /* Iterate until the delta constraints between each groups are
-       satisfyed. I'm sure it is possible to find a better algorithm,
-       but I am lazy */
-    do {
-        recurse = 0;
-        for(i=1;i<=nb_groups;i++) {
-            delta = exp1[i] - exp1[i-1];
-            if (delta > 2) {
-                /* if delta too big, we encode a smaller exponent */
-                exp1[i] = exp1[i-1] + 2;
-            } else if (delta < -2) {
-                /* if delta is too small, we must decrease the previous
-               exponent, which means we must recurse */
-                recurse = 1;
-                exp1[i-1] = exp1[i] + 2;
-            }
-        }
-    } while (recurse);
-    
+    /* Decrease the delta between each groups to within 2
+     * so that they can be differentially encoded */
+    for (i=1;i<=nb_groups;i++)
+	exp1[i] = FFMIN(exp1[i], exp1[i-1] + 2);
+    for (i=nb_groups-1;i>=0;i--)
+	exp1[i] = FFMIN(exp1[i], exp1[i+1] + 2);
+
     /* now we have the exponent values the decoder will see */
     encoded_exp[0] = exp1[0];
     k = 1;
@@ -1371,7 +1359,7 @@ static int AC3_encode_frame(AVCodecContext *avctx,
                             unsigned char *frame, int buf_size, void *data)
 {
     AC3EncodeContext *s = avctx->priv_data;
-    short *samples = data;
+    int16_t *samples = data;
     int i, j, k, v, ch;
     int16_t input_samples[N];
     int32_t mdct_coef[NB_BLOCKS][AC3_MAX_CHANNELS][N/2];

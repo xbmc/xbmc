@@ -15,7 +15,7 @@
 #include "mp_msg.h"
 #include "help_mp.h"
 
-#include "../osdep/shmem.h"
+#include "osdep/shmem.h"
 
 //int vo_flags=0;
 
@@ -35,7 +35,7 @@ int vo_dbpp=0;
 
 int vo_nomouse_input = 0;
 int vo_grabpointer = 1;
-int vo_doublebuffering = 0;
+int vo_doublebuffering = 1;
 int vo_vsync = 0;
 int vo_fs = 0;
 int vo_fsmode = 0;
@@ -44,6 +44,8 @@ int vo_ontop = 0;
 int vo_adapter_num=0;
 int vo_refresh_rate=0;
 int vo_keepaspect=1;
+int vo_rootwin=0;
+int WinID = -1;
 
 int vo_pts=0; // for hw decoding
 float vo_fps=0; // for mp1e rte
@@ -75,8 +77,6 @@ extern vo_functions_t video_out_null;
 extern vo_functions_t video_out_zr;
 extern vo_functions_t video_out_zr2;
 extern vo_functions_t video_out_bl;
-extern vo_functions_t video_out_pgm;
-extern vo_functions_t video_out_md5;
 extern vo_functions_t video_out_syncfb;
 extern vo_functions_t video_out_fbdev;
 extern vo_functions_t video_out_fbdev2;
@@ -122,6 +122,12 @@ extern vo_functions_t video_out_tga;
 #endif
 #ifdef MACOSX
 extern vo_functions_t video_out_quartz;
+#endif
+#ifdef HAVE_PNM
+extern vo_functions_t video_out_pnm;
+#endif
+#ifdef HAVE_MD5SUM
+extern vo_functions_t video_out_md5sum;
 #endif
 
 vo_functions_t* video_out_drivers[] =
@@ -202,22 +208,6 @@ vo_functions_t* video_out_drivers[] =
 #ifdef HAVE_BL
 	&video_out_bl,
 #endif
-
-#ifdef HAVE_PNG
-	&video_out_png,
-#endif	
-#ifdef HAVE_JPEG
-	&video_out_jpeg,
-#endif
-#ifdef HAVE_GIF
-	&video_out_gif89a,
-#endif
-        &video_out_null,
-//        &video_out_odivx,
-        &video_out_pgm,
-        &video_out_md5,
-	&video_out_mpegpes,
-	&video_out_yuv4mpeg,
 #ifdef HAVE_VESA
 	&video_out_vesa,
 #endif
@@ -236,8 +226,27 @@ vo_functions_t* video_out_drivers[] =
 #endif
     &video_out_cvidix,
 #endif
+        &video_out_null,
+	// should not be auto-selected
+	&video_out_mpegpes,
+	&video_out_yuv4mpeg,
+#ifdef HAVE_PNG
+	&video_out_png,
+#endif	
+#ifdef HAVE_JPEG
+	&video_out_jpeg,
+#endif
+#ifdef HAVE_GIF
+	&video_out_gif89a,
+#endif
 #ifdef HAVE_TGA
         &video_out_tga,
+#endif
+#ifdef HAVE_PNM
+    &video_out_pnm,
+#endif
+#ifdef HAVE_MD5SUM
+    &video_out_md5sum,
 #endif
         NULL
 };
@@ -259,6 +268,10 @@ vo_functions_t* init_best_video_out(char** vo_list){
       while(vo_list[0][0]){
         char* vo=strdup(vo_list[0]);
 	vo_subdevice=strchr(vo,':');
+	if (!strcmp(vo, "pgm"))
+	    mp_msg(MSGT_CPLAYER, MSGL_ERR, MSGTR_VO_PGM_HasBeenReplaced);
+	if (!strcmp(vo, "md5"))
+	    mp_msg(MSGT_CPLAYER, MSGL_ERR, MSGTR_VO_MD5_HasBeenReplaced);
 	if(vo_subdevice){
 	    vo_subdevice[0]=0;
 	    ++vo_subdevice;

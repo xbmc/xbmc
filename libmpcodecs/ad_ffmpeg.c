@@ -110,6 +110,7 @@ static int init(sh_audio_t *sh_audio)
   sh_audio->samplerate=sh_audio->wf->nSamplesPerSec;
   sh_audio->i_bps=sh_audio->wf->nAvgBytesPerSec;
 #endif
+  sh_audio->samplesize=2;
   return 1;
 }
 
@@ -121,7 +122,11 @@ static void uninit(sh_audio_t *sh)
 	mp_msg(MSGT_DECVIDEO, MSGL_ERR, MSGTR_CantCloseCodec);
     if (lavc_context->extradata)
         free(lavc_context->extradata);
+#ifdef _XBOX
+    av_free(lavc_context);
+#else
     free(lavc_context);
+#endif
 }
 
 static int control(sh_audio_t *sh,int cmd,void* arg, ...)

@@ -31,7 +31,7 @@
 #include <stdarg.h>
 #include <limits.h>
 
-static void avcodec_default_free_buffers(AVCodecContext *s);
+void avcodec_default_free_buffers(AVCodecContext *s);
 
 void *av_mallocz(unsigned int size)
 {
@@ -90,6 +90,26 @@ void *av_mallocz_static(unsigned int size)
 }
 
 /**
+ * same as above, but does realloc
+ */
+
+void *av_realloc_static(void *ptr, unsigned int size)
+{
+    int i;
+    if(!ptr)
+      return av_mallocz_static(size);
+    /* Look for the old ptr */
+    for(i = 0; i < last_static; i++) {
+        if(array_static[i] == ptr) {
+            array_static[i] = av_realloc(array_static[i], size);
+            return array_static[i];
+        }
+    }
+    return NULL;
+
+}
+
+/**
  * free all static arrays and reset pointers to 0.
  */
 void av_free_static(void)
@@ -112,7 +132,7 @@ void av_freep(void *arg)
 }
 
 /* encoder management */
-AVCodec *first_avcodec;
+AVCodec *first_avcodec = NULL;
 
 void register_avcodec(AVCodec *format)
 {
@@ -121,6 +141,13 @@ void register_avcodec(AVCodec *format)
     while (*p != NULL) p = &(*p)->next;
     *p = format;
     format->next = NULL;
+}
+
+void avcodec_set_dimensions(AVCodecContext *s, int width, int height){
+    s->coded_width = width;
+    s->coded_height= height;
+    s->width = -((-width )>>s->lowres);
+    s->height= -((-height)>>s->lowres);
 }
 
 typedef struct InternalBuffer{
@@ -141,6 +168,7 @@ void avcodec_align_dimensions(AVCodecContext *s, int *width, int *height){
     switch(s->pix_fmt){
     case PIX_FMT_YUV420P:
     case PIX_FMT_YUV422:
+    case PIX_FMT_UYVY422:
     case PIX_FMT_YUV422P:
     case PIX_FMT_YUV444P:
     case PIX_FMT_GRAY8:
@@ -151,6 +179,7 @@ void avcodec_align_dimensions(AVCodecContext *s, int *width, int *height){
         h_align= 16;
         break;
     case PIX_FMT_YUV411P:
+    case PIX_FMT_UYVY411:
         w_align=32;
         h_align=8;
         break;
@@ -210,7 +239,7 @@ int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic){
         buf->last_pic_num= *picture_number;
     }else{
         int h_chroma_shift, v_chroma_shift;
-        int s_align, pixel_size;
+        int pixel_size;
         
         avcodec_get_chroma_sub_sample(s->pix_fmt, &h_chroma_shift, &v_chroma_shift);
         
@@ -218,6 +247,7 @@ int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic){
         case PIX_FMT_RGB555:
         case PIX_FMT_RGB565:
         case PIX_FMT_YUV422:
+        case PIX_FMT_UYVY422:
             pixel_size=2;
             break;
         case PIX_FMT_RGB24:
@@ -232,11 +262,6 @@ int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic){
         }
 
         avcodec_align_dimensions(s, &w, &h);
-#if defined(ARCH_POWERPC) || defined(HAVE_MMI) //FIXME some cleaner check
-        s_align= 16;
-#else
-        s_align= 8;
-#endif
             
         if(!(s->flags&CODEC_FLAG_EMU_EDGE)){
             w+= EDGE_WIDTH*2;
@@ -250,7 +275,7 @@ int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic){
             const int v_shift= i==0 ? 0 : v_chroma_shift;
 
             //FIXME next ensures that linesize= 2^x uvlinesize, thats needed because some MC code assumes it
-            buf->linesize[i]= ALIGN(pixel_size*w>>h_shift, s_align<<(h_chroma_shift-h_shift)); 
+            buf->linesize[i]= ALIGN(pixel_size*w>>h_shift, STRIDE_ALIGN<<(h_chroma_shift-h_shift)); 
 
             buf->base[i]= av_mallocz((buf->linesize[i]*h>>v_shift)+16); //FIXME 16
             if(buf->base[i]==NULL) return -1;
@@ -259,7 +284,7 @@ int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic){
             if(s->flags&CODEC_FLAG_EMU_EDGE)
                 buf->data[i] = buf->base[i];
             else
-                buf->data[i] = buf->base[i] + ALIGN((buf->linesize[i]*EDGE_WIDTH>>v_shift) + (EDGE_WIDTH>>h_shift), s_align);
+                buf->data[i] = buf->base[i] + ALIGN((buf->linesize[i]*EDGE_WIDTH>>v_shift) + (EDGE_WIDTH>>h_shift), STRIDE_ALIGN);
         }
         pic->age= 256*256*256*64;
     }
@@ -394,6 +419,8 @@ void avcodec_get_context_defaults(AVCodecContext *s){
     s->lmax= FF_QP2LAMBDA * s->qmax;
     s->sample_aspect_ratio= (AVRational){0,1};
     s->ildct_cmp= FF_CMP_VSAD;
+    s->profile= FF_PROFILE_UNKNOWN;
+    s->level= FF_LEVEL_UNKNOWN;
     
     s->intra_quant_bias= FF_DEFAULT_QUANT_BIAS;
     s->inter_quant_bias= FF_DEFAULT_QUANT_BIAS;
@@ -452,6 +479,12 @@ int avcodec_open(AVCodecContext *avctx, AVCodec *codec)
     } else {
         avctx->priv_data = NULL;
     }
+
+    if(avctx->coded_width && avctx->coded_height)
+        avcodec_set_dimensions(avctx, avctx->coded_width, avctx->coded_height);
+    else if(avctx->width && avctx->height)
+        avcodec_set_dimensions(avctx, avctx->width, avctx->height);
+
     ret = avctx->codec->init(avctx);
     if (ret < 0) {
         av_freep(&avctx->priv_data);
@@ -709,7 +742,8 @@ void avcodec_string(char *buf, int buf_size, AVCodecContext *enc, int encode)
         bitrate = enc->bit_rate;
         break;
     default:
-        av_abort();
+        snprintf(buf, buf_size, "Invalid Codec type %d", enc->codec_type);
+        return;
     }
     if (encode) {
         if (enc->flags & CODEC_FLAG_PASS1)
@@ -756,7 +790,7 @@ void avcodec_flush_buffers(AVCodecContext *avctx)
         avctx->codec->flush(avctx);
 }
 
-static void avcodec_default_free_buffers(AVCodecContext *s){
+void avcodec_default_free_buffers(AVCodecContext *s){
     int i, j;
 
     if(s->internal_buffer==NULL) return;
@@ -818,25 +852,33 @@ int av_reduce(int *dst_nom, int *dst_den, int64_t nom, int64_t den, int64_t max)
     return den==0;
 }
 
-int64_t av_rescale(int64_t a, int64_t b, int64_t c){
-    AVInteger ai, ci;
+int64_t av_rescale_rnd(int64_t a, int64_t b, int64_t c, enum AVRounding rnd){
+    AVInteger ai;
+    int64_t r=0;
     assert(c > 0);
     assert(b >=0);
+    assert(rnd >=0 && rnd<=5 && rnd!=4);
     
-    if(a<0) return -av_rescale(-a, b, c);
+    if(a<0 && a != INT64_MIN) return -av_rescale_rnd(-a, b, c, rnd ^ ((rnd>>1)&1)); 
     
+    if(rnd==AV_ROUND_NEAR_INF) r= c/2;
+    else if(rnd&1)             r= c-1;
+
     if(b<=INT_MAX && c<=INT_MAX){
         if(a<=INT_MAX)
-            return (a * b + c/2)/c;
+            return (a * b + r)/c;
         else
-            return a/c*b + (a%c*b + c/2)/c;
+            return a/c*b + (a%c*b + r)/c;
     }
     
     ai= av_mul_i(av_int2i(a), av_int2i(b));
-    ci= av_int2i(c);
-    ai= av_add_i(ai, av_shr_i(ci,1));
+    ai= av_add_i(ai, av_int2i(r));
     
-    return av_i2int(av_div_i(ai, ci));
+    return av_i2int(av_div_i(ai, av_int2i(c)));
+}
+
+int64_t av_rescale(int64_t a, int64_t b, int64_t c){
+    return av_rescale_rnd(a, b, c, AV_ROUND_NEAR_INF);
 }
 
 /* av_log API */
@@ -890,7 +932,7 @@ void av_log_set_callback(void (*callback)(void*, int, const char*, va_list))
     av_log_callback = callback;
 }
 
-#if !defined(HAVE_PTHREADS) && !defined(HAVE_W32THREADS)
+#if !defined(HAVE_THREADS)
 int avcodec_thread_init(AVCodecContext *s, int thread_count){
     return -1;
 }

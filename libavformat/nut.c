@@ -982,7 +982,7 @@ static int decode_stream_header(NUTContext *nut){
     /* codec specific data headers */
     while(get_v(bc) != 0){
         st->codec.extradata_size= get_v(bc);
-        st->codec.extradata= av_mallocz(st->codec.extradata_size);
+        st->codec.extradata= av_mallocz(st->codec.extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
         get_buffer(bc, st->codec.extradata, st->codec.extradata_size);            
 //	    url_fskip(bc, get_v(bc));
     }
@@ -1373,11 +1373,11 @@ av_log(s, AV_LOG_DEBUG, "syncing from %lld\n", nut->packet_start[2]+1);
     return AV_NOPTS_VALUE;
 }
 
-static int nut_read_seek(AVFormatContext *s, int stream_index, int64_t target_ts){
+static int nut_read_seek(AVFormatContext *s, int stream_index, int64_t target_ts, int flags){
 //    NUTContext *nut = s->priv_data;
     int64_t pos;
 
-    if(av_seek_frame_binary(s, stream_index, target_ts) < 0)
+    if(av_seek_frame_binary(s, stream_index, target_ts, flags) < 0)
         return -1;
 
     pos= url_ftell(&s->pb);

@@ -465,6 +465,9 @@ static uint32_t query_format(uint32_t format)
 {
     if(verbose > 2)
         printf("vo_vesa: query_format was called: %x (%s)\n",format,vo_format_name(format));
+#ifdef CONFIG_VIDIX
+    if(vidix_name)return(vidix_query_fourcc(format));
+#endif
     return 1 | VFCAP_OSD | VFCAP_SWSCALE | VFCAP_ACCEPT_STRIDE; /* due new SwScale code */
 }
 
@@ -736,7 +739,7 @@ config(uint32_t width, uint32_t height, uint32_t d_width, uint32_t d_height, uin
 		if((err=vbeGetModeInfo(mode_ptr[i],&vmib)) != VBE_OK)
 		{
 			PRINT_VBE_ERR("vbeGetModeInfo",err);
-			return -1;
+			continue;
 		}
 		if(vmib.XResolution >= w &&
 		   vmib.YResolution >= h &&
@@ -791,7 +794,11 @@ config(uint32_t width, uint32_t height, uint32_t d_width, uint32_t d_height, uin
 		if(use_scaler || fs_mode)
 		{
 		      /* software scale */
-		      if(use_scaler > 1)
+		      if(use_scaler > 1
+#ifdef CONFIG_VIDIX
+				|| vidix_name
+#endif			  
+			  )
 		      {
 		        aspect_save_orig(width,height);
 			aspect_save_prescale(d_width,d_height);
@@ -982,6 +989,7 @@ config(uint32_t width, uint32_t height, uint32_t d_width, uint32_t d_height, uin
 		  {
 		    vidix_grkey_get(&gr_key);
 		    gr_key.key_op = KEYS_PUT;
+#if 0
 		    if (!(vo_colorkey & 0xFF000000))
 		    {
 			gr_key.ckey.op = CKEY_TRUE;
@@ -989,6 +997,7 @@ config(uint32_t width, uint32_t height, uint32_t d_width, uint32_t d_height, uin
 			gr_key.ckey.green = (vo_colorkey & 0x0000FF00) >> 8;
 			gr_key.ckey.blue = vo_colorkey & 0x000000FF;
 		    } else
+#endif
 			gr_key.ckey.op = CKEY_FALSE;
 		    vidix_grkey_set(&gr_key);
 		  }         

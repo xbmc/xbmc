@@ -305,6 +305,11 @@ unsigned int t2;
 double tt;
 int ret;
 
+#ifdef _XBOX
+extern char* current_module;
+current_module = "decode_video_decode";
+#endif
+
 //if(!(sh_video->ds->flags&1) || sh_video->ds->pack_no<5)
 mpi=mpvdec->decode(sh_video, start, in_size, drop_frame);
 
@@ -326,6 +331,10 @@ tt = t*0.000001f;
 video_time_usage+=tt;
 
 if(!mpi || drop_frame) return 0; // error / skipped frame
+
+#ifdef _XBOX
+current_module = "decode_video_put_image";
+#endif
 
 //vo_draw_image(video_out,mpi);
 vf=sh_video->vfilter;

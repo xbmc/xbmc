@@ -16,10 +16,6 @@ extern char *monitor_dotclock_str;
 extern char *fb_dev_name;
 extern char *fb_mode_cfgfile;
 extern char *fb_mode_name;
-#else
-#ifdef HAVE_DIRECTFB
-extern char *fb_dev_name;
-#endif
 #endif
 #ifdef HAVE_DIRECTFB
 #if DIRECTFBVERSION > 912
@@ -28,14 +24,6 @@ extern char *dfb_params;
 #endif
 #ifdef HAVE_PNG
 extern int z_compression;
-#endif
-#ifdef HAVE_JPEG
-extern int jpeg_baseline;
-extern int jpeg_progressive_mode;
-extern int jpeg_optimize;
-extern int jpeg_smooth;
-extern int jpeg_quality;
-extern char * jpeg_outdir;
 #endif
 #ifdef HAVE_SDL
 //extern char *sdl_driver;
@@ -46,6 +34,8 @@ extern int sdl_forcexv;
 #ifdef USE_FAKE_MONO
 extern int fakemono; // defined in dec_audio.c
 #endif
+
+extern int volstep;
 
 #ifdef HAVE_LIRC
 extern char *lirc_configfile;
@@ -65,6 +55,7 @@ extern int vo_gamma_hue;
 extern char *vo_geometry;
 extern int vo_ontop;
 extern int vo_keepaspect;
+extern int vo_rootwin;
 
 extern int opt_screen_size_x;
 extern int opt_screen_size_y;
@@ -80,11 +71,15 @@ extern int ao_pcm_waveheader;
 
 #ifdef HAVE_X11
 extern char *mDisplayName;
-extern int WinID;
 extern int fs_layer;
 extern int stop_xscreensaver;
 extern char **vo_fstype_list;
 extern int vo_nomouse_input;
+#endif
+extern int WinID;
+
+#ifdef HAVE_MENU
+extern int menu_startup;
 #endif
 
 #ifdef HAVE_AA
@@ -127,7 +122,7 @@ extern int nortc;
 #ifdef _XBOX
 extern int limitedhwac3;
 #endif
-
+ 
 /* from libvo/aspect.c */
 extern float monitor_aspect;
 
@@ -142,20 +137,6 @@ m_option_t ao_plugin_conf[]={
 	{"softclip", &ao_plugin_cfg.pl_volume_softclip, CONF_TYPE_FLAG, 0, 0, 1, NULL},
 	{NULL, NULL, 0, 0, 0, 0, NULL}
 };
-
-#ifdef HAVE_JPEG
-m_option_t jpeg_conf[]={
-	{"progressive", &jpeg_progressive_mode, CONF_TYPE_FLAG, 0, 0, 1, NULL},
-	{"noprogressive", &jpeg_progressive_mode, CONF_TYPE_FLAG, 0, 1, 0, NULL},
-	{"baseline", &jpeg_baseline, CONF_TYPE_FLAG, 0, 0, 1, NULL},
-	{"nobaseline", &jpeg_baseline, CONF_TYPE_FLAG, 0, 1, 0, NULL},
-	{"optimize", &jpeg_optimize, CONF_TYPE_INT, CONF_RANGE, 0, 100, NULL},
-	{"smooth", &jpeg_smooth, CONF_TYPE_INT, CONF_RANGE, 0, 100, NULL},
-	{"quality", &jpeg_quality, CONF_TYPE_INT, CONF_RANGE, 0, 100, NULL},
-	{"outdir", &jpeg_outdir, CONF_TYPE_STRING, 0, 0, 0, NULL},
-	{NULL, NULL, 0, 0, 0, 0, NULL}
-};
-#endif
 
 extern int sws_flags;
 extern int readPPOpt(void *conf, char *arg);
@@ -187,11 +168,16 @@ m_option_t mplayer_opts[]={
 	{"nofixed-vo", &fixed_vo, CONF_TYPE_FLAG,CONF_GLOBAL, 0, 0, NULL},
 	{"ontop", &vo_ontop, CONF_TYPE_FLAG, 0, 0, 1, NULL},
 	{"noontop", &vo_ontop, CONF_TYPE_FLAG, 0, 1, 0, NULL},
+	{"rootwin", &vo_rootwin, CONF_TYPE_FLAG, 0, 0, 1, NULL},
 
 	{"aop", ao_plugin_conf, CONF_TYPE_SUBCONFIG, 0, 0, 0, NULL},
 	{"dsp", "Use -ao oss:dsp_path.\n", CONF_TYPE_PRINT, CONF_NOCFG, 0, 0, NULL},
         {"mixer", &mixer_device, CONF_TYPE_STRING, 0, 0, 0, NULL},
         {"mixer-channel", &mixer_channel, CONF_TYPE_STRING, 0, 0, 0, NULL},
+        {"softvol", &soft_vol, CONF_TYPE_FLAG, 0, 0, 1, NULL},
+        {"nosoftvol", &soft_vol, CONF_TYPE_FLAG, 0, 1, 0, NULL},
+        {"softvol-max", &soft_vol_max, CONF_TYPE_FLOAT, CONF_RANGE, 10, 10000, NULL},
+	{"volstep", &volstep, CONF_TYPE_INT, CONF_RANGE, 0, 100, NULL},
 	{"master", "Option -master has been removed, use -aop list=volume instead.\n", CONF_TYPE_PRINT, 0, 0, 0, NULL},
 	// override audio buffer size (used only by -ao oss, anyway obsolete...)
 	{"abs", &ao_data.buffersize, CONF_TYPE_INT, CONF_MIN, 0, 0, NULL},
@@ -223,7 +209,8 @@ m_option_t mplayer_opts[]={
 #endif
 	// -vo jpeg only:
 #ifdef HAVE_JPEG
-	{"jpeg", jpeg_conf, CONF_TYPE_SUBCONFIG, 0,0,0, NULL},
+	{"jpeg", "-jpeg is deprecated. Use -vo jpeg:options instead.\n",
+	    CONF_TYPE_PRINT, 0, 0, 0, NULL},
 #endif
 	// -vo sdl only:
 #ifdef HAVE_SDL
@@ -246,10 +233,6 @@ m_option_t mplayer_opts[]={
 	{"fb", &fb_dev_name, CONF_TYPE_STRING, 0, 0, 0, NULL},
 	{"fbmode", &fb_mode_name, CONF_TYPE_STRING, 0, 0, 0, NULL},
 	{"fbmodeconfig", &fb_mode_cfgfile, CONF_TYPE_STRING, 0, 0, 0, NULL},
-#else
-#ifdef HAVE_DIRECTFB
-	{"fb", &fb_dev_name, CONF_TYPE_STRING, 0, 0, 0, NULL},
-#endif
 #endif
 #ifdef HAVE_DIRECTFB
 #if DIRECTFBVERSION > 912
@@ -293,10 +276,9 @@ m_option_t mplayer_opts[]={
 	
     {"adapter", &vo_adapter_num, CONF_TYPE_INT, CONF_RANGE, 0, 5, NULL},
     {"refreshrate",&vo_refresh_rate,CONF_TYPE_INT,CONF_RANGE, 0,100, NULL},
+	{"wid", &WinID, CONF_TYPE_INT, 0, 0, 0, NULL},
 #ifdef HAVE_X11
 	// x11,xv,xmga,xvidix
-	{"wid", &WinID, CONF_TYPE_INT, 0, 0, 0, NULL},
-	{"rootwin", &WinID, CONF_TYPE_FLAG, 0, -1, 0, NULL},
 	{"icelayer", "-icelayer is obsolete. Use -fstype layer:<number> instead.\n", CONF_TYPE_PRINT, 0, 0, 0, NULL},
 	{"stop-xscreensaver", &stop_xscreensaver, CONF_TYPE_FLAG, 0, 0, 1, NULL},
 	{"nostop-xscreensaver", &stop_xscreensaver, CONF_TYPE_FLAG, 0, 1, 0, NULL},
@@ -346,12 +328,17 @@ m_option_t mplayer_opts[]={
 
 //---------------------- mplayer-only options ------------------------
 
+#ifdef CRASH_DEBUG
+	{"crash-debug", &crash_debug, CONF_TYPE_FLAG, CONF_GLOBAL, 0, 1, NULL},
+	{"nocrash-debug", &crash_debug, CONF_TYPE_FLAG, CONF_GLOBAL, 1, 0, NULL},
+#endif
 	{"osdlevel", &osd_level, CONF_TYPE_INT, CONF_RANGE, 0, 3, NULL},
 #ifdef HAVE_MENU
 	{"menu", &use_menu, CONF_TYPE_FLAG, CONF_GLOBAL, 0, 1, NULL},
 	{"nomenu", &use_menu, CONF_TYPE_FLAG, CONF_GLOBAL, 1, 0, NULL},
 	{"menu-root", &menu_root, CONF_TYPE_STRING, CONF_GLOBAL, 0, 0, NULL},
 	{"menu-cfg", &menu_cfg, CONF_TYPE_STRING, CONF_GLOBAL, 0, 0, NULL},
+	{"menu-startup", &menu_startup, CONF_TYPE_FLAG, CONF_GLOBAL, 0, 1, NULL},
 #else
 	{"menu", "OSD menu support was not compiled in.\n", CONF_TYPE_PRINT,0, 0, 0, NULL},
 #endif
@@ -422,17 +409,18 @@ m_option_t mplayer_opts[]={
 
 	{"slave", &slave_mode, CONF_TYPE_FLAG,CONF_GLOBAL , 0, 1, NULL},
 	{"use-stdin", "-use-stdin has been renamed to -noconsolecontrols, use that instead.", CONF_TYPE_PRINT, 0, 0, 0, NULL},
+	{"key-fifo-size", &key_fifo_size, CONF_TYPE_INT, CONF_RANGE, 2, 65000, NULL},
 	{"noconsolecontrols", &noconsolecontrols, CONF_TYPE_FLAG, CONF_GLOBAL, 0, 1, NULL},
 	{"consolecontrols", &noconsolecontrols, CONF_TYPE_FLAG, CONF_GLOBAL, 0, 0, NULL},
 
 #ifdef _XBOX
-  {"limitedhwac3", &limitedhwac3, CONF_TYPE_FLAG, CONF_GLOBAL, 0, 1, NULL},
+  {"limitedhwac3", &limitedhwac3, CONF_TYPE_FLAG, CONF_GLOBAL, 0, 1, NULL}, 
 #endif
 
 #define MAIN_CONF
 #include "cfg-common.h"
 #undef MAIN_CONF
-
+        
 	{"identify", &identify, CONF_TYPE_FLAG, CONF_GLOBAL, 0, 1, NULL},
 	{"really-quiet", &verbose, CONF_TYPE_FLAG, CONF_GLOBAL, 0, -10, NULL},
 	{"-help", help_text, CONF_TYPE_PRINT, CONF_NOCFG|CONF_GLOBAL, 0, 0, NULL},

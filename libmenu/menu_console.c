@@ -245,15 +245,16 @@ static void check_child(menu_t* menu) {
   r = select(max_fd+1,&rfd, NULL, NULL, &tv);
   if(r == 0) {
     r = waitpid(mpriv->child,&child_status,WNOHANG);
-    if(r > 0) {
-      printf("child died\n");
-    for(i = 0 ; i < 3 ; i++) 
-      close(mpriv->child_fd[i]);
-    mpriv->child = 0;
-    mpriv->prompt = mpriv->mp_prompt;
-    //add_line(mpriv,"Child process exited");
-    } else if(r < 0)
-      printf("waitpid error: %s\n",strerror(errno));
+    if(r < 0){
+      if(errno==ECHILD){  ///exiting childs get handled in mplayer.c
+        for(i = 0 ; i < 3 ; i++) 
+          close(mpriv->child_fd[i]);
+        mpriv->child = 0;
+        mpriv->prompt = mpriv->mp_prompt;
+        //add_line(mpriv,"Child process exited");    
+      }
+      else printf("waitpid error: %s\n",strerror(errno));
+    }
   } else if(r < 0) {
     printf("select error\n");
     return;
@@ -387,9 +388,9 @@ static void read_key(menu_t* menu,int c) {
     else {
       switch(c->id) {
       case MP_CMD_CHELP:
-	add_line(mpriv,"Mplayer console 0.01");
-	add_line(mpriv,"TODO: Write some mainful help msg ;)");
-	add_line(mpriv,"Enter any mplayer command");
+	add_line(mpriv,"MPlayer console 0.01");
+	add_line(mpriv,"TODO: meaningful help message ;)");
+	add_line(mpriv,"Enter any slave command");
 	add_line(mpriv,"exit close this console");
 	break;
       case MP_CMD_CEXIT:
@@ -403,7 +404,7 @@ static void read_key(menu_t* menu,int c) {
 	  menu->show = 0;
 	mpriv->show_ts = 0;
 	break;
-      case MP_CMD_CRUN:
+      case MP_CMD_RUN:
 	run_shell_cmd(menu,c->args[0].v.s);
 	break;
       default: // Send the other commands to mplayer

@@ -27,7 +27,6 @@
 #define DEMUXER_TYPE_MF 16
 #define DEMUXER_TYPE_AUDIO 17
 #define DEMUXER_TYPE_OGG 18
-#define DEMUXER_TYPE_BMP 19
 #define DEMUXER_TYPE_RAWAUDIO 20
 #define DEMUXER_TYPE_RTP 21
 #define DEMUXER_TYPE_RAWDV 22
@@ -54,10 +53,6 @@
 #define DEMUXER_TYPE_DEMUXERS (1<<16)
 // A virtual demuxer type for the network code
 #define DEMUXER_TYPE_PLAYLIST (2<<16)
-
-//This one is needed only to identify mpeg4 in mpeg2-ts, shouldn't be used explicitly,
-// rather use ths usual _TYPE_TS
-#define DEMUXER_TYPE_MPEG4_IN_TS (3<<16)
 
 
 #define DEMUXER_TIME_NONE 0
@@ -277,6 +272,13 @@ int demux_info_add(demuxer_t *demuxer, char *opt, char *param);
 char* demux_info_get(demuxer_t *demuxer, char *opt);
 int demux_info_print(demuxer_t *demuxer);
 int demux_control(demuxer_t *demuxer, int cmd, void *arg);
+
+#ifdef HAVE_OGGVORBIS
+/* Found in demux_ogg.c */
+int demux_ogg_num_subs(demuxer_t *demuxer);
+int demux_ogg_sub_id(demuxer_t *demuxer, int index);
+char *demux_ogg_sub_lang(demuxer_t *demuxer, int index);
+#endif
 
 #endif
 

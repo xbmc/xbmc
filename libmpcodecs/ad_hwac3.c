@@ -94,7 +94,6 @@ static int ac3dts_fillbuff(sh_audio_t *sh_audio)
           }
         }
 #endif
-
       }
       break; /* we're done.*/
     }
@@ -110,11 +109,15 @@ static int ac3dts_fillbuff(sh_audio_t *sh_audio)
   sh_audio->a_in_buffer_len = length;
     
   // TODO: is DTS also checksummed?
-  if(isdts == 0 && crc16_block(sh_audio->a_in_buffer + 2, length - 2) != 0) 
+  if(isdts == 0 && crc16_block(sh_audio->a_in_buffer + 2, length - 2) != 0)
+#ifdef _XBOX
   {
     mp_msg(MSGT_DECAUDIO, MSGL_STATUS, "a52: CRC check failed!  \n");
     return -1;
   }
+#else
+    mp_msg(MSGT_DECAUDIO, MSGL_STATUS, "a52: CRC check failed!  \n");
+#endif
     
   return length;
 }
@@ -386,6 +389,8 @@ static int decode_audio_dts(unsigned char *indata_ptr, int len, unsigned char *b
 #else
   //TODO if fzise is odd, swab doesn't copy the last byte
   swab(indata_ptr, &buf[8], fsize);
+  if (fsize & 1)
+    buf[8+fsize] = indata_ptr[fsize];
 #endif
   memset(&buf[fsize + 8], 0, nr_samples * 2 * 2 - (fsize + 8));
 

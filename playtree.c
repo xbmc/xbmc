@@ -525,7 +525,7 @@ play_tree_rnd_step(play_tree_t* pt) {
 
   if(!count) return NULL;
   
-  r = (int)((count-1.0) * rand() / RAND_MAX);
+  r = (int)((float)(count) * rand() / (RAND_MAX + 1.0));
 
   for(i = head ; i  ; i=i->next) {
     if(!(i->flags & PLAY_TREE_RND_PLAYED)) r--;
@@ -585,6 +585,14 @@ play_tree_iter_step(play_tree_iter_t* iter, int d,int with_nodes) {
   
   if(pt == NULL) { // No next
     // Must we loop?
+    if (iter->mode == PLAY_TREE_ITER_RND) {
+      if (iter->root->loop == 0)
+        return PLAY_TREE_ITER_END;
+      play_tree_unset_flag(iter->root, PLAY_TREE_RND_PLAYED, -1);
+      if (iter->root->loop > 0) iter->root->loop--;
+      // try again
+      return play_tree_iter_step(iter, 0, with_nodes);
+    } else
     if(iter->tree->parent && iter->tree->parent->loop != 0 && ((d > 0 && iter->loop != 0) || ( d < 0 && (iter->loop < 0 || iter->loop < iter->tree->parent->loop) ) ) ) { 
       if(d > 0) { // Go back to the first one
 	for(pt = iter->tree ; pt->prev != NULL; pt = pt->prev)

@@ -20,7 +20,8 @@ OBJS= common.o utils.o mem.o allcodecs.o \
       roqvideo.o dpcm.o interplayvideo.o xan.o rpza.o cinepak.o msrle.o \
       msvideo1.o vqavideo.o idcinvideo.o adx.o rational.o faandct.o 8bps.o \
       smc.o parser.o flicvideo.o truemotion1.o vmdav.o lcl.o qtrle.o g726.o \
-      flac.o vp3dsp.o integer.o
+      flac.o vp3dsp.o integer.o snow.o tscc.o sonic.o ulti.o h264idct.o \
+      qdrw.o xl.o rangecoder.o png.o pnm.o qpeg.o
 
 ifeq ($(AMR_NB),yes)
 ifeq ($(AMR_NB_FIXED),yes)
@@ -40,6 +41,10 @@ endif
 
 ifeq ($(HAVE_W32THREADS),yes)
 OBJS+= w32thread.o
+endif
+
+ifeq ($(HAVE_BEOSTHREADS),yes)
+OBJS+= beosthread.o
 endif
 
 ifeq ($(AMR_WB),yes)
@@ -94,9 +99,14 @@ OBJS+= faac.o
 EXTRALIBS += -lfaac
 endif
 
+ifeq ($(CONFIG_XVID),yes)
+OBJS+= xvidff.o
+EXTRALIBS += -lxvidcore
+endif
+
 ifeq ($(CONFIG_PP),yes)
 ifeq ($(SHARED_PP),yes)
-EXTRALIBS += -lpostproc
+EXTRALIBS += -L$(VPATH)/libpostproc -lpostproc
 else
 # LIBS += libpostproc/libpostproc.a ... should be fixed
 OBJS += libpostproc/postprocess.o
@@ -162,7 +172,8 @@ endif
 
 ifeq ($(TARGET_ALTIVEC),yes)
 OBJS += ppc/dsputil_altivec.o ppc/mpegvideo_altivec.o ppc/idct_altivec.o \
-        ppc/fft_altivec.o ppc/gmc_altivec.o ppc/fdct_altivec.o
+        ppc/fft_altivec.o ppc/gmc_altivec.o ppc/fdct_altivec.o \
+        ppc/dsputil_h264_altivec.o
 endif
 
 ifeq ($(TARGET_ARCH_SH4),yes)
@@ -200,6 +211,9 @@ $(LIB): $(OBJS) $(AMRLIBS)
 	$(RANLIB) $@
 
 $(SLIB): $(OBJS)
+ifeq ($(CONFIG_PP),yes)
+	$(MAKE) -C $(VPATH)/libpostproc
+endif
 ifeq ($(CONFIG_WIN32),yes)
 	$(CC) $(SHFLAGS) -Wl,--output-def,$(@:.dll=.def) -o $@ $(OBJS) $(EXTRALIBS) $(AMREXTRALIBS)
 	-lib /machine:i386 /def:$(@:.dll=.def)
@@ -273,12 +287,15 @@ fft-test: fft-test.o $(LIB)
 ifeq ($(BUILD_SHARED),yes)
 install: all install-headers
 ifeq ($(CONFIG_WIN32),yes)
-	install -s -m 755 $(SLIB) "$(prefix)"
+	install $(INSTALLSTRIP) -m 755 $(SLIB) "$(prefix)"
 else
 	install -d $(prefix)/lib
-	install -s -m 755 $(SLIB) $(prefix)/lib/libavcodec-$(VERSION).so
+	install $(INSTALLSTRIP) -m 755 $(SLIB) $(prefix)/lib/libavcodec-$(VERSION).so
 	ln -sf libavcodec-$(VERSION).so $(prefix)/lib/libavcodec.so
 	ldconfig || true
+endif
+ifeq ($(CONFIG_PP),yes)
+	$(MAKE) -C $(VPATH)/libpostproc $@
 endif
 else
 install:

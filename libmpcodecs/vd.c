@@ -28,7 +28,6 @@
 //#include "vd_internal.h"
 
 extern vd_functions_t mpcodecs_vd_null;
-extern vd_functions_t mpcodecs_vd_cinepak;
 extern vd_functions_t mpcodecs_vd_ffmpeg;
 extern vd_functions_t mpcodecs_vd_theora;
 extern vd_functions_t mpcodecs_vd_dshow;
@@ -40,8 +39,6 @@ extern vd_functions_t mpcodecs_vd_divx4;
 extern vd_functions_t mpcodecs_vd_raw;
 extern vd_functions_t mpcodecs_vd_hmblck;
 extern vd_functions_t mpcodecs_vd_xanim;
-extern vd_functions_t mpcodecs_vd_roqvideo;
-extern vd_functions_t mpcodecs_vd_cyuv;
 extern vd_functions_t mpcodecs_vd_nuv;
 extern vd_functions_t mpcodecs_vd_mpng;
 extern vd_functions_t mpcodecs_vd_ijpg;
@@ -58,7 +55,6 @@ extern vd_functions_t mpcodecs_vd_qtvideo;
 
 vd_functions_t* mpcodecs_vd_drivers[] = {
         &mpcodecs_vd_null,
-        &mpcodecs_vd_cinepak,
 #ifdef USE_LIBAVCODEC
         &mpcodecs_vd_ffmpeg,
 #endif
@@ -82,8 +78,6 @@ vd_functions_t* mpcodecs_vd_drivers[] = {
         &mpcodecs_vd_lzo,
         &mpcodecs_vd_raw,
         &mpcodecs_vd_hmblck,
-        &mpcodecs_vd_roqvideo,
-        &mpcodecs_vd_cyuv,
         &mpcodecs_vd_nuv,
 #ifdef USE_XANIM
         &mpcodecs_vd_xanim,
@@ -131,6 +125,17 @@ float screen_size_xy=0;
 float movie_aspect=-1.0;
 int vo_flags=0;
 int vd_use_slices=1;
+
+/** global variables for gamma, brightness, contrast, saturation and hue 
+    modified by mplayer.c and Gui/mplayer/gtk/eq.c:
+    ranges -100 - 100
+    1000 if the vo default should be used
+*/   
+int vo_gamma_gamma = 1000;
+int vo_gamma_brightness = 1000;
+int vo_gamma_contrast = 1000;
+int vo_gamma_saturation = 1000;
+int vo_gamma_hue = 1000;
 
 extern vd_functions_t* mpvdec; // FIXME!
 extern int divx_quality;
@@ -248,7 +253,8 @@ csp_again:
     if(vo_flags&VFCAP_FLIPPED) flip^=1;
     if(flip && !(vo_flags&VFCAP_FLIP)){
 	// we need to flip, but no flipping filter avail.
-	sh->vfilter=vf=vf_open_filter(vf,"flip",NULL);
+	vf_add_before_vo(&vf, "flip", NULL);
+	sh->vfilter = vf;
     }
 
     // time to do aspect ratio corrections...
@@ -301,6 +307,8 @@ csp_again:
                       fullscreen|(vidmode<<1)|(softzoom<<2)|(flip<<3),
                       "MPlayer",out_fmt);
 
+    vf->w = sh->disp_w;
+    vf->h = sh->disp_h;
     if(vf->config(vf,sh->disp_w,sh->disp_h,
                       screen_size_x,screen_size_y,
                       fullscreen|(vidmode<<1)|(softzoom<<2)|(flip<<3),
@@ -312,6 +320,18 @@ csp_again:
     }
 
     sh->vf_inited=1;
+
+    if (vo_gamma_gamma != 1000)
+        set_video_colors(sh, "gamma", vo_gamma_gamma);
+    if (vo_gamma_brightness != 1000)
+        set_video_colors(sh, "brightness", vo_gamma_brightness);
+    if (vo_gamma_contrast != 1000)
+        set_video_colors(sh, "contrast", vo_gamma_contrast);
+    if (vo_gamma_saturation != 1000)
+        set_video_colors(sh, "saturation", vo_gamma_saturation);
+    if (vo_gamma_hue != 1000)
+        set_video_colors(sh, "hue", vo_gamma_hue);
+
     return 1;
 }
 
@@ -322,8 +342,6 @@ csp_again:
 mp_image_t* mpcodecs_get_image(sh_video_t *sh, int mp_imgtype, int mp_imgflag, int w, int h){
   mp_image_t* mpi=vf_get_image(sh->vfilter,sh->codec->outfmt[sh->outfmtidx],mp_imgtype,mp_imgflag,w,h);
   mpi->x=mpi->y=0;
-  mpi->w=sh->disp_w;
-  mpi->h=sh->disp_h;
   return mpi;
 }
 

@@ -30,7 +30,7 @@
 #define MP_CMD_VF_CHANGE_RECTANGLE 28
 #define MP_CMD_GAMMA 29
 #define MP_CMD_SUB_VISIBILITY 30
-#define MP_CMD_VOBSUB_LANG 31
+// #define MP_CMD_VOBSUB_LANG 31 // combined with SUB_SELECT
 #define MP_CMD_MENU 32
 #define MP_CMD_SET_MENU 33
 #define MP_CMD_GET_TIME_LENGTH 34
@@ -53,6 +53,15 @@
 #define MP_CMD_GET_SUB_VISIBILITY 49
 #define MP_CMD_SUB_FORCED_ONLY 50
 #define MP_CMD_VO_ONTOP 51
+#define MP_CMD_SUB_SELECT 52
+#define MP_CMD_VO_ROOTWIN 53
+#define MP_CMD_SWITCH_VSYNC 54
+#define MP_CMD_SWITCH_RATIO 55
+#define MP_CMD_FRAME_STEP 56
+#define MP_CMD_SPEED_INCR 57
+#define MP_CMD_SPEED_MULT 58
+#define MP_CMD_SPEED_SET 59
+#define MP_CMD_RUN 60
 
 #define MP_CMD_GUI_EVENTS       5000
 #define MP_CMD_GUI_LOADFILE     5001
@@ -82,7 +91,6 @@
 #define MP_CMD_CHELP 7000
 #define MP_CMD_CEXIT 7001
 #define MP_CMD_CHIDE 7002
-#define MP_CMD_CRUN 7003
 
 // The arg types
 #define MP_CMD_ARG_INT 0
@@ -104,8 +112,8 @@
 #define MP_INPUT_NOTHING -3
 
 // For the key's drivers, if possible you can send key up and key down
-// events. Key up is the default, to send a key down you must or the key
-// code with MP_KEY_DOWN.
+// events. Key up is the default, to send a key down you must use the 
+// OR operator between the key code and MP_KEY_DOWN.
 #define MP_KEY_DOWN (1<<29)
 // Use this when the key shouldn't be auto-repeated (like mouse buttons)
 #define MP_NO_REPEAT_KEY (1<<28)
@@ -131,6 +139,7 @@ typedef struct mp_cmd {
   char* name;
   int nargs;
   mp_cmd_arg_t args[MP_CMD_MAX_ARGS];
+  int pausing;
 } mp_cmd_t;
 
 
@@ -191,7 +200,7 @@ mp_input_queue_cmd(mp_cmd_t* cmd);
 // This function retrieves the next available command waiting no more than time msec.
 // If pause is true, the next input will always return a pause command.
 mp_cmd_t*
-mp_input_get_cmd(int time, int paused);
+mp_input_get_cmd(int time, int paused, int peek_only);
 
 mp_cmd_t*
 mp_input_parse_cmd(char* str);

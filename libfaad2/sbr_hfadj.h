@@ -34,17 +34,11 @@
 extern "C" {
 #endif
 
-typedef struct {
-
-    real_t Q_mapped[64][5];
-
-    uint8_t S_index_mapped[64][5];
-    uint8_t S_mapped[64][5];
-
-    real_t G_lim_boost[5][64];
-    real_t Q_M_lim_boost[5][64];
-    real_t S_M_boost[5][64];
-
+typedef struct
+{
+    real_t G_lim_boost[MAX_L_E][MAX_M];
+    real_t Q_M_lim_boost[MAX_L_E][MAX_M];
+    real_t S_M_boost[MAX_L_E][MAX_M];
 } sbr_hfadj_info;
 
 

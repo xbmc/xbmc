@@ -26,13 +26,14 @@
 #include <inttypes.h>
 
 #include "mpeg2.h"
+#include "attributes.h"
 #include "mpeg2_internal.h"
 
 mpeg2_mc_t mpeg2_mc;
 
 void mpeg2_mc_init (uint32_t accel)
 {
-#ifdef ARCH_X86
+#if defined(ARCH_X86) || defined(ARCH_X86_64)
     if (accel & MPEG2_ACCEL_X86_MMXEXT)
 	mpeg2_mc = mpeg2_mc_mmxext;
     else if (accel & MPEG2_ACCEL_X86_3DNOW)
@@ -41,21 +42,19 @@ void mpeg2_mc_init (uint32_t accel)
 	mpeg2_mc = mpeg2_mc_mmx;
     else
 #endif
-#ifdef ARCH_PPC
-#ifdef HAVE_ALTIVEC
+#if defined(ARCH_PPC) && defined(HAVE_ALTIVEC)
     if (accel & MPEG2_ACCEL_PPC_ALTIVEC)
 	mpeg2_mc = mpeg2_mc_altivec;
     else
-#endif
 #endif
 #ifdef ARCH_ALPHA
     if (accel & MPEG2_ACCEL_ALPHA)
 	mpeg2_mc = mpeg2_mc_alpha;
     else
 #endif
-#ifdef LIBMPEG2_MLIB
-    if (accel & MPEG2_ACCEL_MLIB)
-	mpeg2_mc = mpeg2_mc_mlib;
+#if defined(ARCH_SPARC) && defined(HAVE_VIS)
+    if (accel & MPEG2_ACCEL_SPARC_VIS)
+	mpeg2_mc = mpeg2_mc_vis;
     else
 #endif
 	mpeg2_mc = mpeg2_mc_c;

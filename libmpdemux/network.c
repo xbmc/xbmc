@@ -67,9 +67,9 @@ static struct {
 	// MP3 streaming, some MP3 streaming server answer with audio/mpeg
 	{ "audio/mpeg", DEMUXER_TYPE_AUDIO },
 	// MPEG streaming
-	{ "video/mpeg", DEMUXER_TYPE_MPEG_PS },
-	{ "video/x-mpeg", DEMUXER_TYPE_MPEG_PS },
-	{ "video/x-mpeg2", DEMUXER_TYPE_MPEG_PS },
+	{ "video/mpeg", DEMUXER_TYPE_UNKNOWN },
+	{ "video/x-mpeg", DEMUXER_TYPE_UNKNOWN },
+	{ "video/x-mpeg2", DEMUXER_TYPE_UNKNOWN },
 	// AVI ??? => video/x-msvideo
 	{ "video/x-msvideo", DEMUXER_TYPE_AVI },
 	// MOV => video/quicktime
@@ -195,7 +195,7 @@ connect2Server_with_af(char *host, int port, int af,int verb) {
 	fd_set set;
 	struct timeval tv;
 	union {
-		struct sockaddr_in four;
+	struct sockaddr_in four;
 #ifdef HAVE_AF_INET6
 		struct sockaddr_in6 six;
 #endif
@@ -226,7 +226,7 @@ connect2Server_with_af(char *host, int port, int af,int verb) {
 			mp_msg(MSGT_NETWORK,MSGL_ERR, "Unknown address family %d:\n", af);
 			return -2;
 	}
-	
+
 	
 	bzero(&server_address, sizeof(server_address));
 	
@@ -253,7 +253,7 @@ connect2Server_with_af(char *host, int port, int af,int verb) {
 		}
 		
 		memcpy( our_s_addr, (void*)hp->h_addr, hp->h_length );
-	}
+    }
 #ifdef HAVE_WINSOCK2
 	else {
 		unsigned long addr = inet_addr(host);
@@ -277,7 +277,7 @@ connect2Server_with_af(char *host, int port, int af,int verb) {
 		default:
 			mp_msg(MSGT_NETWORK,MSGL_ERR, "Unknown address family %d:\n", af);
 			return -2;
-	}
+  }
 
 #if defined(USE_ATON) || defined(HAVE_WINSOCK2)
 #ifdef _XBOX
@@ -323,9 +323,9 @@ connect2Server_with_af(char *host, int port, int af,int verb) {
 	      if( ret<0 ) mp_msg(MSGT_NETWORK,MSGL_ERR,"select failed\n");
 	      else if(ret > 0) break;
 	      else if(count > 30 || mp_input_check_interrupt(500)) {
-		if(count > 30)
+		      if(count > 30)
 		  mp_msg(MSGT_NETWORK,MSGL_ERR,"Connection timeout\n");
-		else
+		      else
 		  mp_msg(MSGT_NETWORK,MSGL_V,"Connection interuppted by user\n");
 		return -3;
 	      }
@@ -345,7 +345,7 @@ connect2Server_with_af(char *host, int port, int af,int verb) {
 #endif
 
 #ifndef _XBOX //XBOX doesnt support SO_ERROR option for getsockopt
-	// Check if there were any error
+  // Check if there were any error
 	err_len = sizeof(int);
 	ret =  getsockopt(socket_server_fd,SOL_SOCKET,SO_ERROR,&err,&err_len);
 	if(ret < 0) {
@@ -1036,6 +1036,7 @@ realrtsp_streaming_start( stream_t *stream ) {
 	int fd;
 	rtsp_session_t *rtsp;
 	char *mrl;
+	char *file;
 	int port;
 	int redirected, temp;
 	if( stream==NULL ) return -1;
@@ -1048,13 +1049,17 @@ realrtsp_streaming_start( stream_t *stream ) {
 
 		fd = connect2Server( stream->streaming_ctrl->url->hostname,
 			port = (stream->streaming_ctrl->url->port ? stream->streaming_ctrl->url->port : 554),1 );
+		if(fd<0 && !stream->streaming_ctrl->url->port)
+			fd = connect2Server( stream->streaming_ctrl->url->hostname,
+				port = 7070, 1 );
 		if(fd<0) return -1;
 		
-		mrl = malloc(sizeof(char)*(strlen(stream->streaming_ctrl->url->hostname)+strlen(stream->streaming_ctrl->url->file)+16));
-		if (stream->streaming_ctrl->url->file[0] == '/')
-		    stream->streaming_ctrl->url->file++;
-		sprintf(mrl,"rtsp://%s:%i/%s",stream->streaming_ctrl->url->hostname,port,stream->streaming_ctrl->url->file);
-		rtsp = rtsp_session_start(fd,&mrl, stream->streaming_ctrl->url->file,
+		file = stream->streaming_ctrl->url->file;
+		if (file[0] == '/')
+		    file++;
+		mrl = malloc(sizeof(char)*(strlen(stream->streaming_ctrl->url->hostname)+strlen(file)+16));
+		sprintf(mrl,"rtsp://%s:%i/%s",stream->streaming_ctrl->url->hostname,port,file);
+		rtsp = rtsp_session_start(fd,&mrl, file,
 			stream->streaming_ctrl->url->hostname, port, &redirected);
 
 		if ( redirected == 1 ) {

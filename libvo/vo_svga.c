@@ -44,8 +44,8 @@ TODO:
 
 #include "sub.h"
 
-#include "../mp_msg.h"
-//#include "../mp_image.h"
+#include "mp_msg.h"
+//#include "mp_image.h"
 
 #include <assert.h>
 
@@ -747,7 +747,7 @@ int page;
       mpi->stride[0] = mode_stride;
       mpi->planes[0] = PageStore[page].vbase + 
              y_pos*mode_stride + (x_pos*mpi->bpp)/8;
-      (int)mpi->priv=page;
+      mpi->priv=(void *)page;
       if(verbose>2)
         printf("vo_svga: direct render allocated! page=%d\n",page);
       return(VO_TRUE);

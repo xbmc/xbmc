@@ -26,6 +26,8 @@
 #include "config.h"
 #include "mp_msg.h"
 
+#include "help_mp.h"
+
 // for mmioFOURCC:
 #include "libmpdemux/aviheader.h"
 
@@ -80,13 +82,13 @@ static int add_to_fourcc(char *s, char *alias, unsigned int *fourcc,
 		goto err_out_parse_error;
 	return 1;
 err_out_duplicated:
-	mp_msg(MSGT_CODECCFG,MSGL_ERR,"duplicated FourCC");
+	mp_msg(MSGT_CODECCFG,MSGL_ERR,MSGTR_DuplicateFourcc);
 	return 0;
 err_out_too_many:
-	mp_msg(MSGT_CODECCFG,MSGL_ERR,"too many FourCCs/formats...");
+	mp_msg(MSGT_CODECCFG,MSGL_ERR,MSGTR_TooManyFourccs);
 	return 0;
 err_out_parse_error:
-	mp_msg(MSGT_CODECCFG,MSGL_ERR,"parse error");
+	mp_msg(MSGT_CODECCFG,MSGL_ERR,MSGTR_ParseError);
 	return 0;
 }
 
@@ -99,20 +101,20 @@ static int add_to_format(char *s, char *alias,unsigned int *fourcc, unsigned int
 	for (i = 0; i < CODECS_MAX_FOURCC && fourcc[i] != 0xffffffff; i++)
 		/* NOTHING */;
 	if (i == CODECS_MAX_FOURCC) {
-		mp_msg(MSGT_CODECCFG,MSGL_ERR,"too many FourCCs/formats...");
+		mp_msg(MSGT_CODECCFG,MSGL_ERR,MSGTR_TooManyFourccs);
 		return 0;
 	}
 
         fourcc[i]=strtoul(s,&endptr,0);
 	if (*endptr != '\0') {
-		mp_msg(MSGT_CODECCFG,MSGL_ERR,"parse error (format ID not a number?)");
+		mp_msg(MSGT_CODECCFG,MSGL_ERR,MSGTR_ParseErrorFIDNotNumber);
 		return 0;
 	}
 
 	if(alias){
 	    fourccmap[i]=strtoul(alias,&endptr,0);
 	    if (*endptr != '\0') {
-		mp_msg(MSGT_CODECCFG,MSGL_ERR,"parse error (format ID alias not a number?)");
+		mp_msg(MSGT_CODECCFG,MSGL_ERR,MSGTR_ParseErrorFIDAliasNotNumber);
 		return 0;
 	    }
 	} else
@@ -120,7 +122,7 @@ static int add_to_format(char *s, char *alias,unsigned int *fourcc, unsigned int
 
 	for (j = 0; j < i; j++)
 		if (fourcc[j] == fourcc[i]) {
-			mp_msg(MSGT_CODECCFG,MSGL_ERR,"duplicated format ID");
+			mp_msg(MSGT_CODECCFG,MSGL_ERR,MSGTR_DuplicateFID);
 			return 0;
 		}
 
@@ -141,6 +143,8 @@ static int add_to_format(char *s, char *alias,unsigned int *fourcc, unsigned int
 		{"444P",  IMGFMT_444P},
 		{"422P",  IMGFMT_422P},
 		{"411P",  IMGFMT_411P},
+		{"Y800",  IMGFMT_Y800},
+		{"Y8",    IMGFMT_Y8},
 
 		{"YUY2",  IMGFMT_YUY2},
 		{"UYVY",  IMGFMT_UYVY},
@@ -232,10 +236,10 @@ static int add_to_inout(char *sfmt, char *sflags, unsigned int *outfmt,
         
 	return 1;
 err_out_too_many:
-	mp_msg(MSGT_CODECCFG,MSGL_ERR,"too many out...");
+	mp_msg(MSGT_CODECCFG,MSGL_ERR,MSGTR_TooManyOut);
 	return 0;
 err_out_parse_error:
-	mp_msg(MSGT_CODECCFG,MSGL_ERR,"parse error");
+	mp_msg(MSGT_CODECCFG,MSGL_ERR,MSGTR_ParseError);
 	return 0;
 }
 
@@ -251,9 +255,11 @@ static short get_driver(char *s,int audioflag)
 		"alaw",
 		"msgsm",
 		"dshow",
-		"aiffpcm",
 		"dvdpcm",
 		"hwac3",
+#ifdef _XBOX		
+		"aiffpcm",
+#endif		
 		"libvorbis",
 		"ffmpeg",
 		"libmad",
@@ -319,7 +325,7 @@ static int validate_codec(codecs_t *c, int type)
 		/* NOTHING */;
 
 	if (i < strlen(tmp_name)) {
-		mp_msg(MSGT_CODECCFG,MSGL_ERR,"\ncodec(%s) name is not valid!\n", c->name);
+		mp_msg(MSGT_CODECCFG,MSGL_ERR,MSGTR_InvalidCodecName, c->name);
 		return 0;
 	}
 
@@ -328,23 +334,22 @@ static int validate_codec(codecs_t *c, int type)
 
 #if 0
 	if (c->fourcc[0] == 0xffffffff) {
-		mp_msg(MSGT_CODECCFG,MSGL_ERR,"\ncodec(%s) does not have FourCC/format!\n", c->name);
-		return 0;
-	}
-
-	/* XXX fix this: shitty with 'null' codec */
-	if (!c->driver) {
-		mp_msg(MSGT_CODECCFG,MSGL_ERR,"\ncodec(%s) does not have a driver!\n", c->name);
+		mp_msg(MSGT_CODECCFG,MSGL_ERR,MSGTR_CodecLacksFourcc, c->name);
 		return 0;
 	}
 #endif
+
+	if (!c->drv) {
+		mp_msg(MSGT_CODECCFG,MSGL_ERR,MSGTR_CodecLacksDriver, c->name);
+		return 0;
+	}
 
 #if 0
 #warning codec->driver == 4;... <- ezt nem kellene belehegeszteni...
 #warning HOL VANNAK DEFINIALVA????????????
 	if (!c->dll && (c->driver == 4 ||
 				(c->driver == 2 && type == TYPE_VIDEO))) {
-		mp_msg(MSGT_CODECCFG,MSGL_ERR,"\ncodec(%s) needs a 'dll'!\n", c->name);
+		mp_msg(MSGT_CODECCFG,MSGL_ERR,MSGTR_CodecNeedsDLL, c->name);
 		return 0;
 	}
 #warning guid.f1 lehet 0? honnan lehet tudni, hogy nem adtak meg?
@@ -352,7 +357,7 @@ static int validate_codec(codecs_t *c, int type)
 
 	if (type == TYPE_VIDEO)
 		if (c->outfmt[0] == 0xffffffff) {
-			mp_msg(MSGT_CODECCFG,MSGL_ERR,"\ncodec(%s) needs an 'outfmt'!\n", c->name);
+			mp_msg(MSGT_CODECCFG,MSGL_ERR,MSGTR_CodecNeedsOutfmt, c->name);
 			return 0;
 		}
 #endif
@@ -370,7 +375,7 @@ static int add_comment(char *s, char **d)
 		(*d)[pos++] = '\n';
 	}
 	if (!(*d = (char *) realloc(*d, pos + strlen(s) + 1))) {
-		mp_msg(MSGT_CODECCFG,MSGL_FATAL,"Can't allocate memory for comment. ");
+		mp_msg(MSGT_CODECCFG,MSGL_FATAL,MSGTR_CantAllocateComment);
 		return 0;
 	}
 	strcpy(*d + pos, s);
@@ -419,7 +424,7 @@ static int get_token(int min, int max)
 	char c;
 
 	if (max >= MAX_NR_TOKEN) {
-		mp_msg(MSGT_CODECCFG,MSGL_ERR,"get_token(): max >= MAX_NR_TOKEN!");
+		mp_msg(MSGT_CODECCFG,MSGL_ERR,MSGTR_GetTokenMaxNotLessThanMAX_NR_TOKEN);
 		goto out_eof;
 	}
 
@@ -503,15 +508,15 @@ int parse_codec_cfg(char *cfgfile)
 #endif
 	}
 	
-	mp_msg(MSGT_CODECCFG,MSGL_INFO,"Reading %s: ", cfgfile);
+	mp_msg(MSGT_CODECCFG,MSGL_V,MSGTR_ReadingFile, cfgfile);
 
 	if ((fp = fopen(cfgfile, "r")) == NULL) {
-		mp_msg(MSGT_CODECCFG,MSGL_ERR,"Can't open '%s': %s\n", cfgfile, strerror(errno));
+		mp_msg(MSGT_CODECCFG,MSGL_V,MSGTR_CantOpenFileError, cfgfile, strerror(errno));
 		return 0;
 	}
 
 	if ((line = (char *) malloc(MAX_LINE_LEN + 1)) == NULL) {
-		mp_msg(MSGT_CODECCFG,MSGL_FATAL,"Can't get memory for 'line': %s\n", strerror(errno));
+		mp_msg(MSGT_CODECCFG,MSGL_FATAL,MSGTR_CantGetMemoryForLine, strerror(errno));
 		return 0;
 	}
 	read_nextline = 1;
@@ -569,7 +574,7 @@ int parse_codec_cfg(char *cfgfile)
 			}
 		        if (!(*codecsp = (codecs_t *) realloc(*codecsp,
 				sizeof(codecs_t) * (*nr_codecsp + 2)))) {
-			    mp_msg(MSGT_CODECCFG,MSGL_FATAL,"Can't realloc '*codecsp': %s\n", strerror(errno));
+			    mp_msg(MSGT_CODECCFG,MSGL_FATAL,MSGTR_CantReallocCodecsp, strerror(errno));
 			    goto err_out;
 		        }
 			codec=*codecsp + *nr_codecsp;
@@ -584,19 +589,19 @@ int parse_codec_cfg(char *cfgfile)
 			for (i = 0; i < *nr_codecsp - 1; i++) {
 				if(( (*codecsp)[i].name!=NULL) && 
 				    (!strcmp(token[0], (*codecsp)[i].name)) ) {
-					mp_msg(MSGT_CODECCFG,MSGL_ERR,"Codec name '%s' isn't unique.", token[0]);
+					mp_msg(MSGT_CODECCFG,MSGL_ERR,MSGTR_CodecNameNotUnique, token[0]);
 					goto err_out_print_linenum;
 				}
 			}
 			if (!(codec->name = strdup(token[0]))) {
-				mp_msg(MSGT_CODECCFG,MSGL_ERR,"Can't strdup -> 'name': %s\n", strerror(errno));
+				mp_msg(MSGT_CODECCFG,MSGL_ERR,MSGTR_CantStrdupName, strerror(errno));
 				goto err_out;
 			}
 		} else if (!strcmp(token[0], "info")) {
 			if (codec->info || get_token(1, 1) < 0)
 				goto err_out_parse_error;
 			if (!(codec->info = strdup(token[0]))) {
-				mp_msg(MSGT_CODECCFG,MSGL_ERR,"Can't strdup -> 'info': %s\n", strerror(errno));
+				mp_msg(MSGT_CODECCFG,MSGL_ERR,MSGTR_CantStrdupInfo, strerror(errno));
 				goto err_out;
 			}
 		} else if (!strcmp(token[0], "comment")) {
@@ -620,14 +625,14 @@ int parse_codec_cfg(char *cfgfile)
 			if (get_token(1, 1) < 0)
 				goto err_out_parse_error;
 			if (!(codec->drv = strdup(token[0]))) {
-				mp_msg(MSGT_CODECCFG,MSGL_ERR,"Can't strdup -> 'driver': %s\n", strerror(errno));
+				mp_msg(MSGT_CODECCFG,MSGL_ERR,MSGTR_CantStrdupDriver, strerror(errno));
 				goto err_out;
 			}
 		} else if (!strcmp(token[0], "dll")) {
 			if (get_token(1, 1) < 0)
 				goto err_out_parse_error;
 			if (!(codec->dll = strdup(token[0]))) {
-				mp_msg(MSGT_CODECCFG,MSGL_ERR,"Can't strdup -> 'dll': %s\n", strerror(errno));
+				mp_msg(MSGT_CODECCFG,MSGL_ERR,MSGTR_CantStrdupDLL, strerror(errno));
 				goto err_out;
 			}
 		} else if (!strcmp(token[0], "guid")) {
@@ -696,7 +701,7 @@ int parse_codec_cfg(char *cfgfile)
 	}
 	if (!validate_codec(codec, codec_type))
 		goto err_out_not_valid;
-	mp_msg(MSGT_CODECCFG,MSGL_INFO,"%d audio & %d video codecs\n", nr_acodecs, nr_vcodecs);
+	mp_msg(MSGT_CODECCFG,MSGL_INFO,MSGTR_AudioVideoCodecTotals, nr_acodecs, nr_vcodecs);
 	if(video_codecs) video_codecs[nr_vcodecs].name = NULL;
 	if(audio_codecs) audio_codecs[nr_acodecs].name = NULL;
 out:
@@ -706,7 +711,7 @@ out:
 	return 1;
 
 err_out_parse_error:
-	mp_msg(MSGT_CODECCFG,MSGL_ERR,"parse error");
+	mp_msg(MSGT_CODECCFG,MSGL_ERR,MSGTR_ParseError);
 err_out_print_linenum:
 	PRINT_LINENUM;
 err_out:
@@ -718,11 +723,39 @@ err_out:
 	fclose(fp);
 	return 0;
 err_out_not_valid:
-	mp_msg(MSGT_CODECCFG,MSGL_ERR,"Codec is not defined correctly.");
+	mp_msg(MSGT_CODECCFG,MSGL_ERR,MSGTR_CodecDefinitionIncorrect);
 	goto err_out_print_linenum;
 err_out_release_num:
-	mp_msg(MSGT_CODECCFG,MSGL_ERR,"This codecs.conf is too old and incompatible with this MPlayer release!");
+	mp_msg(MSGT_CODECCFG,MSGL_ERR,MSGTR_OutdatedCodecsConf);
 	goto err_out_print_linenum;
+}
+
+static void codecs_free(codecs_t* codecs,int count) {
+	int i;
+		for ( i = 0; i < count; i++)
+			if ( (codecs[i]).name ) {
+				if( (codecs[i]).name )
+					free((codecs[i]).name);
+				if( (codecs[i]).info )
+					free((codecs[i]).info);
+				if( (codecs[i]).comment )
+					free((codecs[i]).comment);
+				if( (codecs[i]).dll )
+					free((codecs[i]).dll);
+				if( (codecs[i]).drv )
+					free((codecs[i]).drv);
+			}
+		if (codecs)
+			free(codecs);
+}
+
+void codecs_uninit_free() {
+	if (video_codecs)
+	codecs_free(video_codecs,nr_vcodecs);
+	video_codecs=NULL;
+	if (audio_codecs)
+	codecs_free(audio_codecs,nr_acodecs);
+	audio_codecs=NULL;
 }
 
 codecs_t *find_audio_codec(unsigned int fourcc, unsigned int *fourccmap,
@@ -842,51 +875,6 @@ void list_codecs(int audioflag){
 		}
 
 }
-
-static void audio_codecs_uninit_free() {
-	int i;
-	for ( i = 0; i < nr_acodecs; i++)
-	  if ( (audio_codecs[i]).name ) {
-	  	if( (audio_codecs[i]).name )
-	  		free((audio_codecs[i]).name);
-	  	if( (audio_codecs[i]).info )
-	  		free((audio_codecs[i]).info);
-	  	if( (audio_codecs[i]).comment )
-	  		free((audio_codecs[i]).comment);
-	  	if( (audio_codecs[i]).dll )
-	  		free((audio_codecs[i]).dll);
-	  	if( (audio_codecs[i]).drv )
-	  		free((audio_codecs[i]).drv);	  		
-	  }
-	if (audio_codecs)
-		free(audio_codecs);
-	audio_codecs=NULL;		
-}
-
-static void video_codecs_uninit_free() {
-	int i;
-	for ( i = 0; i < nr_vcodecs; i++)
-	  if ( (video_codecs[i]).name ) {
-	  	if( (video_codecs[i]).name )
-	  		free((video_codecs[i]).name);
-	  	if( (video_codecs[i]).info )
-	  		free((video_codecs[i]).info);
-	  	if( (video_codecs[i]).comment )
-	  		free((video_codecs[i]).comment);
-	  	if( (video_codecs[i]).dll )
-	  		free((video_codecs[i]).dll);
-	  	if( (video_codecs[i]).drv )
-	  		free((video_codecs[i]).drv);	  		
-	  }
-	if (video_codecs)
-		free(video_codecs);
-	video_codecs=NULL;		
-}		  
-		  
-void codecs_uninit_free() {
-	audio_codecs_uninit_free();
-	video_codecs_uninit_free();
-}	
 
 #ifdef CODECS2HTML
 /*

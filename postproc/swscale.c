@@ -61,9 +61,6 @@ untested special converters
 #else
 #include <stdlib.h>
 #endif
-#ifdef HAVE_ALTIVEC_H
-#include <altivec.h>
-#endif
 #include "swscale.h"
 #include "swscale_internal.h"
 #include "../cpudetect.h"
@@ -148,7 +145,7 @@ write special BGR->BGR scaler
 #define MIN(a,b) ((a) > (b) ? (b) : (a))
 #define MAX(a,b) ((a) < (b) ? (b) : (a))
 
-#ifdef ARCH_X86
+#if defined(ARCH_X86) || defined(ARCH_X86_64)
 static uint64_t attribute_used __attribute__((aligned(8))) bF8=       0xF8F8F8F8F8F8F8F8LL;
 static uint64_t attribute_used __attribute__((aligned(8))) bFC=       0xFCFCFCFCFCFCFCFCLL;
 static uint64_t __attribute__((aligned(8))) w10=       0x0010001000100010LL;
@@ -207,7 +204,7 @@ extern const uint8_t dither_8x8_32[8][8];
 extern const uint8_t dither_8x8_73[8][8];
 extern const uint8_t dither_8x8_220[8][8];
 
-#ifdef ARCH_X86
+#if defined(ARCH_X86) || defined(ARCH_X86_64)
 void in_asm_used_var_warning_killer()
 {
  volatile int i= bF8+bFC+w10+
@@ -682,7 +679,7 @@ static inline void yuv2packedXinC(SwsContext *c, int16_t *lumFilter, int16_t **l
 #endif //HAVE_ALTIVEC
 #endif //ARCH_POWERPC
 
-#ifdef ARCH_X86
+#if defined(ARCH_X86) || defined(ARCH_X86_64)
 
 #if (defined (HAVE_MMX) && !defined (HAVE_3DNOW) && !defined (HAVE_MMX2)) || defined (RUNTIME_CPUDETECT)
 #define COMPILE_MMX
@@ -695,7 +692,7 @@ static inline void yuv2packedXinC(SwsContext *c, int16_t *lumFilter, int16_t **l
 #if (defined (HAVE_3DNOW) && !defined (HAVE_MMX2)) || defined (RUNTIME_CPUDETECT)
 #define COMPILE_3DNOW
 #endif
-#endif //ARCH_X86
+#endif //ARCH_X86 || ARCH_X86_64
 
 #undef HAVE_MMX
 #undef HAVE_MMX2
@@ -719,7 +716,7 @@ static inline void yuv2packedXinC(SwsContext *c, int16_t *lumFilter, int16_t **l
 #endif
 #endif //ARCH_POWERPC
 
-#ifdef ARCH_X86
+#if defined(ARCH_X86) || defined(ARCH_X86_64)
 
 //X86 versions
 /*
@@ -761,7 +758,7 @@ static inline void yuv2packedXinC(SwsContext *c, int16_t *lumFilter, int16_t **l
 #include "swscale_template.c"
 #endif
 
-#endif //ARCH_X86
+#endif //ARCH_X86 || ARCH_X86_64
 
 // minor note: the HAVE_xyz is messed up after that line so don't use it
 
@@ -778,7 +775,7 @@ static double getSplineCoeff(double a, double b, double c, double d, double dist
 
 static inline void initFilter(int16_t **outFilter, int16_t **filterPos, int *outFilterSize, int xInc,
 			      int srcW, int dstW, int filterAlign, int one, int flags,
-			      SwsVector *srcFilter, SwsVector *dstFilter)
+			      SwsVector *srcFilter, SwsVector *dstFilter, double param[2])
 {
 	int i;
 	int filterSize;
@@ -786,7 +783,7 @@ static inline void initFilter(int16_t **outFilter, int16_t **filterPos, int *out
 	int minFilterSize;
 	double *filter=NULL;
 	double *filter2=NULL;
-#ifdef ARCH_X86
+#if defined(ARCH_X86) || defined(ARCH_X86_64)
 	if(flags & SWS_CPU_CAPS_MMX)
 		asm volatile("emms\n\t"::: "memory"); //FIXME this shouldnt be required but it IS (even for non mmx versions)
 #endif
@@ -858,13 +855,12 @@ static inline void initFilter(int16_t **outFilter, int16_t **filterPos, int *out
 		double xDstInSrc;
 		double sizeFactor, filterSizeInSrc;
 		const double xInc1= (double)xInc / (double)(1<<16);
-		int param= (flags&SWS_PARAM_MASK)>>SWS_PARAM_SHIFT;
 
 		if     (flags&SWS_BICUBIC)	sizeFactor= 4.0;
 		else if(flags&SWS_X)		sizeFactor= 8.0;
 		else if(flags&SWS_AREA)		sizeFactor= 1.0; //downscale only, for upscale it is bilinear
 		else if(flags&SWS_GAUSS)	sizeFactor= 8.0;   // infinite ;)
-		else if(flags&SWS_LANCZOS)	sizeFactor= param ? 2.0*param : 6.0;
+		else if(flags&SWS_LANCZOS)	sizeFactor= param[0] != SWS_PARAM_DEFAULT ? 2.0*param[0] : 6.0;
 		else if(flags&SWS_SINC)		sizeFactor= 20.0; // infinite ;)
 		else if(flags&SWS_SPLINE)	sizeFactor= 20.0;  // infinite ;)
 		else if(flags&SWS_BILINEAR)	sizeFactor= 2.0;
@@ -893,13 +889,13 @@ static inline void initFilter(int16_t **outFilter, int16_t **filterPos, int *out
 				double coeff;
 				if(flags & SWS_BICUBIC)
 				{
-					double A= param ? -param*0.01 : -0.60;
-					
-					// Equation is from VirtualDub
-					if(d<1.0)
-						coeff = (1.0 - (A+3.0)*d*d + (A+2.0)*d*d*d);
+					double B= param[0] != SWS_PARAM_DEFAULT ? param[0] : 0.0;
+					double C= param[1] != SWS_PARAM_DEFAULT ? param[1] : 0.6;
+
+					if(d<1.0) 
+						coeff = (12-9*B-6*C)*d*d*d + (-18+12*B+6*C)*d*d + 6-2*B;
 					else if(d<2.0)
-						coeff = (-4.0*A + 8.0*A*d - 5.0*A*d*d + A*d*d*d);
+						coeff = (-B-6*C)*d*d*d + (6*B+30*C)*d*d + (-12*B-48*C)*d +8*B+24*C;
 					else
 						coeff=0.0;
 				}
@@ -911,7 +907,7 @@ static inline void initFilter(int16_t **outFilter, int16_t **filterPos, int *out
 				}*/
 				else if(flags & SWS_X)
 				{
-					double A= param ? param*0.1 : 1.0;
+					double A= param[0] != SWS_PARAM_DEFAULT ? param[0] : 1.0;
 					
 					if(d<1.0)
 						coeff = cos(d*PI);
@@ -930,7 +926,7 @@ static inline void initFilter(int16_t **outFilter, int16_t **filterPos, int *out
 				}
 				else if(flags & SWS_GAUSS)
 				{
-					double p= param ? param*0.1 : 3.0;
+					double p= param[0] != SWS_PARAM_DEFAULT ? param[0] : 3.0;
 					coeff = pow(2.0, - p*d*d);
 				}
 				else if(flags & SWS_SINC)
@@ -939,7 +935,7 @@ static inline void initFilter(int16_t **outFilter, int16_t **filterPos, int *out
 				}
 				else if(flags & SWS_LANCZOS)
 				{
-					double p= param ? param : 3.0; 
+					double p= param[0] != SWS_PARAM_DEFAULT ? param[0] : 3.0; 
 					coeff = d ? sin(d*PI)*sin(d*PI/p)/(d*d*PI*PI/p) : 1.0;
 					if(d>p) coeff=0;
 				}
@@ -1146,17 +1142,17 @@ static inline void initFilter(int16_t **outFilter, int16_t **filterPos, int *out
 	free(filter);
 }
 
-#ifdef ARCH_X86
+#if defined(ARCH_X86) || defined(ARCH_X86_64)
 static void initMMX2HScaler(int dstW, int xInc, uint8_t *funnyCode, int16_t *filter, int32_t *filterPos, int numSplits)
 {
 	uint8_t *fragmentA;
-	int imm8OfPShufW1A;
-	int imm8OfPShufW2A;
-	int fragmentLengthA;
+	long imm8OfPShufW1A;
+	long imm8OfPShufW2A;
+	long fragmentLengthA;
 	uint8_t *fragmentB;
-	int imm8OfPShufW1B;
-	int imm8OfPShufW2B;
-	int fragmentLengthB;
+	long imm8OfPShufW1B;
+	long imm8OfPShufW2B;
+	long fragmentLengthB;
 	int fragmentPos;
 
 	int xpos, i;
@@ -1169,9 +1165,9 @@ static void initMMX2HScaler(int dstW, int xInc, uint8_t *funnyCode, int16_t *fil
 		"jmp 9f				\n\t"
 	// Begin
 		"0:				\n\t"
-		"movq (%%edx, %%eax), %%mm3	\n\t" 
-		"movd (%%ecx, %%esi), %%mm0	\n\t" 
-		"movd 1(%%ecx, %%esi), %%mm1	\n\t"
+		"movq (%%"REG_d", %%"REG_a"), %%mm3\n\t" 
+		"movd (%%"REG_c", %%"REG_S"), %%mm0\n\t" 
+		"movd 1(%%"REG_c", %%"REG_S"), %%mm1\n\t"
 		"punpcklbw %%mm7, %%mm1		\n\t"
 		"punpcklbw %%mm7, %%mm0		\n\t"
 		"pshufw $0xFF, %%mm1, %%mm1	\n\t"
@@ -1179,26 +1175,26 @@ static void initMMX2HScaler(int dstW, int xInc, uint8_t *funnyCode, int16_t *fil
 		"pshufw $0xFF, %%mm0, %%mm0	\n\t"
 		"2:				\n\t"
 		"psubw %%mm1, %%mm0		\n\t"
-		"movl 8(%%ebx, %%eax), %%esi	\n\t"
+		"mov 8(%%"REG_b", %%"REG_a"), %%"REG_S"\n\t"
 		"pmullw %%mm3, %%mm0		\n\t"
 		"psllw $7, %%mm1		\n\t"
 		"paddw %%mm1, %%mm0		\n\t"
 
-		"movq %%mm0, (%%edi, %%eax)	\n\t"
+		"movq %%mm0, (%%"REG_D", %%"REG_a")\n\t"
 
-		"addl $8, %%eax			\n\t"
+		"add $8, %%"REG_a"		\n\t"
 	// End
 		"9:				\n\t"
 //		"int $3\n\t"
-		"leal 0b, %0			\n\t"
-		"leal 1b, %1			\n\t"
-		"leal 2b, %2			\n\t"
-		"decl %1			\n\t"
-		"decl %2			\n\t"
-		"subl %0, %1			\n\t"
-		"subl %0, %2			\n\t"
-		"leal 9b, %3			\n\t"
-		"subl %0, %3			\n\t"
+		"lea 0b, %0			\n\t"
+		"lea 1b, %1			\n\t"
+		"lea 2b, %2			\n\t"
+		"dec %1				\n\t"
+		"dec %2				\n\t"
+		"sub %0, %1			\n\t"
+		"sub %0, %2			\n\t"
+		"lea 9b, %3			\n\t"
+		"sub %0, %3			\n\t"
 
 
 		:"=r" (fragmentA), "=r" (imm8OfPShufW1A), "=r" (imm8OfPShufW2A),
@@ -1209,34 +1205,34 @@ static void initMMX2HScaler(int dstW, int xInc, uint8_t *funnyCode, int16_t *fil
 		"jmp 9f				\n\t"
 	// Begin
 		"0:				\n\t"
-		"movq (%%edx, %%eax), %%mm3	\n\t" 
-		"movd (%%ecx, %%esi), %%mm0	\n\t" 
+		"movq (%%"REG_d", %%"REG_a"), %%mm3\n\t" 
+		"movd (%%"REG_c", %%"REG_S"), %%mm0\n\t" 
 		"punpcklbw %%mm7, %%mm0		\n\t"
 		"pshufw $0xFF, %%mm0, %%mm1	\n\t"
 		"1:				\n\t"
 		"pshufw $0xFF, %%mm0, %%mm0	\n\t"
 		"2:				\n\t"
 		"psubw %%mm1, %%mm0		\n\t"
-		"movl 8(%%ebx, %%eax), %%esi	\n\t"
+		"mov 8(%%"REG_b", %%"REG_a"), %%"REG_S"\n\t"
 		"pmullw %%mm3, %%mm0		\n\t"
 		"psllw $7, %%mm1		\n\t"
 		"paddw %%mm1, %%mm0		\n\t"
 
-		"movq %%mm0, (%%edi, %%eax)	\n\t"
+		"movq %%mm0, (%%"REG_D", %%"REG_a")\n\t"
 
-		"addl $8, %%eax			\n\t"
+		"add $8, %%"REG_a"		\n\t"
 	// End
 		"9:				\n\t"
 //		"int $3\n\t"
-		"leal 0b, %0			\n\t"
-		"leal 1b, %1			\n\t"
-		"leal 2b, %2			\n\t"
-		"decl %1			\n\t"
-		"decl %2			\n\t"
-		"subl %0, %1			\n\t"
-		"subl %0, %2			\n\t"
-		"leal 9b, %3			\n\t"
-		"subl %0, %3			\n\t"
+		"lea 0b, %0			\n\t"
+		"lea 1b, %1			\n\t"
+		"lea 2b, %2			\n\t"
+		"dec %1				\n\t"
+		"dec %2				\n\t"
+		"sub %0, %1			\n\t"
+		"sub %0, %2			\n\t"
+		"lea 9b, %3			\n\t"
+		"sub %0, %3			\n\t"
 
 
 		:"=r" (fragmentB), "=r" (imm8OfPShufW1B), "=r" (imm8OfPShufW2B),
@@ -1317,7 +1313,7 @@ static void initMMX2HScaler(int dstW, int xInc, uint8_t *funnyCode, int16_t *fil
 	}
 	filterPos[i/2]= xpos>>16; // needed to jump to the next part
 }
-#endif // ARCH_X86
+#endif // ARCH_X86 || ARCH_X86_64
 
 static void globalInit(){
     // generating tables:
@@ -1331,7 +1327,7 @@ static void globalInit(){
 static SwsFunc getSwsFunc(int flags){
     
 #ifdef RUNTIME_CPUDETECT
-#ifdef ARCH_X86
+#if defined(ARCH_X86) || defined(ARCH_X86_64)
 	// ordered per speed fasterst first
 	if(flags & SWS_CPU_CAPS_MMX2)
 		return swScale_MMX2;
@@ -1728,7 +1724,7 @@ int sws_setColorspaceDetails(SwsContext *c, const int inv_table[4], int srcRange
 	//FIXME factorize
 
 #ifdef HAVE_ALTIVEC
-	yuv2rgb_altivec_init_tables (c, inv_table);
+	yuv2rgb_altivec_init_tables (c, inv_table, brightness, contrast, saturation);
 #endif	
 	return 0;
 }
@@ -1751,7 +1747,7 @@ int sws_getColorspaceDetails(SwsContext *c, int **inv_table, int *srcRange, int 
 }
 
 SwsContext *sws_getContext(int srcW, int srcH, int origSrcFormat, int dstW, int dstH, int origDstFormat, int flags,
-                         SwsFilter *srcFilter, SwsFilter *dstFilter){
+                         SwsFilter *srcFilter, SwsFilter *dstFilter, double *param){
 
 	SwsContext *c;
 	int i;
@@ -1759,7 +1755,7 @@ SwsContext *sws_getContext(int srcW, int srcH, int origSrcFormat, int dstW, int 
 	int unscaled, needsDither;
 	int srcFormat, dstFormat;
 	SwsFilter dummyFilter= {NULL, NULL, NULL, NULL};
-#ifdef ARCH_X86
+#if defined(ARCH_X86) || defined(ARCH_X86_64)
 	if(flags & SWS_CPU_CAPS_MMX)
 		asm volatile("emms\n\t"::: "memory");
 #endif
@@ -1849,6 +1845,14 @@ SwsContext *sws_getContext(int srcW, int srcH, int origSrcFormat, int dstW, int 
 	// drop every 2. pixel for chroma calculation unless user wants full chroma
 	if((isBGR(srcFormat) || isRGB(srcFormat)) && !(flags&SWS_FULL_CHR_H_INP)) 
 		c->chrSrcHSubSample=1;
+
+	if(param){
+		c->param[0] = param[0];
+		c->param[1] = param[1];
+	}else{
+		c->param[0] =
+		c->param[1] = SWS_PARAM_DEFAULT;
+	}
 
 	c->chrIntHSubSample= c->chrDstHSubSample;
 	c->chrIntVSubSample= c->chrSrcVSubSample;
@@ -1985,13 +1989,13 @@ SwsContext *sws_getContext(int srcW, int srcH, int origSrcFormat, int dstW, int 
 		initFilter(&c->hLumFilter, &c->hLumFilterPos, &c->hLumFilterSize, c->lumXInc,
 				 srcW      ,       dstW, filterAlign, 1<<14,
 				 (flags&SWS_BICUBLIN) ? (flags|SWS_BICUBIC)  : flags,
-				 srcFilter->lumH, dstFilter->lumH);
+				 srcFilter->lumH, dstFilter->lumH, c->param);
 		initFilter(&c->hChrFilter, &c->hChrFilterPos, &c->hChrFilterSize, c->chrXInc,
 				 c->chrSrcW, c->chrDstW, filterAlign, 1<<14,
 				 (flags&SWS_BICUBLIN) ? (flags|SWS_BILINEAR) : flags,
-				 srcFilter->chrH, dstFilter->chrH);
+				 srcFilter->chrH, dstFilter->chrH, c->param);
 
-#ifdef ARCH_X86
+#if defined(ARCH_X86) || defined(ARCH_X86_64)
 // can't downscale !!!
 		if(c->canMMX2BeUsed && (flags & SWS_FAST_BILINEAR))
 		{
@@ -2017,11 +2021,11 @@ SwsContext *sws_getContext(int srcW, int srcH, int origSrcFormat, int dstW, int 
 		initFilter(&c->vLumFilter, &c->vLumFilterPos, &c->vLumFilterSize, c->lumYInc,
 				srcH      ,        dstH, filterAlign, (1<<12)-4,
 				(flags&SWS_BICUBLIN) ? (flags|SWS_BICUBIC)  : flags,
-				srcFilter->lumV, dstFilter->lumV);
+				srcFilter->lumV, dstFilter->lumV, c->param);
 		initFilter(&c->vChrFilter, &c->vChrFilterPos, &c->vChrFilterSize, c->chrYInc,
 				c->chrSrcH, c->chrDstH, filterAlign, (1<<12)-4,
 				(flags&SWS_BICUBLIN) ? (flags|SWS_BILINEAR) : flags,
-				srcFilter->chrV, dstFilter->chrV);
+				srcFilter->chrV, dstFilter->chrV, c->param);
 	}
 
 	// Calculate Buffer Sizes so that they won't run out while handling these damn slices
@@ -2132,7 +2136,7 @@ SwsContext *sws_getContext(int srcW, int srcH, int origSrcFormat, int dstW, int 
 		}
 		else
 		{
-#ifdef ARCH_X86
+#if defined(ARCH_X86) || defined(ARCH_X86_64)
 			MSG_V("SwScaler: using X86-Asm scaler for horizontal scaling\n");
 #else
 			if(flags & SWS_FAST_BILINEAR)

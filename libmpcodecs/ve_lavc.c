@@ -153,6 +153,7 @@ static int lavc_param_nssew= 8;
 static int lavc_param_closed_gop = 0;
 static int lavc_param_dc_precision = 8;
 static int lavc_param_threads= 1;
+static int lavc_param_turbo = 0;
 
 
 char *lavc_param_acodec = "mp2";
@@ -185,7 +186,7 @@ m_option_t lavcopts_conf[]={
 	{"vqblur", &lavc_param_vqblur, CONF_TYPE_FLOAT, CONF_RANGE, 0.0, 1.0, NULL},
 	{"vb_qfactor", &lavc_param_vb_qfactor, CONF_TYPE_FLOAT, CONF_RANGE, -31.0, 31.0, NULL},
 	{"vmax_b_frames", &lavc_param_vmax_b_frames, CONF_TYPE_INT, CONF_RANGE, 0, FF_MAX_B_FRAMES, NULL},
-	{"vpass", &lavc_param_vpass, CONF_TYPE_INT, CONF_RANGE, 0, 2, NULL},
+	{"vpass", &lavc_param_vpass, CONF_TYPE_INT, CONF_RANGE, 0, 3, NULL},
 	{"vrc_strategy", &lavc_param_vrc_strategy, CONF_TYPE_INT, CONF_RANGE, 0, 2, NULL},
 	{"vb_strategy", &lavc_param_vb_strategy, CONF_TYPE_INT, CONF_RANGE, 0, 10, NULL},
 	{"vb_qoffset", &lavc_param_vb_qoffset, CONF_TYPE_FLOAT, CONF_RANGE, 0.0, 31.0, NULL},
@@ -302,6 +303,7 @@ m_option_t lavcopts_conf[]={
         {"qns", &lavc_param_qns, CONF_TYPE_INT, CONF_RANGE, 0, 1000000, NULL},
         {"nssew", &lavc_param_nssew, CONF_TYPE_INT, CONF_RANGE, 0, 1000000, NULL},
 	{"threads", &lavc_param_threads, CONF_TYPE_INT, CONF_RANGE, 1, 8, NULL},
+	{"turbo", &lavc_param_turbo, CONF_TYPE_FLAG, 0, 0, 1, NULL},
 	{NULL, NULL, 0, 0, 0, 0, NULL}
 };
 #endif
@@ -321,6 +323,8 @@ struct vf_priv_s {
 #if LIBAVCODEC_BUILD < 4684
 #define FF_QP2LAMBDA 1
 #endif
+
+static int encode_frame(struct vf_instance_s* vf, AVFrame *pic);
 
 static int config(struct vf_instance_s* vf,
         int width, int height, int d_width, int d_height,
@@ -541,13 +545,14 @@ static int config(struct vf_instance_s* vf,
 	    return 0;
 	}
     }
-    else if (lavc_param_autoaspect)
+    else if (lavc_param_autoaspect) {
 #if LIBAVCODEC_BUILD >= 4687
 	lavc_venc_context->sample_aspect_ratio = av_d2q((float)d_width/d_height*height / width, 255);
 #else
 	lavc_venc_context->aspect_ratio =
 #endif
 	mux_v->aspect = (float)d_width/d_height;
+    }
 
     /* keyframe interval */
     if (lavc_param_keyint >= 0) /* != -1 */
@@ -635,15 +640,8 @@ static int config(struct vf_instance_s* vf,
     if(!stats_file) {
     /* lavc internal 2pass bitrate control */
     switch(lavc_param_vpass){
-    case 1: 
-	lavc_venc_context->flags|= CODEC_FLAG_PASS1; 
-	stats_file= fopen(passtmpfile, "wb");
-	if(stats_file==NULL){
-	    mp_msg(MSGT_MENCODER,MSGL_ERR,"2pass failed: filename=%s\n", passtmpfile);
-            return 0;
-	}
-	break;
     case 2:
+    case 3:
 	lavc_venc_context->flags|= CODEC_FLAG_PASS2; 
 	stats_file= fopen(passtmpfile, "rb");
 	if(stats_file==NULL){
@@ -661,6 +659,42 @@ static int config(struct vf_instance_s* vf,
 	    mp_msg(MSGT_MENCODER,MSGL_ERR,"2pass failed: reading from filename=%s\n", passtmpfile);
             return 0;
 	}        
+	if(lavc_param_vpass == 2)
+	    break;
+	else
+	    fclose(stats_file);
+	    /* fall through */
+    case 1: 
+	lavc_venc_context->flags|= CODEC_FLAG_PASS1; 
+	stats_file= fopen(passtmpfile, "wb");
+	if(stats_file==NULL){
+	    mp_msg(MSGT_MENCODER,MSGL_ERR,"2pass failed: filename=%s\n", passtmpfile);
+            return 0;
+	}
+	if(lavc_param_turbo && (lavc_param_vpass == 1)) {
+	  /* uses SAD comparison functions instead of other hungrier */
+	  lavc_venc_context->me_pre_cmp = 0;
+	  lavc_venc_context->me_cmp = 0;
+	  lavc_venc_context->me_sub_cmp = 0;
+	  lavc_venc_context->mb_cmp = 2;
+
+	  /* Disables diamond motion estimation */
+	  lavc_venc_context->pre_dia_size = 0;
+	  lavc_venc_context->dia_size = 0;
+
+	  lavc_venc_context->quantizer_noise_shaping = 0; // qns=0
+	  lavc_venc_context->noise_reduction = 0; // nr=0
+
+	  if (lavc_param_mb_decision) {
+	    lavc_venc_context->mb_decision = 1; // mbd=0 ("realtime" encoding)
+	  }
+	  lavc_venc_context->flags &= ~CODEC_FLAG_QPEL;
+	  lavc_venc_context->flags &= ~CODEC_FLAG_4MV;
+	  lavc_venc_context->flags &= ~CODEC_FLAG_TRELLIS_QUANT;
+	  lavc_venc_context->flags &= ~CODEC_FLAG_CBP_RD;
+	  lavc_venc_context->flags &= ~CODEC_FLAG_QP_RD;
+	  lavc_venc_context->flags &= ~CODEC_FLAG_MV0;
+	}
 	break;
     }
     }
@@ -708,7 +742,14 @@ static int config(struct vf_instance_s* vf,
 
 static int control(struct vf_instance_s* vf, int request, void* data){
 
-    return CONTROL_UNKNOWN;
+    switch(request){
+        case VFCTRL_FLUSH_FRAMES:
+            if(vf->priv->codec->capabilities & CODEC_CAP_DELAY)
+                while(encode_frame(vf, NULL) > 0);
+            return CONTROL_TRUE;
+        default:
+            return CONTROL_UNKNOWN;
+    }
 }
 
 static int query_format(struct vf_instance_s* vf, unsigned int fmt){
@@ -749,8 +790,6 @@ static double psnr(double d){
 }
 
 static int put_image(struct vf_instance_s* vf, mp_image_t *mpi){
-    const char pict_type_char[5]= {'?', 'I', 'P', 'B', 'S'};
-    int out_size;
     AVFrame *pic= vf->priv->pic;
 
     pic->data[0]=mpi->planes[0];
@@ -772,9 +811,18 @@ static int put_image(struct vf_instance_s* vf, mp_image_t *mpi){
     }
 #endif
 
+    return (encode_frame(vf, pic) >= 0);
+}
+
+static int encode_frame(struct vf_instance_s* vf, AVFrame *pic){
+    const char pict_type_char[5]= {'?', 'I', 'P', 'B', 'S'};
+    int out_size;
+
 	out_size = avcodec_encode_video(lavc_venc_context, mux_v->buffer, mux_v->buffer_size,
 	    pic);
 
+    if(out_size == 0)
+        return 0;
            
     muxer_write_chunk(mux_v,out_size,lavc_venc_context->coded_frame->key_frame?0x10:0);
         
@@ -802,6 +850,8 @@ static int put_image(struct vf_instance_s* vf, mp_image_t *mpi){
             if(!fvstats) {
                 perror("fopen");
                 lavc_param_psnr=0; // disable block
+                mp_msg(MSGT_MENCODER,MSGL_ERR,"Can't open %s for writing. Check its permissions.\n",filename);
+                return -1;
                 /*exit(1);*/
             }
         }
@@ -836,7 +886,7 @@ static int put_image(struct vf_instance_s* vf, mp_image_t *mpi){
     /* store stats if there are any */
     if(lavc_venc_context->stats_out && stats_file) 
         fprintf(stats_file, "%s", lavc_venc_context->stats_out);
-    return 1;
+    return out_size;
 }
 
 static void uninit(struct vf_instance_s* vf){
@@ -898,7 +948,8 @@ static int vf_open(vf_instance_t *vf, char* args){
 	memset(mux_v->bih, 0, sizeof(BITMAPINFOHEADER)+28);
 	mux_v->bih->biSize=sizeof(BITMAPINFOHEADER)+28;
     }
-    else if (lavc_param_vcodec && !strcasecmp(lavc_param_vcodec, "huffyuv"))
+    else if (lavc_param_vcodec && (!strcasecmp(lavc_param_vcodec, "huffyuv")
+                                || !strcasecmp(lavc_param_vcodec, "ffvhuff")))
     {
     /* XXX: hack: huffyuv needs to store huffman tables (allthough we dunno the size yet ...) */
 	mux_v->bih=malloc(sizeof(BITMAPINFOHEADER)+1000);
@@ -963,12 +1014,16 @@ static int vf_open(vf_instance_t *vf, char* args){
 	mux_v->bih->biCompression = mmioFOURCC('W', 'M', 'V', '2');
     else if (!strcasecmp(lavc_param_vcodec, "huffyuv"))
 	mux_v->bih->biCompression = mmioFOURCC('H', 'F', 'Y', 'U');
+    else if (!strcasecmp(lavc_param_vcodec, "ffvhuff"))
+	mux_v->bih->biCompression = mmioFOURCC('F', 'F', 'V', 'H');
     else if (!strcasecmp(lavc_param_vcodec, "asv1"))
 	mux_v->bih->biCompression = mmioFOURCC('A', 'S', 'V', '1');
     else if (!strcasecmp(lavc_param_vcodec, "asv2"))
 	mux_v->bih->biCompression = mmioFOURCC('A', 'S', 'V', '2');
     else if (!strcasecmp(lavc_param_vcodec, "ffv1"))
 	mux_v->bih->biCompression = mmioFOURCC('F', 'F', 'V', '1');
+    else if (!strcasecmp(lavc_param_vcodec, "snow"))
+	mux_v->bih->biCompression = mmioFOURCC('S', 'N', 'O', 'W');
     else
 	mux_v->bih->biCompression = mmioFOURCC(lavc_param_vcodec[0],
 		lavc_param_vcodec[1], lavc_param_vcodec[2], lavc_param_vcodec[3]); /* FIXME!!! */

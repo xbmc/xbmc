@@ -97,7 +97,6 @@ struct vf_priv_s {
 	int qp;
 	int mode;
 	int mpeg2;
-	unsigned int outfmt;
 	int temp_stride;
 	uint8_t *src;
 	int16_t *temp;
@@ -193,7 +192,7 @@ static void hardthresh_mmx(DCTELEM dst[64], DCTELEM src[64], int qp, uint8_t *pe
 		"movq %%mm0, %%mm3	\n\t"\
 		"punpcklwd %%mm1, %%mm0	\n\t" /*A*/\
 		"punpckhwd %%mm7, %%mm3	\n\t" /*C*/\
-		"punpcklwd %%mm1, %%mm7	\n\t" /*B*/\
+		"punpcklwd %%mm2, %%mm7	\n\t" /*B*/\
 		"punpckhwd %%mm2, %%mm1	\n\t" /*D*/\
 \
 		"movq %%mm0, " #dst0 "	\n\t"\
@@ -271,7 +270,7 @@ static void softthresh_mmx(DCTELEM dst[64], DCTELEM src[64], int qp, uint8_t *pe
 		"movq %%mm0, %%mm3	\n\t"\
 		"punpcklwd %%mm1, %%mm0	\n\t" /*A*/\
 		"punpckhwd %%mm7, %%mm3	\n\t" /*C*/\
-		"punpcklwd %%mm1, %%mm7	\n\t" /*B*/\
+		"punpcklwd %%mm2, %%mm7	\n\t" /*B*/\
 		"punpckhwd %%mm2, %%mm1	\n\t" /*D*/\
 \
 		"movq %%mm0, " #dst0 "	\n\t"\
@@ -357,9 +356,9 @@ static void store_slice_mmx(uint8_t *dst, int16_t *src, int dst_stride, int src_
 			"psraw %%mm2, %%mm1	\n\t"
 			"packuswb %%mm1, %%mm0	\n\t"
 			"movq %%mm0, (%1) 	\n\t"
-			"addl $16, %0		\n\t"
-			"addl $8, %1		\n\t"
-			"cmpl %2, %1		\n\t"
+			"add $16, %0		\n\t"
+			"add $8, %1		\n\t"
+			"cmp %2, %1		\n\t"
 			" jb 1b			\n\t"
 			: "+r" (src1), "+r"(dst1)
 			: "r"(dst + width), "r"(dither[y]), "g"(log2_scale), "g"(6-log2_scale)
@@ -384,6 +383,7 @@ static void filter(struct vf_priv_s *p, uint8_t *dst, uint8_t *src, int dst_stri
 	DCTELEM *block = (DCTELEM *)block_align;
 	DCTELEM *block2= (DCTELEM *)(block_align+16);
 
+	if (!src || !dst) return; // HACK avoid crash for Y8 colourspace
 	for(y=0; y<height; y++){
 		int index= 8 + 8*stride + y*stride;
 		memcpy(p->src + index, src + y*src_stride, width);
@@ -451,7 +451,6 @@ static int config(struct vf_instance_s* vf,
 
 static void get_image(struct vf_instance_s* vf, mp_image_t *mpi){
     if(mpi->flags&MP_IMGFLAG_PRESERVE) return; // don't change
-    if(mpi->imgfmt!=vf->priv->outfmt) return; // colorspace differ
     // ok, we can do pp in-place (or pp disabled):
     vf->dmpi=vf_get_image(vf->next,mpi->imgfmt,
         mpi->type, mpi->flags, mpi->w, mpi->h);
@@ -472,13 +471,13 @@ static int put_image(struct vf_instance_s* vf, mp_image_t *mpi){
 
 	if(!(mpi->flags&MP_IMGFLAG_DIRECT)){
 		// no DR, so get a new image! hope we'll get DR buffer:
-                dmpi=vf_get_image(vf->next,vf->priv->outfmt,
+                dmpi=vf_get_image(vf->next,mpi->imgfmt,
                     MP_IMGTYPE_TEMP,
                     MP_IMGFLAG_ACCEPT_STRIDE|MP_IMGFLAG_PREFER_ALIGNED_STRIDE,
                     mpi->w,mpi->h);
                 vf_clone_mpi_attributes(dmpi, mpi);
         }else{
-           dmpi=mpi;
+           dmpi=vf->dmpi;
         }
 
         vf->priv->mpeg2= mpi->qscale_type;
@@ -567,7 +566,7 @@ static int control(struct vf_instance_s* vf, int request, void* data){
 
 static int open(vf_instance_t *vf, char* args){
 
-    int log2c=0;
+    int log2c=-1;
     
     vf->config=config;
     vf->put_image=put_image;
@@ -608,14 +607,6 @@ static int open(vf_instance_t *vf, char* args){
 	}
     }
 #endif
-    
-    // check csp:
-    vf->priv->outfmt=vf_match_csp(&vf->next,fmt_list,IMGFMT_YV12);
-    if(!vf->priv->outfmt)
-    {
-	uninit(vf);
-        return 0; // no csp match :(
-    }
     
     return 1;
 }

@@ -51,7 +51,8 @@ static char help_text[]=
 
 // mplayer.c:
 
-#define MSGTR_Exiting "\n終了しています... (%s)\n"
+#define MSGTR_Exiting "\n終了しています\n"
+#define MSGTR_ExitingHow "\n終了しています... (%s)\n"
 #define MSGTR_Exit_quit "終了"
 #define MSGTR_Exit_eof "ファイルの末端です"
 #define MSGTR_Exit_error "致命的エラー"
@@ -59,20 +60,16 @@ static char help_text[]=
 #define MSGTR_NoHomeDir "ホームディレクトリを見付けることが出来ませんでした.\n"
 #define MSGTR_GetpathProblem "get_path(\"config\") で問題が起きました\n"
 #define MSGTR_CreatingCfgFile "config fileを作成しました: %s\n"
-#define MSGTR_InvalidVOdriver "無効な映像出力ドライバ: %s\n '-vo help' で有効な映像出力ドライバ一覧を取得できます.\n"
 #define MSGTR_InvalidAOdriver "無効な音声出力ドライバ: %s\n '-ao help' で有効な音声出力ドライバ一覧を取得できます.\n"
 #define MSGTR_CopyCodecsConf "MPlayerのソースの etc/codecs.confのコピーかリンクを ~/.mplayer/codecs.conf に作成して下さい)\n"
 #define MSGTR_BuiltinCodecsConf "組み込まれたデフォルトの codecs.conf を利用してます\n"
 #define MSGTR_CantLoadFont "フォントをロード出来ません: %s\n"
 #define MSGTR_CantLoadSub "サブタイトルをロード出来ません: %s\n"
-#define MSGTR_ErrorDVDkey "DVD keyの処理でエラー\n"
-#define MSGTR_DVDauthOk "DVD認証処理は正常に完了しました\n"
 #define MSGTR_CantOpenDumpfile "dump fileを開けません\n"
 #define MSGTR_CoreDumped "コアダンプ ;)\n"
 #define MSGTR_FPSnotspecified "FPS がヘッダに指定されていないか不正です. -fps オプションを利用して下さい.\n"
 #define MSGTR_CantFindAudioCodec "audio format 0x%X 向けのコーデックを見付ける事が出来ませんでした.\n"
 #define MSGTR_RTFMCodecs "DOCS/HTML/en/codecs.html を御覧下さい\n"
-#define MSGTR_CouldntInitAudioCodec "音声出力コーデックの初期化に失敗しました -> 無音声になります.\n"
 #define MSGTR_VOincompCodec "選択された映像出力デバイスはコーデックと互換性がありません\n"
 #define MSGTR_CannotInitVO "FATAL: 映像出力ドライバの初期化に失敗しました.\n"
 #define MSGTR_CannotInitAO "音声デバイスの初期化に失敗しました -> 無音声になります.\n"
@@ -96,7 +93,7 @@ static char help_text[]=
 "  -次のオプションを試みる -cache 8192.\n"\
 "- non-interleaved AVI ファイルに -cacheオプションを使ってませんか?\n"\
 "  - 次のオプションを試みる -nocache.\n"\
-"チューニング、スピードアップの為に DOCS/HTML/en/devices.html を御覧下さい.\n"\
+"チューニング、スピードアップの為に DOCS/HTML/en/video.html を御覧下さい.\n"\
 "もし、これらを試しても何もこう化が得られない場合は、DOCS/HTML/en/bugreports.html を御覧下さい.\n\n"
 
 #define MSGTR_NoGui "MPlayer はGUIサポートを無効にしてコンパイルされました.\n"
@@ -106,7 +103,6 @@ static char help_text[]=
 #define MSGTR_FPSforced "FPS forced to be %5.3f  (ftime: %5.3f)\n"
 #define MSGTR_CompiledWithRuntimeDetection "コンパイル時にRuntime CPU Detectionが試用されています、これは最適ではありません\n最適なパフォーマスを得るには、--disable-runtime-cpudetectionを有効にしてMPLayerを再コンパイルして下さい\n"
 #define MSGTR_CompiledWithCPUExtensions "x86 CPU 向けにコンパイルされました:"
-#define MSGTR_AvailableVideoOutputPlugins "有効な音声出力プラグイン:\n"
 #define MSGTR_AvailableVideoOutputDrivers "有効な映像出力ドライバ:\n"
 #define MSGTR_AvailableAudioOutputDrivers "有効な音声出力ドライバ:\n"
 #define MSGTR_AvailableAudioCodecs "有効な音声コーデック:\n"
@@ -117,12 +113,9 @@ static char help_text[]=
 #define MSGTR_UsingRTCTiming "Linux hardware RTC timing (%ldHz) を使っています.\n"
 #define MSGTR_CannotReadVideoProperties "Video: プロパティーを読み取れません.\n"
 #define MSGTR_NoStreamFound "ストリームを見付けることが出来ませんでした.\n"
-#define MSGTR_InitializingAudioCodec "音声コーデックを初期化中...\n"
 #define MSGTR_ErrorInitializingVODevice "選択された映像出力(-vo)デバイスを開く事が出来ませんでした.\n"
 #define MSGTR_ForcedVideoCodec "指定された映像コーデック: %s\n"
 #define MSGTR_ForcedAudioCodec "指定された音声コーデック: %s\n"
-#define MSGTR_AODescription_AOAuthor "AO: 詳細: %s\nAO: 著者: %s\n"
-#define MSGTR_AOComment "AO: コメント: %s\n"
 #define MSGTR_Video_NoVideo "Video: 映像がありません\n"
 #define MSGTR_NotInitializeVOPorVO "\nFATAL: 画像フィルター(-vf)か画像出力(-vo)の初期化に失敗しました.\n"
 #define MSGTR_Paused "\n  =====  停止  =====\r" // no more than 23 characters (status line for audio files)
@@ -137,7 +130,7 @@ static char help_text[]=
 "  compiled/optimized for.\n"\
 "  Verify this!\n"
 #define MSGTR_Exit_SIGSEGV_SIGFPE \
-"- Mplayerは不良な CPU/FPU/RAM によってクラッシュしました.\n"\
+"- MPlayerは不良な CPU/FPU/RAM によってクラッシュしました.\n"\
 "  Recompile MPlayer with --enable-debug and make a 'gdb' backtrace and\n"\
 "  --enable-debugをつけてMPlyaerをコンパイルしなおし、gdbで調査しましょう\n"\
 "  詳細は DOCS/HTML/en/bugreports.html#bugreports_crash にあります\n"
@@ -152,7 +145,6 @@ static char help_text[]=
 // mencoder.c:
 
 #define MSGTR_CannotOpenFile_Device "ファイル及びデバイスが開けません.\n"
-#define MSGTR_ErrorDVDAuth "DVD認証に失敗しました.\n"
 #define MSGTR_CannotOpenDemuxer "demuxerを開くことが出来ません.\n"
 #define MSGTR_NoAudioEncoderSelected "\n音声エンコーダ(-oac)が指定されていません、 何か指定するか、無指定(-nosound)を与えて下さい。詳細は '-oac help'\n"
 #define MSGTR_NoVideoEncoderSelected "\n映像エンコーダ(-ovc)が指定されていません、 何か指定して下さい。 詳細は '-ovc help'\n"
@@ -216,7 +208,6 @@ static char help_text[]=
 #define MSGTR_CantSeekFile "このファイルはシークすることが出来ません.\n"
 
 #define MSGTR_EncryptedVOB "暗号化されたVOB(Encryoted VOB)ファイルです。DOCS/HTML/en/cd-dvd.html を御覧下さい.\n"
-#define MSGTR_EncryptedVOBauth "暗号化されたストリームですが、認証を必要と指定されていません\n"
 
 #define MSGTR_MOVcomprhdr "MOV: 圧縮されたヘッダ(Compressd headers)をサポートするには ZLIB が必要です\n"
 #define MSGTR_MOVvariableFourCC "MOV: 警告: Variable FOURCC detected!?\n"
@@ -299,8 +290,6 @@ static char help_text[]=
 #define MSGTR_Equalizer "エコライザー"
 #define MSGTR_SkinBrowser "スキンブラウザ"
 #define MSGTR_Preferences "設定"
-#define MSGTR_OSSPreferences "OSS ドライバ設定"
-#define MSGTR_SDLPreferences "SDL ドライバ設定"
 #define MSGTR_NoMediaOpened "メディアが開かれていません."
 #define MSGTR_VCDTrack "VCD トラック %d"
 #define MSGTR_NoChapter "キャプターがありません"
@@ -339,7 +328,6 @@ static char help_text[]=
 #define MSGTR_SKIN_FONT_FontFileNotFound "フォントファイルが存在しません\n"
 #define MSGTR_SKIN_FONT_FontImageNotFound "フォントイメージファイルが存在しません\n"
 #define MSGTR_SKIN_UnknownParameter "未知のパラメータ(%s)\n"
-#define MSGTR_SKINBROWSER_NotEnoughMemory "[skinbrowser] メモリが不足しています.\n"
 #define MSGTR_SKIN_SKINCFG_SkinNotFound "スキンが存在しません( %s ).\n"
 #define MSGTR_SKIN_SKINCFG_SkinCfgReadError "スキン設定ファイルの読み込みエラー(%s).\n"
 #define MSGTR_SKIN_LABEL "スキン:"
@@ -442,9 +430,6 @@ static char help_text[]=
 #define MSGTR_PREFERENCES_FRAME_CodecDemuxer "コーデック& demuxer"
 #define MSGTR_PREFERENCES_FRAME_Cache "キャッシュ"
 #define MSGTR_PREFERENCES_FRAME_Misc "Misc"
-#define MSGTR_PREFERENCES_OSS_Device "デバイス:"
-#define MSGTR_PREFERENCES_OSS_Mixer "Mixer:"
-#define MSGTR_PREFERENCES_SDL_Driver "ドライバー:"
 #define MSGTR_PREFERENCES_DXR3_VENC "Video エンコーダ:"
 #define MSGTR_PREFERENCES_DXR3_LAVC "LAVC (FFmpeg)使用"
 #define MSGTR_PREFERENCES_DXR3_FAME "FAME 使用"

@@ -95,6 +95,13 @@ typedef struct mkv_track
 
   int subtitle_type;
 
+  /* The timecodes of video frames might have to be reordered if they're
+     in display order (the timecodes, not the frames themselves!). In this
+     case demux packets have to be cached with the help of these variables. */
+  int reorder_timecodes;
+  demux_packet_t **cached_dps;
+  int num_cached_dps, num_allocated_dps;
+
   /* generic content encoding support */
   mkv_content_encoding_t *encodings;
   int num_encodings;
@@ -230,20 +237,10 @@ typedef struct __attribute__((__packed__))
 /* for e.g. "-slang ger" */
 extern char *dvdsub_lang;
 extern char *audio_lang;
+extern int dvdsub_id;
+extern int demux_aid_vid_mismatch;
 
 #ifdef _XBOX
-void xbmc_mkv_updatesubs(void *mkvdemuxer)
-{
-  mkv_demuxer_t *d = (mkv_demuxer_t*)mkvdemuxer;
-  int i, id;
-  for (i=0, id=0; i < d->num_tracks; i++)
-    if (d->tracks[i] != NULL && d->tracks[i]->type == MATROSKA_TRACK_SUBTITLE)
-	{
-		id++;
-		xbmc_addsub(d->tracks[i]->tnum, d->tracks[i]->language, XBMC_SUBTYPE_MKVSUB, 0);
-	}
-}
-
 int xbmc_mkv_audiocount(void *mkvdemuxer)
 {
  mkv_demuxer_t *d = (mkv_demuxer_t*)mkvdemuxer;
@@ -440,6 +437,7 @@ vobsub_parse_custom_colors (mkv_track_t *t, const char *start)
 {
   int use_custom_colors, i;
 
+  use_custom_colors = 0;
   start += 14;
   while (isspace(*start))
     start++;
@@ -491,6 +489,33 @@ vobsub_parse_forced_subs (mkv_track_t *t, const char *start)
   mp_msg(MSGT_DEMUX, MSGL_V, "[mkv] VobSub forced subs: %d\n",
          t->sh_sub.forced_subs_only);
   return 8;
+}
+
+/** \brief Free cached demux packets
+ *
+ * Reordering the timecodes requires caching of demux packets. This function
+ * frees all these cached packets and the memory for the cached pointers
+ * itself.
+ *
+ * \param demuxer The demuxer for which the cache is to be freed.
+ */
+static void
+free_cached_dps (demuxer_t *demuxer)
+{
+  mkv_demuxer_t *mkv_d = (mkv_demuxer_t *) demuxer->priv;
+  mkv_track_t *track;
+  int i, k;
+
+  for (k = 0; k < mkv_d->num_tracks; k++)
+    {
+      track = mkv_d->tracks[k];
+      for (i = 0; i < track->num_cached_dps; i++)
+        free_demux_packet (track->cached_dps[i]);
+      free(track->cached_dps);
+      track->cached_dps = NULL;
+      track->num_cached_dps = 0;
+      track->num_allocated_dps = 0;
+    }
 }
 
 static int
@@ -927,6 +952,8 @@ demux_mkv_read_trackvideo (demuxer_t *demuxer, mkv_track_t *track)
             track->v_frate = num;
             mp_msg (MSGT_DEMUX, MSGL_V, "[mkv] |   + Frame rate: %f\n",
                     track->v_frate);
+            if (track->v_frate > 0)
+              track->default_duration = 1 / track->v_frate;
             break;
           }
 
@@ -1125,6 +1152,7 @@ demux_mkv_read_trackentry (demuxer_t *demuxer)
             else
               {
                 track->v_frate = 1000000000.0 / num;
+                track->default_duration = num / 1000000000.0;
                 mp_msg (MSGT_DEMUX, MSGL_V, "[mkv] |  + Default duration: "
                         "%.3fms ( = %.3f fps)\n",num/1000000.0,track->v_frate);
               }
@@ -1549,14 +1577,26 @@ display_tracks (mkv_demuxer_t *mkv_d)
         {
         case MATROSKA_TRACK_VIDEO:
           type = "video";
+          if (identify)
+            mp_msg(MSGT_GLOBAL, MSGL_INFO, "ID_VIDEO_ID=%d\n", vid);
           sprintf (str, "-vid %u", vid++);
           break;
         case MATROSKA_TRACK_AUDIO:
           type = "audio";
+          if (identify)
+            {
+              mp_msg(MSGT_GLOBAL, MSGL_INFO, "ID_AUDIO_ID=%d\n", aid);
+              mp_msg(MSGT_GLOBAL, MSGL_INFO, "ID_AID_%d_LANG=%s\n", aid, mkv_d->tracks[i]->language);
+            }
           sprintf (str, "-aid %u, -alang %.5s",aid++,mkv_d->tracks[i]->language);
           break;
         case MATROSKA_TRACK_SUBTITLE:
-          type = "sutitles";
+          type = "subtitles";
+          if (identify)
+            {
+              mp_msg(MSGT_GLOBAL, MSGL_INFO, "ID_SUBTITLE_ID=%d\n", sid);
+              mp_msg(MSGT_GLOBAL, MSGL_INFO, "ID_SID_%d_LANG=%s\n", sid, mkv_d->tracks[i]->language);
+            }
           sprintf (str, "-sid %u, -slang %.5s",sid++,mkv_d->tracks[i]->language);
           break;
         }
@@ -1678,6 +1718,16 @@ demux_mkv_open_video (demuxer_t *demuxer, mkv_track_t *track)
 #endif /* USE_QTX_CODECS */
 
         }
+      else if (!strcmp(track->codec_id, MKV_V_MPEG1))
+        {
+          bih->biCompression = mmioFOURCC('m', 'p', 'g', '1');
+          track->reorder_timecodes = 1;
+        }
+      else if (!strcmp(track->codec_id, MKV_V_MPEG2))
+        {
+          bih->biCompression = mmioFOURCC('m', 'p', 'g', '2');
+          track->reorder_timecodes = 1;
+        }
       else
         {
           mp_msg (MSGT_DEMUX,MSGL_WARN,"[mkv] Unknown/unsupported CodecID "
@@ -1695,10 +1745,12 @@ demux_mkv_open_video (demuxer_t *demuxer, mkv_track_t *track)
     track->v_frate = 25.0;
   sh_v->fps = track->v_frate;
   sh_v->frametime = 1 / track->v_frate;
+  sh_v->aspect = 0;
   if (!track->realmedia)
     {
       sh_v->disp_w = track->v_width;
       sh_v->disp_h = track->v_height;
+      if (track->v_dheight)
       sh_v->aspect = (float)track->v_dwidth / (float)track->v_dheight;
     }
   else
@@ -1859,42 +1911,37 @@ demux_mkv_open_audio (demuxer_t *demuxer, mkv_track_t *track)
   sh_a->wf->nChannels = track->a_channels;
   sh_a->samplerate = (uint32_t) track->a_sfreq;
   sh_a->wf->nSamplesPerSec = (uint32_t) track->a_sfreq;
-  sh_a->samplesize = track->a_bps / 8;
+  if (track->a_bps == 0)
+    {
+      sh_a->samplesize = 2;
+      sh_a->wf->wBitsPerSample = 16;
+    }
+  else
+    {
+      sh_a->samplesize = track->a_bps / 8;
+      sh_a->wf->wBitsPerSample = track->a_bps;
+    }
   if (track->a_formattag == 0x0055)  /* MP3 || MP2 */
     {
       sh_a->wf->nAvgBytesPerSec = 16000;
       sh_a->wf->nBlockAlign = 1152;
-      sh_a->wf->wBitsPerSample = 0;
-      sh_a->samplesize = 0;
     }
-  else if (track->a_formattag == 0x2000) /* AC3 */
+  else if ((track->a_formattag == 0x2000) || /* AC3 */
+           (track->a_formattag == 0x2001)) /* DTS */
     {
       sh_a->wf->nAvgBytesPerSec = 16000;
       sh_a->wf->nBlockAlign = 1536;
-      sh_a->wf->wBitsPerSample = 0;
-      sh_a->samplesize = 0;
-
-    }
-  else if (track->a_formattag == 0x2001) /* DTS */
-    {
-      sh_a->wf->nAvgBytesPerSec = 16000;
-      sh_a->wf->nBlockAlign = 1536;
-      sh_a->wf->wBitsPerSample = 0;
-      sh_a->samplesize = 0;
-
     }
   else if (track->a_formattag == 0x0001)  /* PCM || PCM_BE */
     {
       sh_a->wf->nAvgBytesPerSec = sh_a->channels * sh_a->samplerate*2;
       sh_a->wf->nBlockAlign = sh_a->wf->nAvgBytesPerSec;
-      sh_a->wf->wBitsPerSample = track->a_bps;
       if (!strcmp(track->codec_id, MKV_A_PCM_BE))
         sh_a->format = mmioFOURCC('t', 'w', 'o', 's');
     }
   else if (!strcmp(track->codec_id, MKV_A_QDMC) ||
            !strcmp(track->codec_id, MKV_A_QDMC2))
     {
-      sh_a->wf->wBitsPerSample = track->a_bps;
       sh_a->wf->nAvgBytesPerSec = 16000;
       sh_a->wf->nBlockAlign = 1486;
       track->fix_i_bps = 1;
@@ -1913,8 +1960,6 @@ demux_mkv_open_audio (demuxer_t *demuxer, mkv_track_t *track)
 
       sh_a->wf->nAvgBytesPerSec = 16000;
       sh_a->wf->nBlockAlign = 1024;
-      sh_a->wf->wBitsPerSample = 0;
-      sh_a->samplesize = 0;
 
       /* Recreate the 'private data' */
       /* which faad2 uses in its initialization */
@@ -1973,7 +2018,6 @@ demux_mkv_open_audio (demuxer_t *demuxer, mkv_track_t *track)
       ra4p = (real_audio_v4_props_t *) track->private_data;
       ra5p = (real_audio_v5_props_t *) track->private_data;
 
-      sh_a->wf->wBitsPerSample = sh_a->samplesize * 8;
       sh_a->wf->nAvgBytesPerSec = 0;  /* FIXME !? */
       sh_a->wf->nBlockAlign = be2me_16 (ra4p->frame_size);
 
@@ -2050,6 +2094,46 @@ demux_mkv_open_audio (demuxer_t *demuxer, mkv_track_t *track)
   return 0;
 }
 
+/** \brief Parse the private data for VobSub subtitle tracks.
+
+  This function tries to parse the private data for all VobSub tracks.
+  The private data contains the normal text from the original .idx file.
+  Things like the palette, subtitle dimensions and custom colors are
+  stored here.
+
+  \param demuxer The generic demuxer.
+*/
+static void
+demux_mkv_parse_vobsub_data (demuxer_t *demuxer)
+{
+  mkv_demuxer_t *mkv_d = (mkv_demuxer_t *) demuxer->priv;
+  mkv_track_t *track;
+  int i, m, size;
+  uint8_t *buffer;
+
+  for (i = 0; i < mkv_d->num_tracks; i++)
+    {
+      track = mkv_d->tracks[i];
+      if ((track->type != MATROSKA_TRACK_SUBTITLE) ||
+          (track->subtitle_type != MATROSKA_SUBTYPE_VOBSUB))
+        continue;
+
+      size = track->private_size;
+      m = demux_mkv_decode (track,track->private_data,&buffer,&size,2);
+      if (buffer && m)
+        {
+          free (track->private_data);
+          track->private_data = buffer;
+        }
+      if (!demux_mkv_parse_idx (track))
+        {
+          free (track->private_data);
+          track->private_data = NULL;
+          track->private_size = 0;
+        }
+    }
+}
+
 static int
 demux_mkv_open_sub (demuxer_t *demuxer, mkv_track_t *track)
 {
@@ -2057,15 +2141,7 @@ demux_mkv_open_sub (demuxer_t *demuxer, mkv_track_t *track)
     {
       if (track->subtitle_type == MATROSKA_SUBTYPE_VOBSUB)
         {
-          int m, size = track->private_size;
-          uint8_t *buffer;
-          m = demux_mkv_decode (track,track->private_data,&buffer,&size,2);
-          if (buffer && m)
-            {
-              free (track->private_data);
-              track->private_data = buffer;
-            }
-          if (demux_mkv_parse_idx (track))
+          if (track->private_data != NULL)
             {
               demuxer->sub->sh = malloc(sizeof(mkv_sh_sub_t));
               if (demuxer->sub->sh != NULL)
@@ -2085,6 +2161,24 @@ demux_mkv_open_sub (demuxer_t *demuxer, mkv_track_t *track)
 
 void demux_mkv_seek (demuxer_t *demuxer, float rel_seek_secs, int flags);
 
+/** \brief Given a matroska track number, find the subtitle number that mplayer would ask for.
+ *  \param d The demuxer for which the subtitle id should be returned.
+ *  \param num The matroska track number we are looking up.
+ */
+static int demux_mkv_sub_reverse_id(mkv_demuxer_t *d, int num)
+{
+  int i, id;
+  
+  for (i=0, id=0; i < d->num_tracks; i++)
+    if (d->tracks[i] != NULL && d->tracks[i]->type == MATROSKA_TRACK_SUBTITLE) {
+      if (d->tracks[i]->tnum == num)
+        return id;
+      id++;
+    }
+  
+  return -1;
+}
+
 int
 demux_mkv_open (demuxer_t *demuxer)
 {
@@ -2095,7 +2189,7 @@ demux_mkv_open (demuxer_t *demuxer)
   char *str;
 
 #ifdef USE_ICONV
-  subcp_open_noenca();
+  subcp_open(NULL);
 #endif
 
   stream_seek(s, s->start_pos);
@@ -2117,6 +2211,8 @@ demux_mkv_open (demuxer_t *demuxer)
   ebml_read_length (s, NULL);  /* return bytes number until EOF */
 
   mp_msg (MSGT_DEMUX, MSGL_V, "[mkv] + a segment...\n");
+
+  demux_aid_vid_mismatch = 1; // don't identify in new_sh_* since ids don't match
 
   mkv_d = (mkv_demuxer_t *) malloc (sizeof (mkv_demuxer_t));
   memset (mkv_d, 0, sizeof(mkv_demuxer_t));
@@ -2283,6 +2379,7 @@ demux_mkv_open (demuxer_t *demuxer)
       demuxer->audio->id = -2;
     }
 
+  demux_mkv_parse_vobsub_data (demuxer);
   /* DO NOT automatically select a subtitle track and behave like DVD */
   /* playback: only show subtitles if the user explicitely wants them. */
   track = NULL;
@@ -2297,6 +2394,7 @@ demux_mkv_open (demuxer_t *demuxer)
           {
             mp_msg (MSGT_DEMUX, MSGL_INFO,
                     "[mkv] Will display subtitle track %u\n", track->tnum);
+	    dvdsub_id = demux_mkv_sub_reverse_id(mkv_d, track->tnum);
             demuxer->sub->id = track->tnum;
           }
   else
@@ -2348,6 +2446,7 @@ demux_close_mkv (demuxer_t *demuxer)
   if (mkv_d)
     {
       int i;
+      free_cached_dps (demuxer);
       if (mkv_d->tracks)
         {
           for (i=0; i<mkv_d->num_tracks; i++)
@@ -2387,6 +2486,7 @@ demux_mkv_read_block_lacing (uint8_t *buffer, uint64_t *size,
   int i;
 
   *all_lace_sizes = NULL;
+  lace_size = NULL;
   /* lacing flags */
   flags = *buffer++;
   (*size)--;
@@ -2742,9 +2842,89 @@ handle_realaudio (demuxer_t *demuxer, mkv_track_t *track, uint8_t *buffer,
   ds_add_packet (demuxer->audio, dp);
 }
 
+/** Reorder timecodes and add cached demux packets to the queues.
+ *
+ * Timecode reordering is needed if a video track contains B frames that
+ * are timestamped in display order (e.g. MPEG-1, MPEG-2 or "native" MPEG-4).
+ * MPlayer doesn't like timestamps in display order. This function adjusts
+ * the timestamp of cached frames (which are exactly one I/P frame followed
+ * by one or more B frames) so that they are in coding order again.
+ *
+ * Example: The track with 25 FPS contains four frames with the timecodes
+ * I at 0ms, P at 120ms, B at 40ms and B at 80ms. As soon as the next I
+ * or P frame arrives these timecodes can be changed to I at 0ms, P at 40ms,
+ * B at 80ms and B at 120ms.
+ *
+ * \param demuxer The Matroska demuxer struct for this instance.
+ * \param track The track structure whose cache should be handled.
+ */
+static void
+flush_cached_dps (demuxer_t *demuxer, mkv_track_t *track)
+{
+  float tmp_pts;
+  int i;
+
+  if (track->num_cached_dps == 0)
+    return;
+  tmp_pts = track->cached_dps[0]->pts;
+  for (i = 1; i < track->num_cached_dps; i++)
+    track->cached_dps[i - 1]->pts = track->cached_dps[i]->pts;
+  track->cached_dps[track->num_cached_dps - 1]->pts = tmp_pts;
+
+  for (i = 0; i < track->num_cached_dps; i++)
+    ds_add_packet (demuxer->video, track->cached_dps[i]);
+  track->num_cached_dps = 0;
+}
+
+/** Cache video frames if timecodes have to be reordered.
+ *
+ * Timecode reordering is needed if a video track contains B frames that
+ * are timestamped in display order (e.g. MPEG-1, MPEG-2 or "native" MPEG-4).
+ * This function takes in a Matroska block read from the file, allocates a
+ * demux packet for it, fills in its values, allocates space for storing
+ * pointers to the cached demux packets and adds the packet to it. If
+ * the packet contains an I or a P frame then ::flush_cached_dps is called
+ * in order to send the old cached frames downstream.
+ *
+ * \param demuxer The Matroska demuxer struct for this instance.
+ * \param track The packet is meant for this track.
+ * \param buffer The actual frame contents.
+ * \param size The frame size in bytes.
+ * \param block_bref A relative timecode (backward reference). If it is \c 0
+ *   then the frame is an I frame.
+ * \param block_fref A relative timecode (forward reference). If it is \c 0
+ *   then the frame is either an I frame or a P frame depending on the value
+ *   of \a block_bref. Otherwise it's a B frame.
+ */
+static void
+handle_video_bframes (demuxer_t *demuxer, mkv_track_t *track, uint8_t *buffer,
+                      uint32_t size, int block_bref, int block_fref)
+{
+  mkv_demuxer_t *mkv_d = (mkv_demuxer_t *) demuxer->priv;
+  demux_packet_t *dp;
+
+  dp = new_demux_packet (size);
+  memcpy(dp->buffer, buffer, size);
+  dp->pos = demuxer->filepos;
+  dp->pts = mkv_d->last_pts;
+  if (block_fref == 0)          /* I or P frame */
+    flush_cached_dps (demuxer, track);
+  if (block_bref != 0)          /* I frame, don't cache it */
+    dp->flags = 0x10;
+  if ((track->num_cached_dps + 1) > track->num_allocated_dps)
+    {
+      track->cached_dps = (demux_packet_t **)
+        realloc(track->cached_dps, (track->num_cached_dps + 10) *
+                sizeof(demux_packet_t *));
+      track->num_allocated_dps += 10;
+    }
+  track->cached_dps[track->num_cached_dps] = dp;
+  track->num_cached_dps++;
+}
+
 static int
 handle_block (demuxer_t *demuxer, uint8_t *block, uint64_t length,
-              uint64_t block_duration, int64_t block_bref)
+              uint64_t block_duration, int64_t block_bref, int64_t block_fref)
 {
   mkv_demuxer_t *mkv_d = (mkv_demuxer_t *) demuxer->priv;
   mkv_track_t *track = NULL;
@@ -2850,6 +3030,9 @@ handle_block (demuxer_t *demuxer, uint8_t *block, uint64_t length,
             handle_realvideo (demuxer, track, block, lace_size[i], block_bref);
           else if (ds == demuxer->audio && track->realmedia)
             handle_realaudio (demuxer, track, block, lace_size[i], block_bref);
+          else if (ds == demuxer->video && track->reorder_timecodes)
+            handle_video_bframes (demuxer, track, block, lace_size[i],
+                                  block_bref, block_fref);
           else
             {
               int modified, size = lace_size[i];
@@ -2899,7 +3082,7 @@ demux_mkv_fill_buffer (demuxer_t *demuxer)
       while (mkv_d->cluster_size > 0)
         {
           uint64_t block_duration = 0,  block_length = 0;
-          int64_t block_bref = 0;
+          int64_t block_bref = 0, block_fref = 0;
           uint8_t *block = NULL;
 
           while (mkv_d->blockgroup_size > 0)
@@ -2928,8 +3111,10 @@ demux_mkv_fill_buffer (demuxer_t *demuxer)
                     int64_t num = ebml_read_int (s, &l);
                     if (num == EBML_INT_INVALID)
                       return 0;
-                    if (num < 0)
+                    if (num <= 0)
                       block_bref = num;
+                    else
+                      block_fref = num;
                     break;
                   }
 
@@ -2947,7 +3132,7 @@ demux_mkv_fill_buffer (demuxer_t *demuxer)
           if (block)
             {
               int res = handle_block (demuxer, block, block_length,
-                                      block_duration, block_bref);
+                                      block_duration, block_bref, block_fref);
               free (block);
               if (res < 0)
                 return 0;
@@ -3001,6 +3186,7 @@ demux_mkv_fill_buffer (demuxer_t *demuxer)
 void
 demux_mkv_seek (demuxer_t *demuxer, float rel_seek_secs, int flags)
 {
+  free_cached_dps (demuxer);
   if (!(flags & 2))  /* time in secs */
     {
       void resync_audio_stream(sh_audio_t *sh_audio);
@@ -3196,6 +3382,102 @@ demux_mkv_control (demuxer_t *demuxer, int cmd, void *arg)
 
     default:
       return DEMUXER_CTRL_NOTIMPL;
+    }
+}
+
+/** \brief Return the number of subtitle tracks in the file.
+
+  \param demuxer The demuxer for which the number of subtitle tracks
+  should be returned.
+*/
+int
+demux_mkv_num_subs (demuxer_t *demuxer)
+{
+  mkv_demuxer_t *mkv_d = (mkv_demuxer_t *) demuxer->priv;
+  int i, num;
+
+  num = 0;
+  for (i = 0; i < mkv_d->num_tracks; i++)
+    if ((mkv_d->tracks[i]->type == MATROSKA_TRACK_SUBTITLE) &&
+        (mkv_d->tracks[i]->subtitle_type != MATROSKA_SUBTYPE_UNKNOWN))
+      num++;
+
+  return num;
+}
+
+/** \brief Change the current subtitle track and return its ID.
+
+  Changes the current subtitle track. If the new subtitle track is a
+  VobSub track then the SPU decoder will be re-initialized.
+
+  \param demuxer The demuxer whose subtitle track will be changed.
+  \param new_num The number of the new subtitle track. The number must be
+  between 0 and demux_mkv_num_subs - 1.
+
+  \returns The Matroska track number of the newly selected track.
+*/
+int
+demux_mkv_change_subs (demuxer_t *demuxer, int new_num)
+{
+  mkv_demuxer_t *mkv_d = (mkv_demuxer_t *) demuxer->priv;
+  mkv_track_t *track;
+  int i, num;
+
+  num = 0;
+  track = NULL;
+  for (i = 0; i < mkv_d->num_tracks; i++)
+    {
+      if ((mkv_d->tracks[i]->type == MATROSKA_TRACK_SUBTITLE) &&
+          (mkv_d->tracks[i]->subtitle_type != MATROSKA_SUBTYPE_UNKNOWN))
+        num++;
+      if (num == (new_num + 1))
+        {
+          track = mkv_d->tracks[i];
+          break;
+        }
+    }
+  if (track == NULL)
+    return -1;
+
+  if (demuxer->sub->sh == NULL)
+    demuxer->sub->sh = malloc(sizeof(mkv_sh_sub_t));
+  if (demuxer->sub->sh != NULL)
+    memcpy(demuxer->sub->sh, &track->sh_sub, sizeof(mkv_sh_sub_t));
+
+  return track->tnum;
+}
+
+/** \brief Get the language code for a subtitle track.
+
+  Retrieves the language code for a subtitle track if it is known.
+  If the language code is "und" then do not copy it ("und" = "undefined").
+
+  \param demuxer The demuxer to work on
+  \param track_num The n'th subtitle track to get the language from
+  \param lang Store the language here
+  \param maxlen The maximum number of characters to copy into lang
+*/
+void
+demux_mkv_get_sub_lang(demuxer_t *demuxer, int track_num, char *lang,
+                       int maxlen)
+{
+  mkv_demuxer_t *mkv_d = (mkv_demuxer_t *) demuxer->priv;
+  mkv_track_t *track;
+  int i, num;
+
+  num = 0;
+  for (i = 0; i < mkv_d->num_tracks; i++)
+    {
+      track = mkv_d->tracks[i];
+      if (track->type == MATROSKA_TRACK_SUBTITLE)
+        num++;
+      if (num == (track_num + 1))
+        {
+          if ((track->language != NULL) &&
+              strcmp(track->language, "und"))
+            strncpy(lang, track->language, maxlen);
+          return;
+        }
     }
 }
 

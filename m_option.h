@@ -252,7 +252,11 @@ m_option_set(m_option_t* opt,void* dst, void* src) {
 inline  static void
 m_option_copy(m_option_t* opt,void* dst, void* src) {
   if(opt->type->copy)
-    opt->type->copy(opt,dst,src);
+#ifdef _XBOX
+	opt->type->copy(opt,dst,src);
+#else
+    opt->type->set(opt,dst,src);
+#endif
   else if(opt->type->size > 0)
     memcpy(dst,src,opt->type->size);
 }

@@ -37,8 +37,8 @@ int ff_h263_decode_init(AVCodecContext *avctx)
     s->avctx = avctx;
     s->out_format = FMT_H263;
 
-    s->width = avctx->width;
-    s->height = avctx->height;
+    s->width  = avctx->coded_width;
+    s->height = avctx->coded_height;
     s->workaround_bugs= avctx->workaround_bugs;
 
     // set defaults
@@ -111,7 +111,7 @@ int ff_h263_decode_init(AVCodecContext *avctx)
 int ff_h263_decode_end(AVCodecContext *avctx)
 {
     MpegEncContext *s = avctx->priv_data;
-    
+
     if (s->h263_msmpeg4)		//free memory allocated by init_vlc_r1
         ff_msmpeg4_decode_uninit();
     else
@@ -144,6 +144,7 @@ static int get_consumed_bytes(MpegEncContext *s, int buf_size){
 
 static int decode_slice(MpegEncContext *s){
     const int part_mask= s->partitioned_frame ? (AC_END|AC_ERROR) : 0x7F;
+    const int mb_size= 16>>s->avctx->lowres;
     s->last_resync_gb= s->gb;
     s->first_slice_line= 1;
         
@@ -219,7 +220,7 @@ static int decode_slice(MpegEncContext *s){
                         
                     if(++s->mb_x >= s->mb_width){
                         s->mb_x=0;
-                        ff_draw_horiz_band(s, s->mb_y*16, 16);
+                        ff_draw_horiz_band(s, s->mb_y*mb_size, mb_size);
                         s->mb_y++;
                     }
                     return 0; 
@@ -239,7 +240,7 @@ static int decode_slice(MpegEncContext *s){
                 ff_h263_loop_filter(s);
         }
         
-        ff_draw_horiz_band(s, s->mb_y*16, 16);
+        ff_draw_horiz_band(s, s->mb_y*mb_size, mb_size);
         
         s->mb_x= 0;
     }
@@ -259,17 +260,24 @@ static int decode_slice(MpegEncContext *s){
         
         if(bits_left==0){
             s->padding_bug_score+=16;
-        }else if(bits_left>8){
-            s->padding_bug_score++;
         } else if(bits_left != 1){
             int v= show_bits(&s->gb, 8);
             v|= 0x7F >> (7-(bits_count&7));
 
-            if(v==0x7F)
+            if(v==0x7F && bits_left<=8)
                 s->padding_bug_score--;
+            else if(v==0x7F && ((get_bits_count(&s->gb)+8)&8) && bits_left<=16)
+                s->padding_bug_score+= 4;
             else
                 s->padding_bug_score++;            
         }                          
+    }
+    
+    if(s->workaround_bugs&FF_BUG_AUTODETECT){
+        if(s->padding_bug_score > -2 && !s->data_partitioning && (s->divx_version || !s->resync_marker))
+            s->workaround_bugs |=  FF_BUG_NO_PADDING;
+        else
+            s->workaround_bugs &= ~FF_BUG_NO_PADDING;
     }
 
     // handle formats which dont have unique end markers
@@ -520,13 +528,13 @@ retry:
         if(s->avctx->codec_tag == ff_get_fourcc("DIVX") && s->vo_type==0 && s->vol_control_parameters==0)
             s->divx_version= 400; //divx 4
     }
+    
+    if(s->xvid_build && s->divx_version){
+        s->divx_version=
+        s->divx_build= 0;
+    }
 
     if(s->workaround_bugs&FF_BUG_AUTODETECT){
-        s->workaround_bugs &= ~FF_BUG_NO_PADDING;
-        
-        if(s->padding_bug_score > -2 && !s->data_partitioning && (s->divx_version || !s->resync_marker))
-            s->workaround_bugs |=  FF_BUG_NO_PADDING;
-
         if(s->avctx->codec_tag == ff_get_fourcc("XVIX")) 
             s->workaround_bugs|= FF_BUG_XVID_ILACE;
 
@@ -632,7 +640,7 @@ retry:
 #ifdef HAVE_MMX
     if(s->codec_id == CODEC_ID_MPEG4 && s->xvid_build && avctx->idct_algo == FF_IDCT_AUTO && (mm_flags & MM_MMX) && !(s->flags&CODEC_FLAG_BITEXACT)){
         avctx->idct_algo= FF_IDCT_LIBMPEG2MMX;
-        avctx->width= 0; // force reinit
+        avctx->coded_width= 0; // force reinit
     }
 #endif
 
@@ -641,7 +649,8 @@ retry:
         /* FIXME: By the way H263 decoder is evolving it should have */
         /* an H263EncContext                                         */
     
-    if (   s->width != avctx->width || s->height != avctx->height) {
+    if (   s->width  != avctx->coded_width 
+        || s->height != avctx->coded_height) {
         /* H.263 could change picture size any time */
         ParseContext pc= s->parse_context; //FIXME move these demuxng hack to avformat
         s->parse_context.buffer=0;
@@ -649,8 +658,7 @@ retry:
         s->parse_context= pc;
     }
     if (!s->context_initialized) {
-        avctx->width = s->width;
-        avctx->height = s->height;
+        avcodec_set_dimensions(avctx, s->width, s->height);
 
         goto retry;
     }

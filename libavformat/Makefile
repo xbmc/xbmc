@@ -12,11 +12,11 @@ OBJS= utils.o cutils.o os_support.o allformats.o
 PPOBJS=
 
 # mux and demuxes
-OBJS+=mpeg.o mpegts.o mpegtsenc.o ffm.o crc.o img.o raw.o rm.o \
+OBJS+=mpeg.o mpegts.o mpegtsenc.o ffm.o crc.o img.o img2.o raw.o rm.o \
       avienc.o avidec.o wav.o swf.o au.o gif.o mov.o mpjpeg.o dv.o \
       yuv4mpeg.o 4xm.o flvenc.o flvdec.o movenc.o psxstr.o idroq.o ipmovie.o \
       nut.o wc3movie.o mp3.o westwood.o segafilm.o idcin.o flic.o \
-      sierravmd.o matroska.o
+      sierravmd.o matroska.o sol.o electronicarts.o nsvdec.o
 
 ifeq ($(CONFIG_RISKY),yes)
 OBJS+= asf.o
@@ -45,6 +45,10 @@ endif
 
 ifeq ($(CONFIG_DV1394),yes)
 OBJS+= dv1394.o
+endif
+
+ifeq ($(CONFIG_DC1394),yes)
+OBJS+= dc1394.o
 endif
 
 ifeq ($(CONFIG_AUDIO_OSS),yes)
@@ -79,6 +83,11 @@ ifeq ($(BUILD_SHARED),yes)
 SLIB= $(SLIBPREF)avformat$(SLIBSUF)
 endif
 
+EXTRALIBS+=-lavcodec -L../libavcodec
+ifeq ($(CONFIG_MP3LAME),yes)
+EXTRALIBS+=-lmp3lame
+endif
+
 SRCS := $(OBJS:.o=.c) $(PPOBJS:.o=.cpp)
 
 all: $(LIB) $(SLIB)
@@ -102,10 +111,10 @@ depend: $(SRCS)
 ifeq ($(BUILD_SHARED),yes)
 install: all install-headers
 ifeq ($(CONFIG_WIN32),yes)
-	install -s -m 755 $(SLIB) "$(prefix)"
+	install $(INSTALLSTRIP) -m 755 $(SLIB) "$(prefix)"
 else
 	install -d $(prefix)/lib
-	install -s -m 755 $(SLIB) $(prefix)/lib/libavformat-$(VERSION).so
+	install $(INSTALLSTRIP) -m 755 $(SLIB) $(prefix)/lib/libavformat-$(VERSION).so
 	ln -sf libavformat-$(VERSION).so $(prefix)/lib/libavformat.so
 	ldconfig || true
 endif
@@ -131,7 +140,7 @@ install-headers:
 	g++ $(subst -Wall,,$(CFLAGS)) -c -o $@ $< 
 
 distclean clean: 
-	rm -f *.o *.d .depend *~ *.a $(LIB)
+	rm -f *.o *.d .depend *~ *.a *.so $(LIB)
 
 #
 # include dependency files if they exist

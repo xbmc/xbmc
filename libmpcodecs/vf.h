@@ -42,6 +42,7 @@ typedef struct vf_instance_s {
     unsigned int default_caps; // used by default query_format()
     unsigned int default_reqs; // used by default config()
     // data:
+    int w, h;
     vf_image_context_t imgctx;
     struct vf_instance_s* next;
     mp_image_t *dmpi;
@@ -66,6 +67,7 @@ typedef struct vf_seteq_s
 #define VFCTRL_FLIP_PAGE 10 /* Tell the vo to flip pages */
 #define VFCTRL_DUPLICATE_FRAME 11 /* For encoding - encode zero-change frame */
 #define VFCTRL_SKIP_NEXT_FRAME 12 /* For encoding - drop the next frame that passes thru */
+#define VFCTRL_FLUSH_FRAMES    13 /* For encoding - flush delayed frames */
 
 #include "vfcap.h"
 
@@ -75,6 +77,7 @@ mp_image_t* vf_get_image(vf_instance_t* vf, unsigned int outfmt, int mp_imgtype,
 
 vf_instance_t* vf_open_plugin(vf_info_t** filter_list, vf_instance_t* next, char *name, char **args);
 vf_instance_t* vf_open_filter(vf_instance_t* next, char *name, char **args);
+vf_instance_t* vf_add_before_vo(vf_instance_t **vf, char *name, char **args);
 vf_instance_t* vf_open_encoder(vf_instance_t* next, char *name, char *args);
 
 unsigned int vf_match_csp(vf_instance_t** vfp,unsigned int* list,unsigned int preferred);

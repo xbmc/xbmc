@@ -2,11 +2,13 @@
 #ifndef _MP_MSG_H
 #define _MP_MSG_H
 
-extern int verbose; // defined in mplayer.c
+// defined in mplayer.c and mencoder.c
+extern int verbose;
+extern int identify;
 
 // verbosity elevel:
 
-// stuff from level MSGL_FATAL-MSGL_HINT should be translated.
+// stuff from level MSGL_FATAL-MSGL_STATUS should be translated.
 
 #define MSGL_FATAL 0  // will exit/abort
 #define MSGL_ERR 1    // continues
@@ -18,6 +20,9 @@ extern int verbose; // defined in mplayer.c
 #define MSGL_DBG2 7   // v=2
 #define MSGL_DBG3 8   // v=3
 #define MSGL_DBG4 9   // v=4
+
+#define MSGL_FIXME 1  // for conversions from printf where the appropriate MSGL is not known; set equal to ERR for obtrusiveness
+#define MSGT_FIXME 0  // for conversions from printf where the appropriate MSGT is not known; set equal to GLOBAL for obtrusiveness
 
 // code/module:
 

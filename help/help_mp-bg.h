@@ -58,7 +58,8 @@ static char help_text[]=
 
 // mplayer.c: 
 
-#define MSGTR_Exiting "\nИзлизам... (%s)\n"
+#define MSGTR_Exiting "\nИзлизам...\n"
+#define MSGTR_ExitingHow "\nИзлизам... (%s)\n"
 #define MSGTR_Exit_quit "Край"
 #define MSGTR_Exit_eof "Край на файла"
 #define MSGTR_Exit_error "Фатална грешка"
@@ -66,23 +67,17 @@ static char help_text[]=
 #define MSGTR_NoHomeDir "Не намирам HOME директория\n"
 #define MSGTR_GetpathProblem "Проблем с функция get_path(\"config\") \n"
 #define MSGTR_CreatingCfgFile "Създавам конфигурационен файл: %s\n"
-#define MSGTR_InvalidVOdriver "Невалидно име на видео драйвер: %s\nИзползвай '-vo help' за списък на наличните видео драйвери.\n"
 #define MSGTR_InvalidAOdriver "Невалидно име на аудио драйвер: %s\nИзползвай '-ao help' за списък на наличните аудио драйвери.\n"
 #define MSGTR_CopyCodecsConf "(копирай/свържи etc/codecs.conf (от сорс кода на MPlayer) с ~/.mplayer/codecs.conf)\n"
 #define MSGTR_BuiltinCodecsConf "Използвам вградения codecs.conf\n"
 #define MSGTR_CantLoadFont "Не мога да заредя шрифт: %s\n"
 #define MSGTR_CantLoadSub "Не мога за заредя субтитри: %s\n"
-#define MSGTR_ErrorDVDkey "Грешка при обработка на DVD KEY (ключът невалиден).\n"
-#define MSGTR_CmdlineDVDkey "DVD command line requested key is stored for descrambling.\n"
-#define MSGTR_DVDauthOk "DVD auth sequence seems to be OK.\n"
 #define MSGTR_DumpSelectedStreamMissing "dump: ФАТАЛНО: избраният поток липсва!\n"
 #define MSGTR_CantOpenDumpfile "dump: Не мога да създам файл за извличане!!\n"
 #define MSGTR_CoreDumped "dump: Данните извлечени :)\n"
 #define MSGTR_FPSnotspecified "FPS (Кадри В Секунда) е с неизвестна или невалидна стойност! Използвайте опция -fps!\n"
 #define MSGTR_TryForceAudioFmtStr "Опитвам да наложа аудио декодер от указаната фамилия %s...\n"
-#define MSGTR_CantFindAfmtFallback "Не мога да намеря аудио декодер от указаната фамилия, връщам се на другите.\n"
 #define MSGTR_CantFindAudioCodec "Не мога да намеря декодер за аудио формат 0x%X!\n"
-#define MSGTR_CouldntInitAudioCodec "Не успях да пусна аудио декодера! -> изключвам звука\n"
 #define MSGTR_TryForceVideoFmtStr "Опитвам да използвам видео декодер от фамилия %s...\n"
 #define MSGTR_CantFindVideoCodec "Не мога да намеря декодер който да работи с този видео драйвер и видео тип 0x%X!\n"
 #define MSGTR_VOincompCodec "Съжалявам, избраният видео драйвер е несъвместим с този декодер.\n"
@@ -111,7 +106,7 @@ static char help_text[]=
 "  - Опитай с -cache 8192\n"\
 "- Използваш опция -cache при неправилно структуриран файл (non-interleaved)? \n"\
 "  - Опитай с -nocache\n"\
-"Прочети DOCS/HTML/en/devices.html за съвети и настойки\n"\
+"Прочети DOCS/HTML/en/video.html за съвети и настойки\n"\
 "Ако нищо не помогне, прочети DOCS/HTML/en/bugreports.html!\n\n"
 
 #define MSGTR_NoGui "MPlayer е компилиран БЕЗ Графичен Потребителски Интерфейс (GUI)!\n"
@@ -121,7 +116,6 @@ static char help_text[]=
 #define MSGTR_FPSforced "Видеото е застопорено на %5.3f кадъра в секунда (ftime: %5.3f)\n"
 #define MSGTR_CompiledWithRuntimeDetection "Поддръжка RUNTIME CPU Detection - внимание, това не е оптимално! За да получите максимална производителност, прекомпилирайте mplayer от сорса и използвайте ./configure --disable-runtime-cpudetection \n"
 #define MSGTR_CompiledWithCPUExtensions "Поддръжка на x86 CPU с :"
-#define MSGTR_AvailableVideoOutputPlugins "Налични видео plugin-и:\n"
 #define MSGTR_AvailableVideoOutputDrivers "Налични видео драйвери:\n"
 #define MSGTR_AvailableAudioOutputDrivers "Налични аудио драйвери:\n"
 #define MSGTR_AvailableAudioCodecs "Налични аудио декодери:\n"
@@ -132,12 +126,9 @@ static char help_text[]=
 #define MSGTR_UsingRTCTiming "Изполвзвам Linux's hardware RTC таймер (%ldHz)\n"
 #define MSGTR_CannotReadVideoProperties "Видео: не мога да прочета параметрите на видео потока\n"
 #define MSGTR_NoStreamFound "Потокът не е намерен\n"
-#define MSGTR_InitializingAudioCodec "Пускам аудио декодер...\n"
 #define MSGTR_ErrorInitializingVODevice "Грешка при отваряне/пускане на видео драйвера (-vo)!\n"
 #define MSGTR_ForcedVideoCodec "Наложен видео декодер: %s\n"
 #define MSGTR_ForcedAudioCodec "Наложен аудио декодер: %s\n"
-#define MSGTR_AODescription_AOAuthor "AO: Описание: %s\nAO: Автор: %s\n"
-#define MSGTR_AOComment "AO: Коментар: %s\n"
 #define MSGTR_Video_NoVideo "Видео: няма видео!!!\n"
 #define MSGTR_NotInitializeVOPorVO "\nФАТАЛНО: Не мога да пусна видео филтрите (-vf) или видео изхода (-vo)!\n"
 #define MSGTR_Paused "\n  =====  ПАУЗА  =====\r"
@@ -166,11 +157,9 @@ static char help_text[]=
 #define MSGTR_UsingPass3ControllFile "Използвам pass3 контролен файл: %s\n"
 #define MSGTR_MissingFilename "\nЛипсва име на файл!\n\n"
 #define MSGTR_CannotOpenFile_Device "Не мога да отворя файл/устройство\n"
-#define MSGTR_ErrorDVDAuth "Грешка при DVD auth...\n"
 #define MSGTR_CannotOpenDemuxer "Не мога да отворя demuxer (разпределител)\n"
 #define MSGTR_NoAudioEncoderSelected "\nНе е посочен аудио енкодер (-oac)! Изберете един или използвайте -nosound.\nВижте -oac help!\n"
 #define MSGTR_NoVideoEncoderSelected "\nНе е посочен видео енкодер (-ovc)! Изберете един, Вижте -ovc help!\n"
-// #define MSGTR_InitializingAudioCodec "Инициализирам аудио codec...\n"
 #define MSGTR_CannotOpenOutputFile "Не мога да отворя изходящия файл '%s'\n"
 #define MSGTR_EncoderOpenFailed "Не успях да отворя енкодер\n"
 #define MSGTR_ForcingOutputFourcc "Налагам fourcc кода да бъде %x [%.4s]\n"
@@ -275,7 +264,6 @@ static char help_text[]=
 
 #define MSGTR_ShMemAllocFail "Не мога да заделя споделена памет\n"
 #define MSGTR_CantAllocAudioBuf "Не мога да заделя аудио буфер\n"
-#define MSGTR_NoMemForDecodedImage "Няма достатъчно памет за буфера на декодираното изображение (%ld байта)\n"
 
 #define MSGTR_UnknownAudio "Непознат/липсващ аудио формат -> изключвам звука\n"
 
@@ -329,8 +317,6 @@ static char help_text[]=
 #define MSGTR_SkinBrowser "Избор на Кожи"
 #define MSGTR_Network "Поточно видео..."
 #define MSGTR_Preferences "Настройки"
-#define MSGTR_OSSPreferences "Конфигурация на OSS драйвера"
-#define MSGTR_SDLPreferences "Конфигурация на SDL драйвера"
 #define MSGTR_NoMediaOpened "no media opened"
 #define MSGTR_VCDTrack "VCD писта %d"
 #define MSGTR_NoChapter "няма глави"
@@ -373,7 +359,6 @@ static char help_text[]=
 #define MSGTR_SKIN_FONT_FontImageNotFound "Файлът с изображението на шрифта не е намерен\n"
 #define MSGTR_SKIN_FONT_NonExistentFontID "Несъществуващ идентификатор на шрифт (%s)\n"
 #define MSGTR_SKIN_UnknownParameter "Неизвестен параметър (%s)\n"
-#define MSGTR_SKINBROWSER_NotEnoughMemory "[skinbrowser] Недостиг на памет.\n"
 #define MSGTR_SKIN_SKINCFG_SkinNotFound "Не намирам Кожата (%s).\n"
 #define MSGTR_SKIN_SKINCFG_SkinCfgReadError "Грешка при четене на конфигурационния файл на Кожата (%s).\n"
 #define MSGTR_SKIN_LABEL "Кожи:"
@@ -496,9 +481,6 @@ static char help_text[]=
 #define MSGTR_PREFERENCES_FRAME_CodecDemuxer "Декодери и разпределители"
 #define MSGTR_PREFERENCES_FRAME_Cache "Cache"
 #define MSGTR_PREFERENCES_FRAME_Misc "Разни"
-#define MSGTR_PREFERENCES_OSS_Device "Устройство:"
-#define MSGTR_PREFERENCES_OSS_Mixer "Mixer:"
-#define MSGTR_PREFERENCES_SDL_Driver "Устройство:"
 #define MSGTR_PREFERENCES_Message "Не забравяйте, че някои опции остават в сила до следващия филм."
 #define MSGTR_PREFERENCES_DXR3_VENC "Видео енкодер:"
 #define MSGTR_PREFERENCES_DXR3_LAVC "LAVC (FFmpeg)"

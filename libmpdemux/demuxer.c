@@ -18,7 +18,12 @@
 #include "stheader.h"
 #include "mf.h"
 
+#include "../libao2/afmt.h"
 #include "../libvo/fastmemcpy.h"
+
+// Should be set to 1 by demux module if ids it passes to new_sh_audio and
+// new_sh_video don't match aids and vids it accepts from the command line
+int demux_aid_vid_mismatch = 0;
 
 void free_demuxer_stream(demux_stream_t *ds){
     ds_free_packs(ds);
@@ -79,17 +84,27 @@ sh_audio_t* new_sh_audio(demuxer_t *demuxer,int id){
     if(demuxer->a_streams[id]){
         mp_msg(MSGT_DEMUXER,MSGL_WARN,MSGTR_AudioStreamRedefined,id);
     } else {
+        sh_audio_t *sh;
         mp_msg(MSGT_DEMUXER,MSGL_V,MSGTR_FoundAudioStream,id);
         demuxer->a_streams[id]=malloc(sizeof(sh_audio_t));
         memset(demuxer->a_streams[id],0,sizeof(sh_audio_t));
+        sh = demuxer->a_streams[id];
+        // set some defaults
+        sh->samplesize=2;
+        sh->sample_format=AFMT_S16_NE;
+        sh->audio_out_minsize=8192;/* default size, maybe not enough for Win32/ACM*/
+        if (identify && !demux_aid_vid_mismatch)
+          mp_msg(MSGT_GLOBAL, MSGL_INFO, "ID_AUDIO_ID=%d\n", id);
     }
     return demuxer->a_streams[id];
 }
 
 void free_sh_audio(sh_audio_t* sh){
-    mp_msg(MSGT_DEMUXER,MSGL_V,"DEMUXER: freeing sh_audio at %p  \n",sh);
+    mp_msg(MSGT_DEMUXER,MSGL_DBG2,"DEMUXER: freeing sh_audio at %p\n",sh);
     if(sh->wf) free(sh->wf);
+#ifdef _XBOX    
     if(sh->ah) free(sh->ah);
+#endif
     free(sh);
 }
 
@@ -106,12 +121,14 @@ sh_video_t* new_sh_video(demuxer_t *demuxer,int id){
         mp_msg(MSGT_DEMUXER,MSGL_V,MSGTR_FoundVideoStream,id);
         demuxer->v_streams[id]=malloc(sizeof(sh_video_t));
         memset(demuxer->v_streams[id],0,sizeof(sh_video_t));
+        if (identify && !demux_aid_vid_mismatch)
+          mp_msg(MSGT_GLOBAL, MSGL_INFO, "ID_VIDEO_ID=%d\n", id);
     }
     return demuxer->v_streams[id];
 }
 
 void free_sh_video(sh_video_t* sh){
-    mp_msg(MSGT_DEMUXER,MSGL_V,"DEMUXER: freeing sh_video at %p  \n",sh);
+    mp_msg(MSGT_DEMUXER,MSGL_DBG2,"DEMUXER: freeing sh_video at %p\n",sh);
     if(sh->bih) free(sh->bih);
     free(sh);
 }
@@ -122,12 +139,12 @@ extern void demux_close_y4m(demuxer_t *demuxer);
 extern void demux_close_mf(demuxer_t* demuxer);
 extern void demux_close_roq(demuxer_t* demuxer);
 extern void demux_close_film(demuxer_t* demuxer);
-extern void demux_close_bmp(demuxer_t* demuxer);
 extern void demux_close_fli(demuxer_t* demuxer);
 extern void demux_close_nsv(demuxer_t* demuxer);
 extern void demux_close_nuv(demuxer_t* demuxer);
 extern void demux_close_audio(demuxer_t* demuxer);
 extern void demux_close_ogg(demuxer_t* demuxer);
+extern void demux_close_mpg(demuxer_t* demuxer);
 extern void demux_close_rtp(demuxer_t* demuxer);
 extern void demux_close_demuxers(demuxer_t* demuxer);
 extern void demux_close_avi(demuxer_t *demuxer);
@@ -157,7 +174,7 @@ extern void demux_close_tv(demuxer_t *demuxer);
 
 void free_demuxer(demuxer_t *demuxer){
     int i;
-    mp_msg(MSGT_DEMUXER,MSGL_V,"DEMUXER: freeing demuxer at %p  \n",demuxer);
+    mp_msg(MSGT_DEMUXER,MSGL_DBG2,"DEMUXER: freeing demuxer at %p\n",demuxer);
     switch(demuxer->type) {
     case DEMUXER_TYPE_PVA:
       demux_close_pva(demuxer); break;
@@ -173,8 +190,6 @@ void free_demuxer(demuxer_t *demuxer){
       demux_close_roq(demuxer);  break;
     case DEMUXER_TYPE_FILM:
       demux_close_film(demuxer); break;
-    case DEMUXER_TYPE_BMP:
-      demux_close_bmp(demuxer); break;
     case DEMUXER_TYPE_FLI:
       demux_close_fli(demuxer); break;
     case DEMUXER_TYPE_NSV:
@@ -209,7 +224,7 @@ void free_demuxer(demuxer_t *demuxer){
       demux_close_smjpeg(demuxer); break;
     case DEMUXER_TYPE_DEMUXERS:
       demux_close_demuxers(demuxer); return;
-    case DEMUXER_TYPE_AVI:
+    case DEMUXER_TYPE_AVI: 
     case DEMUXER_TYPE_AVI_NI:
     case DEMUXER_TYPE_AVI_NINI:
       demux_close_avi(demuxer); break;
@@ -224,8 +239,9 @@ void free_demuxer(demuxer_t *demuxer){
     case DEMUXER_TYPE_LMLM4:
       demux_close_lmlm4(demuxer); break;
     case DEMUXER_TYPE_MPEG_TS:
-    case DEMUXER_TYPE_MPEG4_IN_TS:
       demux_close_ts(demuxer); break;
+    case DEMUXER_TYPE_MPEG_PS:
+      demux_close_mpg(demuxer); break;
     case DEMUXER_TYPE_REALAUDIO:
       demux_close_ra(demuxer); break;
 #ifdef USE_LIBAVFORMAT
@@ -291,7 +307,6 @@ void ds_read_packet(demux_stream_t *ds,stream_t *stream,int len,float pts,off_t 
 int demux_mf_fill_buffer( demuxer_t *demux);
 int demux_roq_fill_buffer(demuxer_t *demux);
 int demux_film_fill_buffer(demuxer_t *demux);
-int demux_bmp_fill_buffer(demuxer_t *demux);
 int demux_fli_fill_buffer(demuxer_t *demux);
 int demux_mpg_es_fill_buffer(demuxer_t *demux);
 int demux_mpg_fill_buffer(demuxer_t *demux);
@@ -331,7 +346,6 @@ int demux_fill_buffer(demuxer_t *demux,demux_stream_t *ds){
     case DEMUXER_TYPE_MF: return demux_mf_fill_buffer(demux);
     case DEMUXER_TYPE_ROQ: return demux_roq_fill_buffer(demux);
     case DEMUXER_TYPE_FILM: return demux_film_fill_buffer(demux);
-    case DEMUXER_TYPE_BMP: return demux_bmp_fill_buffer(demux);
     case DEMUXER_TYPE_FLI: return demux_fli_fill_buffer(demux);
     case DEMUXER_TYPE_MPEG_TY: return demux_ty_fill_buffer( demux );
     case DEMUXER_TYPE_MPEG4_ES:
@@ -376,8 +390,7 @@ int demux_fill_buffer(demuxer_t *demux,demux_stream_t *ds){
     case DEMUXER_TYPE_GIF: return demux_gif_fill_buffer(demux);
 #endif
     case DEMUXER_TYPE_LMLM4: return demux_lmlm4_fill_buffer(demux);
-    case DEMUXER_TYPE_MPEG_TS:
-    case DEMUXER_TYPE_MPEG4_IN_TS:
+    case DEMUXER_TYPE_MPEG_TS: 
 	return demux_ts_fill_buffer(demux);
     case DEMUXER_TYPE_REALAUDIO: return demux_ra_fill_buffer(demux);
 #ifdef USE_LIBAVFORMAT
@@ -588,7 +601,6 @@ int mov_read_header(demuxer_t* demuxer);
 int demux_open_fli(demuxer_t* demuxer);
 int demux_open_mf(demuxer_t* demuxer);
 int demux_open_film(demuxer_t* demuxer);
-int demux_open_bmp(demuxer_t* demuxer);
 int demux_open_roq(demuxer_t* demuxer);
 #ifdef HAVE_LIBDV095
 int demux_open_rawdv(demuxer_t* demuxer);
@@ -610,11 +622,11 @@ extern void demux_open_nsv(demuxer_t *demuxer);
 extern void demux_open_nuv(demuxer_t *demuxer);
 extern int demux_audio_open(demuxer_t* demuxer);
 extern int demux_ogg_open(demuxer_t* demuxer);
+extern int demux_mpg_open(demuxer_t* demuxer);
 extern int demux_rawaudio_open(demuxer_t* demuxer);
 extern int demux_rawvideo_open(demuxer_t* demuxer);
 extern int smjpeg_check_file(demuxer_t *demuxer);
 extern int demux_open_smjpeg(demuxer_t* demuxer);
-extern int bmp_check_file(demuxer_t *demuxer);
 extern int demux_xmms_open(demuxer_t* demuxer);
 extern int gif_check_file(demuxer_t *demuxer);
 extern int demux_open_gif(demuxer_t* demuxer);
@@ -632,6 +644,9 @@ extern int lavf_check_file(demuxer_t *demuxer);
 extern int demux_open_lavf(demuxer_t* demuxer);
 
 extern demuxer_t* init_avi_with_ogg(demuxer_t* demuxer);
+#ifdef STREAMING_LIVE_DOT_COM
+extern demuxer_t* demux_open_rtp(demuxer_t* demuxer);
+#endif
 
 int extension_parsing=1; // 0=off 1=mixed (used only for unstable formats)
 
@@ -688,17 +703,21 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_AVI){
   demuxer=new_demuxer(stream,DEMUXER_TYPE_AVI,audio_id,video_id,dvdsub_id);
   { //---- RIFF header:
     int id=stream_read_dword_le(demuxer->stream); // "RIFF"
-    if(id==mmioFOURCC('R','I','F','F')){
+    if((id==mmioFOURCC('R','I','F','F')) || (id==mmioFOURCC('O','N','2',' '))){
       stream_read_dword_le(demuxer->stream); //filesize
       id=stream_read_dword_le(demuxer->stream); // "AVI "
-      if(id==formtypeAVI){
+      if(id==formtypeAVI){ 
         mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat,"AVI");
         file_format=DEMUXER_TYPE_AVI;
-      }
+      }	
+      if(id==mmioFOURCC('O','N','2','f')){ 
+        mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat,"ON2 AVI");
+        file_format=DEMUXER_TYPE_AVI;
+      }	
     }
     if (file_format==DEMUXER_TYPE_UNKNOWN) {
-    free_demuxer(demuxer);
-    demuxer = NULL;
+      free_demuxer(demuxer);
+      demuxer = NULL;
     }
   }
 }
@@ -838,7 +857,7 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_FLI){
     stream_seek(demuxer->stream, 4);
     id=stream_read_word_le(demuxer->stream);
     // check for the FLI file magic number
-    if((id==0xAF11) || (id==0xAF12)){
+    if((id==0xAF11) || (id==0xAF12)){ 
       mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat,"FLI");
       file_format=DEMUXER_TYPE_FLI;
     } else {
@@ -853,7 +872,7 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_FILM){
   {
     int signature=stream_read_fourcc(demuxer->stream);
     // check for the FLI file magic number
-    if(signature==mmioFOURCC('F', 'I', 'L', 'M')){
+    if(signature==mmioFOURCC('F', 'I', 'L', 'M')){ 
       mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat,"FILM");
       file_format=DEMUXER_TYPE_FILM;
     } else {
@@ -886,17 +905,6 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_GIF){
   }
 }
 #endif
-//=============== Try to open as BMP file: =================
-if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_BMP){
-  demuxer=new_demuxer(stream,DEMUXER_TYPE_BMP,audio_id,video_id,dvdsub_id);
-  if(bmp_check_file(demuxer)){
-      mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat,"BMP");
-      file_format=DEMUXER_TYPE_BMP;
-  } else {
-      free_demuxer(demuxer);
-      demuxer = NULL;
-  }
-}
 #ifdef HAVE_OGGVORBIS
 //=============== Try to open as Ogg file: =================
 if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_OGG){
@@ -951,7 +959,7 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_MPEG_PS){
  file_format=DEMUXER_TYPE_UNKNOWN;
  while(pes>=0){
   demuxer=new_demuxer(stream,DEMUXER_TYPE_MPEG_PS,audio_id,video_id,dvdsub_id);
-
+  
   // try to pre-detect PES:
   tmppos=stream_tell(demuxer->stream);
   tmp=stream_read_dword(demuxer->stream);
@@ -960,7 +968,7 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_MPEG_PS){
       if(tmp>1 && tmp<=2048) pes=0; // demuxer->synced=3; // PES...
   }
   stream_seek(demuxer->stream,tmppos);
-
+  
   if(!pes) demuxer->synced=3; // hack!
 
   num_elementary_packets100=0;
@@ -977,7 +985,7 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_MPEG_PS){
   num_h264_pps=0;
   num_mp3audio_packets=0;
 
-  if(ds_fill_buffer(demuxer->video)){
+  if(demux_mpg_open(demuxer)){
     if(!pes)
       mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat,"MPEG-PES");
     else
@@ -1003,7 +1011,7 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_MPEG_PS){
         --pes;continue; // tricky...
       }
       file_format=DEMUXER_TYPE_MPEG_ES; //  <-- hack is here :)
-    } else
+    } else 
 #if 1
     // fuzzy mpeg4-es detection. do NOT enable without heavy testing of mpeg formats detection!
     if(num_elementary_packets1B6>3 && num_elementary_packets12x>=1 &&
@@ -1014,7 +1022,7 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_MPEG_PS){
 #endif
 #if 1
     // fuzzy h264-es detection. do NOT enable without heavy testing of mpeg formats detection!
-    if((num_h264_slice>3 || (num_h264_dpa>3 && num_h264_dpb>3 && num_h264_dpc>3)) &&
+    if((num_h264_slice>3 || (num_h264_dpa>3 && num_h264_dpb>3 && num_h264_dpc>3)) && 
        /* FIXME num_h264_sps>=1 && */ num_h264_pps>=1 && num_h264_idr>=1 &&
        num_elementary_packets1B6==0 && num_elementary_packetsPES==0 &&
        demuxer->synced<2){
@@ -1043,11 +1051,11 @@ if(file_format==DEMUXER_TYPE_MPEG_ES || file_format==DEMUXER_TYPE_MPEG4_ES  || f
     demuxer = NULL;
   } else {
     switch(file_format){
-    case DEMUXER_TYPE_MPEG_ES:
+    case DEMUXER_TYPE_MPEG_ES: 
         mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat, "MPEG-ES"); break;
-    case DEMUXER_TYPE_MPEG4_ES:
+    case DEMUXER_TYPE_MPEG4_ES: 
         mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat, "MPEG4-ES"); break;
-    case DEMUXER_TYPE_H264_ES:
+    case DEMUXER_TYPE_H264_ES: 
         mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat, "H264-ES"); break;
     }
   }
@@ -1187,10 +1195,6 @@ switch(file_format){
   break;
  }
 #endif
- case DEMUXER_TYPE_BMP: {
-  if (!demux_open_bmp(demuxer)) return NULL;
-  break;
- }
  case DEMUXER_TYPE_ROQ: {
   if (!demux_open_roq(demuxer)) return NULL;
   break;
@@ -1228,7 +1232,7 @@ switch(file_format){
 	 demuxer = new_demuxers_demuxer(demuxer,od,demuxer);
      }
 #endif
-   }
+   }       
    return demuxer;
 //  break;
  }
@@ -1289,11 +1293,6 @@ switch(file_format){
     } else {
       sh_video=d_video->sh;sh_video->ds=d_video;
       sh_video->fps=1000.0f; sh_video->frametime=0.001f; // 1ms
-      mp_msg(MSGT_DEMUXER,MSGL_INFO,"VIDEO:  [%.4s]  %dx%d  %dbpp\n",
-        (char *)&sh_video->bih->biCompression,
-        sh_video->bih->biWidth,
-        sh_video->bih->biHeight,
-        sh_video->bih->biBitCount);
       //      sh_video->i_bps=10*asf_packetsize; // FIXME!
     }
   }
@@ -1367,12 +1366,11 @@ switch(file_format){
 #endif
 #ifdef STREAMING_LIVE_DOT_COM
  case DEMUXER_TYPE_RTP: {
-   demuxer = demux_open_rtp(demuxer);
+   if (!(demuxer = demux_open_rtp(demuxer))) return NULL;
    break;
  }
 #endif
- case DEMUXER_TYPE_MPEG_TS:
- case DEMUXER_TYPE_MPEG4_IN_TS: {
+ case DEMUXER_TYPE_MPEG_TS: {
   demux_open_ts(demuxer);
   break;
  }
@@ -1388,6 +1386,15 @@ switch(file_format){
 #endif
 } // switch(file_format)
 pts_from_bps=0; // !!!
+if ((sh_video=demuxer->video->sh) && sh_video->bih)
+  mp_msg(MSGT_DEMUX,MSGL_INFO,"VIDEO:  [%.4s]  %ldx%ld  %dbpp  %5.3f fps  %5.1f kbps (%4.1f kbyte/s)\n",
+    (char *)&sh_video->bih->biCompression,
+    sh_video->bih->biWidth,
+    sh_video->bih->biHeight,
+    sh_video->bih->biBitCount,
+    sh_video->fps,
+    sh_video->i_bps*0.008f,
+    sh_video->i_bps/1024.0f );
 return demuxer;
 }
 
@@ -1398,10 +1405,15 @@ int audio_stream_cache = 0;
 
 extern int hr_mp3_seek;
 
+extern float stream_cache_min_percent;
+extern float stream_cache_prefill_percent;
+
 demuxer_t* demux_open(stream_t *vs,int file_format,int audio_id,int video_id,int dvdsub_id,char* filename){
   stream_t *as = NULL,*ss = NULL;
   demuxer_t *vd,*ad = NULL,*sd = NULL;
   int afmt =DEMUXER_TYPE_UNKNOWN,sfmt = DEMUXER_TYPE_UNKNOWN ;
+
+  demux_aid_vid_mismatch = 0;
 
   if(audio_stream) {
     as = open_stream(audio_stream,0,&afmt);
@@ -1410,8 +1422,8 @@ demuxer_t* demux_open(stream_t *vs,int file_format,int audio_id,int video_id,int
       return NULL;
     }
     if(audio_stream_cache) {
-      if(!stream_enable_cache(as,audio_stream_cache*1024,audio_stream_cache*1024/5,
-			      audio_stream_cache*1024/20)) {
+      if(!stream_enable_cache(as,audio_stream_cache*1024,audio_stream_cache*1024*(stream_cache_min_percent / 100.0),
+			      audio_stream_cache*1024*(stream_cache_prefill_percent / 100.0))) {
 	free_stream(as);
 	mp_msg(MSGT_DEMUXER,MSGL_ERR,"Can't enable audio stream cache\n");
 	return NULL;
@@ -1507,7 +1519,7 @@ if(!demuxer->seekable){
     // clear demux buffers:
     if(sh_audio){ ds_free_packs(d_audio);sh_audio->a_buffer_len=0;}
     ds_free_packs(d_video);
-
+    
     demuxer->stream->eof=0; // clear eof flag
     demuxer->video->eof=0;
     demuxer->audio->eof=0;
@@ -1533,7 +1545,7 @@ switch(demuxer->file_format){
 
   case DEMUXER_TYPE_MPEG_TY:
       demux_seek_ty(demuxer,rel_seek_secs,flags);  break;
-
+  
   case DEMUXER_TYPE_H264_ES:
   case DEMUXER_TYPE_MPEG4_ES:
   case DEMUXER_TYPE_MPEG_ES:
@@ -1554,7 +1566,7 @@ switch(demuxer->file_format){
 
   case DEMUXER_TYPE_PVA:
       demux_seek_pva(demuxer,rel_seek_secs,flags); break;
-
+      
   case DEMUXER_TYPE_FLI:
       demux_seek_fli(demuxer,rel_seek_secs,flags);  break;
   case DEMUXER_TYPE_FILM:
@@ -1582,7 +1594,6 @@ switch(demuxer->file_format){
       demux_mkv_seek(demuxer,rel_seek_secs,flags);  break;
 #endif
  case DEMUXER_TYPE_MPEG_TS:
- case DEMUXER_TYPE_MPEG4_IN_TS:
       demux_seek_ts(demuxer,rel_seek_secs,flags); break;
  #ifdef USE_LIBAVFORMAT
  case DEMUXER_TYPE_LAVF:
@@ -1600,7 +1611,7 @@ int demux_info_add(demuxer_t *demuxer, char *opt, char *param)
     int n = 0;
 
 
-    for(n = 0; info && info[2*n] != NULL; n++)
+    for(n = 0; info && info[2*n] != NULL; n++) 
       {
 	if(!strcasecmp(opt,info[2*n]))
 	  {
@@ -1608,7 +1619,7 @@ int demux_info_add(demuxer_t *demuxer, char *opt, char *param)
 	    return 0;
 	  }
       }
-
+    
     info = demuxer->info = (char**)realloc(info,(2*(n+2))*sizeof(char*));
     info[2*n] = strdup(opt);
     info[2*n+1] = strdup(param);
@@ -1654,9 +1665,7 @@ extern int demux_audio_control(demuxer_t *demuxer, int cmd, void *arg);
 extern int demux_ogg_control(demuxer_t *demuxer, int cmd, void *arg);
 extern int demux_real_control(demuxer_t *demuxer, int cmd, void *arg);
 extern int demux_lavf_control(demuxer_t *demuxer, int cmd, void *arg);
-#ifdef _XBOX
 extern int demux_mov_control(demuxer_t *demuxer, int cmd, void *arg);
-#endif
 
 int demux_control(demuxer_t *demuxer, int cmd, void *arg) {
     switch(demuxer->type) {
@@ -1666,7 +1675,6 @@ int demux_control(demuxer_t *demuxer, int cmd, void *arg) {
 	case DEMUXER_TYPE_MPEG_ES:
 	case DEMUXER_TYPE_MPEG_PS:
 	case DEMUXER_TYPE_MPEG_TS:
-	case DEMUXER_TYPE_MPEG4_IN_TS:
 	    return demux_mpg_control(demuxer,cmd,arg);
 	case DEMUXER_TYPE_ASF:
 	    return demux_asf_control(demuxer,cmd,arg);
@@ -1694,10 +1702,8 @@ int demux_control(demuxer_t *demuxer, int cmd, void *arg) {
         case DEMUXER_TYPE_LAVF:
 	    return demux_lavf_control(demuxer, cmd, arg);
 #endif
-#ifdef _XBOX
-    case DEMUXER_TYPE_MOV:
-	    return demux_mov_control(demuxer, cmd, arg);
-#endif
+        case DEMUXER_TYPE_MOV:
+  	    return demux_mov_control(demuxer, cmd, arg);
 
 	default:
 	    return DEMUXER_CTRL_NOTIMPL;
@@ -1706,19 +1712,20 @@ int demux_control(demuxer_t *demuxer, int cmd, void *arg) {
 
 
 
-unsigned long demuxer_get_time_length(demuxer_t *demuxer){
-    unsigned long get_time_ans;
+unsigned long demuxer_get_time_length(demuxer_t *demuxer){     
+    unsigned long get_time_ans;     
     if (demux_control(demuxer, DEMUXER_CTRL_GET_TIME_LENGTH,(void *)&get_time_ans)<=0)  {
-        get_time_ans=0;
+        get_time_ans=0;     
     }
     return get_time_ans;
 }
 
-int demuxer_get_percent_pos(demuxer_t *demuxer){
-    int ans;
-    if (demux_control(demuxer, DEMUXER_CTRL_GET_PERCENT_POS, &ans)<=0)  {
-        ans=0;
-    }
+int demuxer_get_percent_pos(demuxer_t *demuxer){     
+    int ans = 0;
+    int res = demux_control(demuxer, DEMUXER_CTRL_GET_PERCENT_POS, &ans);
+    int len = (demuxer->movi_end - demuxer->movi_start) / 100;
+    if (res == DEMUXER_CTRL_NOTIMPL && len > 0)
+      ans = (demuxer->filepos - demuxer->movi_start) / len;
     if (ans>100 || ans<0) ans=0;
     return ans;
 }

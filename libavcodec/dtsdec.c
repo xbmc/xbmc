@@ -361,12 +361,14 @@ dts_decode_init (AVCodecContext *avctx)
 static int
 dts_decode_end (AVCodecContext *s)
 {
+#ifdef _XBOX
   //hack because libdts does not clean itself
   if(s->priv_data) {
   	if(dts_samples(s->priv_data)) free(dts_samples(s->priv_data));
   	free(s->priv_data);
   	s->priv_data = NULL;
 	}
+#endif
   
   return 0;
 }
@@ -375,7 +377,11 @@ AVCodec dts_decoder = {
   "dts", 
   CODEC_TYPE_AUDIO,
   CODEC_ID_DTS,
-  0,//sizeof (dts_state_t *), //libdts alloc its own priv data
+#ifdef _XBOX
+	0,//libdts alloc its own priv data
+#else
+  sizeof (dts_state_t *),
+#endif
   dts_decode_init,
   NULL,
   dts_decode_end,

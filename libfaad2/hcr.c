@@ -144,7 +144,7 @@ typedef struct
 
 #define segmentWidth( codebook )	min( maxCwLen[codebook], ics->length_of_longest_codeword )
      
-uint8_t reordered_spectral_data(faacDecHandle hDecoder, ic_stream *ics, bitfile *ld,
+uint8_t reordered_spectral_data(NeAACDecHandle hDecoder, ic_stream *ics, bitfile *ld,
                                 int16_t *spectral_data)
 {
     uint16_t sp_offset[8];

@@ -28,10 +28,10 @@
 #include "video_out.h"
 #include "video_out_internal.h"
 #include "fastmemcpy.h"
-#include "../input/input.h"
-#include "../osdep/keycodes.h"
-#include "../input/mouse.h"
-#include "../mp_msg.h"
+#include "input/input.h"
+#include "osdep/keycodes.h"
+#include "input/mouse.h"
+#include "mp_msg.h"
 #include "aspect.h"
 #include "geometry.h"
 
@@ -51,6 +51,13 @@ void SetVideoFunctions(vo_functions_t* pFunctions)
 	video_out_directx.uninit=pFunctions->uninit;
 }
 #else
+#ifndef WM_XBUTTONDOWN
+# define WM_XBUTTONDOWN    0x020B
+# define WM_XBUTTONUP      0x020C
+# define WM_XBUTTONDBLCLK  0x020D
+#endif
+
+static LPDIRECTDRAWCOLORCONTROL	g_cc = NULL;		//color control interface
 static LPDIRECTDRAW7        g_lpdd = NULL;          //DirectDraw Object
 static LPDIRECTDRAWSURFACE7  g_lpddsPrimary = NULL;  //Primary Surface: viewport through the Desktop
 static LPDIRECTDRAWSURFACE7  g_lpddsOverlay = NULL;  //Overlay Surface
@@ -77,6 +84,7 @@ static COLORREF windowcolor = RGB(0,0,16);          //windowcolor == colorkey
 static int adapter_count=0;
 static GUID selected_guid;
 static GUID *selected_guid_ptr = NULL;
+static RECT monitor_rect;	                        //monitor coordinates 
 static float window_aspect;
 
 extern void mplayer_put_key(int code);              //let mplayer handel the keyevents 
@@ -85,7 +93,10 @@ extern int vo_doublebuffering;                      //tribblebuffering
 extern int vo_fs;
 extern int vo_directrendering;
 extern int vo_ontop;
+extern int vo_rootwin;
 extern int vidmode;
+extern int vo_colorkey;
+extern int WinID;
 
 /*****************************************************************************
  * DirectDraw GUIDs.
@@ -96,6 +107,12 @@ static const GUID IID_IDirectDraw7 =
 {
 	0x15e65ec0,0x3b9c,0x11d2,{0xb9,0x2f,0x00,0x60,0x97,0x97,0xea,0x5b}
 };
+
+static const GUID IID_IDirectDrawColorControl =
+{
+	0x4b9f0ee0,0x0d7e,0x11d0,{0x9b,0x06,0x00,0xa0,0xc9,0x03,0xa3,0xb8}
+}; 
+
 
 typedef struct directx_fourcc_caps
 {
@@ -321,6 +338,11 @@ static uint32_t Directx_CreateBackpuffer()
 
 static void uninit(void)
 {
+	if (g_cc != NULL)
+	{
+		g_cc->lpVtbl->Release(g_cc);
+	}
+	g_cc=NULL;
 	if (g_lpddclipper != NULL) g_lpddclipper->lpVtbl->Release(g_lpddclipper);
 	g_lpddclipper = NULL;
 	mp_msg(MSGT_VO, MSGL_DBG3,"<vo_directx><INFO>clipper released\n");
@@ -364,12 +386,17 @@ static BOOL WINAPI EnumCallbackEx(GUID FAR *lpGUID, LPSTR lpDriverDescription, L
     }
     
     if(adapter_count == vo_adapter_num){
+        MONITORINFO mi;
         if (!lpGUID)
             selected_guid_ptr = NULL;
         else
         {
             selected_guid = *lpGUID;
             selected_guid_ptr = &selected_guid;
+        }
+        mi.cbSize = sizeof(mi);
+        if (GetMonitorInfo(hm, &mi)) {
+			monitor_rect = mi.rcMonitor;
         }
         mp_msg(MSGT_VO, MSGL_INFO ,"\t\t<--");
     }
@@ -499,6 +526,17 @@ static uint32_t Directx_ManageDisplay()
       rd.top=(vo_screenheight-height)/2;
       if(ShowCursor(FALSE)>=0)while(ShowCursor(FALSE)>=0){}
     }
+    else if (WinID != -1 && vo_geometry) {
+      POINT pt;
+      pt.x = vo_dx;
+      pt.y = vo_dy;
+      ClientToScreen(hWnd,&pt);  
+      width=d_image_width;
+      height=d_image_height;
+      rd.left = pt.x;
+      rd.top = pt.y;
+      while(ShowCursor(TRUE)<=0){}
+    }
     else {
       POINT pt;
       pt.x = 0;  //overlayposition relative to the window
@@ -507,6 +545,10 @@ static uint32_t Directx_ManageDisplay()
       GetClientRect(hWnd, &rd);
 	  width=rd.right - rd.left;
 	  height=rd.bottom - rd.top;
+      pt.x -= monitor_rect.left;    /* move coordinates from global to local monitor space */
+      pt.y -= monitor_rect.top;
+      rd.right -= monitor_rect.left;
+      rd.bottom -= monitor_rect.top;
 	  rd.left = pt.x;
       rd.top = pt.y; 
       if(!nooverlay && (!width || !height)){
@@ -609,19 +651,22 @@ static uint32_t Directx_ManageDisplay()
 	}
     else
     {
-        g_lpddclipper->lpVtbl->SetHWnd(g_lpddclipper, 0,vo_fs?hWndFS: hWnd);
+        g_lpddclipper->lpVtbl->SetHWnd(g_lpddclipper, 0,(vo_fs && !vidmode)?hWndFS: hWnd);
     }       
 	
     if(!vidmode && !vo_fs){
+      if(WinID == -1) {
           RECT rdw=rd;
           AdjustWindowRect(&rdw,WS_OVERLAPPEDWINDOW|WS_SIZEBOX,FALSE);
 //          printf("window: %i %i %ix%i\n",rdw.left,rdw.top,rdw.right - rdw.left,rdw.bottom - rdw.top);      
-          SetWindowPos(hWnd,(vo_ontop)?HWND_TOPMOST:HWND_NOTOPMOST,rdw.left,rdw.top,rdw.right-rdw.left,rdw.bottom-rdw.top,SWP_NOOWNERZORDER); 
+		  rdw.left += monitor_rect.left; /* move to global coordinate space */
+          rdw.top += monitor_rect.top;
+		  rdw.right += monitor_rect.left;
+		  rdw.bottom += monitor_rect.top;
+          SetWindowPos(hWnd,(vo_ontop)?HWND_TOPMOST:(vo_rootwin?HWND_BOTTOM:HWND_NOTOPMOST),rdw.left,rdw.top,rdw.right-rdw.left,rdw.bottom-rdw.top,SWP_NOOWNERZORDER); 
+      }
     }
-    else SetWindowPos(hWndFS,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOOWNERZORDER);
-
-  	/*for nonoverlay mode we are finished, for overlay mode we have to display the overlay first*/
-	if(nooverlay)return 0;
+    else SetWindowPos(vidmode?hWnd:hWndFS,vo_rootwin?HWND_BOTTOM:HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOOWNERZORDER);
 
     /*make sure the overlay is inside the screen*/
     if(rd.left<0)rd.left=0;
@@ -629,6 +674,8 @@ static uint32_t Directx_ManageDisplay()
     if(rd.top<0)rd.top=0;
     if(rd.bottom>vo_screenheight)rd.bottom=vo_screenheight;
     
+  	/*for nonoverlay mode we are finished, for overlay mode we have to display the overlay first*/
+	if(nooverlay)return 0;
 	
 //    printf("overlay: %i %i %ix%i\n",rd.left,rd.top,rd.right - rd.left,rd.bottom - rd.top);
 	ddrval = g_lpddsOverlay->lpVtbl->UpdateOverlay(g_lpddsOverlay,&rs, g_lpddsPrimary, &rd, dwUpdateFlags, &ovfx);
@@ -838,7 +885,7 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 			//printf("Windowposchange\n");
 			if(g_lpddsBack != NULL)  //or it will crash with -vm
 			{
-				Directx_ManageDisplay(0,0);
+				Directx_ManageDisplay();
 			}
 		    break;
 		}
@@ -922,6 +969,16 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 				mplayer_put_key(MOUSE_BTN4);
 			break;
 		}
+        case WM_XBUTTONDOWN:
+		{
+			if (vo_nomouse_input)
+				break;
+			if (HIWORD(wParam) == 1)
+				mplayer_put_key(MOUSE_BTN5);
+			else
+				mplayer_put_key(MOUSE_BTN6);
+			break;
+		}
 		
     }
 	return DefWindowProc(hWnd, message, wParam, lParam);
@@ -948,6 +1005,10 @@ static uint32_t preinit(const char *arg)
         mplayericon = ExtractIcon( hInstance, exedir, 0 );
   	}
     if(!mplayericon)mplayericon=LoadIcon(NULL,IDI_APPLICATION);
+    monitor_rect.right=GetSystemMetrics(SM_CXSCREEN);
+    monitor_rect.bottom=GetSystemMetrics(SM_CYSCREEN);
+	
+    windowcolor = vo_colorkey;
     wc.style         =  CS_HREDRAW | CS_VREDRAW;
     wc.lpfnWndProc   =  WndProc;
     wc.cbClsExtra    =  0;
@@ -956,19 +1017,23 @@ static uint32_t preinit(const char *arg)
     wc.hCursor       =  LoadCursor(NULL,IDC_ARROW);
     wc.hIcon         =  mplayericon;
     wc.hbrBackground =  CreateSolidBrush(vidmode?RGB(0,0,0):windowcolor);
-    wc.lpszClassName =  "Mplayer - Movieplayer for Linux";
+    wc.lpszClassName =  "MPlayer - The Movie Player";
     wc.lpszMenuName  =  NULL;
     RegisterClass(&wc);
+    if (WinID != -1) hWnd = WinID;
+    else
     hWnd = CreateWindowEx(vidmode?WS_EX_TOPMOST:0,
-        "MPlayer - Movieplayer for Linux","",(vidmode)?WS_POPUP:WS_OVERLAPPEDWINDOW| WS_SIZEBOX,
+        "MPlayer - The Movie Player","",(vidmode)?WS_POPUP:WS_OVERLAPPEDWINDOW| WS_SIZEBOX,
         CW_USEDEFAULT, CW_USEDEFAULT, 100, 100,NULL,NULL,hInstance,NULL);
 	wc.hbrBackground = CreateSolidBrush(RGB(0,0,0));                     
     wc.lpszClassName = "MPlayer - Fullscreen";
     RegisterClass(&wc);
-    hWndFS = CreateWindow("MPlayer - Fullscreen","MPlayer Fullscreen",WS_POPUP,0,0,GetSystemMetrics(SM_CXSCREEN),GetSystemMetrics(SM_CYSCREEN),hWnd,NULL,hInstance,NULL);			
-    mp_msg(MSGT_VO, MSGL_DBG3 ,"<vo_directx><INFO>initial mplayer windows created\n");
 	
 	if (Directx_InitDirectDraw()!= 0)return 1;          //init DirectDraw
+	
+    if(!vidmode)hWndFS = CreateWindow("MPlayer - Fullscreen","MPlayer Fullscreen",WS_POPUP,monitor_rect.left,monitor_rect.top,monitor_rect.right-monitor_rect.left,monitor_rect.bottom-monitor_rect.top,hWnd,NULL,hInstance,NULL);			
+    mp_msg(MSGT_VO, MSGL_DBG3 ,"<vo_directx><INFO>initial mplayer windows created\n");
+    
     if (Directx_CheckPrimaryPixelformat()!=0)return 1;
 	if (!nooverlay && Directx_CheckOverlayPixelformats() == 0)        //check for supported hardware
 	{
@@ -1109,6 +1174,8 @@ static uint32_t put_image(mp_image_t *mpi){
 	uint32_t y = mpi->y;
 	uint32_t w = mpi->w;
 	uint32_t h = mpi->h;
+
+    if (WinID != -1) Directx_ManageDisplay();
    
     if((mpi->flags&MP_IMGFLAG_DIRECT)||(mpi->flags&MP_IMGFLAG_DRAW_CALLBACK)) 
 	{
@@ -1159,16 +1226,16 @@ static uint32_t put_image(mp_image_t *mpi){
 static uint32_t
 config(uint32_t width, uint32_t height, uint32_t d_width, uint32_t d_height, uint32_t options, char *title, uint32_t format)
 {
-	vo_screenwidth = GetSystemMetrics(SM_CXSCREEN);
-	vo_screenheight = GetSystemMetrics(SM_CYSCREEN);
-    vo_fs = options & 0x01;
     RECT rd;
+    vo_screenwidth = monitor_rect.right - monitor_rect.left;
+    vo_screenheight = monitor_rect.bottom - monitor_rect.top;
+    vo_fs = options & 0x01;
 	image_format =  format;
 	image_width = width;
 	image_height = height;
 	d_image_width = d_width;
 	d_image_height = d_height;
-    nooverlay = 0;
+    if(format != primary_image_format)nooverlay = 0;
     aspect_save_orig(image_width,image_height);
     aspect_save_prescale(d_image_width,d_image_height);
     if(vidmode){
@@ -1190,16 +1257,21 @@ config(uint32_t width, uint32_t height, uint32_t d_width, uint32_t d_height, uin
             vo_dx=rd.left;
             vo_dy=rd.top;
         }
+        vo_dx += monitor_rect.left; /* move position to global window space */
+        vo_dy += monitor_rect.top;
         rd.left = vo_dx;
         rd.top = vo_dy;
         rd.right = rd.left + d_image_width;
         rd.bottom = rd.top + d_image_height;
+        if (WinID == -1) {
         AdjustWindowRect(&rd,WS_OVERLAPPEDWINDOW|WS_SIZEBOX,FALSE);  
         SetWindowPos(hWnd,NULL, vo_dx, vo_dy,rd.right-rd.left,rd.bottom-rd.top,SWP_SHOWWINDOW|SWP_NOOWNERZORDER); 
+        }
     }
     else ShowWindow(hWnd,SW_SHOW); 
      
     if(vo_fs && !vidmode)ShowWindow(hWndFS,SW_SHOW);   
+	if (WinID == -1)
 	SetWindowText(hWnd,title);
     
     
@@ -1243,6 +1315,9 @@ config(uint32_t width, uint32_t height, uint32_t d_width, uint32_t d_height, uin
         if(g_lpddclipper->lpVtbl->SetHWnd (g_lpddclipper, 0, hWnd)!= DD_OK){mp_msg(MSGT_VO, MSGL_FATAL,"<vo_directx><FATAL ERROR>can't associate clipper with window\n");return 1;}
         if(g_lpddsPrimary->lpVtbl->SetClipper (g_lpddsPrimary,g_lpddclipper)!=DD_OK){mp_msg(MSGT_VO, MSGL_FATAL,"<vo_directx><FATAL ERROR>can't associate primary surface with clipper\n");return 1;}
 	    mp_msg(MSGT_VO, MSGL_DBG3,"<vo_directx><INFO>clipper succesfully created\n");
+	}else{
+		if(DD_OK != g_lpddsOverlay->lpVtbl->QueryInterface(g_lpddsOverlay,&IID_IDirectDrawColorControl,(void**)&g_cc))
+			mp_msg(MSGT_VO, MSGL_V,"<vo_directx><WARN>unable to get DirectDraw ColorControl interface\n");
 	}
 	Directx_ManageDisplay();
 	memset(&ddsdsf, 0,sizeof(DDSURFACEDESC2));
@@ -1251,6 +1326,81 @@ config(uint32_t width, uint32_t height, uint32_t d_width, uint32_t d_height, uin
 	dstride = ddsdsf.lPitch;
     image = ddsdsf.lpSurface;
 	return 0;
+}
+
+//function to set color controls
+//  brightness	[0, 10000]
+//  contrast	[0, 20000]
+//  hue		[-180, 180]
+//  saturation	[0, 20000]
+static uint32_t color_ctrl_set(char *what, int value)
+{
+	uint32_t	r = VO_NOTIMPL;
+	DDCOLORCONTROL	dcc;
+	//printf("\n*** %s = %d\n", what, value);
+	if (!g_cc) {
+		//printf("\n *** could not get color control interface!!!\n");
+		return VO_NOTIMPL;
+	}
+	ZeroMemory(&dcc, sizeof(dcc));
+	dcc.dwSize = sizeof(dcc);
+
+	if (!strcmp(what, "brightness")) {
+		dcc.dwFlags = DDCOLOR_BRIGHTNESS;
+		dcc.lBrightness = (value + 100) * 10000 / 200;
+		r = VO_TRUE;
+	} else if (!strcmp(what, "contrast")) {
+		dcc.dwFlags = DDCOLOR_CONTRAST;
+		dcc.lContrast = (value + 100) * 20000 / 200;
+		r = VO_TRUE;
+	} else if (!strcmp(what, "hue")) {
+		dcc.dwFlags = DDCOLOR_HUE;
+		dcc.lHue = value * 180 / 100;
+		r = VO_TRUE;
+	} else if (!strcmp(what, "saturation")) {
+		dcc.dwFlags = DDCOLOR_SATURATION;
+		dcc.lSaturation = (value + 100) * 20000 / 200;
+		r = VO_TRUE;
+	}
+	
+	if (r == VO_TRUE) {
+		g_cc->lpVtbl->SetColorControls(g_cc, &dcc);
+	}
+	return r;
+}
+
+//analoguous to color_ctrl_set
+static uint32_t color_ctrl_get(char *what, int *value)
+{
+	uint32_t	r = VO_NOTIMPL;
+	DDCOLORCONTROL	dcc;
+	if (!g_cc) {
+		//printf("\n *** could not get color control interface!!!\n");
+		return VO_NOTIMPL;
+	}
+	ZeroMemory(&dcc, sizeof(dcc));
+	dcc.dwSize = sizeof(dcc);
+
+	if (g_cc->lpVtbl->GetColorControls(g_cc, &dcc) != DD_OK) {
+		return r;
+	}
+
+	if (!strcmp(what, "brightness") && (dcc.dwFlags & DDCOLOR_BRIGHTNESS)) {
+		*value = dcc.lBrightness * 200 / 10000 - 100;
+		r = VO_TRUE;
+	} else if (!strcmp(what, "contrast") && (dcc.dwFlags & DDCOLOR_CONTRAST)) {
+		*value = dcc.lContrast * 200 / 20000 - 100;
+		r = VO_TRUE;
+	} else if (!strcmp(what, "hue") && (dcc.dwFlags & DDCOLOR_HUE)) {
+		*value = dcc.lHue * 100 / 180;
+		r = VO_TRUE;
+	} else if (!strcmp(what, "saturation") && (dcc.dwFlags & DDCOLOR_SATURATION)) {
+		*value = dcc.lSaturation * 200 / 20000 - 100;
+		r = VO_TRUE;
+	}
+//	printf("\n*** %s = %d\n", what, *value);
+	
+	return r;
 }
 
 static uint32_t control(uint32_t request, void *data, ...)
@@ -1264,6 +1414,7 @@ static uint32_t control(uint32_t request, void *data, ...)
 	case VOCTRL_DRAW_IMAGE:
         return put_image(data);
     case VOCTRL_ONTOP:
+			if(WinID != -1) return VO_TRUE;
 	        if(vidmode)
 			{
 				mp_msg(MSGT_VO, MSGL_ERR,"<vo_directx><ERROR>ontop has no meaning in exclusive mode\n");
@@ -1275,6 +1426,19 @@ static uint32_t control(uint32_t request, void *data, ...)
 				Directx_ManageDisplay();
 			}
 		return VO_TRUE;
+    case VOCTRL_ROOTWIN:
+			if(WinID != -1) return VO_TRUE;
+	        if(vidmode)
+			{
+				mp_msg(MSGT_VO, MSGL_ERR,"<vo_directx><ERROR>rootwin has no meaning in exclusive mode\n");
+			}
+	        else
+			{
+				if(vo_rootwin) vo_rootwin = 0;
+				else vo_rootwin = 1;
+				Directx_ManageDisplay();
+			}
+		return VO_TRUE;
     case VOCTRL_FULLSCREEN:
 		{
 	        if(vidmode)
@@ -1283,13 +1447,41 @@ static uint32_t control(uint32_t request, void *data, ...)
 			}
 	        else
 			{
-			    if(!vo_fs){vo_fs=1;ShowWindow(hWndFS,SW_SHOW);}  
-                else {vo_fs=0; ShowWindow(hWndFS,SW_HIDE);}  
+			    if(!vo_fs)
+				{
+					vo_fs=1;
+					ShowWindow(hWndFS,SW_SHOW);
+					ShowWindow(hWnd,SW_HIDE);
+				}
+                else
+				{
+					vo_fs=0;
+					ShowWindow(hWndFS,SW_HIDE);
+					ShowWindow(hWnd,SW_SHOW);
+				}  
 				Directx_ManageDisplay();
                 break;				
 			}
 		    return VO_TRUE;
 		}
+	case VOCTRL_SET_EQUALIZER: {
+		va_list	ap;
+		int	value;
+		
+		va_start(ap, data);
+		value = va_arg(ap, int);
+		va_end(ap);
+		return color_ctrl_set(data, value);
+	}
+	case VOCTRL_GET_EQUALIZER: {
+		va_list	ap;
+		int	*value;
+		
+		va_start(ap, data);
+		value = va_arg(ap, int*);
+		va_end(ap);
+		return color_ctrl_get(data, value);
+	}
     };
     return VO_NOTIMPL;
 }

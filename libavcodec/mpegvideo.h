@@ -50,7 +50,7 @@ enum OutputFormat {
 
 #define MAX_THREADS 8
 
-#define MAX_PICTURE_COUNT 15
+#define MAX_PICTURE_COUNT 32
 
 #define ME_MAP_SIZE 64
 #define ME_MAP_SHIFT 3
@@ -263,7 +263,7 @@ typedef struct MpegEncContext {
     int h263_msmpeg4; ///< generate MSMPEG4 compatible stream (deprecated, use msmpeg4_version instead)
     int h263_flv;     ///< use flv h263 header 
     
-    int codec_id;     /* see CODEC_ID_xxx */
+    enum CodecID codec_id;     /* see CODEC_ID_xxx */
     int fixed_qscale; ///< fixed qscale if non zero 
     int encoding;     ///< true if we are encoding (vs decoding) 
     int flags;        ///< AVCodecContext.flags (HQ, MV4, ...) 
@@ -369,8 +369,6 @@ typedef struct MpegEncContext {
     int last_non_b_pict_type;   ///< used for mpeg4 gmc b-frames & ratecontrol 
     int dropable;
     int frame_rate_index;
-    int frame_rate_ext_n;       ///< MPEG-2 specific framerate modificators (numerator)
-    int frame_rate_ext_d;       ///< MPEG-2 specific framerate modificators (denominator)
 
     /* motion compensation */
     int unrestricted_mv;        ///< mv can point outside of the coded picture 
@@ -775,15 +773,17 @@ extern enum PixelFormat ff_yuv420p_list[2];
 void ff_init_block_index(MpegEncContext *s);
 
 static inline void ff_update_block_index(MpegEncContext *s){
+    const int block_size= 8>>s->avctx->lowres;
+
     s->block_index[0]+=2;
     s->block_index[1]+=2;
     s->block_index[2]+=2;
     s->block_index[3]+=2;
     s->block_index[4]++;
     s->block_index[5]++;
-    s->dest[0]+= 16;
-    s->dest[1]+= 8;
-    s->dest[2]+= 8;
+    s->dest[0]+= 2*block_size;
+    s->dest[1]+= block_size;
+    s->dest[2]+= block_size;
 }
 
 static inline int get_bits_diff(MpegEncContext *s){
@@ -806,7 +806,11 @@ void ff_fix_long_mvs(MpegEncContext * s, uint8_t *field_select_table, int field_
                      int16_t (*mv_table)[2], int f_code, int type, int truncate);
 void ff_init_me(MpegEncContext *s);
 int ff_pre_estimate_p_frame_motion(MpegEncContext * s, int mb_x, int mb_y);
-
+inline int ff_epzs_motion_search(MpegEncContext * s, int *mx_ptr, int *my_ptr,
+                             int P[10][2], int src_index, int ref_index, int16_t (*last_mv)[2], 
+                             int ref_mv_scale, int size, int h);                             
+int inline ff_get_mb_score(MpegEncContext * s, int mx, int my, int src_index,
+                               int ref_index, int size, int h, int add_rate);
 
 /* mpeg12.c */
 extern const int16_t ff_mpeg1_default_intra_matrix[64];
@@ -837,8 +841,8 @@ typedef struct RLTable {
     RL_VLC_ELEM *rl_vlc[32];       ///< decoding only 
 } RLTable;
 
-void init_rl(RLTable *rl);
-void init_vlc_rl(RLTable *rl);
+void init_rl(RLTable *rl, int use_static);
+void init_vlc_rl(RLTable *rl, int use_static);
 
 static inline int get_rl_index(const RLTable *rl, int last, int run, int level)
 {
@@ -858,6 +862,15 @@ extern const int16_t ff_mpeg4_default_intra_matrix[64];
 extern const int16_t ff_mpeg4_default_non_intra_matrix[64];
 extern const uint8_t ff_h263_chroma_qscale_table[32];
 extern const uint8_t ff_h263_loop_filter_strength[32];
+
+/* h261.c */
+void ff_h261_loop_filter(MpegEncContext *s);
+void ff_h261_reorder_mb_index(MpegEncContext* s);
+void ff_h261_encode_mb(MpegEncContext *s,
+                    DCTELEM block[6][64],
+                    int motion_x, int motion_y);
+void ff_h261_encode_picture_header(MpegEncContext * s, int picture_number);
+void ff_h261_encode_init(MpegEncContext *s);
 
 
 /* h263.c, h263dec.c */
@@ -920,6 +933,7 @@ int ff_mpeg4_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size);
 /* rv10.c */
 void rv10_encode_picture_header(MpegEncContext *s, int picture_number);
 int rv_decode_dc(MpegEncContext *s, int n);
+void rv20_encode_picture_header(MpegEncContext *s, int picture_number);
 
 
 /* msmpeg4.c */

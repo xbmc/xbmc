@@ -30,7 +30,7 @@ static ad_info_t info =  {
 
 LIBAD_EXTERN(qtaudio)
 
-#ifdef USE_QTX_CODECS
+#if defined(USE_QTX_CODECS) && !defined(MACOSX)
 typedef struct OpaqueSoundConverter*    SoundConverter;
 typedef unsigned long                   OSType;
 typedef unsigned long                   UnsignedFixed;
@@ -92,7 +92,7 @@ static int loader_init()
     Setup_LDT_Keeper();
 #endif
     qtml_dll = LoadLibraryA("qtmlClient.dll");
-    if( qtml_dll == NULL )
+    if( qtml_dll == (HMODULE)NULL )
     {
         mp_msg(MSGT_DECAUDIO,MSGL_ERR,"failed loading dll\n" );
 	return 1;
@@ -180,8 +180,10 @@ static int preinit(sh_audio_t *sh){
     mp_msg(MSGT_DECAUDIO,MSGL_DBG2,"loader_init DONE!\n");
 
     error = InitializeQTML(6+16);
-    mp_msg(MSGT_DECAUDIO,MSGL_DBG2,"InitializeQTML:%i\n",error);
-    if(error) return 0;
+    if(error){
+        mp_msg(MSGT_DECAUDIO,MSGL_ERR,"InitializeQTML:%i\n",error);
+        return 0;
+    }
 #endif
     
 #if 1

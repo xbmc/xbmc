@@ -3,8 +3,9 @@
 
 #include "aviheader.h"
 #include "ms_hdr.h"
+#ifdef _XBOX
 #include "aiff.h"
-
+#endif
 // Stream headers:
 
 typedef struct {
@@ -42,8 +43,10 @@ typedef struct {
   // win32-compatible codec parameters:
   AVIStreamHeader audio;
   WAVEFORMATEX* wf;
+#ifdef _XBOX
   // aiff codec parameters:
   AIFF_HEADER *ah;
+#endif
   // codec-specific:
   void* context; // codec-specific stuff (usually HANDLE or struct pointer)
   unsigned char* codecdata; // extra header data passed from demuxer to codec

@@ -32,15 +32,18 @@
 #include "video_out.h"
 #include "video_out_internal.h"
 
+#include "mp_msg.h"
+#include "help_mp.h"
+
 #include "sub.h"
 
 #include "fastmemcpy.h"
-#include "../postproc/rgb2rgb.h"
-#include "../libmpcodecs/vf_scale.h"
+#include "postproc/rgb2rgb.h"
+#include "libmpcodecs/vf_scale.h"
 
 static vo_info_t info = 
 {
-	"yuv4mpeg output for mjpegtools (to \"stream.yuv\")",
+	"yuv4mpeg output for mjpegtools",
 	"yuv4mpeg",
 	"Robert Kesterson <robertk@robertk.com>",
 	""
@@ -48,8 +51,9 @@ static vo_info_t info =
 
 LIBVO_EXTERN (yuv4mpeg)
 
-static int image_width;
-static int image_height;
+static int image_width = 0;
+static int image_height = 0;
+static float image_fps = 0;
 
 static uint8_t *image = NULL;
 static uint8_t *image_y = NULL;
@@ -58,6 +62,8 @@ static uint8_t *image_v = NULL;
 
 static uint8_t *rgb_buffer = NULL;
 static uint8_t *rgb_line_buffer = NULL;
+
+static char *yuv_filename = NULL;
 
 static int using_format = 0;
 static FILE *yuv_out;
@@ -75,32 +81,47 @@ static uint32_t config(uint32_t width, uint32_t height, uint32_t d_width,
        uint32_t d_height, uint32_t fullscreen, char *title, 
        uint32_t format)
 {
+	if (image_width == width && image_height == height &&
+	     image_fps == vo_fps && vo_config_count)
+	  return 0;
+	if (vo_config_count) {
+	  mp_msg(MSGT_VO, MSGL_WARN,
+	    "Video formats differ (w:%i=>%i, h:%i=>%i, fps:%f=>%f), "
+	    "restarting output.\n",
+	    image_width, width, image_height, height, image_fps, vo_fps);
+	  uninit();
+	}
 	image_height = height;
 	image_width = width;
+	image_fps = vo_fps;
 	using_format = format;
 
 	if (Y4M_IS_INTERLACED)
 	{
 		if (height % 4)
 		{
-			perror("yuv4mpeg: Interlaced mode requires image height to be divisable by 4");
+			mp_msg(MSGT_VO,MSGL_FATAL,
+				MSGTR_VO_YUV4MPEG_InterlacedHeightDivisibleBy4);
 			return -1;
 		}
 		
 		rgb_line_buffer = malloc(image_width * 3);
 		if (!rgb_line_buffer)
 		{
-			perror("yuv4mpeg: Unable to allocate line buffer for interlaced mode");
+			mp_msg(MSGT_VO,MSGL_FATAL,
+				MSGTR_VO_YUV4MPEG_InterlacedLineBufAllocFail);
 			return -1;
 		}
 		
 		if (using_format == IMGFMT_YV12)
-			printf("yuv4mpeg: WARNING: Input not RGB; Can't seperate chrominance by fields!\n");
+			mp_msg(MSGT_VO,MSGL_WARN,
+				MSGTR_VO_YUV4MPEG_InterlacedInputNotRGB);
 	}
 				
 	if (width % 2)
 	{
-		perror("yuv4mpeg: Image width must be divisable by 2");
+		mp_msg(MSGT_VO,MSGL_FATAL,
+			MSGTR_VO_YUV4MPEG_WidthDivisibleBy2);
 		return -1;
 	}	
 	
@@ -110,7 +131,8 @@ static uint32_t config(uint32_t width, uint32_t height, uint32_t d_width,
 		rgb_buffer = malloc(image_width * image_height * 3);
 		if (!rgb_buffer)
 		{
-			perror("yuv4mpeg: Not enough memory to allocate RGB framebuffer");
+			mp_msg(MSGT_VO,MSGL_FATAL,
+				MSGTR_VO_YUV4MPEG_NoMemRGBFrameBuf);
 			return -1;
 		}
 	}
@@ -118,10 +140,12 @@ static uint32_t config(uint32_t width, uint32_t height, uint32_t d_width,
 	write_bytes = image_width * image_height * 3 / 2;
 	image = malloc(write_bytes);
 
-	yuv_out = fopen("stream.yuv", "wb");
+	yuv_out = fopen(yuv_filename ? yuv_filename : "stream.yuv", "wb");
 	if (!yuv_out || image == 0) 
 	{
-		perror("yuv4mpeg: Can't get memory or file handle to write stream.yuv");
+		mp_msg(MSGT_VO,MSGL_FATAL,
+			MSGTR_VO_YUV4MPEG_OutFileOpenError,
+			yuv_filename ? yuv_filename : "stream.yuv");
 		return -1;
 	}
 	image_y = image;
@@ -134,7 +158,7 @@ static uint32_t config(uint32_t width, uint32_t height, uint32_t d_width,
 
 	/* At least the interlacing is ok now */
 	fprintf(yuv_out, "YUV4MPEG2 W%d H%d F%ld:%ld I%c A0:0\n", 
-			image_width, image_height, (long)(vo_fps * 1000000.0), 
+			image_width, image_height, (long)(image_fps * 1000000.0), 
 			(long)1000000, config_interlace);
 
 	fflush(yuv_out);
@@ -220,7 +244,8 @@ static void deinterleave_fields(uint8_t *ptr, const int stride,
 static void vo_y4m_write(const void *ptr, const size_t num_bytes)
 {
 	if (fwrite(ptr, 1, num_bytes, yuv_out) != num_bytes)
-		perror("yuv4mpeg: Error writing image to output!");
+		mp_msg(MSGT_VO,MSGL_ERR,
+			MSGTR_VO_YUV4MPEG_OutFileWriteError);
 }
 
 static int write_last_frame(void)
@@ -435,6 +460,7 @@ static uint32_t query_format(uint32_t format)
 	return 0;
 }
 
+// WARNING: config(...) also uses this
 static void uninit(void)
 {
     if(image)
@@ -452,6 +478,13 @@ static void uninit(void)
 	if(rgb_line_buffer)
 		free(rgb_line_buffer);
 	rgb_line_buffer = NULL;
+
+	if (yuv_filename)
+		free(yuv_filename);
+	yuv_filename = NULL;
+	image_width = 0;
+	image_height = 0;
+	image_fps = 0;
 }
 
 
@@ -462,40 +495,57 @@ static void check_events(void)
 
 static uint32_t preinit(const char *arg)
 {
-    int arg_unrecognized = 0;
-
     if(arg) 
     {
-        /* configure output mode */
-	if (strcmp(arg, "interlaced"))
-            arg_unrecognized++;
-	else
-	    config_interlace = Y4M_ILACE_TOP_FIRST;
+	int parse_err = 0;
+	unsigned int parse_pos = 0;
 
-        if (strcmp(arg, "interlaced_bf"))
-            arg_unrecognized++;
-        else
-            config_interlace = Y4M_ILACE_BOTTOM_FIRST;
-
-        /* If both tests failed the argument is invalid */
-        if (arg_unrecognized == 2)
-        {
-	        printf("vo_yuv4mpeg: Unknown subdevice: %s\n", arg);
-			return ENOSYS;
+	while (arg[parse_pos] && !parse_err) {
+	    if (strncmp (&arg[parse_pos], "interlaced", 10) == 0) {
+		parse_pos += 10;
+		config_interlace = Y4M_ILACE_TOP_FIRST;
+	    }
+	    else if (strncmp (&arg[parse_pos], "interlaced_bf", 13) == 0) {
+		parse_pos += 13;
+		config_interlace = Y4M_ILACE_BOTTOM_FIRST;
+	    }
+	    else if (strncmp (&arg[parse_pos], "file=", 5) == 0) {
+		int file_len;
+		parse_pos += 5;
+		file_len = strcspn (&arg[parse_pos], ":");
+		if (file_len < 0) {
+		    parse_err = 1;
+		    break;
 		}
+		yuv_filename = malloc (file_len + 1);
+		memcpy (yuv_filename, &arg[parse_pos], file_len);
+		yuv_filename[file_len] = 0;
+		parse_pos += file_len;
+	    }
+	    if (arg[parse_pos] == ':') parse_pos++;
+	    else if (arg[parse_pos]) parse_err = 1;
+	}
+	if (parse_err) { 
+	    mp_msg(MSGT_VO,MSGL_FATAL, 
+		    MSGTR_VO_YUV4MPEG_UnknownSubDev,arg); 
+	    return -1;
+	}
     }
 
     /* Inform user which output mode is used */
     switch (config_interlace)
     {
         case Y4M_ILACE_TOP_FIRST:
-            printf("vo_yuv4mpeg: Interlaced output mode, top-field first\n");
+	    mp_msg(MSGT_VO,MSGL_STATUS,
+	    	    MSGTR_VO_YUV4MPEG_InterlacedTFFMode);
             break;
         case Y4M_ILACE_BOTTOM_FIRST:
-            printf("vo_yuv4mpeg: Interlaced output mode, bottom-field first\n");
+	    mp_msg(MSGT_VO,MSGL_STATUS,
+	    	    MSGTR_VO_YUV4MPEG_InterlacedBFFMode);
             break;
         default:
-            printf("vo_yuv4mpeg: Using (default) progressive frame mode\n");
+	    mp_msg(MSGT_VO,MSGL_STATUS,
+	    	    MSGTR_VO_YUV4MPEG_ProgressiveMode);
             break;
     }
     return 0;

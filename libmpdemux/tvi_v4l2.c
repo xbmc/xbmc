@@ -405,7 +405,7 @@ static int set_mute(priv_t *priv, int value)
 }
 
 /*
-** Mplayer uses values from -100 up to 100 for controls.
+** MPlayer uses values from -100 up to 100 for controls.
 ** Here they are scaled to what the tv card needs and applied.
 */
 static int set_control(priv_t *priv, struct v4l2_control *control, int val_signed) {
@@ -693,6 +693,22 @@ static int control(priv_t *priv, int cmd, void *arg)
 	    return TVI_CONTROL_FALSE;
 	}
 	return TVI_CONTROL_TRUE;
+    case TVI_CONTROL_SPC_GET_NORMID:
+	{
+	    int i;
+	    for (i = 0;; i++) {
+		struct v4l2_standard standard;
+		memset(&standard, 0, sizeof(standard));
+		standard.index = i;
+		if (-1 == ioctl(priv->video_fd, VIDIOC_ENUMSTD, &standard))
+		    return TVI_CONTROL_FALSE;
+		if (!strcasecmp(standard.name, (char *)arg)) {
+		    *(int *)arg = i;
+		    return TVI_CONTROL_TRUE;
+		}
+	    }
+	    return TVI_CONTROL_FALSE;
+	}
     case TVI_CONTROL_SPC_GET_INPUT:
 	if (ioctl(priv->video_fd, VIDIOC_G_INPUT, (int *)arg) < 0) {
 	    mp_msg(MSGT_TV, MSGL_ERR, "%s: ioctl get input failed: %s\n",
@@ -822,7 +838,7 @@ static int uninit(priv_t *priv)
     }
 
     /* stop audio thread */
-    if (!tv_param_noaudio) {
+    if (!tv_param_noaudio && !tv_param_immediate) {
 	pthread_join(priv->audio_grabber_thread, NULL);
 	pthread_mutex_destroy(&priv->skew_mutex);
     }

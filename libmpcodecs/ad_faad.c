@@ -71,11 +71,11 @@ static int init(sh_audio_t *sh)
     /* XXX: FAAD support FLOAT output, how do we handle
       * that (FAAD_FMT_FLOAT)? ::atmos
       */
-    if(sh->samplesize)
       switch(sh->samplesize){
 	case 1: // 8Bit
 	  mp_msg(MSGT_DECAUDIO,MSGL_WARN,"FAAD: 8Bit samplesize not supported by FAAD, assuming 16Bit!\n");
 	default:
+	  sh->samplesize=2;
 	case 2: // 16Bit
 	  faac_conf->outputFormat = FAAD_FMT_16BIT;
 	  break;
@@ -123,6 +123,7 @@ static int init(sh_audio_t *sh)
     mp_msg(MSGT_DECAUDIO,MSGL_V,"FAAD: Negotiated samplerate: %dHz  channels: %d\n", faac_samplerate, faac_channels);
     sh->channels = faac_channels;
     sh->samplerate = faac_samplerate;
+    sh->samplesize=2;
     //sh->o_bps = sh->samplesize*faac_channels*faac_samplerate;
     if(!sh->i_bps) {
       mp_msg(MSGT_DECAUDIO,MSGL_WARN,"FAAD: compressed input bitrate missing, assuming 128kbit/s!\n");
@@ -193,7 +194,8 @@ static int decode_audio(sh_audio_t *sh,unsigned char *buf,int minlen,int maxlen)
     }
 
     if(faac_finfo.error > 0) {
-      mp_msg(MSGT_DECAUDIO,MSGL_WARN,"FAAD: Trying to resync!\n");
+      mp_msg(MSGT_DECAUDIO,MSGL_WARN,"FAAD: error: %s, trying to resync!\n",
+              faacDecGetErrorMessage(faac_finfo.error));
       j++;
     } else
       break;

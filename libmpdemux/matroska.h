@@ -7,6 +7,8 @@
 #ifndef __MATROSKA_H
 #define __MATROSKA_H
 
+#include "demuxer.h"
+
 #define MKV_A_AAC_2MAIN  "A_AAC/MPEG2/MAIN"
 #define MKV_A_AAC_2LC    "A_AAC/MPEG2/LC"
 #define MKV_A_AAC_2SBR   "A_AAC/MPEG2/LC/SBR"
@@ -43,6 +45,8 @@
 #define MKV_V_SORENSONV3 "V_SORENSON/V3"
 #define MKV_V_CINEPAK    "V_CINEPAK"
 #define MKV_V_QUICKTIME  "V_QUICKTIME"
+#define MKV_V_MPEG1      "V_MPEG1"
+#define MKV_V_MPEG2      "V_MPEG2"
 
 #define MKV_S_TEXTASCII  "S_TEXT/ASCII"
 #define MKV_S_TEXTUTF8   "S_TEXT/UTF8"
@@ -60,5 +64,10 @@ typedef struct {
   unsigned int colors[4];
   int forced_subs_only;
 } mkv_sh_sub_t;
+
+int demux_mkv_num_subs(demuxer_t *demuxer);
+int demux_mkv_change_subs(demuxer_t *demuxer, int new_num);
+void demux_mkv_get_sub_lang(demuxer_t *demuxer, int track_num, char *lang,
+                            int maxlen);
 
 #endif /* __MATROSKA_H */

@@ -38,16 +38,16 @@ int XShmGetEventBase(Display *);
 #include "fastmemcpy.h"
 #include "sub.h"
 
-#include "../postproc/swscale.h"
-#include "../postproc/swscale_internal.h"       //FIXME
-#include "../postproc/rgb2rgb.h"
-#include "../libmpcodecs/vf_scale.h"
+#include "postproc/swscale.h"
+#include "postproc/swscale_internal.h"       //FIXME
+#include "postproc/rgb2rgb.h"
+#include "libmpcodecs/vf_scale.h"
 
-#include "../mp_msg.h"
+#include "mp_msg.h"
 
 #ifdef HAVE_NEW_GUI
-#include "../Gui/interface.h"
-#include "../mplayer.h"
+#include "Gui/interface.h"
+#include "mplayer.h"
 #endif
 
 static vo_info_t info = {
@@ -425,7 +425,6 @@ static uint32_t config(uint32_t width, uint32_t height, uint32_t d_width,
                                   vo_dwidth, vo_dheight);
         }
 
-        XFlush(mDisplay);
         XSync(mDisplay, False);
 
         // we cannot grab mouse events on root window :(
@@ -534,8 +533,6 @@ static uint32_t config(uint32_t width, uint32_t height, uint32_t d_width,
         return -1;
     }
 #endif
-
-    saver_off(mDisplay);
 
     if (vo_ontop)
         vo_x11_setlayer(mDisplay, vo_window, vo_ontop);
@@ -724,7 +721,6 @@ static void uninit(void)
         return;
 
     freeMyXImage();
-    saver_on(mDisplay);         // screen saver back on
 
 #ifdef HAVE_XF86VM
     vo_vm_close(mDisplay);

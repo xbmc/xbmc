@@ -27,7 +27,7 @@
 #include "common.h"
 #include "avcodec.h"
 #include "dsputil.h"
-#include "cabac.h"
+#include "rangecoder.h"
 #include "golomb.h"
 
 #define MAX_PLANES 4
@@ -164,7 +164,7 @@ typedef struct PlaneContext{
 
 typedef struct FFV1Context{
     AVCodecContext *avctx;
-    CABACContext c;
+    RangeCoder c;
     GetBitContext gb;
     PutBitContext pb;
     int version;
@@ -218,57 +218,52 @@ static inline int get_context(FFV1Context *f, int_fast16_t *src, int_fast16_t *l
         return f->quant_table[0][(L-LT) & 0xFF] + f->quant_table[1][(LT-T) & 0xFF] + f->quant_table[2][(T-RT) & 0xFF];
 }
 
-/**
- * put 
- */
-static inline void put_symbol(CABACContext *c, uint8_t *state, int v, int is_signed, int max_exp){
+static inline void put_symbol(RangeCoder *c, uint8_t *state, int v, int is_signed){
     int i;
 
     if(v){
         const int a= ABS(v);
         const int e= av_log2(a);
-
-        put_cabac(c, state+0, 0);
+        put_rac(c, state+0, 0);
         
+        assert(e<=9);
+
         for(i=0; i<e; i++){
-            put_cabac(c, state+1+i, 1);  //1..8
+            put_rac(c, state+1+i, 1);  //1..10
+        }
+        put_rac(c, state+1+i, 0);
+
+        for(i=e-1; i>=0; i--){
+            put_rac(c, state+22+i, (a>>i)&1); //22..31
         }
 
-        if(e<max_exp){
-            put_cabac(c, state+1+i, 0);      //1..8
-
-            for(i=e-1; i>=0; i--){
-                put_cabac(c, state+16+e+i, (a>>i)&1); //17..29
-            }
-            if(is_signed)
-                put_cabac(c, state+9 + e, v < 0); //9..16
-        }
+        if(is_signed)
+            put_rac(c, state+11 + e, v < 0); //11..21
     }else{
-        put_cabac(c, state+0, 1);
+        put_rac(c, state+0, 1);
     }
 }
 
-static inline int get_symbol(CABACContext *c, uint8_t *state, int is_signed, int max_exp){
-    if(get_cabac(c, state+0))
+static inline int get_symbol(RangeCoder *c, uint8_t *state, int is_signed){
+    if(get_rac(c, state+0))
         return 0;
     else{
-        int i, e;
- 
-        for(e=0; e<max_exp; e++){ 
-            int a= 1<<e;
-
-            if(get_cabac(c, state + 1 + e)==0){ // 1..8
-                for(i=e-1; i>=0; i--){
-                    a += get_cabac(c, state+16+e+i)<<i; //17..29
-                }
-
-                if(is_signed && get_cabac(c, state+9 + e)) //9..16
-                    return -a;
-                else
-                    return a;
-            }
+        int i, e, a;
+        e= 0;
+        while(get_rac(c, state+1 + e)){ //1..10
+            e++;
         }
-        return -(1<<e);
+        assert(e<=9);
+
+        a= 1;
+        for(i=e-1; i>=0; i--){
+            a += a + get_rac(c, state+22 + i); //22..31
+        }
+
+        if(is_signed && get_rac(c, state+11 + e)) //11..21
+            return -a;
+        else
+            return a;
     }
 }
 
@@ -324,10 +319,8 @@ static inline void put_vlc_symbol(PutBitContext *pb, VlcState * const state, int
      code= v ^ ((2*state->drift + state->count)>>31);
 #endif
     
-    code = -2*code-1;
-    code^= (code>>31);
 //printf("v:%d/%d bias:%d error:%d drift:%d count:%d k:%d\n", v, code, state->bias, state->error_sum, state->drift, state->count, k);
-    set_ur_golomb(pb, code, k, 12, bits);
+    set_sr_golomb(pb, code, k, 12, bits);
 
     update_vlc_state(state, v);
 }
@@ -344,12 +337,8 @@ static inline int get_vlc_symbol(GetBitContext *gb, VlcState * const state, int 
 
     assert(k<=8);
 
-    v= get_ur_golomb(gb, k, 12, bits);
+    v= get_sr_golomb(gb, k, 12, bits);
 //printf("v:%d bias:%d error:%d drift:%d count:%d k:%d", v, state->bias, state->error_sum, state->drift, state->count, k);
-
-    v++;
-    if(v&1) v=  (v>>1);
-    else    v= -(v>>1);
 
 #if 0 // JPEG LS
     if(k==0 && 2*state->drift <= - state->count) v ^= (-1);
@@ -366,7 +355,7 @@ static inline int get_vlc_symbol(GetBitContext *gb, VlcState * const state, int 
 
 static inline void encode_line(FFV1Context *s, int w, int_fast16_t *sample[2], int plane_index, int bits){
     PlaneContext * const p= &s->plane[plane_index];
-    CABACContext * const c= &s->c;
+    RangeCoder * const c= &s->c;
     int x;
     int run_index= s->run_index;
     int run_count=0;
@@ -386,7 +375,7 @@ static inline void encode_line(FFV1Context *s, int w, int_fast16_t *sample[2], i
         diff= fold(diff, bits);
         
         if(s->ac){
-            put_symbol(c, p->state[context], diff, 1, bits-1);
+            put_symbol(c, p->state[context], diff, 1);
         }else{
             if(context == 0) run_mode=1;
             
@@ -430,7 +419,7 @@ static inline void encode_line(FFV1Context *s, int w, int_fast16_t *sample[2], i
 
 static void encode_plane(FFV1Context *s, uint8_t *src, int w, int h, int stride, int plane_index){
     int x,y,i;
-    const int ring_size=2;
+    const int ring_size= s->avctx->context_model ? 3 : 2;
     int_fast16_t sample_buffer[ring_size][w+6], *sample[ring_size];
     s->run_index=0;
     
@@ -453,7 +442,7 @@ static void encode_plane(FFV1Context *s, uint8_t *src, int w, int h, int stride,
 
 static void encode_rgb_frame(FFV1Context *s, uint32_t *src, int w, int h, int stride){
     int x, y, p, i;
-    const int ring_size=2;
+    const int ring_size= s->avctx->context_model ? 3 : 2;
     int_fast16_t sample_buffer[3][ring_size][w+6], *sample[3][ring_size];
     s->run_index=0;
     
@@ -490,32 +479,35 @@ static void encode_rgb_frame(FFV1Context *s, uint32_t *src, int w, int h, int st
     }
 }
 
-static void write_quant_table(CABACContext *c, int16_t *quant_table){
+static void write_quant_table(RangeCoder *c, int16_t *quant_table){
     int last=0;
     int i;
-    uint8_t state[CONTEXT_SIZE]={0};
+    uint8_t state[CONTEXT_SIZE];
+    memset(state, 128, sizeof(state));
 
     for(i=1; i<128 ; i++){
         if(quant_table[i] != quant_table[i-1]){
-            put_symbol(c, state, i-last-1, 0, 7);
+            put_symbol(c, state, i-last-1, 0);
             last= i;
         }
     }
-    put_symbol(c, state, i-last-1, 0, 7);
+    put_symbol(c, state, i-last-1, 0);
 }
 
 static void write_header(FFV1Context *f){
-    uint8_t state[CONTEXT_SIZE]={0};
+    uint8_t state[CONTEXT_SIZE];
     int i;
-    CABACContext * const c= &f->c;
+    RangeCoder * const c= &f->c;
 
-    put_symbol(c, state, f->version, 0, 7);
-    put_symbol(c, state, f->avctx->coder_type, 0, 7);
-    put_symbol(c, state, f->colorspace, 0, 7); //YUV cs type 
-    put_cabac(c, state, 1); //chroma planes
-        put_symbol(c, state, f->chroma_h_shift, 0, 7);
-        put_symbol(c, state, f->chroma_v_shift, 0, 7);
-    put_cabac(c, state, 0); //no transparency plane
+    memset(state, 128, sizeof(state));
+    
+    put_symbol(c, state, f->version, 0);
+    put_symbol(c, state, f->avctx->coder_type, 0);
+    put_symbol(c, state, f->colorspace, 0); //YUV cs type 
+    put_rac(c, state, 1); //chroma planes
+        put_symbol(c, state, f->chroma_h_shift, 0);
+        put_symbol(c, state, f->chroma_v_shift, 0);
+    put_rac(c, state, 0); //no transparency plane
 
     for(i=0; i<5; i++)
         write_quant_table(c, f->quant_table[i]);
@@ -543,6 +535,12 @@ static int encode_init(AVCodecContext *avctx)
     FFV1Context *s = avctx->priv_data;
     int i;
 
+    if(avctx->strict_std_compliance >= 0){
+        av_log(avctx, AV_LOG_ERROR, "this codec is under development, files encoded with it wont be decodeable with future versions!!!\n"
+               "use vstrict=-1 to use it anyway\n");
+        return -1;
+    }
+        
     common_init(avctx);
  
     s->version=0;
@@ -609,13 +607,12 @@ static void clear_state(FFV1Context *f){
     for(i=0; i<f->plane_count; i++){
         PlaneContext *p= &f->plane[i];
 
-        p->interlace_bit_state[0]= 0;
-        p->interlace_bit_state[1]= 0;
+        p->interlace_bit_state[0]= 128;
+        p->interlace_bit_state[1]= 128;
         
         for(j=0; j<p->context_count; j++){
             if(f->ac){
-                memset(p->state[j], 0, sizeof(uint8_t)*CONTEXT_SIZE);
-                p->state[j][7] = 2*62;
+                memset(p->state[j], 128, sizeof(uint8_t)*CONTEXT_SIZE);
             }else{
                 p->vlc_state[j].drift= 0;
                 p->vlc_state[j].error_sum= 4; //FFMAX((RANGE + 32)/64, 2);
@@ -628,39 +625,33 @@ static void clear_state(FFV1Context *f){
 
 static int encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size, void *data){
     FFV1Context *f = avctx->priv_data;
-    CABACContext * const c= &f->c;
+    RangeCoder * const c= &f->c;
     AVFrame *pict = data;
     const int width= f->width;
     const int height= f->height;
     AVFrame * const p= &f->picture;
     int used_count= 0;
+    uint8_t keystate=128;
 
-    if(avctx->strict_std_compliance >= 0){
-        av_log(avctx, AV_LOG_ERROR, "this codec is under development, files encoded with it wont be decodeable with future versions!!!\n"
-               "use vstrict=-1 to use it anyway\n");
-        return -1;
-    }
-        
-    ff_init_cabac_encoder(c, buf, buf_size);
-    ff_init_cabac_states(c, ff_h264_lps_range, ff_h264_mps_state, ff_h264_lps_state, 64);
-    c->lps_state[2] = 1;
-    c->lps_state[3] = 0;
-    
+    ff_init_range_encoder(c, buf, buf_size);
+//    ff_init_cabac_states(c, ff_h264_lps_range, ff_h264_mps_state, ff_h264_lps_state, 64);
+    ff_build_rac_states(c, 0.05*(1LL<<32), 256-8);
+
     *p = *pict;
     p->pict_type= FF_I_TYPE;
     
     if(avctx->gop_size==0 || f->picture_number % avctx->gop_size == 0){
-        put_cabac_bypass(c, 1);
+        put_rac(c, &keystate, 1);
         p->key_frame= 1;
         write_header(f);
         clear_state(f);
     }else{
-        put_cabac_bypass(c, 0);
+        put_rac(c, &keystate, 0);
         p->key_frame= 0;
     }
 
     if(!f->ac){
-        used_count += put_cabac_terminate(c, 1);
+        used_count += ff_rac_terminate(c);
 //printf("pos=%d\n", used_count);
         init_put_bits(&f->pb, buf + used_count, buf_size - used_count);
     }
@@ -681,7 +672,7 @@ static int encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size,
     f->picture_number++;
 
     if(f->ac){
-        return put_cabac_terminate(c, 1);
+        return ff_rac_terminate(c);
     }else{
         flush_put_bits(&f->pb); //nicer padding FIXME
         return used_count + (put_bits_count(&f->pb)+7)/8;
@@ -709,7 +700,7 @@ static int encode_end(AVCodecContext *avctx)
 
 static inline void decode_line(FFV1Context *s, int w, int_fast16_t *sample[2], int plane_index, int bits){
     PlaneContext * const p= &s->plane[plane_index];
-    CABACContext * const c= &s->c;
+    RangeCoder * const c= &s->c;
     int x;
     int run_count=0;
     int run_mode=0;
@@ -726,9 +717,9 @@ static inline void decode_line(FFV1Context *s, int w, int_fast16_t *sample[2], i
             sign=0;
         
 
-        if(s->ac)
-            diff= get_symbol(c, p->state[context], 1, bits-1);
-        else{
+        if(s->ac){
+            diff= get_symbol(c, p->state[context], 1);
+        }else{
             if(context == 0 && run_mode==0) run_mode=1;
             
             if(run_mode){
@@ -833,13 +824,15 @@ static void decode_rgb_frame(FFV1Context *s, uint32_t *src, int w, int h, int st
     }
 }
 
-static int read_quant_table(CABACContext *c, int16_t *quant_table, int scale){
+static int read_quant_table(RangeCoder *c, int16_t *quant_table, int scale){
     int v;
     int i=0;
-    uint8_t state[CONTEXT_SIZE]={0};
+    uint8_t state[CONTEXT_SIZE];
+
+    memset(state, 128, sizeof(state));
 
     for(v=0; i<128 ; v++){
-        int len= get_symbol(c, state, 0, 7) + 1;
+        int len= get_symbol(c, state, 0) + 1;
 
         if(len + i > 128) return -1;
         
@@ -860,17 +853,19 @@ static int read_quant_table(CABACContext *c, int16_t *quant_table, int scale){
 }
 
 static int read_header(FFV1Context *f){
-    uint8_t state[CONTEXT_SIZE]={0};
+    uint8_t state[CONTEXT_SIZE];
     int i, context_count;
-    CABACContext * const c= &f->c;
+    RangeCoder * const c= &f->c;
     
-    f->version= get_symbol(c, state, 0, 7);
-    f->ac= f->avctx->coder_type= get_symbol(c, state, 0, 7);
-    f->colorspace= get_symbol(c, state, 0, 7); //YUV cs type
-    get_cabac(c, state); //no chroma = false
-    f->chroma_h_shift= get_symbol(c, state, 0, 7);
-    f->chroma_v_shift= get_symbol(c, state, 0, 7);
-    get_cabac(c, state); //transparency plane
+    memset(state, 128, sizeof(state));
+
+    f->version= get_symbol(c, state, 0);
+    f->ac= f->avctx->coder_type= get_symbol(c, state, 0);
+    f->colorspace= get_symbol(c, state, 0); //YUV cs type
+    get_rac(c, state); //no chroma = false
+    f->chroma_h_shift= get_symbol(c, state, 0);
+    f->chroma_v_shift= get_symbol(c, state, 0);
+    get_rac(c, state); //transparency plane
     f->plane_count= 2;
 
     if(f->colorspace==0){
@@ -933,11 +928,12 @@ static int decode_init(AVCodecContext *avctx)
 
 static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, uint8_t *buf, int buf_size){
     FFV1Context *f = avctx->priv_data;
-    CABACContext * const c= &f->c;
+    RangeCoder * const c= &f->c;
     const int width= f->width;
     const int height= f->height;
     AVFrame * const p= &f->picture;
     int bytes_read;
+    uint8_t keystate= 128;
 
     AVFrame *picture = data;
 
@@ -945,14 +941,12 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, uint8
     if (buf_size == 0)
         return 0;
 
-    ff_init_cabac_decoder(c, buf, buf_size);
-    ff_init_cabac_states(c, ff_h264_lps_range, ff_h264_mps_state, ff_h264_lps_state, 64);
-    c->lps_state[2] = 1;
-    c->lps_state[3] = 0;
+    ff_init_range_decoder(c, buf, buf_size);
+    ff_build_rac_states(c, 0.05*(1LL<<32), 256-8);
 
 
     p->pict_type= FF_I_TYPE; //FIXME I vs. P
-    if(get_cabac_bypass(c)){
+    if(get_rac(c, &keystate)){
         p->key_frame= 1;
         read_header(f);
         clear_state(f);
@@ -970,8 +964,8 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, uint8
         av_log(avctx, AV_LOG_ERROR, "keyframe:%d coder:%d\n", p->key_frame, f->ac);
     
     if(!f->ac){
-        bytes_read = get_cabac_terminate(c);
-        if(bytes_read ==0) av_log(avctx, AV_LOG_ERROR, "error at end of AC stream\n");
+        bytes_read = c->bytestream - c->bytestream_start - 1;
+        if(bytes_read ==0) av_log(avctx, AV_LOG_ERROR, "error at end of AC stream\n"); //FIXME
 //printf("pos=%d\n", bytes_read);
         init_get_bits(&f->gb, buf + bytes_read, buf_size - bytes_read);
     } else {
@@ -1000,7 +994,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, uint8
     *data_size = sizeof(AVFrame);
     
     if(f->ac){
-        bytes_read= get_cabac_terminate(c);
+        bytes_read= c->bytestream - c->bytestream_start - 1;
         if(bytes_read ==0) av_log(f->avctx, AV_LOG_ERROR, "error at end of frame\n");
     }else{
         bytes_read+= (get_bits_count(&f->gb)+7)/8;

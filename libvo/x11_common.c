@@ -20,7 +20,7 @@
 #include "aspect.h"
 #include "geometry.h"
 #include "help_mp.h"
-#include "../osdep/timer.h"
+#include "osdep/timer.h"
 
 #include <X11/Xmd.h>
 #include <X11/Xlib.h>
@@ -45,12 +45,12 @@
 #include <X11/extensions/Xvlib.h>
 #endif
 
-#include "../input/input.h"
-#include "../input/mouse.h"
+#include "input/input.h"
+#include "input/mouse.h"
 
 #ifdef HAVE_NEW_GUI
-#include "../Gui/interface.h"
-#include "../mplayer.h"
+#include "Gui/interface.h"
+#include "mplayer.h"
 #endif
 
 #define WIN_LAYER_ONBOTTOM               2
@@ -75,7 +75,7 @@ int mScreen;
 int mLocalDisplay;
 
 /* output window id */
-int WinID = -1;
+extern int WinID;
 int vo_mouse_autohide = 0;
 int vo_wm_type = 0;
 int vo_fs_type = 0; // needs to be accessible for GUI X11 code
@@ -165,7 +165,7 @@ void vo_hidecursor(Display * disp, Window win)
     Pixmap bm_no;
     XColor black, dummy;
     Colormap colormap;
-    static unsigned char bm_no_data[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+    static char bm_no_data[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
     if (WinID == 0)
         return;                 // do not hide, if we're playing at rootwin
@@ -178,6 +178,7 @@ void vo_hidecursor(Display * disp, Window win)
     XFreeCursor(disp, no_ptr);
     if (bm_no != None)
         XFreePixmap(disp, bm_no);
+    XFreeColors(disp,colormap,&black.pixel,1,0);
 }
 
 void vo_showcursor(Display * disp, Window win)
@@ -230,6 +231,7 @@ void fstype_help(void)
            "use _NETWM_STATE_STAYS_ON_TOP hint if available");
     mp_msg(MSGT_VO, MSGL_INFO,
            "You can also negate the settings with simply putting '-' in the beginning");
+    mp_msg(MSGT_VO, MSGL_INFO, "\n\n");
 }
 
 static void fstype_dump(int fstype)
@@ -366,9 +368,15 @@ int vo_init(void)
 // Window    mRootWin;
     XWindowAttributes attribs;
     char *dispName;
+	
+	if (vo_rootwin)
+		WinID = 0; // use root win
 
     if (vo_depthonscreen)
+    {
+        saver_off(mDisplay);
         return 1;               // already called
+    }
 
     XSetErrorHandler(x11_errorhandler);
 
@@ -520,7 +528,7 @@ void vo_uninit(void)
     mDisplay = NULL;
 }
 
-#include "../osdep/keycodes.h"
+#include "osdep/keycodes.h"
 #include "wskeys.h"
 
 extern void mplayer_put_key(int code);
@@ -848,8 +856,6 @@ typedef struct
     long state;
 } MotifWmHints;
 
-extern MotifWmHints vo_MotifWmHints;
-extern Atom vo_MotifHints;
 extern int vo_depthonscreen;
 extern int vo_screenwidth;
 extern int vo_screenheight;
@@ -1051,6 +1057,10 @@ int vo_x11_check_events(Display * mydisplay)
                 {
                     int key;
 
+#ifdef HAVE_NEW_GUI
+                    if ( use_gui ) { break; }
+#endif
+
                     XLookupString(&Event.xkey, buf, sizeof(buf), &keySym,
                                   &stat);
 #ifdef XF86XK_AudioPause
@@ -1059,10 +1069,6 @@ int vo_x11_check_events(Display * mydisplay)
                     key =
                         ((keySym & 0xff00) !=
                          0 ? ((keySym & 0x00ff) + 256) : (keySym));
-#ifdef HAVE_NEW_GUI
-                    if ((use_gui) && (key == wsEnter))
-                        break;
-#endif
                     vo_x11_putkey(key);
                     ret |= VO_EVENT_KEYPRESS;
                 }
@@ -1130,6 +1136,25 @@ int vo_x11_check_events(Display * mydisplay)
         }
     }
     return ret;
+}
+
+/**
+ * \brief sets the size and position of the non-fullscreen window.
+ */
+void vo_x11_nofs_sizepos(int x, int y, int width, int height)
+{
+  if (vo_fs) {
+    vo_old_x = x;
+    vo_old_y = y;
+    vo_old_width = width;
+    vo_old_height = height;
+  }
+  else
+  {
+   vo_dwidth = width;
+   vo_dheight = height;
+   XMoveResizeWindow(mDisplay, vo_window, x, y, width, height);
+  }
 }
 
 void vo_x11_sizehint(int x, int y, int width, int height, int max)
@@ -1623,7 +1648,7 @@ void saver_on(Display * mDisplay)
                 DPMSInfo(mDisplay, &state, &onoff);
                 if (onoff)
                 {
-                    mp_msg(MSGT_VO, MSGL_INFO,
+                    mp_msg(MSGT_VO, MSGL_V,
                            "Successfully enabled DPMS\n");
                 } else
                 {
@@ -1678,7 +1703,7 @@ void saver_off(Display * mDisplay)
         {
             Status stat;
 
-            mp_msg(MSGT_VO, MSGL_INFO, "Disabling DPMS\n");
+            mp_msg(MSGT_VO, MSGL_V, "Disabling DPMS\n");
             dpms_disabled = 1;
             stat = DPMSDisable(mDisplay);       // monitor powersave off
             mp_msg(MSGT_VO, MSGL_V, "DPMSDisable stat: %d\n", stat);
@@ -1774,8 +1799,8 @@ void vo_x11_xinerama_move(Display * dsp, Window w)
 void vo_vm_switch(uint32_t X, uint32_t Y, int *modeline_width,
                   int *modeline_height)
 {
-    unsigned int vm_event, vm_error;
-    unsigned int vm_ver, vm_rev;
+    int vm_event, vm_error;
+    int vm_ver, vm_rev;
     int i, j, have_vm = 0;
 
     int modecount;
