@@ -4,6 +4,7 @@
 #include "Playlistm3u.h"
 #include "PlaylistPLS.h"
 #include "Playlistb4S.h"
+#include "PlaylistWPL.h"
 #include "util.h"
 using namespace PLAYLIST;
 CPlayListFactory::CPlayListFactory(void)
@@ -31,6 +32,10 @@ CPlayList* CPlayListFactory::Create(const CStdString& strFileName) const
 	if (strExtension==".b4s")
 	{
 		return new CPlayListB4S();
+	}
+	if (strExtension==".wpl")
+	{
+		return new CPlayListWPL();
 	}
 	return NULL;
 }
