@@ -210,7 +210,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
   }
   
 	CUtil::CacheSubtitles(strFile);
-
+  CUtil::PrepareSubtitleFonts();
 	m_iPTS			= 0;
 	m_bPaused	  = false;
 

@@ -202,6 +202,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiSettingsSlideShow);				// window id = 12 slideshow:window id 2007
 	m_gWindowManager.Add(&m_guiSettingsFilter);						// window id = 13
 	m_gWindowManager.Add(&m_guiSettingsMusic);						// window id = 14
+  m_gWindowManager.Add(&m_guiSettingsSubtitles);				// window id = 15
 	m_gWindowManager.Add(&m_guiScripts);									// window id = 20
 
   m_gWindowManager.Add(&m_guiDialogYesNo);							// window id = 100
@@ -302,7 +303,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiWindowVisualisation.Load( strSkinPath+"\\musicVisualisation.xml");
 	m_guiSettingsMusic.Load( strSkinPath+"\\SettingsMusic.xml");
 	m_guiWindowSlideshow.Load( strSkinPath+"\\slideshow.xml");
-	
+	m_guiSettingsSubtitles.Load( strSkinPath+"\\SettingsScreenSubtitles.xml");
 	m_guiMusicOverlay.AllocResources();
 	m_guiWindowVideoOverlay.AllocResources();
 	m_gWindowManager.AddMsgTarget(this);
