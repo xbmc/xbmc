@@ -393,29 +393,26 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
 	 * since stopping a script can take up to 10 seconds or more,we display 'stopping'
 	 * after the filename for now.
 	 */
-	if (g_sectionLoader.IsLoaded("PYTHON") &&	g_application.m_pPythonParser)
+	int iSize = m_pythonParser.ScriptsSize();
+	for (int i=0; i < iSize; i++)
 	{
-		int iSize = g_application.ScriptsSize();
-		for (int i=0; i < iSize; i++)
+		int id = m_pythonParser.GetPythonScriptId(i);
+		if (m_pythonParser.isRunning(id))
 		{
-			int id = g_application.GetPythonScriptId(i);
-			if (g_application.m_pPythonParser->isRunning(id))
-			{
-				char* filename = g_application.m_pPythonParser->getFileName(id);
+			const char* filename = m_pythonParser.getFileName(id);
 
-				for (int i=0; i < (int)m_vecItems.size(); i++)
+			for (int i=0; i < (int)m_vecItems.size(); i++)
+			{
+				CFileItem* pItem=m_vecItems[i];
+				if (pItem->m_strPath == filename)
 				{
-					CFileItem* pItem=m_vecItems[i];
-					if (pItem->m_strPath == filename)
-					{
-						char tstr[1024];
-						strcpy(tstr, pItem->GetLabel());
-						if (g_application.m_pPythonParser->isStopping(id))
-							strcat(tstr, " (Stopping)");
-						else
-							strcat(tstr, " (Running)");
-						pItem->SetLabel(tstr);
-					}
+					char tstr[1024];
+					strcpy(tstr, pItem->GetLabel());
+					if (m_pythonParser.isStopping(id))
+						strcat(tstr, " (Stopping)");
+					else
+						strcat(tstr, " (Running)");
+					pItem->SetLabel(tstr);
 				}
 			}
 		}
@@ -500,31 +497,25 @@ void CGUIWindowScripts::OnClick(int iItem)
 		/* execute script...
 		 * if script is already running do not run it again but stop it.
 		 */
-		if (g_application.m_pPythonParser && g_sectionLoader.IsLoaded("PYTHON"))
+		int id = m_pythonParser.getScriptId(strPath);
+		if (id != -1)
 		{
-			int id = g_application.m_pPythonParser->getScriptId(strPath);
-			if (id != -1)
+			/* if we are here we already know that this script is running.
+				* But we will check it again to be sure :)
+				*/
+			if(m_pythonParser.isRunning(id))
 			{
-				/* if we are here we already know that this script is running.
-				 * But we will check it again to be sure :)
-				 */
-				if(g_application.m_pPythonParser->isRunning(id))
-				{
-					// the option stop scripts is disabled for now, this will be turned on
-					// when de debouncing problem is solved
+				m_pythonParser.stopScript(id);
 
-					// g_application.m_pPythonParser->stopScript(id);
-
-					// update items
-					int selectedItem = GetSelectedItem();
-					Update(m_strDirectory);
-					CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,selectedItem);
-					CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,selectedItem);
-					return;
-				}
+				// update items
+				int selectedItem = GetSelectedItem();
+				Update(m_strDirectory);
+				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,selectedItem);
+				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,selectedItem);
+				return;
 			}
 		}
-		g_application.ExecutePythonScript(strPath);
+		m_pythonParser.evalFile(strPath);
 	}
 }
 
@@ -589,26 +580,14 @@ void CGUIWindowScripts::Render()
 	}
 
 	// update control_list / control_thumbs if one or more scripts have stopped / started
-	if (g_sectionLoader.IsLoaded("PYTHON") && g_application.m_pPythonParser)
-	{
-		if(g_application.m_pPythonParser->scriptsSize() != scriptSize)
-		{
-			int selectedItem = GetSelectedItem();
-			Update(m_strDirectory);
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,selectedItem);
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,selectedItem);
-			scriptSize = g_application.m_pPythonParser->scriptsSize();
-		}
-	}
-	else if (scriptSize != 0)
+	if(m_pythonParser.ScriptsSize() != scriptSize)
 	{
 		int selectedItem = GetSelectedItem();
 		Update(m_strDirectory);
 		CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,selectedItem);
 		CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,selectedItem);
-		scriptSize = 0;
+		scriptSize = m_pythonParser.ScriptsSize();
 	}
-
 	CGUIWindow::Render();
 }
 void CGUIWindowScripts::GoParentFolder()

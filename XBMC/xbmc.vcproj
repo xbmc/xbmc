@@ -1211,9 +1211,6 @@
 				Name="libPython"
 				Filter="">
 				<File
-					RelativePath=".\xbmc\lib\libPython\xbmcmodule.cpp">
-				</File>
-				<File
 					RelativePath=".\xbmc\lib\libPython\XBPython.cpp">
 				</File>
 				<File
@@ -1225,10 +1222,32 @@
 				<File
 					RelativePath=".\xbmc\lib\libPython\XBPyThread.h">
 				</File>
+				<Filter
+					Name="xbmcmodule"
+					Filter="">
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\dialog.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\player.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\window.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\xbmcmodule.cpp">
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="libGoAhead"
 				Filter="">
+				<File
+					RelativePath=".\xbmc\lib\libGoAhead\SpyceModule.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libGoAhead\SpyceModule.h">
+				</File>
 				<File
 					RelativePath=".\xbmc\lib\libGoAhead\WebServer.cpp">
 				</File>
