@@ -643,7 +643,7 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
 								 dst,         
 								 dststride,							//	dst stride
 								 XVID_CSP_YUY2 ,0);
-
+  __asm emms;
 	if (y+h+16 >= (int)image_height) m_bFlip=true;
 //  yv12toyuy2(src[0],src[1],src[2],image + dstride*y + 2*x ,w,h,stride[0],stride[1],dstride);
   return 0;
@@ -797,7 +797,7 @@ static unsigned int video_draw_frame(unsigned char *src[])
 								 dst,         
 								 dststride,							//	dst stride
 								 XVID_CSP_YUY2 ,0);
-
+  __asm emms;
 	//yv12toyuy2(src[0],src[1],src[2],image,image_width,image_height,image_width,image_width>>1,dstride);
   return 0;
 }
@@ -839,7 +839,7 @@ static unsigned int put_image(mp_image_t *mpi)
 								 dst,         						
 								 dststride,			//	dst stride
 								 XVID_CSP_YUY2 ,0);
-
+  __asm emms;
 	//yv12toyuy2(src[0],src[1],src[2],image,image_width,image_height,image_width,image_width>>1,dstride);
   return VO_TRUE;
 }
