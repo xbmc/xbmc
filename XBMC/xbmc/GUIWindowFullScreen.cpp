@@ -150,7 +150,9 @@ void CGUIWindowFullScreen::Render()
 		RECT DestRect;
 		g_application.m_pPlayer->GetVideoRect(SrcRect, DestRect);
 		CStdString strRects;
-		float fAR = g_application.m_pPlayer->GetVideoAspectRatio(); //((float)(DestRect.right-DestRect.left)) / ((float)(DestRect.bottom-DestRect.top));
+		float fAR;
+		bool bWidescreen;
+		g_application.m_pPlayer->GetVideoAspectRatio(fAR, bWidescreen); //((float)(DestRect.right-DestRect.left)) / ((float)(DestRect.bottom-DestRect.top));
 		strRects.Format(" | (%i,%i)-(%i,%i)->(%i,%i)-(%i,%i) AR:%2.2f", 
 											SrcRect.left,SrcRect.top,
 											SrcRect.right,SrcRect.bottom,
@@ -174,7 +176,14 @@ void CGUIWindowFullScreen::Render()
 		{
 			strStatus2 +="NTSC";
 		}
-
+		if (bWidescreen)
+		{
+			strStatus2 +=" 16:9";
+		}
+		else
+		{
+			strStatus2 +=" 4:3";
+		}
 
 		{
 			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 
