@@ -8,7 +8,11 @@
 #pragma comment(linker, "/merge:LAME_TEX=LIBLAME")
 #pragma comment(linker, "/merge:LAME_DAT=LIBLAME")
 #pragma comment(linker, "/merge:LAME_BSS=LIBLAME")
-#pragma comment(linker, "/merge:LAME_RDA=LIBLAME")
+// we have a problem here, SECTION loading doesn't work ok when using stringpooling
+// this is disabled for all projects in xbmc now. But it seemes the same happens for
+// static doubles. these crash xbmc to. Only solution for now is to prevent this section
+// from merging into LIBLAME
+//#pragma comment(linker, "/merge:LAME_RDA=LIBLAME")
 #pragma comment(linker, "/section:LIBLAME,RWE")
 
 class CEncoderLame : public CEncoder
