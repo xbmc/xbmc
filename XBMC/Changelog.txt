@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 07-09-2004 fixed: Another blackscreen bug thanks to pike + yuvalt
   - 07-09-2004 updated: Polish language file (thanks NaPek)
   - 07-09-2004 updated: Portuguese language file (thanks wellingtontu)
   - 07-09-2004 updated: Italian language file (thanks kotix)
