@@ -11,7 +11,6 @@
 #include "url.h"
 #include "autorun.h"
 #include "ActionManager.h"
-using namespace PLAYLIST;
 
 #ifdef _DEBUG
 //	#pragma comment (lib,"lib/filezilla/xbfilezillad.lib") // SECTIONNAME=FILEZILL
@@ -197,10 +196,16 @@ HRESULT CApplication::Initialize()
     strcpy(g_stSettings.m_szAlbumDirectory,strPath.c_str());
     strcat(g_stSettings.m_szAlbumDirectory,"\\albums");		
   }
+	if (g_stSettings.m_szMusicRecordingDirectory[0]==0)
+  {
+    strcpy(g_stSettings.m_szMusicRecordingDirectory,strPath.c_str());
+    strcat(g_stSettings.m_szMusicRecordingDirectory,"\\recordings");		
+  }
 	CreateDirectory(g_stSettings.szThumbnailsDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szShortcutDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szIMDBDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szAlbumDirectory,NULL);
+	CreateDirectory(g_stSettings.m_szMusicRecordingDirectory,NULL);
 	string strDir=strPath;
 	string strAlbumDir=g_stSettings.m_szAlbumDirectory;
 	CreateDirectory((strAlbumDir+"\\playlists").c_str(),NULL);
@@ -271,6 +276,7 @@ HRESULT CApplication::Initialize()
 
 	//	Start Thread for DVD Mediatype detection
 	m_DetectDVDType.Create( false);
+
 	return S_OK;
 }
 
@@ -339,6 +345,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 void CApplication::Render()
 {
+	static iBlinkRecord=0;
 	SpinHD();
 	// process messages, even if a movie is playing
 	g_applicationMessenger.ProcessMessages();
@@ -390,6 +397,21 @@ void CApplication::Render()
 		if (dwMegFree <= 10)
 		{
 			g_TextureManager.Flush();
+		}
+		if (IsPlayingAudio())
+		{
+			if (m_pPlayer->IsRecording() )
+			{
+				CGUIFont* pFont=g_fontManager.GetFont("font13");
+				if (pFont)
+				{
+					iBlinkRecord++;
+					if (iBlinkRecord>25)
+						pFont->DrawText(60, 50, 0xffff0000, L"REC"); //Draw REC in RED
+					if (iBlinkRecord> 50)
+						iBlinkRecord=0;
+				}
+			}
 		}
 #ifdef _DEBUG		
 		CStdStringW wszText;

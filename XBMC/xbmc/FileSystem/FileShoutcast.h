@@ -10,7 +10,8 @@
 #endif // _MSC_VER > 1000
 
 #include "IFile.h"
-#include "../MusicInfoTagLoaderMP3.h"
+#include "../lib/libid3/id3.h"
+#include "../lib/libid3/misc_support.h"
 using namespace XFILE;
 namespace XFILE
 {

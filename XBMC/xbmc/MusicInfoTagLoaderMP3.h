@@ -6,10 +6,7 @@
 
 #include "filesystem/file.h"
 
-#define HAVE_CONFIG
-#define ID3LIB_LINKOPTION 1
 #include "lib/libID3/id3.h"
-#include "lib/libID3/config.h"
 #include "lib/libID3/tag.h"
 #include "lib/libID3/utils.h"
 #include "lib/libID3/misc_support.h"

@@ -2,6 +2,8 @@
 #include "mplayer/mplayer.h"
 #include "../util.h"
 #include "../settings.h"
+#include "../filesystem/fileshoutcast.h"
+extern CFileShoutcast* m_pShoutCastRipper;
 extern "C" void dllReleaseAll( );
 
 #define KEY_ENTER 13
@@ -464,3 +466,25 @@ void CMPlayer::SwitchToNextAudioLanguage()
 {
  	
 }
+
+bool CMPlayer::CanRecord() 
+{
+	if (!m_pShoutCastRipper) return false;
+	return m_pShoutCastRipper->CanRecord();
+}
+bool CMPlayer::IsRecording() 
+{
+	if (!m_pShoutCastRipper) return false;
+	return m_pShoutCastRipper->IsRecording();
+}
+bool CMPlayer::Record(bool bOnOff) 
+{
+	if (!m_pShoutCastRipper) return false;
+	if (bOnOff && IsRecording()) return true;
+	if (bOnOff==false && IsRecording()==false) return true;
+	if (bOnOff) 
+			return m_pShoutCastRipper->Record();
+	
+	m_pShoutCastRipper->StopRecording();
+	return true;
+} 

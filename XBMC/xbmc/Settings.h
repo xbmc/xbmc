@@ -167,6 +167,7 @@ public:
 		int				m_iChannels;
 		bool			m_bAC3PassThru;
 		bool			m_bUseID3;
+		char			m_szMusicRecordingDirectory[128];
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;
