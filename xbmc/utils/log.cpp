@@ -22,6 +22,14 @@ void CLog::Log(const char *format, ... )
 	va_start(va, format);
 	_vsnprintf(tmp, 16384, format, va);
 	va_end(va);
+  while (1)
+  {
+    int ilen=strlen(tmp);
+    if (ilen <=0) break;
+    if ( tmp[ilen-1] == '\n' || tmp[ilen-1] == '\r' || tmp[ilen-1] ==' ') tmp[ilen-1]=0;
+    else break;
+  }
+
   strcat(tmp,"\r\n");
 	tmp[16384-1] = 0;
   FILE* fd=fopen("Q:\\xbmc.log","a+");

@@ -349,14 +349,14 @@ bool CMPlayer::load()
 		m_pDLL = new DllLoader("Q:\\mplayer\\mplayer.dll");
 		if( !m_pDLL->Parse() )
 		{
-      CLog::Log("cmplayer::load() parse failed\n");
+      CLog::Log("cmplayer::load() parse failed");
 			delete m_pDLL;
 			m_pDLL=NULL;
 			return false;
 		}
 		if( !m_pDLL->ResolveImports()  )
 		{
-			CLog::Log("cmplayer::load() resolve imports failed\n");
+			CLog::Log("cmplayer::load() resolve imports failed");
 		}
 		mplayer_load_dll(*m_pDLL);
 	}
@@ -364,11 +364,11 @@ bool CMPlayer::load()
 }
 bool CMPlayer::openfile(const CStdString& strFile)
 {
-  char szTmp[128];
+  int iCacheSize=1024;
   closefile();
 
+  CLog::Log("mplayer play:%s", strFile.c_str());
   // setup the cache size mplayer uses
-  int iCacheSize=1024;
   // for DVD/CD's or remote shares we use 8 megs
   if (CUtil::IsDVD(strFile) || CUtil::IsISO9660(strFile) || CUtil::IsRemote(strFile) )
   {
@@ -395,8 +395,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
     iCacheSize=256;
   }
   
-  sprintf(szTmp,"set cache size to %i kbyte\n",iCacheSize);
-  OutputDebugString(szTmp);
+  CLog::Log("  cache sizem:%i kbyte",iCacheSize);
   
   // cache (remote) subtitles to HD
 	CUtil::CacheSubtitles(strFile);
@@ -436,6 +435,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
   options.SetVolumeAmplification(g_stSettings.m_fVolumeAmplification);
   options.GetOptions(argc,argv);
   
+  CLog::Log("  open 1st time");
 	mplayer_init(argc,argv);
   mplayer_setcache_size(iCacheSize);
 	int iRet=mplayer_open_file(strFile.c_str());
@@ -484,7 +484,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
           options.SetSpeed(25.0f / fFPS); 
           options.SetFPS(25.0f);
           bNeed2Restart=true;
-          OutputDebugString("--restart cause we use ntsc->pal framerate conversion\n");
+          CLog::Log("  --restart cause we use ntsc->pal framerate conversion");
         }
       }
       else
@@ -496,7 +496,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
           options.SetSpeed(23.976f / fFPS); 
           options.SetFPS(23.976f);
           bNeed2Restart=true;
-          OutputDebugString("--restart cause we use pal->ntsc framerate conversion\n");
+          CLog::Log("  --restart cause we use pal->ntsc framerate conversion");
         }
       }
     }
@@ -518,7 +518,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
         options.SetChannels(2);
         options.SetAC3PassTru(true);
         bNeed2Restart=true;
-        OutputDebugString("--restart cause we use ac3 passtru\n");
+        CLog::Log("  --restart cause we use ac3 passtru");
 		  }
 	  }
 
@@ -531,7 +531,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
         options.SetChannels(6);
         options.SetChannelMapping("channels=6:6:0:0:1:1:2:4:3:5:4:2:5:3");
         bNeed2Restart=true;
-        OutputDebugString("--restart cause speaker mapping needs fixing\n");
+        CLog::Log("  --restart cause speaker mapping needs fixing");
 	    }	
 
       // if xbox only got stereo output, then limit number of channels to 2
@@ -550,7 +550,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
         options.SetChannels(6);
         options.SetChannelMapping("channels=6:5:0:0:1:1:2:2:3:3:4:4:5:5");
         bNeed2Restart=true;
-        OutputDebugString("--restart cause audio channels changed:5\n");
+        CLog::Log("  --restart cause audio channels changed:5");
       }
       // remap audio speaker layout for files with 3 audio channels 
       if (iChannels==3)
@@ -558,7 +558,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
         options.SetChannels(4);
         options.SetChannelMapping("channels=4:4:0:0:1:1:2:2:2:3");
         bNeed2Restart=true;
-        OutputDebugString("--restart cause audio channels changed:3\n");
+        CLog::Log("  --restart cause audio channels changed:3");
       }
       
       if (iChannels==1 || iChannels==2||iChannels==4)
@@ -569,7 +569,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
         //else iChannels=0;
         if (iChan!=iChannels)
         {
-          OutputDebugString("--restart cause audio channels changed\n");
+          CLog::Log("  --restart cause audio channels changed");
           options.SetChannels(iChannels);
           bNeed2Restart=true; 
         }
@@ -579,7 +579,8 @@ bool CMPlayer::openfile(const CStdString& strFile)
   
     if (bNeed2Restart)
     {
-      OutputDebugString("--------------- restart --------------- \n");
+      CLog::Log("  --------------- restart ---------------");
+      CLog::Log("  open 2nd time");
 			mplayer_close_file();
       options.GetOptions(argc,argv);
 			load();
@@ -588,7 +589,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			iRet=mplayer_open_file(strFile.c_str());
 			if (iRet < 0)
 			{
-        CLog::Log("cmplayer::openfile() %s failed\n",strFile.c_str());
+        CLog::Log("cmplayer::openfile() %s failed",strFile.c_str());
 				closefile();
 				return false;
 			}
@@ -659,7 +660,7 @@ void CMPlayer::Process()
     }
     catch(...)
     {
-      CLog::Log("mplayer generated exception!\n");
+      CLog::Log("mplayer generated exception!");
     }
 		mplayer_close_file();
 	}
