@@ -13,6 +13,8 @@
 #define TMSG_MEDIA_STOP           201
 #define TMSG_MEDIA_PAUSE          202
 
+#define TMSG_PICTURE_SHOW					220
+
 #define TMSG_SHUTDOWN             300
 #define TMSG_DASHBOARD            301
 #define TMSG_RESTART              302
@@ -42,6 +44,7 @@ public:
 	void	MediaPlay(string filename);
 	void	MediaStop();
 	void	MediaPause();
+	void	PictureShow(string filename);
 	void	Shutdown();
 	void	Restart();
 	void	RebootToDashBoard();
