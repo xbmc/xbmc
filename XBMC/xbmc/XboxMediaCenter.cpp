@@ -1,5 +1,9 @@
 // XboxMediaCenter
 //
+// - zoom/stretch
+// - crash in mplayer
+// - fopen... in dllloader
+//
 // libraries: 
 //			- CDRipX			: doesnt support section loading yet			
 //			- xbfilezilla : doesnt support section loading yet

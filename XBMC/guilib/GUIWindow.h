@@ -25,7 +25,7 @@ public:
 	int									GetFocusedControl() const;
 	void								AllocResources();
   void								FreeResources();
-  
+	void								ResetAllControls();  
 protected:
   vector<CGUIControl*> m_vecControls;
   typedef vector<CGUIControl*>::iterator ivecControls;
