@@ -2305,7 +2305,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 		// Switch to default options
 		g_stSettings.m_defaultVideoSettings.m_AdjustFrameRate = g_guiSettings.GetBool("MyVideos.FrameRateConversions");
 		g_stSettings.m_defaultVideoSettings.m_Deinterlace = g_guiSettings.GetBool("PostProcessing.DeInterlace");
-		g_stSettings.m_defaultVideoSettings.m_FilmGrain = g_guiSettings.GetBool("Filters.Noise") ? g_guiSettings.GetBool("Filters.NoiseLevel") : 0;
+		g_stSettings.m_defaultVideoSettings.m_FilmGrain = g_guiSettings.GetBool("Filters.Noise") ? g_guiSettings.GetInt("Filters.NoiseLevel") : 0;
 		g_stSettings.m_currentVideoSettings = g_stSettings.m_defaultVideoSettings;
 		// see if we have saved options in the database
 		if (CUtil::IsVideo(strFile))

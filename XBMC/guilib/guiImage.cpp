@@ -40,7 +40,19 @@ void CGUIImage::Render(int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight)
 {
   if (!m_pVB) return;
   if (m_vecTextures.size()==0) return;
+  // save old position + size
+  int oldPosX = m_iPosX;
+  int oldPosY = m_iPosY;
+  DWORD oldWidth = m_dwWidth;
+  DWORD oldHeight = m_dwHeight;
+  SetPosition(iPosX, iPosY);
+  SetWidth(dwWidth);
+  SetHeight(dwHeight);
 	Render();
+  // reset old position + size
+  SetPosition(oldPosX, oldPosY);
+  SetWidth(oldWidth);
+  SetHeight(oldHeight);
 }
 
 void CGUIImage::Render()
