@@ -124,8 +124,8 @@ void CGUIWindowMusicBase::OnAction(const CAction& action)
 	*/
 bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 {
-  switch ( message.GetMessage() )
-  {
+	switch ( message.GetMessage() )
+	{
 		case GUI_MSG_PLAYBACK_STARTED:
 		{
 			UpdateButtons();
@@ -246,18 +246,18 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 		}
 		break;
 
-    case GUI_MSG_WINDOW_DEINIT:
+		case GUI_MSG_WINDOW_DEINIT:
 		{
 			m_nSelectedItem=GetSelectedItem();
 			m_iLastControl=GetFocusedControl();
-      ClearFileItems();
+			ClearFileItems();
 			g_musicDatabase.Close();
 			CSectionLoader::Unload("LIBID3");
 			CSectionLoader::Unload("LIBMP4");
 		}
 		break;
 
-    case GUI_MSG_WINDOW_INIT:
+		case GUI_MSG_WINDOW_INIT:
 		{
 			CGUIWindow::OnMessage(message);
 
@@ -286,11 +286,11 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 		}
 		break;
 
-    case GUI_MSG_CLICKED:
-    {
-      int iControl=message.GetSenderId();
+		case GUI_MSG_CLICKED:
+		{
+			int iControl=message.GetSenderId();
 			if (iControl==CONTROL_BTNVIEWASICONS)
-      {
+			{
 				if ( m_Directory.IsVirtualDirectoryRoot() )
 				{
 					m_iViewAsIconsRoot++;
@@ -327,9 +327,9 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 			{
 				OnSearch();
 			}
-      else if (iControl==CONTROL_LIST||iControl==CONTROL_THUMBS)  // list/thumb control
-      {
-        int iItem=GetSelectedItem();
+			else if (iControl==CONTROL_LIST||iControl==CONTROL_THUMBS)  // list/thumb control
+			{
+				int iItem=GetSelectedItem();
 				int iAction=message.GetParam1();
 
 				// iItem is checked for validity inside these routines
@@ -349,12 +349,11 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 				{
 					OnPopupMenu(iItem);
 				}
+			}
+		}
 
-      }
-    }
 	}
-
-  return CGUIWindow::OnMessage(message);
+	return CGUIWindow::OnMessage(message);
 }
 
 /// \brief Remove items from list/thumb control and \e m_vecItems.

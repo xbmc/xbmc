@@ -44,7 +44,7 @@ CGUIWindowPrograms::CGUIWindowPrograms(void)
 :CGUIWindow(0)
 {
 	m_Directory.m_strPath="?";
-  m_Directory.m_bIsFolder=true;
+	m_Directory.m_bIsFolder=true;
 	m_iLastControl=-1;
 	m_iViewAsIcons=-1;
 }
@@ -71,15 +71,53 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 			CGUIWindow::OnMessage(message);
 			m_database.Open();
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-			if (m_Directory.m_strPath=="?")
+
+			// remove shortcuts
+			if (g_guiSettings.GetBool("MyPrograms.NoShortcuts") && g_stSettings.m_szShortcutDirectory[0] && g_settings.m_vecMyProgramsBookmarks[0].strName.Equals("shortcuts"))
+				g_settings.m_vecMyProgramsBookmarks.erase(g_settings.m_vecMyProgramsBookmarks.begin());
+
+			// check for a passed destination path
+			CStdString strDestination = message.GetStringParam();
+			if (!strDestination.IsEmpty())
 			{
-				m_Directory.m_strPath=g_stSettings.m_szDefaultPrograms;
-				m_shareDirectory=g_stSettings.m_szDefaultPrograms;
+				message.SetStringParam("");
+				CLog::Log(LOGINFO,"Attempting to quickpath to: %s",strDestination.c_str());
+			}
+			// otherwise, is this the first time accessing this window?
+			else if (m_Directory.m_strPath=="?")
+			{
+				strDestination = g_stSettings.m_szDefaultPrograms;
+				CLog::Log(LOGINFO,"Attempting to default to: %s",strDestination.c_str());
+			}
+			// try to open the destination path
+			if (!strDestination.IsEmpty())
+			{
+				// default parameters if the jump fails
+				m_Directory.m_strPath="";
+				m_shareDirectory="";
 				m_iDepth=1;
 				m_strBookmarkName="default";
-				if (g_guiSettings.GetBool("MyPrograms.NoShortcuts") && g_stSettings.m_szShortcutDirectory[0])	// let's remove shortcuts from vector
-					g_settings.m_vecMyProgramsBookmarks.erase(g_settings.m_vecMyProgramsBookmarks.begin());
+
+				bool bIsBookmarkName = false;
+				int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyProgramsBookmarks, bIsBookmarkName);
+				if (iIndex>-1)
+				{
+					// set current directory to matching share
+					if (bIsBookmarkName)
+						m_Directory.m_strPath=g_settings.m_vecMyProgramsBookmarks[iIndex].strPath;
+					else
+						m_Directory.m_strPath=strDestination;
+					m_shareDirectory=g_settings.m_vecMyProgramsBookmarks[iIndex].strPath;
+					m_iDepth=g_settings.m_vecMyProgramsBookmarks[iIndex].m_iDepthSize;
+					m_strBookmarkName=g_settings.m_vecMyProgramsBookmarks[iIndex].strName;
+					CLog::Log(LOGINFO,"  Success! Opened destination path: %s",strDestination.c_str());
+				}
+				else
+				{
+					CLog::Log(LOGERROR,"  Failed! Destination parameter (%s) does not match a valid share!",strDestination.c_str());
+				}
 			}
+
 
 			// make controls 100-110 invisible...
 			for (int i=100; i < 110; i++)

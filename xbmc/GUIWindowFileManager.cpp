@@ -261,14 +261,46 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 
 			m_rootDir.SetShares(g_settings.m_vecMyFilesShares);
 
-			if (m_Directory[0].m_strPath=="?")
+			// check for a passed destination path
+			CStdString strDestination = message.GetStringParam();
+			if (!strDestination.IsEmpty())
 			{
-				m_Directory[0].m_strPath=g_stSettings.m_szDefaultFiles;
+				message.SetStringParam("");
+				CLog::Log(LOGINFO,"Attempting to quickpath to: %s",strDestination.c_str());
 			}
+			// otherwise, is this the first time accessing this window?
+			else if (m_Directory[0].m_strPath=="?")
+			{
+				strDestination = g_stSettings.m_szDefaultFiles;
+				CLog::Log(LOGINFO,"Attempting to default to: %s",strDestination.c_str());
+			}
+			// try to open the destination path
+			if (!strDestination.IsEmpty())
+			{
+				// default parameters if the jump fails
+				m_Directory[0].m_strPath="";
+				
+				bool bIsBookmarkName = false;
+				int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyFilesShares, bIsBookmarkName);
+				if (iIndex>-1)
+				{
+					// set current directory to matching share
+					if (bIsBookmarkName)
+						m_Directory[0].m_strPath=g_settings.m_vecMyFilesShares[iIndex].strPath;
+					else
+						m_Directory[0].m_strPath=strDestination;
+					CLog::Log(LOGINFO,"  Success! Opened destination path: %s",strDestination.c_str());
+				}
+				else
+				{
+					CLog::Log(LOGERROR,"  Failed! Destination parameter (%s) does not match a valid share!",strDestination.c_str());
+				}
+			}
+
 			if (m_Directory[1].m_strPath=="?") m_Directory[1].m_strPath="";
 
-      m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);      
-      if (m_dlgProgress) m_dlgProgress->SetHeading(126);
+			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);      
+			if (m_dlgProgress) m_dlgProgress->SetHeading(126);
 
 			for (int i=0; i<2; i++)
 			{
