@@ -287,6 +287,7 @@ CSettings::CSettings(void)
 
 	g_stSettings.m_bDisplayRemoteCodes=false;
 	g_stSettings.m_bResample=false;
+	g_stSettings.m_iOSDTimeout = 5;		// OSD Timeout, default to 5 seconds
 }
 
 CSettings::~CSettings(void)
@@ -1003,6 +1004,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetString(pElement, "weathertemp", g_stSettings.m_szWeatherFTemp, "C");					//WEATHER SETTINGS
 		GetString(pElement, "weatherspeed", g_stSettings.m_szWeatherFSpeed, "K");				//WEATHER SETTINGS
 		GetString(pElement, "areacode", g_stSettings.m_szWeatherArea, "UKXX0085");				//WEATHER SETTINGS
+		GetInteger(pElement, "osdtimeout", g_stSettings.m_iOSDTimeout,5,0,INT_MAX);
 	}
 	// slideshow settings
 	pElement = pRootElement->FirstChildElement("slideshow");
@@ -1310,6 +1312,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetString(pNode, "weathertemp", g_stSettings.m_szWeatherFTemp);			//WEATHER SETTINGS
 	SetString(pNode, "weatherspeed", g_stSettings.m_szWeatherFSpeed);		//WEATHER SETTINGS
 	SetString(pNode, "areacode", g_stSettings.m_szWeatherArea);				//WEATHER SETTINGS
+	SetInteger(pNode, "osdtimeout", g_stSettings.m_iOSDTimeout);
 
   // slideshow settings
 	TiXmlElement slideshowNode("slideshow");

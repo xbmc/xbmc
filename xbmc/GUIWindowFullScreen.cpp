@@ -348,25 +348,27 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
   
 	if (m_bOSDVisible)
 	{
-    if (timeGetTime()-m_dwOSDTimeOut > 5000)
-    {
-      CSingleLock lock(m_section);
-      CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0,0,0,NULL);
+		//if (timeGetTime()-m_dwOSDTimeOut > 5000)
+		if ( (timeGetTime() - m_dwOSDTimeOut) > (g_stSettings.m_iOSDTimeout * 1000))
+		{
+			CSingleLock lock(m_section);
+			CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0,0,0,NULL);
 			g_application.m_guiWindowOSD.OnMessage(msg);	// Send a de-init msg to the OSD
 			m_bOSDVisible=false;
-      return g_application.m_guiWindowOSD.OnMessage(message);	// route messages to OSD window
-    }
-    switch (message.GetMessage())
-    {
-      case GUI_MSG_SETFOCUS:
-      case GUI_MSG_LOSTFOCUS:
-      case GUI_MSG_CLICKED:
-      case GUI_MSG_WINDOW_INIT:
-      case GUI_MSG_WINDOW_DEINIT:
-        OutputDebugString("CGUIWindowFullScreen::OnMessage() reset timeout\n");
-        m_dwOSDTimeOut=timeGetTime();
-      break;
-    }
+			return g_application.m_guiWindowOSD.OnMessage(message);	// route messages to OSD window
+		}
+
+		switch (message.GetMessage())
+		{
+			case GUI_MSG_SETFOCUS:
+			case GUI_MSG_LOSTFOCUS:
+			case GUI_MSG_CLICKED:
+			case GUI_MSG_WINDOW_INIT:
+			case GUI_MSG_WINDOW_DEINIT:
+				OutputDebugString("CGUIWindowFullScreen::OnMessage() reset timeout\n");
+				m_dwOSDTimeOut=timeGetTime();
+			break;
+		}
 		return g_application.m_guiWindowOSD.OnMessage(message);	// route messages to OSD window
 	}
 
@@ -488,7 +490,8 @@ void CGUIWindowFullScreen::RenderFullScreen()
  
 	if (m_bShowStatus)
 	{
-		if ( (timeGetTime() - m_dwTimeStatusShowTime) >=5000)
+		if ( (timeGetTime() - m_dwTimeStatusShowTime) > (g_stSettings.m_iOSDTimeout * 1000))
+		//if ( (timeGetTime() - m_dwTimeStatusShowTime) >=5000)
 		{
 			m_bShowStatus=false;
 			return;
