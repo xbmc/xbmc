@@ -608,7 +608,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
 	if (NULL==m_pDB.get()) return false;
 	if (NULL==m_pDS.get()) return false;
 	CStdString strSQL;
-	strSQL.Format("select distinct album.*, artist.*, path.* from album,artist,path,song where album.idAlbum=song.idAlbum and album.idArtist=artist.idArtist and album.idPath=path.idPath and song.iTimesPlayed > 0 limit 20" );
+	strSQL.Format("select distinct album.*, artist.*, path.* from album,artist,path,song where album.idAlbum=song.idAlbum and album.idArtist=artist.idArtist and album.idPath=path.idPath and song.iTimesPlayed > 0 order by song.iTimesPlayed limit 20" );
 	if (!m_pDS->query(strSQL.c_str())) return false;
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound== 0) return false;
