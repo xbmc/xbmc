@@ -1932,8 +1932,41 @@
 		<id>734</id>
 		<value>Bez hasla</value>
 	</string>
-
-
+	<string>
+		<id>735</id>
+		<value>Czcionka:</value>
+	</string>	
+	<string>
+		<id>736</id>
+		<value>Styl:</value>
+	</string>	
+	<string>
+		<id>737</id>
+		<value>Kolor:</value>
+	</string>
+	<string>
+		<id>738</id>
+		<value>Normalna</value>
+	</string>	
+	<string>
+		<id>739</id>
+		<value>Pogrubiona</value>
+	</string>	
+	<string>
+		<id>740</id>
+		<value>Pochylona</value>
+	</string>	
+	<string>
+		<id>741</id>
+		<value>Pogrubiona i pochylona</value>
+	</string>	
+	<string>
+		<id>742</id>
+		<value>Bialy</value>
+	</string>	
+	<string>
+		<id>743</id>
+		<value>Zolty</value>
 
 
 	<string>
