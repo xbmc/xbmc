@@ -2,6 +2,8 @@
 #include "lib/sqlLite/sqlitedataset.h"
 #include "StdString.h"
 #include "utils\IMDB.h"
+#include "settings/VideoSettings.h"
+
 #include <vector>
 #include <memory>
 using namespace std;
@@ -48,7 +50,11 @@ public:
   void    DeleteMovie(const CStdString& strFilenameAndPath);
   void    GetDVDLabel(long lMovieId, CStdString& strDVDLabel);
   void    SetDVDLabel(long lMovieId,const CStdString& strDVDLabel1);
-  int	  GetRecentMovies(long* pMovieIdArray, int nSize);
+  int			GetRecentMovies(long* pMovieIdArray, int nSize);
+
+	bool		GetVideoSettings(const CStdString &strFilenameAndPath, CVideoSettings &settings);
+	void		SetVideoSettings(const CStdString &strFilenameAndPath, const CVideoSettings &settings);
+
 protected:
   auto_ptr<SqliteDatabase>  m_pDB;
 	auto_ptr<Dataset>				  m_pDS;
@@ -69,5 +75,8 @@ protected:
   void    Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   void    RemoveInvalidChars(CStdString& strTxt);
 	bool		CreateTables();
+
+	bool		UpdateOldVersion(float fVersion);
+
 	CIMDBMovie GetDetailsFromDataset(auto_ptr<Dataset> &pDS);
 };

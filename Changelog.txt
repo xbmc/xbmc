@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 29-01-2005 fixed: 1080i aspect ratio in ComboRenderer
+  - 29-01-2005 added: Pictures auto-rotate using EXIF information
+  - 29-01-2005 fixed: Zoom in pictures should pause slideshow till unzoomed
+  - 29-01-2005 added: Video database update code
+  - 29-01-2005 added: Video settings are saved per-file to the video database.
   - 29-01-2005 added: [ 1111870 ] Blue Screen of Death (which isn't blue), thanks to Fulg
   - 29-01-2005 fixed: textsubtitles were being rendered in sourceresolution instead of outputresolution causing larg(er) subs and >2 lines on low(er) resolution videos.
   - 29-01-2005 fixed: vobsubs were being clipped instead of scaled unless displayresolution matched the vobsubresolution and no overscan was set. (only with mplayer pre6)

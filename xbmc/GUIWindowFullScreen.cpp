@@ -308,7 +308,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 		{	// toggle the aspect ratio mode (only if the info is onscreen)
 		  if (m_bShowViewModeInfo)
 		    {
-			SetViewMode(++g_stSettings.m_iViewMode);
+					SetViewMode(++g_stSettings.m_currentVideoSettings.m_ViewMode);
 		    }
 		  m_bShowViewModeInfo = true;
 		  m_dwShowViewModeTimeout = timeGetTime();
@@ -382,7 +382,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 			m_bLastRender=false;
 			m_bOSDVisible=false;
 
-			CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness,g_settings.m_iContrast,g_settings.m_iGamma,true);
+			CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness,g_stSettings.m_currentVideoSettings.m_Contrast,g_stSettings.m_currentVideoSettings.m_Gamma,true);
 
 			CGUIWindow::OnMessage(message);
 
@@ -400,7 +400,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 			m_bShowViewModeInfo = false;
 
 			// set the correct view mode
-			SetViewMode(g_stSettings.m_iViewMode);
+			SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
 
 			if (CUtil::IsUsingTTFSubtitles())
 			{
@@ -610,7 +610,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
 		{
 			// get the "View Mode" string
 			CStdString strTitle = g_localizeStrings.Get(629);
-			CStdString strMode = g_localizeStrings.Get(630 + g_stSettings.m_iViewMode);
+			CStdString strMode = g_localizeStrings.Get(630 + g_stSettings.m_currentVideoSettings.m_ViewMode);
 			CStdString strInfo;
 			strInfo.Format("%s : %s",strTitle.c_str(), strMode.c_str());
 			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 
@@ -989,18 +989,18 @@ void CGUIWindowFullScreen::Update()
 void CGUIWindowFullScreen::SetViewMode(int iViewMode)
 {
 	if (iViewMode<VIEW_MODE_NORMAL || iViewMode>VIEW_MODE_CUSTOM) iViewMode=VIEW_MODE_NORMAL;
-	g_stSettings.m_iViewMode = iViewMode;
+	g_stSettings.m_currentVideoSettings.m_ViewMode = iViewMode;
 
-	if (g_stSettings.m_iViewMode == VIEW_MODE_NORMAL)
+	if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_NORMAL)
 	{	// normal mode...
 		g_stSettings.m_fPixelRatio = 1.0;
 		g_stSettings.m_fZoomAmount = 1.0;
 		return;
 	}
-	if (g_stSettings.m_iViewMode == VIEW_MODE_CUSTOM)
+	if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_CUSTOM)
 	{
-		g_stSettings.m_fZoomAmount = g_stSettings.m_fCustomZoomAmount;
-		g_stSettings.m_fPixelRatio = g_stSettings.m_fCustomPixelRatio;
+		g_stSettings.m_fZoomAmount = g_stSettings.m_currentVideoSettings.m_CustomZoomAmount;
+		g_stSettings.m_fPixelRatio = g_stSettings.m_currentVideoSettings.m_CustomPixelRatio;
 		return;
 	}
 	
@@ -1014,7 +1014,7 @@ void CGUIWindowFullScreen::SetViewMode(int iViewMode)
 	float fSourceFrameRatio;
 	g_application.m_pPlayer->GetVideoAspectRatio(fSourceFrameRatio);
 
-	if (g_stSettings.m_iViewMode == VIEW_MODE_ZOOM)
+	if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_ZOOM)
 	{	// zoom image so no black bars
 		g_stSettings.m_fPixelRatio = 1.0;
 		// calculate the desired output ratio
@@ -1030,7 +1030,7 @@ void CGUIWindowFullScreen::SetViewMode(int iViewMode)
 			g_stSettings.m_fZoomAmount = fNewHeight/fScreenHeight;
 		}
 	}
-	else if (g_stSettings.m_iViewMode == VIEW_MODE_STRETCH_4x3)
+	else if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_4x3)
 	{	// stretch image to 4:3 ratio
 		g_stSettings.m_fZoomAmount = 1.0;
 		if (iRes == PAL_4x3 || iRes == PAL60_4x3 || iRes == NTSC_4x3 || iRes == HDTV_480p_4x3)
@@ -1045,14 +1045,14 @@ void CGUIWindowFullScreen::SetViewMode(int iViewMode)
 			g_stSettings.m_fPixelRatio = (4.0f/3.0f)/fSourceFrameRatio;
 		}
 	}
-	else if (g_stSettings.m_iViewMode == VIEW_MODE_STRETCH_14x9)
+	else if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_14x9)
 	{	// stretch image to 14:9 ratio
 		g_stSettings.m_fZoomAmount = 1.0;
 		// now we need to set g_stSettings.m_fPixelRatio so that 
 		// fOutputFrameRatio = 14:9.
 		g_stSettings.m_fPixelRatio = (14.0f/9.0f)/fSourceFrameRatio;
 	}
-	else if (g_stSettings.m_iViewMode == VIEW_MODE_STRETCH_16x9)
+	else if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_16x9)
 	{	// stretch image to 16:9 ratio
 		g_stSettings.m_fZoomAmount = 1.0;
 		if (iRes == PAL_4x3 || iRes == PAL60_4x3 || iRes == NTSC_4x3 || iRes == HDTV_480p_4x3)
@@ -1066,7 +1066,7 @@ void CGUIWindowFullScreen::SetViewMode(int iViewMode)
 			g_stSettings.m_fPixelRatio = (fScreenWidth/fScreenHeight)*g_settings.m_ResInfo[iRes].fPixelRatio/fSourceFrameRatio;
 		}
 	}
-	else// if (g_stSettings.m_iViewMode == VIEW_MODE_ORIGINAL)
+	else// if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_ORIGINAL)
 	{	// zoom image so that the height is the original size
 		g_stSettings.m_fPixelRatio = 1.0;
 		// get the size of the media file

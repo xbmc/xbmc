@@ -49,7 +49,7 @@ public:
 	CSlideShowPic();
 	~CSlideShowPic();
 
-	void	SetTexture(int iSlideNumber, D3DTexture *pTexture, int iWidth, int iHeight, DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSISTION_EFFECT transEffect = FADEIN_FADEOUT);
+	void	SetTexture(int iSlideNumber, D3DTexture *pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSISTION_EFFECT transEffect = FADEIN_FADEOUT);
 	void	UpdateTexture(D3DTexture *pTexture, int iWidth, int iHeight);
 	bool	IsLoaded() const {return m_bIsLoaded;};
 	void	Render();
@@ -144,7 +144,7 @@ public:
   virtual bool	OnMessage(CGUIMessage& message);
   virtual void	OnAction(const CAction &action);
   virtual void	Render();
-	void					OnLoadPic(int iPic, int iSlideNumber, D3DTexture *pTexture, int iWidth, int iHeight, int iOriginalWidth, int iOriginalHeight, bool bFullSize);
+	void					OnLoadPic(int iPic, int iSlideNumber, D3DTexture *pTexture, int iWidth, int iHeight, int iOriginalWidth, int iOriginalHeight, int iRotate, bool bFullSize);
 	int						NumSlides();
 private:
   void				RenderPause();

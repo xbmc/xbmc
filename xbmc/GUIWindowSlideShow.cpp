@@ -65,7 +65,7 @@ void CBackgroundPicLoader::Process()
 				bool bFullSize = ((int)pic.GetWidth() < m_maxWidth) && ((int)pic.GetHeight() < m_maxHeight);
 				if (!bFullSize && pic.GetWidth() == MAX_PICTURE_WIDTH) bFullSize = true;
 				if (!bFullSize && pic.GetHeight() == MAX_PICTURE_HEIGHT) bFullSize = true;
-				m_pCallback->OnLoadPic(m_iPic, m_iSlideNumber, pTexture, pic.GetWidth(), pic.GetHeight(), iOriginalWidth, iOriginalHeight, bFullSize);
+				m_pCallback->OnLoadPic(m_iPic, m_iSlideNumber, pTexture, pic.GetWidth(), pic.GetHeight(), iOriginalWidth, iOriginalHeight, pic.GetExifOrientation(), bFullSize);
 			}
 		}
 		m_bLoadPic = false;
@@ -107,7 +107,7 @@ void CSlideShowPic::Close()
 	m_bDrawNextImage = false;
 }
 
-void CSlideShowPic::SetTexture(int iSlideNumber, D3DTexture *pTexture, int iWidth, int iHeight, DISPLAY_EFFECT dispEffect, TRANSISTION_EFFECT transEffect)
+void CSlideShowPic::SetTexture(int iSlideNumber, D3DTexture *pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect, TRANSISTION_EFFECT transEffect)
 {
 	Close();
 	m_bPause = false;
@@ -129,6 +129,14 @@ void CSlideShowPic::SetTexture(int iSlideNumber, D3DTexture *pTexture, int iWidt
 	m_fTransistionAngle = 0;
 	m_fTransistionZoom = 0;
 	m_fAngle = 0;
+	if (iRotate == 8)
+	{	// rotate to 270 degrees
+		m_fAngle = 3.0f;
+	}
+	if (iRotate == 6)
+	{	// rotate to 90 degrees
+		m_fAngle = 1.0f;
+	}
 	m_fZoomAmount = 1;
 	m_fZoomLeft = 0;
 	m_fZoomTop = 0;
@@ -251,8 +259,11 @@ void CSlideShowPic::Process()
 			}
 		}
 	}
+	// if we are zoomed, make sure we are paused
+	bool bPaused = m_bPause;
+	if (m_fZoomAmount > 1.0f) bPaused = true;
 	// now just display
-	if (!m_bNoEffect && !m_bPause)
+	if (!m_bNoEffect && !bPaused)
 	{
 		if (m_displayEffect == EFFECT_FLOAT)
 		{
@@ -295,7 +306,7 @@ void CSlideShowPic::Process()
 			}
 		}
 	}
-	if (m_bPause)
+	if (bPaused)
 	{	// paused - increment the last transistion start time
 		m_transistionEnd.start++;
 	}
@@ -1135,7 +1146,7 @@ void CGUIWindowSlideShow::Move(float fX, float fY)
 	}
 }
 
-void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, D3DTexture *pTexture, int iWidth, int iHeight, int iOriginalWidth, int iOriginalHeight, bool bFullSize)
+void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, D3DTexture *pTexture, int iWidth, int iHeight, int iOriginalWidth, int iOriginalHeight, int iRotate, bool bFullSize)
 {
 	if (pTexture)
 	{
@@ -1150,9 +1161,9 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, D3DTexture *pTex
 		else
 		{
 			if (m_bSlideShow)
-				m_Image[iPic].SetTexture(iSlideNumber, pTexture, iWidth, iHeight);
+				m_Image[iPic].SetTexture(iSlideNumber, pTexture, iWidth, iHeight, iRotate);
 			else
-				m_Image[iPic].SetTexture(iSlideNumber, pTexture, iWidth, iHeight, EFFECT_NO_TIMEOUT);
+				m_Image[iPic].SetTexture(iSlideNumber, pTexture, iWidth, iHeight, iRotate, EFFECT_NO_TIMEOUT);
 			m_Image[iPic].SetOriginalSize(iOriginalWidth, iOriginalHeight, bFullSize);
 		}
 	}

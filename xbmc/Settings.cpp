@@ -169,8 +169,6 @@ CSettings::CSettings(void)
 	for (int i = 0; i < (int)g_settings.m_szMyVideoCleanTokensArray.size(); i++)
 		g_settings.m_szMyVideoCleanTokensArray[i].MakeLower();
 
-	g_stSettings.m_bNonInterleaved=false;
-	g_stSettings.m_bNoCache=false;
 	g_stSettings.m_bUseFDrive=true;
 	g_stSettings.m_bUseGDrive=false;
 	g_stSettings.m_bUsePCDVDROM=false;
@@ -253,11 +251,9 @@ CSettings::CSettings(void)
 	g_stSettings.m_bMyFilesSourceRootSortAscending=true;
 	g_stSettings.m_bMyFilesDestSortAscending=true;
 	g_stSettings.m_bMyFilesDestRootSortAscending=true;
-	g_stSettings.m_iViewMode = VIEW_MODE_NORMAL;
+
 	g_stSettings.m_fZoomAmount = 1.0f;
 	g_stSettings.m_fPixelRatio = 1.0f;
-	g_stSettings.m_fCustomZoomAmount=1.0f;
-	g_stSettings.m_fCustomPixelRatio=1.0f;
 
 	g_stSettings.m_bDisplayRemoteCodes=false;
 	g_stSettings.m_mplayerDebug=false;
@@ -1066,7 +1062,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 	pElement = pRootElement->FirstChildElement("general");
 	if (pElement)
 	{
-		GetInteger(pElement, "audiostream",g_stSettings.m_iAudioStream,-1,-1,INT_MAX);
+		GetInteger(pElement, "audiostream",g_stSettings.m_defaultVideoSettings.m_AudioStream,-1,-1,INT_MAX);
 
 		GetString(pElement, "kaiarenapass",	g_stSettings.szOnlineArenaPassword, "");
 		GetString(pElement, "kaiarenadesc",	g_stSettings.szOnlineArenaDescription, "");
@@ -1076,9 +1072,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 	pElement = pRootElement->FirstChildElement("screen");
 	if (pElement)
 	{
-		GetInteger(pElement, "viewmode", g_stSettings.m_iViewMode, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, VIEW_MODE_CUSTOM);
-		GetFloat(pElement, "zoomamount", g_stSettings.m_fCustomZoomAmount, 1.0f, 1.0f, 2.0f);
-		GetFloat(pElement, "pixelratio", g_stSettings.m_fCustomPixelRatio, 1.0f, 0.5f, 2.0f);
+		GetInteger(pElement, "viewmode", g_stSettings.m_defaultVideoSettings.m_ViewMode, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, VIEW_MODE_CUSTOM);
+		GetFloat(pElement, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount, 1.0f, 1.0f, 2.0f);
+		GetFloat(pElement, "pixelratio", g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio, 1.0f, 0.5f, 2.0f);
 	}
 	// audio settings
 	pElement = pRootElement->FirstChildElement("audio");
@@ -1311,9 +1307,9 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	TiXmlElement screenNode("screen");
 	pNode = pRoot->InsertEndChild(screenNode);
 	if (!pNode) return false;
-	SetInteger(pNode, "viewmode", g_stSettings.m_iViewMode);
-	SetFloat(pNode, "zoomamount", g_stSettings.m_fCustomZoomAmount);
-	SetFloat(pNode, "pixelratio", g_stSettings.m_fCustomPixelRatio);
+	SetInteger(pNode, "viewmode", g_stSettings.m_defaultVideoSettings.m_ViewMode);
+	SetFloat(pNode, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount);
+	SetFloat(pNode, "pixelratio", g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio);
 
 	// audio settings
 	TiXmlElement audioNode("audio");
