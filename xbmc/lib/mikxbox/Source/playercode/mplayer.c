@@ -850,7 +850,9 @@ static int DoPTEffectB(UWORD tick, UWORD flags, MP_CONTROL *a, MODULE *mod, SWOR
 		mod->sngpos=dat;
 		mod->posjmp=2;
 		mod->patpos=0;
-		OutputDebugString("Looped!\n");
+#ifdef _XBOX
+		mod->loop = 0; // special credits loop/wrap semantics
+#endif
 	}
 
 	return 0;
@@ -890,7 +892,9 @@ static int DoPTEffectD(UWORD tick, UWORD flags, MP_CONTROL *a, MODULE *mod, SWOR
 								&& !(flags&UF_NOWRAP)))) {
 					mod->sngpos=0;
 					mod->posjmp=2;
-					OutputDebugString("Looped!\n");
+#ifdef _XBOX
+					mod->loop = 0; // special credits loop/wrap semantics
+#endif
 				} else
 					mod->posjmp=3;
 			}
@@ -2934,6 +2938,9 @@ void Mod_Player_HandleTick(void)
 					else
 						pf->sngspd=6;
 					pf->bpm=pf->inittempo<32?32:pf->inittempo;
+#ifdef _XBOX
+					pf->loop = 1; // special credits loop/wrap semantics
+#endif
 				}
 			}
 			if (pf->sngpos<0) pf->sngpos=pf->numpos-1;
