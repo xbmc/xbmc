@@ -161,49 +161,25 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
     }
     break;
 
-	case ACTION_STEP_BACK:
-    {
-      int iPercent=g_application.m_pPlayer->GetPercentage();
-      if (iPercent>=2)
-      {
-        g_application.m_pPlayer->SeekPercentage(iPercent-2);
-      }
-    }
+		case ACTION_STEP_BACK:
+      SeekPercentage(g_application.m_pPlayer->GetPercentage()-2);
 		break;
 
-	case ACTION_STEP_FORWARD:
-    {      
-      int iPercent=g_application.m_pPlayer->GetPercentage();
-			if (iPercent+2<=100)
-      {
-        g_application.m_pPlayer->SeekPercentage(iPercent+2);
-      }
-    }
-    break;
+		case ACTION_STEP_FORWARD:
+			SeekPercentage(g_application.m_pPlayer->GetPercentage()+2);
+		break;
 
 		case ACTION_BIG_STEP_BACK:
-    {
-      int iPercent=g_application.m_pPlayer->GetPercentage();
-			if (iPercent>=10)
-      {
-        g_application.m_pPlayer->SeekPercentage(iPercent-10);
-      }
-    }
-    break;
+			SeekPercentage(g_application.m_pPlayer->GetPercentage()-10);
+		break;
 
 		case ACTION_BIG_STEP_FORWARD:
-    {
-      int iPercent=g_application.m_pPlayer->GetPercentage();
-			if (iPercent+10<=100)
-      {
-        g_application.m_pPlayer->SeekPercentage(iPercent+10);
-      }
-    }
-    break;
+			SeekPercentage(g_application.m_pPlayer->GetPercentage()+10);
+		break;
 
-    case ACTION_SHOW_MPLAYER_OSD:
-      g_application.m_pPlayer->ToggleOSD();
-    break;
+		case ACTION_SHOW_MPLAYER_OSD:
+			g_application.m_pPlayer->ToggleOSD();
+		break;
 
 		case ACTION_SHOW_OSD:	// Show the OSD
     {	
@@ -336,20 +312,28 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 		}
 		break;
  		case ACTION_SMALL_STEP_BACK:
-     {
- 
- 		int orgpos=(int)g_application.m_pPlayer->GetTime();
-		int triesleft=g_stSettings.m_iSmallStepBackTries;
-        int jumpsize = g_stSettings.m_iSmallStepBackSeconds; // secs
-        int setpos=(orgpos > jumpsize) ? orgpos-jumpsize : 0; // First jump = 2*jumpsize
-        int newpos;
-        do
-        {
-			setpos = (setpos > jumpsize) ? setpos-jumpsize : 0;
- 			g_application.m_pPlayer->SeekTime(setpos*1000);
- 			Sleep(g_stSettings.m_iSmallStepBackDelay); // delay to let mplayer finish its seek (in ms)
- 			newpos = (int)g_application.m_pPlayer->GetTime();
- 		} while ( (newpos>orgpos-jumpsize) && (setpos>0) && (--triesleft>0));
+    {
+			// unpause the player so that it seeks nicely
+			bool bNeedPause(false);
+			if (g_application.m_pPlayer->IsPaused())
+			{
+				g_application.m_pPlayer->Pause();
+				bNeedPause = true;
+			}
+ 			int orgpos=(int)g_application.m_pPlayer->GetTime();
+			int triesleft=g_stSettings.m_iSmallStepBackTries;
+      int jumpsize = g_stSettings.m_iSmallStepBackSeconds; // secs
+      int setpos=(orgpos > jumpsize) ? orgpos-jumpsize : 0; // First jump = 2*jumpsize
+      int newpos;
+      do
+      {
+				setpos = (setpos > jumpsize) ? setpos-jumpsize : 0;
+ 				g_application.m_pPlayer->SeekTime(setpos*1000);
+ 				Sleep(g_stSettings.m_iSmallStepBackDelay); // delay to let mplayer finish its seek (in ms)
+ 				newpos = (int)g_application.m_pPlayer->GetTime();
+ 			} while ( (newpos>orgpos-jumpsize) && (setpos>0) && (--triesleft>0));
+			// repause player if needed
+			if (bNeedPause) g_application.m_pPlayer->Pause();
   	}
     break;
 	}
@@ -859,11 +843,13 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
 			float h;
 			m_subtitleFont->GetTextExtent(subtitleText.c_str(), &w, &h);
 
-			float x = (float) g_settings.m_ResInfo[m_iResolution].iWidth / 2;
+			float x = (float) (g_settings.m_ResInfo[m_iResolution].iWidth) / 2;
 			float y = (float) g_settings.m_ResInfo[m_iResolution].iSubtitles - h;
 
-			m_subtitleFont->DrawText(x-1, y-1, 0, subtitleText.c_str(), XBFONT_CENTER_X);
-			m_subtitleFont->DrawText(x+1, y+1, 0, subtitleText.c_str(), XBFONT_CENTER_X);
+			m_subtitleFont->DrawText(x-2, y, 0, subtitleText.c_str(), XBFONT_CENTER_X);
+			m_subtitleFont->DrawText(x+2, y, 0, subtitleText.c_str(), XBFONT_CENTER_X);
+			m_subtitleFont->DrawText(x, y+2, 0, subtitleText.c_str(), XBFONT_CENTER_X);
+			m_subtitleFont->DrawText(x, y-2, 0, subtitleText.c_str(), XBFONT_CENTER_X);
 			m_subtitleFont->DrawText(x, y, g_stSettings.m_iSubtitleTTFColor, subtitleText.c_str(), XBFONT_CENTER_X);
 		}
 	}
@@ -920,8 +906,19 @@ void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
 			im*=60;
 			ih*=3600; 
 			itotal = ih+im+is;
+			bool bNeedsPause(false);
+			if (g_application.m_pPlayer->IsPaused())
+			{
+				bNeedsPause = true;
+				g_application.m_pPlayer->Pause();
+			}
 			if(itotal < g_application.m_pPlayer->GetTotalTime())
 				g_application.m_pPlayer->SeekTime(itotal*1000);
+			if (bNeedsPause)
+			{
+				Sleep(g_stSettings.m_iSmallStepBackDelay);	// allow mplayer to finish it's seek (nasty hack)
+				g_application.m_pPlayer->Pause();
+			}
 			m_iTimeCodePosition = 0;
       m_bShowTime=false;
 		}
@@ -1036,4 +1033,25 @@ void CGUIWindowFullScreen::SetViewMode(int iViewMode)
 		// now work out the zoom amount so that no zoom is done
 		g_stSettings.m_fZoomAmount = (srcRect.bottom-srcRect.top)/fNewHeight;
 	}
+}
+
+void CGUIWindowFullScreen::SeekPercentage(int iPercent)
+{
+	if (iPercent<0) iPercent=0;
+	if (iPercent>100) iPercent=100;
+	// Unpause mplayer if necessary
+	bool bNeedsPause(false);
+	if (g_application.m_pPlayer->IsPaused())
+	{
+		g_application.m_pPlayer->Pause();
+		bNeedsPause = true;
+	}
+	g_application.m_pPlayer->SeekPercentage(iPercent);
+	// And repause it
+	if (bNeedsPause)
+	{
+		Sleep(g_stSettings.m_iSmallStepBackDelay);	// allow mplayer to finish it's seek (nasty hack)
+		g_application.m_pPlayer->Pause();
+	}
+
 }
