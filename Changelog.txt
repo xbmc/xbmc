@@ -5,6 +5,12 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-11-2004 added: Kai Toast - pop up notifications for XLink Kai function
+  - 13-11-2004 added: Kai Auto Play - automatically launch games off the harddrive
+  - 13-11-2004 added: Kai Network Settings - configure games directory and notifications.
+  - 13-11-2004 added: Kai Netowrk Dialogs - help for n00bs
+
+added/fixed: (dd-mm-yyyy) (please specify date in CET)
   - 13-11-2004 added: RealMedia RTSP/RDT support
   - 13-11-2004 fixed: <alignY>, <textoffsetX>, <textoffsetY> didn't work for listcontrolex
   - 13-11-2004 fixed: My Pictures shows folder thumb for parent folder items
