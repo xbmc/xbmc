@@ -23,6 +23,7 @@
 #include "filesystem/file.h"
 #include "xbox/iosupport.h"
 #include "playlistplayer.h"
+#include "GUIPassword.h"
 
 #define VIEW_AS_LIST           0
 #define VIEW_AS_ICONS          1
@@ -333,7 +334,7 @@ void CGUIWindowVideoActors::OnClick(int iItem)
     m_iItemSelected=-1;
 		if ( pItem->m_bIsShareOrDrive ) 
 		{
-      if ( !HaveBookmarkPermissions( pItem, "videos" ) )
+      if ( !CGUIPassword::IsItemUnlocked( pItem, "videos" ) )
         return;
 
 			if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )

@@ -2043,7 +2043,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   
   CUtil::Split(strMovie,strLookInPaths[0],strFileName);
   ReplaceExtension(strFileName, "", strFileNameNoExt);
-  
+
 	if (strlen(g_stSettings.m_szAlternateSubtitleDirectory) != 0)
 	{
 		strLookInPaths[1] = g_stSettings.m_szAlternateSubtitleDirectory;
@@ -3373,6 +3373,13 @@ void CUtil::ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayList::CPl
 
 bool CUtil::IsNaturalNumber(const CStdString& str)
 {
+	return IsNaturalNumber((CStdStringW)str);
+}
+
+bool CUtil::IsNaturalNumber(const CStdStringW& str)
+{
+  if (0 == (int)str.size())
+    return false;
 	for (int i = 0; i < (int)str.size(); i++)
 	{
 		if ((str[i] < '0') || (str[i] > '9')) return false;

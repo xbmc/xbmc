@@ -17,6 +17,9 @@ public:
 
 	static bool ShowAndGetInput(CStdString& aTextString, bool allowEmptyResult);
 	static bool ShowAndGetInput(CStdString& aTextString, const CStdString &strHeading, bool allowEmptyResult);
+  static bool ShowAndGetInput(CStdStringW& aTextString, const CStdStringW &strHeading, bool allowEmptyResult);
+	static bool	ShowAndGetNewPassword(CStdStringW& strNewPassword);
+  static int  ShowAndVerifyPassword(CStdStringW& strPassword, const CStdStringW& strHeading, int iRetries);
 
 	virtual void	Close();
 

@@ -9,6 +9,7 @@ public:
 	virtual ~CGUIDialogYesNo(void);
   virtual bool    OnMessage(CGUIMessage& message);
 	bool						IsConfirmed() const;
+  static bool     ShowAndGetInput(const CStdStringW& dlgHeading, const CStdStringW& dlgLine0, const CStdStringW& dlgLine1, const CStdStringW& dlgLine2);
 	void					  SetLine(int iLine, const wstring& strLine);
 	void					  SetLine(int iLine, const string& strLine);
 	void						SetLine(int iLine, int iString);

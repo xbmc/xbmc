@@ -30,6 +30,7 @@
 #include "filesystem/directorycache.h"
 #include "GUIDialogOK.h"
 #include "AutoSwitch.h"
+#include "GUIPassword.h"
 
 #define VIEW_AS_LIST           0
 #define VIEW_AS_ICONS          1
@@ -576,7 +577,7 @@ void CGUIWindowVideoFiles::OnClick(int iItem)
     m_iItemSelected=-1;
 		if ( pItem->m_bIsShareOrDrive ) 
 		{
-      if ( !HaveBookmarkPermissions( pItem, "videos" ) )
+      if ( !CGUIPassword::IsItemUnlocked( pItem, "videos" ) )
         return;
 
 			if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )
@@ -1308,7 +1309,7 @@ void CGUIWindowVideoFiles::OnPopupMenu(int iItem)
 			bMaxRetryExceeded=!(m_vecItems[iItem]->m_iBadPwdCount < g_stSettings.m_iMasterLockMaxRetry);
 		
 		// and do the popup menu
- 		if (CGUIDialogContextMenu::BookmarksMenu("videos", m_vecItems[iItem]->GetLabel(), m_vecItems[iItem]->m_strPath, m_vecItems[iItem]->m_iLockMode, bMaxRetryExceeded, iPosX, iPosY))
+		if (CGUIDialogContextMenu::BookmarksMenu("videos", m_vecItems[iItem]->GetLabel(), m_vecItems[iItem]->m_strPath, m_vecItems[iItem]->m_iLockMode, bMaxRetryExceeded, iPosX, iPosY))
 		{
 			m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
 			Update(m_strDirectory);

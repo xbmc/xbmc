@@ -38,8 +38,8 @@
 #include "GUIDialogFileStacking.h"
 #include "GUIDialogVolumeBar.h"
 #include "GUIDialogKaiToast.h"
-#include "GUIDialogPasswordNumeric.h"
-#include "GUIDialogPasswordGamepad.h"
+#include "GUIDialogNumeric.h"
+#include "GUIDialogGamepad.h"
 #include "GUIDialogSubMenu.h"
 #include "GUIDialogButtonMenu.h"
 #include "GUIDialogContextMenu.h"
@@ -162,8 +162,8 @@ public:
 	CGUIDialogOK										m_guiDialogOK;
 	CGUIDialogVolumeBar							m_guiDialogVolumeBar;
 	CGUIDialogKaiToast							m_guiDialogKaiToast;
-	CGUIDialogPasswordNumeric				m_guiDialogPasswordNumeric;
-	CGUIDialogPasswordGamepad				m_guiDialogPasswordGamepad;
+	CGUIDialogNumeric				m_guiDialogNumeric;
+	CGUIDialogGamepad				m_guiDialogGamepad;
 	CGUIDialogSubMenu								m_guiDialogSubMenu;
 	CGUIDialogButtonMenu						m_guiDialogButtonMenu;
 	CGUIDialogContextMenu						m_guiDialogContextMenu;
@@ -228,7 +228,9 @@ public:
 	UINT64		m_DAAPSongSize;
 	void		*m_DAAPArtistPtr;
 	CCdgParser	m_CdgParser;
-  int         m_iMasterCodeRetriesRemaining;
+  bool        m_bMasterLockPreviouslyEntered;
+  int         m_iMasterLockRetriesRemaining;
+  bool        m_bMasterLockOverridesLocalPasswords;
 
 protected:
   CStdString							m_strCurrentPlayer;

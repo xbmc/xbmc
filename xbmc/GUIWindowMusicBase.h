@@ -99,7 +99,6 @@ protected:
 	virtual	void							OnSearchItemFound(const CFileItem* pItem);
 	virtual void							DoSearch(const CStdString& strSearch,VECFILEITEMS& items);
 					bool							HaveDiscOrConnection( CStdString& strPath, int iDriveType );
-        	bool             	HaveBookmarkPermissions(CFileItem* pItem, const CStdString &strType);
 					bool							GetKeyboard(CStdString& strInput);
 	virtual	void							GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
 	virtual	void							ShowThumbPanel();
