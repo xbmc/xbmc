@@ -36,7 +36,7 @@ protected:
   virtual void			UpdateButtons();
 	virtual void			OnPopupMenu(int iItem);
 
-  void							Clear();
+  void							ClearFileItems();
 	void							OnSort();
 	virtual void			Update(const CStdString &strDirectory) {};	// CONSOLIDATE??
 	virtual void			OnClick(int iItem) {};		// CONSOLIDATE??

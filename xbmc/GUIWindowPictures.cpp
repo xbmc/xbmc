@@ -188,7 +188,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 			m_iLastControl=GetFocusedControl();
 			m_iItemSelected=GetSelectedItem();
 
-			Clear();
+			ClearFileItems();
 			if (message.GetParam1() != WINDOW_SLIDESHOW)
 			{
 				CSectionLoader::Unload("CXIMAGE");
@@ -369,8 +369,14 @@ void CGUIWindowPictures::OnSort()
   }
 }
 
-void CGUIWindowPictures::Clear()
+void CGUIWindowPictures::ClearFileItems()
 {
+  CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_LIST,0,0,NULL);
+  g_graphicsContext.SendMessage(msg);         
+
+	CGUIMessage msg2(GUI_MSG_LABEL_RESET,GetID(),CONTROL_THUMBS,0,0,NULL);
+  g_graphicsContext.SendMessage(msg2);         
+
 	CFileItemList itemlist(m_vecItems); // will clean up everything
 }
 
@@ -496,7 +502,7 @@ void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
 			m_history.Set(strSelectedItem,m_strDirectory);
 		}
 	}
-  Clear();
+  ClearFileItems();
 
 	GetDirectory(strDirectory, m_vecItems);
 

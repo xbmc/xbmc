@@ -238,7 +238,8 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 		{
 			m_iLastControl=GetFocusedControl();
 			m_iItemSelected=GetSelectedItem(m_iLastControl-CONTROL_LEFT_LIST);
-			Clear();
+			ClearFileItems(0);
+			ClearFileItems(1);
 		}	
     break;
 
@@ -384,10 +385,12 @@ void CGUIWindowFileManager::OnSort(int iList)
 //	UpdateControl(iList);
 }
 
-void CGUIWindowFileManager::Clear()
+void CGUIWindowFileManager::ClearFileItems(int iList)
 {
-	CFileItemList itemleftlist(m_vecItems[0]); // will clean up everything
-	CFileItemList itemrightlist(m_vecItems[1]); // will clean up everything
+  CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),iList+CONTROL_LEFT_LIST,0,0,NULL);
+  g_graphicsContext.SendMessage(msg);         
+
+	CFileItemList itemleftlist(m_vecItems[iList]); // will clean up everything
 }
 
 void CGUIWindowFileManager::UpdateButtons()
@@ -462,9 +465,7 @@ void CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 		}
 	}
 
-	{
-		CFileItemList itemleftlist(m_vecItems[iList]); // will clean up everything
-	}
+	ClearFileItems(iList);
 
 	GetDirectory(iList, strDirectory, m_vecItems[iList]);
 

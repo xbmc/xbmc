@@ -146,7 +146,7 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
 		{
 			m_iSelectedItem=GetSelectedItem();
 			m_iLastControl=GetFocusedControl();
-			Clear();
+			ClearFileItems();
 		}
     break;
 
@@ -280,8 +280,14 @@ void CGUIWindowScripts::UpdateButtons()
 
 }
 
-void CGUIWindowScripts::Clear()
+void CGUIWindowScripts::ClearFileItems()
 {
+	CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_LIST,0,0,NULL);
+  g_graphicsContext.SendMessage(msg);         
+
+  CGUIMessage msg2(GUI_MSG_LABEL_RESET,GetID(),CONTROL_THUMBS,0,0,NULL);
+  g_graphicsContext.SendMessage(msg2);         
+
 	CFileItemList itemlist(m_vecItems); // will clean up everything
 }
 
@@ -345,7 +351,7 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
 			m_history.Set(strSelectedItem,m_strDirectory);
 		}
 	}
-  Clear();
+  ClearFileItems();
 
 	CStdString strParentPath;
 	bool bParentExists=false;

@@ -353,7 +353,7 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 			m_history.Set(strSelectedItem,m_strDirectory);
 		}
 	}
-  Clear();
+  ClearFileItems();
 
 	CStdString strParentPath;
 	bool bParentExists=CUtil::GetParentPath(strDirectory, strParentPath);
