@@ -1628,7 +1628,7 @@ void CApplication::OnKey(CKey& key)
 		// pause : pauses current audio song
 		if (action.wID == ACTION_PAUSE)
 		{
-			if (m_pPlayer)
+			if (IsPlaying())
 			{
 				m_pPlayer->Pause();
 				if (!m_pPlayer->IsPaused())
