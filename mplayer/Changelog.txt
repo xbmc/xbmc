@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 16-01-2004 fixed: avi's > 2GB stackoverflow crash
+                      patch from Bugzilla Bug 86, avi_idx_quicksort overflows stack on >2GB ODML file, http://bugzilla.mplayerhq.hu/show_bug.cgi?id=86
+                      xbmc: [ 1103426 ] aviheader.c bug - transcoded AVIs don't play
   - 14-01-2005 changed: improved FF/RW in video's, should display 2fps during 8x-32x modes. 
                         still some problems when decoding using ffmpeg, ff/rw work, but no picture.
   - 14-01-2005 fixed: FF/RW in mp3/wma
