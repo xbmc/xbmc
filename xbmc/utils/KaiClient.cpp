@@ -34,8 +34,8 @@ void CKaiClient::QueryVectorPlayerCount(CStdString& aVector)
 		CStdString strQueryMessage;
 		strQueryMessage.Format("KAI_CLIENT_SPECIFIC_COUNT;%s;",aVector.c_str());
 		Send(server_addr, strQueryMessage);
-//		OutputDebugString(strQueryMessage.c_str());
-//		OutputDebugString("\r\n");
+		//OutputDebugString(strQueryMessage.c_str());
+		//OutputDebugString("\r\n");
 	}
 }
 
@@ -820,7 +820,7 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 					CStdString strQuestion = strtok(NULL, ";"); 
 					CStdString strAnswer = strtok(NULL, ";");  
 
-					if (strQuestion.Find("XBE_")==0)
+					if (strAnswer.length()>0 && strQuestion.Find("XBE_")==0)
 					{
 						CStdString strTitleId = strQuestion.Mid(4);
 						DWORD dwTitleId = strtoul(strTitleId.c_str(),NULL,16);

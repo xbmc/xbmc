@@ -139,7 +139,11 @@ void CArenaItem::OnPaint(CGUIItem::RenderContext* pContext)
 			DWORD dwColor = pDC->m_bFocused ? pDC->m_dwTextSelectedColour : pDC->m_dwTextNormalColour;
 
 			CStdString strInfo;
-			if (m_nPlayerLimit>0)
+			if (m_nPlayers<0)
+			{
+				// orbs remeshing: don't display anything
+			}
+			else if (m_nPlayerLimit>0)
 			{
 				strInfo.Format("%d/%d",(m_nPlayers>0) ? m_nPlayers : 0, m_nPlayerLimit);
 			}
