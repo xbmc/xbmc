@@ -14,6 +14,7 @@
 #include "DetectDVDType.h"
 #include "autoptrhandle.h"
 #include "playlistfactory.h"
+#include "ThumbnailCache.h"
 
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;
@@ -1474,3 +1475,22 @@ int CUtil::GetFolderCount(VECFILEITEMS &items)
 	return nFolderCount;
 }
 
+bool CUtil::ThumbExists(const CStdString& strFileName, bool bAddCache)
+{
+	return CThumbnailCache::GetThumbnailCache()->ThumbExists(strFileName, bAddCache);
+}
+
+void CUtil::ThumbCacheAdd(const CStdString& strFileName, bool bFileExists)
+{
+	CThumbnailCache::GetThumbnailCache()->Add(strFileName, bFileExists);
+}
+
+void CUtil::ThumbCacheClear()
+{
+	CThumbnailCache::GetThumbnailCache()->Clear();
+}
+
+bool CUtil::ThumbCached(const CStdString& strFileName)
+{
+	return CThumbnailCache::GetThumbnailCache()->IsCached(strFileName);
+}

@@ -193,7 +193,7 @@ void CGUIWindowMusicInfo::Refresh()
 	CStdString strThumb;
 	CStdString strImage=m_pAlbum->GetImageURL();
 	CUtil::GetAlbumThumb(m_pAlbum->GetTitle()+m_pAlbum->GetAlbumPath(),strThumb);
-	if (!CUtil::FileExists(strThumb) )
+	if (!CUtil::ThumbExists(strThumb) )
 	{
 		CHTTP http;
 		http.Download(strImage,strThumb);
@@ -206,6 +206,7 @@ void CGUIWindowMusicInfo::Refresh()
 		m_pTexture=picture.Load(strThumb);
 		m_iTextureWidth=picture.GetWidth();
 		m_iTextureHeight=picture.GetWidth();
+		CUtil::ThumbCacheAdd(strThumb, true);
 	}
 	Update();
 }

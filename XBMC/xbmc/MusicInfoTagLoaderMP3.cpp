@@ -4,10 +4,48 @@
 #include "Util.h"
 #include "picture.h"
 
+const uchar* ID3_GetPictureBufferOfPicType(ID3_Tag* tag, ID3_PictureType pictype, size_t* pBufSize )
+{
+  if (NULL == tag)
+    return NULL;
+  else
+  {
+    ID3_Frame* frame = NULL;
+    ID3_Tag::Iterator* iter = tag->CreateIterator();
+
+    while (NULL != (frame = iter->GetNext() ))
+    {
+      if(frame->GetID() == ID3FID_PICTURE)
+      {
+        if(frame->GetField(ID3FN_PICTURETYPE)->Get() == (uint32)pictype)
+          break;
+      }
+    }
+    delete iter;
+
+    if (frame != NULL)
+    {
+      ID3_Field* myField = frame->GetField(ID3FN_DATA);
+      if (myField != NULL)
+      {
+				*pBufSize=myField->Size();
+        return myField->GetRawBinary();
+      }
+      else return NULL;
+    }
+    else return NULL;
+  }
+}
+
 #define BYTES2INT(b1,b2,b3,b4) (((b1 & 0xFF) << (3*8)) | \
                                 ((b2 & 0xFF) << (2*8)) | \
                                 ((b3 & 0xFF) << (1*8)) | \
                                 ((b4 & 0xFF) << (0*8)))
+
+#define UNSYNC(b1,b2,b3,b4) (((b1 & 0x7F) << (3*7)) | \
+                             ((b2 & 0x7F) << (2*7)) | \
+                             ((b3 & 0x7F) << (1*7)) | \
+                             ((b4 & 0x7F) << (0*7)))
 
 #define MPEG_VERSION2_5 0
 #define MPEG_VERSION1   1
@@ -104,28 +142,33 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
 			bFound=true;
 		}
 
+		CStdString strCoverArt, strPath, strFileName;
+		CUtil::Split(tag.GetURL(), strPath, strFileName);
+		CUtil::GetAlbumThumb(tag.GetAlbum()+strPath, strCoverArt,true);
 		if (bFound)
 		{
-			CStdString strCoverArt, strPath, strFileName;
-			CUtil::Split(tag.GetURL(), strPath, strFileName);
-			CUtil::GetAlbumThumb(tag.GetAlbum()+strPath, strCoverArt,true);
-			if (!CUtil::FileExists(strCoverArt))
+			if (!CUtil::ThumbExists(strCoverArt))
 			{
-				CPicture pic;
 				int nPos=strExtension.Find('/');
 				if (nPos>-1)
 					strExtension.Delete(0, nPos+1);
-				ID3_GetPictureDataOfPicType(&id3tag, "T:\\ID3CoverArt."+strExtension, nPicTyp);
-				pic.CreateAlbumThumbnail("T:\\ID3CoverArt."+strExtension, tag.GetAlbum()+strPath);
-				::DeleteFile("T:\\ID3CoverArt."+strExtension);
+
+				size_t nBufSize=0;
+				const BYTE* pPic=ID3_GetPictureBufferOfPicType(&id3tag, nPicTyp, &nBufSize );
+
+				CPicture pic;
+				pic.CreateAlbumThumbnailFromMemory(pPic, nBufSize, strExtension, strCoverArt);
+				CUtil::ThumbCacheAdd(strCoverArt, true);
 			}
+		}
+		else
+		{
+			//	id3 has no cover, so add to cache 
+			//	that it does not exist
+			CUtil::ThumbCacheAdd(strCoverArt, false);
 		}
 	}
 
-	const Mp3_Headerinfo* mp3info = id3tag.GetMp3HeaderInfo();
-	if ( mp3info != NULL )
-		tag.SetDuration( mp3info->time );
-		
 	return bResult;
 }
 
@@ -155,8 +198,7 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
 					bResult = ReadTag( myTag, tag );
 				}
 			}
-			if (tag.GetDuration()<=0)
-				tag.SetDuration(ReadDuration(file, myTag));
+			tag.SetDuration(ReadDuration(file, myTag));
 		}
 		file.Close();
 	}
@@ -194,10 +236,25 @@ bool CMusicInfoTagLoaderMP3::IsMp3FrameHeader(unsigned long head)
 int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
 {
 	int nDuration=0;
+	int nPrependedBytes=0;
+	unsigned char* xing;
+	unsigned char buffer[8193];
+
+	/* Make sure file has a ID3v2 tag */
+	file.Seek(0, SEEK_SET);
+	file.Read(buffer, 6);
+
+	if (buffer[0]=='I' && 
+			buffer[1]=='D' && 
+			buffer[2]=='3')
+	{
+		/* Now check what the ID3v2 size field says */
+		file.Read(buffer, 4);
+		nPrependedBytes = UNSYNC(buffer[0], buffer[1], buffer[2], buffer[3]) + 10;
+	}
 
 	//raw mp3Data = FileSize - ID3v1 tag - ID3v2 tag
-	int nMp3DataSize=id3tag.GetFileSize()-id3tag.GetAppendedBytes()-id3tag.GetPrependedBytes();
-	int nPrependedBytes=id3tag.GetPrependedBytes();
+	int nMp3DataSize=id3tag.GetFileSize()-id3tag.GetAppendedBytes()-nPrependedBytes;
 
 	const int freqtab[][4] =
 	{
@@ -206,13 +263,14 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
 			{22050, 24000, 16000, 0}, /* MPEG version 2 */
 	};
 
-	unsigned char buffer[65501];
-	file.Seek(0, SEEK_SET);
-	file.Read(buffer, 65500);
+	// Skip ID3V2 tag when reading mp3 data
+	file.Seek(nPrependedBytes, SEEK_SET);
+	file.Read(buffer, 8192);
 
 	int frequency=0, bitrate=0, bittable=0;
-	double tpf=0.0;
-	for (int i=nPrependedBytes; i<65500; i++)
+	int frame_count=0;
+	double tpf=0.0, bpf=0.0;
+	for (int i=0; i<8192; i++)
 	{
 		unsigned long mpegheader=(unsigned long)(
 																	( (buffer[i] & 255) << 24) |
@@ -221,8 +279,22 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
 																	( (buffer[i+3] & 255)      )
 																); 
 
+		//	Do we have a Xing header before the first mpeg frame?
+		if (buffer[i  ]=='X' &&
+				buffer[i+1]=='i' &&
+				buffer[i+2]=='n' &&
+				buffer[i+3]=='g')
+		{
+			if(buffer[i+7] & VBR_FRAMES_FLAG) /* Is the frame count there? */
+			{
+					frame_count = BYTES2INT(buffer[i+8], buffer[i+8+1], buffer[i+8+2], buffer[i+8+3]);
+			}
+		}
+
 		if (IsMp3FrameHeader(mpegheader))
 		{
+			//	skip mpeg header
+			i+=4;
 			int version=0;
 			/* MPEG Audio Version */
 			switch(mpegheader & VERSION_MASK) {
@@ -283,10 +355,26 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
 
 			/* Bitrate */
 			int bitindex = (mpegheader & 0xf000) >> 12;
+			int freqindex = (mpegheader & 0x0C00) >> 10;
 			bitrate = bitrate_table[bittable][layer][bitindex];
   
+			/* Calculate bytes per frame, calculation depends on layer */
+			switch(layer) {
+			case 1:
+					bpf = bitrate;
+					bpf *= 48000;
+					bpf /= freqtab[version][freqindex] << (version-1);
+					break;
+			case 2:
+			case 3:
+					bpf = bitrate;
+					bpf *= 144000;
+					bpf /= freqtab[version][freqindex] << (version-1);
+					break;
+			default:
+					bpf = 1;
+			}
 			double tpfbs[] = { 0, 384.0f, 1152.0f, 1152.0f };
-			int freqindex = (mpegheader & 0x0C00) >> 10;
 			frequency = freqtab[version][freqindex];
 			tpf=tpfbs[layer] / (double) frequency;
 			if (version==MPEG_VERSION2_5 && version==MPEG_VERSION2)
@@ -294,36 +382,37 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
 
 			if(frequency == 0)
 				return 0;
-			break;
-		}
-	}
 
-	//	Check for Xing VBR mp3 file
-	int frame_count=0;
-	for (i=nPrependedBytes; i<65500; i++)
-	{
-		if (buffer[i]=='X' &&
-			buffer[i+1]=='i' &&
-			buffer[i+2]=='n' &&
-			buffer[i+3]=='g')
-		{
-			if(buffer[i+7] & VBR_FRAMES_FLAG) /* Is the frame count there? */
-			{
-					frame_count = BYTES2INT(buffer[i+8], buffer[i+8+1],
-																	buffer[i+8+2], buffer[i+8+3]);
-					break;
+			/* Channel mode (stereo/mono) */
+			int chmode = (mpegheader & 0xc0) >> 6;
+			/* calculate position of Xing VBR header */
+			if (version == MPEG_VERSION1) {
+				if (chmode == 3) /* mono */
+					xing = buffer + i + 17;
+				else
+					xing = buffer + i + 32;
 			}
-		}
+			else {
+				if (chmode == 3) /* mono */
+					xing = buffer + i + 9;
+				else
+					xing = buffer + i + 17;
+			}
 
-		unsigned long mpegheader=(unsigned long)(
-																	( (buffer[i] & 255) << 24) |
-																	( (buffer[i+1] & 255) << 16) |
-																	( (buffer[i+2] & 255) <<  8) |
-																	( (buffer[i+3] & 255)      )
-																); 
-
-		if (IsMp3FrameHeader(mpegheader))
+			//	Do we have a Xing header
+			if (xing[0]=='X' &&
+					xing[1]=='i' &&
+					xing[2]=='n' &&
+					xing[3]=='g')
+			{
+				if(xing[7] & VBR_FRAMES_FLAG) /* Is the frame count there? */
+				{
+						frame_count = BYTES2INT(xing[8], xing[8+1], xing[8+2], xing[8+3]);
+				}
+			}
+			//	We are done!
 			break;
+		}
 	}
 
 	if (frame_count > 0)
@@ -368,7 +457,8 @@ int CMusicInfoTagLoaderMP3::ReadDuration(CFile& file, const ID3_Tag& id3tag)
 
 
 	//	Normal mp3 with constant bitrate duration
-	double d=(double)nMp3DataSize / ((double)bitrate * 125.0f);
+	//	Now song length is ((filesize)/(bytes per frame))*(time per frame) 
+	double d=(double)nMp3DataSize / bpf * tpf;
 	return (int)d;
 
 }

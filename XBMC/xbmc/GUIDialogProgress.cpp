@@ -2,6 +2,7 @@
 #include "guiWindowManager.h"
 #include "localizeStrings.h"
 #include "GUIProgressControl.h"
+#include "application.h"
 
 #define CONTROL_PROGRESS_BAR 20
 
@@ -42,6 +43,14 @@ void CGUIDialogProgress::Progress()
 	if  (m_bRunning)
 	{
 		m_gWindowManager.Process();
+	}
+}
+
+void CGUIDialogProgress::ProgressKeys()
+{
+	if  (m_bRunning)
+	{
+		g_application.FrameMove();
 	}
 }
 
