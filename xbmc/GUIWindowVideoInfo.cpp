@@ -5,6 +5,7 @@
 #include "utils/http.h"
 #include "util.h"
 #include "picture.h"
+#include "application.h"
 
 #define	CONTROL_TITLE					20
 #define	CONTROL_DIRECTOR			21
@@ -61,11 +62,13 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 				m_pTexture=NULL;
 				m_pMovie=NULL;
 			}
+			g_application.EnableOverlay();
 		}
 		break;
 
     case GUI_MSG_WINDOW_INIT:
     {
+			g_application.DisableOverlay();
 			m_pTexture=NULL;
 			m_bViewReview=true;
 			Refresh();

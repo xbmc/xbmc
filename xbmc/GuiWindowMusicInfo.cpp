@@ -5,6 +5,7 @@
 #include "utils/http.h"
 #include "util.h"
 #include "picture.h"
+#include "application.h"
 
 #define	CONTROL_ALBUM		20
 #define	CONTROL_ARTIST	21
@@ -56,11 +57,13 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
 				m_pTexture->Release();
 				m_pTexture=NULL;
 			}
+			g_application.EnableOverlay();
 		}
 		break;
 
     case GUI_MSG_WINDOW_INIT:
     {
+			g_application.DisableOverlay();
 			m_pTexture=NULL;
 			m_bViewReview=true;
 			Refresh();
