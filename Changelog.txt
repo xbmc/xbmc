@@ -5,7 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-  
+  - 21-08-2004 added: Failsafe patch from SF (Thanks Guybrush)
+  - 21-08-2004 added: <align> tag works for buttons now.
+  - 21-08-2004 added: Popup subpanel to homepage.
+  - 21-08-2004 fixed: codecs.conf: DTS tracks wouldn't decode properly if DTS was not enabled.
   - 21-08-2004 added: Two bugs to bugs.txt
   - 21-08-2004 added:    Hebrew xpr fonts
   - 21-08-2004 changed:  Flip BiDi Charset has moved from XboxMediaCenter.xml to the GUI

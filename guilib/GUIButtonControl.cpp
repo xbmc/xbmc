@@ -2,9 +2,10 @@
 #include "guibuttoncontrol.h"
 #include "guifontmanager.h"
 #include "guiWindowManager.h"
+#include "guiDialog.h"
 #include "ActionManager.h"
 
-CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus, DWORD dwTextXOffset, DWORD dwTextYOffset)
+CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus, DWORD dwTextXOffset, DWORD dwTextYOffset, DWORD dwAlign)
 :CGUIControl(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight)
 ,m_imgFocus(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight, strTextureFocus)
 ,m_imgNoFocus(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight, strTextureNoFocus)
@@ -16,6 +17,7 @@ CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, int iP
 	m_dwDisabledColor	= 0xFF606060; 
 	m_dwTextOffsetX = dwTextXOffset;
 	m_dwTextOffsetY = dwTextYOffset;
+	m_dwTextAlignment = dwAlign;
 	m_pFont=NULL;
   m_lHyperLinkWindowID=WINDOW_INVALID;
 	m_strScriptAction="";
@@ -61,13 +63,16 @@ void CGUIButtonControl::Render()
 
 	if (m_strLabel.size() > 0 && m_pFont)
 	{
+		float fPosX = (float)m_iPosX+m_dwTextOffsetX;
+		if (m_dwTextAlignment == XBFONT_CENTER_X)
+			fPosX = (float)m_iPosX + m_dwWidth/2;
 		if (IsDisabled() )
 		{
-			m_pFont->DrawText( (float)m_iPosX+m_dwTextOffsetX, (float)m_iPosY+m_dwTextOffsetY,m_dwDisabledColor,m_strLabel.c_str());
+			m_pFont->DrawText( fPosX, (float)m_iPosY+m_dwTextOffsetY,m_dwDisabledColor,m_strLabel.c_str(), m_dwTextAlignment);
 		}
 		else
 		{
-			m_pFont->DrawText( (float)m_iPosX+m_dwTextOffsetX, (float)m_iPosY+m_dwTextOffsetY,m_dwTextColor,m_strLabel.c_str());
+			m_pFont->DrawText( fPosX, (float)m_iPosY+m_dwTextOffsetY,m_dwTextColor,m_strLabel.c_str(),m_dwTextAlignment);
 		}
 	}
 
@@ -91,7 +96,14 @@ void CGUIButtonControl::OnAction(const CAction &action)
 
 		if (m_lHyperLinkWindowID != WINDOW_INVALID)
 		{
-			m_gWindowManager.ActivateWindow(m_lHyperLinkWindowID);
+			CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_lHyperLinkWindowID);
+			if (pWindow && pWindow->IsDialog())
+			{
+				CGUIDialog *pDialog = (CGUIDialog *)pWindow;
+				pDialog->DoModal(GetParentID());
+			}
+			else
+				m_gWindowManager.ActivateWindow(m_lHyperLinkWindowID);
 		}
 	}
 }
@@ -135,11 +147,16 @@ void CGUIButtonControl::FreeResources()
   m_imgNoFocus.FreeResources();
 }
 
-void CGUIButtonControl::SetText(CStdString aLabel)
+void CGUIButtonControl::SetText(const CStdString &aLabel)
 {
 	WCHAR wszText[1024];
 	swprintf(wszText,L"%S",aLabel.c_str());
 	m_strLabel=wszText;
+}
+
+void CGUIButtonControl::SetText(const wstring &label)
+{
+	m_strLabel=label;
 }
 
 void CGUIButtonControl::SetLabel(const CStdString& strFontName,const CStdString& strLabel,D3DCOLOR dwColor)

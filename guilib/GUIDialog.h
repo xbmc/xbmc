@@ -21,7 +21,8 @@ public:
 	virtual void		Close();
 	virtual bool    Load(const CStdString& strFileName, bool bContainsPath = false);
 	virtual bool		IsRunning() const { return m_bRunning; }
-	
+	virtual bool		IsDialog() { return true;};
+
 protected:
 	DWORD						m_dwParentWindowID;
 	CGUIWindow* 		m_pParentWindow;

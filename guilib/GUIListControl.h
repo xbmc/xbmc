@@ -60,9 +60,10 @@ public:
 	void									SetSpace(int iHeight);
 	void									SetFont2(const CStdString& strFont);
 	void									SetColors2(DWORD dwTextColor, DWORD dwSelectedColor);
-	void						SetPageControlVisible(bool bVisible);
+	void									SetPageControlVisible(bool bVisible);
   int                   GetSelectedItem(CStdString& strLabel);
-	bool				SelectItemFromPoint(int iPosX, int iPosY);
+	bool									SelectItemFromPoint(int iPosX, int iPosY);
+	void									GetPointFromItem(int &iPosX, int &iPosY);
 	DWORD									GetTextColor() const { return m_dwTextColor;};
 	DWORD									GetTextColor2() const { return m_dwTextColor2;};
 	DWORD									GetSelectedColor() const { return m_dwSelectedColor;};

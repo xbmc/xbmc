@@ -654,6 +654,12 @@ bool CGUIListControl::SelectItemFromPoint(int iPosX, int iPosY)
 	return false;
 }
 
+void CGUIListControl::GetPointFromItem(int &iPosX, int &iPosY)
+{
+	iPosY = m_iCursorY*(m_iItemHeight+m_iSpaceBetweenItems) + m_iItemHeight/2;
+	iPosX = m_dwWidth/2;
+}
+
 void CGUIListControl::SetPageControlVisible(bool bVisible)
 {
 	m_bUpDownVisible = bVisible;
