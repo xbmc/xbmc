@@ -25,6 +25,8 @@
 #include <stdio.h>
 #include <algorithm>
 
+#pragma warning (disable:4244)
+#pragma warning (disable:4800)
 unsigned long GetLocalIPAddress()
 {
   static unsigned long ipaddress = 0;

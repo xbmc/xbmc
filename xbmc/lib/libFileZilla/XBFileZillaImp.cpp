@@ -32,6 +32,8 @@
 
 #include "bsdsfv.h"
 
+#pragma warning (disable:4244)
+#pragma warning (disable:4800)
 CXBFileZillaImp* CXBFileZillaImp::mInstance = NULL;
 CCriticalSectionWrapper CXBFileZillaImp::mXBoxSettingsCS;
 //////////////////////////////////////////////////////////////////////

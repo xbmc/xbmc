@@ -570,8 +570,13 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 void CGUIWindowMusicBase::OnRetrieveMusicInfo(VECFILEITEMS& items, bool bScan)
 {
 	CStdString strItem;
+  
+  // get all information for all files in current directory from database 
+  VECSONGS songsList;
+  m_database.GetSongsByPath(m_strDirectory,songsList);
 
-	for (int i=0; i < (int)items.size(); ++i)
+  // for every file found
+  for (int i=0; i < (int)items.size(); ++i)
 	{
 		CFileItem* pItem=items[i];
 		CStdString strExtension;
@@ -585,24 +590,55 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(VECFILEITEMS& items, bool bScan)
 			m_dlgProgress->Progress();
 			if (m_dlgProgress->IsCanceled()) return;
 		}
+    // dont try reading id3tags for folders or playlists
 		if (!pItem->m_bIsFolder && !CUtil::IsPlayList(pItem->m_strPath) )
 		{
+      // is tag for this file already loaded?
 			bool bNewFile=false;
 			CMusicInfoTag& tag=pItem->m_musicInfoTag;
 			if (!tag.Loaded() )
 			{
+        // no, then we gonna load it. But dont load tags from cdda files
 				if (strExtension!=".cdda" )
 				{
+          // first search for file in our list of the current directory
 					CSong song;
-					if ( !m_database.GetSongByFileName(pItem->m_strPath, song) )
+          bool bFound(false);
+          for (int x=0; x < (int)songsList.size(); ++x)
+          {
+            if (songsList[x].strFileName == pItem->m_strPath)
+            {
+              song=songsList[x];
+              bFound=true;
+              break;
+            }
+          }
+          if (!bFound)
+          {
+            // try finding it in the database
+            CStdString strPathName;
+            CStdString strFileName;
+            m_database.Split(pItem->m_strPath, strPathName, strFileName);
+            if (strPathName != m_strDirectory)
+            {
+              if ( m_database.GetSongByFileName(pItem->m_strPath, song) )
+              {
+                bFound=true;
+              }
+            }
+          }
+					if ( !bFound )
 					{
+            // if id3 tag scanning is turned on OR we're scanning the directory
+            // then parse id3tag from file
 						if (g_stSettings.m_bUseID3 || bScan)
 						{
-
+              // get correct tag parser
 							CMusicInfoTagLoaderFactory factory;
 							auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
 							if (NULL != pLoader.get())
 							{						
+                 // get id3tag
 								if ( pLoader->Load(pItem->m_strPath,tag))
 								{
 									bNewFile=true;
@@ -610,7 +646,7 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(VECFILEITEMS& items, bool bScan)
 							}
 						}
 					}
-					else
+					else // of if ( !bFound )
 					{
 						tag.SetAlbum(song.strAlbum);
 						tag.SetArtist(song.strArtist);
@@ -620,8 +656,8 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(VECFILEITEMS& items, bool bScan)
 						tag.SetTrackNumber(song.iTrack);
 						tag.SetLoaded(true);
 					}
-				}
-			}
+				}//if (strExtension!=".cdda" )
+			}//if (!tag.Loaded() )
 
 			if (tag.Loaded() && bScan)
 			{
