@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 05-01-2004 fixed: [ 1094725 ] Getting stuck on system info screen
   - 05-01-2004 updated: Polish language file (Thnx to napek)
   - 05-01-2004 fixed: possible problems with progress dialogs
   - 05-01-2004 fixed: slow startup with DVD in drive
