@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 08-01-2005 fixed: playlist windows, current playing item disappears after using the context menu in it
+  - 08-01-2005 changed: video/music info, smoother update of icons after getting information
   - 08-01-2005 fixed: thumb cache was not cleared
   - 08-01-2005 changed: minor GUIListControl performance tweaks
   - 08-01-2005 changed: minor guiImage & xprfont performance tweaks
