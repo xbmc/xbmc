@@ -109,6 +109,7 @@ bool CProgramDatabase::Open()
 void CProgramDatabase::Close()
 {
 	if (NULL==m_pDB.get() ) return;
+  if (NULL!=m_pDS.get()) m_pDS->close();
 	m_pDB->disconnect();
 	m_pDB.reset();
 }
@@ -186,14 +187,16 @@ long CProgramDatabase::GetFile(const CStdString& strFilenameAndPath, VECFILEITEM
 				FileTimeToSystemTime(&localTime, &pItem->m_stTime);
 				pItem->m_dwSize=FileAttributeData.nFileSizeLow;
 				programs.push_back(pItem);
+        m_pDS->close();
 				return lFileId;
 			}
 			else
 			{
+        m_pDS->close();
 				DeleteFile(lFileId);
 				return -1;
 			}
-			
+      m_pDS->close();
 		}
 	}
 	catch (...)
@@ -217,8 +220,10 @@ long CProgramDatabase::AddFile(long lPathId, const CStdString& strFileName, cons
     if (m_pDS->num_rows() > 0) 
     {
       lFileId=m_pDS->fv("idFile").get_asLong() ;
+      m_pDS->close();
       return lFileId;
     }
+    m_pDS->close();
 	  strSQL.Format ("insert into files (idFile, idPath, strFileName, xbedescription, iTimesPlayed) values(NULL, %i, '%s','%s',%i)", lPathId, strFileName.c_str(),strDescription.c_str(),0);
 	  m_pDS->exec(strSQL.c_str());
     lFileId=sqlite_last_insert_rowid( m_pDB->getHandle() );
@@ -244,6 +249,7 @@ long CProgramDatabase::AddBookMark(const CStdString& strBookmark)
 		m_pDS->query(strSQL.c_str());
 		if (m_pDS->num_rows() == 0)
 		{
+      m_pDS->close();
 			strSQL.Format("insert into bookmark (idBookmark, bookMarkname) values (NULL, '%s')", strBookmark.c_str());
 			m_pDS->exec(strSQL.c_str());
 			long lBookmarkId=sqlite_last_insert_rowid(m_pDB->getHandle());
@@ -253,6 +259,7 @@ long CProgramDatabase::AddBookMark(const CStdString& strBookmark)
 		{
 			const field_value value = m_pDS->fv("idBookmark");
 			long lBookmarkId=value.get_asLong();
+      m_pDS->close();
 			return lBookmarkId;
 		}
 	}
@@ -276,18 +283,20 @@ long CProgramDatabase::AddPath(const CStdString& strPath)
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() == 0) 
     {
-	  // doesnt exists, add it
-	  strSQL.Format("insert into Path (idPath, strPath) values( NULL, '%s')",
-                    strPath.c_str());
-	  m_pDS->exec(strSQL.c_str());
-	  long lPathId=sqlite_last_insert_rowid(m_pDB->getHandle());
-	  return lPathId;
+      m_pDS->close();
+	    // doesnt exists, add it
+	    strSQL.Format("insert into Path (idPath, strPath) values( NULL, '%s')",
+                      strPath.c_str());
+	    m_pDS->exec(strSQL.c_str());
+	    long lPathId=sqlite_last_insert_rowid(m_pDB->getHandle());
+	    return lPathId;
     }
     else
     {
- 	  const field_value value = m_pDS->fv("idPath");
-	  long lPathId=value.get_asLong() ;
-	  return lPathId;
+ 	    const field_value value = m_pDS->fv("idPath");
+	    long lPathId=value.get_asLong() ;
+      m_pDS->close();
+	    return lPathId;
     }
 
   }
@@ -314,8 +323,11 @@ bool CProgramDatabase::EntryExists(const CStdString& strPath, const CStdString& 
 		CStdString strSQL;
 		strSQL.Format("select * from program where idPath=%i and idBookmark=%i",lPathId,lBookmarkId);
 		m_pDS->query(strSQL.c_str());
-		if (m_pDS->num_rows() > 0)
+    if (m_pDS->num_rows() > 0) {
+      m_pDS->close();
 			return true;
+    }
+    m_pDS->close();
 	}
 	catch (...)
 	{
@@ -327,17 +339,18 @@ long CProgramDatabase::GetPath(const CStdString& strPath)
 {
   try
   {
-	if (NULL==m_pDB.get()) return -1;
-	if (NULL==m_pDS.get()) return -1;
-	CStdString strSQL;
-    strSQL.Format("select * from path where strPath like '%s' ",strPath.c_str());
-	m_pDS->query(strSQL.c_str());
-	if (m_pDS->num_rows() > 0) 
-	{
-		long lPathId = m_pDS->fv("idPath").get_asLong();
-		return lPathId;
-	}
-
+	  if (NULL==m_pDB.get()) return -1;
+	  if (NULL==m_pDS.get()) return -1;
+	  CStdString strSQL;
+      strSQL.Format("select * from path where strPath like '%s' ",strPath.c_str());
+	  m_pDS->query(strSQL.c_str());
+	  if (m_pDS->num_rows() > 0) 
+	  {
+		  long lPathId = m_pDS->fv("idPath").get_asLong();
+      m_pDS->close();
+		  return lPathId;
+	  }
+    m_pDS->close();
   }
   catch(...)
   {
@@ -358,9 +371,10 @@ long CProgramDatabase::GetProgram(long lPathId)
 		m_pDS->query(strSQL.c_str());
 		if (m_pDS->num_rows() > 0) {
 			long lProgramId=m_pDS->fv("idProgram").get_asLong();
+      m_pDS->close();
 			return lProgramId;
 		}
-		
+    m_pDS->close();
 	}
 	catch(...)
 	{
@@ -437,7 +451,6 @@ void CProgramDatabase::GetProgramsByBookmark(CStdString& strBookmark, VECFILEITE
 			strSQL.Format("select * from program,files,path where program.idBookmark=%i and program.idPath=path.idPath and files.idPath=program.idPath",lBookmarkId);
 		}
 		m_pDS->query(strSQL.c_str());
-		if (m_pDS->num_rows() == 0) return;
 		while (!m_pDS->eof())
 		{
 			WIN32_FILE_ATTRIBUTE_DATA FileAttributeData;
@@ -464,6 +477,7 @@ void CProgramDatabase::GetProgramsByBookmark(CStdString& strBookmark, VECFILEITE
 			}
 			m_pDS->next();
 		}
+    m_pDS->close();
 	
 		// let's now delete the program from the database since it no longer exists.. better way to do this?
 
@@ -509,7 +523,6 @@ void CProgramDatabase::GetProgramsByPath(const CStdString& strPath, VECFILEITEMS
 			}
 		}
 		m_pDS->query(strSQL.c_str());
-		if (m_pDS->num_rows() == 0) return;
 		while (!m_pDS->eof())
 		{
 			WIN32_FILE_ATTRIBUTE_DATA FileAttributeData;
@@ -538,6 +551,7 @@ void CProgramDatabase::GetProgramsByPath(const CStdString& strPath, VECFILEITEMS
 			}
 			m_pDS->next();
 		}
+    m_pDS->close();
 
 		// let's now delete the program from the database since it no longer exists.. better way to do this?
 
@@ -624,10 +638,13 @@ bool CProgramDatabase::IncTimesPlayed(const CStdString& strFileName1)
 		strSQL.Format("select * from files,path where files.idPath=path.idPath and path.strPath='%s'",strPath.c_str());
 		if (!m_pDS->query(strSQL.c_str())) return false;
 		int iRowsFound = m_pDS->num_rows();
-		if (iRowsFound== 0) return false;
-
+    if (iRowsFound == 0) {
+      m_pDS->close();
+      return false;
+    }
 		int idFile        = m_pDS->fv("files.idFile").get_asLong();
 		int iTimesPlayed  = m_pDS->fv("files.iTimesPlayed").get_asLong();
+    m_pDS->close();
 
 		CLog::Log(LOGDEBUG, "CProgramDatabase::IncTimesPlayed(%s), idFile=%i, iTimesPlayed=%i",
 			strFileName1.c_str(), idFile, iTimesPlayed);
