@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 26-09-2004 fixed: [ 1034835 ] CDrip to mp3 not include year and genre field
   - 26-09-2004 fixed: Buttons on subpanel caused issues
   - 26-09-2004 fixed: IMDb lookup could fail if the plot had no html tags in it.
   - 25-09-2004 fixed: <align>right</align> didn't work for buttons

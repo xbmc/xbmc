@@ -13,6 +13,10 @@
 
 #include "cddb.h"
 #include "../dnsnamecache.h"
+#include "../lib/libID3/id3.h"
+#include "../util.h"
+#include "../utils/CharsetConverter.h"
+
 using namespace CDDB;
 //-------------------------------------------------------------------------------------------------------------------
 Xcddb::Xcddb() 
@@ -41,7 +45,7 @@ bool Xcddb::openSocket()
 	// connect to site directly
   CStdString strIpadres;
   CDNSNameCache::Lookup(cddb_ip_adress,strIpadres);
-  if (strIpadres=="") strIpadres="64.71.163.204";
+  if (strIpadres=="") strIpadres="130.179.31.49"; //"64.71.163.204";
 	service.sin_addr.s_addr = inet_addr(strIpadres.c_str());
 	service.sin_port = htons(port);
 	m_cddb_socket.attach( socket(AF_INET,SOCK_STREAM,IPPROTO_TCP));
@@ -715,9 +719,14 @@ void Xcddb::addTitle(const char *buffer)
 		artist[0]='\0';
 		strcpy(title,value);
 	}
-	m_mapArtists[trk_nr]=artist;
-	m_mapTitles[trk_nr]=title;
 
+	CStdString strArtist;
+	g_charsetConverter.utf8ToStringCharset(CStdString(artist), strArtist);		// convert UTF-8 to charset string
+	m_mapArtists[trk_nr]=strArtist;
+
+	CStdString strTitle;
+	g_charsetConverter.utf8ToStringCharset(CStdString(title), strTitle);		// convert UTF-8 to charset string
+	m_mapTitles[trk_nr]=strTitle;
 //	//writeLog(artist);
 //	//writeLog(title);
 }
@@ -790,7 +799,7 @@ void Xcddb::parseData(const char *buffer)
 	//writeLog("parseData Start");
 
 	char *line;
-	const char trenner[3]={'\r','\n',0x0};
+	const char trenner[3]={'\n','\r','\0'};
 	line=strtok((char*)buffer,trenner);
 	int line_cnt=0;
 	while(line = strtok(0,trenner))
@@ -814,23 +823,30 @@ void Xcddb::parseData(const char *buffer)
 				}
 				if (found)
 				{
-					m_strDisk_artist=(char*)(line+7);
-					m_strDisk_artist=m_strDisk_artist.Left(i-7);
-					m_strDisk_title=(char*)(line+i+3);
+					CStdString strLine=(char*)(line+7);
+					CStdString strDisk_artist=strLine.Left(i-7);
+					CStdString strDisk_title=(char*)(line+i+3);
+					g_charsetConverter.utf8ToStringCharset(strDisk_artist, m_strDisk_artist);		// convert UTF-8 to charset string
+					g_charsetConverter.utf8ToStringCharset(strDisk_title, m_strDisk_title);		// convert UTF-8 to charset string
 				}
 				else
 				{
-					m_strDisk_artist="";
-					m_strDisk_title=(char*)(line+7);
+					CStdString strDisk_title;
+					strDisk_title=(char*)(line+7);
+					g_charsetConverter.utf8ToStringCharset(strDisk_title, m_strDisk_title);		// convert UTF-8 to charset string
 				}
 			}
 			else if (0==strncmp(line,"DYEAR",5))
 			{
-				m_strYear = (char*)(line+5);
+				CStdString strYear = (char*)(line+5);
+				strYear.TrimLeft("= ");
+				g_charsetConverter.utf8ToStringCharset(strYear, m_strYear);		// convert UTF-8 to charset string
 			}
 			else if (0==strncmp(line,"DGENRE",6))
 			{
-				m_strGenre=(char*)(line+6);
+				CStdString strGenre=(char*)(line+6);
+				strGenre.TrimLeft("= ");
+				g_charsetConverter.utf8ToStringCharset(strGenre, m_strGenre);		// convert UTF-8 to charset string
 			}
 			else if (0==strncmp(line,"TTITLE",6))
 			{
@@ -838,6 +854,44 @@ void Xcddb::parseData(const char *buffer)
 			}
 			else if (0==strncmp(line,"EXTD",4))
 			{
+				CStdString strExtd((char*)(line+4));
+
+				if (m_strYear.IsEmpty())
+				{
+					//	Extract Year from extended info
+					//	as a fallback
+					int iPos=strExtd.Find("YEAR:");
+					if (iPos > -1)
+					{
+						CStdString strYear;
+						strYear = strExtd.Mid(iPos+6, 4);
+						g_charsetConverter.utf8ToStringCharset(strYear, m_strYear);		// convert UTF-8 to charset string
+					}
+				}
+
+				if (m_strGenre.IsEmpty())
+				{
+					//	Extract ID3 Genre
+					//	as a fallback
+					int iPos=strExtd.Find("ID3G:");
+					if (iPos > -1)
+					{
+						CStdString strGenre;
+						strGenre = strExtd.Mid(iPos+5, 4);
+						strGenre.TrimLeft(' ');
+						if (CUtil::IsNaturalNumber(strGenre))
+						{
+							char * pEnd;
+							long l = strtol(strGenre.c_str(),&pEnd,0);
+							if (l < ID3_NR_OF_V1_GENRES)
+							{
+								// convert to genre string
+								strGenre = ID3_v1_genre_description[l];
+								g_charsetConverter.utf8ToStringCharset(strGenre, m_strGenre);		// convert UTF-8 to charset string
+							}
+						}
+					}
+				}
 			}
 			else if (0==strncmp(line,"EXTT",4))
 			{
@@ -874,7 +928,10 @@ void Xcddb::addExtended(const char *buffer)
 	{
 		return;
 	}
-	m_mapExtended_track[trk_nr]=value;
+
+	CStdString strValue;
+	g_charsetConverter.utf8ToStringCharset(value, strValue);		// convert UTF-8 to charset string
+	m_mapExtended_track[trk_nr]=strValue;
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -1124,7 +1181,7 @@ int Xcddb::queryCDinfo(CCdInfo* pInfo)
 	}
 
 // Erst mal was empfangen
-	string recv_buffer=Recv(false);
+	CStdString recv_buffer=Recv(false);
 	/*
 	200	OK, read/write allowed
 	201	OK, read only
@@ -1147,7 +1204,7 @@ int Xcddb::queryCDinfo(CCdInfo* pInfo)
 	}
 
 	// Jetzt hello Senden
-	if( ! Send("cddb hello xbox xbox xcddb 00.00.01"))
+	if( ! Send("cddb hello xbox xbox XboxMediaCenter 1.1.0"))
 	{
 		//writeLog("Send Failed");
 		m_lastError=E_NETWORK_ERROR_SEND;
@@ -1178,6 +1235,40 @@ int Xcddb::queryCDinfo(CCdInfo* pInfo)
 	{
 		//		//writeLog("Hello 2 cddb: Already shook hands, but it's OK");
 		m_lastError=W_CDDB_already_shook_hands;
+	}
+
+	// Set CDDB protocol-level to 6
+	if( ! Send("proto 6"))
+	{
+		//writeLog("Send Failed");
+		m_lastError=E_NETWORK_ERROR_SEND;
+		return false;
+	}
+
+// hello Antwort	
+	recv_buffer=Recv(false);
+	/*
+	200	CDDB protocol level: current cur_level, supported supp_level
+	201	OK, protocol version now: cur_level
+	501	Illegal protocol level.
+	502	Protocol level already cur_level.
+	*/
+	if (recv_buffer.c_str()[0]=='2' && recv_buffer.c_str()[1]=='0' && recv_buffer.c_str()[2]=='1')
+	{
+		//OK
+		////writeLog("Set to protocol-level 6: OK");
+		m_lastError=IN_PROGRESS;
+	}
+	else if (recv_buffer.c_str()[0]=='5' && recv_buffer.c_str()[1]=='0' && recv_buffer.c_str()[2]=='1')
+	{
+		//writeLog("Protocol level illegal");
+		m_lastError=E_CDDB_illegal_protocol_level;
+		return false; 
+	}
+	else if (recv_buffer.c_str()[0]=='5' && recv_buffer.c_str()[1]=='0' && recv_buffer.c_str()[2]=='2')
+	{
+		//		//writeLog("Protocol-level already set to 6");
+		m_lastError=IN_PROGRESS;
 	}
 
 
