@@ -539,6 +539,11 @@ void CGUIWindow::LoadControl(const TiXmlNode* pControl, int iGroup, VECREFERENCE
   }
 }
 
+void CGUIWindow::OnWindowLoaded() 
+{
+  DynamicResourceAlloc(true);
+}
+
 void CGUIWindow::SetPosition(int iPosX, int iPosY)
 {
   m_iPosX = iPosX;
@@ -984,6 +989,15 @@ void CGUIWindow::FreeResources()
     pControl->FreeResources();
   }
   //g_TextureManager.Dump();
+}
+
+void CGUIWindow::DynamicResourceAlloc(bool bOnOff)
+{
+  for (ivecControls i = m_vecControls.begin();i != m_vecControls.end(); ++i)
+  {
+    CGUIControl* pControl = *i;
+    pControl->DynamicResourceAlloc(bOnOff);
+  }
 }
 
 void CGUIWindow::Add(CGUIControl* pControl)

@@ -32,6 +32,7 @@ protected:
 	virtual void	PopulateSubTitles();
 					void	ClearSubTitleItems();
   void			Reset();
+  virtual void OnWindowLoaded();
 	bool			m_bSubMenuOn;
 	int				m_iActiveMenu;
 	DWORD			m_iActiveMenuButtonID;

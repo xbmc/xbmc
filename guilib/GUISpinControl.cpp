@@ -329,7 +329,14 @@ void CGUISpinControl::FreeResources()
   strcpy(m_szTyped, "");
 }
 
-
+void CGUISpinControl::DynamicResourceAlloc(bool bOnOff)
+{
+  CGUIControl::DynamicResourceAlloc(bOnOff);
+  m_imgspinUp.DynamicResourceAlloc(bOnOff);
+  m_imgspinUpFocus.DynamicResourceAlloc(bOnOff);
+  m_imgspinDown.DynamicResourceAlloc(bOnOff);
+  m_imgspinDownFocus.DynamicResourceAlloc(bOnOff);
+}
 
 void CGUISpinControl::Render()
 {

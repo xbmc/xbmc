@@ -28,6 +28,7 @@ public:
   virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
+  virtual void DynamicResourceAlloc(bool bOnOff);
   virtual bool CanFocus() const;
 
   void Select(int iBitmap);
@@ -70,6 +71,7 @@ protected:
   int m_iRenderHeight;
   bool m_bWasVisible;
   DWORD m_dwAlpha[4];
+  bool m_bDynamicResourceAlloc;
 
   //vertex values
   float m_fX;

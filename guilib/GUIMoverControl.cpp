@@ -164,6 +164,13 @@ void CGUIMoverControl::FreeResources()
   m_imgNoFocus.FreeResources();
 }
 
+void CGUIMoverControl::DynamicResourceAlloc(bool bOnOff)
+{
+  CGUIControl::DynamicResourceAlloc(bOnOff);
+  m_imgFocus.DynamicResourceAlloc(bOnOff);
+  m_imgNoFocus.DynamicResourceAlloc(bOnOff);
+}
+
 void CGUIMoverControl::Update()
 {
   CGUIControl::Update();

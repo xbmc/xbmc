@@ -75,6 +75,12 @@ void CGUIRadioButtonControl::FreeResources()
   m_imgRadioNoFocus.FreeResources();
 }
 
+void CGUIRadioButtonControl::DynamicResourceAlloc(bool bOnOff)
+{
+  CGUIControl::DynamicResourceAlloc(bOnOff);
+  m_imgRadioFocus.DynamicResourceAlloc(bOnOff);
+  m_imgRadioNoFocus.DynamicResourceAlloc(bOnOff);
+}
 
 void CGUIRadioButtonControl::Update()
 {

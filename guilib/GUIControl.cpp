@@ -21,6 +21,7 @@ CGUIControl::CGUIControl()
   m_dwControlDown = 0;
   ControlType = GUICONTROL_UNKNOWN;
   m_bInvalidated = true;
+  m_bAllocated=false;
 }
 
 CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight)
@@ -44,15 +45,35 @@ CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPo
   m_dwControlUp = 0;
   m_dwControlDown = 0;
   ControlType = GUICONTROL_UNKNOWN;
+  m_bInvalidated = true;
+  m_bAllocated=false;
 }
 
 
 CGUIControl::~CGUIControl(void)
-{}
+{
+
+}
 
 void CGUIControl::AllocResources()
 {
   m_bInvalidated = true;
+  m_bAllocated=true;
+}
+
+void CGUIControl::FreeResources()
+{
+  m_bAllocated=false;
+}
+
+bool CGUIControl::IsAllocated()
+{
+  return m_bAllocated;
+}
+
+void CGUIControl::DynamicResourceAlloc(bool bOnOff)
+{
+
 }
 
 void CGUIControl::Render()
@@ -92,6 +113,7 @@ void CGUIControl::OnUp()
     g_graphicsContext.SendMessage(msg);
   }
 }
+
 void CGUIControl::OnDown()
 {
   if (HasFocus())
@@ -101,6 +123,7 @@ void CGUIControl::OnDown()
     g_graphicsContext.SendMessage(msg);
   }
 }
+
 void CGUIControl::OnLeft()
 {
   if (HasFocus())
@@ -110,6 +133,7 @@ void CGUIControl::OnLeft()
     g_graphicsContext.SendMessage(msg);
   }
 }
+
 void CGUIControl::OnRight()
 {
   if (HasFocus())
@@ -130,8 +154,6 @@ DWORD CGUIControl::GetParentID(void) const
 {
   return m_dwParentID;
 }
-
-
 
 bool CGUIControl::HasFocus(void) const
 {
@@ -222,7 +244,6 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
   return false;
 }
 
-
 bool CGUIControl::CanFocus() const
 {
   if (!IsVisible()) return false;
@@ -260,7 +281,6 @@ void CGUIControl::SetPosition(int iPosX, int iPosY)
   }
 }
 
-
 void CGUIControl::SetAlpha(DWORD dwAlpha)
 {
   m_dwAlpha = dwAlpha;
@@ -276,18 +296,22 @@ void CGUIControl::SetColourDiffuse(D3DCOLOR colour)
     Update();
   }
 }
+
 int CGUIControl::GetXPosition() const
 {
   return m_iPosX;
 }
+
 int CGUIControl::GetYPosition() const
 {
   return m_iPosY;
 }
+
 DWORD CGUIControl::GetWidth() const
 {
   return m_dwWidth;
 }
+
 DWORD CGUIControl::GetHeight() const
 {
   return m_dwHeight;
@@ -300,7 +324,6 @@ void CGUIControl::SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dw
   m_dwControlLeft = dwLeft;
   m_dwControlRight = dwRight;
 }
-
 
 void CGUIControl::SetWidth(int iWidth)
 {
@@ -328,6 +351,7 @@ void CGUIControl::SetVisible(bool bVisible)
     m_bInvalidated = true;
   }
 }
+
 void CGUIControl::SetSelected(bool bSelected)
 {
   if (m_bSelected != bSelected)
@@ -336,6 +360,7 @@ void CGUIControl::SetSelected(bool bSelected)
     m_bInvalidated = true;
   }
 }
+
 void CGUIControl::EnableCalibration(bool bOnOff)
 {
   if (m_bCalibration != bOnOff)
@@ -344,6 +369,7 @@ void CGUIControl::EnableCalibration(bool bOnOff)
     m_bInvalidated = true;
   }
 }
+
 bool CGUIControl::CalibrationEnabled() const
 {
   return m_bCalibration;

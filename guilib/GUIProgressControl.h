@@ -25,6 +25,7 @@ public:
   virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
+  virtual void DynamicResourceAlloc(bool bOnOff);
   virtual bool OnMessage(CGUIMessage& message);
   void SetPercentage(int iPercent);
   int GetPercentage() const;

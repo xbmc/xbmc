@@ -228,6 +228,19 @@ void CGUISelectButtonControl::FreeResources()
   m_bShowSelect = false;
 }
 
+void CGUISelectButtonControl::DynamicResourceAlloc(bool bOnOff)
+{
+  CGUIControl::DynamicResourceAlloc(bOnOff);
+
+  m_imgBackground.DynamicResourceAlloc(bOnOff);
+
+  m_imgLeft.DynamicResourceAlloc(bOnOff);
+  m_imgLeftFocus.DynamicResourceAlloc(bOnOff);
+
+  m_imgRight.DynamicResourceAlloc(bOnOff);
+  m_imgRightFocus.DynamicResourceAlloc(bOnOff);
+}
+
 void CGUISelectButtonControl::PreAllocResources()
 {
   CGUIButtonControl::PreAllocResources();

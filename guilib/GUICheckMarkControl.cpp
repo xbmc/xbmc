@@ -131,6 +131,12 @@ void CGUICheckMarkControl::FreeResources()
   m_imgCheckMarkNoFocus.FreeResources();
 }
 
+void CGUICheckMarkControl::DynamicResourceAlloc(bool bOnOff)
+{
+  CGUIControl::DynamicResourceAlloc(bOnOff);
+  m_imgCheckMark.DynamicResourceAlloc(bOnOff);
+  m_imgCheckMarkNoFocus.DynamicResourceAlloc(bOnOff);
+}
 
 void CGUICheckMarkControl::SetLabel(const CStdString& strFontName, const CStdString& strLabel, D3DCOLOR dwColor)
 {

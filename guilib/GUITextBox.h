@@ -38,6 +38,7 @@ public:
   virtual void PreAllocResources();
   virtual void AllocResources() ;
   virtual void FreeResources() ;
+  virtual void DynamicResourceAlloc(bool bOnOff);
   DWORD GetTextColor() const { return m_dwTextColor;};
   const char* GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
   DWORD GetSpinWidth() const { return m_upDown.GetWidth() / 2; };

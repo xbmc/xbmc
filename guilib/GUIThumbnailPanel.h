@@ -37,6 +37,7 @@ public:
   virtual void PreAllocResources();
   virtual void AllocResources() ;
   virtual void FreeResources() ;
+  virtual void DynamicResourceAlloc(bool bOnOff);
   void SetScrollySuffix(CStdString wstrSuffix);
   void SetTextureDimensions(int iWidth, int iHeight);
   void SetThumbAlign(int align);

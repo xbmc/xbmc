@@ -186,6 +186,8 @@ void CGUIWindowBuddies::OnWindowLoaded()
   // bind the listcontrol to our friends list
 	CGUIMessage msgb(GUI_MSG_LABEL_BIND,GetID(),CONTROL_LISTEX,0,0,&m_friends);
 	OnMessage(msgb);
+
+  CGUIWindow::OnWindowLoaded();
 }
 
 void CGUIWindowBuddies::OnInitWindow()

@@ -3,8 +3,6 @@
 #include "TextureManager.h"
 #include "../xbmc/settings.h"
 
-
-
 CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTexture, DWORD dwColorKey)
     : CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
 {
@@ -28,6 +26,7 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, 
   for (int i = 0; i < 4; i++)
     m_dwAlpha[i] = 0xFF;
   ControlType = GUICONTROL_IMAGE;
+  m_bDynamicResourceAlloc=false;
 }
 
 CGUIImage::CGUIImage(const CGUIImage &left)
@@ -53,10 +52,13 @@ CGUIImage::CGUIImage(const CGUIImage &left)
     m_dwAlpha[i] = left.m_dwAlpha[i];
   m_pPalette = NULL;
   ControlType = GUICONTROL_IMAGE;
+  m_bDynamicResourceAlloc=false;
 }
 
 CGUIImage::~CGUIImage(void)
-{}
+{
+
+}
 
 void CGUIImage::Render(int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight)
 {
@@ -78,11 +80,18 @@ void CGUIImage::Render(int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight)
 
 void CGUIImage::Render()
 {
+  if (m_bDynamicResourceAlloc && !m_bVisible && IsAllocated())
+    FreeResources();
+
   if (!m_bVisible)
   {
     m_bWasVisible = false;
     return ;
   }
+  
+  if (m_bDynamicResourceAlloc && m_bVisible && !IsAllocated())
+    AllocResources();
+
   if (!m_vecTextures.size())
     return ;
 
@@ -155,7 +164,9 @@ void CGUIImage::Render()
 }
 
 void CGUIImage::OnAction(const CAction &action)
-{}
+{
+
+}
 
 bool CGUIImage::OnMessage(CGUIMessage& message)
 {
@@ -170,8 +181,8 @@ void CGUIImage::PreAllocResources()
 
 void CGUIImage::AllocResources()
 {
-  CGUIControl::AllocResources();
   FreeResources();
+  CGUIControl::AllocResources();
 
   m_dwFrameCounter = 0;
   m_iCurrentImage = 0;
@@ -202,6 +213,14 @@ void CGUIImage::FreeResources()
   m_iCurrentLoop = 0;
   m_iImageWidth = 0;
   m_iImageHeight = 0;
+
+  CGUIControl::FreeResources();
+}
+
+void CGUIImage::DynamicResourceAlloc(bool bOnOff)
+{
+  CGUIControl::DynamicResourceAlloc(bOnOff);
+  m_bDynamicResourceAlloc=bOnOff;
 }
 
 void CGUIImage::Update()
@@ -333,7 +352,7 @@ void CGUIImage::SetItems(int iItems)
 
 void CGUIImage::Process()
 {
-  if (m_vecTextures.size() <= 1)
+  if (m_vecTextures.size() <= 1 || IsAllocated())
     return ;
 
   if (!m_bWasVisible)
@@ -374,6 +393,7 @@ void CGUIImage::Process()
     }
   }
 }
+
 void CGUIImage::SetTextureWidth(int iWidth)
 {
   if (m_iTextureWidth != iWidth)
@@ -383,6 +403,7 @@ void CGUIImage::SetTextureWidth(int iWidth)
     m_bInvalidated = true;
   }
 }
+
 void CGUIImage::SetTextureHeight(int iHeight)
 {
   if (m_iTextureHeight != iHeight)
@@ -392,10 +413,12 @@ void CGUIImage::SetTextureHeight(int iHeight)
     m_bInvalidated = true;
   }
 }
+
 int CGUIImage::GetTextureWidth() const
 {
   return m_iTextureWidth;
 }
+
 int CGUIImage::GetTextureHeight() const
 {
   return m_iTextureHeight;
@@ -409,6 +432,7 @@ void CGUIImage::SetKeepAspectRatio(bool bOnOff)
     m_bInvalidated = true;
   }
 }
+
 bool CGUIImage::GetKeepAspectRatio() const
 {
   return m_bKeepAspectRatio;
@@ -419,6 +443,7 @@ int CGUIImage::GetRenderWidth() const
 {
   return m_iRenderWidth;
 }
+
 int CGUIImage::GetRenderHeight() const
 {
   return m_iRenderHeight;
@@ -447,4 +472,3 @@ void CGUIImage::SetCornerAlpha(DWORD dwLeftTop, DWORD dwRightTop, DWORD dwLeftBo
     m_bInvalidated = true;
   }
 }
-
