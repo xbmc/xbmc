@@ -139,10 +139,14 @@ bool CHTTP::ReadData(string& strData)
 		n = m_strHeaders.find("Content-Length:");
 		if (n == string::npos)  // no chunked transfer or content-length.  We should read until recvbytes is 0
 		{
-			while (m_RecvBytes > 0)
+			do
 			{
-				strData.append(m_RecvBuffer, m_RecvBuffer + m_RecvBytes);
-				m_RecvBytes = 0;
+				if (m_RecvBytes > 0)
+				{
+					strData.append(m_RecvBuffer, m_RecvBuffer + m_RecvBytes);
+					m_RecvBytes = 0;
+				}
+
 				if (!Recv(-1))
 				{
 					strData.clear();
@@ -150,9 +154,7 @@ bool CHTTP::ReadData(string& strData)
 					Close();
 					return false;
 				}
-
-			}
-
+			} while (m_RecvBytes > 0);
 		}
 
 		else
@@ -514,7 +516,9 @@ bool CHTTP::Recv(int iLen)
 				if (WSAWaitForMultipleEvents(1, &hEvent, FALSE, TIMEOUT, FALSE) == WSA_WAIT_EVENT_0)
 				{
 					if (!WSAGetOverlappedResult(m_socket, &ovl, &n, FALSE, &flags))
+					{
 						return false;
+					}
 				}
 				else
 				{
@@ -524,7 +528,9 @@ bool CHTTP::Recv(int iLen)
 				}
 			}
 			else
+			{
 				return false;
+			}
 		}
 		if (!n)
 		{
