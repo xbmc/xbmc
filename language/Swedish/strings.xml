@@ -2124,5 +2124,21 @@
  <value>Profile '%s' laddades ok!</value>
  </string>
 
+   <string>
+<id>13300</id>
+<value>Fläktfart:</value>
+</string>
+
+   <string>
+<id>13301</id>
+<value>Automatisk temp. kontroll</value>
+</string>
+
+   <string>
+<id>13302</id>
+<value>Fläktfart</value>
+</string>
+
+
 
 </strings>
