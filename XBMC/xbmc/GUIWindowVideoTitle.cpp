@@ -310,6 +310,7 @@ void CGUIWindowVideoTitle::UpdateButtons()
       SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
     }
 
+    ShowThumbPanel();
 		SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
 		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyVideoTitleSortMethod+365);
 
