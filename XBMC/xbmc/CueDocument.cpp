@@ -34,6 +34,7 @@
 
 #include "cuedocument.h"
 #include "util.h"
+#include "utils/CharsetConverter.h"
 
 CCueDocument::CCueDocument(void)
 {
@@ -295,7 +296,12 @@ int CCueDocument::ExtractNumericInfo(const char *szData)
 bool CCueDocument::ResolvePath(CStdString &strPath, const CStdString &strBase)
 {
 	CStdString strDirectory;
+	CStdString strFilename;
 	CUtil::GetDirectory(strBase, strDirectory);
+	if(CUtil::IsSmb(strDirectory)) {
+		g_charsetConverter.stringCharsetToUtf8(strPath,strFilename);
+		strPath = strFilename;
+	}
 	CUtil::GetQualifiedFilename(strDirectory, strPath);
 	return true;
 }
