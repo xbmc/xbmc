@@ -59,9 +59,17 @@ bool CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum)
 	}
 	// check if we found a list of albums
 
+	CStdString strHTMLLow=strHTML;
+	strHTMLLow.MakeLower();
+	int iStartOfTable=strHTMLLow.Find("albums with titles like");
+	if (iStartOfTable< 0) return false;
+	iStartOfTable=strHTMLLow.ReverseFind("<table",iStartOfTable);
+	if (iStartOfTable < 0) return false;
+
 	CHTMLTable table;
 	CHTMLUtil  util;
-	table.Parse(strHTML);
+	CStdString strTable=strHTML.Right((int)strHTML.size()-iStartOfTable);
+	table.Parse(strTable);
 	for (int i=0; i < table.GetRows(); ++i)
 	{
 		const CHTMLRow& row=table.GetRow(i);
