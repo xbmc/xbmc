@@ -110,12 +110,12 @@ static int audio_init(int rate,int channels,int format,int flags)
         pao_data->bps *= (ao_format_bits/8);
 		}
 
-	if(pao_data->buffersize==-1)
-    {
+	//if(pao_data->buffersize==-1)
+    //{
         pao_data->buffersize  = ao_format_bits/8;
         pao_data->buffersize *= channels;
         pao_data->buffersize *= m_pAudioDecoder->GetChunkLen();
-    }
+    //}
 		pao_data->outburst=m_pAudioDecoder->GetChunkLen();
 	 return 1;
 }
