@@ -142,7 +142,7 @@ bool CMarkupSTL::Save( LPCTSTR szFileName )
 	nLength = WideCharToMultiByte(CP_UTF8,0,m_csDoc,nLength,pBuffer,nUTF8Len+1,NULL,NULL);
 	DWORD numwritten;
 	WriteFile(hFile, pBuffer, nLength, &numwritten, 0);
-	delete pBuffer;
+	delete[] pBuffer;
 #else
 	DWORD numwritten;
 	WriteFile(hFile, (LPCTSTR)m_csDoc, nLength, &numwritten, 0);
