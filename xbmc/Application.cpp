@@ -427,17 +427,6 @@ void CApplication::OnKey(CKey& key)
 				return;
 			}
 		}
-		else
-		{
-			// music stopped.
-			if (m_gWindowManager.GetActiveWindow()==2006)
-			{
-				if (g_playlistPlayer.size() ==0 || !m_pPlayer)
-				{
-					m_gWindowManager.ActivateWindow(0);//home.
-				}
-			}
-		}
 	}
 	m_gWindowManager.OnKey(key);   
 }
@@ -989,11 +978,22 @@ void CApplication::SpinHD()
 		}
 	}
 
+	// clean up player core if its inactive >= 10 sec.
 	if (m_pPlayer)
 	{
 		if (!m_pPlayer->IsPlaying() )
 		{
-			if ( (long)(timeGetTime() - m_dwIdleTime) >= 10L*1000L )
+			bool bTimeOut=(long)(timeGetTime() - m_dwIdleTime) >= 10L*1000L ;
+			// music stopped.
+			if (m_gWindowManager.GetActiveWindow()==2006)
+			{
+				if (g_playlistPlayer.size() ==0 || bTimeOut)
+				{
+					m_gWindowManager.ActivateWindow(0);//home.
+				}
+			}
+
+			if ( bTimeOut )
 			{
 				delete m_pPlayer;
 				m_pPlayer=NULL;
