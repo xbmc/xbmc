@@ -69,6 +69,7 @@ protected:
 	DWORD										m_dwFrameCounter;
   bool                    m_bKeepAspectRatio;
   vector <LPDIRECT3DTEXTURE8> m_vecTextures;
+	LPDIRECT3DPALETTE8			m_pPalette;
   int                     m_iRenderWidth;
   int                     m_iRenderHeight;
 };
