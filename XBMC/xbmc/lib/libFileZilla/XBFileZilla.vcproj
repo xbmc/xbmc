@@ -441,7 +441,7 @@
 				Name="Common"
 				Filter="">
 				<File
-					RelativePath="C:\Program Files\Microsoft Xbox SDK\Samples\Xbox\Common\Src\xbapp.cpp">
+					RelativePath="$(XDK)\Samples\Xbox\Common\Src\xbapp.cpp">
 					<FileConfiguration
 						Name="Release|Xbox">
 						<Tool
@@ -461,10 +461,10 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="C:\Program Files\Microsoft Xbox SDK\Samples\Xbox\Common\Include\xbapp.h">
+					RelativePath="$(XDK)\Samples\Xbox\Common\Include\xbapp.h">
 				</File>
 				<File
-					RelativePath="C:\Program Files\Microsoft Xbox SDK\Samples\Xbox\Common\Src\xbinput.cpp">
+					RelativePath="$(XDK)\Samples\Xbox\Common\Src\xbinput.cpp">
 					<FileConfiguration
 						Name="Release|Xbox">
 						<Tool
@@ -484,10 +484,10 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="C:\Program Files\Microsoft Xbox SDK\Samples\Xbox\Common\Include\xbinput.h">
+					RelativePath="$(XDK)\Samples\Xbox\Common\Include\xbinput.h">
 				</File>
 				<File
-					RelativePath="C:\Program Files\Microsoft Xbox SDK\Samples\Xbox\Common\Src\xbutil.cpp">
+					RelativePath="$(XDK)\Samples\Xbox\Common\Src\xbutil.cpp">
 					<FileConfiguration
 						Name="Release|Xbox">
 						<Tool
@@ -507,7 +507,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="C:\Program Files\Microsoft Xbox SDK\Samples\Xbox\Common\Include\xbutil.h">
+					RelativePath="$(XDK)\Samples\Xbox\Common\Include\xbutil.h">
 				</File>
 			</Filter>
 		</Filter>
