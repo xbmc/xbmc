@@ -95,6 +95,8 @@ CGUIWindowOSD::CGUIWindowOSD(void)
 	m_iActiveMenu = 0;
 	m_iActiveMenuButtonID = 0;
 	m_iCurrentBookmark = 0;
+	// enable relative coordinates
+	m_bRelativeCoords = true;
 }
 
 CGUIWindowOSD::~CGUIWindowOSD(void)
@@ -235,7 +237,10 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 
 			OutputDebugString("OSD:INIT\n");
 			if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(false);
-			ResetAllControls();							// make sure the controls are positioned relevant to the OSD Y offset
+			// position correctly
+			int iResolution = g_graphicsContext.GetVideoResolution();
+			SetPosition(0, g_settings.m_ResInfo[iResolution].iOSDYOffset);
+//			ResetAllControls();							// make sure the controls are positioned relevant to the OSD Y offset
 			m_bSubMenuOn=false;
 			m_iActiveMenuButtonID=0;
 			m_iActiveMenu=0;

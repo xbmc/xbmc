@@ -70,6 +70,7 @@ public:
 	virtual void			ResetAllControls();
 	static void		        FlushReferenceCache();
 	virtual bool	IsDialog() {return false;};
+	void					SetRelativeCoords(bool bRelativeCoords) { m_bRelativeCoords = bRelativeCoords; };
 
 protected:
   virtual void        OnWindowLoaded();

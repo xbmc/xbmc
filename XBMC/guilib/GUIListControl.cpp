@@ -326,7 +326,7 @@ void CGUIListControl::OnAction(const CAction &action)
 				{
 					Scroll(1);
 				}
-				else if (m_iCursorY<m_iItemsPerPage-1)
+				else if (m_iCursorY<m_iItemsPerPage-1 && m_iOffset + m_iCursorY < (int)m_vecItems.size()-1)
 				{
 					m_iCursorY++;
 				}
