@@ -3021,7 +3021,60 @@ void CMusicDatabaseReorg::DeleteSingleAlbum()
 }
 */
 
-/*
+bool CMusicDatabase::GetGenresNav(VECGENRES& genres)
+{
+	try
+	{
+		genres.erase(genres.begin(), genres.end());
+
+		if (NULL==m_pDB.get()) return false;
+		if (NULL==m_pDS.get()) return false;
+
+    // get primary genres for songs
+		CStdString strSQL1;
+		strSQL1 += "select genre.strGenre ";
+    strSQL1 += "from genre ";
+		strSQL1 += "join song on genre.idGenre = song.idGenre ";
+
+    // get secondary genres for songs
+    CStdString strSQL2;
+    strSQL2 += "select genre.strGenre ";
+    strSQL2 += "from exgenresong ";
+    strSQL2 += "join song on exgenresong.idSong = song.idSong ";
+    strSQL2 += "join genre on exgenresong.idGenre = genre.idGenre ";
+
+    CStdString strSQL = strSQL1 + "union " + strSQL2;
+
+    // run query
+		CLog::Log(LOGDEBUG,"CMusicDatabase::GetArtistsNav() query: %s",strSQL.c_str());
+    if (!m_pDS->query(strSQL.c_str())) return false;
+		int iRowsFound = m_pDS->num_rows();
+		if (iRowsFound==0)
+    {
+      m_pDS->close();
+      return false;
+    }
+
+    // get data from returned rows
+		while (!m_pDS->eof())
+		{
+			CStdString strGenre = m_pDS->fv("genre.strGenre").get_asString();
+			genres.push_back(strGenre);
+			m_pDS->next();
+		}
+
+    // cleanup
+		m_pDS->close();
+
+		return true;
+	}
+	catch(...)
+	{
+    CLog::Log(LOGERROR, "CMusicDatabase:GetGenresNav() failed");
+	}
+	return false;
+}
+
 bool CMusicDatabase::GetArtistsNav(VECARTISTS& artists, const CStdString &strGenre1)
 {
 	try
@@ -3031,52 +3084,79 @@ bool CMusicDatabase::GetArtistsNav(VECARTISTS& artists, const CStdString &strGen
 		if (NULL==m_pDB.get()) return false;
 		if (NULL==m_pDS.get()) return false;
 
-		// clean up strings
-		CStdString strGenre=strGenre1;
-		if (!strGenre.IsEmpty()) RemoveInvalidChars(strGenre);
+		// get primary artists by primary genre
+		CStdString strSQL1;
+		strSQL1 += "select artist.strArtist ";
+		strSQL1 += "from genre ";
+		strSQL1 += "join song on genre.idGenre = song.idGenre ";
+		strSQL1 += "join artist on song.idArtist = artist.idArtist ";
+		
+		// get primary artists by extra genre
+		CStdString strSQL2;
+		strSQL2 += "select artist.strArtist ";
+		strSQL2 += "from genre ";
+		strSQL2 += "join exgenresong on genre.idGenre = exgenresong.idGenre ";
+		strSQL2 += "join song on exgenresong.idSong = song.idSong ";
+		strSQL2 += "join artist on song.idArtist = artist.idArtist ";
 
-		// build query
-		CStdString strSQL = "select ";
-		if (!strGenre.IsEmpty())
-			strSQL += "distinct ";
-		strSQL += "strArtist from artist ";
+		// get extra artists by primary genre
+		CStdString strSQL3;
+		strSQL3 += "select artist.strArtist ";
+		strSQL3 += "from exartistsong ";
+		strSQL3 += "join song on exartistsong.idSong = song.idSong ";
+		strSQL3 += "join genre on song.idGenre = genre.idGenre ";
+		strSQL3 += "join artist on exartistsong.idArtist = artist.idArtist ";
 
+		// get extra artists by extra genre
+		CStdString strSQL4;
+		strSQL4 += "select artist.strArtist ";
+		strSQL4 += "from exartistsong ";
+		strSQL4 += "join artist on artist.idArtist = exartistsong.idArtist ";
+		strSQL4 += "join song on song.idSong = exartistsong.idSong ";
+		strSQL4 += "join exgenresong on exartistsong.idSong = exgenresong.idSong ";
+		strSQL4 += "join genre on exgenresong.idGenre = genre.idGenre ";
+
+		// where clause
 		CStdString strWhere;
-		if (!strGenre.IsEmpty())
+		CStdString strTemp;
+
+    if (!strGenre1.IsEmpty())
 		{
-			// if getting artist by genre we need to join the song
-			// since thats the only table that relates them
-			strSQL += "join song on artist.idArtist = song.idArtist ";
-			strSQL += "join genre on song.idGenre = genre.idGenre ";
-	
-			CStdString strTemp;
-			strTemp.Format("genre.strGenre like '%s' ",strGenre.c_str());
-			strWhere = "where " + strTemp;
+			CStdString strGenre=strGenre1;
+			RemoveInvalidChars(strGenre);
+			strTemp.Format("where genre.strGenre = '%s' ",strGenre.c_str());
+			strWhere += strTemp;
+    }
 
-			// set up sql queries:
-			// get artists based off extra genres
-			// get extra artists based off genres
-			// get extra artists based off extra genres
-		}
-
-		// skip various artists
 		CStdString strVariousArtists=g_localizeStrings.Get(340);
 		long lVariousArtistsId = AddArtist(strVariousArtists);
-		
-		CStdString strTemp;
 		strTemp.Format("artist.idArtist <> %i ",lVariousArtistsId);
 
-		if (strWhere.IsEmpty())
+    if (strWhere.IsEmpty())
 			strWhere += "where ";
 		else
 			strWhere += "and ";
 		strWhere += strTemp;
 
-		strSQL += strWhere;
+		strSQL1 += strWhere;
+		strSQL2 += strWhere;
+		strSQL3 += strWhere;
+		strSQL4 += strWhere;
+
+    // no genre
+    // only get primary and secondary artists
+    CStdString strSQL;
+    if (strGenre1.IsEmpty())
+      strSQL = strSQL1 + "union " + strSQL3;
+    // genre
+    // needs all four queries
+    else
+      strSQL = strSQL1 + "union " + strSQL2 + "union " + strSQL3 + "union " + strSQL4;
 
 		// run query
-		CLog::Log(LOGDEBUG,"CMusicDatabase::GetAristsNav() query: %s",strSQL.c_str());
-		if (!m_pDS->query(strSQL.c_str())) return false;
+		CLog::Log(LOGDEBUG,"CMusicDatabase::GetArtistsNav() query: %s",strSQL.c_str());
+		if (!m_pDS->query(strSQL.c_str()))
+			return false;
 		int iRowsFound = m_pDS->num_rows();
 		if (iRowsFound==0)
 		{
@@ -3087,7 +3167,7 @@ bool CMusicDatabase::GetArtistsNav(VECARTISTS& artists, const CStdString &strGen
 		// get data from returned rows
 		while (!m_pDS->eof())
 		{
-			CStdString strArtist = m_pDS->fv("strArtist").get_asString();
+			CStdString strArtist = m_pDS->fv("artist.strArtist").get_asString();
 			artists.push_back(strArtist);
 			m_pDS->next();
 		}
@@ -3112,60 +3192,113 @@ bool CMusicDatabase::GetAlbumsNav(VECALBUMS& albums, const CStdString &strGenre1
 		if (NULL==m_pDB.get()) return false;
 		if (NULL==m_pDS.get()) return false;
 
-		// clean up strings
-		CStdString strGenre=strGenre1;
-		if (!strGenre.IsEmpty()) RemoveInvalidChars(strGenre);
-		CStdString strArtist=strArtist1;
-		if (!strArtist.IsEmpty()) RemoveInvalidChars(strArtist);
+		// get albums by primary genre and primary artist
+		CStdString strSQL1;
+		strSQL1 += "select path.*, album.*, artist.strArtist ";
+		strSQL1 += "from genre ";
+		strSQL1 += "join song on genre.idgenre = song.idgenre ";
+		strSQL1 += "join path on song.idpath = path.idpath ";
+		strSQL1 += "join album on song.idalbum = album.idalbum ";
 
-		// build query
-		CStdString strSQL = "select ";
-		strSQL += "* from album ";
-		strSQL += "join path on album.idPath = path.idPath ";
+		// get albums by extra genre and primary artist
+		CStdString strSQL2;
+		strSQL2 += "select path.*, album.*, artist.strArtist ";
+		strSQL2 += "from genre ";
+		strSQL2 += "join exgenresong on genre.idgenre = exgenresong.idgenre ";
+		strSQL2 += "join song on exgenresong.idsong = song.idsong ";
+		strSQL2 += "join path on song.idpath = path.idpath ";
+		strSQL2 += "join album on song.idalbum = album.idalbum ";
+		strSQL2 += "join artist on song.idartist = artist.idartist ";
 
-		// filtering
-		if (!strGenre.IsEmpty() || !strArtist.IsEmpty())
-		{
-			// albums with more than one artist is linked to "Various Artists"
-			// so to get albums by genre OR artist we need to join
-			// the song table since thats the only table that relates them
-			// correctly
-			strSQL += "join song on album.idAlbum = song.idAlbum ";
-		}
+		// get albums by primary genre and extra artist
+		CStdString strSQL3;
+		strSQL3 += "select path.*, album.*, artist.strArtist ";
+		strSQL3 += "from exartistsong ";
+		strSQL3 += "join song on exartistsong.idsong = song.idsong ";
+		strSQL3 += "join path on song.idpath = path.idpath ";
+		strSQL3 += "join album on song.idalbum = album.idalbum ";
+		strSQL3 += "join genre on song.idgenre = genre.idgenre ";
+		strSQL3 += "join artist on exartistsong.idartist = artist.idartist ";
 
+		// get albums by extra genre and extra artist
+		CStdString strSQL4;
+		strSQL4 += "select path.*, album.*, artist.strArtist ";
+		strSQL4 += "from exartistsong ";
+		strSQL4 += "join artist on artist.idartist = exartistsong.idartist ";
+		strSQL4 += "join song on song.idsong = exartistsong.idsong ";
+		strSQL4 += "join exgenresong on exartistsong.idsong = exgenresong.idsong ";
+		strSQL4 += "join path on song.idpath = path.idpath ";
+		strSQL4 += "join album on song.idalbum = album.idalbum ";
+		strSQL4 += "join genre on exgenresong.idgenre = genre.idgenre ";
+
+		// where clause
 		CStdString strWhere;
-		if (!strGenre.IsEmpty())
-		{
-			// link genre table to song table
-			strSQL += "join genre on song.idGenre = genre.idGenre ";
+		CStdString strTemp;
+    int iQuery = 0;
 
-			CStdString strTemp;
-			strTemp.Format("genre.strGenre like '%s' ",strGenre.c_str());
-			strWhere = "where " + strTemp;
-		}
-		if (!strArtist.IsEmpty())
+    if (!strGenre1.IsEmpty())
 		{
-			// we're filtering by artist so link artist table to song table
-			strSQL += "join artist on song.idArtist = artist.idArtist ";
+  		CStdString strGenre=strGenre1;
+  		RemoveInvalidChars(strGenre);
+  		strTemp.Format("where genre.strGenre = '%s' ",strGenre.c_str());
+  		strWhere += strTemp;
+      iQuery += 1;
+    }
 
-			CStdString strTemp;
-			strTemp.Format("artist.strArtist like '%s' ",strArtist.c_str());
-			
-			if (strWhere.IsEmpty())
+		if (!strArtist1.IsEmpty())
+		{
+			CStdString strArtist=strArtist1;
+			RemoveInvalidChars(strArtist);
+			strTemp.Format("artist.strArtist = '%s' ",strArtist.c_str());
+
+      if (strWhere.IsEmpty())
 				strWhere += "where ";
 			else
 				strWhere += "and ";
 			strWhere += strTemp;
-		}
-		else
-		{
-			// no artist filter so link artist table to album table
-			strSQL += "join artist on album.idArtist = artist.idArtist ";
+
+      iQuery += 2;
 		}
 
-		strSQL += strWhere;
-		strSQL += "group by album.idAlbum ";
-	
+    // if no genre and artist, need to bind artists to album table
+    // so that albums show up with "Various Artists"
+    if (iQuery == 0)
+    {
+      strSQL1 += "join artist on album.idartist = artist.idartist ";
+      strSQL1 += "group by album.strAlbum ";
+    }
+    // otherwise bind artists to song table
+    else
+    {
+		  strSQL1 += "join artist on song.idartist = artist.idartist ";
+    }
+
+		strSQL1 += strWhere;
+		strSQL2 += strWhere;
+		strSQL3 += strWhere;
+		strSQL4 += strWhere;
+
+		CStdString strSQL;
+    // no genre, no artist
+    // only get albums
+    if (iQuery == 0)
+      strSQL = strSQL1;
+
+    // genre only
+    // get albums off primary and secondary genres
+    else if (iQuery == 1)
+      strSQL = strSQL1 + "union " + strSQL2;
+
+    // artist only
+    // get albums off primary and secondary artists
+    else if (iQuery == 2)
+			strSQL += strSQL1 + "union " + strSQL3;
+
+    // genre and artist
+    // need all four queries
+    else
+      strSQL = strSQL1 + "union " + strSQL2 + "union " + strSQL3 + "union " + strSQL4;
+
 		// run query
 		CLog::Log(LOGDEBUG,"CMusicDatabase::GetAlbumsNav() query: %s",strSQL.c_str());
 		if (!m_pDS->query(strSQL.c_str())) return false;
@@ -3186,301 +3319,7 @@ bool CMusicDatabase::GetAlbumsNav(VECALBUMS& albums, const CStdString &strGenre1
 		// cleanup
 		m_pDS->close();
 		return true;
-	}
-	catch(...)
-	{
-		CLog::Log(LOGERROR, "CMusicDatabase::GetAlbumsNav() failed");
-	}
-	return false;
-}
 
-bool CMusicDatabase::GetSongsNav(VECSONGS& songs, const CStdString &strGenre1, const CStdString &strArtist1, const CStdString &strAlbum1)
-{
-	try
-	{
-		songs.erase(songs.begin(), songs.end());
-
-		if (NULL==m_pDB.get()) return false;
-		if (NULL==m_pDS.get()) return false;
-
-		// clean up strings
-		CStdString strGenre=strGenre1;
-		if (!strGenre.IsEmpty()) RemoveInvalidChars(strGenre);
-		CStdString strArtist=strArtist1;
-		if (!strArtist.IsEmpty()) RemoveInvalidChars(strArtist);
-		CStdString strAlbum=strAlbum1;
-		if (!strAlbum.IsEmpty()) RemoveInvalidChars(strAlbum);
-
-		// build query
-		CStdString strSQL = "select * from song ";
-		strSQL += "join path on song.idPath = path.idPath ";
-		strSQL += "join genre on song.idGenre = genre.idGenre ";
-		strSQL += "join artist on song.idArtist = artist.idArtist ";
-		strSQL += "join album on song.idAlbum = album.idAlbum ";
-		strSQL += "join thumb on song.idThumb = thumb.idThumb ";
-
-		CStdString strWhere;
-		if (!strGenre.IsEmpty())
-		{
-			CStdString strTemp;
-			strTemp.Format("genre.strGenre like '%s' ",strGenre.c_str());
-			strWhere = "where " + strTemp;
-		}
-		if (!strArtist.IsEmpty())
-		{
-			CStdString strTemp;
-			strTemp.Format("artist.strArtist like '%s' ",strArtist.c_str());
-			if (strWhere.IsEmpty())
-				strWhere += "where ";
-			else
-				strWhere += "and ";
-			strWhere += strTemp;
-		}
-		if (!strAlbum.IsEmpty())
-		{
-			CStdString strTemp;
-			strTemp.Format("album.strAlbum like '%s' ",strAlbum.c_str());
-			if (strWhere.IsEmpty())
-				strWhere += "where ";
-			else
-				strWhere += "and ";
-			strWhere += strTemp;
-		}
-		strSQL += strWhere;
-
-		// run query
-		CLog::Log(LOGDEBUG,"CMusicDatabase::GetSongsNav() query: %s",strSQL.c_str());
-		if (!m_pDS->query(strSQL.c_str())) return false;
-		int iRowsFound = m_pDS->num_rows();
-		if (iRowsFound==0)
-		{
-			m_pDS->close();
-			return false;
-		}
-
-		// get data from returned rows
-		songs.reserve(iRowsFound);
-		while (!m_pDS->eof())
-		{
-			songs.push_back(GetSongFromDataset());
-			m_pDS->next();
-		}
-
-		// cleanup
-		m_pDS->close();
-		return true;
-	}
-	catch(...)
-	{
-		CLog::Log(LOGERROR, "CMusicDatabase::GetSongsNav() failed");
-	}
-	return false;
-}
-*/
-
-bool CMusicDatabase::GetArtistsNav(VECARTISTS& artists, const CStdString &strGenre1)
-{
-	try
-	{
-		artists.erase(artists.begin(), artists.end());
-
-		if (NULL==m_pDB.get()) return false;
-		if (NULL==m_pDS.get()) return false;
-
-		// using a genre?
-		if (strGenre1.IsEmpty())
-			return GetArtists(artists);
-		else
-		{
-			// get primary artists by primary genre
-			CStdString strSQL1;
-			strSQL1 += "select artist.strArtist ";
-			strSQL1 += "from genre ";
-			strSQL1 += "join song on genre.idGenre = song.idGenre ";
-			strSQL1 += "join artist on song.idArtist = artist.idArtist ";
-			
-			// get primary artists by extra genre
-			CStdString strSQL2;
-			strSQL2 += "select artist.strArtist ";
-			strSQL2 += "from genre ";
-			strSQL2 += "join exgenresong on genre.idGenre = exgenresong.idGenre ";
-			strSQL2 += "join song on exgenresong.idSong = song.idSong ";
-			strSQL2 += "join artist on song.idArtist = artist.idArtist ";
-
-			// get extra artists by primary genre
-			CStdString strSQL3;
-			strSQL3 += "select artist.strArtist ";
-			strSQL3 += "from exartistsong ";
-			strSQL3 += "join song on exartistsong.idSong = song.idSong ";
-			strSQL3 += "join genre on song.idGenre = genre.idGenre ";
-			strSQL3 += "join artist on exartistsong.idArtist = artist.idArtist ";
-
-			// get extra artists by extra genre
-			CStdString strSQL4;
-			strSQL4 += "select artist.strArtist ";
-			strSQL4 += "from exartistsong ";
-			strSQL4 += "join artist on artist.idArtist = exartistsong.idArtist ";
-			strSQL4 += "join song on song.idSong = exartistsong.idSong ";
-			strSQL4 += "join exgenresong on exartistsong.idSong = exgenresong.idSong ";
-			strSQL4 += "join genre on exgenresong.idGenre = genre.idGenre ";
-
-			// where clause
-			CStdString strWhere;
-			CStdString strTemp;
-
-			CStdString strGenre=strGenre1;
-			RemoveInvalidChars(strGenre);
-			strTemp.Format("where genre.strGenre = '%s' ",strGenre.c_str());
-			strWhere += strTemp;
-
-			CStdString strVariousArtists=g_localizeStrings.Get(340);
-			long lVariousArtistsId = AddArtist(strVariousArtists);
-			strTemp.Format("and artist.idArtist <> %i ",lVariousArtistsId);
-			strWhere += strTemp;
-
-			strSQL1 += strWhere;
-			strSQL2 += strWhere;
-			strSQL3 += strWhere;
-			strSQL4 += strWhere;
-
-			CStdString strSQL = strSQL1 + "union " + strSQL2 + "union " + strSQL3 + "union " + strSQL4;
-
-			// run query
-			CLog::Log(LOGDEBUG,"CMusicDatabase::GetArtistsNav() query: %s",strSQL.c_str());
-			if (!m_pDS->query(strSQL.c_str()))
-				return false;
-			int iRowsFound = m_pDS->num_rows();
-			if (iRowsFound==0)
-			{
-				m_pDS->close();
-				return false;
-			}
-
-			// get data from returned rows
-			while (!m_pDS->eof())
-			{
-				CStdString strArtist = m_pDS->fv("artist.strArtist").get_asString();
-				artists.push_back(strArtist);
-				m_pDS->next();
-			}
-			// cleanup
-			m_pDS->close();
-
-			return true;
-		}
-	}
-	catch(...)
-	{
-		CLog::Log(LOGERROR, "CMusicDatabase::GetArtistsNav() failed");
-	}
-	return false;
-}
-
-bool CMusicDatabase::GetAlbumsNav(VECALBUMS& albums, const CStdString &strGenre1, const CStdString &strArtist1)
-{
-	try
-	{
-		albums.erase(albums.begin(), albums.end());
-
-		if (NULL==m_pDB.get()) return false;
-		if (NULL==m_pDS.get()) return false;
-
-		if (strGenre1.IsEmpty())
-		{
-			if (strArtist1.IsEmpty())
-				return GetAlbums(albums);
-			else
-				return GetAlbumsByArtist(strArtist1,albums);
-		}
-		else
-		{
-			// get albums by primary genre and primary artist
-			CStdString strSQL1;
-			strSQL1 += "select path.*, album.*, artist.strArtist ";
-			strSQL1 += "from genre ";
-			strSQL1 += "join song on genre.idgenre = song.idgenre ";
-			strSQL1 += "join path on song.idpath = path.idpath ";
-			strSQL1 += "join album on song.idalbum = album.idalbum ";
-			strSQL1 += "join artist on song.idartist = artist.idartist ";
-
-			// get albums by extra genre and primary artist
-			CStdString strSQL2;
-			strSQL2 += "select path.*, album.*, artist.strArtist ";
-			strSQL2 += "from genre ";
-			strSQL2 += "join exgenresong on genre.idgenre = exgenresong.idgenre ";
-			strSQL2 += "join song on exgenresong.idsong = song.idsong ";
-			strSQL2 += "join path on song.idpath = path.idpath ";
-			strSQL2 += "join album on song.idalbum = album.idalbum ";
-			strSQL2 += "join artist on song.idartist = artist.idartist ";
-
-			// get albums by primary genre and extra artist
-			CStdString strSQL3;
-			strSQL3 += "select path.*, album.*, artist.strArtist ";
-			strSQL3 += "from exartistsong ";
-			strSQL3 += "join song on exartistsong.idsong = song.idsong ";
-			strSQL3 += "join path on song.idpath = path.idpath ";
-			strSQL3 += "join album on song.idalbum = album.idalbum ";
-			strSQL3 += "join genre on song.idgenre = genre.idgenre ";
-			strSQL3 += "join artist on exartistsong.idartist = artist.idartist ";
-
-			// get albums by extra genre and extra artist
-			CStdString strSQL4;
-			strSQL4 += "select path.*, album.*, artist.strArtist ";
-			strSQL4 += "from exartistsong ";
-			strSQL4 += "join artist on artist.idartist = exartistsong.idartist ";
-			strSQL4 += "join song on song.idsong = exartistsong.idsong ";
-			strSQL4 += "join exgenresong on exartistsong.idsong = exgenresong.idsong ";
-			strSQL4 += "join path on song.idpath = path.idpath ";
-			strSQL4 += "join album on song.idalbum = album.idalbum ";
-			strSQL4 += "join genre on exgenresong.idgenre = genre.idgenre ";
-
-			// where clause
-			CStdString strWhere;
-			CStdString strTemp;
-
-			CStdString strGenre=strGenre1;
-			RemoveInvalidChars(strGenre);
-			strTemp.Format("where genre.strGenre = '%s' ",strGenre.c_str());
-			strWhere += strTemp;
-
-			if (!strArtist1.IsEmpty())
-			{
-				CStdString strArtist=strArtist1;
-				RemoveInvalidChars(strArtist);
-				strTemp.Format("and artist.strArtist = '%s' ",strArtist.c_str());
-				strWhere += strTemp;
-			}
-
-			strSQL1 += strWhere;
-			strSQL2 += strWhere;
-			strSQL3 += strWhere;
-			strSQL4 += strWhere;
-
-			CStdString strSQL = strSQL1 + "union " + strSQL2;
-			if (!strArtist1.IsEmpty())
-				strSQL += "union " + strSQL3 + "union " + strSQL4;
-
-			// run query
-			CLog::Log(LOGDEBUG,"CMusicDatabase::GetAlbumsNav() query: %s",strSQL.c_str());
-			if (!m_pDS->query(strSQL.c_str())) return false;
-			int iRowsFound = m_pDS->num_rows();
-			if (iRowsFound==0)
-			{
-				m_pDS->close();
-				return false;
-			}
-
-			// get data from returned rows
-			while (!m_pDS->eof())
-			{
-				albums.push_back(GetAlbumFromDataset());
-				m_pDS->next();
-			}
-
-			// cleanup
-			m_pDS->close();
-			return true;
-		}
 	}
 	catch(...)
 	{
