@@ -95,8 +95,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 
 void CGUIWindowHome::OnClickShutdown(CGUIMessage& aMessage)
 {
-	g_application.Stop();
-	XKUtils::XBOXPowerOff();
+	g_applicationMessenger.Shutdown();
 }
 
 void CGUIWindowHome::OnClickDashboard(CGUIMessage& aMessage)

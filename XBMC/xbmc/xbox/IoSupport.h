@@ -121,9 +121,9 @@ public:
 	INT 					ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
 	VOID					CloseCDROM(HANDLE hDevice);
 	BOOL					IsDebug();
-	HRESULT 			Shutdown();
-
-	static VOID		SpindownHarddisk();
+	
+  static HRESULT Shutdown();
+	static VOID		 SpindownHarddisk();
 
 protected:
 	static VOID			IdexWritePortUchar(USHORT port, UCHAR data);
