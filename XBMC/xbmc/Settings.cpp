@@ -10,8 +10,8 @@ struct CSettings::stSettings g_stSettings;
 CSettings::CSettings(void)
 {
 
-  strcpy(g_stSettings.m_szSubtitleFont,"");
-  g_stSettings.m_iSubtitleHeight=0;
+  strcpy(g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
+  g_stSettings.m_iSubtitleHeight=28;
   g_stSettings.m_bPostProcessing=true;
   g_stSettings.m_bDeInterlace=false;
 	g_stSettings.m_bAudioOnAllSpeakers=false;
@@ -676,7 +676,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetBoolean(pElement, "deinterlace", g_stSettings.m_bDeInterlace);
       
 		GetInteger(pElement, "subtitleheight",g_stSettings.m_iSubtitleHeight);
-		GetString(pElement, "subtitlefont", g_stSettings.m_szSubtitleFont,"");
+		GetString(pElement, "subtitlefont", g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
 	}
 	// myscripts settings
 	pElement = pRootElement->FirstChildElement("myscripts");
