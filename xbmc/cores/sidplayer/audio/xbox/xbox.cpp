@@ -53,6 +53,13 @@ void *Audio_Xbox::open (AudioConfig &cfg, const char *name)
 
 	isOpen  = true;
 
+	if (cfg.channels == 1)
+		DirectSoundOverrideSpeakerConfig(DSSPEAKER_MONO);
+	else if (cfg.channels == 2)
+		DirectSoundOverrideSpeakerConfig(DSSPEAKER_STEREO);
+	else
+		DirectSoundOverrideSpeakerConfig(DSSPEAKER_USE_DEFAULT);
+
 	if (FAILED(DirectSoundCreate(NULL, &pDS, NULL)))
 	{
 		_errorString = "XBOX ERROR: Could not open audio device.";
