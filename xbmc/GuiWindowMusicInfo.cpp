@@ -105,6 +105,7 @@ void CGUIWindowMusicInfo::SetAlbum(CMusicAlbumInfo& album)
 void CGUIWindowMusicInfo::Update()
 {
 	if (!m_pAlbum) return;
+	CStdString strTmp;
 	SetLabel(CONTROL_ALBUM, m_pAlbum->GetTitle() );
 	SetLabel(CONTROL_ARTIST, m_pAlbum->GetArtist() );
 	SetLabel(CONTROL_DATE, m_pAlbum->GetDateOfRelease() );
@@ -115,7 +116,16 @@ void CGUIWindowMusicInfo::Update()
 	SetLabel(CONTROL_RATING, strRating );
 
 	SetLabel(CONTROL_GENRE, m_pAlbum->GetGenre() );
-	SetLabel(CONTROL_TONE, m_pAlbum->GetTones() );
+	{
+	CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_TONE); 
+    OnMessage(msg1);
+	}
+	{
+	strTmp=m_pAlbum->GetTones(); strTmp.Trim();
+	CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TONE); 
+    msg1.SetLabel( strTmp );
+    OnMessage(msg1);
+	}
 	SetLabel(CONTROL_STYLES, m_pAlbum->GetStyles() );
 
 	if (m_bViewReview)
