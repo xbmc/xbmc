@@ -565,11 +565,11 @@
   </string> 
   <string>
     <id>213</id>
-    <value>Kalibrering GUI</value>
+    <value>Kalibrera GUI</value>
   </string> 
   <string>
     <id>214</id>
-    <value>Kalibrering film</value>
+    <value>Kalibrera film</value>
   </string> 
   <string>
     <id>215</id>
@@ -1670,7 +1670,7 @@
    </string>
    <string>
      <id>492</id>
-     <value>Förstora undertexter</value>
+     <value>Förstora undertext</value>
    </string>
    <string>
      <id>493</id>
@@ -1686,7 +1686,7 @@
    </string>
    <string>
      <id>496</id>
-     <value>Kalibration</value>
+     <value>Kalibrera</value>
    </string>
  <string>
  <id>497</id>
@@ -1695,7 +1695,7 @@
 
  <string>
  <id>498</id>
- <value>Sortera efter: Typ</value>
+ <value>Sortera: Typ</value>
  </string>
 
  <string>
