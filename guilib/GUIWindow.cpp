@@ -6,10 +6,14 @@
 #include "../xbmc/utils/log.h"
 #include "../xbmc/util.h"
 #include "GUIControlFactory.h"
-#include "guibuttoncontrol.h"
-#include "guiRadiobuttoncontrol.h"
+#include "guiButtonControl.h"
+#include "guiSpinButtonControl.h"
+#include "guiRadioButtonControl.h"
 #include "guiSpinControl.h"
+#include "guiRSSControl.h"
+#include "guiRAMControl.h"
 #include "guiListControl.h"
+#include "guiListControlEx.h"
 #include "guiImage.h"
 #include "GUILabelControl.h"
 #include "GUIFadeLabelControl.h"
@@ -77,9 +81,21 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 			{
 				stControl.m_pControl = new CGUIFadeLabelControl(*((CGUIFadeLabelControl*)it->m_pControl));
 			}
+			else if (!strcmp(it->m_szType,"spinbutton"))
+			{
+				stControl.m_pControl = new CGUISpinButtonControl(*((CGUISpinButtonControl*)it->m_pControl));
+			}
 			else if (!strcmp(it->m_szType,"button"))
 			{
 				stControl.m_pControl = new CGUIButtonControl(*((CGUIButtonControl*)it->m_pControl));
+			}
+			else if (!strcmp(it->m_szType,"rss"))
+			{
+				stControl.m_pControl = new CGUIRSSControl(*((CGUIRSSControl*)it->m_pControl));
+			}
+			else if (!strcmp(it->m_szType,"ram"))
+			{
+				stControl.m_pControl = new CGUIRAMControl(*((CGUIRAMControl*)it->m_pControl));
 			}
 			else if (!strcmp(it->m_szType,"togglebutton"))
 			{
@@ -116,6 +132,10 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 			else if (!strcmp(it->m_szType,"listcontrol"))
 			{
 				stControl.m_pControl = new CGUIListControl(*((CGUIListControl*)it->m_pControl));
+			}
+			else if (!strcmp(it->m_szType,"listcontrolex"))
+			{
+				stControl.m_pControl = new CGUIListControlEx(*((CGUIListControlEx*)it->m_pControl));
 			}
 			else if (!strcmp(it->m_szType,"textbox"))
 			{
@@ -188,9 +208,21 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 		{
 			stControl.m_pControl = new CGUIFadeLabelControl(*((CGUIFadeLabelControl*)it->m_pControl));
 		}
+		else if (!strcmp(it->m_szType,"spinbutton"))
+		{
+			stControl.m_pControl = new CGUISpinButtonControl(*((CGUISpinButtonControl*)it->m_pControl));
+		}
 		else if (!strcmp(it->m_szType,"button"))
 		{
 			stControl.m_pControl = new CGUIButtonControl(*((CGUIButtonControl*)it->m_pControl));
+		}
+		else if (!strcmp(it->m_szType,"rss"))
+		{
+			stControl.m_pControl = new CGUIRSSControl(*((CGUIRSSControl*)it->m_pControl));
+		}
+		else if (!strcmp(it->m_szType,"ram"))
+		{
+			stControl.m_pControl = new CGUIRAMControl(*((CGUIRAMControl*)it->m_pControl));
 		}
 		else if (!strcmp(it->m_szType,"togglebutton"))
 		{
@@ -227,6 +259,10 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 		else if (!strcmp(it->m_szType,"listcontrol"))
 		{
 			stControl.m_pControl = new CGUIListControl(*((CGUIListControl*)it->m_pControl));
+		}
+		else if (!strcmp(it->m_szType,"listcontrolex"))
+		{
+			stControl.m_pControl = new CGUIListControlEx(*((CGUIListControlEx*)it->m_pControl));
 		}
 		else if (!strcmp(it->m_szType,"textbox"))
 		{
@@ -388,6 +424,10 @@ DWORD CGUIWindow::GetPreviousWindowID(void) const
 	return m_dwPreviousWindowId;
 }
 
+void CGUIWindow::OnInitWindow()
+{
+}
+
 bool CGUIWindow::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
@@ -408,6 +448,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 		    }
         CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwDefaultFocusControlID);
         g_graphicsContext.SendMessage(msg);
+		OnInitWindow();
       }
       return true;
     break;
@@ -426,6 +467,17 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       return true;
     }
     break;
+
+    case GUI_MSG_CLICKED:
+	{
+		CLICK_EVENT clickEvent = m_mapClickEvents[ message.GetSenderId() ];
+
+		if (clickEvent.HasAHandler())
+		{
+			clickEvent.Fire(message);
+		}
+		break;
+	}
 
     case GUI_MSG_SETFOCUS:
     {
