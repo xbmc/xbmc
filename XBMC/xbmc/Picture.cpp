@@ -189,28 +189,26 @@ IDirect3DTexture8* CPicture::GetYUY2Texture( CxImage& image  )
 	D3DLOCKED_RECT lr;
 	if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
 	{
-		CxImage imageY;
-		CxImage imageU;
-		CxImage imageV;
- 		if ( image.SplitYUV(&imageY,&imageU,&imageV))
+		// translate RGB->YUV2
+		DWORD strideScreen=lr.Pitch;
+		for (DWORD y=0; y < dwHeight; y++)
 		{
-			DWORD strideScreen=lr.Pitch;
-			for (DWORD y=0; y < m_dwHeight; y++)
+			BYTE *pDest = (BYTE*)lr.pBits + strideScreen*y;
+			for (DWORD x=0; x < (dwWidth>>1); x++)
 			{
-				BYTE *pDest = (BYTE*)lr.pBits + strideScreen*y;
-					
-				BYTE *pY = (BYTE*)imageY.GetBits() + y * imageY.GetEffWidth();
-				BYTE *pU = (BYTE*)imageU.GetBits() + (y) * (imageU.GetEffWidth());
-				BYTE *pV = (BYTE*)imageV.GetBits() + (y) * (imageV.GetEffWidth());
-				for (DWORD x=0; x < (m_dwWidth>>1); x++)
-				{
-					*pDest++ = *pY++;	
-					*pDest++ = *pU++;
-					*pDest++ = *pY++;
-					*pDest++ = *pV++;
-					pU++;
-					pV++;
-				}
+				RGBQUAD rgb1=image.GetPixelColor( (x<<1), y);
+				RGBQUAD yuv1=image.RGBtoYUV(rgb1);
+				RGBQUAD rgb2=image.GetPixelColor((x<<1)+1,y);
+				RGBQUAD yuv2=image.RGBtoYUV(rgb2);
+				BYTE Y0 = yuv1.rgbRed;
+				BYTE U = (yuv1.rgbGreen+yuv2.rgbGreen)>>1;
+				BYTE Y1 = yuv2.rgbRed;
+				BYTE V = (yuv1.rgbBlue+yuv2.rgbBlue)>>1;
+
+				*pDest++ = Y0;
+				*pDest++ = U;
+				*pDest++ = Y1;
+				*pDest++ = V;
 			}
 		}
 		pTexture->UnlockRect( 0 );
