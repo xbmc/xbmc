@@ -162,6 +162,7 @@ void Audio_Xbox::Eof()
 		return;
 
 	pStream->Discontinuity();
+	DirectSoundDoWork();
 }
 
 // Rev 1.8 (saw) - Alias fix
