@@ -255,7 +255,14 @@ __int64 CFileXBMSP::Seek(__int64 iFilePosition, int iWhence)
 {
 	UINT64 newpos;
 
-	if (!m_bOpened) return 0;
+	if (!m_bOpened) return -1;
+
+	//Fix for broken seeking when we are at position 0
+	if (m_filePos == 0)
+	{
+		char cBuf[1];
+		Read(cBuf,1);
+	}
 	switch(iWhence) 
 	{
 		case SEEK_SET:
@@ -283,7 +290,7 @@ __int64 CFileXBMSP::Seek(__int64 iFilePosition, int iWhence)
 		}
     else
     {
-      int x=1;
+      return -1;
     }
 	}
 	else if ( newpos == m_fileSize )
@@ -295,7 +302,7 @@ __int64 CFileXBMSP::Seek(__int64 iFilePosition, int iWhence)
 		}
     else
     {
-      int x=1;
+      return -1;
     }
 	}
 	else if (newpos > m_filePos)
@@ -306,7 +313,7 @@ __int64 CFileXBMSP::Seek(__int64 iFilePosition, int iWhence)
 		}
     else
     {
-      int x=1;
+      return -1;
     }
 	}
 	else if (newpos < m_filePos)
@@ -317,7 +324,7 @@ __int64 CFileXBMSP::Seek(__int64 iFilePosition, int iWhence)
 		}
     else
     {
-      int x=1;
+      return -1;
     }
 	}
 	return m_filePos;

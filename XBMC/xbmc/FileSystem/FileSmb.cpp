@@ -272,13 +272,13 @@ bool CFileSMB::ReadString(char *szLine, int iLineLength)
 
 __int64 CFileSMB::Seek(__int64 iFilePosition, int iWhence)
 {
-	if (m_fd == -1) return 0;
+	if (m_fd == -1) return -1;
 
 	smb.Lock();	
 	INT64 pos = smbc_lseek(m_fd, iFilePosition, iWhence);
 	smb.Unlock();
 
-	if( pos < 0 )	return 0;
+	if( pos < 0 )	return -1;
 
 	return (__int64)pos;
 }
