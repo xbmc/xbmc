@@ -5,6 +5,11 @@
 #include "xbox/undocumented.h"
 #include "lib/common/xbnet.h"
 #include "url.h"
+#include "shortcut.h"
+#include "common/xbresource.h"
+#include "graphiccontext.h"
+#include "sectionloader.h"
+#include "lib/cximage/ximage.h"
 
 char g_szTitleIP[32];
 
@@ -143,6 +148,24 @@ bool CUtil::FileExists(const CStdString& strFileName)
 
 void CUtil::GetThumbnail(const CStdString& strFileName, CStdString& strThumb)
 {
+	if (CUtil::IsXBE(strFileName))
+	{
+		if (CUtil::GetXBEIcon(strFileName,strThumb) ) return ;
+		strThumb="defaultProgamIcon.png";
+		return;
+	}
+	if (CUtil::IsShortCut(strFileName) )
+	{
+		CShortcut shortcut;
+		if ( shortcut.Create( strFileName ) )
+		{
+			CStdString strFile=shortcut.m_strPath;
+			
+			GetThumbnail(strFile,strThumb);
+			return;			
+		}
+	}
+
   char szThumbNail[1024];
 	Crc32 crc;
 	crc.Reset();
@@ -471,4 +494,270 @@ bool CUtil::IsVideo(const CStdString& strFile)
 			}
 	}
 	strURLData=strResult;
+}
+
+void CUtil::SaveString(const CStdString &strTxt, FILE *fd)
+{
+	int iSize=strTxt.size();
+	fwrite(&iSize,1,sizeof(int),fd);
+	if (iSize > 0)
+	{
+		fwrite(&strTxt.c_str()[0],1,iSize,fd);
+	}
+}
+
+bool CUtil::LoadString(CStdString &strTxt, FILE *fd)
+{
+	strTxt="";
+	int iSize;
+	int iRead=fread(&iSize,1,sizeof(int),fd);
+	if (iRead != sizeof(int) ) return false;
+	if (feof(fd)) return false;
+	if (iSize==0) return true;
+	if (iSize > 0 && iSize < 16384)
+	{
+		char *szTmp = new char [iSize+2];
+		iRead=fread(szTmp,1,iSize,fd);
+		if (iRead != iSize)
+		{
+			delete [] szTmp;
+			return false;
+		}
+		szTmp[iSize]=0;
+		strTxt=szTmp;
+		delete [] szTmp;
+		return true;
+	}
+	return false;
+}
+
+void CUtil::SaveInt(int iValue, FILE *fd)
+{
+	fwrite(&iValue,1,sizeof(int),fd);
+}
+
+int CUtil::LoadInt( FILE *fd)
+{
+	int iValue;
+	fread(&iValue,1,sizeof(int),fd);
+	return iValue;
+}
+
+void CUtil::LoadDateTime(SYSTEMTIME& dateTime, FILE *fd)
+{
+	fread(&dateTime,1,sizeof(dateTime),fd);
+}
+
+void CUtil::SaveDateTime(SYSTEMTIME& dateTime, FILE *fd)
+{
+	fwrite(&dateTime,1,sizeof(dateTime),fd);
+}
+
+
+void CUtil::GetSongCacheName(const CStdString& strFileName, CStdString& strSongCacheName)
+{
+	Crc32 crc;
+	crc.Reset();
+  crc.Compute(strFileName.c_str(),strlen(strFileName.c_str()));
+	strSongCacheName.Format("%s\\%x.si",g_stSettings.m_szAlbumDirectory,crc);
+}
+
+void CUtil::GetAlbumThumb(const CStdString& strFileName, CStdString& strThumb)
+{
+	Crc32 crc;
+	crc.Reset();
+  crc.Compute(strFileName.c_str(),strlen(strFileName.c_str()));
+	strThumb.Format("%s\\%x.tbn",g_stSettings.m_szAlbumDirectory,crc);
+}
+void CUtil::GetAlbumCacheName(const CStdString& strFileName, CStdString& strAlbumThumb)
+{
+	CStdString strTmp="";
+	for (int i=0; i < (int)strFileName.size(); ++i)
+	{
+		char kar=strFileName[i];
+		if ( isalpha( (byte)kar) ) strTmp +=kar;
+	}
+	strTmp.ToLower();
+	Crc32 crc;
+	crc.Reset();
+  crc.Compute(strTmp.c_str(),strTmp.size());
+	strAlbumThumb.Format("%s\\%x.ai",g_stSettings.m_szAlbumDirectory,crc);
+}
+bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
+{
+  // check if thumbnail already exists
+  char szThumbNail[1024];
+	Crc32 crc;
+	crc.Reset();
+  crc.Compute(strFilePath.c_str(),strlen(strFilePath.c_str()));
+  sprintf(szThumbNail,"%s\\%x.tbn",g_stSettings.szThumbnailsDirectory,crc);
+  strIcon= szThumbNail;
+  if (CUtil::FileExists(strIcon) )
+  {
+    //yes, just return
+    return true;
+  }
+
+  // no, then create a new thumb
+  // Locate file ID and get TitleImage.xbx E:\UDATA\<ID>\TitleImage.xbx
+
+  bool bFoundThumbnail=false;
+  CStdString szFileName;
+	szFileName.Format("E:\\UDATA\\%08x\\TitleImage.xbx", GetXbeID( strFilePath ) );
+			
+  CXBPackedResource* pPackedResource = new CXBPackedResource();
+  if( SUCCEEDED( pPackedResource->Create( szFileName.c_str(), 1, NULL ) ) )
+  {
+    LPDIRECT3DTEXTURE8 pTexture;
+    LPDIRECT3DTEXTURE8 m_pTexture;
+		D3DSURFACE_DESC descSurface;
+
+		pTexture = pPackedResource->GetTexture((DWORD)0);
+
+		if ( pTexture )
+		{
+      if ( SUCCEEDED( pTexture->GetLevelDesc( 0, &descSurface ) ) )
+      {
+        int iHeight=descSurface.Height;
+        int iWidth=descSurface.Width;
+        DWORD dwFormat=descSurface.Format;
+        g_graphicsContext.Get3DDevice()->CreateTexture( 128,
+									                128,
+									                1,
+									                0,
+									                D3DFMT_LIN_A8R8G8B8,
+									                0,
+									                &m_pTexture);
+				LPDIRECT3DSURFACE8 pSrcSurface = NULL;
+				LPDIRECT3DSURFACE8 pDestSurface = NULL;
+
+        pTexture->GetSurfaceLevel( 0, &pSrcSurface );
+        m_pTexture->GetSurfaceLevel( 0, &pDestSurface );
+
+        D3DXLoadSurfaceFromSurface( pDestSurface, NULL, NULL, 
+                                    pSrcSurface, NULL, NULL,
+                                    D3DX_DEFAULT, D3DCOLOR( 0 ) );
+        D3DLOCKED_RECT rectLocked;
+        if ( D3D_OK == m_pTexture->LockRect(0,&rectLocked,NULL,0L  ) )
+        {
+		        BYTE *pBuff   = (BYTE*)rectLocked.pBits;	
+		        if (pBuff)
+		        {
+			        DWORD strideScreen=rectLocked.Pitch;
+              //mp_msg(0,0," strideScreen=%i\n", strideScreen);
+
+              CSectionLoader::Load("CXIMAGE");
+              CxImage* pImage = new CxImage(iWidth, iHeight, 24, CXIMAGE_FORMAT_JPG);
+				      for (int y=0; y < iHeight; y++)
+              {
+                byte *pPtr = pBuff+(y*(strideScreen));
+                for (int x=0; x < iWidth;x++)
+                {
+                  byte Alpha=*(pPtr+3);
+                  byte b=*(pPtr+0);
+                  byte g=*(pPtr+1);
+                  byte r=*(pPtr+2);
+                  pPtr+=4;
+                  
+                  pImage->SetPixelColor(x,y,RGB(r,g,b));
+                }
+              }
+
+              m_pTexture->UnlockRect(0);
+		          //mp_msg(0,0,"save as %s\n", szThumbNail);
+		          pImage->Resample(64,64,0);
+		          pImage->Flip();
+              pImage->Save(strIcon.c_str(),CXIMAGE_FORMAT_JPG);
+		          delete pImage;
+              bFoundThumbnail=true;
+              CSectionLoader::Unload("CXIMAGE");
+            }
+            else m_pTexture->UnlockRect(0);
+        }
+        pSrcSurface->Release();
+        pDestSurface->Release();
+        m_pTexture->Release();
+      }
+      pTexture->Release();
+    }
+  }
+  delete pPackedResource;
+  return bFoundThumbnail;
+}
+
+
+bool CUtil::GetXBEDescription(const CStdString& strFileName, CStdString& strDescription)
+{
+
+		_XBE_CERTIFICATE HC;
+		_XBE_HEADER HS;
+
+		FILE* hFile  = fopen(strFileName.c_str(),"rb");
+    if (!hFile)
+    {
+      strDescription=CUtil::GetFileName(strFileName);
+      return false;
+    }
+		fread(&HS,1,sizeof(HS),hFile);
+		fseek(hFile,HS.XbeHeaderSize,SEEK_SET);
+		fread(&HC,1,sizeof(HC),hFile);
+		fclose(hFile);
+
+		CHAR TitleName[40];
+		WideCharToMultiByte(CP_ACP,0,HC.TitleName,-1,TitleName,40,NULL,NULL);
+    if (strlen(TitleName) > 0)
+    {
+		  strDescription=TitleName;
+      return true;
+    }
+    strDescription=CUtil::GetFileName(strFileName);
+    return false;
+}
+
+DWORD CUtil::GetXbeID( const CStdString& strFilePath)
+{
+	DWORD dwReturn = 0;
+	HANDLE hFile;
+	DWORD dwCertificateLocation;
+	DWORD dwLoadAddress;
+	DWORD dwRead;
+//	WCHAR wcTitle[41];
+	
+  hFile = CreateFile( strFilePath.c_str(), 
+						GENERIC_READ, 
+						FILE_SHARE_READ, 
+						NULL,
+						OPEN_EXISTING,
+						FILE_ATTRIBUTE_NORMAL,
+						NULL );
+	if ( hFile != INVALID_HANDLE_VALUE )
+	{
+		if ( SetFilePointer(	hFile,  0x104, NULL, FILE_BEGIN ) == 0x104 )
+		{
+			if ( ReadFile( hFile, &dwLoadAddress, 4, &dwRead, NULL ) )
+			{
+				if ( SetFilePointer(	hFile,  0x118, NULL, FILE_BEGIN ) == 0x118 )
+				{
+					if ( ReadFile( hFile, &dwCertificateLocation, 4, &dwRead, NULL ) )
+					{
+						dwCertificateLocation -= dwLoadAddress;
+						// Add offset into file
+						dwCertificateLocation += 8;
+						if ( SetFilePointer(	hFile,  dwCertificateLocation, NULL, FILE_BEGIN ) == dwCertificateLocation )
+						{
+							dwReturn = 0;
+							ReadFile( hFile, &dwReturn, sizeof(DWORD), &dwRead, NULL );
+							if ( dwRead != sizeof(DWORD) )
+							{
+								dwReturn = 0;
+							}
+						}
+
+					}
+				}
+			}
+		}
+		CloseHandle(hFile);
+	}
+	return dwReturn;
 }

@@ -110,6 +110,11 @@ void  CVirtualDirectory::CacheThumbs(VECFILEITEMS &items)
 			{
 				pItem->SetIconImage("defaultAudio.png");
 			}
+			if (CUtil::IsXBE(pItem->m_strPath) )
+			{
+				pItem->SetIconImage("defaultProgram.png");
+			}
+
 			if (CUtil::IsVideo(pItem->m_strPath) )
 			{
 				pItem->SetIconImage("defaultVideo.png");
@@ -159,13 +164,14 @@ void  CVirtualDirectory::CacheThumbs(VECFILEITEMS &items)
 				{
 					CStdString strExtension;
 					CUtil::GetExtension(pItem->m_strPath,strExtension);
+					
 					for (int i=0; i < (int)g_settings.m_vecIcons.size(); ++i)
 					{
 						CFileTypeIcon& icon=g_settings.m_vecIcons[i];
 
 						if (CUtil::cmpnocase(strExtension.c_str(), icon.m_strName)==0)
 						{
-							pItem->SetIconImage(icon.m_strName);
+							pItem->SetIconImage(icon.m_strIcon);
 							break;
 						}
 					}

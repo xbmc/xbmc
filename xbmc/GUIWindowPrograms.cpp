@@ -7,7 +7,6 @@
 #include "crc32.h"
 #include "settings.h"
 #include "lib/cximage/ximage.h"
-#include "common/xbresource.h"
 #include "Shortcut.h"
 #include "guidialog.h"
 #include "sectionLoader.h"
@@ -229,7 +228,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
         if (CUtil::IsXBE(strFileName))
         {
           CStdString strDescription;
-          if ( GetXBEDescription(strFile,strDescription))
+					if ( CUtil::GetXBEDescription(strFile,strDescription))
           {
             if ( !CUtil::IsDVD(strFile) )
             {
@@ -243,7 +242,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
           pItem->m_bIsFolder=false;
           pItem->m_dwSize=wfd.nFileSizeLow;
 					CStdString strThumb;
-          if (!GetXBEIcon(pItem->m_strPath.c_str(), strThumb))
+					if (!CUtil::GetXBEIcon(pItem->m_strPath.c_str(), strThumb))
           {
 						pItem->SetThumbnailImage("defaultProgramIcon.png");
           }
@@ -254,8 +253,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
           FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
           FileTimeToSystemTime(&localTime, &pItem->m_stTime);
           m_vecItems.push_back(pItem);      
-          bRecurseSubDirs=false;
-          
+          bRecurseSubDirs=false;          
         }
 
         if ( CUtil::IsShortCut(strFileName)  )
@@ -264,33 +262,13 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
           pItem->m_strPath=strFile;
           pItem->m_bIsFolder=false;
           pItem->m_dwSize=wfd.nFileSizeLow;
-					CStdString& strThumb=pItem->m_strPath;
-					CUtil::ReplaceExtension(pItem->m_strPath,".tbn",strThumb);
+					CStdString strThumb=pItem->m_strPath;
+					CUtil::GetThumbnail(pItem->m_strPath,strThumb);
 					pItem->SetThumbnailImage(strThumb);
 
           if (!CUtil::FileExists(strThumb))
           {
 						pItem->SetThumbnailImage("defaultShortCutIcon.png");
-          }
-
-          CShortcut shortcut;
-		      if ( shortcut.Create( pItem->m_strPath ) )
-          {
-            CStdString strFile=shortcut.m_strPath;
-            if (CUtil::IsShortCut(strFile) )
-            {
-              if ( shortcut.Create( shortcut.m_strPath ) )
-              {
-                strFile=shortcut.m_strPath;
-              }
-            }
-
-						CStdString strThumb;
-            if (!GetXBEIcon(strFile, strThumb))
-            {
-							pItem->SetThumbnailImage("defaultShortCutIcon.png");
-            }
-
           }
 
           FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
@@ -335,34 +313,6 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
   OnSort();
   UpdateButtons();
 }
-
-bool CGUIWindowPrograms::GetXBEDescription(const CStdString& strFileName, CStdString& strDescription)
-{
-
-		_XBE_CERTIFICATE HC;
-		_XBE_HEADER HS;
-
-		FILE* hFile  = fopen(strFileName.c_str(),"rb");
-    if (!hFile)
-    {
-      strDescription=CUtil::GetFileName(strFileName);
-      return false;
-    }
-		fread(&HS,1,sizeof(HS),hFile);
-		fseek(hFile,HS.XbeHeaderSize,SEEK_SET);
-		fread(&HC,1,sizeof(HC),hFile);
-		fclose(hFile);
-
-		CHAR TitleName[40];
-		WideCharToMultiByte(CP_ACP,0,HC.TitleName,-1,TitleName,40,NULL,NULL);
-    if (strlen(TitleName) > 0)
-    {
-		  strDescription=TitleName;
-      return true;
-    }
-    strDescription=CUtil::GetFileName(strFileName);
-    return false;
-};
 
 void CGUIWindowPrograms::OnClick(int iItem)
 {
@@ -585,150 +535,8 @@ void CGUIWindowPrograms::OnSort()
   }
 }
 
-bool CGUIWindowPrograms::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
-{
-  // check if thumbnail already exists
-  CUtil::GetThumbnail(strFilePath,strIcon);
-  if (CUtil::FileExists(strIcon) )
-  {
-    //yes, just return
-    return true;
-  }
 
-  // no, then create a new thumb
-  // Locate file ID and get TitleImage.xbx E:\UDATA\<ID>\TitleImage.xbx
 
-  bool bFoundThumbnail=false;
-  CStdString szFileName;
-	szFileName.Format("E:\\UDATA\\%08x\\TitleImage.xbx", GetXbeID( strFilePath ) );
-			
-  CXBPackedResource* pPackedResource = new CXBPackedResource();
-  if( SUCCEEDED( pPackedResource->Create( szFileName.c_str(), 1, NULL ) ) )
-  {
-    LPDIRECT3DTEXTURE8 pTexture;
-    LPDIRECT3DTEXTURE8 m_pTexture;
-		D3DSURFACE_DESC descSurface;
-
-		pTexture = pPackedResource->GetTexture((DWORD)0);
-
-		if ( pTexture )
-		{
-      if ( SUCCEEDED( pTexture->GetLevelDesc( 0, &descSurface ) ) )
-      {
-        int iHeight=descSurface.Height;
-        int iWidth=descSurface.Width;
-        DWORD dwFormat=descSurface.Format;
-        g_graphicsContext.Get3DDevice()->CreateTexture( 128,
-									                128,
-									                1,
-									                0,
-									                D3DFMT_LIN_A8R8G8B8,
-									                0,
-									                &m_pTexture);
-				LPDIRECT3DSURFACE8 pSrcSurface = NULL;
-				LPDIRECT3DSURFACE8 pDestSurface = NULL;
-
-        pTexture->GetSurfaceLevel( 0, &pSrcSurface );
-        m_pTexture->GetSurfaceLevel( 0, &pDestSurface );
-
-        D3DXLoadSurfaceFromSurface( pDestSurface, NULL, NULL, 
-                                    pSrcSurface, NULL, NULL,
-                                    D3DX_DEFAULT, D3DCOLOR( 0 ) );
-        D3DLOCKED_RECT rectLocked;
-        if ( D3D_OK == m_pTexture->LockRect(0,&rectLocked,NULL,0L  ) )
-        {
-		        BYTE *pBuff   = (BYTE*)rectLocked.pBits;	
-		        if (pBuff)
-		        {
-			        DWORD strideScreen=rectLocked.Pitch;
-              //mp_msg(0,0," strideScreen=%i\n", strideScreen);
-
-              CSectionLoader::Load("CXIMAGE");
-              CxImage* pImage = new CxImage(iWidth, iHeight, 24, CXIMAGE_FORMAT_JPG);
-				      for (int y=0; y < iHeight; y++)
-              {
-                byte *pPtr = pBuff+(y*(strideScreen));
-                for (int x=0; x < iWidth;x++)
-                {
-                  byte Alpha=*(pPtr+3);
-                  byte b=*(pPtr+0);
-                  byte g=*(pPtr+1);
-                  byte r=*(pPtr+2);
-                  pPtr+=4;
-                  
-                  pImage->SetPixelColor(x,y,RGB(r,g,b));
-                }
-              }
-
-              m_pTexture->UnlockRect(0);
-		          //mp_msg(0,0,"save as %s\n", szThumbNail);
-		          pImage->Resample(64,64,0);
-		          pImage->Flip();
-              pImage->Save(strIcon.c_str(),CXIMAGE_FORMAT_JPG);
-		          delete pImage;
-              bFoundThumbnail=true;
-              CSectionLoader::Unload("CXIMAGE");
-            }
-            else m_pTexture->UnlockRect(0);
-        }
-        pSrcSurface->Release();
-        pDestSurface->Release();
-        m_pTexture->Release();
-      }
-      pTexture->Release();
-    }
-  }
-  delete pPackedResource;
-  return bFoundThumbnail;
-}
-
-DWORD CGUIWindowPrograms::GetXbeID( const CStdString& strFilePath)
-{
-	DWORD dwReturn = 0;
-	HANDLE hFile;
-	DWORD dwCertificateLocation;
-	DWORD dwLoadAddress;
-	DWORD dwRead;
-//	WCHAR wcTitle[41];
-	
-  hFile = CreateFile( strFilePath.c_str(), 
-						GENERIC_READ, 
-						FILE_SHARE_READ, 
-						NULL,
-						OPEN_EXISTING,
-						FILE_ATTRIBUTE_NORMAL,
-						NULL );
-	if ( hFile != INVALID_HANDLE_VALUE )
-	{
-		if ( SetFilePointer(	hFile,  0x104, NULL, FILE_BEGIN ) == 0x104 )
-		{
-			if ( ReadFile( hFile, &dwLoadAddress, 4, &dwRead, NULL ) )
-			{
-				if ( SetFilePointer(	hFile,  0x118, NULL, FILE_BEGIN ) == 0x118 )
-				{
-					if ( ReadFile( hFile, &dwCertificateLocation, 4, &dwRead, NULL ) )
-					{
-						dwCertificateLocation -= dwLoadAddress;
-						// Add offset into file
-						dwCertificateLocation += 8;
-						if ( SetFilePointer(	hFile,  dwCertificateLocation, NULL, FILE_BEGIN ) == dwCertificateLocation )
-						{
-							dwReturn = 0;
-							ReadFile( hFile, &dwReturn, sizeof(DWORD), &dwRead, NULL );
-							if ( dwRead != sizeof(DWORD) )
-							{
-								dwReturn = 0;
-							}
-						}
-
-					}
-				}
-			}
-		}
-		CloseHandle(hFile);
-	}
-	return dwReturn;
-}
 
 
 void CGUIWindowPrograms::UpdateButtons()

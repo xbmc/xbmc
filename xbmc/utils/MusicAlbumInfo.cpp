@@ -2,6 +2,7 @@
 #include ".\htmltable.h"
 #include ".\htmlutil.h"
 #include ".\http.h"
+#include "../util.h"
 
 
 
@@ -19,6 +20,7 @@ CMusicAlbumInfo::CMusicAlbumInfo(void)
 	m_strImageURL="";
 	m_strTitle2="";
 	m_iRating=0;
+	m_bLoaded=false;
 }
 
 CMusicAlbumInfo::~CMusicAlbumInfo(void)
@@ -238,6 +240,7 @@ bool	CMusicAlbumInfo::Parse(const CStdString& strHTML)
 		}
 	}
 	if (m_strTitle2="") m_strTitle2=m_strTitle;
+	SetLoaded(true);
 	return true;
 }
 
@@ -250,3 +253,70 @@ bool CMusicAlbumInfo::Load()
 	return Parse(strHTML);
 }
 
+
+
+void CMusicAlbumInfo::Save(CStdString& strFileName)
+{
+	
+	FILE* fd = fopen(strFileName.c_str(), "wb+");
+	if (fd)
+	{
+		CUtil::SaveString(m_strArtist,fd);
+		CUtil::SaveString(m_strTitle,fd);
+		CUtil::SaveString(m_strDateOfRelease,fd);
+		CUtil::SaveString(m_strGenre,fd);
+		CUtil::SaveString(m_strTones,fd);
+		CUtil::SaveString(m_strStyles,fd);
+		CUtil::SaveString(m_strReview,fd);
+		CUtil::SaveString(m_strImageURL,fd);
+		CUtil::SaveString(m_strTitle2,fd);
+		CUtil::SaveInt(m_iRating,fd);
+		CUtil::SaveInt(m_vecSongs.size(),fd);
+		for (int iSong=0; iSong < (int)m_vecSongs.size(); iSong++)
+		{
+			CMusicSong& song=m_vecSongs[iSong];
+			song.Save(fd);
+		}
+		fclose(fd);
+	}
+}
+
+bool CMusicAlbumInfo::Load(CStdString& strFileName)
+{
+	m_vecSongs.erase(m_vecSongs.begin(),m_vecSongs.end());
+	FILE* fd = fopen(strFileName.c_str(), "rb");
+	if (fd)
+	{
+		CUtil::LoadString(m_strArtist,fd);
+		CUtil::LoadString(m_strTitle,fd);
+		CUtil::LoadString(m_strDateOfRelease,fd);
+		CUtil::LoadString(m_strGenre,fd);
+		CUtil::LoadString(m_strTones,fd);
+		CUtil::LoadString(m_strStyles,fd);
+		CUtil::LoadString(m_strReview,fd);
+		CUtil::LoadString(m_strImageURL,fd);
+		CUtil::LoadString(m_strTitle2,fd);
+		m_iRating=CUtil::LoadInt(fd);
+		int iSongs=CUtil::LoadInt(fd);
+		for (int iSong=0; iSong < iSongs; iSong++)
+		{
+			CMusicSong song;
+			song.Load(fd);
+			m_vecSongs.push_back(song);
+		}
+		
+		SetLoaded(true);
+		fclose(fd);
+		return true;
+	}
+	return false;
+}
+
+void CMusicAlbumInfo::SetLoaded(bool bOnOff)
+{
+	m_bLoaded=bOnOff;
+}
+bool CMusicAlbumInfo::Loaded() const
+{
+	return m_bLoaded;
+}

@@ -35,5 +35,18 @@ public:
 	static bool IsAudio(const CStdString& strLine) ;
 	static bool IsVideo(const CStdString& strLine) ;
 	static void URLEncode(CStdString& strURLData);
+	static bool LoadString(CStdString &strTxt, FILE *fd);
+	static void SaveString(const CStdString &strTxt, FILE *fd);
+	static void	SaveInt(int iValue, FILE *fd);
+	static int	LoadInt( FILE *fd);
+	static void LoadDateTime(SYSTEMTIME& dateTime, FILE *fd);
+	static void SaveDateTime(SYSTEMTIME& dateTime, FILE *fd);
+	static void GetSongCacheName(const CStdString& strFileName, CStdString& strSongCacheName);
+	static void GetAlbumThumb(const CStdString& strFileName, CStdString& strAlbumThumb);
+	static void GetAlbumCacheName(const CStdString& strFileName, CStdString& strAlbumThumb);
+	static bool GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon);
+	static bool GetXBEDescription(const CStdString& strFileName, CStdString& strDescription);
+	static DWORD GetXbeID( const CStdString& strFilePath);
+
   virtual ~CUtil(void);
 };

@@ -273,6 +273,7 @@ bool CGUIListControl::OnMessage(CGUIMessage& message)
       if (message.GetMessage() == GUI_MSG_CLICKED)
       {
         m_iOffset=(m_upDown.GetValue()-1)*m_iItemsPerPage;
+				while (m_iOffset+m_iCursorY >= (int)m_vecItems.size()) m_iCursorY--;
       }
     }
     if (message.GetMessage() == GUI_MSG_LOSTFOCUS ||
