@@ -717,7 +717,7 @@
 	</string>
 	<string>
 		<id>252</id>
-		<value>Output to all speakers</value>
+		<value>- Output to all speakers</value>
 	</string>
 	<string>
 		<id>253</id>
@@ -725,7 +725,7 @@
 	</string>
 	<string>
 		<id>254</id>
-		<value>DD Stereo Passthrough</value>
+		<value>- DD Stereo Passthrough</value>
 	</string>
 	<string>
 		<id>255</id>
@@ -1161,7 +1161,7 @@
 	</string>
 	<string>
 		<id>364</id>
-		<value>DD/DTS Multichannel Passthrough</value>
+		<value>- DD/DTS Multichannel Passthrough</value>
 	</string>
 	<string>
 		<id>365</id>
@@ -1665,7 +1665,7 @@
 	</string>
 	<string>
 		<id>491</id>
-		<value>Use big icons</value>
+		<value>- Use big icons</value>
 	</string>
 	<string>
 		<id>492</id>
@@ -1991,8 +1991,8 @@
 		<value>Fullscreen OSD</value>
 	</string>
   <string><id>13000</id><value>System</value></string>
-  <string><id>13001</id><value>Immediate HD Spindown:</value></string>
+  <string><id>13001</id><value>Immediate HD Spindown</value></string>
   <string><id>13002</id><value>Video Only</value></string>
-  <string><id>13003</id><value>- Delay:</value></string>
-  <string><id>13004</id><value>- Minimum file duration:</value></string>
+  <string><id>13003</id><value>- Delay</value></string>
+  <string><id>13004</id><value>- Minimum file duration</value></string>
 </strings>
