@@ -72,10 +72,22 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 			m_pFile=NULL;
 			return false;
 		}
+
+		// 128k is optimal for xbox
+		int iBufferSize=128*1024;
+
+		//	WORKAROUND: Protocol is xbms? Must use a smaller buffer
+		//	else nothing will be cached and the file is
+		//	filled with garbage. :(
+		CURL url(strFileName);
+		CStdString strProtocol=url.GetProtocol();
+		strProtocol.ToLower();
+		if (strProtocol=="xbms" )
+			iBufferSize=120*1024; //16384; 
+
 		// ouch, auto_ptr doesn't work for arrays!
 		//auto_ptr<char> buffer ( new char[16384]);
-		// 128k is optimal for xbox
-		CAutoBuffer buffer(128*1024);
+		CAutoBuffer buffer(iBufferSize);
 		int iRead;
 
 		UINT64 llFileSize=GetLength();
@@ -96,7 +108,7 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 		while (llFileSize>0)
 		{
       g_application.ResetScreenSaver();
-			int iBytesToRead=128*1024;
+			int iBytesToRead=iBufferSize;
 			if (iBytesToRead>llFileSize) 
 			{
 				iBytesToRead=llFileSize;
