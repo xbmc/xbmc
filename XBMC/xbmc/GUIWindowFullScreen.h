@@ -44,4 +44,5 @@ private:
 	int							m_strTimeStamp[5];
 	int							m_iTimeCodePosition;
   int             m_iCurrentBookmark;
+  DWORD           m_dwOSDTimeOut;
 };

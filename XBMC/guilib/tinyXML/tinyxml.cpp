@@ -725,8 +725,8 @@ bool TiXmlDocument::LoadFile( const char* filename )
 	}
 	else
 	{
-		sprintf(szTmp,"XMLReader:unable to open file:%s :%i\n", filename,GetLastError() );
-		OutputDebugString(szTmp);
+		//sprintf(szTmp,"XMLReader:unable to open file:%s :%i\n", filename,GetLastError() );
+		//OutputDebugString(szTmp);
 
 	}
 	XMLSetError( TIXML_ERROR_OPENING_FILE );
