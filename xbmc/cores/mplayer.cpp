@@ -241,7 +241,7 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
   {
     //e
     m_vecOptions.push_back("-ac");
-    m_vecOptions.push_back("hwac3");
+    m_vecOptions.push_back("hwac3,a52,");
   }
 
   if ( g_stSettings.m_bPostProcessing )
@@ -467,6 +467,13 @@ bool CMPlayer::openfile(const CStdString& strFile)
       options.SetChannels(0);
     }
 
+    // if we're using digital out & ac3/dts pass-through is enabled
+    // then try opening file with ac3/dts pass-through 
+    bool bSupportsSPDIFOut=(XGetAudioFlags() & (DSSPEAKER_ENABLE_AC3 | DSSPEAKER_ENABLE_DTS)) != 0;
+    if (g_stSettings.m_bUseDigitalOutput && bSupportsSPDIFOut )
+    {
+      options.SetAC3PassTru(true);
+    }
     options.SetAudioStream(m_iAudioStreamIDX);
     options.SetVolumeAmplification(g_stSettings.m_fVolumeAmplification);
     options.GetOptions(argc,argv);
@@ -538,9 +545,24 @@ bool CMPlayer::openfile(const CStdString& strFile)
           }
         }
       }
-
-	    bool bSupportsSPDIFOut=(XGetAudioFlags() & (DSSPEAKER_ENABLE_AC3 | DSSPEAKER_ENABLE_DTS)) != 0;
-
+      // if we are not using ac3/dts pass-through
+      if (strstr(strAudioCodec,"AC3/SPDIF")==NULL)
+      {
+        // make sure to update the option (used below)
+        options.SetAC3PassTru(false);
+      }
+      else
+      {
+        // if we are using ac3/dts pass-through
+        // then make sure samplerate = 48 khz. Other samplerates are NOT supported on the xbox
+        if (lSampleRate!=48000)
+        {
+          // 2bad, disable pass-through and restart
+          options.SetAC3PassTru(false);
+          bNeed2Restart=true;
+        }
+      }
+#if 0
 	    // check if AC3 passthrough is enabled in MS dashboard
       // ifso we need 2 check if this movie has AC3 5.1 sound and if thats true
       // we reopen the movie with the ac3 5.1 passthrough audio filter
@@ -559,7 +581,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
           CLog::Log("  --restart cause we use ac3 passtru");
 		    }
 	    }
-
+#endif
       // if we dont have ac3 passtru enabled
       if (!options.GetAC3PassTru())
       {
