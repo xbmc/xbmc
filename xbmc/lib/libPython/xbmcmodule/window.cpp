@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "window.h"
-#include "control.h"
-#include "..\..\..\application.h"
+#include "guiwindowmanager.h"
 #include "GuiLabelControl.h"
+#include "GuiListControl.h"
 #include "GuiFadeLabelControl.h"
+#include "GuiTextBox.h"
 
 #define ACTIVE_WINDOW	m_gWindowManager.GetActiveWindow()
 
@@ -258,6 +259,28 @@ namespace PYXBMC
 			pControl->pGUIControl->OnMessage(msg);
 		}
 
+		// Control TextBox
+		else if (!strcmp(pControl->ob_type->tp_name, ControlTextBox_Type.tp_name))
+		{
+			ControlTextBox* pControlTextBox = (ControlTextBox*)pControl;
+
+			// create textbox
+			pControl->pGUIControl = new CGUITextBox(pControl->iParentId, pControl->iControlId,
+					pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
+					pControlTextBox->strFont, pControlTextBox->pControlSpin->dwWidth, pControlTextBox->pControlSpin->dwHeight,
+					pControlTextBox->pControlSpin->strTextureUp, pControlTextBox->pControlSpin->strTextureDown, pControlTextBox->pControlSpin->strTextureUpFocus,
+					pControlTextBox->pControlSpin->strTextureDownFocus, pControlTextBox->pControlSpin->dwColor, pControlTextBox->pControlSpin->dwPosX,
+					pControlTextBox->pControlSpin->dwPosY, pControlTextBox->strFont, pControlTextBox->dwTextColor);
+
+			// reset textbox
+			CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
+			pControl->pGUIControl->OnMessage(msg);
+
+			// set values for spincontrol
+			pControlTextBox->pControlSpin->iControlId = pControl->iControlId;
+			pControlTextBox->pControlSpin->iParentId = pControl->iParentId;
+		}
+
 		// Control Button
 		else if (!strcmp(pControl->ob_type->tp_name, ControlButton_Type.tp_name))
 		{
@@ -281,10 +304,32 @@ namespace PYXBMC
 					pControlImage->strFileName, pControlImage->strColorKey);
 		}
 
-		// add control to list and allocate recources for the control
+		// Control List
+		else if (!strcmp(pControl->ob_type->tp_name, ControlList_Type.tp_name))
+		{
+			ControlList* pControlList = (ControlList*)pControl;
+			pControl->pGUIControl = new CGUIListControl(pControl->iParentId, pControl->iControlId,
+					pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
+					pControlList->strFont, pControlList->dwSpinWidth, pControlList->dwSpinHeight,
+					pControlList->strTextureUp, pControlList->strTextureDown, pControlList->strTextureUpFocus,
+					pControlList->strTextureDownFocus, pControlList->dwSpinColor, pControlList->dwSpinX,
+					pControlList->dwSpinY, pControlList->strFont,pControlList->dwTextColor,
+					pControlList->dwSelectedColor, pControlList->strButton, pControlList->strButtonFocus);
+			/*		pControl->SetNavigation(up,down,left,right);
+						pControl->SetColourDiffuse(dwColorDiffuse);
+						pControl->SetScrollySuffix(strSuffix);
+						pControl->SetTextOffsets(iTextXOff,iTextYOff, iTextXOff2,iTextYOff2);
+						pControl->SetVisible(bVisible);
+						pControl->SetImageDimensions(dwitemWidth, dwitemHeight);
+						pControl->SetItemHeight(iTextureHeight);
+						pControl->SetSpace(iSpace);
+						pControl->SetColors2(dwTextColor2, dwSelectedColor2);
+						pControl->SetFont2( strFont2 );
+						*/
+				//((CGUIListControl*)pControl->pGUIControl)->
+		}
+
 		Py_INCREF(pControl);
-		self->vecControls.push_back(pControl);
-		pControl->pGUIControl->AllocResources();
 
 		// set default navigation for control
 		pControl->iControlUp = pControl->iControlId;
@@ -296,7 +341,12 @@ namespace PYXBMC
 				pControl->iControlDown,	pControl->iControlLeft, pControl->iControlRight);
 
 		g_graphicsContext.Lock();
+
+		// add control to list and allocate recources for the control
+		self->vecControls.push_back(pControl);
+		pControl->pGUIControl->AllocResources();
 		pWindow->Add(pControl->pGUIControl);
+
 		g_graphicsContext.Unlock();
 
 		Py_INCREF(Py_None);

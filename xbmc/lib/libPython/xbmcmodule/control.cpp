@@ -1,7 +1,4 @@
 #include "stdafx.h"
-#include "..\..\..\application.h"
-#include "GuiLabelControl.h"
-#include <vector>
 #include "control.h"
 
 using namespace std;
@@ -17,6 +14,9 @@ extern "C" {
 
 namespace PYXBMC
 {
+	/*
+	// not used for now
+
 	PyObject* Control_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
 	{
 		Control *self;
@@ -35,6 +35,7 @@ namespace PYXBMC
 	{
 		self->ob_type->tp_free((PyObject*)self);
 	}
+*/
 
 	/* This function should return -1 if obj1 is less than obj2,
 	 * 0 if they are equal, and 1 if obj1 is greater than obj2
@@ -268,7 +269,7 @@ namespace PYXBMC
 			"xbmcgui.Control",         /*tp_name*/
 			sizeof(Control),           /*tp_basicsize*/
 			0,                         /*tp_itemsize*/
-			(destructor)Control_Dealloc,/*tp_dealloc*/
+			0,//(destructor)Control_Dealloc,/*tp_dealloc*/
 			0,                         /*tp_print*/
 			0,                         /*tp_getattr*/
 			0,                         /*tp_setattr*/
@@ -301,7 +302,7 @@ namespace PYXBMC
 			0,                         /* tp_dictoffset */
 			0,                         /* tp_init */
 			0,                         /* tp_alloc */
-			Control_New,               /* tp_new */
+			0,//Control_New,               /* tp_new */
 	};
 }
 

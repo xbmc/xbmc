@@ -1,10 +1,9 @@
 #include "stdafx.h"
-
 #include "keyboard.h"
-#include "../../../keyboard/virtualkeyboard.h"
-#include "../../../ApplicationMessenger.h"
 #include "GUIWindowManager.h"
-#include "../../../util.h"
+#include "..\..\..\keyboard\virtualkeyboard.h"
+#include "..\..\..\ApplicationMessenger.h"
+#include "..\..\..\util.h"
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
