@@ -321,7 +321,7 @@ public:
   XFSTATUS CloseConnection(int ConnectionId); // i.e. kick user
   XFSTATUS GetAllConnections(std::vector<SXFConnection>& ConnectionVector);
   XFSTATUS GetConnection(int ConnectionId, SXFConnection& Connection);
-  XFSTATUS CXBFileZilla::GetNoConnections(void);
+  XFSTATUS GetNoConnections(void);
 
   CXFServerSettings mSettings;
 };
