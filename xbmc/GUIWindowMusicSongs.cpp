@@ -431,7 +431,7 @@ void CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, VECFILEI
 
 void CGUIWindowMusicSongs::OnScan()
 {
-	if (g_guiSettings.GetBool("MusicLibrary.UseBackgroundScanner"))
+	if (1 /*g_guiSettings.GetBool("MusicLibrary.UseBackgroundScanner")*/)
 	{
 		if (g_application.m_guiDialogMusicScan.IsRunning())
 		{

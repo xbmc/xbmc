@@ -202,11 +202,10 @@ CGUISettings::CGUISettings(void)
 	AddInt(6,"MusicLists.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 	AddCategory(3, "MusicLibrary", 14022);
 	AddBool(1,"MusicLibrary.ShufflePlaylistsOnLoad", 228, false);
-	AddBool(2,"MusicLibrary.UseBackgroundScanner", 14055, false);
-	AddString(3,"MusicLibrary.Cleanup", 334, "", BUTTON_CONTROL_STANDARD);
-	AddString(4,"MusicLibrary.DeleteAlbumInfo", 422, "", BUTTON_CONTROL_STANDARD);
-	AddString(5,"MusicLibrary.DeleteCDDBInfo", 423, "", BUTTON_CONTROL_STANDARD);
-	AddBool(6,"MusicLibrary.FindRemoteThumbs", 14059, true);
+	AddString(2,"MusicLibrary.Cleanup", 334, "", BUTTON_CONTROL_STANDARD);
+	AddString(3,"MusicLibrary.DeleteAlbumInfo", 422, "", BUTTON_CONTROL_STANDARD);
+	AddString(4,"MusicLibrary.DeleteCDDBInfo", 423, "", BUTTON_CONTROL_STANDARD);
+	AddBool(5,"MusicLibrary.FindRemoteThumbs", 14059, true);
 	
 	// music osd 13314
 	AddCategory(3, "CDDARipper", 620);
