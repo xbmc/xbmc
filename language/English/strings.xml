@@ -579,11 +579,11 @@
   <string><id>12324</id><value>XBMC Master Lock</value></string>
   <string><id>12325</id><value>Folder Locked</value></string>
   <string><id>12326</id><value>Enter password</value></string>
-  <string><id>12327</id><value>Enter Master Code and press OK,</value></string>
-  <string><id>12328</id><value>Enter unlock code and press OK,</value></string> 
-  <string><id>12329</id><value>or press C to cancel:</value></string>
+  <string><id>12327</id><value>Enter Master Code and press Enter,</value></string>
+  <string><id>12328</id><value>Enter Unlock Code and press Enter,</value></string> 
+  <string><id>12329</id><value>or press C to cancel</value></string>
   <string><id>12330</id><value>Enter XBOX gamepad button combo and </value></string>
-  <string><id>12331</id><value>press Start, or Back to cancel:</value></string>
+  <string><id>12331</id><value>press Start, or Back to cancel</value></string>
   <string><id>12332</id><value>Lock Share</value></string>
   <string><id>12333</id><value>Unlock Share</value></string>
   <string><id>12334</id><value>Reset Share Lock</value></string>
