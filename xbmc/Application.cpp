@@ -34,6 +34,7 @@
 #include "GUIStandardWindow.h"
 #include "utils/LED.h"
 #include "LangCodeExpander.h"
+#include "lib/libGoAhead/xbmchttp.h"
 #include "utils/GUIInfoManager.h"
 
 // uncomment this if you want to use release libs in the debug build.
@@ -1607,6 +1608,13 @@ void CApplication::OnKey(CKey& key)
 		// to map key->action
 		if (key.FromKeyboard() && (iWin == WINDOW_DIALOG_KEYBOARD || iWin == WINDOW_BUDDIES) )
 		{
+			//check for key received over HttpApi first
+			action.wID = 0;
+			if (pXbmcHttp)
+			{																	CKey keyHttp(pXbmcHttp->GetKey());	
+				if (keyHttp.GetButtonCode()!=KEY_INVALID)
+					action.wID = (WORD) keyHttp.GetButtonCode();	//Nad
+			};																if (action.wID == 0)	
 			// see if we've got an ascii key
 			if (g_Keyboard.GetAscii() != 0)
 				action.wID = (WORD)g_Keyboard.GetAscii() | KEY_ASCII;
@@ -2000,6 +2008,17 @@ void CApplication::FrameMove()
 		}
 		m_gWindowManager.OnAction(action);
 	}
+	// process the buttons received via the HttpApi
+	if (pXbmcHttp)
+	{
+		CKey keyHttp(pXbmcHttp->GetKey());
+		if (keyHttp.GetButtonCode()!=KEY_INVALID)
+		{
+			OnKey(keyHttp);
+			pXbmcHttp->ResetKey();
+			return;
+		}
+	};
 	// process the keyboard buttons etc.
 	BYTE vkey = g_Keyboard.GetKey();
 	if (vkey)
