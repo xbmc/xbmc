@@ -1450,4 +1450,8 @@
     <id>446</id>
     <value>DVD</value>
   </string> 
+  <string>
+    <id>447</id>
+    <value>Autorun</value>
+  </string> 
 </strings>
