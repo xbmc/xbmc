@@ -169,7 +169,7 @@ public:
 	void					SetPlaySpeed(int iSpeed);
 	bool					IsButtonDown(DWORD code);
 	bool					ResetScreenSaverWindow();
-	void					SetKaiNotification(CStdString& aCaption, CStdString& aDescription);
+	void					SetKaiNotification(CStdString& aCaption, CStdString& aDescription, CGUIImage* aIcon=NULL);
 
 	CGUIWindowHome									m_guiHome;
   CGUIWindowPrograms							m_guiPrograms;

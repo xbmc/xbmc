@@ -1214,14 +1214,15 @@ void CGUIWindowBuddies::OnContactOffline(CStdString& aFriend)
 		m_friends.Add(pBuddy);
 	}
 
-	pBuddy->SetIcon(16,16,"buddyitem-offline.png");
-	pBuddy->m_bIsOnline = false;
-	pBuddy->m_dwPing	= 0;
-	if (pBuddy->IsAvatarCached())
+	if (!pBuddy->m_pAvatar)
 	{
 		pBuddy->UseCachedAvatar();
 	}
-		
+	
+	pBuddy->SetIcon(16,16,"buddyitem-offline.png");
+	pBuddy->m_bIsOnline = false;
+	pBuddy->m_dwPing	= 0;
+
 	m_friends.Sort();
 	m_friends.Release();
 }
@@ -1245,6 +1246,11 @@ void CGUIWindowBuddies::OnContactOnline(CStdString& aFriend)
 
 	pBuddy->m_bIsOnline = true;
 	
+	if (!pBuddy->m_pAvatar)
+	{
+		pBuddy->UseCachedAvatar();
+	}
+	
 	// if last on, then leave speex on
 	if (pBuddy->m_bSpeex)
 	{
@@ -1259,7 +1265,7 @@ void CGUIWindowBuddies::OnContactOnline(CStdString& aFriend)
 	if (m_bContactNotifications)
 	{
 		CStdString note = "has just signed in";
-		g_application.SetKaiNotification(aFriend,note);
+		g_application.SetKaiNotification(aFriend, note, pBuddy->m_pAvatar);
 	}
 }
 
@@ -1321,7 +1327,7 @@ void CGUIWindowBuddies::OnContactSpeexRing(CStdString& aFriend)
 			pBuddy->m_bRingIndicator = FALSE;
 
 			CStdString note = "has initiated voice chat";
-			g_application.SetKaiNotification(aFriend,note);
+			g_application.SetKaiNotification(aFriend, note, pBuddy->m_pAvatar);
 		}
 	}
 
@@ -1355,7 +1361,7 @@ void CGUIWindowBuddies::OnContactInvite(CStdString& aFriend, CStdString& aVector
 		pBuddy->m_bInvite = TRUE;
 
 		CStdString note = "has sent you an invitation";
-		g_application.SetKaiNotification(aFriend,note);
+		g_application.SetKaiNotification(aFriend, note, pBuddy->m_pAvatar);
 	}
 
 	m_friends.Release();

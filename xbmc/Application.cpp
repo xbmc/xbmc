@@ -1602,12 +1602,12 @@ void CApplication::OnKey(CKey& key)
 	}
 }
 
-void CApplication::SetKaiNotification(CStdString& aCaption, CStdString& aDescription)
+void CApplication::SetKaiNotification(CStdString& aCaption, CStdString& aDescription, CGUIImage* aIcon)
 {
 	// queue toast notification
 	if (g_stSettings.m_bOnlineNotifications)
 	{
-		m_guiDialogKaiToast.QueueNotification(aCaption,aDescription);
+		m_guiDialogKaiToast.QueueNotification(aIcon,aCaption,aDescription);
 	}
 }
 
