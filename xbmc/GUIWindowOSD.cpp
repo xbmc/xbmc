@@ -250,6 +250,18 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 			else
 				ToggleButton(OSD_PLAY, false);		// make sure play button is up (so it shows the play symbol)
 
+			//	Set rewind button state
+			if (g_application.GetPlaySpeed() < 1)	// are we rewinding
+				ToggleButton(OSD_REWIND, true);		// make sure our button is in the down position
+			else
+				ToggleButton(OSD_REWIND, false);	// pop the button back to it's up state
+
+			//	Set forward button state
+			if (g_application.GetPlaySpeed() > 1)	// are we forwarding
+				ToggleButton(OSD_FFWD, true);		// make sure out button is in the down position
+			else
+				ToggleButton(OSD_FFWD, false);		// pop the button back to it's up state
+
       FOCUS_CONTROL(GetID(), OSD_PLAY, 0);	// set focus to play button by default when window is shown
 
 			return true;
@@ -310,19 +322,37 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 			if (iControl == OSD_REWIND)
 			{
 				g_application.m_guiWindowFullScreen.ChangetheSpeed(ACTION_REWIND);	// start rewinding or speed up rewind
-				if (g_application.GetPlaySpeed() != 1)	// are we not playing back at normal speed
-					ToggleButton(OSD_REWIND, true);		// make sure out button is in the down position
-				else
-					ToggleButton(OSD_REWIND, false);	// pop the button back to it's up state
 			}
 
 			if (iControl == OSD_FFWD)
 			{
 				g_application.m_guiWindowFullScreen.ChangetheSpeed(ACTION_FORWARD);	// start ffwd or speed up ffwd
-				if (g_application.GetPlaySpeed() != 1)	// are we not playing back at normal speed
+			}
+
+			if (iControl == OSD_FFWD || iControl == OSD_REWIND)
+			{
+				//	Set rewind/forward button state if we are rewinding
+				if (g_application.GetPlaySpeed() < 1)	// are we rewinding
+				{
+					ToggleButton(OSD_REWIND, true);		// make sure our button is in the down position
+					ToggleButton(OSD_FFWD, false);	// pop the button back to it's up state
+					ToggleButton(OSD_PLAY, false);		// their up state
+				}
+
+				//	Set rewind/forward button state if we are forwarding
+				if (g_application.GetPlaySpeed() > 1)	// are we forwarding
+				{
 					ToggleButton(OSD_FFWD, true);		// make sure out button is in the down position
-				else
-					ToggleButton(OSD_FFWD, false);		// pop the button back to it's up state
+					ToggleButton(OSD_REWIND, false);	// pop the button back to it's up state
+					ToggleButton(OSD_PLAY, false);		// their up state
+				}
+
+				//	Set rewind/forward button state if we are in normal play
+				if (g_application.GetPlaySpeed() == 1)
+				{
+					ToggleButton(OSD_FFWD, false);		// make sure out button is in the up position
+					ToggleButton(OSD_REWIND, false);	// pop the button back to it's up state
+				}
 			}
 
 			if (iControl == OSD_SKIPBWD)
