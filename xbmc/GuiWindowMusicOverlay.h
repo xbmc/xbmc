@@ -13,7 +13,7 @@ public:
 	virtual ~CGUIWindowMusicOverlay(void);
   virtual bool				OnMessage(CGUIMessage& message);
   virtual void				OnAction(const CAction &action);
-	virtual void			OnMouse();
+	virtual void				OnMouse();
   virtual void				Render();
 	void								SetID3Tag(ID3_Tag& tag);
 	void								SetCurrentFile(CFileItem& item);
@@ -21,14 +21,14 @@ public:
 	int									m_iTextureWidth;
 	int									m_iTextureHeight;
   virtual void				FreeResources();
-
 protected:
-	long			  m_lStartOffset;
+	void								UpdateInfo(const CMusicInfoTag &tag);
+	long								m_lStartOffset;
   int                 m_iFrames;
   bool                m_bShowInfo;
-  bool				m_bShowInfoAlways;
-  int				  m_iFrameIncrement;
-  DWORD				  m_dwTimeout;
+  bool								m_bShowInfoAlways;
+  int									m_iFrameIncrement;
+  DWORD								m_dwTimeout;
   int                 m_iTopPosition;
   void                UpdatePosition(int iStep, int iMaxSteps);
   void                GetTopControlPosition();

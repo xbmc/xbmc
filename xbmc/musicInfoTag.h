@@ -26,7 +26,7 @@ namespace MUSIC_INFO
 		const CStdString& GetGenre() const;
 		int								GetTrackNumber() const;
 		int								GetDuration() const;
-		void							GetReleaseDate(SYSTEMTIME& dateTime);
+		void							GetReleaseDate(SYSTEMTIME& dateTime) const;
 
 		void 							SetURL(const CStdString& strURL) ;
 		void 							SetTitle(const CStdString& strTitle) ;
