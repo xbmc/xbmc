@@ -499,6 +499,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			strFont2			= ((CGUIListControlEx*)pReference)->GetFontName2();
 			lTextOffsetX		= ((CGUIListControlEx*)pReference)->GetTextOffsetX();
 			lTextOffsetY		= ((CGUIListControlEx*)pReference)->GetTextOffsetY();
+			dwAlignY				= ((CGUIListControlEx*)pReference)->GetAlignmentY();
 		}
 		else if (strType=="textbox")
 		{
@@ -1055,7 +1056,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 						dwSpinColor,iSpinPosX,iSpinPosY,
 						strFont,dwTextColor,dwSelectedColor,
 						strButton,strButtonFocus,
-						lTextOffsetX, lTextOffsetY);
+						lTextOffsetX, lTextOffsetY, dwAlignY);
 
 		pControl->SetNavigation(up,down,left,right);
 		pControl->SetColourDiffuse(dwColorDiffuse);

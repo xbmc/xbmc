@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-11-2004 fixed: <alignY>, <textoffsetX>, <textoffsetY> didn't work for listcontrolex
   - 13-11-2004 fixed: My Pictures shows folder thumb for parent folder items
   - 13-11-2004 fixed: Lockup adding artist folders to playlist (sf bug #1062846)
   - 13-11-2004 fixed: Alpha level errors that occured with some button types (radio button etc.)

@@ -254,7 +254,7 @@ DWORD CAc97DirectSound::GetSpace()
 	DWORD dwSize= iFreePackets*m_dwPacketSize;
 	if (m_bResampleAudio)
 	{	// calculate the actual amount of data that we can handle
-		float fBytesPerSecOutput = 48000*m_wfx.wBitsPerSample*m_wfx.nChannels; //code copy from AsyncDircetsound
+		float fBytesPerSecOutput = 48000.0f*m_wfx.wBitsPerSample*m_wfx.nChannels; //code copy from AsyncDircetsound
 		dwSize = (DWORD)((float)dwSize*(float)m_Resampler.GetInputBitrate()/fBytesPerSecOutput);
 	}
 	return dwSize;
