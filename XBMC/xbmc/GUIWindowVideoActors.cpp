@@ -290,6 +290,7 @@ bool CGUIWindowVideoActors::OnMessage(CGUIMessage& message)
 					g_stSettings.m_iVideoStartWindow=nNewWindow;
 					g_settings.Save();
 					m_gWindowManager.ActivateWindow(nNewWindow);
+					SET_CONTROL_FOCUS(nNewWindow, CONTROL_BTNTYPE, 0);
 				}
 
         return true;
