@@ -438,7 +438,7 @@ void CCdgRenderer::UpdateTexture()
 				{
 					TexColor &=  0x00FFFFFF;
 					if(ClutOffset == m_pCdg->GetBackgroundColor())
-						TexColor |= m_fgAlpha;
+						TexColor |= m_bgAlpha;
 					else
 						TexColor |= m_fgAlpha;
 				}
