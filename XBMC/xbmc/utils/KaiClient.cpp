@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "KaiClient.h"
+#include "KaiRequestList.h"
 #include "Log.h"
 #include "../Settings.h"
 #include "../Application.h"
@@ -16,29 +17,6 @@ CKaiClient* CKaiClient::client = NULL;
 DWORD g_speexLoopbackPlayerId = 0xDEADBEEF;
 #endif
 
-void CKaiClient::QueryVector(DWORD aTitleId)
-{
-	if (client_state==State::Authenticated)
-	{
-		CStdString strResolveMessage;
-		CStdString strQuestion;
-		strQuestion.Format("%x",aTitleId);
-		strResolveMessage.Format("KAI_CLIENT_APP_SPECIFIC;XBE_0x%s;",strQuestion.ToUpper().c_str());
-		Send(server_addr, strResolveMessage);
-	}
-}
-
-void CKaiClient::QueryVectorPlayerCount(CStdString& aVector)
-{
-	if (client_state==State::Authenticated)
-	{
-		CStdString strQueryMessage;
-		strQueryMessage.Format("KAI_CLIENT_SPECIFIC_COUNT;%s;",aVector.c_str());
-		Send(server_addr, strQueryMessage);
-		//OutputDebugString(strQueryMessage.c_str());
-		//OutputDebugString("\r\n");
-	}
-}
 
 CKaiClient::CKaiClient(void) : CUdpClient()
 {
@@ -55,9 +33,31 @@ CKaiClient::CKaiClient(void) : CUdpClient()
 	CStdString strEgress = "egress";
 	m_pEgress  = new CMediaPacketQueue(strEgress);
 
+	// request list
+	m_pRequestList = new CKaiRequestList();
+
 	Create();
 
 	CLog::Log(LOGINFO, "KAICLIENT: Ready.");
+}
+
+
+void CKaiClient::QueryVector(DWORD aTitleId)
+{
+	CStdString strResolveMessage;
+	CStdString strQuestion;
+	strQuestion.Format("%x",aTitleId);
+	strResolveMessage.Format("KAI_CLIENT_APP_SPECIFIC;XBE_0x%s;",strQuestion.ToUpper().c_str());
+
+	m_pRequestList->QueueRequest(strResolveMessage);
+}
+
+void CKaiClient::QueryVectorPlayerCount(CStdString& aVector)
+{
+	CStdString strQueryMessage;
+	strQueryMessage.Format("KAI_CLIENT_SPECIFIC_COUNT;%s;",aVector.c_str());
+
+	m_pRequestList->QueueRequest(strQueryMessage);
 }
 
 void CKaiClient::VoiceChatStart()
@@ -965,13 +965,22 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 	}
 
 	// do infrequent work
-	if (!m_bContactsSettling)
+	if (client_state==State::Authenticated)
 	{
-		BOOL bHeadset = CVoiceManager::IsHeadsetConnected();
-		if (bHeadset!=m_bHeadset)
+		if (!m_bContactsSettling)
 		{
-			SetBearerCaps(bHeadset);
-			m_bHeadset = bHeadset;
+			BOOL bHeadset = CVoiceManager::IsHeadsetConnected();
+			if (bHeadset!=m_bHeadset)
+			{
+				SetBearerCaps(bHeadset);
+				m_bHeadset = bHeadset;
+			}
+		}
+
+		CStdString strRequest = "";
+		if (m_pRequestList->GetNext(strRequest))
+		{
+			Send(server_addr, strRequest);
 		}
 	}
 }
