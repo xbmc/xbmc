@@ -3267,6 +3267,8 @@ bool CMusicDatabase::GetAlbumsNav(VECALBUMS& albums, const CStdString &strGenre1
     {
       strSQL1 += "join artist on album.idartist = artist.idartist ";
       strSQL2 += "join artist on album.idartist = artist.idartist ";
+      strSQL1 += "group by album.idalbum ";
+      strSQL2 += "group by album.idalbum ";
     }
     // if the artist is provided, bind artists to song table
     else
@@ -3284,12 +3286,12 @@ bool CMusicDatabase::GetAlbumsNav(VECALBUMS& albums, const CStdString &strGenre1
     // no genre, no artist
     // only get albums
     if (iQuery == 0)
-      strSQL = strSQL1 + "group by album.idalbum ";
+      strSQL = strSQL1;
 
     // genre only
     // get albums off primary and secondary genres
     else if (iQuery == 1)
-      strSQL = strSQL1 + "union " + strSQL2 + "group by album.idalbum ";
+      strSQL = strSQL1 + "union " + strSQL2;
 
     // artist only
     // get albums off primary and secondary artists
