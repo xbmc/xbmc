@@ -459,6 +459,7 @@ public:
 		bool			m_bDisplayRemoteCodes;	// Remote code debug info
 		bool			m_bResampleMusicAudio;	// resample using SSRC
 		bool			m_bResampleVideoAudio;	// separate from music, as it causes a CPU hit
+		bool			m_bPCMPassthrough;			// PCM passthrough (no volume control)
 		int       m_iLCDModChip;
 		int       m_iOSDTimeout;		// OSD timeout in seconds
 		char      szOnlineUsername[32]; // KAITAG (username)
