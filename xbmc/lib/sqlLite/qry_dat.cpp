@@ -25,6 +25,10 @@
  * THE SOFTWARE.
  *
  **********************************************************************/
+/**********************************************************************
+ * 2005-03-29 - Minor modifications to allow get_asBool to function on
+ *              on string values that are 1 or 0
+/**********************************************************************/
 
 #include "qry_dat.h"
 
@@ -204,7 +208,7 @@ string field_value::get_asString() const {
 bool field_value::get_asBool() const {
     switch (field_type) {
     case ft_String: {
-      if (str_value == "True")
+      if (str_value == "True" || str_value == "1")
           return true;
       else
 	return false;
