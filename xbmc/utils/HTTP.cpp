@@ -136,27 +136,41 @@ bool CHTTP::ReadData(string& strData)
 	{
 		// normal transfer
 		n = m_strHeaders.find("Content-Length:");
-		if (n == string::npos)
+		if (n == string::npos)  // no chunked transfer or content-length.  We should read until recvbytes is 0
 		{
-			CLog::Log("Invalid reply from server");
-			Close();
-			return false;
-		}
-
-		int len = atoi(m_strHeaders.c_str() + n + 16);
-		while (len > 0)
-		{
-			strData.append(m_RecvBuffer, m_RecvBuffer + (len > m_RecvBytes ? m_RecvBytes : len));
-			len -= m_RecvBytes;
-			if (len > 0)
+			while (m_RecvBytes > 0)
 			{
+				strData.append(m_RecvBuffer, m_RecvBuffer + m_RecvBytes);
 				m_RecvBytes = 0;
-				if (!Recv(len))
+				if (!Recv(-1))
 				{
 					strData.clear();
-					CLog::Log("Recv failed: %d", WSAGetLastError());
+					CLog::Log("Invalid reply from server");
 					Close();
 					return false;
+				}
+
+			}
+
+		}
+
+		else
+		{
+			int len = atoi(m_strHeaders.c_str() + n + 16);
+			while (len > 0)
+			{
+				strData.append(m_RecvBuffer, m_RecvBuffer + (len > m_RecvBytes ? m_RecvBytes : len));
+				len -= m_RecvBytes;
+				if (len > 0)
+				{
+					m_RecvBytes = 0;
+					if (!Recv(len))
+					{
+						strData.clear();
+						CLog::Log("Recv failed: %d", WSAGetLastError());
+						Close();
+						return false;
+					}
 				}
 			}
 		}
