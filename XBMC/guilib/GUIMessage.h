@@ -30,6 +30,7 @@
 #define GUI_MSG_ITEM_SELECTED  15		// ask control 2 return the selected item
 #define GUI_MSG_ITEM_SELECT		 16		// ask control 2 select a specific item
 #define	GUI_MSG_LABEL2_SET		 17
+#define	GUI_MSG_SHOWRANGE      18
 
 #define GUI_MSG_USER         1000
 #include <string>
