@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 31-01-2005 fixed: Incorrect webrequest HEAD sent when a value was entered for HTTP Proxy Host but HTTP proxy was disabled.
   - 31-01-2005 fixed: videos (in certain resolutions) crash on subtitle/osd display, more commonly reported as "MPEG2 files don't play".
   - 31-01-2005 added: Representative screenshot for overlay modes.
   - 31-01-2005 added: SF patch from kraqh3d enhancing the music title format:
