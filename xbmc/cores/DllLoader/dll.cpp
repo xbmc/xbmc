@@ -46,6 +46,9 @@ struct DllTrackInfo
 	unsigned MinAddr;
 	unsigned MaxAddr;
 	std::map<unsigned, AllocLenCaller> AllocList;
+	
+	// list with dll's that are loaded by this dll
+	std::list<HMODULE> DllList; 
 };
 
 int ResolveName(char*, char*, void **);
@@ -64,6 +67,19 @@ inline std::map<unsigned,AllocLenCaller>* get_track_list(unsigned addr)
 	}
 	return NULL;
 }
+
+inline std::list<HMODULE>* get_track_list_dll(unsigned addr)
+{
+	for (TrackedDllsIter it = TrackedDlls.begin(); it != TrackedDlls.end(); ++it)
+	{
+		if (addr >= it->MinAddr && addr <= it->MaxAddr)
+		{
+			return &it->DllList;
+		}
+	}
+	return NULL;
+}
+
 
 extern "C" void* __cdecl track_malloc(size_t s)
 {
@@ -160,6 +176,44 @@ extern "C"	char* __cdecl track_strdup( const char* str)
     return pdup;
 }
 
+extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file);
+extern "C" HMODULE __stdcall track_LoadLibraryA(LPCSTR file) 
+{
+  unsigned loc;
+  __asm mov eax,[ebp+4]
+  __asm mov loc,eax
+
+  std::list<HMODULE>* pList = get_track_list_dll(loc);
+
+  HMODULE handle = dllLoadLibraryA(file);
+  if (pList) pList->push_back(handle);
+  return handle;
+}
+
+extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule);
+extern "C" BOOL __stdcall track_FreeLibrary(HINSTANCE hLibModule)
+{
+  unsigned loc;
+  __asm mov eax,[ebp+4]
+  __asm mov loc,eax
+
+  std::list<HMODULE>* pList = get_track_list_dll(loc);
+
+  if (pList)
+  {
+    for (std::list<HMODULE>::iterator it = pList->begin(); it != pList->end(); ++it)
+    {
+      if (*it == hLibModule)
+      {
+        pList->erase(it);
+        break;
+      }
+    }
+  }
+  
+  return dllFreeLibrary(hLibModule);
+}
+								
 std::list<unsigned long*> AllocatedFunctionList;
 int iDllDummyOutputCall = 0;
 extern "C" void dll_dummy_output(char* dllname, char* funcname)
@@ -438,6 +492,14 @@ int DllLoader::ResolveImports(void)
 							{
 								Fixup = track_strdup;
 							}
+							else if (!strcmp(ImpName, "LoadLibraryA"))
+							{
+								Fixup = track_LoadLibraryA;
+							}
+							else if (!strcmp(ImpName, "FreeLibrary"))
+							{
+								Fixup = track_FreeLibrary;
+							}
 						}
 						*Addr = (unsigned long)Fixup;
 					}
@@ -635,9 +697,7 @@ DllLoader::~DllLoader()
 		{
 			if (!it->AllocList.empty())
 			{
-				char temp[128];
-				sprintf(temp, "%s: Detected memory leaks: %d leaks\n", Dll, it->AllocList.size());
-				OutputDebugString(temp);
+			  CLog::DebugLog("%s: Detected memory leaks: %d leaks", Dll, it->AllocList.size());
 				unsigned total = 0;
 				std::map<unsigned,MSizeCount>::iterator itt;
 				for (std::map<unsigned, AllocLenCaller>::iterator p = it->AllocList.begin(); p != it->AllocList.end(); ++p)
@@ -657,15 +717,29 @@ DllLoader::~DllLoader()
 				}
 				for( itt = Calleradrmap.begin(); itt != Calleradrmap.end();++itt )
 				{
-		sprintf(temp,"leak caller address %8x, size %8i, counter %4i\n",itt->first, (itt->second).size,(itt->second).count);
-					OutputDebugString(temp);
+				  CLog::DebugLog("leak caller address %8x, size %8i, counter %4i",itt->first, (itt->second).size,(itt->second).count);
 				}
-				sprintf(temp, "%s: Total bytes leaked: %d\n", Dll, total);
-				OutputDebugString(temp);
+				CLog::DebugLog("%s: Total bytes leaked: %d", Dll, total);
 				Calleradrmap.erase(Calleradrmap.begin(),Calleradrmap.end());
-	
 			}
-			TrackedDlls.erase(it);
+			
+			// unloading unloaded dll's
+			if (!it->DllList.empty())
+			{
+			  CLog::DebugLog("%s: Detected %d unloaded dll's", Dll, it->DllList.size());
+				for (std::list<HMODULE>::iterator p = it->DllList.begin(); p != it->DllList.end(); ++p)
+				{
+				  DllLoader* pDll = (DllLoader*)*p;
+				  if (strlen(pDll->GetDLLName()) > 0) CLog::DebugLog("  : %s", pDll->GetDLLName());
+				    
+        }
+				for (std::list<HMODULE>::iterator p = it->DllList.begin(); p != it->DllList.end(); ++p)
+				{
+				  dllFreeLibrary(*p);
+        }
+			}
+			
+			it = TrackedDlls.erase(it);
 			break;
 		}
 	}
@@ -681,9 +755,7 @@ DllLoader::~DllLoader()
 
 char * DllLoader::GetDLLName()
 {
-	if (Dll)
-		return Dll;
-	return "";
+  return Dll ? Dll : "";
 }
 
 int DllLoader::IncrRef()
@@ -832,7 +904,8 @@ extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file)
 		}
 	}
 	
-	DllLoader * dllhandle = new DllLoader(pfile);
+	// enable memory tracking by default
+	DllLoader * dllhandle = new DllLoader(pfile, true);
 	
 	int hr = dllhandle->Parse();
 	if (hr == 0) 
