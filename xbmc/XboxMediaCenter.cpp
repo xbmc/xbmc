@@ -5,13 +5,36 @@
 //			- CDRipX			: doesnt support section loading yet			
 //			- xbfilezilla : doesnt support section loading yet
 //			
+// solved, need 2 test:
+//			- [XC]D-Ice : my pictures: dpad down moves pic down (not in zoommode)
+//
 // bugs: 
 //			- reboot button blinks 1/2 speed???
 //		  - reboot doesnt work on some biosses
 //			- in debug mode CSMBDirectory gives a stack corruption
-//			- zoom doesnt work if movie height>movie width
-//			- subtitles are resized in stretch mode 2?
-//		  - video starts pretty slooowww..
+//
+//			- zoom/stretch
+//					- zoom doesnt work if movie height > movie width
+//					- easy way 2 switch between zoom/stretch/normal
+//					- 4:3 / 16:9 compensation for movies
+//
+//			- subtitles:
+//					- subtitles are resized in stretch mode 2?
+//					- if zooming causes the movie to use most of the screen then put subtitles in video
+//					- try to keep subtitles on bottom of screen
+//
+//		  - video
+//				- video starts pretty slooowww..
+//				- fix video preview window
+//				- reset video window from 720x576 to 640x480 if movie <= 640x480?
+//
+// bugs reported by users
+//			  - [XC]D-Ice : my pictures: show bmp while listening mp3-> 10..15 secs b4 picture shows up? its k when notplaying audio
+//				
+// feature requests by users:
+//				- pike|afk  : version number for mplayer.dll
+//			  - ???				: autoupdate for mplayer.dll
+//
 //
 // general:
 //			- different skins for 4:3 / 16:9
@@ -54,7 +77,6 @@
 //			- when playing : show video info in leftbottom corner 
 //			- bookmarks
 //			- OSD
-//			- subtitles (positioning also)
 //			- file stacking
 //
 // Settings:
