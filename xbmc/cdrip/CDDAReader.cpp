@@ -25,7 +25,7 @@ CCDDAReader::~CCDDAReader()
 	CloseHandle(m_hStopEvent);
 
 	if (m_sRipBuffer[0].pbtStream == NULL) delete []m_sRipBuffer[0].pbtStream;
-	if (m_sRipBuffer[0].pbtStream == NULL) delete []m_sRipBuffer[0].pbtStream;
+	if (m_sRipBuffer[1].pbtStream == NULL) delete []m_sRipBuffer[1].pbtStream;
 }
 
 bool CCDDAReader::Init(int iTrack)
