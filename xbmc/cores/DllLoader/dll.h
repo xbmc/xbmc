@@ -2,6 +2,7 @@
 #define __DLL_H_
 //#pragma message("including dll.h")
 #include <stdlib.h>
+#include <xtl.h>
 
 #include "coffldr.h"
 #include "exp2dll.h"
@@ -24,8 +25,8 @@ protected:
 #endif
     void    PrintExportTable(ExportDirTable_t *ExportDirTable);
     int     ResolveOrdinal(char*, unsigned long, void**);
-	int		ResolveName(char*, char*, void **);
-	int		LoadExports();
+    int     ResolveName(char*, char*, void **);
+    int     LoadExports();
 	
 public:
     DllLoader(const char *dll, bool track = false);

@@ -28,7 +28,7 @@ const char *DATA_DIR_NAME[16] = {
 
 CoffLoader::CoffLoader()
 {
-	hModule	  = NULL;	
+	hModule	= NULL;	
 	SymTable = 0;
 	StringTable = 0;
 	SectionData = 0;
@@ -38,7 +38,7 @@ CoffLoader::~CoffLoader()
 {
 	if( hModule ) {
 		VirtualFree(hModule, 0, MEM_RELEASE);
-		hModule   = NULL;
+		hModule = NULL;
 	}
 	if( SymTable ) {
 		delete [] SymTable;
