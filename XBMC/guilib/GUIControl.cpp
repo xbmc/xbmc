@@ -145,13 +145,29 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
         if ( IsDisabled() || !IsVisible() || !CanFocus() )
         {
           DWORD dwControl=0;
-          if (message.GetParam1()==ACTION_MOVE_DOWN) dwControl = m_dwControlDown;
-          if (message.GetParam1()==ACTION_MOVE_UP) dwControl = m_dwControlUp;
-          if (message.GetParam1()==ACTION_MOVE_LEFT) dwControl = m_dwControlLeft;
+          if (message.GetParam1()==ACTION_MOVE_DOWN)  dwControl = m_dwControlDown;
+          if (message.GetParam1()==ACTION_MOVE_UP)    dwControl = m_dwControlUp;
+          if (message.GetParam1()==ACTION_MOVE_LEFT)  dwControl = m_dwControlLeft;
           if (message.GetParam1()==ACTION_MOVE_RIGHT) dwControl = m_dwControlRight;
-          CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), dwControl, message.GetParam1());
-          g_graphicsContext.SendMessage(msg);
-          return true;
+          if (GetID() != dwControl)
+          {
+            CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), dwControl, message.GetParam1());
+            g_graphicsContext.SendMessage(msg);
+            return true;
+          }
+          else
+          {
+            //ok, the control points to itself, it will do a stackoverflow so try to go back
+            DWORD dwReverse = 0;
+            if (message.GetParam1() == ACTION_MOVE_DOWN)  {dwReverse = ACTION_MOVE_UP;    dwControl = m_dwControlUp;}
+            if (message.GetParam1() == ACTION_MOVE_UP)    {dwReverse = ACTION_MOVE_DOWN;  dwControl = m_dwControlDown;}
+            if (message.GetParam1() == ACTION_MOVE_LEFT)  {dwReverse = ACTION_MOVE_RIGHT; dwControl = m_dwControlRight;}
+            if (message.GetParam1() == ACTION_MOVE_RIGHT) {dwReverse = ACTION_MOVE_LEFT;  dwControl = m_dwControlLeft;}
+            //if the other direction also points to itself it will still stackoverflow but then it's just skinproblem imho
+            CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), dwControl, dwReverse);
+            g_graphicsContext.SendMessage(msg);
+            return true;
+          }
         }
         m_bHasFocus=true;
         return true;
