@@ -566,7 +566,7 @@ void CMPlayer::GetAudioInfo( CStdString& strAudioInfo)
 	long lSampleRate;
 	int	 iChannels;
 	BOOL bVBR;
-	if (!m_bIsPlaying)
+	if (!m_bIsPlaying||!mplayer_HasAudio())
 	{
 		strAudioInfo="";
 		return;
