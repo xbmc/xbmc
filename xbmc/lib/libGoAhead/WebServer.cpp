@@ -721,6 +721,12 @@ void formTest(webs_t wp, char_t *path, char_t *query)
 	websDone(wp, 200);
 }
 
+// Restore code and data sections to normal.
+#pragma code_seg()
+#pragma data_seg()
+#pragma bss_seg()
+#pragma const_seg()
+
 int  XbmcWebsAspCommand(int eid, webs_t wp, int argc, char_t **argv)
 {
 	if (!pXbmcWeb) return -1;
