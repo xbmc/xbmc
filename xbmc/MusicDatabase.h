@@ -222,6 +222,7 @@ public:
 	void		EmptyCache();
 	void		CheckVariousArtistsAndCoverArt();
 	bool		GetRecentlyPlayedAlbums(VECALBUMS& albums);
+	bool		GetRecentlyAddedAlbums(VECALBUMS& albums);
 	bool		GetSongsByPathes(SETPATHES& pathes, MAPSONGS& songs);
 	bool		GetAlbumByPath(const CStdString& strPath, CAlbum& album);
 	bool		GetAlbumsByPath(const CStdString& strPath, VECALBUMS& albums);
