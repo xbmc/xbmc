@@ -6,7 +6,6 @@
 #include <map>
 #include <list>
 #include <vector>
-#include <set>
 
 #include <string.h>
 #include "dll.h"
@@ -137,6 +136,28 @@ extern "C" void __cdecl track_free(void* p)
 		pList->erase((unsigned)p);
 	
 		free(p);
+}
+
+extern "C"	char* __cdecl track_strdup( const char* str)
+{
+	unsigned loc;
+	__asm mov eax,[ebp+4]
+	__asm mov loc,eax
+
+		std::map<unsigned,AllocLenCaller>* pList = get_track_list(loc);
+
+    char* pdup;
+    pdup = strdup(str);
+
+    if (pdup && pList)
+	{
+		AllocLenCaller temp;
+		temp.size=0;
+		temp.calleraddr=loc;
+		(*pList)[(unsigned)pdup] = temp;
+	}
+
+    return pdup;
 }
 
 std::list<unsigned long*> AllocatedFunctionList;
@@ -412,6 +433,10 @@ int DllLoader::ResolveImports(void)
 							else if (!strcmp(ImpName, "free"))
 							{
 								Fixup = track_free;
+							}
+							else if (!strcmp(ImpName, "_strdup"))
+							{
+								Fixup = track_strdup;
 							}
 						}
 						*Addr = (unsigned long)Fixup;
