@@ -1,11 +1,11 @@
 /***************************************************************************
-                          audiodrv.h    -  ``DirectSound for Xbox''
-                                           specific audio driver interface.
-                             -------------------
-    begin                : Mon Feb 18 2004
-    copyright            : (C) 2004 by Richard Crockford
-    email                : 
- ***************************************************************************/
+                         audiodrv.h    -  ``DirectSound for Xbox''
+                                          specific audio driver interface.
+                            -------------------
+   begin                : Mon Feb 18 2004
+   copyright            : (C) 2004 by Richard Crockford
+   email                : 
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -35,34 +35,34 @@
 #define new new( _NORMAL_BLOCK, __FILE__, __LINE__)
 #endif
 
-#include "../AudioBase.h"
+#include "../AudioBase.h" 
 // 0.5s per buffer
 #define AUDIO_XBOX_BUFFERS (4)
 
 class Audio_Xbox: public AudioBase
-{    
-private:  // ------------------------------------------------------- private
-    // DirectSound Support
-    LPDIRECTSOUND       pDS;
-    LPDIRECTSOUNDSTREAM pStream;
-    XMEDIAPACKET				pMPacket[AUDIO_XBOX_BUFFERS];
-		DWORD								dwStreamed[AUDIO_XBOX_BUFFERS];
-		int BufIdx;
+{
+private:   // ------------------------------------------------------- private
+  // DirectSound Support
+  LPDIRECTSOUND pDS;
+  LPDIRECTSOUNDSTREAM pStream;
+  XMEDIAPACKET pMPacket[AUDIO_XBOX_BUFFERS];
+  DWORD dwStreamed[AUDIO_XBOX_BUFFERS];
+  int BufIdx;
 
-    bool isOpen;
-    bool isPlaying;
+  bool isOpen;
+  bool isPlaying;
 
-public:  // --------------------------------------------------------- public
-    Audio_Xbox();
-    ~Audio_Xbox();
+public:   // --------------------------------------------------------- public
+  Audio_Xbox();
+  ~Audio_Xbox();
 
-    void *open  (AudioConfig &cfg, const char *name);
-    void  close ();    
-    void *reset ();
-    void *write ();
-    void  pause ();
-		void Eof();
-		void SetVolume(long nVolume);
+  void *open (AudioConfig &cfg, const char *name);
+  void close ();
+  void *reset ();
+  void *write ();
+  void pause ();
+  void Eof();
+  void SetVolume(long nVolume);
 };
 
 #endif // _XBOX

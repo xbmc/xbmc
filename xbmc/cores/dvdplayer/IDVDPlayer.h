@@ -6,5 +6,5 @@ class DVDNavResult;
 class IDVDPlayer
 {
 public:
-  virtual int OnDVDNavResult(void* pData, int iMessage) = 0; 
+  virtual int OnDVDNavResult(void* pData, int iMessage) = 0;
 };

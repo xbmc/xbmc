@@ -1,10 +1,10 @@
 /***************************************************************************
-                          AudioBase.h  -  description
-                             -------------------
-    begin                : Sat Jul 8 2000
-    copyright            : (C) 2000 by Simon White
-    email                : s_a_white@email.com
- ***************************************************************************/
+                         AudioBase.h  -  description
+                            -------------------
+   begin                : Sat Jul 8 2000
+   copyright            : (C) 2000 by Simon White
+   email                : s_a_white@email.com
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -13,9 +13,14 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- ***************************************************************************/
+ ***************************************************************************/ 
 /***************************************************************************
  *  $Log$
+ *  Revision 1.3  2005/03/19 17:33:04  jmarshallnz
+ *  Formatting for tabs -> 2 spaces
+ *
+ *    - 19-03-2005 added: <autodetectFG> tag to XBoxMediaCenter.xml.  Set to false if you have an old bios that causes a crash on autodetection.
+ *
  *  Revision 1.2  2004/08/03 19:45:59  jmarshallnz
  *    - 03-08-2004 needed:  Textures.xpr needs repacking!
  *    - 03-08-2004 changed: Replaced old virtual keyboard with new skinnable one.
@@ -60,40 +65,40 @@
 class AudioBase
 {
 protected:
-    AudioConfig _settings;
-    char       *_errorString;
-    void       *_sampleBuffer;
+  AudioConfig _settings;
+  char *_errorString;
+  void *_sampleBuffer;
 
 public:
-    AudioBase ()
-    {
-        _errorString  = "None";
-        _sampleBuffer = NULL;
-    }
-    virtual ~AudioBase () {;}
+  AudioBase ()
+  {
+    _errorString = "None";
+    _sampleBuffer = NULL;
+  }
+  virtual ~AudioBase () {;}
 
-    // All drivers must support these
-    virtual void *open  (AudioConfig &cfg, const char *name) = 0;
-    // Rev 1.3 (saw) - Definition is incorrect and has been updated.
-    // On a reset hardware buffers may have changed and therefore a
-    // new address needs to be returned by the driver.
-    virtual void *reset () = 0;
-    virtual void *write () = 0;
-    virtual void  close () = 0;
-    virtual void  pause () = 0;
-	virtual void  SetVolume(long nVolume) {};
-	virtual const char *extension () const { return ""; }
-    void   *buffer () { return _sampleBuffer; }
+  // All drivers must support these
+  virtual void *open (AudioConfig &cfg, const char *name) = 0;
+  // Rev 1.3 (saw) - Definition is incorrect and has been updated.
+  // On a reset hardware buffers may have changed and therefore a
+  // new address needs to be returned by the driver.
+  virtual void *reset () = 0;
+  virtual void *write () = 0;
+  virtual void close () = 0;
+  virtual void pause () = 0;
+  virtual void SetVolume(long nVolume) {};
+  virtual const char *extension () const { return ""; }
+  void *buffer () { return _sampleBuffer; }
 
-    void getConfig (AudioConfig &cfg) const
-    {
-        cfg = _settings;
-    }
-    
-    const char *getErrorString () const
-    {
-        return _errorString;
-    }
+  void getConfig (AudioConfig &cfg) const
+  {
+    cfg = _settings;
+  }
+
+  const char *getErrorString () const
+  {
+    return _errorString;
+  }
 };
 
 #endif // _AudioBase_h_

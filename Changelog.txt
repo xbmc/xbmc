@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 19-03-2005 added: <autodetectFG> tag to XBoxMediaCenter.xml.  Set to false if you have an old bios that causes a crash on autodetection.
   - 19-03-2005 fixed: Overlays dim on screensaver activate while video is paused.
   - 19-03-2005 fixed: MusicPlayer and VideoPlayer labels only return something if there is the appropriate media type playing.
   - 18-03-2005 fixed: Play action in My Music Nav does not interfere with unpausing, or returning playback speed to 1

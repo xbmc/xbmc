@@ -9,22 +9,22 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-class CEvent  
+class CEvent
 {
 public:
-	void PulseEvent();
-	bool WaitMSec(DWORD dwMillSeconds);
-	HANDLE GetHandle();
-	void Reset();
-	void Set();
-	void Wait();
-	CEvent();
-	virtual ~CEvent();
+  void PulseEvent();
+  bool WaitMSec(DWORD dwMillSeconds);
+  HANDLE GetHandle();
+  void Reset();
+  void Set();
+  void Wait();
+  CEvent();
+  virtual ~CEvent();
 
 protected:
-	CEvent(const CEvent& event);
+  CEvent(const CEvent& event);
   CEvent& operator=(const CEvent& src);
-	HANDLE m_hEvent;
+  HANDLE m_hEvent;
 };
 
 #endif // !defined(AFX_EVENT_H__724ADE14_0F5C_4836_B995_08FFAA97D6B9__INCLUDED_)

@@ -1,19 +1,21 @@
 #pragma once
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-typedef struct vo_info_s
-{
-		/* driver name ("Matrox Millennium G200/G400" */
-		const char *name;
-		/* short name (for config strings) ("mga") */
-		const char *short_name;
-		/* author ("Aaron Holtzman <aholtzma@ess.engr.uvic.ca>") */
-		const char *author;
-		/* any additional comments */
-		const char *comment;
-} vo_info_t;
+  typedef struct vo_info_s
+  {
+    /* driver name ("Matrox Millennium G200/G400" */
+    const char *name;
+    /* short name (for config strings) ("mga") */
+    const char *short_name;
+    /* author ("Aaron Holtzman <aholtzma@ess.engr.uvic.ca>") */
+    const char *author;
+    /* any additional comments */
+    const char *comment;
+  }
+  vo_info_t;
 
 #define IMGFMT_RGB_MASK 0xFFFFFF00
 #define IMGFMT_RGB (('R'<<24)|('G'<<16)|('B'<<8))
@@ -44,7 +46,7 @@ typedef struct vo_info_s
 #define IMGFMT_BGR_DEPTH(fmt) ((fmt)&0x3F)
 
 
-/* Planar YUV Formats */
+  /* Planar YUV Formats */
 
 #define IMGFMT_YVU9 0x39555659
 #define IMGFMT_IF09 0x39304649
@@ -56,13 +58,13 @@ typedef struct vo_info_s
 #define IMGFMT_Y8   0x20203859
 #define IMGFMT_NV12 0x3231564E
 
-/* unofficial Planar Formats, FIXME if official 4CC exists */
+  /* unofficial Planar Formats, FIXME if official 4CC exists */
 #define IMGFMT_444P 0x50343434
 #define IMGFMT_422P 0x50323234
 #define IMGFMT_411P 0x50313134
 #define IMGFMT_HM12 0x32314D48
 
-/* Packed YUV Formats */
+  /* Packed YUV Formats */
 
 #define IMGFMT_IUYV 0x56595549
 #define IMGFMT_IY41 0x31435949
@@ -88,40 +90,40 @@ typedef struct vo_info_s
 #define VO_EVENT_RESIZE 2
 #define VO_EVENT_KEYPRESS 4
 
-/* Obsolete: VOCTRL_QUERY_VAA 1 */
-/* does the device support the required format */
-#define VOCTRL_QUERY_FORMAT 2
-/* signal a device reset seek */
-#define VOCTRL_RESET 3
-/* true if vo driver can use GUI created windows */
+  /* Obsolete: VOCTRL_QUERY_VAA 1 */
+  /* does the device support the required format */
+#define VOCTRL_QUERY_FORMAT 2 
+  /* signal a device reset seek */
+#define VOCTRL_RESET 3 
+  /* true if vo driver can use GUI created windows */
 #define VOCTRL_GUISUPPORT 4
-#define VOCTRL_GUI_NOWINDOW 19
-/* used to switch to fullscreen */
+#define VOCTRL_GUI_NOWINDOW 19 
+  /* used to switch to fullscreen */
 #define VOCTRL_FULLSCREEN 5
-#define VOCTRL_SCREENSHOT 6
-/* signal a device pause */
-#define VOCTRL_PAUSE 7
-/* start/resume playback */
-#define VOCTRL_RESUME 8
-/* libmpcodecs direct rendering: */
+#define VOCTRL_SCREENSHOT 6 
+  /* signal a device pause */
+#define VOCTRL_PAUSE 7 
+  /* start/resume playback */
+#define VOCTRL_RESUME 8 
+  /* libmpcodecs direct rendering: */
 #define VOCTRL_GET_IMAGE 9
 #define VOCTRL_DRAW_IMAGE 13
-#define VOCTRL_SET_SPU_PALETTE 14
-/* decoding ahead: */
+#define VOCTRL_SET_SPU_PALETTE 14 
+  /* decoding ahead: */
 #define VOCTRL_GET_NUM_FRAMES 10
 #define VOCTRL_GET_FRAME_NUM  11
 #define VOCTRL_SET_FRAME_NUM  12
 #define VOCTRL_GET_PANSCAN 15
-#define VOCTRL_SET_PANSCAN 16
-/* equalizer controls */
+#define VOCTRL_SET_PANSCAN 16 
+  /* equalizer controls */
 #define VOCTRL_SET_EQUALIZER 17
-#define VOCTRL_GET_EQUALIZER 18
-//#define VOCTRL_GUI_NOWINDOW 19
-/* Frame duplication */
-#define VOCTRL_DUPLICATE_FRAME 20
-// ... 21
+#define VOCTRL_GET_EQUALIZER 18 
+  //#define VOCTRL_GUI_NOWINDOW 19
+  /* Frame duplication */
+#define VOCTRL_DUPLICATE_FRAME 20 
+  // ... 21
 #define VOCTRL_START_SLICE 21
-#define MP_MAX_PLANES	4
+#define MP_MAX_PLANES 4
 
 #define MP_IMGFIELD_ORDERED 0x01
 #define MP_IMGFIELD_TOP_FIRST 0x02
@@ -129,13 +131,14 @@ typedef struct vo_info_s
 #define MP_IMGFIELD_TOP 0x08
 #define MP_IMGFIELD_BOTTOM 0x10
 
-typedef struct mp_image_s {
+  typedef struct mp_image_s
+  {
     unsigned short flags;
     unsigned char type;
     unsigned char bpp;  // bits/pixel. NOT depth! for RGB it will be n*8
     unsigned int imgfmt;
-    int width,height;  // stored dimensions
-    int x,y,w,h;  // visible dimensions
+    int width, height;  // stored dimensions
+    int x, y, w, h;  // visible dimensions
     unsigned char* planes[MP_MAX_PLANES];
     unsigned int stride[MP_MAX_PLANES];
     char * qscale;
@@ -151,151 +154,153 @@ typedef struct mp_image_s {
     int chroma_y_shift; // vertical
     /* for private use by filter or vo driver (to store buffer id or dmpi) */
     void* priv;
-} mp_image_t;
+  }
+  mp_image_t;
 
 
-typedef struct vo_functions_s
-{
-	vo_info_t *info;
-	unsigned int (*preinit)(const char *arg);
-	unsigned int (*config)(unsigned int width, unsigned int height, unsigned int d_width,
-	unsigned int d_height, unsigned int fullscreen, char *title,
-	unsigned int format);
-	unsigned int (*control)(unsigned int request, void *data, ...);
-	unsigned int (*draw_frame)(unsigned char *src[]);
-	unsigned int (*draw_slice)(unsigned char *src[], int stride[], int w,int h, int x,int y);
-	void (*draw_osd)(void);
-	void (*flip_page)(void);
-	void (*check_events)(void);
-	void (*uninit)(void);
-} vo_functions_t;
+  typedef struct vo_functions_s
+  {
+    vo_info_t *info;
+    unsigned int (*preinit)(const char *arg);
+    unsigned int (*config)(unsigned int width, unsigned int height, unsigned int d_width,
+                           unsigned int d_height, unsigned int fullscreen, char *title,
+                           unsigned int format);
+    unsigned int (*control)(unsigned int request, void *data, ...);
+    unsigned int (*draw_frame)(unsigned char *src[]);
+    unsigned int (*draw_slice)(unsigned char *src[], int stride[], int w, int h, int x, int y);
+    void (*draw_osd)(void);
+    void (*flip_page)(void);
+    void (*check_events)(void);
+    void (*uninit)(void);
+  }
+  vo_functions_t;
 
 
 #define A_ZOOM 1
 #define A_NOZOOM 0
 
 
-//--- buffer content restrictions:
-// set if buffer content shouldn't be modified:
-#define MP_IMGFLAG_PRESERVE 0x01
-// set if buffer content will be READ for next frame's MC: (I/P mpeg frames)
+  //--- buffer content restrictions:
+  // set if buffer content shouldn't be modified:
+#define MP_IMGFLAG_PRESERVE 0x01 
+  // set if buffer content will be READ for next frame's MC: (I/P mpeg frames)
 #define MP_IMGFLAG_READABLE 0x02
 
-//--- buffer width/stride/plane restrictions: (used for direct rendering)
-// stride _have_to_ be aligned to MB boundary:  [for DR restrictions]
-#define MP_IMGFLAG_ACCEPT_ALIGNED_STRIDE 0x4
-// stride should be aligned to MB boundary:     [for buffer allocation]
-#define MP_IMGFLAG_PREFER_ALIGNED_STRIDE 0x8
-// codec accept any stride (>=width):
-#define MP_IMGFLAG_ACCEPT_STRIDE 0x10
-// codec accept any width (width*bpp=stride -> stride%bpp==0) (>=width):
-#define MP_IMGFLAG_ACCEPT_WIDTH 0x20
-//--- for planar formats only:
-// uses only stride[0], and stride[1]=stride[2]=stride[0]>>mpi->chroma_x_shift
-#define MP_IMGFLAG_COMMON_STRIDE 0x40
-// uses only planes[0], and calculates planes[1,2] from width,height,imgfmt
+  //--- buffer width/stride/plane restrictions: (used for direct rendering)
+  // stride _have_to_ be aligned to MB boundary:  [for DR restrictions]
+#define MP_IMGFLAG_ACCEPT_ALIGNED_STRIDE 0x4 
+  // stride should be aligned to MB boundary:     [for buffer allocation]
+#define MP_IMGFLAG_PREFER_ALIGNED_STRIDE 0x8 
+  // codec accept any stride (>=width):
+#define MP_IMGFLAG_ACCEPT_STRIDE 0x10 
+  // codec accept any width (width*bpp=stride -> stride%bpp==0) (>=width):
+#define MP_IMGFLAG_ACCEPT_WIDTH 0x20 
+  //--- for planar formats only:
+  // uses only stride[0], and stride[1]=stride[2]=stride[0]>>mpi->chroma_x_shift
+#define MP_IMGFLAG_COMMON_STRIDE 0x40 
+  // uses only planes[0], and calculates planes[1,2] from width,height,imgfmt
 #define MP_IMGFLAG_COMMON_PLANE 0x80
 
 #define MP_IMGFLAGMASK_RESTRICTIONS 0xFF
 
-//--------- color info (filled by mp_image_setfmt() ) -----------
-// set if number of planes > 1
-#define MP_IMGFLAG_PLANAR 0x100
-// set if it's YUV colorspace
-#define MP_IMGFLAG_YUV 0x200
-// set if it's swapped (BGR or YVU) plane/byteorder
-#define MP_IMGFLAG_SWAPPED 0x400
-// using palette for RGB data
+  //--------- color info (filled by mp_image_setfmt() ) -----------
+  // set if number of planes > 1
+#define MP_IMGFLAG_PLANAR 0x100 
+  // set if it's YUV colorspace
+#define MP_IMGFLAG_YUV 0x200 
+  // set if it's swapped (BGR or YVU) plane/byteorder
+#define MP_IMGFLAG_SWAPPED 0x400 
+  // using palette for RGB data
 #define MP_IMGFLAG_RGB_PALETTE 0x800
 
 #define MP_IMGFLAGMASK_COLORS 0xF00
 
-// codec uses drawing/rendering callbacks (draw_slice()-like thing, DR method 2)
-// [the codec will set this flag if it supports callbacks, and the vo _may_
-//  clear it in get_image() if draw_slice() not implemented]
-#define MP_IMGFLAG_DRAW_CALLBACK 0x1000
-// set if it's in video buffer/memory: [set by vo/vf's get_image() !!!]
-#define MP_IMGFLAG_DIRECT 0x2000
-// set if buffer is allocated (used in destination images):
+  // codec uses drawing/rendering callbacks (draw_slice()-like thing, DR method 2)
+  // [the codec will set this flag if it supports callbacks, and the vo _may_
+  //  clear it in get_image() if draw_slice() not implemented]
+#define MP_IMGFLAG_DRAW_CALLBACK 0x1000 
+  // set if it's in video buffer/memory: [set by vo/vf's get_image() !!!]
+#define MP_IMGFLAG_DIRECT 0x2000 
+  // set if buffer is allocated (used in destination images):
 #define MP_IMGFLAG_ALLOCATED 0x4000
 
-// buffer type was printed (do NOT set this flag - it's for INTERNAL USE!!!)
+  // buffer type was printed (do NOT set this flag - it's for INTERNAL USE!!!)
 #define MP_IMGFLAG_TYPE_DISPLAYED 0x8000
 
-// codec doesn't support any form of direct rendering - it has own buffer
-// allocation. so we just export its buffer pointers:
-#define MP_IMGTYPE_EXPORT 0
-// codec requires a static WO buffer, but it does only partial updates later:
-#define MP_IMGTYPE_STATIC 1
-// codec just needs some WO memory, where it writes/copies the whole frame to:
-#define MP_IMGTYPE_TEMP 2
-// I+P type, requires 2+ independent static R/W buffers
-#define MP_IMGTYPE_IP 3
-// I+P+B type, requires 2+ independent static R/W and 1+ temp WO buffers
+  // codec doesn't support any form of direct rendering - it has own buffer
+  // allocation. so we just export its buffer pointers:
+#define MP_IMGTYPE_EXPORT 0 
+  // codec requires a static WO buffer, but it does only partial updates later:
+#define MP_IMGTYPE_STATIC 1 
+  // codec just needs some WO memory, where it writes/copies the whole frame to:
+#define MP_IMGTYPE_TEMP 2 
+  // I+P type, requires 2+ independent static R/W buffers
+#define MP_IMGTYPE_IP 3 
+  // I+P+B type, requires 2+ independent static R/W and 1+ temp WO buffers
 #define MP_IMGTYPE_IPB 4
 
 
-// set, if the given colorspace is supported (with or without conversion)
-#define VFCAP_CSP_SUPPORTED 0x1
-// set, if the given colorspace is supported _without_ conversion
-#define VFCAP_CSP_SUPPORTED_BY_HW 0x2
-// set if the driver/filter can draw OSD
-#define VFCAP_OSD 0x4
-// set if the driver/filter can handle compressed SPU stream
-#define VFCAP_SPU 0x8
-// scaling up/down by hardware, or software:
+  // set, if the given colorspace is supported (with or without conversion)
+#define VFCAP_CSP_SUPPORTED 0x1 
+  // set, if the given colorspace is supported _without_ conversion
+#define VFCAP_CSP_SUPPORTED_BY_HW 0x2 
+  // set if the driver/filter can draw OSD
+#define VFCAP_OSD 0x4 
+  // set if the driver/filter can handle compressed SPU stream
+#define VFCAP_SPU 0x8 
+  // scaling up/down by hardware, or software:
 #define VFCAP_HWSCALE_UP 0x10
 #define VFCAP_HWSCALE_DOWN 0x20
-#define VFCAP_SWSCALE 0x40
-// driver/filter can do vertical flip (upside-down)
+#define VFCAP_SWSCALE 0x40 
+  // driver/filter can do vertical flip (upside-down)
 #define VFCAP_FLIP 0x80
 
-// driver/hardware handles timing (blocking)
-#define VFCAP_TIMER 0x100
-// driver _always_ flip image upside-down (for ve_vfw)
-#define VFCAP_FLIPPED 0x200
-// vf filter: accepts stride (put_image)
-// vo driver: has draw_slice() support for the given csp
-#define VFCAP_ACCEPT_STRIDE 0x400
-// filter does postprocessing (so you shouldn't scale/filter image before it)
+  // driver/hardware handles timing (blocking)
+#define VFCAP_TIMER 0x100 
+  // driver _always_ flip image upside-down (for ve_vfw)
+#define VFCAP_FLIPPED 0x200 
+  // vf filter: accepts stride (put_image)
+  // vo driver: has draw_slice() support for the given csp
+#define VFCAP_ACCEPT_STRIDE 0x400 
+  // filter does postprocessing (so you shouldn't scale/filter image before it)
 #define VFCAP_POSTPROC 0x800
 
-#define VO_TRUE		1
-#define VO_FALSE	0
-#define VO_ERROR	-1
-#define VO_NOTAVAIL	-2
-#define VO_NOTIMPL	-3
+#define VO_TRUE  1
+#define VO_FALSE 0
+#define VO_ERROR -1
+#define VO_NOTAVAIL -2
+#define VO_NOTIMPL -3
 
-#define VOFLAG_FULLSCREEN	0x01
-#define VOFLAG_MODESWITCHING	0x02
-#define VOFLAG_SWSCALE		0x04
-#define VOFLAG_FLIPPING		0x08
+#define VOFLAG_FULLSCREEN 0x01
+#define VOFLAG_MODESWITCHING 0x02
+#define VOFLAG_SWSCALE  0x04
+#define VOFLAG_FLIPPING  0x08
 #define VOFLAG_XOVERLAY_SUB_VO  0x10000
 
-extern void vo_draw_alpha_yv12(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride);
-extern void vo_draw_alpha_yuy2(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride);
-extern void vo_draw_alpha_rgb24(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride);
-extern void vo_draw_alpha_rgb32(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride);
-extern void vo_draw_alpha_rgb15(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride);
-extern void vo_draw_alpha_rgb16(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride);
-extern void aspect_save_orig(int orgw, int orgh);
-extern void aspect(unsigned int *srcw, unsigned int *srch, int zoom);
-extern void aspect_save_prescale(int prew, int preh);
-extern void aspect_save_screenres(int scrw, int scrh);
+  extern void vo_draw_alpha_yv12(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase, int dststride);
+  extern void vo_draw_alpha_yuy2(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase, int dststride);
+  extern void vo_draw_alpha_rgb24(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase, int dststride);
+  extern void vo_draw_alpha_rgb32(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase, int dststride);
+  extern void vo_draw_alpha_rgb15(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase, int dststride);
+  extern void vo_draw_alpha_rgb16(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase, int dststride);
+  extern void aspect_save_orig(int orgw, int orgh);
+  extern void aspect(unsigned int *srcw, unsigned int *srch, int zoom);
+  extern void aspect_save_prescale(int prew, int preh);
+  extern void aspect_save_screenres(int scrw, int scrh);
 
-extern void draw_alpha(int x0,int y0, int w,int h, unsigned char* src, unsigned char *srca, int stride);
-extern void vo_draw_text(int dxs,int dys,void (*draw_alpha)(int x0,int y0, int w,int h, unsigned char* src, unsigned char *srca, int stride));
+  extern void draw_alpha(int x0, int y0, int w, int h, unsigned char* src, unsigned char *srca, int stride);
+  extern void vo_draw_text(int dxs, int dys, void (*draw_alpha)(int x0, int y0, int w, int h, unsigned char* src, unsigned char *srca, int stride));
 
-extern vo_functions_t video_functions;
+  extern vo_functions_t video_functions;
 
-typedef struct
-{
-	unsigned char *y;
-	unsigned char *u;
-	unsigned char *v;
-}
-IMAGE;
-extern int image_output(IMAGE * image, unsigned int width,int height,unsigned int edged_width, unsigned char * dst[4], unsigned int dst_stride[4],int csp,int interlaced);
+  typedef struct
+  {
+    unsigned char *y;
+    unsigned char *u;
+    unsigned char *v;
+  }
+  IMAGE;
+  extern int image_output(IMAGE * image, unsigned int width, int height, unsigned int edged_width, unsigned char * dst[4], unsigned int dst_stride[4], int csp, int interlaced);
 
 
 #define XVID_CSP_USER     (1<< 0) /* 4:2:0 planar */

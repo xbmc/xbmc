@@ -30,34 +30,34 @@ class CDVDDemuxFFmpeg : public CDVDDemux
 public:
   CDVDDemuxFFmpeg();
   ~CDVDDemuxFFmpeg();
-  
+
   bool Open(CDVDInputStream* pInput);
   void Dispose();
   void Reset();
-  
+
   CDVDDemux::DemuxPacket* Read();
-  
+
   bool Seek(int iTime);
   int GetStreamLenght();
   CDemuxStream* GetStream(int iStreamId);
   int GetNrOfStreams();
-  
+
   AVFormatContext* m_pFormatContext;
-  
+
 protected:
   int ReadFrame(AVPacket *packet);
   void AddStream(int iId);
   void Lock();
   void Unlock();
 
-  bool    ContextInit(const char* strFile, BYTE* buffer, int iBufferSize);
-  void    ContextDeInit();
-  
+  bool ContextInit(const char* strFile, BYTE* buffer, int iBufferSize);
+  void ContextDeInit();
+
   CRITICAL_SECTION m_critSection;
   // #define MAX_STREAMS 20 // from avformat.h
   CDemuxStream* m_streams[20]; // maximum number of streams that ffmpeg can handle
-  
-  BYTE  m_ffmpegBuffer[FFMPEG_FILE_BUFFER_SIZE];
+
+  BYTE m_ffmpegBuffer[FFMPEG_FILE_BUFFER_SIZE];
   ByteIOContext m_ioContext;
-  URLContext*   m_pUrlContext;
+  URLContext* m_pUrlContext;
 };

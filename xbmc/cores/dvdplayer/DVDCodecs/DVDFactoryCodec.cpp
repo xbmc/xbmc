@@ -38,6 +38,6 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CodecID codecID)
   {
     pAudioCodec = new CDVDAudioCodecFFmpeg();
   }
-  
+
   return pAudioCodec;
 }

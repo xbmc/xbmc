@@ -11,7 +11,7 @@
 #define GUI_MSG_PLAYLIST_CHANGED        GUI_MSG_USER + 3
 
 //  Start Slideshow in my pictures lpVoid = CStdString
-//  Param lpVoid: CStdString* that points to the Directory 
+//  Param lpVoid: CStdString* that points to the Directory
 //  to start the slideshow in.
 #define GUI_MSG_START_SLIDESHOW         GUI_MSG_USER + 4
 

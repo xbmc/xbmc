@@ -12,23 +12,24 @@
 #include "../cores/DllLoader/dll.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-struct SCR_INFO 
-{
-	int	dummy;
-};
+  struct SCR_INFO
+  {
+    int dummy;
+  };
 
-struct ScreenSaver
-{
+  struct ScreenSaver
+  {
 public:
-	void (__cdecl* Create)(LPDIRECT3DDEVICE8 pd3dDevice, int iWidth, int iHeight, const char* szScreensaver);
-	void (__cdecl* Start) ();
-	void (__cdecl* Render) ();
-	void (__cdecl* Stop) ();
-	void (__cdecl* GetInfo)(SCR_INFO *info);
-} ;
+    void (__cdecl* Create)(LPDIRECT3DDEVICE8 pd3dDevice, int iWidth, int iHeight, const char* szScreensaver);
+    void (__cdecl* Start) ();
+    void (__cdecl* Render) ();
+    void (__cdecl* Stop) ();
+    void (__cdecl* GetInfo)(SCR_INFO *info);
+  } ;
 
 #ifdef __cplusplus
 };
@@ -37,20 +38,20 @@ public:
 class CScreenSaver
 {
 public:
-	CScreenSaver(struct ScreenSaver* pScr, DllLoader* pLoader, const CStdString& strScreenSaverName);
-	 ~CScreenSaver();
+  CScreenSaver(struct ScreenSaver* pScr, DllLoader* pLoader, const CStdString& strScreenSaverName);
+  ~CScreenSaver();
 
-	// Things that MUST be supplied by the child classes
-	void Create();
-	void Start();
-	void Render();
-	void Stop();
-	void GetInfo(SCR_INFO *info);
+  // Things that MUST be supplied by the child classes
+  void Create();
+  void Start();
+  void Render();
+  void Stop();
+  void GetInfo(SCR_INFO *info);
 
 protected:
-	auto_ptr<struct ScreenSaver> m_pScr;
-	auto_ptr<DllLoader> m_pLoader;
-	CStdString m_strScreenSaverName;
+  auto_ptr<struct ScreenSaver> m_pScr;
+  auto_ptr<DllLoader> m_pLoader;
+  CStdString m_strScreenSaverName;
 };
 
 

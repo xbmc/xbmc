@@ -1,27 +1,27 @@
 #pragma once
 #include "DownloadQueue.h"
 
-#define MAX_DOWNLOAD_QUEUES		3
+#define MAX_DOWNLOAD_QUEUES  3
 
 class CDownloadQueueManager
 {
 public:
-	CDownloadQueueManager();
-	virtual ~CDownloadQueueManager(void);
+  CDownloadQueueManager();
+  virtual ~CDownloadQueueManager(void);
 
-	VOID    Initialize();
-	TICKET	RequestContent(CStdString& aUrl, IDownloadQueueObserver* aObserver);
-	TICKET	RequestFile(CStdString& aUrl, IDownloadQueueObserver* aObserver);
-	TICKET	RequestFile(CStdString& aUrl, CStdString& aFilePath, IDownloadQueueObserver* aObserver);
+  VOID Initialize();
+  TICKET RequestContent(CStdString& aUrl, IDownloadQueueObserver* aObserver);
+  TICKET RequestFile(CStdString& aUrl, IDownloadQueueObserver* aObserver);
+  TICKET RequestFile(CStdString& aUrl, CStdString& aFilePath, IDownloadQueueObserver* aObserver);
 
 protected:
 
-	CDownloadQueue* GetNextDownloadQueue();
+  CDownloadQueue* GetNextDownloadQueue();
 
-	typedef std::vector<CDownloadQueue*> QUEUEPOOL;
-	QUEUEPOOL m_queues;
+  typedef std::vector<CDownloadQueue*> QUEUEPOOL;
+  QUEUEPOOL m_queues;
 
-	CRITICAL_SECTION m_critical;
+  CRITICAL_SECTION m_critical;
 };
 
 // Single global instance of class is in cpp file

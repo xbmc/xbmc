@@ -12,18 +12,18 @@
 class CNfoFile
 {
 public:
-	CNfoFile();
-	virtual ~CNfoFile();
-	
-	HRESULT Create(LPSTR szPath);
+  CNfoFile();
+  virtual ~CNfoFile();
 
-	string m_strImDbUrl;
+  HRESULT Create(LPSTR szPath);
+
+  string m_strImDbUrl;
 private:
-	HRESULT Load(char* szFile);
-	void	Close();
+  HRESULT Load(char* szFile);
+  void Close();
 private:
-	char*	m_doc;
-	int		m_size;
+  char* m_doc;
+  int m_size;
 };
 
 #endif // !defined(AFX_NfoFile_H__641CCF68_6D2A_426E_9204_C0E4BEF12D00__INCLUDED_)

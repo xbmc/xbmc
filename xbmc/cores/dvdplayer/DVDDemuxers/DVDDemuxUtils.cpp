@@ -12,7 +12,7 @@ CDVDDemux::DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket()
 {
   CDVDDemux::DemuxPacket* pPacket = new CDVDDemux::DemuxPacket;
   if (!pPacket) return NULL;
-  
+
   fast_memset(pPacket, 0, sizeof(CDVDDemux::DemuxPacket));
   return pPacket;
 }

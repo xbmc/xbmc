@@ -15,7 +15,7 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock) : CThread()
   m_pAudioCodec = NULL;
   m_bInitializedOutputDevice = false;
   m_iSourceChannels = 0;
-  
+
   InitializeCriticalSection(&m_critCodecSection);
   m_packetQueue.SetMaxSize(10 * 16 * 1024);
 }
@@ -45,33 +45,33 @@ bool CDVDPlayerAudio::OpenStream(CodecID codecID, int iChannels, int iSampleRate
     CLog::Log(LOGFATAL, "CDVDPlayerAudio::OpenStream() m_pAudioCodec != NULL");
     return false;
   }
-  
+
   int iWantedChannels = iChannels;
   if (iWantedChannels == 5) iWantedChannels = 6;
-        
+
   switch (codecID)
   {
-    case CODEC_ID_AC3:
+  case CODEC_ID_AC3:
     {
       iWantedChannels = 2;
       break;
     }
     //case CODEC_ID_AAC:
-    case CODEC_ID_MP2:
-    case CODEC_ID_PCM_S16BE:
-    case CODEC_ID_PCM_S16LE:
-    case CODEC_ID_MP3:
+  case CODEC_ID_MP2:
+  case CODEC_ID_PCM_S16BE:
+  case CODEC_ID_PCM_S16LE:
+  case CODEC_ID_MP3:
     {
       break;
     }
-    case CODEC_ID_DTS:
+  case CODEC_ID_DTS:
     {
       // dts stream
       // asyncaudiostream is unable to open dts streams, use ac97 for this
       CLog::Log(LOGWARNING, "CODEC_ID_DTS is currently not supported");
       return false;
     }
-    default:
+  default:
     {
       CLog::Log(LOGWARNING, "Unsupported audio codec");
       return false;
@@ -80,9 +80,9 @@ bool CDVDPlayerAudio::OpenStream(CodecID codecID, int iChannels, int iSampleRate
 
   CLog::Log(LOGNOTICE, "Creating audio codec with codec id: %i", codecID);
   m_pAudioCodec = CDVDFactoryCodec::CreateAudioCodec(codecID);
-  
+
   CLog::Log(LOGNOTICE, "Opening audio codec id: %i, channels: %i, sample rate: %i, bits: %i",
-      codecID, iWantedChannels, iSampleRate, 16);
+            codecID, iWantedChannels, iSampleRate, 16);
   if (!m_pAudioCodec->Open(codecID, iWantedChannels, iSampleRate, 16))
   {
     CLog::Log(LOGERROR, "Error opening audio codec");
@@ -91,15 +91,15 @@ bool CDVDPlayerAudio::OpenStream(CodecID codecID, int iChannels, int iSampleRate
     m_pAudioCodec = NULL;
     return false;
   }
-  
+
   m_codec = codecID;
   m_iSourceChannels = iChannels;
-  
+
   m_packetQueue.Init();
-  
-  CLog::Log(LOGNOTICE, "Creating audio thread");  
+
+  CLog::Log(LOGNOTICE, "Creating audio thread");
   Create();
-  
+
   return true;
 }
 
@@ -107,19 +107,19 @@ void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
 {
   // wait until buffers are empty
   if (bWaitForBuffers) m_packetQueue.WaitUntilEmpty();
-  
+
   // send abort message to the audio queue
   m_packetQueue.Abort();
-  
-   CLog::Log(LOGNOTICE, "waiting for audio thread to exit");
-   
+
+  CLog::Log(LOGNOTICE, "waiting for audio thread to exit");
+
   // shut down the adio_decode thread and wait for it
   StopThread(); // will set this->m_bStop to true
   this->WaitForThreadExit(INFINITE);
-  
+
   // uninit queue
   m_packetQueue.End();
-  
+
   CLog::Log(LOGNOTICE, "Deleting audio codec");
   if (m_pAudioCodec)
   {
@@ -127,7 +127,7 @@ void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
     delete m_pAudioCodec;
     m_pAudioCodec = NULL;
   }
-  
+
   pAudioPacket = NULL;
 }
 
@@ -137,7 +137,7 @@ int CDVDPlayerAudio::DecodeFrame(BYTE** pAudioBuffer)
   CDVDDemux::DemuxPacket* pPacket = pAudioPacket;
   int n, len, data_size;
 
-  for(;;)
+  for (;;)
   {
     /* NOTE: the audio packet can contain several frames */
     while (audio_pkt_size > 0)
@@ -151,13 +151,13 @@ int CDVDPlayerAudio::DecodeFrame(BYTE** pAudioBuffer)
         audio_pkt_size = 0;
         break;
       }
-      
+
       // get decoded data and the size of it
       data_size = m_pAudioCodec->GetData(pAudioBuffer);
-      
+
       audio_pkt_data += len;
       audio_pkt_size -= len;
-      
+
       if (data_size <= 0) continue;
 
       // if no pts, then compute it
@@ -174,16 +174,16 @@ int CDVDPlayerAudio::DecodeFrame(BYTE** pAudioBuffer)
       pPacket = NULL;
       pAudioPacket = NULL;
     }
-    
+
     if (m_packetQueue.RecievedAbortRequest()) return -1;
-    
+
     // read next packet and return -1 on error
     if (m_packetQueue.Get(&pPacket, 1) < 0) return -1;
 
     pAudioPacket = pPacket;
     audio_pkt_data = pPacket->pData;
     audio_pkt_size = pPacket->iSize;
-    
+
     // if update the audio clock with the pts
     if (pPacket->pts != DVD_NOPTS_VALUE)
     {
@@ -202,18 +202,18 @@ void CDVDPlayerAudio::OnStartup()
 void CDVDPlayerAudio::Process()
 {
   CLog::Log(LOGNOTICE, "running thread: audio_thread");
-  
+
   int len;
   int iAudioBufferSize = 0;
   int iAudioBufferIndex = 0;
-  
+
   // silence data
   BYTE silence[1024];
   memset(silence, 0, 1024);
-  
+
   BYTE* pAudioBuffer;
-  
-  while(!m_bStop)
+
+  while (!m_bStop)
   {
     if (iAudioBufferIndex >= iAudioBufferSize)
     {
@@ -232,14 +232,14 @@ void CDVDPlayerAudio::Process()
     {
       m_bInitializedOutputDevice = InitializeOutputDevice();
     }
-    
+
     // while (pDVDPlayer->m_bIsDVD && !pDVDPlayer->m_bDrawedFrame) Sleep(5); // wait for first video picture
     __int64 iCurrentAudioClock = m_audioClock - m_dvdAudio.GetDelay();
     __int64 iClockDiff = (iCurrentAudioClock - m_pClock->GetClock());
     if (iClockDiff < 0) iClockDiff = 0 - iClockDiff;
     //if (/*diff < 25000/ && */diff > -25000)
     {
-      
+
     }
     if (iClockDiff > 5000) // sync clock if diff is bigger than 5 msec
     {
@@ -258,7 +258,7 @@ void CDVDPlayerAudio::OnExit()
   CLog::Log(LOGNOTICE, "Closing audio device");
   m_dvdAudio.Destroy();
   m_bInitializedOutputDevice = false;
-  
+
   CLog::Log(LOGNOTICE, "thread end: audio_thread");
 }
 
@@ -275,7 +275,7 @@ void CDVDPlayerAudio::Resume()
 void CDVDPlayerAudio::Flush()
 {
   m_packetQueue.Flush();
-  m_dvdAudio.Flush();   
+  m_dvdAudio.Flush();
   if (m_pAudioCodec)
   {
     EnterCriticalSection(&m_critCodecSection);
@@ -286,7 +286,7 @@ void CDVDPlayerAudio::Flush()
 
 void CDVDPlayerAudio::DoWork()
 {
-  m_dvdAudio.DoWork();    
+  m_dvdAudio.DoWork();
 }
 
 bool CDVDPlayerAudio::InitializeOutputDevice()

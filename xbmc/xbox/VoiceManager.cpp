@@ -20,13 +20,13 @@ static const DWORD MAX_RAMP_TIME = 340;     // 340 ms
 // DSEFFECTIMAGEDESC, we will update the Headset mixbin destinations based
 // on the actual loaded DSP image.
 static DSMIXBINVOLUMEPAIR g_dsmbvp[] =
-{
-    { DSMIXBIN_VOICE_0,         DSBVOLUME_MAX },    // Headset 0
-    { DSMIXBIN_VOICE_1,         DSBVOLUME_MAX },    // Headset 1
-    { DSMIXBIN_VOICE_2,         DSBVOLUME_MAX },    // Headset 2
-    { DSMIXBIN_VOICE_3,         DSBVOLUME_MAX },    // Headset 3
-    { DSMIXBIN_FRONT_CENTER,    DSBVOLUME_MIN },    // Voice Through Speakers
-};
+  {
+    { DSMIXBIN_VOICE_0, DSBVOLUME_MAX },     // Headset 0
+    { DSMIXBIN_VOICE_1, DSBVOLUME_MAX },     // Headset 1
+    { DSMIXBIN_VOICE_2, DSBVOLUME_MAX },     // Headset 2
+    { DSMIXBIN_VOICE_3, DSBVOLUME_MAX },     // Headset 3
+    { DSMIXBIN_FRONT_CENTER, DSBVOLUME_MIN },     // Voice Through Speakers
+  };
 static const DWORD NUM_VOLUMEPAIRS = sizeof( g_dsmbvp ) / sizeof( g_dsmbvp[0] );
 
 // Everything after the first 4 mixbins is considered a "Speaker" send
@@ -37,37 +37,37 @@ static const DWORD NUM_SPEAKERPAIRS = NUM_VOLUMEPAIRS - XGetPortCount();
 
 //-----------------------------------------------------------------------------
 // Name: struct REMOTE_CHATTER
-// Desc: Stores information and related data structures for a remote chatter 
+// Desc: Stores information and related data structures for a remote chatter
 //          in the chat session
 //-----------------------------------------------------------------------------
 
 struct REMOTE_CHATTER
 {
-    DWORD               duid;               // CRC32 of remote chatter's nick
+  DWORD duid;               // CRC32 of remote chatter's nick
 
-	CMediaPacketQueue*  pPacketQueue;		// Voice queue for chatter
+  CMediaPacketQueue* pPacketQueue;  // Voice queue for chatter
 
-	SpeexBits			m_bits;
-	void *				m_dec_state;
-	LPDIRECTSOUNDSTREAM pOutputStream;      // DSound mixing stream
-    BOOL                bIsTalking;         // TRUE if player is talking
-    BYTE*               pbStreamBuffer;     // Buffer for stream packets
-    CVoiceManager*      pVoiceManager;      // Pointer to CVoiceManager
-    BYTE*               pbDriftBuffer;      // Buffer for drift compensation
+  SpeexBits m_bits;
+  void * m_dec_state;
+  LPDIRECTSOUNDSTREAM pOutputStream;      // DSound mixing stream
+  BOOL bIsTalking;         // TRUE if player is talking
+  BYTE* pbStreamBuffer;     // Buffer for stream packets
+  CVoiceManager* pVoiceManager;      // Pointer to CVoiceManager
+  BYTE* pbDriftBuffer;      // Buffer for drift compensation
 };
 
 
 
-#pragma pack(push,1)
+#pragma pack(push,1) 
 //-----------------------------------------------------------------------------
 // Name: struct COMPLETED_PACKET
-// Desc: Structure used to store completed packets until the game calls 
+// Desc: Structure used to store completed packets until the game calls
 //          ProcessVoice to retrieve them
 //-----------------------------------------------------------------------------
 struct COMPLETED_PACKET
 {
-    BYTE    Port;
-    BYTE    abData[1];  // Variable length compressed data
+  BYTE Port;
+  BYTE abData[1];  // Variable length compressed data
 };
 #pragma pack(pop)
 
@@ -84,26 +84,26 @@ DWORD CVoiceManager::m_dwHeadphoneState = 0;
 
 CVoiceManager::CVoiceManager()
 {
-    ZeroMemory( &m_cfg, sizeof( VOICE_MANAGER_CONFIG ) );
+  ZeroMemory( &m_cfg, sizeof( VOICE_MANAGER_CONFIG ) );
 
-    // Set up chatters
-    m_pChatters                     = NULL;
-    m_bIsInChatSession              = FALSE;
-    m_pLoopbackChatters             = NULL;
+  // Set up chatters
+  m_pChatters = NULL;
+  m_bIsInChatSession = FALSE;
+  m_pLoopbackChatters = NULL;
 
-    // Set up communicators
-    m_dwConnectedCommunicators      = 0;
-    m_dwLoopback                    = 0;
-    m_dwEnabled                     = 0x0000000F;
-    m_bVoiceThroughSpeakers         = FALSE;
+  // Set up communicators
+  m_dwConnectedCommunicators = 0;
+  m_dwLoopback = 0;
+  m_dwEnabled = 0x0000000F;
+  m_bVoiceThroughSpeakers = FALSE;
 
-    // Set up buffers
-    m_pbTempEncodedPacket           = NULL;
-    m_pbCompletedPackets            = NULL;
-    m_dwNumCompletedPackets         = 0;
+  // Set up buffers
+  m_pbTempEncodedPacket = NULL;
+  m_pbCompletedPackets = NULL;
+  m_dwNumCompletedPackets = 0;
 
-	m_nSilentFrameCounter			= 0;
-	m_bResetDeviceState				= FALSE;
+  m_nSilentFrameCounter = 0;
+  m_bResetDeviceState = FALSE;
 }
 
 
@@ -115,12 +115,12 @@ CVoiceManager::CVoiceManager()
 //-----------------------------------------------------------------------------
 CVoiceManager::~CVoiceManager()
 {
-    assert( m_pChatters                     == NULL &&
-            m_pLoopbackChatters             == NULL &&
-            m_pbTempEncodedPacket           == NULL &&
-            m_pbCompletedPackets            == NULL );
+  assert( m_pChatters == NULL &&
+          m_pLoopbackChatters == NULL &&
+          m_pbTempEncodedPacket == NULL &&
+          m_pbCompletedPackets == NULL );
 
-    assert( m_dwConnectedCommunicators == 0 );
+  assert( m_dwConnectedCommunicators == 0 );
 }
 
 
@@ -130,230 +130,230 @@ INT g_nVoiceManagerInboundQueueNo = 1;
 // Name: InitChatter
 // Desc: Helper function to initialize a REMOTE_CHATTER struct
 //-----------------------------------------------------------------------------
-HRESULT CVoiceManager::InitChatter(	REMOTE_CHATTER*             pChatter, 
-                                    DSSTREAMDESC*               pdssd )
+HRESULT CVoiceManager::InitChatter( REMOTE_CHATTER* pChatter,
+                                    DSSTREAMDESC* pdssd )
 {
-    HRESULT hr = S_OK;
+  HRESULT hr = S_OK;
 
-    // Zero out the chatter
-    ZeroMemory( pChatter, sizeof( REMOTE_CHATTER ) );
+  // Zero out the chatter
+  ZeroMemory( pChatter, sizeof( REMOTE_CHATTER ) );
 
-    pChatter->pVoiceManager = this;
+  pChatter->pVoiceManager = this;
 
-    // Create the voice queue
+  // Create the voice queue
 
-	CStdString strQueueName;
-	strQueueName.Format("inbound %d",g_nVoiceManagerInboundQueueNo++);
-	pChatter->pPacketQueue = new CMediaPacketQueue(strQueueName);
+  CStdString strQueueName;
+  strQueueName.Format("inbound %d", g_nVoiceManagerInboundQueueNo++);
+  pChatter->pPacketQueue = new CMediaPacketQueue(strQueueName);
 
-    // Create the decoder
-	speex_bits_init(&pChatter->m_bits);
-	pChatter->m_dec_state = speex_decoder_init(&speex_nb_mode);
-	int enh = 0;
-	speex_decoder_ctl(pChatter->m_dec_state, SPEEX_SET_ENH, &enh);
+  // Create the decoder
+  speex_bits_init(&pChatter->m_bits);
+  pChatter->m_dec_state = speex_decoder_init(&speex_nb_mode);
+  int enh = 0;
+  speex_decoder_ctl(pChatter->m_dec_state, SPEEX_SET_ENH, &enh);
 
-    // Create a stream with the specified context
-    pdssd->lpvContext = pChatter;
-    hr = DirectSoundCreateStream( pdssd, &pChatter->pOutputStream );
-    if( FAILED( hr ) )
-        return hr;
+  // Create a stream with the specified context
+  pdssd->lpvContext = pChatter;
+  hr = DirectSoundCreateStream( pdssd, &pChatter->pOutputStream );
+  if ( FAILED( hr ) )
+    return hr;
 
-    // Set the stream headroom to 0
-    pChatter->pOutputStream->SetHeadroom( 0 );
+  // Set the stream headroom to 0
+  pChatter->pOutputStream->SetHeadroom( 0 );
 
-    // Allocate buffer for stream data
-    pChatter->pbStreamBuffer = new BYTE[ m_dwBufferSize ];
-    if( !pChatter->pbStreamBuffer )
-        return E_OUTOFMEMORY;
+  // Allocate buffer for stream data
+  pChatter->pbStreamBuffer = new BYTE[ m_dwBufferSize ];
+  if ( !pChatter->pbStreamBuffer )
+    return E_OUTOFMEMORY;
 
-    // Allocate drift compensation buffer and fill with silence
-    pChatter->pbDriftBuffer = new BYTE[ m_dwPacketSize ];
-    if( !pChatter->pbDriftBuffer )
-        return E_OUTOFMEMORY;
-    ZeroMemory( pChatter->pbDriftBuffer, m_dwPacketSize );
+  // Allocate drift compensation buffer and fill with silence
+  pChatter->pbDriftBuffer = new BYTE[ m_dwPacketSize ];
+  if ( !pChatter->pbDriftBuffer )
+    return E_OUTOFMEMORY;
+  ZeroMemory( pChatter->pbDriftBuffer, m_dwPacketSize );
 
-    // Start the stream with silence from the drift compensation buffer
-    for( DWORD i = 0; i < NUM_PACKETS; i++ )
-    {
-        SubmitStreamPacket( i, pChatter );
-    }
+  // Start the stream with silence from the drift compensation buffer
+  for ( DWORD i = 0; i < NUM_PACKETS; i++ )
+  {
+    SubmitStreamPacket( i, pChatter );
+  }
 
-    return S_OK;
+  return S_OK;
 }
 
 
 
 //-----------------------------------------------------------------------------
 // Name: DSPMixBinToDSoundMixBin
-// Desc: Converts a DSP mix bin (retrieved from a DSP effect state block) to a 
+// Desc: Converts a DSP mix bin (retrieved from a DSP effect state block) to a
 //          DirectSound mix bin constant (i.e., DSMIXBIN_FRONT_LEFT)
 //-----------------------------------------------------------------------------
 inline static DWORD DSPMixBinToDSoundMixBin( DWORD dwDSPMixBin )
 {
-    const DWORD DSP_MIXBIN_BASE = 0x1400;
-    const DWORD DSP_MIXBIN_OFFSET = 0x20;
+  const DWORD DSP_MIXBIN_BASE = 0x1400;
+  const DWORD DSP_MIXBIN_OFFSET = 0x20;
 
-    // Make sure this is a valid DSP mixbin address
-    assert( dwDSPMixBin >= DSP_MIXBIN_BASE &&
-            dwDSPMixBin <= DSP_MIXBIN_BASE + DSMIXBIN_FXSEND_LAST * DSP_MIXBIN_OFFSET &&
-            ( dwDSPMixBin - DSP_MIXBIN_BASE ) % DSP_MIXBIN_OFFSET == 0 );
+  // Make sure this is a valid DSP mixbin address
+  assert( dwDSPMixBin >= DSP_MIXBIN_BASE &&
+          dwDSPMixBin <= DSP_MIXBIN_BASE + DSMIXBIN_FXSEND_LAST * DSP_MIXBIN_OFFSET &&
+          ( dwDSPMixBin - DSP_MIXBIN_BASE ) % DSP_MIXBIN_OFFSET == 0 );
 
-    return ( dwDSPMixBin - DSP_MIXBIN_BASE ) / DSP_MIXBIN_OFFSET;
+  return ( dwDSPMixBin - DSP_MIXBIN_BASE ) / DSP_MIXBIN_OFFSET;
 }
 
 
 
 // Disable compiler warning about skipped initializations
 #pragma warning( push )
-#pragma warning( disable : 4533 )
+#pragma warning( disable : 4533 ) 
 //-----------------------------------------------------------------------------
 // Name: Initialize
 // Desc: Initializes the voice manager object
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::Initialize( VOICE_MANAGER_CONFIG* pConfig )
 {
-    HRESULT hr = S_OK;
+  HRESULT hr = S_OK;
 
-    // Set up chatters
-    m_pChatters                     = NULL;
-    m_bIsInChatSession              = FALSE;
-    m_pLoopbackChatters             = NULL;
+  // Set up chatters
+  m_pChatters = NULL;
+  m_bIsInChatSession = FALSE;
+  m_pLoopbackChatters = NULL;
 
-    // Set up communicators
-    m_dwConnectedCommunicators      = 0;
-    m_dwLoopback                    = 0;
-    m_dwEnabled                     = 0x0000000F;
-    m_bVoiceThroughSpeakers         = FALSE;
+  // Set up communicators
+  m_dwConnectedCommunicators = 0;
+  m_dwLoopback = 0;
+  m_dwEnabled = 0x0000000F;
+  m_bVoiceThroughSpeakers = FALSE;
 
-    // Set up buffers
-    m_pbTempEncodedPacket           = NULL;
-    m_pbCompletedPackets            = NULL;
-    m_dwNumCompletedPackets         = 0;
+  // Set up buffers
+  m_pbTempEncodedPacket = NULL;
+  m_pbCompletedPackets = NULL;
+  m_dwNumCompletedPackets = 0;
 
-	m_nSilentFrameCounter			= 0;
+  m_nSilentFrameCounter = 0;
 
-    // Must have at least 1 remote player
-    assert( pConfig->dwMaxRemotePlayers > 0 );
+  // Must have at least 1 remote player
+  assert( pConfig->dwMaxRemotePlayers > 0 );
 
-    // Voice packets must be a multiple of 20ms
-    assert( pConfig->dwVoicePacketTime % 20 == 0 );
+  // Voice packets must be a multiple of 20ms
+  assert( pConfig->dwVoicePacketTime % 20 == 0 );
 
-    // Grab the config parameters
-    memcpy( &m_cfg, pConfig, sizeof( VOICE_MANAGER_CONFIG ) );
+  // Grab the config parameters
+  memcpy( &m_cfg, pConfig, sizeof( VOICE_MANAGER_CONFIG ) );
 
-    // Calculate other useful constants
-    m_dwPacketSize          = ( m_cfg.dwVoicePacketTime * VOICE_SAMPLING_RATE / 1000 ) * 2;
-    m_dwBufferSize          = m_dwPacketSize * NUM_PACKETS;
-    m_dwCompressedSize      = COMPRESSED_FRAME_SIZE; 
-    m_dwCompletedPacketSize = m_dwCompressedSize + sizeof( BYTE );
+  // Calculate other useful constants
+  m_dwPacketSize = ( m_cfg.dwVoicePacketTime * VOICE_SAMPLING_RATE / 1000 ) * 2;
+  m_dwBufferSize = m_dwPacketSize * NUM_PACKETS;
+  m_dwCompressedSize = COMPRESSED_FRAME_SIZE;
+  m_dwCompletedPacketSize = m_dwCompressedSize + sizeof( BYTE );
 
-    // Set up the wave format
-    m_wfx.cbSize          = 0;
-    m_wfx.nChannels       = 1;
-    m_wfx.nSamplesPerSec  = VOICE_SAMPLING_RATE;
-    m_wfx.wBitsPerSample  = 16;
-    m_wfx.nBlockAlign     = m_wfx.wBitsPerSample / 8 * m_wfx.nChannels;
-    m_wfx.nAvgBytesPerSec = m_wfx.nSamplesPerSec * m_wfx.nBlockAlign;
-    m_wfx.wFormatTag      = WAVE_FORMAT_PCM;
+  // Set up the wave format
+  m_wfx.cbSize = 0;
+  m_wfx.nChannels = 1;
+  m_wfx.nSamplesPerSec = VOICE_SAMPLING_RATE;
+  m_wfx.wBitsPerSample = 16;
+  m_wfx.nBlockAlign = m_wfx.wBitsPerSample / 8 * m_wfx.nChannels;
+  m_wfx.nAvgBytesPerSec = m_wfx.nSamplesPerSec * m_wfx.nBlockAlign;
+  m_wfx.wFormatTag = WAVE_FORMAT_PCM;
 
-    // Initialize communicators
+  // Initialize communicators
 
-    for( DWORD i = 0; i < XGetPortCount(); i++ )
-    {
-        hr = m_aVoiceCommunicators[i].Initialize( this );
-        if( FAILED( hr ) )
-            goto Cleanup;
+  for ( DWORD i = 0; i < XGetPortCount(); i++ )
+  {
+    hr = m_aVoiceCommunicators[i].Initialize( this );
+    if ( FAILED( hr ) )
+      goto Cleanup;
 
-        // Each communicator has an SRC effect for outputting mixed
-        // voice data to system memory.  We can read from the DSP
-        // image to find out what that mixbin is
-        DSEFFECTMAP* pEffectMap = &m_cfg.pEffectImageDesc->aEffectMaps[ m_cfg.dwFirstSRCEffectIndex + i ];
-        LPDSFX_SAMPLE_RATE_CONVERTER_STATE pSRCState = LPDSFX_SAMPLE_RATE_CONVERTER_STATE(pEffectMap->lpvStateSegment);
-        m_adwHeadphoneSends[ i ] = DSPMixBinToDSoundMixBin( pSRCState->dwInMixbinPtrs[ 0 ] );
+    // Each communicator has an SRC effect for outputting mixed
+    // voice data to system memory.  We can read from the DSP
+    // image to find out what that mixbin is
+    DSEFFECTMAP* pEffectMap = &m_cfg.pEffectImageDesc->aEffectMaps[ m_cfg.dwFirstSRCEffectIndex + i ];
+    LPDSFX_SAMPLE_RATE_CONVERTER_STATE pSRCState = LPDSFX_SAMPLE_RATE_CONVERTER_STATE(pEffectMap->lpvStateSegment);
+    m_adwHeadphoneSends[ i ] = DSPMixBinToDSoundMixBin( pSRCState->dwInMixbinPtrs[ 0 ] );
 
-        // The SRC buffer should be twice as big as our buffers, because it
-        // contains 32-bit samples instead of 16-bit
-        assert( pEffectMap->dwScratchSize >= m_dwBufferSize * 2 );
+    // The SRC buffer should be twice as big as our buffers, because it
+    // contains 32-bit samples instead of 16-bit
+    assert( pEffectMap->dwScratchSize >= m_dwBufferSize * 2 );
 
-        // Turn off mixbin headroom for this input mixbin
-        pConfig->pDSound->SetMixBinHeadroom( m_adwHeadphoneSends[ i ], 0 );
-    }
+    // Turn off mixbin headroom for this input mixbin
+    pConfig->pDSound->SetMixBinHeadroom( m_adwHeadphoneSends[ i ], 0 );
+  }
 
-    // Update the stream mixbin configuration to reflect the correct headphone
-    // sends
-    for( DWORD i = 0; i < XGetPortCount(); i++ )
-    {
-        g_dsmbvp[ i ].dwMixBin = m_adwHeadphoneSends[ i ];
-    }
+  // Update the stream mixbin configuration to reflect the correct headphone
+  // sends
+  for ( DWORD i = 0; i < XGetPortCount(); i++ )
+  {
+    g_dsmbvp[ i ].dwMixBin = m_adwHeadphoneSends[ i ];
+  }
 
-    DSMIXBINS dsmb = { NUM_VOLUMEPAIRS, g_dsmbvp};
-    m_bVoiceThroughSpeakers = FALSE;
+  DSMIXBINS dsmb = { NUM_VOLUMEPAIRS, g_dsmbvp};
+  m_bVoiceThroughSpeakers = FALSE;
 
-    // Stream configuration
-    DSSTREAMDESC dssd = {0};
-    dssd.dwMaxAttachedPackets   = NUM_PACKETS;
-    dssd.lpwfxFormat            = &m_wfx;
-    dssd.lpMixBins              = &dsmb;
-    dssd.dwFlags                = DSSTREAMCAPS_ACCURATENOTIFY;
-    dssd.lpfnCallback           = StreamCallback;
+  // Stream configuration
+  DSSTREAMDESC dssd = {0};
+  dssd.dwMaxAttachedPackets = NUM_PACKETS;
+  dssd.lpwfxFormat = &m_wfx;
+  dssd.lpMixBins = &dsmb;
+  dssd.dwFlags = DSSTREAMCAPS_ACCURATENOTIFY;
+  dssd.lpfnCallback = StreamCallback;
 
-    // Allocate space for each of our remote chatters
-    m_pChatters = new REMOTE_CHATTER[ m_cfg.dwMaxRemotePlayers ];
-    if( !m_pChatters )
-    {
-        hr = E_OUTOFMEMORY;
-        goto Cleanup;
-    }
+  // Allocate space for each of our remote chatters
+  m_pChatters = new REMOTE_CHATTER[ m_cfg.dwMaxRemotePlayers ];
+  if ( !m_pChatters )
+  {
+    hr = E_OUTOFMEMORY;
+    goto Cleanup;
+  }
 
-    // Initialize each remote chatter
-    for( DWORD i = 0; i < m_cfg.dwMaxRemotePlayers; i++ )
-    {
-        hr = InitChatter( &m_pChatters[i], &dssd );
-        if( FAILED( hr ) )
-            goto Cleanup;
-    }
+  // Initialize each remote chatter
+  for ( DWORD i = 0; i < m_cfg.dwMaxRemotePlayers; i++ )
+  {
+    hr = InitChatter( &m_pChatters[i], &dssd );
+    if ( FAILED( hr ) )
+      goto Cleanup;
+  }
 
-    // Allocate space for loopback chatters
-    m_pLoopbackChatters = new REMOTE_CHATTER[ XGetPortCount() ];
-    if( !m_pLoopbackChatters )
-    {
-        hr = E_OUTOFMEMORY;
-        goto Cleanup;
-    }
+  // Allocate space for loopback chatters
+  m_pLoopbackChatters = new REMOTE_CHATTER[ XGetPortCount() ];
+  if ( !m_pLoopbackChatters )
+  {
+    hr = E_OUTOFMEMORY;
+    goto Cleanup;
+  }
 
-    // Mixbin configuration for the loopback chatters - each loopback
-    // chatter should just be outputting to the corresponding communicator's
-    // mixbin
-    dsmb.dwMixBinCount = 1;
-    for( DWORD i = 0; i < XGetPortCount(); i++ )
-    {
-        dsmb.lpMixBinVolumePairs = &g_dsmbvp[i];
-        hr = InitChatter( &m_pLoopbackChatters[ i ], &dssd );
-        if( FAILED( hr ) )
-            goto Cleanup;
-    }
+  // Mixbin configuration for the loopback chatters - each loopback
+  // chatter should just be outputting to the corresponding communicator's
+  // mixbin
+  dsmb.dwMixBinCount = 1;
+  for ( DWORD i = 0; i < XGetPortCount(); i++ )
+  {
+    dsmb.lpMixBinVolumePairs = &g_dsmbvp[i];
+    hr = InitChatter( &m_pLoopbackChatters[ i ], &dssd );
+    if ( FAILED( hr ) )
+      goto Cleanup;
+  }
 
-    // Allocate space for a temporary compressed packet
-    m_pbTempEncodedPacket = new BYTE[ m_dwCompressedSize ];
-    if( !m_pbTempEncodedPacket )
-    {
-        hr = E_OUTOFMEMORY;
-        goto Cleanup;
-    }
+  // Allocate space for a temporary compressed packet
+  m_pbTempEncodedPacket = new BYTE[ m_dwCompressedSize ];
+  if ( !m_pbTempEncodedPacket )
+  {
+    hr = E_OUTOFMEMORY;
+    goto Cleanup;
+  }
 
-    // Allocate space to store completed packets until game retrieves them
-    m_pbCompletedPackets = new BYTE[ m_cfg.dwMaxStoredPackets * m_dwCompletedPacketSize ];
-    if( !m_pbCompletedPackets )
-    {
-        hr = E_OUTOFMEMORY;
-        goto Cleanup;
-    }
+  // Allocate space to store completed packets until game retrieves them
+  m_pbCompletedPackets = new BYTE[ m_cfg.dwMaxStoredPackets * m_dwCompletedPacketSize ];
+  if ( !m_pbCompletedPackets )
+  {
+    hr = E_OUTOFMEMORY;
+    goto Cleanup;
+  }
 
 Cleanup:
-    if( FAILED( hr ) )
-        Shutdown();
+  if ( FAILED( hr ) )
+    Shutdown();
 
-    return hr;
+  return hr;
 }
 #pragma warning( pop )
 
@@ -364,75 +364,75 @@ Cleanup:
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::Shutdown()
 {
-    LeaveChatSession();
+  LeaveChatSession();
 
-    // Tear down our remote chatters
-    if( m_pChatters )
+  // Tear down our remote chatters
+  if ( m_pChatters )
+  {
+    for ( DWORD i = 0; i < m_cfg.dwMaxRemotePlayers; i++ )
     {
-        for( DWORD i = 0; i < m_cfg.dwMaxRemotePlayers; i++ )
-        {
-			if (m_pChatters[i].pPacketQueue)
-				delete[] m_pChatters[i].pPacketQueue;
+      if (m_pChatters[i].pPacketQueue)
+        delete[] m_pChatters[i].pPacketQueue;
 
-			speex_bits_destroy(&m_pChatters[i].m_bits);
-			speex_decoder_destroy(m_pChatters[i].m_dec_state);
+      speex_bits_destroy(&m_pChatters[i].m_bits);
+      speex_decoder_destroy(m_pChatters[i].m_dec_state);
 
-            if( m_pChatters[i].pOutputStream )
-                m_pChatters[i].pOutputStream->Release();
-            if( m_pChatters[i].pbStreamBuffer )
-                delete[] m_pChatters[i].pbStreamBuffer;
-            if( m_pChatters[i].pbDriftBuffer )
-                delete[] m_pChatters[i].pbDriftBuffer;
-        }
-
-        delete[] m_pChatters;
-        m_pChatters = NULL;
+      if ( m_pChatters[i].pOutputStream )
+        m_pChatters[i].pOutputStream->Release();
+      if ( m_pChatters[i].pbStreamBuffer )
+        delete[] m_pChatters[i].pbStreamBuffer;
+      if ( m_pChatters[i].pbDriftBuffer )
+        delete[] m_pChatters[i].pbDriftBuffer;
     }
 
-    // Tear down our loopback chatters
-    if( m_pLoopbackChatters )
+    delete[] m_pChatters;
+    m_pChatters = NULL;
+  }
+
+  // Tear down our loopback chatters
+  if ( m_pLoopbackChatters )
+  {
+    for ( DWORD i = 0; i < XGetPortCount(); i++ )
     {
-        for( DWORD i = 0; i < XGetPortCount(); i++ )
-        {
-			if (m_pLoopbackChatters[i].pPacketQueue)
-				delete[] m_pLoopbackChatters[i].pPacketQueue;
+      if (m_pLoopbackChatters[i].pPacketQueue)
+        delete[] m_pLoopbackChatters[i].pPacketQueue;
 
-			speex_bits_destroy(&m_pLoopbackChatters[i].m_bits);
-			speex_decoder_destroy(m_pLoopbackChatters[i].m_dec_state);
+      speex_bits_destroy(&m_pLoopbackChatters[i].m_bits);
+      speex_decoder_destroy(m_pLoopbackChatters[i].m_dec_state);
 
-            if( m_pLoopbackChatters[i].pOutputStream )
-                m_pLoopbackChatters[i].pOutputStream->Release();
-            if( m_pLoopbackChatters[i].pbStreamBuffer )
-                delete[] m_pLoopbackChatters[i].pbStreamBuffer;
-            if( m_pLoopbackChatters[i].pbDriftBuffer )
-                delete[] m_pLoopbackChatters[i].pbDriftBuffer;
-        }
-
-        delete[] m_pLoopbackChatters;
-        m_pLoopbackChatters = NULL;
+      if ( m_pLoopbackChatters[i].pOutputStream )
+        m_pLoopbackChatters[i].pOutputStream->Release();
+      if ( m_pLoopbackChatters[i].pbStreamBuffer )
+        delete[] m_pLoopbackChatters[i].pbStreamBuffer;
+      if ( m_pLoopbackChatters[i].pbDriftBuffer )
+        delete[] m_pLoopbackChatters[i].pbDriftBuffer;
     }
 
-    // Tear down each local communicator
-    for( DWORD i = 0; i < XGetPortCount(); i++ )
-    {
-        m_aVoiceCommunicators[i].Shutdown();
-    }
+    delete[] m_pLoopbackChatters;
+    m_pLoopbackChatters = NULL;
+  }
 
-    // Free our temporary compressed packet
-    if( m_pbTempEncodedPacket )
-    {
-        delete[] m_pbTempEncodedPacket;
-        m_pbTempEncodedPacket = NULL;
-    }
+  // Tear down each local communicator
+  for ( DWORD i = 0; i < XGetPortCount(); i++ )
+  {
+    m_aVoiceCommunicators[i].Shutdown();
+  }
 
-    // Free the completed packet buffer
-    if( m_pbCompletedPackets )
-    {
-        delete[] m_pbCompletedPackets;
-        m_pbCompletedPackets = NULL;
-    }
+  // Free our temporary compressed packet
+  if ( m_pbTempEncodedPacket )
+  {
+    delete[] m_pbTempEncodedPacket;
+    m_pbTempEncodedPacket = NULL;
+  }
 
-    return S_OK;
+  // Free the completed packet buffer
+  if ( m_pbCompletedPackets )
+  {
+    delete[] m_pbCompletedPackets;
+    m_pbCompletedPackets = NULL;
+  }
+
+  return S_OK;
 }
 
 
@@ -443,33 +443,33 @@ HRESULT CVoiceManager::Shutdown()
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::AddChatter( DWORD dwPlayer )
 {
-    assert( IsInChatSession() );
-    assert( ChatterIndexFromDUID( dwPlayer ) == m_cfg.dwMaxRemotePlayers );
+  assert( IsInChatSession() );
+  assert( ChatterIndexFromDUID( dwPlayer ) == m_cfg.dwMaxRemotePlayers );
 
-    // Find an open slot to use for this chatter
-    DWORD dwNewChatterIndex;
-    for( dwNewChatterIndex = 0; dwNewChatterIndex < m_cfg.dwMaxRemotePlayers; dwNewChatterIndex++ )
-    {
-		if( m_pChatters[ dwNewChatterIndex ].duid == 0 )
-            break;
-    }
+  // Find an open slot to use for this chatter
+  DWORD dwNewChatterIndex;
+  for ( dwNewChatterIndex = 0; dwNewChatterIndex < m_cfg.dwMaxRemotePlayers; dwNewChatterIndex++ )
+  {
+    if ( m_pChatters[ dwNewChatterIndex ].duid == 0 )
+      break;
+  }
 
-	if (dwNewChatterIndex >= m_cfg.dwMaxRemotePlayers)
-	{
-		OutputDebugString("oh no!\r\n");
-		return E_FAIL;
-	}
+  if (dwNewChatterIndex >= m_cfg.dwMaxRemotePlayers)
+  {
+    OutputDebugString("oh no!\r\n");
+    return E_FAIL;
+  }
 
-    assert( dwNewChatterIndex < m_cfg.dwMaxRemotePlayers );
-    REMOTE_CHATTER* pNewChatter = &m_pChatters[ dwNewChatterIndex ];
+  assert( dwNewChatterIndex < m_cfg.dwMaxRemotePlayers );
+  REMOTE_CHATTER* pNewChatter = &m_pChatters[ dwNewChatterIndex ];
 
-    // Initialize the new chatter
-	pNewChatter->duid = dwPlayer;
-    RecalculateMixBins( pNewChatter );
+  // Initialize the new chatter
+  pNewChatter->duid = dwPlayer;
+  RecalculateMixBins( pNewChatter );
 
-    assert( ChatterIndexFromDUID( dwPlayer ) < m_cfg.dwMaxRemotePlayers );
+  assert( ChatterIndexFromDUID( dwPlayer ) < m_cfg.dwMaxRemotePlayers );
 
-    return S_OK;
+  return S_OK;
 }
 
 
@@ -479,34 +479,34 @@ HRESULT CVoiceManager::AddChatter( DWORD dwPlayer )
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::RemoveChatter( DWORD dwPlayer )
 {
-    assert( IsInChatSession() );
-    assert( ChatterIndexFromDUID( dwPlayer ) < m_cfg.dwMaxRemotePlayers );
+  assert( IsInChatSession() );
+  assert( ChatterIndexFromDUID( dwPlayer ) < m_cfg.dwMaxRemotePlayers );
 
-    // If we've muted them, or they've muted us, pull them
-    // out of the list.  Game code is responsible for
-    // re-muting someone when they come back into the session
-    for( WORD i = 0; i < XGetPortCount(); i++ )
-    {
-        if( IsPlayerMuted( dwPlayer, i ) )
-            UnMutePlayer( dwPlayer, i );
-        if( IsPlayerRemoteMuted( dwPlayer, i ) )
-            UnRemoteMutePlayer( dwPlayer, i );
-    }
+  // If we've muted them, or they've muted us, pull them
+  // out of the list.  Game code is responsible for
+  // re-muting someone when they come back into the session
+  for ( WORD i = 0; i < XGetPortCount(); i++ )
+  {
+    if ( IsPlayerMuted( dwPlayer, i ) )
+      UnMutePlayer( dwPlayer, i );
+    if ( IsPlayerRemoteMuted( dwPlayer, i ) )
+      UnRemoteMutePlayer( dwPlayer, i );
+  }
 
-    // Find the specified chatter
-    DWORD chatterIndex = ChatterIndexFromDUID( dwPlayer );
+  // Find the specified chatter
+  DWORD chatterIndex = ChatterIndexFromDUID( dwPlayer );
 
-    // Flush the queue so it gets reset
-	m_pChatters[ chatterIndex ].pPacketQueue->Flush();
-    ZeroMemory( m_pChatters[ chatterIndex ].pbDriftBuffer, m_dwPacketSize );
-    m_pChatters[ chatterIndex ].bIsTalking = FALSE;
+  // Flush the queue so it gets reset
+  m_pChatters[ chatterIndex ].pPacketQueue->Flush();
+  ZeroMemory( m_pChatters[ chatterIndex ].pbDriftBuffer, m_dwPacketSize );
+  m_pChatters[ chatterIndex ].bIsTalking = FALSE;
 
-    // Zero out the XUID so we know this slot is free
-	ZeroMemory( &m_pChatters[ chatterIndex ].duid, sizeof( DWORD ) );
-    
-    assert( ChatterIndexFromDUID( dwPlayer ) == m_cfg.dwMaxRemotePlayers );
+  // Zero out the XUID so we know this slot is free
+  ZeroMemory( &m_pChatters[ chatterIndex ].duid, sizeof( DWORD ) );
 
-    return S_OK;
+  assert( ChatterIndexFromDUID( dwPlayer ) == m_cfg.dwMaxRemotePlayers );
+
+  return S_OK;
 }
 
 
@@ -518,51 +518,51 @@ HRESULT CVoiceManager::RemoveChatter( DWORD dwPlayer )
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::ResetChatter( DWORD dwPlayer )
 {
-    assert( IsInChatSession() );
-    assert( ChatterIndexFromDUID( dwPlayer ) < m_cfg.dwMaxRemotePlayers );
+  assert( IsInChatSession() );
+  assert( ChatterIndexFromDUID( dwPlayer ) < m_cfg.dwMaxRemotePlayers );
 
-    // Find the specified chatter
-    DWORD chatterIndex = ChatterIndexFromDUID( dwPlayer );
+  // Find the specified chatter
+  DWORD chatterIndex = ChatterIndexFromDUID( dwPlayer );
 
-    // Reset their voice queue
-	m_pChatters[ chatterIndex ].pPacketQueue->Flush();
-    m_pChatters[ chatterIndex ].bIsTalking = FALSE;
+  // Reset their voice queue
+  m_pChatters[ chatterIndex ].pPacketQueue->Flush();
+  m_pChatters[ chatterIndex ].bIsTalking = FALSE;
 
-    return S_OK;
+  return S_OK;
 }
 
 
 BOOL CVoiceManager::IsHeadsetConnected()
 {
-	CheckDeviceChangesLite();
-	return (m_dwMicrophoneState && m_dwHeadphoneState);
+  CheckDeviceChangesLite();
+  return (m_dwMicrophoneState && m_dwHeadphoneState);
 }
 
 
 
 VOID CVoiceManager::CheckDeviceChangesLite()
 {
-    DWORD dwMicrophoneInsertions;
-    DWORD dwMicrophoneRemovals;
-    DWORD dwHeadphoneInsertions;
-    DWORD dwHeadphoneRemovals;
+  DWORD dwMicrophoneInsertions;
+  DWORD dwMicrophoneRemovals;
+  DWORD dwHeadphoneInsertions;
+  DWORD dwHeadphoneRemovals;
 
-    // Must call XGetDevice changes to track possible removal and insertion
-    // in one frame
-    XGetDeviceChanges( XDEVICE_TYPE_VOICE_MICROPHONE,
-                       &dwMicrophoneInsertions,
-                       &dwMicrophoneRemovals );
-    XGetDeviceChanges( XDEVICE_TYPE_VOICE_HEADPHONE,
-                       &dwHeadphoneInsertions,
-                       &dwHeadphoneRemovals );
+  // Must call XGetDevice changes to track possible removal and insertion
+  // in one frame
+  XGetDeviceChanges( XDEVICE_TYPE_VOICE_MICROPHONE,
+                     &dwMicrophoneInsertions,
+                     &dwMicrophoneRemovals );
+  XGetDeviceChanges( XDEVICE_TYPE_VOICE_HEADPHONE,
+                     &dwHeadphoneInsertions,
+                     &dwHeadphoneRemovals );
 
-    // Update state for removals
-    m_dwMicrophoneState &= ~( dwMicrophoneRemovals );
-    m_dwHeadphoneState  &= ~( dwHeadphoneRemovals );
+  // Update state for removals
+  m_dwMicrophoneState &= ~( dwMicrophoneRemovals );
+  m_dwHeadphoneState &= ~( dwHeadphoneRemovals );
 
-    // Then update state for new insertions
-    m_dwMicrophoneState |= ( dwMicrophoneInsertions );
-    m_dwHeadphoneState  |= ( dwHeadphoneInsertions );
+  // Then update state for new insertions
+  m_dwMicrophoneState |= ( dwMicrophoneInsertions );
+  m_dwHeadphoneState |= ( dwHeadphoneInsertions );
 }
 
 
@@ -573,65 +573,65 @@ VOID CVoiceManager::CheckDeviceChangesLite()
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::CheckDeviceChanges()
 {
-    DWORD dwMicrophoneInsertions;
-    DWORD dwMicrophoneRemovals;
-    DWORD dwHeadphoneInsertions;
-    DWORD dwHeadphoneRemovals;
+  DWORD dwMicrophoneInsertions;
+  DWORD dwMicrophoneRemovals;
+  DWORD dwHeadphoneInsertions;
+  DWORD dwHeadphoneRemovals;
 
-    // Must call XGetDevice changes to track possible removal and insertion
-    // in one frame
-    XGetDeviceChanges( XDEVICE_TYPE_VOICE_MICROPHONE,
-                       &dwMicrophoneInsertions,
-                       &dwMicrophoneRemovals );
-    XGetDeviceChanges( XDEVICE_TYPE_VOICE_HEADPHONE,
-                       &dwHeadphoneInsertions,
-                       &dwHeadphoneRemovals );
+  // Must call XGetDevice changes to track possible removal and insertion
+  // in one frame
+  XGetDeviceChanges( XDEVICE_TYPE_VOICE_MICROPHONE,
+                     &dwMicrophoneInsertions,
+                     &dwMicrophoneRemovals );
+  XGetDeviceChanges( XDEVICE_TYPE_VOICE_HEADPHONE,
+                     &dwHeadphoneInsertions,
+                     &dwHeadphoneRemovals );
 
-    // Update state for removals
-    m_dwMicrophoneState &= ~( dwMicrophoneRemovals );
-    m_dwHeadphoneState  &= ~( dwHeadphoneRemovals );
+  // Update state for removals
+  m_dwMicrophoneState &= ~( dwMicrophoneRemovals );
+  m_dwHeadphoneState &= ~( dwHeadphoneRemovals );
 
-    // Then update state for new insertions
-    m_dwMicrophoneState |= ( dwMicrophoneInsertions );
-    m_dwHeadphoneState  |= ( dwHeadphoneInsertions );
+  // Then update state for new insertions
+  m_dwMicrophoneState |= ( dwMicrophoneInsertions );
+  m_dwHeadphoneState |= ( dwHeadphoneInsertions );
 
-    // want to preserve the dwMicrophoneRemovals and dwHeadphoneRemovals so 
-	// so that when we eventually execute the following code we will follow
-	// the code path that processes an insertion (assuming headset was connected)
-	if (IsInChatSession())
-	{
-		if (m_bResetDeviceState) 
-		{
-			m_bResetDeviceState = FALSE;
-			dwHeadphoneInsertions  = m_dwHeadphoneState;
-			dwMicrophoneInsertions = m_dwMicrophoneState;
-		}
+  // want to preserve the dwMicrophoneRemovals and dwHeadphoneRemovals so
+  // so that when we eventually execute the following code we will follow
+  // the code path that processes an insertion (assuming headset was connected)
+  if (IsInChatSession())
+  {
+    if (m_bResetDeviceState)
+    {
+      m_bResetDeviceState = FALSE;
+      dwHeadphoneInsertions = m_dwHeadphoneState;
+      dwMicrophoneInsertions = m_dwMicrophoneState;
+    }
 
-		for( WORD i = 0; i < XGetPortCount(); i++ )
-		{
-			// If either the microphone or the headphone was
-			// removed since last call, remove the communicator
-			if( m_dwConnectedCommunicators & ( 1 << i ) &&
-				( ( dwMicrophoneRemovals   & ( 1 << i ) ) ||
-				( dwHeadphoneRemovals    & ( 1 << i ) ) ) )
-			{
-				OnCommunicatorRemoved( i );
-			}
+    for ( WORD i = 0; i < XGetPortCount(); i++ )
+    {
+      // If either the microphone or the headphone was
+      // removed since last call, remove the communicator
+      if ( m_dwConnectedCommunicators & ( 1 << i ) &&
+           ( ( dwMicrophoneRemovals & ( 1 << i ) ) ||
+             ( dwHeadphoneRemovals & ( 1 << i ) ) ) )
+      {
+        OnCommunicatorRemoved( i );
+      }
 
-			// If both microphone and headphone are present, and
-			// we didn't have a communicator here last frame, and
-			// the communicator is enabled, then register the insertion
-			if( ( m_dwMicrophoneState         & ( 1 << i ) ) &&
-				( m_dwHeadphoneState          & ( 1 << i ) ) &&
-				!( m_dwConnectedCommunicators & ( 1 << i ) ) &&
-				( m_dwEnabled                 & ( 1 << i ) ) )
-			{
-				OnCommunicatorInserted( i );
-			}
-		}
-	}
+      // If both microphone and headphone are present, and
+      // we didn't have a communicator here last frame, and
+      // the communicator is enabled, then register the insertion
+      if ( ( m_dwMicrophoneState & ( 1 << i ) ) &&
+           ( m_dwHeadphoneState & ( 1 << i ) ) &&
+           !( m_dwConnectedCommunicators & ( 1 << i ) ) &&
+           ( m_dwEnabled & ( 1 << i ) ) )
+      {
+        OnCommunicatorInserted( i );
+      }
+    }
+  }
 
-    return S_OK;
+  return S_OK;
 }
 
 
@@ -639,85 +639,85 @@ HRESULT CVoiceManager::CheckDeviceChanges()
 
 //-----------------------------------------------------------------------------
 // Name: OnCompletedPacket
-// Desc: Called whenever a packet is completed, so that we can do the 
+// Desc: Called whenever a packet is completed, so that we can do the
 //          appropriate thing with it (store to send to game, loopback, etc.)
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::OnCompletedPacket( DWORD dwControllerPort, VOID* pvData, DWORD dwSize )
 {
-    if( m_dwLoopback & ( 1 << dwControllerPort ) )
+  if ( m_dwLoopback & ( 1 << dwControllerPort ) )
+  {
+    // If this communicator is in loopback mode, we'll submit the packet
+    // to the corresponding loopback chatter
+    m_pLoopbackChatters[ dwControllerPort ].pPacketQueue->Write((LPBYTE)pvData);
+  }
+  else
+  {
+    if ( IsInChatSession() )
     {
-        // If this communicator is in loopback mode, we'll submit the packet
-        // to the corresponding loopback chatter
-		m_pLoopbackChatters[ dwControllerPort ].pPacketQueue->Write((LPBYTE)pvData);
+      // Store the completed packet until the game retrieves it
+      if ( m_dwNumCompletedPackets < m_cfg.dwMaxStoredPackets )
+      {
+        COMPLETED_PACKET* pPacket = (COMPLETED_PACKET *)( m_pbCompletedPackets + m_dwNumCompletedPackets * m_dwCompletedPacketSize );
+
+        pPacket->Port = (BYTE)dwControllerPort;
+        memcpy( pPacket->abData, pvData, dwSize);
+
+        m_dwNumCompletedPackets++;
+      }
+      else
+      {
+        //OutputDebugString("No space to store encoded packet - need to call ProcessVoice() more frequently!\r\n");
+      }
     }
-    else
-    {
-        if( IsInChatSession() )
-        {
-            // Store the completed packet until the game retrieves it
-            if( m_dwNumCompletedPackets < m_cfg.dwMaxStoredPackets )
-            {
-                COMPLETED_PACKET* pPacket = (COMPLETED_PACKET *)( m_pbCompletedPackets + m_dwNumCompletedPackets * m_dwCompletedPacketSize );
+  }
 
-                pPacket->Port = (BYTE)dwControllerPort;
-                memcpy( pPacket->abData, pvData, dwSize);
-
-                m_dwNumCompletedPackets++;
-            }
-            else
-            {
-                //OutputDebugString("No space to store encoded packet - need to call ProcessVoice() more frequently!\r\n");
-            }
-        }
-    }
-
-    return S_OK;
+  return S_OK;
 }
 
 
 
 //-----------------------------------------------------------------------------
 // Name: OnCommunicatorInserted
-// Desc: Called when we detect that a communicator has physically been 
+// Desc: Called when we detect that a communicator has physically been
 //          inserted into a controller
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::OnCommunicatorInserted( DWORD dwControllerPort )
 {
-    // Tell the communicator to handle the insertion
-    HRESULT hr = m_aVoiceCommunicators[ dwControllerPort ].OnInsertion( dwControllerPort );
+  // Tell the communicator to handle the insertion
+  HRESULT hr = m_aVoiceCommunicators[ dwControllerPort ].OnInsertion( dwControllerPort );
 
-    if( SUCCEEDED( hr ) )
-    {
-        // Reset the headphone for the communicator - this basically
-        // just entails submitting initial packets to get it going
-        hr = m_aVoiceCommunicators[ dwControllerPort ].ResetHeadphone();
-        if( FAILED( hr ) )
-            goto Cleanup;
+  if ( SUCCEEDED( hr ) )
+  {
+    // Reset the headphone for the communicator - this basically
+    // just entails submitting initial packets to get it going
+    hr = m_aVoiceCommunicators[ dwControllerPort ].ResetHeadphone();
+    if ( FAILED( hr ) )
+      goto Cleanup;
 
-        // Do the same for the microphone
-        hr = m_aVoiceCommunicators[ dwControllerPort ].ResetMicrophone();
-        if( FAILED( hr ) )
-            goto Cleanup;
+    // Do the same for the microphone
+    hr = m_aVoiceCommunicators[ dwControllerPort ].ResetMicrophone();
+    if ( FAILED( hr ) )
+      goto Cleanup;
 
-        // Now that everything has succeeded, we can mark the communicator
-        // as being present.
-        m_dwConnectedCommunicators |= ( 1 << dwControllerPort );
+    // Now that everything has succeeded, we can mark the communicator
+    // as being present.
+    m_dwConnectedCommunicators |= ( 1 << dwControllerPort );
 
-        // Notify the title that the communicator was inserted
-        m_cfg.pfnCommunicatorCallback( dwControllerPort, 
-                                       VOICE_COMMUNICATOR_INSERTED, 
-                                       m_cfg.pCallbackContext );
-    }
+    // Notify the title that the communicator was inserted
+    m_cfg.pfnCommunicatorCallback( dwControllerPort,
+                                   VOICE_COMMUNICATOR_INSERTED,
+                                   m_cfg.pCallbackContext );
+  }
 
 Cleanup:
-    if( FAILED( hr ) )
-    {
-        // This could happen if the communicator gets removed immediately
-        // after being inserted, and should be considered a normal scenario
-        m_aVoiceCommunicators[ dwControllerPort ].OnRemoval();
-    }
+  if ( FAILED( hr ) )
+  {
+    // This could happen if the communicator gets removed immediately
+    // after being inserted, and should be considered a normal scenario
+    m_aVoiceCommunicators[ dwControllerPort ].OnRemoval();
+  }
 
-    return hr;
+  return hr;
 }
 
 
@@ -729,20 +729,20 @@ Cleanup:
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::OnCommunicatorRemoved( DWORD dwControllerPort )
 {
-    // Mark the communicator as having been removed
-    m_dwConnectedCommunicators &= ~( 1 << dwControllerPort );
-    m_aVoiceCommunicators[dwControllerPort].OnRemoval();
+  // Mark the communicator as having been removed
+  m_dwConnectedCommunicators &= ~( 1 << dwControllerPort );
+  m_aVoiceCommunicators[dwControllerPort].OnRemoval();
 
-    // Notify the title that the communicator was removed
-    m_cfg.pfnCommunicatorCallback( dwControllerPort, 
-                                   VOICE_COMMUNICATOR_REMOVED, 
-                                   m_cfg.pCallbackContext );
+  // Notify the title that the communicator was removed
+  m_cfg.pfnCommunicatorCallback( dwControllerPort,
+                                 VOICE_COMMUNICATOR_REMOVED,
+                                 m_cfg.pCallbackContext );
 
-    // Flush the queue for the loopback chatter
-	m_pLoopbackChatters[ dwControllerPort ].pPacketQueue->Flush();
-    m_pLoopbackChatters[ dwControllerPort ].bIsTalking = FALSE;
+  // Flush the queue for the loopback chatter
+  m_pLoopbackChatters[ dwControllerPort ].pPacketQueue->Flush();
+  m_pLoopbackChatters[ dwControllerPort ].bIsTalking = FALSE;
 
-    return S_OK;
+  return S_OK;
 }
 
 
@@ -753,17 +753,17 @@ HRESULT CVoiceManager::OnCommunicatorRemoved( DWORD dwControllerPort )
 //-----------------------------------------------------------------------------
 VOID CVoiceManager::EnterChatSession()
 {
-    if( IsInChatSession() )
-        return;
+  if ( IsInChatSession() )
+    return ;
 
-    m_bIsInChatSession = TRUE;
-	m_bResetDeviceState = TRUE;
+  m_bIsInChatSession = TRUE;
+  m_bResetDeviceState = TRUE;
 
-    for( WORD i = 0; i < XGetPortCount(); i++ )
-    {
-        assert( m_MuteList[i].empty() );
-        assert( m_RemoteMuteList[i].empty() );
-    }
+  for ( WORD i = 0; i < XGetPortCount(); i++ )
+  {
+    assert( m_MuteList[i].empty() );
+    assert( m_RemoteMuteList[i].empty() );
+  }
 }
 
 
@@ -774,21 +774,21 @@ VOID CVoiceManager::EnterChatSession()
 //-----------------------------------------------------------------------------
 VOID CVoiceManager::LeaveChatSession()
 {
-    if( !IsInChatSession() )
-        return;
+  if ( !IsInChatSession() )
+    return ;
 
-    // Remove all our remote chatters - this will
-    // also un-mute/un-remote-mute them all
-    for( DWORD i = 0; i < m_cfg.dwMaxRemotePlayers; i++ )
+  // Remove all our remote chatters - this will
+  // also un-mute/un-remote-mute them all
+  for ( DWORD i = 0; i < m_cfg.dwMaxRemotePlayers; i++ )
+  {
+    if ( m_pChatters[i].duid != 0 )
     {
-		if( m_pChatters[i].duid != 0 )
-        {
-			RemoveChatter( m_pChatters[i].duid );
-        }
+      RemoveChatter( m_pChatters[i].duid );
     }
+  }
 
-    m_bIsInChatSession = FALSE;
-	m_bResetDeviceState = FALSE;
+  m_bIsInChatSession = FALSE;
+  m_bResetDeviceState = FALSE;
 }
 
 
@@ -800,16 +800,16 @@ VOID CVoiceManager::LeaveChatSession()
 //-----------------------------------------------------------------------------
 DWORD CVoiceManager::ChatterIndexFromDUID( DWORD dwPlayer )
 {
-    assert( dwPlayer != 0 );
+  assert( dwPlayer != 0 );
 
-    for( DWORD i = 0; i < m_cfg.dwMaxRemotePlayers; i++ )
-    {
-        if( m_pChatters[i].duid == dwPlayer )
-            return i;
-    }
+  for ( DWORD i = 0; i < m_cfg.dwMaxRemotePlayers; i++ )
+  {
+    if ( m_pChatters[i].duid == dwPlayer )
+      return i;
+  }
 
-    // Not found - return max
-    return m_cfg.dwMaxRemotePlayers;
+  // Not found - return max
+  return m_cfg.dwMaxRemotePlayers;
 }
 
 
@@ -820,20 +820,20 @@ DWORD CVoiceManager::ChatterIndexFromDUID( DWORD dwPlayer )
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::MutePlayer( DWORD dwPlayer, DWORD dwControllerPort )
 {
-    assert( IsInChatSession() );
-    assert( !IsPlayerMuted( dwPlayer, dwControllerPort ) );
+  assert( IsInChatSession() );
+  assert( !IsPlayerMuted( dwPlayer, dwControllerPort ) );
 
-    // Add them to our mute list
-    m_MuteList[ dwControllerPort ].push_back( dwPlayer );
+  // Add them to our mute list
+  m_MuteList[ dwControllerPort ].push_back( dwPlayer );
 
-    // Update mixbin settings to reflect the new mute settings
-    DWORD dwChatterIndex = ChatterIndexFromDUID( dwPlayer );
-    assert( dwChatterIndex < m_cfg.dwMaxRemotePlayers );
-    RecalculateMixBins( &m_pChatters[ dwChatterIndex ] );
+  // Update mixbin settings to reflect the new mute settings
+  DWORD dwChatterIndex = ChatterIndexFromDUID( dwPlayer );
+  assert( dwChatterIndex < m_cfg.dwMaxRemotePlayers );
+  RecalculateMixBins( &m_pChatters[ dwChatterIndex ] );
 
-    assert( IsPlayerMuted( dwPlayer, dwControllerPort ) );
+  assert( IsPlayerMuted( dwPlayer, dwControllerPort ) );
 
-    return S_OK;
+  return S_OK;
 }
 
 
@@ -844,27 +844,27 @@ HRESULT CVoiceManager::MutePlayer( DWORD dwPlayer, DWORD dwControllerPort )
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::UnMutePlayer( DWORD dwPlayer, DWORD dwControllerPort )
 {
-    assert( IsInChatSession() );
-    assert( IsPlayerMuted( dwPlayer, dwControllerPort ) );
+  assert( IsInChatSession() );
+  assert( IsPlayerMuted( dwPlayer, dwControllerPort ) );
 
-    // Find the entry in our mute list and remove it
-    for( MuteList::iterator it = m_MuteList[ dwControllerPort ].begin(); it < m_MuteList[ dwControllerPort ].end(); ++it )
+  // Find the entry in our mute list and remove it
+  for ( MuteList::iterator it = m_MuteList[ dwControllerPort ].begin(); it < m_MuteList[ dwControllerPort ].end(); ++it )
+  {
+    if ( *it == dwPlayer )
     {
-        if( *it == dwPlayer )
-        {
-            m_MuteList[ dwControllerPort ].erase( it );
-            break;
-        }
+      m_MuteList[ dwControllerPort ].erase( it );
+      break;
     }
+  }
 
-    // Update mixbin settings to reflect the new mute settings
-    DWORD dwChatterIndex = ChatterIndexFromDUID( dwPlayer );
-    assert( dwChatterIndex < m_cfg.dwMaxRemotePlayers );
-    RecalculateMixBins( &m_pChatters[ dwChatterIndex ] );
+  // Update mixbin settings to reflect the new mute settings
+  DWORD dwChatterIndex = ChatterIndexFromDUID( dwPlayer );
+  assert( dwChatterIndex < m_cfg.dwMaxRemotePlayers );
+  RecalculateMixBins( &m_pChatters[ dwChatterIndex ] );
 
-    assert( !IsPlayerMuted( dwPlayer, dwControllerPort ) );
+  assert( !IsPlayerMuted( dwPlayer, dwControllerPort ) );
 
-    return S_OK;
+  return S_OK;
 }
 
 
@@ -875,16 +875,16 @@ HRESULT CVoiceManager::UnMutePlayer( DWORD dwPlayer, DWORD dwControllerPort )
 //-----------------------------------------------------------------------------
 BOOL CVoiceManager::IsPlayerMuted( DWORD dwPlayer, DWORD dwControllerPort )
 {
-    // Look for the player in our mute list
-    for( MuteList::iterator it = m_MuteList[ dwControllerPort ].begin(); it < m_MuteList[ dwControllerPort ].end(); ++it )
+  // Look for the player in our mute list
+  for ( MuteList::iterator it = m_MuteList[ dwControllerPort ].begin(); it < m_MuteList[ dwControllerPort ].end(); ++it )
+  {
+    if ( *it == dwPlayer )
     {
-        if( *it == dwPlayer )
-        {
-            return TRUE;
-        }
+      return TRUE;
     }
+  }
 
-    return FALSE;
+  return FALSE;
 }
 
 
@@ -895,20 +895,20 @@ BOOL CVoiceManager::IsPlayerMuted( DWORD dwPlayer, DWORD dwControllerPort )
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::RemoteMutePlayer( DWORD dwPlayer, DWORD dwControllerPort )
 {
-    assert( IsInChatSession() );
-    assert( !IsPlayerRemoteMuted( dwPlayer, dwControllerPort ) );
+  assert( IsInChatSession() );
+  assert( !IsPlayerRemoteMuted( dwPlayer, dwControllerPort ) );
 
-    // Add them to our remote mute list
-    m_RemoteMuteList[ dwControllerPort ].push_back( dwPlayer );
+  // Add them to our remote mute list
+  m_RemoteMuteList[ dwControllerPort ].push_back( dwPlayer );
 
-    // Update mixbin settings to reflect the new mute settings
-    DWORD dwChatterIndex = ChatterIndexFromDUID( dwPlayer );
-    assert( dwChatterIndex < m_cfg.dwMaxRemotePlayers );
-    RecalculateMixBins( &m_pChatters[ dwChatterIndex ] );
+  // Update mixbin settings to reflect the new mute settings
+  DWORD dwChatterIndex = ChatterIndexFromDUID( dwPlayer );
+  assert( dwChatterIndex < m_cfg.dwMaxRemotePlayers );
+  RecalculateMixBins( &m_pChatters[ dwChatterIndex ] );
 
-    assert( IsPlayerRemoteMuted( dwPlayer, dwControllerPort ) );
+  assert( IsPlayerRemoteMuted( dwPlayer, dwControllerPort ) );
 
-    return S_OK;
+  return S_OK;
 }
 
 
@@ -919,27 +919,27 @@ HRESULT CVoiceManager::RemoteMutePlayer( DWORD dwPlayer, DWORD dwControllerPort 
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::UnRemoteMutePlayer( DWORD dwPlayer, DWORD dwControllerPort )
 {
-    assert( IsInChatSession() );
-    assert( IsPlayerRemoteMuted( dwPlayer, dwControllerPort ) );
+  assert( IsInChatSession() );
+  assert( IsPlayerRemoteMuted( dwPlayer, dwControllerPort ) );
 
-    // Remove them from our remote mute list
-    for( MuteList::iterator it = m_RemoteMuteList[ dwControllerPort ].begin(); it < m_RemoteMuteList[ dwControllerPort ].end(); ++it )
+  // Remove them from our remote mute list
+  for ( MuteList::iterator it = m_RemoteMuteList[ dwControllerPort ].begin(); it < m_RemoteMuteList[ dwControllerPort ].end(); ++it )
+  {
+    if ( *it == dwPlayer )
     {
-        if( *it == dwPlayer )
-        {
-            m_RemoteMuteList[ dwControllerPort ].erase( it );
-            break;
-        }
+      m_RemoteMuteList[ dwControllerPort ].erase( it );
+      break;
     }
+  }
 
-    // Update mixbin settings to reflect the new mute settings
-    DWORD dwChatterIndex = ChatterIndexFromDUID( dwPlayer );
-    assert( dwChatterIndex < m_cfg.dwMaxRemotePlayers );
-    RecalculateMixBins( &m_pChatters[ dwChatterIndex ] );
+  // Update mixbin settings to reflect the new mute settings
+  DWORD dwChatterIndex = ChatterIndexFromDUID( dwPlayer );
+  assert( dwChatterIndex < m_cfg.dwMaxRemotePlayers );
+  RecalculateMixBins( &m_pChatters[ dwChatterIndex ] );
 
-    assert( !IsPlayerRemoteMuted( dwPlayer, dwControllerPort ) );
+  assert( !IsPlayerRemoteMuted( dwPlayer, dwControllerPort ) );
 
-    return S_OK;
+  return S_OK;
 }
 
 
@@ -950,15 +950,15 @@ HRESULT CVoiceManager::UnRemoteMutePlayer( DWORD dwPlayer, DWORD dwControllerPor
 //-----------------------------------------------------------------------------
 BOOL CVoiceManager::IsPlayerRemoteMuted( DWORD dwPlayer, DWORD dwControllerPort )
 {
-    for( MuteList::iterator it = m_RemoteMuteList[ dwControllerPort ].begin(); it < m_RemoteMuteList[ dwControllerPort ].end(); ++it )
+  for ( MuteList::iterator it = m_RemoteMuteList[ dwControllerPort ].begin(); it < m_RemoteMuteList[ dwControllerPort ].end(); ++it )
+  {
+    if ( *it == dwPlayer )
     {
-        if( *it == dwPlayer )
-        {
-            return TRUE;
-        }
+      return TRUE;
     }
+  }
 
-    return FALSE;
+  return FALSE;
 }
 
 
@@ -969,17 +969,17 @@ BOOL CVoiceManager::IsPlayerRemoteMuted( DWORD dwPlayer, DWORD dwControllerPort 
 //-----------------------------------------------------------------------------
 BOOL CVoiceManager::IsPlayerTalking( DWORD dwPlayer )
 {
-    DWORD chatterIndex = ChatterIndexFromDUID( dwPlayer );
-    assert( chatterIndex < m_cfg.dwMaxRemotePlayers );
+  DWORD chatterIndex = ChatterIndexFromDUID( dwPlayer );
+  assert( chatterIndex < m_cfg.dwMaxRemotePlayers );
 
-    return( m_pChatters[ chatterIndex ].bIsTalking );
+  return ( m_pChatters[ chatterIndex ].bIsTalking );
 }
 
 
 BOOL CVoiceManager::IsPlayerRegistered( DWORD dwPlayer )
 {
-    DWORD chatterIndex = ChatterIndexFromDUID( dwPlayer );
-    return (chatterIndex != m_cfg.dwMaxRemotePlayers);
+  DWORD chatterIndex = ChatterIndexFromDUID( dwPlayer );
+  return (chatterIndex != m_cfg.dwMaxRemotePlayers);
 }
 
 //-----------------------------------------------------------------------------
@@ -988,25 +988,25 @@ BOOL CVoiceManager::IsPlayerRegistered( DWORD dwPlayer )
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::ReceivePacket( DWORD dwPlayer, VOID* pvData, INT nSize )
 {
-    assert( IsInChatSession() );
-    assert( nSize == (INT)m_dwCompressedSize );
+  assert( IsInChatSession() );
+  assert( nSize == (INT)m_dwCompressedSize );
 
-    DWORD chatterIndex = ChatterIndexFromDUID( dwPlayer );
-    if( chatterIndex < m_cfg.dwMaxRemotePlayers )
-    {
-        // Send the packet to the queue
-		m_pChatters[ chatterIndex ].pPacketQueue->Write((LPBYTE)pvData);
-    }
-    else
-    {
-        // This could happen if a remote player got our ADD_CHATTER message
-        // and starts sending us voice, all before we get an ADD_CHATTER
-        // message from them.  If it happens for a long period of time, it
-        // probably means that an ADD_CHATTER message got lost somewhere.
-        //VoiceLog( L"Got packet from player %I64x, but no queue set up for them", xuidFromPlayer.qwUserID );
-    }
+  DWORD chatterIndex = ChatterIndexFromDUID( dwPlayer );
+  if ( chatterIndex < m_cfg.dwMaxRemotePlayers )
+  {
+    // Send the packet to the queue
+    m_pChatters[ chatterIndex ].pPacketQueue->Write((LPBYTE)pvData);
+  }
+  else
+  {
+    // This could happen if a remote player got our ADD_CHATTER message
+    // and starts sending us voice, all before we get an ADD_CHATTER
+    // message from them.  If it happens for a long period of time, it
+    // probably means that an ADD_CHATTER message got lost somewhere.
+    //VoiceLog( L"Got packet from player %I64x, but no queue set up for them", xuidFromPlayer.qwUserID );
+  }
 
-    return S_OK;
+  return S_OK;
 }
 
 
@@ -1014,7 +1014,7 @@ HRESULT CVoiceManager::ReceivePacket( DWORD dwPlayer, VOID* pvData, INT nSize )
 
 //-----------------------------------------------------------------------------
 // Name: EnableCommunicator
-// Desc: Enables or disabled voice on the specified controller.  If a 
+// Desc: Enables or disabled voice on the specified controller.  If a
 //          controller has voice DISABLED, then no voice will be sent to
 //          that peripheral, and no input will be captured FROM the peripheral
 //          To the game code, it will look as if there is no communicator
@@ -1026,26 +1026,26 @@ HRESULT CVoiceManager::ReceivePacket( DWORD dwPlayer, VOID* pvData, INT nSize )
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::EnableCommunicator( DWORD dwControllerPort, BOOL bEnabled )
 {
-    if( bEnabled )
+  if ( bEnabled )
+  {
+    // All we need to do is set the flag - if a communicator is currently
+    // plugged in, it will be picked up in the next call to
+    // CheckDeviceChanges
+    m_dwEnabled |= ( 1 << dwControllerPort );
+  }
+  else
+  {
+    m_dwEnabled &= ~( 1 << dwControllerPort );
+
+    // Pretend the communicator was removed.  Having the enabled flag
+    // cleared will prevent it from being re-added in CheckDeviceChanges
+    if ( m_dwConnectedCommunicators & ( 1 << dwControllerPort ) )
     {
-        // All we need to do is set the flag - if a communicator is currently
-        // plugged in, it will be picked up in the next call to 
-        // CheckDeviceChanges
-        m_dwEnabled |= ( 1 << dwControllerPort );
+      OnCommunicatorRemoved( dwControllerPort );
     }
-    else
-    {
-        m_dwEnabled &= ~( 1 << dwControllerPort );
-        
-        // Pretend the communicator was removed.  Having the enabled flag
-        // cleared will prevent it from being re-added in CheckDeviceChanges
-        if( m_dwConnectedCommunicators & ( 1 << dwControllerPort ) )
-        {
-            OnCommunicatorRemoved( dwControllerPort );
-        }
-    }
-        
-    return S_OK;
+  }
+
+  return S_OK;
 }
 
 
@@ -1055,29 +1055,29 @@ HRESULT CVoiceManager::EnableCommunicator( DWORD dwControllerPort, BOOL bEnabled
 
 //-----------------------------------------------------------------------------
 // Name: SetLoopback
-// Desc: Sets a voice communicator to loop back on itself, rather than 
+// Desc: Sets a voice communicator to loop back on itself, rather than
 //          producing data.  Useful for voice mask testing
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::SetLoopback( DWORD dwControllerPort, BOOL bLoopback )
 {
-    if( bLoopback )
-    {
-        m_dwLoopback |= ( 1 << dwControllerPort );
+  if ( bLoopback )
+  {
+    m_dwLoopback |= ( 1 << dwControllerPort );
 
-		m_pLoopbackChatters[ dwControllerPort ].pPacketQueue->Flush();
-    }
-    else
-    {
-        m_dwLoopback &= ~( 1 << dwControllerPort );
-    }
+    m_pLoopbackChatters[ dwControllerPort ].pPacketQueue->Flush();
+  }
+  else
+  {
+    m_dwLoopback &= ~( 1 << dwControllerPort );
+  }
 
-    // Update mixbin settings to reflect loopback change
-    for( DWORD i = 0; i < m_cfg.dwMaxRemotePlayers; i++ )
-    {
-        RecalculateMixBins( &m_pChatters[i] );
-    }
-        
-    return S_OK;
+  // Update mixbin settings to reflect loopback change
+  for ( DWORD i = 0; i < m_cfg.dwMaxRemotePlayers; i++ )
+  {
+    RecalculateMixBins( &m_pChatters[i] );
+  }
+
+  return S_OK;
 }
 
 
@@ -1088,58 +1088,58 @@ HRESULT CVoiceManager::SetLoopback( DWORD dwControllerPort, BOOL bLoopback )
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::RecalculateMixBins( REMOTE_CHATTER* pChatter )
 {
-    DSMIXBINS dsmb = { NUM_VOLUMEPAIRS, g_dsmbvp };
-    if( m_bVoiceThroughSpeakers )
+  DSMIXBINS dsmb = { NUM_VOLUMEPAIRS, g_dsmbvp };
+  if ( m_bVoiceThroughSpeakers )
+  {
+    // Voice Through Speakers ON:
+    // Turn all headphone sends off, and check to see if any
+    // player has muted or been muted by the remote chatter.
+    // If anyone's muted, turn speaker sends off, else turn the
+    // speaker sends on
+    BOOL bMuted = FALSE;
+    for ( DWORD i = 0; i < XGetPortCount(); i++ )
     {
-        // Voice Through Speakers ON:
-        // Turn all headphone sends off, and check to see if any
-        // player has muted or been muted by the remote chatter.
-        // If anyone's muted, turn speaker sends off, else turn the
-        // speaker sends on
-        BOOL bMuted = FALSE;
-        for( DWORD i = 0; i < XGetPortCount(); i++ )
-        {
-            if( IsPlayerMuted( pChatter->duid, i ) ||
-                IsPlayerRemoteMuted( pChatter->duid, i ) )
-            {
-                bMuted = TRUE;
-            }
-            g_dsmbvp[i].lVolume = DSBVOLUME_MIN;
-        }
-        LONG lSpeakerVolume = bMuted ? DSBVOLUME_MIN : DSBVOLUME_MAX;
-        for( DWORD i = XGetPortCount(); i < NUM_VOLUMEPAIRS; i++ )
-        {
-            g_dsmbvp[i].lVolume = lSpeakerVolume;
-        }
+      if ( IsPlayerMuted( pChatter->duid, i ) ||
+           IsPlayerRemoteMuted( pChatter->duid, i ) )
+      {
+        bMuted = TRUE;
+      }
+      g_dsmbvp[i].lVolume = DSBVOLUME_MIN;
     }
-    else
+    LONG lSpeakerVolume = bMuted ? DSBVOLUME_MIN : DSBVOLUME_MAX;
+    for ( DWORD i = XGetPortCount(); i < NUM_VOLUMEPAIRS; i++ )
     {
-        // Voice Through Speakers OFF:
-        // Set each headphone send appropriately based on whether or
-        // not they've muted or been muted by the remote talker, and
-        // whether or not that headphone is in loopback mode
-        // Turn the speaker sends off
-        for( DWORD i = 0; i < XGetPortCount(); i++ )
-        {
-            if( IsPlayerMuted( pChatter->duid, i ) ||
-                IsPlayerRemoteMuted( pChatter->duid, i ) ||
-                ( m_dwLoopback & ( 1 << i ) ) )
-            {
-                g_dsmbvp[i].lVolume = DSBVOLUME_MIN;
-            }
-            else
-            {
-                g_dsmbvp[i].lVolume = DSBVOLUME_MAX;
-            }
-        }
-        for( DWORD i = XGetPortCount(); i < NUM_VOLUMEPAIRS; i++ )
-        {
-            g_dsmbvp[i].lVolume = DSBVOLUME_MIN;
-        }
+      g_dsmbvp[i].lVolume = lSpeakerVolume;
     }
+  }
+  else
+  {
+    // Voice Through Speakers OFF:
+    // Set each headphone send appropriately based on whether or
+    // not they've muted or been muted by the remote talker, and
+    // whether or not that headphone is in loopback mode
+    // Turn the speaker sends off
+    for ( DWORD i = 0; i < XGetPortCount(); i++ )
+    {
+      if ( IsPlayerMuted( pChatter->duid, i ) ||
+           IsPlayerRemoteMuted( pChatter->duid, i ) ||
+           ( m_dwLoopback & ( 1 << i ) ) )
+      {
+        g_dsmbvp[i].lVolume = DSBVOLUME_MIN;
+      }
+      else
+      {
+        g_dsmbvp[i].lVolume = DSBVOLUME_MAX;
+      }
+    }
+    for ( DWORD i = XGetPortCount(); i < NUM_VOLUMEPAIRS; i++ )
+    {
+      g_dsmbvp[i].lVolume = DSBVOLUME_MIN;
+    }
+  }
 
-    pChatter->pOutputStream->SetMixBinVolumes( &dsmb );
-    return S_OK;
+  pChatter->pOutputStream->SetMixBinVolumes( &dsmb );
+  return S_OK;
 }
 
 
@@ -1149,18 +1149,18 @@ HRESULT CVoiceManager::RecalculateMixBins( REMOTE_CHATTER* pChatter )
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::SetVoiceThroughSpeakers( BOOL bEnabled )
 {
-    if( bEnabled == m_bVoiceThroughSpeakers )
-        return S_OK;
-
-    // Recalculate mix bin settings for all remote chatters
-    m_bVoiceThroughSpeakers = bEnabled;
-    for( DWORD i = 0; i < m_cfg.dwMaxRemotePlayers; i++ )
-    {
-        if( m_pChatters[i].duid != 0 )
-            RecalculateMixBins( &m_pChatters[i] );
-    }
-
+  if ( bEnabled == m_bVoiceThroughSpeakers )
     return S_OK;
+
+  // Recalculate mix bin settings for all remote chatters
+  m_bVoiceThroughSpeakers = bEnabled;
+  for ( DWORD i = 0; i < m_cfg.dwMaxRemotePlayers; i++ )
+  {
+    if ( m_pChatters[i].duid != 0 )
+      RecalculateMixBins( &m_pChatters[i] );
+  }
+
+  return S_OK;
 }
 
 
@@ -1173,12 +1173,12 @@ HRESULT CVoiceManager::SetVoiceThroughSpeakers( BOOL bEnabled )
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::GetDriftCompensationPacket( XMEDIAPACKET* pPacket, REMOTE_CHATTER* pChatter )
 {
-    ZeroMemory( pPacket, sizeof( XMEDIAPACKET ) );
+  ZeroMemory( pPacket, sizeof( XMEDIAPACKET ) );
 
-    pPacket->pvBuffer   = pChatter->pbDriftBuffer;
-    pPacket->dwMaxSize  = m_dwPacketSize;
+  pPacket->pvBuffer = pChatter->pbDriftBuffer;
+  pPacket->dwMaxSize = m_dwPacketSize;
 
-    return S_OK;
+  return S_OK;
 }
 
 
@@ -1189,12 +1189,12 @@ HRESULT CVoiceManager::GetDriftCompensationPacket( XMEDIAPACKET* pPacket, REMOTE
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::GetTemporaryPacket( XMEDIAPACKET* pPacket )
 {
-    ZeroMemory( pPacket, sizeof( XMEDIAPACKET ) );
+  ZeroMemory( pPacket, sizeof( XMEDIAPACKET ) );
 
-    pPacket->pvBuffer   = m_pbTempEncodedPacket;
-    pPacket->dwMaxSize  = m_dwCompressedSize;
+  pPacket->pvBuffer = m_pbTempEncodedPacket;
+  pPacket->dwMaxSize = m_dwCompressedSize;
 
-    return S_OK;
+  return S_OK;
 }
 
 
@@ -1206,15 +1206,15 @@ HRESULT CVoiceManager::GetTemporaryPacket( XMEDIAPACKET* pPacket )
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::GetStreamPacket( XMEDIAPACKET* pPacket, REMOTE_CHATTER* pChatter, DWORD dwIndex )
 {
-    ZeroMemory( pPacket, sizeof( XMEDIAPACKET ) );
+  ZeroMemory( pPacket, sizeof( XMEDIAPACKET ) );
 
-    pPacket->pvBuffer   = pChatter->pbStreamBuffer + dwIndex * m_dwPacketSize;
-    pPacket->dwMaxSize  = m_dwPacketSize;
-    pPacket->pContext   = (LPVOID)dwIndex;
+  pPacket->pvBuffer = pChatter->pbStreamBuffer + dwIndex * m_dwPacketSize;
+  pPacket->dwMaxSize = m_dwPacketSize;
+  pPacket->pContext = (LPVOID)dwIndex;
 
-    ZeroMemory( pPacket->pvBuffer, pPacket->dwMaxSize );
+  ZeroMemory( pPacket->pvBuffer, pPacket->dwMaxSize );
 
-    return S_OK;
+  return S_OK;
 }
 
 
@@ -1227,10 +1227,10 @@ HRESULT CVoiceManager::GetStreamPacket( XMEDIAPACKET* pPacket, REMOTE_CHATTER* p
 inline
 HRESULT CVoiceManager::SubmitStreamPacket( DWORD dwIndex, REMOTE_CHATTER* pChatter )
 {
-    XMEDIAPACKET xmp;
-    GetStreamPacket( &xmp, pChatter, dwIndex );
-    memcpy( xmp.pvBuffer, pChatter->pbDriftBuffer, m_dwPacketSize );
-    return pChatter->pOutputStream->Process( &xmp, NULL );
+  XMEDIAPACKET xmp;
+  GetStreamPacket( &xmp, pChatter, dwIndex );
+  memcpy( xmp.pvBuffer, pChatter->pbDriftBuffer, m_dwPacketSize );
+  return pChatter->pOutputStream->Process( &xmp, NULL );
 }
 
 
@@ -1238,91 +1238,91 @@ HRESULT CVoiceManager::SubmitStreamPacket( DWORD dwIndex, REMOTE_CHATTER* pChatt
 //-----------------------------------------------------------------------------
 // Name: MicrophonePacketCallback
 // Desc: Called at DPC time when a packet has been completed by one of the
-//          microphones.  We can just encode the packet and add it to our 
+//          microphones.  We can just encode the packet and add it to our
 //          bundle of stored completed packets
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::MicrophonePacketCallback( DWORD dwPort, LPVOID pPacketContext, DWORD dwStatus )
 {
-    CVoiceCommunicator* pCommunicator = &m_aVoiceCommunicators[ dwPort ];
+  CVoiceCommunicator* pCommunicator = &m_aVoiceCommunicators[ dwPort ];
 
-    // If the packet failed or was flushed, it means that we either released
-    // the device, or the device was removed. 
-    if( dwStatus != XMEDIAPACKET_STATUS_SUCCESS )
+  // If the packet failed or was flushed, it means that we either released
+  // the device, or the device was removed.
+  if ( dwStatus != XMEDIAPACKET_STATUS_SUCCESS )
+  {
+    assert( dwStatus == XMEDIAPACKET_STATUS_FAILURE ||
+            dwStatus == XMEDIAPACKET_STATUS_FLUSHED );
+
+    return S_FALSE;
+  }
+
+  // Save floating point state
+  XSaveFloatingPointStateForDpc();
+
+  // Grab the completed microphone packet
+  XMEDIAPACKET xmpMicrophone;
+  pCommunicator->GetMicrophonePacket( &xmpMicrophone, (DWORD)pPacketContext );
+
+  // We should only encode if we're currently in a chat session,
+  // or if the microphone is in loopback mode
+  if ( IsInChatSession() || m_dwLoopback & ( 1 << dwPort ) )
+  {
+    // Grab a temporary compressed packet
+    XMEDIAPACKET xmpCompressed;
+    DWORD dwCompressedSize = 0;
+    GetTemporaryPacket( &xmpCompressed );
+    xmpCompressed.pdwCompletedSize = &dwCompressedSize;
+
+    // Detect silence
+    short high = 0;
+    short low = MAXSHORT;
+    int frameSize = pCommunicator->m_enc_frame_size;
+    short* pSample = (short*)xmpMicrophone.pvBuffer;
+    for (int i = 0; i < frameSize; i++)
     {
-        assert( dwStatus == XMEDIAPACKET_STATUS_FAILURE ||
-                dwStatus == XMEDIAPACKET_STATUS_FLUSHED );
-
-        return S_FALSE;
+      if (pSample[i] > high)
+      {
+        high = pSample[i];
+      }
     }
 
-    // Save floating point state
-    XSaveFloatingPointStateForDpc();
+    m_nSilentFrameCounter = (high < 100) ? (m_nSilentFrameCounter + 1) : 0;
 
-    // Grab the completed microphone packet
-    XMEDIAPACKET        xmpMicrophone;
-    pCommunicator->GetMicrophonePacket( &xmpMicrophone, (DWORD)pPacketContext );
-
-    // We should only encode if we're currently in a chat session,
-    // or if the microphone is in loopback mode
-    if( IsInChatSession() || m_dwLoopback & ( 1 << dwPort ) )
+    // If we haven't detected 3000ms (150 frames) of silence then encode the
+    // samples and transmit to the engine.
+    if (m_nSilentFrameCounter <= 150)
     {
-        // Grab a temporary compressed packet
-        XMEDIAPACKET        xmpCompressed;
-        DWORD               dwCompressedSize = 0;
-        GetTemporaryPacket( &xmpCompressed );
-        xmpCompressed.pdwCompletedSize = &dwCompressedSize;
+      // If voice was detected, encode the PCM into a Speex compressed packet
+      speex_bits_reset(&pCommunicator->m_bits);
+      speex_encode(pCommunicator->m_enc_state, (short*)xmpMicrophone.pvBuffer, &pCommunicator->m_bits);
+      dwCompressedSize = speex_bits_write(&pCommunicator->m_bits, (char*)xmpCompressed.pvBuffer, xmpCompressed.dwMaxSize);
 
-		// Detect silence
-		short high		= 0;
-		short low		= MAXSHORT;
-		int	frameSize	= pCommunicator->m_enc_frame_size;
-		short* pSample	= (short*)xmpMicrophone.pvBuffer;
-		for (int i=0; i<frameSize; i++)
-		{
-			if (pSample[i]>high)
-			{
-				high=pSample[i];
-			}
-		}
+      // Increase the ramp time for lowering headphone volume
+      if ( pCommunicator->m_dwRampTime < MAX_RAMP_TIME )
+        pCommunicator->m_dwRampTime += m_cfg.dwVoicePacketTime;
 
-		m_nSilentFrameCounter = (high<100) ? (m_nSilentFrameCounter+1) : 0;
-
-		// If we haven't detected 3000ms (150 frames) of silence then encode the
-		// samples and transmit to the engine.
-		if (m_nSilentFrameCounter<=150)
-		{
-            // If voice was detected, encode the PCM into a Speex compressed packet
-			speex_bits_reset(&pCommunicator->m_bits);
-			speex_encode(pCommunicator->m_enc_state, (short*)xmpMicrophone.pvBuffer, &pCommunicator->m_bits);
-			dwCompressedSize = speex_bits_write(&pCommunicator->m_bits, (char*)xmpCompressed.pvBuffer, xmpCompressed.dwMaxSize);
-
-            // Increase the ramp time for lowering headphone volume
-            if( pCommunicator->m_dwRampTime < MAX_RAMP_TIME )
-                pCommunicator->m_dwRampTime += m_cfg.dwVoicePacketTime;
-
-            OnCompletedPacket( dwPort, xmpCompressed.pvBuffer, dwCompressedSize );
-        }
-        else
-        {
-            // If the mic was silent, decrease the ramp time so that we
-            // start bringing the headphone volume back up
-            if( pCommunicator->m_dwRampTime > 0 )
-                pCommunicator->m_dwRampTime -= m_cfg.dwVoicePacketTime;
-        }
+      OnCompletedPacket( dwPort, xmpCompressed.pvBuffer, dwCompressedSize );
     }
-
-    // Re-submit the packet back to the microphone
-    if( FAILED( pCommunicator->SubmitMicrophonePacket( &xmpMicrophone ) ) )
+    else
     {
-        // This will only happen if the device has been removed,
-        // in which case we'll pick it up on the next call to
-        // CheckDeviceChanges
+      // If the mic was silent, decrease the ramp time so that we
+      // start bringing the headphone volume back up
+      if ( pCommunicator->m_dwRampTime > 0 )
+        pCommunicator->m_dwRampTime -= m_cfg.dwVoicePacketTime;
     }
+  }
 
-    // Restore floating point state
-    XRestoreFloatingPointStateForDpc();
+  // Re-submit the packet back to the microphone
+  if ( FAILED( pCommunicator->SubmitMicrophonePacket( &xmpMicrophone ) ) )
+  {
+    // This will only happen if the device has been removed,
+    // in which case we'll pick it up on the next call to
+    // CheckDeviceChanges
+  }
 
-    return S_OK;
+  // Restore floating point state
+  XRestoreFloatingPointStateForDpc();
+
+  return S_OK;
 }
 
 
@@ -1335,8 +1335,8 @@ HRESULT CVoiceManager::MicrophonePacketCallback( DWORD dwPort, LPVOID pPacketCon
 //-----------------------------------------------------------------------------
 VOID CALLBACK StreamCallback( LPVOID pStreamContext, LPVOID pPacketContext, DWORD dwStatus )
 {
-    REMOTE_CHATTER* pThis = (REMOTE_CHATTER*)pStreamContext;
-    pThis->pVoiceManager->StreamPacketCallback( pThis, pPacketContext, dwStatus );
+  REMOTE_CHATTER* pThis = (REMOTE_CHATTER*)pStreamContext;
+  pThis->pVoiceManager->StreamPacketCallback( pThis, pPacketContext, dwStatus );
 }
 
 
@@ -1351,62 +1351,62 @@ VOID CALLBACK StreamCallback( LPVOID pStreamContext, LPVOID pPacketContext, DWOR
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::StreamPacketCallback( REMOTE_CHATTER* pChatter, LPVOID pPacketContext, DWORD dwStatus )
 {
-    if( dwStatus != XMEDIAPACKET_STATUS_SUCCESS )
-    {
-        // Streams don't fail
-        assert( dwStatus == XMEDIAPACKET_STATUS_FLUSHED );
-        return S_FALSE;
-    }
+  if ( dwStatus != XMEDIAPACKET_STATUS_SUCCESS )
+  {
+    // Streams don't fail
+    assert( dwStatus == XMEDIAPACKET_STATUS_FLUSHED );
+    return S_FALSE;
+  }
 
-    // Get the drift compensation packet
-    XMEDIAPACKET xmpDriftPacket;
-    GetDriftCompensationPacket( &xmpDriftPacket, pChatter );
+  // Get the drift compensation packet
+  XMEDIAPACKET xmpDriftPacket;
+  GetDriftCompensationPacket( &xmpDriftPacket, pChatter );
 
-    // Grab as many packets from the queue as it is willing to
-    // produce. 
-    // Zero Packets: The stream is running slightly faster than
-    //      the queue and will re-use the packet stored in the 
-    //      drift compensation buffer
-    // One Packet: Normal scenario - copy output to drift
-    //      compensation buffer and submit to stream
-    // Two Packets: The stream is running slightly slower than
-    //      the queue and will overwrite a packet in the
-    //      drift compensation buffer, then submit the last
-    //      packet to the stream.
-	XMEDIAPACKET xmpCompressed;
+  // Grab as many packets from the queue as it is willing to
+  // produce.
+  // Zero Packets: The stream is running slightly faster than
+  //      the queue and will re-use the packet stored in the
+  //      drift compensation buffer
+  // One Packet: Normal scenario - copy output to drift
+  //      compensation buffer and submit to stream
+  // Two Packets: The stream is running slightly slower than
+  //      the queue and will overwrite a packet in the
+  //      drift compensation buffer, then submit the last
+  //      packet to the stream.
+  XMEDIAPACKET xmpCompressed;
 
-	if (pChatter->pPacketQueue->Read(xmpCompressed))
-	{
-        // The queue gave us a compressed packet - we need to decode it
-        pChatter->bIsTalking = TRUE;
+  if (pChatter->pPacketQueue->Read(xmpCompressed))
+  {
+    // The queue gave us a compressed packet - we need to decode it
+    pChatter->bIsTalking = TRUE;
 
-        // Save floating point state
-        XSaveFloatingPointStateForDpc();
+    // Save floating point state
+    XSaveFloatingPointStateForDpc();
 
-		// DECODE
-		speex_bits_read_from(&pChatter->m_bits, (char*) xmpCompressed.pvBuffer, xmpCompressed.dwMaxSize);
-		speex_decode(pChatter->m_dec_state, &pChatter->m_bits, (short*)xmpDriftPacket.pvBuffer);
+    // DECODE
+    speex_bits_read_from(&pChatter->m_bits, (char*) xmpCompressed.pvBuffer, xmpCompressed.dwMaxSize);
+    speex_decode(pChatter->m_dec_state, &pChatter->m_bits, (short*)xmpDriftPacket.pvBuffer);
 
-		*xmpCompressed.pdwStatus = XMEDIAPACKET_STATUS_SUCCESS;
+    *xmpCompressed.pdwStatus = XMEDIAPACKET_STATUS_SUCCESS;
 
-        // Restore floating point state
-        XRestoreFloatingPointStateForDpc();
- 	}
-	else
-	{
-        pChatter->bIsTalking = FALSE;
+    // Restore floating point state
+    XRestoreFloatingPointStateForDpc();
+  }
+  else
+  {
+    pChatter->bIsTalking = FALSE;
 
-        // Re-fill the drift compensation packet with silence
-        ZeroMemory( xmpDriftPacket.pvBuffer, m_dwPacketSize );
-	}
+    // Re-fill the drift compensation packet with silence
+    ZeroMemory( xmpDriftPacket.pvBuffer, m_dwPacketSize );
+  }
 
-    if( FAILED( SubmitStreamPacket( (DWORD)pPacketContext, pChatter ) ) )
-    {
-        // The only way this would fail is if we submitted too many packets
-        assert( FALSE );
-    }
+  if ( FAILED( SubmitStreamPacket( (DWORD)pPacketContext, pChatter ) ) )
+  {
+    // The only way this would fail is if we submitted too many packets
+    assert( FALSE );
+  }
 
-    return S_OK;
+  return S_OK;
 }
 
 
@@ -1415,25 +1415,25 @@ HRESULT CVoiceManager::StreamPacketCallback( REMOTE_CHATTER* pChatter, LPVOID pP
 // Name: GetSRCInfo
 // Desc: Retrieves information about the state of the specified SRC DSP effect
 //-----------------------------------------------------------------------------
-HRESULT CVoiceManager::GetSRCInfo( DWORD dwControllerPort, 
+HRESULT CVoiceManager::GetSRCInfo( DWORD dwControllerPort,
                                    DWORD* pdwBufferSize,
-                                   VOID** ppvBufferData, 
+                                   VOID** ppvBufferData,
                                    DWORD* pdwWritePosition )
 {
-    // Get the state segment for the appropriate SRC effect
-    DSEFFECTMAP* pEffectMap = &m_cfg.pEffectImageDesc->aEffectMaps[ m_cfg.dwFirstSRCEffectIndex + dwControllerPort ];
-    LPCDSFX_SAMPLE_RATE_CONVERTER_PARAMS pSRCParams = LPCDSFX_SAMPLE_RATE_CONVERTER_PARAMS(pEffectMap->lpvStateSegment);
+  // Get the state segment for the appropriate SRC effect
+  DSEFFECTMAP* pEffectMap = &m_cfg.pEffectImageDesc->aEffectMaps[ m_cfg.dwFirstSRCEffectIndex + dwControllerPort ];
+  LPCDSFX_SAMPLE_RATE_CONVERTER_PARAMS pSRCParams = LPCDSFX_SAMPLE_RATE_CONVERTER_PARAMS(pEffectMap->lpvStateSegment);
 
-    if( pdwBufferSize )
-        *pdwBufferSize = pEffectMap->dwScratchSize;
+  if ( pdwBufferSize )
+    *pdwBufferSize = pEffectMap->dwScratchSize;
 
-    if( ppvBufferData )
-        *ppvBufferData = pEffectMap->lpvScratchSegment;
+  if ( ppvBufferData )
+    *ppvBufferData = pEffectMap->lpvScratchSegment;
 
-    if( pdwWritePosition )
-        *pdwWritePosition = pSRCParams->dwScratchSampleOffset;
+  if ( pdwWritePosition )
+    *pdwWritePosition = pSRCParams->dwScratchSampleOffset;
 
-    return S_OK;
+  return S_OK;
 }
 
 
@@ -1446,16 +1446,16 @@ HRESULT CVoiceManager::GetSRCInfo( DWORD dwControllerPort,
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::SetSRCGain( DWORD dwControllerPort, FLOAT fGain )
 {
-    assert( fGain >= 0.0f && fGain <= 1.0f );
+  assert( fGain >= 0.0f && fGain <= 1.0f );
 
-    // Convert from IEEE float to DSP s.23 format
-    DWORD dwGainParam = DWORD( fGain * 0x7FFFFF );
-    return m_cfg.pDSound->SetEffectData( m_cfg.dwFirstSRCEffectIndex + dwControllerPort,
-                                         32,   // offset to gain param
-                                         &dwGainParam,
-                                         sizeof( DWORD ),
-                                         DSFX_IMMEDIATE );
- 
+  // Convert from IEEE float to DSP s.23 format
+  DWORD dwGainParam = DWORD( fGain * 0x7FFFFF );
+  return m_cfg.pDSound->SetEffectData( m_cfg.dwFirstSRCEffectIndex + dwControllerPort,
+                                       32,    // offset to gain param
+                                       &dwGainParam,
+                                       sizeof( DWORD ),
+                                       DSFX_IMMEDIATE );
+
 }
 
 
@@ -1468,86 +1468,86 @@ HRESULT CVoiceManager::SetSRCGain( DWORD dwControllerPort, FLOAT fGain )
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::HeadphonePacketCallback( DWORD dwPort, LPVOID pPacketContext, DWORD dwStatus )
 {
-    CVoiceCommunicator* pCommunicator = &m_aVoiceCommunicators[ dwPort ];
+  CVoiceCommunicator* pCommunicator = &m_aVoiceCommunicators[ dwPort ];
 
-    // If the packet failed or was flushed, it means that we either released
-    // the device, or the device was removed. 
-    if( dwStatus != XMEDIAPACKET_STATUS_SUCCESS )
-    {
-        assert( dwStatus == XMEDIAPACKET_STATUS_FAILURE ||
-                dwStatus == XMEDIAPACKET_STATUS_FLUSHED );
+  // If the packet failed or was flushed, it means that we either released
+  // the device, or the device was removed.
+  if ( dwStatus != XMEDIAPACKET_STATUS_SUCCESS )
+  {
+    assert( dwStatus == XMEDIAPACKET_STATUS_FAILURE ||
+            dwStatus == XMEDIAPACKET_STATUS_FLUSHED );
 
-        return S_FALSE;
-    }
+    return S_FALSE;
+  }
 
-    // Grab packets of audio data from the output of the Sample 
-    // Rate Converter DSP effect.  Right now, the effect is outputting
-    // 32 bit samples instead of 16, so we have to downconvert them.
-    // In the future, the SRC effect will be able to output 16
-    // bit samples, and this will no longer be necessary
-    DWORD dwCircularBufferSize;
-    DWORD dwWritePosition;
-    VOID* pvBufferData;
-    GetSRCInfo( (WORD)dwPort, &dwCircularBufferSize, &pvBufferData, &dwWritePosition );
+  // Grab packets of audio data from the output of the Sample
+  // Rate Converter DSP effect.  Right now, the effect is outputting
+  // 32 bit samples instead of 16, so we have to downconvert them.
+  // In the future, the SRC effect will be able to output 16
+  // bit samples, and this will no longer be necessary
+  DWORD dwCircularBufferSize;
+  DWORD dwWritePosition;
+  VOID* pvBufferData;
+  GetSRCInfo( (WORD)dwPort, &dwCircularBufferSize, &pvBufferData, &dwWritePosition );
 
-    DWORD dwSrcPacketSize = m_dwPacketSize * 2;
-    DWORD dwBytesAvailable = ( dwWritePosition + dwCircularBufferSize - pCommunicator->m_dwSRCReadPosition ) % dwCircularBufferSize;
+  DWORD dwSrcPacketSize = m_dwPacketSize * 2;
+  DWORD dwBytesAvailable = ( dwWritePosition + dwCircularBufferSize - pCommunicator->m_dwSRCReadPosition ) % dwCircularBufferSize;
 
-    // Grab the completed headphone packet
-    XMEDIAPACKET xmpHeadphone;
-    pCommunicator->GetHeadphonePacket( &xmpHeadphone, (DWORD)pPacketContext );
+  // Grab the completed headphone packet
+  XMEDIAPACKET xmpHeadphone;
+  pCommunicator->GetHeadphonePacket( &xmpHeadphone, (DWORD)pPacketContext );
 
-    // We'll convert from 32-bit to 16-bit samples as we copy into the 
-    // headphone buffer
-    DWORD  dwSamplesToStream = m_dwPacketSize / sizeof( WORD );
-    PLONG  pSrcData = (PLONG)( (BYTE*)pvBufferData + pCommunicator->m_dwSRCReadPosition );
-    PWORD  pDestData = (PWORD)xmpHeadphone.pvBuffer;
+  // We'll convert from 32-bit to 16-bit samples as we copy into the
+  // headphone buffer
+  DWORD dwSamplesToStream = m_dwPacketSize / sizeof( WORD );
+  PLONG pSrcData = (PLONG)( (BYTE*)pvBufferData + pCommunicator->m_dwSRCReadPosition );
+  PWORD pDestData = (PWORD)xmpHeadphone.pvBuffer;
 
-    // If we're wrapping around to the start of our circular
-    // buffer, then process the last little bit here
-    if( dwSrcPacketSize > dwCircularBufferSize - pCommunicator->m_dwSRCReadPosition )
-    {
-        DWORD dwPartial = ( dwCircularBufferSize - pCommunicator->m_dwSRCReadPosition ) / sizeof( DWORD );
-        for( DWORD dwSample = 0; dwSample < dwPartial; dwSample++ )
-            *pDestData++ = WORD( *pSrcData++ >> 16 );
+  // If we're wrapping around to the start of our circular
+  // buffer, then process the last little bit here
+  if ( dwSrcPacketSize > dwCircularBufferSize - pCommunicator->m_dwSRCReadPosition )
+  {
+    DWORD dwPartial = ( dwCircularBufferSize - pCommunicator->m_dwSRCReadPosition ) / sizeof( DWORD );
+    for ( DWORD dwSample = 0; dwSample < dwPartial; dwSample++ )
+      *pDestData++ = WORD( *pSrcData++ >> 16 );
 
-        assert( (PLONG)pSrcData == (PLONG)( (BYTE*)pvBufferData + dwCircularBufferSize ) );
+    assert( (PLONG)pSrcData == (PLONG)( (BYTE*)pvBufferData + dwCircularBufferSize ) );
 
-        // Adjust source pointer and sample count for main loop below
-        dwSamplesToStream -= dwPartial;
-        pSrcData = (PLONG)pvBufferData;
-    }
+    // Adjust source pointer and sample count for main loop below
+    dwSamplesToStream -= dwPartial;
+    pSrcData = (PLONG)pvBufferData;
+  }
 
-    // Now copy over the rest of the packet
-    for( DWORD dwSample = 0; dwSample < dwSamplesToStream; dwSample++ )
-        *pDestData++ = WORD( *pSrcData++ >> 16 );
+  // Now copy over the rest of the packet
+  for ( DWORD dwSample = 0; dwSample < dwSamplesToStream; dwSample++ )
+    *pDestData++ = WORD( *pSrcData++ >> 16 );
 
-    if( dwBytesAvailable >= dwSrcPacketSize )
-    {
-        // Adjust our read position
-        pCommunicator->m_dwSRCReadPosition = ( pCommunicator->m_dwSRCReadPosition + dwSrcPacketSize ) % dwCircularBufferSize;
-    }
-    else
-    {
-        // This means that for some reason, there wasn't enough data in the 
-        // SRC output buffer to fill up a headphone packet, so we probably
-        // put some garbage in.  We re-set the communicator's SRC read
-        // position to be half a packet before the current write position, so that 
-        // when the next packet completes, we can be pretty sure that we'll
-        // have a full packet
-        // VoiceLog( L"Not enough data available for headphone %d!", dwPort );
-        pCommunicator->m_dwSRCReadPosition = ( dwWritePosition + dwCircularBufferSize - dwSrcPacketSize / 2 ) % dwCircularBufferSize;
-    }
+  if ( dwBytesAvailable >= dwSrcPacketSize )
+  {
+    // Adjust our read position
+    pCommunicator->m_dwSRCReadPosition = ( pCommunicator->m_dwSRCReadPosition + dwSrcPacketSize ) % dwCircularBufferSize;
+  }
+  else
+  {
+    // This means that for some reason, there wasn't enough data in the
+    // SRC output buffer to fill up a headphone packet, so we probably
+    // put some garbage in.  We re-set the communicator's SRC read
+    // position to be half a packet before the current write position, so that
+    // when the next packet completes, we can be pretty sure that we'll
+    // have a full packet
+    // VoiceLog( L"Not enough data available for headphone %d!", dwPort );
+    pCommunicator->m_dwSRCReadPosition = ( dwWritePosition + dwCircularBufferSize - dwSrcPacketSize / 2 ) % dwCircularBufferSize;
+  }
 
-    // Re-submit the packet to the headphone
-    if( FAILED( pCommunicator->SubmitHeadphonePacket( &xmpHeadphone ) ) )
-    {
-        // This will only happen if the device has been removed,
-        // in which case we'll pick it up on the next call to
-        // CheckDeviceChanges
-    }
+  // Re-submit the packet to the headphone
+  if ( FAILED( pCommunicator->SubmitHeadphonePacket( &xmpHeadphone ) ) )
+  {
+    // This will only happen if the device has been removed,
+    // in which case we'll pick it up on the next call to
+    // CheckDeviceChanges
+  }
 
-    return S_OK;
+  return S_OK;
 }
 
 
@@ -1559,35 +1559,35 @@ HRESULT CVoiceManager::HeadphonePacketCallback( DWORD dwPort, LPVOID pPacketCont
 //-----------------------------------------------------------------------------
 HRESULT CVoiceManager::ProcessVoice()
 {
-	// Adjust the gain level of each headphone output based on whether or
-	// not (and for how long) that player is talking
-	for( DWORD i = 0; i < XGetPortCount(); i++ )
-	{
-		if( m_dwConnectedCommunicators & ( 1 << i ) )
-		{
-			FLOAT fGain = MAX_GAIN - ( m_aVoiceCommunicators[i].m_dwRampTime * ( MAX_GAIN - MIN_GAIN ) / MAX_RAMP_TIME );
-			SetSRCGain( i, fGain );
-		}
-	}
+  // Adjust the gain level of each headphone output based on whether or
+  // not (and for how long) that player is talking
+  for ( DWORD i = 0; i < XGetPortCount(); i++ )
+  {
+    if ( m_dwConnectedCommunicators & ( 1 << i ) )
+    {
+      FLOAT fGain = MAX_GAIN - ( m_aVoiceCommunicators[i].m_dwRampTime * ( MAX_GAIN - MIN_GAIN ) / MAX_RAMP_TIME );
+      SetSRCGain( i, fGain );
+    }
+  }
 
-	// Fire callbacks for all buffered packets
-	if( m_cfg.pfnVoiceDataCallback )
-	{
-		for( DWORD i = 0; i < m_dwNumCompletedPackets; i++ )
-		{
-			COMPLETED_PACKET* pPacket = (COMPLETED_PACKET*)( m_pbCompletedPackets + i * m_dwCompletedPacketSize );
-			m_cfg.pfnVoiceDataCallback( pPacket->Port,
-										m_dwCompressedSize, 
-										pPacket->abData, 
-										m_cfg.pCallbackContext );
-		}
-	}
-	m_dwNumCompletedPackets = 0;
+  // Fire callbacks for all buffered packets
+  if ( m_cfg.pfnVoiceDataCallback )
+  {
+    for ( DWORD i = 0; i < m_dwNumCompletedPackets; i++ )
+    {
+      COMPLETED_PACKET* pPacket = (COMPLETED_PACKET*)( m_pbCompletedPackets + i * m_dwCompletedPacketSize );
+      m_cfg.pfnVoiceDataCallback( pPacket->Port,
+                                  m_dwCompressedSize,
+                                  pPacket->abData,
+                                  m_cfg.pCallbackContext );
+    }
+  }
+  m_dwNumCompletedPackets = 0;
 
-    // Check for insertions and removals
-    CheckDeviceChanges();
+  // Check for insertions and removals
+  CheckDeviceChanges();
 
-    return S_OK;
+  return S_OK;
 }
 
 

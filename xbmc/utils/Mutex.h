@@ -1,33 +1,33 @@
 //  CMutex - Wrapper for xbox Mutex API
 //
-//	by Bobbin007 in 2003
+// by Bobbin007 in 2003
 
 #pragma once
 
-class CMutex 
+class CMutex
 {
 public:
-	CMutex();
-	CMutex( char* pName );
-	virtual ~CMutex();
+  CMutex();
+  CMutex( char* pName );
+  virtual ~CMutex();
 
-	HANDLE GetHandle();
+  HANDLE GetHandle();
 
-	void Release();
+  void Release();
 
-	bool Wait();
-	void WaitMSec(DWORD dwMillSeconds);
+  bool Wait();
+  void WaitMSec(DWORD dwMillSeconds);
 
 protected:
-	HANDLE	m_hMutex;
+  HANDLE m_hMutex;
 };
 
 class CMutexWait
 {
 public:
-	CMutexWait(CMutex& mutex);
-	virtual ~CMutexWait();
+  CMutexWait(CMutex& mutex);
+  virtual ~CMutexWait();
 private:
-	CMutex& m_mutex;
-	bool    m_bLocked;
+  CMutex& m_mutex;
+  bool m_bLocked;
 };

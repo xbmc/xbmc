@@ -54,12 +54,12 @@ struct SSortMusicNav
 
       switch ( m_iSortMethod )
       {
-      case 0:  // Sort by Filename
+      case 0:   // Sort by Filename
         strcpy(szfilename1, rpStart.GetLabel().c_str());
         strcpy(szfilename2, rpEnd.GetLabel().c_str());
         break;
 
-      case 1:  // Sort by Date
+      case 1:   // Sort by Date
         if ( rpStart.m_stTime.wYear > rpEnd.m_stTime.wYear ) return bGreater;
         if ( rpStart.m_stTime.wYear < rpEnd.m_stTime.wYear ) return !bGreater;
 
@@ -80,25 +80,25 @@ struct SSortMusicNav
         return true;
         break;
 
-      case 2:  // Sort by Size
+      case 2:   // Sort by Size
         if ( rpStart.m_dwSize > rpEnd.m_dwSize) return bGreater;
         if ( rpStart.m_dwSize < rpEnd.m_dwSize) return !bGreater;
         return true;
         break;
 
-      case 3:  // Sort by TrackNum
+      case 3:   // Sort by TrackNum
         if ( rpStart.m_musicInfoTag.GetTrackNumber() > rpEnd.m_musicInfoTag.GetTrackNumber()) return bGreater;
         if ( rpStart.m_musicInfoTag.GetTrackNumber() < rpEnd.m_musicInfoTag.GetTrackNumber()) return !bGreater;
         return true;
         break;
 
-      case 4:  // Sort by Duration
+      case 4:   // Sort by Duration
         if ( rpStart.m_musicInfoTag.GetDuration() > rpEnd.m_musicInfoTag.GetDuration()) return bGreater;
         if ( rpStart.m_musicInfoTag.GetDuration() < rpEnd.m_musicInfoTag.GetDuration()) return !bGreater;
         return true;
         break;
 
-      case 5:  // Sort by Title
+      case 5:   // Sort by Title
         // remove "the" for sorting
         strStart = rpStart.m_musicInfoTag.GetTitle();
         strEnd = rpEnd.m_musicInfoTag.GetTitle();
@@ -110,7 +110,7 @@ struct SSortMusicNav
         strcpy(szfilename2, strEnd.c_str());
         break;
 
-      case 6:  // Sort by Artist
+      case 6:   // Sort by Artist
         // remove "the" for sorting
         strStart = rpStart.m_musicInfoTag.GetArtist();
         strEnd = rpEnd.m_musicInfoTag.GetArtist();
@@ -122,7 +122,7 @@ struct SSortMusicNav
         strcpy(szfilename2, strEnd.c_str());
         break;
 
-      case 7:  // Sort by Album
+      case 7:   // Sort by Album
         // remove "the" for sorting
         strStart = rpStart.m_musicInfoTag.GetAlbum();
         strEnd = rpEnd.m_musicInfoTag.GetAlbum();
@@ -134,7 +134,7 @@ struct SSortMusicNav
         strcpy(szfilename2, strEnd.c_str());
         break;
 
-      case 8:  // Label without "The "
+      case 8:   // Label without "The "
         strStart = rpStart.GetLabel();
         strEnd = rpEnd.GetLabel();
         if (strStart.Left(4).Equals("The "))
@@ -145,7 +145,7 @@ struct SSortMusicNav
         strcpy(szfilename2, strEnd.c_str());
         break;
 
-      default:  // Sort by Filename by default
+      default:   // Sort by Filename by default
         strcpy(szfilename1, rpStart.GetLabel().c_str());
         strcpy(szfilename2, rpEnd.GetLabel().c_str());
         break;
@@ -188,8 +188,7 @@ CGUIWindowMusicNav::CGUIWindowMusicNav(void)
   m_strAlbum = "";
 }
 CGUIWindowMusicNav::~CGUIWindowMusicNav(void)
-{
-}
+{}
 
 bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 {
@@ -350,7 +349,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
             if (g_application.m_pPlayer->IsPaused()) return true;
             if (g_application.GetPlaySpeed() != 1) return true;
           }
-          
+
           // not playing audio, or playback speed == 1
           PlayItem(iItem);
         }

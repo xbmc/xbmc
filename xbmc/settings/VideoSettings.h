@@ -11,29 +11,29 @@
 
 class CVideoSettings
 {
-	public:
-		CVideoSettings();
-		~CVideoSettings() {};
+public:
+  CVideoSettings();
+  ~CVideoSettings() {};
 
-		bool operator!=(const CVideoSettings &right) const;
+  bool operator!=(const CVideoSettings &right) const;
 
-		bool			m_NoCache;
-		bool      m_NonInterleaved;
-		bool			m_Deinterlace;
-		int				m_FilmGrain;
-		int				m_ViewMode;			// current view mode
-		float			m_CustomZoomAmount;	// custom setting zoom amount
-		float			m_CustomPixelRatio;	// custom setting pixel ratio
-		int       m_AudioStream;
-		int       m_SubtitleStream;
-		float			m_SubtitleDelay;
-		bool			m_SubtitleOn;
-		int				m_Brightness;
-		int				m_Contrast;
-		int				m_Gamma;
-		bool			m_AdjustFrameRate;
-		float			m_AudioDelay;
-    int       m_ResumeTime;
+  bool m_NoCache;
+  bool m_NonInterleaved;
+  bool m_Deinterlace;
+  int m_FilmGrain;
+  int m_ViewMode;   // current view mode
+  float m_CustomZoomAmount; // custom setting zoom amount
+  float m_CustomPixelRatio; // custom setting pixel ratio
+  int m_AudioStream;
+  int m_SubtitleStream;
+  float m_SubtitleDelay;
+  bool m_SubtitleOn;
+  int m_Brightness;
+  int m_Contrast;
+  int m_Gamma;
+  bool m_AdjustFrameRate;
+  float m_AudioDelay;
+  int m_ResumeTime;
 private:
 };
 

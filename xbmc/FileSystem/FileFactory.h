@@ -14,12 +14,12 @@ using namespace XFILE;
 
 namespace XFILE
 {
-	class CFileFactory  
-	{
-	public:
-		CFileFactory();
-		virtual ~CFileFactory();
-		IFile* CreateLoader(const CStdString& strFileName);
-	};
+class CFileFactory
+{
+public:
+  CFileFactory();
+  virtual ~CFileFactory();
+  IFile* CreateLoader(const CStdString& strFileName);
+};
 };
 #endif // !defined(AFX_FILEFACTORY1_H__068E3138_B7CB_4BEE_B5CE_8AA8CADAB233__INCLUDED_)

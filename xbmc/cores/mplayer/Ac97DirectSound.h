@@ -1,22 +1,22 @@
 /*
- * XBoxMediaPlayer
- * Copyright (c) 2002 d7o3g4q and RUNTiME
- * Portions Copyright (c) by the authors of ffmpeg and xvid
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
+* XBoxMediaPlayer
+* Copyright (c) 2002 d7o3g4q and RUNTiME
+* Portions Copyright (c) by the authors of ffmpeg and xvid
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
 
 // AsyncAudioRenderer.h: interface for the CAc97DirectSound class.
 //
@@ -39,56 +39,56 @@ extern void UnRegisterAudioCallback();
 class CAc97DirectSound : public IDirectSoundRenderer
 {
 public:
-	CAc97DirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool  bAC3DTS = true, bool bResample = false);
-	virtual ~CAc97DirectSound();
+  CAc97DirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bAC3DTS = true, bool bResample = false);
+  virtual ~CAc97DirectSound();
 
-	virtual void 		UnRegisterAudioCallback();
-	virtual void 		RegisterAudioCallback(IAudioCallback* pCallback);
-	virtual DWORD 	GetChunkLen();
-	virtual FLOAT 	GetDelay();
+  virtual void UnRegisterAudioCallback();
+  virtual void RegisterAudioCallback(IAudioCallback* pCallback);
+  virtual DWORD GetChunkLen();
+  virtual FLOAT GetDelay();
 
-	virtual DWORD AddPacketsResample(unsigned char* data, DWORD len);
-	virtual bool IsResampling() { return m_bResampleAudio; }
-	virtual DWORD 	AddPackets(unsigned char* data, DWORD len);
-	virtual DWORD		GetSpace();
-	virtual HRESULT Deinitialize();
-	virtual HRESULT Pause();
-	virtual HRESULT Stop();
-	virtual HRESULT	Resume();
-	virtual DWORD		GetBytesInBuffer();
-	virtual LONG		GetMinimumVolume() const;
-	virtual LONG		GetMaximumVolume() const;
-	virtual LONG		GetCurrentVolume() const;
-	virtual void		Mute(bool bMute);
-	virtual HRESULT	SetCurrentVolume(LONG nVolume);
-	virtual bool		SupportsSurroundSound()  const;
-	static void CALLBACK StaticStreamCallback(LPVOID pStreamContext, LPVOID pPacketContext, DWORD dwStatus);
-	void						StreamCallback(LPVOID pPacketContext, DWORD dwStatus);
-	virtual int			SetPlaySpeed(int iSpeed);
-	virtual void    WaitCompletion();
+  virtual DWORD AddPacketsResample(unsigned char* data, DWORD len);
+  virtual bool IsResampling() { return m_bResampleAudio; }
+  virtual DWORD AddPackets(unsigned char* data, DWORD len);
+  virtual DWORD GetSpace();
+  virtual HRESULT Deinitialize();
+  virtual HRESULT Pause();
+  virtual HRESULT Stop();
+  virtual HRESULT Resume();
+  virtual DWORD GetBytesInBuffer();
+  virtual LONG GetMinimumVolume() const;
+  virtual LONG GetMaximumVolume() const;
+  virtual LONG GetCurrentVolume() const;
+  virtual void Mute(bool bMute);
+  virtual HRESULT SetCurrentVolume(LONG nVolume);
+  virtual bool SupportsSurroundSound() const;
+  static void CALLBACK StaticStreamCallback(LPVOID pStreamContext, LPVOID pPacketContext, DWORD dwStatus);
+  void StreamCallback(LPVOID pPacketContext, DWORD dwStatus);
+  virtual int SetPlaySpeed(int iSpeed);
+  virtual void WaitCompletion();
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers){};
 
 private:
-	IAudioCallback* m_pCallback;
-	LONG						m_lFadeVolume;
-	bool									FindFreePacket( DWORD& pdwIndex );
+  IAudioCallback* m_pCallback;
+  LONG m_lFadeVolume;
+  bool FindFreePacket( DWORD& pdwIndex );
 
-	LPAC97MEDIAOBJECT			m_pDigitalOutput;
-	WAVEFORMATEX				  m_wfx;
-	DWORD									m_dwPacketSize;
-	DWORD									m_dwNumPackets;
-	PBYTE									m_pbSampleData[64];
-	DWORD*								m_adwStatus;
-	bool									m_bPause;
-	bool									m_bMute;
-	bool									m_bIsAllocated;
-	WAVEFORMATEXTENSIBLE	m_wfxex;
-	LPDIRECTSOUND8        m_pDSound;
+  LPAC97MEDIAOBJECT m_pDigitalOutput;
+  WAVEFORMATEX m_wfx;
+  DWORD m_dwPacketSize;
+  DWORD m_dwNumPackets;
+  PBYTE m_pbSampleData[64];
+  DWORD* m_adwStatus;
+  bool m_bPause;
+  bool m_bMute;
+  bool m_bIsAllocated;
+  WAVEFORMATEXTENSIBLE m_wfxex;
+  LPDIRECTSOUND8 m_pDSound;
 
-	//add for 44.1KHz 2 Channel audio Passthrough after software resample
-	bool					m_bAc3DTS;	//input stream property
-	bool					m_bResampleAudio;
-	Cssrc					m_Resampler;
+  //add for 44.1KHz 2 Channel audio Passthrough after software resample
+  bool m_bAc3DTS; //input stream property
+  bool m_bResampleAudio;
+  Cssrc m_Resampler;
 };
 
 #endif // !defined(AFX_AC97AUDIORENDERER_H__B590A94D_D15E_43A6_A41D_527BD441B5F5__INCLUDED_)
