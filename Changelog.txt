@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 05-10-2004 fixed: [ 1039240 ] "Out of Memory Error" switching between pictures/slideshow
+  - 05-10-2004 fixed: PAL60 startup for emergency recovery console
   - 04-10-2004 added: Initial Symbols support to the virtual keyboard.
   - 04-10-2004 fixed: List/Thumbs page indicator didn't show total # of pages.
   - 04-10-2004 fixed: XBMC wouldn't run if AVAlaunch or X3 bios etc. set the EEPROM mode to PAL60
