@@ -65,8 +65,8 @@ void CGUIWindowMusicOverlay::OnAction(const CAction &action)
 				{
 					m_bShowInfoAlways = false;
 					m_bShowInfo       = false;
-          m_dwTimeout       = 0;
-				  m_iFrames         = STEPS;
+					m_dwTimeout       = 0;
+					m_iFrames         = STEPS;
 					m_iFrameIncrement = -1;
 				}
 
@@ -80,11 +80,11 @@ void CGUIWindowMusicOverlay::OnAction(const CAction &action)
 						m_bShowInfo=true;
 						g_stSettings.m_bMyMusicSongInfoInVis = true;
 						g_stSettings.m_bMyMusicSongThumbInVis = true;
-            m_iFrameIncrement = 1;
+						m_iFrameIncrement = 1;
 					}
 					// info is already on screen in its resting spot. 
 					// if INFO is hit again, set bool to make it stay there.
-					else if (m_iFrames == STEPS)
+					else if (m_iFrames == STEPS && g_stSettings.m_iMusicOSDTimeout > 0)
 					{
 						m_bShowInfoAlways=true;
 					}
@@ -245,14 +245,17 @@ void CGUIWindowMusicOverlay::Render()
 			//if we just got to the top, start the timer but keep us sitting there until timeout expires
 			if (m_dwTimeout <= 0)
 			{
-				//set timeout to g_stSettings.m_iOSDTimeout seconds in the future
+				//set timeout to g_stSettings.m_iMusicOSDTimeout seconds in the future
 				//(timeGetTime is in milliseconds, so we multiply by 1000
-				m_dwTimeout =  (g_stSettings.m_iOSDTimeout * 1000) + timeGetTime();
+				if (g_stSettings.m_iMusicOSDTimeout > 0)
+					m_dwTimeout = (g_stSettings.m_iMusicOSDTimeout * 1000) + timeGetTime();
+				else
+					m_dwTimeout = 0;
 				m_iFrames = STEPS;
 				m_iFrameIncrement = 0;
 			}
 			//if a timeout was set and it has expired, start moving down
-			else if (g_stSettings.m_iOSDTimeout > 0 && timeGetTime() > m_dwTimeout)
+			else if (g_stSettings.m_iMusicOSDTimeout > 0 && timeGetTime() > m_dwTimeout)
 			{
 				m_dwTimeout = 0;
 				m_iFrames = STEPS;

@@ -663,14 +663,13 @@ CStdString CMusicInfoTagLoaderMP3::ParseMP3Genre (const CStdString& str)
 
 	}
 
-	// finally return the / seperated string
+	// return the " / " seperate string
 	CStdString strGenre;
-	vector<CStdString>::iterator it;
-	for(it = vecGenres.begin(); it < vecGenres.end(); it++)
+	for (size_t i = 0; i < vecGenres.size() - 1; i++)
 	{
-		CStdString strTemp = *it;
-		strGenre += strTemp + "/";
+		strGenre += vecGenres.at(i) + " / ";
 	}
-	strGenre.TrimRight("/");
+	strGenre += vecGenres.back();
+
 	return strGenre;
 }
