@@ -2486,4 +2486,24 @@
 <id>14002</id>
 <value>Stacking: Luddig</value>
 </string>
+   <string>
+<id>14003</id>
+<value>Downloading playlist file...</value>
+</string>
+   <string>
+<id>14004</id>
+<value>Laddar ner stream listan...</value>
+</string>
+   <string>
+<id>14005</id>
+<value>Bearbetar stream listan...</value>
+</string>
+   <string>
+<id>14006</id>
+<value>Nerladdning av stream listan misslyckades</value>
+</string>
+   <string>
+<id>14007</id>
+<value>Nerladdning av playlist fil misslyckades</value>
+</string>
 </strings>
