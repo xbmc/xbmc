@@ -1551,6 +1551,9 @@ void CApplication::Stop()
 	try
 	{
 		CLog::Log("stop all");
+
+		CKaiClient::GetInstance()->RemoveObserver();
+
 		if (m_pWebServer)
 		{
 			CLog::Log("stop webserver");
