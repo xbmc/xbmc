@@ -32,11 +32,12 @@ int  CGraphicContext::GetHeight() const
   return m_iScreenHeight;
 }
 
-void CGraphicContext::Set(LPDIRECT3DDEVICE8 p3dDevice, int iWidth, int iHeight)
+void CGraphicContext::Set(LPDIRECT3DDEVICE8 p3dDevice, int iWidth, int iHeight, bool bWideScreen)
 {
   m_pd3dDevice=p3dDevice;
   m_iScreenWidth=iWidth;
   m_iScreenHeight=iHeight;
+	m_bWidescreen=bWideScreen;
 }
 
 void CGraphicContext::SetMediaDir(const CStdString& strMediaDir)
@@ -64,4 +65,9 @@ DWORD CGraphicContext::GetNewID()
 {
   m_dwID++;
   return  m_dwID;
+}
+
+bool CGraphicContext::IsWidescreen() const
+{
+	return m_bWidescreen;
 }
