@@ -353,3 +353,55 @@ void CMPlayer::SetSaturation(bool bPlus)
 	else
 		mplayer_put_key('7');
 }
+
+
+
+void CMPlayer::GetAudioInfo( CStdString& strAudioInfo)
+{
+	char strFourCC[10];
+	char strAudioCodec[128];
+	long lBitRate;
+	long lSampleRate;
+	int	 iChannels;
+	BOOL bVBR;
+	mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
+	float fSampleRate=((float)lSampleRate) / 1000.0f;
+	if (bVBR)
+	{
+		strAudioInfo.Format("audio:%s (%s) VBR br:%i sr:%02.2f khz chns:%i",
+									strFourCC,strAudioCodec,lBitRate,fSampleRate,iChannels);
+	}
+	else
+	{
+		strAudioInfo.Format("audio:%s (%s) CBR br:%i sr:%02.2f khz chns:%i",
+									strFourCC,strAudioCodec,lBitRate,fSampleRate,iChannels);
+	}
+}
+
+void CMPlayer::GetVideoInfo( CStdString& strVideoInfo)
+{
+
+	char  strFourCC[10];
+	char  strVideoCodec[128];
+	float fFPS;
+	unsigned int   iWidth;
+	unsigned int   iHeight;
+	long  lFrames2Early;
+	long  lFrames2Late;
+	mplayer_GetVideoInfo(strFourCC,strVideoCodec, &fFPS, &iWidth,&iHeight, &lFrames2Early, &lFrames2Late);
+	strVideoInfo.Format("video:%s fps:%02.2f %ix%i early/late:%i %i", 
+											strFourCC,fFPS,iWidth,iHeight,lFrames2Early,lFrames2Late);
+}
+
+
+void CMPlayer::GetGeneralInfo( CStdString& strVideoInfo)
+{
+	long lFramesDropped;
+	int iQuality;
+	int iCacheFilled;
+	float fTotalCorrection;
+	float fAVDelay;
+	mplayer_GetGeneralInfo(&lFramesDropped, &iQuality, &iCacheFilled, &fTotalCorrection, &fAVDelay);
+	strVideoInfo.Format("dropped:%i Q:%i cache:%i ct:%2.2f av:%2.2f", 
+												lFramesDropped, iQuality, iCacheFilled, fTotalCorrection, fAVDelay);
+}

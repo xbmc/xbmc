@@ -25,6 +25,7 @@ Keymappings when playing movies:
     step backward -10 min                       controller: DPAD down       remote    : down
     toggle OSD                                  controller: black           remote    : info
     toggle subtitles                            controller: white           remote    : title
+    show info                                   controller: Y               remote    : ?
   
 My Pictures when viewing a slideshow or picture:
   move when in zoom mode                        controller: DPAD            remote    : use up/down/left/right or thumbstick left

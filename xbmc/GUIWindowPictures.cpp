@@ -96,7 +96,7 @@ struct SSortPicturesByName
 CGUIWindowPictures::CGUIWindowPictures(void)
 :CGUIWindow(0)
 {
-	m_strDirectory="";
+	m_strDirectory="?";
   m_bDVDDiscChanged = false;
   m_bDVDDiscEjected = false;
 }
@@ -164,7 +164,8 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
     case GUI_MSG_WINDOW_INIT:
 		{
 			CSectionLoader::Unload("CXIMAGE");
-			m_strDirectory=g_stSettings.m_szDefaultPictures;
+			if (m_strDirectory=="?")
+				m_strDirectory=g_stSettings.m_szDefaultPictures;
 
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(101);
 			m_rootDir.SetMask(g_stSettings.m_szMyPicturesExtensions);

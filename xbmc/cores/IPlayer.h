@@ -32,6 +32,9 @@ public:
 	virtual void		SetBrightness(bool bPlus=true)=0;	
 	virtual void		SetHue(bool bPlus=true)=0;	
 	virtual void		SetSaturation(bool bPlus=true)=0;	
+	virtual void		GetAudioInfo( CStdString& strAudioInfo)=0;
+	virtual void		GetVideoInfo( CStdString& strVideoInfo)=0;
+	virtual void		GetGeneralInfo( CStdString& strVideoInfo)=0;
 protected:
 	IPlayerCallback& m_callback;
 };
