@@ -49,11 +49,15 @@ bool CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum)
 	CUtil::URLEncode(strPostData);
 	strURL+=strPostData;
 	CMusicAlbumInfo newAlbum("",strURL);
-	if ( newAlbum.Parse(strHTML) )
-	{
-		m_vecAlbums.push_back(newAlbum);
-		return true;
-	}
+  if (strHTML.Find("Album Search Results for:")==-1)
+  {
+    if (newAlbum.Parse(strHTML))
+	  {
+		  m_vecAlbums.push_back(newAlbum);
+		  return true;
+	  }
+    return false;
+  }
 
 	// check if we found a list of albums
 	CStdString strHTMLLow=strHTML;
@@ -72,7 +76,6 @@ bool CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum)
 	{
 		const CHTMLRow& row=table.GetRow(i);
 		CStdString strAlbumName;
-		CStdString strAlbumURL;
 
 		for (int iCol=0; iCol < row.GetColumns(); ++iCol)
 		{
@@ -95,25 +98,19 @@ bool CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum)
 				util.RemoveTags(strAlbum);
 				strAlbumName=strAlbum + " " + strAlbumName;
 			}
-			if (iCol==4 && strColum.Find("a href=\"javascript:j('") >= 0)
+			if (iCol==4 && strColum.Find("<a href") >= 0)
 			{
-				int iPos=strColum.Find(">");
-				if (iPos >= 0)
-				{
-					int iPosCookieStart=strColum.Find("('");
-					int iPosCookieEnd=strColum.Find("')",iPosCookieStart);
-					if (iPosCookieStart>=0 && iPosCookieEnd>=0)
-					{
-						iPosCookieStart+=2;
-						CStdString strCookie=strColum.Mid(iPosCookieStart,(int)iPosCookieEnd-iPosCookieStart);
-						// full album url:
-						// http://www.allmusic.com/cg/amg.dll?p=amg&token=&sql=10:66jieal64xs7
-						strAlbumURL.Format("http://www.allmusic.com/cg/amg.dll?p=amg&token=&sql=%s", strCookie.c_str());
+        CStdString strAlbumURL;
+		    int iStartOfUrl=strColum.Find("<a href", 0);
+		    int iEndOfUrl=strColum.Find(">", iStartOfUrl);
+		    CStdString strAlbum=strColum.Mid(iStartOfUrl, iEndOfUrl+1);
+		    util.getAttributeOfTag(strAlbum, "href=\"", strAlbumURL);
 
-						CMusicAlbumInfo newAlbum(strAlbumName,strAlbumURL);
+        if (!strAlbumURL.IsEmpty())
+        {
+						CMusicAlbumInfo newAlbum(strAlbumName,"http://www.allmusic.com"+strAlbumURL);
 						m_vecAlbums.push_back(newAlbum);
-					}
-				}
+        }
 			}
 		}
 	}

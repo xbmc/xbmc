@@ -1202,99 +1202,108 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumI
 	  m_dlgProgress->StartModal(GetID());
 	  m_dlgProgress->Progress();
   }
-	
-	CMusicInfoScraper scraper;
-	if (scraper.FindAlbuminfo(strAlbum))
-	{
-		// did we found at least 1 album?
-		int iAlbumCount=scraper.GetAlbumCount();
-		if (iAlbumCount >=1)
-		{
-			//yes
-			// if we found more then 1 album, let user choose one
-			int iSelectedAlbum=0;
-			if (iAlbumCount > 1)
-			{
-				//show dialog with all albums found
-				const WCHAR* szText=g_localizeStrings.Get(181).c_str();
-				CGUIDialogSelect *pDlg= (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
-        if (pDlg)
-        {
-				  pDlg->SetHeading(szText);
-				  pDlg->Reset();
-          pDlg->EnableButton(true);
-          pDlg->SetButtonLabel(413); // manual
+  
+  try 
+  {
+	  CMusicInfoScraper scraper;
+	  if (scraper.FindAlbuminfo(strAlbum))
+	  {
+		  // did we found at least 1 album?
+		  int iAlbumCount=scraper.GetAlbumCount();
+		  if (iAlbumCount >=1)
+		  {
+			  //yes
+			  // if we found more then 1 album, let user choose one
+			  int iSelectedAlbum=0;
+			  if (iAlbumCount > 1)
+			  {
+				  //show dialog with all albums found
+				  const WCHAR* szText=g_localizeStrings.Get(181).c_str();
+				  CGUIDialogSelect *pDlg= (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+          if (pDlg)
+          {
+				    pDlg->SetHeading(szText);
+				    pDlg->Reset();
+            pDlg->EnableButton(true);
+            pDlg->SetButtonLabel(413); // manual
 
-				  for (int i=0; i < iAlbumCount; ++i)
-				  {
-					  CMusicAlbumInfo& info = scraper.GetAlbum(i);
-					  pDlg->Add(info.GetTitle2());
-				  }
-				  pDlg->DoModal(GetID());
+				    for (int i=0; i < iAlbumCount; ++i)
+				    {
+					    CMusicAlbumInfo& info = scraper.GetAlbum(i);
+					    pDlg->Add(info.GetTitle2());
+				    }
+				    pDlg->DoModal(GetID());
 
-				  // and wait till user selects one
-				  iSelectedAlbum= pDlg->GetSelectedLabel();
-				  if (iSelectedAlbum< 0)
-					{
-						if (!pDlg->IsButtonPressed()) return false;
-						CStdString strNewAlbum=strAlbum;
-						if (!GetKeyboard(strNewAlbum)) return false;
-						if (strNewAlbum=="") return false;
-						if (m_dlgProgress) 
-						{
-							m_dlgProgress->SetLine(0,strNewAlbum);
-							m_dlgProgress->Progress();
-						}
+				    // and wait till user selects one
+				    iSelectedAlbum= pDlg->GetSelectedLabel();
+				    if (iSelectedAlbum< 0)
+					  {
+						  if (!pDlg->IsButtonPressed()) return false;
+						  CStdString strNewAlbum=strAlbum;
+						  if (!GetKeyboard(strNewAlbum)) return false;
+						  if (strNewAlbum=="") return false;
+						  if (m_dlgProgress) 
+						  {
+							  m_dlgProgress->SetLine(0,strNewAlbum);
+							  m_dlgProgress->Progress();
+						  }
 
-						return FindAlbumInfo(strNewAlbum, album);
-					}
-        }
-			}
+						  return FindAlbumInfo(strNewAlbum, album);
+					  }
+          }
+			  }
 
-			// ok, downloading the album info
-			album = scraper.GetAlbum(iSelectedAlbum);
+			  // ok, downloading the album info
+			  album = scraper.GetAlbum(iSelectedAlbum);
 
-			if (m_dlgProgress) 
-			{
-				m_dlgProgress->SetHeading(185);
-				m_dlgProgress->SetLine(0,album.GetTitle2());
-				m_dlgProgress->SetLine(1,"");
-				m_dlgProgress->SetLine(2,"");
-				m_dlgProgress->Progress();
-			}
+			  if (m_dlgProgress) 
+			  {
+				  m_dlgProgress->SetHeading(185);
+				  m_dlgProgress->SetLine(0,album.GetTitle2());
+				  m_dlgProgress->SetLine(1,"");
+				  m_dlgProgress->SetLine(2,"");
+				  m_dlgProgress->Progress();
+			  }
 
-			// download the album info
-			bool bLoaded=album.Loaded();
-			if (!bLoaded) 
-				bLoaded=album.Load();
+			  // download the album info
+			  bool bLoaded=album.Loaded();
+			  if (!bLoaded) 
+				  bLoaded=album.Load();
 
-			return true;
-		}
-		else 
-		{
-			// no albums found
-			if (pDlgOK)
-			{
-				pDlgOK->SetHeading(185);
-				pDlgOK->SetLine(0,L"");
-				pDlgOK->SetLine(1,187);
-				pDlgOK->SetLine(2,L"");
-				pDlgOK->DoModal(GetID());
-			}
-		}
-	}
-	else
-	{
-		// unable 2 connect to www.allmusic.com
-		if (pDlgOK)
-		{
-			pDlgOK->SetHeading(185);
-			pDlgOK->SetLine(0,L"");
-			pDlgOK->SetLine(1,499);
-			pDlgOK->SetLine(2,L"");
-			pDlgOK->DoModal(GetID());
-		}
-	}
+			  return true;
+		  }
+		  else 
+		  {
+			  // no albums found
+			  if (pDlgOK)
+			  {
+				  pDlgOK->SetHeading(185);
+				  pDlgOK->SetLine(0,L"");
+				  pDlgOK->SetLine(1,187);
+				  pDlgOK->SetLine(2,L"");
+				  pDlgOK->DoModal(GetID());
+			  }
+		  }
+	  }
+	  else
+	  {
+		  // unable 2 connect to www.allmusic.com
+		  if (pDlgOK)
+		  {
+			  pDlgOK->SetHeading(185);
+			  pDlgOK->SetLine(0,L"");
+			  pDlgOK->SetLine(1,499);
+			  pDlgOK->SetLine(2,L"");
+			  pDlgOK->DoModal(GetID());
+		  }
+	  }
+  }
+  catch(...)
+  {
+    if (m_dlgProgress && m_dlgProgress->IsRunning())
+      m_dlgProgress->Close();
 
+    CLog::Log(LOGERROR, "Exception while downloading album info");
+  }
 	return false;
 }
