@@ -357,6 +357,9 @@
 				RelativePath=".\xbmc\GUIWindowSettingsGeneral.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowSettingsMovieCalibration.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowSettingsScreen.cpp">
 			</File>
 			<File
@@ -507,6 +510,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettingsGeneral.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsMovieCalibration.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettingsScreen.h">

@@ -26,6 +26,8 @@ public:
   void         SetItems(int iItems);
 	void				 SetTextureWidth(int iWidth);
 	void				 SetTextureHeight(int iHeight);
+	int					 GetTextureWidth() const;
+	int					 GetTextureHeight() const;
 protected:
   virtual void       Update();
 	void							 Process();

@@ -286,3 +286,11 @@ void CGUIImage::SetTextureHeight(int iHeight)
 	m_iTextureHeight=iHeight;
 	Update();
 }
+int	CGUIImage::GetTextureWidth() const
+{
+	return m_iTextureWidth;
+}
+int CGUIImage::GetTextureHeight() const
+{
+	return m_iTextureHeight;
+}

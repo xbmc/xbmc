@@ -15,6 +15,7 @@ CGraphicContext::CGraphicContext(void)
   m_pd3dDevice=NULL;
   m_dwID=0;
   m_strMediaDir="D:\\media";
+	m_bShowPreviewWindow=false;
 }
 
 CGraphicContext::~CGraphicContext(void)
@@ -120,6 +121,15 @@ void CGraphicContext::SetViewWindow(const RECT&	rc)
 	m_videoRect.top   = rc.top;
 	m_videoRect.right = rc.right;
 	m_videoRect.bottom= rc.bottom;
+	if (m_bShowPreviewWindow && !m_bFullScreenVideo)
+	{
+		D3DRECT d3dRC;
+		d3dRC.x1=rc.left;
+		d3dRC.x2=rc.right;
+		d3dRC.y1=rc.top;
+		d3dRC.y2=rc.bottom;
+		Get3DDevice()->Clear( 1, &d3dRC, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
+	}
 }
 
 void CGraphicContext::SetFullScreenVideo(bool bOnOff)
@@ -147,4 +157,9 @@ void CGraphicContext::Lock()
 void CGraphicContext::Unlock()
 {
 	LeaveCriticalSection(&m_critSection);
+}
+
+void CGraphicContext::EnablePreviewWindow(bool bEnable)
+{
+	m_bShowPreviewWindow=bEnable;
 }

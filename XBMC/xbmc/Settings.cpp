@@ -56,6 +56,11 @@ CSettings::CSettings(void)
 	g_stSettings.m_bSoften=false;
 	g_stSettings.m_bZoom=false;
 	g_stSettings.m_bStretch=false;
+
+	g_stSettings.m_iMoviesOffsetX1=0;
+	g_stSettings.m_iMoviesOffsetY1=0;
+	g_stSettings.m_iMoviesOffsetX2=0;
+	g_stSettings.m_iMoviesOffsetY2=0;
 }
 
 CSettings::~CSettings(void)

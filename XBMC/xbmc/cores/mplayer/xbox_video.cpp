@@ -93,16 +93,16 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
 	//TODO
   RECT            rd_window;
   DWORD           dwUpdateFlags=0;
-  unsigned int    xscreen = g_graphicsContext.GetWidth();
-  unsigned int    yscreen = g_graphicsContext.GetHeight();
+	long    xscreen = (g_graphicsContext.GetWidth() + g_stSettings.m_iMoviesOffsetX2)-g_stSettings.m_iMoviesOffsetX1;
+  long    yscreen = (g_graphicsContext.GetHeight()+ g_stSettings.m_iMoviesOffsetY2)-g_stSettings.m_iMoviesOffsetY1;
 	if( g_graphicsContext.IsFullScreenVideo() )
   {
 		if ( g_stSettings.m_bStretch) 
 		{
-			rd.left=0;
-			rd.top=0;
-			rd.right=xscreen;
-			rd.bottom=yscreen;
+			rd.left   = g_stSettings.m_iMoviesOffsetX1;
+			rd.top    = g_stSettings.m_iMoviesOffsetY1;
+			rd.right  = rd.left+xscreen;
+			rd.bottom = rd.top+yscreen;
 			return 0;
 		}
 
@@ -119,20 +119,20 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
 		{
 			aspect(&width,&height,A_NOZOOM);
 		}
-    rd.left = (xscreen-width)/2;
-    rd.right = rd.left+width;
-    rd.top = (yscreen-height)/2;
-    rd.bottom = rd.top + height;
+    rd.left = (xscreen-(long)width)/2;
+    rd.right = rd.left+(long)width;
+    rd.top = (yscreen-(long)height)/2;
+    rd.bottom = rd.top + (long)height;
   }
 	else
 	{
 		const RECT& rc=g_graphicsContext.GetViewWindow();
-		width = rc.right-rc.left;
+		width  = rc.right-rc.left;
 		height = rc.bottom-rc.top;
-		int iwidth = (width/16)*16;
-		int iheight = (height/16)*16;
-		if (width%16) iwidth+=16;
-		if (iheight%16) iheight+=16;
+		int iwidth  = ( ((long)width ) /16)*16;
+		int iheight = ( ((long)height) /16)*16;
+		if ( ( (long)width )%16) iwidth+=16;
+		if ( ( (long)height)%16) iheight+=16;
 
 		rd.top=rc.top;
 		rd.left=rc.left;
@@ -189,6 +189,10 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
   //printf("Source:x1:%i,x2:%i,y1:%i,y2:%i\n",rs.left,rs.right,rs.top,rs.bottom);
   //printf("Image:x:%i->%i,y:%i->%i\n",image_width,d_image_width,image_height,d_image_height);
 
+	rd.left    += g_stSettings.m_iMoviesOffsetX1;
+	rd.right   += g_stSettings.m_iMoviesOffsetX1;
+	rd.top     += g_stSettings.m_iMoviesOffsetY1;
+	rd.bottom  += g_stSettings.m_iMoviesOffsetY1;
   
 	return 0;
 }
@@ -285,7 +289,7 @@ static void video_flip_page(void)
 	else
 	{
 		g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      
-		g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_dwVisibleOverlay], &rs, &rd, FALSE, 0x00010001  );
+		g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_dwVisibleOverlay], &rs, &rd, TRUE, 0x00010001  );
 	}
 
 	m_dwVisibleOverlay=1-m_dwVisibleOverlay;

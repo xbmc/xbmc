@@ -22,6 +22,7 @@
 #include "GUIWindowSettingsGeneral.h"
 #include "GUIWindowSettingsScreen.h"
 #include "GUIWindowSettingsUICalibration.h"
+#include "GUIWindowSettingsMovieCalibration.h"
 #include "GUIWindowMusicInfo.h" 
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowMusicOverlay.h"
@@ -77,6 +78,7 @@ public:
 	CGUIWindowVideoInfo							m_guiVideoInfo;
 	CGUIWindowSettingsScreen				m_guiSettingsScreen;
 	CGUIWindowSettingsUICalibration	m_guiSettingsUICalibration;
+	CGUIWindowSettingsMovieCalibration m_guiSettingsMovieCalibration;
 	CGUIDialogSelect								m_guiDialogSelect;
 	CGUIWindowMusicOverlay					m_guiMusicOverlay;
 	CGUIWindowFullScreen						m_guiWindowFullScreen;
