@@ -24,6 +24,40 @@ HANDLE iso9660::m_hCDROM=NULL;
 static CRITICAL_SECTION m_critSection;
 #define BUFFER_SIZE MODE2_DATA_SIZE
 #define RET_ERR -1
+
+
+//******************************************************************************************************************
+const string iso9660::ParseName(struct	iso9660_Directory& isodir)
+{
+	string temp_text=(char*)isodir.FileName;
+	temp_text.resize(isodir.Len_Fi); 
+	if (isodir.FileName[isodir.Len_Fi] == 'R' && isodir.FileName[isodir.Len_Fi+1]=='R')
+	{
+		// rockridge
+		int iPos=isodir.Len_Fi+5;
+		do
+		{
+			if (isodir.FileName[iPos]=='N'&& isodir.FileName[iPos+1]=='M')
+			{
+				// altername name
+				// "N" "M"		LEN_NM	 1		FLAGS		NAMECONTENT
+				// BP1 BP2    BP3      BP4  BP5     BP6-LEN_NM
+				int iNameLen = isodir.FileName[iPos+2]-5;
+				temp_text=(char*)&isodir.FileName[iPos+5];
+				temp_text.resize(iNameLen);
+				iPos+=(iNameLen+5);
+			}
+			if ( isascii(isodir.FileName[iPos]) && isascii(isodir.FileName[iPos+1]))
+			{
+				// ??
+				// "?" "?"  LEN		
+				// BP1 BP2  BP3   
+				iPos += isodir.FileName[iPos+2];	
+			}
+		} while (33+iPos < isodir.ucRecordLength);
+	}
+	return temp_text;
+}
 //******************************************************************************************************************
 struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const char *path )
 {
@@ -118,7 +152,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 				}
 				if (!m_info.joliet && isodir.FileName[0]>=0x20 )
 				{
-					temp_text=(char*)isodir.FileName;
+					temp_text=ParseName(isodir);
 					bContinue=true;
 				}
 				if (bContinue)
@@ -193,7 +227,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 				}
 				if (!m_info.joliet && isodir.FileName[0]>=0x20 )
 				{
-					temp_text=(char*)isodir.FileName;
+					temp_text=ParseName(isodir);
 					bContinue=true;
 				}
 				if (bContinue)
