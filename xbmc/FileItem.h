@@ -4,8 +4,7 @@
   */
 #pragma once
 #include "guilistitem.h"
-#include "MusicInfoTag.h"
-#include "MusicDatabase.h"
+#include "song.h"
 #include "settings.h"
 #include "utils/archive.h"
 

@@ -2,8 +2,6 @@
 #define _CCDDARIPPER_H
 
 #include "CDDAReader.h"
-#include "..\MusicInfotag.h"
-#include "..\FileItem.h"
 #include "Encoder.h"
 
 class CCDDARipper

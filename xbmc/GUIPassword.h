@@ -1,6 +1,5 @@
 #pragma once
 #include "GUIDialog.h"
-#include "FileItem.h"
 
 class CGUIPassword :
 	public CGUIDialog

@@ -4,7 +4,6 @@
 #include "DVDInputStream.h"
 #include "DVDInputStreamFile.h"
 #include "DVDInputStreamNavigator.h"
-#include "..\..\..\fileitem.h"
 
 CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const char* strFile)
 {
