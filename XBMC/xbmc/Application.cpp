@@ -24,6 +24,8 @@
 
 
 CApplication::CApplication(void)
+:m_ctrDpad(220,220)
+,m_ctrIR(220,220)
 {
   
 }
@@ -146,32 +148,40 @@ void CApplication::FrameMove()
   ReadInput();
 	XBIR_REMOTE* pRemote	= &m_DefaultIR_Remote;
   XBGAMEPAD*  pGamepad	= &m_DefaultGamepad;
-  if ( pGamepad->bAnalogButtons[XINPUT_GAMEPAD_LEFT_TRIGGER])
+
+	WORD wButtons = pGamepad->wButtons;
+	WORD wRemotes = pRemote->wPressedButtons;
+	WORD wDpad = wButtons&(XINPUT_GAMEPAD_DPAD_UP|XINPUT_GAMEPAD_DPAD_DOWN|XINPUT_GAMEPAD_DPAD_LEFT|XINPUT_GAMEPAD_DPAD_RIGHT);
+	
+	WORD wDir = m_ctrDpad.DpadInput(wDpad,0!=pGamepad->bAnalogButtons[XINPUT_GAMEPAD_LEFT_TRIGGER],0!=pGamepad->bAnalogButtons[XINPUT_GAMEPAD_RIGHT_TRIGGER]);
+	wDir |= m_ctrIR.IRInput(wRemotes);
+
+  if ( wDir & DC_LEFTTRIGGER)
   {
     CKey key(true,KEY_BUTTON_LEFT_TRIGGER);
     m_gWindowManager.OnKey(key);   
   }
-  if ( pGamepad->bAnalogButtons[XINPUT_GAMEPAD_RIGHT_TRIGGER])
+  if ( wDir & DC_RIGHTTRIGGER)
   {
     CKey key(true,KEY_BUTTON_RIGHT_TRIGGER);
     m_gWindowManager.OnKey(key);   
   }
-  if ( pGamepad->wPressedButtons&XINPUT_GAMEPAD_DPAD_LEFT )
+  if ( wDir & DC_LEFT )
   {
     CKey key(true,KEY_BUTTON_DPAD_LEFT);
     m_gWindowManager.OnKey(key);   
   }
-  if ( pGamepad->wPressedButtons&XINPUT_GAMEPAD_DPAD_RIGHT)
+  if ( wDir & DC_RIGHT)
   {
     CKey key(true,KEY_BUTTON_DPAD_RIGHT);
     m_gWindowManager.OnKey(key);   
   }
-  if ( pGamepad->wPressedButtons&XINPUT_GAMEPAD_DPAD_UP)
+  if ( wDir & DC_UP )
   {
     CKey key(true,KEY_BUTTON_DPAD_UP);
     m_gWindowManager.OnKey(key);   
   }
-  if ( pGamepad->wPressedButtons&XINPUT_GAMEPAD_DPAD_DOWN)
+  if ( wDir & DC_DOWN )
   {
     CKey key(true,KEY_BUTTON_DPAD_DOWN);
     m_gWindowManager.OnKey(key);   
@@ -257,30 +267,6 @@ void CApplication::FrameMove()
 		case XINPUT_IR_REMOTE_INFO:
     {
 		  CKey key(true,KEY_REMOTE_INFO);
-      m_gWindowManager.OnKey(key);   
-		  break;
-    }
-		case XINPUT_IR_REMOTE_UP:
-    {
-		  CKey key(true,KEY_REMOTE_UP);
-      m_gWindowManager.OnKey(key);   
-		  break;
-    }
-		case XINPUT_IR_REMOTE_DOWN:
-    {
-		  CKey key(true,KEY_REMOTE_DOWN);
-      m_gWindowManager.OnKey(key);   
-		  break;
-    }
-		case XINPUT_IR_REMOTE_LEFT:
-    {
-		  CKey key(true,KEY_REMOTE_LEFT);
-      m_gWindowManager.OnKey(key);   
-		  break;
-    }
-		case XINPUT_IR_REMOTE_RIGHT:
-    {
-		  CKey key(true,KEY_REMOTE_RIGHT);
       m_gWindowManager.OnKey(key);   
 		  break;
     }
