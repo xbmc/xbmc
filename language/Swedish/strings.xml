@@ -62,14 +62,11 @@
   <string>
     <id>17</id>
     <value>Söndag</value>
-  </string>
-  
-    
+  </string>    
   <string>
     <id>21</id>
     <value>Januari</value>
-  </string>
-  
+  </string> 
   <string>
     <id>22</id>
     <value>Februari</value>
@@ -1290,7 +1287,7 @@
   </string>   
   <string>
     <id>405</id>
-    <value>Dew Point</value>
+    <value>Dagg i luften</value>
   </string> 
   <string>
     <id>406</id>
@@ -1572,6 +1569,35 @@
      <id>477</id>
     <value>Kunde inte ladda playlist</value>
    </string>
+  <string>
+    <id>478</id>
+    <value>OSD</value>
+  </string>
+  <string>
+    <id>479</id>
+    <value>Skal och Språk</value>
+  </string>
+  <string>
+    <id>480</id>
+    <value>Användar Gränssnitt</value>
+  </string>
+  <string>
+    <id>481</id>
+    <value>Ljud Val</value>
+  </string>
+  <string>
+    <id>482</id>
+    <value>Om XBMC</value>
+  </string>
+  <string>
+    <id>483</id>
+    <value>Album</value>
+  </string>
+  <string>
+    <id>484</id>
+    <value>Artist</value>
+  </string>
+
  <string><id>10000</id><value>Start</value></string>
  <string><id>10001</id><value>Mina Program</value></string>
  <string><id>10002</id><value>Mina Bilder</value></string>
