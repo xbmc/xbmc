@@ -422,9 +422,9 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 			selectionNumber = catalogNumber( parameter);
 			if (navigatorState == WEB_NAV_PLAYLIST)
 			{
-				if (selectionNumber <= g_playlistPlayer.size())
+				if (selectionNumber <= g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size())
 				{
-					strcpy(buffer, g_playlistPlayer[selectionNumber].GetDescription());
+					strcpy(buffer, g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC )[selectionNumber].GetDescription());
 					output = buffer;
 				}
 			}
@@ -492,7 +492,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 			int items;
 			if (navigatorState == WEB_NAV_PLAYLIST)
 			{
-				items = g_playlistPlayer.size();
+				items = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
 			}
 			else
 			{
@@ -513,8 +513,8 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 			CStdString name;
 			if (navigatorState == WEB_NAV_PLAYLIST)
 			{
-				if(catalogItemCounter < g_playlistPlayer.size()) {
-					name = g_playlistPlayer[catalogItemCounter].GetDescription();
+				if(catalogItemCounter < g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size()) {
+					name = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC )[catalogItemCounter].GetDescription();
 				}
 			}
 			else
@@ -538,10 +538,10 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 			CStdString name;
 			if (navigatorState == WEB_NAV_PLAYLIST)
 			{
-				if((catalogItemCounter + 1) < g_playlistPlayer.size())
+				if((catalogItemCounter + 1) < g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size())
 				{
 					++catalogItemCounter;
-					name = g_playlistPlayer[catalogItemCounter].GetDescription();
+					name = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC )[catalogItemCounter].GetDescription();
 					if( eid != NO_EID) {
 						ejSetResult( eid, (char_t *)name.c_str());
 					} else {
@@ -611,7 +611,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 							CStdString filename = itm->m_strPath;
 
 							PLAYLIST::CPlayList::CPlayListItem playlistItem(description, filename /*, duration*/);
-							g_playlistPlayer.Add(playlistItem);
+							g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).Add(playlistItem);
 							delete items[i];
 						}
 					}
@@ -623,13 +623,13 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 						if (description == "..") return 0;
 
 						PLAYLIST::CPlayList::CPlayListItem playlistItem(description, filename /*, duration*/);
-						g_playlistPlayer.Add(playlistItem);
+						g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).Add(playlistItem);
 					}
 				}
 				else if (strstr( parameter, XBMC_CAT_UNQUE) != NULL)
 				{
 					// attemt to unque item from playlist.
-					g_playlistPlayer.Remove(g_playlistPlayer[selectionNumber].GetFileName());
+					g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).Remove(g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC )[selectionNumber].GetFileName());
 				}
 				else
 				{
