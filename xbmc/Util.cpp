@@ -1402,11 +1402,8 @@ void CUtil::CacheSubtitles(const CStdString& strMovie)
   char * sub_exts[] = {  ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx",".ifo", NULL};
   int iPos=0;
   bool bFoundSubs=false;
-  CURL url(strMovie);
-  if (url.GetProtocol() == "http") return;
-  if (url.GetProtocol() == "shout") return;
-  // check alternate subtitle directory
-  if (strlen(g_stSettings.m_szAlternateSubtitleDirectory)==0) return;
+
+  //delete cached subs
   WIN32_FIND_DATA wfd;
   CAutoPtrFind hFind ( FindFirstFile("Z:\\*.*",&wfd));
   if (hFind.isValid())
@@ -1428,26 +1425,31 @@ void CUtil::CacheSubtitles(const CStdString& strMovie)
     } while (FindNextFile((HANDLE)hFind, &wfd));
   }
 
-  iPos=0;
-  while (sub_exts[iPos])
+  if (CUtil::IsPlayList(strMovie)) return;
+  if (strlen(g_stSettings.m_szAlternateSubtitleDirectory)!=0) 
   {
-    CStdString strSource,strDest;
-    strDest.Format("Z:\\subtitle%s", sub_exts[iPos]);
-
-    if (CUtil::IsVideo(strMovie))
+    // check alternate subtitle directory
+    iPos=0;
+    while (sub_exts[iPos])
     {
-      CStdString strFname;
-      strFname=CUtil::GetFileName(strMovie);
-      strSource.Format("%s\\%s", g_stSettings.m_szAlternateSubtitleDirectory,strFname.c_str());
-      CUtil::ReplaceExtension(strSource,sub_exts[iPos],strSource);
-      CFile file;
-      if ( file.Cache(strSource.c_str(), strDest.c_str(),NULL,NULL))
+      CStdString strSource,strDest;
+      strDest.Format("Z:\\subtitle%s", sub_exts[iPos]);
+
+      if (CUtil::IsVideo(strMovie))
       {
-        CLog::Log(" cached subtitle %s->%s\n", strSource.c_str(), strDest.c_str());
-        bFoundSubs=true;
+        CStdString strFname;
+        strFname=CUtil::GetFileName(strMovie);
+        strSource.Format("%s\\%s", g_stSettings.m_szAlternateSubtitleDirectory,strFname.c_str());
+        CUtil::ReplaceExtension(strSource,sub_exts[iPos],strSource);
+        CFile file;
+        if ( file.Cache(strSource.c_str(), strDest.c_str(),NULL,NULL))
+        {
+          CLog::Log(" cached subtitle %s->%s\n", strSource.c_str(), strDest.c_str());
+          bFoundSubs=true;
+        }
       }
+      iPos++;
     }
-    iPos++;
   }
 
   if (bFoundSubs) return;
