@@ -5,7 +5,7 @@
   <string><id>3</id><value>Películas</value></string>
   <string><id>4</id><value>Guía TV</value></string>
   <string><id>5</id><value>Ajustes</value></string>
-  <!-- String with id 6 should not be set here, only in the english language file !-->
+  <!-- La línea string id 6 no se usa aquí, solamente se pone en el fichero de idioma inglés !-->
   <string><id>7</id><value>Archivos</value></string>
   <string><id>8</id><value>Meteorología</value></string>
   <string><id>11</id><value>Lunes</value></string>
@@ -241,28 +241,28 @@
   <string><id>310</id><value>- Auto brillo/contraste</value></string>
   <string><id>311</id><value>- Desanillado</value></string>
   <string><id>312</id><value>(0=auto)</value></string>
-  <string><id>313</id><value>Borrar base de datos</value></string>
+  <string><id>313</id><value>Reorganizar base de datos</value></string>
   <string><id>314</id><value>Preparando...</value></string>
   <string><id>315</id><value>Error en base de datos</value></string>
   <string><id>316</id><value>Buscando canciones...</value></string>
-  <string><id>317</id><value>Limpieza efectuada</value></string>
-  <string><id>318</id><value>Borrando canciones...</value></string>
-  <string><id>319</id><value>Error al borrar canciones</value></string>
-  <string><id>320</id><value>Borrando artistas...</value></string>
-  <string><id>321</id><value>Error al borrar artistas</value></string>
-  <string><id>322</id><value>Borrando géneros...</value></string>
-  <string><id>323</id><value>Error al borrar géneros</value></string>
-  <string><id>324</id><value>Borrando rutas...</value></string>
-  <string><id>325</id><value>Error al borrar rutas</value></string>
-  <string><id>326</id><value>Borrando álbumes...</value></string>
-  <string><id>327</id><value>Error al borrar álbumes</value></string>
+  <string><id>317</id><value>Reorganización efectuada</value></string>
+  <string><id>318</id><value>Reorganizando canciones...</value></string>
+  <string><id>319</id><value>Error al reorganizar canciones</value></string>
+  <string><id>320</id><value>Reorganizando artistas...</value></string>
+  <string><id>321</id><value>Error al reorganizar artistas</value></string>
+  <string><id>322</id><value>Reorganizando géneros...</value></string>
+  <string><id>323</id><value>Error al reorganizar géneros</value></string>
+  <string><id>324</id><value>Reorganizando rutas...</value></string>
+  <string><id>325</id><value>Error al reorganizar rutas</value></string>
+  <string><id>326</id><value>Reorganizando álbumes...</value></string>
+  <string><id>327</id><value>Error al reorganizar álbumes</value></string>
   <string><id>328</id><value>Guardando cambios...</value></string>
   <string><id>329</id><value>Error al guardar cambios</value></string>
   <string><id>330</id><value>Esto puede durar varios minutos...</value></string>
   <string><id>331</id><value>Comprimiendo base de datos...</value></string>
   <string><id>332</id><value>Error al comprimir base de datos</value></string>
-  <string><id>333</id><value>¿Borrar la base de datos musical?</value></string>
-  <string><id>334</id><value>Borrar la base de datos musical</value></string>
+  <string><id>333</id><value>¿Reorganizar la base de datos musical?</value></string>
+  <string><id>334</id><value>Reorganizar la base de datos musical</value></string>
   <string><id>335</id><value>Seleccionar</value></string>
   <string><id>336</id><value>Ajustar Fotog/seg</value></string>
   <string><id>337</id><value>Salida de audio</value></string>
@@ -428,16 +428,16 @@
   <string><id>497</id><value>Ocultar extensiones</value></string>
   <string><id>498</id><value>Por: Tipo</value></string>
   <string><id>499</id><value>Imposible conectar con www.allmusic.com</value></string>
-  <string><id>500</id><value>Fallo en la descarga de info del álbum</value></string>
+  <string><id>500</id><value>Fallo al descargar información del álbum</value></string>
   <string><id>501</id><value>Localizando nombre de los álbumes...</value></string>
   <string><id>502</id><value>Abierto</value></string>
   <string><id>503</id><value>Ocupado</value></string>
   <string><id>504</id><value>Vacío</value></string>		
-  <string><id>505</id><value>Cargando info de los ficheros...</value></string>
+  <string><id>505</id><value>Cargando información de los ficheros...</value></string>
   <string><id>506</id><value>Usar el nombre del directorio como descripción</value></string>
   <string><id>507</id><value>Por: Uso</value></string>
   <string><id>508</id><value>No usar accesos directos ni Explorar</value></string> 
-  <string><id>600</id><value>Ripear CD</value></string>
+  <string><id>600</id><value>Ripear AudioCD</value></string>
   <string><id>601</id><value>Medio</value></string>
   <string><id>602</id><value>Estandar</value></string>
   <string><id>603</id><value>Extremo</value></string>
@@ -453,66 +453,40 @@
   <string><id>623</id><value>Velocidad de muestreo</value></string>
   <string><id>624</id><value>Incluir número de pista</value></string>
   <string><id>625</id><value>Todas las canciones</value></string>
-
   <string><id>629</id><value>Modo de Vista</value></string>
-
   <string><id>630</id><value>Normal</value></string>
-
   <string><id>631</id><value>Zoom</value></string>
-
   <string><id>632</id><value>Adaptar 4:3</value></string>
-
   <string><id>633</id><value>Adaptar 14:9</value></string>
-
   <string><id>634</id><value>Adaptar 16:9</value></string>
-
   <string><id>635</id><value>Tamaño Original</value></string>
-
   <string><id>636</id><value>Personalizado</value></string>
-
   <string><id>700</id><value>Borrar la libreria</value></string>
-
   <string><id>701</id><value>Eliminando canciones antiguas de la libreria</value></string>
-
   <string><id>702</id><value>Esta ruta ya ha sido explorada.</value></string>
-
-  <string><id>703</id><value>Pulse SI para actualizar todas las canciones de esta trayectoria.</value></string>
-
+  <string><id>703</id><value>Pulse SI para actualizar todas las canciones.</value></string>
   <string><id>704</id><value>Pulse NO para añadir una nueva canción.</value></string>
-
   <string><id>705</id><value>Opciones de Red</value></string>
-
   <string><id>706</id><value>- Host del Proxy HTTP</value></string>
-
   <string><id>707</id><value>- Puerto del Proxy HTTP</value></string>
-
   <string><id>708</id><value>Activar Proxy HTTP</value></string>
-
   <string><id>709</id><value>Xtag de XLink Kai</value></string>
-
   <string><id>710</id><value>Contraseña de XLink Kai</value></string>
-
   <string><id>711</id><value>Protocolo Internet (IP)</value></string>
-
   <string><id>712</id><value>Puerto especificado inválido. Valores desde 1 a 65535.</value></string>
-
-  <string><id>713</id><value>Proxy HTTP</value></string>
-  <string><id>714</id><value>XLink Kai</value></string>
-  <string><id>715</id><value>Asignación</value></string>
-  <string><id>716</id><value>Automática (DHCP)</value></string>
-  <string><id>717</id><value>Manual (Estática)</value></string>
-  <string><id>718</id><value>Por defecto (Tomada del Dashboard)</value></string>
-  <string><id>719</id><value>- Dirección IP</value></string>
-  <string><id>720</id><value>- Máscara de Subred</value></string>
-  <string><id>721</id><value>- Puerta de Enlace</value></string>
+  <string><id>713</id><value>Proxy HTTP</value></string>	
+  <string><id>714</id><value>XLink Kai</value></string>	
+  <string><id>715</id><value>Asignación</value></string>	
+  <string><id>716</id><value>Automática (DHCP)</value></string>	
+  <string><id>717</id><value>Manual (Estática)</value></string>	
+  <string><id>718</id><value>Por defecto (Tomada del Dashboard)</value></string>	
+  <string><id>719</id><value>- Dirección IP</value></string>	
+  <string><id>720</id><value>- Máscara de Subred</value></string>	
+  <string><id>721</id><value>- Puerta de Enlace</value></string>	
   <string><id>722</id><value>- Servidor de DNS</value></string>
-
   <string><id>723</id><value>Guardar y resetear la XBox</value></string>
-
   <string><id>724</id><value>Dirección especificada inválida. El formato es AAA.BBB.CCC.DDD</value></string>
-
   <string><id>725</id><value>un número entre 0 y 255.</value></string>
-
   <string><id>726</id><value>Cambios sin guardar. ¿Continuar sin guardar?</value></string>
   <string><id>727</id><value>Servidor Web</value></string>	
   <string><id>728</id><value>Servidor FTP</value></string>	
@@ -532,9 +506,9 @@
   <string><id>742</id><value>Blanco</value></string>	
   <string><id>743</id><value>Amarillo</value></string>
   <string><id>744</id><value>Ficheros</value></string>		
-  <string><id>745</id><value>No hay recabada información para esta vista</value></string>		
-  <string><id>746</id><value>Cambiar a los archivos de vistas</value></string>
-  <string><id>747</id><value>No hay suficiente memoria para cargar la imagen</value></string>
+  <string><id>745</id><value>No hay información para este tipo de vista</value></string>		
+  <string><id>746</id><value>Cambie a vista por Ficheros</value></string>
+  <string><id>747</id><value>Error al cargar la imagen</value></string>
   <string><id>748</id><value>Editar ruta</value></string>
   <string><id>749</id><value>Añadir distribución</value></string>
   <string><id>750</id><value>¿Esta seguro?</value></string>
@@ -590,77 +564,41 @@
   <string><id>12007</id><value>Imágenes/presentación</value></string>
   <string><id>12008</id><value>Diálogo apilar ficheros</value></string>
   <string><id>12310</id><value>0</value></string>
-
   <string><id>12311</id><value>1</value></string>
-
   <string><id>12312</id><value>2</value></string>
-
   <string><id>12313</id><value>3</value></string>
-
   <string><id>12314</id><value>4</value></string>
-
   <string><id>12315</id><value>5</value></string>
-
   <string><id>12316</id><value>6</value></string>
-
   <string><id>12317</id><value>7</value></string>
-
   <string><id>12318</id><value>8</value></string>
-
   <string><id>12319</id><value>9</value></string>
-
   <string><id>12320</id><value>c</value></string>
-
   <string><id>12321</id><value>ok</value></string>
-
   <string><id>12322</id><value>*</value></string>
-
   <string><id>12324</id><value>Bloqueo Maestro del XBMC</value></string>
-
   <string><id>12325</id><value>Carpeta Bloqueada</value></string>
-
   <string><id>12326</id><value>Escriba la contraseña</value></string>
-
   <string><id>12327</id><value>Escriba el Código Maestro y</value></string>
-
-  <string><id>12328</id><value>Escriba el código de desbloqueo y</value></string>
- 
+  <string><id>12328</id><value>Escriba el código de desbloqueo y</value></string> 
   <string><id>12329</id><value>pulse Enter, o C para cancelar</value></string>
-
   <string><id>12330</id><value>Pulse una combinación de botones en el</value></string>
-
   <string><id>12331</id><value>mando y pulse Start, o Back para cancelar</value></string>
-
   <string><id>12332</id><value>Bloquear Distribución</value></string>
-
   <string><id>12333</id><value>Desbloquear Distribución</value></string>
-
   <string><id>12334</id><value>Resetear Bloqueo</value></string>
-
   <string><id>12335</id><value>Quitar Bloqueo</value></string>
-
   <string><id>12336</id><value>Seleccionar tipo de bloqueo a usar:</value></string>
-
   <string><id>12337</id><value>Contraseña Numérica</value></string>
-
   <string><id>12338</id><value>Combinación de botones</value></string>
-
   <string><id>12339</id><value>Contraseña Alfanumérica</value></string>
-
   <string><id>12340</id><value>Escriba la nueva contraseña</value></string>
-
   <string><id>12341</id><value>Reescriba la nueva contraseña</value></string>
-
   <string><id>12342</id><value>Incorrecto, quedan</value></string>
-
   <string><id>12343</id><value>intentos</value></string>
-
   <string><id>12344</id><value>Las contraseñas no son iguales.</value></string>
-
   <string><id>12345</id><value>Acceso Denegado</value></string>
-
   <string><id>12346</id><value>Se ha excedido el límite de intentos.</value></string>
-
   <string><id>12347</id><value>La XBOX se apagará ahora.</value></string>
   <string><id>12600</id><value>Meteorología</value></string>
   <string><id>12900</id><value>Salvapantallas</value></string>
@@ -674,35 +612,25 @@
   <string><id>13006</id><value>Dashboard</value></string> 
   <string><id>13100</id><value>Filtro antivibración</value></string>
   <string><id>13200</id><value>Perfiles</value></string>
-
-  <string><id>13201</id><value>¿Borrar perfil '%s'?</value></string>
-
-  <string><id>13202</id><value>Guardando opciones del perfil actual...</value></string>
-
-  <string><id>13203</id><value>El perfil '%s' ha sido guardado</value></string>
-
+  <string><id>13201</id><value>¿Quiere borrar el perfil '%s'?</value></string>
+  <string><id>13202</id><value>Guardar opciones del perfil actual...</value></string>
+  <string><id>13203</id><value>El perfil '%s' ha sido cargado</value></string>
   <string><id>13204</id><value>Último perfil cargado:</value></string>
-
   <string><id>13205</id><value>Desconocido</value></string>
   <string><id>13299</id><value>Temperatura máxima</value></string>
-
   <string><id>13300</id><value>Velocidad del ventilador</value></string>
-
   <string><id>13301</id><value>Autocontrol del ventilador por temperatura</value></string>
-
   <string><id>13302</id><value>Controlar la velocidad del ventilador</value></string>
-
   <string><id>13303</id><value>Fuente del Skin</value></string>
-
   <string><id>13304</id><value>Permitir mover a la vez secuencias bidireccionales</value></string>
-  <string><id>13305</id><value>Activar alimentación RSS</value></string>
+  <string><id>13305</id><value>Activar información RSS</value></string>
   <string><id>13306</id><value>Ocultar el icono de subir de carpeta</value></string>
   <string><id>13307</id><value>Ocultar números de pista</value></string>
   <string><id>13308</id><value>¿Desea reiniciar la xbox</value></string>
   <string><id>13309</id><value>en lugar del XBMC?</value></string>
   <string><id>13310</id><value>Efecto de zoom</value></string>
   <string><id>13311</id><value>Efecto flotante</value></string>
-  <string><id>13312</id><value>Reducción de la barra negra</value></string>
+  <string><id>13312</id><value>Reducción de las barras negras</value></string>
   <string><id>13313</id><value>Resetear/Reiniciar</value></string>
   <string><id>13314</id><value>Tiempo en pantalla del OSD</value></string>
   <string><id>13315</id><value>Crear carátulas</value></string>
@@ -710,7 +638,7 @@
   <string><id>13317</id><value>Ver presentación</value></string>
   <string><id>13318</id><value>Diapositiva recursiva</value></string>
   <string><id>13319</id><value>Aleatorio</value></string>
-  <string><id>13320</id><value>Stereo</value></string>
+  <string><id>13320</id><value>Estéreo</value></string>
   <string><id>13321</id><value>Solo izquierdo</value></string>
   <string><id>13322</id><value>Solo derecho</value></string>
   <string><id>13323</id><value>Activar CD+G</value></string>
@@ -729,20 +657,22 @@
   <string><id>13336</id><value>Borrar botón</value></string>
   <string><id>13337</id><value>- Redireccionar a 2 Canales PCM</value></string>  
   <string><id>13338</id><value>LED frontal</value></string>
-
   <string><id>13339</id><value>Color del LED frontal</value></string>
-
   <string><id>13340</id><value>Dejarlo como estaba</value></string>
-
   <string><id>13341</id><value>Verde</value></string>
-
   <string><id>13342</id><value>Naranja</value></string>
-
   <string><id>13343</id><value>Rojo</value></string>
-
   <string><id>13344</id><value>Cíclico</value></string>
-
   <string><id>13345</id><value>Apagar el LED al reproducir</value></string>
+  <string><id>13346</id><value>Info de la película</value></string>
+  <string><id>13347</id><value>Poner objeto en cola</value></string>
+  <string><id>13348</id><value>Buscar en IMDb...</value></string>
+  <string><id>13349</id><value>Buscar info de todo</value></string>
+  <string><id>13350</id><value>Reproducir ahora...</value></string>
+  <string><id>13351</id><value>Info del álbum</value></string>
+  <string><id>13352</id><value>Explorar en B. de D.</value></string>
+  <string><id>13353</id><value>Detener la exploración</value></string>
+  
   <string><id>14000</id><value>Apilar: No</value></string>
   <string><id>14001</id><value>Apilar: Simple</value></string>
   <string><id>14002</id><value>Apilar: Complejo</value></string>
@@ -788,24 +718,17 @@
   <string><id>14042</id><value>Dirección IP del motor</value></string>
   <string><id>14043</id><value>- Apagar aunque esté reproduciendo</value></string>
   <string><id>14044</id><value>%i mins</value></string>
-
   <string><id>14045</id><value>%i segs</value></string>
-
   <string><id>14046</id><value>%i ms</value></string>
-
   <string><id>14047</id><value>%i %%</value></string>
-
   <string><id>14048</id><value>%i kbps</value></string>
-
   <string><id>14049</id><value>%i kb</value></string>
-
   <string><id>14050</id><value>%i.0 dB</value></string>
-
   <string><id>14051</id><value>Ver el reloj en formato 12 horas</value></string>
-
   <string><id>14052</id><value>Invertir mes y día en el menú principal</value></string>
-
   <string><id>14053</id><value>Filtros GUI</value></string>
-
   <string><id>14054</id><value>Activar búsqueda en Internet</value></string>
+  <string><id>14055</id><value>Usar exploración oculta</value></string>
+  <string><id>14056</id><value>Detener la exploración</value></string>
+  <string><id>14057</id><value>No es posible mientras se explora la información de los medios</value></string>
 </strings>

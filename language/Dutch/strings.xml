@@ -5,8 +5,8 @@
 <string><id>3</id><value>Films</value></string>
 <string><id>4</id><value>TV Gids</value></string>
 <string><id>5</id><value>Instellingen</value></string>
-<string><id>7</id><value>Bestandsbeheer</value></string>
 <!-- String with id 6 should not be set here, only in the english language file !-->
+<string><id>7</id><value>Bestandsbeheer</value></string>
 <string><id>8</id><value>Weerbericht</value></string>
 <string><id>11</id><value>maandag</value></string>
 <string><id>12</id><value>dinsdag</value></string>
@@ -32,9 +32,9 @@
 <string><id>100</id><value>Weergave:Iconen</value></string>
 <string><id>101</id><value>Weergave:Lijst</value></string>
 <string><id>102</id><value>Scannen</value></string>
-<string><id>103</id><value>Sorteer Op:Naam</value></string> 
-<string><id>104</id><value>Sorteer Op:Datum</value></string>
-<string><id>105</id><value>Sorteer Op:Formaat</value></string>
+<string><id>103</id><value>Sorteren:Naam</value></string> 
+<string><id>104</id><value>Sorteren:Datum</value></string>
+<string><id>105</id><value>Sorteren:Formaat</value></string>
 <string><id>106</id><value>NEE</value></string> 
 <string><id>107</id><value>JA</value></string> 
 <string><id>108</id><value>Schuifvoorstelling</value></string> 
@@ -195,11 +195,11 @@
 <string><id>263</id><value>Web server:</value></string>
 <string><id>264</id><value>Opnemen</value></string>
 <string><id>265</id><value>Stop Opname</value></string>
-<string><id>266</id><value>Sorteer Op:Naam</value></string>
-<string><id>267</id><value>Sorteer Op:Tijd</value></string>
-<string><id>268</id><value>Sorteer Op:Titel</value></string>
-<string><id>269</id><value>Sorteer Op:Artiest</value></string>
-<string><id>270</id><value>Sorteer Op:Album</value></string>
+<string><id>266</id><value>Sorteren:Naam</value></string>
+<string><id>267</id><value>Sorteren:Tijd</value></string>
+<string><id>268</id><value>Sorteren:Titel</value></string>
+<string><id>269</id><value>Sorteren:Artiest</value></string>
+<string><id>270</id><value>Sorteren:Album</value></string>
 <string><id>271</id><value>Top 100</value></string>
 <string><id>272</id><value>Beeldpositie: Linksboven</value></string>
 <string><id>273</id><value>Beeldpositie: Rechtsonder</value></string>
@@ -291,11 +291,11 @@
 <string><id>360</id><value>Screensaver</value></string>
 <string><id>361</id><value>Diavoorstelling</value></string> 
 <string><id>362</id><value>Screensaver Doorzichtigheid</value></string>
-<string><id>363</id><value>Sorteer Op Bestand</value></string> 
+<string><id>363</id><value>Sorteren Bestand</value></string> 
 <string><id>364</id><value>- DD/DTS Doorgeven</value></string> 
-<string><id>365</id><value>Sorteer Op Naam</value></string> 
-<string><id>366</id><value>Sorteer Op Jaar</value></string> 
-<string><id>367</id><value>Sorteer Op Waardering</value></string> 
+<string><id>365</id><value>Sorteren:Naam</value></string> 
+<string><id>366</id><value>Sorteren:Jaar</value></string> 
+<string><id>367</id><value>Sorteren:Waardering</value></string> 
 <string><id>368</id><value>IMDB</value></string> 
 <string><id>369</id><value>Titel</value></string>
 <string><id>370</id><value>Onweer</value></string>
@@ -426,7 +426,7 @@
 <string><id>495</id><value>Upsample Video naar GUI Resolutie</value></string>
 <string><id>496</id><value>Kalibratie</value></string>
 <string><id>497</id><value>Verberg Media extensies</value></string>
-<string><id>498</id><value>Sorteer Op:Type</value></string>
+<string><id>498</id><value>Sorteren:Type</value></string>
 <string><id>499</id><value>Kan geen verbinding maken met www.allmusic.com</value></string>
 <string><id>500</id><value>Downloaden Album info mislukt</value></string>
 <string><id>501</id><value>Zoeken naar Album namen...</value></string>
@@ -435,7 +435,7 @@
 <string><id>504</id><value>Leeg</value></string>
 <string><id>505</id><value>Media info inlezen van bestanden...</value></string>
 <string><id>506</id><value>Gebruik Mapnamen voor Beschrijving</value></string>
-<string><id>507</id><value>Sorteer Op: Gebruik</value></string>
+<string><id>507</id><value>Sorteren:Gebruik</value></string>
 <string><id>508</id><value>Gebruik geen snelkoppelingen en scanfunctie</value></string>
 <string><id>600</id><value>Kopiëer cd</value></string>
 <string><id>601</id><value>Middelmatig</value></string>
@@ -508,7 +508,7 @@
 <string><id>744</id><value>Bestanden</value></string>	
 <string><id>745</id><value>Geen gescande informatie in deze weergave</value></string>		
 <string><id>746</id><value>Wissel naar Bestandsweergave</value></string>
-<string><id>747</id><value>Onvoldoende geheugen om afbeelding te laden</value></string>
+<string><id>747</id><value>Fout Tijdens Laden Afbeelding</value></string>
 <string><id>748</id><value>Wijzig Netwerklocatie</value></string>
 <string><id>749</id><value>Voeg Netwerklocatie toe</value></string>
 <string><id>750</id><value>Weet u het zeker?</value></string>
@@ -669,6 +669,9 @@
 <string><id>13348</id><value>IMDb doorzoeken...</value></string> 
 <string><id>13349</id><value>Info Verzamelen Over Alle Bestanden</value></string> 
 <string><id>13350</id><value>Speelt nu...</value></string>
+<string><id>13351</id><value>Album Informatie</value></string> 
+<string><id>13352</id><value>Scan Map naar Database</value></string> 
+<string><id>13353</id><value>Stop Scannen</value></string>
 <string><id>14000</id><value>Invoegen: Uit</value></string>
 <string><id>14001</id><value>Invoegen: Simpel</value></string> 
 <string><id>14002</id><value>Invoegen: Fuzzy</value></string>
