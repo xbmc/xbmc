@@ -43,6 +43,8 @@ public:
   void 					SetFloatValue(float fValue);
   int  					GetValue() const;
   float					GetFloatValue() const;
+  virtual void SetDisabledColor(D3DCOLOR color);
+  DWORD							GetDisabledColor() const { return m_dwDisabledColor;};
   void					AddLabel(const wstring& strLabel, int  iValue);
   const WCHAR*	GetLabel() const;
   virtual void	SetFocus(bool bOnOff);
@@ -63,6 +65,7 @@ public:
   float             GetFloatInterval() const;
   bool              GetShowRange() const;
   void              SetShowRange(bool bOnoff) ;
+  void		SetBuddyControlID(DWORD dwBuddyControlID);
 protected:
   void      PageUp();
   void      PageDown();
@@ -89,9 +92,13 @@ protected:
   CStdString    m_strFont;
   CGUIFont* m_pFont;
   DWORD     m_dwTextColor;
+  DWORD     m_dwDisabledColor;
 	DWORD			m_dwAlign;
   bool      m_bShowRange;
   char      m_szTyped[10];
   int       m_iTypedPos;
+  DWORD		m_dwBuddyControlID;
+  bool		m_bBuddyDisabled;
+
 };
 #endif
