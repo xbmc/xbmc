@@ -14,7 +14,7 @@
   <string><id>8</id><value>Pogoda</value></string>
   <string><id>11</id><value>Poniedzia³ek</value></string>
   <string><id>12</id><value>Wtorek</value></string>
-  <string><id>13</id><value>œroda</value></string>
+  <string><id>13</id><value>Œroda</value></string>
   <string><id>14</id><value>Czwartek</value></string>
   <string><id>15</id><value>Pi¹tek</value></string>
   <string><id>16</id><value>Sobota</value></string>
@@ -93,7 +93,7 @@
   <string><id>159</id><value>Nie ma po³¹czenia</value></string>
   <string><id>160</id><value>Wolne</value></string>
   <string><id>161</id><value>Niedostêpny</value></string>
-  <string><id>162</id><value>Tacka napêdu jest otwarta</value></string>
+  <string><id>162</id><value>Napêd jest otwarty</value></string>
   <string><id>163</id><value>Czytam</value></string>
   <string><id>164</id><value>Nie ma dysku</value></string>
   <string><id>165</id><value>Jest dysk</value></string>
@@ -130,14 +130,15 @@
   <string><id>196</id><value>Wybierz film:</value></string>
   <string><id>197</id><value>Odczytuje informacje IMDB</value></string>
   <string><id>198</id><value>Wczytuje...</value></string>
-  <string><id>199</id><value>Re¿yser</value></string>
-  <string><id>200</id><value>Podziêkowania</value></string>
-  <string><id>201</id><value>Rok</value></string>
-  <string><id>202</id><value>Linia Tag</value></string>
-  <string><id>203</id><value>Plot outline</value></string>
-  <string><id>204</id><value>Ocena</value></string>
-  <string><id>205</id><value>Glosy</value></string>
-  <string><id>206</id><value>Obsada</value></string>
+  <string><id>199</id><value>Re¿yser:</value></string>
+  <string><id>200</id><value>Podziêkowania:</value></string>
+  <string><id>201</id><value>Rok:</value></string>
+  <string><id>202</id><value>Linia Tag:</value></string>
+  <string><id>203</id><value>Plot outline:</value></string>
+  <string><id>204</id><value>Ocena</value>:</string>
+  <string><id>2050</id><value>Czas trwania:</value></string>
+  <string><id>205</id><value>G³osy:</value></string>
+  <string><id>206</id><value>Obsada:</value></string>
   <string><id>207</id><value>Plot</value></string>
   <string><id>208</id><value>Odtwarzaj</value></string>
   <string><id>209</id><value>Dalej</value></string>
@@ -152,7 +153,7 @@
   <string><id>218</id><value>Napêd DVD</value></string>
   <string><id>219</id><value>Proszê w³o¿yæ dysk</value></string>
   <string><id>220</id><value>Zdalny dostêp</value></string>
-  <string><id>221</id><value>Siec nie jest pod³¹czona</value></string>
+  <string><id>221</id><value>Sieæ nie jest pod³¹czona</value></string>
   <string><id>222</id><value>Anuluj</value></string>
   <string><id>223</id><value>Wybierz najlepsza rozdzielczoœæ dla filmów</value></string>
   <string><id>224</id><value>Szybkoœæ</value></string>
@@ -234,7 +235,7 @@
   <string><id>302</id><value>3. Strumieñ</value></string>
   <string><id>303</id><value>1. OpóŸnienie</value></string>
   <string><id>304</id><value>2. Jêzyk</value></string>
-  <string><id>305</id><value>3. Wl/wyl</value></string>
+  <string><id>305</id><value>3. W³/wy³</value></string>
   <string><id>306</id><value>6. Non-Interleaved</value></string>
   <string><id>307</id><value>Auto</value></string>
   <string><id>308</id><value>filtr vertical deblocking</value></string>
@@ -281,7 +282,6 @@
   <string><id>349</id><value>Pokazuj tylko Default.xbe</value></string>
   <string><id>350</id><value>Programy</value></string>
   <string><id>351</id><value>Wy³¹cz</value></string>
-  <string><id>9999999</id><value>www.xZoNe.com.pl</value></string>
   <string><id>352</id><value>Przyæmiony</value></string>
   <string><id>353</id><value>Czarny</value></string>
   <string><id>354</id><value>Matrix'owe znaczki</value></string>
@@ -294,13 +294,13 @@
   <string><id>361</id><value>R. SlideShow</value></string>
   <string><id>362</id><value>Poziom przezroczystoœci wygaszacza (%)</value></string>
   <string><id>363</id><value>Sortuj: Plikami</value></string>
-  <string><id>364</id><value>DD/DTS Multichannel Passthrough</value></string>
+  <string><id>364</id><value>Multikana³owe przejœcie DD/DTS</value></string>
   <string><id>365</id><value>Sortuj: Nazwami</value></string>
   <string><id>366</id><value>Sortuj: Latami</value></string>
   <string><id>367</id><value>Sortuj: Ocenami</value></string>
   <string><id>368</id><value>IMDB</value></string>
   <string><id>369</id><value>Tytu³</value></string>
-  <string><id>370</id><value>T-Storms</value></string>
+  <string><id>370</id><value>Burze</value></string>
   <string><id>371</id><value>Czêœciowo</value></string>
   <string><id>372</id><value>G³ownie</value></string>
   <string><id>373</id><value>S³onecznie</value></string>
@@ -398,7 +398,7 @@
   <string><id>476</id><value>Music &amp; Video</value></string>
   <string><id>477</id><value>Nie mogê za³adowaæ play listy</value></string>
   <string><id>478</id><value>OSD</value></string>
-  <string><id>479</id><value>Skora i jêzyk</value></string>
+  <string><id>479</id><value>Skóra i jêzyk</value></string>
   <string><id>480</id><value>Interfejs u¿ytkownika</value></string>
   <string><id>481</id><value>Opcje Audio</value></string>
   <string><id>482</id><value>O XBMC...</value></string>
@@ -431,7 +431,7 @@
   <string><id>602</id><value>Standardowa</value></string>
   <string><id>603</id><value>Ekstremalna</value></string>
   <string><id>604</id><value>Sta³y Bit Rate</value></string>
-  <string><id>605</id><value>Zapisuje...</value></string>
+  <string><id>605</id><value>Zapisujê...</value></string>
   <string><id>606</id><value>Numer scie¿ki:</value></string>
   <string><id>607</id><value>Do:</value></string>
   <string><id>608</id><value>Nie mo¿na zapisaæ CD lub Scie¿ki</value></string>
@@ -506,7 +506,7 @@
   <string><id>753</id><value>Edytuj nazwê udzia³u</value></string>
   <string><id>999</id><value>Rozgrywka Online</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
-  <string><id>10000</id><value>Home</value></string>
+  <string><id>10000</id><value>Ekran g³ówny</value></string>
   <string><id>10001</id><value>Moje programy</value></string>
   <string><id>10002</id><value>Moje obrazy</value></string>
   <string><id>10003</id><value>Moje pliki</value></string>
@@ -552,6 +552,43 @@
   <string><id>12006</id><value>Wizualizacja dŸwiêku</value></string>
   <string><id>12007</id><value>Moje obrazy/slideshow</value></string>
   <string><id>12008</id><value>Okienko Filestacking</value></string>
+  <string><id>12310</id><value>0</value></string>
+  <string><id>12311</id><value>1</value></string>
+  <string><id>12312</id><value>2</value></string>
+  <string><id>12313</id><value>3</value></string>
+  <string><id>12314</id><value>4</value></string>
+  <string><id>12315</id><value>5</value></string>
+  <string><id>12316</id><value>6</value></string>
+  <string><id>12317</id><value>7</value></string>
+  <string><id>12318</id><value>8</value></string>
+  <string><id>12319</id><value>9</value></string>
+  <string><id>12320</id><value>c</value></string>
+  <string><id>12321</id><value>ok</value></string>
+  <string><id>12322</id><value>*</value></string>
+  <string><id>12324</id><value>XBMC zabezpieczenie</value></string>
+  <string><id>12325</id><value>Folder zablokowany</value></string>
+  <string><id>12326</id><value>Wpisz has³o</value></string>
+  <string><id>12327</id><value>Wpisz kod i wciœnij Enter,</value></string>
+  <string><id>12328</id><value>Wpisz kod odblokowuj¹cy i wciœnij Enter,</value></string> 
+  <string><id>12329</id><value>lub C aby anulowaæ</value></string>
+  <string><id>12330</id><value>Wciœnij kombinacjê przycisków na padzie i </value></string>
+  <string><id>12331</id><value>Stary lub Back aby anulowaæ</value></string>
+  <string><id>12332</id><value>Zabezpiecz udzia³</value></string>
+  <string><id>12333</id><value>Odbezpiecz udzia³</value></string>
+  <string><id>12334</id><value>Resetuj zabezpieczenie udzia³u</value></string>
+  <string><id>12335</id><value>Usuñ zabezpieczenie udzia³u</value></string>
+  <string><id>12336</id><value>Wybierz typ zabezpieczenia:</value></string>
+  <string><id>12337</id><value>Has³o numeryczne</value></string>
+  <string><id>12338</id><value>Kombinacja przycisków</value></string>
+  <string><id>12339</id><value>Has³o tekstowe</value></string>
+  <string><id>12340</id><value>Wpisz nowe has³o</value></string>
+  <string><id>12341</id><value>Powtórz nowe has³o</value></string>
+  <string><id>12342</id><value>Has³o niepoprawne,</value></string>
+  <string><id>12343</id><value>pozosta³o prób </value></string>
+  <string><id>12344</id><value>Wpisane has³o nie pasuje.</value></string>
+  <string><id>12345</id><value>Dostêp zabroniony</value></string>
+  <string><id>12346</id><value>Limit powtórzeñ wyczerpany.</value></string>
+  <string><id>12347</id><value>XBox zostanie wy³¹czony.</value></string>
   <string><id>12600</id><value>Moja pogoda</value></string>
   <string><id>12900</id><value>Wygaszacz</value></string>
   <string><id>12901</id><value>Pe³no ekranowe OSD</value></string>
@@ -605,6 +642,22 @@
   <string><id>13335</id><value>ustaw jako domyœlny</value></string>
   <string><id>13336</id><value>Usuñ przycisk</value></string>
   <string><id>13337</id><value>Przejœcie PCM dwu kana³owe</value></string>
+  <string><id>13338</id><value>Dioda LED</value></string>
+  <string><id>13339</id><value>Kolor diody LED</value></string>
+  <string><id>13340</id><value>Pozostaw niezmieniony</value></string>
+  <string><id>13341</id><value>Zielony</value></string>
+  <string><id>13342</id><value>Pomarañczowy</value></string>
+  <string><id>13343</id><value>Czerwony</value></string>
+  <string><id>13344</id><value>Wszystkie po kolei</value></string>
+  <string><id>13345</id><value>Wy³¹cz diodê podczas odtwarzania</value></string>
+  <string><id>13346</id><value>Informacja o filmie</value></string>
+  <string><id>13347</id><value>Queue Item</value></string>
+  <string><id>13348</id><value>Wyszukuj w IMDb...</value></string>
+  <string><id>13349</id><value>Uzyskaj informacje dla wszystkich plików</value></string>
+  <string><id>13350</id><value>Odtwarzam...</value></string>
+  <string><id>13351</id><value>Informacje o albumie</value></string>
+  <string><id>13352</id><value>Skanuj folder do bazy danych</value></string>
+  <string><id>13353</id><value>Przerwij skanowanie</value></string>
   <string><id>14000</id><value>Stacking: Wy³.</value></string>
   <string><id>14001</id><value>Stacking: Prosty</value></string>
   <string><id>14002</id><value>Stacking: Rozmyty</value></string>
@@ -630,19 +683,19 @@
   <string><id>14022</id><value>Biblioteka</value></string>
   <string><id>14023</id><value>Bez TV</value></string>
   <string><id>14024</id><value>Podaj najbli¿sze du¿e miasto lub kod pocztowy US</value></string>
-  <string><id>14025</id><value>Video z Twardego dysku</value></string>
-  <string><id>14026</id><value>Video z DVDRomu</value></string>
-  <string><id>14027</id><value>Video z Sieci lokalnej</value></string>
-  <string><id>14028</id><value>Video z Internetu</value></string>
-  <string><id>14029</id><value>Audio z Twardego dysku</value></string>
-  <string><id>14030</id><value>Audio z DVDRomu</value></string>
-  <string><id>14031</id><value>Audio z Sieci lokalnej</value></string>
-  <string><id>14032</id><value>Audio z Internetu</value></string>
-  <string><id>14033</id><value>DVD z Twardego dysku</value></string>
-  <string><id>14034</id><value>DVD z DVDRomu</value></string>
-  <string><id>14035</id><value>DVD z Sieci lokalnej</value></string>
+  <string><id>14025</id><value>Cache'owanie Video   - Twardy dysk</value></string>
+  <string><id>14026</id><value>                     - DVDRom</value></string>
+  <string><id>14027</id><value>                     - Sieæ lokalna</value></string>
+  <string><id>14028</id><value>                     - Internet</value></string>
+  <string><id>14029</id><value>Cache'owanie Audio   - Twardy dysk</value></string>
+  <string><id>14030</id><value>                     - DVDRom</value></string>
+  <string><id>14031</id><value>                     - Sieæ lokalna</value></string>
+  <string><id>14032</id><value>                     - Internet</value></string>
+  <string><id>14033</id><value>Cache'owanie DVD     - Twardy dysk</value></string>
+  <string><id>14034</id><value>                     - DVDRom</value></string>
+  <string><id>14035</id><value>                     - Sieæ lokalna</value></string>
   <string><id>14036</id><value>Serwery</value></string>
-  <string><id>14037</id><value>Patrz i czuj</value></string>
+  <string><id>14037</id><value>Wygl¹d</value></string>
   <string><id>14038</id><value>Ustawienia sieciowe zmienione</value></string>
   <string><id>14039</id><value>XBMC wymaga restartu aby zmienic twoje</value></string>
   <string><id>14040</id><value>ustawienia sieciowe.  Would you like to restart now?</value></string>
@@ -662,5 +715,5 @@
   <string><id>14054</id><value>W³¹cz Internet Lookups</value></string>
   <string><id>14055</id><value>U¿yj skanowania w tle</value></string>
   <string><id>14056</id><value>Zatrzymaj skanowanie</value></string>
-  <string><id>14057</id><value>Nie mo¿liwe dopuki wyszukujê informacje</value></string>
+  <string><id>14057</id><value>Nie mo¿liwe dopóki wyszukujê informacje o mediach</value></string>
 </strings>
