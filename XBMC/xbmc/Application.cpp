@@ -311,7 +311,9 @@ void CApplication::Render()
 		{
 			// set soften on/off
 			m_pd3dDevice->SetSoftDisplayFilter(g_stSettings.m_bSoften);
-			m_pd3dDevice->SetFlickerFilter(g_stSettings.m_bSoften ? 5 : 0);
+			// set the flicker filter - Changed by JM to improve subtitle flicker (using 1)
+			// HDTV modes may not need this, though.
+			m_pd3dDevice->SetFlickerFilter(g_stSettings.m_bSoften ? 5 : 1);
 			Sleep(50);
 			return;
 		}

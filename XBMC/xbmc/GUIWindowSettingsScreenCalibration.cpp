@@ -234,7 +234,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
 			m_iCountR=0;
 			g_graphicsContext.SetCalibrating(true);
 			// Inform the player so we can update the resolution
-			if (g_application.m_pPlayer)
+			if (g_application.IsPlayingVideo())
 				g_application.m_pPlayer->Update();
 			// Get the allowable resolutions that we can calibrate...
 			m_Res.clear();
