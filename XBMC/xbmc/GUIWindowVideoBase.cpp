@@ -696,8 +696,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
 		  pDlgProgress->SetLine(0,strMovieName);
 		  pDlgProgress->SetLine(1,"");
 		  pDlgProgress->SetLine(2,"");
-			if (!pDlgProgress->IsRunning())
-				pDlgProgress->StartModal(GetID());
+		  pDlgProgress->StartModal(GetID());
 		  pDlgProgress->Progress();
 
 		  bool						bError=true;
@@ -754,8 +753,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
 				    pDlgProgress->SetLine(0,strMovieName);
 				    pDlgProgress->SetLine(1,url.m_strTitle);
 				    pDlgProgress->SetLine(2,"");
-						if (!pDlgProgress->IsRunning())
-							pDlgProgress->StartModal(GetID());
+				    pDlgProgress->StartModal(GetID());
 				    pDlgProgress->Progress();
 				    if ( IMDB.GetDetails(url, movieDetails) )
 				    {
