@@ -44,23 +44,26 @@ struct CreditLine_t
 // x, y are percentage distance across the screen of the center point
 // Time is delay since last credit
 //    x,   y,   Time,    Dur,  InD, OutD,                        Effects, Font, Text
-CreditLine_t Credits[] = {
+	CreditLine_t Credits[] = {
 	// Intro
 	{  50,  25,    400,  10000,  100,  800, EFF_IN_FLASH  |EFF_OUT_FADE   ,   78, L"XBOX" },
 	{  50,  45,      0,  10000,  100,  800, EFF_IN_FLASH  |EFF_OUT_FADE   ,   78, L"MEDIA" },
 	{  50,  65,      0,  10000,  100,  800, EFF_IN_FLASH  |EFF_OUT_FADE   ,   78, L"CENTER" },
 
+	// Lead dev
+	{  50,  22,  11500,   5000,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Lead Developer" },
+	{  50,  35,    500,   4500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Frodo" },
+
 	// Devs
-	{  50,  22,  11500,  16500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Developers" },
-	{  50,  35,    500,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Frodo" },
-	{  50,  45,    100,   7400,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Butcher" },
-	{  50,  55,    100,   7300,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Forza" },
-	{  50,  65,    100,   7200,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Bobbin007" },
-	
-	{  50,  35,   8200,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"JCMarshall" },
-	{  50,  45,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"jwnmulder" },
-	{  50,  55,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"monkeyhappy" },
-	{  50,  65,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Tslayer" },
+	{  50,  22,   6500,  16500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Developers" },
+	{  50,  35,    500,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Butcher" },
+	{  50,  45,    100,   7400,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Forza" },
+	{  50,  55,    100,   7300,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Bobbin007" },
+	{  50,  65,    100,   7200,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"JCMarshall" },
+
+	{  50,  35,   8200,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"jwnmulder" },
+	{  50,  45,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"monkeyhappy" },
+	{  50,  55,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Tslayer" },
 
 	// Project Management
 	{  50,  22,   9500,   5000,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Project Management" },
@@ -78,7 +81,7 @@ CreditLine_t Credits[] = {
 	{  50,  45,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"RUNTiME" },
 	{  50,  55,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Shadow_Mx" },
 	{  50,  65,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"xAD" },
-	
+
 	// Support
 	{  50,  22,   9500,   5000,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Tech Support" },
 	{  50,  35,    500,   4500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Hullebulle" },
@@ -100,7 +103,7 @@ CreditLine_t Credits[] = {
 	{  50,  45,    100,   7400,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"MrX" },
 	{  50,  55,    100,   7300,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team-XBMC" },
 	{  50,  65,    100,   7200,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"xAD" },
-	
+
 	// Special Thanks
 	{  50,  22,   9500,   8000,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Special Thanks to" },
 	{  50,  35,    500,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"The Joker of Team Avalaunch" },
