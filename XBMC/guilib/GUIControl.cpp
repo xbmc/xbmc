@@ -22,6 +22,7 @@ CGUIControl::CGUIControl()
   m_dwControlUp=0;
   m_dwControlDown=0;
 	ControlType = GUICONTROL_UNKNOWN;
+  m_bInvalidated = true;
 }
 
 CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight)
@@ -52,8 +53,14 @@ CGUIControl::~CGUIControl(void)
 {
 }
 
+void CGUIControl::AllocResources()
+{
+  m_bInvalidated = true;
+}
+
 void CGUIControl::Render()
 {
+  m_bInvalidated = false;
 }
 
 void CGUIControl::OnAction(const CAction &action) 
@@ -248,9 +255,13 @@ void CGUIControl::SetEnabled(bool bEnable)
 
 void CGUIControl::SetPosition(int iPosX, int iPosY)
 {
-  m_iPosX=iPosX;
-  m_iPosY=iPosY;
-  Update();
+  if ((m_iPosX != iPosX) || (m_iPosY != iPosY))
+  {
+    m_iPosX=iPosX;
+    m_iPosY=iPosY;
+    Update();
+    m_bInvalidated = true;
+  }
 }
 
 
@@ -263,10 +274,11 @@ void CGUIControl::SetAlpha(DWORD dwAlpha)
 
 void CGUIControl::SetColourDiffuse(D3DCOLOR colour)
 {
-	if (colour!=m_colDiffuse)
+	if (colour != m_colDiffuse)
 	{
 		m_colDiffuse = colour;
     Update();
+    m_bInvalidated = true;
 	}
 }
 int CGUIControl::GetXPosition() const
@@ -297,23 +309,39 @@ void CGUIControl::SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dw
 
 void CGUIControl::SetWidth(int iWidth)
 {
-  m_dwWidth=iWidth;
-  Update();
+  if (m_dwWidth != iWidth)
+  {
+    m_dwWidth=iWidth;
+    Update();
+    m_bInvalidated = true;
+  }
 }
 
 void CGUIControl::SetHeight(int iHeight)
 {
-  m_dwHeight=iHeight;
-  Update();
+  if (m_dwHeight != iHeight)
+  {
+    m_dwHeight=iHeight;
+    Update();
+    m_bInvalidated = true;
+  }
 }
 
 void CGUIControl::SetVisible(bool bVisible)
 {
-  m_bVisible=bVisible;
+  if (m_bVisible != bVisible)
+  {
+    m_bVisible=bVisible;
+    m_bInvalidated = true;
+  }
 }
 void CGUIControl::SetSelected(bool bSelected)
 {
-  m_bSelected=bSelected;
+  if (m_bSelected != bSelected)
+  {
+    m_bSelected=bSelected;
+    m_bInvalidated = true;
+  }
 }
 void CGUIControl::EnableCalibration(bool bOnOff)
 {
