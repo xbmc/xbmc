@@ -1206,15 +1206,8 @@ void CUtil::GetAlbumThumb(const CStdString& strAlbumName, const CStdString& strF
 bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
 {
   // check if thumbnail already exists
-	CStdString strPath="";
-	CStdString strFileName="";
-	CStdString defaultTbn;
-	CUtil::Split(strFilePath, strPath, strFileName);
-	CUtil::ReplaceExtension(strFileName, ".tbn", defaultTbn);
-	if (CUtil::HasSlashAtEnd(strPath))
-		strPath.Delete(strPath.size()-1);
 
-	if (CUtil::IsDVD(strFilePath))		// create CRC for DVD as we can't store default.tbn on DVD
+	if (CUtil::IsDVD(strFilePath) || g_guiSettings.GetBool("MyPrograms.CacheProgramThumbs") )		// create CRC for DVD as we can't store default.tbn on DVD
 	{
 	  Crc32 crc;
  	  crc.Compute(strFilePath);
@@ -1222,8 +1215,17 @@ bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
 	}
 	else
 	{
-	  strIcon.Format("%s\\%s", strPath.c_str(), defaultTbn.c_str());
+		CStdString strPath="";
+		CStdString strFileName="";
+		CStdString defaultTbn;
+		CUtil::Split(strFilePath, strPath, strFileName);
+		CUtil::ReplaceExtension(strFileName, ".tbn", defaultTbn);
+		if (CUtil::HasSlashAtEnd(strPath))
+			strPath.Delete(strPath.size()-1);
+		
+		strIcon.Format("%s\\%s", strPath.c_str(), defaultTbn.c_str());
 	}
+
 	if (CUtil::FileExists(strIcon) && !CUtil::IsDVD(strFilePath))   // always create thumbnail for DVD.
   {
     //yes, just return
