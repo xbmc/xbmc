@@ -526,12 +526,14 @@ void CGUIWindowVideoPlaylist::ShowThumbPanel()
   if ( ViewByLargeIcon() )
   {
     CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
-    pControl->ShowBigIcons(true);
+		if (pControl)
+			pControl->ShowBigIcons(true);
   }
   else
   {
     CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
-    pControl->ShowBigIcons(false);
+		if (pControl)
+	    pControl->ShowBigIcons(false);
   }
   if (iItem>-1)
   {
