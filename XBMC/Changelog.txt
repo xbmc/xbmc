@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 21-02-2005 added: Writing files returns false if unable to do so.  Means that moving files will only
+                      allow the source file to be deleted if the copy was successful - thanks to modplug.
+  - 21-02-2005 fixed: Highlight sometimes didn't go away in filemanager when doing popup menu stuff.
+  - 21-02-2005 fixed: Destination files weren't deleted if copy/move was cancelled.
   - 21-02-2005 added: Option to enable fatal error handler on fatal errors in XBoxMediaCenter.xml.  Defaults to false (off).
   - 21-02-2005 added: ButtonScrollers with <wraparound> off can move to a different control off the top + bottom (or left + right for horizontal scrollers).
   - 21-02-2005 fixed: OSD audio menu lockup
