@@ -60,30 +60,29 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
 	CUtil::RemoveCRLF(strLine);
 	if (strLine != START_PLAYLIST_MARKER)
 	{
-    CURL url(strLine);
-	CStdString strProtocol = url.GetProtocol();
-    if (strProtocol == "http" || strProtocol == "mms" || strProtocol == "rtp" || strProtocol == "udp" || strProtocol == "ftp"  || strProtocol == "rtsp")
-    {
-		if (bShoutCast && !CUtil::IsAudio(strLine) && !CUtil::IsAudio(strLine))
+		CURL url(strLine);
+		CStdString strProtocol = url.GetProtocol();
+		if (strProtocol == "http" || strProtocol == "mms" || strProtocol == "rtp" || strProtocol == "udp" || strProtocol == "ftp"  || strProtocol == "rtsp")
 		{
-			strLine.Replace("http:","shout:");
-		}
-
-		if (!bShoutCast && strProtocol == "http")
-		{
-			if (!LoadFromWeb(strLine))
+			if (bShoutCast && !CUtil::IsAudio(strLine) && !CUtil::IsAudio(strLine))
 			{
-				return false;
+				strLine.Replace("http:","shout:");
 			}
-		}
-		else
-		{
+
+			if (!bShoutCast && strProtocol == "http")
+			{
+				if (LoadFromWeb(strLine))
+				{
+					file.Close();
+					return true;
+				}
+			}
 			CPlayListItem newItem(strLine,strLine,0);
 			Add(newItem);
+
+			file.Close();
+			return true;
 		}
-		file.Close();
-		return true;
-    }
 		file.Close();
 		return false;
 	}
@@ -154,8 +153,9 @@ bool CPlayListPLS::LoadFromWeb(CStdString& strURL)
 	CHTTP httpUtil;
 	CStdString strData;
 
-	// Load up the page from the internet
-	if (!httpUtil.Get(strURL, strData))
+	// Load up the page's header from the internet.  It is necessary to 
+	// load the header only, as some HTTP link will be to actual streams
+	if (!httpUtil.Head(strURL))
 	{
 		CLog::Log(LOGNOTICE, "URL %s not found", strURL.c_str());
 		return false;
@@ -172,10 +172,12 @@ bool CPlayListPLS::LoadFromWeb(CStdString& strURL)
 	CLog::Log(LOGINFO, "Content-Type is %s", strContentType.c_str());
 	if (strContentType == "video/x-ms-asf")
 	{
+		httpUtil.Get(strURL, strData);
 		return LoadAsxInfo(strData);
 	}
 	if (strContentType == "audio/x-pn-realaudio")
 	{
+		httpUtil.Get(strURL, strData);
 		return LoadRAMInfo(strData);
 	}
 

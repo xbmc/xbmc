@@ -598,13 +598,15 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 	if (m_strProxyServer.size())
 	{
 		szGet = (char*)_alloca(strlen(szHTTPHEADER) + strURL.size() + 20);
-		sprintf(szGet,"%s %s HTTP/1.0\r\n%s\r\n",verb, strURL.c_str(),szHTTPHEADER);
+		sprintf(szGet,"%s %s HTTP/1.1\r\n%s\r\n",verb, strURL.c_str(),szHTTPHEADER);
 	}
 	else
 	{
 		szGet = (char*)_alloca(strlen(szHTTPHEADER) + strFile.size() + 20);
-		sprintf(szGet,"%s %s HTTP/1.0\r\n%s\r\n",verb, strFile.c_str(),szHTTPHEADER);
+		sprintf(szGet,"%s %s HTTP/1.1\r\n%s\r\n",verb, strFile.c_str(),szHTTPHEADER);
 	}
+
+	//CLog::Log(LOGINFO, "Opening page with request:\n%s", szGet);
 
 	if (!Send(szGet,strlen(szGet)))
 	{
@@ -632,22 +634,67 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 	} while ((HeaderEnd = strstr(m_RecvBuffer,"\r\n\r\n"))==NULL);
 	HeaderEnd += 4;
 
+	//CLog::Log(LOGINFO, "Retrieved:\n%s", m_RecvBuffer);
+	// Parse the return value...first line is:
+	// PROTOCOL STATUS MESSAGE
+	// Currently assuming 1 space between PROTOCOL/STATUS and STATUS/MESSAGE
+	CStdString strProtocol, strStatus, strReason;
+	char * pszStart = m_RecvBuffer;
+	int nWhich = 0;
+	char *pszCurrent;
+	for (pszCurrent = pszStart; *pszCurrent != '\r'; pszCurrent++)
+	{
+		if (*pszCurrent == ' ')
+		{
+			switch(nWhich)
+			{
+			case 0:
+				strProtocol.assign(pszStart, pszCurrent - pszStart);
+				pszStart = pszCurrent + 1;
+				nWhich = 1;
+				break;
+
+			case 1:
+				strStatus.assign(pszStart, pszCurrent - pszStart);
+				pszStart = pszCurrent + 1;
+				nWhich = 2;
+				break;
+			}
+		}
+	}
+	strReason.assign(pszStart, pszCurrent - pszStart);
+	char *end = pszCurrent;
+
 	// expected return:
 	// HTTP-Version SP Status-Code SP Reason-Phrase CRLF
-	if (strnicmp(m_RecvBuffer, "HTTP/", 5) || m_RecvBuffer[5] != '1' || m_RecvBuffer[6] != '.' || m_RecvBuffer[7] < '0' || m_RecvBuffer[7] > '1')
-	{
-		CLog::Log(LOGERROR, "Invalid reply from server");
-		Close();
-		return 0; // malformed reply
-	}
-	int status = atoi(m_RecvBuffer + 9);
-	char* end = strchr(m_RecvBuffer + 13, '\r');
-	string strReason(m_RecvBuffer + 13, end);
+	//if (strnicmp(m_RecvBuffer, "HTTP/", 5) || m_RecvBuffer[5] != '1' || m_RecvBuffer[6] != '.' || m_RecvBuffer[7] < '0' || m_RecvBuffer[7] > '1')
+	//{
+	//	CLog::Log(LOGERROR, "Invalid reply from server");
+	//	Close();
+	//	return 0; // malformed reply
+	//}
+	//int status = atoi(m_RecvBuffer + 9);
+	//char* end = strchr(m_RecvBuffer + 13, '\r');
+	//string strReason(m_RecvBuffer + 13, end);
 	m_strHeaders.assign(end+2, HeaderEnd);
 
 	// Keep the headers string for compatability for now, but also parse
 	// headers into a map
 	ParseHeaders();
+
+	// Check protocol for any type other than HEAD
+	if (stricmp(verb, "HEAD"))
+	{
+		if (strProtocol != "HTTP/1.0" && strProtocol != "HTTP/1.1")
+		{
+			CLog::Log(LOGERROR, "Invalid reply from server");
+			Close();
+			return 0; // malformed reply
+		}
+	}
+
+	// Return value is the status of the request
+	int status = atoi(strStatus.c_str());
 
 	memmove(m_RecvBuffer, HeaderEnd, 1 + (m_RecvBytes -= (HeaderEnd - m_RecvBuffer)));
 	
@@ -696,7 +743,7 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 			n += 10;
 			string strURL(m_strHeaders.begin() + n, m_strHeaders.begin() + m_strHeaders.find('\r', n));
 			if (strnicmp(strURL.c_str(),"http:", 5))
-      {
+			{
 				char portstr[8];
 				sprintf(portstr, ":%d", m_iPort);
 				strURL.insert(0, portstr);
