@@ -73,13 +73,19 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus,DWORD dwPosX, DWORD dwPosY, CGUI
 		CGUIImage *pImage=pItem->GetThumbnail();
 		if (!pImage )
     {
-			pImage=new CGUIImage(0,0,dwPosX+4,dwPosY+16,64,64,pItem->GetThumbnailImage(),0x0);
+			pImage=new CGUIImage(0,0,4+dwPosX,4+dwPosY,64,64,pItem->GetThumbnailImage(),0x0);
+      pImage->SetKeepAspectRatio(true);
       pImage->AllocResources();
 			pItem->SetThumbnail(pImage);
+      int xOff=(64-pImage->GetWidth())/2;
+      int yOff=(64-pImage->GetHeight())/2;
+      pImage->SetPosition(4+dwPosX+xOff,10+dwPosY+yOff);
     }
     else
     {
-			pImage->SetPosition(dwPosX+4,dwPosY+16);
+      int xOff=(64-pImage->GetWidth())/2;
+      int yOff=(64-pImage->GetHeight())/2;
+      pImage->SetPosition(4+dwPosX+xOff,10+dwPosY+yOff);
       pImage->Render();
     }
   }
