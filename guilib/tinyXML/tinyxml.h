@@ -297,11 +297,11 @@ public:
 	*/
 	const char * Value () const 
   { 
-		if ( value.length() ) 
+		if ( value.length() >0) 
 		{
 			return value.c_str ();
 		}
-		else return strNull.c_str();
+		else return "";
   }
 	/** Changes the value of the node. Defined as:
 		@verbatim
