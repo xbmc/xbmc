@@ -325,17 +325,13 @@ void CCdgRenderer::Render()
 		switch(m_FileState)
 		{
 		case FILE_ERR_NOT_FOUND:
-				strMessage = strFileName;
-				strText = g_localizeStrings.Get(NOT_FOUND);
-				strMessage += " "+ strText;
+				strMessage.Format(g_localizeStrings.Get(NOT_FOUND).c_str(), strFileName.c_str());
 				break;
 		case FILE_ERR_OPENING:
-				strMessage = g_localizeStrings.Get(ERROR_OPENING);
-				strMessage += " " + strFileName + ".";
+				strMessage.Format(g_localizeStrings.Get(ERROR_OPENING).c_str(), strFileName.c_str());
 				break;
 		case FILE_ERR_LOADING:
-				strMessage= g_localizeStrings.Get(UNABLE_TO_LOAD);
-				strMessage += " " + strFileName + ".";
+				strMessage.Format(g_localizeStrings.Get(UNABLE_TO_LOAD).c_str(), strFileName.c_str());
 				break;
 		case FILE_ERR_NO_MEM:
 				strMessage= g_localizeStrings.Get(ERROR_OUT_OF_MEMORY);
