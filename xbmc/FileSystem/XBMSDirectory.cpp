@@ -13,6 +13,15 @@ extern "C" {
 	#include "../lib/libxbms/ccxmltrans.h"
 }
 
+struct DiscoveryCallbackContext {
+	VECFILEITEMS *items;
+	const char *username;
+	const char *password;
+};
+
+static void DiscoveryCallback(const char *addr, const char *port, const char *version,
+															const char *comment, void *context);
+
 CXBMSDirectory::CXBMSDirectory(void)
 {
 	CSectionLoader::Load("LIBXBMS");
@@ -40,6 +49,25 @@ bool  CXBMSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
   g_directoryCache.ClearDirectory(strPath);	
 
 	CcXstreamServerConnection conn = NULL;
+
+	if (strPath == "xbms://")
+	{
+		if (url.GetFileName() == "")
+		{
+			// Let's do the automatic discovery.
+			struct DiscoveryCallbackContext dc_context;
+			CStdString strPassword=url.GetPassWord();
+			CStdString strUserName=url.GetUserName();
+
+			dc_context.items = &items;
+			dc_context.username = ((strUserName.c_str() != NULL) && (strlen(strUserName.c_str()) > 0)) ? strUserName.c_str() : NULL;
+			dc_context.password = ((strPassword.c_str() != NULL) && (strlen(strPassword.c_str()) > 0)) ? strPassword.c_str() : NULL;
+			ccx_client_discover_servers(DiscoveryCallback, (void *)(&dc_context)); 
+			rv = S_OK;
+
+			return true;
+		}
+	}
 
 	if (cc_xstream_client_connect(url.GetHostName().c_str(),
 																(url.HasPort()) ? url.GetPort(): 1400, &conn) != CC_XSTREAM_CLIENT_OK)
@@ -186,4 +214,50 @@ bool  CXBMSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 	
   g_directoryCache.SetDirectory(strPath,vecCacheItems);
 	return true;
+}
+
+static void DiscoveryCallback(const char *addr, const char *port, const char *version,
+															const char *comment, void *context)
+{
+	struct DiscoveryCallbackContext *c = (struct DiscoveryCallbackContext *)context;
+
+	//Construct name
+	CStdString itemName = "Server: ";
+	CStdString strPath = "xbms://";
+	itemName += addr;
+
+	if (strcmp(port, "1400") != 0)
+	{
+		itemName += " Port: ";
+		itemName += port;
+	}
+	if (strlen(comment) > 0)
+	{
+		itemName += " (";
+		itemName += comment;
+		itemName += ")";
+	}
+
+	// Construct URL	
+	if (c->username != NULL)
+	{
+		strPath += c->username;
+		if (c->password != NULL)
+		{
+			strPath += ":";
+			strPath += c->password;
+		}
+		strPath += "@";
+	}
+	strPath += addr;
+	strPath += ":";
+	strPath += port;
+	strPath += "/";
+
+	// Add to items
+	CFileItem* pItem = new CFileItem(itemName);
+	pItem->m_strPath=strPath;
+	pItem->m_bIsFolder=true;
+	pItem->m_bIsShareOrDrive=true;
+	c->items->push_back(pItem);
 }
