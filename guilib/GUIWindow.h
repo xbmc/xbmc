@@ -12,7 +12,7 @@ class CGUIWindow
 public:
   CGUIWindow(DWORD dwID);
   virtual ~CGUIWindow(void);
-  bool            Load(const string& strFileName);
+  bool            Load(const CStdString& strFileName);
   virtual void    Render();
   virtual void    OnKey(const CKey& key);
   virtual bool    OnMessage(CGUIMessage& message);

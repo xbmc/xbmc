@@ -34,7 +34,7 @@ distribution.
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include "../StdString.h"
 #include <assert.h>
 
 // Help out windows:
@@ -51,8 +51,8 @@ distribution.
 
 
 #ifdef TIXML_USE_STL
-	#include <string>
-	#define TIXML_STRING	std::string
+	#include "stdstring.h"
+	#define TIXML_STRING	std::CStdString
 	#define TIXML_ISTREAM	std::istream
 	#define TIXML_OSTREAM	std::ostream
 #else
@@ -141,7 +141,7 @@ protected:
 	    static bool StreamTo( TIXML_ISTREAM * in, int character, TIXML_STRING * tag );
 	#endif
 
-	/*	Reads an XML name into the string provided. Returns
+	/*	Reads an XML name into the CStdString provided. Returns
 		a pointer just past the last character of the name,
 		or 0 if the function has an error.
 	*/
@@ -151,7 +151,7 @@ protected:
 		Wickedly complex options, but it keeps the (sensitive) code in one place.
 	*/
 	static const char* ReadText(	const char* in,				// where to start
-									TIXML_STRING* text,			// the string read
+									TIXML_STRING* text,			// the CStdString read
 									bool ignoreWhiteSpace,		// whether to keep the white space
 									const char* endTag,			// what ends this text
 									bool ignoreCase );			// whether to ignore case in the end tag
@@ -175,7 +175,7 @@ protected:
 		}
 	}
 
-	// Puts a string to a stream, expanding entities as it goes.
+	// Puts a CStdString to a stream, expanding entities as it goes.
 	// Note this should not contian the '<', '>', etc, or they will be transformed into entities!
 	static void PutString( const TIXML_STRING& str, TIXML_OSTREAM* out );
 
@@ -290,7 +290,7 @@ public:
 		Element:	name of the element
 		Comment:	the comment text
 		Unknown:	the tag contents
-		Text:		the text string
+		Text:		the text CStdString
 		@endverbatim
 
 		The subclasses will wrap this function.
@@ -306,14 +306,14 @@ public:
 		Element:	name of the element
 		Comment:	the comment text
 		Unknown:	the tag contents
-		Text:		the text string
+		Text:		the text CStdString
 		@endverbatim
 	*/
 	void SetValue (const char * _value) { value = _value;}
 
     #ifdef TIXML_USE_STL
-	/// STL std::string form.
-	void SetValue( const std::string& value )    
+	/// STL std::CStdString form.
+	void SetValue( const std::CStdString& value )    
 	{	  
 		StringToBuffer buf( value );
 		SetValue( buf.buffer ? buf.buffer : "" );    	
@@ -333,8 +333,8 @@ public:
 	TiXmlNode* LastChild( const char * value ) const;			/// The last child of this node matching 'value'. Will be null if there are no children.
 
     #ifdef TIXML_USE_STL
-	TiXmlNode* FirstChild( const std::string& value ) const	{	return FirstChild (value.c_str ());	}	///< STL std::string form.
-	TiXmlNode* LastChild( const std::string& value ) const	{	return LastChild (value.c_str ());	}	///< STL std::string form.
+	TiXmlNode* FirstChild( const std::CStdString& value ) const	{	return FirstChild (value.c_str ());	}	///< STL std::CStdString form.
+	TiXmlNode* LastChild( const std::CStdString& value ) const	{	return LastChild (value.c_str ());	}	///< STL std::CStdString form.
 	#endif
 
 	/** An alternate way to walk the children of a node.
@@ -359,7 +359,7 @@ public:
 	TiXmlNode* IterateChildren( const char * value, TiXmlNode* previous ) const;
 
     #ifdef TIXML_USE_STL
-	TiXmlNode* IterateChildren( const std::string& value, TiXmlNode* previous ) const	{	return IterateChildren (value.c_str (), previous);	}	///< STL std::string form.
+	TiXmlNode* IterateChildren( const std::CStdString& value, TiXmlNode* previous ) const	{	return IterateChildren (value.c_str (), previous);	}	///< STL std::CStdString form.
 	#endif
 
 	/** Add a new node related to this. Adds a child past the LastChild.
@@ -392,8 +392,8 @@ public:
 	TiXmlNode* PreviousSibling( const char * ) const;
 
     #ifdef TIXML_USE_STL
-	TiXmlNode* PreviousSibling( const std::string& value ) const	{	return PreviousSibling (value.c_str ());	}	///< STL std::string form.
-	TiXmlNode* NextSibling( const std::string& value) const	{	return NextSibling (value.c_str ());	}	///< STL std::string form.
+	TiXmlNode* PreviousSibling( const std::CStdString& value ) const	{	return PreviousSibling (value.c_str ());	}	///< STL std::CStdString form.
+	TiXmlNode* NextSibling( const std::CStdString& value) const	{	return NextSibling (value.c_str ());	}	///< STL std::CStdString form.
 	#endif
 
 	/// Navigate to a sibling node.
@@ -415,7 +415,7 @@ public:
 	TiXmlElement* NextSiblingElement( const char * ) const;
 
     #ifdef TIXML_USE_STL
-	TiXmlElement* NextSiblingElement( const std::string& value) const	{	return NextSiblingElement (value.c_str ());	}	///< STL std::string form.
+	TiXmlElement* NextSiblingElement( const std::CStdString& value) const	{	return NextSiblingElement (value.c_str ());	}	///< STL std::CStdString form.
 	#endif
 
 	/// Convenience function to get through elements.
@@ -425,7 +425,7 @@ public:
 	TiXmlElement* FirstChildElement( const char * value ) const;
 
     #ifdef TIXML_USE_STL
-	TiXmlElement* FirstChildElement( const std::string& value ) const	{	return FirstChildElement (value.c_str ());	}	///< STL std::string form.
+	TiXmlElement* FirstChildElement( const std::CStdString& value ) const	{	return FirstChildElement (value.c_str ());	}	///< STL std::CStdString form.
 	#endif
 
 	/// Query the type (as an enumerated value, above) of this node.
@@ -502,8 +502,8 @@ public:
 	TiXmlAttribute() : prev( 0 ), next( 0 )	{}
 
 	#ifdef TIXML_USE_STL
-	/// std::string constructor.
-	TiXmlAttribute( const std::string& _name, const std::string& _value )
+	/// std::CStdString constructor.
+	TiXmlAttribute( const std::CStdString& _name, const std::CStdString& _value )
 	{
 		name = _name;
 		value = _value;
@@ -524,14 +524,14 @@ public:
 	void SetDoubleValue( double value );								///< Set the value from a double.
 
     #ifdef TIXML_USE_STL
-	/// STL std::string form.
-	void SetName( const std::string& _name )	
+	/// STL std::CStdString form.
+	void SetName( const std::CStdString& _name )	
 	{	
 		StringToBuffer buf( _name );
 		SetName ( buf.buffer ? buf.buffer : "error" );	
 	}
-	/// STL std::string form.	
-	void SetValue( const std::string& _value )	
+	/// STL std::CStdString form.	
+	void SetValue( const std::CStdString& _value )	
 	{	
 		StringToBuffer buf( _value );
 		SetValue( buf.buffer ? buf.buffer : "error" );	
@@ -611,8 +611,8 @@ public:
 	TiXmlElement (const char * in_value);
 
 	#ifdef TIXML_USE_STL
-	/// std::string constructor.
-	TiXmlElement( const std::string& _value ) : 	TiXmlNode( TiXmlNode::ELEMENT )
+	/// std::CStdString constructor.
+	TiXmlElement( const std::CStdString& _value ) : 	TiXmlNode( TiXmlNode::ELEMENT )
 	{
 		firstChild = lastChild = 0;
 		value = _value;
@@ -640,19 +640,19 @@ public:
 	void SetAttribute( const char* name, const char * value );
 
     #ifdef TIXML_USE_STL
-	const char* Attribute( const std::string& name ) const				{ return Attribute( name.c_str() ); }
-	const char* Attribute( const std::string& name, int* i ) const		{ return Attribute( name.c_str(), i ); }
+	const char* Attribute( const std::CStdString& name ) const				{ return Attribute( name.c_str() ); }
+	const char* Attribute( const std::CStdString& name, int* i ) const		{ return Attribute( name.c_str(), i ); }
 
-	/// STL std::string form.
-	void SetAttribute( const std::string& name, const std::string& value )	
+	/// STL std::CStdString form.
+	void SetAttribute( const std::CStdString& name, const std::CStdString& value )	
 	{	
 		StringToBuffer n( name );
 		StringToBuffer v( value );
 		if ( n.buffer && v.buffer )
 			SetAttribute (n.buffer, v.buffer );	
 	}	
-	///< STL std::string form.
-	void SetAttribute( const std::string& name, int value )	
+	///< STL std::CStdString form.
+	void SetAttribute( const std::CStdString& name, int value )	
 	{	
 		StringToBuffer n( name );
 		if ( n.buffer )
@@ -669,7 +669,7 @@ public:
 	*/
 	void RemoveAttribute( const char * name );
     #ifdef TIXML_USE_STL
-	void RemoveAttribute( const std::string& name )	{	RemoveAttribute (name.c_str ());	}	///< STL std::string form.
+	void RemoveAttribute( const std::CStdString& name )	{	RemoveAttribute (name.c_str ());	}	///< STL std::CStdString form.
 	#endif
 
 	TiXmlAttribute* FirstAttribute() const	{ return attributeSet.First(); }		///< Access the first attribute in this element.
@@ -748,7 +748,7 @@ public:
 
 	#ifdef TIXML_USE_STL
 	/// Constructor.
-	TiXmlText( const std::string& initValue ) : TiXmlNode (TiXmlNode::TEXT)
+	TiXmlText( const std::CStdString& initValue ) : TiXmlNode (TiXmlNode::TEXT)
 	{
 		SetValue( initValue );
 	}
@@ -796,9 +796,9 @@ public:
 #ifdef TIXML_USE_STL
 	/// Constructor.
 	TiXmlDeclaration(
-						const std::string& _version,
-						const std::string& _encoding,
-						const std::string& _standalone )
+						const std::CStdString& _version,
+						const std::CStdString& _encoding,
+						const std::CStdString& _standalone )
 					: TiXmlNode( TiXmlNode::DECLARATION )
 	{
 		version = _version;
@@ -888,7 +888,7 @@ public:
 
 	#ifdef TIXML_USE_STL
 	/// Constructor.
-	TiXmlDocument( const std::string& documentName ) :
+	TiXmlDocument( const std::CStdString& documentName ) :
 	    TiXmlNode( TiXmlNode::DOCUMENT )
 	{
         value = documentName;
@@ -920,12 +920,12 @@ public:
 	/*XBTVGuide End*/
 
 	#ifdef TIXML_USE_STL
-	bool LoadFile( const std::string& filename )			///< STL std::string version.
+	bool LoadFile( const std::CStdString& filename )			///< STL std::CStdString version.
 	{
 		StringToBuffer f( filename );
 		return ( f.buffer && LoadFile( f.buffer ));
 	}
-	bool SaveFile( const std::string& filename ) const		///< STL std::string version.
+	bool SaveFile( const std::CStdString& filename ) const		///< STL std::CStdString version.
 	{
 		StringToBuffer f( filename );
 		return ( f.buffer && SaveFile( f.buffer ));
@@ -947,7 +947,7 @@ public:
 	/// Contains a textual (english) description of the error if one occurs.
 	const char * ErrorDesc() const	{ return errorDesc.c_str (); }
 
-	/** Generally, you probably want the error string ( ErrorDesc() ). But if you
+	/** Generally, you probably want the error CStdString ( ErrorDesc() ). But if you
 			prefer the ErrorId, this function will fetch it.
 		*/
 	const int ErrorId()	const				{ return errorId; }

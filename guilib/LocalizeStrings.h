@@ -3,7 +3,7 @@
 #pragma once
 #include "gui3d.h"
 
-#include <string>
+#include "stdstring.h"
 #include <map>
 using namespace std;
 
@@ -12,7 +12,7 @@ class CLocalizeStrings
 public:
   CLocalizeStrings(void);
   virtual ~CLocalizeStrings(void);
-  bool            Load(const string& strFileName);
+  bool            Load(const CStdString& strFileName);
   const wstring&  Get(DWORD dwCode);
 protected:
   map<DWORD,wstring> m_vecStrings;

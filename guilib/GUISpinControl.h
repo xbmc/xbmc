@@ -18,7 +18,7 @@ using namespace std;
 class CGUISpinControl :  public CGUIControl
 {
 public:  
-  CGUISpinControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const string& strUp, const string& strDown, const string& strUpFocus, const string& strDownFocus, const string& strFont, DWORD dwTextColor, int iType);
+  CGUISpinControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CStdString& strFont, DWORD dwTextColor, int iType);
   virtual ~CGUISpinControl(void);
   virtual void Render();
   virtual void OnKey(const CKey& key) ;
@@ -33,8 +33,8 @@ public:
   void SetFloatValue(float fValue);
   int  GetValue() const;
   float GetFloatValue() const;
-  void AddLabel(const string& strLabel);
-  const string GetLabel() const;
+  void AddLabel(const CStdString& strLabel);
+  const CStdString GetLabel() const;
   virtual void SetFocus(bool bOnOff);
 protected:
   int       m_iStart;
@@ -50,7 +50,7 @@ protected:
 	CGUIImage m_imgspinDown;
 	CGUIImage m_imgspinUpFocus;
 	CGUIImage m_imgspinDownFocus;
-  string    m_strFont;
+  CStdString    m_strFont;
   CGUIFont* m_pFont;
   DWORD     m_dwTextColor;
 };

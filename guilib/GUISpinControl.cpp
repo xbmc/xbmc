@@ -3,7 +3,7 @@
 
 #define SPIN_BUTTON_DOWN 0
 #define SPIN_BUTTON_UP   1
-CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const string& strUp, const string& strDown, const string& strUpFocus, const string& strDownFocus, const string& strFont, DWORD dwTextColor, int iType)
+CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CStdString& strFont, DWORD dwTextColor, int iType)
 :CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight)
 ,m_imgspinUp(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight,strUp)
 ,m_imgspinDown(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight,strDown)
@@ -244,12 +244,12 @@ float CGUISpinControl::GetFloatValue() const
 }
 
 
-void CGUISpinControl::AddLabel(const string& strLabel)
+void CGUISpinControl::AddLabel(const CStdString& strLabel)
 {
   m_vecLabels.push_back(strLabel);
 }
 
-const string CGUISpinControl::GetLabel() const
+const CStdString CGUISpinControl::GetLabel() const
 {
   return m_vecLabels[ m_iValue];
 }

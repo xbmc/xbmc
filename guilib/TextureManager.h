@@ -3,7 +3,7 @@
 #include "gui3d.h"
 
 #include <vector>
-#include <string>
+#include "stdstring.h"
 using namespace std;
 
 #pragma once
@@ -14,8 +14,8 @@ public:
   CGUITextureManager(void);
   virtual ~CGUITextureManager(void);
 
-  LPDIRECT3DTEXTURE8 GetTexture(const string& strTextureName, DWORD dwColorKey=0);
-  void               ReleaseTexture(const string& strTextureName);
+  LPDIRECT3DTEXTURE8 GetTexture(const CStdString& strTextureName, DWORD dwColorKey=0);
+  void               ReleaseTexture(const CStdString& strTextureName);
   void               Cleanup();
 protected:
   
@@ -24,7 +24,7 @@ protected:
     public:
       CTexture::CTexture(){};
       virtual CTexture::~CTexture(){};
-      string              strTextureName;
+      CStdString              strTextureName;
       LPDIRECT3DTEXTURE8  m_pTexture;
       int                 m_iReferenceCount;
   };

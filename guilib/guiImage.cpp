@@ -3,7 +3,7 @@
 
 
 
-CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const string& strTexture,DWORD dwColorKey)
+CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTexture,DWORD dwColorKey)
 :CGUIControl(dwParentID, dwControlId,dwPosX, dwPosY, dwWidth, dwHeight)
 {
   m_colDiffuse	= 0xFFFFFFFF;  

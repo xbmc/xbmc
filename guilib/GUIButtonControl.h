@@ -7,13 +7,13 @@
 #include "guimessage.h"
 #include "guifont.h"
 #include "guiimage.h"
-#include <string>
+#include "stdstring.h"
 using namespace std;
 
 class CGUIButtonControl : public CGUIControl
 {
 public:
-  CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const string& strTextureFocus,const string& strTextureNoFocus);
+  CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus);
   virtual ~CGUIButtonControl(void);
   
   virtual void Render();
@@ -25,8 +25,8 @@ public:
   virtual void SetAlpha(DWORD dwAlpha);
   virtual void SetColourDiffuse(D3DCOLOR colour);
   virtual void SetDisabledColor(D3DCOLOR color);
-	void        SetLabel(const string& strFontName,const wstring& strLabel,D3DCOLOR dwColor);
-	void        SetLabel(const string& strFontName,const string& strLabel,D3DCOLOR dwColor);
+	void        SetLabel(const CStdString& strFontName,const wstring& strLabel,D3DCOLOR dwColor);
+	void        SetLabel(const CStdString& strFontName,const CStdString& strLabel,D3DCOLOR dwColor);
   void        SetHyperLink(long dwWindowID);
 
 protected:

@@ -12,7 +12,7 @@ CLocalizeStrings::~CLocalizeStrings(void)
 }
 
 
-bool CLocalizeStrings::Load(const string& strFileName)
+bool CLocalizeStrings::Load(const CStdString& strFileName)
 {
   m_vecStrings.erase(m_vecStrings.begin(),m_vecStrings.end());
   TiXmlDocument xmlDoc;
@@ -21,12 +21,12 @@ bool CLocalizeStrings::Load(const string& strFileName)
     return false;
   }
   TiXmlElement* pRootElement =xmlDoc.RootElement();
-  string strValue=pRootElement->Value();
-  if (strValue!=string("strings")) return false;
+  CStdString strValue=pRootElement->Value();
+  if (strValue!=CStdString("strings")) return false;
   const TiXmlNode *pChild = pRootElement->FirstChild();
   while (pChild)
   {
-    string strValue=pChild->Value();
+    CStdString strValue=pChild->Value();
     if (strValue=="string")
     {
       const TiXmlNode *pChildID = pChild->FirstChild("id");

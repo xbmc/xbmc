@@ -11,7 +11,7 @@
 #include "guiButtonControl.h"
 #include "guiListItem.h"
 #include <vector>
-#include <string>
+#include "stdstring.h"
 using namespace std;
 
 
@@ -19,14 +19,14 @@ class CGUIListControl : public CGUIControl
 {
 public:
   CGUIListControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, 
-                  const string& strFontName, 
-                  const string& strImageIcon,
+                  const CStdString& strFontName, 
+                  const CStdString& strImageIcon,
                   DWORD dwSpinWidth,DWORD dwSpinHeight,
-                  const string& strUp, const string& strDown, 
-                  const string& strUpFocus, const string& strDownFocus, 
+                  const CStdString& strUp, const CStdString& strDown, 
+                  const CStdString& strUpFocus, const CStdString& strDownFocus, 
                   DWORD dwSpinColor,DWORD dwSpinX, DWORD dwSpinY,
-                  const string& strFont, DWORD dwTextColor,
-                  const string& strButton, const string& strButtonFocus);
+                  const CStdString& strFont, DWORD dwTextColor,
+                  const CStdString& strButton, const CStdString& strButtonFocus);
   virtual ~CGUIListControl(void);
   virtual void Render();
   virtual void OnKey(const CKey& key) ;
@@ -34,7 +34,7 @@ public:
 
   virtual void AllocResources() ;
   virtual void FreeResources() ;
-  void         SetScrollySuffix(string wstrSuffix);
+  void         SetScrollySuffix(CStdString wstrSuffix);
 
 protected:
    

@@ -670,8 +670,8 @@ bool TiXmlDocument::LoadFile( const char* filename )
 
 	// There was a really terrifying little bug here. The code:
 	//		value = filename
-	// in the STL case, cause the assignment method of the std::string to
-	// be called. What is strange, is that the std::string had the same
+	// in the STL case, cause the assignment method of the std::CStdString to
+	// be called. What is strange, is that the std::CStdString had the same
 	// address as it's c_str() method, and so bad things happen. Looks
 	// like a bug in the Microsoft STL implementation.
 	// See STL_STRING_BUG above.
@@ -682,7 +682,7 @@ bool TiXmlDocument::LoadFile( const char* filename )
 
 	if ( file != INVALID_HANDLE_VALUE)
 	{
-		// Get the file size, so we can pre-allocate the string. HUGE speed impact.
+		// Get the file size, so we can pre-allocate the CStdString. HUGE speed impact.
 		DWORD length = 0;
 		length = GetFileSize(file, NULL);
 
@@ -733,7 +733,7 @@ bool TiXmlDocument::LoadPartial() {
 	// Delete the existing data:
 	Clear();
 
-	StringToBuffer buf( value ); //weird filename string bug stuff
+	StringToBuffer buf( value ); //weird filename CStdString bug stuff
 
 	if(buf.buffer)
 		value = buf.buffer;
@@ -742,7 +742,7 @@ bool TiXmlDocument::LoadPartial() {
 	
 	if ( file != INVALID_HANDLE_VALUE)
 	{
-		// Get the file size, so we can pre-allocate the string. HUGE speed impact.
+		// Get the file size, so we can pre-allocate the CStdString. HUGE speed impact.
 		DWORD length = 0;
 		length = GetFileSize(file, NULL);
 

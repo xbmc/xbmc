@@ -271,7 +271,7 @@ HRESULT CXBFont::Create( D3DTexture* pFontTexture, VOID* pFontData )
         m_fFontBottomPadding = *((FLOAT*)pData); pData += sizeof(FLOAT);
         m_fFontYAdvance      = *((FLOAT*)pData); pData += sizeof(FLOAT);
 
-        // Point to the translator string
+        // Point to the translator CStdString
         m_cMaxGlyph = ((WORD*)pData)[0];
         pData += sizeof(WORD);
         m_TranslatorTable = (SHORT*)pData;
@@ -381,7 +381,7 @@ VOID CXBFont::SetSlantFactor( FLOAT fSlantFactor )
 
 //-----------------------------------------------------------------------------
 // Name: GetTextExtent()
-// Desc: Get the dimensions of a text string
+// Desc: Get the dimensions of a text CStdString
 //-----------------------------------------------------------------------------
 HRESULT CXBFont::GetTextExtent( const WCHAR* strText, FLOAT* pWidth, 
                                 FLOAT* pHeight, BOOL bFirstLineOnly ) const
@@ -395,7 +395,7 @@ HRESULT CXBFont::GetTextExtent( const WCHAR* strText, FLOAT* pWidth,
 
 //-----------------------------------------------------------------------------
 // Name: GetTextExtent()
-// Desc: Get the dimensions of a text string
+// Desc: Get the dimensions of a text CStdString
 //-----------------------------------------------------------------------------
 HRESULT CXBFont::GetTextExtent( const WCHAR* strText, DWORD cchText, FLOAT* pWidth, 
                                 FLOAT* pHeight, BOOL bFirstLineOnly ) const
@@ -437,7 +437,7 @@ HRESULT CXBFont::GetTextExtent( const WCHAR* strText, DWORD cchText, FLOAT* pWid
         sx += pGlyph->wOffset;
         sx += pGlyph->wAdvance;
 
-        // Store text extent of string in output parameters
+        // Store text extent of CStdString in output parameters
         if( sx > (*pWidth) )   (*pWidth)  = sx;
         if( sy > (*pHeight) )  (*pHeight) = sy;
      }
@@ -454,7 +454,7 @@ HRESULT CXBFont::GetTextExtent( const WCHAR* strText, DWORD cchText, FLOAT* pWid
 
 //-----------------------------------------------------------------------------
 // Name: GetTextWidth()
-// Desc: Returns the width (in pixels) of a text string
+// Desc: Returns the width (in pixels) of a text CStdString
 //-----------------------------------------------------------------------------
 FLOAT CXBFont::GetTextWidth( const WCHAR* strText ) const
 {
@@ -583,7 +583,7 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
 
     if( dwFlags & XBFONT_TRUNCATED )
     {
-        // Check if we will really need to truncate the string
+        // Check if we will really need to truncate the CStdString
         if( fMaxPixelWidth <= 0.0f )
         {
             dwFlags &= (~XBFONT_TRUNCATED);
@@ -630,7 +630,7 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
             bStartingNewLine = FALSE;
         }
 
-        // Get the current letter in the string
+        // Get the current letter in the CStdString
         WCHAR letter = *strText++;
 
         // Handle the newline character
@@ -732,7 +732,7 @@ HRESULT CXBFont::End()
 
 //-----------------------------------------------------------------------------
 // Name: RenderToTexture()
-// Desc: Creates a texture and renders a text string into it. The texture
+// Desc: Creates a texture and renders a text CStdString into it. The texture
 //       format defaults to a 32-bit linear texture
 //-----------------------------------------------------------------------------
 LPDIRECT3DTEXTURE8 CXBFont::CreateTexture( const WCHAR* strText, 

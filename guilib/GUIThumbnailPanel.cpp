@@ -5,15 +5,15 @@
 #define CONTROL_UPDOWN	1
 
 CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, 
-                                 const string& strFontName, 
-                                 const string& strImageIcon,
-                                 const string& strImageIconFocus,
+                                 const CStdString& strFontName, 
+                                 const CStdString& strImageIcon,
+                                 const CStdString& strImageIconFocus,
                                  DWORD dwitemWidth, DWORD dwitemHeight,
                                  DWORD dwSpinWidth,DWORD dwSpinHeight,
-                                 const string& strUp, const string& strDown, 
-                                 const string& strUpFocus, const string& strDownFocus, 
+                                 const CStdString& strUp, const CStdString& strDown, 
+                                 const CStdString& strUpFocus, const CStdString& strDownFocus, 
                                  DWORD dwSpinColor,DWORD dwSpinX, DWORD dwSpinY,
-                                 const string& strFont, DWORD dwTextColor)
+                                 const CStdString& strFont, DWORD dwTextColor)
 :CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight)
 ,m_imgFolder(dwParentID, dwControlId, dwPosX, dwPosY, dwitemWidth,dwitemHeight,strImageIcon)
 ,m_imgFolderFocus(dwParentID, dwControlId, dwPosX, dwPosY, dwitemWidth,dwitemHeight,strImageIconFocus)
@@ -29,17 +29,60 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, DWOR
   m_iCursorX   = 0;
   m_dwTextColor= dwTextColor;
   m_strSuffix=L"|";  
+	m_bScrollUp=false;
+	m_bScrollDown=false;
+	m_iScrollCounter=0;
+
 }
 
 CGUIThumbnailPanel::~CGUIThumbnailPanel(void)
 {
 }
 
+void CGUIThumbnailPanel::RenderItem(bool bFocus,DWORD dwPosX, DWORD dwPosY, CGUIListItem* pItem)
+{
+
+  float fTextHeight,fTextWidth;
+  m_pFont->GetTextExtent( L"W", &fTextWidth,&fTextHeight);
+
+  WCHAR wszText[1024];
+  float fTextPosY =dwPosY+ m_imgFolder.GetHeight()-2*fTextHeight;
+	swprintf(wszText,L"%S", pItem->GetLabel().c_str() );
+
+  if (bFocus && HasFocus()&&m_iSelect==CONTROL_LIST )
+  {
+    m_imgFolderFocus.SetPosition(dwPosX, dwPosY);
+    m_imgFolderFocus.Render();
+    
+    RenderText((float)dwPosX,(float)fTextPosY,m_dwTextColor,wszText,true);
+  }
+  else
+  {
+    m_imgFolder.SetPosition(dwPosX, dwPosY);
+    m_imgFolder.Render();
+    
+    RenderText((float)dwPosX,(float)fTextPosY,m_dwTextColor,wszText,false);
+  
+  }
+  if (pItem->m_strThumbnailImage != "")
+  {
+    if (!pItem->m_pImage)
+    {
+      pItem->m_pImage=new CGUIImage(0,0,dwPosX+4,dwPosY+16,64,64,pItem->m_strThumbnailImage,0xffffffff);
+      pItem->m_pImage->AllocResources();
+    }
+    else
+    {
+      pItem->m_pImage->SetPosition(dwPosX+4,dwPosY+16);
+      pItem->m_pImage->Render();
+    }
+  }
+}
+
 void CGUIThumbnailPanel::Render()
 {
   if (!m_pFont) return;
   if (!IsVisible()) return;
-  WCHAR wszText[1024];
 
   if (!ValidItem(m_iCursorX,m_iCursorY) )
   {
@@ -47,57 +90,104 @@ void CGUIThumbnailPanel::Render()
       m_iCursorY=0;
   }
   CGUIControl::Render();
-  float fTextHeight,fTextWidth;
-  m_pFont->GetTextExtent( L"W", &fTextWidth,&fTextHeight);
 
-  for (int iRow=0; iRow < m_iRows; iRow++)
-  {
-    DWORD dwPosY=m_dwPosY + iRow*m_iItemHeight;
+	int iScrollYOffset=0;
+	if (m_bScrollDown)
+	{
+		iScrollYOffset=-(m_iItemHeight-m_iScrollCounter);
+	}
+	if (m_bScrollUp)
+	{
+		iScrollYOffset=m_iItemHeight-m_iScrollCounter;
+	}
+
+	D3DVIEWPORT8 oldviewport, newviewport;
+	g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
+
+	newviewport.X      = m_dwPosX;
+	newviewport.Y			 = m_dwPosY;
+	newviewport.Width  = m_iColumns*m_iItemWidth;
+	newviewport.Height = m_iRows*m_iItemHeight;
+	newviewport.MinZ   = 0.0f;
+	newviewport.MaxZ   = 1.0f;
+	g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
+
+	if (m_bScrollUp)
+	{
+		// render item on top
+		DWORD dwPosY=m_dwPosY -m_iItemHeight + iScrollYOffset;
+    m_iOffset-=m_iColumns;
     for (int iCol=0; iCol < m_iColumns; iCol++)
     {
-    
-      
-      DWORD dwPosX = m_dwPosX + iCol*m_iItemWidth;
-      int iItem = iRow*m_iColumns+iCol+m_iOffset;
+			DWORD dwPosX = m_dwPosX + iCol*m_iItemWidth;
+      int iItem = iCol+m_iOffset;
+      if (iItem>0 && iItem < (int)m_vecItems.size())
+      {
+        CGUIListItem *pItem=m_vecItems[iItem];
+				RenderItem(false,dwPosX,dwPosY,pItem);
+      }
+    }
+    m_iOffset+=m_iColumns;
+	}
+
+	// render main panel
+  for (int iRow=0; iRow < m_iRows; iRow++)
+  {
+    DWORD dwPosY=m_dwPosY + iRow*m_iItemHeight + iScrollYOffset;
+    for (int iCol=0; iCol < m_iColumns; iCol++)
+    {
+			DWORD dwPosX = m_dwPosX + iCol*m_iItemWidth;
+	    int iItem = iRow*m_iColumns+iCol+m_iOffset;
       if (iItem < (int)m_vecItems.size())
       {
-        float fTextPosY =dwPosY+ m_imgFolder.GetHeight()-2*fTextHeight;
-        
         CGUIListItem *pItem=m_vecItems[iItem];
-        swprintf(wszText,L"%S", pItem->GetLabel().c_str() );
-
-        if (m_iCursorX==iCol && m_iCursorY==iRow && HasFocus()&&m_iSelect==CONTROL_LIST )
-        {
-          m_imgFolderFocus.SetPosition(dwPosX, dwPosY);
-          m_imgFolderFocus.Render();
-          
-          RenderText((float)dwPosX,(float)fTextPosY,m_dwTextColor,wszText,true);
-        }
-        else
-        {
-          m_imgFolder.SetPosition(dwPosX, dwPosY);
-          m_imgFolder.Render();
-          
-          RenderText((float)dwPosX,(float)fTextPosY,m_dwTextColor,wszText,false);
-        
-        }
-        if (pItem->m_strThumbnailImage != "")
-        {
-          if (!pItem->m_pImage)
-          {
-            pItem->m_pImage=new CGUIImage(0,0,dwPosX+4,dwPosY+16,64,64,pItem->m_strThumbnailImage,0xffffffff);
-            pItem->m_pImage->AllocResources();
-          }
-          else
-          {
-            pItem->m_pImage->SetPosition(dwPosX+4,dwPosY+16);
-            pItem->m_pImage->Render();
-          }
-        }
+				bool bFocus=(m_iCursorX==iCol && m_iCursorY==iRow );
+				RenderItem(bFocus,dwPosX,dwPosY,pItem);
       }
     }
   }
+
+	if (m_bScrollDown)
+	{
+		// render item on bottom
+		DWORD dwPosY=m_dwPosY + m_iRows*m_iItemHeight + iScrollYOffset;
+    for (int iCol=0; iCol < m_iColumns; iCol++)
+    {
+			DWORD dwPosX = m_dwPosX + iCol*m_iItemWidth;
+	    int iItem = m_iRows*m_iColumns+iCol+m_iOffset;
+      if (iItem < (int)m_vecItems.size())
+      {
+        CGUIListItem *pItem=m_vecItems[iItem];
+				RenderItem(false,dwPosX,dwPosY,pItem);
+      }
+    }
+	}
+
+	g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
   m_upDown.Render();
+
+	//
+  int iFrames=12;
+  int iStep=m_iItemHeight/iFrames;
+  if (!iStep) iStep=1;
+	if (m_bScrollDown)
+	{
+		m_iScrollCounter-=iStep;
+		if (m_iScrollCounter<=0)
+		{
+			m_bScrollDown=false;
+      m_iOffset+=m_iColumns;
+		}
+	}
+	if (m_bScrollUp)
+	{
+		m_iScrollCounter-=iStep;
+		if (m_iScrollCounter<=0)
+		{
+			m_bScrollUp=false;
+      m_iOffset -= m_iColumns;
+		}
+	}
 }
 
 void CGUIThumbnailPanel::OnKey(const CKey& key)
@@ -290,7 +380,9 @@ void CGUIThumbnailPanel::OnUp()
     }
     else if (m_iCursorY ==0 && m_iOffset)
     {
-      m_iOffset-=m_iColumns;
+			m_iScrollCounter=m_iItemHeight;
+			m_bScrollUp=true;
+     // m_iOffset-=m_iColumns;
     }
     else
     {
@@ -316,7 +408,15 @@ void CGUIThumbnailPanel::OnDown()
     {
       m_iOffset+= m_iColumns;
       if ( !ValidItem(m_iCursorX,m_iCursorY) ) 
+			{
         m_iOffset-= m_iColumns;
+			}
+			else
+			{
+				m_iOffset-= m_iColumns;
+				m_iScrollCounter=m_iItemHeight;
+				m_bScrollDown=true;
+			}
       return;
     }
     else
@@ -424,7 +524,7 @@ void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor,
   }
 }
 
-void CGUIThumbnailPanel::SetScrollySuffix(string wstrSuffix)
+void CGUIThumbnailPanel::SetScrollySuffix(CStdString wstrSuffix)
 {
   WCHAR wsSuffix[128];
   swprintf(wsSuffix,L"%S", wstrSuffix.c_str());

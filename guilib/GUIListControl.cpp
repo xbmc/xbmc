@@ -4,14 +4,14 @@
 #define CONTROL_LIST		0
 #define CONTROL_UPDOWN	1
 CGUIListControl::CGUIListControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, 
-                                 const string& strFontName, 
-                                 const string& strImageIcon,
+                                 const CStdString& strFontName, 
+                                 const CStdString& strImageIcon,
                                  DWORD dwSpinWidth,DWORD dwSpinHeight,
-                                 const string& strUp, const string& strDown, 
-                                 const string& strUpFocus, const string& strDownFocus, 
+                                 const CStdString& strUp, const CStdString& strDown, 
+                                 const CStdString& strUpFocus, const CStdString& strDownFocus, 
                                  DWORD dwSpinColor,DWORD dwSpinX, DWORD dwSpinY,
-                                 const string& strFont, DWORD dwTextColor,
-                                 const string& strButton, const string& strButtonFocus)
+                                 const CStdString& strFont, DWORD dwTextColor,
+                                 const CStdString& strButton, const CStdString& strButtonFocus)
 :CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight)
 ,m_imgFolder(dwParentID, dwControlId, dwPosX, dwPosY, 0,0,strImageIcon)
 ,m_upDown(dwControlId, 0, dwSpinX, dwSpinY, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwSpinColor, SPIN_CONTROL_TYPE_INT)
@@ -80,7 +80,7 @@ void CGUIListControl::Render()
       RenderText( (float)dwPosX, (float)dwPosY+2, m_dwTextColor, wszText,bSelected);
       
 		
-      string strLabel2=pItem->GetLabel2();
+      CStdString strLabel2=pItem->GetLabel2();
       if (strLabel2.size()>0)
       {
         dwPosX=m_dwPosX+m_dwWidth-16;
@@ -106,7 +106,7 @@ void CGUIListControl::RenderText(float fPosX, float fPosY, DWORD dwTextColor, WC
   m_pFont->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
   float fMaxWidth=GetWidth()-GetWidth()/10.0f;
 /*
-  string strLabel2=pItem->GetLabel2();
+  CStdString strLabel2=pItem->GetLabel2();
   if (strLabel2.size()) 
   {
     float fW,fH;
@@ -398,7 +398,7 @@ void CGUIListControl::OnDown()
   }
 }
 
-void CGUIListControl::SetScrollySuffix(string wstrSuffix)
+void CGUIListControl::SetScrollySuffix(CStdString wstrSuffix)
 {
   WCHAR wsSuffix[128];
   swprintf(wsSuffix,L"%S", wstrSuffix.c_str());

@@ -16,7 +16,7 @@ CGUIWindow::~CGUIWindow(void)
 }
 
 
-bool CGUIWindow::Load(const string& strFileName)
+bool CGUIWindow::Load(const CStdString& strFileName)
 {
   TiXmlDocument xmlDoc;
   if ( !xmlDoc.LoadFile(strFileName.c_str()) )
@@ -24,15 +24,15 @@ bool CGUIWindow::Load(const string& strFileName)
     return false;
   }
   TiXmlElement* pRootElement =xmlDoc.RootElement();
-  string strValue=pRootElement->Value();
-  if (strValue!=string("window")) return false;
+  CStdString strValue=pRootElement->Value();
+  if (strValue!=CStdString("window")) return false;
   
   m_dwDefaultFocusControlID=0;
  
   const TiXmlNode *pChild = pRootElement->FirstChild();
   while (pChild)
   {
-    string strValue=pChild->Value();
+    CStdString strValue=pChild->Value();
     if (strValue=="id")
     {
       m_dwWindowId=atoi(pChild->FirstChild()->Value());

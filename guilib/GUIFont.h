@@ -3,9 +3,9 @@
 #pragma once
 
 #include "gui3d.h"
-
-#include "graphiccontext.h"
 #include <string>
+#include "graphiccontext.h"
+#include "stdstring.h"
 #include "common/xbfont.h"
 using namespace std;
 
@@ -14,8 +14,8 @@ class CGUIFont: public CXBFont
 public:
   CGUIFont(void);
   virtual ~CGUIFont(void);
-  bool  Load(const string& strFontName,const string& strFilename);
-  const string& GetFontName() const;
+  bool  Load(const CStdString& strFontName,const CStdString& strFilename);
+  const CStdString& GetFontName() const;
   void DrawShadowText( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
                         const WCHAR* strText, DWORD dwFlags=0,
                         FLOAT fMaxPixelWidth =0.0,
@@ -26,7 +26,7 @@ public:
                               const WCHAR* strText,float fMaxWidth);
 
 protected:
-  string m_strFontName;
+  CStdString m_strFontName;
 };
 
 #endif
