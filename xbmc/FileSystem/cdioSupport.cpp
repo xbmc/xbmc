@@ -40,7 +40,7 @@ signature_t CCdIoSupport::sigs[] =
     { 0 }
   };
 
-#undef DEBUG_CDIO
+#define DEBUG_CDIO
 
 static void
 xbox_cdio_log_handler (cdio_log_level_t level, const char message[])
@@ -536,9 +536,21 @@ CCdInfo* CCdIoSupport::GetCdInfo()
 		return NULL;
 	} 
 
-	CCdInfo* info = new CCdInfo;
 	m_nFirstTrackNum = cdio_get_first_track_num(cdio);
-	m_nNumTracks      = cdio_get_num_tracks(cdio);
+	if (m_nFirstTrackNum==CDIO_INVALID_TRACK)
+	{
+		cdio_destroy(cdio);
+		return NULL;
+	}
+
+	m_nNumTracks = cdio_get_num_tracks(cdio);
+	if (m_nNumTracks==CDIO_INVALID_TRACK)
+	{
+		cdio_destroy(cdio);
+		return NULL;
+	}
+
+	CCdInfo* info = new CCdInfo;
 	info->SetFirstTrack( m_nFirstTrackNum );
 	info->SetTrackCount( m_nNumTracks );
 
@@ -559,6 +571,7 @@ CCdInfo* CCdIoSupport::GetCdInfo()
 			sprintf( buf, "cdio_track_msf for track %i failed, I give up.\n", i);
 			OutputDebugString( buf );
 			delete info;
+			cdio_destroy(cdio);
 			return NULL;
 		}
 
