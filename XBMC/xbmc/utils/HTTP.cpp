@@ -319,21 +319,20 @@ bool CHTTP::Connect()
 
 		if(inet_addr(m_strHostName.c_str())==INADDR_NONE)
 		{
-			
-			if (strcmp(m_strHostName.c_str(),"ia.imdb.com")==0)
-				service.sin_addr.s_addr = inet_addr("193.108.153.16");
-			
-			else if (strcmp(m_strHostName.c_str(),"us.imdb.com")==0)
-				service.sin_addr.s_addr = inet_addr("207.171.166.140");
-			//else if (strcmp(m_strHostName.c_str(),"www.allmusic.com")==0)
-				//service.sin_addr.s_addr = inet_addr("64.152.72.2");
-			else
+			CStdString strIpAdres="";
+			CDNSNameCache::Lookup(m_strHostName,strIpAdres);
+			service.sin_addr.s_addr = inet_addr(strIpAdres.c_str());
+			if (strIpAdres=="")
 			{
-#ifdef _XBOX
-				CStdString strIpAdres;
-				CDNSNameCache::Lookup(m_strHostName,strIpAdres);
-				service.sin_addr.s_addr = inet_addr(strIpAdres.c_str());
-#endif
+				if (strcmp(m_strHostName.c_str(),"ia.imdb.com")==0)
+					service.sin_addr.s_addr = inet_addr("193.108.153.16");
+				
+				else if (strcmp(m_strHostName.c_str(),"us.imdb.com")==0)
+					service.sin_addr.s_addr = inet_addr("207.171.166.140");
+				else if (strcmp(m_strHostName.c_str(),"www.allmusic.com")==0)
+					service.sin_addr.s_addr = inet_addr("64.152.71.2");
+				else if (strcmp(m_strHostName.c_str(),"image.allmusic.com")==0)
+					service.sin_addr.s_addr = inet_addr("64.152.70.67");
 			}
 		}
 		else
