@@ -1225,6 +1225,12 @@
 				RelativePath=".\xbmc\cores\CDDAPlayer.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\cores\dlgcache.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\dlgcache.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\cores\EMUdummy.cpp">
 			</File>
 			<File
