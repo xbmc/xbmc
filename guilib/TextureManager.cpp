@@ -522,28 +522,32 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 			}
 		}
 
-		// save cached copy
-
-		WIN32_FIND_DATA FindData;
-		HANDLE hFind = FindFirstFile(strPath, &FindData);
-		if (hFind != INVALID_HANDLE_VALUE)
+		// save cached copy (if skin texture)
+		CStdString strText = strCachePath;
+		strText.MakeLower();
+		if (strstr(strText.c_str(),"q:\\skin") ) 
 		{
-			FindClose(hFind);
-
-			XGWriteSurfaceOrTextureToXPR(pTexture, strCachePath.c_str(), true);
-			SetFileAttributes(strCachePath.c_str(), FILE_ATTRIBUTE_HIDDEN);
-
-			HANDLE hFile = CreateFile(strCachePath.c_str(), GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
-			if (hFile != INVALID_HANDLE_VALUE)
+			WIN32_FIND_DATA FindData;
+			HANDLE hFind = FindFirstFile(strPath, &FindData);
+			if (hFind != INVALID_HANDLE_VALUE)
 			{
-				SetFilePointer(hFile, 0, NULL, FILE_END);
-				WORD Size[2];
-				Size[0] = info.Width;
-				Size[1] = info.Height;
-				DWORD n;
-				WriteFile(hFile, Size, 4, &n, 0);
-				SetFileTime(hFile, NULL, NULL, &FindData.ftLastWriteTime);
-				CloseHandle(hFile);
+				FindClose(hFind);
+
+				XGWriteSurfaceOrTextureToXPR(pTexture, strCachePath.c_str(), true);
+				SetFileAttributes(strCachePath.c_str(), FILE_ATTRIBUTE_HIDDEN);
+
+				HANDLE hFile = CreateFile(strCachePath.c_str(), GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
+				if (hFile != INVALID_HANDLE_VALUE)
+				{
+					SetFilePointer(hFile, 0, NULL, FILE_END);
+					WORD Size[2];
+					Size[0] = info.Width;
+					Size[1] = info.Height;
+					DWORD n;
+					WriteFile(hFile, Size, 4, &n, 0);
+					SetFileTime(hFile, NULL, NULL, &FindData.ftLastWriteTime);
+					CloseHandle(hFile);
+				}
 			}
 		}
 	}
