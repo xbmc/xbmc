@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 03-11-2004 updated: German (Austrian) language file (Thnx to CEOMR)
   - 03-11-2004 changed: progress control now can have an overlay texture
   - 02-11-2004 added: GUI code for monkeyh1
   - 02-11-2004 added: Context menu to My Pictures
