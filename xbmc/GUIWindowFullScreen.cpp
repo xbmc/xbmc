@@ -43,8 +43,8 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
   //  - language
   
   COSDSubMenu videoMenu(291,100,100);
-  COSDOptionFloatRange optionAVDelay(-10.0f,10.0f,0.01f,0.0f);
-  COSDOptionIntRange   optionPercentage(0,100,1,0);
+  COSDOptionFloatRange optionAVDelay(297,-10.0f,10.0f,0.01f,0.0f);
+  COSDOptionIntRange   optionPercentage(298,0,100,1,0);
   videoMenu.AddOption(&optionAVDelay);
   videoMenu.AddOption(&optionPercentage);
   
@@ -52,8 +52,8 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
   COSDSubMenu audioMenu(292,100,100);
 
   COSDSubMenu SubtitleMenu(293,100,100);
-  COSDOptionFloatRange optionSubtitleDelay(-10.0f,10.0f,0.01f,0.0f);
-  COSDOptionBoolean    optionEnable;
+  COSDOptionFloatRange optionSubtitleDelay(303,-10.0f,10.0f,0.01f,0.0f);
+  COSDOptionBoolean    optionEnable(305);
 
   SubtitleMenu.AddOption(&optionSubtitleDelay);
   SubtitleMenu.AddOption(&optionEnable);
@@ -70,6 +70,23 @@ CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
 
 void CGUIWindowFullScreen::OnAction(const CAction &action)
 {
+  if (m_bOSDVisible)
+  {
+	  switch (action.wID)
+    {
+		  case ACTION_SHOW_OSD:
+			  //g_application.m_pPlayer->ToggleOSD();
+        m_bOSDVisible=!m_bOSDVisible;
+        if (m_bOSDVisible) ShowOSD();
+        else HideOSD();
+		  break;
+
+		  default:
+        CGUIWindow::OnAction(action);
+		  break;
+    }
+    return;
+  }
 	switch (action.wID)
 	{
 		case ACTION_SHOW_GUI:

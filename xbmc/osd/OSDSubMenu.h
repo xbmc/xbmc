@@ -27,7 +27,8 @@ namespace OSD
 
 	private:
     void Clear();
-		typedef	vector<IOSDOption*>::iterator ivecOptions;						
+		typedef	vector<IOSDOption*>::iterator ivecOptions;	
+		typedef	vector<IOSDOption*>::const_iterator icvecOptions;						
 		vector<IOSDOption*> m_vecOptions;
 
 		int m_iCurrentOption;
