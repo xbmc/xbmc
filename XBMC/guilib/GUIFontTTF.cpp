@@ -10,6 +10,15 @@ CGUIFontTTF::CGUIFontTTF(const CStdString& strFontName) : CGUIFont(strFontName)
 
 CGUIFontTTF::~CGUIFontTTF(void)
 {
+	m_usedTTFRefCount[m_strFilename]--;
+
+	if (m_usedTTFRefCount[m_strFilename] == 0)
+	{
+		m_usedTTFRefCount.erase(m_strFilename);
+		m_usedTTFs.erase(m_strFilename);
+
+		XFONT_Release(m_pTrueTypeFont);
+	}
 }
 
 // Change font style: XFONT_NORMAL, XFONT_BOLD, XFONT_ITALICS, XFONT_BOLDITALICS
@@ -21,12 +30,25 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
     // size of the font cache in bytes
     DWORD dwFontCacheSize = 64 * 1024;
 
+	m_strFilename = strFilename;
+
 	WCHAR wszFilename[256];
 	swprintf(wszFilename, L"%S", strFilename.c_str());
 
-    if( FAILED( XFONT_OpenTrueTypeFont ( wszFilename,
-                                        dwFontCacheSize,&m_pTrueTypeFont ) ) )
-        return false;
+	if (m_usedTTFs[strFilename] == NULL)
+	{
+		if( FAILED( XFONT_OpenTrueTypeFont ( wszFilename,
+											dwFontCacheSize,&m_pTrueTypeFont ) ) )
+			return false;
+
+		m_usedTTFs[strFilename] = m_pTrueTypeFont;
+		m_usedTTFRefCount[strFilename] = 1;
+	}
+	else
+	{
+		m_pTrueTypeFont = m_usedTTFs[strFilename];
+		m_usedTTFRefCount[strFilename]++;
+	}
 
 	m_pTrueTypeFont->SetTextHeight( iHeight );
 	m_pTrueTypeFont->SetTextStyle( iStyle );
@@ -181,3 +203,5 @@ void CGUIFontTTF::DrawTrueType(LONG nPosX, LONG nPosY, WCHAR* text, int len)
 	pSurface->Release();
 }
 
+stdext::hash_map<string, XFONT*> CGUIFontTTF::m_usedTTFs;
+stdext::hash_map<string, int>	 CGUIFontTTF::m_usedTTFRefCount;
