@@ -310,6 +310,32 @@ void CGraphicContext::ScalePosToScreenResolution(DWORD& x, DWORD&  y, RESOLUTION
 	y  = (DWORD) ( (float(y))		 * fPercentY); 
 }
 
+void CGraphicContext::ScaleXCoord(DWORD& x, RESOLUTION res)
+{
+	if (res == INVALID) return;
+	float fPercentX = ((float)m_iScreenWidth ) / ((float)m_pResInfo[res].iWidth);
+	x  = (DWORD) ( (float(x))		 * fPercentX); 
+}
+void CGraphicContext::ScaleXCoord(int& x, RESOLUTION res)
+{
+	if (res == INVALID) return;
+	float fPercentX = ((float)m_iScreenWidth ) / ((float)m_pResInfo[res].iWidth);
+	x  = (int) ( (float(x))		 * fPercentX); 
+}
+void CGraphicContext::ScaleYCoord(DWORD& y, RESOLUTION res)
+{
+	if (res == INVALID) return;
+	float fPercentY = ((float)m_iScreenHeight ) / ((float)m_pResInfo[res].iHeight);
+	y  = (DWORD) ( (float(y))		 * fPercentY); 
+}
+void CGraphicContext::ScaleYCoord(int& y, RESOLUTION res)
+{
+	if (res == INVALID) return;
+	float fPercentY = ((float)m_iScreenHeight ) / ((float)m_pResInfo[res].iHeight);
+	y  = (int) ( (float(y))		 * fPercentY); 
+}
+
+
 void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 {
 	// 1080i
