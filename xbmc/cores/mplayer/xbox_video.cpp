@@ -264,6 +264,7 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
 	img.y=src[0];
 	img.u=src[1];
 	img.v=src[2];
+	while (w % 16) w++;
 	image_output( &img,									// image
 								 w,										// width
 								 h,										// height
