@@ -17,7 +17,8 @@ CSettings::CSettings(void)
 	g_stSettings.m_bAutorunVCD=true;
 	g_stSettings.m_bAutorunCdda=true;
 	g_stSettings.m_bAutorunXbox=true;
-
+	g_stSettings.m_bUseFDrive=true;
+	g_stSettings.m_bUseGDrive=false;
 	strcpy(g_stSettings.szDefaultLanguage,"english");
 	strcpy(g_stSettings.szDefaultVisualisation,"goom.dll");
 	g_stSettings.m_minFilter=D3DTEXF_LINEAR;
@@ -215,7 +216,9 @@ void CSettings::Load()
 
 	g_stSettings.m_iStartupWindow=GetInteger(pRootElement, "startwindow");
 	g_stSettings.m_iHTTPProxyPort=GetInteger(pRootElement, "httpproxyport");
-	
+
+	g_stSettings.m_bUseFDrive=GetBoolean(pRootElement, "useFDrive");
+	g_stSettings.m_bUseGDrive=GetBoolean(pRootElement, "useGDrive");
 
   CStdString strDir;
   strDir=g_stSettings.m_szShortcutDirectory;

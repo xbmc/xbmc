@@ -68,7 +68,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 			if (m_pVisualisation) 
 			{
 				m_pVisualisation->Create();
-				OnInitialize(2, 44100, 16);
+				//OnInitialize(2, 44100, 16);
 				if (g_application.m_pPlayer)
 					g_application.m_pPlayer->RegisterAudioCallback(this);
 			}

@@ -130,6 +130,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	int				 	iTextureHeight=30;
 	CStdString 	strImage,strImageFocus;
 	int				 	iTextureWidth=80;
+	bool				bHasPath=false;
 	
 	// get defaults from reference control
 	if (pReference)
@@ -226,9 +227,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		if (strType=="progress")
 		{
 			strTextureBg	= ((CGUIProgressControl*)pReference)->GetBackGroundTextureName();
-			strLeft				= ((CGUIProgressControl*)pReference)->GetBackGroundTextureName();
-			strMid				= ((CGUIProgressControl*)pReference)->GetBackTextureRightName();
-			strRight			= ((CGUIProgressControl*)pReference)->GetBackTextureMidName();
+			strLeft				= ((CGUIProgressControl*)pReference)->GetBackTextureLeftName();
+			strMid				= ((CGUIProgressControl*)pReference)->GetBackTextureMidName();
+			strRight			= ((CGUIProgressControl*)pReference)->GetBackTextureRightName();
 		}
 		if (strType=="image")
 		{
@@ -327,6 +328,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	GetDWORD(pControlNode,"bitmaps", dwItems);
 	GetHex(pControlNode, "textcolor", dwTextColor);
 
+ 	GetBoolean(pControlNode,"hasPath",bHasPath);
+
 	GetString(pControlNode,"textureUp",strUp);
 	GetString(pControlNode,"textureDown",strDown);
 	GetString(pControlNode,"textureUpFocus",strUpFocus);
@@ -401,7 +404,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
   if (strType=="label")
   {
-      CGUILabelControl* pControl = new CGUILabelControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strFont,strLabel,dwTextColor,dwAlign);
+      CGUILabelControl* pControl = new CGUILabelControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strFont,strLabel,dwTextColor,dwAlign, bHasPath);
       pControl->SetColourDiffuse(dwColorDiffuse);
       pControl->SetVisible(bVisible);
       return pControl;

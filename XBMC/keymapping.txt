@@ -9,6 +9,7 @@ general key mappings in GUI:
   goto previous folder                          controller: B               remote    : ?
         
 Keymappings when playing audio songs:
+  switch between Visualisation/GUI:							controller: X button        remote:   : menu button   
   next/previous song                            controller: ?               remote    : skip- and skip+
   pause song                                    controller: ?               remote    : pause
   stop song                                     controller: ?               remote    : stop
