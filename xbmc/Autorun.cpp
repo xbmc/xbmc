@@ -189,13 +189,16 @@ bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAdded
 				}
         else if (bRoot && pItem->m_strPath.Find("PICTURES") != -1 )
 				{
-          bPlaying=true;
-				  m_gWindowManager.ActivateWindow(WINDOW_PICTURES);
-          CStdString* strUrl = new CStdString( pItem->m_strPath.c_str() );
-				  CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, 0, 0, (void*) strUrl );
-				  m_gWindowManager.SendMessage( msg );
-				  delete strUrl;
-				  break;
+          if (g_stSettings.m_bAutorunPictures)
+          {
+            bPlaying=true;
+				    m_gWindowManager.ActivateWindow(WINDOW_PICTURES);
+            CStdString* strUrl = new CStdString( pItem->m_strPath.c_str() );
+				    CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, 0, 0, (void*) strUrl );
+				    m_gWindowManager.SendMessage( msg );
+				    delete strUrl;
+				    break;
+          }
         }
 				else
 				{
