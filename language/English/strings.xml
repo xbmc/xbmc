@@ -313,11 +313,11 @@
 	</string>
 	<string>
 		<id>150</id>
-		<value>IP:</value>
+		<value>IP</value>
 	</string>
 	<string>
 		<id>151</id>
-		<value>Link:</value>
+		<value>Link: </value>
 	</string>
 	<string>
 		<id>152</id>
@@ -377,19 +377,19 @@
 	</string>
 	<string>
 		<id>166</id>
-		<value>Skin:</value>
+		<value>Skin</value>
 	</string>
 	<string>
 		<id>167</id>
-		<value>FTP server:</value>
+		<value>FTP server</value>
 	</string>
 	<string>
 		<id>168</id>
-		<value>Synchronize Time:</value>
+		<value>Synchronize Time</value>
 	</string>
 	<string>
 		<id>169</id>
-		<value>Resolution:</value>
+		<value>Resolution</value>
 	</string>
 	<string>
 		<id>170</id>
@@ -661,11 +661,11 @@
 	</string>
 	<string>
 		<id>237</id>
-		<value>Minification:</value>
+		<value>Minification</value>
 	</string>
 	<string>
 		<id>238</id>
-		<value>Magnification:</value>
+		<value>Magnification</value>
 	</string>
 	<string>
 		<id>240</id>
@@ -761,7 +761,7 @@
 	</string>
 	<string>
 		<id>263</id>
-		<value>HTTP server:</value>
+		<value>HTTP server</value>
 	</string>
 	<string>
 		<id>264</id>
@@ -1053,7 +1053,7 @@
 	</string>
 	<string>
 		<id>337</id>
-		<value>Audio Output:</value>
+		<value>Audio Output</value>
 	</string>
 	<string>
 		<id>338</id>
@@ -1505,27 +1505,27 @@
 	</string>
 	<string>
 		<id>451</id>
-		<value>Row 1 adress:</value>
+		<value>Row 1 adress</value>
 	</string>
 	<string>
 		<id>452</id>
-		<value>Row 2 adress:</value>
+		<value>Row 2 adress</value>
 	</string>
 	<string>
 		<id>453</id>
-		<value>Row 3 adress:</value>
+		<value>Row 3 adress</value>
 	</string>
 	<string>
 		<id>454</id>
-		<value>Row 4 adress:</value>
+		<value>Row 4 adress</value>
 	</string>
 	<string>
 		<id>455</id>
-		<value>Rows:</value>
+		<value>Rows</value>
 	</string>
 	<string>
 		<id>456</id>
-		<value>Mode:</value>
+		<value>Mode</value>
 	</string>
 	<string>
 		<id>457</id>
@@ -1702,6 +1702,19 @@
 	<string>
 		<id>500</id>
 		<value>Downloading album info failed</value>
+	</string>
+	<string>
+
+		<id>999</id>
+		<value>Online Gaming</value>
+
+	</string> 
+	<string>
+		
+		<id>998</id>
+		
+		<value>XLink KAI</value>
+	
 	</string>
 	<string>
 		<id>10000</id>
