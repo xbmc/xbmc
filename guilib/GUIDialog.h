@@ -23,5 +23,7 @@ public:
 protected:
 	DWORD						m_dwParentWindowID;
 	CGUIWindow* 		m_pParentWindow;
+	DWORD						m_dwPrevRouteWindow;
+	CGUIWindow* 		m_pPrevRouteWindow;
 	bool						m_bRunning;
 };

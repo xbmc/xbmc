@@ -121,4 +121,5 @@ public:
   static void RestoreBrightnessContrastGamma();
   static void InitGamma();
   static void ClearCache();
+	static void SortFileItemsByName(VECFILEITEMS& items, bool bSortAscending=true);
 };

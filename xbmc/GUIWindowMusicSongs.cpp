@@ -221,7 +221,10 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
         UpdateButtons();
         UpdateListControl();
 
-				if (!m_strDirectory.IsEmpty() && m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory.Find(m_strDirectory) > -1 && g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC_TEMP)
+				CStdString strDirectory=m_strDirectory;
+				if (CUtil::HasSlashAtEnd(strDirectory))
+					strDirectory.Delete(strDirectory.size()-1);
+				if (!m_strDirectory.IsEmpty() && m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory==strDirectory && g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC_TEMP)
 				{
 					int nSong=g_playlistPlayer.GetCurrentSong();
 					const CPlayList::CPlayListItem item=g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP)[nSong];
@@ -762,6 +765,8 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
 			//	Save current window and directory to know where the selected item was
 			m_nTempPlayListWindow=GetID();
 			m_strTempPlayListDirectory=m_strDirectory;
+			if (CUtil::HasSlashAtEnd(m_strTempPlayListDirectory))
+				m_strTempPlayListDirectory.Delete(m_strTempPlayListDirectory.size()-1);
 
 			g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC_TEMP);
 			g_playlistPlayer.Play(iItem-nFolderCount-iNoSongs);
@@ -982,13 +987,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 					}
 					else // of if ( !bFound )
 					{
-						tag.SetAlbum(song.strAlbum);
-						tag.SetArtist(song.strArtist);
-						tag.SetGenre(song.strGenre);
-						tag.SetDuration(song.iDuration);
-						tag.SetTitle(song.strTitle);
-						tag.SetTrackNumber(song.iTrack);
-						tag.SetLoaded(true);
+						tag.SetSong(song);
 					}
 				}//if (strExtension!=".cdda" )
 			}//if (!tag.Loaded() )
@@ -1001,20 +1000,118 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 
 			if (tag.Loaded() && m_bScan && bNewFile)
 			{
-				SYSTEMTIME stTime;
-				tag.GetReleaseDate(stTime);
-				CSong song;
-				song.strTitle		= tag.GetTitle();
-				song.strGenre		= tag.GetGenre();
-				song.strFileName= pItem->m_strPath;
-				song.strArtist	= tag.GetArtist();
-				song.strAlbum		= tag.GetAlbum();
-				song.iYear			=	stTime.wYear;
-				song.iTrack			= tag.GetTrackNumber();
-				song.iDuration	= tag.GetDuration();
-
+				CSong song(tag);
 				g_musicDatabase.AddSong(song,false);
 			}
 		}//if (!pItem->m_bIsFolder)
+	}
+}
+
+void CGUIWindowMusicSongs::OnSearchItemFound(const CFileItem* pSelItem)
+{
+	if (pSelItem->m_bIsFolder)
+	{
+		CStdString strPath=pSelItem->m_strPath;
+		CStdString strParentPath;
+		CUtil::GetParentPath(strPath, strParentPath);
+		Update(strParentPath);
+
+		while (CUtil::GetParentPath(strPath, strParentPath))
+		{
+			m_history.Set(strPath, strParentPath);
+			strPath=strParentPath;
+		}
+		m_history.Set(strPath, "");
+
+		for (int i=0; i<(int)m_vecItems.size(); i++)
+		{
+			CFileItem* pItem=m_vecItems[i];
+			if (pItem->m_strPath==pSelItem->m_strPath)
+			{
+				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST, i);
+				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS, i);
+				const CGUIControl* pControl=GetControl(CONTROL_LIST);
+				if (pControl->IsVisible())
+				{
+					SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+				}
+				else
+				{
+					SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
+				}
+				break;
+			}
+		}
+	}
+	else
+	{
+		CStdString strPath, strFileName;
+		CUtil::Split(pSelItem->m_strPath, strPath, strFileName);
+		
+		Update(strPath);
+
+		CStdString strParentPath;
+		while (CUtil::GetParentPath(strPath, strParentPath))
+		{
+			m_history.Set(strPath, strParentPath);
+			strPath=strParentPath;
+		}
+		m_history.Set(strPath, "");
+
+		for (int i=0; i<(int)m_vecItems.size(); i++)
+		{
+			CFileItem* pItem=m_vecItems[i];
+			if (pItem->m_strPath==pSelItem->m_strPath)
+			{
+				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST, i);
+				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS, i);
+				const CGUIControl* pControl=GetControl(CONTROL_LIST);
+				if (pControl->IsVisible())
+				{
+					SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+				}
+				else
+				{
+					SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
+				}
+				break;
+			}
+		}
+	}
+}
+
+/// \brief Search for a song or a artist with search string \e strSearch in the musicdatabase and return the found \e items
+/// \param strSearch The search string 
+/// \param items Items Found
+void CGUIWindowMusicSongs::DoSearch(const CStdString& strSearch,VECFILEITEMS& items)
+{
+	VECALBUMS albums;
+	g_musicDatabase.FindAlbumsByName(strSearch, albums);
+
+	if (albums.size())
+	{
+		CStdString strAlbum=g_localizeStrings.Get(483);	//	Album
+		for (int i=0; i<(int)albums.size(); i++)
+		{
+			CAlbum& album=albums[i];
+			CFileItem* pItem=new CFileItem(album);
+			pItem->SetLabel("[" + strAlbum + "] " + album.strAlbum + " - " + album.strArtist);
+			items.push_back(pItem);
+		}
+	}
+
+	VECSONGS songs;
+	g_musicDatabase.FindSongsByNameAndArtist(strSearch, songs);
+
+	if (songs.size())
+	{
+		CStdString strSong=g_localizeStrings.Get(179);	//	Song
+		for (int i=0; i<(int)songs.size(); i++)
+		{
+			CSong& song=songs[i];
+			CFileItem* pItem=new CFileItem(song);
+			pItem->SetLabel("[" + strSong + "] " + song.strTitle + " - " + song.strArtist + " - " + song.strAlbum);
+			items.push_back(pItem);
+		}
 	}
 }
