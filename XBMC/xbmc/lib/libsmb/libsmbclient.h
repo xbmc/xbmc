@@ -360,9 +360,9 @@ struct _SMBCCTX {
 	int        (*unlink)  (SMBCCTX *c, const char *fname);
 	int        (*rename)  (SMBCCTX *ocontext, const char *oname, 
 			       SMBCCTX *ncontext, const char *nname);
-	off_t      (*lseek)   (SMBCCTX *c, SMBCFILE * file, off_t offset, int whence);
-	int        (*stat)    (SMBCCTX *c, const char *fname, struct stat *st);
-	int        (*fstat)   (SMBCCTX *c, SMBCFILE *file, struct stat *st);
+	SMB_OFF_T  (*lseek)   (SMBCCTX *c, SMBCFILE * file, SMB_OFF_T offset, int whence);
+	int        (*stat)    (SMBCCTX *c, const char *fname, SMB_STRUCT_STAT *st);
+	int        (*fstat)   (SMBCCTX *c, SMBCFILE *file, SMB_STRUCT_STAT *st);
 	int        (*close)   (SMBCCTX *c, SMBCFILE *file);
 
 	/** callable functions for dirs
@@ -374,9 +374,9 @@ struct _SMBCCTX {
 			       struct smbc_dirent *dirp, int count);
 	int        (*mkdir)   (SMBCCTX *c, const char *fname, mode_t mode);
 	int        (*rmdir)   (SMBCCTX *c, const char *fname);
-	off_t      (*telldir) (SMBCCTX *c, SMBCFILE *dir);
-	int        (*lseekdir)(SMBCCTX *c, SMBCFILE *dir, off_t offset);
-	int        (*fstatdir)(SMBCCTX *c, SMBCFILE *dir, struct stat *st);
+	SMB_OFF_T      (*telldir) (SMBCCTX *c, SMBCFILE *dir);
+	int        (*lseekdir)(SMBCCTX *c, SMBCFILE *dir, SMB_OFF_T offset);
+	int        (*fstatdir)(SMBCCTX *c, SMBCFILE *dir, SMB_STRUCT_STAT *st);
         int        (*chmod)(SMBCCTX *c, const char *fname, mode_t mode);
         int        (*utimes)(SMBCCTX *c,
                              const char *fname, struct timeval *tbuf);
@@ -725,7 +725,7 @@ ssize_t smbc_write(int fd, void *buf, size_t bufsize);
  * 
  * @todo Are errno values complete and correct?
  */
-off_t smbc_lseek(int fd, off_t offset, int whence);
+SMB_OFF_T smbc_lseek(int fd, SMB_OFF_T offset, int whence);
 
 
 /**@ingroup file
@@ -909,7 +909,7 @@ struct smbc_dirent* smbc_readdir(unsigned int dh);
  * @see             smbc_readdir()
  *
  */
-off_t smbc_telldir(int dh);
+SMB_OFF_T smbc_telldir(int dh);
 
 
 /**@ingroup directory
@@ -934,7 +934,7 @@ off_t smbc_telldir(int dh);
  *
  * @todo In what does the reture and errno values mean?
  */
-int smbc_lseekdir(int fd, off_t offset);
+int smbc_lseekdir(int fd, SMB_OFF_T offset);
 
 /**@ingroup directory
  * Create a directory.
@@ -1000,7 +1000,7 @@ int smbc_rmdir(const char *durl);
  * @see             Unix stat()
  *
  */
-int smbc_stat(const char *url, struct stat *st);
+int smbc_stat(const char *url, SMB_STRUCT_STAT *st);
 
 
 /**@ingroup attribute
@@ -1021,7 +1021,7 @@ int smbc_stat(const char *url, struct stat *st);
  * @see             smbc_stat(), Unix stat()
  *
  */
-int smbc_fstat(int fd, struct stat *st);
+int smbc_fstat(int fd, SMB_STRUCT_STAT *st);
 
 
 /**@ingroup attribue

@@ -1,11 +1,16 @@
 #ifndef XB_LIB_SMB_H
 #define XB_LIB_SMB_H
 
-#include "../lib/libsmb/config.h"
-//#include "../lib/libsmb/includes.h"
-#define uint16 unsigned short
-#define int32 INT32
-#include "../lib/libsmb/charset.h"
+#define uint u_int
+#define mode_t int
+#define ssize_t int
+#define uid_t int
+#define gid_t int
+#define SMB_STRUCT_STAT struct __stat64
+#define SMB_OFF_T UINT64
+
+/* this defines the charset types used in samba */
+typedef enum {CH_UCS2=0, CH_UNIX=1, CH_DISPLAY=2, CH_DOS=3, CH_UTF8=4} charset_t;
 
 #ifdef __cplusplus
 extern "C" {

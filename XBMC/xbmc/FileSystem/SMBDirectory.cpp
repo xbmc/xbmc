@@ -72,7 +72,7 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 			if (dirEnt->name && strcmp(dirEnt->name,".") && strcmp(dirEnt->name,"..") &&
 				 (dirEnt->name[dirEnt->namelen - 2] != '$'))
 			{
-				long lSize = 0;
+				unsigned __int64 iSize = 0;
 				bool bIsDir = true;
 				__int64 lTimeDate = 0;
 
@@ -89,7 +89,7 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 						dirEnt->smbc_type != SMBC_WORKGROUP &&
 						dirEnt->smbc_type != SMBC_SERVER)
 				{
-					struct stat info;
+					struct __stat64 info;
 					CStdString strFile = strRoot + wStrFile;
 
 					// convert from string to UTF8
@@ -97,12 +97,13 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 					strUtfFile[strLen] = 0;
 
 					smb.Lock();
+					// it's safe to cast to a struct stat* here
 					smbc_stat(strUtfFile, &info);
 					smb.Unlock();
 
 					bIsDir = (info.st_mode & S_IFDIR) ? true : false;
 					lTimeDate = info.st_ctime;
-					lSize = info.st_size;
+					iSize = info.st_size;
 				}
 				
 				FILETIME fileTime,localTime;
@@ -129,7 +130,7 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 						pItem->m_strPath=strRoot;
 						pItem->m_strPath+=wStrFile;
 						pItem->m_bIsFolder=false;
-						pItem->m_dwSize = lSize;
+						pItem->m_dwSize = (DWORD)iSize;
 						FileTimeToSystemTime(&localTime, &pItem->m_stTime);
 		        
 						items.push_back(pItem);
