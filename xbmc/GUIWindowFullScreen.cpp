@@ -150,7 +150,7 @@ void CGUIWindowFullScreen::Render()
 		RECT DestRect;
 		g_application.m_pPlayer->GetVideoRect(SrcRect, DestRect);
 		CStdString strRects;
-		float fAR= ((float)(DestRect.right-DestRect.left)) / ((float)(DestRect.bottom-DestRect.top));
+		float fAR = g_application.m_pPlayer->GetVideoAspectRatio(); //((float)(DestRect.right-DestRect.left)) / ((float)(DestRect.bottom-DestRect.top));
 		strRects.Format(" | (%i,%i)-(%i,%i)->(%i,%i)-(%i,%i) AR:%2.2f", 
 											SrcRect.left,SrcRect.top,
 											SrcRect.right,SrcRect.bottom,

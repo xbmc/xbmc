@@ -39,6 +39,7 @@ public:
 	virtual void		GetGeneralInfo( CStdString& strVideoInfo)=0;
 	virtual void    Update()=0;
 	virtual void		GetVideoRect(RECT& SrcRect, RECT& DestRect)=0;
+	virtual float		GetVideoAspectRatio()=0;
 protected:
 	IPlayerCallback& m_callback;
 };
