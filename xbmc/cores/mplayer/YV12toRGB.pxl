@@ -53,9 +53,7 @@ xmma discard,discard,r0, r0,c2_bx2, r1,c2_bx2
 
 ; r1 = 2*yfac*(y-yadj)
 ; r2 = y-yadj, r1 = 2*yfac*r2
-sub r1, t0, c3
-mul_x2 r1, r1, c4
-;xmma_x2 discard,discard,r1, t0,c4, -c3,c4
+xmma_x2 discard,discard,r1, t0,c4, -c3,c4
 
 ; r0 = r0 + r1 (alpha set from y, a = 1.0)
 add r0, r0, r1
