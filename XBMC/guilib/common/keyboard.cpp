@@ -53,7 +53,8 @@ void CKeyboard::Initialize()
       pollValues.ReservedMBZ2    = 0;
 			m_hKeyboardDevice[i] = XInputOpen( XDEVICE_TYPE_DEBUG_KEYBOARD, i, 
 																				XDEVICE_NO_SLOT, &pollValues );
-    }
+ 			CLog::Log(LOGINFO, "Keyboard found on port %i", i);
+   }
   }
 }
 
@@ -74,6 +75,7 @@ void CKeyboard::Update()
     {
       XInputClose( m_hKeyboardDevice[i] );
       m_hKeyboardDevice[i] = NULL;
+ 			CLog::Log(LOGINFO, "Keyboard removed from port %i", i);
     }
 
     // Handle inserted devices
@@ -90,6 +92,7 @@ void CKeyboard::Update()
 
       m_hKeyboardDevice[i] = XInputOpen( XDEVICE_TYPE_DEBUG_KEYBOARD, i, 
                                           XDEVICE_NO_SLOT, &pollValues );
+ 			CLog::Log(LOGINFO, "Keyboard inserted in port %i", i);
 
 			m_bKeyDown = false;
     }

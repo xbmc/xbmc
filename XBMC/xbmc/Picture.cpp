@@ -37,7 +37,7 @@ void CPicture::Free()
 	}
 }
 
-IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate,int iMaxWidth, int iMaxHeight, bool bRGB)
+IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int &iOriginalWidth, int &iOriginalHeight, int iMaxWidth, int iMaxHeight)
 {
 	IDirect3DTexture8* pTexture=NULL;
 	CStdString strExtension;
@@ -106,21 +106,8 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate,int
     return NULL;
   }
 
-	if (iRotate == 1)
-	{
-		if (!image.RotateRight() || !image.IsValid()) return NULL;
-	}
-	if (iRotate == 2)
-	{
-		if (!image.Rotate180() || !image.IsValid()) return NULL;
-	}
-	if (iRotate == 3)
-	{
-		if (!image.RotateLeft() || !image.IsValid()) return NULL;
-	}
-
-	m_dwWidth  = image.GetWidth();
-	m_dwHeight = image.GetHeight();
+	m_dwWidth  = iOriginalWidth  = image.GetWidth();
+	m_dwHeight = iOriginalHeight = image.GetHeight();
 
 	bool bResize=false;
 	float fAspect= ((float)m_dwWidth) / ((float)m_dwHeight);
@@ -151,11 +138,7 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate,int
 	m_dwWidth=image.GetWidth();
 	m_dwHeight=image.GetHeight();
 
-	if (bRGB)
-		pTexture=GetTexture(image);
-	else
-		pTexture=GetYUY2Texture(image);
-	return pTexture;
+	return GetTexture(image);;
 }
 
 IDirect3DTexture8* CPicture::LoadNative(const CStdString& strFileName)
@@ -167,12 +150,32 @@ IDirect3DTexture8* CPicture::LoadNative(const CStdString& strFileName)
 	// TODO: Add other known stuff that D3DCreateTextureFromFileEx supports
 	if ( 0!=CUtil::cmpnocase(strExtension.c_str(),".jpg") &&
 				0!=CUtil::cmpnocase(strExtension.c_str(),".jpeg") &&
-				0!=CUtil::cmpnocase(strExtension.c_str(),".png") ) return NULL;
+				0!=CUtil::cmpnocase(strExtension.c_str(),".png") &&
+				0!=CUtil::cmpnocase(strExtension.c_str(),".bmp")) return NULL;
 
   try
   {
+		CGUIImage *newImage = new CGUIImage(WINDOW_SLIDESHOW, 100, 0, 0, 720, 576, strFileName);
+		newImage->AllocResources();
+		return newImage->m_vecTextures[0];
 		IDirect3DTexture8 *pTexture = NULL;
-		D3DXIMAGE_INFO info;
+		if (g_graphicsContext.Get3DDevice()->CreateTexture(1024, 1024, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &pTexture) == D3D_OK)
+		{
+			IDirect3DSurface8 *pSurface = NULL;
+			if (pTexture->GetSurfaceLevel(0, &pSurface) == D3D_OK)
+			{
+				D3DXIMAGE_INFO info;
+				if (D3DXLoadSurfaceFromFile(pSurface, NULL, NULL, strFileName.c_str(), NULL, D3DX_DEFAULT, 0, &info)==D3D_OK)
+				{
+					m_dwWidth  = info.Width;
+					m_dwHeight = info.Height;
+					pSurface->Release();
+					return pTexture;
+				}
+			}
+		}
+		return NULL;
+/*		D3DXIMAGE_INFO info;
 		DWORD dwColorKey = 0;
 		if (D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(),strFileName.c_str(), D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED,
 				D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture) != D3D_OK)
@@ -183,7 +186,7 @@ IDirect3DTexture8* CPicture::LoadNative(const CStdString& strFileName)
 
 		m_dwWidth  = info.Width;
 		m_dwHeight = info.Height;
-		return pTexture;
+		return pTexture;*/
   }
   catch(...)
   {
@@ -560,7 +563,7 @@ int CPicture::DetectFileType(const BYTE* pBuffer, int nBufSize)
 	return CXIMAGE_FORMAT_UNKNOWN;
 }
 
-void CPicture::RenderImage(IDirect3DTexture8* pTexture,int x, int y, int width, int height, int iTextureWidth, int iTextureHeight, int iTextureLeft, int iTextureTop)
+void CPicture::RenderImage(IDirect3DTexture8* pTexture,float x, float y, float width, float height, int iTextureWidth, int iTextureHeight, int iTextureLeft, int iTextureTop, DWORD dwAlpha)
 {
   CPicture::VERTEX* vertex=NULL;
   LPDIRECT3DVERTEXBUFFER8 m_pVB;
@@ -568,33 +571,30 @@ void CPicture::RenderImage(IDirect3DTexture8* pTexture,int x, int y, int width, 
 	g_graphicsContext.Get3DDevice()->CreateVertexBuffer( 4*sizeof(CPicture::VERTEX), D3DUSAGE_WRITEONLY, 0L, D3DPOOL_DEFAULT, &m_pVB );
   m_pVB->Lock( 0, 0, (BYTE**)&vertex, 0L );
 
-	float fx=(float)x;
-	float fy=(float)y;
-	float fwidth=(float)width;
-	float fheight=(float)height;
 	float fxOff = (float)iTextureLeft;
 	float fyOff = (float)iTextureTop;
 
-  vertex[0].p = D3DXVECTOR4( fx - 0.5f,	fy - 0.5f,		0, 0 );
+  vertex[0].p = D3DXVECTOR4( x - 0.5f,	y - 0.5f,		0, 0 );
   vertex[0].tu = fxOff;
   vertex[0].tv = fyOff;
 
-  vertex[1].p = D3DXVECTOR4( fx+fwidth - 0.5f,	fy - 0.5f,		0, 0 );
+  vertex[1].p = D3DXVECTOR4( x+width - 0.5f,	y - 0.5f,		0, 0 );
   vertex[1].tu = fxOff+(float)iTextureWidth;
   vertex[1].tv = fyOff;
 
-  vertex[2].p = D3DXVECTOR4( fx+fwidth - 0.5f,	fy+fheight - 0.5f,	0, 0 );
+  vertex[2].p = D3DXVECTOR4( x+width - 0.5f,	y+height - 0.5f,	0, 0 );
   vertex[2].tu = fxOff+(float)iTextureWidth;
   vertex[2].tv = fyOff+(float)iTextureHeight;
 
-  vertex[3].p = D3DXVECTOR4( fx - 0.5f,	fy+fheight - 0.5f,	0, 0 );
+  vertex[3].p = D3DXVECTOR4( x - 0.5f,	y+height - 0.5f,	0, 0 );
   vertex[3].tu = fxOff;
   vertex[3].tv = fyOff+iTextureHeight;
 
-  vertex[0].col = 0xffffffff;
-	vertex[1].col = 0xffffffff;
-	vertex[2].col = 0xffffffff;
-	vertex[3].col = 0xffffffff;
+	D3DCOLOR dwColor = (dwAlpha << 24) | 0xFFFFFF;
+	for (int i=0; i<4; i++)
+	{
+		vertex[i].col = dwColor;
+	}
   m_pVB->Unlock();
 
 
@@ -617,7 +617,7 @@ void CPicture::RenderImage(IDirect3DTexture8* pTexture,int x, int y, int width, 
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FILLMODE,     D3DFILL_SOLID );
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_CULLMODE,     D3DCULL_CCW );
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA );
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_YUVENABLE, FALSE);
