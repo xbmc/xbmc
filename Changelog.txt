@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 27-10-2004 fixed: filemanager didn't display computername in path
+  - 27-10-2004 fixed: selecting Xecuter3 LCD would cause errors when running in debug mode
+  - 27-10-2004 fixed: selecting Xenium LCD would show up as having selected Xecuter3 and the 
+                      opposite when returning to setting screen.
   - 26-10-2004 fixed: Autoshutdown now checks for FTP activity (SF Bug #1051210)
   - 26-10-2004 added: Kai password is displayed using *'s in the GUI.
   - 26-10-2004 fixed: Hide File extension and Parent Dir Items clash in General Settings
