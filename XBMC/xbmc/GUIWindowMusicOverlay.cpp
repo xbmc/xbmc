@@ -40,6 +40,7 @@ CGUIWindowMusicOverlay::CGUIWindowMusicOverlay()
 	m_iPosOrgIcon=0;
 	m_lStartOffset=0;
 	m_pTexture=NULL;
+	m_bShowInfoAlways=false;
 }
 
 CGUIWindowMusicOverlay::~CGUIWindowMusicOverlay()
@@ -57,17 +58,36 @@ void CGUIWindowMusicOverlay::OnAction(const CAction &action)
 				//reset timeout
 				m_dwTimeout = 0;
 
-				//figure out which way we are moving
-				if (m_iFrameIncrement == 0)
+				// if we're up permanently, and action is invoked again,
+				// remove the info and reset
+				if (m_bShowInfoAlways)
 				{
-					//we're not moving, so figure out if we should start moving up or down
+					m_bShowInfoAlways = false;
+					m_bShowInfo       = false;
+          m_dwTimeout       = 0;
+				  m_iFrames         = STEPS;
+					m_iFrameIncrement = -1;
+				}
+
+				//figure out which way we are moving
+				else if (m_iFrameIncrement == 0)
+				{
+					// we're not moving, so figure out if we should start moving up or down
+					// scroll the info up
 					if (m_iFrames <= 0)
 					{
 						m_bShowInfo=true;
 						g_stSettings.m_bMyMusicSongInfoInVis = true;
 						g_stSettings.m_bMyMusicSongThumbInVis = true;
-						m_iFrameIncrement = 1;
+            m_iFrameIncrement = 1;
 					}
+					// info is already on screen in its resting spot. 
+					// if INFO is hit again, set bool to make it stay there.
+					else if (m_iFrames == STEPS)
+					{
+						m_bShowInfoAlways=true;
+					}
+					// else scroll the info down
 					else
 					{
 						m_bShowInfo=false;
@@ -79,6 +99,11 @@ void CGUIWindowMusicOverlay::OnAction(const CAction &action)
 					//we're moving... reverse
 					m_iFrameIncrement*=-1;
 				}
+				break;
+
+			case ACTION_SHOW_GUI:
+				// reset the bool if switching back to the GUI
+				m_bShowInfoAlways=false;
 				break;
 		}
 	}
@@ -176,7 +201,8 @@ void CGUIWindowMusicOverlay::Render()
     m_iPosOrgBigPlayTime=GetControlYPosition(CONTROL_BIG_PLAYTIME);
   }
   //int iSteps=25;
-  if ( m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION)
+  if ( (m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION) ||
+	  (m_bShowInfoAlways) )
   {
     SetPosition(0, 50,50,m_iPosOrgRectangle);
     SetPosition(CONTROL_LOGO_PIC, 50,50,m_iPosOrgIcon);
@@ -211,7 +237,7 @@ void CGUIWindowMusicOverlay::Render()
 			m_iFrameIncrement = 0;
 			g_stSettings.m_bMyMusicSongInfoInVis = false;
 			g_stSettings.m_bMyMusicSongThumbInVis = false;
-		}
+    }
 		else if (!m_bShowInfo && m_iFrames >= STEPS)
 		{
 			m_dwTimeout = 0;
@@ -226,7 +252,7 @@ void CGUIWindowMusicOverlay::Render()
 			m_iFrameIncrement = 0;
 			g_stSettings.m_bMyMusicSongInfoInVis = false;
 			g_stSettings.m_bMyMusicSongThumbInVis = false;
-		}
+    }
 		else if (m_iFrames >= STEPS)
 		{
 			//if we just got to the top, start the timer but keep us sitting there until timeout expires
