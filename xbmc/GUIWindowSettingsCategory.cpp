@@ -390,6 +390,18 @@ void CGUIWindowSettingsCategory::CreateSettings()
 			}
 			pControl->SetValue(pSettingInt->GetData()-pSettingInt->m_iMin);
 		}
+		else if (strSetting == "System.FanSpeed")
+		{
+			CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+			CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+			for (int i=pSettingInt->m_iMin; i <= pSettingInt->m_iMax; i+=5)
+			{
+				CStdString strLabel;
+				strLabel.Format("%i%%", i*2);
+				pControl->AddLabel(strLabel, i);
+			}
+			pControl->SetValue(int(pSettingInt->GetData()/5)-1);
+		}
 		else if (strSetting == "System.RemotePlayHDSpinDown")
 		{
 			CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -786,7 +798,12 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 	else if (strSetting == "System.FanSpeed")
 	{
 		CSettingInt *pSetting = (CSettingInt*)pSettingControl->GetSetting();
-    CFanController::Instance()->SetFanSpeed(pSetting->GetData());
+		int iControlID = pSettingControl->GetID();
+		CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControlID,0,0,NULL);
+		g_graphicsContext.SendMessage(msg);
+		int iSpeed = (RESOLUTION)msg.GetParam1();
+  	g_guiSettings.SetInt("System.FanSpeed", iSpeed);
+    CFanController::Instance()->SetFanSpeed(iSpeed);
 	}
 	else if (strSetting == "System.AutoTemperature")
 	{

@@ -5,19 +5,20 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-  - 06-01-2004 fixed: IMDb didn't filter HTML codes if a single match was found.
-  - 06-01-2004 fixed: Texel alignment in video playback.
-  - 06-01-2004 fixed: default.tbn sometimes did not get generated in proper directory.
-  - 05-01-2004 fixed: [ 1094725 ] Getting stuck on system info screen
-  - 05-01-2004 updated: Polish language file (Thnx to napek)
-  - 05-01-2004 fixed: possible problems with progress dialogs
-  - 05-01-2004 fixed: slow startup with DVD in drive
-  - 04-01-2004 fixed: music/video info hang
-  - 04-01-2004 fixed: [ 1092849 ] Cancel saving profile freezes the xbox
-  - 04-01-2004 fixed: [ 1092854 ] Music slide/shutdown menu freeze
-  - 04-01-2004 changed: modal dialogs are completely rendered by the window manager now
-  - 04-01-2004 fixed: play a song in a folder, goto videos, start a movie, when movie ends the songs is played again
-  - 03-01-2004 updated: Chinese (Simple) language file (Thnx to iikii)
+  - 06-01-2005 fixed: [ 1094724 ] Fan speed display bug
+  - 06-01-2005 fixed: IMDb didn't filter HTML codes if a single match was found.
+  - 06-01-2005 fixed: Texel alignment in video playback.
+  - 06-01-2005 fixed: default.tbn sometimes did not get generated in proper directory.
+  - 05-01-2005 fixed: [ 1094725 ] Getting stuck on system info screen
+  - 05-01-2005 updated: Polish language file (Thnx to napek)
+  - 05-01-2005 fixed: possible problems with progress dialogs
+  - 05-01-2005 fixed: slow startup with DVD in drive
+  - 04-01-2005 fixed: music/video info hang
+  - 04-01-2005 fixed: [ 1092849 ] Cancel saving profile freezes the xbox
+  - 04-01-2005 fixed: [ 1092854 ] Music slide/shutdown menu freeze
+  - 04-01-2005 changed: modal dialogs are completely rendered by the window manager now
+  - 04-01-2005 fixed: play a song in a folder, goto videos, start a movie, when movie ends the songs is played again
+  - 03-01-2005 updated: Chinese (Simple) language file (Thnx to iikii)
   - 02-01-2005 changed: my music, background scanner can be canceled during its first operations 
   - 02-01-2005 updated: sqlitedataset to 0.60 (now in namespace dbiplus)
   - 31-12-2004 added: my music, tag loader thread for playlist
