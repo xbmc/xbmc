@@ -799,7 +799,7 @@ void CApplication::StopServices()
 		m_pWebServer->Stop();
 		delete m_pWebServer;
 		m_pWebServer = NULL;
-    CSectionLoader::Unload("LIBHTTP");
+    //CSectionLoader::Unload("LIBHTTP");
 	}
 
   /* filezilla doesn't like to be deleted?
