@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 11-11-2004 fixed: shutdown button
   - 10-11-2004 added: new control buttonscroller for homepage buttons.
   - 10-11-2004 added: <homebuttons> group added to XBoxMediaCenter.xml for user configurable buttons.
   - 10-11-2004 added: XBMC.ActivateWindow() built-in command.                    
