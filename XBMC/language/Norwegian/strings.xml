@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.159. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.601. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -693,6 +693,8 @@
   <string><id>13355</id><value>Pixel Shader</value></string>
   <string><id>13356</id><value>YUY2 overlegg</value></string>
   <string><id>13357</id><value>Kombinasjon overlegg/shader</value></string>
+  <string><id>13358</id><value>Høykvalitets Pixel Shader</value></string>
+  <string><id>13359</id><value>Medium kvalitets Pixel Shader</value></string>
 
   <string><id>14000</id><value>Stabling: Av</value></string>
   <string><id>14001</id><value>Stabling: Enkel</value></string>
@@ -775,12 +777,12 @@
   <string><id>15017</id><value>Vis: Spill</value></string>
   <string><id>15018</id><value>Skriv inn</value></string>
   <string><id>15019</id><value>Legg til</value></string>
-  <string><id>15020</id><value>Vert</value></string>
+  <string><id>15020</id><value>Vær vert</value></string>
   <string><id>15021</id><value>Arenaer</value></string>
   <string><id>15022</id><value>Vis: Arenaer</value></string>
-  <string><id>15023</id><value>Spill av</value></string>
+  <string><id>15023</id><value>Spill</value></string>
   <string><id>15024</id><value>Legg til</value></string>
-  <string><id>15025</id><value>Vert</value></string>
+  <string><id>15025</id><value>Vær vert</value></string>
   <string><id>15026</id><value>Samtale</value></string>
   <string><id>15027</id><value>Vis: Chat</value></string>
   <string><id>15028</id><value>Tastatur</value></string>

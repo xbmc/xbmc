@@ -5,6 +5,12 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 09-02-2005 updated: German language file
+  - 09-02-2005 updated: Polish language file (Thnx to napek)
+  - 09-02-2005 updated: Norwegian language file (Thnx to vnmartinsen)
+  - 09-02-2005 updated: Italian language file (Thnx to kotix)
+  - 09-02-2005 updated: French language file (Thnx to modhack)
+  - 09-02-2005 updated: German (Austrian) language file (Thnx to CEOMR)
   - 09-02-2005 fixed: Harddisk spins down without any file playing when Immediate HD Spindown set to Music & Video
   - 08-02-2005 added: Two new gui control types: infolabel and infoimage.  Identical to label and image except they
                       come with an additional tag <info> with one of the 5 strings below.  More stuff to be added later.
