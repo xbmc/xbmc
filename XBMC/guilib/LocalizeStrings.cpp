@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "localizestrings.h"
 #include "tinyxml/tinyxml.h"
 #include "../xbmc/utils/log.h"

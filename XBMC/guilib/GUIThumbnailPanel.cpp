@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "guithumbnailpanel.h"
 #include "guifontmanager.h"
 

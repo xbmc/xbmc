@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include <xtl.h>
 #include <XGraphics.h>
 #include "packedtexture.h"
