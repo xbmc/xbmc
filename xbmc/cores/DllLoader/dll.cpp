@@ -13,7 +13,7 @@
 
 #include "../../utils/log.h"
 
-#define DEFAULT_DLLPATH "Q:\\mplayer\\codecs"
+#define DEFAULT_DLLPATH "Q:\\system\\players\\mplayer\\codecs"
 
 #define MODULE_HANDLES_START     0xf3f30120
 #define MODULE_HANDLE_kernel32  0xf3f30120			//kernel32.dll magic number

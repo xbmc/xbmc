@@ -1243,6 +1243,10 @@ void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)
 			CHDDirectory directory;	
 			VECFILEITEMS items;
 			CStdString strPath = "Q:\\mplayer\\font\\";
+	    if(g_guiSettings.GetBool("MyVideos.AlternateMPlayer"))
+      {
+        strPath = "Q:\\system\\players\\mplayer\\font\\";
+      }
 			strPath+=g_guiSettings.GetString("Subtitles.Font");
 			strPath+="\\";
 			directory.GetDirectory(strPath,items);
@@ -1280,6 +1284,10 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
 		CHDDirectory directory;	
 		VECFILEITEMS items;
 		CStdString strPath = "Q:\\mplayer\\font\\";
+	  if(g_guiSettings.GetBool("MyVideos.AlternateMPlayer"))
+    {
+      strPath = "Q:\\system\\players\\mplayer\\font\\";
+    }
 		directory.GetDirectory(strPath,items);
 		for (int i=0; i < (int)items.size(); ++i)
 		{
