@@ -95,6 +95,7 @@ DAAP_SClientHost *DAAP_Client_AddHost(DAAP_SClient *pCThis, char *host,
 
 unsigned int DAAP_Client_GetDatabases(DAAP_SClientHost *pCHThis);
 
+int GetStreamThreadStatus(void);
 
 /* Interface - ClientHost */
 
@@ -144,6 +145,7 @@ typedef struct
 typedef struct
 {
     int size;
+	int streamlen;
     void *data;
 } DAAP_ClientHost_Song;
 
@@ -215,6 +217,18 @@ int DAAP_ClientHost_AsyncGetAudioFile(DAAP_SClientHost *pCHThis,
                                       int fd);
 /* call this to make the async get abort asap */
 int DAAP_ClientHost_AsyncStop(DAAP_SClientHost *pCHThis);
+
+// XBMC Async ops
+int DAAP_ClientHost_GetAudioFileAsync(DAAP_SClientHost *pCHThis,
+                                 int databaseid, int songid, char *songformat,
+                                 DAAP_ClientHost_Song *song);
+
+void DAAP_ClientHost_StopAudioFileAsync(DAAP_SClientHost *pCHThis);
+
+//unsigned int Priv_DAAP_ClientHost_GetDatabasePlaylistItems(DAAP_SClientHost *pCHThis,
+                                                         //int databaseid,
+                                                         //int playlistid,
+														 //DAAP_ClientHost_DatabasePlaylistItem *items);
 
 
 #ifdef __cplusplus
