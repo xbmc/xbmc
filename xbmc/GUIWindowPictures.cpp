@@ -551,6 +551,7 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
 			SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
 		}
 	}
+	ShowThumbPanel();
 
 	for (int i=0; i < (int)m_vecItems.size(); ++i)
 	{
