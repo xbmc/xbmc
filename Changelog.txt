@@ -5,6 +5,13 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 08-02-2005 added: Two new gui control types: infolabel and infoimage.  Identical to label and image except they
+                      come with an additional tag <info> with one of the 5 strings below.  More stuff to be added later.
+                      Example code in Home.xml in Project Mayhem.
+  - 08-02-2005 added: New InfoManager class for allowing specific info/images to be displayed anywhere in the GUI.
+                       Initially added 4 labels: Weather.Conditions, Weather.Temperature, System.Time and System.Date
+                       and 1 image: Weather.Conditions
+  - 08-02-2005 changed: Weather is now obtained in a background thread on demand.
   - 06-02-2005 added: new control ids 51-54 to MusicOverlay.xml for Title, Artist, Year + Album labelcontrols.
   - 06-02-2005 fixed: 12 hour clock display on homepage - thanks to Nuka1195 
   - 06-02-2005 fixed: Thumbnail is erronously set when last entry in comma separated <path> is an XBE.

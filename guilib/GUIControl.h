@@ -108,7 +108,9 @@ public:
 		GUICONTROL_RESIZE,
 		GUICONTROL_BUTTONBAR,
 		GUICONTROL_CONSOLE,
-		GUICONTROL_EDIT
+		GUICONTROL_EDIT,
+		GUICONTROL_INFOIMAGE,
+		GUICONTROL_INFOLABEL
 	};
 	GUICONTROLTYPES GetControlType() const { return ControlType; }
 
@@ -123,7 +125,7 @@ protected:
   DWORD              m_dwHeight;
   DWORD              m_dwWidth;
   D3DCOLOR           m_colDiffuse;
-  DWORD				 m_dwAlpha;
+  DWORD              m_dwAlpha;
   DWORD							 m_dwControlID;
   DWORD							 m_dwParentID;
   bool							 m_bHasFocus;
@@ -132,6 +134,6 @@ protected:
   bool							 m_bSelected;
   int                m_iGroup;
 	bool							 m_bCalibration;
-	GUICONTROLTYPES ControlType;
+	GUICONTROLTYPES    ControlType;
 };
 #endif

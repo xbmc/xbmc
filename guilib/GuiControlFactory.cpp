@@ -28,6 +28,8 @@
 #include "GUIResizeControl.h"
 #include "GUIButtonScroller.h"
 #include "GUISpinControlEx.h"
+#include "GUIInfoLabelControl.h"
+#include "GUIInfoImage.h"
 
 CGUIControlFactory::CGUIControlFactory(void)
 {
@@ -187,6 +189,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	wstring		strLabel=L"";
 	CStdString  strFont="";
 	CStdString  strTmp;
+	CStdString	strInfo;
 	DWORD     	dwTextColor=0xFFFFFFFF;
 	DWORD		dwAlign=XBFONT_LEFT;
 	DWORD		dwAlignY=0;
@@ -297,6 +300,15 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwTextColor			= ((CGUILabelControl*)pReference)->GetTextColor();
 			dwAlign				= ((CGUILabelControl*)pReference)->m_dwTextAlign;
 			dwDisabledColor		= ((CGUILabelControl*)pReference)->GetDisabledColor();
+		}
+		else if (strType=="infolabel")
+		{
+			strFont				= ((CGUIInfoLabelControl*)pReference)->GetFontName();
+			strLabel			= ((CGUIInfoLabelControl*)pReference)->GetLabel();
+			dwTextColor		= ((CGUIInfoLabelControl*)pReference)->GetTextColor();
+			dwAlign				= ((CGUIInfoLabelControl*)pReference)->m_dwTextAlign;
+			dwDisabledColor		= ((CGUIInfoLabelControl*)pReference)->GetDisabledColor();
+			strInfo				= ((CGUIInfoLabelControl *)pReference)->GetInfo();
 		}
 		else if (strType=="edit")
 		{
@@ -476,6 +488,12 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		{
 			strTexture			= ((CGUIImage *)pReference)->GetFileName();
 			dwColorKey			= ((CGUIImage *)pReference)->GetColorKey();
+		}
+		else if (strType=="infoimage")
+		{
+			strTexture			= ((CGUIInfoImage *)pReference)->GetFileName();
+			dwColorKey			= ((CGUIInfoImage *)pReference)->GetColorKey();
+			strInfo					= ((CGUIInfoImage *)pReference)->GetInfo();
 		}
 		else if (strType=="listcontrol")
 		{
@@ -706,6 +724,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
 	GetString(pControlNode,"script", strExecuteAction);	// left in for backwards compatibility.
 	GetString(pControlNode,"execute", strExecuteAction);
+	GetString(pControlNode,"info", strInfo);
 	GetHex(pControlNode,"disabledcolor",dwDisabledColor);
 	GetPath(pControlNode,"textureDownFocus",strTextureDownFocus);
 	GetPath(pControlNode,"textureUpFocus",strTextureUpFocus);
@@ -880,6 +899,18 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
 		pControl->SetColourDiffuse(dwColorDiffuse);
 		pControl->SetVisible(bVisible);
+		return pControl;
+	}
+	if (strType=="infolabel")
+	{
+		CGUIInfoLabelControl* pControl = new CGUIInfoLabelControl(
+					dwParentId,dwID,iPosX,iPosY,dwWidth,dwHeight,
+					strFont,strLabel,dwTextColor,dwDisabledColor,
+					dwAlign, bHasPath);
+
+		pControl->SetColourDiffuse(dwColorDiffuse);
+		pControl->SetVisible(bVisible);
+		pControl->SetInfo(strInfo);
 		return pControl;
 	}
 	if (strType=="edit")
@@ -1111,6 +1142,17 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		pControl->SetNavigation(up,down,left,right);
 		pControl->SetColourDiffuse(dwColorDiffuse);
 		pControl->SetVisible(bVisible);
+		return pControl;
+	}
+	if (strType=="infoimage")
+	{
+		CGUIInfoImage* pControl = new CGUIInfoImage(
+			dwParentId,dwID,iPosX,iPosY,dwWidth,dwHeight,strTexture,dwColorKey);
+
+		pControl->SetNavigation(up,down,left,right);
+		pControl->SetColourDiffuse(dwColorDiffuse);
+		pControl->SetVisible(bVisible);
+		pControl->SetInfo(strInfo);
 		return pControl;
 	}
 	if (strType=="listcontrol")
