@@ -37,6 +37,7 @@ to maintain a single distribution point for the source code.
 #include "sntp.h"
 #include "../DNSNameCache.h"
 #include "../autoptrhandle.h"
+#include "../utils/log.h"
 using namespace AUTOPTR;
 
 const double NTP_FRACTIONAL_TO_MS = (((double)1000.0)/0xFFFFFFFF);
@@ -589,14 +590,14 @@ BOOL CSNTPClient::GetServerTime(LPCTSTR pszHostName, NtpServerResponse& response
   CNtpSocket* pSocket = new CNtpSocket();
   if (!pSocket->Create())
   {
-    //TRACE(_T("Failed to create client socket, GetLastError returns: %d\n"), GetLastError());
+    CLog::Log("Failed to create client socket, GetLastError returns: %d\n", GetLastError());
     return FALSE;
   }
 
   //Connect to the SNTP server
   if (!pSocket->Connect(pszHostName, nPort))
   {
-    //TRACE(_T("Could not connect to the SNTP server %s on port %d, GetLastError returns: %d\n"), pszHostName, nPort, GetLastError());
+    CLog::Log("Could not connect to the SNTP server %s on port %d, GetLastError returns: %d\n", pszHostName, nPort, GetLastError());
 
     //Tidy up prior to returning
     DWORD dwError = GetLastError();
@@ -617,7 +618,7 @@ BOOL CSNTPClient::GetServerTime(LPCTSTR pszHostName, NtpServerResponse& response
     //Send off the NtpBasicInfo packet
     if (!pSocket->Send((LPCSTR) &nbi, nSendSize))
     {
-      //TRACE(_T("Failed in call to send NTP request to the SNTP server, GetLastError returns %d\n"), GetLastError());
+      CLog::Log("Failed in call to send NTP request to the SNTP server, GetLastError returns %d\n", GetLastError());
 
       //Tidy up prior to returning
       DWORD dwError = GetLastError();
@@ -631,7 +632,7 @@ BOOL CSNTPClient::GetServerTime(LPCTSTR pszHostName, NtpServerResponse& response
     BOOL bReadable;
     if (!pSocket->IsReadible(bReadable, m_dwTimeout) || !bReadable)
     {
-      //TRACE(_T("Unable to wait for NTP reply from the SNTP server, GetLastError returns %d\n"), WSAETIMEDOUT);
+      CLog::Log("Unable to wait for NTP reply from the SNTP server, GetLastError returns %d\n", WSAETIMEDOUT);
 
       //Tidy up prior to returning
       delete pSocket;
@@ -647,7 +648,7 @@ BOOL CSNTPClient::GetServerTime(LPCTSTR pszHostName, NtpServerResponse& response
   	memset(&nfp, 0, nReceiveSize);
     if (!pSocket->Receive((LPSTR) &nfp, nReceiveSize))
     {
-      //TRACE(_T("Unable to read reply from the SNTP server, GetLastError returns %d\n"), GetLastError());
+      CLog::Log("Unable to read reply from the SNTP server, GetLastError returns %d\n", GetLastError());
 
       //Tidy up prior to returning
       DWORD dwError = GetLastError();
