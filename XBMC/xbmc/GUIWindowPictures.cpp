@@ -377,54 +377,26 @@ void CGUIWindowPictures::UpdateButtons()
 {
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
-  int iString;
-	if ( m_strDirectory.IsEmpty() ) 
-  {
-		switch (m_iViewAsIconsRoot)
-    {
-      case VIEW_AS_LIST:
-        iString=101; // view as icons
-      break;
-      
-      case VIEW_AS_ICONS:
-        iString=100;  // view as large icons
-      break;
-      case VIEW_AS_LARGEICONS:
-        iString=417; // view as list
-      break;
 
-      default:
-        iString=100; // view as icons
-      break;
-    }
+	int iString = 101;	// view as list
+	if (ViewByIcon())
+		iString = 100;		// view as icon
+	if (ViewByLargeIcon())
+		iString = 417;		// view as large icon
+
+	SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
+	UpdateThumbPanel();
+
+	if (ViewByIcon()) 
+	{
+		SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
+		SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
 	}
-	else 
-  {
-		switch (m_iViewAsIcons)
-    {
-      case VIEW_AS_LIST:
-        iString=101; // view as icons
-      break;
-      
-      case VIEW_AS_ICONS:
-        iString=100;  // view as large icons
-      break;
-      case VIEW_AS_LARGEICONS:
-        iString=417; // view as list
-      break;
-      default:
-        iString=100; // view as icons
-      break;
-    }		
+	else
+	{
+		SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
+		SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
 	}
-  if (ViewByIcon()) 
-  {
-    SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
-  }
-  else
-  {
-    SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
-  }
 
 	if (g_guiSettings.GetBool("Slideshow.Shuffle"))
 	{
@@ -777,6 +749,7 @@ bool CGUIWindowPictures::DoCreateFolderThumbs(CStdString &strFolder, int *iTotal
 	VECFILEITEMS items;
 	GetDirectory(strFolder, items);
 	SortItems(items);
+  CFileItemList itemlist(items); // will clean up everything
 
 	*iTotalItems += CUtil::GetFileCount(items);
 
@@ -1151,9 +1124,15 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
 void CGUIWindowPictures::SetViewMode(int iViewMode)
 {
   if ( m_strDirectory.IsEmpty() )
+	{
+		m_iViewAsIconsRoot=iViewMode;
     g_stSettings.m_iMyPicturesRootViewAsIcons=iViewMode;
+	}
   else
+	{
     g_stSettings.m_iMyPicturesViewAsIcons=iViewMode;
+		m_iViewAsIcons=iViewMode;
+	}
 }
 
 int CGUIWindowPictures::SortMethod()
