@@ -805,6 +805,7 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
 
   if (iBottom+15>=(int)image_height)
   {
+    // flush CPU cache. This way all data is back in memory and GPU (pixelshader) can access it
     __asm {
       wbinvd
     }
@@ -1096,6 +1097,7 @@ static unsigned int put_image(mp_image_t *mpi)
 
 	if((mpi->flags&MP_IMGFLAG_DIRECT)||(mpi->flags&MP_IMGFLAG_DRAW_CALLBACK)) 
 	{
+    // flush CPU cache. This way all data is back in memory and GPU (pixelshader) can access it
     __asm {
       wbinvd
     }
@@ -1163,6 +1165,7 @@ static unsigned int put_image(mp_image_t *mpi)
     memcpy( m_TextureBuffer[m_iBackBuffer], mpi->planes[0], image_height * ytexture_pitch);
 	}
 
+  // flush CPU cache. This way all data is back in memory and GPU (pixelshader) can access it
   __asm {
       wbinvd
     }
