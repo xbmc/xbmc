@@ -171,7 +171,7 @@ namespace XISO9660 {
 		//	Audio Track
 		bool IsAudio( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_NO_DATA); }
 
-		//	UDF CD
+		//	UDF filesystem
 		bool IsUDF( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_UDF); }
 
 		void SetFirstTrack( int nTrack ) { m_nFirstTrack = nTrack; }
@@ -223,6 +223,7 @@ namespace XISO9660 {
 		int		IsHFS(void);
 		int		Is3DO(void);
 		int		IsJoliet(void);
+		int		IsUDF(void);
 		int		GetSize(void);
 		int		GetJolietLevel( void );
 		int		GuessFilesystem(int start_session, track_t track_num);
@@ -233,8 +234,8 @@ namespace XISO9660 {
 
 	private:
 
-		char buffer[6][CDIO_CD_FRAMESIZE_RAW];  /* for CD-Data */
-		static signature_t sigs[15];
+		char buffer[7][CDIO_CD_FRAMESIZE_RAW];  /* for CD-Data */
+		static signature_t sigs[17];
 		int i,j;                                                           /* index */
 		int m_nStartTrack;                                   /* first sector of track */
 		int m_nIsofsSize;                                      /* size of session */

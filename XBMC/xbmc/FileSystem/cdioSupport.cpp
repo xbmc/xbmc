@@ -12,7 +12,8 @@ using namespace XISO9660;
 #define UFS_SUPERBLOCK_SECTOR   4  /* buffer[2] */
 #define BOOT_SECTOR            17  /* buffer[3] */
 #define VCD_INFO_SECTOR       150  /* buffer[4] */
-#define UDFX_SECTOR			   32  /* buffer[4] */
+#define UDFX_SECTOR			       32  /* buffer[4] */
+#define UDF_ANCHOR_SECTOR			256  /* buffer[5] */
 
 
 signature_t CCdIoSupport::sigs[] =
@@ -32,7 +33,8 @@ signature_t CCdIoSupport::sigs[] =
     {4,     0, "VIDEO_CD",   "VIDEO CD"}, 
     {4,     0, "SUPERVCD",   "Chaoji VCD"}, 
     {0,     0, "MICROSOFT*XBOX*MEDIA", "UDFX CD"},
-		{0,     1, "BEA01",     "UDF"}
+    {0,     1, "BEA01",      "UDF"}, 
+    { 0 }
   };
 
 #undef DEBUG_CDIO
@@ -181,7 +183,7 @@ void CCdIoSupport::PrintAnalysis(int fs, int num_audio)
     sprintf(buf, "CD-ROM with ISO 9660 filesystem");
 	  	OutputDebugString( buf );
     if (fs & JOLIET) {
-      sprintf(buf, " and joliet extension level %d", m_nJolietLevel);
+      sprintf(buf, " with joliet extension level %d", m_nJolietLevel);
  	  OutputDebugString( buf );
    }
 	if (fs & ROCKRIDGE) {
@@ -343,6 +345,11 @@ int CCdIoSupport::IsJoliet(void)
   return 2 == buffer[3][0] && buffer[3][88] == 0x25 && buffer[3][89] == 0x2f;
 }
 
+int CCdIoSupport::IsUDF(void)
+{
+	return 2 == ((uint16_t)buffer[5][0] | ((uint16_t)buffer[5][1] << 8));
+}
+
 /* ISO 9660 volume space in M2F1_SECTOR_SIZE byte units */
 int CCdIoSupport::GetSize(void)
 {
@@ -377,11 +384,11 @@ int CCdIoSupport::GuessFilesystem(int start_session, track_t track_num)
 
   if (ReadBlock(ISO_SUPERBLOCK_SECTOR, start_session, 0, track_num) < 0)
     return FS_UNKNOWN;
-    
-	if ( IsIt(IS_UDF) )
+
+	if (IsIt(IS_UDF))
 		return FS_UDF;
 
-  /* filesystem */
+	/* filesystem */
   if (IsIt(IS_CD_I) && IsIt(IS_CD_RTOS) 
       && !IsIt(IS_BRIDGE) && !IsIt(IS_XA)) {
     return FS_INTERACTIVE;
@@ -393,14 +400,22 @@ int CCdIoSupport::GuessFilesystem(int start_session, track_t track_num)
     if (IsIt(IS_HS))
       ret |= FS_HIGH_SIERRA;
     else if (IsIt(IS_ISOFS)) {
-      if (IsIt(IS_CD_RTOS) && IsIt(IS_BRIDGE))
+if (IsIt(IS_CD_RTOS) && IsIt(IS_BRIDGE))
 	ret = FS_ISO_9660_INTERACTIVE;
       else if (IsHFS())
 	ret = FS_ISO_HFS;
       else
 	ret = FS_ISO_9660;
       m_nIsofsSize = GetSize();
-      
+
+	if (ReadBlock(UDF_ANCHOR_SECTOR, start_session, 5, track_num) < 0)
+		return ret;
+
+	//	Maybe there is an UDF anchor in iso session
+	//	so its ISO/UDF session and we prefere UDF
+	if ( IsUDF() )
+		return FS_UDF;
+
 #if 0
       if (IsRockridge())
 	ret |= ROCKRIDGE;
