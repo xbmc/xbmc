@@ -724,7 +724,7 @@ BOOL CTransferSocket::InitTransfer(BOOL bCalledFromSend)
 			return FALSE;
 		}
 		ASSERT(m_Filename!="");
-		m_hFile = CreateFile(m_Filename, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
+		m_hFile = CreateFile(m_Filename, GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, 0, OPEN_EXISTING, 0, 0);
 		if (m_hFile == INVALID_HANDLE_VALUE)
 		{
 			m_status=3;
