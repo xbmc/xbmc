@@ -40,6 +40,7 @@ public:
 	long GetCurrentSongEnd() { return m_currentSong.m_lEndOffset; };
 	CStdString GetMusicLabel(const CStdString &strItem);
 	CStdString GetVideoLabel(const CStdString &strItem);
+	CStdString GetProgressBar(const CStdString &strItem);
 	wstring GetFreeSpace(const CStdString &strDrive);
 	CStdString GetCurrentPlayTime();
 
