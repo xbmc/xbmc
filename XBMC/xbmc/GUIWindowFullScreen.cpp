@@ -101,9 +101,10 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 			m_gWindowManager.PreviousWindow();
 		break;
 
-		case ACTION_PAUSE:
+		// PAUSE action is handled globally in the Application class
+/*		case ACTION_PAUSE:
 			g_application.m_pPlayer->Pause();
-		break;
+		break;*/
 		case ACTION_SUBTITLE_DELAY_MIN:
 			g_application.m_pPlayer->SubtitleOffset(false);
 		break;
