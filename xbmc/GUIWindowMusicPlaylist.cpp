@@ -543,72 +543,156 @@ void CGUIWindowMusicPlayList::OnRetrieveMusicInfo(VECFILEITEMS& items)
 	if (items.size()<=0)
 		return;
 
-	MAPSONGS songsMap;
-	g_musicDatabase.GetSongsByPathes(m_Pathes, songsMap);
+	m_strPrevPath.Empty();
+
+	bool bShowProgress=false;
+	bool bProgressVisible=false;
+
+	//	Show a progress dialog when playlist isn't loaded
+	//	after 1.5 secs 
+	if (!m_gWindowManager.IsRouted())
+		bShowProgress=true;
+
+	DWORD dwTick=timeGetTime();
 
 	CSong song;
-	for (int i=0; i<(int)m_vecItems.size(); i++)
+	for (int i=0; i<(int)items.size(); i++)
 	{
-		CFileItem* pItem=m_vecItems[i];
-		CMusicInfoTag& tag=pItem->m_musicInfoTag;
-		if (tag.Loaded())
-			continue;	// nothing to do here
-		if (CUtil::IsCDDA(pItem->m_strPath))
+		CFileItem* pItem=items[i];
+
+		CStdString strExtension;
+		CUtil::GetExtension(pItem->m_strPath,strExtension);
+
+		//	Should we init a progress dialog
+		if (bShowProgress && !bProgressVisible)
 		{
-			VECFILEITEMS  items;
-			CCDDADirectory dir;
-			//	... use the directory of the cd to 
-			//	get its cddb information...
-			if (dir.GetDirectory("D:",items))
+			DWORD dwElapsed = timeGetTime() - dwTick;
+
+			//	if tag loading took more then 1.5 secs. till now
+			//	show the progress dialog 
+			if (dwElapsed>1500)
 			{
-				for (int i=0; i < (int)items.size(); ++i)
+				if (m_dlgProgress) 
 				{
-					CFileItem* pCDDAItem=items[i];
-					if (pCDDAItem->m_strPath==pItem->m_strPath)
-					{
-						//	...and find current track to use
-						//	cddb information for display.
-						pItem->m_musicInfoTag=pCDDAItem->m_musicInfoTag;
-					}
+					m_dlgProgress->SetHeading(189);
+					m_dlgProgress->SetLine(0, 505);
+					m_dlgProgress->SetLine(1,"");
+					m_dlgProgress->SetLine(2,"");
+					m_dlgProgress->StartModal(GetID());
+					m_dlgProgress->ShowProgressBar(true);
+					m_dlgProgress->SetPercentage((i*100)/m_vecItems.size());
+					m_dlgProgress->Progress();
+					bProgressVisible=true;
 				}
 			}
+		}		
+
+		if (bProgressVisible && (i%10)==0 && i>0)
+		{
+			m_dlgProgress->SetPercentage((i*100)/items.size());
+			m_dlgProgress->Progress();
+		}
+
+		//	Progress key presses from controller or remote
+		if (bProgressVisible)
+			if (m_dlgProgress) m_dlgProgress->ProgressKeys();
+
+		//	Canceled by the user, finish
+		if (bProgressVisible && m_dlgProgress->IsCanceled())
+		{
+			if (m_dlgProgress) m_dlgProgress->Close();
+			return;
+		}
+
+		LoadItem(pItem);
+
+	}
+
+	m_songsMap.erase(m_songsMap.begin(),m_songsMap.end());
+
+	if (bShowProgress)
+	{
+		if (m_dlgProgress) m_dlgProgress->Close();
+		return;
+	}
+}
+
+
+void CGUIWindowMusicPlayList::LoadItem(CFileItem* pItem)
+{
+        CMusicInfoTag& tag=pItem->m_musicInfoTag;
+	if (tag.Loaded())
+            return;	// nothing to do here
+	
+        CStdString strFileName, strPath;
+	CUtil::Split(pItem->m_strPath, strPath, strFileName);
+
+	if (CUtil::IsCDDA(pItem->m_strPath))
+	{
+		//	We have cdda item...
+		VECFILEITEMS  items;
+		CCDDADirectory dir;
+		//	... use the directory of the cd to 
+		//	get its cddb information...
+		if (dir.GetDirectory("D:",items))
+		{
+			for (int i=0; i < (int)items.size(); ++i)
 			{
-				CFileItemList itemlist(items);	//	cleanup everything
+				CFileItem* pCDDAItem=items[i];
+				if (pCDDAItem->m_strPath==pItem->m_strPath)
+				{
+					//	...and find current track to use
+					//	cddb information for display.
+					pItem->m_musicInfoTag=pCDDAItem->m_musicInfoTag;
+				}
 			}
 		}
-		else
 		{
-			IMAPSONGS it=songsMap.find(pItem->m_strPath);
-			if (it!=songsMap.end())
+			CFileItemList itemlist(items);	//	cleanup everything
+		}
+	}
+	else
+	{
+		//	Have we loaded this item from database before
+		IMAPSONGS it=m_songsMap.find(pItem->m_strPath);
+		if (it!=m_songsMap.end())
+		{
+			CSong& song=it->second;
+			pItem->m_musicInfoTag.SetSong(song);
+			m_songsMap.erase(it);
+		}
+		else if (strPath!=m_strPrevPath)
+		{
+			//	The item is from another directory then the last one,
+			//	query the database for the new directory...
+			g_musicDatabase.GetSongsByPath(strPath, m_songsMap, true);
+
+			//	...and look if we find it
+			IMAPSONGS it=m_songsMap.find(pItem->m_strPath);
+			if (it!=m_songsMap.end())
 			{
-				song=it->second;
-				pItem->m_musicInfoTag.SetAlbum(song.strAlbum);
-				pItem->m_musicInfoTag.SetArtist(song.strArtist);
-				pItem->m_musicInfoTag.SetGenre(song.strGenre);
-				pItem->m_musicInfoTag.SetDuration(song.iDuration);
-				pItem->m_musicInfoTag.SetTitle(song.strTitle);
-				pItem->m_musicInfoTag.SetTrackNumber(song.iTrack);
-				pItem->m_musicInfoTag.SetLoaded(true);
+				CSong& song=it->second;
+				pItem->m_musicInfoTag.SetSong(song);
+				m_songsMap.erase(it);
 			}
-			else
-			{
-				if (g_stSettings.m_bUseID3)
-				{
-					// get correct tag parser
-					CMusicInfoTagLoaderFactory factory;
-					auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
-					if (NULL != pLoader.get())
-							// get id3tag
-						pLoader->Load(pItem->m_strPath,pItem->m_musicInfoTag);
-				}
-				else
-				{	// no ID3 tag stuff, so get the title from the current label (to remove extensions etc.)
-					pItem->SetLabel(CUtil::GetTitleFromPath(pItem->GetLabel()));
-				}
-			}
+		}
+
+		//	Nothing found, load tag from file
+		if (g_stSettings.m_bUseID3 && !pItem->m_musicInfoTag.Loaded())
+		{
+			// get correct tag parser
+			CMusicInfoTagLoaderFactory factory;
+			auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
+			if (NULL != pLoader.get())
+					// get id3tag
+				pLoader->Load(pItem->m_strPath,pItem->m_musicInfoTag);
+		}
+		else
+		{	// no ID3 tag stuff, so get the title from the current label (to remove extensions etc.)
+			pItem->SetLabel(CUtil::GetTitleFromPath(pItem->GetLabel()));
 		}
 	}
 
-	songsMap.erase(songsMap.begin(),songsMap.end());
+	m_strPrevPath=strPath;
 }
 

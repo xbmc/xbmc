@@ -20,11 +20,14 @@ protected:
 	virtual void				OnFileItemFormatLabel(CFileItem* pItem);
 	virtual	void				DoSort(VECFILEITEMS& items);
 	virtual void				OnRetrieveMusicInfo(VECFILEITEMS& items);
+					void				LoadItem(CFileItem* pItem);
 
 					void				SavePlayList();
 					void				ClearPlayList();
 					void				ShufflePlayList();
 					void				RemovePlayListItem(int iItem);
 
-					SETPATHES m_Pathes;
+					SETPATHES		m_Pathes;
+					MAPSONGS		m_songsMap;
+					CStdString	m_strPrevPath;
 };
