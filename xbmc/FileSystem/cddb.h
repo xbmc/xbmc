@@ -53,7 +53,7 @@ namespace CDDB
 			void 							setCacheDir(const CStdString&  pCacheDir );
 
 			int								queryCDinfo(int real_track_count, toc cdtoc[]);
-			int 							queryCDinfo(int inexact_list_select);
+			int 							queryCDinfo(CCdInfo* pInfo, int inexact_list_select);
 			int								queryCDinfo(CCdInfo* pInfo);
 			int 							getLastError() const;
 			const char *			getLastErrorText() const;

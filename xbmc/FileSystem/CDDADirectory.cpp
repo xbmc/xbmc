@@ -106,7 +106,7 @@ bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 				if (iSelectedCD>= 0) 
 				{
 					//	...query cddb for the inexact match
-					if ( cddb.queryCDinfo(1+iSelectedCD))
+					if ( cddb.queryCDinfo(pCdInfo, 1+iSelectedCD))
 					{
 						//	cddb info loaded
 						bCddbInfoLoaded=true;
@@ -116,6 +116,11 @@ bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 				}
 				else
 					pCdInfo->SetNoCDDBInfo();
+
+				if (bCloseProgress)
+				{
+					pDialogProgress->Close();
+				}
 			}
 			else 
 			{
