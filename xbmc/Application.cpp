@@ -2391,15 +2391,20 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 	if (!bRestart)
 	{
 		OutputDebugString("new file set audiostream:0\n");
-		g_stSettings.m_iAudioStream=-1;
-		g_stSettings.m_iSubtitleStream=-1;
-		g_stSettings.m_bNoCache=false;
-		g_stSettings.m_bNonInterleaved=false;
-
-		// switch 2 default settings...
-		g_settings.m_iBrightness=50;
-		g_settings.m_iContrast=50;
-		g_settings.m_iGamma=20;
+		// Switch to default options
+		g_stSettings.m_defaultVideoSettings.m_AdjustFrameRate = g_guiSettings.GetBool("MyVideos.FrameRateConversions");
+		g_stSettings.m_defaultVideoSettings.m_Deinterlace = g_guiSettings.GetBool("PostProcessing.DeInterlace");
+		g_stSettings.m_defaultVideoSettings.m_FilmGrain = g_guiSettings.GetBool("Filters.Noise") ? g_guiSettings.GetBool("Filters.NoiseLevel") : 0;
+		g_stSettings.m_currentVideoSettings = g_stSettings.m_defaultVideoSettings;
+		// see if we have saved options in the database
+		if (CUtil::IsVideo(strFile))
+		{
+			CVideoDatabase dbs;
+			// open the d/b and retrieve the bookmarks for the current movie
+			dbs.Open();
+			dbs.GetVideoSettings(strFile, g_stSettings.m_currentVideoSettings);
+			dbs.Close();
+		}
 	}
 	else
 	{

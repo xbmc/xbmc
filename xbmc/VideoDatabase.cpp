@@ -11,6 +11,8 @@
 #include "utils/log.h"
 #include "util.h"
 
+#define VIDEO_DATABASE_VERSION 1.0f
+
 //********************************************************************************************************************************
 CVideoDatabase::CVideoDatabase(void)
 {
@@ -96,6 +98,30 @@ bool CVideoDatabase::Open()
 			return false;
 		}
 	}
+	else
+	{	// Database exists, check the version number
+    m_pDS->query("SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'version'\n");
+		float fVersion = 0;
+    if (m_pDS->num_rows() > 0)
+		{
+			m_pDS->close();
+			m_pDS->query("SELECT idVersion FROM version\n");
+			if (m_pDS->num_rows() > 0)
+			fVersion = m_pDS->fv("idVersion").get_asFloat();
+		}
+		if (fVersion < VIDEO_DATABASE_VERSION && !UpdateOldVersion(fVersion))
+		{
+			CLog::Log(LOGERROR, "Can't update the video database from version %f to %f", fVersion, VIDEO_DATABASE_VERSION);
+			Close();
+			return false;
+		}
+		else if (fVersion > VIDEO_DATABASE_VERSION)
+		{
+			CLog::Log(LOGERROR, "Can't open the video database as it is a NEWER version than what we were expecting!");
+			Close();
+			return false;
+		}
+	}
 
 	m_pDS->exec("PRAGMA cache_size=8192\n");
 	m_pDS->exec("PRAGMA synchronous='OFF'\n");
@@ -120,10 +146,22 @@ bool CVideoDatabase::CreateTables()
 
   try 
 	{
+		CLog::Log(LOGINFO, "creating versions table");
+		m_pDS->exec("CREATE TABLE version (idVersion float)\n");
+		CStdString strVersion;
+		strVersion.Format("INSERT INTO version (idVersion) values(%f)\n", VIDEO_DATABASE_VERSION);
+		m_pDS->exec(strVersion.c_str());
+
     CLog::Log(LOGINFO, "create bookmark table");
     m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, fPercentage text)\n");
 		
-    CLog::Log(LOGINFO, "create genre table");
+    CLog::Log(LOGINFO, "create settings table");
+    m_pDS->exec("CREATE TABLE settings ( idFile integer, Interleaved bool, NoCache bool, Deinterlace bool, FilmGrain integer,"
+			          "ViewMode integer,ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer,"
+								"SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer,"
+								"AdjustFrameRate integer, AudioDelay float)\n");
+
+		CLog::Log(LOGINFO, "create genre table");
     m_pDS->exec("CREATE TABLE genre ( idGenre integer primary key, strGenre text)\n");
     
     CLog::Log(LOGINFO, "create genrelinkmovie table");
@@ -1211,4 +1249,117 @@ CIMDBMovie CVideoDatabase::GetDetailsFromDataset(auto_ptr<Dataset> &pDS)
   long lMovieId=pDS->fv("movieinfo.idMovie").get_asLong();
   details.m_strSearchString.Format("%i", lMovieId);
 	return details;
+}
+
+/// \brief GetVideoSettings() obtains any saved video settings for the current file.
+/// \retval Returns true if the settings exist, false otherwise.
+bool CVideoDatabase::GetVideoSettings(const CStdString &strFilenameAndPath, CVideoSettings &settings)
+{
+  try
+  {
+		// obtain the FileID (if it exists)
+    long lPathId, lMovieId;
+    long lFileId=GetFile(strFilenameAndPath, lPathId, lMovieId, true);
+    if (lFileId < 0) return false;
+	  if (NULL==m_pDB.get()) return false;
+	  if (NULL==m_pDS.get()) return false;
+		// ok, now obtain the settings for this file
+    CStdString strSQL;
+    strSQL.Format("select * from settings where idFile='%i'\n", lFileId);
+    m_pDS->query( strSQL.c_str() );
+		if (m_pDS->num_rows() > 0)
+		{	// get the video settings info
+			settings.m_AdjustFrameRate = m_pDS->fv("AdjustFrameRate").get_asBool();
+			settings.m_AudioDelay = m_pDS->fv("AudioDelay").get_asFloat();
+			settings.m_AudioStream = m_pDS->fv("AudioStream").get_asInteger();
+			settings.m_Brightness = m_pDS->fv("Brightness").get_asInteger();
+			settings.m_Contrast = m_pDS->fv("Contrast").get_asInteger();
+			settings.m_CustomPixelRatio = m_pDS->fv("PixelRatio").get_asFloat();
+			settings.m_CustomZoomAmount = m_pDS->fv("ZoomAmount").get_asFloat();
+			settings.m_Gamma = m_pDS->fv("Gamma").get_asInteger();
+			settings.m_NonInterleaved = m_pDS->fv("Interleaved").get_asBool();
+			settings.m_NoCache = m_pDS->fv("NoCache").get_asBool();
+			settings.m_SubtitleDelay = m_pDS->fv("SubtitleDelay").get_asFloat();
+			settings.m_SubtitleOn = m_pDS->fv("SubtitlesOn").get_asBool();
+			settings.m_SubtitleStream = m_pDS->fv("SubtitleStream").get_asInteger();
+			settings.m_ViewMode = m_pDS->fv("ViewMode").get_asInteger();
+			m_pDS->close();
+			return true;
+		}
+    m_pDS->close();
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::GetVideoSettings() failed");
+  }
+	return false;
+}
+
+/// \brief Sets the settings for a particular video file
+void CVideoDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, const CVideoSettings &setting)
+{
+  try
+  {
+    long lPathId, lMovieId;
+	  if (NULL==m_pDB.get()) return ;
+	  if (NULL==m_pDS.get()) return ;
+    long lFileId=GetFile(strFilenameAndPath, lPathId, lMovieId, true);
+    if (lFileId < 0)
+		{	// no files found - we have to add one
+			lMovieId = AddMovie(strFilenameAndPath, "", false);
+			lFileId = GetFile(strFilenameAndPath, lPathId, lMovieId, true);
+			if (lFileId < 0) return;
+		}
+    CStdString strSQL;
+    strSQL.Format("select * from settings where idFile=%i",lFileId);
+    m_pDS->query( strSQL.c_str() );
+    if (m_pDS->num_rows() > 0)
+    {
+      m_pDS->close();
+			// update the item
+      strSQL.Format("update settings set Interleaved=%i,NoCache=%i,Deinterlace=%i,FilmGrain=%i,ViewMode=%i,ZoomAmount=%f,PixelRatio=%f,"
+										"AudioStream=%i,SubtitleStream=%i,SubtitleDelay=%f,SubtitlesOn=%i,Brightness=%i,Contrast=%i,Gamma=%i,"
+										"AdjustFrameRate=%i,AudioDelay=%f where idFile=%i\n",
+										setting.m_NonInterleaved,setting.m_NoCache,setting.m_Deinterlace,setting.m_FilmGrain,setting.m_ViewMode, setting.m_CustomZoomAmount, setting.m_CustomPixelRatio,
+										setting.m_AudioStream,setting.m_SubtitleStream,setting.m_SubtitleDelay,setting.m_SubtitleOn,
+										setting.m_Brightness,setting.m_Contrast,setting.m_Gamma,setting.m_AdjustFrameRate,setting.m_AudioDelay,lFileId);
+	    m_pDS->exec(strSQL.c_str());
+      return;
+    }
+		else
+		{	// add the items
+			m_pDS->close();
+      strSQL.Format("insert into settings ( idFile,Interleaved,NoCache,Deinterlace,FilmGrain,ViewMode,ZoomAmount,PixelRatio,"
+										"AudioStream,SubtitleStream,SubtitleDelay,SubtitlesOn,Brightness,Contrast,Gamma,"
+										"AdjustFrameRate,AudioDelay) values (%i,%i,%i,%i,%i,%i,%f,%f,%i,%i,%f,%i,%i,%i,%i,%i,%f)\n",
+										lFileId, setting.m_NonInterleaved,setting.m_NoCache,setting.m_Deinterlace,setting.m_FilmGrain,setting.m_ViewMode, setting.m_CustomZoomAmount, setting.m_CustomPixelRatio,
+										setting.m_AudioStream,setting.m_SubtitleStream,setting.m_SubtitleDelay,setting.m_SubtitleOn,
+										setting.m_Brightness,setting.m_Contrast,setting.m_Gamma,setting.m_AdjustFrameRate,setting.m_AudioDelay);
+	    m_pDS->exec(strSQL.c_str());
+		}
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "CVideoDatabase::AddBookMarkToMovie(%s) failed",strFilenameAndPath.c_str());
+  }
+}
+
+bool CVideoDatabase::UpdateOldVersion(float fVersion)
+{
+	if (fVersion == 0.0f)
+	{	// Version 0 to 0.5 upgrade - we need to add the version table and the settings table
+		CLog::Log(LOGINFO, "creating versions table");
+		m_pDS->exec("CREATE TABLE version (idVersion float)\n");
+		CStdString strVersion;
+		strVersion.Format("INSERT INTO version (idVersion) values(%f)\n", VIDEO_DATABASE_VERSION);
+		m_pDS->exec(strVersion.c_str());
+
+    CLog::Log(LOGINFO, "create settings table");
+    m_pDS->exec("CREATE TABLE settings ( idFile integer, Interleaved bool, NoCache bool, Deinterlace bool, FilmGrain integer,"
+			          "ViewMode integer,ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer,"
+								"SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer,"
+								"AdjustFrameRate integer, AudioDelay float)\n");
+		fVersion = VIDEO_DATABASE_VERSION;
+	}
+	return true;
 }

@@ -475,6 +475,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				<File
 					RelativePath=".\xbmc\GUIWindowSettingsUICalibration.cpp">
 				</File>
+				<File
+					RelativePath=".\xbmc\settings\VideoSettings.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\settings\VideoSettings.h">
+				</File>
 			</Filter>
 			<Filter
 				Name="GUI Music"
