@@ -6,6 +6,7 @@
 #include <xtl.h>
 #include "conio.h"
 #include "../../util.h"
+#include "../../Util.h"
 
 /*
 HD44780 or equivalent
@@ -230,7 +231,8 @@ void CSmartXXLCD::DisplayOut(unsigned char data, unsigned char command)
 		m_iActualpos = 0;
     
 		//wait_us(2500);		// wait 2.5 msec	
-	}		
+	}
+  	usleep(50);
  }
 
 //************************************************************************************************************************
@@ -243,6 +245,7 @@ void CSmartXXLCD::DisplayBuildCustomChars()
 	static char Bar0[] ={0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10};
 	static char Bar1[] ={0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18};
 	static char Bar2[] ={0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c, 0x1c};
+	static char Bar3[] ={0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e};	//4pixel
 	static char REW[8][8]=
 	{
 		{0x00, 0x05, 0x0a, 0x14, 0x0a, 0x05, 0x00, 0x00},
@@ -277,7 +280,8 @@ void CSmartXXLCD::DisplayBuildCustomChars()
 	 for(I=0;I<8;I++) DisplayOut(REW[AnimIndex][I], DAT);   // REW
 	 for(I=0;I<8;I++) DisplayOut(FF[AnimIndex][I], DAT);    // FF
 	 for(I=0;I<8;I++) DisplayOut(Play[I], DAT);  // Play
-	 for(I=0;I<8;I++) DisplayOut(Stop[I], DAT);  // Stop
+	 //for(I=0;I<8;I++) DisplayOut(Stop[I], DAT);  			// Stop
+	 for(I=0;I<8;I++) DisplayOut(Bar3[I], DAT);
 	 for(I=0;I<8;I++) DisplayOut(Pause[I], DAT); // Pause
 	DisplayOut(DISP_DDRAM_SET, CMD);
     AnimIndex=(AnimIndex+1) & 0x7;
