@@ -41,6 +41,7 @@ void XBPython::Initialize()
 			Py_Initialize();
 			PyEval_InitThreads();
 			initxbmc(); // init xbmc modules
+			initxbmcgui(); // init xbmcgui modules
 			// redirecting default output to debug console
 			if (PyRun_SimpleString(""
 					"import xbmc\n"
