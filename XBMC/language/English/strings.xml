@@ -521,6 +521,7 @@
   <string><id>756</id><value>Edit Program Name</value></string>
   <string><id>757</id><value>Edit Path Depth</value></string>
   <string><id>758</id><value>Removing Program Link</value></string>  
+  <string><id>759</id><value>View: Big List</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Online Gaming</value></string>
   <string><id>1000</id><value>Screensaver Preview</value></string>
@@ -877,7 +878,7 @@
   <string><id>15060</id><value>Message Here</value></string>
   <string><id>15061</id><value>You're invited to play %s.</value></string>
   <string><id>15062</id><value>Use alternate mplayer location</value></string>
-  <string><id>15100</id><value>Nav</value></string>
+  <string><id>15100</id><value>Library</value></string>
   <string><id>15101</id><value>Database</value></string>
   <string><id>15102</id><value>* All Albums</value></string>
   <string><id>15103</id><value>* All Artists</value></string>

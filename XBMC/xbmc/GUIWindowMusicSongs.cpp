@@ -356,8 +356,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
           CFileItem* pItem = m_vecItems[i];
           if (pItem->m_strPath == strSelected)
           {
-            CONTROL_SELECT_ITEM(CONTROL_LIST, i);
-            CONTROL_SELECT_ITEM(CONTROL_THUMBS, i);
+            SetSelectedItem(i);
             break;
           }
         }
@@ -679,76 +678,10 @@ void CGUIWindowMusicSongs::UpdateButtons()
     g_graphicsContext.SendMessage(msg);
   }
 
-  // Update listcontrol and view by icon/list button
-  const CGUIControl* pControl = GetControl(CONTROL_THUMBS);
-  if (pControl)
-  {
-    if (!pControl->IsVisible())
-    {
-      CONTROL_SELECT_ITEM(CONTROL_THUMBS, GetSelectedItem());
-    }
-  }
-  pControl = GetControl(CONTROL_LIST);
-  if (pControl)
-  {
-    if (!pControl->IsVisible())
-    {
-      CONTROL_SELECT_ITEM(CONTROL_LIST, GetSelectedItem());
-    }
-  }
-
-  SET_CONTROL_HIDDEN(CONTROL_LIST);
-  SET_CONTROL_HIDDEN(CONTROL_THUMBS);
-
-  bool bViewIcon = false;
-  int iString;
   if ( m_Directory.IsVirtualDirectoryRoot() )
-  {
-    switch (m_iViewAsIconsRoot)
-    {
-    case VIEW_AS_LIST:
-      iString = 101; // view as icons
-      break;
-
-    case VIEW_AS_ICONS:
-      iString = 100;  // view as large icons
-      bViewIcon = true;
-      break;
-    case VIEW_AS_LARGEICONS:
-      iString = 417; // view as list
-      bViewIcon = true;
-      break;
-    }
-  }
+    m_viewControl.SetCurrentView(m_iViewAsIconsRoot);
   else
-  {
-    switch (m_iViewAsIcons)
-    {
-    case VIEW_AS_LIST:
-      iString = 101; // view as icons
-      break;
-
-    case VIEW_AS_ICONS:
-      iString = 100;  // view as large icons
-      bViewIcon = true;
-      break;
-    case VIEW_AS_LARGEICONS:
-      iString = 417; // view as list
-      bViewIcon = true;
-      break;
-    }
-  }
-
-  if (bViewIcon)
-  {
-    SET_CONTROL_VISIBLE(CONTROL_THUMBS);
-  }
-  else
-  {
-    SET_CONTROL_VISIBLE(CONTROL_LIST);
-  }
-
-  SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS, iString);
+    m_viewControl.SetCurrentView(m_iViewAsIcons);
 
   // Update object count label
   int iItems = m_vecItems.Size();
@@ -1096,8 +1029,7 @@ void CGUIWindowMusicSongs::OnSearchItemFound(const CFileItem* pSelItem)
       CFileItem* pItem = m_vecItems[i];
       if (pItem->m_strPath == strPath)
       {
-        CONTROL_SELECT_ITEM(CONTROL_LIST, i);
-        CONTROL_SELECT_ITEM(CONTROL_THUMBS, i);
+        SetSelectedItem(i);
         break;
       }
     }
@@ -1122,22 +1054,12 @@ void CGUIWindowMusicSongs::OnSearchItemFound(const CFileItem* pSelItem)
       CFileItem* pItem = m_vecItems[i];
       if (pItem->m_strPath == pSelItem->m_strPath)
       {
-        CONTROL_SELECT_ITEM(CONTROL_LIST, i);
-        CONTROL_SELECT_ITEM(CONTROL_THUMBS, i);
+        SetSelectedItem(i);
         break;
       }
     }
   }
-
-  const CGUIControl* pControl = GetControl(CONTROL_LIST);
-  if (pControl && pControl->IsVisible())
-  {
-    SET_CONTROL_FOCUS(CONTROL_LIST, 0);
-  }
-  else
-  {
-    SET_CONTROL_FOCUS(CONTROL_THUMBS, 0);
-  }
+  m_viewControl.SetFocused();
 }
 
 /// \brief Search for a song or a artist with search string \e strSearch in the musicdatabase and return the found \e items
@@ -1182,18 +1104,7 @@ void CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
   if (!m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("MusicLists.UseAutoSwitching"))
   {
     m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
-
-    int iFocusedControl = GetFocusedControl();
-
-    ShowThumbPanel();
     UpdateButtons();
-
-    if (iFocusedControl == CONTROL_LIST || iFocusedControl == CONTROL_THUMBS)
-    {
-      int iControl = CONTROL_LIST;
-      if (m_iViewAsIcons != VIEW_AS_LIST) iControl = CONTROL_THUMBS;
-      SET_CONTROL_FOCUS(iControl, 0);
-    }
   }
 }
 
