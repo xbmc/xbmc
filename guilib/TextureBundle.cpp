@@ -348,7 +348,9 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
 	// it's about 3 times faster to load in cached ram then do this than to load in wc ram. :)
 	if (hr == S_OK)
 	{
-		XPhysicalProtect(UnpackedBuf, m_CurFileHeader[m_LoadIdx]->second.UnpackedSize, PAGE_READWRITE | PAGE_WRITECOMBINE);
+		// this causes xbmc to crash when swtiching back to gui from pal60, not really needed anyway as nothing should be writing to texture ram.
+		//XPhysicalProtect(UnpackedBuf, m_CurFileHeader[m_LoadIdx]->second.UnpackedSize, PAGE_READWRITE | PAGE_WRITECOMBINE);
+
 		__asm {
 			wbinvd
 		}
