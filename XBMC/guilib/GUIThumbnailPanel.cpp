@@ -173,6 +173,8 @@ void CGUIThumbnailPanel::Render()
 		{
 			m_bScrollDown=false;
       m_iOffset+=m_iColumns;
+			int iPage = m_iOffset/(m_iRows*m_iColumns);
+			m_upDown.SetValue(iPage+1);
 		}
 	}
 	if (m_bScrollUp)
@@ -182,6 +184,8 @@ void CGUIThumbnailPanel::Render()
 		{
 			m_bScrollUp=false;
       m_iOffset -= m_iColumns;
+			int iPage = m_iOffset/(m_iRows*m_iColumns);
+			m_upDown.SetValue(iPage+1);
 		}
 	}
 }
@@ -284,6 +288,30 @@ bool CGUIThumbnailPanel::OnMessage(CGUIMessage& message)
     {
       message.SetParam1(m_iOffset + m_iCursorY*m_iColumns+m_iCursorX);
     }
+		if (message.GetMessage()==GUI_MSG_ITEM_SELECT)
+		{
+			int iItem=message.GetParam1();
+			if (iItem >=0 && iItem < (int)m_vecItems.size())
+			{
+				int iPage=1;
+				m_iCursorX=0;
+				m_iCursorY=0;
+				m_iOffset=0;
+				while (iItem > (m_iRows*m_iColumns) )
+				{
+					m_iOffset +=(m_iRows*m_iColumns);
+					iItem -= (m_iRows*m_iColumns);
+					iPage++;
+				}
+				while (iItem > m_iColumns)
+				{
+					m_iCursorY++;
+					iItem -= m_iColumns;
+				}
+				m_upDown.SetValue(iPage);
+				m_iCursorX=iItem;
+			}
+		}
   }
 
   if ( CGUIControl::OnMessage(message) ) return true;
@@ -388,7 +416,7 @@ void CGUIThumbnailPanel::OnUp()
   {
     if (m_iCursorY > 0) 
     {
-      m_iCursorY--;
+      m_iCursorY--; 
     }
     else if (m_iCursorY ==0 && m_iOffset)
     {

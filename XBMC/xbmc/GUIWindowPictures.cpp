@@ -132,6 +132,9 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_WINDOW_INIT:
 		{
+			if ( CUtil::IsRemote(m_strDirectory) )
+				m_strDirectory="";
+
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(101);
 			m_rootDir.SetMask(g_stSettings.m_szMyPicturesExtensions);
 			int iControl=CONTROL_LIST;
@@ -316,6 +319,18 @@ void CGUIWindowPictures::UpdateButtons()
 
 void CGUIWindowPictures::Update(const CStdString &strDirectory)
 {
+// get selected item
+	int iItem=GetSelectedItem();
+	CStdString strSelectedItem="";
+	if (iItem >=0 && iItem < (int)m_vecItems.size())
+	{
+		CFileItem* pItem=m_vecItems[iItem];
+		if (pItem->m_bIsFolder && pItem->GetLabel() != "..")
+		{
+			strSelectedItem=pItem->m_strPath;
+			m_history.Set(strSelectedItem,m_strDirectory);
+		}
+	}
   Clear();
 
 	CStdString strParentPath;
@@ -350,6 +365,19 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
 	m_rootDir.GetDirectory(strDirectory,m_vecItems);
   OnSort();
   UpdateButtons();
+
+	strSelectedItem=m_history.Get(m_strDirectory);	
+	for (int i=0; i < (int)m_vecItems.size(); ++i)
+	{
+		CFileItem* pItem=m_vecItems[i];
+		if (pItem->m_strPath==strSelectedItem)
+		{
+			CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,i);
+			CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,i);
+			break;
+		}
+	}
+
 }
 
 
@@ -426,4 +454,21 @@ void CGUIWindowPictures::Render()
 {
 	CGUIWindow::Render();
 	m_slideShow.Render();
+}
+
+
+int CGUIWindowPictures::GetSelectedItem()
+{
+	int iControl;
+	if ( g_stSettings.m_bMyPicturesViewAsIcons) 
+	{
+		iControl=CONTROL_THUMBS;
+	}
+	else
+		iControl=CONTROL_LIST;
+
+  CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
+  g_graphicsContext.SendMessage(msg);         
+  int iItem=msg.GetParam1();
+	return iItem;
 }

@@ -35,6 +35,12 @@
 #include <string>
 using namespace std;
 
+#define CONTROL_SELECT_ITEM(dwSenderId, dwControlID,iItem) \
+{ \
+	CGUIMessage msg(GUI_MSG_ITEM_SELECT, dwSenderId, dwControlID,iItem); \
+	g_graphicsContext.SendMessage(msg); \
+}
+
 #define SET_CONTROL_LABEL(dwSenderId, dwControlID,label) \
 { \
 	CGUIMessage msg(GUI_MSG_LABEL_SET, dwSenderId, dwControlID); \
