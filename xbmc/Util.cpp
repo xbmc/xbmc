@@ -2729,6 +2729,19 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
       CLog::Log(LOGERROR, "XBMC.PlayMedia could not play media: %s", parameter.c_str());
     }
   }
+  else if (execute.Equals("ReloadSkin"))
+  {
+    //	Reload the skin
+    int iActiveWindowID = m_gWindowManager.GetActiveWindow();
+    CGUIWindow* pWindow=m_gWindowManager.GetWindow(iActiveWindowID);
+    DWORD dwFocusedControlID=pWindow->GetFocusedControl();
+
+    g_application.LoadSkin(g_guiSettings.GetString("LookAndFeel.Skin"));
+
+    m_gWindowManager.ActivateWindow(iActiveWindowID);
+    CGUIMessage msg(GUI_MSG_SETFOCUS, iActiveWindowID, dwFocusedControlID, 0);
+    pWindow->OnMessage(msg);
+  }
 }
 
 void usleep(int t)
