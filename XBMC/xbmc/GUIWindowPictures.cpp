@@ -851,8 +851,44 @@ void CGUIWindowPictures::ShowThumbPanel()
 /// \param strHistoryString History string build as return value
 void CGUIWindowPictures::GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString)
 {
-	strHistoryString=pItem->m_strPath;
+	if (pItem->m_bIsShareOrDrive)
+	{
+		//	We are in the virual directory
 
-	if (CUtil::HasSlashAtEnd(strHistoryString))
-		strHistoryString.Delete(strHistoryString.size()-1);
+		//	History string of the DVD drive
+		//	must be handel separately
+		if (pItem->m_iDriveType==SHARE_TYPE_DVD)
+		{
+			//	Remove disc label from item label
+			//	and use as history string, m_strPath
+			//	can change for new discs
+			CStdString strLabel=pItem->GetLabel();
+			int nPosOpen=strLabel.Find('(');
+			int nPosClose=strLabel.ReverseFind(')');
+			if (nPosOpen>-1 && nPosClose>-1 && nPosClose>nPosOpen)
+			{
+				strLabel.Delete(nPosOpen+1, (nPosClose)-(nPosOpen+1));
+				strHistoryString=strLabel;
+			}
+			else
+				strHistoryString=strLabel;
+		}
+		else
+		{
+			//	Other items in virual directory
+			CStdString strPath=pItem->m_strPath;
+			while (CUtil::HasSlashAtEnd(strPath))
+				strPath.Delete(strPath.size()-1);
+
+			strHistoryString=pItem->GetLabel()+strPath;
+		}
+	}
+	else
+	{
+		//	Normal directory items
+		strHistoryString=pItem->m_strPath;
+
+		if (CUtil::HasSlashAtEnd(strHistoryString))
+			strHistoryString.Delete(strHistoryString.size()-1);
+	}
 }
