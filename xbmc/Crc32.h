@@ -18,32 +18,42 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-class Crc32 {
+class Crc32 
+{
 public:
-    Crc32()
-	{
-		Reset();
-	}
-    
-	Crc32(const void* buffer, unsigned int count)
-	{
-        Reset();
-        Compute(buffer, count);
-    }
+		Crc32()
+		{
+			Reset();
+		}
+	    
+		Crc32(const void* buffer, unsigned int count)
+		{
+			Reset();
+			Compute(buffer, count);
+		}
 
-	void Reset()
-	{
-		m_crc = 0xFFFFFFFF;
-	}
+		Crc32(const CStdString& strValue)
+		{
+			Reset();
+			Compute(strValue.c_str(), strValue.size());
+		}
 
-    void Compute(const void* buffer, unsigned int count);
-    void Compute(unsigned char value);
+		void Reset()
+		{
+			m_crc = 0xFFFFFFFF;
+		}
 
-    operator unsigned __int32 () const {
-        return m_crc;
-    }
+		void Compute(const void* buffer, unsigned int count);
+		void Compute(unsigned char value);
+		void Compute(const CStdString& strValue);
+		void ComputeFromLowerCase(const CStdString& strValue);
+
+		operator unsigned __int32 () const 
+		{
+			return m_crc;
+		}
 
 private:
-    unsigned __int32 m_crc;
+		unsigned __int32 m_crc;
 };
 

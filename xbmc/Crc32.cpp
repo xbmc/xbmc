@@ -42,3 +42,14 @@ void Crc32::Compute(unsigned char value)
     }
 }
 
+void Crc32::Compute(const CStdString& strValue)
+{
+	Compute(strValue.c_str(), strValue.size());
+}
+
+void Crc32::ComputeFromLowerCase(const CStdString& strValue)
+{
+	CStdString strLower=strValue;
+	strLower.MakeLower();
+	Compute(strLower.c_str(), strLower.size());
+}

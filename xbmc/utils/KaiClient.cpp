@@ -1097,6 +1097,6 @@ void CKaiClient::OnCommunicatorEvent( DWORD dwControllerPort, VOICE_COMMUNICATOR
 DWORD CKaiClient::Crc32FromString(CStdString& aString)
 {
 	Crc32 crc;
-	crc.Compute(aString.c_str(),aString.length());
+	crc.Compute(aString);
 	return (DWORD)crc;
 }

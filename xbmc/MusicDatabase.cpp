@@ -271,18 +271,15 @@ void CMusicDatabase::AddSong(const CSong& song1, bool bCheck)
 		long lPathId   = AddPath(strPath);
 		long lAlbumId  = AddAlbum(song1.strAlbum,lArtistId,iNumArtists,song1.strArtist,lPathId,strPath);
 
-		DWORD dwCRC;
 		Crc32 crc;
-		crc.Reset();
-		crc.Compute(song1.strFileName.c_str(),strlen(song1.strFileName.c_str()));
-		dwCRC=crc;
+		crc.Compute(song1.strFileName);
 
 		bool bInsert = true;
 		int lSongId = -1;
 		if (bCheck)
 		{
 			strSQL.Format("select * from song where idAlbum=%i and dwFileNameCRC='%ul' and strTitle='%s'",
-					lAlbumId,dwCRC,song.strTitle.c_str());
+					lAlbumId,crc,song.strTitle.c_str());
 			if (!m_pDS->query(strSQL.c_str())) return;
 			if (m_pDS->num_rows() != 0)
 			{
@@ -297,7 +294,7 @@ void CMusicDatabase::AddSong(const CSong& song1, bool bCheck)
 										lAlbumId,lPathId,lArtistId,iNumArtists,lGenreId,iNumGenres,
 										song.strTitle.c_str(),
 										song.iTrack,song.iDuration,song.iYear,
-										dwCRC,
+										(DWORD)crc,
 										strFileName.c_str(), 0, song.iStartOffset, song.iEndOffset);
 
 			m_pDS->exec(strSQL.c_str());
@@ -862,14 +859,11 @@ bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName1, CSong& so
 		if (NULL==m_pDS.get()) return false;
 
 		Crc32 crc;
-		crc.Reset();
-		crc.Compute(strFileName1.c_str(),strlen(strFileName1.c_str()));
-
-		DWORD dwCRC=crc;
+		crc.Compute(strFileName1);
 
 		CStdString strSQL;
 		strSQL.Format("select * from song,album,path,artist,genre where song.dwFileNameCRC='%ul' and path.strPath='%s' and song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idArtist=artist.idArtist and song.idGenre=genre.idGenre",
-										dwCRC,
+										crc,
 										strPath.c_str());
 
 		if (!m_pDS->query(strSQL.c_str())) return false;
@@ -1568,15 +1562,13 @@ bool CMusicDatabase::IncrTop100CounterByFileName(const CStdString& strFileName1)
 
 		if (NULL==m_pDB.get()) return false;
 		if (NULL==m_pDS.get()) return false;
-		CStdString strSQL;
-		DWORD dwCRC;
-		Crc32 crc;
-		crc.Reset();
-		crc.Compute(strFileName1.c_str(),strlen(strFileName1.c_str()));
-		dwCRC=crc;
 
+		Crc32 crc;
+		crc.Compute(strFileName1);
+
+		CStdString strSQL;
 		strSQL.Format("select * from song,path where song.dwFileNameCRC='%ul' and song.idPath=path.idPath and path.strPath='%s'",
-										dwCRC,
+										crc,
 										strPath.c_str());
 		if (!m_pDS->query(strSQL.c_str())) return false;
 		int iRowsFound = m_pDS->num_rows();
