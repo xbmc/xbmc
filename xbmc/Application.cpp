@@ -2087,9 +2087,6 @@ void CApplication::FrameMove()
   // we are scanning for new music info
   m_guiDialogMusicScan.UpdateState();
 
-  // reset the fullscreen analog options if needed
-  m_guiWindowFullScreen.m_bSmoothFFwdRewd = false;
-
   if (g_lcd)
     UpdateLCD();
   // read raw input from controller, remote control, mouse and keyboard
