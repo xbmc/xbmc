@@ -19,7 +19,6 @@
 #define USER_MANAGEMENT_SUPPORT
 #endif
 
-#include "defines.h"
 #define SOCK_DFT_SVC_TIME	20
 #define SPYCE_SUPPORT
 
