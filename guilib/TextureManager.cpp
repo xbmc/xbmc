@@ -253,6 +253,7 @@ void CTextureMap::Flush()
 CGUITextureManager::CGUITextureManager(void)
 {
 	D3DXSetDXT3DXT5(TRUE);
+	m_iNextPreload = m_PreLoadNames.end();
 }
 
 CGUITextureManager::~CGUITextureManager(void)
