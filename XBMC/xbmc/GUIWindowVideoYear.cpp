@@ -22,7 +22,12 @@
 #include "filesystem/file.h"
 #include "xbox/iosupport.h"
 #include "playlistplayer.h"
-#include "GUIDialogFileStacking.h"
+#include "GUIThumbnailPanel.h"
+
+#define VIEW_AS_LIST           0
+#define VIEW_AS_ICONS          1
+#define VIEW_AS_LARGEICONS     2
+
 #define CONTROL_BTNVIEWASICONS		 2
 #define CONTROL_BTNSORTBY					 3
 #define CONTROL_BTNSORTASC				 4
@@ -171,6 +176,7 @@ bool CGUIWindowVideoYear::OnMessage(CGUIMessage& message)
 			m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
 			Update(m_strDirectory);
 
+      ShowThumbPanel();
       if (m_iItemSelected >=0)
       {
 			  CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_iItemSelected)
@@ -186,10 +192,18 @@ bool CGUIWindowVideoYear::OnMessage(CGUIMessage& message)
       int iControl=message.GetSenderId();
       if (iControl==CONTROL_BTNVIEWASICONS)
       {
-		  if ( m_strDirectory.IsEmpty() )
-		    g_stSettings.m_bMyVideoYearRootViewAsIcons=!g_stSettings.m_bMyVideoYearRootViewAsIcons;
-		  else
-		    g_stSettings.m_bMyVideoYearViewAsIcons=!g_stSettings.m_bMyVideoYearViewAsIcons;
+        bool bLargeIcons(false);
+		    if ( m_strDirectory.IsEmpty() )
+        {
+		      g_stSettings.m_iMyVideoYearRootViewAsIcons++;
+          if (g_stSettings.m_iMyVideoYearRootViewAsIcons > VIEW_AS_LARGEICONS) g_stSettings.m_iMyVideoYearRootViewAsIcons=VIEW_AS_LIST;
+        }
+		    else
+        {
+		      g_stSettings.m_iMyVideoYearViewAsIcons++;
+          if (g_stSettings.m_iMyVideoYearViewAsIcons > VIEW_AS_LARGEICONS) g_stSettings.m_iMyVideoYearViewAsIcons=VIEW_AS_LIST;
+        }
+        ShowThumbPanel();
 
 				g_settings.Save();
         UpdateButtons();
@@ -251,11 +265,42 @@ void CGUIWindowVideoYear::UpdateButtons()
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
 	bool bViewIcon = false;
-	if ( m_strDirectory.IsEmpty() ) {
-		bViewIcon = g_stSettings.m_bMyVideoYearRootViewAsIcons;
+  int iString;
+	if ( m_strDirectory.IsEmpty() ) 
+  {
+		switch (g_stSettings.m_iMyVideoYearRootViewAsIcons)
+    {
+      case VIEW_AS_LIST:
+        iString=100; // view as icons
+      break;
+      
+      case VIEW_AS_ICONS:
+        iString=417;  // view as large icons
+        bViewIcon=true;
+      break;
+      case VIEW_AS_LARGEICONS:
+        iString=101; // view as list
+        bViewIcon=true;
+      break;
+    }
 	}
-	else {
-		bViewIcon = g_stSettings.m_bMyVideoYearViewAsIcons;
+	else 
+  {
+		switch (g_stSettings.m_iMyVideoYearViewAsIcons)
+    {
+      case VIEW_AS_LIST:
+        iString=100; // view as icons
+      break;
+      
+      case VIEW_AS_ICONS:
+        iString=417;  // view as large icons
+        bViewIcon=true;
+      break;
+      case VIEW_AS_LARGEICONS:
+        iString=101; // view as list
+        bViewIcon=true;
+      break;
+    }		
 	}
    if (bViewIcon) 
     {
@@ -266,11 +311,6 @@ void CGUIWindowVideoYear::UpdateButtons()
       SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
     }
 
-    int iString=101;
-    if (!bViewIcon) 
-    {
-      iString=100;
-    }
 		SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
 		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyVideoYearSortMethod+365);
 
@@ -423,13 +463,7 @@ void CGUIWindowVideoYear::Update(const CStdString &strDirectory)
   UpdateButtons();
   strSelectedItem=m_history.Get(m_strDirectory);	
 
-  bool bViewAsIcon = false;
-	if ( m_strDirectory.IsEmpty() )
-		bViewAsIcon = g_stSettings.m_bMyVideoYearRootViewAsIcons;
-	else
-		bViewAsIcon = g_stSettings.m_bMyVideoYearViewAsIcons;
-
-	if ( bViewAsIcon ) {	
+	if ( ViewByIcon() ) {	
 		SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS);
 	}
 	else {
@@ -526,13 +560,7 @@ int CGUIWindowVideoYear::GetSelectedItem()
 {
 	int iControl;
 	bool bViewIcon = false;
-	if ( m_strDirectory.IsEmpty() ) {
-		bViewIcon = g_stSettings.m_bMyVideoYearRootViewAsIcons;
-	}
-	else {
-		bViewIcon = g_stSettings.m_bMyVideoYearViewAsIcons;
-	}
-	if ( bViewIcon) 
+	if ( ViewByIcon() ) 
 	{
 		iControl=CONTROL_THUMBS;
 	}
@@ -546,4 +574,29 @@ int CGUIWindowVideoYear::GetSelectedItem()
 }
 void CGUIWindowVideoYear::SetIMDBThumbs(VECFILEITEMS& items)
 {
+}
+bool CGUIWindowVideoYear::ViewByIcon()
+{
+  if ( m_strDirectory.IsEmpty() )
+  {
+    if (g_stSettings.m_iMyVideoYearRootViewAsIcons != VIEW_AS_LIST) return true;
+  }
+  else
+  {
+    if (g_stSettings.m_iMyVideoYearViewAsIcons != VIEW_AS_LIST) return true;
+  }
+  return false;
+}
+
+bool CGUIWindowVideoYear::ViewByLargeIcon()
+{
+  if ( m_strDirectory.IsEmpty() )
+  {
+    if (g_stSettings.m_iMyVideoYearRootViewAsIcons == VIEW_AS_LARGEICONS) return true;
+  }
+  else
+  {
+    if (g_stSettings.m_iMyVideoYearViewAsIcons== VIEW_AS_LARGEICONS) return true;
+  }
+  return false;
 }

@@ -120,8 +120,8 @@ public:
 		bool			m_bMyMusicTop100ViewAsIcons;
 		int				m_iMyMusicStartWindow;
 
-		bool			m_bMyVideoViewAsIcons;
-		bool			m_bMyVideoRootViewAsIcons;
+		int 			m_iMyVideoViewAsIcons;
+		int 			m_iMyVideoRootViewAsIcons;
 	  int				m_iMyVideoSortMethod;
 	  bool			m_bMyVideoSortAscending;
 
@@ -203,23 +203,23 @@ public:
     bool      m_bUseDigitalOutput;
     int       m_iAudioStream;
 
-		bool			m_bMyVideoGenreViewAsIcons;
-		bool			m_bMyVideoGenreRootViewAsIcons;
+		int			m_iMyVideoGenreViewAsIcons;
+		int			m_iMyVideoGenreRootViewAsIcons;
 	  int				m_iMyVideoGenreSortMethod;
 	  bool			m_bMyVideoGenreSortAscending;
 
-		bool			m_bMyVideoActorViewAsIcons;
-		bool			m_bMyVideoActorRootViewAsIcons;
+		int			m_iMyVideoActorViewAsIcons;
+		int			m_iMyVideoActorRootViewAsIcons;
 	  int				m_iMyVideoActorSortMethod;
 	  bool			m_bMyVideoActorSortAscending;
 
-		bool			m_bMyVideoYearViewAsIcons;
-		bool			m_bMyVideoYearRootViewAsIcons;
+		int			m_iMyVideoYearViewAsIcons;
+		int			m_iMyVideoYearRootViewAsIcons;
 	  int				m_iMyVideoYearSortMethod;
 	  bool			m_bMyVideoYearSortAscending;
 
-		bool			m_bMyVideoTitleViewAsIcons;
-		bool			m_bMyVideoTitleRootViewAsIcons;
+		int			m_iMyVideoTitleViewAsIcons;
+		int			m_iMyVideoTitleRootViewAsIcons;
 	  int				m_iMyVideoTitleSortMethod;
 	  bool			m_bMyVideoTitleSortAscending;
 
