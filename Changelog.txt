@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 30-01-2005 changed: Reboot from FatalErrorHandler works on all buttons now (thanks Fulg!)
+  - 30-01-2005 fixed: Screensaver dims videos in ComboRenderer.
   - 30-01-2005 fixed: crash when leaving kai window
   - 30-01-2005 fixed: [ 1107267 ] CRC32::Compute needs to be case insensitive (All thumbs need to be recreated)
   - 30-01-2005 added: file manager, show free disk space for hdd and total size for DVD
@@ -34,6 +36,7 @@ added/fixed: (dd-mm-yyyy) (please specify date in CET)
                       Settings -> My Videos/My Music -> Library
   - 24-01-2005 changed: Default IMDb url is now akas.imdb.com for alternative title support.
   - 24-01-2005 added: [1105853]Added locks & context menu to My Programs, fixed some bugs - thanks to slacker!
+  - 24-01-2005 fixed: Screensaver could show music info - thanks to kraqh3d!
   - 24-01-2005 fixed: music info tag, remove possible \r\n at the end of a tag field (artist, title...)
   - 24-01-2005 updated: Finnish language file (Thnx to jutski)
   - 24-01-2005 updated: German (Austrian) language file (Thnx to CEOMR)
