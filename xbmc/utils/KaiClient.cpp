@@ -221,7 +221,7 @@ void CKaiClient::SetHostingStatus(BOOL bIsHosting)
 	if (client_state==State::Authenticated)
 	{
 		CStdString strStatusMessage;
-		strStatusMessage.Format("KAI_CLIENT_ARENA_STATUS;%d;%d;",bIsHosting ? 1:0, 1);
+		strStatusMessage.Format("KAI_CLIENT_ARENA_STATUS;%d;%d;",bIsHosting ? 2:0, 1);
 		Send(server_addr, strStatusMessage);
 	}
 }
