@@ -121,14 +121,28 @@ CBuddyItem* CGUIWindowBuddies::GetBuddySelection()
 {
 	CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_LISTEX,0,0,NULL);
 	g_graphicsContext.SendMessage(msg);         
-	return dynamic_cast<CBuddyItem*>((CGUIListExItem*)msg.GetLPVOID());
+	//return dynamic_cast<CBuddyItem*>((CGUIListExItem*)msg.GetLPVOID());
+
+	CGUIListExItem* pItem = (CGUIListExItem*)msg.GetLPVOID();
+	if (pItem==NULL)
+		return NULL;
+
+	return	(pItem->GetCookie()==CKaiClient::Item::Player) ?
+			(CBuddyItem*)pItem : NULL;
 }
 
 CArenaItem* CGUIWindowBuddies::GetArenaSelection()
 {
 	CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_LISTEX,0,0,NULL);
 	g_graphicsContext.SendMessage(msg);         
-	return dynamic_cast<CArenaItem*>((CGUIListExItem*)msg.GetLPVOID());
+//	return dynamic_cast<CArenaItem*>((CGUIListExItem*)msg.GetLPVOID());
+
+	CGUIListExItem* pItem = (CGUIListExItem*)msg.GetLPVOID();
+	if (pItem==NULL)
+		return NULL;
+
+	return	(pItem->GetCookie()==CKaiClient::Item::Arena) ?
+			(CArenaItem*)pItem : NULL;
 }
 
 void CGUIWindowBuddies::OnClickModeButton(CGUIMessage& aMessage)
