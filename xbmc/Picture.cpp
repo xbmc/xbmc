@@ -4,6 +4,8 @@
 #include "filesystem/file.h"
 
 #define QUALITY 0
+#define MAX_THUMB_WIDTH 64
+#define MAX_THUMB_HEIGHT 64
 
 CPicture::CPicture(void)
 {
@@ -62,102 +64,47 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate,int
 		m_bSectionLoaded=true;
 	}
 
+	CxImage image(dwImageType);
+	if (!image.Load(strCachedFile.c_str(),dwImageType))
 	{
-
-		CxImage image(dwImageType);
-		if (!image.Load(strCachedFile.c_str(),dwImageType))
-		{
-			
-			return NULL;
-		}
-		m_dwWidth  = image.GetWidth();
-		m_dwHeight = image.GetHeight();
-	  
-    bool bResize=false;
-    float fAspect= ((float)m_dwWidth) / ((float)m_dwHeight);
-		if ( g_graphicsContext.IsWidescreen() )
-		{
-			// adjust for widescreen...
-			// widescreen = 33% wider so make height also 33% taller?
-			float fHeight = (float)m_dwHeight;
-			fHeight *= 1.33333f;
-			m_dwHeight=(int)fHeight;
-    
-			fAspect= ((float)m_dwWidth) / ((float)m_dwHeight);
-      bResize = true;
-		}
-		
-		if (m_dwWidth > (DWORD)g_graphicsContext.GetWidth() )
-    {
-      bResize=true;
-      m_dwWidth  = g_graphicsContext.GetWidth();
-      m_dwHeight = (DWORD)( ( (float)m_dwWidth) / fAspect);
-    }
-
-    if (m_dwHeight > (DWORD)g_graphicsContext.GetHeight() )
-    {
-      bResize=true;
-      m_dwHeight =g_graphicsContext.GetHeight();
-      m_dwWidth  = (DWORD)(  fAspect * ( (float)m_dwHeight) );
-    }
-		if (iMaxWidth > (int)g_graphicsContext.GetWidth() )
-    {
-      bResize=true;
-      m_dwWidth  = iMaxWidth;
-      m_dwHeight = (DWORD)( ( (float)m_dwWidth) / fAspect);
-    }
-
-    if (iMaxHeight > (int)g_graphicsContext.GetHeight() )
-    {
-      bResize=true;
-      m_dwHeight =iMaxHeight;
-      m_dwWidth  = (DWORD)(  fAspect * ( (float)m_dwHeight) );
-    }
-
-    if (bResize)
-    {
-			image.Resample(m_dwWidth,m_dwHeight, QUALITY);
-		}
+		return NULL;
+	}
 
     for (int i=0; i < iRotate; ++i) 
     {
-      image.RotateRight();
+		image.RotateRight();
     }
-		m_dwWidth=image.GetWidth();
-		m_dwHeight=image.GetHeight();
 
-
-    bResize=false;
-    fAspect= ((float)m_dwWidth) / ((float)m_dwHeight);
+	m_dwWidth  = image.GetWidth();
+	m_dwHeight = image.GetHeight();
+	
+	bool bResize=false;
+	float fAspect= ((float)m_dwWidth) / ((float)m_dwHeight);
 		
-    if (m_dwWidth > (DWORD)g_graphicsContext.GetWidth() )
+	if (m_dwWidth > (DWORD)iMaxWidth)
     {
-      bResize=true;
-      m_dwWidth  = g_graphicsContext.GetWidth();
-      m_dwHeight = (DWORD)( ( (float)m_dwWidth) / fAspect);
+		bResize=true;
+		m_dwWidth  = iMaxWidth;
+		m_dwHeight = (DWORD)( ( (float)m_dwWidth) / fAspect);
     }
 
-    if (m_dwHeight > (DWORD)g_graphicsContext.GetHeight() )
+    if (m_dwHeight > (DWORD)iMaxHeight)
     {
-      bResize=true;
-      m_dwHeight =g_graphicsContext.GetHeight();
-      m_dwWidth  = (DWORD)(  fAspect * ( (float)m_dwHeight) );
+		bResize=true;
+		m_dwHeight = iMaxHeight;
+		m_dwWidth  = (DWORD)(  fAspect * ( (float)m_dwHeight) );
     }
 
     if (bResize)
     {
-			image.Resample(m_dwWidth,m_dwHeight, QUALITY);
-		}
-
-    m_dwWidth=image.GetWidth();
-		m_dwHeight=image.GetHeight();
-
-
-
-		image.Flip();
-		pTexture=GetTexture(image);
+		image.Resample(m_dwWidth,m_dwHeight, QUALITY);
 	}
 
+	m_dwWidth=image.GetWidth();
+	m_dwHeight=image.GetHeight();
+
+	image.Flip();
+	pTexture=GetTexture(image);
 	return pTexture;
 }
 
@@ -272,17 +219,17 @@ bool CPicture::CreateThumnail(const CStdString& strFileName)
     bool bResize=false;
     float fAspect= ((float)m_dwWidth) / ((float)m_dwHeight);
 		
-    if (m_dwWidth > (DWORD)64 )
+    if (m_dwWidth > (DWORD)MAX_THUMB_WIDTH )
     {
       bResize=true;
-      m_dwWidth  = 64;
+      m_dwWidth  = MAX_THUMB_WIDTH;
       m_dwHeight = (DWORD)( ( (float)m_dwWidth) / fAspect);
     }
 
-    if (m_dwHeight > (DWORD)64 )
+    if (m_dwHeight > (DWORD)MAX_THUMB_HEIGHT )
     {
       bResize=true;
-      m_dwHeight =64;
+      m_dwHeight =MAX_THUMB_HEIGHT;
       m_dwWidth  = (DWORD)(  fAspect * ( (float)m_dwHeight) );
     }
 
