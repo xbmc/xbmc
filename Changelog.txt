@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 20-02-2005 fixed: OSD audio menu lockup
   - 20-02-2005 changed: Enlarge Vobsubs changed to Resize Vobsubs.  Percentage runs from 30% -> 200%.  Defaults to 100%.  If you don't reset your settings on upgrade (which there is no need for) it will be initally set to 30%, which you may wish to change.
   - 20-02-2005 fixed: Buttonscroller focus from another control didn't update background images correctly.
   - 20-02-2005 fixed: OSD crashes when filling listcontrols.
