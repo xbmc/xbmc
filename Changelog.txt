@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 09-03-2005 fixed: Only the first python control was reading from references.xml correctly.
   - 09-03-2005 fixed: Memory of loaded picture was not cleared correctly on Slideshow exit.
   - 09-03-2005 fixed: Upgrade code incorrectly returned false if the database was empty.
   - 09-03-2005 added: Default options for viewmode, brightness, contrast + gamma.
