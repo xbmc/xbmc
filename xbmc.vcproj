@@ -423,6 +423,9 @@
 				RelativePath=".\xbmc\Application.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\stdafx.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\XboxMediaCenter.cpp">
 			</File>
 			<Filter
