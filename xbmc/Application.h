@@ -127,6 +127,7 @@ public:
   void StopTimeServer();
 
 	void					Stop();
+	void					RestartApp();
 	void					LoadSkin(const CStdString& strSkin);
 	void					DelayLoadSkin();
 	void					CancelDelayLoadSkin();

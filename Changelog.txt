@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 10-09-2004 changed: restart XBMC instead of reset when changed network settings.
   - 10-09-2004 fixed: State of the Album/song info on Visualisation wasn't saved.
   - 10-09-2004 fixed: Screensaver would not stop when mouse was moved/clicked
   - 09-09-2004 changed: Video subtitles cleanup + fixed sizing of subs.
