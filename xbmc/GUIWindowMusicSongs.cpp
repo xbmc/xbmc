@@ -1014,8 +1014,10 @@ void CGUIWindowMusicSongs::OnSearchItemFound(const CFileItem* pSelItem)
 		CStdString strPath=pSelItem->m_strPath;
 		CStdString strParentPath;
 		CUtil::GetParentPath(strPath, strParentPath);
+
 		Update(strParentPath);
 
+		//	Build the directory history for the item
 		while (CUtil::GetParentPath(strPath, strParentPath))
 		{
 			m_history.Set(strPath, strParentPath);
@@ -1023,10 +1025,15 @@ void CGUIWindowMusicSongs::OnSearchItemFound(const CFileItem* pSelItem)
 		}
 		m_history.Set(strPath, "");
 
+		strPath=pSelItem->m_strPath;
+		CURL url(strPath);
+		if (url.GetProtocol()=="smb" && !CUtil::HasSlashAtEnd(strPath))
+			strPath+="/";
+
 		for (int i=0; i<(int)m_vecItems.size(); i++)
 		{
 			CFileItem* pItem=m_vecItems[i];
-			if (pItem->m_strPath==pSelItem->m_strPath)
+			if (pItem->m_strPath==strPath)
 			{
 				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST, i);
 				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS, i);
