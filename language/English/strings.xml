@@ -1074,4 +1074,8 @@
     <id>342</id>
     <value>Movies</value>
   </string>
+  <string>
+    <id>343</id>
+    <value>7. Adjust Framerate</value>
+  </string>
 </strings>

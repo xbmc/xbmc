@@ -489,15 +489,7 @@ void CGUIWindowVideoGenre::OnInfo(int iItem)
   VECMOVIESFILES movies;
   m_database.GetFiles(atol(pItem->m_strPath),movies);
 	if (movies.size() <=0) return;
-  CStdString strFile=movies[0];
-  if (m_database.HasMovieInfo(strFile) )
-  {
-      CIMDBMovie movieDetails;
-      m_database.GetMovieInfo(strFile,movieDetails);
-      CGUIWindowVideoInfo* pDlgInfo= (CGUIWindowVideoInfo*)m_gWindowManager.GetWindow(2003);
-	    pDlgInfo->SetMovie(movieDetails);
-	    pDlgInfo->DoModal(GetID());
-      if ( !pDlgInfo->NeedRefresh() ) return;
-      m_database.DeleteMovieInfo(strFile);
-  }
+  CStdString strFilePath=movies[0];
+  CStdString strFile=CUtil::GetFileName(strFilePath);
+  ShowIMDB(strFile,strFilePath, "" ,false);
 }
