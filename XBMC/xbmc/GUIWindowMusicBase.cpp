@@ -97,11 +97,13 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 						pItem->Select(false);
 				}
 
-				CFileItem* pItem=m_vecItems[nFolderCount+nCurrentItem];
-				if (pItem)
-					pItem->Select(true);
+				if (nFolderCount+nCurrentItem<(int)m_vecItems.size())
+				{
+					CFileItem* pItem=m_vecItems[nFolderCount+nCurrentItem];
+					if (pItem)
+						pItem->Select(true);
+				}
 			}
-
 		}
 		break;
 
