@@ -10,7 +10,7 @@
 
 // alignment of file blocks - should be a multiple of the sector size of the disk and a power of 2
 // HDD sector = 512 bytes, DVD/CD sector = 2048 bytes
-#define ALIGN (2048)
+#define ALIGN (512)
 
 enum XPR_FLAGS
 {
@@ -97,10 +97,32 @@ bool CTextureBundle::OpenBundle()
 	if (GetFileAttributes(strPath.c_str()) == -1)
 		return false;
 
+	m_TimeStamp.dwLowDateTime = m_TimeStamp.dwHighDateTime = 0;
+
 	if (ALIGN % XGetDiskSectorSize(strPath.Left(3).c_str()))
 	{
 		CLog::Log("Disk sector size is not supported, caching textures.xpr");
-		CopyFile(strPath, "Z:\\Textures.xpr", FALSE);
+
+		WIN32_FIND_DATA FindData[2];
+		FindClose(FindFirstFile(strPath.c_str(), &FindData[0]));
+		HANDLE hFind = FindFirstFile("Z:\\Textures.xpr", &FindData[1]);
+		FindClose(hFind);
+
+		if (hFind == INVALID_HANDLE_VALUE || FindData[0].nFileSizeLow != FindData[1].nFileSizeLow ||
+			CompareFileTime(&FindData[0].ftLastWriteTime, &FindData[1].ftLastWriteTime))
+		{
+			if (!CopyFile(strPath, "Z:\\Textures.xpr", FALSE))
+			{
+				CLog::Log("Unable to open file: %s: %x", strPath.c_str(), GetLastError());
+				return false;
+			}
+			m_hFile = CreateFile(strPath.c_str(), GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, 0, OPEN_EXISTING, 0, 0);
+			if (m_hFile != INVALID_HANDLE_VALUE)
+			{
+				GetFileTime(m_hFile, NULL, NULL, &m_TimeStamp);
+				CloseHandle(m_hFile);
+			}
+		}
 		strPath = "Z:\\Textures.xpr";
 	}
 
@@ -110,6 +132,9 @@ bool CTextureBundle::OpenBundle()
 		CLog::Log("Unable to open file: %s: %x", strPath.c_str(), GetLastError());
 		return false;
 	}
+
+	if (m_TimeStamp.dwLowDateTime || m_TimeStamp.dwHighDateTime)
+		SetFileTime(m_hFile, NULL, NULL, &m_TimeStamp);
 
 	CAutoBuffer HeaderBuf(ALIGN);
 	DWORD n;

@@ -22,7 +22,7 @@ must not be misrepresented as being the original software.
 distribution.
 */
 
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "tinyxml.h"
 
 #ifndef TIXML_USE_STL

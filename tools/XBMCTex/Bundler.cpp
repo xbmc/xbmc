@@ -4,7 +4,8 @@
 
 // alignment of file blocks - should be a multiple of the sector size of the disk and a power of 2
 // HDD sector = 512 bytes, DVD/CD sector = 2048 bytes
-#define ALIGN (2048)
+// XBMC supports caching of texures on the HDD for DVD loads, so this can be 512
+#define ALIGN (512)
 
 bool CBundler::StartBundle()
 {
