@@ -51,7 +51,7 @@ public:
 	virtual ~CMusicDatabase(void);
 	bool		Open() ;
 	void		Close() ;
-	void		AddSong(const CSong& song);
+	void		AddSong(const CSong& song,bool bCheck=true);
 	long		AddAlbumInfo(const CAlbum& album);
 	bool		GetAlbumInfo(const CStdString& strAlbum, CAlbum& album);
 	bool		GetSong(const CStdString& strTitle, CSong& song);

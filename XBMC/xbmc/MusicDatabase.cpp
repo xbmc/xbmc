@@ -138,7 +138,7 @@ bool CMusicDatabase::CreateTables()
 	return true;
 }
 
-void CMusicDatabase::AddSong(const CSong& song1)
+void CMusicDatabase::AddSong(const CSong& song1, bool bCheck)
 {
 	CSong song=song1;
 	RemoveInvalidChars(song.strAlbum);
@@ -163,22 +163,25 @@ void CMusicDatabase::AddSong(const CSong& song1)
 	dwCRC=crc;
 
 	char szSQL[1024];
-	sprintf(szSQL,"select * from song where idAlbum=%i AND idGenre=%i AND idArtist=%i AND dwFileNameCRC='%ul' AND strTitle='%s'", 
-			lAlbumId,lGenreId,lArtistId,dwCRC,song.strTitle.c_str());
-	try
-	{
-		if (!m_pDS->query(szSQL)) return;
-	}
-	catch(...)
-	{
-		OutputDebugString("-------ERRORohoh!");
-		return;
-	}
-	int iRowsFound = m_pDS->num_rows();
-	if (iRowsFound!= 0) 
-	{
-		return ; // already exists
-	}
+  if (bCheck)
+  {
+	  sprintf(szSQL,"select * from song where idAlbum=%i AND idGenre=%i AND idArtist=%i AND dwFileNameCRC='%ul' AND strTitle='%s'", 
+			  lAlbumId,lGenreId,lArtistId,dwCRC,song.strTitle.c_str());
+	  try
+	  {
+		  if (!m_pDS->query(szSQL)) return;
+	  }
+	  catch(...)
+	  {
+		  OutputDebugString("-------ERRORohoh!");
+		  return;
+	  }
+	  int iRowsFound = m_pDS->num_rows();
+	  if (iRowsFound!= 0) 
+	  {
+		  return ; // already exists
+	  }
+  }
 	
 
 	sprintf(szSQL,"insert into song (idSong,idArtist,idAlbum,idGenre,idPath,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,iTimesPlayed) values(NULL,%i,%i,%i,%i,'%s',%i,%i,%i,'%ul','%s',%i)",
