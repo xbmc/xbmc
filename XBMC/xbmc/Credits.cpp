@@ -282,14 +282,14 @@ static HRESULT InitLogo()
 	// Open XPR
 	HANDLE hFile = CreateFile("q:\\credits\\credits.xpr", GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
 	if (hFile == INVALID_HANDLE_VALUE)
-		return GetLastError();
+		return E_FAIL;
 
 	// Get header
 	XPR_HEADER XPRHeader;
 	if (!ReadFile(hFile, &XPRHeader, sizeof(XPR_HEADER), &n, 0) || n < sizeof(XPR_HEADER))
 	{
 		CloseHandle(hFile);
-		return GetLastError() ? GetLastError() : E_FAIL;
+		return E_FAIL;
 	}
 
 	if (XPRHeader.dwMagic != XPR_MAGIC_VALUE)
@@ -305,7 +305,7 @@ static HRESULT InitLogo()
 	if (!ReadFile(hFile, ResourceHeader, Size, &n, 0) || n < Size)
 	{
 		CloseHandle(hFile);
-		return GetLastError() ? GetLastError() : E_FAIL;
+		return E_FAIL;
 	}
 
 	// create shaders (8 bytes of header)
@@ -324,7 +324,7 @@ static HRESULT InitLogo()
 	{
 		free(PackedData);
 		CloseHandle(hFile);
-		return GetLastError() ? GetLastError() : E_FAIL;
+		return E_FAIL;
 	}
 	CloseHandle(hFile);
 
@@ -753,6 +753,16 @@ void RunCredits()
 	D3DDevice::Clear(0, 0, D3DCLEAR_STENCIL | D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
 	D3DDevice::Present(0, 0, 0, 0);
 
+	if (FAILED(InitLogo()))
+	{
+		CLog::Log("Unable to load credits logo");
+		CleanupLogo();
+		g_graphicsContext.Unlock();
+		if (NeedUnpause)
+			g_application.m_pPlayer->Pause();
+		return;
+	}
+
 	static bool FixedCredits = false;
 
 	DWORD Time = 0;
@@ -839,15 +849,6 @@ void RunCredits()
 
 	FixedCredits = true;
 
-	bool NoLogo = false;
-	HRESULT hr = InitLogo();
-	if (FAILED(hr))
-	{
-		CLog::Log("Unable to load credits logo: %x", hr);
-		CleanupLogo();
-		NoLogo = true;
-	}
-
 	s_hMusicStarted = CreateEvent(0, TRUE, FALSE, 0);
 	s_bStopPlaying = false;
 	HANDLE hMusicThread = (HANDLE)_beginthreadex(0, 0, CreditsMusicThread, "q:\\credits\\credits.mod", 0, NULL);
@@ -899,9 +900,12 @@ void RunCredits()
 			// Activate new credits
 			while (NextCredit < NUM_CREDITS && Credits[NextCredit].Time <= Time)
 			{
-				CGUIFont* pFont = Fonts.find(Credits[NextCredit].Font)->second;
-				Credits[NextCredit].pTex = pFont->CreateTexture(Credits[NextCredit].Text, 0, 0xffffffff, D3DFMT_LIN_A8R8G8B8);
-				pFont->GetTextExtent(Credits[NextCredit].Text, &Credits[NextCredit].TextWidth, &Credits[NextCredit].TextHeight);
+				if (Credits[NextCredit].Text)
+				{
+					CGUIFont* pFont = Fonts.find(Credits[NextCredit].Font)->second;
+					Credits[NextCredit].pTex = pFont->CreateTexture(Credits[NextCredit].Text, 0, 0xffffffff, D3DFMT_LIN_A8R8G8B8);
+					pFont->GetTextExtent(Credits[NextCredit].Text, &Credits[NextCredit].TextWidth, &Credits[NextCredit].TextHeight);
+				}
 				ActiveList.push_back(&Credits[NextCredit]);
 				++NextCredit;
 			}
@@ -928,54 +932,50 @@ void RunCredits()
 
 			DWORD Gamma = 0;
 
-			if (!NoLogo)
-			{
-				// render cubemap
-				LPDIRECT3DSURFACE8 pRenderSurf, pOldRT, pOldZS;
-				pSpecEnvMap->GetCubeMapSurface(D3DCUBEMAP_FACE_NEGATIVE_Z, 0, &pRenderSurf);
-				D3DDevice::GetRenderTarget(&pOldRT);
-				D3DDevice::GetDepthStencilSurface(&pOldZS);
-				D3DDevice::SetRenderTarget(pRenderSurf, NULL);
+			// render cubemap
+			LPDIRECT3DSURFACE8 pRenderSurf, pOldRT, pOldZS;
+			pSpecEnvMap->GetCubeMapSurface(D3DCUBEMAP_FACE_NEGATIVE_Z, 0, &pRenderSurf);
+			D3DDevice::GetRenderTarget(&pOldRT);
+			D3DDevice::GetDepthStencilSurface(&pOldZS);
+			D3DDevice::SetRenderTarget(pRenderSurf, NULL);
 
-				D3DSURFACE_DESC desc;
-				pSpecEnvMap->GetLevelDesc(0, &desc);
+			D3DSURFACE_DESC desc;
+			pSpecEnvMap->GetLevelDesc(0, &desc);
 
-				D3DDevice::SetTexture(0, pFrontTex);
-				D3DDevice::SetVertexShader(D3DFVF_XYZRHW|D3DFVF_TEX1);
+			D3DDevice::SetTexture(0, pFrontTex);
+			D3DDevice::SetVertexShader(D3DFVF_XYZRHW|D3DFVF_TEX1);
 
-				D3DDevice::SetTextureStageState(0, D3DTSS_COLOROP,   D3DTOP_MODULATE);
-				D3DDevice::SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_CURRENT);
-				D3DDevice::SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TEXTURE);
-				D3DDevice::SetTextureStageState(0, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);
-				D3DDevice::SetTextureStageState(1, D3DTSS_COLOROP,   D3DTOP_DISABLE);
-				D3DDevice::SetTextureStageState(1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);
+			D3DDevice::SetTextureStageState(0, D3DTSS_COLOROP,   D3DTOP_MODULATE);
+			D3DDevice::SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_CURRENT);
+			D3DDevice::SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TEXTURE);
+			D3DDevice::SetTextureStageState(0, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);
+			D3DDevice::SetTextureStageState(1, D3DTSS_COLOROP,   D3DTOP_DISABLE);
+			D3DDevice::SetTextureStageState(1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);
 
-				D3DDevice::Begin(D3DPT_QUADLIST);
-				D3DDevice::SetVertexData2f(D3DVSDE_TEXCOORD0, 0.0f, 0.0f);
-				D3DDevice::SetVertexData4f(D3DVSDE_VERTEX,    0.0f, 0.0f, 0.0f, 0.0f);
-				D3DDevice::SetVertexData2f(D3DVSDE_TEXCOORD0, 1.0f, 0.0f);
-				D3DDevice::SetVertexData4f(D3DVSDE_VERTEX,    (float)desc.Width, 0.0f, 0.0f, 0.0f);
-				D3DDevice::SetVertexData2f(D3DVSDE_TEXCOORD0, 1.0f, 1.0f);
-				D3DDevice::SetVertexData4f(D3DVSDE_VERTEX,    (float)desc.Width, (float)desc.Height, 0.0f, 0.0f);
-				D3DDevice::SetVertexData2f(D3DVSDE_TEXCOORD0, 0.0f, 1.0f);
-				D3DDevice::SetVertexData4f(D3DVSDE_VERTEX,    0.0f, (float)desc.Height, 0.0f, 0.0f);
-				D3DDevice::End();
+			D3DDevice::Begin(D3DPT_QUADLIST);
+			D3DDevice::SetVertexData2f(D3DVSDE_TEXCOORD0, 0.0f, 0.0f);
+			D3DDevice::SetVertexData4f(D3DVSDE_VERTEX,    0.0f, 0.0f, 0.0f, 0.0f);
+			D3DDevice::SetVertexData2f(D3DVSDE_TEXCOORD0, 1.0f, 0.0f);
+			D3DDevice::SetVertexData4f(D3DVSDE_VERTEX,    (float)desc.Width, 0.0f, 0.0f, 0.0f);
+			D3DDevice::SetVertexData2f(D3DVSDE_TEXCOORD0, 1.0f, 1.0f);
+			D3DDevice::SetVertexData4f(D3DVSDE_VERTEX,    (float)desc.Width, (float)desc.Height, 0.0f, 0.0f);
+			D3DDevice::SetVertexData2f(D3DVSDE_TEXCOORD0, 0.0f, 1.0f);
+			D3DDevice::SetVertexData4f(D3DVSDE_VERTEX,    0.0f, (float)desc.Height, 0.0f, 0.0f);
+			D3DDevice::End();
 
-				D3DDevice::SetTexture(0, 0);
+			D3DDevice::SetTexture(0, 0);
 
-				RenderCredits(ActiveList, Gamma, Time, 0.4f);
+			RenderCredits(ActiveList, Gamma, Time, 0.4f);
 
-				D3DDevice::SetRenderTarget(pOldRT, pOldZS);
-				pOldRT->Release();
-				pOldZS->Release();
-				pRenderSurf->Release();
-			}
+			D3DDevice::SetRenderTarget(pOldRT, pOldZS);
+			pOldRT->Release();
+			pOldZS->Release();
+			pRenderSurf->Release();
 
 			D3DDevice::Clear(0, 0, D3DCLEAR_STENCIL | D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
 
 			// Background
-			if (!NoLogo)
-				RenderLogo((float)(Time - LastTime) / 1000.f);
+			RenderLogo((float)(Time - LastTime) / 1000.f);
 
 			LastTime = Time;
 
@@ -1016,8 +1016,7 @@ void RunCredits()
 				}
 				Fonts.clear();
 
-				if (!NoLogo)
-					CleanupLogo();
+				CleanupLogo();
 
 				// clear screen and exit to gui
 				D3DDevice::Clear(0, 0, D3DCLEAR_STENCIL | D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
