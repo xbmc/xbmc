@@ -93,7 +93,7 @@ bool CLangCodeExpander::LookupDVDLangCode(CStdString& desc, const int code)
 		char lang[3];
 		lang[2]=0;
 		lang[1]=(code&255);
-		lang[0]=(code>>8);
+		lang[0]=(code>>8)&255;
 
     return Lookup(desc, lang, ELT_ISO639_1);
 }
