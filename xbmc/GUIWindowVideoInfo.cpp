@@ -36,17 +36,14 @@ CGUIWindowVideoInfo::~CGUIWindowVideoInfo(void)
 }
 
 
-void CGUIWindowVideoInfo::OnKey(const CKey& key)
+void CGUIWindowVideoInfo::OnAction(const CAction &action)
 {
-  if (key.IsButton())
-  {
-    if ( key.GetButtonCode() == KEY_BUTTON_BACK  || key.GetButtonCode() == KEY_REMOTE_BACK)
+	if (action.wID == ACTION_PARENT_MENU)
     {
-      Close();
-      return;
+		Close();
+		return;
     }
-  }
-  CGUIWindow::OnKey(key);
+	CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)

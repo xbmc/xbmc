@@ -1,5 +1,7 @@
-XBMC key mappings:
---------------------------
+XBMC key mappings
+-----------------
+
+You may change these settings for yourself, by editing the keymap.xml file.
 
 general key mappings in GUI:
   page up/down                                  controller: L/R trigger     remote    : REVERSE/FORWARD
@@ -31,7 +33,7 @@ Keymappings when playing movies:
   
 My Pictures when viewing a slideshow or picture:
   move when in zoom mode                        controller: DPAD            remote    : use up/down/left/right or thumbstick left
-  next/prev picture                             controller: DPAD L/R        remote    : use left/right
+  next/prev picture                             controller: triggers        remote    : skip- and skip+
   show file info                                controller: black           remote    : info
   pause/continue                                controller: start           remote    : pause
   zoom out                                      controller: X               remote    : 0-9

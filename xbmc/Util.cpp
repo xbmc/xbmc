@@ -1084,7 +1084,8 @@ RESOLUTION	CUtil::GetResolution(D3DPRESENT_PARAMETERS &params)
 	bool bWidescreen = (params.Flags & D3DPRESENTFLAG_WIDESCREEN) != 0;
 	bool bPAL = (XGetVideoStandard()==XC_VIDEO_STANDARD_PAL_I);
 
-	if (iWidth==resInfo[HDTV_1080i].iWidth && iHeight==resInfo[HDTV_1080i].iHeight) return HDTV_1080i;
+	// Remember 1080i == 540p, so multiply resInfo[].iHeight by 2
+	if (iWidth==resInfo[HDTV_1080i].iWidth && iHeight==resInfo[HDTV_1080i].iHeight*2) return HDTV_1080i;
 	if (iWidth==resInfo[HDTV_720p].iWidth && iHeight==resInfo[HDTV_720p].iHeight) return HDTV_720p;
 
 	if (!bPAL)

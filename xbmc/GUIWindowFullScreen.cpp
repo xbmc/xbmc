@@ -23,9 +23,9 @@ CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
 }
 
 
-void CGUIWindowFullScreen::OnKey(const CKey& key)
+void CGUIWindowFullScreen::OnAction(const CAction &action)
 {
-	if ( key.GetButtonCode() == KEY_BUTTON_START  || key.GetButtonCode() == KEY_REMOTE_DISPLAY)
+	if (action.wID == ACTION_ASPECT_RATIO)
 	{
 		m_bShowStatus=true;
 		m_dwLastTime=timeGetTime();
@@ -52,62 +52,49 @@ void CGUIWindowFullScreen::OnKey(const CKey& key)
 		return;
 
 	}
-
-	if ( key.IsButton() )
+	switch (action.wID)
 	{
-		switch (key.GetButtonCode() )
-		{
-			case KEY_BUTTON_DPAD_LEFT:
-			case KEY_REMOTE_LEFT:
-				g_application.m_pPlayer->Seek(false,false);
-			break;
+		case ACTION_STEP_BACK:
+			g_application.m_pPlayer->Seek(false,false);
+		break;
 
-			case KEY_BUTTON_DPAD_RIGHT:
-			case KEY_REMOTE_RIGHT:
-				g_application.m_pPlayer->Seek(true,false);
-			break;
+		case ACTION_STEP_FORWARD:
+			g_application.m_pPlayer->Seek(true,false);
+		break;
 
+		case ACTION_BIG_STEP_BACK:
+			g_application.m_pPlayer->Seek(false,true);
+		break;
+
+		case ACTION_BIG_STEP_FORWARD:
+			g_application.m_pPlayer->Seek(true,true);
+		break;
+
+		case ACTION_SHOW_OSD:
+			g_application.m_pPlayer->ToggleOSD();
+		break;
 			
-			case KEY_BUTTON_DPAD_UP:
-			case KEY_REMOTE_UP:
-				g_application.m_pPlayer->Seek(true,true);
-			break;
+		case ACTION_SHOW_SUBTITLES:
+			g_application.m_pPlayer->ToggleSubtitles();
+		break;
 
-			case KEY_BUTTON_DPAD_DOWN:
-			case KEY_REMOTE_DOWN:
-				g_application.m_pPlayer->Seek(false,true);
-			break;
+		case ACTION_SHOW_CODEC:
+			m_bShowInfo = !m_bShowInfo;
+		break;
 
-			case KEY_BUTTON_BLACK:
-			case KEY_REMOTE_INFO:
-				g_application.m_pPlayer->ToggleOSD();
-			break;
-				
-			case KEY_BUTTON_WHITE:
-			case KEY_REMOTE_TITLE:
-				g_application.m_pPlayer->ToggleSubtitles();
-			break;
+		case ACTION_NEXT_SUBTITLE:
+			g_application.m_pPlayer->SwitchToNextLanguage();
+		break;
 
-			case KEY_BUTTON_A:
-				g_application.m_pPlayer->closefile();
-			break;
+		case ACTION_STOP:
+			g_application.m_pPlayer->closefile();
+		break;
 
-			case KEY_BUTTON_BACK:
-				g_application.m_pPlayer->Pause();
-			break;
-
-			
-			case KEY_BUTTON_Y:
-				m_bShowInfo = !m_bShowInfo;
-			break;
-
-			case KEY_BUTTON_B:
-				g_application.m_pPlayer->SwitchToNextLanguage();
-			break;
-
-		}
+		case ACTION_PAUSE:
+			g_application.m_pPlayer->Pause();
+		break;
 	}
-  CGUIWindow::OnKey(key);
+	CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)

@@ -11,17 +11,14 @@ CGUIWindowSettings::~CGUIWindowSettings(void)
 }
 
 
-void CGUIWindowSettings::OnKey(const CKey& key)
+void CGUIWindowSettings::OnAction(const CAction &action)
 {
-  if (key.IsButton())
-  {
-    if ( key.GetButtonCode() == KEY_BUTTON_BACK  || key.GetButtonCode() == KEY_REMOTE_BACK)
+	if (action.wID == ACTION_PARENT_MENU)
     {
-      m_gWindowManager.ActivateWindow(0); // back 2 home
-      return;
+		m_gWindowManager.ActivateWindow(WINDOW_HOME); // back 2 home
+		return;
     }
-  }
-  CGUIWindow::OnKey(key);
+	CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowSettings::OnMessage(CGUIMessage& message)

@@ -61,45 +61,37 @@ void CGUITextBox::Render()
 	m_upDown.Render();
 }
 
-void CGUITextBox::OnKey(const CKey& key)
+void CGUITextBox::OnAction(const CAction &action)
 {
-  if (!key.IsButton() ) return;
-
-  switch (key.GetButtonCode())
+  switch (action.wID)
   {
-    case KEY_REMOTE_REVERSE:
-    case KEY_BUTTON_LEFT_TRIGGER:
+    case ACTION_PAGE_UP:
       OnPageUp();
     break;
 
-    case KEY_REMOTE_FORWARD:
-    case KEY_BUTTON_RIGHT_TRIGGER:
+    case ACTION_PAGE_DOWN:
       OnPageDown();
     break;
 
-    case KEY_REMOTE_DOWN:
-    case KEY_BUTTON_DPAD_DOWN:
+    case ACTION_MOVE_DOWN:
     {
       OnDown();
     }
     break;
     
-    case KEY_REMOTE_UP:
-    case KEY_BUTTON_DPAD_UP:
+    case ACTION_MOVE_UP:
     {
       OnUp();
     }
     break;
 
-    case KEY_REMOTE_LEFT:
-    case KEY_BUTTON_DPAD_LEFT:
+    case ACTION_MOVE_LEFT:
     {
       OnLeft();
     }
     break;
 
-    case KEY_REMOTE_RIGHT:
-    case KEY_BUTTON_DPAD_RIGHT:
+    case ACTION_MOVE_RIGHT:
     {
       OnRight();
     }
@@ -107,7 +99,7 @@ void CGUITextBox::OnKey(const CKey& key)
 
     default:
     {
-        m_upDown.OnKey(key);
+        m_upDown.OnAction(action);
     }
   }
 }
@@ -195,41 +187,49 @@ void CGUITextBox::FreeResources()
 
 void CGUITextBox::OnRight()
 {
-  CKey key(true,KEY_BUTTON_DPAD_RIGHT);
-  m_upDown.OnKey(key);
+  CKey key(KEY_BUTTON_DPAD_RIGHT);
+  CAction action;
+  action.wID = ACTION_MOVE_RIGHT;
+  m_upDown.OnAction(action);
   if (!m_upDown.HasFocus()) 
   {
-    CGUIControl::OnKey(key);
+    CGUIControl::OnAction(action);
   }
 }
 
 void CGUITextBox::OnLeft()
 {
-  CKey key(true,KEY_BUTTON_DPAD_LEFT);
-  m_upDown.OnKey(key);
+  CKey key(KEY_BUTTON_DPAD_LEFT);
+  CAction action;
+  action.wID = ACTION_MOVE_LEFT;
+  m_upDown.OnAction(action);
   if (!m_upDown.HasFocus()) 
   {
-    CGUIControl::OnKey(key);
+    CGUIControl::OnAction(action);
   }
 }
 
 void CGUITextBox::OnUp()
 {
-  CKey key(true,KEY_BUTTON_DPAD_UP);
-  m_upDown.OnKey(key);
+  CKey key(KEY_BUTTON_DPAD_UP);
+  CAction action;
+  action.wID = ACTION_MOVE_UP;
+  m_upDown.OnAction(action);
   if (!m_upDown.HasFocus()) 
   {
-    CGUIControl::OnKey(key);
+    CGUIControl::OnAction(action);
   }
 }
 
 void CGUITextBox::OnDown()
 {
-  CKey key(true,KEY_BUTTON_DPAD_DOWN);
-  m_upDown.OnKey(key);
+  CKey key(KEY_BUTTON_DPAD_DOWN);
+  CAction action;
+  action.wID = ACTION_MOVE_DOWN;
+  m_upDown.OnAction(action);
   if (!m_upDown.HasFocus()) 
   {
-    CGUIControl::OnKey(key);
+    CGUIControl::OnAction(action);
   }  
 }
 

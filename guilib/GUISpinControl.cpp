@@ -31,65 +31,62 @@ CGUISpinControl::~CGUISpinControl(void)
 }
 
 
-void CGUISpinControl::OnKey(const CKey& key)
+void CGUISpinControl::OnAction(const CAction &action)
 {
-  if (key.IsButton() )
-  {
-    if (key.GetButtonCode() == KEY_BUTTON_DPAD_LEFT)
+    if (action.wID == ACTION_MOVE_LEFT)
     {
-      if (m_iSelect==SPIN_BUTTON_UP) 
-      {
-				if (m_bReverse)
-				{
-					if (CanMoveUp() )
-						m_iSelect=SPIN_BUTTON_DOWN;
-				}
-				else
-				{
-					if (CanMoveDown() )
-						m_iSelect=SPIN_BUTTON_DOWN;
-				}
-        return;
-      }
+		if (m_iSelect==SPIN_BUTTON_UP) 
+		{
+					if (m_bReverse)
+					{
+						if (CanMoveUp() )
+							m_iSelect=SPIN_BUTTON_DOWN;
+					}
+					else
+					{
+						if (CanMoveDown() )
+							m_iSelect=SPIN_BUTTON_DOWN;
+					}
+			return;
+		}
     }
-    if (key.GetButtonCode() == KEY_BUTTON_DPAD_RIGHT)
+    if (action.wID == ACTION_MOVE_RIGHT)
     {
-      if (m_iSelect==SPIN_BUTTON_DOWN) 
-      {
-				if (m_bReverse)
-				{
-					if (CanMoveDown() )
-						m_iSelect=SPIN_BUTTON_UP;
-				}
-				else
-				{
-					if (CanMoveUp() )
-						m_iSelect=SPIN_BUTTON_UP;
-				}
-        return;
-      }
+		if (m_iSelect==SPIN_BUTTON_DOWN) 
+		{
+					if (m_bReverse)
+					{
+						if (CanMoveDown() )
+							m_iSelect=SPIN_BUTTON_UP;
+					}
+					else
+					{
+						if (CanMoveUp() )
+							m_iSelect=SPIN_BUTTON_UP;
+					}
+			return;
+		}
     }
-    if (key.GetButtonCode()==KEY_BUTTON_A || key.GetButtonCode() == KEY_REMOTE_SELECT)
+    if (action.wID == ACTION_SELECT_ITEM)
     {
-			if (m_iSelect==SPIN_BUTTON_UP)
-			{
-				if (m_bReverse)
-					MoveDown();
-				else
-					MoveUp();
-				return;
-			}
-			if (m_iSelect==SPIN_BUTTON_DOWN)
-			{
-				if (m_bReverse)
-					MoveUp();
-				else
-					MoveDown();
-				return;
-			}
+		if (m_iSelect==SPIN_BUTTON_UP)
+		{
+			if (m_bReverse)
+				MoveDown();
+			else
+				MoveUp();
+			return;
+		}
+		if (m_iSelect==SPIN_BUTTON_DOWN)
+		{
+			if (m_bReverse)
+				MoveUp();
+			else
+				MoveDown();
+			return;
+		}
     }
-  }
-  CGUIControl::OnKey(key);
+	CGUIControl::OnAction(action);
 }
 
 

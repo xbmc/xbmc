@@ -11,7 +11,7 @@ public:
   virtual ~CGUIWindowPrograms(void);
   virtual bool    OnMessage(CGUIMessage& message);
   virtual void    Render();
-  virtual void    OnKey(const CKey& key);
+  virtual void    OnAction(const CAction &action);
 protected:
   
 	void						OnScan(VECFILEITEMS& items, int& iTotalAppsFound)  ;

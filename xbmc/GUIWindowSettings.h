@@ -8,6 +8,6 @@ public:
   CGUIWindowSettings(void);
   virtual ~CGUIWindowSettings(void);
   virtual bool    OnMessage(CGUIMessage& message);
-  virtual void    OnKey(const CKey& key);
+  virtual void    OnAction(const CAction &action);
 
 };

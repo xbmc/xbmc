@@ -49,20 +49,16 @@ CGUIWindowVisualisation::~CGUIWindowVisualisation(void)
 }
 
 
-void CGUIWindowVisualisation::OnKey(const CKey& key)
+void CGUIWindowVisualisation::OnAction(const CAction &action)
 {
-	if ( key.IsButton() )
+	switch (action.wID)
 	{
-		switch (key.GetButtonCode() )
-		{
-			case KEY_BUTTON_X:
-			case KEY_REMOTE_DISPLAY:
-				// back 2 UI
-				m_gWindowManager.ActivateWindow(0); // back 2 home
+		case ACTION_SHOW_GUI:
+			// back 2 UI
+			m_gWindowManager.ActivateWindow(WINDOW_HOME); // back 2 home
 			break;
-		}
 	}
-  CGUIWindow::OnKey(key);
+	CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)

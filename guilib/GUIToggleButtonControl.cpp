@@ -68,25 +68,22 @@ void CGUIToggleButtonControl::Render()
 
 }
 
-void CGUIToggleButtonControl::OnKey(const CKey& key) 
+void CGUIToggleButtonControl::OnAction(const CAction &action) 
 {
-  CGUIControl::OnKey(key);
-  if ( key.IsButton() )
-  {
-    if (key.GetButtonCode() == KEY_BUTTON_A || key.GetButtonCode() == KEY_REMOTE_SELECT)
+	CGUIControl::OnAction(action);
+	if (action.wID == ACTION_SELECT_ITEM)
     {
-      m_bSelected=!m_bSelected;
-      if (m_lHyperLinkWindowID >=0)
-      {
-        m_gWindowManager.ActivateWindow(m_lHyperLinkWindowID);
-        return;
-      }
-      // button selected.
-      // send a message
-      CGUIMessage message(GUI_MSG_CLICKED,GetID(), GetParentID() );
-      g_graphicsContext.SendMessage(message);
+		m_bSelected=!m_bSelected;
+		if (m_lHyperLinkWindowID >=0)
+		{
+			m_gWindowManager.ActivateWindow(m_lHyperLinkWindowID);
+			return;
+		}
+		// button selected.
+		// send a message
+		CGUIMessage message(GUI_MSG_CLICKED,GetID(), GetParentID() );
+		g_graphicsContext.SendMessage(message);
     }
-  }
 }
 
 bool CGUIToggleButtonControl::OnMessage(CGUIMessage& message)

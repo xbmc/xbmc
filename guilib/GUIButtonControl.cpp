@@ -61,24 +61,21 @@ void CGUIButtonControl::Render()
 
 }
 
-void CGUIButtonControl::OnKey(const CKey& key) 
+void CGUIButtonControl::OnAction(const CAction &action) 
 {
-  CGUIControl::OnKey(key);
-  if ( key.IsButton() )
-  {
-    if (key.GetButtonCode() == KEY_BUTTON_A || key.GetButtonCode() == KEY_REMOTE_SELECT)
-    {
-      if (m_lHyperLinkWindowID >=0)
-      {
-        m_gWindowManager.ActivateWindow(m_lHyperLinkWindowID);
-        return;
-      }
-      // button selected.
-      // send a message
-      CGUIMessage message(GUI_MSG_CLICKED,GetID(), GetParentID() );
-      g_graphicsContext.SendMessage(message);
+	CGUIControl::OnAction(action);
+	if (action.wID == ACTION_SELECT_ITEM)
+	{
+		if (m_lHyperLinkWindowID >=0)
+		{
+			m_gWindowManager.ActivateWindow(m_lHyperLinkWindowID);
+			return;
+		}
+		// button selected.
+		// send a message
+		CGUIMessage message(GUI_MSG_CLICKED,GetID(), GetParentID() );
+		g_graphicsContext.SendMessage(message);
     }
-  }
 }
 
 bool CGUIButtonControl::OnMessage(CGUIMessage& message)

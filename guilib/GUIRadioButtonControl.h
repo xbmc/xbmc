@@ -8,7 +8,7 @@ public:
   CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus, const CStdString& strRadioFocus,const CStdString& strRadioNoFocus);
   virtual ~CGUIRadioButtonControl(void);
   virtual void Render();
-  virtual void OnKey(const CKey& key) ;
+  virtual void OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);
   virtual void AllocResources();
   virtual void FreeResources();

@@ -29,16 +29,13 @@ void CGUIRadioButtonControl::Render()
   }
 }
 
-void CGUIRadioButtonControl::OnKey(const CKey& key) 
+void CGUIRadioButtonControl::OnAction(const CAction &action) 
 {
-  CGUIButtonControl::OnKey(key);
-  if ( key.IsButton() )
-  {
-    if (key.GetButtonCode() == KEY_BUTTON_A || key.GetButtonCode() == KEY_REMOTE_SELECT)
-    {
-      m_bSelected=!m_bSelected;
-    }
-  }
+	CGUIButtonControl::OnAction(action);
+	if (action.wID == ACTION_SELECT_ITEM)
+	{
+		m_bSelected=!m_bSelected;
+	}
 }
 
 bool CGUIRadioButtonControl::OnMessage(CGUIMessage& message)

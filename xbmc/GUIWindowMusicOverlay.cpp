@@ -30,9 +30,9 @@ CGUIWindowMusicOverlay::~CGUIWindowMusicOverlay()
 }
 
 
-void CGUIWindowMusicOverlay::OnKey(const CKey& key)
+void CGUIWindowMusicOverlay::OnAction(const CAction &action)
 {
-  CGUIWindow::OnKey(key);
+  CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowMusicOverlay::OnMessage(CGUIMessage& message)

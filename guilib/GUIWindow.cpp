@@ -143,7 +143,7 @@ void CGUIWindow::Render()
   }
 }
 
-void CGUIWindow::OnKey(const CKey& key)
+void CGUIWindow::OnAction(const CAction &action)
 {
   ivecControls i;
   for (i=m_vecControls.begin();i != m_vecControls.end(); ++i)
@@ -151,7 +151,7 @@ void CGUIWindow::OnKey(const CKey& key)
     CGUIControl* pControl= *i;
     if (pControl->HasFocus() )
     {
-      pControl->OnKey(key);
+      pControl->OnAction(action);
       return;
     }
   }

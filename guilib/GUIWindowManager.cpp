@@ -97,16 +97,16 @@ void CGUIWindowManager::ActivateWindow(int iWindowID)
 }
 
 
-void CGUIWindowManager::OnKey(const CKey& key)
+void CGUIWindowManager::OnAction(const CAction &action)
 {
   if (m_pRouteWindow)
   {
-    m_pRouteWindow->OnKey(key);
+    m_pRouteWindow->OnAction(action);
     return;
   }
   if (m_iActiveWindow < 0) return;
   CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
-  if (pWindow) pWindow->OnKey(key);
+  if (pWindow) pWindow->OnAction(action);
 }
 
 void CGUIWindowManager::Render()

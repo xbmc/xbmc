@@ -192,46 +192,38 @@ void CGUIThumbnailPanel::Render()
 	}
 }
 
-void CGUIThumbnailPanel::OnKey(const CKey& key)
+void CGUIThumbnailPanel::OnAction(const CAction &action)
 {
-  if (!key.IsButton() ) return;
-
-  switch (key.GetButtonCode())
+  switch (action.wID)
   {
-		case KEY_REMOTE_REVERSE:
-    case KEY_BUTTON_LEFT_TRIGGER:
+	case ACTION_PAGE_UP:
       OnPageUp();
     break;
 
-    case KEY_REMOTE_FORWARD:
-    case KEY_BUTTON_RIGHT_TRIGGER:
+    case ACTION_PAGE_DOWN:
       OnPageDown();
     break;
 
 
-    case KEY_REMOTE_DOWN:
-    case KEY_BUTTON_DPAD_DOWN:
+    case ACTION_MOVE_DOWN:
     {
       OnDown();
     }
     break;
     
-    case KEY_REMOTE_UP:
-    case KEY_BUTTON_DPAD_UP:
+    case ACTION_MOVE_UP:
     {
       OnUp();
     }
     break;
 
-    case KEY_REMOTE_LEFT:
-    case KEY_BUTTON_DPAD_LEFT:
+    case ACTION_MOVE_LEFT:
     {
       OnLeft();
     }
     break;
 
-    case KEY_REMOTE_RIGHT:
-    case KEY_BUTTON_DPAD_RIGHT:
+    case ACTION_MOVE_RIGHT:
     {
       OnRight();
     }
@@ -241,12 +233,12 @@ void CGUIThumbnailPanel::OnKey(const CKey& key)
     {
       if (m_iSelect==CONTROL_LIST)
       {
-          CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(),key.GetButtonCode());
+          CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.wID);
           g_graphicsContext.SendMessage(msg);
       }
       else
       {
-        m_upDown.OnKey(key);
+        m_upDown.OnAction(action);
       }
     }
   }
@@ -371,7 +363,9 @@ bool CGUIThumbnailPanel::ValidItem(int iX, int iY)
 }
 void CGUIThumbnailPanel::OnRight()
 {
-  CKey key(true,KEY_BUTTON_DPAD_RIGHT);
+  CKey key(KEY_BUTTON_DPAD_RIGHT);
+  CAction action;
+  action.wID = ACTION_MOVE_RIGHT;
   if (m_iSelect==CONTROL_LIST) 
   {
     if (m_iCursorX+1 < m_iColumns && ValidItem(m_iCursorX+1,m_iCursorY) )
@@ -385,17 +379,19 @@ void CGUIThumbnailPanel::OnRight()
   }
   else
   {
-    m_upDown.OnKey(key);
+    m_upDown.OnAction(action);
     if (!m_upDown.HasFocus()) 
     {
-      CGUIControl::OnKey(key);
+      CGUIControl::OnAction(action);
     }
   }
 }
 
 void CGUIThumbnailPanel::OnLeft()
 {
-  CKey key(true,KEY_BUTTON_DPAD_LEFT);
+  CKey key(KEY_BUTTON_DPAD_LEFT);
+  CAction action;
+  action.wID = ACTION_MOVE_LEFT;
   if (m_iSelect==CONTROL_LIST) 
   {
     if (m_iCursorX > 0) 
@@ -403,11 +399,11 @@ void CGUIThumbnailPanel::OnLeft()
       m_iCursorX--;
       return;
     }
-    CGUIControl::OnKey(key);
+    CGUIControl::OnAction(action);
   }
   else
   {
-    m_upDown.OnKey(key);
+    m_upDown.OnAction(action);
     if (!m_upDown.HasFocus()) 
     {
       m_iSelect=CONTROL_LIST;
@@ -417,7 +413,9 @@ void CGUIThumbnailPanel::OnLeft()
 
 void CGUIThumbnailPanel::OnUp()
 {
-  CKey key(true,KEY_BUTTON_DPAD_UP);
+  CKey key(KEY_BUTTON_DPAD_UP);
+  CAction action;
+  action.wID = ACTION_MOVE_UP;
   if (m_iSelect==CONTROL_LIST) 
   {
 		if (m_bScrollUp)
@@ -441,12 +439,12 @@ void CGUIThumbnailPanel::OnUp()
     }
     else
     {
-      return CGUIControl::OnKey(key);
+      return CGUIControl::OnAction(action);
     }
   }
   else
   {
-    m_upDown.OnKey(key);
+    m_upDown.OnAction(action);
     if (!m_upDown.HasFocus()) 
     {
       m_iSelect=CONTROL_LIST;
@@ -456,7 +454,9 @@ void CGUIThumbnailPanel::OnUp()
 
 void CGUIThumbnailPanel::OnDown()
 {
-  CKey key(true,KEY_BUTTON_DPAD_DOWN);
+  CKey key(KEY_BUTTON_DPAD_DOWN);
+  CAction action;
+  action.wID = ACTION_MOVE_DOWN;
   if (m_iSelect==CONTROL_LIST) 
   {
 		if (m_bScrollDown)
@@ -497,10 +497,10 @@ void CGUIThumbnailPanel::OnDown()
   }
   else
   {
-    m_upDown.OnKey(key);
+    m_upDown.OnAction(action);
     if (!m_upDown.HasFocus()) 
     {
-      CGUIControl::OnKey(key);
+      CGUIControl::OnAction(action);
     }  
   }
 }

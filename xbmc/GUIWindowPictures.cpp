@@ -103,34 +103,34 @@ CGUIWindowPictures::~CGUIWindowPictures(void)
 {
 }
 
-void CGUIWindowPictures::OnKey(const CKey& key)
+void CGUIWindowPictures::OnAction(const CAction &action)
 {
-  if (m_slideShow.IsPlaying() )
-  {
-    m_slideShow.OnKey(key);
+	if (m_slideShow.IsPlaying())
+	{
+		// Get a new action, as we're using a different window now
+		CAction newAction;
+		g_buttonTranslator.ReGetAction(12, newAction);
+		m_slideShow.OnAction(newAction);
 		if (!m_slideShow.IsPlaying())
 		{
 			g_application.EnableOverlay();
 		}
-    return;
-  }
-  else
-  {
-    if (key.IsButton())
-    {
-			if ( key.GetButtonCode() == KEY_BUTTON_B )
-			{
-				GoParentFolder();
-				return;
-			}
-      if ( key.GetButtonCode() == KEY_BUTTON_BACK  || key.GetButtonCode() == KEY_REMOTE_BACK)
-      {
-        m_gWindowManager.ActivateWindow(0); // back 2 home
-        return;
-      }
+		return;
+	}
+	else
+	{
+		if (action.wID == ACTION_PARENT_DIR)
+		{
+			GoParentFolder();
+			return;
+		}
+		if (action.wID == ACTION_PARENT_MENU)
+		{
+			m_gWindowManager.ActivateWindow(WINDOW_HOME); // back 2 home
+			return;
+		}
     }
-  }
-  CGUIWindow::OnKey(key);
+	CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
@@ -261,8 +261,11 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
         g_graphicsContext.SendMessage(msg);         
         int iItem=msg.GetParam1();
-        OnClick(iItem);
-        
+		int iAction=message.GetParam1();
+		if (iAction==ACTION_SELECT_ITEM)
+		{
+			OnClick(iItem);
+		}
       }
     }
     break;

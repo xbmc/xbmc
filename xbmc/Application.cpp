@@ -98,6 +98,9 @@ HRESULT CApplication::Create()
 	CStdString strLanguagePath;
 	strLanguagePath.Format("%s\\language\\%s\\strings.xml", strPath.c_str(),g_stSettings.szDefaultLanguage);
 	g_localizeStrings.Load(strLanguagePath );
+	// HACK FOR BUTTON MAPPING
+	g_buttonTranslator.Load();
+	// END HACK
 
 	DWORD dwStandard=XGetVideoStandard();
 	DWORD dwFlags=XGetVideoFlags();
@@ -409,9 +412,15 @@ void CApplication::Render()
 
 void CApplication::OnKey(CKey& key)
 {
+	// get the current window to send to
+	int iWin = m_gWindowManager.GetActiveWindow();
+	// now translate our key into an action id (Transfer into button translator!!)
+	CAction action;
+	g_buttonTranslator.GetAction(iWin, key, action);
+
 	if ( IsPlayingVideo() )
 	{
-		if ( key.GetButtonCode() == KEY_BUTTON_X  || key.GetButtonCode() == KEY_REMOTE_MENU)
+		if (action.wID == ACTION_SHOW_GUI)
 		{
 			// switch between fullscreen & normal video screen
 			g_TextureManager.Flush();
@@ -427,7 +436,9 @@ void CApplication::OnKey(CKey& key)
 		}
 		if (g_graphicsContext.IsFullScreenVideo())
 		{
-			m_guiWindowFullScreen.OnKey(key);
+			// get the new action for the FullScreenVideo window
+			g_buttonTranslator.ReGetAction(WINDOW_FULLSCREEN_VIDEO, action);
+			m_guiWindowFullScreen.OnAction(action);
 			return;
 		}
 	}
@@ -435,80 +446,107 @@ void CApplication::OnKey(CKey& key)
 	{
 		if (IsPlayingAudio() )
 		{
-			if ( key.GetButtonCode() == KEY_BUTTON_X  || key.GetButtonCode() == KEY_REMOTE_MENU)
+			if (action.wID == ACTION_SHOW_GUI)
 			{
-				if (m_gWindowManager.GetActiveWindow()==2006)
+				if (m_gWindowManager.GetActiveWindow()==WINDOW_VISUALISATION)
 				{
-					m_gWindowManager.ActivateWindow(0);//home.
+					m_gWindowManager.ActivateWindow(WINDOW_HOME);//home.
 				}	
 				else
 				{
-					m_gWindowManager.ActivateWindow(2006);//visz.
+					m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);//visz.
 				}
 				return;
 			}
 		}
 	}
-	m_gWindowManager.OnKey(key);   
+	m_gWindowManager.OnAction(action);
+
+	// handle extra global presses (FIXME)
+	if (action.wID == ACTION_PAUSE)
+	{
+		m_pPlayer->Pause();
+	}
+	if (action.wID == ACTION_STOP)
+	{
+		m_pPlayer->closefile();
+	}
+	if (action.wID == ACTION_PREV_ITEM)
+	{
+		g_playlistPlayer.PlayPrevious();
+	}
+	if (action.wID == ACTION_NEXT_ITEM)
+	{
+		g_playlistPlayer.PlayNext();
+	}
 }
 
 void CApplication::FrameMove()
 {
-  ReadInput();
+	ReadInput();
 	XBIR_REMOTE* pRemote	= &m_DefaultIR_Remote;
-  XBGAMEPAD*  pGamepad	= &m_DefaultGamepad;
+	XBGAMEPAD*  pGamepad	= &m_DefaultGamepad;
 
 	WORD wButtons = pGamepad->wButtons;
 	WORD wRemotes = pRemote->wPressedButtons;
 	WORD wDpad = wButtons&(XINPUT_GAMEPAD_DPAD_UP|XINPUT_GAMEPAD_DPAD_DOWN|XINPUT_GAMEPAD_DPAD_LEFT|XINPUT_GAMEPAD_DPAD_RIGHT);
+
+	BYTE bLeftTrigger = pGamepad->bAnalogButtons[XINPUT_GAMEPAD_LEFT_TRIGGER];
+	BYTE bRightTrigger = pGamepad->bAnalogButtons[XINPUT_GAMEPAD_RIGHT_TRIGGER];
 	
-	WORD wDir = m_ctrDpad.DpadInput(wDpad,0!=pGamepad->bAnalogButtons[XINPUT_GAMEPAD_LEFT_TRIGGER],0!=pGamepad->bAnalogButtons[XINPUT_GAMEPAD_RIGHT_TRIGGER]);
-
-
+	WORD wDir = m_ctrDpad.DpadInput(wDpad,0!=bLeftTrigger,0!=bRightTrigger);
 	wRemotes=m_ctrIR.IRInput(wRemotes);
 
 	bool bGotKey=false;
 
-	if ( pGamepad->fX1 || pGamepad->fY1 || pGamepad->fX2 || pGamepad->fY2)
+	if (pGamepad->fX1 || pGamepad->fY1)
 	{
-    CKey key(false,KEY_INVALID,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
-    OnKey(key);   
+		bGotKey=true;
+		CKey key(KEY_BUTTON_LEFT_THUMB_STICK,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+		OnKey(key);   
+	}
+
+	if (pGamepad->fX2 || pGamepad->fY2)
+	{
+		bGotKey=true;
+		CKey key(KEY_BUTTON_RIGHT_THUMB_STICK,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+		OnKey(key);   
 	}
 
 	if ( wDir & DC_LEFTTRIGGER)
   {
 		bGotKey=true;
-    CKey key(true,KEY_BUTTON_LEFT_TRIGGER,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+    CKey key(KEY_BUTTON_LEFT_TRIGGER,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
   if ( wDir & DC_RIGHTTRIGGER)
   {
 		bGotKey=true;
-    CKey key(true,KEY_BUTTON_RIGHT_TRIGGER,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+    CKey key(KEY_BUTTON_RIGHT_TRIGGER,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
   if ( wDir & DC_LEFT )
   {
 		bGotKey=true;
-    CKey key(true,KEY_BUTTON_DPAD_LEFT,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+    CKey key(KEY_BUTTON_DPAD_LEFT,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
   if ( wDir & DC_RIGHT)
   {
 		bGotKey=true;
-    CKey key(true,KEY_BUTTON_DPAD_RIGHT,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+    CKey key(KEY_BUTTON_DPAD_RIGHT,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
   if ( wDir & DC_UP )
   {
 		bGotKey=true;
-    CKey key(true,KEY_BUTTON_DPAD_UP,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+    CKey key(KEY_BUTTON_DPAD_UP,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
   if ( wDir & DC_DOWN )
   {
 		bGotKey=true;
-    CKey key(true,KEY_BUTTON_DPAD_DOWN,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+    CKey key(KEY_BUTTON_DPAD_DOWN,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
 
@@ -516,13 +554,13 @@ void CApplication::FrameMove()
 	if ( pGamepad->wPressedButtons & XINPUT_GAMEPAD_BACK )
   {
 		bGotKey=true;
-    CKey key(true,KEY_BUTTON_BACK,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+    CKey key(KEY_BUTTON_BACK,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
 	if ( pGamepad->wPressedButtons & XINPUT_GAMEPAD_START)
   {
 		bGotKey=true;
-    CKey key(true,KEY_BUTTON_START,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+    CKey key(KEY_BUTTON_START,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
 
@@ -530,263 +568,57 @@ void CApplication::FrameMove()
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_A])
   {
 		bGotKey=true;
-    CKey key(true,KEY_BUTTON_A,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+    CKey key(KEY_BUTTON_A,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   }
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_B])
   {
 		bGotKey=true;
-    CKey key(true,KEY_BUTTON_B,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+    CKey key(KEY_BUTTON_B,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);
   }
   
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_X])
   {
 		bGotKey=true;
-    CKey key(true,KEY_BUTTON_X,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+    CKey key(KEY_BUTTON_X,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);
 		
   }
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_Y])
   {
 		bGotKey=true;
-    CKey key(true,KEY_BUTTON_Y,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+    CKey key(KEY_BUTTON_Y,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   } 
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_BLACK])
   {
 		bGotKey=true;
-    CKey key(true,KEY_BUTTON_BLACK,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+    CKey key(KEY_BUTTON_BLACK,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   } 
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_WHITE])
   {
 		bGotKey=true;
-    CKey key(true,KEY_BUTTON_WHITE,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+    CKey key(KEY_BUTTON_WHITE,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
     OnKey(key);   
   } 
 	
   switch (wRemotes)
 	{
-		case DC_LEFTTRIGGER:
+		// 0 is invalid
+		case 0:
+			break;
+		// Map all other keys unchanged
+		default:
 		{
 			bGotKey=true;
-			CKey key(true,KEY_BUTTON_LEFT_TRIGGER,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+			CKey key(wRemotes);
 			OnKey(key);   
+			break;
 		}
-		break;
-		case DC_RIGHTTRIGGER:
-		{
-			bGotKey=true;
-			CKey key(true,KEY_BUTTON_RIGHT_TRIGGER,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
-			OnKey(key);   
-		}
-		break;
-
-		case DC_LEFT:
-		{
-			bGotKey=true;
-			CKey key(true,KEY_BUTTON_DPAD_LEFT,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
-			OnKey(key);   
-		}
-		break;
-		case DC_RIGHT:
-		{
-			bGotKey=true;
-			CKey key(true,KEY_BUTTON_DPAD_RIGHT,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
-			OnKey(key);   
-		}
-		break;
-		
-		case DC_UP:
-		{
-			bGotKey=true;
-			CKey key(true,KEY_BUTTON_DPAD_UP,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
-			OnKey(key);   
-		}
-		break;
-
-		case DC_DOWN:
-		{
-			bGotKey=true;
-			CKey key(true,KEY_BUTTON_DPAD_DOWN,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
-			OnKey(key);   
-		}
-		break;
-
-		case DC_REMOTE_MENU:
-    {
-			bGotKey=true;
-		  CKey key(true,KEY_REMOTE_MENU);
-      OnKey(key);   
-		  break;
-    }
-		case DC_REMOTE_BACK:
-    {
-			bGotKey=true;
-		  CKey key(true,KEY_REMOTE_BACK);
-      OnKey(key);   
-		  break;
-    }
-		case DC_REMOTE_SELECT:
-    {
-			bGotKey=true;
-		  CKey key(true,KEY_REMOTE_SELECT);
-      OnKey(key);   
-		  break;
-    }
-		case DC_REMOTE_DISPLAY:
-    {
-			bGotKey=true;
-		  CKey key(true,KEY_REMOTE_DISPLAY);
-      OnKey(key);   
-		  break;
-    }
-		case DC_REMOTE_TITLE:
-    {
-			bGotKey=true;
-		  CKey key(true,KEY_REMOTE_TITLE);
-      OnKey(key);   
-		  break;
-    }
-		case DC_REMOTE_INFO:
-    {
-			bGotKey=true;
-		  CKey key(true,KEY_REMOTE_INFO);
-      OnKey(key);   
-		  break;
-    }
-		case DC_REMOTE_PLAY:
-    {
-			bGotKey=true;
-		  CKey key(true,KEY_REMOTE_PLAY);
-      OnKey(key);   
-		  break;
-    }
-		case DC_REMOTE_PAUSE:
-    {
-			bGotKey=true;
-		  CKey key(true,KEY_REMOTE_PAUSE);
-      OnKey(key);   
-			if (m_pPlayer)
-			{
-				if (m_pPlayer->IsPlaying() )
-				{
-					m_pPlayer->Pause();
-				}
-			}
-		  break;
-    }
-		case DC_REMOTE_STOP:
-    {
-			bGotKey=true;
-		  CKey key(true,KEY_REMOTE_STOP);
-      OnKey(key);   
-			if (m_pPlayer)
-			{
-				if (m_pPlayer->IsPlaying() )
-				{
-					m_pPlayer->closefile();
-				}
-			}
-		  break;
-    }
-		case DC_REMOTE_SKIP_MINUS:
-    {
-			bGotKey=true;
-		  CKey key(true,KEY_REMOTE_SKIPMINUS);
-      OnKey(key);   
-			if (m_pPlayer && g_playlistPlayer.size() )
-			{
-				g_playlistPlayer.PlayPrevious();
-			}
-		  break;
-    }
-		case DC_REMOTE_SKIP_PLUS:
-    {
-			bGotKey=true;
-		  CKey key(true,KEY_REMOTE_SKIPPLUS);
-      OnKey(key);   
-			if (m_pPlayer && g_playlistPlayer.size() )
-			{
-				g_playlistPlayer.PlayNext();
-			}
-		  break;
-    }
-
-	case DC_REMOTE_0:
-    {
-			bGotKey=true;
-		  CKey key(true,KEY_REMOTE_0);
-      OnKey(key);   
-		  break;
-    }
-    case DC_REMOTE_1:
-    {
-			bGotKey=true;
-		  CKey key(true,KEY_REMOTE_1);
-      OnKey(key);   
-		  break;
-    }
-    case DC_REMOTE_2:
-    {
-			bGotKey=true;
-		  CKey key(true,KEY_REMOTE_2);
-      OnKey(key);   
-		  break;
-    }
-    case DC_REMOTE_3:
-    {
-			bGotKey=true;
-		  CKey key(true,KEY_REMOTE_3);
-      OnKey(key);   
-		  break;
-    }
-    case DC_REMOTE_4:
-    {
-			bGotKey=true;
-		  CKey key(true,KEY_REMOTE_4);
-      OnKey(key);   
-		  break;
-    }
-    case DC_REMOTE_5:
-    {
-			bGotKey=true;
-		  CKey key(true,KEY_REMOTE_5);
-      OnKey(key);   
-		  break;
-    }
-    case DC_REMOTE_6:
-    {
-			bGotKey=true;
-		  CKey key(true,KEY_REMOTE_6);
-      OnKey(key);   
-		  break;
-    }
-    case DC_REMOTE_7:
-    {
-			bGotKey=true;
-		  CKey key(true,KEY_REMOTE_7);
-      OnKey(key);   
-		  break;
-    }
-    case DC_REMOTE_8:
-    {
-			bGotKey=true;
-		  CKey key(true,KEY_REMOTE_8);
-      OnKey(key);   
-		  break;
-    }
-    case DC_REMOTE_9:
-    {
-			bGotKey=true;
-		  CKey key(true,KEY_REMOTE_9);
-      OnKey(key);   
-		  break;
-    }
 	}
 
-	
 	if (bGotKey) 
 	{
 		m_dwSpinDownTime=timeGetTime();
@@ -1019,7 +851,7 @@ void CApplication::SpinHD()
 			{
 				if (g_playlistPlayer.size() ==0 || bTimeOut)
 				{
-					m_gWindowManager.ActivateWindow(0);//home.
+					m_gWindowManager.ActivateWindow(WINDOW_HOME);//home.
 				}
 			}
 

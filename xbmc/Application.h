@@ -44,6 +44,7 @@
 #include "DetectDVDType.h"
 #include "Autorun.h"
 #include "IMsgTargetCallback.h"
+#include "ButtonTranslator.h"
 
 #include <vector>
 #include <memory>

@@ -23,9 +23,9 @@ CGUIWindowVideoOverlay::~CGUIWindowVideoOverlay()
 }
 
 
-void CGUIWindowVideoOverlay::OnKey(const CKey& key)
+void CGUIWindowVideoOverlay::OnAction(const CAction &action)
 {
-  CGUIWindow::OnKey(key);
+  CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowVideoOverlay::OnMessage(CGUIMessage& message)
