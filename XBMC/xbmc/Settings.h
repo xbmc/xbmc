@@ -248,6 +248,7 @@ public:
   int       m_iCacheSizeISO[3];
   int       m_iCacheSizeLAN[3];
   int       m_iCacheSizeInternet[3];
+  int       m_iMyVideoPlaylistViewAsIcons;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;

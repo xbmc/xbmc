@@ -451,6 +451,9 @@
 					RelativePath=".\xbmc\GUIWindowVideoOverlay.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIWindowVideoPlaylist.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIWindowVideoTitle.cpp">
 				</File>
 				<File
@@ -886,6 +889,9 @@
 				RelativePath=".\xbmc\GuiWindowVideoOverlay.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowVideoPlaylist.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowVideoTitle.h">
 			</File>
 			<File
@@ -943,10 +949,10 @@
 				RelativePath=".\xbmc\cores\ModPlayer.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
