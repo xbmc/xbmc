@@ -46,6 +46,7 @@ public:
   void    ClearBookMarksOfMovie(const CStdString& strFilenameAndPath);
   void    DeleteMovie(const CStdString& strFilenameAndPath);
   void    SetDVDLabel(long lMovieId,const CStdString& strDVDLabel1);
+  int	  GetRecentMovies(long* pMovieIdArray, int nSize);
 protected:
   auto_ptr<SqliteDatabase>  m_pDB;
 	auto_ptr<Dataset>				  m_pDS;
