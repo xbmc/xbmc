@@ -11,35 +11,34 @@
 #endif // _MSC_VER > 1000
 
 #include "http.h"
+#include "StdString.h"
 #include <vector>
-#include <string>
-using namespace std;
 
 
 class CIMDBUrl
 {
 	public:
-		string m_strURL;
-		string m_strTitle;
+		CStdString m_strURL;
+		CStdString m_strTitle;
 };
 typedef vector<CIMDBUrl> IMDB_MOVIELIST;
 
 class CIMDBMovie
 {
 	public:
-		bool 				Load(const string& strFileName);
-		void 				Save(const string& strFileName);
-		string m_strDirector;
-		string m_strWritingCredits;
-		string m_strGenre;
-		string m_strTagLine;
-		string m_strPlotOutline;
-		string m_strPlot;
-		string m_strPictureURL;
-		string m_strTitle;
-		string m_strVotes;
-		string m_strCast;
-		string m_strSearchString;
+		bool 				Load(const CStdString& strFileName);
+		void 				Save(const CStdString& strFileName);
+		CStdString m_strDirector;
+		CStdString m_strWritingCredits;
+		CStdString m_strGenre;
+		CStdString m_strTagLine;
+		CStdString m_strPlotOutline;
+		CStdString m_strPlot;
+		CStdString m_strPictureURL;
+		CStdString m_strTitle;
+		CStdString m_strVotes;
+		CStdString m_strCast;
+		CStdString m_strSearchString;
 		int				 m_iTop250;
 		int    		 m_iYear;
 		float  		 m_fRating;
@@ -50,16 +49,16 @@ class CIMDB
 {
 public:
 	CIMDB();
-	CIMDB(const string& strProxyServer, int iProxyPort);
+	CIMDB(const CStdString& strProxyServer, int iProxyPort);
 	virtual ~CIMDB();
 
-	bool FindMovie(const string& strMovie,	IMDB_MOVIELIST& movielist);
+	bool FindMovie(const CStdString& strMovie,	IMDB_MOVIELIST& movielist);
 	bool GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails);
-	bool Download(const string &strURL, const string &strFileName);
-	void GetURL(const string& strMovie,string& strURL);
+	bool Download(const CStdString &strURL, const CStdString &strFileName);
+	void GetURL(const CStdString& strMovie,CStdString& strURL);
 protected:
-	void ParseAHREF(const char* ahref, string& strURL, string& strTitle);
-	void ParseGenres(const char* ahref, string& strURL, string& strTitle);
+	void ParseAHREF(const char* ahref, CStdString& strURL, CStdString& strTitle);
+	void ParseGenres(const char* ahref, CStdString& strURL, CStdString& strTitle);
 	void RemoveAllAfter(char* szMovie,const char* szSearch);
   CHTTP m_http;
 };
