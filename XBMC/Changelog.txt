@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 10-03-2005 fixed: Selecting VIDEO_TS.IFO on a dvd would not initiate playback properly.
+  - 10-03-2005 fixed: Any dll's atempting to use stat on a dvd would always return success with invalid properties set
   - 10-03-2005 added: Dynamic Range compensation for AC3 if no AC3/DTS receiver is available.
   - 09-03-2005 changed: music files, duration of files without tags is shown when tag reading is enabled
   - 09-03-2005 fixed: Only the first python control was reading from references.xml correctly.
