@@ -498,8 +498,9 @@ HANDLE iso9660::OpenFile( const char* filename)
 	
 	DWORD dwBytesRead;
 	int iRead=::ReadFile( m_info.ISO_HANDLE, m_pCache, m_info.iso.wSectorSizeLE, &dwBytesRead,NULL );
-	if( iRead<=0 )
+	if( iRead<=0 || dwBytesRead==0)
 	{
+		//516,428,684 bytes
 		printf("using mode2 %i\n", m_info.curr_filesize);
 		m_bUseMode2 = true;		
 		m_info.iso.wSectorSizeLE=MODE2_DATA_SIZE;
