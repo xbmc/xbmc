@@ -206,6 +206,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiSettingsUICalibration);		// window id = 10
 	m_gWindowManager.Add(&m_guiSettingsMovieCalibration);	// window id = 11
 	m_gWindowManager.Add(&m_guiSettingsSlideShow);				// window id = 12
+	m_gWindowManager.Add(&m_guiSettingsFilter);						// window id = 13
 
   m_gWindowManager.Add(&m_guiDialogYesNo);							// window id = 100
   m_gWindowManager.Add(&m_guiDialogProgress);						// window id = 101
@@ -272,6 +273,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_guiSettingsUICalibration.Load( strSkinPath+"\\settingsUICalibration.xml" );
 	m_guiSettingsMovieCalibration.Load( strSkinPath+"\\settingsMovieCalibration.xml" );
 	m_guiSettingsSlideShow.Load( strSkinPath+"\\SettingsSlideShow.xml" );
+	m_guiSettingsFilter.Load( strSkinPath+"\\SettingsFilter.xml" );
 	m_guiWindowVideoOverlay.Load( strSkinPath+"\\videoOverlay.xml" );
 	m_guiWindowFullScreen.Load( strSkinPath+"\\videoFullScreen.xml" );
 }

@@ -10,6 +10,9 @@ struct CSettings::stSettings g_stSettings;
 CSettings::CSettings(void)
 {
 	memset(g_stSettings.m_rectMovieCalibration,0, sizeof(g_stSettings.m_rectMovieCalibration));
+	g_stSettings.m_minFilter=D3DTEXF_LINEAR;
+	g_stSettings.m_maxFilter=D3DTEXF_LINEAR;
+	g_stSettings.m_iSoften=1;
 	g_stSettings.m_bAllowPAL60=true;
 	g_stSettings.m_iHDSpinDownTime=5; // minutes
 	g_stSettings.m_bAutoShufflePlaylist=true;

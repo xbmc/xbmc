@@ -130,6 +130,7 @@ public:
 		int				m_iUIOffsetX;
 		int				m_iUIOffsetY;
 		bool			m_bSoften;
+		int				m_iSoften;
 		bool			m_bZoom;
 		bool			m_bStretch;
 		bool			m_bAllowVideoSwitching;
@@ -137,6 +138,8 @@ public:
 		RECT			m_rectMovieCalibration[20];
 		bool			m_bAutoShufflePlaylist;
 		int			  m_iHDSpinDownTime;
+		DWORD     m_minFilter ;
+		DWORD     m_maxFilter ;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;
