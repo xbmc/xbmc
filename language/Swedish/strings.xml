@@ -2226,6 +2226,14 @@
 <value>Fläktfart</value>
 </string>
 
+   <string>
+<id>13303</id>
+<value>Skal Fonter:</value>
+</string>
 
+   <string>
+<id>13304</id>
+<value>Vänd Texthåll:</value>
+</string>
 
 </strings>
