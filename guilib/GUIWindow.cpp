@@ -647,7 +647,7 @@ void CGUIWindow::ResetAllControls()
 
 void CGUIWindow::OnWindowLoaded()
 {
-  //m_vecControls.erase(m_vecControls.begin(),m_vecControls.end());
+  m_vecPositions.erase(m_vecPositions.begin(),m_vecPositions.end());
 	for (int i=0;i < (int)m_vecControls.size(); ++i)
   {
     CGUIControl* pControl= m_vecControls[i];
