@@ -369,7 +369,7 @@ void CKaiClient::SetBearerCaps(BOOL bIsHeadsetPresent)
 	if (client_state==State::Authenticated)
 	{
 		CStdString strStatusMessage;
-		strStatusMessage.Format("KAI_CLIENT_CAPS;01%s;", bIsHeadsetPresent ? "2":"" );
+		strStatusMessage.Format("KAI_CLIENT_CAPS;01%s3;", bIsHeadsetPresent ? "2":"" );
 		Send(server_addr, strStatusMessage);
 	}
 }
