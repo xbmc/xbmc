@@ -830,6 +830,24 @@ bool CMPlayer::openfile(const CStdString& strFile)
 					bNeed2Restart=true;
 					CLog::Log("  --restart cause speaker mapping needs fixing");		
 				}
+				// OGG has yet another channel mapping.. we need a better way for this FL, C, FR, SL, SR, LFE
+				if ( strstr(strAudioCodec, "OggVorbis") && (iChannels==6))
+				{
+					if(g_stSettings.m_bUseDigitalOutput)
+					{
+						options.SetChannels(6);
+						options.SetChannelMapping("channels=6:6:0:0:1:4:2:1:3:2:4:3:5:5");
+					}
+					else
+					{
+						//Doesn't seem to be working here.. only left and right channel seems to be mixed
+						options.SetChannels(0);
+						options.SetChannelMapping("channels=6:2:0:0:2:1:1:0:1:1:3:0:4:1:5:0:5:1");
+					}
+					
+					bNeed2Restart=true;
+					CLog::Log("  --restart cause speaker mapping needs fixing");		
+				}
 
 
 				// if xbox only got stereo output, then limit number of channels to 2
