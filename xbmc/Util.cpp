@@ -823,6 +823,7 @@ bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
     }
   }
   delete pPackedResource;
+  if (bFoundThumbnail) CUtil::ClearCache();
   return bFoundThumbnail;
 }
 
@@ -2012,6 +2013,8 @@ void CUtil::SetMusicThumbs(VECFILEITEMS &items)
     CFileItem* pItem=items[i];
     SetMusicThumb(pItem);
   }
+  CUtil::ClearCache();
+
 }
 
 void CUtil::SetMusicThumb(CFileItem* pItem)
