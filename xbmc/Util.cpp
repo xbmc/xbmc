@@ -185,6 +185,7 @@ void CUtil::GetThumbnail(const CStdString& strFileName, CStdString& strThumb)
 void CUtil::GetFileSize(__int64 dwFileSize, CStdString& strFileSize)
 {
   char szTemp[128];
+  // file < 1 kbyte?
   if (dwFileSize < 1024)
   {
 		//	substract the integer part of the float value
@@ -196,16 +197,38 @@ void CUtil::GetFileSize(__int64 dwFileSize, CStdString& strFileSize)
     strFileSize=szTemp;
     return;
   }
-  if (dwFileSize < 1024*1024)
+  __int64 iOneMeg=1024*1024;
+
+  // file < 1 megabyte?
+  if (dwFileSize < iOneMeg)
   {
     sprintf(szTemp,"%02.1f KB", ((float)dwFileSize)/1024.0f);
     strFileSize=szTemp;
     return;
   }
-  sprintf(szTemp,"%02.1f MB", ((float)dwFileSize)/(1024.0f*1024.0f));
+
+  // file < 1 GByte?
+  __int64 iOneGigabyte=iOneMeg;
+  iOneGigabyte *= (__int64)1000;
+  if (dwFileSize < iOneGigabyte)
+  {
+    sprintf(szTemp,"%02.1f MB", ((float)dwFileSize)/((float)iOneMeg));
+    strFileSize=szTemp;
+    return;
+  }
+  //file > 1 GByte
+  int iGigs=0;
+  while (dwFileSize >= iOneGigabyte)
+  {
+    dwFileSize -=iOneGigabyte;
+    iGigs++;
+  }
+  float fMegs=((float)dwFileSize)/((float)iOneMeg);
+  fMegs /=1000.0f;
+  fMegs+=iGigs;
+  sprintf(szTemp,"%02.1f GB", fMegs);
   strFileSize=szTemp;
   return;
-  
 }
 
 void CUtil::GetDate(SYSTEMTIME stTime, CStdString& strDateTime)
@@ -1255,4 +1278,13 @@ void CUtil::PrepareSubtitleFonts()
       }
     } while (FindNextFile((HANDLE)hFind, &wfd));
   }
+}
+
+__int64 CUtil::ToInt64(DWORD dwHigh, DWORD dwLow)
+{
+  __int64 n;
+  n=dwHigh;
+  n <<=32;
+  n += dwLow;
+  return n;
 }

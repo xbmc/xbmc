@@ -128,11 +128,11 @@ bool  CXNSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 			const TiXmlNode *SizeNode=pChild->FirstChild("SIZE");
 			
 			SYSTEMTIME dtDateTime;
-			DWORD dwFileSize=0;
+			__int64 dwFileSize=0;
 			memset(&dtDateTime,0,sizeof(dtDateTime));
 			if (SizeNode)
 			{
-				dwFileSize=atol( SizeNode->FirstChild()->Value() );
+				dwFileSize=_atoi64( SizeNode->FirstChild()->Value() );
 			}
 			if (DateNode)
 			{

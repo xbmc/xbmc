@@ -298,7 +298,7 @@ WORD    CDelayController::DIRInput( WORD wDir )
 	else
 	{
     long lTicks=GetTickCount() - m_dwLastTime;
-    if ( m_iCount > 0 && (lTicks>m_dwMoveDelay ) )
+    if ( m_iCount > 0 && (lTicks > (long)m_dwMoveDelay ) )
     {
       m_iCount=0;
       m_wLastDir=0;
