@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "../stdafx.h" 
 /*
  * XBoxMediaPlayer
  * Copyright (c) 2002 Frodo
@@ -26,179 +26,177 @@ using namespace XFILE;
 
 //*********************************************************************************************
 CFileSndtrk::CFileSndtrk()
-:m_hFile(INVALID_HANDLE_VALUE)
-{
-}
+    : m_hFile(INVALID_HANDLE_VALUE)
+{}
 
 //*********************************************************************************************
 CFileSndtrk::~CFileSndtrk()
 {
-
 }
 //*********************************************************************************************
 bool CFileSndtrk::Open(const CURL& url, bool bBinary)
 {
-	m_hFile.attach( CreateFile(url.GetFileName(),GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,0,NULL));
-	if ( !m_hFile.isValid() ) return false;
+  m_hFile.attach( CreateFile(url.GetFileName(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL));
+  if ( !m_hFile.isValid() ) return false;
 
-	m_i64FilePos=0;
-	LARGE_INTEGER i64Size;
-	GetFileSizeEx((HANDLE)m_hFile, &i64Size);
-	m_i64FileLength=i64Size.QuadPart;
-	Seek(0,SEEK_SET);
+  m_i64FilePos = 0;
+  LARGE_INTEGER i64Size;
+  GetFileSizeEx((HANDLE)m_hFile, &i64Size);
+  m_i64FileLength = i64Size.QuadPart;
+  Seek(0, SEEK_SET);
 
-	return true;
+  return true;
 }
 //*********************************************************************************************
 bool CFileSndtrk::OpenForWrite(const char* strFileName)
 {
-	m_hFile.attach(CreateFile(strFileName,GENERIC_READ|GENERIC_WRITE,FILE_SHARE_READ,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL));
-	if (!m_hFile.isValid()) return false;
+  m_hFile.attach(CreateFile(strFileName, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
+  if (!m_hFile.isValid()) return false;
 
-	m_i64FilePos=0;
-	LARGE_INTEGER i64Size;
-	GetFileSizeEx((HANDLE)m_hFile, &i64Size);
-	m_i64FileLength=i64Size.QuadPart;
-	Seek(0,SEEK_SET);
+  m_i64FilePos = 0;
+  LARGE_INTEGER i64Size;
+  GetFileSizeEx((HANDLE)m_hFile, &i64Size);
+  m_i64FileLength = i64Size.QuadPart;
+  Seek(0, SEEK_SET);
 
-	return true;
+  return true;
 }
 
 //*********************************************************************************************
 unsigned int CFileSndtrk::Read(void *lpBuf, __int64 uiBufSize)
 {
-	if (!m_hFile.isValid()) return 0;
-	DWORD nBytesRead;
-	if ( ReadFile((HANDLE)m_hFile,lpBuf,(DWORD)uiBufSize,&nBytesRead,NULL) )
-	{
-			m_i64FilePos+=nBytesRead;
-			return nBytesRead;
-	}
-	return 0;
+  if (!m_hFile.isValid()) return 0;
+  DWORD nBytesRead;
+  if ( ReadFile((HANDLE)m_hFile, lpBuf, (DWORD)uiBufSize, &nBytesRead, NULL) )
+  {
+    m_i64FilePos += nBytesRead;
+    return nBytesRead;
+  }
+  return 0;
 }
 
 //*********************************************************************************************
 unsigned int CFileSndtrk::Write(void *lpBuf, __int64 uiBufSize)
 {
-	if (!m_hFile.isValid()) return 0;
-	DWORD nBytesWriten;
-	if ( WriteFile((HANDLE)m_hFile,lpBuf,(DWORD)uiBufSize,&nBytesWriten,NULL) )
-	{
-			return nBytesWriten;
-	}
-	return 0;
+  if (!m_hFile.isValid()) return 0;
+  DWORD nBytesWriten;
+  if ( WriteFile((HANDLE)m_hFile, lpBuf, (DWORD)uiBufSize, &nBytesWriten, NULL) )
+  {
+    return nBytesWriten;
+  }
+  return 0;
 }
 
 //*********************************************************************************************
 void CFileSndtrk::Close()
 {
-	m_hFile.reset();
+  m_hFile.reset();
 }
 
 //*********************************************************************************************
 __int64 CFileSndtrk::Seek(__int64 iFilePosition, int iWhence)
 {
-	LARGE_INTEGER lPos,lNewPos;
-	lPos.QuadPart=iFilePosition;
-	switch (iWhence)
-	{
-		case SEEK_SET:
-			SetFilePointerEx((HANDLE)m_hFile, lPos,&lNewPos,FILE_BEGIN);
-		break;
+  LARGE_INTEGER lPos, lNewPos;
+  lPos.QuadPart = iFilePosition;
+  switch (iWhence)
+  {
+  case SEEK_SET:
+    SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_BEGIN);
+    break;
 
-		case SEEK_CUR:
-			SetFilePointerEx((HANDLE)m_hFile, lPos,&lNewPos,FILE_CURRENT);
-		break;
+  case SEEK_CUR:
+    SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_CURRENT);
+    break;
 
-		case SEEK_END:
-			SetFilePointerEx((HANDLE)m_hFile, lPos,&lNewPos,FILE_END);
-		break;
-	}
-	m_i64FilePos=lNewPos.QuadPart;
-	return (lNewPos.QuadPart);
+  case SEEK_END:
+    SetFilePointerEx((HANDLE)m_hFile, lPos, &lNewPos, FILE_END);
+    break;
+  }
+  m_i64FilePos = lNewPos.QuadPart;
+  return (lNewPos.QuadPart);
 }
 
 //*********************************************************************************************
 __int64 CFileSndtrk::GetLength()
 {
-	LARGE_INTEGER i64Size;
-	GetFileSizeEx((HANDLE)m_hFile, &i64Size);
-	return i64Size.QuadPart;
+  LARGE_INTEGER i64Size;
+  GetFileSizeEx((HANDLE)m_hFile, &i64Size);
+  return i64Size.QuadPart;
 
-//	return m_i64FileLength;
+  // return m_i64FileLength;
 }
 
 //*********************************************************************************************
 __int64 CFileSndtrk::GetPosition()
 {
-	return m_i64FilePos;
+  return m_i64FilePos;
 }
 
 
 //*********************************************************************************************
 bool CFileSndtrk::ReadString(char *szLine, int iLineLength)
 {
-	szLine[0]=0;
-	if (!m_hFile.isValid()) return false;
-	__int64 iFilePos=GetPosition();
+  szLine[0] = 0;
+  if (!m_hFile.isValid()) return false;
+  __int64 iFilePos = GetPosition();
 
-	int iBytesRead=Read( (unsigned char*)szLine, iLineLength);
-	if (iBytesRead <= 0)
-	{
-		return false;
-	}
-	
-	szLine[iBytesRead]=0;
+  int iBytesRead = Read( (unsigned char*)szLine, iLineLength);
+  if (iBytesRead <= 0)
+  {
+    return false;
+  }
 
-	for (int i=0; i < iBytesRead; i++)
-	{
-		if ('\n' == szLine[i])
-		{
-			if ('\r' == szLine[i+1])
-			{
-				szLine[i+1]=0;
-				
-				Seek(iFilePos+i+2,SEEK_SET);
-			}
-			else
-			{
-				// end of line
-				szLine[i+1]=0;
-				
-				Seek(iFilePos+i+1,SEEK_SET);
-			}
-			break;
-		}
-		else if ('\r'==szLine[i])
-		{
-			if ('\n' == szLine[i+1])
-			{
-				szLine[i+1]=0;
-				
-				Seek(iFilePos+i+2,SEEK_SET);
-			}
-			else
-			{
-				// end of line
-				szLine[i+1]=0;
-				Seek(iFilePos+i+1,SEEK_SET);
-				
-			}
-			break;
-		}
-	}
-	if (iBytesRead>0) 
-	{
-		return true;
-	}
-	return false;
+  szLine[iBytesRead] = 0;
+
+  for (int i = 0; i < iBytesRead; i++)
+  {
+    if ('\n' == szLine[i])
+    {
+      if ('\r' == szLine[i + 1])
+      {
+        szLine[i + 1] = 0;
+
+        Seek(iFilePos + i + 2, SEEK_SET);
+      }
+      else
+      {
+        // end of line
+        szLine[i + 1] = 0;
+
+        Seek(iFilePos + i + 1, SEEK_SET);
+      }
+      break;
+    }
+    else if ('\r' == szLine[i])
+    {
+      if ('\n' == szLine[i + 1])
+      {
+        szLine[i + 1] = 0;
+
+        Seek(iFilePos + i + 2, SEEK_SET);
+      }
+      else
+      {
+        // end of line
+        szLine[i + 1] = 0;
+        Seek(iFilePos + i + 1, SEEK_SET);
+
+      }
+      break;
+    }
+  }
+  if (iBytesRead > 0)
+  {
+    return true;
+  }
+  return false;
 }
 
 
 int CFileSndtrk::Write(const void* lpBuf, __int64 uiBufSize)
 {
-	if (!m_hFile.isValid()) return -1;
-	DWORD dwNumberOfBytesWritten=0;
-	WriteFile((HANDLE)m_hFile, lpBuf, (DWORD)uiBufSize,&dwNumberOfBytesWritten,NULL);
-	return (int)dwNumberOfBytesWritten;
+  if (!m_hFile.isValid()) return -1;
+  DWORD dwNumberOfBytesWritten = 0;
+  WriteFile((HANDLE)m_hFile, lpBuf, (DWORD)uiBufSize, &dwNumberOfBytesWritten, NULL);
+  return (int)dwNumberOfBytesWritten;
 }

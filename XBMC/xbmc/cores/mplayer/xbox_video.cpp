@@ -1,21 +1,21 @@
 /*
- * XBoxMediaCenter
- * Copyright (c) 2003 Frodo/jcmarshall
- * Portions Copyright (c) by the authors of ffmpeg / xvid /mplayer
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+* XBoxMediaCenter
+* Copyright (c) 2003 Frodo/jcmarshall
+* Portions Copyright (c) by the authors of ffmpeg / xvid /mplayer
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 #include "../../stdafx.h"
 #include "xbox_video.h"
@@ -38,85 +38,85 @@ CXBoxRenderManager g_renderManager;
 
 CXBoxRenderManager::CXBoxRenderManager()
 {
-	m_bChanging = false;
-	m_pRenderer = NULL;
-	m_bPauseDrawing = false;
+  m_bChanging = false;
+  m_pRenderer = NULL;
+  m_bPauseDrawing = false;
 }
 
 CXBoxRenderManager::~CXBoxRenderManager()
 {
-	m_bChanging = true;
-	if (m_pRenderer)
-		delete m_pRenderer;
-	m_pRenderer = NULL;
+  m_bChanging = true;
+  if (m_pRenderer)
+    delete m_pRenderer;
+  m_pRenderer = NULL;
 }
 
 unsigned int CXBoxRenderManager::QueryFormat(unsigned int format)
 {
-	if (!m_bChanging && m_pRenderer)
-		return m_pRenderer->QueryFormat(format);
-	return 0;
+  if (!m_bChanging && m_pRenderer)
+    return m_pRenderer->QueryFormat(format);
+  return 0;
 }
 
 // Functions called from mplayer
 inline void CXBoxRenderManager::WaitForFlip()
 {
-	if (!m_bChanging && m_pRenderer)
-		m_pRenderer->WaitForFlip();
+  if (!m_bChanging && m_pRenderer)
+    m_pRenderer->WaitForFlip();
 }
 
 unsigned int CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, unsigned int options, char *title, unsigned int format)
 {
-	m_iSourceWidth = width;
-	m_iSourceHeight = height;
+  m_iSourceWidth = width;
+  m_iSourceHeight = height;
   unsigned int result = 0;
-	if (!m_bChanging && m_pRenderer)
+  if (!m_bChanging && m_pRenderer)
   {
-		result = m_pRenderer->Configure(width, height, d_width, d_height, options, title, format);
+    result = m_pRenderer->Configure(width, height, d_width, d_height, options, title, format);
     Update(false);
     m_bIsStarted = true;
   }
-	return result;
+  return result;
 }
 inline unsigned int CXBoxRenderManager::GetImage(mp_image_t *mpi)
 {
   if (m_bPauseDrawing) return VO_FALSE;
-	if (!m_bChanging && m_pRenderer)
-		return m_pRenderer->GetImage(mpi);
-	return VO_FALSE;
+  if (!m_bChanging && m_pRenderer)
+    return m_pRenderer->GetImage(mpi);
+  return VO_FALSE;
 }
 inline unsigned int CXBoxRenderManager::PutImage(mp_image_t *mpi)
 {
   if (m_bPauseDrawing) return VO_FALSE;
-	if (!m_bChanging && m_pRenderer)
-		return m_pRenderer->PutImage(mpi);
-	return VO_FALSE;
+  if (!m_bChanging && m_pRenderer)
+    return m_pRenderer->PutImage(mpi);
+  return VO_FALSE;
 }
 
 inline unsigned int CXBoxRenderManager::DrawFrame(unsigned char *src[])
 {
   if (m_bPauseDrawing) return 0;
-	if (!m_bChanging && m_pRenderer)
-		return m_pRenderer->DrawFrame(src);
-	return 0;
+  if (!m_bChanging && m_pRenderer)
+    return m_pRenderer->DrawFrame(src);
+  return 0;
 }
 
-inline unsigned int CXBoxRenderManager::DrawSlice(unsigned char *src[], int stride[], int w,int h,int x,int y)
+inline unsigned int CXBoxRenderManager::DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y)
 {
   if (m_bPauseDrawing) return 0;
-	if (!m_bChanging && m_pRenderer)
-		return m_pRenderer->DrawSlice(src, stride, w, h, x, y);
-	return 0;
+  if (!m_bChanging && m_pRenderer)
+    return m_pRenderer->DrawSlice(src, stride, w, h, x, y);
+  return 0;
 }
 
 inline void CXBoxRenderManager::FlipPage()
 {
-	if (!m_bChanging && m_pRenderer)
+  if (!m_bChanging && m_pRenderer)
   {
     if (m_bPauseDrawing)
       m_pRenderer->RenderBlank();
     else
-	  	m_pRenderer->FlipPage();
+      m_pRenderer->FlipPage();
   }
 }
 
@@ -132,49 +132,49 @@ void CXBoxRenderManager::Update(bool bPauseDrawing)
 unsigned int CXBoxRenderManager::PreInit(const char *arg)
 {
   m_bIsStarted = false;
-  m_bPauseDrawing=false;
-	if (!m_bChanging)
-	{
-		if (!m_pRenderer)
-		{	// no renderer
-			if (g_guiSettings.GetInt("Filters.RenderMethod") == RENDER_OVERLAYS)
-			{
-				m_pRenderer = new CComboRenderer(g_graphicsContext.Get3DDevice());
-			}
-			else if (g_guiSettings.GetInt("Filters.RenderMethod") == RENDER_HQ_RGB_SHADER)
-			{
-				m_pRenderer = new CRGBRenderer(g_graphicsContext.Get3DDevice());
-			}
-			else	// if (g_guiSettings.GetInt("Filters.RenderMethod") == RENDER_LQ_RGB_SHADER)
-				m_pRenderer = new CPixelShaderRenderer(g_graphicsContext.Get3DDevice());
-		}
-		if (m_pRenderer)
-			return m_pRenderer->PreInit(arg);
-	}
-	return 0;
+  m_bPauseDrawing = false;
+  if (!m_bChanging)
+  {
+    if (!m_pRenderer)
+    { // no renderer
+      if (g_guiSettings.GetInt("Filters.RenderMethod") == RENDER_OVERLAYS)
+      {
+        m_pRenderer = new CComboRenderer(g_graphicsContext.Get3DDevice());
+      }
+      else if (g_guiSettings.GetInt("Filters.RenderMethod") == RENDER_HQ_RGB_SHADER)
+      {
+        m_pRenderer = new CRGBRenderer(g_graphicsContext.Get3DDevice());
+      }
+      else // if (g_guiSettings.GetInt("Filters.RenderMethod") == RENDER_LQ_RGB_SHADER)
+        m_pRenderer = new CPixelShaderRenderer(g_graphicsContext.Get3DDevice());
+    }
+    if (m_pRenderer)
+      return m_pRenderer->PreInit(arg);
+  }
+  return 0;
 }
 
 void CXBoxRenderManager::UnInit()
 {
-	if (!m_bChanging && m_pRenderer)
-	{
-		m_pRenderer->UnInit();
-		delete m_pRenderer;
-		m_pRenderer = NULL;
-	}
+  if (!m_bChanging && m_pRenderer)
+  {
+    m_pRenderer->UnInit();
+    delete m_pRenderer;
+    m_pRenderer = NULL;
+  }
 }
 
-inline void CXBoxRenderManager::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,unsigned char *srca, int stride)
+inline void CXBoxRenderManager::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, unsigned char *srca, int stride)
 {
-	if (m_bPauseDrawing) return;
-	if (!m_bChanging && m_pRenderer)
-		m_pRenderer->DrawAlpha(x0, y0, w, h, src, srca, stride);
+  if (m_bPauseDrawing) return ;
+  if (!m_bChanging && m_pRenderer)
+    m_pRenderer->DrawAlpha(x0, y0, w, h, src, srca, stride);
 }
 
 void CXBoxRenderManager::SetupScreenshot()
 {
-	if (m_pRenderer)
-		m_pRenderer->SetupScreenshot();
+  if (m_pRenderer)
+    m_pRenderer->SetupScreenshot();
 }
 
 //********************************************************************************************************
@@ -182,32 +182,32 @@ void CXBoxRenderManager::SetupScreenshot()
 //********************************************************************************************************
 void xbox_video_CheckScreenSaver()
 {
-	g_renderManager.CheckScreenSaver();
+  g_renderManager.CheckScreenSaver();
 }
 
 void xbox_video_getAR(float& fAR)
 {
-	fAR = g_renderManager.GetAR();
+  fAR = g_renderManager.GetAR();
 }
 
 void xbox_video_getRect(RECT& SrcRect, RECT& DestRect)
 {
-	g_renderManager.GetRects(SrcRect, DestRect);
+  g_renderManager.GetRects(SrcRect, DestRect);
 }
 
 void xbox_video_wait()
 {
-	g_renderManager.WaitForFlip();
+  g_renderManager.WaitForFlip();
 }
 
 void xbox_video_render_update()
 {
-	g_renderManager.RenderUpdate();
+  g_renderManager.RenderUpdate();
 }
 
 void xbox_video_update(bool bPauseDrawing)
 {
-	g_renderManager.Update(bPauseDrawing);
+  g_renderManager.Update(bPauseDrawing);
 }
 
 /********************************************************************************************************
@@ -215,9 +215,9 @@ void xbox_video_update(bool bPauseDrawing)
 ********************************************************************************************************/
 
 //********************************************************************************************************
-static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned char *srca, int stride)
+static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src, unsigned char *srca, int stride)
 {
-	g_renderManager.DrawAlpha(x0, y0, w, h, src, srca, stride);
+  g_renderManager.DrawAlpha(x0, y0, w, h, src, srca, stride);
 }
 
 /********************************************************************************************************
@@ -234,7 +234,7 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
 */
 static void video_draw_osd(void)
 {
-	if (g_renderManager.Paused()) return;
+  if (g_renderManager.Paused()) return ;
   vo_draw_text(g_renderManager.GetOSDWidth(), g_renderManager.GetOSDHeight(), draw_alpha);
 }
 
@@ -243,21 +243,20 @@ static void video_draw_osd(void)
 //      Uninit the whole system, this is on the same "level" as preinit.
 static void video_uninit(void)
 {
-  OutputDebugString("video_uninit\n");  
-	g_renderManager.UnInit();
+  OutputDebugString("video_uninit\n");
+  g_renderManager.UnInit();
   OutputDebugString("video_uninit done\n");
 }
 
 //***********************************************************************************************************
 static void video_check_events(void)
-{
-}
+{}
 
 //***********************************************************************************************************
 /*init the video system (to support querying for supported formats)*/
 static unsigned int video_preinit(const char *arg)
 {
-	return g_renderManager.PreInit(arg);
+  return g_renderManager.PreInit(arg);
 }
 
 /********************************************************************************************************
@@ -266,15 +265,15 @@ static unsigned int video_preinit(const char *arg)
   (U,V). MPEG codecs (libmpeg2, opendivx) use this. This doesn't have
   to display the whole frame, only update small parts of it.
 */
-static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,int h,int x,int y )
+static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w, int h, int x, int y )
 {
-	return g_renderManager.DrawSlice(src, stride, w, h, x, y);
+  return g_renderManager.DrawSlice(src, stride, w, h, x, y);
 }
 
 //********************************************************************************************************
 static void video_flip_page(void)
 {
-	g_renderManager.FlipPage();
+  g_renderManager.FlipPage();
 }
 /********************************************************************************************************
   draw_frame(): this is the older interface, this displays only complete
@@ -284,7 +283,7 @@ static void video_flip_page(void)
 */
 static unsigned int video_draw_frame(unsigned char *src[])
 {
-	return g_renderManager.DrawFrame(src);
+  return g_renderManager.DrawFrame(src);
 }
 
 /********************************************************************************************************
@@ -310,7 +309,7 @@ static unsigned int video_draw_frame(unsigned char *src[])
 static unsigned int video_config(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, unsigned int options, char *title, unsigned int format)
 {
   OutputDebugString("video_config()\n");
-	return g_renderManager.Configure(width, height, d_width, d_height, options, title, format);
+  return g_renderManager.Configure(width, height, d_width, d_height, options, title, format);
   OutputDebugString("video_config() done\n");
 }
 
@@ -319,30 +318,30 @@ static unsigned int video_control(unsigned int request, void *data, ...)
 {
   switch (request)
   {
-    case VOCTRL_GET_IMAGE:
-          //libmpcodecs Direct Rendering interface
-          //You need to update mpi (mp_image.h) structure, for example,
-          //look at vo_x11, vo_sdl, vo_xv or mga_common.
+  case VOCTRL_GET_IMAGE:
+    //libmpcodecs Direct Rendering interface
+    //You need to update mpi (mp_image.h) structure, for example,
+    //look at vo_x11, vo_sdl, vo_xv or mga_common.
     return g_renderManager.GetImage((mp_image_t *)data);
 
-/********************************************************************************************************
-   VOCTRL_QUERY_FORMAT  -  queries if a given pixelformat is supported.
-    It also returns various flags decsirbing the capabilities
-    of the driver with teh given mode. for the flags, see file vfcaps.h !
-    the most important flags, every driver must properly report
-    these:
-        0x1  -  supported (with or without conversion)
-        0x2  -  supported without conversion (define 0x1 too!)
-        0x100  -  driver/hardware handles timing (blocking)
-    also SET sw/hw scaling and osd support flags, and flip,
-    and accept_stride if you implement VOCTRL_DRAW_IMAGE (see bellow)
-    NOTE: VOCTRL_QUERY_FORMAT may be called _before_ first config()
-    but is always called between preinit() and uninit()
-*/
-    case VOCTRL_QUERY_FORMAT:
-      return g_renderManager.QueryFormat(*((unsigned int*)data));
+    /********************************************************************************************************
+       VOCTRL_QUERY_FORMAT  -  queries if a given pixelformat is supported.
+        It also returns various flags decsirbing the capabilities
+        of the driver with teh given mode. for the flags, see file vfcaps.h !
+        the most important flags, every driver must properly report
+        these:
+            0x1  -  supported (with or without conversion)
+            0x2  -  supported without conversion (define 0x1 too!)
+            0x100  -  driver/hardware handles timing (blocking)
+        also SET sw/hw scaling and osd support flags, and flip,
+        and accept_stride if you implement VOCTRL_DRAW_IMAGE (see bellow)
+        NOTE: VOCTRL_QUERY_FORMAT may be called _before_ first config()
+        but is always called between preinit() and uninit()
+    */
+  case VOCTRL_QUERY_FORMAT:
+    return g_renderManager.QueryFormat(*((unsigned int*)data));
 
-    case VOCTRL_DRAW_IMAGE:
+  case VOCTRL_DRAW_IMAGE:
     /*  replacement for the current draw_slice/draw_frame way of
         passing video frames. by implementing SET_IMAGE, you'll get
         image in mp_image struct instead of by calling draw_*.
@@ -350,21 +349,21 @@ static unsigned int video_control(unsigned int request, void *data, ...)
         old-style draw_* functils will be called!
         Note: draw_slice is still mandatory, for per-slice rendering!
     */
-      
-      return g_renderManager.PutImage((mp_image_t *)data);
-//      return VO_NOTIMPL;
 
-    case VOCTRL_FULLSCREEN:
+    return g_renderManager.PutImage((mp_image_t *)data);
+    //      return VO_NOTIMPL;
+
+  case VOCTRL_FULLSCREEN:
     {
-        //TODO
+      //TODO
       return VO_NOTIMPL;
     }
-    case VOCTRL_PAUSE:
-    case VOCTRL_RESUME:
-    case VOCTRL_RESET:
-    case VOCTRL_GUISUPPORT:
-    case VOCTRL_SET_EQUALIZER:
-    case VOCTRL_GET_EQUALIZER:
+  case VOCTRL_PAUSE:
+  case VOCTRL_RESUME:
+  case VOCTRL_RESET:
+  case VOCTRL_GUISUPPORT:
+  case VOCTRL_SET_EQUALIZER:
+  case VOCTRL_GET_EQUALIZER:
     break;
 
     return VO_TRUE;
@@ -375,24 +374,24 @@ static unsigned int video_control(unsigned int request, void *data, ...)
 
 //********************************************************************************************************
 static vo_info_t video_info =
-{
+  {
     "XBOX Direct3D8 YUY2 renderer",
     "directx",
     "Frodo/JCMarshall",
     ""
-};
+  };
 
 //********************************************************************************************************
 vo_functions_t video_functions =
-{
+  {
     &video_info,
-    video_preinit,			// done
-    video_config,				// done
+    video_preinit,    // done
+    video_config,     // done
     video_control,
-    video_draw_frame,		// done
-    video_draw_slice,		// done
+    video_draw_frame,   // done
+    video_draw_slice,   // done
     video_draw_osd,
-    video_flip_page,		// done
-    video_check_events,	// unused
-    video_uninit				// done
-};
+    video_flip_page,   // done
+    video_check_events,  // unused
+    video_uninit    // done
+  };

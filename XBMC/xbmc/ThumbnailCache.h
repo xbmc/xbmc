@@ -3,20 +3,20 @@
 class CThumbnailCache
 {
 private:
-	CThumbnailCache();
+  CThumbnailCache();
 public:
-	virtual ~CThumbnailCache();
+  virtual ~CThumbnailCache();
 
-	static CThumbnailCache* GetThumbnailCache();
-	bool ThumbExists(const CStdString& strFileName, bool bAddCache=false);
-	void Add(const CStdString& strFileName, bool bExists);
-	void Clear();
-	bool IsCached(const CStdString& strFileName);
+  static CThumbnailCache* GetThumbnailCache();
+  bool ThumbExists(const CStdString& strFileName, bool bAddCache = false);
+  void Add(const CStdString& strFileName, bool bExists);
+  void Clear();
+  bool IsCached(const CStdString& strFileName);
 protected:
 
-	static CThumbnailCache* m_pCacheInstance;
+  static CThumbnailCache* m_pCacheInstance;
 
-	map<CStdString, bool> m_Cache;
+  map<CStdString, bool> m_Cache;
 
-	static CCriticalSection m_cs;
+  static CCriticalSection m_cs;
 };

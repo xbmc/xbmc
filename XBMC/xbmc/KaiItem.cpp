@@ -8,22 +8,22 @@
 
 CKaiItem::CKaiItem(CStdString& strLabel) : CGUIListExItem(strLabel)
 {
-	m_pAvatar			= NULL;
+  m_pAvatar = NULL;
 
-	if (IsAvatarCached())
-	{
-		UseCachedAvatar();
-	}
+  if (IsAvatarCached())
+  {
+    UseCachedAvatar();
+  }
 }
 
 CKaiItem::~CKaiItem(void)
 {
-	if (m_pAvatar)
-	{
-		m_pAvatar->FreeResources();
-		delete m_pAvatar;
-		m_pAvatar = NULL;
-	}
+  if (m_pAvatar)
+  {
+    m_pAvatar->FreeResources();
+    delete m_pAvatar;
+    m_pAvatar = NULL;
+  }
 }
 
 void CKaiItem::AllocResources()
@@ -48,101 +48,101 @@ void CKaiItem::FreeResources()
 
 void CKaiItem::SetAvatar(CStdString& aAvatarUrl)
 {
-//	OutputDebugString("Setting Kai avatar\r\n");
+  // OutputDebugString("Setting Kai avatar\r\n");
 
-	// Get file extension from url
-	CStdString strExtension;
-	CUtil::GetExtension(aAvatarUrl,strExtension);	
-	if (!strExtension.IsEmpty())
-	{
-		if (IsAvatarCached())
-		{
-			CStdString strAvatarFilePath;
-			GetAvatarFilePath(strAvatarFilePath);
+  // Get file extension from url
+  CStdString strExtension;
+  CUtil::GetExtension(aAvatarUrl, strExtension);
+  if (!strExtension.IsEmpty())
+  {
+    if (IsAvatarCached())
+    {
+      CStdString strAvatarFilePath;
+      GetAvatarFilePath(strAvatarFilePath);
 
-			DWORD dwAvatarWidth	 = 50;
-			DWORD dwAvatarHeight = 50;
-			if (m_pAvatar)
-			{
-				m_pAvatar->FreeResources();
-				delete m_pAvatar;
-			}
-			m_pAvatar = new CGUIImage(0,0,0,0,dwAvatarWidth,dwAvatarHeight,strAvatarFilePath);
-		}
-		else
-		{
-			g_DownloadManager.RequestFile(aAvatarUrl,this);
-		}
-	}
+      DWORD dwAvatarWidth = 50;
+      DWORD dwAvatarHeight = 50;
+      if (m_pAvatar)
+      {
+        m_pAvatar->FreeResources();
+        delete m_pAvatar;
+      }
+      m_pAvatar = new CGUIImage(0, 0, 0, 0, dwAvatarWidth, dwAvatarHeight, strAvatarFilePath);
+    }
+    else
+    {
+      g_DownloadManager.RequestFile(aAvatarUrl, this);
+    }
+  }
 }
 
 void CKaiItem::UseCachedAvatar()
 {
-	CStdString strAvatarFilePath;
-	GetAvatarFilePath(strAvatarFilePath);
+  CStdString strAvatarFilePath;
+  GetAvatarFilePath(strAvatarFilePath);
 
-	DWORD dwAvatarWidth	 = 50;
-	DWORD dwAvatarHeight = 50;
+  DWORD dwAvatarWidth = 50;
+  DWORD dwAvatarHeight = 50;
 
-	if (m_pAvatar)
-	{
-		m_pAvatar->FreeResources();
-		delete m_pAvatar;
-	}
-	m_pAvatar = new CGUIImage(0,0,0,0,dwAvatarWidth,dwAvatarHeight,strAvatarFilePath);
+  if (m_pAvatar)
+  {
+    m_pAvatar->FreeResources();
+    delete m_pAvatar;
+  }
+  m_pAvatar = new CGUIImage(0, 0, 0, 0, dwAvatarWidth, dwAvatarHeight, strAvatarFilePath);
 }
 
 bool CKaiItem::IsAvatarCached()
 {
-	// Compute cached filename
-	CStdString strFilePath;
-	GetAvatarFilePath(strFilePath);
-	    
-	// Check to see if the file is already cached
-	return CUtil::FileExists(strFilePath);
+  // Compute cached filename
+  CStdString strFilePath;
+  GetAvatarFilePath(strFilePath);
+
+  // Check to see if the file is already cached
+  return CUtil::FileExists(strFilePath);
 }
 
 void CKaiItem::GetAvatarFilePath(CStdString& aFilePath)
 {
-	// Generate a unique identifier from player name    
-	Crc32 crc;
-	crc.Compute(m_strName);
-	aFilePath.Format("Q:\\thumbs\\kai\\avatar-%x.jpg",crc);
+  // Generate a unique identifier from player name
+  Crc32 crc;
+  crc.Compute(m_strName);
+  aFilePath.Format("Q:\\thumbs\\kai\\avatar-%x.jpg", crc);
 }
 
 void CKaiItem::OnFileComplete(TICKET aTicket, CStdString& aFilePath, INT aByteRxCount, Result aResult)
 {
-	if (aResult == IDownloadQueueObserver::Succeeded && aByteRxCount>=100) 
-	{
-		//OutputDebugString("Downloaded avatar.\r\n");
+  if (aResult == IDownloadQueueObserver::Succeeded && aByteRxCount >= 100)
+  {
+    //OutputDebugString("Downloaded avatar.\r\n");
 
-		CStdString strAvatarFilePath;
-		GetAvatarFilePath(strAvatarFilePath);
+    CStdString strAvatarFilePath;
+    GetAvatarFilePath(strAvatarFilePath);
 
-		try
-		{
-			CPicture picture;
-			picture.Convert(aFilePath,strAvatarFilePath);
+    try
+    {
+      CPicture picture;
+      picture.Convert(aFilePath, strAvatarFilePath);
 
-			DWORD dwAvatarWidth	 = 50;
-			DWORD dwAvatarHeight = 50;
-			if (m_pAvatar)
-			{
-				m_pAvatar->FreeResources();
-				delete m_pAvatar;
-			}
-			m_pAvatar = new CGUIImage(0,0,0,0,dwAvatarWidth,dwAvatarHeight,strAvatarFilePath);
-		}
-		catch(...)
-		{
-			::DeleteFile(strAvatarFilePath.c_str());
-		}
-	}
-	else
-	{
-		//OutputDebugString("Unable to download avatar.\r\n");
-	}
+      DWORD dwAvatarWidth = 50;
+      DWORD dwAvatarHeight = 50;
+      if (m_pAvatar)
+      {
+        m_pAvatar->FreeResources();
+        delete m_pAvatar;
+      }
+      m_pAvatar = new CGUIImage(0, 0, 0, 0, dwAvatarWidth, dwAvatarHeight, strAvatarFilePath);
+    }
+    catch (...)
+    {
+      ::DeleteFile(strAvatarFilePath.c_str());
+    }
+  }
+  else
+  {
+    //OutputDebugString("Unable to download avatar.\r\n");
+  }
 
-	::DeleteFile(aFilePath.c_str());
+  ::DeleteFile(aFilePath.c_str());
 }
 

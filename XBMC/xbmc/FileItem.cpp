@@ -12,8 +12,8 @@
 CFileItem::CFileItem(const CSong& song)
 {
   Clear();
-  m_strLabel=song.strTitle;
-  m_strPath=song.strFileName;
+  m_strLabel = song.strTitle;
+  m_strPath = song.strFileName;
   m_musicInfoTag.SetSong(song);
   m_lStartOffset = song.iStartOffset;
   m_lEndOffset = song.iEndOffset;
@@ -23,16 +23,16 @@ CFileItem::CFileItem(const CSong& song)
 CFileItem::CFileItem(const CAlbum& album)
 {
   Clear();
-  m_strLabel=album.strAlbum;
-  m_strPath=album.strPath;
-  m_bIsFolder=true;
-  m_strLabel2=album.strArtist;
+  m_strLabel = album.strAlbum;
+  m_strPath = album.strPath;
+  m_bIsFolder = true;
+  m_strLabel2 = album.strArtist;
   m_musicInfoTag.SetAlbum(album);
 }
 
 CFileItem::CFileItem(const CFileItem& item)
 {
-  *this=item;
+  *this = item;
 }
 
 CFileItem::CFileItem(void)
@@ -41,84 +41,83 @@ CFileItem::CFileItem(void)
 }
 
 CFileItem::CFileItem(const CStdString& strLabel)
-:CGUIListItem()
+    : CGUIListItem()
 {
   Clear();
-  m_strLabel=strLabel;
+  m_strLabel = strLabel;
 }
 
 CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
 {
   Clear();
-  m_strPath=strPath;
-  m_bIsFolder=bIsFolder;
+  m_strPath = strPath;
+  m_bIsFolder = bIsFolder;
 }
 
 CFileItem::CFileItem(const CShare& share)
 {
   Clear();
-  m_bIsFolder=true;
-  m_bIsShareOrDrive=true;
-  m_strPath=share.strPath;
-  m_strLabel=share.strName;
-  m_iLockMode=share.m_iLockMode;
-  m_strLockCode=share.m_strLockCode;
-  m_iBadPwdCount=share.m_iBadPwdCount;
-  m_iDriveType=share.m_iDriveType;
-  m_idepth=share.m_iDepthSize;
+  m_bIsFolder = true;
+  m_bIsShareOrDrive = true;
+  m_strPath = share.strPath;
+  m_strLabel = share.strName;
+  m_iLockMode = share.m_iLockMode;
+  m_strLockCode = share.m_strLockCode;
+  m_iBadPwdCount = share.m_iBadPwdCount;
+  m_iDriveType = share.m_iDriveType;
+  m_idepth = share.m_iDepthSize;
 }
 
 CFileItem::~CFileItem(void)
 {
-
 }
 
 const CFileItem& CFileItem::operator=(const CFileItem& item)
 {
-  if (this==&item) return *this;
-  m_strLabel2=item.m_strLabel2;
-  m_strLabel=item.m_strLabel;
+  if (this == &item) return * this;
+  m_strLabel2 = item.m_strLabel2;
+  m_strLabel = item.m_strLabel;
   FreeMemory();
-  m_bSelected=item.m_bSelected;
-  m_strIcon=item.m_strIcon;
-  m_strThumbnailImage=item.m_strThumbnailImage;
-  m_strPath=item.m_strPath;
-  m_bIsFolder=item.m_bIsFolder;
-  m_iDriveType=item.m_iDriveType;
-  m_bIsShareOrDrive=item.m_bIsShareOrDrive;
-  memcpy(&m_stTime,&item.m_stTime,sizeof(SYSTEMTIME));
-  m_dwSize=item.m_dwSize;
-  m_musicInfoTag=item.m_musicInfoTag;
+  m_bSelected = item.m_bSelected;
+  m_strIcon = item.m_strIcon;
+  m_strThumbnailImage = item.m_strThumbnailImage;
+  m_strPath = item.m_strPath;
+  m_bIsFolder = item.m_bIsFolder;
+  m_iDriveType = item.m_iDriveType;
+  m_bIsShareOrDrive = item.m_bIsShareOrDrive;
+  memcpy(&m_stTime, &item.m_stTime, sizeof(SYSTEMTIME));
+  m_dwSize = item.m_dwSize;
+  m_musicInfoTag = item.m_musicInfoTag;
   m_lStartOffset = item.m_lStartOffset;
   m_lEndOffset = item.m_lEndOffset;
-  m_fRating=item.m_fRating;
-  m_strDVDLabel=item.m_strDVDLabel;
-  m_iprogramCount=item.m_iprogramCount;
-  m_iLockMode=item.m_iLockMode;
-  m_strLockCode=item.m_strLockCode;
-  m_iBadPwdCount=item.m_iBadPwdCount;
+  m_fRating = item.m_fRating;
+  m_strDVDLabel = item.m_strDVDLabel;
+  m_iprogramCount = item.m_iprogramCount;
+  m_iLockMode = item.m_iLockMode;
+  m_strLockCode = item.m_strLockCode;
+  m_iBadPwdCount = item.m_iBadPwdCount;
   return *this;
 }
 
 void CFileItem::Clear()
 {
-  m_strLabel2="";
-  m_strLabel="";
+  m_strLabel2 = "";
+  m_strLabel = "";
   FreeIcons();
   m_musicInfoTag.Clear();
-  m_bSelected=false;
-  m_fRating=0.0f;
-  m_strDVDLabel="";
+  m_bSelected = false;
+  m_fRating = 0.0f;
+  m_strDVDLabel = "";
   m_strPath = "";
-  m_fRating=0.0f;
-  m_dwSize=0;
-  m_bIsFolder=false;
-  m_bIsShareOrDrive=false;
-  memset(&m_stTime,0,sizeof(m_stTime));
+  m_fRating = 0.0f;
+  m_dwSize = 0;
+  m_bIsFolder = false;
+  m_bIsShareOrDrive = false;
+  memset(&m_stTime, 0, sizeof(m_stTime));
   m_iDriveType = SHARE_TYPE_UNKNOWN;
   m_lStartOffset = 0;
   m_lEndOffset = 0;
-  m_iprogramCount=0;
+  m_iprogramCount = 0;
   m_idepth = 1;
   m_iLockMode = LOCK_MODE_EVERYONE;
   m_strLockCode = "";
@@ -135,7 +134,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar << m_strThumbnailImage;
     ar << m_strIcon;
     ar << m_bSelected;
-    
+
     ar << m_strPath;
     ar << m_bIsShareOrDrive;
     ar << m_iDriveType;
@@ -161,7 +160,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> m_strThumbnailImage;
     ar >> m_strIcon;
     ar >> m_bSelected;
-    
+
     ar >> m_strPath;
     ar >> m_bIsShareOrDrive;
     ar >> m_iDriveType;
@@ -184,8 +183,8 @@ void CFileItem::Serialize(CArchive& ar)
 bool CFileItem::IsVideo() const
 {
   CStdString strExtension;
-  CUtil::GetExtension(m_strPath,strExtension);
-  if (strExtension.size() < 2) return  false;
+  CUtil::GetExtension(m_strPath, strExtension);
+  if (strExtension.size() < 2) return false;
   CUtil::Lower(strExtension);
   if ( strstr( g_stSettings.m_szMyVideoExtensions, strExtension.c_str() ) )
     return true;
@@ -196,8 +195,8 @@ bool CFileItem::IsVideo() const
 bool CFileItem::IsAudio() const
 {
   CStdString strExtension;
-  CUtil::GetExtension(m_strPath,strExtension);
-  if (strExtension.size() < 2) return  false;
+  CUtil::GetExtension(m_strPath, strExtension);
+  if (strExtension.size() < 2) return false;
   CUtil::Lower(strExtension);
 
   if ( strstr( g_stSettings.m_szMyMusicExtensions, strExtension.c_str() ) )
@@ -212,7 +211,7 @@ bool CFileItem::IsAudio() const
 bool CFileItem::IsPicture() const
 {
   CStdString strExtension;
-  CUtil::GetExtension(m_strPath,strExtension);
+  CUtil::GetExtension(m_strPath, strExtension);
   if (strExtension.size() < 2) return false;
   CUtil::Lower(strExtension);
 
@@ -240,17 +239,17 @@ bool CFileItem::IsShoutCast() const
 bool CFileItem::IsInternetStream() const
 {
   CURL url(m_strPath);
-  CStdString strProtocol=url.GetProtocol();
+  CStdString strProtocol = url.GetProtocol();
   strProtocol.ToLower();
 
-  if (strProtocol.size()==0)
+  if (strProtocol.size() == 0)
     return false;
 
-  if (strProtocol=="shout" || strProtocol=="mms" || 
-      strProtocol=="http"  || strProtocol=="ftp" || 
-      strProtocol=="rtsp"  || strProtocol=="rtp" || 
-      strProtocol=="udp") 
-      return true;
+  if (strProtocol == "shout" || strProtocol == "mms" ||
+      strProtocol == "http" || strProtocol == "ftp" ||
+      strProtocol == "rtsp" || strProtocol == "rtp" ||
+      strProtocol == "udp")
+    return true;
 
   return false;
 }
@@ -258,60 +257,60 @@ bool CFileItem::IsInternetStream() const
 bool CFileItem::IsPlayList() const
 {
   CStdString strExtension;
-  CUtil::GetExtension(m_strPath,strExtension);
+  CUtil::GetExtension(m_strPath, strExtension);
   strExtension.ToLower();
-  if (strExtension==".m3u") return true;
-  if (strExtension==".b4s") return true;
-  if (strExtension==".pls") return true;
-  if (strExtension==".strm") return true;
-  if (strExtension==".wpl") return true;
+  if (strExtension == ".m3u") return true;
+  if (strExtension == ".b4s") return true;
+  if (strExtension == ".pls") return true;
+  if (strExtension == ".strm") return true;
+  if (strExtension == ".wpl") return true;
   return false;
 }
 
 bool CFileItem::IsPythonScript() const
 {
-   char* pExtension=CUtil::GetExtension(m_strPath);
-   if (!pExtension) return false;
-   if (CUtil::cmpnocase(pExtension,".py")==0) return true;
-   return false;
+  char* pExtension = CUtil::GetExtension(m_strPath);
+  if (!pExtension) return false;
+  if (CUtil::cmpnocase(pExtension, ".py") == 0) return true;
+  return false;
 }
 
 bool CFileItem::IsXBE() const
 {
-   char* pExtension=CUtil::GetExtension(m_strPath);
-   if (!pExtension) return false;
-   if (CUtil::cmpnocase(pExtension,".xbe")==0) return true;
-   return false;
+  char* pExtension = CUtil::GetExtension(m_strPath);
+  if (!pExtension) return false;
+  if (CUtil::cmpnocase(pExtension, ".xbe") == 0) return true;
+  return false;
 }
 
 bool CFileItem::IsDefaultXBE() const
 {
-  char* pFileName=CUtil::GetFileName(m_strPath);
+  char* pFileName = CUtil::GetFileName(m_strPath);
   if (!pFileName) return false;
-  if (CUtil::cmpnocase(pFileName, "default.xbe")==0) return true;
+  if (CUtil::cmpnocase(pFileName, "default.xbe") == 0) return true;
   return false;
 }
 
 bool CFileItem::IsShortCut() const
 {
-   char* pExtension=CUtil::GetExtension(m_strPath);
-   if (!pExtension) return false;
-   if (CUtil::cmpnocase(pExtension,".cut")==0) return true;
-   return false;
+  char* pExtension = CUtil::GetExtension(m_strPath);
+  if (!pExtension) return false;
+  if (CUtil::cmpnocase(pExtension, ".cut") == 0) return true;
+  return false;
 }
 
 bool CFileItem::IsNFO() const
 {
-  char *pExtension=CUtil::GetExtension(m_strPath);
+  char *pExtension = CUtil::GetExtension(m_strPath);
   if (!pExtension) return false;
-  if (CUtil::cmpnocase(pExtension,".nfo")==0) return true;
+  if (CUtil::cmpnocase(pExtension, ".nfo") == 0) return true;
   return false;
 }
 
 bool CFileItem::IsDVDImage() const
 {
   CStdString strExtension;
-  CUtil::GetExtension(m_strPath,strExtension);
+  CUtil::GetExtension(m_strPath, strExtension);
   if (strExtension.Equals(".img")) return true;
   return false;
 }
@@ -319,15 +318,15 @@ bool CFileItem::IsDVDImage() const
 bool CFileItem::IsDVDFile(bool bVobs /*= true*/, bool bIfos /*= true*/) const
 {
   CStdString strFileName = CUtil::GetFileName(m_strPath);
-  if(bIfos)
+  if (bIfos)
   {
-    if(strFileName.Equals("video_ts.ifo")) return true;
-    if(strFileName.Left(4).Equals("vts_") && strFileName.Right(6).Equals("_0.ifo") && strFileName.length() == 12) return true;
+    if (strFileName.Equals("video_ts.ifo")) return true;
+    if (strFileName.Left(4).Equals("vts_") && strFileName.Right(6).Equals("_0.ifo") && strFileName.length() == 12) return true;
   }
-  if(bVobs)
+  if (bVobs)
   {
-    if(strFileName.Equals("video_ts.vob")) return true;
-    if(strFileName.Left(4).Equals("vts_") && strFileName.Right(4).Equals(".vob")) return true;
+    if (strFileName.Equals("video_ts.vob")) return true;
+    if (strFileName.Left(4).Equals("vts_") && strFileName.Right(4).Equals(".vob")) return true;
   }
 
   return false;
@@ -336,7 +335,7 @@ bool CFileItem::IsDVDFile(bool bVobs /*= true*/, bool bIfos /*= true*/) const
 bool CFileItem::IsRAR() const
 {
   CStdString strExtension;
-  CUtil::GetExtension(m_strPath,strExtension);
+  CUtil::GetExtension(m_strPath, strExtension);
   if ( (strExtension.CompareNoCase(".rar") == 0) || (strExtension.Equals(".001")) ) return true; // sometimes the first rar is named .001
   return false;
 }
@@ -361,7 +360,7 @@ bool CFileItem::IsRemote() const
   return CUtil::IsRemote(m_strPath);
 }
 
-bool  CFileItem::IsSmb() const
+bool CFileItem::IsSmb() const
 {
   return CUtil::IsSmb(m_strPath);
 }
@@ -389,7 +388,7 @@ bool CFileItem::IsReadOnly() const
 
 bool CFileItem::HasDefaultThumb() const
 {
-  CStdString strThumb=GetThumbnailImage();
+  CStdString strThumb = GetThumbnailImage();
 
   if (strThumb.Equals("DefaultPlaylistBig.png")) return true;
   if (strThumb.Equals("DefaultProgramBig.png")) return true;
@@ -408,7 +407,7 @@ bool CFileItem::HasDefaultThumb() const
   if (strThumb.Equals("defaultXBOXDVDBig.png")) return true;
 
   // check the default icons
-  for (unsigned int i=0; i < g_settings.m_vecIcons.size(); ++i)
+  for (unsigned int i = 0; i < g_settings.m_vecIcons.size(); ++i)
   {
     if (strThumb.Equals(g_settings.m_vecIcons[i].m_strIcon)) return true;
   }
@@ -418,7 +417,7 @@ bool CFileItem::HasDefaultThumb() const
 
 bool CFileItem::HasDefaultIcon() const
 {
-  CStdString strThumb=GetThumbnailImage();
+  CStdString strThumb = GetThumbnailImage();
 
   if (strThumb.Equals("DefaultPlaylist.png")) return true;
   if (strThumb.Equals("DefaultProgram.png")) return true;
@@ -437,7 +436,7 @@ bool CFileItem::HasDefaultIcon() const
   if (strThumb.Equals("defaultXBOXDVD.png")) return true;
 
   // check the default icons
-  for (unsigned int i=0; i < g_settings.m_vecIcons.size(); ++i)
+  for (unsigned int i = 0; i < g_settings.m_vecIcons.size(); ++i)
   {
     if (strThumb.Equals(g_settings.m_vecIcons[i].m_strIcon)) return true;
   }
@@ -463,24 +462,24 @@ void CFileItem::FillInDefaultIcon()
 
   CStdString strThumb;
   CStdString strExtension;
-  bool bOnlyDefaultXBE=g_guiSettings.GetBool("MyPrograms.DefaultXBEOnly");
+  bool bOnlyDefaultXBE = g_guiSettings.GetBool("MyPrograms.DefaultXBEOnly");
   if (!m_bIsFolder)
   {
     CStdString strExtension;
-    CUtil::GetExtension(m_strPath,strExtension);
+    CUtil::GetExtension(m_strPath, strExtension);
 
-    for (int i=0; i < (int)g_settings.m_vecIcons.size(); ++i)
+    for (int i = 0; i < (int)g_settings.m_vecIcons.size(); ++i)
     {
-      CFileTypeIcon& icon=g_settings.m_vecIcons[i];
+      CFileTypeIcon& icon = g_settings.m_vecIcons[i];
 
-      if (CUtil::cmpnocase(strExtension.c_str(), icon.m_strName)==0)
+      if (CUtil::cmpnocase(strExtension.c_str(), icon.m_strName) == 0)
       {
         SetIconImage(icon.m_strIcon);
         break;
       }
     }
   }
-  if (GetIconImage()=="")
+  if (GetIconImage() == "")
   {
     if (!m_bIsFolder)
     {
@@ -490,22 +489,22 @@ void CFileItem::FillInDefaultIcon()
         SetIconImage("defaultPlaylist.png");
 
         CUtil::GetExtension(m_strPath, strExtension);
-        if ( CUtil::cmpnocase(strExtension.c_str(),".strm") !=0) 
+        if ( CUtil::cmpnocase(strExtension.c_str(), ".strm") != 0)
         {
           //  Save playlists to playlist directroy
           CStdString strDir;
           CStdString strFileName;
-          strFileName=CUtil::GetFileName(m_strPath);
-          strDir.Format("%s\\playlists\\%s",g_stSettings.m_szAlbumDirectory,strFileName.c_str());
-          if (strDir!=m_strPath)
+          strFileName = CUtil::GetFileName(m_strPath);
+          strDir.Format("%s\\playlists\\%s", g_stSettings.m_szAlbumDirectory, strFileName.c_str());
+          if (strDir != m_strPath)
           {
             CPlayListFactory factory;
             auto_ptr<CPlayList> pPlayList (factory.Create(m_strPath));
-            if (pPlayList.get()!=NULL)
+            if (pPlayList.get() != NULL)
             {
-              if (pPlayList->Load(m_strPath) && pPlayList->size()>0)
+              if (pPlayList->Load(m_strPath) && pPlayList->size() > 0)
               {
-                const CPlayList::CPlayListItem& item=(*pPlayList.get())[0];
+                const CPlayList::CPlayListItem& item = (*pPlayList.get())[0];
                 if (!item.IsInternetStream())
                 {
                   pPlayList->Save(strDir);
@@ -540,10 +539,10 @@ void CFileItem::FillInDefaultIcon()
         // shortcut
         CStdString strDescription;
         CStdString strFName;
-        strFName=CUtil::GetFileName(m_strPath);
+        strFName = CUtil::GetFileName(m_strPath);
 
-        int iPos=strFName.ReverseFind(".");
-        strDescription=strFName.Left(iPos);
+        int iPos = strFName.ReverseFind(".");
+        strDescription = strFName.Left(iPos);
         SetLabel(strDescription);
         SetIconImage("defaultShortcut.png");
       }
@@ -555,7 +554,7 @@ void CFileItem::FillInDefaultIcon()
     }
     else
     {
-      if (GetLabel()=="..")
+      if (GetLabel() == "..")
       {
         SetIconImage("defaultFolderBack.png");
       }
@@ -566,15 +565,15 @@ void CFileItem::FillInDefaultIcon()
     }
   }
 
-  if (GetThumbnailImage()=="")
+  if (GetThumbnailImage() == "")
   {
-    if (GetIconImage()!="")
+    if (GetIconImage() != "")
     {
       CStdString strBig;
-      int iPos=GetIconImage().Find(".");
-      strBig=GetIconImage().Left(iPos);
-      strBig+="Big";
-      strBig+=GetIconImage().Right(GetIconImage().size()-(iPos));
+      int iPos = GetIconImage().Find(".");
+      strBig = GetIconImage().Left(iPos);
+      strBig += "Big";
+      strBig += GetIconImage().Right(GetIconImage().size() - (iPos));
       SetThumbnailImage(strBig);
     }
   }
@@ -586,13 +585,13 @@ void CFileItem::SetThumb()
   // set the thumbnail for an file item
 
   // if it already has a thumbnail, then return
-  if (HasThumbnail()) return;
+  if (HasThumbnail()) return ;
 
   //  No thumb for parent folder items
-  if (GetLabel()=="..") return;
+  if (GetLabel() == "..") return ;
 
 
-  if (IsXBE() && m_bIsFolder) return;  // case where we have multiple paths with XBE
+  if (IsXBE() && m_bIsFolder) return ;  // case where we have multiple paths with XBE
   if (!IsRemote())
   {
     CStdString strFile;
@@ -600,7 +599,7 @@ void CFileItem::SetThumb()
     if (CUtil::FileExists(strFile))
     {
       SetThumbnailImage(strFile);
-      return;
+      return ;
     }
   }
 
@@ -611,17 +610,17 @@ void CFileItem::SetThumb()
     CShortcut shortcut;
     if ( shortcut.Create( m_strPath ) )
     {
-      item.m_strPath=shortcut.m_strPath;
+      item.m_strPath = shortcut.m_strPath;
     }
   }
   else
-    item.m_strPath=m_strPath;
+    item.m_strPath = m_strPath;
 
   // get filename of cached thumbnail like Q:\thumbs\aed638.tbn
   CStdString strCachedThumbnail;
   Crc32 crc;
   crc.ComputeFromLowerCase(item.m_strPath);
-  strCachedThumbnail.Format("%s\\%x.tbn",g_stSettings.szThumbnailsDirectory,crc);
+  strCachedThumbnail.Format("%s\\%x.tbn", g_stSettings.szThumbnailsDirectory, crc);
 
   bool bGotIcon(false);
 
@@ -629,9 +628,9 @@ void CFileItem::SetThumb()
   // If it is on the DVD and is an XBE, let's grab get the thumbnail again
   if (!CUtil::FileExists(strCachedThumbnail) || (item.IsXBE() && item.IsDVD()) )
   {
-    if (IsRemote() && !g_guiSettings.GetBool("VideoLibrary.FindRemoteThumbs")) return;
+    if (IsRemote() && !g_guiSettings.GetBool("VideoLibrary.FindRemoteThumbs")) return ;
     // get the path for the  thumbnail
-    CUtil::GetThumbnail( item.m_strPath,strThumb);
+    CUtil::GetThumbnail( item.m_strPath, strThumb);
     // local cached thumb does not exists
     // check if strThumb exists
     if (CUtil::FileExists(strThumb))
@@ -641,18 +640,18 @@ void CFileItem::SetThumb()
       {
         // remote file, then cache it...
         CFile file;
-        if ( file.Cache(strThumb.c_str(), strCachedThumbnail.c_str(),NULL,NULL))
+        if ( file.Cache(strThumb.c_str(), strCachedThumbnail.c_str(), NULL, NULL))
         {
           // cache ok, then use it
           SetThumbnailImage(strCachedThumbnail);
-          bGotIcon=true;
+          bGotIcon = true;
         }
       }
       else
       {
         // local file, then use it
         SetThumbnailImage(strThumb);
-        bGotIcon=true;
+        bGotIcon = true;
       }
     }
     else
@@ -663,13 +662,13 @@ void CFileItem::SetThumb()
       CStdString strThumbnailFileName;
       if (m_bIsFolder)
       {
-        strThumbnailFileName=m_strPath;
+        strThumbnailFileName = m_strPath;
         if (CUtil::HasSlashAtEnd(strThumbnailFileName))
-          strThumbnailFileName.Delete(strThumbnailFileName.size()-1);
-        strThumbnailFileName+=".tbn";
+          strThumbnailFileName.Delete(strThumbnailFileName.size() - 1);
+        strThumbnailFileName += ".tbn";
       }
       else
-        CUtil::ReplaceExtension(item.m_strPath,".tbn", strThumbnailFileName);
+        CUtil::ReplaceExtension(item.m_strPath, ".tbn", strThumbnailFileName);
 
       if (file.Exists(strThumbnailFileName))
       {
@@ -677,18 +676,18 @@ void CFileItem::SetThumb()
         if (item.IsRemote() || item.IsDVD() || item.IsISO9660())
         {
           //  remote, cache thumb to hdd
-          if ( file.Cache(strThumbnailFileName.c_str(), strCachedThumbnail.c_str(),NULL,NULL))
+          if ( file.Cache(strThumbnailFileName.c_str(), strCachedThumbnail.c_str(), NULL, NULL))
           {
 
             SetThumbnailImage(strCachedThumbnail);
-            bGotIcon=true;
+            bGotIcon = true;
           }
         }
         else
         {
           //  local, just use it
           SetThumbnailImage(strThumbnailFileName);
-          bGotIcon=true;
+          bGotIcon = true;
         }
       }
     }
@@ -721,9 +720,9 @@ void CFileItem::SetMusicThumb()
   //  folder like folder.jpg or .tbn files.
 
   // if it already has a thumbnail, then return
-  if ( HasThumbnail() ) return;
+  if ( HasThumbnail() ) return ;
 
-  if (IsInternetStream()) return;
+  if (IsInternetStream()) return ;
 
   CStdString strThumb, strPath;
 
@@ -732,9 +731,9 @@ void CFileItem::SetMusicThumb()
     CUtil::GetDirectory(m_strPath, strPath);
   else
   {
-    strPath=m_strPath;
+    strPath = m_strPath;
     if (CUtil::HasSlashAtEnd(strPath))
-      strPath.Delete(strPath.size()-1);
+      strPath.Delete(strPath.size() - 1);
   }
 
   //  Look if an album thumb is available,
@@ -742,7 +741,7 @@ void CFileItem::SetMusicThumb()
   //  a directory in album window
   CStdString strAlbum;
   if (m_musicInfoTag.Loaded())
-    strAlbum=m_musicInfoTag.GetAlbum();
+    strAlbum = m_musicInfoTag.GetAlbum();
 
   if (!m_bIsFolder)
   {
@@ -757,7 +756,7 @@ void CFileItem::SetMusicThumb()
     else
     {
       // look for a temporary thumb (Q:\albums\thumbs\temp)
-      CUtil::GetAlbumThumb(strAlbum, strPath,strThumb, true);
+      CUtil::GetAlbumThumb(strAlbum, strPath, strThumb, true);
       if (CUtil::FileExists(strThumb) )
       {
         //  found it
@@ -776,7 +775,7 @@ void CFileItem::SetMusicThumb()
   if (strThumb.IsEmpty() && !m_bIsFolder)
   {
     CUtil::ReplaceExtension(m_strPath, ".tbn", strThumb);
-    if( IsRemote() || IsDVD() || IsISO9660())
+    if ( IsRemote() || IsDVD() || IsISO9660())
     {
       //  Query local cache
       CStdString strCached;
@@ -789,7 +788,7 @@ void CFileItem::SetMusicThumb()
       }
       else
       {
-        if (IsRemote() && !g_guiSettings.GetBool("MusicLibrary.FindRemoteThumbs")) return;
+        if (IsRemote() && !g_guiSettings.GetBool("MusicLibrary.FindRemoteThumbs")) return ;
         //  create cached thumb, if a .tbn file is found
         //  on a remote share
         if (CUtil::FileExists(strThumb))
@@ -833,25 +832,25 @@ void CFileItem::SetMusicThumb()
   }
 
   //  If we have not found a thumb before, look for a folder thumb
-  if (strThumb.IsEmpty() && GetLabel()!="..")
+  if (strThumb.IsEmpty() && GetLabel() != "..")
   {
     CStdString strFolderThumb;
 
     //  Lookup permanent thumbs on HD, if a
     //  thumb for this folder exists
-    CUtil::GetAlbumFolderThumb(strPath,strFolderThumb);
+    CUtil::GetAlbumFolderThumb(strPath, strFolderThumb);
     if (!CUtil::FileExists(strFolderThumb))
     {
       //  No, lookup saved temp thumbs on HD, if a previously
       //  cached thumb for this folder exists...
-      CUtil::GetAlbumFolderThumb(strPath,strFolderThumb, true);
+      CUtil::GetAlbumFolderThumb(strPath, strFolderThumb, true);
       if (!CUtil::FileExists(strFolderThumb))
       {
-        if (IsRemote() && !g_guiSettings.GetBool("MusicLibrary.FindRemoteThumbs")) return;
+        if (IsRemote() && !g_guiSettings.GetBool("MusicLibrary.FindRemoteThumbs")) return ;
         if (m_bIsFolder)
         {
-          CStdString strFolderTbn=strPath;
-          strFolderTbn+=".tbn";
+          CStdString strFolderTbn = strPath;
+          strFolderTbn += ".tbn";
           CUtil::AddFileToFolder(m_strPath, "folder.jpg", strThumb);
 
           //  ...no, check for a folder.jpg
@@ -904,8 +903,8 @@ void CFileItem::SetMusicThumb()
     //  Have we found a folder thumb
     if (!strFolderThumb.IsEmpty())
     {
-        //  if we have a directory from album
-        //  window, set the icon too.
+      //  if we have a directory from album
+      //  window, set the icon too.
       if (m_bIsFolder && !strAlbum.IsEmpty())
         SetIconImage(strFolderThumb);
 
@@ -917,7 +916,7 @@ void CFileItem::SetMusicThumb()
 void CFileItem::RemoveExtension()
 {
   if (m_bIsFolder)
-    return;
+    return ;
   CStdString strLabel = GetLabel();
   CUtil::RemoveExtension(strLabel);
   SetLabel(strLabel);
@@ -926,7 +925,7 @@ void CFileItem::RemoveExtension()
 void CFileItem::CleanFileName()
 {
   if (m_bIsFolder)
-    return;
+    return ;
   CStdString strLabel = GetLabel();
   CUtil::CleanFileName(strLabel);
   SetLabel(strLabel);
@@ -940,7 +939,6 @@ void CFileItem::CleanFileName()
 
 CFileItemList::CFileItemList()
 {
-
 }
 
 CFileItemList::~CFileItemList()
@@ -963,12 +961,12 @@ void CFileItemList::Clear()
   if (m_items.size())
   {
     IVECFILEITEMS i;
-    i=m_items.begin(); 
+    i = m_items.begin();
     while (i != m_items.end())
     {
       CFileItem* pItem = *i;
       delete pItem;
-      i=m_items.erase(i);
+      i = m_items.erase(i);
     }
   }
 }
@@ -986,9 +984,9 @@ void CFileItemList::Add(CFileItem* pItem)
 
 void CFileItemList::Remove(CFileItem* pItem)
 {
-  for (IVECFILEITEMS it=m_items.begin(); it!=m_items.end(); ++it)
+  for (IVECFILEITEMS it = m_items.begin(); it != m_items.end(); ++it)
   {
-    if (pItem==*it)
+    if (pItem == *it)
     {
       m_items.erase(it);
       break;
@@ -998,9 +996,9 @@ void CFileItemList::Remove(CFileItem* pItem)
 
 void CFileItemList::Remove(int iItem)
 {
-  if (iItem>=0 && iItem < (int)Size())
+  if (iItem >= 0 && iItem < (int)Size())
   {
-    CFileItem* pItem=*(m_items.begin() + iItem);
+    CFileItem* pItem = *(m_items.begin() + iItem);
     delete pItem;
     m_items.erase(m_items.begin() + iItem);
   }
@@ -1008,10 +1006,10 @@ void CFileItemList::Remove(int iItem)
 
 void CFileItemList::Append(const CFileItemList& itemlist)
 {
-  for (int i=0; i<itemlist.Size(); ++i)
+  for (int i = 0; i < itemlist.Size(); ++i)
   {
-    const CFileItem* pItem=itemlist[i];
-    CFileItem* pNewItem=new CFileItem(*pItem);
+    const CFileItem* pItem = itemlist[i];
+    CFileItem* pNewItem = new CFileItem(*pItem);
     Add(pNewItem);
   }
 }
@@ -1033,7 +1031,7 @@ int CFileItemList::Size() const
 
 bool CFileItemList::IsEmpty() const
 {
-  return (m_items.size()<=0);
+  return (m_items.size() <= 0);
 }
 
 void CFileItemList::Reserve(int iCount)
@@ -1050,32 +1048,32 @@ void CFileItemList::Serialize(CArchive& ar)
 {
   if (ar.IsStoring())
   {
-    int i=0;
-    if (m_items.size()>0 && m_items[0]->GetLabel()=="..")
-      i=1;
+    int i = 0;
+    if (m_items.size() > 0 && m_items[0]->GetLabel() == "..")
+      i = 1;
 
-    ar << (int)(m_items.size()-i);
+    ar << (int)(m_items.size() - i);
 
-    for (i; i<(int)m_items.size(); ++i)
+    for (i; i < (int)m_items.size(); ++i)
     {
-      CFileItem* pItem=m_items[i];
+      CFileItem* pItem = m_items[i];
       ar << *pItem;
     }
   }
   else
   {
-    int iSize=0;
+    int iSize = 0;
     ar >> iSize;
-    if (iSize<=0)
-      return;
+    if (iSize <= 0)
+      return ;
 
     Clear();
 
     m_items.reserve(iSize);
 
-    for (int i=0; i<iSize; ++i)
+    for (int i = 0; i < iSize; ++i)
     {
-      CFileItem* pItem=new CFileItem;
+      CFileItem* pItem = new CFileItem;
       ar >> *pItem;
       m_items.push_back(pItem);
     }
@@ -1084,9 +1082,9 @@ void CFileItemList::Serialize(CArchive& ar)
 
 void CFileItemList::FillInDefaultIcons()
 {
-  for (int i=0; i < (int)m_items.size(); ++i)
+  for (int i = 0; i < (int)m_items.size(); ++i)
   {
-    CFileItem* pItem=m_items[i];
+    CFileItem* pItem = m_items[i];
     pItem->FillInDefaultIcon();
   }
 }
@@ -1096,12 +1094,12 @@ void CFileItemList::SetThumbs()
   //cache thumbnails directory
   g_directoryCache.InitThumbCache();
 
-  for (int i=0; i < (int)m_items.size(); ++i)
+  for (int i = 0; i < (int)m_items.size(); ++i)
   {
-    CFileItem* pItem=m_items[i];
+    CFileItem* pItem = m_items[i];
     pItem->SetThumb();
   }
-  
+
   g_directoryCache.ClearThumbCache();
 }
 
@@ -1110,9 +1108,9 @@ void CFileItemList::SetMusicThumbs()
   //cache thumbnails directory
   g_directoryCache.InitMusicThumbCache();
 
-  for (int i=0; i < (int)m_items.size(); ++i)
+  for (int i = 0; i < (int)m_items.size(); ++i)
   {
-    CFileItem* pItem=m_items[i];
+    CFileItem* pItem = m_items[i];
     pItem->SetMusicThumb();
   }
 
@@ -1121,7 +1119,7 @@ void CFileItemList::SetMusicThumbs()
 
 int CFileItemList::GetFolderCount() const
 {
-  int nFolderCount=0;
+  int nFolderCount = 0;
   for (int i = 0; i < (int)m_items.size(); i++)
   {
     CFileItem* pItem = m_items[i];
@@ -1134,7 +1132,7 @@ int CFileItemList::GetFolderCount() const
 
 int CFileItemList::GetFileCount() const
 {
-  int nFileCount=0;
+  int nFileCount = 0;
   for (int i = 0; i < (int)m_items.size(); i++)
   {
     CFileItem* pItem = m_items[i];
@@ -1150,7 +1148,7 @@ void CFileItemList::FilterCueItems()
   // Handle .CUE sheet files...
   VECSONGS itemstoadd;
   VECARTISTS itemstodelete;
-  for (int i=0; i<(int)m_items.size(); i++)
+  for (int i = 0; i < (int)m_items.size(); i++)
   {
     CFileItem *pItem = m_items[i];
     if (!pItem->m_bIsFolder)
@@ -1172,12 +1170,12 @@ void CFileItemList::FilterCueItems()
             CMusicInfoTag tag;
             auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(cuesheet.GetMediaPath()));
             if (NULL != pLoader.get())
-            {           
+            {
               // get id3tag
-              pLoader->Load(cuesheet.GetMediaPath(),tag);
+              pLoader->Load(cuesheet.GetMediaPath(), tag);
             }
             // fill in any missing entries from underlying media file
-            for (int j=0; j<(int)newitems.size(); j++)
+            for (int j = 0; j < (int)newitems.size(); j++)
             {
               CSong song = newitems[j];
               if (tag.Loaded())
@@ -1189,9 +1187,9 @@ void CFileItemList::FilterCueItems()
                 tag.GetReleaseDate(dateTime);
                 if (dateTime.wYear > 1900) song.iYear = dateTime.wYear;
               }
-              if (!song.iDuration && tag.GetDuration()>0)
+              if (!song.iDuration && tag.GetDuration() > 0)
               { // must be the last song
-                song.iDuration = (tag.GetDuration()*75 - song.iStartOffset+37)/75;
+                song.iDuration = (tag.GetDuration() * 75 - song.iStartOffset + 37) / 75;
               }
               // add this item to the list
               itemstoadd.push_back(song);
@@ -1206,21 +1204,21 @@ void CFileItemList::FilterCueItems()
     }
   }
   // now delete the .CUE files and underlying media files.
-  for (int i=0; i<(int)itemstodelete.size(); i++)
+  for (int i = 0; i < (int)itemstodelete.size(); i++)
   {
-    for (int j=0; j<(int)m_items.size(); j++)
+    for (int j = 0; j < (int)m_items.size(); j++)
     {
       CFileItem *pItem = m_items[j];
       if (pItem->m_strPath == itemstodelete[i])
       { // delete this item
         delete pItem;
-        m_items.erase(m_items.begin()+j);
+        m_items.erase(m_items.begin() + j);
         break;
       }
     }
   }
   // and add the files from the .CUE sheet
-  for (int i=0; i<(int)itemstoadd.size(); i++)
+  for (int i = 0; i < (int)itemstoadd.size(); i++)
   {
     // now create the file item, and add to the item list.
     CFileItem *pItem = new CFileItem(itemstoadd[i]);
@@ -1231,12 +1229,12 @@ void CFileItemList::FilterCueItems()
 // Remove the extensions from the filenames
 void CFileItemList::RemoveExtensions()
 {
-  for (int i=0; i < Size(); ++i)
+  for (int i = 0; i < Size(); ++i)
     m_items[i]->RemoveExtension();
 }
 
 void CFileItemList::CleanFileNames()
 {
-  for (int i=0; i < Size(); ++i)
+  for (int i = 0; i < Size(); ++i)
     m_items[i]->CleanFileName();
 }

@@ -11,10 +11,8 @@
 
 IAudioCallback::IAudioCallback()
 {
-
 }
 
 IAudioCallback::~IAudioCallback()
 {
-
 }

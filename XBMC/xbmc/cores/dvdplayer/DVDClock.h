@@ -6,7 +6,7 @@
 
 enum ClockDiscontinuityType
 {
-  CLOCK_DISC_FULL, // pts is starting form 0 again
+  CLOCK_DISC_FULL,  // pts is starting form 0 again
   CLOCK_DISC_NORMAL // after a pause
 };
 
@@ -15,15 +15,15 @@ class CDVDClock
 public:
   CDVDClock();
   ~CDVDClock();
-  
+
   __int64 GetClock();
-  void    Discontinuity(ClockDiscontinuityType type, __int64 currentPts = 0LL);
+  void Discontinuity(ClockDiscontinuityType type, __int64 currentPts = 0LL);
 
 protected:
 
   LARGE_INTEGER m_systemFrequency;
   LARGE_INTEGER m_startClock;
   bool m_bReset;
-  
+
   __int64 m_lastPts;
 };

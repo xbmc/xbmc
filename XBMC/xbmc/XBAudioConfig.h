@@ -5,20 +5,20 @@
 class XBAudioConfig
 {
 public:
-	XBAudioConfig();
-	~XBAudioConfig();
+  XBAudioConfig();
+  ~XBAudioConfig();
 
-	bool HasDigitalOutput();
+  bool HasDigitalOutput();
 
-	bool GetAC3Enabled();
-	void SetAC3Enabled(bool bEnable);
-	bool GetDTSEnabled();
-	void SetDTSEnabled(bool bEnable);
-	bool NeedsSave();
-	void Save();
+  bool GetAC3Enabled();
+  void SetAC3Enabled(bool bEnable);
+  bool GetDTSEnabled();
+  void SetDTSEnabled(bool bEnable);
+  bool NeedsSave();
+  void Save();
 
 private:
-	DWORD m_dwAudioFlags;
+  DWORD m_dwAudioFlags;
 };
 
 extern XBAudioConfig g_audioConfig;

@@ -1,21 +1,21 @@
 /*
- * XBoxMediaPlayer
- * Copyright (c) 2002 Frodo
- * Portions Copyright (c) by the authors of ffmpeg and xvid
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+* XBoxMediaPlayer
+* Copyright (c) 2002 Frodo
+* Portions Copyright (c) by the authors of ffmpeg and xvid
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "../stdafx.h"
@@ -25,19 +25,19 @@
 
 static UINT64 strtouint64(const char *s)
 {
-	UINT64 r = 0;
+  UINT64 r = 0;
 
-	while ((*s != 0) && (isspace(*s)))
-		s++;
-	if (*s == '+')
-		s++;
-	while ((*s != 0) && (isdigit(*s)))
-	{
-		r = r * ((UINT64)10);
-		r += ((UINT64)(*s)) - ((UINT64)'0');
-		s++;
-	}
-	return r;
+  while ((*s != 0) && (isspace(*s)))
+    s++;
+  if (*s == '+')
+    s++;
+  while ((*s != 0) && (isdigit(*s)))
+  {
+    r = r * ((UINT64)10);
+    r += ((UINT64)(*s)) - ((UINT64)'0');
+    s++;
+  }
+  return r;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -46,373 +46,373 @@ static UINT64 strtouint64(const char *s)
 
 CFileXBMSP::CFileXBMSP()
 {
-	CSectionLoader::Load("LIBXBMS");
-	m_fileSize=0;
-	m_bOpened=false;
+  CSectionLoader::Load("LIBXBMS");
+  m_fileSize = 0;
+  m_bOpened = false;
 }
 
 CFileXBMSP::~CFileXBMSP()
 {
-	Close();
-	CSectionLoader::Unload("LIBXBMS");
+  Close();
+  CSectionLoader::Unload("LIBXBMS");
 }
 
 //*********************************************************************************************
 bool CFileXBMSP::Open(const CURL& url, bool bBinary)
 {
-	const char* strUserName = url.GetUserName().c_str();
-	const char* strPassword = url.GetPassWord().c_str();
-	const char* strHostName = url.GetHostName().c_str();
-	const char* strFileName = url.GetFileName().c_str();
-	int iport = url.GetPort();
+  const char* strUserName = url.GetUserName().c_str();
+  const char* strPassword = url.GetPassWord().c_str();
+  const char* strHostName = url.GetHostName().c_str();
+  const char* strFileName = url.GetFileName().c_str();
+  int iport = url.GetPort();
 
-	char *fn = NULL, *tmp1, *tmp2, *info;
+  char *fn = NULL, *tmp1, *tmp2, *info;
 
-	if (m_bOpened) Close();
-  
-	m_bOpened=false;
-	m_fileSize=0;
-	m_filePos=0;
-	
+  if (m_bOpened) Close();
+
+  m_bOpened = false;
+  m_fileSize = 0;
+  m_filePos = 0;
+
   OutputDebugString("xbms:open:");
   OutputDebugString(strFileName);
   OutputDebugString("\n");
-	if (cc_xstream_client_connect(strHostName, 
-																(iport > 0) ? iport : 1400,
-																&m_connection) != CC_XSTREAM_CLIENT_OK)
-	{
-    OutputDebugString("xbms:unable to connect\n");
-	  return false;
-	}
-	if (cc_xstream_client_version_handshake(m_connection) != CC_XSTREAM_CLIENT_OK)
-	{
-    OutputDebugString("xbms:unable handshake\n");
-		cc_xstream_client_disconnect(m_connection);
-		
-    return false;
-	}
-
-	// Authenticate here!  
-	if ((strPassword != NULL) && (strlen(strPassword) > 0))
-	{
-		// We don't check the return value here.  If authentication
-		// step fails, let's try if server lets us log in without
-		// authentication.
-		cc_xstream_client_password_authenticate(m_connection,
-												(strUserName != NULL) ? strUserName : "",
-												strPassword);
-	}
- 
-	fn = strdup(strFileName);
-	if (fn == NULL)
-	{
-		cc_xstream_client_disconnect(m_connection);
-    
-		return false;
-	}
-	free(fn);
-  CStdString strFile=CUtil::GetFileName(strFileName);
-  
-  char szPath[1024];
-  strcpy(szPath,"");
-  if (strFile.size() != strlen(strFileName) )
+  if (cc_xstream_client_connect(strHostName,
+                                (iport > 0) ? iport : 1400,
+                                &m_connection) != CC_XSTREAM_CLIENT_OK)
   {
-    strncpy(szPath,strFileName, strlen(strFileName)-(strFile.size()+1) );
-    szPath[ strlen(strFileName)-(strFile.size()+1)]=0;
+    OutputDebugString("xbms:unable to connect\n");
+    return false;
+  }
+  if (cc_xstream_client_version_handshake(m_connection) != CC_XSTREAM_CLIENT_OK)
+  {
+    OutputDebugString("xbms:unable handshake\n");
+    cc_xstream_client_disconnect(m_connection);
+
+    return false;
   }
 
-	
-	CStdString strDir, strPath;
-	strDir="";
+  // Authenticate here!
+  if ((strPassword != NULL) && (strlen(strPassword) > 0))
+  {
+    // We don't check the return value here.  If authentication
+    // step fails, let's try if server lets us log in without
+    // authentication.
+    cc_xstream_client_password_authenticate(m_connection,
+                                            (strUserName != NULL) ? strUserName : "",
+                                            strPassword);
+  }
+
+  fn = strdup(strFileName);
+  if (fn == NULL)
+  {
+    cc_xstream_client_disconnect(m_connection);
+
+    return false;
+  }
+  free(fn);
+  CStdString strFile = CUtil::GetFileName(strFileName);
+
+  char szPath[1024];
+  strcpy(szPath, "");
+  if (strFile.size() != strlen(strFileName) )
+  {
+    strncpy(szPath, strFileName, strlen(strFileName) - (strFile.size() + 1) );
+    szPath[ strlen(strFileName) - (strFile.size() + 1)] = 0;
+  }
+
+
+  CStdString strDir, strPath;
+  strDir = "";
   OutputDebugString("xbms:setdir:/\n");
-	if (cc_xstream_client_setcwd(m_connection, "/") == CC_XSTREAM_CLIENT_OK)
-	{
-		strPath=szPath;
-		for (int i=0; i < (int)strPath.size(); ++i)
-		{
-			if (strPath[i]=='/' || strPath[i]=='\\')
-			{
-				if (strDir!="")
-				{
+  if (cc_xstream_client_setcwd(m_connection, "/") == CC_XSTREAM_CLIENT_OK)
+  {
+    strPath = szPath;
+    for (int i = 0; i < (int)strPath.size(); ++i)
+    {
+      if (strPath[i] == '/' || strPath[i] == '\\')
+      {
+        if (strDir != "")
+        {
           OutputDebugString("xbms:setdir:");
           OutputDebugString(strDir.c_str());
           OutputDebugString("\n");
-					if (cc_xstream_client_setcwd(m_connection, strDir.c_str()) != CC_XSTREAM_CLIENT_OK)
-					{
+          if (cc_xstream_client_setcwd(m_connection, strDir.c_str()) != CC_XSTREAM_CLIENT_OK)
+          {
             OutputDebugString("xbms:unable set dir\n");
-						if (m_connection != NULL) cc_xstream_client_disconnect(m_connection);	
-						return false;
-					}
-				}
-				strDir="";
-			}
-			else
-			{
-				strDir += strPath[i];
-			}
-		}
-	}
-	else
-	{
+            if (m_connection != NULL) cc_xstream_client_disconnect(m_connection);
+            return false;
+          }
+        }
+        strDir = "";
+      }
+      else
+      {
+        strDir += strPath[i];
+      }
+    }
+  }
+  else
+  {
     OutputDebugString("xbms:unable set dir\n");
-		if (m_connection != NULL) cc_xstream_client_disconnect(m_connection);	
-		return false;
-	}
-	if (strDir.size() > 0)
-	{
+    if (m_connection != NULL) cc_xstream_client_disconnect(m_connection);
+    return false;
+  }
+  if (strDir.size() > 0)
+  {
     OutputDebugString("xbms:setdir:");
     OutputDebugString(strDir.c_str());
     OutputDebugString("\n");
-		if (cc_xstream_client_setcwd(m_connection, strDir.c_str()) != CC_XSTREAM_CLIENT_OK)
-		{
+    if (cc_xstream_client_setcwd(m_connection, strDir.c_str()) != CC_XSTREAM_CLIENT_OK)
+    {
       OutputDebugString("xbms:unable set dir\n");
-			if (m_connection != NULL) cc_xstream_client_disconnect(m_connection);	
-			
-			return false;
-		}
-	}
+      if (m_connection != NULL) cc_xstream_client_disconnect(m_connection);
+
+      return false;
+    }
+  }
 
   if (cc_xstream_client_file_info(m_connection, strFile.c_str(), &info) != CC_XSTREAM_CLIENT_OK)
-	{
+  {
     OutputDebugString("xbms:unable to get info for file:");
     OutputDebugString(strFile.c_str());
     OutputDebugString("\n");
-		cc_xstream_client_disconnect(m_connection);
-    
-		return false;
-	}
-	
-	if (strstr(info, "<ATTRIB>file</ATTRIB>") != NULL)
-    { 
-		tmp1 = strstr(info, "<SIZE>");
-		tmp2 = strstr(info, "</SIZE>");
-		if ((tmp1 != NULL) && (tmp2 != NULL) && (tmp2 > tmp1) && ((tmp2 - tmp1) < 22))
-    { 
-			m_fileSize = strtouint64(tmp1 + 6);
-    }
-		else
-    { 
-			m_fileSize = 4000000000U; 
-    } 
-  } 
-	else 
-  { 
-		m_fileSize = 4000000000U; 
+    cc_xstream_client_disconnect(m_connection);
+
+    return false;
   }
-	free(info);
+
+  if (strstr(info, "<ATTRIB>file</ATTRIB>") != NULL)
+  {
+    tmp1 = strstr(info, "<SIZE>");
+    tmp2 = strstr(info, "</SIZE>");
+    if ((tmp1 != NULL) && (tmp2 != NULL) && (tmp2 > tmp1) && ((tmp2 - tmp1) < 22))
+    {
+      m_fileSize = strtouint64(tmp1 + 6);
+    }
+    else
+    {
+      m_fileSize = 4000000000U;
+    }
+  }
+  else
+  {
+    m_fileSize = 4000000000U;
+  }
+  free(info);
 
   if (cc_xstream_client_file_open(m_connection, strFile.c_str(), &m_handle) != CC_XSTREAM_CLIENT_OK)
-	{
+  {
     OutputDebugString("xbms:unable to open file:");
     OutputDebugString(strFile.c_str());
     OutputDebugString("\n");
-		cc_xstream_client_disconnect(m_connection);
-    
-		return false;
-	}
-	m_bOpened=true;
-  
-	return true;
+    cc_xstream_client_disconnect(m_connection);
+
+    return false;
+  }
+  m_bOpened = true;
+
+  return true;
 }
 
 bool CFileXBMSP::Exists(const CURL& url)
 {
-	bool exist(true);
-	exist=CFileXBMSP::Open(url, true);
-	Close();
-	return exist;
+  bool exist(true);
+  exist = CFileXBMSP::Open(url, true);
+  Close();
+  return exist;
 }
 
 int CFileXBMSP::Stat(const CURL& url, struct __stat64* buffer)
 {
-	if (Open(url, true))
-	{
-		buffer->st_size = this->m_fileSize;
-		buffer->st_mode = _S_IFREG;
-		Close();
-		return 0;
-	}
-	errno = ENOENT;
-	return -1;
+  if (Open(url, true))
+  {
+    buffer->st_size = this->m_fileSize;
+    buffer->st_mode = _S_IFREG;
+    Close();
+    return 0;
+  }
+  errno = ENOENT;
+  return -1;
 }
 
 //*********************************************************************************************
 unsigned int CFileXBMSP::Read(void *lpBuf, __int64 uiBufSize)
 {
-	unsigned char *buf;
-	size_t buflen;
+  unsigned char *buf;
+  size_t buflen;
 
-	if (!m_bOpened) return 0;
-	if (cc_xstream_client_file_read(m_connection, m_handle, (size_t)uiBufSize, &buf, &buflen) !=
-		CC_XSTREAM_CLIENT_OK)
-	{
-		return 0;
-	}
-	fast_memcpy(lpBuf, buf, buflen);
-	free(buf);
-	m_filePos += buflen;
-	return buflen;
+  if (!m_bOpened) return 0;
+  if (cc_xstream_client_file_read(m_connection, m_handle, (size_t)uiBufSize, &buf, &buflen) !=
+      CC_XSTREAM_CLIENT_OK)
+  {
+    return 0;
+  }
+  fast_memcpy(lpBuf, buf, buflen);
+  free(buf);
+  m_filePos += buflen;
+  return buflen;
 }
 
 //*********************************************************************************************
 void CFileXBMSP::Close()
 {
-	
-	if (m_bOpened) 
-	{
-		cc_xstream_client_close(m_connection, m_handle);
-		cc_xstream_client_disconnect(m_connection);
-	}
-	m_bOpened=false;
-	m_fileSize=0;
+
+  if (m_bOpened)
+  {
+    cc_xstream_client_close(m_connection, m_handle);
+    cc_xstream_client_disconnect(m_connection);
+  }
+  m_bOpened = false;
+  m_fileSize = 0;
 }
 
 //*********************************************************************************************
 __int64 CFileXBMSP::Seek(__int64 iFilePosition, int iWhence)
 {
-	UINT64 newpos;
+  UINT64 newpos;
 
-	if (!m_bOpened) return -1;
+  if (!m_bOpened) return -1;
 
-	switch(iWhence) 
-	{
-		case SEEK_SET:
-			// cur = pos
-			newpos = iFilePosition;
-			break;
-		case SEEK_CUR:
-			// cur += pos
-			newpos = m_filePos + iFilePosition;
-			break;
-		case SEEK_END:
-			// end -= pos
-			newpos = m_fileSize - iFilePosition;
-			break;
-	}
-	if (newpos < 0)       		newpos = 0;
-	if (newpos > m_fileSize)	newpos = m_fileSize;
+  switch (iWhence)
+  {
+  case SEEK_SET:
+    // cur = pos
+    newpos = iFilePosition;
+    break;
+  case SEEK_CUR:
+    // cur += pos
+    newpos = m_filePos + iFilePosition;
+    break;
+  case SEEK_END:
+    // end -= pos
+    newpos = m_fileSize - iFilePosition;
+    break;
+  }
+  if (newpos < 0) newpos = 0;
+  if (newpos > m_fileSize) newpos = m_fileSize;
   if (newpos == m_filePos) return m_filePos;
-	if ( newpos == 0 )
-	{
+  if ( newpos == 0 )
+  {
     // goto beginning
-		if (cc_xstream_client_file_rewind(m_connection, m_handle) == CC_XSTREAM_CLIENT_OK)
-		{
-			m_filePos = newpos;
-		}
+    if (cc_xstream_client_file_rewind(m_connection, m_handle) == CC_XSTREAM_CLIENT_OK)
+    {
+      m_filePos = newpos;
+    }
     else
     {
       return -1;
     }
-	}
-	else if ( newpos == m_fileSize )
-	{
+  }
+  else if ( newpos == m_fileSize )
+  {
     // goto end
-		if (cc_xstream_client_file_end(m_connection, m_handle) == CC_XSTREAM_CLIENT_OK)
-		{
-			m_filePos = newpos;
-		}
+    if (cc_xstream_client_file_end(m_connection, m_handle) == CC_XSTREAM_CLIENT_OK)
+    {
+      m_filePos = newpos;
+    }
     else
     {
       return -1;
     }
-	}
-	else if (newpos > m_filePos)
-	{
-		//Fix for broken seeking when we are at position 0 when using -dvd-device
-		if (m_filePos == 0)
-		{
-			char cBuf[1];
-			Read(cBuf,1);
-		}
-		if (newpos == m_filePos) return m_filePos; 
-		if (cc_xstream_client_file_forward(m_connection, m_handle, (size_t)(newpos - m_filePos), 0) ==CC_XSTREAM_CLIENT_OK)
-		{
-			m_filePos = newpos;
-		}
+  }
+  else if (newpos > m_filePos)
+  {
+    //Fix for broken seeking when we are at position 0 when using -dvd-device
+    if (m_filePos == 0)
+    {
+      char cBuf[1];
+      Read(cBuf, 1);
+    }
+    if (newpos == m_filePos) return m_filePos;
+    if (cc_xstream_client_file_forward(m_connection, m_handle, (size_t)(newpos - m_filePos), 0) == CC_XSTREAM_CLIENT_OK)
+    {
+      m_filePos = newpos;
+    }
     else
     {
       return -1;
     }
-	}
-	else if (newpos < m_filePos)
-	{
-		if (cc_xstream_client_file_backwards(m_connection, m_handle, (size_t)(m_filePos - newpos), 0) ==CC_XSTREAM_CLIENT_OK)
-		{
-			m_filePos = newpos;
-		}
+  }
+  else if (newpos < m_filePos)
+  {
+    if (cc_xstream_client_file_backwards(m_connection, m_handle, (size_t)(m_filePos - newpos), 0) == CC_XSTREAM_CLIENT_OK)
+    {
+      m_filePos = newpos;
+    }
     else
     {
       return -1;
     }
-	}
-	return m_filePos;
+  }
+  return m_filePos;
 }
 
 //*********************************************************************************************
 __int64 CFileXBMSP::GetLength()
 {
-	if (!m_bOpened) return 0;
-	return m_fileSize;
+  if (!m_bOpened) return 0;
+  return m_fileSize;
 }
 
 //*********************************************************************************************
 __int64 CFileXBMSP::GetPosition()
 {
-	if (!m_bOpened) return 0;
-	return m_filePos;
+  if (!m_bOpened) return 0;
+  return m_filePos;
 }
 
 
 //*********************************************************************************************
 bool CFileXBMSP::ReadString(char *szLine, int iLineLength)
 {
-	if (!m_bOpened) return false;
-	__int64 iFilePos=GetPosition();
+  if (!m_bOpened) return false;
+  __int64 iFilePos = GetPosition();
 
-	int iBytesRead=Read( (unsigned char*)szLine, iLineLength);
-	if (iBytesRead <= 0)
-	{
-		return false;
-	}
+  int iBytesRead = Read( (unsigned char*)szLine, iLineLength);
+  if (iBytesRead <= 0)
+  {
+    return false;
+  }
 
-	szLine[iBytesRead]=0;
+  szLine[iBytesRead] = 0;
 
-	for (int i=0; i < iBytesRead; i++)
-	{
-		if ('\n' == szLine[i])
-		{
-			if ('\r' == szLine[i+1])
-			{
-				szLine[i+2]=0;
-				Seek(iFilePos+i+2,SEEK_SET);
-			}
-			else
-			{
-				// end of line
-				szLine[i+1]=0;
-				Seek(iFilePos+i+1,SEEK_SET);
-			}
-			break;
-		}
-		else if ('\r'==szLine[i])
-		{
-			if ('\n' == szLine[i+1])
-			{
-				szLine[i+2]=0;
-				Seek(iFilePos+i+2,SEEK_SET);
-			}
-			else
-			{
-				// end of line
-				szLine[i+1]=0;
-				Seek(iFilePos+i+1,SEEK_SET);
-			}
-			break;
-		}
-	}
-	if (iBytesRead>0) 
-	{
-		return true;
-	}
-	return false;
+  for (int i = 0; i < iBytesRead; i++)
+  {
+    if ('\n' == szLine[i])
+    {
+      if ('\r' == szLine[i + 1])
+      {
+        szLine[i + 2] = 0;
+        Seek(iFilePos + i + 2, SEEK_SET);
+      }
+      else
+      {
+        // end of line
+        szLine[i + 1] = 0;
+        Seek(iFilePos + i + 1, SEEK_SET);
+      }
+      break;
+    }
+    else if ('\r' == szLine[i])
+    {
+      if ('\n' == szLine[i + 1])
+      {
+        szLine[i + 2] = 0;
+        Seek(iFilePos + i + 2, SEEK_SET);
+      }
+      else
+      {
+        // end of line
+        szLine[i + 1] = 0;
+        Seek(iFilePos + i + 1, SEEK_SET);
+      }
+      break;
+    }
+  }
+  if (iBytesRead > 0)
+  {
+    return true;
+  }
+  return false;
 }

@@ -5,11 +5,11 @@ using namespace PLAYLIST;
 namespace PLAYLIST
 {
 
-	class CPlayListFactory
-	{
-	public:
-		CPlayListFactory(void);
-		virtual ~CPlayListFactory(void);
-		CPlayList* Create(const CStdString& strFileName)  const;
-	};
+class CPlayListFactory
+{
+public:
+  CPlayListFactory(void);
+  virtual ~CPlayListFactory(void);
+  CPlayList* Create(const CStdString& strFileName) const;
+};
 };

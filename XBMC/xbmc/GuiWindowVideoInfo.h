@@ -3,22 +3,22 @@
 #include "utils/imdb.h"
 
 class CGUIWindowVideoInfo :
-  public CGUIDialog
+      public CGUIDialog
 {
 public:
   CGUIWindowVideoInfo(void);
   virtual ~CGUIWindowVideoInfo(void);
-  virtual bool    OnMessage(CGUIMessage& message);
-  virtual void    OnAction(const CAction &action);
-  virtual void    Render();
-	void						SetMovie(CIMDBMovie& movie);
-  bool            NeedRefresh() const;
+  virtual bool OnMessage(CGUIMessage& message);
+  virtual void OnAction(const CAction &action);
+  virtual void Render();
+  void SetMovie(CIMDBMovie& movie);
+  bool NeedRefresh() const;
 
 protected:
-	void										Refresh();
-	void										Update();
-	void										SetLabel(int iControl, const CStdString& strLabel);
-	CIMDBMovie*							m_pMovie;
-	bool										m_bViewReview;
-  bool                    m_bRefresh;
+  void Refresh();
+  void Update();
+  void SetLabel(int iControl, const CStdString& strLabel);
+  CIMDBMovie* m_pMovie;
+  bool m_bViewReview;
+  bool m_bRefresh;
 };

@@ -15,153 +15,152 @@
 #define SPACE_BETWEEN_BUTTONS 2
 
 CGUIDialogContextMenu::CGUIDialogContextMenu(void)
-:CGUIDialog(0)
+    : CGUIDialog(0)
 {
-	m_iClickedButton = -1;
-	m_iNumButtons = 0;
+  m_iClickedButton = -1;
+  m_iNumButtons = 0;
 }
 
 CGUIDialogContextMenu::~CGUIDialogContextMenu(void)
-{
-}
+{}
 
 void CGUIDialogContextMenu::OnAction(const CAction &action)
 {
-	if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
+  if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
   {
-		Close();
-		return;
+    Close();
+    return ;
   }
-	CGUIDialog::OnAction(action);
+  CGUIDialog::OnAction(action);
 }
 
 bool CGUIDialogContextMenu::OnMessage(CGUIMessage &message)
 {
-	if (message.GetMessage() == GUI_MSG_CLICKED)
-	{
-		// someone has been clicked - deinit...
-		m_iClickedButton = message.GetSenderId() - BUTTON_TEMPLATE;
-		Close();
-		return true;
-	}
-	return CGUIDialog::OnMessage(message);
+  if (message.GetMessage() == GUI_MSG_CLICKED)
+  {
+    // someone has been clicked - deinit...
+    m_iClickedButton = message.GetSenderId() - BUTTON_TEMPLATE;
+    Close();
+    return true;
+  }
+  return CGUIDialog::OnMessage(message);
 }
 
 void CGUIDialogContextMenu::OnInitWindow()
-{	// disable the template button control
-	CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_TEMPLATE);
-	if (pControl)
-	{
-		pControl->SetVisible(false);
-	}
-	m_iClickedButton = -1;
-	CGUIDialog::OnInitWindow();
+{ // disable the template button control
+  CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_TEMPLATE);
+  if (pControl)
+  {
+    pControl->SetVisible(false);
+  }
+  m_iClickedButton = -1;
+  CGUIDialog::OnInitWindow();
 }
 
 void CGUIDialogContextMenu::ClearButtons()
 {
-	// destroy our buttons (if we have them from a previous viewing)
-	for (int i=1; i<=m_iNumButtons; i++)
-	{
-		// get the button to remove...
-		CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_TEMPLATE+i);
-		if (pControl)
-		{
-			// remove the control from our list
-			Remove(BUTTON_TEMPLATE+i);
-			// kill the button
+  // destroy our buttons (if we have them from a previous viewing)
+  for (int i = 1; i <= m_iNumButtons; i++)
+  {
+    // get the button to remove...
+    CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_TEMPLATE + i);
+    if (pControl)
+    {
+      // remove the control from our list
+      Remove(BUTTON_TEMPLATE + i);
+      // kill the button
       pControl->FreeResources();
-			delete pControl;
-		}
-	}
-	m_iNumButtons = 0;
+      delete pControl;
+    }
+  }
+  m_iNumButtons = 0;
 }
 
 void CGUIDialogContextMenu::AddButton(int iLabel)
 {
-	AddButton(g_localizeStrings.Get(iLabel));
+  AddButton(g_localizeStrings.Get(iLabel));
 }
 
 void CGUIDialogContextMenu::AddButton(const wstring &strLabel)
 {
-	// add a button to our control
-	CGUIButtonControl *pButtonTemplate = (CGUIButtonControl *)GetControl(BUTTON_TEMPLATE);
-	if (!pButtonTemplate) return;
-	CGUIButtonControl *pButton = new CGUIButtonControl(*pButtonTemplate);
-	if (!pButton) return;
-	// set the button's ID and position
-	m_iNumButtons++;
-	DWORD dwID = BUTTON_TEMPLATE+m_iNumButtons;
-	pButton->SetID(dwID);
-	pButton->SetPosition(pButtonTemplate->GetXPosition(),(m_iNumButtons-1)*(pButtonTemplate->GetHeight()+SPACE_BETWEEN_BUTTONS));
-	pButton->SetVisible(true);
-	pButton->SetNavigation(dwID-1, dwID+1, dwID, dwID);
-	pButton->SetText(strLabel);
-	Add(pButton);
-	// and update the size of our menu
-	CGUIControl *pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
-	if (pControl)
-	{
-		pControl->SetHeight(m_iNumButtons*(pButtonTemplate->GetHeight()+SPACE_BETWEEN_BUTTONS));
-		CGUIControl *pControl2 = (CGUIControl *)GetControl(BACKGROUND_BOTTOM);
-		if (pControl2)
-		{
-			pControl2->SetPosition(pControl2->GetXPosition(), pControl->GetYPosition()+pControl->GetHeight()); 
-		}
-	}
+  // add a button to our control
+  CGUIButtonControl *pButtonTemplate = (CGUIButtonControl *)GetControl(BUTTON_TEMPLATE);
+  if (!pButtonTemplate) return ;
+  CGUIButtonControl *pButton = new CGUIButtonControl(*pButtonTemplate);
+  if (!pButton) return ;
+  // set the button's ID and position
+  m_iNumButtons++;
+  DWORD dwID = BUTTON_TEMPLATE + m_iNumButtons;
+  pButton->SetID(dwID);
+  pButton->SetPosition(pButtonTemplate->GetXPosition(), (m_iNumButtons - 1)*(pButtonTemplate->GetHeight() + SPACE_BETWEEN_BUTTONS));
+  pButton->SetVisible(true);
+  pButton->SetNavigation(dwID - 1, dwID + 1, dwID, dwID);
+  pButton->SetText(strLabel);
+  Add(pButton);
+  // and update the size of our menu
+  CGUIControl *pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
+  if (pControl)
+  {
+    pControl->SetHeight(m_iNumButtons*(pButtonTemplate->GetHeight() + SPACE_BETWEEN_BUTTONS));
+    CGUIControl *pControl2 = (CGUIControl *)GetControl(BACKGROUND_BOTTOM);
+    if (pControl2)
+    {
+      pControl2->SetPosition(pControl2->GetXPosition(), pControl->GetYPosition() + pControl->GetHeight());
+    }
+  }
 }
 
 void CGUIDialogContextMenu::DoModal(DWORD dwParentId)
 {
-	// update the navigation of the first and last buttons
-	CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_TEMPLATE+1);
-	if (pControl)
-	{
-		pControl->SetNavigation(BUTTON_TEMPLATE+m_iNumButtons, pControl->GetControlIdDown(),
-														pControl->GetControlIdLeft(), pControl->GetControlIdRight());
-	}
-	pControl = (CGUIControl *)GetControl(BUTTON_TEMPLATE+m_iNumButtons);
-	if (pControl)
-	{
-		pControl->SetNavigation(pControl->GetControlIdUp(), BUTTON_TEMPLATE+1,
-														pControl->GetControlIdLeft(), pControl->GetControlIdRight());
-	}
-	// update our default control
-	if (m_dwDefaultFocusControlID <= BUTTON_TEMPLATE || m_dwDefaultFocusControlID > (DWORD)(BUTTON_TEMPLATE+m_iNumButtons))
-		m_dwDefaultFocusControlID = BUTTON_TEMPLATE+1;
-	// check the default control has focus...
-	while (m_dwDefaultFocusControlID <= (DWORD)(BUTTON_TEMPLATE+m_iNumButtons) && !(GetControl(m_dwDefaultFocusControlID)->CanFocus()))
-		m_dwDefaultFocusControlID++;
-	CGUIDialog::DoModal(dwParentId);
+  // update the navigation of the first and last buttons
+  CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_TEMPLATE + 1);
+  if (pControl)
+  {
+    pControl->SetNavigation(BUTTON_TEMPLATE + m_iNumButtons, pControl->GetControlIdDown(),
+                            pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+  }
+  pControl = (CGUIControl *)GetControl(BUTTON_TEMPLATE + m_iNumButtons);
+  if (pControl)
+  {
+    pControl->SetNavigation(pControl->GetControlIdUp(), BUTTON_TEMPLATE + 1,
+                            pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+  }
+  // update our default control
+  if (m_dwDefaultFocusControlID <= BUTTON_TEMPLATE || m_dwDefaultFocusControlID > (DWORD)(BUTTON_TEMPLATE + m_iNumButtons))
+    m_dwDefaultFocusControlID = BUTTON_TEMPLATE + 1;
+  // check the default control has focus...
+  while (m_dwDefaultFocusControlID <= (DWORD)(BUTTON_TEMPLATE + m_iNumButtons) && !(GetControl(m_dwDefaultFocusControlID)->CanFocus()))
+    m_dwDefaultFocusControlID++;
+  CGUIDialog::DoModal(dwParentId);
 }
 
 int CGUIDialogContextMenu::GetButton()
 {
-	return m_iClickedButton;
+  return m_iClickedButton;
 }
 
 DWORD CGUIDialogContextMenu::GetHeight()
 {
-	CGUIControl *pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
-	if (pControl)
-		return pControl->GetHeight();
-	else
-		return CGUIDialog::GetHeight();
+  CGUIControl *pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
+  if (pControl)
+    return pControl->GetHeight();
+  else
+    return CGUIDialog::GetHeight();
 }
 
 DWORD CGUIDialogContextMenu::GetWidth()
 {
-	CGUIControl *pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
-	if (pControl)
-		return pControl->GetWidth();
-	else
-		return CGUIDialog::GetWidth();
+  CGUIControl *pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
+  if (pControl)
+    return pControl->GetWidth();
+  else
+    return CGUIDialog::GetWidth();
 }
 
 void CGUIDialogContextMenu::EnableButton(int iButton, bool bEnable)
 {
-	CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_TEMPLATE+iButton);
-	if (pControl) pControl->SetEnabled(bEnable);
+  CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_TEMPLATE + iButton);
+  if (pControl) pControl->SetEnabled(bEnable);
 }
 
 bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdString &strLabel, const CStdString &strPath, int iLockMode, bool bMaxRetryExceeded, int iPosX, int iPosY)
@@ -170,14 +169,14 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (pMenu)
   {
-    bool bMyProgramsMenu = ("myprograms"==strType);
+    bool bMyProgramsMenu = ("myprograms" == strType);
     // clean any buttons not needed
     pMenu->ClearButtons();
     // add the needed buttons
-    pMenu->AddButton(118);	// 1: Rename
-    pMenu->AddButton(748);	// 2: Edit Path
-    pMenu->AddButton(117);	// 3: Delete
-    pMenu->AddButton(bMyProgramsMenu ? 754 : 749);	// 4: Add Program Link / Add Share
+    pMenu->AddButton(118); // 1: Rename
+    pMenu->AddButton(748); // 2: Edit Path
+    pMenu->AddButton(117); // 3: Delete
+    pMenu->AddButton(bMyProgramsMenu ? 754 : 749); // 4: Add Program Link / Add Share
     // This if statement should always be the *last* one to add buttons
     // Only show share lock stuff if masterlock isn't disabled
     if (LOCK_MODE_EVERYONE != g_stSettings.m_iMasterLockMode)
@@ -196,11 +195,11 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
     }
 
     // set the correct position
-    pMenu->SetPosition(iPosX-pMenu->GetWidth()/2, iPosY-pMenu->GetHeight()/2);
+    pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
     pMenu->DoModal(m_gWindowManager.GetActiveWindow());
     switch (pMenu->GetButton())
     {
-    case 1:	 // 1: Rename
+    case 1:   // 1: Rename
       {
         if (!CheckMasterCode(iLockMode)) return false;
         // rename share
@@ -213,7 +212,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
         }
       }
       break;
-    case 2:	 // 2: Edit Path
+    case 2:   // 2: Edit Path
       {
         if (!CheckMasterCode(iLockMode)) return false;
         // edit path
@@ -229,7 +228,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
               return false;
             if (!(CUtil::IsNaturalNumber(strNewDepth) && 0 < atoi(strNewDepth.c_str()) && 10 > atoi(strNewDepth.c_str())))
             {
-              CGUIDialogOK::ShowAndGetInput("257","759","760","");
+              CGUIDialogOK::ShowAndGetInput("257", "759", "760", "");
               return false;
             }
             g_settings.UpdateBookmark(strType, strLabel, "depth", strNewDepth);
@@ -239,32 +238,32 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
         }
       }
       break;
-    case 3:	 // 3: Delete
+    case 3:   // 3: Delete
       {
         if (!CheckMasterCode(iLockMode)) return false;
         // prompt user if they want to really delete the bookmark
         if (CGUIDialogYesNo::ShowAndGetInput(bMyProgramsMenu ? "758" : "751", "", "750", ""))
-          {
-            // delete this share
-            g_settings.DeleteBookmark(strType, strLabel, strPath);
-            return true;
-          }
+        {
+          // delete this share
+          g_settings.DeleteBookmark(strType, strLabel, strPath);
+          return true;
         }
+      }
       break;
-    case 4:	 // 4: Add Share
+    case 4:   // 4: Add Share
       {
         if (!CheckMasterCode(iLockMode)) return false;
         // Add new share
         CStdString strNewPath;
         CStdString strHeading = g_localizeStrings.Get(bMyProgramsMenu ? 755 : 752);
         if (CGUIDialogKeyboard::ShowAndGetInput(strNewPath, strHeading, false))
-        {	// got a valid path
+        { // got a valid path
           CStdString strNewDepth = "";
           if (bMyProgramsMenu)
           { // get a path depth
-          CStdString strHeading = g_localizeStrings.Get(757);
-          if (!(CGUIDialogKeyboard::ShowAndGetInput(strNewDepth, strHeading, false)))
-            return false;
+            CStdString strHeading = g_localizeStrings.Get(757);
+            if (!(CGUIDialogKeyboard::ShowAndGetInput(strNewDepth, strHeading, false)))
+              return false;
           }
           CStdString strNewName;
           CStdString strHeading = g_localizeStrings.Get(bMyProgramsMenu ? 756 : 753);
@@ -277,7 +276,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
         }
       }
       break;
-    case 5:  // Share Lock settings
+    case 5:   // Share Lock settings
       {
         if (LOCK_MODE_EVERYONE == iLockMode)  // 5: Lock Share
         {
@@ -292,12 +291,12 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
             // clean any buttons not needed
             pMenu->ClearButtons();
             // add the needed buttons
-            pMenu->AddButton(12337);	// 1: Numeric Password
-            pMenu->AddButton(12338);	// 2: XBOX gamepad button combo
-            pMenu->AddButton(12339);	// 3: Full-text Password
+            pMenu->AddButton(12337); // 1: Numeric Password
+            pMenu->AddButton(12338); // 2: XBOX gamepad button combo
+            pMenu->AddButton(12339); // 3: Full-text Password
 
             // set the correct position
-            pMenu->SetPosition(iPosX-pMenu->GetWidth()/2, iPosY-pMenu->GetHeight()/2);
+            pMenu->SetPosition(iPosX - pMenu->GetWidth() / 2, iPosY - pMenu->GetHeight() / 2);
             pMenu->DoModal(m_gWindowManager.GetActiveWindow());
 
             char strLockMode[33];  // holds 32 places plus sign character
@@ -305,27 +304,27 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
             CStdStringW strNewPassword = L"";
             switch (pMenu->GetButton())
             {
-            case 1:	// 1: Numeric Password
-                if (!CGUIDialogNumeric::ShowAndGetNewPassword(strNewPassword))
-                  return false;
-              break;
-            case 2:	// 2: Gamepad Password
-              if (!CGUIDialogGamepad::ShowAndGetNewPassword(strNewPassword))
-                  return false;
-              break;
-            case 3:	// 3: Fulltext Password
-              if (!CGUIDialogKeyboard::ShowAndGetNewPassword(strNewPassword))
-                  return false;
-              break;
-            default: // Not supported, abort
+            case 1:  // 1: Numeric Password
+              if (!CGUIDialogNumeric::ShowAndGetNewPassword(strNewPassword))
                 return false;
               break;
-                }
+            case 2:  // 2: Gamepad Password
+              if (!CGUIDialogGamepad::ShowAndGetNewPassword(strNewPassword))
+                return false;
+              break;
+            case 3:  // 3: Fulltext Password
+              if (!CGUIDialogKeyboard::ShowAndGetNewPassword(strNewPassword))
+                return false;
+              break;
+            default:  // Not supported, abort
+              return false;
+              break;
+            }
             // password entry and re-entry succeeded, write out the lock data
             g_settings.UpdateBookmark(strType, strLabel, "lockmode", strLockMode);
-                  g_settings.UpdateBookmark(strType, strLabel, "lockcode", strNewPassword);
-                  g_settings.UpdateBookmark(strType, strLabel, "badpwdcount", "0");
-                  return true;
+            g_settings.UpdateBookmark(strType, strLabel, "lockcode", strNewPassword);
+            g_settings.UpdateBookmark(strType, strLabel, "badpwdcount", "0");
+            return true;
           }
         }
         else if (LOCK_MODE_EVERYONE < iLockMode && bMaxRetryExceeded)  // 5: Reset Share Lock
@@ -351,11 +350,11 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
           g_settings.UpdateBookmark(strType, strLabel, "badpwdcount", "0");
           return true;
         }
-        else  // this should never happen, but if it does, don't perform any action                            
+        else  // this should never happen, but if it does, don't perform any action
           return false;
       }
       break;
-    case 6:  // Share Lock settings
+    case 6:   // Share Lock settings
       {
         // 6: Reactivate Share Lock
         if (LOCK_MODE_EVERYONE > iLockMode && !bMaxRetryExceeded && !g_application.m_bMasterLockOverridesLocalPasswords)
@@ -366,7 +365,7 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
           g_settings.UpdateBookmark(strType, strLabel, "lockmode", strInvertedLockmode);
           return true;
         }
-        else  // this should never happen, but if it does, don't perform any action                            
+        else  // this should never happen, but if it does, don't perform any action
           return false;
       }
     }
@@ -376,13 +375,13 @@ bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdS
 
 bool CGUIDialogContextMenu::CheckMasterCode(int iLockMode)
 {
-	// prompt user for mastercode if the bookmark is locked
-	// or if m_iMasterLockProtectShares is enabled
-	if (LOCK_MODE_EVERYONE < iLockMode || 0 != g_stSettings.m_iMasterLockProtectShares)
-	{
-		// Prompt user for mastercode
+  // prompt user for mastercode if the bookmark is locked
+  // or if m_iMasterLockProtectShares is enabled
+  if (LOCK_MODE_EVERYONE < iLockMode || 0 != g_stSettings.m_iMasterLockProtectShares)
+  {
+    // Prompt user for mastercode
     return CGUIPassword::IsMasterLockUnlocked(true);
-	}
+  }
   else
   {
     // we don't need to prompt for mastercode

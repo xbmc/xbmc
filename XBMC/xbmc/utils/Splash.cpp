@@ -17,12 +17,10 @@ CSplash::~CSplash()
 }
 
 void CSplash::OnStartup()
-{
-}
+{}
 
 void CSplash::OnExit()
-{
-}
+{}
 
 void CSplash::Process()
 {
@@ -31,8 +29,8 @@ void CSplash::Process()
 
   g_graphicsContext.Lock();
   g_graphicsContext.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
-  int w = g_graphicsContext.GetWidth()/2;
-  int h = g_graphicsContext.GetHeight()/2;
+  int w = g_graphicsContext.GetWidth() / 2;
+  int h = g_graphicsContext.GetHeight() / 2;
   CGUIImage* image = new CGUIImage(0, 0, 0, 0, w, h, m_ImageName);
   image->SetKeepAspectRatio(true);
   image->AllocResources();
@@ -43,11 +41,11 @@ void CSplash::Process()
   // Store the old gamma ramp
   g_graphicsContext.Get3DDevice()->GetGammaRamp(&oldRamp);
   float fade = 0.5f;
-  for(int i = 0; i < 256; i++)
+  for (int i = 0; i < 256; i++)
   {
-    newRamp.red[i]   = (int)((float)oldRamp.red[i]*fade);
-    newRamp.green[i] = (int)((float)oldRamp.red[i]*fade);
-    newRamp.blue[i]  = (int)((float)oldRamp.red[i]*fade);
+    newRamp.red[i] = (int)((float)oldRamp.red[i] * fade);
+    newRamp.green[i] = (int)((float)oldRamp.red[i] * fade);
+    newRamp.blue[i] = (int)((float)oldRamp.red[i] * fade);
   }
   g_graphicsContext.Get3DDevice()->SetGammaRamp(D3DSGR_IMMEDIATE, &newRamp);
 
@@ -63,13 +61,14 @@ void CSplash::Process()
   //fade in and wait untill the thread is stopped
   while (!m_bStop)
   {
-    if (fade <= 1.f) {
+    if (fade <= 1.f)
+    {
       Sleep(1);
-      for(int i = 0; i < 256; i++)
+      for (int i = 0; i < 256; i++)
       {
-        newRamp.red[i]   = (int)((float)oldRamp.red[i]*fade);
-        newRamp.green[i] = (int)((float)oldRamp.green[i]*fade);
-        newRamp.blue[i]  = (int)((float)oldRamp.blue[i]*fade);
+        newRamp.red[i] = (int)((float)oldRamp.red[i] * fade);
+        newRamp.green[i] = (int)((float)oldRamp.green[i] * fade);
+        newRamp.blue[i] = (int)((float)oldRamp.blue[i] * fade);
       }
       g_graphicsContext.Lock();
       g_graphicsContext.Get3DDevice()->SetGammaRamp(D3DSGR_IMMEDIATE, &newRamp);
@@ -86,11 +85,11 @@ void CSplash::Process()
   // fade out
   for (float fadeout = fade - 0.01f; fadeout >= 0.f; fadeout -= 0.01f)
   {
-    for(int i = 0; i < 256; i++)
+    for (int i = 0; i < 256; i++)
     {
-      newRamp.red[i]   = (int)((float)oldRamp.red[i]*fadeout);
-      newRamp.green[i] = (int)((float)oldRamp.green[i]*fadeout);
-      newRamp.blue[i]  = (int)((float)oldRamp.blue[i]*fadeout);
+      newRamp.red[i] = (int)((float)oldRamp.red[i] * fadeout);
+      newRamp.green[i] = (int)((float)oldRamp.green[i] * fadeout);
+      newRamp.blue[i] = (int)((float)oldRamp.blue[i] * fadeout);
     }
     Sleep(1);
     g_graphicsContext.Get3DDevice()->SetGammaRamp(D3DSGR_IMMEDIATE, &newRamp);
@@ -102,11 +101,11 @@ void CSplash::Process()
   g_graphicsContext.Unlock();
 }
 
-bool CSplash::Start() 
+bool CSplash::Start()
 {
   if (m_ImageName.IsEmpty() || !CUtil::FileExists(m_ImageName))
   {
-		CLog::Log(LOGDEBUG, "Splash image %s not found", m_ImageName.c_str());
+    CLog::Log(LOGDEBUG, "Splash image %s not found", m_ImageName.c_str());
     return false;
   }
   Create();

@@ -13,6 +13,6 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   {
     return (new CDVDInputStreamNavigator(pPlayer));
   }
-  
+
   return (new CDVDInputStreamFile());
 }

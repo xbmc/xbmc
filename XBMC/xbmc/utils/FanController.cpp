@@ -27,9 +27,9 @@ CFanController* CFanController::Instance()
 
 CFanController::CFanController()
 {
-  inCustomMode       = false;
-  systemFanSpeed     = GetFanSpeed();
-  currentFanSpeed    = systemFanSpeed;
+  inCustomMode = false;
+  systemFanSpeed = GetFanSpeed();
+  currentFanSpeed = systemFanSpeed;
   calculatedFanSpeed = systemFanSpeed;
 }
 
@@ -40,30 +40,30 @@ CFanController::~CFanController()
 }
 
 void CFanController::OnStartup()
-{
-}
+{}
 
 void CFanController::OnExit()
-{
-}
+{}
 
 void CFanController::Process()
 {
-  if (!g_guiSettings.GetBool("System.AutoTemperature")) return;
-  int interval      = 500;
-  tooHotLoopCount   = 0;
-  tooColdLoopCount  = 0;
-	while (!m_bStop)
-	{
+  if (!g_guiSettings.GetBool("System.AutoTemperature")) return ;
+  int interval = 500;
+  tooHotLoopCount = 0;
+  tooColdLoopCount = 0;
+  while (!m_bStop)
+  {
     GetGPUTempInternal();
     GetCPUTempInternal();
 
-    // Use the highest temperature, if the temperatures are 
+    // Use the highest temperature, if the temperatures are
     // equal, go with the CPU temperature.
-    if (cpuTemp >= gpuTemp) {
+    if (cpuTemp >= gpuTemp)
+    {
       sensor = ST_CPU;
     }
-    else {
+    else
+    {
       sensor = ST_GPU;
     }
 
@@ -75,7 +75,7 @@ void CFanController::Process()
     gpuLastTemp = gpuTemp;
 
     Sleep(interval);
-	}
+  }
 }
 
 void CFanController::SetTargetTemperature(int targetTemperature)
@@ -83,7 +83,7 @@ void CFanController::SetTargetTemperature(int targetTemperature)
   targetTemp = targetTemperature;
 }
 
-void  CFanController::RestoreStartupSpeed() 
+void CFanController::RestoreStartupSpeed()
 {
   SetFanSpeed(systemFanSpeed);
   Sleep(100);
@@ -97,7 +97,7 @@ void  CFanController::RestoreStartupSpeed()
   inCustomMode = false;
 }
 
-void CFanController::Start(int targetTemperature) 
+void CFanController::Start(int targetTemperature)
 {
   StopThread();
   targetTemp = targetTemperature;
@@ -126,29 +126,30 @@ void CFanController::GetFanSpeedInternal()
 
 void CFanController::SetFanSpeed(const int fanspeed, const bool force)
 {
-  if (fanspeed < 0) return;
-  if (fanspeed > 50) return;
-  if ((currentFanSpeed == fanspeed) && (!force)) return;
-  if (force) 
+  if (fanspeed < 0) return ;
+  if (fanspeed > 50) return ;
+  if ((currentFanSpeed == fanspeed) && (!force)) return ;
+  if (force)
   {
     //on boot or first time set it needs a kickstart in releasemode for some reason
     //it works fine without this block in debugmode...
- 	  HalWriteSMBusValue(PIC_ADDRESS, FAN_MODE, 0, 1);
-	  Sleep(10);
-  	HalWriteSMBusValue(PIC_ADDRESS, FAN_REGISTER, 0, fanspeed);
+    HalWriteSMBusValue(PIC_ADDRESS, FAN_MODE, 0, 1);
+    Sleep(10);
+    HalWriteSMBusValue(PIC_ADDRESS, FAN_REGISTER, 0, fanspeed);
   }
   //enable custom fanspeeds
- 	HalWriteSMBusValue(PIC_ADDRESS, FAN_MODE, 0, 1);
-	Sleep(10);
-	HalWriteSMBusValue(PIC_ADDRESS, FAN_REGISTER, 0, fanspeed);
-	Sleep(10);
+  HalWriteSMBusValue(PIC_ADDRESS, FAN_MODE, 0, 1);
+  Sleep(10);
+  HalWriteSMBusValue(PIC_ADDRESS, FAN_REGISTER, 0, fanspeed);
+  Sleep(10);
   currentFanSpeed = fanspeed;
-  inCustomMode    = true;
+  inCustomMode = true;
 }
 
 float CFanController::GetGPUTemp()
 {
-  if (m_ThreadHandle == NULL) {
+  if (m_ThreadHandle == NULL)
+  {
     GetGPUTempInternal();
   }
   return gpuTemp;
@@ -161,7 +162,8 @@ void CFanController::GetGPUTempInternal()
 
 float CFanController::GetCPUTemp()
 {
-  if (m_ThreadHandle == NULL) {
+  if (m_ThreadHandle == NULL)
+  {
     GetCPUTempInternal();
   }
   return cpuTemp;
@@ -173,83 +175,97 @@ void CFanController::GetCPUTempInternal()
 
   unsigned short cpu, cpudec;
 
-  _outp(0xc004, (0x4c<<1)|0x01);
-	_outp(0xc008, 0x01);
-	_outpw(0xc000, _inpw(0xc000));
-	_outp(0xc002, (0) ? 0x0b : 0x0a);
-	while ((_inp(0xc000) & 8));
-	cpu = _inpw(0xc006);
+  _outp(0xc004, (0x4c << 1) | 0x01);
+  _outp(0xc008, 0x01);
+  _outpw(0xc000, _inpw(0xc000));
+  _outp(0xc002, (0) ? 0x0b : 0x0a);
+  while ((_inp(0xc000) & 8));
+  cpu = _inpw(0xc006);
 
-	_outp(0xc004, (0x4c<<1)|0x01);
-	_outp(0xc008, 0x10);
-	_outpw(0xc000, _inpw(0xc000));
-	_outp(0xc002, (0) ? 0x0b : 0x0a);
-	while ((_inp(0xc000) & 8));
-	cpudec = _inpw(0xc006);
+  _outp(0xc004, (0x4c << 1) | 0x01);
+  _outp(0xc008, 0x10);
+  _outpw(0xc000, _inpw(0xc000));
+  _outp(0xc002, (0) ? 0x0b : 0x0a);
+  while ((_inp(0xc000) & 8));
+  cpudec = _inpw(0xc006);
 
-  cpuTemp = (float)cpu + (float)cpudec/256.0f;
+  cpuTemp = (float)cpu + (float)cpudec / 256.0f;
 }
 
 
-void CFanController::CalcSpeed(int targetTemp) {
+void CFanController::CalcSpeed(int targetTemp)
+{
   float temp;
   float tempOld;
   float targetTempFloor;
   float targetTempCeiling;
 
-  if (sensor == ST_GPU) {
-    temp    = gpuTemp;
+  if (sensor == ST_GPU)
+  {
+    temp = gpuTemp;
     tempOld = gpuLastTemp;
   }
-  else {
-    temp    = cpuTemp;
+  else
+  {
+    temp = cpuTemp;
     tempOld = cpuLastTemp;
   }
-  targetTempFloor   = (float)targetTemp - 0.75f;
+  targetTempFloor = (float)targetTemp - 0.75f;
   targetTempCeiling = (float)targetTemp + 0.75f;
 
-  if ((temp >= targetTempFloor) && (temp <= targetTempCeiling)) {
+  if ((temp >= targetTempFloor) && (temp <= targetTempCeiling))
+  {
     //within range, try to keep it steady
-    tooHotLoopCount  = 0;
+    tooHotLoopCount = 0;
     tooColdLoopCount = 0;
-    if (temp > tempOld) {
+    if (temp > tempOld)
+    {
       calculatedFanSpeed++;
     }
-    else if (temp < tempOld) {
+    else if (temp < tempOld)
+    {
       calculatedFanSpeed--;
     }
   }
 
-  else if (temp < targetTempFloor) {
+  else if (temp < targetTempFloor)
+  {
     //cool, lower speed unless it's getting hotter
-    if (temp == tempOld) {
+    if (temp == tempOld)
+    {
       tooColdLoopCount++;
     }
-    else if (temp > tempOld) {
+    else if (temp > tempOld)
+    {
       tooColdLoopCount--;
     }
-    if ((temp < tempOld) || (tooColdLoopCount == 12)) {
+    if ((temp < tempOld) || (tooColdLoopCount == 12))
+    {
       calculatedFanSpeed--;
       //CLog::DebugLog("Lowering fanspeed to %i, tooHotLoopCount=%i tooColdLoopCount=%i", calculatedFanSpeed, tooHotLoopCount, tooColdLoopCount);
       tooColdLoopCount = 0;
     }
   }
 
-  else if (temp > targetTempCeiling) {
+  else if (temp > targetTempCeiling)
+  {
     //hot, increase fanspeed if it's still getting hotter or not getting any cooler for at leat loopcount*sleepvalue
-    if (temp == tempOld) {
+    if (temp == tempOld)
+    {
       tooHotLoopCount++;
     }
-    else if (temp < tempOld) {
+    else if (temp < tempOld)
+    {
       tooHotLoopCount--;
     }
-    if ((temp > tempOld) || (tooHotLoopCount == 12)) {
+    if ((temp > tempOld) || (tooHotLoopCount == 12))
+    {
       calculatedFanSpeed++;
       //CLog::DebugLog("Increasing fanspeed to %i, tooHotLoopCount=%i tooColdLoopCount=%i", calculatedFanSpeed, tooHotLoopCount, tooColdLoopCount);
       tooHotLoopCount = 0;
     }
   }
 
- 	if (calculatedFanSpeed < 1) {calculatedFanSpeed = 1;} // always keep the fan running
-	if (calculatedFanSpeed > 50) {calculatedFanSpeed = 50;}
+  if (calculatedFanSpeed < 1) {calculatedFanSpeed = 1;} // always keep the fan running
+  if (calculatedFanSpeed > 50) {calculatedFanSpeed = 50;}
 }
