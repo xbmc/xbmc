@@ -1969,6 +1969,26 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
 		}
 	}
 
+	//	If we have not found a thumb before, look for a .tbn if its a file
+	if (strThumb.IsEmpty() && !pItem->m_bIsFolder)
+	{
+		Crc32 crc;
+		crc.Reset();
+		crc.Compute(pItem->m_strPath.c_str(),strlen(pItem->m_strPath.c_str()));
+		strThumb.Format("%s\\%x.tbn",g_stSettings.m_szAlbumDirectory,crc);
+		if (CUtil::ThumbExists(strThumb, true))
+		{
+			//	found a .tbn
+			pItem->SetIconImage(strThumb);
+			pItem->SetThumbnailImage(strThumb);
+		}
+		else
+		{
+			//	no .tbn found for file
+			strThumb.Empty();
+		}
+	}
+
 	//	If we have not found a thumb before, look for a folder thumb
   if (strThumb.IsEmpty() && pItem->GetLabel()!="..")
   {
