@@ -395,7 +395,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
     iCacheSize=256;
   }
   
-  CLog::Log("  cache sizem:%i kbyte",iCacheSize);
+  //CLog::Log("  cache sizem:%i kbyte",iCacheSize);
   
   // cache (remote) subtitles to HD
 	CUtil::CacheSubtitles(strFile);
@@ -435,7 +435,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
   options.SetVolumeAmplification(g_stSettings.m_fVolumeAmplification);
   options.GetOptions(argc,argv);
   
-  CLog::Log("  open 1st time");
+  //CLog::Log("  open 1st time");
 	mplayer_init(argc,argv);
   mplayer_setcache_size(iCacheSize);
 	int iRet=mplayer_open_file(strFile.c_str());
@@ -580,7 +580,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
     if (bNeed2Restart)
     {
       CLog::Log("  --------------- restart ---------------");
-      CLog::Log("  open 2nd time");
+      //CLog::Log("  open 2nd time");
 			mplayer_close_file();
       options.GetOptions(argc,argv);
 			load();
