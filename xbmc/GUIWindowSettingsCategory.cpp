@@ -51,6 +51,7 @@ struct sortstringbyname
 CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
 :CGUIWindow(0)
 {
+	m_iLastControl=-1;
 	m_pOriginalSpin = NULL;
 	m_pOriginalRadioButton = NULL;
 	m_pOriginalButton = NULL;
@@ -185,14 +186,18 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 			m_OldResolution = (RESOLUTION)g_guiSettings.GetInt("LookAndFeel.Resolution");
 			int iFocusControl=m_iLastControl;
 
-			SetupControls();
-
 			CGUIWindow::OnMessage(message);
+
+      SetupControls();
 
 			if (iFocusControl>-1)
 			{
 				SET_CONTROL_FOCUS(iFocusControl, 0);
 			}
+      else
+      {
+        SET_CONTROL_FOCUS(m_dwDefaultFocusControlID, 0);
+      }
 
 			return true;
 		}
@@ -261,6 +266,7 @@ void CGUIWindowSettingsCategory::SetupControls()
 		pButton->SetPosition(pButtonArea->GetXPosition(), pButtonArea->GetYPosition() + i*pControlGap->GetHeight());
 		pButton->SetNavigation(CONTROL_START_BUTTONS+(int)i-1, CONTROL_START_BUTTONS+i+1, CONTROL_START_CONTROL, CONTROL_START_CONTROL);
 		pButton->SetVisible(true);
+    pButton->AllocResources();
 		Add(pButton);
 	}
 	// update the first and last buttons...
@@ -1045,6 +1051,7 @@ void CGUIWindowSettingsCategory::FreeControls()
 		Remove(CONTROL_START_BUTTONS+i);
 		if (pControl)
 		{
+      pControl->FreeResources();
 			delete pControl;
 		}
 	}
@@ -1063,6 +1070,7 @@ void CGUIWindowSettingsCategory::FreeSettingsControls()
 		Remove(CONTROL_START_CONTROL+i);
 		if (pControl)
 		{
+      pControl->FreeResources();
 			delete pControl;
 		}
 		delete m_vecSettings[i];
@@ -1076,19 +1084,18 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, int iPosX, int i
 	CGUIControl *pControl = NULL;
 	if (pSetting->GetControlType() == CHECKMARK_CONTROL)
 	{
-		pControl = new CGUIRadioButtonControl(*m_pOriginalRadioButton);
+    pControl = new CGUIRadioButtonControl(*m_pOriginalRadioButton);
 		if (!pControl) return;
-		CGUIRadioButtonControl *pRadioButton = (CGUIRadioButtonControl *)pControl;
-		pRadioButton->SetText(g_localizeStrings.Get(pSetting->GetLabel()));
+		((CGUIRadioButtonControl *)pControl)->SetText(g_localizeStrings.Get(pSetting->GetLabel()));
 		pControl->SetPosition(iPosX, iPosY);
 		pControl->SetWidth(iWidth);
-		pSettingControl = new CRadioButtonSettingControl(pRadioButton, iControlID, pSetting);
+		pSettingControl = new CRadioButtonSettingControl((CGUIRadioButtonControl *)pControl, iControlID, pSetting);
 	}
 	else if (pSetting->GetControlType() == SPIN_CONTROL_FLOAT || pSetting->GetControlType() == SPIN_CONTROL_INT_PLUS || pSetting->GetControlType() == SPIN_CONTROL_TEXT || pSetting->GetControlType() == SPIN_CONTROL_INT)
 	{	
-		pControl = new CGUISpinControlEx(*m_pOriginalSpin);
-		if (!pControl) return;
-		pControl->SetPosition(iPosX, iPosY);
+    pControl = new CGUISpinControlEx(*m_pOriginalSpin);
+    if (!pControl) return;
+	  pControl->SetPosition(iPosX, iPosY);
 		pControl->SetWidth(iWidth);
 		((CGUISpinControlEx *)pControl)->SetLabel(g_localizeStrings.Get(pSetting->GetLabel()));
 		pControl->SetWidth(iWidth);
@@ -1112,6 +1119,7 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, int iPosX, int i
 	pControl->SetGroup(CONTROL_GROUP_SETTINGS);
 	pControl->SetVisible(true);
 	Add(pControl);
+  pControl->AllocResources();
 	m_vecSettings.push_back(pSettingControl);
 }
 
