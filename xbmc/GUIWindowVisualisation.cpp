@@ -130,7 +130,7 @@ void CGUIWindowVisualisation::Render()
 			try
 			{
 				Sleep(16);
-					m_pVisualisation->Render();
+				m_pVisualisation->Render();
 				
 			}
 			catch(...)
