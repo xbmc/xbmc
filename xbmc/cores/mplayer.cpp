@@ -13,6 +13,8 @@
 #include "../XBAudioConfig.h"
 #include "../XBVideoConfig.h"
 #include "../utils/CharsetConverter.h"
+#include "../langcodeexpander.h"
+
 #define KEY_ENTER 13
 #define KEY_TAB 9
 
@@ -92,160 +94,9 @@ const char * dvd_audio_stream_types[8] =
 const char * dvd_audio_stream_channels[6] =
 { "mono", "stereo", "unknown", "unknown", "5.1/6.1", "5.1" };
 
-#define DVDLANGUAGES 144
-const char * dvd_audio_stream_langs[DVDLANGUAGES][2] = 
-{ 	{"--", "(Not detected)"},
-	{"cc", "Closed Caption"},
-	{"aa", "Afar"},
-	{"ab", "Abkhazian"},
-	{"af", "Afrikaans"},
-	{"am", "Amharic"},
-	{"ar", "Arabic"},
-	{"as", "Assamese"},
-	{"ay", "Aymara"},
-	{"az", "Azerbaijani"},
-	{"ba", "Bashkir"},
-	{"be", "Byelorussian"},
-	{"bg", "Bulgarian"},
-	{"bh", "Bihari"},
-	{"bi", "Bislama"},
-	{"bn", "Bengali; Bangla"},
-	{"bo", "Tibetan"},
-	{"br", "Breton"},
-	{"ca", "Catalan"},
-	{"co", "Corsican"},
-	{"cs", "Czech"},
-	{"cy", "Welsh"},
-	{"da", "Dansk"},
-	{"de", "Deutsch"},
-	{"dz", "Bhutani"},
-	{"el", "Greek"},
-	{"en", "English"},
-	{"eo", "Esperanto"},
-	{"es", "Espanol"},
-	{"et", "Estonian"},
-	{"eu", "Basque"},
-	{"fa", "Persian"},
-	{"fi", "Finnish"},
-	{"fj", "Fiji"},
-	{"fo", "Faroese"},
-	{"fr", "Francais"},
-	{"fy", "Frisian"},
-	{"ga", "Irish"},
-	{"gd", "Scots Gaelic"},
-	{"gl", "Galician"},
-	{"gn", "Guarani"},
-	{"gu", "Gujarati"},
-	{"ha", "Hausa"},
-	{"he", "Hebrew"},
-	{"hi", "Hindi"},
-	{"hr", "Hrvatski"},
-	{"hu", "Hungarian"},
-	{"hy", "Armenian"},
-	{"ia", "Interlingua"},
-	{"id", "Indonesian"},
-	{"ie", "Interlingue"},
-	{"ik", "Inupiak"},
-	{"in", "Indonesian"},
-	{"is", "Islenska"},
-	{"it", "Italiano"},
-	{"iu", "Inuktitut"},
-	{"iw", "Hebrew"},
-	{"ja", "Japanese"},
-	{"ji", "Yiddish"},
-	{"jw", "Javanese"},
-	{"ka", "Georgian"},
-	{"kk", "Kazakh"},
-	{"kl", "Greenlandic"},
-	{"km", "Cambodian"},
-	{"kn", "Kannada"},
-	{"ko", "Korean"},
-	{"ks", "Kashmiri"},
-	{"ku", "Kurdish"},
-	{"ky", "Kirghiz"},
-	{"la", "Latin"},
-	{"ln", "Lingala"},
-	{"lo", "Laothian"},
-	{"lt", "Lithuanian"},
-	{"lv", "Latvian, Lettish"},
-	{"mg", "Malagasy"},
-	{"mi", "Maori"},
-	{"mk", "Macedonian"},
-	{"ml", "Malayalam"},
-	{"mn", "Mongolian"},
-	{"mo", "Moldavian"},
-	{"mr", "Marathi"},
-	{"ms", "Malay"},
-	{"mt", "Maltese"},
-	{"my", "Burmese"},
-	{"na", "Nauru"},
-	{"ne", "Nepali"},
-	{"nl", "Nederlands"},
-	{"no", "Norsk"},
-	{"oc", "Occitan"},
-	{"om", "(Afan) Oromo"},
-	{"or", "Oriya"},
-	{"pa", "Punjabi"},
-	{"pl", "Polish"},
-	{"ps", "Pashto, Pushto"},
-	{"pt", "Portugues"},
-	{"qu", "Quechua"},
-	{"rm", "Rhaeto-Romance"},
-	{"rn", "Kirundi"},
-	{"ro", "Romanian"},
-	{"ru", "Russian"},
-	{"rw", "Kinyarwanda"},
-	{"sa", "Sanskrit"},
-	{"sd", "Sindhi"},
-	{"sg", "Sangho"},
-	{"sh", "Serbo-Croatian"},
-	{"si", "Sinhalese"},
-	{"sk", "Slovak"},
-	{"sl", "Slovenian"},
-	{"sm", "Samoan"},
-	{"sn", "Shona"},
-	{"so", "Somali"},
-	{"sq", "Albanian"},
-	{"sr", "Serbian"},
-	{"ss", "Siswati"},
-	{"st", "Sesotho"},
-	{"su", "Sundanese"},
-	{"sv", "Svenska"},
-	{"sw", "Swahili"},
-	{"ta", "Tamil"},
-	{"te", "Telugu"},
-	{"tg", "Tajik"},
-	{"th", "Thai"},
-	{"ti", "Tigrinya"},
-	{"tk", "Turkmen"},
-	{"tl", "Tagalog"},
-	{"tn", "Setswana"},
-	{"to", "Tonga"},
-	{"tr", "Turkish"},
-	{"ts", "Tsonga"},
-	{"tt", "Tatar"},
-	{"tw", "Twi"},
-	{"ug", "Uighur"},
-	{"uk", "Ukrainian"},
-	{"ur", "Urdu"},
-	{"uz", "Uzbek"},
-	{"vi", "Vietnamese"},
-	{"vo", "Volapuk"},
-	{"wo", "Wolof"},
-	{"xh", "Xhosa"},
-	{"yi", "Yiddish"},				// formerly ji
-	{"yo", "Yoruba"},
-	{"za", "Zhuang"},
-	{"zh", "Chinese"},
-	{"zu", "Zulu"}
-};
-
-
-
-
-
 bool   m_bCanceling=false;
 static CDlgCache* m_dlgCache=NULL;
+
 CMPlayer::Options::Options()
 {
 	m_bResampleAudio=false;
@@ -1551,33 +1402,19 @@ int     CMPlayer::GetSubtitle()
 
 void      CMPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
 {
-	stream_language_t slt;
-	mplayer_getSubtitleStreamInfo(iStream, &slt);
-	CLog::Log(LOGINFO, "Stream:%d language:%d", iStream, slt.language);
-	if(slt.language != 0)
-	{               
-		char lang[3];
-		lang[2]=0;
-		lang[1]=(slt.language&255);
-		lang[0]=(slt.language>>8);
-		CStdString strName;
-		for(int i=0;i<DVDLANGUAGES;i++)
-		{
-			if(stricmp(lang,dvd_audio_stream_langs[i][0])==0)
-			{
-				strName = dvd_audio_stream_langs[i][1];
-				break;
-			}
-		}
-		if(strName.length() == 0)
-		{
-			strName = "UNKNOWN:";
-			strName += (char)(slt.language>>8);
-			strName += (char)(slt.language&255);
-		}
 
-		strStreamName = strName;
+  xbmc_subtitle sub;
+  memset(&sub, 0, sizeof(xbmc_subtitle));
+  
+  mplayer_getSubtitleInfo(iStream, &sub);
 
+  if(strlen(sub.name)>0)
+  {
+    if(!g_LangCodeExpander.Lookup(strStreamName, sub.name))
+    {
+      strStreamName = "UNKNOWN:";
+		  strStreamName += sub.name;
+    }
 	}
 	else
 	{
@@ -1634,39 +1471,20 @@ void     CMPlayer::GetAudioStreamName(int iStream, CStdString& strStreamName)
 	mplayer_getAudioStreamInfo(iStream, &slt);
 	if(slt.language != 0)
 	{               
-		char lang[3];
-		lang[2]=0;
-		lang[1]=(slt.language&255);
-		lang[0]=(slt.language>>8);
-		CStdString strName;
-		for(int i=0;i<DVDLANGUAGES;i++)
-		{
-			if(stricmp(lang,dvd_audio_stream_langs[i][0])==0)
-			{
-				strName = dvd_audio_stream_langs[i][1];
-				break;
-			}
-		}
-		if(strName.length() == 0)
-		{
-			strName = "UNKNOWN:";
+    CStdString strName;
+    if(!g_LangCodeExpander.LookupDVDLangCode(strName, slt.language))
+    {
+      strName = "UNKNOWN:";
 			strName += (char)(slt.language>>8);
 			strName += (char)(slt.language&255);
-		}
+    }
 
 		strStreamName.Format("%s - %s(%s)",strName,dvd_audio_stream_types[slt.type],dvd_audio_stream_channels[slt.channels]);
-
 	}
 	else
 	{
 		strStreamName = "";
 	}
-	//char lang[3];
-	//code=lang[1]|(lang[0]<<8);
-	//lang[2]=0;
-	//lang[1]=(slt.language&255);
-	//lang[0]=(slt.language>>8);
-	//strStreamName = lang;
 }
 
 void     CMPlayer::SetAudioStream(int iStream)

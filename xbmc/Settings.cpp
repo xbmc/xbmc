@@ -9,6 +9,7 @@
 #include "GraphicContext.h"
 #include "GUIWindowMusicBase.h"
 #include "utils/FanController.h"
+#include "LangCodeExpander.h"
 
 using namespace std;
 
@@ -487,6 +488,10 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 	GetShares(pRootElement,"video",m_vecMyVideoShares,strDefault);
 	if (strDefault.size())
 		strcpy( g_stSettings.m_szDefaultVideos, strDefault.c_str());
+
+  g_LangCodeExpander.LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
+
+  g_LangCodeExpander.LoadStandardCodes();
 
 	bXboxMediacenter=true;
 	return true;
@@ -1094,6 +1099,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 	LoadCalibration(pRootElement, strSettingsFile);
 
 	g_guiSettings.LoadXML(pRootElement);
+
 	return true;
 }
 
