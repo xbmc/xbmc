@@ -68,7 +68,7 @@ bool CMusicInfoTagLoaderOgg::Load(const CStdString& strFileName, CMusicInfoTag& 
       }
       if (!strMBAID.IsEmpty())
       {
-        tag.SetMusicBrainzAlbumID(strMBAID);
+        tag.SetMusicBrainzArtistID(strMBAID);
       }
       if (!strMBBID.IsEmpty())
       {
