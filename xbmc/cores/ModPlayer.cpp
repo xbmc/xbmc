@@ -4,6 +4,8 @@
 #include "../xbox/iosupport.h"
 #include "../utils/log.h"
 #include "../SectionLoader.h"
+#include "../URL.h"
+#include "../FileSystem/FileSmb.h"
 
 #pragma comment(linker,"/merge:MOD_RD=MOD_RX")
 #pragma comment(linker,"/section:MOD_RX,REN")
@@ -81,16 +83,31 @@ bool ModPlayer::openfile(const CStdString& strFile)
 {
 	closefile();
 
-	char* str = strdup(strFile.c_str());
+	char* str = NULL;
+	if (!CUtil::IsHD(strFile))
+	{
+		CFile file;
+		if (!file.Cache(strFile.c_str(),"Z:\\cachedmod",NULL,NULL))
+		{
+			::DeleteFile("Z:\\cachedmod");
+			CLog::Log("ModPlayer: Unable to cache file %s\n", strFile.c_str());
+			return false;
+		}
+		str = strdup("Z:\\cachedmod");
+	}
+	else
+		str = strdup(strFile.c_str());
+
 	m_pModule = Mod_Player_Load(str, 32, 0);
 	free(str);
+
 	if (m_pModule)
 	{
 		Mod_Player_Start(m_pModule);
 	}
 	else
 	{
-		CLog::Log("ModPlayer: Could not load module, reason: %s\n", MikMod_strerror(mikwinGetErrno()));
+		CLog::Log("ModPlayer: Could not load module %s: %s\n", strFile.c_str(), MikMod_strerror(mikwinGetErrno()));
 		return false;
 	}
 
@@ -245,7 +262,7 @@ void ModPlayer::OnExit()
 void ModPlayer::Process()
 {
 	//this thing should get pumped at least once a frame at 30 fps
-	DWORD dwQuantum = 1000 / 30;
+	DWORD dwQuantum = 1000 / 35;
 #ifdef _DEBUG
 	AveUpdate = 0;
 	NumUpdates = 0;
