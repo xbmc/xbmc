@@ -85,6 +85,13 @@ void CApplicationMessenger::ProcessMessages()
 					XKUtils::XBOXPowerCycle();
 				break;
 
+        case TMSG_RESET:
+					g_application.Stop();
+          Sleep(200);
+          XKUtils::XBOXReset();
+				break;
+
+
 				case TMSG_MEDIA_PLAY:
 				{
 					// restore to previous window if needed
@@ -270,6 +277,12 @@ void CApplicationMessenger::Shutdown()
 void CApplicationMessenger::Restart()
 {
 		ThreadMessage tMsg = {TMSG_RESTART};
+		SendMessage(tMsg);
+}
+
+void CApplicationMessenger::Reset()
+{
+		ThreadMessage tMsg = {TMSG_RESET};
 		SendMessage(tMsg);
 }
 
