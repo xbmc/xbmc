@@ -34,7 +34,7 @@
 
 #define OSD_TEXTURE_HEIGHT 150
 
-#define NUM_BUFFERS (3)
+#define NUM_BUFFERS (2)
 
 struct DRAWRECT
 {
@@ -634,9 +634,15 @@ static unsigned int video_preinit(const char *arg)
 
 static void YV12ToRGB()
 {
-	while (m_RGBTexture[m_iRGBDecodeBuffer]->IsBusy()) Sleep(1);
-
 	g_graphicsContext.Lock();
+
+	while (m_RGBTexture[m_iRGBDecodeBuffer]->IsBusy())
+	{
+		if (m_RGBTexture[m_iRGBDecodeBuffer]->Lock)
+			g_graphicsContext.Get3DDevice()->BlockOnFence(m_RGBTexture[m_iRGBDecodeBuffer]->Lock);
+		else
+			Sleep(1);
+	}
 
 	LPDIRECT3DSURFACE8 pOldRT, pNewRT;
 	m_RGBTexture[m_iRGBDecodeBuffer]->GetSurfaceLevel(0, &pNewRT);
@@ -653,7 +659,6 @@ static void YV12ToRGB()
 		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_MAGFILTER,  D3DTEXF_POINT );
 		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_MINFILTER,  D3DTEXF_POINT );
 	}
-	g_graphicsContext.Get3DDevice()->SetPixelShader(m_hPixelShader);
 
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ZENABLE,      FALSE );
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGENABLE,    FALSE );
@@ -663,7 +668,9 @@ static void YV12ToRGB()
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_ONE );
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_ZERO );
+
 	g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_YV12VERTEX );
+	g_graphicsContext.Get3DDevice()->SetPixelShader(m_hPixelShader);
 
 	// Render the image
 	float w = float(image_width / 2);
@@ -675,33 +682,37 @@ static void YV12ToRGB()
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, 0, 0 );
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, 0, 0 );
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, 0, 0 );
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, 0, 0, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, 0, 0, 0, 1.0f );
 
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)image_width, 0 );
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, w, 0 );
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, w, 0 );
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)image_width, 0, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)image_width, 0, 0, 1.0f );
 
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)image_width, (float)image_height );
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, w, h );
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, w, h );
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)image_width, (float)image_height, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)image_width, (float)image_height, 0, 1.0f );
 
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, 0, (float)image_height );
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, 0, h );
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, 0, h );
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, 0, (float)image_height, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, 0, (float)image_height, 0, 1.0f );
 	g_graphicsContext.Get3DDevice()->End();
 
+	g_graphicsContext.Get3DDevice()->SetScreenSpaceOffset(0, 0);
+
 	g_graphicsContext.Get3DDevice()->SetPixelShader(NULL);
+	g_graphicsContext.Get3DDevice()->SetVertexShader(0);
 	g_graphicsContext.Get3DDevice()->SetTexture(0, NULL);
 	g_graphicsContext.Get3DDevice()->SetTexture(1, NULL);
 	g_graphicsContext.Get3DDevice()->SetTexture(2, NULL);
 	g_graphicsContext.Get3DDevice()->SetRenderTarget(pOldRT, NULL);
+
+	g_graphicsContext.Get3DDevice()->KickPushBuffer();
+
 	pOldRT->Release();
 	pNewRT->Release();
-
-	g_graphicsContext.Get3DDevice()->SetScreenSpaceOffset(0, 0);
 
 	++m_iRGBDecodeBuffer %= NUM_BUFFERS;
 
@@ -712,24 +723,44 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
 {
   BYTE *s;
   BYTE *d;
-  DWORD i=0;
+  int i=0;
   int iBottom=y+h;
   int iOrgY=y;
   int iOrgH=h;
 
-	while (m_YTexture[m_iYUVDecodeBuffer]->IsBusy()) Sleep(1);
-	while (m_UTexture[m_iYUVDecodeBuffer]->IsBusy()) Sleep(1);
-	while (m_VTexture[m_iYUVDecodeBuffer]->IsBusy()) Sleep(1);
+	g_graphicsContext.Lock();
+
+	while (m_YTexture[m_iYUVDecodeBuffer]->IsBusy())
+	{
+		if (m_YTexture[m_iYUVDecodeBuffer]->Lock)
+			g_graphicsContext.Get3DDevice()->BlockOnFence(m_YTexture[m_iYUVDecodeBuffer]->Lock);
+		else
+			Sleep(1);
+	}
+	while (m_UTexture[m_iYUVDecodeBuffer]->IsBusy())
+	{
+		if (m_UTexture[m_iYUVDecodeBuffer]->Lock)
+			g_graphicsContext.Get3DDevice()->BlockOnFence(m_UTexture[m_iYUVDecodeBuffer]->Lock);
+		else
+			Sleep(1);
+	}
+	while (m_VTexture[m_iYUVDecodeBuffer]->IsBusy())
+	{
+		if (m_VTexture[m_iYUVDecodeBuffer]->Lock)
+			g_graphicsContext.Get3DDevice()->BlockOnFence(m_VTexture[m_iYUVDecodeBuffer]->Lock);
+		else
+			Sleep(1);
+	}
 
 	D3DLOCKED_RECT lr;
 
   // copy Y
 	m_YTexture[m_iYUVDecodeBuffer]->LockRect(0, &lr, NULL, 0);
   d=(BYTE*)lr.pBits + lr.Pitch*y + x;
-  s=src[0];                           
-  for(i=0;i<(DWORD)h;i++){
-    fast_memcpy(d,s,w);                  
-    s+=stride[0];                  
+  s=src[0];
+  for(i=0;i<h;i++){
+    fast_memcpy(d,s,w);
+    s+=stride[0];
     d+=lr.Pitch;
   }
 	m_YTexture[m_iYUVDecodeBuffer]->UnlockRect(0);
@@ -740,7 +771,7 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
 	m_UTexture[m_iYUVDecodeBuffer]->LockRect(0, &lr, NULL, 0);
   d=(BYTE*)lr.pBits + lr.Pitch*y + x;
   s=src[1];
-  for(i=0;i<(DWORD)h;i++){
+  for(i=0;i<h;i++){
     fast_memcpy(d,s,w);
     s+=stride[1];
     d+=lr.Pitch;
@@ -751,7 +782,7 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
 	m_VTexture[m_iYUVDecodeBuffer]->LockRect(0, &lr, NULL, 0);
   d=(BYTE*)lr.pBits + lr.Pitch*y + x;
   s=src[2];
-  for(i=0;i<(DWORD)h;i++){
+  for(i=0;i<h;i++){
     fast_memcpy(d,s,w);
     s+=stride[2];
     d+=lr.Pitch;
@@ -765,6 +796,8 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
     ++m_iYUVDecodeBuffer %= NUM_BUFFERS;
     m_bFlip++;
   }
+
+	g_graphicsContext.Unlock();
 
   return 0;
 }
@@ -875,16 +908,16 @@ void xbox_video_render_osd()
 	g_graphicsContext.Get3DDevice()->Begin(D3DPT_QUADLIST);
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, 0, 0 );
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, 0, 0 );
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_OSDRect.left, m_OSDRect.top, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_OSDRect.left, m_OSDRect.top, 0, 1.0f );
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, m_OSDWidth, 0 );
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, m_OSDWidth, 0 );
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_OSDRect.right, m_OSDRect.top, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_OSDRect.right, m_OSDRect.top, 0, 1.0f );
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, m_OSDWidth, m_OSDHeight );
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, m_OSDWidth, m_OSDHeight );
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_OSDRect.right, m_OSDRect.bottom, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_OSDRect.right, m_OSDRect.bottom, 0, 1.0f );
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, 0, m_OSDHeight );
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, 0, m_OSDHeight );
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_OSDRect.left, m_OSDRect.bottom, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_OSDRect.left, m_OSDRect.bottom, 0, 1.0f );
 	g_graphicsContext.Get3DDevice()->End();
 
 	g_graphicsContext.Get3DDevice()->SetTexture(0, NULL);
@@ -897,6 +930,7 @@ void xbox_video_render_osd()
 void xbox_video_render()
 {
   if (m_iRGBRenderBuffer<0 || m_iRGBRenderBuffer >= NUM_BUFFERS) return;
+
   g_graphicsContext.Get3DDevice()->SetTexture( 0, m_RGBTexture[m_iRGBRenderBuffer]);
 
 	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_SELECTARG1 );
@@ -923,16 +957,16 @@ void xbox_video_render()
 	// Render the image
 	g_graphicsContext.Get3DDevice()->Begin(D3DPT_QUADLIST);
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left, (float)rs.top );
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.left, (float)rd.top, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.left, (float)rd.top, 0, 1.0f );
 
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)rs.top );
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.right, (float)rd.top, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.right, (float)rd.top, 0, 1.0f );
 
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)rs.bottom );
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.right, (float)rd.bottom, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.right, (float)rd.bottom, 0, 1.0f );
 
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left, (float)rs.bottom );
-	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.left, (float)rd.bottom, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.left, (float)rd.bottom, 0, 1.0f );
 	g_graphicsContext.Get3DDevice()->End();
 
 	g_graphicsContext.Get3DDevice()->SetTexture( 0, NULL);
@@ -943,7 +977,7 @@ void xbox_video_render()
 static void video_flip_page(void)
 {
   if (m_bPauseDrawing) return;
-  
+
 	if (m_bFlip<=0)
   {
     return;
@@ -967,7 +1001,7 @@ static void video_flip_page(void)
 		if (g_application.NeedRenderFullScreen())
 			g_application.RenderFullScreen();
 
-	  //g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      
+	  g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      
 		g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
 	}
 	g_graphicsContext.Unlock();
@@ -1075,24 +1109,45 @@ static unsigned int get_image(mp_image_t *mpi)
 //********************************************************************************************************
 static unsigned int put_image(mp_image_t *mpi)
 {
+	return VO_FALSE;
 	if((mpi->flags&MP_IMGFLAG_DIRECT) || (mpi->flags&MP_IMGFLAG_DRAW_CALLBACK))
 	{
 		return VO_FALSE;
 	}
-  DWORD  i = 0;
+  int  i = 0;
   BYTE   *d;
   BYTE   *s;
-  DWORD x = mpi->x;
-  DWORD y = mpi->y;
-  DWORD w = mpi->w;
-  DWORD h = mpi->h;
-
-	while (m_YTexture[m_iYUVDecodeBuffer]->IsBusy()) Sleep(1);
-	while (m_UTexture[m_iYUVDecodeBuffer]->IsBusy()) Sleep(1);
-	while (m_VTexture[m_iYUVDecodeBuffer]->IsBusy()) Sleep(1);
+  int x = mpi->x;
+  int y = mpi->y;
+  int w = mpi->w;
+  int h = mpi->h;
 
 	if (mpi->flags&MP_IMGFLAG_PLANAR)
 	{
+		g_graphicsContext.Lock();
+
+		while (m_YTexture[m_iYUVDecodeBuffer]->IsBusy())
+		{
+			if (m_YTexture[m_iYUVDecodeBuffer]->Lock)
+				g_graphicsContext.Get3DDevice()->BlockOnFence(m_YTexture[m_iYUVDecodeBuffer]->Lock);
+			else
+				Sleep(1);
+		}
+		while (m_UTexture[m_iYUVDecodeBuffer]->IsBusy())
+		{
+			if (m_UTexture[m_iYUVDecodeBuffer]->Lock)
+				g_graphicsContext.Get3DDevice()->BlockOnFence(m_UTexture[m_iYUVDecodeBuffer]->Lock);
+			else
+				Sleep(1);
+		}
+		while (m_VTexture[m_iYUVDecodeBuffer]->IsBusy())
+		{
+			if (m_VTexture[m_iYUVDecodeBuffer]->Lock)
+				g_graphicsContext.Get3DDevice()->BlockOnFence(m_VTexture[m_iYUVDecodeBuffer]->Lock);
+			else
+				Sleep(1);
+		}
+
 		D3DLOCKED_RECT lr;
 
 		m_YTexture[m_iYUVDecodeBuffer]->LockRect(0, &lr, NULL, 0);
@@ -1104,6 +1159,7 @@ static unsigned int put_image(mp_image_t *mpi)
       s+=mpi->stride[0];
       d+=lr.Pitch;
     }
+		m_YTexture[m_iYUVDecodeBuffer]->UnlockRect(0);
 
     w/=2;h/=2;x/=2;y/=2;
     
@@ -1115,6 +1171,7 @@ static unsigned int put_image(mp_image_t *mpi)
       s+=mpi->stride[1];
       d+=lr.Pitch;
     }
+		m_UTexture[m_iYUVDecodeBuffer]->UnlockRect(0);
 
 		m_VTexture[m_iYUVDecodeBuffer]->LockRect(0, &lr, NULL, 0);
 		d=(BYTE*)lr.pBits + lr.Pitch*y + x;
@@ -1124,6 +1181,7 @@ static unsigned int put_image(mp_image_t *mpi)
       s+=mpi->stride[2];
       d+=lr.Pitch;
     }
+		m_VTexture[m_iYUVDecodeBuffer]->UnlockRect(0);
 	}
 	else
 	{
@@ -1134,6 +1192,8 @@ static unsigned int put_image(mp_image_t *mpi)
 	YV12ToRGB();
 	++m_iYUVDecodeBuffer %= NUM_BUFFERS;
 	m_bFlip++;
+
+	g_graphicsContext.Unlock();
 
 	return VO_TRUE;
 }

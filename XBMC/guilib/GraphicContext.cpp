@@ -231,22 +231,22 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
 			res = NTSC_4x3;
 	}
 	bool NeedReset = false;
-	if (m_bFullScreenVideo)
-	{
-		if (m_pd3dParams->FullScreen_PresentationInterval != D3DPRESENT_INTERVAL_ONE)
-		{
-			m_pd3dParams->FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_ONE;
-			NeedReset = true;
-		}
-	}
-	else
-	{
+//	if (m_bFullScreenVideo)
+//	{
+//		if (m_pd3dParams->FullScreen_PresentationInterval != D3DPRESENT_INTERVAL_ONE)
+//		{
+//			m_pd3dParams->FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_ONE;
+//			NeedReset = true;
+//		}
+//	}
+//	else
+//	{
 		if (m_pd3dParams->FullScreen_PresentationInterval != D3DPRESENT_INTERVAL_IMMEDIATE)
 		{
 			m_pd3dParams->FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 			NeedReset = true;
 		}
-	}
+//	}
 	if (NeedZ != m_pd3dParams->EnableAutoDepthStencil)
 	{
 		m_pd3dParams->EnableAutoDepthStencil = NeedZ;
