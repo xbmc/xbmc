@@ -186,7 +186,7 @@ HRESULT CApplication::Initialize()
 			}
 
   }
-	g_graphicsContext.SetD3DDevice(m_pd3dDevice);//,m_d3dpp.BackBufferWidth,m_d3dpp.BackBufferHeight, g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY, (m_d3dpp.Flags&D3DPRESENTFLAG_WIDESCREEN) !=0 );
+	g_graphicsContext.SetD3DDevice(m_pd3dDevice);
 	LoadSkin(g_stSettings.szDefaultSkin);
   m_gWindowManager.Add(&m_guiHome);											// window id = 0
   m_gWindowManager.Add(&m_guiPrograms);									// window id = 1
@@ -249,9 +249,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiMusicOverlay.FreeResources();
 	m_guiMusicOverlay.ClearAll();
 	
-//	m_guiWindowFullScreen.FreeResources();
-//	m_guiWindowFullScreen.ClearAll();
-
 	m_gWindowManager.DeInitialize();
 	g_TextureManager.Cleanup();
 
@@ -290,7 +287,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 	m_guiMusicOverlay.AllocResources();
 	m_guiWindowVideoOverlay.AllocResources();
-//	m_guiWindowFullScreen.AllocResources();
 	m_gWindowManager.AddMsgTarget(this);
 	m_gWindowManager.SetCallback(*this);
 
@@ -714,7 +710,6 @@ bool CApplication::IsPlayingVideo() const
 
 void CApplication::RenderFullScreen()
 {
-//	m_guiWindowFullScreen.RenderFullScreen();
 //	OutputDebugString("RenderFullScreen ...\n");
 	if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
 	{
@@ -788,7 +783,6 @@ void CApplication::ResetAllControls()
 {
 	m_guiMusicOverlay.ResetAllControls();
 	m_guiWindowVideoOverlay.ResetAllControls();
-//	m_guiWindowFullScreen.ResetAllControls();
 }
 bool CApplication::OnMessage(CGUIMessage& message)
 {

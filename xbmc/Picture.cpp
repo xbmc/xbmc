@@ -27,7 +27,7 @@ void CPicture::Free()
 	}
 }
 
-IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate,int iMaxWidth, int iMaxHeight)
+IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate,int iMaxWidth, int iMaxHeight, bool bRGB)
 {
 	IDirect3DTexture8* pTexture=NULL;
 	CStdString strExtension;
@@ -104,7 +104,10 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate,int
 	m_dwHeight=image.GetHeight();
 
 	image.Flip();
-	pTexture=GetTexture(image);
+	if (bRGB)
+		pTexture=GetTexture(image);
+	else
+		pTexture=GetYUY2Texture(image);
 	return pTexture;
 }
 
@@ -162,7 +165,58 @@ IDirect3DTexture8* CPicture::GetTexture( CxImage& image  )
 	return pTexture;
 }
 
+IDirect3DTexture8* CPicture::GetYUY2Texture( CxImage& image  )
+{
+	IDirect3DTexture8* pTexture=NULL;
+	if (g_graphicsContext.Get3DDevice()->CreateTexture( image.GetWidth(), 
+																											image.GetHeight(), 
+																											1, // levels
+																											0, //usage
+																											D3DFMT_YUY2 ,
+																											0,
+																											&pTexture) != D3D_OK) 
+	{
+		return NULL;
+	}
+	if (!pTexture) 
+	{
+		return NULL;
+	}
 
+	DWORD dwHeight=image.GetHeight();
+	DWORD dwWidth =image.GetWidth();
+
+	D3DLOCKED_RECT lr;
+	if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
+	{
+		CxImage imageY;
+		CxImage imageU;
+		CxImage imageV;
+ 		if ( image.SplitYUV(&imageY,&imageU,&imageV))
+		{
+			DWORD strideScreen=lr.Pitch;
+			for (DWORD y=0; y < m_dwHeight; y++)
+			{
+				BYTE *pDest = (BYTE*)lr.pBits + strideScreen*y;
+					
+				BYTE *pY = (BYTE*)imageY.GetBits() + y * imageY.GetEffWidth();
+				BYTE *pU = (BYTE*)imageU.GetBits() + (y) * (imageU.GetEffWidth());
+				BYTE *pV = (BYTE*)imageV.GetBits() + (y) * (imageV.GetEffWidth());
+				for (DWORD x=0; x < (m_dwWidth>>1); x++)
+				{
+					*pDest++ = *pY++;	
+					*pDest++ = *pU++;
+					*pDest++ = *pY++;
+					*pDest++ = *pV++;
+					pU++;
+					pV++;
+				}
+			}
+		}
+		pTexture->UnlockRect( 0 );
+	}
+	return pTexture;
+}
 
 bool CPicture::CreateThumnail(const CStdString& strFileName)
 {
@@ -249,7 +303,7 @@ bool CPicture::CreateThumnail(const CStdString& strFileName)
 	return true;
 }
 
-void CPicture::RenderImage(IDirect3DTexture8* pTexture,int x, int y, int width, int height, int iTextureWidth, int iTextureHeight, int xOff, int yOff)
+void CPicture::RenderImage(IDirect3DTexture8* pTexture,int x, int y, int width, int height, int iTextureWidth, int iTextureHeight, bool bRGB)
 {
   CPicture::VERTEX* vertex=NULL;
   LPDIRECT3DVERTEXBUFFER8 m_pVB;
@@ -261,23 +315,24 @@ void CPicture::RenderImage(IDirect3DTexture8* pTexture,int x, int y, int width, 
 	float fy=(float)y;
 	float fwidth=(float)width;
 	float fheight=(float)height;
-	
+	float fxOff = 0;
+	float fyOff = 0;
 
   vertex[0].p = D3DXVECTOR4( fx - 0.5f,	fy - 0.5f,		0, 0 );
-  vertex[0].tu = (float)xOff;
-  vertex[0].tv = (float)yOff;
+  vertex[0].tu = fxOff;
+  vertex[0].tv = fyOff;
 
   vertex[1].p = D3DXVECTOR4( fx+fwidth - 0.5f,	fy - 0.5f,		0, 0 );
-  vertex[1].tu = (float)(xOff+iTextureWidth);
-  vertex[1].tv = (float)yOff;
+  vertex[1].tu = fxOff+(float)iTextureWidth;
+  vertex[1].tv = fyOff;
 
   vertex[2].p = D3DXVECTOR4( fx+fwidth - 0.5f,	fy+fheight - 0.5f,	0, 0 );
-  vertex[2].tu = (float)(xOff+iTextureWidth);
-  vertex[2].tv = (float)(yOff+iTextureHeight);
+  vertex[2].tu = fxOff+(float)iTextureWidth;
+  vertex[2].tv = fyOff+(float)iTextureHeight;
 
   vertex[3].p = D3DXVECTOR4( fx - 0.5f,	fy+fheight - 0.5f,	0, 0 );
-  vertex[3].tu = (float)xOff;
-  vertex[3].tv = (float)(yOff+iTextureHeight);
+  vertex[3].tu = fxOff;
+  vertex[3].tv = fyOff+iTextureHeight;
  
   vertex[0].col = 0xffffffff;
 	vertex[1].col = 0xffffffff;
@@ -306,12 +361,15 @@ void CPicture::RenderImage(IDirect3DTexture8* pTexture,int x, int y, int width, 
     g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
     g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA );
     g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_YUVENABLE, bRGB ? FALSE : TRUE);
     g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_VERTEX );
     // Render the image
     g_graphicsContext.Get3DDevice()->SetStreamSource( 0, m_pVB, sizeof(VERTEX) );
     g_graphicsContext.Get3DDevice()->DrawPrimitive( D3DPT_QUADLIST, 0, 1 );
 		m_pVB->Release();
 }
+
+
 
 bool CPicture::Convert(const CStdString& strSource,const CStdString& strDest)
 {
