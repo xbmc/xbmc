@@ -33,6 +33,8 @@
 	                                                        <mental@kludge.org>
 
 */
+#include "xbsection_start.h"
+
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"

@@ -26,6 +26,7 @@
 				PreprocessorDefinitions="WIN32;_XBOX;NDEBUG"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
+				BufferSecurityCheck="FALSE"
 				EnableFunctionLevelLinking="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Release/MIKXBOX.pch"
@@ -33,7 +34,8 @@
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"/>
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -107,6 +109,9 @@
 						PreprocessorDefinitions=""
 						BrowseInformation="1"/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\include\xbsection_start.h">
 			</File>
 			<Filter
 				Name="Drivers"

@@ -27,6 +27,8 @@
 
 ==============================================================================*/
 
+#include "xbsection_start.h"
+
 #ifndef _IN_VIRTCH_
 #include "mikmod.h"
 #include "mikmod_internals.h"

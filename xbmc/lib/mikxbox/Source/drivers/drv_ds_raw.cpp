@@ -22,6 +22,9 @@
 *	(Wrapper for use as a static library or DLL)
 *
 */
+
+#include "xbsection_start.h"
+
 //HACKED FOR XBOX BY PETE KNEPLEY
 
 #define INITGUID
@@ -50,6 +53,9 @@ static BOOL					 HasNotify = FALSE;     /* Notification available? ====*/
 static LPDIRECTSOUNDNOTIFY	 lpdsNotify;			/* Notify interface ===========*/
 static int					 playingFinished = 0;	/* >= 2: playing is finished ==*/
 static BYTE				*	 pSoundData=NULL;		/* Dsound buffer ptr ==========*/
+static __int64 PTS;
+static void (*pCallback)(unsigned char*, int) = 0;
+static BOOL IsPaused = FALSE;
 
 void set_ds(LPDIRECTSOUND ds) { lpds = ds; }
 void set_dsbprimary(LPDIRECTSOUNDBUFFER b) { lpdsbprimary = b; }
@@ -57,6 +63,8 @@ void set_ds_buffersize(int size) { if (size <= 0) dsbuffersize = DEFAULT_DSBUFFE
                                      else dsbuffersize = size; }
 LPDIRECTSOUNDBUFFER get_ds_dsbstream(void) { return lpdsb; }
 BOOL get_ds_active() { return playingFinished < 2; }
+__int64 get_ds_pts() { return PTS / 5; }
+void set_ds_callback(void (*p)(unsigned char*, int)) { pCallback = p; }
 
 /**********************************************************************************************************************************************************
 
@@ -80,6 +88,8 @@ static void FillMusicBuffer(DWORD size)
 			playingFinished++; 
 
 		VC_WriteBytes((SBYTE*)pSoundData+dwReplayPos, size);
+		if (pCallback)
+			pCallback(pSoundData+dwReplayPos, size);
 	}
 }
 /**********************************************************************************************************************************************************
@@ -136,7 +146,7 @@ BOOL DS_Init(void)
     dsbd.dwSize = sizeof(DSBUFFERDESC); 
 	dsbd.dwFlags = DSBCAPS_CTRLPOSITIONNOTIFY;
 	/* time size correspond to frequency / timer refresh (50Hz) */
-	dwTimeSize = wfm.nAvgBytesPerSec / 50;
+	dwTimeSize = wfm.nAvgBytesPerSec / 25;
     dsbd.dwBufferBytes = dwTimeSize * dsbuffersize;  
     dsbd.lpwfxFormat = &wfm; 
  
@@ -164,6 +174,8 @@ BOOL DS_Init(void)
 	memset(lpvData,0,dwSizeBuffer); 
 	
 	BYTE* peteisapimp=NULL;
+
+	IsPaused = FALSE;
 
 	dwReplayPos = dwMidBuffer;
     return VC_Init();
@@ -207,9 +219,10 @@ static BOOL DS_PlayStart(void)
 {
 	BOOL r = VC_PlayStart();
 	dwReplayPos = 0;
+	PTS = 0;
 	FillMusicBuffer(dwMidBuffer);
 	dwReplayPos = dwMidBuffer;
-    lpdsb->Play(0, 0, DSBPLAY_LOOPING);
+  lpdsb->Play(0, 0, DSBPLAY_LOOPING);
 	playingFinished = 0;
 	return r;
 }
@@ -238,11 +251,15 @@ void DS_PlayStop(void)
 		the updated size is now constant until u change frequency -> dwTimeSize = frequency / 50Hz. 
 
 ***********************************************************************************************************************************************************/
+
 static void DS_Update(void)
 {
-static DWORD dwWrite=0;
-	
+	if (IsPaused)
+		lpdsb->Pause(DSBPAUSE_RESUME);
+	IsPaused = FALSE;
 
+	static DWORD dwWrite=0;
+	
 	if FAILED(lpdsb->GetCurrentPosition(&dwPlay, &dwWrite)){
 		return;
 		//goto trythis;
@@ -256,17 +273,34 @@ static DWORD dwWrite=0;
 			if (dwReplayPos >= dwSizeBuffer){
 				dwReplayPos = 0;
 			}
+			++PTS;
 		}
 	}
 	else{
 		if ( dwPlay > (dwReplayPos+dwMidBuffer)){
 			FillMusicBuffer(dwTimeSize);
 			dwReplayPos += dwTimeSize;
+			++PTS;
 		}
 
 	}
 }
+
 /**********************************************************************************************************************************************************
+
+
+... DS_Pause(...) ...											
+
+***********************************************************************************************************************************************************/
+static void DS_Pause(void)
+{
+	if (!IsPaused)
+		lpdsb->Pause(DSBPAUSE_PAUSE);
+	IsPaused = TRUE;
+}
+
+/**********************************************************************************************************************************************************
+
 
 																	... DS_Reset(...) ...											
 
@@ -286,7 +320,7 @@ DWORD DSgetReplayPos()
 {
 	return dwReplayPos;
 }
-#endif
+#endif // _DEBUG
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 MIKMODAPI MDRIVER drv_ds_raw = {
         NULL,
@@ -307,7 +341,7 @@ MIKMODAPI MDRIVER drv_ds_raw = {
         DS_PlayStart,
         DS_PlayStop,
         DS_Update,
-		NULL,
+		DS_Pause,
         VC_VoiceSetVolume,
 		VC_VoiceGetVolume,
 		VC_VoiceSetFrequency,
