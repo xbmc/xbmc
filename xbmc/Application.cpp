@@ -32,6 +32,9 @@
 #include "utils/CharsetConverter.h"
 #include "XBVideoConfig.h"
 #include "GUIStandardWindow.h"
+#include "utils/LED.h"
+
+
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
@@ -126,7 +129,7 @@ static void __cdecl FEH_TextOut(XFONT* pFont, int iLine, const wchar_t* fmt, ...
 	va_end(args);
 
 	if (!(iLine & 0x8000))
-		CLog::Log(LOGFATAL, "Line %i: %S", iLine, buf);
+		CLog::Log(LOGFATAL, "%S", buf);
 
 	bool Center = (iLine & 0x10000) > 0;
 	pFont->SetTextAlignment(Center ? XFONT_TOP|XFONT_CENTER : XFONT_TOP|XFONT_LEFT);
@@ -942,11 +945,39 @@ void CApplication::StopTimeServer()
 	m_sntpClient.StopThread();
 }
 
+void CApplication::StartLEDControl(bool switchoff)
+{
+  CLog::Log(LOGNOTICE, "Start LED Control");
+  if (switchoff == true && g_guiSettings.GetInt("LED.Colour") != LED_COLOUR_NO_CHANGE)
+	{
+		if ( IsPlayingVideo() && g_guiSettings.GetInt("LED.DisableOnPlayback") == LED_PLAYBACK_VIDEO)
+		{
+			CLog::Log(LOGNOTICE, "LED Control: Playing Video LED is switched OFF!");
+			ILED::CLEDControl(LED_COLOUR_OFF);
+		}
+		if ( IsPlayingAudio() && g_guiSettings.GetInt("LED.DisableOnPlayback") == LED_PLAYBACK_MUSIC)
+		{
+			CLog::Log(LOGNOTICE, "LED Control: Playing Music LED is switched OFF!");
+			ILED::CLEDControl(LED_COLOUR_OFF);
+		}
+		if ( IsPlayingVideo() || IsPlayingAudio() && g_guiSettings.GetInt("LED.DisableOnPlayback") == LED_PLAYBACK_VIDEO_MUSIC)
+		{
+			CLog::Log(LOGNOTICE, "LED Control: Playing Video Or Music LED is switched OFF!");
+			ILED::CLEDControl(LED_COLOUR_OFF);
+		}
+	}
+  else if (switchoff == false)
+	{
+		ILED::CLEDControl(g_guiSettings.GetInt("LED.Colour")); 
+	}
+}
+
 void CApplication::StartServices()
 {
   StartTimeServer();
   StartWebServer();
   StartFtpServer();
+  StartLEDControl(false); 
 
   //	Start Thread for DVD Mediatype detection
 	CLog::Log(LOGNOTICE, "start dvd mediatype detection");
@@ -2294,6 +2325,7 @@ void CApplication::OnPlayBackEnded()
 	OutputDebugString("Playback has finished\n");
 	CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0, 0, 0, NULL);
 	m_gWindowManager.SendThreadMessage(msg);
+	StartLEDControl(false);
 }
 
 void CApplication::OnPlayBackStarted()
@@ -2306,6 +2338,8 @@ void CApplication::OnPlayBackStarted()
 	m_gWindowManager.SendThreadMessage(msg);
 
   CheckNetworkHDSpinDown(true);
+
+  StartLEDControl(true);   
 }
 
 bool CApplication::IsPlaying() const
@@ -2346,6 +2380,8 @@ void CApplication::StopPlaying()
 	m_CdgParser.Free();
 	CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
 	m_gWindowManager.SendMessage(msg);
+
+	StartLEDControl(false);	
 }
 
 
