@@ -27,6 +27,7 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
   if (url.GetProtocol() =="http" || url.GetProtocol()=="HTTP") return NULL;
   if (url.GetProtocol() =="shout" || url.GetProtocol()=="SHOUT") return NULL;
   if (url.GetProtocol() =="mms" || url.GetProtocol()=="MMS") return NULL;
+  if (url.GetProtocol() =="rtp" || url.GetProtocol()=="RTP") return NULL;
 	if (strExtension==".mp3")
 	{
 		CMusicInfoTagLoaderMP3 *pTagLoader= new CMusicInfoTagLoaderMP3();

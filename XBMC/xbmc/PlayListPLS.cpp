@@ -56,7 +56,7 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
 	if (strLine != START_PLAYLIST_MARKER)
 	{
     CURL url(strLine);
-    if (url.GetProtocol() == "http" ||url.GetProtocol() == "mms")
+    if (url.GetProtocol() == "http" ||url.GetProtocol() == "mms"||url.GetProtocol() == "rtp")
     {
 			if (bShoutCast) strLine.Replace("http:","shout:");
 			CPlayListItem newItem(strLine,strLine,0);
