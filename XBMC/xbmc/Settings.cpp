@@ -1237,7 +1237,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 	if (pElement)
 	{
 		GetInteger(pElement, "programsviewicons", g_stSettings.m_iMyProgramsViewAsIcons,1,0,2);
-		GetInteger(pElement, "programssortmethod", g_stSettings.m_iMyProgramsSortMethod,0,0,2);
+		GetInteger(pElement, "programssortmethod", g_stSettings.m_iMyProgramsSortMethod,0,0,3);
 		GetBoolean(pElement, "programssortascending", g_stSettings.m_bMyProgramsSortAscending);
 
 		GetBoolean(pElement, "flatten", g_stSettings.m_bMyProgramsFlatten);

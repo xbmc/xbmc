@@ -183,7 +183,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
             else if (iControl==CONTROL_BTNSORTMETHOD) // sort by
             {
                 g_stSettings.m_iMyProgramsSortMethod++;
-                if (g_stSettings.m_iMyProgramsSortMethod >=3)
+                if (g_stSettings.m_iMyProgramsSortMethod >=4)
                     g_stSettings.m_iMyProgramsSortMethod=0;
                 g_settings.Save();
                 UpdateButtons();
@@ -501,6 +501,8 @@ void CGUIWindowPrograms::OnClick(int iItem)
         char szDevicePath[1024];
         char szXbePath[1024];
         char szParameters[1024];
+		if (g_stSettings.m_bMyProgramsFlatten)
+			m_database.IncTimesPlayed(pItem->m_strPath);
         memset(szParameters,0,sizeof(szParameters));
         strcpy(szPath,pItem->m_strPath.c_str());
 
@@ -638,6 +640,14 @@ struct SSortProgramsByName
                 return true;
                 break;
 
+			case 3:
+				if (rpStart.m_iprogramCount > rpEnd.m_iprogramCount)
+					return bGreater;
+				if (rpStart.m_iprogramCount < rpEnd.m_iprogramCount)
+					return !bGreater;
+				return true;
+				break;
+
             default:  //  Sort by Filename by default
                 strcpy(szfilename1, rpStart.GetLabel().c_str());
                 strcpy(szfilename2, rpEnd.GetLabel().c_str());
@@ -699,6 +709,17 @@ void CGUIWindowPrograms::OnSort()
             else
                 pItem->SetLabel2("");
         }
+		if (g_stSettings.m_iMyProgramsSortMethod==3)
+		{
+			if (pItem->m_bIsFolder)
+				pItem->SetLabel2("");
+			else
+			{
+				CStdString strTimesPlayed;
+				strTimesPlayed.Format("%i",pItem->m_iprogramCount);
+				pItem->SetLabel2(strTimesPlayed);
+			}
+		}
     }
 
 
@@ -752,8 +773,14 @@ void CGUIWindowPrograms::UpdateButtons()
 
 		SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWAS,iString);
 
-    SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTMETHOD,g_stSettings.m_iMyProgramsSortMethod+103);
-
+	if (g_stSettings.m_iMyProgramsSortMethod==3)
+	{
+		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTMETHOD, 507);  //Times Played
+	}
+	else
+	{
+        SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTMETHOD,g_stSettings.m_iMyProgramsSortMethod+103);
+	}
 
     if ( g_stSettings.m_bMyProgramsSortAscending)
     {
