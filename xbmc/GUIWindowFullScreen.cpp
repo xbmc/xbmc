@@ -11,6 +11,7 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 :CGUIWindow(0)
 {
 	m_bShowInfo=false;
+	m_dwLastTime=0;
 }
 
 CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
@@ -22,6 +23,8 @@ void CGUIWindowFullScreen::OnKey(const CKey& key)
 {
 	if ( key.GetButtonCode() == KEY_BUTTON_START  || key.GetButtonCode() == KEY_REMOTE_DISPLAY)
 	{
+		m_bShowStatus=true;
+		m_dwLastTime=timeGetTime();
 		// zoom->stretch
 		if (g_stSettings.m_bZoom)
 		{
@@ -108,6 +111,44 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
 void CGUIWindowFullScreen::Render()
 {
+	if (!g_application.m_pPlayer) return;
+	
+	if (m_bShowStatus)
+	{
+		if ( (timeGetTime() - m_dwLastTime) >=3000)
+		{
+			m_bShowStatus=false;
+			return;
+		}
+		CStdString strStatus;
+		if (g_stSettings.m_bZoom) strStatus="Zoom";
+		else if (g_stSettings.m_bStretch) strStatus="Stretch";
+		else strStatus="Normal";
+
+		if (g_stSettings.m_bSoften)
+			strStatus += "  Soften";
+		else
+			strStatus += "  No Soften";
+
+		{
+			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 
+			msg.SetLabel(strStatus); 
+			OnMessage(msg);
+		}
+		{
+			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2); 
+			msg.SetLabel(""); 
+			OnMessage(msg);
+		}
+		{
+			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3); 
+			msg.SetLabel(""); 
+			OnMessage(msg);
+		}
+		CGUIWindow::Render();
+		return;
+	}
+	//------------------------
 	if (!m_bShowInfo) return;
 	if (!g_application.m_pPlayer) return;
 	// show audio codec info
