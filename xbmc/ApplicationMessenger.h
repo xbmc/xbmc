@@ -22,6 +22,7 @@
 #define TMSG_SHUTDOWN             300
 #define TMSG_DASHBOARD            301
 #define TMSG_RESTART              302
+#define TMSG_RESET                303
 
 typedef struct {
 	DWORD dwMessage;
@@ -56,6 +57,7 @@ public:
 	void	Shutdown();
 	void	Restart();
 	void	RebootToDashBoard();
+  void  Reset();
 
 private:
 
