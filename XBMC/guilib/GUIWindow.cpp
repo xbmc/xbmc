@@ -300,7 +300,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
     if ( !xmlDoc.LoadFile(strPath.c_str()) )
     {
         CLog::Log("unable to load:%s", strPath.c_str());
-		m_dwWindowId=9999;
+		m_dwWindowId=WINDOW_INVALID;
         return false;
     }
   TiXmlElement* pRootElement =xmlDoc.RootElement();
@@ -324,7 +324,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
     CStdString strValue=pChild->Value();
     if (strValue=="id")
     {
-      m_dwWindowId=atoi(pChild->FirstChild()->Value());
+      m_dwWindowId=WINDOW_HOME + atoi(pChild->FirstChild()->Value());		// window Id's start at WINDOW_HOME
     }
     else if (strValue=="defaultcontrol")
     {

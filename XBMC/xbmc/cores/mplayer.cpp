@@ -534,13 +534,15 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		}
 		options.SetNoCache(g_stSettings.m_bNoCache);
 
-		bool bSupportsSPDIFOut=(XGetAudioFlags() & (DSSPEAKER_ENABLE_AC3 | DSSPEAKER_ENABLE_DTS)) != 0;
+		bool bSupportsAC3Out=(XGetAudioFlags() & DSSPEAKER_ENABLE_AC3) != 0;
+		bool bSupportsDTSOut=(XGetAudioFlags() & DSSPEAKER_ENABLE_DTS) != 0;
 
 		// shoutcast is always stereo
 		if (CUtil::IsShoutCast(strFile) ) 
 		{
 			options.SetChannels(2);
-			bSupportsSPDIFOut = false;
+			bSupportsAC3Out = false;
+			bSupportsDTSOut = false;
 		}
 		else 
 		{
@@ -549,11 +551,10 @@ bool CMPlayer::openfile(const CStdString& strFile)
 
 			// if we're using digital out & ac3/dts pass-through is enabled
 			// then try opening file with ac3/dts pass-through 
-			if (g_stSettings.m_bUseDigitalOutput && bSupportsSPDIFOut )
+			if (g_stSettings.m_bUseDigitalOutput && (bSupportsAC3Out || bSupportsDTSOut))
 			{
-				if ( g_stSettings.m_bDDStereoPassThrough || g_stSettings.m_bDD_DTSMultiChannelPassThrough)
+				if (g_stSettings.m_bDDStereoPassThrough || g_stSettings.m_bDD_DTSMultiChannelPassThrough)
 				{
-					options.SetAC3PassTru(true);
 					options.SetChannels(6);
 				}
 			}
@@ -664,21 +665,72 @@ bool CMPlayer::openfile(const CStdString& strFile)
 					}
 				}
 			}
-			// if we are not using ac3/dts pass-through
-			if (strstr(strAudioCodec,"AC3/SPDIF")==NULL)
+			// check if the codec is AC3 or DTS
+			if (strstr(strAudioCodec,"AC3")==NULL)
 			{
-				// make sure to update the option (used below)
+				// no make sure AC3 passthru is off (used below)
 				options.SetAC3PassTru(false);
 			}
 			else
 			{
-				// if we are using ac3/dts pass-through
-				// then make sure samplerate = 48 khz. Other samplerates are NOT supported on the xbox
-				if (lSampleRate!=48000)
-				{
-					// 2bad, disable pass-through and restart
-					options.SetAC3PassTru(false);
-					bNeed2Restart=true;
+				// should we be using passthrough??
+				// if the sample rate is not 48kHz, it could be a DTS file
+				// DTS files are reported as AC3 in mplayer as at 30/4/2004
+				// This may be changed at a later date, so it'll pay to keep an eye
+				// on things.
+				if (lSampleRate!=48000 && g_stSettings.m_bUseDigitalOutput && bSupportsDTSOut)
+				{	// Could be DTS - lets restart to see
+					options.SetAC3PassTru(true);
+					options.SetChannels(6);
+					CLog::Log("  --------------- restart to test for DTS ---------------");
+					mplayer_close_file();
+					options.GetOptions(argc,argv);
+					load();
+					mplayer_init(argc,argv);
+					mplayer_setcache_size(iCacheSize);
+					if(bFileIsDVDImage || bFileIsDVDIfoFile)
+						iRet=mplayer_open_file(GetDVDArgument(strFile).c_str());
+					else
+						iRet=mplayer_open_file(strFile.c_str());
+					if (iRet < 0)
+					{
+						CLog::Log("cmplayer::openfile() %s failed",strFile.c_str());
+						closefile();
+						if (m_dlgCache) delete m_dlgCache;
+						m_dlgCache=NULL;
+						return false;
+					}
+					// OK, now check what we've got now...
+					long lNewSampleRate;
+					int iNewChannels;
+					mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lNewSampleRate, &iNewChannels, &bVBR);
+					if (lNewSampleRate==48000)
+					{	// yep - was DTS after all!
+						options.SetAC3PassTru(true);
+						options.SetChannels(2);
+						bNeed2Restart=false;
+					}
+					else
+					{	// nope - must be non-48kHz AC3 or something else...
+						options.SetAC3PassTru(false);
+						options.SetChannels(6);
+						bNeed2Restart=true;
+					}
+				}
+				if (lSampleRate==48000 && g_stSettings.m_bUseDigitalOutput && bSupportsAC3Out)
+				{	// sample rate is OK
+					if (iChannels == 2 && g_stSettings.m_bDDStereoPassThrough)
+					{	// YES - change to pass through mode
+						options.SetAC3PassTru(true);
+						options.SetChannels(2);
+						bNeed2Restart=true;
+					}
+					if (iChannels > 2 && g_stSettings.m_bDD_DTSMultiChannelPassThrough)
+					{	// YES - change to pass through mode
+						options.SetAC3PassTru(true);
+						options.SetChannels(2);
+						bNeed2Restart=true;
+					}
 				}
 			}
 			// if we dont have ac3 passtru enabled
@@ -695,7 +747,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 
 				// if xbox only got stereo output, then limit number of channels to 2
 				// same if xbox got digital output, but we're listening to the analog output
-				if (!bSupportsSPDIFOut || !g_stSettings.m_bUseDigitalOutput)
+				if (!bSupportsAC3Out || !g_stSettings.m_bUseDigitalOutput)
 				{
 					if (iChannels > 2) 
 					{

@@ -447,6 +447,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings, bool &bCalibration
 	GetString(pRootElement, "videoextensions", g_stSettings.m_szMyVideoExtensions,".nfo|.rm|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli");
 
 	GetInteger(pRootElement, "startwindow", g_stSettings.m_iStartupWindow,0,0,INT_MAX);
+	g_stSettings.m_iStartupWindow += WINDOW_HOME;	// windows referenced from WINDOW_HOME
 	GetInteger(pRootElement, "httpproxyport", g_stSettings.m_iHTTPProxyPort,0,0,INT_MAX);
 
 	GetBoolean(pRootElement, "useFDrive", g_stSettings.m_bUseFDrive);
@@ -975,7 +976,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 	pElement = pRootElement->FirstChildElement("myvideos");
 	if (pElement)
 	{ 
-		GetInteger(pElement, "startwindow",g_stSettings.m_iVideoStartWindow,0,0,INT_MAX);
+		GetInteger(pElement, "startwindow",g_stSettings.m_iVideoStartWindow,WINDOW_VIDEOS,WINDOW_VIDEO_GENRE,WINDOW_VIDEO_TITLE);
 		GetBoolean(pElement, "stackvideo", g_stSettings.m_bMyVideoVideoStack);
 		GetBoolean(pElement, "stackgenre", g_stSettings.m_bMyVideoGenreStack);
 		GetBoolean(pElement, "stackactor", g_stSettings.m_bMyVideoActorStack);
