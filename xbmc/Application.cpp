@@ -567,7 +567,7 @@ HRESULT CApplication::Initialize()
 	{
 		strcpy(g_stSettings.szThumbnailsDirectory,"Q:\\thumbs");
 	}
-	if (g_stSettings.m_szShortcutDirectory[0]==0)
+	if (g_stSettings.m_szShortcutDirectory[0]==0 && !g_stSettings.m_bMyProgramsNoShortcuts)
 	{
 		strcpy(g_stSettings.m_szShortcutDirectory,"Q:\\shortcuts");		
 	}
@@ -589,7 +589,8 @@ HRESULT CApplication::Initialize()
 	strThumbIMDB+="\\imdb";
 	CreateDirectory(strThumbIMDB.c_str(),NULL);
 
-	CreateDirectory(g_stSettings.m_szShortcutDirectory,NULL);
+	if (!g_stSettings.m_bMyProgramsNoShortcuts)
+		CreateDirectory(g_stSettings.m_szShortcutDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szAlbumDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szMusicRecordingDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szScreenshotsDirectory, NULL);
