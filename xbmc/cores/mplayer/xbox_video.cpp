@@ -30,6 +30,7 @@
 #include "../../settings.h"
 #include "../../application.h"
 #include "../../util.h"
+#include "../../utils/log.h"
 
 #define SUBTITLE_TEXTURE_WIDTH  720
 #define SUBTITLE_TEXTURE_HEIGHT 120
@@ -974,7 +975,7 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
 
   m_lFrameCounter=0;
   mplayer_GetVideoInfo(strFourCC,strVideoCodec, &m_fps, &iWidth,&iHeight, &tooearly, &toolate);
-
+  g_graphicsContext.SetFullScreenVideo(true);
   OutputDebugString("video_config\n");
   fs = options & 0x01;
   image_format   =  format;
