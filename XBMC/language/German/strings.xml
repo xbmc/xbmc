@@ -9,7 +9,7 @@
   </string>
   <string>
     <id>2</id>
-    <value>MP3</value>
+    <value>Musik</value>
   </string>
   <string>
     <id>3</id>
@@ -25,7 +25,7 @@
   </string>
   <string>
     <id>6</id>
-    <value>XBOX Media Center Oct 12th 2003 build</value>
+    <value>XBOX Media Center Nov 23th 2003 build</value>
   </string>
   <string>
     <id>7</id>
@@ -113,15 +113,15 @@
   </string>  
   <string>
     <id>100</id>
-    <value>Icon Ansicht</value>
+    <value>Icons</value>
   </string>  
   <string>
     <id>101</id>
-    <value>Listen Ansicht</value>
+    <value>Listen</value>
   </string>  
   <string>
     <id>102</id>
-    <value>Durchsuche</value>
+    <value>Durchsuchen</value>
   </string>  
   <string>
     <id>103</id>
@@ -149,7 +149,7 @@
   </string>   
   <string>
     <id>109</id>
-    <value>Thumbs erstellen</value>
+    <value>Thumbs erst.</value>
   </string>   
   <string>
     <id>110</id>
@@ -165,11 +165,11 @@
   </string>   
   <string>
     <id>113</id>
-    <value>Meine Daten : Quelle</value>
+    <value>Daten: Quelle</value>
   </string>   
   <string>
     <id>114</id>
-    <value>Meine Daten : Ziel</value>
+    <value>Daten: Ziel</value>
   </string>   
   <string>
     <id>115</id>
@@ -193,27 +193,27 @@
   </string>   
   <string>
     <id>120</id>
-    <value>Kopieren bestätigen</value>
+    <value>Kopieren best.</value>
   </string>   
   <string>
     <id>121</id>
-    <value>Verschieben bestätigen</value>
+    <value>Verschieben best.</value>
   </string>   
   <string>
     <id>122</id>
-    <value>Löschen bestätigen</value>
+    <value>Löschen bestät.</value>
   </string>   
   <string>
     <id>123</id>
-    <value>Möchtest Du wirklich diese Daten kopieren?</value>
+    <value>Wirklich kopieren ?</value>
   </string>   
   <string>
     <id>124</id>
-    <value>Möchtest Du wirklich diese Daten verschieben?</value>
+    <value>Wirklich verschieben ?</value>
   </string>   
   <string>
     <id>125</id>
-    <value>Möchtest Du wirklich diese Daten löschen?</value>
+    <value>Wirklich löschen ?</value>
   </string>  
   <string>
     <id>126</id>
@@ -249,7 +249,7 @@
   </string>  
   <string>
     <id>134</id>
-    <value>Zeige Titel</value>
+    <value>Titel</value>
   </string>  
   <string>
     <id>135</id>
@@ -257,15 +257,15 @@
   </string>  
   <string>
     <id>136</id>
-    <value>Playlists</value>
+    <value>Playlisten</value>
   </string>  
   <string>
     <id>137</id>
-    <value>Suche</value>
+    <value>Suchen</value>
   </string>  
   <string>
     <id>138</id>
-    <value>System Information</value>
+    <value>System Info</value>
   </string>  
   <string>
     <id>139</id>
@@ -285,11 +285,11 @@
   </string> 
   <string>
     <id>143</id>
-    <value>Gegenwärtig:</value>
+    <value>Gegenwärtig</value>
   </string> 
   <string>
     <id>144</id>
-    <value>Erbaut:</value>
+    <value>Version:</value>
   </string> 
   <string>
     <id>145</id>
@@ -297,7 +297,7 @@
   </string> 
   <string>
     <id>146</id>
-    <value>Type:</value>
+    <value>Typ:</value>
   </string> 
   <string>
     <id>147</id>
@@ -313,7 +313,7 @@
   </string> 
   <string>
     <id>150</id>
-    <value>IP:</value>
+    <value>IP</value>
   </string> 
   <string>
     <id>151</id>
@@ -329,7 +329,7 @@
   </string> 
   <string>
     <id>154</id>
-    <value>Festplattenspeicher</value>
+    <value>HDD Speicher:</value>
   </string> 
   <string>
     <id>155</id>
@@ -341,7 +341,7 @@
   </string> 
   <string>
     <id>157</id>
-    <value>Filme</value>
+    <value>Filme:</value>
   </string> 
   <string>
     <id>158</id>
@@ -377,19 +377,19 @@
   </string> 
   <string>
     <id>166</id>
-    <value>Skin:</value>
+    <value>Skin</value>
   </string> 
   <string>
     <id>167</id>
-    <value>FTP Server:</value>
+    <value>FTP Server</value>
   </string> 
   <string>
     <id>168</id>
-    <value>Zeit Server:</value>
+    <value>Zeit Server</value>
   </string> 
   <string>
     <id>169</id>
-    <value>Auflösung:</value>
+    <value>Auflösung</value>
   </string> 
   <string>
     <id>170</id>
@@ -401,7 +401,7 @@
   </string> 
   <string>
     <id>172</id>
-    <value>Datum der Veröffentlichung:</value>
+    <value>Datum:</value>
   </string> 
   <string>
     <id>173</id>
@@ -421,7 +421,7 @@
   </string> 
   <string>
     <id>177</id>
-    <value>Review:</value>
+    <value>Bericht:</value>
   </string> 
   <string>
     <id>178</id>
@@ -429,7 +429,7 @@
   </string> 
   <string>
     <id>179</id>
-    <value>Song</value>
+    <value>Lied</value>
   </string> 
   <string>
     <id>180</id>
@@ -445,11 +445,11 @@
   </string> 
   <string>
     <id>183</id>
-    <value>Review</value>
+    <value>Bericht</value>
   </string> 
   <string>
     <id>184</id>
-    <value>Refresh</value>
+    <value>Aktualis.</value>
   </string> 
   <string>
     <id>185</id>
@@ -461,7 +461,7 @@
   </string>  
   <string>
     <id>187</id>
-    <value>Kein Album gefunden!</value>
+    <value>Kein Album gefunden !</value>
   </string>  
   <string>
     <id>188</id>
@@ -485,15 +485,15 @@
   </string>  
   <string>
     <id>193</id>
-    <value>Scan</value>
+    <value>Scannen</value>
   </string>  
   <string>
     <id>194</id>
-    <value>Durchsuche...</value>
+    <value>Durchsuche ...</value>
   </string> 
   <string>
     <id>195</id>
-    <value>Keinen IMDB Eintrag gefunden!</value>
+    <value>Keinen Eintrag gefunden !</value>
   </string> 
   <string>
     <id>196</id>
@@ -513,7 +513,7 @@
   </string> 
   <string>
     <id>200</id>
-    <value>Credits</value>
+    <value>Info</value>
   </string> 
   <string>
     <id>201</id>
@@ -557,7 +557,7 @@
   </string> 
   <string>
     <id>211</id>
-    <value>Suche nach Anwendungen</value>
+    <value>Suche</value>
   </string> 
   <string>
     <id>212</id>
@@ -569,7 +569,7 @@
   </string> 
   <string>
     <id>214</id>
-    <value>Film Kalibrierung</value>
+    <value>Kalibrierung</value>
   </string> 
   <string>
     <id>215</id>
@@ -589,7 +589,7 @@
   </string> 
   <string>
     <id>219</id>
-    <value>Bitte lege eine CD ein</value>
+    <value>CD einlegen</value>
   </string> 
   <string>
     <id>220</id>
@@ -605,7 +605,7 @@
   </string> 
   <string>
     <id>223</id>
-    <value>Wähle beste Auflösung für Filme</value>
+    <value>Automatische Auflösung</value>
   </string> 
   <string>
     <id>224</id>
@@ -613,7 +613,7 @@
   </string> 
   <string>
     <id>225</id>
-    <value>Übergangs Zeit</value>
+    <value>Übergangszeit</value>
   </string> 
   <string>
     <id>226</id>
@@ -625,7 +625,7 @@
   </string> 
   <string>
     <id>228</id>
-    <value>Zufällige Playlist beim Laden</value>
+    <value>Zufällige Playlist</value>
   </string> 
   <string>
     <id>229</id>
@@ -669,7 +669,7 @@
   </string>
   <string>
     <id>240</id>
-    <value>Autostart DVD-Video</value>
+    <value>Autostart DVD</value>
   </string>
   <string>
     <id>241</id>
@@ -703,5 +703,124 @@
     <id>248</id>
     <value>Sprache</value>
   </string>
-
+  <string>
+    <id>249</id>
+    <value>Musik</value>
+  </string>
+  <string>
+    <id>250</id>
+    <value>Visualisierung</value>
+  </string>
+  <string>
+    <id>251</id>
+    <value>Wähle Ziel-Ordner</value>
+  </string>
+  <string>
+    <id>252</id>
+    <value>Ausgabe an alle Lautsprecher</value>
+  </string>
+  <string>
+    <id>253</id>
+    <value>Nummer der Kanäle</value>
+  </string>
+  <string>
+    <id>254</id>
+    <value>AC3 Passthru</value>
+  </string>
+  <string>
+    <id>255</id>
+    <value>CDDB</value>
+  </string>
+  <string>
+    <id>256</id>
+    <value>Suche in FreeDB nach CDDB Infos</value>
+  </string>
+  <string>
+    <id>257</id>
+    <value>Fehler</value>
+  </string>
+  <string>
+    <id>258</id>
+    <value>ID3 tags anzeigen</value>
+  </string>
+  <string>
+    <id>259</id>
+    <value>Öffne</value>
+  </string>
+  <string>
+    <id>260</id>
+    <value>Shoutcast</value>
+  </string>
+  <string>
+    <id>261</id>
+    <value>Warte auf Start....</value>
+  </string>
+  <string>
+    <id>262</id>
+    <value>Scripts Ausgabe</value>
+  </string>
+  <string>
+    <id>263</id>
+    <value>HTTP server</value>
+  </string>
+  <string>
+    <id>264</id>
+    <value>Aufnehmen</value>
+  </string>
+  <string>
+    <id>265</id>
+    <value>Aufn. Stop</value>
+  </string>
+  <string>
+    <id>266</id>
+    <value>n. Track ord.</value>
+  </string>
+  <string>
+    <id>267</id>
+    <value>n. Zeit. ord.</value>
+  </string>
+  <string>
+    <id>268</id>
+    <value>n. Titel ord.</value>
+  </string>
+  <string>
+    <id>269</id>
+    <value>n. Künstler ord.</value>
+  </string>
+  <string>
+    <id>270</id>
+    <value>n. Album ord.</value>
+  </string>
+  <string>
+    <id>271</id>
+    <value>Top 100</value>
+  </string>
+  <string>
+    <id>272</id>
+    <value>Overscanbereich oben links ausrichten</value>
+  </string>
+  <string>
+    <id>273</id>
+    <value>Overscanbereich unten rechts ausrichten</value>
+  </string>
+  <string>
+    <id>274</id>
+    <value>Untertitelposition</value>
+  </string>
+  <string>
+    <id>275</id>
+    <value>Pixel Ratio einstellen</value>
+  </string>
+  <string>
+    <id>276</id>
+    <value>Bewege den Pfeil um den Overscanbereich einzustellen</value>
+  </string>
+  <string>
+    <id>277</id>
+    <value>Bewege den Balken um die Untertitelposition einzustellen</value>
+  </string>
+  <string>
+    <id>278</id>
+    <value>Ändere das Rechteck so das es ein perfektes Quadrat ergibt</value>
+  </string>
 </strings>
