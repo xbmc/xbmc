@@ -26,9 +26,23 @@ void						(__cdecl* pVODrawAlphargb32)(int w,int h, unsigned char* src, unsigned
 void						(__cdecl* pVODrawAlphargb15)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride);
 void						(__cdecl* pVODrawAlphargb16)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride);
 __int64					(__cdecl* pGetPTS)();
+BOOL						(__cdecl* pHasVideo)();
+BOOL						(__cdecl* pHasAudio)();
 
 extern "C" 
 {
+
+	BOOL		mplayer_HasVideo()
+	{
+		return pHasVideo();
+	}
+
+	BOOL		mplayer_HasAudio()
+	{
+		return pHasAudio();
+	}
+
+
 	void mplayer_put_key(int code)
 	{
 		pMplayerPutKey(code);
@@ -188,6 +202,13 @@ void mplayer_load_dll(DllLoader& dll)
 	dll.ResolveExport("mplayer_get_pts", &pProc);
 	pGetPTS=(__int64 (__cdecl*)())pProc;
 
+	dll.ResolveExport("mplayer_HasVideo", &pProc);
+	pHasVideo=(BOOL (__cdecl*)())pProc;
+
+	dll.ResolveExport("mplayer_HasAudio", &pProc);
+	pHasAudio=(BOOL (__cdecl*)())pProc;
+
+	
 	pSetVideoFunctions(&video_functions);
 	pSetAudioFunctions(&audio_functions);
 }

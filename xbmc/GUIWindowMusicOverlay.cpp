@@ -7,6 +7,8 @@
 #include "application.h"
 
 #define CONTROL_PLAYTIME		2
+#define CONTROL_PLAY_LOGO   3
+#define CONTROL_PAUSE_LOGO  4
 
 CGUIWindowMusicOverlay::CGUIWindowMusicOverlay()
 :CGUIWindow(0)
@@ -40,9 +42,25 @@ void CGUIWindowMusicOverlay::Render()
 	
 	char szTime[32];
 	sprintf(szTime,"%02.2i:%02.2i",mm,ss);
-	CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_PLAYTIME); 
-	msg.SetLabel(szTime); 
-	OnMessage(msg); 
+	{
+		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_PLAYTIME); 
+		msg.SetLabel(szTime); 
+		OnMessage(msg); 
+	}
 
+	if (g_application.m_pPlayer->IsPaused() )
+	{
+		CGUIMessage msg1(GUI_MSG_HIDDEN, GetID(), CONTROL_PLAY_LOGO); 
+		OnMessage(msg1);
+		CGUIMessage msg2(GUI_MSG_VISIBLE, GetID(), CONTROL_PAUSE_LOGO); 
+		OnMessage(msg2); 
+	}
+	else
+	{
+		CGUIMessage msg1(GUI_MSG_VISIBLE, GetID(), CONTROL_PLAY_LOGO); 
+		OnMessage(msg1);
+		CGUIMessage msg2(GUI_MSG_HIDDEN, GetID(), CONTROL_PAUSE_LOGO); 
+		OnMessage(msg2); 
+	}
 	CGUIWindow::Render();
 }
