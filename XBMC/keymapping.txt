@@ -1,0 +1,18 @@
+XBMC key mappings:
+   my programs:
+      -shortcuts are automaticcly generated for every .xbe file found. 
+       Use flatten to easy generate shortcuts for all xbe's on a drive
+      
+   my pictures:
+      when viewing a picture/slideshow
+        left/right/up/down : move when in zoom mode
+        left/right         : next/prev picture when not in zoom mode
+        black              : show file info
+        START              : pause/continue
+        X                  : zoom out
+        A                  : zoom in 
+   
+   my files:
+      L/R trigger : switch between source/destination window
+      Y button    : (de)select files/directory
+   

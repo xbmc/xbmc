@@ -78,12 +78,26 @@ HRESULT CApplication::Initialize()
     }
   }
 	LoadSkin(g_stSettings.szDefaultSkin);
+  m_gWindowManager.Add(&m_guiHome);
+  m_gWindowManager.Add(&m_guiPrograms);
+	m_gWindowManager.Add(&m_guiPictures);
+  m_gWindowManager.Add(&m_guiMyFiles);
+  m_gWindowManager.Add(&m_guiMyMusic);
+	m_gWindowManager.Add(&m_guiMyVideo);
+	m_gWindowManager.Add(&m_guiSettings);
+	m_gWindowManager.Add(&m_guiSettingsGeneral);
+  m_gWindowManager.Add(&m_guiDialogYesNo);
+  m_gWindowManager.Add(&m_guiDialogProgress);
+  m_gWindowManager.Add(&m_keyboard);
+	m_gWindowManager.Add(&m_guiSystemInfo);
 
   g_graphicsContext.Set(m_pd3dDevice,m_d3dpp.BackBufferWidth,m_d3dpp.BackBufferHeight);
   m_keyboard.Initialize();
 	m_ctrDpad.SetDelays(g_stSettings.m_iMoveDelayController,g_stSettings.m_iRepeatDelayController);
 	m_ctrIR.SetDelays(g_stSettings.m_iMoveDelayIR,g_stSettings.m_iRepeatDelayIR);
-  m_gWindowManager.ActivateWindow(g_stSettings.m_iStartupWindow);
+
+	m_gWindowManager.SetCallback(*this);
+	m_gWindowManager.ActivateWindow(g_stSettings.m_iStartupWindow);
 
   return S_OK;
 }
@@ -100,6 +114,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_gWindowManager.DeInitialize();
 	g_TextureManager.Cleanup();
 
+	g_fontManager.Clear();
   g_graphicsContext.SetMediaDir(strSkinPath);
   g_fontManager.LoadFonts(strSkinPath+string("\\font.xml")) ;
 
@@ -115,19 +130,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiDialogYesNo.Load( strSkinPath+string("\\dialogYesNo.xml" ));  
 	m_guiDialogProgress.Load( strSkinPath+string("\\dialogProgress.xml" ));  
 
-	m_gWindowManager.SetCallback(*this);
-  m_gWindowManager.Add(&m_guiHome);
-  m_gWindowManager.Add(&m_guiPrograms);
-	m_gWindowManager.Add(&m_guiPictures);
-  m_gWindowManager.Add(&m_guiMyFiles);
-  m_gWindowManager.Add(&m_guiMyMusic);
-	m_gWindowManager.Add(&m_guiMyVideo);
-	m_gWindowManager.Add(&m_guiSettings);
-	m_gWindowManager.Add(&m_guiSettingsGeneral);
-  m_gWindowManager.Add(&m_guiDialogYesNo);
-  m_gWindowManager.Add(&m_guiDialogProgress);
-  m_gWindowManager.Add(&m_keyboard);
-	m_gWindowManager.Add(&m_guiSystemInfo);
 }
 
 
@@ -400,6 +402,7 @@ case XINPUT_IR_REMOTE_0:
 void CApplication::Stop()
 {
 	m_sntpClient.StopThread();
+	g_fontManager.Clear();
 	m_gWindowManager.DeInitialize();
 	g_TextureManager.Cleanup();
 	CSectionLoader::UnloadAll();

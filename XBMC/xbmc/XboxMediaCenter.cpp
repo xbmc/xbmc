@@ -1,15 +1,14 @@
 // guiTest.cpp : Defines the entry point for the application.
 //
 // graphics:
-//			- default icons voor apps,pictures,audio/video/shortcuts
-//			- default icons voor drives aanpassen
-//		  - new icon voor reboot knop in home
+//			- default icons voor filetypes
 //
 // need 2 test: 
 //      - tijd van files (loopt 1 uur voor/achter??)
 //      - dialog wat groter gemaakt
 //
 // bugs: 
+//			- ntsc
 //
 // algemeen:
 //			-	ftp server

@@ -211,5 +211,15 @@ void CGUIWindow::SelectNextControl()
   }
   CGUIMessage msgSetFocus(GUI_MSG_SETFOCUS,GetID(),m_vecControls[i]->GetID() );
   g_graphicsContext.SendMessage(msgSetFocus);
+}
 
+
+void CGUIWindow::ClearAll()
+{
+  for (int i=0; i < (int)m_vecControls.size(); ++i)
+  {
+    CGUIControl* pControl= m_vecControls[i];
+    delete pControl;
+  }
+	m_vecControls.erase(m_vecControls.begin(),m_vecControls.end());
 }

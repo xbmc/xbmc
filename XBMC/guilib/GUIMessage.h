@@ -29,6 +29,8 @@
 #define GUI_MSG_ITEM_SELECTED  15
 
 #define GUI_MSG_USER         1000
+#include <string>
+using namespace std;
 
 class CGUIMessage
 {
@@ -46,7 +48,10 @@ public:
   void	SetParam1(DWORD dwParam1);
   void	SetParam2(DWORD dwParam2);
   void	SetLPVOID(void* lpVoid);
+	void	SetLabel(const wstring& wstrLabel);
+	const wstring& GetLabel() const;
 private:
+	wstring m_strLabel;
   DWORD m_dwSenderID;
   DWORD m_dwControlID;
   DWORD m_dwMessage;

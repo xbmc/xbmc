@@ -45,6 +45,16 @@ CGUIFont*	GUIFontManager::GetFont(const CStdString& strFontName)
   return NULL;
 }
 
+void GUIFontManager::Clear()
+{
+	for (int i=0; i < (int)m_vecFonts.size(); ++i)
+  {
+    CGUIFont* pFont=m_vecFonts[i];
+		delete pFont;
+	}
+	m_vecFonts.erase(m_vecFonts.begin(),m_vecFonts.end());
+}
+
 void GUIFontManager::LoadFonts(const CStdString& strFilename)
 {
   TiXmlDocument xmlDoc;

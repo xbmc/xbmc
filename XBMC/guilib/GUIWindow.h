@@ -20,6 +20,7 @@ public:
   int             GetFocusControl();
   void            SelectNextControl();
   DWORD           GetID(void) const;
+	void						ClearAll();
 protected:
   vector<CGUIControl*> m_vecControls;
   typedef vector<CGUIControl*>::iterator ivecControls;
