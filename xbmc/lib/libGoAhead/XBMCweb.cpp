@@ -771,7 +771,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 								GetNavigatorState() == WEB_NAV_MUSICPLAYLIST ||
 								GetNavigatorState() == WEB_NAV_VIDEOPLAYLIST)
 						{
-							if (CUtil::IsPlayList(itm->m_strPath))
+							if (itm->IsPlayList())
 							{
 								int iPlayList = PLAYLIST_MUSIC;
 								if (GetNavigatorState() == WEB_NAV_VIDEOS) iPlayList = PLAYLIST_VIDEO;
@@ -976,7 +976,7 @@ void CXbmcWeb::SetCurrentMediaItem(CFileItem& newItem)
 	currentMediaItem = newItem;
 
 	//	No audio file, we are finished here
-	if (!CUtil::IsAudio(newItem.m_strPath) )
+	if (!newItem.IsAudio() )
 		return;
 
 	//	Get a reference to the item's tag

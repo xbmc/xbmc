@@ -2,6 +2,7 @@
 #include "guiwindow.h"
 
 #include "stdstring.h"
+#include "FileItem.h"
 #include <vector>
 using namespace std;
 
@@ -13,7 +14,7 @@ public:
   virtual bool				OnMessage(CGUIMessage& message);
   virtual void				OnAction(const CAction &action);
 	virtual void				Render();
-	void								SetCurrentFile(const CStdString& strFile);
+	void								SetCurrentFile(const CFileItem& item);
 protected:
   void                HideControl(int iControl);
   void                ShowControl(int iControl);

@@ -9,7 +9,6 @@
 #include "utils/log.h"
 #include "xbox/undocumented.h"
 #include "url.h"
-#include "shortcut.h"
 #include "xbresource.h"
 #include "graphiccontext.h"
 #include "sectionloader.h"
@@ -17,14 +16,13 @@
 #include "filesystem/file.h"
 #include "DetectDVDType.h"
 #include "autoptrhandle.h"
-#include "playlistfactory.h"
 #include "ThumbnailCache.h"
-#include "picture.h"
 #include "filesystem/hddirectory.h"
 #include "filesystem/DirectoryCache.h"
 #include "Credits.h"
 #include "utils/CharsetConverter.h"
 #include "cores/mplayer/xbox_video.h"
+#include "shortcut.h"
 
 bool CUtil::m_bNetworkUp = false;
 
@@ -70,38 +68,6 @@ char* CUtil::GetExtension(const CStdString& strFileName)
 {
   char* extension = strrchr(strFileName.c_str(),'.');
   return extension ;
-}
-
-bool CUtil::IsXBE(const CStdString& strFileName)
-{
-   char* pExtension=GetExtension(strFileName);
-   if (!pExtension) return false;
-   if (CUtil::cmpnocase(pExtension,".xbe")==0) return true;
-   return false;
-}
-
-bool CUtil::IsPythonScript(const CStdString& strFileName)
-{
-   char* pExtension=GetExtension(strFileName);
-   if (!pExtension) return false;
-   if (CUtil::cmpnocase(pExtension,".py")==0) return true;
-   return false;
-}
-
-bool CUtil::IsDefaultXBE(const CStdString& strFileName)
-{
-  char* pFileName=GetFileName(strFileName);
-  if (!pFileName) return false;
-  if (CUtil::cmpnocase(pFileName, "default.xbe")==0) return true;
-  return false;
-}
-
-bool CUtil::IsShortCut(const CStdString& strFileName)
-{
-   char* pExtension=GetExtension(strFileName);
-   if (!pExtension) return false;
-   if (CUtil::cmpnocase(pExtension,".cut")==0) return true;
-   return false;
 }
 
 int CUtil::cmpnocase(const char* str1,const char* str2)
@@ -632,6 +598,8 @@ bool CUtil::FileExists(const CStdString& strFileName)
 void CUtil::GetThumbnail(const CStdString& strFileName, CStdString& strThumb)
 {
   strThumb="";
+	CFileItem item(strFileName, false);
+
   CStdString strFile;
   CUtil::ReplaceExtension(strFileName,".tbn",strFile);
 	if (CUtil::FileExists(strFile))
@@ -640,14 +608,14 @@ void CUtil::GetThumbnail(const CStdString& strFileName, CStdString& strThumb)
     return;
   }
 
-  if (CUtil::IsXBE(strFileName))
+  if (item.IsXBE())
   {
     if (CUtil::GetXBEIcon(strFileName,strThumb) ) return ;
     strThumb="defaultProgamIcon.png";
     return;
   }
 
-  if (CUtil::IsShortCut(strFileName) )
+  if (item.IsShortCut() )
   {
     CShortcut shortcut;
     if ( shortcut.Create( strFileName ) )
@@ -898,7 +866,7 @@ bool CUtil::HasSlashAtEnd(const CStdString& strFile)
   return false;
 }
 
- bool CUtil::IsRemote(const CStdString& strFile)
+bool CUtil::IsRemote(const CStdString& strFile)
 {
   CURL url(strFile);
   CStdString strProtocol=url.GetProtocol();
@@ -908,7 +876,7 @@ bool CUtil::HasSlashAtEnd(const CStdString& strFile)
   return false;
 }
 
- bool CUtil::IsDVD(const CStdString& strFile)
+bool CUtil::IsDVD(const CStdString& strFile)
 {
   if (strFile.Left(4)=="DVD:" || strFile.Left(4)=="dvd:")
     return true;
@@ -921,13 +889,15 @@ bool CUtil::HasSlashAtEnd(const CStdString& strFile)
 
   return false;
 }
+
 bool CUtil::IsCDDA(const CStdString& strFile)
 {
-CURL url(strFile);
-if (url.GetProtocol()=="cdda")
-  return true;
-return false;
+	CURL url(strFile);
+	if (url.GetProtocol()=="cdda")
+		return true;
+	return false;
 }
+
 bool CUtil::IsISO9660(const CStdString& strFile)
 {
   CStdString strLeft=strFile.Left(8);
@@ -960,124 +930,6 @@ void CUtil::RemoveCRLF(CStdString& strLine)
     strLine=strLine.Left((int)strLine.size()-1);
   }
 
-}
-bool CUtil::IsPicture(const CStdString& strFile)
-{
-  CStdString strExtension;
-  CUtil::GetExtension(strFile,strExtension);
-  if (strExtension.size() < 2) return false;
-  CUtil::Lower(strExtension);
-  if ( strstr( g_stSettings.m_szMyPicturesExtensions, strExtension.c_str() ) )
-  {
-    return true;
-  }
-	if (strExtension == ".tbn")
-		return true;
-  return false;
-}
-
-bool CUtil::IsShoutCast(const CStdString& strFileName)
-{
-  if (strstr(strFileName.c_str(), "shout:") ) return true;
-  return false;
-}
-
-bool CUtil::IsCUESheet(const CStdString& strFileName)
-{
-	CStdString strExtension;
-	GetExtension(strFileName, strExtension);
-	return (strExtension.CompareNoCase(".cue") == 0);
-}
-
-bool CUtil::IsAudio(const CStdString& strFile)
-{
-  CStdString strExtension;
-  CUtil::GetExtension(strFile,strExtension);
-  if (strExtension.size() < 2) return  false;
-  CUtil::Lower(strExtension);
-  if ( strstr( g_stSettings.m_szMyMusicExtensions, strExtension.c_str() ) )
-  {
-    return true;
-  }
-  if (strstr(strFile.c_str(), ".cdda") ) return true;
-  if (IsShoutCast(strFile) ) return true;
-
-  return false;
-}
-bool CUtil::IsVideo(const CStdString& strFile)
-{
-  CStdString strExtension;
-  CUtil::GetExtension(strFile,strExtension);
-  if (strExtension.size() < 2) return  false;
-  CUtil::Lower(strExtension);
-  if ( strstr( g_stSettings.m_szMyVideoExtensions, strExtension.c_str() ) )
-  {
-    return true;
-  }
-  return false;
-}
-bool CUtil::IsPlayList(const CStdString& strFile)
-{
-  CStdString strExtension;
-  CUtil::GetExtension(strFile,strExtension);
-  strExtension.ToLower();
-  if (strExtension==".m3u") return true;
-  if (strExtension==".b4s") return true;
-  if (strExtension==".pls") return true;
-  if (strExtension==".strm") return true;
-  if (strExtension==".wpl") return true;
-  return false;
-}
-
-bool CUtil::IsDVDImage(const CStdString& strFile)
-{
-  CStdString strExtension;
-  CUtil::GetExtension(strFile,strExtension);
-  if (strExtension.Equals(".img")) return true;
-  return false;
-}
-
-bool CUtil::IsDVDFile(const CStdString& strFile, bool bVobs /*= true*/, bool bIfos /*= true*/)
-{
-	CStdString strFileName = GetFileName(strFile);
-	if(bIfos)
-	{
-		if(strFileName.Equals("video_ts.ifo")) return true;
-		if(strFileName.Left(4).Equals("vts_") && strFileName.Right(6).Equals("_0.ifo") && strFileName.length() == 12) return true;
-	}
-	if(bVobs)
-	{
-		if(strFileName.Equals("video_ts.vob")) return true;
-		if(strFileName.Left(4).Equals("vts_") && strFileName.Right(4).Equals(".vob")) return true;
-	}
-
-	return false;
-}
-
-bool CUtil::IsRAR(const CStdString& strFile)
-{
-  CStdString strExtension;
-  CUtil::GetExtension(strFile,strExtension);
-  if ( (strExtension.CompareNoCase(".rar") == 0) || (strExtension.Equals(".001")) ) return true; // sometimes the first rar is named .001
-  return false;
-}
-
-bool CUtil::IsInternetStream(const CStdString& strFile)
-{
-	CURL url(strFile);
-	CStdString strProtocol=url.GetProtocol();
-	strProtocol.ToLower();
-
-	if (strProtocol.size()==0)
-		return false;
-
-  if (strProtocol=="shout" || strProtocol=="mms" || 
-			strProtocol=="http"  || strProtocol=="ftp" || 
-			strProtocol=="rtsp"  || strProtocol=="rtp" || 
-			strProtocol=="udp") 
-			return true;
-
-	return false;
 }
 
 int CUtil::GetDVDIfoTitle(const CStdString& strFile)
@@ -1441,143 +1293,8 @@ void CUtil::FillInDefaultIcons(VECFILEITEMS &items)
   for (int i=0; i < (int)items.size(); ++i)
   {
     CFileItem* pItem=items[i];
-    FillInDefaultIcon(pItem);
+    pItem->FillInDefaultIcon();
 
-  }
-}
-
-void CUtil::FillInDefaultIcon(CFileItem* pItem)
-{
-	//CLog::Log(LOGINFO, "FillInDefaultIcon(%s)", pItem->GetLabel().c_str());
-  // find the default icon for a file or folder item
-  // for files this can be the (depending on the file type)
-  //   default picture for photo's
-  //   default picture for songs
-  //   default picture for videos
-  //   default picture for shortcuts
-  //   default picture for playlists
-  //   or the icon embedded in an .xbe
-  //
-  // for folders
-  //   for .. folders the default picture for parent folder
-  //   for other folders the defaultFolder.png
-
-  CStdString strThumb;
-  CStdString strExtension;
-  bool bOnlyDefaultXBE=g_guiSettings.GetBool("MyPrograms.DefaultXBEOnly");
-  if (!pItem->m_bIsFolder)
-  {
-    CStdString strExtension;
-    CUtil::GetExtension(pItem->m_strPath,strExtension);
-
-    for (int i=0; i < (int)g_settings.m_vecIcons.size(); ++i)
-    {
-      CFileTypeIcon& icon=g_settings.m_vecIcons[i];
-
-      if (CUtil::cmpnocase(strExtension.c_str(), icon.m_strName)==0)
-      {
-        pItem->SetIconImage(icon.m_strIcon);
-        break;
-      }
-    }
-  }
-  if (pItem->GetIconImage()=="")
-  {
-		if (!pItem->m_bIsFolder)
-		{
-			if (CUtil::IsPlayList(pItem->m_strPath) )
-			{
-				// playlist
-				pItem->SetIconImage("defaultPlaylist.png");
-
-			GetExtension(pItem->m_strPath, strExtension);
-			if ( CUtil::cmpnocase(strExtension.c_str(),".strm") !=0) 
-			{
-				//	Save playlists to playlist directroy
-				CStdString strDir;
-				CStdString strFileName;
-				strFileName=CUtil::GetFileName(pItem->m_strPath);
-				strDir.Format("%s\\playlists\\%s",g_stSettings.m_szAlbumDirectory,strFileName.c_str());
-				if (strDir!=pItem->m_strPath)
-				{
-					CPlayListFactory factory;
-					auto_ptr<CPlayList> pPlayList (factory.Create(pItem->m_strPath));
-					if (pPlayList.get()!=NULL)
-					{
-						if (pPlayList->Load(pItem->m_strPath) && pPlayList->size()>0)
-						{
-							const CPlayList::CPlayListItem& item=(*pPlayList.get())[0];
-							if (!CUtil::IsInternetStream(item.GetFileName()))
-							{
-								pPlayList->Save(strDir);
-							}
-						}
-					}
-				}
-			}
-			}
-			else if (CUtil::IsPicture(pItem->m_strPath) )
-			{
-				// picture
-				pItem->SetIconImage("defaultPicture.png");
-			}
-			else if ( bOnlyDefaultXBE ? CUtil::IsDefaultXBE(pItem->m_strPath) : CUtil::IsXBE(pItem->m_strPath) )
-			{
-				// xbe
-				pItem->SetIconImage("defaultProgram.png");
-			}
-			else if ( CUtil::IsAudio(pItem->m_strPath) )
-			{
-				// audio
-				pItem->SetIconImage("defaultAudio.png");
-			}
-			else if (CUtil::IsVideo(pItem->m_strPath) )
-			{
-				// video
-				pItem->SetIconImage("defaultVideo.png");
-			}
-			else if (CUtil::IsShortCut(pItem->m_strPath) )
-			{
-				// shortcut
-				CStdString strDescription;
-				CStdString strFName;
-				strFName=CUtil::GetFileName(pItem->m_strPath);
-
-				int iPos=strFName.ReverseFind(".");
-				strDescription=strFName.Left(iPos);
-				pItem->SetLabel(strDescription);
-				pItem->SetIconImage("defaultShortcut.png");
-			}
-			//else
-			//{
-			//	// default icon for unknown file type
-			//	pItem->SetIconImage("defaultUnknown.png");
-			//}
-		}
-		else
-		{
-			if (pItem->GetLabel()=="..")
-			{
-				pItem->SetIconImage("defaultFolderBack.png");
-			}
-			else
-			{
-				pItem->SetIconImage("defaultFolder.png");
-			}
-		}
-	}
-
-	if (pItem->GetThumbnailImage()=="")
-  {
-    if (pItem->GetIconImage()!="")
-    {
-      CStdString strBig;
-      int iPos=pItem->GetIconImage().Find(".");
-      strBig=pItem->GetIconImage().Left(iPos);
-      strBig+="Big";
-      strBig+=pItem->GetIconImage().Right(pItem->GetIconImage().size()-(iPos));
-      pItem->SetThumbnailImage(strBig);
-    }
   }
 }
 
@@ -1594,11 +1311,11 @@ void CUtil::CreateShortcuts(VECFILEITEMS &items)
 void CUtil::CreateShortcut(CFileItem* pItem)
 {
 	bool bOnlyDefaultXBE=g_guiSettings.GetBool("MyPrograms.DefaultXBEOnly");
-	if ( bOnlyDefaultXBE ? CUtil::IsDefaultXBE(pItem->m_strPath) : CUtil::IsXBE(pItem->m_strPath) )
+	if ( bOnlyDefaultXBE ? pItem->IsDefaultXBE() : pItem->IsXBE() )
 	{
 		// xbe
 		pItem->SetIconImage("defaultProgram.png");
-		if ( !CUtil::IsDVD(pItem->m_strPath) )
+		if ( !pItem->IsDVD() )
 		{
 			CStdString strDescription;
 			if (! CUtil::GetXBEDescription(pItem->m_strPath,strDescription))
@@ -1630,7 +1347,7 @@ void CUtil::SetThumbs(VECFILEITEMS &items)
   for (int i=0; i < (int)items.size(); ++i)
   {
     CFileItem* pItem=items[i];
-    SetThumb(pItem);
+    pItem->SetThumb();
   }
 
   g_directoryCache.ClearThumbCache();
@@ -1646,13 +1363,14 @@ bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
   // to q:\thumbs and return the cached image as a thumbnail
   CStdString strFolderImage;
   strThumb="";
-  AddFileToFolder(strFolder, "folder.jpg", strFolderImage);
+	CUtil::AddFileToFolder(strFolder, "folder.jpg", strFolderImage);
 
+	CFileItem item(strFolder, true);
   // remote or local file?
-  if (CUtil::IsRemote(strFolder) || CUtil::IsDVD(strFolder) || CUtil::IsISO9660(strFolder) )
+  if (item.IsRemote() || item.IsDVD() || item.IsISO9660() )
   {
     // dont try to locate a folder.jpg for streams &  shoutcast
-    if (CUtil::IsInternetStream(strFolder))
+    if (item.IsInternetStream())
       return false;
 
     CUtil::GetThumbnail( strFolderImage,strThumb);
@@ -1661,13 +1379,13 @@ bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
     {
       CFile file;
       // then cache folder.jpg to xbox HD
-	  if (g_guiSettings.GetBool("VideoLibrary.FindRemoteThumbs") && (file.Exists(strFolderImage)))
-	  {
-		if ( file.Cache(strFolderImage.c_str(), strThumb.c_str(),NULL,NULL))
-		{
-			return true;
-		}
-	  }
+			if (g_guiSettings.GetBool("VideoLibrary.FindRemoteThumbs") && (file.Exists(strFolderImage)))
+			{
+				if ( file.Cache(strFolderImage.c_str(), strThumb.c_str(),NULL,NULL))
+				{
+					return true;
+				}
+			}
     }
     else
     {
@@ -1685,137 +1403,6 @@ bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
   // no thumb found
   strThumb="";
   return false;
-}
-
-void CUtil::SetThumb(CFileItem* pItem)
-{
-  CStdString strThumb;
-  // set the thumbnail for an file item
-
-  // if it already has a thumbnail, then return
-  if ( pItem->HasThumbnail() ) return;
-
-  //  No thumb for parent folder items
-  if (pItem->GetLabel()=="..") return;
-
-
-  CStdString strFileName=pItem->m_strPath;
-  if (CUtil::IsXBE(strFileName) && pItem->m_bIsFolder) return;  // case where we have multiple paths with XBE
-  if (!CUtil::IsRemote(strFileName))
-	{
-		CStdString strFile;
-		CUtil::ReplaceExtension(strFileName, ".tbn", strFile);
-		if (CUtil::FileExists(strFile))
-		{
-			pItem->SetThumbnailImage(strFile);
-			return;
-		}
-	}
-
-  // if this is a shortcut, then get the real filename
-  if (CUtil::IsShortCut(strFileName))
-  {
-    CShortcut shortcut;
-    if ( shortcut.Create( strFileName ) )
-    {
-      strFileName=shortcut.m_strPath;
-    }
-  }
-
-	// get filename of cached thumbnail like Q:\thumbs\aed638.tbn
-  CStdString strCachedThumbnail;
-  Crc32 crc;
-  crc.ComputeFromLowerCase(strFileName);
-  strCachedThumbnail.Format("%s\\%x.tbn",g_stSettings.szThumbnailsDirectory,crc);
-
-  bool bGotIcon(false);
-
-  // does a cached thumbnail exists?
-	// If it is on the DVD and is an XBE, let's grab get the thumbnail again
-	if (!CUtil::FileExists(strCachedThumbnail) || (CUtil::IsXBE(strFileName) && CUtil::IsDVD(strFileName)) )
-  {
-    if (CUtil::IsRemote(strFileName) && !g_guiSettings.GetBool("VideoLibrary.FindRemoteThumbs")) return;
-		// get the path for the  thumbnail
-		CUtil::GetThumbnail( strFileName,strThumb);
-    // local cached thumb does not exists
-    // check if strThumb exists
-    if (CUtil::FileExists(strThumb))
-    {
-      // yes, is it a local or remote file
-      if (CUtil::IsRemote(strThumb) || CUtil::IsDVD(strThumb) || CUtil::IsISO9660(strThumb) )
-      {
-        // remote file, then cache it...
-        CFile file;
-        if ( file.Cache(strThumb.c_str(), strCachedThumbnail.c_str(),NULL,NULL))
-        {
-          // cache ok, then use it
-          pItem->SetThumbnailImage(strCachedThumbnail);
-          bGotIcon=true;
-        }
-      }
-      else
-      {
-        // local file, then use it
-        pItem->SetThumbnailImage(strThumb);
-        bGotIcon=true;
-      }
-    }
-    else
-    {
-      // strThumb doesnt exists either
-      // now check for filename.tbn or foldername.tbn
-      CFile file;
-      CStdString strThumbnailFileName;
-			if (pItem->m_bIsFolder)
-			{
-				strThumbnailFileName=pItem->m_strPath;
-				if (CUtil::HasSlashAtEnd(strThumbnailFileName))
-					strThumbnailFileName.Delete(strThumbnailFileName.size()-1);
-				strThumbnailFileName+=".tbn";
-			}
-			else
-				CUtil::ReplaceExtension(strFileName,".tbn", strThumbnailFileName);
-
-			if (file.Exists(strThumbnailFileName))
-			{
-				//	local or remote ?
-				if (CUtil::IsRemote(strFileName) || CUtil::IsDVD(strFileName) || CUtil::IsISO9660(strFileName))
-				{
-					//	remote, cache thumb to hdd
-					if ( file.Cache(strThumbnailFileName.c_str(), strCachedThumbnail.c_str(),NULL,NULL))
-					{
-
-						pItem->SetThumbnailImage(strCachedThumbnail);
-						bGotIcon=true;
-					}
-				}
-				else
-				{
-					//	local, just use it
-					pItem->SetThumbnailImage(strThumbnailFileName);
-					bGotIcon=true;
-				}
-      }
-    }
-		// fill in the folder thumbs
-		if (!bGotIcon && pItem->GetLabel() != "..")
-		{
-			// this is a folder ?
-			if (pItem->m_bIsFolder)
-			{
-				// yes, then get the folder thumbnail
-				if ( CUtil::GetFolderThumb(strFileName, strThumb))
-				{
-					pItem->SetThumbnailImage(strThumb);
-				}
-			}
-		}
-  }
-  else
-  {
-    // yes local cached thumbnail exists, use it
-    pItem->SetThumbnailImage(strCachedThumbnail);
-  }
 }
 
 void CUtil::ShortenFileName(CStdString& strFileNameAndPath)
@@ -2030,8 +1617,6 @@ void CUtil::ClearSubtitles()
 	}
 }
 
-
-
 void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached )
 {
   char * sub_exts[] = {  ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx",".ifo", NULL};
@@ -2039,10 +1624,10 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
 
 	ClearSubtitles();
 
-  CURL url(strMovie);
-  if (CUtil::IsInternetStream(strMovie)) return;
-  if (CUtil::IsPlayList(strMovie)) return;
-  if (!CUtil::IsVideo(strMovie)) return;
+  CFileItem item(strMovie, false);
+  if (item.IsInternetStream()) return;
+  if (item.IsPlayList()) return;
+  if (!item.IsVideo()) return;
 
   const int iPaths = 2;
   CStdString strLookInPaths[2];
@@ -2189,14 +1774,6 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
   strResult += strFile;
 }
 
-bool CUtil::IsNFO(const CStdString& strFile)
-{
-  char *pExtension=CUtil::GetExtension(strFile);
-  if (!pExtension) return false;
-  if (CUtil::cmpnocase(pExtension,".nfo")==0) return true;
-  return false;
-}
-
 void CUtil::GetPath(const CStdString& strFileName, CStdString& strPath)
 {
   int iPos1=strFileName.Find("/");
@@ -2319,8 +1896,7 @@ void CUtil::PlayDVD()
   {
     CIoSupport helper;
     helper.Remount("D:","Cdrom0");
-	CFileItem item;
-	item.m_strPath = "dvd://1";
+    CFileItem item("dvd://1", false);
     g_application.PlayFile(item);
   }
 }
@@ -2659,211 +2235,10 @@ void CUtil::SetMusicThumbs(VECFILEITEMS &items)
   for (int i=0; i < (int)items.size(); ++i)
   {
     CFileItem* pItem=items[i];
-    SetMusicThumb(pItem);
+    pItem->SetMusicThumb();
   }
 
   g_directoryCache.ClearMusicThumbCache();
-}
-
-void CUtil::SetMusicThumb(CFileItem* pItem)
-{
-	//	Set the album thumb for a file or folder.
-
-	//	Sets thumb by album title or uses files in
-	//	folder like folder.jpg or .tbn files.
-
-  // if it already has a thumbnail, then return
-  if ( pItem->HasThumbnail() ) return;
-
-  if (CUtil::IsInternetStream(pItem->m_strPath)) return;
-
-  CStdString strThumb, strPath;
-
-	//	If item is not a folder, extract its path
-  if (!pItem->m_bIsFolder)
-    CUtil::GetDirectory(pItem->m_strPath, strPath);
-  else
-	{
-    strPath=pItem->m_strPath;
-		if (CUtil::HasSlashAtEnd(strPath))
-			strPath.Delete(strPath.size()-1);
-	}
-
-	//	Look if an album thumb is available,
-	//	could be any file with tags loaded or
-	//	a directory in album window
-  CStdString strAlbum;
-	if (pItem->m_musicInfoTag.Loaded())
-		strAlbum=pItem->m_musicInfoTag.GetAlbum();
-
-	if (!pItem->m_bIsFolder)
-  {
-    // look for a permanent thumb (Q:\albums\thumbs)
-    CUtil::GetAlbumThumb(strAlbum, strPath, strThumb);
-    if (CUtil::FileExists(strThumb))
-    {
-			//	found it, we are finished.
-      pItem->SetIconImage(strThumb);
-      pItem->SetThumbnailImage(strThumb);
-    }
-    else
-    {
-      // look for a temporary thumb (Q:\albums\thumbs\temp)
-      CUtil::GetAlbumThumb(strAlbum, strPath,strThumb, true);
-      if (CUtil::FileExists(strThumb) )
-      {
-				//	found it
-        pItem->SetIconImage(strThumb);
-        pItem->SetThumbnailImage(strThumb);
-      }
-			else
-			{
-				//	no thumb found
-				strThumb.Empty();
-			}
-		}
-	}
-
-	//	If we have not found a thumb before, look for a .tbn if its a file
-	if (strThumb.IsEmpty() && !pItem->m_bIsFolder)
-	{
-		CUtil::ReplaceExtension(pItem->m_strPath, ".tbn", strThumb);
-		if( CUtil::IsRemote(pItem->m_strPath) || CUtil::IsDVD(pItem->m_strPath) || CUtil::IsISO9660(pItem->m_strPath))
-		{
-			//	Query local cache
-			CStdString strCached;
-			CUtil::GetAlbumFolderThumb(strThumb, strCached, true);
-			if (CUtil::FileExists(strCached))
-			{
-				//	Remote thumb found in local cache
-				pItem->SetIconImage(strCached);
-				pItem->SetThumbnailImage(strCached);
-			}
-			else
-			{
-        if (CUtil::IsRemote(pItem->m_strPath) && !g_guiSettings.GetBool("MusicLibrary.FindRemoteThumbs")) return;
-				//	create cached thumb, if a .tbn file is found
-				//	on a remote share
-				if (CUtil::FileExists(strThumb))
-				{
-					//	found, save a thumb
-					//	to the temp thumb dir.
-					CPicture pic;
-					if (pic.CreateAlbumThumbnail(strThumb, strThumb))
-					{
-						pItem->SetIconImage(strCached);
-						pItem->SetThumbnailImage(strCached);
-					}
-					else
-					{
-						//	save temp thumb failed,
-						//	no thumb available
-						strThumb.Empty();
-					}
-				}
-				else
-				{
-					//	no thumb available
-					strThumb.Empty();
-				}
-			}
-		}
-		else
-		{
-			if (CUtil::FileExists(strThumb))
-			{
-				//	use local .tbn file as thumb
-				pItem->SetIconImage(strThumb);
-				pItem->SetThumbnailImage(strThumb);
-			}
-			else
-			{
-				//	No thumb found
-				strThumb.Empty();
-			}
-		}
-	}
-
-	//	If we have not found a thumb before, look for a folder thumb
-  if (strThumb.IsEmpty() && pItem->GetLabel()!="..")
-  {
-		CStdString strFolderThumb;
-
-		//	Lookup permanent thumbs on HD, if a
-		//	thumb for this folder exists
-    CUtil::GetAlbumFolderThumb(strPath,strFolderThumb);
-		if (!CUtil::FileExists(strFolderThumb))
-		{
-			//	No, lookup saved temp thumbs on HD, if a previously
-			//	cached thumb for this folder exists...
-			CUtil::GetAlbumFolderThumb(strPath,strFolderThumb, true);
-			if (!CUtil::FileExists(strFolderThumb))
-			{
-        if (CUtil::IsRemote(pItem->m_strPath) && !g_guiSettings.GetBool("MusicLibrary.FindRemoteThumbs")) return;
-				if (pItem->m_bIsFolder)
-				{
-					CStdString strFolderTbn=strPath;
-					strFolderTbn+=".tbn";
-					CUtil::AddFileToFolder(pItem->m_strPath, "folder.jpg", strThumb);
-
-					//	...no, check for a folder.jpg
-					if (CUtil::ThumbExists(strThumb, true))
-					{
-						//	found, save a thumb for this folder
-						//	to the temp thumb dir.
-						CPicture pic;
-						if (!pic.CreateAlbumThumbnail(strThumb, strPath))
-						{
-							//	save temp thumb failed,
-							//	no thumb available
-							strFolderThumb.Empty();
-						}
-					}	//	...or maybe we have a "foldername".tbn
-					else if (CUtil::ThumbExists(strFolderTbn, true))
-					{
-						//	found, save a thumb for this folder
-						//	to the temp thumb dir.
-						CPicture pic;
-						if (!pic.CreateAlbumThumbnail(strFolderTbn, strPath))
-						{
-							//	save temp thumb failed,
-							//	no thumb available
-							strFolderThumb.Empty();
-						}
-					}
-					else
-					{
-						//	no thumb exists, do we have a directory
-						//	from album window, use music.jpg as icon
-						if (!strAlbum.IsEmpty())
-						{
-							pItem->SetIconImage("Music.jpg");
-							pItem->SetThumbnailImage("Music.jpg");
-						}
-
-						strFolderThumb.Empty();
-					}
-				}
-				else
-				{
-					//	No thumb found for file
-					strFolderThumb.Empty();
-				}
-			}
-		}	//	if (pItem->m_bIsFolder && strThumb.IsEmpty() && pItem->GetLabel()!="..")
-
-
-		//	Have we found a folder thumb
-		if (!strFolderThumb.IsEmpty())
-		{
-				//	if we have a directory from album
-				//	window, set the icon too.
-			if (pItem->m_bIsFolder && !strAlbum.IsEmpty())
-				pItem->SetIconImage(strFolderThumb);
-
-			pItem->SetThumbnailImage(strFolderThumb);
-		}
-  }
 }
 
 CStdString CUtil::GetNextFilename(const char* fn_template, int max)
@@ -3488,46 +2863,6 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
 	{
 		CUtil::RunXBE(parameter.c_str());
 	}
-}
-
-bool CUtil::IsDefaultThumb(const CStdString& strThumb)
-{
-	if (strThumb.Equals("DefaultPlaylist.png")) return true;
-	if (strThumb.Equals("DefaultPlaylistBig.png")) return true;
-	if (strThumb.Equals("DefaultProgram.png")) return true;
-	if (strThumb.Equals("DefaultProgramBig.png")) return true;
-	if (strThumb.Equals("DefaultShortcut.png")) return true;
-	if (strThumb.Equals("DefaultShortcutBig.png")) return true;
-	if (strThumb.Equals("defaultAudio.png")) return true;
-	if (strThumb.Equals("defaultAudioBig.png")) return true;
-	if (strThumb.Equals("defaultCdda.png")) return true;
-	if (strThumb.Equals("defaultCddaBig.png")) return true;
-	if (strThumb.Equals("defaultDVDEmpty.png")) return true;
-	if (strThumb.Equals("defaultDVDEmptyBig.png")) return true;
-	if (strThumb.Equals("defaultDVDRom.png")) return true;
-	if (strThumb.Equals("defaultDVDRomBig.png")) return true;
-	if (strThumb.Equals("defaultFolder.png")) return true;
-	if (strThumb.Equals("defaultFolderBack.png")) return true;
-	if (strThumb.Equals("defaultFolderBackBig.png")) return true;
-	if (strThumb.Equals("defaultFolderBig.png")) return true;
-	if (strThumb.Equals("defaultHardDisk.png")) return true;
-	if (strThumb.Equals("defaultHardDiskBig.png")) return true;
-	if (strThumb.Equals("defaultNetwork.png")) return true;
-	if (strThumb.Equals("defaultNetworkBig.png")) return true;
-	if (strThumb.Equals("defaultPicture.png")) return true;
-	if (strThumb.Equals("defaultPictureBig.png")) return true;
-	if (strThumb.Equals("defaultVCD.png")) return true;
-	if (strThumb.Equals("defaultVCDBig.png")) return true;
-	if (strThumb.Equals("defaultVideo.png")) return true;
-	if (strThumb.Equals("defaultVideoBig.png")) return true;
-	if (strThumb.Equals("defaultXBOXDVD.png")) return true;
-	if (strThumb.Equals("defaultXBOXDVDBig.png")) return true;
-	// check the default icons
-	for (unsigned int i=0; i < g_settings.m_vecIcons.size(); ++i)
-  {
-		if (strThumb.Equals(g_settings.m_vecIcons[i].m_strIcon)) return true;
-  }
-	return false;
 }
 
 void usleep(int t)

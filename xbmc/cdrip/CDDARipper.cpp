@@ -112,7 +112,8 @@ bool CCDDARipper::Rip(int iTrack, const char* strFile, MUSIC_INFO::CMusicInfoTag
 	CLog::Log(LOGINFO, "Start ripping track %i to %s", iTrack, strFile);
 
   // if we are ripping to a samba share, rip it to hd first and then copy it it the share
-  if (CUtil::IsRemote(strFile)) strFilename = tempnam("Z:\\", "");
+	CFileItem file(strFile, false);
+  if (file.IsRemote()) strFilename = tempnam("Z:\\", "");
   if (!strFilename)
   {
     CLog::Log(LOGERROR, "CCDDARipper: Error opening file");
@@ -161,7 +162,7 @@ bool CCDDARipper::Rip(int iTrack, const char* strFile, MUSIC_INFO::CMusicInfoTag
 	pDlgProgress->Close();
 	DeInit();
 	
-  if (CUtil::IsRemote(strFile) && !bCancelled)
+  if (file.IsRemote() && !bCancelled)
   {
     // copy the ripped track to the share
     CFile file;
@@ -196,7 +197,8 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
 	CStdString strFile;
 	CStdString strDirectory = g_stSettings.m_strRipPath;
 	if (!CUtil::HasSlashAtEnd(strDirectory)) CUtil::AddDirectorySeperator(strDirectory);
-	bool bIsFATX = !CUtil::IsSmb(strDirectory);
+	CFileItem ripPath(strDirectory, true);
+	bool bIsFATX = !ripPath.IsSmb();
 
 	if (pItem->m_strPath.Find(".cdda") < 0) return false;
 	if (strDirectory.size() < 3)
@@ -253,7 +255,8 @@ bool CCDDARipper::RipCD()
 	CStdString strFile;
 	CStdString strDirectory = g_stSettings.m_strRipPath;
 	if (!CUtil::HasSlashAtEnd(strDirectory)) CUtil::AddDirectorySeperator(strDirectory);
-	bool bIsFATX = !CUtil::IsSmb(strDirectory);
+	CFileItem ripPath(strDirectory, true);
+	bool bIsFATX = !ripPath.IsSmb();
 
 	// return here if cd is not a CDDA disc
 	MEDIA_DETECT::CCdInfo* pInfo = MEDIA_DETECT::CDetectDVDMedia::GetCdInfo();

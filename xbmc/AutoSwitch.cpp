@@ -122,7 +122,7 @@ int CAutoSwitch::ByFolders(bool bBigThumbs, VECFILEITEMS& vecItems)
 		for (int i=0; i<(int)vecItems.size(); i++)
 		{
 			CFileItem* pItem = vecItems[i];
-			if (!CUtil::IsDefaultThumb(pItem->GetThumbnailImage()))
+			if (!pItem->HasDefaultThumb())
 			{
 				bThumbs = true;
 				break;
@@ -167,7 +167,7 @@ int CAutoSwitch::ByFiles(bool bBigThumbs, bool bHideParentDirItems, VECFILEITEMS
 		for (int i=0; i<(int)vecItems.size(); i++)
 		{
 			CFileItem* pItem = vecItems[i];
-			if (!CUtil::IsDefaultThumb(pItem->GetThumbnailImage()))
+			if (!pItem->HasDefaultThumb())
 			{
 				bThumbs = true;
 				break;
@@ -210,7 +210,7 @@ int CAutoSwitch::ByThumbPercent(bool bBigThumbs, bool bHideParentDirItems, int i
 	for (int i=0; i<(int)vecItems.size(); i++)
 	{
 		CFileItem* pItem = vecItems[i];
-		if (!CUtil::IsDefaultThumb(pItem->GetThumbnailImage()))
+		if (!pItem->HasDefaultThumb())
 		{
 			iNonDefault++;
 			float fTempPercent = ( (float)iNonDefault / (float)iNumItems ) * (float)100;

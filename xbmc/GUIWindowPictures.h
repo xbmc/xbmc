@@ -51,7 +51,7 @@ protected:
   void              AddDir(CGUIWindowSlideShow *pSlideShow,const CStdString& strPath);
 	CVirtualDirectory		m_rootDir;
   VECFILEITEMS				m_vecItems;
-	CStdString					m_strDirectory;
+	CFileItem						m_Directory;
 	CGUIDialogProgress*	m_dlgProgress;
 	CDirectoryHistory		m_history;
   int                 m_iItemSelected;

@@ -40,7 +40,8 @@ static CStdString m_strTempPlayListDirectory="";
 CGUIWindowVideoPlaylist::CGUIWindowVideoPlaylist(void)
 :CGUIWindow(0)
 {
-  m_strDirectory="";
+	m_Directory.m_strPath="";
+	m_Directory.m_bIsFolder=true;
 	m_iLastControl=-1;
 	m_iItemSelected=-1;
 }
@@ -293,7 +294,7 @@ void CGUIWindowVideoPlaylist::MoveCurrentPlayListItem(int iAction)
     CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
     if (playlist.Swap(iSelected, iNew))
     {
-      Update(m_strDirectory);
+      Update(m_Directory.m_strPath);
       SetSelectedItem(iNew);
       return;
     }
@@ -362,8 +363,8 @@ void CGUIWindowVideoPlaylist::UpdateListControl()
 
 void CGUIWindowVideoPlaylist::OnFileItemFormatLabel(CFileItem* pItem)
 {
-  CUtil::SetThumb(pItem);
-	CUtil::FillInDefaultIcon(pItem);
+	pItem->SetThumb();
+	pItem->FillInDefaultIcon();
 	// Remove extension from title if it exists
 	pItem->SetLabel(CUtil::GetTitleFromPath(pItem->GetLabel()));
 }
@@ -602,16 +603,16 @@ void CGUIWindowVideoPlaylist::Update(const CStdString &strDirectory)
 
 	ClearFileItems();
 
-	m_history.Set(strSelectedItem,m_strDirectory);
-	m_strDirectory=strDirectory;
+	m_history.Set(strSelectedItem,m_Directory.m_strPath);
+	m_Directory.m_strPath=strDirectory;
 
-	GetDirectory(m_strDirectory, m_vecItems);
+	GetDirectory(m_Directory.m_strPath, m_vecItems);
 
 
   UpdateListControl();
 	UpdateButtons();
 
-	strSelectedItem=m_history.Get(m_strDirectory);
+	strSelectedItem=m_history.Get(m_Directory.m_strPath);
 
 	if (m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST)
 	{
@@ -627,7 +628,7 @@ void CGUIWindowVideoPlaylist::Update(const CStdString &strDirectory)
 
 	int iCurrentSong=-1;
 	//	Search current playlist item
-	if ((m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory.Find(m_strDirectory) > -1 && g_application.IsPlayingVideo() 
+	if ((m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory.Find(m_Directory.m_strPath) > -1 && g_application.IsPlayingVideo() 
 			&& g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_VIDEO_TEMP) 
 			|| (GetID()==WINDOW_VIDEO_PLAYLIST && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_VIDEO && g_application.IsPlayingVideo()) )
 	{
@@ -757,7 +758,7 @@ void CGUIWindowVideoPlaylist::ShufflePlayList()
 		}
 	}
 
-	Update(m_strDirectory);
+	Update(m_Directory.m_strPath);
 }
 
 /// \brief Save current playlist to playlist folder

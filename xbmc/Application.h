@@ -118,6 +118,7 @@ public:
 	void					DelayLoadSkin();
 	void					CancelDelayLoadSkin();
 	const CStdString&		CurrentFile();
+	const CFileItem&		CurrentFileItem();
 	const CStdString&		GetCurrentPlayer();
 	virtual bool			OnMessage(CGUIMessage& message);
 	virtual	void			OnPlayBackEnded();

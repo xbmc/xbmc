@@ -73,31 +73,31 @@ ModPlayer::ModPlayer(IPlayerCallback& callback) :IPlayer(callback)
 
 ModPlayer::~ModPlayer()
 {
-	closefile();
+	CloseFile();
 	mikxboxExit();
 
 	CSectionLoader::Unload("MOD_RX");
 	CSectionLoader::Unload("MOD_RW");
 }
 
-bool ModPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
+bool ModPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 {
-	closefile();
+	CloseFile();
 
 	char* str = NULL;
-	if (!CUtil::IsHD(strFile))
+	if (!file.IsHD())
 	{
-		CFile file;
-		if (!file.Cache(strFile.c_str(),"Z:\\cachedmod",NULL,NULL))
+		CFile fileCopy;
+		if (!fileCopy.Cache(file.m_strPath.c_str(),"Z:\\cachedmod",NULL,NULL))
 		{
 			::DeleteFile("Z:\\cachedmod");
-			CLog::Log(LOGERROR, "ModPlayer: Unable to cache file %s\n", strFile.c_str());
+			CLog::Log(LOGERROR, "ModPlayer: Unable to cache file %s\n", file.m_strPath.c_str());
 			return false;
 		}
 		str = strdup("Z:\\cachedmod");
 	}
 	else
-		str = strdup(strFile.c_str());
+		str = strdup(file.m_strPath.c_str());
 
 	m_pModule = Mod_Player_Load(str, 127, 0);
 	free(str);
@@ -108,7 +108,7 @@ bool ModPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 	}
 	else
 	{
-		CLog::Log(LOGERROR, "ModPlayer: Could not load module %s: %s\n", strFile.c_str(), MikMod_strerror(mikxboxGetErrno()));
+		CLog::Log(LOGERROR, "ModPlayer: Could not load module %s: %s\n", file.m_strPath.c_str(), MikMod_strerror(mikxboxGetErrno()));
 		return false;
 	}
 
@@ -124,7 +124,7 @@ bool ModPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 	return true;
 }
 
-bool ModPlayer::closefile()
+bool ModPlayer::CloseFile()
 {
 	if (IsPaused())
 		Pause();

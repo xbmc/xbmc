@@ -106,7 +106,8 @@ CGUIWindowScripts::CGUIWindowScripts()
 	m_bDVDDiscChanged = false;
 	m_bDVDDiscEjected = false;
 	m_bViewOutput = false;
-	m_strDirectory="?";
+	m_Directory.m_strPath="?";
+	m_Directory.m_bIsFolder=true;
 	scriptSize = 0;
 	m_iLastControl=-1;
 	m_iSelectedItem=-1;
@@ -154,7 +155,7 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
 		{
 			shares.erase(shares.begin(),shares.end());
 			CGUIWindow::OnMessage(message);
-			if (m_strDirectory=="?") m_strDirectory="Q:\\scripts";//g_stSettings.m_szDefaultScripts;
+			if (m_Directory.m_strPath=="?") m_Directory.m_strPath="Q:\\scripts";//g_stSettings.m_szDefaultScripts;
 
 			m_rootDir.SetMask("*.py");
 
@@ -170,7 +171,7 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
 			if (m_iLastControl>-1)
 				SET_CONTROL_FOCUS(m_iLastControl, 0);
 
-			Update(m_strDirectory);
+			Update(m_Directory.m_strPath);
 
 			if (m_iSelectedItem>-1)
 			{
@@ -187,7 +188,7 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
       int iControl=message.GetSenderId();
       if (iControl==CONTROL_BTNVIEWASICONS)
       {
-		  if ( m_strDirectory.IsEmpty() )
+		  if ( m_Directory.IsVirtualDirectoryRoot() )
 		    g_stSettings.m_bScriptsRootViewAsIcons=!g_stSettings.m_bScriptsRootViewAsIcons;
 		  else
 		    g_stSettings.m_bScriptsViewAsIcons=!g_stSettings.m_bScriptsViewAsIcons;
@@ -231,7 +232,7 @@ void CGUIWindowScripts::UpdateButtons()
 	SET_CONTROL_HIDDEN(CONTROL_LIST);
 	SET_CONTROL_HIDDEN(CONTROL_THUMBS);
 	bool bViewIcon = false;
-	if ( m_strDirectory.IsEmpty() ) {
+	if ( m_Directory.IsVirtualDirectoryRoot() ) {
 		bViewIcon = g_stSettings.m_bScriptsRootViewAsIcons;
 	}
 	else {
@@ -346,7 +347,7 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
 		if (pItem->m_bIsFolder && pItem->GetLabel() != "..")
 		{
 			strSelectedItem=pItem->m_strPath;
-			m_history.Set(strSelectedItem,m_strDirectory);
+			m_history.Set(strSelectedItem,m_Directory.m_strPath);
 		}
 	}
   ClearFileItems();
@@ -389,7 +390,7 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
 		m_strParentPath = "";
   }
 
-  m_strDirectory=strDirectory;
+	m_Directory.m_strPath=strDirectory;
 	m_rootDir.GetDirectory(strDirectory,m_vecItems);
 	CUtil::SetThumbs(m_vecItems);
 	CUtil::FillInDefaultIcons(m_vecItems);
@@ -427,12 +428,12 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
   OnSort();
   UpdateButtons();
 
-	strSelectedItem=m_history.Get(m_strDirectory);	
+	strSelectedItem=m_history.Get(m_Directory.m_strPath);	
 
 	if (m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST)
 	{
 		bool bViewAsIcon = false;
-		if ( m_strDirectory.IsEmpty() )
+		if ( m_Directory.IsVirtualDirectoryRoot() )
 			bViewAsIcon = g_stSettings.m_bScriptsRootViewAsIcons;
 		else
 			bViewAsIcon = g_stSettings.m_bScriptsViewAsIcons;
@@ -461,7 +462,7 @@ int CGUIWindowScripts::GetSelectedItem()
 {
 	int iControl;
 	bool bViewIcon = false;
-	if ( m_strDirectory.IsEmpty() ) {
+	if ( m_Directory.IsVirtualDirectoryRoot() ) {
 		bViewIcon = g_stSettings.m_bScriptsRootViewAsIcons;
 	}
 	else {
@@ -518,7 +519,7 @@ void CGUIWindowScripts::OnClick(int iItem)
 
 				// update items
 				int selectedItem = GetSelectedItem();
-				Update(m_strDirectory);
+				Update(m_Directory.m_strPath);
 				CONTROL_SELECT_ITEM(CONTROL_LIST,selectedItem);
 				CONTROL_SELECT_ITEM(CONTROL_THUMBS,selectedItem);
 				return;
@@ -577,7 +578,7 @@ void CGUIWindowScripts::Render()
 	if(g_pythonParser.ScriptsSize() != scriptSize)
 	{
 		int selectedItem = GetSelectedItem();
-		Update(m_strDirectory);
+		Update(m_Directory.m_strPath);
 		CONTROL_SELECT_ITEM(CONTROL_LIST,selectedItem);
 		CONTROL_SELECT_ITEM(CONTROL_THUMBS,selectedItem);
 		scriptSize = g_pythonParser.ScriptsSize();

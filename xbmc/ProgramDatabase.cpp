@@ -112,6 +112,7 @@ void CProgramDatabase::Close()
   if (NULL!=m_pDS.get()) m_pDS->close();
 	m_pDB->disconnect();
 	m_pDB.reset();
+	m_pDS.reset();
 }
 
 //********************************************************************************************************************************

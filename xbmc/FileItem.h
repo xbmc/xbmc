@@ -7,12 +7,13 @@
 #include "stdstring.h"
 #include "MusicInfoTag.h"
 #include "MusicDatabase.h"
-#include "PlayList.h"
+#include "settings.h"
 #include <vector>
 #include "utils/archive.h"
+#include "cuedocument.h"
+
 using namespace std;
 using namespace MUSIC_INFO;
-using namespace PLAYLIST;
 
 /*!
 	\brief Represents a file on a share
@@ -25,30 +26,62 @@ public:
   CFileItem(void);
   CFileItem(const CFileItem& item);
   CFileItem(const CStdString& strLabel);
+	CFileItem(const CStdString& strPath, bool bIsFolder);
 	CFileItem(const CSong& song);
 	CFileItem(const CAlbum& album);
-	CFileItem(const CPlayList::CPlayListItem &item);
+	CFileItem(const CShare& share);
   virtual ~CFileItem(void);
 
-	void Clear();
-  const CFileItem& operator=(const CFileItem& item);
-	virtual void Serialize(CArchive& ar);
+					void					Clear();
+  const		CFileItem&		operator=(const CFileItem& item);
+	virtual void					Serialize(CArchive& ar);
 
-  CStdString    m_strPath;						///< complete path to item
-  bool          m_bIsShareOrDrive;		///< is this a root share/drive
-  int			m_iDriveType;			///< If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CShare::m_iDriveType
-  SYSTEMTIME    m_stTime;							///< file creation date & time
-  __int64       m_dwSize;							///< file size (0 for folders)
-  float         m_fRating;
-  CStdString    m_strDVDLabel;
-	CMusicInfoTag m_musicInfoTag;
-  int			m_iprogramCount;
-	int			m_idepth;
-	long		m_lStartOffset;
-	long		m_lEndOffset;
-  int           m_iLockMode;
-  CStdStringW    m_strLockCode;
-  int           m_iBadPwdCount;
+					bool					IsVideo() const;
+					bool					IsPicture() const;
+					bool					IsAudio() const;
+					bool					IsCUESheet() const;
+					bool					IsShoutCast() const;
+					bool					IsInternetStream() const;
+					bool					HasDefaultThumb() const;
+					bool					HasDefaultIcon() const;
+					bool					IsPlayList() const;
+					bool					IsPythonScript() const;
+					bool					IsXBE() const;
+					bool					IsDefaultXBE() const;
+					bool					IsShortCut() const;
+					bool					IsNFO() const;
+					bool					IsDVDImage() const;
+					bool					IsDVDFile(bool bVobs=true, bool bIfos=true) const;
+					bool					IsRAR() const;
+					bool					IsISO9660() const;
+					bool					IsCDDA() const;
+					bool					IsDVD() const;
+					bool					IsHD() const;
+					bool					IsRemote() const;
+					bool					IsSmb() const;
+					bool					IsVirtualDirectoryRoot() const;
+					bool					IsReadOnly() const;
+
+					void					FillInDefaultIcon();
+					void					SetThumb();
+					void					SetMusicThumb();
+
+public:
+					CStdString		m_strPath;						///< complete path to item
+					bool					m_bIsShareOrDrive;		///< is this a root share/drive
+					int						m_iDriveType;			///< If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CShare::m_iDriveType
+					SYSTEMTIME		m_stTime;							///< file creation date & time
+					__int64				m_dwSize;							///< file size (0 for folders)
+					float					m_fRating;
+					CStdString		m_strDVDLabel;
+					CMusicInfoTag	m_musicInfoTag;
+					int						m_iprogramCount;
+					int						m_idepth;
+					long					m_lStartOffset;
+					long					m_lEndOffset;
+					int						m_iLockMode;
+					CStdStringW		m_strLockCode;
+					int						m_iBadPwdCount;
 };
 
 /*!
@@ -90,9 +123,25 @@ class CFileItemList : public ISerializable
 public:
 	CFileItemList(VECFILEITEMS& items);
 	virtual ~CFileItemList();
-	VECFILEITEMS& GetList() ;
-	void Clear();
-	virtual void Serialize(CArchive& ar);
+	virtual void					Serialize(CArchive& ar);
+					CFileItem*		operator[] (int iItem);
+	const		CFileItem*		operator[] (int iItem) const;
+					void					Clear();
+					void					Add(CFileItem* pItem);
+					void					Remove(CFileItem* pItem);
+					void					Remove(int iItem);
+					CFileItem*		Get(int iItem);
+	const		CFileItem*		Get(int iItem) const;
+					int						Size() const;
+					bool					IsEmpty() const;
+					void					Append(const CFileItemList& itemlist);
+					void					Reserve(int iCount);
+					void					SetThumbs();
+					void					SetMusicThumbs();
+					void					FillInDefaultIcons();
+					int						GetFolderCount() const;
+					int						GetFileCount() const;
+					void					FilterCueItems();
 private:
-	VECFILEITEMS& m_items;
+					VECFILEITEMS&	m_items;
 };

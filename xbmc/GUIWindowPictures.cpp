@@ -118,7 +118,8 @@ struct SSortPicturesByName
 CGUIWindowPictures::CGUIWindowPictures(void)
 :CGUIWindow(0)
 {
-	m_strDirectory="?";
+	m_Directory.m_strPath="?";
+  m_Directory.m_bIsFolder=true;
   m_iItemSelected=-1;
 	m_iLastControl=-1;
 
@@ -158,16 +159,16 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 		break;
 		case GUI_MSG_DVDDRIVE_EJECTED_CD:
 		{
-			if ( !m_strDirectory.IsEmpty() ) {
-				if ( CUtil::IsCDDA( m_strDirectory ) || CUtil::IsDVD( m_strDirectory ) || CUtil::IsISO9660( m_strDirectory ) ) {
+			if ( !m_Directory.IsVirtualDirectoryRoot() ) {
+				if ( m_Directory.IsCDDA() || m_Directory.IsDVD() || m_Directory.IsISO9660() ) {
 					//	Disc has changed and we are inside a DVD Drive share, get out of here :)
-					m_strDirectory = "";
-					Update( m_strDirectory );
+					m_Directory.m_strPath.Empty();
+					Update( m_Directory.m_strPath );
 				}
 			}
 			else {
 				int iItem = GetSelectedItem();
-				Update( m_strDirectory );
+				Update( m_Directory.m_strPath );
 				CONTROL_SELECT_ITEM(CONTROL_LIST,iItem)
 				CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem)
 			}
@@ -175,9 +176,9 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 		break;
 		case GUI_MSG_DVDDRIVE_CHANGED_CD:
 		{
-			if ( m_strDirectory.IsEmpty() ) {
+			if ( m_Directory.IsVirtualDirectoryRoot() ) {
 				int iItem = GetSelectedItem();
-				Update( m_strDirectory );
+				Update( m_Directory.m_strPath );
 				CONTROL_SELECT_ITEM(CONTROL_LIST,iItem)
 				CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem)
 			}
@@ -208,10 +209,10 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 			m_rootDir.SetMask(g_stSettings.m_szMyPicturesExtensions);
 			m_rootDir.SetShares(g_settings.m_vecMyPictureShares);
 
-			if (m_strDirectory=="?")
+			if (m_Directory.m_strPath=="?")
 			{
-				m_strDirectory=g_stSettings.m_szDefaultPictures;
-				SetHistoryForPath(m_strDirectory);
+				m_Directory.m_strPath=g_stSettings.m_szDefaultPictures;
+				SetHistoryForPath(m_Directory.m_strPath);
 			}
 
 			if (m_iLastControl>-1)
@@ -223,7 +224,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 				m_iViewAsIconsRoot=g_stSettings.m_iMyPicturesRootViewAsIcons;
 			}
 
-			Update(m_strDirectory);
+			Update(m_Directory.m_strPath);
 
 			UpdateThumbPanel();
 
@@ -253,7 +254,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       }
       else if (iControl==CONTROL_BTNSORTBY) // sort by
       {
-				if (m_strDirectory.IsEmpty())
+				if (m_Directory.IsVirtualDirectoryRoot())
 				{
 					if (g_stSettings.m_iMyPicturesRootSortMethod==0)
 						g_stSettings.m_iMyPicturesRootSortMethod=3;
@@ -272,7 +273,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       }
       else if (iControl==CONTROL_BTNSORTASC) // sort asc
       {
-				if (m_strDirectory.IsEmpty())
+				if (m_Directory.IsVirtualDirectoryRoot())
 					g_stSettings.m_bMyPicturesRootSortAscending=!g_stSettings.m_bMyPicturesRootSortAscending;
 				else
 					g_stSettings.m_bMyPicturesSortAscending=!g_stSettings.m_bMyPicturesSortAscending;
@@ -469,7 +470,7 @@ void CGUIWindowPictures::UpdateButtons()
 void CGUIWindowPictures::Update(const CStdString &strDirectory)
 {
 	UpdateDir(strDirectory);
-	if (!m_strDirectory.IsEmpty() && g_guiSettings.GetBool("Pictures.UseAutoSwitching"))
+	if (!m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("Pictures.UseAutoSwitching"))
 	{
 		m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
 
@@ -498,7 +499,7 @@ void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
 		if (pItem->m_bIsFolder && pItem->GetLabel() != "..")
 		{
 			GetDirectoryHistoryString(pItem, strSelectedItem);
-			m_history.Set(strSelectedItem,m_strDirectory);
+			m_history.Set(strSelectedItem,m_Directory.m_strPath);
 		}
 	}
   ClearFileItems();
@@ -507,7 +508,7 @@ void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
 
 	m_iLastControl=GetFocusedControl();
 
-	m_strDirectory=strDirectory;
+	m_Directory.m_strPath=strDirectory;
 	CUtil::SetThumbs(m_vecItems);
 	if (g_guiSettings.GetBool("FileLists.HideExtensions"))
 		CUtil::RemoveExtensions(m_vecItems);
@@ -515,7 +516,7 @@ void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
 	OnSort();
 	UpdateButtons();
 
-	strSelectedItem=m_history.Get(m_strDirectory);	
+	strSelectedItem=m_history.Get(m_Directory.m_strPath);	
 
 	if (m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST)
 	{
@@ -584,7 +585,7 @@ bool CGUIWindowPictures::HaveDiscOrConnection( CStdString& strPath, int iDriveTy
 			  dlg->DoModal( GetID() );
       }
 			int iItem = GetSelectedItem();
-			Update( m_strDirectory );
+			Update( m_Directory.m_strPath );
 			CONTROL_SELECT_ITEM(CONTROL_LIST,iItem)
 			CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem)
 			return false;
@@ -663,7 +664,7 @@ void  CGUIWindowPictures::OnSlideShowRecursive(const CStdString &strPicture)
     g_application.StopPlaying();
 
   pSlideShow->Reset();
-  AddDir(pSlideShow,m_strDirectory);
+  AddDir(pSlideShow,m_Directory.m_strPath);
   pSlideShow->StartSlideShow();
 	if (!strPicture.IsEmpty())
 		pSlideShow->Select(strPicture);
@@ -758,7 +759,7 @@ bool CGUIWindowPictures::OnCreateThumbs()
   }
   CSectionLoader::Unload("CXIMAGE");
 	if (m_dlgProgress) m_dlgProgress->Close();
-  Update(m_strDirectory);
+  Update(m_Directory.m_strPath);
   return !bCancel;
 }
 
@@ -772,10 +773,10 @@ void CGUIWindowPictures::CreateFolderThumbs(bool bRecurse)
 	int iTotalItems = 0;
 	int iCurrentItem = 0;
 	CSectionLoader::Load("CXIMAGE");
-	DoCreateFolderThumbs(m_strDirectory, &iTotalItems, &iCurrentItem, bRecurse);
+	DoCreateFolderThumbs(m_Directory.m_strPath, &iTotalItems, &iCurrentItem, bRecurse);
   CSectionLoader::Unload("CXIMAGE");
 	if (m_dlgProgress) m_dlgProgress->Close();
-  Update(m_strDirectory);
+  Update(m_Directory.m_strPath);
 }
 
 bool CGUIWindowPictures::DoCreateFolderThumbs(CStdString &strFolder, int *iTotalItems, int *iCurrentItem, bool bRecurse)
@@ -922,7 +923,7 @@ void CGUIWindowPictures::GoParentFolder()
 
 bool CGUIWindowPictures::ViewByIcon()
 {
-  if ( m_strDirectory.IsEmpty() )
+  if ( m_Directory.IsVirtualDirectoryRoot() )
   {
 	  if (m_iViewAsIconsRoot != VIEW_AS_LIST) return true;
   }
@@ -935,7 +936,7 @@ bool CGUIWindowPictures::ViewByIcon()
 
 bool CGUIWindowPictures::ViewByLargeIcon()
 {
-  if ( m_strDirectory.IsEmpty() )
+  if ( m_Directory.IsVirtualDirectoryRoot() )
   {
 	  if (m_iViewAsIconsRoot == VIEW_AS_LARGEICONS) return true;
   }
@@ -1102,7 +1103,7 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
 		iPosX = pList->GetXPosition()+pList->GetWidth()/2;
 		iPosY = pList->GetYPosition()+pList->GetHeight()/2;
 	}	
-	if ( m_strDirectory.IsEmpty() )
+	if ( m_Directory.IsVirtualDirectoryRoot() )
 	{
 		if (iItem < 0)
 		{	// we should add the option here of adding shares
@@ -1118,7 +1119,7 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
     if (CGUIDialogContextMenu::BookmarksMenu("pictures", m_vecItems[iItem]->GetLabel(), m_vecItems[iItem]->m_strPath, m_vecItems[iItem]->m_iLockMode, bMaxRetryExceeded, iPosX, iPosY))
 		{
 			m_rootDir.SetShares(g_settings.m_vecMyPictureShares);
-			Update(m_strDirectory);
+			Update(m_Directory.m_strPath);
 			return;
 		}
 	}
@@ -1173,7 +1174,7 @@ void CGUIWindowPictures::OnPopupMenu(int iItem)
 
 void CGUIWindowPictures::SetViewMode(int iViewMode)
 {
-  if ( m_strDirectory.IsEmpty() )
+  if ( m_Directory.IsVirtualDirectoryRoot() )
 	{
 		m_iViewAsIconsRoot=iViewMode;
     g_stSettings.m_iMyPicturesRootViewAsIcons=iViewMode;
@@ -1187,7 +1188,7 @@ void CGUIWindowPictures::SetViewMode(int iViewMode)
 
 int CGUIWindowPictures::SortMethod()
 {
-	if (m_strDirectory.IsEmpty())
+	if (m_Directory.IsVirtualDirectoryRoot())
 	{
 		if (g_stSettings.m_iMyPicturesRootSortMethod==0)
 			return g_stSettings.m_iMyPicturesRootSortMethod+103;
@@ -1200,7 +1201,7 @@ int CGUIWindowPictures::SortMethod()
 
 bool CGUIWindowPictures::SortAscending()
 {
-	if (m_strDirectory.IsEmpty())
+	if (m_Directory.IsVirtualDirectoryRoot())
 		return g_stSettings.m_bMyPicturesRootSortAscending;
 	else
 		return g_stSettings.m_bMyPicturesSortAscending;
@@ -1209,7 +1210,7 @@ bool CGUIWindowPictures::SortAscending()
 void CGUIWindowPictures::SortItems(VECFILEITEMS& items)
 {
 	SSortPicturesByName sortmethod;
-	if (m_strDirectory.IsEmpty())
+	if (m_Directory.IsVirtualDirectoryRoot())
 	{
 		sortmethod.m_iSortMethod=g_stSettings.m_iMyPicturesRootSortMethod;
 		sortmethod.m_bSortAscending=g_stSettings.m_bMyPicturesRootSortAscending;

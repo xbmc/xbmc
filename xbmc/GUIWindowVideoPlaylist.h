@@ -39,6 +39,6 @@ protected:
   int         m_iLastControl;
   VECFILEITEMS							m_vecItems;
 	CDirectoryHistory		m_history;
-  CStdString m_strDirectory;
+  CFileItem m_Directory;
 	typedef vector <CFileItem*>::iterator ivecItems;
 };

@@ -63,7 +63,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
 
 CDVDPlayer::~CDVDPlayer()
 {
-  closefile();
+  CloseFile();
   
   CloseHandle(m_hReadyEvent);
   DeleteCriticalSection(&m_critStreamSection);
@@ -146,13 +146,14 @@ void CDVDPlayer::Unload()
 	CLog::Log(LOGNOTICE, "CDVDPlayer::Unload() Done unloading dll's");
 }
 
-bool CDVDPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
+bool CDVDPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 {
+  CStdString strFile=file.m_strPath;
   CLog::Log(LOGNOTICE, "DVDPlayer: Opening: %s", strFile.c_str());
   
   // if playing a file close it first
   // this has to be changed so we won't have to close it.
-  closefile();
+  CloseFile();
   
   m_bAbortRequest = false;
   step = 0;
@@ -183,7 +184,7 @@ bool CDVDPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 	return !m_bStop;
 }
 
-bool CDVDPlayer::closefile()
+bool CDVDPlayer::CloseFile()
 {
   CLog::Log(LOGNOTICE, "DVDPlayer: closefile called");
   m_bAbortRequest = true;
