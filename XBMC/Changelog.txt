@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-03-2005 fixed: weather broken since last update
   - 12-03-2005 changed: code cleanup, removing unnecessary inlcudes, making more use of precompiled headers
   - 12-03-2005 changed: moved cddb info reading into a tag loader
   - 12-03-2005 changed: <label> tag is tested using IsNaturalNumber() rather than testing for alphabetical first character now.  Allows non-alphabetical labels.
