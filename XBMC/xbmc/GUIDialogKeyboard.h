@@ -22,6 +22,7 @@ protected:
 private:
 
 	void OnClickButton(int iButtonControl);
+	void OnRemoteNumberClick(int key);
 	void		UpdateButtons();
 	WCHAR		GetCharacter(int iButton);
 
@@ -32,4 +33,10 @@ private:
 	bool m_bDirty;
 	bool m_bCapsLock;
 	bool m_bShift;
+
+	DWORD	m_lastRemoteClickTime;
+	WORD	m_lastRemoteKeyClicked;
+	int		m_indexInSeries;
+
+	static const char* s_charsSeries[10];
 };
