@@ -495,10 +495,10 @@ void CGUIThumbnailPanel::OnRight()
   }
   else
   {
-    m_upDown.OnLeft();
+    m_upDown.OnRight();
     if (!m_upDown.HasFocus()) 
     {
-      CGUIControl::OnLeft();
+      m_iSelect=CONTROL_LIST;
     }
   }
 }
