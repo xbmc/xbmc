@@ -7,6 +7,7 @@
 //
 
 #pragma once
+#include "filesystem/factoryDirectory.h"
 
 class CAutorun
 {
@@ -19,4 +20,5 @@ protected:
 	void				RunXboxCd();
 	void				RunCdda();
 	void				RunISOMedia();
+	bool				RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot);
 };

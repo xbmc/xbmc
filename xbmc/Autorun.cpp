@@ -3,7 +3,6 @@
 #include "DetectDVDType.h"
 #include "sectionloader.h"
 #include "util.h"
-#include "filesystem/factoryDirectory.h"
 #include "settings.h"
 #include "playlistplayer.h"
 #include "GuiUserMessages.h"
@@ -67,98 +66,19 @@ void CAutorun::RunXboxCd()
 	}
 	if ( !g_stSettings.m_bAutorunDVD && !g_stSettings.m_bAutorunVCD && !g_stSettings.m_bAutorunVideo && !g_stSettings.m_bAutorunMusic && !g_stSettings.m_bAutorunPictures )
 		return;
-	VECFILEITEMS	vecItems;
 
 	int nAddedToPlaylist = 0;
-	bool bVideoFound = false;
-
 	CFactoryDirectory factory;
 	CDirectory* pDir = factory.Create( "D:\\" );
-	if ( !pDir->GetDirectory( "D:\\", vecItems ) )
-		return;
-
-	for (int i=0; i < (int)vecItems.size(); i++)
-	{
-		CFileItem* pItem=vecItems[i];
-		if ( g_stSettings.m_bAutorunDVD ) 
-		{
-			if ( pItem->m_bIsFolder && pItem->m_strPath.Find( "VIDEO_TS" ) != -1 ) 
-			{
-				g_graphicsContext.SetFullScreenVideo(true);
-				g_application.PlayFile( "D:\\VIDEO_TS\\VIDEO_TS.IFO" );
-				break;
-			}
-		}
-		if ( g_stSettings.m_bAutorunVCD ) 
-		{
-			if ( pItem->m_bIsFolder && pItem->m_strPath == "MPEGAV" )
-			{
-				g_graphicsContext.SetFullScreenVideo(true);
-				g_application.PlayFile( "D:\\MPEGAV\\AVSEQ01.DAT" );
-				break;
-			}
-			if ( pItem->m_bIsFolder && pItem->m_strPath == "MPEG2" )
-			{
-				g_graphicsContext.SetFullScreenVideo(true);
-				g_application.PlayFile( "D:\\MPEG2\\AVSEQ01.MPG" );
-				break;
-			}
-		}
-
-		if (g_stSettings.m_bAutorunVideo)
-		{
-			if ( !pItem->m_bIsFolder && CUtil::IsVideo( pItem->m_strPath ) )
-			{
-				g_graphicsContext.SetFullScreenVideo(true);
-				g_application.PlayFile( pItem->m_strPath );
-				bVideoFound = true;
-				break;
-			}
-		}
-
-		if (g_stSettings.m_bAutorunMusic)
-		{
-			if ( !pItem->m_bIsFolder && CUtil::IsAudio( pItem->m_strPath ) )
-			{
-				nAddedToPlaylist++;
-				CPlayList::CPlayListItem playlistItem;
-				playlistItem.SetFileName(pItem->m_strPath);
-				playlistItem.SetDescription(pItem->GetLabel());
-				playlistItem.SetDuration( pItem->m_musicInfoTag.GetDuration() );
-				g_playlistPlayer.Add(playlistItem);
-			}
-		}
-
-		if (g_stSettings.m_bAutorunPictures)
-		{
-			if ( !pItem->m_bIsFolder && CUtil::IsPicture( pItem->m_strPath ) )
-			{
-				m_gWindowManager.ActivateWindow( 2 );
-				CStdString* strUrl = new CStdString( "D:\\" );
-				CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, 0, 0, (void*) strUrl );
-				m_gWindowManager.SendMessage( msg );
-				delete strUrl;
-				break;
-			}
-		}
-	}
-
-	if ( !bVideoFound && nAddedToPlaylist > 0 )
+	bool bPlaying=RunDisc(pDir, "D:",nAddedToPlaylist,true);
+	if ( !bPlaying && nAddedToPlaylist > 0 )
 	{
 		CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
 		m_gWindowManager.SendMessage( msg );
-
-		int nSize = g_playlistPlayer.size();
-		g_playlistPlayer.Play( nSize - nAddedToPlaylist );
+		g_playlistPlayer.Play( 0 );
 	}
 
-	// cleanup
-	for (int i=0; i < (int)vecItems.size(); i++)
-	{
-		CFileItem* pItem=vecItems[i];
-		delete pItem;
-	}
-
+	delete pDir;
 }
 
 void CAutorun::RunCdda()
@@ -207,55 +127,79 @@ void CAutorun::RunISOMedia()
 	VECFILEITEMS	vecItems;
 
 	int nAddedToPlaylist = 0;
-	bool bVideoFound = false;
-
 	CFactoryDirectory factory;
 	CDirectory* pDir = factory.Create( "iso9660://" );
-	if ( !pDir->GetDirectory( "iso9660://", vecItems ) )
-		return;
+	bool bPlaying=RunDisc(pDir, "iso9660:",nAddedToPlaylist,true);
+	if ( !bPlaying && nAddedToPlaylist > 0 )
+	{
+		CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
+		m_gWindowManager.SendMessage( msg );
+		g_playlistPlayer.Play( 0 );
+	}
+
+	delete pDir;
+}
+bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot)
+{
+	bool bPlaying(false);
+	VECFILEITEMS vecItems;
+	if ( !pDir->GetDirectory( strDrive, vecItems ) )
+	{
+		return false;
+	}
 
   for (int i=0; i < (int)vecItems.size(); i++)
   {
 		CFileItem* pItem=vecItems[i];
-		if ( g_stSettings.m_bAutorunDVD ) 
+		if (pItem->m_bIsFolder)
 		{
-			if ( pItem->m_bIsFolder && pItem->m_strPath.Find( "VIDEO_TS" ) != -1 ) 
+			if (pItem->m_strPath != "." && pItem->m_strPath != ".." )
 			{
-				g_graphicsContext.SetFullScreenVideo(true);
-				g_application.PlayFile( "iso9660://VIDEO_TS/VIDEO_TS.IFO" );
-				break;
+				if (bRoot&& pItem->m_strPath.Find( "VIDEO_TS" ) != -1 ) 
+				{
+					if ( g_stSettings.m_bAutorunDVD ) 
+					{
+						CStdString strFileName;
+						strFileName.Format("%s\\VIDEO_TS\\VIDEO_TS.IFO",strDrive.c_str());
+						g_graphicsContext.SetFullScreenVideo(true);
+						g_application.PlayFile( strFileName );
+						bPlaying=true;
+						break;
+					}
+				}
+				else if (bRoot && pItem->m_strPath.Find("MPEGAV") != -1 )
+				{
+					if ( g_stSettings.m_bAutorunVCD ) 
+					{
+						CStdString strFileName;
+						strFileName.Format("%s\\MPEGAV\\AVSEQ01.DAT",strDrive.c_str());
+						g_graphicsContext.SetFullScreenVideo(true);
+						g_application.PlayFile( strFileName );
+						bPlaying=true;
+						break;
+					}
+				}
+				else
+				{
+					if (RunDisc(pDir, pItem->m_strPath, nAddedToPlaylist,false)) 
+					{
+						bPlaying=true;
+						break;
+					}
+				}
 			}
 		}
-		if ( g_stSettings.m_bAutorunVCD ) 
+		else
 		{
-			if ( pItem->m_bIsFolder && pItem->m_strPath == "MPEGAV" )
+			if ( bRoot && CUtil::IsVideo( pItem->m_strPath ) && g_stSettings.m_bAutorunVideo)
 			{
-				g_graphicsContext.SetFullScreenVideo(true);
-				g_application.PlayFile( "iso9660://MPEGAV/AVSEQ01.DAT" );
-				break;
-			}
-			if ( pItem->m_bIsFolder && pItem->m_strPath == "MPEG2" )
-			{
-				g_graphicsContext.SetFullScreenVideo(true);
-				g_application.PlayFile( "iso9660://MPEG2/AVSEQ01.MPG" );
-				break;
-			}
-		}
-
-		if (g_stSettings.m_bAutorunVideo)
-		{
-			if ( !pItem->m_bIsFolder && CUtil::IsVideo( pItem->m_strPath ) )
-			{
+				bPlaying=true;
 				g_graphicsContext.SetFullScreenVideo(true);
 				g_application.PlayFile( pItem->m_strPath );
-				bVideoFound = true;
 				break;
 			}
-		}
 
-		if (g_stSettings.m_bAutorunMusic)
-		{
-			if ( !pItem->m_bIsFolder && CUtil::IsAudio( pItem->m_strPath ) )
+			if ( CUtil::IsAudio( pItem->m_strPath ) && g_stSettings.m_bAutorunMusic)
 			{
 				nAddedToPlaylist++;
 				CPlayList::CPlayListItem playlistItem;
@@ -264,14 +208,12 @@ void CAutorun::RunISOMedia()
 				playlistItem.SetDuration( pItem->m_musicInfoTag.GetDuration() );
 				g_playlistPlayer.Add(playlistItem);
 			}
-		}
-
-		if (g_stSettings.m_bAutorunPictures)
-		{
-			if ( !pItem->m_bIsFolder && CUtil::IsPicture( pItem->m_strPath ) )
+		
+			if ( CUtil::IsPicture( pItem->m_strPath ) && g_stSettings.m_bAutorunPictures)
 			{
+				bPlaying=true;
 				m_gWindowManager.ActivateWindow( 2 );
-				CStdString* strUrl = new CStdString( "iso9660://" );
+				CStdString* strUrl = new CStdString( strDrive );
 				CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, 0, 0, (void*) strUrl );
 				m_gWindowManager.SendMessage( msg );
 				delete strUrl;
@@ -279,21 +221,15 @@ void CAutorun::RunISOMedia()
 			}
 		}
   }
-
-	if ( !bVideoFound && nAddedToPlaylist > 0 )
-	{
-		CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
-		m_gWindowManager.SendMessage( msg );
-
-		int nSize = g_playlistPlayer.size();
-		g_playlistPlayer.Play( nSize - nAddedToPlaylist );
-	}
+/*
+*/
 	// cleanup
 	for (int i=0; i < (int)vecItems.size(); i++)
 	{
 		CFileItem* pItem=vecItems[i];
 		delete pItem;
 	}
+	return bPlaying;
 }
 
 void CAutorun::HandleAutorun()
