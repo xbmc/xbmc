@@ -80,6 +80,8 @@ struct XB_VINFO
 
 // some state
 static BOOL IsPaused;
+static int OutputChans;
+static BOOL ReverseStereo;
 static int ActiveChans;
 static LARGE_INTEGER LastUpdate;
 static LARGE_INTEGER CounterFreq;
@@ -146,26 +148,62 @@ BOOL XB_Init(void)
 	if (pDS)
 		XB_Exit();
 
+	// switch off the modes that are not supported - software mixing and 16 bit selection are not available.
+	// the xbox can only output 48kHz 20-bit audio, and always hardware mixes
+	// there are no options for xbox that affect performance, all options change the output sound only.
+	md_mode &= DMODE_STEREO | DMODE_SURROUND | DMODE_REVERSE;
+	// always interpolate and always use high quality
+	md_mode |= DMODE_HQMIXER | DMODE_INTERP;
+
+	// fixed frequency mix, hardware limitation
+	md_mixfreq = 48000;
+
+	DWORD flags = XGetAudioFlags();
+
+	switch (XC_AUDIO_FLAGS_BASIC(flags))
+	{
+	case XC_AUDIO_FLAGS_MONO:
+		md_mode &= ~DMODE_STEREO;
+	case XC_AUDIO_FLAGS_STEREO:
+		md_mode &= ~DMODE_SURROUND;
+		break;
+	}
+
+	if (md_mode & DMODE_STEREO)
+	{
+		if (md_mode & DMODE_SURROUND)
+		{
+			OutputChans = 4;
+			if (XC_AUDIO_FLAGS_BASIC(flags) != XC_AUDIO_FLAGS_SURROUND)
+				DirectSoundOverrideSpeakerConfig(DSSPEAKER_SURROUND);
+		}
+		else
+		{
+			OutputChans = 2;
+			if (XC_AUDIO_FLAGS_BASIC(flags) != XC_AUDIO_FLAGS_STEREO)
+				DirectSoundOverrideSpeakerConfig(DSSPEAKER_STEREO);
+		}
+	}
+	else
+	{
+		OutputChans = 2;
+		if (XC_AUDIO_FLAGS_BASIC(flags) != XC_AUDIO_FLAGS_MONO)
+			DirectSoundOverrideSpeakerConfig(DSSPEAKER_MONO);
+	}
+
+	ReverseStereo = (md_mode & DMODE_REVERSE) ? TRUE : FALSE;
+
+	IsPaused = FALSE;
+	ActiveChans = 0;
+
 	if (FAILED(DirectSoundCreate(NULL, &pDS, NULL)))
 		return 1;
 
 	InitializeCriticalSection(&DSCS);
 
-	// all the software options are ignored on xbox currently
-	// the 16-bit flag cannot work - the xbox can only output 48kHz 20-bit audio
-	// mono and surround to be added in due course (though why you'd want mono I don't know).
-	// none of the options make any difference to performance
-	md_mode = 0;
-
-	// fixed frequency mix, hardware limitation
-	md_mixfreq = 48000;
-
-	IsPaused = FALSE;
-	ActiveChans = 0;
-
 	QueryPerformanceFrequency(&CounterFreq);
 
-	// setup the voltage table, intel asm is fine - xboxes only have intel cpus
+	// setup the volume table, intel asm is fine - xboxes only have intel cpus
 	for (int i = 0; i < VOLTABLESIZE; ++i)
 	{
 		float v;
@@ -361,6 +399,14 @@ void XB_Update(void)
 		if (VoiceInfo[i].active)
 		{
 			int b = VoiceInfo[i].buf;
+
+			if (VoiceInfo[i].setpos != -1)
+			{
+				// set position, used for s3m Oxx offset effects
+				VoiceInfo[i].pdsb[b]->SetCurrentPosition(VoiceInfo[i].setpos);
+				VoiceInfo[i].setpos = -1;
+			}
+
 			if (VoiceInfo[i].kick)
 			{
 				// kick off a new voice
@@ -378,12 +424,6 @@ void XB_Update(void)
 				}
 				// this voice has no active buffer so don't bother updating
 				continue;
-			}
-
-			if (VoiceInfo[i].setpos != -1)
-			{
-				VoiceInfo[i].pdsb[b]->SetCurrentPosition(VoiceInfo[i].setpos);
-				VoiceInfo[i].setpos = -1;
 			}
 
 			if (VoiceInfo[i].chanfreq != VoiceInfo[i].buffreq[b])
@@ -424,20 +464,41 @@ void XB_Update(void)
 			if (VoiceInfo[i].chanpan != VoiceInfo[i].bufpan[b])
 			{
 				VoiceInfo[i].bufpan[b] = VoiceInfo[i].chanpan;
-				DSMIXBINVOLUMEPAIR vols[2];
-				vols[0].dwMixBin = DSMIXBIN_FRONT_LEFT;
-				vols[1].dwMixBin = DSMIXBIN_FRONT_RIGHT;
-				if (VoiceInfo[i].bufpan[b] == PAN_SURROUND)
+				DSMIXBINVOLUMEPAIR vols[] = { DSMIXBINVOLUMEPAIRS_DEFAULT_4CHANNEL };
+				switch (OutputChans)
 				{
-					vols[0].lVolume = 
-						vols[1].lVolume = ConvertVolume(255 * 256 / 480);
+				case 2:
+					if (VoiceInfo[i].bufpan[b] == PAN_SURROUND)
+					{
+						vols[0].lVolume = vols[1].lVolume = ConvertVolume(255 * 256 / 480);
+					}
+					else
+					{
+						vols[0].lVolume = ConvertVolume(PAN_RIGHT - VoiceInfo[i].bufpan[b]);
+						vols[1].lVolume = ConvertVolume(VoiceInfo[i].bufpan[b]);
+					}
+					break;
+				case 4:
+					if (VoiceInfo[i].bufpan[b] == PAN_SURROUND)
+					{
+						vols[0].lVolume = vols[1].lVolume = vols[2].lVolume = vols[3].lVolume = ConvertVolume(255 * 256 / 480);
+					}
+					else
+					{
+						vols[0].lVolume = ConvertVolume(PAN_RIGHT - VoiceInfo[i].bufpan[b]);
+						vols[1].lVolume = ConvertVolume(VoiceInfo[i].bufpan[b]);
+						vols[2].lVolume = vols[3].lVolume = DSBVOLUME_MIN;
+					}
+					break;
 				}
-				else
+				if (ReverseStereo)
 				{
-					vols[0].lVolume = ConvertVolume(PAN_RIGHT - VoiceInfo[i].bufpan[b]);
-					vols[1].lVolume = ConvertVolume(VoiceInfo[i].bufpan[b]);
+					// swap channels
+					long t = vols[0].lVolume;
+					vols[0].lVolume = vols[1].lVolume;
+					vols[1].lVolume = t;
 				}
-				DSMIXBINS MixBins = { 2, vols };
+				DSMIXBINS MixBins = { OutputChans, vols };
 				VoiceInfo[i].pdsb[b]->SetMixBinVolumes(&MixBins);
 			}
 		}
@@ -731,9 +792,6 @@ void XB_VoiceSetVolume(UBYTE voice, UWORD vol)
 {
 	if (vol > 255)
 		vol = 255;
-	if (voice <= 1 && VoiceInfo[voice].chanvol != vol)
-		XB_Log("SetVolume: c=%02d, vol=%03d", voice, vol);
-
 	VoiceInfo[voice].chanvol = vol;
 }
 
@@ -755,9 +813,6 @@ void XB_VoiceSetFrequency(UBYTE voice, ULONG freq)
 		XB_Log("WARN: Frequency out of range (%d > %d), clamping", freq, DSBFREQUENCY_MAX);
 		freq = DSBFREQUENCY_MAX;
 	}
-	if (voice <= 1 && VoiceInfo[voice].chanfreq != freq)
-		XB_Log("SetFreq:   c=%02d, frq=%03d", voice, freq);
-
 	VoiceInfo[voice].chanfreq = freq;
 }
 
@@ -769,9 +824,6 @@ ULONG XB_VoiceGetFrequency(UBYTE voice)
 
 void XB_VoiceSetPanning(UBYTE voice, ULONG pan)
 {
-	if (voice <= 1 && VoiceInfo[voice].chanpan != pan)
-		XB_Log("SetPan:    c=%02d, pan=%03d", voice, pan);
-
 	VoiceInfo[voice].chanpan = pan;
 }
 
@@ -788,19 +840,23 @@ void XB_VoicePlay(UBYTE voice,SWORD handle,ULONG start,ULONG size,ULONG reppos,U
 		++ActiveChans;
 	}
 
-	if (voice <= 1)
-		XB_Log("VoicePlay: c=%02d, s=%02d, play=%05d-%05d, loop=%05d-%05d, flags=%02x", voice, handle, start, size, reppos, repend, flags >> 8);
-
 	int i = VoiceInfo[voice].buf;
 
 	WAVEFORMATEX fmt;
 	XAudioCreatePcmFormat(Samples[handle].chans, 48000, Samples[handle].bits, &fmt);
 
-	if (VoiceInfo[voice].handle == handle && CheckBufStatus(&VoiceInfo[voice], i))
+	// check to see if it's a s3m Oxx offset effect - if so reuse the buffer
+	// only reuse for offsets not new notes so that declicking works
+	if (VoiceInfo[voice].handle == handle && start && CheckBufStatus(&VoiceInfo[voice], i))
 	{
 		VoiceInfo[voice].setpos = start * fmt.nBlockAlign;
+		VoiceInfo[voice].kick = true; // kick it in case the buffer ends before the offset can be reset
+
+		XB_Log("chn: %02d; s3m offset: %05d", voice, start);
 		return;
 	}
+
+	XB_Log("chn: %02d; New instrument %02d", voice, handle);
 
 	// check to see if the current buffer is playing
 	if (CheckBufStatus(&VoiceInfo[voice], i))
@@ -813,7 +869,6 @@ void XB_VoicePlay(UBYTE voice,SWORD handle,ULONG start,ULONG size,ULONG reppos,U
 	HRESULT r;
 	if (VoiceInfo[voice].pdsb[i])
 	{
-		VoiceInfo[voice].pdsb[i]->Stop();
 		// check for sample format change
 		int h = VoiceInfo[voice].handle;
 		if ((h != handle) && (Samples[h].bits != Samples[handle].bits || Samples[h].chans != Samples[handle].chans))
@@ -829,8 +884,9 @@ void XB_VoicePlay(UBYTE voice,SWORD handle,ULONG start,ULONG size,ULONG reppos,U
 		bufdesc.dwFlags = 0;
 		bufdesc.dwBufferBytes = 0;
 		bufdesc.lpwfxFormat = &fmt;
-		DSMIXBINVOLUMEPAIR vols[] = { DSMIXBINVOLUMEPAIRS_DEFAULT_STEREO };
-		DSMIXBINS MixBins = { 2, vols };
+		DSMIXBINVOLUMEPAIR vols[] = { DSMIXBINVOLUMEPAIRS_DEFAULT_4CHANNEL };
+		vols[0].lVolume = vols[1].lVolume = vols[2].lVolume = vols[3].lVolume = DSBVOLUME_MIN;
+		DSMIXBINS MixBins = { OutputChans, vols };
 		bufdesc.lpMixBins = &MixBins;
 		bufdesc.dwInputMixBin = 0;
 
