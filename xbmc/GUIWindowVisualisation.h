@@ -5,8 +5,8 @@
 #include "cores/IAudioCallback.h"
 #include "utils/CriticalSection.h"
 
-#define AUDIO_BUFFER_SIZE 1024	// MUST BE A POWER OF 2!!!
-#define MAX_AUDIO_BUFFERS 32
+#define AUDIO_BUFFER_SIZE 512	// MUST BE A POWER OF 2!!!
+#define MAX_AUDIO_BUFFERS 16
 
 #include <list>
 using namespace std;
