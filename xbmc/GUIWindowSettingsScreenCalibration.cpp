@@ -336,6 +336,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
 
 void CGUIWindowSettingsScreenCalibration::Render()
 {
+  g_graphicsContext.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
 	m_iControl = GetFocusedControl();
 	if (m_iControl >=0)
 	{
