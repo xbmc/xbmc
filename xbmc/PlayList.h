@@ -39,7 +39,7 @@ namespace PLAYLIST
 		const CStdString&		GetName() const;
 		void								Remove(const CStdString& strFileName);
 		void 								Clear();
-		void 								Shuffle();
+		virtual void 				Shuffle();
 		int									size() const;
 		int									RemoveDVDItems();
 		const CPlayList::CPlayListItem& operator[] (int iItem)  const;
