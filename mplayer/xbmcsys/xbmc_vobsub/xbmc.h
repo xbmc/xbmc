@@ -2,6 +2,7 @@
 #define __XBMC_H 1
 
 #define MAX_XBMC_NAME 10
+#define MAX_XBMC_SUBTITLES 32
 
 #define XBMC_SUBTYPE_STANDARD 1
 #define XBMC_SUBTYPE_VOBSUB 2
@@ -11,13 +12,14 @@
 
 typedef struct 
 {
-	int id;
-	char name[MAX_XBMC_NAME];
-	int type;
-	int invalid;
+	int id; //The internal id of a subtitle of a certain type.
+	char name[MAX_XBMC_NAME]; //Name as given by the file playing
+  char* desc; //Possibly some descriptive data, not used at the moment.
+	int type; //Subtitle type
+	int invalid; //Will be set if this subtitle has been invalidated for some reason. can't be used
 } xbmc_subtitle;
 
-xbmc_subtitle xbmc_subtitles[32];
+xbmc_subtitle xbmc_subtitles[MAX_XBMC_SUBTITLES];
 int xbmc_sub_count;
 int xbmc_sub_current;
 

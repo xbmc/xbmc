@@ -28,6 +28,6 @@ void xbmc_addsub(int id, char* name, int type,int invalid)
 	else
 		xbmc_subtitles[xbmc_sub_count].name[0] = 0;
 	xbmc_subtitles[xbmc_sub_count].type = type;
-	xbmc_subtitles[xbmc_sub_count].invalid = 0;
+	xbmc_subtitles[xbmc_sub_count].invalid = invalid;
 	xbmc_sub_count++;
 }

@@ -37,6 +37,10 @@ int flip_hebrew = 1;
 
 extern char* dvdsub_lang;
 
+#ifdef _XBOX
+#include "xbmc.h"
+#endif
+
 /* Maximal length of line of a subtitle */
 #define LINE_LEN 1000
 static float mpsub_position=0;
@@ -1811,36 +1815,49 @@ char** sub_filenames(char* path, char *fname)
     char **result2;
     
 #ifdef _XBOX
-	//count sub formats
-	for (j=0; sub_exts[j]; j++)
-	{
-	}
 
-	printf("support %i subtitle formats\n", j);
-	result2 = (char**)malloc(sizeof(char*)*(j+1));
+	FILE *fd;
+	char filename[128];
+	int s=0;
+	struct _finddata_t FindFileData;
+	int hFind;
 
-	char szFileName[1024];
-	strcpy(szFileName, fname);
-	i=strlen(szFileName)-1;
-	while (i >= 0)
-	{
-		if (szFileName[i]=='.')
-		{
-			szFileName[i]=0;
-			break;
-		}
-		else i--;
-	}
+	printf("Starting lookup for subs");
+    result2 = (char**)malloc(sizeof(char*) * MAX_XBMC_SUBTITLES);
 
-    for (i = 0; i < j; i++)
-	{
-		result2[i] = malloc(1024);
-		//strcpy(result2[i],szFileName);
-		//strcat(result2[i],".");
-		strcpy(result2[i],"Z:\\subtitle.");
-		strcat(result2[i],sub_exts[i]);
+    for(i=0; i<MAX_XBMC_SUBTITLES; i++)
+    	result2[i] = NULL;
+    
+    // 2004-10-12, Jimmy
+    
+    char strFindName[128];
+    char strLExt[128];
+    char strSubtitle[128];
+    int wild;
+    for(i=0; sub_exts[i]; i++)
+    {    		    
+      for(wild=0; wild<2; wild++)
+      {
+          if (wild == 0)
+              sprintf(strFindName, "Z:\\subtitle.%s",sub_exts[i]);
+          else
+              sprintf(strFindName, "Z:\\subtitle.*.%s",sub_exts[i]);
+  	        
+          hFind = _findfirst(strFindName,&FindFileData);
+          if (hFind != -1)
+          {
+              do {
+				  printf(strSubtitle, "Z:\\%s", FindFileData.name);
+	              sprintf(strSubtitle, "Z:\\%s", FindFileData.name);
+	              result2[s] = malloc(1024);
+	              strcpy(result2[s],strSubtitle);				    
+	              s++;
+              } while (_findnext(hFind,&FindFileData) != -1);
+              _findclose (hFind);
+          }
+      }
     }
-    result2[j] = NULL;
+    result2[s] = NULL;
     return result2;
 #else
     int subcnt;
