@@ -559,8 +559,8 @@ void CGUIWindowVideoGenre::OnClick(int iItem)
 
 void CGUIWindowVideoGenre::OnInfo(int iItem)
 {
+  if ( m_strDirectory.IsEmpty() ) return;
   CFileItem* pItem=m_vecItems[iItem];
-  if (pItem->m_bIsFolder) return;
 	
   VECMOVIESFILES movies;
   m_database.GetFiles(atol(pItem->m_strPath),movies);
