@@ -7,18 +7,17 @@ class CGUIWindowSystemInfo :
 public:
 	CGUIWindowSystemInfo(void);
 	virtual ~CGUIWindowSystemInfo(void);
-  virtual bool    OnMessage(CGUIMessage& message);
-  virtual void    OnAction(const CAction &action);
-	virtual void		Render();
+	virtual bool    OnMessage(CGUIMessage& message);
+	virtual void    OnAction(const CAction &action);
+	virtual void	Render();	
 protected:
-	void						GetValues();
-	DWORD						m_dwlastTime ;
-  DWORD           m_dwFPSTime;
-  DWORD           m_dwFrames;
-  float           m_fFPS;
+	void			GetValues();
+	DWORD			m_dwlastTime ;
+	DWORD           m_dwFPSTime;
+	DWORD           m_dwFrames;
+	float           m_fFPS;
 	float           cputemp;
 	float           mbtemp;
-  unsigned short  fanSpeed;
-
-
+	unsigned short  fanSpeed;
+	wchar_t			m_wszMPlayerVersion[50];
 };

@@ -7,6 +7,7 @@
 #include "xbox/iosupport.h"
 #include <ConIo.h>
 #include "utils/FanController.h"
+#include "cores/DllLoader/dll.h"
 
 extern char g_szTitleIP[32];
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
@@ -28,6 +29,39 @@ void CGUIWindowSystemInfo::OnAction(const CAction &action)
 	CGUIWindow::OnAction(action);
 }
 
+//lpParam will get the version info, wchar format
+DWORD WINAPI GetMPlayerVersionW( LPVOID lpParam )
+{
+	wchar_t wszVersion[50];
+    wchar_t wszCompileDate[50];	
+
+	const char* (__cdecl* pMplayerGetVersion)();
+	const char* (__cdecl* pMplayerGetCompileDate)();
+	wszVersion[0] = 0; wszCompileDate[0] = 0;
+		
+	DllLoader* mplayerDll = new DllLoader("Q:\\mplayer\\mplayer.dll");
+	if( mplayerDll->Parse() )
+	{		
+		//try to resolve and call mplayer_getversion
+		if (mplayerDll->ResolveExport("mplayer_getversion", (void**)&pMplayerGetVersion))
+			mbstowcs(wszVersion, pMplayerGetVersion(), sizeof(wszVersion));
+		
+		//try to resolve and call mplayer_getcompiledate
+		if (mplayerDll->ResolveExport("mplayer_getcompiledate", (void**)&pMplayerGetCompileDate))
+			mbstowcs(wszCompileDate, pMplayerGetCompileDate(), sizeof(wszCompileDate));
+		
+		//see if we have compiledate and or version
+		if (wszVersion[0]!=0 && wszCompileDate[0]!=0)
+			swprintf((wchar_t *)lpParam, 50, L"%s (%s)", wszVersion, wszCompileDate);
+		else if (wszVersion[0]!=0)
+			swprintf((wchar_t *)lpParam, 50, L"%s", wszVersion);
+	}
+	delete mplayerDll;
+	mplayerDll=NULL;
+
+    return 0; 
+} 
+
 bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 {
 	switch ( message.GetMessage() )
@@ -41,6 +75,16 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 			m_dwFrames=0;
 			m_fFPS=0.0f;
 			m_dwlastTime=0;
+
+			//Get the version from the dll in a seperate thread.
+			m_wszMPlayerVersion[0] = 0;			
+			HANDLE hThread = CreateThread(NULL, 0,
+								GetMPlayerVersionW,		// thread function 
+								&m_wszMPlayerVersion,	// argument to thread function 
+								0, NULL);
+
+			if (hThread != NULL) 
+				CloseHandle( hThread );
 		}
 		break;
 	}
@@ -101,7 +145,7 @@ void  CGUIWindowSystemInfo::GetValues()
 	{
 		const WCHAR *psztext=g_localizeStrings.Get(144).c_str();
 		const WCHAR *pszbuild=g_localizeStrings.Get(6).c_str();
-		swprintf(wszText,L"%s %s", psztext,pszbuild);
+		swprintf(wszText,L"%s %s\n%s", psztext,pszbuild,m_wszMPlayerVersion);
 
 		SET_CONTROL_LABEL(GetID(), 5,wszText);
 	}
