@@ -556,8 +556,9 @@ bool CMPlayer::openfile(const CStdString& strFile)
       if (iChannels==1 || iChannels==2||iChannels==4)
       {
         int iChan=options.GetChannels();
-        if ( iChannels !=2) iChannels=2;
-        else iChannels=0;
+        if ( iChannels ==2) iChannels=0;
+        //if ( iChannels !=2) iChannels=2;
+        //else iChannels=0;
         if (iChan!=iChannels)
         {
           OutputDebugString("--restart cause audio channels changed\n");
