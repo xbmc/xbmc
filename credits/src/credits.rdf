@@ -1,5 +1,5 @@
-out_packedresource  credits.xpr
-out_header          ..\xbmc\credits_res.h
+out_packedresource  ..\credits.xpr
+out_header          ..\..\xbmc\credits_res.h
 out_version         XPR0
 
 UserData VShader
