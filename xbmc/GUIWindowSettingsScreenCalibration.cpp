@@ -16,6 +16,11 @@
 #define CONTROL_VIDEO			20
 #define CONTROL_OSD				12
 
+#define HIDE_CONTROL(dwSenderId, dwControlID) \
+{ \
+	CGUIMessage msg(GUI_MSG_HIDDEN, dwSenderId, dwControlID); \
+	OnMessage(msg); \
+}
 
 
 CGUIWindowSettingsScreenCalibration::CGUIWindowSettingsScreenCalibration(void)
@@ -283,9 +288,11 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
 			{	// don't allow resolution switching if we are playing a video
 				m_iCurRes = 0;
 				m_Res.push_back(g_graphicsContext.GetVideoResolution());
+				SET_CONTROL_VISIBLE(GetID(), CONTROL_VIDEO);
 			}
 			else
 			{
+				HIDE_CONTROL(GetID(), CONTROL_VIDEO);
 				g_graphicsContext.GetAllowedResolutions(m_Res, true);
 				// find our starting resolution
 				for (UINT i=0; i<m_Res.size(); i++)
