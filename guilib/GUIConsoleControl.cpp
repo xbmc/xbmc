@@ -113,6 +113,14 @@ void CGUIConsoleControl::AddLine(CStdString& aLine, DWORD aColour)
 	m_dwLineCounter++;
 }
 
+void CGUIConsoleControl::Clear()
+{
+	for(int nIndex=0; nIndex<m_nMaxLines; nIndex++)
+	{
+		m_lines[nIndex].text.clear();
+	}
+}
+
 void CGUIConsoleControl::Write(CStdString& aString, DWORD aColour)
 {
 	CStdString	strLine;
@@ -122,13 +130,16 @@ void CGUIConsoleControl::Write(CStdString& aString, DWORD aColour)
 	int nStartOfLine = 0;
 	int nPosition	 = 0;
 
+	aString.Replace('`','\'');
+	aString.Replace("\r\n","\n");
+
 	while( nPosition < (int)aString.length() )
 	{
 		// Get the current letter in the string
 		char letter = aString[nPosition];
 
 		// Handle the newline character
-		if (letter == '\n' )
+		if (letter == '\n')
 		{
 			// Add as much of the text as we have accumulated, irrespective
 			// of whether we have reached the end of the line.
@@ -137,12 +148,12 @@ void CGUIConsoleControl::Write(CStdString& aString, DWORD aColour)
 
 			// Reset state
 			nLastSpace			= -1;
-			nStartOfLine		= nPosition;
+			nStartOfLine		= nPosition+1;
 			strLine.clear();
 		}
 		else
 		{
-			if (letter==' ') 
+			if (letter == ' ') 
 			{
 				// Note the position of this space, we may need to refer to it.
 				nLastSpace = nPosition;
