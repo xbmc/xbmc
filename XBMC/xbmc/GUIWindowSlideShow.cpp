@@ -8,6 +8,8 @@
 #include "guiFontManager.h"
 #include "util.h"
 #include "sectionloader.h"
+#include "texturemanager.h"
+#include "guilabelcontrol.h"
 
 #define MAX_RENDER_METHODS 9
 #define MAX_ZOOM_FACTOR    10
@@ -48,6 +50,7 @@ void CGUIWindowSlideShow::Reset()
 	m_bShowInfo=false;
 	m_bSlideShow=false;
 	m_bPause=false;
+	m_bErrorMessage=false;
  
 	m_iRotate=0;
 	m_iZoomFactor=1;
@@ -205,17 +208,23 @@ void CGUIWindowSlideShow::Render()
 					if (!m_bPause|| m_pTextureBackGround==NULL)
 					{
 						// get next picture
-						m_pTextureCurrent=GetNextSlide(m_dwWidthCurrent,m_dwHeightCurrent, m_strCurrentSlide);
-
-						if (m_pTextureCurrent==NULL && m_pTextureBackGround != NULL)
-						{	// failed to low possibly due to memory constraint
-							// delete the previous pic and try again...
-							CLog::Log(LOGERROR, "SLIDESHOW: Out of memory (possibly). Deleting current picture and trying again");
-							m_pTextureBackGround->Release();
-							m_pTextureBackGround = NULL;
-							m_iCurrentSlide--;
+						if (!m_bErrorMessage || m_bSlideShow)
+						{
 							m_pTextureCurrent=GetNextSlide(m_dwWidthCurrent,m_dwHeightCurrent, m_strCurrentSlide);
+
+							if (m_pTextureCurrent==NULL && m_pTextureBackGround != NULL)
+							{	// failed to low possibly due to memory constraint
+								// delete the previous pic and try again...
+								CLog::Log(LOGERROR, "SLIDESHOW: Out of memory (possibly). Deleting current picture and trying again");
+								m_pTextureBackGround->Release();
+								m_pTextureBackGround = NULL;
+								m_iCurrentSlide--;
+								m_pTextureCurrent=GetNextSlide(m_dwWidthCurrent,m_dwHeightCurrent, m_strCurrentSlide);
+							}
 						}
+						// turn on the memory error message if necessary
+						m_bErrorMessage = (m_pTextureCurrent==NULL);
+						// choose the slideshow mode
 						m_dwFrameCounter=0;
 						int iNewMethod;
 						do
@@ -230,9 +239,8 @@ void CGUIWindowSlideShow::Render()
 		}
 
 		// swap our buffers over
-		if (!m_pTextureBackGround) 
+		if (!m_pTextureBackGround && m_pTextureCurrent) 
 		{
-			if (!m_pTextureCurrent) return;
 			m_pTextureBackGround=m_pTextureCurrent;
 //			m_pSurfaceBackGround=m_pSurfaceCurrent;
 			m_dwWidthBackGround=m_dwWidthCurrent;
@@ -275,9 +283,11 @@ void CGUIWindowSlideShow::Render()
 //		dest.top/=2;
 //		dest.bottom/=2;
 //	}
-	CPicture picture;
-	picture.RenderImage(m_pTextureBackGround, x, y, width, height, m_iZoomWidth, m_iZoomHeight, m_iZoomLeft, m_iZoomTop);
-
+	if (m_pTextureBackGround)
+	{
+		CPicture picture;
+		picture.RenderImage(m_pTextureBackGround, x, y, width, height, m_iZoomWidth, m_iZoomHeight, m_iZoomLeft, m_iZoomTop);
+	}
 //	g_graphicsContext.Get3DDevice()->UpdateOverlay(m_pSurfaceBackGround, &source, &dest, true, 0x00010001);
 
 	if (m_pTextureCurrent) 
@@ -315,9 +325,8 @@ void CGUIWindowSlideShow::Render()
 			break;
 		}
 	  
-		if (bResult)
+		if (bResult && m_pTextureCurrent)
 		{
-			if (!m_pTextureCurrent) return;
 //			if (m_pSurfaceBackGround)
 //			{
 //				m_pSurfaceBackGround->Release();
@@ -341,9 +350,6 @@ void CGUIWindowSlideShow::Render()
 	}
 
 	RenderPause();
-
-	if (!m_bShowInfo && m_iZoomFactor == 1)
-		return;
 
 	if (m_iZoomFactor > 1)
 	{
@@ -387,6 +393,20 @@ void CGUIWindowSlideShow::Render()
 			OnMessage(msg);
 		}
 	}
+
+	if (m_bErrorMessage)
+	{
+		CGUIFont *pFont = g_fontManager.GetFont(((CGUILabelControl *)GetControl(LABEL_ROW1))->GetFontName());
+		if (pFont)
+		{
+			wstring wszText = g_localizeStrings.Get(747);
+			pFont->DrawText((float)g_graphicsContext.GetWidth()/2, (float)g_graphicsContext.GetHeight()/2, 0xffffffff, wszText.c_str(), XBFONT_CENTER_X|XBFONT_CENTER_Y);
+		}
+	}
+	
+	if (!m_bShowInfo && m_iZoomFactor == 1)
+		return;
+
 	CGUIWindow::Render();
 }
 
@@ -728,6 +748,8 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 
 		case GUI_MSG_WINDOW_INIT:
 		{
+			// clear as much memory as possible
+			g_TextureManager.Flush();
 			CGUIWindow::OnMessage(message);
       if (g_application.IsPlayingVideo())
         g_application.StopPlaying();
