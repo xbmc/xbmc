@@ -2358,6 +2358,74 @@
         <value>Timeout panneau musique</value>
     </string>
     <string>
+        <id>13315</id>
+        <value>Créer vignettes</value>
+    </string>
+    <string>
+        <id>13316</id>
+        <value>Récursivement</value>
+    </string>
+    <string>
+        <id>13317</id>
+        <value>Voir le diaporama</value>
+    </string>
+    <string>
+        <id>13318</id>
+        <value>Récursivement</value>
+    </string>
+    <string>
+        <id>13319</id>
+        <value>Aléatoire</value>
+    </string>
+    <string>
+        <id>13320</id>
+        <value>Stereo</value>
+    </string>
+    <string>
+        <id>13321</id>
+        <value>Gauche seulement</value>
+    </string>
+    <string>
+        <id>13322</id>
+        <value>Droite seulement</value>
+    </string>
+    <string>
+        <id>13323</id>
+        <value>Activer le CD+G</value>
+    </string>
+    <string>
+        <id>13324</id>
+        <value>Transparence de l'arrière plan</value>
+    </string>
+    <string>
+        <id>13325</id>
+        <value>Transparence du premier plan</value>
+    </string>
+    <string>
+        <id>13326</id>
+        <value>Délai A/V</value>
+    </string>
+    <string>
+        <id>13327</id>
+        <value>Karaoké</value>
+    </string>
+    <string>
+        <id>13328</id>
+        <value>%s non trouvé.</value>
+    </string>
+    <string>
+        <id>13329</id>
+        <value>Impossible d'ouvrir %s</value>
+    </string>
+    <string>
+        <id>13330</id>
+        <value>Impossible de charger %s</value>
+    </string>
+    <string>
+        <id>13331</id>
+        <value>Erreur : mémoire insuffisante.</value>
+    </string>
+    <string>
         <id>14000</id>
         <value>Stacking : désactivé</value>
     </string>
@@ -2368,5 +2436,25 @@
     <string>
         <id>14002</id>
         <value>Stacking : brouillé</value>
+    </string>
+    <string>
+        <id>14003</id>
+        <value>Téléchargement de la liste de lecture...</value>
+    </string>
+    <string>
+        <id>14004</id>
+        <value>Téléchargement de la liste des flux...</value>
+    </string>
+    <string>
+        <id>14005</id>
+        <value>Parcours de la liste des flux...</value>
+    </string>
+    <string>
+        <id>14006</id>
+        <value>Le téléchargement de la liste des flux a échoué</value>
+    </string>
+    <string>
+        <id>14007</id>
+        <value>Le téléchargement de la liste de lecture a échoué</value>
     </string>
 </strings>
