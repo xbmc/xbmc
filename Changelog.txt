@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 24-09-2004 fixed: Picture info (current number of picture was out by 1)
+  - 24-09-2004 fixed: [ 1023515 ] .GIF renamed to .JPEG crashes XBMC
   - 24-09-2004 changed: Polish language file (thanks to NaPeK)
   - 24-09-2004 changed: German (Austrian) language file
   - 24-09-2004 fixed: in thumbnail view the up arrow was not reachable
