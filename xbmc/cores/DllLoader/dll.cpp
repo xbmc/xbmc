@@ -259,7 +259,7 @@ extern "C" HMODULE __stdcall track_LoadLibraryA(LPCSTR file)
   std::list<HMODULE>* pList = get_track_list_dll(loc);
 
   HMODULE handle = dllLoadLibraryA(file);
-  if (pList) pList->push_back(handle);
+  if (pList && handle) pList->push_back(handle);
   return handle;
 }
 
@@ -801,7 +801,8 @@ DllLoader::~DllLoader()
 				for (std::list<HMODULE>::iterator p = it->DllList.begin(); p != it->DllList.end(); ++p)
 				{
 				  DllLoader* pDll = (DllLoader*)*p; 
-				  if (pDll != (DllLoader*)MODULE_HANDLE_kernel32 &&
+				  if (pDll != NULL &&
+              pDll != (DllLoader*)MODULE_HANDLE_kernel32 &&
               pDll != (DllLoader*)MODULE_HANDLE_user32 &&
               pDll != (DllLoader*)MODULE_HANDLE_ddraw &&
               pDll != (DllLoader*)MODULE_HANDLE_wininet &&
@@ -813,7 +814,7 @@ DllLoader::~DllLoader()
         }
 				for (std::list<HMODULE>::iterator p = it->DllList.begin(); p != it->DllList.end(); ++p)
 				{
-				  dllFreeLibrary(*p);
+          if(*p) dllFreeLibrary(*p);
         }
 			}
 			
