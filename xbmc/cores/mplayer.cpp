@@ -587,8 +587,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			// then try opening file with ac3/dts pass-through 
 			if (g_stSettings.m_bUseDigitalOutput && (bSupportsAC3Out || bSupportsDTSOut))
 			{
-				//Streamed internet files won't play correctly when forcing mplayer to output to 6 channels.. don't know why.
-				if ((g_stSettings.m_bDDStereoPassThrough || g_stSettings.m_bDD_DTSMultiChannelPassThrough) && !bFileOnInternet)
+				if (g_stSettings.m_bDDStereoPassThrough || g_stSettings.m_bDD_DTSMultiChannelPassThrough)
 				{
 					options.SetChannels(6);
 				}
