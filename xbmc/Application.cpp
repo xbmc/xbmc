@@ -633,15 +633,7 @@ void CApplication::OnKey(CKey& key)
     // stop : stops playing current audio song
     if (action.wID == ACTION_STOP)
 	  {
-      if ( IsPlayingAudio() && !IsPlayingVideo())
-      {
-        m_pPlayer->closefile();
-				//	turn off visualisation window when stopping
-				if (iWin==WINDOW_VISUALISATION)
-					m_gWindowManager.PreviousWindow();
-      }
-		  CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
-		  m_gWindowManager.SendThreadMessage( msg );
+      StopPlaying();
 	  }  
 
     // pause : pauses current audio song
@@ -852,6 +844,20 @@ void CApplication::FrameMove()
 	}
 
 
+}
+
+void CApplication::StopPlaying()
+{
+  int iWin = m_gWindowManager.GetActiveWindow();
+  if ( IsPlayingAudio() && !IsPlayingVideo())
+  {
+    m_pPlayer->closefile();
+	  //	turn off visualisation window when stopping
+	  if (iWin==WINDOW_VISUALISATION)
+		  m_gWindowManager.PreviousWindow();
+  }
+  CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
+  m_gWindowManager.SendThreadMessage( msg );
 }
 
 void CApplication::Stop()
