@@ -1640,6 +1640,7 @@ void CApplication::FrameMove()
 	{
 		// Reset the screensaver
 		ResetScreenSaver();
+		if (ResetScreenSaverWindow()) return;
 
 		// call OnAction with ACTION_MOUSE
 		CAction action;
