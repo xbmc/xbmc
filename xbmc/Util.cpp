@@ -794,7 +794,7 @@ int CUtil::GetDVDIfoTitle(const CStdString& strFile)
   CStdString strResult;
   for (int i=0; i < (int)strURLData.size(); ++i)
   {
-      char kar=strURLData[i];
+      int kar=(unsigned char)strURLData[i];
       if (kar==' ') strResult+='+';
       else if (isalnum(kar) || kar=='&'  || kar=='=' ) strResult+=kar;
       else {
