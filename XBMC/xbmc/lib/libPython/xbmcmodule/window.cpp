@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "window.h"
+#include "dialog.h"
 #include "guiwindowmanager.h"
 #include "GuiLabelControl.h"
 #include "GuiListControl.h"
@@ -22,34 +23,25 @@ extern "C" {
 
 namespace PYXBMC
 {
-	PyObject* Window_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
+	// used by Dialog to to create a new dialogWindow
+	bool Window_CreateNewWindow(Window* pWindow, bool bAsDialog)
 	{
-		Window *self;
-
-		self = (Window*)type->tp_alloc(type, 0);
-		if (!self) return NULL;
-
-		self->iWindowId = -1;
-
-		if (!PyArg_ParseTuple(args, "|i", &self->iWindowId)) return NULL;
-
-		if (self->iWindowId != -1)
+		if (pWindow->iWindowId != -1)
 		{
 			// user specified window id, use this one if it exists
 			// It is not possible to capture key presses or button presses
 			PyGUILock();
-			self->pWindow = m_gWindowManager.GetWindow(self->iWindowId);
+			pWindow->pWindow = m_gWindowManager.GetWindow(pWindow->iWindowId);
 			PyGUIUnlock();
-			if (!self->pWindow)
+			if (!pWindow->pWindow)
 			{
-				PyErr_SetString((PyObject*)self, "Window id does not exist");
-				self->ob_type->tp_free((PyObject*)self);
-				return NULL;
+				PyErr_SetString(PyExc_ValueError, "Window id does not exist");
+				return false;
 			}
-			self->iOldWindowId = 0;
-			self->bModal = false;
-			self->iCurrentControlId = 3000;
-			self->bIsPythonWindow = false;
+			pWindow->iOldWindowId = 0;
+			pWindow->bModal = false;
+			pWindow->iCurrentControlId = 3000;
+			pWindow->bIsPythonWindow = false;
 		}
 		else
 		{
@@ -61,25 +53,47 @@ namespace PYXBMC
 			if (m_gWindowManager.GetWindow(WINDOW_PYTHON_END))
 			{
 				PyGUIUnlock();
-				PyErr_SetString((PyObject*)self, "maximum number of windows reached");
-				self->ob_type->tp_free((PyObject*)self);
-				return NULL;
+				PyErr_SetString(PyExc_Exception, "maximum number of windows reached");
+				return false;
 			}
 			while(id < WINDOW_PYTHON_END && m_gWindowManager.GetWindow(id) != NULL) id++;
 			PyGUIUnlock();
 
-			self->iWindowId = id;
-			self->iOldWindowId = 0;
-			self->bModal = false;
-			self->bIsPythonWindow = true;
-			self->pWindow = new CGUIPythonWindow(id);
+			pWindow->iWindowId = id;
+			pWindow->iOldWindowId = 0;
+			pWindow->bModal = false;
+			pWindow->bIsPythonWindow = true;
 
-			if (self->bIsPythonWindow)
-				((CGUIPythonWindow*)self->pWindow)->SetCallbackWindow((PyObject*)self);
+			if (!bAsDialog) pWindow->pWindow = new CGUIPythonWindow(id);
+			else pWindow->pWindow = new CGUIPythonWindowDialog(id);
+
+			if (pWindow->bIsPythonWindow)
+				((CGUIPythonWindow*)pWindow->pWindow)->SetCallbackWindow((PyObject*)pWindow);
 
 			PyGUILock();
-			m_gWindowManager.Add(self->pWindow);
+			m_gWindowManager.Add(pWindow->pWindow);
 			PyGUIUnlock();
+		}
+		return true;
+	}
+
+	PyObject* Window_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
+	{
+		Window *self;
+
+		self = (Window*)type->tp_alloc(type, 0);
+		if (!self) return NULL;
+
+		self->iWindowId = -1;
+
+		if (!PyArg_ParseTuple(args, "|i", &self->iWindowId)) return NULL;
+
+		// create new GUIWindow
+		if (!Window_CreateNewWindow(self, false))
+		{
+			// error is already set by Window_CreateNewWindow, just release the memory
+			self->ob_type->tp_free((PyObject*)self);
+			return NULL;
 		}
 
 		return (PyObject*)self;
@@ -124,38 +138,7 @@ namespace PYXBMC
 		if (self->bIsPythonWindow) delete self->pWindow;
 		self->ob_type->tp_free((PyObject*)self);
 	}
-/*
-	PyObject* Window_Load(Window *self, PyObject *args)
-	{
-		CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
-		if (!pWindow) return NULL;
 
-		char *cLine;
-		if (!PyArg_ParseTuple(args, "s", &cLine)) return NULL;
-		if (!pWindow->Load(cLine))
-		{
-			// error loading file. Since window id is now set to 9999 we set it to
-			// the old value again
-			PyGUILock();
-			pWindow->SetID(self->iWindowId);
-			g_graphicsContext.Unlock();
-
-			char error[1024];
-			strcpy(error, "could not load: ");
-			strcat(error, cLine);
-			PyErr_SetString((PyObject*)self, error);
-			return NULL;
-		}
-		// load succeeded, just in case window id is specified in xml file, we set it
-		// to our own value here
-		PyGUILock();
-		pWindow->SetID(self->iWindowId);
-		g_graphicsContext.Unlock();
-
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
-*/
 	PyDoc_STRVAR(show__doc__,
 		"show(self) -- Show this window.\n"
 		"\n"
@@ -171,7 +154,10 @@ namespace PYXBMC
 			self->iOldWindowId = ACTIVE_WINDOW;
 
 		PyGUILock();
-		m_gWindowManager.ActivateWindow(self->iWindowId);
+		// if it's a idalog, we have to activate it a bit different
+		if (WindowDialog_Check(self))	((CGUIPythonWindowDialog*)self->pWindow)->Activate(ACTIVE_WINDOW);
+		// activate the window
+		else m_gWindowManager.ActivateWindow(self->iWindowId);
 		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
@@ -191,8 +177,13 @@ namespace PYXBMC
 			((CGUIPythonWindow*)self->pWindow)->PulseActionEvent();
 
 		PyGUILock();
-		m_gWindowManager.ActivateWindow(self->iOldWindowId);
+
+		// if it's a idalog, we have to close it a bit different
+		if (WindowDialog_Check(self))	((CGUIPythonWindowDialog*)self->pWindow)->Close();
+		// close the window by activating the parent one
+		else m_gWindowManager.ActivateWindow(self->iOldWindowId);
 		self->iOldWindowId = 0;
+
 		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
@@ -249,6 +240,10 @@ namespace PYXBMC
 	PyDoc_STRVAR(addControl__doc__,
 		"addControl(self, Control) -- Add a Control to this window.\n"
 		"\n"
+		"Throws: TypeError, if supplied argument is not a Control type\n"
+		"        ReferenceError, if control is already used in another window\n"
+		"        RuntimeError, should not happen :-)\n"
+		"\n"
 		"The next controls can be added to a window atm\n"
 		"\n"
 		"  -ControlLabel\n"
@@ -263,23 +258,17 @@ namespace PYXBMC
 		CGUIWindow* pWindow = NULL;
 		Control* pControl;
 
-		// since i've no intention of getting involved in python maintenance, these are
-		// hardcoded offsets for button controls (and controls that use button controls)
-		// ideally they should be dynamically read in as with all the other properties.
-		DWORD dwHardcodedTextOffsetX = 10;
-		DWORD dwHardcodedTextOffsetY = 2;
-
 		if (!PyArg_ParseTuple(args, "O", &pControl)) return NULL;
 		// type checking, object should be of type Control
 		if(!Control_Check(pControl))
 		{
-			PyErr_SetString((PyObject*)self, "Object should be of type Control");
+			PyErr_SetString(PyExc_TypeError, "Object should be of type Control");
 			return NULL;
 		}
 
 		if(pControl->iControlId != 0)
 		{
-			PyErr_SetString((PyObject*)self, "Control is already used");
+			PyErr_SetString(PyExc_ReferenceError, "Control is already used");
 			return NULL;
 		}
 
@@ -302,100 +291,32 @@ namespace PYXBMC
 
 		// Control Label
 		if (ControlLabel_Check(pControl))
-		{
-			ControlLabel* pControlLabel = (ControlLabel*)pControl;
-			pControl->pGUIControl = new CGUILabelControl(pControl->iParentId, pControl->iControlId,
-					pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
-					pControlLabel->strFont, pControlLabel->strText, pControlLabel->dwTextColor, pControlLabel->dwTextColor, 0, false);
-		}
+			ControlLabel_Create((ControlLabel*)pControl);
 
 		// Control Fade Label
 		else if (ControlFadeLabel_Check(pControl))
-		{
-			ControlFadeLabel* pControlFadeLabel = (ControlFadeLabel*)pControl;
-			pControl->pGUIControl = new CGUIFadeLabelControl(pControl->iParentId, pControl->iControlId,
-					pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
-					pControlFadeLabel->strFont, pControlFadeLabel->dwTextColor, 0);
-
-			CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
-			pControl->pGUIControl->OnMessage(msg);
-		}
+			ControlFadeLabel_Create((ControlFadeLabel*)pControl);
 
 		// Control TextBox
 		else if (ControlTextBox_Check(pControl))
-		{
-			ControlTextBox* pControlTextBox = (ControlTextBox*)pControl;
-
-			// create textbox
-			pControl->pGUIControl = new CGUITextBox(pControl->iParentId, pControl->iControlId,
-					pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
-					pControlTextBox->strFont, pControlTextBox->pControlSpin->dwWidth, pControlTextBox->pControlSpin->dwHeight,
-					pControlTextBox->pControlSpin->strTextureUp, pControlTextBox->pControlSpin->strTextureDown, pControlTextBox->pControlSpin->strTextureUpFocus,
-					pControlTextBox->pControlSpin->strTextureDownFocus, pControlTextBox->pControlSpin->dwColor, pControlTextBox->pControlSpin->dwPosX,
-					pControlTextBox->pControlSpin->dwPosY, pControlTextBox->strFont, pControlTextBox->dwTextColor);
-
-			// reset textbox
-			CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
-			pControl->pGUIControl->OnMessage(msg);
-
-			// set values for spincontrol
-			pControlTextBox->pControlSpin->iControlId = pControl->iControlId;
-			pControlTextBox->pControlSpin->iParentId = pControl->iParentId;
-		}
+			ControlTextBox_Create((ControlTextBox*)pControl);
 
 		// Control Button
 		else if (ControlButton_Check(pControl))
-		{
-			ControlButton* pControlButton = (ControlButton*)pControl;
-			pControl->pGUIControl = new CGUIButtonControl(pControl->iParentId, pControl->iControlId,
-					pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
-					pControlButton->strTextureFocus, pControlButton->strTextureNoFocus,
-					dwHardcodedTextOffsetX, dwHardcodedTextOffsetY);
-
-			CGUIButtonControl* pGuiButtonControl = (CGUIButtonControl*)pControl->pGUIControl;
-
-			pGuiButtonControl->SetLabel(pControlButton->strFont, pControlButton->strText, pControlButton->dwTextColor);
-			pGuiButtonControl->SetDisabledColor(pControlButton->dwDisabledColor);
-		}
+			ControlButton_Create((ControlButton*)pControl);
 
 		// Image
 		else if (ControlImage_Check(pControl))
-		{
-			ControlImage* pControlImage = (ControlImage*)pControl;
-			pControl->pGUIControl = new CGUIImage(pControl->iParentId, pControl->iControlId,
-					pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
-					pControlImage->strFileName, pControlImage->strColorKey);
-		}
+			ControlImage_Create((ControlImage*)pControl);
 
 		// Control List
 		else if (ControlList_Check(pControl))
-		{
-			ControlList* pControlList = (ControlList*)pControl;
-			pControl->pGUIControl = new CGUIListControl(pControl->iParentId, pControl->iControlId,
-					pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
-					pControlList->strFont, pControlList->pControlSpin->dwWidth, pControlList->pControlSpin->dwHeight,
-					pControlList->pControlSpin->strTextureUp, pControlList->pControlSpin->strTextureDown, pControlList->pControlSpin->strTextureUpFocus,
-					pControlList->pControlSpin->strTextureDownFocus, pControlList->pControlSpin->dwColor, pControlList->pControlSpin->dwPosX,
-					pControlList->pControlSpin->dwPosY, pControlList->strFont,pControlList->dwTextColor,
-					pControlList->dwSelectedColor, pControlList->strTextureButton, pControlList->strTextureButtonFocus,
-					dwHardcodedTextOffsetX, dwHardcodedTextOffsetY);
-
-			CGUIListControl* pListControl = (CGUIListControl*)pControl->pGUIControl;
-			pListControl->SetImageDimensions(pControlList->dwImageWidth, pControlList->dwImageHeight);
-			pListControl->SetItemHeight(pControlList->dwItemHeight);
-			pListControl->SetSpace(pControlList->dwSpace);
-
-			// set values for spincontrol
-			CGUIListControl* c = (CGUIListControl*)pControl->pGUIControl;
-			pControlList->pControlSpin->pGUIControl;// = (CGUIControl*) c->GetSpinControl();
-			pControlList->pControlSpin->iControlId = pControl->iControlId;
-			pControlList->pControlSpin->iParentId = pControl->iParentId;
-		}
+			ControlList_Create((ControlList*)pControl);
 
 		//unknown control type to add, should not happen
 		else
 		{
-			PyErr_SetString((PyObject*)self, "Object is a Control, but can't be added to a window");
+			PyErr_SetString(PyExc_RuntimeError, "Object is a Control, but can't be added to a window");
 			return NULL;
 		}
 
@@ -423,8 +344,119 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(getControl__doc__,
+		"getControl(self, int controlId) -- Get's the control from this window.\n"
+		"\n"
+		"Throws: Exception, if Control doesn't exist\n"
+		"\n"
+		"controlId doesn't have to be a python control, it can be a control id\n"
+		"from a xbmc window too (you can find id's in the xml files\n"
+		"\n"
+		"Note, not python controls are not completely usable yet\n"
+		"You can only use the Control functions\n"
+		"");
+
+	PyObject* Window_GetControl(Window *self, PyObject *args)
+	{
+		CGUIWindow* pWindow = NULL;
+		int iControlId;
+		Control* pControl = NULL;
+
+		if (!PyArg_ParseTuple(args, "i", &iControlId)) return NULL;
+
+		// lock xbmc GUI before accessing data from it
+		PyGUILock();
+
+		pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+		if (!pWindow)
+		{
+			PyGUIUnlock();
+			return NULL;
+		}
+
+		// check if control exists
+		CGUIControl* pGUIControl = (CGUIControl*)pWindow->GetControl(iControlId);
+		PyGUIUnlock();
+		if (!pGUIControl)
+		{
+			// control does not exist.
+			PyErr_SetString(PyExc_Exception, "Control does not exist");
+			return NULL;
+		}
+
+		// find in window vector first!!!
+		// this saves us from creating a complete new control
+		vector<Control*>::iterator it = self->vecControls.begin();
+		while (it != self->vecControls.end())
+		{
+      Control* control = *it;
+			if (control->iControlId == iControlId)
+			{
+				Py_INCREF(control);
+				return (PyObject*)control;
+			} else ++it;
+		}
+
+		// allocate a new control with a new reference
+		switch(pGUIControl->GetControlType())
+		{
+		case CGUIControl::GUICONTROL_BUTTON:
+			pControl = (Control*)ControlButton_Type.tp_alloc(&ControlButton_Type, 0);
+			break;
+		case CGUIControl::GUICONTROL_LABEL:
+			pControl = (Control*)ControlLabel_Type.tp_alloc(&ControlLabel_Type, 0);
+			break;
+		case CGUIControl::GUICONTROL_SPIN:
+			pControl = (Control*)ControlSpin_Type.tp_alloc(&ControlSpin_Type, 0);
+			break;
+		case CGUIControl::GUICONTROL_FADELABEL:
+			pControl = (Control*)ControlFadeLabel_Type.tp_alloc(&ControlFadeLabel_Type, 0);
+			break;
+		case CGUIControl::GUICONTROL_TEXTBOX:
+			pControl = (Control*)ControlTextBox_Type.tp_alloc(&ControlTextBox_Type, 0);
+			break;
+		case CGUIControl::GUICONTROL_IMAGE:
+			pControl = (Control*)ControlImage_Type.tp_alloc(&ControlImage_Type, 0);
+			break;
+		case CGUIControl::GUICONTROL_LIST:
+			pControl = (Control*)ControlList_Type.tp_alloc(&ControlList_Type, 0);
+			break;
+		}
+
+		if (!pControl)
+		{
+			// throw an exeption
+			PyErr_SetString(PyExc_Exception, "Unknown control type for python");
+			return NULL;
+		}
+
+		PyGUILock();
+
+		// we have a valid control here, fill in all the 'Control' data
+		pControl->pGUIControl = pGUIControl;
+		pControl->iControlId = pGUIControl->GetID();
+		pControl->iParentId = self->iWindowId;
+		pControl->dwHeight = pGUIControl->GetHeight();
+		pControl->dwWidth = pGUIControl->GetWidth();
+		pControl->dwPosX = pGUIControl->GetXPosition();
+		pControl->dwPosY = pGUIControl->GetYPosition();
+		pControl->iControlUp = pGUIControl->GetControlIdUp();
+		pControl->iControlDown = pGUIControl->GetControlIdDown();
+		pControl->iControlLeft = pGUIControl->GetControlIdLeft();
+		pControl->iControlRight = pGUIControl->GetControlIdRight();
+
+		PyGUIUnlock();
+
+		// return the control with increased reference (+1)
+		return (PyObject*)pControl;
+	}
+
 	PyDoc_STRVAR(setFocus__doc__,
-		"setFocus(self, Control) -- Give the supplied control focus.");
+		"setFocus(self, Control) -- Give the supplied control focus.\n"
+		"Throws: TypeError, if supplied argument is not a Control type\n"
+		"        SystemError, on Internal error\n"
+		"        RuntimeError, if control is not added to a window\n"
+		"\n");
 
 	PyObject* Window_SetFocus(Window *self, PyObject *args)
 	{ 
@@ -436,13 +468,13 @@ namespace PYXBMC
 		// type checking, object should be of type Control
 		if(!Control_Check(pControl))
 		{
-			PyErr_SetString((PyObject*)self, "Object should be of type Control");
+			PyErr_SetString(PyExc_TypeError, "Object should be of type Control");
 			return NULL;
 		}
 
 		if(!pWindow->GetControl(pControl->iControlId))
 		{
-			PyErr_SetString((PyObject*)self, "Control does not exist in window");
+			PyErr_SetString(PyExc_RuntimeError, "Control does not exist in window");
 			return NULL;
 		}
 
@@ -457,6 +489,9 @@ namespace PYXBMC
 	PyDoc_STRVAR(removeControl__doc__,
 		"removeControl(self, Control) -- Removes the control from this window.\n"
 		"\n"
+		"Throws: TypeError, if supplied argument is not a Control type\n"
+		"        RuntimeError, if control is not added to this window\n"
+		"\n"
 		"This will not delete the control. It is only removed from the window.");
 
 	PyObject* Window_RemoveControl(Window *self, PyObject *args)
@@ -469,13 +504,13 @@ namespace PYXBMC
 		// type checking, object should be of type Control
 		if(!Control_Check(pControl))
 		{
-			PyErr_SetString((PyObject*)self, "Object should be of type Control");
+			PyErr_SetString(PyExc_TypeError, "Object should be of type Control");
 			return NULL;
 		}
 
 		if(!pWindow->GetControl(pControl->iControlId))
 		{
-			PyErr_SetString((PyObject*)self, "Control does not exist in window");
+			PyErr_SetString(PyExc_RuntimeError, "Control does not exist in window");
 			return NULL;
 		}
 
@@ -496,12 +531,13 @@ namespace PYXBMC
 		pControl->pGUIControl->FreeResources();
 		delete pControl->pGUIControl;
 
+		PyGUIUnlock();
+
 		// initialize control to zero
 		pControl->pGUIControl = NULL;
 		pControl->iControlId = 0;
 		pControl->iParentId = 0;
 		Py_DECREF(pControl);
-		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -530,6 +566,7 @@ namespace PYXBMC
 		{"show", (PyCFunction)Window_Show, METH_VARARGS, show__doc__},
 		{"close", (PyCFunction)Window_Close, METH_VARARGS, close__doc__},
 		{"addControl", (PyCFunction)Window_AddControl, METH_VARARGS, addControl__doc__},
+		{"getControl", (PyCFunction)Window_GetControl, METH_VARARGS, getControl__doc__},
 		{"removeControl", (PyCFunction)Window_RemoveControl, METH_VARARGS, removeControl__doc__},
 		{"setFocus", (PyCFunction)Window_SetFocus, METH_VARARGS, setFocus__doc__},
 		{"getHeight", (PyCFunction)Window_GetHeight, METH_VARARGS, getHeight__doc__},
@@ -542,6 +579,9 @@ namespace PYXBMC
 		"\n"
 		"Window(self[, int windowId) -- Create a new Window to draw on.\n"
 		"                               Specify an id to use an existing window.\n"
+		"\n"
+		"Throws: ValueError, if supplied window Id does not exist\n"
+		"        Exception, if more then 200 windows are created\n"
 		"\n"
 		"Deleting this window will activate the old window that was active\n"
 		"and resets (not delete) all controls that are associated with this window.");
