@@ -110,6 +110,8 @@ static const DWORD FVF_Y8A8VERTEX = D3DFVF_XYZRHW|D3DFVF_TEX2;
 
 static void video_flip_page(void);
 void video_uninit(void);
+unsigned int Directx_ManageDisplay();
+
 //********************************************************************************************************
 void choose_best_resolution(float fps)
 {
@@ -277,9 +279,9 @@ void DeleteOSDTextures(int index)
   if (m_pOSDATexture[index]) {
     m_pOSDATexture[index]->Release();
     m_pOSDATexture[index] = NULL;
+    CLog::Log(LOGDEBUG, "Deleted OSD textures (%i)", index);
   }
   m_iOSDTextureHeight[index] = 0;
-  CLog::Log(LOGDEBUG, "Deleted OSD textures (%i)", index);
 }
 
 //********************************************************************************************************
@@ -296,8 +298,8 @@ void DeleteVideoTextures(int index)
   if (m_VTexture[index]) {
     m_VTexture[index]->Release();
     m_VTexture[index] = NULL;
+    CLog::Log(LOGDEBUG, "Deleted video textures (%i)", index);
   }
-  CLog::Log(LOGDEBUG, "Deleted video textures (%i)", index);
 }
 
 //********************************************************************************************************
@@ -340,7 +342,12 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
   CLog::Log(LOGDEBUG, "Created video textures (0)");
   m_NumVideoBuffers = 1;
 
-  m_iOSDTextureWidth  = g_settings.m_ResInfo[m_iResolution].Overscan.right - g_settings.m_ResInfo[m_iResolution].Overscan.left;
+  //set zoomamount to 1 temporary to get the default width of the destination viewwindow
+  float zoomAmount = g_stSettings.m_fZoomAmount;
+  g_stSettings.m_fZoomAmount = 1.0;
+  Directx_ManageDisplay();
+  g_stSettings.m_fZoomAmount = zoomAmount;
+  m_iOSDTextureWidth  = rd.right - rd.left;
   m_iOSDTextureHeight[0] = 0;
   m_iOSDTextureHeight[1] = 0;
 
