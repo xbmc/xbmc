@@ -24,19 +24,30 @@ class Window(xbmcgui.Window):
 	def __init__(self):
 	
 		self.addControl(xbmcgui.ControlImage(0,0,720,576, 'background.png'))
-		self.strAction = xbmcgui.ControlLabel(100, 100, 100, 20, 'action', 'font13', '0xFFFF3300')
-		self.strButton = xbmcgui.ControlLabel(100, 150, 100, 20, 'button', 'font13', '0xFF666666')
+		self.list = xbmcgui.ControlList(200, 100, 400, 400)
+		self.strAction = xbmcgui.ControlLabel(50, 100, 100, 20, 'action', 'font13', '0xFFFF3300')
+		self.strButton = xbmcgui.ControlLabel(50, 150, 100, 20, 'button', 'font13', '0xFFFFFFFF')
+		
+		self.addControl(self.list)
 		self.addControl(self.strAction)
 		self.addControl(self.strButton)
-		
+				
 		self.button1 = xbmcgui.ControlButton(50, 200, 90, 30, "Button 1")
 		self.button2 = xbmcgui.ControlButton(50, 240, 90, 30, "Button 2")
 		self.addControl(self.button1)
 		self.addControl(self.button2)
 		
 		self.button1.controlDown(self.button2)
+		self.button1.controlRight(self.list)
 		self.button2.controlUp(self.button1)
+		self.button2.controlRight(self.list)
+		self.list.controlLeft(self.button1)
 		
+		# add a few items to the list
+		xbmcgui.lock()
+		for i in range(50):
+			self.list.addItem('item' + str(i))
+		xbmcgui.unlock()
 		self.setFocus(self.button1)
 	
 	def onAction(self, action):
@@ -57,6 +68,10 @@ class Window(xbmcgui.Window):
 			self.strButton.setLabel('button 1 clicked')
 		elif control == self.button2:
 			self.strButton.setLabel('button 2 clicked')
+		elif control == self.list:
+			item = self.list.getSelectedItem()
+			self.strButton.setLabel('selected : ' + self.list.getSelectedItem().getLabel())
+			item.setLabel(item.getLabel() + '1')
 
 w = Window()
 w.doModal()

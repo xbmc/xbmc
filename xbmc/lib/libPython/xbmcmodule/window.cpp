@@ -215,14 +215,12 @@ namespace PYXBMC
 	}
 
 	PyObject* Window_AddControl(Window *self, PyObject *args)
-	{ 
-		CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
-		if (!pWindow) return NULL;
-
+	{
+		CGUIWindow* pWindow = NULL;
 		Control* pControl;
 		if (!PyArg_ParseTuple(args, "O", &pControl)) return NULL;
 		// type checking, object should be of type Control
-		if(strcmp(((PyObject*)pControl)->ob_type->tp_base->tp_name, Control_Type.tp_name))
+		if(!Control_Check(pControl))
 		{
 			PyErr_SetString((PyObject*)self, "Object should be of type Control");
 			return NULL;
@@ -234,13 +232,25 @@ namespace PYXBMC
 			return NULL;
 		}
 
+		// lock xbmc GUI before accessing data from it
+		PyGUILock();
+
+		pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+		if (!pWindow)
+		{
+			PyGUIUnlock();
+			return NULL;
+		}
+
 		pControl->iParentId = self->iWindowId;
 		// assign control id, if id is already in use, try next id
 		do pControl->iControlId = ++self->iCurrentControlId;
 		while (pWindow->GetControl(pControl->iControlId));
 
+		PyGUIUnlock();
+
 		// Control Label
-		if (!strcmp(pControl->ob_type->tp_name, ControlLabel_Type.tp_name))
+		if (ControlLabel_CheckExact(pControl))
 		{
 			ControlLabel* pControlLabel = (ControlLabel*)pControl;
 			pControl->pGUIControl = new CGUILabelControl(pControl->iParentId, pControl->iControlId,
@@ -249,7 +259,7 @@ namespace PYXBMC
 		}
 
 		// Control Fade Label
-		else if (!strcmp(pControl->ob_type->tp_name, ControlFadeLabel_Type.tp_name))
+		else if (ControlFadeLabel_CheckExact(pControl))
 		{
 			ControlFadeLabel* pControlFadeLabel = (ControlFadeLabel*)pControl;
 			pControl->pGUIControl = new CGUIFadeLabelControl(pControl->iParentId, pControl->iControlId,
@@ -261,7 +271,7 @@ namespace PYXBMC
 		}
 
 		// Control TextBox
-		else if (!strcmp(pControl->ob_type->tp_name, ControlTextBox_Type.tp_name))
+		else if (ControlTextBox_CheckExact(pControl))
 		{
 			ControlTextBox* pControlTextBox = (ControlTextBox*)pControl;
 
@@ -283,7 +293,7 @@ namespace PYXBMC
 		}
 
 		// Control Button
-		else if (!strcmp(pControl->ob_type->tp_name, ControlButton_Type.tp_name))
+		else if (ControlButton_CheckExact(pControl))
 		{
 			ControlButton* pControlButton = (ControlButton*)pControl;
 			pControl->pGUIControl = new CGUIButtonControl(pControl->iParentId, pControl->iControlId,
@@ -297,7 +307,7 @@ namespace PYXBMC
 		}
 
 		// Image
-		else if (!strcmp(pControl->ob_type->tp_name, ControlImage_Type.tp_name))
+		else if (ControlImage_CheckExact(pControl))
 		{
 			ControlImage* pControlImage = (ControlImage*)pControl;
 			pControl->pGUIControl = new CGUIImage(pControl->iParentId, pControl->iControlId,
@@ -306,28 +316,27 @@ namespace PYXBMC
 		}
 
 		// Control List
-		else if (!strcmp(pControl->ob_type->tp_name, ControlList_Type.tp_name))
+		else if (ControlList_CheckExact(pControl))
 		{
 			ControlList* pControlList = (ControlList*)pControl;
 			pControl->pGUIControl = new CGUIListControl(pControl->iParentId, pControl->iControlId,
 					pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
-					pControlList->strFont, pControlList->dwSpinWidth, pControlList->dwSpinHeight,
-					pControlList->strTextureUp, pControlList->strTextureDown, pControlList->strTextureUpFocus,
-					pControlList->strTextureDownFocus, pControlList->dwSpinColor, pControlList->dwSpinX,
-					pControlList->dwSpinY, pControlList->strFont,pControlList->dwTextColor,
-					pControlList->dwSelectedColor, pControlList->strButton, pControlList->strButtonFocus);
-			/*		pControl->SetNavigation(up,down,left,right);
-						pControl->SetColourDiffuse(dwColorDiffuse);
-						pControl->SetScrollySuffix(strSuffix);
-						pControl->SetTextOffsets(iTextXOff,iTextYOff, iTextXOff2,iTextYOff2);
-						pControl->SetVisible(bVisible);
-						pControl->SetImageDimensions(dwitemWidth, dwitemHeight);
-						pControl->SetItemHeight(iTextureHeight);
-						pControl->SetSpace(iSpace);
-						pControl->SetColors2(dwTextColor2, dwSelectedColor2);
-						pControl->SetFont2( strFont2 );
-						*/
-				//((CGUIListControl*)pControl->pGUIControl)->
+					pControlList->strFont, pControlList->pControlSpin->dwWidth, pControlList->pControlSpin->dwHeight,
+					pControlList->pControlSpin->strTextureUp, pControlList->pControlSpin->strTextureDown, pControlList->pControlSpin->strTextureUpFocus,
+					pControlList->pControlSpin->strTextureDownFocus, pControlList->pControlSpin->dwColor, pControlList->pControlSpin->dwPosX,
+					pControlList->pControlSpin->dwPosY, pControlList->strFont,pControlList->dwTextColor,
+					pControlList->dwSelectedColor, pControlList->strTextureButton, pControlList->strTextureButtonFocus);
+
+			CGUIListControl* pListControl = (CGUIListControl*)pControl->pGUIControl;
+			pListControl->SetImageDimensions(pControlList->dwImageWidth, pControlList->dwImageHeight);
+			pListControl->SetItemHeight(pControlList->dwItemHeight);
+			pListControl->SetSpace(pControlList->dwSpace);
+
+			// set values for spincontrol
+			CGUIListControl* c = (CGUIListControl*)pControl->pGUIControl;
+			pControlList->pControlSpin->pGUIControl;// = (CGUIControl*) c->GetSpinControl();
+			pControlList->pControlSpin->iControlId = pControl->iControlId;
+			pControlList->pControlSpin->iParentId = pControl->iParentId;
 		}
 
 		Py_INCREF(pControl);
@@ -362,7 +371,7 @@ namespace PYXBMC
 		Control* pControl;
 		if (!PyArg_ParseTuple(args, "O", &pControl)) return NULL;
 		// type checking, object should be of type Control
-		if(strcmp(((PyObject*)pControl)->ob_type->tp_base->tp_name, Control_Type.tp_name))
+		if(!Control_Check(pControl))
 		{
 			PyErr_SetString((PyObject*)self, "Object should be of type Control");
 			return NULL;
@@ -390,7 +399,7 @@ namespace PYXBMC
 		Control* pControl;
 		if (!PyArg_ParseTuple(args, "O", &pControl)) return NULL;
 		// type checking, object should be of type Control
-		if(strcmp(((PyObject*)pControl)->ob_type->tp_base->tp_name, Control_Type.tp_name))
+		if(!Control_Check(pControl))
 		{
 			PyErr_SetString((PyObject*)self, "Object should be of type Control");
 			return NULL;
