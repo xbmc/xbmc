@@ -10,7 +10,6 @@
 #include "guiwindowmanager.h"
 #include "directorycache.h"
 
-
 using namespace DIRECTORY;
 using namespace XFILE;
 
@@ -50,9 +49,10 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 	{
 		CShare& share=m_vecShares->at(i);
 		if ( share.strPath == strPath.Left( share.strPath.size() )  ||
-			   share.strPath == strPath2.Left( share.strPath.size() )  ||
-				 share.strPath == strPath3.Left( share.strPath.size() ) ||
-         strPath.Left(2)=="Q:" || strPath.Left(2)=="q:")
+			share.strPath == strPath2.Left( share.strPath.size() )  ||
+			share.strPath == strPath3.Left( share.strPath.size() ) ||
+			strPath.Mid(1,1)==":" || strPath.Mid(1,1)==":")
+		 // strPath.Left(2)=="Q:" || strPath.Left(2)=="q:")
 		{
 /*
 			//	Check if cd is detected already before
@@ -63,7 +63,10 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 			CFactoryDirectory factory;
 			//IDirectory *pDirectory = factory.Create(share.strPath);
 			CStdString path;
-			if (strPath.Left(2)=="Q:" || strPath.Left(2)=="q:")
+
+			// get local path
+			//if (strPath.Left(2)=="Q:" || strPath.Left(2)=="q:")
+			if (strPath.Mid(1,1)==":" || strPath.Mid(1,1)==":")
 			{
 				path = strPath;
 			}
