@@ -107,5 +107,7 @@ public:
   static void GetVideoThumbnail(const CStdString& strIMDBID, CStdString& strThumb);
   static void SetMusicThumbs(VECFILEITEMS &items);
   static void SetMusicThumb(CFileItem* pItem);
+  static CStdString GetNextFilename(const char* fn_template, int max);
+  static void TakeScreenshot();
 
 };
