@@ -15,6 +15,7 @@ public:
   virtual ~CGUIWindowManager(void);  
   virtual void    SendMessage(CGUIMessage& message);
   void            Add(CGUIWindow* pWindow);
+	void						Remove(DWORD dwID);
   void            ActivateWindow(int iWindowID);
   void            OnKey(const CKey& key);
   void            Render();

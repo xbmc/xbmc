@@ -1,34 +1,17 @@
 #include "XBPython.h"
 
-XTHREAD_NOTIFICATION pyThreadNotification;
-
-static PyObject *Py_XbOutput(PyObject *self, PyObject *args)
-{
-	char *s_line;
-	if (!PyArg_ParseTuple(args, "s:andrelog", &s_line))	return NULL;
-
-	//Py_BEGIN_ALLOW_THREADS
-	if (outputBuffer == NULL) {
-		OutputDebugString(s_line);
-	} else { // print line to buffer
-		OutputDebugString(s_line);
-		outputBuffer->addLine(s_line);
-	}
-	//Py_END_ALLOW_THREADS
-
-	Py_INCREF(Py_None);
-	return Py_None;
+extern "C" {
+	// used for testing
+	extern void free_arenas(void);
 }
 
-//define c functions to be used in python here
-static PyMethodDef xboxMethods[] = {
-	{"xb_output", (PyCFunction)Py_XbOutput, METH_VARARGS, "xb_output(line) writes a message to debug terminal"},
-	{NULL, NULL, 0, NULL}
-};
+#pragma code_seg("PY_TEXT")
+#pragma data_seg("PY_DATA")
+#pragma bss_seg("PY_BSS")
+#pragma const_seg("PY_RDATA")
 
 XBPython::XBPython()
 {
-	outputBuffer = NULL;
 	mainThreadState = NULL;
 	nextid = 0;
 
@@ -36,20 +19,18 @@ XBPython::XBPython()
 	Py_Initialize();
 	PyEval_InitThreads();
 
-	Py_InitModule("xbox", xboxMethods);
-
 	/* redirecting default output to debug console */
 	if (PyRun_SimpleString(""
-			"import xbox\n"
-			"class xboxout:\n"
+			"import xbmc\n"
+			"class xbmcout:\n"
 			"	def write(self, data):\n"
-			"		xbox.xb_output(data)\n"
+			"		xbmc.output(data)\n"
 			"	def flush(self):\n"
-			"		xbox.xb_output(\".\")\n"
+			"		xbmc.output(\".\")\n"
 			"\n"
 			"import sys\n"
-			"sys.stdout = xboxout()\n"
-			"sys.stderr = xboxout()\n"
+			"sys.stdout = xbmcout()\n"
+			"sys.stderr = xbmcout()\n"
 			"print '-->Python Initialized<--'\n"
 			"") == -1)
 	{
@@ -59,145 +40,187 @@ XBPython::XBPython()
 	mainThreadState = PyThreadState_Get();
 	// release the lock
 	PyEval_ReleaseLock();
-
-  // register notification routine with the system
-  pyThreadNotification.pfnNotifyRoutine = PyThreadNotifyProc;
-  XRegisterThreadNotifyRoutine( &pyThreadNotification, TRUE );
+	InitializeCriticalSection(&m_critSection);
 }
 
-XBPython::~XBPython() {
-	XRegisterThreadNotifyRoutine( &pyThreadNotification, FALSE );
-
+XBPython::~XBPython()
+{
+	DeleteCriticalSection(&m_critSection);
 	// shut down the interpreter
 	PyEval_AcquireLock();
 	PyThreadState_Swap(mainThreadState);
 	Py_Finalize();
-	//free_arenas();
-	if (outputBuffer) delete outputBuffer;
+	// free_arenas();
 }
 
-int XBPython::evalFile(const char *src) {
-	XBPyThread *pyThread = new XBPyThread(mainThreadState);
+int XBPython::evalFile(const char *src)
+{
+	if (!Py_IsInitialized()) return -1;
+	nextid++;
+	XBPyThread *pyThread = new XBPyThread(this, mainThreadState, nextid);
 	pyThread->evalFile(src);
 	PyElem inf;
 	inf.id = nextid;
+	inf.bDone = false;
 	strcpy(inf.strFile, src);
 	inf.pyThread = pyThread;
 
-	pyList.push_back(inf);
-	return nextid++;
+	EnterCriticalSection(&m_critSection );
+	vecPyList.push_back(inf);
+	LeaveCriticalSection(&m_critSection );
+
+	return nextid;
 }
 
-int XBPython::evalString(const char *src) {
-	XBPyThread *pyThread = new XBPyThread(mainThreadState);
+int XBPython::evalString(const char *src)
+{
+	nextid++;
+	if (!Py_IsInitialized()) return -1;
+	XBPyThread *pyThread = new XBPyThread(this, mainThreadState, nextid);
 	pyThread->evalString(src);
 	//strcpy(strFile, "");
 	//addToList(pyThread);
-	return nextid++;
+	return nextid;
 }
 
-bool XBPython::isDone(int id) {
-	PyList::iterator it;
-	for( it = pyList.begin(); it != pyList.end(); it++ ) {
-		if (it->id == id) {
-			return false;
+bool XBPython::isDone(int id)
+{
+	bool bIsDone = true;
+	EnterCriticalSection(&m_critSection );
+
+	PyList::iterator it = vecPyList.begin();
+	while (it != vecPyList.end())
+	{
+		if (it->id == id && !it->bDone) bIsDone = false;
+
+		//delete scripts which are done
+		if (it->bDone)
+		{
+			//wait 10 sec, should be enough for slow scripts :-)
+			it->pyThread->WaitForThreadExit(10000); 
+			delete it->pyThread;
+			vecPyList.erase(it);
 		}
+		else ++it;
 	}
-	return true;
+
+	LeaveCriticalSection(&m_critSection );
+	return bIsDone;
 }
 
-void XBPython::stopScript(int id) {
-	OutputDebugString("Stopping script with id ");
-	char *c = new char[10];
-	c[0] = id + 48;
-	c[1] = '\0';
-	OutputDebugString(c);
-	OutputDebugString("\n");
+void XBPython::setDone(int id)
+{
+	EnterCriticalSection(&m_critSection);
+	PyList::iterator it = vecPyList.begin();
+	while (it != vecPyList.end())
+	{
+		if (it->id == id)
+		{
+			if (it->pyThread->isStopping())
+				OutputDebugString("Python script interrupted by user\n");
+			else
+				OutputDebugString("Python script stopped\n");
+		}
+		it->bDone = true;
+		++it;
+	}
+	LeaveCriticalSection(&m_critSection);
+}
 
-	PyList::iterator it;
-	for( it = pyList.begin(); it != pyList.end(); it++ ) {
+void XBPython::stopScript(int id)
+{
+	EnterCriticalSection(&m_critSection);
+
+	PyList::iterator it = vecPyList.begin();
+	while (it != vecPyList.end())
+	{
 		if (it->id == id) {
-			OutputDebugString("TODO threadstop()\n");
+			Py_Output("Stopping script with id: %i\n", id);
 			it->pyThread->stop();
+			LeaveCriticalSection(&m_critSection);
 			return;
 		}
+		++it;
 	}
+	LeaveCriticalSection(&m_critSection );
 }
 
-PyThreadState *XBPython::getMainThreadState() {
+PyThreadState *XBPython::getMainThreadState()
+{
 	return mainThreadState;
 }
 
-int XBPython::scriptsSize() {
-	return pyList.size();
+int XBPython::scriptsSize()
+{
+	int iSize;
+	EnterCriticalSection(&m_critSection);
+
+	iSize = vecPyList.size();
+
+	LeaveCriticalSection(&m_critSection);
+	return iSize;	
 }
 
 char* XBPython::getFileName(int scriptId)
 {
-	PyList::iterator it;
-	for( it = pyList.begin(); it != pyList.end(); it++ )
+	char* cFileName = NULL;
+	EnterCriticalSection(&m_critSection);
+
+	PyList::iterator it = vecPyList.begin();
+	while (it != vecPyList.end())
 	{
-		if (it->id == scriptId) return it->strFile;
+		if (it->id == scriptId) cFileName = it->strFile;
+		++it;
 	}
-	return NULL;
+
+	LeaveCriticalSection(&m_critSection);
+	return cFileName;
 }
 
 int XBPython::getScriptId(const char* strFile)
 {
-	PyList::iterator it;
-	for( it = pyList.begin(); it != pyList.end(); it++ )
+	int iId = -1;
+	EnterCriticalSection(&m_critSection);
+
+	PyList::iterator it = vecPyList.begin();
+	while (it != vecPyList.end())
 	{
-		if (!strcmp(it->strFile, strFile)) return it->id;
+		if (!strcmp(it->strFile, strFile)) iId = it->id;
+		++it;
 	}
-	return 0;
+
+	LeaveCriticalSection(&m_critSection);
+	return iId;
 }
 
-bool XBPython::isRunning(const char* strFile)
+bool XBPython::isRunning(int scriptId)
 {
-	PyList::iterator it;
-	for( it = pyList.begin(); it != pyList.end(); it++ )
+	bool bRunning = false;
+	EnterCriticalSection(&m_critSection);
+
+	PyList::iterator it = vecPyList.begin();
+	while (it != vecPyList.end())
 	{
-		if (!strcmp(it->strFile, strFile)) return true;
+		if (it->id == scriptId)	bRunning = true;
+		++it;
 	}
-	return false;
+
+	LeaveCriticalSection(&m_critSection);
+	return bRunning;
 }
 
-int XBPython::getOutputHeight()
+bool XBPython::isStopping(int scriptId)
 {
-	if (outputBuffer) return outputBuffer->getHeight();
-	else return 0;
-}
+	bool bStopping = false;
+	EnterCriticalSection(&m_critSection);
 
-int XBPython::getOutputLength()
-{
-	if (outputBuffer) return outputBuffer->getLength();
-	else return 0;
-}
-
-char* XBPython::getOutputLine(int nr)
-{
-	if (outputBuffer) return outputBuffer->getLine(nr);
-	else return NULL;
-}
-
-void XBPython::enableOutput(int h, int l)
-{
-	if (h > 0 && l > 0)	outputBuffer = new OutputBuffer(h, l);
-}
-
-VOID WINAPI PyThreadNotifyProc(BOOL fCreate) {
-	if (!fCreate) {
-		PyList::iterator it;
-		for( it = pyList.begin(); it != pyList.end(); it++ ) {
-			if (it->pyThread->isDone()) {
-				//we have found the thread wich is done executing python code
-				//thread didn't exit (wich is true because this method needs to complete first.
-				//fixme?
-				delete it->pyThread;
-				OutputDebugString("Python script stopped\n");
-				pyList.erase(it);
-				return;
-			}
-		}
+	PyList::iterator it = vecPyList.begin();
+	while (it != vecPyList.end())
+	{
+		if (it->id == scriptId) bStopping = it->pyThread->isStopping();
+		++it;
 	}
+
+	LeaveCriticalSection(&m_critSection);
+	return bStopping;
 }

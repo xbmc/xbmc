@@ -163,6 +163,11 @@ DWORD CGUIWindow::GetID(void) const
   return m_dwWindowId;
 }
 
+void CGUIWindow::SetID(DWORD dwID)
+{
+	m_dwWindowId = dwID;
+}
+
 
 bool CGUIWindow::OnMessage(CGUIMessage& message)
 {

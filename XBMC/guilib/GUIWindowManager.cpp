@@ -40,6 +40,21 @@ void CGUIWindowManager::Add(CGUIWindow* pWindow)
   m_vecWindows.push_back(pWindow);
 }
 
+void CGUIWindowManager::Remove(DWORD dwID)
+{
+	vector<CGUIWindow*>::iterator it = m_vecWindows.begin();
+	while (it != m_vecWindows.end())
+	{
+		CGUIWindow* pWindow = *it;
+		if(pWindow->GetID() == dwID)
+		{
+			m_vecWindows.erase(it);
+			it = m_vecWindows.end();
+		}
+		else it++;
+	}
+}
+
 void CGUIWindowManager::ActivateWindow(int iWindowID)
 {
   // deactivate any window

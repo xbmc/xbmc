@@ -26,14 +26,16 @@ protected:
   void							Clear();
 	void							Update(const CStdString &strDirectory);
 	int								GetSelectedItem();
-
   bool							HaveDiscOrConnection( CStdString& strPath, int iDriveType );
+
 	CVirtualDirectory		m_rootDir;
   VECFILEITEMS				m_vecItems;
 	CStdString					m_strDirectory;
 	CDirectoryHistory		m_history;
 	bool								m_bDVDDiscChanged;
 	bool								m_bDVDDiscEjected;
+	bool								m_bViewOutput;
 	int									scriptSize;
+	CStdStringW					m_strWScriptsOutput;
 	VECSHARES shares;
 };

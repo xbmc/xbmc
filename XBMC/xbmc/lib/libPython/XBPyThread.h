@@ -25,9 +25,9 @@ protected:
 	bool stopping;
 	int id;
 
-	void OnStartup();
-	void Process();
-	void OnExit();
+	virtual void OnStartup();
+	virtual void Process();
+	virtual void OnExit();
 };
 
 #endif // XBPYTHREAD_H_

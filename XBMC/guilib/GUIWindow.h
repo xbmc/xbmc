@@ -23,6 +23,7 @@ public:
   int             		GetFocusControl();
   void            		SelectNextControl();
   DWORD           		GetID(void) const;
+	void								SetID(DWORD dwID);
 	const CGUIControl*	GetControl(int iControl) const;
 	void								ClearAll();
 	int									GetFocusedControl() const;

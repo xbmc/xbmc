@@ -19,10 +19,13 @@
 #define CONTROL_BTNVIEWASICONS		2
 #define CONTROL_BTNSORTBY					3
 #define CONTROL_BTNSORTASC				4
+#define CONTROL_BTNTOGGLEOUTPUT		5
 
+#define CONTROL_TEXTAREA					9
 #define CONTROL_LIST							10
 #define CONTROL_THUMBS						11
 #define CONTROL_LABELFILES        12
+
 
 struct SSortScriptsByName
 {
@@ -102,6 +105,7 @@ CGUIWindowScripts::CGUIWindowScripts()
 {
 	m_bDVDDiscChanged = false;
 	m_bDVDDiscEjected = false;
+	m_bViewOutput = false;
 	m_strDirectory="?";
 	scriptSize = 0;
 }
@@ -183,7 +187,6 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
 		    g_stSettings.m_bScriptsRootViewAsIcons=!g_stSettings.m_bScriptsRootViewAsIcons;
 		  else
 		    g_stSettings.m_bScriptsViewAsIcons=!g_stSettings.m_bScriptsViewAsIcons;
-
 				g_settings.Save();
         UpdateButtons();
       }
@@ -202,6 +205,11 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
         UpdateButtons();
         OnSort();
       }
+      else if (iControl==CONTROL_BTNTOGGLEOUTPUT) // switch to script output area
+      {
+				m_bViewOutput = !m_bViewOutput;
+        UpdateButtons();
+      }
       else if (iControl==CONTROL_LIST||iControl==CONTROL_THUMBS)  // list/thumb control
       {
          // get selected item
@@ -216,13 +224,20 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
       }
     }
 		break;
+
+		case GUI_MSG_USER:
+		{
+			m_strWScriptsOutput += message.GetLabel();
+			SET_CONTROL_LABEL(GetID(), CONTROL_TEXTAREA, m_strWScriptsOutput);
+		}
+		break;
 	}
   return CGUIWindow::OnMessage(message);
 }
 
 void CGUIWindowScripts::UpdateButtons()
 {
-
+	SET_CONTROL_HIDDEN(GetID(), CONTROL_TEXTAREA);
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
 	bool bViewIcon = false;
@@ -232,44 +247,49 @@ void CGUIWindowScripts::UpdateButtons()
 	else {
 		bViewIcon = g_stSettings.m_bScriptsViewAsIcons;
 	}
-   if (bViewIcon) 
-    {
-      SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
-    }
-    else
-    {
-      SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
-    }
+	if (m_bViewOutput)
+	{
+		SET_CONTROL_VISIBLE(GetID(), CONTROL_TEXTAREA);
+	}
+	else if (bViewIcon) 
+  {
+    SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
+  }
+  else
+  {
+    SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
+  }
 
-    int iString=101;
-    if (!bViewIcon) 
-    {
-      iString=100;
-    }
-		SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
-		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_bScriptsSortMethod+103);
+  int iString=101;
+  if (!bViewIcon) 
+  {
+    iString=100;
+  }
+	SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
+	SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_bScriptsSortMethod+103);
+	SET_CONTROL_LABEL(GetID(), CONTROL_BTNTOGGLEOUTPUT,!m_bViewOutput ? 254 : 255);
 
-    if ( g_stSettings.m_bScriptsSortAscending)
-    {
-      CGUIMessage msg(GUI_MSG_DESELECTED,GetID(), CONTROL_BTNSORTASC);
-      g_graphicsContext.SendMessage(msg);
-    }
-    else
-    {
-      CGUIMessage msg(GUI_MSG_SELECTED,GetID(), CONTROL_BTNSORTASC);
-      g_graphicsContext.SendMessage(msg);
-    }
+  if ( g_stSettings.m_bScriptsSortAscending)
+  {
+    CGUIMessage msg(GUI_MSG_DESELECTED,GetID(), CONTROL_BTNSORTASC);
+    g_graphicsContext.SendMessage(msg);
+  }
+  else
+  {
+    CGUIMessage msg(GUI_MSG_SELECTED,GetID(), CONTROL_BTNSORTASC);
+    g_graphicsContext.SendMessage(msg);
+  }
 
-    int iItems=m_vecItems.size();
-    if (iItems)
-    {
-      CFileItem* pItem=m_vecItems[0];
-      if (pItem->GetLabel()=="..") iItems--;
-    }
-    WCHAR wszText[20];
-    const WCHAR* szText=g_localizeStrings.Get(127).c_str();
-    swprintf(wszText,L"%i %s", iItems,szText);
-		SET_CONTROL_LABEL(GetID(), CONTROL_LABELFILES,wszText);
+  int iItems=m_vecItems.size();
+  if (iItems)
+  {
+    CFileItem* pItem=m_vecItems[0];
+    if (pItem->GetLabel()=="..") iItems--;
+  }
+  WCHAR wszText[20];
+  const WCHAR* szText=g_localizeStrings.Get(127).c_str();
+  swprintf(wszText,L"%i %s", iItems,szText);
+	SET_CONTROL_LABEL(GetID(), CONTROL_LABELFILES,wszText);
 
 }
 
@@ -416,7 +436,10 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
 	else
 		bViewAsIcon = g_stSettings.m_bScriptsViewAsIcons;
 
-	if ( bViewAsIcon ) {	
+	if (m_bViewOutput) {
+		SET_CONTROL_FOCUS(GetID(), CONTROL_TEXTAREA);
+	}
+	else if ( bViewAsIcon ) {	
 		SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS);
 	}
 	else {
@@ -491,7 +514,11 @@ void CGUIWindowScripts::OnClick(int iItem)
 				 */
 				if(g_application.m_pPythonParser->isRunning(id))
 				{
-					g_application.m_pPythonParser->stopScript(id);
+					// the option stop scripts is disabled for now, this will be turned on
+					// when de debouncing problem is solved
+
+					// g_application.m_pPythonParser->stopScript(id);
+
 					// update items
 					int selectedItem = GetSelectedItem();
 					Update(m_strDirectory);
@@ -599,5 +626,3 @@ void CGUIWindowScripts::GoParentFolder()
   }
   UpdateButtons();
 }
-
-
