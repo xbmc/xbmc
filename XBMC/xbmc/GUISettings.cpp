@@ -292,7 +292,8 @@ CGUISettings::CGUISettings(void)
 	AddBool(4, "MyVideos.FrameRateConversions", 336, false);
 	AddBool(5, "MyVideos.UseGUIResolution", 495, true);
 	AddInt(6,"MyVideos.OSDTimeout", 472, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_SECS);
-  AddBool(7, "MyVideos.AlternateMPlayer", 15062, false);
+  // removed - we only use system directory now.
+//  AddBool(7, "MyVideos.AlternateMPlayer", 15062, false);
 
 	AddCategory(5, "VideoLists", 14018);
 	AddBool(1,"VideoLists.HideParentDirItems", 13306, true);
