@@ -2471,11 +2471,13 @@ if(!sh_video) {
       if ((' ' == hhmmssf[6]) && (' ' != hhmmssf[5])) {
         hhmmssf[6] = '0';
       }
+#ifndef _XBOX //prevents spam :)
              mp_msg(MSGT_AVSYNC,MSGL_STATUS,"A:  %s %4.1f%% %d%%   \r"
 		    ,hhmmssf
 		    ,(sh_audio->delay>0.5)?100.0*audio_time_usage/(double)sh_audio->delay:0
 		    ,cache_fill_status
 		    );
+#endif
   }
   if(d_audio->eof) eof = PT_NEXT_ENTRY;
 
