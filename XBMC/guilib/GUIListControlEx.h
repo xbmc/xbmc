@@ -35,7 +35,7 @@ public:
                   DWORD dwSpinColor,DWORD dwSpinX, DWORD dwSpinY,
                   const CStdString& strFont, DWORD dwTextColor,DWORD dwSelectedColor,
                   const CStdString& strButton, const CStdString& strButtonFocus,
-				  DWORD dwItemTextOffsetX, DWORD dwItemTextOffsetY);
+				  DWORD dwItemTextOffsetX, DWORD dwItemTextOffsetY, DWORD dwTextAlign);
   virtual ~CGUIListControlEx(void);
   virtual void 					Render();
   virtual void 					OnAction(const CAction &action);
@@ -73,8 +73,9 @@ public:
 	DWORD									GetItemHeight() const { return m_iItemHeight;	};
 	DWORD									GetImageWidth() const { return m_iImageWidth;};
 	DWORD									GetImageHeight() const { return m_iImageHeight;};
-	DWORD	GetTextOffsetX() const { return m_dwTextOffsetX;};
-	DWORD	GetTextOffsetY() const { return m_dwTextOffsetY;};
+	DWORD									GetTextOffsetX() const { return m_dwTextOffsetX;};
+	DWORD									GetTextOffsetY() const { return m_dwTextOffsetY;};
+	DWORD									GetAlignmentY() const { return m_imgButton.GetTextAlign() & 0x00000004; };
 
 	const wstring&				GetSuffix() const { return m_strSuffix;};
 	const CStdString			GetButtonFocusName() const { return m_imgButton.GetTexutureFocusName();};
@@ -96,11 +97,11 @@ protected:
 	int										m_iCursorY;
 	int										m_iImageWidth;
 	int										m_iImageHeight;
-	bool				m_bUpDownVisible;
+	bool									m_bUpDownVisible;
   DWORD                 m_dwTextColor,m_dwTextColor2;
   DWORD                 m_dwSelectedColor,m_dwSelectedColor2;
-  	DWORD	m_dwTextOffsetX;
-	DWORD	m_dwTextOffsetY;
+	DWORD									m_dwTextOffsetX;
+	DWORD									m_dwTextOffsetY;
 
   CGUIFont*             m_pFont;
 	CGUIFont*             m_pFont2;

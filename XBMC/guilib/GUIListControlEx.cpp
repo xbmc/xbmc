@@ -13,10 +13,10 @@ CGUIListControlEx::CGUIListControlEx(DWORD dwParentID, DWORD dwControlId, int iP
                                  DWORD dwSpinColor,DWORD dwSpinX, DWORD dwSpinY,
                                  const CStdString& strFont, DWORD dwTextColor,DWORD dwSelectedColor,
                                  const CStdString& strButton, const CStdString& strButtonFocus,
-								 DWORD dwItemTextOffsetX, DWORD dwItemTextOffsetY)
+								 DWORD dwItemTextOffsetX, DWORD dwItemTextOffsetY, DWORD dwTextAlignY)
 :CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
 ,m_upDown(dwControlId, 0, dwSpinX, dwSpinY, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwSpinColor, SPIN_CONTROL_TYPE_INT)
-,m_imgButton(dwControlId, 0, iPosX, iPosY, dwWidth, dwHeight, strButtonFocus,strButton, dwItemTextOffsetX, dwItemTextOffsetY)
+,m_imgButton(dwControlId, 0, iPosX, iPosY, dwWidth, dwHeight, strButtonFocus,strButton, dwItemTextOffsetX, dwItemTextOffsetY, dwTextAlignY)
 {
 	m_pList = NULL;
   m_dwSelectedColor=dwSelectedColor;
