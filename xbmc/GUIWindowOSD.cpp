@@ -346,6 +346,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 				{
 					// set the controls values
 					SetSliderValue(-10.0f, 10.0f, g_application.m_pPlayer->GetSubTitleDelay(), OSD_SUBTITLE_DELAY);
+					SetCheckmarkValue(mplayer_SubtitleVisible(), OSD_SUBTITLE_ONOFF);
 
 					// show the controls on this sub menu
 					SET_CONTROL_VISIBLE(GetID(), OSD_SUBTITLE_DELAY);
