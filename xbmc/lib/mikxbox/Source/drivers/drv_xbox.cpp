@@ -190,6 +190,41 @@ BOOL XB_Init(void)
 
 	ReverseStereo = (md_mode & DMODE_REVERSE) ? TRUE : FALSE;
 
+	DWORD flags = XGetAudioFlags();
+
+	switch (XC_AUDIO_FLAGS_BASIC(flags))
+	{
+	case XC_AUDIO_FLAGS_MONO:
+		md_mode &= ~DMODE_STEREO;
+	case XC_AUDIO_FLAGS_STEREO:
+		md_mode &= ~DMODE_SURROUND;
+		break;
+	}
+
+	if (md_mode & DMODE_STEREO)
+	{
+		if (md_mode & DMODE_SURROUND)
+		{
+			OutputChans = 4;
+			if (XC_AUDIO_FLAGS_BASIC(flags) != XC_AUDIO_FLAGS_SURROUND)
+				DirectSoundOverrideSpeakerConfig(DSSPEAKER_SURROUND);
+		}
+		else
+		{
+			OutputChans = 2;
+			if (XC_AUDIO_FLAGS_BASIC(flags) != XC_AUDIO_FLAGS_STEREO)
+				DirectSoundOverrideSpeakerConfig(DSSPEAKER_STEREO);
+		}
+	}
+	else
+	{
+		OutputChans = 2;
+		if (XC_AUDIO_FLAGS_BASIC(flags) != XC_AUDIO_FLAGS_MONO)
+			DirectSoundOverrideSpeakerConfig(DSSPEAKER_MONO);
+	}
+
+	ReverseStereo = (md_mode & DMODE_REVERSE) ? TRUE : FALSE;
+
 	IsPaused = FALSE;
 	ActiveChans = 0;
 
@@ -863,6 +898,8 @@ void XB_VoicePlay(UBYTE voice,SWORD handle,ULONG start,ULONG size,ULONG reppos,U
 		VoiceInfo[voice].kick = true; // kick it in case the buffer ends before the offset can be reset
 		return;
 	}
+
+	XB_Log("chn: %02d; New instrument %02d", voice, handle);
 
 	// check to see if the current buffer is playing
 	if (CheckBufStatus(&VoiceInfo[voice], i))
