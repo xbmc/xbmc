@@ -709,6 +709,8 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 		case GUI_MSG_WINDOW_INIT:
 		{
 			CGUIWindow::OnMessage(message);
+      if (g_application.IsPlayingVideo())
+        g_application.StopPlaying();
 			if (message.GetParam1() != WINDOW_PICTURES)
 			{
 				CSectionLoader::Load("CXIMAGE");
