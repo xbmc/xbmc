@@ -110,6 +110,8 @@ HRESULT CApplication::Initialize()
 
   m_gWindowManager.ActivateWindow(g_stSettings.m_iStartupWindow);
 
+	m_ctrDpad.SetDelays(g_stSettings.m_iMoveDelayController,g_stSettings.m_iRepeatDelayController);
+	m_ctrIR.SetDelays(g_stSettings.m_iMoveDelayIR,g_stSettings.m_iRepeatDelayIR);
 
   return S_OK;
 }

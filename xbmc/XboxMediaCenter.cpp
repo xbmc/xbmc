@@ -10,7 +10,6 @@
 //      - dialog wat groter gemaakt
 //
 // bugs: 
-//      - delay controller (remote & gewoon)
 //
 // algemeen:
 //			-	ftp server
