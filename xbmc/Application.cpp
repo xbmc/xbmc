@@ -319,12 +319,8 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 							Sleep(50);
 							++iCount;
 
-							if (HaveGamepad)
-							{
-								ReadInput();
-								if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_START)
-									XKUtils::XBOXPowerCycle();
-							}
+							if (HaveGamepad && AnyButtonDown())
+								XKUtils::XBOXPowerCycle();
 						}
 					}
 
@@ -355,12 +351,8 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 							Sleep(50);
 							++iCount;
 
-							if (HaveGamepad)
-							{
-								ReadInput();
-								if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_START)
-									XKUtils::XBOXPowerCycle();
-							}
+							if (HaveGamepad && AnyButtonDown())
+								XKUtils::XBOXPowerCycle();
 						}
 					}
 				}
@@ -374,12 +366,8 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 						dwState = XNetGetTitleXnAddr(&xna);
 						Sleep(50);
 
-						if (HaveGamepad)
-						{
-							ReadInput();
-							if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_START)
-								XKUtils::XBOXPowerCycle();
-						}
+						if (HaveGamepad && AnyButtonDown())
+							XKUtils::XBOXPowerCycle();
 					} while (dwState==XNET_GET_XNADDR_PENDING);
 					ip_addr = xna.ina;
 
@@ -405,12 +393,8 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 					{
 						Sleep(50);
 
-						if (HaveGamepad)
-						{
-							ReadInput();
-							if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_START)
-								XKUtils::XBOXPowerCycle();
-						}
+						if (HaveGamepad && AnyButtonDown())
+							XKUtils::XBOXPowerCycle();
 					}
 				}
 			}
@@ -429,12 +413,8 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 			dwState = XNetGetTitleXnAddr(&xna);
 			Sleep(50);
 
-			if (HaveGamepad)
-			{
-				ReadInput();
-				if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_START)
-					XKUtils::XBOXPowerCycle();
-			}
+			if (HaveGamepad && AnyButtonDown())
+				XKUtils::XBOXPowerCycle();
 		} while (dwState==XNET_GET_XNADDR_PENDING);
 		ip_addr = xna.ina;
 	}
@@ -483,15 +463,8 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 		for (;;)
 		{
 			Sleep(50);
-			ReadInput();
-			if (m_DefaultGamepad.wPressedButtons || m_DefaultIR_Remote.wButtons)
+			if (AnyButtonDown())
 				XKUtils::XBOXPowerCycle();
-
-			for (int i = 0; i < 8; ++i)
-			{
-				if (m_DefaultGamepad.bPressedAnalogButtons[i])
-					XKUtils::XBOXPowerCycle();
-			}
 		}
 	}
 	else
@@ -2324,6 +2297,20 @@ bool CApplication::IsButtonDown(DWORD code)
 	{
 		// remote
 		return m_DefaultIR_Remote.wButtons == code;
+	}
+	return false;
+}
+
+bool CApplication::AnyButtonDown()
+{
+	ReadInput();
+	if (m_DefaultGamepad.wPressedButtons || m_DefaultIR_Remote.wButtons)
+		return true;
+
+	for (int i = 0; i < 6; ++i)
+	{
+		if (m_DefaultGamepad.bPressedAnalogButtons[i])
+			return true;
 	}
 	return false;
 }

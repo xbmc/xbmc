@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 30-01-2005 added: Music listing style can be specified in options (in place of the Hide Track Numbers option)
+  - 30-01-2005 fixed: Now Playing in My Videos goes to playlist view even if nothing is playing.
   - 30-01-2005 fixed: Canceling scan of videos causes freeze.
   - 30-01-2005 changed: Reboot from FatalErrorHandler works on all buttons now (thanks Fulg!)
   - 30-01-2005 fixed: Screensaver dims videos in ComboRenderer.

@@ -1532,3 +1532,42 @@ void CGUIWindowMusicBase::OnRipCD()
 		}
 	}
 }
+
+void CGUIWindowMusicBase::SetLabelFromTag(CFileItem *pItem)
+{
+	CStdString strFormat = g_guiSettings.GetString("MusicLists.TrackFormat");
+	CMusicInfoTag& tag=pItem->m_musicInfoTag;
+	int iPos1 = 0;
+	int iPos2 = strFormat.Find('%', iPos1);
+	CStdString strLabel;
+	while (iPos2 >= 0)
+	{
+		if (iPos2 > iPos1)
+			strLabel += strFormat.Mid(iPos1,iPos2-iPos1);
+		CStdString str;
+		if (strFormat[iPos2+1] == 'N' && tag.GetTrackNumber()>0)
+		{	// number
+			str.Format("%02.2i",tag.GetTrackNumber());
+		}
+		else if (strFormat[iPos2+1] == 'A' && tag.GetArtist().size())
+		{	// artist
+			str = tag.GetArtist();
+		}
+		else if (strFormat[iPos2+1] == 'T' && tag.GetTitle().size())
+			str = tag.GetTitle();
+		strLabel+=str;
+		iPos1 = iPos2+2;
+		iPos2 = strFormat.Find('%', iPos1);
+	}
+	if (iPos1 < (int)strFormat.size()-1)
+		strLabel += strFormat.Right(strFormat.size()-iPos1);
+	pItem->SetLabel( strLabel );
+
+	//	set label 2
+	int nDuration=tag.GetDuration();
+	if (nDuration > 0)
+	{
+		CUtil::SecondsToHMSString(nDuration, strLabel);
+		pItem->SetLabel2(strLabel);
+	}
+}

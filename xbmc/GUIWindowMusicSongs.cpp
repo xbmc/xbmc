@@ -980,30 +980,7 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
 	//	set label 1
 	if (pItem->m_musicInfoTag.Loaded())
 	{
-		CStdString str;
-		CMusicInfoTag& tag=pItem->m_musicInfoTag;
-		CStdString strTitle=tag.GetTitle();
-		CStdString strArtist=tag.GetArtist();
-		if (strTitle.size()) 
-		{
-			if (strArtist)
-			{
-				int iTrack=tag.GetTrackNumber();
-				if (iTrack>0 && !g_guiSettings.GetBool("MusicLists.HideTrackNumber"))
-					str.Format("%02.2i. %s - %s",iTrack, tag.GetArtist().c_str(), tag.GetTitle().c_str());
-				else 
-					str.Format("%s - %s", tag.GetArtist().c_str(), tag.GetTitle().c_str());
-			}
-			else
-			{
-				int iTrack=tag.GetTrackNumber();
-				if (iTrack>0)
-					str.Format("%02.2i. %s ",iTrack, tag.GetTitle().c_str());
-				else 
-					str.Format("%s", tag.GetTitle().c_str());
-			}
-			pItem->SetLabel( str );
-		}
+		SetLabelFromTag(pItem);
 	}
 	else
 	{	// No tag, so we disable the file extension if it has one
@@ -1012,7 +989,6 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
 	}
 
 	//	set label 2
-
 	int nMyMusicSortMethod=0;
 	if (m_strDirectory.IsEmpty())
 		nMyMusicSortMethod=g_stSettings.m_iMyMusicSongsRootSortMethod;

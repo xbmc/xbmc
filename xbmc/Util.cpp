@@ -24,6 +24,7 @@
 #include "filesystem/DirectoryCache.h"
 #include "Credits.h"
 #include "utils/CharsetConverter.h"
+#include "cores/mplayer/xbox_video.h"
 
 bool CUtil::m_bNetworkUp = false;
 
@@ -2983,6 +2984,14 @@ void CUtil::TakeScreenshot()
 		{
 			g_graphicsContext.Lock();
 			g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
+			if (g_application.IsPlayingVideo())
+			{
+				LPDIRECT3DSURFACE8 pSurface = g_renderManager.GetOverlay();
+				if (pSurface)
+				{
+					pSurface->Release();
+				}
+			}
 			if (SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer(-1, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
 			{
 				if (FAILED(XGWriteSurfaceToFile(lpSurface, fn)))
