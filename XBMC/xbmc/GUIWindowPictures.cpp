@@ -454,6 +454,7 @@ void CGUIWindowPictures::OnCreateThumbs()
 			m_dlgProgress->SetLine(1, wstrProgress);
 			m_dlgProgress->SetLine(2, L"");
 			m_dlgProgress->Progress();
+			if ( m_dlgProgress->IsCanceled() ) break;
       picture.CreateThumnail(pItem->m_strPath);
     }
   }
