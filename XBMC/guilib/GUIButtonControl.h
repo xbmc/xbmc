@@ -37,6 +37,7 @@ public:
   virtual void SetDisabledColor(D3DCOLOR color);
 	void        SetLabel(const CStdString& strFontName,const wstring& strLabel,D3DCOLOR dwColor);
 	void        SetLabel(const CStdString& strFontName,const CStdString& strLabel,D3DCOLOR dwColor);
+	void		SetText(CStdString aLabel);
   void        SetHyperLink(long dwWindowID);
 	void				SetScriptAction(const CStdString& strScriptAction);
 	const	CStdString& GetTexutureFocusName() const { return m_imgFocus.GetFileName(); };
