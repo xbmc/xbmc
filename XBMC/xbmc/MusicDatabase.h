@@ -86,6 +86,7 @@ public:
 	CMusicDatabase(void);
 	virtual ~CMusicDatabase(void);
 	bool		Open() ;
+	bool		IsOpen();
 	void		Close() ;
 	void		AddSong(const CSong& song,bool bCheck=true);
 	long		AddAlbumInfo(const CAlbum& album);
@@ -117,6 +118,7 @@ protected:
 	map<CStdString, CGenreCache> m_genreCache;
 	map<CStdString, CPathCache> m_pathCache;
 	map<CStdString, CAlbumCache> m_albumCache;
+	bool		m_bOpen;
 	bool		CreateTables();
 	long		AddAlbum(const CStdString& strAlbum, long lArtistId, long lPathId, const CStdString& strPath);
 	long		AddGenre(const CStdString& strGenre);

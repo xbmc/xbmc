@@ -34,6 +34,7 @@ using namespace PLAYLIST;
 int CGUIWindowMusicBase::m_nTempPlayListWindow=0;
 CStdString CGUIWindowMusicBase::m_strTempPlayListDirectory="";
 
+CMusicDatabase CGUIWindowMusicBase::m_database;
 
 CGUIWindowMusicBase::CGUIWindowMusicBase ()
 :CGUIWindow(0)
@@ -57,6 +58,7 @@ void CGUIWindowMusicBase::OnAction(const CAction& action)
 
   if (action.wID==ACTION_PREVIOUS_MENU)
   {
+		m_database.Close();
 		CUtil::ThumbCacheClear();
 		CUtil::RemoveTempFiles();
 		m_gWindowManager.ActivateWindow(WINDOW_HOME);
@@ -172,7 +174,6 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 			m_iLastControl=GetFocusedControl();
       ClearFileItems();
 			CSectionLoader::Unload("LIBID3");
-			m_database.Close();
 		}
 		break;
 
@@ -182,7 +183,8 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
 			CSectionLoader::Load("LIBID3");
 
-			m_database.Open();
+			if (!m_database.IsOpen())
+				m_database.Open();
 
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
