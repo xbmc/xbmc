@@ -195,7 +195,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bNonInterleaved=false;
 	g_stSettings.m_bNoCache=false;
 	g_stSettings.m_bAudioOnAllSpeakers=false;
-	g_stSettings.m_bUseID3=true;
+	g_stSettings.m_bUseID3=false;
 	g_stSettings.m_bDD_DTSMultiChannelPassThrough=false;
 	g_stSettings.m_bDDStereoPassThrough=false;
 	g_stSettings.m_bAutorunPictures=true;
