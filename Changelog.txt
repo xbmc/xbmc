@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 23-02-2005 changed: Get available subtitle fonts and sizes from alternate mplayer path if alternate mplayer is enabled
   - 23-02-2005 updated: Polish language file (Thnx to napek)
   - 23-02-2005 updated: Norwegian language file (Thnx to vnm)
   - 23-02-2005 updated: Italian language file (Thnx to kotix)
