@@ -19,17 +19,17 @@
 CHTTP::CHTTP(const string& strProxyServer, int iProxyPort)
 :m_strProxyServer(strProxyServer)
 ,m_iProxyPort(iProxyPort)
+,m_socket(INVALID_SOCKET)
 {
-	m_socket=NULL;
 	m_strCookie="";
 }
 
 
 CHTTP::CHTTP()
+:m_socket(INVALID_SOCKET)
 {
 	m_strProxyServer=g_stSettings.m_szHTTPProxy;
 	m_iProxyPort=g_stSettings.m_iHTTPProxyPort;
-	m_socket=NULL;
 	m_strCookie="";
 }
 
@@ -95,8 +95,7 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 		//g_dialog.SetMessage(1,strError);
 		//g_dialog.DoModal();
 
-		closesocket(m_socket);
-		m_socket=NULL;
+		m_socket.reset();
 		return false;
 	}
 
@@ -104,7 +103,7 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 	long lReadTotal=0;
 	do
 	{
-		long lenRead=recv(m_socket,(char*)&pszBuffer[lReadTotal],5000-lReadTotal,0);
+		long lenRead=recv((SOCKET)m_socket,(char*)&pszBuffer[lReadTotal],5000-lReadTotal,0);
 		if (lenRead <=0)
 		{
 			//printf("receive failed\n");
@@ -114,8 +113,7 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 			//g_dialog.SetMessage(0,m_strHostName.c_str());
 			//g_dialog.SetMessage(1,strError);
 			//g_dialog.DoModal();
-			closesocket(m_socket);
-			m_socket=NULL;
+			m_socket.reset();
 		}
 		lReadTotal+=lenRead;
 	} while (strstr(pszBuffer,"\r\n\r\n")==NULL);
@@ -142,8 +140,7 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 
 		if (pResult)
 		{
-			closesocket(m_socket);
-			m_socket=NULL;
+			m_socket.reset();
 			
 			char* pNewLocation=strstr(pszBuffer,"Location: ");
 			if (pNewLocation)
@@ -175,8 +172,7 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 		//printf("website didn't return 200\n");
 		pszBuffer[lReadTotal]=0;
 		//printf("%s",szBuffer);
-		closesocket(m_socket);
-		m_socket=NULL;
+		m_socket.reset();
 		
 		pszBuffer[40]=0;
 		char strError[128];
@@ -219,8 +215,7 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 		{
 			//printf("website returned empty document\n");
 			OutputDebugString("Website returned empty document\n");
-			closesocket(m_socket);
-			m_socket=NULL;
+			m_socket.reset();
 			
 			char strError[128];
 			sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
@@ -237,8 +232,7 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 		if (!pBuffer)
 		{
 			//printf("failed to allocate space\n");
-			closesocket(m_socket);
-			m_socket=NULL;
+			m_socket.reset();
 				
 			char strError[128];
 			sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
@@ -263,8 +257,7 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 					OutputDebugString("Failed to read body\n");
 					//printf("failed to read body\n");
 					delete [] pBuffer;
-					closesocket(m_socket);
-					m_socket=NULL;
+					m_socket.reset();
 					
 					char strError[128];
 					sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
@@ -290,8 +283,7 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 	else strHTML="";
 	
 	//printf("%s\n", strHTML.c_str());
-	closesocket(m_socket);
-	m_socket=NULL;
+	m_socket.reset();
 	return true;
 }
 
@@ -342,10 +334,10 @@ bool CHTTP::Connect()
 		}
 		service.sin_port = htons(m_iPort);
 	}
-	m_socket = socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
+	m_socket.attach( socket(AF_INET,SOCK_STREAM,IPPROTO_TCP));
 	
 	// attempt to connection
-	if (connect(m_socket,(sockaddr*) &service,sizeof(struct sockaddr)) == SOCKET_ERROR)
+	if (connect((SOCKET)m_socket,(sockaddr*) &service,sizeof(struct sockaddr)) == SOCKET_ERROR)
 	{
 		char strError[128];
 		sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
@@ -353,8 +345,7 @@ bool CHTTP::Connect()
 		//g_dialog.SetMessage(0,m_strHostName.c_str());
 		//g_dialog.SetMessage(1,strError);
 		//g_dialog.DoModal();
-		closesocket(m_socket);
-		m_socket=NULL;
+		m_socket.reset();
 		return false;
 	}
 	return true;
@@ -453,7 +444,7 @@ bool CHTTP::Send(unsigned char* pBuffer, int iLen)
 	int iOrgLen=iLen;
 	while (iLen>0)
 	{
-		int iErr=send(m_socket,(const char*)&pBuffer[iPos],iLen,0);
+		int iErr=send((SOCKET)m_socket,(const char*)&pBuffer[iPos],iLen,0);
 		if (iErr>0)
 		{
 			iPos+=iLen;
@@ -478,7 +469,7 @@ bool CHTTP::Recv(unsigned char* pBuffer, int iLen, int& iRead)
 	long bytesRead = 0;
 	while (iLen>0)
 	{
-		long lenRead=recv(m_socket,(char*)&pBuffer[bytesRead],iLen,0);
+		long lenRead=recv((SOCKET)m_socket,(char*)&pBuffer[bytesRead],iLen,0);
 		if (lenRead > 0)
 		{
 			bytesRead+=lenRead;
@@ -546,8 +537,7 @@ bool CHTTP::Download(const string &strURL, const string &strFileName)
 		//g_dialog.SetMessage(1,strError);
 		//g_dialog.DoModal();
 
-		closesocket(m_socket);
-		m_socket=NULL;
+		m_socket.reset();
 		return false;
 	}
 
@@ -555,7 +545,7 @@ bool CHTTP::Download(const string &strURL, const string &strFileName)
 	long lReadTotal=0;
 	do
 	{
-		long lenRead=recv(m_socket,(char*)&pszBuffer[lReadTotal],5000-lReadTotal,0);
+		long lenRead=recv((SOCKET)m_socket,(char*)&pszBuffer[lReadTotal],5000-lReadTotal,0);
 		if (lenRead <=0)
 		{
 			char strError[128];
@@ -565,8 +555,7 @@ bool CHTTP::Download(const string &strURL, const string &strFileName)
 			//g_dialog.SetMessage(1,strError);
 			//g_dialog.DoModal();
 
-			closesocket(m_socket);
-			m_socket=NULL;
+			m_socket.reset();
 		}
 		lReadTotal+=lenRead;
 	} while (strstr(pszBuffer,"\r\n\r\n")==NULL);
@@ -579,8 +568,7 @@ bool CHTTP::Download(const string &strURL, const string &strFileName)
 		pResult=strstr(pszBuffer,"HTTP/1.0 302");
 		if (pResult)
 		{
-			closesocket(m_socket);
-			m_socket=NULL;
+			m_socket.reset();
 			
 			char* pNewLocation=strstr(pszBuffer,"Location: ");
 			if (pNewLocation)
@@ -604,8 +592,7 @@ bool CHTTP::Download(const string &strURL, const string &strFileName)
 		OutputDebugString("website didn't return 200\n");
 		pszBuffer[lReadTotal]=0;
 		//printf("%s",pszBuffer);
-		closesocket(m_socket);
-		m_socket=NULL;
+		m_socket.reset();
 		char strError[128];
 		sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
 		//g_dialog.SetCaption(0,"GET didn't return 200");
@@ -650,8 +637,7 @@ bool CHTTP::Download(const string &strURL, const string &strFileName)
 			//g_dialog.SetMessage(1,strError);
 			//g_dialog.DoModal();
 
-			closesocket(m_socket);
-			m_socket=NULL;
+			m_socket.reset();
 			delete[] pszBuffer;
 			return false;
 		}
@@ -661,8 +647,7 @@ bool CHTTP::Download(const string &strURL, const string &strFileName)
 		if (!pBuffer)
 		{
 			OutputDebugString("failed to allocate space\n");
-			closesocket(m_socket);
-			m_socket=NULL;
+			m_socket.reset();
 			char strError[128];
 			sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
 			//g_dialog.SetCaption(0,"Out of memory");
@@ -691,8 +676,7 @@ bool CHTTP::Download(const string &strURL, const string &strFileName)
 					//g_dialog.DoModal();
 
 					delete [] pBuffer;
-					closesocket(m_socket);
-					m_socket=NULL;
+					m_socket.reset();
 					delete[] pszBuffer;
 					return false;
 				}
@@ -725,8 +709,7 @@ bool CHTTP::Download(const string &strURL, const string &strFileName)
 		delete[] pszBuffer;
 	}
 	//printf("%s\n", strHTML.c_str());
-	closesocket(m_socket);
-	m_socket=NULL;
+	m_socket.reset();
 	return true;
 }
 
@@ -800,8 +783,7 @@ bool CHTTP::Post(const string &strURL, const string &strPostData, string &strHTM
 		//g_dialog.SetMessage(1,strError);
 		//g_dialog.DoModal();
 
-		closesocket(m_socket);
-		m_socket=NULL;
+		m_socket.reset();
 		return false;
 	}
 
@@ -810,7 +792,7 @@ bool CHTTP::Post(const string &strURL, const string &strPostData, string &strHTM
 	long lReadTotal=0;
 	do
 	{
-		long lenRead=recv(m_socket,(char*)&pszBuffer[lReadTotal],5000-lReadTotal,0);
+		long lenRead=recv((SOCKET)m_socket,(char*)&pszBuffer[lReadTotal],5000-lReadTotal,0);
 		if (lenRead <=0)
 		{
 			//printf("receive failed\n");
@@ -820,8 +802,7 @@ bool CHTTP::Post(const string &strURL, const string &strPostData, string &strHTM
 			//g_dialog.SetMessage(0,m_strHostName.c_str());
 			//g_dialog.SetMessage(1,strError);
 			//g_dialog.DoModal();
-			closesocket(m_socket);
-			m_socket=NULL;
+			m_socket.reset();
 		}
 		lReadTotal+=lenRead;
 	} while (strstr(pszBuffer,"\r\n\r\n")==NULL && lReadTotal < 1024);
@@ -851,8 +832,7 @@ bool CHTTP::Post(const string &strURL, const string &strPostData, string &strHTM
 
 		if (pResult)
 		{
-			closesocket(m_socket);
-			m_socket=NULL;
+			m_socket.reset();
 			
 			char* pNewLocation=strstr(pszBuffer,"Location: ");
 			if (pNewLocation)
@@ -882,8 +862,7 @@ bool CHTTP::Post(const string &strURL, const string &strPostData, string &strHTM
 		//printf("website didn't return 200\n");
 		pszBuffer[lReadTotal]=0;
 		//printf("%s",pszBuffer);
-		closesocket(m_socket);
-		m_socket=NULL;
+		m_socket.reset();
 		
 		pszBuffer[40]=0;
 		char strError[128];
@@ -926,8 +905,7 @@ bool CHTTP::Post(const string &strURL, const string &strPostData, string &strHTM
 		{
 			//printf("website returned empty document\n");
 			OutputDebugString("Website returned empty document\n");
-			closesocket(m_socket);
-			m_socket=NULL;
+			m_socket.reset();
 			
 			char strError[128];
 			sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
@@ -944,8 +922,7 @@ bool CHTTP::Post(const string &strURL, const string &strPostData, string &strHTM
 		if (!pBuffer)
 		{
 			//printf("failed to allocate space\n");
-			closesocket(m_socket);
-			m_socket=NULL;
+			m_socket.reset();
 				
 			char strError[128];
 			sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
@@ -971,8 +948,7 @@ bool CHTTP::Post(const string &strURL, const string &strPostData, string &strHTM
 					//printf("failed to read body\n");
 					delete [] pBuffer;
 					delete [] pszBuffer;
-					closesocket(m_socket);
-					m_socket=NULL;
+					m_socket.reset();
 					
 					char strError[128];
 					sprintf(strError,"error:%i %i", GetLastError(), WSAGetLastError());
@@ -997,8 +973,7 @@ bool CHTTP::Post(const string &strURL, const string &strPostData, string &strHTM
 	else strHTML="";
 	
 	//printf("%s\n", strHTML.c_str());
-	closesocket(m_socket);
-	m_socket=NULL;
+	m_socket.reset();
 	return true;
 }
 //------------------------------------------------------------------------------------------------------------------
@@ -1056,8 +1031,7 @@ bool CHTTP::Open(const string& strURL)
 		//g_dialog.SetMessage(1,strError);
 		//g_dialog.DoModal();
 
-		closesocket(m_socket);
-		m_socket=NULL;
+		m_socket.reset();
 		return false;
 	}
 
@@ -1065,7 +1039,7 @@ bool CHTTP::Open(const string& strURL)
 	long lReadTotal=0;
 	do
 	{
-		long lenRead=recv(m_socket,(char*)&pszBuffer[lReadTotal],5000-lReadTotal,0);
+		long lenRead=recv((SOCKET)m_socket,(char*)&pszBuffer[lReadTotal],5000-lReadTotal,0);
 		if (lenRead <=0)
 		{
 			//printf("receive failed\n");
@@ -1075,8 +1049,7 @@ bool CHTTP::Open(const string& strURL)
 			//g_dialog.SetMessage(0,m_strHostName.c_str());
 			//g_dialog.SetMessage(1,strError);
 			//g_dialog.DoModal();
-			closesocket(m_socket);
-			m_socket=NULL;
+			m_socket.reset();
 		}
 		lReadTotal+=lenRead;
 	} while (strstr(pszBuffer,"\r\n\r\n")==NULL);
@@ -1096,6 +1069,5 @@ bool CHTTP::Open(const string& strURL)
 
 void CHTTP::Close()
 {
-	closesocket(m_socket);
-	m_socket=NULL;
+	m_socket.reset();
 }

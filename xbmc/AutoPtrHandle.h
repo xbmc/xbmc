@@ -25,4 +25,20 @@ namespace AUTOPTR
 	protected:
 		virtual void Cleanup();
 	};
+
+
+	class CAutoPtrSocket
+	{
+	public:
+		CAutoPtrSocket(SOCKET hSocket);
+		virtual ~CAutoPtrSocket(void);
+		operator SOCKET();
+		void		 attach(SOCKET hSocket);
+		SOCKET	 release();
+		bool		 isValid() const;
+		void     reset();
+	protected:
+		virtual void Cleanup();
+		SOCKET m_hSocket;
+	};
 };

@@ -3,6 +3,8 @@
 #include "../DNSNameCache.h"
 #include "../url.h"
 #include "../util.h"
+#include "../autoptrhandle.h"
+using namespace AUTOPTR;
 
 CXNSDirectory::CXNSDirectory(void)
 {
@@ -28,7 +30,7 @@ bool  CXNSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 
 	CStdString strFile=url.GetFileName();
 
-	SOCKET s = socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
+	CAutoPtrSocket s ( socket(AF_INET,SOCK_STREAM,IPPROTO_TCP));
 	sockaddr_in service;
 
 	unsigned long ulHostIp = inet_addr( strHostName.c_str() );
@@ -38,21 +40,19 @@ bool  CXNSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	service.sin_addr.s_addr = ulHostIp;
 		
 	// attempt to connection
-	int err = connect(s,(sockaddr*) &service,sizeof(struct sockaddr));
+	int err = connect((SOCKET)s,(sockaddr*) &service,sizeof(struct sockaddr));
 	if (err == SOCKET_ERROR) 
 	{
-		closesocket(s);
 		return false;
 	}
 
 	// validate greeting
 	char buff[1024];
 	memset(buff,0,256);
-	send(s,"HELLO XSTREAM 6.0\r\n",19,0);
-	recv(s,buff,11,0);
+	send((SOCKET)s,"HELLO XSTREAM 6.0\r\n",19,0);
+	recv((SOCKET)s,buff,11,0);
 	if (strcmp(buff,"HELLO XBOX!")!=0)
 	{
-		closesocket(s);
 		return false;
 	}
 
@@ -71,28 +71,27 @@ bool  CXNSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	OutputDebugString(buff);
 	OutputDebugString("\n");
 	// evalute the response, positive is the amount of bytes to get, negative is error.
-	send(s,buff,strlen(buff),0);
-	recv(s,szResult,32,0);
+	send((SOCKET)s,buff,strlen(buff),0);
+	recv((SOCKET)s,szResult,32,0);
 	int catalogueSize = atoi(szResult);
 	if (catalogueSize<=0)
 	{
-		closesocket(s);
 		return false;
 	}
 	
 	// allocate sufficient memory for the document
-	char* lpszXml = new char[catalogueSize+10];
+	auto_ptr<char> lpszXml (new char[catalogueSize+10] );
 	
 	// start pulling it down from the server
 	int bytesRead=0;
 	while(bytesRead<catalogueSize)
 	{
-		bytesRead+=recv(s,(lpszXml+bytesRead),(catalogueSize-bytesRead),0);
+		bytesRead+=recv((SOCKET)s,(lpszXml.get()+bytesRead),(catalogueSize-bytesRead),0);
 	}
 
 	// terminate the xml document (CStdString) and close the socket
-	lpszXml[catalogueSize]=0x00;
-	closesocket(s);
+	lpszXml.get()[catalogueSize]=0x00;
+	
 
 	// Create a tag which identifies the remote server hosting this file
 	// we will prefix this tag to each item we enumerate
@@ -103,16 +102,14 @@ bool  CXNSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	
 	// Start at the very beginning a very good place to start!
 	TiXmlDocument xmlDoc;
-  xmlDoc.Parse( lpszXml );
+  xmlDoc.Parse( lpszXml.get() );
 	if ( xmlDoc.IsError() ) 
 	{
-		delete [] lpszXml;
 		return false;
 	}
 	TiXmlElement* pRootElement =xmlDoc.RootElement();
 	if (!pRootElement)
 	{
-		delete [] lpszXml;
 		return false;
 	}
 	
@@ -175,7 +172,6 @@ bool  CXNSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 			else
 			{
 				// no path? how can this be?
-				delete [] lpszXml;
 				return false;
 			}
 
@@ -208,6 +204,5 @@ bool  CXNSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 		pChild=pChild->NextSibling();
 	}
 
-	if (lpszXml) delete [] lpszXml;
 	return true;
 }

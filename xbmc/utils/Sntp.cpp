@@ -36,6 +36,9 @@ to maintain a single distribution point for the source code.
 #endif
 #include "sntp.h"
 #include "../DNSNameCache.h"
+#include "../autoptrhandle.h"
+using namespace AUTOPTR;
+
 const double NTP_FRACTIONAL_TO_MS = (((double)1000.0)/0xFFFFFFFF);
 const double NTP_TO_SECOND = (((double)1.0)/0xFFFFFFFF);
 const long JAN_1ST_1900 = 2415021;
@@ -264,7 +267,7 @@ public:
 
 protected:
   BOOL	 Connect(const SOCKADDR* lpSockAddr, int nSockAddrLen);
-  SOCKET m_hSocket;
+  CAutoPtrSocket m_hSocket;
 };
 
 
@@ -472,20 +475,19 @@ double CNtpTime::NtpFractionToSecond(DWORD dwFraction)
 
 
 CNtpSocket::CNtpSocket()
+:m_hSocket(INVALID_SOCKET)
 {
-  m_hSocket = INVALID_SOCKET; //default to an invalid scoket descriptor
 }
 
 CNtpSocket::~CNtpSocket()
 {
-  Close();
 }
 
 BOOL CNtpSocket::Create()
 {
   //NTP Uses UDP instead of the usual TCP
-  m_hSocket = socket(AF_INET, SOCK_DGRAM, 0);
-  return (m_hSocket != INVALID_SOCKET);
+	m_hSocket.attach( socket(AF_INET, SOCK_DGRAM, 0));
+	return (m_hSocket.isValid() );
 }
 
 BOOL CNtpSocket::Connect(LPCTSTR pszHostAddress, int nPort)
@@ -521,7 +523,7 @@ BOOL CNtpSocket::Connect(LPCTSTR pszHostAddress, int nPort)
 
 BOOL CNtpSocket::Connect(const SOCKADDR* lpSockAddr, int nSockAddrLen)
 {
-	int nConnect = connect(m_hSocket, lpSockAddr, nSockAddrLen);
+	int nConnect = connect((SOCKET)m_hSocket, lpSockAddr, nSockAddrLen);
   return (nConnect == 0);
 }
 
@@ -530,7 +532,7 @@ BOOL CNtpSocket::Send(LPCSTR pszBuf, int nBuf)
   //must have been created first
   //ASSERT(m_hSocket != INVALID_SOCKET);
 
-  return (send(m_hSocket, pszBuf, nBuf, 0) != SOCKET_ERROR);
+  return (send((SOCKET)m_hSocket, pszBuf, nBuf, 0) != SOCKET_ERROR);
 }
 
 int CNtpSocket::Receive(LPSTR pszBuf, int nBuf)
@@ -538,16 +540,12 @@ int CNtpSocket::Receive(LPSTR pszBuf, int nBuf)
   //must have been created first
   //ASSERT(m_hSocket != INVALID_SOCKET);
 
-  return recv(m_hSocket, pszBuf, nBuf, 0); 
+  return recv((SOCKET)m_hSocket, pszBuf, nBuf, 0); 
 }
 
 void CNtpSocket::Close()
 {
-	if (m_hSocket != INVALID_SOCKET)
-	{
-		closesocket(m_hSocket);
-		m_hSocket = INVALID_SOCKET;
-	}
+	m_hSocket.reset();
 }
 
 BOOL CNtpSocket::IsReadible(BOOL& bReadible, DWORD dwTimeout)
@@ -557,7 +555,7 @@ BOOL CNtpSocket::IsReadible(BOOL& bReadible, DWORD dwTimeout)
   timeout.tv_usec = (dwTimeout % 1000) * 1000;
   fd_set fds;
   FD_ZERO(&fds);
-  FD_SET(m_hSocket, &fds);
+  FD_SET((SOCKET)m_hSocket, &fds);
   int nStatus = select(0, &fds, NULL, NULL, &timeout);
   if (nStatus == SOCKET_ERROR)
     return FALSE;
