@@ -70,7 +70,7 @@ protected:
 	void					GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, char* szValue, const CStdString& strDefaultValue);
 	void					GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue);
 	void					LocalizeOverview(char *szStr);
-	void					LocalizeOverviewToken(char *szStr);
+	void					LocalizeOverviewToken(char *szStr, bool bAppendSpace = true);
 	void					LocalizeDay(char *szDay);
 	void					LoadLocalizedToken();
 	void					SplitLongString(char *szString, int splitStart, int splitEnd);
