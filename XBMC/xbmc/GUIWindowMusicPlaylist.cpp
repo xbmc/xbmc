@@ -65,30 +65,16 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 		}
 		break;
 
-		case GUI_MSG_WINDOW_DEINIT:
-		{
-			m_nSelectedItem=GetSelectedItem();
-		}
-		break;
-
     case GUI_MSG_WINDOW_INIT:
 		{
-			CGUIWindowMusicBase::OnMessage(message);
-
 			m_iViewAsIconsRoot=g_stSettings.m_iMyMusicPlaylistViewAsIcons;
 
-			Update(m_strDirectory);
+			CGUIWindowMusicBase::OnMessage(message);
 
 			if ((m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST) && m_vecItems.size()<=0)
 			{
 				m_iLastControl=CONTROL_BTNVIEWASICONS;
 				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
-			}
-
-			if (m_nSelectedItem>-1)
-			{
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_nSelectedItem);
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_nSelectedItem);
 			}
 
 			if (g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC)

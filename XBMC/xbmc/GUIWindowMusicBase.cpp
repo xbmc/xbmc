@@ -211,6 +211,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_WINDOW_DEINIT:
 		{
+			m_nSelectedItem=GetSelectedItem();
 			m_iLastControl=GetFocusedControl();
       ClearFileItems();
 			CSectionLoader::Unload("LIBID3");
@@ -235,6 +236,15 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 			{
 				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
 			}
+
+			Update(m_strDirectory);
+ 
+			if (m_nSelectedItem>-1)
+			{
+				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_nSelectedItem);
+				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_nSelectedItem);
+			}
+
 			return true;
 		}
 		break;
