@@ -88,6 +88,7 @@ public:
 	void									RenderFullScreen();
   bool                  NeedRenderFullScreen();
 	void									SpinHD();
+	void				CheckScreenSaver();		// CB: SCREENSAVER PATCH
 	void									ResetAllControls();
   virtual void          Process();
 	CGUIWindowHome									m_guiHome;
@@ -136,11 +137,15 @@ public:
 	bool														m_bSpinDown;
 	DWORD														m_dwSpinDownTime;
 	DWORD														m_dwIdleTime;
+	bool		m_bInactive;	// CB: SCREENSAVER PATCH
+	bool		m_bScreenSave;	// CB: SCREENSAVER PATCH
+	DWORD		m_dwSaverTick;	// CB: SCREENSAVER PATCH
 protected:
 	bool										m_bOverlayEnabled;
 	CStdString							m_strCurrentPlayer;
   bool                    m_bSettingsLoaded;
   CStdString              m_strCurrentFile;
+  D3DGAMMARAMP m_OldRamp;			// CB: SCREENSAVER PATCH
 };
 
 extern CApplication g_application;

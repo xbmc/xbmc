@@ -43,6 +43,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_maxFilter=D3DTEXF_LINEAR;
 	g_stSettings.m_bAllowPAL60=true;
 	g_stSettings.m_iHDSpinDownTime=5; // minutes
+	g_stSettings.m_iScreenSaverTime=0;	// seconds - CB: SCREENSAVER PATCH
 	g_stSettings.m_bAutoShufflePlaylist=true;
   g_stSettings.m_iSlideShowTransistionFrames=25;
   g_stSettings.m_iSlideShowStayTime=3000;
@@ -222,6 +223,7 @@ bool CSettings::Load()
   //GetString(pRootElement, "skin", g_stSettings.szDefaultSkin,"MediaCenter");
 	GetString(pRootElement, "dashboard", g_stSettings.szDashboard,"C:\\xboxdash.xbe");
 	
+	GetInteger(pRootElement, "screensavertime", g_stSettings.m_iScreenSaverTime);	// CB: SCREENSAVER PATCH
 	
 	GetString(pRootElement, "CDDBIpAdres", g_stSettings.m_szCDDBIpAdres,"194.97.4.18");
 	//g_stSettings.m_bUseCDDB=GetBoolean(pRootElement, "CDDBEnabled");
