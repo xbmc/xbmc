@@ -62,20 +62,32 @@ bool CHTTP::ReadData(string& strData)
 		{
 			// chunked transfer
 			char* num = p;
-			p = strchr(p, '\n');
-			while (!p)
+			for (;;)
 			{
+				while (*p && *p != '\n')
+					++p;
+				if (*p == '\n')
+					break;
+
+				memmove(m_RecvBuffer, num, m_RecvBytes = (m_RecvBuffer + m_RecvBytes) - num);
 				if (!Recv(-1))
 				{
 					CLog::Log("Recv failed: %d", WSAGetLastError());
 					Close();
 					return false;
 				}
-				p = strchr(m_RecvBuffer, '\n');
+				num = p = m_RecvBuffer;
+				if (!*p)
+				{
+					CLog::Log("Invalid reply from server");
+					Close();
+					return false;
+				}
 			}
 			++p;
 
 			int len = strtol(num, NULL, 16);
+			CLog::DebugLog("Chunk len: %d", len);
 			if (!len)
 				break; // end of data
 
@@ -98,9 +110,15 @@ bool CHTTP::ReadData(string& strData)
 					p = m_RecvBuffer;
 				}
 			}
-			if (p + 2 >= m_RecvBuffer + m_RecvBytes)
+			if (p + 2 > m_RecvBuffer + m_RecvBytes)
 			{
-				m_RecvBytes = (m_RecvBuffer + m_RecvBytes) - p;
+				if (p != m_RecvBuffer + m_RecvBytes)
+				{
+					m_RecvBuffer[0] = *p;
+					m_RecvBytes = 1;
+				}
+				else
+					m_RecvBytes = 0;
 				if (!Recv(-1))
 				{
 					strData.clear();
@@ -431,7 +449,7 @@ bool CHTTP::Recv(int iLen)
 		iLen = (BUFSIZE - m_RecvBytes);
 
 	if (!m_RecvBuffer)
-		m_RecvBuffer = new char[BUFSIZE];
+		m_RecvBuffer = new char[BUFSIZE+1];
 
 	while (iLen > 0)
 	{
@@ -462,12 +480,15 @@ bool CHTTP::Recv(int iLen)
 		}
 		if (!n)
 		{
+			shutdown(m_socket, SD_BOTH);
+			m_RecvBuffer[m_RecvBytes] = 0;
 			WSASetLastError(0);
-			return !bUnknown; // graceful close
+			return bUnknown; // graceful close
 		}
 		m_RecvBytes+=n;
 		iLen-=n;
 	}
+	m_RecvBuffer[m_RecvBytes] = 0;
 	return true;
 }
 
@@ -535,25 +556,22 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 		return 0;
 	}
 
-	shutdown(m_socket, SD_SEND); // finished sending data - send TCP FIN
-
 	m_RecvBytes = 0;
 	char* HeaderEnd;
 	do
 	{
-		if (m_RecvBytes >= BUFSIZE-1)
+		if (m_RecvBytes >= BUFSIZE)
 		{
 			CLog::Log("Invalid reply from server");
 			Close();
 			return 0;
 		}
-		if (!Recv(BUFSIZE-m_RecvBytes-1) && WSAGetLastError())
+		if (!Recv(-1))
 		{
 			CLog::Log("Recv failed: %d", WSAGetLastError());
 			Close();
 			return 0;
 		}
-		m_RecvBuffer[m_RecvBytes] = 0;
 	} while ((HeaderEnd = strstr(m_RecvBuffer,"\r\n\r\n"))==NULL);
 	HeaderEnd += 4;
 
@@ -570,7 +588,7 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 	string strReason(m_RecvBuffer + 13, end);
 	m_strHeaders.assign(end+2, HeaderEnd);
 
-	memmove(m_RecvBuffer, HeaderEnd, m_RecvBytes -= (HeaderEnd - m_RecvBuffer));
+	memmove(m_RecvBuffer, HeaderEnd, 1 + (m_RecvBytes -= (HeaderEnd - m_RecvBuffer)));
 
 	if (status < 100)
 	{
