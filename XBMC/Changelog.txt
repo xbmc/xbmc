@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 14-11-2004 updated: Romanian language file (Thnx to bompy)
   - 14-11-2004 fixed: Reconnection to Kai engine after disconnection.
   - 14-11-2004 added: Kai default games directory set to f:\games
   - 13-11-2004 added: Kai Toast - pop up notifications for XLink Kai function
