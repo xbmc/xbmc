@@ -1207,7 +1207,7 @@ bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
   AddFileToFolder(strFolder, "folder.jpg", strFolderImage);
 
   // remote or local file?
-  if (CUtil::IsRemote(strFolder) )
+  if (CUtil::IsRemote(strFolder) || CUtil::IsDVD(strFolder) || CUtil::IsISO9660(strFolder) )
   {
     CURL url(strFolder);
     // dont try to locate a folder.jpg for streams &  shoutcast
@@ -1287,7 +1287,7 @@ void CUtil::SetThumb(CFileItem* pItem)
     if (CUtil::FileExists(strThumb))
     {
       // yes, is it a local or remote file
-      if (CUtil::IsRemote(strThumb) )
+      if (CUtil::IsRemote(strThumb) || CUtil::IsDVD(strThumb) || CUtil::IsISO9660(strThumb) )
       {
         // remote file, then cache it...
         CFile file;
@@ -1309,16 +1309,28 @@ void CUtil::SetThumb(CFileItem* pItem)
     {
       // strThumb doesnt exists either
       // now check for filename.tbn
-      if (CUtil::IsRemote(strFileName) )
-      {
-        CFile file;
-        CStdString strThumbnailFileName;
-        CUtil::ReplaceExtension(strFileName,".tbn", strThumbnailFileName);
-        if ( file.Cache(strThumbnailFileName.c_str(), strCachedThumbnail.c_str(),NULL,NULL))
-        {
-          pItem->SetThumbnailImage(strCachedThumbnail);
-          bGotIcon=true;
-        }
+      CFile file;
+      CStdString strThumbnailFileName;
+      CUtil::ReplaceExtension(strFileName,".tbn", strThumbnailFileName);
+			if (file.Exists(strThumbnailFileName))
+			{
+				//	local or remote ?
+				if (CUtil::IsRemote(strFileName) || CUtil::IsDVD(strFileName) || CUtil::IsISO9660(strFileName))
+				{
+					//	remote, cache thumb to hdd
+					if ( file.Cache(strThumbnailFileName.c_str(), strCachedThumbnail.c_str(),NULL,NULL))
+					{
+						
+						pItem->SetThumbnailImage(strCachedThumbnail);
+						bGotIcon=true;
+					}
+				}
+				else
+				{
+					//	local, just use it
+					pItem->SetThumbnailImage(strThumbnailFileName);
+					bGotIcon=true;
+				}
       }
     }
 		// fill in the folder thumbs
@@ -2184,7 +2196,7 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
 	if (strThumb.IsEmpty() && !pItem->m_bIsFolder)
 	{
 		CUtil::ReplaceExtension(pItem->m_strPath, ".tbn", strThumb);
-		if( CUtil::IsRemote(pItem->m_strPath))
+		if( CUtil::IsRemote(pItem->m_strPath) || CUtil::IsDVD(pItem->m_strPath) || CUtil::IsISO9660(pItem->m_strPath))
 		{
 			//	Query local cache
 			CStdString strCached;
