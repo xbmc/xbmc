@@ -105,6 +105,21 @@ XFSTATUS CXBFileZilla::GetConnection(int ConnectionId, SXFConnection& Connection
   return XBFILEZILLA(GetServer())->GetConnection(ConnectionId, Connection);
 }
 
+XFSTATUS CXBFileZilla::GetNoConnections()
+{
+	int intConnCount = 0;
+	std::vector<SXFConnection> Connections;
+
+	GetAllConnections(Connections);
+
+	for (std::vector<SXFConnection>::const_iterator ConnIter = Connections.begin(); ConnIter!=Connections.end(); ConnIter++)
+	{
+		intConnCount ++;
+	}
+
+	return(intConnCount);
+}
+
 void CXBFileZilla::SetCriticalOperationCallback(CriticalOperationCallback Callback)
 {
   XBFILEZILLA(SetCriticalOperationCallback(Callback));
