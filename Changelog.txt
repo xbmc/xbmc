@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 10-11-2004 added: new control buttonscroller for homepage buttons.
+  - 10-11-2004 added: <homebuttons> group added to XBoxMediaCenter.xml for user configurable buttons.
+  - 10-11-2004 added: XBMC.ActivateWindow() built-in command.                    
   - 10-11-2004 fixed: subtitle size of 4:3 videos displayed on widescreen
   - 09-11-2004 fixed: my music songs, record button was not enabled/disabled immediately after starting/stopping a shoutcast stream
   - 08-11-2004 added: new command "XBMC.RestartApp" for skinners to restart only the application

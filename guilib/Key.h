@@ -253,6 +253,15 @@
 #define WINDOW_PYTHON_START	13000
 #define WINDOW_PYTHON_END	13099
 
+#define ICON_TYPE_NONE			101
+#define ICON_TYPE_PROGRAMS	102
+#define ICON_TYPE_MUSIC			103
+#define ICON_TYPE_PICTURES	104
+#define ICON_TYPE_VIDEOS		105
+#define ICON_TYPE_FILES			106
+#define ICON_TYPE_WEATHER		107
+#define ICON_TYPE_SETTINGS	109
+
 /*!
   \ingroup actionkeys
   \brief 

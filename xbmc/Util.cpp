@@ -873,7 +873,7 @@ void CUtil::Lower(CStdString& strText)
   char szText[1024];
   strcpy(szText, strText.c_str());
   //for multi-byte language, the strText.size() is not correct
-  for (int i=0; i < strlen(szText);++i)
+  for (unsigned int i=0; i < strlen(szText);++i)
     szText[i]=tolower(szText[i]);
   strText=szText;
 };
@@ -3366,11 +3366,24 @@ bool CUtil::IsBuiltIn(const CStdString& execString)
 	return false;
 }
 
+void CUtil::SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam)
+{
+	strParam = "";
+	strFunction = execString.Mid(5);
+	int iPos = strFunction.Find("(");
+	int iPos2 = strFunction.Find(")", iPos);
+	if (iPos > 0 && iPos2 > 0)
+	{	// got a parameter
+		strParam = strFunction.Mid(iPos+1, iPos2-iPos-1);
+		strFunction = strFunction.Left(iPos).c_str();
+	}
+}
+
 void CUtil::ExecBuiltIn(const CStdString& execString)
 {
 	// Get the text after the "XBMC."
-	char* pExec = strchr(execString.c_str(), '.');
-	CStdString execute(++pExec);
+	CStdString execute, parameter;
+	SplitExecFunction(execString, execute, parameter);
 
 	if ((execute == "Reboot") || (execute == "Restart"))  //Will reboot the xbox, aka cold reboot
 	{
@@ -3395,5 +3408,11 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
 	else if (execute == "Reset") //Will reset the xbox, aka soft reset
 	{
 		g_applicationMessenger.Reset();
+	}
+	else if (execute == "ActivateWindow")
+	{
+		// get the parameter
+		int iWindow = WINDOW_HOME + atoi(parameter.c_str());
+		m_gWindowManager.ActivateWindow(iWindow);
 	}
 }

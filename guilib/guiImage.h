@@ -46,6 +46,7 @@ public:
   bool              GetKeepAspectRatio() const;
   int               GetRenderWidth() const;
   int               GetRenderHeight() const;
+	void							SetCornerAlpha(DWORD dwLeftTop, DWORD dwRightTop, DWORD dwLeftBottom, DWORD dwRightBottom);
 
 protected:
   virtual void       Update();
@@ -71,13 +72,11 @@ protected:
 	int										  m_iCurrentImage;
 	DWORD										m_dwFrameCounter;
   bool                    m_bKeepAspectRatio;
-//  vector <LPDIRECT3DTEXTURE8> m_vecTextures;
+  vector <LPDIRECT3DTEXTURE8> m_vecTextures;
 	LPDIRECT3DPALETTE8			m_pPalette;
   int                     m_iRenderWidth;
   int                     m_iRenderHeight;
 	bool										m_bWasVisible;
-	//TEXTURE_TEST
-public:
-  vector <LPDIRECT3DTEXTURE8> m_vecTextures;
+	DWORD										m_dwAlpha[4];
 };
 #endif

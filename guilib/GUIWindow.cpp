@@ -28,6 +28,7 @@
 #include "GUISelectButtonControl.h"
 #include "GUIMoverControl.h"
 #include "GUIResizeControl.h"
+#include "GUIButtonScroller.h"
 #include "SkinInfo.h"
 #include "../xbmc/application.h"
 #include "../xbmc/xbox/XKUtils.h"
@@ -164,6 +165,10 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 			{
 				stControl.m_pControl = new CGUIResizeControl(*((CGUIResizeControl*)it->m_pControl));
 			}
+			else if (!strcmp(it->m_szType,"buttonscroller"))
+			{
+				stControl.m_pControl = new CGUIButtonScroller(*((CGUIButtonScroller*)it->m_pControl));
+			}
 			controls.push_back(stControl);
 		}
 		return true;
@@ -296,6 +301,10 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 		else if (!strcmp(it->m_szType,"resize"))
 		{
 			stControl.m_pControl = new CGUIResizeControl(*((CGUIResizeControl*)it->m_pControl));
+		}
+		else if (!strcmp(it->m_szType,"buttonscroller"))
+		{
+			stControl.m_pControl = new CGUIButtonScroller(*((CGUIButtonScroller*)it->m_pControl));
 		}
 		ControlsCache.push_back(stControl);
 	}
