@@ -117,6 +117,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 				CGUIWindowMusicBase::OnMessage(message);
 				g_stSettings.m_iMyMusicPlaylistViewAsIcons=m_iViewAsIconsRoot;
 				g_settings.Save();
+				return true;
 			}
 			else if (iControl==CONTROL_BTNSHUFFLE)
 			{
