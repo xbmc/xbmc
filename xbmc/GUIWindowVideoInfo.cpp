@@ -172,7 +172,7 @@ void  CGUIWindowVideoInfo::Render()
 	CGUIDialog::Render();
   if (!m_pTexture) return;
 
-  OutputDebugString("render texture\n");
+  //OutputDebugString("render texture\n");
 	const CGUIControl* pControl=GetControl(CONTROL_IMAGE);
 	float x=(float)pControl->GetXPosition();
 	float y=(float)pControl->GetYPosition();
@@ -217,7 +217,7 @@ void CGUIWindowVideoInfo::Refresh()
         }
         catch(...)
         {
-          OutputDebugString("...");
+          OutputDebugString("...\n");
           ::DeleteFile(strThumb.c_str());
         }
 	    }
