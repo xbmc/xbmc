@@ -2056,9 +2056,30 @@
  <value>- Minimum speltid:</value>
  </string>
 
-<string>
-<id>13100</id>
-<value>Fladder filter</value>
-</string>
+ <string>
+ <id>13100</id>
+ <value>Fladder filter</value>
+ </string>
+
+   <string>
+ <id>13200</id>
+ <value>Profiler</value>
+ </string>
+
+   <string>
+ <id>13201</id>
+ <value>Radera profil '%s'?</value>
+ </string>
+
+   <string>
+ <id>13202</id>
+ <value>Spara nuvarande inställningar som profil...</value>
+ </string>
+
+   <string>
+ <id>13203</id>
+ <value>Profile '%s' laddades ok!</value>
+ </string>
+
 
 </strings>
