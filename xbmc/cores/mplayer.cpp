@@ -644,6 +644,11 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 			m_dlgCache = new CDlgCache();
 			m_dlgCache->Update();
 		}
+    if (iCacheSize == 0)
+    {
+      //let mplayer figure out what to do with the cache
+      iCacheSize = -1;
+    }
 
 		CLog::Log(LOGINFO, "mplayer play:%s cachesize:%i", strFile.c_str(), iCacheSize);
 
@@ -924,10 +929,10 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 		bIsVideo=HasVideo();
 		bIsAudio=HasAudio();
 		int iNewCacheSize=GetCacheSize(bFileOnHD,bFileOnISO,bFileOnUDF,bFileOnInternet,bFileOnLAN, bIsVideo, bIsAudio, bIsDVD);
-		if (iNewCacheSize > iCacheSize)
+		if ((iCacheSize > 0) && (iNewCacheSize != iCacheSize))
 		{
-			CLog::Log(LOGINFO, "detected video. Cachesize is now %i, (was %i)", iNewCacheSize,iCacheSize);
-			mplayer_setcache_size(iCacheSize);
+			CLog::Log(LOGINFO, "detected video and/or audio. Cachesize is now %i, (was %i)", iNewCacheSize,iCacheSize);
+			mplayer_setcache_size(iCacheSize); //<== does this really change the cachesize after the stream has started????
 		}
 
 		if ( ThreadHandle() == NULL)
@@ -1555,9 +1560,9 @@ int CMPlayer::GetCacheSize(bool bFileOnHD,bool bFileOnISO,bool bFileOnUDF,bool b
 
 	if (bFileOnHD)
 	{
-		if ( bIsDVD  ) return g_guiSettings.GetInt("CacheDVD.HardDisk");
-		if ( bIsVideo) return g_guiSettings.GetInt("CacheVideo.HardDisk");
-		if ( bIsAudio) return g_guiSettings.GetInt("CacheAudio.HardDisk");
+		if ( bIsDVD  ) return g_guiSettings.GetInt("Cache.HardDisk");
+		if ( bIsVideo) return g_guiSettings.GetInt("Cache.HardDisk");
+		if ( bIsAudio) return g_guiSettings.GetInt("Cache.HardDisk");
 	}
 	if (bFileOnISO || bFileOnUDF)
 	{
@@ -1571,8 +1576,9 @@ int CMPlayer::GetCacheSize(bool bFileOnHD,bool bFileOnISO,bool bFileOnUDF,bool b
 		if ( bIsVideo) return g_guiSettings.GetInt("CacheVideo.Internet");
 		if ( bIsAudio) return g_guiSettings.GetInt("CacheAudio.Internet");
 		//File is on internet however we don't know what type.
+    return g_guiSettings.GetInt("CacheUnknown.Internet");
 		//Apperently fixes DreamBox playback.
-		return 4096; 
+		//return 4096; 
 	}
 	if (bFileOnLAN)
 	{

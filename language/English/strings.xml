@@ -715,17 +715,15 @@
   <string><id>14022</id><value>Library</value></string>
   <string><id>14023</id><value>No TV</value></string>
   <string><id>14024</id><value>Enter the nearest large town or US ZIP code</value></string>
-  <string><id>14025</id><value>Video Cache   - Harddisk</value></string>
-  <string><id>14026</id><value>              - DVDRom</value></string>
-  <string><id>14027</id><value>              - Local Network</value></string>
-  <string><id>14028</id><value>              - Internet</value></string>
-  <string><id>14029</id><value>Audio Cache   - Harddisk</value></string>
-  <string><id>14030</id><value>              - DVDRom</value></string>
-  <string><id>14031</id><value>              - Local Network</value></string>
-  <string><id>14032</id><value>              - Internet</value></string>
-  <string><id>14033</id><value>DVD Cache     - Harddisk</value></string>
-  <string><id>14034</id><value>              - DVDRom</value></string>
-  <string><id>14035</id><value>              - Local Network</value></string>
+  <string><id>14025</id><value>Video/Audio/DVD Cache - Harddisk</value></string>
+  <string><id>14026</id><value>Video Cache - DVDRom</value></string>
+  <string><id>14027</id><value>- Local Network</value></string>
+  <string><id>14028</id><value>- Internet</value></string>
+  <string><id>14030</id><value>Audio Cache - DVDRom</value></string>
+  <string><id>14031</id><value>- Local Network</value></string>
+  <string><id>14032</id><value>- Internet</value></string>
+  <string><id>14034</id><value>DVD Cache - DVDRom</value></string>
+  <string><id>14035</id><value>- Local Network</value></string>
   <string><id>14036</id><value>Servers</value></string>
   <string><id>14037</id><value>Look and Feel</value></string>
   <string><id>14038</id><value>Network settings changed</value></string>
@@ -750,6 +748,7 @@
   <string><id>14057</id><value>Not possible while scanning for media info</value></string>
   <string><id>14058</id><value>Film Grain Effect</value></string>
   <string><id>14059</id><value>Look for custom thumbnails on remote shares</value></string>
+  <string><id>14060</id><value>Unknown type Cache - Internet</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>The service is not connected, would you like to attempt</value></string>
