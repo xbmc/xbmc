@@ -145,11 +145,11 @@
 	</string>
 	<string>
 		<id>109</id>
-		<value>Bate un cui</value>
+		<value>Creare Thumbs</value>
 	</string>
 	<string>
 		<id>110</id>
-		<value>Bate in cuie</value>
+		<value>Creare Thumbnails</value>
 	</string>
 	<string>
 		<id>111</id>
@@ -881,15 +881,15 @@
 	</string>
 	<string>
 		<id>294</id>
-		<value>Creare semn de carte</value>
+		<value>Creare Bookmark</value>
 	</string>
 	<string>
 		<id>295</id>
-		<value>Ciclare semne de carte</value>
+		<value>Ciclare Bookmarks</value>
 	</string>
 	<string>
 		<id>296</id>
-		<value>Sterger semne de carte</value>
+		<value>Stergere Bookmarks</value>
 	</string>
 	<string>
 		<id>297</id>
@@ -2278,9 +2278,39 @@
   <string><id>13310</id><value>Efect zoom</value></string>
   <string><id>13311</id><value>Effect float</value></string>
   <string><id>13312</id><value>Reducere bara neagra</value></string>
-  <string><id>13313</id><value>Reset/Reboot</value></string>
-  <string><id>13314</id><value>Music OSD Timeout</value></string>
+  <string><id>13313</id><value>Reset/Restart</value></string>
+  <string><id>13314</id><value>Timeout OSD Muzica</value></string>
+  <string><id>13315</id><value>Creare Thumbnails</value></string>
+  <string><id>13316</id><value>Thumbnails Recursive</value></string>
+  <string><id>13317</id><value>Vizualizare Slideshow</value></string>
+  <string><id>13318</id><value>Slideshow Recursive</value></string>
+  <string><id>13319</id><value>Randomize</value></string>
+  <string><id>13320</id><value>Stereo</value></string>
+  <string><id>13321</id><value>Numai stanga</value></string>
+  <string><id>13322</id><value>Numai dreapta</value></string>
+  <string><id>13323</id><value>Activare CD+G</value></string>
+  <string><id>13324</id><value>Transparenta Background</value></string>
+  <string><id>13325</id><value>Transparenta Foreground</value></string>
+  <string><id>13326</id><value>Intarziere A/V</value></string>
+  <string><id>13327</id><value>Karaoke</value></string>
+  <string><id>13328</id><value>%s negasit.</value></string>
+  <string><id>13329</id><value>Eroare la deschiderea %s</value></string>
+  <string><id>13330</id><value>Unable to load %s</value></string>
+  <string><id>13331</id><value>Eroare: out of memory.</value></string>
+  <string><id>13332</id><value>Muta sus</value></string>
+  <string><id>13333</id><value>Muta jos</value></string>
+  <string><id>13334</id><value>Editeaza Label</value></string>
+  <string><id>13335</id><value>Standard</value></string>
+  <string><id>13336</id><value>Indepartare buton</value></string>
+  <string><id>13337</id><value>2 Canale PCM passthrough</value></string>
   <string><id>14000</id><value>Stiva: Deactivat</value></string>
   <string><id>14001</id><value>Stiva: Simplu</value></string>
   <string><id>14002</id><value>Stiva: Fuzzy</value></string>
+  <string><id>14003</id><value>Downloadare fisier playlist...</value></string>
+  <string><id>14004</id><value>Downloadare lista stream-uri...</value></string>
+  <string><id>14005</id><value>Parsare lista stream-uri...</value></string>
+  <string><id>14006</id><value>Downloadare list stream-uri eronata</value></string>
+  <string><id>14007</id><value>Downloadare fisier playlist eronata</value></string>
+  <string><id>14008</id><value>Activare notificari Kai</value></string>
+  <string><id>14009</id><value>Directorul Games</value></string>
 </strings>
