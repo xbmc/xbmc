@@ -184,6 +184,7 @@ public:
 	void		CheckVariousArtistsAndCoverArt();
 	bool		GetRecentlyPlayedAlbums(VECALBUMS& albums);
 	bool		GetSongsByPathes(SETPATHES& pathes, MAPSONGS& songs);
+	bool		GetAlbumByPath(const CStdString& strPath, CAlbum& album);
 protected:
 	auto_ptr<SqliteDatabase> m_pDB;
 	auto_ptr<Dataset>				 m_pDS;
