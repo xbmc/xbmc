@@ -143,37 +143,20 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 		{
 			// started playing another song...
 			int nCurrentPlaylist=message.GetParam1();
+      const CPlayList::CPlayListItem* item = (const CPlayList::CPlayListItem*)message.GetLPVOID();
 			if ((nCurrentPlaylist==PLAYLIST_MUSIC_TEMP && m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory.Find(m_strDirectory) > -1 )
 					|| (GetID()==WINDOW_MUSIC_PLAYLIST && nCurrentPlaylist==PLAYLIST_MUSIC))
 			{
-				int nCurrentItem=LOWORD(message.GetParam2());
-				int nPreviousItem=(int)HIWORD(message.GetParam2());
-
-				int nFolderCount=0;
 				for (int i=0; i < (int)m_vecItems.size(); ++i)
 				{
 					CFileItem* pItem=m_vecItems[i];
-					if (pItem && pItem->m_bIsFolder)
+					if (pItem )
 					{
-						nFolderCount++;
-					}
-					else
-						break;
-				}
-
-				//	is the previous item in this directory
-				if (nFolderCount+nPreviousItem<(int)m_vecItems.size())
-				{
-					CFileItem* pItem=m_vecItems[nFolderCount+nPreviousItem];
-					if (pItem)
-						pItem->Select(false);
-				}
-
-				if (nFolderCount+nCurrentItem<(int)m_vecItems.size())
-				{
-					CFileItem* pItem=m_vecItems[nFolderCount+nCurrentItem];
-					if (pItem)
-						pItem->Select(true);
+            if (pItem->m_strPath == item->GetFileName())
+						  pItem->Select(true);
+            else
+						  pItem->Select(false);
+          }
 				}
 			}
 		}
