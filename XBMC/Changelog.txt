@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 30-11-2004 added: [ 917706 ] Extra OSD Info (estimated end time & movie filename)
   - 30-11-2004 fixed: [ 970904 ] Screensaver stays on with WebServer/un-pause
   - 30-11-2004 fixed: imdb info/thumbs not saved
   - 29-11-2004 added: Kai protocol level debugging + Specify Kai engine host IP in Settings.

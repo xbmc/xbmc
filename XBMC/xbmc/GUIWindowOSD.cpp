@@ -67,6 +67,8 @@
 #define OSD_SUBTITLE_LIST 802
 
 #define OSD_TIMEINFO 100
+#define OSD_ESTENDTIME 102
+#define OSD_MOVIENAME 103
 #define OSD_SUBMENU_BG_VOL 300
 //#define OSD_SUBMENU_BG_SYNC 301	- not used
 #define OSD_SUBMENU_BG_SUBTITLES 302
@@ -541,6 +543,29 @@ void CGUIWindowOSD::Get_TimeInfo()
 	CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), OSD_TIMEINFO);
 	msg.SetLabel(szTime); 
     OnMessage(msg);			// ask our label to update it's caption
+
+	// Get the estimated end time
+	SYSTEMTIME time;
+	WCHAR szETATime[32];
+	GetLocalTime(&time);
+	unsigned int tmpvar = time.wHour * 3600 + time.wMinute * 60 + g_application.m_pPlayer->GetTotalTime() - (unsigned int)g_application.m_pPlayer->GetTime();
+	if(tmpvar != 0)
+	{
+		int iHour = tmpvar / 3600;
+		int iMin  = (tmpvar-iHour*3600) / 60;
+		if (iHour >= 24) iHour -= 24;
+		swprintf(szETATime, L"%02d:%02d", iHour, iMin);
+	}
+	
+	CGUIMessage msg1(GUI_MSG_LABEL_SET, GetID(), OSD_ESTENDTIME); 
+	msg1.SetLabel(szETATime); 
+	OnMessage(msg1); 
+
+	// Set the movie file name label
+	CStdString strMovieFileName =  CUtil::GetFileName(g_application.CurrentFile());
+	CGUIMessage msg2(GUI_MSG_LABEL_SET, GetID(), OSD_MOVIENAME); 
+	msg2.SetLabel(strMovieFileName); 
+	OnMessage(msg2); 
 }
 
 void CGUIWindowOSD::ToggleButton(DWORD iButtonID, bool bSelected)
