@@ -790,7 +790,8 @@ int blit_frame=0;
 
 void exit_player(char* how)
 {
-    eof=1;
+    /*eof=1; causes a crash for some reason*/
+	xbmc_cancel=1;
 }
 
 __int64 mplayer_get_pts()
@@ -1489,6 +1490,10 @@ if(!use_stdin && !slave_mode){
     mp_msg(MSGT_CPLAYER,MSGL_INFO,"\n");
     if(filename) mp_msg(MSGT_CPLAYER,MSGL_INFO,MSGTR_Playing, filename);
 
+#ifdef _XBOX
+	if(xbmc_cancel) return 0;
+#endif
+
     //==================== Open VOB-Sub ============================
 	if (strstr(filename,".mp3") || strstr(filename,".ogg") || strstr(filename,".flac") || strstr(filename,"shout:") || strstr(filename, "dvd://") )
     {
@@ -1535,7 +1540,11 @@ if(!use_stdin && !slave_mode){
     //printf("step3\n");
     //============ Open & Sync STREAM --- fork cache2 ====================
 
-    stream=NULL;
+#ifdef _XBOX
+	if(xbmc_cancel) return -1;
+#endif
+
+	stream=NULL;
     demuxer=NULL;
   if (d_audio) {
         //free_demuxer_stream(d_audio);
@@ -1627,6 +1636,11 @@ if(stream->type==STREAMTYPE_DVD){
 #endif
 
     // CACHE2: initial prefill: 20%  later: 5%  (should be set by -cacheopts)
+
+#ifdef _XBOX
+	if(xbmc_cancel) return -1;
+#endif
+
 #ifdef HAS_DVBIN_SUPPORT
 goto_enable_cache:
 #endif
@@ -1644,7 +1658,11 @@ if(stream_cache_size>0){
         file_format=DEMUXER_TYPE_AUDIO;
     }
     //============ Open DEMUXERS --- DETECT file type =======================
-    current_module="demux_open";
+#ifdef _XBOX
+	if(xbmc_cancel) return -1;
+#endif
+
+	current_module="demux_open";
 
     demuxer=demux_open(stream,file_format,audio_id,video_id,dvdsub_id,filename);
 
@@ -1859,6 +1877,11 @@ if(!sh_video && !sh_audio){
     demux_info_print(demuxer);
 
     //================== Read SUBTITLES (DVD & TEXT) ==========================
+
+#ifdef _XBOX
+	if(xbmc_cancel) return -1;
+#endif
+
     printf("id:%i vo_spudec:%x", d_dvdsub->id,vo_spudec);
     if(d_dvdsub->id >= 0 && vo_spudec==NULL && sh_video){
 
@@ -1954,6 +1977,11 @@ if(sh_video) {
 #endif
 
     //================== Init AUDIO (codec) ==========================
+
+#ifdef _XBOX
+	if(xbmc_cancel) return -1;
+#endif
+
 if(sh_audio){
         // Go through the codec.conf and find the best codec...
         current_module="init_audio_codec";
@@ -1997,6 +2025,11 @@ if(identify) {
 if(!sh_video) goto main; // audio-only
 
     //================== Init VIDEO (codec & libvo) ==========================
+
+#ifdef _XBOX
+	if(xbmc_cancel) return -1;
+#endif
+
 if(!fixed_vo || !(inited_flags&INITED_VO)){
         current_module="preinit_libvo";
 
@@ -2133,6 +2166,10 @@ if(!sh_video && osd_level >= 0) { // save OSD level only once
 
         //================ SETUP AUDIO ==========================
 
+#ifdef _XBOX
+	if(xbmc_cancel) return -1;
+#endif
+
 if(sh_audio){
             //const ao_info_t *info=audio_out->info;
             current_module="af_preinit";
@@ -2225,6 +2262,10 @@ if(force_fps && sh_video){
         }
 
         //==================== START PLAYING =======================
+
+#ifdef _XBOX
+	if(xbmc_cancel) return -1;
+#endif
 
 if(loop_times>1) loop_times--; else
 if(loop_times==1) loop_times = -1;
