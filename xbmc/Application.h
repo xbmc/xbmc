@@ -229,6 +229,8 @@ public:
 	bool		m_bScreenSave;	// CB: SCREENSAVER PATCH
 	DWORD		m_dwSaverTick;	// CB: SCREENSAVER PATCH
 	DWORD		m_dwSkinTime;
+	void		*m_DAAPSong;
+	UINT64		m_DAAPSongSize;
 
 protected:
   void                    UpdateLCD();

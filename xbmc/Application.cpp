@@ -53,6 +53,7 @@
 	#pragma comment (lib,"xbmc/lib/libsidplay/libsidutilsd.lib")		// SECTIONNAME=SID_RW,SID_RX
 	#pragma comment (lib,"xbmc/lib/libsidplay/resid_builderd.lib")	// SECTIONNAME=SID_RW,SID_RX
 	#pragma comment (lib,"xbmc/lib/libmp4/libmp4v2d.lib")	// SECTIONNAME=LIBMP4
+	#pragma comment (lib,"xbmc/lib/libxdaap/libxdaapd.lib")	// SECTIONNAME=LIBXDAAP
 #else
 	#pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")
 	#pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")
@@ -72,6 +73,7 @@
 	#pragma comment (lib,"xbmc/lib/libsidplay/libsidutils.lib")   // SECTIONNAME=SID_RW,SID_RX
 	#pragma comment (lib,"xbmc/lib/libsidplay/resid_builder.lib") // SECTIONNAME=SID_RW,SID_RX
 	#pragma comment (lib,"xbmc/lib/libmp4/libmp4v2.lib")	// SECTIONNAME=LIBMP4
+	#pragma comment (lib,"xbmc/lib/libxdaap/libxdaap.lib")	// SECTIONNAME=LIBXDAAP
 #endif
 
 CStdString g_LoadErrorStr;
@@ -96,6 +98,7 @@ CApplication::CApplication(void)
 	m_bScreenSave = false;			// CB: SCREENSAVER PATCH
 	m_dwSaverTick = timeGetTime();	// CB: SCREENSAVER PATCH
 	m_dwSkinTime  = 0;
+	m_DAAPSong = NULL;
 }	
 
 CApplication::~CApplication(void)
