@@ -749,6 +749,11 @@
   <string><id>13374</id><value>- Port 3 Voice</value></string>
   <string><id>13375</id><value>Gerät benutzen</value></string>
   <string><id>13376</id><value>Lautstärke (%)</value></string>
+  <string><id>13377</id><value>Standard View Mode</value></string>
+  <string><id>13378</id><value>Standard Helligkeit</value></string>
+  <string><id>13379</id><value>Standard Kontrast</value></string>
+  <string><id>13380</id><value>Standard Gamma</value></string>
+  <string><id>13381</id><value>Video fortsetzten</value></string>
 
   <string><id>14000</id><value>Stapeln: Aus</value></string>
   <string><id>14001</id><value>Stapeln: Einfach</value></string>
