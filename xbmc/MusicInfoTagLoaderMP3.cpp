@@ -173,7 +173,7 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
 					else
 					{
 						CUtil::ThumbCacheAdd(strCoverArt, false);
-						CLog::Log("Tag loader mp3: Unable to create album art for %s", tag.GetURL().c_str());
+						CLog::Log("Tag loader mp3: Unable to create album art for %s (extension=%s, size=%d)", tag.GetURL().c_str(), strExtension.c_str(), nBufSize);
 					}
 				}
 			}
