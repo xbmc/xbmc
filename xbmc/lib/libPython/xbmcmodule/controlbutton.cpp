@@ -36,7 +36,6 @@ namespace PYXBMC
 		self->strFont = "font13";		
 		self->dwTextColor = 0xffffffff;
 		self->dwDisabledColor = 0x60ffffff;
-		self->dwTextAlign = 0;
 
 		// if texture is supplied use it, else get default ones
 		self->strTextureFocus = cTextureFocus ? cTextureFocus : PyGetDefaultImage("button", "textureFocus", "button-focus.png");		
@@ -55,7 +54,7 @@ namespace PYXBMC
 		pControl->pGUIControl = new CGUIButtonControl(pControl->iParentId, pControl->iControlId,
 				pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
 				pControl->strTextureFocus, pControl->strTextureNoFocus,
-				CONTROL_TEXT_OFFSET_X, CONTROL_TEXT_OFFSET_Y, pControl->dwTextAlign);
+				CONTROL_TEXT_OFFSET_X, CONTROL_TEXT_OFFSET_Y, (XBFONT_LEFT | XBFONT_CENTER_Y));
 
 		CGUIButtonControl* pGuiButtonControl = (CGUIButtonControl*)pControl->pGUIControl;
 
