@@ -10,7 +10,7 @@ public:
   void Stop();
 
   int   GetFanSpeed();
-  void  SetFanSpeed(int fanspeed);
+  void  SetFanSpeed(const int fanspeed);
   float GetGPUTemp();
   float GetCPUTemp();
   void  SetTargetTemperature(int targetTemperature);
@@ -29,7 +29,7 @@ private:
   int   targetTemp;
   int   systemFanSpeed;
   int   currentFanSpeed;
-  int   lastFanSpeed;
+  int   calculatedFanSpeed;
   int   tooHotLoopCount;
   int   tooColdLoopCount;
   float cpuTemp;
@@ -45,7 +45,7 @@ private:
   void GetGPUTempInternal();
   void GetCPUTempInternal();
 
-  int  CalcSpeed(int targetTemp);
+  void CalcSpeed(int targetTemp);
 
   virtual void		OnStartup();
 	virtual void		OnExit();

@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 16-08-2004 fixed: Fanspeed setting didn't kick in on xbmc load
+  - 16-08-2004 fixed: Fanspeed could be set even if Fanspeed control was disabled
   - 15-08-2004 changed: italian language file (tny to kotix)
   - 15-08-2004 fixed: sf [1009706] album info sometimes doesn't get download (tnx to equinox102)
   - 15-08-2004 fixed: crash in X community when navigating
