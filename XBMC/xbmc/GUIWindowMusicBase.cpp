@@ -815,11 +815,9 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
 	bool bUpdate=false;
 	// check cache
 	CAlbum albuminfo;
-	if (!bRefresh && g_musicDatabase.GetAlbumInfo(strAlbum, strPath, albuminfo))
+	VECSONGS songs;
+	if (!bRefresh && g_musicDatabase.GetAlbumInfo(strAlbum, strPath, albuminfo, songs))
 	{
-		VECSONGS songs;
-		g_musicDatabase.GetSongsByAlbum(strAlbum, strPath, songs);
-
 		vector<CMusicSong> vecSongs;
 		for (int i=0; i<(int)songs.size(); i++)
 		{
@@ -870,11 +868,24 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
 				albuminfo.iRating   = album.GetRating();
 				albuminfo.iYear 		= atol( album.GetDateOfRelease().c_str() );
 				albuminfo.strPath   = album.GetAlbumPath();
+
+				for (int i=0; i<(int)album.GetNumberOfSongs(); i++)
+				{
+					CMusicSong musicSong=album.GetSong(i);
+
+					CSong song;
+					song.iTrack=musicSong.GetTrack();
+					song.strTitle=musicSong.GetSongName();
+					song.iDuration=musicSong.GetDuration();
+
+					songs.push_back(song);
+				}
+
 				// save to database
 				if (bRefresh)
-					g_musicDatabase.UpdateAlbumInfo(albuminfo);
+					g_musicDatabase.UpdateAlbumInfo(albuminfo, songs);
 				else
-					g_musicDatabase.AddAlbumInfo(albuminfo);
+					g_musicDatabase.AddAlbumInfo(albuminfo, songs);
 			}
 			if (m_dlgProgress)
 				m_dlgProgress->Close();

@@ -176,6 +176,7 @@ bool CMusicDatabase::CreateTables()
 {
 	try
 	{
+		//	Tables
     CLog::Log(LOGINFO, "create artist table");
 		m_pDS->exec("CREATE TABLE artist ( idArtist integer primary key, strArtist text)\n");
     CLog::Log(LOGINFO, "create album table");
@@ -188,30 +189,33 @@ bool CMusicDatabase::CreateTables()
 		m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idAlbum integer, idPath integer, idArtist integer, iNumArtists integer, idGenre integer, iNumGenres integer, strTitle text, iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer)\n");
     CLog::Log(LOGINFO,"create albuminfo table");
 		m_pDS->exec("CREATE TABLE albuminfo ( idAlbumInfo integer primary key, idAlbum integer, iYear integer, idGenre integer, iNumGenres integer, strTones text, strStyles text, strReview text, strImage text, iRating integer)\n");
+    CLog::Log(LOGINFO,"create albuminfosong table");
+		m_pDS->exec("CREATE TABLE albuminfosong ( idAlbumInfoSong integer primary key, idAlbumInfo integer, iTrack integer, strTitle text, iDuration integer)\n");
 
-	CLog::Log(LOGINFO,"create exartistsong table");
+		CLog::Log(LOGINFO,"create exartistsong table");
 		m_pDS->exec("CREATE TABLE exartistsong ( idSong integer, iPosition integer, idArtist integer)\n");
-	CLog::Log(LOGINFO,"create extragenresong table");
+		CLog::Log(LOGINFO,"create extragenresong table");
 		m_pDS->exec("CREATE TABLE exgenresong ( idSong integer, iPosition integer, idGenre integer)\n");
-	CLog::Log(LOGINFO,"create exartistalbum table");
+		CLog::Log(LOGINFO,"create exartistalbum table");
 		m_pDS->exec("CREATE TABLE exartistalbum ( idAlbum integer, iPosition integer, idArtist integer)\n");
-	CLog::Log(LOGINFO,"create exgenrealbum table");
-	        m_pDS->exec("CREATE TABLE exgenrealbum ( idAlbum integer, iPosition integer, idGenre integer)\n");
+		CLog::Log(LOGINFO,"create exgenrealbum table");
+	  m_pDS->exec("CREATE TABLE exgenrealbum ( idAlbum integer, iPosition integer, idGenre integer)\n");
 
-	CLog::Log(LOGINFO,"create exartistsong index");
+		//	Indexes
+		CLog::Log(LOGINFO,"create exartistsong index");
 		m_pDS->exec("CREATE INDEX idxExtraArtistSong ON exartistsong(idSong)");
 		m_pDS->exec("CREATE INDEX idxExtraArtistSong2 ON exartistsong(idArtist)");
-	CLog::Log(LOGINFO,"create exgenresong index");
+		CLog::Log(LOGINFO,"create exgenresong index");
 		m_pDS->exec("CREATE INDEX idxExtraGenreSong ON exgenresong(idSong)");
 		m_pDS->exec("CREATE INDEX idxExtraGenreSong2 ON exgenresong(idGenre)");
-	CLog::Log(LOGINFO,"create exartistalbum index");
+		CLog::Log(LOGINFO,"create exartistalbum index");
 		m_pDS->exec("CREATE INDEX idxExtraArtistAlbum ON exartistalbum(idAlbum)");
 		m_pDS->exec("CREATE INDEX idxExtraArtistAlbum2 ON exartistalbum(idArtist)");
-	CLog::Log(LOGINFO,"create exgenrealbum index");
-	        m_pDS->exec("CREATE INDEX idxExtraGenreAlbum ON exgenrealbum(idAlbum)");
+		CLog::Log(LOGINFO,"create exgenrealbum index");
+		m_pDS->exec("CREATE INDEX idxExtraGenreAlbum ON exgenrealbum(idAlbum)");
 		m_pDS->exec("CREATE INDEX idxExtraGenreAlbum2 ON exgenrealbum(idGenre)");
 
-	CLog::Log(LOGINFO, "create album index");
+		CLog::Log(LOGINFO, "create album index");
 		m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum)");
     CLog::Log(LOGINFO, "create genre index");
 		m_pDS->exec("CREATE INDEX idxGenre ON genre(strGenre)");
@@ -220,6 +224,10 @@ bool CMusicDatabase::CreateTables()
     CLog::Log(LOGINFO, "create path index");
 		m_pDS->exec("CREATE INDEX idxPath ON path(strPath)");
 		//m_pDS->exec("CREATE INDEX idxSong ON song(dwFileNameCRC)");
+
+		//	Trigger
+    CLog::Log(LOGINFO, "create albuminfo trigger");
+		m_pDS->exec("CREATE TRIGGER tgrAlbumInfo AFTER delete ON albuminfo FOR EACH ROW BEGIN delete from albuminfosong where albuminfosong.idAlbumInfo=old.idAlbumInfo; END");
 	}
 	catch (...)
 	{
@@ -1147,7 +1155,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
 	return false;
 }
 
-long CMusicDatabase::AddAlbumInfo(const CAlbum& album1)
+long CMusicDatabase::AddAlbumInfo(const CAlbum& album1, const VECSONGS& songs)
 {
 	CStdString strSQL;
 	try
@@ -1200,6 +1208,9 @@ long CMusicDatabase::AddAlbumInfo(const CAlbum& album1)
 		m_pDS->exec(strSQL.c_str());
 
 		long lAlbumInfoId=sqlite_last_insert_rowid(m_pDB->getHandle());
+
+		AddAlbumInfoSongs(lAlbumInfoId, songs);
+
 		return lAlbumInfoId;
 	}
 	catch(...)
@@ -1208,6 +1219,44 @@ long CMusicDatabase::AddAlbumInfo(const CAlbum& album1)
 	}
 
 	return -1;
+}
+
+bool CMusicDatabase::AddAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs)
+{
+	CStdString strSQL;
+	try
+	{
+		if (NULL==m_pDB.get()) return false;
+		if (NULL==m_pDS.get()) return false;
+
+		for (int i=0; i<(int)songs.size(); i++)
+		{
+			CSong song=songs[i];
+			RemoveInvalidChars(song.strTitle);
+
+			strSQL.Format("select * from albuminfosong where idAlbumInfo=%i and iTrack=%i", idAlbumInfo, song.iTrack);
+			if (!m_pDS->query(strSQL.c_str())) continue;
+
+			int iRowsFound = m_pDS->num_rows();
+			if (iRowsFound!= 0)
+				continue;
+
+			strSQL.Format("insert into albuminfosong (idAlbumInfoSong,idAlbumInfo,iTrack,strTitle,iDuration) values(NULL,%i,%i,'%s',%i)",
+													idAlbumInfo,
+													song.iTrack,
+													song.strTitle,
+													song.iDuration);
+			m_pDS->exec(strSQL.c_str());
+		}
+
+		return true;
+	}
+	catch(...)
+	{
+    CLog::Log(LOGERROR, "musicdatabase:unable to addalbuminfosong (%s)", strSQL.c_str());
+	}
+
+	return false;
 }
 
 bool CMusicDatabase::GetSongsByGenre(const CStdString& strGenre, VECSONGS& songs)
@@ -1278,7 +1327,7 @@ bool CMusicDatabase::GetGenres(VECGENRES& genres)
 	return false;
 }
 
-bool CMusicDatabase::GetAlbumInfo(const CStdString& strAlbum1, const CStdString& strPath1, CAlbum& album)
+bool CMusicDatabase::GetAlbumInfo(const CStdString& strAlbum1, const CStdString& strPath1, CAlbum& album, VECSONGS& songs)
 {
 	try
 	{
@@ -1310,7 +1359,13 @@ bool CMusicDatabase::GetAlbumInfo(const CStdString& strAlbum1, const CStdString&
 			album.strStyles	= m_pDS->fv("albuminfo.strStyles").get_asString();
 			album.strTones	= m_pDS->fv("albuminfo.strTones").get_asString();
 			album.strPath   = m_pDS->fv("path.strPath").get_asString();
+
+			long idAlbumInfo = m_pDS->fv("albuminfo.idAlbumInfo").get_asLong();
+
 			m_pDS->close();	//	cleanup recordset data
+
+			GetAlbumInfoSongs(idAlbumInfo, songs);
+
 			return true;
 		}
 		return false;
@@ -1318,6 +1373,39 @@ bool CMusicDatabase::GetAlbumInfo(const CStdString& strAlbum1, const CStdString&
 	catch(...)
 	{
     CLog::Log(LOGERROR, "CMusicDatabase:GetAlbumInfo(%s, %s) failed", strAlbum1.c_str(), strPath1.c_str());
+	}
+
+	return false;
+}
+
+bool CMusicDatabase::GetAlbumInfoSongs(long idAlbumInfo, VECSONGS& songs)
+{
+	try
+	{
+		CStdString strSQL;
+		strSQL.Format("select * from albuminfosong where idAlbumInfo=%i order by iTrack", idAlbumInfo);
+
+		if (!m_pDS->query(strSQL.c_str())) return false;
+		int iRowsFound = m_pDS->num_rows();
+		if (iRowsFound==0) return false;
+		while (!m_pDS->eof())
+		{
+			CSong song;
+			song.iTrack	= m_pDS->fv("iTrack").get_asLong();
+			song.strTitle	= m_pDS->fv("strTitle").get_asString();
+			song.iDuration	= m_pDS->fv("iDuration").get_asLong();
+
+			songs.push_back(song);
+			m_pDS->next();
+		}
+
+		m_pDS->close();	//	cleanup recordset data
+
+		return true;
+	}
+	catch(...)
+	{
+    CLog::Log(LOGERROR, "CMusicDatabase:GetAlbumInfoSongs(%i) failed", idAlbumInfo);
 	}
 
 	return false;
@@ -1811,7 +1899,7 @@ bool CMusicDatabase::FindAlbumsByName(const CStdString& strSearch1, VECALBUMS& a
 	return false;
 }
 
-long CMusicDatabase::UpdateAlbumInfo(const CAlbum& album1)
+long CMusicDatabase::UpdateAlbumInfo(const CAlbum& album1, const VECSONGS& songs)
 {
 	CStdString strSQL;
 	try
@@ -1851,7 +1939,7 @@ long CMusicDatabase::UpdateAlbumInfo(const CAlbum& album1)
 		int iRowsFound = m_pDS->num_rows();
 		if (iRowsFound== 0)
 		{
-			return AddAlbumInfo(album1);
+			return AddAlbumInfo(album1, songs);
 		}
 
 		long idAlbumInfo=m_pDS->fv("idAlbumInfo").get_asLong();
@@ -1868,6 +1956,8 @@ long CMusicDatabase::UpdateAlbumInfo(const CAlbum& album1)
 												idAlbumInfo);
 		m_pDS->exec(strSQL.c_str());
 
+		UpdateAlbumInfoSongs(idAlbumInfo, songs);
+
 		return idAlbumInfo;
 	}
 	catch(...)
@@ -1876,6 +1966,28 @@ long CMusicDatabase::UpdateAlbumInfo(const CAlbum& album1)
 	}
 
 	return -1;
+}
+
+bool CMusicDatabase::UpdateAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs)
+{
+	CStdString strSQL;
+	try
+	{
+		if (NULL==m_pDB.get()) return false;
+		if (NULL==m_pDS.get()) return false;
+
+		strSQL.Format("delete from albuminfosong where idAlbumInfo=%i", idAlbumInfo);
+		if (!m_pDS->exec(strSQL.c_str())) return false;
+
+		return AddAlbumInfoSongs(idAlbumInfo, songs);
+
+	}
+	catch(...)
+	{
+    CLog::Log(LOGERROR, "musicdatabase:unable to updatealbuminfosongs (%s)", strSQL.c_str());
+	}
+
+	return false;
 }
 
 CStdString CMusicDatabase::GetSubpathsFromPath(const CStdString &strPath)
