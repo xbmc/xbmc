@@ -67,7 +67,7 @@ bool CVideoDatabase::Open()
 
 	// test id dbs already exists, if not we need 2 create the tables
 	bool bDatabaseExists=false;
-	FILE* fd= fopen(videoDatabase,"rb");
+	FILE* fd= fopen(videoDatabase.c_str(),"rb");
 	if (fd)
 	{
 		bDatabaseExists=true;
@@ -75,14 +75,14 @@ bool CVideoDatabase::Open()
 	}
 
 	m_pDB.reset(new SqliteDatabase() ) ;
-  m_pDB->setDatabase(videoDatabase);
+  m_pDB->setDatabase(videoDatabase.c_str());
 	
   m_pDS.reset(m_pDB->CreateDataset());
 	if ( m_pDB->connect() != DB_CONNECTION_OK) 
 	{
-    CLog::Log("videodatabase::unable to open %s",videoDatabase);
+    CLog::Log("videodatabase::unable to open %s",videoDatabase.c_str());
 		Close();
-    ::DeleteFile(videoDatabase);
+    ::DeleteFile(videoDatabase.c_str());
 		return false;
 	}
 
@@ -90,9 +90,9 @@ bool CVideoDatabase::Open()
 	{
 		if (!CreateTables()) 
 		{
-      CLog::Log("videodatabase::unable to create %s",videoDatabase);
+      CLog::Log("videodatabase::unable to create %s",videoDatabase.c_str());
 			Close();
-      ::DeleteFile(videoDatabase);
+      ::DeleteFile(videoDatabase.c_str());
 			return false;
 		}
 	}

@@ -67,7 +67,7 @@ bool CProgramDatabase::Open()
 
 	// test id dbs already exists, if not we need 2 create the tables
 	bool bDatabaseExists=false;
-	FILE* fd= fopen(programDatabase,"rb");
+	FILE* fd= fopen(programDatabase.c_str(),"rb");
 	if (fd)
 	{
 		bDatabaseExists=true;
@@ -75,14 +75,14 @@ bool CProgramDatabase::Open()
 	}
 
 	m_pDB.reset(new SqliteDatabase() ) ;
-	m_pDB->setDatabase(programDatabase);
+	m_pDB->setDatabase(programDatabase.c_str());
 
 	m_pDS.reset(m_pDB->CreateDataset());
 	if ( m_pDB->connect() != DB_CONNECTION_OK) 
 	{
-		CLog::Log("programdatabase::unable to open %s",programDatabase);
+		CLog::Log("programdatabase::unable to open %s",programDatabase.c_str());
 		Close();
-		::DeleteFile(programDatabase);
+		::DeleteFile(programDatabase.c_str());
 		return false;
 	}
 
@@ -90,9 +90,9 @@ bool CProgramDatabase::Open()
 	{
 		if (!CreateTables()) 
 		{
-			CLog::Log("programdatabase::unable to create %s",programDatabase);
+			CLog::Log("programdatabase::unable to create %s",programDatabase.c_str());
 			Close();
-			::DeleteFile(programDatabase);
+			::DeleteFile(programDatabase.c_str());
 			return false;
 		}
 	}
