@@ -1,8 +1,10 @@
 <!-- Finnish - language resource  -->
-<!-- Finnish Translation 2004-7-7 by Nanite1000 -->
-<!-- Based on CVS revision 2004-7-7 YYYY-MM-DD -->
+<!-- Finnish Translation 2004-8-25 by Nanite1000 -->
+<!-- Based on CVS revision 2004-8-24 YYYY-MM-DD -->
 <!-- For comments PM me in xboxmediacenter forum or IRC: nanite1k @ #xbmc on efnet-->
+<!--   or send email to: nanite1000 _at_ users _dot_ sourceforge _dot_ net  -->
 <!-- Kommentteja voi lähetellä xboxmediacentterin foorumin kautta -->
+<!--   tai sähköpostina: nanite1000 _miuku_ users _piste_ sourceforge _piste_ net  -->
 <!-- Not all weather strings are tranlated, cant get it to look correct/too long -->
 <!--    Weather strings can be tranlated if all combinations has its own string -->
 <!--    Ie.  light+snow, rain+showers... -->
@@ -290,7 +292,7 @@
   </string> 
   <string>
     <id>143</id>
-    <value>Nyt</value>
+    <value>Nyt:</value>
   </string> 
   <string>
     <id>144</id>
@@ -358,7 +360,7 @@
   </string> 
   <string>
     <id>160</id>
-    <value>vapaa</value>
+    <value>vapaana</value>
   </string> 
   <string>
     <id>161</id>
@@ -382,19 +384,19 @@
   </string> 
   <string>
     <id>166</id>
-    <value>Skini:</value>
+    <value>Skini</value>
   </string> 
   <string>
     <id>167</id>
-    <value>FTP palvelin:</value>
+    <value>FTP palvelin</value>
   </string> 
   <string>
     <id>168</id>
-    <value>Synkronoi aika:</value>
+    <value>Synkronoi aika</value>
   </string> 
   <string>
     <id>169</id>
-    <value>Näyttö:</value>
+    <value>Näyttö</value>
   </string> 
   <string>
     <id>170</id>
@@ -442,7 +444,7 @@
   </string> 
   <string>
     <id>181</id>
-    <value>Valitse:</value>
+    <value>Valitse</value>
   </string> 
   <string>
     <id>182</id>
@@ -582,11 +584,11 @@
   </string> 
   <string>
     <id>216</id>
-    <value>Zoomaa</value>
+    <value>Zoomausmäärä</value>
   </string> 
   <string>
     <id>217</id>
-    <value>Venytä</value>
+    <value>Kuvapisteen kokosuhde</value>
   </string> 
   <string>
     <id>218</id>
@@ -666,11 +668,11 @@
   </string> 
   <string>
     <id>237</id>
-    <value>Pienennys:</value>
+    <value>Pienennys</value>
   </string> 
   <string>
     <id>238</id>
-    <value>Suurennus:</value>
+    <value>Suurennus</value>
   </string>
   <string>
     <id>240</id>
@@ -722,7 +724,7 @@
   </string>
   <string>
     <id>252</id>
-    <value>Käytä aina kaikkia kaiuttimia</value>
+    <value>- Stereoääni kaikille kaiuttimille</value>
   </string>
   <string>
     <id>253</id>
@@ -730,7 +732,7 @@
   </string>
   <string>
     <id>254</id>
-    <value>DD Stereo Passthrough</value>
+    <value>- DTS äänentoistolaite käytössä</value>
   </string>
   <string>
     <id>255</id>
@@ -766,7 +768,7 @@
   </string>
   <string>
     <id>263</id>
-    <value>HTTP palvelin:</value>
+    <value>HTTP palvelin</value>
   </string>
   <string>
     <id>264</id>
@@ -938,23 +940,23 @@
   </string>
   <string>
     <id>307</id>
-    <value>Automaattinen</value>
+    <value>- Automaattinen jälkikäsittely</value>
   </string>
   <string>
     <id>308</id>
-    <value>vertical deblocking-suodatus</value>
+    <value>- vertical deblocking-suodatus</value>
   </string>
   <string>
     <id>309</id>
-    <value>horizontal deblocking-suodat.</value>
+    <value>- horizontal deblocking-suodat.</value>
   </string>
   <string>
     <id>310</id>
-    <value>Auto kirkkaus/kontrasti</value>
+    <value>- Auto kirkkaus/kontrasti</value>
   </string>
   <string>
     <id>311</id>
-    <value>Dering</value>
+    <value>- Dering</value>
   </string>
   <string>
     <id>312</id>
@@ -962,7 +964,7 @@
   </string>
   <string>
     <id>313</id>
-    <value>Järjestä tietokanta</value>
+    <value>Päivitä tietokanta</value>
   </string>
   <string>
     <id>314</id>
@@ -982,7 +984,7 @@
   </string>
   <string>
     <id>318</id>
-    <value>Merkataan poistetut kappaleet</value>
+    <value>Päivitetään poistetut kappaleet</value>
   </string>
   <string>
     <id>319</id>
@@ -990,7 +992,7 @@
   </string>
   <string>
     <id>320</id>
-    <value>Etsitään esittäjät...</value>
+    <value>Päivitetään esittäjät...</value>
   </string>
   <string>
     <id>321</id>
@@ -998,7 +1000,7 @@
   </string>
   <string>
     <id>322</id>
-    <value>Etsitään tyylilajit...</value>
+    <value>Päivitetään tyylilajit...</value>
   </string>
   <string>
     <id>323</id>
@@ -1006,7 +1008,7 @@
   </string>
   <string>
     <id>324</id>
-    <value>Etsitään tiedostopolut...</value>
+    <value>Päivitetään tiedostopolut...</value>
   </string>
   <string>
     <id>325</id>
@@ -1014,7 +1016,7 @@
   </string>
   <string>
     <id>326</id>
-    <value>Etsitään albumit...</value>
+    <value>Päivitetään albumit...</value>
   </string>
   <string>
     <id>327</id>
@@ -1058,7 +1060,7 @@
   </string>
   <string>
     <id>337</id>
-    <value>Audiolähtö:</value>
+    <value>Audiolähtö</value>
   </string>
   <string>
     <id>338</id>
@@ -1166,7 +1168,7 @@
   </string>   
   <string>
     <id>364</id>
-    <value>DD/DTS Multichannel Passthrough</value>
+    <value>- AC3 äänentoistolaite käytössä</value>
   </string>   
   <string>
     <id>365</id>
@@ -1342,7 +1344,7 @@
   </string>
   <string>
     <id>408</id>
-    <value>nop:</value>
+    <value>nopeus:</value>
   </string>      
   <string>
     <id>410</id>
@@ -1506,31 +1508,35 @@
   </string> 
   <string>
     <id>450</id>
-    <value>Sarakkeita:</value>
+    <value>Sarakkeita</value>
+  </string> 
+  <string>
+    <id>4501</id>
+    <value>LCD Tyyppi</value>
   </string> 
   <string>
     <id>451</id>
-    <value>Rivin 1 osoite:</value>
+    <value>Rivin 1 osoite</value>
   </string> 
   <string>
     <id>452</id>
-    <value>Rivin 2 osoite:</value>
+    <value>Rivin 2 osoite</value>
   </string> 
   <string>
     <id>453</id>
-    <value>Rivin 3 osoite:</value>
+    <value>Rivin 3 osoite</value>
   </string> 
   <string>
     <id>454</id>
-    <value>Rivin 4 osoite:</value>
+    <value>Rivin 4 osoite</value>
   </string> 
   <string>
     <id>455</id>
-    <value>Rivejä:</value>
+    <value>Rivejä</value>
   </string> 
   <string>
     <id>456</id>
-    <value>Tila:</value>
+    <value>Tila</value>
   </string>
   <string>
     <id>457</id>
@@ -1558,7 +1564,7 @@
   </string>
   <string>
     <id>463</id>
-    <value>Taustavalo:</value>
+    <value>Taustavalo</value>
   </string>
   <string>
     <id>464</id>
@@ -1574,7 +1580,7 @@
   </string> 
   <string>
     <id>467</id>
-    <value>Tyyppi:</value>
+    <value>Tyyppi</value>
   </string> 
   <string>
     <id>468</id>
@@ -1590,7 +1596,7 @@
   </string>
   <string>
     <id>471</id>
-    <value>Modipiiri:</value>
+    <value>Modipiiri</value>
   </string>
   <string>
     <id>472</id>
@@ -1610,7 +1616,7 @@
   </string>
   <string>
     <id>476</id>
-    <value>Musiikille &amp; Videolle</value>
+    <value>Musiikki &amp; Video</value>
   </string>
   <string>
     <id>477</id>
@@ -1670,7 +1676,7 @@
   </string>
   <string>
     <id>491</id>
-    <value>Isoina kuvina</value>
+    <value>- Isoina kuvina</value>
   </string>
   <string>
     <id>492</id>
@@ -1727,6 +1733,18 @@
   <string>
     <id>505</id>
     <value>Haetaan median tiedot tiedostoista...</value>
+  </string>
+  <string>
+    <id>506</id>
+    <value>Nimet hakemistojen nimistä</value>
+  </string> 
+  <string> 	 
+    <id>507</id> 	 
+    <value>Käytön mukaan</value> 	 
+  </string>
+  <string>
+    <id>508</id>
+    <value>Älä näytä Kirjanmerkit- ja Päivitys- painiketta</value>
   </string>
   <string>
     <id>600</id>
@@ -1787,6 +1805,62 @@
   <string>
     <id>624</id>
     <value>Sisällytä Raidan numero</value>
+  </string>
+  <string>
+    <id>625</id>
+    <value>All songs of</value>
+  </string>
+  <string>
+    <id>629</id>
+    <value>Kuvamoodi</value>
+  </string>
+  <string>
+    <id>630</id>
+    <value>Normaali</value>
+  </string>
+  <string>
+    <id>631</id>
+    <value>Zoomattu</value>
+  </string>
+  <string>
+    <id>632</id>
+    <value>Venytetty 4:3</value>
+  </string>
+  <string>
+    <id>633</id>
+    <value>Venytetty 14:9</value>
+  </string>
+  <string>
+    <id>634</id>
+    <value>Venytetty 16:9</value>
+  </string>
+  <string>
+    <id>635</id>
+    <value>Alkuperäinen</value>
+  </string>
+  <string>
+    <id>636</id>
+    <value>Oma</value>
+  </string>
+  <string>
+    <id>700</id>
+    <value>Päivitetään tietokantaa</value>
+  </string>
+  <string>
+    <id>701</id>
+    <value>Poistetaan vanhat kappaleet tietokannasta</value>
+  </string>
+  <string>
+    <id>702</id>
+    <value>Tämä polku on jo päivitetty</value>
+  </string>
+  <string>
+    <id>703</id>
+    <value>Kyllä: Päivitä kaikki kappaleet tässä polussa.</value>
+  </string>
+  <string>
+    <id>704</id>
+    <value>Ei: Lisää vain uudet kappaleet.</value>
   </string>
 
   <string>
@@ -1849,10 +1923,23 @@
 <string><id>12901</id><value>Kokoruudun valikko</value></string>
 
 <string><id>13000</id><value>Järjestelmä</value></string>
-<string><id>13001</id><value>Välitön HD sammutus:</value></string>
+<string><id>13001</id><value>Kiintolevyn sammutus heti</value></string>
 <string><id>13002</id><value>Vain Videoille</value></string>
-<string><id>13003</id><value>- Viive:</value></string>
-<string><id>13004</id><value>- Pienin videon kestoaika:</value></string>
+<string><id>13003</id><value>- Viive</value></string>
+<string><id>13004</id><value>- Pienin videon kestoaika</value></string>
+<string><id>13100</id><value>Flicker filter</value></string>
+<string><id>13200</id><value>Profiilit</value></string>
+<string><id>13201</id><value>Poistetaanko profiili '%s'?</value></string>
+<string><id>13202</id><value>Tallenna asetukset profiiliksi...</value></string>
+<string><id>13203</id><value>Profiili '%s' ladattu</value></string>
+<string><id>13204</id><value>Viimeksi ladattu profiili:</value></string>
+<string><id>13205</id><value>Tuntematon</value></string>
+<string><id>13300</id><value>Tuuletin:</value></string>
+<string><id>13301</id><value>Automaattinen lämpötilan säätö</value></string>
+<string><id>13302</id><value>Tuulettimen nopeus</value></string>
+
+<string><id>13303</id><value>Skinin merkistö:</value></string>
+<string><id>13304</id><value>Käänteinen merkistö:</value></string>
 
 </strings>
 
