@@ -224,6 +224,19 @@ void CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 	CGUIWindow::OnAction(action);
 }
 
+void CGUIWindowSettingsScreenCalibration::AllocResources()
+{
+  CGUIWindow::AllocResources();
+  g_application.m_guiWindowOSD.AllocResources();
+}
+
+void CGUIWindowSettingsScreenCalibration::FreeResources()
+{
+  g_application.m_guiWindowOSD.FreeResources();
+  CGUIWindow::FreeResources();
+}
+
+
 bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )

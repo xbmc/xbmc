@@ -604,6 +604,40 @@ bool CUtil::IsPlayList(const CStdString& strFile)
   if (strExtension==".strm") return true;
   return false;
 }
+
+bool CUtil::IsDVDImage(const CStdString& strFile)
+{
+  CStdString strExtension;
+  CUtil::GetExtension(strFile,strExtension);
+  if (strExtension.Equals(".img")) return true;
+  return false;
+}
+
+bool CUtil::IsDVDFile(const CStdString& strFile, bool bVobs /*= true*/, bool bIfos /*= true*/)
+{
+	CStdString strFileName = GetFileName(strFile);
+	if(bIfos)
+	{
+		if(strFileName.Equals("video_ts.ifo")) return true;
+		if(strFileName.Left(4).Equals("vts_") && strFileName.Right(6).Equals("_0.ifo") && strFileName.length() == 12) return true;
+	}
+	if(bVobs)
+	{
+		if(strFileName.Equals("video_ts.vob")) return true;
+		if(strFileName.Left(4).Equals("vts_") && strFileName.Right(4).Equals(".vob")) return true;
+	}
+
+	return false;
+}
+
+int CUtil::GetDVDIfoTitle(const CStdString& strFile)
+{
+	CStdString strFilename = GetFileName(strFile);
+	if (strFilename.Equals("video_ts.ifo")) return 0;
+	//VTS_[TITLE]_0.IFO
+	return atoi(strFilename.Mid(4,2).c_str());
+}
+
  void CUtil::URLEncode(CStdString& strURLData)
 {
   CStdString strResult;
