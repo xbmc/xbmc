@@ -112,6 +112,7 @@ struct CreditLine_t
 	{  50,  45,    100,   7400,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team SmartXX" },
 	{  50,  55,    100,   7300,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team Xecuter" },
 	{  50,  65,    100,   7300,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team Ozxodus" },
+	{  50,  75,    100,   7300,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"bestplayer.de" },
 
   // JOKE section;-)
 
