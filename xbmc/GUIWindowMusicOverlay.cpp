@@ -29,11 +29,14 @@ using namespace MUSIC_INFO;
 #define CONTROL_FF_LOGO  7
 #define CONTROL_RW_LOGO  8
 
+#define STEPS 25
+
 CGUIWindowMusicOverlay::CGUIWindowMusicOverlay()
 :CGUIWindow(0)
 {
-  m_iFrames=0;
-  m_iPosOrgIcon=0;
+	m_iFrames=0;
+	m_dwTimeout=0;
+	m_iPosOrgIcon=0;
 	m_pTexture=NULL;
 }
 
@@ -44,7 +47,32 @@ CGUIWindowMusicOverlay::~CGUIWindowMusicOverlay()
 
 void CGUIWindowMusicOverlay::OnAction(const CAction &action)
 {
-  CGUIWindow::OnAction(action);
+	if (m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+	{
+		switch (action.wID)
+		{
+			case ACTION_SHOW_INFO:
+				//reset timeout
+				m_dwTimeout = 0;
+
+				//figure out which way we are moving
+				if (m_iFrameIncrement == 0)
+				{
+					//we're not moving, so figure out if we should start moving up or down
+					if (m_iFrames <= 0)
+						m_iFrameIncrement = 1;
+					else
+						m_iFrameIncrement = -1;
+				}
+				else
+				{
+					//we're moving... reverse
+					m_iFrameIncrement*=-1;
+				}
+				break;
+		}
+	}
+	CGUIWindow::OnAction(action);
 }
 
 bool CGUIWindowMusicOverlay::OnMessage(CGUIMessage& message)
@@ -95,7 +123,7 @@ void CGUIWindowMusicOverlay::Render()
     m_iPosOrgPlayTime=GetControlYPosition(CONTROL_PLAYTIME);
     m_iPosOrgBigPlayTime=GetControlYPosition(CONTROL_BIG_PLAYTIME);
   }
-  int iSteps=25;
+  //int iSteps=25;
   if ( m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION)
   {
     SetPosition(0, 50,50,m_iPosOrgRectangle);
@@ -108,55 +136,48 @@ void CGUIWindowMusicOverlay::Render()
     SetPosition(CONTROL_PLAYTIME, 50,50,m_iPosOrgPlayTime);
     SetPosition(CONTROL_BIG_PLAYTIME, 50,50,m_iPosOrgBigPlayTime);
     m_iFrames=0;
+	m_iFrameIncrement = 1;
+	m_dwTimeout = 0;
   }
   else
   {
-    if (m_iFrames < iSteps)
-    {
-      // scroll up
-      SetPosition(0, m_iFrames,iSteps,m_iPosOrgRectangle);
-      SetPosition(CONTROL_LOGO_PIC, m_iFrames,iSteps,m_iPosOrgIcon);
-      SetPosition(CONTROL_PLAY_LOGO, m_iFrames,iSteps,m_iPosOrgPlay);
-      SetPosition(CONTROL_PAUSE_LOGO, m_iFrames,iSteps,m_iPosOrgPause);
-      SetPosition(CONTROL_FF_LOGO, m_iFrames,iSteps,m_iPosOrgPause);
-      SetPosition(CONTROL_RW_LOGO, m_iFrames,iSteps,m_iPosOrgPause);
-      SetPosition(CONTROL_INFO, m_iFrames,iSteps,m_iPosOrgInfo);
-      SetPosition(CONTROL_PLAYTIME, m_iFrames,iSteps,m_iPosOrgPlayTime);
-      SetPosition(CONTROL_BIG_PLAYTIME, m_iFrames,iSteps,m_iPosOrgBigPlayTime);
-      m_iFrames++;
-    }
-    else if (m_iFrames >=iSteps && m_iFrames<=5*iSteps+iSteps)
-    {
-      //show
-      SetPosition(0, iSteps,iSteps,m_iPosOrgRectangle);
-      SetPosition(CONTROL_LOGO_PIC, iSteps,iSteps,m_iPosOrgIcon);
-      SetPosition(CONTROL_PLAY_LOGO, iSteps,iSteps,m_iPosOrgPlay);
-      SetPosition(CONTROL_PAUSE_LOGO, iSteps,iSteps,m_iPosOrgPause);
-      SetPosition(CONTROL_FF_LOGO, iSteps,iSteps,m_iPosOrgPause);
-      SetPosition(CONTROL_RW_LOGO, iSteps,iSteps,m_iPosOrgPause);
-      SetPosition(CONTROL_INFO, iSteps,iSteps,m_iPosOrgInfo);
-      SetPosition(CONTROL_PLAYTIME, iSteps,iSteps,m_iPosOrgPlayTime);
-      SetPosition(CONTROL_BIG_PLAYTIME, iSteps,iSteps,m_iPosOrgBigPlayTime);
-      m_iFrames++;
-    }
-    else if (m_iFrames >=5*iSteps+iSteps )
-    {
-      if (m_iFrames > 5*iSteps+2*iSteps) 
-      {
-        m_iFrames=5*iSteps+2*iSteps;
-      }
-      //scroll down
-      SetPosition(0,                    5*iSteps+2*iSteps-m_iFrames,iSteps,m_iPosOrgRectangle);
-      SetPosition(CONTROL_LOGO_PIC,     5*iSteps+2*iSteps-m_iFrames,iSteps,m_iPosOrgIcon);
-      SetPosition(CONTROL_PLAY_LOGO,    5*iSteps+2*iSteps-m_iFrames,iSteps,m_iPosOrgPlay);
-      SetPosition(CONTROL_PAUSE_LOGO,   5*iSteps+2*iSteps-m_iFrames,iSteps,m_iPosOrgPause);
-      SetPosition(CONTROL_FF_LOGO,   5*iSteps+2*iSteps-m_iFrames,iSteps,m_iPosOrgPause);
-      SetPosition(CONTROL_RW_LOGO,   5*iSteps+2*iSteps-m_iFrames,iSteps,m_iPosOrgPause);
-      SetPosition(CONTROL_INFO,         5*iSteps+2*iSteps-m_iFrames,iSteps,m_iPosOrgInfo);
-      SetPosition(CONTROL_PLAYTIME,     5*iSteps+2*iSteps-m_iFrames,iSteps,m_iPosOrgPlayTime);
-      SetPosition(CONTROL_BIG_PLAYTIME, 5*iSteps+2*iSteps-m_iFrames,iSteps,m_iPosOrgBigPlayTime);
-      m_iFrames++;
-    }
+      SetPosition(0, m_iFrames,STEPS,m_iPosOrgRectangle);
+      SetPosition(CONTROL_LOGO_PIC, m_iFrames,STEPS,m_iPosOrgIcon);
+      SetPosition(CONTROL_PLAY_LOGO, m_iFrames,STEPS,m_iPosOrgPlay);
+      SetPosition(CONTROL_PAUSE_LOGO, m_iFrames,STEPS,m_iPosOrgPause);
+      SetPosition(CONTROL_FF_LOGO, m_iFrames,STEPS,m_iPosOrgPause);
+      SetPosition(CONTROL_RW_LOGO, m_iFrames,STEPS,m_iPosOrgPause);
+      SetPosition(CONTROL_INFO, m_iFrames,STEPS,m_iPosOrgInfo);
+      SetPosition(CONTROL_PLAYTIME, m_iFrames,STEPS,m_iPosOrgPlayTime);
+      SetPosition(CONTROL_BIG_PLAYTIME, m_iFrames,STEPS,m_iPosOrgBigPlayTime);
+	  m_iFrames+=m_iFrameIncrement;
+		
+	  if (m_iFrames <= 0)
+	  {
+		//we're just sitting at the bottom
+		m_dwTimeout =  0;
+		m_iFrames = 0;
+		m_iFrameIncrement = 0;
+	  }
+	  else if (m_iFrames >= STEPS)
+	  {
+		//if we just got to the top, start the timer but keep us sitting there until timeout expires
+		if (m_dwTimeout <= 0)
+		{
+			//set timeout to g_stSettings.m_iOSDTimeout seconds in the future
+			//(timeGetTime is in milliseconds, so we multiply by 1000
+			m_dwTimeout =  (g_stSettings.m_iOSDTimeout * 1000) + timeGetTime();
+			m_iFrames = STEPS;
+			m_iFrameIncrement = 0;
+		}
+		//if the timeout has expired, start moving down
+		else if (timeGetTime() > m_dwTimeout)
+		{
+			m_dwTimeout = 0;
+			m_iFrames = STEPS;
+			m_iFrameIncrement = -1;
+		}
+	  }
   }
 	__int64 lPTS=g_application.m_pPlayer->GetPTS();
   int hh = (int)(lPTS / 36000) % 100;
@@ -196,7 +217,7 @@ void CGUIWindowMusicOverlay::Render()
     char szTmp[32];
     sprintf(szTmp,"(%ix)", iSpeed);
     strcat(szTime,szTmp);
-    m_iFrames =iSteps ;
+    m_iFrames = STEPS ;
   }
 
   {
