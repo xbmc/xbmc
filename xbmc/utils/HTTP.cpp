@@ -523,7 +523,7 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 	}
 
 	// send request...
-	char* szHTTPHEADER = (char*)_alloca(300 + m_strHostName.size() + m_strCookie.size() + (pData ? strlen(pData) : 0));
+	char* szHTTPHEADER = (char*)_alloca(350 + m_strHostName.size() + m_strCookie.size() + (pData ? strlen(pData) : 0));
 	strcpy(szHTTPHEADER,"Connection: close\r\n"
 											"Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/msword, */*\r\n"
 											"Accept-Language: en-us\r\n"
@@ -533,13 +533,14 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 											"User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)\r\n");
 	if (m_strCookie.size())
 	{
+		// is this even valid in http?
 		strcat(szHTTPHEADER,"Cookie: ");
 		strcat(szHTTPHEADER,m_strCookie.c_str());
 		strcat(szHTTPHEADER, "\r\n");
 	}
 	if (pData)
 	{
-		strcat(szHTTPHEADER, "\r\n");
+		sprintf(szHTTPHEADER + strlen(szHTTPHEADER), "Content-Length: %d\r\n\r\n", strlen(pData));
 		strcat(szHTTPHEADER, pData);
 	}
 
