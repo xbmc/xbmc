@@ -196,6 +196,10 @@ void CGUIWindowMusicOverlay::Render()
   {
 		GetTopControlPosition();
   }
+
+  // make sure frames cannot go below 0
+  if (m_iFrames < 0) m_iFrames=0;
+
   //int iSteps=25;
   if ( (m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION) ||
 	  (m_bShowInfoAlways) )
@@ -209,6 +213,7 @@ void CGUIWindowMusicOverlay::Render()
   {
 		UpdatePosition(m_iFrames,STEPS);
 		m_iFrames+=m_iFrameIncrement;
+    //CLog::Log(LOGDEBUG,"m_iFrames = [%i], m_iFrameIncrement = [%i]",m_iFrames,m_iFrameIncrement);
 
 		if (!m_bShowInfo && m_iFrames <= 1)
 		{
@@ -257,9 +262,14 @@ void CGUIWindowMusicOverlay::Render()
 	  }
   }
 	
-  if ((m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION) || 
-      (g_stSettings.m_bMyMusicSongInfoInVis)
-  ) {
+  /*
+  CStdString strbool = "false";
+  if (g_stSettings.m_bMyMusicSongInfoInVis)
+    strbool = "true";
+  CLog::Log(LOGDEBUG,"m_bMyMusicSongInfoInVis = [%s]",strbool.c_str());
+  */
+  if ((m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION) || (g_stSettings.m_bMyMusicSongInfoInVis))
+  {
     ShowControl( CONTROL_PLAYTIME);
     ShowControl( CONTROL_INFO);
     ShowControl( CONTROL_BIG_PLAYTIME);
@@ -292,22 +302,18 @@ void CGUIWindowMusicOverlay::Render()
 	  }
 	  else
 	  {
+      // apply the correct speed logo
       int iSpeed=g_application.GetPlaySpeed();
       if (iSpeed==1)
-      {
-		    ShowControl( CONTROL_PLAY_LOGO); 
-      }
+  	    ShowControl( CONTROL_PLAY_LOGO); 
       else if (iSpeed>1)
-      {
-		    ShowControl(CONTROL_FF_LOGO); 
-      }
-		  else
-      {
-        ShowControl(CONTROL_RW_LOGO);  
-      }
-	  }
+  	    ShowControl( CONTROL_FF_LOGO); 
+  	  else
+        ShowControl( CONTROL_RW_LOGO);  
+    }
   }
-  else {
+  else
+  {
 	  HideControl( CONTROL_PLAY_LOGO); 
 	  HideControl( CONTROL_PAUSE_LOGO);
 	  HideControl( CONTROL_FF_LOGO); 
@@ -422,6 +428,14 @@ void CGUIWindowMusicOverlay::Update()
 	// Get our tag info from the infoManager
 	UpdateInfo(g_infoManager.GetCurrentSongTag());
 
+  // reset the bools to allow the new new song info to slide up
+  if (g_guiSettings.GetInt("MyMusic.OSDTimeout") > 0)
+  {
+    m_bShowInfo=true;
+    g_stSettings.m_bMyMusicSongInfoInVis = true;
+    g_stSettings.m_bMyMusicSongThumbInVis = true;
+  }
+
 	if (m_bShowInfo && m_gWindowManager.GetActiveWindow()==WINDOW_VISUALISATION)
 	{
 		//reset timeout
@@ -432,6 +446,9 @@ void CGUIWindowMusicOverlay::Update()
 		{
 			m_iFrameIncrement = 1;
 		}
+    
+    // make sure frames cannot go below zero
+    if (m_iFrames < 0) m_iFrames=0;
 	}
 }
 
