@@ -134,11 +134,7 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 			tag.SetTitle(fixString(ansiString));	// titel
 			ansiString="";
 			g_charsetConverter.ucs2CharsetToStringCharset((LPWSTR)(pData.get()+iOffset+nTitleSize), ansiString);
-			CStdString strArtist=fixString(ansiString);
-			//	Multiple artists are seperated with a ";" in Windows Media Player 
-			//	make sure it fits to our system using a " / " to separate them
-			strArtist.Replace(";", " / ");
-			tag.SetArtist(strArtist);
+			tag.SetArtist(fixString(ansiString));
 
 			//General(ZT("Copyright"))=(LPWSTR)(pData.get()+iOffset+(nTitleSize+nAuthorSize));
 			//General(ZT("Comments"))=(LPWSTR)(pData.get()+iOffset+(nTitleSize+nAuthorSize+nCopyrightSize));
