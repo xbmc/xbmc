@@ -38,6 +38,7 @@ protected:
 					void							OnSearch();
 					bool							DoSearch(const CStdString strDir,const CStdString& strSearch,VECFILEITEMS& items);
 					bool							HaveDiscOrConnection( CStdString& strPath, int iDriveType );
+					bool							GetKeyboard(CStdString& strInput);
 
 	CStdString								m_strDirectory;
 	CVirtualDirectory					m_rootDir;
