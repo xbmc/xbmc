@@ -477,9 +477,9 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 	D3DXSetDXT3DXT5(TRUE);
 
 	bool Cached = false;
-	int n = strPath.find_last_of('.');
-	CStdString strCachePath(strPath.Left(n));
-
+	CStdString strCachePath(strPath);
+	int n = strCachePath.find_last_of('\\');
+	strCachePath.insert(n, "\\cache");
 	strCachePath += ".xpr";
 	if (GetFileAttributes(strCachePath) != -1)
 	{
@@ -523,7 +523,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 	}
 	else
 	{
-		if (strPath.Right(strPath.size()-n) == ".dds")
+		if (strPath.Right(4).ToLower() == ".dds")
 		{
 			if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), strPath.c_str(),
 				D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED,
@@ -569,7 +569,6 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 				FindClose(hFind);
 
 				XGWriteSurfaceOrTextureToXPR(pTexture, strCachePath.c_str(), true);
-				SetFileAttributes(strCachePath.c_str(), FILE_ATTRIBUTE_HIDDEN);
 
 				HANDLE hFile = CreateFile(strCachePath.c_str(), GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
 				if (hFile != INVALID_HANDLE_VALUE)
