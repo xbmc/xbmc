@@ -3,6 +3,7 @@
 #include "settings.h"
 #include "util.h"
 #include "sectionLoader.h"
+#include "texturemanager.h"
 #include "stdstring.h"
 
 
@@ -72,7 +73,7 @@ HRESULT CApplication::Initialize()
                              g_stSettings.m_strLocalNetmask,
                              g_stSettings.m_strGateway ) )
     {
-                      
+				m_sntpClient.Create();                      
       
     }
   }
@@ -393,4 +394,12 @@ case XINPUT_IR_REMOTE_0:
 	}
 
 	
+}
+void CApplication::Stop()
+{
+	m_sntpClient.StopThread();
+	m_gWindowManager.DeInitialize();
+	g_TextureManager.Cleanup();
+	CSectionLoader::UnloadAll();
+	Destroy();
 }

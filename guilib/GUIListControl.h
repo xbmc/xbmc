@@ -38,7 +38,7 @@ public:
 
 protected:
    
-  void         RenderText(float fPosX, float fPosY, DWORD dwTextColor, WCHAR* wszText,bool bScroll );
+  void         RenderText(float fPosX, float fPosY,float fMaxWidth, DWORD dwTextColor, WCHAR* wszText,bool bScroll );
   void         OnRight();
   void         OnLeft();
   void         OnDown();

@@ -82,14 +82,26 @@ void CGUIListControl::Render()
         dwColor=m_dwSelectedColor;
       
 			dwPosX += m_imgFolder.GetWidth()+2;
-      swprintf(wszText,L"%S", pItem->GetLabel().c_str() );
       bool bSelected(false);
       if (i == m_iCursorY && HasFocus() && m_iSelect== CONTROL_LIST)
         bSelected=true;
-      RenderText( (float)dwPosX, (float)dwPosY+2, dwColor, wszText,bSelected);
+
+			CStdString strLabel2=pItem->GetLabel2();
+      
+			DWORD dMaxWidth=m_dwWidth-16;
+      if (strLabel2.size()>0)
+      {
+				dMaxWidth=m_dwWidth-16;
+				float fTextHeight,fTextWidth;
+        swprintf(wszText,L"%S", strLabel2.c_str() );
+				m_pFont->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
+				dMaxWidth -= (DWORD)(fTextWidth);
+			}
+			swprintf(wszText,L"%S", pItem->GetLabel().c_str() );
+      
+			RenderText( (float)dwPosX, (float)dwPosY+2, (FLOAT)dMaxWidth, dwColor, wszText,bSelected);
       
 		
-      CStdString strLabel2=pItem->GetLabel2();
       if (strLabel2.size()>0)
       {
         dwPosX=m_dwPosX+m_dwWidth-16;
@@ -103,7 +115,7 @@ void CGUIListControl::Render()
 	m_upDown.Render();
 }
 
-void CGUIListControl::RenderText(float fPosX, float fPosY, DWORD dwTextColor, WCHAR* wszText,bool bScroll )
+void CGUIListControl::RenderText(float fPosX, float fPosY, float fMaxWidth,DWORD dwTextColor, WCHAR* wszText,bool bScroll )
 {
 	static int scroll_pos = 0;
 	static int iScrollX=0;
@@ -113,18 +125,23 @@ void CGUIListControl::RenderText(float fPosX, float fPosY, DWORD dwTextColor, WC
 
   float fTextHeight,fTextWidth;
   m_pFont->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
-  float fMaxWidth=GetWidth()-GetWidth()/10.0f;
-/*
-  CStdString strLabel2=pItem->GetLabel2();
-  if (strLabel2.size()) 
-  {
-    float fW,fH;
-    m_pFont->GetTextExtent( wszText, &fW,&fH);
-    fMaxWidth -= fW;
-  }*/
+
+	D3DVIEWPORT8 oldviewport, newviewport;
+	g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
+
+	newviewport.X      = (DWORD)fPosX;
+	newviewport.Y			 = (DWORD)fPosY;
+	newviewport.Width  = (DWORD)(fMaxWidth-5.0f);
+	newviewport.Height = 60;
+	newviewport.MinZ   = 0.0f;
+	newviewport.MaxZ   = 1.0f;
+	g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
+
+
   if (!bScroll || fTextWidth <= fMaxWidth)
   {
     m_pFont->DrawTextWidth(fPosX,fPosY,dwTextColor,wszText,fMaxWidth);
+		g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
     return;
   }
   else
@@ -138,6 +155,7 @@ void CGUIListControl::RenderText(float fPosX, float fPosY, DWORD dwTextColor, WC
 
     if (fTextWidth > fMaxWidth)
     {
+				fMaxWidth+=50.0f;
         WCHAR szText[1024];
 				if (iLastItem != iItem)
 				{
@@ -191,6 +209,7 @@ void CGUIListControl::RenderText(float fPosX, float fPosY, DWORD dwTextColor, WC
 					}
     }
   }
+	g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
 }
 
 void CGUIListControl::OnKey(const CKey& key)

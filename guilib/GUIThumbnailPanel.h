@@ -60,6 +60,8 @@ protected:
   wstring               m_strSuffix;
   DWORD                 m_dwTextColor;
   DWORD                 m_dwSelectedColor;
+	int										m_iLastItem;
+	
   CGUIFont*             m_pFont;
   CGUISpinControl       m_upDown;
   CGUIImage             m_imgFolder;

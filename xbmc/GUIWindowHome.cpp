@@ -8,6 +8,7 @@
 #include "settings.h"
 #include "sectionloader.h"
 #include "util.h"
+#include "application.h"
 
 CGUIWindowHome::CGUIWindowHome(void)
 :CGUIWindow(0)
@@ -59,6 +60,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 
         case 10: // powerdown
         {
+					g_application.Stop();
           XKUtils::XBOXPowerOff();
         }
         break;
@@ -82,10 +84,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 		      strcat(szDevicePath,szDirectory);
 		      wsprintf(szXbePath,"d:\\%s",szXbe);
 
-
-		      m_gWindowManager.DeInitialize();
-          g_TextureManager.Cleanup();
-					CSectionLoader::UnloadAll();
+					g_application.Stop();
 
           CUtil::LaunchXbe(szDevicePath,szXbePath,NULL);
         }
@@ -93,6 +92,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       
 				case 12:
 				{
+					g_application.Stop();
 					XKUtils::XBOXReset();
 				}
       }

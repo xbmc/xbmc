@@ -13,7 +13,6 @@
 //      - delay controller (remote & gewoon)
 //
 // algemeen:
-//			- SNTP
 //			-	ftp server
 //      - thumbnails : centreren in folder indien thumb <64x64
 //      - file info box
@@ -29,7 +28,7 @@
 //			- skinnable key mapping for controls
 //
 // My Pictures:
-//      - use thumbsticks voor zoom en move
+//      - use analog thumbsticks voor zoom en move
 //      - FF/RW l/r trigger   : speed/slow down slideshow time
 //      - show selected image in file browser
 //
@@ -65,13 +64,13 @@
 #include "stdafx.h"
 #include "application.h"
 
+CApplication g_application;
 void main()
 {
-  CApplication app;
-  app.Create();
+	g_application.Create();
   while (1)
   {
-    app.Run();
+    g_application.Run();
   }
 }
 

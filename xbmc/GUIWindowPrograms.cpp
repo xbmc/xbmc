@@ -11,6 +11,7 @@
 #include "Shortcut.h"
 #include "guidialog.h"
 #include "sectionLoader.h"
+#include "application.h"
 
 #include <algorithm>
 
@@ -448,6 +449,7 @@ void CGUIWindowPrograms::OnClick(int iItem)
 		m_gWindowManager.DeInitialize();
 		CSectionLoader::UnloadAll();
 
+		g_application.Stop();
     if (strlen(szParameters))
       CUtil::LaunchXbe(szDevicePath,szXbePath,szParameters);
     else
