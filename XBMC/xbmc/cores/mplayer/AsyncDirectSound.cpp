@@ -134,9 +134,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	if (iNumBuffers)
 		m_dwNumPackets = (DWORD)iNumBuffers;
 	else
-	{
 		m_dwNumPackets=8*iChannels;
-	}
 
 	m_adwStatus    = new DWORD[ m_dwNumPackets ];
 
@@ -241,7 +239,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	XMEDIAINFO info;
 	m_pStream->GetInfo(&info);
 	int fSize;
-	if (!mplayer_HasVideo())
+	if (!mplayer_HasVideo() && !iNumBuffers)
 		fSize = 4096 / info.dwInputSize; // fixes stuttering wav/wma
 	else
 		fSize = 1024 / info.dwInputSize;
