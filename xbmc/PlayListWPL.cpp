@@ -3,6 +3,9 @@
 #include "playlistwpl.h"
 #include "util.h"
 #include "tinyxml/tinyxml.h"
+#include "autoptrhandle.h"
+
+using namespace AUTOPTR;
 
 /* ------------------------ example wpl playlist file ---------------------------------
 		<?wpl version="1.0"?>
@@ -37,8 +40,14 @@ bool CPlayListWPL::Load(const CStdString& strFileName)
 
 	Clear();
 	
+	CFile file;
+	if (!file.Open(strFileName.c_str())) return false;
+	int iLenght=(int)file.GetLength();
+	auto_aptr<char> xmlData(new char[iLenght]);
+	file.Read(xmlData.get(), iLenght);
+
 	TiXmlDocument xmlDoc;
-  if (!xmlDoc.LoadFile( strFileName.c_str() ) ) return false;
+  if (xmlDoc.Parse(xmlData.get())==NULL) return false;
 
 	TiXmlElement* pRootElement =xmlDoc.RootElement();
 	if (!pRootElement ) return false;
