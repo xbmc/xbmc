@@ -308,7 +308,7 @@
   <string><id>377</id><value>Leggera</value></string>
   <string><id>378</id><value>AM</value></string>
   <string><id>379</id><value>PM</value></string>
-  <string><id>380</id><value>Acquazzoni</value></string>
+  <string><id>380</id><value>Rovesci</value></string>
   <string><id>381</id><value>Poco</value></string>
   <string><id>382</id><value>Sparsi</value></string>
   <string><id>383</id><value>Vento</value></string>
@@ -316,14 +316,14 @@
   <string><id>385</id><value>Bello</value></string>
   <string><id>386</id><value>Chiaro</value></string>
   <string><id>387</id><value>Nuvoloso</value></string>
-  <string><id>388</id><value>Presto</value></string>
-  <string><id>389</id><value>Acquazzone</value></string>
-  <string><id>390</id><value>Nevischio</value></string>
+  <string><id>388</id><value>Anticipati</value></string>
+  <string><id>389</id><value>Rovescio</value></string>
+  <string><id>390</id><value>Turbini</value></string>
   <string><id>391</id><value>Bassa</value></string>
   <string><id>392</id><value>Media</value></string>
   <string><id>393</id><value>Alta</value></string>
-  <string><id>394</id><value>N/A</value></string>
-  <string><id>395</id><value>N/A</value></string>
+  <string><id>394</id><value>Nebbia</value></string>
+  <string><id>395</id><value>Coperto</value></string>
   <string><id>396</id><value>Seleziona Località</value></string>
   <string><id>397</id><value>Aggiornamento</value></string>
   <string><id>398</id><value>Unità Temp</value></string>
@@ -420,7 +420,7 @@
   <string><id>489</id><value>Autoplay File Successivo</value></string>
   <string><id>490</id><value>Auto switch Lista e Icone in Musica</value></string>
   <string><id>491</id><value>- Usa icone grandi</value></string>
-  <string><id>492</id><value>Ingrandisci Sottotitoli</value></string>
+  <string><id>492</id><value>Ridimensiona Sottotitoli</value></string>
   <string><id>493</id><value>Opzioni Avanzate (Solo Esperti!)</value></string>
   <string><id>494</id><value>Livello Audio Generale</value></string>
   <string><id>495</id><value>Adatta i Video alla Risoluzione dell'Interfaccia</value></string>
@@ -431,7 +431,7 @@
   <string><id>500</id><value>Impossibile scaricare le informazioni sull'album</value></string>
   <string><id>501</id><value>Ricerca nome album in corso...</value></string>
   <string><id>502</id><value>Aperto</value></string>
-  <string><id>503</id><value>Impegnato</value></string>
+  <string><id>503</id><value>Caricando</value></string>
   <string><id>504</id><value>Vuoto</value></string>
   <string><id>505</id><value>Caricamento informazioni dai files...</value></string>
   <string><id>506</id><value>Usa i Nomi delle Directory per la Descrizione</value></string>
@@ -523,6 +523,23 @@
   <string><id>758</id><value>Rimuovo Collegamento</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Gioco Online</value></string>
+
+  <string><id>1396</id><value>Mutevole</value></string>
+  <string><id>1397</id><value>e</value></string>
+  <string><id>1398</id><value>Gelata</value></string>
+  <string><id>1399</id><value>N/A</value></string>
+  <string><id>1400</id><value>N/A</value></string>
+  <string><id>1401</id><value>N/A</value></string>
+  <string><id>1402</id><value>N/A</value></string>
+  <string><id>1403</id><value>N/A</value></string>
+  <string><id>1404</id><value>N/A</value></string>
+  <string><id>1405</id><value>N/A</value></string>
+  <string><id>1406</id><value>N/A</value></string>
+  <string><id>1407</id><value>N/A</value></string>
+  <string><id>1408</id><value>N/A</value></string>
+  <string><id>1409</id><value>N/A</value></string>
+  <string><id>1410</id><value>N/A</value></string>
+
   <string><id>10000</id><value>Home</value></string>
   <string><id>10001</id><value>Programmi</value></string>
   <string><id>10002</id><value>Immagini</value></string>
@@ -694,6 +711,7 @@
   <string><id>13357</id><value>Combinazione Overlays/Shader</value></string>
   <string><id>13358</id><value>Pixel Shader Qualità Alta</value></string>
   <string><id>13359</id><value>Pixel Shader Qualità Media</value></string>
+  <string><id>13360</id><value>Crea Icone Automaticamente</value></string>
 
   <string><id>14000</id><value>Unisci: Spento</value></string>
   <string><id>14001</id><value>Unisci: Semplice</value></string>

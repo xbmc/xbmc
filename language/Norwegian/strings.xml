@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.602. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.167. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -323,8 +323,8 @@
   <string><id>391</id><value>Lav</value></string>
   <string><id>392</id><value>Middels</value></string>
   <string><id>393</id><value>Høy</value></string>
-  <string><id>394</id><value>Ikke tilgjengelig</value></string>
-  <string><id>395</id><value>Ikke tilgjengelig</value></string>
+  <string><id>394</id><value>Tåke</value></string>
+  <string><id>395</id><value>Dis</value></string>
   <string><id>396</id><value>Velg plass</value></string>
   <string><id>397</id><value>Oppdateringsintervall</value></string>
   <string><id>398</id><value>Temperaturskala</value></string>
@@ -421,7 +421,7 @@
   <string><id>489</id><value>Bruke spilleliste i sanger</value></string>
   <string><id>490</id><value>Skifte automatisk mellom liste og ikoner i sanger</value></string>
   <string><id>491</id><value>- Bruke store ikoner</value></string>
-  <string><id>492</id><value>Forstørr undertekster</value></string>
+  <string><id>492</id><value>Størrelse på undertekster</value></string>
   <string><id>493</id><value>Avanserte instillinger (Kun eksperter!)</value></string>
   <string><id>494</id><value>Gjennomsnittlig headroom (dB)</value></string>
   <string><id>495</id><value>Øk filmoppløsning til grensesnittets oppløsning</value></string>
@@ -524,6 +524,23 @@
   <string><id>758</id><value>Fjerner programlink</value></string>  
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Spill på nettet</value></string>
+
+  <string><id>1396</id><value>Forbigående</value></string>
+  <string><id>1397</id><value>og</value></string>
+  <string><id>1398</id><value>Kjølig</value></string>
+  <string><id>1399</id><value>N/A</value></string>
+  <string><id>1400</id><value>N/A</value></string>
+  <string><id>1401</id><value>N/A</value></string>
+  <string><id>1402</id><value>N/A</value></string>
+  <string><id>1403</id><value>N/A</value></string>
+  <string><id>1404</id><value>N/A</value></string>
+  <string><id>1405</id><value>N/A</value></string>
+  <string><id>1406</id><value>N/A</value></string>
+  <string><id>1407</id><value>N/A</value></string>
+  <string><id>1408</id><value>N/A</value></string>
+  <string><id>1409</id><value>N/A</value></string>
+  <string><id>1410</id><value>N/A</value></string>
+
   <string><id>10000</id><value>Forside</value></string>
   <string><id>10001</id><value>Programmer</value></string>
   <string><id>10002</id><value>Bilder</value></string>
@@ -695,6 +712,7 @@
   <string><id>13357</id><value>Kombinasjon overlegg/shader</value></string>
   <string><id>13358</id><value>Høykvalitets Pixel Shader</value></string>
   <string><id>13359</id><value>Medium kvalitets Pixel Shader</value></string>
+  <string><id>13360</id><value>Lag miniatyrbilder</value></string>
 
   <string><id>14000</id><value>Stabling: Av</value></string>
   <string><id>14001</id><value>Stabling: Enkel</value></string>

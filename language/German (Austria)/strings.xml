@@ -305,13 +305,13 @@
   <string><id>372</id><value>Größtenteils</value></string>
   <string><id>373</id><value>Sonne</value></string>
   <string><id>374</id><value>Wolken</value></string>
-  <string><id>375</id><value>Schnee(fall)</value></string>
+  <string><id>375</id><value>Schnee</value></string>
   <string><id>376</id><value>Regen</value></string>
   <string><id>377</id><value>Leichter</value></string>
-  <string><id>378</id><value>Vormittags</value></string>
-  <string><id>379</id><value>Nachmittags</value></string>
-  <string><id>380</id><value>Regenschauer</value></string>
-  <string><id>381</id><value>Wenige</value></string>
+  <string><id>378</id><value>Vormittag</value></string>
+  <string><id>379</id><value>Nachmittag</value></string>
+  <string><id>380</id><value>Schauer</value></string>
+  <string><id>381</id><value>Wenig</value></string>
   <string><id>382</id><value>Vereinzelt</value></string>
   <string><id>383</id><value>Wind</value></string>
   <string><id>384</id><value>Starker</value></string>
@@ -320,7 +320,7 @@
   <string><id>387</id><value>Wolken</value></string>
   <string><id>388</id><value>Morgens</value></string>
   <string><id>389</id><value>Schauer</value></string>
-  <string><id>390</id><value>Schneegestöber</value></string>
+  <string><id>390</id><value>Böen</value></string>
   <string><id>391</id><value>niedrig</value></string>
   <string><id>392</id><value>mittel</value></string>
   <string><id>393</id><value>hoch</value></string>
@@ -422,7 +422,7 @@
   <string><id>489</id><value>Automatisch nächstes Lied im Ordner abspielen</value></string>
   <string><id>490</id><value>Listenansicht mit Symbolansicht tauschen</value></string>
   <string><id>491</id><value>- große Symbole verwenden</value></string>
-  <string><id>492</id><value>VobUntertitel vergrößern um</value></string>
+  <string><id>492</id><value>VobUntertitel Größe ändern um</value></string>
   <string><id>493</id><value>Erweiterte Optionen [nur für Experten]:</value></string>
   <string><id>494</id><value>Übersteuerungsreserve</value></string>
   <string><id>495</id><value>VideoAbtastrate erhöhen auf GUI Auflösung</value></string>
@@ -696,7 +696,7 @@
   <string><id>13357</id><value>Kombination aus Overlay/Shader</value></string>
   <string><id>13358</id><value>Pixel Shader (hohe Qualität)</value></string>
   <string><id>13359</id><value>Pixel Shader (mittlere Qualität)</value></string>
-
+  <string><id>13360</id><value>Miniaturansichten erstellen</value></string>
   <string><id>14000</id><value>Koppeln deakt.</value></string>
   <string><id>14001</id><value>Koppeln einfach</value></string>
   <string><id>14002</id><value>Koppeln unpräz.</value></string>
@@ -726,9 +726,11 @@
   <string><id>14026</id><value>Video Cache  - DVD Laufwerk</value></string>
   <string><id>14027</id><value>Video Cache  - lokales Netzwerk</value></string>
   <string><id>14028</id><value>Video Cache  - Internet</value></string>
+
   <string><id>14030</id><value>Audio Cache  - DVD Laufwerk</value></string>
   <string><id>14031</id><value>Audio Cache  - lokales Netzwerk</value></string>
   <string><id>14032</id><value>Audio Cache  - Internet</value></string>
+
   <string><id>14034</id><value>DVD Cache    - DVD Laufwerk</value></string>
   <string><id>14035</id><value>DVD Cache    - lokales Netzwerk</value></string>
   <string><id>14036</id><value>Server</value></string>
