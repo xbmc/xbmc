@@ -193,3 +193,21 @@ int CPlayList::RemoveDVDItems()
 	}
 	return nFileCount;
 }
+
+bool CPlayList::Swap(int position1, int position2)
+{
+  if (
+    (position1 < 0) ||
+    (position2 < 0) ||
+    (position1 >= size()) ||
+    (position2 >= size())
+    )
+  {
+    return false;
+  }
+  CPlayListItem anItem  = m_vecItems[position1];
+  m_vecItems[position1] = m_vecItems[position2];
+  m_vecItems[position2] = anItem;
+  return true;
+}
+
