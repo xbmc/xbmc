@@ -5,6 +5,7 @@
 *.obj
 *.idb
 *.pdb
+*.asm
 *.ncb
 BuildLog.htm
 default.xbe

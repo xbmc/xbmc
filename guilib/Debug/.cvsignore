@@ -2,6 +2,7 @@
 *.idb
 *.pdb
 *.ncb
+*.asm
 BuildLog.htm
 default.xbe
 xbmc.exe
