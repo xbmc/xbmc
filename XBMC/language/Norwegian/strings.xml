@@ -1,4 +1,3 @@
-  <!-- Based on version 1.150 of the English xml. Last updated by vnmartinsen !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -144,8 +143,8 @@
   <string><id>210</id><value>Forrige</value></string>
   <string><id>211</id><value>Leter etter applikasjoner</value></string>
   <string><id>212</id><value>applikasjoner funnet</value></string>
-  <string><id>213</id><value>Kalibrér grensesnitt</value></string>
-  <string><id>214</id><value>Kalibrér bilde</value></string>
+  <string><id>213</id><value>Sentrér grensesnitt...</value></string>
+  <string><id>214</id><value>Kalibrér bilde...</value></string>
   <string><id>215</id><value>Bløthet</value></string>
   <string><id>216</id><value>Zoom</value></string>
   <string><id>217</id><value>Strekk</value></string>
@@ -438,7 +437,7 @@
   <string><id>506</id><value>Bruke katalognavn som beskrivelse</value></string>
   <string><id>507</id><value>Sortering: Bruk</value></string>
   <string><id>508</id><value>Ikke bruke snarveier eller skanning</value></string>
-  <string><id>600</id><value>Ripp CD</value></string>
+  <string><id>600</id><value>Ripp musikk-CD</value></string>
   <string><id>601</id><value>Middels</value></string>
   <string><id>602</id><value>Standard</value></string>
   <string><id>603</id><value>Ekstrem</value></string>
@@ -509,13 +508,18 @@
   <string><id>744</id><value>Filer</value></string>
   <string><id>745</id><value>Ingen skannet informasjon for denne visningen</value></string>
   <string><id>746</id><value>Bytt til filvisning</value></string>
-  <string><id>747</id><value>Ikke nok ledig minne til å laste bilde</value></string>
+  <string><id>747</id><value>Feil ved lasting av bilde</value></string>
   <string><id>748</id><value>Forandre bane</value></string>
   <string><id>749</id><value>Legg til deling</value></string>
   <string><id>750</id><value>Er du sikker?</value></string>
   <string><id>751</id><value>Fjern deling</value></string>
   <string><id>752</id><value>Forandre delingsbane</value></string>
   <string><id>753</id><value>Forandre delingsnavn</value></string>
+  <string><id>754</id><value>Legg til programlink</value></string>
+  <string><id>755</id><value>Rediger programbane</value></string>
+  <string><id>756</id><value>Rediger programnavn</value></string>
+  <string><id>757</id><value>Rediger banedybde</value></string>
+  <string><id>758</id><value>Fjerner programlink</value></string>  
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Spill på nettet</value></string>
   <string><id>10000</id><value>Forside</value></string>
@@ -585,10 +589,10 @@
   <string><id>12329</id><value>eller trykk C for å avbryte</value></string>
   <string><id>12330</id><value>Skriv inn XBOX knappekombinasjon og </value></string>
   <string><id>12331</id><value>trykk Start, eller Back for å avbryte</value></string>
-  <string><id>12332</id><value>Lås mappe</value></string>
-  <string><id>12333</id><value>Lås opp mappe</value></string>
-  <string><id>12334</id><value>Nullstill delingslås</value></string>
-  <string><id>12335</id><value>Fjern delingslås</value></string>
+  <string><id>12332</id><value>Lås</value></string>
+  <string><id>12333</id><value>Lås opp</value></string>
+  <string><id>12334</id><value>Nullstill lås</value></string>
+  <string><id>12335</id><value>Fjern lås</value></string>
   <string><id>12336</id><value>Velg hvilken type lås som skal benyttes:</value></string>
   <string><id>12337</id><value>Nummerisk passord</value></string>
   <string><id>12338</id><value>Spill-kontroll knappekombinasjon</value></string>
@@ -684,7 +688,7 @@
   <string><id>13354</id><value>Rendermetode</value></string>
   <string><id>13355</id><value>Pixel Shader</value></string>
   <string><id>13356</id><value>YUY2 overlegg</value></string>
-  <string><id>13357</id><value>Raskt YUY2 overlegg</value></string>
+  <string><id>13357</id><value>Kombinasjon overlegg/shader</value></string>
 
   <string><id>14000</id><value>Stabling: Av</value></string>
   <string><id>14001</id><value>Stabling: Enkel</value></string>
@@ -711,17 +715,17 @@
   <string><id>14022</id><value>Bibliotek</value></string>
   <string><id>14023</id><value>Ingen TV</value></string>
   <string><id>14024</id><value>Skriv inn nærmeste store by eller US ZIP kode</value></string>
-  <string><id>14025</id><value>Video fra harddisk</value></string>
-  <string><id>14026</id><value>Video fra DVD-spiller</value></string>
-  <string><id>14027</id><value>Video fra lokalt nettverk</value></string>
-  <string><id>14028</id><value>Video fra internett</value></string>
-  <string><id>14029</id><value>Audio fra harddisk</value></string>
-  <string><id>14030</id><value>Audio fra DVD-spiller</value></string>
-  <string><id>14031</id><value>Audio fra lokalt nettverk</value></string>
-  <string><id>14032</id><value>Audio fra internett</value></string>
-  <string><id>14033</id><value>DVD fra harddisk</value></string>
-  <string><id>14034</id><value>DVD fra DVD-spiller</value></string>
-  <string><id>14035</id><value>DVD fra lokalt nettverk</value></string>
+  <string><id>14025</id><value>Video fra     - harddisk</value></string>
+  <string><id>14026</id><value>              - DVD-spiller</value></string>
+  <string><id>14027</id><value>              - lokalt nettverk</value></string>
+  <string><id>14028</id><value>              - internett</value></string>
+  <string><id>14029</id><value>Lyd fra       - harddisk</value></string>
+  <string><id>14030</id><value>              - DVD-spiller</value></string>
+  <string><id>14031</id><value>              - lokalt nettverk</value></string>
+  <string><id>14032</id><value>              - internett</value></string>
+  <string><id>14033</id><value>DVD fra       - harddisk</value></string>
+  <string><id>14034</id><value>              - DVD-spiller</value></string>
+  <string><id>14035</id><value>              - lokalt nettverk</value></string>
   <string><id>14036</id><value>Tjenere</value></string>
   <string><id>14037</id><value>Utseende</value></string>
   <string><id>14038</id><value>Nettverksinstillingene er forandret</value></string>
