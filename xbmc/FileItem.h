@@ -144,6 +144,7 @@ public:
   void FilterCueItems();
   void RemoveExtensions();
   void CleanFileNames();
+  bool HasFileNoCase(CStdString& path);
 private:
   VECFILEITEMS m_items;
 };

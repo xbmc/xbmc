@@ -214,6 +214,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   DWORD dwAlignY = 0;
   CStdString strTextureFocus, strTextureNoFocus, strTextureUpFocus, strTextureDownFocus;
   CStdString strTextureAltFocus, strTextureAltNoFocus;
+  CStdString strToggleSelect;
   DWORD dwDisabledColor = 0xffffffff;;
   int iHyperLink = WINDOW_INVALID;
   DWORD dwItems;
@@ -385,8 +386,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     }
     else if (strType == "button")
     {
-      strTextureFocus = ((CGUIButtonControl*)pReference)->GetTexutureFocusName();
-      strTextureNoFocus = ((CGUIButtonControl*)pReference)->GetTexutureNoFocusName();
+      strTextureFocus = ((CGUIButtonControl*)pReference)->GetTextureFocusName();
+      strTextureNoFocus = ((CGUIButtonControl*)pReference)->GetTextureNoFocusName();
       strFont = ((CGUIButtonControl*)pReference)->GetFontName();
       strLabel = ((CGUIButtonControl*)pReference)->GetLabel();
       dwTextColor = ((CGUIButtonControl*)pReference)->GetTextColor();
@@ -400,8 +401,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     }
     else if (strType == "conditionalbutton")
     {
-      strTextureFocus = ((CGUIConditionalButtonControl*)pReference)->GetTexutureFocusName();
-      strTextureNoFocus = ((CGUIConditionalButtonControl*)pReference)->GetTexutureNoFocusName();
+      strTextureFocus = ((CGUIConditionalButtonControl*)pReference)->GetTextureFocusName();
+      strTextureNoFocus = ((CGUIConditionalButtonControl*)pReference)->GetTextureNoFocusName();
       strFont = ((CGUIConditionalButtonControl*)pReference)->GetFontName();
       strLabel = ((CGUIConditionalButtonControl*)pReference)->GetLabel();
       dwTextColor = ((CGUIConditionalButtonControl*)pReference)->GetTextColor();
@@ -416,33 +417,37 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     else if (strType == "spinbutton")
     {
       iType = ((CGUISpinButtonControl*)pReference)->GetType();
-      strTextureDownFocus = ((CGUISpinButtonControl*)pReference)->GetTexutureDownFocusName();
-      strTextureUpFocus = ((CGUISpinButtonControl*)pReference)->GetTexutureUpFocusName();
-      strTextureFocus = ((CGUISpinButtonControl*)pReference)->GetTexutureFocusName();
-      strTextureNoFocus = ((CGUISpinButtonControl*)pReference)->GetTexutureNoFocusName();
+      strTextureDownFocus = ((CGUISpinButtonControl*)pReference)->GetTextureDownFocusName();
+      strTextureUpFocus = ((CGUISpinButtonControl*)pReference)->GetTextureUpFocusName();
+      strTextureFocus = ((CGUISpinButtonControl*)pReference)->GetTextureFocusName();
+      strTextureNoFocus = ((CGUISpinButtonControl*)pReference)->GetTextureNoFocusName();
       strFont = ((CGUISpinButtonControl*)pReference)->GetFontName();
       dwTextColor = ((CGUISpinButtonControl*)pReference)->GetTextColor();
       dwDisabledColor = ((CGUISpinButtonControl*)pReference)->GetDisabledColor() ;
     }
     else if (strType == "togglebutton")
     {
-      strTextureAltFocus = ((CGUIToggleButtonControl*)pReference)->GetTexutureAltFocusName();
-      strTextureAltNoFocus = ((CGUIToggleButtonControl*)pReference)->GetTexutureAltNoFocusName();
-      strTextureFocus = ((CGUIToggleButtonControl*)pReference)->GetTexutureFocusName();
-      strTextureNoFocus = ((CGUIToggleButtonControl*)pReference)->GetTexutureNoFocusName();
+      strTextureAltFocus = ((CGUIToggleButtonControl*)pReference)->GetTextureAltFocusName();
+      strTextureAltNoFocus = ((CGUIToggleButtonControl*)pReference)->GetTextureAltNoFocusName();
+      strTextureFocus = ((CGUIToggleButtonControl*)pReference)->GetTextureFocusName();
+      strTextureNoFocus = ((CGUIToggleButtonControl*)pReference)->GetTextureNoFocusName();
       strFont = ((CGUIToggleButtonControl*)pReference)->GetFontName();
       strLabel = ((CGUIToggleButtonControl*)pReference)->GetLabel();
+      strExecuteAction = ((CGUIToggleButtonControl*)pReference)->GetExecuteAction();
       dwTextColor = ((CGUIToggleButtonControl*)pReference)->GetTextColor();
-      dwDisabledColor = ((CGUIToggleButtonControl*)pReference)->GetDisabledColor() ;
+      dwDisabledColor = ((CGUIToggleButtonControl*)pReference)->GetDisabledColor();
+      dwAlign = ((CGUIToggleButtonControl*)pReference)->GetTextAlign() & 0x00000003;
+      dwAlignY = ((CGUIToggleButtonControl*)pReference)->GetTextAlign() & 0x00000004;
       iHyperLink = ((CGUIToggleButtonControl*)pReference)->GetHyperLink();
       lTextOffsetX = ((CGUIToggleButtonControl*)pReference)->GetTextOffsetX();
       lTextOffsetY = ((CGUIToggleButtonControl*)pReference)->GetTextOffsetY();
+      strToggleSelect = ((CGUIToggleButtonControl*)pReference)->GetToggleSelect();
     }
     else if (strType == "buttonM")
     {
       dwItems = ((CGUIMButtonControl*)pReference)->GetItems();
-      strTextureFocus = ((CGUIMButtonControl*)pReference)->GetTexutureFocusName();
-      strTextureNoFocus = ((CGUIMButtonControl*)pReference)->GetTexutureNoFocusName();
+      strTextureFocus = ((CGUIMButtonControl*)pReference)->GetTextureFocusName();
+      strTextureNoFocus = ((CGUIMButtonControl*)pReference)->GetTextureNoFocusName();
       strFont = ((CGUIMButtonControl*)pReference)->GetFontName();
       strLabel = ((CGUIMButtonControl*)pReference)->GetLabel();
       dwTextColor = ((CGUIMButtonControl*)pReference)->GetTextColor();
@@ -466,10 +471,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     }
     else if (strType == "radiobutton")
     {
-      strTextureRadioFocus = ((CGUIRadioButtonControl*)pReference)->GetTexutureRadioFocusName();;
-      strTextureRadioNoFocus = ((CGUIRadioButtonControl*)pReference)->GetTexutureRadioNoFocusName();;
-      strTextureFocus = ((CGUIRadioButtonControl*)pReference)->GetTexutureFocusName();
-      strTextureNoFocus = ((CGUIRadioButtonControl*)pReference)->GetTexutureNoFocusName();
+      strTextureRadioFocus = ((CGUIRadioButtonControl*)pReference)->GetTextureRadioFocusName();;
+      strTextureRadioNoFocus = ((CGUIRadioButtonControl*)pReference)->GetTextureRadioNoFocusName();;
+      strTextureFocus = ((CGUIRadioButtonControl*)pReference)->GetTextureFocusName();
+      strTextureNoFocus = ((CGUIRadioButtonControl*)pReference)->GetTextureNoFocusName();
       strFont = ((CGUIRadioButtonControl*)pReference)->GetFontName();
       strLabel = ((CGUIRadioButtonControl*)pReference)->GetLabel();
       dwTextColor = ((CGUIRadioButtonControl*)pReference)->GetTextColor();
@@ -486,10 +491,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       dwTextColor = ((CGUISpinControl*)pReference)->GetTextColor();
       dwAlign = ((CGUISpinControl*)pReference)->GetAlignment();
       dwAlignY = ((CGUISpinControl*)pReference)->GetAlignmentY();
-      strUp = ((CGUISpinControl*)pReference)->GetTexutureUpName();
-      strDown = ((CGUISpinControl*)pReference)->GetTexutureDownName();
-      strUpFocus = ((CGUISpinControl*)pReference)->GetTexutureUpFocusName();
-      strDownFocus = ((CGUISpinControl*)pReference)->GetTexutureDownFocusName();
+      strUp = ((CGUISpinControl*)pReference)->GetTextureUpName();
+      strDown = ((CGUISpinControl*)pReference)->GetTextureDownName();
+      strUpFocus = ((CGUISpinControl*)pReference)->GetTextureUpFocusName();
+      strDownFocus = ((CGUISpinControl*)pReference)->GetTextureDownFocusName();
       iType = ((CGUISpinControl*)pReference)->GetType();
       dwWidth = ((CGUISpinControl*)pReference)->GetSpinWidth();
       dwHeight = ((CGUISpinControl*)pReference)->GetSpinHeight();
@@ -530,10 +535,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strFont = ((CGUIListControl*)pReference)->GetFontName();
       dwSpinWidth = ((CGUIListControl*)pReference)->GetSpinWidth();
       dwSpinHeight = ((CGUIListControl*)pReference)->GetSpinHeight();
-      strUp = ((CGUIListControl*)pReference)->GetTexutureUpName();
-      strDown = ((CGUIListControl*)pReference)->GetTexutureDownName();
-      strUpFocus = ((CGUIListControl*)pReference)->GetTexutureUpFocusName();
-      strDownFocus = ((CGUIListControl*)pReference)->GetTexutureDownFocusName();
+      strUp = ((CGUIListControl*)pReference)->GetTextureUpName();
+      strDown = ((CGUIListControl*)pReference)->GetTextureDownName();
+      strUpFocus = ((CGUIListControl*)pReference)->GetTextureUpFocusName();
+      strDownFocus = ((CGUIListControl*)pReference)->GetTextureDownFocusName();
       dwSpinColor = ((CGUIListControl*)pReference)->GetSpinTextColor();
       iSpinPosX = ((CGUIListControl*)pReference)->GetSpinX();
       iSpinPosY = ((CGUIListControl*)pReference)->GetSpinY();
@@ -562,10 +567,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strFont = ((CGUIListControlEx*)pReference)->GetFontName();
       dwSpinWidth = ((CGUIListControlEx*)pReference)->GetSpinWidth();
       dwSpinHeight = ((CGUIListControlEx*)pReference)->GetSpinHeight();
-      strUp = ((CGUIListControlEx*)pReference)->GetTexutureUpName();
-      strDown = ((CGUIListControlEx*)pReference)->GetTexutureDownName();
-      strUpFocus = ((CGUIListControlEx*)pReference)->GetTexutureUpFocusName();
-      strDownFocus = ((CGUIListControlEx*)pReference)->GetTexutureDownFocusName();
+      strUp = ((CGUIListControlEx*)pReference)->GetTextureUpName();
+      strDown = ((CGUIListControlEx*)pReference)->GetTextureDownName();
+      strUpFocus = ((CGUIListControlEx*)pReference)->GetTextureUpFocusName();
+      strDownFocus = ((CGUIListControlEx*)pReference)->GetTextureDownFocusName();
       dwSpinColor = ((CGUIListControlEx*)pReference)->GetSpinTextColor();
       iSpinPosX = ((CGUIListControlEx*)pReference)->GetSpinX();
       iSpinPosY = ((CGUIListControlEx*)pReference)->GetSpinY();
@@ -591,10 +596,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       dwTextColor = ((CGUITextBox*)pReference)->GetTextColor();
       dwSpinWidth = ((CGUITextBox*)pReference)->GetSpinWidth();
       dwSpinHeight = ((CGUITextBox*)pReference)->GetSpinHeight();
-      strUp = ((CGUITextBox*)pReference)->GetTexutureUpName();
-      strDown = ((CGUITextBox*)pReference)->GetTexutureDownName();
-      strUpFocus = ((CGUITextBox*)pReference)->GetTexutureUpFocusName();
-      strDownFocus = ((CGUITextBox*)pReference)->GetTexutureDownFocusName();
+      strUp = ((CGUITextBox*)pReference)->GetTextureUpName();
+      strDown = ((CGUITextBox*)pReference)->GetTextureDownName();
+      strUpFocus = ((CGUITextBox*)pReference)->GetTextureUpFocusName();
+      strDownFocus = ((CGUITextBox*)pReference)->GetTextureDownFocusName();
       dwSpinColor = ((CGUITextBox*)pReference)->GetSpinTextColor();
       iSpinPosX = ((CGUITextBox*)pReference)->GetSpinX();
       iSpinPosY = ((CGUITextBox*)pReference)->GetSpinY();
@@ -614,10 +619,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       dwitemHeight = ((CGUIThumbnailPanel*)pReference)->GetItemHeight();
       dwSpinWidth = ((CGUIThumbnailPanel*)pReference)->GetSpinWidth();
       dwSpinHeight = ((CGUIThumbnailPanel*)pReference)->GetSpinHeight();
-      strUp = ((CGUIThumbnailPanel*)pReference)->GetTexutureUpName();
-      strDown = ((CGUIThumbnailPanel*)pReference)->GetTexutureDownName();
-      strUpFocus = ((CGUIThumbnailPanel*)pReference)->GetTexutureUpFocusName();
-      strDownFocus = ((CGUIThumbnailPanel*)pReference)->GetTexutureDownFocusName();
+      strUp = ((CGUIThumbnailPanel*)pReference)->GetTextureUpName();
+      strDown = ((CGUIThumbnailPanel*)pReference)->GetTextureDownName();
+      strUpFocus = ((CGUIThumbnailPanel*)pReference)->GetTextureUpFocusName();
+      strDownFocus = ((CGUIThumbnailPanel*)pReference)->GetTextureDownFocusName();
       dwSpinColor = ((CGUIThumbnailPanel*)pReference)->GetSpinTextColor();
       iSpinPosX = ((CGUIThumbnailPanel*)pReference)->GetSpinX();
       iSpinPosY = ((CGUIThumbnailPanel*)pReference)->GetSpinY();
@@ -637,8 +642,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strLeftFocus = ((CGUISelectButtonControl*)pReference)->GetTextureLeftFocus();
       strRight = ((CGUISelectButtonControl*)pReference)->GetTextureRight();
       strRightFocus = ((CGUISelectButtonControl*)pReference)->GetTextureRightFocus();
-      strTextureFocus = ((CGUISelectButtonControl*)pReference)->GetTexutureFocusName();
-      strTextureNoFocus = ((CGUISelectButtonControl*)pReference)->GetTexutureNoFocusName();
+      strTextureFocus = ((CGUISelectButtonControl*)pReference)->GetTextureFocusName();
+      strTextureNoFocus = ((CGUISelectButtonControl*)pReference)->GetTextureNoFocusName();
       strFont = ((CGUISelectButtonControl*)pReference)->GetFontName();
       strLabel = ((CGUISelectButtonControl*)pReference)->GetLabel();
       dwTextColor = ((CGUISelectButtonControl*)pReference)->GetTextColor();
@@ -682,10 +687,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
       strFont = ((CGUISpinControlEx*)pReference)->GetFontName();
       dwTextColor = ((CGUISpinControlEx*)pReference)->GetTextColor();
       dwAlignY = ((CGUISpinControlEx*)pReference)->GetAlignment();
-      strUp = ((CGUISpinControlEx*)pReference)->GetTexutureUpName();
-      strDown = ((CGUISpinControlEx*)pReference)->GetTexutureDownName();
-      strUpFocus = ((CGUISpinControlEx*)pReference)->GetTexutureUpFocusName();
-      strDownFocus = ((CGUISpinControlEx*)pReference)->GetTexutureDownFocusName();
+      strUp = ((CGUISpinControlEx*)pReference)->GetTextureUpName();
+      strDown = ((CGUISpinControlEx*)pReference)->GetTextureDownName();
+      strUpFocus = ((CGUISpinControlEx*)pReference)->GetTextureUpFocusName();
+      strDownFocus = ((CGUISpinControlEx*)pReference)->GetTextureDownFocusName();
       iType = ((CGUISpinControlEx*)pReference)->GetType();
       dwSpinWidth = ((CGUISpinControlEx*)pReference)->GetSpinWidth();
       dwSpinHeight = ((CGUISpinControlEx*)pReference)->GetSpinHeight();
@@ -764,6 +769,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   GetPath(pControlNode, "textureNoFocus", strTextureNoFocus);
   GetPath(pControlNode, "AltTextureFocus", strTextureAltFocus);
   GetPath(pControlNode, "AltTextureNoFocus", strTextureAltNoFocus);
+  GetString(pControlNode, "UseAltTexture", strToggleSelect);
   GetDWORD(pControlNode, "bitmaps", dwItems);
   GetHex(pControlNode, "textcolor", dwTextColor);
 
@@ -1072,16 +1078,16 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     CGUIToggleButtonControl* pControl = new CGUIToggleButtonControl(
                                           dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
                                           strTextureFocus, strTextureNoFocus,
-                                          strTextureAltFocus, strTextureAltNoFocus);
+                                          strTextureAltFocus, strTextureAltNoFocus, lTextOffsetX, lTextOffsetY, (dwAlign | dwAlignY));
 
     pControl->SetLabel(strFont, strLabel, dwTextColor);
     pControl->SetDisabledColor(dwDisabledColor);
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetHyperLink(iHyperLink);
+    pControl->SetExecuteAction(strExecuteAction);
     pControl->SetVisible(bVisible);
-    pControl->SetTextOffsetX(lTextOffsetX);
-    pControl->SetTextOffsetY(lTextOffsetY);
+    pControl->SetToggleSelect(strToggleSelect);
     return pControl;
   }
   if (strType == "buttonM")

@@ -2747,6 +2747,66 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
     CGUIMessage msg(GUI_MSG_SETFOCUS, iActiveWindowID, dwFocusedControlID, 0);
     pWindow->OnMessage(msg);
   }
+  else if (execute.Equals("PlayerControl"))
+  {
+    if (parameter.IsEmpty())
+    {
+      CLog::Log(LOGERROR, "XBMC.PlayerControl called with empty parameter");
+      return;
+    }
+    if (parameter.Equals("Play"))
+    { // play/pause
+      // either resume playing, or pause
+      if (g_application.IsPlaying())
+      {
+        if (g_application.GetPlaySpeed() != 1)
+          g_application.SetPlaySpeed(1);
+        else          
+          g_application.m_pPlayer->Pause();
+      }
+      else
+      { // not currently playing, let's see if there's anything in the playlist
+//        CPlayList& playlist = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist());
+//       if (playlist.size())
+//         g_playlistPlayer.Play(g_playlistPlayer.Pl
+      }
+    } 
+    else if (parameter.Equals("Stop"))
+    {
+      g_application.StopPlaying();
+    }
+    else if (parameter.Equals("Rewind") || parameter.Equals("Forward"))
+    {
+      if (g_application.IsPlaying() && !g_application.m_pPlayer->IsPaused())
+      {
+        int iPlaySpeed = g_application.GetPlaySpeed();
+        if (parameter.Equals("Rewind") && iPlaySpeed == 1) // Enables Rewinding
+          iPlaySpeed *= -2;
+        else if (parameter.Equals("Rewind") && iPlaySpeed > 1) //goes down a notch if you're FFing
+          iPlaySpeed /= 2;
+        else if (parameter.Equals("Forward") && iPlaySpeed < 1) //goes up a notch if you're RWing
+        {
+          iPlaySpeed /= 2;
+          if (iPlaySpeed == -1) iPlaySpeed = 1;
+        }
+        else
+          iPlaySpeed *= 2;
+
+        if (iPlaySpeed > 32 || iPlaySpeed < -32)
+          iPlaySpeed = 1;
+
+        g_application.SetPlaySpeed(iPlaySpeed);
+      }
+    }
+    else if (parameter.Equals("Next"))
+    {
+      g_playlistPlayer.PlayNext();
+    }
+    else if (parameter.Equals("Previous"))
+    {
+      g_playlistPlayer.PlayPrevious();
+    }
+  }
 }
 
 void usleep(int t)
