@@ -116,11 +116,11 @@
   </string>  
   <string>
     <id>100</id>
-    <value>View as icons</value>
+    <value>View: Icons</value>
   </string>  
   <string>
     <id>101</id>
-    <value>View as list</value>
+    <value>View: List</value>
   </string>  
   <string>
     <id>102</id>
@@ -128,15 +128,15 @@
   </string>  
   <string>
     <id>103</id>
-    <value>Sort by name</value>
+    <value>Sort by: Name</value>
   </string> 
   <string>
     <id>104</id>
-    <value>Sort by date</value>
+    <value>Sort by: Date</value>
   </string>    
   <string>
     <id>105</id>
-    <value>Sort by size</value>
+    <value>Sort by: Size</value>
   </string>      
   <string>
     <id>106</id>
@@ -512,31 +512,31 @@
   </string> 
   <string>
     <id>199</id>
-    <value>Director</value>
+    <value>Director:</value>
   </string> 
   <string>
     <id>200</id>
-    <value>Credits</value>
+    <value>Writer:</value>
   </string> 
   <string>
     <id>201</id>
-    <value>Year</value>
+    <value>Year:</value>
   </string> 
   <string>
     <id>202</id>
-    <value>Tag line</value>
+    <value>Tagline:</value>
   </string> 
   <string>
     <id>203</id>
-    <value>Plot outline</value>
+    <value>Plot outline:</value>
   </string> 
   <string>
     <id>204</id>
-    <value>Rating</value>
+    <value>Rating:</value>
   </string> 
   <string>
     <id>205</id>
-    <value>Votes</value>
+    <value>Votes:</value>
   </string> 
   <string>
     <id>206</id>
@@ -776,23 +776,23 @@
   </string>
   <string>
     <id>266</id>
-    <value>Sort by Track</value>
+    <value>Sort by: Track</value>
   </string>
   <string>
     <id>267</id>
-    <value>Sort by Time</value>
+    <value>Sort by: Time</value>
   </string>
   <string>
     <id>268</id>
-    <value>Sort by Title</value>
+    <value>Sort by: Title</value>
   </string>
   <string>
     <id>269</id>
-    <value>Sort by Artist</value>
+    <value>Sort by: Artist</value>
   </string>
   <string>
     <id>270</id>
-    <value>Sort by Album</value>
+    <value>Sort by: Album</value>
   </string>
   <string>
     <id>271</id>
@@ -1160,7 +1160,7 @@
   </string>
   <string>
     <id>363</id>
-    <value>Sort by File</value>
+    <value>Sort by: File</value>
   </string>   
   <string>
     <id>364</id>
@@ -1168,15 +1168,15 @@
   </string>   
   <string>
     <id>365</id>
-    <value>Sort by name</value>
+    <value>Sort by: Name</value>
   </string>   
   <string>
     <id>366</id>
-    <value>Sort by year</value>
+    <value>Sort by: Year</value>
   </string>   
   <string>
     <id>367</id>
-    <value>Sort by rating</value>
+    <value>Sort by: Rating</value>
   </string>   
   <string>
     <id>368</id>
@@ -1332,7 +1332,7 @@
   </string> 
   <string>
     <id>417</id>
-    <value>Large Icons</value>
+    <value>View: Big Icons</value>
   </string> 
   <string>
     <id>418</id>
@@ -1384,7 +1384,7 @@
   </string>  
   <string>
     <id>430</id>
-    <value>Sort by DVD#</value>
+    <value>Sort by: DVD#</value>
   </string>  
   <string>
     <id>431</id>
