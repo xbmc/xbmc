@@ -66,8 +66,8 @@ bool  CISO9660Directory::GetDirectory(const CStdString& strPath,VECFILEITEMS &it
                 pItem->m_strPath=strRoot;
                 pItem->m_strPath+=wfd.cFileName;
                 pItem->m_bIsFolder=true;
-                FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
-                FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+ //               FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
+ //               FileTimeToSystemTime(&localTime, &pItem->m_stTime);
         	
                 items.push_back(pItem);      
               }
@@ -81,8 +81,8 @@ bool  CISO9660Directory::GetDirectory(const CStdString& strPath,VECFILEITEMS &it
                 pItem->m_strPath+=wfd.cFileName;
 					      pItem->m_bIsFolder=false;
                 pItem->m_dwSize=CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
-					      FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
-					      FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+//					      FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
+//					      FileTimeToSystemTime(&localTime, &pItem->m_stTime);
 					      items.push_back(pItem);
 				      }
             }
