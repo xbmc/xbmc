@@ -821,7 +821,11 @@ void RunCredits()
 		D3DDevice::BlockUntilVerticalBlank();
 		D3DDevice::SetGammaRamp(D3DSGR_IMMEDIATE, &Ramp);
 	}
-	D3DDevice::Clear(0, 0, D3DCLEAR_STENCIL | D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
+
+	RESOLUTION res = g_graphicsContext.GetVideoResolution();
+	g_graphicsContext.SetVideoResolution(res, TRUE);
+
+	D3DDevice::Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
 	D3DDevice::Present(0, 0, 0, 0);
 
 	MEMORYSTATUS stat;
@@ -830,6 +834,7 @@ void RunCredits()
 	{
 		CLog::Log("Not enough memory to display credits");
 		D3DDevice::SetGammaRamp(D3DSGR_IMMEDIATE, &StartRamp);
+		g_graphicsContext.SetVideoResolution(res, FALSE);
 		g_graphicsContext.Unlock();
 		if (NeedUnpause)
 			g_application.m_pPlayer->Pause();
@@ -841,6 +846,7 @@ void RunCredits()
 		CLog::Log("Unable to load credits logo");
 		D3DDevice::SetGammaRamp(D3DSGR_IMMEDIATE, &StartRamp);
 		CleanupLogo();
+		g_graphicsContext.SetVideoResolution(res, FALSE);
 		g_graphicsContext.Unlock();
 		if (NeedUnpause)
 			g_application.m_pPlayer->Pause();
@@ -1071,7 +1077,7 @@ void RunCredits()
 
 			// check for keypress
 			g_application.ReadInput();
-			if (g_application.m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_B] ||
+			if (g_application.m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_B] > XINPUT_GAMEPAD_MAX_CROSSTALK ||
 				g_application.m_DefaultGamepad.wButtons & XINPUT_GAMEPAD_BACK ||
 				g_application.m_DefaultIR_Remote.wButtons == XINPUT_IR_REMOTE_BACK ||
 				g_application.m_DefaultIR_Remote.wButtons == XINPUT_IR_REMOTE_MENU)
@@ -1090,7 +1096,17 @@ void RunCredits()
 
 				CleanupLogo();
 
+				// wait for button release
+				do {
+					Sleep(1);
+					g_application.ReadInput();
+				} while (g_application.m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_B] > XINPUT_GAMEPAD_MAX_CROSSTALK ||
+					g_application.m_DefaultGamepad.wButtons & XINPUT_GAMEPAD_BACK ||
+					g_application.m_DefaultIR_Remote.wButtons == XINPUT_IR_REMOTE_BACK ||
+					g_application.m_DefaultIR_Remote.wButtons == XINPUT_IR_REMOTE_MENU);
+
 				// clear screen and exit to gui
+				g_graphicsContext.SetVideoResolution(res, FALSE);
 				D3DDevice::Clear(0, 0, D3DCLEAR_STENCIL | D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
 				D3DDevice::SetGammaRamp(0, &StartRamp);
 				D3DDevice::Present(0, 0, 0, 0);
@@ -1155,8 +1171,8 @@ unsigned __stdcall CreditsMusicThread(void* pParam)
 	}
 
 	// set to loop and jump to the end section
-	pModule->loop = 1;
-	pModule->sngpos = 18;
+//	pModule->loop = 1;
+//	pModule->sngpos = 18;
 	s_bFadeMusic = false;
 
 	Mod_Player_Start(pModule);
@@ -1171,19 +1187,19 @@ unsigned __stdcall CreditsMusicThread(void* pParam)
 			{
 				mikxboxSetMusicVolume(--MusicVol);
 			}
-//			else
-//			{
-//				// check for end of pattern at position 12
-//				if (pModule->sngpos == 12 &&
-//						pModule->patpos == pModule->numrow-1 &&
-//						!pModule->vbtick)
-//				{
-//					// jump back to posiiton 9
-//					pModule->patpos = 0;
-//					pModule->posjmp = 2;
-//					pModule->sngpos = 9;
-//				}
-//			}
+			else
+			{
+				// check for end of pattern at position 12
+				if (pModule->sngpos == 12 &&
+						pModule->patpos == pModule->numrow-1 &&
+						!pModule->vbtick)
+				{
+					// jump back to posiiton 9
+					pModule->patpos = 0;
+					pModule->posjmp = 2;
+					pModule->sngpos = 9;
+				}
+			}
 		}
 
 		if (!s_bStopPlaying)
@@ -1191,8 +1207,8 @@ unsigned __stdcall CreditsMusicThread(void* pParam)
 			Mod_Player_Stop();
 			Mod_Player_Free(pModule);
 			pModule = Mod_Player_Load((char*)pParam, 127, 0);
-			pModule->loop = 1;
-			pModule->sngpos = 18;
+//			pModule->loop = 1;
+//			pModule->sngpos = 18;
 			s_bFadeMusic = false;
 			mikxboxSetMusicVolume(MusicVol = 128);
 			Mod_Player_Start(pModule);
