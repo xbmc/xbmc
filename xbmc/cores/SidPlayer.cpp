@@ -88,11 +88,15 @@ SidPlayer::SidPlayer(IPlayerCallback& callback) :IPlayer(callback), m_name("SidP
 
 	createOutput(OUT_NULL, NULL);
 	createSidEmu(EMU_NONE);
+
+	InitializeCriticalSection(&m_CS);
 }
 
 SidPlayer::~SidPlayer()
 {
 	closefile();
+
+	DeleteCriticalSection(&m_CS);
 
 	CSectionLoader::Unload("SID_RX");
 	CSectionLoader::Unload("SID_RW");
@@ -256,10 +260,8 @@ createSidEmu_error:
 	return false;
 }
 
-bool SidPlayer::openfile(const CStdString& strFile)
+bool SidPlayer::starttrack()
 {
-	closefile();
-
 	if ((m_state & ~playerFast) == playerRestart)
 	{
 		if (m_state & playerFast)
@@ -267,72 +269,7 @@ bool SidPlayer::openfile(const CStdString& strFile)
 		m_state = playerStopped;
 	}
 
-	m_driver.output = OUT_SOUNDCARD;
-	m_driver.file   = false;
-	m_driver.sid    = EMU_RESID;
-
-	if (!CUtil::IsHD(strFile))
-	{
-		CFile file;
-		if (!file.Cache(strFile.c_str(),"Z:\\cachedsid",NULL,NULL))
-		{
-			::DeleteFile("Z:\\cachedsid");
-			CLog::Log("ModPlayer: Unable to cache file %s\n", strFile.c_str());
-			return false;
-		}
-		m_filename = strdup("Z:\\cachedsid");
-	}
-	else
-		m_filename = strdup(strFile.c_str());
-
-	// Load the tune
-	m_tune.load (m_filename);
-	if (!m_tune)
-	{
-		displayError ((m_tune.getInfo ()).statusString);
-		return false;
-	}
-
-	// Select the desired track
-	m_track.first    = m_tune.selectSong (m_track.first);
-	m_track.selected = m_track.first;
-	if (m_track.single)
-		m_track.songs = 1;
-
-	// If user provided no time then load songlength database
-	// and set default lengths incase it's not found in there.
-	{
-		if (m_driver.file && m_timer.valid && !m_timer.length)
-		{   // Time of 0 provided for wav generation
-			displayError ("ERROR: -t0 invalid in record mode");
-			return false;
-		}
-		if (!m_timer.valid)
-		{
-			const char *database = (m_iniCfg.sidplay2()).database;
-			m_timer.length = (m_iniCfg.sidplay2()).playLength;
-			if (m_driver.file)
-				m_timer.length = (m_iniCfg.sidplay2()).recordLength;
-			if (database && (*database != '\0'))
-			{   // Try loading the database specificed by the user
-				if (m_database.open (database) < 0)
-				{
-					displayError (m_database.error ());
-					return false;
-				}
-			}
-		}
-	}
-
-	if (!m_filter.definition)
-		m_filter.definition = m_iniCfg.filter (m_engCfg.sidModel);
-
-	// Configure engine with settings
-	if (m_engine.config (m_engCfg) < 0)
-	{   // Config failed
-		displayError (m_engine.error ());
-		return false;
-	}
+	m_track.selected = m_tune.selectSong (m_track.selected);
 
 	// Select the required song
 	if (m_engine.load (&m_tune) < 0)
@@ -392,10 +329,86 @@ bool SidPlayer::openfile(const CStdString& strFile)
 	}
 
 	m_track.loop = false;
-	m_track.single = true;
 
 	m_timer.current = ~0;
 	m_state = playerRunning;
+
+	return true;
+}
+
+bool SidPlayer::openfile(const CStdString& strFile)
+{
+	closefile();
+
+	if (!CUtil::IsHD(strFile))
+	{
+		CFile file;
+		if (!file.Cache(strFile.c_str(),"Z:\\cachedsid",NULL,NULL))
+		{
+			::DeleteFile("Z:\\cachedsid");
+			CLog::Log("ModPlayer: Unable to cache file %s\n", strFile.c_str());
+			return false;
+		}
+		m_filename = strdup("Z:\\cachedsid");
+	}
+	else
+		m_filename = strdup(strFile.c_str());
+
+	m_driver.output = OUT_SOUNDCARD;
+	m_driver.file   = false;
+	m_driver.sid    = EMU_RESID;
+
+	// Load the tune
+	m_tune.load (m_filename);
+	if (!m_tune)
+	{
+		displayError ((m_tune.getInfo ()).statusString);
+		return false;
+	}
+
+	// Select the desired track
+	m_track.first    = m_tune.selectSong (m_track.first);
+	m_track.selected = m_track.first;
+	if (m_track.single)
+		m_track.songs = 1;
+
+	// If user provided no time then load songlength database
+	// and set default lengths incase it's not found in there.
+	{
+		if (m_driver.file && m_timer.valid && !m_timer.length)
+		{   // Time of 0 provided for wav generation
+			displayError ("ERROR: -t0 invalid in record mode");
+			return false;
+		}
+		if (!m_timer.valid)
+		{
+			const char *database = (m_iniCfg.sidplay2()).database;
+			m_timer.length = (m_iniCfg.sidplay2()).playLength;
+			if (m_driver.file)
+				m_timer.length = (m_iniCfg.sidplay2()).recordLength;
+			if (database && (*database != '\0'))
+			{   // Try loading the database specificed by the user
+				if (m_database.open (database) < 0)
+				{
+					displayError (m_database.error ());
+					return false;
+				}
+			}
+		}
+	}
+
+	if (!m_filter.definition)
+		m_filter.definition = m_iniCfg.filter (m_engCfg.sidModel);
+
+	// Configure engine with settings
+	if (m_engine.config (m_engCfg) < 0)
+	{   // Config failed
+		displayError (m_engine.error ());
+		return false;
+	}
+
+	if (!starttrack())
+		return false;
 
 	m_bIsPlaying=true;
 	m_bPaused=false;
@@ -414,7 +427,7 @@ bool SidPlayer::closefile()
 	m_bStopPlaying=true;
 	StopThread();
 
-	m_engine.stop   ();
+	m_engine.stop();
 	if (m_state == playerExit)
 	{   // Natural finish
 	}
@@ -491,6 +504,23 @@ void SidPlayer::SubtitleOffset(bool bPlus)
 
 void SidPlayer::Seek(bool bPlus, bool bLargeStep)
 {
+	EnterCriticalSection(&m_CS);
+
+	if (bPlus)
+	{
+		m_track.selected++;
+		if (m_track.selected > m_track.songs)
+			m_track.selected = 1;
+	}
+	else
+	{
+		m_track.selected--;
+		if (m_track.selected < 1)
+			m_track.selected = m_track.songs;
+	}
+	m_state = playerRestart;
+
+	LeaveCriticalSection(&m_CS);
 }
 
 void SidPlayer::ToggleFrameDrop()
@@ -549,44 +579,56 @@ void SidPlayer::OnExit()
 
 void SidPlayer::Process()
 {
-	event();
-	while (!m_bStopPlaying)
+	do
 	{
-		void *buffer = m_driver.selected->buffer ();
-		uint_least32_t length = m_driver.cfg.bufSize;
+		if ((m_state & ~playerFast) == playerRestart)
+			starttrack();
 
-		if (m_state == playerRunning)
+		event();
+		while (!m_bStopPlaying)
 		{
-			// Fill buffer
-			uint_least32_t ret;
-			ret = m_engine.play (buffer, length);
-			if (ret < length)
+			EnterCriticalSection(&m_CS);
+
+			void *buffer = m_driver.selected->buffer ();
+			uint_least32_t length = m_driver.cfg.bufSize;
+
+			if (m_state == playerRunning)
 			{
-				if (m_engine.state () != sid2_stopped)
+				// Fill buffer
+				uint_least32_t ret;
+				ret = m_engine.play (buffer, length);
+				if (ret < length)
 				{
-					m_state = playerError;
+					if (m_engine.state () != sid2_stopped)
+					{
+						m_state = playerError;
+						break;
+					}
 					break;
 				}
+			}
+
+			switch (m_state)
+			{
+			case playerRunning:
+				m_driver.selected->write();
+				// Deliberate run on
+			case playerPaused:
+				LeaveCriticalSection(&m_CS);
+				DirectSoundDoWork();
+				Sleep(50);
+				continue;
+			default:
+				LeaveCriticalSection(&m_CS);
 				break;
 			}
-		}
 
-		switch (m_state)
-		{
-		case playerRunning:
-			m_driver.selected->write();
-			// Deliberate run on
-		case playerPaused:
-			DirectSoundDoWork();
-			Sleep(50);
-			continue;
-		default:
 			break;
 		}
-
-		break;
-	}
-	((AudioDriver*)m_driver.selected)->Eof();
+		EnterCriticalSection(&m_CS);
+		((AudioDriver*)m_driver.selected)->Eof();
+		LeaveCriticalSection(&m_CS);
+	} while (!m_bStopPlaying && (m_state & ~playerFast) == playerRestart);
 }
 
 void SidPlayer::event (void)

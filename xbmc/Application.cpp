@@ -801,22 +801,30 @@ void CApplication::OnKey(CKey& key)
         }
         if (action.wID == ACTION_MUSIC_FORWARD || action.wID == ACTION_MUSIC_REWIND)
         {
-          int iPlaySpeed=m_iPlaySpeed;
-          if (action.wID == ACTION_MUSIC_REWIND && iPlaySpeed == 1) // Enables Rewinding
-	          iPlaySpeed *=-2;
-          else if (action.wID == ACTION_MUSIC_REWIND && iPlaySpeed > 1) //goes down a notch if you're FFing
-	          iPlaySpeed /=2;
-          else if (action.wID == ACTION_MUSIC_FORWARD && iPlaySpeed < 1) //goes up a notch if you're RWing
-	          iPlaySpeed /= 2;
-          else 
-	          iPlaySpeed *= 2;
+					if (m_strCurrentPlayer == "sid")
+					{
+						// sid uses these to track skip
+						m_pPlayer->Seek(action.wID == ACTION_MUSIC_FORWARD);
+					}
+					else
+					{
+						int iPlaySpeed=m_iPlaySpeed;
+						if (action.wID == ACTION_MUSIC_REWIND && iPlaySpeed == 1) // Enables Rewinding
+							iPlaySpeed *=-2;
+						else if (action.wID == ACTION_MUSIC_REWIND && iPlaySpeed > 1) //goes down a notch if you're FFing
+							iPlaySpeed /=2;
+						else if (action.wID == ACTION_MUSIC_FORWARD && iPlaySpeed < 1) //goes up a notch if you're RWing
+							iPlaySpeed /= 2;
+						else 
+							iPlaySpeed *= 2;
 
-          if (action.wID == ACTION_MUSIC_FORWARD && iPlaySpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
-	          iPlaySpeed = 1;
-          if (iPlaySpeed > 32 || iPlaySpeed < -32)
-	          iPlaySpeed = 1;     
+						if (action.wID == ACTION_MUSIC_FORWARD && iPlaySpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
+							iPlaySpeed = 1;
+						if (iPlaySpeed > 32 || iPlaySpeed < -32)
+							iPlaySpeed = 1;     
 
-          SetPlaySpeed(iPlaySpeed);
+						SetPlaySpeed(iPlaySpeed);
+					}
         }
       }
     }
