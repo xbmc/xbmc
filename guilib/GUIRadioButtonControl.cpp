@@ -24,24 +24,28 @@ void CGUIRadioButtonControl::Render()
   CGUIButtonControl::Render();
   if ( IsSelected() )
   {
-    if ( HasFocus() )
-    {
+//    if ( HasFocus() )
+ //   {
       m_imgRadioFocus.Render();
-    }
-    else
-    {
-     m_imgRadioNoFocus.Render();
-    }
+ //   }
+ //   else
+ //   {
+ //    m_imgRadioNoFocus.Render();
+ //   }
   }
+	else
+	{
+     m_imgRadioNoFocus.Render();
+	}
 }
 
 void CGUIRadioButtonControl::OnAction(const CAction &action) 
 {
-	CGUIButtonControl::OnAction(action);
 	if (action.wID == ACTION_SELECT_ITEM)
 	{
 		m_bSelected=!m_bSelected;
 	}
+	CGUIButtonControl::OnAction(action);
 }
 
 bool CGUIRadioButtonControl::OnMessage(CGUIMessage& message)
@@ -62,12 +66,7 @@ void CGUIRadioButtonControl::AllocResources()
   m_imgRadioFocus.AllocResources();
   m_imgRadioNoFocus.AllocResources();
 
-  int iPosX=(m_iPosX+m_dwWidth-8) - 16;
-  int iPosY=m_iPosY+(m_dwHeight-16)/2;
-  m_imgRadioFocus.SetPosition(iPosX,iPosY);
-  m_imgRadioNoFocus.SetPosition(iPosX,iPosY);
-  
-
+	SetPosition(m_iPosX, m_iPosY);
 }
 
 void CGUIRadioButtonControl::FreeResources()
@@ -84,6 +83,14 @@ void  CGUIRadioButtonControl::Update()
   
 }
 
+void CGUIRadioButtonControl::SetPosition(int iPosX, int iPosY)
+{
+	CGUIButtonControl::SetPosition(iPosX, iPosY);
+  int iRadioPosX=(m_iPosX+(int)m_dwWidth-8) - 16;
+  int iRadioPosY=m_iPosY+((int)m_dwHeight-16)/2;
+  m_imgRadioFocus.SetPosition(iRadioPosX,iRadioPosY);
+  m_imgRadioNoFocus.SetPosition(iRadioPosX,iRadioPosY);
+}
 
 
 

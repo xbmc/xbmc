@@ -119,7 +119,7 @@ CSmartXXLCD::~CSmartXXLCD()
 void CSmartXXLCD::Initialize()
 {
   StopThread();
-  if (!g_stSettings.m_bLCDUsed) 
+  if (g_guiSettings.GetInt("LCD.Mode") == LCD_MODE_NONE) 
   {
     CLog::Log(LOGINFO, "lcd not used");
     return;
@@ -140,14 +140,14 @@ void CSmartXXLCD::SetContrast(int iContrast)
 //*************************************************************************************************************
 void CSmartXXLCD::Stop()
 {
-  if (!g_stSettings.m_bLCDUsed) return;
+  if (g_guiSettings.GetInt("LCD.Mode") == LCD_MODE_NONE) return;
   StopThread();
 }
 
 //*************************************************************************************************************
 void CSmartXXLCD::SetLine(int iLine, const CStdString& strLine)
 {
-  if (!g_stSettings.m_bLCDUsed) return;
+  if (g_guiSettings.GetInt("LCD.Mode") == LCD_MODE_NONE) return;
   if (iLine < 0 || iLine >= (int)m_iRows) return;
   
   CStdString strLineLong=strLine;
@@ -394,7 +394,7 @@ void CSmartXXLCD::DisplayProgressBar(unsigned char percent, unsigned char charcn
 //************************************************************************************************************************
 void CSmartXXLCD::DisplaySetBacklight(unsigned char level) 
 {
-  if (g_stSettings.m_iLCDType==LCD_MODE_TYPE_LCD)
+  if (g_guiSettings.GetInt("LCD.Type")==LCD_MODE_TYPE_LCD)
   {
     float fBackLight=((float)level)/100.0f;
     fBackLight*=63.0f;
@@ -403,7 +403,7 @@ void CSmartXXLCD::DisplaySetBacklight(unsigned char level)
     outb(DISP_O_LIGHT, iNewLevel&63);
   }
 
-  if (g_stSettings.m_iLCDType==LCD_MODE_TYPE_VFD)
+  if (g_guiSettings.GetInt("LCD.Type")==LCD_MODE_TYPE_VFD)
   {
     //VFD:(value 0 to 3 = 100%, 75%, 50%, 25%)
     if (level<0) level=0;
@@ -418,7 +418,7 @@ void CSmartXXLCD::DisplaySetBacklight(unsigned char level)
 //************************************************************************************************************************
 void CSmartXXLCD::DisplaySetContrast(unsigned char level) 
 {
-  if (g_stSettings.m_iLCDType==LCD_MODE_TYPE_LCD)
+  if (g_guiSettings.GetInt("LCD.Type")==LCD_MODE_TYPE_LCD)
   {
     float fBackLight=((float)level)/100.0f;
     fBackLight*=63.0f;
@@ -465,14 +465,14 @@ void CSmartXXLCD::Process()
   int iOldContrast=-1;
 
   
-  m_iColumns = g_stSettings.m_iLCDColumns;
-  m_iRows    = g_stSettings.m_iLCDRows;
-  m_iRow1adr = g_stSettings.m_iLCDAdress[0];
-  m_iRow2adr = g_stSettings.m_iLCDAdress[1];
-  m_iRow3adr = g_stSettings.m_iLCDAdress[2];
-  m_iRow4adr = g_stSettings.m_iLCDAdress[3];
-  m_iBackLight= g_stSettings.m_iLCDBackLight;
-  m_iContrast = g_stSettings.m_iLCDContrast;
+  m_iColumns = g_guiSettings.GetInt("LCD.Columns");
+  m_iRows    = g_guiSettings.GetInt("LCD.Rows");
+  m_iRow1adr = g_guiSettings.GetInt("LCD.Row1Address");
+  m_iRow2adr = g_guiSettings.GetInt("LCD.Row2Address");
+  m_iRow3adr = g_guiSettings.GetInt("LCD.Row3Address");
+  m_iRow4adr = g_guiSettings.GetInt("LCD.Row4Address");
+  m_iBackLight= g_guiSettings.GetInt("LCD.BackLight");
+  m_iContrast = g_guiSettings.GetInt("LCD.Contrast");
   if (m_iRows >= MAX_ROWS) m_iRows=MAX_ROWS-1;
 
   DisplayInit();

@@ -46,6 +46,7 @@ CGUIWindow::VECREFERENCECONTOLS CGUIWindow::ControlsCache;
 CGUIWindow::CGUIWindow(DWORD dwID)
 {
   m_dwWindowId=dwID;
+	m_dwIDRange=1;
   m_dwPreviousWindowId=WINDOW_HOME;
   m_dwDefaultFocusControlID=0;
   m_bRelativeCoords = false;
@@ -183,6 +184,10 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 			else if (!strcmp(it->m_szType,"buttonscroller"))
 			{
 				stControl.m_pControl = new CGUIButtonScroller(*((CGUIButtonScroller*)it->m_pControl));
+			}
+			else if (!strcmp(it->m_szType,"spincontrolex"))
+			{
+				stControl.m_pControl = new CGUISpinControlEx(*((CGUISpinControlEx*)it->m_pControl));
 			}
 			controls.push_back(stControl);
 		}
@@ -332,6 +337,10 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 		else if (!strcmp(it->m_szType,"buttonscroller"))
 		{
 			stControl.m_pControl = new CGUIButtonScroller(*((CGUIButtonScroller*)it->m_pControl));
+		}
+		else if (!strcmp(it->m_szType,"spincontrolex"))
+		{
+			stControl.m_pControl = new CGUISpinControlEx(*((CGUISpinControlEx*)it->m_pControl));
 		}
 		ControlsCache.push_back(stControl);
 	}
@@ -526,8 +535,8 @@ void CGUIWindow::CenterWindow()
 void CGUIWindow::Render()
 {
 	// calculate necessary scalings
-	float fFromWidth = (float)g_settings.m_ResInfo[g_stSettings.m_GUIResolution].iWidth;
-	float fFromHeight = (float)g_settings.m_ResInfo[g_stSettings.m_GUIResolution].iHeight;
+	float fFromWidth = (float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth;
+	float fFromHeight = (float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight;
 	float fToWidth = (float)g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iWidth;
 	float fToHeight = (float)g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iHeight;
 	float fScaleX = fToWidth/fFromWidth;
@@ -620,8 +629,8 @@ void CGUIWindow::OnMouseAction()
 	if (m_bNeedsScaling)
 	{
 		// calculate necessary scalings
-		float fFromWidth = (float)g_settings.m_ResInfo[g_stSettings.m_GUIResolution].iWidth;
-		float fFromHeight = (float)g_settings.m_ResInfo[g_stSettings.m_GUIResolution].iHeight;
+		float fFromWidth = (float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth;
+		float fFromHeight = (float)g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight;
 		float fToWidth = (float)g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iWidth;
 		float fToHeight = (float)g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iHeight;
 		float fScaleX = fToWidth/fFromWidth;

@@ -178,7 +178,7 @@ bool CCdgReader::Start(float fStartTime)
 	if(!m_pLoader)	return false;
 	m_fStartingTime = fStartTime;
 	m_Timer.StartZero();
-	SetAVDelay(g_stSettings.m_fCdgAVDelay);
+	SetAVDelay(g_guiSettings.GetFloat("Karaoke.SyncDelay"));
 	m_uiNumReadSubCodes = 0;
 	m_Cdg.ClearDisplay();
 	CThread::Create(false);
@@ -441,12 +441,12 @@ void CCdgRenderer::UpdateTexture()
 }
 TEX_COLOR CCdgRenderer::GetBgAlpha()
 {
-	return	((TEX_COLOR) (g_stSettings.m_iCdgBgAlpha & 0x000000FF))<<24;
+	return	((TEX_COLOR) (g_guiSettings.GetInt("Karaoke.BackgroundAlpha") & 0x000000FF))<<24;
 }
 
 TEX_COLOR CCdgRenderer::GetFgAlpha()
 {
-	return ((TEX_COLOR) (g_stSettings.m_iCdgFgAlpha & 0x000000FF))<<24;
+	return ((TEX_COLOR) (g_guiSettings.GetInt("Karaoke.ForegroundAlpha") & 0x000000FF))<<24;
 }
 
 TEX_COLOR  CCdgRenderer::ConvertColor(CDG_COLOR CdgColor)
@@ -518,7 +518,7 @@ float CCdgParser::GetAVDelay()
 	CSingleLock	lock(m_CritSection);
 	if(m_pReader)
 		return m_pReader->GetAVDelay();
-	return	g_stSettings.m_fCdgAVDelay;
+	return g_guiSettings.GetFloat("Karaoke.SyncDelay");
 }
 void CCdgParser::Render()
 {

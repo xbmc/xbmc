@@ -239,13 +239,13 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	m_pCallback=pCallback;
 
 	m_bResampleAudio = false;
-	if (bResample && g_stSettings.m_bResampleMusicAudio && uiSamplesPerSec != 48000)
+	if (bResample && g_guiSettings.GetBool("AudioOutput.HighQualityResampling") && uiSamplesPerSec != 48000)
 		m_bResampleAudio = true;
 
 	bool  bAudioOnAllSpeakers(false);
-	if (g_stSettings.m_bUseDigitalOutput)
+	if (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL)
 	{
-		if (g_stSettings.m_bAudioOnAllSpeakers  ) 
+		if (g_guiSettings.GetBool("AudioOutput.OutputToAllSpeakers")) 
 		{
 			bAudioOnAllSpeakers=true;
   	  DirectSoundOverrideSpeakerConfig(DSSPEAKER_USE_DEFAULT);
@@ -415,7 +415,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	m_pStream->SetHeadroom(0);
 	// Set the default mixbins headroom to appropriate level as set in the settings file (to allow the maximum volume)
 	for (DWORD i=0; i<dsmb.dwMixBinCount;i++)
-		m_pDSound->SetMixBinHeadroom(i, DWORD(g_stSettings.m_fVolumeHeadroom/6.0f));
+		m_pDSound->SetMixBinHeadroom(i, DWORD(g_guiSettings.GetFloat("headroom")/6.0f));
 
 	m_bIsAllocated   = true;
 	if (m_pCallback)
@@ -898,6 +898,6 @@ void CASyncDirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeaker
 	m_pStream->SetHeadroom(0);
 	// Set the default mixbins headroom to appropriate level as set in the settings file (to allow the maximum volume)
 	for (DWORD i=0; i<dsmb.dwMixBinCount;i++)
-		m_pDSound->SetMixBinHeadroom(i, DWORD(g_stSettings.m_fVolumeHeadroom/6.0f));
+		m_pDSound->SetMixBinHeadroom(i, DWORD(g_guiSettings.GetFloat("headroom")/6.0f));
     m_iCurrentAudioStream = iAudioStream;
 }

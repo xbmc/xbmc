@@ -5,7 +5,7 @@
 #include "DetectDVDType.h"
 #include "sectionloader.h"
 #include "util.h"
-#include "settings.h"
+#include "GUISettings.h"
 #include "playlistplayer.h"
 #include "texturemanager.h"
 #include "GuiUserMessages.h"
@@ -37,7 +37,7 @@ void CAutorun::ExecuteAutorun()
 
 	g_application.ResetScreenSaverWindow();		// turn off the screensaver if it's active
 
-	if ( g_stSettings.m_bAutorunCdda && pInfo->IsAudio( 1 ) )
+	if ( g_guiSettings.GetBool("Autorun.CDDA") && pInfo->IsAudio( 1 ) )
 	{
 		RunCdda();
 	}
@@ -57,7 +57,7 @@ void CAutorun::ExecuteAutorun()
 
 void CAutorun::RunXboxCd()
 {	
-	if (g_stSettings.m_bAutorunXbox)
+	if (g_guiSettings.GetBool("Autorun.Xbox"))
 	{
 		if ( CUtil::FileExists("D:\\default.xbe") ) 
 		{
@@ -67,7 +67,7 @@ void CAutorun::RunXboxCd()
 			return;
 		}
 	}
-	if ( !g_stSettings.m_bAutorunDVD && !g_stSettings.m_bAutorunVCD && !g_stSettings.m_bAutorunVideo && !g_stSettings.m_bAutorunMusic && !g_stSettings.m_bAutorunPictures )
+	if ( !g_guiSettings.GetBool("Autorun.DVD") && !g_guiSettings.GetBool("Autorun.VCD") && !g_guiSettings.GetBool("Autorun.Video") && !g_guiSettings.GetBool("Autorun.Music") && !g_guiSettings.GetBool("Autorun.Pictures") )
 		return;
 
 	int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
@@ -127,7 +127,7 @@ void CAutorun::RunCdda()
 
 void CAutorun::RunISOMedia()
 {
-	if ( !g_stSettings.m_bAutorunDVD && !g_stSettings.m_bAutorunVCD && !g_stSettings.m_bAutorunVideo && !g_stSettings.m_bAutorunMusic && !g_stSettings.m_bAutorunPictures )
+	if ( !g_guiSettings.GetBool("Autorun.DVD") && !g_guiSettings.GetBool("Autorun.VCD") && !g_guiSettings.GetBool("Autorun.Video") && !g_guiSettings.GetBool("Autorun.Music") && !g_guiSettings.GetBool("Autorun.Pictures") )
 		return;
 
 	int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
@@ -167,7 +167,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
 			{
 				if (bRoot&& pItem->m_strPath.Find( "VIDEO_TS" ) != -1 ) 
 				{
-					if ( g_stSettings.m_bAutorunDVD ) 
+					if ( g_guiSettings.GetBool("Autorun.DVD") ) 
 					{
             CUtil::PlayDVD();
 						bPlaying=true;
@@ -176,7 +176,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
 				}
 				else if (bRoot && pItem->m_strPath.Find("MPEGAV") != -1 )
 				{
-					if ( g_stSettings.m_bAutorunVCD ) 
+					if ( g_guiSettings.GetBool("Autorun.VCD") ) 
 					{
 						CFileItem item = *pItem;
 						item.m_strPath.Format("%s%cAVSEQ01.DAT",pItem->m_strPath.c_str(),szSlash);
@@ -187,7 +187,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
 				}
 				else if (bRoot && pItem->m_strPath.Find("MPEG2") != -1 )
 				{
-					if ( g_stSettings.m_bAutorunVCD ) 
+					if ( g_guiSettings.GetBool("Autorun.VCD") ) 
 					{
 						CFileItem item = *pItem;
 						item.m_strPath.Format("%s%cAVSEQ01.MPG",pItem->m_strPath.c_str(),szSlash);
@@ -198,7 +198,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
 				}
         else if (bRoot && pItem->m_strPath.Find("PICTURES") != -1 )
 				{
-          if (g_stSettings.m_bAutorunPictures)
+          if (g_guiSettings.GetBool("Autorun.Pictures"))
           {
             bPlaying=true;
 				    m_gWindowManager.ActivateWindow(WINDOW_PICTURES);
@@ -213,14 +213,14 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
 		}
 		else
 		{
-			if ( CUtil::IsVideo( pItem->m_strPath ) && g_stSettings.m_bAutorunVideo)
+			if ( CUtil::IsVideo( pItem->m_strPath ) && g_guiSettings.GetBool("Autorun.Video"))
 			{
 				bPlaying=true;
 				g_application.PlayFile( *pItem );
 				break;
 			}
 
-			if ( CUtil::IsAudio( pItem->m_strPath ) && g_stSettings.m_bAutorunMusic)
+			if ( CUtil::IsAudio( pItem->m_strPath ) && g_guiSettings.GetBool("Autorun.Music"))
 			{
 				nAddedToPlaylist++;
 				CPlayList::CPlayListItem playlistItem;
@@ -230,7 +230,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
 				g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).Add(playlistItem);
 			}
 		
-			if ( CUtil::IsPicture( pItem->m_strPath ) && g_stSettings.m_bAutorunPictures)
+			if ( CUtil::IsPicture( pItem->m_strPath ) && g_guiSettings.GetBool("Autorun.Pictures"))
 			{
 				bPlaying=true;
 				m_gWindowManager.ActivateWindow(WINDOW_PICTURES);

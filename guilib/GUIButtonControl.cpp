@@ -16,6 +16,7 @@ CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, int iP
 	m_dwFlickerCounter	= 0;
 	m_dwFrameCounter	= 0;
 	m_strLabel			= L""; 
+	m_strLabel2=L"";
 	m_dwTextColor		= 0xFFFFFFFF; 
 	m_dwDisabledColor	= 0xFF606060; 
 	m_dwTextOffsetX		= dwTextXOffset;
@@ -35,6 +36,7 @@ void CGUIButtonControl::SetDisabledColor(D3DCOLOR color)
 {
 	m_dwDisabledColor = color;
 }
+
 void CGUIButtonControl::Render()
 {
 	if (!IsVisible())
@@ -74,11 +76,13 @@ void CGUIButtonControl::Render()
 	m_imgFocus.Render();
 	m_imgNoFocus.Render();  
 
+	if (!m_pFont) return;
+	
 	// if we're flickering then we may not need to render text
 	bool bRenderText   = (m_dwFlickerCounter>0) ? (m_dwFrameCounter % 60 > 30) : true;
 	m_dwFlickerCounter = (m_dwFlickerCounter>0) ? (m_dwFlickerCounter-1) : 0;
 
-	if (m_strLabel.size() > 0 && m_pFont && bRenderText)
+	if (m_strLabel.size() > 0 && bRenderText)
 	{
 		float fPosX = (float)m_iPosX + m_dwTextOffsetX;
 		float fPosY = (float)m_iPosY + m_dwTextOffsetY;
@@ -96,14 +100,25 @@ void CGUIButtonControl::Render()
 		g_charsetConverter.stringCharsetToFontCharset(m_strLabel, strLabelUnicode);
 
 		if (IsDisabled())
-		{
 			m_pFont->DrawText( fPosX, fPosY, m_dwDisabledColor, strLabelUnicode.c_str(), m_dwTextAlignment);
-		}
 		else
+			m_pFont->DrawText( fPosX, fPosY,m_dwTextColor,strLabelUnicode.c_str(),m_dwTextAlignment);
+
+		// render the second label if it exists
+		if (m_strLabel2.size() > 0)
 		{
-			m_pFont->DrawText( fPosX, fPosY, m_dwTextColor, strLabelUnicode.c_str(), m_dwTextAlignment);
+			fPosX = (float)m_iPosX + m_dwWidth - m_dwTextOffsetX;
+			DWORD dwAlign = XBFONT_RIGHT | (m_dwTextAlignment & XBFONT_CENTER_Y);
+
+			g_charsetConverter.stringCharsetToFontCharset(m_strLabel2, strLabelUnicode);
+
+			if (IsDisabled() )
+				m_pFont->DrawText( fPosX, fPosY,m_dwDisabledColor,strLabelUnicode.c_str(), dwAlign);
+			else
+				m_pFont->DrawText( fPosX, fPosY,m_dwTextColor,strLabelUnicode.c_str(),dwAlign);
 		}
 	}
+	
 }
 
 void CGUIButtonControl::OnAction(const CAction &action) 
@@ -186,6 +201,19 @@ void CGUIButtonControl::SetText(const wstring &label)
 {
 	m_strLabel = label;
 }
+
+void CGUIButtonControl::SetText2(const CStdString &aLabel2)
+{
+	WCHAR wszText[1024];
+	swprintf(wszText,L"%S",aLabel2.c_str());
+	m_strLabel2=wszText;
+}
+
+void CGUIButtonControl::SetText2(const wstring &label2)
+{
+	m_strLabel2=label2;
+}
+
 void CGUIButtonControl::SetLabel(const CStdString& strFontName,const CStdString& strLabel,D3DCOLOR dwColor)
 {
 	WCHAR wszText[1024];

@@ -247,7 +247,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 			Reset();
 
 			//	Set play/pause button into the right state
-			if (g_application.m_pPlayer->IsPaused())
+			if (g_application.m_pPlayer && g_application.m_pPlayer->IsPaused())
 				ToggleButton(OSD_PLAY, true);		// make sure play button is down (so it shows the pause symbol)
 			else
 				ToggleButton(OSD_PLAY, false);		// make sure play button is up (so it shows the play symbol)
@@ -449,7 +449,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 
 					SetCheckmarkValue(g_stSettings.m_bNonInterleaved, OSD_NONINTERLEAVED);
 					SetCheckmarkValue(g_stSettings.m_bNoCache, OSD_NOCACHE);
-					SetCheckmarkValue(g_stSettings.m_bFrameRateConversions, OSD_ADJFRAMERATE);
+					SetCheckmarkValue(g_guiSettings.GetBool("MyVideos.FrameRateConversions"), OSD_ADJFRAMERATE);
 
 					// show the controls on this sub menu
 					SET_CONTROL_VISIBLE(GetID(), OSD_VIDEOPOS);
@@ -820,7 +820,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 						g_stSettings.m_iAudioStream = pList->GetSelectedItem();
 						PopulateAudioStreams();
 						// call monkeyh1's code here...
-						bool bAudioOnAllSpeakers = g_stSettings.m_bUseDigitalOutput && g_stSettings.m_bAudioOnAllSpeakers;
+						bool bAudioOnAllSpeakers = (g_guiSettings.GetInt("AudioOutput.Mode")==AUDIO_DIGITAL) && g_guiSettings.GetBool("Audio.OutputToAllSpeakers");
 						xbox_audio_switch_channel(g_stSettings.m_iAudioStream, bAudioOnAllSpeakers);
 						break;
 					}
@@ -873,7 +873,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 
 		case OSD_ADJFRAMERATE:
 		{
-			g_stSettings.m_bFrameRateConversions=!g_stSettings.m_bFrameRateConversions;
+			g_guiSettings.ToggleBool("MyVideos.FrameRateConversions");
 			m_bSubMenuOn = false;										// hide the sub menu
 			OutputDebugString("OSD:RESTART4\n");
 			g_application.m_guiWindowFullScreen.m_bOSDVisible = false;	// toggle the OSD off so parent window can de-init

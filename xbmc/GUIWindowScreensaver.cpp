@@ -109,7 +109,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
 			CScreenSaverFactory factory;
 			CStdString strScr;
 			OutputDebugString("Load Screensaver\n");
-			strScr.Format("Q:\\screensavers\\%s", g_stSettings.szDefaultScreenSaver);
+			strScr.Format("Q:\\screensavers\\%s", g_guiSettings.GetString("ScreenSaver.Mode").c_str());
 			m_pScreenSaver=factory.LoadScreenSaver(strScr.c_str());
 			if (m_pScreenSaver) 
 			{

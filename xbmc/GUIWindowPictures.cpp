@@ -14,6 +14,8 @@
 #include "DetectDVDType.h"
 #include "sectionloader.h"
 #include "GUIThumbnailPanel.h"
+#include "AutoSwitch.h"
+
 #define VIEW_AS_LIST           0
 #define VIEW_AS_ICONS          1
 #define VIEW_AS_LARGEICONS     2
@@ -118,6 +120,9 @@ CGUIWindowPictures::CGUIWindowPictures(void)
 	m_strDirectory="?";
   m_iItemSelected=-1;
 	m_iLastControl=-1;
+
+	m_iViewAsIcons=-1;
+	m_iViewAsIconsRoot=-1;
 }
 
 CGUIWindowPictures::~CGUIWindowPictures(void)
@@ -211,6 +216,12 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 			if (m_iLastControl>-1)
 				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
 
+			if (m_iViewAsIcons==-1 && m_iViewAsIconsRoot==-1)
+			{
+				m_iViewAsIcons=g_stSettings.m_iMyPicturesViewAsIcons;
+				m_iViewAsIconsRoot=g_stSettings.m_iMyPicturesRootViewAsIcons;
+			}
+
 			Update(m_strDirectory);
 
 			ShowThumbPanel();
@@ -230,23 +241,22 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       int iControl=message.GetSenderId();
       if (iControl==CONTROL_BTNVIEWASICONS)
       {
-
-        bool bLargeIcons(false);
-		    if ( m_strDirectory.IsEmpty() )
-        {
-		      g_stSettings.m_iMyPicturesRootViewAsIcons++;
-          if (g_stSettings.m_iMyPicturesRootViewAsIcons > VIEW_AS_LARGEICONS) g_stSettings.m_iMyPicturesRootViewAsIcons=VIEW_AS_LIST;
-        }
-		    else
-        {
-		      g_stSettings.m_iMyPicturesViewAsIcons++;
-          if (g_stSettings.m_iMyPicturesViewAsIcons > VIEW_AS_LARGEICONS) g_stSettings.m_iMyPicturesViewAsIcons=VIEW_AS_LIST;
-        }
-
-				g_settings.Save();
-        ShowThumbPanel();
-				
+				if ( m_strDirectory.IsEmpty() )
+				{
+					m_iViewAsIconsRoot++;
+					if (m_iViewAsIconsRoot > VIEW_AS_LARGEICONS) m_iViewAsIconsRoot=VIEW_AS_LIST;
+				}
+				else
+				{
+					m_iViewAsIcons++;
+					if (m_iViewAsIcons > VIEW_AS_LARGEICONS) m_iViewAsIcons=VIEW_AS_LIST;
+				}
+				ShowThumbPanel();
         UpdateButtons();
+
+				g_stSettings.m_iMyPicturesRootViewAsIcons = m_iViewAsIconsRoot;
+				g_stSettings.m_iMyPicturesViewAsIcons = m_iViewAsIconsRoot;
+				g_settings.Save();
       }
       else if (iControl==CONTROL_BTNSORTBY) // sort by
       {
@@ -292,7 +302,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       }
 			else if (iControl==CONTROL_SHUFFLE)
 			{
-				g_stSettings.m_bSlideShowShuffle = !g_stSettings.m_bSlideShowShuffle;
+				g_guiSettings.ToggleBool("Slideshow.Shuffle");
 				g_settings.Save();
 			}
 			else if (iControl==CONTROL_LIST||iControl==CONTROL_THUMBS)  // list/thumb control
@@ -385,14 +395,12 @@ void CGUIWindowPictures::Clear()
 
 void CGUIWindowPictures::UpdateButtons()
 {
-
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
-	bool bViewIcon = false;
   int iString;
 	if ( m_strDirectory.IsEmpty() ) 
   {
-		switch (g_stSettings.m_iMyPicturesRootViewAsIcons)
+		switch (m_iViewAsIconsRoot)
     {
       case VIEW_AS_LIST:
         iString=101; // view as icons
@@ -400,11 +408,9 @@ void CGUIWindowPictures::UpdateButtons()
       
       case VIEW_AS_ICONS:
         iString=100;  // view as large icons
-        bViewIcon=true;
       break;
       case VIEW_AS_LARGEICONS:
         iString=417; // view as list
-        bViewIcon=true;
       break;
 
       default:
@@ -414,7 +420,7 @@ void CGUIWindowPictures::UpdateButtons()
 	}
 	else 
   {
-		switch (g_stSettings.m_iMyPicturesViewAsIcons)
+		switch (m_iViewAsIcons)
     {
       case VIEW_AS_LIST:
         iString=101; // view as icons
@@ -422,19 +428,16 @@ void CGUIWindowPictures::UpdateButtons()
       
       case VIEW_AS_ICONS:
         iString=100;  // view as large icons
-        bViewIcon=true;
       break;
       case VIEW_AS_LARGEICONS:
         iString=417; // view as list
-        bViewIcon=true;
       break;
       default:
         iString=100; // view as icons
       break;
-
     }		
 	}
-  if (bViewIcon) 
+  if (ViewByIcon()) 
   {
     SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
   }
@@ -443,7 +446,7 @@ void CGUIWindowPictures::UpdateButtons()
     SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
   }
 
-	if (g_stSettings.m_bSlideShowShuffle)
+	if (g_guiSettings.GetBool("Slideshow.Shuffle"))
 	{
 		CGUIMessage msg2(GUI_MSG_SELECTED,GetID(),CONTROL_SHUFFLE,0,0,NULL);
 		g_graphicsContext.SendMessage(msg2);  
@@ -506,9 +509,23 @@ void CGUIWindowPictures::UpdateButtons()
 	SET_CONTROL_LABEL(GetID(), CONTROL_LABELFILES,wszText);
 }
 
-
-
 void CGUIWindowPictures::Update(const CStdString &strDirectory)
+{
+	UpdateDir(strDirectory);
+	if (!m_strDirectory.IsEmpty() && g_guiSettings.GetBool("Pictures.UseAutoSwitching"))
+	{
+		m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
+
+		ShowThumbPanel();
+		UpdateButtons();
+
+		int iControl = CONTROL_LIST;
+		if (m_iViewAsIcons != VIEW_AS_LIST) iControl = CONTROL_THUMBS;
+		SET_CONTROL_FOCUS(GetID(), iControl, 0);
+	}
+}
+
+void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
 {
 // get selected item
 	int iItem=GetSelectedItem();
@@ -530,7 +547,7 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
 
 	m_strDirectory=strDirectory;
 	CUtil::SetThumbs(m_vecItems);
-	if (g_stSettings.m_bHideExtensions)
+	if (g_guiSettings.GetBool("Pictures.HideExtensions"))
 		CUtil::RemoveExtensions(m_vecItems);
 	CUtil::FillInDefaultIcons(m_vecItems);
 	OnSort();
@@ -933,11 +950,11 @@ bool CGUIWindowPictures::ViewByIcon()
 {
   if ( m_strDirectory.IsEmpty() )
   {
-    if (g_stSettings.m_iMyPicturesRootViewAsIcons != VIEW_AS_LIST) return true;
+	  if (m_iViewAsIconsRoot != VIEW_AS_LIST) return true;
   }
   else
   {
-    if (g_stSettings.m_iMyPicturesViewAsIcons != VIEW_AS_LIST) return true;
+ 	  if (m_iViewAsIcons != VIEW_AS_LIST) return true;
   }
   return false;
 }
@@ -946,11 +963,11 @@ bool CGUIWindowPictures::ViewByLargeIcon()
 {
   if ( m_strDirectory.IsEmpty() )
   {
-    if (g_stSettings.m_iMyPicturesRootViewAsIcons == VIEW_AS_LARGEICONS) return true;
+	  if (m_iViewAsIconsRoot == VIEW_AS_LARGEICONS) return true;
   }
   else
   {
-    if (g_stSettings.m_iMyPicturesViewAsIcons== VIEW_AS_LARGEICONS) return true;
+	  if (m_iViewAsIcons== VIEW_AS_LARGEICONS) return true;
   }
   return false;
 }
@@ -1076,7 +1093,7 @@ void CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, VECFILEITE
 		if ( bParentExists )
 		{
 			// yes
-			if (!g_stSettings.m_bHideParentDirItems)
+			if (!g_guiSettings.GetBool("Pictures.HideParentDirItems"))
 			{
 				CFileItem *pItem = new CFileItem("..");
 				pItem->m_strPath=strParentPath;
@@ -1091,7 +1108,7 @@ void CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, VECFILEITE
 	{
 		// yes, this is the root of a share
 		// add parent path to the virtual directory
-		if (!g_stSettings.m_bHideParentDirItems)
+		if (!g_guiSettings.GetBool("Pictures.HideParentDirItems"))
 		{
 			CFileItem *pItem = new CFileItem("..");
 			pItem->m_strPath="";

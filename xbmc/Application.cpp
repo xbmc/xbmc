@@ -168,15 +168,15 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 
 		// Check if we have the required modes available
 		g_videoConfig.GetModes(m_pD3D);
-		if (!g_graphicsContext.IsValidResolution(g_stSettings.m_GUIResolution))
+		if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
 		{
 			// Oh uh - doesn't look good for starting in their wanted screenmode
 			CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
-			g_stSettings.m_GUIResolution = g_videoConfig.GetSafeMode();
-			CLog::Log(LOGERROR, "Resetting to mode %s", g_settings.m_ResInfo[g_stSettings.m_GUIResolution].strMode);
+			g_guiSettings.m_LookAndFeelResolution = g_videoConfig.GetSafeMode();
+			CLog::Log(LOGERROR, "Resetting to mode %s", g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode);
 			// Transfer the resolution information to our graphics context
 			g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
-			g_graphicsContext.SetGUIResolution(g_stSettings.m_GUIResolution);
+			g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
 			CLog::Log(LOGERROR, "Done reset");
 		}
 
@@ -250,12 +250,12 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 		bool ForceStatic = false;
 		if (m_bXboxMediacenterLoaded)
 		{
-			if (strcmp(g_stSettings.m_strIPAssignment, "dhcp") == 0)
+			if (g_guiSettings.GetInt("Network.Assignment") == NETWORK_DHCP)
 			{
 				TriedDash = true;
 				ForceDHCP = true;
 			}
-			else if (strcmp(g_stSettings.m_strIPAssignment, "static") == 0)
+			else if (g_guiSettings.GetInt("Network.Assignment") == NETWORK_STATIC)
 			{
 				ForceStatic = true;
 				TriedDash = true;
@@ -325,10 +325,10 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 						memset(&ni, 0, sizeof(ni));
 						if (ForceStatic)
 						{
-							strcpy(ni.ip, g_stSettings.m_strLocalIPAdres);
-							strcpy(ni.subnet, g_stSettings.m_strLocalNetmask);
-							strcpy(ni.gateway, g_stSettings.m_strGateway);
-							strcpy(ni.DNS1, g_stSettings.m_strNameServer);
+							strcpy(ni.ip, g_guiSettings.GetString("Network.IPAddress"));
+							strcpy(ni.subnet, g_guiSettings.GetString("Network.Subnet"));
+							strcpy(ni.gateway, g_guiSettings.GetString("Network.Gateway"));
+							strcpy(ni.DNS1, g_guiSettings.GetString("Network.DNS"));
 						}
 						else
 						{
@@ -607,16 +607,16 @@ HRESULT CApplication::Create()
 		}
 	}
 
-	if (!g_graphicsContext.IsValidResolution(g_stSettings.m_GUIResolution))
+	if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
 	{
 		// Oh uh - doesn't look good for starting in their wanted screenmode
 		CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
-    g_stSettings.m_GUIResolution = initialResolution;
+    g_guiSettings.SetInt("LookAndFeel.Resolution", initialResolution);
 	}
   // Transfer the new resolution information to our graphics context
 	g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
-  g_graphicsContext.SetGUIResolution(g_stSettings.m_GUIResolution);
-	g_graphicsContext.SetOffset(g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY);
+  g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
+	g_graphicsContext.SetOffset(g_guiSettings.GetInt("UIOffset.X"), g_guiSettings.GetInt("UIOffset.Y"));
   if( FAILED( hr = m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL, 
                                       D3DCREATE_HARDWARE_VERTEXPROCESSING, 
                                       &m_d3dpp, &m_pd3dDevice ) ) )
@@ -638,16 +638,16 @@ HRESULT CApplication::Create()
   m_pd3dDevice->GetBackBuffer( 0, 0, &m_pBackBuffer );
 	g_graphicsContext.SetD3DDevice(m_pd3dDevice);
 	// set filters
-	g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MINFILTER, g_stSettings.m_minFilter );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MAGFILTER, g_stSettings.m_maxFilter );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
 	CUtil::InitGamma();
-  g_graphicsContext.SetGUIResolution(g_stSettings.m_GUIResolution);
+  g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
 
   m_splash = new CSplash("Q:\\media\\splash.png");
   m_splash->Start();
 
 	CStdString strLanguagePath;
-	strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_stSettings.szDefaultLanguage);
+	strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_guiSettings.GetString("LookAndFeel.Language"));
 
 	CLog::Log(LOGINFO, "load language file:%s",strLanguagePath.c_str());
 	if (!g_localizeStrings.Load(strLanguagePath ))
@@ -663,7 +663,7 @@ HRESULT CApplication::Create()
 		g_settings.m_ResInfo[iResolution].iWidth,
 		g_settings.m_ResInfo[iResolution].iHeight,
 		g_settings.m_ResInfo[iResolution].strMode);
-	CLog::Log(LOGINFO, " GUI screen offset (%i,%i)", g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY);
+	CLog::Log(LOGINFO, " GUI screen offset (%i,%i)", g_guiSettings.GetInt("UIOffset.X"), g_guiSettings.GetInt("UIOffset.Y"));
 	m_gWindowManager.Initialize();
 	g_actionManager.SetScriptActionCallback(&g_pythonParser);
 
@@ -677,7 +677,7 @@ HRESULT CApplication::Initialize()
 	{
 		strcpy(g_stSettings.szThumbnailsDirectory,"Q:\\thumbs");
 	}
-	if (g_stSettings.m_szShortcutDirectory[0]==0 && !g_stSettings.m_bMyProgramsNoShortcuts)
+	if (g_stSettings.m_szShortcutDirectory[0]==0 && !g_guiSettings.GetBool("Programs.NoShortcuts"))
 	{
 		strcpy(g_stSettings.m_szShortcutDirectory,"Q:\\shortcuts");
 	}
@@ -702,7 +702,7 @@ HRESULT CApplication::Initialize()
 	strThumbKai+="\\kai";
 	CreateDirectory(strThumbKai.c_str(),NULL);
 
-	if (!g_stSettings.m_bMyProgramsNoShortcuts)
+	if (!g_guiSettings.GetBool("Programs.NoShortcuts"))
 		CreateDirectory(g_stSettings.m_szShortcutDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szAlbumDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szMusicRecordingDirectory,NULL);
@@ -739,34 +739,41 @@ HRESULT CApplication::Initialize()
 	if (!m_bXboxMediacenterLoaded)
 	{
 		CLog::Log(LOGINFO, "using default network settings");
-		strcpy (g_stSettings.m_strLocalIPAdres,"192.168.0.100");
-		strcpy (g_stSettings.m_strLocalNetmask,"255.255.255.0");
-		strcpy (g_stSettings.m_strGateway,"192.168.0.1");
-		strcpy (g_stSettings.m_strNameServer,"192.168.0.1");
-		g_stSettings.m_bFTPServerEnabled=true;
-		g_stSettings.m_bHTTPServerEnabled=false;
-		g_stSettings.m_bTimeServerEnabled=false;
+		g_guiSettings.SetString("Network.IPAddress", "192.168.0.100");
+		g_guiSettings.SetString("Network.Subnet", "255.255.255.0");
+		g_guiSettings.SetString("Network.Gateway", "192.168.0.1");
+		g_guiSettings.SetString("Network.DNS", "192.168.0.1");
+		g_guiSettings.SetBool("Servers.FTPServer", true);
+		g_guiSettings.SetBool("Servers.WebServer", false);
+		g_guiSettings.SetBool("Servers.TimeServer", false);
 	}
+	CStdString strAssignment;
+	if (g_guiSettings.GetInt("Network.Assignment")==NETWORK_DASH)
+		strAssignment = "dash";
+	else if (g_guiSettings.GetInt("Network.Assignment")==NETWORK_DHCP)
+		strAssignment = "dhcp";
+	else //if (g_guiSettings.GetInt("Network.Assignment")==NETWORK_STATIC)
+		strAssignment = "static";
 	CLog::Log(LOGNOTICE, "initialize assignment:[%s] network ip:[%s] netmask:[%s] gateway:[%s] nameserver:[%s]",
-		g_stSettings.m_strIPAssignment,
-		g_stSettings.m_strLocalIPAdres,
-		g_stSettings.m_strLocalNetmask,
-		g_stSettings.m_strGateway,
-		g_stSettings.m_strNameServer);
+		strAssignment.c_str(),
+		g_guiSettings.GetString("Network.IPAddress").c_str(),
+		g_guiSettings.GetString("Network.Subnet").c_str(),
+		g_guiSettings.GetString("Network.Gateway").c_str(),
+		g_guiSettings.GetString("Network.DNS").c_str());
 
-	if ( !CUtil::InitializeNetwork(g_stSettings.m_strIPAssignment,
-		g_stSettings.m_strLocalIPAdres,
-		g_stSettings.m_strLocalNetmask,
-		g_stSettings.m_strGateway,
-		g_stSettings.m_strNameServer) )
+	if ( !CUtil::InitializeNetwork(g_guiSettings.GetInt("Network.Assignment"),
+		g_guiSettings.GetString("Network.IPAddress"),
+		g_guiSettings.GetString("Network.Subnet"),
+		g_guiSettings.GetString("Network.Gateway"),
+		g_guiSettings.GetString("Network.DNS")))
 	{
 		CLog::Log(LOGERROR, "initialize network failed");
 	}
 
   StartServices();
 
-  CLog::Log(LOGNOTICE, "load default skin:[%s]",g_stSettings.szDefaultSkin);
-	LoadSkin(g_stSettings.szDefaultSkin);
+  CLog::Log(LOGNOTICE, "load default skin:[%s]",g_guiSettings.GetString("LookAndFeel.Skin").c_str());
+	LoadSkin(g_guiSettings.GetString("LookAndFeel.Skin"));
 
 	CLog::Log(LOGINFO, "initializing skin");
 	m_gWindowManager.Add(&m_guiHome);											// window id = 0
@@ -776,42 +783,16 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiMyVideo);									// window id = 6
 	m_gWindowManager.Add(&m_guiSettings);									// window id = 4
 	m_gWindowManager.Add(&m_guiSystemInfo);								// window id = 7
-	m_gWindowManager.Add(&m_guiSettingsGeneral);					// window id = 8
-	//m_gWindowManager.Add(&m_guiSettingsScreen);				// window id = 9
-	m_gWindowManager.Add(&m_guiSettingsMyVideo);				// window id = 9
 	m_gWindowManager.Add(&m_guiSettingsUICalibration);		// window id = 10
 	m_gWindowManager.Add(&m_guiSettingsScreenCalibration);	// window id = 11
-	m_gWindowManager.Add(&m_guiSettingsSlideShow);				// window id = 12 slideshow:window id 2007
-	m_gWindowManager.Add(&m_guiSettingsFilter);						// window id = 13
-	//m_gWindowManager.Add(&m_guiSettingsMusic);				// window id = 14
-	m_gWindowManager.Add(&m_guiSettingsMyMusic);				// window id = 14
-	m_gWindowManager.Add(&m_guiSettingsSubtitles);				// window id = 15
-	m_gWindowManager.Add(&m_guiSettingsScreensaver);				// window id = 16
-	m_gWindowManager.Add(&m_guiSettingsSkinLanguage);			// window id = 19
+	m_gWindowManager.Add(&m_guiSettingsCategory);				// window id = 12 slideshow:window id 2007
 	m_gWindowManager.Add(&m_guiScripts);									// window id = 20
 	m_gWindowManager.Add(&m_guiVideoGenre);								// window id = 21
 	m_gWindowManager.Add(&m_guiVideoActors);							// window id = 22
 	m_gWindowManager.Add(&m_guiVideoYear);							  // window id = 23
-	m_gWindowManager.Add(&m_guiSettingsPrograms);					// window id = 24
 	m_gWindowManager.Add(&m_guiVideoTitle);							  // window id = 25
-	m_gWindowManager.Add(&m_guiSettingsCache);						// window id = 26
-	m_gWindowManager.Add(&m_guiSettingsAutoRun);					// window id = 27
 	m_gWindowManager.Add(&m_guiMyVideoPlayList);					// window id = 28
-	m_gWindowManager.Add(&m_guiSettingsCDRipper);					// window id = 32
-	m_gWindowManager.Add(&m_guiSettingsLCD);					// window id = 29
-	m_gWindowManager.Add(&m_guiSettingsUserInterface);			// window id = 30
-	m_gWindowManager.Add(&m_guiSettingsAudio);					    // window id = 31
-  m_gWindowManager.Add(&m_guiSettingsSytem);            // window id = 32
-  m_gWindowManager.Add(&m_guiSettingsCDRipper);					// window id = 33
   m_gWindowManager.Add(&m_guiSettingsProfile);          // window id = 34
-  m_gWindowManager.Add(&m_guiSettingsNetwork);          // window id = 35
-    m_gWindowManager.Add(&m_guiSettingsNetworkProxy);          // window id = 36
-	m_gWindowManager.Add(&m_guiSettingsNetworkKai);          // window id = 37
-	m_gWindowManager.Add(&m_guiSettingsNetworkIP);          // window id = 38
-	m_gWindowManager.Add(&m_guiSettingsNetworkWeb);          // window id = 39
-	m_gWindowManager.Add(&m_guiSettingsNetworkFTP);          // window id = 40
-	m_gWindowManager.Add(&m_guiSettingsNetworkTime);          // window id = 41
-	m_gWindowManager.Add(&m_guiSettingsCdg);						//window id =42
 
 	m_gWindowManager.Add(&m_guiDialogYesNo);							// window id = 100
 	m_gWindowManager.Add(&m_guiDialogProgress);						// window id = 101
@@ -841,7 +822,6 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiWindowOSD);						// window id = 2901
 	m_gWindowManager.Add(&m_guiWindowScreensaver);				// window id = 2900 Screensaver
 	m_gWindowManager.Add(&m_guiMyWeather);						    // window id = 2600 WEATHER
-	m_gWindowManager.Add(&m_guiSettingsWeather);				  // window id = 17 WEATHER SETTINGS
 	m_gWindowManager.Add(&m_guiMyBuddies);						    // window id = 2700 BUDDIES
 
 	g_DownloadManager.Initialize();
@@ -873,27 +853,24 @@ HRESULT CApplication::Initialize()
 	}
 
 	CLog::Log(LOGNOTICE, "initialize done");
-	if (g_stSettings.m_bLCDUsed)
+	if (g_guiSettings.GetInt("LCD.Mode")==LCD_MODE_NOTV)
 	{
-		if (g_stSettings.m_iLCDMode==LCD_MODE_NOTV)
-		{
-			// jump to my music when we're in NO tv mode
-			m_gWindowManager.ActivateWindow(WINDOW_MUSIC_FILES);
-		}
+		// jump to my music when we're in NO tv mode
+		m_gWindowManager.ActivateWindow(WINDOW_MUSIC_FILES);
 	}
 	return S_OK;
 }
 
 void CApplication::StartWebServer()
 {
- 	if (g_stSettings.m_bHTTPServerEnabled && CUtil::IsNetworkUp())
+ 	if (g_guiSettings.GetBool("Servers.WebServer") && CUtil::IsNetworkUp())
 	{
 		CLog::Log(LOGNOTICE, "start webserver");
 		CSectionLoader::Load("LIBHTTP");
 		m_pWebServer = new CWebServer();
 		CStdString ipadres;
 		CUtil::GetTitleIP(ipadres);
-		m_pWebServer->Start(ipadres.c_str(), g_stSettings.m_iWebServerPort, "Q:\\web");
+		m_pWebServer->Start(ipadres.c_str(), atoi(g_guiSettings.GetString("Servers.WebServerPort")), "Q:\\web");
 	}
 }
 
@@ -911,7 +888,7 @@ void CApplication::StopWebServer()
 
 void CApplication::StartFtpServer()
 {
-	if ( g_stSettings.m_bFTPServerEnabled && CUtil::IsNetworkUp())
+	if ( g_guiSettings.GetBool("Servers.FTPServer") && CUtil::IsNetworkUp())
 	{
 		CLog::Log(LOGNOTICE, "start ftpserver");
     if (!m_pFileZilla) {
@@ -935,7 +912,7 @@ void CApplication::StopFtpServer()
 
 void CApplication::StartTimeServer()
 {
- 	if (g_stSettings.m_bTimeServerEnabled && CUtil::IsNetworkUp())
+ 	if (g_guiSettings.GetBool("Servers.TimeServer") && CUtil::IsNetworkUp())
 	{
 		CLog::Log(LOGNOTICE, "start timeserver thread");
 		m_sntpClient.Create();
@@ -959,8 +936,8 @@ void CApplication::StartServices()
 	m_DetectDVDType.Create( false);
 
 	CLog::Log(LOGNOTICE, "initializing playlistplayer");
-	g_playlistPlayer.Repeat(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistRepeat);
-	g_playlistPlayer.Repeat(PLAYLIST_MUSIC_TEMP, g_stSettings.m_bMyMusicRepeat);
+	g_playlistPlayer.Repeat(PLAYLIST_MUSIC, g_guiSettings.GetBool("MyMusic.Repeat"));
+	g_playlistPlayer.Repeat(PLAYLIST_MUSIC_TEMP, g_guiSettings.GetBool("MyMusic.Repeat"));
 	g_playlistPlayer.Repeat(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistRepeat);
 	g_playlistPlayer.Repeat(PLAYLIST_VIDEO_TEMP, false);
 
@@ -969,11 +946,11 @@ void CApplication::StartServices()
 	g_lcd->Initialize();
 
 	CLog::Log(LOGNOTICE, "start fancontroller");
-  if (g_stSettings.m_bAutoTemperature) {
-    CFanController::Instance()->Start(g_stSettings.m_iTargetTemperature);
+  if (g_guiSettings.GetBool("System.AutoTemperature")) {
+    CFanController::Instance()->Start(g_guiSettings.GetInt("System.TargetTemperature"));
   }
-  else if (g_stSettings.m_bFanSpeedControl) {
-    CFanController::Instance()->SetFanSpeed(g_stSettings.m_iFanSpeed);
+  else if (g_guiSettings.GetBool("System.FanSpeedControl")) {
+    CFanController::Instance()->SetFanSpeed(g_guiSettings.GetInt("System.FanSpeed"));
   }
 }
 
@@ -1052,7 +1029,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 	CLog::Log(LOGINFO, "  load fonts for skin...");
 	g_graphicsContext.SetMediaDir(strSkinPath);
-	g_fontManager.LoadFonts(CStdString(g_stSettings.m_szSkinFontSet));
+	g_fontManager.LoadFonts(g_guiSettings.GetString("LookAndFeel.Font"));
 
 	LARGE_INTEGER start;
 	QueryPerformanceCounter(&start);
@@ -1080,13 +1057,9 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiVideoTitle.Load("myvideoTitle.xml");
 	m_guiSettings.Load("settings.xml");
 	m_guiMyVideoPlayList.Load("myvideoplaylist.xml");
-	m_guiSettingsLCD.Load("settingsLCD.xml");
 	m_guiSystemInfo.Load("SettingsSystemInfo.xml");
 	m_guiMusicInfo.Load("DialogAlbumInfo.xml");
 	m_guiScriptsInfo.Load("DialogScriptInfo.xml");
-	m_guiSettingsGeneral.Load("SettingsGeneral.xml");
-	m_guiSettingsPrograms.Load("SettingsPrograms.xml");
-	m_guiSettingsSytem.Load("SettingsSystem.xml");
   m_guiSettingsProfile.Load("SettingsProfile.xml");
 	m_guiDialogYesNo.Load("dialogYesNo.xml");
 	m_guiDialogProgress.Load("dialogProgress.xml");
@@ -1105,44 +1078,22 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiDialogFileStacking.Load("dialogFileStacking.xml");
 	m_guiVideoInfo.Load("DialogVideoInfo.xml");
 	m_guiMusicOverlay.Load("musicOverlay.xml");
-	//m_guiSettingsScreen.Load("settingsScreen.xml");
-	m_guiSettingsMyVideo.Load("SettingsMyVideo.xml");
 	m_guiSettingsUICalibration.Load("settingsUICalibration.xml");
 	m_guiSettingsScreenCalibration.Load("settingsScreenCalibration.xml");
-	m_guiSettingsSlideShow.Load("SettingsSlideShow.xml");
-	m_guiSettingsScreensaver.Load("SettingsScreensaver.xml");
-	m_guiSettingsAutoRun.Load("SettingsAutoRun.xml");
-	m_guiSettingsFilter.Load("SettingsFilter.xml");
-	m_guiSettingsCache.Load("SettingsCache.xml");
+	m_guiSettingsCategory.Load("SettingsCategory.xml");
 	m_guiWindowVideoOverlay.Load("videoOverlay.xml");
 	m_guiWindowFullScreen.Load("videoFullScreen.xml");
 	m_guiScripts.Load("myscripts.xml");
 	m_guiWindowVisualisation.Load("musicVisualisation.xml");
-	//m_guiSettingsMusic.Load("SettingsMusic.xml");
-	m_guiSettingsMyMusic.Load("SettingsMyMusic.xml");
 	m_guiWindowSlideshow.Load("slideshow.xml");
-	m_guiSettingsSubtitles.Load("SettingsScreenSubtitles.xml");
 	m_guiWindowScreensaver.SetID(WINDOW_SCREENSAVER);				// Matrix Screensaver - saves us having to have our own XML file
 	m_guiWindowOSD.Load("videoOSD.xml");
 	m_guiMyWeather.Load("myweather.xml");							//WEATHER
-	m_guiSettingsWeather.Load("SettingsWeather.xml");				//WEATHER SETTINGS
-	m_guiSettingsNetwork.Load("SettingsNetwork.xml");				//NETWORK SETTINGS
-	m_guiSettingsNetworkProxy.Load("SettingsNetworkProxy.xml");
-	m_guiSettingsNetworkKai.Load("SettingsNetworkKai.xml");
-	m_guiSettingsNetworkIP.Load("SettingsNetworkIP.xml");
-	m_guiSettingsNetworkFTP.Load("SettingsNetworkFTP.xml");
-	m_guiSettingsNetworkWeb.Load("SettingsNetworkWeb.xml");
-	m_guiSettingsNetworkTime.Load("SettingsNetworkTime.xml");
-	m_guiSettingsSkinLanguage.Load("SettingsSkinLanguage.xml");		// Skin & Language settings
-	m_guiSettingsUserInterface.Load("SettingsUserInterface.xml");	// User Interface settings
-	m_guiSettingsAudio.Load("SettingsAudioOptions.xml");			// Audio Options
 	m_guiDialogInvite.Load( "dialogInvite.xml" );
 	m_guiDialogHost.Load( "dialogHost.xml" );
 	m_guiDialogKeyboard.Load( "dialogKeyboard.xml" );
 	m_guiMyBuddies.Load( "mybuddies.xml");
-	m_guiSettingsCDRipper.Load("SettingsCDRipper.xml");
 	m_guiPointer.Load("Pointer.xml");
-	m_guiSettingsCdg.Load("SettingsCdg.xml");
 	
 	// Load the user windows
 	LoadUserWindows(strSkinPath);
@@ -1608,7 +1559,7 @@ void CApplication::OnKey(CKey& key)
 void CApplication::SetKaiNotification(CStdString& aCaption, CStdString& aDescription, CGUIImage* aIcon)
 {
 	// queue toast notification
-	if (g_stSettings.m_bOnlineNotifications)
+	if (g_guiSettings.GetBool("XLinkKai.EnableNotifications"))
 	{
 		m_guiDialogKaiToast.QueueNotification(aIcon,aCaption,aDescription);
 	}
@@ -1618,7 +1569,7 @@ void CApplication::UpdateLCD()
 {
 	static lTickCount=0;
 
-	if (!g_stSettings.m_bLCDUsed) return;
+	if (g_guiSettings.GetInt("LCD.Mode") == LCD_MODE_NONE) return;
 	long lTimeOut=1000;
 	if ( m_iPlaySpeed != 1) lTimeOut=0;
 	if ( ((long)GetTickCount()-lTickCount) >=lTimeOut)
@@ -1796,7 +1747,7 @@ void CApplication::UpdateLCD()
 		}
 		else
 		{
-			if (g_stSettings.m_iLCDMode==LCD_MODE_NORMAL)
+			if (g_guiSettings.GetInt("LCD.Mode")==LCD_MODE_NORMAL)
 			{
 				// line 0: XBMC running...
 				// line 1: time/date
@@ -1816,7 +1767,7 @@ void CApplication::UpdateLCD()
 				strTime.Format("%ix%i %s", g_settings.m_ResInfo[iResolution].iWidth, g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].strMode);
 				g_lcd->SetLine(3,strTime);
 			}
-			if (g_stSettings.m_iLCDMode==LCD_MODE_NOTV)
+			if (g_guiSettings.GetInt("LCD.Mode")==LCD_MODE_NOTV)
 			{
 				// line 0: window name like   My music/songs
 				// line 1: current control or selected item
@@ -2292,7 +2243,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 		m_guiMusicOverlay.SetCurrentFile(m_itemCurrentFile);
 		m_guiWindowVideoOverlay.SetCurrentFile(m_itemCurrentFile.m_strPath);
 
-		if(CUtil::IsAudio(m_itemCurrentFile.m_strPath) && g_stSettings.m_bIsCdgEnabled)
+		if(CUtil::IsAudio(m_itemCurrentFile.m_strPath) && g_guiSettings.GetBool("Karaoke.Enabled"))
 			m_CdgParser.Start(m_itemCurrentFile.m_strPath);
 
 		m_dwIdleTime=timeGetTime();
@@ -2428,20 +2379,15 @@ bool CApplication::ResetScreenSaverWindow()
 			// Fade to dim or black screensaver is active
 			// fade in
       float fFadeLevel = 1.0f;
-      switch (g_stSettings.m_iScreenSaverMode)
+			CStdString strScreenSaver = g_guiSettings.GetString("ScreenSaver.Mode");
+			if (strScreenSaver == "Dim")
 			{
-			case SCREENSAVER_FADE:
-				{
-					fFadeLevel = (float)g_stSettings.m_iScreenSaverFadeLevel / 100;
-				}
-				break;
-			case SCREENSAVER_BLACK:
-				{
-					fFadeLevel = 0;
-				}
-				break;
-      }
-
+				fFadeLevel = (float)g_guiSettings.GetInt("ScreenSaver.DimLevel") / 100;
+			}
+			else if (strScreenSaver == "Fade")
+			{
+				fFadeLevel = 0;
+			}
 			D3DGAMMARAMP Ramp;
 			for (float fade=fFadeLevel; fade<=1; fade+=0.01f)
 			{
@@ -2470,7 +2416,7 @@ void CApplication::CheckScreenSaver()
 	FLOAT fFadeLevel;
 
 	if ( m_gWindowManager.IsRouted()) return;
-	if (g_stSettings.m_iLCDMode==LCD_MODE_NOTV) return;
+	if (g_guiSettings.GetInt("LCD.Mode")==LCD_MODE_NOTV) return;
 
 	if (!m_bInactive)
 	{
@@ -2507,41 +2453,33 @@ void CApplication::CheckScreenSaver()
 		if (!m_bScreenSave)
 		{
 			// no, then check the timer if screensaver should pop up
-			if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_stSettings.m_iScreenSaverTime*60*1000L) )
+			if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("ScreenSaver.Time")*60*1000L) )
 			{
 				//yes, show the screensaver
 				m_bScreenSave = true;
 				m_dwSaverTick=timeGetTime();		// Save the current time for the shutdown timeout
 
-				switch ( g_stSettings.m_iScreenSaverMode )
+				CStdString strScreenSaver = g_guiSettings.GetString("ScreenSaver.Mode");
+				if (strScreenSaver == "Dim")
 				{
-				case SCREENSAVER_FADE:
-					{
-						fFadeLevel = (FLOAT) g_stSettings.m_iScreenSaverFadeLevel / 100; // 0.07f;
-					}
-					break;
-
-				case SCREENSAVER_BLACK:
-					{
-						fFadeLevel = 0;
-					}
-					break;
-
-				case SCREENSAVER_XBS:
-					{
-						if (!IsPlayingVideo())
-						{
-							m_gWindowManager.ActivateWindow(WINDOW_SCREENSAVER);
-							return;
-						}
-						else
-						{
-							fFadeLevel = (FLOAT) g_stSettings.m_iScreenSaverFadeLevel / 100; // 0.07f;
-						}
-					}
-					break;
+					fFadeLevel = (FLOAT) g_guiSettings.GetInt("ScreenSaver.DimLevel") / 100; // 0.07f;
 				}
-
+				else if (strScreenSaver == "Black")
+				{
+					fFadeLevel = 0;
+				}
+				else if (strScreenSaver != "None")
+				{
+					if (!IsPlayingVideo())
+					{
+						m_gWindowManager.ActivateWindow(WINDOW_SCREENSAVER);
+						return;
+					}
+					else
+					{
+						fFadeLevel = (FLOAT) g_guiSettings.GetInt("ScreenSaver.DimLevel") / 100; // 0.07f;
+					}
+				}
 				m_pd3dDevice->GetGammaRamp(&m_OldRamp);	// Store the old gamma ramp
 				// Fade to fFadeLevel
 				for (float fade=1.f; fade>=fFadeLevel; fade-=0.01f)
@@ -2592,7 +2530,7 @@ void CApplication::CheckShutdown()
 	}
 	else
 	{
-		if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_stSettings.m_iShutdownTime*60*1000L) )
+		if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("System.ShutDownTime")*60*1000L) )
 		{
 			if (m_pPlayer && m_pPlayer->IsPlaying())	// if we're playing something don't shutdown
 			{
@@ -2635,7 +2573,8 @@ bool CApplication::MustBlockHDSpinDown(bool bCheckThisForNormalSpinDown)
 
 void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
 {
-  if (!g_stSettings.m_bHDRemoteplaySpinDownAudio && !g_stSettings.m_bHDRemoteplaySpinDownVideo) return;
+	int iSpinDown = g_guiSettings.GetInt("System.RemotePlayHDSpinDown");
+  if (iSpinDown == SPIN_DOWN_NONE) return;
   if (m_gWindowManager.IsRouted()) return;
   if (MustBlockHDSpinDown(false)) return;
 
@@ -2654,12 +2593,13 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
       if (
         !CUtil::IsHD(m_itemCurrentFile.m_strPath) &&
         (
-          (g_stSettings.m_bHDRemoteplaySpinDownVideo && IsPlayingVideo()) ||
-          (g_stSettings.m_bHDRemoteplaySpinDownAudio && IsPlayingAudio())
+          (iSpinDown == SPIN_DOWN_VIDEO && IsPlayingVideo()) ||
+          (iSpinDown == SPIN_DOWN_MUSIC && IsPlayingAudio()) ||
+					(iSpinDown == SPIN_DOWN_BOTH)
         ) &&
         (
           (iDuration <= 0) ||
-          (iDuration > g_stSettings.m_iHDRemoteplaySpinDownMinDuration*60)
+          (iDuration > g_guiSettings.GetInt("System.RemotePlayHDSpinDownMinDuration")*60)
         )
       )
       {
@@ -2685,7 +2625,7 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
 	{
     // check the elapsed time
     DWORD dwTimeSpan=timeGetTime() - m_dwSpinDownTime;
-		if ( (m_dwSpinDownTime != 0) && (dwTimeSpan >= ((DWORD)g_stSettings.m_iHDRemoteplaySpinDownTime*1000UL))  )
+		if ( (m_dwSpinDownTime != 0) && (dwTimeSpan >= ((DWORD)g_guiSettings.GetInt("System.RemotePlayHDSpinDownDelay")*1000UL))  )
 		{
       // time has elapsed, spin it down
       CIoSupport::SpindownHarddisk();
@@ -2698,7 +2638,7 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
 
 void CApplication::CheckHDSpindown()
 {
-  if (!g_stSettings.m_iHDSpinDownTime) return;
+  if (!g_guiSettings.GetInt("System.HDSpinDownTime")) return;
   if (m_gWindowManager.IsRouted()) return;
   if (MustBlockHDSpinDown()) return;
 
@@ -2718,7 +2658,7 @@ void CApplication::CheckHDSpindown()
 	{
     // yes, then check the elapsed time
     DWORD dwTimeSpan=timeGetTime() - m_dwSpinDownTime;
-		if ( (m_dwSpinDownTime != 0) && (dwTimeSpan >= ((DWORD)g_stSettings.m_iHDSpinDownTime*60UL*1000UL))  )
+		if ( (m_dwSpinDownTime != 0) && (dwTimeSpan >= ((DWORD)g_guiSettings.GetInt("System.HDSpinDownTime")*60UL*1000UL))  )
 		{
       // time has elapsed, spin it down
       CIoSupport::SpindownHarddisk();
@@ -2922,10 +2862,10 @@ void CApplication::Process()
   if (!m_bNetworkSpinDown) CheckHDSpindown();
 
 	// check if we need to activate the screensaver (if enabled)
-	if (g_stSettings.m_iScreenSaverMode) CheckScreenSaver();
+	if (g_guiSettings.GetString("ScreenSaver.Mode") != "None") CheckScreenSaver();
 
 	// check if we need to shutdown (if enabled)
-	if (g_stSettings.m_iShutdownTime) CheckShutdown();
+	if (g_guiSettings.GetInt("System.ShutDownTime")) CheckShutdown();
 
 	// process messages, even if a movie is playing
 	g_applicationMessenger.ProcessMessages();

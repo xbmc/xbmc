@@ -29,6 +29,7 @@
 #include "GUIListControl.h"
 #include "filesystem/directorycache.h"
 #include "GUIDialogOK.h"
+#include "AutoSwitch.h"
 
 #define VIEW_AS_LIST           0
 #define VIEW_AS_ICONS          1
@@ -143,6 +144,9 @@ CGUIWindowVideoFiles::CGUIWindowVideoFiles()
   m_iItemSelected=-1;
 	m_iLastControl=-1;
 	m_bDisplayEmptyDatabaseMessage = false;
+
+	m_iViewAsIcons=-1;
+	m_iViewAsIconsRoot=-1;
 }
 
 CGUIWindowVideoFiles::~CGUIWindowVideoFiles()
@@ -190,6 +194,13 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
 				m_strDirectory=g_stSettings.m_szDefaultVideos;
 				SetHistoryForPath(m_strDirectory);
 			}
+
+			if (m_iViewAsIcons==-1 && m_iViewAsIconsRoot==-1)
+			{
+				m_iViewAsIcons=g_stSettings.m_iMyMusicSongsViewAsIcons;
+				m_iViewAsIconsRoot=g_stSettings.m_iMyMusicSongsRootViewAsIcons;
+			}
+
 			return CGUIWindowVideoBase::OnMessage(message);
 		}
 		break;
@@ -215,6 +226,23 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         UpdateButtons();
         OnSort();
       }
+			else if (iControl==CONTROL_BTNVIEWASICONS)
+			{
+				if ( m_strDirectory.IsEmpty() )
+				{
+					m_iViewAsIconsRoot++;
+					if (m_iViewAsIconsRoot > VIEW_AS_LARGEICONS) m_iViewAsIconsRoot=VIEW_AS_LIST;
+				}
+				else
+				{
+					m_iViewAsIcons++;
+					if (m_iViewAsIcons > VIEW_AS_LARGEICONS) m_iViewAsIcons=VIEW_AS_LIST;
+				}
+				g_stSettings.m_iMyVideoRootViewAsIcons=m_iViewAsIconsRoot;
+				g_stSettings.m_iMyVideoViewAsIcons=m_iViewAsIcons;
+
+				CGUIWindowVideoBase::OnMessage(message);
+			}
       else if (iControl==CONTROL_BTNSORTASC) // sort asc
       {
 				if (m_strDirectory.IsEmpty())
@@ -308,6 +336,22 @@ void CGUIWindowVideoFiles::SortItems()
 
 void CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
 {
+	UpdateDir(strDirectory);
+	if (!m_strDirectory.IsEmpty() && g_guiSettings.GetBool("VideoLists.AutoSwitchUseLargeThumbs"))
+	{
+		m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
+
+		//ShowThumbPanel();
+		UpdateButtons();
+
+		int iControl = CONTROL_LIST;
+		if (m_iViewAsIcons != VIEW_AS_LIST) iControl = CONTROL_THUMBS;
+		SET_CONTROL_FOCUS(GetID(), iControl, 0);
+	}
+}
+
+void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
+{
   // get selected item
 	int iItem=GetSelectedItem();
 	CStdString strSelectedItem="";
@@ -332,7 +376,7 @@ void CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
 		if ( bParentExists )
 		{
 			// yes
-			if (!g_stSettings.m_bHideParentDirItems)
+			if (!g_guiSettings.GetBool("VideoLists.HideParentDirItems"))
 			{
 				CFileItem *pItem = new CFileItem("..");
 				pItem->m_strPath=strParentPath;
@@ -347,7 +391,7 @@ void CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
   {
 		// yes, this is the root of a share
 		// add parent path to the virtual directory
-		if (!g_stSettings.m_bHideParentDirItems)
+		if (!g_guiSettings.GetBool("VideoLists.HideParentDirItems"))
 		{
 			CFileItem *pItem = new CFileItem("..");
 			pItem->m_strPath="";
@@ -491,7 +535,7 @@ void CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
 	m_iLastControl=GetFocusedControl();
 
 	CUtil::SetThumbs(m_vecItems);
-	if ((g_stSettings.m_bHideExtensions) || (g_stSettings.m_bMyVideoCleanTitles))
+	if ((g_guiSettings.GetBool("VideoLists.HideExtensions")) || (g_stSettings.m_bMyVideoCleanTitles))
 		CUtil::RemoveExtensions(m_vecItems);
   if (g_stSettings.m_bMyVideoCleanTitles)
     CUtil::CleanFileNames(m_vecItems);
@@ -988,11 +1032,11 @@ bool CGUIWindowVideoFiles::ViewByIcon()
 {
   if ( m_strDirectory.IsEmpty() )
   {
-    if (g_stSettings.m_iMyVideoRootViewAsIcons != VIEW_AS_LIST) return true;
+ 	  if (m_iViewAsIconsRoot != VIEW_AS_LIST) return true;
   }
   else
   {
-    if (g_stSettings.m_iMyVideoViewAsIcons != VIEW_AS_LIST) return true;
+ 	  if (m_iViewAsIcons != VIEW_AS_LIST) return true;
   }
   return false;
 }
@@ -1001,11 +1045,11 @@ bool CGUIWindowVideoFiles::ViewByLargeIcon()
 {
   if ( m_strDirectory.IsEmpty() )
   {
-    if (g_stSettings.m_iMyVideoRootViewAsIcons == VIEW_AS_LARGEICONS) return true;
+ 	  if (m_iViewAsIconsRoot == VIEW_AS_LARGEICONS) return true;
   }
   else
   {
-    if (g_stSettings.m_iMyVideoViewAsIcons== VIEW_AS_LARGEICONS) return true;
+ 	  if (m_iViewAsIcons== VIEW_AS_LARGEICONS) return true;
   }
   return false;
 }
@@ -1120,7 +1164,7 @@ void CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, VECFILEI
 		if ( bParentExists )
 		{
 			// yes
-			if (!g_stSettings.m_bHideParentDirItems)
+			if (!g_guiSettings.GetBool("VideoLists.HideParentDirItems"))
 			{
 				CFileItem *pItem = new CFileItem("..");
 				pItem->m_strPath=strParentPath;
@@ -1135,7 +1179,7 @@ void CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, VECFILEI
 	{
 		// yes, this is the root of a share
 		// add parent path to the virtual directory
-		if (!g_stSettings.m_bHideParentDirItems)
+		if (!g_guiSettings.GetBool("VideoLists.HideParentDirItems"))
 		{
 			CFileItem *pItem = new CFileItem("..");
 			pItem->m_strPath="";
