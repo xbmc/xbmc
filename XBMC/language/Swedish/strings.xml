@@ -1629,6 +1629,19 @@
      <id>492</id>
      <value>Förstora undertexter</value>
    </string>
+   <string>
+     <id>493</id>
+     <value>Avanserade val (Bara Experter!)</value>
+   </string>
+   <string>
+     <id>494</id>
+     <value>Overall Audio Headroom (dB)</value>
+   </string>
+   <string>
+     <id>495</id>
+     <value>Upsampla video till GUI upplösning</value>
+   </string>
+
 
 
 
