@@ -68,7 +68,7 @@ void CGUIWindowManager::PreviousWindow()
 	if (m_iActiveWindow >=0)
 	{
     
-    if (m_iActiveWindow >=0 && m_iActiveWindow < m_vecWindows.size())
+    if (m_iActiveWindow >=0 && m_iActiveWindow < (int)m_vecWindows.size())
     {
 		  CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
 		  iPrevActiveWindowID = pWindow->GetPreviousWindowID();

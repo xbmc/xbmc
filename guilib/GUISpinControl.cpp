@@ -24,7 +24,7 @@ CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPo
   m_dwTextColor=dwTextColor;
   m_iType=iType;
   m_iSelect=SPIN_BUTTON_DOWN;
-
+  m_bShowRange=false;
 }
 
 CGUISpinControl::~CGUISpinControl(void)
@@ -117,6 +117,11 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
 			}
       break;
 
+      case GUI_MSG_SHOWRANGE:
+        if (message.GetParam1() ) m_bShowRange=true;
+        else  m_bShowRange=false;
+      break;
+
       case GUI_MSG_LABEL_ADD:
       {
         AddLabel(message.GetLabel(), message.GetParam1());
@@ -183,7 +188,16 @@ void CGUISpinControl::Render()
 	{
 		swprintf(wszText,L"");
 		if (m_iValue < (int)m_vecLabels.size() )
-			swprintf(wszText,L"%s", m_vecLabels[m_iValue].c_str() );
+    {
+      if (m_bShowRange)
+      {
+        swprintf(wszText,L"(%i/%i) %s", m_iValue+1,(int)m_vecLabels.size(),m_vecLabels[m_iValue].c_str() );
+      }
+			else
+      {
+        swprintf(wszText,L"%s", m_vecLabels[m_iValue].c_str() );
+      }
+    }
 	}
 
 	if ( m_dwAlign== XBFONT_LEFT)
@@ -479,4 +493,13 @@ void CGUISpinControl::SetFloatInterval(float fInterval)
 float CGUISpinControl::GetFloatInterval() const
 {
   return m_fInterval;
+}
+
+bool CGUISpinControl::GetShowRange() const
+{
+  return m_bShowRange;
+}
+void CGUISpinControl::SetShowRange(bool bOnoff) 
+{
+  m_bShowRange=bOnoff;
 }

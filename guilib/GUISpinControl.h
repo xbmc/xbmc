@@ -49,6 +49,8 @@ public:
 	DWORD							GetSpinHeight() const { return m_imgspinUp.GetHeight(); };
   void              SetFloatInterval(float fInterval);
   float             GetFloatInterval() const;
+  bool              GetShowRange() const;
+  void              SetShowRange(bool bOnoff) ;
 protected:
 	bool			CanMoveDown();
 	bool			CanMoveUp();
@@ -74,5 +76,6 @@ protected:
   CGUIFont* m_pFont;
   DWORD     m_dwTextColor;
 	DWORD			m_dwAlign;
+  bool      m_bShowRange;
 };
 #endif
