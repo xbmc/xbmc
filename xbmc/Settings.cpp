@@ -218,6 +218,8 @@ CSettings::CSettings(void)
   strcpy(g_stSettings.m_strGateway,"");
 	strcpy(g_stSettings.m_strNameServer,"");
 	strcpy(g_stSettings.m_strTimeServer,"");
+	strcpy(g_stSettings.szOnlineUsername,"");
+	strcpy(g_stSettings.szOnlinePassword,"");
 	g_stSettings.m_bTimeServerEnabled=false;
 	g_stSettings.m_bFTPServerEnabled=false;
 	g_stSettings.m_bHTTPServerEnabled=false;
@@ -359,6 +361,13 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings, bool &bCalibration
 		pFileType=pFileType->NextSibling();
 	}
 
+	TiXmlElement* pXLinkElement =pRootElement->FirstChildElement("xlink");
+	if (pXLinkElement)
+	{
+		GetString(pXLinkElement, "username", g_stSettings.szOnlineUsername,"");
+		GetString(pXLinkElement, "password", g_stSettings.szOnlinePassword,"");
+	}
+
 	TiXmlElement* pDelaysElement =pRootElement->FirstChildElement("delays");
 	if (pDelaysElement)
 	{
@@ -395,6 +404,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings, bool &bCalibration
 	GetString(pRootElement, "defaultgateway", g_stSettings.m_strGateway,"");
 	GetString(pRootElement, "nameserver", g_stSettings.m_strNameServer,"");
 	GetString(pRootElement, "timeserver", g_stSettings.m_strTimeServer,"207.46.248.43");
+
   GetString(pRootElement, "thumbnails",g_stSettings.szThumbnailsDirectory,"");
   GetString(pRootElement, "shortcuts", g_stSettings.m_szShortcutDirectory,"");
   GetString(pRootElement, "screenshots", g_stSettings.m_szScreenshotsDirectory, "");
