@@ -25,6 +25,7 @@ bool CGUIWindow::Load(const CStdString& strFileName)
 		OutputDebugString("Unable to load window:");
 		OutputDebugString(strFileName.c_str());
 		OutputDebugString("\n");
+		m_dwWindowId=9999;
     return false;
   }
   TiXmlElement* pRootElement =xmlDoc.RootElement();
