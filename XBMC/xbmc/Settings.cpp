@@ -1012,10 +1012,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetBoolean(pElement, "deinterlace", g_stSettings.m_bDeInterlace);
 
 		GetInteger(pElement, "enlargesubtitlepercent",g_stSettings.m_iEnlargeSubtitlePercent, 0, 0, 200);
-		bool bEnlargeSubtitles;
-		GetBoolean(pElement, "enlargesubtitles",bEnlargeSubtitles);
-		if (bEnlargeSubtitles && !g_stSettings.m_iEnlargeSubtitlePercent)
-			g_stSettings.m_iEnlargeSubtitlePercent = 100;
 		GetInteger(pElement, "subtitleheight",g_stSettings.m_iSubtitleHeight,28,1,128);
 		GetString(pElement, "subtitlefont", g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
 		GetInteger(pElement, "smallstepbackseconds", g_stSettings.m_iSmallStepBackSeconds,7,1,INT_MAX);
