@@ -53,7 +53,21 @@ bool CIMDB::FindMovie(const CStdString &strMovie,IMDB_MOVIELIST& movielist)
 	if (!szBuffer) return false;
 	strcpy(szBuffer,strHTML.c_str());
 	
-	/*
+	/*  AS OF 20-12-2004
+	<h2>Popular Results</h2>
+
+<b>Popular Titles</b> (Displaying 1 Result)<ol><li><a href="/title/tt0056869/?fr=c2l0ZT1kZnxzZz0xfHR0PTF8cG49MHxxPUZvciBUaGUgQmlyZHN8bXg9MjB8bG09MjAwfGh0bWw9MQ__;fc=1;ft=11;fm=1">The Birds</a> (1963)<br>&#160;aka <em>"Alfred Hitchcock's The Birds"</em> - UK <em>(complete title)</em></li></ol>
+</p>
+
+<h2>Other Results</h2>
+
+<p>
+<b>Titles (Exact Matches)</b> (Displaying 1 Result)<ol><li><a href="/title/tt0248808/?fr=c2l0ZT1kZnxzZz0xfHR0PTF8cG49MHxxPUZvciBUaGUgQmlyZHN8bXg9MjB8bG09MjAwfGh0bWw9MQ__;fc=2;ft=11;fm=1">For the Birds</a> (2000)</li></ol><b>Titles (Partial Matches)</b> (Displaying 4 Results)<ol><li><a href="/title/tt0045173/?fr=c2l0ZT1kZnxzZz0xfHR0PTF8cG49MHxxPUZvciBUaGUgQmlyZHN8bXg9MjB8bG09MjAwfGh0bWw9MQ__;fc=3;ft=11;fm=1">Something for the Birds</a> (1952)</li><li><a href="/title/tt0151087/?fr=c2l0ZT1kZnxzZz0xfHR0PTF8cG49MHxxPUZvciBUaGUgQmlyZHN8bXg9MjB8bG09MjAwfGh0bWw9MQ__;fc=4;ft=11;fm=1">It's for the Birds</a> (1967)</li><li><a href="/title/tt0284522/?fr=c2l0ZT1kZnxzZz0xfHR0PTF8cG49MHxxPUZvciBUaGUgQmlyZHN8bXg9MjB8bG09MjAwfGh0bWw9MQ__;fc=5;ft=11;fm=1">Strictly for the Birds</a> (1963)</li><li><a href="/title/tt0066281/?fr=c2l0ZT1kZnxzZz0xfHR0PTF8cG49MHxxPUZvciBUaGUgQmlyZHN8bXg9MjB8bG09MjAwfGh0bWw9MQ__;fc=6;ft=11;fm=1">The Rainbirds</a> (1971) (TV)<br>&#160;aka <em>"Play for Today: The Rainbirds"</em> - UK <em>(series title)</em></li></ol><b>Titles (Approx Matches)</b> (Displaying 5 Results)<ol><li><a href="/title/tt0366252/?fr=c2l0ZT1kZnxzZz0xfHR0PTF8cG49MHxxPUZvciBUaGUgQmlyZHN8bXg9MjB8bG09MjAwfGh0bWw9MQ__;fc=7;ft=11;fm=1">Borrowed Clothes; or, Fine Feathers Make Fine Birds</a> (1909)</li><li><a href="/title/tt0055934/?fr=c2l0ZT1kZnxzZz0xfHR0PTF8cG49MHxxPUZvciBUaGUgQmlyZHN8bXg9MjB8bG09MjAwfGh0bWw9MQ__;fc=8;ft=11;fm=1">Du mouron pour les petits oiseaux</a> (1962)<br>&#160;aka <em>"Chicken Feed for Little Birds"</em> - <em>(English title)</em></li><li><a href="/title/tt0151086/?fr=c2l0ZT1kZnxzZz0xfHR0PTF8cG49MHxxPUZvciBUaGUgQmlyZHN8bXg9MjB8bG09MjAwfGh0bWw9MQ__;fc=9;ft=11;fm=1">It's for the Birdies</a> (1962)</li><li><a href="/title/tt0032426/?fr=c2l0ZT1kZnxzZz0xfHR0PTF8cG49MHxxPUZvciBUaGUgQmlyZHN8bXg9MjB8bG09MjAwfGh0bWw9MQ__;fc=10;ft=11;fm=1">The Early Worm Gets the Bird</a> (1940)</li><li><a href="/title/tt0306741/?fr=c2l0ZT1kZnxzZz0xfHR0PTF8cG49MHxxPUZvciBUaGUgQmlyZHN8bXg9MjB8bG09MjAwfGh0bWw9MQ__;fc=11;ft=11;fm=1">Doraemon, Nobita to tsubasa no yuusacchi</a> (2001) (TV)<br>&#160;aka <em>"Doraemon, Nobita, and the Bird Kingdom"</em></li></ol>
+
+</p>
+<p>
+  */
+	/* OLD METHOD
 	<b>Exact Matches</b> (11 matches, by popularity)
     </p>
     <p>
@@ -65,7 +79,11 @@ bool CIMDB::FindMovie(const CStdString &strMovie,IMDB_MOVIELIST& movielist)
 	</LI>
 	*/
 
-	char *pStartOfMovieList=strstr(szBuffer," Matches</b>");
+	char *pStartOfMovieList=strstr(szBuffer," Titles</b>");
+	if (!pStartOfMovieList)
+	{	// We don't have the "Titles</b>" tag, try "Matches)</b>
+		pStartOfMovieList=strstr(szBuffer," Matches)</b>");
+	}
 	if (!pStartOfMovieList)
 	{
 		char* pMovieTitle	 = strstr(szBuffer,"\"title\">");
@@ -115,7 +133,7 @@ bool CIMDB::FindMovie(const CStdString &strMovie,IMDB_MOVIELIST& movielist)
 	*pEndOfMovieList=0;
 	while(1)
 	{
-		char* pAHREF=strstr(pStartOfMovieList,"<a href=");
+		char* pAHREF=strstr(pStartOfMovieList,"<a href=\"/title");
 		if (pAHREF)
 		{
 			//<a href="/title/tt0313443/">Out of Time</a>(2003/I)</tr>...
@@ -138,6 +156,13 @@ bool CIMDB::FindMovie(const CStdString &strMovie,IMDB_MOVIELIST& movielist)
 					pURL++;
 					*pURL=0;
           char* pURLEnd=strstr(pURL+1,"<");
+					char *pURLQuestion=strstr(pAHREF, "?fr");
+					if (pURLQuestion)
+					{
+						*pURLQuestion=0;
+						pURLQuestion++;
+						*pURLQuestion=0;
+					}
           strcpy(szURL, pAHREF);
 					if (pURLEnd)  
           {

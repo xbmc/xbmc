@@ -1188,5 +1188,8 @@ void CGUIWindowSlideShow::Shuffle()
 	m_iNextSlide = 1;
 }
 
-
+int CGUIWindowSlideShow::NumSlides()
+{
+	return (int)m_vecSlides.size();
+}
 

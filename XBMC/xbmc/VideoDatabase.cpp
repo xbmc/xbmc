@@ -765,6 +765,7 @@ void CVideoDatabase::SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
     RemoveInvalidChars(details1.m_strSearchString);  
     RemoveInvalidChars(details1.m_strTitle);  
     RemoveInvalidChars(details1.m_strVotes);  
+    RemoveInvalidChars(details1.m_strRuntime);  
     RemoveInvalidChars(details1.m_strWritingCredits);  
     RemoveInvalidChars(details1.m_strGenre);  
     RemoveInvalidChars(details1.m_strIMDBNumber);  
@@ -1187,7 +1188,7 @@ void CVideoDatabase::GetDVDLabel(long lMovieId, CStdString& strDVDLabel)
   }
 }
 
-CIMDBMovie CVideoDatabase::GetDetailsFromDataset(auto_ptr<Dataset> pDS)
+CIMDBMovie CVideoDatabase::GetDetailsFromDataset(auto_ptr<Dataset> &pDS)
 {
 	CIMDBMovie details;
   details.m_fRating=(float)atof(pDS->fv("movieinfo.fRating").get_asString().c_str()) ;
