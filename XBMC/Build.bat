@@ -59,6 +59,7 @@ rem xcopy python BUILD\python /E /Q /I /Y
 rem xcopy %SKINS% Build\Skin /E /Q /I /Y
 rem xcopy %CODECS% Build\mplayer\codecs /E /Q /I /Y
 xcopy media BUILD\media /E /Q /I /Y
+del BUILD\media\dsstdfx.bin
 
 REM ECHO ------------------------------
 REM ECHO Removing CVS directories from build
