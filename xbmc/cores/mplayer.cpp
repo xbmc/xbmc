@@ -93,7 +93,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		{
 			OutputDebugString("cmplayer::openfile() parse failed\n");
 			delete m_pDLL;
-			m_pDLL=false;
+			m_pDLL=NULL;
 			return false;
 		}
 		OutputDebugString("cmplayer::openfile() resolve imports\n");

@@ -387,6 +387,12 @@
 				RelativePath=".\xbmc\GUIWindowVideoOverlay.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowVisualisation.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowVisualisation.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\MusicDatabase.cpp">
 			</File>
 			<File
@@ -1055,6 +1061,22 @@
 					RelativePath=".\xbmc\cores\mplayer\xbox_video.h">
 				</File>
 			</Filter>
+		</Filter>
+		<Filter
+			Name="Visualisations"
+			Filter="">
+			<File
+				RelativePath=".\xbmc\visualizations\Visualisation.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\visualizations\Visualisation.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\visualizations\VisualisationFactory.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\visualizations\VisualisationFactory.h">
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

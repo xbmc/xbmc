@@ -19,6 +19,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bAutorunXbox=true;
 
 	strcpy(g_stSettings.szDefaultLanguage,"english");
+	strcpy(g_stSettings.szDefaultVisualisation,"goom.dll");
 	g_stSettings.m_minFilter=D3DTEXF_LINEAR;
 	g_stSettings.m_maxFilter=D3DTEXF_LINEAR;
 	g_stSettings.m_iSoften=1;

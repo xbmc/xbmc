@@ -184,6 +184,10 @@ HRESULT CApplication::Initialize()
 	CreateDirectory((strDir+"\\playlists").c_str(),NULL);
 	CreateDirectory((strDir+"\\thumbs").c_str(),NULL); // contains the album thumbs
 	CreateDirectory((strDir+"\\cddb").c_str(),NULL);
+	CreateDirectory((strDir+"\\python").c_str(),NULL);
+	CreateDirectory((strDir+"\\scripts").c_str(),NULL);
+	CreateDirectory((strDir+"\\language").c_str(),NULL);
+	CreateDirectory((strDir+"\\visualisation").c_str(),NULL);
 
 
   // initialize network
@@ -219,6 +223,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiMusicInfo);								// window id = 2001
 	m_gWindowManager.Add(&m_guiDialogOK);									// window id = 2002
 	m_gWindowManager.Add(&m_guiVideoInfo);								// window id = 2003
+	m_gWindowManager.Add(&m_guiWindowVisualisation);			// window id = 2006
 	
   g_graphicsContext.Set(m_pd3dDevice,m_d3dpp.BackBufferWidth,m_d3dpp.BackBufferHeight, g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY, (m_d3dpp.Flags&D3DPRESENTFLAG_WIDESCREEN) !=0 );
   m_keyboard.Initialize();
@@ -282,6 +287,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiWindowVideoOverlay.Load( strSkinPath+"\\videoOverlay.xml" );
 	m_guiWindowFullScreen.Load( strSkinPath+"\\videoFullScreen.xml" );
 	m_guiScripts.Load( strSkinPath+"\\myscripts.xml");
+	m_guiWindowVisualisation.Load( strSkinPath+"\\musicVisualisation.xml");
 }
 
 
