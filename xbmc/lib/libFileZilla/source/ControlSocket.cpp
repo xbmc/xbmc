@@ -29,6 +29,9 @@
 #include "AsyncGssSocketLayer.h"
 #endif
 
+#include "../../Settings.h"
+#include "../../utils/MemUnit.h"
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
@@ -1009,6 +1012,23 @@ void CControlSocket::ParseCommand()
 				t_directory dir;
 				for (std::vector<t_directory>::const_iterator iter=user.permissions.begin(); iter!=user.permissions.end(); iter++) {
 					if((iter->dir != "/") && (iter->dir != "\\")) {
+
+						if (isalpha(iter->dir[0]) && iter->dir[1] == ':')
+						{
+							char drive = tolower(iter->dir[0]);
+							if (drive >= 'f')
+							{
+								// check it's available
+								if (drive > 'g' ||
+									(drive == 'f' && !g_stSettings.m_bUseFDrive) ||
+									(drive == 'g' && !g_stSettings.m_bUseGDrive))
+								{
+									if (!MU_IsDriveValid(drive))
+										continue;
+								}
+							}
+						}
+
 						CStdString dirToList = iter->dir;
 						dirToList.TrimRight("\\");
 						dirToList.TrimRight("/");
