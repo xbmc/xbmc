@@ -492,34 +492,9 @@ HRESULT CApplication::Create()
 	g_videoConfig.GetModes(m_pD3D);
   //init the present parameters with values that are supported
   RESOLUTION initialResolution = g_videoConfig.GetInitialMode(m_pD3D, &m_d3dpp);
-
-  if( FAILED( hr = m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL, 
-                                      D3DCREATE_HARDWARE_VERTEXPROCESSING, 
-                                      &m_d3dpp, &m_pd3dDevice ) ) )
-  {
-      CLog::Log(LOGFATAL, "XBAppEx: Could not create D3D device!" );
-      CLog::Log(LOGFATAL, " width/height:(%ix%i)" , m_d3dpp.BackBufferWidth,m_d3dpp.BackBufferHeight);
-      CLog::Log(LOGFATAL, " refreshrate:%i" , m_d3dpp.FullScreen_RefreshRateInHz);
-      if (m_d3dpp.Flags & D3DPRESENTFLAG_WIDESCREEN)
-        CLog::Log(LOGFATAL, " 16:9 widescreen");  
-      else
-        CLog::Log(LOGFATAL, " 4:3");  
-
-      if (m_d3dpp.Flags & D3DPRESENTFLAG_INTERLACED)
-        CLog::Log(LOGFATAL, " interlaced");  
-      if (m_d3dpp.Flags & D3DPRESENTFLAG_PROGRESSIVE)
-        CLog::Log(LOGFATAL, " progressive");  
-      return hr;
-  }
-  m_pd3dDevice->GetBackBuffer( 0, 0, &m_pBackBuffer );
-	g_graphicsContext.SetD3DDevice(m_pd3dDevice);
+  g_graphicsContext.SetGUIResolution(initialResolution);
   // Transfer the resolution information to our graphics context
 	g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
-	// set filters
-	g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MINFILTER, g_stSettings.m_minFilter );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MAGFILTER, g_stSettings.m_maxFilter );
-  g_graphicsContext.SetGUIResolution(initialResolution);
-	CUtil::InitGamma();
 
   CIoSupport helper;
 	CStdString strPath;
@@ -539,11 +514,6 @@ HRESULT CApplication::Create()
 	CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 	CLog::Log(LOGNOTICE, "starting...");
 	CLog::Log(LOGNOTICE, "Q is mapped to:%s",szDevicePath);
-
-  //start splash, if xbmc is set as dash throug a copy .xbe, splash will 
-  //fail here and run again after loading of the settings
-  m_splash = new CSplash("Q:\\media\\splash.png");
-  m_splash->Start();
 
   // Initialize core peripheral port support. Note: If these parameters
 	// are 0 and NULL, respectively, then the default number and types of
@@ -584,16 +554,7 @@ HRESULT CApplication::Create()
 	g_LoadErrorStr = "Unable to load settings";
 	m_bAllSettingsLoaded=g_settings.Load(m_bXboxMediacenterLoaded,m_bSettingsLoaded);
 	if (!m_bAllSettingsLoaded)
-		FatalErrorHandler(false, true, true);
-
-  // Transfer the new resolution information from settings to our graphics context
-	g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
-	if (!g_graphicsContext.IsValidResolution(g_stSettings.m_GUIResolution))
-	{
-		// Oh uh - doesn't look good for starting in their wanted screenmode
-		CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
-    g_stSettings.m_GUIResolution = initialResolution;
-	}
+		FatalErrorHandler(true, true, true);
 
 	CLog::Log(LOGINFO, "map drives...");
 	CLog::Log(LOGINFO, "  map drive C:");
@@ -638,10 +599,6 @@ HRESULT CApplication::Create()
 			::MoveFile("Q:\\xbmc.log","Q:\\xbmc.old.log");
 			CLog::Close();
 			CLog::Log(LOGNOTICE, "Q is mapped to:%s",szDevicePath);
-      if (!m_splash->IsRunning())
-      {
-        m_splash->Start();
-      }
 		}
 		else
 		{
@@ -649,6 +606,45 @@ HRESULT CApplication::Create()
 			FatalErrorHandler(true, false, true);
 		}
 	}
+
+	if (!g_graphicsContext.IsValidResolution(g_stSettings.m_GUIResolution))
+	{
+		// Oh uh - doesn't look good for starting in their wanted screenmode
+		CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
+    g_stSettings.m_GUIResolution = initialResolution;
+	}
+  // Transfer the new resolution information to our graphics context
+	g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
+  g_graphicsContext.SetGUIResolution(g_stSettings.m_GUIResolution);
+	g_graphicsContext.SetOffset(g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY);
+  if( FAILED( hr = m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL, 
+                                      D3DCREATE_HARDWARE_VERTEXPROCESSING, 
+                                      &m_d3dpp, &m_pd3dDevice ) ) )
+  {
+      CLog::Log(LOGFATAL, "XBAppEx: Could not create D3D device!" );
+      CLog::Log(LOGFATAL, " width/height:(%ix%i)" , m_d3dpp.BackBufferWidth,m_d3dpp.BackBufferHeight);
+      CLog::Log(LOGFATAL, " refreshrate:%i" , m_d3dpp.FullScreen_RefreshRateInHz);
+      if (m_d3dpp.Flags & D3DPRESENTFLAG_WIDESCREEN)
+        CLog::Log(LOGFATAL, " 16:9 widescreen");  
+      else
+        CLog::Log(LOGFATAL, " 4:3");  
+
+      if (m_d3dpp.Flags & D3DPRESENTFLAG_INTERLACED)
+        CLog::Log(LOGFATAL, " interlaced");  
+      if (m_d3dpp.Flags & D3DPRESENTFLAG_PROGRESSIVE)
+        CLog::Log(LOGFATAL, " progressive");  
+      return hr;
+  }
+  m_pd3dDevice->GetBackBuffer( 0, 0, &m_pBackBuffer );
+	g_graphicsContext.SetD3DDevice(m_pd3dDevice);
+	// set filters
+	g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MINFILTER, g_stSettings.m_minFilter );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MAGFILTER, g_stSettings.m_maxFilter );
+	CUtil::InitGamma();
+  g_graphicsContext.SetGUIResolution(g_stSettings.m_GUIResolution);
+
+  m_splash = new CSplash("Q:\\media\\splash.png");
+  m_splash->Start();
 
 	CStdString strLanguagePath;
 	strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_stSettings.szDefaultLanguage);
@@ -856,9 +852,6 @@ HRESULT CApplication::Initialize()
 	m_ctrIR.SetDelays(g_stSettings.m_iMoveDelayIR,g_stSettings.m_iRepeatDelayIR);
 
   SAFE_DELETE(m_splash);
-
-	g_graphicsContext.SetGUIResolution(g_stSettings.m_GUIResolution);
-	g_graphicsContext.SetOffset(g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY);
 
 	m_gWindowManager.ActivateWindow(g_stSettings.m_iStartupWindow);
 	CLog::Log(LOGINFO, "removing tempfiles");
