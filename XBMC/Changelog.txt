@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 17-08-2004 added: Romanian Language file by bompy
   - 17-08-2004 updated: Polish Language file by NaPeK 
   - 17-08-2004 updated: small changes to the skin
   - 17-08-2004 updated: german language file
