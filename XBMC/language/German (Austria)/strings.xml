@@ -1979,7 +1979,7 @@
   </string>
   <string>
     <id>735</id>
-    <value>Symbol</value>
+    <value>Zeichentabelle</value>
   </string>	
   <string>
     <id>736</id>
@@ -2344,7 +2344,7 @@
 <value>Drücke - JA - um die XBOX neu zu starten</value>
 </string>
    <string><id>13309</id>
-<value>Drücke - NEIN - um nur einen Reset auszuführen</value>
+<value>Drücke - NEIN - um nur XBMC neu zu laden</value>
 </string>
     <string><id>13310</id>
 <value>Übergang streckend</value>
@@ -2408,27 +2408,30 @@
 <value>Fehler beim Öffnen von %s</value>
 </string> 
      <string><id>13330</id>
-<value>Laden von %s nicht mglich</value>
+<value>Laden von %s nicht möglich</value>
 </string> 
      <string><id>13331</id>
 <value>Fehler: Nicht genügend Speicher.</value>
 </string> 
 
    <string><id>13332</id>
-<value>Aufwärts</value>
+<value>Nach oben</value>
 </string> 
      <string><id>13333</id>
-<value>Abwärts</value>
+<value>Nach unten</value>
 </string> 
      <string><id>13334</id>
-<value>Label ändern</value>
+<value>Beschriftung ändern</value>
 </string> 
      <string><id>13335</id>
-<value>Standard</value>
+<value>Standard setzen</value>
 </string> 
      <string><id>13336</id>
-<value>Button löschen</value>
-</string> 
+<value>Button entfernen</value>
+</string>
+   <string><id>13337</id>
+<value>2 Kanal Pulse Code Modulation</value>
+</string>
 
    <string><id>14000</id>
 <value>Koppeln deakt.</value>
@@ -2454,5 +2457,11 @@
      <string><id>14007</id>
 <value>Fehler beim Erhalt der Wiedergabeliste</value>
 </string>
+    <string><id>14008</id>
+<value>Aktiviere Kai Benachrichtigung</value>
+</string> 
+     <string><id>14009</id>
+<value>Spieleverzeichnis</value>
+</string> 
 
 </strings>
