@@ -143,6 +143,7 @@ void CGUIImage::Render()
 	Process();
 
     // Set state to render the image
+		g_graphicsContext.Get3DDevice()->SetPalette( 0, m_pPalette);
     g_graphicsContext.Get3DDevice()->SetTexture( 0, m_vecTextures[m_iCurrentImage] );
     g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
     g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
@@ -195,7 +196,7 @@ void CGUIImage::AllocResources()
   for (int i=0; i < iImages; i++)
   {
     LPDIRECT3DTEXTURE8 pTexture;
-		pTexture=g_TextureManager.GetTexture(m_strFileName,i, m_iTextureWidth,m_iTextureHeight);
+		pTexture=g_TextureManager.GetTexture(m_strFileName,i, m_iTextureWidth,m_iTextureHeight,m_pPalette);
     m_vecTextures.push_back(pTexture);
   }
 

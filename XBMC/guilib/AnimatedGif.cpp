@@ -59,6 +59,9 @@ CAnimatedGif::~CAnimatedGif()
 		delete []	Raster; 
 }
 
+#ifdef _XBOX
+int RoundPow2(int s);
+#endif
 
 // Init: Allocates space for raster and palette in GDI-compatible structures.
 void CAnimatedGif::Init(int iWidth, int iHeight, int iBPP, int iLoops) 
@@ -76,7 +79,11 @@ void CAnimatedGif::Init(int iWidth, int iHeight, int iBPP, int iLoops)
 	}
 	// Standard members setup
 	Transparent =-1;
+#ifdef _XBOX
+	BytesPerRow = RoundPow2(Width = iWidth);
+#else
 	BytesPerRow = Width = iWidth; 
+#endif
 	Height			= iHeight; 
 	BPP					=	iBPP;
 	// Animation Extra members setup:
