@@ -489,13 +489,14 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 						//	show albums folder jpeg
 						CPicture picture;
 						m_pTexture=picture.Load(strFolderjpg);
-					m_iTextureWidth=picture.GetWidth();
-					m_iTextureHeight=picture.GetHeight();
-					if (m_pTexture)
-					{							
-						CGUIMessage msg1(GUI_MSG_HIDDEN, GetID(), CONTROL_LOGO_PIC); 
-						OnMessage(msg1);
-					}
+					  m_iTextureWidth=picture.GetWidth();
+					  m_iTextureHeight=picture.GetHeight();
+					  if (m_pTexture)
+					  {							
+						  CGUIMessage msg1(GUI_MSG_HIDDEN, GetID(), CONTROL_LOGO_PIC); 
+						  OnMessage(msg1);
+					  }
+          }
 				}
 			}
 		}
