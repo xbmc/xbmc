@@ -294,6 +294,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(&m_guiSettingsCache);						// window id = 26
   m_gWindowManager.Add(&m_guiSettingsAutoRun);					// window id = 27
   m_gWindowManager.Add(&m_guiMyVideoPlayList);					// window id = 28
+  m_gWindowManager.Add(&m_guiSettingsLCD);					    // window id = 29
 
   m_gWindowManager.Add(&m_guiDialogYesNo);							// window id = 100
   m_gWindowManager.Add(&m_guiDialogProgress);						// window id = 101
@@ -403,6 +404,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_guiVideoTitle.Load( strSkinPath+"\\myvideoTitle.xml" );  
 	m_guiSettings.Load( strSkinPath+"\\settings.xml" );  
   m_guiMyVideoPlayList.Load( strSkinPath+"\\myvideoplaylist.xml" );  
+  m_guiSettingsLCD.Load( strSkinPath+"\\settingsLCD.xml" );  
 	m_guiSystemInfo.Load( strSkinPath+"\\SettingsSystemInfo.xml" );  
 	m_guiMusicInfo.Load( strSkinPath+"\\DialogAlbumInfo.xml" );  
 	m_guiScriptsInfo.Load( strSkinPath+"\\DialogScriptInfo.xml" ); 

@@ -249,6 +249,9 @@ public:
   int       m_iCacheSizeLAN[3];
   int       m_iCacheSizeInternet[3];
   int       m_iMyVideoPlaylistViewAsIcons;
+  bool      m_bLCDUsed;
+  int       m_iLCDColumns;
+  int       m_iLCDAdress[4];
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;

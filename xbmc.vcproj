@@ -377,6 +377,9 @@
 					RelativePath=".\xbmc\GUIWindowSettingsGeneral.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIWindowSettingsLCD.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIWindowSettingsMusic.cpp">
 				</File>
 				<File
@@ -838,6 +841,9 @@
 				RelativePath=".\xbmc\GUIWindowSettingsGeneral.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowSettingsLCD.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\guiwindowsettingsmusic.h">
 			</File>
 			<File
@@ -949,10 +955,10 @@
 				RelativePath=".\xbmc\cores\ModPlayer.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
