@@ -932,6 +932,12 @@
 			Name="cores"
 			Filter="">
 			<File
+				RelativePath=".\xbmc\cores\CDDAPlayer.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\CDDAPlayer.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\cores\EMUkernel32.cpp">
 			</File>
 			<File

@@ -101,6 +101,7 @@ protected:
 	bool										m_bOverlayEnabled;
 	vector<int>							m_vecScriptIds;
 	typedef vector<int>::iterator ivecScriptIds;
+	CStdString							m_strCurrentPlayer;
 };
 
 extern CApplication g_application;
