@@ -133,9 +133,10 @@ void CGUIRSSControl::RenderText()
 		if (m_iStartFrame > 25)
 		{
 			WCHAR wTmp[3];
-			
+			int iTextLenght = (int)wcslen(m_pwzText);
+
 			// if scroll char index is bigger or equal to the text length
-			if (m_iCharIndex >= (int)wcslen(m_pwzText) )
+			if (m_iCharIndex >= iTextLenght )
 			{
 				// use a space character
 				wTmp[0]=L' ';
@@ -157,7 +158,7 @@ void CGUIRSSControl::RenderText()
 				++m_iCharIndex;
 
 				// if we've reached the end of the text
-				if (m_iCharIndex > (int)wcslen(m_pwzText) )
+				if (m_iCharIndex > iTextLenght )
 				{
 					// start from the begning
 					m_iCharIndex = 0;
@@ -175,9 +176,9 @@ void CGUIRSSControl::RenderText()
 			int ipos=0;
 			// truncate the scroll text starting from the character index and wrap
 			// the text.
-			for (int i=0; i < (int)wcslen(m_pwzText); i++)
+			for (int i=0; i < iTextLenght; i++)
 			{
-				if (i+m_iCharIndex < (int)wcslen(m_pwzText))
+				if (i+m_iCharIndex < iTextLenght)
 				{
 					m_pwzBuffer[i]=m_pwzText[i+m_iCharIndex];
 					m_pbBuffer[i]=m_pbColors[i+m_iCharIndex];
@@ -201,7 +202,7 @@ void CGUIRSSControl::RenderText()
 			
 			if (fPosY >=0.0)
 			{
-              m_pFont->DrawColourTextWidth(fPosX-m_iScrollX,fPosY,m_pdwPalette,m_pwzBuffer,m_pbBuffer,fMaxWidth);
+				m_pFont->DrawColourTextWidth(fPosX-m_iScrollX,fPosY,m_pdwPalette,m_pwzBuffer,m_pbBuffer,fMaxWidth);
 			}					
 		}
 		else
@@ -209,10 +210,10 @@ void CGUIRSSControl::RenderText()
 			m_iStartFrame++;
 			if (fPosY >=0.0)
 			{
-              m_pFont->DrawColourTextWidth(fPosX,fPosY,m_pdwPalette,m_pwzText,m_pbColors,fMaxWidth);
+				m_pFont->DrawColourTextWidth(fPosX,fPosY,m_pdwPalette,m_pwzText,m_pbColors,fMaxWidth);
 			}
 		}
-    }
+	}
 	g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
 }
 
