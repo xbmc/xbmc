@@ -818,10 +818,10 @@ void CApplication::RenderFullScreen()
 
 void CApplication::ResetScreenSaver()
 {
+  m_dwSpinDownTime=timeGetTime();
   if (m_bInactive) 
   {
     m_dwSaverTick=timeGetTime();	// Start the timer going ...
-    m_dwSpinDownTime=timeGetTime();
   }
 }
 
