@@ -1267,9 +1267,9 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
     m_iAudioStreamIDX=-1;
 
     // switch 2 default settings...
-    g_settings.m_iBrightness=43;
-    g_settings.m_iContrast=39;
-    g_settings.m_iGamma=38;
+    g_settings.m_iBrightness=50;
+    g_settings.m_iContrast=50;
+    g_settings.m_iGamma=17;
     
   }
   m_strCurrentFile=strFile;
