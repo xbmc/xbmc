@@ -29,7 +29,7 @@ protected:
   void              Update(int iList, const CStdString &strDirectory); //???
   void              OnStart(CFileItem *pItem);
 	bool							SelectItem(int iList, int &item);
-  void							Clear();
+  void							ClearFileItems(int iList);
   void							OnClick(int iList, int iItem);
   void              OnMark(int iList, int iItem);
   void							OnSort(int iList);

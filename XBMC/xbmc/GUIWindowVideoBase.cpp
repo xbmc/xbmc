@@ -203,7 +203,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 		case GUI_MSG_WINDOW_DEINIT:
 			m_iLastControl=GetFocusedControl();
 			m_iItemSelected=GetSelectedItem();
-			Clear();
+			ClearFileItems();
       m_database.Close();
 		break;
 
@@ -434,8 +434,14 @@ void CGUIWindowVideoBase::OnSort()
 	}
 }
 
-void CGUIWindowVideoBase::Clear()
+void CGUIWindowVideoBase::ClearFileItems()
 {
+	CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_LIST,0,0,NULL);
+	g_graphicsContext.SendMessage(msg);         
+  
+	CGUIMessage msg2(GUI_MSG_LABEL_RESET,GetID(),CONTROL_THUMBS,0,0,NULL);
+	g_graphicsContext.SendMessage(msg2);         
+
 	CFileItemList itemlist(m_vecItems); // will clean up everything
 }
 

@@ -200,6 +200,9 @@ bool CRssReader::Parse()
 
 	TiXmlElement* rootXmlNode = m_xml.RootElement();
 
+	if (!rootXmlNode)
+		return false;
+
 	TiXmlElement* rssXmlNode = NULL;
 	
 	CStdString strValue = rootXmlNode->Value();

@@ -60,7 +60,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 		{
 			m_iLastControl=GetFocusedControl();
 			m_iSelectedItem=GetSelectedItem();
-			Clear();
+			ClearFileItems();
 			m_database.Close();
 		}
 		break;
@@ -464,8 +464,14 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
 }
 
 
-void CGUIWindowPrograms::Clear()
+void CGUIWindowPrograms::ClearFileItems()
 {
+	CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_LIST,0,0,NULL);
+	g_graphicsContext.SendMessage(msg);
+
+	CGUIMessage msg2(GUI_MSG_LABEL_RESET,GetID(),CONTROL_THUMBS,0,0,NULL);
+	g_graphicsContext.SendMessage(msg2);
+
 	CFileItemList itemlist(m_vecItems); // will clean up everything
 }
 
@@ -503,7 +509,7 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 	int idepth = m_iDepth;
 	vector<CStdString> vecPaths;
 
-	Clear();
+	ClearFileItems();
 
 	if (strDirectory=="")  // display only the root shares 
 	{

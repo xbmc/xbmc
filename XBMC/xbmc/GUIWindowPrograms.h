@@ -25,7 +25,7 @@ protected:
 	void				OnClick(int iItem);
 	void				OnSort();
 	void				UpdateButtons();
-	void				Clear();
+	void				ClearFileItems();
 	void				DeleteThumbs(VECFILEITEMS& items);
 	int					GetSelectedItem();
 	void				GoParentFolder();
