@@ -32,6 +32,9 @@ protected:
 	int								GetSelectedItem();
   bool							HaveDiscOrConnection( CStdString& strPath, int iDriveType );
   void              OnSlideShowRecursive();
+  bool              ViewByIcon();
+  void              ShowThumbPanel();
+  bool              ViewByLargeIcon();
 
   void              AddDir(CGUIWindowSlideShow *pSlideShow,const CStdString& strPath);
 	CVirtualDirectory		m_rootDir;

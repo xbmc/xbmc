@@ -65,8 +65,6 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.m_szHTTPProxy,"");
   strcpy(g_stSettings.szDefaultSkin,"MediaCenter");
 	strcpy(g_stSettings.szHomeDir,"");
-	g_stSettings.m_bMyPicturesViewAsIcons=false;
-	g_stSettings.m_bMyPicturesRootViewAsIcons=true;
 	g_stSettings.m_bMyPicturesSortAscending=true;
 
 	strcpy(g_stSettings.m_szMyPicturesExtensions,".bmp|.jpg|.png|.gif|.pcx|.tif|.jpeg");
@@ -596,8 +594,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 	TiXmlElement *pElement = pRootElement->FirstChildElement("mypictures");
 	if (pElement)
 	{
-		GetBoolean(pElement, "picturesviewicons", g_stSettings.m_bMyPicturesViewAsIcons);
-		GetBoolean(pElement, "picturesrooticons", g_stSettings.m_bMyPicturesRootViewAsIcons);
+		GetInteger(pElement, "picturesviewicons", g_stSettings.m_iMyPicturesViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
+		GetInteger(pElement, "picturesrooticons", g_stSettings.m_iMyPicturesRootViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
 		GetInteger(pElement, "picturessortmethod",g_stSettings.m_iMyPicturesSortMethod,0,0,2);
 		GetBoolean(pElement, "picturessortascending", g_stSettings.m_bMyPicturesSortAscending);
 	}
@@ -845,8 +843,8 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	TiXmlElement picturesNode("mypictures");
 	pNode = pRoot->InsertEndChild(picturesNode);
 	if (!pNode) return false;
-	SetBoolean(pNode, "picturesviewicons", g_stSettings.m_bMyPicturesViewAsIcons);
-	SetBoolean(pNode, "picturesrooticons", g_stSettings.m_bMyPicturesRootViewAsIcons);
+	SetInteger(pNode, "picturesviewicons", g_stSettings.m_iMyPicturesViewAsIcons);
+	SetInteger(pNode, "picturesrooticons", g_stSettings.m_iMyPicturesRootViewAsIcons);
 	SetInteger(pNode, "picturessortmethod",g_stSettings.m_iMyPicturesSortMethod);
 	SetBoolean(pNode, "picturessortascending", g_stSettings.m_bMyPicturesSortAscending);
 

@@ -5,8 +5,8 @@
 #include "utils/log.h"
 
 #define QUALITY 0
-#define MAX_THUMB_WIDTH 64
-#define MAX_THUMB_HEIGHT 64
+#define MAX_THUMB_WIDTH 128
+#define MAX_THUMB_HEIGHT 128
 
 #define MAX_ALBUM_THUMB_WIDTH 128
 #define MAX_ALBUM_THUMB_HEIGHT 128
@@ -254,7 +254,8 @@ bool CPicture::CreateThumnail(const CStdString& strFileName)
 {
   CStdString strThumbnail;
   CUtil::GetThumbnail(strFileName, strThumbnail);
-	return DoCreateThumbnail(strFileName, strThumbnail, MAX_THUMB_WIDTH, MAX_THUMB_HEIGHT);
+  bool bCacheFile=CUtil::IsRemote(strFileName);
+	return DoCreateThumbnail(strFileName, strThumbnail, MAX_THUMB_WIDTH, MAX_THUMB_HEIGHT,bCacheFile);
 }
 
 bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, int nMaxWidth, int nMaxHeight, bool bCacheFile/*=true*/)
