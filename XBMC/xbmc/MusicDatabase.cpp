@@ -133,10 +133,10 @@ void CMusicDatabase::AddSong(const CSong& song1)
 	Split(song.strFileName, strPath, strFileName);
 	if (NULL==m_pDB.get()) return ;
 	if (NULL==m_pDS.get()) return ;
-	long lGenreId  = AddGenre(song.strGenre);
-	long lArtistId = AddArtist(song.strArtist);
+	long lGenreId  = AddGenre(song1.strGenre);
+	long lArtistId = AddArtist(song1.strArtist);
 	long lPathId   = AddPath(strPath);
-	long lAlbumId  = AddAlbum(song.strAlbum,lArtistId);
+	long lAlbumId  = AddAlbum(song1.strAlbum,lArtistId);
 
 	DWORD dwCRC;
 	Crc32 crc;
@@ -477,9 +477,9 @@ long CMusicDatabase::AddAlbumInfo(const CAlbum& album1)
 
 	if (NULL==m_pDB.get()) return -1;
 	if (NULL==m_pDS.get()) return -1;
-	long lGenreId  = AddGenre(album.strGenre);
-	long lArtistId = AddArtist(album.strArtist);
-	long lAlbumId  = AddAlbum(album.strAlbum,lArtistId);
+	long lGenreId  = AddGenre(album1.strGenre);
+	long lArtistId = AddArtist(album1.strArtist);
+	long lAlbumId  = AddAlbum(album1.strAlbum,lArtistId);
 
 	char szSQL[1024];
 	sprintf(szSQL,"select * from albuminfo where idAlbum=%i AND idGenre=%i AND idArtist=%i ", lAlbumId,lGenreId,lArtistId);
