@@ -567,6 +567,9 @@
 				RelativePath=".\xbmc\Util.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\VideoDatabase.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\XBApplicationEx.cpp">
 			</File>
 			<File
@@ -774,6 +777,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\Util.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\VideoDatabase.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\XBApplicationEx.h">
