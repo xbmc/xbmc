@@ -96,76 +96,79 @@ void CMusicInfoLoader::Process()
 
 void CMusicInfoLoader::LoadItem(CFileItem* pItem)
 {
-		CStdString strFileName, strPath;
-		CUtil::Split(pItem->m_strPath, strPath, strFileName);
+	if (pItem->m_musicInfoTag.Loaded())
+		return;
 
-		//	First query cached items
-		it=m_mapFileItems.find(pItem->m_strPath);
-		if (it!=m_mapFileItems.end()&& it->second->m_musicInfoTag.Loaded())
+	CStdString strFileName, strPath;
+	CUtil::Split(pItem->m_strPath, strPath, strFileName);
+
+	//	First query cached items
+	it=m_mapFileItems.find(pItem->m_strPath);
+	if (it!=m_mapFileItems.end()&& it->second->m_musicInfoTag.Loaded())
+	{
+		pItem->m_musicInfoTag=it->second->m_musicInfoTag;
+	}
+	else if (CUtil::IsCDDA(pItem->m_strPath))
+	{
+		//	We have cdda item...
+		VECFILEITEMS  items;
+		CDirectory dir;
+		//	... use the directory of the cd to 
+		//	get its cddb information...
+		if (dir.GetDirectory("cdda://local",items))
 		{
-			pItem->m_musicInfoTag=it->second->m_musicInfoTag;
-		}
-		else if (CUtil::IsCDDA(pItem->m_strPath))
-		{
-			//	We have cdda item...
-			VECFILEITEMS  items;
-			CDirectory dir;
-			//	... use the directory of the cd to 
-			//	get its cddb information...
-			if (dir.GetDirectory("cdda://local",items))
+			for (int i=0; i < (int)items.size(); ++i)
 			{
-				for (int i=0; i < (int)items.size(); ++i)
+				CFileItem* pCDDAItem=items[i];
+				if (pCDDAItem->m_strPath==pItem->m_strPath)
 				{
-					CFileItem* pCDDAItem=items[i];
-					if (pCDDAItem->m_strPath==pItem->m_strPath)
-					{
-						//	...and find current track to use
-						//	cddb information for display.
-						pItem->m_musicInfoTag=pCDDAItem->m_musicInfoTag;
-					}
+					//	...and find current track to use
+					//	cddb information for display.
+					pItem->m_musicInfoTag=pCDDAItem->m_musicInfoTag;
 				}
 			}
-			{
-				CFileItemList itemlist(items);	//	cleanup everything
-			}
 		}
-		else
 		{
-			//	Have we loaded this item from database before
+			CFileItemList itemlist(items);	//	cleanup everything
+		}
+	}
+	else
+	{
+		//	Have we loaded this item from database before
+		IMAPSONGS it=m_songsMap.find(pItem->m_strPath);
+		if (it!=m_songsMap.end())
+		{
+			CSong& song=it->second;
+			pItem->m_musicInfoTag.SetSong(song);
+		}
+		else if (strPath!=m_strPrevPath)
+		{
+			//	The item is from another directory as the last one,
+			//	query the database for the new directory...
+			m_musicDatabase.GetSongsByPath(strPath, m_songsMap);
+
+			//	...and look if we find it
 			IMAPSONGS it=m_songsMap.find(pItem->m_strPath);
 			if (it!=m_songsMap.end())
 			{
 				CSong& song=it->second;
 				pItem->m_musicInfoTag.SetSong(song);
 			}
-			else if (strPath!=m_strPrevPath)
-			{
-				//	The item is from another directory as the last one,
-				//	query the database for the new directory...
-				m_musicDatabase.GetSongsByPath(strPath, m_songsMap);
-
-				//	...and look if we find it
-				IMAPSONGS it=m_songsMap.find(pItem->m_strPath);
-				if (it!=m_songsMap.end())
-				{
-					CSong& song=it->second;
-					pItem->m_musicInfoTag.SetSong(song);
-				}
-			}
-
-			//	Nothing found, load tag from file
-			if (g_guiSettings.GetBool("MyMusic.UseTags") && !pItem->m_musicInfoTag.Loaded())
-			{
-				// get correct tag parser
-				CMusicInfoTagLoaderFactory factory;
-				auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
-				if (NULL != pLoader.get())
-						// get id3tag
-					pLoader->Load(pItem->m_strPath,pItem->m_musicInfoTag);
-			}
 		}
 
-		m_strPrevPath=strPath;
+		//	Nothing found, load tag from file
+		if (g_guiSettings.GetBool("MyMusic.UseTags") && !pItem->m_musicInfoTag.Loaded())
+		{
+			// get correct tag parser
+			CMusicInfoTagLoaderFactory factory;
+			auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
+			if (NULL != pLoader.get())
+					// get id3tag
+				pLoader->Load(pItem->m_strPath,pItem->m_musicInfoTag);
+		}
+	}
+
+	m_strPrevPath=strPath;
 }
 
 void CMusicInfoLoader::OnExit()

@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 07-01-2005 fixed: music playlist, all cue items show the tag info of the first file 
   - 07-01-2005 updated: Spanish language file (Thnx to anghlar)
   - 07-01-2005 updated: Italian language file (Thnx to kotix)
   - 07-01-2005 fixed: filemanager, lock mode wasn't updated in both panes
