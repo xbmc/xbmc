@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 28-01-2005 added: mpng playback support, usefull for testing video quality. (libpng-1.2.8)
   - 17-01-2005 fixed: playback failes if Output to all Speakers is selected and a AC3 2.0 stream is found.
   - 16-01-2004 fixed: avi's > 2GB stackoverflow crash
                       patch from Bugzilla Bug 86, avi_idx_quicksort overflows stack on >2GB ODML file, http://bugzilla.mplayerhq.hu/show_bug.cgi?id=86
