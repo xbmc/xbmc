@@ -1837,8 +1837,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
 					m_pPlayer = 0;
 				}
 			}
-			if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow()==WINDOW_FULLSCREEN_VIDEO) {
+			if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow()==WINDOW_FULLSCREEN_VIDEO)
+			{
 				m_gWindowManager.PreviousWindow();
+				g_graphicsContext.SetGUIResolution(g_stSettings.m_GUIResolution);
 			}
 		}
 		break;
