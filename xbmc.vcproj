@@ -968,10 +968,10 @@
 				RelativePath=".\xbmc\cores\ModPlayer.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
@@ -1463,7 +1463,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="$(InputFileName)"
-							CommandLine="xsasm /nologo /P $(InputPath) $(TargetDir)$(InputName).xpu"
+							CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;"
 							Outputs="$(TargetDir)$(InputName).xpu"/>
 					</FileConfiguration>
 					<FileConfiguration
@@ -1471,7 +1471,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="$(InputFileName)"
-							CommandLine="xsasm /nologo /P $(InputPath) $(TargetDir)$(InputName).xpu"
+							CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;"
 							Outputs="$(TargetDir)$(InputName).xpu"/>
 					</FileConfiguration>
 					<FileConfiguration
@@ -1479,7 +1479,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="$(InputFileName)"
-							CommandLine="xsasm /nologo /P $(InputPath) $(TargetDir)$(InputName).xpu"
+							CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;"
 							Outputs="$(TargetDir)$(InputName).xpu"/>
 					</FileConfiguration>
 					<FileConfiguration
@@ -1487,7 +1487,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="$(InputFileName)"
-							CommandLine="xsasm /nologo /P $(InputPath) $(TargetDir)$(InputName).xpu"
+							CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;"
 							Outputs="$(TargetDir)$(InputName).xpu"/>
 					</FileConfiguration>
 					<FileConfiguration
@@ -1495,7 +1495,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="$(InputFileName)"
-							CommandLine="xsasm /nologo /P $(InputPath) $(TargetDir)$(InputName).xpu"
+							CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;"
 							Outputs="$(TargetDir)$(InputName).xpu"/>
 					</FileConfiguration>
 					<FileConfiguration
@@ -1503,7 +1503,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="$(InputFileName)"
-							CommandLine="xsasm /nologo /P $(InputPath) $(TargetDir)$(InputName).xpu"
+							CommandLine="xsasm /nologo /P &quot;$(InputPath)&quot; &quot;$(TargetDir)$(InputName).xpu&quot;"
 							Outputs="$(TargetDir)$(InputName).xpu"/>
 					</FileConfiguration>
 				</File>
