@@ -1086,6 +1086,7 @@ bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
     if (url.GetProtocol() =="http" || url.GetProtocol()=="HTTP") return false;
     if (url.GetProtocol() =="shout" || url.GetProtocol()=="SHOUT") return false;
     if (url.GetProtocol() =="mms" || url.GetProtocol()=="MMS") return false;
+    if (url.GetProtocol() =="rtp" || url.GetProtocol()=="RTP") return false;
 
     // check if folder.jpg exists 
 		CUtil::GetThumbnail( strFolderImage,strThumb);
