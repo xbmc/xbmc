@@ -373,6 +373,11 @@ void CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, VECFILEI
 
 void CGUIWindowMusicSongs::OnScan()
 {
+	// remove username + password from m_strDirectory for display in Dialog
+	CURL url(m_strDirectory);
+	CStdString strStrippedPath;
+	url.GetURLWithoutUserDetails(strStrippedPath);
+
 	DWORD dwTick=timeGetTime();
 
 	g_application.DisableOverlay();
@@ -380,7 +385,7 @@ void CGUIWindowMusicSongs::OnScan()
 	m_dlgProgress->SetHeading(189);
 	m_dlgProgress->SetLine(0, 330);
 	m_dlgProgress->SetLine(1,"");
-	m_dlgProgress->SetLine(2,m_strDirectory );
+	m_dlgProgress->SetLine(2,strStrippedPath );
 	m_dlgProgress->StartModal(GetID());
 
 	// Preload section for ID3 cover art reading
@@ -426,7 +431,12 @@ void CGUIWindowMusicSongs::OnScan()
 
 bool CGUIWindowMusicSongs::DoScan(VECFILEITEMS& items)
 {
-	m_dlgProgress->SetLine(2,m_strDirectory );
+	// remove username + password from m_strDirectory for display in Dialog
+	CURL url(m_strDirectory);
+	CStdString strStrippedPath;
+	url.GetURLWithoutUserDetails(strStrippedPath);
+
+	m_dlgProgress->SetLine(2,strStrippedPath );
 	m_dlgProgress->Progress();
 
 	OnRetrieveMusicInfo(items);

@@ -24,6 +24,8 @@ public:
 	const CStdString& GetProtocol() const;
 	const CStdString& GetFileType() const;
   void							GetURL(CStdString& strURL) ;
+	void							GetURLWithoutUserDetails(CStdString& strURL) ;
+
 protected:
 	int				 m_iPort;
 	CStdString m_strHostName;
