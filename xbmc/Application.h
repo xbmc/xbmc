@@ -63,10 +63,6 @@ public:
 
 	void									Stop();
 	void									LoadSkin(const CStdString& strSkin);
-	void									ExecutePythonScript(const CStdString& strScript);
-	void									ProcessPythonScripts();
-	int										ScriptsSize();
-	int										GetPythonScriptId(int scriptPosition); 
 
 	virtual bool					OnMessage(CGUIMessage& message);
 
@@ -114,7 +110,6 @@ public:
 	CAutorun												m_Autorun;
 	CDelayController								m_ctrDpad;
 	CDelayController								m_ctrIR;
-	XBPython*												m_pPythonParser;
 	CWebServer*											m_pWebServer;
 	IPlayer*												m_pPlayer;
 	bool														m_bSpinDown;

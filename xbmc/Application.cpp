@@ -49,7 +49,6 @@ CApplication::CApplication(void)
 {
 		m_bSpinDown=true;
 		m_bOverlayEnabled=true;
-		m_pPythonParser=NULL;
 		m_pWebServer=NULL;
 		m_pPlayer=NULL;
 		XSetProcessQuantumLength(5); //default=20msec
@@ -217,7 +216,7 @@ HRESULT CApplication::Initialize()
                             g_stSettings.m_strGateway ) )
   {
 			m_sntpClient.Create(); 
-			
+	
 			if (false)//g_stSettings.m_bHTTPServerEnabled)
 			{
 				CSectionLoader::Load("LIBHTTP");
@@ -266,9 +265,6 @@ HRESULT CApplication::Initialize()
 
 	//	Start Thread for DVD Mediatype detection
 	m_DetectDVDType.Create( false);
-
-	//this->ExecutePythonScript("q:\\scripts\\medusa\\start_medusa.py");
-
 	return S_OK;
 }
 
@@ -379,7 +375,7 @@ void CApplication::Render()
 		}
 	}
 
-  {
+	{
 	  MEMORYSTATUS stat;
 	  GlobalMemoryStatus(&stat);
 		DWORD dwMegFree=stat.dwAvailPhys / (1024*1024);
@@ -408,9 +404,9 @@ void CApplication::Render()
 
 	// process messages which have to be send to the gui
 	// (this can only be done after m_gWindowManager.Render())
-	g_applicationMessenger.ProcessMessages(MSG_TYPE_WINDOW);
+	g_applicationMessenger.ProcessWindowMessages();
 	// process any Python scripts
-	ProcessPythonScripts();
+	m_pythonParser.Process();
 }
 
 void CApplication::OnKey(CKey& key)
@@ -635,26 +631,6 @@ void CApplication::FrameMove()
 
 void CApplication::Stop()
 {
-	if (m_pPythonParser)
-	{
-		//first load the python sections if not loaded.
-		if(!g_sectionLoader.IsLoaded("PYTHON")) g_sectionLoader.Load("PYTHON");
-		if(!g_sectionLoader.IsLoaded("PY_RW")) g_sectionLoader.Load("PY_RW");
-
-		ivecScriptIds it=m_vecScriptIds.begin();
-		while (it != m_vecScriptIds.end())
-		{
-			int iScriptId = *it;
-			if ( !m_pPythonParser->isDone(iScriptId) )
-			{
-				m_pPythonParser->stopScript(iScriptId);
-			}
-			++it;
-		}
-		delete m_pPythonParser;
-		m_pPythonParser=NULL;
-	}
-
 	if (m_pWebServer)
 	{
 		m_pWebServer->Stop();
@@ -668,6 +644,8 @@ void CApplication::Stop()
 		m_pPlayer=NULL;
 	}
 
+	g_applicationMessenger.Cleanup();
+	m_pythonParser.FreeResources();
 	m_DetectDVDType.StopThread();
 	m_sntpClient.StopThread();
 	m_guiMusicOverlay.FreeResources();
@@ -675,55 +653,8 @@ void CApplication::Stop()
 	g_fontManager.Clear();
 	m_gWindowManager.DeInitialize();
 	g_TextureManager.Cleanup();
-	g_applicationMessenger.Cleanup();
 	CSectionLoader::UnloadAll();
 	Destroy();
-}
-
-void CApplication::ExecutePythonScript(const CStdString& strScript)
-{
-	 /* PY_RW stay's loaded as longs as m_pPythonParser != NULL.
-	  * When someone runs a script for the first time both sections PYTHON and PY_RW
-	  * are loaded. After that script has finished only section PYTHON is unloaded
-	  * and m_pPythonParser is 'not' deleted.
-		* Only delete m_pPythonParser and unload PY_RW if you don't want to use Python
-		* anymore
-		*/
-	if(!g_sectionLoader.IsLoaded("PYTHON")) g_sectionLoader.Load("PYTHON");
-	if(!g_sectionLoader.IsLoaded("PY_RW")) g_sectionLoader.Load("PY_RW");
-
-	if (!m_pPythonParser) m_pPythonParser = new XBPython();
-
-	//run script..
-	int id=m_pPythonParser->evalFile(strScript.c_str());
-	m_vecScriptIds.push_back(id);
-}
-
-void CApplication::ProcessPythonScripts()
-{
-	if ( !m_pPythonParser || m_vecScriptIds.size() == 0) return;
-
-	ivecScriptIds it=m_vecScriptIds.begin();
-	while (it != m_vecScriptIds.end())
-	{
-		int iScriptId = *it;
-		if (m_pPythonParser->isDone(iScriptId))
-			it=m_vecScriptIds.erase(it);
-		else ++it;
-	}
-	if ( m_vecScriptIds.size()==0)
-		// no scripts are running, it's safe to unload section PYTHON now
-		g_sectionLoader.Unload("PYTHON");
-}
-
-int CApplication::ScriptsSize()
-{
-	return m_vecScriptIds.size();
-}
-
-int CApplication::GetPythonScriptId(int scriptPosition)
-{
-	return (int)m_vecScriptIds[scriptPosition];
 }
 
 bool CApplication::PlayFile(const CStdString& strFile)

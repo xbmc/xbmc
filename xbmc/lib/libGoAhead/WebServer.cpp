@@ -318,7 +318,8 @@ static int websHomePageHandler(webs_t wp, char_t *urlPrefix, char_t *webDir,
 /*
  *	If the empty or "/" URL is invoked, redirect default URLs to the home page
  */
-
+	bool redirected = false;
+	char dir[1024];
 	char files[][20] = {
 			"index.html",
 			"index.htm",
@@ -327,27 +328,56 @@ static int websHomePageHandler(webs_t wp, char_t *urlPrefix, char_t *webDir,
 			"default.asp",
 			"home.asp",
 			NULL, };
+
 	// check if one of the above files exist, if one does then redirect to it.
-	if (*url == '\0' || gstrcmp(url, T("/")) == 0)
+	strcpy(dir, websGetDefaultDir());
+	strcat(dir, path);
+	for(u_int pos = 0; pos < strlen(dir); pos++)
+		if (dir[pos] == '/') dir[pos] = '\\';
+	
+	DWORD attributes = GetFileAttributes(dir);
+	if (FILE_ATTRIBUTE_DIRECTORY == attributes)
 	{
     int i = 0;
 		char buf[1024];
-
 		while (files[i][0])
 		{
-			strcpy(buf, websGetDefaultDir());
-			strcat(buf, path);
+			strcpy(buf, dir);
+			if (buf[strlen(buf)-1] != '\\') strcat(buf, "\\");
 			strcat(buf, files[i]);
-			for(u_int pos = 0; pos < strlen(buf); pos++)
-				if (buf[pos] == '/') buf[pos] = '\\';
 
 			if (!access(buf, 0))
 			{
-				websRedirect(wp, files[i]);
+				strcpy(buf, path);
+				if (path[strlen(path)-1] != '/') strcat(buf, "/");
+				strcat(buf, files[i]);
+				websRedirect(wp, buf);
 				return 1;
 			}
 			i++;
 		}
+
+		//no default file found, list directory contents
+		WIN32_FIND_DATA FindFileData;
+		HANDLE hFind;
+		strcat(dir, "\\*");
+		hFind=FindFirstFile(dir, &FindFileData);
+		websWrite(wp, "%s", "<body><html>\n");
+		do
+		{
+			string w = "<a href=/";
+			w += &path[1];
+			w += "/";
+			w += FindFileData.cFileName;
+			w += ">";
+			w += FindFileData.cFileName;
+			w += "</a><br>\n";
+			websWrite(wp, "%s", w.c_str());
+		}
+		while (FindNextFile(hFind, &FindFileData));
+		FindClose(hFind);
+		websWrite(wp, "%s", "</body></html>\n");
+		return 1;
 	}
 	return 0;
 }

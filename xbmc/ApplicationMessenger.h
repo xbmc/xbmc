@@ -4,10 +4,6 @@
 #include "stdstring.h"
 #include <vector>
 
-//message types
-#define MSG_TYPE_NORMAL						1
-#define MSG_TYPE_WINDOW						2
-
 // defines here
 #define TMSG_DIALOG_DOMODAL       100
 #define TMSG_WRITE_SCRIPT_OUTPUT  101
@@ -38,7 +34,9 @@ public:
 	void	Cleanup();
 	// if a message has to be send to the gui, use MSG_TYPE_WINDOW instead
 	void	SendMessage(ThreadMessage& msg, bool wait = false);
-	void	ProcessMessages(int messagetype = MSG_TYPE_NORMAL); // only call from main thread.
+	void	ProcessMessages(); // only call from main thread.
+	void	ProcessWindowMessages();
+
 
 	void	MediaPlay(string filename);
 	void	MediaStop();

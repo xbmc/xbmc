@@ -1,73 +1,142 @@
 #include "XBPython.h"
+#include "..\..\sectionLoader.h"
 
-extern "C" {
-	//xbmc module
-	extern void initxbmc(void);
+	 /* PY_RW stay's loaded as longs as m_pPythonParser != NULL.
+	  * When someone runs a script for the first time both sections PYTHON and PY_RW
+	  * are loaded. After that script has finished only section PYTHON is unloaded
+	  * and m_pPythonParser is 'not' deleted.
+		* Only delete m_pPythonParser and unload PY_RW if you don't want to use Python
+		* anymore
+		*/
 
-	// used for testing
-	extern void free_arenas(void);
-}
-
-#pragma code_seg("PY_TEXT")
-#pragma data_seg("PY_DATA")
-#pragma bss_seg("PY_BSS")
-#pragma const_seg("PY_RDATA")
+XBPython m_pythonParser;
 
 XBPython::XBPython()
 {
-	mainThreadState = NULL;
+	bInitialized = false;
+	bThreadInitialize = false;
 	nextid = 0;
-
-	/* Initialize the Python interpreter.  Required. */
-	Py_Initialize();
-	PyEval_InitThreads();
-	initxbmc();
-	/* redirecting default output to debug console */
-	if (PyRun_SimpleString(""
-			"import xbmc\n"
-			"class xbmcout:\n"
-			"	def write(self, data):\n"
-			"		xbmc.output(data)\n"
-			"	def flush(self):\n"
-			"		xbmc.output(\".\")\n"
-			"	def close(self):\n"
-			"		xbmc.output('.')\n"
-			"\n"
-			"import sys\n"
-			"sys.stdout = xbmcout()\n"
-			"sys.stderr = xbmcout()\n"
-			"print '-->Python Initialized<--'\n"
-			"") == -1)
-	{
-		OutputDebugString("Python Initialize Error\n");
-	}
-
-	mainThreadState = PyThreadState_Get();
-	// release the lock
-	PyEval_ReleaseLock();
+	mainThreadState = NULL;
 	InitializeCriticalSection(&m_critSection);
+	m_hEvent = CreateEvent(NULL, false, false, "pythonEvent");
+	dThreadId = GetCurrentThreadId();
 }
 
-XBPython::~XBPython()
+void XBPython::Initialize()
 {
+	g_sectionLoader.Load("PYTHON");
+
+	if(!bInitialized)
+	{
+		if(dThreadId == GetCurrentThreadId())
+		{
+			g_sectionLoader.Load("PY_RW");
+
+			Py_Initialize();
+			PyEval_InitThreads();
+			initxbmc(); // init xbmc modules
+			// redirecting default output to debug console
+			if (PyRun_SimpleString(""
+					"import xbmc\n"
+					"class xbmcout:\n"
+					"	def write(self, data):\n"
+					"		xbmc.output(data)\n"
+					"	def close(self):\n"
+					"		xbmc.output('.')\n"
+					"	def flush(self):\n"
+					"		xbmc.output('.')\n"
+					"\n"
+					"import sys\n"
+					"sys.stdout = xbmcout()\n"
+					"sys.stderr = xbmcout()\n"
+					"print '-->Python Initialized<--'\n"
+					"") == -1)
+			{
+				OutputDebugString("Python Initialize Error\n");
+			}
+
+			mainThreadState = PyThreadState_Get();
+			// release the lock
+			PyEval_ReleaseLock();
+
+			bInitialized = true;
+			bThreadInitialize = false;
+			PulseEvent(m_hEvent);
+		}
+		else
+		{
+			// only the main thread should initialize python, unload python again.
+			g_sectionLoader.Unload("PYTHON");
+			bThreadInitialize = true;
+			WaitForSingleObject(m_hEvent, INFINITE);
+		}
+	}
+}
+
+void XBPython::Finalize()
+{
+	CloseHandle(m_hEvent);
+	g_sectionLoader.Unload("PYTHON");
+}
+
+void XBPython::FreeResources()
+{
+	PyList::iterator it = vecPyList.begin();
+	while (it != vecPyList.end())
+	{
+		it->pyThread->stop();
+		++it;
+	}
+	Process();
+
+	if(bInitialized)
+	{
+		// shut down the interpreter
+		PyEval_AcquireLock();
+		PyThreadState_Swap(mainThreadState);
+		Py_Finalize();
+		// free_arenas();
+	}
+	g_sectionLoader.Load("PY_RW");
 	DeleteCriticalSection(&m_critSection);
-	// shut down the interpreter
-	PyEval_AcquireLock();
-	PyThreadState_Swap(mainThreadState);
-	Py_Finalize();
-	// free_arenas();
+}
+
+void XBPython::Process()
+{
+	if (bThreadInitialize) Initialize();
+	if (!bInitialized) return;
+
+	EnterCriticalSection(&m_critSection );
+
+	PyList::iterator it = vecPyList.begin();
+	while (it != vecPyList.end())
+	{
+		//delete scripts which are done
+		if (it->bDone)
+		{
+			//wait 10 sec, should be enough for slow scripts :-)
+			it->pyThread->WaitForThreadExit(10000); 
+			delete it->pyThread;
+			vecPyList.erase(it);
+			Finalize();
+		}
+		else ++it;
+	}
+
+	LeaveCriticalSection(&m_critSection );
 }
 
 int XBPython::evalFile(const char *src)
 {
-	if (!Py_IsInitialized()) return -1;
+	Initialize();
+
 	nextid++;
 	XBPyThread *pyThread = new XBPyThread(this, mainThreadState, nextid);
 	pyThread->evalFile(src);
 	PyElem inf;
 	inf.id = nextid;
 	inf.bDone = false;
-	strcpy(inf.strFile, src);
+	inf.strFile = src;
 	inf.pyThread = pyThread;
 
 	EnterCriticalSection(&m_critSection );
@@ -79,6 +148,7 @@ int XBPython::evalFile(const char *src)
 
 int XBPython::evalString(const char *src)
 {
+	/*
 	nextid++;
 	if (!Py_IsInitialized()) return -1;
 	XBPyThread *pyThread = new XBPyThread(this, mainThreadState, nextid);
@@ -86,31 +156,8 @@ int XBPython::evalString(const char *src)
 	//strcpy(strFile, "");
 	//addToList(pyThread);
 	return nextid;
-}
-
-bool XBPython::isDone(int id)
-{
-	bool bIsDone = true;
-	EnterCriticalSection(&m_critSection );
-
-	PyList::iterator it = vecPyList.begin();
-	while (it != vecPyList.end())
-	{
-		if (it->id == id && !it->bDone) bIsDone = false;
-
-		//delete scripts which are done
-		if (it->bDone)
-		{
-			//wait 10 sec, should be enough for slow scripts :-)
-			it->pyThread->WaitForThreadExit(10000); 
-			delete it->pyThread;
-			vecPyList.erase(it);
-		}
-		else ++it;
-	}
-
-	LeaveCriticalSection(&m_critSection );
-	return bIsDone;
+	*/
+	return 0;
 }
 
 void XBPython::setDone(int id)
@@ -155,7 +202,7 @@ PyThreadState *XBPython::getMainThreadState()
 	return mainThreadState;
 }
 
-int XBPython::scriptsSize()
+int XBPython::ScriptsSize()
 {
 	int iSize;
 	EnterCriticalSection(&m_critSection);
@@ -166,15 +213,15 @@ int XBPython::scriptsSize()
 	return iSize;	
 }
 
-char* XBPython::getFileName(int scriptId)
+const char* XBPython::getFileName(int scriptId)
 {
-	char* cFileName = NULL;
+	const char* cFileName = NULL;
 	EnterCriticalSection(&m_critSection);
 
 	PyList::iterator it = vecPyList.begin();
 	while (it != vecPyList.end())
 	{
-		if (it->id == scriptId) cFileName = it->strFile;
+		if (it->id == scriptId) cFileName = it->strFile.c_str();
 		++it;
 	}
 
@@ -190,7 +237,7 @@ int XBPython::getScriptId(const char* strFile)
 	PyList::iterator it = vecPyList.begin();
 	while (it != vecPyList.end())
 	{
-		if (!strcmp(it->strFile, strFile)) iId = it->id;
+		if (!strcmp(it->strFile.c_str(), strFile)) iId = it->id;
 		++it;
 	}
 
@@ -228,4 +275,9 @@ bool XBPython::isStopping(int scriptId)
 
 	LeaveCriticalSection(&m_critSection);
 	return bStopping;
+}
+
+int XBPython::GetPythonScriptId(int scriptPosition)
+{
+	return (int)vecPyList[scriptPosition].id;
 }

@@ -41,10 +41,6 @@ int XBPyThread::evalFile(const char *src)
 	type = 'F';
 	source = new char[strlen(src)+1];
 	strcpy(source, src);
-	// chdir("Q:\\scripts\\medusa");
-	// Py_SetPythonHome("Q:\\scripts\\medusa");
-	// Py_SetProgramName(source);
-	// PySys_SetPath(source);
 	Create();
 	return 0;
 }
@@ -80,7 +76,7 @@ void XBPyThread::Process()
 	// set current directory and python's path.
 	PySys_SetPath(path);
 	chdir(sourcedir);
- 
+
 	if (type == 'F') {
 		// run script from file
 		FILE *fp = fopen(source, "r");
