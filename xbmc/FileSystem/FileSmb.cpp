@@ -155,18 +155,13 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
 	else
 		url.GetURL(strFileName);
 
-	// convert from string to UTF8
-	char strUtfFileName[1024];
-	int strLen = convert_string(CH_DOS, CH_UTF8, strFileName.c_str(), (size_t)strFileName.length(), strUtfFileName, 1024, false);
-	strUtfFileName[strLen] = 0;
-
 	smb.Lock();
 
 	// opening a file to another computer share will create a new session
 	// when opening smb://server xbms will try to find folder.jpg in all shares
 	// listed, which will create lot's of open sessions.
 	
-	m_fd = smbc_open(strUtfFileName, O_RDONLY, 0);
+	m_fd = smbc_open(strFileName.c_str(), O_RDONLY, 0);
 
 	if(m_fd == -1)
 	{
@@ -223,15 +218,10 @@ bool CFileSMB::Exists(const CURL& url)
 	else
 		url.GetURL(strFileName);
 
-	// convert from string to UTF8
-	char strUtfFileName[1024];
-	int strLen = convert_string(CH_DOS, CH_UTF8, strFileName.c_str(), (size_t)strFileName.length(), strUtfFileName, 1024, false);
-	strUtfFileName[strLen] = 0;
-
 	struct __stat64 info;
 
 	smb.Lock();
-	int iResult = smbc_stat(strUtfFileName, &info);
+	int iResult = smbc_stat(strFileName, &info);
 	smb.PurgeEx(url);
 	smb.Unlock();
 	
@@ -253,13 +243,8 @@ int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 	else
 		url.GetURL(strFileName);
 
-	// convert from string to UTF8
-	char strUtfFileName[1024];
-	int strLen = convert_string(CH_DOS, CH_UTF8, strFileName.c_str(), (size_t)strFileName.length(), strUtfFileName, 1024, false);
-	strUtfFileName[strLen] = 0;
-
 	smb.Lock();
-	int iResult = smbc_stat(strUtfFileName, buffer);
+	int iResult = smbc_stat(strFileName, buffer);
 	smb.PurgeEx(url);
 	smb.Unlock();
 
