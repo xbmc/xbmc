@@ -50,8 +50,6 @@ HRESULT CApplication::Initialize()
   g_localizeStrings.Load(strSkinPath+string("\\strings.xml") );
 
 	g_settings.Load();
-	strSkinPath+=CStdString("\\");
-  strSkinPath+=g_stSettings.szDefaultSkin;
 
   if (g_stSettings.szThumbnailsDirectory[0]==0)
   {
@@ -79,7 +77,29 @@ HRESULT CApplication::Initialize()
       
     }
   }
+	LoadSkin(g_stSettings.szDefaultSkin);
+
   g_graphicsContext.Set(m_pd3dDevice,m_d3dpp.BackBufferWidth,m_d3dpp.BackBufferHeight);
+  m_keyboard.Initialize();
+	m_ctrDpad.SetDelays(g_stSettings.m_iMoveDelayController,g_stSettings.m_iRepeatDelayController);
+	m_ctrIR.SetDelays(g_stSettings.m_iMoveDelayIR,g_stSettings.m_iRepeatDelayIR);
+  m_gWindowManager.ActivateWindow(g_stSettings.m_iStartupWindow);
+
+  return S_OK;
+}
+
+void CApplication::LoadSkin(const CStdString& strSkin)
+{
+	CStdString strHomePath;
+	string strSkinPath;
+	CUtil::GetHomePath(strHomePath);
+	strSkinPath=strHomePath;
+	strSkinPath+="\\skin\\";
+	strSkinPath+=strSkin;
+
+	m_gWindowManager.DeInitialize();
+	g_TextureManager.Cleanup();
+
   g_graphicsContext.SetMediaDir(strSkinPath);
   g_fontManager.LoadFonts(strSkinPath+string("\\font.xml")) ;
 
@@ -104,16 +124,8 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiSettings);
   m_gWindowManager.Add(&m_guiDialogYesNo);
   m_gWindowManager.Add(&m_guiDialogProgress);
-
-  m_keyboard.Initialize();
   m_gWindowManager.Add(&m_keyboard);
 
-  m_gWindowManager.ActivateWindow(g_stSettings.m_iStartupWindow);
-
-	m_ctrDpad.SetDelays(g_stSettings.m_iMoveDelayController,g_stSettings.m_iRepeatDelayController);
-	m_ctrIR.SetDelays(g_stSettings.m_iMoveDelayIR,g_stSettings.m_iRepeatDelayIR);
-
-  return S_OK;
 }
 
 

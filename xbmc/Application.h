@@ -31,7 +31,7 @@ public:
   virtual void		FrameMove();
   virtual void		Render();
 	void						Stop();
-
+	void						LoadSkin(const CStdString& strSkin);
   CGUIWindowHome        m_guiHome;
   CGUIWindowPrograms    m_guiPrograms;
 	CGUIWindowPictures		m_guiPictures;
