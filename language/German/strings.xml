@@ -565,6 +565,43 @@
   <string><id>12006</id><value>Audio-Visualisation</value></string>
   <string><id>12007</id><value>Bilder/Diaschau</value></string>
   <string><id>12008</id><value>Verbinden Dialog</value></string>
+  <string><id>12310</id><value>0</value></string>
+  <string><id>12311</id><value>1</value></string>
+  <string><id>12312</id><value>2</value></string>
+  <string><id>12313</id><value>3</value></string>
+  <string><id>12314</id><value>4</value></string>
+  <string><id>12315</id><value>5</value></string>
+  <string><id>12316</id><value>6</value></string>
+  <string><id>12317</id><value>7</value></string>
+  <string><id>12318</id><value>8</value></string>
+  <string><id>12319</id><value>9</value></string>
+  <string><id>12320</id><value>c</value></string>
+  <string><id>12321</id><value>ok</value></string>
+  <string><id>12322</id><value>*</value></string>
+  <string><id>12324</id><value>XBMC Master Lock</value></string>
+  <string><id>12325</id><value>Ordner gesperrt</value></string>
+  <string><id>12326</id><value>Passwort eingeben</value></string>
+  <string><id>12327</id><value>Mastercode eingeben und E drücken,</value></string>
+  <string><id>12328</id><value>Entsperrcode eingeben und E drücken,</value></string> 
+  <string><id>12329</id><value>oder mit C abbrechen</value></string>
+  <string><id>12330</id><value>XBOX gamepad button combo eingeben und </value></string>
+  <string><id>12331</id><value>'Start' drücken, oder 'Back' um abzubrechen.</value></string>
+  <string><id>12332</id><value>Share sperren</value></string>
+  <string><id>12333</id><value>Share entsperren</value></string>
+  <string><id>12334</id><value>Share Sperre zurücksetzen</value></string>
+  <string><id>12335</id><value>Share Sperre entfernen</value></string>
+  <string><id>12336</id><value>Bitte die Art der Sperre auswählen:</value></string>
+  <string><id>12337</id><value>Nummerisches Passwort</value></string>
+  <string><id>12338</id><value>Gamepad button combo</value></string>
+  <string><id>12339</id><value>Text Passwort</value></string>
+  <string><id>12340</id><value>Neues Passwort eingeben</value></string>
+  <string><id>12341</id><value>Neues Passwort erneut eingeben</value></string>
+  <string><id>12342</id><value>Falsches Password,</value></string>
+  <string><id>12343</id><value>Versuche übrig </value></string>
+  <string><id>12344</id><value>Die eingegebenen Passworte stimmen nicht überein.</value></string>
+  <string><id>12345</id><value>Zugriff verweigert</value></string>
+  <string><id>12346</id><value>Anzahl der Fehlversuche erreicht.</value></string>
+  <string><id>12347</id><value>Die XBOX wird nun ausgeschaltet.</value></string>
   <string><id>12600</id><value>Wetter</value></string>
   <string><id>12900</id><value>Bildschirmschoner</value></string>
   <string><id>12901</id><value>Vollbild OSD</value></string>
@@ -573,6 +610,8 @@
   <string><id>13002</id><value>nur Video</value></string>
   <string><id>13003</id><value>- Verzögerung</value></string>
   <string><id>13004</id><value>- minimale Dauer der Datei</value></string>
+  <string><id>13005</id><value>Ausschalten</value></string>
+  <string><id>13006</id><value>Dashboard</value></string>
   <string><id>13100</id><value>Flimmerfilter</value></string>
   <string><id>13200</id><value>Profile</value></string>
   <string><id>13201</id><value>Profil '%s' löschen?</value></string>
@@ -619,6 +658,19 @@
   <string><id>13335</id><value>Als Standard setzen</value></string>
   <string><id>13336</id><value>Button entfernen</value></string>
   <string><id>13337</id><value>- Stereo PCM durchreichen</value></string>
+  <string><id>13338</id><value>Front LED</value></string>
+  <string><id>13339</id><value>Front LED Farbe</value></string>
+  <string><id>13340</id><value>So lassen wie sie ist</value></string>
+  <string><id>13341</id><value>Grün</value></string>
+  <string><id>13342</id><value>Orange</value></string>
+  <string><id>13343</id><value>Rot</value></string>
+  <string><id>13344</id><value>Im Zyklus</value></string>
+  <string><id>13345</id><value>LED ausschalten während der Wiedergabe</value></string>
+  <string><id>13346</id><value>Film Informationen</value></string>
+  <string><id>13347</id><value>Zur Playliste hinzufügen</value></string>
+  <string><id>13348</id><value>In IMDb suchen...</value></string>
+  <string><id>13349</id><value>Suche für alle Dateien</value></string>
+  <string><id>13350</id><value>Now Playing...</value></string>
   <string><id>14000</id><value>Stapeln: Aus</value></string>
   <string><id>14001</id><value>Stapeln: Einfach</value></string>
   <string><id>14002</id><value>Stapeln: Fuzzy</value></string>
@@ -644,17 +696,17 @@
   <string><id>14022</id><value>Bibliothek</value></string>
   <string><id>14023</id><value>Kein TV</value></string>
   <string><id>14024</id><value>Bitte eine nächstgelegene große Stadt oder einen US ZIP code eingeben</value></string>
-  <string><id>14025</id><value>Video von Festplatte</value></string>
-  <string><id>14026</id><value>Video von DVD-Rom</value></string>
-  <string><id>14027</id><value>Video über lokales Netzwerk</value></string>
-  <string><id>14028</id><value>Video aus dem Internet</value></string>
-  <string><id>14029</id><value>Audio von Festplatte</value></string>
-  <string><id>14030</id><value>Audio von DVD-Rom</value></string>
-  <string><id>14031</id><value>Audio über lokales Netzwerk</value></string>
-  <string><id>14032</id><value>Audio aus dem Internet</value></string>
-  <string><id>14033</id><value>DVD von Festplatte</value></string>
-  <string><id>14034</id><value>DVD von DVD-Rom</value></string>
-  <string><id>14035</id><value>DVD über lokales Netzwerk</value></string>
+  <string><id>14025</id><value>Video Cache   - Festplatte</value></string>
+  <string><id>14026</id><value>              - DVD-Rom</value></string>
+  <string><id>14027</id><value>              - Lokales Netzwerk</value></string>
+  <string><id>14028</id><value>              - Internet</value></string>
+  <string><id>14029</id><value>Audio Cache   - Festplatte</value></string>
+  <string><id>14030</id><value>              - DVD-Rom</value></string>
+  <string><id>14031</id><value>              - Lokales Netzwerk</value></string>
+  <string><id>14032</id><value>              - Internet</value></string>
+  <string><id>14033</id><value>DVD Cache     - Festplatte</value></string>
+  <string><id>14034</id><value>              - DVD-Rom</value></string>
+  <string><id>14035</id><value>              - Lokales Netzwerk</value></string>
   <string><id>14036</id><value>Server</value></string>
   <string><id>14037</id><value>Darstellung</value></string>
   <string><id>14038</id><value>Netwerkeinstellungen verändert</value></string>
@@ -674,4 +726,7 @@
   <string><id>14052</id><value>Monat und Tag im Home Screen tauschen</value></string>
   <string><id>14053</id><value>GUI Filter</value></string>
   <string><id>14054</id><value>Internet Anfragen zulassen</value></string>
+  <string><id>14055</id><value>Durchsuchen in Hintergrund</value></string>
+  <string><id>14056</id><value>Stop</value></string>
+  <string><id>14057</id><value>Nicht möglich während des Durchsuchens</value></string>
 </strings>
