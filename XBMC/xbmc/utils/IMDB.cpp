@@ -581,19 +581,19 @@ void CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL)
 	strTmp.Trim();
 	strcpy(szMovie,strTmp.c_str());
 
-	RemoveAllAfter(szMovie,"divx");
-	RemoveAllAfter(szMovie,"xvid");
-	RemoveAllAfter(szMovie,"dvd");
-	RemoveAllAfter(szMovie,"svcd");
-	RemoveAllAfter(szMovie,"ac3");
-	RemoveAllAfter(szMovie,"ogg");
-	RemoveAllAfter(szMovie,"ogm");
-	RemoveAllAfter(szMovie,"internal");
-	RemoveAllAfter(szMovie,"fragment");
-	RemoveAllAfter(szMovie,"dvdrip");
-	RemoveAllAfter(szMovie,"proper");
-	RemoveAllAfter(szMovie,"limited");
-	RemoveAllAfter(szMovie,"rerip");
+	RemoveAllAfter(szMovie," divx ");
+	RemoveAllAfter(szMovie," xvid ");
+	RemoveAllAfter(szMovie," dvd ");
+	RemoveAllAfter(szMovie," svcd ");
+	RemoveAllAfter(szMovie," ac3 ");
+	RemoveAllAfter(szMovie," ogg ");
+	RemoveAllAfter(szMovie," ogm ");
+	RemoveAllAfter(szMovie," internal ");
+	RemoveAllAfter(szMovie," fragment ");
+	RemoveAllAfter(szMovie," dvdrip ");
+	RemoveAllAfter(szMovie," proper ");
+	RemoveAllAfter(szMovie," limited ");
+	RemoveAllAfter(szMovie," rerip ");
   
 	CStdString strHTML;
 	sprintf(szURL,"http://us.imdb.com/Tsearch?title=%s", szMovie);
