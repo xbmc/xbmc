@@ -416,6 +416,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiSettingsSubtitles.Load( strSkinPath+"\\SettingsScreenSubtitles.xml");
 	m_guiWindowScreensaver.SetID(WINDOW_SCREENSAVER);		// CB: Matrix Screensaver - saves us having to have our own XML file
 	m_guiMyWeather.Load( strSkinPath+"\\myweather.xml");	//WEATHER
+	CGUIWindow::FlushReferenceCache(); // flush the cache so it doesn't use memory all the time
 
   CLog::Log("  initialize new skin...");
 	m_guiMusicOverlay.AllocResources();
