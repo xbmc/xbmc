@@ -649,7 +649,7 @@ HRESULT CApplication::Initialize()
 			m_pWebServer = new CWebServer();
 			CStdString ipadres;
 			CUtil::GetTitleIP(ipadres);
-			m_pWebServer->Start(ipadres.c_str(), 80, "Q:\\web");
+			m_pWebServer->Start(ipadres.c_str(), g_stSettings.m_iWebServerPort, "Q:\\web");
 		} 
 
 		if ( g_stSettings.m_bFTPServerEnabled)
