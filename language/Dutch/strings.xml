@@ -582,8 +582,8 @@
 <string><id>13305</id><value>RSS Feeds inschakelen</value></string>
 <string><id>13306</id><value>Verberg hoofdmapitems</value></string>
 <string><id>13307</id><value>Verberg tracknummers</value></string>
-<string><id>13308</id><value>Wilt u opnieuw opstarten(hardboot)</value></string>
-<string><id>13309</id><value>In plaats van een herstart?(softboot)</value></string>
+<string><id>13308</id><value>Wilt u de xbox opnieuw opstarten(hardboot)</value></string>
+<string><id>13309</id><value>In plaats van alleen XBMC herstarten?(softboot)</value></string>
 <string><id>13310</id><value>Zoom Effect</value></string>
 <string><id>13311</id><value>Zweef Effect</value></string>
 <string><id>13312</id><value>Zwarte balk reductie</value></string>
@@ -606,12 +606,18 @@
 <string><id>13329</id><value>Fout tijdens openen %s</value></string> 
 <string><id>13330</id><value>%s Kan niet geladen worden</value></string>
 <string><id>13331</id><value>Fout: geheugen tekort.</value></string>
+<string><id>13332</id><value>Omhoog</value></string> 
+<string><id>13333</id><value>Omlaag</value></string> 
+<string><id>13334</id><value>Pas Label Aan</value></string> 
+<string><id>13335</id><value>Maak Standaard</value></string> 
+<string><id>13336</id><value>Verwijder Knop</value></string>
+<string><id>13337</id><value>- Stereo PCM weergave</value></string>
 <string><id>14000</id><value>Delen Invoegen: Uit</value></string>
 <string><id>14001</id><value>Delen Invoegen: Simpel</value></string> 
 <string><id>14002</id><value>Delen Invoegen: Fuzzy</value></string>
 <string><id>14003</id><value>Downloaden van playlist bestand...</value></string>
 <string><id>14004</id><value>Downloaden van streams lijst...</value></string>
-	<string><id>14005</id><value>Parsing streams lijst...</value></string>
+<string><id>14005</id><value>Uitpakken streams lijst...</value></string>
 <string><id>14006</id><value>Downloaden van streams lijst mislukt</value></string> 
 <string><id>14007</id><value>Downloaden van playlist bestand mislukt</value></string>
 

@@ -5,6 +5,12 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-11-2004 updated: French language file (Thnx to modhack2)
+  - 13-11-2004 updated: Portuguese (Brazil) language file (Thnx to wellingtontu)
+  - 13-11-2004 updated: Italian language file (Thnx to kotix)
+  - 13-11-2004 updated: Dutch language file (Thnx to joepmeloenx)
+  - 13-11-2004 updated: German (Austrian) language file (Thnx to CEOMR)
+  - 13-11-2004 updated: German language file
   - 13-11-2004 updated: Hebrew language file by okets
   - 11-11-2004 fixed: minor bugs like delay calculation in audio output device
   - 11-11-2004 added: Implementation of 2 channel PCM passthrough 

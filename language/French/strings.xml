@@ -2426,6 +2426,26 @@
         <value>Erreur : mémoire insuffisante.</value>
     </string>
     <string>
+        <id>13332</id>
+        <value>Monter</value>
+    </string>
+    <string>
+        <id>13333</id>
+        <value>Descendre</value>
+    </string>
+    <string>
+        <id>13334</id>
+        <value>Editer le Nom</value>
+    </string>
+    <string>
+        <id>13335</id>
+        <value>Mettre par Défaut</value>
+    </string>
+    <string>
+        <id>13336</id>
+        <value>Supprimer</value>
+    </string>
+    <string>
         <id>14000</id>
         <value>Stacking : désactivé</value>
     </string>

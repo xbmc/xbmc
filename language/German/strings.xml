@@ -8,15 +8,15 @@
   </string>
   <string>
     <id>1</id>
-    <value>Eigene Bilder</value>
+    <value>Bilder</value>
   </string>
   <string>
     <id>2</id>
-    <value>Eigene Musik</value>
+    <value>Musik</value>
   </string>
   <string>
     <id>3</id>
-    <value>Eigene Videos</value>
+    <value>Videos</value>
   </string>
   <string>
     <id>4</id>
@@ -328,11 +328,11 @@
   </string>
   <string>
     <id>154</id>
-    <value>Speicher:</value>
+    <value>Laufwerke:</value>
   </string>
   <string>
     <id>155</id>
-    <value>Laufwerke</value>
+    <value>Laufwerk</value>
   </string>
   <string>
     <id>156</id>
@@ -2328,7 +2328,7 @@
   </string>
   <string>
     <id>13306</id>
-    <value>Einträge Vorgänger eines Ordners ausblenden</value>
+    <value>Vorgängerordner Einträge ausblenden</value>
   </string>
   <string>
     <id>13307</id>
@@ -2429,6 +2429,30 @@
   <string>
     <id>13331</id>
     <value>Nicht genügend Speicher</value>
+  </string>
+  <string>
+    <id>13332</id>
+    <value>Nach oben</value>
+  </string>
+  <string>
+    <id>13333</id>
+    <value>Nach unten</value>
+  </string>
+  <string>
+    <id>13334</id>
+    <value>Beschriftung ändern</value>
+  </string>
+  <string>
+    <id>13335</id>
+    <value>Als Standard setzen</value>
+  </string>
+  <string>
+    <id>13336</id>
+    <value>Button entfernen</value>
+  </string>
+  <string>
+    <id>13337</id>
+    <value>- Stereo PCM durchreichen</value>
   </string>
   <string>
     <id>14000</id>
