@@ -79,7 +79,7 @@ public:
 	bool					CalibrationEnabled() const;
   void SetGroup(int iGroup);
   int GetGroup(void) const;
-  virtual void  Update() {};
+  virtual void  Update() { m_bInvalidated = true; };
 
 	enum GUICONTROLTYPES { 
 		GUICONTROL_UNKNOWN,
