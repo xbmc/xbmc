@@ -2872,7 +2872,7 @@ public:
 	}
 	int Insert(int nIdx, PCMYSTR sz)
 	{
-		if ( nIdx >= this->size() )
+		if ( static_cast<MYSIZE>(nIdx) >= this->size() )
 			this->append(sz, sslen(sz));
 		else
 			this->insert(static_cast<MYSIZE>(nIdx), sz);
