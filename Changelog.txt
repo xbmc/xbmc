@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 11-03-2005 added: [ 1160400 ] Added ControlCheckMark in Python - thanks to gimblefoot
   - 10-03-2005 added: My Music label format now accepts %F for filename
   - 10-03-2005 changed: My Music Nav window now uses a virtual path for better "back" handling (thanks to Elupus for the idea)
   - 10-03-2005 added: Initial support for VideoPlayer.Title for infolabels/infofadelabels.
