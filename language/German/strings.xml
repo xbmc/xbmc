@@ -292,7 +292,7 @@
   <string><id>358</id><value>Alle Alben</value></string>
   <string><id>359</id><value>Favoriten</value></string>
   <string><id>360</id><value>Bildschirmschoner</value></string>
-  <string><id>361</id><value>Recurs. Diaschau</value></string>
+  <string><id>361</id><value>Rekurs. Diaschau</value></string>
   <string><id>362</id><value>Verdunkelung</value></string>
   <string><id>363</id><value>Nach Datei</value></string>
   <string><id>364</id><value>- Receiver unterstützt AC3</value></string>
@@ -585,7 +585,7 @@
   <string><id>12327</id><value>Mastercode eingeben und E drücken,</value></string>
   <string><id>12328</id><value>Entsperrcode eingeben und E drücken,</value></string> 
   <string><id>12329</id><value>oder mit C abbrechen</value></string>
-  <string><id>12330</id><value>XBOX gamepad button combo eingeben und </value></string>
+  <string><id>12330</id><value>Gamepad Tastenkombination eingeben und </value></string>
   <string><id>12331</id><value>'Start' drücken, oder 'Back' um abzubrechen.</value></string>
   <string><id>12332</id><value>Share sperren</value></string>
   <string><id>12333</id><value>Share entsperren</value></string>
@@ -594,7 +594,7 @@
   <string><id>12336</id><value>Bitte die Art der Sperre auswählen:</value></string>
   <string><id>12337</id><value>Nummerisches Passwort</value></string>
   <string><id>12338</id><value>Gamepad button combo</value></string>
-  <string><id>12339</id><value>Text Passwort</value></string>
+  <string><id>12339</id><value>Volltext Passwort</value></string>
   <string><id>12340</id><value>Neues Passwort eingeben</value></string>
   <string><id>12341</id><value>Neues Passwort erneut eingeben</value></string>
   <string><id>12342</id><value>Falsches Password,</value></string>
@@ -627,7 +627,7 @@
   <string><id>13303</id><value>Schriftart</value></string>
   <string><id>13304</id><value>links-/rechtsläufige Zeichenfolgen ermöglichen</value></string>
   <string><id>13305</id><value>RSS Feed [Newsflash] aktivieren</value></string>
-  <string><id>13306</id><value>Vorgängerordner Einträge ausblenden</value></string>
+  <string><id>13306</id><value>Eintrag zum übergeordneten Verzeichnis ausblenden</value></string>
   <string><id>13307</id><value>Track Nummern ausblenden</value></string>
   <string><id>13308</id><value>Drücke 'Ja' um die XBOX neu zu starten</value></string>
   <string><id>13309</id><value>Drücke 'Nein' um XBMC neu zu laden</value></string>
@@ -640,7 +640,7 @@
   <string><id>13316</id><value>Rekursive Thumbnails</value></string>
   <string><id>13317</id><value>Slideshow anzeigen</value></string>
   <string><id>13318</id><value>Rekursive Slideshow</value></string>
-  <string><id>13319</id><value>Zufällig</value></string>
+  <string><id>13319</id><value>Zufallsauswahl</value></string>
   <string><id>13320</id><value>Stereo</value></string>
   <string><id>13321</id><value>Nur links</value></string>
   <string><id>13322</id><value>Nur rechts</value></string>
@@ -661,17 +661,20 @@
   <string><id>13337</id><value>- Stereo PCM durchreichen</value></string>
   <string><id>13338</id><value>Front LED</value></string>
   <string><id>13339</id><value>Front LED Farbe</value></string>
-  <string><id>13340</id><value>So lassen wie sie ist</value></string>
+  <string><id>13340</id><value>Keine Änderung</value></string>
   <string><id>13341</id><value>Grün</value></string>
   <string><id>13342</id><value>Orange</value></string>
   <string><id>13343</id><value>Rot</value></string>
-  <string><id>13344</id><value>Im Zyklus</value></string>
+  <string><id>13344</id><value>Zyklisch</value></string>
   <string><id>13345</id><value>LED ausschalten während der Wiedergabe</value></string>
   <string><id>13346</id><value>Film Informationen</value></string>
   <string><id>13347</id><value>Zur Playliste hinzufügen</value></string>
   <string><id>13348</id><value>In IMDb suchen...</value></string>
   <string><id>13349</id><value>Suche für alle Dateien</value></string>
   <string><id>13350</id><value>Now Playing...</value></string>
+  <string><id>13351</id><value>Album Informationen</value></string>
+  <string><id>13352</id><value>Ordner Durchsuchen</value></string>
+  <string><id>13353</id><value>Suche anhalten</value></string>
   <string><id>14000</id><value>Stapeln: Aus</value></string>
   <string><id>14001</id><value>Stapeln: Einfach</value></string>
   <string><id>14002</id><value>Stapeln: Fuzzy</value></string>
