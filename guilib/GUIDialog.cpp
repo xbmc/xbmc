@@ -83,6 +83,8 @@ void CGUIDialog::DoModal(DWORD dwParentId)
 		return;
 	}
 
+	if (m_gWindowManager.m_pRouteWindow == this) return;		// already routed to this dialog
+
 	m_dwPrevRouteWindow=m_gWindowManager.RouteToWindow(GetID());
 	m_pPrevRouteWindow=m_gWindowManager.GetWindow(m_dwPrevRouteWindow);
 
