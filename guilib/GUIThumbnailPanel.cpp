@@ -202,7 +202,7 @@ void CGUIThumbnailPanel::Render()
 	}
 
 	g_graphicsContext.RestoreViewPort();
-  m_upDown.Render();
+  
 
 	//
   int iFrames=12;
@@ -251,6 +251,7 @@ void CGUIThumbnailPanel::Render()
       pItem->FreeMemory();
     }
   }
+  m_upDown.Render();
 }
 
 void CGUIThumbnailPanel::OnAction(const CAction &action)
