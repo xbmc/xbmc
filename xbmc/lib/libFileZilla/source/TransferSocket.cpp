@@ -73,7 +73,7 @@ void CTransferSocket::Init(t_dirlisting *pDir, int nMode)
 	m_bReady = TRUE;
 	m_status = 0;
 	if (m_pBuffer)
-		XPhysicalFree(m_pBuffer);
+		free(m_pBuffer);
 	m_pBuffer = 0;
 	m_pDirListing = pDir;
 
@@ -107,7 +107,7 @@ void CTransferSocket::Init(CStdString filename, int nMode, _int64 rest, BOOL bBi
 CTransferSocket::~CTransferSocket()
 {
 	if (m_pBuffer)
-		XPhysicalFree(m_pBuffer);
+		free(m_pBuffer);
 	if (m_hFile != INVALID_HANDLE_VALUE)
 	{
 		CloseHandle(m_hFile);
@@ -498,12 +498,12 @@ void CTransferSocket::OnReceive(int nErrorCode)
 			m_nAlign = (4096 - (m_nRest & 4095)) & 4095;
 
 			if (m_pBuffer)
-				XPhysicalFree(m_pBuffer);
+				free(m_pBuffer);
 			// Xbox writes ide data in 128k blocks, so always try to write 128k of data at a time.
 			// Uses a 160k buffer so there's a bit of overrun as it's more efficient to always try and read 32k+ from the socket.
 			// Also allows realignment to page alignment when restarting.
 			m_nBufSize = 160*1024;
-			m_pBuffer = (char*)XPhysicalAlloc(m_nBufSize, MAXULONG_PTR, 0, PAGE_READWRITE);
+      m_pBuffer = (char*)malloc(m_nBufSize);
 			if (!m_pBuffer)
 			{
 				CloseHandle(m_hFile);
@@ -712,10 +712,10 @@ BOOL CTransferSocket::InitTransfer(BOOL bCalledFromSend)
 	if (m_nMode==TRANSFERMODE_SEND)
 	{
 		if (m_pBuffer)
-			XPhysicalFree(m_pBuffer);
+			free(m_pBuffer);
 		// smaller read buffer than for writes to avoid having to do massive data moves
 		m_nBufSize = 32*1024;
-		m_pBuffer = (char*)XPhysicalAlloc(m_nBufSize, MAXULONG_PTR, 0, PAGE_READWRITE | PAGE_WRITECOMBINE);
+		m_pBuffer = (char*)malloc(m_nBufSize);
 		if (!m_pBuffer)
 		{
 			m_status=6;
