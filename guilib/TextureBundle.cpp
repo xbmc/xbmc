@@ -329,6 +329,7 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
 		free(m_PreLoadBuffer[m_LoadIdx]);
 		m_PreLoadBuffer[m_LoadIdx] = 0;
 	}
+	m_CurFileHeader[m_LoadIdx] = m_FileHeaders.end();
 
 	// switch on writecombine on memory and flush the cache for the gpu
 	// it's about 3 times faster to load in cached ram then do this than to load in wc ram. :)
