@@ -197,8 +197,8 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
 
 			if (m_iViewAsIcons==-1 && m_iViewAsIconsRoot==-1)
 			{
-				m_iViewAsIcons=g_stSettings.m_iMyMusicSongsViewAsIcons;
-				m_iViewAsIconsRoot=g_stSettings.m_iMyMusicSongsRootViewAsIcons;
+				m_iViewAsIcons=g_stSettings.m_iMyVideoViewAsIcons;
+				m_iViewAsIconsRoot=g_stSettings.m_iMyVideoRootViewAsIcons;
 			}
 
 			return CGUIWindowVideoBase::OnMessage(message);
@@ -226,23 +226,6 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         UpdateButtons();
         OnSort();
       }
-			else if (iControl==CONTROL_BTNVIEWASICONS)
-			{
-				if ( m_strDirectory.IsEmpty() )
-				{
-					m_iViewAsIconsRoot++;
-					if (m_iViewAsIconsRoot > VIEW_AS_LARGEICONS) m_iViewAsIconsRoot=VIEW_AS_LIST;
-				}
-				else
-				{
-					m_iViewAsIcons++;
-					if (m_iViewAsIcons > VIEW_AS_LARGEICONS) m_iViewAsIcons=VIEW_AS_LIST;
-				}
-				g_stSettings.m_iMyVideoRootViewAsIcons=m_iViewAsIconsRoot;
-				g_stSettings.m_iMyVideoViewAsIcons=m_iViewAsIcons;
-
-				CGUIWindowVideoBase::OnMessage(message);
-			}
       else if (iControl==CONTROL_BTNSORTASC) // sort asc
       {
 				if (m_strDirectory.IsEmpty())
@@ -1285,6 +1268,8 @@ void CGUIWindowVideoFiles::SetViewMode(int iViewMode)
     g_stSettings.m_iMyVideoRootViewAsIcons = iViewMode;
   else
     g_stSettings.m_iMyVideoViewAsIcons = iViewMode;
+	m_iViewAsIcons = g_stSettings.m_iMyVideoViewAsIcons;
+	m_iViewAsIconsRoot = g_stSettings.m_iMyVideoRootViewAsIcons;
 }
 
 void CGUIWindowVideoFiles::OnPopupMenu(int iItem)

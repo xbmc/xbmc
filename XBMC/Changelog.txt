@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-12-2004 added: Off mode added to LED colour options.
+  - 13-12-2004 fixed: View as method was loaded incorrectly in Videos->Files.
+  - 13-12-2004 fixed: Karaoke display should be nicely up to speed again.  Not sure about A/V sync (though it stays in sync once set).
+  - 13-12-2004 changed: Small nicety added: Navigate left to menu then immediately right and it remembers the control you were at.
   - 13-12-2004 fixed: Rendering of dialogs in Full Screen Video.
   - 13-12-2004 changed: Settings menus: Categories change on focus, rather than on click.
   - 13-12-2004 changed: GUIMessages to controls have changed - all messages from windows to controls on that window
