@@ -223,11 +223,15 @@ void CGUIWindowMusicInfo::Refresh()
 		m_iTextureHeight=picture.GetWidth();
 		CUtil::ThumbCacheAdd(strThumb, true);
 
-		//	Also save a copy as directory thumb.
-		CStdString strFolderThumb;
-		CUtil::GetAlbumThumb(m_pAlbum->GetAlbumPath(),strFolderThumb);
-		::CopyFile( strThumb, strFolderThumb, false);
-		CUtil::ThumbCacheAdd(strFolderThumb, true);
+		if (!CUtil::IsCDDA(m_pAlbum->GetAlbumPath()))
+		{
+			//	Also save a copy as directory thumb,
+			//	if the album isn't located on an audio cd.
+			CStdString strFolderThumb;
+			CUtil::GetAlbumThumb(m_pAlbum->GetAlbumPath(),strFolderThumb);
+			::CopyFile( strThumb, strFolderThumb, false);
+			CUtil::ThumbCacheAdd(strFolderThumb, true);
+		}
 	}
 	Update();
 }
