@@ -57,9 +57,6 @@ void CAutorun::RunXboxCd()
 	{
 		if ( CUtil::FileExists("D:\\default.xbe") ) 
 		{
-			m_gWindowManager.DeInitialize();
-			CSectionLoader::UnloadAll();
-
 			g_application.Stop();
 
 			CUtil::LaunchXbe( "Cdrom0", "D:\\default.xbe", NULL );
