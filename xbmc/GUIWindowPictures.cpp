@@ -78,6 +78,13 @@ struct SSortPicturesByName
 					return true;
         break;
 
+        case 3:	//	Sort by share type
+					if ( rpStart.m_iDriveType > rpEnd.m_iDriveType) return bGreater;
+					if ( rpStart.m_iDriveType < rpEnd.m_iDriveType) return !bGreater;
+ 					strcpy(szfilename1, rpStart.GetLabel());
+					strcpy(szfilename2, rpEnd.GetLabel());
+        break;
+
 				default:	//	Sort by Filename by default
 					strcpy(szfilename1, rpStart.GetLabel().c_str());
 					strcpy(szfilename2, rpEnd.GetLabel().c_str());
@@ -240,8 +247,10 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       {
 				if (m_strDirectory.IsEmpty())
 				{
-					g_stSettings.m_iMyPicturesRootSortMethod++;
-					if (g_stSettings.m_iMyPicturesRootSortMethod >=3) g_stSettings.m_iMyPicturesRootSortMethod=0;
+					if (g_stSettings.m_iMyPicturesRootSortMethod==0)
+						g_stSettings.m_iMyPicturesRootSortMethod=3;
+					else
+						g_stSettings.m_iMyPicturesRootSortMethod=0;
 				}
 				else
 				{
@@ -426,7 +435,14 @@ void CGUIWindowPictures::UpdateButtons()
 		//	Update sort by button
 		if (m_strDirectory.IsEmpty())
 		{
-			SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyPicturesRootSortMethod+103);
+			if (g_stSettings.m_iMyPicturesRootSortMethod==0)
+			{
+				SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyPicturesRootSortMethod+103);
+			}
+			else
+			{
+				SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,498);	//	Sort by: Type
+			}
 		}
 		else
 		{
