@@ -19,6 +19,7 @@ public:
 	virtual void	OnAction(const CAction &action);
 	virtual void	Render();
 	virtual bool	SubMenuVisible();
+	virtual void	ResetAllControls();
 
 private:
 	virtual void	Get_TimeInfo();
@@ -31,6 +32,7 @@ private:
 	virtual void	PopulateBookmarks();
 	virtual void	PopulateAudioStreams();
 	virtual void	PopulateSubTitles();
+  void      Reset();
 	bool			m_bSubMenuOn;
 	int				m_iActiveMenu;
 	DWORD			m_iActiveMenuButtonID;

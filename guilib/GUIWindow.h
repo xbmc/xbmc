@@ -41,7 +41,7 @@ public:
 	int									GetFocusedControl() const;
 	virtual void				AllocResources();
   virtual void				FreeResources();
-	void								ResetAllControls();
+	virtual void				ResetAllControls();
 	static void         FlushReferenceCache();
 protected:
 	struct stReferenceControl
