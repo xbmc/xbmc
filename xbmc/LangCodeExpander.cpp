@@ -1,6 +1,7 @@
 #include "langcodeexpander.h"
 #include "tinyxml/tinyxml.h"
 #include "utils/log.h"
+#include "GUISettings.h"
 
 CLangCodeExpander g_LangCodeExpander;
 
@@ -24,8 +25,16 @@ void CLangCodeExpander::LoadStandardCodes(void)
 {
   try
   {
-    LoadCodes("Q:\\mplayer\\ISO639-1.xml", m_mapISO639_1);
-    LoadCodes("Q:\\mplayer\\ISO639-2.xml", m_mapISO639_2);
+    if(g_guiSettings.GetBool("MyVideos.AlternateMPlayer"))
+    {
+      LoadCodes("Q:\\system\\players\\mplayer\\ISO639-1.xml", m_mapISO639_1);
+      LoadCodes("Q:\\system\\players\\mplayer\\ISO639-2.xml", m_mapISO639_2);
+    }
+    else
+    {
+      LoadCodes("Q:\\mplayer\\ISO639-1.xml", m_mapISO639_1);
+      LoadCodes("Q:\\mplayer\\ISO639-2.xml", m_mapISO639_2);
+    }
   }
   catch(...)
   {
