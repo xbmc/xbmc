@@ -285,8 +285,11 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 		
 	if (nTrackNum >=1)
 	{
+		CStdString strText=g_localizeStrings.Get(435);
+		if (strText.GetAt(strText.size()-1) != ' ')
+			strText+=" ";
 		CStdString strTrack;
-		strTrack.Format("Track %i", nTrackNum);
+		strTrack.Format(strText+"%i", nTrackNum);
 		
 		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
 		msg1.SetLabel( strTrack );
@@ -294,8 +297,11 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 	}
 	if (NULL != pYear.get() )
 	{
+		CStdString strText=g_localizeStrings.Get(436);
+		if (strText.GetAt(strText.size()-1) != ' ')
+			strText+=" ";
 		CStdString strYear;
-		strYear.Format("Year:%s", pYear.get());
+		strYear.Format(strText+"%s", pYear.get());
 		
 		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
 		msg1.SetLabel( strYear );
@@ -410,8 +416,11 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 						int iTrack=song.iTrack;
 						if (iTrack >=1)
 						{
+							CStdString strText=g_localizeStrings.Get(435);
+							if (strText.GetAt(strText.size()-1) != ' ')
+								strText+=" ";
 							CStdString strTrack;
-							strTrack.Format("Track %i", iTrack);
+							strTrack.Format(strText+"%i", iTrack);
 							
 							CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
 							msg1.SetLabel( strTrack );
@@ -420,8 +429,11 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 
 						if (song.iYear >=1900)
 						{
+							CStdString strText=g_localizeStrings.Get(436);
+							if (strText.GetAt(strText.size()-1) != ' ')
+								strText+=" ";
 							CStdString strYear;
-							strYear.Format("Year: %i", song.iYear);
+							strYear.Format(strText+"%i", song.iYear);
 							
 							CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
 							msg1.SetLabel( strYear );
@@ -429,11 +441,18 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 						}
 						if (song.iDuration > 0)
 						{
-							CStdString strYear;
-							strYear.Format("Duration: %i:%02.2i", song.iDuration/60, song.iDuration%60);
+							CStdString strDuration, strTime;
+
+							CStdString strText=g_localizeStrings.Get(437);
+							if (strText.GetAt(strText.size()-1) != ' ')
+								strText+=" ";
+
+							CUtil::SecondsToHMSString(song.iDuration, strTime);
+
+							strDuration=strText+strTime;
 							
 							CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-							msg1.SetLabel( strYear );
+							msg1.SetLabel( strDuration );
 							OnMessage(msg1);
 						}
 					}
