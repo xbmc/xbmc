@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 23-02-2005 fixed: Switching from Fullscreen Video -> GUI now looks more professional (blank screen rather than stalled/mangled video)
   - 23-02-2005 added: [ 1149558 ] Printing XBE Title To LCD On Launch.  Thanks sniperkilla!
   - 22-02-2005 fixed: Crash when Kai is re-entered after a skin/font/etc. change.
   - 21-02-2005 fixed: Yet another weather localization fix.  Thanks KoTiX!

@@ -82,12 +82,14 @@ unsigned int CXBoxRenderManager::Configure(unsigned int width, unsigned int heig
 }
 inline unsigned int CXBoxRenderManager::GetImage(mp_image_t *mpi)
 {
+  if (m_bPauseDrawing) return VO_FALSE;
 	if (!m_bChanging && m_pRenderer)
 		return m_pRenderer->GetImage(mpi);
 	return VO_FALSE;
 }
 inline unsigned int CXBoxRenderManager::PutImage(mp_image_t *mpi)
 {
+  if (m_bPauseDrawing) return VO_FALSE;
 	if (!m_bChanging && m_pRenderer)
 		return m_pRenderer->PutImage(mpi);
 	return VO_FALSE;
@@ -95,6 +97,7 @@ inline unsigned int CXBoxRenderManager::PutImage(mp_image_t *mpi)
 
 inline unsigned int CXBoxRenderManager::DrawFrame(unsigned char *src[])
 {
+  if (m_bPauseDrawing) return 0;
 	if (!m_bChanging && m_pRenderer)
 		return m_pRenderer->DrawFrame(src);
 	return 0;
@@ -102,6 +105,7 @@ inline unsigned int CXBoxRenderManager::DrawFrame(unsigned char *src[])
 
 inline unsigned int CXBoxRenderManager::DrawSlice(unsigned char *src[], int stride[], int w,int h,int x,int y)
 {
+  if (m_bPauseDrawing) return 0;
 	if (!m_bChanging && m_pRenderer)
 		return m_pRenderer->DrawSlice(src, stride, w, h, x, y);
 	return 0;
@@ -109,9 +113,20 @@ inline unsigned int CXBoxRenderManager::DrawSlice(unsigned char *src[], int stri
 
 inline void CXBoxRenderManager::FlipPage()
 {
-	if (m_bPauseDrawing) return;
 	if (!m_bChanging && m_pRenderer)
-		m_pRenderer->FlipPage();
+  {
+    if (m_bPauseDrawing)
+      m_pRenderer->RenderBlank();
+    else
+	  	m_pRenderer->FlipPage();
+  }
+}
+
+void CXBoxRenderManager::Update(bool bPauseDrawing)
+{
+  m_bPauseDrawing = bPauseDrawing;
+  if (!m_bChanging && m_pRenderer)
+    m_pRenderer->Update(bPauseDrawing);
 }
 
 unsigned int CXBoxRenderManager::PreInit(const char *arg)
