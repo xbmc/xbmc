@@ -223,6 +223,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bMyProgramsFlatten=true;
 	g_stSettings.m_bMyProgramsDefaultXBE=true;
 	g_stSettings.m_bMyProgramsDirectoryName=false;
+	g_stSettings.m_bMyProgramsNoShortcuts=true;
 	strcpy(g_stSettings.szDashboard,"C:\\xboxdash.xbe");
 	strcpy(g_stSettings.m_szAlternateSubtitleDirectory,"");
 	strcpy(g_stSettings.m_strLocalIPAdres,"");
@@ -543,6 +544,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 		share.strName="shortcuts";
 		m_vecMyProgramsBookmarks.push_back(share);
 	}
+
 
 	strDir=g_stSettings.m_szAlternateSubtitleDirectory;
 	ConvertHomeVar(strDir);
@@ -1243,6 +1245,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetBoolean(pElement, "flatten", g_stSettings.m_bMyProgramsFlatten);
 		GetBoolean(pElement, "defaultxbe", g_stSettings.m_bMyProgramsDefaultXBE);
 		GetBoolean(pElement, "directoryname", g_stSettings.m_bMyProgramsDirectoryName);
+		GetBoolean(pElement, "noshortcuts", g_stSettings.m_bMyProgramsNoShortcuts);
 	}
 
 	// cdda ripper settings
@@ -1298,6 +1301,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	SetBoolean(pNode, "flatten", g_stSettings.m_bMyProgramsFlatten);
 	SetBoolean(pNode, "defaultxbe", g_stSettings.m_bMyProgramsDefaultXBE);
 	SetBoolean(pNode, "directoryname", g_stSettings.m_bMyProgramsDirectoryName);
+	SetBoolean(pNode, "noshortcuts", g_stSettings.m_bMyProgramsNoShortcuts);
 
 
 	// cache settings
