@@ -10,19 +10,19 @@
 #define LOGFATAL   6
 #define LOGNONE    7
 
-static char	levelNames[][8] =
-{
-	"DEBUG", "INFO", "NOTICE", "WARNING", "ERROR", "SEVERE", "FATAL", "NONE"
-};
+static char levelNames[][8] =
+  {
+    "DEBUG", "INFO", "NOTICE", "WARNING", "ERROR", "SEVERE", "FATAL", "NONE"
+  };
 
 class CLog
 {
-	static FILE* fd;
+  static FILE* fd;
 public:
   CLog();
   virtual ~CLog(void);
   static void Close();
   static void Log(int loglevel, const char *format, ... );
-	static void DebugLog(const char *format, ...);
-	static int  GetLevel();
+  static void DebugLog(const char *format, ...);
+  static int GetLevel();
 };

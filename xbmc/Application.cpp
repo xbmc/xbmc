@@ -113,12 +113,11 @@ CApplication::CApplication(void)
   m_iMasterLockRetriesRemaining = 0;
   m_bMasterLockPreviouslyEntered = false;
   m_bMasterLockOverridesLocalPasswords = false;
-  m_bInitializing=true;
+  m_bInitializing = true;
 }
 
 CApplication::~CApplication(void)
-{
-}
+{}
 
 // text out routine for below
 static void __cdecl FEH_TextOut(XFONT* pFont, int iLine, const wchar_t* fmt, ...)
@@ -612,7 +611,7 @@ HRESULT CApplication::Create()
   CLog::Log(LOGINFO, "  map drive D:");
   helper.Remount("D:", "Cdrom0");
 
-  if (helper.IsDrivePresent("F:") || g_stSettings.m_bUseFDrive)
+  if ((g_stSettings.m_bAutoDetectFG && helper.IsDrivePresent("F:")) || g_stSettings.m_bUseFDrive)
   {
     CLog::Log(LOGINFO, "  map drive F:");
     helper.Remap("F:,Harddisk0\\Partition6");
@@ -620,7 +619,7 @@ HRESULT CApplication::Create()
   }
 
   // used for the LBA-48 hack allowing >120 gig
-  if (helper.IsDrivePresent("G:") || g_stSettings.m_bUseGDrive)
+  if ((g_stSettings.m_bAutoDetectFG && helper.IsDrivePresent("G:")) || g_stSettings.m_bUseGDrive)
   {
     CLog::Log(LOGINFO, "  map drive G:");
     helper.Remap("G:,Harddisk0\\Partition7");
@@ -904,7 +903,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(&m_guiSettings);                 // window id = 4
   m_gWindowManager.Add(&m_guiSystemInfo);               // window id = 7
   m_gWindowManager.Add(&m_guiSettingsUICalibration);    // window id = 10
-  m_gWindowManager.Add(&m_guiSettingsScreenCalibration);// window id = 11
+  m_gWindowManager.Add(&m_guiSettingsScreenCalibration); // window id = 11
   m_gWindowManager.Add(&m_guiSettingsCategory);         // window id = 12 slideshow:window id 2007
   m_gWindowManager.Add(&m_guiScripts);                  // window id = 20
   m_gWindowManager.Add(&m_guiVideoGenre);               // window id = 21
@@ -927,7 +926,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(&m_guiDialogGamepad);            // window id = 110
   m_gWindowManager.Add(&m_guiDialogButtonMenu);         // window id = 111
   m_gWindowManager.Add(&m_guiDialogMusicScan);          // window id = 112
-//m_gWindowManager.Add(&m_guiDialogMuteBug);            // window id = 113
+  //m_gWindowManager.Add(&m_guiDialogMuteBug);            // window id = 113
   m_gWindowManager.Add(&m_guiMyMusicPlayList);          // window id = 500
   m_gWindowManager.Add(&m_guiMyMusicSongs);             // window id = 501
   m_gWindowManager.Add(&m_guiMyMusicAlbum);             // window id = 502
@@ -935,7 +934,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(&m_guiMyMusicGenres);            // window id = 504
   m_gWindowManager.Add(&m_guiMyMusicTop100);            // window id = 505
   m_gWindowManager.Add(&m_guiMyMusicNav);               // window id = 506
-//m_gWindowManager.Add(&m_keyboard);                    // window id = 1000
+  //m_gWindowManager.Add(&m_keyboard);                    // window id = 1000
   m_gWindowManager.Add(&m_guiDialogSelect);             // window id = 2000
   m_gWindowManager.Add(&m_guiMusicInfo);                // window id = 2001
   m_gWindowManager.Add(&m_guiDialogOK);                 // window id = 2002
@@ -985,7 +984,7 @@ HRESULT CApplication::Initialize()
     // jump to my music when we're in NO tv mode
     m_gWindowManager.ActivateWindow(WINDOW_MUSIC_FILES);
   }
-  m_bInitializing=false;
+  m_bInitializing = false;
   return S_OK;
 }
 void CApplication::PrintXBEToLCD(const char* xbePath)
@@ -1190,15 +1189,15 @@ void CApplication::LoadSkin(const CStdString& strSkin)
     m_pPlayer = NULL;
   }
 
-  //  When the app is started the instance of the 
-  //  kai client should not be created until the 
+  //  When the app is started the instance of the
+  //  kai client should not be created until the
   //  skin is loaded the first time, but we must
-  //  disconnect from the engine when the skin is 
+  //  disconnect from the engine when the skin is
   //  changed
-  bool bKaiConnected=false;
+  bool bKaiConnected = false;
   if (!m_bInitializing)
   {
-    bKaiConnected=CKaiClient::GetInstance()->IsEngineConnected();
+    bKaiConnected = CKaiClient::GetInstance()->IsEngineConnected();
     if (bKaiConnected)
     {
       CLog::Log(LOGINFO, " Disconnecting Kai...");
@@ -1335,7 +1334,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   if (bKaiConnected)
   {
     CLog::Log(LOGINFO, " Reconnecting Kai...");
-    
+
     CKaiClient::GetInstance()->SetObserver(&m_guiMyBuddies);
     Sleep(3000);  //  The client need some time to "resync"
   }
@@ -1794,14 +1793,14 @@ void CApplication::OnKey(CKey& key)
       Mute();
     else  // already muted
       UnMute();
-    
+
     if (m_pPlayer)
       m_pPlayer->SetVolume(g_stSettings.m_nVolumeLevel);
   }
 
   // Check for global volume control
   if (action.wID == ACTION_VOLUME_UP || action.wID == ACTION_VOLUME_DOWN)
-  { 
+  {
     if (g_stSettings.m_bMute == true)
     {
       if (action.wID == ACTION_VOLUME_UP)   // restore level only on volume up
@@ -2430,8 +2429,7 @@ void CApplication::Stop()
     CLog::Log(LOGNOTICE, "stopped");
   }
   catch (...)
-  {
-  }
+  {}
 }
 
 bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
@@ -3396,8 +3394,8 @@ void CApplication::Mute(void)
 void CApplication::UnMute(void)
 {
   g_stSettings.m_bMute = false;
-  g_stSettings.m_nVolumeLevel = g_stSettings.m_iPreMuteVolumeLevel;   
-      
+  g_stSettings.m_nVolumeLevel = g_stSettings.m_iPreMuteVolumeLevel;
+
   CGUIMessage msg(GUI_MSG_MUTE_OFF, 0, 0, 0, 0, NULL);
   m_gWindowManager.SendMessage(msg);
 }

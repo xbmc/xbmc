@@ -1,8 +1,8 @@
 #ifndef __COFF_H_
 #define __COFF_H_
-#pragma once
+#pragma once 
 //#pragma message("including coff.h")
-//  
+//
 //      COFF -- Common Object File Format
 //          Used commonly by Un*x and is imbedded in Windows PE
 //          file format.
@@ -27,15 +27,17 @@
  *          Spec section 3.3
  */
 
-typedef struct {
-    unsigned short  MachineType;            /* magic type               */
-    unsigned short  NumberOfSections;       /* number of sections       */
-    unsigned long   TimeDateStamp;          /* time & date stamp        */
-    unsigned long   PointerToSymbolTable;   /* file pointer to symtab   */
-    unsigned long   NumberOfSymbols;        /* number of symtab entries */
-    unsigned short  SizeOfOptionHeader;     /* sizeof(optional hdr)     */
-    unsigned short  Characteristics;        /* flags                    */
-} COFF_FileHeader_t;
+typedef struct
+{
+  unsigned short MachineType;            /* magic type               */
+  unsigned short NumberOfSections;       /* number of sections       */
+  unsigned long TimeDateStamp;          /* time & date stamp        */
+  unsigned long PointerToSymbolTable;   /* file pointer to symtab   */
+  unsigned long NumberOfSymbols;        /* number of symtab entries */
+  unsigned short SizeOfOptionHeader;     /* sizeof(optional hdr)     */
+  unsigned short Characteristics;        /* flags                    */
+}
+COFF_FileHeader_t;
 
 /*
  *      Machine Types          
@@ -45,12 +47,12 @@ typedef struct {
 
 #if 1
 
-#ifndef IMAGE_FILE_MACHINE_I386     
+#ifndef IMAGE_FILE_MACHINE_I386
 #define IMAGE_FILE_MACHINE_I386     0x14c
-#endif
+#endif 
 /*
-
-
+ 
+ 
 #define IMAGE_FILE_RELOCS_STRIPPED                  0x0001
 #define IMAGE_FILE_EXECUTABLE_IMAGE                 0x0002
 #define IMAGE_FILE_LINE_NUMS_STRIPPED               0x0004
@@ -84,75 +86,83 @@ typedef struct {
  *          Spec section 3.4.1
  */
 
-typedef struct {
-    unsigned short  Magic;
-    unsigned short  LinkVersion;
-    unsigned long   CodeSize;
-    unsigned long   DataSize;
-    unsigned long   BssSize;
-    unsigned long   Entry;
-    unsigned long   CodeBase;
-    unsigned long   DataBase;
-} OptionHeader_t;
+typedef struct
+{
+  unsigned short Magic;
+  unsigned short LinkVersion;
+  unsigned long CodeSize;
+  unsigned long DataSize;
+  unsigned long BssSize;
+  unsigned long Entry;
+  unsigned long CodeBase;
+  unsigned long DataBase;
+}
+OptionHeader_t;
 
-typedef struct {
-    unsigned short  Magic;
-    unsigned short  LinkVersion;
-    unsigned long   CodeSize;
-    unsigned long   DataSize;
-    unsigned long   BssSize;
-    unsigned long   Entry;
-    unsigned long   CodeBase;
-} OptionHeaderPlus_t;
+typedef struct
+{
+  unsigned short Magic;
+  unsigned short LinkVersion;
+  unsigned long CodeSize;
+  unsigned long DataSize;
+  unsigned long BssSize;
+  unsigned long Entry;
+  unsigned long CodeBase;
+}
+OptionHeaderPlus_t;
 
 /*
  *      Optional Header Windows NT-Specific Fields (Image Only)
  *          Spec section 3.4.2
  */
 
-typedef struct {
-    unsigned long   ImageBase;
-    unsigned long   SectionAlignment;
-    unsigned long   FileAlignment;
-    unsigned long   OSVer;
-    unsigned long   ImgVer;
-    unsigned long   SubSysVer;
-    unsigned long   Reserved;
-    unsigned long   SizeOfImage;
-    unsigned long   SizeOfHeaders;
-    unsigned long   CheckSum;
-    unsigned short  Subsystem;
-    unsigned short  DLLFlags;
-    unsigned long   SizeOfStackReserve;
-    unsigned long   SizeOfStackCommit;
-    unsigned long   SizeOfHeapReserve;
-    unsigned long   SizeOfHeapCommit;
-    unsigned long   LoaderFlags;
-    unsigned long   NumDirectories;
-} WindowsHeader_t;
+typedef struct
+{
+  unsigned long ImageBase;
+  unsigned long SectionAlignment;
+  unsigned long FileAlignment;
+  unsigned long OSVer;
+  unsigned long ImgVer;
+  unsigned long SubSysVer;
+  unsigned long Reserved;
+  unsigned long SizeOfImage;
+  unsigned long SizeOfHeaders;
+  unsigned long CheckSum;
+  unsigned short Subsystem;
+  unsigned short DLLFlags;
+  unsigned long SizeOfStackReserve;
+  unsigned long SizeOfStackCommit;
+  unsigned long SizeOfHeapReserve;
+  unsigned long SizeOfHeapCommit;
+  unsigned long LoaderFlags;
+  unsigned long NumDirectories;
+}
+WindowsHeader_t;
 
-typedef struct {
-    unsigned __int64    ImageBase;
-    unsigned long       SectionAlignment;
-    unsigned long       FileAlignment;
-    unsigned long       OSVer;
-    unsigned long       ImgVer;
-    unsigned long       SubSysVer;
-    unsigned long       Reserved;
-    unsigned long       SizeOfImage;
-    unsigned long       SizeOfHeaders;
-    unsigned long       CheckSum;
-    unsigned short      Subsystem;
-    unsigned short      DLLFlags;
-    unsigned __int64    SizeOfStackReserve;
-    unsigned __int64    SizeOfStackCommit;
-    unsigned __int64    SizeOfHeapReserve;
-    unsigned __int64    SizeOfHeapCommit;
-    unsigned long       LoaderFlags;
-    unsigned long       NumDirectories;
-} WindowsHeaderPlus_t;
+typedef struct
+{
+  unsigned __int64 ImageBase;
+  unsigned long SectionAlignment;
+  unsigned long FileAlignment;
+  unsigned long OSVer;
+  unsigned long ImgVer;
+  unsigned long SubSysVer;
+  unsigned long Reserved;
+  unsigned long SizeOfImage;
+  unsigned long SizeOfHeaders;
+  unsigned long CheckSum;
+  unsigned short Subsystem;
+  unsigned short DLLFlags;
+  unsigned __int64 SizeOfStackReserve;
+  unsigned __int64 SizeOfStackCommit;
+  unsigned __int64 SizeOfHeapReserve;
+  unsigned __int64 SizeOfHeapCommit;
+  unsigned long LoaderFlags;
+  unsigned long NumDirectories;
+}
+WindowsHeaderPlus_t;
 
-#if !defined (_XBOX)
+#if !defined (_XBOX) 
 /*
 #define IMAGE_SUBSYSTEM_UNKNOWN                     0
 #define IMAGE_SUBSYSTEM_NATIVE                      1
@@ -163,7 +173,7 @@ typedef struct {
 #define IMAGE_SUBSYSTEM_EFI_APPLICATION             10
 #define IMAGE_SUBSYSTEM_EFI_BOOT_SERVICE_DRIVER     11
 #define IMAGE_SUBSYSTEM_EFI_RUNTIME_DRIVER          12
-
+ 
 #define IMAGE_DLLCHARACTERISTICS_NO_BIND            0x0800
 #define IMAGE_DLLCHARACTERISTICS_WDM_DRIVER         0x2000
 #define IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE  0X8000
@@ -175,28 +185,30 @@ typedef struct {
  *          Spec section 3.4.3
  */
 
-typedef struct {
-    unsigned long   RVA;
-    unsigned long   Size;
-} Image_Data_Directory_t;
+typedef struct
+{
+  unsigned long RVA;
+  unsigned long Size;
+}
+Image_Data_Directory_t;
 
 enum Directory_Items {
-    EXPORT_TABLE = 0,
-    IMPORT_TABLE,
-    RESOURCE_TABLE,
-    EXCEPTION_TABLE,
-    CERTIFICATE_TABLE,
-    BASE_RELOCATION_TABLE,
-    DEBUG_,
-    ARCHITECTURE,
-    GLOBAL_PTR,
-    TLS_TABLE,
-    LOAD_CONFIG_TABLE,
-    BOUND_IMPORT,
-    IAT,
-    DELAY_IMPORT_DESCRIPTOR,
-    COM_RUNTIME_HEADER,
-    RESERVED
+  EXPORT_TABLE = 0,
+  IMPORT_TABLE,
+  RESOURCE_TABLE,
+  EXCEPTION_TABLE,
+  CERTIFICATE_TABLE,
+  BASE_RELOCATION_TABLE,
+  DEBUG_,
+  ARCHITECTURE,
+  GLOBAL_PTR,
+  TLS_TABLE,
+  LOAD_CONFIG_TABLE,
+  BOUND_IMPORT,
+  IAT,
+  DELAY_IMPORT_DESCRIPTOR,
+  COM_RUNTIME_HEADER,
+  RESERVED
 };
 
 /*
@@ -205,19 +217,21 @@ enum Directory_Items {
  */
 
 
-typedef struct {
-    unsigned char   Name[8];
-    unsigned long   VirtualSize;
-    unsigned long   VirtualAddress;
-    unsigned long   SizeOfRawData;
-    unsigned long   PtrToRawData;
-    unsigned long   PtrToRelocations;
-    unsigned long   PtrToLineNums;
-    unsigned short  NumRelocations;
-    unsigned short  NumLineNumbers;
-    unsigned long   Characteristics;
-} SectionHeader_t;
-                        
+typedef struct
+{
+  unsigned char Name[8];
+  unsigned long VirtualSize;
+  unsigned long VirtualAddress;
+  unsigned long SizeOfRawData;
+  unsigned long PtrToRawData;
+  unsigned long PtrToRelocations;
+  unsigned long PtrToLineNums;
+  unsigned short NumRelocations;
+  unsigned short NumLineNumbers;
+  unsigned long Characteristics;
+}
+SectionHeader_t;
+
 /*
  *      Section Flags (Characteristics)
  *          Spec section 4.1
@@ -257,18 +271,20 @@ typedef struct {
  *      COFF Relocations (Object Only)
  *          Spec section 5.2
  */
- 
-typedef struct {
-    unsigned long   VirtualAddress;
-    unsigned long   SymTableIndex;
-    unsigned short  Type;
-} ObjReloc_t;
+
+typedef struct
+{
+  unsigned long VirtualAddress;
+  unsigned long SymTableIndex;
+  unsigned short Type;
+}
+ObjReloc_t;
 
 /*
  *      COFF Relocation Type Indicators
  *          Spec section 5.2.1
  */
- 
+
 #define IMAGE_REL_I386_ABSOLUTE     0x0000
 #define IMAGE_REL_I386_DIR16        0x0001
 #define IMAGE_REL_I386_REL16        0x0002
@@ -283,39 +299,43 @@ typedef struct {
  *      COFF Line Numbers
  *          Spec section 5.3
  */
- 
-typedef struct {
-    union {
-        unsigned long   SymbolTableIndex;
-        unsigned long   VirtualAddress;
-    } Type;
-    unsigned short  LineNum;
-} LineNumbers_t;
+
+typedef struct
+{
+  union {
+    unsigned long SymbolTableIndex;
+    unsigned long VirtualAddress;
+  } Type;
+  unsigned short LineNum;
+}
+LineNumbers_t;
 
 /*
  *      COFF Symbol Table
  *          Spec section 5.4
  */
- 
-typedef struct {
-    union {
-        unsigned char       ShortName[8];
-        unsigned __int64    Offset;
-    } Name;
-    unsigned long   Value;
-    unsigned short  SectionNumber;
-    unsigned short  Type;
-    unsigned char   StorageClass;
-    unsigned char   NumberOfAuxSymbols;
-} SymbolTable_t;
 
-#if !defined (_XBOX)
-/* 
+typedef struct
+{
+  union {
+    unsigned char ShortName[8];
+    unsigned __int64 Offset;
+  } Name;
+  unsigned long Value;
+  unsigned short SectionNumber;
+  unsigned short Type;
+  unsigned char StorageClass;
+  unsigned char NumberOfAuxSymbols;
+}
+SymbolTable_t;
+
+#if !defined (_XBOX) 
+/*
 #define IMAGE_SYM_UNDEFINED     0
 #define IMAGE_SYM_ABSOLUTE      0xFFFF
 #define IMAGE_SYM_DEBUG         0xFFFE
-
-
+ 
+ 
 #define IMAGE_SYM_TYPE_NULL         0
 #define IMAGE_SYM_TYPE_VOID         1
 #define IMAGE_SYM_TYPE_CHAR         2
@@ -332,13 +352,13 @@ typedef struct {
 #define IMAGE_SYM_TYPE_WORD         13
 #define IMAGE_SYM_TYPE_UINT         14
 #define IMAGE_SYM_TYPE_DWORD        15
-
+ 
 #define IMAGE_SYM_DWORD_NULL        0
 #define IMAGE_SYM_DWORD_POINTER     1
 #define IMAGE_SYM_DWORD_FUNCTION    2
 #define IMAGE_SYM_DWORD_ARRAY       3
-
-
+ 
+ 
 #define IMAGE_SYM_CLASS_END_OF_FUNCTION         0xFF
 #define IMAGE_SYM_CLASS_NULL                    0
 #define IMAGE_SYM_CLASS_AUTOMATIC               1
@@ -367,76 +387,84 @@ typedef struct {
 #define IMAGE_SYM_CLASS_WEAK_EXTERNAL           105*/
 #endif
 
-typedef struct {
-    unsigned long   TagIndex;
-    unsigned long   TotalSize;
-    unsigned long   PtrToLineNumber;
-    unsigned long   PtrToNextFunc;
-    unsigned short  unused;
-} AuxFuncDef_t;
+typedef struct
+{
+  unsigned long TagIndex;
+  unsigned long TotalSize;
+  unsigned long PtrToLineNumber;
+  unsigned long PtrToNextFunc;
+  unsigned short unused;
+}
+AuxFuncDef_t;
 
 /*
  *      Symbol Auxiliary Record: .bf and .ef
  *          Spec section 5.5.2
  */
- 
-typedef struct {
-    unsigned long   unused;
-    unsigned short  LineNumber;
-    unsigned long   unused1;
-    unsigned short  unused2;
-    unsigned long   PtrToNextFunc;
-    unsigned char   unused3;
-} AuxBfEf_t;
 
-/*  
+typedef struct
+{
+  unsigned long unused;
+  unsigned short LineNumber;
+  unsigned long unused1;
+  unsigned short unused2;
+  unsigned long PtrToNextFunc;
+  unsigned char unused3;
+}
+AuxBfEf_t;
+
+/*
  *      Export Section (Directory)
  *          Spec section 6.3
  */
- 
+
 /*
  *      Export Directory Table
  *          Spec section 6.3.1
  */
 
-typedef struct {
-    unsigned long   ExportFlags;
-    unsigned long   TimeStamp;
-    unsigned short  MajorVersion;
-    unsigned short  MinorVersion;
-    unsigned long   Name_RVA;
-    unsigned long   OrdinalBase;
-    unsigned long   NumAddrTable;
-    unsigned long   NumNamePtrs;
-    unsigned long   ExportAddressTable_RVA;
-    unsigned long   NamePointerTable_RVA;
-    unsigned long   OrdinalTable_RVA;
-} ExportDirTable_t;
+typedef struct
+{
+  unsigned long ExportFlags;
+  unsigned long TimeStamp;
+  unsigned short MajorVersion;
+  unsigned short MinorVersion;
+  unsigned long Name_RVA;
+  unsigned long OrdinalBase;
+  unsigned long NumAddrTable;
+  unsigned long NumNamePtrs;
+  unsigned long ExportAddressTable_RVA;
+  unsigned long NamePointerTable_RVA;
+  unsigned long OrdinalTable_RVA;
+}
+ExportDirTable_t;
 
 
 /*
  *      Import Section (Directory)
  *          Spec section 6.4
  */
- 
+
 /*
  *      Import Directory Table
  *          Spec Section 6.4.1
  */
- 
-typedef struct {
-    unsigned long   ImportLookupTable_RVA;
-    unsigned long   TimeStamp;
-    unsigned long   ForwarderChain;
-    unsigned long   Name_RVA;
-    unsigned long   ImportAddressTable_RVA;
-} ImportDirTable_t;
 
-/* 
+typedef struct
+{
+  unsigned long ImportLookupTable_RVA;
+  unsigned long TimeStamp;
+  unsigned long ForwarderChain;
+  unsigned long Name_RVA;
+  unsigned long ImportAddressTable_RVA;
+}
+ImportDirTable_t;
+
+/*
  *      .reloc Relocation types
  *          spec section 6.6
  */
- 
+
 #if 1
 #define IMAGE_REL_BASED_ABSOLUTE        0
 #define IMAGE_REL_BASED_HIGH            1

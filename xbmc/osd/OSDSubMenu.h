@@ -3,38 +3,38 @@
 
 namespace OSD
 {
-	class COSDSubMenu
-	{
-	public:
-		COSDSubMenu();
-		COSDSubMenu(int iHeading,int iXpos, int iYpos);
-		COSDSubMenu(const COSDSubMenu& submenu);
-		const COSDSubMenu& operator = (const COSDSubMenu& submenu);
-	
-		virtual ~COSDSubMenu(void);
-		COSDSubMenu* Clone() const;
+class COSDSubMenu
+{
+public:
+  COSDSubMenu();
+  COSDSubMenu(int iHeading, int iXpos, int iYpos);
+  COSDSubMenu(const COSDSubMenu& submenu);
+  const COSDSubMenu& operator = (const COSDSubMenu& submenu);
 
-		void Draw();
-    void AddOption(const IOSDOption* option);
-		bool OnAction(IExecutor& executor,const CAction& action);
+  virtual ~COSDSubMenu(void);
+  COSDSubMenu* Clone() const;
 
-		int  GetX() const;
-		void SetX(int X);
-		
-		int  GetY() const;
-		void SetY(int X) ;
-    void SetValue(int iMessage, int iValue);
-    void SetLabel(int iMessage, const CStdString& strLabel);
-	private:
-    void Clear();
-		typedef	vector<IOSDOption*>::iterator ivecOptions;	
-		typedef	vector<IOSDOption*>::const_iterator icvecOptions;						
-		vector<IOSDOption*> m_vecOptions;
+  void Draw();
+  void AddOption(const IOSDOption* option);
+  bool OnAction(IExecutor& executor, const CAction& action);
 
-		int m_iCurrentOption;
-		int m_iXPos;
-		int m_iYPos;
-    int m_iHeading;
-    bool m_bOptionSelected;
-	};
+  int GetX() const;
+  void SetX(int X);
+
+  int GetY() const;
+  void SetY(int X) ;
+  void SetValue(int iMessage, int iValue);
+  void SetLabel(int iMessage, const CStdString& strLabel);
+private:
+  void Clear();
+  typedef vector<IOSDOption*>::iterator ivecOptions;
+  typedef vector<IOSDOption*>::const_iterator icvecOptions;
+  vector<IOSDOption*> m_vecOptions;
+
+  int m_iCurrentOption;
+  int m_iXPos;
+  int m_iYPos;
+  int m_iHeading;
+  bool m_bOptionSelected;
+};
 };

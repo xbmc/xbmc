@@ -9,35 +9,34 @@ CCriticalSection CDirectoryCache::m_cs;
 
 CDirectoryCache::CDirectoryCache(void)
 {
-	m_iThumbCacheRefCount=0;
-	m_iMusicThumbCacheRefCount=0;
+  m_iThumbCacheRefCount = 0;
+  m_iMusicThumbCacheRefCount = 0;
 }
 
 CDirectoryCache::~CDirectoryCache(void)
-{
-}
+{}
 
 
-bool  CDirectoryCache::GetDirectory(const CStdString& strPath1,CFileItemList &items) 
+bool CDirectoryCache::GetDirectory(const CStdString& strPath1, CFileItemList &items)
 {
-	CSingleLock lock(m_cs);
+  CSingleLock lock (m_cs);
 
   items.Clear();
 
-  CStdString strPath=strPath1;
-	if (CUtil::HasSlashAtEnd(strPath))
-		strPath.Delete(strPath.size()-1);
+  CStdString strPath = strPath1;
+  if (CUtil::HasSlashAtEnd(strPath))
+    strPath.Delete(strPath.size() - 1);
 
-  ivecCache i=g_directoryCache.m_vecCache.begin();
+  ivecCache i = g_directoryCache.m_vecCache.begin();
   while (i != g_directoryCache.m_vecCache.end() )
   {
-    CDir* dir=*i;
-    if (dir->m_strPath==strPath)
+    CDir* dir = *i;
+    if (dir->m_strPath == strPath)
     {
-      
-      for (int i=0; i < (int) dir->m_Items.Size(); ++i)
+
+      for (int i = 0; i < (int) dir->m_Items.Size(); ++i)
       {
-        CFileItem* pItem= new CFileItem();
+        CFileItem* pItem = new CFileItem();
         (*pItem) = *(dir->m_Items[i]);
         items.Add(pItem);
       }
@@ -49,67 +48,67 @@ bool  CDirectoryCache::GetDirectory(const CStdString& strPath1,CFileItemList &it
   return false;
 }
 
-void  CDirectoryCache::SetDirectory(const CStdString& strPath1,const CFileItemList &items)
+void CDirectoryCache::SetDirectory(const CStdString& strPath1, const CFileItemList &items)
 {
-	CSingleLock lock(m_cs);
+  CSingleLock lock (m_cs);
 
-  CStdString strPath=strPath1;
-	if (CUtil::HasSlashAtEnd(strPath))
-		strPath.Delete(strPath.size()-1);
+  CStdString strPath = strPath1;
+  if (CUtil::HasSlashAtEnd(strPath))
+    strPath.Delete(strPath.size() - 1);
 
   g_directoryCache.ClearDirectory(strPath);
-  CDir* dir=new CDir;
-  dir->m_strPath=strPath;
-	dir->m_Items.Append(items);
+  CDir* dir = new CDir;
+  dir->m_strPath = strPath;
+  dir->m_Items.Append(items);
   g_directoryCache.m_vecCache.push_back(dir);
 }
 
-void  CDirectoryCache::ClearDirectory(const CStdString& strPath1)
+void CDirectoryCache::ClearDirectory(const CStdString& strPath1)
 {
-	CSingleLock lock(m_cs);
+  CSingleLock lock (m_cs);
 
-  CStdString strPath=strPath1;
-	if (CUtil::HasSlashAtEnd(strPath))
-		strPath.Delete(strPath.size()-1);
+  CStdString strPath = strPath1;
+  if (CUtil::HasSlashAtEnd(strPath))
+    strPath.Delete(strPath.size() - 1);
 
-  ivecCache i=g_directoryCache.m_vecCache.begin();
+  ivecCache i = g_directoryCache.m_vecCache.begin();
   while (i != g_directoryCache.m_vecCache.end() )
   {
-    CDir* dir=*i;
-    if (dir->m_strPath==strPath)
+    CDir* dir = *i;
+    if (dir->m_strPath == strPath)
     {
       dir->m_Items.Clear(); // will clean up everything
-			delete dir;
+      delete dir;
       g_directoryCache.m_vecCache.erase(i);
-      return;
+      return ;
     }
     ++i;
   }
 }
 
-bool  CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
+bool CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
 {
-	CSingleLock lock(m_cs);
+  CSingleLock lock (m_cs);
 
   CStdString strPath, strFixedFile(strFile);
-  
-  //Fixup mismatched slashes in urls for local filenames
-  if( strFixedFile.Mid(1,1) == ":" )
-    strFixedFile.Replace('/','\\');
 
-  bInCache=false;
-  CUtil::GetDirectory(strFixedFile,strPath);
-  ivecCache i=g_directoryCache.m_vecCache.begin();
+  //Fixup mismatched slashes in urls for local filenames
+  if ( strFixedFile.Mid(1, 1) == ":" )
+    strFixedFile.Replace('/', '\\');
+
+  bInCache = false;
+  CUtil::GetDirectory(strFixedFile, strPath);
+  ivecCache i = g_directoryCache.m_vecCache.begin();
   while (i != g_directoryCache.m_vecCache.end() )
   {
-    CDir* dir=*i;
-    if (dir->m_strPath==strPath)
+    CDir* dir = *i;
+    if (dir->m_strPath == strPath)
     {
-      bInCache=true;
-      for (int i=0; i < (int) dir->m_Items.Size(); ++i)
+      bInCache = true;
+      for (int i = 0; i < (int) dir->m_Items.Size(); ++i)
       {
-        CFileItem* pItem=dir->m_Items[i];
-        if ( CUtil::cmpnocase(pItem->m_strPath,strFixedFile)==0)
+        CFileItem* pItem = dir->m_Items[i];
+        if ( CUtil::cmpnocase(pItem->m_strPath, strFixedFile) == 0)
         {
           return true;
         }
@@ -120,138 +119,138 @@ bool  CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
   return false;
 }
 
-void  CDirectoryCache::Clear()
+void CDirectoryCache::Clear()
 {
-	CSingleLock lock(m_cs);
+  CSingleLock lock (m_cs);
 
-  ivecCache i=g_directoryCache.m_vecCache.begin();
+  ivecCache i = g_directoryCache.m_vecCache.begin();
   while (i != g_directoryCache.m_vecCache.end() )
   {
-    CDir* dir=*i;
-		if (!IsCacheDir(dir->m_strPath))
+    CDir* dir = *i;
+    if (!IsCacheDir(dir->m_strPath))
     {
-			dir->m_Items.Clear(); // will clean up everything
-			delete dir;
-			g_directoryCache.m_vecCache.erase(i);
+      dir->m_Items.Clear(); // will clean up everything
+      delete dir;
+      g_directoryCache.m_vecCache.erase(i);
     }
 
   }
 }
 
-void  CDirectoryCache::InitCache(set<CStdString>& dirs)
+void CDirectoryCache::InitCache(set<CStdString>& dirs)
 {
-	CDirectory dir;
+  CDirectory dir;
 
-	set<CStdString>::iterator it;
-	for (it=dirs.begin(); it!=dirs.end(); ++it)
-	{
-    CStdString& strDir=*it;
-		CFileItemList items;
-		dir.GetDirectory(strDir, items);
-		items.Clear();
-	}
-}
-
-void  CDirectoryCache::ClearCache(set<CStdString>& dirs)
-{
-  ivecCache i=g_directoryCache.m_vecCache.begin();
-  while (i != g_directoryCache.m_vecCache.end() )
+  set<CStdString>::iterator it;
+  for (it = dirs.begin(); it != dirs.end(); ++it)
   {
-    CDir* dir=*i;
-		if (dirs.find(dir->m_strPath)!=dirs.end())
-    {
-			dir->m_Items.Clear(); // will clean up everything
-			delete dir;
-			g_directoryCache.m_vecCache.erase(i);
-    }
-		else
-			i++;
+    CStdString& strDir = *it;
+    CFileItemList items;
+    dir.GetDirectory(strDir, items);
+    items.Clear();
   }
 }
 
-bool  CDirectoryCache::IsCacheDir(CStdString strPath)
+void CDirectoryCache::ClearCache(set<CStdString>& dirs)
 {
-	if (g_directoryCache.m_thumbDirs.find(strPath)==g_directoryCache.m_thumbDirs.end())
-		return false;
-	if (g_directoryCache.m_musicThumbDirs.find(strPath)==g_directoryCache.m_musicThumbDirs.end())
-		return false;
-
-	return true;
+  ivecCache i = g_directoryCache.m_vecCache.begin();
+  while (i != g_directoryCache.m_vecCache.end() )
+  {
+    CDir* dir = *i;
+    if (dirs.find(dir->m_strPath) != dirs.end())
+    {
+      dir->m_Items.Clear(); // will clean up everything
+      delete dir;
+      g_directoryCache.m_vecCache.erase(i);
+    }
+    else
+      i++;
+  }
 }
 
-void  CDirectoryCache::InitThumbCache()
+bool CDirectoryCache::IsCacheDir(CStdString strPath)
 {
-	CSingleLock lock(m_cs);
+  if (g_directoryCache.m_thumbDirs.find(strPath) == g_directoryCache.m_thumbDirs.end())
+    return false;
+  if (g_directoryCache.m_musicThumbDirs.find(strPath) == g_directoryCache.m_musicThumbDirs.end())
+    return false;
 
-	if (g_directoryCache.m_iThumbCacheRefCount>0)
-	{
-		g_directoryCache.m_iThumbCacheRefCount++;
-		return;
-	}
-	g_directoryCache.m_iThumbCacheRefCount++;
-
-	//	Init video, pictures cache directories
-	if (g_directoryCache.m_thumbDirs.size()==0)
-	{
-		//	thumbnails directories
-		CStdString strThumb=g_stSettings.szThumbnailsDirectory;
-		g_directoryCache.m_thumbDirs.insert(strThumb);
-		strThumb+="\\imdb";
-		g_directoryCache.m_thumbDirs.insert(strThumb);
-	}
-
-	InitCache(g_directoryCache.m_thumbDirs);
+  return true;
 }
 
-void  CDirectoryCache::ClearThumbCache()
+void CDirectoryCache::InitThumbCache()
 {
-	CSingleLock lock(m_cs);
+  CSingleLock lock (m_cs);
 
-	if (g_directoryCache.m_iThumbCacheRefCount>1)
-	{
-		g_directoryCache.m_iThumbCacheRefCount--;
-		return;
-	}
+  if (g_directoryCache.m_iThumbCacheRefCount > 0)
+  {
+    g_directoryCache.m_iThumbCacheRefCount++;
+    return ;
+  }
+  g_directoryCache.m_iThumbCacheRefCount++;
 
-	g_directoryCache.m_iThumbCacheRefCount--;
-	ClearCache(g_directoryCache.m_thumbDirs);
+  // Init video, pictures cache directories
+  if (g_directoryCache.m_thumbDirs.size() == 0)
+  {
+    // thumbnails directories
+    CStdString strThumb = g_stSettings.szThumbnailsDirectory;
+    g_directoryCache.m_thumbDirs.insert(strThumb);
+    strThumb += "\\imdb";
+    g_directoryCache.m_thumbDirs.insert(strThumb);
+  }
+
+  InitCache(g_directoryCache.m_thumbDirs);
 }
 
-void  CDirectoryCache::InitMusicThumbCache()
+void CDirectoryCache::ClearThumbCache()
 {
-	CSingleLock lock(m_cs);
+  CSingleLock lock (m_cs);
 
-	if (g_directoryCache.m_iMusicThumbCacheRefCount>0)
-	{
-		g_directoryCache.m_iMusicThumbCacheRefCount++;
-		return;
-	}
-	g_directoryCache.m_iMusicThumbCacheRefCount++;
+  if (g_directoryCache.m_iThumbCacheRefCount > 1)
+  {
+    g_directoryCache.m_iThumbCacheRefCount--;
+    return ;
+  }
 
-	//	Init music cache directories
-	if (g_directoryCache.m_musicThumbDirs.size()==0)
-	{
-		//	music thumbnails directories
-		CStdString strThumb=g_stSettings.m_szAlbumDirectory;
-		strThumb+="\\thumbs";
-		g_directoryCache.m_musicThumbDirs.insert(strThumb);
-		strThumb+="\\temp";
-		g_directoryCache.m_musicThumbDirs.insert(strThumb);
-	}
-
-	InitCache(g_directoryCache.m_musicThumbDirs);
+  g_directoryCache.m_iThumbCacheRefCount--;
+  ClearCache(g_directoryCache.m_thumbDirs);
 }
 
-void  CDirectoryCache::ClearMusicThumbCache()
+void CDirectoryCache::InitMusicThumbCache()
 {
-	CSingleLock lock(m_cs);
+  CSingleLock lock (m_cs);
 
-	if (g_directoryCache.m_iMusicThumbCacheRefCount>1)
-	{
-		g_directoryCache.m_iMusicThumbCacheRefCount--;
-		return;
-	}
+  if (g_directoryCache.m_iMusicThumbCacheRefCount > 0)
+  {
+    g_directoryCache.m_iMusicThumbCacheRefCount++;
+    return ;
+  }
+  g_directoryCache.m_iMusicThumbCacheRefCount++;
 
-	g_directoryCache.m_iMusicThumbCacheRefCount--;
-	ClearCache(g_directoryCache.m_musicThumbDirs);
+  // Init music cache directories
+  if (g_directoryCache.m_musicThumbDirs.size() == 0)
+  {
+    // music thumbnails directories
+    CStdString strThumb = g_stSettings.m_szAlbumDirectory;
+    strThumb += "\\thumbs";
+    g_directoryCache.m_musicThumbDirs.insert(strThumb);
+    strThumb += "\\temp";
+    g_directoryCache.m_musicThumbDirs.insert(strThumb);
+  }
+
+  InitCache(g_directoryCache.m_musicThumbDirs);
+}
+
+void CDirectoryCache::ClearMusicThumbCache()
+{
+  CSingleLock lock (m_cs);
+
+  if (g_directoryCache.m_iMusicThumbCacheRefCount > 1)
+  {
+    g_directoryCache.m_iMusicThumbCacheRefCount--;
+    return ;
+  }
+
+  g_directoryCache.m_iMusicThumbCacheRefCount--;
+  ClearCache(g_directoryCache.m_musicThumbDirs);
 }

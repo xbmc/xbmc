@@ -20,61 +20,61 @@ public:
   CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock);
   virtual ~CDVDPlayerVideo();
 
-  bool    OpenStream(CodecID codecID, int iWidth, int iHeight, CDemuxStreamVideo* pDemuxStreamVideo);
-  void    CloseStream(bool bWaitForBuffers);
-  
-  void    Pause();
-  void    Resume();
-  void    Flush();
-  
-  void    Update(bool bPauseDrawing); // called form xbmc
-  void    UpdateMenuPicture();
-  
-  void    GetVideoRect(RECT& SrcRect, RECT& DestRect);
-  float   GetAspectRatio();
+  bool OpenStream(CodecID codecID, int iWidth, int iHeight, CDemuxStreamVideo* pDemuxStreamVideo);
+  void CloseStream(bool bWaitForBuffers);
+
+  void Pause();
+  void Resume();
+  void Flush();
+
+  void Update(bool bPauseDrawing); // called form xbmc
+  void UpdateMenuPicture();
+
+  void GetVideoRect(RECT& SrcRect, RECT& DestRect);
+  float GetAspectRatio();
   __int64 GetDelay();
   __int64 GetDiff();
-  
-  bool    InitializedOutputDevice();
+
+  bool InitializedOutputDevice();
   CDVDPacketQueue m_packetQueue;
 
   CodecID m_codec;    // codec id of the current active stream
 
   CRITICAL_SECTION m_critSection;
-  HANDLE          m_hEvent;
-  
-  CDVDVideo       m_dvdVideo;
+  HANDLE m_hEvent;
+
+  CDVDVideo m_dvdVideo;
   bool m_bRunningVideo;
   CDVDClock* m_pClock;
-  
+
   CDVDOverlay m_overlay;
 
-  DVDVideoPicture pictq[VIDEO_PICTURE_QUEUE_SIZE]; 
+  DVDVideoPicture pictq[VIDEO_PICTURE_QUEUE_SIZE];
   int pictq_size, pictq_rindex, pictq_windex;
-    
+
   int m_iSpeed;
   bool m_bRenderSubs;
 
 protected:
 
-  virtual void    OnStartup();
-  virtual void    OnExit();
-  virtual void    Process();
+  virtual void OnStartup();
+  virtual void OnExit();
+  virtual void Process();
 
   int OutputPicture(DVDVideoPicture* pPicture, __int64 pts1);
-  
+
   CRITICAL_SECTION m_critCodecSection;
 
-  
-  
-  
+
+
+
   CDVDVideoCodec* m_pVideoCodec;
-  bool            m_bInitializedOutputDevice;
+  bool m_bInitializedOutputDevice;
 
   DVDVideoPicture* m_pOverlayPicture;
 
-  CDVDDemuxSPU*   m_pDVDSpu;
-  
+  CDVDDemuxSPU* m_pDVDSpu;
+
   CDemuxStreamVideo* m_pDemuxStreamVideo;
 
 };

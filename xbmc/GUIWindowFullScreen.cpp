@@ -20,7 +20,7 @@
 #define BTN_OSD_AUDIO 14
 #define BTN_OSD_SUBTITLE 15
 
-#define MENU_ACTION_AVDELAY       1 
+#define MENU_ACTION_AVDELAY       1
 #define MENU_ACTION_SEEK          2
 #define MENU_ACTION_SUBTITLEDELAY 3
 #define MENU_ACTION_SUBTITLEONOFF 4
@@ -52,19 +52,19 @@
 
 extern IDirectSoundRenderer* m_pAudioDecoder;
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
-:CGUIWindow(0)
+    : CGUIWindow(0)
 {
-  m_strTimeStamp[0]=0;
-  m_iTimeCodePosition=0;
-  m_bShowTime=false;
-  m_bShowCodecInfo=false;
-  m_bShowViewModeInfo=false;
-  m_dwShowViewModeTimeout=0;
-  m_bShowCurrentTime=false;
-  m_dwTimeCodeTimeout=0;
-  m_fFPS=0;
-  m_fFrameCounter=0.0f;
-  m_dwFPSTime=timeGetTime();
+  m_strTimeStamp[0] = 0;
+  m_iTimeCodePosition = 0;
+  m_bShowTime = false;
+  m_bShowCodecInfo = false;
+  m_bShowViewModeInfo = false;
+  m_dwShowViewModeTimeout = 0;
+  m_bShowCurrentTime = false;
+  m_dwTimeCodeTimeout = 0;
+  m_fFPS = 0;
+  m_fFrameCounter = 0.0f;
+  m_dwFPSTime = timeGetTime();
   m_bSmoothFFwdRewd = false;
   m_bDiscreteFFwdRewd = false;
   m_subtitleFont = NULL;
@@ -85,12 +85,11 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
   // subtitles
   //  - delay
   //  - language
-  
+
 }
 
 CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
-{
-}
+{}
 
 void CGUIWindowFullScreen::AllocResources()
 {
@@ -107,209 +106,210 @@ void CGUIWindowFullScreen::FreeResources()
 
 void CGUIWindowFullScreen::OnAction(const CAction &action)
 {
-  
+
   if (m_bOSDVisible)
   {
     if (action.wID == ACTION_SHOW_OSD && !g_application.m_guiWindowOSD.SubMenuVisible())  // hide the OSD
     {
-      CSingleLock lock(m_section);         
+      CSingleLock lock (m_section);
       OutputDebugString("CGUIWindowFullScreen::HIDEOSD\n");
-      CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0,0,0,NULL);
+      CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0, NULL);
       g_application.m_guiWindowOSD.OnMessage(msg);  // Send a de-init msg to the OSD
-      m_bOSDVisible=false;
+      m_bOSDVisible = false;
 
     }
     else
     {
       OutputDebugString("CGUIWindowFullScreen::OnAction() reset timeout\n");
-      m_dwOSDTimeOut=timeGetTime();
+      m_dwOSDTimeOut = timeGetTime();
       g_application.m_guiWindowOSD.OnAction(action);  // route keys to OSD window
     }
-    return;
+    return ;
   }
-  
+
   // if the player has handled the message, just return
-  if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action)) return;
-  
+  if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action)) return ;
+
   switch (action.wID)
   {
 
     // previous : play previous song from playlist
-    case ACTION_PREV_ITEM:
+  case ACTION_PREV_ITEM:
     {
       g_playlistPlayer.PlayPrevious();
     }
     break;
 
     // next : play next song from playlist
-    case ACTION_NEXT_ITEM:
+  case ACTION_NEXT_ITEM:
     {
       g_playlistPlayer.PlayNext();
     }
     break;
 
-    case ACTION_SHOW_GUI:
+  case ACTION_SHOW_GUI:
     {
       // switch back to the menu
       OutputDebugString("Switching to GUI\n");
       m_gWindowManager.PreviousWindow();
       OutputDebugString("Now in GUI\n");
 
-      return;
+      return ;
     }
     break;
 
-    case ACTION_STEP_BACK:
-      Seek(false, false);
+  case ACTION_STEP_BACK:
+    Seek(false, false);
     break;
 
-    case ACTION_STEP_FORWARD:
-      Seek(true, false);
+  case ACTION_STEP_FORWARD:
+    Seek(true, false);
     break;
 
-    case ACTION_BIG_STEP_BACK:
-      Seek(false, true);
+  case ACTION_BIG_STEP_BACK:
+    Seek(false, true);
     break;
 
-    case ACTION_BIG_STEP_FORWARD:
-      Seek(true, true);
+  case ACTION_BIG_STEP_FORWARD:
+    Seek(true, true);
     break;
 
-    case ACTION_SHOW_MPLAYER_OSD:
-      g_application.m_pPlayer->ToggleOSD();
+  case ACTION_SHOW_MPLAYER_OSD:
+    g_application.m_pPlayer->ToggleOSD();
     break;
 
-    case ACTION_SHOW_OSD: // Show the OSD
-    { 
-      //CSingleLock lock(m_section);      
+  case ACTION_SHOW_OSD:  // Show the OSD
+    {
+      //CSingleLock lock(m_section);
       OutputDebugString("CGUIWindowFullScreen:SHOWOSD\n");
-      m_dwOSDTimeOut=timeGetTime();
-      
-      CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,0,0,NULL);
+      m_dwOSDTimeOut = timeGetTime();
+
+      CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, 0, 0, NULL);
       g_application.m_guiWindowOSD.OnMessage(msg);  // Send an init msg to the OSD
-      m_bOSDVisible=true;
-      
+      m_bOSDVisible = true;
+
     }
     break;
-      
-    case ACTION_SHOW_SUBTITLES:
-    { 
+
+  case ACTION_SHOW_SUBTITLES:
+    {
       g_application.m_pPlayer->ToggleSubtitles();
     }
     break;
 
-    case ACTION_SHOW_CODEC:
+  case ACTION_SHOW_CODEC:
     {
       m_bShowCodecInfo = !m_bShowCodecInfo;
     }
     break;
 
-    case ACTION_NEXT_SUBTITLE:
+  case ACTION_NEXT_SUBTITLE:
     {
       g_application.m_pPlayer->SwitchToNextLanguage();
     }
     break;
 
-    case ACTION_STOP:
+  case ACTION_STOP:
     {
       g_application.StopPlaying();
     }
     break;
 
     // PAUSE action is handled globally in the Application class
-    case ACTION_PAUSE:
-      if (g_application.m_pPlayer) g_application.m_pPlayer->Pause();
+  case ACTION_PAUSE:
+    if (g_application.m_pPlayer) g_application.m_pPlayer->Pause();
     break;
 
-    case ACTION_SUBTITLE_DELAY_MIN:
-      g_application.m_pPlayer->SubtitleOffset(false);
+  case ACTION_SUBTITLE_DELAY_MIN:
+    g_application.m_pPlayer->SubtitleOffset(false);
     break;
-    case ACTION_SUBTITLE_DELAY_PLUS:
-      g_application.m_pPlayer->SubtitleOffset(true);
+  case ACTION_SUBTITLE_DELAY_PLUS:
+    g_application.m_pPlayer->SubtitleOffset(true);
     break;
-    case ACTION_AUDIO_DELAY_MIN:
-      g_application.m_pPlayer->AudioOffset(false);
+  case ACTION_AUDIO_DELAY_MIN:
+    g_application.m_pPlayer->AudioOffset(false);
     break;
-    case ACTION_AUDIO_DELAY_PLUS:
-      g_application.m_pPlayer->AudioOffset(true);
+  case ACTION_AUDIO_DELAY_PLUS:
+    g_application.m_pPlayer->AudioOffset(true);
     break;
-    case ACTION_AUDIO_NEXT_LANGUAGE:
-      //g_application.m_pPlayer->AudioOffset(false);
+  case ACTION_AUDIO_NEXT_LANGUAGE:
+    //g_application.m_pPlayer->AudioOffset(false);
     break;
-    case ACTION_PLAY:
-      if (g_application.m_pPlayer->IsPaused()) {
-        g_application.m_pPlayer->Pause();
-      }
-      g_application.SetPlaySpeed(1);
+  case ACTION_PLAY:
+    if (g_application.m_pPlayer->IsPaused())
+    {
+      g_application.m_pPlayer->Pause();
+    }
+    g_application.SetPlaySpeed(1);
     m_bShowCurrentTime = true;
-    m_dwTimeCodeTimeout=timeGetTime();
+    m_dwTimeCodeTimeout = timeGetTime();
     break;
-    case ACTION_REWIND:
-    case ACTION_FORWARD:
-      ChangetheSpeed(action.wID);
+  case ACTION_REWIND:
+  case ACTION_FORWARD:
+    ChangetheSpeed(action.wID);
     break;
-    case ACTION_ANALOG_REWIND:
-    case ACTION_ANALOG_FORWARD:
+  case ACTION_ANALOG_REWIND:
+  case ACTION_ANALOG_FORWARD:
+    {
+      // calculate the speed based on the amount the button is held down
+      int iPower = (int)(action.fAmount1 * 5.5f);
+      // returns 0 -> 5
+      int iSpeed = 1 << iPower;
+      if (iSpeed == 1)
       {
-        // calculate the speed based on the amount the button is held down
-        int iPower = (int)(action.fAmount1*5.5f);
-        // returns 0 -> 5
-        int iSpeed = 1 << iPower;
-        if (iSpeed==1)
-        {
-          m_bSmoothFFwdRewd = false;
-        }
-        else
-        {
-          m_bSmoothFFwdRewd = true;
-          if (action.wID == ACTION_ANALOG_REWIND)
-            iSpeed = -iSpeed;
-        }
-        g_application.SetPlaySpeed(iSpeed);
+        m_bSmoothFFwdRewd = false;
       }
+      else
+      {
+        m_bSmoothFFwdRewd = true;
+        if (action.wID == ACTION_ANALOG_REWIND)
+          iSpeed = -iSpeed;
+      }
+      g_application.SetPlaySpeed(iSpeed);
+    }
     break;
-    case REMOTE_0:
-      ChangetheTimeCode(REMOTE_0);
+  case REMOTE_0:
+    ChangetheTimeCode(REMOTE_0);
     break;
-    case REMOTE_1:
-      ChangetheTimeCode(REMOTE_1);
+  case REMOTE_1:
+    ChangetheTimeCode(REMOTE_1);
     break;
-    case REMOTE_2:
-      ChangetheTimeCode(REMOTE_2);
+  case REMOTE_2:
+    ChangetheTimeCode(REMOTE_2);
     break;
-    case REMOTE_3:
-      ChangetheTimeCode(REMOTE_3);
+  case REMOTE_3:
+    ChangetheTimeCode(REMOTE_3);
     break;
-    case REMOTE_4:
-      ChangetheTimeCode(REMOTE_4);
+  case REMOTE_4:
+    ChangetheTimeCode(REMOTE_4);
     break;
-    case REMOTE_5:
-      ChangetheTimeCode(REMOTE_5);
+  case REMOTE_5:
+    ChangetheTimeCode(REMOTE_5);
     break;
-    case REMOTE_6:
-      ChangetheTimeCode(REMOTE_6);
+  case REMOTE_6:
+    ChangetheTimeCode(REMOTE_6);
     break;
-    case REMOTE_7:
-      ChangetheTimeCode(REMOTE_7);
+  case REMOTE_7:
+    ChangetheTimeCode(REMOTE_7);
     break;
-    case REMOTE_8:
-      ChangetheTimeCode(REMOTE_8);
+  case REMOTE_8:
+    ChangetheTimeCode(REMOTE_8);
     break;
-    case REMOTE_9:
-      ChangetheTimeCode(REMOTE_9);
+  case REMOTE_9:
+    ChangetheTimeCode(REMOTE_9);
     break;
 
-    case ACTION_ASPECT_RATIO:
+  case ACTION_ASPECT_RATIO:
     { // toggle the aspect ratio mode (only if the info is onscreen)
       if (m_bShowViewModeInfo)
-        {
-          g_renderManager.SetViewMode(++g_stSettings.m_currentVideoSettings.m_ViewMode);
-        }
+      {
+        g_renderManager.SetViewMode(++g_stSettings.m_currentVideoSettings.m_ViewMode);
+      }
       m_bShowViewModeInfo = true;
       m_dwShowViewModeTimeout = timeGetTime();
     }
     break;
-    case ACTION_SMALL_STEP_BACK:
+  case ACTION_SMALL_STEP_BACK:
     {
       // unpause the player so that it seeks nicely
       bool bNeedPause(false);
@@ -318,18 +318,19 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
         g_application.m_pPlayer->Pause();
         bNeedPause = true;
       }
-      int orgpos=(int)(g_application.m_pPlayer->GetTime()/1000);
-      int triesleft=g_stSettings.m_iSmallStepBackTries;
+      int orgpos = (int)(g_application.m_pPlayer->GetTime() / 1000);
+      int triesleft = g_stSettings.m_iSmallStepBackTries;
       int jumpsize = g_stSettings.m_iSmallStepBackSeconds; // secs
-      int setpos=(orgpos > jumpsize) ? orgpos-jumpsize : 0; // First jump = 2*jumpsize
+      int setpos = (orgpos > jumpsize) ? orgpos - jumpsize : 0; // First jump = 2*jumpsize
       int newpos;
       do
       {
-        setpos = (setpos > jumpsize) ? setpos-jumpsize : 0;
+        setpos = (setpos > jumpsize) ? setpos - jumpsize : 0;
         g_application.m_pPlayer->SeekTime(setpos*1000);
         Sleep(g_stSettings.m_iSmallStepBackDelay); // delay to let mplayer finish its seek (in ms)
-        newpos = (int)(g_application.m_pPlayer->GetTime()/1000);
-      } while ( (newpos>orgpos-jumpsize) && (setpos>0) && (--triesleft>0));
+        newpos = (int)(g_application.m_pPlayer->GetTime() / 1000);
+      }
+      while ( (newpos > orgpos - jumpsize) && (setpos > 0) && (--triesleft > 0));
       // repause player if needed
       if (bNeedPause) g_application.m_pPlayer->Pause();
     }
@@ -339,8 +340,8 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 }
 
 bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
-{ 
-  
+{
+
   if (m_bOSDVisible)
   {
     //if (timeGetTime()-m_dwOSDTimeOut > 5000)
@@ -348,23 +349,23 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
     {
       if ( (timeGetTime() - m_dwOSDTimeOut) > (DWORD)(g_guiSettings.GetInt("MyVideos.OSDTimeout") * 1000))
       {
-        CSingleLock lock(m_section);
-        CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0,0,0,NULL);
+        CSingleLock lock (m_section);
+        CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0, NULL);
         g_application.m_guiWindowOSD.OnMessage(msg);  // Send a de-init msg to the OSD
-        m_bOSDVisible=false;
+        m_bOSDVisible = false;
         return g_application.m_guiWindowOSD.OnMessage(message); // route messages to OSD window
       }
     }
 
     switch (message.GetMessage())
     {
-      case GUI_MSG_SETFOCUS:
-      case GUI_MSG_LOSTFOCUS:
-      case GUI_MSG_CLICKED:
-      case GUI_MSG_WINDOW_INIT:
-      case GUI_MSG_WINDOW_DEINIT:
-        OutputDebugString("CGUIWindowFullScreen::OnMessage() reset timeout\n");
-        m_dwOSDTimeOut=timeGetTime();
+    case GUI_MSG_SETFOCUS:
+    case GUI_MSG_LOSTFOCUS:
+    case GUI_MSG_CLICKED:
+    case GUI_MSG_WINDOW_INIT:
+    case GUI_MSG_WINDOW_DEINIT:
+      OutputDebugString("CGUIWindowFullScreen::OnMessage() reset timeout\n");
+      m_dwOSDTimeOut = timeGetTime();
       break;
     }
     return g_application.m_guiWindowOSD.OnMessage(message); // route messages to OSD window
@@ -372,7 +373,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
   switch (message.GetMessage())
   {
-    case GUI_MSG_WINDOW_INIT:
+  case GUI_MSG_WINDOW_INIT:
     {
       // check whether we've come back here from a window during which time we've actually
       // stopped playing videos
@@ -381,12 +382,12 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         m_gWindowManager.PreviousWindow();
         return true;
       }
-      m_bLastRender=false;
-      m_bOSDVisible=false;
+      m_bLastRender = false;
+      m_bOSDVisible = false;
 
       CGUIWindow::OnMessage(message);
 
-      CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness,g_stSettings.m_currentVideoSettings.m_Contrast,g_stSettings.m_currentVideoSettings.m_Gamma,false);
+      CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, false);
 
       g_graphicsContext.Lock();
       g_graphicsContext.SetFullScreenVideo( true );
@@ -397,7 +398,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
       HideOSD();
 
-      m_iCurrentBookmark=0;
+      m_iCurrentBookmark = 0;
       m_bShowCodecInfo = false;
       m_bShowViewModeInfo = false;
 
@@ -406,7 +407,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
       if (CUtil::IsUsingTTFSubtitles())
       {
-        CSingleLock lock(m_fontLock);
+        CSingleLock lock (m_fontLock);
 
         if (m_subtitleFont)
         {
@@ -428,23 +429,23 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
       return true;
     }
-    case GUI_MSG_WINDOW_DEINIT:
+  case GUI_MSG_WINDOW_DEINIT:
     {
       // Pause player before lock or the app will deadlock
       if (g_application.m_pPlayer)
-        g_application.m_pPlayer->Update(true);  
+        g_application.m_pPlayer->Update(true);
       // Pause so that we make sure that our fullscreen renderer has finished...
       Sleep(100);
 
-      CSingleLock lock(m_section);
+      CSingleLock lock (m_section);
 
       if (m_bOSDVisible)
       {
-          CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0,0,0,NULL);
-          g_application.m_guiWindowOSD.OnMessage(msg);  // Send a de-init msg to the OSD
+        CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0, NULL);
+        g_application.m_guiWindowOSD.OnMessage(msg);  // Send a de-init msg to the OSD
       }
 
-      m_bOSDVisible=false;
+      m_bOSDVisible = false;
 
       CGUIWindow::OnMessage(message);
 
@@ -454,8 +455,8 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       g_graphicsContext.SetFullScreenVideo(false);
       g_graphicsContext.SetGUIResolution(g_guiSettings.m_LookAndFeelResolution);
       g_graphicsContext.Unlock();
-      
-      m_iCurrentBookmark=0;
+
+      m_iCurrentBookmark = 0;
 
       HideOSD();
 
@@ -467,13 +468,13 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       }
 
       if (g_application.m_pPlayer)
-        g_application.m_pPlayer->Update();  
+        g_application.m_pPlayer->Update();
       return true;
     }
-    case GUI_MSG_SETFOCUS:
-    case GUI_MSG_LOSTFOCUS:
-      if (m_bOSDVisible) return true;
-      if (message.GetSenderId() != WINDOW_FULLSCREEN_VIDEO) return true;
+  case GUI_MSG_SETFOCUS:
+  case GUI_MSG_LOSTFOCUS:
+    if (m_bOSDVisible) return true;
+    if (message.GetSenderId() != WINDOW_FULLSCREEN_VIDEO) return true;
     break;
   }
 
@@ -487,7 +488,7 @@ void CGUIWindowFullScreen::OnMouse()
     CAction action;
     action.wID = ACTION_SHOW_GUI;
     OnAction(action);
-    return;
+    return ;
   }
   if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
   { // no control found to absorb this click - toggle the OSD
@@ -502,21 +503,21 @@ void CGUIWindowFullScreen::OnMouse()
 // change) so that we get smooth video playback
 void CGUIWindowFullScreen::Render()
 {
-  return;
+  return ;
 }
 
 bool CGUIWindowFullScreen::NeedRenderFullScreen()
 {
-  CSingleLock lock(m_section);      
-  if (g_application.m_pPlayer) 
+  CSingleLock lock (m_section);
+  if (g_application.m_pPlayer)
   {
-    if (g_application.m_pPlayer->IsPaused() )return true;
+    if (g_application.m_pPlayer->IsPaused() ) return true;
   }
-  
-  if (g_application.GetPlaySpeed() != 1) 
+
+  if (g_application.GetPlaySpeed() != 1)
   {
     m_bShowCurrentTime = true;
-    m_dwTimeCodeTimeout=timeGetTime();
+    m_dwTimeCodeTimeout = timeGetTime();
   }
   if (m_bShowTime) return true;
   if (m_bShowCodecInfo) return true;
@@ -530,9 +531,9 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
     return true;
   if (m_bLastRender)
   {
-    m_bLastRender=false;
+    m_bLastRender = false;
   }
- 
+
   return false;
 }
 
@@ -542,61 +543,61 @@ void CGUIWindowFullScreen::RenderFullScreen()
   if (!m_bSmoothFFwdRewd && g_application.GetPlaySpeed() != 1 && !m_bDiscreteFFwdRewd)
     g_application.SetPlaySpeed(1);
 
-  if (g_application.GetPlaySpeed() != 1) 
+  if (g_application.GetPlaySpeed() != 1)
   {
     m_bShowCurrentTime = true;
-    m_dwTimeCodeTimeout=timeGetTime();
+    m_dwTimeCodeTimeout = timeGetTime();
   }
 
-  m_bLastRender=true;
-  m_fFrameCounter+=1.0f;
-  FLOAT fTimeSpan=(float)(timeGetTime()-m_dwFPSTime);
-  if (fTimeSpan >=1000.0f)
+  m_bLastRender = true;
+  m_fFrameCounter += 1.0f;
+  FLOAT fTimeSpan = (float)(timeGetTime() - m_dwFPSTime);
+  if (fTimeSpan >= 1000.0f)
   {
-    fTimeSpan/=1000.0f;
-    m_fFPS=(m_fFrameCounter/fTimeSpan);
-    m_dwFPSTime=timeGetTime();
-    m_fFrameCounter=0;
+    fTimeSpan /= 1000.0f;
+    m_fFPS = (m_fFrameCounter / fTimeSpan);
+    m_dwFPSTime = timeGetTime();
+    m_fFrameCounter = 0;
   }
-  if (!g_application.m_pPlayer) return;
+  if (!g_application.m_pPlayer) return ;
 
   bool bRenderGUI(false);
   if (g_application.m_pPlayer->IsPaused() )
   {
-    SET_CONTROL_VISIBLE(IMG_PAUSE);  
-    bRenderGUI=true;
+    SET_CONTROL_VISIBLE(IMG_PAUSE);
+    bRenderGUI = true;
   }
   else
   {
-    SET_CONTROL_HIDDEN(IMG_PAUSE);  
+    SET_CONTROL_HIDDEN(IMG_PAUSE);
   }
- 
+
   //------------------------
-  if (m_bShowCodecInfo) 
+  if (m_bShowCodecInfo)
   {
-    bRenderGUI=true;
+    bRenderGUI = true;
     // show audio codec info
     CStdString strAudio, strVideo, strGeneral;
     g_application.m_pPlayer->GetAudioInfo(strAudio);
-    { 
-      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 
-      msg.SetLabel(strAudio); 
+    {
+      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
+      msg.SetLabel(strAudio);
       OnMessage(msg);
     }
     // show video codec info
     g_application.m_pPlayer->GetVideoInfo(strVideo);
-    { 
-      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2); 
-      msg.SetLabel(strVideo); 
+    {
+      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2);
+      msg.SetLabel(strVideo);
       OnMessage(msg);
     }
     // show general info
     g_application.m_pPlayer->GetGeneralInfo(strGeneral);
-    { 
+    {
       CStdString strGeneralFPS;
       strGeneralFPS.Format("fps:%02.2f %s", m_fFPS, strGeneral.c_str() );
-      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3); 
-      msg.SetLabel(strGeneralFPS); 
+      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
+      msg.SetLabel(strGeneralFPS);
       OnMessage(msg);
     }
   }
@@ -609,15 +610,15 @@ void CGUIWindowFullScreen::RenderFullScreen()
   }
   if (m_bShowViewModeInfo)
   {
-    bRenderGUI=true;
+    bRenderGUI = true;
     {
       // get the "View Mode" string
       CStdString strTitle = g_localizeStrings.Get(629);
       CStdString strMode = g_localizeStrings.Get(630 + g_stSettings.m_currentVideoSettings.m_ViewMode);
       CStdString strInfo;
-      strInfo.Format("%s : %s",strTitle.c_str(), strMode.c_str());
-      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 
-      msg.SetLabel(strInfo); 
+      strInfo.Format("%s : %s", strTitle.c_str(), strMode.c_str());
+      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
+      msg.SetLabel(strInfo);
       OnMessage(msg);
     }
     // show sizing information
@@ -627,15 +628,15 @@ void CGUIWindowFullScreen::RenderFullScreen()
     g_application.m_pPlayer->GetVideoAspectRatio(fAR);
     {
       CStdString strSizing;
-      strSizing.Format("Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1)", 
-                        SrcRect.right-SrcRect.left,SrcRect.bottom-SrcRect.top,
-                        DestRect.right-DestRect.left,DestRect.bottom-DestRect.top, g_stSettings.m_fZoomAmount, fAR*g_stSettings.m_fPixelRatio, g_stSettings.m_fPixelRatio);
-      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2); 
+      strSizing.Format("Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1)",
+                       SrcRect.right - SrcRect.left, SrcRect.bottom - SrcRect.top,
+                       DestRect.right - DestRect.left, DestRect.bottom - DestRect.top, g_stSettings.m_fZoomAmount, fAR*g_stSettings.m_fPixelRatio, g_stSettings.m_fPixelRatio);
+      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2);
       msg.SetLabel(strSizing);
       OnMessage(msg);
     }
     // show resolution information
-    int iResolution=g_graphicsContext.GetVideoResolution();
+    int iResolution = g_graphicsContext.GetVideoResolution();
     {
       CStdString strStatus;
       strStatus.Format("%ix%i %s", g_settings.m_ResInfo[iResolution].iWidth, g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].strMode);
@@ -647,8 +648,8 @@ void CGUIWindowFullScreen::RenderFullScreen()
       CStdString strFilter;
       strFilter.Format("  |  Flicker Filter: %i", g_guiSettings.GetInt("Filters.Flicker"));
       strStatus += strFilter;
-      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3); 
-      msg.SetLabel(strStatus); 
+      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
+      msg.SetLabel(strStatus);
       OnMessage(msg);
     }
   }
@@ -659,43 +660,43 @@ void CGUIWindowFullScreen::RenderFullScreen()
   if (m_bOSDVisible)
   {
     // tell the OSD window to draw itself
-    CSingleLock lock(m_section);
+    CSingleLock lock (m_section);
     g_application.m_guiWindowOSD.Render();
     // Render the mouse pointer, if visible...
     if (g_Mouse.IsActive()) g_application.m_guiPointer.Render();
-    return;
+    return ;
   }
 
   RenderTTFSubtitles();
 
   if (m_bShowTime && m_iTimeCodePosition != 0)
   {
-    if ( (timeGetTime() - m_dwTimeCodeTimeout) >=2500)
+    if ( (timeGetTime() - m_dwTimeCodeTimeout) >= 2500)
     {
-      m_bShowTime=false;
+      m_bShowTime = false;
       m_iTimeCodePosition = 0;
-      return;
+      return ;
     }
-    bRenderGUI=true;
+    bRenderGUI = true;
     CStdString strDispTime = "??:??";
 
-    CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 
-    for(int count = 0; count < m_iTimeCodePosition; count++)
+    CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
+    for (int count = 0; count < m_iTimeCodePosition; count++)
     {
-      if(m_strTimeStamp[count] == -1)
+      if (m_strTimeStamp[count] == -1)
         strDispTime[count] = ':';
       else
-        strDispTime[count] = (char)m_strTimeStamp[count]+48;
+        strDispTime[count] = (char)m_strTimeStamp[count] + 48;
     }
     strDispTime += "/" + g_infoManager.GetVideoLabel("duration") + " [" + g_infoManager.GetVideoLabel("time") + "]";
-    msg.SetLabel(strDispTime); 
+    msg.SetLabel(strDispTime);
     OnMessage(msg);
-  } 
+  }
 
   // check if we have bidirectional controls and set controlIds
-  bool bRewIcons = (GetControl(IMG_2Xr)!=NULL);
+  bool bRewIcons = (GetControl(IMG_2Xr) != NULL);
 
-  int iSpeed=g_application.GetPlaySpeed();
+  int iSpeed = g_application.GetPlaySpeed();
   // hide all speed indicators first
   SET_CONTROL_HIDDEN(IMG_2X);
   SET_CONTROL_HIDDEN(IMG_4X);
@@ -703,7 +704,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
   SET_CONTROL_HIDDEN(IMG_16X);
   SET_CONTROL_HIDDEN(IMG_32X);
 
-  if(bRewIcons)
+  if (bRewIcons)
   {
     SET_CONTROL_HIDDEN(IMG_2Xr);
     SET_CONTROL_HIDDEN(IMG_4Xr);
@@ -712,44 +713,44 @@ void CGUIWindowFullScreen::RenderFullScreen()
     SET_CONTROL_HIDDEN(IMG_32Xr);
   }
 
-  if(iSpeed!=1)
+  if (iSpeed != 1)
   {
-    bRenderGUI=true;
-    switch(iSpeed)
+    bRenderGUI = true;
+    switch (iSpeed)
     {
-      case 2:
-        SET_CONTROL_VISIBLE(IMG_2X);
-        break;
-      case -2:
-        SET_CONTROL_VISIBLE(bRewIcons ? IMG_2Xr : IMG_2X);
-        break;
-      case 4:
-        SET_CONTROL_VISIBLE(IMG_4X);
-        break;
-      case -4:
-        SET_CONTROL_VISIBLE(bRewIcons ? IMG_4Xr : IMG_4X);
-        break;
-      case 8:
-        SET_CONTROL_VISIBLE(IMG_8X);
-        break;
-      case -8:
-        SET_CONTROL_VISIBLE(bRewIcons ? IMG_8Xr : IMG_8X);
-        break;
-      case 16:
-        SET_CONTROL_VISIBLE(IMG_16X);
-        break;
-      case -16:
-        SET_CONTROL_VISIBLE(bRewIcons ? IMG_16Xr : IMG_16X);
-        break;
-      case 32:
-        SET_CONTROL_VISIBLE(IMG_32X);
-        break;
-      case -32:
-        SET_CONTROL_VISIBLE(bRewIcons ? IMG_32Xr : IMG_32X);
-        break;
-      default:
-        // do nothing, leave them all invisible
-        break;
+    case 2:
+      SET_CONTROL_VISIBLE(IMG_2X);
+      break;
+    case - 2:
+      SET_CONTROL_VISIBLE(bRewIcons ? IMG_2Xr : IMG_2X);
+      break;
+    case 4:
+      SET_CONTROL_VISIBLE(IMG_4X);
+      break;
+    case - 4:
+      SET_CONTROL_VISIBLE(bRewIcons ? IMG_4Xr : IMG_4X);
+      break;
+    case 8:
+      SET_CONTROL_VISIBLE(IMG_8X);
+      break;
+    case - 8:
+      SET_CONTROL_VISIBLE(bRewIcons ? IMG_8Xr : IMG_8X);
+      break;
+    case 16:
+      SET_CONTROL_VISIBLE(IMG_16X);
+      break;
+    case - 16:
+      SET_CONTROL_VISIBLE(bRewIcons ? IMG_16Xr : IMG_16X);
+      break;
+    case 32:
+      SET_CONTROL_VISIBLE(IMG_32X);
+      break;
+    case - 32:
+      SET_CONTROL_VISIBLE(bRewIcons ? IMG_32Xr : IMG_32X);
+      break;
+    default:
+      // do nothing, leave them all invisible
+      break;
     }
   }
 
@@ -757,10 +758,10 @@ void CGUIWindowFullScreen::RenderFullScreen()
   if (m_bShowCurrentTime)
   {
     CStdString strTime;
-    bRenderGUI =true;
+    bRenderGUI = true;
     SET_CONTROL_VISIBLE(LABEL_CURRENT_TIME);
     SET_CONTROL_LABEL(LABEL_CURRENT_TIME, g_infoManager.GetLabel("videoplayer.time"));
-    if ( (timeGetTime() - m_dwTimeCodeTimeout) >=2500)
+    if ( (timeGetTime() - m_dwTimeCodeTimeout) >= 2500)
     {
       m_bShowCurrentTime = false;
     }
@@ -810,7 +811,7 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
 {
   if (CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subtitleFont)
   {
-    CSingleLock lock(m_fontLock);
+    CSingleLock lock (m_fontLock);
 
     subtitle* sub = mplayer_GetCurrentSubtitle();
 
@@ -840,20 +841,20 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
       float x = (float) (g_settings.m_ResInfo[m_iResolution].iWidth) / 2;
       float y = (float) g_settings.m_ResInfo[m_iResolution].iSubtitles - h;
 
-      float outlinewidth = (float)g_guiSettings.GetInt("Subtitles.Height")/8;
+      float outlinewidth = (float)g_guiSettings.GetInt("Subtitles.Height") / 8;
 
-      m_subtitleFont->DrawText(x-outlinewidth, y, 0, subtitleText.c_str(), XBFONT_CENTER_X);
-      m_subtitleFont->DrawText(x+outlinewidth, y, 0, subtitleText.c_str(), XBFONT_CENTER_X);
-      m_subtitleFont->DrawText(x, y+outlinewidth, 0, subtitleText.c_str(), XBFONT_CENTER_X);
-      m_subtitleFont->DrawText(x, y-outlinewidth, 0, subtitleText.c_str(), XBFONT_CENTER_X);
-      m_subtitleFont->DrawText(x, y, g_guiSettings.GetInt("Subtitles.Color")==SUBTITLE_COLOR_YELLOW ? 0xFFFF00 : 0xFFFFFF, subtitleText.c_str(), XBFONT_CENTER_X);
+      m_subtitleFont->DrawText(x - outlinewidth, y, 0, subtitleText.c_str(), XBFONT_CENTER_X);
+      m_subtitleFont->DrawText(x + outlinewidth, y, 0, subtitleText.c_str(), XBFONT_CENTER_X);
+      m_subtitleFont->DrawText(x, y + outlinewidth, 0, subtitleText.c_str(), XBFONT_CENTER_X);
+      m_subtitleFont->DrawText(x, y - outlinewidth, 0, subtitleText.c_str(), XBFONT_CENTER_X);
+      m_subtitleFont->DrawText(x, y, g_guiSettings.GetInt("Subtitles.Color") == SUBTITLE_COLOR_YELLOW ? 0xFFFF00 : 0xFFFFFF, subtitleText.c_str(), XBFONT_CENTER_X);
     }
   }
 }
 
 void CGUIWindowFullScreen::HideOSD()
 {
-  CSingleLock lock(m_section);      
+  CSingleLock lock (m_section);
   m_osdMenu.Clear();
   SET_CONTROL_HIDDEN(BTN_OSD_VIDEO);
   SET_CONTROL_HIDDEN(BTN_OSD_AUDIO);
@@ -867,7 +868,6 @@ void CGUIWindowFullScreen::HideOSD()
 
 void CGUIWindowFullScreen::ShowOSD()
 {
-
 }
 
 bool CGUIWindowFullScreen::OSDVisible() const
@@ -877,38 +877,37 @@ bool CGUIWindowFullScreen::OSDVisible() const
 
 void CGUIWindowFullScreen::OnExecute(int iAction, const IOSDOption* option)
 {
-
 }
 void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
 {
-  if(remote >=58 && remote <= 67) //Make sure it's only for the remote
+  if (remote >= 58 && remote <= 67) //Make sure it's only for the remote
   {
     m_bShowTime = true;
-    m_dwTimeCodeTimeout=timeGetTime();
+    m_dwTimeCodeTimeout = timeGetTime();
     int itime = remote - 58;
-    if(m_iTimeCodePosition <= 4 && m_iTimeCodePosition != 2)
+    if (m_iTimeCodePosition <= 4 && m_iTimeCodePosition != 2)
     {
       m_strTimeStamp[m_iTimeCodePosition++] = itime;
-      if(m_iTimeCodePosition == 2)
+      if (m_iTimeCodePosition == 2)
         m_strTimeStamp[m_iTimeCodePosition++] = -1;
     }
-    if(m_iTimeCodePosition > 4)
+    if (m_iTimeCodePosition > 4)
     {
-      long itotal,ih,im,is=0;                 
-      ih =  (m_strTimeStamp[0]-0)*10;
-      ih += (m_strTimeStamp[1]-0);   
-      im =  (m_strTimeStamp[3]-0)*10;   
-      im += (m_strTimeStamp[4]-0);   
-      im*=60;
-      ih*=3600; 
-      itotal = ih+im+is;
+      long itotal, ih, im, is = 0;
+      ih = (m_strTimeStamp[0] - 0) * 10;
+      ih += (m_strTimeStamp[1] - 0);
+      im = (m_strTimeStamp[3] - 0) * 10;
+      im += (m_strTimeStamp[4] - 0);
+      im *= 60;
+      ih *= 3600;
+      itotal = ih + im + is;
       bool bNeedsPause(false);
       if (g_application.m_pPlayer->IsPaused())
       {
         bNeedsPause = true;
         g_application.m_pPlayer->Pause();
       }
-      if(itotal < g_application.m_pPlayer->GetTotalTime())
+      if (itotal < g_application.m_pPlayer->GetTotalTime())
         g_application.m_pPlayer->SeekTime(itotal*1000);
       if (bNeedsPause)
       {
@@ -916,20 +915,20 @@ void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
         g_application.m_pPlayer->Pause();
       }
       m_iTimeCodePosition = 0;
-      m_bShowTime=false;
+      m_bShowTime = false;
     }
   }
 }
 void CGUIWindowFullScreen::ChangetheSpeed(DWORD action)
 {
-  int iSpeed=g_application.GetPlaySpeed();
+  int iSpeed = g_application.GetPlaySpeed();
   if (action == ACTION_REWIND && iSpeed == 1) // Enables Rewinding
-    iSpeed *=-2;
+    iSpeed *= -2;
   else if (action == ACTION_REWIND && iSpeed > 1) //goes down a notch if you're FFing
-    iSpeed /=2;
+    iSpeed /= 2;
   else if (action == ACTION_FORWARD && iSpeed < 1) //goes up a notch if you're RWing
     iSpeed /= 2;
-  else 
+  else
     iSpeed *= 2;
 
   if (action == ACTION_FORWARD && iSpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
@@ -938,11 +937,10 @@ void CGUIWindowFullScreen::ChangetheSpeed(DWORD action)
     iSpeed = 1;
   m_bDiscreteFFwdRewd = (iSpeed != 1);
   g_application.SetPlaySpeed(iSpeed);
-} 
+}
 
 void CGUIWindowFullScreen::Update()
 {
-
 }
 
 void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)

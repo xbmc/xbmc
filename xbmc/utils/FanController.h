@@ -9,15 +9,15 @@ public:
   void Start(int targetTemperature);
   void Stop();
 
-  int   GetFanSpeed();
-  void  SetFanSpeed(const int fanspeed, const bool force=true);
+  int GetFanSpeed();
+  void SetFanSpeed(const int fanspeed, const bool force = true);
   float GetGPUTemp();
   float GetCPUTemp();
-  void  SetTargetTemperature(int targetTemperature);
-  void  RestoreStartupSpeed();
+  void SetTargetTemperature(int targetTemperature);
+  void RestoreStartupSpeed();
 
   static CFanController* Instance();
-	virtual ~CFanController();
+  virtual ~CFanController();
 private:
   enum SensorType {
     ST_GPU = 0,
@@ -25,30 +25,30 @@ private:
   };
 
   static CFanController* _Instance;
-  
-  int   targetTemp;
-  int   systemFanSpeed;
-  int   currentFanSpeed;
-  int   calculatedFanSpeed;
-  int   tooHotLoopCount;
-  int   tooColdLoopCount;
-  bool  inCustomMode;
+
+  int targetTemp;
+  int systemFanSpeed;
+  int currentFanSpeed;
+  int calculatedFanSpeed;
+  int tooHotLoopCount;
+  int tooColdLoopCount;
+  bool inCustomMode;
   float cpuTemp;
   float cpuLastTemp;
   unsigned short gpuTemp;
   unsigned short gpuLastTemp;
 
-  SensorType     sensor;
+  SensorType sensor;
 
   CFanController();
-  
+
   void GetFanSpeedInternal();
   void GetGPUTempInternal();
   void GetCPUTempInternal();
 
   void CalcSpeed(int targetTemp);
 
-  virtual void		OnStartup();
-	virtual void		OnExit();
-	virtual void		Process();
+  virtual void OnStartup();
+  virtual void OnExit();
+  virtual void Process();
 };

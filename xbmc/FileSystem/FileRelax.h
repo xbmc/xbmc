@@ -16,29 +16,29 @@ using namespace XFILE;
 namespace XFILE
 {
 
-	class CFileRelax : public IFile  
-	{
-	public:
-		CFileRelax();
-		virtual ~CFileRelax();
-		virtual __int64				GetPosition();
-		virtual __int64				GetLength();
-		virtual bool					Open(const CURL& url, bool bBinary=true);
-		virtual bool					Exists(const CURL& url);
-		virtual int						Stat(const CURL& url, struct __stat64* buffer);
-		virtual unsigned int	Read(void* lpBuf, __int64 uiBufSize);
-		virtual bool					ReadString(char *szLine, int iLineLength);
-		virtual __int64				Seek(__int64 iFilePosition, int iWhence=SEEK_SET);
-		virtual void					Close();
-	protected:
-		UINT64								m_fileSize ;
-		UINT64							  m_filePos;
-		CAutoPtrSocket        m_socket;
-	private:
-		bool m_bOpened;
-		bool									Send(byte* pBuffer, int iLen);
-		bool									Recv(byte* pBuffer, int iLen);
-	};
+class CFileRelax : public IFile
+{
+public:
+  CFileRelax();
+  virtual ~CFileRelax();
+  virtual __int64 GetPosition();
+  virtual __int64 GetLength();
+  virtual bool Open(const CURL& url, bool bBinary = true);
+  virtual bool Exists(const CURL& url);
+  virtual int Stat(const CURL& url, struct __stat64* buffer);
+  virtual unsigned int Read(void* lpBuf, __int64 uiBufSize);
+  virtual bool ReadString(char *szLine, int iLineLength);
+  virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
+  virtual void Close();
+protected:
+  UINT64 m_fileSize ;
+  UINT64 m_filePos;
+  CAutoPtrSocket m_socket;
+private:
+  bool m_bOpened;
+  bool Send(byte* pBuffer, int iLen);
+  bool Recv(byte* pBuffer, int iLen);
+};
 };
 
 #endif // !defined(AFX_FILERELAX_H__7DA6AD38_2EA8_4106_933C_EF5FC6D581E4__INCLUDED_)

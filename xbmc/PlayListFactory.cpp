@@ -8,34 +8,32 @@
 #include "util.h"
 using namespace PLAYLIST;
 CPlayListFactory::CPlayListFactory(void)
-{
-}
+{}
 
 CPlayListFactory::~CPlayListFactory(void)
-{
-}
+{}
 
 
 CPlayList* CPlayListFactory::Create(const CStdString& strFileName) const
 {
-	CStdString strExtension;
-	CUtil::GetExtension(strFileName,strExtension);
-	strExtension.ToLower();
-	if (strExtension==".m3u")
-	{
-		return new CPlayListM3U();
-	}
-	if (strExtension==".pls" || strExtension==".strm")
-	{
-		return new CPlayListPLS();
-	}
-	if (strExtension==".b4s")
-	{
-		return new CPlayListB4S();
-	}
-	if (strExtension==".wpl")
-	{
-		return new CPlayListWPL();
-	}
-	return NULL;
+  CStdString strExtension;
+  CUtil::GetExtension(strFileName, strExtension);
+  strExtension.ToLower();
+  if (strExtension == ".m3u")
+  {
+    return new CPlayListM3U();
+  }
+  if (strExtension == ".pls" || strExtension == ".strm")
+  {
+    return new CPlayListPLS();
+  }
+  if (strExtension == ".b4s")
+  {
+    return new CPlayListB4S();
+  }
+  if (strExtension == ".wpl")
+  {
+    return new CPlayListWPL();
+  }
+  return NULL;
 }

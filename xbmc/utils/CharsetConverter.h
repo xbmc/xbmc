@@ -31,18 +31,18 @@ public:
   void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest, FriBidiCharSet fribidiCharset);
 
 private:
-  vector<CStdString>		m_vecCharsetNames;
-  vector<CStdString>		m_vecCharsetLabels;
-  vector<CStdString>		m_vecBidiCharsetNames;
-  vector<FriBidiCharSet>	m_vecBidiCharsets;
+  vector<CStdString> m_vecCharsetNames;
+  vector<CStdString> m_vecCharsetLabels;
+  vector<CStdString> m_vecBidiCharsetNames;
+  vector<FriBidiCharSet> m_vecBidiCharsets;
 
-  iconv_t					m_iconvStringCharsetToFontCharset;
-  iconv_t					m_iconvSubtitleCharsetToFontCharset;
-  iconv_t					m_iconvUtf8ToStringCharset;
-  iconv_t					m_iconvStringCharsetToUtf8;
-  iconv_t					m_iconvUcs2CharsetToStringCharset;
+  iconv_t m_iconvStringCharsetToFontCharset;
+  iconv_t m_iconvSubtitleCharsetToFontCharset;
+  iconv_t m_iconvUtf8ToStringCharset;
+  iconv_t m_iconvStringCharsetToUtf8;
+  iconv_t m_iconvUcs2CharsetToStringCharset;
 
-  FriBidiCharSet			m_stringFribidiCharset;
+  FriBidiCharSet m_stringFribidiCharset;
 
   CStdString EMPTY;
 };

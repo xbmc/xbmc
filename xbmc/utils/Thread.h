@@ -11,32 +11,32 @@
 
 #include "event.h"
 
-class CThread  
+class CThread
 {
 public:
-	CThread();
-	virtual ~CThread();
-	void						Create(bool bAutoDelete = false);
-	unsigned long		ThreadId() const;
-	bool						WaitForThreadExit(DWORD dwTimeOutSec);
-	bool						SetPriority(const int iPriority);
-	HANDLE          ThreadHandle();
-	operator				HANDLE();
-	operator const	HANDLE() const;
-	bool						IsAutoDelete() const;
-	virtual void		StopThread();
+  CThread();
+  virtual ~CThread();
+  void Create(bool bAutoDelete = false);
+  unsigned long ThreadId() const;
+  bool WaitForThreadExit(DWORD dwTimeOutSec);
+  bool SetPriority(const int iPriority);
+  HANDLE ThreadHandle();
+  operator HANDLE();
+  operator const HANDLE() const;
+  bool IsAutoDelete() const;
+  virtual void StopThread();
 
 protected:
-	virtual void		OnStartup(){};
-	virtual void		OnExit(){};
-	virtual void		Process(){};
-	CEvent					m_eventStop;
-	bool            m_bAutoDelete;
-	bool						m_bStop;
-	HANDLE					m_ThreadHandle;
-	DWORD						m_dwThreadId;
+  virtual void OnStartup(){};
+  virtual void OnExit(){};
+  virtual void Process(){};
+  CEvent m_eventStop;
+  bool m_bAutoDelete;
+  bool m_bStop;
+  HANDLE m_ThreadHandle;
+  DWORD m_dwThreadId;
 private:
-	static DWORD WINAPI CThread::staticThread(LPVOID* data);
+  static DWORD WINAPI CThread::staticThread(LPVOID* data);
 };
 
 #endif // !defined(AFX_THREAD_H__ACFB7357_B961_4AC1_9FB2_779526219817__INCLUDED_)

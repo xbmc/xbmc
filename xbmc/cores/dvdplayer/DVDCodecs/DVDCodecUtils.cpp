@@ -23,15 +23,15 @@ DVDVideoPicture* CDVDCodecUtils::AllocatePicture(int iWidth, int iHeight)
   pPicture->iLineSize[1] = w;
   pPicture->iLineSize[2] = w;
 
-  return pPicture;         
+  return pPicture;
 }
-  
+
 void CDVDCodecUtils::FreePicture(DVDVideoPicture* pPicture)
 {
   delete[] pPicture->data[0];
   delete pPicture;
 }
-  
+
 bool CDVDCodecUtils::CopyPicture(DVDVideoPicture* pDst, DVDVideoPicture* pSrc)
 {
   if (pDst->iWidth != pSrc->iWidth || pDst->iHeight != pSrc->iHeight) return false;
@@ -39,11 +39,11 @@ bool CDVDCodecUtils::CopyPicture(DVDVideoPicture* pDst, DVDVideoPicture* pSrc)
   int size_y = (pSrc->iWidth * pSrc->iHeight);
   int size_u = pSrc->iWidth / 2 * pSrc->iHeight / 2;
   int size_v = size_u;
-  
+
   fast_memcpy(pDst->data[0], pSrc->data[0], size_y);
   fast_memcpy(pDst->data[1], pSrc->data[1], size_u);
   fast_memcpy(pDst->data[2], pSrc->data[2], size_v);
-  
+
   return true;
 }
 
@@ -53,7 +53,7 @@ bool CDVDCodecUtils::CopyPictureToOverlay(YUVOverlay* pOverlay, DVDVideoPicture 
   BYTE *d = pOverlay->data[0];
   int w = pSrc->iWidth;
   int h = pSrc->iHeight;
-  for (int y=0; y < h; y++)
+  for (int y = 0; y < h; y++)
   {
     fast_memcpy(d, s, w);
     s += pSrc->iLineSize[0];
@@ -63,7 +63,7 @@ bool CDVDCodecUtils::CopyPictureToOverlay(YUVOverlay* pOverlay, DVDVideoPicture 
   d = pOverlay->data[1];
   w = pSrc->iWidth >> 1;
   h = pSrc->iHeight >> 1;
-  for (int y=0; y < h; y++)
+  for (int y = 0; y < h; y++)
   {
     fast_memcpy(d, s, w);
     s += pSrc->iLineSize[1];
@@ -71,7 +71,7 @@ bool CDVDCodecUtils::CopyPictureToOverlay(YUVOverlay* pOverlay, DVDVideoPicture 
   }
   s = pSrc->data[2];
   d = pOverlay->data[2];
-  for (int y=0; y < h; y++)
+  for (int y = 0; y < h; y++)
   {
     fast_memcpy(d, s, w);
     s += pSrc->iLineSize[2];

@@ -8,25 +8,26 @@
 #include "..\DVDOverlay.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-  #define DVDNAV_COMPILE
-  #include "dvdnav/dvdnav.h"
-  
-  #ifndef WIN32
-  #  define WIN32
-  #endif // WIN32
-  #define HAVE_CONFIG_H
-  #include "dvdnav/dvdnav_internal.h"
-  #include "dvdnav/vm.h"
+#define DVDNAV_COMPILE
+ #include "dvdnav/dvdnav.h"
+
+#ifndef WIN32
+ #  define WIN32
+ #endif // WIN32
+ #define HAVE_CONFIG_H
+ #include "dvdnav/dvdnav_internal.h"
+ #include "dvdnav/vm.h"
 
   // forward declarations
   vm_t* dvdnav_get_vm(dvdnav_t *self);
   int dvdnav_get_nr_of_subtitle_streams(dvdnav_t *self);
   int dvdnav_get_nr_of_audio_streams(dvdnav_t *self);
   int dvdnav_get_button_info(dvdnav_t* self, int alpha[2][4], int color[2][4]);
-  
+
 #ifdef __cplusplus
 }
 #endif
@@ -40,7 +41,7 @@ CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player) : CDVDInp
   InitializeCriticalSection(&m_critSection);
   m_pDLLlibdvdnav = NULL; // DLL Handle for libdvdnav.dll
   m_pDLLlibdvdcss = NULL; // DLL Handle for libdvdcss.dll
-  
+
   m_iTotalTime = 0;
   m_iCurrentTime = 0;
 }
@@ -63,14 +64,14 @@ bool CDVDInputStreamNavigator::LoadDLL()
       UnloadDLL();
       return false;
     }
-    
-    if(!m_pDLLlibdvdcss->Parse())
+
+    if (!m_pDLLlibdvdcss->Parse())
     {
       CLog::Log(LOGERROR, "CDVDInputStreamNavigator::LoadDLL() parse failed");
       UnloadDLL();
       return false;
     }
-    if(!m_pDLLlibdvdcss->ResolveImports())
+    if (!m_pDLLlibdvdcss->ResolveImports())
     {
       CLog::Log(LOGWARNING, "CDVDInputStreamNavigator::LoadDLL() resolve imports failed");
       UnloadDLL();
@@ -87,14 +88,14 @@ bool CDVDInputStreamNavigator::LoadDLL()
       UnloadDLL();
       return false;
     }
-    
-    if(!m_pDLLlibdvdnav->Parse())
+
+    if (!m_pDLLlibdvdnav->Parse())
     {
       CLog::Log(LOGERROR, "CDVDInputStreamNavigator::LoadDLL() parse failed");
       UnloadDLL();
       return false;
     }
-    if(!m_pDLLlibdvdnav->ResolveImports())
+    if (!m_pDLLlibdvdnav->ResolveImports())
     {
       CLog::Log(LOGWARNING, "CDVDInputStreamNavigator::LoadDLL() resolve imports failed");
       UnloadDLL();
@@ -108,42 +109,42 @@ bool CDVDInputStreamNavigator::LoadDLL()
       return false;
     }
   }
-  
+
   return true;
 }
 
 void CDVDInputStreamNavigator::UnloadDLL()
 {
   if (m_pDLLlibdvdnav)
-	{
-	  delete m_pDLLlibdvdnav;
-	  m_pDLLlibdvdnav = NULL;
-	}
+  {
+    delete m_pDLLlibdvdnav;
+    m_pDLLlibdvdnav = NULL;
+  }
   if (m_pDLLlibdvdcss)
-	{
-	  delete m_pDLLlibdvdcss;
-	  m_pDLLlibdvdcss = NULL;
-	} 
+  {
+    delete m_pDLLlibdvdcss;
+    m_pDLLlibdvdcss = NULL;
+  }
 }
 
 bool CDVDInputStreamNavigator::Open(const char* strFile)
 {
   char* strDVDFile;
-  
+
   if (!CDVDInputStream::Open(strFile)) return false;
-  
+
   // load the dll first
   if (!LoadDLL()) return false;
-  
+
   // load the dvd language codes
   // g_LangCodeExpander.LoadStandardCodes();
 
   // since libdvdnav automaticly play's the dvd if the directory contains VIDEO_TS.IFO
   // we strip it here.
   strDVDFile = strdup(strFile);
-  if (strnicmp(strDVDFile+strlen(strDVDFile)-12, "VIDEO_TS.IFO",12)==0)
+  if (strnicmp(strDVDFile + strlen(strDVDFile) - 12, "VIDEO_TS.IFO", 12) == 0)
   {
-	  strDVDFile[strlen(strDVDFile) - 13] = '\0';
+    strDVDFile[strlen(strDVDFile) - 13] = '\0';
   }
 
   // open up the DVD device
@@ -153,10 +154,10 @@ bool CDVDInputStreamNavigator::Open(const char* strFile)
     UnloadDLL();
     return false;
   }
-  
+
   // set region flag (0xff = all regions ?)
   dvdnav_set_region_mask(m_dvdnav, 0xff);
-  
+
   // set defaults
   if (dvdnav_menu_language_select(m_dvdnav, "en") != DVDNAV_STATUS_OK ||
       dvdnav_audio_language_select(m_dvdnav, "en") != DVDNAV_STATUS_OK ||
@@ -173,7 +174,7 @@ bool CDVDInputStreamNavigator::Open(const char* strFile)
     CLog::DebugLog("Error on dvdnav_set_readahead_flag: %s\n", dvdnav_err_to_string(m_dvdnav));
     return false;
   }
-  
+
   // set the PGC positioning flag to have position information relatively to the
   // whole feature instead of just relatively to the current chapter
   if (dvdnav_set_PGC_positioning_flag(m_dvdnav, 1) != DVDNAV_STATUS_OK)
@@ -184,21 +185,21 @@ bool CDVDInputStreamNavigator::Open(const char* strFile)
   }
 
   free(strDVDFile);
-  
+
   return true;
 }
 
 void CDVDInputStreamNavigator::Close()
 {
-  if (!m_dvdnav) return;
-  
+  if (!m_dvdnav) return ;
+
   // finish off by closing the dvdnav device
   if (dvdnav_close(m_dvdnav) != DVDNAV_STATUS_OK)
   {
     CLog::DebugLog("Error on dvdnav_close: %s\n", dvdnav_err_to_string(m_dvdnav));
-    return;
+    return ;
   }
-  
+
   CDVDInputStream::Close();
   m_dvdnav = NULL;
 }
@@ -206,7 +207,7 @@ void CDVDInputStreamNavigator::Close()
 int CDVDInputStreamNavigator::Read(BYTE* buf, int buf_size)
 {
   if (!m_dvdnav) return -1;
-  
+
   int navresult;
   if (m_pBufferSize == 0)
   {
@@ -218,7 +219,7 @@ int CDVDInputStreamNavigator::Read(BYTE* buf, int buf_size)
     }
     while (navresult != DVDNAV_BLOCK_OK);
   }
-      
+
   if (m_pBufferSize > 0) fast_memcpy(buf, m_temp, m_pBufferSize);
 
   int temp = m_pBufferSize;
@@ -231,11 +232,11 @@ int CDVDInputStreamNavigator::Seek(__int64 offset, int whence)
   if (!m_dvdnav) return -1;
   return -1;
 }
-  
+
 int CDVDInputStreamNavigator::ProcessBlock()
 {
   if (!m_dvdnav) return -1;
-  
+
   int result, event, len, iNavresult;
   uint8_t *buf;
   bool bFinished = false;
@@ -246,9 +247,9 @@ int CDVDInputStreamNavigator::ProcessBlock()
     CLog::DebugLog("CDVDInputStreamNavigator::ProcessBlock, unreaded mpeg data!!");
     return DVDNAV_BLOCK_OK;
   }
-  
+
   iNavresult = -1;
-  
+
   while (!bFinished)
   {
     buf = m_mem;
@@ -273,60 +274,60 @@ int CDVDInputStreamNavigator::ProcessBlock()
       fast_memcpy(m_temp, buf, len);
       iNavresult = DVDNAV_BLOCK_OK;
       bFinished = true;
-    break;
+      break;
 
     case DVDNAV_NOP:
       // Nothing to do here.
-    break;
+      break;
 
     case DVDNAV_STILL_FRAME:
-    {
-      // We have reached a still frame. A real player application would wait
-      // the amount of time specified by the still's length while still handling
-      // user input to make menus and other interactive stills work.
-      // A length of 0xff means an indefinite still which has to be skipped
-      // indirectly by some user interaction.
-      int navres = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_STILL_FRAME);
-      iNavresult = DVDNAV_STILL_FRAME;
-      if (navres == NAVRESULT_STILL_NOT_SKIPPED) bFinished = true;
-    }
-    break;
+      {
+        // We have reached a still frame. A real player application would wait
+        // the amount of time specified by the still's length while still handling
+        // user input to make menus and other interactive stills work.
+        // A length of 0xff means an indefinite still which has to be skipped
+        // indirectly by some user interaction.
+        int navres = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_STILL_FRAME);
+        iNavresult = DVDNAV_STILL_FRAME;
+        if (navres == NAVRESULT_STILL_NOT_SKIPPED) bFinished = true;
+      }
+      break;
 
     case DVDNAV_WAIT:
-    {
-      // We have reached a point in DVD playback, where timing is critical.
-      // Player application with internal fifos can introduce state
-      // inconsistencies, because libdvdnav is always the fifo's length
-      // ahead in the stream compared to what the application sees.
-      // Such applications should wait until their fifos are empty
-      // when they receive this type of event.
-      
-      // xbmc, we don't use any fifos at this place
-      SkipWait();
-    }
-    break;
+      {
+        // We have reached a point in DVD playback, where timing is critical.
+        // Player application with internal fifos can introduce state
+        // inconsistencies, because libdvdnav is always the fifo's length
+        // ahead in the stream compared to what the application sees.
+        // Such applications should wait until their fifos are empty
+        // when they receive this type of event.
+
+        // xbmc, we don't use any fifos at this place
+        SkipWait();
+      }
+      break;
 
     case DVDNAV_SPU_CLUT_CHANGE:
       // Player applications should pass the new colour lookup table to their
       // SPU decoder. The CLUT is given as 16 uint32_t's in the buffer.
       m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_SPU_CLUT_CHANGE);
-    break;
+      break;
 
     case DVDNAV_SPU_STREAM_CHANGE:
       // Player applications should inform their SPU decoder to switch channels
       m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_SPU_STREAM_CHANGE);
-    break;
+      break;
 
     case DVDNAV_AUDIO_STREAM_CHANGE:
       // Player applications should inform their audio decoder to switch channels
       m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_AUDIO_STREAM_CHANGE);
-    break;
+      break;
 
     case DVDNAV_HIGHLIGHT:
-    {
-      m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_HIGHLIGHT);
-    }
-    break;
+      {
+        m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_HIGHLIGHT);
+      }
+      break;
 
     case DVDNAV_VTS_CHANGE:
       // Some status information like video aspect and video scale permissions do
@@ -336,69 +337,69 @@ int CDVDInputStreamNavigator::ProcessBlock()
       m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_VTS_CHANGE);
       iNavresult = -1; // return read error
       bFinished = true;
-    break;
+      break;
 
     case DVDNAV_CELL_CHANGE:
-    {
-      // Some status information like the current Title and Part numbers do not
-      // change inside a cell. Therefore this event can be used to query such
-      // information only when necessary and update the decoding/displaying
-      // accordingly.
-      int tt = 0, ptt = 0;
-      uint32_t pos, len;
-      char input = '\0';
+      {
+        // Some status information like the current Title and Part numbers do not
+        // change inside a cell. Therefore this event can be used to query such
+        // information only when necessary and update the decoding/displaying
+        // accordingly.
+        int tt = 0, ptt = 0;
+        uint32_t pos, len;
+        char input = '\0';
 
-      dvdnav_current_title_info(m_dvdnav, &tt, &ptt);
-      dvdnav_get_position(m_dvdnav, &pos, &len);
-      CLog::DebugLog("Cell change: Title %d, Chapter %d\n", tt, ptt);
-      CLog::DebugLog("At position %.0f%% inside the feature\n", 100 * (double)pos / (double)len);
-      
-      dvdnav_cell_change_event_t* cell_event = (dvdnav_cell_change_event_t*)buf;
-      m_iTotalTime = (int)((cell_event->pgc_length / 100000) & 0xFFFFFFFF);
-      
-      m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_CELL_CHANGE);
-    }
-    break;
+        dvdnav_current_title_info(m_dvdnav, &tt, &ptt);
+        dvdnav_get_position(m_dvdnav, &pos, &len);
+        CLog::DebugLog("Cell change: Title %d, Chapter %d\n", tt, ptt);
+        CLog::DebugLog("At position %.0f%% inside the feature\n", 100 * (double)pos / (double)len);
+
+        dvdnav_cell_change_event_t* cell_event = (dvdnav_cell_change_event_t*)buf;
+        m_iTotalTime = (int)((cell_event->pgc_length / 100000) & 0xFFFFFFFF);
+
+        m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_CELL_CHANGE);
+      }
+      break;
 
     case DVDNAV_NAV_PACKET:
-    {
-      // A NAV packet provides PTS discontinuity information, angle linking information and
-      // button definitions for DVD menus. Angles are handled completely inside libdvdnav.
-      // For the menus to work, the NAV packet information has to be passed to the overlay
-      // engine of the player so that it knows the dimensions of the button areas.
+      {
+        // A NAV packet provides PTS discontinuity information, angle linking information and
+        // button definitions for DVD menus. Angles are handled completely inside libdvdnav.
+        // For the menus to work, the NAV packet information has to be passed to the overlay
+        // engine of the player so that it knows the dimensions of the button areas.
 
 
-      // Applications with fifos should not use these functions to retrieve NAV packets,
-      // they should implement their own NAV handling, because the packet you get from these
-      // functions will already be ahead in the stream which can cause state inconsistencies.
-      // Applications with fifos should therefore pass the NAV packet through the fifo
-      // and decoding pipeline just like any other data.
-      pci_t* pci = dvdnav_get_current_nav_pci(m_dvdnav);
-      m_iCurrentTime =  (int)((pci->pci_gi.vobu_s_ptm / 100000) & 0xFFFFFFFF);
-      //CLog::DebugLog("NAV Pakcet");
-    }
-    break;
+        // Applications with fifos should not use these functions to retrieve NAV packets,
+        // they should implement their own NAV handling, because the packet you get from these
+        // functions will already be ahead in the stream which can cause state inconsistencies.
+        // Applications with fifos should therefore pass the NAV packet through the fifo
+        // and decoding pipeline just like any other data.
+        pci_t* pci = dvdnav_get_current_nav_pci(m_dvdnav);
+        m_iCurrentTime = (int)((pci->pci_gi.vobu_s_ptm / 100000) & 0xFFFFFFFF);
+        //CLog::DebugLog("NAV Pakcet");
+      }
+      break;
 
     case DVDNAV_HOP_CHANNEL:
       // This event is issued whenever a non-seamless operation has been executed.
       // Applications with fifos should drop the fifos content to speed up responsiveness.
       m_pDVDPlayer->OnDVDNavResult(NULL, DVDNAV_HOP_CHANNEL);
-    break;
+      break;
 
     case DVDNAV_STOP:
-    {
-      // Playback should end here.
-      m_pDVDPlayer->OnDVDNavResult(NULL, DVDNAV_STOP);
-      iNavresult = DVDNAV_STOP;
-      bFinished = true;
-    }
-    break;
+      {
+        // Playback should end here.
+        m_pDVDPlayer->OnDVDNavResult(NULL, DVDNAV_STOP);
+        iNavresult = DVDNAV_STOP;
+        bFinished = true;
+      }
+      break;
 
     default:
-    {
-      CLog::DebugLog("Unknown event (%i)\n", event);
-    }
-    break;
+      {
+        CLog::DebugLog("Unknown event (%i)\n", event);
+      }
+      break;
 
     }
 
@@ -410,20 +411,20 @@ int CDVDInputStreamNavigator::ProcessBlock()
 
 void CDVDInputStreamNavigator::ActivateButton()
 {
-  if (!m_dvdnav) return;
+  if (!m_dvdnav) return ;
   dvdnav_button_activate(m_dvdnav, dvdnav_get_current_nav_pci(m_dvdnav));
 }
 
 void CDVDInputStreamNavigator::SelectButton(int iButton)
 {
-  if (!m_dvdnav) return;
+  if (!m_dvdnav) return ;
   dvdnav_button_select(m_dvdnav, dvdnav_get_current_nav_pci(m_dvdnav), iButton);
 }
 
 int CDVDInputStreamNavigator::GetCurrentButton()
 {
   int button;
-    if (!m_dvdnav) return -1;
+  if (!m_dvdnav) return -1;
   dvdnav_get_current_highlight(m_dvdnav, &button);
   return button;
 }
@@ -436,37 +437,37 @@ int CDVDInputStreamNavigator::GetTotalButtons()
 
 void CDVDInputStreamNavigator::OnUp()
 {
-  if (!m_dvdnav) return;
+  if (!m_dvdnav) return ;
   dvdnav_upper_button_select(m_dvdnav, dvdnav_get_current_nav_pci(m_dvdnav));
 }
 
 void CDVDInputStreamNavigator::OnDown()
 {
-  if (!m_dvdnav) return;
+  if (!m_dvdnav) return ;
   dvdnav_lower_button_select(m_dvdnav, dvdnav_get_current_nav_pci(m_dvdnav));
 }
 
 void CDVDInputStreamNavigator::OnLeft()
 {
-  if (!m_dvdnav) return;
+  if (!m_dvdnav) return ;
   dvdnav_left_button_select(m_dvdnav, dvdnav_get_current_nav_pci(m_dvdnav));
 }
 
 void CDVDInputStreamNavigator::OnRight()
 {
-  if (!m_dvdnav) return;
+  if (!m_dvdnav) return ;
   dvdnav_right_button_select(m_dvdnav, dvdnav_get_current_nav_pci(m_dvdnav));
 }
 
 void CDVDInputStreamNavigator::OnMenu()
 {
-  if (!m_dvdnav) return;
+  if (!m_dvdnav) return ;
   dvdnav_menu_call(m_dvdnav, DVD_MENU_Escape);
 }
 
 void CDVDInputStreamNavigator::OnBack()
 {
-  if (!m_dvdnav) return;
+  if (!m_dvdnav) return ;
   dvdnav_go_up(m_dvdnav);
 }
 
@@ -487,16 +488,16 @@ void CDVDInputStreamNavigator::OnPrevious()
     dvdnav_prev_pg_search(m_dvdnav);
   }
 }
-  
+
 void CDVDInputStreamNavigator::SkipStill()
 {
-  if (!m_dvdnav) return;
+  if (!m_dvdnav) return ;
   dvdnav_still_skip(m_dvdnav);
 }
 
 void CDVDInputStreamNavigator::SkipWait()
 {
-  if (!m_dvdnav) return;
+  if (!m_dvdnav) return ;
   dvdnav_wait_skip(m_dvdnav);
 }
 
@@ -514,17 +515,17 @@ void CDVDInputStreamNavigator::Unlock()
 bool CDVDInputStreamNavigator::IsInMenu()
 {
   if (!m_dvdnav) return false;
-  
+
   //unsigned int iButton = (dvdnav_get_vm(m_dvdnav)->state.HL_BTNN_REG >> 10);
   pci_t* pci = dvdnav_get_current_nav_pci(m_dvdnav);
   if (pci->hli.hl_gi.hli_ss > 0) return true;
-  
+
   int iTitle, iPart;
-   
+
   //if (DVDNAV_STATUS_OK != dvdnav_current_title_info(m_dvdnav, &iTitle, &iPart))
   //return (iTitle == 0);
   dvdnav_current_title_info(m_dvdnav, &iTitle, &iPart);
-  
+
   // if we are not in a vts domain, we are probably in a menu
   return (0 == dvdnav_is_domain_vts(m_dvdnav) || iTitle == 0);
   return false;
@@ -534,7 +535,7 @@ int CDVDInputStreamNavigator::GetActiveSubtitleStream()
 {
   int iStream;
   if (!m_dvdnav) return -1;
-  
+
   iStream = (dvdnav_get_active_spu_stream(m_dvdnav) & 0xff);
   if (iStream == 0x80) return -1;
   return (iStream & ~0x80);
@@ -543,17 +544,17 @@ int CDVDInputStreamNavigator::GetActiveSubtitleStream()
 std::string CDVDInputStreamNavigator::GetSubtitleStreamLanguage(int iId)
 {
   if (!m_dvdnav) return NULL;
-  
+
   CStdString strLanguage;
-  
+
   uint16_t lang = dvdnav_spu_stream_to_lang(m_dvdnav, iId);
   if (!g_LangCodeExpander.LookupDVDLangCode(strLanguage, lang)) strLanguage = "Unknown";
-  
+
   return strLanguage;
 }
 
 int CDVDInputStreamNavigator::GetSubTitleStreamCount()
-{ 
+{
   if (!m_dvdnav) return 0;
   return dvdnav_get_nr_of_subtitle_streams(m_dvdnav);
 }
@@ -561,7 +562,7 @@ int CDVDInputStreamNavigator::GetSubTitleStreamCount()
 int CDVDInputStreamNavigator::GetActiveAudioStream()
 {
   if (!m_dvdnav) return -1;
-  
+
   return dvdnav_get_active_audio_stream(m_dvdnav);
 }
 
@@ -570,15 +571,15 @@ std::string CDVDInputStreamNavigator::GetAudioStreamLanguage(int iId)
   if (!m_dvdnav) return NULL;
 
   CStdString strLanguage;
-   
+
   uint16_t lang = dvdnav_audio_stream_to_lang(m_dvdnav, iId);
   if (!g_LangCodeExpander.LookupDVDLangCode(strLanguage, lang)) strLanguage = "Unknown";
-  
+
   return strLanguage;
 }
 
 int CDVDInputStreamNavigator::GetAudioStreamCount()
-{ 
+{
   if (!m_dvdnav) return 0;
   return dvdnav_get_nr_of_audio_streams(m_dvdnav);
 }
@@ -587,10 +588,10 @@ bool CDVDInputStreamNavigator::GetHighLightArea(int* iXStart, int* iXEnd, int* i
 {
   dvdnav_highlight_area_t hl;
   int iCurrentButton = 0;
-  
+
   if (!m_dvdnav) return false;
-  
-  if (DVDNAV_STATUS_OK == dvdnav_get_highlight_area(dvdnav_get_current_nav_pci(m_dvdnav), iButton, 0/*mode? spu stream?*/, &hl))
+
+  if (DVDNAV_STATUS_OK == dvdnav_get_highlight_area(dvdnav_get_current_nav_pci(m_dvdnav), iButton, 0 /*mode? spu stream?*/, &hl))
   {
     // button cropping information
     *iXStart = hl.sx;
@@ -599,7 +600,7 @@ bool CDVDInputStreamNavigator::GetHighLightArea(int* iXStart, int* iXEnd, int* i
     *iYEnd = hl.ey;
     return true;
   }
-  
+
   return false;
 }
 
@@ -611,18 +612,18 @@ bool CDVDInputStreamNavigator::GetButtonInfo(DVDOverlayPicture* pOverlayPicture,
   int iButtonType = 0; // 0 = selection, 1 = action (clicked)
 
   if (!m_dvdnav || dvdnav_get_button_info(m_dvdnav, alpha, color) < 0) return false;
-  
+
   pOverlayPicture->alpha[0] = alpha[iButtonType][0];
   pOverlayPicture->alpha[1] = alpha[iButtonType][1];
   pOverlayPicture->alpha[2] = alpha[iButtonType][2];
   pOverlayPicture->alpha[3] = alpha[iButtonType][3];
-  
+
   int i;
   for (i = 0; i < 3; i++) pOverlayPicture->color[0][i] = pSPU->m_clut[color[iButtonType][0]][i];
   for (i = 0; i < 3; i++) pOverlayPicture->color[1][i] = pSPU->m_clut[color[iButtonType][1]][i];
   for (i = 0; i < 3; i++) pOverlayPicture->color[2][i] = pSPU->m_clut[color[iButtonType][2]][i];
   for (i = 0; i < 3; i++) pOverlayPicture->color[3][i] = pSPU->m_clut[color[iButtonType][3]][i];
-  
+
   return true;
 }
 

@@ -22,7 +22,7 @@
 #include "StringUtils.h"
 using namespace std;
 
-//	guilib internal
+// guilib internal
 #include "tinyxml/tinyxml.h"
 #include "GUIWindowManager.h"
 #include "LocalizeStrings.h"
@@ -50,7 +50,7 @@ using namespace XFILE;
 #include "AutoPtrHandle.h"
 using namespace AUTOPTR;
 
-//	Often used
+// Often used
 #include "GUIDialogOK.h"
 #include "GUIDialogProgress.h"
 #include "GUIDialogYesNo.h"
