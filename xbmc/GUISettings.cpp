@@ -198,9 +198,9 @@ CGUISettings::CGUISettings(void)
 	AddBool(5,"AudioOutput.AC3PassThrough", 364, true);
 	AddBool(6,"AudioOutput.DTSPassThrough", 254, true);
 	AddBool(7,"AudioOutput.HighQualityResampling", 473, true);
-	AddFloat(8,"AudioOutput.Headroom", 494, 6.0f, 0.0f, 6.0f, 12.0f);
+	AddInt(8,"AudioOutput.Headroom", 494, 6, 0, 6, 12, SPIN_CONTROL_INT_PLUS, "%i.0 dB");
 	// don't show the one underneath here
-	AddFloat(1,"AudioVideo.VolumeAmplification", 290, 0.0f, -200.0f, 1.0f, 60.0f);
+	AddInt(1,"AudioVideo.VolumeAmplification", 290, 0, -200, 1, 60, SPIN_CONTROL_INT_PLUS, "%i.0 dB");
 	// System settings
 	AddGroup(4, 13000);
 	AddCategory(4, "System", 13000);
@@ -256,9 +256,27 @@ CGUISettings::CGUISettings(void)
 	AddString(1,"MyVideos.Calibrate", 214, "", BUTTON_CONTROL_STANDARD);
 	AddBool(2, "MyVideos.WidescreenSwitching", 223, false);
 	AddBool(3, "MyVideos.PAL60Switching", 226, true);
-	AddBool(4, "MyVideos.FrameRateConversions", 336, true);
+	AddBool(4, "MyVideos.FrameRateConversions", 336, false);
 	AddBool(5, "MyVideos.UseGUIResolution", 495, true);
 	AddInt(6,"MyVideos.OSDTimeout", 472, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, "%i secs");
+
+	AddCategory(5, "VideoLists", 14018);
+	AddBool(1,"VideoLists.HideParentDirItems", 13306, true);
+	AddBool(2,"VideoLists.UseAutoSwitching", 14011, false);
+	AddBool(3,"VideoLists.AutoSwitchUseLargeThumbs", 14012, false);
+	AddInt(4,"VideoLists.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
+	AddInt(5,"VideoLists.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, "%i%%");
+	
+	AddCategory(5, "PostProcessing", 14041);
+	AddBool(1, "PostProcessing.DeInterlace", 285, false);
+	AddBool(2, "PostProcessing.Enable", 286, false);
+	AddBool(3, "PostProcessing.Auto", 307, true);	// only has effect if PostProcessing.Enable is on.
+	AddBool(4, "PostProcessing.VerticalDeBlocking", 308, false);
+	AddInt(5, "PostProcessing.VerticalDeBlockLevel", 308, 0, 0, 1, 100, SPIN_CONTROL_INT);
+	AddBool(6, "PostProcessing.HorizontalDeBlocking", 309, false);
+	AddInt(7, "PostProcessing.HorizontalDeBlockLevel", 309, 0, 0, 1, 100, SPIN_CONTROL_INT);
+	AddBool(8, "PostProcessing.AutoBrightnessContrastLevels", 310, false);
+	AddBool(9, "PostProcessing.DeRing", 311, false);
 
 	AddCategory(5, "Filters", 230);
 	AddInt(1, "Filters.Flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT);
@@ -273,24 +291,6 @@ CGUISettings::CGUISettings(void)
 	AddBool(6, "Subtitles.FlipBiDiCharSet", 13304, false);
 	AddInt(7, "Subtitles.EnlargePercentage", 492, 0, 0, 10, 200, SPIN_CONTROL_INT_PLUS, "%i%%");
 
-	AddCategory(5, "PostProcessing", 14041);
-	AddBool(1, "PostProcessing.DeInterlace", 285, false);
-	AddBool(2, "PostProcessing.Enable", 286, false);
-	AddBool(3, "PostProcessing.Auto", 307, true);	// only has effect if PostProcessing.Enable is on.
-	AddBool(4, "PostProcessing.VerticalDeBlocking", 308, false);
-	AddInt(5, "PostProcessing.VerticalDeBlockLevel", 308, 0, 0, 1, 100, SPIN_CONTROL_INT);
-	AddBool(6, "PostProcessing.HorizontalDeBlocking", 309, false);
-	AddInt(7, "PostProcessing.HorizontalDeBlockLevel", 309, 0, 0, 1, 100, SPIN_CONTROL_INT);
-	AddBool(8, "PostProcessing.AutoBrightnessContrastLevels", 310, false);
-	AddBool(9, "PostProcessing.DeRing", 311, false);
-
-	AddCategory(5, "VideoLists", 14018);
-	AddBool(1,"VideoLists.HideParentDirItems", 13306, true);
-	AddBool(2,"VideoLists.UseAutoSwitching", 14011, false);
-	AddBool(3,"VideoLists.AutoSwitchUseLargeThumbs", 14012, false);
-	AddInt(4,"VideoLists.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
-	AddInt(5,"VideoLists.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, "%i%%");
-	
 	AddCategory(5, "Audio", 481);
 
 	// network settings
@@ -324,14 +324,14 @@ CGUISettings::CGUISettings(void)
 	AddBool(6, "LookAndFeel.EnableRSSFeeds", 13305, true);
 	AddString(7, "LookAndFeel.GUICentering", 213, "", BUTTON_CONTROL_STANDARD);
 
+	AddCategory(7, "FileLists", 14018);
+	AddBool(1,"FileLists.HideExtensions", 497, false);
+	AddBool(2,"FileLists.HideParentDirItems", 13306, false);
+
 	AddCategory(7, "ScreenSaver", 360);
 	AddString(1, "ScreenSaver.Mode", 356, "Dim", SPIN_CONTROL_TEXT);
 	AddInt(2, "ScreenSaver.Time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, "%i mins");
 	AddInt(3, "ScreenSaver.DimLevel", 362, 20, 10, 10, 80, SPIN_CONTROL_INT_PLUS, "%i%%");
-
-	AddCategory(7, "FileLists", 14018);
-	AddBool(1,"FileLists.HideExtensions", 497, false);
-	AddBool(2,"FileLists.HideParentDirItems", 13306, false);
 
 	AddCategory(7, "UIFilters", 230);
 	AddInt(1, "UIFilters.Flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT);

@@ -840,7 +840,7 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 
 		if (1 /* bIsVideo*/) 
 		{
-			options.SetVolumeAmplification(g_guiSettings.GetFloat("AudioVideo.VolumeAmplification"));
+			options.SetVolumeAmplification((float)g_guiSettings.GetInt("AudioVideo.VolumeAmplification"));
 		}
 
 		//Make sure we set the dvd-device parameter if we are playing dvdimages or dvdfolders

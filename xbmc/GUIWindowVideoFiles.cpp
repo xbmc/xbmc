@@ -337,7 +337,7 @@ void CGUIWindowVideoFiles::SortItems(VECFILEITEMS& items)
 void CGUIWindowVideoFiles::Update(const CStdString &strDirectory)
 {
 	UpdateDir(strDirectory);
-	if (!m_strDirectory.IsEmpty() && g_guiSettings.GetBool("VideoLists.AutoSwitchUseLargeThumbs"))
+	if (!m_strDirectory.IsEmpty() && g_guiSettings.GetBool("VideoLists.UseAutoSwitching"))
 	{
 		m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
 
