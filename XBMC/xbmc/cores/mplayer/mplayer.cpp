@@ -34,7 +34,6 @@ void					(__cdecl*	pVODrawAlphargb16)(int w,int h,	unsigned char* src,	unsigned 
 __int64				(__cdecl*	pGetPTS)();
 BOOL					(__cdecl*	pHasVideo)();
 BOOL					(__cdecl*	pHasAudio)();
-void					(__cdecl*	pyv12toyuy2)(const unsigned	char *ysrc,	const	unsigned char	*usrc, const unsigned	char *vsrc,	unsigned char	*dst,unsigned	int	width, unsigned	int	height,int lumStride,	int	chromStride, int dstStride);
 int						(__cdecl*	pImageOutput)(IMAGE	*	image, unsigned	int	width,int	height,unsigned	int	edged_width, unsigned	char * dst[4], unsigned	int	dst_stride[4],int	csp,int	interlaced);
 void					(__cdecl*	pInitColorConversions)();
 void					(__cdecl*	pSetCacheSize)(int);
@@ -66,6 +65,7 @@ int						(__cdecl*	pgetSubtitleStreamInfo)(int	iStream, stream_language_t*	strea
 int						(__cdecl*	pgetTime)();
 __int64				(__cdecl*	pgetCurrentTime)();
 void					(__cdecl*	pShowOSD)(int);
+void					(__cdecl* pGetCurrentModule)(char* s, int n);
 
 extern "C" 
 {
@@ -220,11 +220,6 @@ extern "C"
 		return pHasAudio();
 	}
 
-	void yv12toyuy2(const unsigned char *ysrc, const unsigned char *usrc, const unsigned char *vsrc, unsigned char *dst,unsigned int width, unsigned int height,int lumStride, int chromStride, int dstStride)
-	{
-		pyv12toyuy2(ysrc, usrc, vsrc, dst,width, height,lumStride, chromStride, dstStride);
-	}
-
 	void mplayer_put_key(int code)
 	{
 		pMplayerPutKey(code);
@@ -328,174 +323,67 @@ extern "C"
 		return pGetPTS();
 	}
 
+	void mplayer_get_current_module(char* s, int n)
+	{
+		pGetCurrentModule(s, n);
+	}
+
 	void mplayer_load_dll(DllLoader& dll)
 	{
-
-		void* pProc;
-		dll.ResolveExport("audio_out_format_bits", &pProc);
-		pAudioOutFormatBits=(int (__cdecl*)(int))pProc;
-
-		dll.ResolveExport("SetVideoFunctions", &pProc);
-		pSetVideoFunctions=(void (__cdecl*)(vo_functions_t*))pProc;
-
-		dll.ResolveExport("GetAOData", &pProc);
-		pGetAOData=(ao_data_t* (__cdecl*)())pProc;
-
-		dll.ResolveExport("SetAudioFunctions", &pProc);
-		pSetAudioFunctions=(void (__cdecl*)(ao_functions_t* ))pProc;
-
-		dll.ResolveExport("mplayer_init", &pProc);
-		pInitPlayer=(int (__cdecl*)(int argc, char* argvp[]))pProc;
-
-		dll.ResolveExport("mplayer_open_file", &pProc);
-		pOpenFile=(int (__cdecl*)(const char* ))pProc;
-
-		dll.ResolveExport("mplayer_process", &pProc);
-		pProcess=(int (__cdecl*)())pProc;
-
-
-		dll.ResolveExport("mplayer_close_file", &pProc);
-		pCloseFile=(int (__cdecl*)())pProc;
-
-		dll.ResolveExport("mplayer_put_key", &pProc);
-		pMplayerPutKey=(void (__cdecl*)(int))pProc;
-
-		dll.ResolveExport("vo_draw_text", &pProc);
-		pVODrawText=(void (__cdecl*)(int dxs,int dys,void (*draw_alpha)(int x0,int y0, int w,int h, unsigned char* src, unsigned char *srca, int stride)))pProc;
-
-
-		dll.ResolveExport("aspect_save_screenres", &pProc);
-		pAspectSaveScreenres=(void (__cdecl*)(int scrw, int scrh))pProc;
-
-		dll.ResolveExport("aspect_save_prescale", &pProc);
-		pAspectSavePrescale=(void (__cdecl*)(int scrw, int scrh))pProc;
-
-		dll.ResolveExport("aspect_save_orig", &pProc);
-		pAspectSaveOrig=(void (__cdecl*)(int scrw, int scrh))pProc;
-
-		dll.ResolveExport("aspect", &pProc);
-		pAspect=(void (__cdecl*)(unsigned int*,unsigned int*, int ))pProc;
-
-		dll.ResolveExport("vo_draw_alpha_yv12", &pProc);
-		pVODrawAlphayv12=(void (__cdecl*)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride))pProc;
-
-		dll.ResolveExport("vo_draw_alpha_yuy2", &pProc);
-		pVODrawAlphayuy2=(void (__cdecl*)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride))pProc;
-
-		dll.ResolveExport("vo_draw_alpha_rgb24", &pProc);
-		pVODrawAlphargb24=(void (__cdecl*)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride))pProc;
-
-		dll.ResolveExport("vo_draw_alpha_rgb32", &pProc);
-		pVODrawAlphargb32=(void (__cdecl*)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride))pProc;
-
-		dll.ResolveExport("vo_draw_alpha_rgb15", &pProc);
-		pVODrawAlphargb15=(void (__cdecl*)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride))pProc;
-
-		dll.ResolveExport("vo_draw_alpha_rgb16", &pProc);
-		pVODrawAlphargb16=(void (__cdecl*)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride))pProc;
-
-		dll.ResolveExport("mplayer_get_pts", &pProc);
-		pGetPTS=(__int64 (__cdecl*)())pProc;
-
-		dll.ResolveExport("mplayer_HasVideo", &pProc);
-		pHasVideo=(BOOL (__cdecl*)())pProc;
-
-		dll.ResolveExport("mplayer_HasAudio", &pProc);
-		pHasAudio=(BOOL (__cdecl*)())pProc;
-
-		dll.ResolveExport("yv12toyuy2_C", &pProc);
-		pyv12toyuy2= (void (__cdecl*)(const unsigned char *ysrc, const unsigned char *usrc, const unsigned char *vsrc, unsigned char *dst,unsigned int width, unsigned int height,int lumStride, int chromStride, int dstStride))pProc;
-
-		dll.ResolveExport("image_output", &pProc);
-		pImageOutput=(int (__cdecl*)(IMAGE * image, unsigned int width,int height,unsigned int edged_width, unsigned char * dst[4], unsigned int dst_stride[4],int csp,int interlaced))pProc;
-
-		dll.ResolveExport("init_color_conversions", &pProc);
-		pInitColorConversions=(void(__cdecl*)())pProc;
-
-		dll.ResolveExport("mplayer_setcache_size", &pProc);
-		pSetCacheSize=(void(__cdecl*)(int))pProc;
-
-		dll.ResolveExport("mplayer_GetAudioInfo", &pProc);
-		pGetAudioInfo=(void(__cdecl*)(char* strFourCC,char* strAudioCodec, long* bitrate, long* samplerate, int* channels, BOOL* bVBR))pProc;
-
-		dll.ResolveExport("mplayer_GetVideoInfo", &pProc);
-		pGetVideoInfo=(void(__cdecl*)(char* strFourCC,char* strVideoCodec, float* fps, unsigned int* iWidth,unsigned int* iHeight, long* tooearly, long* toolate))pProc;
-
-		dll.ResolveExport("mplayer_GetGeneralInfo", &pProc);
-		pGetGeneralInfo=(void(__cdecl*)(long* lFramesDropped, int* iQuality, int* iCacheFilled, float* fTotalCorrection, float* fAVDelay))pProc;
-
-		dll.ResolveExport("mplayer_setAVDelay", &pProc);
-		psetAVDelay=(void(__cdecl*)(float))pProc;
-
-		dll.ResolveExport("mplayer_setSubtitleDelay", &pProc);
-		psetSubtitleDelay=(void(__cdecl*)(float))pProc;
-
-		dll.ResolveExport("mplayer_setPercentage", &pProc);
-		psetPercentage=(void(__cdecl*)(int))pProc;
-
-		dll.ResolveExport("mplayer_getAVDelay", &pProc);
-		pgetAVDelay=(float(__cdecl*)())pProc;
-
-		dll.ResolveExport("mplayer_getSubtitleDelay", &pProc);
-		pgetSubtitleDelay=(float(__cdecl*)())pProc;
-
-		dll.ResolveExport("mplayer_getPercentage", &pProc);
-		pgetPercentage=(int(__cdecl*)())pProc;
-
-		dll.ResolveExport("mplayer_getSubtitle", &pProc);
-		pgetSubtitle=(int(__cdecl*)())pProc;
-
-		dll.ResolveExport("mplayer_getSubtitleCount", &pProc);
-		pgetSubtitleCount=(int(__cdecl*)())pProc;
-
-		dll.ResolveExport("mplayer_getSubtitleStreamInfo", &pProc);
-		pgetSubtitleStreamInfo=(int(__cdecl*)(int, stream_language_t*))pProc;
-
-		dll.ResolveExport("mplayer_SubtitleVisible", &pProc);
-		pgetSubtitleVisible=(int(__cdecl*)())pProc;
-
-
-		dll.ResolveExport("mplayer_setPercentage", &pProc);
-		psetPercentage=(void(__cdecl*)(int))pProc;
-
-		dll.ResolveExport("mplayer_setSubtitle", &pProc);
-		psetSubtitle=(void(__cdecl*)(int))pProc;
-
-		dll.ResolveExport("mplayer_showSubtitle", &pProc);
-		pshowSubtitle=(void(__cdecl*)(int))pProc;
-
-		dll.ResolveExport("mplayer_getAudioLanguageCount", &pProc);
-		pgetAudioLanguageCount=(int(__cdecl*)())pProc;
-
-		dll.ResolveExport("mplayer_getAudioLanguage", &pProc);
-		pgetAudioLanguage=(int(__cdecl*)())pProc;
-
-		dll.ResolveExport("mplayer_getAudioStream", &pProc);
-		pgetAudioStream=(int(__cdecl*)())pProc;
-
-		dll.ResolveExport("mplayer_getAudioStreamCount", &pProc);
-		pgetAudioStreamCount=(int(__cdecl*)())pProc;
-
-		dll.ResolveExport("mplayer_getAudioStreamInfo", &pProc);
-		pgetAudioStreamInfo=(int(__cdecl*)(int, stream_language_t*))pProc;
-
-		dll.ResolveExport("mplayer_setAudioLanguage", &pProc);
-		psetAudioLanguage=(void(__cdecl*)(int))pProc;
-
-		dll.ResolveExport("mplayer_setTime", &pProc);
-		psetTime=(void(__cdecl*)(int))pProc;
-
-		dll.ResolveExport("mplayer_getTime", &pProc);
-		pgetTime=(int(__cdecl*)())pProc;
-
-		dll.ResolveExport("mplayer_ToFFRW", &pProc);
-		pToFFRW=(void(__cdecl*)(int))pProc;
-
-		dll.ResolveExport("mplayer_getCurrentTime", &pProc);
-		pgetCurrentTime=(__int64(__cdecl*)())pProc;
-
-		dll.ResolveExport("mplayer_showosd", &pProc);
-		pShowOSD=(void(__cdecl*)(int))pProc;
+		dll.ResolveExport("audio_out_format_bits", (void**)&pAudioOutFormatBits);
+		dll.ResolveExport("SetVideoFunctions", (void**)&pSetVideoFunctions);
+		dll.ResolveExport("GetAOData", (void**)&pGetAOData);
+		dll.ResolveExport("SetAudioFunctions", (void**)&pSetAudioFunctions);
+		dll.ResolveExport("mplayer_init", (void**)&pInitPlayer);
+		dll.ResolveExport("mplayer_open_file", (void**)&pOpenFile);
+		dll.ResolveExport("mplayer_process", (void**)&pProcess);
+		dll.ResolveExport("mplayer_close_file", (void**)&pCloseFile);
+		dll.ResolveExport("mplayer_put_key", (void**)&pMplayerPutKey);
+		dll.ResolveExport("vo_draw_text", (void**)&pVODrawText);
+		dll.ResolveExport("aspect_save_screenres", (void**)&pAspectSaveScreenres);
+		dll.ResolveExport("aspect_save_prescale", (void**)&pAspectSavePrescale);
+		dll.ResolveExport("aspect_save_orig", (void**)&pAspectSaveOrig);
+		dll.ResolveExport("aspect", (void**)&pAspect);
+		dll.ResolveExport("vo_draw_alpha_yv12", (void**)&pVODrawAlphayv12);
+		dll.ResolveExport("vo_draw_alpha_yuy2", (void**)&pVODrawAlphayuy2);
+		dll.ResolveExport("vo_draw_alpha_rgb24", (void**)&pVODrawAlphargb24);
+		dll.ResolveExport("vo_draw_alpha_rgb32", (void**)&pVODrawAlphargb32);
+		dll.ResolveExport("vo_draw_alpha_rgb15", (void**)&pVODrawAlphargb15);
+		dll.ResolveExport("vo_draw_alpha_rgb16", (void**)&pVODrawAlphargb16);
+		dll.ResolveExport("mplayer_get_pts", (void**)&pGetPTS);
+		dll.ResolveExport("mplayer_HasVideo", (void**)&pHasVideo);
+		dll.ResolveExport("mplayer_HasAudio", (void**)&pHasAudio);
+		dll.ResolveExport("image_output", (void**)&pImageOutput);
+		dll.ResolveExport("init_color_conversions", (void**)&pInitColorConversions);
+		dll.ResolveExport("mplayer_setcache_size", (void**)&pSetCacheSize);
+		dll.ResolveExport("mplayer_GetAudioInfo", (void**)&pGetAudioInfo);
+		dll.ResolveExport("mplayer_GetVideoInfo", (void**)&pGetVideoInfo);
+		dll.ResolveExport("mplayer_GetGeneralInfo", (void**)&pGetGeneralInfo);
+		dll.ResolveExport("mplayer_setAVDelay", (void**)&psetAVDelay);
+		dll.ResolveExport("mplayer_setSubtitleDelay", (void**)&psetSubtitleDelay);
+		dll.ResolveExport("mplayer_setPercentage", (void**)&psetPercentage);
+		dll.ResolveExport("mplayer_getAVDelay", (void**)&pgetAVDelay);
+		dll.ResolveExport("mplayer_getSubtitleDelay", (void**)&pgetSubtitleDelay);
+		dll.ResolveExport("mplayer_getPercentage", (void**)&pgetPercentage);
+		dll.ResolveExport("mplayer_getSubtitle", (void**)&pgetSubtitle);
+		dll.ResolveExport("mplayer_getSubtitleCount", (void**)&pgetSubtitleCount);
+		dll.ResolveExport("mplayer_getSubtitleStreamInfo", (void**)&pgetSubtitleStreamInfo);
+		dll.ResolveExport("mplayer_SubtitleVisible", (void**)&pgetSubtitleVisible);
+		dll.ResolveExport("mplayer_setPercentage", (void**)&psetPercentage);
+		dll.ResolveExport("mplayer_setSubtitle", (void**)&psetSubtitle);
+		dll.ResolveExport("mplayer_showSubtitle", (void**)&pshowSubtitle);
+		dll.ResolveExport("mplayer_getAudioLanguageCount", (void**)&pgetAudioLanguageCount);
+		dll.ResolveExport("mplayer_getAudioLanguage", (void**)&pgetAudioLanguage);
+		dll.ResolveExport("mplayer_getAudioStream", (void**)&pgetAudioStream);
+		dll.ResolveExport("mplayer_getAudioStreamCount", (void**)&pgetAudioStreamCount);
+		dll.ResolveExport("mplayer_getAudioStreamInfo", (void**)&pgetAudioStreamInfo);
+		dll.ResolveExport("mplayer_setAudioLanguage", (void**)&psetAudioLanguage);
+		dll.ResolveExport("mplayer_setTime", (void**)&psetTime);
+		dll.ResolveExport("mplayer_getTime", (void**)&pgetTime);
+		dll.ResolveExport("mplayer_ToFFRW", (void**)&pToFFRW);
+		dll.ResolveExport("mplayer_getCurrentTime", (void**)&pgetCurrentTime);
+		dll.ResolveExport("mplayer_showosd", (void**)&pShowOSD);
+		dll.ResolveExport("mplayer_get_current_module", (void**)&pGetCurrentModule);
 
 		pSetVideoFunctions(&video_functions);
 		pSetAudioFunctions(&audio_functions);

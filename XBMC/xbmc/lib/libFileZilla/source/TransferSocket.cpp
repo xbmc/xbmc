@@ -128,12 +128,12 @@ CTransferSocket::~CTransferSocket()
 
 
 //Die folgenden Zeilen nicht bearbeiten. Sie werden vom Klassen-Assistenten benötigt.
-#if 0
+/*
 BEGIN_MESSAGE_MAP(CTransferSocket, CAsyncSocketEx)
 	//{{AFX_MSG_MAP(CTransferSocket)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
-#endif	// 0
+*/
 
 /////////////////////////////////////////////////////////////////////////////
 // Member-Funktion CTransferSocket

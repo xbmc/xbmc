@@ -672,26 +672,6 @@ bool CMPlayer::openfile(const CStdString& strFile)
 					bNeed2Restart=true;
 				}
 			}
-#if 0
-			// check if AC3 passthrough is enabled in MS dashboard
-			// ifso we need 2 check if this movie has AC3 5.1 sound and if thats true
-			// we reopen the movie with the ac3 5.1 passthrough audio filter
-			bool bAc3PassTru(false);
-			if (iChannels==2 && g_stSettings.m_bDDStereoPassThrough) bAc3PassTru=true;
-			if (iChannels> 2 && g_stSettings.m_bDD_DTSMultiChannelPassThrough) bAc3PassTru=true;
-
-			if (g_stSettings.m_bUseDigitalOutput && bSupportsSPDIFOut && bAc3PassTru )
-			{
-				// and the movie has an AC3 audio stream
-				if ( strstr(strAudioCodec,"AC3-liba52") && (lSampleRate==48000) )
-				{
-					options.SetChannels(2);
-					options.SetAC3PassTru(true);
-					bNeed2Restart=true;
-					CLog::Log("  --restart cause we use ac3 passtru");
-				}
-			}
-#endif
 			// if we dont have ac3 passtru enabled
 			if (!options.GetAC3PassTru())
 			{
@@ -864,7 +844,9 @@ void CMPlayer::Process()
 		}
 		catch(...)
 		{
-			CLog::Log("mplayer generated exception!");
+			char module[100];
+			mplayer_get_current_module(module, sizeof(module));
+			CLog::Log("mplayer generated exception in %s", module);
 		}
 		if (!m_bStop)
 			xbox_audio_wait_completion();
