@@ -63,11 +63,11 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAdres
 	}
 	if (pDns)
 	{
-		CLog::Log("DNS lookup for %s failed: %u", strHostName.c_str(), pDns->iStatus);
+		CLog::Log(LOGERROR, "DNS lookup for %s failed: %u", strHostName.c_str(), pDns->iStatus);
 		XNetDnsRelease(pDns);
 	}
 	else
-		CLog::Log("DNS lookup for %s failed: %u", strHostName.c_str(), err);
+		CLog::Log(LOGERROR, "DNS lookup for %s failed: %u", strHostName.c_str(), err);
 	WSACloseEvent(hEvent);
 	return false;
 }

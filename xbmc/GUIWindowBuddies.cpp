@@ -533,7 +533,7 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 
 void CGUIWindowBuddies::Enter(CArenaItem& aArena)
 {
-	CLog::Log("CGUIWindowBuddies::Enter");	
+	CLog::Log(LOGDEBUG, "CGUIWindowBuddies::Enter");	
 	ChangeState(State::Arenas);
 	CKaiClient::GetInstance()->EnterVector(aArena.m_strVector);
 }
@@ -581,7 +581,7 @@ void CGUIWindowBuddies::OnContactOnline(CStdString& aFriend)
 
 void CGUIWindowBuddies::OnContactPing(CStdString& aFriend, CStdString& aVector, CStdString& aPing)
 {
-//	CLog::Log("CGUIWindowBuddies::OnContactPing");	
+//	CLog::Log(LOGINFO, "CGUIWindowBuddies::OnContactPing");	
 
 	CGUIList::GUILISTITEMS& list = m_friends.Lock();
 
@@ -598,7 +598,7 @@ void CGUIWindowBuddies::OnContactPing(CStdString& aFriend, CStdString& aVector, 
 
 void CGUIWindowBuddies::OnContactRemove(CStdString& aFriend)
 {
-	CLog::Log("CGUIWindowBuddies::OnContactRemove");	
+	CLog::Log(LOGDEBUG, "CGUIWindowBuddies::OnContactRemove");	
 	m_friends.Remove(aFriend);
 }
 
@@ -669,7 +669,7 @@ void CGUIWindowBuddies::Play(CStdString& aVector)
 
 void CGUIWindowBuddies::OnSupportedTitle(DWORD aTitleId, CStdString& aVector)
 {
-	CLog::Log("CGUIWindowBuddies::OnSupportedTitle");	
+	CLog::Log(LOGDEBUG, "CGUIWindowBuddies::OnSupportedTitle");	
 
 	INT arenaDelimiter = aVector.ReverseFind('/')+1;
 	CStdString arenaLabel = aVector.Mid(arenaDelimiter);
@@ -689,7 +689,7 @@ void CGUIWindowBuddies::OnSupportedTitle(DWORD aTitleId, CStdString& aVector)
 
 void CGUIWindowBuddies::OnEnterArena(CStdString& aVector)
 {
-	CLog::Log("CGUIWindowBuddies::OnEnterArena");	
+	CLog::Log(LOGDEBUG, "CGUIWindowBuddies::OnEnterArena");	
 
 	m_arena.Clear();
 
@@ -698,7 +698,7 @@ void CGUIWindowBuddies::OnEnterArena(CStdString& aVector)
 
 void CGUIWindowBuddies::OnNewArena(CStdString& aVector)
 {
-	CLog::Log("CGUIWindowBuddies::OnNewArena");	
+	CLog::Log(LOGDEBUG, "CGUIWindowBuddies::OnNewArena");	
 
 	INT arenaDelimiter = aVector.ReverseFind('/')+1;
 	CStdString arenaLabel = aVector.Mid(arenaDelimiter);
@@ -718,7 +718,7 @@ void CGUIWindowBuddies::OnNewArena(CStdString& aVector)
 
 void CGUIWindowBuddies::OnOpponentEnter(CStdString& aOpponent)
 {
-	CLog::Log("CGUIWindowBuddies::OnOpponentEnter");	
+	CLog::Log(LOGDEBUG, "CGUIWindowBuddies::OnOpponentEnter");	
 
 	CGUIList::GUILISTITEMS& list = m_arena.Lock();
 
@@ -751,6 +751,6 @@ void CGUIWindowBuddies::OnOpponentPing(CStdString& aOpponent, CStdString& aPing)
 
 void CGUIWindowBuddies::OnOpponentLeave(CStdString& aOpponent)
 {
-	CLog::Log("CGUIWindowBuddies::OnOpponentLeave");	
+	CLog::Log(LOGDEBUG, "CGUIWindowBuddies::OnOpponentLeave");	
 	m_arena.Remove(aOpponent);
 }

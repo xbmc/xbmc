@@ -864,7 +864,7 @@ void RunCredits()
 	GlobalMemoryStatus(&stat);
 	if (stat.dwAvailPhys < 10*1024*1024)
 	{
-		CLog::Log("Not enough memory to display credits");
+		CLog::Log(LOGERROR, "Not enough memory to display credits");
 		D3DDevice::SetGammaRamp(D3DSGR_IMMEDIATE, &StartRamp);
 		g_graphicsContext.SetVideoResolution(res, FALSE);
 		g_graphicsContext.Unlock();
@@ -875,7 +875,7 @@ void RunCredits()
 
 	if (FAILED(InitLogo()))
 	{
-		CLog::Log("Unable to load credits logo");
+		CLog::Log(LOGERROR, "Unable to load credits logo");
 		D3DDevice::SetGammaRamp(D3DSGR_IMMEDIATE, &StartRamp);
 		CleanupLogo();
 		g_graphicsContext.SetVideoResolution(res, FALSE);

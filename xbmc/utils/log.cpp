@@ -5,6 +5,7 @@
 #include "criticalsection.h"
 #include "singlelock.h"
 #include "StdString.h"
+#include "../Settings.h"
 
 static CLog g_logger;
 
@@ -22,6 +23,9 @@ static char tmp[16384];
 FILE* CLog::fd = NULL;
 CCriticalSection critSec;
 
+
+
+
 void CLog::Close()
 {
 	CSingleLock waitLock(critSec);
@@ -32,41 +36,48 @@ void CLog::Close()
   }
 }
 
-void CLog::Log(const char *format, ... )
+
+void CLog::Log(int loglevel, const char *format, ... )
 {
-	CSingleLock waitLock(critSec);
-	va_list va;
+	if (loglevel >= g_stSettings.m_iLogLevel)
+	{
+		CSingleLock waitLock(critSec);
+		CStdString str = levelNames[loglevel];
+		str+=" ";
+		va_list va;
 
-	if (!fd)
-		fd=_fsopen("Q:\\xbmc.log","a+",_SH_DENYWR);
-	if (!fd)
-		return;
+		if (!fd)
+			fd=_fsopen("Q:\\xbmc.log","a+",_SH_DENYWR);
+		if (!fd)
+			return;
 
-  SYSTEMTIME time;
-	GetLocalTime(&time);
-  CStdString strTime;
-  strTime.Format("%02.2d-%02.2d-%04.4d %02.2d:%02.2d:%02.2d ",time.wDay,time.wMonth,time.wYear,time.wHour,time.wMinute,time.wSecond);
+		SYSTEMTIME time;
+		GetLocalTime(&time);
+		CStdString strTime;
+		strTime.Format("%02.2d-%02.2d-%04.4d %02.2d:%02.2d:%02.2d ",time.wDay,time.wMonth,time.wYear,time.wHour,time.wMinute,time.wSecond);
 
-	va_start(va, format);
-	_vsnprintf(tmp, 16384, format, va);
-	va_end(va);
+		va_start(va, format);
+		_vsnprintf(tmp, 16384, format, va);
+		va_end(va);
 
-	while (1)
-  {
-    int ilen=strlen(tmp);
-    if (ilen <=0) break;
-    if ( tmp[ilen-1] == '\n' || tmp[ilen-1] == '\r' || tmp[ilen-1] ==' ') tmp[ilen-1]=0;
-    else break;
-  }
+		while (1)
+		{
+			int ilen=strlen(tmp);
+			if (ilen <=0) break;
+			if ( tmp[ilen-1] == '\n' || tmp[ilen-1] == '\r' || tmp[ilen-1] ==' ') tmp[ilen-1]=0;
+			else break;
+		}
 
-	strcat(tmp,"\n");
-	tmp[16384-1] = 0;
+		strcat(tmp,"\n");
+		tmp[16384-1] = 0;
 
-	OutputDebugString(tmp);
-
-  fwrite(strTime.c_str(),strTime.size(),1,fd);
-  fwrite(tmp,strlen(tmp),1,fd);
-  fflush(fd);
+		OutputDebugString(tmp);
+	
+		fwrite(strTime.c_str(),strTime.size(),1,fd);
+		fwrite(str.c_str(),str.size(),1,fd);
+		fwrite(tmp,strlen(tmp),1,fd);
+		fflush(fd);
+	}
 }
 
 void CLog::DebugLog(const char *format, ... )

@@ -113,7 +113,7 @@ SidPlayer::~SidPlayer()
 
 void SidPlayer::displayError(const char *error)
 {
-	CLog::Log("%s: %s\n", m_name, error);
+	CLog::Log(LOGERROR, "%s: %s\n", m_name, error);
 }
 
 // Create the output object to process sound buffer
@@ -356,7 +356,7 @@ bool SidPlayer::openfile(const CStdString& strFile)
 		if (!file.Cache(strFile.c_str(),"Z:\\cachedsid",NULL,NULL))
 		{
 			::DeleteFile("Z:\\cachedsid");
-			CLog::Log("ModPlayer: Unable to cache file %s\n", strFile.c_str());
+			CLog::Log(LOGERROR, "ModPlayer: Unable to cache file %s\n", strFile.c_str());
 			return false;
 		}
 		m_filename = strdup("Z:\\cachedsid");

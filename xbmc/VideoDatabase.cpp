@@ -80,7 +80,7 @@ bool CVideoDatabase::Open()
   m_pDS.reset(m_pDB->CreateDataset());
 	if ( m_pDB->connect() != DB_CONNECTION_OK) 
 	{
-    CLog::Log("videodatabase::unable to open %s",videoDatabase.c_str());
+    CLog::Log(LOGERROR, "videodatabase::unable to open %s",videoDatabase.c_str());
 		Close();
     ::DeleteFile(videoDatabase.c_str());
 		return false;
@@ -90,7 +90,7 @@ bool CVideoDatabase::Open()
 	{
 		if (!CreateTables()) 
 		{
-      CLog::Log("videodatabase::unable to create %s",videoDatabase.c_str());
+      CLog::Log(LOGERROR, "videodatabase::unable to create %s",videoDatabase.c_str());
 			Close();
       ::DeleteFile(videoDatabase.c_str());
 			return false;
@@ -119,36 +119,36 @@ bool CVideoDatabase::CreateTables()
 
   try 
 	{
-    CLog::Log("create bookmark table");
+    CLog::Log(LOGINFO, "create bookmark table");
     m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, fPercentage text)\n");
 		
-    CLog::Log("create genre table");
+    CLog::Log(LOGINFO, "create genre table");
     m_pDS->exec("CREATE TABLE genre ( idGenre integer primary key, strGenre text)\n");
     
-    CLog::Log("create genrelinkmovie table");
+    CLog::Log(LOGINFO, "create genrelinkmovie table");
     m_pDS->exec("CREATE TABLE genrelinkmovie ( idGenre integer, idMovie integer)\n");
     
-    CLog::Log("create movie table");
+    CLog::Log(LOGINFO, "create movie table");
     m_pDS->exec("CREATE TABLE movie ( idMovie integer primary key, idPath integer, hasSubtitles integer, cdlabel text)\n");
     
-    CLog::Log("create movieinfo table");
+    CLog::Log(LOGINFO, "create movieinfo table");
     m_pDS->exec("CREATE TABLE movieinfo ( idMovie integer, idDirector integer, strPlotOutline text, strPlot text, strTagLine text, strVotes text, fRating text,strCast text,strCredits text, iYear integer, strGenre text, strPictureURL text, strTitle text, IMDBID text)\n");
     
-    CLog::Log("create actorlinkmovie table");
+    CLog::Log(LOGINFO, "create actorlinkmovie table");
     m_pDS->exec("CREATE TABLE actorlinkmovie ( idActor integer, idMovie integer )\n");
     
-    CLog::Log("create actors table");
+    CLog::Log(LOGINFO, "create actors table");
     m_pDS->exec("CREATE TABLE actors ( idActor integer primary key, strActor text )\n");
 
-    CLog::Log("create path table");
+    CLog::Log(LOGINFO, "create path table");
     m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text)\n");
     
-    CLog::Log("create files table");
+    CLog::Log(LOGINFO, "create files table");
     m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, idMovie integer,strFilename text)\n");
   }
   catch (...) 
 	{ 
-    CLog::Log("videodatabase::unable to create tables:%i",GetLastError());
+    CLog::Log(LOGERROR, "videodatabase::unable to create tables:%i",GetLastError());
 		return false;
 	}
 
@@ -179,7 +179,7 @@ long CVideoDatabase::AddFile(long lMovieId, long lPathId, const CStdString& strF
   }
   catch(...)
   {
-    CLog::Log("videodatabase:unable to addfile (%s)", strSQL.c_str());
+    CLog::Log(LOGERROR, "videodatabase:unable to addfile (%s)", strSQL.c_str());
   }
   return -1;
 }
@@ -237,7 +237,7 @@ long CVideoDatabase::GetFile(const CStdString& strFilenameAndPath, long &lPathId
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::GetFile(%s) failed",strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "CVideoDatabase::GetFile(%s) failed",strFilenameAndPath.c_str());
   }
   return -1;
 }
@@ -272,7 +272,7 @@ long CVideoDatabase::AddPath(const CStdString& strPath)
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::AddPath(%s) failed",strPath.c_str());
+    CLog::Log(LOGERROR, "CVideoDatabase::AddPath(%s) failed",strPath.c_str());
   }
 	return -1;
 }
@@ -296,7 +296,7 @@ long CVideoDatabase::GetPath(const CStdString& strPath)
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::GetPath(%s) failed",strPath.c_str());
+    CLog::Log(LOGERROR, "CVideoDatabase::GetPath(%s) failed",strPath.c_str());
   }
 	return -1;
 }
@@ -342,7 +342,7 @@ int CVideoDatabase::GetRecentMovies(long* pMovieIdArray, int nSize)
 	}
 	catch(...)
 	{
-		CLog::Log("CVideoDatabase::GetRecentMovies failed.");
+		CLog::Log(LOGERROR, "CVideoDatabase::GetRecentMovies failed.");
 	}
 
 	return count;
@@ -385,7 +385,7 @@ long CVideoDatabase::AddMovie(const CStdString& strFilenameAndPath, const CStdSt
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::AddMovie(%s,%s) failed",strFilenameAndPath.c_str() , strcdLabel.c_str() );
+    CLog::Log(LOGERROR, "CVideoDatabase::AddMovie(%s,%s) failed",strFilenameAndPath.c_str() , strcdLabel.c_str() );
   }
   return -1;
 }
@@ -424,7 +424,7 @@ long CVideoDatabase::AddGenre(const CStdString& strGenre1)
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::AddGenre(%s) failed",strGenre1.c_str() );
+    CLog::Log(LOGERROR, "CVideoDatabase::AddGenre(%s) failed",strGenre1.c_str() );
   }
 
 	return -1;
@@ -465,7 +465,7 @@ long CVideoDatabase::AddActor(const CStdString& strActor1)
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::AddActor(%s) failed",strActor1.c_str() );
+    CLog::Log(LOGERROR, "CVideoDatabase::AddActor(%s) failed",strActor1.c_str() );
   }
 	return -1;
 }
@@ -488,7 +488,7 @@ void CVideoDatabase::AddGenreToMovie(long lMovieId, long lGenreId)
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::AddGenreToMovie() failed");
+    CLog::Log(LOGERROR, "CVideoDatabase::AddGenreToMovie() failed");
   }
 }
 
@@ -511,7 +511,7 @@ void CVideoDatabase::AddActorToMovie(long lMovieId, long lActorId)
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::AddActorToMovie() failed");
+    CLog::Log(LOGERROR, "CVideoDatabase::AddActorToMovie() failed");
   }
 }
 
@@ -533,7 +533,7 @@ void CVideoDatabase::GetGenres(VECMOVIEGENRES& genres)
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::GetGenres() failed");
+    CLog::Log(LOGERROR, "CVideoDatabase::GetGenres() failed");
   }
 }
 
@@ -555,7 +555,7 @@ void CVideoDatabase::GetActors(VECMOVIEACTORS& actors)
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::GetActors() failed");
+    CLog::Log(LOGERROR, "CVideoDatabase::GetActors() failed");
   }
 }
 
@@ -579,7 +579,7 @@ bool CVideoDatabase::HasMovieInfo(const CStdString& strFilenameAndPath)
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::HasMovieInfo(%s) failed",strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "CVideoDatabase::HasMovieInfo(%s) failed",strFilenameAndPath.c_str());
   }
   return false;
 
@@ -608,7 +608,7 @@ bool CVideoDatabase::HasSubtitle(const CStdString& strFilenameAndPath)
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::HasSubtitle(%s) failed",strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "CVideoDatabase::HasSubtitle(%s) failed",strFilenameAndPath.c_str());
   }
   return false;
 }
@@ -636,7 +636,7 @@ void CVideoDatabase::DeleteMovieInfo(const CStdString& strFileNameAndPath)
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::DeleteMovieInfo(%s) failed",strFileNameAndPath.c_str());
+    CLog::Log(LOGERROR, "CVideoDatabase::DeleteMovieInfo(%s) failed",strFileNameAndPath.c_str());
   }
 }
 
@@ -685,7 +685,7 @@ void CVideoDatabase::GetMoviesByGenre(CStdString& strGenre1, VECMOVIES& movies)
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::GetMoviesByGenre(%s) failed",strGenre1.c_str());
+    CLog::Log(LOGERROR, "CVideoDatabase::GetMoviesByGenre(%s) failed",strGenre1.c_str());
   }
 }
 
@@ -733,7 +733,7 @@ void CVideoDatabase::GetMoviesByActor(CStdString& strActor1, VECMOVIES& movies)
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::GetMoviesByActor(%s) failed",strActor1.c_str());
+    CLog::Log(LOGERROR, "CVideoDatabase::GetMoviesByActor(%s) failed",strActor1.c_str());
   }
 }
 
@@ -775,7 +775,7 @@ void CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath,CIMDBMovi
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::GetMovieInfo(%s) failed",strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "CVideoDatabase::GetMovieInfo(%s) failed",strFilenameAndPath.c_str());
   }
 }
 
@@ -907,7 +907,7 @@ void CVideoDatabase::SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::SetMovieInfo(%s) failed",strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "CVideoDatabase::SetMovieInfo(%s) failed",strFilenameAndPath.c_str());
   }
 }
 
@@ -946,7 +946,7 @@ void CVideoDatabase::GetMoviesByPath(CStdString& strPath1, VECMOVIES& movies)
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::GetMoviesByPath(%s) failed",strPath1.c_str());
+    CLog::Log(LOGERROR, "CVideoDatabase::GetMoviesByPath(%s) failed",strPath1.c_str());
   }
 }
 
@@ -978,7 +978,7 @@ void CVideoDatabase::GetFiles(long lMovieId, VECMOVIESFILES& movies)
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::GetFiles() failed");
+    CLog::Log(LOGERROR, "CVideoDatabase::GetFiles() failed");
   }
 }
 
@@ -1007,7 +1007,7 @@ void CVideoDatabase::GetYears(VECMOVIEYEARS& years)
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::GetYears() failed");
+    CLog::Log(LOGERROR, "CVideoDatabase::GetYears() failed");
   }
 }
 
@@ -1053,7 +1053,7 @@ void CVideoDatabase::GetMoviesByYear(CStdString& strYear, VECMOVIES& movies)
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::GetMoviesByYear(%s) failed",strYear.c_str());
+    CLog::Log(LOGERROR, "CVideoDatabase::GetMoviesByYear(%s) failed",strYear.c_str());
   }
 }
 
@@ -1082,7 +1082,7 @@ void CVideoDatabase::GetBookMarksForMovie(const CStdString& strFilenameAndPath, 
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::GetBookMarksForMovie(%s) failed",strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "CVideoDatabase::GetBookMarksForMovie(%s) failed",strFilenameAndPath.c_str());
   }
 }
 
@@ -1106,7 +1106,7 @@ void CVideoDatabase::AddBookMarkToMovie(const CStdString& strFilenameAndPath, fl
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::AddBookMarkToMovie(%s) failed",strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "CVideoDatabase::AddBookMarkToMovie(%s) failed",strFilenameAndPath.c_str());
   }
 }
 
@@ -1126,7 +1126,7 @@ void CVideoDatabase::ClearBookMarksOfMovie(const CStdString& strFilenameAndPath)
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::ClearBookMarksOfMovie(%s) failed",strFilenameAndPath.c_str());
+    CLog::Log(LOGERROR, "CVideoDatabase::ClearBookMarksOfMovie(%s) failed",strFilenameAndPath.c_str());
   }
 }
 
@@ -1169,7 +1169,7 @@ void  CVideoDatabase::GetMovies(VECMOVIES& movies)
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::GetMovies() failed");
+    CLog::Log(LOGERROR, "CVideoDatabase::GetMovies() failed");
   }
 }
 
@@ -1207,7 +1207,7 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath)
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::DeleteMovie() failed");
+    CLog::Log(LOGERROR, "CVideoDatabase::DeleteMovie() failed");
   }
 }
 
@@ -1220,7 +1220,7 @@ void CVideoDatabase::SetDVDLabel(long lMovieId, const CStdString& strDVDLabel1)
   {
     if (NULL==m_pDB.get()) return ;
 	  if (NULL==m_pDS.get()) return ;
-    CLog::Log("setdvdlabel:id:%i label:%s",lMovieId,strDVDLabel1.c_str());
+    CLog::Log(LOGERROR, "setdvdlabel:id:%i label:%s",lMovieId,strDVDLabel1.c_str());
 
 	  CStdString strSQL;
 
@@ -1229,7 +1229,7 @@ void CVideoDatabase::SetDVDLabel(long lMovieId, const CStdString& strDVDLabel1)
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::SetDVDLabel() failed");
+    CLog::Log(LOGERROR, "CVideoDatabase::SetDVDLabel() failed");
   }
 }
 
@@ -1251,6 +1251,6 @@ void CVideoDatabase::GetDVDLabel(long lMovieId, CStdString& strDVDLabel)
   }
   catch(...)
   {
-    CLog::Log("CVideoDatabase::GetDVDLabel() failed");
+    CLog::Log(LOGERROR, "CVideoDatabase::GetDVDLabel() failed");
   }
 }

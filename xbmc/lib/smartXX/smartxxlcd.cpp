@@ -120,7 +120,7 @@ void CSmartXXLCD::Initialize()
   StopThread();
   if (!g_stSettings.m_bLCDUsed) 
   {
-    CLog::Log("lcd not used");
+    CLog::Log(LOGINFO, "lcd not used");
     return;
   }
   Create();
@@ -151,7 +151,7 @@ void CSmartXXLCD::SetLine(int iLine, const CStdString& strLine)
   while (strLineLong.size() < m_iColumns) strLineLong+=" ";
   if (strLineLong != m_strLine[iLine])
   {
-//    CLog::Log("set line:%i [%s]", iLine,strLineLong.c_str());
+//    CLog::Log(LOGINFO, "set line:%i [%s]", iLine,strLineLong.c_str());
     m_bUpdate[iLine]=true;
     m_strLine[iLine]=strLineLong;
     m_event.Set();

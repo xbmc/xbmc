@@ -20,7 +20,7 @@ int parse_args_from_string(lame_global_flags * const gfp, const char *p,
     int     c = 0;
     int     ret;
 
-		CLog::Log("Encoder: Encoding with %s", p);
+		CLog::Log(LOGINFO, "Encoder: Encoding with %s", p);
     if (p == NULL || *p == '\0')
         return 0;
 
@@ -67,7 +67,7 @@ bool CEncoderLame::Init(const char* strFile, int iInChannels, int iInRate, int i
 	m_pGlobalFlags = lame_init();
 	if (!m_pGlobalFlags)
 	{
-		CLog::Log("Error: lame_init() failed");
+		CLog::Log(LOGERROR, "Error: lame_init() failed");
 		return false;
 	}
 
@@ -105,7 +105,7 @@ bool CEncoderLame::Init(const char* strFile, int iInChannels, int iInRate, int i
 	// set some more internal options and check for problems
   if (lame_init_params(m_pGlobalFlags) < 0)
 	{
-		CLog::Log("Error: Cannot init Lame params");
+		CLog::Log(LOGERROR, "Error: Cannot init Lame params");
 		return false;
   }
 
@@ -127,13 +127,13 @@ int CEncoderLame::Encode(int nNumBytesRead, BYTE* pbtStream)
 
 	if (iBytes < 0)
 	{
-		CLog::Log("Internal Lame error: %i", iBytes);
+		CLog::Log(LOGERROR, "Internal Lame error: %i", iBytes);
 		return 0;
 	}
 
 	if (WriteStream(m_buffer, iBytes) != iBytes)
 	{ 
-		CLog::Log("Error writing Lame buffer to file");
+		CLog::Log(LOGERROR, "Error writing Lame buffer to file");
 		return 0;
 	}
 
@@ -146,7 +146,7 @@ bool CEncoderLame::Close()
 	int iBytes = lame_encode_flush(m_pGlobalFlags, m_buffer, sizeof(m_buffer));
 
 	if (iBytes < 0) {
-		CLog::Log("Internal Lame error: %i", iBytes);
+		CLog::Log(LOGERROR, "Internal Lame error: %i", iBytes);
 		return false;
 	}
 
@@ -158,7 +158,7 @@ bool CEncoderLame::Close()
 	FILE* file = fopen(m_strFile.c_str(), "rb+");
 	if(!file)
 	{
-		CLog::Log("Error: Cannot open file for writing tags: %s", m_strFile);
+		CLog::Log(LOGERROR, "Error: Cannot open file for writing tags: %s", m_strFile);
 		return false;
 	}
 

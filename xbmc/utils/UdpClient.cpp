@@ -24,14 +24,14 @@ bool CUdpClient::Create(void)
 	client_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	if (client_socket == SOCKET_ERROR)
 	{
-		CLog::Log("UDPCLIENT: Unable to create socket.");	
+		CLog::Log(LOGERROR, "UDPCLIENT: Unable to create socket.");	
 		return false;
 	}
 
 	unsigned int value =  1;
 	if( setsockopt( client_socket, SOL_SOCKET, SO_BROADCAST, (char*) &value, sizeof( unsigned int ) ) == SOCKET_ERROR)
 	{
-		CLog::Log("UDPCLIENT: Unable to set socket option.");
+		CLog::Log(LOGERROR, "UDPCLIENT: Unable to set socket option.");
 		return false;
 	}
 
@@ -94,7 +94,7 @@ bool CUdpClient::Send(SOCKADDR_IN aAddress, CStdString& aMessage)
 
 void CUdpClient::Process() 
 {
-	CLog::Log("UDPCLIENT: Listening.");	
+	CLog::Log(LOGNOTICE, "UDPCLIENT: Listening.");	
 
 	SOCKADDR_IN remoteAddress;
 	char messageBuffer[513];
@@ -134,7 +134,7 @@ void CUdpClient::Process()
 			{
 				CStdString debug;
 				debug.Format("UDPCLIENT: Socket error %u",WSAGetLastError());
-				CLog::Log(debug);
+				CLog::Log(LOGDEBUG, debug);
 			}
 
 			// is there any more data to read?
@@ -146,7 +146,7 @@ void CUdpClient::Process()
 		DispatchNextCommand();
 	}
 
-	CLog::Log("UDPCLIENT: Stopped listening.");	
+	CLog::Log(LOGNOTICE, "UDPCLIENT: Stopped listening.");	
 }
 
 
@@ -174,6 +174,6 @@ void CUdpClient::DispatchNextCommand()
 	int ret = sendto(client_socket, command.message, command.message.GetLength(), 0, (struct sockaddr *) &command.address, sizeof(command.address));
 	if(ret == SOCKET_ERROR)
 	{
-		CLog::Log("UDPCLIENT: Unable to transmit data to host.");	
+		CLog::Log(LOGERROR, "UDPCLIENT: Unable to transmit data to host.");	
 	}
 }

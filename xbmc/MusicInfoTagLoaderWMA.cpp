@@ -290,7 +290,7 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 								else
 								{
 									CUtil::ThumbCacheAdd(strCoverArt, false);
-									CLog::Log("Tag loader wma: Unable to create album art for %s (extension=%s, size=%d)", tag.GetURL().c_str(), strExtension.c_str(), picture.dwDataLen);
+									CLog::Log(LOGERROR, "Tag loader wma: Unable to create album art for %s (extension=%s, size=%d)", tag.GetURL().c_str(), strExtension.c_str(), picture.dwDataLen);
 								}
 							}
 						}
@@ -335,7 +335,7 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 	}
 	catch(...)
 	{
-		CLog::Log("Tag loader wma: exception in file %s", strFileName.c_str());
+		CLog::Log(LOGERROR, "Tag loader wma: exception in file %s", strFileName.c_str());
 	}
 
 	tag.SetLoaded(false);

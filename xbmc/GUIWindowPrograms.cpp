@@ -313,7 +313,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int depth
 				{
 					CStdString strDescription;
 
-					if (!CUtil::GetXBEDescription(strFile, strDescription) || bUseDirectoryName)
+					if (!CUtil::GetXBEDescription(strFile, strDescription) || (bUseDirectoryName && CUtil::IsDefaultXBE(strFileName)) )
 					{
 						CUtil::GetDirectoryName(strFile, strDescription);
 						CUtil::ShortenFileName(strDescription);

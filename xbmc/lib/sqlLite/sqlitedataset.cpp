@@ -166,18 +166,18 @@ int SqliteDatabase::connect() {
 			char* err=NULL;
 			if (setErr(sqlite_exec(getHandle(),"PRAGMA empty_result_callbacks=ON",NULL,NULL,&err)) != SQLITE_OK) 
 			{
-				CLog::Log("sqlite:unable to set callback on:%s", error.c_str());
+				CLog::Log(LOGERROR, "sqlite:unable to set callback on:%s", error.c_str());
 				throw DbErrors(getErrorMsg());
 			}
 			active = true;
 			return DB_CONNECTION_OK;
 		}
-		CLog::Log("unable to open database:%s (%i)", db.c_str(),GetLastError());
+		CLog::Log(LOGERROR, "unable to open database:%s (%i)", db.c_str(),GetLastError());
 		return DB_CONNECTION_NONE;
 	}
 	catch(...)
 	{
-		CLog::Log("unable to open database:%s (%i)", db.c_str(),GetLastError());
+		CLog::Log(LOGERROR, "unable to open database:%s (%i)", db.c_str(),GetLastError());
 	}
 	return DB_CONNECTION_NONE;
 };

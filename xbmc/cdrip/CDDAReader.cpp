@@ -35,7 +35,7 @@ bool CCDDAReader::Init(int iTrack)
 
 	if (CDEX_OK != CR_Init(""))
 	{
-		CLog::Log("Error: CR_Init failed");
+		CLog::Log(LOGERROR, "Error: CR_Init failed");
 		return false;
 	}
 
@@ -49,12 +49,12 @@ bool CCDDAReader::Init(int iTrack)
 	CR_ReadToc();
 	dwStartSector = CR_GetTocEntry(iTrack - 1).dwStartSector;
 	dwEndSector = CR_GetTocEntry(iTrack).dwStartSector-1;
-	CLog::Log("Track %d, Sectors %d", CR_GetTocEntry(iTrack - 1).btTrackNumber,	dwEndSector - dwStartSector);
+	CLog::Log(LOGINFO, "Track %d, Sectors %d", CR_GetTocEntry(iTrack - 1).btTrackNumber,	dwEndSector - dwStartSector);
 
 	// Open ripper
 	if (CR_OpenRipper(&m_lBufferSize,	dwStartSector, dwEndSector) != CDEX_OK)
 	{
-		CLog::Log("Error: Failed to open ripper");
+		CLog::Log(LOGERROR, "Error: Failed to open ripper");
 		return false;
 	}
 
@@ -86,7 +86,7 @@ bool CCDDAReader::DeInit()
 
 	if (CDEX_OK != CR_DeInit())
 	{
-		CLog::Log("Error: CR_DeInit failed");
+		CLog::Log(LOGERROR, "Error: CR_DeInit failed");
 		return false;
 	}
 
@@ -114,7 +114,7 @@ int CCDDAReader::ReadChunk()
 	// Check for jitter errors
 	if (CDEX_JITTER_ERROR == ripErr)
 	{
-		CLog::Log("Found Jitter Error while reading cdda data");
+		CLog::Log(LOGERROR, "Found Jitter Error while reading cdda data");
 		/*
 		DWORD dwStartSector, dwEndSector;
 		// Get info where jitter error did occur

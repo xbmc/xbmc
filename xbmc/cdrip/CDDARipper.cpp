@@ -110,12 +110,12 @@ bool CCDDARipper::Rip(int iTrack, const char* strFile, MUSIC_INFO::CMusicInfoTag
 	int	iPercent, iOldPercent = 0;
 	bool bCancled = false;
 
-	CLog::Log("Start ripping track %i to %s", iTrack, strFile);
+	CLog::Log(LOGINFO, "Start ripping track %i to %s", iTrack, strFile);
 
 		// init ripper
 	if (!Init(iTrack, strFile, &infoTag))
 	{
-		CLog::Log("Error: CCDDARipper::Init failed");
+		CLog::Log(LOGERROR, "Error: CCDDARipper::Init failed");
 		return false;
 	}
 
@@ -154,8 +154,8 @@ bool CCDDARipper::Rip(int iTrack, const char* strFile, MUSIC_INFO::CMusicInfoTag
 	pDlgProgress->Close();
 	DeInit();
 
-	if (bCancled) CLog::Log("User Cancelled CDDA Rip");
-	else CLog::Log("Finished ripping track %i", iTrack);
+	if (bCancled) CLog::Log(LOGWARNING, "User Cancelled CDDA Rip");
+	else CLog::Log(LOGINFO, "Finished ripping track %i", iTrack);
 	return !bCancled;
 }
 
@@ -171,7 +171,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
 	if (strDirectory.size() < 3)
 	{
 		// no rip path has been set, show error
-		CLog::Log("Error: CDDARipPath has not been set in XboxMediaCenter.xml");
+		CLog::Log(LOGERROR, "Error: CDDARipPath has not been set in XboxMediaCenter.xml");
 		g_graphicsContext.Lock();
 		CGUIDialogOK*	pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
 		pDlgOK->SetHeading(257); // Error
@@ -229,7 +229,7 @@ bool CCDDARipper::RipCD()
 	if (strDirectory.size() < 3)
 	{
 		// no rip path has been set, show error
-		CLog::Log("Error: CDDARipPath has not been set in XboxMediaCenter.xml");
+		CLog::Log(LOGERROR, "Error: CDDARipPath has not been set in XboxMediaCenter.xml");
 		g_graphicsContext.Lock();
 		CGUIDialogOK*	pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
 		pDlgOK->SetHeading(257); // Error
@@ -296,7 +296,7 @@ bool CCDDARipper::RipCD()
 		// return false if Rip returned false (this means an error or the user cancelled
 		if (!Rip(iTrack, strFile.c_str(), vecItems[i]->m_musicInfoTag)) return false;
 	}
-	CLog::Log("Ripped CD succesfull");
+	CLog::Log(LOGINFO, "Ripped CD succesfull");
 	return true;
 }
 

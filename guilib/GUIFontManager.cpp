@@ -29,7 +29,7 @@ CGUIFont* GUIFontManager::Load(const CStdString& strFontName,const CStdString& s
     return pNewFont;
   }
   // font could not b loaded
-  CLog::Log("Could'nt load font name:%s file:%s", strFontName.c_str(),strFilename.c_str());
+  CLog::Log(LOGERROR, "Couldn't load font name:%s file:%s", strFontName.c_str(),strFilename.c_str());
   delete pNewFont;
   return NULL;
 }
@@ -72,12 +72,12 @@ void GUIFontManager::LoadFonts()
 	// Get the file to load fonts from:
 	RESOLUTION res;
 	CStdString strPath = g_SkinInfo.GetSkinPath("font.xml", &res);
-  CLog::Log("Loading fonts from %s",strPath.c_str());
+  CLog::Log(LOGINFO, "Loading fonts from %s",strPath.c_str());
   TiXmlDocument xmlDoc;
   // first try our preferred file
   if ( !xmlDoc.LoadFile(strPath.c_str()) )
   {
-		CLog::Log("Could'nt load %s",strPath.c_str());
+		CLog::Log(LOGERROR, "Couldn't load %s",strPath.c_str());
 		return ;
   }
   TiXmlElement* pRootElement =xmlDoc.RootElement();
@@ -85,7 +85,7 @@ void GUIFontManager::LoadFonts()
   CStdString strValue=pRootElement->Value();
   if (strValue!=CStdString("fonts")) 
   {
-    CLog::Log("file %s doesnt start with <fonts>",strPath.c_str());
+    CLog::Log(LOGERROR, "file %s doesnt start with <fonts>",strPath.c_str());
     return ;
   }
   const TiXmlNode *pChild = pRootElement->FirstChild();
