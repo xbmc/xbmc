@@ -303,6 +303,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
   {
       CStdString strFont,strUp,strDown;
       CStdString strUpFocus,strDownFocus;
+			bool bReverse=false;
       strUp=pControlNode->FirstChild("textureUp")->FirstChild()->Value();
       strDown=pControlNode->FirstChild("textureDown")->FirstChild()->Value();
       strUpFocus=pControlNode->FirstChild("textureUpFocus")->FirstChild()->Value();
@@ -326,11 +327,18 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 				if (strAlign=="left") dwAlign=XBFONT_LEFT;
 				if (strAlign=="center") dwAlign=XBFONT_CENTER_X;
 			}
-
+			pNode=pControlNode->FirstChild("reverse" );
+			if (pNode)
+			{
+				CStdString strNode=pNode->FirstChild()->Value();
+				if (strNode == "yes" || strNode=="on")
+					bReverse=true;
+			}
       CGUISpinControl* pControl = new CGUISpinControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strUp,strDown,strUpFocus,strDownFocus,strFont,dwTextColor,iType,dwAlign);
       pControl->SetNavigation(up,down,left,right);
       pControl->SetColourDiffuse(dwColorDiffuse);
       pControl->SetVisible(bVisible);
+			pControl->SetReverse(bReverse);
       return pControl;
   }
 

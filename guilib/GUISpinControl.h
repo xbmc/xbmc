@@ -36,9 +36,12 @@ public:
   void					AddLabel(const wstring& strLabel, int  iValue);
   const WCHAR*	GetLabel() const;
   virtual void	SetFocus(bool bOnOff);
+	void					SetReverse(bool bOnOff);
 protected:
 	bool			CanMoveDown();
 	bool			CanMoveUp();
+	void			MoveUp();
+	void			MoveDown();
   int       m_iStart;
   int       m_iEnd;
   float     m_fStart;
@@ -47,6 +50,7 @@ protected:
   float     m_fValue;
   int       m_iType;
   int       m_iSelect;
+	bool			m_bReverse;
   vector<wstring> m_vecLabels;
   vector<int>			m_vecValues;
 	CGUIImage m_imgspinUp;
