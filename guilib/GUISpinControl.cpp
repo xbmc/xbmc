@@ -166,14 +166,19 @@ void CGUISpinControl::OnAction(const CAction &action)
             if (m_bReverse)
             {
                 if (CanMoveUp() )
+								{
                     m_iSelect=SPIN_BUTTON_DOWN;
+										return;
+								}
             }
             else
             {
                 if (CanMoveDown() )
+								{
                     m_iSelect=SPIN_BUTTON_DOWN;
+										return;
+								}
             }
-            return;
         }
     }
     if (action.wID == ACTION_MOVE_RIGHT)
@@ -183,14 +188,19 @@ void CGUISpinControl::OnAction(const CAction &action)
             if (m_bReverse)
             {
                 if (CanMoveDown() )
+								{
                     m_iSelect=SPIN_BUTTON_UP;
+										return;
+								}
             }
             else
             {
                 if (CanMoveUp() )
+								{
                     m_iSelect=SPIN_BUTTON_UP;
+										return;
+								}
             }
-            return;
         }
     }
     if (action.wID == ACTION_SELECT_ITEM)
