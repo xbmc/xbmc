@@ -90,7 +90,8 @@ void _mm_registerloader(MLOADER* ldr)
 	if(cruise) {
 		while (cruise->next)
 			cruise = cruise->next;
-		cruise->next=ldr;
+		if (cruise != ldr)
+			cruise->next=ldr;
 	} else
 		firstloader=ldr; 
 }
