@@ -1,6 +1,9 @@
 #include "XBPython.h"
 
 extern "C" {
+	//xbmc module
+	extern void initxbmc(void);
+
 	// used for testing
 	extern void free_arenas(void);
 }
@@ -18,7 +21,7 @@ XBPython::XBPython()
 	/* Initialize the Python interpreter.  Required. */
 	Py_Initialize();
 	PyEval_InitThreads();
-
+	initxbmc();
 	/* redirecting default output to debug console */
 	if (PyRun_SimpleString(""
 			"import xbmc\n"
@@ -120,8 +123,8 @@ void XBPython::setDone(int id)
 				OutputDebugString("Python script interrupted by user\n");
 			else
 				OutputDebugString("Python script stopped\n");
+			it->bDone = true;
 		}
-		it->bDone = true;
 		++it;
 	}
 	LeaveCriticalSection(&m_critSection);
