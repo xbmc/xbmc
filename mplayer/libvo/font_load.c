@@ -42,6 +42,46 @@ raw_file* load_raw(char *name,int verbose){
 
 extern int sub_unicode;
 
+void free_font_desc( font_desc_t* desc )
+{
+    int i;
+    
+    if(desc) {
+    	if (desc->fpath){
+    		free(desc->fpath);
+    		desc->fpath = NULL;
+    	}
+    	for(i=0;i<16;i++) {
+    		if(desc->pic_a[i]){
+    			if(desc->pic_a[i]->pal){
+    				free(desc->pic_a[i]->pal);
+    				desc->pic_a[i]->pal = NULL;
+    			}
+    			if(desc->pic_a[i]->bmp){
+    				free(desc->pic_a[i]->bmp);
+    				desc->pic_a[i]->bmp = NULL;
+    			}
+    			free(desc->pic_a[i]);
+    			desc->pic_a[i] = NULL;
+    		}
+    		if(desc->pic_b[i]){
+    			if(desc->pic_b[i]->pal){
+    				free(desc->pic_b[i]->pal);
+    				desc->pic_b[i]->pal = NULL;
+    			}
+    			if(desc->pic_b[i]->bmp){
+    				free(desc->pic_b[i]->bmp);
+    				desc->pic_b[i]->bmp = NULL;
+    			}
+    			free(desc->pic_b[i]);
+    			desc->pic_b[i] = NULL;
+    		}   		
+    	}
+    	free(desc);
+    	desc = NULL;
+    }   	
+}
+
 font_desc_t* read_font_desc(char* fname,float factor,int verbose){
 unsigned char sor[1024];
 unsigned char sor2[1024];
@@ -99,7 +139,7 @@ while(fgets(sor,1020,f)){
     if (!sor[0] || sor[1] == 1 || (sor[0] == 'M' && sor[1] == 'Z') || (sor[0] == 0x1f && sor[1] == 0x8b) || (sor[0] == 1 && sor[1] == 0x66)) {
       printf("%s doesn't look like a font description, ignoring\n", fname);
       fclose(f);
-      free(desc);
+      free_font_desc(desc);
       free(dn);
       return NULL;
     }
@@ -245,7 +285,7 @@ while(fgets(sor,1020,f)){
       }
   }
   printf("Syntax error in font desc: %s\n",sor);
-  free(desc);
+  free_font_desc(desc);
   fclose(f);
   return NULL;
 
@@ -254,7 +294,7 @@ fclose(f);
 
  if (first == 1) {
    printf("%s is empty or a directory, ignoring\n", fname);
-   free(desc);
+   free_font_desc(desc);
    return NULL;
  }
 
