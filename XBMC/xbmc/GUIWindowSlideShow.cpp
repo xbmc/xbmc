@@ -686,7 +686,22 @@ bool CGUIWindowSlideShow::IsPlaying() const
 
 void CGUIWindowSlideShow::Reset()
 {
-	// check to see if more needs doing to close the thread...
+	m_bShowInfo=false;
+	m_bSlideShow=false;
+	m_bPause=false;
+	m_bErrorMessage=false;
+	m_bReloadImage = false;
+ 
+	m_iRotate=0;
+	m_iZoomFactor=1;
+	m_iCurrentSlide = 0;
+	m_iNextSlide = 1;
+	m_iCurrentPic = 0;
+	m_vecSlides.erase(m_vecSlides.begin(),m_vecSlides.end());
+}
+
+void CGUIWindowSlideShow::FreeResources()
+{ // wait for any outstanding picture loads
 	if (m_pBackgroundLoader)
 	{
 		// sleep until the loader finishes loading the current pic
@@ -699,20 +714,9 @@ void CGUIWindowSlideShow::Reset()
 		delete m_pBackgroundLoader;
 		m_pBackgroundLoader = NULL;
 	}
-	m_bShowInfo=false;
-	m_bSlideShow=false;
-	m_bPause=false;
-	m_bErrorMessage=false;
-	m_bReloadImage = false;
- 
-	m_iRotate=0;
-	m_iZoomFactor=1;
-	m_iCurrentSlide = 0;
-	m_iNextSlide = 1;
-	m_iCurrentPic = 0;
+  // and close the images.
 	m_Image[0].Close();
 	m_Image[1].Close();
-	m_vecSlides.erase(m_vecSlides.begin(),m_vecSlides.end());
 }
 
 void CGUIWindowSlideShow::Add(const CStdString& strPicture)
