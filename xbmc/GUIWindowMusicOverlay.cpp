@@ -291,29 +291,19 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 					OnMessage(msg1);
 			}
 
-		
-			if ( dbs.Open() )
+			CStdString strThumb;
+			CUtil::GetAlbumThumb(strAlbum,strThumb);
+			if (CUtil::FileExists(strThumb) )
 			{
-				CAlbum album;
-				if ( dbs.GetAlbumInfo(strAlbum, album) )
-				{
-					CStdString strThumb;
-					CUtil::GetAlbumThumb(album.strAlbum,strThumb);
-					if (CUtil::FileExists(strThumb) )
-					{
-						CPicture picture;
-						m_pTexture=picture.Load(strThumb);
-						m_iTextureWidth=picture.GetWidth();
-						m_iTextureHeight=picture.GetHeight();
-						if (m_pTexture)
-						{							
-							CGUIMessage msg1(GUI_MSG_HIDDEN, GetID(), CONTROL_LOGO_PIC); 
-							OnMessage(msg1);
-						}
-					}
-				
+				CPicture picture;
+				m_pTexture=picture.Load(strThumb);
+				m_iTextureWidth=picture.GetWidth();
+				m_iTextureHeight=picture.GetHeight();
+				if (m_pTexture)
+				{							
+					CGUIMessage msg1(GUI_MSG_HIDDEN, GetID(), CONTROL_LOGO_PIC); 
+					OnMessage(msg1);
 				}
-				dbs.Close();
 			}
 		}
 	}
