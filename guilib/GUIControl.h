@@ -64,6 +64,10 @@ public:
   /// \brief Used to test whether the pointer location (fPosX, fPosY) is inside the control.  For mouse events.
   virtual bool	HitTest(int iPosX, int iPosY) const;
   void          SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight);
+  DWORD         GetControlIdUp() const { return m_dwControlUp;};
+  DWORD         GetControlIdDown() const { return m_dwControlDown;};
+  DWORD         GetControlIdLeft() const { return m_dwControlLeft;};
+  DWORD         GetControlIdRight() const { return m_dwControlRight;};
   void          SetFocus(bool bOnOff);
   void          SetWidth(int iWidth);
   void          SetHeight(int iHeight);
