@@ -47,6 +47,16 @@ CFile::~CFile()
 }
 
 //*********************************************************************************************
+
+class CAutoBuffer
+{
+	char* p;
+public:
+	explicit CAutoBuffer(size_t s) { p = (char*)XPhysicalAlloc(128*1024, MAXULONG_PTR, 0, PAGE_READWRITE | PAGE_WRITECOMBINE); }
+	~CAutoBuffer() { if (p) XPhysicalFree(p); }
+	char* get() { return p; }
+};
+
 bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallback* pCallback, void* pContext)
 {
 	if ( Open(strFileName,true))
@@ -59,7 +69,10 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 			m_pFile=NULL;
 			return false;
 		}
-		auto_ptr<char> buffer ( new char[16384]);
+		// ouch, auto_ptr doesn't work for arrays!
+		//auto_ptr<char> buffer ( new char[16384]);
+		// 128k is optimal for xbox
+		CAutoBuffer buffer(128*1024);
 		int iRead;
 
 		UINT64 llFileSize=GetLength();
@@ -68,10 +81,19 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 		DWORD  ipercent=0;
 		char *szFileName = strrchr(strFileName,'\\');
 		if (!szFileName) szFileName = strrchr(strFileName,'/');
+
+		// Presize file for faster writes
+		LARGE_INTEGER size;
+		size.QuadPart = llFileSizeOrg;
+		::SetFilePointerEx(hMovie, size, 0, FILE_BEGIN);
+		::SetEndOfFile(hMovie);
+		size.QuadPart = 0;
+		::SetFilePointerEx(hMovie, size, 0, FILE_BEGIN);
+
 		while (llFileSize>0)
 		{
       g_application.ResetScreenSaver();
-			int iBytesToRead=16384;
+			int iBytesToRead=128*1024;
 			if (iBytesToRead>llFileSize) 
 			{
 				iBytesToRead=llFileSize;
