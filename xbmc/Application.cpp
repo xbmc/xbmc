@@ -427,6 +427,11 @@ void CApplication::DelayLoadSkin()
 	return;
 }
 
+void CApplication::CancelDelayLoadSkin()
+{
+	m_dwSkinTime=0;
+}
+
 void CApplication::LoadSkin(const CStdString& strSkin)
 {
 	m_dwSkinTime = 0;
@@ -1890,7 +1895,7 @@ void CApplication::Process()
 	// check if we need to load a new skin
 	if (m_dwSkinTime && timeGetTime() >= m_dwSkinTime)
 	{
-		CGUIMessage msg(GUI_MSG_USER,-1,m_gWindowManager.GetActiveWindow());
+		CGUIMessage msg(GUI_MSG_LOAD_SKIN,-1,m_gWindowManager.GetActiveWindow());
 		g_graphicsContext.SendMessage(msg);
 	}
 
