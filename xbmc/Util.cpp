@@ -215,6 +215,14 @@ bool CUtil::FileExists(const CStdString& strFileName)
 
 void CUtil::GetThumbnail(const CStdString& strFileName, CStdString& strThumb)
 {
+  CStdString strFile;
+  CUtil::ReplaceExtension(strFileName,".tbn",strFile);
+  if (CUtil::FileExists(strFile))
+  {
+    strThumb=strFile;
+    return;
+  }
+
 	if (CUtil::IsXBE(strFileName))
 	{
 		if (CUtil::GetXBEIcon(strFileName,strThumb) ) return ;
