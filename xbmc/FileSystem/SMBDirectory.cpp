@@ -49,7 +49,7 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	smb.Init();
 
 	// convert from string to UTF8
-	strLen = convert_string(CH_DOS, CH_UTF8, strPath, strPath.length(), strUtfPath, 1024);
+	strLen = convert_string(CH_DOS, CH_UTF8, strRoot, strRoot.length(), strUtfPath, 1024);
 	strUtfPath[strLen] = 0;
 
 	smb.Lock();
