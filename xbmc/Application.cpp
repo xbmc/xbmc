@@ -546,8 +546,8 @@ void CApplication::OnKey(CKey& key)
 		  {
 			  m_pd3dDevice->SetGammaRamp(0, &m_OldRamp);	// put the old gamma ramp back in place
 		  }
+      return;
 	  }
-    ResetScreenSaver();
   }
 
 	// get the current active window 
