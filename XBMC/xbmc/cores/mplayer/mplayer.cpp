@@ -3,6 +3,10 @@
 #include "video.h"
 #include "../DllLoader/dll.h"
 
+//deal wma, and wmv dlls in openfile, and closefile functions
+extern DllLoader * wmaDMOdll;
+extern DllLoader * wmvDMOdll;
+extern "C" BOOL WINAPI dllFreeLibrary(HINSTANCE hLibModule);
 
 int							(__cdecl* pInitPlayer)(int argc, char* argvp[]);
 int							(__cdecl* pOpenFile)(const char*);
@@ -100,12 +104,21 @@ extern "C"
 
 	int mplayer_open_file(const char* szFile)
 	{
+		wmaDMOdll = NULL;					//hacks for free library for DMOs
+		wmvDMOdll = NULL;
 		return pOpenFile(szFile);
 	}
 
 	int mplayer_close_file()
 	{
-		return pCloseFile();
+		int hr = pCloseFile();
+		if (wmaDMOdll) 
+			dllFreeLibrary( (HINSTANCE)wmaDMOdll );
+		wmaDMOdll = NULL;
+		if (wmvDMOdll) 
+			dllFreeLibrary( (HINSTANCE)wmvDMOdll );
+		wmvDMOdll = NULL;
+		return hr;
 	}
 
 
