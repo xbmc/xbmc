@@ -388,6 +388,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 		pUser->AddDirectory("C:\\", XBFILE_READ|XBFILE_WRITE|XBFILE_DELETE|XBFILE_APPEND|XBDIR_DELETE|XBDIR_CREATE|XBDIR_LIST|XBDIR_SUBDIRS);
 		pUser->AddDirectory("D:\\", XBFILE_READ|XBDIR_LIST|XBDIR_SUBDIRS);
 		pUser->AddDirectory("E:\\", XBFILE_READ|XBFILE_WRITE|XBFILE_DELETE|XBFILE_APPEND|XBDIR_DELETE|XBDIR_CREATE|XBDIR_LIST|XBDIR_SUBDIRS);
+		pUser->AddDirectory("Q:\\", XBFILE_READ|XBFILE_WRITE|XBFILE_DELETE|XBFILE_APPEND|XBDIR_DELETE|XBDIR_CREATE|XBDIR_LIST|XBDIR_SUBDIRS);
 		pUser->CommitChanges();
 
 		FEH_TextOut(pFont, iLine++, L"FTP server running on port %d, login: xbox/xbox", m_pFileZilla->mSettings.GetServerPort());
@@ -496,7 +497,8 @@ HRESULT CApplication::Create()
 		FatalErrorHandler(true, false, true);
 
 	CLog::Log("load keymapping");
-	g_buttonTranslator.Load();
+	if (!g_buttonTranslator.Load())
+		FatalErrorHandler(true, false, true);
 
 	CLog::Log("setup DirectX");
 	g_graphicsContext.SetGUIResolution(g_stSettings.m_GUIResolution);
