@@ -6,6 +6,7 @@
 #include "settings.h"
 #include "guiWindowManager.h"
 #include "GUIDialogInvite.h"
+#include "GUIDialogHost.h"
 #include "GUIDialogProgress.h"
 #include "GUIDialogYesNo.h"
 #include "localizestrings.h"
@@ -154,8 +155,6 @@ void CGUIWindowBuddies::OnInitWindow()
 	SET_CONTROL_LABEL(GetID(),  CONTROL_LABELBUDDYINVT, "");
 	SET_CONTROL_LABEL(GetID(),  CONTROL_LABELPLAYERCNT, "");
 
-	SET_CONTROL_DISABLED(GetID(), CONTROL_BTNHOST);
-
 	if (window_state==State::Uninitialized)
 	{
 		// bind this image to the control defined in the xml, later we'll use this
@@ -167,7 +166,10 @@ void CGUIWindowBuddies::OnInitWindow()
 									"buddyitem-chat.png",
 									"buddyitem-ping.png",
 									"buddyitem-invite.png",
-									"buddyitem-play.png");
+									"buddyitem-play.png",
+									"buddyitem-idle.png",
+									"buddyitem-host.png",
+									"buddyitem-keyboard.png");
 
 		CArenaItem::SetIcons(12,12, "arenaitem-private.png");
 
@@ -353,14 +355,27 @@ void CGUIWindowBuddies::OnClickPlayButton(CGUIMessage& aMessage)
 
 void CGUIWindowBuddies::OnClickHostButton(CGUIMessage& aMessage)
 {
-	CStdString strDescription = "";
-	CStdString strPrompt = "Please choose a description for your arena.";
-
-	if (CGUIDialogKeyboard::ShowAndGetInput(strDescription, strPrompt, false))
+	CGUIDialogHost& dialog = *((CGUIDialogHost*)m_gWindowManager.GetWindow(WINDOW_DIALOG_HOST));
+	
+	dialog.DoModal(GetID());
+	dialog.Close();
+	
+	if (dialog.IsOK())
 	{
-		CStdString strPassword = "";
-		int nPlayerLimit = 12;
-		m_pKaiClient->Host(strPassword,nPlayerLimit,strDescription);
+		if (dialog.IsPrivate())
+		{
+			CStdString strPassword;
+			CStdString strDescription;
+			INT nPlayerLimit;
+
+			dialog.GetConfiguration(strPassword,strDescription,nPlayerLimit);
+
+			m_pKaiClient->Host(strPassword,strDescription,nPlayerLimit);
+		}
+		else
+		{
+			m_pKaiClient->Host();
+		}
 	}
 }
 
@@ -883,6 +898,7 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNADD,			"Add");
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNHOST,		"Host");	
 			SET_CONTROL_DISABLED(GetID(), CONTROL_BTNADD);	
+			SET_CONTROL_DISABLED(GetID(), CONTROL_BTNHOST);	
 			break;
 		}
 
@@ -913,6 +929,7 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNADD,			"Add");
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNHOST,		"Host");	
 			SET_CONTROL_DISABLED(GetID(), CONTROL_BTNADD);	
+			SET_CONTROL_ENABLED(GetID(), CONTROL_BTNHOST);	
 			break;
 		}
 	}
@@ -1032,10 +1049,16 @@ void CGUIWindowBuddies::OnContactPing(CStdString& aFriend, CStdString& aVector, 
 		if (!pBuddy->m_bBusy)
 		{
 			pBuddy->m_bHeadset  = aBearerCapability.Find('2')>=0;
+			pBuddy->m_bKeyboard = aBearerCapability.Find('3')>=0;
 		}
 	}
 
 	m_friends.Release();
+}
+
+void CGUIWindowBuddies::OnUpdateHostingStatus(BOOL bIsHosting)
+{
+	SET_CONTROL_LABEL(GetID(),  CONTROL_LABELPLAYERCNT, bIsHosting ? "Host" : "");
 }
 
 void CGUIWindowBuddies::OnContactRemove(CStdString& aFriend)
@@ -1275,16 +1298,6 @@ void CGUIWindowBuddies::OnSupportedTitle(DWORD aTitleId, CStdString& aVector)
 void CGUIWindowBuddies::OnEnterArena(CStdString& aVector, BOOL bCanHost)
 {
 	m_arena.Clear();
-	
-	if (bCanHost)
-	{
-		SET_CONTROL_ENABLED(GetID(), CONTROL_BTNHOST);
-	}
-	else
-	{
-		SET_CONTROL_DISABLED(GetID(), CONTROL_BTNHOST);
-	}
-
 	m_pKaiClient->GetSubVectors(aVector);
 }
 

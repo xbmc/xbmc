@@ -43,6 +43,7 @@ public:
 	virtual void			OnUpdateOpponent(CStdString& aOpponent, CStdString& aAge,
 										CStdString& aBandwidth,	CStdString& aLocation, CStdString& aBio);
 	virtual void			OnUpdateOpponent(CStdString& aOpponent, CStdString& aAvatarURL);
+	virtual void			OnUpdateHostingStatus(BOOL bIsHosting);
 	virtual void			OnOpponentEnter(CStdString& aOpponent);
 	virtual void			OnOpponentPing(CStdString& aOpponent, DWORD aPing, int aStatus, CStdString& aBearerCapability);
 	virtual void			OnOpponentLeave(CStdString& aOpponent);

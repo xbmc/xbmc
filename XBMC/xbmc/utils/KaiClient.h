@@ -43,6 +43,7 @@ class IBuddyObserver
 		virtual void OnUpdateOpponent(CStdString& aOpponent, CStdString& aAge, CStdString& aBandwidth,
 									 CStdString& aLocation, CStdString& aBio)=0;
 		virtual void OnUpdateOpponent(CStdString& aOpponent, CStdString& aAvatarURL)=0;
+		virtual void OnUpdateHostingStatus(BOOL bHosting)=0;
 };
 
 
@@ -67,7 +68,8 @@ public:
 	void RemoveContact(CStdString& aContact);
 	void Invite(CStdString& aPlayer, CStdString& aVector, CStdString& aMessage);
 	void EnableContactVoice(CStdString& aContactName, BOOL bEnable=TRUE);
-	void Host(CStdString& aPassword, int aPlayerLimit, CStdString& aDescription);
+	void Host();
+	void Host(CStdString& aPassword, CStdString& aDescription, int aPlayerLimit);
 	void Reattach();
 
 	CStdString GetCurrentVector();
