@@ -331,6 +331,22 @@ public:
 		int				m_iMyMusicTop100ViewAsIcons;
 		int				m_iMyMusicStartWindow;
 
+		// new settings for the Music Nav Window
+		int			m_iMyMusicNavRootViewAsIcons;
+		int			m_iMyMusicNavGenresViewAsIcons;
+		int			m_iMyMusicNavArtistsViewAsIcons;
+		int			m_iMyMusicNavAlbumsViewAsIcons;
+		int			m_iMyMusicNavSongsViewAsIcons;
+
+		int			m_iMyMusicNavRootSortMethod;
+		int			m_iMyMusicNavAlbumsSortMethod;
+		int			m_iMyMusicNavSongsSortMethod;
+
+		bool		m_bMyMusicNavGenresSortAscending;
+		bool		m_bMyMusicNavArtistsSortAscending;
+		bool		m_bMyMusicNavAlbumsSortAscending;
+		bool		m_bMyMusicNavSongsSortAscending;
+
 		int       m_iSmallStepBackSeconds;
 		int       m_iSmallStepBackTries;
 		int       m_iSmallStepBackDelay;

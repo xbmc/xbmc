@@ -926,6 +926,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiMyMusicArtists);						// window id = 503
 	m_gWindowManager.Add(&m_guiMyMusicGenres);						// window id = 504
 	m_gWindowManager.Add(&m_guiMyMusicTop100);						// window id = 505
+	m_gWindowManager.Add(&m_guiMyMusicNav);							// window id = 506
 //	m_gWindowManager.Add(&m_keyboard);										// window id = 1000
 	m_gWindowManager.Add(&m_guiDialogSelect);							// window id = 2000
 	m_gWindowManager.Add(&m_guiMusicInfo);								// window id = 2001
@@ -1235,6 +1236,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiMyMusicArtists.Load("mymusicartists.xml");
 	m_guiMyMusicGenres.Load("mymusicgenres.xml");
 	m_guiMyMusicTop100.Load("mymusictop100.xml");
+	m_guiMyMusicNav.Load("mymusicnav.xml");
 	m_guiDialogSelect.Load("dialogSelect.xml");
 	m_guiDialogOK.Load("dialogOK.xml");
 	m_guiDialogFileStacking.Load("dialogFileStacking.xml");
