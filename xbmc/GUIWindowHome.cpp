@@ -78,7 +78,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 		{
 			int iControl = message.GetControlId();
 			m_iLastControl=iControl;
-			if (iControl>=2 && iControl <=9)
+			if (iControl>=2 && iControl <=19)
 			{
 				m_iLastMenuOption = m_iLastControl;
 

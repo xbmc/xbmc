@@ -25,6 +25,7 @@ public:
 	virtual void    SendMessage(CGUIMessage& message);
 	void			Initialize();
 	void            Add(CGUIWindow* pWindow);
+	void            AddCustomWindow(CGUIWindow* pWindow);
 	void            AddModeless(CGUIWindow* pWindow);
 	void			Remove(DWORD dwID);
 	void			RemoveModeless(DWORD dwID);
@@ -48,6 +49,7 @@ public:
 private:
 	vector <CGUIWindow*>	m_vecWindows;
 	vector <CGUIWindow*>	m_vecModelessWindows;
+	vector <CGUIWindow*>	m_vecCustomWindows;
 
 	int								m_iActiveWindow;
 	IWindowManagerCallback*			m_pCallback;

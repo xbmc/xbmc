@@ -59,7 +59,7 @@
   <string><id>127</id><value>Objects</value></string>
   <string><id>128</id><value>General</value></string>
   <string><id>129</id><value>Slideshow</value></string>
-  <string><id>130</id><value>System info</value></string>
+  <string><id>130</id><value>System Info</value></string>
   <string><id>131</id><value>Screen</value></string>
   <string><id>132</id><value>Albums</value></string>
   <string><id>133</id><value>Artists</value></string>
@@ -608,6 +608,8 @@
   <string><id>13002</id><value>Video Only</value></string>
   <string><id>13003</id><value>- Delay</value></string>
   <string><id>13004</id><value>- Minimum File Duration</value></string>
+  <string><id>13005</id><value>Shutdown</value></string>
+  <string><id>13006</id><value>Dashboard</value></string>
   <string><id>13100</id><value>Flicker Filter</value></string>
   <string><id>13200</id><value>Profiles</value></string>
   <string><id>13201</id><value>Delete profile '%s'?</value></string>
