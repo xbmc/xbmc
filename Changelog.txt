@@ -5,27 +5,29 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-  - 13-01-2004 fixed: [ 1039490 ] Fan speed reset to full speed on exit on 1.6 Xbox
-  - 11-01-2004 fixed: LPCM audio from ex. Music Video DVD's would only create static.
-  - 11-01-2004 fixed: Button scroller issues on homepage.
-  - 11-01-2004 added: Third rendering method using overlays.  Added purely to help find the reason behind the
+  - 13-01-2005 updated: Finnish language file (Thnx to jutski)
+  - 13-01-2005 updated: Norwegian language file (Thnx to vnmartinsen)
+  - 13-01-2005 fixed: [ 1039490 ] Fan speed reset to full speed on exit on 1.6 Xbox
+  - 11-01-2005 fixed: LPCM audio from ex. Music Video DVD's would only create static.
+  - 11-01-2005 fixed: Button scroller issues on homepage.
+  - 11-01-2005 added: Third rendering method using overlays.  Added purely to help find the reason behind the
                       quality improvements gained from the previous overlay method.  This new method is identical
                       to the previous overlays method, except it uses mplayers builtin YV12->YUY2 fast convertor.
                       Further info will be available later today in the thread:
                         http://www.xboxmediaplayer.de/cgi-bin/forums/ikonboard.pl?;act=ST;f=3;t=3916
                       NB: This output looks identical to my eyes as the output from the pixel shader.
-  - 11-01-2004 changed: Webserver authentication now defaults to BASIC instead of DIGEST.  Solves Firefox issues.
-  - 10-01-2004 added: Second rendering method using overlays.
+  - 11-01-2005 changed: Webserver authentication now defaults to BASIC instead of DIGEST.  Solves Firefox issues.
+  - 10-01-2005 added: Second rendering method using overlays.
                       Renderers can be switched from the GUI (Video Settings->Filters)
                       Known Issues: 1080i may not be 100% in terms of Aspect ratio - it hasn't been tested
                                     Renderers cannot be switched on the fly - change will take effect at
                                     next movie play.
                                     Overlays method is much slower than the pixel shader method - reason is
                                     mostly to do with the software YV12->YUY2 conversion done by mplayer.
-  - 10-01-2004 fixed: [ 1059668 ] OSD and scene skip bug.
-  - 10-01-2004 fixed: Slideshow info shows part of directory instead of filename in osd
-  - 10-01-2004 fixed: subtitles wouldn't display if on CD/DVD
-  - 09-01-2004 updated: Greek language file (Thnx to modon)
+  - 10-01-2005 fixed: [ 1059668 ] OSD and scene skip bug.
+  - 10-01-2005 fixed: Slideshow info shows part of directory instead of filename in osd
+  - 10-01-2005 fixed: subtitles wouldn't display if on CD/DVD
+  - 09-01-2005 updated: Greek language file (Thnx to modon)
   - 09-01-2005 fixed: fullscreen video view mode info, soften setting for video was not displayed
   - 09-01-2005 updated: Chinese (Traditional) language file (Thnx to iikii)
   - 09-01-2005 updated: Chinese (Simple) language file (Thnx to iikii)
