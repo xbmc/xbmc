@@ -204,12 +204,23 @@ void CGUIWindowVisualisation::OnAudioData(const unsigned char* pAudioData, int i
 		}
 
 		// Transfer data to our visualisation
-		m_pVisualisation->AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, m_fFreq, AUDIO_BUFFER_SIZE);
+		try
+		{
+			m_pVisualisation->AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, m_fFreq, AUDIO_BUFFER_SIZE);
+		}
+		catch(...)
+		{
+		}
 	}
 	else
 	{	// Transfer data to our visualisation
-		m_pVisualisation->AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, NULL, 0);
-	}
+		try
+		{
+			m_pVisualisation->AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, NULL, 0);
+		}
+		catch(...)
+		{
+		}	}
 	
 	return;
 }
