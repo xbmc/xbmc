@@ -198,6 +198,11 @@ static int config(struct vf_instance_s* vf,
 	    best,
 	    int_sws_flags | get_sws_cpuflags(), srcFilter, dstFilter);
     }
+    
+    if (srcFilter) sws_freeFilter(srcFilter);
+    if (dstFilter) sws_freeFilter(dstFilter);
+    srcFilter=dstFilter=NULL;
+    
     if(!vf->priv->ctx){
 	// error...
 	mp_msg(MSGT_VFILTER,MSGL_WARN,"Couldn't init SwScaler for this setup\n");
