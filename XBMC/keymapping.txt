@@ -14,6 +14,7 @@ Global key mappings while in the menus:
 Keymappings while playing video:
   switch between fullscreen video/menu          controller: X               remote:   : display
   find IMDB info for file or directory name     controller: white           remote    : info
+
   in fullscreen mode:
     pause                                       controller: A               remote    : pause
     stop                                        controller: B               remote    : stop
@@ -27,11 +28,12 @@ Keymappings while playing video:
     toggle mplayer OSD display (playtime)       controller: white           remote    : ?
     toggle subtitles on/off                     controller: ? (use OSD)     remote    : title
     show codec info                             controller: black           remote    : info
+    take a screenshot                           controller: click L thumbst.
 
 Keymappings while in the video OSD:
    navigation                                   controller: use DPAD        remote    : up/down/left/right arrows
    toggle a setting                             controller: A               remote    : select
-   decrease/increase values                     controller: L/R trigger     remote    : skip- and skip+
+   decrease/increase values                     controller: DPAD left/right remote    : up/down/left/right arrows
    exit OSD                                     controller: Y OR back       remote    : menu
   
 Keymappings in My Music:
