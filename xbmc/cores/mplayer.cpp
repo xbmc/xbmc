@@ -1,4 +1,3 @@
-
 #include "stdafx.h"
 #include "mplayer.h"
 #include "mplayer/mplayer.h"
@@ -50,7 +49,7 @@
 #define KEY_XF86_STOP (KEY_XF86_BASE+2)
 #define KEY_XF86_PREV (KEY_XF86_BASE+3)
 #define KEY_XF86_NEXT (KEY_XF86_BASE+4)
-  
+
 /* Keypad keys */
 #define KEY_KEYPAD (KEY_BASE+32)
 #define KEY_KP0 (KEY_KEYPAD+0)
@@ -78,10 +77,10 @@ extern CFileShoutcast* m_pShoutCastRipper;
 extern "C" void dllReleaseAll( );
 
 const char * dvd_audio_stream_types[8] =
-        { "ac3","unknown","mpeg1","mpeg2ext","lpcm","unknown","dts" };
+{ "ac3","unknown","mpeg1","mpeg2ext","lpcm","unknown","dts" };
 
 const char * dvd_audio_stream_channels[6] =
-	{ "mono", "stereo", "unknown", "unknown", "5.1/6.1", "5.1" };
+{ "mono", "stereo", "unknown", "unknown", "5.1/6.1", "5.1" };
 
 #define DVDLANGUAGES 8
 const char * dvd_audio_stream_langs[DVDLANGUAGES][2] = 
@@ -92,14 +91,14 @@ static CDlgCache* m_dlgCache=NULL;
 CMPlayer::Options::Options()
 {
 	m_bResampleAudio=false;
-    m_bNoCache=false;
-    m_bNoIdx=false;
-    m_iChannels=0;
-    m_bAC3PassTru=false;
-    m_strChannelMapping="";
-    m_fVolumeAmplification=0.0f;
-    m_bNonInterleaved=false;
-    m_fSpeed=1.0f;
+	m_bNoCache=false;
+	m_bNoIdx=false;
+	m_iChannels=0;
+	m_bAC3PassTru=false;
+	m_strChannelMapping="";
+	m_fVolumeAmplification=0.0f;
+	m_bNonInterleaved=false;
+	m_fSpeed=1.0f;
 	//Workaround for the need to restart
 	if(g_stSettings.m_iAudioStream >=0)
 		m_iAudioStream=g_stSettings.m_iAudioStream;
@@ -109,99 +108,99 @@ CMPlayer::Options::Options()
 }
 void  CMPlayer::Options::SetFPS(float fFPS)
 {
-  m_fFPS=fFPS;
+	m_fFPS=fFPS;
 }
 float CMPlayer::Options::GetFPS() const
 {
-  return m_fFPS;
+	return m_fFPS;
 }
 
 bool CMPlayer::Options::GetNoCache() const
 {
-  return m_bNoCache;
+	return m_bNoCache;
 }
 void CMPlayer::Options::SetNoCache(bool bOnOff) 
 {
-  m_bNoCache=bOnOff;
+	m_bNoCache=bOnOff;
 }
 
 bool CMPlayer::Options::GetNoIdx() const
 {
-  return m_bNoIdx;
+	return m_bNoIdx;
 }
 
 void CMPlayer::Options::SetNoIdx(bool bOnOff) 
 {
-  m_bNoIdx=bOnOff;
+	m_bNoIdx=bOnOff;
 }
 
 void  CMPlayer::Options::SetSpeed(float fSpeed)
 {
-  m_fSpeed=fSpeed;
+	m_fSpeed=fSpeed;
 }
 float CMPlayer::Options::GetSpeed() const
 {
-  return m_fSpeed;
+	return m_fSpeed;
 }
 
 bool CMPlayer::Options::GetNonInterleaved() const
 {
-  return m_bNonInterleaved;
+	return m_bNonInterleaved;
 }
 void CMPlayer::Options::SetNonInterleaved(bool bOnOff)
 {
-  m_bNonInterleaved=bOnOff;
+	m_bNonInterleaved=bOnOff;
 }
 
 
 int CMPlayer::Options::GetAudioStream() const
 {
-  return m_iAudioStream;
+	return m_iAudioStream;
 }
 void CMPlayer::Options::SetAudioStream(int iStream)
 {
-  m_iAudioStream=iStream;
+	m_iAudioStream=iStream;
 }
 
 float CMPlayer::Options::GetVolumeAmplification() const
 {
-  return m_fVolumeAmplification;
+	return m_fVolumeAmplification;
 }
 
 void CMPlayer::Options::SetVolumeAmplification(float fDB) 
 {
-  if (fDB < -200.0f) fDB=-200.0f;
-  if (fDB >   60.0f) fDB=60.0f;
-  m_fVolumeAmplification=fDB;
+	if (fDB < -200.0f) fDB=-200.0f;
+	if (fDB >   60.0f) fDB=60.0f;
+	m_fVolumeAmplification=fDB;
 }
 
 
 int CMPlayer::Options::GetChannels() const
 {
-  return m_iChannels;
+	return m_iChannels;
 }
 void CMPlayer::Options::SetChannels(int iChannels)
 {
-  m_iChannels=iChannels;
+	m_iChannels=iChannels;
 }
 
 bool CMPlayer::Options::GetAC3PassTru()
 {
-  return m_bAC3PassTru;
+	return m_bAC3PassTru;
 }
 void CMPlayer::Options::SetAC3PassTru(bool bOnOff)
 {
-  m_bAC3PassTru=bOnOff;
+	m_bAC3PassTru=bOnOff;
 }
 
 const string CMPlayer::Options::GetChannelMapping() const
 {
-  return m_strChannelMapping;
+	return m_strChannelMapping;
 }
 
 void CMPlayer::Options::SetChannelMapping(const string& strMapping)
 {
-  m_strChannelMapping=strMapping;
+	m_strChannelMapping=strMapping;
 }
 
 void CMPlayer::Options::SetDVDDevice(const string & strDevice)
@@ -211,161 +210,161 @@ void CMPlayer::Options::SetDVDDevice(const string & strDevice)
 
 void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 {
-  CStdString strTmp;
-  m_vecOptions.erase(m_vecOptions.begin(),m_vecOptions.end());
-  m_vecOptions.push_back("xbmc.exe");
-  
-  // enable direct rendering (mplayer directly draws on xbmc's overlay texture)
-  m_vecOptions.push_back("-dr");    
-  //m_vecOptions.push_back("-verbose");    
-  //m_vecOptions.push_back("1");    
+	CStdString strTmp;
+	m_vecOptions.erase(m_vecOptions.begin(),m_vecOptions.end());
+	m_vecOptions.push_back("xbmc.exe");
 
-  if (m_bNoCache)
-  {
-    m_vecOptions.push_back("-nocache");    
-  }
+	// enable direct rendering (mplayer directly draws on xbmc's overlay texture)
+	m_vecOptions.push_back("-dr");    
+	//m_vecOptions.push_back("-verbose");    
+	//m_vecOptions.push_back("1");    
 
-  if (m_bNoIdx)
-  {
-    m_vecOptions.push_back("-noidx");    
-  }
-  
-  
-  //limit A-V sync correction in order to get smoother playback.
-  //defaults to 0.01 but for high quality videos 0.0001 results in 
-  // much smoother playback but slow reaction time to fix A-V desynchronization
-  //m_vecOptions.push_back("-mc");
-  //m_vecOptions.push_back("0.0001");
+	if (m_bNoCache)
+	{
+		m_vecOptions.push_back("-nocache");    
+	}
 
-  // smooth out audio driver timer (audio drivers arent perect)
-  //Higher values mean more smoothing,but avoid using numbers too high, 
-  //as they will cause independent timing from the sound card and may result in 
-  //an A-V desync
-  //m_vecOptions.push_back("-autosync");
-  //m_vecOptions.push_back("30");
-  
-  if (m_fSpeed != 1.0f)
-  {
-    // set playback speed
-    m_vecOptions.push_back("-speed");
-    strTmp.Format("%f", m_fSpeed);
-    m_vecOptions.push_back(strTmp);
-    m_vecOptions.push_back("-fps");
-    strTmp.Format("%f", m_fFPS);
-    m_vecOptions.push_back(strTmp);
+	if (m_bNoIdx)
+	{
+		m_vecOptions.push_back("-noidx");    
+	}
 
-    // set subtitle fps
-    m_vecOptions.push_back("-subfps");
-    strTmp.Format("%f", m_fFPS);
-    m_vecOptions.push_back(strTmp);
 
-  }
+	//limit A-V sync correction in order to get smoother playback.
+	//defaults to 0.01 but for high quality videos 0.0001 results in 
+	// much smoother playback but slow reaction time to fix A-V desynchronization
+	//m_vecOptions.push_back("-mc");
+	//m_vecOptions.push_back("0.0001");
 
-  if ( m_iAudioStream >=0)
-  {
-	  CLog::Log(" Playing audio stream: %d", m_iAudioStream);
-    m_vecOptions.push_back("-aid");
-    strTmp.Format("%i", m_iAudioStream);
-    m_vecOptions.push_back(strTmp);
-  }
+	// smooth out audio driver timer (audio drivers arent perect)
+	//Higher values mean more smoothing,but avoid using numbers too high, 
+	//as they will cause independent timing from the sound card and may result in 
+	//an A-V desync
+	//m_vecOptions.push_back("-autosync");
+	//m_vecOptions.push_back("30");
 
-  if ( m_iChannels) 
-  {
-    // set number of audio channels
-    m_vecOptions.push_back("-channels");
-    strTmp.Format("%i", m_iChannels);
-    m_vecOptions.push_back(strTmp);
-  }
+	if (m_fSpeed != 1.0f)
+	{
+		// set playback speed
+		m_vecOptions.push_back("-speed");
+		strTmp.Format("%f", m_fSpeed);
+		m_vecOptions.push_back(strTmp);
+		m_vecOptions.push_back("-fps");
+		strTmp.Format("%f", m_fFPS);
+		m_vecOptions.push_back(strTmp);
+
+		// set subtitle fps
+		m_vecOptions.push_back("-subfps");
+		strTmp.Format("%f", m_fFPS);
+		m_vecOptions.push_back(strTmp);
+
+	}
+
+	if ( m_iAudioStream >=0)
+	{
+		CLog::Log(" Playing audio stream: %d", m_iAudioStream);
+		m_vecOptions.push_back("-aid");
+		strTmp.Format("%i", m_iAudioStream);
+		m_vecOptions.push_back(strTmp);
+	}
+
+	if ( m_iChannels) 
+	{
+		// set number of audio channels
+		m_vecOptions.push_back("-channels");
+		strTmp.Format("%i", m_iChannels);
+		m_vecOptions.push_back(strTmp);
+	}
 	if ( m_strChannelMapping.size()) 
-  {
-    // set audio channel mapping
-    m_vecOptions.push_back("-af");
-    m_vecOptions.push_back(m_strChannelMapping);
-  }
-  if ( m_bAC3PassTru)
-  {
-    // this is nice, we can ask mplayer to try hwac3 filter (used for ac3/dts pass-through) first
-    // and if it fails try a52 filter (used for ac3 software decoding) and if that fails
-    // try the other audio codecs (mp3, wma,...)
-    m_vecOptions.push_back("-ac");
-    m_vecOptions.push_back("hwac3,a52,");
-  }
+	{
+		// set audio channel mapping
+		m_vecOptions.push_back("-af");
+		m_vecOptions.push_back(m_strChannelMapping);
+	}
+	if ( m_bAC3PassTru)
+	{
+		// this is nice, we can ask mplayer to try hwac3 filter (used for ac3/dts pass-through) first
+		// and if it fails try a52 filter (used for ac3 software decoding) and if that fails
+		// try the other audio codecs (mp3, wma,...)
+		m_vecOptions.push_back("-ac");
+		m_vecOptions.push_back("hwac3,a52,");
+	}
 
-  if ( g_stSettings.m_bPostProcessing )
-  {
-    if (g_stSettings.m_bPPAuto && !g_stSettings.m_bDeInterlace)
-    {
-      // enable auto quality &postprocessing 
-      m_vecOptions.push_back("-autoq");
-      m_vecOptions.push_back("100");
-      m_vecOptions.push_back("-vop");
-      m_vecOptions.push_back("pp");      
-    }
-    else
-    {
-      // manual postprocessing
-      CStdString strOpt;
-      strTmp = "pp=";
-      bool bAddComma(false);
-      m_vecOptions.push_back("-vop");
-      if ( g_stSettings.m_bDeInterlace)
-      {
-        // add deinterlace filter
-        if (bAddComma) strTmp +="/";
-        strOpt="ci";
-        bAddComma=true;
-        strTmp += strOpt;
-      }
-      if (g_stSettings.m_bPPdering)
-      {
-        // add dering filter
-        if (bAddComma) strTmp +="/";
-        if (g_stSettings.m_iPPVertical>0) strOpt.Format("vb:%i",g_stSettings.m_iPPVertical);
-        else strOpt="dr";
-        bAddComma=true;
-        strTmp += strOpt;
-      }
-      if (g_stSettings.m_bPPVertical)
-      {
-        // add vertical deblocking filter
-        if (bAddComma) strTmp +="/";
-        if (g_stSettings.m_iPPVertical>0) strOpt.Format("vb:%i",g_stSettings.m_iPPVertical);
-        else strOpt="vb:a";
-        bAddComma=true;
-        strTmp += strOpt;
-      }
-      if (g_stSettings.m_bPPHorizontal)
-      {
-        // add horizontal deblocking filter
-        if (bAddComma) strTmp +="/";
-        if (g_stSettings.m_iPPHorizontal>0) strOpt.Format("hb:%i",g_stSettings.m_iPPHorizontal);
-        else strOpt="hb:a";
-        bAddComma=true;
+	if ( g_stSettings.m_bPostProcessing )
+	{
+		if (g_stSettings.m_bPPAuto && !g_stSettings.m_bDeInterlace)
+		{
+			// enable auto quality &postprocessing 
+			m_vecOptions.push_back("-autoq");
+			m_vecOptions.push_back("100");
+			m_vecOptions.push_back("-vop");
+			m_vecOptions.push_back("pp");      
+		}
+		else
+		{
+			// manual postprocessing
+			CStdString strOpt;
+			strTmp = "pp=";
+			bool bAddComma(false);
+			m_vecOptions.push_back("-vop");
+			if ( g_stSettings.m_bDeInterlace)
+			{
+				// add deinterlace filter
+				if (bAddComma) strTmp +="/";
+				strOpt="ci";
+				bAddComma=true;
+				strTmp += strOpt;
+			}
+			if (g_stSettings.m_bPPdering)
+			{
+				// add dering filter
+				if (bAddComma) strTmp +="/";
+				if (g_stSettings.m_iPPVertical>0) strOpt.Format("vb:%i",g_stSettings.m_iPPVertical);
+				else strOpt="dr";
+				bAddComma=true;
+				strTmp += strOpt;
+			}
+			if (g_stSettings.m_bPPVertical)
+			{
+				// add vertical deblocking filter
+				if (bAddComma) strTmp +="/";
+				if (g_stSettings.m_iPPVertical>0) strOpt.Format("vb:%i",g_stSettings.m_iPPVertical);
+				else strOpt="vb:a";
+				bAddComma=true;
+				strTmp += strOpt;
+			}
+			if (g_stSettings.m_bPPHorizontal)
+			{
+				// add horizontal deblocking filter
+				if (bAddComma) strTmp +="/";
+				if (g_stSettings.m_iPPHorizontal>0) strOpt.Format("hb:%i",g_stSettings.m_iPPHorizontal);
+				else strOpt="hb:a";
+				bAddComma=true;
 
-        strTmp += strOpt;
-      }
-      if (g_stSettings.m_bPPAutoLevels)
-      {
-        // add auto brightness/contrast levels
-        if (bAddComma) strTmp +="/";
-        strOpt="al";
-        bAddComma=true;
-        strTmp += strOpt;
-      }
-      m_vecOptions.push_back(strTmp);
-    }
-  }
+				strTmp += strOpt;
+			}
+			if (g_stSettings.m_bPPAutoLevels)
+			{
+				// add auto brightness/contrast levels
+				if (bAddComma) strTmp +="/";
+				strOpt="al";
+				bAddComma=true;
+				strTmp += strOpt;
+			}
+			m_vecOptions.push_back(strTmp);
+		}
+	}
 
-  if (m_fVolumeAmplification > 0.1f || m_fVolumeAmplification < -0.1f)
-  {
-    //add volume amplification audio filter
-    strTmp.Format("volume=%2.2f:0",m_fVolumeAmplification);
-    m_vecOptions.push_back("-af");
-    m_vecOptions.push_back(strTmp);
-  }
-//  if (m_bResampleAudio)
-  //{
-    //m_vecOptions.push_back("-af");
+	if (m_fVolumeAmplification > 0.1f || m_fVolumeAmplification < -0.1f)
+	{
+		//add volume amplification audio filter
+		strTmp.Format("volume=%2.2f:0",m_fVolumeAmplification);
+		m_vecOptions.push_back("-af");
+		m_vecOptions.push_back(strTmp);
+	}
+	//  if (m_bResampleAudio)
+	//{
+	//m_vecOptions.push_back("-af");
 	// 48kHz resampling
 	// format is: rate=sample_rate:bSloppy:quality
 	// where bSloppy is 1 if we don't care about accurate output rate
@@ -373,28 +372,28 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 	//     0   - linear interpolation (fast, but bad quality)
 	//     1   - polyphase filtered with integer math
 	//     2   - polyphase filtered with float math (slowest)
-//	m_vecOptions.push_back("resample=48000:0:1");//,format=2unsignedint");
-  //}
+	//	m_vecOptions.push_back("resample=48000:0:1");//,format=2unsignedint");
+	//}
 
-  if (m_bNonInterleaved)
-  {
-    // open file in non-interleaved way
-    m_vecOptions.push_back("-ni");
-  }
+	if (m_bNonInterleaved)
+	{
+		// open file in non-interleaved way
+		m_vecOptions.push_back("-ni");
+	}
 
-  if(m_strDvdDevice.length()>0)
-  {
-	m_vecOptions.push_back("-dvd-device");
-	m_vecOptions.push_back(CStdString("""") + m_strDvdDevice + CStdString(""""));	
-  }
-  m_vecOptions.push_back("1.avi");
+	if(m_strDvdDevice.length()>0)
+	{
+		m_vecOptions.push_back("-dvd-device");
+		m_vecOptions.push_back(CStdString("""") + m_strDvdDevice + CStdString(""""));	
+	}
+	m_vecOptions.push_back("1.avi");
 
-  argc=(int)m_vecOptions.size();
-  for (int i=0; i < argc; ++i)
-  {
-    argv[i]=(char*)m_vecOptions[i].c_str();
-  }
-  argv[argc]=NULL;
+	argc=(int)m_vecOptions.size();
+	for (int i=0; i < argc; ++i)
+	{
+		argv[i]=(char*)m_vecOptions[i].c_str();
+	}
+	argv[argc]=NULL;
 }
 
 
@@ -430,7 +429,7 @@ bool CMPlayer::load()
 		m_pDLL = new DllLoader("Q:\\mplayer\\mplayer.dll");
 		if( !m_pDLL->Parse() )
 		{
-      CLog::Log("cmplayer::load() parse failed");
+			CLog::Log("cmplayer::load() parse failed");
 			delete m_pDLL;
 			m_pDLL=NULL;
 			return false;
@@ -441,356 +440,356 @@ bool CMPlayer::load()
 		}
 		mplayer_load_dll(*m_pDLL);
 	}
-  return true;
+	return true;
 }
 void update_cache_dialog(const char* tmp)
 {
-  if (m_dlgCache)
-  {
-    m_dlgCache->SetMessage(tmp);
-    m_dlgCache->Update();
-  }
+	if (m_dlgCache)
+	{
+		m_dlgCache->SetMessage(tmp);
+		m_dlgCache->Update();
+	}
 }
 bool CMPlayer::openfile(const CStdString& strFile)
 {
 	int iRet=-1;
-  int iCacheSize=1024;
-  closefile();
-  bool bFileOnHD(false);
-  bool bFileOnISO(false);
-  bool bFileOnUDF(false);
-  bool bFileOnInternet(false);
-  bool bFileOnLAN(false);
-  bool bFileIsDVDImage(false);
-  bool bFileIsDVDIfoFile(false);
-  
-  CURL url(strFile);
-  if ( CUtil::IsHD(strFile) )           bFileOnHD=true;
-  else if ( CUtil::IsISO9660(strFile) ) bFileOnISO=true;
-  else if ( CUtil::IsDVD(strFile) )     bFileOnUDF=true;
-  else if (url.GetProtocol()=="http")   bFileOnInternet=true;
-  else if (url.GetProtocol()=="shout")  bFileOnInternet=true;
-  else if (url.GetProtocol()=="mms")    bFileOnInternet=true;
-  else if (url.GetProtocol()=="rtp")    bFileOnInternet=true;
-  else bFileOnLAN=true;
+	int iCacheSize=1024;
+	closefile();
+	bool bFileOnHD(false);
+	bool bFileOnISO(false);
+	bool bFileOnUDF(false);
+	bool bFileOnInternet(false);
+	bool bFileOnLAN(false);
+	bool bFileIsDVDImage(false);
+	bool bFileIsDVDIfoFile(false);
 
-  bool bIsVideo =CUtil::IsVideo(strFile);
-  bool bIsAudio =CUtil::IsAudio(strFile);
-  bool bIsDVD(false);
+	CURL url(strFile);
+	if ( CUtil::IsHD(strFile) )           bFileOnHD=true;
+	else if ( CUtil::IsISO9660(strFile) ) bFileOnISO=true;
+	else if ( CUtil::IsDVD(strFile) )     bFileOnUDF=true;
+	else if (url.GetProtocol()=="http")   bFileOnInternet=true;
+	else if (url.GetProtocol()=="shout")  bFileOnInternet=true;
+	else if (url.GetProtocol()=="mms")    bFileOnInternet=true;
+	else if (url.GetProtocol()=="rtp")    bFileOnInternet=true;
+	else bFileOnLAN=true;
 
-  bFileIsDVDImage = CUtil::IsDVDImage(strFile);
-  bFileIsDVDIfoFile = CUtil::IsDVDFile(strFile, false, true);
+	bool bIsVideo =CUtil::IsVideo(strFile);
+	bool bIsAudio =CUtil::IsAudio(strFile);
+	bool bIsDVD(false);
 
-  CLog::DebugLog("file:%s IsDVDImage:%i IsDVDIfoFile:%i", strFile.c_str(),bFileIsDVDImage ,bFileIsDVDIfoFile);
-  if (strFile.Find("dvd://") >=0 || bFileIsDVDImage || bFileIsDVDIfoFile)
-  {
-    bIsDVD=true;
-    bIsVideo=true;
-  }
+	bFileIsDVDImage = CUtil::IsDVDImage(strFile);
+	bFileIsDVDIfoFile = CUtil::IsDVDFile(strFile, false, true);
 
-  iCacheSize=GetCacheSize(bFileOnHD,bFileOnISO,bFileOnUDF,bFileOnInternet,bFileOnLAN, bIsVideo, bIsAudio, bIsDVD);
-  try
-  {
-    if (bFileOnInternet)
-    {
-      m_dlgCache = new CDlgCache();
-      m_dlgCache->Update();
-    }
-    
-    CLog::Log("mplayer play:%s cachesize:%i", strFile.c_str(), iCacheSize);
-    
-    // cache (remote) subtitles to HD
-    if (!bFileOnInternet && bIsVideo)
-    {
-	    CUtil::CacheSubtitles(strFile);
-    }
-    CUtil::PrepareSubtitleFonts();
-	  m_iPTS			= 0;
-	  m_bPaused	  = false;
-
-    // first init mplayer. This is needed 2 find out all information
-    // like audio channels, fps etc
-	  load();
-
-    char *argv[30];
-    int argc=8;
-    //Options options;
-    if (CUtil::IsVideo(strFile))
-    {
-      options.SetNonInterleaved(g_stSettings.m_bNonInterleaved);
-
-    }
-    options.SetNoCache(g_stSettings.m_bNoCache);
-
-    // shoutcast is always stereo
-    if (CUtil::IsShoutCast(strFile) ) 
-    {
-      options.SetChannels(2);
-    }
-    else 
-    {
-      // if we are using analog output, then we only got 2 stereo output
-      options.SetChannels(0);
-    }
-
-    // if we're using digital out & ac3/dts pass-through is enabled
-    // then try opening file with ac3/dts pass-through 
-    bool bSupportsSPDIFOut=(XGetAudioFlags() & (DSSPEAKER_ENABLE_AC3 | DSSPEAKER_ENABLE_DTS)) != 0;
-    if (g_stSettings.m_bUseDigitalOutput && bSupportsSPDIFOut )
-    {
-      if ( g_stSettings.m_bDDStereoPassThrough || g_stSettings.m_bDD_DTSMultiChannelPassThrough)
-      {
-        options.SetAC3PassTru(true);
-        options.SetChannels(6);
-      }
-    }
-
-    if (1 /* bIsVideo*/) 
-    {
-      options.SetVolumeAmplification(g_stSettings.m_fVolumeAmplification);
-    }
-
-	//Make sure we set the dvd-device parameter if we are playing dvdimages or dvdfolders
-	if(bFileIsDVDImage)
+	CLog::DebugLog("file:%s IsDVDImage:%i IsDVDIfoFile:%i", strFile.c_str(),bFileIsDVDImage ,bFileIsDVDIfoFile);
+	if (strFile.Find("dvd://") >=0 || bFileIsDVDImage || bFileIsDVDIfoFile)
 	{
-		options.SetDVDDevice(strFile);
-		CLog::Log(" dvddevice: %s", strFile.c_str());
+		bIsDVD=true;
+		bIsVideo=true;
 	}
-	else if(bFileIsDVDIfoFile)
+
+	iCacheSize=GetCacheSize(bFileOnHD,bFileOnISO,bFileOnUDF,bFileOnInternet,bFileOnLAN, bIsVideo, bIsAudio, bIsDVD);
+	try
 	{
-		CStdString strPath,strFName;
-    CUtil::Split(strFile,strPath,strFName);
-    if (CUtil::HasSlashAtEnd(strPath)) strPath=strPath.Left(strPath.size()-1);
+		if (bFileOnInternet)
+		{
+			m_dlgCache = new CDlgCache();
+			m_dlgCache->Update();
+		}
 
-		options.SetDVDDevice(strPath);
-		CLog::Log(" dvddevice: %s", strPath.c_str());
-	}	
+		CLog::Log("mplayer play:%s cachesize:%i", strFile.c_str(), iCacheSize);
 
-    if (CUtil::IsRAR(strFile))
-    {
-    	options.SetNoIdx(true);
-	CLog::Log("Trying to play a rar file (%s). Setting -noidx", strFile.c_str());
-	// -noidx enables mplayer to play an .avi file from a streaming source that is not seekable.
-        // it tells mplayer to _not_ try getting the avi index from the end of the file.
-        // this option is enabled if we try play video from a rar file, as there is a modified version
-        // of ccxstream which sends unrared data when you request the first .rar of a movie.
-        // This means you can play a movie gaplessly from 50 rar files without unraring, which is neat.
-    }
+		// cache (remote) subtitles to HD
+		if (!bFileOnInternet && bIsVideo)
+		{
+			CUtil::CacheSubtitles(strFile);
+		}
+		CUtil::PrepareSubtitleFonts();
+		m_iPTS			= 0;
+		m_bPaused	  = false;
 
-    options.GetOptions(argc,argv);
-    
-    //CLog::Log("  open 1st time");
-	  mplayer_init(argc,argv);
-    mplayer_setcache_size(iCacheSize);
-	if(bFileIsDVDImage || bFileIsDVDIfoFile)
-		iRet=mplayer_open_file(GetDVDArgument(strFile).c_str());
-	else
-	  iRet=mplayer_open_file(strFile.c_str());
-	  if (iRet < 0)
-	  {
-		  CLog::Log("cmplayer::openfile() %s failed",strFile.c_str());
-		  closefile();
-      if (m_dlgCache) delete m_dlgCache;
-      m_dlgCache=NULL;
-		  return false;
-	  }
+		// first init mplayer. This is needed 2 find out all information
+		// like audio channels, fps etc
+		load();
 
-    if (bFileOnInternet ) 
-    {
-      // for streaming we're done.
-    }
-    else
-    {
-      // for other files, check the codecs/audio channels etc etc...
-	    char          strFourCC[10],strVidFourCC[10];
-	    char          strAudioCodec[128],strVideoCodec[128];
-	    long          lBitRate;
-	    long          lSampleRate;
-	    int	          iChannels;
-	    BOOL          bVBR;
-	    float         fFPS;
-	    unsigned int  iWidth;
-	    unsigned int  iHeight;
-	    long          lFrames2Early;
-	    long          lFrames2Late;
-      bool          bNeed2Restart=false;
+		char *argv[30];
+		int argc=8;
+		//Options options;
+		if (CUtil::IsVideo(strFile))
+		{
+			options.SetNonInterleaved(g_stSettings.m_bNonInterleaved);
 
-      // get the audio & video info from the file
-	    mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
-      mplayer_GetVideoInfo(strVidFourCC,strVideoCodec, &fFPS, &iWidth,&iHeight, &lFrames2Early, &lFrames2Late);
+		}
+		options.SetNoCache(g_stSettings.m_bNoCache);
+
+		// shoutcast is always stereo
+		if (CUtil::IsShoutCast(strFile) ) 
+		{
+			options.SetChannels(2);
+		}
+		else 
+		{
+			// if we are using analog output, then we only got 2 stereo output
+			options.SetChannels(0);
+		}
+
+		// if we're using digital out & ac3/dts pass-through is enabled
+		// then try opening file with ac3/dts pass-through 
+		bool bSupportsSPDIFOut=(XGetAudioFlags() & (DSSPEAKER_ENABLE_AC3 | DSSPEAKER_ENABLE_DTS)) != 0;
+		if (g_stSettings.m_bUseDigitalOutput && bSupportsSPDIFOut )
+		{
+			if ( g_stSettings.m_bDDStereoPassThrough || g_stSettings.m_bDD_DTSMultiChannelPassThrough)
+			{
+				options.SetAC3PassTru(true);
+				options.SetChannels(6);
+			}
+		}
+
+		if (1 /* bIsVideo*/) 
+		{
+			options.SetVolumeAmplification(g_stSettings.m_fVolumeAmplification);
+		}
+
+		//Make sure we set the dvd-device parameter if we are playing dvdimages or dvdfolders
+		if(bFileIsDVDImage)
+		{
+			options.SetDVDDevice(strFile);
+			CLog::Log(" dvddevice: %s", strFile.c_str());
+		}
+		else if(bFileIsDVDIfoFile)
+		{
+			CStdString strPath,strFName;
+			CUtil::Split(strFile,strPath,strFName);
+			if (CUtil::HasSlashAtEnd(strPath)) strPath=strPath.Left(strPath.size()-1);
+
+			options.SetDVDDevice(strPath);
+			CLog::Log(" dvddevice: %s", strPath.c_str());
+		}	
+
+		if (CUtil::IsRAR(strFile))
+		{
+			options.SetNoIdx(true);
+			CLog::Log("Trying to play a rar file (%s). Setting -noidx", strFile.c_str());
+			// -noidx enables mplayer to play an .avi file from a streaming source that is not seekable.
+			// it tells mplayer to _not_ try getting the avi index from the end of the file.
+			// this option is enabled if we try play video from a rar file, as there is a modified version
+			// of ccxstream which sends unrared data when you request the first .rar of a movie.
+			// This means you can play a movie gaplessly from 50 rar files without unraring, which is neat.
+		}
+
+		options.GetOptions(argc,argv);
+
+		//CLog::Log("  open 1st time");
+		mplayer_init(argc,argv);
+		mplayer_setcache_size(iCacheSize);
+		if(bFileIsDVDImage || bFileIsDVDIfoFile)
+			iRet=mplayer_open_file(GetDVDArgument(strFile).c_str());
+		else
+			iRet=mplayer_open_file(strFile.c_str());
+		if (iRet < 0)
+		{
+			CLog::Log("cmplayer::openfile() %s failed",strFile.c_str());
+			closefile();
+			if (m_dlgCache) delete m_dlgCache;
+			m_dlgCache=NULL;
+			return false;
+		}
+
+		if (bFileOnInternet ) 
+		{
+			// for streaming we're done.
+		}
+		else
+		{
+			// for other files, check the codecs/audio channels etc etc...
+			char          strFourCC[10],strVidFourCC[10];
+			char          strAudioCodec[128],strVideoCodec[128];
+			long          lBitRate;
+			long          lSampleRate;
+			int	          iChannels;
+			BOOL          bVBR;
+			float         fFPS;
+			unsigned int  iWidth;
+			unsigned int  iHeight;
+			long          lFrames2Early;
+			long          lFrames2Late;
+			bool          bNeed2Restart=false;
+
+			// get the audio & video info from the file
+			mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
+			mplayer_GetVideoInfo(strVidFourCC,strVideoCodec, &fFPS, &iWidth,&iHeight, &lFrames2Early, &lFrames2Late);
 
 
-      // do we need 2 do frame rate conversions ?
-      if (g_stSettings.m_bFrameRateConversions && CUtil::IsVideo(strFile) )
-      {
-        DWORD dwVideoStandard=XGetVideoStandard();
-        if (dwVideoStandard==XC_VIDEO_STANDARD_PAL_I)
-        {
-          // PAL. Framerate for pal=25.0fps
-          // do frame rate conversions for NTSC movie playback under PAL
-          if (fFPS >= 23.0 && fFPS <= 24.5f )
-          {
-            // 23.978  fps -> 25fps frame rate conversion
-            options.SetSpeed(25.0f / fFPS); 
-            options.SetFPS(25.0f);
-            bNeed2Restart=true;
-            CLog::Log("  --restart cause we use ntsc->pal framerate conversion");
-          }
-        }
-        else
-        {
-          //NTSC framerate=23.976 fps
-          // do frame rate conversions for PAL movie playback under NTSC
-          if (fFPS>=24 && fFPS <= 25.5)
-          {
-            options.SetSpeed(23.976f / fFPS); 
-            options.SetFPS(23.976f);
-            bNeed2Restart=true;
-            CLog::Log("  --restart cause we use pal->ntsc framerate conversion");
-          }
-        }
-      }
-      // if we are not using ac3/dts pass-through
-      if (strstr(strAudioCodec,"AC3/SPDIF")==NULL)
-      {
-        // make sure to update the option (used below)
-        options.SetAC3PassTru(false);
-      }
-      else
-      {
-        // if we are using ac3/dts pass-through
-        // then make sure samplerate = 48 khz. Other samplerates are NOT supported on the xbox
-        if (lSampleRate!=48000)
-        {
-          // 2bad, disable pass-through and restart
-          options.SetAC3PassTru(false);
-          bNeed2Restart=true;
-        }
-      }
-#if 0
-	    // check if AC3 passthrough is enabled in MS dashboard
-      // ifso we need 2 check if this movie has AC3 5.1 sound and if thats true
-      // we reopen the movie with the ac3 5.1 passthrough audio filter
-      bool bAc3PassTru(false);
-      if (iChannels==2 && g_stSettings.m_bDDStereoPassThrough) bAc3PassTru=true;
-      if (iChannels> 2 && g_stSettings.m_bDD_DTSMultiChannelPassThrough) bAc3PassTru=true;
-
-      if (g_stSettings.m_bUseDigitalOutput && bSupportsSPDIFOut && bAc3PassTru )
-	    {
-		    // and the movie has an AC3 audio stream
-		    if ( strstr(strAudioCodec,"AC3-liba52") && (lSampleRate==48000) )
-		    {
-          options.SetChannels(2);
-          options.SetAC3PassTru(true);
-          bNeed2Restart=true;
-          CLog::Log("  --restart cause we use ac3 passtru");
-		    }
-	    }
-#endif
-      // if we dont have ac3 passtru enabled
-      if (!options.GetAC3PassTru())
-      {
-        // if DMO filter is used we need 2 remap the audio speaker layout (MS does things differently)
-	      if( strstr(strAudioCodec,"DMO") && (iChannels==6) )
-	      {
-          options.SetChannels(6);
-          options.SetChannelMapping("channels=6:6:0:0:1:1:2:4:3:5:4:2:5:3");
-          bNeed2Restart=true;
-          CLog::Log("  --restart cause speaker mapping needs fixing");
-	      }	
-
-        // if xbox only got stereo output, then limit number of channels to 2
-        // same if xbox got digital output, but we're listening to the analog output
-        if (!bSupportsSPDIFOut || !g_stSettings.m_bUseDigitalOutput)
-        {
-          if (iChannels > 2) 
-          {
-            iChannels=2;
-          }
-        }
-        // remap audio speaker layout for files with 5 audio channels 
-        if (iChannels==5)
-        {
-          options.SetChannels(6);
-          options.SetChannelMapping("channels=6:5:0:0:1:1:2:2:3:3:4:4:5:5");
-          bNeed2Restart=true;
-          CLog::Log("  --restart cause audio channels changed:5");
-        }
-        // remap audio speaker layout for files with 3 audio channels 
-        if (iChannels==3)
-        {
-          options.SetChannels(4);
-          options.SetChannelMapping("channels=4:4:0:0:1:1:2:2:2:3");
-          bNeed2Restart=true;
-          CLog::Log("  --restart cause audio channels changed:3");
-        }
-        
-        if (iChannels==1 || iChannels==2||iChannels==4)
-        {
-          int iChan=options.GetChannels();
-          if ( iChannels ==2) iChannels=0;
-          //if ( iChannels !=2) iChannels=2;
-          //else iChannels=0;
-          if (iChan!=iChannels)
-          {
-            CLog::Log("  --restart cause audio channels changed");
-            options.SetChannels(iChannels);
-            bNeed2Restart=true; 
-          }
-        }
-      }
-
-      if (bNeed2Restart)
-      {
-        CLog::Log("  --------------- restart ---------------");
-        //CLog::Log("  open 2nd time");
-			  mplayer_close_file();
-        options.GetOptions(argc,argv);
-			  load();
-			  mplayer_init(argc,argv);
-        mplayer_setcache_size(iCacheSize);
-			if(bFileIsDVDImage || bFileIsDVDIfoFile)
-				iRet=mplayer_open_file(GetDVDArgument(strFile).c_str());
+			// do we need 2 do frame rate conversions ?
+			if (g_stSettings.m_bFrameRateConversions && CUtil::IsVideo(strFile) )
+			{
+				DWORD dwVideoStandard=XGetVideoStandard();
+				if (dwVideoStandard==XC_VIDEO_STANDARD_PAL_I)
+				{
+					// PAL. Framerate for pal=25.0fps
+					// do frame rate conversions for NTSC movie playback under PAL
+					if (fFPS >= 23.0 && fFPS <= 24.5f )
+					{
+						// 23.978  fps -> 25fps frame rate conversion
+						options.SetSpeed(25.0f / fFPS); 
+						options.SetFPS(25.0f);
+						bNeed2Restart=true;
+						CLog::Log("  --restart cause we use ntsc->pal framerate conversion");
+					}
+				}
+				else
+				{
+					//NTSC framerate=23.976 fps
+					// do frame rate conversions for PAL movie playback under NTSC
+					if (fFPS>=24 && fFPS <= 25.5)
+					{
+						options.SetSpeed(23.976f / fFPS); 
+						options.SetFPS(23.976f);
+						bNeed2Restart=true;
+						CLog::Log("  --restart cause we use pal->ntsc framerate conversion");
+					}
+				}
+			}
+			// if we are not using ac3/dts pass-through
+			if (strstr(strAudioCodec,"AC3/SPDIF")==NULL)
+			{
+				// make sure to update the option (used below)
+				options.SetAC3PassTru(false);
+			}
 			else
-			  iRet=mplayer_open_file(strFile.c_str());
-			  if (iRet < 0)
-			  {
-          CLog::Log("cmplayer::openfile() %s failed",strFile.c_str());
-				  closefile();
-          if (m_dlgCache) delete m_dlgCache;
-          m_dlgCache=NULL;
-				  return false;
-			  }
-  			
-      }
-    }
-    m_bIsPlaying= true;
+			{
+				// if we are using ac3/dts pass-through
+				// then make sure samplerate = 48 khz. Other samplerates are NOT supported on the xbox
+				if (lSampleRate!=48000)
+				{
+					// 2bad, disable pass-through and restart
+					options.SetAC3PassTru(false);
+					bNeed2Restart=true;
+				}
+			}
+#if 0
+			// check if AC3 passthrough is enabled in MS dashboard
+			// ifso we need 2 check if this movie has AC3 5.1 sound and if thats true
+			// we reopen the movie with the ac3 5.1 passthrough audio filter
+			bool bAc3PassTru(false);
+			if (iChannels==2 && g_stSettings.m_bDDStereoPassThrough) bAc3PassTru=true;
+			if (iChannels> 2 && g_stSettings.m_bDD_DTSMultiChannelPassThrough) bAc3PassTru=true;
 
-    bIsVideo=HasVideo();
-    bIsAudio=HasAudio();
-    int iNewCacheSize=GetCacheSize(bFileOnHD,bFileOnISO,bFileOnUDF,bFileOnInternet,bFileOnLAN, bIsVideo, bIsAudio, bIsDVD);
-    if (iNewCacheSize > iCacheSize)
-    {
-      CLog::Log("detected video. Cachesize is now %i, (was %i)", iNewCacheSize,iCacheSize);
-      mplayer_setcache_size(iCacheSize);
-    }
-    
-	  if ( ThreadHandle() == NULL)
-	  {
-		  Create();
-	  }
+			if (g_stSettings.m_bUseDigitalOutput && bSupportsSPDIFOut && bAc3PassTru )
+			{
+				// and the movie has an AC3 audio stream
+				if ( strstr(strAudioCodec,"AC3-liba52") && (lSampleRate==48000) )
+				{
+					options.SetChannels(2);
+					options.SetAC3PassTru(true);
+					bNeed2Restart=true;
+					CLog::Log("  --restart cause we use ac3 passtru");
+				}
+			}
+#endif
+			// if we dont have ac3 passtru enabled
+			if (!options.GetAC3PassTru())
+			{
+				// if DMO filter is used we need 2 remap the audio speaker layout (MS does things differently)
+				if( strstr(strAudioCodec,"DMO") && (iChannels==6) )
+				{
+					options.SetChannels(6);
+					options.SetChannelMapping("channels=6:6:0:0:1:1:2:4:3:5:4:2:5:3");
+					bNeed2Restart=true;
+					CLog::Log("  --restart cause speaker mapping needs fixing");
+				}	
 
-  } 
-  catch(...)
-  {
-    CLog::Log("mplayer couldnt open file");
-    if (m_dlgCache) delete m_dlgCache;
-    m_dlgCache=NULL;  
-    return false;
-  }
+				// if xbox only got stereo output, then limit number of channels to 2
+				// same if xbox got digital output, but we're listening to the analog output
+				if (!bSupportsSPDIFOut || !g_stSettings.m_bUseDigitalOutput)
+				{
+					if (iChannels > 2) 
+					{
+						iChannels=2;
+					}
+				}
+				// remap audio speaker layout for files with 5 audio channels 
+				if (iChannels==5)
+				{
+					options.SetChannels(6);
+					options.SetChannelMapping("channels=6:5:0:0:1:1:2:2:3:3:4:4:5:5");
+					bNeed2Restart=true;
+					CLog::Log("  --restart cause audio channels changed:5");
+				}
+				// remap audio speaker layout for files with 3 audio channels 
+				if (iChannels==3)
+				{
+					options.SetChannels(4);
+					options.SetChannelMapping("channels=4:4:0:0:1:1:2:2:2:3");
+					bNeed2Restart=true;
+					CLog::Log("  --restart cause audio channels changed:3");
+				}
 
-  if (m_dlgCache) delete m_dlgCache;
-  m_dlgCache=NULL;
+				if (iChannels==1 || iChannels==2||iChannels==4)
+				{
+					int iChan=options.GetChannels();
+					if ( iChannels ==2) iChannels=0;
+					//if ( iChannels !=2) iChannels=2;
+					//else iChannels=0;
+					if (iChan!=iChannels)
+					{
+						CLog::Log("  --restart cause audio channels changed");
+						options.SetChannels(iChannels);
+						bNeed2Restart=true; 
+					}
+				}
+			}
+
+			if (bNeed2Restart)
+			{
+				CLog::Log("  --------------- restart ---------------");
+				//CLog::Log("  open 2nd time");
+				mplayer_close_file();
+				options.GetOptions(argc,argv);
+				load();
+				mplayer_init(argc,argv);
+				mplayer_setcache_size(iCacheSize);
+				if(bFileIsDVDImage || bFileIsDVDIfoFile)
+					iRet=mplayer_open_file(GetDVDArgument(strFile).c_str());
+				else
+					iRet=mplayer_open_file(strFile.c_str());
+				if (iRet < 0)
+				{
+					CLog::Log("cmplayer::openfile() %s failed",strFile.c_str());
+					closefile();
+					if (m_dlgCache) delete m_dlgCache;
+					m_dlgCache=NULL;
+					return false;
+				}
+
+			}
+		}
+		m_bIsPlaying= true;
+
+		bIsVideo=HasVideo();
+		bIsAudio=HasAudio();
+		int iNewCacheSize=GetCacheSize(bFileOnHD,bFileOnISO,bFileOnUDF,bFileOnInternet,bFileOnLAN, bIsVideo, bIsAudio, bIsDVD);
+		if (iNewCacheSize > iCacheSize)
+		{
+			CLog::Log("detected video. Cachesize is now %i, (was %i)", iNewCacheSize,iCacheSize);
+			mplayer_setcache_size(iCacheSize);
+		}
+
+		if ( ThreadHandle() == NULL)
+		{
+			Create();
+		}
+
+	} 
+	catch(...)
+	{
+		CLog::Log("mplayer couldnt open file");
+		if (m_dlgCache) delete m_dlgCache;
+		m_dlgCache=NULL;  
+		return false;
+	}
+
+	if (m_dlgCache) delete m_dlgCache;
+	m_dlgCache=NULL;
 
 	//	mplayer return values: 
 	//	-1	internal error
@@ -803,7 +802,7 @@ bool CMPlayer::closefile()
 {
 	m_bIsPlaying=false;
 	StopThread();
-	
+
 	return true;
 }
 
@@ -827,38 +826,38 @@ void CMPlayer::Process()
 	{
 		m_callback.OnPlayBackStarted();
 
-    try
-    {
-		  do 
-		  {
-			  if (!m_bPaused)
-			  {
-				  int iRet=mplayer_process();
-				  if (iRet < 0)
-				  {
-					  m_bIsPlaying=false;
-				  }
-  				
-				  __int64 iPTS=mplayer_get_pts();
-				  if (iPTS)
-				  {
-					  m_iPTS=iPTS;
-				  }
-			  }
-			  else 
-			  {
+		try
+		{
+			do 
+			{
+				if (!m_bPaused)
+				{
+					int iRet=mplayer_process();
+					if (iRet < 0)
+					{
+						m_bIsPlaying=false;
+					}
+
+					__int64 iPTS=mplayer_get_pts();
+					if (iPTS)
+					{
+						m_iPTS=iPTS;
+					}
+				}
+				else 
+				{
 					if (HasVideo())
 					{
 						xbox_video_CheckScreenSaver();		// Check for screen saver
 						Sleep(100);
 					}
-			  }
-		  } while (m_bIsPlaying && !m_bStop);
-    }
-    catch(...)
-    {
-      CLog::Log("mplayer generated exception!");
-    }
+				}
+			} while (m_bIsPlaying && !m_bStop);
+		}
+		catch(...)
+		{
+			CLog::Log("mplayer generated exception!");
+		}
 		mplayer_close_file();
 	}
 	m_bIsPlaying=false;
@@ -908,7 +907,7 @@ bool CMPlayer::HasAudio()
 
 void CMPlayer::ToggleOSD()
 {
-  OutputDebugString("toggle mplayer OSD\n");
+	OutputDebugString("toggle mplayer OSD\n");
 	mplayer_put_key('o');
 }
 
@@ -956,11 +955,11 @@ void CMPlayer::ToggleFrameDrop()
 
 int CMPlayer::GetVolume()
 {
-  return mplayer_getVolume();
+	return mplayer_getVolume();
 }
 void CMPlayer::SetVolume(int iPercentage)
 {
-  mplayer_setVolume(iPercentage);
+	mplayer_setVolume(iPercentage);
 }
 
 void CMPlayer::SetContrast(bool bPlus)
@@ -1013,12 +1012,12 @@ void CMPlayer::GetAudioInfo( CStdString& strAudioInfo)
 	if (bVBR)
 	{
 		strAudioInfo.Format("audio:(%s) VBR br:%i sr:%02.2f khz chns:%i",
-									strAudioCodec,lBitRate,fSampleRate,iChannels);
+			strAudioCodec,lBitRate,fSampleRate,iChannels);
 	}
 	else
 	{
 		strAudioInfo.Format("audio:(%s) CBR br:%i sr:%02.2f khz chns:%i",
-									strAudioCodec,lBitRate,fSampleRate,iChannels);
+			strAudioCodec,lBitRate,fSampleRate,iChannels);
 	}
 }
 
@@ -1039,7 +1038,7 @@ void CMPlayer::GetVideoInfo( CStdString& strVideoInfo)
 	}
 	mplayer_GetVideoInfo(strFourCC,strVideoCodec, &fFPS, &iWidth,&iHeight, &lFrames2Early, &lFrames2Late);
 	strVideoInfo.Format("video:%s fps:%02.2f %ix%i early/late:%i/%i", 
-											strVideoCodec,fFPS,iWidth,iHeight,lFrames2Early,lFrames2Late);
+		strVideoCodec,fFPS,iWidth,iHeight,lFrames2Early,lFrames2Late);
 }
 
 
@@ -1057,7 +1056,7 @@ void CMPlayer::GetGeneralInfo( CStdString& strVideoInfo)
 	}
 	mplayer_GetGeneralInfo(&lFramesDropped, &iQuality, &iCacheFilled, &fTotalCorrection, &fAVDelay);
 	strVideoInfo.Format("dropped:%i Q:%i cache:%i%% ct:%2.2f av:%2.2f", 
-												lFramesDropped, iQuality, iCacheFilled, fTotalCorrection, fAVDelay);
+		lFramesDropped, iQuality, iCacheFilled, fTotalCorrection, fAVDelay);
 }
 
 extern void xbox_audio_registercallback(IAudioCallback* pCallback);
@@ -1095,13 +1094,13 @@ void CMPlayer::UnRegisterAudioCallback()
 void CMPlayer::AudioOffset(bool bPlus)
 {
 	if (bPlus)
- 		mplayer_put_key('+');
+		mplayer_put_key('+');
 	else
 		mplayer_put_key('-');
 }
 void CMPlayer::SwitchToNextAudioLanguage()
 {
- 	
+
 }
 
 void CMPlayer::UpdateSubtitlePosition()
@@ -1130,8 +1129,8 @@ bool CMPlayer::Record(bool bOnOff)
 	if (bOnOff && IsRecording()) return true;
 	if (bOnOff==false && IsRecording()==false) return true;
 	if (bOnOff) 
-			return m_pShoutCastRipper->Record();
-	
+		return m_pShoutCastRipper->Record();
+
 	m_pShoutCastRipper->StopRecording();
 	return true;
 }
@@ -1139,38 +1138,38 @@ bool CMPlayer::Record(bool bOnOff)
 
 void CMPlayer::SeekPercentage(int iPercent)
 {
-  mplayer_setPercentage( iPercent);
-  if (HasVideo())
-  {
-    SwitchToThread();
-    xbox_video_wait();
-  }
+	mplayer_setPercentage( iPercent);
+	if (HasVideo())
+	{
+		SwitchToThread();
+		xbox_video_wait();
+	}
 }
 
 int CMPlayer::GetPercentage()
 {
-  return mplayer_getPercentage( );
+	return mplayer_getPercentage( );
 }
 
 
 void    CMPlayer::SetAVDelay(float fValue)
 {
-  mplayer_setAVDelay(fValue);
+	mplayer_setAVDelay(fValue);
 }
 
 float   CMPlayer::GetAVDelay()
 {
-  return mplayer_getAVDelay();
+	return mplayer_getAVDelay();
 }
 
 void    CMPlayer::SetSubTitleDelay(float fValue)
 {
-  mplayer_setSubtitleDelay(fValue);
+	mplayer_setSubtitleDelay(fValue);
 }
 
 float   CMPlayer::GetSubTitleDelay()
 {
-  return mplayer_getSubtitleDelay();
+	return mplayer_getSubtitleDelay();
 }
 
 int     CMPlayer::GetSubtitleCount()
@@ -1183,13 +1182,13 @@ int     CMPlayer::GetSubtitle()
 	return mplayer_getSubtitle();
 };
 
-void	  CMPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
+void      CMPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
 {
 	stream_language_t slt;
 	mplayer_getSubtitleStreamInfo(iStream, &slt);
 	CLog::Log("Stream:%d language:%d", iStream, slt.language);
 	if(slt.language != 0)
-	{		
+	{               
 		char lang[3];
 		lang[2]=0;
 		lang[1]=(slt.language&255);
@@ -1209,9 +1208,9 @@ void	  CMPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
 			strName += (char)(slt.language>>8);
 			strName += (char)(slt.language&255);
 		}
-		
+
 		strStreamName = strName;
-		
+
 	}
 	else
 	{
@@ -1239,7 +1238,7 @@ void    CMPlayer::SetSubtitleVisible(bool bVisible)
 
 int     CMPlayer::GetAudioStreamCount()
 {
-  return mplayer_getAudioStreamCount();
+	return mplayer_getAudioStreamCount();
 }
 
 int     CMPlayer::GetAudioStream()
@@ -1252,7 +1251,7 @@ void     CMPlayer::GetAudioStreamName(int iStream, CStdString& strStreamName)
 	stream_language_t slt;
 	mplayer_getAudioStreamInfo(iStream, &slt);
 	if(slt.language != 0)
-	{		
+	{               
 		char lang[3];
 		lang[2]=0;
 		lang[1]=(slt.language&255);
@@ -1272,9 +1271,9 @@ void     CMPlayer::GetAudioStreamName(int iStream, CStdString& strStreamName)
 			strName += (char)(slt.language>>8);
 			strName += (char)(slt.language&255);
 		}
-		
+
 		strStreamName.Format("%s - %s(%s)",strName,dvd_audio_stream_types[slt.type],dvd_audio_stream_channels[slt.channels]);
-		
+
 	}
 	else
 	{
@@ -1300,67 +1299,67 @@ void     CMPlayer::SetAudioStream(int iStream)
 
 void CMPlayer::SeekTime(int iTime)
 {
-  mplayer_setTime( iTime);
-  if (HasVideo())
-  {
-    SwitchToThread();
-    xbox_video_wait();
-  }
+	mplayer_setTime( iTime);
+	if (HasVideo())
+	{
+		SwitchToThread();
+		xbox_video_wait();
+	}
 }
 
 __int64 CMPlayer::GetTime()
 {
-  return mplayer_getCurrentTime();
+	return mplayer_getCurrentTime();
 }
 
 int CMPlayer::GetTotalTime()
 {
-  return mplayer_getTime();
+	return mplayer_getTime();
 }
 
 void CMPlayer::ToFFRW(int iSpeed)
 {
-  mplayer_ToFFRW( iSpeed);
-  //SwitchToThread();
-  //xbox_video_wait();
+	mplayer_ToFFRW( iSpeed);
+	//SwitchToThread();
+	//xbox_video_wait();
 }
 
 
 int CMPlayer::GetCacheSize(bool bFileOnHD,bool bFileOnISO,bool bFileOnUDF,bool bFileOnInternet,bool bFileOnLAN, bool bIsVideo, bool bIsAudio, bool bIsDVD)
 {
-  if (g_stSettings.m_bNoCache) return 0;
+	if (g_stSettings.m_bNoCache) return 0;
 
-  if (bFileOnHD)
-  {
-    if ( bIsDVD  ) return g_stSettings.m_iCacheSizeHD[CACHE_VOB];
-    if ( bIsVideo) return g_stSettings.m_iCacheSizeHD[CACHE_VIDEO];
-    if ( bIsAudio) return g_stSettings.m_iCacheSizeHD[CACHE_AUDIO];
-  }
-  if (bFileOnISO)
-  {
-    if ( bIsDVD  ) return g_stSettings.m_iCacheSizeISO[CACHE_VOB];
-    if ( bIsVideo) return g_stSettings.m_iCacheSizeISO[CACHE_VIDEO];
-    if ( bIsAudio) return g_stSettings.m_iCacheSizeISO[CACHE_AUDIO];
-  }
-  if (bFileOnUDF)
-  {
-    if ( bIsDVD  ) return g_stSettings.m_iCacheSizeUDF[CACHE_VOB];
-    if ( bIsVideo) return g_stSettings.m_iCacheSizeUDF[CACHE_VIDEO];
-    if ( bIsAudio) return g_stSettings.m_iCacheSizeUDF[CACHE_AUDIO];
-  }
-  if (bFileOnInternet)
-  {
-    if ( bIsDVD  ) return g_stSettings.m_iCacheSizeInternet[CACHE_VOB];
-    if ( bIsVideo) return g_stSettings.m_iCacheSizeInternet[CACHE_VIDEO];
-    if ( bIsAudio) return g_stSettings.m_iCacheSizeInternet[CACHE_AUDIO];
-  }
-  if (bFileOnLAN)
-  {
-    if ( bIsDVD  ) return g_stSettings.m_iCacheSizeLAN[CACHE_VOB];
-    if ( bIsVideo) return g_stSettings.m_iCacheSizeLAN[CACHE_VIDEO];
-    if ( bIsAudio) return g_stSettings.m_iCacheSizeLAN[CACHE_AUDIO];
-  }
-  return 1024;
+	if (bFileOnHD)
+	{
+		if ( bIsDVD  ) return g_stSettings.m_iCacheSizeHD[CACHE_VOB];
+		if ( bIsVideo) return g_stSettings.m_iCacheSizeHD[CACHE_VIDEO];
+		if ( bIsAudio) return g_stSettings.m_iCacheSizeHD[CACHE_AUDIO];
+	}
+	if (bFileOnISO)
+	{
+		if ( bIsDVD  ) return g_stSettings.m_iCacheSizeISO[CACHE_VOB];
+		if ( bIsVideo) return g_stSettings.m_iCacheSizeISO[CACHE_VIDEO];
+		if ( bIsAudio) return g_stSettings.m_iCacheSizeISO[CACHE_AUDIO];
+	}
+	if (bFileOnUDF)
+	{
+		if ( bIsDVD  ) return g_stSettings.m_iCacheSizeUDF[CACHE_VOB];
+		if ( bIsVideo) return g_stSettings.m_iCacheSizeUDF[CACHE_VIDEO];
+		if ( bIsAudio) return g_stSettings.m_iCacheSizeUDF[CACHE_AUDIO];
+	}
+	if (bFileOnInternet)
+	{
+		if ( bIsDVD  ) return g_stSettings.m_iCacheSizeInternet[CACHE_VOB];
+		if ( bIsVideo) return g_stSettings.m_iCacheSizeInternet[CACHE_VIDEO];
+		if ( bIsAudio) return g_stSettings.m_iCacheSizeInternet[CACHE_AUDIO];
+	}
+	if (bFileOnLAN)
+	{
+		if ( bIsDVD  ) return g_stSettings.m_iCacheSizeLAN[CACHE_VOB];
+		if ( bIsVideo) return g_stSettings.m_iCacheSizeLAN[CACHE_VIDEO];
+		if ( bIsAudio) return g_stSettings.m_iCacheSizeLAN[CACHE_AUDIO];
+	}
+	return 1024;
 }
 
 CStdString CMPlayer::GetDVDArgument(const CStdString& strFile)
@@ -1378,6 +1377,6 @@ CStdString CMPlayer::GetDVDArgument(const CStdString& strFile)
 }
 void CMPlayer::ShowOSD(bool bOnoff)
 {
-  if (bOnoff) mplayer_showosd(1);
-  else mplayer_showosd(0);
+	if (bOnoff) mplayer_showosd(1);
+	else mplayer_showosd(0);
 }
