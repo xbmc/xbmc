@@ -578,10 +578,13 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="GUI Video"
 				Filter="">
 				<File
-					RelativePath=".\xbmc\GUIWindowVideo.cpp">
+					RelativePath=".\xbmc\GUIWindowVideoActors.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\GUIWindowVideoActors.cpp">
+					RelativePath=".\xbmc\GUIWindowVideoBase.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowVideoFiles.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIWindowVideoGenre.cpp">
@@ -1163,10 +1166,13 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\GUIWindowSystemInfo.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\GUIWindowVideo.h">
+				RelativePath=".\xbmc\GUIWindowVideoActors.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\GUIWindowVideoActors.h">
+				RelativePath=".\xbmc\GUIWindowVideoBase.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowVideoFiles.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowVideoGenre.h">
@@ -1907,10 +1913,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">

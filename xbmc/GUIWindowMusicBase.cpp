@@ -313,13 +313,13 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         int iItem=GetSelectedItem();
 				int iAction=message.GetParam1();
 
-				if (iAction == ACTION_QUEUE_ITEM || iAction == ACTION_MOUSE_RIGHT_CLICK)
+				if (iAction == ACTION_QUEUE_ITEM || iAction == ACTION_MOUSE_MIDDLE_CLICK)
         {
 					OnQueueItem(iItem);
         }
-        else if (iAction==ACTION_SHOW_INFO || iAction == ACTION_MOUSE_MIDDLE_CLICK)
+        else if (iAction==ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
         {
-          OnInfo(iItem);
+          OnPopupMenu(iItem);
         }
         else if (iAction==ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
         {

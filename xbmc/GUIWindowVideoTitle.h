@@ -1,5 +1,5 @@
 #pragma once
-#include "GUIWindowVideo.h"
+#include "GUIWindowVideoBase.h"
 #include "filesystem/VirtualDirectory.h"
 #include "filesystem/DirectoryHistory.h"
 #include "FileItem.h"
@@ -11,7 +11,7 @@
 using namespace std;
 using namespace DIRECTORY;
 
-class CGUIWindowVideoTitle : 	public CGUIWindowVideo
+class CGUIWindowVideoTitle : 	public CGUIWindowVideoBase
 {
 public:
 	CGUIWindowVideoTitle(void);
@@ -19,18 +19,15 @@ public:
   virtual bool    OnMessage(CGUIMessage& message);
   virtual void    OnAction(const CAction &action);
 
-private:
-  void              SetIMDBThumbs(VECFILEITEMS& items);
 protected:
   virtual bool      ViewByLargeIcon();
   virtual bool      ViewByIcon();
+	virtual void			SetViewMode(int iMode);
+	virtual int				SortMethod();
+	virtual bool			SortAscending();
 
-  void							Clear();
-  virtual void			OnSort();
-  virtual void			UpdateButtons();
+	virtual void			FormatItemLabels();
+	virtual void			SortItems();
 	virtual void			Update(const CStdString &strDirectory);
   virtual void			OnClick(int iItem);
-  virtual void			OnInfo(int iItem);
-	virtual int				GetSelectedItem();
-
 };

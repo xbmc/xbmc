@@ -299,6 +299,10 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 				{
 					OnClick(iItem);
 				}
+				if (iAction==ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
+				{
+					OnPopupMenu(iItem);
+				}
       }
     }
     break;
@@ -951,4 +955,31 @@ void CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, VECFILEITE
 	}
 	m_rootDir.GetDirectory(strDirectory,items);
 
+}
+
+void CGUIWindowPictures::OnPopupMenu(int iItem)
+{
+	// mark the item
+	m_vecItems[iItem]->Select(true);
+	// calculate our position
+	int iPosX=200;
+	int iPosY=100;
+	const CGUIControl *pList = GetControl(CONTROL_LIST);
+	if (pList)
+	{
+		iPosX = pList->GetXPosition()+pList->GetWidth()/2;
+		iPosY = pList->GetYPosition()+pList->GetHeight()/2;
+	}	
+	if ( m_strDirectory.IsEmpty() )
+	{
+		// and do the popup menu
+		if (CGUIDialogContextMenu::BookmarksMenu("pictures", m_vecItems[iItem]->GetLabel(), m_vecItems[iItem]->m_strPath, iPosX, iPosY))
+		{
+			m_rootDir.SetShares(g_settings.m_vecMyPictureShares);
+			Update(m_strDirectory);
+			return;
+		}
+		m_vecItems[iItem]->Select(false);
+		return;
+	}
 }

@@ -2,6 +2,10 @@
 #include "stdafx.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIButtonControl.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogKeyboard.h"
+#include "GUIDialogYesNo.h"
+#include "Settings.h"
 #include "localizeStrings.h"
 
 #define BACKGROUND_IMAGE 999
@@ -153,4 +157,85 @@ void CGUIDialogContextMenu::EnableButton(int iButton, bool bEnable)
 {
 	CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_TEMPLATE+iButton);
 	if (pControl) pControl->SetEnabled(bEnable);
+}
+
+bool CGUIDialogContextMenu::BookmarksMenu(const CStdString &strType, const CStdString &strLabel, const CStdString &strPath, int iPosX, int iPosY)
+{
+	// popup the context menu
+	CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+	if (pMenu)
+	{
+		// clean any buttons not needed
+		pMenu->ClearButtons();
+		// add the needed buttons
+		pMenu->AddButton(118);	// Rename
+		pMenu->AddButton(748);	// Edit Path
+		pMenu->AddButton(117);	// Delete
+		pMenu->AddButton(749);	// Add Share
+		// set the correct position
+		pMenu->SetPosition(iPosX-pMenu->GetWidth()/2, iPosY-pMenu->GetHeight()/2);
+		pMenu->DoModal(m_gWindowManager.GetActiveWindow());
+		switch (pMenu->GetButton())
+		{
+		case 1:
+			{
+				CStdString strNewLabel = strLabel;
+				CStdString strHeading = g_localizeStrings.Get(753);
+				if (CGUIDialogKeyboard::ShowAndGetInput(strNewLabel, strHeading, false))
+				{
+					g_settings.UpdateBookmark(strType, strLabel, strNewLabel, strPath);
+					return true;
+				}
+			}
+			break;
+		case 2:
+			{
+				CStdString strNewPath = strPath;
+				CStdString strHeading = g_localizeStrings.Get(752);
+				if (CGUIDialogKeyboard::ShowAndGetInput(strNewPath, strHeading, false))
+				{
+					g_settings.UpdateBookmark(strType, strLabel, strLabel, strNewPath);
+					return true;
+				}
+			}
+			break;
+		case 3:
+			{
+				// prompt user
+				CGUIDialogYesNo *pDlg = (CGUIDialogYesNo *)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+				if (pDlg)
+				{
+					pDlg->SetHeading(751);
+					pDlg->SetLine(0, "");
+					pDlg->SetLine(1,750);
+					pDlg->SetLine(2, "");
+					pDlg->DoModal(m_gWindowManager.GetActiveWindow());
+					if (pDlg->IsConfirmed())
+					{
+						// delete this share
+						g_settings.DeleteBookmark(strType, strLabel, strPath);
+						return true;
+					}
+				}
+			}
+			break;
+		case 4:
+			{	// Add new share
+				CStdString strNewPath;
+				CStdString strHeading = g_localizeStrings.Get(752);	// Share Path
+				if (CGUIDialogKeyboard::ShowAndGetInput(strNewPath, strHeading, false))
+				{	// got a valid path
+					CStdString strNewName;
+					strHeading = g_localizeStrings.Get(753);	// Share Name
+					if (CGUIDialogKeyboard::ShowAndGetInput(strNewName, strHeading, false))
+					{
+						g_settings.AddBookmark(strType, strNewName, strNewPath);
+						return true;
+					}
+				}
+			}
+			break;
+		}
+	}
+	return false;
 }
