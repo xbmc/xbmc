@@ -109,11 +109,11 @@
   </string>  
   <string>
     <id>100</id>
-    <value>Voir en icônes</value>
+    <value>Voir : icônes</value>
   </string>  
   <string>
     <id>101</id>
-    <value>Voir en liste</value>
+    <value>Voir : liste</value>
   </string>  
   <string>
     <id>102</id>
@@ -121,15 +121,15 @@
   </string>  
   <string>
     <id>103</id>
-    <value>Lister par nom</value>
+    <value>Lister : nom</value>
   </string> 
   <string>
     <id>104</id>
-    <value>Lister par date</value>
+    <value>Lister : date</value>
   </string>    
   <string>
     <id>105</id>
-    <value>Lister par taille</value>
+    <value>Lister : taille</value>
   </string>      
   <string>
     <id>106</id>
@@ -245,7 +245,7 @@
   </string>  
   <string>
     <id>134</id>
-    <value>Voir chansons</value>
+    <value>Chansons</value>
   </string>  
   <string>
     <id>135</id>
@@ -457,7 +457,7 @@
   </string>  
   <string>
     <id>187</id>
-    <value>Pas d'album trouvé!</value>
+    <value>Pas d'album trouvé</value>
   </string>  
   <string>
     <id>188</id>
@@ -489,7 +489,7 @@
   </string> 
   <string>
     <id>195</id>
-    <value>Pas d'info IMDB trouvée!</value>
+    <value>Pas d'info IMDB trouvée</value>
   </string> 
   <string>
     <id>196</id>
@@ -505,31 +505,31 @@
   </string> 
   <string>
     <id>199</id>
-    <value>Réalisateur</value>
+    <value>Réalisateur : </value>
   </string> 
   <string>
     <id>200</id>
-    <value>Crédits</value>
+    <value>Crédits : </value>
   </string> 
   <string>
     <id>201</id>
-    <value>année</value>
+    <value>Année : </value>
   </string> 
   <string>
     <id>202</id>
-    <value>Ligne de Tag</value>
+    <value>Ligne de Tag : </value>
   </string> 
   <string>
     <id>203</id>
-    <value>Synopsis</value>
+    <value>Synopsis : </value>
   </string> 
   <string>
     <id>204</id>
-    <value>Intérêt</value>
+    <value>Intérêt : </value>
   </string> 
   <string>
     <id>205</id>
-    <value>Votes</value>
+    <value>Votes : </value>
   </string> 
   <string>
     <id>206</id>
@@ -549,7 +549,7 @@
   </string> 
   <string>
     <id>210</id>
-    <value>Précédent</value>
+    <value>Précedent</value>
   </string> 
   <string>
     <id>211</id>
@@ -601,7 +601,7 @@
   </string> 
   <string>
     <id>223</id>
-    <value>Séléction automatique du mode d'affichage</value>
+    <value>Sélection automatique du mode d'affichage</value>
   </string> 
   <string>
     <id>224</id>
@@ -729,7 +729,7 @@
   </string>
   <string>
     <id>256</id>
-    <value>Récupération des informations CDDB sur freedb</value>
+    <value>Réception des informations CDDB sur freedb</value>
   </string>
   <string>
     <id>257</id>
@@ -769,23 +769,23 @@
 </string>
   <string>
     <id>266</id>
-    <value>lister par piste</value>
+    <value>Lister : piste</value>
   </string>
   <string>
     <id>267</id>
-    <value>Lister par durée</value>
+    <value>Lister : durée</value>
   </string>
   <string>
     <id>268</id>
-    <value>Lister par titre</value>
+    <value>Lister : titre</value>
   </string>
   <string>
     <id>269</id>
-    <value>Lister par artiste</value>
+    <value>Lister : artiste</value>
   </string>
   <string>
     <id>270</id>
-    <value>Lister par album</value>
+    <value>Lister : album</value>
   </string>
   <string>
     <id>271</id>
@@ -809,7 +809,7 @@
   </string>
   <string>
     <id>276</id>
-    <value>Déplacer la flèeche pour modifier la taille d'affichage</value>
+    <value>Déplacer la flèche pour modifier la taille d'affichage</value>
   </string>
   <string>
     <id>277</id>
@@ -881,51 +881,51 @@
   </string>
   <string>
     <id>294</id>
-    <value>1. Créer un signet</value>
+    <value>Créer un signet</value>
   </string>
   <string>
     <id>295</id>
-    <value>2. signets automatiques</value>
+    <value>Signets automatiques</value>
   </string>
   <string>
     <id>296</id>
-    <value>3. Effacer les signets</value>
+    <value>Effacer les signets</value>
   </string>
   <string>
     <id>297</id>
-    <value>4. Synchro. audio/video</value>
+    <value>Synchro. audio/video</value>
   </string>
   <string>
     <id>298</id>
-    <value>5. Défilement</value>
+    <value>Déplacement</value>
   </string>
   <string>
     <id>300</id>
-    <value>1. Langue</value>
+    <value>Langue</value>
   </string>
   <string>
     <id>301</id>
-    <value>2. Volume</value>
+    <value>Volume</value>
   </string>
   <string>
     <id>302</id>
-    <value>3. Direct (streaming)</value>
+    <value>Direct (streaming)</value>
   </string>
   <string>
     <id>303</id>
-    <value>1. Mise en cache</value>
+    <value>Mise en cache</value>
   </string>
   <string>
     <id>304</id>
-    <value>2. Langue</value>
+    <value>Langue</value>
   </string>
   <string>
     <id>305</id>
-    <value>3. On/Off</value>
+    <value>On/Off</value>
   </string>
   <string>
     <id>306</id>
-    <value>6. Non-Intercalé</value>
+    <value>Non-Intercalé</value>
   </string>
   <string>
     <id>307</id>
@@ -1021,7 +1021,7 @@
   </string>
   <string>
     <id>330</id>
-    <value>Cette opération peut durer un moment</value>
+    <value>Cette option peut durer un moment</value>
   </string>
   <string>
     <id>331</id>
@@ -1029,7 +1029,7 @@
   </string>
   <string>
     <id>332</id>
-    <value>Erreur sur la compréssion de la base de données</value>
+    <value>Erreur sur la compression de la base de données</value>
   </string>
   <string>
     <id>333</id>
@@ -1073,7 +1073,7 @@
   </string>
   <string>
     <id>343</id>
-    <value>7. Ajuster Tx. rafraich.</value>
+    <value>Ajuster Tx. rafraich.</value>
   </string>
   <string>
     <id>344</id>
@@ -1153,7 +1153,7 @@
   </string>
   <string>
     <id>363</id>
-    <value>Lister par fichier</value>
+    <value>Lister : fichier</value>
   </string>
   <string>
     <id>364</id>
@@ -1161,15 +1161,15 @@
   </string>   
   <string>
     <id>365</id>
-    <value>Lister par nom</value>
+    <value>Lister : nom</value>
   </string>   
   <string>
     <id>366</id>
-    <value>Lister par année</value>
+    <value>Lister : année</value>
   </string>   
   <string>
     <id>367</id>
-    <value>Lister par note</value>
+    <value>Lister : note</value>
   </string>   
   <string>
     <id>368</id>
@@ -1244,6 +1244,26 @@
     <value>Beau</value>
   </string>
   <string>
+  <id>396</id> 
+  <value>Choisir un lieux</value> 
+  </string>
+  <string>
+  <id>397</id> 
+  <value>Rafraichir</value> 
+  </string>
+  <string>
+  <id>398</id> 
+  <value>Unité température</value> 
+  </string>
+  <string>
+  <id>399</id> 
+  <value>Unité vitesse</value> 
+  </string>
+  <string>
+  <id>400</id> 
+  <value>Météo</value>
+</string>
+  <string>
     <id>401</id>
     <value>Temp</value>
   </string>   
@@ -1265,7 +1285,7 @@
   </string> 
   <string>
     <id>406</id>
-    <value>Humiditée</value>
+    <value>Humidité</value>
   </string> 
   <string>
     <id>407</id>
@@ -1285,7 +1305,7 @@
   </string> 
   <string>
     <id>412</id>
-    <value>La récupération de la météo à échoué</value>
+    <value>La récupération de la météo à échouée</value>
   </string>    
   <string>
     <id>413</id>
@@ -1305,7 +1325,7 @@
   </string> 
   <string>
     <id>417</id>
-    <value>Grande icones</value>
+    <value>Voir : grandes icônes</value>
   </string>
   <string>
     <id>418</id>
@@ -1357,11 +1377,11 @@
   </string>  
   <string>
     <id>430</id>
-    <value>Classer par DVD#</value>
+    <value>Classer par : DVD#</value>
   </string>  
   <string>
     <id>431</id>
-    <value>7. Pas de cache</value>
+    <value>Pas de cache</value>
   </string>  
   <string>
     <id>432</id>
@@ -1413,7 +1433,7 @@
   </string> 
   <string>
     <id>444</id>
-    <value>vidéo</value>
+    <value>vidéos</value>
   </string> 
   <string>
     <id>445</id>
@@ -1422,5 +1442,133 @@
   <string>
     <id>446</id>
     <value>DVD</value>
+  </string>
+  <string>
+    <id>447</id>
+    <value>Autorun</value>
   </string> 
+  <string>
+    <id>448</id>
+    <value>LCD</value>
+  </string> 
+  <string>
+    <id>449</id>
+    <value>Activé</value>
+  </string> 
+  <string>
+    <id>450</id>
+    <value>Colones</value>
+  </string> 
+  <string>
+    <id>451</id>
+    <value>Ligne 1 adresse :</value>
+  </string> 
+  <string>
+    <id>452</id>
+    <value>Ligne 2 adresse :</value>
+  </string> 
+  <string>
+    <id>453</id>
+    <value>Ligne 3 adresse :</value>
+  </string> 
+  <string>
+    <id>454</id>
+    <value>Ligne 4 adresse :</value>
+  </string>
+  <string>
+    <id>455</id>
+    <value>Lignes :</value>
+  </string> 
+  <string>
+    <id>456</id>
+    <value>Mode :</value>
+  </string> 
+  <string>
+    <id>457</id>
+    <value>Changer de vue</value>
+  </string>
+  <string>
+    <id>458</id>
+    <value>Signet</value>
+  </string>
+  <string>
+    <id>459</id>
+    <value>Sous</value>
+  </string>
+  <string>
+    <id>460</id>
+    <value>Flux Audio</value>
+  </string>
+  <string>
+    <id>461</id>
+    <value>[actif]</value>
+  </string>
+  <string>
+    <id>462</id>
+    <value>Sous-titre</value>
+  </string>
+  <string>
+    <id>463</id>
+    <value>Contre-jour</value>
+  </string>
+  <string>
+    <id>464</id>
+    <value>Luminosité</value>
+  </string>
+  <string>
+    <id>465</id>
+    <value>Contraste</value>
+  </string>
+  <string>
+    <id>466</id>
+    <value>Gamma</value>
+  </string>
+<string><id>10000</id><value>Accueil</value></string>
+<string><id>10001</id><value>Mes Programes</value></string>
+<string><id>10002</id><value>Mes Images</value></string>
+<string><id>10003</id><value>Mes Fichiers</value></string>
+<string><id>10004</id><value>Paramètres</value></string>
+<string><id>10005</id><value>Mes Musiques</value></string>
+<string><id>10006</id><value>Mes Vidéos</value></string>
+<string><id>10008</id><value>Paramètres->Général</value></string>
+<string><id>10009</id><value>Paramètres->Affichage</value></string>
+<string><id>10010</id><value>Paramètres->Affichage->Interface</value></string>
+<string><id>10011</id><value>Paramètres->Affichage->écran</value></string>
+<string><id>10012</id><value>Paramètres->Diaporama</value></string>
+<string><id>10013</id><value>Paramètres->écran->Filtres</value></string>
+<string><id>10014</id><value>Paramètres->Musique</value></string>
+<string><id>10015</id><value>Paramètres->écran->sous-titres</value></string>
+<string><id>10016</id><value>Paramètres->écran->écran de veille</value></string>
+<string><id>10017</id><value>Paramètres->Météo</value></string>
+<string><id>10020</id><value>Paramètres->WINDOW_SCRIPTS</value></string>
+<string><id>10021</id><value>Mes Vidéos/genre</value></string>
+<string><id>10022</id><value>Mes Vidéos/acteur</value></string>
+<string><id>10023</id><value>Mes Vidéos/année</value></string>
+<string><id>10024</id><value>Paramètres->Programes</value></string>
+<string><id>10025</id><value>Mes Vidéos/titre</value></string>
+<string><id>10026</id><value>Paramètres->Général->Cache</value></string>
+<string><id>10027</id><value>Paramètres->Général->Autorun</value></string>
+<string><id>10028</id><value>Mes Vidéos/playlist</value></string>
+<string><id>10029</id><value>Paramètres->Général->LCD</value></string>
+<string><id>10100</id><value>Boîtes de dialogues : Oui/non</value></string>
+<string><id>10101</id><value>Boîtes de dialogues : progression</value></string>
+<string><id>10500</id><value>Mes Musiques/playlist</value></string>
+<string><id>10501</id><value>Mes Musiques/fichiers</value></string>
+<string><id>10502</id><value>Mes Musiques/albums</value></string>
+<string><id>10503</id><value>Mes Musiques/artistes</value></string>
+<string><id>10504</id><value>Mes Musiques/genres</value></string>
+<string><id>10505</id><value>Mes Musiques/top 100</value></string>
+<string><id>11000</id><value>clavier</value></string>
+<string><id>12000</id><value>Choisir une boîte de dialogues</value></string>
+<string><id>12001</id><value>Mes Musiques/info</value></string>
+<string><id>12002</id><value>Boîtes de dialogues OK</value></string>
+<string><id>12003</id><value>Mes Vidéos/Info</value></string>
+<string><id>12004</id><value>Mes Scripts/Info</value></string>
+<string><id>12005</id><value>Plein écran</value></string>
+<string><id>12006</id><value>Effets vidéos d'accompagnement</value></string>
+<string><id>12007</id><value>Mes images/Diaporama</value></string>
+<string><id>12008</id><value>Boîtes de dialogue sélection de fichier</value></string>
+<string><id>12600</id><value>Ma Météo</value></string>
+<string><id>12900</id><value>écran de veille</value></string>
+<string><id>12901</id><value>Réglages plein écran</value></string>  
 </strings>
