@@ -207,10 +207,7 @@ void CXbmcWeb::AddItemToPlayList(const CFileItem* pItem)
 		CFileItemList items;
 		directory->GetDirectory(strDirectory, items);
 		for (int i=0; i < (int) items.Size(); ++i)
-		{
 			AddItemToPlayList(items[i]);
-			delete items[i];
-		}
 	}
 	else
 	{
