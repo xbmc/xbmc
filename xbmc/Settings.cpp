@@ -320,6 +320,10 @@ CSettings::CSettings(void)
 	g_stSettings.m_bResampleMusicAudio=false;
 	g_stSettings.m_bResampleVideoAudio=false;
 	g_stSettings.m_iOSDTimeout = 5;		// OSD Timeout, default to 5 seconds
+	g_stSettings.m_bHDRemoteplaySpinDownAudio = false;
+	g_stSettings.m_bHDRemoteplaySpinDownVideo = false;
+	g_stSettings.m_iHDRemoteplaySpinDownTime = 20;//seconds
+  g_stSettings.m_iHDRemoteplaySpinDownMinDuration = 20;//minutes
 	g_stSettings.m_mplayerDebug=false;
 	g_stSettings.m_iSambaDebugLevel = 0;
 	strcpy(g_stSettings.m_strSambaWorkgroup, "WORKGROUP");
@@ -1079,6 +1083,11 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetBoolean(pElement, "httpserver", g_stSettings.m_bHTTPServerEnabled);
 		GetBoolean(pElement, "cddb", g_stSettings.m_bUseCDDB);
 		GetInteger(pElement, "hdspindowntime", g_stSettings.m_iHDSpinDownTime,5,0,INT_MAX);
+		GetBoolean(pElement, "autohdspindownaudio", g_stSettings.m_bHDRemoteplaySpinDownAudio);
+		GetBoolean(pElement, "autohdspindownvideo", g_stSettings.m_bHDRemoteplaySpinDownVideo);
+		GetInteger(pElement, "autohdspindowntime", g_stSettings.m_iHDRemoteplaySpinDownTime,20,5,INT_MAX);
+		GetInteger(pElement, "autohdspindownminduration", g_stSettings.m_iHDRemoteplaySpinDownMinDuration,20,0,INT_MAX);
+    
 		GetBoolean(pElement, "autorundvd", g_stSettings.m_bAutorunDVD);
 		GetBoolean(pElement, "autorunvcd", g_stSettings.m_bAutorunVCD);
 		GetBoolean(pElement, "autoruncdda", g_stSettings.m_bAutorunCdda);
@@ -1428,6 +1437,10 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetBoolean(pNode, "httpserver", g_stSettings.m_bHTTPServerEnabled);
 	SetBoolean(pNode, "cddb", g_stSettings.m_bUseCDDB);
 	SetInteger(pNode, "hdspindowntime", g_stSettings.m_iHDSpinDownTime);
+	SetBoolean(pNode, "autohdspindownaudio", g_stSettings.m_bHDRemoteplaySpinDownAudio);
+	SetBoolean(pNode, "autohdspindownvideo", g_stSettings.m_bHDRemoteplaySpinDownVideo);
+	SetInteger(pNode, "autohdspindowntime", g_stSettings.m_iHDRemoteplaySpinDownTime);
+	SetInteger(pNode, "autohdspindownminduration", g_stSettings.m_iHDRemoteplaySpinDownMinDuration);
 	SetBoolean(pNode, "autorundvd", g_stSettings.m_bAutorunDVD);
 	SetBoolean(pNode, "autorunvcd", g_stSettings.m_bAutorunVCD);
 	SetBoolean(pNode, "autoruncdda", g_stSettings.m_bAutorunCdda);
