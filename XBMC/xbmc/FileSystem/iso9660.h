@@ -22,6 +22,8 @@
 #define ISO9660_H
 #pragma once
 #include "xtl.h"
+#include "../xbox/IoSupport.h"
+#include <vector>
 #include <string>
 using namespace std;
 
@@ -133,46 +135,48 @@ struct iso_dirtree
 
 struct iso_directories
 {
-	char *path;
-	struct iso_dirtree *dir;
-	struct iso_directories *next;
+	char*										path;
+	struct iso_dirtree*			dir;
+	struct iso_directories*	next;
 };
 
 class iso9660
 {
-private:
-	struct iso9660_Directory openfileinfo;
-	struct iso_dirtree *searchpointer;
-	struct iso_directories *paths;	
-	struct iso_directories *lastpath;
 public:
-	int						alignmentadjust;  // since we sometimes need out-of-alignemt data, we might need to read more than just the data we need
-	int						Cached_Sector;
-	char					*Cache;
+	iso9660( const char *filename );
+	virtual ~iso9660(  );
 
-	struct iso_dirtree		*dirtree;
-	struct iso9660info		info;
-	iso9660( char *filename );
-	~iso9660(  );
+	HANDLE							FindFirstFile( char *szLocalFolder, WIN32_FIND_DATA *wfdFile );
+	int									FindNextFile( HANDLE szLocalFolder, WIN32_FIND_DATA *wfdFile );
+	bool								FindClose( HANDLE szLocalFolder );
+	DWORD								SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHigh,  DWORD dwMoveMethod  );
+	DWORD								GetFileSize(HANDLE hFile,LPDWORD lpFileSizeHigh  );
+	DWORD								GetFilePosition(HANDLE hFile);
 
-	bool IsValid( void );
-	HANDLE FindFirstFile( char *szLocalFolder, WIN32_FIND_DATA *wfdFile );
-	int FindNextFile( HANDLE szLocalFolder, WIN32_FIND_DATA *wfdFile );
-	bool FindClose( HANDLE szLocalFolder );
-	DWORD SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHigh,  DWORD dwMoveMethod  );
-	DWORD GetFileSize(HANDLE hFile,LPDWORD lpFileSizeHigh  );
-
-	HANDLE OpenFile( char* filename, DWORD location );
-	int  ReadFile( char * pBuffer, int * piSize, DWORD *totalread );
-	void CloseFile( HANDLE );
-	struct iso_dirtree *ReadRecursiveDirFromSector( DWORD sector, char * );
-	struct iso_dirtree *FindFolder( char *Folder );
-	
-	string GetThinText(WCHAR* strTxt, int iLen );
+	HANDLE							OpenFile( const char* filename );
+	int									ReadFile( char * pBuffer, int * piSize, DWORD *totalread );
+	void								CloseFile( HANDLE );
 
 protected:
-	string m_strReturn;
+	struct iso_dirtree*					ReadRecursiveDirFromSector( DWORD sector, const char * );
+	struct iso_dirtree*					FindFolder( char *Folder );
+	string											GetThinText(WCHAR* strTxt, int iLen );
+	char*												m_pCache;
+	struct iso_dirtree*					m_dirtree;
+	struct iso9660info					m_info;
+	bool												m_bUseMode2;
+	CIoSupport									m_IoSupport;
+	string											m_strReturn;
+	HGLOBAL											m_gmXferBuffer;
+	PVOID												m_rawXferBuffer;
 
+	struct iso9660_Directory		m_openfileinfo;
+	struct iso_dirtree*					m_searchpointer;
+	struct iso_directories*			m_paths;	
+	struct iso_directories*			m_lastpath;
+	DWORD												m_dwStartSector;
+	
+	vector<struct iso_dirtree*> m_vecDirsAndFiles;
 };
 
 #endif
