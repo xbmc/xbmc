@@ -193,8 +193,15 @@ bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 		return false;
 	char *szBuffer= new char[strHTML.size()+1];
 	strcpy(szBuffer,strHTML.c_str());
-	//printf ("%s", szBuffer);
+	
+  char szURL[1024];
+  strcpy(szURL, strURL.c_str());
+  if (CUtil::HasSlashAtEnd(strURL)) szURL[ strURL.size()-1 ]=0;
+  int ipos=strlen(szURL)-1;
+  while (szURL[ipos] != '/' && ipos>0) ipos--;
 
+  movieDetails.m_strIMDBNumber=&szURL[ipos+1];
+  CLog::Log("imdb number:%s\n", movieDetails.m_strIMDBNumber.c_str());
 	char *pDirectedBy=strstr(szBuffer,"Directed by");
 	char *pCredits=strstr(szBuffer,"Writing credits");
 	char* pGenre=strstr(szBuffer,"Genre:");
