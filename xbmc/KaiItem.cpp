@@ -111,5 +111,7 @@ void CKaiItem::OnFileComplete(TICKET aTicket, CStdString& aFilePath, INT aByteRx
 	{
 		//OutputDebugString("Unable to download avatar.\r\n");
 	}
+
+	::DeleteFile(aFilePath.c_str());
 }
 
