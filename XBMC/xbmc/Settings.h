@@ -268,6 +268,8 @@ public:
 		int				m_iMyMusicGenresSortMethod;
 		int				m_iMyMusicGenresRootSortMethod;
 		int				m_iMyMusicPlaylistViewAsIcons;
+		bool			m_bMyMusicPlaylistRepeat;
+		bool			m_bMyMusicPlaylistShuffle;
 		int				m_iMyMusicTop100ViewAsIcons;
 		int				m_iMyMusicStartWindow;
 
@@ -314,6 +316,7 @@ public:
 
 		int       m_iMyVideoPlaylistViewAsIcons;
 		bool			m_bMyVideoPlaylistRepeat;
+		bool			m_bMyVideoPlaylistShuffle;
 
 		int       m_iVideoStartWindow;
 

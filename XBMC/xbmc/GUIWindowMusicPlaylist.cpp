@@ -85,6 +85,11 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 				CONTROL_SELECT(GetID(), CONTROL_BTNREPEATONE);
 			}
 
+			if (g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC))
+			{
+				CONTROL_SELECT(GetID(), CONTROL_BTNSHUFFLE);
+			}
+
 			if ((m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST) && m_vecItems.size()<=0)
 			{
 				m_iLastControl=CONTROL_BTNVIEWASICONS;
@@ -122,7 +127,10 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 			}
 			else if (iControl==CONTROL_BTNSHUFFLE)
 			{
-				ShufflePlayList();
+				//ShufflePlayList();
+				g_stSettings.m_bMyMusicPlaylistShuffle=!g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC);
+				g_settings.Save();
+				g_playlistPlayer.ShufflePlay(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistShuffle);
 			}
 			else if (iControl==CONTROL_BTNSAVE)
 			{
@@ -151,8 +159,9 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 			}
 			else if (iControl==CONTROL_BTNREPEAT)
 			{
-				g_guiSettings.ToggleBool("MyMusic.Repeat");
-				g_playlistPlayer.Repeat(PLAYLIST_MUSIC, g_guiSettings.GetBool("MyMusic.Repeat"));
+				g_stSettings.m_bMyMusicPlaylistRepeat=!g_stSettings.m_bMyMusicPlaylistRepeat;
+				g_settings.Save();
+				g_playlistPlayer.Repeat(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistRepeat);
 			}
 			else if (iControl==CONTROL_BTNREPEATONE)
 			{
