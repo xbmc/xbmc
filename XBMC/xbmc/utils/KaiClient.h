@@ -22,6 +22,7 @@ class IBuddyObserver
 		virtual void OnInitialise(CKaiClient* pClient)=0;
 		virtual void OnEngineDetached()=0;
 		virtual void OnAuthenticationFailed(CStdString& aUsername)=0;
+		virtual void OnNetworkError(CStdString& aError)=0;
 		virtual void OnContactOffline(CStdString& aContact)=0;
 		virtual void OnContactOnline(CStdString& aContact)=0;
 		virtual void OnContactsOnline(int nCount)=0;

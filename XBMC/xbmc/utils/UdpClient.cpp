@@ -196,15 +196,18 @@ void CUdpClient::DispatchNextCommand()
 	int ret;
 	if (command.binarySize>0)
 	{
-		ret = sendto(client_socket, (LPCSTR) command.binary, command.binarySize, 0, (struct sockaddr *) &command.address, sizeof(command.address));
+		do
+		{
+			ret = sendto(client_socket, (LPCSTR) command.binary, command.binarySize, 0, (struct sockaddr *) &command.address, sizeof(command.address));
+		} while (ret==-1);
+
 		delete[] command.binary;
 	}
 	else
 	{
-		ret = sendto(client_socket, command.message, command.message.GetLength(), 0, (struct sockaddr *) &command.address, sizeof(command.address));
-	}
-	if(ret == SOCKET_ERROR)
-	{
-		CLog::Log(LOGERROR, "UDPCLIENT: Unable to transmit data to host.");	
+		do
+		{
+			ret = sendto(client_socket, command.message, command.message.GetLength(), 0, (struct sockaddr *) &command.address, sizeof(command.address));
+		} while (ret==-1);
 	}
 }

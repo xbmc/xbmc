@@ -966,7 +966,6 @@ void CGUIWindowBuddies::OnEngineDetached()
 	CStdString description = "XLink Kai has disconnected";
 	g_application.SetKaiNotification(caption,description);
 }
-
 void CGUIWindowBuddies::OnAuthenticationFailed(CStdString& aUsername)
 {
 	CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
@@ -979,6 +978,11 @@ void CGUIWindowBuddies::OnAuthenticationFailed(CStdString& aUsername)
 	g_applicationMessenger.SendMessage(tMsg, false);
 }
 
+void CGUIWindowBuddies::OnNetworkError(CStdString& aError)
+{
+	CStdString caption = "System";
+	g_application.SetKaiNotification(caption,aError);
+}
 void CGUIWindowBuddies::OnContactOffline(CStdString& aFriend)
 {
 	CGUIList::GUILISTITEMS& list = m_friends.Lock();
@@ -1137,6 +1141,7 @@ void CGUIWindowBuddies::OnContactInvite(CStdString& aFriend, CStdString& aVector
 
 	m_friends.Release();
 }
+
 void CGUIWindowBuddies::QueryInstalledGames()
 {
 	m_games.Clear();
@@ -1164,6 +1169,61 @@ void CGUIWindowBuddies::QueryInstalledGames()
 	}
 }
 
+/*
+void CGUIWindowBuddies::QueryInstalledGames()
+{
+	m_games.Clear();
+
+	if (g_stSettings.szOnlineGamesDir[0]==0)
+	{
+		return;
+	}
+
+	WIN32_FIND_DATA wfd;
+	memset(&wfd,0,sizeof(wfd));
+
+	// Search for XBE in within GamesDir subfolders.
+	CStdString strSearchMask;
+	strSearchMask.Format("%s\\*.*",g_stSettings.szOnlineGamesDir);
+	HANDLE hFind = FindFirstFile(strSearchMask.c_str(),&wfd);
+
+	if (hFind==NULL)
+	{
+		return;
+	}
+
+	do
+	{
+		if (wfd.cFileName[0]!=0)
+		{
+			if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+			{
+				// Calculate the path of the game's xbe
+				CStdString strGamePath;
+				strGamePath.Format("%s\\%s\\default.xbe",g_stSettings.szOnlineGamesDir,(CHAR*)wfd.cFileName);
+
+				// If the XBE actually exists
+				if (CUtil::FileExists(strGamePath))
+				{
+					// Read its header info
+					FILE* hFile  = fopen(strGamePath.c_str(),"rb");
+					_XBE_HEADER HS;
+					fread(&HS,1,sizeof(HS),hFile);
+					fseek(hFile,HS.XbeHeaderSize,SEEK_SET);
+					_XBE_CERTIFICATE HC;
+					fread(&HC,1,sizeof(HC),hFile);
+					fclose(hFile);
+
+					// Resolve vector to an arena.
+					m_pKaiClient->QueryVector(HC.TitleId);
+				}
+			}
+		}
+	} while (FindNextFile(hFind, &wfd));
+
+	CloseHandle(hFind);
+}
+*/
 
 void CGUIWindowBuddies::Play(CStdString& aVector)
 {

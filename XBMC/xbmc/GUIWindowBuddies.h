@@ -26,6 +26,7 @@ public:
 	virtual void			OnInitialise(CKaiClient* pClient);
 	virtual void			OnEngineDetached();
 	virtual void			OnAuthenticationFailed(CStdString& aUsername);
+	virtual void			OnNetworkError(CStdString& aError);
 	virtual void			OnContactOffline(CStdString& aFriend);
 	virtual void			OnContactOnline(CStdString& aFriend);
 	virtual void			OnContactsOnline(int nCount);
