@@ -45,6 +45,7 @@ public:
   void    AddBookMarkToMovie(const CStdString& strFilenameAndPath, float fPercentage);
   void    ClearBookMarksOfMovie(const CStdString& strFilenameAndPath);
   void    DeleteMovie(const CStdString& strFilenameAndPath);
+  void    GetDVDLabel(long lMovieId, CStdString& strDVDLabel);
   void    SetDVDLabel(long lMovieId,const CStdString& strDVDLabel1);
   int	  GetRecentMovies(long* pMovieIdArray, int nSize);
 protected:
