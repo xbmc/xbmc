@@ -17,6 +17,7 @@
 #include "texturemanager.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIListControl.h"
+#include "utils/CharsetConverter.h"
 
 using namespace XFILE;
 
@@ -440,7 +441,11 @@ void CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 	}
 
 	GetDirectory(iList, strDirectory, m_vecItems[iList]);
-	m_strDirectory[iList]=strDirectory;
+
+	if (CUtil::IsSmb(strDirectory)) //temp hack for multi byte char language
+		g_charsetConverter.utf8ToStringCharset(strDirectory,m_strDirectory[iList]);
+	else
+		m_strDirectory[iList]=strDirectory;
 	// if we have a .tbn file, use itself as the thumb
 	for (int i=0; i<(int)m_vecItems[iList].size(); i++)
 	{
