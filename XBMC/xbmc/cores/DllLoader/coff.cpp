@@ -1,7 +1,7 @@
-
+#include <xtl.h>
 #include <stdlib.h>
-
 #include <string.h>
+#include <minmax.h>
 #include "coff.h"                    
 //#define DUMPING_DATA 1
 #include "coffldr.h"
@@ -28,65 +28,130 @@ const char *DATA_DIR_NAME[16] = {
 
 CoffLoader::CoffLoader()
 {
-    CoffFileHeader = 0;
-    OptionHeader = 0;
-    WindowsHeader = 0;
-    Directory = 0;
-    SectionHeader = 0;
-    SymTable = 0;
+	hModule = 0;
+	SymTable = 0;
     StringTable = 0;
-    SectionData = 0;
+    SectionData = 0;			//changed to memory aglined locations
+	SectionData_M = 0;			//used to alloc memory before alignment 
 }
 
 CoffLoader::~CoffLoader()
 {
-    if( CoffFileHeader )
-        delete CoffFileHeader;
-    if( OptionHeader )
-        delete OptionHeader;
-    if( WindowsHeader )
-        delete WindowsHeader;
-    if( Directory )
-        delete [] Directory;
-    if( SectionHeader )
-        delete [] SectionHeader;
+    if( hModule )
+        delete hModule;
     if( SymTable )
         delete [] SymTable;
     if( StringTable )
         delete [] StringTable;
-    if( SectionData )
+    if( SectionData_M )
     {
         for( int i = 0; i < NumOfSections; i++)
-            delete [] SectionData[i];
-        delete [] SectionData;
+			if (SectionData_M[i])
+				delete [] SectionData_M[i];
+        delete [] SectionData_M;
     }
+	if (SectionData)
+		delete [] SectionData;
 
-    CoffFileHeader = 0;
-    OptionHeader = 0;
-    WindowsHeader = 0;
-    Directory = 0;
-    SectionHeader = 0;
+	hModule = 0;
     SymTable = 0;
     StringTable = 0;
-    SectionData = 0;
+	SectionData = 0;
+    SectionData_M = 0;
 }
 
-int CoffLoader::LoadCoffFileHeader(FILE *fp)
-{                          
-    CoffFileHeader = new COFF_FileHeader_t;
+int CoffLoader::LoadCoffHModule(FILE *fp)
+{   
+    //test file signatures
+	char Sig[4];
+	rewind(fp); 
+	memset(Sig, 0, sizeof(Sig));
+	fread(Sig, 1, 2, fp);
+	if (strncmp(Sig, "MZ", 2) != 0)
+		return 0;  
 
-    if( !CoffFileHeader )
-        return 0;
+	int Offset = 0;
+	fseek(fp, 0x3c, SEEK_SET);
+	fread(&Offset, sizeof(int),1, fp);
+	if (Offset <= 0)
+		return 0;  
 
-    fread(CoffFileHeader, 1, sizeof(COFF_FileHeader_t), fp);
+	fseek(fp, Offset, SEEK_SET);
+	memset(Sig, 0, sizeof(Sig));
+	fread(Sig, 1, 4, fp);
+	if (strncmp(Sig, "PE\0\0", 4) != 0)
+		return 0;
+	
+	Offset +=4;
+	FileHeaderOffset = Offset;
+
+	// Load and process Header
+    if(fseek(fp, FileHeaderOffset+sizeof(COFF_FileHeader_t)+OPTHDR_SIZE, SEEK_SET))	//skip to winows headers
+		return 0;
+
+	WindowsHeader_t tempWindowsHeader;
+    int readcount = fread(&tempWindowsHeader, 1, WINHDR_SIZE, fp);
+	if (readcount != WINHDR_SIZE)	//test file size error
+		return 0;
+	
+	hModule = new(char[tempWindowsHeader.SizeOfHeaders]);		//need align ??
+	rewind(fp); 
+    readcount = fread(hModule, 1, tempWindowsHeader.SizeOfHeaders, fp);
+	if (readcount != tempWindowsHeader.SizeOfHeaders)			//file size error
+		return 0;
+
+	
+	CoffFileHeader = (COFF_FileHeader_t *) ( (char*)hModule + FileHeaderOffset );
+    NumOfSections = CoffFileHeader->NumberOfSections;
+	
+	OptionHeader   = (OptionHeader_t	*) ( (char*)CoffFileHeader + sizeof(COFF_FileHeader_t) );
+	WindowsHeader  = (WindowsHeader_t	*) ( (char*)OptionHeader  + OPTHDR_SIZE );
+    EntryAddress = OptionHeader->Entry;
+	NumOfDirectories = WindowsHeader->NumDirectories;
     
+	Directory = (Image_Data_Directory_t *) ( (char*)WindowsHeader + WINHDR_SIZE);
+	SectionHeader  = (SectionHeader_t   *) ( (char*)Directory + sizeof(Image_Data_Directory_t)*NumOfDirectories);
+
     if (CoffFileHeader->MachineType != IMAGE_FILE_MACHINE_I386)
         return 0;
 
 #ifdef DUMPING_DATA
     PrintFileHeader(CoffFileHeader);
 #endif
-    return 1;
+
+    if( CoffFileHeader->SizeOfOptionHeader == 0 ) //not an image file, object file maybe
+        return 0;
+
+    // process Option Header
+    if (OptionHeader->Magic == OPTMAGIC_PE32P)
+    {
+        printf("PE32+ not supported\n");
+        return 0;
+    } else if (OptionHeader->Magic == OPTMAGIC_PE32)
+    {
+
+#ifdef DUMPING_DATA
+        PrintOptionHeader(OptionHeader);
+        PrintWindowsHeader(WindowsHeader);
+#endif
+
+    } else
+    {
+        //add error message
+		return 0;
+    }
+           
+#ifdef DUMPING_DATA
+    for (int DirCount = 0; DirCount < NumOfDirectories; DirCount++)
+    {
+        printf("Data Directory %02d: %s\n", DirCount+1, DATA_DIR_NAME[DirCount]);
+        printf("                    RVA:  %08X\n", Directory[DirCount].RVA);
+        printf("                    Size: %08X\n\n", Directory[DirCount].Size);
+    }
+#endif
+
+	return 1;
+    
 }
 
 int CoffLoader::LoadSymTable(FILE *fp)
@@ -141,108 +206,57 @@ int CoffLoader::LoadStringTable(FILE *fp)
     return 1;
 }
 
-int CoffLoader::LoadOptionHeaders(FILE *fp)
-{     
-    if( !CoffFileHeader )
-        return 0;
-    if( CoffFileHeader->SizeOfOptionHeader == 0 )
-        return 1;
-
-    // Load and process Option Header
-    int Offset = ftell(fp);
-    int Sig = 0;
-    fread(&Sig, 1, sizeof(short), fp);
-    fseek(fp, Offset, SEEK_SET);
-
-    if (Sig == OPTMAGIC_PE32P)
-    {
-        printf("PE32+ not supported\n");
-        return 0;
-    } else
-    if (Sig == OPTMAGIC_PE32)
-    {
-        OptionHeader = new OptionHeader_t;
-        if( !OptionHeader )
-            return 0;
-        fread(OptionHeader, 1, OPTHDR_SIZE, fp);
-#ifdef DUMPING_DATA
-        PrintOptionHeader(OptionHeader);
-#endif
-
-        WindowsHeader = new WindowsHeader_t;
-        if( !WindowsHeader )
-            return 0;
-        fread(WindowsHeader, 1, WINHDR_SIZE, fp);
-#ifdef DUMPING_DATA
-        PrintWindowsHeader(WindowsHeader);
-#endif
-    } else
-    {
-        return 0;
-    }
-                           
-    return 1;
-}
-
-int CoffLoader::LoadDirectories(FILE *fp)
+int CoffLoader::LoadSections(FILE *fp)
 {
-    if( !WindowsHeader )
-        return 0;
 
-    Directory = new Image_Data_Directory_t[WindowsHeader->NumDirectories];
-
-    NumOfDirectories = 0;
-    if( !Directory )
-        return 0;
-    fread(Directory, WindowsHeader->NumDirectories, sizeof(Image_Data_Directory_t), fp);
-    NumOfDirectories = WindowsHeader->NumDirectories;
-
-// FIXME: Don't dump (finalize)
-#ifdef DUMPING_DATA
-    for (int DirCount = 0; DirCount < NumOfDirectories; DirCount++)
-    {
-        printf("Data Directory %02d: %s\n", DirCount+1, DATA_DIR_NAME[DirCount]);
-        printf("                    RVA:  %08X\n", Directory[DirCount].RVA);
-        printf("                    Size: %08X\n\n", Directory[DirCount].Size);
-    }
-#endif
-    return 1;
-}
-
-int CoffLoader::LoadSectionHeaders(FILE *fp)
-{
-    if( !CoffFileHeader )
-        return 0;
-
-    SectionHeader = new SectionHeader_t[CoffFileHeader->NumberOfSections];
-    if( !SectionHeader )
-        return 0;
     NumOfSections = CoffFileHeader->NumberOfSections;
     SectionData = new char*[CoffFileHeader->NumberOfSections];
-    if( !SectionData )
+    SectionData_M = new char*[CoffFileHeader->NumberOfSections];
+    if( !SectionData || !SectionData_M )
         return 0;
 
     for (int SctnCnt = 0; SctnCnt < CoffFileHeader->NumberOfSections; SctnCnt++)
     {
-        fread(SectionHeader + SctnCnt, 1, sizeof(SectionHeader_t), fp);
-		// FIXME: Use virtualalloc to load on page boundaries!!!
-        SectionData[SctnCnt] = new char[SectionHeader[SctnCnt].VirtualSize];
-        if( SectionData[SctnCnt] )
+		SectionHeader_t *ScnHdr=(SectionHeader_t *)(SectionHeader + SctnCnt);
+		
+		//Changed code to read sections aglin to page boundary
+		unsigned long page_align=(WindowsHeader&&WindowsHeader->SectionAlignment)?(WindowsHeader->SectionAlignment-1):0;
+		SectionData_M[SctnCnt] = new char[max(ScnHdr->VirtualSize,ScnHdr->SizeOfRawData) + page_align];
+        if( SectionData_M[SctnCnt] )
         {
-            int Offset = ftell(fp);
-            fseek(fp, SectionHeader[SctnCnt].PtrToRawData, SEEK_SET);
-            fread(SectionData[SctnCnt], 1, SectionHeader[SctnCnt].VirtualSize, fp);
+			//pointer round to page size defined in windows header
+			SectionData[SctnCnt] = (char*)( ((unsigned long)(SectionData_M[SctnCnt])+page_align) & ~page_align );
+            fseek(fp, ScnHdr->PtrToRawData, SEEK_SET);
+            fread(SectionData[SctnCnt], 1, ScnHdr->SizeOfRawData, fp);
 
-						SectionHeader_t *ScnHdr=(SectionHeader_t *)(SectionHeader + SctnCnt);
-						if (ScnHdr->Characteristics & IMAGE_SCN_CNT_BSS)
-						{
-							memset(SectionData[SctnCnt], 0, SectionHeader[SctnCnt].VirtualSize);
-						}
+			//debug blocks
+			char szBuf[128];
+			char namebuf[9];
+			for (int iii=0; iii<8; iii++)
+				namebuf[iii]= ScnHdr->Name[iii];
+			namebuf[8]='\0';
+			sprintf(szBuf,"Load code Sections %s Memory %p, Aligned %p, Length %x\n",
+				namebuf,SectionData_M[SctnCnt],SectionData[SctnCnt],
+				max(ScnHdr->VirtualSize,ScnHdr->SizeOfRawData));
+			OutputDebugString(szBuf);
+
+			if ( ScnHdr->SizeOfRawData < ScnHdr->VirtualSize )		//initialize BSS data in the end of section
+			{
+				memset((char*)((long)(SectionData[SctnCnt])+ScnHdr->SizeOfRawData),0,ScnHdr->VirtualSize-ScnHdr->SizeOfRawData);
+			}
+            
+			if (ScnHdr->Characteristics & IMAGE_SCN_CNT_BSS)		//initialize whole .BSS section, pure .BSS is obsolete
+			{
+				memset(SectionData[SctnCnt], 0, ScnHdr->VirtualSize);
+			}
+
 #ifdef DUMPING_DATA
             PrintSection(SectionHeader + SctnCnt, SectionData[SctnCnt]);
 #endif
-            fseek(fp, Offset, SEEK_SET);
-        }
+		} else {
+			//FIXME output error message
+			return 0;
+		}
     }
     return 1;
 }
@@ -251,7 +265,7 @@ int CoffLoader::LoadSectionHeaders(FILE *fp)
 
 int CoffLoader::RVA2Section(unsigned long RVA)
 {
-    int NumOfSections = CoffFileHeader->NumberOfSections;
+    NumOfSections = CoffFileHeader->NumberOfSections;
     for( int i = 0; i < NumOfSections; i++)
     {
         if( SectionHeader[i].VirtualAddress <= RVA )
@@ -744,16 +758,14 @@ void CoffLoader::PrintSection(SectionHeader_t *ScnHdr, char* data)
 
 int CoffLoader::ParseCoff(FILE *fp)
 {  
-    if( !LoadCoffFileHeader(fp) )
+    if( !LoadCoffHModule(fp) )
     {
-        printf("Failed to load/find COFF file header\n");
+        printf("Failed to load/find COFF hModule header\n");
         return 0;
     }    
     if (    !LoadSymTable(fp) ||
             !LoadStringTable(fp) ||
-            !LoadOptionHeaders(fp) ||
-            !LoadDirectories(fp) ||
-            !LoadSectionHeaders(fp) )
+            !LoadSections(fp) )
         return 0;
               
     PerformFixups();
@@ -771,6 +783,9 @@ void CoffLoader::PerformFixups(void)
     int Sctn;                           
     char *FixupData;
     char *EndData;
+
+	Sctn = RVA2Section( EntryAddress );			//get the real entry point address
+    EntryAddress += ( (unsigned long)(SectionData[Sctn]) - SectionHeader[Sctn].VirtualAddress );
 
     if( !Directory )
         return;

@@ -26,7 +26,7 @@ protected:
     int     ResolveOrdinal(char*, unsigned long, void**);
 	int		ResolveName(char*, char*, void **);
 	int		LoadExports();
-
+	
 public:
     DllLoader(char *dll);
     ~DllLoader();
@@ -36,5 +36,7 @@ public:
     int     ResolveExport(char*, void**);
 
 };
+
+typedef BOOL WINAPI EntryFunc(HINSTANCE hinstDLL,DWORD fdwReason,LPVOID lpvReserved);
 
 #endif
