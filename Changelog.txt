@@ -5,6 +5,12 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+
+  - 15-12-2004 changed: skin version to 1.22
+  - 15-12-2004 added: Scan for music info in the background, diabled by default, to enable use settings
+  - 15-12-2004 updated: SQLite to version 3.0.8, File Format changed, all databases have to be recreated
+  - 15-12-2004 fixed: id3 tag reading broken, when file has no genre
+  - 15-12-2004 fixed: autoswitch view, last control isn't remembered when pressing B on controller
   - 13-12-2004 added: Context menu to my videos.
   - 13-12-2004 fixed: Strange pause thing shown during slideshows.
   - 13-12-2004 added: Off mode added to LED colour options.

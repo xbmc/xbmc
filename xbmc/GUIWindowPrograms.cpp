@@ -418,12 +418,17 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 	{
 		m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
 
+		int iFocusedControl=GetFocusedControl();
+
 		ShowThumbPanel();
 		UpdateButtons();
 
-		int iControl = CONTROL_LIST;
-		if (m_iViewAsIcons != VIEW_AS_LIST) iControl = CONTROL_THUMBS;
-		SET_CONTROL_FOCUS(iControl, 0);
+		if (iFocusedControl==CONTROL_LIST || iFocusedControl==CONTROL_THUMBS)
+		{
+			int iControl = CONTROL_LIST;
+			if (m_iViewAsIcons != VIEW_AS_LIST) iControl = CONTROL_THUMBS;
+			SET_CONTROL_FOCUS(iControl, 0);
+		}
 	}
 }
 

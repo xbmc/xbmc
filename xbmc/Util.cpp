@@ -1604,29 +1604,16 @@ void CUtil::CreateShortcut(CFileItem* pItem)
 
 void CUtil::SetThumbs(VECFILEITEMS &items)
 {
-  VECFILEITEMS qitems;
-  CHDDirectory dir;
-
   //cache thumbnails directory
-  CStdString strThumb=g_stSettings.szThumbnailsDirectory;
-  {
-    CFileItemList itemlist(qitems); // will clean up everything
-    dir.GetDirectory(strThumb.c_str(),qitems);		//	precache Q:\thumbs directory
-  }
-  {
-    strThumb+="\\imdb";
-    CFileItemList itemlist(qitems); // will clean up everything
-    dir.GetDirectory(strThumb.c_str(),qitems);			//	precache Q:\thumbs\imdb directory
-  }
-
-
+	g_directoryCache.InitThumbCache();
 
   for (int i=0; i < (int)items.size(); ++i)
   {
     CFileItem* pItem=items[i];
     SetThumb(pItem);
   }
-  CUtil::ClearCache();
+
+  g_directoryCache.ClearThumbCache();
 }
 
 bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
@@ -2630,29 +2617,16 @@ void CUtil::GetVideoThumbnail(const CStdString& strIMDBID, CStdString& strThumb)
 
 void CUtil::SetMusicThumbs(VECFILEITEMS &items)
 {
-  VECFILEITEMS qitems;
-  CHDDirectory dir;
-
-
-  CStdString strThumb=g_stSettings.m_szAlbumDirectory;
-  strThumb+="\\thumbs";
-  {
-    CFileItemList itemlist(qitems); // will clean up everything
-    dir.GetDirectory(strThumb.c_str(),qitems);			//	precache Q:\albums\thumbs directory
-  }
-  {
-    strThumb+="\\temp";
-    CFileItemList itemlist(qitems); // will clean up everything
-    dir.GetDirectory(strThumb.c_str(),qitems);			//	precache Q:\albums\thumbs\temp directory
-  }
+  //cache thumbnails directory
+	g_directoryCache.InitMusicThumbCache();
 
   for (int i=0; i < (int)items.size(); ++i)
   {
     CFileItem* pItem=items[i];
     SetMusicThumb(pItem);
   }
-  CUtil::ClearCache();
 
+  g_directoryCache.ClearMusicThumbCache();
 }
 
 void CUtil::SetMusicThumb(CFileItem* pItem)

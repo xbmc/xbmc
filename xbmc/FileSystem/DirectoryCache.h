@@ -2,7 +2,11 @@
 
 #include "directory.h"
 #include <vector>
+#include <set>
+#include "../utils/CriticalSection.h"
+
 using namespace DIRECTORY;
+
 namespace DIRECTORY
 {
 
@@ -22,10 +26,23 @@ namespace DIRECTORY
     static void  ClearDirectory(const CStdString& strPath);
     static void  Clear();
     static bool  FileExists(const CStdString& strPath,bool& bInCache);
+		static void  InitThumbCache();
+		static void  ClearThumbCache();
+		static void  InitMusicThumbCache();
+		static void  ClearMusicThumbCache();
 protected:
+		static void  InitCache(set<CStdString>& dirs);
+		static void  ClearCache(set<CStdString>& dirs);
+		static bool  IsCacheDir(CStdString strPath);
+
     vector<CDir> m_vecCache;
     typedef vector<CDir>::iterator ivecCache;
-    
+
+		static CCriticalSection m_cs;
+		set<CStdString> m_thumbDirs;
+		set<CStdString> m_musicThumbDirs;
+		int m_iThumbCacheRefCount;
+		int m_iMusicThumbCacheRefCount;
   };
 
 };

@@ -43,6 +43,7 @@
 #include "GUIDialogSubMenu.h"
 #include "GUIDialogButtonMenu.h"
 #include "GUIDialogContextMenu.h"
+#include "GUIDialogMusicScan.h"
 #include "GUIWindowSystemInfo.h"
 #include "GUIWindowSettingsUICalibration.h"
 #include "GUIWindowSettingsScreenCalibration.h"
@@ -166,6 +167,7 @@ public:
 	CGUIDialogSubMenu								m_guiDialogSubMenu;
 	CGUIDialogButtonMenu						m_guiDialogButtonMenu;
 	CGUIDialogContextMenu						m_guiDialogContextMenu;
+	CGUIDialogMusicScan							m_guiDialogMusicScan;
 	CGUIWindowFileManager						m_guiFileManager;
 	CGUIWindowVideoFiles						m_guiMyVideo;
 	CGUIWindowSettings							m_guiSettings;

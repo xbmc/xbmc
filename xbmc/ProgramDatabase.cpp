@@ -226,7 +226,7 @@ long CProgramDatabase::AddFile(long lPathId, const CStdString& strFileName, cons
     m_pDS->close();
 	  strSQL.Format ("insert into files (idFile, idPath, strFileName, xbedescription, iTimesPlayed) values(NULL, %i, '%s','%s',%i)", lPathId, strFileName.c_str(),strDescription.c_str(),0);
 	  m_pDS->exec(strSQL.c_str());
-    lFileId=sqlite_last_insert_rowid( m_pDB->getHandle() );
+    lFileId=(long)sqlite3_last_insert_rowid( m_pDB->getHandle() );
     return lFileId;
   }
   catch(...)
@@ -252,7 +252,7 @@ long CProgramDatabase::AddBookMark(const CStdString& strBookmark)
       m_pDS->close();
 			strSQL.Format("insert into bookmark (idBookmark, bookMarkname) values (NULL, '%s')", strBookmark.c_str());
 			m_pDS->exec(strSQL.c_str());
-			long lBookmarkId=sqlite_last_insert_rowid(m_pDB->getHandle());
+			long lBookmarkId=(long)sqlite3_last_insert_rowid(m_pDB->getHandle());
 			return lBookmarkId;
 		}
 		else
@@ -288,7 +288,7 @@ long CProgramDatabase::AddPath(const CStdString& strPath)
 	    strSQL.Format("insert into Path (idPath, strPath) values( NULL, '%s')",
                       strPath.c_str());
 	    m_pDS->exec(strSQL.c_str());
-	    long lPathId=sqlite_last_insert_rowid(m_pDB->getHandle());
+	    long lPathId=(long)sqlite3_last_insert_rowid(m_pDB->getHandle());
 	    return lPathId;
     }
     else
@@ -412,7 +412,7 @@ long CProgramDatabase::AddProgram(const CStdString& strFilenameAndPath, const CS
       strSQL.Format("insert into program (idProgram, idPath, idBookmark) values( NULL, %i, %i)",
                     lPathId, lBookMarkId);
 	  m_pDS->exec(strSQL.c_str());
-      long lProgramId=sqlite_last_insert_rowid(m_pDB->getHandle());
+      long lProgramId=(long)sqlite3_last_insert_rowid(m_pDB->getHandle());
       AddFile(lPathId,strFileName,strDes);
     }
     else
