@@ -66,7 +66,7 @@ CGUIRSSControl::~CGUIRSSControl(void)
 
 void CGUIRSSControl::Render()
 {
-	if ( (!IsVisible()) || g_application.IsPlayingVideo() || !g_guiSettings.GetBool("LookAndFeel.EnableRSSFeeds") ) 
+	if ( (!IsVisible()) || g_application.IsPlayingVideo() || !g_guiSettings.GetBool("LookAndFeel.EnableRSSFeeds") || !g_guiSettings.GetBool("Network.EnableInternet")) 
 	{
 		return;
 	}

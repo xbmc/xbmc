@@ -1233,6 +1233,9 @@ void CGUIWindowMusicBase::OnSearchItemFound(const CFileItem* pItem)
 
 bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumInfo& album)
 {
+	// quietly return if Internet lookups are disabled
+	if (!g_guiSettings.GetBool("Network.EnableInternet")) return false;
+
 	CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
 
 	// show dialog box indicating we're searching the album

@@ -362,6 +362,18 @@ void CGUIWindowVideoBase::UpdateButtons()
 	SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
 	UpdateThumbPanel();
 
+	// disable scan and manual imdb controls if internet lookups are disabled
+	if (g_guiSettings.GetBool("Network.EnableInternet"))
+	{
+		CONTROL_ENABLE(GetID(), CONTROL_BTNSCAN);
+		CONTROL_ENABLE(GetID(), CONTROL_IMDB);
+	}
+	else
+	{
+		CONTROL_DISABLE(GetID(), CONTROL_BTNSCAN);
+		CONTROL_DISABLE(GetID(), CONTROL_IMDB);
+	}
+
 	if (ViewByIcon()) 
 	{
 		SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
@@ -442,9 +454,11 @@ int CGUIWindowVideoBase::GetSelectedItem()
 
 bool CGUIWindowVideoBase::HaveDiscOrConnection( CStdString& strPath, int iDriveType )
 {
-	if ( iDriveType == SHARE_TYPE_DVD ) {
+	if ( iDriveType == SHARE_TYPE_DVD )
+	{
 		CDetectDVDMedia::WaitMediaReady();
-		if ( !CDetectDVDMedia::IsDiscInDrive() ) {
+		if ( !CDetectDVDMedia::IsDiscInDrive() )
+		{
 			CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
       if (dlg)
       {
@@ -461,9 +475,11 @@ bool CGUIWindowVideoBase::HaveDiscOrConnection( CStdString& strPath, int iDriveT
 			return false;
 		}
 	}
-	else if ( iDriveType == SHARE_TYPE_REMOTE ) {
+	else if ( iDriveType == SHARE_TYPE_REMOTE )
+	{
 			// TODO: Handle not connected to a remote share
-		if ( !CUtil::IsEthernetConnected() ) {
+		if ( !CUtil::IsEthernetConnected() )
+		{
 			CGUIDialogOK* dlg = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
       if (dlg)
       {
@@ -517,8 +533,15 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
 	  pDlgInfo->SetMovie(movieDetails);
 	  pDlgInfo->DoModal(GetID());
     if ( !pDlgInfo->NeedRefresh() ) return;
+
+		// quietly return if Internet lookups are disabled
+		if (!g_guiSettings.GetBool("Network.EnableInternet")) return;
+
     m_database.DeleteMovieInfo(strFile);
  }
+
+	// quietly return if Internet lookups are disabled
+	if (!g_guiSettings.GetBool("Network.EnableInternet")) return;
 
   // handle .nfo files
 	CStdString strExtension;

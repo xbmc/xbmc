@@ -174,6 +174,16 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
 
 void CGUIWindowWeather::UpdateButtons()
 {
+	// disable refresh button if internet lookups are disabled
+	if (g_guiSettings.GetBool("Network.EnableInternet"))
+	{
+		CONTROL_ENABLE(GetID(), CONTROL_BTNREFRESH);
+	}
+	else
+	{
+		CONTROL_DISABLE(GetID(), CONTROL_BTNREFRESH);
+	}
+
 	SET_CONTROL_LABEL(GetID(), CONTROL_BTNREFRESH, 184);			//Refresh
 	SET_CONTROL_LABEL(GetID(), CONTROL_LABELLOCATION, m_szLocation[m_iCurWeather]);
 	SET_CONTROL_LABEL(GetID(), CONTROL_LABELUPDATED, m_szUpdated);
@@ -460,6 +470,9 @@ void CGUIWindowWeather::GetInteger(const TiXmlElement* pRootElement, const CStdS
 //Do a complete download, parse and update
 void CGUIWindowWeather::RefreshMe(bool autoUpdate)
 {
+	// quietly return if Internet lookups are disabled
+	if (!g_guiSettings.GetBool("Network.EnableInternet")) return;
+
 	//message strings for refresh of images
 	CGUIMessage msgDe(GUI_MSG_WINDOW_DEINIT,0,0);
 	CGUIMessage msgRe(GUI_MSG_WINDOW_INIT,0,0,WINDOW_INVALID);
