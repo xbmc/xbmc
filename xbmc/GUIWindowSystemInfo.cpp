@@ -167,7 +167,9 @@ void  CGUIWindowSystemInfo::GetValues()
 	}
 
 	// time current
-	SET_CONTROL_LABEL(4,g_infoManager.GetTime() + g_infoManager.GetDate(true));
+	CStdStringW strDateTime;
+	strDateTime.Format(L"%s %s", g_infoManager.GetTime(true), g_infoManager.GetDate(true));
+	SET_CONTROL_LABEL(4,strDateTime);
 
 	{
 		XNADDR net_stat;
