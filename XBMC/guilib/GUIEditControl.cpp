@@ -12,6 +12,7 @@ CGUIEditControl::CGUIEditControl(DWORD dwParentID, DWORD dwControlId,
 {
 	ControlType = GUICONTROL_EDIT;
 	m_pObserver = NULL;
+	m_iOriginalPosX = iPosX;
 	ShowCursor(true);
 }
 
@@ -83,6 +84,70 @@ void CGUIEditControl::OnKeyPress(WORD wKeyId)
 				m_iCursorPos++;
 				break;
 			}
+		}
+	}
+
+	RecalcLabelPosition();
+}
+
+void CGUIEditControl::RecalcLabelPosition()
+{
+	INT nMaxWidth = (INT) m_dwWidth - 8;
+
+	FLOAT fTextWidth, fTextHeight;
+
+	CStdStringW strTempLabel = m_strLabel;
+	CStdStringW strTempPart  = strTempLabel.Mid(0,m_iCursorPos);
+
+	m_pFont->GetTextExtent( strTempPart.c_str(), &fTextWidth, &fTextHeight );
+
+	// if skinner forgot to set height :p
+	if (m_dwHeight == 0)
+	{
+		// store font height
+		m_dwHeight = (DWORD) fTextHeight;
+	}
+
+	// if text accumulated is greater than width allowed
+	if ((INT)fTextWidth>nMaxWidth)
+	{
+		// move the position of the label to the left (outside of the viewport)
+		m_iPosX = (m_iOriginalPosX+nMaxWidth)-(INT)fTextWidth;
+	}
+	else
+	{
+		// otherwise use original position
+		m_iPosX = m_iOriginalPosX;
+	}
+}
+
+void CGUIEditControl::Render()
+{
+	if (IsVisible())
+	{
+		// we can only perform view port operations if we have an area to display
+		if (m_dwHeight>0 && m_dwWidth>0)
+		{
+			D3DVIEWPORT8 newviewport,oldviewport;
+			g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
+
+			newviewport.X		= (DWORD)m_iOriginalPosX;
+			newviewport.Y		= (DWORD)m_iPosY;
+			newviewport.Width	= m_dwWidth;
+			newviewport.Height	= m_dwHeight;
+			newviewport.MinZ	= 0.0f;
+			newviewport.MaxZ	= 1.0f;
+			
+			g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
+
+			CGUILabelControl::Render();
+
+			g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
+		}
+		else
+		{
+			// use default rendering until we have recalculated label position
+			CGUILabelControl::Render();
 		}
 	}
 }

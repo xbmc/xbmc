@@ -37,8 +37,13 @@ public:
 
 	virtual void SetObserver(IEditControlObserver* aObserver);
 	virtual void OnKeyPress(WORD wKeyId);
+	virtual void Render();
+
+protected:
+	void RecalcLabelPosition();
 
 protected:
 	IEditControlObserver* m_pObserver;
+	INT m_iOriginalPosX;
 };
 #endif
