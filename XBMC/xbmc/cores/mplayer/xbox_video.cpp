@@ -311,20 +311,34 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
 				}
 				float fNewWidth;
 				float fNewHeight;
+				float fHorzBorder=0;
+				float fVertBorder=0;
 				if ( image_width >= image_height)
-				{
-					fNewHeight=(float)iScreenHeight;
-					fNewWidth = fNewHeight*fAR;
+				{	
+					fNewHeight=(float)iScreenHeight;	// 538
+					fNewWidth = fNewHeight*fAR;				// 968.4
+					fHorzBorder= (fNewWidth-(float)iScreenWidth)/2.0f;
+
+					float fFactor = fNewWidth / ((float)image_width);
+					fHorzBorder = fHorzBorder/fFactor;
 				}
 				else
 				{
 					fNewWidth  = (float)( iScreenWidth);
 					fNewHeight = fNewWidth/fAR;
+					fVertBorder= (fNewHeight-(float)iScreenHeight)/2.0f;
+					float fFactor = fNewWidth / ((float)image_width);
+					fVertBorder = fVertBorder/fFactor;
 				}
-				float fHorzBorder=(fNewWidth  - (float)iScreenWidth)/2.0f;
-				float fVertBorder=(fNewHeight - (float)iScreenHeight)/2.0f;
-				fHorzBorder =  (fHorzBorder/fNewWidth ) * ((float)image_width);
-				fVertBorder =  (fVertBorder/fNewHeight) * ((float)image_height);
+				if ( (int)fNewWidth < iScreenWidth )
+				{
+					fHorzBorder=0;
+					fNewWidth  = (float)( iScreenWidth);
+					fNewHeight = fNewWidth/fAR;
+					fVertBorder= (fNewHeight-(float)iScreenHeight)/2.0f;
+					float fFactor = fNewWidth / ((float)image_width);
+					fVertBorder = fVertBorder/fFactor;
+				}
 				rs.left		= (int)fHorzBorder;
 				rs.top    = (int)fVertBorder;
 				rs.right	= (int)image_width  - (int)fHorzBorder;
