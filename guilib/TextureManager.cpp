@@ -28,17 +28,13 @@ CTexture::CTexture(LPDIRECT3DTEXTURE8 pTexture,int iWidth, int iHeight, bool Cac
 	m_iWidth=iWidth;
 	m_iHeight=iHeight;
 	m_pPalette = pPalette;
-	if (m_pPalette)
+	if (m_pPalette && !Cached)
 		m_pPalette->AddRef();
 	m_bCached = Cached;
 }
 
 CTexture::~CTexture()
 {
-	if (m_pPalette)
-		m_pPalette->Release();
-	m_pPalette=NULL;
-
 	FreeTexture();
 }
 
@@ -51,12 +47,20 @@ void CTexture::FreeTexture()
 			m_pTexture->BlockUntilNotBusy();
 			void* Data = (void*)(*(DWORD*)(((char*)m_pTexture) + sizeof(D3DTexture)));
 			D3D_FreeContiguousMemory(Data);
-			delete [] (char*)m_pTexture;
+			delete [] m_pTexture;
 		}
 		else
 			m_pTexture->Release();
 		m_pTexture=NULL;
 	}
+	if (m_pPalette)
+	{
+		if (m_bCached)
+			delete m_pPalette;
+		else
+			m_pPalette->Release();
+	}
+	m_pPalette=NULL;
 }
 
 void CTexture::Dump() const
@@ -292,9 +296,9 @@ int RoundPow2(int s)
 	return 1 << (int)(f+0.999f);
 }
 
-static HRESULT LoadCachedTexture(LPDIRECT3DDEVICE8 pDevice, const char* szFilename, D3DXIMAGE_INFO* pInfo, LPDIRECT3DTEXTURE8* ppTexture)
+static HRESULT LoadCachedTexture(LPDIRECT3DDEVICE8 pDevice, const char* szFilename, D3DXIMAGE_INFO* pInfo, LPDIRECT3DTEXTURE8* ppTexture, LPDIRECT3DPALETTE8* ppPalette)
 {
-	*ppTexture = NULL;
+	*ppTexture = NULL; *ppPalette = NULL;
 
 	HANDLE hFile = CreateFile(szFilename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
@@ -315,57 +319,44 @@ static HRESULT LoadCachedTexture(LPDIRECT3DDEVICE8 pDevice, const char* szFilena
 	}
 
 	DWORD ResHeaderSize = XPRHeader.dwHeaderSize - sizeof(XPR_HEADER);
-	char* ResHeader = new char[sizeof(D3DTexture) + sizeof(DWORD)];
-	if (!ResHeader)
-	{
-		CloseHandle(hFile);
-		return E_FAIL;
-	}
+	D3DTexture* pTex = (D3DTexture*)(new char[sizeof(D3DTexture) + sizeof(DWORD)]);
+	D3DPalette* pPal = 0;
+	if (ResHeaderSize >= sizeof(D3DTexture) + sizeof(D3DPalette) + 4)
+		pPal = new D3DPalette;
+
 	DWORD ResDataSize = XPRHeader.dwTotalSize - XPRHeader.dwHeaderSize;
 	void* ResData = D3D_AllocContiguousMemory(ResDataSize, 4096);
 	if (!ResData)
-	{
-		delete [] ResHeader;
-		CloseHandle(hFile);
-		return E_FAIL;
-	}
+		goto CacheLoadError;
 
-	if (!ReadFile(hFile, ResHeader, sizeof(D3DTexture) + sizeof(DWORD), &n, NULL) || n != sizeof(D3DTexture) + sizeof(DWORD))
+	if (!ReadFile(hFile, pTex, sizeof(D3DTexture), &n, NULL) || n != sizeof(D3DTexture))
+		goto CacheLoadError;
+	if (pPal)
 	{
-		delete [] ResHeader;
-		D3D_FreeContiguousMemory(ResData);
-		CloseHandle(hFile);
-		return E_FAIL;
-	}
-	SetFilePointer(hFile, ResHeaderSize - (sizeof(D3DTexture) + sizeof(DWORD)), NULL, FILE_CURRENT);
-	if (!ReadFile(hFile, ResData, ResDataSize, &n, NULL) || n != ResDataSize)
-	{
-		delete [] ResHeader;
-		D3D_FreeContiguousMemory(ResData);
-		CloseHandle(hFile);
-		return E_FAIL;
+		if (!ReadFile(hFile, pPal, sizeof(D3DTexture), &n, NULL) || n != sizeof(D3DTexture))
+			goto CacheLoadError;
 	}
 	WORD RealSize[2];
 	if (!ReadFile(hFile, RealSize, 4, &n, 0) || n != 4)
-	{
-		delete [] ResHeader;
-		D3D_FreeContiguousMemory(ResData);
-		CloseHandle(hFile);
-		return E_FAIL;
-	}
+		goto CacheLoadError;
+
+	if (!ReadFile(hFile, ResData, ResDataSize, &n, NULL) || n != ResDataSize)
+		goto CacheLoadError;
 	
 	CloseHandle(hFile);
+	hFile = INVALID_HANDLE_VALUE;
 
-	if ((*((DWORD *)ResHeader) & D3DCOMMON_TYPE_MASK) != D3DCOMMON_TYPE_TEXTURE)
-	{
-		delete [] ResHeader;
-		D3D_FreeContiguousMemory(ResData);
-		return E_INVALIDARG;
-	}
+	if ((pTex->Common & D3DCOMMON_TYPE_MASK) != D3DCOMMON_TYPE_TEXTURE)
+		goto CacheLoadError;
 
-	*ppTexture = (LPDIRECT3DTEXTURE8)ResHeader;
+	*ppTexture = (LPDIRECT3DTEXTURE8)pTex;
 	(*ppTexture)->Register(ResData);
-	*(DWORD*)(ResHeader + sizeof(D3DTexture)) = (DWORD)ResData;
+	*(DWORD*)(pTex + 1) = (DWORD)ResData;
+	if (pPal)
+	{
+		*ppPalette = (LPDIRECT3DPALETTE8)pPal;
+		(*ppPalette)->Register(ResData);
+	}
 
 	pInfo->Width = RealSize[0];
 	pInfo->Height = RealSize[1];
@@ -376,6 +367,13 @@ static HRESULT LoadCachedTexture(LPDIRECT3DDEVICE8 pDevice, const char* szFilena
 	pInfo->Format = desc.Format;
 
 	return S_OK;
+
+CacheLoadError:
+	delete [] pTex;
+	if (pPal) delete pPal;
+	if (ResData) D3D_FreeContiguousMemory(ResData);
+	if (hFile != INVALID_HANDLE_VALUE) CloseHandle(hFile);
+	return E_FAIL;
 }
 
 int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
@@ -389,8 +387,9 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
       return pMap->size();
     }
   }
-#if ALLOW_TEXTURE_COMPRESSION
+#ifdef ALLOW_TEXTURE_COMPRESSION
   LPDIRECT3DTEXTURE8 pTexture;
+	LPDIRECT3DPALETTE8 pPal = 0;
   CStdString strPath=g_graphicsContext.GetMediaDir();
 	strPath+="\\media\\";
   strPath+=strTextureName;
@@ -422,7 +421,6 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
     int iWidth = AnimatedGifSet.FrameWidth;
 		int iHeight= AnimatedGifSet.FrameHeight;
 
-		IDirect3DPalette8* pPal;
 		g_graphicsContext.Get3DDevice()->CreatePalette(D3DPALETTE_256, &pPal);
 		PALETTEENTRY* pal;
 		pPal->Lock((D3DCOLOR**)&pal, 0);
@@ -477,40 +475,14 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 
 	D3DXSetDXT3DXT5(TRUE);
 
+	D3DXIMAGE_INFO info;
+
 	bool Cached = false;
 	CStdString strCachePath(strPath);
-	int n = strCachePath.find_last_of('\\');
-	strCachePath.insert(n, "\\cache");
 	strCachePath += ".xpr";
 	if (GetFileAttributes(strCachePath) != -1)
 	{
-		FILETIME t1, t2;
-		WIN32_FIND_DATA FindData;
-		HANDLE hFind = FindFirstFile(strPath, &FindData);
-		if (hFind != INVALID_HANDLE_VALUE)
-		{
-			FindClose(hFind);
-			memcpy(&t1, &FindData.ftLastWriteTime, sizeof(FILETIME));
-
-			HANDLE hFind = FindFirstFile(strCachePath, &FindData);
-			if (hFind != INVALID_HANDLE_VALUE)
-			{
-				FindClose(hFind);
-				memcpy(&t2, &FindData.ftLastWriteTime, sizeof(FILETIME));
-
-				if (!CompareFileTime(&t1, &t2))
-				{
-					Cached = true;
-				}
-			}
-		}
-	}
-
-	D3DXIMAGE_INFO info;
-
-	if (Cached)
-	{
-		if (FAILED(LoadCachedTexture(g_graphicsContext.Get3DDevice(), strCachePath.c_str(), &info, &pTexture)))
+		if (FAILED(LoadCachedTexture(g_graphicsContext.Get3DDevice(), strCachePath.c_str(), &info, &pTexture, &pPal)))
 		{
 			CStdString strText = strCachePath;
 			strText.MakeLower();
@@ -521,6 +493,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 			}
 			return NULL;
 		}
+		Cached = true;
 	}
 	else
 	{
@@ -544,7 +517,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 		{
 			// normal picture
 			if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), strPath.c_str(),
-				D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_DXT3, D3DPOOL_MANAGED,
+				D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED,
 				D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture)!=D3D_OK)
 			{
 				CStdString strText = strPath;
@@ -555,34 +528,6 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 					CLog::Log("Texture manager unable to load file:%s",strPath.c_str());
 				}
 				return NULL;
-			}
-		}
-
-		// save cached copy (if skin texture)
-		CStdString strText = strCachePath;
-		strText.MakeLower();
-		if (strstr(strText.c_str(),"q:\\skin") ) 
-		{
-			WIN32_FIND_DATA FindData;
-			HANDLE hFind = FindFirstFile(strPath, &FindData);
-			if (hFind != INVALID_HANDLE_VALUE)
-			{
-				FindClose(hFind);
-
-				XGWriteSurfaceOrTextureToXPR(pTexture, strCachePath.c_str(), true);
-
-				HANDLE hFile = CreateFile(strCachePath.c_str(), GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
-				if (hFile != INVALID_HANDLE_VALUE)
-				{
-					SetFilePointer(hFile, 0, NULL, FILE_END);
-					WORD Size[2];
-					Size[0] = info.Width;
-					Size[1] = info.Height;
-					DWORD n;
-					WriteFile(hFile, Size, 4, &n, 0);
-					SetFileTime(hFile, NULL, NULL, &FindData.ftLastWriteTime);
-					CloseHandle(hFile);
-				}
 			}
 		}
 	}
@@ -598,7 +543,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 	//strLog.Format("%s %ix%i\n", strTextureName.c_str(),info.Width,info.Height);
 	//OutputDebugString(strLog.c_str());
   CTextureMap* pMap = new CTextureMap(strTextureName);
-	CTexture* pclsTexture = new CTexture(pTexture,info.Width,info.Height, Cached);
+	CTexture* pclsTexture = new CTexture(pTexture,info.Width,info.Height, Cached, 100, pPal);
   pMap->Add(pclsTexture);
   m_vecTextures.push_back(pMap);
 #else
