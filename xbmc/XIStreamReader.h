@@ -44,10 +44,7 @@ public:
 			{ 
 				return END_OF_READER; 
 			}
-			__int64 pt = _stream.GetPosition();
-			size_type st = (_stream.Read((void*) buf, (int) len));
-			_stream.Seek( pt + st );
-			return st;
+			return size_type(_stream.Read((void*) buf, (int) len));
 		}
 
 		/** Return the beginning position in the reader */
@@ -65,8 +62,7 @@ public:
 		/** Set the value of the current position for reading.**/
 		virtual pos_type setCur(pos_type pos) 
 		{ 
-			_stream.Seek(pos); 
-			return pos_type(pos); 
+			return pos_type(_stream.Seek(pos)); 
 		}
 	
 		/** Skip up to \c len chars in the stream and advance the internal position

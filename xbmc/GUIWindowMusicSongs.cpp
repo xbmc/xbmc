@@ -411,7 +411,7 @@ void CGUIWindowMusicSongs::OnScan()
 	{
 		m_dlgProgress->SetLine(0,328);
 		m_dlgProgress->SetLine(1,"");
-		m_dlgProgress->SetLine(2,"" );
+		m_dlgProgress->SetLine(2,330 );
 		m_database.CommitTransaction();
 	}
 	else
@@ -431,10 +431,11 @@ void CGUIWindowMusicSongs::OnScan()
 
 bool CGUIWindowMusicSongs::DoScan(VECFILEITEMS& items)
 {
-	OnRetrieveMusicInfo(items,true);
-	
 	m_dlgProgress->SetLine(2,m_strDirectory );
 
+	OnRetrieveMusicInfo(items,true);
+	m_database.CheckVariousArtistsAndCoverArt();
+	
 	if (m_dlgProgress->IsCanceled()) return false;
 	
 	bool bCancel=false;
@@ -462,8 +463,6 @@ bool CGUIWindowMusicSongs::DoScan(VECFILEITEMS& items)
 					bCancel=true;
 				}
 				
-				m_database.CheckVariousArtistsAndCoverArt();
-
 				m_strDirectory=strDir;
 				if (bCancel) break;
 			}
