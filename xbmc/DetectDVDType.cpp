@@ -200,8 +200,21 @@ void CDetectDVDMedia::DetectMediaType()
   sprintf( buf, "disc label:%s\n", m_pCdInfo->GetDiscLabel().c_str() );
 	OutputDebugString( buf );
 
-  CStdString strLabel;
-  strLabel.Format("DVD-ROM (%s)",m_pCdInfo->GetDiscLabel().c_str());
+  CStdString strLabel="DVD-ROM";
+	CStdString strDiscLabel;
+	if (bCDDA)
+	{
+		strDiscLabel="Audio-CD";
+	}
+	else
+	{
+		strDiscLabel=m_pCdInfo->GetDiscLabel();
+		strDiscLabel.TrimRight(" ");
+	}
+
+	if (!strDiscLabel.IsEmpty())
+		strLabel.Format("DVD-ROM (%s)",strDiscLabel);
+
   SetNewDVDShareUrl( strNewUrl ,bCDDA, strLabel);
 }
 
