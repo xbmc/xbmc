@@ -236,15 +236,16 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 			//g_application.m_pPlayer->AudioOffset(false);
 		break;
 		case ACTION_PLAY:
-			if (g_application.m_pPlayer && g_application.m_pPlayer->IsPaused())
-				g_application.m_pPlayer->Pause();
-			else if (m_iSpeed != 1)
-			{
-				m_iSpeed = 1;
-				g_application.m_pPlayer->ToFFRW(m_iSpeed);
-			}
-			else ;
-
+			if (g_application.m_pPlayer)
+      {
+       if (g_application.m_pPlayer->IsPaused())
+				 g_application.m_pPlayer->Pause();
+			  else if (m_iSpeed != 1)
+			  {
+          m_iSpeed = 1;
+				  g_application.m_pPlayer->ToFFRW(m_iSpeed);
+			  }
+      }
 		break;
 		case ACTION_REWIND:
 			ChangetheSpeed(ACTION_REWIND);
