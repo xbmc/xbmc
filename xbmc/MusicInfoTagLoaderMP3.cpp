@@ -230,6 +230,7 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
 		CLog::Log("Tag loader mp3: exception in file %s", strFileName.c_str());
 	}
 
+	tag.SetLoaded(false);
 	return false;
 }
 
