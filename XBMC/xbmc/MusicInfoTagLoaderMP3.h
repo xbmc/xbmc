@@ -27,8 +27,15 @@ protected:
   char* GetArtist(const ID3_Tag *tag);
   char* GetAlbum(const ID3_Tag *tag);
   char* GetTitle(const ID3_Tag *tag);
+  char* GetMusicBrainzTrackID(const ID3_Tag *tag);
+  char* GetMusicBrainzArtistID(const ID3_Tag *tag);
+  char* GetMusicBrainzAlbumID(const ID3_Tag *tag);
+  char* GetMusicBrainzAlbumArtistID(const ID3_Tag *tag);
+  char* GetMusicBrainzTRMID(const ID3_Tag *tag);
 
 private:
+  char* GetUniqueFileID(const ID3_Tag *tag, const CStdString& strUfidOwner);
+  char* GetUserText(const ID3_Tag *tag, const CStdString& strDescription);
   CStdString ParseMP3Genre(const CStdString& str);
 };
 };
