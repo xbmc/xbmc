@@ -126,4 +126,5 @@ protected:
 	static CStdString					m_strTempPlayListDirectory;	///< The directory the temporary playlist was started
 	int												m_nSelectedItem;	///< Backups the last selected item before window is deinitialized
 	int												m_iLastControl;	///< Backups the last selected control before window is deinitialized
+	long		m_lPlayListSeq;	// sequence number for the playlist
 };
