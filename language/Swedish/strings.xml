@@ -1503,6 +1503,10 @@
   <string>
     <id>450</id>
     <value>Kolumner</value>
+  </string>
+  <string>
+    <id>4501</id>
+    <value>LCD Typ</value>
   </string> 
   <string>
     <id>451</id>
@@ -1832,7 +1836,6 @@
  <id>999</id>
  <value>Online Spel</value>
  </string> 
-
 
  <string>
  <id>10000</id>
