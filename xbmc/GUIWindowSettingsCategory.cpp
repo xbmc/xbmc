@@ -516,9 +516,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
 			CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
 			pControl->AddLabel(g_localizeStrings.Get(13355), RENDER_LQ_RGB_SHADER);
 			pControl->AddLabel(g_localizeStrings.Get(13356), RENDER_OVERLAYS);
-			pControl->AddLabel(g_localizeStrings.Get(13357), RENDER_COMBO);
-			pControl->AddLabel(g_localizeStrings.Get(13359), RENDER_MQ_RGB_SHADER);
-			pControl->AddLabel(g_localizeStrings.Get(13358), RENDER_HQ_RGB_SHADER);
+			pControl->AddLabel(g_localizeStrings.Get(13357), RENDER_HQ_RGB_SHADER);
 			pControl->SetValue(pSettingInt->GetData());
 		}
 		iPosY+=iGapY;
