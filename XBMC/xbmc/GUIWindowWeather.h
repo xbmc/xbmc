@@ -42,9 +42,6 @@ protected:
 	void					LocalizeOverviewToken(char *szStr);
 	void					LoadLocalizedToken();
 
-
-
-	CHTTP					m_httpGrabber;
 	char					m_szLocation[3][100];
 	char					m_szUpdated[256];
 	char					m_szNowIcon[256];

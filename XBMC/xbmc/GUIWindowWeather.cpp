@@ -148,12 +148,14 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
 			int iControl=message.GetSenderId();
 			if(iControl == CONTROL_BTNREFRESH)
 			{
-				RefreshMe(false);	//refresh clicked so do a complete update (not an autoUpdate)
+				RefreshMe(false);	// Refresh clicked so do a complete update (not an autoUpdate)
 			}
 			else if(iControl == CONTROL_SELECTLOCATION)
 			{
 				CGUISpinControl *pTempSpin = (CGUISpinControl*)GetControl(iControl);
 				m_iCurWeather = pTempSpin->GetValue();
+
+				m_lRefreshTime = timeGetTime() - (g_stSettings.m_iWeatherRefresh*60000) + 2000; //refresh in 2 seconds
 			}
 		}
 		break;
@@ -243,6 +245,7 @@ void CGUIWindowWeather::Render()
 
 bool CGUIWindowWeather::Download(const CStdString& strWeatherFile)
 {
+	CHTTP				httpUtil;
 	CStdString			strURL;
 	
 	char c_units = g_stSettings.m_szWeatherFTemp[0];	//convert from temp units to metric/standard
@@ -254,7 +257,7 @@ bool CGUIWindowWeather::Download(const CStdString& strWeatherFile)
 	strURL.Format("http://xoap.weather.com/weather/local/%s?cc=*&unit=%c&dayf=4&prod=xoap&par=%s&key=%s",
 				g_stSettings.m_szWeatherArea[m_iCurWeather], c_units, PARTNER_ID, PARTNER_KEY);
 
-	return m_httpGrabber.Download(strURL, strWeatherFile);
+	return httpUtil.Download(strURL, strWeatherFile);
 }
 
 bool CGUIWindowWeather::LoadWeather(const CStdString& strWeatherFile)
@@ -445,7 +448,7 @@ void CGUIWindowWeather::RefreshMe(bool autoUpdate)
 	//message strings for refresh of images
 	CGUIMessage msgDe(GUI_MSG_WINDOW_DEINIT,0,0);
 	CGUIMessage msgRe(GUI_MSG_WINDOW_INIT,0,0,WINDOW_INVALID);
-  CStdString strWeatherFile = "Z:\\curWeather.xml";
+	CStdString strWeatherFile = "Z:\\curWeather.xml";
 
 	CGUIDialogProgress*	pDlgProgress	= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 	CGUIDialogOK* 		pDlgOK			= (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
