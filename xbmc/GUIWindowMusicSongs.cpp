@@ -1633,11 +1633,10 @@ void CGUIWindowMusicSongs::OnPopupMenu(int iItem)
 void CGUIWindowMusicSongs::LoadDirectoryCache(const CStdString& strDirectory, MAPFILEITEMS& items)
 {
 	Crc32 crc;
-	crc.Reset();
-	crc.Compute(strDirectory.c_str(),strlen(strDirectory.c_str()));
+	crc.ComputeFromLowerCase(strDirectory);
 
 	CStdString strFileName;
-	strFileName.Format("Z:\\%x.fi", (DWORD)crc);
+	strFileName.Format("Z:\\%x.fi", crc);
 
 	CFile file;
 	if (file.Open(strFileName))
@@ -1664,11 +1663,10 @@ void CGUIWindowMusicSongs::SaveDirectoryCache(const CStdString& strDirectory, VE
 		return;
 
 	Crc32 crc;
-	crc.Reset();
-	crc.Compute(strDirectory.c_str(),strlen(strDirectory.c_str()));
+	crc.ComputeFromLowerCase(strDirectory);
 
 	CStdString strFileName;
-	strFileName.Format("Z:\\%x.fi", (DWORD)crc);
+	strFileName.Format("Z:\\%x.fi", crc);
 
 	CFile file;
 	if (file.OpenForWrite(strFileName))
