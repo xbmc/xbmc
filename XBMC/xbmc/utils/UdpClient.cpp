@@ -169,6 +169,8 @@ void CUdpClient::Process()
 		DispatchNextCommand();
 	}
 
+	closesocket(client_socket);
+
 	CLog::Log(LOGNOTICE, "UDPCLIENT: Stopped listening.");	
 }
 
