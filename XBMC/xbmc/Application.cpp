@@ -722,7 +722,8 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
     m_iAudioStreamIDX=-1;
   }
   m_strCurrentFile=strFile;
-	CURL url(strFile);
+  
+	CURL url(m_strCurrentFile);
 	CStdString strNewPlayer = "mplayer";
 	if ( url.GetProtocol() == "cdda")
 	{
@@ -730,7 +731,7 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 	}
 	if (m_pPlayer)
 	{
-		if (1||m_strCurrentPlayer != strNewPlayer || !CUtil::IsAudio(strFile) )
+		if (1||m_strCurrentPlayer != strNewPlayer || !CUtil::IsAudio(m_strCurrentFile) )
 		{
 			delete m_pPlayer;
 			m_pPlayer=NULL;
@@ -745,13 +746,13 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 		m_pPlayer = factory.CreatePlayer(strNewPlayer,*this);
 	}
   
-  bool bResult=m_pPlayer->openfile(strFile);
+  bool bResult=m_pPlayer->openfile(m_strCurrentFile);
 	if (bResult) 
 	{
-		m_guiMusicOverlay.SetCurrentFile(strFile);
-		m_guiWindowVideoOverlay.SetCurrentFile(strFile);
+		m_guiMusicOverlay.SetCurrentFile(m_strCurrentFile);
+		m_guiWindowVideoOverlay.SetCurrentFile(m_strCurrentFile);
 
-		if ( CUtil::IsHD(strFile) )
+		if ( CUtil::IsHD(m_strCurrentFile) )
 		{
 			m_bSpinDown=false;
 		}
