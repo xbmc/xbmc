@@ -5,10 +5,15 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 19-02-2005 fixed: LCD: last bar of the progress is now shown
+  - 19-02-2005 fixed: LCD: execution-timing for the LCD and SmartXX (sometimes the display crashs, hope it's fixed now)
+  - 19-02-2005 fixed: LCD: backlight-fix for the X3-LCD (thnx to GreenGian and SniperKil)
+  - 19-02-2005 added: Smooth progress bar for the HD44780 (stop-symbol was not used) (thnx to GreenGian and SniperKil)
   - 19-02-2005 cleanup: LCD progress bar code moved to LCD class
   - 18-02-2005 fixed: <allowoverlay> doesn't work in music songs
   - 18-02-2005 fixed: Localization of UV data in weather.
   - 18-02-2005 fixed: crash bug in thumbpanels when switching from large->small without resetting current focus.
+  - 18-02-2005 added: progress bar for the LCD
   - 18-02-2005 added: LCD option for HD44780/KS0073 controllers
   - 17-02-2005 fixed: dialog select doesn't free its items when it is closed
   - 17-02-2005 fixed: black screen when going from visualisation -> other window -> press stop -> press back  
