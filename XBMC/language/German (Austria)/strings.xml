@@ -301,15 +301,15 @@
   <string><id>368</id><value>Internetsuche</value></string> 
   <string><id>369</id><value>Titel</value></string>
   <string><id>370</id><value>Gewitter</value></string>
-  <string><id>371</id><value>Vereinzelt</value></string>
+  <string><id>371</id><value>Teilweise</value></string>
   <string><id>372</id><value>Größtenteils</value></string>
-  <string><id>373</id><value>Sonne</value></string>
+  <string><id>373</id><value>Sonnig</value></string>
   <string><id>374</id><value>Wolken</value></string>
   <string><id>375</id><value>Schnee</value></string>
   <string><id>376</id><value>Regen</value></string>
   <string><id>377</id><value>Leichter</value></string>
-  <string><id>378</id><value>Vormittag</value></string>
-  <string><id>379</id><value>Nachmittag</value></string>
+  <string><id>378</id><value>Vormittags</value></string>
+  <string><id>379</id><value>Nachmittags</value></string>
   <string><id>380</id><value>Schauer</value></string>
   <string><id>381</id><value>Wenig</value></string>
   <string><id>382</id><value>Vereinzelt</value></string>
@@ -522,25 +522,26 @@
   <string><id>755</id><value>Verknüpfung: Pfad (ändern):</value></string> 
   <string><id>756</id><value>Verknüpfung: Bezeichnung (ändern):</value></string> 
   <string><id>757</id><value>Pfadtiefe (ändern): [Zahl]</value></string> 
-  <string><id>758</id><value>Verknüpfung löschen</value></string> 
+  <string><id>758</id><value>Verknüpfung löschen</value></string>
+  <string><id>759</id><value>Ges.Liste</value></string>
   <string><id>998</id><value>Online spielen</value></string>
   <string><id>999</id><value>Online spielen</value></string>
   <string><id>1000</id><value>Bildschirmschoner Vorschau</value></string>
   <string><id>1396</id><value>Verwehungen</value></string> 
   <string><id>1397</id><value>und</value></string> 
   <string><id>1398</id><value>Gefrierend</value></string> 
-  <string><id>1399</id><value>N/A</value></string> 
-  <string><id>1400</id><value>N/A</value></string> 
-  <string><id>1401</id><value>N/A</value></string> 
-  <string><id>1402</id><value>N/A</value></string> 
-  <string><id>1403</id><value>N/A</value></string> 
-  <string><id>1404</id><value>N/A</value></string> 
-  <string><id>1405</id><value>N/A</value></string> 
-  <string><id>1406</id><value>N/A</value></string> 
-  <string><id>1407</id><value>N/A</value></string> 
-  <string><id>1408</id><value>N/A</value></string> 
-  <string><id>1409</id><value>N/A</value></string> 
-  <string><id>1410</id><value>N/A</value></string> 
+  <string><id>1399</id><value>Abends</value></string> 
+  <string><id>1400</id><value>Vereinzelt</value></string> 
+  <string><id>1401</id><value>Gewitterschauer</value></string> 
+  <string><id>1402</id><value>Gewitter</value></string> 
+  <string><id>1403</id><value>Sonnig</value></string> 
+  <string><id>1404</id><value>Starker</value></string> 
+  <string><id>1405</id><value>in</value></string> 
+  <string><id>1406</id><value>der</value></string> 
+  <string><id>1407</id><value>Umgebung</value></string> 
+  <string><id>1408</id><value>Eis</value></string> 
+  <string><id>1409</id><value>Kristalle</value></string> 
+  <string><id>1410</id><value>Windstille</value></string> 
   <string><id>10000</id><value>Hauptmenü</value></string>
   <string><id>10001</id><value>Programme</value></string>
   <string><id>10002</id><value>Bilder</value></string>
@@ -753,7 +754,7 @@
   <string><id>13380</id><value>Standard Gamma</value></string> 
   <string><id>13381</id><value>Video fortsetzen</value></string> 
   <string><id>14000</id><value>Koppeln deakt.</value></string>
-  <string><id>14001</id><value>Koppeln einfach</value></string>
+  <string><id>14001</id><value>Koppeln aktiv.</value></string>
   <string><id>14002</id><value>Koppeln unpräz.</value></string>
   <string><id>14003</id><value>Wiedergabeliste wird heruntergeladen...</value></string>
   <string><id>14004</id><value>Streams werden heruntergeladen...</value></string>
@@ -878,7 +879,7 @@
   <string><id>15060</id><value>Nachricht:</value></string> 
   <string><id>15061</id><value>Einladung bei %s mitzuspielen.</value></string>
   <string><id>15062</id><value>Alternativen MediaPlayer verwenden</value></string>
-  <string><id>15100</id><value>Navigation</value></string> 
+  <string><id>15100</id><value>Bibliothek</value></string>
   <string><id>15101</id><value>Datenbank</value></string> 
   <string><id>15102</id><value>* Alle Alben</value></string> 
   <string><id>15103</id><value>* Alle Künstler</value></string> 

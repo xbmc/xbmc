@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.177. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.178. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -522,6 +522,7 @@
   <string><id>756</id><value>Rediger programnavn</value></string>
   <string><id>757</id><value>Rediger banedybde</value></string>
   <string><id>758</id><value>Fjerner programlink</value></string>  
+  <string><id>759</id><value>Vis: Stor liste</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Spill på nettet</value></string>
   <string><id>1000</id><value>Forhåndsvisning av skjermbeskytter</value></string>
@@ -529,7 +530,7 @@
   <string><id>1396</id><value>Forbigående</value></string>
   <string><id>1397</id><value>og</value></string>
   <string><id>1398</id><value>Kjølig</value></string>
-  <string><id>1399</id><value>Sene</value></string>
+  <string><id>1399</id><value>Sent</value></string>
   <string><id>1400</id><value>Isolerte</value></string>
   <string><id>1401</id><value>Tordenbyger</value></string>
   <string><id>1402</id><value>Torden</value></string>
@@ -878,7 +879,7 @@
   <string><id>15060</id><value>Melding her</value></string>
   <string><id>15061</id><value>Du er invitert til å spille %s.</value></string>
   <string><id>15062</id><value>Bruk alternativ mplayer</value></string>
-  <string><id>15100</id><value>Nav</value></string>
+  <string><id>15100</id><value>Bibliotek</value></string>
   <string><id>15101</id><value>Database</value></string>
   <string><id>15102</id><value>* Alle albumer</value></string>
   <string><id>15103</id><value>* Alle artister</value></string>
