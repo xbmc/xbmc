@@ -2533,7 +2533,14 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
     // and start playing it
     g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
     g_playlistPlayer.Reset();
-    g_playlistPlayer.Play(0);
+    if (g_playlistPlayer.ShuffledPlay(iPlaylist))
+    {
+      // if shuffled dont start on first song
+      g_playlistPlayer.SetCurrentSong(0);
+      g_playlistPlayer.PlayNext();
+    }
+    else
+      g_playlistPlayer.Play(0);
     return true;
   }
   return false;
