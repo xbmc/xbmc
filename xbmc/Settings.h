@@ -16,6 +16,9 @@ using namespace std;
 #define SHARE_TYPE_REMOTE				4
 
 
+#define LCD_MODE_NORMAL   0
+#define LCD_MODE_NOTV     1   
+
 #define CACHE_AUDIO 0
 #define CACHE_VIDEO 1
 #define CACHE_VOB   2
@@ -253,6 +256,7 @@ public:
   int       m_iLCDColumns;
   int       m_iLCDRows;
   int       m_iLCDAdress[4];
+  int       m_iLCDMode;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;

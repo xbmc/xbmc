@@ -761,3 +761,15 @@ void CGUIThumbnailPanel::ShowTexture(bool bOnoff)
 {
   m_bShowTexture=bOnoff;
 }
+
+int CGUIThumbnailPanel::GetSelectedItem(CStdString& strLabel)
+{
+  strLabel="";
+  int iItem=m_iOffset + m_iCursorY*m_iColumns+m_iCursorX;
+  if (iItem >=0 && iItem < (int)m_vecItems.size())
+  {
+   CGUIListItem *pItem=m_vecItems[iItem];
+   strLabel=pItem->GetLabel();
+  }
+  return iItem;
+}
