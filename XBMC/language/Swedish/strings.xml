@@ -561,6 +561,43 @@
   <string><id>12006</id><value>Ljud visisalisation</value></string>
   <string><id>12007</id><value>Mina Bilder/Bildspel</value></string>
   <string><id>12008</id><value>Filestacking-dialog</value></string>
+  <string><id>12310</id><value>0</value></string>
+  <string><id>12311</id><value>1</value></string>
+  <string><id>12312</id><value>2</value></string>
+  <string><id>12313</id><value>3</value></string>
+  <string><id>12314</id><value>4</value></string>
+  <string><id>12315</id><value>5</value></string>
+  <string><id>12316</id><value>6</value></string>
+  <string><id>12317</id><value>7</value></string>
+  <string><id>12318</id><value>8</value></string>
+  <string><id>12319</id><value>9</value></string>
+  <string><id>12320</id><value>c</value></string>
+  <string><id>12321</id><value>ok</value></string>
+  <string><id>12322</id><value>*</value></string>
+  <string><id>12324</id><value>XBMC Huvudkod</value></string>
+  <string><id>12325</id><value>Mappen är låst</value></string>
+  <string><id>12326</id><value>Slå din kod</value></string>
+  <string><id>12327</id><value>Slå din huvudkod och tryck OK,</value></string>
+  <string><id>12328</id><value>Slå din låskod och tryck OK,</value></string> 
+  <string><id>12329</id><value>eller tryck C för att avbryta:</value></string>
+  <string><id>12330</id><value>Tryck XBOX kontroller knappkombination och </value></string>
+  <string><id>12331</id><value>tryck Start, eller Back för att avbryta:</value></string>
+  <string><id>12332</id><value>Lås delad mapp</value></string>
+  <string><id>12333</id><value>Lås upp delad mapp</value></string>
+  <string><id>12334</id><value>Återställ låset på mappen</value></string>
+  <string><id>12335</id><value>Ta bort mapp låset</value></string>
+  <string><id>12336</id><value>Välj typ av lås:</value></string>
+  <string><id>12337</id><value>Siffer kombination</value></string>
+  <string><id>12338</id><value>Knapp kombination på kontroller </value></string>
+  <string><id>12339</id><value>Textbaserat lås</value></string>
+  <string><id>12340</id><value>Skriv in det nya lösenordet</value></string>
+  <string><id>12341</id><value>Skriv lösenordet igen</value></string>
+  <string><id>12342</id><value>Felaktigt lösenord,</value></string>
+  <string><id>12343</id><value>Försök kvar </value></string>
+  <string><id>12344</id><value>Lösenordet matchade inte det första.</value></string>
+  <string><id>12345</id><value>Tillgång nekas</value></string>
+  <string><id>12346</id><value>Du har använt max antal lösenordsförsök.</value></string>
+  <string><id>12347</id><value>XBMC och XBoxen kommer nu stängas av.</value></string>
   <string><id>12600</id><value>Mitt väder</value></string>
   <string><id>12900</id><value>Skärmsläckare</value></string>
   <string><id>12901</id><value>Helskärms OSD</value></string>
@@ -647,17 +684,17 @@
   <string><id>14022</id><value>Bibliotek</value></string>
   <string><id>14023</id><value>Ingen TV</value></string>
   <string><id>14024</id><value>Skriv in största närmaste stad</value></string>
-  <string><id>14025</id><value>Video från hårddisk</value></string>
-  <string><id>14026</id><value>Video från DVDRom</value></string>
-  <string><id>14027</id><value>Video från lokalt nätverk</value></string>
-  <string><id>14028</id><value>Video från internet</value></string>
-  <string><id>14029</id><value>Audio från hårddisk</value></string>
-  <string><id>14030</id><value>Audio från DVDRom</value></string>
-  <string><id>14031</id><value>Audio från lokalt nätverk</value></string>
-  <string><id>14032</id><value>Audio från Internet</value></string>
-  <string><id>14033</id><value>DVD från hårddisk</value></string>
-  <string><id>14034</id><value>DVD från DVDRom</value></string>
-  <string><id>14035</id><value>DVD från lokalt nätverk</value></string>
+  <string><id>14025</id><value>Video Cache   - Hårddisk</value></string>
+  <string><id>14026</id><value>              - DVDRom</value></string>
+  <string><id>14027</id><value>              - Lokalt nätverk</value></string>
+  <string><id>14028</id><value>              - Internet</value></string>
+  <string><id>14029</id><value>Ljud Cache    - Hårddisk</value></string>
+  <string><id>14030</id><value>              - DVDRom</value></string>
+  <string><id>14031</id><value>              - Lokalt nätverk</value></string>
+  <string><id>14032</id><value>              - Internet</value></string>
+  <string><id>14033</id><value>DVD Cache     - Hårddisk</value></string>
+  <string><id>14034</id><value>              - DVDRom</value></string>
+  <string><id>14035</id><value>              - Lokalt nätverk</value></string>
   <string><id>14036</id><value>Servrar</value></string>
   <string><id>14037</id><value>Look and Feel</value></string>
   <string><id>14038</id><value>Nätverks inställningar ändrade</value></string>
