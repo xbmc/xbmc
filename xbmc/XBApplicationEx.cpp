@@ -62,7 +62,7 @@ CXBApplicationEx::CXBApplicationEx()
     m_d3dpp.EnableAutoDepthStencil = FALSE;
 	  m_d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
     m_d3dpp.SwapEffect             = D3DSWAPEFFECT_DISCARD ;
-		m_d3dpp.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+		m_d3dpp.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_ONE;
 
     // Specify number and type of input devices this app will be using. By
     // default, you can use 0 and NULL, which triggers XInputDevices() to
