@@ -26,7 +26,7 @@
 #include "cdencoder.h"
 #include <vorbis\vorbisenc.h>
 #endif
-
+#include "ICDAudioCallback.h"
 //-----------------------------------------------------------------------------
 // Name: class CCDRipX
 // Desc: CDDA Player
@@ -58,7 +58,7 @@
 //-----------------------------------------------------------------------------
 
 // Define the maximum amount of packets we will ever submit to the renderer
-const DWORD WAVSTRM_PACKET_COUNT = 2;
+const DWORD WAVSTRM_PACKET_COUNT = 32;
 
 #define TRACKSPERSEC 75
 #define CB_CDDASECTOR 2352
@@ -84,10 +84,10 @@ protected:
 	LONG					nTotalBytes;
 	IDirectSoundStream*     m_pDestXMO;
 	WAVEFORMATEX            m_wfxSourceFormat; 
-	BYTE*	                m_pvSourceBuffer[WAVSTRM_PACKET_COUNT]; 
+	BYTE*										m_pvSourceBuffer[WAVSTRM_PACKET_COUNT]; 
 	HRESULT					hr;
 	HRESULT                 m_hrOpenResult; 
-	DWORD                   m_adwStatus[2];
+	DWORD                   m_adwStatus[WAVSTRM_PACKET_COUNT];
 	BYTE*					pbtStream;
 	LONG					nBufferSize;
 	BOOL					m_init;
@@ -130,6 +130,11 @@ public:
 		
 	CCDRipX();
 	~CCDRipX();
+	
+	void		RegisterAudioCallback(ICDAudioCallback* pCallback);
+	void		UnRegisterAudioCallback();
+private:
+	ICDAudioCallback* m_pCallback;
 
 };
 void DPf(const char* pzFormat, ...);

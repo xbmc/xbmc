@@ -136,6 +136,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
 //	from the CCdInfo class
 void CDetectDVDMedia::DetectMediaType()
 {
+	bool bCDDA(false);
 	OutputDebugString( "Detecting DVD-ROM media filesystem...\n" );
 
 	CStdString strNewUrl;
@@ -163,7 +164,10 @@ void CDetectDVDMedia::DetectMediaType()
 		if ( m_pCdInfo->IsIso9660( 1 ) || m_pCdInfo->IsIso9660Interactive( 1 ) )
 			strNewUrl = "iso9660://";
 		else if ( m_pCdInfo->IsAudio( 1 ) )
+		{
 			strNewUrl = "cdda://local/";
+			bCDDA=true;
+		}
 		else
 			strNewUrl = "D:\\";
 	}
@@ -172,39 +176,53 @@ void CDetectDVDMedia::DetectMediaType()
 	sprintf( buf, "Using protocol %s\n", strNewUrl.c_str() );
 	OutputDebugString( buf );
 
-	SetNewDVDShareUrl( strNewUrl );
+	SetNewDVDShareUrl( strNewUrl ,bCDDA);
 }
 
-void CDetectDVDMedia::SetNewDVDShareUrl( CStdString strNewUrl ) 
+void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA ) 
 {
-	//	Set new URL for every share group
+	CStdString strDescription="DVD";
+	if (bCDDA) strDescription="CD";
 
+	//	Set new URL for every share group
 	//	My Music
 	for (int i=0; i < (int)g_settings.m_vecMyMusicShares.size(); ++i)
 	{
 		if ( g_settings.m_vecMyMusicShares[i].m_iDriveType == SHARE_TYPE_DVD )
+		{
 			g_settings.m_vecMyMusicShares[i].strPath = strNewUrl;
+			g_settings.m_vecMyMusicShares[i].strName = strDescription;
+		}
 	}
 
 	//	My Pictures
 	for (i=0; i < (int)g_settings.m_vecMyPictureShares.size(); ++i)
 	{
 		if ( g_settings.m_vecMyPictureShares[i].m_iDriveType == SHARE_TYPE_DVD )
+		{
 			g_settings.m_vecMyPictureShares[i].strPath = strNewUrl;
+			g_settings.m_vecMyPictureShares[i].strName = strDescription;
+		}
 	}
 
 	//	My Files
 	for (i=0; i < (int)g_settings.m_vecMyFilesShares.size(); ++i)
 	{
 		if ( g_settings.m_vecMyFilesShares[i].m_iDriveType == SHARE_TYPE_DVD )
+		{
 			g_settings.m_vecMyFilesShares[i].strPath = strNewUrl;
+			g_settings.m_vecMyFilesShares[i].strName = strDescription;
+		}
 	}
 
 	//	My Videos
 	for (i=0; i < (int)g_settings.m_vecMyVideoShares.size(); ++i)
 	{
 		if ( g_settings.m_vecMyVideoShares[i].m_iDriveType == SHARE_TYPE_DVD )
+		{
 			g_settings.m_vecMyVideoShares[i].strPath = strNewUrl;
+			g_settings.m_vecMyVideoShares[i].strName = strDescription;
+		}
 	}
 }
 

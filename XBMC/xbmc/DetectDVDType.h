@@ -39,7 +39,7 @@ protected:
 	DWORD							GetTrayState();
 	
 	void							DetectMediaType();
-	void							SetNewDVDShareUrl( CStdString strNewUrl );
+	void							SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA);
 
 private:
 	CIoSupport				m_helper;
