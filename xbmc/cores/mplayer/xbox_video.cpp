@@ -816,7 +816,7 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
     d+=uvtexture_pitch;
   }
 
-  if (iBottom>=(int)image_height)
+  if (iBottom+1>=(int)image_height)
   {
     // flush CPU cache. This way all data is back in memory and GPU (pixelshader) can access it
     __asm {
@@ -1107,7 +1107,6 @@ static unsigned int get_image(mp_image_t *mpi)
 //********************************************************************************************************
 static unsigned int put_image(mp_image_t *mpi)
 {
-#if 0
 	if((mpi->flags&MP_IMGFLAG_DIRECT)||(mpi->flags&MP_IMGFLAG_DRAW_CALLBACK)) 
 	{
     // flush CPU cache. This way all data is back in memory and GPU (pixelshader) can access it
@@ -1189,8 +1188,6 @@ static unsigned int put_image(mp_image_t *mpi)
   //sprintf(szTmp,"putimage decodebuf:%i renderbuf:%i flip:%i\n", m_iDecodeBuffer ,m_iRenderBuffer, m_bFlip);
   //OutputDebugString(szTmp);
 	return VO_TRUE;
-#endif
-  return VO_FALSE;
 }
 
 //********************************************************************************************************
