@@ -8,6 +8,7 @@
 #include "application.h"
 
 #define CONTROL_PROFILES 2
+#define CONTROL_LASTLOADED_PROFILE 3
 
 CGUIWindowSettingsProfile::CGUIWindowSettingsProfile(void)
 :CGUIWindow(0)
@@ -62,16 +63,7 @@ void CGUIWindowSettingsProfile::OnAction(const CAction &action)
           if (dlgYesNo->IsConfirmed())
           {
             //delete profile
-            for (IVECPROFILES iProfile = g_settings.m_vecProfiles.begin(); iProfile != g_settings.m_vecProfiles.end(); ++iProfile)
-            {
-	            if (iProfile == &g_settings.m_vecProfiles.at(i))
-	            {
-                ::DeleteFile("T:\\" + iProfile->getFileName());
-                g_settings.m_vecProfiles.erase(iProfile);
-                g_settings.Save();
-                break;
-	            }
-            }
+            g_settings.DeleteProfile(i);
             LoadList();
           }
         }
@@ -149,6 +141,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
           }
           CSettings::stSettings prevSettings = g_stSettings;
           g_application.StopPlaying();
+          g_application.StopServices();
           g_settings.LoadProfile(iItem);
           //reload stuff
 	        CStdString strLanguagePath;
@@ -165,8 +158,8 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
             g_application.LoadSkin(g_stSettings.szDefaultSkin);
             m_gWindowManager.ActivateWindow(GetID());
           }
-          g_application.StopServices();
           g_application.StartServices();
+          SetLastLoaded();
           CGUIDialogOK* dlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
           if (dlgOK)
           {
@@ -200,10 +193,43 @@ void CGUIWindowSettingsProfile::LoadList()
     CGUIMessage msg(GUI_MSG_LABEL_ADD,GetID(),CONTROL_PROFILES,0,0,(void*)item);
     g_graphicsContext.SendMessage(msg);
   }
+  {
   CGUIListItem* item = new CGUIListItem(g_localizeStrings.Get(13202));
   CGUIMessage msg(GUI_MSG_LABEL_ADD,GetID(),CONTROL_PROFILES,0,0,(void*)item);
   g_graphicsContext.SendMessage(msg);
+  }
+
+  SetLastLoaded();
 }
+
+void CGUIWindowSettingsProfile::SetLastLoaded()
+{
+  //last loaded
+	{
+	  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LASTLOADED_PROFILE); 
+    g_graphicsContext.SendMessage(msg);
+	}
+  {
+	  CGUIMessage msg(GUI_MSG_LABEL_ADD,GetID(), CONTROL_LASTLOADED_PROFILE);
+    CStdString lbl = g_localizeStrings.Get(13204);
+    CStdString lastLoaded;
+    
+    if ((g_settings.m_iLastLoadedProfileIndex < 0) || (g_settings.m_iLastLoadedProfileIndex >= (int)g_settings.m_vecProfiles.size()))
+    {
+      lastLoaded = g_localizeStrings.Get(13205);//unknown
+    }
+    else 
+    {
+      CProfile& profile = g_settings.m_vecProfiles.at(g_settings.m_iLastLoadedProfileIndex);
+      lastLoaded = profile.getName();
+    }
+    CStdString strItem;
+    strItem.Format("%s %s", lbl.c_str(), lastLoaded.c_str());
+	  msg.SetLabel(strItem);
+    g_graphicsContext.SendMessage(msg);
+  }
+}
+
 
 bool CGUIWindowSettingsProfile::GetKeyboard(CStdString& strInput)
 {

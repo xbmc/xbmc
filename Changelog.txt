@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 15-08-2004 added: Last loaded profile label in profile screen
   - 15-08-2004 fixed: Mouse is set to inactive on startup (default focused button should work correctly now)
   - 15-08-2004 changed: Video zoom options increased.
   - 14-08-2004 fixed: Bookmark buttons would disappear when re-entering My Programs

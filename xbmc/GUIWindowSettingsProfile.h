@@ -16,4 +16,5 @@ protected:
   bool  GetKeyboard(CStdString& strInput);
   int   GetSelectedItem();
   void  LoadList();
+  void  SetLastLoaded();
 };
