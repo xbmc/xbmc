@@ -7,6 +7,7 @@
 // though it works reasonably well as is...
 
 #define TOAST_DISPLAY_TIME   5000L
+#define TOAST_MESSAGE_TIME   TOAST_DISPLAY_TIME-1000L
 
 #define POPUP_ICON     400
 #define POPUP_CAPTION_TEXT   401
@@ -73,7 +74,7 @@ bool CGUIDialogKaiToast::OnMessage(CGUIMessage& message)
 }
 
 
-void CGUIDialogKaiToast::QueueNotification(CStdString& aCaption, CStdString& aDescription)
+void CGUIDialogKaiToast::QueueNotification(const CStdString& aCaption, const CStdString& aDescription)
 {
   EnterCriticalSection(&m_critical);
 
@@ -86,7 +87,7 @@ void CGUIDialogKaiToast::QueueNotification(CStdString& aCaption, CStdString& aDe
   LeaveCriticalSection(&m_critical);
 }
 
-void CGUIDialogKaiToast::QueueNotification(CGUIImage* aImage, CStdString& aCaption, CStdString& aDescription)
+void CGUIDialogKaiToast::QueueNotification(CGUIImage* aImage, const CStdString& aCaption, const CStdString& aDescription)
 {
   EnterCriticalSection(&m_critical);
 
@@ -105,7 +106,7 @@ bool CGUIDialogKaiToast::DoWork()
   EnterCriticalSection(&m_critical);
 
   bool bPending = m_notifications.size() > 0;
-  if (bPending)
+  if (bPending && timeGetTime() - m_dwTimer > TOAST_MESSAGE_TIME)
   {
     Notification toast = m_notifications.front();
     m_notifications.pop();
