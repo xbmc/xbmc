@@ -925,10 +925,10 @@ static void video_flip_page(void)
   
 			if (m_bRenderGUI)
 			{
-				g_application.RenderFullScreen();
 				// update our subtitle position
 				xbox_video_update_subtitle_position();
 				xbox_video_render_subtitles(true);
+				g_application.RenderFullScreen();
 			}
 
 	    //g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      

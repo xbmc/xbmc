@@ -104,6 +104,7 @@ public:
   virtual int	   GetTotalTime();
   virtual __int64 GetTime();
   virtual void	  ToFFRW(int iSpeed=0);
+  virtual void    ShowOSD(bool bOnoff);
 protected:
   int GetCacheSize(bool bFileOnHD,bool bFileOnISO,bool bFileOnUDF,bool bFileOnInternet,bool bFileOnLAN, bool bIsVideo, bool bIsAudio, bool bIsDVD);
   bool                load();

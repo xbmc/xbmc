@@ -62,9 +62,14 @@ int             (__cdecl* pgetAudioStream)(int);
 int             (__cdecl* pgetAudioStreamCount)();
 int 			      (__cdecl* pgetTime)();
 __int64         (__cdecl* pgetCurrentTime)();
+void            (__cdecl* pShowOSD)(int);
 
 extern "C" 
 {
+  void mplayer_showosd(int bonoff)
+  {
+    return pShowOSD(bonoff);
+  }
   __int64 mplayer_getCurrentTime()
   {
     return pgetCurrentTime();
@@ -471,6 +476,8 @@ extern "C"
     dll.ResolveExport("mplayer_getCurrentTime", &pProc);
  		pgetCurrentTime=(__int64(__cdecl*)())pProc;
 
+    dll.ResolveExport("mplayer_showosd", &pProc);
+ 		pShowOSD=(void(__cdecl*)(int))pProc;
 
 		pSetVideoFunctions(&video_functions);
 		pSetAudioFunctions(&audio_functions);

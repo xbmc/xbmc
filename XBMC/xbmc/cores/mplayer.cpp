@@ -1136,3 +1136,8 @@ int CMPlayer::GetCacheSize(bool bFileOnHD,bool bFileOnISO,bool bFileOnUDF,bool b
   }
   return 1024;
 }
+
+void CMPlayer::ShowOSD(bool bOnoff)
+{
+  mplayer_showosd(bOnoff? 1:0);
+}
