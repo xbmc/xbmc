@@ -1052,3 +1052,11 @@ void CGUIThumbnailPanel::ScrollUp()
     m_bScrollUp = true;
   }
 }
+
+bool CGUIThumbnailPanel::CanFocus() const
+{
+  if (m_vecItems.size()<=0)
+    return false;
+
+  return CGUIControl::CanFocus();
+}
