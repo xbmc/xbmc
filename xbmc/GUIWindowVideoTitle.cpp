@@ -491,6 +491,7 @@ void CGUIWindowVideoTitle::OnClick(int iItem)
 		VECMOVIESFILES movies;
     m_database.GetFiles(atol(pItem->m_strPath),movies);
 		if (movies.size() <=0) return;
+    if (!CheckMovie(movies[0])) return;
     if (movies.size() >1)
     {
       CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);

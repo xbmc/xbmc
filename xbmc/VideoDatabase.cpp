@@ -606,7 +606,7 @@ void CVideoDatabase::GetMoviesByGenre(CStdString& strGenre1, VECMOVIES& movies)
 	  if (NULL==m_pDB.get()) return ;
 	  if (NULL==m_pDS.get()) return ;
     CStdString strSQL;
-    strSQL.Format("select * from genrelinkmovie,genre,movie,movieinfo,actors where genrelinkmovie.idGenre=genre.idGenre and genrelinkmovie.idmovie=movie.idmovie and movieinfo.idmovie=movie.idmovie and genre.strGenre='%s' and movieinfo.iddirector=actors.idActor", strGenre.c_str());
+    strSQL.Format("select * from genrelinkmovie,genre,movie,movieinfo,actors,path where path.idpath=movie.idpath and genrelinkmovie.idGenre=genre.idGenre and genrelinkmovie.idmovie=movie.idmovie and movieinfo.idmovie=movie.idmovie and genre.strGenre='%s' and movieinfo.iddirector=actors.idActor", strGenre.c_str());
 
     m_pDS->query( strSQL.c_str() );
     if (m_pDS->num_rows() == 0)  return;
@@ -625,6 +625,8 @@ void CVideoDatabase::GetMoviesByGenre(CStdString& strGenre1, VECMOVIES& movies)
       details.m_strGenre=m_pDS->fv("movieinfo.strGenre").get_asString();
       details.m_strPictureURL=m_pDS->fv("movieinfo.strPictureURL").get_asString();
       details.m_strTitle=m_pDS->fv("movieinfo.strTitle").get_asString();
+      details.m_strPath=m_pDS->fv("path.strPath").get_asString();
+      details.m_strDVDLabel=m_pDS->fv("path.cdlabel").get_asString();
       long lMovieId=m_pDS->fv("movieinfo.idMovie").get_asLong();
       details.m_strSearchString.Format("%i", lMovieId);
 
@@ -650,7 +652,7 @@ void CVideoDatabase::GetMoviesByActor(CStdString& strActor1, VECMOVIES& movies)
 	  if (NULL==m_pDB.get()) return ;
 	  if (NULL==m_pDS.get()) return ;
     CStdString strSQL;
-    strSQL.Format("select * from actorlinkmovie,actors,movie,movieinfo where actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie and movieinfo.idmovie=movie.idmovie and actors.stractor='%s'", strActor.c_str());
+    strSQL.Format("select * from actorlinkmovie,actors,movie,movieinfo,path where path.idpath=movie.idpath and actors.idActor=actorlinkmovie.idActor and actorlinkmovie.idmovie=movie.idmovie and movieinfo.idmovie=movie.idmovie and actors.stractor='%s'", strActor.c_str());
     m_pDS->query( strSQL.c_str() );
     if (m_pDS->num_rows() == 0)  return;
     while (!m_pDS->eof()) 
@@ -668,6 +670,9 @@ void CVideoDatabase::GetMoviesByActor(CStdString& strActor1, VECMOVIES& movies)
       details.m_strGenre=m_pDS->fv("movieinfo.strGenre").get_asString();
       details.m_strPictureURL=m_pDS->fv("movieinfo.strPictureURL").get_asString();
       details.m_strTitle=m_pDS->fv("movieinfo.strTitle").get_asString();
+      details.m_strPath=m_pDS->fv("path.strPath").get_asString();
+      details.m_strDVDLabel=m_pDS->fv("path.cdlabel").get_asString();
+
       long lMovieId=m_pDS->fv("movieinfo.idMovie").get_asLong();
       details.m_strSearchString.Format("%i", lMovieId);
 
@@ -692,7 +697,8 @@ void CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath,CIMDBMovi
     if (lMovieId<0) return;
 
 	  CStdString strSQL;
-    strSQL.Format("select * from movieinfo,actors where idmovie=%i and idDirector=idActor", lMovieId);
+    strSQL.Format("select * from movieinfo,actors,movie,path where path.idpath=movie.idpath and movie.idMovie=movieinfo.idMovie and movieinfo.idmovie=%i and idDirector=idActor", lMovieId);
+    
 	  m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() == 0) 
     {
@@ -710,6 +716,9 @@ void CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath,CIMDBMovi
     details.m_strGenre=m_pDS->fv("movieinfo.strGenre").get_asString();
     details.m_strPictureURL=m_pDS->fv("movieinfo.strPictureURL").get_asString();
     details.m_strTitle=m_pDS->fv("movieinfo.strTitle").get_asString();
+    details.m_strPath=m_pDS->fv("path.strPath").get_asString();
+    details.m_strDVDLabel=m_pDS->fv("path.cdlabel").get_asString();
+
     details.m_strSearchString.Format("%i", lMovieId);
 
   }
@@ -951,7 +960,7 @@ void CVideoDatabase::GetMoviesByYear(CStdString& strYear, VECMOVIES& movies)
 	  if (NULL==m_pDB.get()) return ;
 	  if (NULL==m_pDS.get()) return ;
     CStdString strSQL;
-    strSQL.Format("select * from movie,movieinfo,actors where movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor and movieinfo.iYear=%i",iYear);
+    strSQL.Format("select * from movie,movieinfo,actors,path where path.idpath=movie.idpath and movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor and movieinfo.iYear=%i",iYear);
 
     m_pDS->query( strSQL.c_str() );
     if (m_pDS->num_rows() == 0)  return;
@@ -970,6 +979,8 @@ void CVideoDatabase::GetMoviesByYear(CStdString& strYear, VECMOVIES& movies)
       details.m_strGenre=m_pDS->fv("movieinfo.strGenre").get_asString();
       details.m_strPictureURL=m_pDS->fv("movieinfo.strPictureURL").get_asString();
       details.m_strTitle=m_pDS->fv("movieinfo.strTitle").get_asString();
+      details.m_strPath=m_pDS->fv("path.strPath").get_asString();
+      details.m_strDVDLabel=m_pDS->fv("path.cdlabel").get_asString();
       long lMovieId=m_pDS->fv("movieinfo.idMovie").get_asLong();
       details.m_strSearchString.Format("%i", lMovieId);
 
@@ -1065,7 +1076,7 @@ void  CVideoDatabase::GetMovies(VECMOVIES& movies)
 	  if (NULL==m_pDB.get()) return ;
 	  if (NULL==m_pDS.get()) return ;
     CStdString strSQL;
-    strSQL.Format("select * from movie,movieinfo,actors where movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor");
+    strSQL.Format("select * from movie,movieinfo,actors,path where movieinfo.idmovie=movie.idmovie and movieinfo.iddirector=actors.idActor and movie.idpath=path.idpath");
 
     m_pDS->query( strSQL.c_str() );
     if (m_pDS->num_rows() == 0)  return;
@@ -1084,6 +1095,8 @@ void  CVideoDatabase::GetMovies(VECMOVIES& movies)
       details.m_strGenre=m_pDS->fv("movieinfo.strGenre").get_asString();
       details.m_strPictureURL=m_pDS->fv("movieinfo.strPictureURL").get_asString();
       details.m_strTitle=m_pDS->fv("movieinfo.strTitle").get_asString();
+      details.m_strPath=m_pDS->fv("path.strPath").get_asString();
+      details.m_strDVDLabel=m_pDS->fv("path.cdlabel").get_asString();
       long lMovieId=m_pDS->fv("movieinfo.idMovie").get_asLong();
       details.m_strSearchString.Format("%i", lMovieId);
       movies.push_back(details);
@@ -1096,6 +1109,7 @@ void  CVideoDatabase::GetMovies(VECMOVIES& movies)
   }
 }
 
+//********************************************************************************************************************************
 void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath)
 {
   try
@@ -1130,5 +1144,34 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath)
   catch(...)
   {
     CLog::Log("CVideoDatabase::DeleteMovie() failed");
+  }
+}
+
+//********************************************************************************************************************************
+void CVideoDatabase::SetDVDLabel(long lMovieId, const CStdString& strDVDLabel1)
+{
+  CStdString strDVDLabel=strDVDLabel1;
+	RemoveInvalidChars(strDVDLabel);
+  try
+  {
+    if (NULL==m_pDB.get()) return ;
+	  if (NULL==m_pDS.get()) return ;
+
+	  CStdString strSQL;
+    strSQL.Format("select * from path,movie where movie.idMovie=%i and path.idpath=movie.idpath",lMovieId);
+	  m_pDS->query(strSQL.c_str());
+	  if (m_pDS->num_rows() <= 0) 
+	  {
+      return;
+	  }
+    long lPathId = m_pDS->fv("path.idPath").get_asLong();
+    if (lPathId <0) return;
+
+    strSQL.Format("update path set cdlabel='%s' where idPath=%i", strDVDLabel1.c_str(), lPathId );
+    m_pDS->exec(strSQL.c_str());
+  }
+  catch(...)
+  {
+    CLog::Log("CVideoDatabase::SetDVDLabel() failed");
   }
 }

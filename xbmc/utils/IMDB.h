@@ -40,6 +40,8 @@ class CIMDBMovie
 		CStdString m_strCast;
 		CStdString m_strSearchString;
     CStdString m_strFile;
+    CStdString m_strPath;
+    CStdString m_strDVDLabel;
 		int				 m_iTop250;
 		int    		 m_iYear;
 		float  		 m_fRating;
