@@ -10,7 +10,6 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, 
 {
   m_colDiffuse	= 0xFFFFFFFF;  
   
-  m_pVB=NULL;
   m_strFileName=strTexture;
   m_iTextureWidth=0;
   m_iTextureHeight=0;
@@ -52,7 +51,6 @@ CGUIImage::CGUIImage(const CGUIImage &left)
   m_iTextureHeight=0;
 	for (int i=0; i<4; i++)
 		m_dwAlpha[i] = left.m_dwAlpha[i];
-  m_pVB=NULL;
   m_pPalette = NULL;
 	ControlType = GUICONTROL_IMAGE;
 }
@@ -63,7 +61,6 @@ CGUIImage::~CGUIImage(void)
 
 void CGUIImage::Render(int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight)
 {
-  if (!m_pVB) return;
   if (m_vecTextures.size()==0) return;
   // save old position + size
   int oldPosX = m_iPosX;
@@ -88,8 +85,6 @@ void CGUIImage::Render()
 		return;
 	}
 	if (!m_vecTextures.size())
-		return ;
-	if (!m_pVB)
 		return ;
 	
 	Process();
@@ -123,8 +118,33 @@ void CGUIImage::Render()
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_YUVENABLE, FALSE);
 	g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_VERTEX );
 	// Render the image
-	g_graphicsContext.Get3DDevice()->SetStreamSource( 0, m_pVB, sizeof(VERTEX) );
-	g_graphicsContext.Get3DDevice()->DrawPrimitive( D3DPT_QUADLIST, 0, 1 );
+ 	g_graphicsContext.Get3DDevice()->Begin(D3DPT_QUADLIST);
+
+  g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs, 0.0f );
+  D3DCOLOR color = m_colDiffuse;
+	if (m_dwAlpha[0] != 0xFF) color = (m_dwAlpha[0] << 24) | (m_colDiffuse & 0x00FFFFFF);
+  g_graphicsContext.Get3DDevice()->SetVertexDataColor(D3DVSDE_DIFFUSE, color);
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_fX - 0.5f, m_fY - 0.5f, 0.0f, 0.0f );
+
+ 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs + m_fU, 0.0f );
+  color = m_colDiffuse;
+	if (m_dwAlpha[1] != 0xFF) color = (m_dwAlpha[1] << 24) | (m_colDiffuse & 0x00FFFFFF);
+  g_graphicsContext.Get3DDevice()->SetVertexDataColor(D3DVSDE_DIFFUSE, color);
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_fX + m_fNW - 0.5f, m_fY - 0.5f, 0.0f, 0.0f );
+
+ 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs + m_fU, m_fV );
+  color = m_colDiffuse;
+	if (m_dwAlpha[2] != 0xFF) color = (m_dwAlpha[2] << 24) | (m_colDiffuse & 0x00FFFFFF);
+  g_graphicsContext.Get3DDevice()->SetVertexDataColor(D3DVSDE_DIFFUSE, color);
+  g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_fX + m_fNW - 0.5f, m_fY + m_fNH - 0.5f, 0.0f, 0.0f );
+
+ 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, m_fUOffs, m_fV );
+  color = m_colDiffuse;
+	if (m_dwAlpha[3] != 0xFF) color = (m_dwAlpha[3] << 24) | (m_colDiffuse & 0x00FFFFFF);
+  g_graphicsContext.Get3DDevice()->SetVertexDataColor(D3DVSDE_DIFFUSE, color);
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_fX - 0.5f, m_fY + m_fNH - 0.5f, 0.0f, 0.0f );
+
+	g_graphicsContext.Get3DDevice()->End();
 
 	// unset the texture and palette or the texture caching crashes because the runtime still has a reference
 	g_graphicsContext.Get3DDevice()->SetTexture( 0, NULL);
@@ -169,24 +189,11 @@ void CGUIImage::AllocResources()
   }
 
   // Set state to render the image
-  // Create a vertex buffer for rendering the image
-  g_graphicsContext.Lock(); //Lock since this can be called based on a keypress while video is running.
-  g_graphicsContext.Get3DDevice()->CreateVertexBuffer( 4*sizeof(CGUIImage::VERTEX), D3DUSAGE_WRITEONLY, 0L, D3DPOOL_DEFAULT, &m_pVB );
   UpdateVB();
-  g_graphicsContext.Unlock();
-  
 }
 
 void CGUIImage::FreeResources()
 {
-  if (m_pVB!=NULL)
-	{
-    g_graphicsContext.Lock();
-		m_pVB->Release();
-    g_graphicsContext.Unlock();
-		m_pVB=NULL;
-	}
-
   for (int i=0; i < (int)m_vecTextures.size(); ++i)
   {
     g_TextureManager.ReleaseTexture(m_strFileName,i);
@@ -206,13 +213,10 @@ void CGUIImage::Update()
 
 void CGUIImage::UpdateVB()
 {
-  if (!m_pVB) return;
   if (m_vecTextures.size()==0) return;
 
-  CGUIImage::VERTEX* vertex=NULL;
-  
-  float x=(float)m_iPosX;
-  float y=(float)m_iPosY;
+  m_fX = (float)m_iPosX;
+  m_fY = (float)m_iPosY;
 #ifdef ALLOW_TEXTURE_COMPRESSION
 	if (0==m_iImageWidth|| 0==m_iImageHeight)
 	{
@@ -255,15 +259,14 @@ void CGUIImage::UpdateVB()
     m_iTextureWidth=m_dwWidth;
   }
 
-
   if (m_dwWidth==0) 
     m_dwWidth=m_iTextureWidth;
   if (m_dwHeight==0) 
     m_dwHeight=m_iTextureHeight;
 
 
-  float nw =(float)m_dwWidth;
-  float nh=(float)m_dwHeight;
+  m_fNW = (float)m_dwWidth;
+  m_fNH = (float)m_dwHeight;
 
   if (m_bKeepAspectRatio && m_iTextureWidth && m_iTextureHeight)
   {
@@ -283,74 +286,31 @@ void CGUIImage::UpdateVB()
     // this shouldnt happen, but just make sure that everything still fits onscreen
     if (fNewWidth > m_dwWidth || fNewHeight > m_dwHeight)
     {
-      fNewWidth=(float)m_dwWidth;
-      fNewHeight=(float)m_dwHeight;
+      fNewWidth  = (float)m_dwWidth;
+      fNewHeight = (float)m_dwHeight;
     }
-    nw=fNewWidth;
-    nh=fNewHeight;
+    m_fNW = fNewWidth;
+    m_fNH = fNewHeight;
   }
 
 
-  m_iRenderWidth=(int)nw;
-  m_iRenderHeight=(int)nh;
+  m_iRenderWidth  = (int)m_fNW;
+  m_iRenderHeight = (int)m_fNH;
 
 	if (CalibrationEnabled())
 	{
-		g_graphicsContext.Correct(x, y);
+		g_graphicsContext.Correct(m_fX, m_fY);
 	}
-  g_graphicsContext.Lock(); 
-  m_pVB->Lock( 0, 0, (BYTE**)&vertex, 0L );
-  g_graphicsContext.Unlock(); 
+
 #ifdef ALLOW_TEXTURE_COMPRESSION
-	float uoffs = float(m_iBitmap * m_dwWidth) / float(m_iImageWidth);
-	float u = float(m_iTextureWidth) / float(m_iImageWidth);
-	float v = float(m_iTextureHeight) / float(m_iImageHeight);
-
-	vertex[0].p = D3DXVECTOR4( x - 0.5f,	y - 0.5f,		0, 0 );
-	vertex[0].tu = uoffs;
-	vertex[0].tv = 0;
-	
-	vertex[1].p = D3DXVECTOR4( x+nw - 0.5f,	y - 0.5f,		0, 0 );
-	vertex[1].tu = uoffs+u;
-	vertex[1].tv = 0;
-	
-	vertex[2].p = D3DXVECTOR4( x+nw - 0.5f,	y+nh - 0.5f,	0, 0 );
-	vertex[2].tu = uoffs+u;
-	vertex[2].tv = v;
-	
-	vertex[3].p = D3DXVECTOR4( x - 0.5f,	y+nh - 0.5f,	0, 0 );
-	vertex[3].tu = uoffs;
-	vertex[3].tv = v;
-
-
+	m_fUOffs = float(m_iBitmap * m_dwWidth) / float(m_iImageWidth);
+	m_fU     = float(m_iTextureWidth) / float(m_iImageWidth);
+	m_fV     = float(m_iTextureHeight) / float(m_iImageHeight);
 #else
-  int iXOffset=m_iBitmap*m_dwWidth;
-
-  vertex[0].p = D3DXVECTOR4( x - 0.5f,	y - 0.5f,		0, 0 );
-  vertex[0].tu = (float)iXOffset;
-  vertex[0].tv = 0;
-
-  vertex[1].p = D3DXVECTOR4( x+nw - 0.5f,	y - 0.5f,		0, 0 );
-  vertex[1].tu = (float)iXOffset+m_iTextureWidth;
-  vertex[1].tv = 0;
-
-  vertex[2].p = D3DXVECTOR4( x+nw - 0.5f,	y+nh - 0.5f,	0, 0 );
-  vertex[2].tu = (float)iXOffset+m_iTextureWidth;
-  vertex[2].tv = (float)m_iTextureHeight;
-
-  vertex[3].p = D3DXVECTOR4( x - 0.5f,	y+nh - 0.5f,	0, 0 );
-  vertex[3].tu = (float)iXOffset;
-  vertex[3].tv = (float)m_iTextureHeight;
+  m_fUOffs = float(m_iBitmap*m_dwWidth);
+  m_fU     = float(m_iTextureWidth);
+  m_fV     = float(m_iTextureHeight);
 #endif
-
-	for (int i=0; i<4; i++)
-	{
-		D3DCOLOR color = m_colDiffuse;
-		if (m_dwAlpha[i] != 0xFF)
-			color = (m_dwAlpha[i] << 24) | (m_colDiffuse & 0x00FFFFFF);
-		vertex[i].col = color;
-	}
-  m_pVB->Unlock();  
 }
 
 bool CGUIImage::CanFocus() const
