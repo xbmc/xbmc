@@ -4926,10 +4926,9 @@ void xbmc_update_subs()
 		c = vobsub_get_indexes_count(vo_vobsub);
 		for(i=0;i<c;i++)
 		{
-			char name[2];
-			strncpy(name, vobsub_get_id(vo_vobsub,i),2);
-			xbmc_addsub(i, name, XBMC_SUBTYPE_VOBSUB, 0);
-
+			char* name = vobsub_get_id(vo_vobsub,i);
+			if(name) //Only add vobsubs that really exists
+				xbmc_addsub(i, name, XBMC_SUBTYPE_VOBSUB, 0);
 		}
 		if(vobsub_id >= 0)
 			xbmc_sub_current = xbmc_num_from_sid(vobsub_id, XBMC_SUBTYPE_VOBSUB);
