@@ -1059,8 +1059,8 @@ void CGUIWindowVideoBase::GetStackedFiles(const CStdString &strFilePath, vector<
   CStdString strPath;
   CStdString strFileName;
   CUtil::Split(strFilePath, strPath, strFileName);
-  if (CUtil::HasSlashAtEnd(strPath))
-    strPath.Delete(strPath.size() - 1);
+//  if (CUtil::HasSlashAtEnd(strPath))
+//    strPath.Delete(strPath.size() - 1);
   movies.clear();
   if (g_stSettings.m_iMyVideoVideoStack == STACK_NONE)
   {
