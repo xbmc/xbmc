@@ -79,7 +79,7 @@ void CGUIDialogKeyboard::OnAction(const CAction &action)
 		m_bDirty = false;
 		Close();
 	}
-	else if (action.wID == ACTION_PARENT_DIR)
+	else if (action.wID == ACTION_BACKSPACE)
 	{
 		Backspace();
 	}
