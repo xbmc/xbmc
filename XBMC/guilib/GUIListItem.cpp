@@ -35,6 +35,12 @@ CGUIListItem::~CGUIListItem(void)
     delete m_pThumbnailImage;
     m_pThumbnailImage=NULL;
   }
+	if (m_pIconImage)
+	{
+    m_pIconImage->FreeResources();
+    delete m_pIconImage;
+    m_pThumbnailImage=NULL;
+	}
 }
 
 void CGUIListItem::SetLabel(const CStdString& strLabel) 
@@ -134,4 +140,22 @@ const CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
   m_strIcon=item.m_strIcon;
   m_strThumbnailImage=item.m_strThumbnailImage;
 	return *this;
+}
+
+void CGUIListItem::FreeIcons()
+{
+  if (m_pThumbnailImage) 
+  {
+    m_pThumbnailImage->FreeResources();
+    delete m_pThumbnailImage;
+    m_pThumbnailImage=NULL;
+  }
+	if (m_pIconImage)
+	{
+    m_pIconImage->FreeResources();
+    delete m_pIconImage;
+    m_pThumbnailImage=NULL;
+	}
+	m_strThumbnailImage="";
+	m_strIcon="";
 }

@@ -6,19 +6,19 @@
 //
 // test:
 //			- my files copy : shortens filenames to 42 chars.
-//
 // bugs: 
 //			- reboot button blinks 1/2 speed???
 //		  - reboot doesnt work on some biosses
 //
-// graphics:
-//			- pike:special icon for files (they now use the folder icon)
 //
 // general:
+//			- MPLAYER
+//					- play from network
+//					- other formats like ogg,matroska,...
+//
 //			- CDDB query : show dialogs
 //			- keep groups together when sorting (hd, shares,...)
 //			-	ftp server
-//      - thumbnails need 2b centered in folder icon
 //		  - thumbnail: render text with disolving alpha
 //      - screen calibration offsets
 //  		- 4:3/16:9 aspect ratio
@@ -38,6 +38,7 @@
 // my music:
 //			- shoutcast
 //			- when playing : show album info/playtime/... in leftbottom corner
+//			- pause/ff/rwnd/stop
 //
 // my videos:
 //		  - control panel like in xbmp
@@ -52,6 +53,8 @@
 // settings:
 //			- general:
 //          - restore to default settings
+//			- audio:
+//          - output 2 all speakers
 //			- Slideshow
 //					- specify mypics transition time/slideshow time
 //		  - screen:

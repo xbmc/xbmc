@@ -73,7 +73,7 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus,DWORD dwPosX, DWORD dwPosY, CGUI
 		CGUIImage *pImage=pItem->GetThumbnail();
 		if (!pImage )
     {
-			pImage=new CGUIImage(0,0,dwPosX+4,dwPosY+16,64,64,pItem->GetThumbnailImage(),0xffffffff);
+			pImage=new CGUIImage(0,0,dwPosX+4,dwPosY+16,64,64,pItem->GetThumbnailImage(),0x0);
       pImage->AllocResources();
 			pItem->SetThumbnail(pImage);
     }

@@ -6,8 +6,9 @@
 #include "texturemanager.h"
 #include "stdstring.h"
 #include "cores/playercorefactory.h"
+#include "playlistplayer.h"
 
-
+using namespace PLAYLIST;
 
 #ifdef _DEBUG
 //	#pragma comment (lib,"lib/filezilla/xbfilezillad.lib") // SECTIONNAME=FILEZILL
@@ -416,22 +417,37 @@ void CApplication::FrameMove()
     {
 		  CKey key(true,KEY_REMOTE_STOP);
       m_gWindowManager.OnKey(key);   
+			if (m_pPlayer)
+			{
+				if (m_pPlayer->IsPlaying() )
+				{
+					m_pPlayer->closefile();
+				}
+			}
 		  break;
     }
 		case XINPUT_IR_REMOTE_SKIP_MINUS:
     {
 		  CKey key(true,KEY_REMOTE_SKIPMINUS);
       m_gWindowManager.OnKey(key);   
+			if (m_pPlayer && g_playlistPlayer.size() )
+			{
+				g_playlistPlayer.PlayPrevious();
+			}
 		  break;
     }
 		case XINPUT_IR_REMOTE_SKIP_PLUS:
     {
 		  CKey key(true,KEY_REMOTE_SKIPPLUS);
       m_gWindowManager.OnKey(key);   
+			if (m_pPlayer && g_playlistPlayer.size() )
+			{
+				g_playlistPlayer.PlayNext();
+			}
 		  break;
     }
 
-case XINPUT_IR_REMOTE_0:
+	case XINPUT_IR_REMOTE_0:
     {
 		  CKey key(true,KEY_REMOTE_0);
       m_gWindowManager.OnKey(key);   
@@ -582,7 +598,17 @@ bool CApplication::PlayFile(const CStdString& strFile)
 	if (!m_pPlayer)
 	{
 		CPlayerCoreFactory factory;
-		m_pPlayer = factory.CreatePlayer("mplayer");
+		m_pPlayer = factory.CreatePlayer("mplayer",*this);
 	}
 	return m_pPlayer->openfile(strFile);
+}
+
+void CApplication::OnPlayBackEnded()
+{
+	if (!m_pPlayer) return;
+	g_playlistPlayer.PlayNext();
+}
+
+void CApplication::OnPlayBackStarted()
+{
 }

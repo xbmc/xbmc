@@ -531,10 +531,10 @@ VOID CIoSupport::GetXbePath(char* szDest)
 	strcpy(szHomeDrive, helper.GetDrive(szDevicePath).c_str());	//get driveletter of xbepath
 	if (szHomeDrive[0])
 	{
-		OutputDebugString("homedrive:");OutputDebugString(szHomeDrive);OutputDebugString("\n");
+		//OutputDebugString("homedrive:");OutputDebugString(szHomeDrive);OutputDebugString("\n");
 
 		helper.GetPartition(szHomeDrive,szPartition);		//get patition (ie: Hardisk0\Partition1)
-		OutputDebugString("partition:");OutputDebugString(szPartition);OutputDebugString("\n");
+//		OutputDebugString("partition:");OutputDebugString(szPartition);OutputDebugString("\n");
     strcpy(szDest, szHomeDrive);						//copy drive letter
 		strcat(szDest, ":");										//copy drive letter
 		strncat(szDest,													//concat the path

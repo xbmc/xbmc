@@ -6,6 +6,6 @@ class CPlayerCoreFactory
 public:
 	CPlayerCoreFactory();
 	virtual ~CPlayerCoreFactory();
-	IPlayer* CreatePlayer(const CStdString& strCore) const;
+	IPlayer* CreatePlayer(const CStdString& strCore,IPlayerCallback& callback) const;
 
 };

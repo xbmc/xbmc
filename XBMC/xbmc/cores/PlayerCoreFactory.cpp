@@ -8,15 +8,15 @@ CPlayerCoreFactory::~CPlayerCoreFactory()
 {
 }
 
-IPlayer* CPlayerCoreFactory::CreatePlayer(const CStdString& strCore) const
+IPlayer* CPlayerCoreFactory::CreatePlayer(const CStdString& strCore,IPlayerCallback& callback) const
 {
 	CStdString strCoreLower=strCore;
 	strCoreLower.ToLower();
-	if (strCoreLower=="mplayer") return new CMPlayer();
-	//if (strCoreLower=="xine") return new CXinePlayer();
+	if (strCoreLower=="mplayer") return new CMPlayer(callback);
+	//if (strCoreLower=="xine") return new CXinePlayer(callback);
 
 	// default = mplayer
-	return new CMPlayer();
+	return new CMPlayer(callback);
 }
 
 
