@@ -43,5 +43,8 @@ unix2dos *txt
 cd $dest
 unix2dos *xml
 rm -rf `find . -name "CVS*" -type d`
+find skin -iname \*.png -exec rm -f "{}" \;
+# xbmc only needs the XPR format skin files
+
 xbepatch default.xbe retail.xbe
 mv retail.xbe default.xbe
