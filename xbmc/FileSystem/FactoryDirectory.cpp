@@ -16,6 +16,12 @@ CFactoryDirectory::~CFactoryDirectory(void)
 {
 }
 
+/*!
+	\brief Create a CDirectory object of the share type specified in \e strPath .
+	\param strPath Specifies the share type to access, can be a share or share with path.
+	\return CDirectory object to access the directories on the share.
+	\sa CDirectory
+	*/
 CDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 {
 	CURL url(strPath);

@@ -11,6 +11,10 @@ using namespace std;
 namespace DIRECTORY
 {
 
+	/*!
+		\ingroup windows 
+		\brief Get access to shares and it's directories.
+		*/
 	class CVirtualDirectory : public CDirectory
   {
   public:
