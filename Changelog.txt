@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 07-10-2004 changed: Reset instead of powercycle on pressing reboot. [ 1041020 ]
   - 06-10-2004 fixed: crash when loading a second movie using TTF fonts for subs
   - 05-10-2004 fixed: scrolling text in fadecontrols ignored the width parameter when TTF fonts are used.
   - 05-10-2004 fixed: Virtual keyboard didn't center properly

@@ -105,7 +105,7 @@ void CGUIWindowHome::OnClickDashboard(CGUIMessage& aMessage)
 
 void CGUIWindowHome::OnClickReboot(CGUIMessage& aMessage)
 {
-  g_applicationMessenger.Restart();
+  g_applicationMessenger.Reset();
 }
 
 void CGUIWindowHome::OnClickCredits(CGUIMessage& aMessage)
