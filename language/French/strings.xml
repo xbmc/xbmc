@@ -28,6 +28,10 @@
     <value>Fichiers</value>
   </string>
   <string>
+    <id>8</id>
+    <value>Météo</value>
+  </string>  
+  <string>
     <id>11</id>
     <value>Lundi</value>
   </string>
@@ -597,7 +601,7 @@
   </string> 
   <string>
     <id>223</id>
-    <value>Choisir meilleurs résolution pour les vidéos</value>
+    <value>Choisir meilleure résolution pour les vidéos</value>
   </string> 
   <string>
     <id>224</id>
@@ -621,7 +625,7 @@
   </string> 
   <string>
     <id>229</id>
-    <value>Temps de rotation HDD </value>
+    <value>Temps d'arret Disque Dur </value>
  </string> 
   <string>
     <id>230</id>
@@ -857,7 +861,7 @@
   </string>
   <string>
     <id>289</id>
-    <value>Corp de texte</value>
+    <value>Corps de texte</value>
   </string>
   <string>
     <id>290</id>
@@ -1176,16 +1180,80 @@
     <value>Titre</value>
   </string>
   <string>
+    <id>370</id>
+    <value>Orage</value>
+  </string>
+  <string>
+    <id>371</id>
+    <value>Partiellement</value>
+  </string>
+  <string>
+    <id>372</id>
+    <value>Pratiquement</value>
+  </string>
+  <string>
+    <id>373</id>
+    <value>Ensoleillé</value>
+  </string>
+  <string>
+    <id>374</id>
+    <value>Nuageux</value>
+  </string>
+  <string>
+    <id>375</id>
+    <value>Neige</value>
+  </string>
+  <string>
+    <id>376</id>
+    <value>Pluvieux</value>
+  </string>
+  <string>
+    <id>377</id>
+    <value>Leger</value>
+  </string>
+  <string>
+    <id>378</id>
+    <value>Matinée</value>
+  </string>
+  <string>
+    <id>379</id>
+    <value>Soirée</value>
+  </string>
+  <string>
+    <id>380</id>
+    <value>Averses</value>
+  </string>
+  <string>
+    <id>381</id>
+    <value>Quelques</value>
+  </string>
+  <string>
+    <id>382</id>
+    <value>Dispersé</value>
+  </string>
+  <string>
+    <id>383</id>
+    <value>Vent</value>
+  </string>
+  <string>
+    <id>384</id>
+    <value>Fort</value>
+  </string>
+  <string>
+    <id>385</id>
+    <value>Beau</value>
+  </string>
+  <string>
     <id>401</id>
-    <value>Météo</value>
+    <value>Temp</value>
   </string>   
   <string>
     <id>402</id>
-    <value>Feels Like</value>
+    <value>T° Resentie</value>
   </string> 
   <string>
     <id>403</id>
-    <value>Indice d'exposition UV</value>
+    <value>Indice UV</value>
   </string>
   <string>
     <id>404</id>
@@ -1193,7 +1261,7 @@
   </string>   
   <string>
     <id>405</id>
-    <value>Condensation</value>
+    <value>T° Condens</value>
   </string> 
   <string>
     <id>406</id>
@@ -1201,11 +1269,11 @@
   </string> 
   <string>
     <id>407</id>
-    <value>De</value>
+    <value>Du</value>
   </string>
   <string>
     <id>408</id>
-    <value>A</value>
+    <value>à</value>
   </string>      
   <string>
     <id>410</id>
