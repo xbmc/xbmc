@@ -138,6 +138,7 @@ public:
 	void					DelayLoadSkin();
 	void					CancelDelayLoadSkin();
 	const CStdString&		CurrentFile();
+	const CStdString&		GetCurrentPlayer();
 	virtual bool			OnMessage(CGUIMessage& message);
 	virtual	void			OnPlayBackEnded();
 	virtual	void			OnPlayBackStarted();
@@ -276,6 +277,7 @@ public:
 	void		*m_DAAPArtistPtr;
 
 protected:
+  CStdString							m_strCurrentPlayer;
   void                    UpdateLCD();
   bool					  SwitchToFullScreen();
 	void										FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork);
@@ -283,7 +285,6 @@ protected:
   CIMDBMovie              m_tagCurrentMovie;
   int                     m_iPlaySpeed;
 	bool										m_bOverlayEnabled;
-	CStdString							m_strCurrentPlayer;
   bool                    m_bAllSettingsLoaded;
   CFileItem              m_itemCurrentFile;
   D3DGAMMARAMP m_OldRamp;			// CB: SCREENSAVER PATCH
