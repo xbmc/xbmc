@@ -43,7 +43,10 @@ namespace PLAYLIST
 		bool				Repeated(int iPlaylist);
 		void				RepeatOne(int iPlaylist, bool bYesNo);
 		bool				RepeatedOne(int iPlaylist);
+		void				ShufflePlay(int iPlaylist, bool bYesNo);
+		bool				ShuffledPlay(int iPlaylist);
 	protected:
+		int					NextShuffleItem();
 		int					m_iEntriesNotFound;
 		bool				m_bChanged;
 		int					m_iCurrentSong;
@@ -53,7 +56,7 @@ namespace PLAYLIST
 		CPlayList		m_PlaylistVideo;
 		CPlayList		m_PlaylistVideoTemp;
 		CPlayList		m_PlaylistEmpty;
-		int					m_iRepeatOptions;
+		int					m_iOptions;
 	};
 
 };
