@@ -1558,6 +1558,9 @@ void CApplication::FrameMove()
 	// process mouse actions
 	if (g_Mouse.IsActive())
 	{
+		// Reset the screensaver
+		ResetScreenSaver();
+
 		// call OnAction with ACTION_MOUSE
 		CAction action;
 		action.wID = ACTION_MOUSE;

@@ -121,7 +121,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
       if (iControl==CONTROL_PROFILES)
       {
         int iAction=message.GetParam1();
-        if (iAction == ACTION_SELECT_ITEM) {
+        if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK) {
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_PROFILES,0,0,NULL);
           g_graphicsContext.SendMessage(msg);
           int iItem=msg.GetParam1();

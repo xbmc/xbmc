@@ -22,6 +22,7 @@ public:
 	bool			IsPlaying() const;
 	virtual bool	OnMessage(CGUIMessage& message);
 	virtual void	OnAction(const CAction &action);
+	virtual void	OnMouse();
 	virtual void	Render();
 	virtual void	SetColor( DWORD dwColor ) { m_dwColor = dwColor; };
 	DWORD			GetColor( void ) { return m_dwColor; };
