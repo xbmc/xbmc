@@ -16,6 +16,8 @@
 #include "GUIWindowSettings.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogProgress.h"
+#include "GUIWindowSystemInfo.h"
+#include "GUIWindowSettingsGeneral.h"
 #include "LocalizeStrings.h"
 #include "utils/sntp.h"
 #include "utils/delaycontroller.h"
@@ -41,6 +43,8 @@ public:
 	CGUIWindowMusic				m_guiMyMusic;
 	CGUIWindowVideo				m_guiMyVideo;
 	CGUIWindowSettings		m_guiSettings;
+	CGUIWindowSystemInfo	m_guiSystemInfo;
+	CGUIWindowSettingsGeneral m_guiSettingsGeneral;
   CXBVirtualKeyboard    m_keyboard;
 	CSNTPClient						m_sntpClient;
 	CDelayController			m_ctrDpad;

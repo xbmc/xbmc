@@ -3,7 +3,7 @@
 
 #define SPIN_BUTTON_DOWN 0
 #define SPIN_BUTTON_UP   1
-CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CStdString& strFont, DWORD dwTextColor, int iType)
+CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CStdString& strFont, DWORD dwTextColor, int iType, DWORD dwAlign)
 :CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight)
 ,m_imgspinUp(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight,strUp)
 ,m_imgspinDown(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight,strDown)
@@ -15,6 +15,7 @@ CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPo
   m_fStart=0.0f;
   m_fEnd=1.0f;
   m_iValue=0;
+	m_dwAlign=dwAlign;
   m_fValue=0.0;
   m_strFont=strFont;
   m_pFont=NULL;
@@ -22,8 +23,6 @@ CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPo
   m_iType=iType;
   m_iSelect=SPIN_BUTTON_DOWN;
 
-  AddLabel("label1");
-  AddLabel("label2");
 }
 
 CGUISpinControl::~CGUISpinControl(void)
@@ -127,13 +126,35 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
   {
     switch (message.GetMessage())
     {
+			case GUI_MSG_LABEL_RESET:
+			{
+				m_vecLabels.erase(m_vecLabels.begin(),m_vecLabels.end());
+				SetValue(0);
+        return true;
+			}
+      break;
+
       case GUI_MSG_LABEL_ADD:
       {
-        char *pLabel=(char*)message.GetLPVOID();
+        WCHAR *pLabel=(WCHAR *)message.GetLPVOID();
         AddLabel(pLabel);
         return true;
       }
       break;
+
+			case GUI_MSG_ITEM_SELECTED:
+			{
+				message.SetParam1( GetValue() );
+
+				if (m_iType==SPIN_CONTROL_TYPE_TEXT)
+				{
+					const WCHAR* wsLabel=GetLabel();
+					message.SetLPVOID( (LPVOID*)wsLabel  );
+				}
+				return true;
+			}
+
+
     }
   }
 	return false;
@@ -166,6 +187,44 @@ void CGUISpinControl::FreeResources()
 void CGUISpinControl::Render()
 {
 	if (!IsVisible()) return;
+	DWORD dwPosX=m_dwPosX;
+	WCHAR wszText[1024];
+	if (m_iType == SPIN_CONTROL_TYPE_INT)
+		swprintf(wszText,L"%i/%i",m_iValue, m_iEnd);
+	else if (m_iType==SPIN_CONTROL_TYPE_FLOAT)
+		swprintf(wszText,L"%02.2f/%02.2f",m_fValue, m_fEnd);
+	else
+	{
+		swprintf(wszText,L"%s", m_vecLabels[m_iValue].c_str() );
+	}
+
+	if ( m_dwAlign== XBFONT_LEFT)
+	{
+		if (m_pFont)
+		{
+			float fTextHeight,fTextWidth;
+			m_pFont->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
+			m_imgspinUpFocus.SetPosition((DWORD)fTextWidth + 5+dwPosX+ m_imgspinDown.GetWidth(), m_dwPosY);
+			m_imgspinUp.SetPosition((DWORD)fTextWidth + 5+dwPosX+ m_imgspinDown.GetWidth(), m_dwPosY);
+			m_imgspinDownFocus.SetPosition((DWORD)fTextWidth + 5+dwPosX, m_dwPosY);
+			m_imgspinDown.SetPosition((DWORD)fTextWidth + 5+dwPosX, m_dwPosY);
+		}
+	}
+
+	if (m_pFont)
+	{
+	
+    float fWidth,fHeight;
+    m_pFont->GetTextExtent( wszText, &fWidth,&fHeight);
+    fHeight/=2;
+    float fPosY = (float)m_dwHeight/2;
+    fPosY-=fHeight;
+    fPosY+=(float)m_dwPosY;
+
+    
+    m_pFont->DrawText((float)m_dwPosX-3, (float)fPosY,m_dwTextColor,wszText,m_dwAlign);
+	}
+
 	if ( HasFocus() )
 	{
 		if (m_iSelect==SPIN_BUTTON_UP) 
@@ -184,28 +243,7 @@ void CGUISpinControl::Render()
 		m_imgspinDown.Render();
 	}
 
-	if (m_pFont)
-	{
-    WCHAR wszText[1024];
-    if (m_iType == SPIN_CONTROL_TYPE_INT)
-      swprintf(wszText,L"%i/%i",m_iValue, m_iEnd);
-    else if (m_iType==SPIN_CONTROL_TYPE_FLOAT)
-      swprintf(wszText,L"%02.2f/%02.2f",m_fValue, m_fEnd);
-    else
-    {
-      swprintf(wszText,L"%S", m_vecLabels[m_iValue].c_str() );
-    }
 
-    float fWidth,fHeight;
-    m_pFont->GetTextExtent( wszText, &fWidth,&fHeight);
-    fHeight/=2;
-    float fPosY = (float)m_dwHeight/2;
-    fPosY-=fHeight;
-    fPosY+=(float)m_dwPosY;
-
-    
-    m_pFont->DrawText((float)m_dwPosX-3, (float)fPosY,m_dwTextColor,wszText,XBFONT_RIGHT);
-	}
 }
 
 
@@ -244,14 +282,15 @@ float CGUISpinControl::GetFloatValue() const
 }
 
 
-void CGUISpinControl::AddLabel(const CStdString& strLabel)
+void CGUISpinControl::AddLabel(const WCHAR* strLabel)
 {
   m_vecLabels.push_back(strLabel);
 }
 
-const CStdString CGUISpinControl::GetLabel() const
+const WCHAR* CGUISpinControl::GetLabel() const
 {
-  return m_vecLabels[ m_iValue];
+	const wstring strLabel=m_vecLabels[ m_iValue];
+  return strLabel.c_str();
 }
 
 void CGUISpinControl::SetPosition(DWORD dwPosX, DWORD dwPosY)

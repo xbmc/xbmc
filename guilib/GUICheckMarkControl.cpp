@@ -2,7 +2,7 @@
 #include "guifontmanager.h"
 
 
-CGUICheckMarkControl::CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureCheckMark,DWORD dwCheckWidth, DWORD dwCheckHeight)
+CGUICheckMarkControl::CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureCheckMark,DWORD dwCheckWidth, DWORD dwCheckHeight,DWORD dwAlign)
 :CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight)
 ,m_imgCheckMark(dwParentID, dwControlId, dwPosX, dwPosY,dwCheckWidth, dwCheckHeight, strTextureCheckMark)
 {
@@ -11,6 +11,7 @@ CGUICheckMarkControl::CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, 
 	m_dwDisabledColor	= 0xFF606060; 
 	m_pFont=NULL;
   m_bSelected=false;
+	m_dwAlign=dwAlign;
 }
 
 CGUICheckMarkControl::~CGUICheckMarkControl(void)
@@ -21,24 +22,37 @@ void CGUICheckMarkControl::Render()
 {
   if (!m_pFont) return;
   if (!IsVisible()) return;
+	DWORD dwTextPosX=m_dwPosX;
+	DWORD dwCheckMarkPosX=m_dwPosX;
+	if (m_dwAlign==XBFONT_LEFT)
+	{
+		float fTextHeight,fTextWidth;
+		m_pFont->GetTextExtent( m_strLabel.c_str(), &fTextWidth,&fTextHeight);
+		dwCheckMarkPosX += ( (DWORD)(fTextWidth)+5);
+	}
+	else
+	{
+		dwTextPosX += m_imgCheckMark.GetWidth() +5;
+	}
+
   if (IsDisabled() )
   {
-    m_pFont->DrawText((float)m_dwPosX, (float)m_dwPosY, m_dwDisabledColor, m_strLabel.c_str());
+    m_pFont->DrawText((float)dwTextPosX, (float)m_dwPosY, m_dwDisabledColor, m_strLabel.c_str());
   }
   else
   {
     if (HasFocus())
     {
-      m_pFont->DrawShadowText((float)m_dwPosX, (float)m_dwPosY, m_dwTextColor, m_strLabel.c_str());
+      m_pFont->DrawShadowText((float)dwTextPosX, (float)m_dwPosY, m_dwTextColor, m_strLabel.c_str());
     }
     else
     {
-      m_pFont->DrawText((float)m_dwPosX, (float)m_dwPosY, m_dwTextColor, m_strLabel.c_str());
+      m_pFont->DrawText((float)dwTextPosX, (float)m_dwPosY, m_dwTextColor, m_strLabel.c_str());
     }
   }
   if (m_bSelected)
   {
-    m_imgCheckMark.SetPosition(m_dwPosX+m_dwWidth - m_imgCheckMark.GetWidth(), m_dwPosY); 
+    m_imgCheckMark.SetPosition(dwCheckMarkPosX, m_dwPosY); 
     m_imgCheckMark.Render();
   }
 }

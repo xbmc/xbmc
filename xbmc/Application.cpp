@@ -110,7 +110,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiMyMusic.Load( strSkinPath+string("\\mymusic.xml" ));  
 	m_guiMyVideo.Load( strSkinPath+string("\\myvideo.xml" ));  
 	m_guiSettings.Load( strSkinPath+string("\\settings.xml" ));  
-
+	m_guiSystemInfo.Load( strSkinPath+string("\\SettingsSystemInfo.xml" ));  
+	m_guiSettingsGeneral.Load( strSkinPath+string("\\SettingsGeneral.xml" ));  
 	m_guiDialogYesNo.Load( strSkinPath+string("\\dialogYesNo.xml" ));  
 	m_guiDialogProgress.Load( strSkinPath+string("\\dialogProgress.xml" ));  
 
@@ -122,10 +123,11 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_gWindowManager.Add(&m_guiMyMusic);
 	m_gWindowManager.Add(&m_guiMyVideo);
 	m_gWindowManager.Add(&m_guiSettings);
+	m_gWindowManager.Add(&m_guiSettingsGeneral);
   m_gWindowManager.Add(&m_guiDialogYesNo);
   m_gWindowManager.Add(&m_guiDialogProgress);
   m_gWindowManager.Add(&m_keyboard);
-
+	m_gWindowManager.Add(&m_guiSystemInfo);
 }
 
 
