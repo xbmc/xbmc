@@ -31,6 +31,7 @@
 #include "GUIInfoLabelControl.h"
 #include "GUIInfoFadeLabelControl.h"
 #include "GUIInfoImage.h"
+#include "../xbmc/util.h"
 
 CGUIControlFactory::CGUIControlFactory(void)
 {
@@ -883,16 +884,16 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		{
 			if (strTmp[0] != '-') 
 			{
-				if ((strTmp[0]>='A')&&(strTmp[0]<='z'))
-				{
+        if (CUtil::IsNaturalNumber(strTmp))
+        {
+ 					DWORD dwLabelID=atol(strTmp);
+					strLabel=g_localizeStrings.Get(dwLabelID);
+        }
+        else
+        {
 					WCHAR wszTmp[256];
 					swprintf(wszTmp,L"%S",strTmp.c_str());
 					strLabel = wszTmp;
-				}
-				else
-				{
-					DWORD dwLabelID=atol(strTmp);
-					strLabel=g_localizeStrings.Get(dwLabelID);
 				}
 			}
 		}
