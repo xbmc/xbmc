@@ -147,10 +147,10 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 				strURL = pNewLocation;
 				delete [] pszBuffer;
         
-        if (strstr(pNewLocation,"http:") ==NULL && strstr(pNewLocation,"HTTP:") ==NULL)
+        if (strstr(strURL.c_str(),"http:") ==NULL && strstr(strURL.c_str(),"HTTP:") ==NULL)
         {
           char szNewLocation[1024];
-          sprintf(szNewLocation,"http://%s:%i%s", m_strHostName.c_str(),m_iPort,pNewLocation);
+          sprintf(szNewLocation,"http://%s:%i%s", m_strHostName.c_str(),m_iPort,strURL.c_str());
           strURL=szNewLocation;
         }
         OutputDebugString("to:");
