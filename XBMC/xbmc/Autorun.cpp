@@ -36,7 +36,7 @@ void CAutorun::ExecuteAutorun()
 	{
 		RunCdda();
 	}
-	else if (  pInfo->IsUDFX( 1 ) )
+	else if (  pInfo->IsUDFX( 1 ) || pInfo->IsUDF(1) )
 	{
 		RunXboxCd();
 	}

@@ -30,6 +30,7 @@ namespace XISO9660 {
 #define FS_ISO_9660_INTERACTIVE 8  /* both CD-RTOS and isofs filesystem */
 #define FS_3DO					9
 #define FS_UDFX					10
+#define FS_UDF					11
 #define FS_UNKNOWN				15
 #define FS_MASK					15
 
@@ -58,6 +59,7 @@ namespace XISO9660 {
 #define IS_VIDEO_CD				11 /* Video CD */
 #define IS_CVD					12 /* Chinese Video CD - slightly incompatible with SVCD */
 #define IS_UDFX					13
+#define IS_UDF					14
 
 	typedef struct signature
 	{
@@ -168,6 +170,9 @@ namespace XISO9660 {
 
 		//	Audio Track
 		bool IsAudio( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_NO_DATA); }
+
+		//	UDF CD
+		bool IsUDF( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_UDF); }
 
 		void SetFirstTrack( int nTrack ) { m_nFirstTrack = nTrack; }
 		void SetTrackCount( int nCount ) { m_nNumTrack = nCount; }
