@@ -460,11 +460,6 @@ bool CMPlayer::openfile(const CStdString& strFile)
     {
       options.SetChannels(2);
     }
-    else if (g_stSettings.m_bUseDigitalOutput)
-    {
-      // if we are using digital output, try to open the file using 6 channels audio
-      options.SetChannels(6);
-    }
     else 
     {
       // if we are using analog output, then we only got 2 stereo output
@@ -479,6 +474,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
       if ( g_stSettings.m_bDDStereoPassThrough || g_stSettings.m_bDD_DTSMultiChannelPassThrough)
       {
         options.SetAC3PassTru(true);
+        options.SetChannels(6);
       }
     }
     options.SetAudioStream(m_iAudioStreamIDX);
