@@ -27,6 +27,7 @@
 //*********************************************************************************************
 CFileISO::CFileISO()
 {
+	CSectionLoader::Load("ISO9660");
 	m_pIsoReader=NULL;
 }
 
@@ -37,18 +38,18 @@ CFileISO::~CFileISO()
 	{
 		Close();
 	}
-
+	CSectionLoader::Unload("ISO9660");
 }
 //*********************************************************************************************
 bool CFileISO::Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName, int iport,bool bBinary)
 {
-  CSectionLoader::Load("ISO9660");
+  
 	m_pIsoReader = new CISO9660(m_cdrom);
 	if (!m_pIsoReader->OpenDisc() )
 	{
 		delete m_pIsoReader;
 		m_pIsoReader=NULL;
-		CSectionLoader::Unload("ISO9660");
+		
     return false;
 	}
 
@@ -56,7 +57,7 @@ bool CFileISO::Open(const char* strUserName, const char* strPassword,const char*
 	{
 		delete m_pIsoReader;
 		m_pIsoReader=NULL;
-		CSectionLoader::Unload("ISO9660");
+		
     return false;
 	}
 	return true;
@@ -77,7 +78,7 @@ void CFileISO::Close()
 	delete m_pIsoReader;
 	m_pIsoReader=NULL;
   
-  CSectionLoader::Unload("ISO9660");
+  
 }
 
 //*********************************************************************************************

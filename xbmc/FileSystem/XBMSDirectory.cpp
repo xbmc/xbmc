@@ -12,10 +12,12 @@ extern "C" {
 
 CXBMSDirectory::CXBMSDirectory(void)
 {
+	CSectionLoader::Load("LIBXBMS");
 }
 
 CXBMSDirectory::~CXBMSDirectory(void)
 {
+	CSectionLoader::Unload("LIBXBMS");
 }
 
 
@@ -31,7 +33,7 @@ bool  CXBMSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 	if (!CUtil::HasSlashAtEnd(strPath) )
 		strRoot+="/";
 
-	CSectionLoader::Load("LIBXBMS");
+	
 
 	CcXstreamServerConnection conn = NULL;
 
@@ -39,14 +41,14 @@ bool  CXBMSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 																(url.HasPort()) ? url.GetPort(): 1400, &conn) != CC_XSTREAM_CLIENT_OK)
 	{
 		if (conn != NULL) cc_xstream_client_disconnect(conn);	
-		CSectionLoader::Unload("LIBXBMS");
+		
 		return false;
 	}
 
 	if (cc_xstream_client_version_handshake(conn) != CC_XSTREAM_CLIENT_OK)
 	{
 		if (conn != NULL) cc_xstream_client_disconnect(conn);	
-		CSectionLoader::Unload("LIBXBMS");
+		
 		return false;
 	}
 
@@ -67,14 +69,14 @@ bool  CXBMSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 	if (cc_xstream_client_setcwd(conn, strFileName.c_str()) != CC_XSTREAM_CLIENT_OK)
 	{
 		if (conn != NULL) cc_xstream_client_disconnect(conn);	
-		CSectionLoader::Unload("LIBXBMS");
+		
 		return false;
 	}
 
 	if (cc_xstream_client_dir_open(conn, &handle) != CC_XSTREAM_CLIENT_OK)
 	{
 		if (conn != NULL) cc_xstream_client_disconnect(conn);	
-		CSectionLoader::Unload("LIBXBMS");
+		
 		return false;
 	}
 
@@ -142,7 +144,7 @@ bool  CXBMSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 	if (conn != NULL)
 		cc_xstream_client_disconnect(conn);
 	
-	CSectionLoader::Unload("LIBXBMS");
+	
 
 	return true;
 }

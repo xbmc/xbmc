@@ -46,6 +46,7 @@ public:
 
 CFileSMB::CFileSMB()
 {
+	CSectionLoader::Load("LIBSMB");
 	m_pSMB=NULL;
 	m_fd = -1;
 }
@@ -53,6 +54,7 @@ CFileSMB::CFileSMB()
 CFileSMB::~CFileSMB()
 {
 	Close();
+	CSectionLoader::Unload("LIBSMB");
 }
 
 
@@ -74,7 +76,7 @@ bool CFileSMB::Open(const char* strUserName, const char* strPassword,const char 
 {
 
 	// the samba code does not interpret binary/text.  We may
-	CSectionLoader::Load("LIBSMB");
+	
   m_pSMB = new SMB();
 
 	if( g_stSettings.m_strNameServer[0] != 0x00 )
@@ -109,7 +111,7 @@ bool CFileSMB::Open(const char* strUserName, const char* strPassword,const char 
 
 	if( m_fd < 0 )
 	{
-		CSectionLoader::Unload("LIBSMB");
+		
 		return false;
 	}
 	INT64 ret = m_pSMB->lseek(m_fd, 0, SEEK_END);
@@ -118,7 +120,6 @@ bool CFileSMB::Open(const char* strUserName, const char* strPassword,const char 
 	{
 		m_pSMB->close(m_fd);
 		m_fd = -1;
-		CSectionLoader::Unload("LIBSMB");
 		return false;
 	}
 
@@ -128,7 +129,6 @@ bool CFileSMB::Open(const char* strUserName, const char* strPassword,const char 
 	{
 		m_pSMB->close(m_fd);
 		m_fd = -1;
-		CSectionLoader::Unload("LIBSMB");
 		return false;
 	}
 	// We've successfully opened the file!
@@ -231,6 +231,5 @@ void CFileSMB::Close()
 	m_pSMB=NULL;
 	m_fd = -1;
 	
-	CSectionLoader::Unload("LIBSMB");
 }
 

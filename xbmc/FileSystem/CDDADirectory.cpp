@@ -11,16 +11,18 @@ using namespace CDDB;
 
 CCDDADirectory::CCDDADirectory(void)
 {
+//CSectionLoader::Load("LIBCDRIP");
 }
 
 CCDDADirectory::~CCDDADirectory(void)
 {
+//CSectionLoader::Unload("LIBCDRIP");
 }
 
 
 bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 {
-	//CSectionLoader::Load("LIBCDRIP");
+	
 	{
 
     CIoSupport helper;
@@ -118,6 +120,6 @@ bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 			}
 		}//if (nTracks>0)
 	}
-	//CSectionLoader::Unload("LIBCDRIP");
+	
 	return true;
 }
