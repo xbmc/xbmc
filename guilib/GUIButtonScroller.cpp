@@ -358,17 +358,28 @@ void CGUIButtonScroller::SetActiveButton(int iButton)
 		if (iMaxButton >= m_iNumSlots) iMaxButton = m_iNumSlots-1;
 		if (iButton > iMaxButton)
 		{
-			m_iOffset = iMaxButton-iButton;
+			m_iOffset = iButton - iMaxButton;
 			m_iCurrentSlot = iMaxButton;
 			OnChangeFocus();
 			return;
+		}
+		// now change our current slot so that it all fits nicely
+		// lastly, make sure we fill the number of slots that we have (if possible)
+		int iNumButtonsToShow = m_vecButtons.size() - iButton + m_iCurrentSlot;
+		if (iNumButtonsToShow < m_iNumSlots && iNumButtonsToShow < (int)m_vecButtons.size())
+		{	// we have empty space - try and fill it up
+			while (iNumButtonsToShow < (int)m_vecButtons.size() && m_iCurrentSlot < m_iNumSlots)
+			{
+				m_iCurrentSlot++;
+				iNumButtonsToShow = m_vecButtons.size() - iButton + m_iCurrentSlot;
+			}
 		}
 	}
 	m_iOffset = 0;
 	for (int i=0; i<(int)m_vecButtons.size(); i++)
 	{
 		int iItem = i;
-		for (int j=0; j<m_iDefaultSlot; j++)
+		for (int j=0; j<m_iCurrentSlot; j++)
 			if (GetNext(iItem) != -1) iItem = GetNext(iItem);
 		if (iItem == iButton)
 		{
