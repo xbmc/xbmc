@@ -88,12 +88,6 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 					CUtil::GetThumbnail(strImage,strThumb);
 					DeleteFile(strThumb.c_str());
 				}
-				CStdString strIMDBInfo;
-        CUtil::GetIMDBInfo(m_pMovie->m_strSearchString,strIMDBInfo);
-        if (CUtil::FileExists(strIMDBInfo) )
-	      {
-          DeleteFile(strIMDBInfo.c_str());
-        }
         m_bRefresh=true;
         Close();
         return true;
@@ -261,9 +255,9 @@ void CGUIWindowVideoInfo::Refresh()
 	    }
 	    CUtil::GetThumbnail(m_pMovie->m_strSearchString,strThumb);
     }
-    CStdString strAlbum;
-	  CUtil::GetIMDBInfo(m_pMovie->m_strSearchString,strAlbum);
-	  m_pMovie->Save(strAlbum);
+    //CStdString strAlbum;
+	  //CUtil::GetIMDBInfo(m_pMovie->m_strSearchString,strAlbum);
+	  //m_pMovie->Save(strAlbum);
 
 	  if (strThumb.size() > 0 && CUtil::FileExists(strThumb) )
 	  {

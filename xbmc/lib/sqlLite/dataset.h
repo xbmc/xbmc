@@ -46,7 +46,7 @@ class Dataset;		// forward declaration of class Dataset
 
 #define S_NO_CONNECTION "No active connection";
 
-#define DB_BUFF_MAX           8*1024    // Maximum buffer's capacity
+#define DB_BUFF_MAX           8*4096    // Maximum buffer's capacity
 
 #define DB_CONNECTION_NONE	0
 #define DB_CONNECTION_OK	1
