@@ -9,8 +9,8 @@
 
 #define MAX_RENDER_METHODS 9
 #define MAX_ZOOM_FACTOR    10
-#define MAX_PICTURE_WIDTH  1024
-#define MAX_PICTURE_HEIGHT 1024
+#define MAX_PICTURE_WIDTH  2048//1024
+#define MAX_PICTURE_HEIGHT 2048//1024
 
 #define LABEL_ROW1			10
 #define LABEL_ROW2			11
@@ -303,7 +303,7 @@ void CGUIWindowSlideShow::Render()
 	if ( m_bShowInfo )
 	{
 		CStdString strFileInfo, strSlideInfo;
-		strFileInfo.Format("%ix%i %S", m_dwWidthBackGround, m_dwHeightBackGround,CUtil::GetFileName(m_strBackgroundSlide));
+		strFileInfo.Format("%ix%i %s", m_dwWidthBackGround, m_dwHeightBackGround,CUtil::GetFileName(m_strBackgroundSlide));
 		{
 			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 
 			msg.SetLabel(strFileInfo); 
