@@ -1067,27 +1067,7 @@ void CUtil::FillInDefaultIcon(CFileItem* pItem)
   bool bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
   if (!pItem->m_bIsFolder)
   {
-    if (CUtil::IsPicture(pItem->m_strPath) )
-    {
-      // picture
-      pItem->SetIconImage("defaultPicture.png");
-    }
-    else if ( CUtil::IsAudio(pItem->m_strPath) )
-    {
-      // album database
-      pItem->SetIconImage("defaultAudio.png");
-    }
-    else if ( bOnlyDefaultXBE ? CUtil::IsDefaultXBE(pItem->m_strPath) : CUtil::IsXBE(pItem->m_strPath) )
-    {
-      // xbe
-      pItem->SetIconImage("defaultProgram.png");
-    }
-    else if (CUtil::IsVideo(pItem->m_strPath) )
-    {
-      // video
-      pItem->SetIconImage("defaultVideo.png");
-    }
-    else if (CUtil::IsPlayList(pItem->m_strPath) )
+    if (CUtil::IsPlayList(pItem->m_strPath) )
     {
       // playlist
       CStdString strDir;
@@ -1108,6 +1088,26 @@ void CUtil::FillInDefaultIcon(CFileItem* pItem)
         }
       }
     }
+    else if (CUtil::IsPicture(pItem->m_strPath) )
+    {
+      // picture
+      pItem->SetIconImage("defaultPicture.png");
+    }
+    else if ( bOnlyDefaultXBE ? CUtil::IsDefaultXBE(pItem->m_strPath) : CUtil::IsXBE(pItem->m_strPath) )
+    {
+      // xbe
+      pItem->SetIconImage("defaultProgram.png");
+    }
+		else if ( CUtil::IsAudio(pItem->m_strPath) )
+    {
+      // audio
+      pItem->SetIconImage("defaultAudio.png");
+    }
+    else if (CUtil::IsVideo(pItem->m_strPath) )
+    {
+      // video
+      pItem->SetIconImage("defaultVideo.png");
+    }
     else if (CUtil::IsShortCut(pItem->m_strPath) )
     {
       // shortcut
@@ -1120,6 +1120,11 @@ void CUtil::FillInDefaultIcon(CFileItem* pItem)
       pItem->SetLabel(strDescription);
       pItem->SetIconImage("defaultShortcut.png");
     }
+		//else
+		//{
+		//	// default icon for unknown file type
+		//	pItem->SetIconImage("defaultUnknown.png");
+		//}
   }
   else
   {
