@@ -92,6 +92,7 @@ public:
   void                  Restart(bool bSamePosition=true);
 	void									EnableOverlay();
 	void									DisableOverlay();
+	bool									IsPlaying() const ;
 	bool									IsPlayingAudio() const ;
 	bool									IsPlayingVideo() const ;
 	void									OnKey(CKey& key);

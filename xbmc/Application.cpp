@@ -846,19 +846,6 @@ void CApplication::FrameMove()
 
 }
 
-void CApplication::StopPlaying()
-{
-  int iWin = m_gWindowManager.GetActiveWindow();
-  if ( IsPlayingAudio() && !IsPlayingVideo())
-  {
-    m_pPlayer->closefile();
-	  //	turn off visualisation window when stopping
-	  if (iWin==WINDOW_VISUALISATION)
-		  m_gWindowManager.PreviousWindow();
-  }
-  CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
-  m_gWindowManager.SendThreadMessage( msg );
-}
 
 void CApplication::Stop()
 {
@@ -987,6 +974,12 @@ void CApplication::DisableOverlay()
 	m_bOverlayEnabled=false;
 }
 
+bool CApplication::IsPlaying() const
+{
+	if (!m_pPlayer) return false;
+	if (!m_pPlayer->IsPlaying()) return false;
+	return true;
+}
 
 bool CApplication::IsPlayingAudio() const 
 {
@@ -1004,6 +997,22 @@ bool CApplication::IsPlayingVideo() const
 	if (m_pPlayer->HasVideo()) return true;
 	return false;
 }
+
+
+void CApplication::StopPlaying()
+{
+  int iWin = m_gWindowManager.GetActiveWindow();
+  if ( IsPlaying() )
+  {
+    m_pPlayer->closefile();
+	  //	turn off visualisation window when stopping
+	  if (iWin==WINDOW_VISUALISATION)
+		  m_gWindowManager.PreviousWindow();
+  }
+  CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
+  m_gWindowManager.SendThreadMessage( msg );
+}
+
 
 bool CApplication::NeedRenderFullScreen()
 {
