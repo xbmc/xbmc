@@ -189,7 +189,8 @@ void CGUIWindowBuddies::OnClickJoinButton(CGUIMessage& aMessage)
 	{
 		ChangeState(State::Arenas);
 		SET_CONTROL_FOCUS(GetID(),  CONTROL_LISTEX, 0);
-		CKaiClient::GetInstance()->EnterVector(pBuddy->m_strVector);
+		CStdString strPassword = "";
+		CKaiClient::GetInstance()->EnterVector(pBuddy->m_strVector,strPassword);
 	}
 }
 
@@ -223,6 +224,8 @@ void CGUIWindowBuddies::OnClickListItem(CGUIMessage& aMessage)
 	CArenaItem* pArena;
 	if ( (pArena = GetArenaSelection()) )
 	{
+
+
 		Enter(*pArena);
 	}
 }
@@ -424,7 +427,8 @@ void CGUIWindowBuddies::ChangeState()
 			if (pClient->GetCurrentVector().IsEmpty())
 			{
 				CStdString aRootVector = KAI_SYSTEM_ROOT;
-				pClient->EnterVector(aRootVector);
+				CStdString strPassword = "";
+				pClient->EnterVector(aRootVector,strPassword);
 			}
 			break;
 		}
@@ -533,15 +537,20 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 
 void CGUIWindowBuddies::Enter(CArenaItem& aArena)
 {
-	CLog::Log(LOGDEBUG, "CGUIWindowBuddies::Enter");	
+	CLog::Log(LOGDEBUG, "CGUIWindowBuddies::Enter");
+
+	if (aArena.m_bIsPrivate)
+	{
+		CStdString strHeading = "A password is required to join this arena.";
+		if (!CGUIDialogKeyboard::ShowAndGetInput(aArena.m_strPassword, strHeading, false))
+		{
+			return;
+		}
+	}
+
 	ChangeState(State::Arenas);
-	CKaiClient::GetInstance()->EnterVector(aArena.m_strVector);
+	CKaiClient::GetInstance()->EnterVector(aArena.m_strVector, aArena.m_strPassword );
 }
-
-
-
-
-
 
 void CGUIWindowBuddies::OnContactOffline(CStdString& aFriend)
 {
@@ -696,7 +705,22 @@ void CGUIWindowBuddies::OnEnterArena(CStdString& aVector)
 	CKaiClient::GetInstance()->GetSubVectors(aVector);
 }
 
-void CGUIWindowBuddies::OnNewArena(CStdString& aVector)
+void CGUIWindowBuddies::OnEnterArenaFailed(CStdString& aVector, CStdString& aReason)
+{
+	CLog::Log(LOGDEBUG, "CGUIWindowBuddies::OnEnterArenaFailed");
+
+	CStdString strPassword = "";
+
+	if (CGUIDialogKeyboard::ShowAndGetInput(strPassword, aReason, false))
+	{
+		ChangeState(State::Arenas);
+		CKaiClient::GetInstance()->EnterVector(aVector, strPassword );
+	}
+}
+
+void CGUIWindowBuddies::OnNewArena(	CStdString& aVector, CStdString& aDescription,
+									int nPlayers, int nPlayerLimit, int bPrivate )
+
 {
 	CLog::Log(LOGDEBUG, "CGUIWindowBuddies::OnNewArena");	
 
@@ -710,6 +734,11 @@ void CGUIWindowBuddies::OnNewArena(CStdString& aVector)
 	{
 		pArena = new CArenaItem(arenaLabel);
 		pArena->m_strVector = aVector;
+		pArena->m_strDescription = aDescription;
+		pArena->m_nPlayers = nPlayers;
+		pArena->m_nPlayerLimit = nPlayerLimit;
+		pArena->m_bIsPrivate = bPrivate>0;
+
 		m_arena.Add(pArena);
 	}
 
