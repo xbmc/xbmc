@@ -126,6 +126,23 @@ void CGUIWindowMusicTop100::UpdateButtons()
 	CONTROL_DISABLE(GetID(), CONTROL_BTNSORTASC);
 
 	//	Update listcontrol and and view by icon/list button
+	const CGUIControl* pControl=GetControl(CONTROL_THUMBS);
+	if (!pControl->IsVisible())
+	{
+		CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_LIST,0,0,NULL);
+		g_graphicsContext.SendMessage(msg);
+		int iItem=msg.GetParam1();
+		CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem);
+	}
+	pControl=GetControl(CONTROL_LIST);
+	if (!pControl->IsVisible())
+	{
+		CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_THUMBS,0,0,NULL);
+		g_graphicsContext.SendMessage(msg);
+		int iItem=msg.GetParam1();
+		CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem);
+	}
+
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
 
