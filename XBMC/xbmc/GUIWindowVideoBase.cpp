@@ -212,8 +212,9 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 		{
 			CGUIWindow::OnMessage(message);
 
-      m_database.Open();
-      m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+			m_database.Open();
+			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+
 			m_rootDir.SetMask(g_stSettings.m_szMyVideoExtensions);
 			m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
 			
@@ -222,12 +223,12 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 
 			Update(m_Directory.m_strPath);
 
-      UpdateThumbPanel();
-      if (m_iItemSelected >=0)
-      {
-			  CONTROL_SELECT_ITEM(CONTROL_LIST,m_iItemSelected)
-			  CONTROL_SELECT_ITEM(CONTROL_THUMBS,m_iItemSelected)
-      }
+			UpdateThumbPanel();
+			if (m_iItemSelected >=0)
+			{
+				CONTROL_SELECT_ITEM(CONTROL_LIST,m_iItemSelected)
+				CONTROL_SELECT_ITEM(CONTROL_THUMBS,m_iItemSelected)
+			}
 			return true;
 		}
 		break;
@@ -244,7 +245,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 				SetViewMode(iViewMode);
 				g_settings.Save();
 				UpdateThumbPanel();
-        UpdateButtons();
+				UpdateButtons();
       }
       else if (iControl==CONTROL_PLAY_DVD)
       {

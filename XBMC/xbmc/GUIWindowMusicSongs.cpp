@@ -170,6 +170,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_WINDOW_INIT:
 		{
+			/*
 			//	This window is started by the home window.
 			//	Now we decide which my music window has to be shown and
 			//	switch to the my music window the user last activated.
@@ -178,12 +179,58 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 				m_gWindowManager.ActivateWindow(g_stSettings.m_iMyMusicStartWindow);
 				return false;
 			}
+			*/
 
-			bool bFirstTime=false;
-			if (m_Directory.m_strPath=="?")
+			// check for a passed destination path
+			CStdString strDestination = message.GetStringParam();
+			if (!strDestination.IsEmpty())
 			{
-				bFirstTime=true;
-				m_Directory.m_strPath=g_stSettings.m_szDefaultMusic;
+				message.SetStringParam("");
+				g_stSettings.m_iMyMusicStartWindow = GetID();
+				CLog::Log(LOGINFO,"Attempting to quickpath to: %s",strDestination.c_str());
+			}
+
+			// unless we have a destination path, switch to the last my music window
+			if (g_stSettings.m_iMyMusicStartWindow!=GetID())
+			{
+				m_gWindowManager.ActivateWindow(g_stSettings.m_iMyMusicStartWindow);
+				return false;
+			}
+
+			// is this the first time the window is opened?
+			if (m_Directory.m_strPath=="?" && strDestination.IsEmpty())
+			{
+				strDestination = g_stSettings.m_szDefaultMusic;
+				CLog::Log(LOGINFO,"Attempting to default to: %s",strDestination.c_str());
+			}
+
+			// try to open the destination path
+			if (!strDestination.IsEmpty())
+			{
+				// default parameters if the jump fails
+				m_Directory.m_strPath="";
+
+				bool bIsBookmarkName = false;
+				int iIndex = CUtil::GetMatchingShare(strDestination, g_settings.m_vecMyMusicShares, bIsBookmarkName);
+				if (iIndex>-1)
+				{
+					// set current directory to matching share
+					if (bIsBookmarkName)
+						m_Directory.m_strPath=g_settings.m_vecMyMusicShares[iIndex].strPath;
+					else
+						m_Directory.m_strPath=strDestination;
+					CLog::Log(LOGINFO,"  Success! Opened destination path: %s",strDestination.c_str());
+				}
+				else
+				{
+					CLog::Log(LOGERROR,"  Failed! Destination parameter (%s) does not match a valid share!",strDestination.c_str());
+				}
+				
+				// need file filters or GetDirectory in SetHistoryPath fails
+				m_rootDir.SetMask(g_stSettings.m_szMyMusicExtensions);
+				m_rootDir.SetShares(g_settings.m_vecMyMusicShares);
+
+				SetHistoryForPath(m_Directory.m_strPath);
 			}
 
 			if (m_Directory.IsCDDA() || m_Directory.IsDVD() || m_Directory.IsISO9660())
@@ -209,16 +256,18 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 				m_iViewAsIconsRoot=g_stSettings.m_iMyMusicSongsRootViewAsIcons;
 			}
 
-			CGUIWindowMusicBase::OnMessage(message);
+			return CGUIWindowMusicBase::OnMessage(message);
 
+
+			/*
 			if (bFirstTime)
 			{
 				//	Set directory history for default path
 				SetHistoryForPath(m_Directory.m_strPath);
 				bFirstTime=false;
 			}
-
 			return true;
+			*/
 		}
 		break;
 
