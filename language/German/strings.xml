@@ -2326,4 +2326,12 @@
     <id>13305</id>
     <value>RSS Feed aktivieren [Newsflash]</value>
   </string>
+  <string>
+    <id>13306</id>
+    <value>Einträge Vorgänger eines Ordners ausblenden</value>
+  </string>
+  <string>
+    <id>13307</id>
+    <value>Track Nummern ausblenden</value>
+  </string>
 </strings>

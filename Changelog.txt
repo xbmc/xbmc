@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 23-10-2004 updated: German language file
+  - 23-10-2004 changed: Greek language file (Thnx to modon)
+  - 23-10-2004 changed: Slovenian language file (Thnx to hijacker)
+  - 23-10-2004 changed: Dutch language file (Thnx to joepmeloenx)
+  - 23-10-2004 changed: Maltese language file (Author unknown)
   - 23-10-2004 changed: Using less memory for video playback now
   - 22-10-2004 changed: libcdio updated to 0.70 (Thnx to Mog) 
   - 20-10-2004 added: ssl support to python
