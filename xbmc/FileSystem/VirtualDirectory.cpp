@@ -140,12 +140,17 @@ bool CVirtualDirectory::IsShare(const CStdString& strPath) const
 	CStdString strPathCpy = strPath;
 	strPathCpy.TrimRight("/");
 	strPathCpy.TrimRight("\\");
+  // just to make sure there's no mixed slashing in share/default defines
+  // ie. f:/video and f:\video was not be recognised as the same directory,
+  // resulting in navigation to a lower directory then the share.
+  strPathCpy.Replace("/", "\\"); 
 	for (int i=0; i < (int)m_vecShares->size(); ++i)
 	{
 		const CShare& share=m_vecShares->at(i);
 		CStdString strShare = share.strPath;
 		strShare.TrimRight("/");
 		strShare.TrimRight("\\");
+  	strShare.Replace("/", "\\");
 		if (strShare==strPathCpy) return true;
 	}
 	return false;
