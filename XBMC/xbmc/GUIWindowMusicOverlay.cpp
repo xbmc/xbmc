@@ -15,6 +15,8 @@
 #include "lib/libID3/tag.h"
 #include "lib/libID3/misc_support.h"
 #include "musicInfoTagLoaderFactory.h"
+#include "filesystem/SndtrkDirectory.h"
+#include "utils/log.h"
 
 using namespace MUSIC_INFO;
 
@@ -511,7 +513,17 @@ void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
 		{
 			//	No title in tag, show filename only
 			CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-			msg1.SetLabel( CUtil::GetFileName(strFile) );
+			CSndtrkDirectory dir;
+			//char *NameOfSong=new char[64];
+			char NameOfSong[64];
+			*NameOfSong = NULL;
+			dir.FindTrackName(strFile,NameOfSong);
+			CLog::Log("Song is %s",NameOfSong);
+			if(NameOfSong != NULL)
+				msg1.SetLabel(NameOfSong);
+			else
+				msg1.SetLabel( CUtil::GetFileName(strFile) );
+			//delete [] NameOfSong;
 			OnMessage(msg1);
 		}
 	}	//	if (tag.Loaded())

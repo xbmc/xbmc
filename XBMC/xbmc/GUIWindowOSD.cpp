@@ -226,7 +226,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 			m_iActiveMenuButtonID=0;
 			m_iActiveMenu=0;
 			Reset();
-        FOCUS_CONTROL(GetID(), OSD_PLAY, 0);	// set focus to play button by default when window is shown
+      FOCUS_CONTROL(GetID(), OSD_PLAY, 0);	// set focus to play button by default when window is shown
 
 			return true;
 		}
