@@ -345,7 +345,9 @@ void CGUITextureManager::PreLoad(const CStdString& strTextureName)
 			return;
 	}
 
-	if (m_TexBundle.HasFile(strPalTex))
+	DWORD dwStandard=XGetVideoStandard();
+
+	if ((dwStandard==XC_VIDEO_STANDARD_PAL_I) && m_TexBundle.HasFile(strPalTex))
 		m_PreLoadNames.push_back(strPalTex);
 	else if (m_TexBundle.HasFile(strTextureName))
 		m_PreLoadNames.push_back(strTextureName);
@@ -408,7 +410,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 		if (m_iNextPreload != m_PreLoadNames.end())
 			m_TexBundle.PreloadFile(*m_iNextPreload);
 	}
-	else if (m_TexBundle.HasFile(strPalTex))
+	else if ((dwStandard==XC_VIDEO_STANDARD_PAL_I) && m_TexBundle.HasFile(strPalTex))
 	{
 		pstrBundleTex = &strPalTex;
 		bBundled = true;
