@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 11-01-2004 fixed: Button scroller issues on homepage.
   - 11-01-2004 added: Third rendering method using overlays.  Added purely to help find the reason behind the
                       quality improvements gained from the previous overlay method.  This new method is identical
                       to the previous overlays method, except it uses mplayers builtin YV12->YUY2 fast convertor.
