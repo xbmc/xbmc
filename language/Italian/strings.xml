@@ -2331,11 +2331,11 @@
 </string>
 <string>
 <id>13308</id>
-<value>Vuoi fare un riavvio hardware</value>
+<value>Vuoi riavviare la tua xbox</value>
 </string>
 <string>
 <id>13309</id>
-<value>invece di un reset?</value>
+<value>invece di XBMC?</value>
 </string>
 <string>
 <id>13310</id>
@@ -2347,7 +2347,7 @@
 </string>
 <string>
 <id>13312</id>
-<value>Riduzione Barra nera</value>
+<value>Riduzione barra nera</value>
 </string>
 <string>
 <id>13313</id>
@@ -2387,6 +2387,39 @@
   <string>
 <id>13322</id>
 <value>Solo destra</value>
+</string>
+  <string>
+<id>13323</id>
+<value>Abilita CD+G</value>
+</string>
+  <string>
+<id>13324</id>
+<value>Trasparenza sfondo</value>
+</string>
+  <string><id>13325</id><value>Trasparenza primo piano</value></string>
+  <string>
+<id>13326</id>
+<value>Ritardo A/V</value>
+</string>
+  <string>
+<id>13327</id>
+<value>Karaoke</value>
+</string>
+  <string>
+<id>13328</id>
+<value>%s non trovato.</value>
+</string>
+  <string>
+<id>13329</id>
+<value>Errore apertura %s</value>
+</string>
+  <string>
+<id>13330</id>
+<value>Impossibile caricare %s</value>
+</string>
+  <string>
+<id>13331</id>
+<value>Errore: memoria insufficiente.</value>
 </string>
   <string>
 <id>14000</id>

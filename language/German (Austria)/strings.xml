@@ -26,16 +26,15 @@
     <id>5</id>
     <value>Einstellungen</value>
   </string>
-
   <string>
     <id>7</id>
     <value>Eigene Dateien</value>
   </string>
+
   <string>
     <id>8</id>
     <value>Wettervorhersage</value>
   </string>
-
   <string>
     <id>11</id>
     <value>Montag</value>
@@ -64,7 +63,6 @@
     <id>17</id>
     <value>Sonntag</value>
   </string>
-
   <string>
     <id>21</id>
     <value>Jänner</value>
@@ -112,7 +110,8 @@
   <string>
     <id>32</id>
     <value>Dezember</value>
-  </string>  
+  </string>
+  
   <string>
     <id>100</id>
     <value>Symbolansicht</value>
@@ -2054,7 +2053,6 @@
     <id>753</id> 
     <value>Freigabe: Name ändern</value> 
   </string> 
-
   <string>	
     <id>998</id>
     <value>Online spielen</value>
@@ -2062,7 +2060,8 @@
   <string>
     <id>999</id>
     <value>Online spielen</value>
-  </string> 
+  </string>
+
   <string>
     <id>10000</id>
     <value>Hauptmenü</value>
@@ -2175,6 +2174,7 @@
     <id>10029</id>
     <value>Einstellungen->Allgemein->LCD</value>
   </string>
+
   <string>
     <id>10100</id>
     <value>JA/NEIN Dialog</value>
@@ -2211,6 +2211,7 @@
     <id>11000</id>
     <value>Tastatur</value>
   </string>
+
   <string>
     <id>12000</id>
     <value>Dialogauswahl</value>
@@ -2247,6 +2248,7 @@
     <id>12008</id>
     <value>Dateikomprimierung</value>
   </string>
+
   <string>
     <id>12600</id>
     <value>Wetter</value>
@@ -2279,7 +2281,6 @@
     <id>13004</id> 
     <value>- minimale Datendauer</value> 
   </string>
-
   <string>
     <id>13100</id> 
     <value>Flimmerfilter</value> 
@@ -2376,13 +2377,14 @@
 <value>Zufallsgenerator</value>
 </string> 
      <string><id>13320</id>
-<value>Stereo</value>
+<value>Ausgabe Stereo</value>
 </string> 
      <string><id>13321</id>
-<value>nur links</value>
+<value>Ausgabe nur links</value>
 </string> 
      <string><id>13322</id>
-<value>nur rechts</value>
+<value>Ausgabe nur rechts</value>
+</string>
 
    <string><id>13323</id>
 <value>Aktiviere CD+G</value>
@@ -2406,21 +2408,36 @@
 <value>Fehler beim Öffnen von %s</value>
 </string> 
      <string><id>13330</id>
-<value>Laden von %s nicht möglich</value>
+<value>Laden von %s nicht mglich</value>
 </string> 
      <string><id>13331</id>
 <value>Fehler: Nicht genügend Speicher.</value>
 </string> 
 
-</string>
+   <string><id>13332</id>
+<value>Aufwärts</value>
+</string> 
+     <string><id>13333</id>
+<value>Abwärts</value>
+</string> 
+     <string><id>13334</id>
+<value>Label ändern</value>
+</string> 
+     <string><id>13335</id>
+<value>Standard</value>
+</string> 
+     <string><id>13336</id>
+<value>Button löschen</value>
+</string> 
+
    <string><id>14000</id>
-<value>Verknüpfen: AUS</value>
+<value>Koppeln deakt.</value>
 </string> 
    <string><id>14001</id>
-<value>Verknüpfen: Einfach</value>
+<value>Koppeln einfach</value>
 </string> 
    <string><id>14002</id>
-<value>Verknüpfen: Komplex</value>
+<value>Koppeln komplex</value>
 </string> 
     <string><id>14003</id>
 <value>Wiedergabeliste wird heruntergeladen...</value>
@@ -2436,6 +2453,6 @@
 </string> 
      <string><id>14007</id>
 <value>Fehler beim Erhalt der Wiedergabeliste</value>
-</string> 
+</string>
 
 </strings>
