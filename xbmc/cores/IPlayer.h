@@ -42,10 +42,11 @@ public:
 	virtual void		GetVideoAspectRatio(float& fAR)=0;
 	virtual void		AudioOffset(bool bPlus=true){};
 	virtual void		SwitchToNextAudioLanguage(){};
+	virtual void		UpdateSubtitlePosition(){};
+	virtual void		RenderSubtitles(){};
 	virtual bool		CanRecord() {return false;};
 	virtual bool		IsRecording() {return false;};
 	virtual bool		Record(bool bOnOff) {return false;};
-
 protected:
 	IPlayerCallback& m_callback;
 };
