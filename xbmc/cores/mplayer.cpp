@@ -79,17 +79,11 @@ CMPlayer::~CMPlayer()
 	StopThread();
 	Unload();
 }
-
-bool CMPlayer::openfile(const CStdString& strFile)
+bool CMPlayer::load()
 {
-	closefile();
-
-	CUtil::CacheSubtitles(strFile);
-
-	m_iPTS			= 0;
-	m_bPaused	  = false;
-	m_bIsPlaying= true;
-
+	m_bIsPlaying=false;
+	StopThread();
+	Unload();
 	if (!m_pDLL)
 	{
 		m_pDLL = new DllLoader("Q:\\mplayer\\mplayer.dll");
@@ -106,6 +100,19 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		}
 		mplayer_load_dll(*m_pDLL);
 	}
+  return true;
+}
+bool CMPlayer::openfile(const CStdString& strFile)
+{
+	closefile();
+
+	CUtil::CacheSubtitles(strFile);
+
+	m_iPTS			= 0;
+	m_bPaused	  = false;
+	m_bIsPlaying= true;
+
+	load();
 //	int argc=8;
 //	char szChannels[12];
 //	sprintf(szChannels,"%i", g_stSettings.m_iChannels);
@@ -155,7 +162,8 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			//char *argv[] = {"xbmc.xbe", "-channels","2", "-ac","hwac3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
 			int argc=8;
 			char *argv[] = {"xbmc.xbe", "-ac","hwac3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
-			mplayer_init(argc,argv);
+			load();
+      mplayer_init(argc,argv);
 			mplayer_setcache_size(1024);
 			if (CUtil::IsAudio(strFile) )
 			{
@@ -176,7 +184,8 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		mplayer_close_file();
 		int argc=10;
 		char *argv[] = {"xbmc.xbe", "-channels","6","-af","channels=6:6:0:0:1:1:2:4:3:5:4:2:5:3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
-		mplayer_init(argc,argv);
+		load();
+    mplayer_init(argc,argv);
 		mplayer_setcache_size(1024);
 		if (CUtil::IsAudio(strFile) )
 		{
@@ -196,7 +205,8 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		mplayer_close_file();
 		int argc=8;
 		char *argv[] = {"xbmc.xbe", "-channels","4","-autoq", "6", "-vf", "pp", "1.avi",NULL};
-		mplayer_init(argc,argv);
+		load();
+    mplayer_init(argc,argv);
 		mplayer_setcache_size(1024);
 		if (CUtil::IsAudio(strFile) )
 		{
@@ -216,7 +226,8 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		mplayer_close_file();
 		int argc=8;
 		char *argv[] = {"xbmc.xbe", "-channels","2","-autoq", "6", "-vf", "pp", "1.avi",NULL};
-		mplayer_init(argc,argv);
+		load();
+    mplayer_init(argc,argv);
 		mplayer_setcache_size(1024);
 		if (CUtil::IsAudio(strFile) )
 		{
