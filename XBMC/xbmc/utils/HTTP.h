@@ -30,6 +30,9 @@ public:
 	void 		SetCookie(const string& strCookie);
 	bool 		Get(string& strURL, string& strHTML);
 	bool 		Download(const string &strURL, const string &strFileName);
+	
+	string m_redirectedURL;
+
 protected:
 	bool		BreakURL(const string& strURL, string& strHostName, int& iPort, string& Page);
 	bool		Send(char* pBuffer, int iLen);
@@ -46,6 +49,7 @@ protected:
 	string m_strHostName;
 	string m_strCookie;
 	string m_strHeaders;
+	
 	int    m_iProxyPort;
 	int    m_iPort;
 
