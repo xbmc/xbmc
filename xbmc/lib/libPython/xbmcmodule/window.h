@@ -16,9 +16,9 @@ namespace PYXBMC
 		int iWindowId;
 		int iOldWindowId;
 		int iCurrentControlId;
-		bool bIsCreatedByPython;
+		bool bIsPythonWindow;
 		bool bModal;
-		CGUIPythonWindow* pWindow;
+		CGUIWindow* pWindow;
 		std::vector<Control*> vecControls;
 	} Window;
 

@@ -7,7 +7,8 @@ class PyXBMCAction
 {
 public:
 	DWORD dwParam;
-	PyObject* pActionCallback;  
+	PyObject* pCallbackWindow;
+	PyObject* pObject;
 };
 
 int Py_XBMC_Event_OnAction(void* arg);
@@ -21,10 +22,10 @@ public:
   virtual ~CGUIPythonWindow(void);
   virtual bool    OnMessage(CGUIMessage& message);
   virtual void    OnAction(const CAction &action);
-	void						SetActionCallback(PyObject *object);
+	void						SetCallbackWindow(PyObject *object);
 	void						WaitForActionEvent(DWORD timeout);
 	void						PulseActionEvent();
 protected:
-	PyObject*		pActionCallback;
+	PyObject*		pCallbackWindow;
 	HANDLE			m_actionEvent;
 };

@@ -3,11 +3,15 @@
 #include "localizestrings.h"
 #include "pyutil.h"
 #include "..\..\..\application.h"
+#include "window.h"
+#include "control.h"
+
+using namespace PYXBMC;
 
 CGUIPythonWindow::CGUIPythonWindow(DWORD dwId)
 :CGUIWindow(dwId)
 {
-	pActionCallback = NULL;
+	pCallbackWindow = NULL;
 	m_actionEvent = CreateEvent(NULL, false, false, "pythonActionEvent");
 }
 
@@ -18,11 +22,11 @@ CGUIPythonWindow::~CGUIPythonWindow(void)
 
 void CGUIPythonWindow::OnAction(const CAction &action)
 {
-	if(pActionCallback)
+	if(pCallbackWindow)
 	{
 		PyXBMCAction* inf = new PyXBMCAction;
 		inf->dwParam = action.wID;
-		inf->pActionCallback = pActionCallback;
+		inf->pCallbackWindow = pCallbackWindow;
 
 		// aquire lock?
 		Py_AddPendingCall(Py_XBMC_Event_OnAction, inf);
@@ -53,11 +57,23 @@ bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
 		case GUI_MSG_CLICKED:
     {
       int iControl=message.GetSenderId();
-			if(pActionCallback)
+			if(pCallbackWindow)
 			{
 				PyXBMCAction* inf = new PyXBMCAction;
+				// find python control object with same iControl
+				std::vector<Control*>::iterator it = ((Window*)pCallbackWindow)->vecControls.begin();
+				while (it != ((Window*)pCallbackWindow)->vecControls.end())
+				{
+					Control* pControl = *it;
+					if (pControl->iControlId == iControl)
+					{
+						inf->pObject = (PyObject*)pControl;
+						break;
+					}
+					++it;
+				}
 				inf->dwParam = iControl;
-				inf->pActionCallback = pActionCallback;
+				inf->pCallbackWindow = pCallbackWindow;
 
 				// aquire lock?
 				Py_AddPendingCall(Py_XBMC_Event_OnControl, inf);
@@ -70,9 +86,9 @@ bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-void CGUIPythonWindow::SetActionCallback(PyObject *object)
+void CGUIPythonWindow::SetCallbackWindow(PyObject *object)
 {
-	pActionCallback = object;
+	pCallbackWindow = object;
 }
 
 void CGUIPythonWindow::WaitForActionEvent(DWORD timeout)
@@ -91,7 +107,7 @@ int Py_XBMC_Event_OnControl(void* arg)
 	{
 		PyXBMCAction* action = (PyXBMCAction*)arg;
 
-		PyObject_CallMethod(action->pActionCallback, "onControl", "i", action->dwParam);
+		PyObject_CallMethod(action->pCallbackWindow, "onControl", "O", action->pObject);
 
 		delete action;
 	}
@@ -104,7 +120,7 @@ int Py_XBMC_Event_OnAction(void* arg)
 	{
 		PyXBMCAction* action = (PyXBMCAction*)arg;
 
-		PyObject_CallMethod(action->pActionCallback, "onAction", "l", action->dwParam);
+		PyObject_CallMethod(action->pCallbackWindow, "onAction", "l", action->dwParam);
 
 		delete action;
 	}

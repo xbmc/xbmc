@@ -2,6 +2,7 @@
 #include "application.h"
 #include "xbox/xkutils.h"
 #include "texturemanager.h"
+#include "playlistplayer.h"
 
 CApplicationMessenger g_applicationMessenger;
 
@@ -137,6 +138,18 @@ void CApplicationMessenger::ProcessMessages()
 				case TMSG_EXECUTE_SCRIPT:
 					m_pythonParser.evalFile(pMsg->strParam.c_str());
 				break;
+
+				case TMSG_PLAYLISTPLAYER_PLAY:
+					g_playlistPlayer.Play(pMsg->dwParam1);
+				break;
+
+				case TMSG_PLAYLISTPLAYER_NEXT:
+					g_playlistPlayer.PlayNext();
+				break;
+				
+				case TMSG_PLAYLISTPLAYER_PREV:
+					g_playlistPlayer.PlayPrevious();
+				break;
 			}
 			if (pMsg->hWaitEvent)
 			{
@@ -208,6 +221,24 @@ void CApplicationMessenger::MediaStop()
 void CApplicationMessenger::MediaPause()
 {
 		ThreadMessage tMsg = {TMSG_MEDIA_PAUSE};
+		SendMessage(tMsg);
+}
+
+void CApplicationMessenger::PlayListPlayerPlay(int iSong)
+{
+		ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, iSong};
+		SendMessage(tMsg);
+}
+
+void CApplicationMessenger::PlayListPlayerNext()
+{
+		ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_NEXT};
+		SendMessage(tMsg);
+}
+
+void CApplicationMessenger::PlayListPlayerPrevious()
+{
+		ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PREV};
 		SendMessage(tMsg);
 }
 

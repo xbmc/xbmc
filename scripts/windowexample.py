@@ -1,3 +1,4 @@
+import xbmc
 import xbmcgui
 
 #get actioncodes from keymap.xml
@@ -21,31 +22,43 @@ ACTION_PREV_ITEM							= 15
 
 class Window(xbmcgui.Window):
 	def __init__(self):
-		self.addControl(xbmcgui.ControlImage(0,0,400,400, 'q:\\skin\\mediacenter\\media\\background.png'))
-		self.strAction = xbmcgui.ControlLabel(100, 100, 200, 200, '', 'font13')
+	
+		self.addControl(xbmcgui.ControlImage(0,0,720,576, 'q:\\skin\\mediacenter\\media\\background.png'))
+		self.strAction = xbmcgui.ControlLabel(100, 100, 100, 20, 'action', 'font13', '0xFFFF3300')
+		self.strButton = xbmcgui.ControlLabel(100, 150, 100, 20, 'button', 'font13', '0xFF666666')
 		self.addControl(self.strAction)
+		self.addControl(self.strButton)
+		
+		self.button1 = xbmcgui.ControlButton(50, 200, 90, 30, "Button 1")
+		self.button2 = xbmcgui.ControlButton(50, 240, 90, 30, "Button 2")
+		self.addControl(self.button1)
+		self.addControl(self.button2)
+		
+		self.button1.controlDown(self.button2)
+		self.button2.controlUp(self.button1)
+		
+		self.setFocus(self.button1)
 	
 	def onAction(self, action):
 		if action == ACTION_PREVIOUS_MENU:
 			print('action recieved: previous')
 			self.close()
 		if action == ACTION_SHOW_INFO:
-			self.strAction.setText('action recieved: show info')
+			self.strAction.setLabel('action recieved: show info')
 		if action == ACTION_STOP:
-			self.strAction.setText('action recieved: stop')
+			self.strAction.setLabel('action recieved: stop')
 		if action == ACTION_PAUSE:
 			print('pause')
 			dialog = xbmcgui.Dialog()
 			dialog.ok('action recieved','ACTION_PAUSE')
+	
+	def onControl(self, control):
+		if control == self.button1:
+			self.strButton.setLabel('button 1 clicked')
+		elif control == self.button2:
+			self.strButton.setLabel('button 2 clicked')
 
 w = Window()
-
-c2 = xbmcgui.ControlLabel(100, 150, 200, 200, u'text', 'font14')
-c2.setText('just some text')
-w.addControl(c2)
-
-
 w.doModal()
 
 del w
-del c2

@@ -1,7 +1,3 @@
-/*	PyObject* ControlImage_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
-			// check if filename exists
-
-*/
 #include "..\python.h"
 #include "..\..\..\application.h"
 #include "GuiImage.h"
@@ -14,10 +10,6 @@ using namespace std;
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
 #pragma const_seg("PY_RDATA")
-
-/*****************************************************************
- * start of window methods and python objects
- *****************************************************************/
 
 #ifdef __cplusplus
 extern "C" {

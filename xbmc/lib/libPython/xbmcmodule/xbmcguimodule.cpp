@@ -35,6 +35,7 @@ namespace PYXBMC
 		if (PyType_Ready(&Window_Type) < 0 ||
 				PyType_Ready(&Control_Type) < 0 ||
 				PyType_Ready(&ControlLabel_Type) < 0 ||
+				PyType_Ready(&ControlButton_Type) < 0 ||
 				PyType_Ready(&ControlImage_Type) < 0 ||
 				PyType_Ready(&DialogType) < 0 ||
 				PyType_Ready(&DialogProgressType) < 0)
@@ -43,6 +44,7 @@ namespace PYXBMC
 		Py_INCREF(&Window_Type);
 		Py_INCREF(&Control_Type);
 		Py_INCREF(&ControlLabel_Type);
+		Py_INCREF(&ControlButton_Type);
 		Py_INCREF(&ControlImage_Type);
 		Py_INCREF(&DialogType);
 		Py_INCREF(&DialogProgressType);
@@ -53,6 +55,7 @@ namespace PYXBMC
     PyModule_AddObject(pXbmcGuiModule, "Window", (PyObject*)&Window_Type);
 		//PyModule_AddObject(pXbmcGuiModule, "Control", (PyObject*)&Control_Type);
 		PyModule_AddObject(pXbmcGuiModule, "ControlLabel", (PyObject*)&ControlLabel_Type);
+		PyModule_AddObject(pXbmcGuiModule, "ControlButton", (PyObject*)&ControlButton_Type);
 		PyModule_AddObject(pXbmcGuiModule, "ControlImage", (PyObject*)&	ControlImage_Type);
 		PyModule_AddObject(pXbmcGuiModule, "Dialog", (PyObject*)&DialogType);
 		PyModule_AddObject(pXbmcGuiModule, "DialogProgress", (PyObject *)&DialogProgressType);
