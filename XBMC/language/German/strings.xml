@@ -392,7 +392,7 @@
   </string>
   <string>
     <id>168</id>
-    <value>Mit Zeit Server abgleichen</value>
+    <value>Zeit Server abgleich</value>
   </string>
   <string>
     <id>169</id>
@@ -640,7 +640,7 @@
   </string>
   <string>
     <id>229</id>
-    <value>HD Abschaltzeit (min)</value>
+    <value>Festplatte abschalten</value>
   </string>
   <string>
     <id>230</id>
@@ -680,31 +680,31 @@
   </string>
   <string>
     <id>240</id>
-    <value>Autostart DVD</value>
+    <value>DVD-Video automatisch abspielen</value>
   </string>
   <string>
     <id>241</id>
-    <value>Autostart VCD/SVCD</value>
+    <value>VCD/SVCD automatisch abspielen</value>
   </string>
   <string>
     <id>242</id>
-    <value>Autostart Audio-CD</value>
+    <value>Audio CD's automatisch abspielen</value>
   </string>
   <string>
     <id>243</id>
-    <value>Autostart XBox Spiele</value>
+    <value>XBox Spiele automatisch laden</value>
   </string>
   <string>
     <id>244</id>
-    <value>Autostart Videos</value>
+    <value>Videos auf CD automatisch abspielen</value>
   </string>
   <string>
     <id>245</id>
-    <value>Autostart Musik</value>
+    <value>Musik auf CD automatisch abspielen</value>
   </string>
   <string>
     <id>246</id>
-    <value>Autostart Bilder</value>
+    <value>Bilder auf CD automatisch anschauen</value>
   </string>
   <string>
     <id>247</id>
@@ -772,7 +772,7 @@
   </string>
   <string>
     <id>263</id>
-    <value>HTTP Server aktivieren</value>
+    <value>Web Server aktivieren</value>
   </string>
   <string>
     <id>264</id>
@@ -880,7 +880,7 @@
   </string>
   <string>
     <id>290</id>
-    <value>Verstärkung (dB)</value>
+    <value>Verstärkung</value>
   </string>
   <string>
     <id>291</id>
@@ -1164,7 +1164,7 @@
   </string>
   <string>
     <id>362</id>
-    <value>Verdunkelung in %</value>
+    <value>Verdunkelung</value>
   </string>
   <string>
     <id>363</id>
@@ -1304,7 +1304,7 @@
   </string>
   <string>
     <id>397</id>
-    <value>Aktualisieren alle</value>
+    <value>Wetterdaten aktualisieren alle</value>
   </string>
   <string>
     <id>398</id>
@@ -1692,7 +1692,7 @@
   </string>
   <string>
     <id>494</id>
-    <value>Übersteuerungsreserve (dB)</value>
+    <value>Übersteuerungsreserve</value>
   </string>
   <string>
     <id>495</id>
@@ -1880,7 +1880,7 @@
   </string>
   <string>
     <id>708</id>
-    <value>HTTP Proxy aktivieren</value>
+    <value>HTTP Proxy benutzen</value>
   </string>
   <string>
     <id>709</id>
@@ -2316,19 +2316,19 @@
   </string>
   <string>
     <id>13299</id>
-    <value>- Angestrebte Temperatur</value>
+    <value>- Angestrebte CPU Temperatur</value>
   </string>
   <string>
     <id>13300</id>
-    <value>- Geschwindigkeit in %</value>
+    <value>- Geschwindigkeit</value>
   </string>
   <string>
     <id>13301</id>
-    <value>Autom. Temperaturkontrolle</value>
+    <value>Lüftergeschwindigkeit über CPU Temperatur regeln</value>
   </string>
   <string>
     <id>13302</id>
-    <value>Lüftergeschwindigkeit einstellen</value>
+    <value>Lüftergeschwindigkeit manuell einstellen</value>
   </string>
   <string>
     <id>13303</id>
@@ -2516,7 +2516,7 @@
   </string>
   <string>
     <id>14011</id>
-    <value>Autoswitching aktivieren</value>
+    <value>Autom. Listen- und Symbolansicht wechseln</value>
   </string>
   <string>
     <id>14012</id>
@@ -2576,7 +2576,7 @@
   </string>
   <string>
     <id>14026</id>
-    <value>Video von DVDRom</value>
+    <value>Video von DVD-Rom</value>
   </string>
   <string>
     <id>14027</id>
@@ -2592,7 +2592,7 @@
   </string>
   <string>
     <id>14030</id>
-    <value>Audio von DVDRom</value>
+    <value>Audio von DVD-Rom</value>
   </string>
   <string>
     <id>14031</id>
@@ -2608,7 +2608,7 @@
   </string>
   <string>
     <id>14034</id>
-    <value>DVD von DVDRom</value>
+    <value>DVD von DVD-Rom</value>
   </string>
   <string>
     <id>14035</id>
@@ -2644,6 +2644,34 @@
   </string>
   <string>
     <id>14043</id>
-    <value>- Ausschalten wenn abgespielt wird</value>
+    <value>- Auch ausschalten wenn abgespielt wird</value>
+  </string>
+  <string>
+    <id>14044</id>
+    <value>%i Min</value>
+  </string>
+  <string>
+    <id>14045</id>
+    <value>%i Sek</value>
+  </string>
+  <string>
+    <id>14046</id>
+    <value>%i ms</value>
+  </string>
+  <string>
+    <id>14047</id>
+    <value>%i %%</value>
+  </string>
+  <string>
+    <id>14048</id>
+    <value>%i kbps</value>
+  </string>
+  <string>
+    <id>14049</id>
+    <value>%i kb</value>
+  </string>
+  <string>
+    <id>14050</id>
+    <value>%i.0 dB</value>
   </string>
 </strings>

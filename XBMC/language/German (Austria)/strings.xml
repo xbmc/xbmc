@@ -386,7 +386,7 @@
   </string> 
   <string>
     <id>166</id>
-    <value>Darstellung</value>
+    <value>Oberfläche</value>
   </string> 
   <string>
     <id>167</id>
@@ -514,7 +514,7 @@
   </string> 
   <string>
     <id>198</id>
-    <value>Lade Video-Informationen</value>
+    <value>Lade Video Informationen</value>
   </string> 
   <string>
     <id>199</id>
@@ -718,7 +718,7 @@
   </string>
   <string>
     <id>249</id>
-    <value>Musik</value>
+    <value>Eigene Musik</value>
   </string>
   <string>
     <id>250</id>
@@ -726,7 +726,7 @@
   </string>
   <string>
     <id>251</id>
-    <value>Ziel-Ordner wählen</value>
+    <value>Ziel Ordner wählen</value>
   </string>
   <string>
     <id>252</id>
@@ -754,7 +754,7 @@
   </string>
   <string>
     <id>258</id>
-    <value>ID3-Informationen anzeigen</value>
+    <value>ID3 Informationen anzeigen</value>
   </string>
   <string>
     <id>259</id>
@@ -770,7 +770,7 @@
   </string>
   <string>
     <id>262</id>
-    <value>Skript-Ausgabe</value>
+    <value>Skript Ausgabe</value>
   </string>
   <string>
     <id>263</id>
@@ -870,7 +870,7 @@
   </string>
   <string>
     <id>287</id>
-    <value>Untertitelmenü</value>
+    <value>Untertitel</value>
   </string>
   <string>
     <id>288</id>
@@ -970,7 +970,7 @@
   </string>
   <string>
     <id>313</id>
-    <value>Musik-Datenbank reorganisieren</value>
+    <value>Musik Datenbank reorganisieren</value>
   </string>
   <string>
     <id>314</id>
@@ -1054,7 +1054,7 @@
   </string>
   <string>
     <id>334</id>
-    <value>Musik-Datenbank reorganisieren</value>
+    <value>Musik Datenbank reorganisieren</value>
   </string>
   <string>
     <id>335</id>
@@ -1138,11 +1138,11 @@
   </string>
   <string>
     <id>355</id>
-    <value>Wartezeit</value>
+    <value>- Wartezeit</value>
   </string>
   <string>
     <id>356</id>
-    <value>Modus</value>
+    <value>Bildschirmschoner</value>
   </string>
   <string>
     <id>357</id>
@@ -1158,7 +1158,7 @@
   </string>
   <string>
     <id>360</id>
-    <value>B-Schirmschoner</value>
+    <value>Bildschirm</value>
   </string>
   <string>
     <id>361</id>
@@ -1166,7 +1166,7 @@
   </string>   
   <string>
     <id>362</id>
-    <value>Dimmerungsstärke</value>
+    <value>- Dimmerungsstärke</value>
   </string>
   <string>
     <id>363</id>
@@ -1402,11 +1402,11 @@
   </string> 
   <string>
     <id>422</id>
-    <value>Album-Informationen löschen</value>
+    <value>Album Informationen löschen</value>
   </string> 
   <string>
     <id>423</id>
-    <value>CDDB-Informationen löschen</value>
+    <value>CDDB Informationen löschen</value>
   </string> 
   <string>
     <id>424</id>
@@ -1414,11 +1414,11 @@
   </string> 
   <string>
     <id>425</id>
-    <value>Keine Album-Informationen gefunden!</value>
+    <value>Keine Album Informationen gefunden!</value>
   </string> 
   <string>
     <id>426</id>
-    <value>Keine CDDB-Informationen gefunden!</value>
+    <value>Keine CDDB Informationen gefunden!</value>
   </string> 
   <string>
     <id>427</id>
@@ -1706,7 +1706,7 @@
   </string>
   <string>
     <id>497</id> 
-    <value>Dateityp-Erweiterungen ausblenden</value> 
+    <value>Dateityp Erweiterungen ausblenden</value> 
   </string>
   <string>
     <id>498</id>
@@ -2246,11 +2246,11 @@
   </string>
   <string>
     <id>12005</id>
-    <value>Vollbild-Video</value>
+    <value>Vollbild Video</value>
   </string>
   <string>
     <id>12006</id>
-    <value>Audio-Visualisation</value>
+    <value>Audio Visualisation</value>
   </string>
   <string>
     <id>12007</id>
@@ -2363,10 +2363,10 @@
 <value>Drücke - NEIN - um nur XBMC neu zu laden</value>
 </string>
     <string><id>13310</id>
-<value>Übergang streckend</value>
+<value>- Übergang streckend</value>
 </string> 
      <string><id>13311</id>
-<value>Übergang gleitend</value>
+<value>- Übergang gleitend</value>
 </string> 
      <string><id>13312</id>
 <value>Ränderreduktion</value>
@@ -2510,7 +2510,7 @@
      <string><id>14038</id><value>Netzwerkeinstellungen wurden geändert!</value></string> 
      <string><id>14039</id><value>Um die Änderungen wirksam zu machen,</value></string> 
      <string><id>14040</id><value>müssen sie die XBOX neu starten. NEUSTART?</value></string> 
-     <string><id>14041</id><value>Post Processing</value></string> 
-   <string><id>14042</id><value>Engine IP Addresse</value></string>
-
+     <string><id>14041</id><value>Nachbearbeitung</value></string> 
+     <string><id>14042</id><value>Engine IP Addresse</value></string>
+     <string><id>14043</id><value>- Ausschalten während Wiedergabe</value></string>
 </strings>
