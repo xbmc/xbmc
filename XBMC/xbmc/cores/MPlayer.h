@@ -16,6 +16,9 @@ public:
   {
   public:
     Options();
+    bool         GetNonInterleaved() const;
+    void         SetNonInterleaved(bool bOnOff) ;
+
     float        GetVolumeAmplification() const;
     void         SetVolumeAmplification(float fDB) ;
 
@@ -34,6 +37,7 @@ public:
       int     m_iChannels;
       bool    m_bAC3PassTru;
       float   m_fVolumeAmplification;
+      bool    m_bNonInterleaved;
       string  m_strChannelMapping;
       vector<string> m_vecOptions;
 

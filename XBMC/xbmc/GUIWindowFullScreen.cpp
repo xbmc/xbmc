@@ -23,6 +23,7 @@
 #define MENU_ACTION_SUBTITLEDELAY 3
 #define MENU_ACTION_SUBTITLEONOFF 4
 #define MENU_ACTION_SUBTITLELANGUAGE 5
+#define MENU_ACTION_INTERLEAVED 6
 
 #define IMG_PAUSE     16
 
@@ -411,8 +412,11 @@ void CGUIWindowFullScreen::ShowOSD()
 
   int iValue=g_application.m_pPlayer->GetPercentage();
   COSDOptionIntRange   optionPercentage(MENU_ACTION_SEEK,298,true,0,100,1,iValue);
+  COSDOptionBoolean    optionNonInterleaved(MENU_ACTION_INTERLEAVED,306, g_stSettings.m_bNonInterleaved);
+
   videoMenu.AddOption(&optionAVDelay);
   videoMenu.AddOption(&optionPercentage);
+  videoMenu.AddOption(&optionNonInterleaved);
   
 
   COSDSubMenu audioMenu(292,100,100);
@@ -487,7 +491,13 @@ void CGUIWindowFullScreen::OnExecute(int iAction, const IOSDOption* option)
     {
       const COSDOptionIntRange* intOption = (const COSDOptionIntRange*)option;
       mplayer_setSubtitle(intOption->GetValue());
-   }
+    }
+    break;
+    
+    case MENU_ACTION_INTERLEAVED:
+      const COSDOptionBoolean* boolOption = (const COSDOptionBoolean*)option;
+      g_stSettings.m_bNonInterleaved=!g_stSettings.m_bNonInterleaved;
+      g_application.Restart(true);
     break;
   }
 }

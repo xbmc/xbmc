@@ -15,6 +15,7 @@ CSettings::CSettings(void)
   g_stSettings.m_fVolumeAmplification=0.0f;
   g_stSettings.m_bPostProcessing=true;
   g_stSettings.m_bDeInterlace=false;
+  g_stSettings.m_bNonInterleaved=false;
 	g_stSettings.m_bAudioOnAllSpeakers=false;
 	g_stSettings.m_iChannels=2;
 	g_stSettings.m_bUseID3=true;
