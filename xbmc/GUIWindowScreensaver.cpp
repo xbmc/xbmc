@@ -47,6 +47,12 @@ void CGUIWindowScreensaver::OnAction(const CAction &action)
 	// We're just a screen saver, nothing to do here ...	
 }
 
+// called when the mouse is moved/clicked etc. etc.
+void CGUIWindowScreensaver::OnMouse()
+{
+	m_gWindowManager.PreviousWindow();
+}
+
 void CGUIWindowScreensaver::InitMatrix()
 {
 	int iX, iY;
