@@ -268,3 +268,9 @@ int CGUIWindowManager::GetActiveWindow() const
 	CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
 	return pWindow->GetID();
 }
+
+bool CGUIWindowManager::IsRouted() const
+{
+  if (m_pRouteWindow) return true;
+  return false;
+}

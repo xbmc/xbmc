@@ -32,6 +32,7 @@ public:
 	void						DispatchThreadMessages();
 	void						AddMsgTarget( IMsgTargetCallback* pMsgTarget );
 	int							GetActiveWindow() const;
+  bool            IsRouted() const;
 private:
   vector <CGUIWindow*>					m_vecWindows;
   int														m_iActiveWindow;
