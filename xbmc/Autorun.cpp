@@ -27,7 +27,7 @@ CAutorun::~CAutorun()
 
 void CAutorun::ExecuteAutorun()
 {
-	if ( g_application.IsPlayingAudio() || g_application.IsPlayingVideo() )
+	if ( g_application.IsPlayingAudio() || g_application.IsPlayingVideo() || m_gWindowManager.IsRouted())
 		return;
 
 	CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
