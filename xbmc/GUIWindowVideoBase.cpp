@@ -612,11 +612,11 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
         {
           OutputDebugString("found 1 or more movies\n");
           int iSelectedMovie = 0;
-          if ( iMoviesFound > 1)
+          if (iMoviesFound > 0)  // always ask user to select (allows manual lookup)
           {
             // more then 1 movie found
             // ask user to select 1
-            OutputDebugString("found more then 1 movie\n");
+//            OutputDebugString("found more then 1 movie\n");
             pDlgSelect->SetHeading(196);
             pDlgSelect->Reset();
             for (int i = 0; i < iMoviesFound; ++i)
