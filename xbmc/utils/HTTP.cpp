@@ -19,7 +19,7 @@
 //////////////////////////////////////////////////////////////////////
 
 
-						
+
 CHTTP::CHTTP(const string& strProxyServer, int iProxyPort)
 :m_strProxyServer(strProxyServer)
 ,m_iProxyPort(iProxyPort)
@@ -195,7 +195,7 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 
 	if (!ReadData(strHTML))
 		return false;
-	
+
 	Close();
 	return true;
 }
@@ -286,7 +286,7 @@ bool CHTTP::Connect()
 			service.sin_addr.s_addr = inet_addr(strIpAddress.c_str());
 			if (service.sin_addr.s_addr == INADDR_NONE || strIpAddress=="")
 			{
-				CLog::Log(LOGWARNING, "ERROR: Your DNS(<nameserver> tag) is not properly set.  Please fix.  Defaulting to using hard-coded IP address for known Hosts.");
+				CLog::Log(LOGWARNING, "ERROR: Problem accessing the DNS. Defaulting to using hard-coded IP address for known Hosts.");
 //				if (strcmp(m_strHostName.c_str(),"ia.imdb.com")==0)
 //					service.sin_addr.s_addr = inet_addr("193.108.152.15");
 				if (strcmp(m_strHostName.c_str(),"us.imdb.com")==0)
@@ -309,7 +309,7 @@ bool CHTTP::Connect()
 		service.sin_port = htons(m_iPort);
 	}
 	m_socket.attach(socket(AF_INET,SOCK_STREAM,IPPROTO_TCP));
-	
+
 	// attempt to connection
 	int nTries = 0;
 	while (connect((SOCKET)m_socket,(sockaddr*) &service,sizeof(struct sockaddr)) == SOCKET_ERROR)
@@ -338,13 +338,13 @@ bool CHTTP::BreakURL(const string &strURL, string &strHostName, int& iPort, stri
 	strFile="";
 	iPort=80;
 	strHostName="";
-	
+
   ptr1 = strstr(url, "://");
   if( ptr1==NULL )
   {
 		return false;
   }
-		    
+
 	pos1 = ptr1-url;
 	strncpy(szProtocol, url, pos1);
 	szProtocol[pos1] = '\0';
@@ -352,8 +352,8 @@ bool CHTTP::BreakURL(const string &strURL, string &strHostName, int& iPort, stri
 	// jump the "://"
 	ptr1 += 3;
 	pos1 += 3;
-		
-    
+
+
   // look if the port is given
   ptr2 = strchr(ptr1, ':');
   // If the : is after the first / it isn't the port
@@ -533,7 +533,7 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 	{
     CLog::Log(LOGERROR, "Invalid url: %s",strURL.c_str());
 		return 0;
-	}	
+	}
 
 	if (!Connect())
 	{
