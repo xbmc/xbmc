@@ -43,6 +43,7 @@ CKaiClient::CKaiClient(void) : CUdpClient()
 {
 	CLog::Log(LOGINFO, "KAICLIENT: Instantiating...");
 	observer = NULL;
+	m_bHeadset = FALSE;
 	m_bHosting	= FALSE;
 	m_bContactsSettling = TRUE;
 	m_nFriendsOnline = 0;
@@ -432,7 +433,6 @@ void CKaiClient::SendVoiceDataToEngine()
 
 void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LPBYTE pMessage, DWORD dwMessageLength)
 {
-//	CLog::Log(aMessage);	
 //	OutputDebugString("KAI: ");
 //	OutputDebugString(aMessage.c_str());
 //	OutputDebugString("\r\n");
@@ -835,8 +835,20 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 
 			break;
 	}
+
+	// do infrequent work
+	if (!m_bContactsSettling)
+	{
+		BOOL bHeadset = CVoiceManager::IsHeadsetConnected();
+		if (bHeadset!=m_bHeadset)
+		{
+			SetBearerCaps(bHeadset);
+			m_bHeadset = bHeadset;
+		}
+	}
 }
 
+// do frequent work
 void CKaiClient::DoWork()
 {
 	// generate our own notifications
@@ -846,6 +858,9 @@ void CKaiClient::DoWork()
 		{
 			m_bContactsSettling = FALSE;
 			observer->OnContactsOnline(m_nFriendsOnline);
+
+			m_bHeadset = CVoiceManager::IsHeadsetConnected();
+			SetBearerCaps(m_bHeadset);
 		}
 	}
 
