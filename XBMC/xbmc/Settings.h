@@ -467,6 +467,7 @@ public:
 		char      szOnlineGamesDir[32]; // user games directory path
 		char      szOnlineArenaPassword[32]; // private arena password
 		char      szOnlineArenaDescription[64]; // private arena description
+		char      szOnlineKaiServer[32];
 		bool	  m_bOnlineNotifications; // kai notifications
 		bool      m_mplayerDebug;
 		int       m_iSambaDebugLevel;
