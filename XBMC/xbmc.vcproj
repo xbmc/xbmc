@@ -39,7 +39,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xapilibd.lib d3dx8d.lib d3d8d.lib xgraphicsd.lib dsoundd.lib xboxkrnl.lib xonlined.lib xkbdd.lib"
+				AdditionalDependencies="xapilibd.lib d3dx8d.lib d3d8d.lib xgraphicsd.lib dsoundd.lib xboxkrnl.lib xonlined.lib xkbdd.lib xvoiced.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames="libc,libcmt"
@@ -217,7 +217,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xapilib.lib d3dx8.lib d3d8.lib xgraphics.lib dsound.lib xboxkrnl.lib xonline.lib xkbd.lib"
+				AdditionalDependencies="xapilib.lib d3dx8.lib d3d8.lib xgraphics.lib dsound.lib xboxkrnl.lib xonline.lib xkbd.lib xvoice.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="libc"
@@ -442,6 +442,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\CueDocument.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\KaiItem.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\stdafx.cpp">
@@ -698,6 +701,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\DNSNameCache.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\utils\DownloadQueue.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\DownloadQueueManager.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\utils\FanController.cpp">
 				</File>
 				<File
@@ -951,6 +960,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\DNSNameCache.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\DownloadQueue.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\DownloadQueueManager.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\Event.h">
@@ -1256,6 +1271,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\utils\KaiClient.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\KaiItem.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\KaiVoice.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\cores\mplayer\keycodes.h">
 			</File>
 			<File
@@ -1263,6 +1284,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MediaMonitor.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\xbox\MediaPacketQueue.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MemUnit.h">
@@ -1376,6 +1400,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\utils\Sntp.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\lib\libSpeex\speex.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\lib\libSpeex\speex_bits.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\stdafx.h">
 			</File>
 			<File
@@ -1407,6 +1437,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\keyboard\virtualkeyboard.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\xbox\VoiceCommunicator.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\xbox\VoiceManager.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\XBApplicationEx.h">
@@ -1593,6 +1629,15 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			Filter="">
 			<File
 				RelativePath=".\xbmc\xbox\IoSupport.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\xbox\MediaPacketQueue.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\xbox\VoiceCommunicator.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\xbox\VoiceManager.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\xbox\xbeheader.cpp">
