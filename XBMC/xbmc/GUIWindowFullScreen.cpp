@@ -82,7 +82,8 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 		  break;
 
 		  default:
-        CGUIWindow::OnAction(action);
+        m_osdMenu.OnAction(action);
+        SET_CONTROL_FOCUS(GetID(), m_osdMenu.GetSelectedMenu()+BTN_OSD_VIDEO); 
 		  break;
     }
     return;
@@ -195,6 +196,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 	{
 		case GUI_MSG_WINDOW_INIT:
 		{
+      m_bOSDVisible=false;
 			CGUIWindow::OnMessage(message);
 			g_graphicsContext.Lock();
 			g_graphicsContext.SetFullScreenVideo( true );
@@ -213,6 +215,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 				g_application.m_pPlayer->Update(true);	
 			// Pause so that we make sure that our fullscreen renderer has finished...
 			Sleep(100);
+      m_bOSDVisible=false;
 		}
 	}
 	return CGUIWindow::OnMessage(message);
@@ -351,4 +354,9 @@ void CGUIWindowFullScreen::ShowOSD()
   SET_CONTROL_HIDDEN(GetID(),LABEL_ROW2);
   SET_CONTROL_HIDDEN(GetID(),LABEL_ROW3);
   SET_CONTROL_HIDDEN(GetID(),BLUE_BAR);
+}
+
+bool CGUIWindowFullScreen::OSDVisible() const
+{
+  return m_bOSDVisible;
 }

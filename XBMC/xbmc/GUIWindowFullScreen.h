@@ -12,7 +12,8 @@ public:
   virtual bool    OnMessage(CGUIMessage& message);
   virtual void    OnAction(const CAction &action);
 	virtual void		Render();
-	void				RenderFullScreen();
+	void				    RenderFullScreen();
+  bool            OSDVisible() const;
 
 private:
   void            ShowOSD();

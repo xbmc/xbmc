@@ -140,3 +140,9 @@ void COSDMenu::AddSubMenu(const COSDSubMenu& submenu)
 {
   m_vecSubMenus.push_back( submenu.Clone() );
 }
+
+
+int  COSDMenu::GetSelectedMenu() const
+{
+  return m_iCurrentSubMenu;
+}

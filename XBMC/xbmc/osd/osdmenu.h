@@ -26,6 +26,7 @@ namespace OSD
 		int  GetY() const;
 		void SetY(int Y) ;
 
+    int  GetSelectedMenu() const;
 	private:
     void Clear();
 		typedef	vector<COSDSubMenu*>::iterator ivecSubMenus;
