@@ -30,8 +30,8 @@ extern "C" {
 	void set_xbox_interface(char* ip, char* subnet);
 
 	size_t convert_string(charset_t from, charset_t to,
-		void const *src, size_t srclen, 
-		void *dest, size_t destlen);
+	      void const *src, size_t srclen, 
+	      void *dest, size_t destlen, BOOL allow_bad_conv);
 		
 	void set_log_callback(smb_log_callback fn);
 	void xb_setSambaWorkgroup(char* workgroup);
