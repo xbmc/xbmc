@@ -382,6 +382,12 @@
 				RelativePath=".\xbmc\MusicInfoTagLoaderMP3.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\NfoFile.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\NfoFile.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\Picture.cpp">
 			</File>
 			<File

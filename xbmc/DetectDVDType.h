@@ -26,7 +26,7 @@ class CDetectDVDMedia : public CThread
 {
 public:
 	CDetectDVDMedia();
-	~CDetectDVDMedia();
+	virtual ~CDetectDVDMedia();
 
 	virtual void		OnStartup();
 	virtual void		OnExit();

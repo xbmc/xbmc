@@ -15,7 +15,7 @@ CDirectoryHistory::~CDirectoryHistory()
 void	CDirectoryHistory::Set(const CStdString&  strSelectedItem, const CStdString& strDirectory)
 {
 	if (strSelectedItem.size()==0) return;
-	if (strDirectory.size()==0) return;
+//	if (strDirectory.size()==0) return;
 	CStdString strDir=strDirectory;
 	strDir.ToLower();
 	while (CUtil::HasSlashAtEnd(strDir) )

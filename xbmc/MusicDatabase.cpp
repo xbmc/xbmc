@@ -484,7 +484,7 @@ bool CMusicDatabase::GetAlbumInfo(const string& strAlbum1, CAlbum& album)
 	string strAlbum = strAlbum1;
 	RemoveInvalidChars(strAlbum);
 	char szSQL[1024];
-	sprintf(szSQL,"select * from albuminfo where where albuminfo.idAlbum=album.idAlbum and albuminfo.idGenre=genre.idGenre and albuminfo.idArtist=artist.idArtist and strAlbum='%s'",strAlbum.c_str() );
+	sprintf(szSQL,"select * from albuminfo,album,genre,artist where albuminfo.idAlbum=album.idAlbum and albuminfo.idGenre=genre.idGenre and albuminfo.idArtist=artist.idArtist and strAlbum='%s'",strAlbum.c_str() );
 	if (!m_pDS->query(szSQL)) return false;
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound!= 0) 
