@@ -109,8 +109,8 @@ bool  CXNSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	
 	// Start at the very beginning a very good place to start!
 	TiXmlDocument xmlDoc;
-  xmlDoc.Parse( lpszXml.get() );
-	if ( xmlDoc.IsError() ) 
+  xmlDoc.Parse(lpszXml.get());
+	if (xmlDoc.Error()) 
 	{
 		return false;
 	}

@@ -20,10 +20,10 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
   m_vecStrings.erase(m_vecStrings.begin(),m_vecStrings.end());
 	{
 		TiXmlDocument xmlDoc;
-		if ( !xmlDoc.LoadFile(strFileName.c_str()) )
+		if (!xmlDoc.LoadFile(strFileName.c_str()))
 		{
-			CLog::Log(LOGERROR, "unable to load %s: %s at line %d", strFileName.c_str(), xmlDoc.GetErrorDesc(), xmlDoc.GetLineNo());
-			g_LoadErrorStr.Format("%s, Line %d\n%s", strFileName.c_str(), xmlDoc.GetLineNo(), xmlDoc.GetErrorDesc());
+			CLog::Log(LOGERROR, "unable to load %s: %s at line %d", strFileName.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
+			g_LoadErrorStr.Format("%s, Line %d\n%s", strFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
 			return false;
 		}
 		TiXmlElement* pRootElement =xmlDoc.RootElement();

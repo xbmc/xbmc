@@ -110,7 +110,7 @@ bool  CRTVDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 		// Begin parsing the XML data
 		TiXmlDocument xmlDoc;
 		xmlDoc.Parse( (const char *) data );
-		if ( xmlDoc.IsError() ) 
+		if ( xmlDoc.Error() ) 
 		{
 			free(data);
 			return false;
