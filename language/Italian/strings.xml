@@ -142,8 +142,8 @@
   <string><id>210</id><value>Precedente</value></string>
   <string><id>211</id><value>Ricerca applicazioni</value></string>
   <string><id>212</id><value>Applicazione trovata</value></string>
-  <string><id>213</id><value>Calibraz. Interfaccia</value></string>
-  <string><id>214</id><value>Calibrazione Video</value></string>
+  <string><id>213</id><value>Centra l'Interfaccia Utente...</value></string>
+  <string><id>214</id><value>Calibrazione Video...</value></string>
   <string><id>215</id><value>Ammorbidisci</value></string>
   <string><id>216</id><value>Livello di Zoom</value></string>
   <string><id>217</id><value>Pixel Ratio</value></string>
@@ -259,7 +259,7 @@
   <string><id>329</id><value>Errore nel salvataggio delle modifiche</value></string>
   <string><id>330</id><value>Potrebbe richiedere diversi minuti...</value></string>
   <string><id>331</id><value>Compressione archivio...</value></string>
-  <string><id>332</id><value>Errore durante la compressione del archivio</value></string>
+  <string><id>332</id><value>Errore durante la compressione dell'archivio</value></string>
   <string><id>333</id><value>Vuoi riorganizzare l'archivio musicale?</value></string>
   <string><id>334</id><value>Riorganizza l'Archivio Musicale</value></string>
   <string><id>335</id><value>Avvia</value></string>
@@ -400,7 +400,7 @@
   <string><id>470</id><value>Riconoscimenti</value></string>
   <string><id>471</id><value>Modchip</value></string>
   <string><id>472</id><value>Timeout OSD Video</value></string>
-  <string><id>473</id><value>Alta Qualità Resampling</value></string>
+  <string><id>473</id><value>Ricampionamento ad Alta Qualità</value></string>
   <string><id>474</id><value>Spento</value></string>
   <string><id>475</id><value>Solo Musica</value></string>
   <string><id>476</id><value>Musica e Video</value></string>
@@ -562,6 +562,43 @@
   <string><id>12006</id><value>Effetti grafici</value></string>
   <string><id>12007</id><value>Immagini/slideshow</value></string>
   <string><id>12008</id><value>Casella di Unisci</value></string>
+  <string><id>12310</id><value>0</value></string>
+  <string><id>12311</id><value>1</value></string>
+  <string><id>12312</id><value>2</value></string>
+  <string><id>12313</id><value>3</value></string>
+  <string><id>12314</id><value>4</value></string>
+  <string><id>12315</id><value>5</value></string>
+  <string><id>12316</id><value>6</value></string>
+  <string><id>12317</id><value>7</value></string>
+  <string><id>12318</id><value>8</value></string>
+  <string><id>12319</id><value>9</value></string>
+  <string><id>12320</id><value>c</value></string>
+  <string><id>12321</id><value>ok</value></string>
+  <string><id>12322</id><value>*</value></string>
+  <string><id>12324</id><value>XBMC Master Lock</value></string>
+  <string><id>12325</id><value>Cartella Bloccata</value></string>
+  <string><id>12326</id><value>Inserire password</value></string>
+  <string><id>12327</id><value>Inserire Master Code e premere Enter,</value></string>
+  <string><id>12328</id><value>Inserire Cod. Sblocco e premere Enter,</value></string> 
+  <string><id>12329</id><value>Premere C per Annullare</value></string>
+  <string><id>12330</id><value>Inserire combinazione tasti Gamepad e </value></string>
+  <string><id>12331</id><value>premere Start, oppure Back per Annullare</value></string>
+  <string><id>12332</id><value>Blocco Condivisione</value></string>
+  <string><id>12333</id><value>Sblocco Condivisione</value></string>
+  <string><id>12334</id><value>Reset Blocco Condivisione</value></string>
+  <string><id>12335</id><value>Rimuovi Blocco Condivisione</value></string>
+  <string><id>12336</id><value>Seleziona tipo di Blocco da usare:</value></string>
+  <string><id>12337</id><value>Password Numerica</value></string>
+  <string><id>12338</id><value>Sequenza tasti Gamepad</value></string>
+  <string><id>12339</id><value>Password di solo testo</value></string>
+  <string><id>12340</id><value>Inserire nuova password</value></string>
+  <string><id>12341</id><value>Re-Inserire nuova password</value></string>
+  <string><id>12342</id><value>Password errata,</value></string>
+  <string><id>12343</id><value>tentativi rimasti.</value></string>
+  <string><id>12344</id><value>La Password inserita non è corretta.</value></string>
+  <string><id>12345</id><value>Accesso Negato</value></string>
+  <string><id>12346</id><value>Limite di tentativi superato.</value></string>
+  <string><id>12347</id><value>L'XBOX ora si spegnerà.</value></string>
   <string><id>12600</id><value>Meteo</value></string>
   <string><id>12900</id><value>Screensaver</value></string>
   <string><id>12901</id><value>OSD a schermo intero</value></string>
@@ -570,6 +607,8 @@
   <string><id>13002</id><value>Solo Video</value></string>
   <string><id>13003</id><value>- Ritardo</value></string>
   <string><id>13004</id><value>- Durata Minima del File</value></string>
+  <string><id>13005</id><value>Spegni</value></string>
+  <string><id>13006</id><value>Dashboard</value></string>
   <string><id>13100</id><value>Filtro Sfarfallio</value></string>
   <string><id>13200</id><value>Profili</value></string>
   <string><id>13201</id><value>Cancella profilo '%i'?</value></string>
@@ -634,32 +673,32 @@
   <string><id>14007</id><value>Scaricamento file playlist fallito</value></string>
   <string><id>14008</id><value>Abilita notifiche Kai</value></string>
   <string><id>14009</id><value>Directory Giochi</value></string>
-  <string><id>14010</id><value>Opzioni Arrangiamento</value></string>
-  <string><id>14011</id><value>Attiva Arrangiamento</value></string>
+  <string><id>14010</id><value>Adattamento Vista Icone per</value></string>
+  <string><id>14011</id><value>Auto-Adattamento Vista Icone</value></string>
   <string><id>14012</id><value>- Usa Icone Grandi</value></string>
-  <string><id>14013</id><value>- Metodo</value></string>
+  <string><id>14013</id><value>- Vista Icone per</value></string>
   <string><id>14014</id><value>- Percentuale</value></string>
-  <string><id>14015</id><value>Icone se nessun File</value></string>
-  <string><id>14016</id><value>Lista se nessuna Cartella</value></string>
+  <string><id>14015</id><value>Nessun File ed almeno una Icona</value></string>
+  <string><id>14016</id><value>Almeno un File ed una Icona</value></string>
   <string><id>14017</id><value>Percentuale di Icone</value></string>
-  <string><id>14018</id><value>Vedi Opzioni</value></string>
+  <string><id>14018</id><value>Opzioni Veduta</value></string>
   <string><id>14019</id><value>Area code 1</value></string>
   <string><id>14020</id><value>Area code 2</value></string>
   <string><id>14021</id><value>Area code 3</value></string>
   <string><id>14022</id><value>Archivio</value></string>
   <string><id>14023</id><value>No TV</value></string>
   <string><id>14024</id><value>Inserisci la città più grande vicina a te o US ZIPcode</value></string>
-  <string><id>14025</id><value>Video da HardDisk</value></string>
-  <string><id>14026</id><value>Video da DVDRom</value></string>
-  <string><id>14027</id><value>Video da Local Network</value></string>
-  <string><id>14028</id><value>Video da Internet</value></string>
-  <string><id>14029</id><value>Audio da HardDisk</value></string>
-  <string><id>14030</id><value>Audio da DVDRom</value></string>
-  <string><id>14031</id><value>Audio da Local Network</value></string>
-  <string><id>14032</id><value>Audio da Internet</value></string>
-  <string><id>14033</id><value>DVD da HardDisk</value></string>
-  <string><id>14034</id><value>DVD da DVDRom</value></string>
-  <string><id>14035</id><value>DVD da Rete Locale</value></string>
+  <string><id>14025</id><value>Video Cache   - Harddisk</value></string>
+  <string><id>14026</id><value>              - DVDRom</value></string>
+  <string><id>14027</id><value>              - Rete Locale</value></string>
+  <string><id>14028</id><value>              - Internet</value></string>
+  <string><id>14029</id><value>Audio Cache  - Harddisk</value></string>
+  <string><id>14030</id><value>              - DVDRom</value></string>
+  <string><id>14031</id><value>              - Rete Locale</value></string>
+  <string><id>14032</id><value>              - Internet</value></string>
+  <string><id>14033</id><value>DVD Cache    - Harddisk</value></string>
+  <string><id>14034</id><value>              - DVDRom</value></string>
+  <string><id>14035</id><value>              - Rete Locale</value></string>
   <string><id>14036</id><value>Servers</value></string>
   <string><id>14037</id><value>Aspetto</value></string>
   <string><id>14038</id><value>Impostazioni di rete cambiate</value></string>

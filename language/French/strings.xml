@@ -581,8 +581,8 @@
   <string><id>13306</id><value>Masquer les éléments du répertoire parent</value></string>
   <string><id>13307</id><value>Masquer les numéros des pistes</value></string>
   <string><id>13307</id><value>Reset/Reboot</value></string>
-  <string><id>13308</id><value>Voulez vous faire un reboot</value></string>
-  <string><id>13309</id><value>plutôt qu'un reset ?</value></string>
+  <string><id>13308</id><value>Voulez vous redémarrer la XBOX ?</value></string>
+  <string><id>13309</id><value>sinon "non" pour redémarrer seulement XBMC</value></string>
   <string><id>13310</id><value>Zoom</value></string>
   <string><id>13311</id><value>Flottement</value></string>
   <string><id>13312</id><value>réduction de la barre noire</value></string>
@@ -593,7 +593,7 @@
   <string><id>13317</id><value>Voir le diaporama</value></string>
   <string><id>13318</id><value>Récursivement</value></string>
   <string><id>13319</id><value>Aléatoire</value></string>
-  <string><id>13320</id><value>Stereo</value></string>
+  <string><id>13320</id><value>Stéréo</value></string>
   <string><id>13321</id><value>Gauche seulement</value></string>
   <string><id>13322</id><value>Droite seulement</value></string>
   <string><id>13323</id><value>Activer le CD+G</value></string>
@@ -610,12 +610,59 @@
   <string><id>13334</id><value>Editer le Nom</value></string>
   <string><id>13335</id><value>Mettre par Défaut</value></string>
   <string><id>13336</id><value>Supprimer</value></string>
-  <string><id>14000</id><value>Stacking : désactivé</value></string>
-  <string><id>14001</id><value>Stacking : simple</value></string>
-  <string><id>14002</id><value>Stacking : brouillé</value></string>
+  <string><id>14000</id><value>Empiler : désactivé</value></string>
+  <string><id>14001</id><value>Empiler : simple</value></string>
+  <string><id>14002</id><value>Empiler : brouillé</value></string>
   <string><id>14003</id><value>Téléchargement de la liste de lecture...</value></string>
   <string><id>14004</id><value>Téléchargement de la liste des flux...</value></string>
   <string><id>14005</id><value>Parcours de la liste des flux...</value></string>
   <string><id>14006</id><value>Le téléchargement de la liste des flux a échoué</value></string>
   <string><id>14007</id><value>Le téléchargement de la liste de lecture a échoué</value></string>
+  <string><id>14008</id><value>Activer les Notifications KAI</value></string>
+  <string><id>14009</id><value>Répertoire des Jeux</value></string>
+  <string><id>14010</id><value>Basculement des vignettes basé sur</value></string>
+  <string><id>14011</id><value>Activer le basculement</value></string>
+  <string><id>14012</id><value>- Utiliser les affiches</value></string>
+  <string><id>14013</id><value>- Basculement - </value></string>
+  <string><id>14014</id><value>- Pourcentage</value></string>
+  <string><id>14015</id><value>Aucun fichier et au moins une vignette</value></string>
+  <string><id>14016</id><value>Au moins un fichier et une vignette</value></string>
+  <string><id>14017</id><value>Pourcentage des vignettes</value></string>
+  <string><id>14018</id><value>Voir Options</value></string>
+  <string><id>14019</id><value>Changer location 1</value></string>
+  <string><id>14020</id><value>Changer location 2</value></string>
+  <string><id>14021</id><value>Changer location 3</value></string>
+  <string><id>14022</id><value>Librairie</value></string>
+  <string><id>14023</id><value>Sans TV</value></string>
+  <string><id>14024</id><value>Entrez la ville la plus proche ou le code postal</value></string>
+  <string><id>14025</id><value>Video depuis le Disque Dur</value></string>
+  <string><id>14026</id><value>Video depuis le DVDRom</value></string>
+  <string><id>14027</id><value>Video depuis le réseau local</value></string>
+  <string><id>14028</id><value>Video depuis Internet</value></string>
+  <string><id>14029</id><value>Audio depuis le Disque Dur</value></string>
+  <string><id>14030</id><value>Audio depuis le DVDRom</value></string>
+  <string><id>14031</id><value>Audio depuis le réseau local</value></string>
+  <string><id>14032</id><value>Audio depuis Internet</value></string>
+  <string><id>14033</id><value>DVD depuis le Disque Dur</value></string>
+  <string><id>14034</id><value>DVD depuis le DVDRom</value></string>
+  <string><id>14035</id><value>DVD depuis le réseau local</value></string>
+  <string><id>14036</id><value>Serveurs</value></string>
+  <string><id>14037</id><value>Apparences</value></string>
+  <string><id>14038</id><value>Les paramètres réseaux ont été changés</value></string>
+  <string><id>14039</id><value>XBMC a besoin d'être redémarrer pour</value></string>
+  <string><id>14040</id><value>configurer le réseau.  Voulez vous redémarrer maintenant ?</value></string>
+  <string><id>14041</id><value>Post Processing</value></string>
+  <string><id>14042</id><value>Adresse IP du moteur KAI</value></string>
+  <string><id>14043</id><value>- Eteindre pendant la lecture</value></string>
+  <string><id>14044</id><value>%i mins</value></string>
+  <string><id>14045</id><value>%i secs</value></string>
+  <string><id>14046</id><value>%i ms</value></string>
+  <string><id>14047</id><value>%i %%</value></string>
+  <string><id>14048</id><value>%i kbps</value></string>
+  <string><id>14049</id><value>%i kb</value></string>
+  <string><id>14050</id><value>%i.0 dB</value></string>
+  <string><id>14051</id><value>Afficher l'heure sur 12 chiffres</value></string>
+  <string><id>14052</id><value>Intervertir le mois et le jour sur l'écran d'accueil</value></string>
+  <string><id>14053</id><value>Filtres graphiques</value></string>
+  <string><id>14054</id><value>Activer les recherches Internet</value></string>
 </strings>
