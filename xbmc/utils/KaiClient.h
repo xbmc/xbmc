@@ -47,7 +47,7 @@ protected:
 	enum State {Discovering,Attaching,Querying,LoggingIn,Authenticated,Disconnecting};
 
 	void Discover();
-	void Disconnect();
+	void Detach();
 	void Attach(SOCKADDR_IN& aAddress);
 	void TakeOver();
 	void Query();

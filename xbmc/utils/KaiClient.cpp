@@ -115,7 +115,7 @@ void CKaiClient::RemoveObserver()
 	if (observer)
 	{
 		observer = NULL;
-		Disconnect();
+		Detach();
 	}
 }
 
@@ -196,9 +196,9 @@ void CKaiClient::Discover()
 	//Send("192.168.1.2", KAI_SYSTEM_PORT, strInitiateDiscoveryMessage);
 }
 
-void CKaiClient::Disconnect()
+void CKaiClient::Detach()
 {	
-	CStdString strDisconnectionMessage = "KAI_CLIENT_DISCONNECT;";
+	CStdString strDisconnectionMessage = "KAI_CLIENT_DETACH;";
 
 	client_state = State::Disconnecting;
 
