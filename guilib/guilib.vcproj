@@ -25,6 +25,7 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				EnableEnhancedInstructionSet="1"
+				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
 				WarningLevel="3"

@@ -8,6 +8,11 @@
 #include <vector>
 using namespace std;
 
+#define SHARE_TYPE_UNKNOWN	0
+#define SHARE_TYPE_DVD		1
+#define SHARE_TYPE_REMOTE	2
+#define SHARE_TYPE_LOCAL	3
+
 class CShare
 {
 	public:
@@ -16,6 +21,7 @@ class CShare
 		CStdString strName;
 		CStdString strPath;
 		int        m_iBufferSize;
+		int        m_iDriveType;
 
 };
 typedef vector<CShare> VECSHARES;

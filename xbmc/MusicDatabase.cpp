@@ -368,7 +368,7 @@ bool CMusicDatabase::GetAlbums(VECALBUMS& albums)
 	while (!m_pDS->eof()) 
 	{
 		CAlbum album;
-		album.strAlbum  = m_pDS->fv("album.strAlbum").get_asString();
+		album.strAlbum  = m_pDS->fv("strAlbum").get_asString();
 		albums.push_back(album);
 		m_pDS->next();
 	}
