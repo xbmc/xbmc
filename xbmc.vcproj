@@ -492,6 +492,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIWindowSettingsNetwork.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIWindowSettingsNetworkFTP.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIWindowSettingsNetworkIP.cpp">
 				</File>
 				<File
@@ -499,6 +502,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIWindowSettingsNetworkProxy.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowSettingsNetworkTime.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowSettingsNetworkWeb.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIWindowSettingsProfile.cpp">
@@ -1091,6 +1100,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\GUIWindowSettingsNetwork.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowSettingsNetworkFTP.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowSettingsNetworkIP.h">
 			</File>
 			<File
@@ -1098,6 +1110,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettingsNetworkProxy.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsNetworkTime.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsNetworkWeb.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettingsProfile.h">

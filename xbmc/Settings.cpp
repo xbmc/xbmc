@@ -471,7 +471,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 		GetString(pRootElement, "CDDBIpAddress", g_stSettings.m_szCDDBIpAdres,"194.97.4.18");
 	//g_stSettings.m_bUseCDDB=GetBoolean(pRootElement, "CDDBEnabled");
 
-	GetString(pRootElement, "timeserver", g_stSettings.m_strTimeServer,"207.46.248.43");
+	
 
 	GetString(pRootElement, "thumbnails",g_stSettings.szThumbnailsDirectory,"");
 	GetString(pRootElement, "shortcuts", g_stSettings.m_szShortcutDirectory,"");
@@ -488,8 +488,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
 	GetInteger(pRootElement, "startwindow", g_stSettings.m_iStartupWindow,0,0,INT_MAX);
 	g_stSettings.m_iStartupWindow += WINDOW_HOME;	// windows referenced from WINDOW_HOME
-	GetInteger(pRootElement, "webserverport", g_stSettings.m_iWebServerPort, 80,0,INT_MAX);
-
+	
 	GetBoolean(pRootElement, "useFDrive", g_stSettings.m_bUseFDrive);
 	GetBoolean(pRootElement, "useGDrive", g_stSettings.m_bUseGDrive);
 	GetBoolean(pRootElement, "usePCDVDROM", g_stSettings.m_bUsePCDVDROM);
@@ -1180,6 +1179,10 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 	
 		GetString(pElement, "kaiusername", g_stSettings.szOnlineUsername, "");
 		GetString(pElement, "kaipassword", g_stSettings.szOnlinePassword, "");
+
+		GetString(pElement, "timeserverhost", g_stSettings.m_strTimeServer, "207.46.248.43");
+
+		GetInteger(pElement, "webserverport", g_stSettings.m_iWebServerPort, 80, 0, 65535);
 	}
 
 	// slideshow settings
@@ -1578,6 +1581,9 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	SetString(pNode, "kaiusername", g_stSettings.szOnlineUsername);
 	SetString(pNode, "kaipassword", g_stSettings.szOnlinePassword);
 
+	SetString(pNode, "timeserverhost", g_stSettings.m_strTimeServer);
+
+	SetInteger(pNode, "webserverport", g_stSettings.m_iWebServerPort);
 
 	// slideshow settings
 	TiXmlElement slideshowNode("slideshow");
