@@ -361,6 +361,13 @@ dts_decode_init (AVCodecContext *avctx)
 static int
 dts_decode_end (AVCodecContext *s)
 {
+  //hack because libdts does not clean itself
+  if(s->priv_data) {
+  	if(dts_samples(s->priv_data)) free(dts_samples(s->priv_data));
+  	free(s->priv_data);
+  	s->priv_data = NULL;
+	}
+  
   return 0;
 }
 
@@ -368,7 +375,7 @@ AVCodec dts_decoder = {
   "dts", 
   CODEC_TYPE_AUDIO,
   CODEC_ID_DTS,
-  sizeof (dts_state_t *),
+  0,//sizeof (dts_state_t *), //libdts alloc its own priv data
   dts_decode_init,
   NULL,
   dts_decode_end,
