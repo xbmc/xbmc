@@ -10,7 +10,7 @@ public:
   void Stop();
 
   int   GetFanSpeed();
-  void  SetFanSpeed(const int fanspeed);
+  void  SetFanSpeed(const int fanspeed, const bool force=true);
   float GetGPUTemp();
   float GetCPUTemp();
   void  SetTargetTemperature(int targetTemperature);
@@ -32,6 +32,7 @@ private:
   int   calculatedFanSpeed;
   int   tooHotLoopCount;
   int   tooColdLoopCount;
+  bool  inCustomMode;
   float cpuTemp;
   float cpuLastTemp;
   unsigned short gpuTemp;
