@@ -231,8 +231,8 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.szOnlineUsername,"");
 	strcpy(g_stSettings.szOnlinePassword,"");
 	g_stSettings.m_bTimeServerEnabled=false;
-	g_stSettings.m_bFTPServerEnabled=false;
-	g_stSettings.m_bHTTPServerEnabled=false;
+	g_stSettings.m_bFTPServerEnabled=true;
+	g_stSettings.m_bHTTPServerEnabled=true;
 	g_stSettings.m_iWebServerPort=80;
 	strcpy(g_stSettings.m_szHTTPProxy,"");
 	strcpy(g_stSettings.szDefaultSkin,"Project Mayhem");
