@@ -67,6 +67,8 @@ extern "C" void dllReleaseAll( );
 
 extern "C" void free_registry(void);
 extern void xbox_video_wait();
+extern void xbox_video_CheckScreenSaver();	// Screensaver check
+
 int m_iAudioStreamIDX=-1;
 CMPlayer::Options::Options()
 {
