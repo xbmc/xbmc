@@ -63,7 +63,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 			if ((m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST) && m_vecItems.size()<=0)
 			{
 				m_iLastControl=CONTROL_BTNVIEWASICONS;
-				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
+				SET_CONTROL_FOCUS(m_iLastControl, 0);
 			}
 
 		}
@@ -77,23 +77,23 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 
 			if (g_playlistPlayer.Repeated(PLAYLIST_MUSIC))
 			{
-				CONTROL_SELECT(GetID(), CONTROL_BTNREPEAT);
+				CONTROL_SELECT(CONTROL_BTNREPEAT);
 			}
 
 			if (g_playlistPlayer.RepeatedOne(PLAYLIST_MUSIC))
 			{
-				CONTROL_SELECT(GetID(), CONTROL_BTNREPEATONE);
+				CONTROL_SELECT(CONTROL_BTNREPEATONE);
 			}
 
 			if (g_playlistPlayer.ShuffledPlay(PLAYLIST_MUSIC))
 			{
-				CONTROL_SELECT(GetID(), CONTROL_BTNSHUFFLE);
+				CONTROL_SELECT(CONTROL_BTNSHUFFLE);
 			}
 
 			if ((m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST) && m_vecItems.size()<=0)
 			{
 				m_iLastControl=CONTROL_BTNVIEWASICONS;
-				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
+				SET_CONTROL_FOCUS(m_iLastControl, 0);
 			}
 
 			if (g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC)
@@ -101,8 +101,8 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 				int iSong=g_playlistPlayer.GetCurrentSong();
 				if (iSong >= 0 && iSong<=(int)m_vecItems.size())
 				{
-					CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iSong);
-					CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iSong);
+					CONTROL_SELECT_ITEM(CONTROL_LIST,iSong);
+					CONTROL_SELECT_ITEM(CONTROL_THUMBS,iSong);
 				}
 			}
 			return true;
@@ -318,7 +318,7 @@ void CGUIWindowMusicPlayList::ClearPlayList()
 	}
 	UpdateListControl();
 	UpdateButtons();
-	SET_CONTROL_FOCUS(GetID(), CONTROL_BTNVIEWASICONS, 0);
+	SET_CONTROL_FOCUS(CONTROL_BTNVIEWASICONS, 0);
 }
 
 void CGUIWindowMusicPlayList::ShufflePlayList()
@@ -388,12 +388,12 @@ void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
 
 	if (m_vecItems.size()<=0)
 	{
-		SET_CONTROL_FOCUS(GetID(), CONTROL_BTNVIEWASICONS, 0);
+		SET_CONTROL_FOCUS(CONTROL_BTNVIEWASICONS, 0);
 	}
 	else
 	{
-		CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem-1)
-		CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem-1)
+		CONTROL_SELECT_ITEM(CONTROL_LIST,iItem-1)
+		CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem-1)
 	}
 }
 
@@ -402,34 +402,34 @@ void CGUIWindowMusicPlayList::UpdateButtons()
 	//	Update playlist buttons
 	if (m_vecItems.size() )
 	{
-		CONTROL_ENABLE(GetID(), CONTROL_BTNSHUFFLE);
-		CONTROL_ENABLE(GetID(), CONTROL_BTNSAVE);
-		CONTROL_ENABLE(GetID(), CONTROL_BTNCLEAR);
-		CONTROL_ENABLE(GetID(), CONTROL_BTNREPEAT);
-		CONTROL_ENABLE(GetID(), CONTROL_BTNREPEATONE);
-		CONTROL_ENABLE(GetID(), CONTROL_BTNPLAY);
+		CONTROL_ENABLE(CONTROL_BTNSHUFFLE);
+		CONTROL_ENABLE(CONTROL_BTNSAVE);
+		CONTROL_ENABLE(CONTROL_BTNCLEAR);
+		CONTROL_ENABLE(CONTROL_BTNREPEAT);
+		CONTROL_ENABLE(CONTROL_BTNREPEATONE);
+		CONTROL_ENABLE(CONTROL_BTNPLAY);
 
 		if (g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC)
 		{
-			CONTROL_ENABLE(GetID(), CONTROL_BTNNEXT);
-			CONTROL_ENABLE(GetID(), CONTROL_BTNPREVIOUS);
+			CONTROL_ENABLE(CONTROL_BTNNEXT);
+			CONTROL_ENABLE(CONTROL_BTNPREVIOUS);
 		}
 		else
 		{
-			CONTROL_DISABLE(GetID(), CONTROL_BTNNEXT);
-			CONTROL_DISABLE(GetID(), CONTROL_BTNPREVIOUS);
+			CONTROL_DISABLE(CONTROL_BTNNEXT);
+			CONTROL_DISABLE(CONTROL_BTNPREVIOUS);
 		}
 	}
 	else
 	{
-		CONTROL_DISABLE(GetID(), CONTROL_BTNSHUFFLE);
-		CONTROL_DISABLE(GetID(), CONTROL_BTNSAVE);
-		CONTROL_DISABLE(GetID(), CONTROL_BTNCLEAR);
-		CONTROL_DISABLE(GetID(), CONTROL_BTNREPEAT);
-		CONTROL_DISABLE(GetID(), CONTROL_BTNREPEATONE);
-		CONTROL_DISABLE(GetID(), CONTROL_BTNPLAY);
-		CONTROL_DISABLE(GetID(), CONTROL_BTNNEXT);
-		CONTROL_DISABLE(GetID(), CONTROL_BTNPREVIOUS);
+		CONTROL_DISABLE(CONTROL_BTNSHUFFLE);
+		CONTROL_DISABLE(CONTROL_BTNSAVE);
+		CONTROL_DISABLE(CONTROL_BTNCLEAR);
+		CONTROL_DISABLE(CONTROL_BTNREPEAT);
+		CONTROL_DISABLE(CONTROL_BTNREPEATONE);
+		CONTROL_DISABLE(CONTROL_BTNPLAY);
+		CONTROL_DISABLE(CONTROL_BTNNEXT);
+		CONTROL_DISABLE(CONTROL_BTNPREVIOUS);
 	}
 
 	//	Update listcontrol and and view by icon/list button
@@ -441,7 +441,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
 		  CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_LIST,0,0,NULL);
 		  g_graphicsContext.SendMessage(msg);
 		  int iItem=msg.GetParam1();
-		  CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem);
+		  CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem);
 	  }
   }
 	pControl=GetControl(CONTROL_LIST);
@@ -452,12 +452,12 @@ void CGUIWindowMusicPlayList::UpdateButtons()
 		  CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_THUMBS,0,0,NULL);
 		  g_graphicsContext.SendMessage(msg);
 		  int iItem=msg.GetParam1();
-		  CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem);
+		  CONTROL_SELECT_ITEM(CONTROL_LIST,iItem);
 	  }
   }
 
-	SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
-	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
+	SET_CONTROL_HIDDEN(CONTROL_LIST);
+	SET_CONTROL_HIDDEN(CONTROL_THUMBS);
 
 	bool bViewIcon = false;
   int iString;
@@ -479,14 +479,14 @@ void CGUIWindowMusicPlayList::UpdateButtons()
 
 	if (bViewIcon) 
   {
-    SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
+    SET_CONTROL_VISIBLE(CONTROL_THUMBS);
   }
   else
   {
-    SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
+    SET_CONTROL_VISIBLE(CONTROL_LIST);
   }
 
-	SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
+	SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS,iString);
 
 	//	Update object count label
 	int iItems=m_vecItems.size();
@@ -499,7 +499,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
   const WCHAR* szText=g_localizeStrings.Get(127).c_str();
   swprintf(wszText,L"%i %s", iItems,szText);
 
-	SET_CONTROL_LABEL(GetID(), CONTROL_LABELFILES,wszText);
+	SET_CONTROL_LABEL(CONTROL_LABELFILES,wszText);
 }
 
 void CGUIWindowMusicPlayList::OnClick(int iItem)

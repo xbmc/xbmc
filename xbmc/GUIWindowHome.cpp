@@ -52,12 +52,12 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 			// make controls 101-120 invisible...
 			for (int iControl=102; iControl < 120; iControl++)
 			{
-				SET_CONTROL_HIDDEN(GetID(), iControl);
+				SET_CONTROL_HIDDEN(iControl);
 			}
 
 			if (m_iLastMenuOption>0)
 			{
-				SET_CONTROL_VISIBLE(GetID(), m_iLastMenuOption+100);
+				SET_CONTROL_VISIBLE(m_iLastMenuOption+100);
 			}
 
 			if (iFocusControl<0)
@@ -70,7 +70,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 
 			ON_POLL_BUTTON_CONDITION(CONTROL_BTN_XLINK_KAI, CGUIWindowHome, OnPollXLinkClient, 50);
 
-			SET_CONTROL_FOCUS(GetID(), iFocusControl, 0);
+			SET_CONTROL_FOCUS(iFocusControl, 0);
 			return true;
 		}
 
@@ -85,10 +85,10 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 				// make controls 101-120 invisible...
 				for (int i=101; i < 120; i++)
 				{
-						SET_CONTROL_HIDDEN(GetID(), i);
+						SET_CONTROL_HIDDEN(i);
 				}
 		
-				SET_CONTROL_VISIBLE(GetID(), iControl+100);
+				SET_CONTROL_VISIBLE(iControl+100);
 			    break;
 			}
 			if (iControl == CONTROL_BTN_SCROLLER)
@@ -100,9 +100,9 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 					// make controls 101-120 invisible...
 					for (int i=101; i < 120; i++)
 					{
-							SET_CONTROL_HIDDEN(GetID(), i);
+							SET_CONTROL_HIDDEN(i);
 					}
-					SET_CONTROL_VISIBLE(GetID(), iIconType);
+					SET_CONTROL_VISIBLE(iIconType);
 				}
 				break;
 			}
@@ -181,12 +181,12 @@ void CGUIWindowHome::Render()
 
   GetDate(szText,&time);
 	
-	SET_CONTROL_LABEL(GetID(), 200,szText);
-	SET_CONTROL_LABEL(GetID(), 201,szText);
+	SET_CONTROL_LABEL(200,szText);
+	SET_CONTROL_LABEL(201,szText);
 
 	GetTime(szText,&time);
 
-	SET_CONTROL_LABEL(GetID(), 201,szText);
+	SET_CONTROL_LABEL(201,szText);
 
   CGUIWindow::Render();
 }

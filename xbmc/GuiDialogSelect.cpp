@@ -80,7 +80,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 			const WCHAR* szText=g_localizeStrings.Get(127).c_str();
 			swprintf(wszText,L"%i %s", m_vecList.size(),szText);
 
-			SET_CONTROL_LABEL(GetID(), CONTROL_NUMBEROFFILES,wszText);
+			SET_CONTROL_LABEL(CONTROL_NUMBEROFFILES,wszText);
 
       if (m_bButtonEnabled)
       {

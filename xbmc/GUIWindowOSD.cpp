@@ -384,7 +384,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 				ToggleSubMenu(iControl, OSD_SUBMENU_BG_VOL);			// hide or show the sub-menu
 				if (m_bSubMenuOn)										// is sub menu on?
 				{
-					SET_CONTROL_VISIBLE(GetID(), OSD_VOLUMESLIDER);		// show the volume control
+					SET_CONTROL_VISIBLE(OSD_VOLUMESLIDER);		// show the volume control
 					FOCUS_CONTROL(GetID(), OSD_VOLUMESLIDER, 0);	// set focus to it
 				}
 				else													// sub menu is off
@@ -410,10 +410,10 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 					SetCheckmarkValue(g_application.m_pPlayer->GetSubtitleVisible(), OSD_SUBTITLE_ONOFF);
 
 					// show the controls on this sub menu
-					SET_CONTROL_VISIBLE(GetID(), OSD_SUBTITLE_DELAY);
-					SET_CONTROL_VISIBLE(GetID(), OSD_SUBTITLE_DELAY_LABEL);
-					SET_CONTROL_VISIBLE(GetID(), OSD_SUBTITLE_ONOFF);
-					SET_CONTROL_VISIBLE(GetID(), OSD_SUBTITLE_LIST);
+					SET_CONTROL_VISIBLE(OSD_SUBTITLE_DELAY);
+					SET_CONTROL_VISIBLE(OSD_SUBTITLE_DELAY_LABEL);
+					SET_CONTROL_VISIBLE(OSD_SUBTITLE_ONOFF);
+					SET_CONTROL_VISIBLE(OSD_SUBTITLE_LIST);
 
 					FOCUS_CONTROL(GetID(), OSD_SUBTITLE_DELAY, 0);	// set focus to the first control in our group
 					PopulateSubTitles();	// populate the list control with subtitles for this video
@@ -426,10 +426,10 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 				if (m_bSubMenuOn)
 				{
 					// show the controls on this sub menu
-					SET_CONTROL_VISIBLE(GetID(), OSD_CREATEBOOKMARK);
-					SET_CONTROL_VISIBLE(GetID(), OSD_BOOKMARKS_LIST);
-					SET_CONTROL_VISIBLE(GetID(), OSD_BOOKMARKS_LIST_LABEL);
-					SET_CONTROL_VISIBLE(GetID(), OSD_CLEARBOOKMARKS);
+					SET_CONTROL_VISIBLE(OSD_CREATEBOOKMARK);
+					SET_CONTROL_VISIBLE(OSD_BOOKMARKS_LIST);
+					SET_CONTROL_VISIBLE(OSD_BOOKMARKS_LIST_LABEL);
+					SET_CONTROL_VISIBLE(OSD_CLEARBOOKMARKS);
 
 					FOCUS_CONTROL(GetID(), OSD_CREATEBOOKMARK, 0);	// set focus to the first control in our group
 					PopulateBookmarks();	// populate the list control with bookmarks for this video
@@ -457,21 +457,21 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 					SetCheckmarkValue(g_guiSettings.GetBool("MyVideos.FrameRateConversions"), OSD_ADJFRAMERATE);
 
 					// show the controls on this sub menu
-					SET_CONTROL_VISIBLE(GetID(), OSD_VIDEOPOS);
-					SET_CONTROL_VISIBLE(GetID(), OSD_NONINTERLEAVED);
-					SET_CONTROL_VISIBLE(GetID(), OSD_NOCACHE);
-					SET_CONTROL_VISIBLE(GetID(), OSD_ADJFRAMERATE);
-					SET_CONTROL_VISIBLE(GetID(), OSD_VIDEOPOS_LABEL);
-					SET_CONTROL_VISIBLE(GetID(), OSD_ZOOM);
-					SET_CONTROL_VISIBLE(GetID(), OSD_ZOOMLABEL);
-					SET_CONTROL_VISIBLE(GetID(), OSD_PIXELRATIO);
-					SET_CONTROL_VISIBLE(GetID(), OSD_PIXELRATIO_LABEL);
-					SET_CONTROL_VISIBLE(GetID(), OSD_BRIGHTNESS);
-					SET_CONTROL_VISIBLE(GetID(), OSD_BRIGHTNESSLABEL);
-					SET_CONTROL_VISIBLE(GetID(), OSD_CONTRAST);
-					SET_CONTROL_VISIBLE(GetID(), OSD_CONTRASTLABEL);
-					SET_CONTROL_VISIBLE(GetID(), OSD_GAMMA);
-					SET_CONTROL_VISIBLE(GetID(), OSD_GAMMALABEL);
+					SET_CONTROL_VISIBLE(OSD_VIDEOPOS);
+					SET_CONTROL_VISIBLE(OSD_NONINTERLEAVED);
+					SET_CONTROL_VISIBLE(OSD_NOCACHE);
+					SET_CONTROL_VISIBLE(OSD_ADJFRAMERATE);
+					SET_CONTROL_VISIBLE(OSD_VIDEOPOS_LABEL);
+					SET_CONTROL_VISIBLE(OSD_ZOOM);
+					SET_CONTROL_VISIBLE(OSD_ZOOMLABEL);
+					SET_CONTROL_VISIBLE(OSD_PIXELRATIO);
+					SET_CONTROL_VISIBLE(OSD_PIXELRATIO_LABEL);
+					SET_CONTROL_VISIBLE(OSD_BRIGHTNESS);
+					SET_CONTROL_VISIBLE(OSD_BRIGHTNESSLABEL);
+					SET_CONTROL_VISIBLE(OSD_CONTRAST);
+					SET_CONTROL_VISIBLE(OSD_CONTRASTLABEL);
+					SET_CONTROL_VISIBLE(OSD_GAMMA);
+					SET_CONTROL_VISIBLE(OSD_GAMMALABEL);
 					FOCUS_CONTROL(GetID(), OSD_VIDEOPOS, 0);	// set focus to the first control in our group
 				}
 			}
@@ -485,9 +485,9 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 					SetSliderValue(-10.0f, 10.0f, g_application.m_pPlayer->GetAVDelay(), OSD_AVDELAY);
 				
 					// show the controls on this sub menu
-					SET_CONTROL_VISIBLE(GetID(), OSD_AVDELAY);
-					SET_CONTROL_VISIBLE(GetID(), OSD_AVDELAY_LABEL);
-					SET_CONTROL_VISIBLE(GetID(), OSD_AUDIOSTREAM_LIST);
+					SET_CONTROL_VISIBLE(OSD_AVDELAY);
+					SET_CONTROL_VISIBLE(OSD_AVDELAY_LABEL);
+					SET_CONTROL_VISIBLE(OSD_AUDIOSTREAM_LIST);
 
 					FOCUS_CONTROL(GetID(), OSD_AVDELAY, 0);	// set focus to the first control in our group
 					PopulateAudioStreams();		// populate the list control with audio streams for this video
@@ -605,7 +605,7 @@ void CGUIWindowOSD::ToggleSubMenu(DWORD iButtonID, DWORD iBackID)
 	{
 		m_bSubMenuOn = false;	// toggle it ready for the new menu requested
 		// set the current menu invisible
-		SET_CONTROL_HIDDEN(GetID(), m_iActiveMenu);
+		SET_CONTROL_HIDDEN(m_iActiveMenu);
 	}
 
 	// Get button position

@@ -79,7 +79,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 			if ((m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST) && m_vecItems.size()<=0)
 			{
 				m_iLastControl=CONTROL_BTNVIEWASICONS;
-				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
+				SET_CONTROL_FOCUS(m_iLastControl, 0);
 			}
 
 		}
@@ -103,28 +103,28 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 			if ((m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST) && m_vecItems.size()<=0)
 			{
 				m_iLastControl=CONTROL_BTNVIEWASICONS;
-				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
+				SET_CONTROL_FOCUS(m_iLastControl, 0);
 			}
 
 			if (m_iItemSelected>-1)
 			{
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_iItemSelected);
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_iItemSelected);
+				CONTROL_SELECT_ITEM(CONTROL_LIST,m_iItemSelected);
+				CONTROL_SELECT_ITEM(CONTROL_THUMBS,m_iItemSelected);
 			}
 
 			if (g_playlistPlayer.Repeated(PLAYLIST_VIDEO))
 			{
-				CONTROL_SELECT(GetID(), CONTROL_BTNREPEAT);
+				CONTROL_SELECT(CONTROL_BTNREPEAT);
 			}
 
 			if (g_playlistPlayer.RepeatedOne(PLAYLIST_VIDEO))
 			{
-				CONTROL_SELECT(GetID(), CONTROL_BTNREPEATONE);
+				CONTROL_SELECT(CONTROL_BTNREPEATONE);
 			}
 
 			if (g_playlistPlayer.ShuffledPlay(PLAYLIST_VIDEO))
 			{
-				CONTROL_SELECT(GetID(), CONTROL_BTNSHUFFLE);
+				CONTROL_SELECT(CONTROL_BTNSHUFFLE);
 			}
 
 			if (g_application.IsPlayingVideo() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_VIDEO)
@@ -132,8 +132,8 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 				int iSong=g_playlistPlayer.GetCurrentSong();
 				if (iSong >= 0 && iSong<=(int)m_vecItems.size())
 				{
-					CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iSong);
-					CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iSong);
+					CONTROL_SELECT_ITEM(CONTROL_LIST,iSong);
+					CONTROL_SELECT_ITEM(CONTROL_THUMBS,iSong);
 				}
 			}
 			return true;
@@ -260,8 +260,8 @@ void CGUIWindowVideoPlaylist::OnAction(const CAction &action)
 
 void CGUIWindowVideoPlaylist::SetSelectedItem(int index)
 {
-  CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,   index);
-  CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS, index);
+  CONTROL_SELECT_ITEM(CONTROL_LIST,   index);
+  CONTROL_SELECT_ITEM(CONTROL_THUMBS, index);
 }
 
 void CGUIWindowVideoPlaylist::MoveCurrentPlayListItem(int iAction)
@@ -309,7 +309,7 @@ void CGUIWindowVideoPlaylist::ClearPlayList()
 	}
 	UpdateListControl();
 	UpdateButtons();
-	SET_CONTROL_FOCUS(GetID(), CONTROL_BTNVIEWASICONS, 0);
+	SET_CONTROL_FOCUS(CONTROL_BTNVIEWASICONS, 0);
 }
 
 void CGUIWindowVideoPlaylist::ClearFileItems()
@@ -376,34 +376,34 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
 	//	Update playlist buttons
 	if (m_vecItems.size() )
 	{
-		CONTROL_ENABLE(GetID(), CONTROL_BTNCLEAR);
-		CONTROL_ENABLE(GetID(), CONTROL_BTNSAVE);
-		CONTROL_ENABLE(GetID(), CONTROL_BTNPLAY);
-		CONTROL_ENABLE(GetID(), CONTROL_BTNSHUFFLE);
-		CONTROL_ENABLE(GetID(), CONTROL_BTNREPEAT);
-		CONTROL_ENABLE(GetID(), CONTROL_BTNREPEATONE);
+		CONTROL_ENABLE(CONTROL_BTNCLEAR);
+		CONTROL_ENABLE(CONTROL_BTNSAVE);
+		CONTROL_ENABLE(CONTROL_BTNPLAY);
+		CONTROL_ENABLE(CONTROL_BTNSHUFFLE);
+		CONTROL_ENABLE(CONTROL_BTNREPEAT);
+		CONTROL_ENABLE(CONTROL_BTNREPEATONE);
 
 		if (g_application.IsPlayingVideo() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_VIDEO)
 		{
-			CONTROL_ENABLE(GetID(), CONTROL_BTNNEXT);
-			CONTROL_ENABLE(GetID(), CONTROL_BTNPREVIOUS);
+			CONTROL_ENABLE(CONTROL_BTNNEXT);
+			CONTROL_ENABLE(CONTROL_BTNPREVIOUS);
 		}
 		else
 		{
-			CONTROL_DISABLE(GetID(), CONTROL_BTNNEXT);
-			CONTROL_DISABLE(GetID(), CONTROL_BTNPREVIOUS);
+			CONTROL_DISABLE(CONTROL_BTNNEXT);
+			CONTROL_DISABLE(CONTROL_BTNPREVIOUS);
 		}
 	}
 	else
 	{
-		CONTROL_DISABLE(GetID(), CONTROL_BTNCLEAR);
-		CONTROL_DISABLE(GetID(), CONTROL_BTNSAVE);
-		CONTROL_DISABLE(GetID(), CONTROL_BTNSHUFFLE);
-		CONTROL_DISABLE(GetID(), CONTROL_BTNPLAY);
-		CONTROL_DISABLE(GetID(), CONTROL_BTNNEXT);
-		CONTROL_DISABLE(GetID(), CONTROL_BTNPREVIOUS);
-		CONTROL_DISABLE(GetID(), CONTROL_BTNREPEAT);
-		CONTROL_DISABLE(GetID(), CONTROL_BTNREPEATONE);
+		CONTROL_DISABLE(CONTROL_BTNCLEAR);
+		CONTROL_DISABLE(CONTROL_BTNSAVE);
+		CONTROL_DISABLE(CONTROL_BTNSHUFFLE);
+		CONTROL_DISABLE(CONTROL_BTNPLAY);
+		CONTROL_DISABLE(CONTROL_BTNNEXT);
+		CONTROL_DISABLE(CONTROL_BTNPREVIOUS);
+		CONTROL_DISABLE(CONTROL_BTNREPEAT);
+		CONTROL_DISABLE(CONTROL_BTNREPEATONE);
 	}
 
 	//	Update listcontrol and and view by icon/list button
@@ -415,7 +415,7 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
 		  CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_LIST,0,0,NULL);
 		  g_graphicsContext.SendMessage(msg);
 		  int iItem=msg.GetParam1();
-		  CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem);
+		  CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem);
 	  }
   }
 	pControl=GetControl(CONTROL_LIST);
@@ -426,12 +426,12 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
 		  CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_THUMBS,0,0,NULL);
 		  g_graphicsContext.SendMessage(msg);
 		  int iItem=msg.GetParam1();
-		  CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem);
+		  CONTROL_SELECT_ITEM(CONTROL_LIST,iItem);
 	  }
   }
 
-	SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
-	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
+	SET_CONTROL_HIDDEN(CONTROL_LIST);
+	SET_CONTROL_HIDDEN(CONTROL_THUMBS);
 
 	bool bViewIcon = false;
   int iString;
@@ -453,14 +453,14 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
 
 	if (bViewIcon) 
   {
-    SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
+    SET_CONTROL_VISIBLE(CONTROL_THUMBS);
   }
   else
   {
-    SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
+    SET_CONTROL_VISIBLE(CONTROL_LIST);
   }
 
-	SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
+	SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS,iString);
 
 	//	Update object count label
 	int iItems=m_vecItems.size();
@@ -473,17 +473,17 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
   const WCHAR* szText=g_localizeStrings.Get(127).c_str();
   swprintf(wszText,L"%i %s", iItems,szText);
 
-	SET_CONTROL_LABEL(GetID(), CONTROL_LABELFILES,wszText);
+	SET_CONTROL_LABEL(CONTROL_LABELFILES,wszText);
 
 	//	Update Repeat/Repeat One button
 	if (g_playlistPlayer.Repeated(PLAYLIST_VIDEO))
 	{
-		CONTROL_SELECT(GetID(), CONTROL_BTNREPEAT);
+		CONTROL_SELECT(CONTROL_BTNREPEAT);
 	}
 
 	if (g_playlistPlayer.RepeatedOne(PLAYLIST_VIDEO))
 	{
-		CONTROL_SELECT(GetID(), CONTROL_BTNREPEATONE);
+		CONTROL_SELECT(CONTROL_BTNREPEATONE);
 	}
 
 
@@ -535,8 +535,8 @@ void CGUIWindowVideoPlaylist::ShowThumbPanel()
   }
   if (iItem>-1)
   {
-    CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem);
-    CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem);
+    CONTROL_SELECT_ITEM(CONTROL_LIST,iItem);
+    CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem);
   }
 }
 
@@ -615,11 +615,11 @@ void CGUIWindowVideoPlaylist::Update(const CStdString &strDirectory)
 	{
 		if (ViewByIcon()) 
 		{	
-			SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
+			SET_CONTROL_FOCUS(CONTROL_THUMBS, 0);
 		}
 		else 
 		{
-			SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+			SET_CONTROL_FOCUS(CONTROL_LIST, 0);
 		}
 	}
 
@@ -644,8 +644,8 @@ void CGUIWindowVideoPlaylist::Update(const CStdString &strDirectory)
 			GetDirectoryHistoryString(pItem, strHistory);
 			if (strHistory==strSelectedItem)
 			{
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,i);
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,i);
+				CONTROL_SELECT_ITEM(CONTROL_LIST,i);
+				CONTROL_SELECT_ITEM(CONTROL_THUMBS,i);
 				bSelectedFound=true;
 			}
 		}
@@ -719,12 +719,12 @@ void CGUIWindowVideoPlaylist::RemovePlayListItem(int iItem)
 
 	if (m_vecItems.size()<=0)
 	{
-		SET_CONTROL_FOCUS(GetID(), CONTROL_BTNVIEWASICONS, 0);
+		SET_CONTROL_FOCUS(CONTROL_BTNVIEWASICONS, 0);
 	}
 	else
 	{
-		CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem-1)
-		CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem-1)
+		CONTROL_SELECT_ITEM(CONTROL_LIST,iItem-1)
+		CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem-1)
 	}
 }
 
