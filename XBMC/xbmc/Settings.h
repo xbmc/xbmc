@@ -1,7 +1,7 @@
 #pragma once
 
 #include "tinyxml/tinyxml.h"
-#define CONFIG_VERSION 0x0008
+#define CONFIG_VERSION 0x0009
 
 #include <xtl.h>
 #include "stdstring.h"
@@ -159,6 +159,7 @@ public:
 		bool			m_bAudioOnAllSpeakers;
 		int				m_iChannels;
 		bool			m_bAC3PassThru;
+		bool			m_bUseID3;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;
