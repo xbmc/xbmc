@@ -80,17 +80,19 @@ static int audio_init(int rate,int channels,int format,int flags)
 		bool bAC3PassThru=false;
 		
 		int ao_format_bits = audio_out_format_bits(format); 
-    if (format==AFMT_AC3) ao_format_bits=16;
+		if (format==AFMT_AC3) ao_format_bits=16;
 
-		mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
-		if (strstr(strAudioCodec,"SPDIF"))
+		// Check whether we are passing digital output direct through.
+		// Anything with 48kHz 2 channel audio can be passed direct.
+		if (g_stSettings.m_bUseDigitalOutput)
 		{
-      if (g_stSettings.m_bUseDigitalOutput && (g_stSettings.m_bDD_DTSMultiChannelPassThrough || g_stSettings.m_bDDStereoPassThrough) )
-      {
-			  bAC3PassThru=true;
-      }
+			mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
+			// Check that we are allowed to pass through DD or DTS
+			if (strstr(strAudioCodec,"SPDIF") && (g_stSettings.m_bDD_DTSMultiChannelPassThrough || g_stSettings.m_bDDStereoPassThrough))
+				bAC3PassThru=true;
+			else if (lSampleRate == 48000 && iChannels == 2) // Check for stereo 48kHz audio for direct digital out
+				bAC3PassThru=true;
 		}
-
 		pao_data=GetAOData();
 		if (bAC3PassThru)
 		{
