@@ -150,18 +150,6 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 				int nPreviousItem=(int)HIWORD(message.GetParam2());
 
 				int nFolderCount=CUtil::GetFolderCount(m_vecItems);
-				//if (nFolderCount>0)
-				//	nFolderCount++;
-				//for (int i=0; i < (int)m_vecItems.size(); ++i)
-				//{
-				//	CFileItem* pItem=m_vecItems[i];
-				//	if (pItem && pItem->m_bIsFolder)
-				//	{
-				//		nFolderCount++;
-				//	}
-				//	else
-				//		break;
-				//}
 
 				//	is the previous item in this directory
 				for (int i=nFolderCount, n=0; i<(int)m_vecItems.size(); i++)
