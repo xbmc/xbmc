@@ -176,6 +176,7 @@
 
 #define WINDOW_DIALOG_YES_NO          100
 #define WINDOW_DIALOG_PROGRESS        101
+#define WINDOW_DIALOG_INVITE	      102
 #define WINDOW_MUSIC_PLAYLIST         500
 #define WINDOW_MUSIC_FILES            501
 #define WINDOW_MUSIC_ALBUM            502
@@ -193,6 +194,7 @@
 #define WINDOW_SLIDESHOW              2007
 #define WINDOW_DIALOG_FILESTACKING    2008
 #define WINDOW_WEATHER                2600
+#define WINDOW_BUDDIES                2700
 #define WINDOW_SCREENSAVER            2900
 #define WINDOW_OSD                    2901
 
