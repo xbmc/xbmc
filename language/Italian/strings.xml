@@ -109,7 +109,7 @@
   </string>
  <string>
   <id>100</id> 
-  <value>Vedi icone</value> 
+  <value>Vedi Icone</value> 
   </string>
  <string>
   <id>101</id> 
@@ -145,11 +145,11 @@
   </string>
  <string>
   <id>109</id> 
-  <value>Crea vignette</value> 
+  <value>Crea Icone</value> 
   </string>
  <string>
   <id>110</id> 
-  <value>Crea vignette</value> 
+  <value>Crea Icone</value> 
   </string>
  <string>
   <id>111</id> 
@@ -1357,7 +1357,7 @@
   </string>
  <string>
   <id>415</id> 
-  <value>Downloading vignette...</value> 
+  <value>Scaricamento Icone...</value> 
   </string>
  <string>
   <id>416</id> 
@@ -2235,7 +2235,7 @@
   </string>
  <string>
   <id>12008</id> 
-  <value>Filestacking dialog</value> 
+  <value>Casella di raggruppo</value> 
   </string>
  <string>
   <id>12600</id> 
@@ -2247,7 +2247,7 @@
   </string>
  <string>
   <id>12901</id> 
-  <value>Fullscreen OSD</value> 
+  <value>OSD a schermo intero</value> 
   </string>
  <string>
   <id>13000</id> 
@@ -2271,7 +2271,7 @@
   </string>
  <string>
   <id>13100</id>
-  <value>Flicker filter</value>
+  <value>Filtro sfarfallio</value>
  </string>
  <string>
   <id>13200</id>
@@ -2315,7 +2315,7 @@
 </string>
   <string>
 <id>13304</id>
-<value>Flip Charset</value>
+<value>Abilita Flipping in stringhe bidirezionali</value>
 </string>
  <string>
 <id>13305</id>
@@ -2339,18 +2339,85 @@
 </string>
 <string>
 <id>13310</id>
-<value>Zoom in Transizione</value>
+<value>Effetto Zoom</value>
 </string>
 <string>
 <id>13311</id>
-<value>Spostamento in Transizione</value>
+<value>Effetto spostamento</value>
 </string>
 <string>
 <id>13312</id>
-<value>Riduzione Bordo</value>
+<value>Riduzione Barra nera</value>
 </string>
 <string>
 <id>13313</id>
 <value>Reset/Riavvio</value>
+</string>
+  <string><id>13314</id>
+<value>Timeout OSD musica</value>
+</string>
+  <string>
+<id>13315</id>
+<value>Crea Icone</value>
+</string>
+  <string>
+<id>13316</id>
+<value>Icone Ricorsive</value>
+</string>
+  <string>
+<id>13317</id>
+<value>Vedi Slideshow</value>
+</string>
+  <string>
+<id>13318</id>
+<value>Slideshow Ricorsivo</value>
+</string>
+  <string>
+<id>13319</id>
+<value>Ordine sparso</value>
+</string>
+  <string>
+<id>13320</id>
+<value>Stereo</value>
+</string>
+  <string>
+<id>13321</id>
+<value>Solo sinistra</value>
+</string>
+  <string>
+<id>13322</id>
+<value>Solo destra</value>
+</string>
+  <string>
+<id>14000</id>
+<value>Unisci: Spento</value>
+</string>
+  <string>
+<id>14001</id>
+<value>Unisci: Semplice</value>
+</string>
+  <string>
+<id>14002</id>
+<value>Unisci: Esteso</value>
+</string>
+  <string>
+<id>14003</id>
+<value>Scaricamento file playlist...</value>
+</string>
+  <string>
+<id>14004</id>
+<value>Scaricamento lista streams...</value>
+</string>
+  <string>
+<id>14005</id>
+<value>Esamino lista streams...</value>
+</string>
+  <string>
+<id>14006</id>
+<value>Scaricamento lista streams fallito</value>
+</string>
+  <string>
+<id>14007</id>
+<value>Scaricamento file playlist fallito</value>
 </string>
 </strings>
