@@ -959,11 +959,10 @@ void CXbmcWeb::SetCurrentMediaItem(CFileItem& newItem)
 		//	Look if we have this file in database...
 		bool bFound=false;
 		CSong song;
-		CMusicDatabase dbs;
-		if (dbs.Open())
+		if (g_musicDatabase.Open())
 		{
-			bFound=dbs.GetSongByFileName(newItem.m_strPath, song);
-			dbs.Close();
+			bFound=g_musicDatabase.GetSongByFileName(newItem.m_strPath, song);
+			g_musicDatabase.Close();
 		}
 		if (!bFound && g_stSettings.m_bUseID3)
 		{

@@ -505,7 +505,7 @@ void CGUIWindowMusicPlayList::OnRetrieveMusicInfo(VECFILEITEMS& items)
 		return;
 
 	MAPSONGS songsMap;
-	m_database.GetSongsByPathes(m_Pathes, songsMap);
+	g_musicDatabase.GetSongsByPathes(m_Pathes, songsMap);
 
 	CSong song;
 	for (int i=0; i<(int)m_vecItems.size(); i++)

@@ -97,7 +97,6 @@ protected:
 	typedef vector <CFileItem*>::iterator ivecItems;	///< CFileItem* vector Iterator
 	CGUIDialogProgress*				m_dlgProgress;	///< Progress dialog
 	CDirectoryHistory					m_history;	///< Previous items selected as string for list/thumb control
-	static CMusicDatabase			m_database;	///< Instance of Musicdatabase for all windows
 	/*!
 		\brief Is list, thumb or thumb control with large icons shown.
 
