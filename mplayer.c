@@ -102,6 +102,7 @@ static unsigned int ffrw_starttime=0;
 static int ffrw_startpts=0;
 static int ffrw_sstepframes=0;
 static int ffrw_sstepnum=0;
+void ffrw_setspeed(int iSpeed);
 
 //override exit_player_with_rc macro :)
 #define exit_player_with_rc(a, b) \
@@ -3184,6 +3185,8 @@ if(auto_quality>0){
     osd_function = OSD_REW;
     if(ffrw_sstepnum >= ffrw_sstepframes && blit_frame)
     {
+      int ispeed = ffrw_speed; //Copy this as it might change during this loop
+
       //Don't seek forward, and only display frames every half second
       while(rel_seek_secs > -0.5f) 
       {
@@ -3239,8 +3242,9 @@ if(auto_quality>0){
   {
 
     //Tell mplayer to seek a short bit ahead. 
-    //Attempt to seek one frame ahead, will likely meen next keyframe
+    //Attempt to seek one frame ahead, will likely mean next keyframe
     rel_seek_secs=1/sh_video->fps + 0.00001f;
+    abs_seek_pos=0;
 
     //The code below tries to sync up audio to current video location but it doesn't
     //work properly so i've reverted it to seeking a short bit instead
@@ -3401,10 +3405,14 @@ if (stream->type==STREAMTYPE_DVDNAV && dvd_nav_still)
     } break;
     case MP_CMD_SPEED_SET : {
       float v = cmd->args[0].v.f;
+#ifdef _XBOX //Use this to set speed in correct thread.
+      ffrw_setspeed((int)v);
+#else
       playback_speed = v;
       if (sh_video)
       osd_show_speed = sh_video->fps;
       build_afilter_chain(sh_audio, &ao_data);
+#endif
     } break;
     case MP_CMD_FRAME_STEP :
     case MP_CMD_PAUSE : {
@@ -5066,6 +5074,15 @@ int mplayer_getTime()
 
 void mplayer_ToFFRW(int iSpeed)
 {
+  char buff[15];
+  sprintf(buff, "speed_set %d", iSpeed);
+  mp_input_queue_cmd(mp_input_parse_cmd(buff));
+}
+
+//Function is used by mplayer thread to set speed without threading issues
+//It isn't and should not be exported. Will be called after a call to mplayer_ToFFRW
+void ffrw_setspeed(int iSpeed)
+{
   static int oldframedrop=-1;
 
   m_iPlaySpeed=iSpeed;
@@ -5136,7 +5153,6 @@ void mplayer_ToFFRW(int iSpeed)
   }
   else if (iSpeed > 1) //Can be handled by normal speedup code
   {
-      ffrw_speed = 0; //To make sure we don't happen to modify stuff while in use
       ffrw_startpts=voldpts;
       ffrw_starttime=GetTimerMS();
       ffrw_sstepnum=0;
@@ -5160,7 +5176,6 @@ void mplayer_ToFFRW(int iSpeed)
   }
   else if (iSpeed < 0)
   {
-      ffrw_speed=0; //To make sure we don't happen to modify stuff while in use
       ffrw_startpts=voldpts;
       ffrw_starttime=GetTimerMS();
       ffrw_sstepnum=0;
