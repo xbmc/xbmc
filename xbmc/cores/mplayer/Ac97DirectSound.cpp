@@ -90,25 +90,22 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback,int iChannels, unsi
 
 	
 	m_pDigitalOutput=NULL;
-	m_pAnalogOutput=NULL;
 	hr=Ac97CreateMediaObject(DSAC97_CHANNEL_DIGITAL, NULL, NULL, &m_pDigitalOutput);
 	if ( hr !=DS_OK )
 	{
 		OutputDebugString("failed to create digital Ac97CreateMediaObject()\n");
 	}
 
-	hr=Ac97CreateMediaObject(DSAC97_CHANNEL_ANALOG, NULL, NULL, &m_pAnalogOutput);
-  if ( hr !=DS_OK )
-	{
-		OutputDebugString("failed to create analog Ac97CreateMediaObject()\n");
-	}
   XMEDIAINFO info;
   m_pDigitalOutput->GetInfo(&info);
   int fSize = 1024 / info.dwInputSize;
   fSize *= info.dwInputSize;
   m_dwPacketSize=(int)fSize;
-  for (DWORD dwX=0; dwX < m_dwNumPackets ; dwX++)
-    m_pbSampleData[dwX] = (BYTE*)XPhysicalAlloc( m_dwPacketSize, MAXULONG_PTR,0,PAGE_READWRITE|PAGE_NOCACHE);
+
+	// XphysicalAlloc has page (4k) granularity, so allocate all the buffers in one chunk to avoid wasting 3k per buffer
+	m_pbSampleData[0] = (BYTE*)XPhysicalAlloc(m_dwPacketSize * m_dwNumPackets, MAXULONG_PTR,0,PAGE_READWRITE|PAGE_WRITECOMBINE);
+	for (DWORD dwX=1; dwX < m_dwNumPackets; dwX++)
+		m_pbSampleData[dwX] = m_pbSampleData[dwX-1] + m_dwPacketSize;
 	
 	bool bAC3DTS=true;
 	hr=m_pDigitalOutput->SetMode(bAC3DTS ? DSAC97_MODE_ENCODED : DSAC97_MODE_PCM);
@@ -127,11 +124,6 @@ HRESULT CAc97DirectSound::Deinitialize()
 {
 	OutputDebugString("CAc97DirectSound::Deinitialize\n");
 	m_bIsAllocated = false;
-	if (m_pAnalogOutput)
-	{
-		m_pAnalogOutput->Release();
-		m_pAnalogOutput=NULL;
-	}
 	if (m_pDigitalOutput)
 	{
 		m_pDigitalOutput->Release();
@@ -143,11 +135,9 @@ HRESULT CAc97DirectSound::Deinitialize()
 		m_pDSound =NULL;
 	}
 
-	for (DWORD dwX=0; dwX < m_dwNumPackets ; dwX++)
-	{
-		if (m_pbSampleData[dwX]) XPhysicalFree(m_pbSampleData[dwX]) ;
-		m_pbSampleData[dwX]=NULL;
-	}
+	if (m_pbSampleData[0])
+		XPhysicalFree(m_pbSampleData[0]);
+	memset(m_pbSampleData, 0, m_dwNumPackets * sizeof(m_pbSampleData[0]));
 
 	if ( m_adwStatus )
 		delete [] m_adwStatus;
