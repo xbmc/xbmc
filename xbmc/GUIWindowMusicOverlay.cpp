@@ -26,6 +26,8 @@ using namespace MUSIC_INFO;
 CGUIWindowMusicOverlay::CGUIWindowMusicOverlay()
 :CGUIWindow(0)
 {
+  m_iFrames=0;
+  m_iPosOrgIcon=0;
 	m_pTexture=NULL;
 }
 
@@ -44,12 +46,85 @@ bool CGUIWindowMusicOverlay::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-
+void CGUIWindowMusicOverlay::SetPosition(int iControl, int iStep, int iSteps,int iOrgPos)
+{
+  int iScreenHeight=g_graphicsContext.GetHeight();
+  float fDiff=(float)iScreenHeight-(float)iOrgPos;
+  float fPos = fDiff / ((float)iSteps);
+  fPos *= -((float)iStep);
+  fPos += (float)iScreenHeight;
+  CGUIControl* pControl=(CGUIControl*)GetControl(iControl);
+  pControl->SetPosition(pControl->GetXPosition(), (int)fPos);
+}
 void CGUIWindowMusicOverlay::Render()
 {
 	if (!g_application.m_pPlayer) return;
 	if ( g_application.m_pPlayer->HasVideo()) return;
-
+  if (m_iPosOrgIcon==0)
+  {
+    m_iPosOrgRectangle=GetControl(0)->GetYPosition();
+    m_iPosOrgIcon=GetControl(CONTROL_LOGO_PIC)->GetYPosition();
+    m_iPosOrgPlay=GetControl(CONTROL_PLAY_LOGO)->GetYPosition();
+    m_iPosOrgPause=GetControl(CONTROL_PAUSE_LOGO)->GetYPosition();
+    m_iPosOrgInfo=GetControl(CONTROL_INFO)->GetYPosition();
+    m_iPosOrgPlayTime=GetControl(CONTROL_PLAYTIME)->GetYPosition();
+    m_iPosOrgBigPlayTime=GetControl(CONTROL_BIG_PLAYTIME)->GetYPosition();
+  }  
+  if ( m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION)
+  {
+    SetPosition(0, 50,50,m_iPosOrgRectangle);
+    SetPosition(CONTROL_LOGO_PIC, 50,50,m_iPosOrgIcon);
+    SetPosition(CONTROL_PLAY_LOGO, 50,50,m_iPosOrgPlay);
+    SetPosition(CONTROL_PAUSE_LOGO, 50,50,m_iPosOrgPause);
+    SetPosition(CONTROL_INFO, 50,50,m_iPosOrgInfo);
+    SetPosition(CONTROL_PLAYTIME, 50,50,m_iPosOrgPlayTime);
+    SetPosition(CONTROL_BIG_PLAYTIME, 50,50,m_iPosOrgBigPlayTime);
+    m_iFrames=0;
+  }
+  else
+  {
+    int iSteps=25;
+    if (m_iFrames < iSteps)
+    {
+      // scroll up
+      SetPosition(0, m_iFrames,iSteps,m_iPosOrgRectangle);
+      SetPosition(CONTROL_LOGO_PIC, m_iFrames,iSteps,m_iPosOrgIcon);
+      SetPosition(CONTROL_PLAY_LOGO, m_iFrames,iSteps,m_iPosOrgPlay);
+      SetPosition(CONTROL_PAUSE_LOGO, m_iFrames,iSteps,m_iPosOrgPause);
+      SetPosition(CONTROL_INFO, m_iFrames,iSteps,m_iPosOrgInfo);
+      SetPosition(CONTROL_PLAYTIME, m_iFrames,iSteps,m_iPosOrgPlayTime);
+      SetPosition(CONTROL_BIG_PLAYTIME, m_iFrames,iSteps,m_iPosOrgBigPlayTime);
+      m_iFrames++;
+    }
+    else if (m_iFrames >=iSteps && m_iFrames<=5*iSteps+iSteps)
+    {
+      //show
+      SetPosition(0, iSteps,iSteps,m_iPosOrgRectangle);
+      SetPosition(CONTROL_LOGO_PIC, iSteps,iSteps,m_iPosOrgIcon);
+      SetPosition(CONTROL_PLAY_LOGO, iSteps,iSteps,m_iPosOrgPlay);
+      SetPosition(CONTROL_PAUSE_LOGO, iSteps,iSteps,m_iPosOrgPause);
+      SetPosition(CONTROL_INFO, iSteps,iSteps,m_iPosOrgInfo);
+      SetPosition(CONTROL_PLAYTIME, iSteps,iSteps,m_iPosOrgPlayTime);
+      SetPosition(CONTROL_BIG_PLAYTIME, iSteps,iSteps,m_iPosOrgBigPlayTime);
+      m_iFrames++;
+    }
+    else if (m_iFrames >=5*iSteps+iSteps )
+    {
+      if (m_iFrames > 5*iSteps+2*iSteps) 
+      {
+        m_iFrames=5*iSteps+2*iSteps;
+      }
+      //scroll down
+      SetPosition(0,                    5*iSteps+2*iSteps-m_iFrames,iSteps,m_iPosOrgRectangle);
+      SetPosition(CONTROL_LOGO_PIC,     5*iSteps+2*iSteps-m_iFrames,iSteps,m_iPosOrgIcon);
+      SetPosition(CONTROL_PLAY_LOGO,    5*iSteps+2*iSteps-m_iFrames,iSteps,m_iPosOrgPlay);
+      SetPosition(CONTROL_PAUSE_LOGO,   5*iSteps+2*iSteps-m_iFrames,iSteps,m_iPosOrgPause);
+      SetPosition(CONTROL_INFO,         5*iSteps+2*iSteps-m_iFrames,iSteps,m_iPosOrgInfo);
+      SetPosition(CONTROL_PLAYTIME,     5*iSteps+2*iSteps-m_iFrames,iSteps,m_iPosOrgPlayTime);
+      SetPosition(CONTROL_BIG_PLAYTIME, 5*iSteps+2*iSteps-m_iFrames,iSteps,m_iPosOrgBigPlayTime);
+      m_iFrames++;
+    }
+  }
 	__int64 lPTS=g_application.m_pPlayer->GetPTS();
   int hh = (int)(lPTS / 36000) % 100;
   int mm = (int)((lPTS / 600) % 60);
@@ -166,6 +241,8 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 
 	void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
 	{
+
+    m_iFrames=0;
 		CStdString strAlbum=strFile;
 		if (m_pTexture)
 		{
