@@ -39,6 +39,7 @@ public:
   CGUIWindow(DWORD dwID);
   virtual ~CGUIWindow(void);
   bool            		Load(const CStdString& strFileName, bool bContainsPath = false);
+  virtual void			SetPosition(DWORD dwPosX, DWORD dwPosY);
   virtual void    		Render();
   virtual void    		OnAction(const CAction &action);
   virtual bool    		OnMessage(CGUIMessage& message);
@@ -82,6 +83,9 @@ protected:
   DWORD  m_dwPreviousWindowId;
   DWORD  m_dwDefaultFocusControlID;
   vector<CPosition> m_vecPositions;
+  bool m_bRelativeCoords;
+  DWORD m_dwPosX;
+  DWORD m_dwPosY;
 };
 
 #endif
