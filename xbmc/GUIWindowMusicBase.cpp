@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "guiwindowmusicbase.h"
 #include "settings.h"
 #include "sectionloader.h"

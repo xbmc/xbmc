@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 // FileSmb.cpp: implementation of the CFileSMB class.
 
 //

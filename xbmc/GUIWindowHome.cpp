@@ -1,4 +1,6 @@
 
+
+#include "stdafx.h"
 #include "guiwindowhome.h"
 #include "localizestrings.h"
 #include "texturemanager.h"

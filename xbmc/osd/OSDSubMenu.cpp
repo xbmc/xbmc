@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include ".\osdsubmenu.h"
 #include "localizestrings.h"
 #include "guifont.h"

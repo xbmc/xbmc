@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "GUIWindowSettingsScreenCalibration.h"
 #include "settings.h"
 #include "stdstring.h"

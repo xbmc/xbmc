@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "autorun.h"
 #include "application.h"
 #include "DetectDVDType.h"

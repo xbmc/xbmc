@@ -1,4 +1,5 @@
 
+#include "stdafx.h"
 #include "GUIWindowSettings.h"
 
 CGUIWindowSettings::CGUIWindowSettings(void)

@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "xtl.h"
 #include "oggtag.h"
 

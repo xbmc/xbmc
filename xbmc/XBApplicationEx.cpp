@@ -9,6 +9,8 @@
 //
 // Copyright (c) Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------------
+
+#include "stdafx.h"
 #include "XBApplicationEx.h"
 #include "utils/log.h"
 #include <D3D8Perf.h>

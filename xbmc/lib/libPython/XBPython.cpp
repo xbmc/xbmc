@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "XBPython.h"
 #include "..\..\sectionLoader.h"
 #include "ActionManager.h"

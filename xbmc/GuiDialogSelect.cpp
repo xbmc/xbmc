@@ -1,4 +1,5 @@
 
+#include "stdafx.h"
 #include "GUIDialogSelect.h"
 #include "localizestrings.h"
 #include "application.h"

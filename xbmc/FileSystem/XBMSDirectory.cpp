@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "xbmsdirectory.h"
 #include "../url.h"
 #include "../util.h"

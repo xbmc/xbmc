@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 //------------------------------------------------------------------------
 // Copyright (C) Sewell Development Corporation, 1994 - 2000.
 //     Web: www.sewelld.com      E-mail: support@sewelld.com

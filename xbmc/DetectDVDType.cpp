@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "DetectDVDType.h"
 #include "Filesystem/cdiosupport.h"
 #include "Filesystem/iso9660.h"

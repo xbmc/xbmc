@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "GUIPythonWindow.h"
 #include "graphiccontext.h"
 #include "localizestrings.h"

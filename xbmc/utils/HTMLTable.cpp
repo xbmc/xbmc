@@ -1,4 +1,6 @@
 
+#include "../stdafx.h"
+
 #include ".\htmltable.h"
 #include ".\htmlutil.h"
 
