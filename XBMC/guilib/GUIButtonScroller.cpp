@@ -342,6 +342,7 @@ void CGUIButtonScroller::SetActiveButton(int iButton)
 		{
 			m_iOffset = 0;
 			m_iCurrentSlot = iMinButton;
+			OnChangeFocus();
 			return;
 		}
 		int iMaxButton = m_iDefaultSlot + m_iMovementRange;
@@ -350,6 +351,7 @@ void CGUIButtonScroller::SetActiveButton(int iButton)
 		{
 			m_iOffset = iMaxButton-iButton;
 			m_iCurrentSlot = iMaxButton;
+			OnChangeFocus();
 			return;
 		}
 	}
@@ -365,6 +367,7 @@ void CGUIButtonScroller::SetActiveButton(int iButton)
 			break;
 		}
 	}
+	OnChangeFocus();
 }
 
 void CGUIButtonScroller::OnUp()
