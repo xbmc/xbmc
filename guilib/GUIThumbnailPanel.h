@@ -131,6 +131,7 @@ protected:
 
   bool                  m_bShowTexture;
   int                   m_iOffset;
+	float									m_fSmoothScrollOffset;
   int                   m_iItemHeight;
   int                   m_iItemWidth;
   int                   m_iSelect;

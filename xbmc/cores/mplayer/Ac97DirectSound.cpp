@@ -54,6 +54,7 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback,int iChannels, unsi
 	m_pCallback=pCallback;
 	m_dwPacketSize		 = 1152 * (uiBitsPerSample/8) * iChannels;
 	m_bPause           = false;
+	m_bMute            = false;
 	m_bIsAllocated     = false;
 	m_pDSound          = NULL;
 	m_adwStatus        = NULL;
@@ -192,13 +193,17 @@ LONG CAc97DirectSound::GetCurrentVolume() const
 //***********************************************************************************************
 void CAc97DirectSound::Mute(bool bMute)
 {
-	return;
+	m_bMute = bMute;
 }
 
 //***********************************************************************************************
 HRESULT CAc97DirectSound::SetCurrentVolume(LONG nVolume)
 {
 	if (!m_bIsAllocated) return -1;
+	if (nVolume == VOLUME_MINIMUM)
+		m_bMute = true;
+	else
+		m_bMute = false;
 	return S_OK;
 }
 
@@ -278,7 +283,10 @@ DWORD CAc97DirectSound::AddPackets(unsigned char *data, DWORD len)
 			xmpAudio.prtTimestamp     = NULL;
 			xmpAudio.pContext         = NULL;
 
-			fast_memcpy(xmpAudio.pvBuffer,&data[iBytesCopied],iSize);
+			if (m_bMute)
+				fast_memset(xmpAudio.pvBuffer, 0, iSize);
+			else
+				fast_memcpy(xmpAudio.pvBuffer,&data[iBytesCopied],iSize);
 
 			// no need to do analogue out - analogue should be disabled as we're
 			// passing non-PCM streams only using AC97

@@ -82,6 +82,7 @@ private:
 	PBYTE									m_pbSampleData[64];
 	DWORD*								m_adwStatus;
 	bool									m_bPause;
+	bool									m_bMute;
 	bool									m_bIsAllocated;
 	LONGLONG       				m_startTime;
 	WAVEFORMATEXTENSIBLE	m_wfxex;

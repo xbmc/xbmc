@@ -17,7 +17,7 @@ public:
   CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControlId, 
 	  int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
 	  const CStdString& strTextureFocus,const CStdString& strTextureNoFocus,
-	  DWORD dwTextOffsetX, DWORD dwTextOffsetY,
+	  DWORD dwTextOffsetX, DWORD dwTextOffsetY, DWORD dwTextAlign,
 	  const CStdString& strRadioFocus,const CStdString& strRadioNoFocus);
 
   virtual ~CGUIRadioButtonControl(void);

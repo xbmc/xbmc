@@ -67,6 +67,8 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 	m_fFPS=0;
 	m_fFrameCounter=0.0f;
 	m_dwFPSTime=timeGetTime();
+	m_bSmoothFFwdRewd = false;
+	m_bDiscreteFFwdRewd = false;
   // audio
   //  - language
   //  - volume
@@ -265,10 +267,28 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
     m_dwTimeCodeTimeout=timeGetTime();
 		break;
 		case ACTION_REWIND:
-			ChangetheSpeed(ACTION_REWIND);
-		break;
 		case ACTION_FORWARD:
-			ChangetheSpeed(ACTION_FORWARD);
+			ChangetheSpeed(action.wID);
+		break;
+		case ACTION_ANALOG_REWIND:
+		case ACTION_ANALOG_FORWARD:
+			{
+				// calculate the speed based on the amount the button is held down
+				int iPower = (int)(action.fAmount1*5.5f);
+				// returns 0 -> 5
+				int iSpeed = 1 << iPower;
+				if (iSpeed==1)
+				{
+					m_bSmoothFFwdRewd = false;
+				}
+				else
+				{
+					m_bSmoothFFwdRewd = true;
+					if (action.wID == ACTION_ANALOG_REWIND)
+						iSpeed = -iSpeed;
+				}
+				g_application.SetPlaySpeed(iSpeed);
+			}
 		break;
 		case REMOTE_0:
 			ChangetheTimeCode(REMOTE_0);
@@ -476,6 +496,10 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
 
 void CGUIWindowFullScreen::RenderFullScreen()
 {
+	// check whether we should stop ffwd/rewd
+	if (!m_bSmoothFFwdRewd && g_application.GetPlaySpeed() != 1 && !m_bDiscreteFFwdRewd)
+		g_application.SetPlaySpeed(1);
+
   if (g_application.GetPlaySpeed() != 1) 
   {
 		m_bShowCurrentTime = true;
@@ -848,6 +872,7 @@ void CGUIWindowFullScreen::ChangetheSpeed(DWORD action)
 		iSpeed = 1;
 	if (iSpeed > 32 || iSpeed < -32)
 		iSpeed = 1;
+	m_bDiscreteFFwdRewd = (iSpeed != 1);
   g_application.SetPlaySpeed(iSpeed);
 }	
 

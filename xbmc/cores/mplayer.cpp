@@ -934,6 +934,8 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 						// 23.978  fps -> 25fps frame rate conversion
 						options.SetSpeed(25.0f / fFPS); 
 						options.SetFPS(25.0f);
+						options.SetAC3PassTru(false);
+						options.SetDTSPassTru(false);
 						bNeed2Restart=true;
 						CLog::Log(LOGINFO, "  --restart cause we use ntsc->pal framerate conversion");
 					}
@@ -946,6 +948,8 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 					{
 						options.SetSpeed(23.976f / fFPS); 
 						options.SetFPS(23.976f);
+						options.SetAC3PassTru(false);
+						options.SetDTSPassTru(false);
 						bNeed2Restart=true;
 						CLog::Log(LOGINFO, "  --restart cause we use pal->ntsc framerate conversion");
 					}

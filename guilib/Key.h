@@ -40,6 +40,9 @@
 #define KEY_BUTTON_LEFT_THUMB_BUTTON        276
 #define KEY_BUTTON_RIGHT_THUMB_BUTTON       277
 
+#define KEY_BUTTON_LEFT_ANALOG_TRIGGER      278
+#define KEY_BUTTON_RIGHT_ANALOG_TRIGGER     279
+
 #define KEY_INVALID                   0xffff
 
 // actions that we have defined...
@@ -160,6 +163,10 @@
 #define ACTION_MOUSE_XBUTTON2_DOUBLE_CLICK	109
 
 #define ACTION_BACKSPACE					110
+#define ACTION_SCROLL_UP					111
+#define ACTION_SCROLL_DOWN				112
+#define ACTION_ANALOG_FORWARD			113
+#define ACTION_ANALOG_REWIND			114
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                 9999
