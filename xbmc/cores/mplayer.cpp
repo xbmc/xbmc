@@ -950,7 +950,6 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 			// do we need 2 do frame rate conversions ?
 			if (g_stSettings.m_bFrameRateConversions && CUtil::IsVideo(strFile) )
 			{
-				DWORD dwVideoStandard=XGetVideoStandard();
 				if (g_videoConfig.HasPAL())
 				{
 					// PAL. Framerate for pal=25.0fps
