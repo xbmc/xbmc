@@ -8,26 +8,29 @@ CPlayListPlayer g_playlistPlayer;
 
 CPlayListPlayer::CPlayListPlayer(void)
 {
-	m_strPlayListName="";
 	m_iCurrentSong=0;
 	m_bChanged=false;
 }
 
 CPlayListPlayer::~CPlayListPlayer(void)
 {
-	Clear();
+	m_PlaylistMusic.Clear();
+	m_PlaylistMusicTemp.Clear();
+	m_PlaylistVideo.Clear();
+	m_PlaylistVideoTemp.Clear();
 }
 
 void CPlayListPlayer::PlayNext(bool bAutoPlay)
 {
-	if (size() <= 0) return;
+	CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
+	if (playlist.size() <= 0) return;
 	m_iCurrentSong++;
-	if (m_iCurrentSong >= size() )
+	if (m_iCurrentSong >= playlist.size() )
 		m_iCurrentSong=0;
 
 	if (bAutoPlay)
 	{
-		CPlayListItem& item = m_vecItems[m_iCurrentSong];
+		const CPlayList::CPlayListItem& item = playlist[m_iCurrentSong];
 		if ( CUtil::IsShoutCast(item.GetFileName()) )
 		{
 			return;
@@ -38,25 +41,32 @@ void CPlayListPlayer::PlayNext(bool bAutoPlay)
 
 void CPlayListPlayer::PlayPrevious()
 {
-	if (size() <= 0) return;
+	CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
+	if (playlist.size() <= 0) return;
 	m_iCurrentSong--;
 	if (m_iCurrentSong < 0)
-		m_iCurrentSong=size()-1;
+		m_iCurrentSong=playlist.size()-1;
 
 	Play(m_iCurrentSong);
 
 }
-	
 
 void CPlayListPlayer::Play(int iSong)
 {
-	if (size() <= 0) return;
+	CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
+	if (playlist.size() <= 0) return;
 	if (iSong < 0) iSong=0;
-	if (iSong >= size() ) iSong=size()-1;
+	if (iSong >= playlist.size() ) iSong=playlist.size()-1;
 
 	m_bChanged=true;
 	m_iCurrentSong=iSong;
-	CPlayListItem& item = m_vecItems[m_iCurrentSong];
+	CPlayList::CPlayListItem item = playlist[m_iCurrentSong];
+
+	if ( !CUtil::IsShoutCast(item.GetFileName()) && !CUtil::IsCDDA(item.GetFileName()) )
+	{
+		CGUIMessage msg( GUI_MSG_PLAYLIST_PLAY_NEXT_PREV, 0, 0, GetCurrentPlaylist(), 0, (LPVOID)&item );
+		m_gWindowManager.SendMessage( msg );
+	}
 	g_application.PlayFile( item.GetFileName() );	
 }
 
@@ -64,7 +74,6 @@ void CPlayListPlayer::SetCurrentSong(int iSong)
 {
 	m_iCurrentSong=iSong;
 }
-
 
 int CPlayListPlayer::GetCurrentSong() const
 {
@@ -78,8 +87,52 @@ bool CPlayListPlayer::HasChanged()
 	return bResult;
 }
 
+int CPlayListPlayer::GetCurrentPlaylist()
+{
+	return m_iCurrentPlayList;
+}
+
+void CPlayListPlayer::SetCurrentPlaylist( int iPlayList )
+{
+	m_iCurrentPlayList = iPlayList;
+	m_bChanged=true;
+}
+
+CPlayList& CPlayListPlayer::GetPlaylist( int nPlayList)
+{
+	switch ( nPlayList )
+	{
+	case PLAYLIST_MUSIC:
+		return m_PlaylistMusic;
+		break;
+	case PLAYLIST_MUSIC_TEMP:
+		return m_PlaylistMusicTemp;
+		break;
+	case PLAYLIST_VIDEO:
+		return m_PlaylistVideo;
+		break;
+	case PLAYLIST_VIDEO_TEMP:
+		return m_PlaylistVideoTemp;
+		break;
+	default:
+		return m_PlaylistMusic;
+		break;
+	}
+}
+
+int CPlayListPlayer::RemoveDVDItems()
+{
+	int nRemovedM = m_PlaylistMusic.RemoveDVDItems();
+	m_PlaylistMusicTemp.RemoveDVDItems();
+	int nRemovedV = m_PlaylistVideo.RemoveDVDItems();
+	m_PlaylistVideoTemp.RemoveDVDItems();
+
+	return nRemovedM + nRemovedV;
+}
+
 void CPlayListPlayer::Shuffle()
 {
-	CPlayList::Shuffle();
+	m_PlaylistMusic.Shuffle();
 	m_iCurrentSong=-1;
 }
+

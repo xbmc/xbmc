@@ -69,7 +69,7 @@ bool CMusicDatabase::Open()
 
 	// test id dbs already exists, if not we need 2 create the tables
 	bool bDatabaseExists=false;
-	FILE* fd= fopen("Q:\\albums\\MyMusic3.db","rb");
+	FILE* fd= fopen("Q:\\albums\\MyMusic4.db","rb");
 	if (fd)
 	{
 		bDatabaseExists=true;
@@ -77,7 +77,7 @@ bool CMusicDatabase::Open()
 	}
 
 	m_pDB.reset(new SqliteDatabase() ) ;
-  m_pDB->setDatabase("Q:\\albums\\MyMusic3.db");
+  m_pDB->setDatabase("Q:\\albums\\MyMusic4.db");
 	
   m_pDS.reset(m_pDB->CreateDataset());
 	if ( m_pDB->connect() != DB_CONNECTION_OK) 
@@ -119,7 +119,7 @@ bool CMusicDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE album ( idAlbum integer primary key, idArtist integer, strAlbum text)\n");
 		m_pDS->exec("CREATE TABLE genre ( idGenre integer primary key, strGenre text)\n");
 		m_pDS->exec("CREATE TABLE path ( idPath integer primary key,  strPath text)\n");
-		m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idArtist integer, idAlbum integer, idGenre integer, idPath integer, strTitle text, iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text)\n");
+		m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idArtist integer, idAlbum integer, idGenre integer, idPath integer, strTitle text, iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, iTimesPlayed integer)\n");
 		m_pDS->exec("CREATE TABLE albuminfo ( idAlbumInfo integer primary key, idAlbum integer, idArtist integer,iYear integer, idGenre integer, strTones text, strStyles text, strReview text, strImage text, iRating integer)\n");
 
 		m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum)");
@@ -179,12 +179,12 @@ void CMusicDatabase::AddSong(const CSong& song1)
 	}
 	
 
-	sprintf(szSQL,"insert into song (idSong,idArtist,idAlbum,idGenre,idPath,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName) values(NULL,%i,%i,%i,%i,'%s',%i,%i,%i,'%ul','%s')",
+	sprintf(szSQL,"insert into song (idSong,idArtist,idAlbum,idGenre,idPath,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,iTimesPlayed) values(NULL,%i,%i,%i,%i,'%s',%i,%i,%i,'%ul','%s',%i)",
 								lArtistId,lAlbumId,lGenreId,lPathId,
 								song.strTitle.c_str(),
 								song.iTrack,song.iDuration,song.iYear,
 								dwCRC,
-								strFileName.c_str());
+								strFileName.c_str(), 0);
 	try
 	{
 		m_pDS->exec(szSQL);
@@ -346,14 +346,15 @@ bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName1, CSong& so
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound== 0) return false;
 
-	song.strArtist = m_pDS->fv("artist.strArtist").get_asString();
-	song.strAlbum  = m_pDS->fv("album.strAlbum").get_asString();
-	song.strGenre  = m_pDS->fv("genre.strGenre").get_asString();
-	song.iTrack    = m_pDS->fv("song.iTrack").get_asLong() ;
-	song.iDuration = m_pDS->fv("song.iDuration").get_asLong() ;
-	song.iYear     = m_pDS->fv("song.iYear").get_asLong() ;
-	song.strTitle  = m_pDS->fv("song.strTitle").get_asString() ;
-	song.strFileName= strFileName1;
+	song.strArtist    = m_pDS->fv("artist.strArtist").get_asString();
+	song.strAlbum     = m_pDS->fv("album.strAlbum").get_asString();
+	song.strGenre     = m_pDS->fv("genre.strGenre").get_asString();
+	song.iTrack       = m_pDS->fv("song.iTrack").get_asLong() ;
+	song.iDuration    = m_pDS->fv("song.iDuration").get_asLong() ;
+	song.iYear        = m_pDS->fv("song.iYear").get_asLong() ;
+	song.strTitle	    = m_pDS->fv("song.strTitle").get_asString() ;
+	song.iTimedPlayed = m_pDS->fv("song.iTimesPlayed").get_asLong();
+	song.strFileName  = strFileName1;
 
 	return true;
 }
@@ -380,6 +381,7 @@ bool CMusicDatabase::GetSong(const CStdString& strTitle1, CSong& song)
 	song.iDuration = m_pDS->fv("song.iDuration").get_asLong() ;
 	song.iYear     = m_pDS->fv("song.iYear").get_asLong() ;
 	song.strTitle  = m_pDS->fv("song.strTitle").get_asString() ;
+	song.iTimedPlayed = m_pDS->fv("song.iTimesPlayed").get_asLong();
 
 	string strFileName = m_pDS->fv("path.strPath").get_asString() ;
 	strFileName += m_pDS->fv("song.strFileName").get_asString() ;
@@ -410,6 +412,7 @@ bool CMusicDatabase::GetSongsByArtist(const CStdString strArtist1, VECSONGS& son
 		song.iDuration = m_pDS->fv("song.iDuration").get_asLong() ;
 		song.iYear     = m_pDS->fv("song.iYear").get_asLong() ;
 		song.strTitle  = m_pDS->fv("song.strTitle").get_asString();
+		song.iTimedPlayed = m_pDS->fv("song.iTimesPlayed").get_asLong();
 			
 		string strFileName = m_pDS->fv("path.strPath").get_asString() ;
 		strFileName += m_pDS->fv("song.strFileName").get_asString() ;
@@ -444,7 +447,8 @@ bool CMusicDatabase::GetSongsByAlbum(const CStdString& strAlbum1, VECSONGS& song
 		song.iDuration = m_pDS->fv("song.iDuration").get_asLong() ;
 		song.iYear     = m_pDS->fv("song.iYear").get_asLong() ;
 		song.strTitle  = m_pDS->fv("song.strTitle").get_asString();
-		
+		song.iTimedPlayed = m_pDS->fv("song.iTimesPlayed").get_asLong();
+
 		string strFileName = m_pDS->fv("path.strPath").get_asString() ;
 		strFileName += m_pDS->fv("song.strFileName").get_asString() ;
 		song.strFileName = strFileName;
@@ -563,13 +567,14 @@ bool CMusicDatabase::GetSongsByGenre(const CStdString& strGenre, VECSONGS& songs
 	while (!m_pDS->eof()) 
 	{
 		CSong song;
-		song.strArtist = m_pDS->fv("artist.strArtist").get_asString();
-		song.strAlbum  = m_pDS->fv("album.strAlbum").get_asString();
-		song.strGenre  = m_pDS->fv("genre.strGenre").get_asString();
-		song.iTrack    = m_pDS->fv("song.iTrack").get_asLong() ;
-		song.iDuration = m_pDS->fv("song.iDuration").get_asLong() ;
-		song.iYear     = m_pDS->fv("song.iYear").get_asLong() ;
-		song.strTitle  = m_pDS->fv("song.strTitle").get_asString();
+		song.strArtist    = m_pDS->fv("artist.strArtist").get_asString();
+		song.strAlbum     = m_pDS->fv("album.strAlbum").get_asString();
+		song.strGenre     = m_pDS->fv("genre.strGenre").get_asString();
+		song.iTrack       = m_pDS->fv("song.iTrack").get_asLong() ;
+		song.iDuration    = m_pDS->fv("song.iDuration").get_asLong() ;
+		song.iYear        = m_pDS->fv("song.iYear").get_asLong() ;
+		song.strTitle     = m_pDS->fv("song.strTitle").get_asString();
+		song.iTimedPlayed = m_pDS->fv("song.iTimesPlayed").get_asLong();
 		
 		string strFileName = m_pDS->fv("path.strPath").get_asString() ;
 		strFileName += m_pDS->fv("song.strFileName").get_asString() ;
@@ -626,4 +631,83 @@ bool CMusicDatabase::GetAlbumInfo(const CStdString& strAlbum1, CAlbum& album)
 		return true;
 	}
 	return false;
+}
+
+bool CMusicDatabase::GetTop100(VECSONGS& songs)
+{
+	songs.erase(songs.begin(), songs.end());
+	if (NULL==m_pDB.get()) return false;
+	if (NULL==m_pDS.get()) return false;
+	char szSQL[1024];
+	sprintf(szSQL,"select * from song,album,genre,artist,path where song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and iTimesPlayed > 0 order by song.iTimesPlayed desc limit 100"  );
+	if (!m_pDS->query(szSQL)) return false;
+	int iRowsFound = m_pDS->num_rows();
+	if (iRowsFound== 0) return false;
+	int iCount=1;
+	while (!m_pDS->eof()) 
+	{
+		CSong song;
+		song.strArtist    = m_pDS->fv("artist.strArtist").get_asString();
+		song.strAlbum     = m_pDS->fv("album.strAlbum").get_asString();
+		song.strGenre     = m_pDS->fv("genre.strGenre").get_asString();
+		song.iTrack       = m_pDS->fv("song.iTrack").get_asLong() ;
+		song.iDuration    = m_pDS->fv("song.iDuration").get_asLong() ;
+		song.iYear        = m_pDS->fv("song.iYear").get_asLong() ;
+		song.strTitle     = m_pDS->fv("song.strTitle").get_asString();
+		song.iTimedPlayed = m_pDS->fv("song.iTimesPlayed").get_asLong();
+		song.iTrack       = iCount;
+		
+		string strFileName = m_pDS->fv("path.strPath").get_asString() ;
+		strFileName += m_pDS->fv("song.strFileName").get_asString() ;
+		song.strFileName = strFileName;
+
+		songs.push_back(song);
+		m_pDS->next();
+
+		iCount++;
+	}
+
+	return true;
+}
+
+bool CMusicDatabase::IncrTop100CounterByFileName(const CStdString& strFileName1)
+{
+	CSong song;
+	CStdString strFileName=strFileName1;
+	RemoveInvalidChars(strFileName);
+
+	CStdString strPath, strFName;
+	Split(strFileName, strPath, strFName);
+
+	if (NULL==m_pDB.get()) return false;
+	if (NULL==m_pDS.get()) return false;
+	char szSQL[1024];
+	DWORD dwCRC;
+	Crc32 crc;
+	crc.Reset();
+  crc.Compute(strFileName1.c_str(),strlen(strFileName1.c_str()));
+	dwCRC=crc;
+
+	sprintf(szSQL,"select * from song,path where song.idPath=path.idPath and dwFileNameCRC='%ul' and strPath='%s'",
+									dwCRC,
+									strPath.c_str());
+	if (!m_pDS->query(szSQL)) return false;
+	int iRowsFound = m_pDS->num_rows();
+	if (iRowsFound== 0) return false;
+
+	int idSong        = m_pDS->fv("song.idSong").get_asLong();
+	int iTimesPlayed  = m_pDS->fv("song.iTimesPlayed").get_asLong();
+
+	sprintf(szSQL,"update song set iTimesPlayed=%i where idSong=%i",
+								++iTimesPlayed, idSong);
+	try
+	{
+		m_pDS->exec(szSQL);
+	}
+	catch(...)
+	{
+		OutputDebugString("-------ERROR----------------");
+	}
+
+	return true;
 }

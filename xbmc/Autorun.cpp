@@ -93,7 +93,7 @@ void CAutorun::RunCdda()
 	if ( vecItems.size() <= 0 )
 		return;
 
-	int nSize = g_playlistPlayer.size();
+	int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
 
 	for (int i=0; i < (int)vecItems.size(); i++)
 	{
@@ -102,7 +102,7 @@ void CAutorun::RunCdda()
 		playlistItem.SetFileName(pItem->m_strPath);
 		playlistItem.SetDescription(pItem->GetLabel());
 		playlistItem.SetDuration( pItem->m_musicInfoTag.GetDuration() );
-		g_playlistPlayer.Add(playlistItem);
+		g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).Add(playlistItem);
 	}
 
 	CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
@@ -200,7 +200,7 @@ bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAdded
 				playlistItem.SetFileName(pItem->m_strPath);
 				playlistItem.SetDescription(pItem->GetLabel());
 				playlistItem.SetDuration( pItem->m_musicInfoTag.GetDuration() );
-				g_playlistPlayer.Add(playlistItem);
+				g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).Add(playlistItem);
 			}
 		
 			if ( CUtil::IsPicture( pItem->m_strPath ) && g_stSettings.m_bAutorunPictures)

@@ -20,6 +20,7 @@ public:
 	int iTrack;
 	int iDuration;
 	int iYear;
+	int iTimedPlayed;
 };
 
 class CAlbum
@@ -60,6 +61,8 @@ public:
 	bool    GetAlbums(VECALBUMS& albums);
 	bool    GetGenres(VECGENRES& genres);
 	void    Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
+	bool		GetTop100(VECSONGS& songs);
+	bool		IncrTop100CounterByFileName(const CStdString& strFileName1);
 protected:
   auto_ptr<SqliteDatabase> m_pDB;
 	auto_ptr<Dataset>				 m_pDS;
