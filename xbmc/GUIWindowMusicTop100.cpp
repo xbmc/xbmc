@@ -86,15 +86,9 @@ bool CGUIWindowMusicTop100::OnMessage(CGUIMessage& message)
 
 void CGUIWindowMusicTop100::OnAction(const CAction &action)
 {
-  if (action.wID==ACTION_PREVIOUS_MENU)
-  {
-		m_gWindowManager.ActivateWindow(WINDOW_HOME);
-		return;
-  }
-
-	if (action.wID==ACTION_SHOW_PLAYLIST)
+	if (action.wID==ACTION_PARENT_DIR)
 	{
-		m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+		//	Top 100 has no parent dirs
 		return;
 	}
 

@@ -142,11 +142,11 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 
 void CGUIWindowMusicPlayList::OnAction(const CAction &action)
 {
-  if (action.wID==ACTION_PREVIOUS_MENU)
-  {
-		m_gWindowManager.ActivateWindow(WINDOW_HOME);
+	if (action.wID==ACTION_PARENT_DIR)
+	{
+		//	Playlist has no parent dirs
 		return;
-  }
+	}
 
 	if (action.wID==ACTION_SHOW_PLAYLIST)
 	{
