@@ -312,6 +312,7 @@ HRESULT CApplication::Initialize()
 
 	m_gWindowManager.Add(&m_guiWindowScreensaver);				// window id = 2900 Screensaver
 	m_gWindowManager.Add(&m_guiMyWeather);						// window id = 2600 WEATHER
+	m_gWindowManager.Add(&m_guiSettingsWeather);				// window id = 17 WEATHER SETTINGS
 
 	/* window id's 3000 - 3100 are reserved for python */
   CLog::Log("initializing virtual keyboard");	
@@ -428,6 +429,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiSettingsSubtitles.Load( strSkinPath+"\\SettingsScreenSubtitles.xml");
 	m_guiWindowScreensaver.SetID(WINDOW_SCREENSAVER);		// CB: Matrix Screensaver - saves us having to have our own XML file
 	m_guiMyWeather.Load( strSkinPath+"\\myweather.xml");	//WEATHER
+	m_guiSettingsWeather.Load(strSkinPath+"\\SettingsWeather.xml");	//WEATHER SETTINGS
 	CGUIWindow::FlushReferenceCache(); // flush the cache so it doesn't use memory all the time
 
   CLog::Log("  initialize new skin...");
