@@ -21,50 +21,50 @@ CFactoryDirectory::~CFactoryDirectory(void)
 }
 
 /*!
-	\brief Create a CDirectory object of the share type specified in \e strPath .
+	\brief Create a IDirectory object of the share type specified in \e strPath .
 	\param strPath Specifies the share type to access, can be a share or share with path.
-	\return CDirectory object to access the directories on the share.
-	\sa CDirectory
+	\return IDirectory object to access the directories on the share.
+	\sa IDirectory
 	*/
-CDirectory* CFactoryDirectory::Create(const CStdString& strPath)
+IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 {
 	CURL url(strPath);
 	CStdString strProtocol=url.GetProtocol();
 	if (strProtocol=="iso9660")
 	{
-		return (CDirectory*)new CISO9660Directory();
+		return (IDirectory*)new CISO9660Directory();
 	}
 	
 	if (strProtocol=="xns")
 	{
-		return (CDirectory*)new CXNSDirectory();
+		return (IDirectory*)new CXNSDirectory();
 	}
 
 	if (strProtocol=="smb")
 	{
-		return (CDirectory*)new CSMBDirectory();
+		return (IDirectory*)new CSMBDirectory();
 	}
 
 	if (strProtocol=="xbms")
 	{
-		return (CDirectory*)new CXBMSDirectory();
+		return (IDirectory*)new CXBMSDirectory();
 	}
 	if (strProtocol=="cdda")
 	{
-		return (CDirectory*)new CCDDADirectory();
+		return (IDirectory*)new CCDDADirectory();
 	}
 	if (strProtocol=="rtv")
 	{
-		return (CDirectory*)new CRTVDirectory();
+		return (IDirectory*)new CRTVDirectory();
 	}
 	if (strProtocol=="soundtrack")
 	{
-		return (CDirectory*)new CSndtrkDirectory();
+		return (IDirectory*)new CSndtrkDirectory();
 	}
 	if (strProtocol=="daap")
 	{
-		return (CDirectory*)new CDAAPDirectory();
+		return (IDirectory*)new CDAAPDirectory();
 	}
 
-  return (CDirectory*)new CHDDirectory();
+  return (IDirectory*)new CHDDirectory();
 }

@@ -138,9 +138,7 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
 
 	// we can't open files like smb://file.f or smb://server/file.f
 	// if a file matches the if below return false, it can't exist on a samba share.
-	if (url.GetFileName().Find('/') < 0 ||
-			url.GetFileName().at(0) == '.' ||
-			url.GetFileName().Find("/.") >= 0) return false;
+  if (!IsValidFile(url.GetFileName())) return false;
 
 	CStdString strFileName;
 
@@ -360,4 +358,75 @@ int CFileSMB::Write(const void* lpBuf, __int64 uiBufSize)
 	smb.Unlock();
 
 	return (int)dwNumberOfBytesWritten;
+}
+
+bool CFileSMB::Delete(const char* strFileName)
+{
+  smb.Init();
+  smb.Lock();
+  int result = smbc_unlink(strFileName);
+  smb.Unlock();
+  return (result == 0);
+}
+
+bool CFileSMB::Rename(const char* strFileName, const char* strNewFileName)
+{
+  smb.Init();
+  smb.Lock();
+  int result = smbc_rename(strFileName, strNewFileName);
+  smb.Unlock();
+  return (result == 0);
+}
+
+bool CFileSMB::OpenForWrite(const CURL& url, bool bBinary)
+{
+	m_bBinary = bBinary;
+	m_fileSize = 0;
+
+	Close();
+
+	// we can't open files like smb://file.f or smb://server/file.f
+	// if a file matches the if below return false, it can't exist on a samba share.
+  if (!IsValidFile(url.GetFileName())) return false;
+
+	CStdString strFileName;
+
+	//Use default credentials if none is specified.
+	if(url.GetUserName().length() == 0 && url.GetHostName().length() > 0)
+	{
+		CURL url2(url);
+		url2.SetUserName(g_stSettings.m_strSambaDefaultUserName);
+		url2.SetPassword(g_stSettings.m_strSambaDefaultPassword);
+		url2.GetURL(strFileName);
+	}
+	else
+		url.GetURL(strFileName);
+
+	smb.Lock();
+
+	m_fd = smbc_creat(strFileName.c_str(), 0);
+
+	if(m_fd == -1)
+	{
+		smb.PurgeEx(url);
+		smb.Unlock();
+		// write error to logfile
+		int nt_error = map_nt_error_from_unix(errno);
+		CLog::Log(LOGERROR, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'",
+				strFileName.c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
+		return false;
+	}
+
+	// We've successfully opened the file!
+	smb.Unlock();
+	return true;
+}
+
+bool CFileSMB::IsValidFile(const CStdString& strFileName)
+{
+	if (strFileName.Find('/') < 0 ||
+			strFileName.at(0) == '.' ||
+			strFileName.Find("/.") >= 0) return false;
+			
+	return true;
 }

@@ -9,7 +9,7 @@ using namespace DIRECTORY;
 namespace DIRECTORY
 {
   class CRTVDirectory :
-    public CDirectory
+    public IDirectory
   {
   public:
     CRTVDirectory(void);

@@ -7,7 +7,7 @@ namespace DIRECTORY
 {
 
   class CCDDADirectory :
-    public CDirectory
+    public IDirectory
   {
   public:
     CCDDADirectory(void);

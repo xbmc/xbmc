@@ -61,7 +61,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 				CDetectDVDMedia::WaitMediaReady();
 */
 			CFactoryDirectory factory;
-			//CDirectory *pDirectory = factory.Create(share.strPath);
+			//IDirectory *pDirectory = factory.Create(share.strPath);
 			CStdString path;
 			if (strPath.Left(2)=="Q:" || strPath.Left(2)=="q:")
 			{
@@ -71,7 +71,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 			{
 				path = share.strPath;
 			}
-			CDirectory *pDirectory = factory.Create(path);
+			IDirectory *pDirectory = factory.Create(path);
 
 			if (!pDirectory) return false;
 

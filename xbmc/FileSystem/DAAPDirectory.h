@@ -12,7 +12,7 @@ namespace DIRECTORY
 {
 	class CDAAPDirectory :
 
-    public CDirectory
+    public IDirectory
 	{
 public:
 		CDAAPDirectory(void);

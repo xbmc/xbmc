@@ -1,11 +1,11 @@
 #pragma once
 
-#include "directory.h"
+#include "idirectory.h"
 using namespace DIRECTORY;
 namespace DIRECTORY
 {
 	/*!
-		\ingroup windows 
+		\ingroup filesystem 
 		\brief Get access to a directory of a file system.
 
 		The Factory can be used to create a directory object
@@ -17,18 +17,18 @@ namespace DIRECTORY
 		CStdString strShare="iso9660://";
 
 		CFactoryDirectory factory;
-		CDirectory* pDir=factory.Create(strShare);
+		IDirectory* pDir=factory.Create(strShare);
 		\endverbatim
 		The \e pDir pointer can be used to access a directory and retrieve it's content.
 
 		When different types of shares have to be accessed use CVirtualDirectory.
-		\sa CDirectory
+		\sa IDirectory
 		*/
   class CFactoryDirectory
   {
   public:
     CFactoryDirectory(void);
     virtual ~CFactoryDirectory(void);
-    CDirectory* Create(const CStdString& strPath);
+    IDirectory* Create(const CStdString& strPath);
   };
 }
