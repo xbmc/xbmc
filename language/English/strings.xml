@@ -2188,7 +2188,7 @@
   <string><id>13300</id><value>Fanspeed:</value></string>
   <string><id>13301</id><value>Auto temperature control</value></string>
   <string><id>13302</id><value>Fanspeed control</value></string>
-  
   <string><id>13303</id><value>Skin Fonts</value></string>
   <string><id>13304</id><value>Flip Charset</value></string>
+  <string><id>13305</id><value>Enable RSS Feeds</value></string>
 </strings>

@@ -39,13 +39,15 @@ private:
 
 	LPDIRECT3DTEXTURE8	m_pTexture;
 	bool			m_bDoEffect;
-	char			m_mtrxGrid[80][60];
-	int				m_iMatrixPos[80];
-	int				m_iMatrixSpeed[80];
+	char			m_mtrxGrid[120][67];
+	int				m_iMatrixPos[120];
+	int				m_iMatrixSpeed[120];
 	DWORD			m_dwFrameCount;
 	bool			m_bInit;
 	CStdString		m_sMessage1;
 	CStdString		m_sMessage2;
 	DWORD			m_dwColor;
 	bool			m_bUseBack;
+	int				m_iColMax;
+	int				m_iRowMax;
 };

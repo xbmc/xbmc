@@ -361,6 +361,8 @@ CSettings::CSettings(void)
 	g_stSettings.m_nVolumeLevel = 0;
 	g_stSettings.m_iLogLevel = LOGNOTICE;
 
+	g_stSettings.m_bEnableRSS=true;
+
   m_iLastLoadedProfileIndex = -1;
 }
 
@@ -1148,6 +1150,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetString(pElement, "flipbidicharset", g_stSettings.m_szFlipBiDiCharset, g_stSettings.m_szFlipBiDiCharset);
 
 		GetInteger(pElement, "shutdowntime", g_stSettings.m_iShutdownTime,0,0,INT_MAX);
+		GetBoolean(pElement, "enablerss", g_stSettings.m_bEnableRSS);
 
     GetBoolean(pElement, "autotemperature",   g_stSettings.m_bAutoTemperature);
     GetInteger(pElement, "targettemperature", g_stSettings.m_iTargetTemperature, 55, 40, 68);
@@ -1548,6 +1551,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	SetString(pNode, "flipbidicharset", g_stSettings.m_szFlipBiDiCharset);
 
 	SetInteger(pNode, "shutdowntime", g_stSettings.m_iShutdownTime);
+	SetBoolean(pNode, "enablerss", g_stSettings.m_bEnableRSS);
 
   SetBoolean(pNode, "autotemperature",   g_stSettings.m_bAutoTemperature);
   SetInteger(pNode, "targettemperature", g_stSettings.m_iTargetTemperature);
