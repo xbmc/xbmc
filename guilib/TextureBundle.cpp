@@ -299,7 +299,13 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
 	if (!m_PreLoadBuffer[m_LoadIdx])
 		return E_OUTOFMEMORY;
 	if (!UnpackedBuf.Set((BYTE*)XPhysicalAlloc(m_CurFileHeader[m_LoadIdx]->second.UnpackedSize, MAXULONG_PTR, 128, PAGE_READWRITE)))
+	{
+		MEMORYSTATUS stat;
+		GlobalMemoryStatus(&stat);
+		CLog::DebugLog("Out of memory loading texture: %s (need %d bytes, have %d bytes)", name.c_str(), 
+			m_CurFileHeader[m_LoadIdx]->second.UnpackedSize, stat.dwAvailPhys);
 		return E_OUTOFMEMORY;
+	}
 
 #ifdef CACHE_WHOLE_BUNDLE
 	if (!m_BundleCache)
@@ -381,7 +387,6 @@ HRESULT CTextureBundle::LoadTexture(LPDIRECT3DDEVICE8 pDevice, const CStdString&
 
 	DWORD ResDataOffset = ((Next - UnpackedBuf) + 127) & ~127;
 	ResData = UnpackedBuf + ResDataOffset;
-	UnpackedBuf.Release();
 
 	if ((pTex->Common & D3DCOMMON_TYPE_MASK) != D3DCOMMON_TYPE_TEXTURE)
 		goto PackedLoadError;
@@ -402,6 +407,8 @@ HRESULT CTextureBundle::LoadTexture(LPDIRECT3DDEVICE8 pDevice, const CStdString&
 	D3DSURFACE_DESC desc;
 	(*ppTexture)->GetLevelDesc(0, &desc);
 	pInfo->Format = desc.Format;
+
+	UnpackedBuf.Release();
 
 	return S_OK;
 
