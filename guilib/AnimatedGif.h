@@ -91,7 +91,9 @@ public:
 	COLOR*				Palette;						// Color Map
 	int						BytesPerRow;				// Width (in bytes) including alignment!
 	int						Transparent;				// Index of Transparent color (-1 for none)
+
 	// Extra members for animations:	
+  int           nLoops;
 	int						xPos, yPos;					// Relative Position
 	int						Delay;							// Delay after image in 1/1000 seconds.
 	int						Transparency;				// Animation Transparency.
@@ -104,7 +106,7 @@ public:
 	CAnimatedGif& operator= (CAnimatedGif& rhs);
 
 	// Image initializer (allocates space for raster and palette):
-	void					Init (int iWidth, int iHeight, int iBPP);
+	void					Init (int iWidth, int iHeight, int iBPP, int iLoops=0);
 
 	inline char&	Pixel (const int& x, const int& y)
 		{return Raster[y*BytesPerRow+x];}

@@ -50,6 +50,7 @@ CAnimatedGif::CAnimatedGif()
 	Raster	=	NULL; 
 	Palette	=	NULL; 
 	pbmi		=	NULL; 
+  nLoops=0;
 }
 
 CAnimatedGif::~CAnimatedGif() 
@@ -60,7 +61,7 @@ CAnimatedGif::~CAnimatedGif()
 
 
 // Init: Allocates space for raster and palette in GDI-compatible structures.
-void CAnimatedGif::Init(int iWidth, int iHeight, int iBPP) 
+void CAnimatedGif::Init(int iWidth, int iHeight, int iBPP, int iLoops) 
 {
 	if (Raster) 
 	{
@@ -80,6 +81,7 @@ void CAnimatedGif::Init(int iWidth, int iHeight, int iBPP)
 	BPP					=	iBPP;
 	// Animation Extra members setup:
 	xPos=xPos=Delay=0;
+  nLoops=iLoops;
 
 	if (BPP==24)
 	{
@@ -130,7 +132,7 @@ CAnimatedGif& CAnimatedGif::operator = (CAnimatedGif& rhs)
 
 CAnimatedGifSet::CAnimatedGifSet() 
 { 
-		nLoops=0;
+		nLoops=0;//0=infinite
 }
 
 CAnimatedGifSet::~CAnimatedGifSet() 
@@ -142,7 +144,7 @@ void CAnimatedGifSet::Release()
 {
 	FrameWidth=0;
 	FrameHeight=0;
-	nLoops=0;
+	nLoops=0;//0=infinite
 	for (int i=0; i < (int)m_vecimg.size(); ++i)
 	{
 		CAnimatedGif* pImage=m_vecimg[i];
@@ -173,7 +175,7 @@ unsigned char CAnimatedGifSet::getbyte(FILE *fd)
 	fread(&uchar,1,1,fd);
 	return uchar;
 }
-
+extern "C" void dllprintf( const char *format, ... );
 // ****************************************************************************
 // * LoadGIF                                                                  *
 // *   Load a GIF File into the CAnimatedGifSet object                             *
@@ -182,7 +184,7 @@ unsigned char CAnimatedGifSet::getbyte(FILE *fd)
 int CAnimatedGifSet::LoadGIF (const char * szFileName)
 {
 	int n;
-
+  dllprintf("load:%s",szFileName);
 	// Global GIF variables:
 	int			GlobalBPP;							// Bits per Pixel.
 	COLOR * GlobalColorMap;					// Global colormap (allocate)
@@ -190,14 +192,23 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
 	struct GIFGCEtag 
 	{																// GRAPHIC CONTROL EXTENSION
 		unsigned char BlockSize;			// Block Size: 4 bytes
-		unsigned char PackedFields;		// Packed Fields. Bits detail:
+		unsigned char PackedFields;		// 3.. Packed Fields. Bits detail:
 																	//    0: Transparent Color Flag
 																	//    1: User Input Flag
 																	//  2-4: Disposal Method
-		unsigned short Delay;					// Delay Time (1/100 seconds)
-		unsigned char Transparent;		// Transparent Color Index
+		unsigned short Delay;					// 4..5 Delay Time (1/100 seconds)
+		unsigned char Transparent;		// 6.. Transparent Color Index
 	} gifgce;
-	int GraphicExtensionFound = 0;
+
+	struct GIFNetscapeTag 
+	{																          
+		unsigned char  comment[11];		//4...14  NETSCAPE2.0
+		unsigned char  SubBlockLength; //15      0x3															
+		unsigned char  reserved;       //16      0x1
+		unsigned short iIterations ;    //17..18  number of iterations (lo-hi)															
+	} gifnetscape;
+
+  int GraphicExtensionFound = 0;
 
 	// OPEN FILE
 	FILE *fd=fopen(szFileName,"rb");
@@ -206,7 +217,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
 		return 0;
 	}
 
-	// *1* READ HEADER (SIGNATURE + VERSION)
+	// *1* READ HEADERBLOCK (6bytes) (SIGNATURE + VERSION)
 	char szSignature[6];				// First 6 bytes (GIF87a or GIF89a)
 	int iRead=fread(szSignature,1,6,fd);
 	if (iRead !=6)
@@ -219,7 +230,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
 		fclose(fd);
 		return 0;
 	}
-
+  //dllprintf("header:%s", szSignature);
 	// *2* READ LOGICAL SCREEN DESCRIPTOR
 	struct GIFLSDtag 
 	{
@@ -246,7 +257,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
 	// fill some animation data:
 	FrameWidth  = giflsd.ScreenWidth;
 	FrameHeight = giflsd.ScreenHeight;
-	nLoops			= 0;
+	nLoops			= 0;//0=infinite
 
 	// *3* READ/GENERATE GLOBAL COLOR MAP
 	GlobalColorMap = new COLOR [1<<GlobalBPP];
@@ -272,30 +283,75 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
 
 		if (charGot == 0x21)		// *A* EXTENSION BLOCK 
 		{
-			switch (getbyte(fd))
+      unsigned char extensionType=getbyte(fd);
+//      dllprintf("Extension Block:%x",extensionType);
+			switch (extensionType)
 			{
 
 				case 0xF9:			// Graphic Control Extension
-
+        {
 					fread((char*)&gifgce,1,sizeof(gifgce),fd);
+//          dllprintf("got Graphic Control Extension:%i/%i fields:%x",gifgce.BlockSize,sizeof(gifgce),gifgce.PackedFields);
 					GraphicExtensionFound++;
 					getbyte(fd); // Block Terminator (always 0)
+        }
 				break;
 
 				case 0xFE:			// Comment Extension: Ignored
+        {
+//            OutputDebugString("got Comment Extension\n");
+            while (int nBlockLength = getbyte(fd))
+						for (n=0;n<nBlockLength;n++) getbyte(fd);
+        }
+        break;
+
 				case 0x01:			// PlainText Extension: Ignored
+        {
+//          OutputDebugString("got PlainText Extension\n");
+          while (int nBlockLength = getbyte(fd))
+					for (n=0;n<nBlockLength;n++) getbyte(fd);
+        }
+        break;
+
 				case 0xFF:			// Application Extension: Ignored
+        {
+//          OutputDebugString("got Application Extension\n");
+          int nBlockLength = getbyte(fd);
+//          dllprintf("  blocklen:%x/%x",nBlockLength,sizeof(gifnetscape));
+          if (nBlockLength==0x0b)
+          {
+            struct GIFNetscapeTag  tag;
+            fread((char*)&tag,1,sizeof(gifnetscape),fd);
+            dllprintf("read netscape tag. sublen:%i res:%i Iterations:%x %s", 
+                    tag.SubBlockLength,tag.reserved,
+                    tag.iIterations,
+                    tag.comment);
+            nLoops=tag.iIterations;  
+            int iterm=getbyte(fd); // terminator
+          }
+          else
+          {
+            do
+            {
+              for (n=0;n<nBlockLength;n++) getbyte(fd);
+            } while (nBlockLength = getbyte(fd));
+          }
+        }
+        break;
+
 				default:			// Unknown Extension: Ignored
+        {
+            dllprintf("got unknown extension:%x",extensionType); 
 					// read (and ignore) data sub-blocks
 					while (int nBlockLength = getbyte(fd))
 						for (n=0;n<nBlockLength;n++) getbyte(fd);
+        }
 				break;
 			}
 		}
-
-
-		else if (charGot == 0x2c) {	// *B* IMAGE (0x2c Image Separator)
-
+		else if (charGot == 0x2c) 
+    {	// *B* IMAGE (0x2c Image Separator)
+//      OutputDebugString("image seperator\n");
 			// Create a new Image Object:
 			CAnimatedGif* NextImage= new CAnimatedGif();
 
@@ -318,8 +374,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
 
 			int LocalColorMap = (gifid.PackedFields & 0x08)? 1 : 0;
 
-			NextImage->Init (gifid.Width, gifid.Height,
-			LocalColorMap ? (gifid.PackedFields&7)+1 : GlobalBPP);
+			NextImage->Init (gifid.Width, gifid.Height,LocalColorMap ? (gifid.PackedFields&7)+1 : GlobalBPP);
 
 			// Fill NextImage Data
 			NextImage->xPos = gifid.xPos;
@@ -379,9 +434,15 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
 			GraphicExtensionFound=0;
 		}
 		else if (charGot == 0x3b) 
-		{	// *C* TRAILER: End of GIF Info
+		{	
+//      OutputDebugString("end of gif marker\n");
+      // *C* TRAILER: End of GIF Info
 			break; // Ok. Standard End.
 		}
+    else
+    {
+      dllprintf("unknown marker:%x\n",charGot);
+    }
 
 	} while ( !feof(fd) );
 
