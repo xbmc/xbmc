@@ -618,4 +618,47 @@
   <string><id>14005</id><value>מפענח רשימת מדיה זורמת...</value></string>
   <string><id>14006</id><value>הורדת רשימת מדיה זורמת נכשלה</value></string>
   <string><id>14007</id><value>הורדת קובץ רשימת שמע נכשלה</value></string>
+  <string><id>14008</id><value>אפשר הודעות מKAI</value></string>
+  <string><id>14009</id><value>ספריית משחקים</value></string>
+  <string><id>14010</id><value>אפשרויות העברה אוטומאטית</value></string>
+  <string><id>14011</id><value>אפשר העברה אוטומאטית</value></string>
+  <string><id>14012</id><value>- השתמש בצלמיות גדולות</value></string>
+  <string><id>14013</id><value>- שיטה</value></string>
+  <string><id>14014</id><value>- אחוזים</value></string>
+  <string><id>14015</id><value>פנל צלמיות כשאין קבצים</value></string>
+  <string><id>14016</id><value>פנל רשימה כשאין ספריות</value></string>
+  <string><id>14017</id><value>אחוזי הצלמיות</value></string>
+  <string><id>14018</id><value>צפה באפשריות</value></string>
+  <string><id>14019</id><value>שנה קוד אזור 1</value></string>
+  <string><id>14020</id><value>שנה קוד אזור 2</value></string>
+  <string><id>14021</id><value>שנה קוד אזור 3</value></string>
+  <string><id>14022</id><value>ספריה</value></string>
+  <string><id>14023</id><value>אין טלויזיה</value></string>
+  <string><id>14024</id><value>הכנס את העיר הגדולה הקרובה או מיקוד בארצות הברית</value></string>
+  <string><id>14025</id><value>וידאו מהכונן הקשיח</value></string>
+  <string><id>14026</id><value>וידאו מכונן DVD</value></string>
+  <string><id>14027</id><value>וידאו מרשת מקומית</value></string>
+  <string><id>14028</id><value>וידאו מהאינטרנט</value></string>
+  <string><id>14029</id><value>אודיו מהכונן הקשיח</value></string>
+  <string><id>14030</id><value>אודיו מכונן DVD</value></string>
+  <string><id>14031</id><value>אודיו מרשת מקומית</value></string>
+  <string><id>14032</id><value>אודיו מהאינטרנט</value></string>
+  <string><id>14033</id><value>DVD מהכונן הקשיח</value></string>
+  <string><id>14034</id><value>DVD מכונן DVD</value></string>
+  <string><id>14035</id><value>DVD מרשת מקומית</value></string>
+  <string><id>14036</id><value>שרתים</value></string>
+  <string><id>14037</id><value>תצוגה והרגשה</value></string>
+  <string><id>14038</id><value>הגדרות רשת שונו/value></string>
+  <string><id>14039</id><value>XBMC דורש אתחול כדי לשנות את</value></string>
+  <string><id>14040</id><value>הגדרות הרשת. האם לאתחל כעת?</value></string>
+  <string><id>14041</id><value>לאחר עיבוד</value></string>
+  <string><id>14042</id><value>כתובת IP של המנוע</value></string>
+  <string><id>14043</id><value>- כבה תוך כדי ניגון</value></string>
+  <string><id>14044</id><value>%i דקות</value></string>
+  <string><id>14045</id><value>%i שניות</value></string>
+  <string><id>14046</id><value>%i מ.ש</value></string>
+  <string><id>14047</id><value>%i %%</value></string>
+  <string><id>14048</id><value>%i kbps</value></string>
+  <string><id>14049</id><value>%i kb</value></string>
+  <string><id>14050</id><value>%i.0 dB</value></string>
 </strings>
