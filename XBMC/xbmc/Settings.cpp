@@ -9,6 +9,8 @@ struct CSettings::stSettings g_stSettings;
 
 CSettings::CSettings(void)
 {
+  g_stSettings.m_bPostProcessing=true;
+  g_stSettings.m_bDeInterlace=false;
 	g_stSettings.m_bMyMusicTop100ViewAsIcons=false;
 	g_stSettings.m_iMyMusicAlbumSortMethod=7;	//	Album
 	g_stSettings.m_iMyMusicTracksSortMethod=3;	//	Tracknum
@@ -635,6 +637,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetBoolean(pElement, "rooticons", g_stSettings.m_bMyVideoRootViewAsIcons);
 		GetInteger(pElement, "sortmethod",g_stSettings.m_iMyVideoSortMethod);
 		GetBoolean(pElement, "sortascending", g_stSettings.m_bMyVideoSortAscending);
+    
+		GetBoolean(pElement, "postprocessing", g_stSettings.m_bPostProcessing);
+		GetBoolean(pElement, "deinterlace", g_stSettings.m_bDeInterlace);
 	}
 	// myscripts settings
 	pElement = pRootElement->FirstChildElement("myscripts");
@@ -797,6 +802,10 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetBoolean(pNode, "rooticons", g_stSettings.m_bMyVideoRootViewAsIcons);
 	SetInteger(pNode, "sortmethod",g_stSettings.m_iMyVideoSortMethod);
 	SetBoolean(pNode, "sortascending", g_stSettings.m_bMyVideoSortAscending);
+
+	SetBoolean(pNode, "postprocessing", g_stSettings.m_bPostProcessing);
+	SetBoolean(pNode, "deinterlace", g_stSettings.m_bDeInterlace);
+
 	// myscripts settings
 	TiXmlElement scriptsNode("myscripts");
 	pNode = pRoot->InsertEndChild(scriptsNode);
