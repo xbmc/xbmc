@@ -112,6 +112,21 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_iItemSelected);
 			}
 
+			if (g_playlistPlayer.Repeated(PLAYLIST_VIDEO))
+			{
+				CONTROL_SELECT(GetID(), CONTROL_BTNREPEAT);
+			}
+
+			if (g_playlistPlayer.RepeatedOne(PLAYLIST_VIDEO))
+			{
+				CONTROL_SELECT(GetID(), CONTROL_BTNREPEATONE);
+			}
+
+			if (g_playlistPlayer.ShuffledPlay(PLAYLIST_VIDEO))
+			{
+				CONTROL_SELECT(GetID(), CONTROL_BTNSHUFFLE);
+			}
+
 			if (g_application.IsPlayingVideo() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_VIDEO)
 			{
 				int iSong=g_playlistPlayer.GetCurrentSong();
@@ -148,7 +163,10 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 			}
 			else if (iControl==CONTROL_BTNSHUFFLE)
 			{
-				ShufflePlayList();
+				//ShufflePlayList();
+				g_stSettings.m_bMyVideoPlaylistShuffle=!g_playlistPlayer.ShuffledPlay(PLAYLIST_VIDEO);
+				g_settings.Save();
+				g_playlistPlayer.ShufflePlay(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistShuffle);
 			}
 			else if (iControl==CONTROL_BTNSAVE)
 			{
@@ -178,6 +196,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 			else if (iControl==CONTROL_BTNREPEAT)
 			{
 				g_stSettings.m_bMyVideoPlaylistRepeat=!g_stSettings.m_bMyVideoPlaylistRepeat;
+				g_settings.Save();
 				g_playlistPlayer.Repeat(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistRepeat);
 			}
 			else if (iControl==CONTROL_BTNREPEATONE)
