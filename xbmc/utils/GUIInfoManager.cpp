@@ -218,7 +218,19 @@ CStdString CGUIInfoManager::GetMusicLabel(const CStdString &strItem)
 
 CStdString CGUIInfoManager::GetVideoLabel(const CStdString &strItem)
 {
-	if (strItem == "time") return GetCurrentPlayTime();
+  // TODO: Move the SetCurrentFile() stuff out of VideoOverlay and into here.
+  CIMDBMovie *pMovie = g_application.GetCurrentMovie();
+  CFileItem item = g_application.CurrentFileItem();
+  if (strItem == "title")
+  {
+    if (pMovie)
+      return pMovie->m_strTitle;
+    else if (item.IsVideo() && !item.GetLabel().IsEmpty())
+      return item.GetLabel();
+    else
+      return "";
+  }
+	else if (strItem == "time") return GetCurrentPlayTime();
 	else if (strItem == "timeremaining") return GetCurrentPlayTimeRemaining();
 	else if (strItem == "timespeed")
 	{
