@@ -170,6 +170,8 @@ public:
 		bool			m_bUseID3;
 		char			m_szMusicRecordingDirectory[128];
     char      m_szAlternateSubtitleDirectory[128];
+    bool      m_bPostProcessing;
+    bool      m_bDeInterlace;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;
