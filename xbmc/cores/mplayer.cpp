@@ -131,8 +131,23 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
   CStdString strTmp;
   m_vecOptions.erase(m_vecOptions.begin(),m_vecOptions.end());
   m_vecOptions.push_back("xbmc.exe");
-  m_vecOptions.push_back("-dr");
-	if ( m_iChannels) 
+  // enable direct rendering
+  m_vecOptions.push_back("-dr");    
+
+  //limit A-V sync correction in order to get smoother playback.
+  //defaults to 0.01 but for high quality videos 0.0001 results in 
+  // much smoother playback but slow reaction time to fix A-V desynchronization
+  m_vecOptions.push_back("-mc");
+  m_vecOptions.push_back("0.0001");
+
+  // smooth out audio driver timer (audio drivers arent perect)
+  //Higher values mean more smoothing,but avoid using numbers too high, 
+  //as they will cause independent timing from the sound card and may result in 
+  //an A-V desync
+  m_vecOptions.push_back("-autosync");
+  m_vecOptions.push_back("30");
+  
+  if ( m_iChannels) 
   {
     m_vecOptions.push_back("-channels");
     strTmp.Format("%i", m_iChannels);
