@@ -530,6 +530,16 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 		m_vecOptions.push_back("-sws");
 		m_vecOptions.push_back("0");
 	}
+
+	// Turn sub delay on
+	if (g_stSettings.m_currentVideoSettings.m_SubtitleDelay != 0.0f)
+	{
+		m_vecOptions.push_back("-subdelay");
+		CStdString strOpt;
+		strOpt.Format("%2.2f", g_stSettings.m_currentVideoSettings.m_SubtitleDelay);
+		m_vecOptions.push_back(strOpt.c_str());
+	}
+
 	m_vecOptions.push_back("1.avi");
 
 	argc=(int)m_vecOptions.size();
@@ -934,7 +944,6 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 				SetSubtitleVisible(true);
 		}
 		SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
-		SetSubTitleDelay(g_stSettings.m_currentVideoSettings.m_SubtitleDelay);
 
 		bIsVideo=HasVideo();
 		bIsAudio=HasAudio();
