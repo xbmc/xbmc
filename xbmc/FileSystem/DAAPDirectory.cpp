@@ -43,7 +43,7 @@ CDAAPDirectory::CDAAPDirectory(void)
 CDAAPDirectory::~CDAAPDirectory(void)
 {
 	//if (m_thisClient) DAAP_Client_Release(m_thisClient);
-	//free_artists();
+	free_artists();
 
 	m_thisHost = NULL;
 	m_thisClient = NULL;
@@ -80,6 +80,7 @@ bool  CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
 	CStdString strRoot=strPath;
 	if (!CUtil::HasSlashAtEnd(strPath)) strRoot+="/";
 
+	CFileItemList vecCacheItems;
 	// Clear out any cached entries for this path
 	g_directoryCache.ClearDirectory(strPath);
 
@@ -167,6 +168,7 @@ bool  CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
 				pItem->m_strPath = strRoot + m_thisHost->dbplaylists->playlists[c].itemname;
 				pItem->m_bIsFolder = true;
 				items.Add(new CFileItem(*pItem));
+        vecCacheItems.Add(pItem);
 			}
 		}
 		else if (m_currLevel == 0)	// playlists, so show albums
@@ -199,6 +201,7 @@ bool  CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
 						pItem->m_strPath = strRoot + cur->artist;
 						pItem->m_bIsFolder = true;
 						items.Add(new CFileItem(*pItem));
+            vecCacheItems.Add(pItem);
 						cur = cur->next;
 					}
 				}
@@ -242,6 +245,7 @@ bool  CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
 							pItem->m_musicInfoTag.SetLoaded(true);
 							
 							items.Add(new CFileItem(*pItem));
+              vecCacheItems.Add(pItem);
 						}
 					}
 				}
@@ -267,6 +271,7 @@ bool  CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
 					pItem->m_strPath = strRoot + curAlbum->album;
 					pItem->m_bIsFolder = true;
 					items.Add(new CFileItem(*pItem));
+          vecCacheItems.Add(pItem);
 					curAlbum = curAlbum->next;
 				}
 			}
@@ -295,10 +300,13 @@ bool  CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
 					pItem->m_musicInfoTag.SetLoaded(true);
 					
 					items.Add(new CFileItem(*pItem));
+          vecCacheItems.Add(pItem);
 				}
 			}
 		}
 	}
+
+  g_directoryCache.SetDirectory(strPath,vecCacheItems);
 	return true;
 }
 

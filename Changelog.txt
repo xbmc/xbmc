@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 15-03-2005 fixed: mem leak in DAAPDirectory
   - 15-03-2005 updated: Finnish language file (Thnx to jutski)
   - 15-03-2004 updated: Polish language file (Thnx to napek)
   - 15-03-2005 updated: Norwegian language file (Thnx to vnm)
