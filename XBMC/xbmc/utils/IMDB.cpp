@@ -14,7 +14,7 @@ using namespace HTML;
 CIMDB::CIMDB()
 {
 }
-CIMDB::CIMDB(const string& strProxyServer, int iProxyPort)
+CIMDB::CIMDB(const CStdString& strProxyServer, int iProxyPort)
 :m_http(strProxyServer,iProxyPort)
 {
 
@@ -25,7 +25,7 @@ CIMDB::~CIMDB()
 
 }
 
-bool CIMDB::FindMovie(const string &strMovie,IMDB_MOVIELIST& movielist)
+bool CIMDB::FindMovie(const CStdString &strMovie,IMDB_MOVIELIST& movielist)
 {
 	char szTitle[1024];
 	char szURL[1024];
@@ -34,7 +34,7 @@ bool CIMDB::FindMovie(const string &strMovie,IMDB_MOVIELIST& movielist)
 	bool bSkip=false;
 	int ipos=0;
 
-	string strURL,strHTML;
+	CStdString strURL,strHTML;
 	GetURL(strMovie,strURL);
   OutputDebugString("Retrieve:");
   OutputDebugString(strURL.c_str());
@@ -170,8 +170,8 @@ bool CIMDB::FindMovie(const string &strMovie,IMDB_MOVIELIST& movielist)
 
 bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 {
-	string strHTML;
-	string strURL = url.m_strURL;
+	CStdString strHTML;
+	CStdString strURL = url.m_strURL;
 
 	movieDetails.m_strTitle=url.m_strTitle;
 	movieDetails.m_strDirector="Not available.";
@@ -280,9 +280,9 @@ bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 
 			 while(pRealEnd > pStart) 
 			 {
-				string url = "";
-				string actor = "";
-				string role = "";
+				CStdString url = "";
+				CStdString actor = "";
+				CStdString role = "";
 		
 				// actor
 					
@@ -359,8 +359,8 @@ bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 
 	if (pPlot)
 	{
-		string strPlotURL= url.m_strURL + "plotsummary";
-		string strPlotHTML;
+		CStdString strPlotURL= url.m_strURL + "plotsummary";
+		CStdString strPlotHTML;
 		if ( m_http.Get(strPlotURL,strPlotHTML))
 		{
 			if (0!=strPlotHTML.size())
@@ -384,7 +384,7 @@ bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 	return true;
 }
 
-void CIMDB::ParseAHREF(const char *ahref, string &strURL, string &strTitle)
+void CIMDB::ParseAHREF(const char *ahref, CStdString &strURL, CStdString &strTitle)
 {
 	char* szAHRef;
 	szAHRef=new char[strlen(ahref)+1];
@@ -423,14 +423,14 @@ void CIMDB::ParseAHREF(const char *ahref, string &strURL, string &strTitle)
 	delete [] szAHRef;
 }
 
-void CIMDB::ParseGenres(const char *ahref, string &strURL, string &strTitle)
+void CIMDB::ParseGenres(const char *ahref, CStdString &strURL, CStdString &strTitle)
 {
 	char* szAHRef;
 	szAHRef=new char[strlen(ahref)+1];
 	strncpy(szAHRef,ahref,strlen(ahref));
 	szAHRef[strlen(ahref)]=0;
 
-	string strGenre = "";
+	CStdString strGenre = "";
 
 	char *pStart;
 	char *pEnd=szAHRef;
@@ -451,7 +451,7 @@ void CIMDB::ParseGenres(const char *ahref, string &strURL, string &strTitle)
 		{
 			pStart = pEnd+2;
 			pEnd = pSlash;
-			*pEnd = 0; // terminate string after current genre
+			*pEnd = 0; // terminate CStdString after current genre
       int iLen=pEnd-pStart;
       if (iLen < 0) break;
 			char *szTemp = new char[iLen+1];
@@ -473,15 +473,15 @@ void CIMDB::ParseGenres(const char *ahref, string &strURL, string &strTitle)
 	delete [] szAHRef;
 }
 
-bool CIMDB::Download(const string &strURL, const string &strFileName)
+bool CIMDB::Download(const CStdString &strURL, const CStdString &strFileName)
 {
-	string strHTML;
+	CStdString strHTML;
 	if (!m_http.Download(strURL,strFileName)) return false;
 
 	return true;
 }
 
-void CIMDBMovie::Save(const string &strFileName)
+void CIMDBMovie::Save(const CStdString &strFileName)
 {
 	FILE* fd=fopen(strFileName.c_str(), "wb+");
 	if (!fd) return;
@@ -503,7 +503,7 @@ void CIMDBMovie::Save(const string &strFileName)
 	fclose(fd);
 }
 
-bool CIMDBMovie::Load(const string& strFileName)
+bool CIMDBMovie::Load(const CStdString& strFileName)
 {
 
 	FILE* fd=fopen(strFileName.c_str(), "rb+");
@@ -534,7 +534,7 @@ void CIMDB::RemoveAllAfter(char* szMovie,const char* szSearch)
   if (pPtr) *pPtr=0;
 }
 
-void CIMDB::GetURL(const string &strMovie, string& strURL)
+void CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL)
 {
 	char szURL[1024];
 	char szMovie[1024];
@@ -614,7 +614,7 @@ void CIMDB::GetURL(const string &strMovie, string& strURL)
 	RemoveAllAfter(szMovie,"ogg");
 	RemoveAllAfter(szMovie,"ogm");
   
-	string strHTML;
+	CStdString strHTML;
 	sprintf(szURL,"http://us.imdb.com/Tsearch?title=%s", szMovie);
 	strURL = szURL;
 }
