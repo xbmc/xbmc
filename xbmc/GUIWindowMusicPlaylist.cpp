@@ -48,8 +48,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
   {
 		case GUI_MSG_PLAYBACK_STOPPED:
 		{
-			if (g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC)
-				UpdateButtons();
+			UpdateButtons();
 		}
 		break;
 
@@ -123,6 +122,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 			else if (iControl==CONTROL_BTNPLAY)
 			{
 				g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+				g_playlistPlayer.Reset();
 				g_playlistPlayer.Play(GetSelectedItem());
 				UpdateButtons();
 			}
@@ -236,6 +236,8 @@ void CGUIWindowMusicPlayList::ClearPlayList()
 {
 	ClearFileItems();
 	g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Clear();
+	if (g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC)
+			g_playlistPlayer.Reset();
 	UpdateListControl();
 	UpdateButtons();
 	SET_CONTROL_FOCUS(GetID(), CONTROL_BTNVIEWASICONS, 0);
@@ -253,6 +255,8 @@ void CGUIWindowMusicPlayList::ShufflePlayList()
 		strFileName=item.GetFileName();
 	}
 	playlist.Shuffle();
+	if (g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC)
+		g_playlistPlayer.Reset();
 
 	if (!strFileName.IsEmpty()) 
 	{
@@ -396,6 +400,7 @@ void CGUIWindowMusicPlayList::OnClick(int iItem)
 	CFileItem* pItem=m_vecItems[iItem];
 	CStdString strPath=pItem->m_strPath;
 	g_playlistPlayer.SetCurrentPlaylist( PLAYLIST_MUSIC );
+	g_playlistPlayer.Reset();
  	g_playlistPlayer.Play( iItem );
 }
 

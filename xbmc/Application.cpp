@@ -1738,20 +1738,28 @@ bool CApplication::OnMessage(CGUIMessage& message)
 			m_dwIdleTime=timeGetTime();
       CStdString strFile=m_strCurrentFile;
       m_strCurrentFile="";
-      if (CUtil::IsVideo(strFile))
+
+      if (CUtil::IsVideo(strFile) && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO_TEMP)
       {
-        if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
-        {
-          g_playlistPlayer.PlayNext(true);
-        }
+				//	Video stacking playback ended
+ 				CPlayList& playlist=g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO_TEMP);
+
+				if (g_playlistPlayer.GetEntriesNotFound()<playlist.size())
+					g_playlistPlayer.PlayNext(true);
+
         if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow()==WINDOW_FULLSCREEN_VIDEO)
 				  m_gWindowManager.PreviousWindow();
       }
       else
       {
+				//	Normal playback ended
 			  if (m_pPlayer) 
 			  {
-				  g_playlistPlayer.PlayNext(true);
+					CPlayList& playlist=g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist());
+
+					if (g_playlistPlayer.GetEntriesNotFound()<playlist.size())
+						g_playlistPlayer.PlayNext(true);
+					
 			  }
 			  if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow()==WINDOW_FULLSCREEN_VIDEO)
 				  m_gWindowManager.PreviousWindow();

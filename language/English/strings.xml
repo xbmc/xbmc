@@ -1570,6 +1570,10 @@
     <id>476</id>
     <value>Music & Video</value>
   </string>
+  <string>
+    <id>477</id>
+    <value>Unable to load playlist</value>
+  </string>
 <string><id>10000</id><value>Home</value></string>
 <string><id>10001</id><value>My Programs</value></string>
 <string><id>10002</id><value>My Pictures</value></string>

@@ -51,8 +51,17 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
   {
 		case GUI_MSG_PLAYBACK_STOPPED:
 		{
-			if (g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_VIDEO)
-				UpdateButtons();
+			for (int i=0; i < (int)m_vecItems.size(); ++i)
+			{
+				CFileItem* pItem=m_vecItems[i];
+				if (pItem && pItem->IsSelected())
+				{
+					pItem->Select(false);
+					break;
+				}
+			}
+
+			UpdateButtons();
 		}
 		break;
 
@@ -145,6 +154,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 			else if (iControl==CONTROL_BTNPLAY)
 			{
 				g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
+				g_playlistPlayer.Reset();
 				g_playlistPlayer.Play(GetSelectedItem());
 				UpdateButtons();
 			}
@@ -207,6 +217,8 @@ void CGUIWindowVideoPlaylist::ClearPlayList()
 {
 	ClearFileItems();
 	g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).Clear();
+	if (g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_VIDEO)
+		g_playlistPlayer.Reset();
 	UpdateListControl();
 	UpdateButtons();
 	SET_CONTROL_FOCUS(GetID(), CONTROL_BTNVIEWASICONS, 0);
@@ -560,6 +572,7 @@ void CGUIWindowVideoPlaylist::OnClick(int iItem)
 	CFileItem* pItem=m_vecItems[iItem];
 	CStdString strPath=pItem->m_strPath;
 	g_playlistPlayer.SetCurrentPlaylist( PLAYLIST_VIDEO);
+	g_playlistPlayer.Reset();
  	g_playlistPlayer.Play( iItem );
 }
 
@@ -597,12 +610,14 @@ void CGUIWindowVideoPlaylist::ShufflePlayList()
 	CPlayList& playlist=g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
 	
 	CStdString strFileName;
-	if (g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_VIDEO)
+	if (g_application.IsPlayingVideo() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_VIDEO)
 	{
 		const CPlayList::CPlayListItem& item=playlist[g_playlistPlayer.GetCurrentSong()];
 		strFileName=item.GetFileName();
 	}
 	playlist.Shuffle();
+	if (g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_VIDEO)
+		g_playlistPlayer.Reset();
 
 	if (!strFileName.IsEmpty()) 
 	{
