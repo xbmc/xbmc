@@ -48,6 +48,7 @@ public:
 	const	CStdString& GetTexutureNoFocusName() const { return m_imgNoFocus.GetFileName(); };
 	DWORD	GetTextOffsetX() const { return m_dwTextOffsetX;};
 	DWORD	GetTextOffsetY() const { return m_dwTextOffsetY;};
+	void							SetTextColor(D3DCOLOR dwTextColor) { m_dwTextColor=dwTextColor;};
 	DWORD							GetTextColor() const { return m_dwTextColor;};
 	DWORD							GetDisabledColor() const { return m_dwDisabledColor;};
 	const CStdString& GetFontName() const { return m_pFont->GetFontName(); };
