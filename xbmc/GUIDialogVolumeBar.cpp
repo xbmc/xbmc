@@ -45,10 +45,18 @@ bool CGUIDialogVolumeBar::OnMessage(CGUIMessage& message)
 	{
 		case GUI_MSG_WINDOW_INIT:
 		{
-			CGUIDialog::OnMessage(message);		
+      //resources are allocated in g_application
+			//CGUIDialog::OnMessage(message);		
 			// start timer
 			m_dwTimer = timeGetTime();
 			// levels are set in Render(), so no need to do them here...
+			return true;
+		}
+		break;
+
+ 		case GUI_MSG_WINDOW_DEINIT:
+		{
+      //don't deinit, g_application handles it
 			return true;
 		}
 		break;
