@@ -6,7 +6,6 @@
 #include "guiWindowManager.h"
 #include "localizestrings.h"
 #include "GUIDialogSelect.h"
-#include "utils/MusicInfoScraper.h"
 #include "musicInfoTagLoaderFactory.h"
 #include "GUIWindowMusicInfo.h"
 #include "GUIDialogOK.h"
@@ -649,6 +648,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 	}
 
 
+	bool bRefresh=false;
 	// check cache
 	CAlbum albuminfo;
 	if ( g_musicDatabase.GetAlbumInfo(strLabel, strPath, albuminfo) )
@@ -674,8 +674,10 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
     {
 			pDlgAlbumInfo->SetAlbum(album);
 			pDlgAlbumInfo->DoModal(GetID());
+
+			if (!pDlgAlbumInfo->NeedRefresh()) return;
+			bRefresh=true;
     }
-		return;
 	}
 
 	// show dialog box indicating we're searching the album
@@ -688,124 +690,79 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 	  m_dlgProgress->StartModal(GetID());
 	  m_dlgProgress->Progress();
   }
-	bool bDisplayErr=false;
 	
 	// find album info
-	CMusicInfoScraper scraper;
-	if (scraper.FindAlbuminfo(strLabel))
-	{
-		if (m_dlgProgress) m_dlgProgress->Close();
-		// did we found at least 1 album?
-		int iAlbumCount=scraper.GetAlbumCount();
-		if (iAlbumCount >=1)
-		{
-			//yes
-			// if we found more then 1 album, let user choose one
-			int iSelectedAlbum=0;
-			if (iAlbumCount > 1)
-			{
-				//show dialog with all albums found
-				const WCHAR* szText=g_localizeStrings.Get(181).c_str();
-				CGUIDialogSelect *pDlg= (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
-        if (pDlg)
-        {
-				  pDlg->SetHeading(szText);
-				  pDlg->Reset();
-				  for (int i=0; i < iAlbumCount; ++i)
-				  {
-					  CMusicAlbumInfo& info = scraper.GetAlbum(i);
-					  pDlg->Add(info.GetTitle2());
-				  }
-				  pDlg->DoModal(GetID());
-
-				  // and wait till user selects one
-				  iSelectedAlbum= pDlg->GetSelectedLabel();
-				  if (iSelectedAlbum< 0) return;
-        }
-			}
-
-			// ok, now show dialog we're downloading the album info
-			CMusicAlbumInfo& album = scraper.GetAlbum(iSelectedAlbum);
-			if (m_dlgProgress) 
-      {
-        m_dlgProgress->SetHeading(185);
-			  m_dlgProgress->SetLine(0,album.GetTitle2());
-			  m_dlgProgress->SetLine(1,"");
-			  m_dlgProgress->SetLine(2,"");
-			  m_dlgProgress->StartModal(GetID());
-			  m_dlgProgress->Progress();
-      }
-
-			// download the album info
-			bool bLoaded=album.Loaded();
-			if (!bLoaded) 
-				bLoaded=album.Load();
-			if ( bLoaded )
-			{
-				// set album title from musicinfotag, not the one we got from allmusic.com
-				album.SetTitle(strLabel);
-				// set path, needed to store album in database
-				album.SetAlbumPath(strPath);
-
-				if (bSaveDb)
-				{
-					CAlbum albuminfo;
-					albuminfo.strAlbum  = album.GetTitle();
-					albuminfo.strArtist = album.GetArtist();
-					albuminfo.strGenre  = album.GetGenre();
-					albuminfo.strTones  = album.GetTones();
-					albuminfo.strStyles = album.GetStyles();
-					albuminfo.strReview = album.GetReview();
-					albuminfo.strImage  = album.GetImageURL();
-					albuminfo.iRating   = album.GetRating();
-					albuminfo.iYear 		= atol( album.GetDateOfRelease().c_str() );
-					albuminfo.strPath   = album.GetAlbumPath();
-					// save to database
-					g_musicDatabase.AddAlbumInfo(albuminfo);
-				}
-				if (m_dlgProgress) 
-					m_dlgProgress->Close();
-
-				// ok, show album info
-				CGUIWindowMusicInfo *pDlgAlbumInfo= (CGUIWindowMusicInfo*)m_gWindowManager.GetWindow(WINDOW_MUSIC_INFO);
-        if (pDlgAlbumInfo)
-        {
-				  pDlgAlbumInfo->SetAlbum(album);
-				  pDlgAlbumInfo->DoModal(GetID());
-        }
-				bUpdate=true;
-			}
-			else
-			{
-				// failed 2 download album info
-				bDisplayErr=true;
-			}
-		}
-		else 
-		{
-			// no albums found
-			bDisplayErr=true;
-		}
-	}
-	else
-	{
-		// unable 2 connect to www.allmusic.com
-		bDisplayErr=true;
-	}
-	// if an error occured, then notice the user
-	if (bDisplayErr)
+	CMusicAlbumInfo album;
+	if (FindAlbumInfo(strLabel, album))
 	{
 		if (m_dlgProgress) 
-      m_dlgProgress->Close();
-    if (pDlgOK)
     {
-		  pDlgOK->SetHeading(187);
-		  pDlgOK->SetLine(0,L"");
-		  pDlgOK->SetLine(1,187);
-		  pDlgOK->SetLine(2,L"");
-		  pDlgOK->DoModal(GetID());
+      m_dlgProgress->SetHeading(185);
+			m_dlgProgress->SetLine(0,album.GetTitle2());
+			m_dlgProgress->SetLine(1,"");
+			m_dlgProgress->SetLine(2,"");
+			m_dlgProgress->Progress();
     }
+
+		// download the album info
+		bool bLoaded=album.Loaded();
+		if (!bLoaded) 
+			bLoaded=album.Load();
+		if ( bLoaded )
+		{
+			// set album title from musicinfotag, not the one we got from allmusic.com
+			album.SetTitle(strLabel);
+			// set path, needed to store album in database
+			album.SetAlbumPath(strPath);
+
+			if (bSaveDb)
+			{
+				CAlbum albuminfo;
+				albuminfo.strAlbum  = album.GetTitle();
+				albuminfo.strArtist = album.GetArtist();
+				albuminfo.strGenre  = album.GetGenre();
+				albuminfo.strTones  = album.GetTones();
+				albuminfo.strStyles = album.GetStyles();
+				albuminfo.strReview = album.GetReview();
+				albuminfo.strImage  = album.GetImageURL();
+				albuminfo.iRating   = album.GetRating();
+				albuminfo.iYear 		= atol( album.GetDateOfRelease().c_str() );
+				albuminfo.strPath   = album.GetAlbumPath();
+				// save to database
+				if (bRefresh)
+					g_musicDatabase.UpdateAlbumInfo(albuminfo);
+				else
+					g_musicDatabase.AddAlbumInfo(albuminfo);
+			}
+			if (m_dlgProgress) 
+				m_dlgProgress->Close();
+
+			// ok, show album info
+			CGUIWindowMusicInfo *pDlgAlbumInfo= (CGUIWindowMusicInfo*)m_gWindowManager.GetWindow(WINDOW_MUSIC_INFO);
+      if (pDlgAlbumInfo)
+      {
+				pDlgAlbumInfo->SetAlbum(album);
+				pDlgAlbumInfo->DoModal(GetID());
+      }
+			bUpdate=true;
+		}
+		else
+		{
+			// failed 2 download album info
+			if (pDlgOK)
+			{
+				pDlgOK->SetHeading(185);
+				pDlgOK->SetLine(0,L"");
+				pDlgOK->SetLine(1,500);
+				pDlgOK->SetLine(2,L"");
+				pDlgOK->DoModal(GetID());
+			}
+		}
 	}
+
+	if (m_dlgProgress) 
+    m_dlgProgress->Close();
+
 	if (bUpdate)
 	{
 		Update(m_strDirectory);
@@ -1094,4 +1051,83 @@ void CGUIWindowMusicBase::UpdateButtons()
 void CGUIWindowMusicBase::OnSearchItemFound(const CFileItem* pItem)
 {
 
+}
+
+bool CGUIWindowMusicBase::FindAlbumInfo(CStdString& strAlbum, CMusicAlbumInfo& album)
+{
+	CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+
+	CMusicInfoScraper scraper;
+	if (scraper.FindAlbuminfo(strAlbum))
+	{
+		// did we found at least 1 album?
+		int iAlbumCount=scraper.GetAlbumCount();
+		if (iAlbumCount >=1)
+		{
+			//yes
+			// if we found more then 1 album, let user choose one
+			int iSelectedAlbum=0;
+			if (iAlbumCount > 1)
+			{
+				//show dialog with all albums found
+				const WCHAR* szText=g_localizeStrings.Get(181).c_str();
+				CGUIDialogSelect *pDlg= (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+        if (pDlg)
+        {
+				  pDlg->SetHeading(szText);
+				  pDlg->Reset();
+          pDlg->EnableButton(true);
+          pDlg->SetButtonLabel(413); // manual
+
+				  for (int i=0; i < iAlbumCount; ++i)
+				  {
+					  CMusicAlbumInfo& info = scraper.GetAlbum(i);
+					  pDlg->Add(info.GetTitle2());
+				  }
+				  pDlg->DoModal(GetID());
+
+				  // and wait till user selects one
+				  iSelectedAlbum= pDlg->GetSelectedLabel();
+				  if (iSelectedAlbum< 0)
+					{
+						if (!pDlg->IsButtonPressed()) return false;
+						CStdString strNewAlbum=strAlbum;
+						if (!GetKeyboard(strNewAlbum)) return false;
+						if (strNewAlbum=="") return false;
+						return FindAlbumInfo(strNewAlbum, album);
+					}
+        }
+			}
+
+			// ok, downloading the album info
+			album = scraper.GetAlbum(iSelectedAlbum);
+			return true;
+		}
+		else 
+		{
+			// no albums found
+			if (pDlgOK)
+			{
+				pDlgOK->SetHeading(185);
+				pDlgOK->SetLine(0,L"");
+				pDlgOK->SetLine(1,187);
+				pDlgOK->SetLine(2,L"");
+				pDlgOK->DoModal(GetID());
+			}
+		}
+	}
+	else
+	{
+		// unable 2 connect to www.allmusic.com
+		if (pDlgOK)
+		{
+			pDlgOK->SetHeading(185);
+			pDlgOK->SetLine(0,L"");
+			pDlgOK->SetLine(1,499);
+			pDlgOK->SetLine(2,L"");
+			pDlgOK->DoModal(GetID());
+		}
+	}
+
+	return false;
 }

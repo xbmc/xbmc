@@ -80,11 +80,13 @@ bool CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum)
 			{
 				CStdString strAlbumName;
 				CStdString strAlbumURL;
-				int iPos=strColum.ReverseFind("</a>");
+				int iPos=strColum.Find(">");
 				if (iPos >= 0)
 				{
-					iPos+=4;
+					//iPos+=4;
+					iPos+=1;
 					strAlbumName=strColum.Right((int)strColum.size()-iPos);
+					strAlbumName.Replace("</a>", "");
 					int iOpen=strAlbumName.Find("<");
 					if (iOpen>=0)
 					{

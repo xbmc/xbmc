@@ -12,6 +12,7 @@
 #include "GUIDialogProgress.h"
 #include "playlist.h"
 #include "musicInfoTagLoaderFactory.h"
+#include "utils/MusicInfoScraper.h"
 
 #include "stdstring.h"
 #include <vector>
@@ -77,6 +78,7 @@ protected:
 					void							GoParentFolder();
 					void							RetrieveMusicInfo();
 					void							OnInfo(int iItem);
+					bool							FindAlbumInfo(CStdString& strAlbum, CMusicAlbumInfo& album);
 					void							ClearFileItems();
 					void							Update(const CStdString &strDirectory);
 					void							UpdateListControl();
