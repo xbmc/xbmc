@@ -143,8 +143,26 @@ CURL::CURL(const CStdString& strURL)
 	m_strFileName.Replace("\\","/");
 }
 
+CURL::CURL(const CURL &url)
+{
+	*this = url;
+}
+
 CURL::~CURL()
 {
+}
+
+CURL& CURL::operator= (const CURL& source)
+{
+	m_iPort = source.m_iPort;
+	m_strHostName = source.m_strHostName;
+	m_strDomain = source.m_strDomain;
+	m_strUserName = source.m_strUserName;
+	m_strPassword = source.m_strPassword;
+	m_strFileName = source.m_strFileName;
+	m_strProtocol = source.m_strProtocol;
+	m_strFileType = source.m_strFileType;
+	return *this;
 }
 
 void CURL::SetFileName(const CStdString& strFileName)
@@ -159,6 +177,16 @@ void CURL::SetFileName(const CStdString& strFileName)
 void CURL::SetHostName(const CStdString& strHostName)
 {
   m_strHostName=strHostName;
+}
+
+void CURL::SetUserName(const CStdString& strUserName)
+{
+  m_strUserName = strUserName;
+}
+
+void CURL::SetPassword(const CStdString& strPassword)
+{
+  m_strPassword = strPassword;
 }
 
 bool  CURL::HasPort() const

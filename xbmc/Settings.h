@@ -354,6 +354,9 @@ public:
 		int       m_iSambaDebugLevel;
 		char      m_strSambaWorkgroup[128];
 		char      m_strSambaWinsServer[32];
+		char      m_strSambaDefaultUserName[128];
+		char      m_strSambaDefaultPassword[128];
+
 		bool      m_bHideExtensions;
 
 		bool      m_bRipWithTrackNumber;

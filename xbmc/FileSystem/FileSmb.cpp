@@ -143,7 +143,17 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
 			url.GetFileName().Find("/.") >= 0) return false;
 
 	CStdString strFileName;
-	url.GetURL(strFileName);
+
+	//Use default credentials if none is specified.
+	if(url.GetUserName().length() == 0 && url.GetHostName().length() > 0)
+	{
+		CURL url2(url);
+		url2.SetUserName(g_stSettings.m_strSambaDefaultUserName);
+		url2.SetPassword(g_stSettings.m_strSambaDefaultPassword);
+		url2.GetURL(strFileName);
+	}
+	else
+		url.GetURL(strFileName);
 
 	// convert from string to UTF8
 	char strUtfFileName[1024];
@@ -202,7 +212,16 @@ bool CFileSMB::Exists(const CURL& url)
 			url.GetFileName().Find("/.") >= 0) return false;
 
 	CStdString strFileName;
-	url.GetURL(strFileName);
+	//Use default credentials if none is specified.
+	if(url.GetUserName().length() == 0 && url.GetHostName().length() > 0)
+	{
+		CURL url2(url);
+		url2.SetUserName(g_stSettings.m_strSambaDefaultUserName);
+		url2.SetPassword(g_stSettings.m_strSambaDefaultPassword);
+		url2.GetURL(strFileName);
+	}
+	else
+		url.GetURL(strFileName);
 
 	// convert from string to UTF8
 	char strUtfFileName[1024];
@@ -223,7 +242,16 @@ bool CFileSMB::Exists(const CURL& url)
 int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 {
 	CStdString strFileName;
-	url.GetURL(strFileName);
+	//Use default credentials if none is specified.
+	if(url.GetUserName().length() == 0 && url.GetHostName().length() > 0)
+	{
+		CURL url2(url);
+		url2.SetUserName(g_stSettings.m_strSambaDefaultUserName);
+		url2.SetPassword(g_stSettings.m_strSambaDefaultPassword);
+		url2.GetURL(strFileName);
+	}
+	else
+		url.GetURL(strFileName);
 
 	// convert from string to UTF8
 	char strUtfFileName[1024];
