@@ -1,6 +1,7 @@
 #include "GUIWindowSettingsUICalibration.h"
 #include "settings.h"
 #include "stdstring.h"
+#include "application.h"
 
 #define CONTROL_LABEL 2
 
@@ -145,6 +146,7 @@ void CGUIWindowSettingsUICalibration::OnKey(const CKey& key)
 
 		g_graphicsContext.SetOffset(g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY);
 		ResetAllControls();
+		g_application.ResetAllControls();
 	}
   CGUIWindow::OnKey(key);
 }
