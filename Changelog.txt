@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-01-2005 fixed: Album thumbs don't show as icon for folder in listview
   - 13-01-2005 updated: Finnish language file (Thnx to jutski)
   - 13-01-2005 updated: Norwegian language file (Thnx to vnmartinsen)
   - 13-01-2005 fixed: [ 1039490 ] Fan speed reset to full speed on exit on 1.6 Xbox
