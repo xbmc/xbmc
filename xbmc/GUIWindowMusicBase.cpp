@@ -299,10 +299,12 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 	else
 		bViewAsIcons = m_bViewAsIcons;
 
-	if ( bViewAsIcons ) {	
+	if ( bViewAsIcons ) 
+	{	
 		SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS);
 	}
-	else {
+	else 
+	{
 		SET_CONTROL_FOCUS(GetID(), CONTROL_LIST);
 	}
 
@@ -508,12 +510,13 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 				bLoaded=album.Load();
 			if ( bLoaded )
 			{
+				// set album title from musicinfotag
+				album.SetTitle(strLabel);
 				// ok, show album info
 				m_dlgProgress->Close();
 				{
 					CAlbum albuminfo;
-					
-					albuminfo.strAlbum  = strLabel;//album.GetTitle();
+					albuminfo.strAlbum  = album.GetTitle();
 					albuminfo.strArtist = album.GetArtist();
 					albuminfo.strGenre  = album.GetGenre();
 					albuminfo.strTones  = album.GetTones();
@@ -559,9 +562,9 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 	if (bUpdate)
 	{
 		Update(m_strDirectory);
+		CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iSelectedItem);
+		CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iSelectedItem);
 	}
-	CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iSelectedItem);
-	CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iSelectedItem);
 }
 
 void CGUIWindowMusicBase::OnRetrieveMusicInfo(VECFILEITEMS& items, bool bScan)
