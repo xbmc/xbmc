@@ -69,7 +69,7 @@ namespace PYXBMC
 			else return cDefault; // return default value
 				
 		}
-		else if (iPyLoadedSkinReferences == 1) return cDefault;
+//		else if (iPyLoadedSkinReferences == 1) return cDefault;
 
 		TiXmlElement *pControls = pySkinReferences.RootElement();
 
