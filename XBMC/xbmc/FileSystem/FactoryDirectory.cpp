@@ -9,6 +9,7 @@
 #include "CDDADirectory.h"
 #include "RTVDirectory.h"
 #include "SndtrkDirectory.h"
+#include "DAAPDirectory.h"
 #include "../url.h"
 
 CFactoryDirectory::CFactoryDirectory(void)
@@ -59,6 +60,10 @@ CDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 	if (strProtocol=="soundtrack")
 	{
 		return (CDirectory*)new CSndtrkDirectory();
+	}
+	if (strProtocol=="daap")
+	{
+		return (CDirectory*)new CDAAPDirectory();
 	}
 
   return (CDirectory*)new CHDDirectory();

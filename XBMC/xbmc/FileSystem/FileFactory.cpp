@@ -11,6 +11,7 @@
 #include "FileXBMSP.h"
 #include "FileRTV.h"
 #include "FileSndtrk.h"
+#include "FileDAAP.h"
 using namespace XFILE;
 
 CFileFactory::CFileFactory()
@@ -35,6 +36,7 @@ IFile* CFileFactory::CreateLoader(const CStdString& strFileName)
 	if (strProtocol=="shout")				return (IFile*)new CFileShoutcast();
 	if (strProtocol=="rtv")					return (IFile*)new CFileRTV();
 	if (strProtocol=="soundtrack")	return (IFile*)new CFileSndtrk();
+	if (strProtocol=="daap")				return (IFile*)new CFileDAAP();
 
   return (IFile*)new CFileHD();
 }
