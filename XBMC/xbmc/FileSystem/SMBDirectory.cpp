@@ -1,10 +1,13 @@
+/*
+ * know bugs:
+ * - doing smbc_stat on for example an IPC_SHARE leaves an open socket
+ *   this happens when listing all shares from a pc ("smb://pc-name")
+ */
+
 #include "smbdirectory.h"
-#include "../lib/libsmb/smb++.h"
-#include "../url.h"
 #include "../settings.h"
 #include "../util.h"
 #include "../sectionLoader.h"
-
 
 CSMBDirectory::CSMBDirectory(void)
 {
@@ -19,92 +22,85 @@ CSMBDirectory::~CSMBDirectory(void)
 
 bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 {
-  bool bResult(true);
-	CURL url(strPath);
+/*
+	We accept smb://[[[domain;]user[:password@]]server[/share[/path[/file]]]]
 
-	CStdString strRoot=strPath;
-	if (!CUtil::HasSlashAtEnd(strPath) )
+	unsigned int smbc_type; 
+		 Type of entity.
+	    SMBC_WORKGROUP=1,
+	    SMBC_SERVER=2, 
+	    SMBC_FILE_SHARE=3,
+	    SMBC_PRINTER_SHARE=4,
+	    SMBC_COMMS_SHARE=5,
+	    SMBC_IPC_SHARE=6,
+	    SMBC_DIR=7,
+	    SMBC_FILE=8,
+	    SMBC_LINK=9,
+	unsigned int dirlen;
+	unsigned int commentlen;
+	char *comment;
+	unsigned int namelen;
+	char name[1];
+}; dirent
+*/
+
+	CStdString strRoot = strPath;
+
+	if (!CUtil::HasSlashAtEnd(strPath))
 		strRoot+="/";
+
+	smb.Init();
+
+	int fd = smbc_opendir(strPath);
+
+	if (fd < 0) return false;
+	else
 	{
-
-			SMB* psmb =smbFile.GetSMB();
-			smbFile.Lock();
-			CStdString strPassword=url.GetPassWord();
-			CStdString strUserName=url.GetUserName();
-			CStdString strDirectory=url.GetFileName();
-
-			char szUserName[256];
-			char szPassWd[256];
-			if (strUserName.size() )
-				strcpy(szUserName, strUserName.c_str());
-			else
-				strcpy(szUserName, "");
-
-			if (strPassword.size() )
-				strcpy(szPassWd, strPassword.c_str());
-			else
-				strcpy(szPassWd, "");
-
-//			psmb->setNBNSAddress(g_stSettings.m_strNameServer);
-	//		psmb->setPasswordCallback(&cb);
-			smbFile.SetLogin(szUserName,szPassWd);
-			SMBdirent* dirEnt;
-			CStdString strFile = strPath.Right( strPath.size() -  strlen("smb://") );
-			int fd = psmb->opendir( strFile.c_str()  );
-			if (fd < 0) 
+		struct smbc_dirent* dirEnt;
+		while ((dirEnt = smbc_readdir(fd))) 
+		{
+			if (dirEnt->name && strcmp(dirEnt->name,".") && strcmp(dirEnt->name,".."))
 			{
-				bResult=false;
-			}
-			else
-			{
-				while ((dirEnt = psmb->readdir(fd))) 
+				CStdString strFile=dirEnt->name;
+				struct stat info;
+
+				smbc_stat(strRoot + strFile, &info);
+				
+				__int64 lTimeDate= info.st_ctime;
+				
+				FILETIME fileTime,localTime;
+				LONGLONG ll = Int32x32To64(lTimeDate, 10000000) + 116444736000000000;
+				fileTime.dwLowDateTime = (DWORD) ll;
+				fileTime.dwHighDateTime = (DWORD)(ll >>32);
+
+				FileTimeToLocalFileTime(&fileTime,&localTime); 
+
+				if (info.st_mode & S_IFDIR)
 				{
-	    		
-	    		
-					if (dirEnt->d_name && strcmp(dirEnt->d_name,".") && strcmp(dirEnt->d_name,".."))
-					{
-						__int64 lTimeDate= dirEnt->st_ctime;
-						CStdString strFile=dirEnt->d_name;
-
-						FILETIME fileTime,localTime;
-						LONGLONG ll = Int32x32To64(lTimeDate, 10000000) + 116444736000000000;
-						fileTime.dwLowDateTime = (DWORD) ll;
-						fileTime.dwHighDateTime = (DWORD)(ll >>32);
-
-						FileTimeToLocalFileTime(&fileTime,&localTime);
-	          
-
-						if (dirEnt->st_mode & S_IFDIR)
-						{
-							CFileItem *pItem = new CFileItem(strFile);
-							pItem->m_strPath=strRoot;
-							pItem->m_strPath+=strFile;
-							pItem->m_bIsFolder=true;
-							FileTimeToSystemTime(&localTime, &pItem->m_stTime);  
-							items.push_back(pItem);
-						}
-						else
-						{
-							if ( IsAllowed( strFile) )
-							{
-								CFileItem *pItem = new CFileItem(strFile);
-								pItem->m_strPath=strRoot;
-								pItem->m_strPath+=strFile;
-								pItem->m_bIsFolder=false;
-								pItem->m_dwSize=dirEnt->st_size;
-								FileTimeToSystemTime(&localTime, &pItem->m_stTime);
-		            
-								items.push_back(pItem);
-							}
-						}
-					}
-
-			    
+					CFileItem *pItem = new CFileItem(strFile);
+					pItem->m_strPath=strRoot;
+					pItem->m_strPath+=strFile;
+					pItem->m_bIsFolder=true;
+					FileTimeToSystemTime(&localTime, &pItem->m_stTime);  
+					items.push_back(pItem);
 				}
-				psmb->closedir(fd);
-
-  		}
-			smbFile.Unlock();
+				else
+				{
+					if ( IsAllowed( strFile) )
+					{
+						CFileItem *pItem = new CFileItem(strFile);
+						pItem->m_strPath=strRoot;
+						pItem->m_strPath+=strFile;
+						pItem->m_bIsFolder=false;
+						pItem->m_dwSize = info.st_size;
+						FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+		        
+						items.push_back(pItem);
+					}
+				}
+			}
+		}
+		smbc_closedir(fd);
 	}
-	return bResult;
+	return true;
 }
