@@ -250,6 +250,9 @@ void CMusicDatabase::AddSong(const CSong& song1, bool bCheck)
 
 		CStdString strPath, strFileName;
 		CUtil::Split(song1.strFileName, strPath, strFileName);
+    if(CUtil::HasSlashAtEnd(strPath))
+      strPath.Delete(strPath.size()-1);
+
 		RemoveInvalidChars(strFileName);
 
 		if (NULL==m_pDB.get()) return;
@@ -850,8 +853,10 @@ bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName1, CSong& so
 		CStdString strFileName=strFileName1;
 		RemoveInvalidChars(strFileName);
 
-		CStdString strPath, strFName;
-		CUtil::Split(strFileName, strPath, strFName);
+		CStdString strPath;
+		CUtil::GetDirectory(strFileName, strPath);
+    if(CUtil::HasSlashAtEnd(strPath))
+      strPath.Delete(strPath.size()-1);
 
 		if (NULL==m_pDB.get()) return false;
 		if (NULL==m_pDS.get()) return false;
@@ -1556,8 +1561,10 @@ bool CMusicDatabase::IncrTop100CounterByFileName(const CStdString& strFileName1)
 		CStdString strFileName=strFileName1;
 		RemoveInvalidChars(strFileName);
 
-		CStdString strPath, strFName;
-		CUtil::Split(strFileName, strPath, strFName);
+		CStdString strPath;
+		CUtil::GetDirectory(strFileName, strPath);
+    if(CUtil::HasSlashAtEnd(strPath))
+      strPath.Delete(strPath.size()-1);
 
 		if (NULL==m_pDB.get()) return false;
 		if (NULL==m_pDS.get()) return false;

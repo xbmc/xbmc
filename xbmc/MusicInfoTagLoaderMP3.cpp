@@ -250,8 +250,8 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
 			bFound=true;
 		}
 
-		CStdString strCoverArt, strPath, strFileName;
-		CUtil::Split(tag.GetURL(), strPath, strFileName);
+		CStdString strCoverArt, strPath;
+		CUtil::GetDirectory(tag.GetURL(), strPath);
 		CUtil::GetAlbumThumb(tag.GetAlbum(), strPath, strCoverArt,true);
 		if (bFound)
 		{

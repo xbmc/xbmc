@@ -279,8 +279,8 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 					if (picture.bPictureType==3) //	Cover Front
 					{
 						CStdString strExtension(picture.pwszMIMEType);
-						CStdString strCoverArt, strPath, strFileName;
-						CUtil::Split(tag.GetURL(), strPath, strFileName);
+						CStdString strCoverArt, strPath;
+						CUtil::GetDirectory(tag.GetURL(), strPath);
 						CUtil::GetAlbumThumb(tag.GetAlbum(), strPath, strCoverArt,true);
 						if (!CUtil::ThumbExists(strCoverArt))
 						{
