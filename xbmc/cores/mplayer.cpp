@@ -278,9 +278,14 @@ void CMPlayer::ToggleOSD()
 	mplayer_put_key('o');
 }
 
+void CMPlayer::SwitchToNextLanguage()
+{
+	mplayer_put_key('l');
+}
 
 void CMPlayer::ToggleSubtitles()
 {
+	mplayer_put_key('s');
 }
 
 

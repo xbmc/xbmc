@@ -25,6 +25,7 @@ Keymappings when playing movies:
     step backward -10 min                       controller: DPAD down       remote    : down
     toggle OSD                                  controller: black           remote    : info
     toggle subtitles                            controller: white           remote    : title
+    Next Subtitle Language                      controller: B								remote    : 
     show info                                   controller: Y               remote    : ?
   
 My Pictures when viewing a slideshow or picture:

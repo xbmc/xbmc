@@ -20,6 +20,7 @@ public:
 	virtual bool		HasVideo();
 	virtual bool		HasAudio();
 	virtual void		ToggleOSD();
+	virtual void		SwitchToNextLanguage();
 
 	virtual __int64	GetPTS() ;
 	virtual void		ToggleSubtitles();

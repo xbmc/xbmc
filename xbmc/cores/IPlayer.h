@@ -21,7 +21,7 @@ public:
 	virtual bool		HasVideo()=0;
 	virtual bool		HasAudio()=0;
 	virtual void		ToggleOSD()=0;
-
+	virtual void		SwitchToNextLanguage()=0;
 	virtual __int64	GetPTS() =0;
 	virtual void		ToggleSubtitles()=0;
 	virtual void		ToggleFrameDrop()=0;

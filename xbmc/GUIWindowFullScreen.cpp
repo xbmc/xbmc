@@ -100,6 +100,9 @@ void CGUIWindowFullScreen::OnKey(const CKey& key)
 				m_bShowInfo = !m_bShowInfo;
 			break;
 
+			case KEY_BUTTON_B:
+				g_application.m_pPlayer->SwitchToNextLanguage();
+			break;
 
 		}
 	}
