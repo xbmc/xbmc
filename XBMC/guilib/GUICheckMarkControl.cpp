@@ -2,9 +2,10 @@
 #include "guifontmanager.h"
 
 
-CGUICheckMarkControl::CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureCheckMark,DWORD dwCheckWidth, DWORD dwCheckHeight,DWORD dwAlign)
+CGUICheckMarkControl::CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureCheckMark,const CStdString& strTextureCheckMarkNF,DWORD dwCheckWidth, DWORD dwCheckHeight,DWORD dwAlign)
 :CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight)
 ,m_imgCheckMark(dwParentID, dwControlId, dwPosX, dwPosY,dwCheckWidth, dwCheckHeight, strTextureCheckMark)
+,m_imgCheckMarkNoFocus(dwParentID, dwControlId, dwPosX, dwPosY,dwCheckWidth, dwCheckHeight, strTextureCheckMarkNF)
 {
 	m_strLabel=L""; 
 	m_dwTextColor	= 0xFFFFFFFF; 
@@ -55,6 +56,11 @@ void CGUICheckMarkControl::Render()
     m_imgCheckMark.SetPosition(dwCheckMarkPosX, m_dwPosY); 
     m_imgCheckMark.Render();
   }
+  else
+  {
+    m_imgCheckMarkNoFocus.SetPosition(dwCheckMarkPosX, m_dwPosY); 
+    m_imgCheckMarkNoFocus.Render();
+  }
 }
 
 void CGUICheckMarkControl::OnAction(const CAction &action) 
@@ -86,12 +92,14 @@ void CGUICheckMarkControl::AllocResources()
 {
   CGUIControl::AllocResources();
   m_imgCheckMark.AllocResources();
+  m_imgCheckMarkNoFocus.AllocResources();
 }
 
 void CGUICheckMarkControl::FreeResources()
 {
   CGUIControl::FreeResources();
   m_imgCheckMark.FreeResources();
+  m_imgCheckMarkNoFocus.FreeResources();
 }
 
 

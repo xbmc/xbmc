@@ -14,7 +14,7 @@ namespace OSD
 
 		virtual ~COSDOptionIntRange(void);
 		virtual IOSDOption* Clone() const;
-		virtual void Draw(int x, int y, bool bFocus=false);
+		virtual void Draw(int x, int y, bool bFocus=false, bool bSelected=false);
 		virtual bool OnAction(const CAction& action);
 	private:
 		int	m_iMin;

@@ -51,7 +51,7 @@ IOSDOption* COSDOptionFloatRange::Clone() const
 }
 
 
-void COSDOptionFloatRange::Draw(int x, int y, bool bFocus)
+void COSDOptionFloatRange::Draw(int x, int y, bool bFocus,bool bSelected)
 {
   DWORD dwColor=0xff999999;
   if (bFocus)
