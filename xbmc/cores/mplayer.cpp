@@ -299,6 +299,9 @@ CMPlayer::CMPlayer(IPlayerCallback& callback)
 
 CMPlayer::~CMPlayer()
 {
+	m_bIsPlaying=false;
+	StopThread();
+	Unload();
 	while( criticalsection_head )
 	{
 		CriticalSection_List * entry = criticalsection_head;
@@ -306,9 +309,6 @@ CMPlayer::~CMPlayer()
 		delete entry;
 	}	//fix winnt and xbox critical data mismatch issue.
 	free_registry();	//free memory take by registry structures
-	m_bIsPlaying=false;
-	StopThread();
-	Unload();
 }
 bool CMPlayer::load()
 {
