@@ -6,7 +6,7 @@
 //deal wma, and wmv dlls in openfile, and closefile functions
 extern DllLoader * wmaDMOdll;
 extern DllLoader * wmvDMOdll;
-extern DllLoader * wmv8DMOdll;
+extern DllLoader * wmsDMOdll;
 extern "C" BOOL WINAPI dllFreeLibrary(HINSTANCE hLibModule);
 
 int							(__cdecl* pInitPlayer)(int argc, char* argvp[]);
@@ -107,7 +107,7 @@ extern "C"
 	{
 		wmaDMOdll = NULL;					//hacks for free library for DMOs
 		wmvDMOdll = NULL;
-		wmv8DMOdll= NULL;
+		wmsDMOdll = NULL;
 		return pOpenFile(szFile);
 	}
 
@@ -120,9 +120,9 @@ extern "C"
 		if (wmvDMOdll) 
 			dllFreeLibrary( (HINSTANCE)wmvDMOdll );
 		wmvDMOdll = NULL;
-		if (wmv8DMOdll) 
-			dllFreeLibrary( (HINSTANCE)wmv8DMOdll );
-		wmv8DMOdll = NULL;
+		if (wmsDMOdll) 
+			dllFreeLibrary( (HINSTANCE)wmsDMOdll );
+		wmsDMOdll = NULL;
 		return hr;
 	}
 

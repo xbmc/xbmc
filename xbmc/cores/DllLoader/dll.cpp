@@ -15,7 +15,7 @@ static int ResolveName(char *Name, char* Function, void **Fixup);
 //hack to Free pe image, global variable.
 DllLoader * wmaDMOdll;
 DllLoader * wmvDMOdll;
-DllLoader * wmv8DMOdll;
+DllLoader * wmsDMOdll;
 
 
 #ifdef DUMPING_DATA
@@ -390,6 +390,22 @@ Exp2Dll::Exp2Dll(char* ObjName, unsigned long Ord, unsigned long Func)
 	*curr = this;
 }                
 
+Exp2Dll::Exp2Dll(char* ObjName, char* FuncName, unsigned long Ord,unsigned long Func)
+{                   
+	Exp2Dll** curr;
+	ObjectName   = new char[strlen(ObjName)+1];      
+	FunctionName = new char[strlen(FuncName)+1];
+	Ordinal = Ord;
+	strcpy(ObjectName, ObjName);
+	strcpy(FunctionName, FuncName);
+	Function = Func;
+	Next = 0;
+
+	curr = &Head;
+	while( *curr ) curr = &((*curr)->Next);
+	*curr = this;
+} 
+
 Exp2Dll::Exp2Dll(char* ObjName, char* FuncName, unsigned long Func)
 {                   
 	Exp2Dll** curr;
@@ -405,7 +421,7 @@ Exp2Dll::Exp2Dll(char* ObjName, char* FuncName, unsigned long Func)
 	while( *curr ) curr = &((*curr)->Next);
 	*curr = this;
 }                
-
+ 
 Exp2Dll::~Exp2Dll()
 {
 
@@ -438,16 +454,27 @@ extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR libname)
 	auto_ptr<char> plibname ( new char[strlen(libname)+120]); 
 	sprintf(plibname.get(), "%s\\%s", DEFAULT_DLLPATH ,(char *)libname);
 	DllLoader * dllhandle = new DllLoader(plibname.get());
-	dllhandle->Parse();
+	
+	int hr = dllhandle->Parse();
+	if ( hr == 0 ) 
+	{
+		char szBuf[128];
+		sprintf(szBuf,"Failed to open %s, check codecs.conf and file existence.\n",plibname);
+		OutputDebugString(szBuf);	
+		delete dllhandle;
+		return NULL;
+	}
+
 	dllhandle->ResolveImports();
 	
 	//log bad guys who do not call Freelibrary 
-	if (strcmp(libname, "wma9dmod.dll") == 0 || strcmp(libname, "WMA9DMOD.DLL") == 0 )
+	if (strcmp(libname, "wmadmod.dll") == 0 || strcmp(libname, "WMADMOD.DLL") == 0 )
 		wmaDMOdll = dllhandle;
-	if (strcmp(libname, "wmv9dmod.dll") == 0 || strcmp(libname, "WMV9DMOD.DLL") == 0 )
-		wmvDMOdll = dllhandle;
 	if (strcmp(libname, "wmvdmod.dll") == 0 || strcmp(libname, "WMVDMOD.DLL") == 0 )
-		wmv8DMOdll = dllhandle;
+		wmvDMOdll = dllhandle;
+	if (strcmp(libname, "wmsdmod.dll") == 0 || strcmp(libname, "WMSDMOD.DLL") == 0 )
+		wmsDMOdll = dllhandle;
+
 
 	void * address = NULL;
 	dllhandle->ResolveExport("DllMain", &address);
