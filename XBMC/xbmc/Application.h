@@ -1,5 +1,6 @@
 #pragma once
 #include "xbapplicationex.h"
+#include "applicationmessenger.h"
 #include "GUIWindowManager.h"
 #include "guiwindow.h"
 #include "GUIMessage.h"
@@ -43,18 +44,9 @@
 #include "DetectDVDType.h"
 #include "Autorun.h"
 #include "IMsgTargetCallback.h"
-#include "utils/CriticalSection.h"
+
 #include <vector>
 #include <memory>
-
-typedef struct {
-	DWORD dwMessage;
-	DWORD dwParam1;
-  DWORD dwParam2;
-	CStdString strParam;
-	HANDLE hWaitEvent;
-	LPVOID lpVoid;
-}ThreadMessage;
 
 using namespace std;
 
@@ -74,8 +66,6 @@ public:
 	void									ProcessPythonScripts();
 	int										ScriptsSize();
 	int										GetPythonScriptId(int scriptPosition); 
-	void									SendThreadMessage(ThreadMessage& msg, bool wait = false);
-	void									ProcessThreadMessages();
 
 	virtual bool					OnMessage(CGUIMessage& message);
 
@@ -133,9 +123,6 @@ protected:
 	typedef vector<int>::iterator ivecScriptIds;
 	CStdString							m_strCurrentPlayer;
 
-	vector<ThreadMessage*>	m_vecThreadMessages;
-	CCriticalSection				m_critSection;
-	
 };
 
 extern CApplication g_application;

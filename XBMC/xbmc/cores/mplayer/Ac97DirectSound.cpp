@@ -93,12 +93,17 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback,int iChannels, unsi
 		m_adwStatus[ j ] = XMEDIAPACKET_STATUS_SUCCESS;
 
 
-	if ( FAILED(Ac97CreateMediaObject(DSAC97_CHANNEL_DIGITAL, NULL, NULL, &m_pDigitalOutput) ) )
+	
+	m_pDigitalOutput=NULL;
+	m_pAnalogOutput=NULL;
+	hr=Ac97CreateMediaObject(DSAC97_CHANNEL_DIGITAL, NULL, NULL, &m_pDigitalOutput);
+	if ( hr !=DS_OK )
 	{
 		OutputDebugString("failed to create digital Ac97CreateMediaObject()\n");
 	}
 
-  if ( FAILED(Ac97CreateMediaObject(DSAC97_CHANNEL_ANALOG, NULL, NULL, &m_pAnalogOutput) ) )
+	hr=Ac97CreateMediaObject(DSAC97_CHANNEL_ANALOG, NULL, NULL, &m_pAnalogOutput);
+  if ( hr !=DS_OK )
 	{
 		OutputDebugString("failed to create analog Ac97CreateMediaObject()\n");
 	}

@@ -35,27 +35,28 @@
 #include <windows.h>
 #endif
 
+#include "IDirectSoundRenderer.h"
 #include "IAudioCallback.h"
 extern void RegisterAudioCallback(IAudioCallback* pCallback);
 extern void UnRegisterAudioCallback();
 
-class CASyncDirectSound 
+class CASyncDirectSound : public IDirectSoundRenderer
 {
 public:
-	void UnRegisterAudioCallback();
-	void RegisterAudioCallback(IAudioCallback* pCallback);
-	DWORD GetChunkLen();
-	FLOAT GetDelay();
+	virtual void	UnRegisterAudioCallback();
+	virtual void		RegisterAudioCallback(IAudioCallback* pCallback);
+	virtual DWORD		GetChunkLen();
+	virtual FLOAT		GetDelay();
 	CASyncDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample);
 	virtual ~CASyncDirectSound();
 
-	DWORD 					AddPackets(unsigned char* data, DWORD len);
-	DWORD						GetSpace();
+	virtual DWORD 	AddPackets(unsigned char* data, DWORD len);
+	virtual DWORD		GetSpace();
 	virtual HRESULT Deinitialize();
 	virtual HRESULT Pause();
 	virtual HRESULT Stop();
-	HRESULT					Resume();
-	DWORD						GetBytesInBuffer();
+	virtual HRESULT	Resume();
+	virtual DWORD		GetBytesInBuffer();
 	virtual LONG		GetMinimumVolume() const;
 	virtual LONG		GetMaximumVolume() const;
 	virtual LONG		GetCurrentVolume() const;
@@ -63,11 +64,11 @@ public:
 	virtual bool		SupportsSurroundSound()  const;
 	static void CALLBACK StaticStreamCallback(LPVOID pStreamContext, LPVOID pPacketContext, DWORD dwStatus);
 	void						StreamCallback(LPVOID pPacketContext, DWORD dwStatus);
-	int							SetPlaySpeed(int iSpeed);
+	virtual int			SetPlaySpeed(int iSpeed);
 
 private:
 	IAudioCallback* m_pCallback;
-	LONG m_lFadeVolume;
+	LONG				m_lFadeVolume;
 
 	bool									FindFreePacket( DWORD& pdwIndex );
 
