@@ -661,24 +661,22 @@ void CApplication::OnKey(CKey& key)
 		  g_playlistPlayer.PlayNext();
 	  }
 
-    if ( IsPlayingAudio())
+    if ( IsPlaying())
     {
       if (!m_pPlayer->IsPaused())
       {
         // if we do a FF/RW in my music then map PLAY action togo back to normal speed
         if (action.wID == ACTION_MUSIC_PLAY)
         {
-          if ( IsPlayingAudio() && m_pAudioDecoder)
+          
+          if (m_iPlaySpeed!=1)
           {
-            if (m_iPlaySpeed!=1)
-            {
-              SetPlaySpeed(1);
-            }
+            SetPlaySpeed(1);
           }
         }
         if (action.wID == ACTION_MUSIC_FORWARD || action.wID == ACTION_MUSIC_REWIND)
         {
-          if ( IsPlayingAudio() && m_pAudioDecoder)
+          if ( m_pAudioDecoder)
           {
             if (action.wID == ACTION_MUSIC_REWIND && m_iPlaySpeed == 1) // Enables Rewinding
 	            m_iPlaySpeed *=-2;
