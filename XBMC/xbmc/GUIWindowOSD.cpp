@@ -166,7 +166,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 	{
 		case GUI_MSG_WINDOW_DEINIT:	// fired when OSD is hidden
 		{
-      g_application.m_pPlayer->ShowOSD(true);
+      if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(true);
 			if (m_bSubMenuOn)						// is sub menu on?
 			{
 				SET_CONTROL_FOCUS(GetID(), m_iActiveMenuButtonID, 0);	// set focus to last menu button

@@ -1199,50 +1199,56 @@ void CApplication::FrameMove()
 
 void CApplication::Stop()
 {
-  CLog::Log("stop all");
-	if (m_pWebServer)
-	{
-    CLog::Log("stop webserver");
-		m_pWebServer->Stop();
-		delete m_pWebServer;
-		m_pWebServer = NULL;
-	}
+  try
+  {
+    CLog::Log("stop all");
+	  if (m_pWebServer)
+	  {
+      CLog::Log("stop webserver");
+		  m_pWebServer->Stop();
+		  delete m_pWebServer;
+		  m_pWebServer = NULL;
+	  }
 
-	if (m_pPlayer)
-	{
-    CLog::Log("stop mplayer");
-		delete m_pPlayer;
-		m_pPlayer=NULL;
-	}
+	  if (m_pPlayer)
+	  {
+      CLog::Log("stop mplayer");
+		  delete m_pPlayer;
+		  m_pPlayer=NULL;
+	  }
 
-  //g_lcd.StopThread();
-  CLog::Log("stop python");
-	g_applicationMessenger.Cleanup();
-	m_pythonParser.FreeResources();
-  
-  CLog::Log("stop dvd detect media");
-	m_DetectDVDType.StopThread();
+    //g_lcd.StopThread();
+    CLog::Log("stop python");
+	  g_applicationMessenger.Cleanup();
+	  m_pythonParser.FreeResources();
+    
+    CLog::Log("stop dvd detect media");
+	  m_DetectDVDType.StopThread();
 
-  CLog::Log("stop LCD");
-  g_lcd.Stop();
-  
+    CLog::Log("stop LCD");
+    g_lcd.Stop();
+    
 
-  CLog::Log("stop time server");
-	m_sntpClient.StopThread();
+    CLog::Log("stop time server");
+	  m_sntpClient.StopThread();
 
-  CLog::Log("unload skin");
-	m_guiMusicOverlay.FreeResources();
-	m_guiWindowVideoOverlay.FreeResources();
-	m_guiWindowOSD.FreeResources();
-	g_fontManager.Clear();
-	m_gWindowManager.DeInitialize();
-	g_TextureManager.Cleanup();
+    CLog::Log("unload skin");
+	  m_guiMusicOverlay.FreeResources();
+	  m_guiWindowVideoOverlay.FreeResources();
+	  m_guiWindowOSD.FreeResources();
+	  g_fontManager.Clear();
+	  m_gWindowManager.DeInitialize();
+	  g_TextureManager.Cleanup();
 
-  CLog::Log("unload sections");
-	CSectionLoader::UnloadAll();
-  CLog::Log("destroy");
-	Destroy();
-  CLog::Log("stopped");
+    CLog::Log("unload sections");
+	  CSectionLoader::UnloadAll();
+    CLog::Log("destroy");
+	  Destroy();
+    CLog::Log("stopped");
+  }
+  catch(...)
+  {
+  }
 }
 
 bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
