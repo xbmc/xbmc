@@ -1106,4 +1106,5 @@ int CMPlayer::GetCacheSize(bool bFileOnHD,bool bFileOnISO,bool bFileOnUDF,bool b
     if ( bIsVideo) return g_stSettings.m_iCacheSizeLAN[CACHE_VIDEO];
     if ( bIsAudio) return g_stSettings.m_iCacheSizeLAN[CACHE_AUDIO];
   }
+  return 1024;
 }
