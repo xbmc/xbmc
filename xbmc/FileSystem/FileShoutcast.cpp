@@ -7,22 +7,24 @@
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
-#include "../UI/configuration.h"
-#include "libshout/types.h"
-#include "libshout/rip_manager.h"
-#include "libshout/util.h"
-#include "libshout/filelib.h"
+#include "../settings.h"
+#include "../lib/libshout/types.h"
+#include "../lib/libshout/rip_manager.h"
+#include "../lib/libshout/util.h"
+#include "../lib/libshout/filelib.h"
+#include "../GUIDialogProgress.h"
+#include "../application.h"
+#include "guiwindowmanager.h"
 #include "ringbuffer.h"
-#include <dialog.h>
+//#include <dialog.h>
 #include "ShoutcastRipFile.h"
 
+const int SHOUTCASTTIMEOUT=100;
 static CRingBuffer m_ringbuf;
 
 static FileState m_fileState;
 static CShoutcastRipFile m_ripFile;
 
-
-extern CDialog g_dialog;
 
 static RIP_MANAGER_INFO m_ripInfo;
 static ERROR_INFO m_errorInfo;
@@ -95,7 +97,7 @@ CFileShoutcast::CFileShoutcast()
 CFileShoutcast::~CFileShoutcast()
 {
 	m_ripFile.Reset();
-	m_ringbuf.Clear();
+	m_ringbuf.Destroy(); 
 	rip_manager_stop();
 }
 
@@ -135,7 +137,7 @@ offset_t CFileShoutcast::GetLength()
 
 bool CFileShoutcast::Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport, bool bBinary)
 {
-
+	m_dwLastTime =timeGetTime();
 	int ret;
 	RIP_MANAGER_OPTIONS 		m_opt;
 	m_opt.relay_port = 8000;
@@ -145,26 +147,34 @@ bool CFileShoutcast::Open(const char* strUserName, const char* strPassword,const
 								OPT_SEARCH_PORTS |
 								OPT_ADD_ID3;
 
+	CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(101);
 
 	strcpy(m_opt.output_directory, "./");
 	m_opt.proxyurl[0] = (char)NULL;
 	char szURL[1024];
-	sprintf(szURL,"http://%s:%i%s", strHostName,iport,strFileName);
+	if ( strlen(strUserName)>0 && strlen(strPassword)>0 )
+	{
+		sprintf(szURL,"http://%s:%s@%s:%i/%s",strUserName,strPassword, strHostName,iport,strFileName);
+	}
+	else
+	{
+		sprintf(szURL,"http://%s:%i/%s", strHostName,iport,strFileName);
+	}
 	strncpy(m_opt.url, szURL, MAX_URL_LEN);
 	sprintf(m_opt.useragent, "x%s",strFileName);
-
-	g_dialog.DoModalLess();
-	g_dialog.SetCaption(0, "Shoutcast" );
-	g_dialog.SetMessage(0, "Opening" );
-	g_dialog.SetMessage(1, szURL );
-	g_dialog.Render();
+	dlgProgress->SetHeading(260);
+	dlgProgress->SetLine(0,259);
+	dlgProgress->SetLine(1,szURL);
+	dlgProgress->SetLine(2,"");
+	dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
+	dlgProgress->Progress();
 	
-
 	if ((ret = rip_manager_start(rip_callback, &m_opt)) != SR_SUCCESS)
 	{
+		dlgProgress->Close();
 		return false;
 	}
-	int iShoutcastTimeout = 10 * g_playerSettings.iShoutcastTimeout; //i.e: 10 * 10 = 100 * 100ms = 10s
+	int iShoutcastTimeout = 10 * SHOUTCASTTIMEOUT; //i.e: 10 * 10 = 100 * 100ms = 10s
 	int iCount = 0;
 	while (!m_fileState.bRipDone && !m_fileState.bRipStarted && !m_fileState.bRipError) 
 	{
@@ -176,7 +186,10 @@ bool CFileShoutcast::Open(const char* strUserName, const char* strPassword,const
 		}
 		else
 		{
-			outputTimeoutMessage("Connection timed out...");
+			dlgProgress->SetLine(1, 257); 
+			dlgProgress->SetLine(2,"Connection timed out...");
+			Sleep(1500);
+			dlgProgress->Close();
 			return false;
 		}
 		iCount++;
@@ -192,16 +205,17 @@ bool CFileShoutcast::Open(const char* strUserName, const char* strPassword,const
 		{
 			Sleep(100);
 			char szTmp[1024];
-			g_dialog.SetCaption(0, "Shoutcast" );
+			//g_dialog.SetCaption(0, "Shoutcast" );
 			sprintf(szTmp,"Buffering %i bytes", m_ringbuf.GetMaxReadSize());
-			g_dialog.SetMessage(0, szTmp );
+			dlgProgress->SetLine(2,szTmp );
+			dlgProgress->Progress();
 			
 			sprintf(szTmp,"%s",m_ripInfo.filename);
 			for (int i=0; i < (int)strlen(szTmp); i++)
 				szTmp[i]=tolower((unsigned char)szTmp[i]);
 			szTmp[50]=0;
-			g_dialog.SetMessage(1, szTmp);
-			g_dialog.Render();
+			dlgProgress->SetLine(1,szTmp );
+			dlgProgress->Progress();
 		}
 		else //it's not really a connection timeout, but it's here, 
 				 //where things get boring, if connection is slow.
@@ -209,20 +223,26 @@ bool CFileShoutcast::Open(const char* strUserName, const char* strPassword,const
 				 //but if it does it sucks to wait here forever.
 				 //CHANGED: Other message here
 		{
-			outputTimeoutMessage("Connection to server to slow...");
+			dlgProgress->SetLine(1, 257); 
+			dlgProgress->SetLine(2,"Connection to server to slow...");
+			dlgProgress->Close();
 			return false;
 		}
 		iCount++;
 	}
 	if ( m_fileState.bRipError )
 	{
-		//show it for 1.5 seconds
-		g_dialog.SetCaption(0, "Error" );
-		g_dialog.SetMessage(0, m_errorInfo.error_str );
-		g_dialog.Render();
+		dlgProgress->SetLine(1,255);
+		dlgProgress->SetLine(2,m_errorInfo.error_str);
+		dlgProgress->Progress();
+
 		Sleep(1500);
+		dlgProgress->Close();
 		return false;
 	}
+	dlgProgress->SetLine(2,261);
+	dlgProgress->Progress();
+	dlgProgress->Close();
 	return true;
 }
 
@@ -237,14 +257,22 @@ unsigned int CFileShoutcast::Read(void* lpBuf, offset_t uiBufSize)
 	int iRead=m_ringbuf.GetMaxReadSize();
 	if (iRead > uiBufSize) iRead=(int)uiBufSize;
 	m_ringbuf.ReadBinary((char*)lpBuf,iRead);
+
+	if (timeGetTime() - m_dwLastTime > 500)
+	{		
+		m_dwLastTime =timeGetTime();
+		ID3_Tag tag;
+		GetID3TagInfo(tag);
+		g_application.m_guiMusicOverlay.SetID3Tag(tag);
+	}
 	return iRead;
 }
 
 void CFileShoutcast::outputTimeoutMessage(const char* message)
 {
-	g_dialog.SetCaption(0, "Shoutcast"  );
-	g_dialog.SetMessage(0,  message );
-	g_dialog.Render();
+	//g_dialog.SetCaption(0, "Shoutcast"  );
+	//g_dialog.SetMessage(0,  message );
+	//g_dialog.Render();
 	Sleep(1500);
 }
 

@@ -1,5 +1,6 @@
 
 #include "FileFactory.h"
+#include "FileShoutcast.h"
 #include "../url.h"
 #include "FileISO.h"
 #include "FileRelax.h"
@@ -39,6 +40,10 @@ IFile* CFileFactory::CreateLoader(const CStdString& strFileName)
 	if (strProtocol=="xbms")
 	{
 		return (IFile*)new CFileXBMSP();
+	}
+	if (strProtocol=="shout" || strProtocol=="http")
+	{
+		return (IFile*)new CFileShoutcast();
 	}
 
   return (IFile*)new CFileHD();

@@ -85,6 +85,7 @@ Clear();
 			{
 				long lDuration=atol(strDuration.c_str());
 				lDuration*=1000;
+				strFilename.Replace("http:","shout:");
 				CPlayListItem newItem(strInfo,strFilename,lDuration);
 				Add(newItem);
 				strFilename="";

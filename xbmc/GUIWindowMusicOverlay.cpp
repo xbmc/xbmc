@@ -94,6 +94,63 @@ void CGUIWindowMusicOverlay::Render()
 	}
 }
 
+void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
+{
+	SYSTEMTIME dateTime;
+	auto_ptr<char>pYear  (ID3_GetYear( &id3tag  ));
+	auto_ptr<char>pTitle (ID3_GetTitle( &id3tag ));
+	auto_ptr<char>pArtist(ID3_GetArtist( &id3tag));
+	auto_ptr<char>pAlbum (ID3_GetAlbum( &id3tag ));
+	auto_ptr<char>pGenre (ID3_GetGenre( &id3tag ));
+	int nTrackNum=ID3_GetTrackNum( &id3tag );
+	{
+		CGUIMessage msg(GUI_MSG_VISIBLE, GetID(), CONTROL_LOGO_PIC); 
+		OnMessage(msg);
+	}
+	{
+		CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_INFO); 
+		OnMessage(msg1);
+	}
+	if (NULL != pTitle.get())
+	{
+		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+		msg1.SetLabel(pTitle.get() );
+		OnMessage(msg1);
+	}
+
+	if (NULL != pArtist.get())
+	{
+		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+		msg1.SetLabel( pArtist.get());
+		OnMessage(msg1);
+	}
+		
+	if ( NULL != pAlbum.get())
+	{
+		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+		msg1.SetLabel( pAlbum.get() );
+		OnMessage(msg1);
+	}
+		
+	if (nTrackNum >=1)
+	{
+		CStdString strTrack;
+		strTrack.Format("Track %i", nTrackNum);
+		
+		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+		msg1.SetLabel( strTrack );
+		OnMessage(msg1);
+	}
+	if (NULL != pYear.get() )
+	{
+		CStdString strYear;
+		strYear.Format("Year:%s", pYear.get());
+		
+		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+		msg1.SetLabel( strYear );
+		OnMessage(msg1);
+	}
+}
 
 	void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
 	{

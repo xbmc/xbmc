@@ -10,11 +10,11 @@
 #endif // _MSC_VER > 1000
 
 #include "IFile.h"
-
+#include "../MusicInfoTagLoaderMP3.h"
 using namespace XFILE;
-
 namespace XFILE
 {
+
 
 typedef struct FileStateSt
 {
@@ -36,9 +36,14 @@ public:
 	virtual offset_t			Seek(offset_t iFilePosition, int iWhence=SEEK_SET);
 	virtual void					Close();
 	virtual bool          CanSeek();
+	virtual bool          CanRecord();
+	virtual bool					Record();
+	virtual void					StopRecording();
+	virtual bool					IsRecording();
+	virtual bool					GetID3TagInfo(ID3_Tag& tag);
 protected:
 	void outputTimeoutMessage(const char* message);
+	DWORD m_dwLastTime;
 };
 };
-
 #endif // !defined(AFX_FILESHOUTCAST_H__6B6082E6_547E_44C4_8801_9890781659C0__INCLUDED_)

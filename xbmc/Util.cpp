@@ -492,7 +492,11 @@ bool CUtil::IsPicture(const CStdString& strFile)
 	return false;
 
 }
-
+bool CUtil::IsShoutCast(const CStdString& strFileName)
+{
+	if (strstr(strFileName.c_str(), "shout:") ) return true;
+	return false;
+}
 bool CUtil::IsAudio(const CStdString& strFile) 
 {
 	CStdString strExtension;
@@ -503,6 +507,7 @@ bool CUtil::IsAudio(const CStdString& strFile)
 		return true;
 	}
 	if (strstr(strFile.c_str(), ".cdda") ) return true;
+	if (IsShoutCast(strFile) ) return true;
 
 	return false;
 }

@@ -76,5 +76,5 @@ public:
 	static bool IsPAL_VCD(int iWidth, int iHeight);
 	static bool IsPAL_SVCD(int iWidth, int iHeight);
 	static bool IsPAL_DVD(int iWidth, int iHeight);
-
+	static bool IsShoutCast(const CStdString& strFileName);
 };

@@ -107,7 +107,7 @@
 #define WEB_NAME					T("name")
 #define WEB_PATH					T("path")
 
-struct SSortFilesByName
+struct SSortWebFilesByName
 {
 	bool operator()(CFileItem* pStart, CFileItem* pEnd)
 	{
@@ -163,10 +163,14 @@ struct SSortFilesByName
 
 
 			for (int i=0; i < (int)strlen(szfilename1); i++)
+			{
 				szfilename1[i]=tolower((unsigned char)szfilename1[i]);
-			
-			for (i=0; i < (int)strlen(szfilename2); i++)
+			}
+
+			for (int i=0; i < (int)strlen(szfilename2); i++)
+			{
 				szfilename2[i]=tolower((unsigned char)szfilename2[i]);
+			}
 			//return (rpStart.strPath.compare( rpEnd.strPath )<0);
 
 			if (g_stSettings.m_bMyFilesSortAscending)
@@ -366,7 +370,7 @@ int CXbmcWeb::xbmcNavigate( int eid, webs_t wp, char_t *parameter)
 			directory->GetDirectory("",webDirItems);
 
 			//sort items
-			sort(webDirItems.begin(), webDirItems.end(), SSortFilesByName());
+			sort(webDirItems.begin(), webDirItems.end(), SSortWebFilesByName());
 
 			return 0;
 		}
@@ -668,7 +672,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 							webDirItems.push_back(pItem);
 						}
 						directory->GetDirectory(strDirectory, webDirItems);
-						sort(webDirItems.begin(), webDirItems.end(), SSortFilesByName());
+						sort(webDirItems.begin(), webDirItems.end(), SSortWebFilesByName());
 					}
 					else
 					{
