@@ -733,7 +733,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 			}
 		}
 
-		if (1 /* bIsVideo*/) 
+		if (bIsVideo) 
 		{
 			options.SetVolumeAmplification((float)g_guiSettings.GetInt("AudioVideo.VolumeAmplification"));
 		}
