@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 15-02-2005 fixed: wrong display in the lcd of following asci characters: _ [ ] \
   - 14-02-2005 added: [ 1121950 ] Kai Games Dir & Game Search - thanks to scampa123
                       Games to start using kai are also looked up in the program's database
   - 14-02-2005 fixed: Possible crashes in ListControl + RssControl.
