@@ -127,11 +127,6 @@ bool CGUIDialogProgress::OnMessage(CGUIMessage& message)
 	return CGUIDialog::OnMessage(message);
 }
 
-bool CGUIDialogProgress::IsCanceled() const
-{
-	return m_bCanceled;
-}
-
 void CGUIDialogProgress::SetPercentage(int iPercentage)
 {
 	CGUIProgressControl* pControl = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS_BAR);
