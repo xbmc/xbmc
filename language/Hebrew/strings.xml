@@ -629,7 +629,7 @@
     </string>
     <string>
         <id>229</id>
-        <value>HD Spindown time (mins)</value>
+        <value>זמן סיבוב הרדיסק (בדקות)</value>
     </string>
     <string>
         <id>230</id>
@@ -2000,6 +2000,79 @@
         <value>התמונות שלי</value>
     </string>
     <string>
+		<id>741</id>
+		<value>מודגש ונטוי</value>
+	</string>	
+	<string>
+		<id>742</id>
+		<value>לבן</value>
+	</string>	
+	<string>
+		<id>743</id>
+		<value>צהוב</value>
+	</string>
+	<string>
+		<id>744</id>
+		<value>קבצים</value>
+	</string>		
+	<string>
+		<id>745</id>
+		<value>אין מידע סרוק לתצוגה זו</value>
+	</string>		
+	<string>
+		<id>746</id>
+		<value>שנה לתצוגת קבצים</value>
+	</string>
+	<string>
+		<id>747</id>
+		<value>אין מספיק זיכרון לטעינת התמונה</value>
+	</string>
+	<string>
+		<id>748</id>
+		<value>ערוך נתיב</value>
+	</string>
+	<string>
+		<id>749</id>
+		<value>הוסף חלוקה</value>
+	</string>
+	<string>
+		<id>750</id>
+		<value>האם אתה בטוח?</value>
+	</string>
+	<string>
+		<id>751</id>
+		<value>מסיר חלוקה</value>
+	</string>
+	<string>
+		<id>752</id>
+		<value>ערוך נתיב חלוקה</value>
+	</string>
+	<string>
+		<id>753</id>
+		<value>ערוך שם חלוקה</value>
+	</string>
+	<string>
+		<id>998</id>
+		<value>XLink Kai</value>
+	</string>
+	<string>
+		<id>999</id>
+		<value>משחקים מקוונים</value>
+	</string>
+	
+	<string>
+		<id>10000</id>
+		<value>דף הבית</value>
+	</string>
+	<string>
+		<id>10001</id>
+		<value>התוכניות שלי</value>
+	</string>
+	<string>
+		<id>10002</id>
+		<value>התמונות שלי</value>
+	</string>
+	<string>
         <id>10003</id>
         <value>הקבצים שלי</value>
     </string>
