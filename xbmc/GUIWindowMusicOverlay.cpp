@@ -159,7 +159,17 @@ void CGUIWindowMusicOverlay::Render()
   int mm = (int)((lPTS / 600) % 60);
   int ss = (int)((lPTS /  10) % 60);
   //int f1 = lPTS % 10;
-	
+
+  int iSpeed=g_application.GetPlaySpeed();
+  if (hh==0 && mm==0 && ss<5)
+  {
+    if (iSpeed < 1)
+    {
+      iSpeed=1;
+      g_application.SetPlaySpeed(iSpeed);
+    }
+  }
+
 	char szTime[32];
 	if (hh >=1)
 	{
@@ -175,7 +185,7 @@ void CGUIWindowMusicOverlay::Render()
 		OnMessage(msg); 
 	}
 
-  int iSpeed=g_application.GetPlaySpeed();
+  
   if (iSpeed !=1)
   {
     char szTmp[32];

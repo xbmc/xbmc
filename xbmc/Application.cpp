@@ -640,9 +640,7 @@ void CApplication::OnKey(CKey& key)
         m_pPlayer->Pause();
         if (!m_pPlayer->IsPaused())
         {
-          m_iPlaySpeed=1;
-          m_pPlayer->ToFFRW(m_iPlaySpeed);
-          m_pAudioDecoder->SetCurrentVolume (m_pAudioDecoder->GetMaximumVolume());
+          SetPlaySpeed(1);
         }
       }
 	  }
@@ -670,9 +668,7 @@ void CApplication::OnKey(CKey& key)
           {
             if (m_iPlaySpeed!=1)
             {
-              m_iPlaySpeed=1;
-              m_pPlayer->ToFFRW(m_iPlaySpeed);
-              m_pAudioDecoder->SetCurrentVolume (m_pAudioDecoder->GetMaximumVolume());
+              SetPlaySpeed(1);
             }
           }
         }
@@ -693,19 +689,8 @@ void CApplication::OnKey(CKey& key)
 	            m_iPlaySpeed = 1;
             if (m_iPlaySpeed > 32 || m_iPlaySpeed < -32)
 	            m_iPlaySpeed = 1;     
-            if (m_iPlaySpeed>=1)
-            {
-              m_pPlayer->ToFFRW(m_iPlaySpeed);
-              if(m_iPlaySpeed==1)
-                m_pAudioDecoder->SetCurrentVolume (m_pAudioDecoder->GetMaximumVolume());
-              else
-                m_pAudioDecoder->SetCurrentVolume (m_pAudioDecoder->GetMinimumVolume());
-            }
-            else
-            {
-              m_pPlayer->ToFFRW(m_iPlaySpeed);
-              m_pAudioDecoder->SetCurrentVolume (m_pAudioDecoder->GetMinimumVolume());
-            }
+
+            SetPlaySpeed(m_iPlaySpeed);
           }
         }
       }
@@ -1374,6 +1359,22 @@ void CApplication::Restart(bool bSamePosition)
 const CStdString& CApplication::CurrentFile()
 {
   return m_strCurrentFile;
+}
+
+
+void CApplication::SetPlaySpeed(int iSpeed)
+{
+  if (!IsPlayingAudio() ) return;
+  m_iPlaySpeed=iSpeed;
+
+  m_pPlayer->ToFFRW(m_iPlaySpeed);
+  if (m_pAudioDecoder)
+  {
+    if(m_iPlaySpeed==1)
+      m_pAudioDecoder->SetCurrentVolume (m_pAudioDecoder->GetMaximumVolume());
+    else
+      m_pAudioDecoder->SetCurrentVolume (m_pAudioDecoder->GetMinimumVolume());
+  }
 }
 
 int CApplication::GetPlaySpeed() const
