@@ -87,7 +87,7 @@ public:
 	CGUIWindowVideoOverlay					m_guiWindowVideoOverlay;
   CXBVirtualKeyboard   						m_keyboard;
 	CSNTPClient											m_sntpClient;
-	//CDetectDVDMedia									m_DetectDVDType;
+	CDetectDVDMedia									m_DetectDVDType;
 	CDelayController								m_ctrDpad;
 	CDelayController								m_ctrIR;
 	Python*													m_pPhytonParser;

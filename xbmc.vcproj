@@ -179,8 +179,8 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="3"
-				GlobalOptimizations="TRUE"
+				Optimization="0"
+				GlobalOptimizations="FALSE"
 				FavorSizeOrSpeed="2"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
@@ -197,7 +197,7 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="0"/>
+				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -295,6 +295,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\Crc32.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\DetectDVDType.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\DNSNameCache.cpp">
@@ -464,6 +467,9 @@
 				RelativePath=".\xbmc\Crc32.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\DetectDVDType.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\DNSNameCache.h">
 			</File>
 			<File
@@ -610,6 +616,12 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\cddb.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\cdioSupport.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\cdioSupport.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\Directory.cpp">
