@@ -1076,54 +1076,32 @@ bool CUtil::IsHD(const CStdString& strFileName)
 }
 
 
-int	CUtil::GetResolution(int iWidth, int iHeight, bool bPAL, bool bPAL60)
+RESOLUTION	CUtil::GetResolution(D3DPRESENT_PARAMETERS &params)
 {
-	if (iWidth==1920 && iHeight==1080) return 1;
-	if (iWidth==1280 && iHeight==720 ) return 2;
+	int iWidth = params.BackBufferWidth;
+	int iHeight = params.BackBufferHeight;
+	bool bProgressive = (params.Flags & D3DPRESENTFLAG_PROGRESSIVE) != 0;
+	bool bWidescreen = (params.Flags & D3DPRESENTFLAG_WIDESCREEN) != 0;
+	bool bPAL = (XGetVideoStandard()==XC_VIDEO_STANDARD_PAL_I);
+
+	if (iWidth==resInfo[HDTV_1080i].iWidth && iHeight==resInfo[HDTV_1080i].iHeight) return HDTV_1080i;
+	if (iWidth==resInfo[HDTV_720p].iWidth && iHeight==resInfo[HDTV_720p].iHeight) return HDTV_720p;
 
 	if (!bPAL)
 	{
-		if (iWidth==720 && iHeight==480) return 3;
+		if (iWidth==resInfo[HDTV_480p_16_9].iWidth && iHeight==resInfo[HDTV_480p_16_9].iHeight && bProgressive && bWidescreen) return HDTV_480p_16_9;
+		if (iWidth==resInfo[HDTV_480p_4_3].iWidth && iHeight==resInfo[HDTV_480p_4_3].iHeight && bProgressive && !bWidescreen) return HDTV_480p_4_3;
+		if (iWidth==resInfo[NTSC_16_9].iWidth && iHeight==resInfo[NTSC_16_9].iHeight && !bProgressive && bWidescreen) return NTSC_16_9;
+		if (iWidth==resInfo[NTSC_4_3].iWidth && iHeight==resInfo[NTSC_4_3].iHeight && !bProgressive && !bWidescreen) return NTSC_4_3;
 	}
 	else
 	{
-		if (bPAL60)
-		{
-			if (iWidth==720 && iHeight==480) return 4;
-		}
-		else
-		{
-			if (iWidth==720 && iHeight==576) return 5;
-		}
-
+		if (iWidth==resInfo[PAL_16_9].iWidth && iHeight==resInfo[PAL_16_9].iHeight && bWidescreen) return PAL_16_9;
+		if (iWidth==resInfo[PAL_4_3].iWidth && iHeight==resInfo[PAL_4_3].iHeight && !bWidescreen) return PAL_4_3;
+		if (iWidth==resInfo[PAL60_16_9].iWidth && iHeight==resInfo[PAL60_16_9].iHeight && bWidescreen) return PAL60_16_9;
+		if (iWidth==resInfo[PAL60_4_3].iWidth && iHeight==resInfo[PAL60_4_3].iHeight && !bWidescreen) return PAL60_4_3;
 	}
-	return 0;
-}
-
-void	CUtil::GetResolutionParams(int m_iResolution,  int& iScreenWidth , int& iScreenHeight,bool& bPAL, bool& bPAL60)
-{
-	iScreenWidth=720;
-	iScreenHeight=576;
-	bPAL=true;
-	bPAL60=false;
-	switch (m_iResolution)
-	{
-		case 1:
-			iScreenWidth=1920; iScreenHeight=1080;
-		break;
-		case 2:
-			iScreenWidth=1280; iScreenHeight=720;
-		break;
-		case 3:
-			iScreenWidth=720; iScreenHeight=480; bPAL=false;
-		break;
-		case 4:
-			iScreenWidth=720; iScreenHeight=480; bPAL=true; bPAL60=true;
-		break;
-		case 5:
-			iScreenWidth=720; iScreenHeight=576; bPAL=true; bPAL60=false;
-		break;
-	}
+	return PAL_4_3;
 }
 
 // Following 6 routines added by JM to determine (possible) source type based
