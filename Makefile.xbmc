@@ -1,0 +1,58 @@
+# mplayer.dll Makefile
+#
+
+include config.mak
+
+DLL_NAME = mplayer.dll
+DEF_FILE = mplayer.def
+LIB_NAME = mplayer_.lib
+
+LIB_PATH = xbmcsys/lib
+
+OBJECTS  = mplayer.o mp_msg.o cpudetect.o codec-cfg.o spudec.o playtree.o playtreeparser.o asxparser.o vobsub.o subreader.o sub_cc.o find_sub.o m_config.o m_option.o parser-cfg.o m_struct.o unrarlib.o mixer.o parser-mpcmd.o libvo/libvo.a libao2/libao2.a libmpcodecs/libmpcodecs.a mp3lib/libMP3.a liba52/liba52.a libmpeg2/libmpeg2.a libaf/libaf.a libmpdemux/libmpdemux.a input/libinput.a postproc/libswscale.a osdep/libosdep.a libavformat/libavformat.a libavcodec/libavcodec.a libfaad2/libfaad2.a libmpdvdkit2/libmpdvdkit.a loader/driver.o loader/vfl.o loader/afl.o loader/dshow/libDS_Filter.a loader/dmo/libDMO_Filter.a
+OBJECTS += xbmcsys/xbmc_vobsub/xbmc.o
+LIBS     = -Lxbmcsys/lib xbmcsys/xbmc_vobsub/xbmc_vobsub.lib -lws2_32 -lwinmm
+
+# check configured libraries, and make sure we link them with the ones in xbmcsys/lib
+
+ifneq ($(Z_LIB),)
+	NAMES += ZLIB
+	OBJECTS += $(LIB_PATH)/libz.a
+endif
+
+ifeq ($(CONFIG_DTS),yes)
+	NAMES += DTS
+	OBJECTS += $(LIB_PATH)/libdts.a
+endif
+
+ifneq ($(MAD_LIB),)
+	NAMES += MAD
+	OBJECTS += $(LIB_PATH)/libmad.a
+endif
+
+ifeq ($(XVID),yes)
+	NAMES += XVID
+	OBJECTS += $(LIB_PATH)/xvidcore.a
+endif
+
+ifneq ($(VORBIS_LIB),)
+	NAMES += VORBIS
+	OBJECTS += $(LIB_PATH)/libogg.a
+	OBJECTS += $(LIB_PATH)/libvorbis.a
+endif
+
+ifneq ($(FRIBIDI_LIB),)
+	NAMES += FRIBIDI
+	OBJECTS += $(LIB_PATH)/libfribidi.a
+endif
+
+# targets
+all:	dll
+clean:
+	rm $(DLL_NAME) $(LIB_NAME)
+dll:	
+	@echo "*** compiling $(DLL_NAME)"
+	@$(CC) -shared -o $(DLL_NAME) $(OBJECTS) $(LIBS) $(DEF_FILE) -Wl,--out-implib,$(LIB_NAME)
+	@echo "*** stripping $(DLL_NAME)"
+	@strip $(DLL_NAME)
+	@echo "*** $(DLL_NAME) linked with: $(NAMES)"
