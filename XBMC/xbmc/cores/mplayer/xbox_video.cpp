@@ -50,6 +50,8 @@ bool												m_bFlip=false;
 static int									m_iDeviceWidth;
 static int									m_iDeviceHeight;
 bool												m_bFullScreen=false;
+float												m_fScreenCompensationX=1.0f;
+float												m_fScreenCompensationY=1.0f;
 
 typedef struct directx_fourcc_caps
 {
@@ -79,6 +81,8 @@ void restore_resolution()
 		m_iDeviceHeight = g_graphicsContext.GetHeight();
 		g_graphicsContext.Get3DDevice()->Reset(&params);
 	}
+	m_fScreenCompensationX=1.0f;
+	m_fScreenCompensationY=1.0f;
 }
 
 //********************************************************************************************************
@@ -88,6 +92,8 @@ void choose_best_resolution()
 	{
 		m_iDeviceWidth  = g_graphicsContext.GetWidth();
 		m_iDeviceHeight = g_graphicsContext.GetHeight();
+		m_fScreenCompensationX=1.0f;
+		m_fScreenCompensationY=1.0f;
 		return;
 	}
 
@@ -187,6 +193,9 @@ void choose_best_resolution()
 	{
 		m_iDeviceWidth  = params.BackBufferWidth;
 		m_iDeviceHeight = params.BackBufferHeight;
+
+		m_fScreenCompensationX = ( (float)m_iDeviceWidth  ) / ( (float)orgparams.BackBufferWidth  );
+		m_fScreenCompensationY = ( (float)m_iDeviceHeight ) / ( (float)orgparams.BackBufferHeight );
 		g_graphicsContext.Get3DDevice()->Reset(&params);
 	}
 }
@@ -214,8 +223,18 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 //********************************************************************************************************
 static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height)
 {
-	int iScreenWidth =m_iDeviceWidth  +g_stSettings.m_iMoviesOffsetX2-g_stSettings.m_iMoviesOffsetX1;
-	int iScreenHeight=m_iDeviceHeight +g_stSettings.m_iMoviesOffsetY2-g_stSettings.m_iMoviesOffsetY1;
+	float fOffsetX1 = (float)g_stSettings.m_iMoviesOffsetX1;
+	float fOffsetY1 = (float)g_stSettings.m_iMoviesOffsetY1;
+	float fOffsetX2 = (float)g_stSettings.m_iMoviesOffsetX2;
+	float fOffsetY2 = (float)g_stSettings.m_iMoviesOffsetY2;
+
+	fOffsetX1 *= m_fScreenCompensationX;
+	fOffsetX2 *= m_fScreenCompensationX;
+	fOffsetY1 *= m_fScreenCompensationY;
+	fOffsetY2 *= m_fScreenCompensationY;
+	
+	float iScreenWidth =(float)m_iDeviceWidth  + fOffsetX2-fOffsetX1;
+	float iScreenHeight=(float)m_iDeviceHeight + fOffsetY2-fOffsetY1;
 	if( g_graphicsContext.IsFullScreenVideo() )
   {
 		if (g_stSettings.m_bStretch)
@@ -226,10 +245,10 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
 			rs.right	= image_width;
 			rs.bottom = image_height ;
 			
-			rd.left   = g_stSettings.m_iMoviesOffsetX1;
-			rd.right  = rd.left+iScreenWidth;
-			rd.top    = g_stSettings.m_iMoviesOffsetY1;
-			rd.bottom = rd.top+iScreenHeight;
+			rd.left   = (int)fOffsetX1;
+			rd.right  = (int)rd.left+(int)iScreenWidth;
+			rd.top    = (int)fOffsetY1;
+			rd.bottom = (int)rd.top+(int)iScreenHeight;
 
 			// place subtitles @ bottom of the screen
 			iSubTitlePos			  = image_height - iSubTitleHeight;
@@ -264,13 +283,13 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
 				fVertBorder =  (fVertBorder/fNewHeight) * ((float)image_height);
 				rs.left		= (int)fHorzBorder;
 				rs.top    = (int)fVertBorder;
-				rs.right	= image_width  - (int)fHorzBorder;
-				rs.bottom = image_height - (int)fVertBorder;
+				rs.right	= (int)image_width  - (int)fHorzBorder;
+				rs.bottom = (int)image_height - (int)fVertBorder;
 
-				rd.left   = g_stSettings.m_iMoviesOffsetX1;
-				rd.right  = rd.left + iScreenWidth;
-				rd.top    = g_stSettings.m_iMoviesOffsetY1;
-				rd.bottom = rd.top + iScreenHeight;
+				rd.left   = (int)fOffsetX1;
+				rd.right  = (int)rd.left + (int)iScreenWidth;
+				rd.top    = (int)fOffsetY1;
+				rd.bottom = (int)rd.top + (int)iScreenHeight;
 
 				iSubTitlePos = rs.bottom - iSubTitleHeight;
 				bClearSubtitleRegion= false;
@@ -298,22 +317,22 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
 		rs.right	= image_width;
 		rs.bottom = image_height + iSubTitleHeight;
 
-		int iPosY = iScreenHeight - (int)(fNewHeight);
-		int iPosX = iScreenWidth  - (int)(fNewWidth)	;
+		float iPosY = iScreenHeight - fNewHeight;
+		float iPosX = iScreenWidth  - fNewWidth	;
 		iPosY /= 2;
 		iPosX /= 2;
-		rd.left   = iPosX + g_stSettings.m_iMoviesOffsetX1;
-		rd.right  = rd.left + (int)fNewWidth;
-		rd.top    = iPosY  + g_stSettings.m_iMoviesOffsetY1;
-		rd.bottom = rd.top + (int)fNewHeight + iSubTitleHeight;
+		rd.left   = (int)iPosX + (int)fOffsetX1;
+		rd.right  = (int)rd.left + (int)fNewWidth;
+		rd.top    = (int)iPosY  + (int)fOffsetY1;
+		rd.bottom = (int)rd.top + (int)fNewHeight + iSubTitleHeight;
 
 		iSubTitlePos = image_height;
 		bClearSubtitleRegion= true;
 
-		if (iSubTitlePos  + 2*iSubTitleHeight >= m_iDeviceHeight -g_stSettings.m_iMoviesOffsetY2)
+		if (iSubTitlePos  + 2*iSubTitleHeight >= m_iDeviceHeight - fOffsetY2)
 		{
 			bClearSubtitleRegion= false;
-			iSubTitlePos = m_iDeviceHeight - g_stSettings.m_iMoviesOffsetY2 - iSubTitleHeight*2;
+			iSubTitlePos = m_iDeviceHeight - (int)fOffsetY2 - iSubTitleHeight*2;
 		}
 
 		return 0;
@@ -403,6 +422,8 @@ static void video_check_events(void)
 
 static unsigned int video_preinit(const char *arg)
 {
+	m_fScreenCompensationX=1.0f;
+	m_fScreenCompensationY=1.0f;
 	iSubTitleHeight=0;
 	iSubTitlePos=0;
 	bClearSubtitleRegion=false;
