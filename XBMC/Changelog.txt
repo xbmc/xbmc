@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 30-11-2004 fixed: imdb info/thumbs not saved
   - 29-11-2004 added: Kai protocol level debugging + Specify Kai engine host IP in Settings.
   - 29-11-2004 fixed: [ 1072703 ] Joliet filenames corrupted
   - 28-11-2004 fixed: weird bug whereby Kai friends list wasn't sorted correctly.

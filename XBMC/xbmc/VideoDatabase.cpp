@@ -271,9 +271,9 @@ long CVideoDatabase::AddPath(const CStdString& strPath)
 	  }
 	  else
 	  {
-      m_pDS->close();
 		  const field_value value = m_pDS->fv("idPath");
 		  long lPathId=value.get_asLong() ;
+      m_pDS->close();
 		  return lPathId;
 	  }
 
