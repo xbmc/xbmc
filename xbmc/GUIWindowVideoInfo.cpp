@@ -79,13 +79,13 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 				g_graphicsContext.SendMessage(msg2);    
 			}
       
-      SET_CONTROL_HIDDEN(GetID(),CONTROL_DISC);
-      CONTROL_DISABLE(GetID(),CONTROL_DISC);
+      SET_CONTROL_HIDDEN(CONTROL_DISC);
+      CONTROL_DISABLE(CONTROL_DISC);
       int iItem=0;
       if ( CUtil::IsISO9660(m_pMovie->m_strPath) || CUtil::IsDVD(m_pMovie->m_strPath) )
       {
-        SET_CONTROL_VISIBLE(GetID(),CONTROL_DISC);
-        CONTROL_ENABLE(GetID(),CONTROL_DISC);
+        SET_CONTROL_VISIBLE(CONTROL_DISC);
+        CONTROL_ENABLE(CONTROL_DISC);
         char szNumber[1024];
         int iPos=0;
         bool bNumber=false;
@@ -254,14 +254,14 @@ void CGUIWindowVideoInfo::Update()
 	if (m_bViewReview)
 	{
       strTmp=m_pMovie->m_strPlot; strTmp.Trim();
-			SET_CONTROL_LABEL(GetID(), CONTROL_TEXTAREA,strTmp.c_str() );
-			SET_CONTROL_LABEL(GetID(), CONTROL_BTN_TRACKS,206);
+			SET_CONTROL_LABEL(CONTROL_TEXTAREA,strTmp.c_str() );
+			SET_CONTROL_LABEL(CONTROL_BTN_TRACKS,206);
 	}
 	else
 	{
       strTmp=m_pMovie->m_strCast; strTmp.Trim();
-			SET_CONTROL_LABEL(GetID(), CONTROL_TEXTAREA,strTmp.c_str() );
-			SET_CONTROL_LABEL(GetID(), CONTROL_BTN_TRACKS,207);
+			SET_CONTROL_LABEL(CONTROL_TEXTAREA,strTmp.c_str() );
+			SET_CONTROL_LABEL(CONTROL_BTN_TRACKS,207);
 		
 	}
 }

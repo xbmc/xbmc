@@ -39,7 +39,7 @@ bool CGUIStandardWindow::OnMessage(CGUIMessage& message)
 
 			if (iFocusControl>-1)
 			{
-				SET_CONTROL_FOCUS(GetID(), iFocusControl, 0);
+				SET_CONTROL_FOCUS(iFocusControl, 0);
 			}
 
 			return true;

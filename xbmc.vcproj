@@ -470,6 +470,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIWindowSettingsProfile.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIWindowSettingsScreenCalibration.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIWindowSettingsUICalibration.cpp">
 				</File>
 			</Filter>
@@ -1550,9 +1553,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 		<Filter
 			Name="VirtualKeyboard"
 			Filter="">
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsScreenCalibration.cpp">
-			</File>
 		</Filter>
 		<Filter
 			Name="xbox"

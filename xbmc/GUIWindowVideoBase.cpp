@@ -182,8 +182,8 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 			else {
 				int iItem = GetSelectedItem();
 				Update( m_strDirectory );
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
+				CONTROL_SELECT_ITEM(CONTROL_LIST,iItem)
+				CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem)
 			}
 		}
 		break;
@@ -193,8 +193,8 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 			if ( m_strDirectory.IsEmpty() ) {
 				int iItem = GetSelectedItem();
 				Update( m_strDirectory );
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
+				CONTROL_SELECT_ITEM(CONTROL_LIST,iItem)
+				CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem)
 			}
 		}
 		break;
@@ -215,15 +215,15 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 			m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
 			
 			if (m_iLastControl>-1)
-				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
+				SET_CONTROL_FOCUS(m_iLastControl, 0);
 
 			Update(m_strDirectory);
 
       UpdateThumbPanel();
       if (m_iItemSelected >=0)
       {
-			  CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_iItemSelected)
-			  CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_iItemSelected)
+			  CONTROL_SELECT_ITEM(CONTROL_LIST,m_iItemSelected)
+			  CONTROL_SELECT_ITEM(CONTROL_THUMBS,m_iItemSelected)
       }
 			return true;
 		}
@@ -279,7 +279,8 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 					g_stSettings.m_iVideoStartWindow=nNewWindow;
 					g_settings.Save();
 					m_gWindowManager.ActivateWindow(nNewWindow);
-					SET_CONTROL_FOCUS(nNewWindow, CONTROL_BTNTYPE, 0);
+					CGUIMessage msg2(GUI_MSG_SETFOCUS, nNewWindow, CONTROL_BTNTYPE);
+					g_graphicsContext.SendMessage(msg2);
 				}
 
         return true;
@@ -351,7 +352,7 @@ void CGUIWindowVideoBase::UpdateButtons()
 	if (g_stSettings.m_iVideoStartWindow == WINDOW_VIDEO_ACTOR) nWindow = 2;
 	if (g_stSettings.m_iVideoStartWindow == WINDOW_VIDEO_YEAR) nWindow = 3;
 	if (g_stSettings.m_iVideoStartWindow == WINDOW_VIDEO_TITLE) nWindow = 4;
-	CONTROL_SELECT_ITEM(GetID(), CONTROL_BTNTYPE, nWindow);
+	CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, nWindow);
 
 	int iString = 101;	// view as list
 	if (ViewByIcon())
@@ -359,33 +360,33 @@ void CGUIWindowVideoBase::UpdateButtons()
 	if (ViewByLargeIcon())
 		iString = 417;		// view as large icon
 
-	SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
+	SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS,iString);
 	UpdateThumbPanel();
 
 	// disable scan and manual imdb controls if internet lookups are disabled
 	if (g_guiSettings.GetBool("Network.EnableInternet"))
 	{
-		CONTROL_ENABLE(GetID(), CONTROL_BTNSCAN);
-		CONTROL_ENABLE(GetID(), CONTROL_IMDB);
+		CONTROL_ENABLE(CONTROL_BTNSCAN);
+		CONTROL_ENABLE(CONTROL_IMDB);
 	}
 	else
 	{
-		CONTROL_DISABLE(GetID(), CONTROL_BTNSCAN);
-		CONTROL_DISABLE(GetID(), CONTROL_IMDB);
+		CONTROL_DISABLE(CONTROL_BTNSCAN);
+		CONTROL_DISABLE(CONTROL_IMDB);
 	}
 
 	if (ViewByIcon()) 
 	{
-		SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
-		SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
+		SET_CONTROL_VISIBLE(CONTROL_THUMBS);
+		SET_CONTROL_HIDDEN(CONTROL_LIST);
 	}
 	else
 	{
-		SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
-		SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
+		SET_CONTROL_VISIBLE(CONTROL_LIST);
+		SET_CONTROL_HIDDEN(CONTROL_THUMBS);
 	}
 
-	SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY, SortMethod());
+	SET_CONTROL_LABEL(CONTROL_BTNSORTBY, SortMethod());
 
 	if (SortAscending())
 	{
@@ -407,7 +408,7 @@ void CGUIWindowVideoBase::UpdateButtons()
 	WCHAR wszText[20];
 	const WCHAR* szText=g_localizeStrings.Get(127).c_str();
 	swprintf(wszText,L"%i %s", iItems,szText);
-	SET_CONTROL_LABEL(GetID(), CONTROL_LABELFILES,wszText);
+	SET_CONTROL_LABEL(CONTROL_LABELFILES,wszText);
 }
 
 void CGUIWindowVideoBase::OnSort()
@@ -470,8 +471,8 @@ bool CGUIWindowVideoBase::HaveDiscOrConnection( CStdString& strPath, int iDriveT
       }
 			int iItem = GetSelectedItem();
 			Update( m_strDirectory );
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
+			CONTROL_SELECT_ITEM(CONTROL_LIST,iItem)
+			CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem)
 			return false;
 		}
 	}
@@ -903,8 +904,8 @@ void CGUIWindowVideoBase::UpdateThumbPanel()
     pControl->ShowBigIcons(ViewByLargeIcon());
 /*  if (iItem>-1)
   {
-    CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST, iItem);
-    CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS, iItem);
+    CONTROL_SELECT_ITEM(CONTROL_LIST, iItem);
+    CONTROL_SELECT_ITEM(CONTROL_THUMBS, iItem);
   }*/
 }
 
@@ -956,8 +957,8 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem)
 	AddItemToPlayList(pItem);
 	
 	//move to next item
-	CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem+1);
-	CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem+1);
+	CONTROL_SELECT_ITEM(CONTROL_LIST,iItem+1);
+	CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem+1);
 }
 
 void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem) 

@@ -281,8 +281,8 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 					CFileItem* pItem = m_vecItems[i];
 					if (pItem->m_strPath==strSelected)
 					{
-						CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,i);
-						CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,i);
+						CONTROL_SELECT_ITEM(CONTROL_LIST,i);
+						CONTROL_SELECT_ITEM(CONTROL_THUMBS,i);
 						break;
 					}
 				}
@@ -527,8 +527,8 @@ void CGUIWindowMusicSongs::OnScan()
 
 	int iItem=GetSelectedItem();
 	Update(m_strDirectory);
-	CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST, iItem);
-	CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS, iItem);
+	CONTROL_SELECT_ITEM(CONTROL_LIST, iItem);
+	CONTROL_SELECT_ITEM(CONTROL_THUMBS, iItem);
 
 	dwTick = timeGetTime() - dwTick;
 	CStdString strTmp, strTmp1;
@@ -686,41 +686,41 @@ void CGUIWindowMusicSongs::UpdateButtons()
 	//	Update Record button
 	if (bIsPlaying && bCanRecord)
 	{
-		CONTROL_ENABLE(GetID(), CONTROL_BTNREC);
+		CONTROL_ENABLE(CONTROL_BTNREC);
 		if (bIsRecording)
 		{
-				SET_CONTROL_LABEL(GetID(), CONTROL_BTNREC,265);//Stop Recording
+				SET_CONTROL_LABEL(CONTROL_BTNREC,265);//Stop Recording
 		}
 		else
 		{
-				SET_CONTROL_LABEL(GetID(), CONTROL_BTNREC,264);//Record
+				SET_CONTROL_LABEL(CONTROL_BTNREC,264);//Record
 		}
 	}
 	else
 	{
-		SET_CONTROL_LABEL(GetID(), CONTROL_BTNREC,264);//Record
-		CONTROL_DISABLE(GetID(), CONTROL_BTNREC);
+		SET_CONTROL_LABEL(CONTROL_BTNREC,264);//Record
+		CONTROL_DISABLE(CONTROL_BTNREC);
 	}
 
 	// Update CDDA Rip button
 	CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
 	if (CDetectDVDMedia::IsDiscInDrive() && pCdInfo && pCdInfo->IsAudio(1))
 	{
-		CONTROL_ENABLE(GetID(), CONTROL_BTNRIP);
+		CONTROL_ENABLE(CONTROL_BTNRIP);
 	}
 	else
 	{
-		CONTROL_DISABLE(GetID(), CONTROL_BTNRIP);
+		CONTROL_DISABLE(CONTROL_BTNRIP);
 	}
 
 	// Disable scan button if shoutcast
 	if (m_strDirectory.IsEmpty() || CUtil::IsShoutCast(m_strDirectory))
 	{
-		CONTROL_DISABLE(GetID(), CONTROL_BTNSCAN);
+		CONTROL_DISABLE(CONTROL_BTNSCAN);
 	}
 	else
 	{
-		CONTROL_ENABLE(GetID(), CONTROL_BTNSCAN);
+		CONTROL_ENABLE(CONTROL_BTNSCAN);
 	}
 
 	//	Update sorting control
@@ -750,7 +750,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
 		  CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_LIST,0,0,NULL);
 		  g_graphicsContext.SendMessage(msg);
 		  int iItem=msg.GetParam1();
-		  CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem);
+		  CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem);
 	  }
   }
 	pControl=GetControl(CONTROL_LIST);
@@ -761,12 +761,12 @@ void CGUIWindowMusicSongs::UpdateButtons()
 		  CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_THUMBS,0,0,NULL);
 		  g_graphicsContext.SendMessage(msg);
 		  int iItem=msg.GetParam1();
-		  CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem);
+		  CONTROL_SELECT_ITEM(CONTROL_LIST,iItem);
 	  }
   }
 
-	SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
-	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
+	SET_CONTROL_HIDDEN(CONTROL_LIST);
+	SET_CONTROL_HIDDEN(CONTROL_THUMBS);
 
 	bool bViewIcon = false;
   int iString;
@@ -809,14 +809,14 @@ void CGUIWindowMusicSongs::UpdateButtons()
 
 	if (bViewIcon) 
 	{
-		SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
+		SET_CONTROL_VISIBLE(CONTROL_THUMBS);
 	}
 	else
 	{
-		SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
+		SET_CONTROL_VISIBLE(CONTROL_LIST);
 	}
 
-	SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
+	SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS,iString);
 
 	//	Update object count label
 	int iItems=m_vecItems.size();
@@ -829,18 +829,18 @@ void CGUIWindowMusicSongs::UpdateButtons()
   const WCHAR* szText=g_localizeStrings.Get(127).c_str();
   swprintf(wszText,L"%i %s", iItems,szText);
 
-	SET_CONTROL_LABEL(GetID(), CONTROL_LABELFILES,wszText);
+	SET_CONTROL_LABEL(CONTROL_LABELFILES,wszText);
 
 	//	Update sort by button
 	if (m_strDirectory.IsEmpty())
 	{
 		if (g_stSettings.m_iMyMusicSongsRootSortMethod==0)
 		{
-			SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyMusicSongsRootSortMethod+103);
+			SET_CONTROL_LABEL(CONTROL_BTNSORTBY,g_stSettings.m_iMyMusicSongsRootSortMethod+103);
 		}
 		else
 		{
-			SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,498);	//	Sort by: Type
+			SET_CONTROL_LABEL(CONTROL_BTNSORTBY,498);	//	Sort by: Type
 		}
 	}
 	else
@@ -848,12 +848,12 @@ void CGUIWindowMusicSongs::UpdateButtons()
 		if (g_stSettings.m_iMyMusicSongsSortMethod<=2)
 		{
 			//	Sort by Name(ItemLabel), Date, Size
-			SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyMusicSongsSortMethod+103);
+			SET_CONTROL_LABEL(CONTROL_BTNSORTBY,g_stSettings.m_iMyMusicSongsSortMethod+103);
 		}
 		else
 		{
 			//	Sort by FileName
-			SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,363);
+			SET_CONTROL_LABEL(CONTROL_BTNSORTBY,363);
 		}
 	}
 }
@@ -1252,8 +1252,8 @@ void CGUIWindowMusicSongs::OnSearchItemFound(const CFileItem* pSelItem)
 			CFileItem* pItem=m_vecItems[i];
 			if (pItem->m_strPath==strPath)
 			{
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST, i);
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS, i);
+				CONTROL_SELECT_ITEM(CONTROL_LIST, i);
+				CONTROL_SELECT_ITEM(CONTROL_THUMBS, i);
 				break;
 			}
 		}
@@ -1278,8 +1278,8 @@ void CGUIWindowMusicSongs::OnSearchItemFound(const CFileItem* pSelItem)
 			CFileItem* pItem=m_vecItems[i];
 			if (pItem->m_strPath==pSelItem->m_strPath)
 			{
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST, i);
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS, i);
+				CONTROL_SELECT_ITEM(CONTROL_LIST, i);
+				CONTROL_SELECT_ITEM(CONTROL_THUMBS, i);
 				break;
 			}
 		}
@@ -1288,11 +1288,11 @@ void CGUIWindowMusicSongs::OnSearchItemFound(const CFileItem* pSelItem)
 	const CGUIControl* pControl=GetControl(CONTROL_LIST);
 	if (pControl && pControl->IsVisible())
 	{
-		SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+		SET_CONTROL_FOCUS(CONTROL_LIST, 0);
 	}
 	else
 	{
-		SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
+		SET_CONTROL_FOCUS(CONTROL_THUMBS, 0);
 	}
 }
 
@@ -1344,7 +1344,7 @@ void CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
 
 		int iControl = CONTROL_LIST;
 		if (m_iViewAsIcons != VIEW_AS_LIST) iControl = CONTROL_THUMBS;
-		SET_CONTROL_FOCUS(GetID(), iControl, 0);
+		SET_CONTROL_FOCUS(iControl, 0);
 	}
 }
 
