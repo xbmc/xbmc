@@ -1149,9 +1149,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 		m_pPlayer=NULL;
 	}
 
-  char *pCrash = NULL;
-  *pCrash = 'T';
-
 	CLog::Log(LOGINFO, "  delete old skin...");
 	m_guiWindowVideoOverlay.FreeResources();
 	m_guiWindowVideoOverlay.ClearAll();
