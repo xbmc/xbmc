@@ -35,6 +35,7 @@ protected:
   bool              ViewByIcon();
   void              ShowThumbPanel();
   bool              ViewByLargeIcon();
+	void              GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
 
   void              AddDir(CGUIWindowSlideShow *pSlideShow,const CStdString& strPath);
 	CVirtualDirectory		m_rootDir;
