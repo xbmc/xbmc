@@ -4,6 +4,7 @@
 #include "../settings.h"
 #include "../lib/smartxx/smartxxLCD.h"
 #include "../lib/libXenium/XeniumLCD.h"
+#include "../lib/x3lcd/x3lcd.h"
 
 
 ILCD* g_lcd=NULL;
@@ -25,6 +26,10 @@ ILCD* CLCDFactory::Create()
     
     case MODCHIP_SMARTXX:
       return new CSmartXXLCD();
+    break;
+
+    case MODCHIP_XECUTER3:
+      return new CX3LCD();
     break;
 
   }
