@@ -9,6 +9,7 @@
   <string><id>3</id><value>Video</value></string>
   <string><id>4</id><value>TV Pruvodce</value></string>
   <string><id>5</id><value>Nastaveni</value></string>
+  <!-- String with id 6 should not be set here, only in the english language file !-->
   <string><id>7</id><value>Soubory</value></string>
   <string><id>11</id><value>Pondeli</value></string>
   <string><id>12</id><value>Utery</value></string>

@@ -5,6 +5,7 @@
   <string><id>3</id><value>Моё видео</value></string>
   <string><id>4</id><value>ТВ Гид</value></string>
   <string><id>5</id><value>Настройки</value></string>
+  <!-- String with id 6 should not be set here, only in the english language file !-->
   <string><id>7</id><value>Мои файлы</value></string>
   <string><id>8</id><value>Прогноз погоды</value></string>
   <string><id>11</id><value>Понедельник</value></string>

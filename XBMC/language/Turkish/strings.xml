@@ -9,6 +9,7 @@
   <string><id>3</id><value>Videolarým</value></string>
   <string><id>4</id><value>TV Proðramlarý</value></string>
   <string><id>5</id><value>Ayarlar</value></string>
+  <!-- String with id 6 should not be set here, only in the english language file !-->
   <string><id>7</id><value>Dosyalar</value></string>
   <string><id>8</id><value>Hava Durumu</value></string>
   <string><id>11</id><value>Pazartesi</value></string>
