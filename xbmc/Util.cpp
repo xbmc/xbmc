@@ -564,6 +564,7 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
 /// \param szParameters Any parameters to pass to the executeable being run
 void CUtil::RunXBE(const char* szPath1, char* szParameters)
 {
+	g_application.PrintXBEToLCD(szPath1);
 	char szDevicePath[1024];
 	char szPath[1024];
 	char szXbePath[1024];

@@ -108,6 +108,7 @@ public:
   void StartTimeServer();
   void StopTimeServer();
   void StartLEDControl(bool switchoff = false);
+  void PrintXBEToLCD(const char* xbePath);
 
 	void					Stop();
 	void					RestartApp();
