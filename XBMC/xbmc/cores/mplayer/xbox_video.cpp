@@ -38,12 +38,16 @@ static unsigned int 				d_image_width, d_image_height;      //image width and he
 static unsigned char*				image=NULL;                         //image data
 static unsigned int 				image_format=0;                     //image format
 static unsigned int 				primary_image_format;
+static float						fSourceFrameRatio=0;				//frame aspect ratio of video
 static unsigned int 				fs = 0;                             //display in window or fullscreen
 static unsigned int 				dstride;                            //surface stride
 static DWORD    					destcolorkey;                       //colorkey for our surface
-int									iSubTitleHeight=0;
-int									iSubTitlePos=0;
-bool								bClearSubtitleRegion=false;
+
+int									iSubtitlePos=0;						//position of subtitles in image coordinates
+int									iMaxSubtitlePos=0;					//max position of subtitles normally (for non-zoomed/stretched)
+int									iDestBottom=0;						//bottom of the destination window
+bool								bClearSubtitleRegion[2]={false,false};	// whether we need to clear the bottom black bar or not
+
 int									m_dwVisibleOverlay=0;
 LPDIRECT3DTEXTURE8					m_pOverlay[2]={NULL,NULL};			// Overlay textures
 LPDIRECT3DSURFACE8					m_pSurface[2]={NULL,NULL};			// Overlay Surfaces
@@ -240,6 +244,26 @@ void choose_best_resolution(float fps)
 	g_graphicsContext.SetVideoResolution(m_iResolution);
 }
 
+//**********************************************************************************************
+// ClearSubtitleRegion()
+//
+// Clears the black section below the movie picture
+//**********************************************************************************************
+static void ClearSubtitleRegion()
+{
+	// calculate the position of the subtitle
+	// clear subtitle area (2 rows)
+	for (int y=image_height; y < iSubtitlePos; y++)
+	{
+		for (int x=0; x < (int)(dstride); x+=2)
+		{
+			*(image + dstride*y+x   ) = 0x10;	// for black Y=0x10  U=0x80 V=0x80
+			*(image + dstride*y+x+1 ) = 0x80;
+		}
+	}
+	bClearSubtitleRegion[m_dwVisibleOverlay] = false;
+}
+
 //********************************************************************************************************
 static void Directx_CreateOverlay(unsigned int uiFormat)
 {
@@ -258,15 +282,34 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 			U = -0.168736 * R + -0.331264 * G + 0.5 * B
 			V = 0.5 * R + -0.418688 * G + -0.081312 * B 
 	*/
+	// Calculate the amount of black bar we have on the bottom of the image for use
+	// with subtitles
+	CALIBRATION *pRect = &g_settings.m_movieCalibration[m_iResolution];
+	float fScreenWidth =(float)resInfo[m_iResolution].iWidth + pRect->right-pRect->left;
+	float fScreenHeight=(float)resInfo[m_iResolution].iHeight + pRect->bottom-pRect->top;
+	float fSubtitleOverlayPos = (float)resInfo[m_iResolution].iHeight + pRect->subtitles;
+
+	float fScreenFrameRatio = fScreenWidth / fScreenHeight * resInfo[m_iResolution].fPixelRatio;
+	float fnewheight = (float)image_height * fSourceFrameRatio / fScreenFrameRatio;
+	float fSubtitleImagePos = fSubtitleOverlayPos/fScreenHeight*fnewheight;
+	float fMaxHeight = (fnewheight + image_height)/2;
+
+	iMaxSubtitlePos = (int)(fSubtitleImagePos - (fnewheight + image_height)/2);
+	if (iMaxSubtitlePos < fMaxHeight)
+		iMaxSubtitlePos = (int)fMaxHeight;
+	iSubtitlePos = iMaxSubtitlePos;
+
+	int height = image_height;
+	if (iMaxSubtitlePos > height)
+		height = iMaxSubtitlePos;
+	else
+		iMaxSubtitlePos = height;
+
 	for (int i=0; i <=1; i++)
 	{
 		if ( m_pSurface[i]) m_pSurface[i]->Release();
 		if ( m_pOverlay[i]) m_pOverlay[i]->Release();
-		// FIXME:  Should always use image_height - this should be sorted
-		// once the subtitles are sorted out.
-		UINT height = image_height;
-		if (resInfo[m_iResolution].iOverlayHeight > height)
-			height = resInfo[m_iResolution].iOverlayHeight;
+
 		g_graphicsContext.Get3DDevice()->CreateTexture( image_width,
 																										height,
 																										1,
@@ -275,90 +318,93 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 																										0,
 																										&m_pOverlay[i] ) ;
 		m_pOverlay[i]->GetSurfaceLevel( 0, &m_pSurface[i] );
+		// Clear the subtitle region of this overlay
+		D3DLOCKED_RECT rectLocked;
+		if ( D3D_OK == m_pOverlay[i]->LockRect(0,&rectLocked,NULL,0L) )
+		{		
+			image  =(unsigned char*)rectLocked.pBits;
+			dstride = rectLocked.Pitch;
+			ClearSubtitleRegion();
+		}
+		m_pOverlay[i]->UnlockRect(0);
 	}
 	g_graphicsContext.Get3DDevice()->EnableOverlay(TRUE);
 }
 
 //***************************************************************************************
-// GetSourcePixelRatio()
+// CalculateSourceFrameRatio()
 //
 // Considers the source frame size and output frame size (as suggested by mplayer)
-// to determine if the pixels in the source are not square.  It returns the pixel
-// ratio.  We consider the cases of VCD, SVCD and DVD separately, as these are intended
-// to be viewed on a non-square pixel TV set, so the pixels are defined to be the same
-// ratio as the intended display pixels.  These formats are determined by frame size.
+// to determine if the pixels in the source are not square.  It calculates the aspect
+// ratio of the output frame.  We consider the cases of VCD, SVCD and DVD separately,
+// as these are intended to be viewed on a non-square pixel TV set, so the pixels are
+// defined to be the same ratio as the intended display pixels.
+// These formats are determined by frame size.
 //***************************************************************************************
-static float GetSourcePixelRatio(int iSourceWidth, int iSourceHeight, int iOutputWidth, int iOutputHeight)
+static void CalculateFrameAspectRatio()
 {
-  float fSourcePixelRatio = 1.0f;
+	fSourceFrameRatio = (float)d_image_width / d_image_height;
 
-  // Check whether mplayer has decided that the size of the video file should be changed
-  // This indicates either a scaling has taken place (which we didn't ask for) or it has
-  // found an aspect ratio parameter from the file, and is changing the frame size based
-  // on that.
-  if (iSourceWidth == iOutputWidth && iSourceHeight == iOutputHeight)
-    return fSourcePixelRatio;
+	// Check whether mplayer has decided that the size of the video file should be changed
+	// This indicates either a scaling has taken place (which we didn't ask for) or it has
+	// found an aspect ratio parameter from the file, and is changing the frame size based
+	// on that.
+	if (image_width == d_image_width && image_height == d_image_height)
+		return;
 
-  // mplayer is scaling in one or both directions.  We must alter our Source Pixel Ratio
+	// mplayer is scaling in one or both directions.  We must alter our Source Pixel Ratio
+	float fImageFrameRatio = (float)image_width / image_height;
 
-  // First check our input data isn't going to cause problems such as divisions by zero
-  // and the like.
-  if (iSourceWidth == 0 || iSourceHeight == 0 || iOutputWidth == 0 || iOutputHeight == 0)
-    return fSourcePixelRatio;
-  
-  // Calculate the ratio of the output frame 
-  float fOutputFrameRatio = (float)iOutputWidth/iOutputHeight;
+	// OK, most sources will be correct now, except those that are intended
+	// to be displayed on non-square pixel based output devices (ie PAL or NTSC TVs)
+	// This includes VCD, SVCD, and DVD (and possibly others that we are not doing yet)
+	// For this, we can base the pixel ratio on the pixel ratios of PAL and NTSC,
+	// though we will need to adjust for anamorphic sources (ie those whose
+	// output frame ratio is not 4:3) and for SVCDs which have 2/3rds the
+	// horizontal resolution of the default NTSC or PAL frame sizes
 
-  // Calculate the ratio of the input frame
-  float fSourceFrameRatio = (float)iSourceWidth/iSourceHeight;
+	// The following are the defined standard ratios for PAL and NTSC pixels
+	float fPALPixelRatio = 128.0f/117.0f;
+	float fNTSCPixelRatio = 72.0f/79.0f;
 
-  // Use output frame ratio and source frame ratio to determine the pixel ratio
-  fSourcePixelRatio = fOutputFrameRatio / fSourceFrameRatio;
+	// Calculate the correction needed for anamorphic sources
+	float fNon4by3Correction = (float)fSourceFrameRatio/(4.0f/3.0f);
 
-  // OK, most sources will be correct now, except those that are intended
-  // to be displayed on non-square pixel based output devices (ie PAL or NTSC TVs)
-  // This includes VCD, SVCD, and DVD (and possibly others that we are not doing yet)
-  // For this, we can base the pixel ratio on the pixel ratios of PAL and NTSC,
-  // though we will need to adjust for anamorphic sources (ie those whose
-  // output frame ratio is not 4:3) and for SVCDs which have 2/3rds the
-  // horizontal resolution of the default NTSC or PAL frame sizes
-
-  // The following are the defined standard ratios for PAL and NTSC pixels
-  float fPALPixelRatio = 128.0f/117.0f;
-  float fNTSCPixelRatio = 72.0f/79.0f;
-
-  // Calculate the correction needed for anamorphic sources
-  float fNon4by3Correction = (float)fOutputFrameRatio/(4.0f/3.0f);
-
-  // Now use the helper functions to check for a VCD, SVCD or DVD frame size
-  if (CUtil::IsNTSC_VCD(iSourceWidth,iSourceHeight))
-     fSourcePixelRatio = fNTSCPixelRatio;
-  if (CUtil::IsNTSC_SVCD(iSourceWidth,iSourceHeight))
-     fSourcePixelRatio = 3.0f/2.0f*fNTSCPixelRatio*fNon4by3Correction;
-  if (CUtil::IsNTSC_DVD(iSourceWidth,iSourceHeight))
-     fSourcePixelRatio = fNTSCPixelRatio*fNon4by3Correction;
-  if (CUtil::IsPAL_VCD(iSourceWidth,iSourceHeight))
-     fSourcePixelRatio = fPALPixelRatio;
-  if (CUtil::IsPAL_SVCD(iSourceWidth,iSourceHeight))
-     fSourcePixelRatio = 3.0f/2.0f*fPALPixelRatio*fNon4by3Correction;
-  if (CUtil::IsPAL_DVD(iSourceWidth,iSourceHeight))
-     fSourcePixelRatio = fPALPixelRatio*fNon4by3Correction;
-
-  // Done, return the result
-  return fSourcePixelRatio;
+	// Now use the helper functions to check for a VCD, SVCD or DVD frame size
+	if (CUtil::IsNTSC_VCD(image_width,image_height))
+		fSourceFrameRatio = fImageFrameRatio*fNTSCPixelRatio;
+	if (CUtil::IsNTSC_SVCD(image_width,image_height))
+		fSourceFrameRatio = fImageFrameRatio*3.0f/2.0f*fNTSCPixelRatio*fNon4by3Correction;
+	if (CUtil::IsNTSC_DVD(image_width,image_height))
+		fSourceFrameRatio = fImageFrameRatio*fNTSCPixelRatio*fNon4by3Correction;
+	if (CUtil::IsPAL_VCD(image_width,image_height))
+		fSourceFrameRatio = fImageFrameRatio*fPALPixelRatio;
+	if (CUtil::IsPAL_SVCD(image_width,image_height))
+		fSourceFrameRatio = fImageFrameRatio*3.0f/2.0f*fPALPixelRatio*fNon4by3Correction;
+	if (CUtil::IsPAL_DVD(image_width,image_height))
+		fSourceFrameRatio = fImageFrameRatio*fPALPixelRatio*fNon4by3Correction;
 }
 
 //********************************************************************************************************
 static unsigned int Directx_ManageDisplay()
 {
-	float fOffsetX1 = (float)g_settings.m_rectMovieCalibration[m_iResolution].left;
-	float fOffsetY1 = (float)g_settings.m_rectMovieCalibration[m_iResolution].top;
-	float fOffsetX2 = (float)g_settings.m_rectMovieCalibration[m_iResolution].right;
-	float fOffsetY2 = (float)g_settings.m_rectMovieCalibration[m_iResolution].bottom;
+	float fOffsetX1 = (float)g_settings.m_movieCalibration[m_iResolution].left;
+	float fOffsetY1 = (float)g_settings.m_movieCalibration[m_iResolution].top;
+	float fOffsetX2 = (float)g_settings.m_movieCalibration[m_iResolution].right;
+	float fOffsetY2 = (float)g_settings.m_movieCalibration[m_iResolution].bottom;
+	float fSubtitleOffset = (float)g_settings.m_movieCalibration[m_iResolution].subtitles;
 
 	float iScreenWidth =(float)resInfo[m_iResolution].iWidth + fOffsetX2-fOffsetX1;
-	float iScreenHeight=(float)resInfo[m_iResolution].iOverlayHeight + fOffsetY2-fOffsetY1;
+	float iScreenHeight=(float)resInfo[m_iResolution].iHeight + fOffsetY2-fOffsetY1;
+	float fSubtitleFractionalPos = (resInfo[m_iResolution].iHeight + fSubtitleOffset-fOffsetY1)/iScreenHeight;
 
+	if (m_iResolution == HDTV_1080i)
+	{
+		fOffsetY1/=2;
+		iScreenHeight/=2;
+	}
+
+	// POSSIBLY ALTER THIS NEXT BRACKET FOR HDTV_1080i
 	if( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
 	{
 		const RECT& rv = g_graphicsContext.GetViewWindow();
@@ -385,9 +431,7 @@ static unsigned int Directx_ManageDisplay()
 			rd.top    = (int)fOffsetY1;
 			rd.bottom = (int)rd.top+(int)iScreenHeight;
 
-			// place subtitles @ bottom of the screen
-			iSubTitlePos			  = image_height - iSubTitleHeight;
-			bClearSubtitleRegion= false;
+			iSubtitlePos = (int)(fSubtitleFractionalPos * image_height);
 			return 0;
 		}
 
@@ -397,41 +441,24 @@ static unsigned int Directx_ManageDisplay()
 				// and keeps the Aspect ratio
 
 				// calculate AR compensation (see http://www.iki.fi/znark/video/conversion)
+				float fOutputFrameRatio = fSourceFrameRatio / resInfo[m_iResolution].fPixelRatio; 
+				if (m_iResolution == HDTV_1080i) fOutputFrameRatio *= 2;
 
-				float fScreenPixelRatio = resInfo[m_iResolution].fOverlayPixelRatio;
-
-				// Calculate frame ratio based on source frame size and pixel ratio (Added by JM)
-				float fSourcePixelRatio = GetSourcePixelRatio(image_width, image_height, d_image_width, d_image_height);
-				float fOutputFrameRatio = (float)image_width/((float)image_height)*fSourcePixelRatio / fScreenPixelRatio; 
-				float fNewWidth;
-				float fNewHeight;
-				float fHorzBorder=0;
+				// assume that the movie is widescreen first, so use full height
 				float fVertBorder=0;
+				float fNewHeight = (float)( iScreenHeight);
+				float fNewWidth  =  fNewHeight*fOutputFrameRatio;
+				float fHorzBorder= (fNewWidth-(float)iScreenWidth)/2.0f;
+				float fFactor = fNewWidth / ((float)image_width);
+				fHorzBorder = fHorzBorder/fFactor;
 
-				if ( image_width >= image_height)
-				{	
-					fNewHeight=(float)iScreenHeight;	  // 538
-					fNewWidth = fNewHeight*fOutputFrameRatio; // 968.4
-					fHorzBorder= (fNewWidth-(float)iScreenWidth)/2.0f;
-
-					float fFactor = fNewWidth / ((float)image_width);
-					fHorzBorder = fHorzBorder/fFactor;
-				}
-				else
-				{
-					fNewWidth  = (float)( iScreenWidth);
-					fNewHeight = fNewWidth/fOutputFrameRatio;
-					fVertBorder= (fNewHeight-(float)iScreenHeight)/2.0f;
-					float fFactor = fNewWidth / ((float)image_width);
-					fVertBorder = fVertBorder/fFactor;
-				}
 				if ( (int)fNewWidth < iScreenWidth )
 				{
 					fHorzBorder=0;
 					fNewWidth  = (float)( iScreenWidth);
 					fNewHeight = fNewWidth/fOutputFrameRatio;
 					fVertBorder= (fNewHeight-(float)iScreenHeight)/2.0f;
-					float fFactor = fNewWidth / ((float)image_width);
+					fFactor = fNewWidth / ((float)image_width);
 					fVertBorder = fVertBorder/fFactor;
 				}
 				rs.left		= (int)fHorzBorder;
@@ -444,8 +471,7 @@ static unsigned int Directx_ManageDisplay()
 				rd.top    = (int)fOffsetY1;
 				rd.bottom = (int)rd.top + (int)iScreenHeight;
 
-				iSubTitlePos = rs.bottom - iSubTitleHeight;
-				bClearSubtitleRegion= false;
+				iSubtitlePos = (int)(fSubtitleFractionalPos*image_height-fVertBorder);
 				return 0;
 		}
 
@@ -453,19 +479,16 @@ static unsigned int Directx_ManageDisplay()
 		// scale up image as much as possible
 		// and keep the aspect ratio (introduces with black bars)
 
-		float fScreenPixelRatio = resInfo[m_iResolution].fOverlayPixelRatio;
-		
-	        // Calculate frame ratio based on source frame size and pixel ratio (Added by JM)
-		float fSourcePixelRatio = GetSourcePixelRatio(image_width, image_height, d_image_width, d_image_height);
-		float fOutputFrameRatio = (float)image_width/((float)image_height)*fSourcePixelRatio/fScreenPixelRatio; 
+		float fOutputFrameRatio = fSourceFrameRatio / resInfo[m_iResolution].fPixelRatio; 
+		if (m_iResolution == HDTV_1080i) fOutputFrameRatio *= 2;
 
 		// maximize the movie width
-		float fNewWidth  = (float)(iScreenWidth);
+		float fNewWidth  = iScreenWidth;
 		float fNewHeight = fNewWidth/fOutputFrameRatio;
 
 		if (fNewHeight > iScreenHeight)
 		{
-			fNewHeight = (float)iScreenHeight;   // POSSIBLY CORRECT FOR SUBTITLE HEIGHT AS WELL
+			fNewHeight = iScreenHeight;   // POSSIBLY CORRECT FOR SUBTITLE HEIGHT AS WELL
 			fNewWidth = fNewHeight*fOutputFrameRatio;
 		}
 
@@ -476,37 +499,35 @@ static unsigned int Directx_ManageDisplay()
 			fNewHeight=(float)image_height;
 		}
 
+		// Centre the movie
+		float iPosY = (iScreenHeight - fNewHeight)/2;
+		float iPosX = (iScreenWidth  - fNewWidth)/2;
+
 		// source rect
 		rs.left		= 0;
 		rs.top    = 0;
 		rs.right	= image_width;
-		rs.bottom = image_height + iSubTitleHeight;
+		rs.bottom = image_height;
 
-
-		// destination rect 
-		float iPosY = iScreenHeight - fNewHeight;
-		float iPosX = iScreenWidth  - fNewWidth	;
-		iPosY /= 2; // center the movie
-		iPosX /= 2; // center the movie
-		rd.left   = (int)(iPosX + fOffsetX1 + 0.5f);
+		rd.left   = (int)(iPosX + fOffsetX1);
 		rd.right  = (int)(rd.left + fNewWidth + 0.5f);
-		rd.top    = (int)(iPosY + fOffsetY1 + 0.5f);
-		rd.bottom = (int)(rd.top + fNewHeight + iSubTitleHeight + 0.5f);
+		rd.top    = (int)(iPosY + fOffsetY1);
+		rd.bottom = (int)(rd.top + fNewHeight + 0.5f);
+		iDestBottom = rd.bottom;
 
-		iSubTitlePos = image_height;
-		bClearSubtitleRegion= true;
-
-		if (iSubTitlePos  + 2*iSubTitleHeight >= resInfo[m_iResolution].iOverlayHeight - fOffsetY2)
+		// adjust for subtitles if necessary
+		iSubtitlePos = (int)((fSubtitleFractionalPos*iScreenHeight - iPosY)/fNewHeight*image_height+0.5f);
+		if (iSubtitlePos > iMaxSubtitlePos)
+			iSubtitlePos = iMaxSubtitlePos;
+		if (iSubtitlePos > rs.bottom)
 		{
-			bClearSubtitleRegion= false;
-			iSubTitlePos = resInfo[m_iResolution].iOverlayHeight - (int)fOffsetY2 - iSubTitleHeight*2;
+			rs.bottom = iSubtitlePos;
+			rd.bottom = (int)(fSubtitleFractionalPos*iScreenHeight+fOffsetY1+0.5f);
 		}
-
 		return 0;
 	}
 	return 0;
 }
-
 
 //***********************************************************************************************************
 //***********************************************************************************************************
@@ -521,12 +542,9 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
 	// if we're not in stretch mode try to put the subtitles below the video
 	if ( y0 > (int)(image_height/2)  )
 	{
-		// get new height of subtitles
-		iSubTitleHeight  = h;
-
-		if (iSubTitlePos ==0) return;
+		bClearSubtitleRegion[m_dwVisibleOverlay] = true;
 		
-		vo_draw_alpha_yuy2(w,h,src,srca,stride,((unsigned char *) image) + dstride*iSubTitlePos + 2*x0,dstride);
+		vo_draw_alpha_yuy2(w,h,src,srca,stride,((unsigned char *) image) + dstride*(iSubtitlePos-h) + 2*x0,dstride);
 		return;
 	}
 	vo_draw_alpha_yuy2(w,h,src,srca,stride,((unsigned char *) image) + dstride*y0 + 2*x0,dstride);
@@ -602,9 +620,7 @@ static void video_check_events(void)
 static unsigned int video_preinit(const char *arg)
 {
 	m_iResolution=PAL_4_3;
-	iSubTitleHeight=0;
-	iSubTitlePos=0;
-	bClearSubtitleRegion=false;
+	for (int i=0; i<2; i++) bClearSubtitleRegion[i] = false;
 	m_dwVisibleOverlay=0;
 	m_bFlip=false;
 	m_bFullScreen=false;
@@ -662,6 +678,7 @@ static void video_flip_page(void)
 	}
 
 	m_dwVisibleOverlay=1-m_dwVisibleOverlay;
+
 	D3DLOCKED_RECT rectLocked;
 	if ( D3D_OK == m_pOverlay[m_dwVisibleOverlay]->LockRect(0,&rectLocked,NULL,0L  ))
 	{
@@ -669,20 +686,8 @@ static void video_flip_page(void)
 		image  =(unsigned char*)rectLocked.pBits;
 	}
 
-	if (bClearSubtitleRegion && iSubTitlePos>0)
-	{
-		// calculate the position of the subtitle
-		// clear subtitle area (2 rows)
-		for (int y=0; y < iSubTitleHeight*2; y++)
-		{
-			for (int x=0; x < (int)(dstride); x+=2)
-			{
-				*(image + dstride*(iSubTitlePos + y)+x   ) = 0x10;	// for black Y=0x10  U=0x80 V=0x80
-				*(image + dstride*(iSubTitlePos + y)+x+1 ) = 0x80;
-			}
-		}
-	}
-
+	if (bClearSubtitleRegion[m_dwVisibleOverlay])
+		ClearSubtitleRegion();
 
 	bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
 	if ( m_bFullScreen != bFullScreen )
@@ -705,13 +710,24 @@ void xbox_video_getRect(RECT& SrcRect, RECT& DestRect)
 {
 	SrcRect=rs;
 	DestRect=rd;
+	// adjust for subtitle space at the bottom
+	if (!g_stSettings.m_bZoom && !g_stSettings.m_bStretch)
+	{
+		SrcRect.bottom = image_height;
+		DestRect.bottom = iDestBottom;
+	}
 }
 
 void xbox_video_getAR(float& fAR)
 {
-	float fOutputPixelRatio = resInfo[m_iResolution].fOverlayPixelRatio;
-	float fOutputFrameRatio = ((float)(rd.right-rd.left)) / ((float)(rd.bottom-rd.top));
-	fAR = fOutputFrameRatio*fOutputPixelRatio;
+	float fOutputPixelRatio = resInfo[m_iResolution].fPixelRatio;
+	if (m_iResolution == HDTV_1080i)
+		fOutputPixelRatio /= 2;
+	float fWidth = (float)(rd.right - rd.left);
+	float fHeight = (float)(rd.bottom - rd.top);
+	if (!g_stSettings.m_bZoom && !g_stSettings.m_bStretch)
+		fHeight = (float)(iDestBottom - rd.top);
+	fAR = fWidth/fHeight*fOutputPixelRatio;
 }
 
 void xbox_video_update()
@@ -841,6 +857,8 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
 
 	m_bFullScreen=g_graphicsContext.IsFullScreenVideo();
 
+	// calculate the input frame aspect ratio
+	CalculateFrameAspectRatio();
 	choose_best_resolution(m_fFPS);
 
 	fs=1;//fullscreen

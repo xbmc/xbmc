@@ -9,7 +9,7 @@ struct CSettings::stSettings g_stSettings;
 
 CSettings::CSettings(void)
 {
-	memset(m_rectMovieCalibration,0, sizeof(m_rectMovieCalibration));
+	memset(m_movieCalibration,0, sizeof(m_movieCalibration));
 	g_stSettings.m_bAudioOnAllSpeakers=false;
 	g_stSettings.m_iChannels=2;
 	g_stSettings.m_bUseID3=true;
@@ -121,7 +121,7 @@ void CSettings::Save() const
 	FILE *calibrationSettings = fopen("T:\\calibration.bin","wb+");
     if (calibrationSettings!=NULL)
 	{
-		fwrite(m_rectMovieCalibration,sizeof(m_rectMovieCalibration),1,calibrationSettings);
+		fwrite(m_movieCalibration,sizeof(m_movieCalibration),1,calibrationSettings);
 		fclose(calibrationSettings);
 	}
 }
@@ -156,7 +156,7 @@ void CSettings::Load()
 	if (calibrationSettings!=NULL)
 	{
 		OutputDebugString("found calibration.bin\n");
-		fread(m_rectMovieCalibration,sizeof(m_rectMovieCalibration),1,calibrationSettings);
+		fread(m_movieCalibration,sizeof(m_movieCalibration),1,calibrationSettings);
 		fclose(calibrationSettings);
 	}
 	else
