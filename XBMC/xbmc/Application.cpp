@@ -148,6 +148,11 @@ HRESULT CApplication::Initialize()
 	CreateDirectory(g_stSettings.m_szShortcutDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szIMDBDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szAlbumDirectory,NULL);
+	string strDir=g_stSettings.m_szAlbumDirectory;
+	CreateDirectory((strDir+"\\artists").c_str(),NULL);
+	CreateDirectory((strDir+"\\genres").c_str(),NULL);
+	CreateDirectory((strDir+"\\albums").c_str(),NULL);
+	CreateDirectory((strDir+"\\playlists").c_str(),NULL);
 
 	
   // initialize network

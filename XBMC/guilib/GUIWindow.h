@@ -22,6 +22,7 @@ public:
   DWORD           		GetID(void) const;
 	const CGUIControl*	GetControl(int iControl) const;
 	void								ClearAll();
+	int									GetFocusedControl() const;
 protected:
   vector<CGUIControl*> m_vecControls;
   typedef vector<CGUIControl*>::iterator ivecControls;

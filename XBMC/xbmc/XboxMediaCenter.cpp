@@ -24,8 +24,6 @@
 //
 // my music:
 //			- album : change gui
-//		  - artist interface
-//			- genre interface
 //			- search
 //			- playlists
 //			- shoutcast

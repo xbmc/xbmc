@@ -5,7 +5,6 @@
 #define CONTROL_UPDOWN	1
 CGUIListControl::CGUIListControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, 
                                  const CStdString& strFontName, 
-                                 const CStdString& strImageIcon,
                                  DWORD dwSpinWidth,DWORD dwSpinHeight,
                                  const CStdString& strUp, const CStdString& strDown, 
                                  const CStdString& strUpFocus, const CStdString& strDownFocus, 
@@ -13,7 +12,6 @@ CGUIListControl::CGUIListControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPo
                                  const CStdString& strFont, DWORD dwTextColor,DWORD dwSelectedColor,
                                  const CStdString& strButton, const CStdString& strButtonFocus)
 :CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight)
-,m_imgFolder(dwParentID, dwControlId, dwPosX, dwPosY, 0,0,strImageIcon)
 ,m_upDown(dwControlId, 0, dwSpinX, dwSpinY, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwSpinColor, SPIN_CONTROL_TYPE_INT)
 ,m_imgButton(dwControlId, 0, dwPosX, dwPosY, dwWidth, dwHeight, strButtonFocus,strButton)
 {
@@ -22,11 +20,21 @@ CGUIListControl::CGUIListControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPo
   m_iItemsPerPage=10;
   m_iItemHeight=10;
   m_pFont=g_fontManager.GetFont(strFontName);
+  m_pFont2=g_fontManager.GetFont(strFontName);
   m_iSelect=CONTROL_LIST;  
 	m_iCursorY=0;
   m_dwTextColor=dwTextColor;
   m_strSuffix=L"|";
-  
+	m_iTextOffsetX=0;
+	m_iTextOffsetY=0;
+	m_iImageWidth=16;
+	m_iImageHeight=16;
+	m_iSpaceBetweenItems=4;
+	m_iTextOffsetX2=0;
+	m_iTextOffsetY2=0;
+	
+	m_dwTextColor2=dwTextColor;
+	m_dwSelectedColor2=dwSelectedColor;
 }
 
 CGUIListControl::~CGUIListControl(void)
@@ -61,58 +69,70 @@ void CGUIListControl::Render()
       m_imgButton.SetPosition(m_dwPosX, dwPosY);	
       m_imgButton.Render();
       
-			int iWidth=m_imgFolder.GetWidth();
+			// render the icon
 			if (pItem->HasIcon() )
       {
         // show icon
 				CGUIImage* pImage=pItem->GetIcon();
 				if (!pImage)
 				{
-					pImage=new CGUIImage(0,0,0,0,0,0,pItem->GetIconImage(),0xffffffff);
+					pImage=new CGUIImage(0,0,0,0,m_iImageWidth,m_iImageHeight,pItem->GetIconImage(),0xffffffff);
 					pImage->AllocResources();
 					pItem->SetIcon(pImage);
+					
 				}
-				float fPosY=5.0;
-        fPosY += dwPosY;
-			  pImage->SetPosition(dwPosX+8, (DWORD)fPosY);
-        pImage->Render();
-				iWidth=pImage->GetWidth()+10;
+				pImage->SetWidth(m_iImageWidth);
+				pImage->SetHeight(m_iImageHeight);
+				pImage->SetPosition(dwPosX+8, dwPosY+5);
+				pImage->Render();
       }
+			dwPosX+=(m_iImageWidth+10);
 
+			// render the text
       DWORD dwColor=m_dwTextColor;
 			if (pItem->IsSelected())
+			{
         dwColor=m_dwSelectedColor;
+			}
       
-			dwPosX += iWidth+2;
+			dwPosX +=m_iTextOffsetX;
       bool bSelected(false);
       if (i == m_iCursorY && HasFocus() && m_iSelect== CONTROL_LIST)
+			{
         bSelected=true;
+			}
 
 			CStdString strLabel2=pItem->GetLabel2();
       
-			DWORD dMaxWidth=m_dwWidth-16;
-      if (strLabel2.size()>0)
+			DWORD dMaxWidth=(m_dwWidth-m_iImageWidth-16);
+      if ( strLabel2.size() > 0 )
       {
-				dMaxWidth=m_dwWidth-16;
 				float fTextHeight,fTextWidth;
         swprintf(wszText,L"%S", strLabel2.c_str() );
-				m_pFont->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
+				m_pFont2->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
 				dMaxWidth -= (DWORD)(fTextWidth);
 			}
+
 			swprintf(wszText,L"%S", pItem->GetLabel().c_str() );
+			RenderText((float)dwPosX, (float)dwPosY+2+m_iTextOffsetY, (FLOAT)dMaxWidth, dwColor, wszText,bSelected);
       
-			RenderText( (float)dwPosX, (float)dwPosY+2, (FLOAT)dMaxWidth, dwColor, wszText,bSelected);
-      
-		
       if (strLabel2.size()>0)
       {
-        dwPosX=m_dwPosX+m_dwWidth-16;
-        swprintf(wszText,L"%S", strLabel2.c_str() );
-        m_pFont->DrawText((float)dwPosX, (float)dwPosY+2,dwColor,wszText,XBFONT_RIGHT); 
-      }	
-      dwPosY += (DWORD)m_iItemHeight;
-    }
+				dwColor=m_dwTextColor2;
+				if (pItem->IsSelected())
+				{
+					dwColor=m_dwSelectedColor2;
+				}
+				if (!m_iTextOffsetX2)
+					dwPosX=m_dwPosX+m_dwWidth-16;
+				else
+					dwPosX=m_dwPosX+m_iTextOffsetX2;
 
+        swprintf(wszText,L"%S", strLabel2.c_str() );
+        m_pFont2->DrawText((float)dwPosX, (float)dwPosY+2+m_iTextOffsetY2,dwColor,wszText,XBFONT_RIGHT); 
+      }	
+      dwPosY += (DWORD)(m_iItemHeight+m_iSpaceBetweenItems);
+    }
   }
 	m_upDown.Render();
 }
@@ -316,20 +336,16 @@ void CGUIListControl::AllocResources()
   if (!m_pFont) return;
   CGUIControl::AllocResources();
   m_upDown.AllocResources();
-  m_imgFolder.AllocResources();
-  m_imgButton.AllocResources();
-  float fWidth,fHeight;
   
-  m_pFont->GetTextExtent( L"y", &fWidth,&fHeight);
-  fHeight+=10.0f;
+  m_imgButton.AllocResources();
 
-  m_imgFolder.SetHeight((int)fHeight-10);
-  m_imgButton.SetHeight((int)fHeight);
+  
+  m_imgButton.SetWidth(m_dwWidth);
+  m_imgButton.SetHeight(m_iItemHeight);
 
-  //fHeight+=2;
-  m_iItemHeight			= (int)fHeight;
+	float fHeight=(float)m_iItemHeight + (float)m_iSpaceBetweenItems;
   float fTotalHeight= (float)(m_dwHeight-m_upDown.GetHeight()-5);
-  m_iItemsPerPage		= (int)(fTotalHeight / fHeight);
+  m_iItemsPerPage		= (int)(fTotalHeight / fHeight );
 
   int iPages=m_vecItems.size() / m_iItemsPerPage;
   if (m_vecItems.size() % m_iItemsPerPage) iPages++;
@@ -342,7 +358,6 @@ void CGUIListControl::FreeResources()
 {
   CGUIControl::FreeResources();
   m_upDown.FreeResources();
-  m_imgFolder.FreeResources();
   m_imgButton.FreeResources();
 }
 
@@ -434,7 +449,7 @@ void CGUIListControl::OnDown()
   }
 }
 
-void CGUIListControl::SetScrollySuffix(CStdString wstrSuffix)
+void CGUIListControl::SetScrollySuffix(const CStdString& wstrSuffix)
 {
   WCHAR wsSuffix[128];
   swprintf(wsSuffix,L"%S", wstrSuffix.c_str());
@@ -469,4 +484,38 @@ void CGUIListControl::OnPageDown()
   {
     m_iCursorY = (m_vecItems.size()-m_iOffset)-1;
   }
+}
+
+
+void CGUIListControl::SetTextOffsets(int iXoffset, int iYOffset,int iXoffset2, int iYOffset2)
+{
+	m_iTextOffsetX = iXoffset;
+	m_iTextOffsetY = iYOffset;
+	m_iTextOffsetX2 = iXoffset2;
+	m_iTextOffsetY2 = iYOffset2;
+}
+
+void CGUIListControl::SetImageDimensions(int iWidth, int iHeight)
+{
+	m_iImageWidth  = iWidth;
+	m_iImageHeight = iHeight;
+}
+
+void CGUIListControl::SetItemHeight(int iHeight)
+{
+	m_iItemHeight=iHeight;
+}
+void CGUIListControl::SetSpace(int iHeight)
+{
+	m_iSpaceBetweenItems=iHeight;
+}
+
+void CGUIListControl::SetFont2(const CStdString& strFont)
+{
+	m_pFont2=g_fontManager.GetFont(strFont);
+}
+void CGUIListControl::SetColors2(DWORD dwTextColor, DWORD dwSelectedColor)
+{
+	m_dwTextColor2=dwTextColor;
+	m_dwSelectedColor2=dwSelectedColor;
 }

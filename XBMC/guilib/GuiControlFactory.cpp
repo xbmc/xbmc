@@ -330,11 +330,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       strDownFocus=pControlNode->FirstChild("textureDownFocus")->FirstChild()->Value();
       strFont=pControlNode->FirstChild("font")->FirstChild()->Value();
       D3DCOLOR dwTextColor,dwSpinColor, dwSelectedColor;
-      sscanf(pControlNode->FirstChild("textcolor" )->FirstChild()->Value(),"%x",&dwTextColor);
       sscanf(pControlNode->FirstChild("spinColor" )->FirstChild()->Value(),"%x",&dwSpinColor);
       sscanf(pControlNode->FirstChild("selectedColor" )->FirstChild()->Value(),"%x",&dwSelectedColor);
+      sscanf(pControlNode->FirstChild("textcolor" )->FirstChild()->Value(),"%x",&dwTextColor);
       
-      CStdString strImage=pControlNode->FirstChild("image")->FirstChild()->Value();
 
       DWORD dwSpinWidth=atol(pControlNode->FirstChild("spinWidth" )->FirstChild()->Value());
       DWORD dwSpinHeight=atol(pControlNode->FirstChild("spinHeight" )->FirstChild()->Value());
@@ -346,7 +345,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
       CGUIListControl* pControl = new CGUIListControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,
                                                       strFont,
-                                                      strImage,
                                                       dwSpinWidth,dwSpinHeight,
                                                       strUp,strDown,
                                                       strUpFocus,strDownFocus,
@@ -361,7 +359,63 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
         CStdString strSuffix=pControlNode->FirstChild("suffix" )->FirstChild()->Value();
         pControl->SetScrollySuffix(strSuffix);
       }
+			int iTextXOff=0;
+			int iTextYOff=0;
+			int iTextXOff2=0;
+			int iTextYOff2=0;
+			pNode=pControlNode->FirstChild("textXOff" );
+			if (pNode)
+				iTextXOff=atol(pNode->FirstChild()->Value());
+			pNode=pControlNode->FirstChild("textYOff" );
+			if (pNode)
+				iTextYOff=atol(pNode->FirstChild()->Value());
+			pNode=pControlNode->FirstChild("textXOff2" );
+			if (pNode)
+				iTextXOff2=atol(pNode->FirstChild()->Value());
+			pNode=pControlNode->FirstChild("textYOff2" );
+			if (pNode)
+				iTextYOff2=atol(pNode->FirstChild()->Value());
+
+
+			pControl->SetTextOffsets(iTextXOff,iTextYOff, iTextXOff2,iTextYOff2);
+
+			DWORD dwitemWidth=16, dwitemHeight=16;
+			pNode=pControlNode->FirstChild("itemWidth" );
+			if (pNode) dwitemWidth=atol(pNode->FirstChild()->Value());
+
+			pNode=pControlNode->FirstChild("itemHeight" );
+			if (pNode) dwitemHeight=atol(pNode->FirstChild()->Value());
+      
+			int iSpace=2;
+			int iTextureHeight=30;
+			
+			pNode=pControlNode->FirstChild("spaceBetweenItems" );
+			if (pNode) iSpace=atol(pNode->FirstChild()->Value());
+
+			
+			pNode=pControlNode->FirstChild("textureHeight" );
+			if (pNode) 
+			{
+				iTextureHeight=atol(pNode->FirstChild()->Value());
+			}
+
       pControl->SetVisible(bVisible);
+			pControl->SetImageDimensions(dwitemWidth, dwitemHeight);
+			pControl->SetItemHeight(iTextureHeight);
+			pControl->SetSpace(iSpace);
+
+			DWORD dwTextColor2=dwTextColor;
+			DWORD dwSelectedColor2=dwSelectedColor;
+			pNode=pControlNode->FirstChild("selectedColor2" );
+			if (pNode) sscanf(pNode->FirstChild()->Value(),"%x",&dwSelectedColor2);
+
+			pNode=pControlNode->FirstChild("textcolor2" );
+			if (pNode) sscanf(pNode->FirstChild()->Value(),"%x",&dwTextColor2);
+			pControl->SetColors2(dwTextColor2, dwSelectedColor2);
+
+			pNode=pControlNode->FirstChild("font2" );
+			if (pNode)
+				pControl->SetFont2( pNode->FirstChild()->Value() );
       return pControl;
   }
 

@@ -54,5 +54,6 @@ public:
 	static void SetThumbs(VECFILEITEMS &items);
 	static void GetArtistDatabase(const CStdString& strFileName, CStdString& strArtistDBS);
 	static void GetGenreDatabase(const CStdString& strFileName, CStdString& strGenreDBS);
+	static bool IsPlayList(const CStdString& strFile) ;
   virtual ~CUtil(void);
 };

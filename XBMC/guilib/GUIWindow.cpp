@@ -236,3 +236,12 @@ const CGUIControl* 	CGUIWindow::GetControl(int iControl) const
   }
 	return NULL;
 }
+int	CGUIWindow::GetFocusedControl() const
+{
+	for (int i=0;i < (int)m_vecControls.size(); ++i)
+  {
+    const CGUIControl* pControl= m_vecControls[i];
+		if (pControl->HasFocus() ) return pControl->GetID();
+  }
+	return -1;
+}

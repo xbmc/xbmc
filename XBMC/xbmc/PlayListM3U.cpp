@@ -37,8 +37,8 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
 		return false;
 	}
 
-	char szLine[1024];
-	if ( !file.ReadString(szLine, sizeof(szLine) ) )
+	char szLine[4096];
+	if ( !file.ReadString(szLine, 1024 ) )
 	{
 		file.Close();
 		return false;
@@ -51,7 +51,7 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
 		return false;
 	}
 
-	while (file.ReadString(szLine,sizeof(szLine) ) )
+	while (file.ReadString(szLine,1024 ) )
 	{
 		strLine=szLine;
 		CUtil::RemoveCRLF(strLine);
@@ -69,7 +69,7 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
 				long lDuration=atoi(strLength.c_str());
 				lDuration*=1000;
 
-				if (file.ReadString(szLine,sizeof(szLine) ) )
+				if (file.ReadString(szLine,1024 ) )
 				{
 					CStdString strFileName=szLine;
 					CUtil::RemoveCRLF(strFileName);

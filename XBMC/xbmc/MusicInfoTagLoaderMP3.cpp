@@ -55,7 +55,7 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
 
 				if (pGenre)
 				{
-					tag.SetTitle(pGenre);
+					tag.SetGenre(pGenre);
 					delete [] pGenre;
 				}
 				if (pTitle)
