@@ -720,6 +720,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
 			  // show dialog...
 			  pDlgOK->SetHeading(195);
 			  pDlgOK->SetLine(0,strMovieName);
+			  pDlgOK->SetLine(1,L"");
 			  pDlgOK->SetLine(2,L"");
 			  pDlgOK->DoModal(GetID());
 		  }
