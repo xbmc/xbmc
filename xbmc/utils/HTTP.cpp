@@ -524,6 +524,8 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 		return 0;
 	}
 
+	shutdown(m_socket, SD_SEND); // finished sending data - send TCP FIN
+
 	m_RecvBytes = 0;
 	char* HeaderEnd;
 	do
