@@ -2750,3 +2750,12 @@ bool CApplication::SwitchToFullScreen()
 	}
 	return false;
 }
+
+/// \brief Restarts XBMC
+void CApplication::RestartApp()
+{
+	char szXBEFileName[1024];
+	CIoSupport helper;
+	helper.GetXbePath(szXBEFileName);
+	CUtil::RunXBE(szXBEFileName);
+}
