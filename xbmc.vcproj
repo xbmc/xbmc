@@ -179,8 +179,8 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="0"
-				GlobalOptimizations="FALSE"
+				Optimization="3"
+				GlobalOptimizations="TRUE"
 				FavorSizeOrSpeed="2"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
@@ -197,7 +197,7 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="3"/>
+				DebugInformationFormat="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -205,7 +205,7 @@
 				AdditionalDependencies="xapilib.lib d3dx8.lib d3d8.lib xgraphics.lib dsound.lib xboxkrnl.lib xonline.lib "
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="FALSE"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				SubSystem="2"
 				OptimizeReferences="2"

@@ -70,6 +70,7 @@ unsigned int CFileHD::Read(void *lpBuf, offset_t uiBufSize)
 	DWORD nBytesRead;
 	if ( ReadFile(m_hFile,lpBuf,(DWORD)uiBufSize,&nBytesRead,NULL) )
 	{
+			m_i64FilePos+=nBytesRead;
 			return nBytesRead;
 	}
 	return 0;
@@ -147,7 +148,7 @@ bool CFileHD::ReadString(char *szLine, int iLineLength)
 	{
 		return false;
 	}
-
+	
 	szLine[iBytesRead]=0;
 
 	for (int i=0; i < iBytesRead; i++)
