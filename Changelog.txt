@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 28-01-2005 changed: using xbox highresolution timers for timing. Possibly better sync.
   - 28-01-2005 added: mpng playback support, usefull for testing video quality. (libpng-1.2.8)
   - 17-01-2005 fixed: playback failes if Output to all Speakers is selected and a AC3 2.0 stream is found.
   - 16-01-2004 fixed: avi's > 2GB stackoverflow crash
