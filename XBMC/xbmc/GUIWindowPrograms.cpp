@@ -699,7 +699,8 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
     bool bScanSubDirs=true;
     bool bFound=false;
     DeleteThumbs(items);
-    CUtil::SetThumbs(items);
+    //CUtil::SetThumbs(items);
+    CUtil::FillInDefaultIcons(items);
     bool bOpen=true;
     if ((int)m_strDirectory.size() != 2) // true for C:, E:, F:, G:
     {

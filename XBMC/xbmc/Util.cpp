@@ -900,25 +900,36 @@ void CUtil::FillInDefaultIcons(VECFILEITEMS &items)
 
 void CUtil::FillInDefaultIcon(CFileItem* pItem)
 {
+  // find the default icon for a file or folder item
+  // for files this can be the (depending on the file type)
+  //   default picture for photo's 
+  //   default picture for songs
+  //   default picture for videos
+  //   default picture for shortcuts
+  //   default picture for playlists
+  //   or the icon embedded in an .xbe
+  //
+  // for folders 
+  //   for .. folders the default picture for parent folder
+  //   for other folders the defaultFolder.png
+
   CStdString strThumb;
   bool bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
 	if (!pItem->m_bIsFolder)
 	{
-		// picture
 		if (CUtil::IsPicture(pItem->m_strPath) )
 		{
+		  // picture
 			pItem->SetIconImage("defaultPicture.png");
 		}
-
-		// album database
-		if ( CUtil::IsAudio(pItem->m_strPath) )
+		else if ( CUtil::IsAudio(pItem->m_strPath) )
 		{
-			pItem->SetIconImage("defaultAudio.png");
+		  // album database
+      pItem->SetIconImage("defaultAudio.png");
 		}
-
-		// xbe
-		if ( bOnlyDefaultXBE ? CUtil::IsDefaultXBE(pItem->m_strPath) : CUtil::IsXBE(pItem->m_strPath) )
+		else if ( bOnlyDefaultXBE ? CUtil::IsDefaultXBE(pItem->m_strPath) : CUtil::IsXBE(pItem->m_strPath) )
 		{
+		  // xbe
 			pItem->SetIconImage("defaultProgram.png");
 			if ( !CUtil::IsDVD(pItem->m_strPath) )
 			{
@@ -954,16 +965,14 @@ void CUtil::FillInDefaultIcon(CFileItem* pItem)
 				}
 			}
 		}
-
-		// video
-		if (CUtil::IsVideo(pItem->m_strPath) )
+		else if (CUtil::IsVideo(pItem->m_strPath) )
 		{
+		  // video
 			pItem->SetIconImage("defaultVideo.png");
 		}
-
-		// playlist
-		if (CUtil::IsPlayList(pItem->m_strPath) )
+		else if (CUtil::IsPlayList(pItem->m_strPath) )
 		{
+		  // playlist
 			CStdString strDir;
 			CStdString strFileName;
 			pItem->SetIconImage("defaultPlaylist.png");
@@ -982,9 +991,9 @@ void CUtil::FillInDefaultIcon(CFileItem* pItem)
         }
       }
 		}
-
-		if (CUtil::IsShortCut(pItem->m_strPath) )
+		else if (CUtil::IsShortCut(pItem->m_strPath) )
 		{
+      // shortcut
 			CStdString strDescription;
 			CStdString strFName;
 			strFName=CUtil::GetFileName(pItem->m_strPath);
@@ -1051,18 +1060,29 @@ void CUtil::SetThumbs(VECFILEITEMS &items)
 
 bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
 {
+  // get the thumbnail for the folder contained in strFolder
+  // and return the filename of the thumbnail in strThumb
+  //
+  // if folder contains folder.jpg and is local on xbox HD then use it as the thumbnail
+  // if folder contains folder.jpg but is located on a share then cache the folder.jpg
+  // to q:\thumbs and return the cached image as a thumbnail
   CStdString strFolderImage;
   strThumb="";
 	AddFileToFolder(strFolder, "folder.jpg", strFolderImage);
 
+  // remote or local file?
 	if (CUtil::IsRemote(strFolder) )
 	{
     CURL url(strFolder);
+    // dont try to locate a folder.jpg for streams &  shoutcast
     if (url.GetProtocol() =="http" || url.GetProtocol()=="HTTP") return false;
     if (url.GetProtocol() =="shout" || url.GetProtocol()=="SHOUT") return false;
     if (url.GetProtocol() =="mms" || url.GetProtocol()=="MMS") return false;
+
+    // check if folder.jpg exists 
 		CUtil::GetThumbnail( strFolderImage,strThumb);
 		CFile file;
+    // yes, then cache it to xbox HD
 		if ( file.Cache(strFolderImage.c_str(), strThumb.c_str(),NULL,NULL))
 		{
 			return true;
@@ -1077,48 +1097,62 @@ bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
 	}
 	else if (CUtil::FileExists(strFolderImage) )
 	{
+    // is local, and folder.jpg exists. Use it
 		strThumb=strFolderImage;
     return true;
 	}
+
+  // no thumb found
   strThumb="";
   return false;
 }
 
 void CUtil::SetThumb(CFileItem* pItem)
 {
-	if ( !pItem->HasThumbnail() )
+  // set the thumbnail for an file item
+  
+  // if it already has a thumbnail, then return
+	if ( pItem->HasThumbnail() ) return;
+	
+  // get the path to the thumbnail (q:\thumb\agdhffh.tbn)
+	CStdString strThumb;
+	CUtil::GetThumbnail( pItem->m_strPath,strThumb);
+
+  // does thumb exists?
+	if (!CUtil::FileExists(strThumb) )
 	{
-		CStdString strThumb;
-		CUtil::GetThumbnail( pItem->m_strPath,strThumb);
-		if (!CUtil::FileExists(strThumb) )
+    // no thumb does NOT exits
+		bool bGotIcon(false);
+		if (CUtil::IsRemote(strThumb) )
 		{
-			bool bGotIcon(false);
-			if (CUtil::IsRemote(strThumb) )
+			CFile file;
+			CStdString strThumbnailFileName;
+			CUtil::ReplaceExtension(pItem->m_strPath,".tbn", strThumbnailFileName);
+			if ( file.Cache(strThumbnailFileName.c_str(), strThumb.c_str(),NULL,NULL))
 			{
-				CFile file;
-				CStdString strThumbnailFileName;
-				CUtil::ReplaceExtension(pItem->m_strPath,".tbn", strThumbnailFileName);
-				if ( file.Cache(strThumbnailFileName.c_str(), strThumb.c_str(),NULL,NULL))
-				{
-					pItem->SetThumbnailImage(strThumb);
-					bGotIcon=true;
-				}
-			}
-			if (!bGotIcon && pItem->GetLabel() != "..")
-			{
-				if (pItem->m_bIsFolder)
-				{
-          if ( CUtil::GetFolderThumb(pItem->m_strPath, strThumb))
-          {
-					  pItem->SetThumbnailImage(strThumb);
-          }
-				}
-			}
-		}
-		else
-		{
 				pItem->SetThumbnailImage(strThumb);
+				bGotIcon=true;
+			}
 		}
+
+    // fill in the folder thumbs
+		if (!bGotIcon && pItem->GetLabel() != "..")
+		{
+      // this is a folder ?
+			if (pItem->m_bIsFolder)
+			{
+        // yes, then get the folder thumbnail
+        if ( CUtil::GetFolderThumb(pItem->m_strPath, strThumb))
+        {
+					pItem->SetThumbnailImage(strThumb);
+        }
+			}
+		}
+	}
+	else
+	{
+    // yes thumb exists, 
+		pItem->SetThumbnailImage(strThumb);
 	}
 }
 
@@ -1852,9 +1886,7 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
 
 void CUtil::GetVideoThumbnail(const CStdString& strIMDBID, CStdString& strThumb)
 {
-  char szThumbNail[1024];
-  sprintf(szThumbNail,"%s\\imdb\\imdb%s.jpg",g_stSettings.szThumbnailsDirectory,strIMDBID.c_str());
-  strThumb= szThumbNail;
+  strThumb.Format("%s\\imdb\\imdb%s.jpg",g_stSettings.szThumbnailsDirectory,strIMDBID.c_str());
 }
 
 void CUtil::SetMusicThumbs(VECFILEITEMS &items)
