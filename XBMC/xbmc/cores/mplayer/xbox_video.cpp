@@ -154,6 +154,13 @@ inline void CXBoxRenderManager::DrawAlpha(int x0, int y0, int w, int h, unsigned
 		m_pRenderer->DrawAlpha(x0, y0, w, h, src, srca, stride);
 }
 
+LPDIRECT3DSURFACE8 CXBoxRenderManager::GetOverlay()
+{
+	if (m_pRenderer)
+		return m_pRenderer->GetOverlay();
+	return NULL;
+}
+
 //********************************************************************************************************
 // Functions below here are called from our app, rather than from mplayer directly
 //********************************************************************************************************
