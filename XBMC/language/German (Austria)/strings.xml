@@ -473,7 +473,7 @@
   <string><id>707</id><value>- HTTP Proxy Port</value></string>
   <string><id>708</id><value>HTTP Proxy verwenden</value></string>
   <string><id>709</id><value>XLink Kai XTag</value></string>
-  <string><id>710</id><value>XLink Kai Password</value></string>
+  <string><id>710</id><value>XLink Kai Kennwort</value></string>
   <string><id>711</id><value>Internet Protokoll (IP)</value></string>
   <string><id>712</id><value>Ungültiger Port wurde festgelegt. Der Wert muss zwischen 1 und 65535 liegen.</value></string>
   <string><id>713</id><value>HTTP Proxy</value></string>	
@@ -496,7 +496,7 @@
   <string><id>730</id><value>- Web Server Port</value></string>	
   <string><id>731</id><value>- Zeit Server Host</value></string>
   <string><id>732</id><value>Sichern &amp; Übernehmen</value></string>
-  <string><id>733</id><value>- Web Server Passwort</value></string>
+  <string><id>733</id><value>- Web Server Kennwort</value></string>
   <string><id>734</id><value>ungesetzt</value></string>
   <string><id>735</id><value>- Zeichentabelle</value></string>	
   <string><id>736</id><value>- Stil</value></string>	
@@ -580,12 +580,12 @@
   <string><id>12322</id><value>*</value></string> 
   <string><id>12324</id><value>XBMC Zugriffskontrolle - HauptKennwort</value></string> 
   <string><id>12325</id><value>Verzeichnis gesperrt</value></string> 
-  <string><id>12326</id><value>HauptKennwort eingeben</value></string> 
-  <string><id>12327</id><value>HauptKennwort eingeben und E drücken,</value></string> 
+  <string><id>12326</id><value>Kennwort eingeben</value></string> 
+  <string><id>12327</id><value>Kennwort eingeben und E drücken,</value></string> 
   <string><id>12328</id><value>Kennwort eingeben und E drücken,</value></string> 
-  <string><id>12329</id><value>oder für Abbruch C drücken</value></string> 
+  <string><id>12329</id><value>oder um abzubrechen C drücken</value></string> 
   <string><id>12330</id><value>Gamepad Tastenkombination eingeben</value></string> 
-  <string><id>12331</id><value>und Start drücken, für Abbruch Back</value></string> 
+  <string><id>12331</id><value>und Start drücken, um abzubrechen Back</value></string> 
   <string><id>12332</id><value>Freigabe sperren</value></string> 
   <string><id>12333</id><value>Freigabe entsperren</value></string> 
   <string><id>12334</id><value>Sperre zurücksetzen</value></string> 
@@ -603,13 +603,13 @@
   <string><id>12346</id><value>Kennwort Eingabelimit erreicht.</value></string> 
   <string><id>12347</id><value>XBOX wird ausgeschaltet.</value></string>
   <string><id>12348</id><value>Objekt gesperrt</value></string>
-  <string><id>12349</id><value>HauptKennwort bis Neustart merken?</value></string> 
-  <string><id>12350</id><value>(Öffnen eines Objekts unter Einstellungen</value></string> 
-  <string><id>12351</id><value>aktiviert autom. die Kennworteingabe.)</value></string> 
-  <string><id>12352</id><value>Tastenkombination Kennwort eingeben und</value></string> 
-  <string><id>12353</id><value>aktivieren </value></string>
+  <string><id>12349</id><value>Kennwort bis Neustart merken?</value></string> 
+  <string><id>12350</id><value>(Öffnen einer Einstellung wird die</value></string> 
+  <string><id>12351</id><value>Kennworteingabe autom. reaktivieren)</value></string> 
+  <string><id>12352</id><value>Gamepad Tastenkombination eingeben</value></string> 
+  <string><id>12353</id><value>Sperre aktivieren</value></string>
   <string><id>12354</id><value>Ordnersperre bis Neustart aufheben?</value></string>
-  <string><id>12355</id><value>aktiviert autom. die Ordnersperre)</value></string>
+  <string><id>12355</id><value>Ordnersperre autom. reaktivieren)</value></string>
   <string><id>12600</id><value>Wetter</value></string>
   <string><id>12900</id><value>Bildschirmschoner</value></string>
   <string><id>12901</id><value>Vollbild OSD</value></string>
@@ -745,4 +745,66 @@
   <string><id>14056</id><value>Suche anhalten</value></string> 
   <string><id>14057</id><value>Nicht möglich während Suche nach Medieninfos</value></string>
   <string><id>14058</id><value>Filmkörnungseffekt</value></string>
+  <string><id>15000</id><value>XLink Kai</value></string>
+  <string><id>15001</id><value>Es besteht keine Verbindung mit XLink, soll</value></string> 
+  <string><id>15002</id><value>XBMC versuchen mit XLink zu verbinden?</value></string> 
+  <string><id>15003</id><value>Nachricht eingeben.</value></string> 
+  <string><id>15004</id><value>Für %s bestand eine Einladung.</value></string> 
+  <string><id>15005</id><value>Datum: %s</value></string> 
+  <string><id>15006</id><value>Von: %s</value></string> 
+  <string><id>15007</id><value>Einladung</value></string> 
+  <string><id>15008</id><value>You've been invited to join %s.</value></string> 
+  <string><id>15009</id><value>Offline</value></string> 
+  <string><id>15010</id><value>Freunde</value></string> 
+  <string><id>15011</id><value>Ansicht: Freunde</value></string> 
+  <string><id>15012</id><value>Betreten</value></string> 
+  <string><id>15013</id><value>Gespräch</value></string> 
+  <string><id>15014</id><value>Einladen</value></string> 
+  <string><id>15015</id><value>Entfernen</value></string> 
+  <string><id>15016</id><value>Spiele</value></string> 
+  <string><id>15017</id><value>Ansicht: Spiele</value></string> 
+  <string><id>15018</id><value>Eintreten</value></string> 
+  <string><id>15019</id><value>Hinzufügen</value></string> 
+  <string><id>15020</id><value>Hosten</value></string> 
+  <string><id>15021</id><value>Arenen</value></string> 
+  <string><id>15022</id><value>Ansicht: Arenen</value></string> 
+  <string><id>15023</id><value>Spielen</value></string> 
+  <string><id>15024</id><value>Hinzufügen</value></string> 
+  <string><id>15025</id><value>Hosten</value></string> 
+  <string><id>15026</id><value>Chat</value></string> 
+  <string><id>15027</id><value>Ansicht: Chat</value></string> 
+  <string><id>15028</id><value>Tastatur</value></string> 
+  <string><id>15029</id><value>Kennwort wird benötigt um Arena zu betreten.</value></string> 
+  <string><id>15030</id><value>Verbindung unterbrochen</value></string> 
+  <string><id>15031</id><value>Kai Authentifizierung</value></string> 
+  <string><id>15032</id><value>Benutzername und/oder Kennwort wurden vom</value></string> 
+  <string><id>15033</id><value>Server abgelehnt, bitte Konfiguration prüfen.</value></string> 
+  <string><id>15034</id><value>hat sich angemeldet</value></string>
+  <string><id>15035</id><value>hat ein Gespräch ermöglicht</value></string> 
+  <string><id>15036</id><value>hat eine Einladung gesendet</value></string>
+  <string><id>15037</id><value>Netzwerkerreichbarkeit nicht feststellbar.</value></string> 
+  <string><id>15038</id><value>Probleme Spiele zu hosten oder beizutreten möglich.</value></string> 
+  <string><id>15039</id><value>Spiel wurde von XBMC nicht gefunden.</value></string> 
+  <string><id>15040</id><value>Bitte DVD einlegen und Spiel manuell starten</value></string> 
+  <string><id>15041</id><value>oder um abzubrechen A drücken .</value></string> 
+  <string><id>15042</id><value>Zugriff verweigert</value></string> 
+  <string><id>15043</id><value>%s dem Chat beigetreten.</value></string> 
+  <string><id>15044</id><value>%s hat Chat verlassen.</value></string> 
+  <string><id>15045</id><value>Persönliche Nachricht eingeben.</value></string> 
+  <string><id>15046</id><value>Aktuelle Arena</value></string> 
+  <string><id>15047</id><value>Arena Kennwort bitte eingeben.</value></string> 
+  <string><id>15048</id><value>Arena Beschreibung bitte eingeben.</value></string> 
+  <string><id>15049</id><value>Spiel hosten</value></string> 
+  <string><id>15050</id><value>Privat Arena hosten</value></string> 
+  <string><id>15051</id><value>Spieler Anzahl</value></string> 
+  <string><id>15052</id><value>Kennwort</value></string> 
+  <string><id>15053</id><value>Beschreibung</value></string> 
+  <string><id>15054</id><value>Invite Dialog</value></string> 
+  <string><id>15055</id><value>Spiel wählen:</value></string> 
+  <string><id>15056</id><value>Nachricht eingeben:</value></string> 
+  <string><id>15057</id><value>Senden</value></string> 
+  <string><id>15058</id><value>Host</value></string> 
+  <string><id>15059</id><value>Einladung angenommen!</value></string> 
+  <string><id>15060</id><value>Nachricht:</value></string> 
+  <string><id>15061</id><value>Einladung bei %s mitzuspielen.</value></string> 
 </strings>
