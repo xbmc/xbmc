@@ -1242,4 +1242,8 @@
     <id>415</id>
     <value>Downloading thumbnail...</value>
   </string> 
+  <string>
+    <id>416</id>
+    <value>Not available</value>
+  </string> 
 </strings>

@@ -108,7 +108,12 @@ void CGUIWindowMusicInfo::Update()
 	SetLabel(CONTROL_ALBUM, m_pAlbum->GetTitle() );
 	SetLabel(CONTROL_ARTIST, m_pAlbum->GetArtist() );
 	SetLabel(CONTROL_DATE, m_pAlbum->GetDateOfRelease() );
-	//SetLabel(CONTROL_RATING, m_pAlbum->GetRating() );
+
+	CStdString strRating;
+	if (m_pAlbum->GetRating() > 0)
+		strRating.Format("%i/9", m_pAlbum->GetRating());
+	SetLabel(CONTROL_RATING, strRating );
+
 	SetLabel(CONTROL_GENRE, m_pAlbum->GetGenre() );
 	SetLabel(CONTROL_TONE, m_pAlbum->GetTones() );
 	SetLabel(CONTROL_STYLES, m_pAlbum->GetStyles() );
@@ -137,10 +142,7 @@ void CGUIWindowMusicInfo::Update()
 		{
 			const CMusicSong& song=m_pAlbum->GetSong(i);
 			CStdString strTmp;
-			int iSec=song.GetDuration();
-			int iMin=iSec/60;
-			iSec = iSec%60;
-			strTmp.Format("%i:%02.2i",iMin,iSec);
+			CUtil::SecondsToHMSString(song.GetDuration(), strTmp);
 			CGUIMessage msg3(GUI_MSG_LABEL2_SET,GetID(),CONTROL_TEXTAREA,i,0);
 			msg3.SetLabel(strTmp);
 			g_graphicsContext.SendMessage(msg3);
@@ -154,10 +156,12 @@ void CGUIWindowMusicInfo::Update()
 
 void CGUIWindowMusicInfo::SetLabel(int iControl, const CStdString& strLabel)
 {
-	if (strLabel.size()==0)	return;
+	CStdString strLabel1=strLabel;
+	if (strLabel1.size()==0)
+		strLabel1=g_localizeStrings.Get(416);
 	
 	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),iControl);
-	msg.SetLabel(strLabel);
+	msg.SetLabel(strLabel1);
 	OnMessage(msg);
 
 }
