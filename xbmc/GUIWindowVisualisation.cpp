@@ -214,7 +214,7 @@ void CGUIWindowVisualisation::Render()
 			{
 				OutputDebugString("ohoh\n");
 			}
-			return;
+//			return;
 		}
 	}
 	CGUIWindow::Render();
