@@ -140,9 +140,9 @@ CGUISettings::CGUISettings(void)
 	AddGroup(0, 1);
 	AddCategory(0, "Slideshow", 108);
 	AddInt(1,"Slideshow.StayTime", 224, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
-	AddInt(2,"Slideshow.TransistionTime", 225, 1500, 100, 100, 10000, SPIN_CONTROL_INT_PLUS, MASK_MS);
-	AddInt(3,"Slideshow.MoveAmount", 13311, 20, 0, 1, 40, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-	AddInt(4,"Slideshow.ZoomAmount", 13310, 7, 0, 1, 40, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+	AddInt(2,"Slideshow.TransistionTime", 225, 2500, 100, 100, 10000, SPIN_CONTROL_INT_PLUS, MASK_MS);
+	AddInt(3,"Slideshow.MoveAmount", 13311, 10, 0, 1, 40, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+	AddInt(4,"Slideshow.ZoomAmount", 13310, 30, 0, 1, 40, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 	AddInt(5,"Slideshow.BlackBarCompensation", 13312, 20, 0, 1, 40, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 	AddBool(6,"Slideshow.Shuffle", 13319, false);
 	AddCategory(0, "Pictures", 14018);
@@ -646,6 +646,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement)
 						if (strValue != "-")
 						{	// update our item
 							(*it).second->FromString(strValue);
+							CLog::Log(LOGDEBUG, "  %s: %s", (*it).first.c_str(), (*it).second->ToString().c_str());
 						}
 					}
 				}
@@ -653,13 +654,33 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement)
 		}
 	}
 	// Get hardware based stuff...
+	CLog::Log(LOGNOTICE, "Getting hardware information now...");
 	if (GetInt("AudioOutput.Mode") == AUDIO_DIGITAL && !g_audioConfig.HasDigitalOutput())
 		SetInt("AudioOutput.Mode", AUDIO_ANALOG);
 	SetBool("AudioOutput.AC3PassThrough", g_audioConfig.GetAC3Enabled());
 	SetBool("AudioOutput.DTSPassThrough", g_audioConfig.GetDTSEnabled());
 	g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)GetInt("LookAndFeel.Resolution");
+	CLog::Log(LOGNOTICE, "Checking resolution %i", g_guiSettings.m_LookAndFeelResolution);
+	DWORD dwAVPack = XGetAVPack();
+	CStdString strAVPack;
+	if (dwAVPack == XC_AV_PACK_SCART) strAVPack = "Scart";
+	else if (dwAVPack == XC_AV_PACK_HDTV) strAVPack = "HDTV";
+	else if (dwAVPack == XC_AV_PACK_RFU) strAVPack = "RF Unit";
+	else if (dwAVPack == XC_AV_PACK_SVIDEO) strAVPack = "S-Video";
+	else if (dwAVPack == XC_AV_PACK_STANDARD) strAVPack = "Standard";
+	else strAVPack = "Unknown";
+	CLog::Log(LOGNOTICE, "AV Pack: %s", strAVPack.c_str());
+	CStdString strAVFlags;
+	if (g_videoConfig.HasWidescreen()) strAVFlags += "Widescreen,";
+	if (g_videoConfig.HasPAL60()) strAVFlags += "Pal60,";
+	if (g_videoConfig.Has480p()) strAVFlags += "480p,";
+	if (g_videoConfig.Has720p()) strAVFlags += "720p,";
+	if (g_videoConfig.Has1080i()) strAVFlags += "1080i,";
+	if (strAVFlags.size() > 1) strAVFlags = strAVFlags.Left(strAVFlags.size()-1);
+	CLog::Log(LOGNOTICE, "AV Flags: %s", strAVFlags.c_str());
 	if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
 	{
+		CLog::Log(LOGNOTICE, "Setting safe mode %i", g_videoConfig.GetSafeMode());
 		SetInt("LookAndFeel.Resolution", g_videoConfig.GetSafeMode());
 	}
 }

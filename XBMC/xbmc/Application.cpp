@@ -113,6 +113,7 @@ CApplication::CApplication(void)
 	m_DAAPSong = NULL;
 	m_DAAPPtr = NULL;
 	m_DAAPArtistPtr = NULL;
+	m_iMasterCodeRetriesRemaining    = 0;
 }
 
 CApplication::~CApplication(void)
@@ -662,7 +663,7 @@ HRESULT CApplication::Create()
 	CLog::Log(LOGINFO, "load keymapping");
 	if (!g_buttonTranslator.Load())
 		FatalErrorHandler(false, false, true);
-	
+
 	// check the skin file for testing purposes
 	CStdString strSkinBase = "Q:\\skin\\";
 	CStdString strSkinPath = strSkinBase + g_guiSettings.GetString("LookAndFeel.Skin");
@@ -686,6 +687,13 @@ HRESULT CApplication::Create()
 	CLog::Log(LOGINFO, " GUI screen offset (%i,%i)", g_guiSettings.GetInt("UIOffset.X"), g_guiSettings.GetInt("UIOffset.Y"));
 	m_gWindowManager.Initialize();
 	g_actionManager.SetScriptActionCallback(&g_pythonParser);
+    
+  g_settings.SetBookmarkLocks("myprograms", true);
+  g_settings.SetBookmarkLocks("pictures", true);
+  g_settings.SetBookmarkLocks("files", true);
+  g_settings.SetBookmarkLocks("music", true);
+  g_settings.SetBookmarkLocks("video", true);
+	m_iMasterCodeRetriesRemaining = g_stSettings.m_iMasterLockMaxRetry;
 
   return CXBApplicationEx::Create();
 }
@@ -823,6 +831,8 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiDialogContextMenu);				// window id = 106
 	m_gWindowManager.Add(&m_guiDialogKaiToast);					// window id = 107
 	m_gWindowManager.Add(&m_guiDialogHost);						// window id = 108
+	m_gWindowManager.Add(&m_guiDialogPasswordNumeric);				// window id = 109
+	m_gWindowManager.Add(&m_guiDialogPasswordGamepad);				// window id = 110
 	m_gWindowManager.Add(&m_guiMyMusicPlayList);					// window id = 500
 	m_gWindowManager.Add(&m_guiMyMusicSongs);							// window id = 501
 	m_gWindowManager.Add(&m_guiMyMusicAlbum);							// window id = 502
@@ -1115,6 +1125,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiDialogProgress.Load("dialogProgress.xml");
 	m_guiDialogVolumeBar.Load("dialogVolumeBar.xml");
 	m_guiDialogKaiToast.Load("dialogKaiToast.xml");
+	m_guiDialogPasswordNumeric.Load("dialogPasswordNumeric.xml");
+	m_guiDialogPasswordGamepad.Load("dialogPasswordGamepad.xml");
 	m_guiDialogSubMenu.Load("dialogSubMenu.xml");
 	m_guiDialogContextMenu.Load("dialogContextMenu.xml");
 	m_guiMyMusicPlayList.Load("mymusicplaylist.xml");
@@ -1170,99 +1182,103 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
 {
-  WIN32_FIND_DATA FindFileData;
-  WIN32_FIND_DATA NextFindFileData;
-  HANDLE hFind;
-  TiXmlDocument xmlDoc;
-  RESOLUTION resToUse = INVALID;
+	WIN32_FIND_DATA FindFileData;
+	WIN32_FIND_DATA NextFindFileData;
+	HANDLE hFind;
+	TiXmlDocument xmlDoc;
+	RESOLUTION resToUse = INVALID;
 
-  // Load from wherever home.xml is
-  g_SkinInfo.GetSkinPath("home.xml", &resToUse);
+	// Load from wherever home.xml is
+	g_SkinInfo.GetSkinPath("home.xml", &resToUse);
 
-  CStdString strLoadPath;
-  strLoadPath.Format("%s%s", strSkinPath, g_SkinInfo.GetDirFromRes(resToUse));
+	CStdString strLoadPath;
+	strLoadPath.Format("%s%s", strSkinPath, g_SkinInfo.GetDirFromRes(resToUse));
 
-  CStdString strPath;
-  strPath.Format("%s\\%s", strLoadPath, "custom*.xml");
-  CLog::Log(LOGINFO, "Loading user windows %s", strPath.c_str());
-  hFind = FindFirstFile(strPath.c_str(), &NextFindFileData);
+	CStdString strPath;
+	strPath.Format("%s\\%s", strLoadPath, "custom*.xml");
+	CLog::Log(LOGINFO, "Loading user windows %s", strPath.c_str());
+	hFind = FindFirstFile(strPath.c_str(), &NextFindFileData);
 
-  CStdString strFileName;
-  while (hFind != INVALID_HANDLE_VALUE)
-  {
-    FindFileData=NextFindFileData;
+	CStdString strFileName;
+	while (hFind != INVALID_HANDLE_VALUE)
+	{
+		FindFileData=NextFindFileData;
 
-    if (!FindNextFile(hFind, &NextFindFileData))
-    {
-      FindClose(hFind);
-      hFind = INVALID_HANDLE_VALUE;
-    }
+		if (!FindNextFile(hFind, &NextFindFileData))
+		{
+			FindClose(hFind);
+			hFind = INVALID_HANDLE_VALUE;
+		}
 
-    // skip "up" directories, which come in all queries
-    if (!_tcscmp(FindFileData.cFileName, _T(".")) || !_tcscmp(FindFileData.cFileName, _T("..")))
-      continue;
+		// skip "up" directories, which come in all queries
+		if (!_tcscmp(FindFileData.cFileName, _T(".")) || !_tcscmp(FindFileData.cFileName, _T("..")))
+			continue;
 
-    strFileName.Format("%s\\%s", strLoadPath.c_str(), FindFileData.cFileName);
-    CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
-    if (!xmlDoc.LoadFile(strFileName.c_str()))
-    {
+		strFileName.Format("%s\\%s", strLoadPath.c_str(), FindFileData.cFileName);
+		CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
+		if (!xmlDoc.LoadFile(strFileName.c_str()))
+		{
 			CLog::Log(LOGERROR, "unable to load:%s", strFileName.c_str());
 			continue;
-    }
+		}
 
-    // Root element should be <window>
-    TiXmlElement* pRootElement = xmlDoc.RootElement();
-    CStdString strValue=pRootElement->Value();
-    if (!strValue.Equals("window"))
-    {
-      CLog::Log(LOGERROR, "file :%s doesnt contain <window>", strFileName.c_str());
-      continue;
-    }
+		// Root element should be <window>
+		TiXmlElement* pRootElement = xmlDoc.RootElement();
+		CStdString strValue=pRootElement->Value();
+		if (!strValue.Equals("window"))
+		{
+			CLog::Log(LOGERROR, "file :%s doesnt contain <window>", strFileName.c_str());
+			continue;
+		}
 
-    // Read the <type> element to get the window type to create
-    // If no type is specified, create a CGUIWindow as default
-    CGUIWindow* pWindow = NULL;
-    const TiXmlNode *pType = pRootElement->FirstChild("type");
-    if (pType == NULL)
-    {
-      pWindow = new CGUIStandardWindow();
-    }
-    else
-    {
-      CStdString strType = pType->FirstChild()->Value();
-      if (strType == "dialog")
-      {
-        pWindow = new CGUIDialog(0);
-      }
-      else if (strType == "subMenu")
-      {
-        pWindow = new CGUIDialogSubMenu();
-      }
-      else
-      {
-        pWindow = new CGUIStandardWindow();
-      }
-    }
+		// Read the <type> element to get the window type to create
+		// If no type is specified, create a CGUIWindow as default
+		CGUIWindow* pWindow = NULL;
+		const TiXmlNode *pType = pRootElement->FirstChild("type");
+		if (pType == NULL)
+		{
+			pWindow = new CGUIStandardWindow();
+		}
+		else
+		{
+			CStdString strType = pType->FirstChild()->Value();
+			if (strType == "dialog")
+			{
+				pWindow = new CGUIDialog(0);
+			}
+			else if (strType == "subMenu")
+			{
+				pWindow = new CGUIDialogSubMenu();
+			}
+			else if (strType == "buttonMenu")
+			{
+				pWindow = new CGUIDialogButtonBar();
+			}
+			else
+			{
+				pWindow = new CGUIStandardWindow();
+			}
+		}
 
-    // Check to make sure the pointer isn't still null
-    if (pWindow == NULL)
-    {
-      CLog::Log(LOGERROR, "Out of memory / Failed to create new object in LoadUserWindows");
-      return false;
-    }
+		// Check to make sure the pointer isn't still null
+		if (pWindow == NULL)
+		{
+			CLog::Log(LOGERROR, "Out of memory / Failed to create new object in LoadUserWindows");
+			return false;
+		}
 
-    // Try to load the page.  If the load fails, delete the pointer
-    if (pWindow->Load(pRootElement, resToUse))
-    {
-      m_gWindowManager.Add(pWindow);
-    }
+		// Try to load the page.  If the load fails, delete the pointer
+		if (pWindow->Load(pRootElement, resToUse))
+		{
+			m_gWindowManager.Add(pWindow);
+		}
 		else
 		{
 			delete pWindow;
 		}
-  }
+	}
 
-  return true;
+	return true;
 }
 
 void CApplication::Render()
@@ -2026,36 +2042,42 @@ void CApplication::FrameMove()
 		bGotKey=true;
 		CKey key(KEY_BUTTON_LEFT_TRIGGER,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);
+		return;
 	}
 	if ( wDir & DC_RIGHTTRIGGER)
 	{
 		bGotKey=true;
 		CKey key(KEY_BUTTON_RIGHT_TRIGGER,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);
+		return;
 	}
 	if ( wDir & DC_LEFT )
 	{
 		bGotKey=true;
 		CKey key(KEY_BUTTON_DPAD_LEFT,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);
+		return;
 	}
 	if ( wDir & DC_RIGHT)
 	{
 		bGotKey=true;
 		CKey key(KEY_BUTTON_DPAD_RIGHT,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);
+		return;
 	}
 	if ( wDir & DC_UP )
 	{
 		bGotKey=true;
 		CKey key(KEY_BUTTON_DPAD_UP,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);
+		return;
 	}
 	if ( wDir & DC_DOWN )
 	{
 		bGotKey=true;
 		CKey key(KEY_BUTTON_DPAD_DOWN,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);
+		return;
 	}
 
 
@@ -2071,6 +2093,7 @@ void CApplication::FrameMove()
 		bGotKey=true;
 		CKey key(KEY_BUTTON_START,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);
+		return;
 	}
 
 	if ( pGamepad->wPressedButtons & XINPUT_GAMEPAD_LEFT_THUMB)
@@ -2078,6 +2101,7 @@ void CApplication::FrameMove()
 		bGotKey=true;
 		CKey key(KEY_BUTTON_LEFT_THUMB_BUTTON,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);
+		return;
 	}
 
 	if ( pGamepad->wPressedButtons & XINPUT_GAMEPAD_RIGHT_THUMB)
@@ -2085,6 +2109,7 @@ void CApplication::FrameMove()
 		bGotKey=true;
 		CKey key(KEY_BUTTON_RIGHT_THUMB_BUTTON,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);
+		return;
 	}
 
 
@@ -2093,12 +2118,14 @@ void CApplication::FrameMove()
 		bGotKey=true;
 		CKey key(KEY_BUTTON_A,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);
+		return;
 	}
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_B])
 	{
 		bGotKey=true;
 		CKey key(KEY_BUTTON_B,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);
+		return;
 	}
 
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_X])
@@ -2106,25 +2133,28 @@ void CApplication::FrameMove()
 		bGotKey=true;
 		CKey key(KEY_BUTTON_X,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);
-
+		return;
 	}
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_Y])
 	{
 		bGotKey=true;
 		CKey key(KEY_BUTTON_Y,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);
+		return;
 	}
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_BLACK])
 	{
 		bGotKey=true;
 		CKey key(KEY_BUTTON_BLACK,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);
+		return;
 	}
 	if (pGamepad->bPressedAnalogButtons[XINPUT_GAMEPAD_WHITE])
 	{
 		bGotKey=true;
 		CKey key(KEY_BUTTON_WHITE,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);
+		return;
 	}
 
 	switch (wRemotes)

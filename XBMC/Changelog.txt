@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 12-12-2004 fixed: Various bugs found here and there :)
+  - 12-12-2004 added: [ 1079275 ] Add share locking ability, thanks to slacker.
+  - 12-12-2004 fixed: Various settings screen issues (including http proxy, hopefully!)
+  - 12-12-2004 added: New dialog GUIDialogButtonBar for a graphical button bar with optional label
   - 11-12-2004 fixed: LCD time and date obey the GUI settings.
   - 11-12-2004 added: XBMC.ActivateWindow() can now activate dialogs.
   - 11-12-2004 changed: various strings to make them more obvious.

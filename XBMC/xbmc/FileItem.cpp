@@ -58,6 +58,9 @@ CFileItem::CFileItem(const CStdString& strLabel)
 	m_idepth = 1;
 	m_lStartOffset = 0;
 	m_lEndOffset = 0;
+  m_iLockMode = LOCK_MODE_EVERYONE;
+  m_strLockCode = "";
+  m_iBadPwdCount = 0;
 }
 
 CFileItem::~CFileItem(void)
@@ -86,6 +89,9 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
 	m_fRating=item.m_fRating;
 	m_strDVDLabel=item.m_strDVDLabel;
 	m_iprogramCount=item.m_iprogramCount;
+  m_iLockMode=item.m_iLockMode;
+  m_strLockCode=item.m_strLockCode;
+  m_iBadPwdCount=item.m_iBadPwdCount;
 	return *this;
 }
 

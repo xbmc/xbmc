@@ -18,11 +18,11 @@ public:
 	DWORD						GetWidth();
 	DWORD						GetHeight();
 
-	static bool			BookmarksMenu(const CStdString &strType, const CStdString &strLabel, const CStdString &strPath, int iPosX, int iPosY);
+	static bool			BookmarksMenu(const CStdString &strType, const CStdString &strLabel, const CStdString &strPath, int iLockMode, bool bMaxRetryExceeded, int iPosX, int iPosY);
 
 protected:
 	virtual void		OnInitWindow();
-
+	static bool			CheckMasterCode(int iLockMode);
 private:
 	int m_iNumButtons;
 	int m_iClickedButton;
