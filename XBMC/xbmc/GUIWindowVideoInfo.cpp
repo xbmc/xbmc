@@ -33,7 +33,6 @@
 CGUIWindowVideoInfo::CGUIWindowVideoInfo(void)
 :CGUIDialog(0)
 {
-	m_pTexture=NULL;
 }
 
 CGUIWindowVideoInfo::~CGUIWindowVideoInfo(void)
@@ -58,12 +57,6 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 		case GUI_MSG_WINDOW_DEINIT:
 		{
 			m_pMovie=NULL;
-			if (m_pTexture)
-			{
-				m_pTexture->Release();
-				m_pTexture=NULL;
-				m_pMovie=NULL;
-			}
 			g_application.EnableOverlay();
 		}
 		break;
@@ -73,7 +66,6 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       m_bRefresh=false;
 			CGUIWindow::OnMessage(message);
 			g_application.DisableOverlay();
-			m_pTexture=NULL;
 			m_bViewReview=true;
       CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_DISC,0,0,NULL);
       g_graphicsContext.SendMessage(msg);         
@@ -276,36 +268,6 @@ void CGUIWindowVideoInfo::SetLabel(int iControl, const CStdString& strLabel)
 void  CGUIWindowVideoInfo::Render()
 {
 	CGUIDialog::Render();
-  if (!m_pTexture) return;
-
-  //OutputDebugString("render texture\n");
-	const CGUIControl* pControl=GetControl(CONTROL_IMAGE);
-  if (pControl)
-  {
-	  float x=(float)pControl->GetXPosition();
-	  float y=(float)pControl->GetYPosition();
-	  DWORD width=pControl->GetWidth();
-	  DWORD height=pControl->GetHeight();
-	  g_graphicsContext.Correct(x,y);
-
-    DWORD dwWidth=m_iTextureWidth;
-    DWORD dwHeight=m_iTextureHeight;
-    float fAspect= ((float)dwWidth) / ((float)dwHeight);
-    if (dwWidth > width )
-    {
-      dwWidth  = width;
-      dwHeight = (DWORD)( ( (float)height) / fAspect);
-    }
-
-    if (dwHeight > height )
-    {
-      dwHeight = height;
-      dwWidth  = (DWORD)(  fAspect * ( (float)height) );
-    }
-  	
-	  CPicture picture;
-	  picture.RenderImage(m_pTexture,(int)x,(int)y,dwWidth,dwHeight,m_iTextureWidth,m_iTextureHeight);
-  }
 }
 
 
@@ -315,11 +277,6 @@ void CGUIWindowVideoInfo::Refresh()
   try
   {
     OutputDebugString("Refresh\n");
-	  if (m_pTexture)
-	  {
-		  m_pTexture->Release();
-		  m_pTexture=NULL;
-	  }
 
 	  CStdString strThumb="";
 	  CStdString strImage=m_pMovie->m_strPictureURL;
@@ -354,14 +311,18 @@ void CGUIWindowVideoInfo::Refresh()
 	  //CUtil::GetIMDBInfo(m_pMovie->m_strSearchString,strAlbum);
 	  //m_pMovie->Save(strAlbum);
 
-	  if (strThumb.size() > 0 && CUtil::FileExists(strThumb) )
+	  if (!CUtil::FileExists(strThumb) )
 	  {
-		  CPicture picture;
-		  m_pTexture=picture.Load(strThumb);
-		  m_iTextureWidth=picture.GetWidth();
-      m_iTextureHeight=picture.GetHeight();
+      strThumb = "";
+    }
   		
-	  }
+    const CGUIControl* pControl=GetControl(CONTROL_IMAGE);
+    if (pControl)
+    {
+    	CGUIImage* pImageControl=(CGUIImage*)pControl;
+      pImageControl->SetKeepAspectRatio(true);
+      pImageControl->SetFileName(strThumb);
+    }
     //OutputDebugString("update\n");
 	  Update();
     //OutputDebugString("updated\n");

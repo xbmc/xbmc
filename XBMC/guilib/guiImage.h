@@ -39,12 +39,14 @@ public:
 	int					 GetTextureWidth() const;
 	int					 GetTextureHeight() const;
 
+  void              SetFileName(const CStdString& strFileName);
 	const CStdString& GetFileName() const {return m_strFileName;};
 	DWORD						  GetColorKey() const {return m_dwColorKey;};
   void              SetKeepAspectRatio(bool bOnOff);
   bool              GetKeepAspectRatio() const;
   int               GetRenderWidth() const;
   int               GetRenderHeight() const;
+
 protected:
   virtual void       Update();
 	void							 Process();
