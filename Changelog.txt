@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 03-04-2005 added: a couple of emulated functions for dll loading
   - 03-04-2005 fixed: missing or empty <value> or <id> tags in strings.xml.
   - 02-04-2005 fixed: Stacked files on iso9660 didn't work.
   - 02-04-2005 fixed: vcd's/svcd's autostart doesn't start the video on disc if a stacked video was played before
