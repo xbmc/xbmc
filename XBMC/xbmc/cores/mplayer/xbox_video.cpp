@@ -39,6 +39,8 @@ static unsigned int 				primary_image_format;
 static unsigned int 				fs = 0;                             //display in window or fullscreen
 static unsigned int 				dstride;                            //surface stride
 static DWORD    						destcolorkey;                       //colorkey for our surface
+int													iSubTitleHeight=0;
+int													iSubTitlePos=0;
 int												  m_dwVisibleOverlay=0;
 LPDIRECT3DTEXTURE8					m_pOverlay[2]={NULL,NULL};					// Overlay textures
 LPDIRECT3DSURFACE8					m_pSurface[2]={NULL,NULL};				  // Overlay Surfaces
@@ -54,7 +56,6 @@ typedef struct directx_fourcc_caps
 #define DIRECT3D8CAPS VFCAP_CSP_SUPPORTED |VFCAP_OSD |VFCAP_HWSCALE_UP|VFCAP_HWSCALE_DOWN
 static directx_fourcc_caps g_ddpf[] =
 {
-    {"YUY2 ",IMGFMT_YUY2 ,DIRECT3D8CAPS|VFCAP_CSP_SUPPORTED_BY_HW},
     {"YV12 ",IMGFMT_YV12 ,DIRECT3D8CAPS},
 //    {"I420 ",IMGFMT_I420 ,DIRECT3D8CAPS},//yv12 with swapped uv
  //   {"IYUV ",IMGFMT_IYUV ,DIRECT3D8CAPS},//same as i420
@@ -76,8 +77,8 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 	{
 		if ( m_pSurface[i]) m_pSurface[i]->Release();
 		if ( m_pOverlay[i]) m_pOverlay[i]->Release();
-		g_graphicsContext.Get3DDevice()->CreateTexture( image_width,
-																										image_height,
+		g_graphicsContext.Get3DDevice()->CreateTexture( g_graphicsContext.GetWidth(),
+																										g_graphicsContext.GetHeight(),
 																										1,
 																										0,
 																										D3DFMT_YUY2,
@@ -90,110 +91,82 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 
 static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height)
 {
-	//TODO
-  RECT            rd_window;
-  DWORD           dwUpdateFlags=0;
-	long    xscreen = (g_graphicsContext.GetWidth() + g_stSettings.m_iMoviesOffsetX2)-g_stSettings.m_iMoviesOffsetX1;
-  long    yscreen = (g_graphicsContext.GetHeight()+ g_stSettings.m_iMoviesOffsetY2)-g_stSettings.m_iMoviesOffsetY1;
+	int iScreenWidth =g_graphicsContext.GetWidth()  +g_stSettings.m_iMoviesOffsetX2-g_stSettings.m_iMoviesOffsetX1;
+	int iScreenHeight=g_graphicsContext.GetHeight() +g_stSettings.m_iMoviesOffsetY2-g_stSettings.m_iMoviesOffsetY1;
 	if( g_graphicsContext.IsFullScreenVideo() )
   {
-		if ( g_stSettings.m_bStretch) 
+		if (g_stSettings.m_bStretch)
 		{
+			// stretch the movie so it occupies the entire screen (aspect ratio = gone)
+			rs.left		= 0;
+			rs.top    = 0;
+			rs.right	= image_width;
+			rs.bottom = image_height ;
+			
 			rd.left   = g_stSettings.m_iMoviesOffsetX1;
+			rd.right  = iScreenWidth;
 			rd.top    = g_stSettings.m_iMoviesOffsetY1;
-			rd.right  = rd.left+xscreen;
-			rd.bottom = rd.top+yscreen;
+			rd.bottom = iScreenHeight;
 			return 0;
 		}
 
-    /*center and zoom image*/
-    rd_window.top = 0;
-    rd_window.left = 0;
-    rd_window.right = xscreen;
-    rd_window.bottom = yscreen;
 		if (g_stSettings.m_bZoom)
 		{
-			aspect(&width,&height,A_ZOOM);
+			// scale up image as much as possible
+			// and keep the aspect ratio
+			float fAR = ( (float)image_width ) / (  (float)image_height );
+			float fNewWidth  = (float)( iScreenWidth);
+			float fNewHeight = fNewWidth/fAR;
+
+			rs.left		= 0;
+			rs.top    = 0;
+			rs.right	= image_width;
+			rs.bottom = image_height + iSubTitleHeight;
+
+			int iPosY = iScreenHeight - (int)(fNewHeight);
+			int iPosX = iScreenWidth  - (int)(fNewWidth)	;
+			iPosY /= 2;
+			iPosX /= 2;
+			rd.left   = iPosX + g_stSettings.m_iMoviesOffsetX1;
+			rd.right  = rd.left + (int)fNewWidth;
+			rd.top    = iPosY  + g_stSettings.m_iMoviesOffsetY1;
+			rd.bottom = rd.top + (int)fNewHeight + iSubTitleHeight;
+			return 0;
 		}
-		else
-		{
-			aspect(&width,&height,A_NOZOOM);
-		}
-    rd.left = (xscreen-(long)width)/2;
-    rd.right = rd.left+(long)width;
-    rd.top = (yscreen-(long)height)/2;
-    rd.bottom = rd.top + (long)height;
-  }
+
+		// normal way
+		// show image centered on screen. Keep aspect ratio
+		rs.left		= 0;
+		rs.top    = 0;
+		rs.right	= image_width;
+		rs.bottom = image_height + iSubTitleHeight;
+		
+		int iPosY = iScreenHeight - (rs.bottom-rs.top);
+		int iPosX = iScreenWidth  - (rs.right-rs.left);
+		iPosY /= 2;
+		iPosX /= 2;
+		rd.left   = iPosX + g_stSettings.m_iMoviesOffsetX1;
+		rd.right  = rd.left + image_width;
+		rd.top    = iPosY + g_stSettings.m_iMoviesOffsetY1;
+		rd.bottom = rd.top + image_height + iSubTitleHeight;
+		return 0;
+	}
 	else
 	{
-		const RECT& rc=g_graphicsContext.GetViewWindow();
-		width  = rc.right-rc.left;
-		height = rc.bottom-rc.top;
-		int iwidth  = ( ((long)width ) /16)*16;
-		int iheight = ( ((long)height) /16)*16;
-		if ( ( (long)width )%16) iwidth+=16;
-		if ( ( (long)height)%16) iheight+=16;
-
-		rd.top=rc.top;
-		rd.left=rc.left;
-		rd.right=iwidth+rd.left;
-		rd.bottom=iheight+rd.top;
-
-		return 0;
+		// preview window.
+		rs.left		= 0;
+		rs.top    = 0;
+		rs.right	= image_width;
+		rs.bottom = image_height;
+		
+		const RECT& rv = g_graphicsContext.GetViewWindow();
+		rd.left   = rv.left;
+		rd.right  = rv.right;
+		rd.top    = rv.top;
+		rd.bottom = rv.bottom;
 
 	}
-	unsigned int uStretchFactor1000;  //minimum stretch 
-	unsigned int xstretch1000,ystretch1000; 
 
-	/*get minimum stretch, depends on display adaptor and mode (refresh rate!) */
-	uStretchFactor1000 = 1000;
-	rd.right = ((width+rd.left)*uStretchFactor1000+999)/1000;
-	rd.bottom = (height+rd.top)*uStretchFactor1000/1000;
-	/*calculate xstretch1000 and ystretch1000*/
-	xstretch1000 = ((rd.right - rd.left)* 1000)/image_width ;
-	ystretch1000 = ((rd.bottom - rd.top)* 1000)/image_height;
-  /*handle move outside of window with cropping not really needed with colorkey, but shouldn't hurt*/
-	rs.left=0;
-	rs.right=image_width;
-	rs.top=0;
-	rs.bottom=image_height;
-  if(!fs)
-		rd_window = rd;         /*don't crop the window !!!*/
-	if(rd.left < 0)         //move out left
-	{
-			rs.left=(-rd.left*1000)/xstretch1000;
-			rd.left = 0; 
-	}
-	else rs.left=0;
-	if(rd.top < 0)          //move out up
-	{
-		rs.top=(-rd.top*1000)/ystretch1000;
-		rd.top = 0;
-	}
-	else rs.top = 0;
-	if(rd.right > (int)xscreen)  //move out right
-	{
-		rs.right=((xscreen-rd.left)*1000)/xstretch1000;
-		rd.right= xscreen;
-	}
-	else rs.right = image_width;
-	if(rd.bottom > (int)yscreen) //move out down
-	{
-		rs.bottom=((yscreen-rd.top)*1000)/ystretch1000;
-		rd.bottom= yscreen;
-	}
-	else rs.bottom= image_height;
-
-	//printf("Window:x:%i,y:%i,w:%i,h:%i\n",rd_window.left,rd_window.top,rd_window.right - rd_window.left,rd_window.bottom - rd_window.top);
-  //printf("Overlay:x1:%i,y1:%i,x2:%i,y2:%i,w:%i,h:%i\n",rd.left,rd.top,rd.right,rd.bottom,rd.right - rd.left,rd.bottom - rd.top);
-  //printf("Source:x1:%i,x2:%i,y1:%i,y2:%i\n",rs.left,rs.right,rs.top,rs.bottom);
-  //printf("Image:x:%i->%i,y:%i->%i\n",image_width,d_image_width,image_height,d_image_height);
-
-	rd.left    += g_stSettings.m_iMoviesOffsetX1;
-	rd.right   += g_stSettings.m_iMoviesOffsetX1;
-	rd.top     += g_stSettings.m_iMoviesOffsetY1;
-	rd.bottom  += g_stSettings.m_iMoviesOffsetY1;
-  
 	return 0;
 }
 
@@ -206,7 +179,31 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
 
 static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned char *srca, int stride)
 {
-//	vo_draw_alpha_yv12(w,h,src,srca,stride,((unsigned char *) image) + dstride*y0 + 2*x0,dstride);
+	// if we draw text on the bottom then it must b the subtitles
+	// if we're not in stretch mode try to put the subtitles below the video
+	if (y0 > (int)(image_height/2)  && !g_stSettings.m_bStretch)
+	{
+		// get new height of subtitles
+		if (h > iSubTitleHeight) iSubTitleHeight  = h;
+
+		// calculate the position of the subtitle
+		iSubTitlePos    = image_height;
+		if ( (int)image_height+h+10 >= (int) g_graphicsContext.GetHeight() )
+		{
+			iSubTitlePos = g_graphicsContext.GetHeight() - h - 10;
+		}
+		// clear subtitle area
+		for (int y=0; y < h; y++)
+		{
+			for (int x=0; x < (int)(dstride); x+=2)
+			{
+				*(image + dstride*(iSubTitlePos + y)+x   )   = 0x15;
+				*(image + dstride*(iSubTitlePos + y)+x+1 ) = 0x80;
+			}
+		}
+		vo_draw_alpha_yuy2(w,h,src,srca,stride,((unsigned char *) image) + dstride*iSubTitlePos + 2*x0,dstride);
+		return;
+	}
 	vo_draw_alpha_yuy2(w,h,src,srca,stride,((unsigned char *) image) + dstride*y0 + 2*x0,dstride);
 }
 
@@ -248,6 +245,8 @@ static void video_check_events(void)
 
 static unsigned int video_preinit(const char *arg)
 {
+	iSubTitleHeight=0;
+	iSubTitlePos=0;
 	m_dwVisibleOverlay=0;
 	m_bFlip=false;
 	fs=1;
