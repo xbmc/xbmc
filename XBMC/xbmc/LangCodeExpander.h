@@ -27,16 +27,15 @@ public:
 protected:
 
 
-  class str_comp
+  struct cstring_less_than : std::binary_function<const char*, const char*, bool>
   {
-  public:
-    bool operator()(const char* _Left, const char* _Right) const
+    bool operator()(const char* lhs, const char* rhs) const
     {
-      return(stricmp(_Left, _Right) < 0);
+      return(strcmp(lhs, rhs) < 0);
     }
   };
 
-  typedef std::map<const char *, const char *,str_comp> STRINGLOOKUPTABLE;
+  typedef std::map<const char *, const char *,cstring_less_than > STRINGLOOKUPTABLE;
   STRINGLOOKUPTABLE m_mapISO639_1;
   STRINGLOOKUPTABLE m_mapISO639_2;
   STRINGLOOKUPTABLE m_mapUser;
