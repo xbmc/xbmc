@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 01-02-2005 fixed: flac playback works sometimes but most times not
   - 01-02-2005 added: mplayer support for new system\players directory structure, enable Alternate mplayer core in settings to use it.
                       Requires new compiled mplayer.dll, old dll's still needs to be in old mplayer dir.
   - 28-01-2005 changed: using xbox highresolution timers for timing. Possibly better sync.
