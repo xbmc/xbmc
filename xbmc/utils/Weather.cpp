@@ -257,6 +257,10 @@ bool CWeather::LoadWeather(const CStdString &strWeatherFile)
 	
 	GetLocalTime(&time);	//used when deciding what weather to grab for today
 
+	// Load in our tokens if necessary
+	if (!m_localizedTokens.size())
+		LoadLocalizedToken();
+
 	// load the xml file
 	TiXmlDocument xmlDoc;
 	if (!xmlDoc.LoadFile(strWeatherFile))
