@@ -1085,7 +1085,7 @@ void CApplication::StartLEDControl(bool switchoff)
 	}
   else if (switchoff == false)
 	{
-		ILED::CLEDControl(g_guiSettings.GetInt("Front.LEDColour")); 
+		ILED::CLEDControl(g_guiSettings.GetInt("LED.Colour")); 
 	}
 	// and dim our LCD as required as well
 	DimLCDOnPlayback(switchoff);
@@ -2435,6 +2435,10 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 		g_stSettings.m_defaultVideoSettings.m_AdjustFrameRate = g_guiSettings.GetBool("MyVideos.FrameRateConversions");
 		g_stSettings.m_defaultVideoSettings.m_Deinterlace = g_guiSettings.GetBool("PostProcessing.DeInterlace");
 		g_stSettings.m_defaultVideoSettings.m_FilmGrain = g_guiSettings.GetBool("Filters.Noise") ? g_guiSettings.GetInt("Filters.NoiseLevel") : 0;
+		g_stSettings.m_defaultVideoSettings.m_ViewMode = g_guiSettings.GetInt("MyVideos.ViewMode");
+		g_stSettings.m_defaultVideoSettings.m_Brightness = g_guiSettings.GetInt("MyVideos.Brightness");
+		g_stSettings.m_defaultVideoSettings.m_Contrast = g_guiSettings.GetInt("MyVideos.Contrast");
+		g_stSettings.m_defaultVideoSettings.m_Gamma = g_guiSettings.GetInt("MyVideos.Gamma");
 		g_stSettings.m_currentVideoSettings = g_stSettings.m_defaultVideoSettings;
 		// see if we have saved options in the database
 		if (item.IsVideo())
@@ -2609,6 +2613,10 @@ void CApplication::StopPlaying()
 		//	turn off visualisation window when stopping
 		if (iWin==WINDOW_VISUALISATION)
 			m_gWindowManager.PreviousWindow();
+    if ( IsPlayingVideo() )
+    { // save our position for resuming at a later date
+      g_stSettings.m_currentVideoSettings.m_ResumeTime = (int)m_pPlayer->GetTime() * 75; // need it in frames (75ths of a second)
+    }
 		m_pPlayer->CloseFile();
 	}
 	m_CdgParser.Free();

@@ -1022,8 +1022,6 @@ void CMPlayer::OnExit()
 
 void CMPlayer::Process()
 {
-	// save our settings for later
-	CVideoSettings oldSettings = g_stSettings.m_currentVideoSettings;
 	bool bHasVideo = HasVideo();
 	if (m_pDLL && m_bIsPlaying)
 	{
@@ -1111,9 +1109,11 @@ void CMPlayer::Process()
 
 	}
 	m_bIsPlaying=false;
-	// Save our settings for the current movie (if necessary!)
-	if (bHasVideo && g_stSettings.m_currentVideoSettings != oldSettings)
+	// Save our settings for the current movie for later
+	if (bHasVideo)
 	{
+    if (!m_bStop) // reset resume time if we reached the end of the movie
+      g_stSettings.m_currentVideoSettings.m_ResumeTime = 0;
 		CVideoDatabase dbs;
 		dbs.Open();
 		dbs.SetVideoSettings(m_strPath, g_stSettings.m_currentVideoSettings);

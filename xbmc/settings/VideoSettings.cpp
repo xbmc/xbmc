@@ -27,6 +27,7 @@ CVideoSettings::CVideoSettings()
 	m_Gamma = 20;
 	m_AdjustFrameRate = false;
 	m_AudioDelay = 0.0f;
+  m_ResumeTime = 0;
 }
 
 bool CVideoSettings::operator!=(const CVideoSettings &right) const
@@ -47,5 +48,6 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
 	if (m_Gamma != right.m_Gamma) return true;
 	if (m_AdjustFrameRate != right.m_AdjustFrameRate) return true;
 	if (m_AudioDelay != right.m_AudioDelay) return true;
+  if (m_ResumeTime != right.m_ResumeTime) return true;
 	return false;
 }
