@@ -588,6 +588,12 @@ void CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL)
 	RemoveAllAfter(szMovie,"ac3");
 	RemoveAllAfter(szMovie,"ogg");
 	RemoveAllAfter(szMovie,"ogm");
+	RemoveAllAfter(szMovie,"internal");
+	RemoveAllAfter(szMovie,"fragment");
+	RemoveAllAfter(szMovie,"dvdrip");
+	RemoveAllAfter(szMovie,"proper");
+	RemoveAllAfter(szMovie,"limited");
+	RemoveAllAfter(szMovie,"rerip");
   
 	CStdString strHTML;
 	sprintf(szURL,"http://us.imdb.com/Tsearch?title=%s", szMovie);
