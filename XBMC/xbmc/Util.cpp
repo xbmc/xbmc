@@ -99,7 +99,18 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
 
 	CURL url(strPath);
 	CStdString strFile=url.GetFileName();
-	if (strFile.size()==0) return false;
+	if (strFile.size()==0)
+	{
+		if (url.GetProtocol() == "smb" && (url.GetHostName().size() > 0))
+		{
+			// we have an smb share with only server or workgroup name
+			// set hostname to "" and return true.
+			url.SetHostName("");
+			url.GetURL(strParent);
+			return true;
+		}
+		return false;
+	}
 
 	if (HasSlashAtEnd(strFile) )
 	{
@@ -843,7 +854,6 @@ void CUtil::FillInDefaultIcons(VECFILEITEMS &items)
 	for (int i=0; i < (int)items.size(); ++i)
 	{
 		CFileItem* pItem=items[i];
-	
 		FillInDefaultIcon(pItem);
 
 	}

@@ -93,6 +93,13 @@ bool CFileSMB::Open(const char* strUserName, const char* strPassword,const char 
 	// this means that if no password and username is provided szFileName doesn't have the workgroup.
 	// should be fixed.
 
+	// we can't open files like smb://file.f or smb://server/file.f
+	if (!strchr(strFileName, '/'))
+	{
+		m_fd = -1;
+		return false;
+	}
+
 	if (strPassword && strUserName)
 		sprintf(szFileName,"smb://%s:%s@%s/%s", strUserName, strPassword, strHostName, strFileName);
 	else
