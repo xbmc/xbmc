@@ -9,6 +9,7 @@ struct CSettings::stSettings g_stSettings;
 
 CSettings::CSettings(void)
 {
+
   g_stSettings.m_iAudioStream=0;
   g_stSettings.m_bPPAuto=true;
   g_stSettings.m_bPPVertical=false;
@@ -126,6 +127,13 @@ CSettings::CSettings(void)
 	g_stSettings.m_bMyVideoViewAsIcons=false;
 	g_stSettings.m_bMyVideoRootViewAsIcons=true;
 	g_stSettings.m_bMyVideoSortAscending=true;
+
+  g_stSettings.m_bMyVideoGenreViewAsIcons=true;
+  g_stSettings.m_bMyVideoGenreRootViewAsIcons=true;
+  g_stSettings.m_iMyVideoGenreSortMethod=0;
+  g_stSettings.m_bMyVideoGenreSortAscending=true;
+
+
 	g_stSettings.m_bMyFilesSourceViewAsIcons=false;
 	g_stSettings.m_bMyFilesSourceRootViewAsIcons=true;
 	g_stSettings.m_bMyFilesDestViewAsIcons=false;
@@ -684,6 +692,11 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetBoolean(pElement, "rooticons", g_stSettings.m_bMyVideoRootViewAsIcons);
 		GetInteger(pElement, "sortmethod",g_stSettings.m_iMyVideoSortMethod);
 		GetBoolean(pElement, "sortascending", g_stSettings.m_bMyVideoSortAscending);
+
+		GetBoolean(pElement, "genreviewicons", g_stSettings.m_bMyVideoGenreViewAsIcons);
+		GetBoolean(pElement, "genrerooticons", g_stSettings.m_bMyVideoGenreRootViewAsIcons);
+		GetInteger(pElement, "genresortmethod",g_stSettings.m_iMyVideoGenreSortMethod);
+		GetBoolean(pElement, "genresortascending", g_stSettings.m_bMyVideoGenreSortAscending);
     
 		GetBoolean(pElement, "postprocessing", g_stSettings.m_bPostProcessing);
 		GetBoolean(pElement, "deinterlace", g_stSettings.m_bDeInterlace);
@@ -889,6 +902,11 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetBoolean(pNode, "rooticons", g_stSettings.m_bMyVideoRootViewAsIcons);
 	SetInteger(pNode, "sortmethod",g_stSettings.m_iMyVideoSortMethod);
 	SetBoolean(pNode, "sortascending", g_stSettings.m_bMyVideoSortAscending);
+  
+	SetBoolean(pNode, "genreviewicons", g_stSettings.m_bMyVideoGenreViewAsIcons);
+	SetBoolean(pNode, "genrerooticons", g_stSettings.m_bMyVideoGenreRootViewAsIcons);
+	SetInteger(pNode, "genresortmethod",g_stSettings.m_iMyVideoGenreSortMethod);
+	SetBoolean(pNode, "genresortascending", g_stSettings.m_bMyVideoGenreSortAscending);
 
 	SetBoolean(pNode, "postprocessing", g_stSettings.m_bPostProcessing);
 	SetBoolean(pNode, "deinterlace", g_stSettings.m_bDeInterlace);

@@ -196,6 +196,12 @@ public:
     bool      m_bFrameRateConversions;
     bool      m_bUseDigitalOutput;
     int       m_iAudioStream;
+
+		bool			m_bMyVideoGenreViewAsIcons;
+		bool			m_bMyVideoGenreRootViewAsIcons;
+	  int				m_iMyVideoGenreSortMethod;
+	  bool			m_bMyVideoGenreSortAscending;
+
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;
