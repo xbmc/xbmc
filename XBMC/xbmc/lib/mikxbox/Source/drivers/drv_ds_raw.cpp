@@ -63,7 +63,7 @@ void set_ds_buffersize(int size) { if (size <= 0) dsbuffersize = DEFAULT_DSBUFFE
                                      else dsbuffersize = size; }
 LPDIRECTSOUNDBUFFER get_ds_dsbstream(void) { return lpdsb; }
 BOOL get_ds_active() { return playingFinished < 2; }
-__int64 get_ds_pts() { return PTS / 5; }
+__int64 get_ds_pts() { return PTS / 3; }
 void set_ds_callback(void (*p)(unsigned char*, int)) { pCallback = p; }
 
 /**********************************************************************************************************************************************************
@@ -146,7 +146,7 @@ BOOL DS_Init(void)
     dsbd.dwSize = sizeof(DSBUFFERDESC); 
 	dsbd.dwFlags = DSBCAPS_CTRLPOSITIONNOTIFY;
 	/* time size correspond to frequency / timer refresh (50Hz) */
-	dwTimeSize = wfm.nAvgBytesPerSec / 25;
+	dwTimeSize = wfm.nAvgBytesPerSec / 30;
     dsbd.dwBufferBytes = dwTimeSize * dsbuffersize;  
     dsbd.lpwfxFormat = &wfm; 
  
