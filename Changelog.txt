@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 19-08-2004 fixed: vobsubs should really be fixed now
+  - 19-08-2004 changed: updated XviD libraries from 1.0.0 to 1.0.1
+  - 19-08-2004 fixed: playdvd should work in xbmc now
+  - 19-08-2004 fixed: play dvd was not working in xbmc
   - 18-08-2004 fixed: current time not showing in xbmc
   - 18-08-2004 fixed: some libraries that were commited as ascii
   - 18-08-2004 added: libdts 0.0.2 lib and header file
