@@ -579,7 +579,7 @@ void CMPlayer::Process()
 			{
 				Sleep(100);
 			}
-		} while (m_bIsPlaying);
+		} while (m_bIsPlaying && !m_bStop);
 		mplayer_close_file();
 	}
 	m_bIsPlaying=false;

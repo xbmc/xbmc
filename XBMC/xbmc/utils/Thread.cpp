@@ -87,15 +87,9 @@ bool CThread::IsAutoDelete() const
 void CThread::StopThread()
 {
 	m_bStop=true;
-	while(m_ThreadHandle)
+	if(m_ThreadHandle)
 	{
-		DWORD dwExitCode;
-		GetExitCodeThread(m_ThreadHandle,&dwExitCode);
-		if (dwExitCode != STILL_ACTIVE) break;
-		Sleep(10);
-	} 
-	if (m_ThreadHandle)
-	{
+		WaitForSingleObject(m_ThreadHandle,INFINITE);
 		CloseHandle(m_ThreadHandle);
 		m_ThreadHandle=NULL;
 	}
@@ -135,26 +129,19 @@ bool CThread::WaitForThreadExit(DWORD dwmsTimeOut)
 // Waits for thread to exit, timeout in given number of msec.
 // Returns true when thread ended
 {
-	DWORD	dwExitCode;
-	DWORD	dwmsWait=0;
+
+  if (!m_ThreadHandle) return true;
+  DWORD dwExitCode;
+  WaitForSingleObject(m_ThreadHandle,dwmsTimeOut);
 
 	GetExitCodeThread(m_ThreadHandle,&dwExitCode);
-	if (dwExitCode==STILL_ACTIVE) 
+  if (dwExitCode!=STILL_ACTIVE)
   {
-		// Wait for thread to end
-		do 
-    {
-			Sleep(100);
-			dwmsWait+=100;
-			GetExitCodeThread(m_ThreadHandle,&dwExitCode);
-		} while (dwExitCode==STILL_ACTIVE && dwmsWait<dwmsTimeOut);
-		return (dwExitCode!=STILL_ACTIVE);
-	}
-	else 
-  {
-		// Thread has already ended
-		return true;
-	}
+    CloseHandle(m_ThreadHandle);
+    m_ThreadHandle=NULL;
+    return true;
+  }
+  return false;
 }
 
 HANDLE   CThread::ThreadHandle()
