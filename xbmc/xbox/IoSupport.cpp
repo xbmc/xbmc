@@ -325,10 +325,13 @@ HRESULT CIoSupport::Shutdown()
 #ifdef _XBOX
 	// fails assertion on debug bios (symptom lockup unless running dr watson
 	// so you can continue past the failed assertion).
-	if (IsDebug())
-		return E_FAIL;
-
-		HalInitiateShutdown();
+	//if (IsDebug())
+#ifdef _DEBUG
+  return E_FAIL;
+#else
+  KeRaiseIrqlToDpcLevel();
+  HalInitiateShutdown();
+#endif
 #endif
 	return S_OK;
 }

@@ -2054,8 +2054,7 @@ void CApplication::CheckShutdown()
 			}
 			else										// not playing
 			{
-				g_application.Stop();		// Stop ourselves
-				XKUtils::XBOXPowerOff();	// Turn off the box
+        g_applicationMessenger.Shutdown(); // Turn off the box
 			}
 		}
 	}

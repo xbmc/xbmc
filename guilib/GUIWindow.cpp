@@ -477,7 +477,7 @@ void CGUIWindow::OnAction(const CAction &action)
 		{
 			if (GetTickCount() >= MarkTime + 3000)
 			{
-				XKUtils::XBOXPowerOff();
+				g_applicationMessenger.Shutdown();
 			}
 		}
 		else
