@@ -44,6 +44,24 @@ CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, i
 
 CGUIRSSControl::~CGUIRSSControl(void)
 {
+  //if(m_pdwPalette) //Shouldn't be deallocated as it is used by all RSSControls
+  //  delete[] m_pdwPalette;
+  if(m_pReader)
+    delete m_pReader;
+  if(m_pwzText)
+    delete[] m_pwzText;
+  if(m_pwzBuffer) 
+     delete[] m_pwzBuffer;
+  if(m_pbBuffer) 
+    delete[] m_pbBuffer;
+  if(m_pbColors) //Deallocate here since there isn't any better place
+    delete[] m_pbColors;
+
+  m_pdwPalette=NULL;
+  m_pReader=NULL;
+  m_pwzText=NULL;
+  m_pwzBuffer=NULL;
+  m_pbColors=NULL;
 }
 
 void CGUIRSSControl::Render()
@@ -80,6 +98,17 @@ void CGUIRSSControl::Render()
 void CGUIRSSControl::OnFeedUpdate(CStdString& aFeed, LPBYTE aColorArray)
 {
 	int nStringLength = aFeed.GetLength()+1;
+
+  if(m_pwzText)
+    delete[] m_pwzText;
+  if(m_pwzBuffer) 
+     delete[] m_pwzBuffer;
+  if(m_pbBuffer) 
+     delete[] m_pbBuffer;
+
+  m_pwzText=NULL;
+  m_pwzBuffer=NULL;
+  m_pbBuffer=NULL;
 
 	m_pwzText	= new WCHAR[nStringLength];
 	m_pwzBuffer	= new WCHAR[nStringLength];
