@@ -1070,4 +1070,8 @@
     <id>341</id>
     <value>Play DVD</value>
   </string>
+  <string>
+    <id>342</id>
+    <value>Movies</value>
+  </string>
 </strings>
