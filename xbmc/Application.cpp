@@ -26,6 +26,7 @@
 #include "GUIThumbnailPanel.h"
 #include "utils/KaiClient.h"
 #include "utils/MemUnit.h"
+#include "FileSystem/DAAPDirectory.h"
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
@@ -99,11 +100,11 @@ CApplication::CApplication(void)
 	m_dwSaverTick = timeGetTime();	// CB: SCREENSAVER PATCH
 	m_dwSkinTime  = 0;
 	m_DAAPSong = NULL;
+	m_DAAPPtr = NULL;
 }	
 
 CApplication::~CApplication(void)
 {
-
 }
 
 // text out routine for below
@@ -1730,6 +1731,15 @@ void CApplication::Stop()
 			CLog::Log("stop mplayer");
 			delete m_pPlayer;
 			m_pPlayer=NULL;
+		}
+
+		// if we have an active connection to iTunes, stop that too	
+		if (g_application.m_DAAPPtr)
+		{
+			CDAAPDirectory *objDAAP;
+
+			objDAAP = new CDAAPDirectory();
+			objDAAP->CloseDAAP();
 		}
 
 		//g_lcd->StopThread();
