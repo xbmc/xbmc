@@ -88,6 +88,15 @@ void CGUIProgressControl::FreeResources()
   m_guiLeft.FreeResources();
 }
 
+void CGUIProgressControl::PreAllocResources()
+{
+	CGUIControl::PreAllocResources();
+	m_guiBackground.PreAllocResources();
+	m_guiMid.PreAllocResources();
+	m_guiRight.PreAllocResources();
+	m_guiLeft.PreAllocResources();
+}
+
 void CGUIProgressControl::AllocResources()
 {
   CGUIControl::AllocResources();

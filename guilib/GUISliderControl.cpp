@@ -246,6 +246,14 @@ void CGUISliderControl::FreeResources()
 	m_guiMidFocus.FreeResources();
 }
 
+void CGUISliderControl::PreAllocResources()
+{
+	CGUIControl::PreAllocResources();
+	m_guiBackground.PreAllocResources();
+	m_guiMid.PreAllocResources();
+	m_guiMidFocus.PreAllocResources();
+}
+
 void CGUISliderControl::AllocResources()
 {
 	CGUIControl::AllocResources();

@@ -500,14 +500,32 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 
 void CGUIWindow::AllocResources()
 {
-  //OutputDebugString(" alloc resources\n");
-  ivecControls i;
+	LARGE_INTEGER start;
+	QueryPerformanceCounter(&start);
+
+	g_TextureManager.StartPreLoad();
+	ivecControls i;
+	for (i=m_vecControls.begin();i != m_vecControls.end(); ++i)
+	{
+		CGUIControl* pControl= *i;
+		pControl->PreAllocResources();
+	}
+	g_TextureManager.EndPreLoad();
+
+	LARGE_INTEGER plend;
+	QueryPerformanceCounter(&plend);
+
   for (i=m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
     CGUIControl* pControl= *i;
     pControl->AllocResources();
   }
-  //g_TextureManager.Dump();
+	g_TextureManager.FlushPreLoad();
+
+	LARGE_INTEGER end, freq;
+	QueryPerformanceCounter(&end);
+	QueryPerformanceFrequency(&freq);
+	CLog::DebugLog("Alloc resources: %.2fms (%.2f ms preload)", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (plend.QuadPart - start.QuadPart) / freq.QuadPart);
 }
 
 void CGUIWindow::FreeResources()

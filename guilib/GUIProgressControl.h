@@ -26,6 +26,7 @@ public:
   virtual ~CGUIProgressControl(void);
   virtual void Render();
   virtual bool CanFocus() const;  
+	virtual void PreAllocResources();
 	virtual void AllocResources();
   virtual void FreeResources();
   virtual bool OnMessage(CGUIMessage& message);

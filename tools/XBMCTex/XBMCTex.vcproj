@@ -25,7 +25,7 @@
 				RuntimeLibrary="5"
 				UsePrecompiledHeader="3"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="TRUE"
+				Detect64BitPortabilityProblems="FALSE"
 				DebugInformationFormat="4"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
@@ -34,7 +34,7 @@
 				AdditionalDependencies="\DX90SDK\Lib\D3D8.lib \DX90SDK\Lib\D3DX8.lib xgraphics.lib"
 				OutputFile="$(OutDir)/XBMCTex.exe"
 				LinkIncremental="2"
-				IgnoreDefaultLibraryNames="libci.lib"
+				IgnoreDefaultLibraryNames="libci.lib,libm.lib,libirc.lib,libc"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/XBMCTex.pdb"
 				SubSystem="1"
@@ -75,7 +75,7 @@
 				EnableEnhancedInstructionSet="0"
 				UsePrecompiledHeader="3"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="TRUE"
+				Detect64BitPortabilityProblems="FALSE"
 				DebugInformationFormat="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
@@ -84,7 +84,7 @@
 				AdditionalDependencies="\DX90SDK\Lib\D3D8.lib \DX90SDK\Lib\D3DX8.lib xgraphics.lib"
 				OutputFile="$(OutDir)/XBMCTex.exe"
 				LinkIncremental="1"
-				IgnoreDefaultLibraryNames="libci.lib"
+				IgnoreDefaultLibraryNames="libci.lib,libm.lib,libirc.lib"
 				GenerateDebugInformation="FALSE"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -120,6 +120,18 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
+				RelativePath=".\AnimatedGif.cpp">
+			</File>
+			<File
+				RelativePath=".\Bundler.cpp">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\lib\liblzo\lzo.lib">
+			</File>
+			<File
+				RelativePath=".\sha.obj">
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -142,6 +154,18 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
+			<File
+				RelativePath=".\AnimatedGif.h">
+			</File>
+			<File
+				RelativePath=".\Bundler.h">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\lib\liblzo\Lzo1x.h">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\lib\liblzo\Lzoconf.h">
+			</File>
 			<File
 				RelativePath=".\stdafx.h">
 			</File>

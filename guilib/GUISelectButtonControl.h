@@ -84,6 +84,7 @@ public:
   virtual void						OnAction(const CAction &action) ;
   virtual bool						OnMessage(CGUIMessage& message);
 
+	virtual void PreAllocResources();
   virtual void						AllocResources();
   virtual void						FreeResources();
 	///	\brief Return the texture of the left arrow that is shown, when the control is in select mode

@@ -323,6 +323,9 @@
 				RelativePath=".\PackedTexture.cpp">
 			</File>
 			<File
+				RelativePath=".\TextureBundle.cpp">
+			</File>
+			<File
 				RelativePath=".\TextureManager.cpp">
 			</File>
 		</Filter>
@@ -434,6 +437,9 @@
 			</File>
 			<File
 				RelativePath=".\StdString.h">
+			</File>
+			<File
+				RelativePath=".\TextureBundle.h">
 			</File>
 			<File
 				RelativePath=".\TextureManager.h">
