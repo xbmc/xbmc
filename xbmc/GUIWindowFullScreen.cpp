@@ -28,7 +28,7 @@
 #define MENU_ACTION_AUDIO_STREAM 8
 
 #define IMG_PAUSE     16
-
+extern int m_iAudioStreamIDX;
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 :CGUIWindow(0)
 {
@@ -562,9 +562,10 @@ void CGUIWindowFullScreen::OnExecute(int iAction, const IOSDOption* option)
     break;
     case MENU_ACTION_AUDIO_STREAM:
       const COSDOptionIntRange* intOption = (const COSDOptionIntRange*)option;
-      g_stSettings.m_iAudioStream=(intOption->GetValue());
+      g_stSettings.m_iAudioStream=intOption->GetValue();
+      m_iAudioStreamIDX=mplayer_getAudioStream(g_stSettings.m_iAudioStream);
       char szTmp[128];
-      sprintf(szTmp,"got audio stream:%i\n", g_stSettings.m_iAudioStream);
+      sprintf(szTmp,"got audio stream:%i=%i\n", g_stSettings.m_iAudioStream,m_iAudioStreamIDX);
       OutputDebugString(szTmp);
 
       HideOSD();
