@@ -305,33 +305,33 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
                                     CStdString strSubFile=strFile;
                                     strSubFile+="\\";
                                     strSubFile+=subwfd.cFileName;
-									if (CUtil::IsXBE(strSubFile))
-									{
-										if (!CUtil::GetXBEDescription(strSubFile, strSubDescription)) 
-										{
-											CUtil::GetDirectoryName(strSubFile, strSubDescription);
-											CUtil::ShortenFileName(strSubDescription);
-											CUtil::RemoveIllegalChars(strSubDescription);
-										}
-										CFileItem *pItem = new CFileItem(strSubDescription);
-										pItem->m_strPath=strSubFile;
-										pItem->m_bIsFolder=false;
-										pItem->m_dwSize=subwfd.nFileSizeLow;
-										FileTimeToLocalFileTime(&subwfd.ftLastWriteTime,&localTime);
-										FileTimeToSystemTime(&localTime, &pItem->m_stTime);
-										m_vecItems.push_back(pItem);
-									}
+									                  if (CUtil::IsXBE(strSubFile))
+									                  {
+										                  if (!CUtil::GetXBEDescription(strSubFile, strSubDescription)) 
+										                  {
+											                  CUtil::GetDirectoryName(strSubFile, strSubDescription);
+											                  CUtil::ShortenFileName(strSubDescription);
+											                  CUtil::RemoveIllegalChars(strSubDescription);
+										                  }
+										                  CFileItem *pItem = new CFileItem(strSubDescription);
+										                  pItem->m_strPath=strSubFile;
+										                  pItem->m_bIsFolder=false;
+										                  pItem->m_dwSize=subwfd.nFileSizeLow;
+										                  FileTimeToLocalFileTime(&subwfd.ftLastWriteTime,&localTime);
+										                  FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+										                  m_vecItems.push_back(pItem);
+									                  }
 
-									else if (CUtil::IsShortCut(strSubFile)) 
-									{
-										CFileItem *pItem = new CFileItem(subwfd.cFileName);
-										pItem->m_strPath=strSubFile;
-										pItem->m_bIsFolder=false;
-										pItem->m_dwSize=subwfd.nFileSizeLow;
-										FileTimeToLocalFileTime(&subwfd.ftLastWriteTime,&localTime);
-										FileTimeToSystemTime(&localTime, &pItem->m_stTime);
-										m_vecItems.push_back(pItem);
-									}
+									                  else if (CUtil::IsShortCut(strSubFile)) 
+									                  {
+										                  CFileItem *pItem = new CFileItem(subwfd.cFileName);
+										                  pItem->m_strPath=strSubFile;
+										                  pItem->m_bIsFolder=false;
+										                  pItem->m_dwSize=subwfd.nFileSizeLow;
+										                  FileTimeToLocalFileTime(&subwfd.ftLastWriteTime,&localTime);
+										                  FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+										                  m_vecItems.push_back(pItem);
+									                  }
                                 }
                             }
                             while (FindNextFile(subhFind, &subwfd));
@@ -346,11 +346,11 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
                 if (bOnlyDefaultXBE ? CUtil::IsDefaultXBE(strFileName) : CUtil::IsXBE(strFileName))
                 {
                     CStdString strDescription;
-					if (!CUtil::GetXBEDescription(strFile,strDescription)) {
-						CUtil::GetDirectoryName(strFile, strDescription);
-						CUtil::ShortenFileName(strDescription);
-						CUtil::RemoveIllegalChars(strDescription);
-					}
+					          if (!CUtil::GetXBEDescription(strFile,strDescription)) {
+						          CUtil::GetDirectoryName(strFile, strDescription);
+						          CUtil::ShortenFileName(strDescription);
+						          CUtil::RemoveIllegalChars(strDescription);
+					          }
                     CFileItem *pItem = new CFileItem(strDescription);
                     pItem->m_strPath=strFile;
                     pItem->m_bIsFolder=false;
@@ -834,9 +834,13 @@ void CGUIWindowPrograms::DeleteThumbs(VECFILEITEMS& items)
             if (CUtil::IsXBE(pItem->m_strPath) )
             {
                 CStdString strThumb;
-                // CUtil::GetThumbnail(pItem->m_strPath, strThumb);
-				CUtil::GetXBEIcon(pItem->m_strPath,strThumb);
-                ::DeleteFile(strThumb.c_str());
+				        CUtil::GetXBEIcon(pItem->m_strPath,strThumb);
+                CStdString strName=pItem->m_strPath;
+                CUtil::ReplaceExtension(pItem->m_strPath,".tbn", strName);
+                if (strName!=strThumb)
+                {
+                  ::DeleteFile(strThumb.c_str());
+                }
             }
         }
     }
