@@ -59,6 +59,7 @@ bool CGUIControlFactory::GetInt(const TiXmlNode* pRootNode, const char* strTag, 
 	iIntValue = atoi(pNode->FirstChild()->Value());
 	return true;
 }
+
 bool CGUIControlFactory::GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& bBoolValue)
 {
 	TiXmlNode* pNode=pRootNode->FirstChild(strTag );
@@ -496,21 +497,21 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		return NULL; // NO id????
 	}
   
-	GetDWORD(pControlNode, "posX", dwPosX);
-	GetDWORD(pControlNode, "posY", dwPosY);
-	GetDWORD(pControlNode, "width", dwWidth);
-	GetDWORD(pControlNode, "height", dwHeight);
-	GetDWORD(pControlNode, "textOffsetX", dwTextOffsetX);
-	GetDWORD(pControlNode, "textOffsetY", dwTextOffsetY);
-	GetDWORD(pControlNode, "textSpaceY",  dwTextSpaceY);
+	if (GetDWORD(pControlNode, "posX", dwPosX)) g_graphicsContext.ScaleXCoord(dwPosX, res);
+	if (GetDWORD(pControlNode, "posY", dwPosY)) g_graphicsContext.ScaleYCoord(dwPosY, res);
+	if (GetDWORD(pControlNode, "width", dwWidth)) g_graphicsContext.ScaleXCoord(dwWidth, res);
+	if (GetDWORD(pControlNode, "height", dwHeight)) g_graphicsContext.ScaleYCoord(dwHeight, res);
+	if (GetDWORD(pControlNode, "textOffsetX", dwTextOffsetX)) g_graphicsContext.ScaleXCoord(dwTextOffsetX, res);
+	if (GetDWORD(pControlNode, "textOffsetY", dwTextOffsetY)) g_graphicsContext.ScaleYCoord(dwTextOffsetY, res);
+	if (GetDWORD(pControlNode, "textSpaceY",  dwTextSpaceY)) g_graphicsContext.ScaleYCoord(dwTextSpaceY, res);
 
-	GetDWORD(pControlNode, "controlOffsetX", dwControlOffsetX);
-	GetDWORD(pControlNode, "controlOffsetY", dwControlOffsetY);
+	if (GetDWORD(pControlNode, "controlOffsetX", dwControlOffsetX)) g_graphicsContext.ScaleXCoord(dwControlOffsetX, res);
+	if (GetDWORD(pControlNode, "controlOffsetY", dwControlOffsetY)) g_graphicsContext.ScaleYCoord(dwControlOffsetY, res);
 
-	GetDWORD(pControlNode, "gfxThumbWidth",  dwThumbWidth);
-	GetDWORD(pControlNode, "gfxThumbHeight", dwThumbHeight);
-	GetDWORD(pControlNode, "gfxThumbSpaceX", dwThumbSpaceX);
-	GetDWORD(pControlNode, "gfxThumbSpaceY", dwThumbSpaceY);
+	if (GetDWORD(pControlNode, "gfxThumbWidth",  dwThumbWidth)) g_graphicsContext.ScaleXCoord(dwThumbWidth, res);
+	if (GetDWORD(pControlNode, "gfxThumbHeight", dwThumbHeight)) g_graphicsContext.ScaleYCoord(dwThumbHeight, res);
+	if (GetDWORD(pControlNode, "gfxThumbSpaceX", dwThumbSpaceX)) g_graphicsContext.ScaleXCoord(dwThumbSpaceX, res);
+	if (GetDWORD(pControlNode, "gfxThumbSpaceY", dwThumbSpaceY)) g_graphicsContext.ScaleYCoord(dwThumbSpaceY, res);
 	GetString(pControlNode,"gfxThumbDefault",strDefaultThumb);
 
 	if (!GetDWORD(pControlNode, "onup"   , up  ))
@@ -564,13 +565,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	GetPath(pControlNode,"textureRightFocus",strRightFocus);
 
 	GetHex(pControlNode,"spinColor",dwSpinColor);
-	GetDWORD(pControlNode,"spinWidth",dwSpinWidth);
-	GetDWORD(pControlNode,"spinHeight",dwSpinHeight);
-	GetDWORD(pControlNode,"spinPosX",dwSpinPosX);
-	GetDWORD(pControlNode,"spinPosY",dwSpinPosY);      
+	if (GetDWORD(pControlNode,"spinWidth",dwSpinWidth)) g_graphicsContext.ScaleXCoord(dwSpinWidth, res);
+	if (GetDWORD(pControlNode,"spinHeight",dwSpinHeight)) g_graphicsContext.ScaleYCoord(dwSpinHeight, res);
+	if (GetDWORD(pControlNode,"spinPosX",dwSpinPosX)) g_graphicsContext.ScaleXCoord(dwSpinPosX, res);
+	if (GetDWORD(pControlNode,"spinPosY",dwSpinPosY)) g_graphicsContext.ScaleYCoord(dwSpinPosY, res);      
 
-	GetDWORD(pControlNode,"MarkWidth",dwCheckWidth);
-	GetDWORD(pControlNode,"MarkHeight",dwCheckHeight);
+	if (GetDWORD(pControlNode,"MarkWidth",dwCheckWidth)) g_graphicsContext.ScaleXCoord(dwCheckWidth, res);
+	if (GetDWORD(pControlNode,"MarkHeight",dwCheckHeight)) g_graphicsContext.ScaleYCoord(dwCheckHeight, res);
 	GetPath(pControlNode,"textureCheckmark",strTextureCheckMark);
 	GetPath(pControlNode,"textureCheckmarkNoFocus",strTextureCheckMarkNF);
 	GetPath(pControlNode,"textureRadioFocus",strTextureRadioFocus);
@@ -618,14 +619,14 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	GetPath(pControlNode,"textureNoFocus",strButton);
 	GetPath(pControlNode,"textureFocus",strButtonFocus);
 	GetString(pControlNode,"suffix",strSuffix);
-	GetInt(pControlNode,"textXOff",iTextXOff);
-	GetInt(pControlNode,"textYOff",iTextYOff);
-	GetInt(pControlNode,"textXOff2",iTextXOff2);
-	GetInt(pControlNode,"textYOff2",iTextYOff2);
+	if (GetInt(pControlNode,"textXOff",iTextXOff)) g_graphicsContext.ScaleXCoord(iTextXOff, res);
+	if (GetInt(pControlNode,"textYOff",iTextYOff)) g_graphicsContext.ScaleYCoord(iTextYOff, res);
+	if (GetInt(pControlNode,"textXOff2",iTextXOff2)) g_graphicsContext.ScaleXCoord(iTextXOff2, res);
+	if (GetInt(pControlNode,"textYOff2",iTextYOff2)) g_graphicsContext.ScaleYCoord(iTextYOff2, res);
 
-	GetDWORD(pControlNode,"itemWidth",dwitemWidth);
-	GetDWORD(pControlNode,"itemHeight",dwitemHeight);
-	GetInt(pControlNode,"spaceBetweenItems",iSpace);
+	if (GetDWORD(pControlNode,"itemWidth",dwitemWidth)) g_graphicsContext.ScaleXCoord(dwitemWidth, res);
+	if (GetDWORD(pControlNode,"itemHeight",dwitemHeight)) g_graphicsContext.ScaleYCoord(dwitemHeight, res);
+	if (GetInt(pControlNode,"spaceBetweenItems",iSpace)) g_graphicsContext.ScaleYCoord(iSpace, res);
 
 	GetHex(pControlNode,"selectedColor2",dwSelectedColor2);
 	GetHex(pControlNode,"textcolor2",dwTextColor2);
@@ -634,23 +635,23 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
 	GetPath(pControlNode,"imageFolder",strImage);
 	GetPath(pControlNode,"imageFolderFocus",strImageFocus);
-	GetInt(pControlNode,"textureWidth",iTextureWidth);
-	GetInt(pControlNode,"textureHeight",iTextureHeight);
+	if (GetInt(pControlNode,"textureWidth",iTextureWidth)) g_graphicsContext.ScaleXCoord(iTextureWidth, res);
+	if (GetInt(pControlNode,"textureHeight",iTextureHeight)) g_graphicsContext.ScaleYCoord(iTextureHeight, res);
   
-	GetInt(pControlNode,"thumbWidth",iThumbWidth);
-	GetInt(pControlNode,"thumbHeight",iThumbHeight);
-	GetInt(pControlNode,"thumbPosX",iThumbXPos);
-	GetInt(pControlNode,"thumbPosY",iThumbYPos);
+	if (GetInt(pControlNode,"thumbWidth",iThumbWidth)) g_graphicsContext.ScaleXCoord(iThumbWidth, res);
+	if (GetInt(pControlNode,"thumbHeight",iThumbHeight)) g_graphicsContext.ScaleYCoord(iThumbHeight, res);
+	if (GetInt(pControlNode,"thumbPosX",iThumbXPos)) g_graphicsContext.ScaleXCoord(iThumbXPos, res);
+	if (GetInt(pControlNode,"thumbPosY",iThumbYPos)) g_graphicsContext.ScaleYCoord(iThumbYPos, res);
   
-	GetInt(pControlNode,"thumbWidthBig",iThumbWidthBig);
-	GetInt(pControlNode,"thumbHeightBig",iThumbHeightBig);
-	GetInt(pControlNode,"thumbPosXBig",iThumbXPosBig);
-	GetInt(pControlNode,"thumbPosYBig",iThumbYPosBig);
+	if (GetInt(pControlNode,"thumbWidthBig",iThumbWidthBig)) g_graphicsContext.ScaleXCoord(iThumbWidthBig, res);
+	if (GetInt(pControlNode,"thumbHeightBig",iThumbHeightBig)) g_graphicsContext.ScaleYCoord(iThumbHeightBig, res);
+	if (GetInt(pControlNode,"thumbPosXBig",iThumbXPosBig)) g_graphicsContext.ScaleXCoord(iThumbXPosBig, res);
+	if (GetInt(pControlNode,"thumbPosYBig",iThumbYPosBig)) g_graphicsContext.ScaleYCoord(iThumbYPosBig, res);
 
-	GetDWORD(pControlNode,"textureWidthBig",textureWidthBig);
-	GetDWORD(pControlNode,"textureHeightBig",textureHeightBig);
-	GetDWORD(pControlNode,"itemWidthBig",itemWidthBig);
-	GetDWORD(pControlNode,"itemHeightBig",itemHeightBig);
+	if (GetDWORD(pControlNode,"textureWidthBig",textureWidthBig)) g_graphicsContext.ScaleXCoord(textureWidthBig, res);
+	if (GetDWORD(pControlNode,"textureHeightBig",textureHeightBig)) g_graphicsContext.ScaleYCoord(textureHeightBig, res);
+	if (GetDWORD(pControlNode,"itemWidthBig",itemWidthBig)) g_graphicsContext.ScaleXCoord(itemWidthBig, res);
+	if (GetDWORD(pControlNode,"itemHeightBig",itemHeightBig)) g_graphicsContext.ScaleYCoord(itemHeightBig, res);
 	GetDWORD(pControlNode,"buddycontrolid",dwBuddyControlID);
 	
 
@@ -681,8 +682,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
 	if (strType=="label")
 	{
-		g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight, res);
-
 		CGUILabelControl* pControl = new CGUILabelControl(
 					dwParentId,dwID,dwPosX,dwPosY,dwWidth,dwHeight,
 					strFont,strLabel,dwTextColor,dwDisabledColor,
@@ -694,8 +693,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	}
 	if (strType=="videowindow")
 	{
-		g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
-		
 		CGUIVideoControl* pControl = new CGUIVideoControl(
 					dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight);
 
@@ -703,8 +700,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	}
 	if (strType=="fadelabel")
 	{
-		g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
-
 		CGUIFadeLabelControl* pControl = new CGUIFadeLabelControl(
 					dwParentId,dwID,dwPosX,dwPosY,dwWidth,dwHeight,
 					strFont,dwTextColor,dwAlign);
@@ -715,8 +710,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	}  
 	if (strType=="spinbutton")
 	{
-		g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
-
 		CGUISpinButtonControl* pControl = new CGUISpinButtonControl(
 					dwParentId,dwID,dwPosX,dwPosY,dwWidth,dwHeight,
 					strTextureNoFocus,strTextureFocus,
@@ -732,8 +725,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
   
 	if (strType=="rss")
 	{
-		g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
-      
 		CGUIRSSControl* pControl = new CGUIRSSControl(
 					dwParentId,dwID,dwPosX,dwPosY,dwWidth,dwHeight,
 					strFont,dwTextColor3,dwTextColor2,dwTextColor,strRSSUrl);
@@ -744,8 +735,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	}
 	if (strType=="ram")
 	{
-	    g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
-      
 		CGUIRAMControl* pControl = new CGUIRAMControl(
 					dwParentId,dwID,dwPosX,dwPosY,dwWidth,dwHeight,
 					strFont,strFont2,dwTextColor3,dwTextColor,
@@ -760,8 +749,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	}
 	if (strType=="button")
 	{
-		g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
-
 		CGUIButtonControl* pControl = new CGUIButtonControl(
 					dwParentId,dwID,dwPosX,dwPosY,dwWidth,dwHeight,
 					strTextureFocus,strTextureNoFocus,
@@ -778,8 +765,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	}
 	if (strType=="togglebutton")
 	{
-		g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
-
 		CGUIToggleButtonControl* pControl = new CGUIToggleButtonControl(
 					dwParentId,dwID,dwPosX,dwPosY,dwWidth,dwHeight,
 					strTextureFocus,strTextureNoFocus,
@@ -797,8 +782,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	}
 	if (strType=="buttonM")
 	{
-		g_graphicsContext.ScalePosToScreenResolution(dwPosX,dwPosY,res);
-
 		CGUIMButtonControl* pControl = new CGUIMButtonControl(
 					dwParentId,dwID,dwPosX,dwPosY,dwWidth,dwHeight,
 					dwItems,strTextureFocus,strTextureNoFocus,
@@ -814,8 +797,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	}
 	if (strType=="checkmark")
 	{
-		g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
-
 		CGUICheckMarkControl* pControl = new CGUICheckMarkControl(
 					dwParentId,dwID,dwPosX,dwPosY,dwWidth,dwHeight,
 					strTextureCheckMark,strTextureCheckMarkNF,
@@ -831,8 +812,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	}
 	if (strType=="radiobutton")
 	{
-		g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
-
 		CGUIRadioButtonControl* pControl = new CGUIRadioButtonControl(
 					dwParentId,dwID,dwPosX,dwPosY,dwWidth,dwHeight,
 					strTextureFocus,strTextureNoFocus,
@@ -849,8 +828,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	}
  	if (strType=="spincontrol")
 	{
-		g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
-
 		CGUISpinControl* pControl = new CGUISpinControl(
 					dwParentId,dwID,dwPosX,dwPosY,dwWidth,dwHeight,
 					strUp,strDown,strUpFocus,strDownFocus,
@@ -869,8 +846,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	}
 	if (strType=="slider")
 	{
-		g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
-  
 		CGUISliderControl* pControl= new CGUISliderControl(
 					dwParentId,dwID,dwPosX,dwPosY,dwWidth,dwHeight,
 					strTextureBg,strMid,strMidFocus,iType);
@@ -883,8 +858,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	} 
 	if (strType=="progress")
 	{
-		g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
-
 		CGUIProgressControl* pControl= new CGUIProgressControl(
 					dwParentId,dwID,dwPosX,dwPosY,dwWidth,dwHeight,
 					strTextureBg,strLeft,strMid,strRight);
@@ -894,8 +867,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	} 
 	if (strType=="image")
 	{
-		g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
-		
 		CGUIImage* pControl = new CGUIImage(
 			dwParentId,dwID,dwPosX,dwPosY,dwWidth,dwHeight,strTexture,dwColorKey);
 
@@ -906,8 +877,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	}
 	if (strType=="listcontrol")
 	{
-		g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
-
 		CGUIListControl* pControl = new CGUIListControl(
 						dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,
 						strFont,
@@ -933,8 +902,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	}
 	if (strType=="listcontrolex")
 	{
-		g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
-
 		CGUIListControlEx* pControl = new CGUIListControlEx(
 						dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,
 						strFont,
@@ -959,8 +926,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	}
 	if (strType=="textbox")
 	{
-		g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
-      
 		CGUITextBox* pControl = new CGUITextBox(
 					dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,
 					strFont,
@@ -977,8 +942,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	}
 	if (strType=="thumbnailpanel")
 	{
-		g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
-
 		CGUIThumbnailPanel* pControl = new CGUIThumbnailPanel(
 					dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,
 					strFont,
@@ -1009,8 +972,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	}
 	if (strType=="selectbutton")
 	{
-		g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight,res);
-
 		CGUISelectButtonControl* pControl = new CGUISelectButtonControl(
 					dwParentId,dwID,dwPosX,dwPosY,
 					dwWidth, dwHeight, strTextureFocus,strTextureNoFocus, 

@@ -181,7 +181,7 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 		if (pNode)
 		{
 			strType = pNode->FirstChild()->Value();
-			CGUIControl* pGUIControl = factory.Create(m_dwWindowId,pControl,NULL,INVALID);
+			CGUIControl* pGUIControl = factory.Create(m_dwWindowId,pControl,NULL,res);
 			if (pGUIControl)
 			{	
 				struct stReferenceControl stControl;
