@@ -1536,6 +1536,18 @@ if(xbmc_cancel) {
 
 //==================== Open VOB-Sub ============================
 
+#ifdef _XBOX
+if (strstr(filename,".mp3") || strstr(filename,".ogg") || strstr(filename,".flac") || strstr(filename,"shout:") || strstr(filename, "dvd://") )
+{
+     if (strstr(filename,".mp3")  || strstr(filename,"shout:") )
+            file_format=DEMUXER_TYPE_AUDIO;
+     printf("do not search for subs\n");
+     sub_auto=0;
+}
+else
+{
+    printf("find subtitles\n");
+#endif //!_XBOX
     current_module="vobsub";
     if (vobsub_name){
       vo_vobsub=vobsub_open(vobsub_name,spudec_ifo,1,&vo_spudec);
@@ -1561,7 +1573,9 @@ if(xbmc_cancel) {
       // check if vobsub requested only to display forced subtitles
       forced_subs_only=vobsub_get_forced_subs_flag(vo_vobsub);
     }
-
+#ifdef _XBOX
+}
+#endif //!_XBOX
 //============ Open & Sync STREAM --- fork cache2 ====================
 
   stream=NULL;
@@ -1675,6 +1689,15 @@ if(stream_cache_size>0){
     if((eof = libmpdemux_was_interrupted(PT_NEXT_ENTRY))) goto goto_next_file;
   #endif
 }
+
+#ifdef _XBOX
+char* cExt = strrchr(filename, '.');
+if (strstr(filename,"shout:") || (cExt != NULL && strstr(cExt,".mp3")))
+{
+  printf("open as audio stream\n");
+  file_format=DEMUXER_TYPE_AUDIO;
+}
+#endif //!_XBOX
 
 //============ Open DEMUXERS --- DETECT file type =======================
 #ifdef _XBOX
