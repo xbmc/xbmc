@@ -54,6 +54,7 @@ public:
   public:
 	  unsigned long dwFileVersion;
     char	    szDefaultSkin[1024];
+		char			szHomeDir[1024];
   
 	  int				m_iMyProgramsSortMethod;
 	  bool			m_bMyProgramsSortAscending;

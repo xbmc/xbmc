@@ -48,8 +48,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
     {
 			CGUIWindow::OnMessage(message);
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(101);
-			CUtil::GetHomePath(m_strDirectory);
-			m_strDirectory+="\\shortcuts";
+			m_strDirectory = "Q:\\shortcuts";
       // make controls 100-110 invisible...
 			for (int i=100; i < 110; i++)
       {
@@ -93,8 +92,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
       else if (iControl==CONTROL_BTNSCAN) // button
       {
 				int iTotalApps=0;
-				CUtil::GetHomePath(m_strDirectory);
-				m_strDirectory+="\\shortcuts";
+				m_strDirectory = "Q:\\shortcuts";
 				
 				CHDDirectory rootDir;
 				Clear();
@@ -298,9 +296,7 @@ void CGUIWindowPrograms::Clear()
 void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 {
   Clear();
-	CStdString strShortCutsDir;
-	CUtil::GetHomePath(strShortCutsDir);
-	strShortCutsDir+="\\shortcuts";
+	CStdString strShortCutsDir = "Q:\\shortcuts";
  
   CStdString strParentPath;
   if (CUtil::GetParentPath(strDirectory,strParentPath))

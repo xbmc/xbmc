@@ -1231,7 +1231,7 @@ void CUtil::PrepareSubtitleFonts()
   if (g_stSettings.m_iSubtitleHeight==0) return;
 
   CStdString strPath,strHomePath,strSearchMask;
-	CUtil::GetHomePath(strHomePath);
+	strHomePath = "Q:";
   strPath.Format("%s\\mplayer\\font\\%s\\%i\\",
           strHomePath.c_str(),
 	        g_stSettings.m_szSubtitleFont,g_stSettings.m_iSubtitleHeight);
