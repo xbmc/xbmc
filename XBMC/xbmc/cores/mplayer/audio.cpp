@@ -104,6 +104,10 @@ static int audio_init(int rate,int channels,int format,int flags)
 		{
         pao_data->bps *= (audio_out_format_bits(format)/8);
 		}
+    if(format== AFMT_AC3)
+    {
+        pao_data->bps *=2;
+    }
     if(pao_data->buffersize==-1)
     {
         pao_data->buffersize  = audio_out_format_bits(format)/8;
