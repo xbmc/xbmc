@@ -36,7 +36,8 @@ CSettings::CSettings(void)
 	g_stSettings.m_bAudioOnAllSpeakers=false;
 	g_stSettings.m_iChannels=2;
 	g_stSettings.m_bUseID3=true;
-	g_stSettings.m_bAC3PassThru=false;
+	g_stSettings.m_bDD_DTSMultiChannelPassThrough=false;
+	g_stSettings.m_bDDStereoPassThrough=false;
 	g_stSettings.m_bAutorunPictures=true;
 	g_stSettings.m_bAutorunMusic=true;
 	g_stSettings.m_bAutorunVideo=true;
@@ -622,10 +623,10 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 	TiXmlElement *pElement = pRootElement->FirstChildElement("mypictures");
 	if (pElement)
 	{
-		GetBoolean(pElement, "viewicons", g_stSettings.m_bMyPicturesViewAsIcons);
-		GetBoolean(pElement, "rooticons", g_stSettings.m_bMyPicturesRootViewAsIcons);
-		GetInteger(pElement, "sortmethod",g_stSettings.m_iMyPicturesSortMethod);
-		GetBoolean(pElement, "sortascending", g_stSettings.m_bMyPicturesSortAscending);
+		GetBoolean(pElement, "picturesviewicons", g_stSettings.m_bMyPicturesViewAsIcons);
+		GetBoolean(pElement, "picturesrooticons", g_stSettings.m_bMyPicturesRootViewAsIcons);
+		GetInteger(pElement, "picturessortmethod",g_stSettings.m_iMyPicturesSortMethod);
+		GetBoolean(pElement, "picturessortascending", g_stSettings.m_bMyPicturesSortAscending);
 	}
 	// myfiles
 	pElement = pRootElement->FirstChildElement("myfiles");
@@ -634,72 +635,73 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		TiXmlElement *pChild = pElement->FirstChildElement("source");
 		if (pChild)
 		{
-			GetBoolean(pChild, "viewicons", g_stSettings.m_bMyFilesSourceViewAsIcons);
-			GetBoolean(pChild, "rooticons", g_stSettings.m_bMyFilesSourceRootViewAsIcons);
+			GetBoolean(pChild, "srcfilesviewicons", g_stSettings.m_bMyFilesSourceViewAsIcons);
+			GetBoolean(pChild, "srcfilesrooticons", g_stSettings.m_bMyFilesSourceRootViewAsIcons);
 		}
 		pChild = pElement->FirstChildElement("dest");
 		if (pChild)
 		{
-			GetBoolean(pChild, "viewicons", g_stSettings.m_bMyFilesDestViewAsIcons);
-			GetBoolean(pChild, "rooticons", g_stSettings.m_bMyFilesDestRootViewAsIcons);
+			GetBoolean(pChild, "dstfilesviewicons", g_stSettings.m_bMyFilesDestViewAsIcons);
+			GetBoolean(pChild, "dstfilesrooticons", g_stSettings.m_bMyFilesDestRootViewAsIcons);
 		}
-		GetInteger(pElement, "sortmethod",g_stSettings.m_iMyFilesSortMethod);
-		GetBoolean(pElement, "sortascending", g_stSettings.m_bMyFilesSortAscending);
+		GetInteger(pElement, "filessortmethod",g_stSettings.m_iMyFilesSortMethod);
+		GetBoolean(pElement, "filessortascending", g_stSettings.m_bMyFilesSortAscending);
 	}
-	// mymusic settings
+
+  // mymusic settings
 	pElement = pRootElement->FirstChildElement("mymusic");
 	if (pElement)
 	{
 		TiXmlElement *pChild = pElement->FirstChildElement("songs");
 		if (pChild)
 		{
-			GetBoolean(pChild, "viewicons", g_stSettings.m_bMyMusicSongsViewAsIcons);
-			GetBoolean(pChild, "rooticons", g_stSettings.m_bMyMusicSongsRootViewAsIcons);
-			GetInteger(pChild, "sortmethod",g_stSettings.m_iMyMusicSongsSortMethod);
-			GetInteger(pChild, "sortmethodroot",g_stSettings.m_iMyMusicSongsRootSortMethod);
-			GetBoolean(pChild, "sortascending",g_stSettings.m_bMyMusicSongsSortAscending);
-			GetBoolean(pChild, "sortascendingroot",g_stSettings.m_bMyMusicSongsRootSortAscending);
+			GetBoolean(pChild, "songsviewicons", g_stSettings.m_bMyMusicSongsViewAsIcons);
+			GetBoolean(pChild, "songsrooticons", g_stSettings.m_bMyMusicSongsRootViewAsIcons);
+			GetInteger(pChild, "songssortmethod",g_stSettings.m_iMyMusicSongsSortMethod);
+			GetInteger(pChild, "songssortmethodroot",g_stSettings.m_iMyMusicSongsRootSortMethod);
+			GetBoolean(pChild, "songssortascending",g_stSettings.m_bMyMusicSongsSortAscending);
+			GetBoolean(pChild, "songssortascendingroot",g_stSettings.m_bMyMusicSongsRootSortAscending);
 		}
 		pChild = pElement->FirstChildElement("album");
 		if (pChild)
 		{
-			GetBoolean(pChild, "viewicons", g_stSettings.m_bMyMusicAlbumViewAsIcons);
-			GetBoolean(pChild, "rooticons", g_stSettings.m_bMyMusicAlbumRootViewAsIcons);
-			GetInteger(pChild, "sortmethod",g_stSettings.m_iMyMusicAlbumSortMethod);
-			GetInteger(pChild, "sortmethodroot",g_stSettings.m_iMyMusicAlbumRootSortMethod);
-			GetBoolean(pChild, "sortascending",g_stSettings.m_bMyMusicAlbumSortAscending);
-			GetBoolean(pChild, "sortascendingroot",g_stSettings.m_bMyMusicAlbumRootSortAscending);
-			GetBoolean(pChild, "showrecentalbums",g_stSettings.m_bMyMusicAlbumShowRecent);
+			GetBoolean(pChild, "albumviewicons", g_stSettings.m_bMyMusicAlbumViewAsIcons);
+			GetBoolean(pChild, "albumrooticons", g_stSettings.m_bMyMusicAlbumRootViewAsIcons);
+			GetInteger(pChild, "albumsortmethod",g_stSettings.m_iMyMusicAlbumSortMethod);
+			GetInteger(pChild, "albumsortmethodroot",g_stSettings.m_iMyMusicAlbumRootSortMethod);
+			GetBoolean(pChild, "albumsortascending",g_stSettings.m_bMyMusicAlbumSortAscending);
+			GetBoolean(pChild, "albumsortascendingroot",g_stSettings.m_bMyMusicAlbumRootSortAscending);
+			GetBoolean(pChild, "albumshowrecentalbums",g_stSettings.m_bMyMusicAlbumShowRecent);
 		}
 		pChild = pElement->FirstChildElement("artist");
 		if (pChild)
 		{
-			GetBoolean(pChild, "viewicons", g_stSettings.m_bMyMusicArtistsViewAsIcons);
-			GetBoolean(pChild, "rooticons", g_stSettings.m_bMyMusicArtistsRootViewAsIcons);
-			GetInteger(pChild, "sortmethod",g_stSettings.m_iMyMusicArtistsSortMethod);
-			GetInteger(pChild, "sortmethodroot",g_stSettings.m_iMyMusicArtistsRootSortMethod);
-			GetBoolean(pChild, "sortascending",g_stSettings.m_bMyMusicArtistsSortAscending);
-			GetBoolean(pChild, "sortascendingroot",g_stSettings.m_bMyMusicArtistsRootSortAscending);
+			GetBoolean(pChild, "artistviewicons", g_stSettings.m_bMyMusicArtistsViewAsIcons);
+			GetBoolean(pChild, "artistrooticons", g_stSettings.m_bMyMusicArtistsRootViewAsIcons);
+			GetInteger(pChild, "artistsortmethod",g_stSettings.m_iMyMusicArtistsSortMethod);
+			GetInteger(pChild, "artistsortmethodroot",g_stSettings.m_iMyMusicArtistsRootSortMethod);
+			GetBoolean(pChild, "artistsortascending",g_stSettings.m_bMyMusicArtistsSortAscending);
+			GetBoolean(pChild, "artistsortascendingroot",g_stSettings.m_bMyMusicArtistsRootSortAscending);
 		}
 		pChild = pElement->FirstChildElement("genre");
 		if (pChild)
 		{
-			GetBoolean(pChild, "viewicons", g_stSettings.m_bMyMusicGenresViewAsIcons);
-			GetBoolean(pChild, "rooticons", g_stSettings.m_bMyMusicGenresRootViewAsIcons);
-			GetInteger(pChild, "sortmethod",g_stSettings.m_iMyMusicGenresSortMethod);
-			GetInteger(pChild, "sortmethodroot",g_stSettings.m_iMyMusicGenresRootSortMethod);
-			GetBoolean(pChild, "sortascending",g_stSettings.m_bMyMusicGenresSortAscending);
-			GetBoolean(pChild, "sortascendingroot",g_stSettings.m_bMyMusicGenresRootSortAscending);
+			GetBoolean(pChild, "genreviewicons", g_stSettings.m_bMyMusicGenresViewAsIcons);
+			GetBoolean(pChild, "genrerooticons", g_stSettings.m_bMyMusicGenresRootViewAsIcons);
+			GetInteger(pChild, "genresortmethod",g_stSettings.m_iMyMusicGenresSortMethod);
+			GetInteger(pChild, "genresortmethodroot",g_stSettings.m_iMyMusicGenresRootSortMethod);
+			GetBoolean(pChild, "genresortascending",g_stSettings.m_bMyMusicGenresSortAscending);
+			GetBoolean(pChild, "genresortascendingroot",g_stSettings.m_bMyMusicGenresRootSortAscending);
 		}
 		pChild = pElement->FirstChildElement("top100");
 		if (pChild)
 		{
-			GetBoolean(pChild, "rooticons", g_stSettings.m_bMyMusicTop100ViewAsIcons);
+			GetBoolean(pChild, "top100rooticons", g_stSettings.m_bMyMusicTop100ViewAsIcons);
 		}
 		pChild = pElement->FirstChildElement("playlist");
 		if (pChild)
 		{
-			GetBoolean(pChild, "rooticons", g_stSettings.m_bMyMusicPlaylistViewAsIcons);
+			GetBoolean(pChild, "playlistrooticons", g_stSettings.m_bMyMusicPlaylistViewAsIcons);
 		}
 		GetInteger(pElement, "startwindow",g_stSettings.m_iMyMusicStartWindow);
 	}
@@ -712,10 +714,10 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetBoolean(pElement, "stackactor", g_stSettings.m_bMyVideoActorStack);
     GetBoolean(pElement, "stackyear", g_stSettings.m_bMyVideoYearStack);
     
-		GetBoolean(pElement, "viewicons", g_stSettings.m_bMyVideoViewAsIcons);
-		GetBoolean(pElement, "rooticons", g_stSettings.m_bMyVideoRootViewAsIcons);
-		GetInteger(pElement, "sortmethod",g_stSettings.m_iMyVideoSortMethod);
-		GetBoolean(pElement, "sortascending", g_stSettings.m_bMyVideoSortAscending);
+		GetBoolean(pElement, "videoviewicons", g_stSettings.m_bMyVideoViewAsIcons);
+		GetBoolean(pElement, "videorooticons", g_stSettings.m_bMyVideoRootViewAsIcons);
+		GetInteger(pElement, "videosortmethod",g_stSettings.m_iMyVideoSortMethod);
+		GetBoolean(pElement, "videosortascending", g_stSettings.m_bMyVideoSortAscending);
 
 		GetBoolean(pElement, "genreviewicons", g_stSettings.m_bMyVideoGenreViewAsIcons);
 		GetBoolean(pElement, "genrerooticons", g_stSettings.m_bMyVideoGenreRootViewAsIcons);
@@ -742,10 +744,10 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 	pElement = pRootElement->FirstChildElement("myscripts");
 	if (pElement)
 	{
-		GetBoolean(pElement, "viewicons", g_stSettings.m_bScriptsViewAsIcons);
-		GetBoolean(pElement, "rooticons", g_stSettings.m_bScriptsRootViewAsIcons);
-		GetInteger(pElement, "sortmethod",g_stSettings.m_iScriptsSortMethod);
-		GetBoolean(pElement, "sortascending", g_stSettings.m_bScriptsSortAscending);
+		GetBoolean(pElement, "scriptsviewicons", g_stSettings.m_bScriptsViewAsIcons);
+		GetBoolean(pElement, "scriptsrooticons", g_stSettings.m_bScriptsRootViewAsIcons);
+		GetInteger(pElement, "scriptssortmethod",g_stSettings.m_iScriptsSortMethod);
+		GetBoolean(pElement, "scriptssortascending", g_stSettings.m_bScriptsSortAscending);
 	}
 	// general settings
 	pElement = pRootElement->FirstChildElement("general");
@@ -801,7 +803,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 	{
 		GetBoolean(pElement, "audioonallspeakers", g_stSettings.m_bAudioOnAllSpeakers);
 		GetInteger(pElement, "channels",g_stSettings.m_iChannels);
-		GetBoolean(pElement, "ac3passthru", g_stSettings.m_bAC3PassThru);
+		GetBoolean(pElement, "ac3passthru51", g_stSettings.m_bDD_DTSMultiChannelPassThrough);
+		GetBoolean(pElement, "ac3passthru21", g_stSettings.m_bDDStereoPassThrough);
 		GetBoolean(pElement, "useid3", g_stSettings.m_bUseID3);
 		GetString(pElement, "visualisation", g_stSettings.szDefaultVisualisation, g_stSettings.szDefaultVisualisation);
 		GetBoolean(pElement, "autoshuffleplaylist", g_stSettings.m_bAutoShufflePlaylist);
@@ -827,12 +830,12 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   pElement = pRootElement->FirstChildElement("myprograms");
   if (pElement)
   {
-	  GetBoolean(pElement, "viewicons", g_stSettings.m_bMyProgramsViewAsIcons);
-	  GetBoolean(pElement, "sortascending", g_stSettings.m_bMyProgramsSortAscending);
-	  GetBoolean(pElement, "flatten", g_stSettings.m_bMyProgramsFlatten);
-   	  GetBoolean(pElement, "defaultxbe", g_stSettings.m_bMyProgramsDefaultXBE);
-	  GetInteger(pElement, "sortmethod", g_stSettings.m_iMyProgramsSortMethod);
+	  GetBoolean(pElement, "programsviewicons", g_stSettings.m_bMyProgramsViewAsIcons);
+	  GetInteger(pElement, "programssortmethod", g_stSettings.m_iMyProgramsSortMethod);
+	  GetBoolean(pElement, "programssortascending", g_stSettings.m_bMyProgramsSortAscending);
     GetInteger(pElement, "selecteditem",g_stSettings.m_iMyProgramsSelectedItem);
+	  GetBoolean(pElement, "flatten", g_stSettings.m_bMyProgramsFlatten);
+   	GetBoolean(pElement, "defaultxbe", g_stSettings.m_bMyProgramsDefaultXBE);
   }
 	return true;
 }
@@ -848,9 +851,9 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	TiXmlElement programsNode("myprograms");
 	TiXmlNode *pNode = pRoot->InsertEndChild(programsNode);
 	if (!pNode) return false;
-	SetBoolean(pNode, "viewicons", g_stSettings.m_bMyProgramsViewAsIcons);
-	SetInteger(pNode, "sortmethod", g_stSettings.m_iMyProgramsSortMethod);
-	SetBoolean(pNode, "sortascending", g_stSettings.m_bMyProgramsSortAscending);
+	SetBoolean(pNode, "programsviewicons", g_stSettings.m_bMyProgramsViewAsIcons);
+	SetInteger(pNode, "programssortmethod", g_stSettings.m_iMyProgramsSortMethod);
+	SetBoolean(pNode, "programssortascending", g_stSettings.m_bMyProgramsSortAscending);
 	SetBoolean(pNode, "flatten", g_stSettings.m_bMyProgramsFlatten);
 	SetBoolean(pNode, "defaultxbe", g_stSettings.m_bMyProgramsDefaultXBE);
   SetInteger(pNode, "selecteditem",g_stSettings.m_iMyProgramsSelectedItem);
@@ -859,10 +862,11 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	TiXmlElement picturesNode("mypictures");
 	pNode = pRoot->InsertEndChild(picturesNode);
 	if (!pNode) return false;
-	SetBoolean(pNode, "viewicons", g_stSettings.m_bMyPicturesViewAsIcons);
-	SetBoolean(pNode, "rooticons", g_stSettings.m_bMyPicturesRootViewAsIcons);
-	SetInteger(pNode, "sortmethod",g_stSettings.m_iMyPicturesSortMethod);
-	SetBoolean(pNode, "sortascending", g_stSettings.m_bMyPicturesSortAscending);
+	SetBoolean(pNode, "picturesviewicons", g_stSettings.m_bMyPicturesViewAsIcons);
+	SetBoolean(pNode, "picturesrooticons", g_stSettings.m_bMyPicturesRootViewAsIcons);
+	SetInteger(pNode, "picturessortmethod",g_stSettings.m_iMyPicturesSortMethod);
+	SetBoolean(pNode, "picturessortascending", g_stSettings.m_bMyPicturesSortAscending);
+
 	// myfiles settings
 	TiXmlElement filesNode("myfiles");
 	pNode = pRoot->InsertEndChild(filesNode);
@@ -871,18 +875,19 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 		TiXmlElement childNode("source");
 		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
 		if (!pChild) return false;
-		SetBoolean(pChild, "viewicons", g_stSettings.m_bMyFilesSourceViewAsIcons);
-		SetBoolean(pChild, "rooticons", g_stSettings.m_bMyFilesSourceRootViewAsIcons);
+		SetBoolean(pChild, "srcfilesviewicons", g_stSettings.m_bMyFilesSourceViewAsIcons);
+		SetBoolean(pChild, "srcfilesrooticons", g_stSettings.m_bMyFilesSourceRootViewAsIcons);
 	}
 	{
 		TiXmlElement childNode("dest");
 		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
 		if (!pChild) return false;
-		SetBoolean(pChild, "viewicons", g_stSettings.m_bMyFilesDestViewAsIcons);
-		SetBoolean(pChild, "rooticons", g_stSettings.m_bMyFilesDestRootViewAsIcons);
+		SetBoolean(pChild, "dstfilesviewicons", g_stSettings.m_bMyFilesDestViewAsIcons);
+		SetBoolean(pChild, "dstfilesrooticons", g_stSettings.m_bMyFilesDestRootViewAsIcons);
 	}
-	SetInteger(pNode, "sortmethod",g_stSettings.m_iMyFilesSortMethod);
-	SetBoolean(pNode, "sortascending", g_stSettings.m_bMyFilesSortAscending);
+	SetInteger(pNode, "filessortmethod",g_stSettings.m_iMyFilesSortMethod);
+	SetBoolean(pNode, "filessortascending", g_stSettings.m_bMyFilesSortAscending);
+
 	// mymusic settings
 	TiXmlElement musicNode("mymusic");
 	pNode = pRoot->InsertEndChild(musicNode);
@@ -891,58 +896,58 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 		TiXmlElement childNode("songs");
 		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
 		if (!pChild) return false;
-		SetBoolean(pChild, "viewicons", g_stSettings.m_bMyMusicSongsViewAsIcons);
-		SetBoolean(pChild, "rooticons", g_stSettings.m_bMyMusicSongsRootViewAsIcons);
-		SetInteger(pChild, "sortmethod",g_stSettings.m_iMyMusicSongsSortMethod);
-		SetInteger(pChild, "sortmethodroot",g_stSettings.m_iMyMusicSongsRootSortMethod);
-		SetBoolean(pChild, "sortascending",g_stSettings.m_bMyMusicSongsSortAscending);
-		SetBoolean(pChild, "sortascendingroot",g_stSettings.m_bMyMusicSongsRootSortAscending);
+		SetBoolean(pChild, "songsviewicons", g_stSettings.m_bMyMusicSongsViewAsIcons);
+		SetBoolean(pChild, "songsrooticons", g_stSettings.m_bMyMusicSongsRootViewAsIcons);
+		SetInteger(pChild, "songssortmethod",g_stSettings.m_iMyMusicSongsSortMethod);
+		SetInteger(pChild, "songssortmethodroot",g_stSettings.m_iMyMusicSongsRootSortMethod);
+		SetBoolean(pChild, "songssortascending",g_stSettings.m_bMyMusicSongsSortAscending);
+		SetBoolean(pChild, "songssortascendingroot",g_stSettings.m_bMyMusicSongsRootSortAscending);
 	}
 	{
 		TiXmlElement childNode("album");
 		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
 		if (!pChild) return false;
-		SetBoolean(pChild, "viewicons", g_stSettings.m_bMyMusicAlbumViewAsIcons);
-		SetBoolean(pChild, "rooticons", g_stSettings.m_bMyMusicAlbumRootViewAsIcons);
-		SetInteger(pChild, "sortmethod",g_stSettings.m_iMyMusicAlbumSortMethod);
-		SetInteger(pChild, "sortmethodroot",g_stSettings.m_iMyMusicAlbumRootSortMethod);
-		SetBoolean(pChild, "sortascending",g_stSettings.m_bMyMusicAlbumSortAscending);
-		SetBoolean(pChild, "sortascendingroot",g_stSettings.m_bMyMusicAlbumRootSortAscending);
-		SetBoolean(pChild, "showrecentalbums",g_stSettings.m_bMyMusicAlbumShowRecent);
+		SetBoolean(pChild, "albumviewicons", g_stSettings.m_bMyMusicAlbumViewAsIcons);
+		SetBoolean(pChild, "albumrooticons", g_stSettings.m_bMyMusicAlbumRootViewAsIcons);
+		SetInteger(pChild, "albumsortmethod",g_stSettings.m_iMyMusicAlbumSortMethod);
+		SetInteger(pChild, "albumsortmethodroot",g_stSettings.m_iMyMusicAlbumRootSortMethod);
+		SetBoolean(pChild, "albumsortascending",g_stSettings.m_bMyMusicAlbumSortAscending);
+		SetBoolean(pChild, "albumsortascendingroot",g_stSettings.m_bMyMusicAlbumRootSortAscending);
+		SetBoolean(pChild, "albumshowrecentalbums",g_stSettings.m_bMyMusicAlbumShowRecent);
 	}
 	{
 		TiXmlElement childNode("artist");
 		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
 		if (!pChild) return false;
-		SetBoolean(pChild, "viewicons", g_stSettings.m_bMyMusicArtistsViewAsIcons);
-		SetBoolean(pChild, "rooticons", g_stSettings.m_bMyMusicArtistsRootViewAsIcons);
-		SetInteger(pChild, "sortmethod",g_stSettings.m_iMyMusicArtistsSortMethod);
-		SetInteger(pChild, "sortmethodroot",g_stSettings.m_iMyMusicArtistsRootSortMethod);
-		SetBoolean(pChild, "sortascending",g_stSettings.m_bMyMusicArtistsSortAscending);
-		SetBoolean(pChild, "sortascendingroot",g_stSettings.m_bMyMusicArtistsRootSortAscending);
+		SetBoolean(pChild, "artistviewicons", g_stSettings.m_bMyMusicArtistsViewAsIcons);
+		SetBoolean(pChild, "artistrooticons", g_stSettings.m_bMyMusicArtistsRootViewAsIcons);
+		SetInteger(pChild, "artistsortmethod",g_stSettings.m_iMyMusicArtistsSortMethod);
+		SetInteger(pChild, "artistsortmethodroot",g_stSettings.m_iMyMusicArtistsRootSortMethod);
+		SetBoolean(pChild, "artistsortascending",g_stSettings.m_bMyMusicArtistsSortAscending);
+		SetBoolean(pChild, "artistsortascendingroot",g_stSettings.m_bMyMusicArtistsRootSortAscending);
 	}
 	{
 		TiXmlElement childNode("genre");
 		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
 		if (!pChild) return false;
-		SetBoolean(pChild, "viewicons", g_stSettings.m_bMyMusicGenresViewAsIcons);
-		SetBoolean(pChild, "rooticons", g_stSettings.m_bMyMusicGenresRootViewAsIcons);
-		SetInteger(pChild, "sortmethod",g_stSettings.m_iMyMusicGenresSortMethod);
-		SetInteger(pChild, "sortmethodroot",g_stSettings.m_iMyMusicGenresRootSortMethod);
-		SetBoolean(pChild, "sortascending",g_stSettings.m_bMyMusicGenresSortAscending);
-		SetBoolean(pChild, "sortascendingroot",g_stSettings.m_bMyMusicGenresRootSortAscending);
+		SetBoolean(pChild, "genreviewicons", g_stSettings.m_bMyMusicGenresViewAsIcons);
+		SetBoolean(pChild, "genrerooticons", g_stSettings.m_bMyMusicGenresRootViewAsIcons);
+		SetInteger(pChild, "genresortmethod",g_stSettings.m_iMyMusicGenresSortMethod);
+		SetInteger(pChild, "genresortmethodroot",g_stSettings.m_iMyMusicGenresRootSortMethod);
+		SetBoolean(pChild, "genresortascending",g_stSettings.m_bMyMusicGenresSortAscending);
+		SetBoolean(pChild, "genresortascendingroot",g_stSettings.m_bMyMusicGenresRootSortAscending);
 	}
 	{
 		TiXmlElement childNode("top100");
 		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
 		if (!pChild) return false;
-		SetBoolean(pChild, "rooticons", g_stSettings.m_bMyMusicTop100ViewAsIcons);
+		SetBoolean(pChild, "top100rooticons", g_stSettings.m_bMyMusicTop100ViewAsIcons);
 	}
 	{
 		TiXmlElement childNode("playlist");
 		TiXmlNode *pChild = pNode->InsertEndChild(childNode);
 		if (!pChild) return false;
-		SetBoolean(pChild, "rooticons", g_stSettings.m_bMyMusicPlaylistViewAsIcons);
+		SetBoolean(pChild, "playlistrooticons", g_stSettings.m_bMyMusicPlaylistViewAsIcons);
 	}
 
 	SetInteger(pNode, "startwindow",g_stSettings.m_iMyMusicStartWindow);
@@ -957,10 +962,10 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   SetBoolean(pNode, "stackactor", g_stSettings.m_bMyVideoActorStack);
   SetBoolean(pNode, "stackyear", g_stSettings.m_bMyVideoYearStack);
 
-	SetBoolean(pNode, "viewicons", g_stSettings.m_bMyVideoViewAsIcons);
-	SetBoolean(pNode, "rooticons", g_stSettings.m_bMyVideoRootViewAsIcons);
-	SetInteger(pNode, "sortmethod",g_stSettings.m_iMyVideoSortMethod);
-	SetBoolean(pNode, "sortascending", g_stSettings.m_bMyVideoSortAscending);
+	SetBoolean(pNode, "videoviewicons", g_stSettings.m_bMyVideoViewAsIcons);
+	SetBoolean(pNode, "videorooticons", g_stSettings.m_bMyVideoRootViewAsIcons);
+	SetInteger(pNode, "videosortmethod",g_stSettings.m_iMyVideoSortMethod);
+	SetBoolean(pNode, "videosortascending", g_stSettings.m_bMyVideoSortAscending);
   
 	SetBoolean(pNode, "genreviewicons", g_stSettings.m_bMyVideoGenreViewAsIcons);
 	SetBoolean(pNode, "genrerooticons", g_stSettings.m_bMyVideoGenreRootViewAsIcons);
@@ -987,10 +992,11 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	TiXmlElement scriptsNode("myscripts");
 	pNode = pRoot->InsertEndChild(scriptsNode);
 	if (!pNode) return false;
-	SetBoolean(pNode, "viewicons", g_stSettings.m_bScriptsViewAsIcons);
-	SetBoolean(pNode, "rooticons", g_stSettings.m_bScriptsRootViewAsIcons);
-	SetInteger(pNode, "sortmethod",g_stSettings.m_iScriptsSortMethod);
-	SetBoolean(pNode, "sortascending", g_stSettings.m_bScriptsSortAscending);
+	SetBoolean(pNode, "scriptsviewicons", g_stSettings.m_bScriptsViewAsIcons);
+	SetBoolean(pNode, "scriptsrooticons", g_stSettings.m_bScriptsRootViewAsIcons);
+	SetInteger(pNode, "scriptssortmethod",g_stSettings.m_iScriptsSortMethod);
+	SetBoolean(pNode, "scriptssortascending", g_stSettings.m_bScriptsSortAscending);
+
 	// general settings
 	TiXmlElement generalNode("general");
 	pNode = pRoot->InsertEndChild(generalNode);
@@ -1013,13 +1019,15 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetInteger(pNode, "screensavertime", g_stSettings.m_iScreenSaverTime);	// CB: SCREENSAVER PATCH
 	SetInteger(pNode, "screensavermode", g_stSettings.m_iScreenSaverMode);	// CB: SCREENSAVER PATCH
 	SetInteger(pNode, "screensaverfade", g_stSettings.m_iScreenSaverFadeLevel);
-	// slideshow settings
+
+  // slideshow settings
 	TiXmlElement slideshowNode("slideshow");
 	pNode = pRoot->InsertEndChild(slideshowNode);
 	if (!pNode) return false;
 	SetInteger(pNode, "transistionframes", g_stSettings.m_iSlideShowTransistionFrames);
 	SetInteger(pNode, "staytime", g_stSettings.m_iSlideShowStayTime);
-	// screen settings
+
+  // screen settings
 	TiXmlElement screenNode("screen");
 	pNode = pRoot->InsertEndChild(screenNode);
 	if (!pNode) return false;
@@ -1034,13 +1042,15 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetBoolean(pNode, "allowpal60", g_stSettings.m_bAllowPAL60);
 	SetInteger(pNode, "minfilter", g_stSettings.m_minFilter);
 	SetInteger(pNode, "maxfilter", g_stSettings.m_maxFilter);
-	// audio settings
+
+  // audio settings
 	TiXmlElement audioNode("audio");
 	pNode = pRoot->InsertEndChild(audioNode);
 	if (!pNode) return false;
 	SetBoolean(pNode, "audioonallspeakers", g_stSettings.m_bAudioOnAllSpeakers);
 	SetInteger(pNode, "channels",g_stSettings.m_iChannels);
-	SetBoolean(pNode, "ac3passthru", g_stSettings.m_bAC3PassThru);
+	SetBoolean(pNode, "ac3passthru51", g_stSettings.m_bDD_DTSMultiChannelPassThrough);
+	SetBoolean(pNode, "ac3passthru21", g_stSettings.m_bDDStereoPassThrough);
 	SetBoolean(pNode, "useid3", g_stSettings.m_bUseID3);
 	SetString(pNode, "visualisation", g_stSettings.szDefaultVisualisation);
   SetBoolean(pNode, "autoshuffleplaylist", g_stSettings.m_bAutoShufflePlaylist);

@@ -724,7 +724,7 @@
   </string>
   <string>
     <id>254</id>
-    <value>AC3 Passthru</value>
+    <value>DD Stereo Passthrough</value>
   </string>
   <string>
     <id>255</id>
@@ -1158,4 +1158,8 @@
     <id>363</id>
     <value>Sort by File</value>
   </string>   
+  <string>
+    <id>364</id>
+    <value>DD/DTS Multichannel Passthrough</value>
+  </string>
 </strings>
