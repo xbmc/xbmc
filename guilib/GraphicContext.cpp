@@ -13,11 +13,13 @@ CGraphicContext::CGraphicContext(void)
 	m_iScreenOffsetX=0;
 	m_iScreenOffsetY=0;
   m_pd3dDevice=NULL;
+  m_pd3dParams=NULL;
+  m_pResInfo=NULL;
   m_dwID=0;
   m_strMediaDir="D:\\media";
 	m_bShowPreviewWindow=false;
 	m_bCalibrating=false;
-	m_iVideoResolution=0;
+	m_Resolution=INVALID;
 	m_pCallback=NULL;
 }
 
@@ -42,14 +44,15 @@ int  CGraphicContext::GetHeight() const
   return m_iScreenHeight;
 }
 
-void CGraphicContext::Set(LPDIRECT3DDEVICE8 p3dDevice, int iWidth, int iHeight, int iOffsetX, int iOffsetY, bool bWideScreen)
+void CGraphicContext::SetD3DDevice(LPDIRECT3DDEVICE8 p3dDevice)
 {
-	m_iScreenOffsetX=iOffsetX;
-	m_iScreenOffsetY=iOffsetY;
-  m_pd3dDevice=p3dDevice;
-  m_iScreenWidth=iWidth;
-  m_iScreenHeight=iHeight;
-	m_bWidescreen=bWideScreen;
+	m_pd3dDevice=p3dDevice;
+}
+
+void CGraphicContext::SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams, RESOLUTION_INFO *pResInfo)
+{
+	m_pd3dParams=p3dParams;
+	m_pResInfo=pResInfo;
 }
 
 void CGraphicContext::SetMediaDir(const CStdString& strMediaDir)
@@ -182,15 +185,102 @@ void CGraphicContext::SetCalibrating(bool bOnOff)
 	m_bCalibrating=bOnOff;
 }
 
-
-void CGraphicContext::SetVideoResolution(int iResolution)
+bool CGraphicContext::IsValidResolution(RESOLUTION res)
 {
-	m_iVideoResolution=iResolution;
+	DWORD dwStandard=XGetVideoStandard();
+	DWORD dwFlags=XGetVideoFlags();
+	bool bCanDoWidescreen = (dwFlags & XC_VIDEO_FLAGS_WIDESCREEN)!=0;
+	if (dwStandard==XC_VIDEO_STANDARD_PAL_I)
+	{
+		bool bCanDoPAL60 = (dwFlags & XC_VIDEO_FLAGS_PAL_60Hz)!=0;
+		if (res == PAL_4x3) return true;
+		if (res == PAL_16x9 && bCanDoWidescreen) return true;
+		if (res == PAL60_4x3 && bCanDoPAL60) return true;
+		if (res == PAL60_16x9 && bCanDoPAL60 && bCanDoWidescreen) return true;
+	}
+	else	// NTSC Screenmodes
+	{
+		if (res == NTSC_4x3) return true;
+		if (res == NTSC_16x9 && bCanDoWidescreen) return true;
+		if (res == HDTV_480p_4x3 && (dwFlags&XC_VIDEO_FLAGS_HDTV_480p)) return true;
+		if (res == HDTV_480p_16x9 && (dwFlags&XC_VIDEO_FLAGS_HDTV_480p) && bCanDoWidescreen) return true;
+		if (res == HDTV_720p && (dwFlags&XC_VIDEO_FLAGS_HDTV_720p)) return true;
+		if (res == HDTV_1080i && (dwFlags&XC_VIDEO_FLAGS_HDTV_1080i)) return true;
+	}
+	return false;
 }
 
-int CGraphicContext::GetVideoResolution() const
+void CGraphicContext::GetAllowedResolutions(vector<RESOLUTION> &res, bool bAllowPAL60)
 {
-	return m_iVideoResolution;
+	DWORD dwStandard=XGetVideoStandard();
+	DWORD dwFlags=XGetVideoFlags();
+	bool bCanDoWidescreen = (dwFlags & XC_VIDEO_FLAGS_WIDESCREEN)!=0;
+	res.clear();
+	if (dwStandard==XC_VIDEO_STANDARD_PAL_I)
+	{
+		res.push_back(PAL_4x3);
+		if (bCanDoWidescreen) res.push_back(PAL_16x9);
+		if (bAllowPAL60 && (dwFlags & XC_VIDEO_FLAGS_PAL_60Hz))
+		{
+			res.push_back(PAL60_4x3);
+			if (bCanDoWidescreen) res.push_back(PAL60_16x9);
+		}
+	}
+	else
+	{
+		res.push_back(NTSC_4x3);
+		if (bCanDoWidescreen) res.push_back(NTSC_16x9);
+		if (dwFlags & XC_VIDEO_FLAGS_HDTV_480p)
+		{
+			res.push_back(HDTV_480p_4x3);
+			if (bCanDoWidescreen) res.push_back(HDTV_480p_16x9);
+		}
+		if (dwFlags & XC_VIDEO_FLAGS_HDTV_720p)
+			res.push_back(HDTV_720p);
+		if (dwFlags & XC_VIDEO_FLAGS_HDTV_1080i)
+			res.push_back(HDTV_1080i);
+	}
+}
+
+void CGraphicContext::SetGUIResolution(RESOLUTION &res)
+{
+	SetVideoResolution(res);
+	m_iScreenWidth=m_pd3dParams->BackBufferWidth ;
+	m_iScreenHeight=m_pd3dParams->BackBufferHeight;
+	m_bWidescreen=(m_pd3dParams->Flags & XC_VIDEO_FLAGS_WIDESCREEN)!=0;
+}
+
+void CGraphicContext::SetVideoResolution(RESOLUTION &res)
+{
+	if (!IsValidResolution(res))
+	{	// Choose a failsafe resolution that we can actually display
+		if (XGetVideoStandard()==XC_VIDEO_STANDARD_PAL_I)
+			res = PAL_4x3;
+		else
+			res = NTSC_4x3;
+	}
+	if (m_Resolution != res)
+	{	
+		m_pd3dParams->BackBufferWidth = m_pResInfo[res].iWidth;
+		m_pd3dParams->BackBufferHeight = m_pResInfo[res].iHeight;
+		m_pd3dParams->Flags = m_pResInfo[res].dwFlags;
+		if (res == PAL60_4x3 || res == PAL60_16x9)
+		{
+			m_pd3dParams->FullScreen_RefreshRateInHz = 60;
+		}
+		else
+		{
+			m_pd3dParams->FullScreen_RefreshRateInHz = 0;
+		}
+		if (m_pd3dDevice)
+			m_pd3dDevice->Reset(m_pd3dParams);
+	}
+	m_Resolution=res;
+}
+
+RESOLUTION CGraphicContext::GetVideoResolution() const
+{
+	return m_Resolution;
 }
 
 void CGraphicContext::ScaleRectToScreenResolution(DWORD& left, DWORD&  top, DWORD& right, DWORD& bottom)
@@ -208,4 +298,132 @@ void CGraphicContext::ScalePosToScreenResolution(DWORD& x, DWORD&  y)
 	float fPercentY = ((float)m_iScreenHeight) / 576.0f;
 	x  = (DWORD) ( (float(x))		 * fPercentX); 
 	y  = (DWORD) ( (float(y))		 * fPercentY); 
+}
+
+void CGraphicContext::ResetScreenParameters(RESOLUTION res)
+{
+	// 1080i (540p for overlays)
+	switch (res)
+	{
+		case HDTV_1080i:
+			m_pResInfo[res].Overscan.left = 0;
+			m_pResInfo[res].Overscan.top = 0;
+			m_pResInfo[res].Overscan.width = 1920;
+			m_pResInfo[res].Overscan.height = 1080;
+			m_pResInfo[res].iSubtitles = 1080;
+			m_pResInfo[res].iWidth = 1920;
+			m_pResInfo[res].iHeight = 1080;
+			m_pResInfo[res].dwFlags = D3DPRESENTFLAG_INTERLACED|D3DPRESENTFLAG_WIDESCREEN;
+			m_pResInfo[res].fPixelRatio = 1.0f;
+			strcpy(m_pResInfo[res].strMode,"1080i 16:9");
+		break;
+		case HDTV_720p:
+			m_pResInfo[res].Overscan.left = 0;
+			m_pResInfo[res].Overscan.top = 0;
+			m_pResInfo[res].Overscan.width = 1280;
+			m_pResInfo[res].Overscan.height = 720;
+			m_pResInfo[res].iSubtitles = 720;
+			m_pResInfo[res].iWidth = 1280;
+			m_pResInfo[res].iHeight = 720;
+			m_pResInfo[res].dwFlags = D3DPRESENTFLAG_PROGRESSIVE|D3DPRESENTFLAG_WIDESCREEN;
+			m_pResInfo[res].fPixelRatio = 1.0f;
+			strcpy(m_pResInfo[res].strMode,"720p 16:9");
+		break;
+		case HDTV_480p_4x3:
+			m_pResInfo[res].Overscan.left = 0;
+			m_pResInfo[res].Overscan.top = 0;
+			m_pResInfo[res].Overscan.width = 720;
+			m_pResInfo[res].Overscan.height = 480;
+			m_pResInfo[res].iSubtitles = 480;
+			m_pResInfo[res].iWidth = 720;
+			m_pResInfo[res].iHeight = 480;
+			m_pResInfo[res].dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
+			m_pResInfo[res].fPixelRatio = 72.0f/79.0f;
+			strcpy(m_pResInfo[res].strMode,"480p 4:3");
+		break;
+		case HDTV_480p_16x9:
+			m_pResInfo[res].Overscan.left = 0;
+			m_pResInfo[res].Overscan.top = 0;
+			m_pResInfo[res].Overscan.width = 720;
+			m_pResInfo[res].Overscan.height = 480;
+			m_pResInfo[res].iSubtitles = 480;
+			m_pResInfo[res].iWidth = 720;
+			m_pResInfo[res].iHeight = 480;
+			m_pResInfo[res].dwFlags = D3DPRESENTFLAG_PROGRESSIVE|D3DPRESENTFLAG_WIDESCREEN;
+			m_pResInfo[res].fPixelRatio = 72.0f/79.0f*4.0f/3.0f;
+			strcpy(m_pResInfo[res].strMode,"480p 16:9");
+		break;
+		case NTSC_4x3:
+			m_pResInfo[res].Overscan.left = 0;
+			m_pResInfo[res].Overscan.top = 0;
+			m_pResInfo[res].Overscan.width = 720;
+			m_pResInfo[res].Overscan.height = 480;
+			m_pResInfo[res].iSubtitles = 480;
+			m_pResInfo[res].iWidth = 720;
+			m_pResInfo[res].iHeight = 480;
+			m_pResInfo[res].dwFlags = 0;
+			m_pResInfo[res].fPixelRatio = 72.0f/79.0f;
+			strcpy(m_pResInfo[res].strMode,"NTSC 4:3");
+		break;
+		case NTSC_16x9:
+			m_pResInfo[res].Overscan.left = 0;
+			m_pResInfo[res].Overscan.top = 0;
+			m_pResInfo[res].Overscan.width = 720;
+			m_pResInfo[res].Overscan.height = 480;
+			m_pResInfo[res].iSubtitles = 480;
+			m_pResInfo[res].iWidth = 720;
+			m_pResInfo[res].iHeight = 480;
+			m_pResInfo[res].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
+			m_pResInfo[res].fPixelRatio = 72.0f/79.0f*4.0f/3.0f;
+			strcpy(m_pResInfo[res].strMode,"NTSC 16:9");
+		break;
+		case PAL_4x3:
+			m_pResInfo[res].Overscan.left = 0;
+			m_pResInfo[res].Overscan.top = 0;
+			m_pResInfo[res].Overscan.width = 720;
+			m_pResInfo[res].Overscan.height = 576;
+			m_pResInfo[res].iSubtitles = 576;
+			m_pResInfo[res].iWidth = 720;
+			m_pResInfo[res].iHeight = 576;
+			m_pResInfo[res].dwFlags = 0;
+			m_pResInfo[res].fPixelRatio = 128.0f/117.0f;
+			strcpy(m_pResInfo[res].strMode,"PAL 4:3");
+		break;
+		case PAL_16x9:
+			m_pResInfo[res].Overscan.left = 0;
+			m_pResInfo[res].Overscan.top = 0;
+			m_pResInfo[res].Overscan.width = 720;
+			m_pResInfo[res].Overscan.height = 576;
+			m_pResInfo[res].iSubtitles = 576;
+			m_pResInfo[res].iWidth = 720;
+			m_pResInfo[res].iHeight = 576;
+			m_pResInfo[res].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
+			m_pResInfo[res].fPixelRatio = 128.0f/117.0f*4.0f/3.0f;
+			strcpy(m_pResInfo[res].strMode,"PAL 16:9");
+		break;
+		case PAL60_4x3:
+			m_pResInfo[res].Overscan.left = 0;
+			m_pResInfo[res].Overscan.top = 0;
+			m_pResInfo[res].Overscan.width = 720;
+			m_pResInfo[res].Overscan.height = 480;
+			m_pResInfo[res].iSubtitles = 480;
+			m_pResInfo[res].iWidth = 720;
+			m_pResInfo[res].iHeight = 480;
+			m_pResInfo[res].dwFlags = 0;
+			m_pResInfo[res].fPixelRatio = 72.0f/79.0f;
+			strcpy(m_pResInfo[res].strMode,"PAL60 4:3");
+		break;
+		case PAL60_16x9:
+			m_pResInfo[res].Overscan.left = 0;
+			m_pResInfo[res].Overscan.top = 0;
+			m_pResInfo[res].Overscan.width = 720;
+			m_pResInfo[res].Overscan.height = 480;
+			m_pResInfo[res].iSubtitles = 480;
+			m_pResInfo[res].iWidth = 720;
+			m_pResInfo[res].iHeight = 480;
+			m_pResInfo[res].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
+			m_pResInfo[res].fPixelRatio = 72.0f/79.0f*4.0f/3.0f;
+			strcpy(m_pResInfo[res].strMode,"PAL60 16:9");
+		break;
+	}
 }

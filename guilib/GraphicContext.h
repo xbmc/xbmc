@@ -5,9 +5,41 @@
 #include "gui3d.h"
 #include "GUIMessage.h"
 #include "IMsgSenderCallback.h"
-
 #include "stdstring.h"
+#include <vector>
+
 using namespace std;
+
+enum RESOLUTION {
+	INVALID = -1,
+	HDTV_1080i = 0,
+	HDTV_720p = 1,
+	HDTV_480p_4x3 = 2,
+	HDTV_480p_16x9 = 3,
+	NTSC_4x3 = 4,
+	NTSC_16x9 = 5,
+	PAL_4x3 = 6,
+	PAL_16x9 = 7,
+	PAL60_4x3 = 8,
+	PAL60_16x9 = 9
+};
+
+struct OVERSCAN {
+	int left;
+	int top;
+	int width;
+	int height;
+};
+
+struct RESOLUTION_INFO	{
+	OVERSCAN Overscan;
+	int iWidth;
+	int iHeight;
+	int iSubtitles;
+	DWORD dwFlags;
+	float fPixelRatio;
+	char strMode[11];
+};
 
 class CGraphicContext
 {
@@ -15,7 +47,9 @@ public:
   CGraphicContext(void);
   virtual ~CGraphicContext(void);
   LPDIRECT3DDEVICE8			Get3DDevice();
-  void									Set(LPDIRECT3DDEVICE8 p3dDevice, int iWidth, int iHeight, int iOffsetX, int iOffsetY, bool bWideScreen=false);
+  void									SetD3DDevice(LPDIRECT3DDEVICE8 p3dDevice);
+//  void									GetD3DParameters(D3DPRESENT_PARAMETERS &params);
+  void									SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams, RESOLUTION_INFO *pResInfo);
   int										GetWidth() const;
   int										GetHeight() const;
   void									SendMessage(CGUIMessage& message);
@@ -34,8 +68,12 @@ public:
 	bool									IsFullScreenVideo() const; 
 	bool									IsCalibrating() const; 
 	void									SetCalibrating(bool bOnOff); 
-	void									SetVideoResolution(int iResolution);
-	int 									GetVideoResolution() const;
+	void									SetGUIResolution(RESOLUTION &res);
+	void									GetAllowedResolutions(vector<RESOLUTION> &res, bool bAllowPAL60 = false);
+	bool									IsValidResolution(RESOLUTION res);
+	void									SetVideoResolution(RESOLUTION &res);
+	RESOLUTION								GetVideoResolution() const;
+	void									ResetScreenParameters(RESOLUTION res);
 	void									SetOffset(int iXoffset, int iYoffset);
 	void									Lock();
 	void									Unlock();
@@ -47,6 +85,7 @@ protected:
 	CRITICAL_SECTION			  m_critSection;
   IMsgSenderCallback*     m_pCallback;
   LPDIRECT3DDEVICE8       m_pd3dDevice;
+  D3DPRESENT_PARAMETERS*  m_pd3dParams;
   int                     m_iScreenHeight;
   int                     m_iScreenWidth;
   DWORD                   m_dwID;
@@ -59,7 +98,8 @@ protected:
 	int											m_iScreenOffsetY;
 	bool										m_bShowPreviewWindow;
 	bool										m_bCalibrating;
-	int											m_iVideoResolution;
+	RESOLUTION									m_Resolution;
+	RESOLUTION_INFO								*m_pResInfo;
 };
 
 extern CGraphicContext g_graphicsContext;

@@ -435,9 +435,6 @@
 				RelativePath=".\xbmc\GUIWindowSettingsGeneral.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\GUIWindowSettingsMovieCalibration.cpp">
-			</File>
-			<File
 				RelativePath=".\xbmc\GUIWindowSettingsMusic.cpp">
 			</File>
 			<File
@@ -445,6 +442,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettingsScreen.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsScreenCalibration.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettingsSlideShow.cpp">
@@ -638,10 +638,10 @@
 				RelativePath=".\xbmc\GUIWindowSettingsGeneral.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\GUIWindowSettingsMovieCalibration.h">
+				RelativePath=".\xbmc\GUIWindowSettingsScreen.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\GUIWindowSettingsScreen.h">
+				RelativePath=".\xbmc\GUIWindowSettingsScreenCalibration.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettingsSlideShow.h">

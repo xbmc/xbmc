@@ -5,25 +5,25 @@
 #include "gui3d.h"
 #include "../xbmc/XBIRRemote.h"
 
-#define KEY_BUTTON_A									256 //done
-#define KEY_BUTTON_B									257 //done
-#define KEY_BUTTON_X									258 //done
-#define KEY_BUTTON_Y									259 //done
-#define KEY_BUTTON_WHITE							260 //done
-#define KEY_BUTTON_BLACK							261 //done
-#define KEY_BUTTON_BACK								262	//FIXME:  virtualkeyboard, InfoDialogs, DialogSelect
-#define KEY_BUTTON_START							263 //done
+#define KEY_BUTTON_A									256
+#define KEY_BUTTON_B									257
+#define KEY_BUTTON_X									258
+#define KEY_BUTTON_Y									259
+#define KEY_BUTTON_WHITE							260
+#define KEY_BUTTON_BLACK							261
+#define KEY_BUTTON_BACK								262
+#define KEY_BUTTON_START							263
 
-#define KEY_BUTTON_DPAD_DOWN					264 //done
-#define KEY_BUTTON_DPAD_UP						265 //done
-#define KEY_BUTTON_DPAD_LEFT					266 //done
-#define KEY_BUTTON_DPAD_RIGHT					267 //done
+#define KEY_BUTTON_DPAD_DOWN					264
+#define KEY_BUTTON_DPAD_UP						265
+#define KEY_BUTTON_DPAD_LEFT					266
+#define KEY_BUTTON_DPAD_RIGHT					267
 
-#define KEY_BUTTON_LEFT_TRIGGER				268 //done
-#define KEY_BUTTON_RIGHT_TRIGGER			269 //done
+#define KEY_BUTTON_LEFT_TRIGGER				268
+#define KEY_BUTTON_RIGHT_TRIGGER			269
 
-#define KEY_BUTTON_LEFT_THUMB_BUTTON	270 //done
-#define KEY_BUTTON_RIGHT_THUMB_BUTTON	271 //done
+#define KEY_BUTTON_LEFT_THUMB_BUTTON	270
+#define KEY_BUTTON_RIGHT_THUMB_BUTTON	271
 #define KEY_BUTTON_LEFT_THUMB_STICK   272
 #define KEY_BUTTON_RIGHT_THUMB_STICK	273
 
@@ -88,6 +88,7 @@
 #define ACTION_AUDIO_DELAY_MIN				54
 #define ACTION_AUDIO_DELAY_PLUS				55
 #define ACTION_AUDIO_NEXT_LANGUAGE		56
+#define ACTION_CHANGE_RESOLUTION		57
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID				-1
