@@ -3,7 +3,7 @@
 #include "DownloadQueue.h"
 #include <vector>
 
-#define DOWNLOAD_QUEUES		3
+#define MAX_DOWNLOAD_QUEUES		3
 
 class CDownloadQueueManager
 {
@@ -22,6 +22,8 @@ protected:
 
 	typedef std::vector<CDownloadQueue*> QUEUEPOOL;
 	QUEUEPOOL m_queues;
+
+	CRITICAL_SECTION m_critical;
 };
 
 // Single global instance of class is in cpp file
