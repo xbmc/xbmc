@@ -10,7 +10,7 @@
 CKaiClient* CKaiClient::client = NULL;
 
 //#define SPEEX_LOOPBACK 1
-#define	KAI_CONTACT_SETTLING_PERIOD		15000L
+#define	KAI_CONTACT_SETTLING_PERIOD		5000L
 #define KAI_REACHABLE_QUERY_PERIOD		15000L
 
 #ifdef SPEEX_LOOPBACK
@@ -975,12 +975,14 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 				SetBearerCaps(bHeadset);
 				m_bHeadset = bHeadset;
 			}
-		}
-
-		CStdString strRequest = "";
-		if (m_pRequestList->GetNext(strRequest))
-		{
-			Send(server_addr, strRequest);
+			else
+			{
+				CStdString strRequest = "";
+				if (m_pRequestList->GetNext(strRequest))
+				{
+					Send(server_addr, strRequest);
+				}
+			}
 		}
 	}
 }
