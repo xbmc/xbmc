@@ -28,7 +28,7 @@ struct VIS_INFO
 struct Visualisation
 {
 public:
-	void (__cdecl* Create)(LPDIRECT3DDEVICE8 pd3dDevice);
+	void (__cdecl* Create)(LPDIRECT3DDEVICE8 pd3dDevice, int iWidth, int iHeight);
 	void (__cdecl* Start)(int iChannels, int iSamplesPerSec, int iBitsPerSample);
 	void (__cdecl* AudioData)(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
 	void (__cdecl* Render) ();
