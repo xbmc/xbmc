@@ -130,6 +130,14 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res)
 	strPath.Format("%s%s\\%s", m_strBaseDir.c_str(), GetDirFromRes(*res).c_str(), strFile.c_str());
 	if (CUtil::FileExists(strPath))
 		return strPath;
+	// if we're in 1080i mode, try 720p next
+	if (*res == HDTV_1080i)
+	{
+		*res = HDTV_720p;
+		strPath.Format("%s%s\\%s", m_strBaseDir.c_str(), GetDirFromRes(*res).c_str(), strFile.c_str());
+		if (CUtil::FileExists(strPath))
+			return strPath;
+	}
 	// that failed - drop to the default resolution
 	if (*res == PAL_4x3 || *res == NTSC_4x3 || *res == HDTV_480p_4x3)
 		*res = m_DefaultResolution;

@@ -294,6 +294,8 @@ void CGUIWindowVideoPlaylist::OnFileItemFormatLabel(CFileItem* pItem)
 {
   CUtil::SetThumb(pItem);
 	CUtil::FillInDefaultIcon(pItem);
+	// Remove extension from title if it exists
+	pItem->SetLabel(CUtil::GetTitleFromPath(pItem->GetLabel()));
 }
 
 void CGUIWindowVideoPlaylist::DoSort(VECFILEITEMS& items)

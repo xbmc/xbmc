@@ -526,7 +526,7 @@ void CGUIWindowMusicPlayList::OnFileItemFormatLabel(CFileItem* pItem)
 		{
 			// No music info and it's not CDDA so we'll just show the filename
 			CStdString str;
-			str = CUtil::GetFileName(pItem->m_strPath);
+			str = CUtil::GetTitleFromPath(pItem->m_strPath);
 			str.Format("%02.2i. %s ", m_lPlayListSeq, str);
 			pItem->SetLabel(str);
 		}
@@ -601,6 +601,10 @@ void CGUIWindowMusicPlayList::OnRetrieveMusicInfo(VECFILEITEMS& items)
 					if (NULL != pLoader.get())
 							// get id3tag
 						pLoader->Load(pItem->m_strPath,pItem->m_musicInfoTag);
+				}
+				else
+				{	// no ID3 tag stuff, so get the title from the current label (to remove extensions etc.)
+					pItem->SetLabel(CUtil::GetTitleFromPath(pItem->GetLabel()));
 				}
 			}
 		}

@@ -535,7 +535,7 @@ void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
 			if(NameOfSong[0] != 0)
 				msg1.SetLabel(NameOfSong);
 			else
-				msg1.SetLabel( CUtil::GetFileName(strFile) );
+				msg1.SetLabel( CUtil::GetTitleFromPath(strFile) );
 			OnMessage(msg1);
 		}
 	}	//	if (tag.Loaded())
@@ -580,8 +580,8 @@ void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
 		else 
 		{
 			//	No tag information available for this file, show filename only
-			CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-			msg1.SetLabel( CUtil::GetFileName(strFile) );
+			CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO);
+			msg1.SetLabel( CUtil::GetTitleFromPath(strFile) );
 			OnMessage(msg1);
 		}
 	}
