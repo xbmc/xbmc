@@ -134,10 +134,10 @@ struct CreditLine_t
   // section dday
 	{  50,  22,   9500,   8000,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   36, L"DDay" },
   {  50,  35,    500,   7500,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"Special thanks to:" },
-	{  50,  45,    100,   7400,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"Frodo for not kicking my skull" },
-	{  50,  55,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"god for pizza, beer and women" },
+	{  50,  45,    100,   7400,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"Frodo for not kicking in my skull" },
+	{  50,  55,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"God for pizza, beer and women" },
 	{  50,  65,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"Douglas Adams for making me smile each summer" },
-	{  50,  75,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"hitchhikers guide to the galaxy" },
+	{  50,  75,    100,   7300,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   20, L"when reading Hitchhikers Guide To The Galaxy" },
 
   // section [XC]D-Ice
 	{  50,  22,   9500,   8000,  800,  800, EFF_IN_ASCEND |EFF_OUT_FADE   ,   36, L"[XC]D-Ice" },
