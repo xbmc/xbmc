@@ -14,6 +14,9 @@ CGUIImage* CBuddyItem::m_pHeadsetIcon	= NULL;
 CGUIImage* CBuddyItem::m_pPingIcon		= NULL;
 CGUIImage* CBuddyItem::m_pInviteIcon	= NULL;
 CGUIImage* CBuddyItem::m_pBusyIcon		= NULL;
+CGUIImage* CBuddyItem::m_pIdleIcon		= NULL;
+CGUIImage* CBuddyItem::m_pHostIcon		= NULL;
+CGUIImage* CBuddyItem::m_pKeyboardIcon	= NULL;
 
 CBuddyItem::CBuddyItem(CStdString& strLabel) : CKaiItem(strLabel)
 {
@@ -25,6 +28,7 @@ CBuddyItem::CBuddyItem(CStdString& strLabel) : CKaiItem(strLabel)
 	m_bIsContact		= FALSE;
 	m_bIsOnline			= FALSE;
 	m_bBusy				= FALSE;
+	m_bKeyboard			= FALSE;
 	m_bHeadset			= FALSE;	// does this buddy have a headset connected?
 	m_bSpeex			= FALSE;	// have you enabled speex for this buddy?
 	m_bIsTalking		= FALSE;	// is this buddy chatting?
@@ -52,7 +56,9 @@ CStdString CBuddyItem::GetArena()
 
 void CBuddyItem::SetIcons(INT aWidth, INT aHeight, const CStdString& aHeadsetTexture,
 							  const CStdString& aChatTexture, const CStdString& aPingTexture,
-							  const CStdString& aInviteTexture, const CStdString& aBusyTexture)
+							  const CStdString& aInviteTexture, const CStdString& aBusyTexture,
+							  const CStdString& aIdleTexture, const CStdString& aHostTexture,
+							  const CStdString& aKeyboardTexture)
 {
 	if (aChatTexture.length()>0)
 	{
@@ -82,6 +88,24 @@ void CBuddyItem::SetIcons(INT aWidth, INT aHeight, const CStdString& aHeadsetTex
 	{
 		m_pBusyIcon = new CGUIImage(0,0,0,0,aWidth,aHeight,aBusyTexture,0x0);
 		m_pBusyIcon->AllocResources();
+	}
+	
+	if (aIdleTexture.length())
+	{
+		m_pIdleIcon = new CGUIImage(0,0,0,0,aWidth,aHeight,aIdleTexture,0x0);
+		m_pIdleIcon->AllocResources();
+	}
+
+	if (aHostTexture.length())
+	{
+		m_pHostIcon = new CGUIImage(0,0,0,0,aWidth,aHeight,aHostTexture,0x0);
+		m_pHostIcon->AllocResources();
+	}
+
+	if (aKeyboardTexture.length())
+	{
+		m_pKeyboardIcon = new CGUIImage(0,0,0,0,aWidth,aHeight,aKeyboardTexture,0x0);
+		m_pKeyboardIcon->AllocResources();
 	}
 }
 
@@ -136,6 +160,12 @@ void CBuddyItem::OnPaint(CGUIItem::RenderContext* pContext)
 			m_pHeadsetIcon->SetPosition(iHeadsetIconPosX,iPingPosY);
 			m_pHeadsetIcon->Render();
 		}
+		// if buddy has a headset
+		else if (m_bKeyboard && m_pKeyboardIcon)
+		{
+			m_pKeyboardIcon->SetPosition(iHeadsetIconPosX,iPingPosY);
+			m_pKeyboardIcon->Render();
+		}
 		// if buddy has sent an invite
 		if (m_bInvite)
 		{
@@ -146,11 +176,20 @@ void CBuddyItem::OnPaint(CGUIItem::RenderContext* pContext)
 				m_pInviteIcon->Render();
 			}
 		}
-		// if buddy's client is detached from engine and syslink activity
-		else if (m_nStatus==1)
+		else if (m_nStatus==0 && m_pIdleIcon) // idle
+		{
+			m_pIdleIcon->SetPosition(iInviteIconPosX,iPingPosY);
+			m_pIdleIcon->Render();
+		}
+		else if (m_nStatus==1 && m_pBusyIcon) // joining
 		{
 			m_pBusyIcon->SetPosition(iInviteIconPosX,iPingPosY);
 			m_pBusyIcon->Render();
+		}
+		else if (m_nStatus>1 && m_pHostIcon)  // hosting
+		{
+			m_pHostIcon->SetPosition(iInviteIconPosX,iPingPosY);
+			m_pHostIcon->Render();
 		}
 
 		if (m_pPingIcon && m_dwPing>0 && m_dwPing<=PING_MAX_LATENCY )

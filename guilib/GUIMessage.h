@@ -87,6 +87,18 @@ using namespace std;
 	g_graphicsContext.SendMessage(msg); \
 }
 
+
+/*!
+	\ingroup winmsg
+	\brief 
+	*/
+#define CONTROL_ENABLE_ON_CONDITION(dwSenderId, dwControlID, bCondition) \
+{ \
+	CGUIMessage msg(bCondition ? GUI_MSG_ENABLED:GUI_MSG_DISABLED, dwSenderId, dwControlID); \
+	g_graphicsContext.SendMessage(msg); \
+}
+
+
 /*!
 	\ingroup winmsg
 	\brief 
