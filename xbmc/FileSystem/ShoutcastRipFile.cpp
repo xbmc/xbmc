@@ -1,6 +1,5 @@
 #include "ShoutcastRipFile.h"
 #include "../settings.h"
-#include "../lib/libid3/misc_support.h"
 #include "../util.h"
 #include "stdstring.h"
 
@@ -109,8 +108,7 @@
 		if ( m_logFile == NULL ) //will be done only the first time or if path not set!
 		{
 			char logFilename[1024];
-			CStdString strHomePath;
-			CUtil::GetHomePath(strHomePath);
+			CStdString strHomePath=g_stSettings.m_szMusicRecordingDirectory;
 			sprintf(logFilename, "%s\\recordings.log", strHomePath.c_str() );
 			m_logFile = fopen( logFilename, "at+");
 		}
@@ -151,12 +149,17 @@
 	void CShoutcastRipFile::StopRecording()
 	{
 		m_recState.bRecording = false; //stop writing, so we can write ID3 info
-		fclose(m_ripFile);
-		//	Write collected ID3 Data to file
-		ID3_Tag id3TagFile;
-		id3TagFile.Link( m_szFilteredFileName );
-		id3TagFile = m_id3Tag;
-		id3TagFile.Update();
+		if (m_ripFile)
+		{
+			fclose(m_ripFile);
+			m_ripFile=NULL;
+			//	Write collected ID3 Data to file
+/*			ID3_Tag id3TagFile;
+			id3TagFile.Clear();
+			id3TagFile.Link( m_szFilteredFileName );
+			id3TagFile = m_id3Tag;
+			id3TagFile.Update();*/
+		}
 	}
 
 	bool CShoutcastRipFile::IsRecording()
@@ -221,8 +224,7 @@
 			//The filename of RM will be something like "Oasis - Champagne Supernova", thus 
 			//So, we will make a file i.e "f:music\Record\Limbik Frequencies\Oasis - Champagne Supernova.mp3"
 			
-			CStdString strHomePath;
-			CUtil::GetHomePath(strHomePath);
+			CStdString strHomePath=g_stSettings.m_szMusicRecordingDirectory;
 			char szFilePath[1024];
 			sprintf( szFilePath, "%s\\%s", strHomePath.c_str(), directoryName );
 			SetFilename( szFilePath, m_szFilteredFileName );
@@ -272,8 +274,7 @@
 		else
 		{
 			//here we will make a file i.e "f:music\Record\Jazzmusique\Jazzmusique - 3.mp3"
-			CStdString strHomePath;
-			CUtil::GetHomePath(strHomePath);
+			CStdString strHomePath=g_stSettings.m_szMusicRecordingDirectory;
 			char szFilePath[1024];
 			char szTitle[1124];													//i.e.
 		

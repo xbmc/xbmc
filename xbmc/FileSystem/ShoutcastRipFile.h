@@ -4,8 +4,9 @@
 
 #include <xtl.h>
 #include "../lib/libshout/rip_manager.h"
-#include "../lib/libid3/misc_support.h"
 
+#include "../lib/libid3/id3.h"
+#include "../lib/libid3/misc_support.h"
 typedef struct RecStateSt
 {
 	bool		bRecording;

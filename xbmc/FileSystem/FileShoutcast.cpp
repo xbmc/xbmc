@@ -83,7 +83,7 @@ error_code filelib_write(char *buf, u_long size)
 	m_ripFile.Write( buf, size ); //will only write, if it has to
 	return SR_SUCCESS;
 }
-
+CFileShoutcast* m_pShoutCastRipper=NULL;
 
 CFileShoutcast::CFileShoutcast()
 {
@@ -92,10 +92,12 @@ CFileShoutcast::CFileShoutcast()
 	m_fileState.bRipStarted=false;
 	m_fileState.bRipError = false;
 	m_ringbuf.Create(1024*1024*5);
+	m_pShoutCastRipper=this;
 }
 
 CFileShoutcast::~CFileShoutcast()
 {
+	m_pShoutCastRipper=NULL;
 	m_ripFile.Reset();
 	m_ringbuf.Destroy(); 
 	rip_manager_stop();

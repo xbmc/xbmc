@@ -70,6 +70,7 @@ CSettings::CSettings(void)
 	strcpy( g_stSettings.m_szDefaultFiles, "");	
 	strcpy( g_stSettings.m_szDefaultVideos, "");	
 	strcpy( g_stSettings.m_szCDDBIpAdres,"");
+	strcpy (g_stSettings.m_szMusicRecordingDirectory,"");
 	g_stSettings.m_bUseCDDB=false;
 	g_stSettings.m_iMyMusicViewMethod=2;//view songs
 	g_stSettings.m_bMyMusicSongsRootViewAsIcons= true; //thumbs
@@ -225,6 +226,7 @@ void CSettings::Load()
 	GetString(pRootElement, "timeserver", g_stSettings.m_strTimeServer,"207.46.248.43");
   GetString(pRootElement, "thumbnails",g_stSettings.szThumbnailsDirectory,"");
   GetString(pRootElement, "shortcuts", g_stSettings.m_szShortcutDirectory,"");
+	GetString(pRootElement, "recordings", g_stSettings.m_szMusicRecordingDirectory,"");
 	GetString(pRootElement, "httpproxy", g_stSettings.m_szHTTPProxy,"");
 	
 	GetString(pRootElement, "imdb", g_stSettings.m_szIMDBDirectory,"");
@@ -258,6 +260,10 @@ void CSettings::Load()
   strDir=g_stSettings.m_szAlbumDirectory;
   ConvertHomeVar(strDir);
   strcpy( g_stSettings.m_szAlbumDirectory, strDir.c_str() );
+
+  strDir=g_stSettings.m_szMusicRecordingDirectory;
+  ConvertHomeVar(strDir);
+  strcpy( g_stSettings.m_szMusicRecordingDirectory, strDir.c_str() );
 
   if (g_stSettings.m_szShortcutDirectory[0])
   {

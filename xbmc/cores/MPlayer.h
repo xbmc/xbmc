@@ -42,6 +42,9 @@ public:
 	virtual void		GetVideoAspectRatio(float& fAR);
 	virtual void		AudioOffset(bool bPlus=true);
 	virtual void		SwitchToNextAudioLanguage();
+	virtual bool		CanRecord() ;
+	virtual bool		IsRecording();
+	virtual bool		Record(bool bOnOff) ;
 protected:
 	virtual void				OnStartup();
 	virtual void				OnExit();
