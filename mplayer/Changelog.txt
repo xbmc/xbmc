@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 18-08-2004 fixed: current time not showing in xbmc
   - 18-08-2004 fixed: some libraries that were commited as ascii
   - 18-08-2004 added: libdts 0.0.2 lib and header file
   - 17-08-2004 fixed: vobsub.c with butcher's fixes
