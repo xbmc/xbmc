@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 10-12-2004 fixed: [ 1080520 ] web interface: unqueing doesn't work - thanks to re.solve + BombrMan
   - 10-12-2004 updated: German (Austrian) language file (Thnx to CEOMR)
   - 10-12-2004 updated: Italian language file (Thnx to kotix)
   - 10-12-2004 fixed: [ 1069833 ] white no longer triggers osd.
