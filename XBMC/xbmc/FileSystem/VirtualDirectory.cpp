@@ -63,6 +63,8 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 			strIcon="defaultNetwork.png";	
 		else if (CUtil::IsDVD(pItem->m_strPath) )
 			strIcon="defaultDVDRom.png";
+		else if (CUtil::IsCDDA(pItem->m_strPath) )
+			strIcon="defaultCDDA.png";
 		else 
 			strIcon="defaultHardDisk.png";
 

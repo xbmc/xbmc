@@ -27,6 +27,7 @@
 #include "utils/delaycontroller.h"
 #include "keyboard/virtualkeyboard.h"
 #include "lib/libPython/XboxPython.h"
+#include "cores/IPlayer.h"
 
 #include <vector>
 using namespace std;
@@ -46,6 +47,8 @@ public:
 	void						LoadSkin(const CStdString& strSkin);
 	void						ExecuteScript(const CStdString& strScript);
 	void						ProcessScripts();
+	
+	bool									PlayFile(const CStdString& strFile);
   CGUIWindowHome        m_guiHome;
   CGUIWindowPrograms    m_guiPrograms;
 	CGUIWindowPictures		m_guiPictures;
@@ -66,6 +69,7 @@ public:
 	CDelayController			m_ctrDpad;
 	CDelayController			m_ctrIR;
 	Python*								m_pPhytonParser;
+	IPlayer*							m_pPlayer;
 protected:
 	vector<int>						m_vecScriptIds;
 	typedef vector<int>::iterator ivecScriptIds;

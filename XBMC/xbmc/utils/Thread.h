@@ -14,6 +14,7 @@
 #else
 #include <windows.h>
 #endif
+#include "event.h"
 
 class CThread  
 {
@@ -34,10 +35,9 @@ protected:
 	virtual void		OnStartup(){};
 	virtual void		OnExit(){};
 	virtual void		Process(){};
-
+	CEvent					m_eventStop;
 	bool            m_bAutoDelete;
 	bool						m_bStop;
-	bool						m_bStopped;
 	HANDLE					m_ThreadHandle;
 	DWORD						m_dwThreadId;
 private:
