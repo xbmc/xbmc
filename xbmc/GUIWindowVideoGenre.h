@@ -25,5 +25,6 @@ protected:
   virtual void			OnSort();
   virtual void			UpdateButtons();
 	virtual void			Update(const CStdString &strDirectory);
+  virtual void			OnClick(int iItem);
 
 };
