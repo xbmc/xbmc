@@ -718,6 +718,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\utils\KaiClient.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\KaiVector.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\utils\MediaMonitor.cpp">
 				</File>
 				<File
@@ -1289,6 +1292,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\KaiItem.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\KaiVector.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\KaiVoice.h">
@@ -1999,10 +2005,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
