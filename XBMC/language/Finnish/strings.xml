@@ -1,6 +1,6 @@
 <!-- Finnish - language resource  -->
 <!-- Finnish Translation by Nanite1000 -->
-<!-- Based on CVS revision 10-26-03 -->
+<!-- Based on CVS revision 11-11-03 DD-MM-YY -->
 <!-- For comments PM me in xboxmediacenter forum -->
 <!-- Kommentteja voi lähetellä xboxmediacentterin foorumin kautta -->
 <strings>
@@ -30,7 +30,7 @@
   </string>
   <string>
     <id>6</id>
-    <value>XBOX Media Center Oct 26th build</value>
+    <value>XBOX Media Center Nov 11th 2003 build</value>
   </string>
   <string>
     <id>7</id>
@@ -257,7 +257,7 @@
   </string>  
   <string>
     <id>135</id>
-    <value>Tyyli</value>
+    <value>Tyylilajit</value>
   </string>  
   <string>
     <id>136</id>
@@ -305,7 +305,7 @@
   </string> 
   <string>
     <id>147</id>
-    <value>Kiinteä</value>
+    <value>Kiinteä IP-osoite</value>
   </string> 
   <string>
     <id>148</id>
@@ -341,7 +341,7 @@
   </string> 
   <string>
     <id>156</id>
-    <value>Vapaana</value>
+    <value>vapaana</value>
   </string> 
   <string>
     <id>157</id>
@@ -349,7 +349,7 @@
   </string> 
   <string>
     <id>158</id>
-    <value>Muistia Vapaana</value>
+    <value>Muistia vapaana</value>
   </string> 
   <string>
     <id>159</id>
@@ -357,7 +357,7 @@
   </string> 
   <string>
     <id>160</id>
-    <value>Vapaana</value>
+    <value>vapaana</value>
   </string> 
   <string>
     <id>161</id>
@@ -465,7 +465,7 @@
   </string>  
   <string>
     <id>187</id>
-    <value>Albumia ei löytynyt!</value>
+    <value>Tietoja ei löytynyt!</value>
   </string>  
   <string>
     <id>188</id>
@@ -505,7 +505,7 @@
   </string> 
   <string>
     <id>197</id>
-    <value>Etsitään elokuvaa IMDB kannasta</value>
+    <value>Etsitään elokuvan tiedot IMDB kannasta</value>
   </string> 
   <string>
     <id>198</id>
@@ -517,7 +517,7 @@
   </string> 
   <string>
     <id>200</id>
-    <value>Lopputekstit</value>
+    <value>Kirjoittanut</value>
   </string> 
   <string>
     <id>201</id>
@@ -730,5 +730,33 @@
   <string>
     <id>254</id>
     <value>AC3 PassTru</value>
+  </string>
+  <string>
+    <id>255</id>
+    <value>CDDB</value>
+  </string>
+  <string>
+    <id>256</id>
+    <value>Haetaan freedb-kannasta levyn CDDB tiedot</value>
+  </string>
+  <string>
+    <id>257</id>
+    <value>Virhe</value>
+  </string>
+  <string>
+    <id>258</id>
+    <value>Käytä ID3 tietoja</value>
+  </string>
+  <string>
+    <id>259</id>
+    <value>Avataan</value>
+  </string>
+  <string>
+    <id>260</id>
+    <value>Shoutcast</value>
+  </string>
+  <string>
+    <id>261</id>
+    <value>Käynnistetään...</value>
   </string>
 </strings>
