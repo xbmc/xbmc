@@ -1,8 +1,8 @@
 <!-- Finnish - language resource                                                    !-->
 <!-- Finnish Translation 2004-11-7 by Nanite1000                                    !-->
 <!-- Based on CVS revision 2004-11-7 YYYY-MM-DD                                     !-->
-<!-- Finnish Translation Update 2005-01-29 by jutski                                !-->
-<!-- Based on CVS revision 2005-01-26 YYYY-MM-DD (English rev1.154)                 !-->
+<!-- Finnish Translation Update 2005-02-02 by jutski                                !-->
+<!-- Based on CVS revision 2005-02-02 YYYY-MM-DD (English rev1.159)                 !-->
 <!-- For comments PM me in xboxmediacenter forum or IRC: nanite1k @ #xbmc on efnet  !-->
 <!--   or send email to: nanite1000 _at_ users _dot_ sourceforge _dot_ net          !-->
 <!-- Kommentteja voi lähetellä xboxmediacentterin foorumin kautta                   !-->
@@ -12,7 +12,8 @@
 <!--    Ie.  light+snow, rain+showers...                                            !-->
 <!-- LCD strings not verified, i dont have LCD screen                               !-->
 <!-- Thanks to nanite1000 for his great work, but I felt this needed to be updated. !-->
-<!-- Should be mostly up-to-date now, let me know if anything's missing/wrong/etc.  !-->
+<!--                                                                                !-->
+<!-- Should be up-to-date now, let me know if anything's missing/wrong/etc.         !-->
 <!--    jutski (IRC: privmsg jutski, ircnet only;                                   !-->
 <!--            or email jutski _at_ users.sourceforge.net)                         !-->
 <strings>
@@ -454,6 +455,7 @@
   <string><id>506</id><value>Nimet hakemistojen nimistä</value></string>
   <string><id>507</id><value>Käytön mukaan</value></string>
   <string><id>508</id><value>Älä näytä Kirjanmerkit- ja Päivitys-painikkeita</value></string>
+  <string><id>509</id><value>Säilö ohjelmien pikkukuvat välimuistiin</value></string>
   <string><id>600</id><value>Rippaa CD</value></string>
   <string><id>601</id><value>Medium</value></string>
   <string><id>602</id><value>Standardi</value></string>
@@ -642,6 +644,8 @@
   <string><id>13203</id><value>Profiili '%s' ladattu</value></string>
   <string><id>13204</id><value>Viimeksi ladattu profiili:</value></string>
   <string><id>13205</id><value>Tuntematon</value></string>
+  <string><id>13206</id><value>Korvaa</value></string>
+  <string><id>13207</id><value>Korvataanko profiili '%s'?</value></string>
   <string><id>13299</id><value>Tavoitelämpötila</value></string>
   <string><id>13300</id><value>Tuulettimen nopeus</value></string>
   <string><id>13301</id><value>Automaattinen lämmönhallinta</value></string>
@@ -650,7 +654,7 @@
   <string><id>13304</id><value>Kaksisuuntainen merkistö käytössä</value></string>
   <string><id>13305</id><value>RSS Uutispalvelu käytössä</value></string>
   <string><id>13306</id><value>Piilota äitihakemisto</value></string>
-  <string><id>13307</id><value>Piilota kappaleiden numerot</value></string>
+  <string><id>13307</id><value>Kappaleen nimeämismalli</value></string>
   <string><id>13308</id><value>Käynnistetäänkö koko XBOX uudelleen,</value></string>
   <string><id>13309</id><value>eikä vain pelkkä XBMC?</value></string>
   <string><id>13310</id><value>Zoomaus-efekti</value></string>
@@ -761,6 +765,7 @@
   <string><id>14058</id><value>Filmin rakeisuus-efekti</value></string>
   <string><id>14059</id><value>Etsi omia pikkukuvia etäjaoista</value></string>
   <string><id>14060</id><value>Tuntematon tyyppi Välimuisti - Internet</value></string>
+  <string><id>14061</id><value>Automaattinen</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Ei yhteyttä palveluun, haluaisitko</value></string>
@@ -824,4 +829,5 @@
   <string><id>15059</id><value>Kutsu hyväksytty!</value></string>
   <string><id>15060</id><value>Viesti tähän</value></string>
   <string><id>15061</id><value>Sinut on kutsuttu pelaamaan peliä %s.</value></string>
+  <string><id>15062</id><value>Käytä vaihtoehtoista mplayer-ydintä</value></string>
 </strings>
