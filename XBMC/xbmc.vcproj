@@ -21,7 +21,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml"
+				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="_XBOX;_DEBUG;HAVE_MSWINDOWS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -200,7 +200,7 @@
 				FavorSizeOrSpeed="2"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml"
+				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;"
 				PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS"
 				StringPooling="FALSE"
 				MinimalRebuild="FALSE"
@@ -1461,12 +1461,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 		<Filter
 			Name="common"
 			Filter="">
-			<File
-				RelativePath=".\xbmc\lib\common\xbSockAddr.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\lib\common\xbsocket.cpp">
-			</File>
 			<File
 				RelativePath=".\xbmc\lib\common\xbstopwatch.cpp">
 			</File>
