@@ -13,4 +13,5 @@ public:
   virtual bool    OnMessage(CGUIMessage& message);
   virtual void    OnKey(const CKey& key);
 	virtual void    Render();
+	void						SetCurrentFile(const CStdString& strFile);
 };

@@ -620,7 +620,9 @@ bool CApplication::PlayFile(const CStdString& strFile)
 		CPlayerCoreFactory factory;
 		m_pPlayer = factory.CreatePlayer("mplayer",*this);
 	}
-	return m_pPlayer->openfile(strFile);
+	bool bResult=m_pPlayer->openfile(strFile);
+	if (bResult) m_guiMusicOverlay.SetCurrentFile(strFile);
+	return bResult;
 }
 
 void CApplication::OnPlayBackEnded()
