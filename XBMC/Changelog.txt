@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 04-04-2005 changed: IMDb lookups return the list of found movies even if there is only 1 (allows manual lookup if it got it wrong.)
   - 04-04-2005 changed: Improved the analog stick + trigger response + allowed analog ffwd and analog rewd to be mapped globally (eg Right thumb stick left and right works nicely.)
   - 04-04-2005 added: Search for .cue sheet underlying media checks for cuesheetname.mp3 and the dropping of the .cue extension.
   - 04-04-2005 added: support for smb://username@server/share (ie no password set no longer requires the colon.)
