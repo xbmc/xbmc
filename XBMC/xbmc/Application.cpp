@@ -204,11 +204,28 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 
 	// Boot up the network for FTP
 	bool NetworkUp = false;
-	bool TriedDash = false;
 	IN_ADDR ip_addr;
 	ip_addr.S_un.S_addr = 0;
+
 	if (InitNetwork)
 	{
+		bool TriedDash = false;
+		bool ForceDHCP = false;
+		bool ForceStatic = false;
+		if (m_bXboxMediacenterLoaded)
+		{
+			if (stricmp(g_stSettings.m_strLocalIPAdres, "dhcp"))
+			{
+				TriedDash = true;
+				ForceDHCP = true;
+			}
+			else if (g_stSettings.m_strLocalIPAdres[0] && g_stSettings.m_strLocalNetmask[0] && g_stSettings.m_strGateway[0] && g_stSettings.m_strNameServer[0])
+			{
+				ForceStatic = true;
+				TriedDash = true;
+			}
+		}
+	
 		for (;;)
 		{
 			if (!(XNetGetEthernetLinkStatus() & XNET_ETHERNET_LINK_ACTIVE))
@@ -220,7 +237,8 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 				int err = 1;
 				if (!TriedDash)
 				{
-					TriedDash = true;
+					if (!m_bXboxMediacenterLoaded)
+						TriedDash = true;
 					FEH_TextOut(pFont, iLine, L"Init network using dash settings...");
 					XNetStartupParams xnsp;
 					memset(&xnsp, 0, sizeof(xnsp));
@@ -239,37 +257,51 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 					err = XNetStartup(&xnsp);
 				}
 
-				if (err)
+				if (err && TriedDash)
 				{
-					FEH_TextOut(pFont, iLine, L"Init network using DHCP...");
-					network_info ni;
-					memset(&ni, 0, sizeof(ni));
-					ni.DHCP = true;
-					int iCount=0;
-					while ((err = CUtil::SetUpNetwork(iCount == 0, ni)) == 1 && iCount < 100)
+					if (!ForceStatic)
 					{
-						Sleep(50);
-						++iCount;
-
-						if (HaveGamepad)
+						FEH_TextOut(pFont, iLine, L"Init network using DHCP...");
+						network_info ni;
+						memset(&ni, 0, sizeof(ni));
+						ni.DHCP = true;
+						int iCount=0;
+						while ((err = CUtil::SetUpNetwork(iCount == 0, ni)) == 1 && iCount < 100)
 						{
-							ReadInput();
-							if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_START)
-								XKUtils::XBOXPowerCycle();
+							Sleep(50);
+							++iCount;
+
+							if (HaveGamepad)
+							{
+								ReadInput();
+								if (m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_START)
+									XKUtils::XBOXPowerCycle();
+							}
 						}
 					}
 
-					if (err)
+					if ((err || ForceStatic) && !ForceDHCP)
 					{
 						XNetCleanup();
 
 						FEH_TextOut(pFont, iLine, L"Init network using static ip...");
+						network_info ni;
 						memset(&ni, 0, sizeof(ni));
-						strcpy(ni.ip, "192.168.0.42");
-						strcpy(ni.subnet, "255.255.255.0");
-						strcpy(ni.gateway, "192.168.0.1");
-						strcpy(ni.DNS1, "192.168.0.1");
-						iCount=0;
+						if (ForceStatic)
+						{
+							strcpy(ni.ip, g_stSettings.m_strLocalIPAdres);
+							strcpy(ni.subnet, g_stSettings.m_strLocalNetmask);
+							strcpy(ni.gateway, g_stSettings.m_strGateway);
+							strcpy(ni.DNS1, g_stSettings.m_strNameServer);
+						}
+						else
+						{
+							strcpy(ni.ip, "192.168.0.42");
+							strcpy(ni.subnet, "255.255.255.0");
+							strcpy(ni.gateway, "192.168.0.1");
+							strcpy(ni.DNS1, "192.168.0.1");
+						}
+						int iCount=0;
 						while ((err = CUtil::SetUpNetwork(iCount == 0, ni)) == 1 && iCount < 100)
 						{
 							Sleep(50);
