@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 25-09-2004 fixed: [ 1031511 ] Playlists with accents in characters will not play
   - 25-09-2004 fixed: [ 1024803 ] Python and Mouse
   - 25-09-2004 fixed: [ 1011940 ] Pause Movie Hangs
   - 25-09-2004 fixed: [ 1034416 ] Difficult to read TTF subtitles
