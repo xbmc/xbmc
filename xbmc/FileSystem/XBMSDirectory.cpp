@@ -65,12 +65,44 @@ bool  CXBMSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 																						strPassword.c_str() );
 	}
 	CStdString strFileName=url.GetFileName();
-	
-	if (cc_xstream_client_setcwd(conn, strFileName.c_str()) != CC_XSTREAM_CLIENT_OK)
+	CStdString strDir, strFile;
+	strDir="";
+	if (cc_xstream_client_setcwd(conn, "/") == CC_XSTREAM_CLIENT_OK)
+	{
+		strFile=url.GetFileName();
+		for (int i=0; i < (int)strFile.size(); ++i)
+		{
+			if (strFile[i]=='/' || strFile[i]=='\\')
+			{
+				if (strDir!="")
+				{
+					if (cc_xstream_client_setcwd(conn, strDir.c_str()) != CC_XSTREAM_CLIENT_OK)
+					{
+						if (conn != NULL) cc_xstream_client_disconnect(conn);	
+						return false;
+					}
+				}
+				strDir="";
+			}
+			else
+			{
+				strDir += strFile[i];
+			}
+		}
+	}
+	else
 	{
 		if (conn != NULL) cc_xstream_client_disconnect(conn);	
-		
 		return false;
+	}
+	if (strDir.size() > 0)
+	{
+		if (cc_xstream_client_setcwd(conn, strDir.c_str()) != CC_XSTREAM_CLIENT_OK)
+		{
+			if (conn != NULL) cc_xstream_client_disconnect(conn);	
+			
+			return false;
+		}
 	}
 
 	if (cc_xstream_client_dir_open(conn, &handle) != CC_XSTREAM_CLIENT_OK)
