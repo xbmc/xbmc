@@ -67,6 +67,12 @@
 #define OSD_SUBMENU_BG_AUDIO 305
 #define OSD_SUBMENU_NIB 350
 
+#define HIDE_CONTROL(dwSenderId, dwControlID) \
+{ \
+	CGUIMessage msg(GUI_MSG_HIDDEN, dwSenderId, dwControlID); \
+	OnMessage(msg); \
+}
+
 CGUIWindowOSD::CGUIWindowOSD(void)
 :CGUIWindow(0)
 {
@@ -91,11 +97,6 @@ void CGUIWindowOSD::Render()
 	SetVideoProgress();			// get the percentage of playback complete so far
 	Get_TimeInfo();				// show the time elapsed/total playing time
 	CGUIWindow::Render();		// render our controls to the screen
-  if (m_bSubMenuOn)	// sub menu currently active ?
-	{
-		SET_CONTROL_FOCUS(GetID(), m_iActiveMenuButtonID, 0);	// set focus to last menu button
-		ToggleSubMenu(0, m_iActiveMenu);						// hide the currently active sub-menu
-	}
   
 }
 
@@ -114,7 +115,7 @@ void CGUIWindowOSD::OnAction(const CAction &action)
 		case ACTION_OSD_HIDESUBMENU:
 		case ACTION_SHOW_OSD:
 		{
-			if (m_bSubMenuOn)						// is sub menu on?
+      if (m_bSubMenuOn)						// is sub menu on?
 			{
 				SET_CONTROL_FOCUS(GetID(), m_iActiveMenuButtonID, 0);	// set focus to last menu button
 				ToggleSubMenu(0, m_iActiveMenu);						// hide the currently active sub-menu
@@ -198,24 +199,27 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 		{
       OutputDebugString("OSD:DEINIT\n");
 			if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(true);
-			if (m_bSubMenuOn)						// is sub menu on?
-			{
-				SET_CONTROL_FOCUS(GetID(), m_iActiveMenuButtonID, 0);	// set focus to last menu button
-				ToggleSubMenu(0, m_iActiveMenu);						// hide the currently active sub-menu
-			}
-      CGUIWindow::OnMessage(message);
+			CGUIWindow::OnMessage(message);
+      g_graphicsContext.SetOSDOn(false);
 			return true;
 		}
 		break;
 
 		case GUI_MSG_WINDOW_INIT:	// fired when OSD is shown
 		{
+
       OutputDebugString("OSD:INIT\n");
       CGUIWindow::OnMessage(message);
 			if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(false);
 			ResetAllControls();							// make sure the controls are positioned relevant to the OSD Y offset
+      g_graphicsContext.SetOSDOn(true);
+			m_bSubMenuOn=false;
+	    m_iActiveMenuButtonID=0;
+		  m_iActiveMenu=0;
+	    Reset();
 			SET_CONTROL_FOCUS(GetID(), OSD_PLAY, 0);	// set focus to play button by default when window is shown
-			return true;
+      
+      return true;
 		}
 		break;
 
@@ -519,33 +523,33 @@ void CGUIWindowOSD::ToggleSubMenu(DWORD iButtonID, DWORD iBackID)
 	m_bSubMenuOn = !m_bSubMenuOn;		// toggle sub menu visible status
 
 	// Set all sub menu controls to hidden
-	SET_CONTROL_HIDDEN(GetID(), OSD_VOLUMESLIDER);
-	SET_CONTROL_HIDDEN(GetID(), OSD_VIDEOPOS);
-	SET_CONTROL_HIDDEN(GetID(), OSD_VIDEOPOS_LABEL);
-	SET_CONTROL_HIDDEN(GetID(), OSD_AUDIOSTREAM_LIST);
-	SET_CONTROL_HIDDEN(GetID(), OSD_AVDELAY);
-	SET_CONTROL_HIDDEN(GetID(), OSD_NONINTERLEAVED);
-	SET_CONTROL_HIDDEN(GetID(), OSD_NOCACHE);
-	SET_CONTROL_HIDDEN(GetID(), OSD_ADJFRAMERATE);
-	SET_CONTROL_HIDDEN(GetID(), OSD_AVDELAY_LABEL);
+	HIDE_CONTROL(GetID(), OSD_VOLUMESLIDER);
+	HIDE_CONTROL(GetID(), OSD_VIDEOPOS);
+	HIDE_CONTROL(GetID(), OSD_VIDEOPOS_LABEL);
+	HIDE_CONTROL(GetID(), OSD_AUDIOSTREAM_LIST);
+	HIDE_CONTROL(GetID(), OSD_AVDELAY);
+	HIDE_CONTROL(GetID(), OSD_NONINTERLEAVED);
+	HIDE_CONTROL(GetID(), OSD_NOCACHE);
+	HIDE_CONTROL(GetID(), OSD_ADJFRAMERATE);
+	HIDE_CONTROL(GetID(), OSD_AVDELAY_LABEL);
   
-	SET_CONTROL_HIDDEN(GetID(), OSD_BRIGHTNESS);
-	SET_CONTROL_HIDDEN(GetID(), OSD_BRIGHTNESSLABEL);
+	HIDE_CONTROL(GetID(), OSD_BRIGHTNESS);
+	HIDE_CONTROL(GetID(), OSD_BRIGHTNESSLABEL);
   
-	SET_CONTROL_HIDDEN(GetID(), OSD_GAMMA);
-	SET_CONTROL_HIDDEN(GetID(), OSD_GAMMALABEL);
+	HIDE_CONTROL(GetID(), OSD_GAMMA);
+	HIDE_CONTROL(GetID(), OSD_GAMMALABEL);
   
-	SET_CONTROL_HIDDEN(GetID(), OSD_CONTRAST);
-	SET_CONTROL_HIDDEN(GetID(), OSD_CONTRASTLABEL);
+	HIDE_CONTROL(GetID(), OSD_CONTRAST);
+	HIDE_CONTROL(GetID(), OSD_CONTRASTLABEL);
 
-	SET_CONTROL_HIDDEN(GetID(), OSD_CREATEBOOKMARK);
-	SET_CONTROL_HIDDEN(GetID(), OSD_BOOKMARKS_LIST);
-	SET_CONTROL_HIDDEN(GetID(), OSD_BOOKMARKS_LIST_LABEL);
-	SET_CONTROL_HIDDEN(GetID(), OSD_CLEARBOOKMARKS);
-	SET_CONTROL_HIDDEN(GetID(), OSD_SUBTITLE_DELAY);
-	SET_CONTROL_HIDDEN(GetID(), OSD_SUBTITLE_DELAY_LABEL);
-	SET_CONTROL_HIDDEN(GetID(), OSD_SUBTITLE_ONOFF);
-	SET_CONTROL_HIDDEN(GetID(), OSD_SUBTITLE_LIST);
+	HIDE_CONTROL(GetID(), OSD_CREATEBOOKMARK);
+	HIDE_CONTROL(GetID(), OSD_BOOKMARKS_LIST);
+	HIDE_CONTROL(GetID(), OSD_BOOKMARKS_LIST_LABEL);
+	HIDE_CONTROL(GetID(), OSD_CLEARBOOKMARKS);
+	HIDE_CONTROL(GetID(), OSD_SUBTITLE_DELAY);
+	HIDE_CONTROL(GetID(), OSD_SUBTITLE_DELAY_LABEL);
+	HIDE_CONTROL(GetID(), OSD_SUBTITLE_ONOFF);
+	HIDE_CONTROL(GetID(), OSD_SUBTITLE_LIST);
 
 	// Reset the other buttons back to up except the one that's active
 	if (iButtonID != OSD_MUTE) ToggleButton(OSD_MUTE, false);
@@ -924,4 +928,57 @@ void CGUIWindowOSD::PopulateSubTitles()
 	// set the current active subtitle as the selected item in the list control
 	CGUIMessage msgSet(GUI_MSG_ITEM_SELECT,GetID(),OSD_SUBTITLE_LIST,g_stSettings.m_iAudioStream,0,NULL);
 	OnMessage(msgSet);
+}
+
+void	CGUIWindowOSD::ResetAllControls()
+{
+  g_graphicsContext.SetOSDOn(true);
+  CGUIWindow::ResetAllControls();
+  g_graphicsContext.SetOSDOn(false);
+}
+
+void CGUIWindowOSD::Reset()
+{
+// Set all sub menu controls to hidden
+
+	HIDE_CONTROL(GetID(), OSD_SUBMENU_BG_AUDIO);
+	HIDE_CONTROL(GetID(), OSD_SUBMENU_BG_VIDEO);
+	HIDE_CONTROL(GetID(), OSD_SUBMENU_BG_BOOKMARKS);
+	HIDE_CONTROL(GetID(), OSD_SUBMENU_BG_SUBTITLES);
+	HIDE_CONTROL(GetID(), OSD_SUBMENU_BG_VOL);
+
+
+	HIDE_CONTROL(GetID(), OSD_VOLUMESLIDER);
+	HIDE_CONTROL(GetID(), OSD_VIDEOPOS);
+	HIDE_CONTROL(GetID(), OSD_VIDEOPOS_LABEL);
+	HIDE_CONTROL(GetID(), OSD_AUDIOSTREAM_LIST);
+	HIDE_CONTROL(GetID(), OSD_AVDELAY);
+	HIDE_CONTROL(GetID(), OSD_NONINTERLEAVED);
+	HIDE_CONTROL(GetID(), OSD_NOCACHE);
+	HIDE_CONTROL(GetID(), OSD_ADJFRAMERATE);
+	HIDE_CONTROL(GetID(), OSD_AVDELAY_LABEL);
+  
+	HIDE_CONTROL(GetID(), OSD_BRIGHTNESS);
+	HIDE_CONTROL(GetID(), OSD_BRIGHTNESSLABEL);
+  
+	HIDE_CONTROL(GetID(), OSD_GAMMA);
+	HIDE_CONTROL(GetID(), OSD_GAMMALABEL);
+  
+	HIDE_CONTROL(GetID(), OSD_CONTRAST);
+	HIDE_CONTROL(GetID(), OSD_CONTRASTLABEL);
+
+	HIDE_CONTROL(GetID(), OSD_CREATEBOOKMARK);
+	HIDE_CONTROL(GetID(), OSD_BOOKMARKS_LIST);
+	HIDE_CONTROL(GetID(), OSD_BOOKMARKS_LIST_LABEL);
+	HIDE_CONTROL(GetID(), OSD_CLEARBOOKMARKS);
+	HIDE_CONTROL(GetID(), OSD_SUBTITLE_DELAY);
+	HIDE_CONTROL(GetID(), OSD_SUBTITLE_DELAY_LABEL);
+	HIDE_CONTROL(GetID(), OSD_SUBTITLE_ONOFF);
+	HIDE_CONTROL(GetID(), OSD_SUBTITLE_LIST);
+
+	ToggleButton(OSD_MUTE, false);
+	ToggleButton(OSD_SUBTITLES, false);
+	ToggleButton(OSD_BOOKMARKS, false);
+	ToggleButton(OSD_VIDEO, false);
+	ToggleButton(OSD_AUDIO, false);
 }

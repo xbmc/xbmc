@@ -8,6 +8,7 @@ CGraphicContext g_graphicsContext;
 
 CGraphicContext::CGraphicContext(void)
 {
+  m_bOSDOn=false;
 	InitializeCriticalSection(&m_critSection);
   m_iScreenWidth=720;
   m_iScreenHeight=576;
@@ -29,7 +30,10 @@ CGraphicContext::~CGraphicContext(void)
 	DeleteCriticalSection(&m_critSection);
 }
 
-
+void CGraphicContext::SetOSDOn(bool bOnOff)
+{
+  m_bOSDOn=bOnOff;
+}
 void CGraphicContext::SetD3DDevice(LPDIRECT3DDEVICE8 p3dDevice)
 {
 	m_pd3dDevice=p3dDevice;
@@ -67,7 +71,7 @@ void CGraphicContext::Correct(float& fCoordinateX, float& fCoordinateY)  const
 {
 	int	iOSDYOffset;
 
-	if (m_bFullScreenVideo)	// full screen video, so adjust with OSD offset instead
+	if (m_bOSDOn)	// full screen video, so adjust with OSD offset instead
 	{
 		iOSDYOffset = m_pResInfo[m_Resolution].iOSDYOffset;
 		fCoordinateX  += (float)m_iScreenOffsetX;
@@ -433,7 +437,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].Overscan.width = 720;
 			m_pResInfo[res].Overscan.height = 480;
 			m_pResInfo[res].iSubtitles = 480;
-			m_pResInfo[res].iOSDYOffset = 0;
+			m_pResInfo[res].iOSDYOffset = -75;
 			m_pResInfo[res].iWidth = 720;
 			m_pResInfo[res].iHeight = 480;
 			m_pResInfo[res].dwFlags = 0;
@@ -446,7 +450,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].Overscan.width = 720;
 			m_pResInfo[res].Overscan.height = 480;
 			m_pResInfo[res].iSubtitles = 480;
-			m_pResInfo[res].iOSDYOffset = 0;
+			m_pResInfo[res].iOSDYOffset = -75;
 			m_pResInfo[res].iWidth = 720;
 			m_pResInfo[res].iHeight = 480;
 			m_pResInfo[res].dwFlags = D3DPRESENTFLAG_WIDESCREEN;

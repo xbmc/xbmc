@@ -89,10 +89,12 @@ CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
 
 void CGUIWindowFullScreen::OnAction(const CAction &action)
 {
+  
 	if (m_bOSDVisible)
 	{
 		if (action.wID == ACTION_SHOW_OSD && !g_application.m_guiWindowOSD.SubMenuVisible())	// hide the OSD
 		{
+      CSingleLock lock(m_section);         
       OutputDebugString("CGUIWindowFullScreen::HIDEOSD\n");
 			CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0,0,0,NULL);
 			g_application.m_guiWindowOSD.OnMessage(msg);	// Send a de-init msg to the OSD
@@ -211,6 +213,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 
 		case ACTION_SHOW_OSD:	// Show the OSD
     {	
+      CSingleLock lock(m_section);      
       OutputDebugString("CGUIWindowFullScreen:SHOWOSD\n");
       m_dwOSDTimeOut=timeGetTime();
       m_bOSDVisible=true;
@@ -341,10 +344,12 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 
 bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 {	
+  
 	if (m_bOSDVisible)
 	{
     if (timeGetTime()-m_dwOSDTimeOut > 5000)
     {
+      CSingleLock lock(m_section);
       CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0,0,0,NULL);
 			g_application.m_guiWindowOSD.OnMessage(msg);	// Send a de-init msg to the OSD
 			m_bOSDVisible=false;
@@ -371,8 +376,9 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       m_bLastRender=false;
       m_bOSDVisible=false;
       CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness,g_settings.m_iContrast,g_settings.m_iGamma,true);
-			CGUIWindow::OnMessage(message);
-			g_graphicsContext.Lock();
+      g_graphicsContext.SetFullScreenVideo(false);//turn off to prevent calibration to OSD position
+      CGUIWindow::OnMessage(message);
+      g_graphicsContext.Lock();
 			g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
 			g_graphicsContext.SetFullScreenVideo( true );
 			g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
@@ -385,6 +391,13 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 		}
 		case GUI_MSG_WINDOW_DEINIT:
 		{
+      CSingleLock lock(m_section);
+      if (m_bOSDVisible)
+      {
+        CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0,0,0,NULL);
+			  g_application.m_guiWindowOSD.OnMessage(msg);	// Send a de-init msg to the OSD
+      }
+      m_bOSDVisible=false;
       CGUIWindow::OnMessage(message);
       CUtil::RestoreBrightnessContrastGamma();
 			g_graphicsContext.Lock();
@@ -394,7 +407,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 				g_application.m_pPlayer->Update(true);	
 			// Pause so that we make sure that our fullscreen renderer has finished...
 			Sleep(100);
-      m_bOSDVisible=false;
       
       m_iCurrentBookmark=0;
       HideOSD();
@@ -414,7 +426,7 @@ void CGUIWindowFullScreen::Render()
 
 bool CGUIWindowFullScreen::NeedRenderFullScreen()
 {
-
+  CSingleLock lock(m_section);      
 	if (g_application.m_pPlayer) 
   {
     if (g_application.m_pPlayer->IsPaused() )return true;
@@ -552,6 +564,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
   if (m_bOSDVisible)
   {
 	  // tell the OSD window to draw itself
+    CSingleLock lock(m_section);
 	  g_application.m_guiWindowOSD.Render();
 
     return;
