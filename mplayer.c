@@ -5067,12 +5067,12 @@ void mplayer_ToFFRW(int iSpeed)
   {
     if(iSpeed == 1)
     {
-      playback_speed = orgplayback_speed;
-      if(ffrw_speed != 0){
+      if(playback_speed != orgplayback_speed){
         abs_seek_pos=1; //Absolute seek since something goes wrong when ff/rw
         rel_seek_secs = aoldpts/10+1; //for some reason pts is multiplied by 10, and somewhat to small
+        playback_speed = orgplayback_speed;
       }
-      
+
       //Dump audio buffer immidiatly      
       audio_out->reset();
     }
