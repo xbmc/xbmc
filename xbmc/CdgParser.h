@@ -6,6 +6,7 @@
 #include  "FileSystem/File.h"
 #include "Cdg.h"
 #include "xbstopwatch.h"
+#include "CdgVoiceManager.h"	// Karaoke patch (114097)
 
 //////////////////////
 //////CdgLoader///////
@@ -158,12 +159,19 @@ public:
 	void		SetAVDelay(float fDelay);
 	float		GetAVDelay();
 	void		Render();
+	// Karaoke patch (114097) ...
+	bool		StartVoice(CDG_VOICE_MANAGER_CONFIG* pConfig);
+	void		StopVoice();
+	void		FreeVoice();
+	void		ProcessVoice();
+	// ... Karaoke patch (114097)
 
 protected:
 	CCdgLoader*	m_pLoader;
 	CCdgReader*	m_pReader;
 	CCdgRenderer*	m_pRenderer;
 	CCriticalSection	m_CritSection;
+	CCdgVoiceManager*	m_pVoiceManager;	// Karaoke patch (114097)
 
 	bool		AllocRenderer();
 	bool		AllocLoader();
@@ -174,6 +182,7 @@ protected:
 	void		StopLoader();
 	bool		StartReader();
 	void		StopReader();
+	bool		AllocVoice();	// Karaoke patch (114097)
 };
 
 #endif

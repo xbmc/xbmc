@@ -24,6 +24,8 @@ protected:
 	void						FillInSkins(CSetting *pSetting);
 	void						FillInLanguages(CSetting *pSetting);
 	void						FillInVisualisations(CSetting *pSetting);
+	void						FillInVoiceMasks(DWORD dwPort, CSetting *pSetting);			// Karaoke patch (114097)
+	void						FillInVoiceMaskValues(DWORD dwPort, CSetting *pSetting);	// Karaoke patch (114097)
 	void						FillInResolutions(CSetting *pSetting);
 	void						FillInScreenSavers(CSetting *pSetting);
 	virtual void		SetupControls();
