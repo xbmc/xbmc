@@ -19,6 +19,8 @@ CSettings::CSettings(void)
   g_stSettings.m_iLCDColumns=20;
   g_stSettings.m_iLCDRows=4;
   g_stSettings.m_iLCDBackLight=32;
+  g_stSettings.m_iLCDBrightness=100;
+  g_stSettings.m_iLCDType=LCD_MODE_TYPE_LCD;
   g_stSettings.m_iLCDAdress[0]=0x0;
   g_stSettings.m_iLCDAdress[1]=0x40;
   g_stSettings.m_iLCDAdress[2]=0x14;
@@ -780,6 +782,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetInteger(pElement, "lcdcolums",g_stSettings.m_iLCDColumns,20,1,20);
     GetInteger(pElement, "lcdrows",g_stSettings.m_iLCDRows,4,1,4);
     GetInteger(pElement, "lcdbacklight",g_stSettings.m_iLCDBackLight,32,0,63);
+    GetInteger(pElement, "lcdbrightness",g_stSettings.m_iLCDBrightness,100,0,100);
+    GetInteger(pElement, "lcdtype",g_stSettings.m_iLCDType,0,0,1);
     GetInteger(pElement, "lcdrow1",g_stSettings.m_iLCDAdress[0],0,0,0x400);
     GetInteger(pElement, "lcdrow2",g_stSettings.m_iLCDAdress[1],0x40,0,0x400);
     GetInteger(pElement, "lcdrow3",g_stSettings.m_iLCDAdress[2],0x14,0,0x400);
@@ -1065,6 +1069,8 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   SetInteger(pNode, "lcdcolums",g_stSettings.m_iLCDColumns);
   SetInteger(pNode, "lcdrows",g_stSettings.m_iLCDRows);
   SetInteger(pNode, "lcdbacklight",g_stSettings.m_iLCDBackLight);
+  SetInteger(pNode, "lcdbrightness",g_stSettings.m_iLCDBrightness);
+  SetInteger(pNode, "lcdtype",g_stSettings.m_iLCDType);
   SetInteger(pNode, "lcdrow1",g_stSettings.m_iLCDAdress[0]);
   SetInteger(pNode, "lcdrow2",g_stSettings.m_iLCDAdress[1]);
   SetInteger(pNode, "lcdrow3",g_stSettings.m_iLCDAdress[2]);
