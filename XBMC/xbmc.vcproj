@@ -215,7 +215,7 @@
 				PrecompiledHeaderThrough="stdafx.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="3"/>
+				DebugInformationFormat="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -224,7 +224,7 @@
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="libc"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="FALSE"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -1818,10 +1818,10 @@
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
