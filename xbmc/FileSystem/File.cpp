@@ -52,8 +52,8 @@ class CAutoBuffer
 {
 	char* p;
 public:
-	explicit CAutoBuffer(size_t s) { p = (char*)XPhysicalAlloc(128*1024, MAXULONG_PTR, 0, PAGE_READWRITE | PAGE_WRITECOMBINE); }
-	~CAutoBuffer() { if (p) XPhysicalFree(p); }
+	explicit CAutoBuffer(size_t s) { p = (char*)malloc(s); }
+	~CAutoBuffer() { if (p) free(p); }
 	char* get() { return p; }
 };
 
