@@ -801,7 +801,8 @@ void CGUIWindowVideoFiles::OnInfo(int iItem)
     {
       // no video file in this folder?
       // then just lookup IMDB info and show it
-      ShowIMDB(strMovie,strFolder, strFolder, false);
+      ShowIMDB(strMovie,strFolder, strFolder, true /*false*/);  // true for bFolder will save the thumb to the local disk (if applicable)
+                                                                // this should happen for the case where a folder only contains a bunch of folders as well.
       CONTROL_SELECT_ITEM(CONTROL_LIST,iSelectedItem);
       CONTROL_SELECT_ITEM(CONTROL_THUMBS,iSelectedItem);
       return;

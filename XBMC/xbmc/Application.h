@@ -110,6 +110,7 @@ public:
   void StartTimeServer();
   void StopTimeServer();
   void StartLEDControl(bool switchoff = false);
+	void DimLCDOnPlayback(bool dim);
   void PrintXBEToLCD(const char* xbePath);
 
 	void					Stop();
