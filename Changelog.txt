@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 30-01-2005 updated: German language file
+  - 30-01-2005 updated: Finnish language file (Thnx to jutski)
+  - 30-01-2005 updated: Norwegian language file (Thnx to vnmartinsen)
   - 30-01-2005 added: Auto gui resolution, sets highest enabled resolution, Settings->Appearance->Look and Feel->Resolution
   - 30-01-2005 added: Music listing style can be specified in options (in place of the Hide Track Numbers option)
   - 30-01-2005 fixed: Now Playing in My Videos goes to playlist view even if nothing is playing.

@@ -1,8 +1,8 @@
 <!-- Finnish - language resource                                                    !-->
 <!-- Finnish Translation 2004-11-7 by Nanite1000                                    !-->
 <!-- Based on CVS revision 2004-11-7 YYYY-MM-DD                                     !-->
-<!-- Finnish Translation Update 2005-01-23 by jutski                                !-->
-<!-- Based on CVS revision 2005-01-21 YYYY-MM-DD (English rev1.151)                 !-->
+<!-- Finnish Translation Update 2005-01-29 by jutski                                !-->
+<!-- Based on CVS revision 2005-01-26 YYYY-MM-DD (English rev1.154)                 !-->
 <!-- For comments PM me in xboxmediacenter forum or IRC: nanite1k @ #xbmc on efnet  !-->
 <!--   or send email to: nanite1000 _at_ users _dot_ sourceforge _dot_ net          !-->
 <!-- Kommentteja voi lähetellä xboxmediacentterin foorumin kautta                   !-->
@@ -165,7 +165,7 @@
   <string><id>215</id><value>Pehmennä</value></string>
   <string><id>216</id><value>Suurennus</value></string>
   <string><id>217</id><value>Kuvasuhde</value></string>
-  <string><id>218</id><value>DVD Asema</value></string>
+  <string><id>218</id><value>DVD-asema</value></string>
   <string><id>219</id><value>Aseta levy</value></string>
   <string><id>220</id><value>Verkkoasema</value></string>
   <string><id>221</id><value>Verkkoa ei kytketty</value></string>
@@ -727,17 +727,15 @@
   <string><id>14022</id><value>Kirjasto</value></string>
   <string><id>14023</id><value>Ei TV:tä</value></string>
   <string><id>14024</id><value>Syötä lähin suuri kaupunki tai yhdysvaltalainen postinumero</value></string>
-  <string><id>14025</id><value>Video-välimuisti  - Kovalevy</value></string>
-  <string><id>14026</id><value>                  - DVDRom</value></string>
-  <string><id>14027</id><value>                  - Lähiverkko</value></string>
-  <string><id>14028</id><value>                  - Internet</value></string>
-  <string><id>14029</id><value>Audio-välimuisti  - Kovalevy</value></string>
-  <string><id>14030</id><value>                  - DVDRom</value></string>
-  <string><id>14031</id><value>                  - Lähiverkko</value></string>
-  <string><id>14032</id><value>                  - Internet</value></string>
-  <string><id>14033</id><value>DVD-välimuisti    - Kovalevy</value></string>
-  <string><id>14034</id><value>                  - DVDRom</value></string>
-  <string><id>14035</id><value>                  - Lähiverkko</value></string>
+  <string><id>14025</id><value>Video/Audio/DVD-välimuisti - Kovalevy</value></string>
+  <string><id>14026</id><value>Video-välimuisti - DVD-ROM</value></string>
+  <string><id>14027</id><value>- Lähiverkko</value></string>
+  <string><id>14028</id><value>- Internet</value></string>
+  <string><id>14030</id><value>Audio-välimuisti - DVD-ROM</value></string>
+  <string><id>14031</id><value>- Lähiverkko</value></string>
+  <string><id>14032</id><value>- Internet</value></string>
+  <string><id>14034</id><value>DVD-välimuisti - DVD-ROM</value></string>
+  <string><id>14035</id><value>- Lähiverkko</value></string>
   <string><id>14036</id><value>Palvelimet</value></string>
   <string><id>14037</id><value>Ulkonäkö</value></string>
   <string><id>14038</id><value>Verkkoasetuksia muutettu</value></string>
@@ -761,10 +759,12 @@
   <string><id>14056</id><value>Pysäytä skannaaminen</value></string>
   <string><id>14057</id><value>Ei mahdollista skannatessa median tietoja</value></string>
   <string><id>14058</id><value>Filmin rakeisuus-efekti</value></string>
+  <string><id>14059</id><value>Etsi omia pikkukuvia etäjaoista</value></string>
+  <string><id>14060</id><value>Tuntematon tyyppi Välimuisti - Internet</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Ei yhteyttä palveluun, haluaisitko</value></string>
-  <string><id>15002</id><value>yrittää yhdistää uudelleen XMBC:llä?</value></string>
+  <string><id>15002</id><value>yrittää yhdistää uudelleen XBMC:llä?</value></string>
   <string><id>15003</id><value>Kirjoita viesti.</value></string>
   <string><id>15004</id><value>Sinut on kutsuttu pelaamaan peliä %s.</value></string>
   <string><id>15005</id><value>Päiväys: %s</value></string>
