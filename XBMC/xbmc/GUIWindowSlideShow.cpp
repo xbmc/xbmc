@@ -761,7 +761,7 @@ void CGUIWindowSlideShow::Render()
 		CLog::DebugLog("We have an error!");
 		if (m_Image[m_iCurrentPic].IsLoaded())
 		{	// Yes.  Let's let it transistion out, wait for it to be released, then try loading again.
-			CLog::DebugLog("Error loading the next image %s", m_vecSlides[m_iNextSlide].c_str());
+			CLog::Log(LOGERROR, "Error loading the next image %s", m_vecSlides[m_iNextSlide].c_str());
 			if (!m_bSlideShow)
 			{	// tell the pic to start transistioning out now
 				m_Image[m_iCurrentPic].StartTransistion();
@@ -772,13 +772,25 @@ void CGUIWindowSlideShow::Render()
 		}
 		else
 		{	// No.  Not much we can do here.  If we're in a slideshow, we mayaswell move on to the next picture
-			// this will be done automatically by the following code blocks
-			CLog::DebugLog("Error loading the current image %s", m_vecSlides[m_iCurrentSlide].c_str());
+			// change to next image
+			if (m_bSlideShow)
+			{
+				CLog::Log(LOGERROR, "Error loading the current image %s", m_vecSlides[m_iCurrentSlide].c_str());
+				m_iCurrentSlide = m_iNextSlide;
+				ShowNext();
+				m_bErrorMessage = false;
+			}
+			// else just drop through - there's nothing we can do (error message will be displayed)
 		}
+	}
+	if (m_bErrorMessage)
+	{
+		RenderErrorMessage();
+		return;
 	}
 	if (!m_Image[m_iCurrentPic].IsLoaded() && !m_pBackgroundLoader->IsLoading())
 	{	// load first image
-		CLog::DebugLog("Loading the current image %s", m_vecSlides[m_iCurrentSlide].c_str());
+		CLog::Log(LOGDEBUG, "Loading the current image %s", m_vecSlides[m_iCurrentSlide].c_str());
 		m_bWaitForNextPic = false;
 		m_bLoadNextPic = false;
 		// load using the background loader
@@ -900,15 +912,7 @@ void CGUIWindowSlideShow::Render()
 		}
 	}
 
-	if (m_bErrorMessage)
-	{
-		CGUIFont *pFont = g_fontManager.GetFont(((CGUILabelControl *)GetControl(LABEL_ROW1))->GetFontName());
-		if (pFont)
-		{
-			wstring wszText = g_localizeStrings.Get(747);
-			pFont->DrawText((float)g_graphicsContext.GetWidth()/2, (float)g_graphicsContext.GetHeight()/2, 0xffffffff, wszText.c_str(), XBFONT_CENTER_X|XBFONT_CENTER_Y);
-		}
-	}
+	RenderErrorMessage();
 	
 	if (m_bShowInfo)
 	{
@@ -1003,6 +1007,18 @@ void CGUIWindowSlideShow::OnAction(const CAction &action)
 		break;
 		default:
 			CGUIWindow::OnAction(action);
+	}
+}
+
+void CGUIWindowSlideShow::RenderErrorMessage()
+{
+	if (!m_bErrorMessage)
+		return;
+	CGUIFont *pFont = g_fontManager.GetFont(((CGUILabelControl *)GetControl(LABEL_ROW1))->GetFontName());
+	if (pFont)
+	{
+		wstring wszText = g_localizeStrings.Get(747);
+		pFont->DrawText((float)g_graphicsContext.GetWidth()/2, (float)g_graphicsContext.GetHeight()/2, 0xffffffff, wszText.c_str(), XBFONT_CENTER_X|XBFONT_CENTER_Y);
 	}
 }
 

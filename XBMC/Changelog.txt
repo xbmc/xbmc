@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 16-12-2004 added: Context menu to My Music
+  - 16-12-2004 fixed: Corrupt picture files could cause endless loops in slideshow/picture viewer
   - 16-12-2004 updated: German (Austrian) language file (Thnx to CEOMR)
   - 16-12-2004 fixed: background media scanning was not canceled on shutdown
   - 16-12-2004 updated: German language file

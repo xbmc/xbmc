@@ -24,7 +24,7 @@ protected:
 	virtual void				GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
 	virtual void				OnRetrieveMusicInfo(VECFILEITEMS& items);
 
-					void				OnScan();
+	virtual void				OnScan();
 					bool				DoScan(VECFILEITEMS& items);
 					void				LoadPlayList(const CStdString& strPlayList);
 

@@ -13,7 +13,6 @@
 #include <algorithm>
 #include "GuiUserMessages.h"
 #include "SectionLoader.h"
-#include "cdrip/cddaripper.h"
 #include "cuedocument.h"
 #include "AutoSwitch.h"
 
@@ -357,24 +356,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 			}
 			else if (iControl == CONTROL_BTNRIP)
 			{
-				CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
-				if (CDetectDVDMedia::IsDiscInDrive() && pCdInfo && pCdInfo->IsAudio(1))
-				{
-					if (!CUtil::IsCDDA(g_application.CurrentFile()))
-					{
-						CCDDARipper ripper;
-						ripper.RipCD();
-					}
-					else
-					{
-						CGUIDialogOK*	pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-						pDlgOK->SetHeading(257); // Error
-						pDlgOK->SetLine(0, "Can't rip CD or Track while playing from CD"); // 
-						pDlgOK->SetLine(1, ""); // 
-						pDlgOK->SetLine(2, "");
-						pDlgOK->DoModal(GetID());
-					}
-				}
+				OnRipCD();
 			}
 		}
 		break;
