@@ -50,7 +50,7 @@ bool CIMDB::FindMovie(const string &strMovie,IMDB_MOVIELIST& movielist)
 
 	if (strHTML.size()==0) return false;
 
-	char *szBuffer= new char[strHTML.size()+1];
+	char *szBuffer= [strHTML.size()+1];
 	if (!szBuffer) return false;
 	strcpy(szBuffer,strHTML.c_str());
 	
@@ -438,17 +438,24 @@ void CIMDB::ParseGenres(const char *ahref, string &strURL, string &strTitle)
 	if(pSlash) 
 	{
 		char *pRealEnd = strstr(szAHRef, "(more)");
-		if(!pRealEnd) strstr(szAHRef, "<br><br>");
+		if(!pRealEnd) pRealEnd=strstr(szAHRef, "<br><br>");
+    if (!pRealEnd)
+    {
+      OutputDebugString("1");
+    }
 		while(pSlash<pRealEnd)
 		{
 			pStart = pEnd+2;
 			pEnd = pSlash;
 			*pEnd = 0; // terminate string after current genre
-			char *szTemp = new char[pEnd - pStart];
-			strncpy(szTemp, pStart, (pEnd - pStart));
-			szTemp[pEnd - pStart] = 0;
+      int iLen=pEnd-pStart;
+      if (iLen < 0) break;
+			char *szTemp = new char[iLen+1];
+			strncpy(szTemp, pStart, iLen);
+			szTemp[iLen] = 0;
 	
 			ParseAHREF(szTemp, strURL, strGenre);
+      delete [] szTemp;
 			strTitle = strTitle + strGenre + " / ";
 			pSlash=strstr(pEnd+2," / ");
 			if(!pSlash) pSlash = pRealEnd;
