@@ -41,7 +41,7 @@
 	#pragma comment (lib, "xbmc/lib/libshout/libshout.lib" )
 #endif
 
-
+extern int m_iAudioStreamIDX;
 CApplication::CApplication(void)
 :m_ctrDpad(220,220)
 ,m_ctrIR(220,220)
@@ -676,6 +676,7 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
   {
     OutputDebugString("new file set audiostream:0\n");
     g_stSettings.m_iAudioStream=0;
+    m_iAudioStreamIDX=-1;
   }
   m_strCurrentFile=strFile;
 	CURL url(strFile);

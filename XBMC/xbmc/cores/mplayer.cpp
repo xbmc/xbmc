@@ -67,7 +67,7 @@ extern "C" void dllReleaseAll( );
 
 extern "C" void free_registry(void);
 extern void xbox_video_wait();
-
+int m_iAudioStreamIDX=-1;
 CMPlayer::Options::Options()
 {
     m_iChannels=0;
@@ -76,7 +76,7 @@ CMPlayer::Options::Options()
     m_fVolumeAmplification=0.0f;
     m_bNonInterleaved=false;
     m_fSpeed=1.0f;
-    m_iAudioStream=0;
+    m_iAudioStream=-1;
 }
 void  CMPlayer::Options::SetFPS(float fFPS)
 {
@@ -195,11 +195,14 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 
   }
 
-  if ( m_iAudioStream >0)
+  if ( m_iAudioStream >=0)
   {
     m_vecOptions.push_back("-aid");
-    strTmp.Format("%i", 1+m_iAudioStream);
+    strTmp.Format("%i", m_iAudioStream);
     m_vecOptions.push_back(strTmp);
+    char szTmp[128];
+    sprintf(szTmp,"add param:-aid %i\n", m_iAudioStream);
+    OutputDebugString(szTmp);
   }
 
   if ( m_iChannels) 
@@ -423,7 +426,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
     options.SetChannels(0);
   }
 
-  options.SetAudioStream(g_stSettings.m_iAudioStream);
+  options.SetAudioStream(m_iAudioStreamIDX);
   options.SetVolumeAmplification(g_stSettings.m_fVolumeAmplification);
   options.GetOptions(argc,argv);
   
