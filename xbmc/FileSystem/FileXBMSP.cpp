@@ -111,14 +111,47 @@ bool CFileXBMSP::Open(const char* strUserName, const char* strPassword,const cha
     szPath[ strlen(strFileName)-(strFile.size()+1)]=0;
   }
 
-  if (szPath[0])
-  {
-	  if (cc_xstream_client_setcwd(m_connection, szPath) != CC_XSTREAM_CLIENT_OK)
-	  {
-		  return false;
-	  }
-  }
 	
+	CStdString strDir, strPath;
+	strDir="";
+	if (cc_xstream_client_setcwd(m_connection, "/") == CC_XSTREAM_CLIENT_OK)
+	{
+		strPath=szPath;
+		for (int i=0; i < (int)strPath.size(); ++i)
+		{
+			if (strPath[i]=='/' || strPath[i]=='\\')
+			{
+				if (strDir!="")
+				{
+					if (cc_xstream_client_setcwd(m_connection, strDir.c_str()) != CC_XSTREAM_CLIENT_OK)
+					{
+						if (m_connection != NULL) cc_xstream_client_disconnect(m_connection);	
+						return false;
+					}
+				}
+				strDir="";
+			}
+			else
+			{
+				strDir += strPath[i];
+			}
+		}
+	}
+	else
+	{
+		if (m_connection != NULL) cc_xstream_client_disconnect(m_connection);	
+		return false;
+	}
+	if (strDir.size() > 0)
+	{
+		if (cc_xstream_client_setcwd(m_connection, strDir.c_str()) != CC_XSTREAM_CLIENT_OK)
+		{
+			if (m_connection != NULL) cc_xstream_client_disconnect(m_connection);	
+			
+			return false;
+		}
+	}
+
   if (cc_xstream_client_file_info(m_connection, strFile.c_str(), &info) != CC_XSTREAM_CLIENT_OK)
 	{
 		cc_xstream_client_disconnect(m_connection);
