@@ -43,7 +43,7 @@ CFileRelax::~CFileRelax()
 	Close();
 }
 //*********************************************************************************************
-bool CFileRelax::Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport, bool bBinary)
+bool CFileRelax::Open(const CURL& url, bool bBinary)
 {
 	if (m_bOpened) Close();
 	m_bOpened=false;
@@ -59,8 +59,8 @@ bool CFileRelax::Open(const char* strUserName, const char* strPassword,const cha
 	m_socket.attach( socket(AF_INET,SOCK_STREAM,IPPROTO_TCP));
 
 	service.sin_family = AF_INET;
-	service.sin_addr.s_addr = inet_addr( strHostName );
-	service.sin_port = htons(iport);
+	service.sin_addr.s_addr = inet_addr( url.GetHostName() );
+	service.sin_port = htons(url.GetPort());
 		
 	// attempt to connection
 	if (connect((SOCKET)m_socket,(sockaddr*) &service,sizeof(struct sockaddr)) == SOCKET_ERROR)
@@ -101,7 +101,7 @@ bool CFileRelax::Open(const char* strUserName, const char* strPassword,const cha
 //	if (strFileName[0]=='/')
 //		sprintf(cmd,"OPEN,%s",&strFileName[1]);
 //	else
-		sprintf(cmd,"OPEN,%s",strFileName);
+		sprintf(cmd,"OPEN,%s",url.GetFileName());
 	if (!Send((unsigned char*)cmd,strlen(cmd) ) )
 	{
 		m_socket.reset();
@@ -129,17 +129,17 @@ bool CFileRelax::Open(const char* strUserName, const char* strPassword,const cha
 }
 
 
-bool CFileRelax::Exists(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport)
+bool CFileRelax::Exists(const CURL& url)
 {
 	bool exist(true);
-	exist=CFileRelax::Open(strUserName, strPassword, strHostName, strFileName, iport, true);
+	exist=CFileRelax::Open(url, true);
 	Close();
 	return exist;
 }
 
-int CFileRelax::Stat(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName, int iport, struct __stat64* buffer)
+int CFileRelax::Stat(const CURL& url, struct __stat64* buffer)
 {
-	if (Open(strUserName, strPassword, strHostName, strFileName, iport, true))
+	if (Open(url, true))
 	{
 		buffer->st_size = this->m_fileSize;
 		buffer->st_mode = _S_IFREG;

@@ -38,9 +38,9 @@ CFileHD::~CFileHD()
 
 }
 //*********************************************************************************************
-bool CFileHD::Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport, bool bBinary)
+bool CFileHD::Open(const CURL& url, bool bBinary)
 {
-	CStdString strFile(strFileName);
+	CStdString strFile(url.GetFileName());
 	strFile.Replace("/", "\\");
 
 	m_hFile.attach( CreateFile(strFile.c_str(),GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,0,NULL));
@@ -55,17 +55,17 @@ bool CFileHD::Open(const char* strUserName, const char* strPassword,const char* 
 	return true;
 }
 
-bool CFileHD::Exists(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport)
+bool CFileHD::Exists(const CURL& url)
 {
-	CStdString strFile(strFileName);
+	CStdString strFile(url.GetFileName());
 	strFile.Replace("/", "\\");
 
 	return GetFileAttributes(strFile.c_str()) != -1;
 }
 
-int CFileHD::Stat(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName, int iport, struct __stat64* buffer)
+int CFileHD::Stat(const CURL& url, struct __stat64* buffer)
 {
-	CStdString strFile(strFileName);
+	CStdString strFile(url.GetFileName());
 	strFile.Replace("/", "\\");
 
 	return _stat64(strFile.c_str(), buffer);
