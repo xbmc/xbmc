@@ -284,6 +284,7 @@ bool CHTTP::Connect()
 			Close();
 			return false;
 		}
+		m_socket.attach(socket(AF_INET,SOCK_STREAM,IPPROTO_TCP)); // new socket
 	}
 	hEvent = WSACreateEvent();
 	return true;
