@@ -113,6 +113,11 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
+void CGUIWindowHome::OnAction(const CAction &action)
+{
+	CGUIWindow::OnAction(action);
+}
+
 void CGUIWindowHome::Render()
 {
   WCHAR szText[128];
