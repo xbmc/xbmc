@@ -81,7 +81,10 @@ void COSDOptionIntRange::Draw(int x, int y, bool bFocus,bool bSelected)
     }
     else
     {
-      swprintf(strValue,L"%i/%i",m_iValue, (m_iMax-m_iMin)/m_iInterval);
+      if (m_iInterval==1)
+        swprintf(strValue,L"%i/%i",m_iValue, m_iMax);
+      else
+        swprintf(strValue,L"%i/%i",m_iValue, (m_iMax-m_iMin)/m_iInterval);
     }
     pFont13->DrawShadowText( (float)x+150,(float)y, dwColor,
                               strValue, 0,
