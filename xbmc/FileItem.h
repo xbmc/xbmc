@@ -126,6 +126,7 @@ public:
           CFileItem*    operator[] (int iItem);
   const   CFileItem*    operator[] (int iItem) const;
           void          Clear();
+          void          ClearKeepPointers();
           void          Add(CFileItem* pItem);
           void          Remove(CFileItem* pItem);
           void          Remove(int iItem);
