@@ -20,6 +20,8 @@ ISO9660
 */
 #include "iso9660.h"
 #include "../utils/singlelock.h"
+#include "../utils/CharsetConverter.h"
+
 #include "stdstring.h"
 //#define _DEBUG_OUTPUT 1
 
@@ -209,14 +211,14 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 		memcpy( &isodir, pCurr_dir_cache + iso9660searchpointer, isize);
 		if( !(isodir.byFlags & Flag_NotExist) )
 		{
-			if( (!( isodir.byFlags & Flag_Directory )) && ( isodir.Len_Fi ) )
+			if( (!( isodir.byFlags & Flag_Directory )) && ( isodir.Len_Fi > 1) )
 			{
 				string temp_text ;
 				bool bContinue=false;
-				if ( m_info.joliet &&  !isodir.FileName[0] )
+				if ( m_info.joliet ) 
 				{
 					bContinue=true;
-					temp_text = GetThinText((WCHAR*)(isodir.FileName+1), isodir.Len_Fi );
+					temp_text = GetThinText((WCHAR*)(isodir.FileName), isodir.Len_Fi );
 					temp_text.resize(isodir.Len_Fi/2);
 				}
 
@@ -294,14 +296,14 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 		memcpy( &isodir, pCurr_dir_cache + iso9660searchpointer, min(sizeof(isodir),sizeof(m_info.isodir)));
 		if( !(isodir.byFlags & Flag_NotExist) )
 		{
-			if( (( isodir.byFlags & Flag_Directory )) && ( isodir.Len_Fi ) )
+			if( (( isodir.byFlags & Flag_Directory )) && ( isodir.Len_Fi > 1) )
 			{
 				string temp_text ;
 				bool bContinue=false;
-				if ( m_info.joliet &&  !isodir.FileName[0] )
+				if ( m_info.joliet )
 				{
 					bContinue=true;
-					temp_text = GetThinText((WCHAR*)(isodir.FileName+1), isodir.Len_Fi );
+					temp_text = GetThinText((WCHAR*)(isodir.FileName), isodir.Len_Fi );
 					temp_text.resize(isodir.Len_Fi/2);
 				}
 				if (!m_info.joliet && isodir.FileName[0]>=0x20 )
@@ -594,12 +596,12 @@ bool iso9660::FindClose( HANDLE szLocalFolder )
 //******************************************************************************************************************
 string iso9660::GetThinText(WCHAR* strTxt, int iLen )
 {
-	m_strReturn="";
-	for (int i=0; i < iLen; i++)
-	{
-		m_strReturn += (char)(strTxt[i]&0xff);
-	}
-	return m_strReturn ;
+	CStdStringW strTxtUnicode(strTxt, iLen);
+	CStdString  strTxtCharset;
+
+	g_charsetConverter.ucs2CharsetToStringCharset(strTxtUnicode, strTxtCharset, true);
+	
+	return strTxtCharset;
 }
 
 //************************************************************************************
