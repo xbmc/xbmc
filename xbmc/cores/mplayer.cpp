@@ -389,10 +389,21 @@ bool CMPlayer::openfile(const CStdString& strFile)
     options.SetNonInterleaved(g_stSettings.m_bNonInterleaved);
   }
 
+  // shoutcast is always stereo
   if (CUtil::IsShoutCast(strFile) ) 
+  {
     options.SetChannels(2);
-  else
+  }
+  else if (g_stSettings.m_bUseDigitalOutput)
+  {
+    // if we are using digital output, try to open the file using 6 channels audio
     options.SetChannels(6);
+  }
+  else 
+  {
+    // if we are using analog output, then we only got 2 stereo output
+    options.SetChannels(0);
+  }
 
   options.SetVolumeAmplification(g_stSettings.m_fVolumeAmplification);
   options.GetOptions(argc,argv);
@@ -445,6 +456,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
           options.SetSpeed(25.0f / fFPS); 
           options.SetFPS(25.0f);
           bNeed2Restart=true;
+          OutputDebugString("--restart cause we use ntsc->pal framerate conversion\n");
         }
       }
       else
@@ -456,6 +468,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
           options.SetSpeed(23.976f / fFPS); 
           options.SetFPS(23.976f);
           bNeed2Restart=true;
+          OutputDebugString("--restart cause we use pal->ntsc framerate conversion\n");
         }
       }
     }
@@ -473,6 +486,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
         options.SetChannels(2);
         options.SetAC3PassTru(true);
         bNeed2Restart=true;
+        OutputDebugString("--restart cause we use ac3 passtru\n");
 		  }
 	  }
 
@@ -485,6 +499,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
         options.SetChannels(6);
         options.SetChannelMapping("channels=6:6:0:0:1:1:2:4:3:5:4:2:5:3");
         bNeed2Restart=true;
+        OutputDebugString("--restart cause speaker mapping needs fixing\n");
 	    }	
 
       // if xbox only got stereo output, then limit number of channels to 2
@@ -503,6 +518,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
         options.SetChannels(6);
         options.SetChannelMapping("channels=6:5:0:0:1:1:2:2:3:3:4:4:5:5");
         bNeed2Restart=true;
+        OutputDebugString("--restart cause audio channels changed:5\n");
       }
       // remap audio speaker layout for files with 3 audio channels 
       if (iChannels==3)
@@ -510,25 +526,31 @@ bool CMPlayer::openfile(const CStdString& strFile)
         options.SetChannels(4);
         options.SetChannelMapping("channels=4:4:0:0:1:1:2:2:2:3");
         bNeed2Restart=true;
+        OutputDebugString("--restart cause audio channels changed:3\n");
       }
       
       if (iChannels==1 || iChannels==2||iChannels==4)
       {
-        if ( iChannels !=2) options.SetChannels(iChannels);
-        else options.SetChannels(0);
-        bNeed2Restart=true;
+        int iChan=options.GetChannels();
+        if ( iChannels !=2) iChannels=2;
+        else iChannels=0;
+        if (iChan!=iChannels)
+        {
+          OutputDebugString("--restart cause audio channels changed\n");
+          options.SetChannels(iChannels);
+          bNeed2Restart=true; 
+        }
       }
     }
 
     if (bNeed2Restart)
     {
+      OutputDebugString("--------------- restart --------------- \n");
 			mplayer_close_file();
       options.GetOptions(argc,argv);
 			load();
 			mplayer_init(argc,argv);
-
       mplayer_setcache_size(iCacheSize);
-
 			iRet=mplayer_open_file(strFile.c_str());
 			if (iRet < 0)
 			{
