@@ -1186,70 +1186,32 @@
     <id>369</id>
     <value>Title</value>
   </string>
-  <string>
-    <id>370</id>
-    <value>T-Storms</value>
-  </string>
-  <string>
-    <id>371</id>
-    <value>Partly</value>
-  </string>
-  <string>
-    <id>372</id>
-    <value>Mostly</value>
-  </string>
-  <string>
-    <id>373</id>
-    <value>Sunny</value>
-  </string>
-  <string>
-    <id>374</id>
-    <value>Cloudy</value>
-  </string>
-  <string>
-    <id>375</id>
-    <value>Snow</value>
-  </string>
-  <string>
-    <id>376</id>
-    <value>Rain</value>
-  </string>
-  <string>
-    <id>377</id>
-    <value>Light</value>
-  </string>
-  <string>
-    <id>378</id>
-    <value>AM</value>
-  </string>
-  <string>
-    <id>379</id>
-    <value>PM</value>
-  </string>
-  <string>
-    <id>380</id>
-    <value>Showers</value>
-  </string>
-  <string>
-    <id>381</id>
-    <value>Few</value>
-  </string>
-  <string>
-    <id>382</id>
-    <value>Scattered</value>
-  </string>
-  <string>
-    <id>383</id>
-    <value>Wind</value>
-  </string>
-  <string>
-    <id>384</id>
-    <value>Strong</value>
-  </string>
-  <string>
-    <id>385</id>
-    <value>Fair</value>
-  </string>
+  <string><id>370</id><value>T-Storms</value></string>
+  <string><id>371</id><value>Partly</value></string>
+  <string><id>372</id><value>Mostly</value></string>
+  <string><id>373</id><value>Sunny</value></string>
+  <string><id>374</id><value>Cloudy</value></string>
+  <string><id>375</id><value>Snow</value></string>
+  <string><id>376</id><value>Rain</value></string>
+  <string><id>377</id><value>Light</value></string>
+  <string><id>378</id><value>AM</value></string>
+  <string><id>379</id><value>PM</value></string>
+  <string><id>380</id><value>Showers</value></string>
+  <string><id>381</id><value>Few</value></string>
+  <string><id>382</id><value>Scattered</value></string>
+  <string><id>383</id><value>Wind</value></string>
+  <string><id>384</id><value>Strong</value></string>
+  <string><id>385</id><value>Fair</value></string>
+  <string><id>386</id><value>Clear</value></string>
+  <string><id>387</id><value>Clouds</value></string>
+  <string><id>388</id><value>N/A</value></string>
+  <string><id>389</id><value>N/A</value></string>
+  <string><id>390</id><value>N/A</value></string>
+  <string><id>391</id><value>N/A</value></string>
+  <string><id>392</id><value>N/A</value></string>
+  <string><id>393</id><value>N/A</value></string>
+  <string><id>394</id><value>N/A</value></string>
+  <string><id>395</id><value>N/A</value></string>
   <string>
   <id>396</id> 
   <value>Select Location</value> 
@@ -1632,7 +1594,7 @@
   </string>
   <string>
     <id>492</id>
-    <value>Enlarge VobSubs</value>
+    <value>Enlarge Subtitles</value>
   </string>
 
 <string><id>10000</id><value>Home</value></string>
