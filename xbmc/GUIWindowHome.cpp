@@ -25,7 +25,7 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(0)
 	m_iLastControl=-1;
 	m_iLastMenuOption=-1;
 
-//	ON_CLICK_MESSAGE(CONTROL_BTN_SHUTDOWN,	CGUIWindowHome, OnClickShutdown);	
+	ON_CLICK_MESSAGE(CONTROL_BTN_SHUTDOWN,	CGUIWindowHome, OnClickShutdown);	
 	ON_CLICK_MESSAGE(CONTROL_BTN_DASHBOARD,	CGUIWindowHome, OnClickDashboard);	
 	ON_CLICK_MESSAGE(CONTROL_BTN_REBOOT,	CGUIWindowHome, OnClickReboot);	
 	ON_CLICK_MESSAGE(CONTROL_BTN_CREDITS,	CGUIWindowHome, OnClickCredits);	
