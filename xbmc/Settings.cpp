@@ -284,6 +284,7 @@ CSettings::CSettings(void)
 
 	g_stSettings.m_bMyMusicGenresRootSortAscending=true;
 	g_stSettings.m_bMyMusicGenresSortAscending=true;
+	g_stSettings.m_bMyMusicShowTrackNumber=true;
 
 	g_stSettings.m_bMyVideoSortAscending=true;
 	g_stSettings.m_bMyVideoRootSortAscending=true;
@@ -1095,6 +1096,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetInteger(pElement, "startwindow",g_stSettings.m_iMyMusicStartWindow,WINDOW_MUSIC_FILES,WINDOW_MUSIC_FILES,WINDOW_MUSIC_TOP100);//501; view songs
 		GetBoolean(pElement, "songinfoinvis",g_stSettings.m_bMyMusicSongInfoInVis);
     GetBoolean(pElement, "songthumbinvis", g_stSettings.m_bMyMusicSongThumbInVis);
+		GetBoolean(pElement, "showtracknumber", g_stSettings.m_bMyMusicShowTrackNumber);
 	}
 	// myvideos settings
 	pElement = pRootElement->FirstChildElement("myvideos");
@@ -1502,6 +1504,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	SetInteger(pNode, "startwindow",g_stSettings.m_iMyMusicStartWindow);
 	SetBoolean(pNode, "songinfoinvis",g_stSettings.m_bMyMusicSongInfoInVis);
   SetBoolean(pNode, "songthumbinvis", g_stSettings.m_bMyMusicSongThumbInVis);
+	SetBoolean(pNode, "showtracknumber", g_stSettings.m_bMyMusicShowTrackNumber);
 
 	// myvideos settings
 	TiXmlElement videosNode("myvideos");
