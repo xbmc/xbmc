@@ -106,6 +106,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
     
 	switch (action.wID)
 	{
+
     // previous : play previous song from playlist
     case ACTION_PREV_ITEM:
 	  {
