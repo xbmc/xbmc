@@ -165,6 +165,23 @@ struct SSortMusicNav
 					//strcpy(szfilename2, rpEnd.m_musicInfoTag.GetAlbum());
 				break;
 
+				case 8:	// Label without "The "
+					strStart = rpStart.GetLabel();
+					strEnd = rpEnd.GetLabel();
+					if (strStart.Left(4).Equals("The "))
+					{
+						strTemp = strStart.Left(4);
+						strStart.TrimLeft(strTemp);
+					}
+					if (strEnd.Left(4).Equals("The "))
+					{
+						strTemp = strEnd.Left(4);
+						strEnd.TrimLeft(strTemp);
+					} 
+					strcpy(szfilename1, strStart.c_str());
+					strcpy(szfilename2, strEnd.c_str());
+				break;
+
 				default: //	Sort by Filename by default
 					strcpy(szfilename1, rpStart.GetLabel().c_str());
 					strcpy(szfilename2, rpEnd.GetLabel().c_str());
@@ -234,11 +251,16 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 			int iControl=message.GetSenderId();
  			if (iControl==CONTROL_BTNSORTBY) // sort by
 			{
-				if (m_iState==SHOW_ROOT||m_iState==SHOW_GENRES||m_iState==SHOW_ARTISTS)
+				if (m_iState==SHOW_ROOT||m_iState==SHOW_GENRES)
 				{
 					// sort by label
 					// root is not actually sorted though
 					g_stSettings.m_iMyMusicNavRootSortMethod=0; 
+				}
+				else if (m_iState==SHOW_ARTISTS)
+				{
+					// sort artist names without "the"
+					g_stSettings.m_iMyMusicNavRootSortMethod=8; 
 				}
 				else if (m_iState==SHOW_ALBUMS)
 				{
@@ -381,6 +403,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 	{
 		case SHOW_ROOT:
 		{
+			g_stSettings.m_iMyMusicNavRootSortMethod=0;
 			m_iViewAsIconsRoot=g_stSettings.m_iMyMusicNavRootViewAsIcons;
 
 			// we're at the zero point
@@ -402,6 +425,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 
 		case SHOW_GENRES:
 		{
+			g_stSettings.m_iMyMusicNavRootSortMethod=0; 
 			m_iViewAsIcons=g_stSettings.m_iMyMusicNavGenresViewAsIcons;
 
 			// set parent directory
@@ -443,6 +467,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 
 		case SHOW_ARTISTS:
 		{
+			g_stSettings.m_iMyMusicNavRootSortMethod=8; 
 			m_iViewAsIcons=g_stSettings.m_iMyMusicNavArtistsViewAsIcons;
 
 			// set parent directory
@@ -1307,7 +1332,7 @@ void CGUIWindowMusicNav::AddItemToTempPlayList(const CFileItem* pItem)
 		for (int i=0; i < (int) items.size(); ++i)
 		{
 			if (!items[i]->m_strPath.IsEmpty())
-				AddItemToPlayList(items[i]);
+				AddItemToTempPlayList(items[i]);
 		}
 
 		// restore old state
