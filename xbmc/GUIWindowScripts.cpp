@@ -217,7 +217,7 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
         g_graphicsContext.SendMessage(msg);         
         int iItem=msg.GetParam1();
         int iAction=message.GetParam1();
-        if (iAction == ACTION_SELECT_ITEM)
+	if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
 				{
 					OnClick(iItem);
 				}
