@@ -516,7 +516,7 @@ void TiXmlElement::SetAttribute( const char * name, const char * value )
 	else
 	{
 		TiXmlDocument* document = GetDocument();
-		if ( document ) document->SetError( TIXML_ERROR_OUT_OF_MEMORY );
+		if ( document ) document->XMLSetError( TIXML_ERROR_OUT_OF_MEMORY );
 	}
 }
 
@@ -629,7 +629,7 @@ TiXmlNode* TiXmlElement::Clone() const
 
 TiXmlDocument::TiXmlDocument() : TiXmlNode( TiXmlNode::DOCUMENT )
 {
-	error = false;
+	m_bError = false;
 	//	ignoreWhiteSpace = true;
 }
 
@@ -637,7 +637,7 @@ TiXmlDocument::TiXmlDocument( const char * documentName ) : TiXmlNode( TiXmlNode
 {
 	//	ignoreWhiteSpace = true;
 	value = documentName;
-	error = false;
+	m_bError = false;
 }
 
 bool TiXmlDocument::LoadFile()
@@ -665,20 +665,12 @@ bool TiXmlDocument::SaveFile() const
 
 bool TiXmlDocument::LoadFile( const char* filename )
 {
+	char szTmp[1024];
 	// Delete the existing data:
-	Clear();
+	ClearError();
 
-	// There was a really terrifying little bug here. The code:
-	//		value = filename
-	// in the STL case, cause the assignment method of the std::CStdString to
-	// be called. What is strange, is that the std::CStdString had the same
-	// address as it's c_str() method, and so bad things happen. Looks
-	// like a bug in the Microsoft STL implementation.
-	// See STL_STRING_BUG above.
-	// Fixed with the StringToBuffer class.
-	value = filename;
 
-	HANDLE file = CreateFile(value.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE file = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	if ( file != INVALID_HANDLE_VALUE)
 	{
@@ -689,7 +681,9 @@ bool TiXmlDocument::LoadFile( const char* filename )
 		// Strange case, but good to handle up front.
 		if ( length == 0 )
 		{
-			//fclose( file );
+			sprintf(szTmp,"XMLReader:file %s is length:0?\n");
+			OutputDebugString(szTmp);
+
 			CloseHandle(file);
 			return false;
 		}
@@ -699,25 +693,42 @@ bool TiXmlDocument::LoadFile( const char* filename )
 		DWORD count;
 		BOOL result;
 
-		char *data = new char[length];
+		char *data = new char[10+length];
 		if(!data)
+		{	
+			sprintf(szTmp,"XMLReader:unable to load file:%s length:%i\n", filename,length);
+			OutputDebugString(szTmp);
 			return false;
-
+		}
+		memset(&data[0],0,length+1);
 		result = ReadFile(file, data, length, &count, NULL);
-		if(!result) {
+		if(!result) 
+		{
+			sprintf(szTmp,"XMLReader:ReadFile %s returned:%i %i\n",result,GetLastError());
+			OutputDebugString(szTmp);
 			delete [] data;
 			return false;
 		}
 
 		CloseHandle(file);
+		data[length]=0;
 		Parse( data );
 		delete [] data;
-		if (  !Error() )
+		if (  !IsError() )
 		{
 			return true;
-		}		
+		}
+		sprintf(szTmp,"XMLReader:Parse %s returned and error\n");
+		OutputDebugString(szTmp);
+
 	}
-	SetError( TIXML_ERROR_OPENING_FILE );
+	else
+	{
+		sprintf(szTmp,"XMLReader:unable to open file:%s :%i\n", filename,GetLastError() );
+		OutputDebugString(szTmp);
+
+	}
+	XMLSetError( TIXML_ERROR_OPENING_FILE );
 	return false;
 }
 
@@ -802,7 +813,7 @@ bool TiXmlDocument::LoadPartial() {
 
 			Parse( data );
 			delete [] data;
-			if (  !Error() )
+			if (  !IsError() )
 				return true;
 		}
 		else {
@@ -833,11 +844,11 @@ bool TiXmlDocument::LoadPartial() {
 			CloseHandle(file);
 			Parse( data );
 			delete [] data;
-			if (  !Error() )
+			if (  !IsError() )
 				return true;
 		}
 	}
-	SetError( TIXML_ERROR_OPENING_FILE );
+	XMLSetError( TIXML_ERROR_OPENING_FILE );
 	return false;
 }
 
@@ -868,7 +879,7 @@ TiXmlNode* TiXmlDocument::Clone() const
 		return 0;
 
 	CopyToClone( clone );
-	clone->error = error;
+	clone->m_bError = m_bError;
 	clone->errorDesc = errorDesc.c_str ();
 
 	TiXmlNode* node = 0;

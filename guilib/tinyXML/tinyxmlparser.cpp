@@ -269,7 +269,7 @@ void TiXmlDocument::StreamIn( TIXML_ISTREAM * in, TIXML_STRING * tag )
 
 	if ( !StreamTo( in, '<', tag ) ) 
 	{
-		SetError( TIXML_ERROR_PARSING_EMPTY );
+		XMLSetError( TIXML_ERROR_PARSING_EMPTY );
 		return;
 	}
 
@@ -305,13 +305,13 @@ void TiXmlDocument::StreamIn( TIXML_ISTREAM * in, TIXML_STRING * tag )
 			}
 			else
 			{
-				SetError( TIXML_ERROR );
+				XMLSetError( TIXML_ERROR );
 				return;
 			}
 		}
 	}
 	// We should have returned sooner.
-	SetError( TIXML_ERROR );
+	XMLSetError( TIXML_ERROR );
 }
 
 #endif
@@ -328,14 +328,14 @@ const char* TiXmlDocument::Parse( const char* p )
 
 	if ( !p || !*p )
 	{
-		SetError( TIXML_ERROR_DOCUMENT_EMPTY );
+		XMLSetError( TIXML_ERROR_DOCUMENT_EMPTY );
 		return false;
 	}
 
     p = SkipWhiteSpace( p );
 	if ( !p )
 	{
-		SetError( TIXML_ERROR_DOCUMENT_EMPTY );
+		XMLSetError( TIXML_ERROR_DOCUMENT_EMPTY );
 		return false;
 	}
 
@@ -425,7 +425,7 @@ TiXmlNode* TiXmlNode::Identify( const char* p )
 	else
 	{
 		if ( doc )
-			doc->SetError( TIXML_ERROR_OUT_OF_MEMORY );
+			doc->XMLSetError( TIXML_ERROR_OUT_OF_MEMORY );
 	}
 	return returnNode;
 }
@@ -543,7 +543,8 @@ const char* TiXmlElement::Parse( const char* p )
 
 	if ( !p || !*p || *p != '<' )
 	{
-		if ( document ) document->SetError( TIXML_ERROR_PARSING_ELEMENT );
+		if ( document ) 
+			document->XMLSetError( TIXML_ERROR_PARSING_ELEMENT );
 		return false;
 	}
 
@@ -553,7 +554,8 @@ const char* TiXmlElement::Parse( const char* p )
     p = ReadName( p, &value );
 	if ( !p || !*p )
 	{
-		if ( document )	document->SetError( TIXML_ERROR_FAILED_TO_READ_ELEMENT_NAME );
+		if ( document )	
+			document->XMLSetError( TIXML_ERROR_FAILED_TO_READ_ELEMENT_NAME );
 		return false;
 	}
 
@@ -568,7 +570,8 @@ const char* TiXmlElement::Parse( const char* p )
 		p = SkipWhiteSpace( p );
 		if ( !p || !*p )
 		{
-			if ( document ) document->SetError( TIXML_ERROR_READING_ATTRIBUTES );
+			if ( document ) 
+				document->XMLSetError( TIXML_ERROR_READING_ATTRIBUTES );
 			return 0;
 		}
 		if ( *p == '/' )
@@ -577,7 +580,8 @@ const char* TiXmlElement::Parse( const char* p )
 			// Empty tag.
 			if ( *p  != '>' )
 			{
-				if ( document ) document->SetError( TIXML_ERROR_PARSING_EMPTY );		
+				if ( document ) 
+					document->XMLSetError( TIXML_ERROR_PARSING_EMPTY );		
 				return 0;
 			}
 			return (p+1);
@@ -600,7 +604,8 @@ const char* TiXmlElement::Parse( const char* p )
 			}
 			else
 			{
-				if ( document ) document->SetError( TIXML_ERROR_READING_END_TAG );
+				if ( document ) 
+					document->XMLSetError( TIXML_ERROR_READING_END_TAG );
 				return 0;
 			}
 		}
@@ -613,7 +618,8 @@ const char* TiXmlElement::Parse( const char* p )
 
 			if ( !p || !*p )
 			{
-				if ( document ) document->SetError( TIXML_ERROR_PARSING_ELEMENT );
+				if ( document ) 
+					document->XMLSetError( TIXML_ERROR_PARSING_ELEMENT );
 				return 0;
 			}
 			SetAttribute( attrib.Name(), attrib.Value() );
@@ -638,7 +644,8 @@ const char* TiXmlElement::ReadValue( const char* p )
 
 			if ( !textNode )
 			{
-				if ( document ) document->SetError( TIXML_ERROR_OUT_OF_MEMORY );
+				if ( document ) 
+					document->XMLSetError( TIXML_ERROR_OUT_OF_MEMORY );
 				    return 0;
 			}
 
@@ -676,7 +683,8 @@ const char* TiXmlElement::ReadValue( const char* p )
 
 	if ( !p )
 	{
-		if ( document ) document->SetError( TIXML_ERROR_READING_ELEMENT_VALUE );
+		if ( document ) 
+			document->XMLSetError( TIXML_ERROR_READING_ELEMENT_VALUE );
 	}	
 	return p;
 }
@@ -706,7 +714,8 @@ const char* TiXmlUnknown::Parse( const char* p )
 	p = SkipWhiteSpace( p );
 	if ( !p || !*p || *p != '<' )
 	{
-		if ( document ) document->SetError( TIXML_ERROR_PARSING_UNKNOWN );
+		if ( document ) 
+			document->XMLSetError( TIXML_ERROR_PARSING_UNKNOWN );
 		return 0;
 	}
 	++p;
@@ -720,7 +729,8 @@ const char* TiXmlUnknown::Parse( const char* p )
 
 	if ( !p )
 	{
-		if ( document )	document->SetError( TIXML_ERROR_PARSING_UNKNOWN );
+		if ( document )	
+			document->XMLSetError( TIXML_ERROR_PARSING_UNKNOWN );
 	}
 	if ( *p == '>' )
 		return p+1;
@@ -758,7 +768,7 @@ const char* TiXmlComment::Parse( const char* p )
 
 	if ( !StringEqual( p, startTag, false ) )
 	{
-		document->SetError( TIXML_ERROR_PARSING_COMMENT );
+		document->XMLSetError( TIXML_ERROR_PARSING_COMMENT );
 		return 0;
 	}
 	p += strlen( startTag );
@@ -776,13 +786,15 @@ const char* TiXmlAttribute::Parse( const char* p )
 	p = ReadName( p, &name );
 	if ( !p || !*p )
 	{
-		if ( document ) document->SetError( TIXML_ERROR_READING_ATTRIBUTES );
+		if ( document ) 
+			document->XMLSetError( TIXML_ERROR_READING_ATTRIBUTES );
 		return 0;
 	}
 	p = SkipWhiteSpace( p );
 	if ( !p || !*p || *p != '=' )
 	{
-		if ( document ) document->SetError( TIXML_ERROR_READING_ATTRIBUTES );
+		if ( document ) 
+			document->XMLSetError( TIXML_ERROR_READING_ATTRIBUTES );
 		return 0;
 	}
 
@@ -790,7 +802,8 @@ const char* TiXmlAttribute::Parse( const char* p )
 	p = SkipWhiteSpace( p );
 	if ( !p || !*p )
 	{
-		if ( document ) document->SetError( TIXML_ERROR_READING_ATTRIBUTES );
+		if ( document ) 
+			document->XMLSetError( TIXML_ERROR_READING_ATTRIBUTES );
 		return 0;
 	}
 	
@@ -880,7 +893,8 @@ const char* TiXmlDeclaration::Parse( const char* p )
 	TiXmlDocument* document = GetDocument();
 	if ( !p || !*p || !StringEqual( p, "<?xml", true ) )
 	{
-		if ( document ) document->SetError( TIXML_ERROR_PARSING_DECLARATION );
+		if ( document ) 
+			document->XMLSetError( TIXML_ERROR_PARSING_DECLARATION );
 		return 0;
 	}
 
