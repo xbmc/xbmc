@@ -167,7 +167,7 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
 		smb.Unlock();
 		// write error to logfile
 		int nt_error = map_nt_error_from_unix(errno);
-		CLog::Log(LOGERROR, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'",
+		CLog::Log(LOGINFO, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'",
 				strFileName.c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
 		return false;
 	}

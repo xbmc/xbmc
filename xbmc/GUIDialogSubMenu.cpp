@@ -64,7 +64,7 @@ void CGUIDialogSubMenu::OnClickReboot(CGUIMessage& aMessage)
 	CGUIDialogYesNo* dlgYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
 	if (dlgYesNo)
 	{
-		dlgYesNo->SetHeading(13307);
+		dlgYesNo->SetHeading(13313);
 		dlgYesNo->SetLine(0, 13308);
 		dlgYesNo->SetLine(1, 13309);
 		dlgYesNo->SetLine(2, "");

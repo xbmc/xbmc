@@ -250,6 +250,7 @@ public:
 		int       m_iSlideShowStayTime;
 		float			m_fSlideShowMoveAmount;
 		float			m_fSlideShowZoomAmount;
+		float			m_fSlideShowBlackBarCompensation;
 		RESOLUTION		m_GUIResolution;
 		bool		  m_bHTTPProxyEnabled;
 		int			  m_iHTTPProxyPort;
