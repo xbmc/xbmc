@@ -545,33 +545,22 @@ void CGUIWindowWeather::LocalizeOverview(char *szStr)
 	char loc[256];
 	char szToken[256];
 	int  intOffset = 0;
-	int  outOffset = 0;
-	bool bDone = false;
+	char *pnt = NULL;
+	memset(loc, '\0', sizeof(loc));
 
-	while (!bDone)
+	while((pnt = strstr(szStr+intOffset, " ")) != NULL)
 	{
-		char* remainingStr = strstr(szStr+intOffset," ");
-		if (remainingStr)
-		{
-			int iTokenLen = (int)(remainingStr - szStr);
-			strncpy(szToken, szStr, iTokenLen);
-			szToken[iTokenLen] = '\0';
-			LocalizeOverviewToken(szToken);
-			strcpy(loc+outOffset, szToken);
-			outOffset += strlen(szToken);
-			intOffset += (int)iTokenLen+1;
-		}
-		else
-		{
-			if(szStr != NULL)
-			{
-				strcpy(szToken, szStr+intOffset);
-				szToken[strlen(szStr+intOffset)] = '\0';
-				LocalizeOverviewToken(szToken);
-				strcpy(loc+outOffset, szToken);
-			}
-			bDone = true; 
-		}
+		//get the length of this token (everything before pnt)
+		int iTokenLen = (int)(strlen(szStr) - strlen(pnt) - intOffset);
+		strncpy(szToken, szStr+intOffset, iTokenLen);	//extract the token
+		szToken[iTokenLen] = '\0';						//stick an end on it
+		LocalizeOverviewToken(szToken);					//localize
+		strcpy(loc+strlen(loc), szToken);				//add it to the end of loc
+		intOffset += iTokenLen + 1;						//update offset for next strstr search
 	}
-	strcpy(szStr, loc);
+	strncpy(szToken, szStr+intOffset, strlen(szStr)-intOffset);	//last word, copy the rest of the string
+	szToken[strlen(szStr)-intOffset] = '\0';					//stick an end on it
+	LocalizeOverviewToken(szToken);								//localize
+	strcpy(loc+strlen(loc), szToken);							//add it to the end of loc
+	strcpy(szStr, loc);											//copy loc over the original input string
 }
