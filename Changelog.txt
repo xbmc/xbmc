@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 27-03-2005 changed: Made sure triggers submit a keypress wen released. Makes sure ff/rw resumes properly on trigger release
+  - 27-05 2005 updated: mplayer.dll, fixes rewind jumps back to beginning when resuming playback.
   - 26-03-2005 changed: UseTags and FindRemoteThumbs are automatically enabled when a music scan starts, and restored when completed
   - 25-03-2005 fixed: tbn thumbnails on iso9660 discs
   - 23-03-2005 updated: Korean language file (Thnx to akoako)
