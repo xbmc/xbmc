@@ -756,7 +756,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 	{	// delete the program database.
 		// TODO: Should this actually be done here??
 		CStdString programDatabase=g_stSettings.m_szAlbumDirectory;
-		programDatabase+="\\MyPrograms4.db";
+		programDatabase+=PROGRAM_DATABASE_NAME;
 		if (CUtil::FileExists(programDatabase))
 			::DeleteFile(programDatabase.c_str());
 	}

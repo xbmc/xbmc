@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 14-02-2005 added: [ 1121950 ] Kai Games Dir & Game Search
+                      Games to start using kai are also looked up in the program's database
   - 14-02-2005 fixed: Possible crashes in ListControl + RssControl.
   - 14-02-2005 fixed: Listcontrols weren't cleared correctly in some views during UpdateDir().
   - 14-02-2005 fixed: Temperature label now shown correctly for weather using infolabels.

@@ -61,7 +61,7 @@ void CProgramDatabase::RemoveInvalidChars(CStdString& strTxt)
 bool CProgramDatabase::Open()
 {
 	CStdString programDatabase=g_stSettings.m_szAlbumDirectory;
-	programDatabase+="\\MyPrograms4.db";
+	programDatabase+=PROGRAM_DATABASE_NAME;
 
 	Close();
 
@@ -98,7 +98,7 @@ bool CProgramDatabase::Open()
 	}
 
 	m_pDS->exec("PRAGMA cache_size=8192\n");
-	m_pDS->exec("PRAGMA synchronous='OFF'\n");
+	m_pDS->exec("PRAGMA synchronous='NORMAL'\n");
 	m_pDS->exec("PRAGMA count_changes='OFF'\n");
 	//	m_pDS->exec("PRAGMA temp_store='MEMORY'\n");
 	return true;
@@ -130,7 +130,7 @@ bool CProgramDatabase::CreateTables()
 		m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text)\n");
 
 		CLog::Log(LOGINFO, "create files table");
-		m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, xbedescription text, iTimesPlayed integer)\n");
+		m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, titleId text, xbedescription text, iTimesPlayed integer)\n");
 	
 		CLog::Log(LOGINFO, "create bookmark index");
 		m_pDS->exec("CREATE INDEX idxBookMark ON bookmark(bookmarkName)");
@@ -138,6 +138,9 @@ bool CProgramDatabase::CreateTables()
 		m_pDS->exec("CREATE INDEX idxPath ON path(strPath)");
 		CLog::Log(LOGINFO, "create files index");
 		m_pDS->exec("CREATE INDEX idxFiles ON files(strFilename)");
+		CLog::Log(LOGINFO, "create files - titleid index");
+		m_pDS->exec("CREATE INDEX idxTitleIdFiles ON files(titleId)");
+   
 	
 	}
 	catch (...) 
@@ -206,14 +209,41 @@ long CProgramDatabase::GetFile(const CStdString& strFilenameAndPath, VECFILEITEM
 	return -1;
 }
 
-long CProgramDatabase::AddFile(long lPathId, const CStdString& strFileName, const CStdString& strDescription)
+bool CProgramDatabase::GetXBEPathByTitleId(const DWORD titleId, CStdString& strPathAndFilename)
+{
+	try
+	{
+		if (NULL==m_pDB.get()) return false;
+		if (NULL==m_pDS.get()) return false;
+		CStdString strSQL;
+		strSQL.Format("select path.strPath, files.strFilename from files join path on files.idPath=path.idPath where files.titleId='%x'",titleId);
+		m_pDS->query(strSQL.c_str());
+		if (m_pDS->num_rows() > 0)
+		{    
+			strPathAndFilename=m_pDS->fv("path.strPath").get_asString(); 
+			strPathAndFilename+=m_pDS->fv("files.strFilename").get_asString(); 
+			strPathAndFilename.Replace('/','\\');
+			m_pDS->close();
+			return true;
+		}
+		m_pDS->close();
+		return false;
+	}
+	catch(...)
+	{
+		CLog::Log(LOGERROR, "CProgramDatabase::GetXBEPathByTitleId(%i) failed",titleId);
+	}
+	return false;
+}
+
+long CProgramDatabase::AddFile(long lPathId, const CStdString& strFileName ,DWORD titleId, const CStdString& strDescription)
 {
 	CStdString strSQL="";
   try
   {
     long lFileId;
     if (NULL==m_pDB.get()) return -1;
-	if (NULL==m_pDS.get()) return -1;
+	  if (NULL==m_pDS.get()) return -1;
 
     strSQL.Format("select * from files where idPath=%i and strFileName like '%s'",lPathId,strFileName.c_str());
     m_pDS->query(strSQL.c_str());
@@ -224,7 +254,7 @@ long CProgramDatabase::AddFile(long lPathId, const CStdString& strFileName, cons
       return lFileId;
     }
     m_pDS->close();
-	  strSQL.Format ("insert into files (idFile, idPath, strFileName, xbedescription, iTimesPlayed) values(NULL, %i, '%s','%s',%i)", lPathId, strFileName.c_str(),strDescription.c_str(),0);
+	  strSQL.Format ("insert into files (idFile, idPath, strFileName, titleId, xbedescription, iTimesPlayed) values(NULL, %i, '%s', '%x','%s',%i)", lPathId, strFileName.c_str(), titleId,strDescription.c_str(),0);
 	  m_pDS->exec(strSQL.c_str());
     lFileId=(long)sqlite3_last_insert_rowid( m_pDB->getHandle() );
     return lFileId;
@@ -384,44 +414,44 @@ long CProgramDatabase::GetProgram(long lPathId)
 }
 
 //********************************************************************************************************************************
-long CProgramDatabase::AddProgram(const CStdString& strFilenameAndPath, const CStdString& strDescription, const CStdString& strBookmark)
+long CProgramDatabase::AddProgram(const CStdString& strFilenameAndPath, DWORD titleId,const CStdString& strDescription, const CStdString& strBookmark)
 {
   try
   {
     if (NULL==m_pDB.get()) return -1;
-	if (NULL==m_pDS.get()) return -1;
-	CStdString strPath, strFileName, strDes=strDescription;
-	Split(strFilenameAndPath, strPath, strFileName); 
+    if (NULL==m_pDS.get()) return -1;
+    CStdString strPath, strFileName, strDes=strDescription;
+    Split(strFilenameAndPath, strPath, strFileName); 
     RemoveInvalidChars(strPath);
     RemoveInvalidChars(strFileName);
     RemoveInvalidChars(strDes);
-	strPath.Replace("\\","/");
-	strFileName.Replace("\\","/");
-	
-	long lPathId=GetPath(strPath);
-	
+    strPath.Replace("\\","/");
+    strFileName.Replace("\\","/");
+
+    long lPathId=GetPath(strPath);
+
     if (!EntryExists(strPath, strBookmark))
     {
-	  
-	  CStdString strSQL;
+
+      CStdString strSQL;
 
       lPathId = AddPath(strPath);
       if (lPathId < 0) return -1;
-	  long lBookMarkId = AddBookMark(strBookmark);
-	  if (lBookMarkId < 0) return -1;
+      long lBookMarkId = AddBookMark(strBookmark);
+      if (lBookMarkId < 0) return -1;
       strSQL.Format("insert into program (idProgram, idPath, idBookmark) values( NULL, %i, %i)",
-                    lPathId, lBookMarkId);
-	  m_pDS->exec(strSQL.c_str());
+        lPathId, lBookMarkId);
+      m_pDS->exec(strSQL.c_str());
       long lProgramId=(long)sqlite3_last_insert_rowid(m_pDB->getHandle());
-      AddFile(lPathId,strFileName,strDes);
+      AddFile(lPathId,strFileName,titleId,strDes);
     }
     else
     {
-	  long lProgramId=GetProgram(lPathId);
-      AddFile(lPathId,strFileName,strDes);
-	  return lProgramId;
+      long lProgramId=GetProgram(lPathId);
+      AddFile(lPathId,strFileName,titleId,strDes);
+      return lProgramId;
     }
-    
+
   }
   catch(...)
   {
