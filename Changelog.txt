@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+	- 07-09-2004 fixed: python dll loading ('import unicodedata' should work again)
 	- 07-09-2004 fixed: xbmc oculd crash when restarting the webserver
 	- 07-09-2004 added: password can now be set for the webserver
   - 07-09-2004 fixed: <aligny> now defaults to top instead of center (should make textoffsetY work unless overridden by aligny)
