@@ -2244,6 +2244,9 @@ void CApplication::Stop()
 			objDAAP->CloseDAAP();
 		}
 
+		if (m_guiDialogMusicScan.IsRunning())
+			m_guiDialogMusicScan.StopScanning();
+
 		//g_lcd->StopThread();
 		CLog::Log(LOGNOTICE, "stop python");
 		g_applicationMessenger.Cleanup();
