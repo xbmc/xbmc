@@ -3,6 +3,7 @@
 #include "sectionloader.h"
 #include "Util.h"
 #include "picture.h"
+#include "utils/log.h"
 
 const uchar* ID3_GetPictureBufferOfPicType(ID3_Tag* tag, ID3_PictureType pictype, size_t* pBufSize )
 {
@@ -174,37 +175,46 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
 
 bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& tag)
 {
-	// retrieve the ID3 Tag info from strFileName
-	// and put it in tag
-	bool bResult=false;
-//	CSectionLoader::Load("LIBID3");
-	tag.SetURL(strFileName);
-	tag.SetLoaded(true);
-	CFile file;
-	if ( file.Open( strFileName.c_str() ) ) 
+	try
 	{
-		//	Do not use ID3TT_ALL, because
-		//	id3lib reads the ID3V1 tag first
-		//	then ID3V2 tag is blocked.
-		ID3_XIStreamReader reader( file );
-		ID3_Tag myTag;
-		if ( myTag.Link(reader, ID3TT_ID3V2) >= 0)
+		// retrieve the ID3 Tag info from strFileName
+		// and put it in tag
+		bool bResult=false;
+	//	CSectionLoader::Load("LIBID3");
+		tag.SetURL(strFileName);
+		tag.SetLoaded(true);
+		CFile file;
+		if ( file.Open( strFileName.c_str() ) ) 
 		{
-			if ( !(bResult = ReadTag( myTag, tag )) ) 
+			//	Do not use ID3TT_ALL, because
+			//	id3lib reads the ID3V1 tag first
+			//	then ID3V2 tag is blocked.
+			ID3_XIStreamReader reader( file );
+			ID3_Tag myTag;
+			if ( myTag.Link(reader, ID3TT_ID3V2) >= 0)
 			{
-				myTag.Clear();
-				if ( myTag.Link(reader, ID3TT_ID3V1 ) >= 0 ) 
+				if ( !(bResult = ReadTag( myTag, tag )) ) 
 				{
-					bResult = ReadTag( myTag, tag );
+					myTag.Clear();
+					if ( myTag.Link(reader, ID3TT_ID3V1 ) >= 0 ) 
+					{
+						bResult = ReadTag( myTag, tag );
+					}
 				}
+				tag.SetDuration(ReadDuration(file, myTag));
 			}
-			tag.SetDuration(ReadDuration(file, myTag));
+			file.Close();
 		}
-		file.Close();
+
+		//	CSectionLoader::Unload("LIBID3");
+		return bResult;
+	}
+	catch(...)
+	{
+		CLog::Log("Tag loader mp3: exception in file %s", strFileName.c_str());
 	}
 
-	//	CSectionLoader::Unload("LIBID3");
-	return bResult;
+	return false;
 }
 
 /* check if 'head' is a valid mp3 frame header */
