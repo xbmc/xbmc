@@ -86,7 +86,7 @@ CSettings::CSettings(void)
 	m_ResInfo[HDTV_480p_4x3].iWidth = 720;
 	m_ResInfo[HDTV_480p_4x3].iHeight = 480;
 	m_ResInfo[HDTV_480p_4x3].dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
-	m_ResInfo[HDTV_480p_4x3].fPixelRatio = 72.0f/79.0f;
+	m_ResInfo[HDTV_480p_4x3].fPixelRatio = 4320.0f/4739.0f;
 	strcpy(m_ResInfo[HDTV_480p_4x3].strMode,"480p 4:3");
 
 	m_ResInfo[HDTV_480p_16x9].Overscan.left = 0;
@@ -98,7 +98,7 @@ CSettings::CSettings(void)
 	m_ResInfo[HDTV_480p_16x9].iWidth = 720;
 	m_ResInfo[HDTV_480p_16x9].iHeight = 480;
 	m_ResInfo[HDTV_480p_16x9].dwFlags = D3DPRESENTFLAG_PROGRESSIVE|D3DPRESENTFLAG_WIDESCREEN;
-	m_ResInfo[HDTV_480p_16x9].fPixelRatio = 72.0f/79.0f*4.0f/3.0f;
+	m_ResInfo[HDTV_480p_16x9].fPixelRatio = 4320.0f/4739.0f*4.0f/3.0f;
 	strcpy(m_ResInfo[HDTV_480p_16x9].strMode,"480p 16:9");
 
 	m_ResInfo[NTSC_4x3].Overscan.left = 0;
@@ -110,7 +110,7 @@ CSettings::CSettings(void)
 	m_ResInfo[NTSC_4x3].iWidth = 720;
 	m_ResInfo[NTSC_4x3].iHeight = 480;
 	m_ResInfo[NTSC_4x3].dwFlags = 0;
-	m_ResInfo[NTSC_4x3].fPixelRatio = 72.0f/79.0f;
+	m_ResInfo[NTSC_4x3].fPixelRatio = 4320.0f/4739.0f;
 	strcpy(m_ResInfo[NTSC_4x3].strMode,"NTSC 4:3");
 
 	m_ResInfo[NTSC_16x9].Overscan.left = 0;
@@ -122,7 +122,7 @@ CSettings::CSettings(void)
 	m_ResInfo[NTSC_16x9].iWidth = 720;
 	m_ResInfo[NTSC_16x9].iHeight = 480;
 	m_ResInfo[NTSC_16x9].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
-	m_ResInfo[NTSC_16x9].fPixelRatio = 72.0f/79.0f*4.0f/3.0f;
+	m_ResInfo[NTSC_16x9].fPixelRatio = 4320.0f/4739.0f*4.0f/3.0f;
 	strcpy(m_ResInfo[NTSC_16x9].strMode,"NTSC 16:9");
 
 	m_ResInfo[PAL_4x3].Overscan.left = 0;
@@ -158,7 +158,7 @@ CSettings::CSettings(void)
 	m_ResInfo[PAL60_4x3].iWidth = 720;
 	m_ResInfo[PAL60_4x3].iHeight = 480;
 	m_ResInfo[PAL60_4x3].dwFlags = 0;
-	m_ResInfo[PAL60_4x3].fPixelRatio = 72.0f/79.0f;
+	m_ResInfo[PAL60_4x3].fPixelRatio = 4320.0f/4739.0f;
 	strcpy(m_ResInfo[PAL60_4x3].strMode,"PAL60 4:3");
 
 	m_ResInfo[PAL60_16x9].Overscan.left = 0;
@@ -170,7 +170,7 @@ CSettings::CSettings(void)
 	m_ResInfo[PAL60_16x9].iWidth = 720;
 	m_ResInfo[PAL60_16x9].iHeight = 480;
 	m_ResInfo[PAL60_16x9].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
-	m_ResInfo[PAL60_16x9].fPixelRatio = 72.0f/79.0f*4.0f/3.0f;
+	m_ResInfo[PAL60_16x9].fPixelRatio = 4320.0f/4739.0f*4.0f/3.0f;
 	strcpy(m_ResInfo[PAL60_16x9].strMode,"PAL60 16:9");
 
 	strcpy(g_stSettings.m_szExternalDVDPlayer,"");

@@ -110,7 +110,7 @@ public:
 	void									ScaleYCoord(DWORD &x, RESOLUTION res);
 	void									ScaleYCoord(int &x, RESOLUTION res);
 	void									ScaleYCoord(long &x, RESOLUTION res);
-	
+	float									GetPixelRatio(RESOLUTION iRes) const;
 
 protected:
 	CRITICAL_SECTION			  m_critSection;
