@@ -1968,6 +1968,14 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
   // if it already has a thumbnail, then return
   if ( pItem->HasThumbnail() ) return;
 
+  if (CUtil::IsRemote(pItem->m_strPath))
+  {
+    CURL url(pItem->m_strPath);
+    if (url.GetProtocol() =="http" || url.GetProtocol()=="HTTP") return ;
+    if (url.GetProtocol() =="shout" || url.GetProtocol()=="SHOUT") return ;
+    if (url.GetProtocol() =="mms" || url.GetProtocol()=="MMS") return ;
+    if (url.GetProtocol() =="rtp" || url.GetProtocol()=="RTP") return ;
+  }
   CStdString strThumb, strPath, strFileName;
 
 	//	If item is not a folder, extract its path
