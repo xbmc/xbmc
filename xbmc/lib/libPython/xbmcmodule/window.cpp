@@ -125,6 +125,9 @@ namespace PYXBMC
 		case CGUIControl::GUICONTROL_BUTTON:
 			pControl = (Control*)ControlButton_Type.tp_alloc(&ControlButton_Type, 0);
 			break;
+		case CGUIControl::GUICONTROL_CHECKMARK:
+			pControl = (Control*)ControlCheckMark_Type.tp_alloc(&ControlCheckMark_Type, 0);
+			break;
 		case CGUIControl::GUICONTROL_LABEL:
 			pControl = (Control*)ControlLabel_Type.tp_alloc(&ControlLabel_Type, 0);
 			break;
@@ -350,6 +353,7 @@ namespace PYXBMC
 		"  -ControlFadeLabel\n"
 		"  -ControlTextBox\n"
 		"  -ControlButton\n"
+		"  -ControlCheckMark\n"
 		"  -ControlList\n"
 		"  -ControlImage\n");
 
@@ -404,6 +408,10 @@ namespace PYXBMC
 		// Control Button
 		else if (ControlButton_Check(pControl))
 			ControlButton_Create((ControlButton*)pControl);
+
+		// Control CheckMark
+		else if (ControlCheckMark_Check(pControl))
+			ControlCheckMark_Create((ControlCheckMark*)pControl);
 
 		// Image
 		else if (ControlImage_Check(pControl))
