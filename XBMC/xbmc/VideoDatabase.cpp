@@ -75,7 +75,7 @@ bool CVideoDatabase::Open()
   m_pDS.reset(m_pDB->CreateDataset());
 	if ( m_pDB->connect() != DB_CONNECTION_OK) 
 	{
-    CLog::Log("videodatabase::unable to open Q:\\albums\\MyVideos1.db (old version?)");
+    CLog::Log("videodatabase::unable to open %s",VIDEODATABASE);
 		Close();
     ::DeleteFile(VIDEODATABASE);
 		return false;
@@ -85,7 +85,7 @@ bool CVideoDatabase::Open()
 	{
 		if (!CreateTables()) 
 		{
-      CLog::Log("videodatabase::unable to create Q:\\albums\\MyVideos1.db");
+      CLog::Log("videodatabase::unable to create %s",VIDEODATABASE);
 			Close();
       ::DeleteFile(VIDEODATABASE);
 			return false;
@@ -738,6 +738,11 @@ void CVideoDatabase::SetMovieInfo(const CStdString& strFilenameAndPath, CIMDBMov
     long lMovieId=GetMovie(strFilenameAndPath);
     if (lMovieId< 0) return;
     details.m_strSearchString.Format("%i", lMovieId);
+
+	  CStdString strPath, strFileName ;
+	  Split(strFilenameAndPath, strPath, strFileName); 
+    details.m_strPath=strPath;
+    details.m_strFile=strFileName;
 
     CIMDBMovie details1=details;
     RemoveInvalidChars(details1.m_strCast);
