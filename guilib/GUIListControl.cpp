@@ -107,10 +107,13 @@ void CGUIListControl::Render()
 			DWORD dMaxWidth=(m_dwWidth-m_iImageWidth-16);
       if ( strLabel2.size() > 0 )
       {
-				float fTextHeight,fTextWidth;
-        swprintf(wszText,L"%S", strLabel2.c_str() );
-				m_pFont2->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
-				dMaxWidth -= (DWORD)(fTextWidth+20);
+				if ( m_iTextOffsetY == m_iTextOffsetY2 ) 
+				{
+					float fTextHeight,fTextWidth;
+					swprintf(wszText,L"%S", strLabel2.c_str() );
+					m_pFont2->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
+					dMaxWidth -= (DWORD)(fTextWidth+20);
+				}
 			}
 
 			swprintf(wszText,L"%S", pItem->GetLabel().c_str() );
