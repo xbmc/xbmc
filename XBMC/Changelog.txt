@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 06-04-2005 updated: Italian language file (Thnx to kotix)
   - 05-04-2005 removed: My Music Albums, Artists, and Genres views.  Use My Music Library instead.
   - 05-04-2005 updated: Norwegian language file (Thnx to vnm)
   - 05-04-2005 updated: German (Austrian) language file (Thnx to CEOMR)
