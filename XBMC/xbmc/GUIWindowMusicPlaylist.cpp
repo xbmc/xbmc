@@ -67,12 +67,15 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 		{
 			CGUIWindowMusicBase::OnMessage(message);
 
-			m_bViewAsIconsRoot=g_stSettings.m_bMyMusicPlaylistViewAsIcons;
+			m_iViewAsIconsRoot=g_stSettings.m_iMyMusicPlaylistViewAsIcons;
 
 			Update(m_strDirectory);
 
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_nSelectedItem);
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_nSelectedItem);
+			if (m_nSelectedItem>-1)
+			{
+				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_nSelectedItem);
+				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_nSelectedItem);
+			}
 
 			if (g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC)
 			{
@@ -98,10 +101,9 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 
       if (iControl==CONTROL_BTNVIEWASICONS)
       {
-				g_stSettings.m_bMyMusicPlaylistViewAsIcons=!g_stSettings.m_bMyMusicPlaylistViewAsIcons;
-				m_bViewAsIconsRoot=g_stSettings.m_bMyMusicPlaylistViewAsIcons;
+				CGUIWindowMusicBase::OnMessage(message);
+				g_stSettings.m_iMyMusicPlaylistViewAsIcons=m_iViewAsIconsRoot;
 				g_settings.Save();
-				UpdateButtons();
 			}
 			else if (iControl==CONTROL_BTNSHUFFLE)
 			{
@@ -343,16 +345,32 @@ void CGUIWindowMusicPlayList::UpdateButtons()
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
 
-	int iString=100;
-	if ( m_bViewAsIconsRoot ) 
-	{
-		SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
-		iString=101;
-	}
-	else 
-	{
-		SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
-	}
+	bool bViewIcon = false;
+  int iString;
+	switch (m_iViewAsIconsRoot)
+  {
+    case VIEW_AS_LIST:
+      iString=100; // view as icons
+    break;
+    
+    case VIEW_AS_ICONS:
+      iString=417;  // view as large icons
+      bViewIcon=true;
+    break;
+    case VIEW_AS_LARGEICONS:
+      iString=101; // view as list
+      bViewIcon=true;
+    break;
+  }
+
+	if (bViewIcon) 
+  {
+    SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
+  }
+  else
+  {
+    SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
+  }
 
 	SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
 

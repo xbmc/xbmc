@@ -192,12 +192,16 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 					m_strDirectory.Empty();
 			}
 
-			m_bViewAsIcons=g_stSettings.m_bMyMusicSongsViewAsIcons;
-			m_bViewAsIconsRoot=g_stSettings.m_bMyMusicSongsRootViewAsIcons;
+			m_iViewAsIcons=g_stSettings.m_iMyMusicSongsViewAsIcons;
+			m_iViewAsIconsRoot=g_stSettings.m_iMyMusicSongsRootViewAsIcons;
 
 			Update(m_strDirectory);
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_nSelectedItem);
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_nSelectedItem);
+ 
+			if (m_nSelectedItem>-1)
+			{
+				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_nSelectedItem);
+				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_nSelectedItem);
+			}
 
 			return true;
 		}
@@ -266,18 +270,11 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 			}
 			else if (iControl==CONTROL_BTNVIEWASICONS)
       {
-				if (m_strDirectory.IsEmpty())
-				{
-					g_stSettings.m_bMyMusicSongsRootViewAsIcons = !g_stSettings.m_bMyMusicSongsRootViewAsIcons;
-					m_bViewAsIconsRoot=g_stSettings.m_bMyMusicSongsRootViewAsIcons;
-				}
-				else
-				{
-					g_stSettings.m_bMyMusicSongsViewAsIcons = !g_stSettings.m_bMyMusicSongsViewAsIcons;
-					m_bViewAsIcons=g_stSettings.m_bMyMusicSongsViewAsIcons;
-				}
+				CGUIWindowMusicBase::OnMessage(message);
+				g_stSettings.m_iMyMusicSongsRootViewAsIcons=m_iViewAsIconsRoot;
+				g_stSettings.m_iMyMusicSongsViewAsIcons=m_iViewAsIcons;
 				g_settings.Save();
-				UpdateButtons();
+				return true;
 			}
       else if (iControl==CONTROL_BTNSORTASC) // sort asc
       {
@@ -405,7 +402,7 @@ void CGUIWindowMusicSongs::OnScan()
 	g_application.DisableOverlay();
 
 	m_dlgProgress->SetHeading(189);
-	m_dlgProgress->SetLine(0, 414);
+	m_dlgProgress->SetLine(0, 330);
 	m_dlgProgress->SetLine(1,"");
 	m_dlgProgress->SetLine(2,m_strDirectory );
 	m_dlgProgress->StartModal(GetID());
@@ -616,30 +613,52 @@ void CGUIWindowMusicSongs::UpdateButtons()
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
 
-	int iString=100;
+	bool bViewIcon = false;
+  int iString;
 	if ( m_strDirectory.IsEmpty() ) 
-	{
-		if ( m_bViewAsIconsRoot ) 
-		{
-			SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
-			iString=101;
-		}
-		else 
-		{
-			SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
-		}
+  {
+		switch (m_iViewAsIconsRoot)
+    {
+      case VIEW_AS_LIST:
+        iString=100; // view as icons
+      break;
+      
+      case VIEW_AS_ICONS:
+        iString=417;  // view as large icons
+        bViewIcon=true;
+      break;
+      case VIEW_AS_LARGEICONS:
+        iString=101; // view as list
+        bViewIcon=true;
+      break;
+    }
 	}
 	else 
+  {
+		switch (m_iViewAsIcons)
+    {
+      case VIEW_AS_LIST:
+        iString=100; // view as icons
+      break;
+      
+      case VIEW_AS_ICONS:
+        iString=417;  // view as large icons
+        bViewIcon=true;
+      break;
+      case VIEW_AS_LARGEICONS:
+        iString=101; // view as list
+        bViewIcon=true;
+      break;
+    }		
+	}
+
+	if (bViewIcon) 
 	{
-		if ( m_bViewAsIcons ) 
-		{
-			SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
-			iString=101;
-		}
-		else 
-		{
-			SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
-		}
+		SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
+	}
+	else
+	{
+		SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
 	}
 
 	SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
@@ -967,4 +986,3 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 		}//if (!pItem->m_bIsFolder)
 	}
 }
-

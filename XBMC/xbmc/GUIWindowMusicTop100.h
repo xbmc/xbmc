@@ -16,5 +16,6 @@ protected:
 	virtual void				OnFileItemFormatLabel(CFileItem* pItem);
   virtual void				OnClick(int iItem);
 	virtual	void				DoSort(VECFILEITEMS& items);
+	virtual	void				ShowThumbPanel(){}
 
 };
