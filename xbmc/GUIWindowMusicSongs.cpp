@@ -480,6 +480,16 @@ void CGUIWindowMusicSongs::LoadPlayList(const CStdString& strPlayList)
 			return;
 
 		g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Clear();
+
+    if (pPlayList->size() == 1)
+    {
+      // just 1 song? then play it (no need to have a playlist of 1 song)
+      CPlayList::CPlayListItem item=(*pPlayList)[0];
+      g_application.PlayFile(item.GetFileName());
+      return;
+    }
+
+
 		//	Do not autoshuffle shoutcast playlists
 		CStdString strFileName;
 		if ((*pPlayList).size())
