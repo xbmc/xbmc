@@ -88,6 +88,7 @@ void CMusicInfoTag::SetTitle(const CStdString& strTitle)
 	m_strTitle=strTitle;
 	m_strTitle.TrimLeft(" ");
 	m_strTitle.TrimRight(" ");
+	m_strTitle.TrimRight("\r\n");
 }
 
 void CMusicInfoTag::SetURL(const CStdString& strURL) 
@@ -100,6 +101,7 @@ void CMusicInfoTag::SetArtist(const CStdString& strArtist)
 	m_strArtist=strArtist;
 	m_strArtist.TrimLeft(" ");
 	m_strArtist.TrimRight(" ");
+	m_strArtist.TrimRight("\r\n");
 }
 
 void CMusicInfoTag::SetAlbum(const CStdString& strAlbum) 
@@ -114,6 +116,7 @@ void CMusicInfoTag::SetGenre(const CStdString& strGenre)
 	m_strGenre=strGenre;
 	m_strGenre.TrimLeft(" ");
 	m_strGenre.TrimRight(" ");
+	m_strGenre.TrimRight("\r\n");
 }
 
 void CMusicInfoTag::SetReleaseDate(SYSTEMTIME& dateTime)
