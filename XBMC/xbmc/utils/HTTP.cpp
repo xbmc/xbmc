@@ -117,6 +117,13 @@ bool CHTTP::ReadData(string& strData)
 	{
 		// normal transfer
 		n = m_strHeaders.find("Content-Length:");
+		if (n == string::npos)
+		{
+			CLog::Log("Invalid reply from server");
+			Close();
+			return false;
+		}
+
 		int len = atoi(m_strHeaders.c_str() + n + 16);
 		while (len > 0)
 		{
