@@ -17,7 +17,7 @@ void CButtonTranslator::Load()
 	// load our xml file, and fill up our mapping tables
 	TiXmlDocument xmlDoc;
 
-	OutputDebugString("Loading keymap.xml");
+	OutputDebugString("Loading keymap.xml\n");
 	// Load the config file
 	if (!xmlDoc.LoadFile("Q:\\keymap.xml"))
 	{
@@ -34,6 +34,7 @@ void CButtonTranslator::Load()
 	{
 		buttonMap map;
 		TiXmlNode* pAction =pWindow->FirstChild("action");
+		OutputDebugString("GLOBAL:\n");
 		while (pAction)
 		{
 			TiXmlNode* pNode=pAction->FirstChild("id");
@@ -60,6 +61,9 @@ void CButtonTranslator::Load()
 		if (pID) wWindowID = (WORD)atol(pID->FirstChild()->Value());
 		if (wWindowID>=0)
 		{
+			char szTmp[128];
+			sprintf(szTmp,"WINDOW:%i\n", wWindowID);
+			OutputDebugString(szTmp);
 			TiXmlNode* pAction =pWindow->FirstChild("action");
 			while (pAction)
 			{
@@ -202,8 +206,11 @@ void CButtonTranslator::MapAction(WORD wAction, TiXmlNode *pNode, buttonMap &map
 		if (strNode=="remotecode")
 		{
 			// Button Code is 255 - OBC (Original Button Code) of the button
-			wButtonCode = 255-(WORD)atol(pNode->FirstChild()->Value());
-			if (wButtonCode > 255) wButtonCode = 0;
+			if (pNode->FirstChild())
+			{
+				wButtonCode = 255-(WORD)atol(pNode->FirstChild()->Value());
+				if (wButtonCode > 255) wButtonCode = 0;
+			}
 		}
 		// check we have a valid button code
 		if (wButtonCode>0)
@@ -211,7 +218,12 @@ void CButtonTranslator::MapAction(WORD wAction, TiXmlNode *pNode, buttonMap &map
 			// check to see if we've already got this (button,action) pair defined
 			buttonMap::iterator it = map.find(wButtonCode);
 			if (it == map.end() || (*it).second != wAction)
+			{
+				char szTmp[128];
+				sprintf(szTmp,"  action:%i button:%i\n", wAction,wButtonCode);
+				OutputDebugString(szTmp);
 				map.insert(pair<WORD, WORD>(wButtonCode,wAction));
+			}
 		}
 		pNode = pNode->NextSibling();
 	}
