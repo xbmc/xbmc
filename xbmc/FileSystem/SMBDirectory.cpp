@@ -40,7 +40,7 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	// note, samba uses UTF8 strings internal, that's why we have to convert strings
 	// and wstrings to UTF8.
 	char strUtfPath[1024];
-	size_t strlen;
+	size_t strLen;
 	CStdString strRoot = strPath;
 
 	if (!CUtil::HasSlashAtEnd(strPath))
@@ -49,8 +49,8 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	smb.Init();
 
 	// convert from string to UTF8
-	strlen = convert_string(CH_DOS, CH_UTF8, strPath, strPath.length(), strUtfPath, 1024);
-	strUtfPath[strlen] = 0;
+	strLen = convert_string(CH_DOS, CH_UTF8, strPath, strPath.length(), strUtfPath, 1024);
+	strUtfPath[strLen] = 0;
 
 	smb.Lock();
 	int fd = smbc_opendir(strUtfPath);
@@ -78,8 +78,8 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 
 				
 				// convert from UTF8 to wide string
-				strlen = convert_string(CH_UTF8, CH_UCS2, dirEnt->name, dirEnt->namelen, wStrFile, 1024);
-				wStrFile[strlen] = 0;
+				strLen = convert_string(CH_UTF8, CH_UCS2, dirEnt->name, dirEnt->namelen, wStrFile, 1024);
+				wStrFile[strLen] = 0;
 
 				// doing stat on one of these types of shares leaves an open session
 				// so just skip them and only stat real dirs / files.
@@ -93,8 +93,8 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 					CStdString strFile = strRoot + wStrFile;
 
 					// convert from string to UTF8
-					strlen = convert_string(CH_DOS, CH_UTF8, strFile, strFile.length(), strUtfFile, 1024);
-					strUtfFile[strlen] = 0;
+					strLen = convert_string(CH_DOS, CH_UTF8, strFile, strFile.length(), strUtfFile, 1024);
+					strUtfFile[strLen] = 0;
 
 					smb.Lock();
 					smbc_stat(strUtfFile, &info);
