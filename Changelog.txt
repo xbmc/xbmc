@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 31-03-2005 fixed: Several translation strings in My Weather.
   - 31-03-2005 added: support for MusicBrainz id's from ogg and mp3 tags
   - 31-03-2005 added: Initial support for SMB share username/password prompting if it's not set in XBoxMediaCenter.xml.  Thanks to BillJam for the patch.
   - 30-03-2005 fixed: Webserver password reset to No Pass did not reset correctly.

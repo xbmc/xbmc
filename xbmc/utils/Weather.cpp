@@ -56,30 +56,6 @@ FIXME'S
 
 CWeather g_weatherManager;
 
-int ConvertSpeed(int curSpeed)
-{
-  //we might not need to convert at all
-  if ((g_guiSettings.GetInt("Weather.TemperatureUnits") == DEGREES_C && g_guiSettings.GetInt("Weather.SpeedUnits") == SPEED_KMH) ||
-      (g_guiSettings.GetInt("Weather.TemperatureUnits") == DEGREES_F && g_guiSettings.GetInt("Weather.SpeedUnits") == SPEED_MPH) )
-    return curSpeed;
-
-  //got through that so if temp is C, speed must be MPH or m/s
-  if (g_guiSettings.GetInt("Weather.TemperatureUnits") == DEGREES_C)
-  {
-    if (g_guiSettings.GetInt("Weather.SpeedUnits") == SPEED_MPS)
-      return (int)(curSpeed * (1000.0 / 3600.0) + 0.5);  //m/s
-    else
-      return (int)(curSpeed / (8.0 / 5.0));  //mph
-  }
-  else
-  {
-    if (g_guiSettings.GetInt("Weather.SpeedUnits") == SPEED_MPS)
-      return (int)(curSpeed * (8.0 / 5.0) * (1000.0 / 3600.0) + 0.5);  //m/s
-    else
-      return (int)(curSpeed * (8.0 / 5.0));  //kph
-  }
-}
-
 CBackgroundWeatherLoader::CBackgroundWeatherLoader(CWeather *pCallback, int iArea)
 {
   m_pCallback = pCallback;
@@ -240,6 +216,30 @@ void CWeather::LocalizeOverview(char *szStr)
   SplitLongString(szStr, 7, 15);    //split to 2 lines if needed
 }
 
+int CWeather::ConvertSpeed(int curSpeed)
+{
+  //we might not need to convert at all
+  if ((g_guiSettings.GetInt("Weather.TemperatureUnits") == DEGREES_C && g_guiSettings.GetInt("Weather.SpeedUnits") == SPEED_KMH) ||
+      (g_guiSettings.GetInt("Weather.TemperatureUnits") == DEGREES_F && g_guiSettings.GetInt("Weather.SpeedUnits") == SPEED_MPH) )
+    return curSpeed;
+
+  //got through that so if temp is C, speed must be MPH or m/s
+  if (g_guiSettings.GetInt("Weather.TemperatureUnits") == DEGREES_C)
+  {
+    if (g_guiSettings.GetInt("Weather.SpeedUnits") == SPEED_MPS)
+      return (int)(curSpeed * (1000.0 / 3600.0) + 0.5);  //m/s
+    else
+      return (int)(curSpeed / (8.0 / 5.0));  //mph
+  }
+  else
+  {
+    if (g_guiSettings.GetInt("Weather.SpeedUnits") == SPEED_MPS)
+      return (int)(curSpeed * (8.0 / 5.0) * (1000.0 / 3600.0) + 0.5);  //m/s
+    else
+      return (int)(curSpeed * (8.0 / 5.0));  //kph
+  }
+}
+
 bool CWeather::LoadWeather(const CStdString &strWeatherFile)
 {
   int iTmpInt;
@@ -329,8 +329,12 @@ bool CWeather::LoadWeather(const CStdString &strWeatherFile)
       //This is a bit untidy, but i'm fed up with localization and string formats :)
       CStdString szWindFrom = g_localizeStrings.Get(407);
       CStdString szWindAt = g_localizeStrings.Get(408);
+      CStdString szCalm = g_localizeStrings.Get(1410);
 
-      sprintf(m_szCurrentWind, "%s %s %s %i %s",
+      if (strcmp(iTmpStr,"CALM") == 0)
+        sprintf(m_szCurrentWind, "%s", szCalm.c_str());
+      else
+        sprintf(m_szCurrentWind, "%s %s %s %i %s",
               szWindFrom.GetBuffer(szWindFrom.GetLength()), iTmpStr,
               szWindAt.GetBuffer(szWindAt.GetLength()), iTmpInt, szUnitSpeed);
     }
