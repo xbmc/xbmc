@@ -181,6 +181,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bAutoShufflePlaylist=true;
 	g_stSettings.dwFileVersion =CONFIG_VERSION;
 	g_stSettings.m_iMyProgramsViewAsIcons=1;
+  g_stSettings.m_iMyVideoPlaylistViewAsIcons=1;
 	g_stSettings.m_bMyProgramsSortAscending=true;
 	g_stSettings.m_bMyProgramsFlatten=false;
 	g_stSettings.m_bMyProgramsDefaultXBE=false;
@@ -862,6 +863,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetBoolean(pElement, "stackactor", g_stSettings.m_bMyVideoActorStack);
     GetBoolean(pElement, "stackyear", g_stSettings.m_bMyVideoYearStack);
     
+    GetInteger(pElement, "videoplaylistviewicons", g_stSettings.m_iMyVideoPlaylistViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
 		GetInteger(pElement, "videoviewicons", g_stSettings.m_iMyVideoViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
 		GetInteger(pElement, "videorooticons", g_stSettings.m_iMyVideoRootViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
 		GetInteger(pElement, "videosortmethod",g_stSettings.m_iMyVideoSortMethod,0,0,2);
@@ -1150,6 +1152,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   SetBoolean(pNode, "stackactor", g_stSettings.m_bMyVideoActorStack);
   SetBoolean(pNode, "stackyear", g_stSettings.m_bMyVideoYearStack);
 
+  SetInteger(pNode, "videoplaylistviewicons", g_stSettings.m_iMyVideoPlaylistViewAsIcons);
 	SetInteger(pNode, "videoviewicons", g_stSettings.m_iMyVideoViewAsIcons);
 	SetInteger(pNode, "videorooticons", g_stSettings.m_iMyVideoRootViewAsIcons);
 	SetInteger(pNode, "videosortmethod",g_stSettings.m_iMyVideoSortMethod);

@@ -37,6 +37,7 @@
 #include "GUIWindowMusicOverlay.h"
 #include "GUIWindowFullScreen.h"
 #include "GUIWindowVideoOverlay.h"
+#include "GUIWindowVideoPlaylist.h" 
 #include "GUIWindowSettingsSlideShow.h"
 #include "GUIWindowSettingsScreensaver.h"
 #include "guiwindowsettingsautorun.h"
@@ -142,6 +143,7 @@ public:
 	CGUIWindowSettingsMusic					m_guiSettingsMusic;
 	CGUIWindowSlideShow							m_guiWindowSlideshow;
   CGUIWindowMusicPlayList					m_guiMyMusicPlayList;
+  CGUIWindowVideoPlaylist         m_guiMyVideoPlayList;
 	CGUIWindowMusicSongs						m_guiMyMusicSongs;
   CGUIWindowMusicAlbum						m_guiMyMusicAlbum;
 	CGUIWindowMusicArtists					m_guiMyMusicArtists;
