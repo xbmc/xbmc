@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 07-09-2004 fixed: Fast trigger scrolling now halts at end of short lists/thumbs
   - 07-09-2004 added: SF patch 1020481: Allow XML configuration of displayed RSS tags (thanks Levsky)
   - 07-09-2004 fixed: Another blackscreen bug thanks to pike + yuvalt
   - 07-09-2004 updated: Polish language file (thanks NaPek)
