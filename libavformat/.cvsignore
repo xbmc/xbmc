@@ -1,0 +1,6 @@
+config.h
+config.mak
+*ffmpeg
+ffserver
+Makefile.*
+.depend
