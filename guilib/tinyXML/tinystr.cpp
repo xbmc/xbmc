@@ -29,12 +29,12 @@ distribution.
 
 
 #include <stdlib.h>
-#include "../StdString.h"
+#include <string.h>
 #include <ctype.h>
 
 #include "tinystr.h"
 
-// TiXmlString constructor, based on a C CStdString
+// TiXmlString constructor, based on a C string
 TiXmlString::TiXmlString (const char* instring)
 {
     unsigned newlen;
@@ -44,13 +44,16 @@ TiXmlString::TiXmlString (const char* instring)
     {
         allocated = 0;
         cstring = NULL;
+        current_length = 0;
         return;
     }
     newlen = strlen (instring) + 1;
     newstring = new char [newlen];
-    strcpy (newstring, instring);
+    memcpy (newstring, instring, newlen);
+    // strcpy (newstring, instring);
     allocated = newlen;
     cstring = newstring;
+    current_length = newlen - 1;
 }
 
 // TiXmlString copy constructor
@@ -67,13 +70,16 @@ TiXmlString::TiXmlString (const TiXmlString& copy)
     {
         allocated = 0;
         cstring = NULL;
+        current_length = 0;
         return;
     }
-    newlen = strlen (copy . cstring) + 1;
+    newlen = copy . length () + 1;
     newstring = new char [newlen];
-    strcpy (newstring, copy . cstring);
+    // strcpy (newstring, copy . cstring);
+    memcpy (newstring, copy . cstring, newlen);
     allocated = newlen;
     cstring = newstring;
+    current_length = newlen - 1;
 }
 
 // TiXmlString = operator. Safe when assign own content
@@ -89,10 +95,12 @@ void TiXmlString ::operator = (const char * content)
     }
     newlen = strlen (content) + 1;
     newstring = new char [newlen];
-    strcpy (newstring, content);
+    // strcpy (newstring, content);
+    memcpy (newstring, content, newlen);
     empty_it ();
     allocated = newlen;
     cstring = newstring;
+    current_length = newlen - 1;
 }
 
 // = operator. Safe when assign own content
@@ -108,30 +116,34 @@ void TiXmlString ::operator = (const TiXmlString & copy)
     }
     newlen = copy . length () + 1;
     newstring = new char [newlen];
-    strcpy (newstring, copy . c_str ());
+    // strcpy (newstring, copy . c_str ());
+    memcpy (newstring, copy . c_str (), newlen);
     empty_it ();
     allocated = newlen;
     cstring = newstring;
+    current_length = newlen - 1;
 }
 
-
-//// Checks if a TiXmlString contains only whitespace (same rules as isspace)
-//bool TiXmlString::isblank () const
-//{
-//    char * lookup;
-//    for (lookup = cstring; * lookup; lookup++)
-//        if (! isspace (* lookup))
-//            return false;
-//    return true;
-//}
 
 // append a const char * to an existing TiXmlString
 void TiXmlString::append( const char* str, int len )
 {
     char * new_string;
-    unsigned new_alloc, new_size;
+    unsigned new_alloc, new_size, size_suffix;
+	
+	// don't use strlen - it can overrun the len passed in!
+	const char* p = str;
+	size_suffix = 0;
 
-    new_size = length () + len + 1;
+	while ( *p && size_suffix < (unsigned)len )
+	{
+		++p;
+		++size_suffix;
+	}
+    if ( !size_suffix)
+        return;
+
+    new_size = length () + size_suffix + 1;
     // check if we need to expand
     if (new_size > allocated)
     {
@@ -144,10 +156,14 @@ void TiXmlString::append( const char* str, int len )
 
         // copy the previous allocated buffer into this one
         if (allocated && cstring)
-            strcpy (new_string, cstring);
+            // strcpy (new_string, cstring);
+            memcpy (new_string, cstring, length ());
 
         // append the suffix. It does exist, otherwize we wouldn't be expanding 
-        strncat (new_string, str, len);
+        // strncat (new_string, str, len);
+        memcpy (new_string + length (), 
+                str,
+                size_suffix);
 
         // return previsously allocated buffer if any
         if (allocated && cstring)
@@ -158,8 +174,15 @@ void TiXmlString::append( const char* str, int len )
         allocated = new_alloc;
     }
     else
-        // we know we can safely append the new CStdString
-        strncat (cstring, str, len);
+    {
+        // we know we can safely append the new string
+        // strncat (cstring, str, len);
+        memcpy (cstring + length (), 
+                str,
+                size_suffix);
+    }
+    current_length = new_size - 1;
+    cstring [current_length] = 0;
 }
 
 
@@ -182,10 +205,14 @@ void TiXmlString::append( const char * suffix )
 
         // copy the previous allocated buffer into this one
         if (allocated && cstring)
-            strcpy (new_string, cstring);
+            memcpy (new_string, cstring, 1 + length ());
+            // strcpy (new_string, cstring);
 
         // append the suffix. It does exist, otherwize we wouldn't be expanding 
-        strcat (new_string, suffix);
+        // strcat (new_string, suffix);
+        memcpy (new_string + length (), 
+                suffix,
+                strlen (suffix) + 1);
 
         // return previsously allocated buffer if any
         if (allocated && cstring)
@@ -196,8 +223,14 @@ void TiXmlString::append( const char * suffix )
         allocated = new_alloc;
     }
     else
-        // we know we can safely append the new CStdString
-        strcat (cstring, suffix);
+    {
+        // we know we can safely append the new string
+        // strcat (cstring, suffix);
+        memcpy (cstring + length (), 
+                suffix, 
+                strlen (suffix) + 1);
+    }
+    current_length = new_size - 1;
 }
 
 // Check for TiXmlString equuivalence
@@ -206,12 +239,13 @@ void TiXmlString::append( const char * suffix )
 //    return (! strcmp (c_str (), compare . c_str ()));
 //}
 
-unsigned TiXmlString::length () const
-{
-    if (allocated)
-        return strlen (cstring);
-    return 0;
-}
+//unsigned TiXmlString::length () const
+//{
+//    if (allocated)
+//        // return strlen (cstring);
+//        return current_length;
+//    return 0;
+//}
 
 
 unsigned TiXmlString::find (char tofind, unsigned offset) const

@@ -400,7 +400,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 	TiXmlDocument xmlDoc;
 	if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) ) 
 	{
-		g_LoadErrorStr.Format("%s, Line %d\n%s", strXMLFile.c_str(), xmlDoc.GetLineNo(), xmlDoc.GetErrorDesc());
+		g_LoadErrorStr.Format("%s, Line %d\n%s", strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
 		return false;
 	}
 
@@ -898,7 +898,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 	TiXmlDocument xmlDoc;
 	if (!xmlDoc.LoadFile(strSettingsFile))
 	{
-		g_LoadErrorStr.Format("%s, Line %d\n%s", strSettingsFile.c_str(), xmlDoc.GetLineNo(), xmlDoc.GetErrorDesc());
+		g_LoadErrorStr.Format("%s, Line %d\n%s", strSettingsFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
 		return false;
 	}
 	TiXmlElement *pRootElement = xmlDoc.RootElement();
