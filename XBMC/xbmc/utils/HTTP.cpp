@@ -211,6 +211,21 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 	return true;
 }
 
+bool CHTTP::Head(string& strURL)
+{
+  CLog::Log(LOGINFO, "Get Header URL: %s", strURL.c_str());
+
+	int status = Open(strURL, "HEAD", NULL);
+	Close();
+
+	if (status != 200)
+	{
+		return false;
+	}
+
+	return true;
+}
+
 //------------------------------------------------------------------------------------------------------------------
 
 bool CHTTP::Post(const string &strURL, const string &strPostData, string &strHTML)
@@ -681,7 +696,7 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 			n += 10;
 			string strURL(m_strHeaders.begin() + n, m_strHeaders.begin() + m_strHeaders.find('\r', n));
 			if (strnicmp(strURL.c_str(),"http:", 5))
-			{
+		
 				char portstr[8];
 				sprintf(portstr, ":%d", m_iPort);
 				strURL.insert(0, portstr);
