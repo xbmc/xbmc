@@ -59,8 +59,14 @@ void CGUIListExItem::OnPaint(CGUIItem::RenderContext* pContext)
 		if (pDC->m_pButton)
 		{
 			// render control
-			pDC->m_pButton->SetSelected(pDC->m_bActive);
+			pDC->m_pButton->SetAlpha(0xFF);
 			pDC->m_pButton->SetFocus(pDC->m_bFocused);
+			if (!pDC->m_bFocused && pDC->m_bActive)
+			{	// listcontrolex is not focused, yet we have an active item, so render it focused
+				// but around 55% transparent.
+				pDC->m_pButton->SetAlpha(0x60);
+				pDC->m_pButton->SetFocus(true);
+			}
 			pDC->m_pButton->SetPosition(iPosX, iPosY);	
 			pDC->m_pButton->Render();
 			iPosX += 8;
