@@ -13,7 +13,7 @@
   </string>
   <string>
     <id>3</id>
-    <value>VidÈos</value>
+    <value>Vidéos</value>
   </string>
   <string>
     <id>4</id>
@@ -21,7 +21,7 @@
   </string>
   <string>
     <id>5</id>
-    <value>ParamËtres</value>
+    <value>Paramètres</value>
   </string>
   <string>
     <id>7</id>
@@ -29,7 +29,7 @@
   </string>
   <string>
     <id>8</id>
-    <value>MÈtÈo</value>
+    <value>Météo</value>
   </string>  
   <string>
     <id>11</id>
@@ -65,7 +65,7 @@
   </string>
   <string>
     <id>22</id>
-    <value>FÈvrier</value>
+    <value>Février</value>
   </string>  
   <string>
     <id>23</id>
@@ -89,7 +89,7 @@
   </string>  
   <string>
     <id>28</id>
-    <value>Ao˚t</value>
+    <value>Août</value>
   </string>  
   <string>
     <id>29</id>
@@ -105,11 +105,11 @@
   </string>  
   <string>
     <id>32</id>
-    <value>DÈcembre</value>
+    <value>Décembre</value>
   </string>  
   <string>
     <id>100</id>
-    <value>Voir en icÙnes</value>
+    <value>Voir en icônes</value>
   </string>  
   <string>
     <id>101</id>
@@ -145,11 +145,11 @@
   </string>   
   <string>
     <id>109</id>
-    <value>CrÈer vignettes</value>
+    <value>Créer vignettes</value>
   </string>   
   <string>
     <id>110</id>
-    <value>CrÈer vignettes</value>
+    <value>Créer vignettes</value>
   </string>   
   <string>
     <id>111</id>
@@ -173,7 +173,7 @@
   </string>   
   <string>
     <id>116</id>
-    <value>DÈplacer</value>
+    <value>Déplacer</value>
   </string>   
   <string>
     <id>117</id>
@@ -193,7 +193,7 @@
   </string>   
   <string>
     <id>121</id>
-    <value>Confirmer dÈplacement du fichier</value>
+    <value>Confirmer déplacement du fichier</value>
   </string>   
   <string>
     <id>122</id>
@@ -201,15 +201,15 @@
   </string>   
   <string>
     <id>123</id>
-    <value>Etes vous s˚r de copier ces fichiers?</value>
+    <value>Etes vous sûr de copier ces fichiers?</value>
   </string>   
   <string>
     <id>124</id>
-    <value>Etes vous s˚r de dÈplacer ces fichiers?</value>
+    <value>Etes vous sûr de déplacer ces fichiers?</value>
   </string>   
   <string>
     <id>125</id>
-    <value>Etes vous s˚r d'effacer ces fichiers?</value>
+    <value>Etes vous sûr d'effacer ces fichiers?</value>
   </string>  
   <string>
     <id>126</id>
@@ -221,7 +221,7 @@
   </string>  
   <string>
     <id>128</id>
-    <value>GÈnÈral</value>
+    <value>Général</value>
   </string> 
   <string>
     <id>129</id>
@@ -229,7 +229,7 @@
   </string> 
   <string>
     <id>130</id>
-    <value>Infos SystËme</value>
+    <value>Infos Système</value>
   </string>  
   <string>
     <id>131</id>
@@ -265,7 +265,7 @@
   </string>  
   <string>
     <id>139</id>
-    <value>TempÈratures:</value>
+    <value>Températures:</value>
   </string> 
   <string>
     <id>140</id>
@@ -289,7 +289,7 @@
   </string> 
   <string>
     <id>145</id>
-    <value>RÈseau:</value>
+    <value>Réseau:</value>
   </string> 
   <string>
     <id>146</id>
@@ -337,15 +337,15 @@
   </string> 
   <string>
     <id>157</id>
-    <value>VidÈo</value>
+    <value>Vidéo</value>
   </string> 
   <string>
     <id>158</id>
-    <value>MÈmoire Libre</value>
+    <value>Mémoire Libre</value>
   </string> 
   <string>
     <id>159</id>
-    <value>Cable dÈbranchÈ</value>
+    <value>Cable débranché</value>
   </string> 
   <string>
     <id>160</id>
@@ -369,7 +369,7 @@
   </string> 
   <string>
     <id>165</id>
-    <value>Disque PrÈsent</value>
+    <value>Disque Présent</value>
   </string> 
   <string>
     <id>166</id>
@@ -385,7 +385,7 @@
   </string> 
   <string>
     <id>169</id>
-    <value>RÈsolution :</value>
+    <value>Résolution :</value>
   </string> 
   <string>
     <id>170</id>
@@ -409,7 +409,7 @@
   </string> 
   <string>
     <id>175</id>
-    <value>SonoritÈ:</value>
+    <value>Sonorité:</value>
   </string> 
   <string>
     <id>176</id>
@@ -429,11 +429,11 @@
   </string> 
   <string>
     <id>180</id>
-    <value>DurÈe</value>
+    <value>Durée</value>
   </string> 
   <string>
     <id>181</id>
-    <value>SÈlection d'album</value>
+    <value>Sélection d'album</value>
   </string> 
   <string>
     <id>182</id>
@@ -457,11 +457,11 @@
   </string>  
   <string>
     <id>187</id>
-    <value>Pas d'album trouvÈ!</value>
+    <value>Pas d'album trouvé!</value>
   </string>  
   <string>
     <id>188</id>
-    <value>Tout sÈlectionner</value>
+    <value>Tout sélectionner</value>
   </string>  
   <string>
     <id>189</id>
@@ -473,7 +473,7 @@
   </string>  
   <string>
     <id>191</id>
-    <value>AlÈatoire</value>
+    <value>Aléatoire</value>
   </string>  
   <string>
     <id>192</id>
@@ -489,11 +489,11 @@
   </string> 
   <string>
     <id>195</id>
-    <value>Pas d'info IMDB trouvÈe!</value>
+    <value>Pas d'info IMDB trouvée!</value>
   </string> 
   <string>
     <id>196</id>
-    <value>SÈlection film:</value>
+    <value>Sélection film:</value>
   </string> 
   <string>
     <id>197</id>
@@ -501,19 +501,19 @@
   </string> 
   <string>
     <id>198</id>
-    <value>Chargement dÈtails du film</value>
+    <value>Chargement détails du film</value>
   </string> 
   <string>
     <id>199</id>
-    <value>RÈalisateur</value>
+    <value>Réalisateur</value>
   </string> 
   <string>
     <id>200</id>
-    <value>CrÈdits</value>
+    <value>Crédits</value>
   </string> 
   <string>
     <id>201</id>
-    <value>annÈe</value>
+    <value>année</value>
   </string> 
   <string>
     <id>202</id>
@@ -525,7 +525,7 @@
   </string> 
   <string>
     <id>204</id>
-    <value>IntÈrÍt</value>
+    <value>Intérêt</value>
   </string> 
   <string>
     <id>205</id>
@@ -549,7 +549,7 @@
   </string> 
   <string>
     <id>210</id>
-    <value>PrÈcÈdent</value>
+    <value>Précédent</value>
   </string> 
   <string>
     <id>211</id>
@@ -557,7 +557,7 @@
   </string> 
   <string>
     <id>212</id>
-    <value>applications trouvÈes</value>
+    <value>applications trouvées</value>
   </string> 
   <string>
     <id>213</id>
@@ -565,7 +565,7 @@
   </string> 
   <string>
     <id>214</id>
-    <value>Config Ècran</value>
+    <value>Config écran</value>
   </string> 
   <string>
     <id>215</id>
@@ -585,7 +585,7 @@
   </string> 
   <string>
     <id>219</id>
-    <value>InsÈrer disque SVP</value>
+    <value>Insérer disque SVP</value>
   </string> 
   <string>
     <id>220</id>
@@ -593,7 +593,7 @@
   </string> 
   <string>
     <id>221</id>
-    <value>Le rÈseau n'est pas connectÈ</value>
+    <value>Le réseau n'est pas connecté</value>
   </string> 
   <string>
     <id>222</id>
@@ -601,7 +601,7 @@
   </string> 
   <string>
     <id>223</id>
-    <value>Choisir meilleure rÈsolution pour les vidÈos</value>
+    <value>Choisir meilleure résolution pour les vidéos</value>
   </string> 
   <string>
     <id>224</id>
@@ -609,7 +609,7 @@
   </string> 
   <string>
     <id>225</id>
-    <value>DurÈe transitions</value>
+    <value>Durée transitions</value>
   </string> 
   <string>
     <id>226</id>
@@ -621,7 +621,7 @@
   </string> 
   <string>
     <id>228</id>
-    <value>Playlist alÈatoire au chargement</value>
+    <value>Playlist aléatoire au chargement</value>
   </string> 
   <string>
     <id>229</id>
@@ -641,7 +641,7 @@
   </string> 
   <string>
     <id>233</id>
-    <value>LinÈaire</value>
+    <value>Linéaire</value>
   </string> 
   <string>
     <id>234</id>
@@ -665,7 +665,7 @@
   </string>
   <string>
     <id>240</id>
-    <value>Lire automatiquement les DVD vidÈo</value>
+    <value>Lire automatiquement les DVD vidéo</value>
   </string>
   <string>
     <id>241</id>
@@ -681,7 +681,7 @@
   </string>
   <string>
     <id>244</id>
-    <value>Lire automatiquement les vidÈos</value>
+    <value>Lire automatiquement les vidéos</value>
   </string>
   <string>
     <id>245</id>
@@ -709,7 +709,7 @@
   </string>
   <string>
     <id>251</id>
-    <value>Selectionnez le rÈpertoire de destination</value>
+    <value>Selectionnez le répertoire de destination</value>
   </string>
   <string>
     <id>252</id>
@@ -729,7 +729,7 @@
   </string>
   <string>
     <id>256</id>
-    <value>RÈcupÈration des informations CDDB sur freedb</value>
+    <value>Récupération des informations CDDB sur freedb</value>
   </string>
   <string>
     <id>257</id>
@@ -773,7 +773,7 @@
   </string>
   <string>
     <id>267</id>
-    <value>Lister par durÈe</value>
+    <value>Lister par durée</value>
   </string>
   <string>
     <id>268</id>
@@ -809,43 +809,43 @@
   </string>
   <string>
     <id>276</id>
-    <value>DÈplacer la flËeche pour modifier la taille d'affichage</value>
+    <value>Déplacer la flèeche pour modifier la taille d'affichage</value>
   </string>
   <string>
     <id>277</id>
-    <value>DÈplacer le bandeau pour changer la position des sous-titres.</value>
+    <value>Déplacer le bandeau pour changer la position des sous-titres.</value>
   </string>
   <string>
     <id>278</id>
-    <value>DÈplacer le rectangle jusqu'a ce qu'il devienne un carrÈ parfait.</value>
+    <value>Déplacer le rectangle jusqu'a ce qu'il devienne un carré parfait.</value>
   </string>
   <string>
     <id>279</id>
-    <value>Impossible de charger les prÈfÈrences</value>
+    <value>Impossible de charger les préférences</value>
   </string>
   <string>
     <id>280</id>
-    <value>Utiliser les exceptions par dÈfaut</value>
+    <value>Utiliser les exceptions par défaut</value>
   </string>
   <string>
     <id>281</id>
-    <value>VÈrifiez le fichier .xml</value>
+    <value>Vérifiez le fichier .xml</value>
   </string>
   <string>
     <id>282</id>
-    <value>%i rÈsultat(s) trouvÈ</value>
+    <value>%i résultat(s) trouvé</value>
   </string>
   <string>
     <id>283</id>
-    <value>RÈsultats de la recherche</value>
+    <value>Résultats de la recherche</value>
   </string>
   <string>
     <id>284</id>
-    <value>Aucun rÈsultat</value>
+    <value>Aucun résultat</value>
   </string>
   <string>
     <id>285</id>
-    <value>Filtre d'entrelacement inversÈ</value>
+    <value>Filtre d'entrelacement inversé</value>
   </string>
   <string>
     <id>286</id>
@@ -881,7 +881,7 @@
   </string>
   <string>
     <id>294</id>
-    <value>1. CrÈer un signet</value>
+    <value>1. Créer un signet</value>
   </string>
   <string>
     <id>295</id>
@@ -897,7 +897,7 @@
   </string>
   <string>
     <id>298</id>
-    <value>5. DÈfilement</value>
+    <value>5. Défilement</value>
   </string>
   <string>
     <id>300</id>
@@ -925,7 +925,7 @@
   </string>
   <string>
     <id>306</id>
-    <value>6. Non-IntercalÈ</value>
+    <value>6. Non-Intercalé</value>
   </string>
   <string>
     <id>307</id>
@@ -933,15 +933,15 @@
   </string>
   <string>
     <id>308</id>
-    <value>filtre vertical de dÈgagement</value>
+    <value>filtre vertical de dégagement</value>
   </string>
   <string>
     <id>309</id>
-    <value>filtre horizontal de dÈgagement</value>
+    <value>filtre horizontal de dégagement</value>
   </string>
   <string>
     <id>310</id>
-    <value>Ajuster lumiËre/contraste</value>
+    <value>Ajuster lumière/contraste</value>
   </string>
   <string>
     <id>311</id>
@@ -953,15 +953,15 @@
   </string>
   <string>
     <id>313</id>
-    <value>RÈorganisez la base de donnÈes</value>
+    <value>Réorganisez la base de données</value>
   </string>
   <string>
     <id>314</id>
-    <value>PrÈparation...</value>
+    <value>Préparation...</value>
   </string>
   <string>
     <id>315</id>
-    <value>Erreur sur la base de donnÈes</value>
+    <value>Erreur sur la base de données</value>
   </string>
   <string>
     <id>316</id>
@@ -969,15 +969,15 @@
   </string>
   <string>
     <id>317</id>
-    <value>RÈorganisation effÈctuÈe</value>
+    <value>Réorganisation efféctuée</value>
   </string>
   <string>
     <id>318</id>
-    <value>Marquage des titres supprimÈs</value>
+    <value>Marquage des titres supprimés</value>
   </string>
   <string>
     <id>319</id>
-    <value>Erreur sur la rÈorganisation des titres</value>
+    <value>Erreur sur la réorganisation des titres</value>
   </string>
   <string>
     <id>320</id>
@@ -985,7 +985,7 @@
   </string>
   <string>
     <id>321</id>
-    <value>Erreur sur la rÈorganisation des artistes</value>
+    <value>Erreur sur la réorganisation des artistes</value>
   </string>
   <string>
     <id>322</id>
@@ -993,7 +993,7 @@
   </string>
   <string>
     <id>323</id>
-    <value>Erreur sur la rÈorganisation des genres</value>
+    <value>Erreur sur la réorganisation des genres</value>
   </string>
   <string>
     <id>324</id>
@@ -1001,7 +1001,7 @@
   </string>
   <string>
     <id>325</id>
-    <value>Erreur dans la rÈorganisation des chemins de fichier</value>
+    <value>Erreur dans la réorganisation des chemins de fichier</value>
   </string>
   <string>
     <id>326</id>
@@ -1009,7 +1009,7 @@
   </string>
   <string>
     <id>327</id>
-    <value>Erreur dans la rÈorganisation des albums</value>
+    <value>Erreur dans la réorganisation des albums</value>
   </string>
   <string>
     <id>328</id>
@@ -1021,23 +1021,23 @@
   </string>
   <string>
     <id>330</id>
-    <value>Cette opÈration peut durer un moment</value>
+    <value>Cette opération peut durer un moment</value>
   </string>
   <string>
     <id>331</id>
-    <value>Compression de la base de donnÈes</value>
+    <value>Compression de la base de données</value>
   </string>
   <string>
     <id>332</id>
-    <value>Erreur sur la comprÈssion de la base de donnÈes</value>
+    <value>Erreur sur la compréssion de la base de données</value>
   </string>
   <string>
     <id>333</id>
-    <value>Voulez vous rÈorganiser votre BDD musicale ?</value>
+    <value>Voulez vous réorganiser votre BDD musicale ?</value>
   </string>
   <string>
     <id>334</id>
-    <value>RÈorganiser la BDD des musiques</value>
+    <value>Réorganiser la BDD des musiques</value>
   </string>
   <string>
     <id>335</id>
@@ -1069,7 +1069,7 @@
   </string>
   <string>
     <id>342</id>
-    <value>SÈquences</value>
+    <value>Séquences</value>
   </string>
   <string>
     <id>343</id>
@@ -1081,7 +1081,7 @@
   </string>
   <string>
     <id>345</id>
-    <value>AnnÈe</value>
+    <value>Année</value>
   </string>
   <string>
     <id>346</id>
@@ -1089,7 +1089,7 @@
   </string>
   <string>
     <id>347</id>
-    <value>DÈpiler</value>
+    <value>Dépiler</value>
   </string>
   <string>
     <id>348</id>
@@ -1117,7 +1117,7 @@
   </string>
   <string>
     <id>354</id>
-    <value>TrainÈes (Matrix)</value>
+    <value>Trainées (Matrix)</value>
   </string>
   <string>
     <id>355</id>
@@ -1125,7 +1125,7 @@
   </string>
   <string>
     <id>356</id>
-    <value>Mode de l'Ècran de veille</value>
+    <value>Mode de l'écran de veille</value>
   </string>
   <string>
     <id>357</id>
@@ -1137,7 +1137,7 @@
   </string>
   <string>
     <id>359</id>
-    <value>Albums rÈcents</value>
+    <value>Albums récents</value>
   </string>
   <string>
     <id>360</id>
@@ -1145,7 +1145,7 @@
   </string>
   <string>
     <id>361</id>
-    <value>Diapo. inversÈ</value>
+    <value>Diapo. inversé</value>
   </string>   
   <string>
     <id>362</id>
@@ -1165,7 +1165,7 @@
   </string>   
   <string>
     <id>366</id>
-    <value>Lister par annÈe</value>
+    <value>Lister par année</value>
   </string>   
   <string>
     <id>367</id>
@@ -1193,7 +1193,7 @@
   </string>
   <string>
     <id>373</id>
-    <value>EnsoleillÈ</value>
+    <value>Ensoleillé</value>
   </string>
   <string>
     <id>374</id>
@@ -1213,11 +1213,11 @@
   </string>
   <string>
     <id>378</id>
-    <value>MatinÈe</value>
+    <value>Matinée</value>
   </string>
   <string>
     <id>379</id>
-    <value>SoirÈe</value>
+    <value>Soirée</value>
   </string>
   <string>
     <id>380</id>
@@ -1229,7 +1229,7 @@
   </string>
   <string>
     <id>382</id>
-    <value>DispersÈ</value>
+    <value>Dispersé</value>
   </string>
   <string>
     <id>383</id>
@@ -1244,12 +1244,32 @@
     <value>Beau</value>
   </string>
   <string>
+    <id>396</id> 
+    <value>Choisir le lieux</value>
+  </string>
+  <string>
+    <id>397</id> 
+    <value>Interval</value> 
+  </string>
+  <string>
+   <id>398</id> 
+   <value>Mesure de la température</value> 
+  </string>
+  <string>
+    <id>399</id> 
+    <value>mesure de la vitesse</value> 
+  </string>
+  <string>
+    <id>400</id> 
+    <value>Temps</value>
+  </string>
+  <string>
     <id>401</id>
     <value>Temp</value>
   </string>   
   <string>
     <id>402</id>
-    <value>T∞ Resentie</value>
+    <value>T° Resentie</value>
   </string> 
   <string>
     <id>403</id>
@@ -1261,11 +1281,11 @@
   </string>   
   <string>
     <id>405</id>
-    <value>T∞ Condens</value>
+    <value>T° Condens</value>
   </string> 
   <string>
     <id>406</id>
-    <value>HumiditÈe</value>
+    <value>Humiditée</value>
   </string> 
   <string>
     <id>407</id>
@@ -1273,7 +1293,7 @@
   </string>
   <string>
     <id>408</id>
-    <value>‡</value>
+    <value>à</value>
   </string>      
   <string>
     <id>410</id>
@@ -1281,11 +1301,11 @@
   </string>       
   <string>
     <id>411</id>
-    <value>RÈcupËre la mÈtÈo pour :</value>
+    <value>Récupère la météo pour :</value>
   </string> 
   <string>
     <id>412</id>
-    <value>La rÈcupÈration de la mÈtÈo ‡ ÈchouÈ</value>
+    <value>La récupération de la météo à échoué</value>
   </string>    
   <string>
     <id>413</id>
@@ -1297,7 +1317,7 @@
   </string>    
   <string>
     <id>415</id>
-    <value>TÈlÈcharge l'aperÁu...</value>
+    <value>Télécharge l'aperçu...</value>
   </string> 
   <string>
     <id>416</id>
@@ -1309,18 +1329,18 @@
   </string>
   <string>
     <id>418</id>
-    <value>Mes VidÈos/Genres</value>
+    <value>Mes Vidéos/Genres</value>
   </string> 
   <string>
     <id>419</id>
-    <value>Mes VidÈos/Acteurs</value>
+    <value>Mes Vidéos/Acteurs</value>
   </string> 
   <string>
     <id>420</id>
-    <value>Mes VidÈos/AnnÈes</value>
+    <value>Mes Vidéos/Années</value>
   </string> 
   <string>
     <id>421</id>
-    <value>Mes VidÈos/Titre</value>
+    <value>Mes Vidéos/Titre</value>
   </string> 
 </strings>
