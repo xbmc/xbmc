@@ -808,7 +808,7 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 										playlistItem.SetDescription(strLabel);
 										playlistItem.SetDuration(playListItem.GetDuration());
 
-										g_playlistPlayer.GetPlaylist(iPlayList).Add(playlistItem);
+										playlist.Add(playlistItem);
 									}
 
 									g_playlistPlayer.SetCurrentPlaylist(iPlayList);
