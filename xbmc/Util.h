@@ -26,6 +26,7 @@ public:
   static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath);
   static bool  IsHD(const CStdString& strFileName);
   static bool  IsXBE(const CStdString& strFileName);
+	static bool  IsPythonScript(const CStdString& strFileName);
   static bool  IsDefaultXBE(const CStdString& strFileName);
   static bool  IsShortCut(const CStdString& strFileName);
   static int   cmpnocase(const char* str1,const char* str2);
