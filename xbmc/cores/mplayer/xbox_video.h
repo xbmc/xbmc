@@ -17,7 +17,7 @@ public:
 	// Functions called from the GUI
 	void					GetRects(RECT &rs, RECT &rd) { if (!m_bChanging && m_pRenderer) m_pRenderer->GetRects(rs, rd); };
 	float					GetAR() { if (!m_bChanging && m_pRenderer) return m_pRenderer->GetAR(); else return 1.0f; };
-	void					Update(bool bPauseDrawing) { m_bPauseDrawing = bPauseDrawing; if (!m_bChanging && m_pRenderer) m_pRenderer->Update(); };
+	void					Update(bool bPauseDrawing);
 	void					RenderUpdate() { if (!m_bChanging && m_pRenderer) m_pRenderer->RenderUpdate(); };
 	void					CheckScreenSaver() { if (!m_bChanging && m_pRenderer) m_pRenderer->CheckScreenSaver(); };
 	void					SetupScreenshot();
