@@ -118,7 +118,7 @@ namespace PYXBMC
 		if (self->bIsPythonWindow) delete self->pWindow;
 		self->ob_type->tp_free((PyObject*)self);
 	}
-
+/*
 	PyObject* Window_Load(Window *self, PyObject *args)
 	{
 		CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
@@ -149,6 +149,14 @@ namespace PYXBMC
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
+*/
+	PyDoc_STRVAR(show__doc__,
+		"show(self) -- Show this window.\n"
+		"\n"
+		"Shows this window by activating it, calling close() after it wil activate the\n"
+		"current window again.\n"
+		"Note, if your script ends this window will be closed to. To show it forever, \n"
+		"make a loop at the end of your script ar use doModal() instead");
 
 	PyObject* Window_Show(Window *self, PyObject *args)
 	{
@@ -163,6 +171,12 @@ namespace PYXBMC
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
+
+	PyDoc_STRVAR(close__doc__,
+		"close(self) -- Closes this window.\n"
+		"\n"
+		"Closes this window by activating the old window.\n"
+		"The window is not deleted with this method.");
 
 	PyObject* Window_Close(Window *self, PyObject *args)
 	{
@@ -179,6 +193,15 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(onAction__doc__,
+		"onAction(self, int action) -- onAction method.\n"
+		"\n"
+		"This method will recieve all actions that the main program will send\n"
+		"to this window.\n"
+		"By default, only the PREVIOUS_MENU action is handled.\n"
+		"Overwrite this method to let your script handle all actions.\n"
+		"Don't forget to capture ACTION_PREVIOUS_MENU, else the user can't close this window.");
+
 	PyObject* Window_OnAction(Window *self, PyObject *args)
 	{
 		DWORD action;
@@ -191,6 +214,9 @@ namespace PYXBMC
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
+
+	PyDoc_STRVAR(doModal__doc__,
+		"doModal(self) -- Display this window until close() is called.");
 
 	PyObject* Window_DoModal(Window *self, PyObject *args)
 	{
@@ -213,6 +239,18 @@ namespace PYXBMC
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
+
+	PyDoc_STRVAR(addControl__doc__,
+		"addControl(self, Control) -- Add a Control to this window.\n"
+		"\n"
+		"The next controls can be added to a window atm\n"
+		"\n"
+		"  -ControlLabel\n"
+		"  -ControlFadeLabel\n"
+		"  -ControlTextBox\n"
+		"  -ControlButton\n"
+		"  -ControlList\n"
+		"  -ControlImage\n");
 
 	PyObject* Window_AddControl(Window *self, PyObject *args)
 	{
@@ -370,6 +408,9 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(setFocus__doc__,
+		"setFocus(self, Control) -- Give the supplied control focus.");
+
 	PyObject* Window_SetFocus(Window *self, PyObject *args)
 	{ 
 		CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
@@ -397,6 +438,11 @@ namespace PYXBMC
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
+
+	PyDoc_STRVAR(removeControl__doc__,
+		"removeControl(self, Control) -- Removes the control from this window.\n"
+		"\n"
+		"This will not delete the control. It is only removed from the window.");
 
 	PyObject* Window_RemoveControl(Window *self, PyObject *args)
 	{ 
@@ -446,10 +492,16 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyDoc_STRVAR(getHeight__doc__,
+		"getHeight(self) -- Returns the height of this screen.");
+
 	PyObject* Window_GetHeight(Window *self, PyObject *args)
 	{
 		return PyLong_FromLong(g_graphicsContext.GetHeight());
 	}
+
+	PyDoc_STRVAR(getWidth__doc__,
+		"getWidth(self) -- Returns the width of this screen.");
 
 	PyObject* Window_GetWidth(Window *self, PyObject *args)
 	{ 
@@ -458,17 +510,26 @@ namespace PYXBMC
 
 	PyMethodDef Window_methods[] = {
 		//{"load", (PyCFunction)Window_Load, METH_VARARGS, ""},
-		{"onAction", (PyCFunction)Window_OnAction, METH_VARARGS, ""},
-		{"doModal", (PyCFunction)Window_DoModal, METH_VARARGS, ""},
-		{"show", (PyCFunction)Window_Show, METH_VARARGS, ""},
-		{"close", (PyCFunction)Window_Close, METH_VARARGS, ""},
-		{"addControl", (PyCFunction)Window_AddControl, METH_VARARGS, ""},
-		{"removeControl", (PyCFunction)Window_RemoveControl, METH_VARARGS, ""},
-		{"setFocus", (PyCFunction)Window_SetFocus, METH_VARARGS, ""},
-		{"getHeight", (PyCFunction)Window_GetHeight, METH_VARARGS, ""},
-		{"getWidth", (PyCFunction)Window_GetWidth, METH_VARARGS, ""},
+		{"onAction", (PyCFunction)Window_OnAction, METH_VARARGS, onAction__doc__},
+		{"doModal", (PyCFunction)Window_DoModal, METH_VARARGS, doModal__doc__},
+		{"show", (PyCFunction)Window_Show, METH_VARARGS, show__doc__},
+		{"close", (PyCFunction)Window_Close, METH_VARARGS, close__doc__},
+		{"addControl", (PyCFunction)Window_AddControl, METH_VARARGS, addControl__doc__},
+		{"removeControl", (PyCFunction)Window_RemoveControl, METH_VARARGS, removeControl__doc__},
+		{"setFocus", (PyCFunction)Window_SetFocus, METH_VARARGS, setFocus__doc__},
+		{"getHeight", (PyCFunction)Window_GetHeight, METH_VARARGS, getHeight__doc__},
+		{"getWidth", (PyCFunction)Window_GetWidth, METH_VARARGS, getWidth__doc__},
 		{NULL, NULL, 0, NULL}
 	};
+
+	PyDoc_STRVAR(window_documentation,
+		"Window class.\n"
+		"\n"
+		"Window(self[, int windowId) -- Create a new Window to draw on.\n"
+		"                               Specify an id to use an existing window.\n"
+		"\n"
+		"Deleting this window will activate the old window that was active\n"
+		"and resets (not delete) all controls that are associated with this window.");
 
 // Restore code and data sections to normal.
 #pragma code_seg()
@@ -498,7 +559,7 @@ namespace PYXBMC
 			0,                         /*tp_setattro*/
 			0,                         /*tp_as_buffer*/
 			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-			"Window Objects",          /* tp_doc */
+			window_documentation,      /* tp_doc */
 			0,		                     /* tp_traverse */
 			0,		                     /* tp_clear */
 			0,		                     /* tp_richcompare */

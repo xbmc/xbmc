@@ -7,6 +7,7 @@
 #include "playlist.h"
 #include "keyboard.h"
 #include "localizestrings.h"
+#include "pyutil.h"
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
@@ -132,6 +133,12 @@ namespace PYXBMC
 		PyModule_AddObject(pXbmcModule, "Player", (PyObject*)&Player_Type);
 		PyModule_AddObject(pXbmcModule, "PlayList", (PyObject*)&PlayList_Type);
 		PyModule_AddObject(pXbmcModule, "PlayListItem", (PyObject*)&PlayListItem_Type);
+
+		// constants
+		PyModule_AddStringConstant(pXbmcModule, "__author__",		PY_XBMC_AUTHOR);
+		PyModule_AddStringConstant(pXbmcModule, "__date__",			"12 April 2004");
+		PyModule_AddStringConstant(pXbmcModule, "__version__",		"1.0");
+		PyModule_AddStringConstant(pXbmcModule, "__credits__",		PY_XBMC_CREDITS);
 	}
 }
 

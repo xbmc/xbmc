@@ -19,12 +19,21 @@ namespace PYXBMC
 	extern PyTypeObject DialogType;
 	extern PyTypeObject DialogProgressType;
 
+	PyDoc_STRVAR(lock__doc__,
+		"lock() -- Lock the gui until unlock is called.\n"
+		"\n"
+		"This will improve performance when doing a lot of gui manipulation at once.\n"
+		"Note, the main program (xbmc itself) will freeze until unlock is called");
+
 	PyObject* XBMCGUI_Lock(PyObject *self, PyObject *args)
 	{
 		PyGUILock();
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
+
+	PyDoc_STRVAR(unlock__doc__,
+		"unlock() -- Unlock the gui.\n");
 
 	PyObject* XBMCGUI_Unlock(PyObject *self, PyObject *args)
 	{
@@ -35,10 +44,15 @@ namespace PYXBMC
 
 	// define c functions to be used in python here
 	PyMethodDef xbmcGuiMethods[] = {
-		{"lock", (PyCFunction)XBMCGUI_Lock, METH_VARARGS, ""},
-		{"unlock", (PyCFunction)XBMCGUI_Unlock, METH_VARARGS, ""},
+		{"lock", (PyCFunction)XBMCGUI_Lock, METH_VARARGS, lock__doc__},
+		{"unlock", (PyCFunction)XBMCGUI_Unlock, METH_VARARGS, unlock__doc__},
 		{NULL, NULL, 0, NULL}
 	};
+
+	PyDoc_STRVAR(xbmcgui_module_documentation,
+			"XBMC GUI Module"
+			"\n"
+			"");
 
 	PyMODINIT_FUNC
 	initxbmcgui(void) 
@@ -76,7 +90,8 @@ namespace PYXBMC
 		Py_INCREF(&DialogType);
 		Py_INCREF(&DialogProgressType);
 
-		pXbmcGuiModule = Py_InitModule("xbmcgui", xbmcGuiMethods);
+		pXbmcGuiModule = Py_InitModule3("xbmcgui", xbmcGuiMethods, xbmcgui_module_documentation);
+
 		if (pXbmcGuiModule == NULL) return;
 
     PyModule_AddObject(pXbmcGuiModule, "Window", (PyObject*)&Window_Type);
@@ -91,6 +106,12 @@ namespace PYXBMC
 		PyModule_AddObject(pXbmcGuiModule, "ControlImage", (PyObject*)&	ControlImage_Type);
 		PyModule_AddObject(pXbmcGuiModule, "Dialog", (PyObject*)&DialogType);
 		PyModule_AddObject(pXbmcGuiModule, "DialogProgress", (PyObject *)&DialogProgressType);
+
+		// constants
+		PyModule_AddStringConstant(pXbmcGuiModule, "__author__",		PY_XBMC_AUTHOR);
+		PyModule_AddStringConstant(pXbmcGuiModule, "__date__",			"12 April 2004");
+		PyModule_AddStringConstant(pXbmcGuiModule, "__version__",		"1.0");
+		PyModule_AddStringConstant(pXbmcGuiModule, "__credits__",		PY_XBMC_CREDITS);
 	}
 }
 
