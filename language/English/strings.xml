@@ -1237,5 +1237,9 @@
   <string>
     <id>414</id>
     <value>Searching directory...</value>
+  </string>    
+  <string>
+    <id>415</id>
+    <value>Downloading thumbnail...</value>
   </string> 
 </strings>
