@@ -37,20 +37,30 @@ bool CGUILabelControl::CanFocus() const
   return false;
 }
 
+void CGUILabelControl::SetText(CStdString aLabel)
+{
+    WCHAR wszText[1024];
+	swprintf(wszText,L"%S",aLabel.c_str());	
+	m_strLabel = wszText;
+ }
 
 bool CGUILabelControl::OnMessage(CGUIMessage& message)
 {
-  if ( message.GetControlId()==GetID() )
-  {
-    if (message.GetMessage() == GUI_MSG_LABEL_SET)
-    {
-      m_strLabel = message.GetLabel();
+	if ( message.GetControlId()==GetID() )
+	{
+		if (message.GetMessage() == GUI_MSG_LABEL_SET)
+		{
+			m_strLabel = message.GetLabel();
+			
 			if ( m_bHasPath )
+			{
 				ShortenPath();
-      return true;
-    }
-  }
-  return CGUIControl::OnMessage(message);
+			}
+			return true;
+		}
+	}
+
+	return CGUIControl::OnMessage(message);
 }
 
 void CGUILabelControl::ShortenPath()
