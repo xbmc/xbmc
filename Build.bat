@@ -41,7 +41,6 @@ md BUILD
 copy release\default.xbe BUILD
 copy *.xml BUILD
 copy *.txt BUILD
-xcopy mplayer BUILD\mplayer /E /Q /I /Y
 xcopy skin\Projec~1\fonts "BUILD\skin\Project Mayhem\fonts" /E /Q /I /Y
 xcopy skin\Projec~1\*.xml "BUILD\skin\Project Mayhem\" /E /Q /I /Y
 REM %TEX% -input skin\Projec~1\media -output "BUILD\skin\Project Mayhem\media"
@@ -58,7 +57,7 @@ xcopy system BUILD\system /E /Q /I /Y
 rem xcopy web BUILD\web /E /Q /I /Y
 rem xcopy python BUILD\python /E /Q /I /Y
 rem xcopy %SKINS% Build\Skin /E /Q /I /Y
-rem xcopy %CODECS% Build\mplayer\codecs /E /Q /I /Y
+rem xcopy %CODECS% Build\system\mplayer\codecs /E /Q /I /Y
 xcopy media BUILD\media /E /Q /I /Y
 del BUILD\media\dsstdfx.bin
 
