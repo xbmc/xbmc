@@ -135,12 +135,14 @@
 				Optimization="3"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
-				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;FASTCAP"
+				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml"
+				PreprocessorDefinitions="NDEBUG;_XBOX;PROFILE;FASTCAP;HAVE_MSWINDOWS"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="0"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
 				DebugInformationFormat="3"
@@ -152,6 +154,7 @@
 				AdditionalDependencies="xapilib.lib d3d8i.lib d3dx8.lib xgraphics.lib dsound.lib dmusici.lib xactengi.lib xsndtrk.lib xvoice.lib xonlines.lib xboxkrnl.lib xbdm.lib xperf.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
+				IgnoreDefaultLibraryNames="LIBCMTd;libc;libcpmtd"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				SubSystem="2"
@@ -167,13 +170,16 @@
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="XboxDeploymentTool"/>
+				Name="XboxDeploymentTool"
+				RemotePath="xe:\xbmc\default.xbe"/>
 			<Tool
 				Name="XboxImageTool"
-				StackSize="65536"
+				FileName="$(TargetDir)default.xbe"
+				StackSize="0x80000"
 				IncludeDebugInfo="TRUE"
 				InsertFile="$(TargetDir)YV12toRGB.xpu,PXLSHADER,R"
 				NoLibWarn="TRUE"
+				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center"/>
@@ -1649,6 +1655,12 @@
 						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Profile_FastCap|Xbox">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Xbox">
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1663,6 +1675,12 @@
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"
 						PreprocessorDefinitions="_XBOX;_DEBUG;HAVE_MSWINDOWS"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Profile_FastCap|Xbox">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Xbox">
@@ -1779,10 +1797,10 @@
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
@@ -1792,6 +1810,12 @@
 							Name="VCCLCompilerTool"
 							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"
 							PreprocessorDefinitions="_XBOX;_DEBUG;HAVE_MSWINDOWS"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Profile_FastCap|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Xbox">
@@ -1820,6 +1844,12 @@
 							PreprocessorDefinitions="_XBOX;_DEBUG;HAVE_MSWINDOWS"/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="Profile_FastCap|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="Release|Xbox">
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1844,6 +1874,12 @@
 							Name="VCCLCompilerTool"
 							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"
 							PreprocessorDefinitions="_XBOX;_DEBUG;HAVE_MSWINDOWS"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Profile_FastCap|Xbox">
+						<Tool
+							Name="VCCLCompilerTool"
+							AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include"/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Xbox">
@@ -1962,28 +1998,10 @@
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\player.h">
 					</File>
 					<File
-						RelativePath=".\xbmc\lib\libPython\xbmcmodule\playlist.cpp">
-						<FileConfiguration
-							Name="Debug|Xbox">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Xbox">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug Xbox No Memory Tracking|Xbox">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\pyplaylist.cpp">
 					</File>
 					<File
-						RelativePath=".\xbmc\lib\libPython\xbmcmodule\playlist.h">
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\pyplaylist.h">
 					</File>
 					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\pyutil.cpp">
