@@ -10,6 +10,7 @@ CKaiClient* CKaiClient::client = NULL;
 
 //#define SPEEX_LOOPBACK 1
 #define	KAI_CONTACT_SETTLING_PERIOD		15000L
+#define KAI_REACHABLE_QUERY_PERIOD		15000L
 
 #ifdef SPEEX_LOOPBACK
 DWORD g_speexLoopbackPlayerId = 0xDEADBEEF;
@@ -46,9 +47,10 @@ CKaiClient::CKaiClient(void) : CUdpClient()
 	m_bHeadset = FALSE;
 	m_bHosting	= FALSE;
 	m_bContactsSettling = TRUE;
+	m_bReachable = FALSE;
 	m_nFriendsOnline = 0;
 	m_pDSound	= NULL;
-
+	
 	// outbound packet queue, collects compressed audio until sufficient to send
 	CStdString strEgress = "egress";
 	m_pEgress  = new CMediaPacketQueue(strEgress);
@@ -143,9 +145,11 @@ void CKaiClient::SetObserver(IBuddyObserver* aObserver)
 {
 	if (observer != aObserver)
 	{
+		m_dwSettlingTimer = timeGetTime();
+		m_dwReachableTimer = timeGetTime();
+
 		// Enable call back methods
 		observer = aObserver;
-		m_dwTimer = timeGetTime();
 
 		aObserver->OnInitialise(this);
 
@@ -343,7 +347,10 @@ bool CKaiClient::IsEngineConnected()
 {
 	return client_state == State::Authenticated;
 }
-
+bool CKaiClient::IsNetworkReachable()
+{
+	return (m_bReachable && client_state == State::Authenticated);
+}
 void CKaiClient::QueryUserProfile(CStdString& aPlayerName)
 {	
 	if (client_state==State::Authenticated)
@@ -363,7 +370,14 @@ void CKaiClient::QueryAvatar(CStdString& aPlayerName)
 		Send(server_addr, strQueryMessage);
 	}
 }
-
+void CKaiClient::QueryClientMetrics()
+{	
+	if (client_state==State::Authenticated)
+	{
+		CStdString strQueryMessage = "KAI_CLIENT_GET_METRICS;";
+		Send(server_addr, strQueryMessage);
+	}
+}
 void CKaiClient::SetBearerCaps(BOOL bIsHeadsetPresent)
 {	
 	if (client_state==State::Authenticated)
@@ -460,11 +474,10 @@ void CKaiClient::SendVoiceDataToEngine()
 
 void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LPBYTE pMessage, DWORD dwMessageLength)
 {
-//	OutputDebugString("KAI: ");
-//	OutputDebugString(aMessage.c_str());
-//	OutputDebugString("\r\n");
-
 	CHAR* szMessage = strtok( (char*)((LPCSTR)aMessage), ";"); 
+
+	//OutputDebugString(szMessage);
+	//OutputDebugString("\r\n");
 
 	// now depending on state...
 	switch (client_state)
@@ -491,7 +504,8 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 			if (strcmp(szMessage,"KAI_CLIENT_LOGGED_IN")==0)
 			{
 				client_state = State::Authenticated;
-				m_dwTimer = timeGetTime();
+				m_dwSettlingTimer  = timeGetTime();
+				m_dwReachableTimer = timeGetTime();
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_NOT_LOGGED_IN")==0)
 			{
@@ -523,6 +537,8 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 			if (strcmp(szMessage,"KAI_CLIENT_USER_DATA")==0)
 			{
 				client_state = State::Authenticated;
+				m_dwSettlingTimer  = timeGetTime();
+				m_dwReachableTimer = timeGetTime();
 
 				CStdString strCaseCorrectedName = strtok(NULL, ";");
 				if (strCaseCorrectedName.length()>0)
@@ -902,6 +918,22 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 					}
 				}
 			}
+			else if (strcmp(szMessage,"KAI_CLIENT_METRICS")==0)
+			{
+				if (observer!=NULL)
+				{
+					CStdString strServer = strtok(NULL, ";");
+					CStdString strReachable = strtok(NULL, ";");
+					
+					if (strReachable.Find("Yes")>=0)
+					{
+						m_bReachable = TRUE;
+						int nameIsLong = strServer.Find('(')-1;
+						CStdString strName = nameIsLong>0 ? strServer.Left(nameIsLong) : strServer;
+						observer->OnNetworkReachable(strName);
+					}
+				}				
+			}
 			else if (strcmp(szMessage,"KAI_CLIENT_DETACH")==0)
 			{
 				client_state = State::Disconnected;
@@ -929,16 +961,24 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 // do frequent work
 void CKaiClient::DoWork()
 {
-	// generate our own notifications
+	// generate our own timed events
 	if (observer!=NULL && client_state == State::Authenticated)
 	{
-		if (m_bContactsSettling && (timeGetTime() - m_dwTimer > KAI_CONTACT_SETTLING_PERIOD) )
+		DWORD dwCurrentTime = timeGetTime();
+
+		if (m_bContactsSettling && (dwCurrentTime - m_dwSettlingTimer > KAI_CONTACT_SETTLING_PERIOD) )
 		{
 			m_bContactsSettling = FALSE;
 			observer->OnContactsOnline(m_nFriendsOnline);
 
 			m_bHeadset = CVoiceManager::IsHeadsetConnected();
 			SetBearerCaps(m_bHeadset);
+		}
+
+		if (!m_bReachable && (dwCurrentTime - m_dwReachableTimer > KAI_REACHABLE_QUERY_PERIOD) )
+		{
+			m_dwReachableTimer = dwCurrentTime;
+			QueryClientMetrics();
 		}
 	}
 

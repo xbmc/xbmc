@@ -23,6 +23,7 @@ class IBuddyObserver
 		virtual void OnEngineDetached()=0;
 		virtual void OnAuthenticationFailed(CStdString& aUsername)=0;
 		virtual void OnNetworkError(CStdString& aError)=0;
+		virtual void OnNetworkReachable(CStdString& aOrbitalServerName)=0;
 		virtual void OnContactOffline(CStdString& aContact)=0;
 		virtual void OnContactOnline(CStdString& aContact)=0;
 		virtual void OnContactsOnline(int nCount)=0;
@@ -81,6 +82,7 @@ public:
 	CStdString GetCurrentVector();
 
 	bool IsEngineConnected();
+	bool IsNetworkReachable();
 	void DoWork();
 
     // Public so that CVoiceManager can get to them
@@ -108,6 +110,7 @@ protected:
 private:
 	CKaiClient(void);
 
+	void QueryClientMetrics();
 	void QueueContactVoice(CStdString& aContactName, DWORD aPlayerId, LPBYTE pMessage, DWORD dwMessageLength);
 	void OnVoiceData( DWORD dwPort, DWORD dwSize, VOID* pvData );
     void OnCommunicatorEvent( DWORD dwPort, VOICE_COMMUNICATOR_EVENT event );
@@ -120,11 +123,15 @@ private:
 	State client_state;
 	IBuddyObserver* observer;
 	CStdString client_vector;
+
 	BOOL	m_bHeadset;
 	BOOL	m_bHosting;
 	BOOL	m_bContactsSettling;
+	BOOL	m_bReachable;
+
 	INT		m_nFriendsOnline;
-	DWORD	m_dwTimer;
+	DWORD	m_dwSettlingTimer;
+	DWORD	m_dwReachableTimer;
 
 	// KAI Speex support
     LPDIRECTSOUND8		m_pDSound;
