@@ -250,30 +250,139 @@ void CGUIWindowPrograms::OnAction(const CAction &action)
 }
 
 
+
+void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int depth)
+{
+	WIN32_FIND_DATA wfd;
+	bool   bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
+	bool  bFlattenDir=g_stSettings.m_bMyProgramsFlatten;
+	bool   bRecurseSubDirs(true);
+	bool newDir(false);
+	memset(&wfd,0,sizeof(wfd));
+	CStdString strRootDir=strDirectory;
+	if (!CUtil::HasSlashAtEnd(strRootDir) )
+		strRootDir+="\\";
+
+	if ( CUtil::IsDVD(strRootDir) )
+	{
+		CIoSupport helper;
+		helper.Remount("D:","Cdrom0");
+	}
+	CStdString strSearchMask=strRootDir;
+	strSearchMask+="*.*";
+
+	FILETIME localTime;
+	CAutoPtrFind hFind ( FindFirstFile(strSearchMask.c_str(),&wfd));
+	if (!hFind.isValid())
+		return ;
+	do {
+		if (wfd.cFileName[0]!=0)
+		{
+			CStdString strFileName=wfd.cFileName;
+			CStdString strFile=strRootDir;
+			strFile+=wfd.cFileName;
+			
+			if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
+			{
+				if (strFileName != "." && strFileName != ".." && !bFlattenDir)
+				{
+					CFileItem *pItem = new CFileItem(strFileName);
+					pItem->m_strPath=strFile;
+					pItem->m_bIsFolder=true;
+					FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
+					FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+					m_vecItems.push_back(pItem);
+				}
+				else
+				{
+					if (strFileName != "." && strFileName != ".." && bFlattenDir && depth > 0 )
+					{
+						if (m_database.GetPath(strFile) < 0)
+						{
+							LoadDirectory(strFile, depth-1);
+						}
+					}
+				}
+
+
+			}
+			else
+			{
+				if (bOnlyDefaultXBE ? CUtil::IsDefaultXBE(strFileName) : CUtil::IsXBE(strFileName))
+				{
+					CStdString strDescription;
+					if (!CUtil::GetXBEDescription(strFile, strDescription))
+					{
+						CUtil::GetDirectoryName(strFile, strDescription);
+						CUtil::ShortenFileName(strDescription);
+						CUtil::RemoveIllegalChars(strDescription);
+					}
+
+					if (!bFlattenDir)
+					{
+						CFileItem *pItem = new CFileItem(strDescription);
+						pItem->m_strPath=strFile;
+						pItem->m_bIsFolder=false;
+						pItem->m_dwSize=wfd.nFileSizeLow;
+
+						FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
+						FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+						m_vecItems.push_back(pItem);
+					}
+					else
+					{
+						m_database.AddProgram(strFile,strDescription,m_bookmarkName);
+					}
+				}
+
+				if (CUtil::IsShortCut(strFileName))
+				{
+					if (!bFlattenDir)
+					{
+						CFileItem *pItem = new CFileItem(wfd.cFileName);
+						pItem->m_strPath=strFile;
+						pItem->m_bIsFolder=false;
+						pItem->m_dwSize=wfd.nFileSizeLow;
+
+						FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
+						FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+						m_vecItems.push_back(pItem);
+					}
+
+					else 
+					{
+						m_database.AddProgram(strFile,wfd.cFileName,m_bookmarkName);
+					}
+				}
+			}
+		}
+	} while(FindNextFile(hFind, &wfd));
+}
+
 void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
 {
-    WIN32_FIND_DATA wfd;
-    bool   bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
-    bool  bFlattenDir=g_stSettings.m_bMyProgramsFlatten;
-    bool   bRecurseSubDirs(true);
+	WIN32_FIND_DATA wfd;
+	bool   bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
+	bool  bFlattenDir=g_stSettings.m_bMyProgramsFlatten;
+	bool   bRecurseSubDirs(true);
 	bool newDir(false);
-    memset(&wfd,0,sizeof(wfd));
-    CStdString strRootDir=strDirectory;
-    if (!CUtil::HasSlashAtEnd(strRootDir) )
-        strRootDir+="\\";
+	memset(&wfd,0,sizeof(wfd));
+	CStdString strRootDir=strDirectory;
+	if (!CUtil::HasSlashAtEnd(strRootDir) )
+		strRootDir+="\\";
 
-    if ( CUtil::IsDVD(strRootDir) )
-    {
-        CIoSupport helper;
-        helper.Remount("D:","Cdrom0");
-    }
-    CStdString strSearchMask=strRootDir;
-    strSearchMask+="*.*";
-	
-    FILETIME localTime;
+	if ( CUtil::IsDVD(strRootDir) )
+	{
+		CIoSupport helper;
+		helper.Remount("D:","Cdrom0");
+	}
+	CStdString strSearchMask=strRootDir;
+	strSearchMask+="*.*";
+
+	FILETIME localTime;
 	CAutoPtrFind hFind ( FindFirstFile(strSearchMask.c_str(),&wfd));
-    if (!hFind.isValid())
-        return ;
+	if (!hFind.isValid())
+		return ;
     do
     {
         if (wfd.cFileName[0]!=0)
@@ -288,16 +397,16 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
                 if (strFileName != "." && strFileName != ".." && !bFlattenDir)
                 {
                     CFileItem *pItem = new CFileItem(strFileName);
-                    pItem->m_strPath=strFile;
-                    pItem->m_bIsFolder=true;
-                    FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
-                    FileTimeToSystemTime(&localTime, &pItem->m_stTime);
-                    m_vecItems.push_back(pItem);
+					pItem->m_strPath=strFile;
+					pItem->m_bIsFolder=true;
+					FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
+					FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+					m_vecItems.push_back(pItem);
                 }
-                else
-                {
-                    if (strFileName != "." && strFileName != ".." && bFlattenDir)
-                    {
+				else
+				{
+					if (strFileName != "." && strFileName != ".." && bFlattenDir)
+					{
 						
 						if (m_database.GetPath(strFile) < 0)
 						{
@@ -414,10 +523,12 @@ void CGUIWindowPrograms::Clear()
 void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 {
     bool   bFlattenDir=g_stSettings.m_bMyProgramsFlatten;
+	bool   bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
     bool   bParentPath(false);
     bool   bPastBookMark(true);
     CStdString strParentPath;
 	CStdString strDir = strDirectory;
+	int depth;
 
     Clear();
     //CStdString strShortCutsDir = "Q:\\shortcuts";
@@ -441,6 +552,7 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 
 		if (strDir==share.strPath) {
 			m_bookmarkName=share.strName;
+			depth=share.m_iDepthSize;
 			if (strParentPath!=share.strPath)
 				bPastBookMark=false;
 		}
@@ -463,7 +575,20 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 
 	m_iLastControl=GetFocusedControl();
 
-	LoadDirectory(strDir);
+//	LoadDirectory(strDir);
+
+	LoadDirectory(strDir, depth);
+
+	if (m_bookmarkName=="shortcuts")
+		bOnlyDefaultXBE=false;			// let's do this so that we don't only grab default.xbe from database when getting shortcuts
+	if (bFlattenDir) 
+		m_database.GetProgramsByBookmark(m_bookmarkName, m_vecItems, bOnlyDefaultXBE); 
+	CUtil::ClearCache();
+	CUtil::SetThumbs(m_vecItems);
+	if (g_stSettings.m_bHideExtensions)
+		CUtil::RemoveExtensions(m_vecItems);
+	CUtil::FillInDefaultIcons(m_vecItems);
+
 	OnSort();
 	UpdateButtons();
 

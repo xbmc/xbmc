@@ -51,6 +51,7 @@ public:
 	CStdString strName;	///< Name of the share, can be choosen freely.
 	CStdString strPath;	///< Path of the share, eg. iso9660:// or F:
 	int        m_iBufferSize;		///< Cachesize of the share
+	int		   m_iDepthSize;		///< Depth for My Programs
 
 	/*!
 	\brief The type of the share.
