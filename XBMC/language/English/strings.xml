@@ -1704,6 +1704,10 @@
 		<value>Downloading album info failed</value>
 	</string>
 	<string>
+		<id>501</id>
+		<value>Looking for album names...</value>
+	</string>
+	<string>
 
 		<id>999</id>
 		<value>Online Gaming</value>

@@ -571,9 +571,24 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
   CFileItem* pItem;
 	pItem=m_vecItems[iItem];
 
+	// show dialog box indicating we're searching the album name
+  if (m_dlgProgress)
+  {
+	  m_dlgProgress->SetHeading(185);
+	  m_dlgProgress->SetLine(0,501);
+	  m_dlgProgress->SetLine(1,"");
+	  m_dlgProgress->SetLine(2,"");
+	  m_dlgProgress->StartModal(GetID());
+	  m_dlgProgress->Progress();
+  }
+
   CStdString strPath;
 	if (pItem->m_bIsFolder)
+	{
 		strPath=pItem->m_strPath;
+		if (CUtil::HasSlashAtEnd(strPath))
+			strPath.Delete(strPath.size()-1);
+	}
 	else
 	{
 		CStdString strFileName;
@@ -582,74 +597,164 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 
 	//	Try to find an album name for this item.
 	//	Only save to database, if album name is found there.
+	VECALBUMS albums;
 	bool bSaveDb=false;
+	bool bSaveDirThumb=false;
 	CStdString strLabel=pItem->GetLabel();
 
-	if (pItem->m_bIsFolder)
+	CAlbum album;
+	if (pItem->m_musicInfoTag.Loaded())
 	{
-		//	if a folder has an album set,
-		//	we can be sure that it is in database
-		CAlbum album;
-		if (pItem->m_musicInfoTag.Loaded())
-		{
-			CStdString strAlbum=pItem->m_musicInfoTag.GetAlbum();
-			if (strAlbum.size())
-			{
-				strLabel=strAlbum;
-				bSaveDb=true;
-			}
-		}
-		else if (g_musicDatabase.GetAlbumByPath(pItem->m_strPath, album))
-		{	//	Normal folder, query database for album name
-			if (album.strAlbum.size())
-			{
-				strLabel=album.strAlbum;
-				bSaveDb=true;
-			}
-		}
-		else
-		{
-			//	No album name found for folder. Look into
-			//	the directory, but don't save to database
-			VECFILEITEMS items;
-			GetDirectory(pItem->m_strPath, items);
-			OnRetrieveMusicInfo(items);
-
-			//	Get first album name found in directory
-			for (int i=0; i<(int)items.size(); i++)
-			{
-				CFileItem* pItem=items[i];
-				if (pItem->m_musicInfoTag.Loaded())
-				{
-					if (pItem->m_musicInfoTag.GetAlbum().size())
-					{
-						strLabel=pItem->m_musicInfoTag.GetAlbum();
-						break;
-					}
-				}
-			}
-		}
-	}
-	else if (pItem->m_musicInfoTag.Loaded())
-	{	//	Handle files
-		CAlbum album;
 		CStdString strAlbum=pItem->m_musicInfoTag.GetAlbum();
-		//	Is album in database?
-		if (g_musicDatabase.GetAlbumByPath(strPath, album))
+		if (!strAlbum.IsEmpty())
+			strLabel=strAlbum;
+
+		if (g_musicDatabase.GetAlbumsByPath(strPath, albums))
 		{
-			//	yes, save query results to database
-			strLabel=album.strAlbum;
+			if (albums.size()==1)
+				bSaveDirThumb=true;
+
 			bSaveDb=true;
 		}
+		else if (!pItem->m_bIsFolder)	//	handle files
+		{
+			set<CStdString> albums;
+
+			//	Get album names found in directory
+			for (int i=0; i<(int)m_vecItems.size(); i++)
+			{
+				CFileItem* pItem=m_vecItems[i];
+				if (pItem->m_musicInfoTag.Loaded() && !pItem->m_musicInfoTag.GetAlbum().IsEmpty())
+				{
+					CStdString strAlbum=pItem->m_musicInfoTag.GetAlbum();
+					albums.insert(strAlbum);
+				}
+			}
+
+			//	the only album in this directory?
+			if (albums.size()==1)
+			{
+				CStdString strAlbum=*albums.begin();
+				strLabel=strAlbum;
+				bSaveDirThumb=true;
+			}
+		}
+	}
+	else if (g_musicDatabase.GetAlbumsByPath(strPath, albums))
+	{	//	Normal folder, query database for albums in this directory
+
+		if (albums.size()==1)
+		{
+			CAlbum& album=albums[0];
+			strLabel=album.strAlbum;
+			bSaveDirThumb=true;
+		}
 		else
-			//	no, don't save
+		{
+			//	More then one album is found in this directory
+			//	let the user choose
+			CGUIDialogSelect *pDlg= (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+      if (pDlg)
+      {
+				pDlg->SetHeading(181);
+				pDlg->Reset();
+        pDlg->EnableButton(false);
+
+				for (int i=0; i < (int)albums.size(); ++i)
+				{
+					CAlbum& album=albums[i];
+					pDlg->Add(album.strAlbum);
+				}
+				pDlg->Sort();
+				pDlg->DoModal(GetID());
+
+				// and wait till user selects one
+				int iSelectedAlbum= pDlg->GetSelectedLabel();
+				if (iSelectedAlbum< 0)
+				{
+					if (m_dlgProgress) m_dlgProgress->Close();
+					return;	
+				}
+
+				strLabel=pDlg->GetSelectedLabelText();
+			}
+		}
+
+		bSaveDb=true;
+	}
+	else
+	{
+		//	No album name found for folder found in database. Look into
+		//	the directory, but don't save albuminfo to database.
+		VECFILEITEMS items;
+		CFileItemList itemlist(items);		//	will cleanup everthing
+		GetDirectory(strPath, items);
+		OnRetrieveMusicInfo(items);
+
+		set<CStdString> albums;
+
+		//	Get album names found in directory
+		for (int i=0; i<(int)items.size(); i++)
+		{
+			CFileItem* pItem=items[i];
+			if (pItem->m_musicInfoTag.Loaded() && !pItem->m_musicInfoTag.GetAlbum().IsEmpty())
+			{
+				CStdString strAlbum=pItem->m_musicInfoTag.GetAlbum();
+				if (!strAlbum.IsEmpty())
+					albums.insert(strAlbum);
+			}
+		}
+
+		if (albums.size()==0)
+		{
+			if (m_dlgProgress) m_dlgProgress->Close();
+			return;	
+		}
+
+		if (albums.size()==1)
+		{
+			CStdString strAlbum=*albums.begin();
 			strLabel=strAlbum;
+			bSaveDirThumb=true;
+		}
+		else
+		{
+			//	More then one album is found in this directory
+			//	let the user choose
+			CGUIDialogSelect *pDlg= (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+			if (pDlg)
+			{
+				pDlg->SetHeading(181);
+				pDlg->Reset();
+				pDlg->EnableButton(false);
+
+				for (set<CStdString>::iterator it=albums.begin(); it != albums.end(); it++)
+				{
+					CStdString strAlbum=*it;
+					pDlg->Add(strAlbum);
+				}
+				pDlg->Sort();
+				pDlg->DoModal(GetID());
+
+				// and wait till user selects one
+				int iSelectedAlbum= pDlg->GetSelectedLabel();
+				if (iSelectedAlbum< 0) 
+				{
+					if (m_dlgProgress) m_dlgProgress->Close();
+					return;	
+				}
+
+				strLabel=pDlg->GetSelectedLabelText();
+			}
+		}
 	}
 
-	ShowAlbumInfo(strLabel, strPath, bSaveDb, false);
+	if (m_dlgProgress) m_dlgProgress->Close();
+
+	ShowAlbumInfo(strLabel, strPath, bSaveDb, bSaveDirThumb, false);
 }
 
-void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strPath, bool bSaveDb, bool bRefresh)
+void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strPath, bool bSaveDb, bool bSaveDirThumb, bool bRefresh)
 {
 	bool bUpdate=false;
 	// check cache
@@ -724,9 +829,30 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
       {
 				pDlgAlbumInfo->SetAlbum(album);
 				pDlgAlbumInfo->DoModal(GetID());
+
+				//	Save directory thumb 
+				if (bSaveDirThumb)
+				{
+					CStdString strThumb;
+					CUtil::GetAlbumThumb(album.GetTitle()+album.GetAlbumPath(),strThumb);
+					//	Was the download of the album art 
+					//	from allmusic.com successfull...
+					if (CUtil::FileExists(strThumb))
+					{
+						//	...yes...
+						if (!CUtil::IsCDDA(album.GetAlbumPath()))
+						{
+							//	...also save a copy as directory thumb,
+							//	if the album isn't located on an audio cd
+							CStdString strFolderThumb;
+							CUtil::GetAlbumThumb(album.GetAlbumPath(),strFolderThumb);
+							::CopyFile(strThumb, strFolderThumb, false);
+						}
+					}
+				}
 				if (pDlgAlbumInfo->NeedRefresh())
 				{
-					ShowAlbumInfo(strAlbum, strPath, bSaveDb, true);
+					ShowAlbumInfo(strAlbum, strPath, bSaveDb, bSaveDirThumb, true);
 					return;
 				}
       }

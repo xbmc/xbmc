@@ -222,27 +222,6 @@ void CGUIWindowMusicInfo::Refresh()
 		//	permanent thumb
 		CHTTP http;
 		http.Download(strImage,strThumb);
-		
-		//	Was the download successfull...
-		if (CUtil::FileExists(strThumb))
-		{
-			CUtil::ThumbCacheAdd(strThumb, true);
-			if (!CUtil::IsCDDA(m_pAlbum->GetAlbumPath()))
-			{
-				//	...also save a copy as directory thumb,
-				//	if the album isn't located on an audio cd
-				//	and its the only album in this directory.
-				VECALBUMS albums;
-				g_musicDatabase.GetAlbumsByPath(m_pAlbum->GetAlbumPath(), albums);
-				if (albums.size()==1)
-				{
-					CStdString strFolderThumb;
-					CUtil::GetAlbumThumb(m_pAlbum->GetAlbumPath(),strFolderThumb);
-					if (::CopyFile(strThumb, strFolderThumb, false))
-						CUtil::ThumbCacheAdd(strFolderThumb, true);
-				}
-			}
-		}
 	}
 
 	if (CUtil::FileExists(strThumb) )
