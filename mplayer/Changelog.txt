@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 08-03-2005 changed: reworked FF/RW, no skiping when returning to normal playback anymore. AV sync might be abit of, but should correct itself in a sec or two
   - 05-03-2005 changed: disbled ff/rw in files/streams that can't be seeked as this causes audio/video desync
   - 03-03-2005 fixed: using autosync cuaeses propblems when resuming from pause. (needs xbmc to call mplayer_ToFFRW(1))
   - 03-03-2005 fixed: using autosync=30(or any value !=0) would cause invalid behaviour on short movies
