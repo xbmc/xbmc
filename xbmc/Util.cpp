@@ -630,6 +630,14 @@ bool CUtil::IsDVDFile(const CStdString& strFile, bool bVobs /*= true*/, bool bIf
 	return false;
 }
 
+bool CUtil::IsRAR(const CStdString& strFile)
+{
+  CStdString strExtension;
+  CUtil::GetExtension(strFile,strExtension);
+  if (strExtension.Equals(".rar")) return true;
+  return false;
+}
+
 int CUtil::GetDVDIfoTitle(const CStdString& strFile)
 {
 	CStdString strFilename = GetFileName(strFile);
