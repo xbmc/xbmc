@@ -6,11 +6,11 @@
 
 #include "stdafx.h"
 #include ".\videodatabase.h"
+#include "settings.h"
 #include "utils/fstrcmp.h"
 #include "utils/log.h"
 #include "util.h"
 
-#define VIDEODATABASE "Q:\\albums\\MyVideos3.db"
 //********************************************************************************************************************************
 CVideoDatabase::CVideoDatabase(void)
 {
@@ -60,11 +60,14 @@ void CVideoDatabase::RemoveInvalidChars(CStdString& strTxt)
 //********************************************************************************************************************************
 bool CVideoDatabase::Open()
 {
+	CStdString videoDatabase=g_stSettings.m_szAlbumDirectory;
+	videoDatabase+="\\MyVideos3.db";
+
 	Close();
 
 	// test id dbs already exists, if not we need 2 create the tables
 	bool bDatabaseExists=false;
-	FILE* fd= fopen(VIDEODATABASE,"rb");
+	FILE* fd= fopen(videoDatabase,"rb");
 	if (fd)
 	{
 		bDatabaseExists=true;
@@ -72,14 +75,14 @@ bool CVideoDatabase::Open()
 	}
 
 	m_pDB.reset(new SqliteDatabase() ) ;
-  m_pDB->setDatabase(VIDEODATABASE);
+  m_pDB->setDatabase(videoDatabase);
 	
   m_pDS.reset(m_pDB->CreateDataset());
 	if ( m_pDB->connect() != DB_CONNECTION_OK) 
 	{
-    CLog::Log("videodatabase::unable to open %s",VIDEODATABASE);
+    CLog::Log("videodatabase::unable to open %s",videoDatabase);
 		Close();
-    ::DeleteFile(VIDEODATABASE);
+    ::DeleteFile(videoDatabase);
 		return false;
 	}
 
@@ -87,9 +90,9 @@ bool CVideoDatabase::Open()
 	{
 		if (!CreateTables()) 
 		{
-      CLog::Log("videodatabase::unable to create %s",VIDEODATABASE);
+      CLog::Log("videodatabase::unable to create %s",videoDatabase);
 			Close();
-      ::DeleteFile(VIDEODATABASE);
+      ::DeleteFile(videoDatabase);
 			return false;
 		}
 	}

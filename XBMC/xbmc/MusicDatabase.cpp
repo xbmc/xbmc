@@ -8,7 +8,6 @@
 #include "util.h"
 #include "utils/log.h"
 #include "musicInfoTag.h"
-#define MUSIC_DATABASE "Q:\\albums\\MyMusic5.db"
 
 CSong::CSong(CMusicInfoTag& tag)
 {
@@ -75,6 +74,10 @@ void CMusicDatabase::RemoveInvalidChars(CStdString& strTxt)
 
 bool CMusicDatabase::Open()
 {
+
+	CStdString musicDatabase=g_stSettings.m_szAlbumDirectory;
+	musicDatabase+="\\MyMusic5.db";
+
 	if (IsOpen())
 	{
 		m_iRefCount++;
@@ -83,7 +86,7 @@ bool CMusicDatabase::Open()
 
 	// test id dbs already exists, if not we need 2 create the tables
 	bool bDatabaseExists=false;
-	FILE* fd= fopen(MUSIC_DATABASE,"rb");
+	FILE* fd= fopen(musicDatabase.c_str(),"rb");
 	if (fd)
 	{
 		bDatabaseExists=true;
@@ -91,14 +94,14 @@ bool CMusicDatabase::Open()
 	}
 
 	m_pDB.reset(new SqliteDatabase() ) ;
-	m_pDB->setDatabase(MUSIC_DATABASE);
+	m_pDB->setDatabase(musicDatabase.c_str());
 	
 	m_pDS.reset(m_pDB->CreateDataset());
 	if ( m_pDB->connect() != DB_CONNECTION_OK) 
 	{
-    CLog::Log("musicdatabase::unable to open %s (old version?)",MUSIC_DATABASE);
+    CLog::Log("musicdatabase::unable to open %s (old version?)",musicDatabase.c_str());
 		Close();
-    ::DeleteFile(MUSIC_DATABASE);
+    ::DeleteFile(musicDatabase.c_str());
 		return false;
 	}
 
@@ -106,9 +109,9 @@ bool CMusicDatabase::Open()
 	{
 		if (!CreateTables()) 
 		{
-      CLog::Log("musicdatabase::unable to create %s ",MUSIC_DATABASE);
+      CLog::Log("musicdatabase::unable to create %s ",musicDatabase.c_str());
 			Close();
-      ::DeleteFile(MUSIC_DATABASE);
+      ::DeleteFile(musicDatabase.c_str());
 			return false;
 		}
 	}
