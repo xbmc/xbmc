@@ -120,7 +120,7 @@ bool	CMusicAlbumInfo::Parse(const CStdString& strHTML)
 	m_vecSongs.erase(m_vecSongs.begin(),m_vecSongs.end());
 	CStdString strHTMLLow=strHTML;
 	strHTMLLow.MakeLower();
-	int iStartOfTable=strHTMLLow.Find("artist");
+	int iStartOfTable=strHTMLLow.Find("artist&nbsp;");
 	if (iStartOfTable< 0) return false;
 	iStartOfTable=strHTMLLow.ReverseFind("<table",iStartOfTable);
 	if (iStartOfTable < 0) return false;
