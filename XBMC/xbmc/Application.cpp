@@ -843,8 +843,20 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 		{
 			m_bSpinDown=false;
 		}
-	}
-	m_dwIdleTime=timeGetTime();
+	
+	  m_dwIdleTime=timeGetTime();
+    if ( IsPlayingVideo())
+    {
+      OutputDebugString("VIDEO!!!\n");
+      if (m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
+      {
+        OutputDebugString("SET FULLSCREEN!!!\n");
+        g_TextureManager.Flush();
+		    g_graphicsContext.SetFullScreenVideo(true);
+		    m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+      }
+    }
+  }
 	return bResult;
 }
 

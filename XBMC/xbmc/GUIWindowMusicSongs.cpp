@@ -534,7 +534,10 @@ void CGUIWindowMusicSongs::LoadPlayList(const CStdString& strPlayList)
 		if ( !CUtil::IsShoutCast(item.GetFileName()) )
 			g_playlistPlayer.Play(0);
 		
-		m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+    if (GetID() == m_gWindowManager.GetActiveWindow())
+    {
+      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+    }
 	}
 }
 
