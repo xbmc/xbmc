@@ -30,13 +30,7 @@ void CGUIDialogProgress::StartModal(DWORD dwParentId)
 		return;
 	}
 
-	m_dwPrevRouteWindow=m_gWindowManager.RouteToWindow( GetID() );
-	m_pPrevRouteWindow=m_gWindowManager.GetWindow(m_dwPrevRouteWindow);
-	if (!m_pPrevRouteWindow || m_pPrevRouteWindow==this)
-	{
-		m_pPrevRouteWindow=NULL;
-		m_dwPrevRouteWindow=-1;
-	}
+	m_gWindowManager.RouteToWindow(this);
 
   // active this window...
   CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
@@ -89,13 +83,13 @@ void CGUIDialogProgress::SetLine(int iLine, const string& strLine)
 	msg.SetLabel(strLine);
 	OnMessage(msg);
 }
+
 void CGUIDialogProgress::SetHeading(int iString)
 {
 	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),1);
 	msg.SetLabel(iString);
 	OnMessage(msg);
 }
-
 
 void	CGUIDialogProgress::SetLine(int iLine, int iString)
 {
@@ -150,3 +144,4 @@ void CGUIDialogProgress::ShowProgressBar(bool bOnOff)
 		OnMessage(msg);
 	}
 }
+

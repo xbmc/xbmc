@@ -18,7 +18,6 @@ public:
 	virtual ~CGUIDialog(void);
 
 	virtual bool    OnMessage(CGUIMessage& message);
-	virtual void    Render();
 	void			DoModal(DWORD dwParentId); // modal
 	void			Show(DWORD dwParentId); // modeless
 	virtual void	Close();
@@ -29,8 +28,6 @@ public:
 protected:
 	DWORD			m_dwParentWindowID;
 	CGUIWindow* 	m_pParentWindow;
-	DWORD			m_dwPrevRouteWindow;
-	CGUIWindow* 	m_pPrevRouteWindow;
 	bool			m_bRunning;
 	bool			m_bModal;
 

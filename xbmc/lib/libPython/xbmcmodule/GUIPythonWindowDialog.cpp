@@ -8,8 +8,6 @@ CGUIPythonWindowDialog::CGUIPythonWindowDialog(DWORD dwId)
 {
 	m_dwParentWindowID = 0;
 	m_pParentWindow = NULL;
-	m_dwPrevRouteWindow = WINDOW_INVALID;
-	m_pPrevRouteWindow = NULL;
 	m_bRunning = false;
 }
 
@@ -27,10 +25,7 @@ void CGUIPythonWindowDialog::Activate(DWORD dwParentId)
 		return;
 	}
 
-	if (m_gWindowManager.m_pRouteWindow == this) return;		// already routed to this dialog
-
-	m_dwPrevRouteWindow=m_gWindowManager.RouteToWindow(GetID());
-	m_pPrevRouteWindow=m_gWindowManager.GetWindow(m_dwPrevRouteWindow);
+	m_gWindowManager.RouteToWindow(this);
 
   // active this dialog...
   CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
@@ -59,26 +54,12 @@ bool CGUIPythonWindowDialog::OnMessage(CGUIMessage& message)
 	return CGUIWindow::OnMessage(message);
 }
 
-void CGUIPythonWindowDialog::Render()
-{
-	// render the parent window
-	if (m_pParentWindow) 
-		m_pParentWindow->Render();
-
-	// render the previous route window
-	if (m_pPrevRouteWindow)
-		m_pPrevRouteWindow->Render();
-
-	// render this dialog box
-	CGUIPythonWindow::Render();
-}
-
 void CGUIPythonWindowDialog::Close()
 {
 	CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0);
   OnMessage(msg);
 
-  m_gWindowManager.UnRoute(m_dwPrevRouteWindow);
+  m_gWindowManager.UnRoute(GetID());
 	m_pParentWindow = NULL;
 	m_bRunning = false;
 }

@@ -3447,7 +3447,8 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
 		if (pWindow && pWindow->IsDialog())
 		{	// Dialog
 			CGUIDialog *pDialog = (CGUIDialog *)pWindow;
-			pDialog->DoModal(m_gWindowManager.GetActiveWindow());
+			if (!pDialog->IsRunning())
+				pDialog->DoModal(m_gWindowManager.GetActiveWindow());
 			return;
 		}
 		m_gWindowManager.ActivateWindow(iWindow);
