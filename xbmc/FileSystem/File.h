@@ -43,6 +43,7 @@ namespace XFILE
 	  bool					ReadString(char *szLine, int iLineLength);
 	  __int64			  Seek(__int64 iFilePosition, int iWhence=SEEK_SET);
 	  void					Close();
+	  void					Flush();
 	  
     bool          OpenForWrite(const char* strFileName, bool bBinary=true);
     static bool   Delete(const char* strFileName);

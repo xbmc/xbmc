@@ -2955,12 +2955,14 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
 	 * music
 	 * music\\album
 	 */
-	int i = 0;
+	int i, s = 0;
+	if (path.at(1) == ':') i = 2; // to skip 'e:'
+	s = i; 
 	while(i < iSize)
 	{
 		i = path.find(cSep, i + 1);
 		if (i < 0) i = iSize; // get remaining chars
-		strArray.push_back(path.substr(0, i));
+		strArray.push_back(path.substr(s, i - s));
 	}
 
 	// create the directories

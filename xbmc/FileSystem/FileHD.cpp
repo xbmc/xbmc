@@ -237,10 +237,15 @@ int CFileHD::Write(const void* lpBuf, __int64 uiBufSize)
 
 bool CFileHD::Delete(const char* strFileName)
 {
-  return DeleteFile(strFileName) ? true : false;
+  return ::DeleteFile(strFileName) ? true : false;
 }
 
 bool CFileHD::Rename(const char* strFileName, const char* strNewFileName)
 {
-  return MoveFile(strFileName, strNewFileName) ? true : false;
+  return ::MoveFile(strFileName, strNewFileName) ? true : false;
+}
+
+void CFileHD::Flush()
+{
+  ::FlushFileBuffers(m_hFile);
 }
