@@ -135,8 +135,8 @@ protected:
 
 	void	UpdateTexture();
 	void	DrawTexture();
-	TEX_COLOR GetBgAlpha();
-	TEX_COLOR GetFgAlpha();
+	TEX_COLOR m_bgAlpha;
+	TEX_COLOR m_fgAlpha;
 	TEX_COLOR ConvertColor(CDG_COLOR);
 };
 
