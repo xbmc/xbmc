@@ -66,16 +66,16 @@ const COSDMenu& COSDMenu::operator = (const COSDMenu& menu)
 
 void COSDMenu::Draw()
 {
-	g_graphicsContext.Get3DDevice()->SetSoftDisplayFilter(true);
-	g_graphicsContext.Get3DDevice()->SetFlickerFilter(5);
+//	g_graphicsContext.Get3DDevice()->SetSoftDisplayFilter(true);
+//	g_graphicsContext.Get3DDevice()->SetFlickerFilter(5);
 
   
 	COSDSubMenu* pSubMenu=m_vecSubMenus[m_iCurrentSubMenu];
 	pSubMenu->Draw();
 	
 	
-  g_graphicsContext.Get3DDevice()->SetSoftDisplayFilter(g_stSettings.m_bSoften);
-	g_graphicsContext.Get3DDevice()->SetFlickerFilter(g_stSettings.m_bSoften ? 5 : 1);
+//  g_graphicsContext.Get3DDevice()->SetSoftDisplayFilter(g_stSettings.m_bSoften);
+//	g_graphicsContext.Get3DDevice()->SetFlickerFilter(g_stSettings.m_bSoften ? 5 : 1);
 }
 
 bool COSDMenu::OnAction(const CAction& action)
