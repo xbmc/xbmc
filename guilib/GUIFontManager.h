@@ -27,11 +27,13 @@ class GUIFontManager
 public:
   GUIFontManager(void);
   virtual ~GUIFontManager(void);
-	CGUIFont*				Load(const CStdString& strFontName,const CStdString& strFilename);
-	void						Unload(const CStdString& strFontName);
+  void						Unload(const CStdString& strFontName);
   void						LoadFonts(const CStdString& strFontSet);
+  CGUIFont*				LoadXPR(const CStdString& strFontName,const CStdString& strFilename);
+  CGUIFont*				LoadTTF(const CStdString& strFontName,const CStdString& strFilename, const int iSize, const int iStyle);
   CGUIFont*				GetFont(const CStdString& strFontName);
-	void						Clear();
+  void						Clear();
+
 protected:
 	void LoadFonts(const TiXmlNode* fontNode);
 
