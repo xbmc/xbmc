@@ -235,7 +235,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bHTTPServerEnabled=false;
 	g_stSettings.m_iWebServerPort=80;
 	strcpy(g_stSettings.m_szHTTPProxy,"");
-	strcpy(g_stSettings.szDefaultSkin,"MediaCenter");
+	strcpy(g_stSettings.szDefaultSkin,"Project Mayhem");
 	strcpy(g_stSettings.szHomeDir,"");
 
 	strcpy(g_stSettings.m_szMyPicturesExtensions,".bmp|.jpg|.png|.gif|.pcx|.tif|.jpeg");
