@@ -483,16 +483,18 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
 {
 	CFileItem *pItem=m_vecItems[iList][iItem];
 
-  CStdString strPath=pItem->m_strPath;
   if (pItem->m_bIsFolder)
   {
+		// save path + drive type as HaveBookmarkPermissions does a Refresh()
+		CStdString strPath = pItem->m_strPath;
+		int iDriveType = pItem->m_iDriveType;
     m_iItemSelected=-1;
     if ( pItem->m_bIsShareOrDrive ) 
     {
       if ( !HaveBookmarkPermissions( pItem, "files" ) )
         return;
 
-      if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )
+      if ( !HaveDiscOrConnection( strPath, iDriveType ) )
         return;
     }
     Update(iList, strPath);
@@ -677,6 +679,7 @@ bool CGUIWindowFileManager::HaveBookmarkPermissions(CFileItem* pItem, const CStd
     else if (!bConfirmed && bCanceled)
     {
       // user canceled out
+			Refresh();	// update lock mode in both panes
       return false;
     }
     else
@@ -687,6 +690,7 @@ bool CGUIWindowFileManager::HaveBookmarkPermissions(CFileItem* pItem, const CStd
       g_settings.UpdateBookmark(strType, strLabel, "badpwdcount", itoa(pItem->m_iBadPwdCount, buffer, 10));
     }
   }
+	Refresh();	// update lock mode in both panes
   return true;
 }
 
