@@ -144,8 +144,8 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 				if ( m_pMovie->m_strPictureURL.size() )
 				{
 					CStdString strThumb;
-					CStdString strImage=m_pMovie->m_strSearchString;
-					CUtil::GetThumbnail(strImage,strThumb);
+          CStdString strImage=m_pMovie->m_strIMDBNumber;
+          CUtil::GetVideoThumbnail(strImage,strThumb);
 					DeleteFile(strThumb.c_str());
 				}
         m_bRefresh=true;
@@ -316,7 +316,7 @@ void CGUIWindowVideoInfo::Refresh()
 	  CStdString strImage=m_pMovie->m_strPictureURL;
     if (strImage.size() >0 && m_pMovie->m_strSearchString.size() > 0)
     {
-	    CUtil::GetThumbnail(m_pMovie->m_strSearchString,strThumb);
+      CUtil::GetVideoThumbnail(m_pMovie->m_strIMDBNumber,strThumb);
 	    if (!CUtil::FileExists(strThumb) )
 	    {
 		    CHTTP http;
@@ -339,7 +339,7 @@ void CGUIWindowVideoInfo::Refresh()
         }
         ::DeleteFile(strTemp.c_str());
 	    }
-	    CUtil::GetThumbnail(m_pMovie->m_strSearchString,strThumb);
+      CUtil::GetVideoThumbnail(m_pMovie->m_strIMDBNumber,strThumb);
     }
     //CStdString strAlbum;
 	  //CUtil::GetIMDBInfo(m_pMovie->m_strSearchString,strAlbum);
