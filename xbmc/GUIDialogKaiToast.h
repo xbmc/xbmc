@@ -16,8 +16,8 @@ public:
     CGUIImage* image;
   };
 
-  void QueueNotification(CStdString& aCaption, CStdString& aDescription);
-  void QueueNotification(CGUIImage* aImage, CStdString& aCaption, CStdString& aDescription);
+  void QueueNotification(const CStdString& aCaption, const CStdString& aDescription);
+  void QueueNotification(CGUIImage* aImage, const CStdString& aCaption, const CStdString& aDescription);
   bool DoWork();
 
   virtual bool OnMessage(CGUIMessage& message);
