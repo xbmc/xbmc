@@ -258,7 +258,7 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.m_strTimeServer,"");
 	strcpy(g_stSettings.szOnlineUsername,"");
 	strcpy(g_stSettings.szOnlinePassword,"");
-	strcpy(g_stSettings.szOnlineGamesDir,"");
+	strcpy(g_stSettings.szOnlineGamesDir,"f:\\games");
 	g_stSettings.m_bOnlineNotifications=true;
 	g_stSettings.m_bTimeServerEnabled=false;
 	g_stSettings.m_bFTPServerEnabled=true;
