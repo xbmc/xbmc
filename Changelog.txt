@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 29-08-2004 added: applied patch for LCD-MOD contrast changes with minor modification.
   - 28-08-2004 changed: removed the need to restart because of audio channel mappings
   - 28-08-2004 changed: removed the need to restart because of hw ac3/dts output
   - 28-08-2004 added: proper downmixing of more than 2 channel sources to dolby surround on the stereo output

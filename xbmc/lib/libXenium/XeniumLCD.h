@@ -16,10 +16,12 @@ public:
   virtual void Stop();
   virtual void SetLine(int iLine, const CStdString& strLine);
   virtual void SetBackLight(int iLight);
+  virtual void SetContrast(int iContrast);
 protected:
 	virtual void		Process();
   void    DisplayInit();
   void    DisplaySetBacklight(unsigned char level) ;
+  void    DisplaySetContrast(unsigned char level);
   void    DisplayProgressBar(unsigned char percent, unsigned char charcnt);
   void    DisplayClearChars(unsigned char startpos , unsigned char line, unsigned char lenght) ;
   void    DisplayWriteString(char *pointer) ;

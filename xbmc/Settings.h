@@ -382,6 +382,7 @@ public:
 		int       m_iLCDAdress[4];
 		int       m_iLCDMode;
 		int       m_iLCDBackLight;
+        int       m_iLCDContrast;
 		int       m_iLCDType;
 		int       m_iLCDBrightness;
 		bool			m_bDisplayRemoteCodes;	// Remote code debug info

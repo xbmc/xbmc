@@ -15,10 +15,13 @@ public:
   virtual void Stop();
   virtual void SetLine(int iLine, const CStdString& strLine);
   virtual void SetBackLight(int iLight);
+  virtual void SetContrast(int iContrast);
+
 protected:
 	virtual void		Process();
   void    DisplayInit();
   void    DisplaySetBacklight(unsigned char level) ;
+  void    DisplaySetContrast(unsigned char level) ;
   void    DisplayProgressBar(unsigned char percent, unsigned char charcnt);
   void    DisplayClearChars(unsigned char startpos , unsigned char line, unsigned char lenght) ;
   void    DisplayWriteString(char *pointer) ;
@@ -35,6 +38,7 @@ protected:
   unsigned int m_iRow4adr ;
   unsigned int m_iActualpos;				// actual cursor possition
   int          m_iBackLight;
+  int          m_iContrast;
   bool         m_bUpdate[MAX_ROWS];
   CStdString   m_strLine[MAX_ROWS];
   int          m_iPos[MAX_ROWS];
