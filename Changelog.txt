@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 16-07-2004 added: ability to change the webserver port in XboxMediaCenter.xml (use <webserver> tag).
   - 14-07-2004 changed: Updated strings.xml with Chokeman's suggestion for post processing alignment
   - 14-07-2004 added: added My Programs setting to use Directory Names as description instead of embedded XBE description.
   - 12-07-2004 changed: immediate hd-spindown disabled while not playing fullscreen (preview/calibrating)
