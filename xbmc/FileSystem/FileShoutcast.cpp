@@ -141,9 +141,9 @@ __int64 CFileShoutcast::GetLength()
 
 bool CFileShoutcast::Open(const CURL& url, bool bBinary)
 {
-	m_dwLastTime =timeGetTime();
+	m_dwLastTime = timeGetTime();
 	int ret;
-	RIP_MANAGER_OPTIONS 		m_opt;
+	RIP_MANAGER_OPTIONS m_opt;
 	m_opt.relay_port = 8000;
 	m_opt.max_port = 18000;
 	m_opt.flags = OPT_AUTO_RECONNECT | 
@@ -152,29 +152,23 @@ bool CFileShoutcast::Open(const CURL& url, bool bBinary)
 								OPT_ADD_ID3;
 
 	CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-	if (dlgProgress->IsRunning())
-		dlgProgress = NULL; // don't use progress if it's already running
 
 	strcpy(m_opt.output_directory, "./");
 	m_opt.proxyurl[0] = (char)NULL;
-	char szURL[1024];
-	if ( strlen(url.GetUserName())>0 && strlen(url.GetPassWord())>0 )
-	{
-		sprintf(szURL,"http://%s:%s@%s:%i/%s",url.GetUserName(),url.GetPassWord(), url.GetHostName(),url.GetPort(),url.GetFileName);
-	}
-	else
-	{
-		sprintf(szURL,"http://%s:%i/%s", url.GetHostName(),url.GetPort(),url.GetFileName());
-	}
-	strncpy(m_opt.url, szURL, MAX_URL_LEN);
-	sprintf(m_opt.useragent, "x%s",url.GetFileName());
+	CStdString strUrl;
+	url.GetURL(strUrl);
+	strUrl.Replace("shout://", "http://");
+
+	strncpy(m_opt.url, strUrl.c_str(), MAX_URL_LEN);
+	sprintf(m_opt.useragent, "x%s",url.GetFileName().c_str());
 	if (dlgProgress)
   {
     dlgProgress->SetHeading(260);
 	  dlgProgress->SetLine(0,259);
-	  dlgProgress->SetLine(1,szURL);
+	  dlgProgress->SetLine(1,strUrl);
 	  dlgProgress->SetLine(2,"");
-	  dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
+	  if (!dlgProgress->IsRunning())
+			dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
 	  dlgProgress->Progress();
   }
 	
