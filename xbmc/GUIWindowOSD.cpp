@@ -243,6 +243,13 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 			m_iActiveMenuButtonID=0;
 			m_iActiveMenu=0;
 			Reset();
+
+			//	Set play/pause button into the right state
+			if (g_application.m_pPlayer->IsPaused())
+				ToggleButton(OSD_PLAY, true);		// make sure play button is down (so it shows the pause symbol)
+			else
+				ToggleButton(OSD_PLAY, false);		// make sure play button is up (so it shows the play symbol)
+
       FOCUS_CONTROL(GetID(), OSD_PLAY, 0);	// set focus to play button by default when window is shown
 
 			return true;
