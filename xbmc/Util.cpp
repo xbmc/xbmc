@@ -276,14 +276,14 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
 //*********************************************************************************************
 void CUtil::LaunchXbe(char* szPath, char* szXbe, char* szParameters)
 {
-  CLog::Log("launch xbe:%s %s", szPath,szXbe);
-  CLog::Log(" mount %s as D:", szPath);
+  CLog::Log(LOGINFO, "launch xbe:%s %s", szPath,szXbe);
+  CLog::Log(LOGINFO, " mount %s as D:", szPath);
 
   CIoSupport helper;
   helper.Unmount("D:");
   helper.Mount("D:",szPath);
 
-  CLog::Log("launch xbe:%s", szXbe);
+  CLog::Log(LOGINFO, "launch xbe:%s", szXbe);
 
   if (szParameters==NULL)
   {
@@ -431,7 +431,7 @@ bool CUtil::InitializeNetwork(const char* szLocalAddress, const char* szLocalSub
 {
   if (!IsEthernetConnected())
   {
-    CLog::Log("network cable unplugged");
+    CLog::Log(LOGWARNING, "network cable unplugged");
     return false;
   }
 
@@ -441,13 +441,13 @@ bool CUtil::InitializeNetwork(const char* szLocalAddress, const char* szLocalSub
   if (CUtil::cmpnocase(szLocalAddress,"dhcp")==0 )
   {
     bSetup=true;
-    CLog::Log("use DHCP");
+    CLog::Log(LOGNOTICE, "use DHCP");
     networkinfo.DHCP=true;
   }
   else if (szLocalAddress[0] && szLocalSubnet[0] && szLocalGateway[0] && szNameServer[0])
   {
     bSetup=true;
-    CLog::Log("use static ip");
+    CLog::Log(LOGNOTICE, "use static ip");
     networkinfo.DHCP=false;
     strcpy(networkinfo.ip,szLocalAddress);
     strcpy(networkinfo.subnet,szLocalSubnet);
@@ -456,23 +456,23 @@ bool CUtil::InitializeNetwork(const char* szLocalAddress, const char* szLocalSub
   }
   else
   {
-    CLog::Log("Not initializing network, using settings as they are setup by dashboard");
+    CLog::Log(LOGWARNING, "Not initializing network, using settings as they are setup by dashboard");
     if ( szLocalAddress[0] || szLocalSubnet[0] || szLocalGateway[0] ||szNameServer[0])
     {
-      CLog::Log("Error initializing network. To setup a network you must choose:");
-      CLog::Log("Static ip:"); 
-      CLog::Log("  fill in the <ip>, <netmask>, <defaultgateway>, <nameserver> tags in xboxmediacenter.xml");
-      CLog::Log("DHCP:");
-      CLog::Log("  just set <ip>DHCP</ip> in xboxmediacenter.xml");
-      CLog::Log("use existing settings from dashboard:");
-      CLog::Log("  leave the <ip>, <netmask>, <defaultgateway>, <nameserver> tags in xboxmediacenter.xml empty");
-      CLog::Log("your current setup doesnt do any of those options. You filled in some tags, but not all!!");
+      CLog::Log(LOGERROR, "Error initializing network. To setup a network you must choose:");
+      CLog::Log(LOGERROR, "Static ip:"); 
+      CLog::Log(LOGERROR, "  fill in the <ipadres>, <netmask>, <defaultgateway>, <nameserver> tags in xboxmediacenter.xml");
+      CLog::Log(LOGERROR, "DHCP:");
+      CLog::Log(LOGERROR, "  just set <ipadres>DHCP</ipadres> in xboxmediacenter.xml");
+      CLog::Log(LOGERROR, "use existing settings from dashboard:");
+      CLog::Log(LOGERROR, "  leave the <ipadres>, <netmask>, <defaultgateway>, <nameserver> tags in xboxmediacenter.xml empty");
+      CLog::Log(LOGERROR, "your current setup doesnt do any of those options. You filled in some tags, but not all!!");
     }
   }
 
   if (bSetup)
   {
-    CLog::Log("setting up network...");
+    CLog::Log(LOGINFO, "setting up network...");
     int iCount=0;
     while (CUtil::SetUpNetwork( false, networkinfo )==1 && iCount < 100)
     {
@@ -482,7 +482,7 @@ bool CUtil::InitializeNetwork(const char* szLocalAddress, const char* szLocalSub
   }
   else
   {
-    CLog::Log("init network");
+    CLog::Log(LOGINFO, "init network");
     XNetStartupParams xnsp;
     memset(&xnsp, 0, sizeof(xnsp));
     xnsp.cfgSizeOfStruct = sizeof(XNetStartupParams);
@@ -500,7 +500,7 @@ bool CUtil::InitializeNetwork(const char* szLocalAddress, const char* szLocalSub
     INT err = XNetStartup(&xnsp);
   }
 
-  CLog::Log("get local ip address:");
+  CLog::Log(LOGINFO, "get local ip address:");
   XNADDR xna;
   DWORD dwState;
   do
@@ -511,7 +511,7 @@ bool CUtil::InitializeNetwork(const char* szLocalAddress, const char* szLocalSub
 
   XNetInAddrToString(xna.ina,g_szTitleIP,32);
 
-  CLog::Log("ip adres:%s",g_szTitleIP);
+  CLog::Log(LOGINFO, "ip adres:%s",g_szTitleIP);
   WSADATA WsaData;
   int err = WSAStartup( MAKEWORD(2,2), &WsaData );
 
@@ -1667,7 +1667,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
       CFile file;
       if ( file.Cache(strSource.c_str(), strDest.c_str(),NULL,NULL))
       {
-        CLog::Log(" cached subtitle %s->%s\n", strSource.c_str(), strDest.c_str());
+        CLog::Log(LOGINFO, " cached subtitle %s->%s\n", strSource.c_str(), strDest.c_str());
         strExtensionCached = (CStdString)sub_exts[iPos];
         bFoundSubs=true;
       }
@@ -1691,7 +1691,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
     CFile file;
     if ( file.Cache(strSource.c_str(), strDest.c_str(),NULL,NULL))
     {
-      CLog::Log(" cached subtitle %s->%s\n", strSource.c_str(), strDest.c_str());
+      CLog::Log(LOGINFO, " cached subtitle %s->%s\n", strSource.c_str(), strDest.c_str());
       strExtensionCached = (CStdString)sub_exts[iPos];
       bFoundSubs=true;
     }
@@ -1907,7 +1907,7 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
 
   if( mode == 100 )
   {
-    CLog::Log("  pending...");
+    CLog::Log(LOGDEBUG, "  pending...");
     dwState = XNetGetTitleXnAddr(&xna);
     if(dwState==XNET_GET_XNADDR_PENDING)
       return 1;
@@ -1915,7 +1915,7 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
     char  azIPAdd[256];
     memset( azIPAdd,0,256);
     XNetInAddrToString(xna.ina,azIPAdd,32);
-    CLog::Log("ip address:%s",azIPAdd);
+    CLog::Log(LOGINFO, "ip address:%s",azIPAdd);
   }
 
   // if local address is specified 
@@ -2036,7 +2036,7 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
 			xnsp.cfgSockMaxSockets = 64; // default = 64
 			xnsp.cfgSockDefaultRecvBufsizeInK = 128; // default = 16
 			xnsp.cfgSockDefaultSendBufsizeInK = 128; // default = 16
-      CLog::Log("requesting local ip adres");
+      CLog::Log(LOGINFO, "requesting local ip adres");
       int err = XNetStartup(&xnsp);
       mode = 100;
       return 1;
@@ -2069,7 +2069,7 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
 			xnsp.cfgSockDefaultSendBufsizeInK = 128; // default = 16
 
       XNetSaveConfigParams(params);
-      CLog::Log("requesting DHCP");
+      CLog::Log(LOGINFO, "requesting DHCP");
       int err = XNetStartup(&xnsp);
       mode = 5;
     }
@@ -2125,72 +2125,72 @@ DWORD CUtil::SetUpNetwork( bool resetmode, struct network_info& networkinfo )
           if ( temp & XNET_ETHERNET_LINK_FULL_DUPLEX )
           {
             // full duplex
-            CLog::Log("  full duplex");
+            CLog::Log(LOGINFO, "  full duplex");
           }
 
           if ( temp & XNET_ETHERNET_LINK_HALF_DUPLEX )
           {
             // half duplex
-            CLog::Log("  half duplex");
+            CLog::Log(LOGINFO, "  half duplex");
           }
 
           if ( temp & XNET_ETHERNET_LINK_100MBPS )
           {
-            CLog::Log("  100 mbps");
+            CLog::Log(LOGINFO, "  100 mbps");
           }
 
           if ( temp & XNET_ETHERNET_LINK_10MBPS )
           {
-            CLog::Log("  10bmps");
+            CLog::Log(LOGINFO, "  10bmps");
           }
 
           if ( vReturn &  XNET_GET_XNADDR_STATIC )
           {
-            CLog::Log("  static ip");             
+            CLog::Log(LOGINFO, "  static ip");             
           }
 
           if ( vReturn &  XNET_GET_XNADDR_DHCP )
           {
-            CLog::Log("  Dynamic IP");
+            CLog::Log(LOGINFO, "  Dynamic IP");
           }
 
           if ( vReturn & XNET_GET_XNADDR_DNS )
           {
-            CLog::Log("  DNS");
+            CLog::Log(LOGINFO, "  DNS");
           }
 
           if ( vReturn & XNET_GET_XNADDR_ETHERNET )
           {
-            CLog::Log("  ethernet");
+            CLog::Log(LOGINFO, "  ethernet");
           }
 
           if ( vReturn & XNET_GET_XNADDR_NONE )
           {
-            CLog::Log("  none");
+            CLog::Log(LOGINFO, "  none");
           }
 
           if ( vReturn & XNET_GET_XNADDR_ONLINE )
           {
-            CLog::Log("  online");
+            CLog::Log(LOGINFO, "  online");
           }
 
           if ( vReturn & XNET_GET_XNADDR_PENDING )
           {
-            CLog::Log("  pending");
+            CLog::Log(LOGINFO, "  pending");
           }
 
           if ( vReturn & XNET_GET_XNADDR_TROUBLESHOOT )
           {
-            CLog::Log("  error");
+            CLog::Log(LOGINFO, "  error");
           }
 
           if ( vReturn & XNET_GET_XNADDR_PPPOE )
           {
-            CLog::Log("  ppoe");
+            CLog::Log(LOGINFO, "  ppoe");
           }
 
           sprintf(temp_str,"  IP: %s",azIPAdd);         
-          CLog::Log(temp_str);
+          CLog::Log(LOGINFO, temp_str);
         }
         ftploop = 0;
         mode ++;
@@ -2579,11 +2579,11 @@ void CUtil::TakeScreenshot()
 			{
 				if (FAILED(XGWriteSurfaceToFile(lpSurface, fn)))
 				{
-					CLog::Log("Failed to Generate Screenshot");
+					CLog::Log(LOGERROR, "Failed to Generate Screenshot");
 				}	
 				else
 				{
-					CLog::Log("Screen shot saved as %s", fn);
+					CLog::Log(LOGINFO, "Screen shot saved as %s", fn);
 				}
 				lpSurface->Release();
 			}	
@@ -2596,7 +2596,7 @@ void CUtil::TakeScreenshot()
 		}
 		else
 		{
-			CLog::Log("Too many screen shots or invalid folder");
+			CLog::Log(LOGWARNING, "Too many screen shots or invalid folder");
 		}
 	}	
  }

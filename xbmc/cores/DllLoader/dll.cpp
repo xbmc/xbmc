@@ -108,7 +108,7 @@ std::list<unsigned long*> AllocatedFunctionList;
 int iDllDummyOutputCall = 0;
 extern "C" void dll_dummy_output(char* dllname, char* funcname)
 {
-	CLog::Log("%s: Unresolved function called (%s), Count number %d", dllname, funcname, ++iDllDummyOutputCall);
+	CLog::Log(LOGERROR, "%s: Unresolved function called (%s), Count number %d", dllname, funcname, ++iDllDummyOutputCall);
 }
 
 // this piece of asm code only calls dll_dummy_output(s, s) and will return NULL

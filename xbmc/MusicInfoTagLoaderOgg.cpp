@@ -70,7 +70,7 @@ bool CMusicInfoTagLoaderOgg::Load(const CStdString& strFileName, CMusicInfoTag& 
 	}
 	catch(...)
 	{
-		CLog::Log("Tag loader ogg: exception in file %s", strFileName.c_str());
+		CLog::Log(LOGERROR, "Tag loader ogg: exception in file %s", strFileName.c_str());
 	}
 
 	tag.SetLoaded(false);

@@ -82,7 +82,7 @@ void CKaiClient::ResolveVector(DWORD aTitleId)
 
 CKaiClient::CKaiClient(void) : CUdpClient()
 {
-	CLog::Log("KAICLIENT: Instatiating...");
+	CLog::Log(LOGNOTICE, "KAICLIENT: Instantiating...");
 	observer = NULL;
 	Create();
 }

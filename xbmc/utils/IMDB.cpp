@@ -45,7 +45,7 @@ bool CIMDB::FindMovie(const CStdString &strMovie,IMDB_MOVIELIST& movielist)
 
 	if (strHTML.size()==0) 
   {
-    CLog::Log("empty document returned");
+    CLog::Log(LOGWARNING, "empty document returned");
     return false;
   }
 
@@ -204,7 +204,7 @@ bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
   while (szURL[ipos] != '/' && ipos>0) ipos--;
 
   movieDetails.m_strIMDBNumber=&szURL[ipos+1];
-  CLog::Log("imdb number:%s\n", movieDetails.m_strIMDBNumber.c_str());
+  CLog::Log(LOGINFO, "imdb number:%s\n", movieDetails.m_strIMDBNumber.c_str());
 	char *pDirectedBy=strstr(szBuffer,"Directed by");
 	char *pCredits=strstr(szBuffer,"Writing credits");
 	char* pGenre=strstr(szBuffer,"Genre:");
@@ -489,7 +489,7 @@ bool CIMDB::Download(const CStdString &strURL, const CStdString &strFileName)
 	CStdString strHTML;
 	if (!m_http.Download(strURL,strFileName)) 
   {
-    CLog::Log("failed to download %s -> %s", strURL.c_str(), strFileName.c_str());
+    CLog::Log(LOGERROR, "failed to download %s -> %s", strURL.c_str(), strFileName.c_str());
     return false;
   }
 

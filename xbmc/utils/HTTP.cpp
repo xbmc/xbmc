@@ -74,14 +74,14 @@ bool CHTTP::ReadData(string& strData)
 				memmove(m_RecvBuffer, num, m_RecvBytes = (m_RecvBuffer + m_RecvBytes) - num);
 				if (!Recv(-1))
 				{
-					CLog::Log("Recv failed: %d", WSAGetLastError());
+					CLog::Log(LOGERROR, "Recv failed: %d", WSAGetLastError());
 					Close();
 					return false;
 				}
 				num = p = m_RecvBuffer;
 				if (!*p)
 				{
-					CLog::Log("Invalid reply from server");
+					CLog::Log(LOGERROR, "Invalid reply from server");
 					Close();
 					return false;
 				}
@@ -104,7 +104,7 @@ bool CHTTP::ReadData(string& strData)
 					if (!Recv(-1))
 					{
 						strData.clear();
-						CLog::Log("Recv failed: %d", WSAGetLastError());
+						CLog::Log(LOGERROR, "Recv failed: %d", WSAGetLastError());
 						Close();
 						return false;
 					}
@@ -123,7 +123,7 @@ bool CHTTP::ReadData(string& strData)
 				if (!Recv(-1))
 				{
 					strData.clear();
-					CLog::Log("Recv failed: %d", WSAGetLastError());
+					CLog::Log(LOGERROR, "Recv failed: %d", WSAGetLastError());
 					Close();
 					return false;
 				}
@@ -145,7 +145,7 @@ bool CHTTP::ReadData(string& strData)
 				if (!Recv(-1))
 				{
 					strData.clear();
-					CLog::Log("Invalid reply from server");
+					CLog::Log(LOGERROR, "Invalid reply from server");
 					Close();
 					return false;
 				}
@@ -167,7 +167,7 @@ bool CHTTP::ReadData(string& strData)
 					if (!Recv(len))
 					{
 						strData.clear();
-						CLog::Log("Recv failed: %d", WSAGetLastError());
+						CLog::Log(LOGERROR, "Recv failed: %d", WSAGetLastError());
 						Close();
 						return false;
 					}
@@ -182,7 +182,7 @@ bool CHTTP::ReadData(string& strData)
 
 bool CHTTP::Get(string& strURL, string& strHTML)
 {
-  CLog::Log("Get URL: %s", strURL.c_str());
+  CLog::Log(LOGINFO, "Get URL: %s", strURL.c_str());
 
 	int status = Open(strURL, "GET", NULL);
 
@@ -203,7 +203,7 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 
 bool CHTTP::Post(const string &strURL, const string &strPostData, string &strHTML)
 {
-	CLog::Log("Post URL:%s", strURL.c_str());
+	CLog::Log(LOGINFO, "Post URL:%s", strURL.c_str());
 
 	int status = Open(strURL, "POST", strPostData.c_str());
 
@@ -223,7 +223,7 @@ bool CHTTP::Post(const string &strURL, const string &strPostData, string &strHTM
 //------------------------------------------------------------------------------------------------------------------
 bool CHTTP::Download(const string &strURL, const string &strFileName)
 {
-	CLog::Log("Download: %s->%s",strURL.c_str(),strFileName.c_str());
+	CLog::Log(LOGINFO, "Download: %s->%s",strURL.c_str(),strFileName.c_str());
 
 	int status = Open(strURL, "GET", NULL);
 
@@ -242,7 +242,7 @@ bool CHTTP::Download(const string &strURL, const string &strFileName)
 	HANDLE hFile = CreateFile(strFileName.c_str(), GENERIC_WRITE, FILE_SHARE_READ, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
-		CLog::Log("Unable to open file %s: %d", strFileName.c_str(), GetLastError());
+		CLog::Log(LOGERROR, "Unable to open file %s: %d", strFileName.c_str(), GetLastError());
 		return false;
 	}
 	if (strData.size())
@@ -285,10 +285,10 @@ bool CHTTP::Connect()
 			service.sin_addr.s_addr = inet_addr(strIpAddress.c_str());
 			if (service.sin_addr.s_addr == INADDR_NONE || strIpAddress=="")
 			{
-				CLog::Log("ERROR: Your DNS(<nameserver> tag) is not properly set.  Please fix.  Defaulting to using hard-coded IP address for known Hosts.");
-				if (strcmp(m_strHostName.c_str(),"ia.imdb.com")==0)
-					service.sin_addr.s_addr = inet_addr("193.108.152.15");
-				else if (strcmp(m_strHostName.c_str(),"us.imdb.com")==0)
+				CLog::Log(LOGWARNING, "ERROR: Your DNS(<nameserver> tag) is not properly set.  Please fix.  Defaulting to using hard-coded IP address for known Hosts.");
+//				if (strcmp(m_strHostName.c_str(),"ia.imdb.com")==0)
+//					service.sin_addr.s_addr = inet_addr("193.108.152.15");
+				if (strcmp(m_strHostName.c_str(),"us.imdb.com")==0)
 					service.sin_addr.s_addr = inet_addr("207.171.166.140");
 				else if (strcmp(m_strHostName.c_str(),"www.imdb.com")==0)
 					service.sin_addr.s_addr = inet_addr("207.171.166.140");
@@ -530,13 +530,13 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 	m_redirectedURL = strURL;
 	if (!BreakURL(strURL, m_strHostName, m_iPort, strFile))
 	{
-    CLog::Log("Invalid url: %s",strURL.c_str());
+    CLog::Log(LOGERROR, "Invalid url: %s",strURL.c_str());
 		return 0;
 	}	
 
 	if (!Connect())
 	{
-		CLog::Log("Unable to connect to %s: %d",m_strHostName.c_str(), WSAGetLastError());
+		CLog::Log(LOGERROR, "Unable to connect to %s: %d",m_strHostName.c_str(), WSAGetLastError());
 		return 0;
 	}
 
@@ -566,17 +566,17 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 	if (m_strProxyServer.size())
 	{
 		szGet = (char*)_alloca(strlen(szHTTPHEADER) + strURL.size() + 20);
-		sprintf(szGet,"%s %s HTTP/1.1\r\n%s\r\n",verb, strURL.c_str(),szHTTPHEADER);
+		sprintf(szGet,"%s %s HTTP/1.0\r\n%s\r\n",verb, strURL.c_str(),szHTTPHEADER);
 	}
 	else
 	{
 		szGet = (char*)_alloca(strlen(szHTTPHEADER) + strFile.size() + 20);
-		sprintf(szGet,"%s %s HTTP/1.1\r\n%s\r\n",verb, strFile.c_str(),szHTTPHEADER);
+		sprintf(szGet,"%s %s HTTP/1.0\r\n%s\r\n",verb, strFile.c_str(),szHTTPHEADER);
 	}
 
 	if (!Send(szGet,strlen(szGet)))
 	{
-		CLog::Log("Send failed: %d", WSAGetLastError());
+		CLog::Log(LOGERROR, "Send failed: %d", WSAGetLastError());
 		Close();
 		return 0;
 	}
@@ -587,13 +587,13 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 	{
 		if (m_RecvBytes >= BUFSIZE)
 		{
-			CLog::Log("Invalid reply from server");
+			CLog::Log(LOGERROR, "Invalid reply from server");
 			Close();
 			return 0;
 		}
 		if (!Recv(-1))
 		{
-			CLog::Log("Recv failed: %d", WSAGetLastError());
+			CLog::Log(LOGERROR, "Recv failed: %d", WSAGetLastError());
 			Close();
 			return 0;
 		}
@@ -604,7 +604,7 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 	// HTTP-Version SP Status-Code SP Reason-Phrase CRLF
 	if (strnicmp(m_RecvBuffer, "HTTP/", 5) || m_RecvBuffer[5] != '1' || m_RecvBuffer[6] != '.' || m_RecvBuffer[7] < '0' || m_RecvBuffer[7] > '1')
 	{
-		CLog::Log("Invalid reply from server");
+		CLog::Log(LOGERROR, "Invalid reply from server");
 		Close();
 		return 0; // malformed reply
 	}
@@ -617,7 +617,7 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 
 	if (status < 100)
 	{
-		CLog::Log("Invalid reply from server");
+		CLog::Log(LOGERROR, "Invalid reply from server");
 		Close();
 		return 0; // malformed reply
 	}
@@ -650,7 +650,7 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 
 		if (!CanHandle)
 		{
-			CLog::Log("Server returned: %d %s", status, strReason.c_str());
+			CLog::Log(LOGERROR, "Server returned: %d %s", status, strReason.c_str());
 			return status; // unhandlable
 		}
 
@@ -667,21 +667,21 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 				strURL.insert(0, m_strHostName.c_str());
 				strURL.insert(0, "http://");
 			}
-			CLog::Log("%d Redirected: %s", status, strURL.c_str());
+			CLog::Log(LOGINFO, "%d Redirected: %s", status, strURL.c_str());
 			m_RecvBytes = 0;
 			m_redirectedURL = strURL;
 			return Open(strURL, verb, pData);
 		}
 		else
 		{
-			CLog::Log("Invalid reply from server");
+			CLog::Log(LOGERROR, "Invalid reply from server");
 			Close();
 			return 0; // malformed reply
 		}
 	}
 	else
 	{
-		CLog::Log("Server returned: %d %s", status, strReason.c_str());
+		CLog::Log(LOGERROR, "Server returned: %d %s", status, strReason.c_str());
 		Close();
 		return status; // error
 	}

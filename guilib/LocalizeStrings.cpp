@@ -22,7 +22,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
 		TiXmlDocument xmlDoc;
 		if ( !xmlDoc.LoadFile(strFileName.c_str()) )
 		{
-			CLog::Log("unable to load %s: %s at line %d", strFileName.c_str(), xmlDoc.GetErrorDesc(), xmlDoc.GetLineNo());
+			CLog::Log(LOGERROR, "unable to load %s: %s at line %d", strFileName.c_str(), xmlDoc.GetErrorDesc(), xmlDoc.GetLineNo());
 			g_LoadErrorStr.Format("%s, Line %d\n%s", strFileName.c_str(), xmlDoc.GetLineNo(), xmlDoc.GetErrorDesc());
 			return false;
 		}
@@ -30,7 +30,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName)
 		CStdString strValue=pRootElement->Value();
 		if (strValue!=CStdString("strings")) 
     {
-      CLog::Log("%s Doesn't contain <strings>", strFileName.c_str());
+      CLog::Log(LOGERROR, "%s Doesn't contain <strings>", strFileName.c_str());
 			g_LoadErrorStr.Format("%s\nDoesnt start with <strings>", strFileName.c_str());
       return false;
     }

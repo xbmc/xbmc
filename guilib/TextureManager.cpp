@@ -264,7 +264,7 @@ CGUITextureManager::~CGUITextureManager(void)
 
 LPDIRECT3DTEXTURE8 CGUITextureManager::GetTexture(const CStdString& strTextureName,int iItem, int& iWidth, int& iHeight, LPDIRECT3DPALETTE8& pPal)
 {
-//  CLog::Log(" refcount++ for  GetTexture(%s)\n", strTextureName.c_str());
+//  CLog::Log(LOGINFO, " refcount++ for  GetTexture(%s)\n", strTextureName.c_str());
   for (int i=0; i < (int)m_vecTextures.size(); ++i)
   {
     CTextureMap *pMap=m_vecTextures[i];
@@ -452,7 +452,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 				nImages = m_TexBundle.LoadAnim(g_graphicsContext.Get3DDevice(), *pstrBundleTex, &info, &pTextures, &pPal, nLoops, &Delay);
 				if (!nImages)
 				{
-					CLog::Log("Texture manager unable to load bundled file: %s",pstrBundleTex->c_str());
+					CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s",pstrBundleTex->c_str());
 					return NULL;
 				}
 			}
@@ -462,7 +462,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 				if (!nImages)
 				{
 					if (!strnicmp(strPackedPath.c_str(),"q:\\skin", 7)) 
-						CLog::Log("Texture manager unable to load packed file: %s",strPackedPath.c_str());
+						CLog::Log(LOGERROR, "Texture manager unable to load packed file: %s",strPackedPath.c_str());
 					return NULL;
 				}
 			}
@@ -487,7 +487,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 			if (iImages==0)
 			{
 				if (!strnicmp(strPath.c_str(),"q:\\skin", 7)) 
-					CLog::Log("Texture manager unable to load file: %s",strPath.c_str());
+					CLog::Log(LOGERROR, "Texture manager unable to load file: %s",strPath.c_str());
 				return NULL;
 			}
 			int iWidth = AnimatedGifSet.FrameWidth;
@@ -550,7 +550,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 	{
 		if (FAILED(m_TexBundle.LoadTexture(g_graphicsContext.Get3DDevice(), *pstrBundleTex, &info, &pTexture, &pPal)))
 		{
-			CLog::Log("Texture manager unable to load bundled file: %s",pstrBundleTex->c_str());
+			CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s",pstrBundleTex->c_str());
 			return NULL;
 		}
 	}
@@ -559,7 +559,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 		if (FAILED(LoadPackedTexture(g_graphicsContext.Get3DDevice(), strPackedPath.c_str(), &info, &pTexture, &pPal)))
 		{
 			if (!strnicmp(strPackedPath.c_str(),"q:\\skin", 7)) 
-				CLog::Log("Texture manager unable to load packed file: %s",strPackedPath.c_str());
+				CLog::Log(LOGERROR, "Texture manager unable to load packed file: %s",strPackedPath.c_str());
 			return NULL;
 		}
 	}
@@ -572,7 +572,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 				D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture)!=D3D_OK)
 			{
 				if (!strnicmp(strPath.c_str(),"q:\\skin", 7)) 
-					CLog::Log("Texture manager unable to load file: %s",strPath.c_str());
+					CLog::Log(LOGERROR, "Texture manager unable to load file: %s",strPath.c_str());
 				return NULL;
 			}
 		}
@@ -584,7 +584,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 				D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture)!=D3D_OK)
 			{
 				if (!strnicmp(strPath.c_str(),"q:\\skin", 7)) 
-					CLog::Log("Texture manager unable to load file: %s",strPath.c_str());
+					CLog::Log(LOGERROR, "Texture manager unable to load file: %s",strPath.c_str());
 				return NULL;
 			}
 		}
@@ -631,7 +631,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
       // dont release skin textures, they are reloaded each time
       if (strstr(strPath.c_str(),"q:\\skin") ) 
       {
-        CLog::Log("Texture manager unable to find file:%s",strPath.c_str());
+        CLog::Log(LOGERROR, "Texture manager unable to find file:%s",strPath.c_str());
       }
 			return 0;
 		}
@@ -703,7 +703,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
       // dont release skin textures, they are reloaded each time
       if (strstr(strPath.c_str(),"q:\\skin") ) 
       {
-        CLog::Log("Texture manager unable to find file:%s",strPath.c_str());
+        CLog::Log(LOGERROR, "Texture manager unable to find file:%s",strPath.c_str());
       }
 		return NULL;
 	}
@@ -729,7 +729,7 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName, int iP
   {
     // dont release skin textures, they are reloaded each time
     //if (strTextureName.GetAt(1) != ':') return;
-    //CLog::Log("release:%s", strTextureName.c_str());
+    //CLog::Log(LOGINFO, "release:%s", strTextureName.c_str());
   }
 
   ivecTextures i;
@@ -743,7 +743,7 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName, int iP
 
       if (pMap->IsEmpty() )
       {
-        //CLog::Log("  cleanup:%s", strTextureName.c_str());
+        //CLog::Log(LOGINFO, "  cleanup:%s", strTextureName.c_str());
         delete pMap;
         i=m_vecTextures.erase(i);
       }

@@ -15,7 +15,7 @@ bool CEncoder::Init(const char* strFile, int iInChannels, int iInRate, int iInBi
 
 	if(!FileCreate(strFile))
 	{
-		CLog::Log("Error: Cannot open file: %s", strFile);
+		CLog::Log(LOGERROR, "Error: Cannot open file: %s", strFile);
 		return false;
 	}
 	return true;

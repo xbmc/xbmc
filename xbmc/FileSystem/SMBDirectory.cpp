@@ -76,7 +76,7 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 		else nt_error = map_nt_error_from_unix(errno);
 
 		// write error to logfile
-		CLog::Log("SMBDirectory->GetDirectory: Unable to open directory : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'",
+		CLog::Log(LOGERROR, "SMBDirectory->GetDirectory: Unable to open directory : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'",
 			strPath.c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
 
 		// is we have an 'invalid handle' error we don't display the error

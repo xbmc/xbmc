@@ -63,7 +63,7 @@ ModPlayer::ModPlayer(IPlayerCallback& callback) :IPlayer(callback)
 
 	if (!mikxboxInit())
 	{
-		CLog::Log("ModPlayer: Could not initialize sound, reason: %s", MikMod_strerror(mikxboxGetErrno()));
+		CLog::Log(LOGERROR, "ModPlayer: Could not initialize sound, reason: %s", MikMod_strerror(mikxboxGetErrno()));
 	}
 
 	SetVolume(g_stSettings.m_nVolumeLevel);
@@ -91,7 +91,7 @@ bool ModPlayer::openfile(const CStdString& strFile)
 		if (!file.Cache(strFile.c_str(),"Z:\\cachedmod",NULL,NULL))
 		{
 			::DeleteFile("Z:\\cachedmod");
-			CLog::Log("ModPlayer: Unable to cache file %s\n", strFile.c_str());
+			CLog::Log(LOGERROR, "ModPlayer: Unable to cache file %s\n", strFile.c_str());
 			return false;
 		}
 		str = strdup("Z:\\cachedmod");
@@ -108,7 +108,7 @@ bool ModPlayer::openfile(const CStdString& strFile)
 	}
 	else
 	{
-		CLog::Log("ModPlayer: Could not load module %s: %s\n", strFile.c_str(), MikMod_strerror(mikxboxGetErrno()));
+		CLog::Log(LOGERROR, "ModPlayer: Could not load module %s: %s\n", strFile.c_str(), MikMod_strerror(mikxboxGetErrno()));
 		return false;
 	}
 

@@ -591,14 +591,14 @@ BOOL CSNTPClient::GetServerTime(LPCTSTR pszHostName, NtpServerResponse& response
   CNtpSocket* pSocket = new CNtpSocket();
   if (!pSocket->Create())
   {
-    CLog::Log("Failed to create client socket, GetLastError returns: %d\n", GetLastError());
+    CLog::Log(LOGERROR, "Failed to create client socket, GetLastError returns: %d\n", GetLastError());
     return FALSE;
   }
 
   //Connect to the SNTP server
   if (!pSocket->Connect(pszHostName, nPort))
   {
-    CLog::Log("Could not connect to the SNTP server %s on port %d, GetLastError returns: %d\n", pszHostName, nPort, GetLastError());
+    CLog::Log(LOGERROR, "Could not connect to the SNTP server %s on port %d, GetLastError returns: %d\n", pszHostName, nPort, GetLastError());
 
     //Tidy up prior to returning
     DWORD dwError = GetLastError();
@@ -619,7 +619,7 @@ BOOL CSNTPClient::GetServerTime(LPCTSTR pszHostName, NtpServerResponse& response
     //Send off the NtpBasicInfo packet
     if (!pSocket->Send((LPCSTR) &nbi, nSendSize))
     {
-      CLog::Log("Failed in call to send NTP request to the SNTP server, GetLastError returns %d\n", GetLastError());
+      CLog::Log(LOGERROR, "Failed in call to send NTP request to the SNTP server, GetLastError returns %d\n", GetLastError());
 
       //Tidy up prior to returning
       DWORD dwError = GetLastError();
@@ -633,7 +633,7 @@ BOOL CSNTPClient::GetServerTime(LPCTSTR pszHostName, NtpServerResponse& response
     BOOL bReadable;
     if (!pSocket->IsReadible(bReadable, m_dwTimeout) || !bReadable)
     {
-      CLog::Log("Unable to wait for NTP reply from the SNTP server, GetLastError returns %d\n", WSAETIMEDOUT);
+      CLog::Log(LOGERROR, "Unable to wait for NTP reply from the SNTP server, GetLastError returns %d\n", WSAETIMEDOUT);
 
       //Tidy up prior to returning
       delete pSocket;
@@ -649,7 +649,7 @@ BOOL CSNTPClient::GetServerTime(LPCTSTR pszHostName, NtpServerResponse& response
   	memset(&nfp, 0, nReceiveSize);
     if (!pSocket->Receive((LPSTR) &nfp, nReceiveSize))
     {
-      CLog::Log("Unable to read reply from the SNTP server, GetLastError returns %d\n", GetLastError());
+      CLog::Log(LOGERROR, "Unable to read reply from the SNTP server, GetLastError returns %d\n", GetLastError());
 
       //Tidy up prior to returning
       DWORD dwError = GetLastError();

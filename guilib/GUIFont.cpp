@@ -32,11 +32,11 @@ bool CGUIFont::Load(const CStdString& strFontName,const CStdString& strFilename)
 	else
 		strPath=strFilename;
   m_strFontName=strFontName;
-  CLog::Log("Load font:%s path:%s", m_strFontName.c_str(), strPath.c_str());
+  CLog::Log(LOGINFO, "Load font:%s path:%s", m_strFontName.c_str(), strPath.c_str());
   bool bResult= (CXBFont::Create(strPath.c_str())==S_OK);
 	if (!bResult)
 	{
-    CLog::Log("failed to load Load font:%s path:%s", m_strFontName.c_str(), strPath.c_str());
+    CLog::Log(LOGERROR, "failed to load Load font:%s path:%s", m_strFontName.c_str(), strPath.c_str());
 	}
 	else
 	{

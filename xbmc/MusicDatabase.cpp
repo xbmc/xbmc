@@ -99,7 +99,7 @@ bool CMusicDatabase::Open()
 	m_pDS.reset(m_pDB->CreateDataset());
 	if ( m_pDB->connect() != DB_CONNECTION_OK) 
 	{
-    CLog::Log("musicdatabase::unable to open %s (old version?)",musicDatabase.c_str());
+    CLog::Log(LOGERROR, "musicdatabase::unable to open %s (old version?)",musicDatabase.c_str());
 		Close();
     ::DeleteFile(musicDatabase.c_str());
 		return false;
@@ -109,7 +109,7 @@ bool CMusicDatabase::Open()
 	{
 		if (!CreateTables()) 
 		{
-      CLog::Log("musicdatabase::unable to create %s ",musicDatabase.c_str());
+      CLog::Log(LOGERROR, "musicdatabase::unable to create %s ",musicDatabase.c_str());
 			Close();
       ::DeleteFile(musicDatabase.c_str());
 			return false;
@@ -153,32 +153,32 @@ bool CMusicDatabase::CreateTables()
 {
 	try 
 	{
-    CLog::Log("create artist table");
+    CLog::Log(LOGINFO, "create artist table");
 		m_pDS->exec("CREATE TABLE artist ( idArtist integer primary key, strArtist text)\n");	
-    CLog::Log("create album table");
+    CLog::Log(LOGINFO, "create album table");
 		m_pDS->exec("CREATE TABLE album ( idAlbum integer primary key, idArtist integer, strAlbum text, idPath integer)\n");
-    CLog::Log("create genre table");
+    CLog::Log(LOGINFO, "create genre table");
 		m_pDS->exec("CREATE TABLE genre ( idGenre integer primary key, strGenre text)\n");
-    CLog::Log("create path table");
+    CLog::Log(LOGINFO, "create path table");
 		m_pDS->exec("CREATE TABLE path ( idPath integer primary key,  strPath text)\n");
-    CLog::Log("create song table");
+    CLog::Log(LOGINFO, "create song table");
 		m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idArtist integer, idAlbum integer, idGenre integer, idPath integer, strTitle text, iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, iTimesPlayed integer)\n");
-    CLog::Log("create albuminfo table");
+    CLog::Log(LOGINFO, "create albuminfo table");
 		m_pDS->exec("CREATE TABLE albuminfo ( idAlbumInfo integer primary key, idAlbum integer, idArtist integer,iYear integer, idGenre integer, strTones text, strStyles text, strReview text, strImage text, iRating integer)\n");
 
-    CLog::Log("create album index");
+    CLog::Log(LOGINFO, "create album index");
 		m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum)");
-    CLog::Log("create genre index");
+    CLog::Log(LOGINFO, "create genre index");
 		m_pDS->exec("CREATE INDEX idxGenre ON genre(strGenre)");
-    CLog::Log("create artist index");
+    CLog::Log(LOGINFO, "create artist index");
 		m_pDS->exec("CREATE INDEX idxArtist ON artist(strArtist)");
-    CLog::Log("create path index");
+    CLog::Log(LOGINFO, "create path index");
 		m_pDS->exec("CREATE INDEX idxPath ON path(strPath)");
 		//m_pDS->exec("CREATE INDEX idxSong ON song(dwFileNameCRC)");
 	}
 	catch (...) 
 	{ 
-    CLog::Log("musicbase::unable to create tables:%i",GetLastError());
+    CLog::Log(LOGERROR, "musicbase::unable to create tables:%i",GetLastError());
 		return false;
 	}
 
@@ -234,7 +234,7 @@ void CMusicDatabase::AddSong(const CSong& song1, bool bCheck)
 	}
 	catch(...)
 	{
-    CLog::Log("musicdatabase:unable to addsong (%s)", strSQL.c_str());
+    CLog::Log(LOGERROR, "musicdatabase:unable to addsong (%s)", strSQL.c_str());
 	}
 }
 
@@ -287,7 +287,7 @@ long CMusicDatabase::AddAlbum(const CStdString& strAlbum1, long lArtistId, long 
 	}
 	catch(...)
 	{
-    CLog::Log("musicdatabase:unable to addalbum (%s)", strSQL.c_str());
+    CLog::Log(LOGERROR, "musicdatabase:unable to addalbum (%s)", strSQL.c_str());
 	}
 
 	return -1;
@@ -413,7 +413,7 @@ long CMusicDatabase::AddGenre(const CStdString& strGenre1)
 	}
 	catch(...)
 	{
-    CLog::Log("musicdatabase:unable to addgenre (%s)", strSQL.c_str());
+    CLog::Log(LOGERROR, "musicdatabase:unable to addgenre (%s)", strSQL.c_str());
 	}
 
 	return -1;
@@ -461,7 +461,7 @@ long CMusicDatabase::AddArtist(const CStdString& strArtist1)
 	}
 	catch(...)
 	{
-    CLog::Log("musicdatabase:unable to addartist (%s)", strSQL.c_str());
+    CLog::Log(LOGERROR, "musicdatabase:unable to addartist (%s)", strSQL.c_str());
 	}
 
 	return -1;
@@ -513,7 +513,7 @@ long CMusicDatabase::AddPath(const CStdString& strPath1)
 	}
 	catch(...)
 	{
-    CLog::Log("musicdatabase:unable to addpath (%s)", strSQL.c_str());
+    CLog::Log(LOGERROR, "musicdatabase:unable to addpath (%s)", strSQL.c_str());
 	}
 
 	return -1;
@@ -562,7 +562,7 @@ bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName1, CSong& so
 	}
 	catch(...)
 	{
-    CLog::Log("CMusicDatabase:GetSongByFileName(%s) failed", strFileName1.c_str());
+    CLog::Log(LOGERROR, "CMusicDatabase:GetSongByFileName(%s) failed", strFileName1.c_str());
 	}
 
 	return false;
@@ -603,7 +603,7 @@ bool CMusicDatabase::GetSong(const CStdString& strTitle1, CSong& song)
 	}
 	catch(...)
 	{
-    CLog::Log("CMusicDatabase:GetSong(%s) failed", strTitle1.c_str());
+    CLog::Log(LOGERROR, "CMusicDatabase:GetSong(%s) failed", strTitle1.c_str());
 	}
 
 	return false;
@@ -649,7 +649,7 @@ bool CMusicDatabase::GetSongsByArtist(const CStdString strArtist1, VECSONGS& son
 	}
 	catch(...)
 	{
-    CLog::Log("CMusicDatabase:GetSongsByArtist(%s) failed", strArtist1.c_str());
+    CLog::Log(LOGERROR, "CMusicDatabase:GetSongsByArtist(%s) failed", strArtist1.c_str());
 	}
 
 	return false;
@@ -701,7 +701,7 @@ bool CMusicDatabase::GetSongsByAlbum(const CStdString& strAlbum1, const CStdStri
 	}
 	catch(...)
 	{
-    CLog::Log("CMusicDatabase:GetSongsByAlbum(%s, %s) failed", strAlbum1.c_str(), strPath1.c_str());
+    CLog::Log(LOGERROR, "CMusicDatabase:GetSongsByAlbum(%s, %s) failed", strAlbum1.c_str(), strPath1.c_str());
 	}
 
 	return false;
@@ -736,7 +736,7 @@ bool CMusicDatabase::GetArtists(VECARTISTS& artists)
 	}
 	catch(...)
 	{
-    CLog::Log("CMusicDatabase:GetArtists() failed");
+    CLog::Log(LOGERROR, "CMusicDatabase:GetArtists() failed");
 	}
 
 	return false;
@@ -773,7 +773,7 @@ bool CMusicDatabase::GetArtistsByName(const CStdString& strArtist1, VECARTISTS& 
 	}
 	catch(...)
 	{
-    CLog::Log("CMusicDatabase:GetArtists() failed");
+    CLog::Log(LOGERROR, "CMusicDatabase:GetArtists() failed");
 	}
 
 	return false;
@@ -806,7 +806,7 @@ bool CMusicDatabase::GetAlbums(VECALBUMS& albums)
 	}
 	catch(...)
 	{
-    CLog::Log("CMusicDatabase:GetAlbums() failed");
+    CLog::Log(LOGERROR, "CMusicDatabase:GetAlbums() failed");
 	}
 
 	return false;
@@ -839,7 +839,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
 	}
 	catch(...)
 	{
-    CLog::Log("CMusicDatabase:GetRecentlyPlayedAlbums() failed");
+    CLog::Log(LOGERROR, "CMusicDatabase:GetRecentlyPlayedAlbums() failed");
 	}
 
 	return false;
@@ -890,7 +890,7 @@ long CMusicDatabase::AddAlbumInfo(const CAlbum& album1)
 	}
 	catch(...)
 	{
-    CLog::Log("musicdatabase:unable to addalbuminfo (%s)", strSQL.c_str());
+    CLog::Log(LOGERROR, "musicdatabase:unable to addalbuminfo (%s)", strSQL.c_str());
 	}
 
 	return -1;
@@ -936,7 +936,7 @@ bool CMusicDatabase::GetSongsByGenre(const CStdString& strGenre, VECSONGS& songs
 	}
 	catch(...)
 	{
-    CLog::Log("CMusicDatabase:GetSongsByGenre() failed");
+    CLog::Log(LOGERROR, "CMusicDatabase:GetSongsByGenre() failed");
 	}
 
 	return false;
@@ -966,7 +966,7 @@ bool CMusicDatabase::GetGenres(VECGENRES& genres)
 	}
 	catch(...)
 	{
-    CLog::Log("CMusicDatabase:GetGenres() failed");
+    CLog::Log(LOGERROR, "CMusicDatabase:GetGenres() failed");
 	}
 
 	return false;
@@ -1007,7 +1007,7 @@ bool CMusicDatabase::GetAlbumInfo(const CStdString& strAlbum1, const CStdString&
 	}
 	catch(...)
 	{
-    CLog::Log("CMusicDatabase:GetAlbumInfo(%s, %s) failed", strAlbum1.c_str(), strPath1.c_str());
+    CLog::Log(LOGERROR, "CMusicDatabase:GetAlbumInfo(%s, %s) failed", strAlbum1.c_str(), strPath1.c_str());
 	}
 
 	return false;
@@ -1052,7 +1052,7 @@ bool CMusicDatabase::GetTop100(VECSONGS& songs)
 	}
 	catch(...)
 	{
-    CLog::Log("CMusicDatabase:GetTop100() failed");
+    CLog::Log(LOGERROR, "CMusicDatabase:GetTop100() failed");
 	}
 
 	return false;
@@ -1095,7 +1095,7 @@ bool CMusicDatabase::IncrTop100CounterByFileName(const CStdString& strFileName1)
 	}
 	catch(...)
 	{
-    CLog::Log("CMusicDatabase:IncrTop100Counter(%s) failed", strFileName1.c_str());
+    CLog::Log(LOGERROR, "CMusicDatabase:IncrTop100Counter(%s) failed", strFileName1.c_str());
 	}
 
 	return false;
@@ -1144,7 +1144,7 @@ bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, VECSONGS& songs)
 	}
 	catch(...)
 	{
-    CLog::Log("CMusicDatabase:GetVecSongsByPath(%s) failed", strPath1.c_str());
+    CLog::Log(LOGERROR, "CMusicDatabase:GetVecSongsByPath(%s) failed", strPath1.c_str());
 	}
 
 	return false;
@@ -1194,7 +1194,7 @@ bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, MAPSONGS& songs,
 	}
 	catch(...)
 	{
-    CLog::Log("CMusicDatabase:GetMapSongsByPath(%s) failed", strPath1.c_str());
+    CLog::Log(LOGERROR, "CMusicDatabase:GetMapSongsByPath(%s) failed", strPath1.c_str());
 	}
 
 	return false;
@@ -1209,7 +1209,7 @@ void CMusicDatabase::BeginTransaction()
 	}
 	catch(...)
 	{
-    CLog::Log("musicdatabase:begintransaction failed");
+    CLog::Log(LOGERROR, "musicdatabase:begintransaction failed");
 	}
 }
 
@@ -1222,7 +1222,7 @@ void CMusicDatabase::CommitTransaction()
 	}
 	catch(...)
 	{
-    CLog::Log("musicdatabase:committransaction failed");
+    CLog::Log(LOGERROR, "musicdatabase:committransaction failed");
 	}
 }
 
@@ -1235,7 +1235,7 @@ void CMusicDatabase::RollbackTransaction()
 	}
 	catch(...)
 	{
-    CLog::Log("musicdatabase:rollbacktransaction failed");
+    CLog::Log(LOGERROR, "musicdatabase:rollbacktransaction failed");
 	}
 }
 
@@ -1308,7 +1308,7 @@ bool CMusicDatabase::GetSongsByPathes(SETPATHES& pathes, MAPSONGS& songs)
 	}
 	catch(...)
 	{
-    CLog::Log("CMusicDatabase:GetSongsByPathes() failed");
+    CLog::Log(LOGERROR, "CMusicDatabase:GetSongsByPathes() failed");
 	}
 
 	return false;
@@ -1342,7 +1342,7 @@ bool CMusicDatabase::GetAlbumByPath(const CStdString& strPath1, CAlbum& album)
 	}
 	catch(...)
 	{
-    CLog::Log("CMusicDatabase:GetAlbumByPath() for %s failed", strPath1.c_str());
+    CLog::Log(LOGERROR, "CMusicDatabase:GetAlbumByPath() for %s failed", strPath1.c_str());
 	}
 
 	return false;
@@ -1383,7 +1383,7 @@ bool CMusicDatabase::GetAlbumsByPath(const CStdString& strPath1, VECALBUMS& albu
 	}
 	catch(...)
 	{
-    CLog::Log("CMusicDatabase:GetAlbumsByPath() for %s failed", strPath1.c_str());
+    CLog::Log(LOGERROR, "CMusicDatabase:GetAlbumsByPath() for %s failed", strPath1.c_str());
 	}
 
 	return false;
@@ -1421,7 +1421,7 @@ bool CMusicDatabase::GetAlbumsByArtist(const CStdString& strArtist1, VECALBUMS& 
 	}
 	catch(...)
 	{
-    CLog::Log("CMusicDatabase:GetAlbumsByArtist() for %s failed", strArtist1.c_str());
+    CLog::Log(LOGERROR, "CMusicDatabase:GetAlbumsByArtist() for %s failed", strArtist1.c_str());
 	}
 
 	return false;
@@ -1467,7 +1467,7 @@ bool CMusicDatabase::FindSongsByName(const CStdString& strSearch1, VECSONGS& son
 	}
 	catch(...)
 	{
-    CLog::Log("CMusicDatabase:GetSongsByName() failed");
+    CLog::Log(LOGERROR, "CMusicDatabase:GetSongsByName() failed");
 	}
 
 	return false;
@@ -1513,7 +1513,7 @@ bool CMusicDatabase::FindSongsByNameAndArtist(const CStdString& strSearch1, VECS
 	}
 	catch(...)
 	{
-    CLog::Log("CMusicDatabase:GetSongsByName() failed");
+    CLog::Log(LOGERROR, "CMusicDatabase:GetSongsByName() failed");
 	}
 
 	return false;
@@ -1548,7 +1548,7 @@ bool CMusicDatabase::FindAlbumsByName(const CStdString& strSearch1, VECALBUMS& a
 	}
 	catch(...)
 	{
-    CLog::Log("CMusicDatabase:GetAlbumsByName() failed");
+    CLog::Log(LOGERROR, "CMusicDatabase:GetAlbumsByName() failed");
 	}
 
 	return false;
@@ -1604,7 +1604,7 @@ long CMusicDatabase::UpdateAlbumInfo(const CAlbum& album1)
 	}
 	catch(...)
 	{
-    CLog::Log("musicdatabase:unable to updatealbuminfo (%s)", strSQL.c_str());
+    CLog::Log(LOGERROR, "musicdatabase:unable to updatealbuminfo (%s)", strSQL.c_str());
 	}
 
 	return -1;
