@@ -24,7 +24,7 @@ public:
   void            		SelectNextControl();
   DWORD           		GetID(void) const;
 	void								SetID(DWORD dwID);
-	DWORD				GetPreviousWindowID(void) const;
+	DWORD								GetPreviousWindowID(void) const;
 	const CGUIControl*	GetControl(int iControl) const;
 	void								ClearAll();
 	int									GetFocusedControl() const;
@@ -32,8 +32,16 @@ public:
   void								FreeResources();
 	void								ResetAllControls();  
 protected:
-	bool LoadReference(const CStdString& strFileName, map<string,CGUIControl*>& controls);
-  vector<CGUIControl*> m_vecControls;
+	struct stReferenceControl
+	{
+		char				 m_szType[128];
+		CGUIControl* m_pControl;
+	};
+	typedef vector<struct stReferenceControl> VECREFERENCECONTOLS;
+	typedef vector<struct stReferenceControl>::iterator IVECREFERENCECONTOLS;
+	bool LoadReference(const CStdString& strFileName, VECREFERENCECONTOLS& controls);
+
+	vector<CGUIControl*> m_vecControls;
   typedef vector<CGUIControl*>::iterator ivecControls;
   DWORD  m_dwWindowId;
   DWORD  m_dwPreviousWindowId;
