@@ -492,7 +492,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
 			else
 				displaytime[count] = (char)m_strTimeStamp[count]+48;
 			}
-		unsigned int tmpvar = g_application.m_pPlayer->GetTime();
+		unsigned int tmpvar = g_application.m_pPlayer->GetTotalTime();
 		if(tmpvar != 0)
 		{
 			int ihour = tmpvar / 3600;
@@ -762,7 +762,7 @@ void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
 			im*=60;
 			ih*=3600; 
 			itotal = ih+im+is;
-			if(itotal < g_application.m_pPlayer->GetTime())
+			if(itotal < g_application.m_pPlayer->GetTotalTime())
 				g_application.m_pPlayer->SeekTime(itotal);
 			m_iTimeCodePosition = 0;
       m_bShowTime=false;

@@ -60,9 +60,16 @@ int             (__cdecl* pgetAudioLanguageCount)();
 int             (__cdecl* pgetAudioLanguage)();
 int             (__cdecl* pgetAudioStream)(int);
 int             (__cdecl* pgetAudioStreamCount)();
-int 			(__cdecl* pgetTime)();
+int 			      (__cdecl* pgetTime)();
+__int64         (__cdecl* pgetCurrentTime)();
+
 extern "C" 
 {
+  __int64 mplayer_getCurrentTime()
+  {
+    return pgetCurrentTime();
+  }
+
   void mplayer_ToFFRW(int iSpeed)
   {
     pToFFRW(iSpeed);
@@ -460,6 +467,9 @@ extern "C"
 
 		dll.ResolveExport("mplayer_ToFFRW", &pProc);
  		pToFFRW=(void(__cdecl*)(int))pProc;
+
+    dll.ResolveExport("mplayer_getCurrentTime", &pProc);
+ 		pgetCurrentTime=(__int64(__cdecl*)())pProc;
 
 
 		pSetVideoFunctions(&video_functions);
