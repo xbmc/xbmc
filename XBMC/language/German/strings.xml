@@ -1246,7 +1246,47 @@
   </string>
   <string>
     <id>385</id>
-    <value>schönes</value>
+    <value>schön</value>
+  </string>
+  <string>
+    <id>386</id>
+    <value>Klar</value>
+  </string>
+  <string>
+    <id>387</id>
+    <value>Wolken</value>
+  </string>
+  <string>
+    <id>388</id>
+    <value>N/A</value>
+  </string>
+  <string>
+    <id>389</id>
+    <value>N/A</value>
+  </string>
+  <string>
+    <id>390</id>
+    <value>N/A</value>
+  </string>
+  <string>
+    <id>391</id>
+    <value>N/A</value>
+  </string>
+  <string>
+    <id>392</id>
+    <value>N/A</value>
+  </string>
+  <string>
+    <id>393</id>
+    <value>N/A</value>
+  </string>
+  <string>
+    <id>394</id>
+    <value>N/A</value>
+  </string>
+  <string>
+    <id>395</id>
+    <value>N/A</value>
   </string>
   <string>
   <id>396</id> 
@@ -1630,7 +1670,19 @@
   </string>
   <string>
     <id>492</id>
-    <value>VobSubs vergrößern</value>
+    <value>Untertitel vergrößern</value>
+  </string>
+  <string>
+    <id>493</id>
+    <value>Erweiterte Optionen (nur für Experten):</value>
+  </string>
+  <string>
+    <id>494</id>
+    <value>Audio Übersteuerungsreserve (dB)</value>
+  </string>
+  <string>
+    <id>495</id>
+    <value>VideoAbtastrate erhöhen auf GUI Auflösung</value>
   </string>
 
 <string><id>10000</id><value>Hauptmenü</value></string>
