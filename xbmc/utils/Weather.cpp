@@ -596,7 +596,7 @@ bool CWeather::GetSearchResults(const CStdString &strSearch, CStdString &strResu
 	return true;
 }
 
-char *CWeather::GetLabel(DWORD dwLabel)
+const char *CWeather::GetLabel(DWORD dwLabel)
 {
 	if (!g_guiSettings.GetBool("Network.EnableInternet"))
 		return "";
@@ -606,7 +606,12 @@ char *CWeather::GetLabel(DWORD dwLabel)
 	{	// need to refresh!
 		Refresh(m_iCurWeather);
 	}
-	if (m_bBusy) return "Busy";
+	if (m_bBusy)
+  {
+    CStdString strBusy = g_localizeStrings.Get(503);
+    strncpy(m_szBusyString, strBusy.c_str(), 256);
+    return m_szBusyString;
+  }
 	// ok, here is where the fun deciphering goes
 	if (dwLabel == WEATHER_LABEL_CURRENT_COND) return m_szCurrentConditions;
 	else if (dwLabel == WEATHER_LABEL_CURRENT_TEMP) return m_szCurrentTemperature;
