@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "GUIPythonWindow.h"
 #include "graphiccontext.h"
-#include "localizestrings.h"
 #include "pyutil.h"
 #include "..\..\..\application.h"
 #include "window.h"

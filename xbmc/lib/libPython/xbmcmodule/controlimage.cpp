@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "..\python.h"
-#include "..\..\..\application.h"
 #include "GuiImage.h"
-#include <vector>
 #include "control.h"
 
 using namespace std;
@@ -38,6 +36,11 @@ namespace PYXBMC
 		return (PyObject*)self;
 	}
 
+	void ControlImage_Dealloc(ControlImage* self)
+	{
+		self->ob_type->tp_free((PyObject*)self);
+	}
+
 	PyMethodDef ControlImage_methods[] = {
 		{NULL, NULL, 0, NULL}
 	};
@@ -54,7 +57,7 @@ namespace PYXBMC
 			"xbmcgui.ControlImage",    /*tp_name*/
 			sizeof(ControlImage),      /*tp_basicsize*/
 			0,                         /*tp_itemsize*/
-			(destructor)Control_Dealloc,/*tp_dealloc*/
+			(destructor)ControlImage_Dealloc,/*tp_dealloc*/
 			0,                         /*tp_print*/
 			0,                         /*tp_getattr*/
 			0,                         /*tp_setattr*/
