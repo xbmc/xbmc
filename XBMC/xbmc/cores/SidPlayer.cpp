@@ -346,7 +346,7 @@ bool SidPlayer::starttrack()
 	return true;
 }
 
-bool SidPlayer::openfile(const CStdString& strFile, int iStartTime)
+bool SidPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 {
 	closefile();
 

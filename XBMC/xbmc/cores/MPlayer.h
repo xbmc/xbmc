@@ -75,7 +75,7 @@ public:
 	virtual ~CMPlayer();
 	virtual void            RegisterAudioCallback(IAudioCallback* pCallback);
 	virtual void            UnRegisterAudioCallback();
-	virtual bool            openfile(const CStdString& strFile, int iStartTime);
+	virtual bool            openfile(const CStdString& strFile, __int64 iStartTime);
 	virtual bool            closefile();
 	virtual bool            IsPlaying() const;
 	virtual void            Pause();
@@ -132,7 +132,7 @@ public:
 	virtual void     GetAudioStreamName(int iStream, CStdString& strStreamName);
 	virtual void     SetAudioStream(int iStream);
 
-	virtual void    SeekTime(int iTime=0);
+	virtual void    SeekTime(__int64 iTime=0);
 	virtual int      GetTotalTime();
 	virtual __int64 GetTime();
 	virtual void    ToFFRW(int iSpeed=0);

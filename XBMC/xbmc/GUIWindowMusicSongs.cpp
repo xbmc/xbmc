@@ -424,6 +424,22 @@ void CGUIWindowMusicSongs::OnScan()
 
 	g_application.DisableOverlay();
 
+	// check whether we have scanned here before
+	bool m_bUpdateAll = false;
+	CStdString strPaths;
+	strPaths = g_musicDatabase.GetSubpathsFromPath(m_strDirectory);
+	if (strPaths.length() > 2)
+	{	// yes, we have, we should prompt the user to ask if they want
+		// to do a full scan, or just add new items...
+		CGUIDialogYesNo *pDialog = &(g_application.m_guiDialogYesNo);
+		pDialog->SetHeading(189);
+		pDialog->SetLine(0,702);
+		pDialog->SetLine(1,703);
+		pDialog->SetLine(2,704);
+		pDialog->DoModal(GetID());
+		if (pDialog->IsConfirmed())	m_bUpdateAll = true;
+	}
+
 	m_dlgProgress->SetHeading(189);
 	m_dlgProgress->SetLine(0, 330);
 	m_dlgProgress->SetLine(1,"");
@@ -438,16 +454,41 @@ void CGUIWindowMusicSongs::OnScan()
 
 	g_musicDatabase.BeginTransaction();
 
+	bool bOKtoScan = true;
+	if (m_bUpdateAll)
+	{
+		m_dlgProgress->SetLine(2,701);
+		m_dlgProgress->Progress();
+		bOKtoScan = g_musicDatabase.RemoveSongsFromPaths(strPaths);
+	}
 	// enable scan mode in OnRetrieveMusicInfo()
 	m_bScan=true;
 
-	if (DoScan(m_vecItems))
+	if (bOKtoScan && DoScan(m_vecItems))
 	{
+		bool bCommit = true;
+		if (m_bUpdateAll)
+		{
+			m_dlgProgress->SetLine(2,700);
+			m_dlgProgress->Progress();
+			bCommit = g_musicDatabase.CleanupAlbumsArtistsGenres(strPaths);
+		}
+		if (bCommit)
+		{
+			g_musicDatabase.CommitTransaction();
+			if (m_bUpdateAll)
+			{
+				m_dlgProgress->SetLine(2,331);
+				m_dlgProgress->Progress();
+				g_musicDatabase.Compress();
+			}
+		}
+		else
+			g_musicDatabase.RollbackTransaction();
 		m_dlgProgress->SetLine(0,328);
 		m_dlgProgress->SetLine(1,"");
 		m_dlgProgress->SetLine(2,330 );
 		m_dlgProgress->Progress();
-		g_musicDatabase.CommitTransaction();
 	}
 	else
 		g_musicDatabase.RollbackTransaction();
@@ -1381,7 +1422,7 @@ void CGUIWindowMusicSongs::FilterItems(VECFILEITEMS &items)
 {
 	// Handle .CUE sheet files...
 	VECSONGS itemstoadd;
-	CStdStringArray itemstodelete;
+	VECARTISTS itemstodelete;
 	for (int i=0; i<(int)items.size(); i++)
 	{
 		CFileItem *pItem = items[i];

@@ -80,7 +80,7 @@ ModPlayer::~ModPlayer()
 	CSectionLoader::Unload("MOD_RW");
 }
 
-bool ModPlayer::openfile(const CStdString& strFile, int iStartTime)
+bool ModPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 {
 	closefile();
 

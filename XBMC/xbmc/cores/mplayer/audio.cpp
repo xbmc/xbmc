@@ -134,7 +134,7 @@ static int audio_init(int rate,int channels,int format,int flags)
 		{
 			mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
 			// Check that we are allowed to pass through DD or DTS
-			if (strstr(strAudioCodec,"SPDIF") && (g_stSettings.m_bDD_DTSMultiChannelPassThrough || g_stSettings.m_bDDStereoPassThrough))
+			if (strstr(strAudioCodec,"SPDIF"))
 				bAC3PassThru=true;
 		}
 		if (bAC3PassThru)
