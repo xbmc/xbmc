@@ -142,22 +142,6 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-	case GUI_MSG_DVDDRIVE_EJECTED_CD:
-		//	Message send by a thread.
-		//	We have to process it later
-		//	(in Render()), if we have shares
-		//	visible
-		m_bDVDDiscEjected = true;
-		break;
-	case GUI_MSG_DVDDRIVE_CHANGED_CD:
-		//	Message send by a thread.
-		//	We have to process it later
-		//	(in Render()), if we have shares
-		//	visible
-		if ( m_strDirectory.IsEmpty() )
-			m_bDVDDiscChanged = true;
-		break;
-
     case GUI_MSG_WINDOW_DEINIT:
 		{
 			m_iSelectedItem=GetSelectedItem();
@@ -176,7 +160,7 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
 
 			CShare share;
 			share.strName = "Q Drive";
-			share.strPath = "Q:\\scripts";
+			share.strPath = "Q:\\";
 			share.m_iBufferSize = 0;
 			share.m_iDriveType = SHARE_TYPE_LOCAL;
 			shares.push_back(share);
@@ -364,7 +348,9 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
   Clear();
 
 	CStdString strParentPath;
-	bool bParentExists=CUtil::GetParentPath(strDirectory, strParentPath);
+	bool bParentExists=false;
+	if (strDirectory!="Q:\\scripts")
+		bParentExists=CUtil::GetParentPath(strDirectory, strParentPath);
 
 	// check if current directory is a root share
   if ( !m_rootDir.IsShare(strDirectory) )
@@ -572,33 +558,6 @@ void CGUIWindowScripts::OnInfo()
 
 void CGUIWindowScripts::Render()
 {
-	//	Process GUI_MSG_DVDDRIVE_EJECTED_CD message, if we have shares
-	if ( m_bDVDDiscEjected ) {
-		if ( !m_strDirectory.IsEmpty() ) {
-			if ( CUtil::IsCDDA( m_strDirectory ) || CUtil::IsDVD( m_strDirectory ) || CUtil::IsISO9660( m_strDirectory ) ) {
-				//	Disc has changed and we are inside a DVD Drive share, get out of here :)
-				m_strDirectory = "";
-				Update( m_strDirectory );
-			}
-		}
-		else {
-			int iItem = GetSelectedItem();
-			Update( m_strDirectory );
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
-		}
-		m_bDVDDiscEjected = false;
-	}
-
-	//	Process GUI_MSG_DVDDRIVED_CHANGED_CD message, if we have shares
-	if ( m_bDVDDiscChanged && m_strDirectory.IsEmpty() ) {
-		int iItem = GetSelectedItem();
-		Update( m_strDirectory );
-		CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
-		CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
-		m_bDVDDiscChanged = false;
-	}
-
 	// update control_list / control_thumbs if one or more scripts have stopped / started
 	if(m_pythonParser.ScriptsSize() != scriptSize)
 	{
