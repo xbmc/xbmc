@@ -22,8 +22,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_ASYNCAUDIORENDERER_H__B590A94D_D15E_43A6_A41D_527BD441B5F5__INCLUDED_)
-#define AFX_ASYNCAUDIORENDERER_H__B590A94D_D15E_43A6_A41D_527BD441B5F5__INCLUDED_
+#if !defined(AFX_AC97AUDIORENDERER_H__B590A94D_D15E_43A6_A41D_527BD441B5F5__INCLUDED_)
+#define AFX_AC97AUDIORENDERER_H__B590A94D_D15E_43A6_A41D_527BD441B5F5__INCLUDED_
 
 #if _MSC_VER > 1000
 #pragma once
@@ -35,27 +35,28 @@
 #include <windows.h>
 #endif
 
+#include "IDirectSoundRenderer.h"
 #include "IAudioCallback.h"
 extern void RegisterAudioCallback(IAudioCallback* pCallback);
 extern void UnRegisterAudioCallback();
 
-class CAc97DirectSound 
+class CAc97DirectSound : public IDirectSoundRenderer
 {
 public:
 	CAc97DirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample);
 	virtual ~CAc97DirectSound();
 
-	void 							UnRegisterAudioCallback();
-	void 							RegisterAudioCallback(IAudioCallback* pCallback);
-	DWORD 						GetChunkLen();
-	FLOAT 						GetDelay();
-	DWORD 					AddPackets(unsigned char* data, DWORD len);
-	DWORD						GetSpace();
+	virtual void 		UnRegisterAudioCallback();
+	virtual void 		RegisterAudioCallback(IAudioCallback* pCallback);
+	virtual DWORD 	GetChunkLen();
+	virtual FLOAT 	GetDelay();
+	virtual DWORD 	AddPackets(unsigned char* data, DWORD len);
+	virtual DWORD		GetSpace();
 	virtual HRESULT Deinitialize();
 	virtual HRESULT Pause();
 	virtual HRESULT Stop();
-	HRESULT					Resume();
-	DWORD						GetBytesInBuffer();
+	virtual HRESULT	Resume();
+	virtual DWORD		GetBytesInBuffer();
 	virtual LONG		GetMinimumVolume() const;
 	virtual LONG		GetMaximumVolume() const;
 	virtual LONG		GetCurrentVolume() const;
@@ -63,11 +64,11 @@ public:
 	virtual bool		SupportsSurroundSound()  const;
 	static void CALLBACK StaticStreamCallback(LPVOID pStreamContext, LPVOID pPacketContext, DWORD dwStatus);
 	void						StreamCallback(LPVOID pPacketContext, DWORD dwStatus);
-	int							SetPlaySpeed(int iSpeed);
+	virtual int			SetPlaySpeed(int iSpeed);
 
 private:
 	IAudioCallback* m_pCallback;
-	LONG m_lFadeVolume;
+	LONG						m_lFadeVolume;
 
 	bool									FindFreePacket( DWORD& pdwIndex );
 
@@ -87,4 +88,4 @@ private:
 	LPDIRECTSOUND8        m_pDSound;
 };
 
-#endif // !defined(AFX_ASYNCAUDIORENDERER_H__B590A94D_D15E_43A6_A41D_527BD441B5F5__INCLUDED_)
+#endif // !defined(AFX_AC97AUDIORENDERER_H__B590A94D_D15E_43A6_A41D_527BD441B5F5__INCLUDED_)

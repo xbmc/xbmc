@@ -2,9 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "audio.h"
+#include "IDirectSoundRenderer.h"
 #include "ASyncDirectSound.h"
+#include "Ac97DirectSound.h"
 #include "IAudioCallback.h"
-CASyncDirectSound* m_pAudioDecoder=NULL;
+IDirectSoundRenderer* m_pAudioDecoder=NULL;
 
 static IAudioCallback* m_pAudioCallback=NULL;
 
@@ -68,8 +70,11 @@ void UnRegisterAudioCallback()
 static int audio_init(int rate,int channels,int format,int flags)
 {
 		pao_data=GetAOData();
+#if 0
+	  m_pAudioDecoder = new CAc97DirectSound(m_pAudioCallback,channels,rate,audio_out_format_bits(format));
+#else
 	  m_pAudioDecoder = new CASyncDirectSound(m_pAudioCallback,channels,rate,audio_out_format_bits(format));
-
+#endif
     pao_data->channels	= channels;
     pao_data->samplerate= rate;
     pao_data->format		= format;
