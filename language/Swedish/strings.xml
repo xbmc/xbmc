@@ -473,7 +473,7 @@
   <string><id>711</id><value>IP inställningar</value></string>
   <string><id>712</id><value>Felaktig port angiven. Värde måste vara mellan 1 och 65535.</value></string>
   <string><id>713</id><value>HTTP Proxy Inställningar</value></string>
-  <string><id>714</id><value>XLink Kai Inställningar</value></string>
+  <string><id>714</id><value>XLink Inställningar</value></string>
   <string><id>715</id><value>Tilldelning</value></string>
   <string><id>716</id><value>Automatisk (DHCP)</value></string>
   <string><id>717</id><value>Manuell (Statisk)</value></string>
@@ -583,7 +583,7 @@
   <string><id>13304</id><value>Vänd texthåll</value></string>
   <string><id>13305</id><value>Aktivera RSS nyheter</value></string>
   <string><id>13306</id><value>Göm föremål i huvudmappen</value></string>
-  <string><id>13307</id><value>Göm låt nummer</value></string>
+  <string><id>13307</id><value>Göm låtnummer</value></string>
   <string><id>13308</id><value>Vill du starta om din xbox</value></string>
   <string><id>13309</id><value>istället för endast XBMC?</value></string>
   <string><id>13310</id><value>Transtion zoom</value></string>
