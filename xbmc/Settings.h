@@ -244,7 +244,7 @@ public:
 		bool      m_bDeInterlace;
 		char      m_szSubtitleFont[40];
 		int       m_iSubtitleHeight;
-		bool      m_bEnlargeSubtitles;
+		int       m_iEnlargeSubtitlePercent;
 		float     m_fVolumeAmplification;
 		bool      m_bNonInterleaved;
 		bool      m_bPPAuto;
