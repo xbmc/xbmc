@@ -245,8 +245,8 @@ CGUISettings::CGUISettings(void)
 	AddBool(2,"Autorun.VCD", 241, true);
 	AddBool(3,"Autorun.CDDA", 242, true);
 	AddBool(4,"Autorun.Xbox", 243, true);
-	AddBool(5,"Autorun.Music", 244, true);
-	AddBool(6,"Autorun.Video", 245, true);
+	AddBool(5,"Autorun.Video", 244, true);
+	AddBool(6,"Autorun.Music", 245, true);
 	AddBool(7,"Autorun.Pictures", 246, true);
 
 	AddCategory(4, "Cache", 439);
@@ -360,7 +360,7 @@ CGUISettings::CGUISettings(void)
 	AddInt(2, "ScreenSaver.Time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
 	AddInt(3, "ScreenSaver.DimLevel", 362, 20, 10, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 
-	AddCategory(7, "UIFilters", 230);
+	AddCategory(7, "UIFilters", 14053);
 	AddInt(1, "UIFilters.Flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT);
 	AddBool(2, "UIFilters.Soften", 215, false);
 

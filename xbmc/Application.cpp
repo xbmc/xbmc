@@ -126,17 +126,20 @@ static void __cdecl FEH_TextOut(XFONT* pFont, int iLine, const wchar_t* fmt, ...
 	va_end(args);
 
 	if (!(iLine & 0x8000))
-		CLog::Log(LOGFATAL, "%S", buf);
+		CLog::Log(LOGFATAL, "Line %i: %S", iLine, buf);
 
 	bool Center = (iLine & 0x10000) > 0;
-	pFont->SetTextAlignment(Center ? XFONT_CENTER : XFONT_LEFT);
+	pFont->SetTextAlignment(Center ? XFONT_TOP|XFONT_CENTER : XFONT_TOP|XFONT_LEFT);
 
 	iLine &= 0x7fff;
 
-	D3DRECT rc = { 0, 50 + 25*iLine, 720, 50 + 25*(iLine+1) };
-	D3DDevice::Clear(1, &rc, D3DCLEAR_TARGET, 0, 0, 0);
-	pFont->TextOut(g_application.m_pBackBuffer, buf, -1, Center ? 360 : 80, 50 + 25*iLine);
-	D3DDevice::Present(0,0,0,0);
+	for (int i=0; i<2; i++)
+	{
+		D3DRECT rc = { 0, 50 + 25*iLine, 720, 50 + 25*(iLine+1) };
+		D3DDevice::Clear(1, &rc, D3DCLEAR_TARGET, 0, 0, 0);
+		pFont->TextOut(g_application.m_pBackBuffer, buf, -1, Center ? 360 : 80, 50 + 25*iLine);
+		D3DDevice::Present(0,0,0,0);
+	}
 }
 
 // This function does not return!
@@ -656,8 +659,22 @@ HRESULT CApplication::Create()
 	CLog::Log(LOGINFO, "load keymapping");
 	if (!g_buttonTranslator.Load())
 		FatalErrorHandler(false, false, true);
-
-  
+	
+	// check the skin file for testing purposes
+	CStdString strSkinBase = "Q:\\skin\\";
+	CStdString strSkinPath = strSkinBase + g_guiSettings.GetString("LookAndFeel.Skin");
+	CLog::Log(LOGINFO, "Checking skin version of: %s", g_guiSettings.GetString("LookAndFeel.Skin").c_str());
+	if (!g_SkinInfo.Check(strSkinPath))
+	{
+		// reset to the default skin (Project Mayhem)
+		CLog::Log(LOGINFO, "The above skin isn't suitable - checking the version of the default: %s", "Project Mayhem");
+		strSkinPath = strSkinBase + "Project Mayhem";
+		if (!g_SkinInfo.Check(strSkinPath))
+		{
+			g_LoadErrorStr.Format("No suitable skin version found.\nWe require at least version %5.4f \n", g_SkinInfo.GetMinVersion());
+			FatalErrorHandler(false, false, true);
+		}
+	}
 	int  iResolution=g_graphicsContext.GetVideoResolution();
 	CLog::Log(LOGINFO, " GUI format %ix%i %s",
 		g_settings.m_ResInfo[iResolution].iWidth,
@@ -1037,7 +1054,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	QueryPerformanceCounter(&start);
 
 	CLog::Log(LOGINFO, "  load new skin...");
-	if (!m_guiHome.Load( "home.xml"))
+	if (!g_SkinInfo.Check(strSkinPath) || !m_guiHome.Load( "home.xml"))
 	{
 		// failed to load home.xml
 		// fallback to default skin
