@@ -82,19 +82,23 @@ bool CGraphicContext::IsWidescreen() const
 }
 
 
-void CGraphicContext::Correct(FLOAT& fCoordinateX, FLOAT& fCoordinateY, FLOAT& fCoordinateX2, FLOAT& fCoordinateY2)  const
+void CGraphicContext::Correct(float& fCoordinateX, float& fCoordinateY)  const
 {
 	fCoordinateX  += (float)m_iScreenOffsetX;
 	fCoordinateY  += (float)m_iScreenOffsetY;
-	
-//	fCoordinateX2 += (float)m_iScreenOffsetX;
-//	fCoordinateY2 += (float)m_iScreenOffsetY;
-
 }
+
+void CGraphicContext::Scale(float& fCoordinateX, float& fCoordinateY, float& fWidth, float& fHeight) const
+{
+	if (!m_bWidescreen) return;
+
+	// for widescreen images need 2 b rescaled to 66% width, 100% height
+}
+
 
 void CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheight)
 {
-	Correct(fx,fy,fwidth,fheight);
+	Correct(fx,fy);
 	D3DVIEWPORT8 newviewport;
 	Get3DDevice()->GetViewport(&m_oldviewport);
 	newviewport.X      = (DWORD)fx;

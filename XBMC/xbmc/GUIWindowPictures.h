@@ -21,7 +21,7 @@ public:
   virtual void    Render();
 
 protected:
-
+	void							GoParentFolder();
   void							OnClick(int iItem);
   void							OnSort();
   void							UpdateButtons();

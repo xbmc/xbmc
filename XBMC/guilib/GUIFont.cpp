@@ -38,7 +38,7 @@ void CGUIFont::DrawShadowText( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
                               DWORD dwShadowColor)
 {
 	float nw=0.0f,nh=0.0f;
-	g_graphicsContext.Correct(fOriginX, fOriginY,  nw,nh);
+	g_graphicsContext.Correct(fOriginX, fOriginY);
 
 	for (int x=0; x < iShadowWidth; x++)
   {
@@ -56,7 +56,7 @@ void CGUIFont::DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
 {
 
 	float nh=0.0f;
-	g_graphicsContext.Correct(fOriginX, fOriginY, fMaxWidth, nh);
+	g_graphicsContext.Correct(fOriginX, fOriginY);
 
   WCHAR wszText[1024];
   wcscpy(wszText,strText);
@@ -80,7 +80,7 @@ void CGUIFont::DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
 HRESULT CGUIFont::DrawText( FLOAT sx, FLOAT sy, DWORD dwColor, const WCHAR* strText, DWORD dwFlags,FLOAT fMaxPixelWidth)
 {
 	float nw=0.0f,nh=0.0f;
-	g_graphicsContext.Correct(sx, sy, nw, nh);
+	g_graphicsContext.Correct(sx, sy);
 
   return CXBFont::DrawTextEx( sx, sy, dwColor, strText, wcslen( strText ),dwFlags, fMaxPixelWidth );
 
@@ -88,6 +88,6 @@ HRESULT CGUIFont::DrawText( FLOAT sx, FLOAT sy, DWORD dwColor, const WCHAR* strT
 HRESULT CGUIFont::DrawTextEx( FLOAT sx, FLOAT sy, DWORD dwColor, const WCHAR* strText, DWORD cchText, DWORD dwFlags,FLOAT fMaxPixelWidth )
 {
 	float nw=0.0f,nh=0.0f;
-	g_graphicsContext.Correct(sx, sy, nw, nh);
+	g_graphicsContext.Correct(sx, sy);
 	return CXBFont::DrawTextEx( sx, sy, dwColor, strText, cchText, dwFlags,fMaxPixelWidth );
 }

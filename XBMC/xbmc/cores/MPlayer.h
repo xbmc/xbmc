@@ -20,7 +20,6 @@ public:
 	virtual __int64	GetPTS();
 	virtual bool		HasVideo();
 	virtual bool		HasAudio();
-	virtual void    VideoWindowChanged();
 
 protected:
 	virtual void		OnStartup();

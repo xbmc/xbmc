@@ -66,6 +66,8 @@ static directx_fourcc_caps g_ddpf[] =
 };
 #define NUM_FORMATS (sizeof(g_ddpf) / sizeof(g_ddpf[0]))
 
+
+//********************************************************************************************************
 void restore_resolution()
 {
   D3DPRESENT_PARAMETERS params;
@@ -79,6 +81,7 @@ void restore_resolution()
 	}
 }
 
+//********************************************************************************************************
 void choose_best_resolution()
 {
 	if (!g_graphicsContext.IsFullScreenVideo() )
@@ -93,19 +96,14 @@ void choose_best_resolution()
 	g_application.GetD3DParameters(orgparams);
 	DWORD dwStandard = XGetVideoStandard();
 	DWORD dwFlags	   = XGetVideoFlags();
-	bool bWideScreen=false;
 	bool bPal60=false;
-
-	if ( dwFlags & XC_VIDEO_FLAGS_WIDESCREEN)
-	{
-		bWideScreen=true;
-	}
-
+	bool bWideScreen=false;
+	if (params.Flags&D3DPRESENTFLAG_WIDESCREEN) bWideScreen=true;
 	if ( (dwFlags&XC_VIDEO_FLAGS_PAL_60Hz) && !bWideScreen )
 	{
 		bPal60=true;
 	}
-	if ( (dwFlags&XC_VIDEO_FLAGS_HDTV_1080i) && g_graphicsContext.IsWidescreen() )
+	if ( (dwFlags&XC_VIDEO_FLAGS_HDTV_1080i) && bWideScreen )
 	{
 		//1920x1080 16:9
 		if (dwStandard==XC_VIDEO_STANDARD_PAL_I)
@@ -129,7 +127,7 @@ void choose_best_resolution()
 	}
 
 
-	if ( (dwFlags&XC_VIDEO_FLAGS_HDTV_720p) && g_graphicsContext.IsWidescreen() )
+	if ( (dwFlags&XC_VIDEO_FLAGS_HDTV_720p) &&bWideScreen )
 	{
 			//1280x720 16:9
 		if (dwStandard==XC_VIDEO_STANDARD_PAL_I)
@@ -193,6 +191,8 @@ void choose_best_resolution()
 	}
 }
 
+
+//********************************************************************************************************
 static void Directx_CreateOverlay(unsigned int uiFormat)
 {
 	for (int i=0; i <=1; i++)
@@ -211,6 +211,7 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 	g_graphicsContext.Get3DDevice()->EnableOverlay(TRUE);
 }
 
+//********************************************************************************************************
 static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height)
 {
 	int iScreenWidth =m_iDeviceWidth  +g_stSettings.m_iMoviesOffsetX2-g_stSettings.m_iMoviesOffsetX1;
@@ -238,7 +239,13 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
 
 		if (g_stSettings.m_bZoom)
 		{
+				// zoom / panscan the movie so that it fills the entire screen
+				// and keeps the Aspect ratio
 				float fAR = ( (float)image_width ) / (  (float)image_height );
+				if (g_graphicsContext.IsWidescreen())
+				{
+					fAR = ( (float)image_width ) / (  ((float)image_height)*1.33333f );
+				}
 				float fNewWidth;
 				float fNewHeight;
 				if ( image_width >= image_height)
@@ -270,9 +277,14 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
 				return 0;
 		}
 
+
 		// scale up image as much as possible
-		// and keep the aspect ratio
+		// and keep the aspect ratio (introduces with black bars)
 		float fAR = ( (float)image_width ) / (  (float)image_height );
+		if (g_graphicsContext.IsWidescreen())
+		{
+			fAR = ( (float)image_width ) / (  ((float)image_height)*1.33333f );
+		}
 		float fNewWidth  = (float)( iScreenWidth);
 		float fNewHeight = fNewWidth/fAR;
 		if ( image_height > image_width)
@@ -349,11 +361,13 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
 	vo_draw_alpha_yuy2(w,h,src,srca,stride,((unsigned char *) image) + dstride*y0 + 2*x0,dstride);
 }
 
+//********************************************************************************************************
 static void video_draw_osd(void)
 {
 	vo_draw_text(image_width, image_height, draw_alpha);
 }
 
+//********************************************************************************************************
 static unsigned int query_format(unsigned int format)
 {
   unsigned int i=0;
@@ -366,6 +380,7 @@ static unsigned int query_format(unsigned int format)
   return 0;
 }
 
+//********************************************************************************************************
 static void video_uninit(void)
 {
 	restore_resolution();
@@ -397,7 +412,7 @@ static unsigned int video_preinit(const char *arg)
 	fs=1;
   return 0;
 }
-
+//********************************************************************************************************
 static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,int h,int x,int y )
 {
 	IMAGE img;
@@ -417,7 +432,7 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
 //  yv12toyuy2(src[0],src[1],src[2],image + dstride*y + 2*x ,w,h,stride[0],stride[1],dstride);
   return 0;
 }
-
+//********************************************************************************************************
 static void video_flip_page(void)
 {
 	if (!m_bFlip) return;
@@ -472,7 +487,7 @@ static void video_flip_page(void)
 		g_graphicsContext.Unlock();
 	}
 }
-
+//********************************************************************************************************
 static unsigned int video_draw_frame(unsigned char *src[])
 {
 	IMAGE img;
@@ -495,7 +510,7 @@ static unsigned int get_image(mp_image_t *mpi)
 {
 	return 0;
 }
-
+//********************************************************************************************************
 static unsigned int put_image(mp_image_t *mpi)
 {
   unsigned int x = mpi->x;
@@ -518,7 +533,7 @@ static unsigned int put_image(mp_image_t *mpi)
 	//yv12toyuy2(src[0],src[1],src[2],image,image_width,image_height,image_width,image_width>>1,dstride);
   return VO_TRUE;
 }
-
+//********************************************************************************************************
 static unsigned int video_config(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, unsigned int options, char *title, unsigned int format)
 {
 	OutputDebugString("video_config\n");
@@ -552,6 +567,8 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
 	OutputDebugString("video_config() done\n");
   return 0;
 }
+
+//********************************************************************************************************
 static unsigned int video_control(unsigned int request, void *data, ...)
 {
   switch (request)
@@ -577,11 +594,8 @@ static unsigned int video_control(unsigned int request, void *data, ...)
   return VO_NOTIMPL;
 }
 
-void mplayer_reset_video_window()
-{
-	Directx_ManageDisplay(d_image_width,d_image_height);
-}
 
+//********************************************************************************************************
 static vo_info_t video_info =
 {
     "XBOX Direct3D8 YUV renderer",
@@ -589,7 +603,7 @@ static vo_info_t video_info =
     "Frodo",
     ""
 };
-
+//********************************************************************************************************
 vo_functions_t video_functions =
 {
 	  &video_info,

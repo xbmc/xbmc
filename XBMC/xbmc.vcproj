@@ -375,6 +375,9 @@
 				RelativePath=".\xbmc\GUIWindowVideoInfo.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowVideoOverlay.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\musicInfoTag.cpp">
 			</File>
 			<File
@@ -528,6 +531,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\GuiWindowVideoInfo.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GuiWindowVideoOverlay.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\ImusicInfoTagLoader.h">

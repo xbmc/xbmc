@@ -3,7 +3,6 @@
 #include "../util.h"
 
 extern "C" void dllReleaseAll( );
-extern	void mplayer_reset_video_window();
 
 CMPlayer::CMPlayer(IPlayerCallback& callback)
 :IPlayer(callback)
@@ -221,8 +220,3 @@ bool CMPlayer::HasAudio()
 	return (mplayer_HasAudio()==TRUE);
 }
 
-
-void CMPlayer::VideoWindowChanged()
-{
-	mplayer_reset_video_window();
-}
