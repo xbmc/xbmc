@@ -553,17 +553,25 @@ void CApplication::OnKey(CKey& key)
 		m_dwSpinDownTime=timeGetTime();
 
     ResetScreenSaver();
-	  m_bInactive=false;		// reset the inactive flag as a key has been pressed
-	  if (m_bScreenSave)		// Screen saver is active
-	  {
-		  m_bScreenSave = false;	// Reset the screensaver active flag
 
-		  if (g_stSettings.m_iScreenSaverMode == 3)	// Matrix Trails
+	  m_bInactive=false;		// reset the inactive flag as a key has been pressed
+    // if Screen saver is active
+	  if (m_bScreenSave)		
+	  {
+      // disable screensaver
+		  m_bScreenSave = false;	
+          
+	    // if matrix trails screensaver is active
+	    int iWin = m_gWindowManager.GetActiveWindow();
+		  if (iWin  == WINDOW_SCREENSAVER)	
 		  {
+        // then show previous window
 			  m_gWindowManager.PreviousWindow();
 		  }
-		  else										// Fade to dim or black
+		  else										
 		  {
+        // Fade to dim or black screensaver is active
+        // just un-dim the screen
 			  m_pd3dDevice->SetGammaRamp(0, &m_OldRamp);	// put the old gamma ramp back in place
 		  }
       return;
@@ -1062,7 +1070,7 @@ void CApplication::CheckScreenSaver()
 
 	if (!m_bInactive)
 	{
-		if (IsPlayingVideo() && !m_pPlayer->IsPaused())	// are we playing a movie?
+		if (IsPlayingVideo() && !m_pPlayer->IsPaused())	// are we playing a movie and is it paused?
 		{
 			m_bInactive=false;
 		}
@@ -1070,18 +1078,20 @@ void CApplication::CheckScreenSaver()
 		{
 			if (m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
 			{
-				m_bInactive=false;	// visualisation is on, so leave it alone
+				m_bInactive=false;	// visualisation is on, so we cannot show a screensaver
 			}
 			else
 			{
-				m_bInactive=true;	// music playing from menu, so start the timer going
+				m_bInactive=true;	// music playing from GUI, we can display a screensaver
 			}
 		}
-		else				// nothing doing here, so start the timer going
+		else				
 		{
+      // we can display a screensaver
 			m_bInactive=true;
 		}
 
+    // if we can display a screensaver, then start screensaver timer
 		if (m_bInactive) 
 		{
 			m_dwSaverTick=timeGetTime();	// Start the timer going ...
@@ -1089,34 +1099,43 @@ void CApplication::CheckScreenSaver()
 	}
 	else
 	{
-		if (!m_bScreenSave)	// Check we're not already in screensaver mode
+    // Check we're not already in screensaver mode
+		if (!m_bScreenSave)	
 		{
+      // no, then check the timer if screensaver should pop up
 			if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_stSettings.m_iScreenSaverTime*60*1000L) )
 			{
+        //yes, show the screensaver
 				m_bScreenSave = true;
 				m_dwSaverTick=timeGetTime();		// Save the current time for the shutdown timeout
 
 				switch ( g_stSettings.m_iScreenSaverMode )
 				{
-					case 1:
+					case SCREENSAVER_FADE:
 						{
 							fFadeLevel = (FLOAT) g_stSettings.m_iScreenSaverFadeLevel / 100; // 0.07f;
 						}
 						break;
 
-					case 2:
+					case SCREENSAVER_BLACK:
 						{
 							fFadeLevel = 0;
 						}
 						break;
 
-					case 3:
+					case SCREENSAVER_MATRIX:
 						{
-							m_gWindowManager.ActivateWindow(WINDOW_SCREENSAVER);
-							return;
+              if (!IsPlayingVideo())
+              {
+							  m_gWindowManager.ActivateWindow(WINDOW_SCREENSAVER);
+                return;
+              }
+              else 
+              {
+                fFadeLevel = (FLOAT) g_stSettings.m_iScreenSaverFadeLevel / 100; // 0.07f;
+              }
 						}
 						break;
-
 				}
 
 				m_pd3dDevice->GetGammaRamp(&m_OldRamp);	// Store the old gamma ramp
