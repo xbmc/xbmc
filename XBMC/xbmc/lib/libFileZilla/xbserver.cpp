@@ -5,6 +5,8 @@
 #include "ListenSocket.h"
 #include "AdminListenSocket.h"
 
+#pragma warning (disable:4244)
+#pragma warning (disable:4800)
 
 CAdminInterface* CXBServer::GetAdminInterface()
 {

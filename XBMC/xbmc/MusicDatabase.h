@@ -54,6 +54,7 @@ public:
 	bool		GetAlbumInfo(const CStdString& strAlbum, CAlbum& album);
 	bool		GetSong(const CStdString& strTitle, CSong& song);
 	bool		GetSongByFileName(const CStdString& strFileName, CSong& song);
+  bool		GetSongsByPath(const CStdString& strPath, VECSONGS& songs);
 	bool		GetSongsByArtist(const CStdString strArtist, VECSONGS& songs);
 	bool		GetSongsByAlbum(const CStdString& strAlbum, VECSONGS& songs);
 	bool		GetSongsByGenre(const CStdString& strGenre, VECSONGS& songs);

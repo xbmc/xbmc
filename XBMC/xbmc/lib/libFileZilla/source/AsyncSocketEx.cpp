@@ -76,6 +76,7 @@ to tim.kosse@gmx.de
 static char THIS_FILE[]=__FILE__;
 #endif
 
+#pragma warning (disable:4552)
 #ifndef CCRITICALSECTIONWRAPPERINCLUDED
 class CCriticalSectionWrapper
 {
