@@ -483,7 +483,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
 			return;
 		}
 	  bRenderGUI=true;
-	  char displaytime[16] = "??:??/??:??:??";
+    char displaytime[32] = "??:??/??:??:?? [??:??:??]";
 		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 
 		for(int count = 0; count < m_iTimeCodePosition; count++)
 		{
@@ -491,17 +491,31 @@ void CGUIWindowFullScreen::RenderFullScreen()
 				displaytime[count] = ':';
 			else
 				displaytime[count] = (char)m_strTimeStamp[count]+48;
-			}
+		}
 		unsigned int tmpvar = g_application.m_pPlayer->GetTotalTime();
 		if(tmpvar != 0)
 		{
 			int ihour = tmpvar / 3600;
 			int imin  = (tmpvar-ihour*3600) / 60;
 			int isec = (tmpvar-ihour*3600) % 60;
-			sprintf(&displaytime[5], "/%2.2d:%2.2d:%2.2d\n", ihour,imin,isec);
+			sprintf(&displaytime[5], "/%2.2d:%2.2d:%2.2d", ihour,imin,isec);
 		}
-		else
-			sprintf(&displaytime[5], "/00:00:00\n");
+    else 
+    {
+			sprintf(&displaytime[5], "/00:00:00");
+    }
+    __int64 iCurrentTime=g_application.m_pPlayer->GetTime();
+    if(iCurrentTime != 0)
+		{
+			__int64 ihour = iCurrentTime / (__int64)3600;
+			__int64 imin  = (iCurrentTime-ihour*3600) / 60;
+			__int64 isec = (iCurrentTime-ihour*3600) % 60;
+			sprintf(&displaytime[14], " [%2.2d:%2.2d:%2.2d]", (int)ihour,(int)imin,(int)isec);
+    }
+    else
+    {
+      sprintf(&displaytime[14], " [??:??:??]");
+    }
 		msg.SetLabel(displaytime); 
     OnMessage(msg);
   }	
