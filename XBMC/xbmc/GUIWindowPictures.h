@@ -4,7 +4,7 @@
 #include "filesystem/DirectoryHistory.h"
 #include "FileItem.h"
 #include "GUIDialogProgress.h"
-
+#include "GUIWindowSlideShow.h"
 #include "stdstring.h"
 #include <vector>
 using namespace std;
@@ -31,7 +31,9 @@ protected:
 	void							OnCreateThumbs();
 	int								GetSelectedItem();
   bool							HaveDiscOrConnection( CStdString& strPath, int iDriveType );
+  void              OnSlideShowRecursive();
 
+  void              AddDir(CGUIWindowSlideShow *pSlideShow,const CStdString& strPath);
 	CVirtualDirectory		m_rootDir;
   VECFILEITEMS				m_vecItems;
 	CStdString					m_strDirectory;

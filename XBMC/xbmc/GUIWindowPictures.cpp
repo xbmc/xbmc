@@ -16,7 +16,9 @@
 #define CONTROL_BTNSORTASC				4
 
 #define CONTROL_BTNSLIDESHOW			6
-#define CONTROL_BTNCREATETHUMBS		7
+#define CONTROL_BTNSLIDESHOW_RECURSIVE			7
+
+#define CONTROL_BTNCREATETHUMBS		8
 #define CONTROL_LIST							10
 #define CONTROL_THUMBS						11
 #define CONTROL_LABELFILES         12
@@ -245,6 +247,10 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       else if (iControl==CONTROL_BTNSLIDESHOW) // Slide Show
       {
 				OnSlideShow();
+      }
+      else if (iControl==CONTROL_BTNSLIDESHOW_RECURSIVE) // Recursive Slide Show
+      {
+        OnSlideShowRecursive();
       }
       else if (iControl==CONTROL_BTNCREATETHUMBS) // Create Thumbs
       {
@@ -535,6 +541,38 @@ void CGUIWindowPictures::OnShowPicture(const CStdString& strPicture)
 	m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
 }
 
+void CGUIWindowPictures::AddDir(CGUIWindowSlideShow *pSlideShow,const CStdString& strPath)
+{
+  if (!pSlideShow) return;
+  VECFILEITEMS items;
+  m_rootDir.GetDirectory(strPath,items);
+  for (int i=0; i < (int)items.size();++i)
+  {
+    CFileItem* pItem=items[i];
+    if (!pItem->m_bIsFolder)
+    {
+		  pSlideShow->Add(pItem->m_strPath);
+    }
+    else
+    {
+      AddDir(pSlideShow,pItem->m_strPath);
+    }
+  }
+  CFileItemList itemlist(items); // will clean up everything
+}
+
+void  CGUIWindowPictures::OnSlideShowRecursive()
+{
+	CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+	if (!pSlideShow)
+		return;
+	
+  pSlideShow->Reset();
+  AddDir(pSlideShow,m_strDirectory);
+  pSlideShow->StartSlideShow();
+	m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
+}
+
 void CGUIWindowPictures::OnSlideShow()
 {
 	CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
@@ -546,7 +584,7 @@ void CGUIWindowPictures::OnSlideShow()
     CFileItem* pItem=m_vecItems[i];
     if (!pItem->m_bIsFolder)
     {
-		pSlideShow->Add(pItem->m_strPath);
+		  pSlideShow->Add(pItem->m_strPath);
     }
   }
 	pSlideShow->StartSlideShow();
