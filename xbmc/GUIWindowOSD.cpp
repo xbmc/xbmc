@@ -1062,6 +1062,7 @@ void CGUIWindowOSD::PopulateAudioStreams()
 			// set the current active audio stream as the selected item in the list control
 			CGUIMessage msgSet(GUI_MSG_ITEM_SELECT,GetID(),OSD_AUDIOSTREAM_LIST,g_stSettings.m_currentVideoSettings.m_AudioStream,0,NULL);
 			OnMessage(msgSet);
+      g_graphicsContext.Unlock();
 			return;
 		}
 	}
