@@ -137,11 +137,15 @@ void CGUIFontTTF::GetTextExtent( const WCHAR* strText, FLOAT* pWidth,
 	*pWidth = *pHeight = 0.0f;
 	lineHeight = m_pTrueTypeFont->GetTextHeight();
 
-	while (j < len) {
-
+	while (j < len) 
+	{
 		for(j = i; j < len; j++)
+		{
 			if (strText[j] == L'\n')
+			{
 				break;
+			}
+		}
 
 		wcsncpy(buf, strText+i, j - i);
 		buf[j-i] = L'\0';
@@ -149,6 +153,8 @@ void CGUIFontTTF::GetTextExtent( const WCHAR* strText, FLOAT* pWidth,
 		if (width > *pWidth)
 			*pWidth = (float) width;
 		*pHeight += lineHeight;
+
+		i = j+1;
 
 /*
 	this was originally from XBMP - is this required in XBMC?
