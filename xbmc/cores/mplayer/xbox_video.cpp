@@ -57,6 +57,7 @@ bool                    m_bFlip=false;
 bool                    m_bRenderGUI=false;
 static RESOLUTION       m_iResolution=PAL_4x3;
 bool                    m_bFlipped;
+bool					m_bHasDimView;		// Screensaver
 
 typedef struct directx_fourcc_caps
 {
@@ -694,6 +695,8 @@ static void video_flip_page(void)
   Directx_ManageDisplay();
   if (!m_bPauseDrawing)
   {
+	m_bHasDimView = false;		// reset for next screensaver event
+
     if (g_graphicsContext.IsFullScreenVideo() )
     {
       if (m_bRenderGUI||g_application.NeedRenderFullScreen())
@@ -707,7 +710,9 @@ static void video_flip_page(void)
         xbox_video_render_subtitles(true);
         g_graphicsContext.Unlock();
       }
-      g_graphicsContext.Lock();
+	
+	  g_graphicsContext.Lock();
+
       while (!g_graphicsContext.Get3DDevice()->GetOverlayUpdateStatus()) Sleep(10);
       g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_iBackBuffer], &rs, &rd, TRUE, 0x00010001  );
       if (m_bRenderGUI)
@@ -724,6 +729,7 @@ static void video_flip_page(void)
       g_graphicsContext.Unlock();
     }
   }
+  
   m_iBackBuffer=1-m_iBackBuffer;
 
   D3DLOCKED_RECT rectLocked;
@@ -764,6 +770,44 @@ void xbox_video_getRect(RECT& SrcRect, RECT& DestRect)
 {
   SrcRect=rs;
   DestRect=rd;
+}
+
+void xbox_video_CheckScreenSaver()
+{
+	// Called from CMPlayer::Process() (mplayer.cpp) when in 'pause' mode
+	D3DLOCKED_RECT lr;
+
+	if (g_application.m_bScreenSave && !m_bHasDimView)
+	{
+		if ( D3D_OK == m_pSurface[m_iBackBuffer]->LockRect( &lr, NULL, 0 ))
+		{
+			// Drop brightness of current surface to 20%
+			DWORD strideScreen=lr.Pitch;
+			for (DWORD y=0; y < (rs.top + rs.bottom); y++)
+			{
+				BYTE *pDest = (BYTE*)lr.pBits + strideScreen*y;
+				for (DWORD x=0; x < ((rs.left + rs.right)>>1); x++)
+				{
+					pDest[0] = (pDest[0] * 0.20);	// Y1
+					pDest[1] = ((pDest[1] - 128) * 0.20) + 128;	// U (with 128 shift!)
+					pDest[2] = (pDest[2] * 0.20);	// Y2
+					pDest[3] = ((pDest[3] - 128) * 0.20) + 128;	// V (with 128 shift!)
+					pDest += 4;
+				}
+			}
+			m_pSurface[m_iBackBuffer]->UnlockRect();
+
+			// Commit to screen
+			g_graphicsContext.Lock();
+			while (!g_graphicsContext.Get3DDevice()->GetOverlayUpdateStatus()) Sleep(10);
+			g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_iBackBuffer], &rs, &rd, TRUE, 0x00010001  );
+			g_graphicsContext.Unlock();
+		}
+
+		m_bHasDimView = true;
+	}
+
+	return;
 }
 
 //********************************************************************************************************
