@@ -263,6 +263,12 @@ int CGUITextureManager::GetDelay(const CStdString& strTextureName, int iPicture)
   return 100;
 }
 
+static int RoundPow2(int s)
+{
+	float f = log((float)s)/log(2.f);
+	return 1 << (int)ceil(f);
+}
+
 int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 {
   // first check of texture exists...
@@ -306,18 +312,16 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
     CTextureMap* pMap = new CTextureMap(strTextureName);
 	  for (int iImage=0; iImage < iImages; iImage++)
     {
-      if (g_graphicsContext.Get3DDevice()->CreateTexture( iWidth, 
-																												  iHeight, 
-																												  1, // levels
-																												  0, //usage
-																												  D3DFMT_DXT3 ,
-																												  0,
-																												  &pTexture) == D3D_OK) 
+			LPDIRECT3DSURFACE8 pTempSurf;
+      if (g_graphicsContext.Get3DDevice()->CreateImageSurface(iWidth, 
+																															iHeight, 
+																															D3DFMT_LIN_A8R8G8B8,
+																															&pTempSurf) == D3D_OK) 
 		  {
         CAnimatedGif* pImage=AnimatedGifSet.m_vecimg[iImage];
         //dllprintf("%s loops:%i", strTextureName.c_str(),AnimatedGifSet.nLoops);
         D3DLOCKED_RECT lr;
-	      if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
+	      if ( D3D_OK == pTempSurf->LockRect( &lr, NULL, 0 ))
 	      {
 		      DWORD strideScreen=lr.Pitch;
 		      for (DWORD y=0; y <(DWORD)pImage->Height; y++)
@@ -344,13 +348,27 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
               *pDest++ = byAlpha;
 			      } // of for (DWORD x=0; x < (DWORD)pImage->Width; x++)
 		      } // of for (DWORD y=0; y < (DWORD)pImage->Height; y++)
-		      pTexture->UnlockRect( 0 );
+		      pTempSurf->UnlockRect( );
 	      } // of if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
-        CTexture* pclsTexture = new CTexture(pTexture,iWidth,iHeight);
-        pclsTexture->SetDelay(pImage->Delay);
-        pclsTexture->SetLoops(AnimatedGifSet.nLoops);
 
-        pMap->Add(pclsTexture);
+				// compress texture
+				if (g_graphicsContext.Get3DDevice()->CreateTexture(RoundPow2(iWidth), RoundPow2(iHeight), 1, 0, D3DFMT_DXT1, 0, &pTexture) == D3D_OK) 
+				{
+					LPDIRECT3DSURFACE8 pDstSurf;
+					pTexture->GetSurfaceLevel(0, &pDstSurf);
+					if (!FAILED(D3DXLoadSurfaceFromSurface(pDstSurf, NULL, NULL, pTempSurf, NULL, NULL, D3DX_FILTER_NONE, 0)))
+					{
+						CTexture* pclsTexture = new CTexture(pTexture,iWidth,iHeight);
+						pclsTexture->SetDelay(pImage->Delay);
+						pclsTexture->SetLoops(AnimatedGifSet.nLoops);
+
+						pMap->Add(pclsTexture);
+					}
+					else
+						pTexture->Release();
+					pDstSurf->Release();
+				}
+				pTempSurf->Release();
 		  } // of if (g_graphicsContext.Get3DDevice()->CreateTexture
     } // of for (int iImage=0; iImage < iImages; iImage++)
     m_vecTextures.push_back(pMap);
