@@ -104,8 +104,11 @@ public:
 	void									ScaleRectToScreenResolution(DWORD& left, DWORD&  top, DWORD& right, DWORD& bottom, RESOLUTION res);
 	void									ScaleXCoord(DWORD &x, RESOLUTION res);
 	void									ScaleXCoord(int &x, RESOLUTION res);
+	void									ScaleXCoord(long &x, RESOLUTION res);
 	void									ScaleYCoord(DWORD &x, RESOLUTION res);
 	void									ScaleYCoord(int &x, RESOLUTION res);
+	void									ScaleYCoord(long &x, RESOLUTION res);
+	
 
 protected:
 	CRITICAL_SECTION			  m_critSection;
