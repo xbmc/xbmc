@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 04-04-2005 updated: Finnish language file (Thnx to jutski)
+  - 04-04-2005 updated: German language file
   - 03-04-2005 added: a couple of emulated functions for dll loading
   - 03-04-2005 fixed: missing or empty <value> or <id> tags in strings.xml.
   - 02-04-2005 fixed: Stacked files on iso9660 didn't work.
