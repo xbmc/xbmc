@@ -41,7 +41,8 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, int 
 {
   m_iItemWidth=dwitemWidth;
   m_iItemHeight=dwitemHeight;
-  m_iOffset    = 0; 
+  m_iOffset    = 0;
+	m_fSmoothScrollOffset = 0;
   m_dwSelectedColor=dwSelectedColor;
   m_pFont      = g_fontManager.GetFont(strFontName);
   m_iSelect    = CONTROL_LIST;  
@@ -266,7 +267,7 @@ void CGUIThumbnailPanel::OnAction(const CAction &action)
 {
   switch (action.wID)
   {
-	case ACTION_PAGE_UP:
+		case ACTION_PAGE_UP:
       OnPageUp();
     break;
 
@@ -274,6 +275,51 @@ void CGUIThumbnailPanel::OnAction(const CAction &action)
       OnPageDown();
     break;
 
+		case ACTION_SCROLL_UP:
+		{
+			m_fSmoothScrollOffset+=action.fAmount1*action.fAmount1;
+			while (m_fSmoothScrollOffset>10.0f/m_iRows)
+			{
+				m_fSmoothScrollOffset-=10.0f/m_iRows;
+				if (m_iOffset>0 && m_iCursorX<=m_iColumns/2 && m_iCursorY<=m_iRows/2)
+				{
+					ScrollUp();
+				}
+				else if (m_iCursorX>0)
+				{
+					m_iCursorX--;
+				}
+				else if (m_iCursorY>0)
+				{
+					m_iCursorY--;
+					m_iCursorX=m_iColumns-1;
+				}
+			}
+		}
+		break;
+		case ACTION_SCROLL_DOWN:
+		{
+			int iItemsPerPage = m_iRows*m_iColumns;
+			m_fSmoothScrollOffset+=action.fAmount1*action.fAmount1;
+			while (m_fSmoothScrollOffset>10.0f/m_iRows)
+			{
+				m_fSmoothScrollOffset-=10.0f/m_iRows;
+				if (m_iOffset + iItemsPerPage < (int)m_vecItems.size() && m_iCursorX>=m_iColumns/2 && m_iCursorY>=m_iRows/2)
+				{
+					ScrollDown();
+				}
+				else if (m_iCursorX<m_iColumns-1 && m_iOffset + m_iCursorY*m_iColumns+m_iCursorX < (int)m_vecItems.size()-1)
+				{
+					m_iCursorX++;
+				}
+				else if (m_iCursorY<m_iRows-1)
+				{
+					m_iCursorY++;
+					m_iCursorX=0;
+				}
+			}
+		}
+		break;
 
     case ACTION_MOVE_DOWN:
     case ACTION_MOVE_UP:

@@ -335,6 +335,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			strFont				= ((CGUIRadioButtonControl*)pReference)->GetFontName();
 			strLabel			= ((CGUIRadioButtonControl*)pReference)->GetLabel();
 			dwTextColor			= ((CGUIRadioButtonControl*)pReference)->GetTextColor();
+			dwAlign					= ((CGUIRadioButtonControl*)pReference)->GetTextAlign() & 0x00000003;
+			dwAlignY				= ((CGUIRadioButtonControl*)pReference)->GetTextAlign() & 0x00000004;
 			dwDisabledColor		= ((CGUIRadioButtonControl*)pReference)->GetDisabledColor() ;
 			iHyperLink			= ((CGUIRadioButtonControl*)pReference)->GetHyperLink();
 			lTextOffsetX		= ((CGUIRadioButtonControl*)pReference)->GetTextOffsetX();
@@ -490,6 +492,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			strFont				= ((CGUISelectButtonControl*)pReference)->GetFontName();
 			strLabel			= ((CGUISelectButtonControl*)pReference)->GetLabel();
 			dwTextColor			= ((CGUISelectButtonControl*)pReference)->GetTextColor();
+			dwAlign					= ((CGUISelectButtonControl*)pReference)->GetTextAlign() & 0x00000003;
+			dwAlignY				= ((CGUISelectButtonControl*)pReference)->GetTextAlign() & 0x00000004;
 			dwDisabledColor		= ((CGUISelectButtonControl*)pReference)->GetDisabledColor() ;
 			lTextOffsetX		= ((CGUISelectButtonControl*)pReference)->GetTextOffsetX();
 			lTextOffsetY		= ((CGUISelectButtonControl*)pReference)->GetTextOffsetY();
@@ -833,7 +837,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		CGUIRadioButtonControl* pControl = new CGUIRadioButtonControl(
 					dwParentId,dwID,iPosX,iPosY,dwWidth,dwHeight,
 					strTextureFocus,strTextureNoFocus,
-					lTextOffsetX,lTextOffsetY,
+					lTextOffsetX,lTextOffsetY,(dwAlign|dwAlignY),
 					strTextureRadioFocus,strTextureRadioNoFocus);
 
 		pControl->SetLabel(strFont,strLabel,dwTextColor);
@@ -994,7 +998,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		CGUISelectButtonControl* pControl = new CGUISelectButtonControl(
 					dwParentId,dwID,iPosX,iPosY,
 					dwWidth, dwHeight, strTextureFocus,strTextureNoFocus, 
-					lTextOffsetX, lTextOffsetY,
+					lTextOffsetX, lTextOffsetY,(dwAlign|dwAlignY),
 					strTextureBg, strLeft, strLeftFocus, strRight, strRightFocus);
 
 		pControl->SetLabel(strFont,strLabel,dwTextColor);
