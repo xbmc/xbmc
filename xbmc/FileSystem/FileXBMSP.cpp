@@ -69,15 +69,19 @@ bool CFileXBMSP::Open(const char* strUserName, const char* strPassword,const cha
 	m_fileSize=0;
 	m_filePos=0;
 	
-
+  OutputDebugString("xbms:open:");
+  OutputDebugString(strFileName);
+  OutputDebugString("\n");
 	if (cc_xstream_client_connect(strHostName, 
 																(iport > 0) ? iport : 1400,
 																&m_connection) != CC_XSTREAM_CLIENT_OK)
 	{
+    OutputDebugString("xbms:unable to connect\n");
 	  return false;
 	}
 	if (cc_xstream_client_version_handshake(m_connection) != CC_XSTREAM_CLIENT_OK)
 	{
+    OutputDebugString("xbms:unable handshake\n");
 		cc_xstream_client_disconnect(m_connection);
 		
     return false;
@@ -114,6 +118,7 @@ bool CFileXBMSP::Open(const char* strUserName, const char* strPassword,const cha
 	
 	CStdString strDir, strPath;
 	strDir="";
+  OutputDebugString("xbms:setdir:/\n");
 	if (cc_xstream_client_setcwd(m_connection, "/") == CC_XSTREAM_CLIENT_OK)
 	{
 		strPath=szPath;
@@ -123,8 +128,12 @@ bool CFileXBMSP::Open(const char* strUserName, const char* strPassword,const cha
 			{
 				if (strDir!="")
 				{
+          OutputDebugString("xbms:setdir:");
+          OutputDebugString(strDir.c_str());
+          OutputDebugString("\n");
 					if (cc_xstream_client_setcwd(m_connection, strDir.c_str()) != CC_XSTREAM_CLIENT_OK)
 					{
+            OutputDebugString("xbms:unable set dir\n");
 						if (m_connection != NULL) cc_xstream_client_disconnect(m_connection);	
 						return false;
 					}
@@ -139,13 +148,18 @@ bool CFileXBMSP::Open(const char* strUserName, const char* strPassword,const cha
 	}
 	else
 	{
+    OutputDebugString("xbms:unable set dir\n");
 		if (m_connection != NULL) cc_xstream_client_disconnect(m_connection);	
 		return false;
 	}
 	if (strDir.size() > 0)
 	{
+    OutputDebugString("xbms:setdir:");
+    OutputDebugString(strDir.c_str());
+    OutputDebugString("\n");
 		if (cc_xstream_client_setcwd(m_connection, strDir.c_str()) != CC_XSTREAM_CLIENT_OK)
 		{
+      OutputDebugString("xbms:unable set dir\n");
 			if (m_connection != NULL) cc_xstream_client_disconnect(m_connection);	
 			
 			return false;
@@ -154,6 +168,9 @@ bool CFileXBMSP::Open(const char* strUserName, const char* strPassword,const cha
 
   if (cc_xstream_client_file_info(m_connection, strFile.c_str(), &info) != CC_XSTREAM_CLIENT_OK)
 	{
+    OutputDebugString("xbms:unable to get info for file:");
+    OutputDebugString(strFile.c_str());
+    OutputDebugString("\n");
 		cc_xstream_client_disconnect(m_connection);
     
 		return false;
@@ -164,22 +181,25 @@ bool CFileXBMSP::Open(const char* strUserName, const char* strPassword,const cha
 		tmp1 = strstr(info, "<SIZE>");
 		tmp2 = strstr(info, "</SIZE>");
 		if ((tmp1 != NULL) && (tmp2 != NULL) && (tmp2 > tmp1) && ((tmp2 - tmp1) < 22))
-        { 
-			m_fileSize = strtouint64(tmp1 + 6);
-        }
-		else
-        { 
-			m_fileSize = 4000000000U; 
-        } 
-    } 
-	else 
     { 
-		m_fileSize = 4000000000U; 
+			m_fileSize = strtouint64(tmp1 + 6);
     }
+		else
+    { 
+			m_fileSize = 4000000000U; 
+    } 
+  } 
+	else 
+  { 
+		m_fileSize = 4000000000U; 
+  }
 	free(info);
 
   if (cc_xstream_client_file_open(m_connection, strFile.c_str(), &m_handle) != CC_XSTREAM_CLIENT_OK)
 	{
+    OutputDebugString("xbms:unable to open file:");
+    OutputDebugString(strFile.c_str());
+    OutputDebugString("\n");
 		cc_xstream_client_disconnect(m_connection);
     
 		return false;
