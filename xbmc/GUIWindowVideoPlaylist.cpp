@@ -26,6 +26,9 @@
 #define CONTROL_BTNNEXT						24
 #define CONTROL_BTNPREVIOUS				25
 
+#define CONTROL_BTNREPEAT					26
+#define CONTROL_BTNREPEATONE			27
+
 #define CONTROL_LABELFILES        12
 
 #define CONTROL_LIST							50
@@ -99,6 +102,16 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
 			}
 
+			if (g_playlistPlayer.Repeated(PLAYLIST_VIDEO))
+			{
+				CONTROL_SELECT(GetID(), CONTROL_BTNREPEAT);
+			}
+
+			if (g_playlistPlayer.RepeatedOne(PLAYLIST_VIDEO))
+			{
+				CONTROL_SELECT(GetID(), CONTROL_BTNREPEATONE);
+			}
+
 			if (m_iItemSelected>-1)
 			{
 				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_iItemSelected);
@@ -167,6 +180,17 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 			{
 				g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
 				g_playlistPlayer.PlayPrevious();
+			}
+			else if (iControl==CONTROL_BTNREPEAT)
+			{
+				g_stSettings.m_bMyVideoPlaylistRepeat=!g_stSettings.m_bMyVideoPlaylistRepeat;
+				g_playlistPlayer.Repeat(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistRepeat);
+			}
+			else if (iControl==CONTROL_BTNREPEATONE)
+			{
+				static bool bRepeatOne=false;
+				bRepeatOne=!bRepeatOne;
+				g_playlistPlayer.RepeatOne(PLAYLIST_VIDEO, bRepeatOne);
 			}
       else if (iControl==CONTROL_LIST||iControl==CONTROL_THUMBS)  // list/thumb control
       {
@@ -290,7 +314,11 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
 	if (m_vecItems.size() )
 	{
 		CONTROL_ENABLE(GetID(), CONTROL_BTNCLEAR);
+		CONTROL_ENABLE(GetID(), CONTROL_BTNSAVE);
 		CONTROL_ENABLE(GetID(), CONTROL_BTNPLAY);
+		CONTROL_ENABLE(GetID(), CONTROL_BTNSHUFFLE);
+		CONTROL_ENABLE(GetID(), CONTROL_BTNREPEAT);
+		CONTROL_ENABLE(GetID(), CONTROL_BTNREPEATONE);
 
 		if (g_application.IsPlayingVideo() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_VIDEO)
 		{
@@ -306,9 +334,13 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
 	else
 	{
 		CONTROL_DISABLE(GetID(), CONTROL_BTNCLEAR);
+		CONTROL_DISABLE(GetID(), CONTROL_BTNSAVE);
+		CONTROL_DISABLE(GetID(), CONTROL_BTNSHUFFLE);
 		CONTROL_DISABLE(GetID(), CONTROL_BTNPLAY);
 		CONTROL_DISABLE(GetID(), CONTROL_BTNNEXT);
 		CONTROL_DISABLE(GetID(), CONTROL_BTNPREVIOUS);
+		CONTROL_DISABLE(GetID(), CONTROL_BTNREPEAT);
+		CONTROL_DISABLE(GetID(), CONTROL_BTNREPEATONE);
 	}
 
 	//	Update listcontrol and and view by icon/list button

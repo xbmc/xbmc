@@ -27,6 +27,9 @@
 #define CONTROL_BTNNEXT						24
 #define CONTROL_BTNPREVIOUS				25
 
+#define CONTROL_BTNREPEAT					26
+#define CONTROL_BTNREPEATONE			27
+
 #define CONTROL_LABELFILES        12
 
 #define CONTROL_LIST							50
@@ -37,6 +40,7 @@ CGUIWindowMusicPlayList::CGUIWindowMusicPlayList(void)
 {
 
 }
+
 CGUIWindowMusicPlayList::~CGUIWindowMusicPlayList(void)
 {
 
@@ -71,6 +75,16 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 			m_iViewAsIconsRoot=g_stSettings.m_iMyMusicPlaylistViewAsIcons;
 
 			CGUIWindowMusicBase::OnMessage(message);
+
+			if (g_playlistPlayer.Repeated(PLAYLIST_MUSIC))
+			{
+				CONTROL_SELECT(GetID(), CONTROL_BTNREPEAT);
+			}
+
+			if (g_playlistPlayer.RepeatedOne(PLAYLIST_MUSIC))
+			{
+				CONTROL_SELECT(GetID(), CONTROL_BTNREPEATONE);
+			}
 
 			if ((m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST) && m_vecItems.size()<=0)
 			{
@@ -135,6 +149,17 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 			{
 				g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
 				g_playlistPlayer.PlayPrevious();
+			}
+			else if (iControl==CONTROL_BTNREPEAT)
+			{
+				g_stSettings.m_bMyMusicPlaylistRepeat=!g_stSettings.m_bMyMusicPlaylistRepeat;
+				g_playlistPlayer.Repeat(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistRepeat);
+			}
+			else if (iControl==CONTROL_BTNREPEATONE)
+			{
+				static bool bRepeatOne=false;
+				bRepeatOne=!bRepeatOne;
+				g_playlistPlayer.RepeatOne(PLAYLIST_MUSIC, bRepeatOne);
 			}
 		}
 		break;
@@ -329,6 +354,8 @@ void CGUIWindowMusicPlayList::UpdateButtons()
 		CONTROL_ENABLE(GetID(), CONTROL_BTNSHUFFLE);
 		CONTROL_ENABLE(GetID(), CONTROL_BTNSAVE);
 		CONTROL_ENABLE(GetID(), CONTROL_BTNCLEAR);
+		CONTROL_ENABLE(GetID(), CONTROL_BTNREPEAT);
+		CONTROL_ENABLE(GetID(), CONTROL_BTNREPEATONE);
 		CONTROL_ENABLE(GetID(), CONTROL_BTNPLAY);
 
 		if (g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC)
@@ -347,6 +374,8 @@ void CGUIWindowMusicPlayList::UpdateButtons()
 		CONTROL_DISABLE(GetID(), CONTROL_BTNSHUFFLE);
 		CONTROL_DISABLE(GetID(), CONTROL_BTNSAVE);
 		CONTROL_DISABLE(GetID(), CONTROL_BTNCLEAR);
+		CONTROL_DISABLE(GetID(), CONTROL_BTNREPEAT);
+		CONTROL_DISABLE(GetID(), CONTROL_BTNREPEATONE);
 		CONTROL_DISABLE(GetID(), CONTROL_BTNPLAY);
 		CONTROL_DISABLE(GetID(), CONTROL_BTNNEXT);
 		CONTROL_DISABLE(GetID(), CONTROL_BTNPREVIOUS);
