@@ -858,7 +858,7 @@ void CApplication::CheckScreenSaver()
 				{
 					case 1:
 						{
-							fFadeLevel = 0.07f;
+							fFadeLevel = (FLOAT) g_stSettings.m_iScreenSaverFadeLevel / 100; // 0.07f;
 						}
 						break;
 
