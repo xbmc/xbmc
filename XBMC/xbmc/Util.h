@@ -79,4 +79,5 @@ public:
 	static void CacheSubtitles(const CStdString& strMovie);
 	static void SecondsToHMSString( long lSeconds, CStdString& strHMS);
   static void PrepareSubtitleFonts();
+  static __int64 ToInt64(DWORD dwHigh, DWORD dwLow);
 };

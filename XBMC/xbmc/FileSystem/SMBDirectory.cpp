@@ -130,7 +130,7 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 						pItem->m_strPath=strRoot;
 						pItem->m_strPath+=wStrFile;
 						pItem->m_bIsFolder=false;
-						pItem->m_dwSize = (DWORD)iSize;
+						pItem->m_dwSize = iSize;
 						FileTimeToSystemTime(&localTime, &pItem->m_stTime);
 		        
 						items.push_back(pItem);
