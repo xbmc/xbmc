@@ -519,7 +519,7 @@ void CGUIWindow::FreeResources()
     CGUIControl* pControl= *i;
     pControl->FreeResources();
   }
-  g_TextureManager.Dump();
+  //g_TextureManager.Dump();
 }
 
 void CGUIWindow::Add(CGUIControl* pControl)
