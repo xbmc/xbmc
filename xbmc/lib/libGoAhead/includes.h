@@ -18,6 +18,10 @@
 #ifndef USER_MANAGEMENT_SUPPORT
 #define USER_MANAGEMENT_SUPPORT
 #endif
+#ifndef __NO_CGI_BIN
+#define __NO_CGI_BIN
+#endif
+
 
 #define SOCK_DFT_SVC_TIME	20
 #define SPYCE_SUPPORT
