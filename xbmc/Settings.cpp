@@ -304,6 +304,9 @@ CSettings::CSettings(void)
 	g_stSettings.m_bResampleVideoAudio=false;
 	g_stSettings.m_iOSDTimeout = 5;		// OSD Timeout, default to 5 seconds
 	g_stSettings.m_mplayerDebug=false;
+	g_stSettings.m_iSambaDebugLevel = 0;
+	strcpy(g_stSettings.m_strSambaWorkgroup, "WORKGROUP");
+	strcpy(g_stSettings.m_strSambaWinsServer, "");
 }
 
 CSettings::~CSettings(void)
@@ -377,6 +380,14 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings, bool &bCalibration
 	{
 		GetString(pXLinkElement, "username", g_stSettings.szOnlineUsername,"");
 		GetString(pXLinkElement, "password", g_stSettings.szOnlinePassword,"");
+	}
+
+	TiXmlElement* pSambaElement =pRootElement->FirstChildElement("samba");
+	if (pSambaElement)
+	{
+		GetString(pSambaElement, "workgroup", g_stSettings.m_strSambaWorkgroup, "WORKGROUP");
+		GetString(pSambaElement, "winsserver", g_stSettings.m_strSambaWinsServer, "");
+		GetInteger(pSambaElement, "debuglevel", g_stSettings.m_iSambaDebugLevel , 0, 0, 100);
 	}
 
 	TiXmlElement* pDelaysElement =pRootElement->FirstChildElement("delays");
