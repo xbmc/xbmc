@@ -5,6 +5,7 @@
 #include "xbox/xkutils.h"
 #include "texturemanager.h"
 #include "playlistplayer.h"
+#include "util.h"
 
 CApplicationMessenger g_applicationMessenger;
 
@@ -91,6 +92,14 @@ void CApplicationMessenger::ProcessMessages()
           XKUtils::XBOXReset();
 				break;
 
+        case TMSG_RESTARTAPP:
+          {
+	          char szXBEFileName[1024];
+	          CIoSupport helper;
+	          helper.GetXbePath(szXBEFileName);
+	          CUtil::RunXBE(szXBEFileName);
+          }
+				break;
 
 				case TMSG_MEDIA_PLAY:
 				{
@@ -275,6 +284,12 @@ void CApplicationMessenger::Restart()
 void CApplicationMessenger::Reset()
 {
 		ThreadMessage tMsg = {TMSG_RESET};
+		SendMessage(tMsg);
+}
+
+void CApplicationMessenger::RestartApp()
+{
+		ThreadMessage tMsg = {TMSG_RESTARTAPP};
 		SendMessage(tMsg);
 }
 
