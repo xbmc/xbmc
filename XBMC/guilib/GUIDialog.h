@@ -19,6 +19,7 @@ public:
   virtual void    Render();
 	void						DoModal(DWORD dwParentId);
 	virtual void		Close();
+	virtual bool    Load(const CStdString& strFileName, bool bContainsPath = false);
 	
 protected:
 	DWORD						m_dwParentWindowID;
