@@ -6,6 +6,7 @@
 #include <map>
 #include <list>
 #include <vector>
+#include <set>
 
 #include <string.h>
 #include "dll.h"
@@ -25,12 +26,27 @@ void* fs_seg = NULL;
 vector<DllLoader *> m_vecDlls;
 
 // Allocation tracking for vis modules that leak
+
+struct AllocLenCaller
+{
+	unsigned size;
+	unsigned calleraddr;
+};
+
+struct MSizeCount
+{
+	unsigned size;
+	unsigned count;
+};
+
+std::map<unsigned,MSizeCount> Calleradrmap;
+
 struct DllTrackInfo
 {
 	DllLoader* pDll;
 	unsigned MinAddr;
 	unsigned MaxAddr;
-	std::map<unsigned, unsigned> AllocList;
+	std::map<unsigned, AllocLenCaller> AllocList;
 };
 
 int ResolveName(char*, char*, void **);
@@ -38,7 +54,7 @@ int ResolveName(char*, char*, void **);
 std::list<DllTrackInfo> TrackedDlls;
 typedef std::list<DllTrackInfo>::iterator TrackedDllsIter;
 
-inline std::map<unsigned,unsigned>* get_track_list(unsigned addr)
+inline std::map<unsigned,AllocLenCaller>* get_track_list(unsigned addr)
 {
 	for (TrackedDllsIter it = TrackedDlls.begin(); it != TrackedDlls.end(); ++it)
 	{
@@ -56,11 +72,16 @@ extern "C" void* __cdecl track_malloc(size_t s)
 	__asm mov eax,[ebp+4]
 	__asm mov loc,eax
 
-		std::map<unsigned,unsigned>* pList = get_track_list(loc);
+		std::map<unsigned,AllocLenCaller>* pList = get_track_list(loc);
 
 	void* p = malloc(s);
 	if (pList)
-		(*pList)[(unsigned)p] = s;
+	{
+		AllocLenCaller temp;
+		temp.size=s;
+		temp.calleraddr=loc;
+		(*pList)[(unsigned)p] = temp;
+	}
 	return p;
 }
 
@@ -70,11 +91,16 @@ extern "C" void* __cdecl track_calloc(size_t n, size_t s)
 	__asm mov eax,[ebp+4]
 	__asm mov loc,eax
 
-		std::map<unsigned,unsigned>* pList = get_track_list(loc);
+		std::map<unsigned,AllocLenCaller>* pList = get_track_list(loc);
 
 	void* p = calloc(n, s);
 	if (pList)
-		(*pList)[(unsigned)p] = n * s;
+	{
+		AllocLenCaller temp;
+		temp.size=n*s;
+		temp.calleraddr=loc;
+		(*pList)[(unsigned)p] = temp;
+	}
 	return p;
 }
 
@@ -84,14 +110,17 @@ extern "C" void* __cdecl track_realloc(void* p, size_t s)
 	__asm mov eax,[ebp+4]
 	__asm mov loc,eax
 
-		std::map<unsigned,unsigned>* pList = get_track_list(loc);
+		std::map<unsigned,AllocLenCaller>* pList = get_track_list(loc);
 
 	void* q = realloc(p, s);
 	if (pList)
 	{
 		if (p != q)
 			pList->erase((unsigned)p);
-		(*pList)[(unsigned)q] = s;
+		AllocLenCaller temp;
+		temp.size=s;
+		temp.calleraddr=loc;
+		(*pList)[(unsigned)q] = temp;
 	}
 	return q;
 }
@@ -102,11 +131,12 @@ extern "C" void __cdecl track_free(void* p)
 	__asm mov eax,[ebp+4]
 	__asm mov loc,eax
 
-		std::map<unsigned,unsigned>* pList = get_track_list(loc);
+		std::map<unsigned,AllocLenCaller>* pList = get_track_list(loc);
 
 	if (pList)
 		pList->erase((unsigned)p);
-	free(p);
+	
+		free(p);
 }
 
 std::list<unsigned long*> AllocatedFunctionList;
@@ -296,7 +326,7 @@ int DllLoader::ResolveImports(void)
 #endif
 		ImportDirTable_t *Imp = ImportDirTable;
 
-		std::map<unsigned, unsigned>* pList = NULL;
+		std::map<unsigned, AllocLenCaller>* pList = NULL;
 		for (TrackedDllsIter it = TrackedDlls.begin(); it != TrackedDlls.end(); ++it)
 		{
 			if (it->pDll == this)
@@ -584,13 +614,31 @@ DllLoader::~DllLoader()
 				sprintf(temp, "%s: Detected memory leaks: %d leaks\n", Dll, it->AllocList.size());
 				OutputDebugString(temp);
 				unsigned total = 0;
-				for (std::map<unsigned, unsigned>::iterator p = it->AllocList.begin(); p != it->AllocList.end(); ++p)
+				std::map<unsigned,MSizeCount>::iterator itt;
+				for (std::map<unsigned, AllocLenCaller>::iterator p = it->AllocList.begin(); p != it->AllocList.end(); ++p)
 				{
-					total += p->second;
+					total += (p->second).size;
 					free((void*)p->first);
+					if ( ( itt=Calleradrmap.find((p->second).calleraddr) ) != Calleradrmap.end() ){
+						(itt->second).size+=(p->second).size;
+						(itt->second).count++;
+					}
+					else {
+						MSizeCount temp;
+						temp.size = (p->second).size;
+						temp.count =1;
+						Calleradrmap.insert( make_pair( (p->second).calleraddr, temp ) );
+					}
+				}
+				for( itt = Calleradrmap.begin(); itt != Calleradrmap.end();++itt )
+				{
+		sprintf(temp,"leak caller address %8x, size %8i, counter %4i\n",itt->first, (itt->second).size,(itt->second).count);
+					OutputDebugString(temp);
 				}
 				sprintf(temp, "%s: Total bytes leaked: %d\n", Dll, total);
 				OutputDebugString(temp);
+				Calleradrmap.erase(Calleradrmap.begin(),Calleradrmap.end());
+	
 			}
 			TrackedDlls.erase(it);
 			break;
