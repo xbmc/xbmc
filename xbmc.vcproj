@@ -356,283 +356,286 @@
 				RelativePath=".\xbmc\Application.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\ApplicationMessenger.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\Autorun.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\ButtonTranslator.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\Crc32.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\DetectDVDType.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\DNSNameCache.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\FileItem.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIDialogFileStacking.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIDialogFileStacking.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIDialogOK.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIDialogProgress.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GuiDialogSelect.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIDialogYesNo.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowFullScreen.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowFullScreen.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowHome.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowMusicAlbum.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowMusicArtists.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowMusicBase.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowMusicGenres.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GuiWindowMusicInfo.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowMusicOverlay.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowMusicPlaylist.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowMusicSongs.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowMusicTop100.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowMyFiles.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowPictures.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowPrograms.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowScreensaver.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowScripts.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowScriptsInfo.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettings.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsCache.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsCache.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsFilter.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsFilter.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsGeneral.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsMusic.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\guiwindowsettingsmusic.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsPrograms.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsScreen.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsScreenCalibration.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsScreensaver.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsSlideShow.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsSubtitles.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsSubtitles.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsUICalibration.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsWeather.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsWeather.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSlideShow.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSystemInfo.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowVideo.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowVideoActors.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowVideoInfo.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowVideoOverlay.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowVideoTitle.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowVideoTitle.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowVideoYear.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowVisualisation.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowVisualisation.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowWeather.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowWeather.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\MusicDatabase.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\MusicDatabaseReorg.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\musicInfoTag.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\musicInfoTag.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\musicInfoTagLoaderFactory.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\MusicInfoTagLoaderMP3.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\MusicInfoTagLoaderOgg.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\MusicInfoTagLoaderWMA.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\MusicInfoTagLoaderWMA.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\NfoFile.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\NfoFile.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\OggTag.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\Picture.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\PlayList.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\PlayListB4S.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\PlayListFactory.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\PlayListM3U.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\PlayListPlayer.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\PlayListPLS.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\SectionLoader.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\Settings.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\Shortcut.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\ThumbnailCache.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\URL.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\Util.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\VideoDatabase.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\XBApplicationEx.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\XBInputEx.cpp">
-			</File>
-			<File
 				RelativePath=".\xbmc\XboxMediaCenter.cpp">
 			</File>
+			<Filter
+				Name="Settings"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\GUIWindowSettings.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowSettingsAutoRun.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowSettingsCache.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowSettingsFilter.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowSettingsGeneral.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowSettingsMusic.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowSettingsPrograms.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowSettingsScreen.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowSettingsScreenCalibration.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowSettingsScreensaver.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowSettingsSlideShow.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowSettingsSubtitles.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowSettingsUICalibration.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowSettingsWeather.cpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="GUI Music"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\GUIWindowMusicAlbum.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowMusicArtists.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowMusicBase.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowMusicGenres.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GuiWindowMusicInfo.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowMusicOverlay.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowMusicPlaylist.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowMusicSongs.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowMusicTop100.cpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="GUI Video"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\GUIWindowVideo.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowVideoActors.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowVideoInfo.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowVideoOverlay.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowVideoTitle.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowVideoYear.cpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="GUI Other"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\GUIWindowFullScreen.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowHome.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowMyFiles.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowPictures.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowPrograms.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowScreensaver.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowScripts.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowScriptsInfo.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowSlideShow.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowSystemInfo.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowVisualisation.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowWeather.cpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="Playlist"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\PlayList.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\PlayListB4S.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\PlayListFactory.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\PlayListM3U.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\PlayListPlayer.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\PlayListPLS.cpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="infoTagReaders"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\musicInfoTag.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\musicInfoTagLoaderFactory.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\MusicInfoTagLoaderMP3.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\MusicInfoTagLoaderOgg.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\MusicInfoTagLoaderWMA.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\OggTag.cpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="utils"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\ApplicationMessenger.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\Autorun.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\ButtonTranslator.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\Crc32.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\DetectDVDType.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\DNSNameCache.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileItem.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\NfoFile.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\Picture.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\SectionLoader.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\Settings.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\Shortcut.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\ThumbnailCache.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\URL.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\Util.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\XBApplicationEx.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\XBInputEx.cpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="database"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\MusicDatabase.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\MusicDatabaseReorg.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\VideoDatabase.cpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="GUI Dialog"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\GUIDialogFileStacking.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogOK.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogProgress.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GuiDialogSelect.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogYesNo.cpp">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
+			<File
+				RelativePath=".\xbmc\cores\mplayer\Ac97DirectSound.h">
+			</File>
 			<File
 				RelativePath=".\xbmc\albumdatabase.h">
 			</File>
@@ -652,28 +655,103 @@
 				RelativePath=".\xbmc\ArtistDirectory.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\cores\mplayer\AsyncDirectSound.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\mplayer\audio.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\AutoPtrHandle.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\Autorun.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\ButtonTranslator.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\CDDADirectory.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\CDDAPlayer.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\cddb.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\cdioSupport.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\Crc32.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\CriticalSection.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\DelayController.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\DetectDVDType.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\Directory.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\DirectoryHistory.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\dlgcache.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\DNSNameCache.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\utils\Event.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FactoryDirectory.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\File.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FileFactory.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FileHD.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FileISO.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileItem.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FileRelax.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FileRTV.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FileShoutcast.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FileSmb.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FileXBMSP.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\fstrcmp.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\genredatabase.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GenreDirectory.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIDialogFileStacking.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIDialogOK.h">
@@ -689,6 +767,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\GuiUserMessages.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowFullScreen.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowHome.h">
@@ -742,7 +823,19 @@
 				RelativePath=".\xbmc\GUIWindowSettings.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowSettingsAutoRun.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsCache.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsFilter.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowSettingsGeneral.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\guiwindowsettingsmusic.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettingsPrograms.h">
@@ -760,7 +853,13 @@
 				RelativePath=".\xbmc\GUIWindowSettingsSlideShow.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowSettingsSubtitles.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowSettingsUICalibration.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsWeather.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSlideShow.h">
@@ -787,16 +886,82 @@
 				RelativePath=".\xbmc\GuiWindowVideoOverlay.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowVideoTitle.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowVideoYear.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowVisualisation.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowWeather.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\HDDirectory.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\HTMLTable.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\HTMLUtil.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\HTTP.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\mplayer\IAudioCallback.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\IFile.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\IMDB.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\ImusicInfoTagLoader.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\xbox\IoSupport.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\IPlayer.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\iso9660.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\ISO9660Directory.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\mplayer\keycodes.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\log.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\ModPlayer.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\MPlayer.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\MusicDatabase.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\MusicDatabaseReorg.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\MusicInfoScraper.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\musicInfoTag.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\musicInfoTagLoaderFactory.h">
@@ -808,10 +973,25 @@
 				RelativePath=".\xbmc\MusicInfoTagLoaderOgg.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\MusicInfoTagLoaderWMA.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\MusicSong.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\Mutex.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\NfoFile.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\OggTag.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\Picture.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\PlayerCoreFactory.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\PlayList.h">
@@ -832,6 +1012,9 @@
 				RelativePath=".\xbmc\PlayListPLS.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\RTVDirectory.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\SectionLoader.h">
 			</File>
 			<File
@@ -841,10 +1024,28 @@
 				RelativePath=".\xbmc\Shortcut.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\ShoutcastRipFile.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\SingleLock.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\SMBDirectory.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\Sntp.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\stdafx.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\utils\Thread.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\ThumbnailCache.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\xbox\Undocumented.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\URL.h">
@@ -856,6 +1057,12 @@
 				RelativePath=".\xbmc\VideoDatabase.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\VirtualDirectory.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\keyboard\virtualkeyboard.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\XBApplicationEx.h">
 			</File>
 			<File
@@ -863,6 +1070,51 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\XBIRRemote.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\XBMSDirectory.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\lib\common\xbNet.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\mplayer\xbox_video.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\lib\common\xbSockAddr.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\lib\common\xbsocket.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\lib\common\xbstopwatch.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\xbox\XKCRC.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\xbox\XKEEPROM.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\xbox\XKExports.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\xbox\XKGeneral.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\xbox\XKHDD.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\xbox\XKRC4.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\xbox\XKSHA1.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\xbox\XKUtils.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\XNSDirectory.h">
 			</File>
 		</Filter>
 		<Filter
@@ -872,151 +1124,76 @@
 				RelativePath=".\xbmc\FileSystem\CDDADirectory.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\FileSystem\CDDADirectory.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\FileSystem\cddb.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\FileSystem\cddb.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\cdioSupport.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\FileSystem\cdioSupport.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\FileSystem\Directory.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\FileSystem\Directory.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\DirectoryHistory.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\FileSystem\DirectoryHistory.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\FileSystem\FactoryDirectory.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\FileSystem\FactoryDirectory.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\File.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\FileSystem\File.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\FileSystem\FileFactory.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\FileSystem\FileFactory.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\FileHD.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\FileSystem\FileHD.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\FileSystem\FileISO.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\FileSystem\FileISO.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\FileRelax.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\FileSystem\FileRelax.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\FileSystem\FileRTV.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\FileSystem\FileRTV.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\FileShoutcast.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\FileSystem\FileShoutcast.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\FileSystem\FileSmb.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\FileSystem\FileSmb.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\FileXBMSP.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\FileSystem\FileXBMSP.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\FileSystem\HDDirectory.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\FileSystem\HDDirectory.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\IFile.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\FileSystem\IFile.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\FileSystem\iso9660.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\FileSystem\iso9660.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\ISO9660Directory.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\FileSystem\ISO9660Directory.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\FileSystem\RTVDirectory.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\FileSystem\RTVDirectory.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\ShoutcastRipFile.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\FileSystem\ShoutcastRipFile.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\FileSystem\SMBDirectory.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\FileSystem\SMBDirectory.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\VirtualDirectory.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\FileSystem\VirtualDirectory.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\FileSystem\XBMSDirectory.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\FileSystem\XBMSDirectory.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\FileSystem\XNSDirectory.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\FileSystem\XNSDirectory.h">
 			</File>
 		</Filter>
 		<Filter
@@ -1024,9 +1201,6 @@
 			Filter="">
 			<File
 				RelativePath=".\xbmc\keyboard\virtualkeyboard.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\keyboard\virtualkeyboard.h">
 			</File>
 		</Filter>
 		<Filter
@@ -1036,55 +1210,25 @@
 				RelativePath=".\xbmc\xbox\IoSupport.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\xbox\IoSupport.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\xbox\Undocumented.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\xbox\XKCRC.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\xbox\XKCRC.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\xbox\XKEEPROM.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\xbox\XKEEPROM.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\xbox\XKExports.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\xbox\XKGeneral.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\xbox\XKGeneral.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\xbox\XKHDD.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\xbox\XKHDD.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\xbox\XKRC4.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\xbox\XKRC4.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\xbox\XKSHA1.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\xbox\XKSHA1.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\xbox\XKUtils.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\xbox\XKUtils.h">
 			</File>
 		</Filter>
 		<Filter
@@ -1094,25 +1238,13 @@
 				RelativePath=".\xbmc\lib\common\xbNet.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\lib\common\xbNet.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\lib\common\xbSockAddr.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\lib\common\xbSockAddr.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\lib\common\xbsocket.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\lib\common\xbsocket.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\lib\common\xbstopwatch.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\lib\common\xbstopwatch.h">
 			</File>
 		</Filter>
 		<Filter
@@ -1122,103 +1254,52 @@
 				RelativePath=".\xbmc\AutoPtrHandle.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\AutoPtrHandle.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\utils\CriticalSection.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\utils\CriticalSection.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\DelayController.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\utils\DelayController.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\utils\Event.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\utils\Event.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\fstrcmp.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\utils\fstrcmp.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\utils\HTMLTable.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\utils\HTMLTable.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\HTMLUtil.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\utils\HTMLUtil.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\utils\HTTP.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\utils\HTTP.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\IMDB.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\utils\IMDB.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\utils\log.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\utils\log.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\utils\MusicInfoScraper.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\utils\MusicInfoScraper.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicSong.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\utils\MusicSong.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\utils\Mutex.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\utils\Mutex.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\SingleLock.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\utils\SingleLock.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\utils\Sntp.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\utils\Sntp.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\utils\Thread.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\utils\Thread.h">
 			</File>
 		</Filter>
 		<Filter
@@ -1228,13 +1309,7 @@
 				RelativePath=".\xbmc\cores\CDDAPlayer.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\CDDAPlayer.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\cores\dlgcache.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\cores\dlgcache.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\cores\EMUdummy.cpp">
@@ -1282,12 +1357,6 @@
 				RelativePath=".\xbmc\cores\exportsreg.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\IPlayer.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\cores\ModPlayer.cpp">
-			</File>
-			<File
 				RelativePath=".\xbmc\cores\ModPlayer.h">
 			</File>
 			<File
@@ -1330,13 +1399,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\cores\PlayerCoreFactory.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\cores\PlayerCoreFactory.h">
 			</File>
 			<Filter
 				Name="mplayer"
@@ -1345,37 +1408,16 @@
 					RelativePath=".\xbmc\cores\mplayer\Ac97DirectSound.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\mplayer\Ac97DirectSound.h">
-				</File>
-				<File
 					RelativePath=".\xbmc\cores\mplayer\AsyncDirectSound.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\cores\mplayer\AsyncDirectSound.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\mplayer\audio.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\mplayer\audio.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\cores\mplayer\IAudioCallback.h">
-				</File>
-				<File
-					RelativePath=".\xbmc\cores\mplayer\keycodes.h">
-				</File>
-				<File
 					RelativePath=".\xbmc\cores\mplayer\mplayer.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\mplayer\mplayer.h">
-				</File>
-				<File
 					RelativePath=".\xbmc\cores\mplayer\xbox_video.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\cores\mplayer\xbox_video.h">
 				</File>
 			</Filter>
 		</Filter>
