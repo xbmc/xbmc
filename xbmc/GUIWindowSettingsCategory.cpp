@@ -18,6 +18,7 @@
 #include "utils/FanController.h"
 #include "GUIDialogYesNo.h"
 #include "utils/CharsetConverter.h"
+#include "playlistplayer.h"
 
 #define CONTROL_GROUP_BUTTONS						0
 #define CONTROL_GROUP_SETTINGS					1
@@ -765,6 +766,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 		CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
 		CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
 		g_guiSettings.SetString("MyMusic.Visualisation", pControl->GetCurrentLabel()+".vis");
+	}
+	else if (strSetting == "MyMusic.Repeat")
+	{
+		g_playlistPlayer.Repeat(PLAYLIST_MUSIC_TEMP, g_guiSettings.GetBool("MyMusic.Repeat"));
 	}
 	else if (strSetting == "MusicLibrary.Cleanup")
 	{
