@@ -32,12 +32,17 @@ CMediaMonitor::CMediaMonitor() : CThread()
 
 CMediaMonitor::~CMediaMonitor()
 {
-
+	CloseHandle(m_hCommand);
+	DeleteCriticalSection(&m_critical_section);
 }
 
 void CMediaMonitor::Create(IMediaObserver* aObserver)
 {
+	InitializeCriticalSection(&m_critical_section);
+
+	m_bStop = false;
 	m_pObserver	= aObserver;
+	m_hCommand = CreateEvent(NULL,FALSE,FALSE,NULL);
 
 	CThread::Create(false);
 }
@@ -46,6 +51,65 @@ void CMediaMonitor::Process()
 {
 	InitializeObserver();
 
+	CMediaMonitor::Command command;
+	command.rCommand = CMediaMonitor::CommandType::Refresh;
+	QueueCommand(command);
+
+	while (!m_bStop)
+	{
+		switch ( WaitForSingleObject(m_hCommand,INFINITE) )
+		{
+			case WAIT_OBJECT_0:
+				DispatchNextCommand();
+				break;
+		}
+	}
+}
+
+void CMediaMonitor::QueueCommand(CMediaMonitor::Command& aCommand)
+{
+	EnterCriticalSection(&m_critical_section);
+
+	m_commands.push_back(aCommand);
+
+	LeaveCriticalSection(&m_critical_section);
+
+	SetEvent(m_hCommand);
+}
+
+void CMediaMonitor::DispatchNextCommand()
+{
+	if (m_commands.size()<=0)
+	{
+		return;
+	}
+
+	EnterCriticalSection(&m_critical_section);
+
+	COMMANDITERATOR it = m_commands.begin();
+	CMediaMonitor::Command command = *it;	
+	m_commands.erase(it);
+
+	LeaveCriticalSection(&m_critical_section);
+
+	switch(command.rCommand)
+	{
+		case CommandType::Refresh:
+		{
+			Scan();
+			break;
+		}
+
+		case CommandType::Update:
+		{
+			UpdateTitle(command.nParam1,command.strParam1,command.strParam2);
+			break;
+		}
+	}
+}
+
+void CMediaMonitor::Scan()
+{
 	VECSHARES& vecShares = g_settings.m_vecMyVideoShares;
 
 	DIRECTORY::CVirtualDirectory directory;
@@ -122,7 +186,7 @@ void CMediaMonitor::Process()
 		{
  			if (!details.m_strPictureURL.IsEmpty())
 			{
-				GetMovieArt(details.m_strIMDBNumber,details.m_strPictureURL,strImagePath);
+				imdb_GetMovieArt(details.m_strIMDBNumber,details.m_strPictureURL,strImagePath);
 			}
 		}
 		else
@@ -143,96 +207,64 @@ void CMediaMonitor::Process()
 }
 
 
-void CMediaMonitor::InitializeObserver()
-{
-	m_database.Open();
 
-	long lzMovieId[RECENT_MOVIES];
-
-	int count = m_database.GetRecentMovies(lzMovieId,RECENT_MOVIES);
-
-	for(int i=0;i<count;i++)
-	{
-		VECMOVIESFILES paths;
-		m_database.GetFiles(lzMovieId[i],paths);
-
-		if (paths.size()>0)
-		{
-			CStdString filePath = paths[0];
-			CStdString strImagePath;
-
-			CIMDBMovie details;  
-			if (GetMovieInfo(filePath, details))
-			{
- 				if (!details.m_strPictureURL.IsEmpty())
-				{
-					GetMovieArt(details.m_strIMDBNumber,details.m_strPictureURL,strImagePath);
-				}
-			}
-			else
-			{
-				details.m_strTitle = CUtil::GetFileName(filePath);
-			}
-
-			if (m_pObserver)
-			{
-				g_graphicsContext.Lock();
-				m_pObserver->OnMediaUpdate(i, filePath, details.m_strTitle, strImagePath);
-				g_graphicsContext.Unlock();
-			}
-		}
-	}
-
-	m_database.Close();
-}
 
 
 bool CMediaMonitor::GetMovieInfo(CStdString& strFilepath, CIMDBMovie& aMovieRecord)
 {
-	bool bInfo = false;
-
+	// Return the record stored in local database
 	if (m_database.HasMovieInfo(strFilepath))
 	{
 		m_database.GetMovieInfo(strFilepath, aMovieRecord);
-		bInfo = true;
+		return true;
 	}
-	else
+
+	// Clean up filename in an attempt to get an idea of the movie name
+	CStdString strName = CUtil::GetFileName(strFilepath);
+	parse_Clean(strName);
+
+	CStdString debug;
+	debug.Format("New filepath: %s\nQuerying: %s",strFilepath.c_str(),strName.c_str());
+	CLog::Log(debug);
+
+	// Query IMDB and populate the record
+	if (imdb_GetMovieInfo(strName,aMovieRecord))
 	{
-		CIMDB imdb;
-		IMDB_MOVIELIST results;
-		CStdString strName = CUtil::GetFileName(strFilepath);
-
-		// Clean up filename in an attempt to get an idea of the movie name
-		parse_Clean(strName);
-
-		CStdString debug;
-		debug.Format("New filepath: %s\nQuerying: %s",strFilepath.c_str(),strName.c_str());
-		CLog::Log(debug);
-
-		if (imdb.FindMovie(strName, results) ) 
+		// Store the record in the internal database
+		CStdString strCDLabel;
+		if (m_database.AddMovie(strFilepath, strCDLabel, false))
 		{
-			if (results.size()>0)
+			m_database.SetMovieInfo(strFilepath, aMovieRecord);
+		}
+
+		return true;
+	}
+
+	// We failed to find any information
+	return false;
+}
+
+bool CMediaMonitor::imdb_GetMovieInfo(CStdString& strTitle, CIMDBMovie& aMovieRecord)
+{
+	CIMDB imdb;
+	IMDB_MOVIELIST results;
+
+	if (imdb.FindMovie(strTitle, results) ) 
+	{
+		if (results.size()>0)
+		{
+			if (! imdb.GetDetails(results[0], aMovieRecord) )
 			{
-				if (! imdb.GetDetails(results[0], aMovieRecord) )
-				{
-					aMovieRecord.m_strTitle = results[0].m_strTitle;
-				}
-
-				CStdString strCDLabel;
-				if (m_database.AddMovie(strFilepath, strCDLabel, false))
-				{
-					m_database.SetMovieInfo(strFilepath, aMovieRecord);
-				}
-
-				bInfo = true;
+				aMovieRecord.m_strTitle = results[0].m_strTitle;
 			}
+			return true;
 		}
 	}
 
-	return bInfo;
+	return false;
 }
 
-bool CMediaMonitor::GetMovieArt(CStdString& strIMDBNumber, CStdString& strPictureUrl, CStdString& strImagePath)
+bool CMediaMonitor::imdb_GetMovieArt(CStdString& strIMDBNumber, CStdString& strPictureUrl, CStdString& strImagePath)
 {
 	CStdString strThum;
 	CUtil::GetVideoThumbnail(strIMDBNumber,strThum);
@@ -274,8 +306,98 @@ bool CMediaMonitor::GetMovieArt(CStdString& strIMDBNumber, CStdString& strPictur
 	return false;
 }
 
+
+void CMediaMonitor::UpdateTitle(INT nIndex, CStdString& strTitle, CStdString& strFilepath)
+{
+	m_database.Open();
+
+	CStdString strImagePath;
+	CIMDBMovie details; 
+	bool bRecord = false;
+
+	// Get the record stored in local database
+	if (m_database.HasMovieInfo(strFilepath))
+	{
+		m_database.DeleteMovieInfo(strFilepath);
+	}
+
+	// Query IMDB and populate the record
+	if (imdb_GetMovieInfo(strTitle,details))
+	{
+		if (!details.m_strPictureURL.IsEmpty())
+		{
+			imdb_GetMovieArt(details.m_strIMDBNumber,details.m_strPictureURL,strImagePath);
+		}
+	}
+	else
+	{
+		details.m_strTitle = strTitle;
+	}
+
+	// Update the record in the internal database
+	m_database.SetMovieInfo(strFilepath, details);
+
+	if (m_pObserver)
+	{
+		g_graphicsContext.Lock();
+		m_pObserver->OnMediaUpdate(nIndex, strFilepath, details.m_strTitle, strImagePath);
+		g_graphicsContext.Unlock();
+	}
+
+	m_database.Close();
+}
+
+
+
+void CMediaMonitor::InitializeObserver()
+{
+	m_database.Open();
+
+	long lzMovieId[RECENT_MOVIES];
+
+	int count = m_database.GetRecentMovies(lzMovieId,RECENT_MOVIES);
+
+	for(int i=0;i<count;i++)
+	{
+		VECMOVIESFILES paths;
+		m_database.GetFiles(lzMovieId[i],paths);
+
+		if (paths.size()>0)
+		{
+			CStdString filePath = paths[0];
+			CStdString strImagePath;
+
+			CIMDBMovie details;  
+			if (GetMovieInfo(filePath, details))
+			{
+ 				if (!details.m_strPictureURL.IsEmpty())
+				{
+					imdb_GetMovieArt(details.m_strIMDBNumber,details.m_strPictureURL,strImagePath);
+				}
+			}
+			else
+			{
+				details.m_strTitle = CUtil::GetFileName(filePath);
+			}
+
+			if (m_pObserver)
+			{
+				g_graphicsContext.Lock();
+				m_pObserver->OnMediaUpdate(i, filePath, details.m_strTitle, strImagePath);
+				g_graphicsContext.Unlock();
+			}
+		}
+	}
+
+	m_database.Close();
+}
+
+
 void CMediaMonitor::Scan(DIRECTORY::CDirectory& directory, CStdString& aPath)
 {
+	// dispatch any pending commands first before scanning this directory!
+	DispatchNextCommand();
+
 	VECFILEITEMS items;
 	if (!directory.GetDirectory(aPath,items))
 	{
