@@ -56,7 +56,20 @@ CURL::CURL(const CStdString& strURL)
   int iSlash=strURL.Find("/",iPos);
 	if (iSlash<0) 
 	{
-		m_strHostName=strURL.Right(strURL.size()-iPos);
+		CStdString strHostNameAndPort=strURL.Right(strURL.size()-iPos);
+		int iColon=strHostNameAndPort.Find(":");
+		if (iColon > 0)
+		{
+			m_strHostName=strHostNameAndPort.Left(iColon);
+			iColon++;
+			CStdString strPort=strHostNameAndPort.Right(strHostNameAndPort.size()-iColon);
+			m_iPort=atoi(strPort.c_str());
+		}
+		else
+		{
+			m_strHostName=strHostNameAndPort;
+		}
+
 	}
 	else
 	{

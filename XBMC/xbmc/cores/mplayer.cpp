@@ -118,6 +118,12 @@ bool CMPlayer::openfile(const CStdString& strFile)
 	{
 		mplayer_setcache_size(0);
 	}
+
+	if ( CUtil::IsShoutCast(strFile) ) 
+	{
+		mplayer_setcache_size(256);
+	}
+
 	
 	int iRet=mplayer_open_file(strFile.c_str());
 	if (iRet < 0)
