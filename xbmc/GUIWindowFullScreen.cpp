@@ -151,8 +151,7 @@ void CGUIWindowFullScreen::Render()
 		g_application.m_pPlayer->GetVideoRect(SrcRect, DestRect);
 		CStdString strRects;
 		float fAR;
-		bool bWidescreen;
-		g_application.m_pPlayer->GetVideoAspectRatio(fAR, bWidescreen); //((float)(DestRect.right-DestRect.left)) / ((float)(DestRect.bottom-DestRect.top));
+		g_application.m_pPlayer->GetVideoAspectRatio(fAR);
 		strRects.Format(" | (%i,%i)-(%i,%i)->(%i,%i)-(%i,%i) AR:%2.2f", 
 											SrcRect.left,SrcRect.top,
 											SrcRect.right,SrcRect.bottom,
@@ -161,29 +160,8 @@ void CGUIWindowFullScreen::Render()
 		strStatus += strRects;
 
 		CStdString strStatus2;
-		int  iScreenWidth;
-		int  iScreenHeight;
-		bool bPAL,bPAL60;
 		int  iResolution=g_graphicsContext.GetVideoResolution();
-		CUtil::GetResolutionParams(iResolution, iScreenWidth,iScreenHeight,bPAL,bPAL60);
-		strStatus2.Format("%ix%i ", iScreenWidth,iScreenHeight);
-		if (bPAL) 
-		{
-			strStatus2 += "PAL";
-			if (bPAL60) strStatus2+= "60";
-		}
-		else
-		{
-			strStatus2 +="NTSC";
-		}
-		if (bWidescreen)
-		{
-			strStatus2 +=" 16:9";
-		}
-		else
-		{
-			strStatus2 +=" 4:3";
-		}
+		strStatus2.Format("%ix%i %s", resInfo[iResolution].iWidth, resInfo[iResolution].iHeight, resInfo[iResolution].strMode);
 
 		{
 			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 

@@ -39,7 +39,7 @@ public:
 	virtual void		GetGeneralInfo( CStdString& strVideoInfo);
 	virtual void    Update();
 	virtual void		GetVideoRect(RECT& SrcRect, RECT& DestRect);
-	virtual void		GetVideoAspectRatio(float& fAR, bool& bWidescreen);
+	virtual void		GetVideoAspectRatio(float& fAR);
 protected:
 	virtual void				OnStartup();
 	virtual void				OnExit();

@@ -140,7 +140,6 @@ public:
 		bool			m_bStretch;
 		bool			m_bAllowVideoSwitching;
 		bool			m_bAllowPAL60;
-		RECT			m_rectMovieCalibration[20];
 		bool			m_bAutoShufflePlaylist;
 		int			  m_iHDSpinDownTime;
 		DWORD     m_minFilter ;
@@ -168,6 +167,7 @@ public:
   VECSHARES					m_vecMyMusicShares;
   VECSHARES					m_vecMyVideoShares;
   VECFILETYPEICONS	m_vecIcons;
+	RECT			m_rectMovieCalibration[20];
 
 protected:
 	bool GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName);

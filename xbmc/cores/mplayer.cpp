@@ -419,7 +419,7 @@ void CMPlayer::GetGeneralInfo( CStdString& strVideoInfo)
 extern void xbox_audio_registercallback(IAudioCallback* pCallback);
 extern void xbox_audio_unregistercallback();
 extern void xbox_video_getRect(RECT& SrcRect, RECT& DestRect);
-extern void xbox_video_getAR(float& fAR, bool& bWidescreen);
+extern void xbox_video_getAR(float& fAR);
 extern void xbox_video_update();
 
 void CMPlayer::Update()
@@ -432,9 +432,9 @@ void CMPlayer::GetVideoRect(RECT& SrcRect, RECT& DestRect)
 	xbox_video_getRect(SrcRect, DestRect);
 }
 
-void CMPlayer::GetVideoAspectRatio(float& fAR, bool& bWidescreen)
+void CMPlayer::GetVideoAspectRatio(float& fAR)
 {
-	xbox_video_getAR(fAR, bWidescreen);
+	xbox_video_getAR(fAR);
 }
 
 void CMPlayer::RegisterAudioCallback(IAudioCallback* pCallback)

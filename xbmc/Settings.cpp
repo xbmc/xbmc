@@ -9,7 +9,7 @@ struct CSettings::stSettings g_stSettings;
 
 CSettings::CSettings(void)
 {
-	memset(g_stSettings.m_rectMovieCalibration,0, sizeof(g_stSettings.m_rectMovieCalibration));
+	memset(m_rectMovieCalibration,0, sizeof(m_rectMovieCalibration));
 	g_stSettings.m_bAudioOnAllSpeakers=false;
 	g_stSettings.m_iChannels=2;
 	g_stSettings.m_bUseID3=true;
@@ -118,6 +118,12 @@ void CSettings::Save() const
 		fwrite(&g_stSettings,sizeof(g_stSettings),1,systemSettings);
 		fclose(systemSettings);
 	}
+	FILE *calibrationSettings = fopen("T:\\calibration.bin","wb+");
+    if (calibrationSettings!=NULL)
+	{
+		fwrite(m_rectMovieCalibration,sizeof(m_rectMovieCalibration),1,calibrationSettings);
+		fclose(calibrationSettings);
+	}
 }
 
 void CSettings::Load()
@@ -145,7 +151,18 @@ void CSettings::Load()
 	{
 		OutputDebugString("settings not found\n");
 	}
-
+	// load calibration file...
+	FILE* calibrationSettings = fopen("T:\\calibration.bin","rb");
+	if (calibrationSettings!=NULL)
+	{
+		OutputDebugString("found calibration.bin\n");
+		fread(m_rectMovieCalibration,sizeof(m_rectMovieCalibration),1,calibrationSettings);
+		fclose(calibrationSettings);
+	}
+	else
+	{
+		OutputDebugString("calibration.bin not found\n");
+	}
 	// load xml file...
 	CStdString strXMLFile;
 	strXMLFile+="Q:\\XboxMediaCenter.xml";
