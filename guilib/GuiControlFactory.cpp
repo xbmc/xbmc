@@ -975,7 +975,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   {
     CGUIFadeLabelControl* pControl = new CGUIFadeLabelControl(
                                        dwParentId, dwID, iPosX, iPosY, dwWidth, dwHeight,
-                                       strFont, dwTextColor, dwAlign);
+                                       strFont, dwTextColor, (dwAlign|dwAlignY));
 
     pControl->SetColourDiffuse(dwColorDiffuse);
     pControl->SetVisible(bVisible);
