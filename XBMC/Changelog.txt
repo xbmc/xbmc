@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 29-01-2005 fixed: subtitle files with uppercase extension were not loaded
   - 28-01-2005 fixed: attempting to change audio track locks up xbmc.
   - 28-01-2005 added: [ 1102392 ] XLink, support for multiple games dirs (Thanks to scampa123)
                       Use a ; to separate them (example: f:\games;g:\games)
