@@ -955,10 +955,10 @@
 				RelativePath=".\xbmc\cores\ModPlayer.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
@@ -1220,6 +1220,12 @@
 			Filter="">
 			<File
 				RelativePath=".\xbmc\xbox\IoSupport.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\xbox\xbeheader.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\xbox\xbeheader.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\xbox\XKCRC.cpp">
