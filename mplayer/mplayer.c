@@ -509,7 +509,6 @@ static void uninit_player(unsigned int mask){
   vo_font = NULL;
 #endif
   current_module=NULL;
-  printf("uninit_player... DONE!"); 
 }
 
 #ifndef _XBOX
@@ -4664,11 +4663,9 @@ if(benchmark){
 }
 
 
-#ifdef _XBOX
-printf(" unint_player\n");
-#endif
 // time to uninit all, except global stuff:
 #ifdef _XBOX
+printf(" unint_player\n");
 uninit_player(INITED_ALL-(INITED_GUI+(fixed_vo?INITED_VO:0)));
 printf(" uninit_player - done\n");
 #else
