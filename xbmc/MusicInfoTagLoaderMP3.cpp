@@ -42,7 +42,7 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
 		ID3_Tag myTag;
 		if ( myTag.Link(reader, ID3TT_ALL) >= 0)
 		{
-				bResult=true;
+				
 				SYSTEMTIME dateTime;
 				char *pYear=ID3_GetYear( &myTag );
 				char *pTitle=ID3_GetTitle( &myTag );
@@ -60,6 +60,7 @@ bool CMusicInfoTagLoaderMP3::Load(const CStdString& strFileName, CMusicInfoTag& 
 				}
 				if (pTitle)
 				{
+					bResult=true;
 					tag.SetTitle(pTitle);
 					delete [] pTitle;
 				}

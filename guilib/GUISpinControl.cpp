@@ -215,21 +215,6 @@ void CGUISpinControl::Render()
 			m_imgspinDown.SetPosition((DWORD)fTextWidth + 5+dwPosX, m_dwPosY);
 		}
 	}
-
-	if (m_pFont)
-	{
-	
-    float fWidth,fHeight;
-    m_pFont->GetTextExtent( wszText, &fWidth,&fHeight);
-    fHeight/=2;
-    float fPosY = (float)m_dwHeight/2;
-    fPosY-=fHeight;
-    fPosY+=(float)m_dwPosY;
-
-    
-    m_pFont->DrawText((float)m_dwPosX-3, (float)fPosY,m_dwTextColor,wszText,m_dwAlign);
-	}
-
 	if ( HasFocus() )
 	{
 		if (m_iSelect==SPIN_BUTTON_UP) 
@@ -247,6 +232,21 @@ void CGUISpinControl::Render()
 		m_imgspinUp.Render();
 		m_imgspinDown.Render();
 	}
+
+	if (m_pFont)
+	{
+	
+    float fWidth,fHeight;
+    m_pFont->GetTextExtent( wszText, &fWidth,&fHeight);
+    fHeight/=2;
+    float fPosY = (float)m_dwHeight/2;
+    fPosY-=fHeight;
+    fPosY+=(float)m_dwPosY;
+
+    
+    m_pFont->DrawText((float)m_dwPosX-3, (float)fPosY,m_dwTextColor,wszText,m_dwAlign);
+	}
+
 
 
 }

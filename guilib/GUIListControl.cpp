@@ -324,6 +324,22 @@ bool CGUIListControl::OnMessage(CGUIMessage& message)
     {
       message.SetParam1(m_iCursorY+m_iOffset);
     }
+		if (message.GetMessage()==GUI_MSG_ITEM_SELECT)
+		{
+			if (message.GetParam1() >=0 && message.GetParam1() < (int)m_vecItems.size())
+			{
+				int iPage=1;
+				m_iOffset=0;
+				m_iCursorY=message.GetParam1();
+				while (m_iCursorY >= m_iItemsPerPage)
+				{
+					iPage++;
+					m_iOffset+=m_iItemsPerPage;
+					m_iCursorY -=m_iItemsPerPage;
+				}
+				m_upDown.SetValue(iPage);
+			}
+		}
   }
 
   if ( CGUIControl::OnMessage(message) ) return true;
