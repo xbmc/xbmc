@@ -891,18 +891,22 @@ void xbox_video_render_osd()
 	// means do alphakill + inverse alphablend
 
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-//	if (m_SubsOnOSD)
-//	{
+	if (m_SubsOnOSD)
+	{
 		// subs use mplayer style alpha
 		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_INVSRCALPHA );
 		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_SRCALPHA );
-//	}
-//	else
-//	{
-//		// OSD looks better with src+(1-a)*dst
-//		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_ONE );
-//		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-//	}
+	}
+	else
+	{
+		// OSD looks better with src+(1-a)*dst
+		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_ONE );
+		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+	}
+
+	// Clip the output to avoid borders flashing from texture filtering getting texels beyond the valid region
+	D3DRECT rs = { m_OSDRect.left+1, m_OSDRect.top+1, m_OSDRect.right-1, m_OSDRect.bottom-1 };
+	g_graphicsContext.Get3DDevice()->SetScissors(1, FALSE, &rs);
 
 	// Render the image
 	g_graphicsContext.Get3DDevice()->Begin(D3DPT_QUADLIST);
@@ -923,6 +927,8 @@ void xbox_video_render_osd()
 	g_graphicsContext.Get3DDevice()->SetTexture(0, NULL);
 	g_graphicsContext.Get3DDevice()->SetTexture(1, NULL);
 	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAKILL, D3DTALPHAKILL_DISABLE );
+
+	g_graphicsContext.Get3DDevice()->SetScissors(0, FALSE, NULL);
 
 	m_OSDWidth = m_OSDHeight = 0;
 }
