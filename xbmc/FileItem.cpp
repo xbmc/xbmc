@@ -999,7 +999,11 @@ void CFileItemList::Remove(CFileItem* pItem)
 void CFileItemList::Remove(int iItem)
 {
   if (iItem>=0 && iItem < (int)Size())
+  {
+    CFileItem* pItem=*(m_items.begin() + iItem);
+    delete pItem;
     m_items.erase(m_items.begin() + iItem);
+  }
 }
 
 void CFileItemList::Append(const CFileItemList& itemlist)
