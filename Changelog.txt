@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 01-04-2005 updated: Finnish language file (Thnx to jutski)
+  - 01-04-2004 updated: Polish language file (Thnx to napek)
+  - 01-04-2005 updated: Norwegian language file (Thnx to vnm)
+  - 01-04-2005 updated: Chinese (Traditional) language file (Thnx to dog099)
   - 31-03-2005 fixed: kai, crash when removing newly added contact when "just signed in" toast message is still on screen
   - 31-03-2005 fixed: kai, crash when removing last contact
   - 31-03-2005 fixed: kai toast dialog only shows the last notification in the queue
