@@ -569,7 +569,7 @@ int DllLoader::ResolveImports(void)
 						if (pList)
 						{
 							// alter fixup for memory tracking
-							if (!strcmp(ImpName, "malloc"))
+							if (!strcmp(ImpName, "malloc") || !strcmp(ImpName, "??2@YAPAXI@Z"))
 							{
 								Fixup = track_malloc;
 							}
@@ -581,7 +581,7 @@ int DllLoader::ResolveImports(void)
 							{
 								Fixup = track_realloc;
 							}
-							else if (!strcmp(ImpName, "free"))
+							else if (!strcmp(ImpName, "free") || !strcmp(ImpName, "??3@YAXPAX@Z"))
 							{
 								Fixup = track_free;
 							}
