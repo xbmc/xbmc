@@ -221,17 +221,14 @@ CStdString CGUIInfoManager::GetMusicLabel(const CStdString &strItem)
 
 CStdString CGUIInfoManager::GetVideoLabel(const CStdString &strItem)
 {
-  // TODO: Move the SetCurrentFile() stuff out of VideoOverlay and into here.
-  CIMDBMovie *pMovie = g_application.GetCurrentMovie();
-  CFileItem item = g_application.CurrentFileItem();
-  if (strItem == "title")
+  if (strItem == "title") return m_currentMovie.m_strTitle;
+  else if (strItem == "genre") return m_currentMovie.m_strGenre;
+  else if (strItem == "director") return m_currentMovie.m_strDirector;
+  else if (strItem == "year")
   {
-    if (pMovie)
-      return pMovie->m_strTitle;
-    else if (item.IsVideo() && !item.GetLabel().IsEmpty())
-      return item.GetLabel();
-    else
-      return "";
+    CStdString strYear;
+    strYear.Format("%i", m_currentMovie.m_iYear);
+    return strYear;
   }
 	else if (strItem == "time") return GetCurrentPlayTime();
 	else if (strItem == "timeremaining") return GetCurrentPlayTimeRemaining();
@@ -300,12 +297,17 @@ CStdString CGUIInfoManager::GetCurrentPlayTimeRemaining()
 	return strTime;
 }
 
+void CGUIInfoManager::SetCurrentItem(const CFileItem &item)
+{
+  ResetCurrentItem();
+  if (item.IsAudio())
+    SetCurrentSong(item);
+  else
+    SetCurrentMovie(item);
+}
+
 void CGUIInfoManager::SetCurrentSong(const CFileItem &item)
 {
-	//	No audio file, we are finished here
-	if (!item.IsAudio())
-		return;
-
 	m_currentSong = item;
 
 	//	Get a reference to the item's tag
@@ -377,6 +379,22 @@ void CGUIInfoManager::SetCurrentSong(const CFileItem &item)
 	//	Find a thumb for this file.
 	m_currentSong.SetMusicThumb();
 	m_currentSong.FillInDefaultIcon();
+}
+
+void CGUIInfoManager::SetCurrentMovie(const CFileItem &item)
+{
+  CVideoDatabase dbs;
+  dbs.Open();
+  if (dbs.HasMovieInfo(item.m_strPath))
+  {
+    dbs.GetMovieInfo(item.m_strPath,m_currentMovie);
+  }
+  dbs.Close();
+
+  if (m_currentMovie.m_strTitle.IsEmpty())
+  { // at least fill in the filename
+    m_currentMovie.m_strTitle = CUtil::GetTitleFromPath(item.m_strPath);
+	}
 }
 
 wstring CGUIInfoManager::GetSystemHeatInfo(const CStdString &strInfo)

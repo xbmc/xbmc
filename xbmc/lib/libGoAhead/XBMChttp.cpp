@@ -27,6 +27,7 @@
 #include "..\..\filesystem\HDDirectory.h" 
 #include "..\..\filesystem\CDDADirectory.h"
 #include "..\..\videodatabase.h"
+#include "..\..\utils\GUIInfoManager.h"
 
 
 
@@ -309,7 +310,7 @@ void SetCurrentMediaItem(CFileItem& newItem)
 	//	If we have tag information, ...
 	if (tag.Loaded())
 	{
-		g_application.SetCurrentSong(tag);
+		g_infoManager.SetCurrentSongTag(tag);
 	}
 }
 

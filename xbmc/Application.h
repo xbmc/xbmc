@@ -119,8 +119,6 @@ public:
 	void				  CheckScreenSaver();		// CB: SCREENSAVER PATCH
 	void				  ActivateScreenSaver();
 	void				  CheckShutdown();
-	void					SetCurrentSong(const CMusicInfoTag& tag);
-	void					SetCurrentMovie(const CIMDBMovie& tag);
 	CMusicInfoTag* GetCurrentSong();
 	CIMDBMovie*		GetCurrentMovie();
 
@@ -172,7 +170,7 @@ public:
 	CGUIDialogFileStacking						m_guiDialogFileStacking;
 	CGUIWindowMusicOverlay						m_guiMusicOverlay;
 	CGUIWindowFullScreen						m_guiWindowFullScreen;
-	CGUIWindowVideoOverlay						m_guiWindowVideoOverlay;
+	CGUIWindowVideoOverlay						m_guiVideoOverlay;
 	CGUIWindowVisualisation						m_guiWindowVisualisation;
 	CGUIWindowSlideShow							m_guiWindowSlideshow;
 	CGUIWindowMusicPlayList						m_guiMyMusicPlayList;
@@ -229,7 +227,6 @@ protected:
   void											FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork);
   bool											m_bXboxMediacenterLoaded;
   bool											m_bSettingsLoaded;
-  CIMDBMovie									m_tagCurrentMovie;
   int											m_iPlaySpeed;
   bool											m_bAllSettingsLoaded;
   CFileItem										m_itemCurrentFile;
