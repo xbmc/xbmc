@@ -90,6 +90,7 @@
 #include "GUIWindowSettingsUserInterface.h"
 #include "GUIWindowSettingsAudio.h"
 #include "GUIWindowSettingsSystem.h"
+#include "GUIWindowSettingsProfile.h"
 
 using namespace std;
 using namespace MEDIA_DETECT;
@@ -105,6 +106,8 @@ public:
   virtual void					Render();
 	virtual HRESULT 			Create();
 
+  void StartServices(); 
+  void StopServices();
 	void					Stop();
 	void					LoadSkin(const CStdString& strSkin);
 	void					DelayLoadSkin();
@@ -142,6 +145,7 @@ public:
 	CGUIWindowHome									m_guiHome;
   CGUIWindowPrograms							m_guiPrograms;
   CGUIWindowSettingsPrograms      m_guiSettingsPrograms;
+  CGUIWindowSettingsProfile       m_guiSettingsProfile;
   CGUIWindowSettingsSystem        m_guiSettingsSytem;
 	CGUIWindowPictures							m_guiPictures;
 	CGUIDialogInvite								m_guiDialogInvite;
@@ -222,7 +226,7 @@ public:
 protected:
   void                    UpdateLCD();
 	void										FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork);
-  bool                    m_bXboxMediacenterLoaded,m_bSettingsLoaded,m_bCalibrationLoaded;;
+  bool                    m_bXboxMediacenterLoaded,m_bSettingsLoaded;
   CIMDBMovie              m_tagCurrentMovie;
   CMusicInfoTag           m_tagCurrentSong;
   int                     m_iPlaySpeed;
