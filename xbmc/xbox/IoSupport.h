@@ -127,7 +127,8 @@ public:
 
 protected:
 	static VOID			IdexWritePortUchar(USHORT port, UCHAR data);
-	unsigned int	  read_active_partition_table(PARTITION_TABLE *p_table);
+  static UCHAR    IdexReadPortUchar(USHORT port);
+  unsigned int	  read_active_partition_table(PARTITION_TABLE *p_table);
 	bool						DriveExists(const char* szDrive);
 	bool						PartitionExists(const char* szPartition);
 private:
