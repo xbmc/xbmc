@@ -25,7 +25,7 @@ bool CButtonTranslator::Load()
 	// Load the config file
 	if (!xmlDoc.LoadFile("Q:\\keymap.xml"))
 	{
-		g_LoadErrorStr.Format("Q:\\keymap.xml, Line %d\n%s", xmlDoc.GetLineNo(), xmlDoc.GetErrorDesc());
+		g_LoadErrorStr.Format("Q:\\keymap.xml, Line %d\n%s", xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
 		return false;
 	}
 
