@@ -1319,22 +1319,10 @@
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\player.cpp">
 					</File>
 					<File
-						RelativePath=".\xbmc\lib\libPython\xbmcmodule\util.cpp">
-						<FileConfiguration
-							Name="Debug|Xbox">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Xbox">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\pyutil.cpp">
 					</File>
 					<File
-						RelativePath=".\xbmc\lib\libPython\xbmcmodule\util.h">
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\pyutil.h">
 					</File>
 					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\window.cpp">

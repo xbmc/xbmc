@@ -172,6 +172,7 @@ void  CGUIWindowVideoInfo::Render()
 	CGUIDialog::Render();
   if (!m_pTexture) return;
 
+  OutputDebugString("render texture\n");
 	const CGUIControl* pControl=GetControl(CONTROL_IMAGE);
 	float x=(float)pControl->GetXPosition();
 	float y=(float)pControl->GetYPosition();
@@ -186,6 +187,7 @@ void  CGUIWindowVideoInfo::Render()
 
 void CGUIWindowVideoInfo::Refresh()
 {
+  OutputDebugString("Refresh\n");
 	if (m_pTexture)
 	{
 		m_pTexture->Release();
@@ -194,26 +196,29 @@ void CGUIWindowVideoInfo::Refresh()
 
 	CStdString strThumb;
 	CStdString strImage=m_pMovie->m_strPictureURL;
-	CUtil::GetThumbnail(m_pMovie->m_strSearchString,strThumb);
-	if (!CUtil::FileExists(strThumb) )
-	{
-		CHTTP http;
-		CStdString strExtension;
-		CUtil::GetExtension(strImage,strExtension);
-		CStdString strTemp="T:\\temp";
-		strTemp+=strExtension;
-		http.Download(strImage, strTemp);
-		
-		CPicture picture;
-		picture.Convert(strTemp,strThumb);
+  if (strImage.size() >0)
+  {
+	  CUtil::GetThumbnail(m_pMovie->m_strSearchString,strThumb);
+	  if (!CUtil::FileExists(strThumb) )
+	  {
+		  CHTTP http;
+		  CStdString strExtension;
+		  CUtil::GetExtension(strImage,strExtension);
+		  CStdString strTemp="T:\\temp";
+		  strTemp+=strExtension;
+		  http.Download(strImage, strTemp);
+  		
+		  CPicture picture;
+		  picture.Convert(strTemp,strThumb);
 
-	}
-	CUtil::GetThumbnail(m_pMovie->m_strSearchString,strThumb);
-	CStdString strAlbum;
+	  }
+	  CUtil::GetThumbnail(m_pMovie->m_strSearchString,strThumb);
+  }
+  CStdString strAlbum;
 	CUtil::GetIMDBInfo(m_pMovie->m_strSearchString,strAlbum);
 	m_pMovie->Save(strAlbum);
 
-	if (CUtil::FileExists(strThumb) )
+	if (strThumb.size() > 0 && CUtil::FileExists(strThumb) )
 	{
 		CPicture picture;
 		m_pTexture=picture.Load(strThumb);
@@ -221,5 +226,7 @@ void CGUIWindowVideoInfo::Refresh()
 		m_iTextureHeight=picture.GetWidth();
 		
 	}
+  OutputDebugString("update\n");
 	Update();
+  OutputDebugString("updated\n");
 }
