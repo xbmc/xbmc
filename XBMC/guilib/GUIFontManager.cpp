@@ -52,9 +52,9 @@ CGUIFont* GUIFontManager::LoadXPR(const CStdString& strFontName, const CStdStrin
 	if (!bFontLoaded)
 	{
 		delete pNewFont;
-
 		// font could not b loaded
 		CLog::Log(LOGERROR, "Couldn't load font name:%s file:%s", strFontName.c_str(),strPath.c_str());
+		return NULL;
 	}
 
 	m_vecFonts.push_back(pNewFont);
