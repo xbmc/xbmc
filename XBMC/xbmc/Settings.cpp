@@ -142,8 +142,8 @@ CSettings::CSettings(void)
   g_stSettings.m_bMyVideoYearStack = false;
   g_stSettings.m_iMyVideoVideoStack = STACK_NONE;
 
-  g_settings.m_MyVideoStackRegExps.push_back("[ -.]*part[ .]*([0-9])*");
-  g_settings.m_MyVideoStackRegExps.push_back("[ -.]*cd[ .]*([0-9])*");
+  g_settings.m_MyVideoStackRegExps.push_back("[ _\\.-]*part[ \\.]*([0-9])*");
+  g_settings.m_MyVideoStackRegExps.push_back("[ _\\.-]*cd[ \\.]*([0-9])*");
 
   g_stSettings.m_bMyVideoCleanTitles = false;
   strcpy(g_stSettings.m_szMyVideoCleanTokens, "divx|xvid|3ivx|ac3|ac351|dts|mp3|wma|m4a|mp4|aac|ogg|scr|ts|sharereactor|dvd|dvdrip");
