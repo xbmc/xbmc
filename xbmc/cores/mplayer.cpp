@@ -293,16 +293,21 @@ bool CMPlayer::openfile(const CStdString& strFile)
 
 	mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
 
+ 
 	if ( !strstr(strAudioCodec,"SPDIF") ) 
 	{
-
+    if (!bSupportsSPDIFOut)
+    {
+      iChannels=2;
+    }
 		switch(iChannels)
 		{
 			case 1:
 			case 2:
 			case 4:
 				mplayer_close_file();
-        options.SetChannels(iChannels);
+        if ( iChannels !=2) options.SetChannels(iChannels);
+        else options.SetChannels(0);
         options.GetOptions(argc,argv);
 				load();
 				mplayer_init(argc,argv);
