@@ -37,7 +37,7 @@ public:
 	DWORD							GetDisabledColor() const { return m_dwDisabledColor;};
 	DWORD							GetTextColor() const { return m_dwTextColor;};
 	DWORD							GetAlignment() const { return m_dwAlign;};
-	const CStdString& GetFontName() const { return m_pFont->GetFontName(); };
+	const char*				GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
 	const wstring			GetLabel() const { return m_strLabel; };
 	DWORD							GetCheckMarkWidth() const { return m_imgCheckMark.GetWidth(); };
 	DWORD							GetCheckMarkHeight() const { return m_imgCheckMark.GetHeight(); };

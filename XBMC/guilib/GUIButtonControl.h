@@ -52,7 +52,7 @@ public:
 	void							SetTextColor(D3DCOLOR dwTextColor) { m_dwTextColor=dwTextColor;};
 	DWORD							GetTextColor() const { return m_dwTextColor;};
 	DWORD							GetDisabledColor() const { return m_dwDisabledColor;};
-	const CStdString& GetFontName() const { return m_pFont->GetFontName(); };
+	const char *			GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
 	const wstring			GetLabel() const { return m_strLabel; };
 	DWORD							GetHyperLink() const { return m_lHyperLinkWindowID;};
 	const CStdString& GetScriptAction() const { return m_strScriptAction; };

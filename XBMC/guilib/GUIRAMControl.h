@@ -66,8 +66,8 @@ public:
 	DWORD				GetSelectedTextColor() const { return m_dwTextSelectColor;};
 	DWORD	GetTextOffsetX() const { return m_dwTextOffsetX;};
 	DWORD	GetTextOffsetY() const { return m_dwTextOffsetY;};
-	const CStdString&	GetFontName() const { return m_pFont->GetFontName(); };
-	const CStdString&	GetFont2Name() const { return m_pFont2->GetFontName(); };
+	const char *	GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
+	const char *	GetFont2Name() const { return m_pFont2 ? m_pFont2->GetFontName().c_str() : ""; };
 
 	void  SetTextSpacing(DWORD dwTextSpaceY) { m_dwTextSpaceY = dwTextSpaceY; };
 	DWORD  GetTextSpacing() const { return m_dwTextSpaceY; };

@@ -29,7 +29,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
 	DWORD							GetTextColor() const { return m_dwTextColor;};
 	DWORD							GetAlignment() const { return m_dwdwTextAlign;};
-	const CStdString& GetFontName() const { return m_pFont->GetFontName(); };
+	const char *			GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
 
 protected:
 	bool				 RenderText(float fPosX, float fPosY, float fMaxWidth,DWORD dwTextColor, WCHAR* wszText,bool bScroll );
