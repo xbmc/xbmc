@@ -35,6 +35,8 @@
 #include "SkinInfo.h"
 #include "../xbmc/application.h"
 #include "../xbmc/xbox/XKUtils.h"
+#include "GUIInfoLabelControl.h"
+#include "GUIInfoImage.h"
 //#include "../xbmc/util.h"
 
 #include<string>
@@ -84,6 +86,10 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 			if (!strcmp(it->m_szType,"label"))
 			{
 				stControl.m_pControl = new CGUILabelControl(*((CGUILabelControl*)it->m_pControl));
+			}
+			else if (!strcmp(it->m_szType,"infolabel"))
+			{
+				stControl.m_pControl = new CGUIInfoLabelControl(*((CGUIInfoLabelControl*)it->m_pControl));
 			}
 			else if (!strcmp(it->m_szType,"edit"))
 			{
@@ -152,6 +158,10 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 			else if (!strcmp(it->m_szType,"image"))
 			{
 				stControl.m_pControl = new CGUIImage(*((CGUIImage*)it->m_pControl));
+			}
+			else if (!strcmp(it->m_szType,"infoimage"))
+			{
+				stControl.m_pControl = new CGUIInfoImage(*((CGUIInfoImage*)it->m_pControl));
 			}
 			else if (!strcmp(it->m_szType,"listcontrol"))
 			{
@@ -238,6 +248,10 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 		{
 			stControl.m_pControl = new CGUILabelControl(*((CGUILabelControl*)it->m_pControl));
 		}
+		else if (!strcmp(it->m_szType,"infolabel"))
+		{
+			stControl.m_pControl = new CGUIInfoLabelControl(*((CGUIInfoLabelControl*)it->m_pControl));
+		}
 		else if (!strcmp(it->m_szType,"edit"))
 		{
 			stControl.m_pControl = new CGUIEditControl(*((CGUIEditControl*)it->m_pControl));
@@ -305,6 +319,10 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 		else if (!strcmp(it->m_szType,"image"))
 		{
 			stControl.m_pControl = new CGUIImage(*((CGUIImage*)it->m_pControl));
+		}
+		else if (!strcmp(it->m_szType,"infoimage"))
+		{
+			stControl.m_pControl = new CGUIInfoImage(*((CGUIInfoImage*)it->m_pControl));
 		}
 		else if (!strcmp(it->m_szType,"listcontrol"))
 		{

@@ -289,6 +289,12 @@
 				RelativePath=".\guiImage.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIInfoImage.cpp">
+			</File>
+			<File
+				RelativePath=".\GUIInfoLabelControl.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIItem.cpp">
 			</File>
 			<File
@@ -469,6 +475,12 @@
 			</File>
 			<File
 				RelativePath=".\guiImage.h">
+			</File>
+			<File
+				RelativePath=".\GUIInfoImage.h">
+			</File>
+			<File
+				RelativePath=".\GUIInfoLabelControl.h">
 			</File>
 			<File
 				RelativePath=".\GUIItem.h">
