@@ -99,7 +99,6 @@ void  CVirtualDirectory::CacheThumbs(VECFILEITEMS &items)
 		pItem->m_bIsShareOrDrive=false;
 		if (pItem->m_bIsFolder)
 		{
-			pItem->SetIconImage("icon-folder.png");
 		}
 		else
 		{
@@ -152,16 +151,23 @@ void  CVirtualDirectory::CacheThumbs(VECFILEITEMS &items)
 		{
 			if (pItem->GetIconImage()=="")
 			{
-				CStdString strExtension;
-				CUtil::GetExtension(pItem->m_strPath,strExtension);
-				for (int i=0; i < (int)g_settings.m_vecIcons.size(); ++i)
+				if (pItem->m_bIsFolder)
 				{
-					CFileTypeIcon& icon=g_settings.m_vecIcons[i];
-
-					if (CUtil::cmpnocase(strExtension.c_str(), icon.m_strName)==0)
+					pItem->SetIconImage("defaultFolder.png");
+				}
+				else
+				{
+					CStdString strExtension;
+					CUtil::GetExtension(pItem->m_strPath,strExtension);
+					for (int i=0; i < (int)g_settings.m_vecIcons.size(); ++i)
 					{
-						pItem->SetIconImage(icon.m_strName);
-						break;
+						CFileTypeIcon& icon=g_settings.m_vecIcons[i];
+
+						if (CUtil::cmpnocase(strExtension.c_str(), icon.m_strName)==0)
+						{
+							pItem->SetIconImage(icon.m_strName);
+							break;
+						}
 					}
 				}
 			}

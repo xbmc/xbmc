@@ -33,8 +33,7 @@ CApplication::CApplication(void)
 CApplication::~CApplication(void)
 {
 }
-
-HRESULT CApplication::Initialize()
+HRESULT CApplication::Create()
 {
 	CStdString strPath;
 	CUtil::GetHomePath(strPath);
@@ -55,7 +54,73 @@ HRESULT CApplication::Initialize()
   g_localizeStrings.Load(strSkinPath+string("\\strings.xml") );
 
 	g_settings.Load();
+	DWORD dwStandard=XGetVideoStandard();
+	DWORD dwFlags=XGetVideoFlags();
 
+	//	0	PAL 720x576 @ 4:3
+	//	1	PAL 720x576 @ 16:9
+	//	2	NTSC 720x480 @ 4:3
+	//	3	NTSC 720x480 @ 16:9
+	//	4	HDTV 1920x1080 @ 16:9
+	//	5	HDTV 1280x720  @ 16:9
+	
+	if (g_stSettings.m_iScreenResolution==4) //HDTV 1920x1080 @ 16:9
+	{
+		if ( dwFlags&XC_VIDEO_FLAGS_HDTV_1080i)
+		{
+			m_d3dpp.BackBufferWidth        = 1920;
+			m_d3dpp.BackBufferHeight       = 1080;
+			m_d3dpp.Flags=D3DPRESENTFLAG_WIDESCREEN;
+		}
+		else g_stSettings.m_iScreenResolution=-1;
+	}
+	else if (g_stSettings.m_iScreenResolution==5) //HDTV 1280x720  @ 16:9
+	{
+		if ( dwFlags&XC_VIDEO_FLAGS_HDTV_720p)
+		{
+			m_d3dpp.BackBufferWidth        = 1280;
+			m_d3dpp.BackBufferHeight       = 720;
+			m_d3dpp.Flags=D3DPRESENTFLAG_WIDESCREEN|D3DPRESENTFLAG_PROGRESSIVE;
+		}
+		else g_stSettings.m_iScreenResolution=-1;
+	}
+
+	if (g_stSettings.m_iScreenResolution <= 3)
+	{
+		if (dwStandard==XC_VIDEO_STANDARD_PAL_I)
+		{
+			if (g_stSettings.m_iScreenResolution<0 || g_stSettings.m_iScreenResolution>1)
+				g_stSettings.m_iScreenResolution=0;
+			m_d3dpp.BackBufferWidth        = 720;
+			m_d3dpp.BackBufferHeight       = 576;
+			if (g_stSettings.m_iScreenResolution==1)
+			{
+				m_d3dpp.Flags=D3DPRESENTFLAG_WIDESCREEN;
+			}
+		}
+		else
+		{
+			//ntsc
+			if (g_stSettings.m_iScreenResolution<2 || g_stSettings.m_iScreenResolution>3)
+				g_stSettings.m_iScreenResolution=2;
+			m_d3dpp.BackBufferWidth        = 720;
+			m_d3dpp.BackBufferHeight       = 480;
+			if (g_stSettings.m_iScreenResolution==3)
+			{
+				m_d3dpp.Flags=D3DPRESENTFLAG_WIDESCREEN;
+			}
+		}
+	}
+
+	return CXBApplicationEx::Create();
+}
+
+HRESULT CApplication::Initialize()
+{
+	CStdString strPath;
+	CUtil::GetHomePath(strPath);
+	string strSkinPath=strPath;
+	strSkinPath+=CStdString("\\skin");
   if (g_stSettings.szThumbnailsDirectory[0]==0)
   {
     strcpy(g_stSettings.szThumbnailsDirectory,strPath.c_str());
@@ -96,7 +161,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(&m_keyboard);
 	m_gWindowManager.Add(&m_guiSystemInfo);
 
-  g_graphicsContext.Set(m_pd3dDevice,m_d3dpp.BackBufferWidth,m_d3dpp.BackBufferHeight);
+  g_graphicsContext.Set(m_pd3dDevice,m_d3dpp.BackBufferWidth,m_d3dpp.BackBufferHeight, (m_d3dpp.Flags&D3DPRESENTFLAG_WIDESCREEN) !=0 );
   m_keyboard.Initialize();
 	m_ctrDpad.SetDelays(g_stSettings.m_iMoveDelayController,g_stSettings.m_iRepeatDelayController);
 	m_ctrIR.SetDelays(g_stSettings.m_iMoveDelayIR,g_stSettings.m_iRepeatDelayIR);

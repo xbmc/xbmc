@@ -86,7 +86,7 @@ public:
 
 public:
     // Functions to create, run, and clean up the application
-    HRESULT Create();
+    virtual HRESULT Create();
     INT     Run();
     VOID    Destroy();
 

@@ -126,6 +126,11 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
   {
     switch (message.GetMessage())
     {
+			case GUI_MSG_ITEM_SELECT:
+				SetValue( message.GetParam1());
+				return true;
+			break;
+			
 			case GUI_MSG_LABEL_RESET:
 			{
 				m_vecLabels.erase(m_vecLabels.begin(),m_vecLabels.end());

@@ -61,6 +61,7 @@ void CGUIListControl::Render()
       m_imgButton.SetPosition(m_dwPosX, dwPosY);	
       m_imgButton.Render();
       
+			int iWidth=m_imgFolder.GetWidth();
 			if (pItem->HasIcon() )
       {
         // show icon
@@ -75,13 +76,14 @@ void CGUIListControl::Render()
         fPosY += dwPosY;
 			  pImage->SetPosition(dwPosX+8, (DWORD)fPosY);
         pImage->Render();
+				iWidth=pImage->GetWidth()+10;
       }
 
       DWORD dwColor=m_dwTextColor;
 			if (pItem->IsSelected())
         dwColor=m_dwSelectedColor;
       
-			dwPosX += m_imgFolder.GetWidth()+2;
+			dwPosX += iWidth+2;
       bool bSelected(false);
       if (i == m_iCursorY && HasFocus() && m_iSelect== CONTROL_LIST)
         bSelected=true;

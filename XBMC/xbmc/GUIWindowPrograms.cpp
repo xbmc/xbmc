@@ -572,10 +572,12 @@ void CGUIWindowPrograms::OnSort()
   for (int i=0; i < (int)m_vecItems.size(); i++)
   {
     CFileItem* pItem=m_vecItems[i];
-		if (pItem->m_bIsFolder)
+		pItem->SetIconImage("defaultFolder.png");
+		if (!CUtil::FileExists(pItem->GetThumbnailImage()) )
 		{
-			pItem->SetIconImage("icon-folder.png");
+			pItem->SetThumbnailImage("defaultFolderBig.png");
 		}
+
     CGUIMessage msg(GUI_MSG_LABEL_ADD,GetID(),CONTROL_LIST,0,0,(void*)pItem);
     g_graphicsContext.SendMessage(msg);    
     CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_THUMBS,0,0,(void*)pItem);
