@@ -11,6 +11,8 @@
 #include "GUIWindowPrograms.h"
 #include "GUIWindowPictures.h"
 #include "GUIWindowMyFiles.h"
+#include "GUIWindowMusic.h"
+#include "GUIWindowVideo.h"
 #include "GUIWindowSettings.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogProgress.h"
@@ -34,6 +36,8 @@ public:
 	CGUIDialogYesNo				m_guiDialogYesNo;
 	CGUIDialogProgress		m_guiDialogProgress;
 	CGUIWindowMyFiles			m_guiMyFiles;
+	CGUIWindowMusic				m_guiMyMusic;
+	CGUIWindowVideo				m_guiMyVideo;
 	CGUIWindowSettings		m_guiSettings;
   CXBVirtualKeyboard    m_keyboard;
 };

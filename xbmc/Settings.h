@@ -64,6 +64,10 @@ public:
 	  int				m_bMyFilesSortMethod;
 	  bool			m_bMyFilesSortAscending;
 
+		bool			m_bMyMusicViewAsIcons;
+	  int				m_bMyMusicSortMethod;
+	  bool			m_bMyMusicSortAscending;
+
   };
   int       m_iSlideShowTransistionFrames;
   int       m_iSlideShowStayTime;

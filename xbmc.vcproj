@@ -283,6 +283,9 @@
 				RelativePath=".\xbmc\GUIWindowHome.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowMusic.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowMyFiles.cpp">
 			</File>
 			<File
@@ -293,6 +296,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettings.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowVideo.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\Picture.cpp">
@@ -369,6 +375,9 @@
 				RelativePath=".\xbmc\GUIWindowHome.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowMusic.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowMyFiles.h">
 			</File>
 			<File
@@ -379,6 +388,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettings.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowVideo.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\Picture.h">

@@ -84,7 +84,10 @@ HRESULT CApplication::Initialize()
   m_guiPrograms.Load( strSkinPath+string("\\myprograms.xml" ));  
 	m_guiPictures.Load( strSkinPath+string("\\mypics.xml" ));  
 	m_guiMyFiles.Load( strSkinPath+string("\\myfiles.xml" ));  
+	m_guiMyMusic.Load( strSkinPath+string("\\mymusic.xml" ));  
+	m_guiMyVideo.Load( strSkinPath+string("\\myvideo.xml" ));  
 	m_guiSettings.Load( strSkinPath+string("\\settings.xml" ));  
+
 	m_guiDialogYesNo.Load( strSkinPath+string("\\dialogYesNo.xml" ));  
 	m_guiDialogProgress.Load( strSkinPath+string("\\dialogProgress.xml" ));  
 
@@ -93,6 +96,8 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(&m_guiPrograms);
 	m_gWindowManager.Add(&m_guiPictures);
   m_gWindowManager.Add(&m_guiMyFiles);
+  m_gWindowManager.Add(&m_guiMyMusic);
+	m_gWindowManager.Add(&m_guiMyVideo);
 	m_gWindowManager.Add(&m_guiSettings);
   m_gWindowManager.Add(&m_guiDialogYesNo);
   m_gWindowManager.Add(&m_guiDialogProgress);
