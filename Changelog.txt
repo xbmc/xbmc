@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 01-03-2005 fixed: flashing screen when viewing pictures
   - 28-02-2005 changed: some gui rendering optimization
   - 28-02-2005 added: More DirectX exports for screensavers, thanks to SiW + MrC
   - 28-02-2005 fixed: Kai window showed incorrect image in Friends view.
