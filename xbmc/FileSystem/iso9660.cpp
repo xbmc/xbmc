@@ -1,6 +1,26 @@
+/*
+	Redbook			: CDDA	
+	Yellowbook	: CDROM
+ISO9660
+ CD-ROM Mode 1 divides the 2352 byte data area into:
+		-12		bytes of synchronisation 
+		-4		bytes of header information 
+		-2048 bytes of user information 
+		-288	bytes of error correction and detection codes. 
 
+ CD-ROM Mode 2 redefines the use of the 2352 byte data area as follows: 
+		-12 bytes of synchronisation 
+		-4 bytes of header information 
+		-2336 bytes of user data. 
+
+
+
+*/
 #include "iso9660.h"
 //#define _DEBUG_OUTPUT 1
+int iso9660::m_iReferences=0;
+HANDLE iso9660::m_hCDROM=NULL;
+static CRITICAL_SECTION m_critSection;
 
 #define RET_ERR -1
 //******************************************************************************************************************
@@ -221,34 +241,39 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 	return NULL;
 }
 //******************************************************************************************************************
-iso9660::iso9660( const char *filename )
+iso9660::iso9660( )
 {
 	m_bUseMode2=false;
-	m_gmXferBuffer = GlobalAlloc(GPTR, RAW_SECTOR_SIZE);
-	m_rawXferBuffer = NULL;
-	if( m_gmXferBuffer )
-		m_rawXferBuffer = GlobalLock(m_gmXferBuffer);
+	if (!m_iReferences)
+	{
+		m_hCDROM = m_IoSupport.OpenCDROM();
+		InitializeCriticalSection(&m_critSection);
+	}
 
-	char temp[10];
-
+	m_iReferences++;
+	
 	m_pCache           = new char[32768];
 	m_paths = 0;
 	m_lastpath = 0;
 	memset(&m_info,0,sizeof(m_info));
+	m_info.ISO_HANDLE = m_hCDROM ;
 	m_info.Curr_dir_cache = 0;
 	m_info.Curr_dir = (char*)malloc( 4096 );
 	strcpy( m_info.Curr_dir, "\\" );
 
-	m_info.ISO_HANDLE =m_IoSupport.OpenCDROM();
 
+	EnterCriticalSection(&m_critSection);
 	DWORD lpNumberOfBytesRead = 0;
 	::SetFilePointer( m_info.ISO_HANDLE, 0x8000,0,FILE_BEGIN );
 	::ReadFile( m_info.ISO_HANDLE, &m_info.iso, sizeof(m_info.iso), &lpNumberOfBytesRead, NULL );
+	
 	if(strncmp(m_info.iso.szSignature,"CD001",5))
 	{
 		m_IoSupport.CloseCDROM( m_info.ISO_HANDLE);
 		m_info.ISO_HANDLE=NULL;
+		m_hCDROM=NULL;
 		m_info.iso9660 = 0;
+		LeaveCriticalSection(&m_critSection);
 		return;
 	}
 	else
@@ -282,6 +307,7 @@ iso9660::iso9660( const char *filename )
 	}
     memcpy( &m_info.isodir, &m_info.iso.szRootDir, sizeof(m_info.isodir) );
 	m_dirtree = ReadRecursiveDirFromSector( m_info.isodir.dwFileLocationLE, "\\" );
+	LeaveCriticalSection(&m_critSection);
 }
 
 //******************************************************************************************************************  
@@ -318,16 +344,15 @@ iso9660::~iso9660(  )
 		free(pDir);
 	}
 
-
-	if (m_info.ISO_HANDLE)
+	m_iReferences--;
+	if (!m_iReferences)
 	{
-		m_IoSupport.CloseCDROM(m_info.ISO_HANDLE);
-	}
-
-	if( m_gmXferBuffer )
-	{
-		GlobalUnlock(m_gmXferBuffer);
-		GlobalFree(m_gmXferBuffer);
+		DeleteCriticalSection(&m_critSection);
+		if (m_hCDROM)
+		{
+			m_IoSupport.CloseCDROM(m_hCDROM);
+		}
+		m_hCDROM=NULL;
 	}
 }
 //******************************************************************************************************************
@@ -371,6 +396,7 @@ struct iso_dirtree *iso9660::FindFolder( char *Folder )
 //******************************************************************************************************************
 HANDLE iso9660::FindFirstFile( char *szLocalFolder, WIN32_FIND_DATA *wfdFile )
 {
+	if (m_info.ISO_HANDLE==0) return (HANDLE)0;
 	memset( wfdFile, 0, sizeof(WIN32_FIND_DATA));
 
 	m_searchpointer = FindFolder( szLocalFolder );
@@ -419,7 +445,7 @@ int iso9660::FindNextFile( HANDLE szLocalFolder, WIN32_FIND_DATA *wfdFile )
 bool iso9660::FindClose( HANDLE szLocalFolder )
 {
 	m_searchpointer = 0;
-	free(m_info.Curr_dir_cache);
+	if (m_info.Curr_dir_cache) free(m_info.Curr_dir_cache);
 	m_info.Curr_dir_cache = 0;
 	return true;
 }
@@ -427,6 +453,9 @@ bool iso9660::FindClose( HANDLE szLocalFolder )
 //******************************************************************************************************************
 HANDLE iso9660::OpenFile( const char* filename)
 {
+	if (m_info.ISO_HANDLE==NULL) return INVALID_HANDLE_VALUE;
+
+	
 	WIN32_FIND_DATA fileinfo;
 	char *pointer,*pointer2;
 	char work[512];
@@ -459,9 +488,11 @@ HANDLE iso9660::OpenFile( const char* filename)
 //	DWORD calc = isodir.dwFileLocationLE * 0x800;
 	//DWORD calc = iso.wSectorSizeLE * isodir.dwFileLocationLE;
 	DWORD calc = m_info.iso.wSectorSizeLE * m_searchpointer->Location;
-	m_info.curr_filesize = m_searchpointer->Length;
+	
+	m_info.curr_filesize = fileinfo.nFileSizeLow;
 	m_dwStartSector = m_searchpointer->Location;
 
+	EnterCriticalSection(&m_critSection);
 	memcpy(&m_openfileinfo, m_searchpointer, sizeof( m_openfileinfo ));
 	DWORD dwPos = ::SetFilePointer( m_info.ISO_HANDLE, calc ,0,FILE_BEGIN );
 	
@@ -469,9 +500,13 @@ HANDLE iso9660::OpenFile( const char* filename)
 	int iRead=::ReadFile( m_info.ISO_HANDLE, m_pCache, m_info.iso.wSectorSizeLE, &dwBytesRead,NULL );
 	if( iRead<=0 )
 	{
+		printf("using mode2 %i\n", m_info.curr_filesize);
 		m_bUseMode2 = true;		
+		m_info.iso.wSectorSizeLE=MODE2_DATA_SIZE;
+		m_info.curr_filesize = (m_info.curr_filesize / 2048) * MODE2_DATA_SIZE;
 	}
 
+	LeaveCriticalSection(&m_critSection);
 	return m_info.ISO_HANDLE;
 }
 
@@ -498,7 +533,7 @@ DWORD iso9660::SetFilePointer(HANDLE hFile,  LONG lDistanceToMove,  PLONG lpDist
 		break;
 
 	case( FILE_END ):
-    m_info.curr_filepos = m_openfileinfo.dwFileLengthLE-lDistanceToMove;
+    m_info.curr_filepos = m_info.curr_filesize-lDistanceToMove;
 		break;		
 	}
 	return m_info.curr_filepos;
@@ -535,7 +570,8 @@ int iso9660::ReadFile( char * pBuffer, int * piSize, DWORD *totalread )
 	DWORD dwBytesRead=0;
 	DWORD dwBytes2Read = *piSize;
 	DWORD dwBytesLeft = m_info.curr_filesize;
-
+	*totalread = 0;
+	if (m_info.ISO_HANDLE==NULL) return -1;
 	if (m_info.curr_filepos>=m_info.curr_filesize) 
 	{
 		return 0; // EOF
@@ -557,6 +593,7 @@ int iso9660::ReadFile( char * pBuffer, int * piSize, DWORD *totalread )
 		for( int t=0; t<5; ++t )
 		{
 			int iResult;
+			EnterCriticalSection(&m_critSection);
 			if (m_bUseMode2)
 			{
 				iResult=m_IoSupport.ReadSectorMode2( m_info.ISO_HANDLE, dwCurrentSector, m_pCache);
@@ -567,6 +604,7 @@ int iso9660::ReadFile( char * pBuffer, int * piSize, DWORD *totalread )
 				::SetFilePointer( m_info.ISO_HANDLE, dwCurrentSector*m_info.iso.wSectorSizeLE, 0,FILE_BEGIN);
 				iResult=::ReadFile( m_info.ISO_HANDLE, m_pCache, m_info.iso.wSectorSizeLE, &dwBytesRead,NULL );
 			}
+			LeaveCriticalSection(&m_critSection);
 			if (iResult <= 0)
 			{
 				if( t == 4 )
@@ -584,7 +622,7 @@ int iso9660::ReadFile( char * pBuffer, int * piSize, DWORD *totalread )
 
 				memcpy(&pBuffer[dwPos], &m_pCache[iAlignmentadjust], dwBytesToCopy);
 				dwPos += dwBytesToCopy;
-				*totalread = *totalread + dwBytesToCopy;
+				*totalread = (*totalread) + dwBytesToCopy;
 				dwBytes2Read-= dwBytesToCopy;
 				m_info.curr_filepos +=dwBytesToCopy;
 			}

@@ -23,11 +23,9 @@
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
-
 //*********************************************************************************************
 CFileISO::CFileISO()
 {
-//	CSectionLoader::Load("ISO9660");
 	m_pIsoReader=NULL;
 	m_i64FilePos=0;
 }
@@ -39,13 +37,12 @@ CFileISO::~CFileISO()
 	{
 		Close();
 	}
-//	CSectionLoader::Unload("ISO9660");
 }
 //*********************************************************************************************
 bool CFileISO::Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName, int iport,bool bBinary)
 {
   m_i64FilePos=0;
-	m_pIsoReader = new iso9660("D:");
+	m_pIsoReader = new iso9660();
 	string strFName="\\";
 	strFName+=strFileName;
 	for (int i=0; i < (int)strFName.size(); ++i )
@@ -86,6 +83,7 @@ void CFileISO::Close()
 //*********************************************************************************************
 offset_t CFileISO::Seek(offset_t iFilePosition, int iWhence)
 {
+	if (!m_pIsoReader) return 0;
 	LONG lPos=(LONG)iFilePosition;
 	LONG lNewPos=0;
 	switch (iWhence)

@@ -199,8 +199,9 @@ typedef struct _FILE_FS_SIZE_INFORMATION {
 	ULONG BytesPerSector;
 } FILE_FS_SIZE_INFORMATION, *PFILE_FS_SIZE_INFORMATION;
 
+#ifdef _XBOX
 #define DEVICE_TYPE ULONG
-
+#endif
 // Structure of FileFsDeviceInformation
 typedef struct _FILE_FS_DEVICE_INFORMATION {                    
     DEVICE_TYPE DeviceType;                                     
@@ -1379,7 +1380,7 @@ extern "C"
 
 	extern DWORD* LaunchDataPage;  
 }
-
+#ifdef _XBOX
 extern "C" XBOXAPI LPVOID XeImageFileName; 
-
+#endif
 #endif // __XBOX_INTERNAL_H__

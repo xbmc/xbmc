@@ -1,7 +1,11 @@
 #pragma once
 #include <string>
 using namespace std;
+#ifdef _XBOX
 #include <xtl.h>
+#else
+#include <windows.h>
+#endif
 #define SS_ANSI 1
 // =============================================================================
 //  FILE:  StdString.h

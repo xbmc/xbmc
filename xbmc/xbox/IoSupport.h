@@ -28,9 +28,11 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
-
+#ifdef _XBOX
 #include <xtl.h>
-
+#else
+#include <windows.h>
+#endif
 #define TRAY_OPEN					16
 #define TRAY_CLOSED_NO_MEDIA		64
 #define TRAY_CLOSED_MEDIA_PRESENT	96
