@@ -2007,7 +2007,47 @@
 	<string>
 		<id>743</id>
 		<value>Galben</value>
+	</string>
+	<string>
+		<id>744</id>
+		<value>Fisiere</value>
 	</string>		
+	<string>
+		<id>745</id>
+		<value>Nici o informatie scanata pt aceasta vizualizare</value>
+	</string>		
+	<string>
+		<id>746</id>
+		<value>Schibare la vizualizare fisiere</value>
+	</string>
+	<string>
+		<id>747</id>
+		<value>Nu este memorie indeajuns pt a incarca imaginea</value>
+	</string>
+	<string>
+		<id>748</id>
+		<value>Editeaza calea</value>
+	</string>
+	<string>
+		<id>749</id>
+		<value>Adauga share</value>
+	</string>
+	<string>
+		<id>750</id>
+		<value>Esti sigur?</value>
+	</string>
+	<string>
+		<id>751</id>
+		<value>Sterge Share</value>
+	</string>
+	<string>
+		<id>752</id>
+		<value>Editeaza calea share</value>
+	</string>
+	<string>
+		<id>753</id>
+		<value>Editeaza nume Share</value>
+	</string>
 	<string>
 		<id>998</id>
 		<value>XLink Kai</value>

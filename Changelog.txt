@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 15-10-2004 changed: Romanian language file (Thnx to bompy)
   - 15-10-2004 fixed: [ 1046845 ] Subtitles show a vertical bar
   - 14-10-2004 changed: cleaned up switching from/to fullscreen code
   - 14-10-2004 added: now GUI_MSG_PLAYBACK_STARTED is send on file start
