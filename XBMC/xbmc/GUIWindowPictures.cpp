@@ -433,7 +433,6 @@ void CGUIWindowPictures::OnClick(int iItem)
 
 bool CGUIWindowPictures::HaveDiscOrConnection( CStdString& strPath, int iDriveType )
 {
-#if 0
 	if ( iDriveType == SHARE_TYPE_DVD ) {
 		CDetectDVDMedia::WaitMediaReady();
 		if ( !CDetectDVDMedia::IsDiscInDrive() ) {
@@ -460,7 +459,6 @@ bool CGUIWindowPictures::HaveDiscOrConnection( CStdString& strPath, int iDriveTy
 	}
 	else
 		return true;
-#endif
   return true;
 }
 
