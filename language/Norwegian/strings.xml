@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.167. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.172. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -587,6 +587,25 @@
   <string><id>12006</id><value>Lydvisualisering</value></string>
   <string><id>12007</id><value>Bilder/bildevisning</value></string>
   <string><id>12008</id><value>Filstablingsdialog</value></string>
+  <string><id>10516</id><value>Min musikk - Bibliotek</value></string>
+  <string><id>10517</id><value>Min musikk - Spilleliste</value></string>
+  <string><id>10518</id><value>Min video - Skuespiller</value></string>
+  <string><id>10519</id><value>Min video - Sjanger</value></string>
+  <string><id>10520</id><value>Min video - Tittel</value></string>
+  <string><id>10521</id><value>Min video - År</value></string>
+  <string><id>10522</id><value>Min video - Spilleliste</value></string>
+  <string><id>10523</id><value>Albuminfo</value></string>
+  <string><id>10524</id><value>Filminfo</value></string>
+  <string><id>11000</id><value>tastatur</value></string>
+  <string><id>12000</id><value>Velgedialog</value></string>
+  <string><id>12001</id><value>Min musikk/info</value></string>
+  <string><id>12002</id><value>Dialog OK</value></string>
+  <string><id>12003</id><value>Mine videoer/info</value></string>
+  <string><id>12004</id><value>Mine skript/info</value></string>
+  <string><id>12005</id><value>Fullskjermsvideo</value></string>
+  <string><id>12006</id><value>Lydvisualisering</value></string>
+  <string><id>12007</id><value>Mine bilder/fremvisning</value></string>
+  <string><id>12008</id><value>Filstablingsdialog</value></string>
   <string><id>12310</id><value>0</value></string>
   <string><id>12311</id><value>1</value></string>
   <string><id>12312</id><value>2</value></string>
@@ -707,11 +726,9 @@
   <string><id>13352</id><value>Skann mappe til database</value></string>
   <string><id>13353</id><value>Stopp skanning</value></string>
   <string><id>13354</id><value>Rendermetode</value></string>
-  <string><id>13355</id><value>Pixel Shader</value></string>
-  <string><id>13356</id><value>YUY2 overlegg</value></string>
-  <string><id>13357</id><value>Kombinasjon overlegg/shader</value></string>
-  <string><id>13358</id><value>Høykvalitets Pixel Shader</value></string>
-  <string><id>13359</id><value>Medium kvalitets Pixel Shader</value></string>
+  <string><id>13355</id><value>Lavkvalitets pixel shader</value></string>
+  <string><id>13356</id><value>Hardwareoverlegg</value></string>
+  <string><id>13357</id><value>Høykvalitets pixel shader</value></string>
   <string><id>13360</id><value>Lag miniatyrbilder</value></string>
 
   <string><id>14000</id><value>Stabling: Av</value></string>
@@ -839,4 +856,11 @@
   <string><id>15060</id><value>Melding her</value></string>
   <string><id>15061</id><value>Du er invitert til å spille %s.</value></string>
   <string><id>15062</id><value>Bruk alternativ mplayer</value></string>
+  <string><id>15100</id><value>Nav</value></string>
+  <string><id>15101</id><value>Database</value></string>
+  <string><id>15102</id><value>* Alle albumer</value></string>
+  <string><id>15103</id><value>* Alle artister</value></string>
+  <string><id>15104</id><value>* Alle sanger</value></string>
+  <string><id>15105</id><value>* Alle sjangre</value></string>
 </strings>
+
