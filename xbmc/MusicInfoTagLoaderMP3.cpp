@@ -1,6 +1,7 @@
 #include "musicinfotagloadermp3.h"
 #include "stdstring.h"
 #include "sectionloader.h"
+#include "Util.h"
 
 using namespace MUSIC_INFO;
 using namespace XFILE;
@@ -50,6 +51,30 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
 		tag.SetReleaseDate(dateTime);
 	}
 
+	//	extract Cover Art and save as album thumb
+	if (ID3_HasPicture(&id3tag))
+	{
+		ID3_PictureType nPicTyp=ID3PT_COVERFRONT;
+		bool bFound=false;
+		auto_ptr<char>pMimeTyp (ID3_GetMimeTypeOfPicType(&id3tag, nPicTyp));
+		if (pMimeTyp.get() == NULL)
+		{
+			nPicTyp=ID3PT_OTHER;
+			auto_ptr<char>pMimeTyp (ID3_GetMimeTypeOfPicType(&id3tag, nPicTyp));
+			if (pMimeTyp.get() != NULL)
+				bFound=true;
+		}
+		else
+			bFound=true;
+
+		if (bFound)
+		{
+			CStdString strCoverArt;
+			CUtil::GetAlbumThumb(tag.GetAlbum(), strCoverArt);
+			if (!CUtil::FileExists(strCoverArt))
+				ID3_GetPictureDataOfPicType(&id3tag, strCoverArt, nPicTyp);
+		}
+	}
 	const Mp3_Headerinfo* mp3info = id3tag.GetMp3HeaderInfo();
 	if ( mp3info != NULL )
 		tag.SetDuration( mp3info->time );
