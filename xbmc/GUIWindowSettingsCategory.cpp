@@ -1177,8 +1177,8 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     {
       g_application.StartWebServer();
       CStdString strPassword = g_guiSettings.GetString("Servers.WebServerPassword");
-      if (strPassword.size() > 0)
-        g_application.m_pWebServer->SetPassword((char_t*)strPassword.c_str());
+//      if (strPassword.size() > 0)
+      g_application.m_pWebServer->SetPassword((char_t*)strPassword.c_str());
     }
   }
   else if (strSetting == "Network.HTTPProxyPort")
