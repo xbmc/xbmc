@@ -908,9 +908,15 @@ void CUtil::SetThumbs(VECFILEITEMS &items)
 					}
 					if (strDescription.size())
 					{
-						CShortcut cut;
-						cut.m_strPath=pItem->m_strPath;
-						cut.Save(strDescription);
+						CStdString strFname;
+						strFname=CUtil::GetFileName(pItem->m_strPath);
+						strFname.ToLower();
+						if (strFname!="dashupdate.xbe" && strFname!="downloader.xbe" && strFname != "update.xbe")
+						{
+							CShortcut cut;
+							cut.m_strPath=pItem->m_strPath;
+							cut.Save(strDescription);
+						}
 					}
         }
 			}
@@ -1139,4 +1145,16 @@ bool CUtil::IsPAL_SVCD(int iWidth, int iHeight)
 bool CUtil::IsPAL_DVD(int iWidth, int iHeight)
 {
   return (iWidth==720 && iHeight==576);
+}
+
+
+void CUtil::RemoveIllegalChars( CStdString& strText)
+{
+	char szRemoveIllegal [1024];
+	strcpy(szRemoveIllegal ,strText.c_str());
+	static char legalChars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~ ";
+	char *cursor;
+	for (cursor = szRemoveIllegal; *(cursor += strspn(cursor, legalChars)); /**/ )
+		*cursor = '_';
+	strText=szRemoveIllegal;
 }
