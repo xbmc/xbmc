@@ -153,6 +153,7 @@ public:
 		bool			m_bAutorunVideo;
 		bool			m_bAutorunPictures;
 		char      szDefaultLanguage[256];
+		char      szDefaultVisualisation[256];
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;
