@@ -21,6 +21,7 @@ public:
 	CStdString GetDirFromRes(RESOLUTION res);
 
 	double GetMinVersion();
+  double GetVersion(){return m_Version;};
 
 protected:
 
@@ -29,6 +30,7 @@ protected:
 	RESOLUTION m_DefaultResolution;	// default resolution for the skin in 4:3 modes
 	RESOLUTION m_DefaultResolutionWide;	// default resolution for the skin in 16:9 modes
 	CStdString m_strBaseDir;
+  double m_Version;
 };
 
 extern CSkinInfo g_SkinInfo;
