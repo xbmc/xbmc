@@ -428,12 +428,13 @@ void CSlideShowPic::Render()
 	float fScreenRatio = fScreenWidth/fScreenHeight * fPixelRatio;
 	// work out if we should be compensating the zoom to minimize blackbars
 	// we should compute this based on the % of black bars on screen perhaps??
-	if (fScreenRatio < fSourceAR * fComp && fSourceAR < fScreenRatio * fComp)
+	// TODO: change m_displayEffect != EFFECT_NO_TIMEOUT to whether we're running the slideshow
+	if (m_displayEffect != EFFECT_NO_TIMEOUT && fScreenRatio < fSourceAR * fComp && fSourceAR < fScreenRatio * fComp)
 		bFillScreen = true;
 	if ((!bFillScreen && fScreenWidth*fPixelRatio > fScreenHeight*fSourceAR) || (bFillScreen && fScreenWidth*fPixelRatio < fScreenHeight*fSourceAR))
 		fScaleNorm = fScreenHeight/(m_fHeight*fPixelRatio);
 	bFillScreen = false;
-	if (fScreenRatio < fSourceInvAR * fComp && fSourceInvAR < fScreenRatio * fComp)
+	if (m_displayEffect != EFFECT_NO_TIMEOUT && fScreenRatio < fSourceInvAR * fComp && fSourceInvAR < fScreenRatio * fComp)
 		bFillScreen = true;
 	if ((!bFillScreen && fScreenWidth*fPixelRatio > fScreenHeight*fSourceInvAR) || (bFillScreen && fScreenWidth*fPixelRatio < fScreenHeight*fSourceInvAR))
 		fScaleInv = fScreenHeight/(m_fWidth*fPixelRatio);
@@ -712,6 +713,9 @@ void CGUIWindowSlideShow::Select(const CStdString& strPicture)
     if (strSlide==strPicture)
     {
       m_iCurrentSlide=i;
+			m_iNextSlide = m_iCurrentSlide+1;
+			if (m_iNextSlide >= (int)m_vecSlides.size())
+				m_iNextSlide = 0;
       return;
     }
   }
@@ -1013,6 +1017,10 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 			}
       g_graphicsContext.SetOverlay(false);
 			g_graphicsContext.Get3DDevice()->EnableOverlay(TRUE);
+
+			// shuffle
+			if (g_stSettings.m_bSlideShowShuffle && m_bSlideShow)
+				Shuffle();
 			return true;
 		}
 	}
@@ -1104,6 +1112,27 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, D3DTexture *pTex
 	}
 }
 
+void CGUIWindowSlideShow::Shuffle()
+{
+	int iNumToShuffle = (int)m_vecSlides.size();
+	// first pic is the current pic
+	vector<CStdString> vecTemp(m_vecSlides);
+	m_vecSlides.clear();
+	int iDone = 0;
+	ivecSlides it = m_vecSlides.begin();
+	m_vecSlides.push_back(vecTemp[m_iCurrentSlide]);
+	vecTemp.erase(vecTemp.begin() + m_iCurrentSlide);
+	iNumToShuffle--;
+	while (iNumToShuffle)
+	{
+		int slide = rand() % iNumToShuffle;
+		m_vecSlides.push_back(vecTemp[slide]);
+		vecTemp.erase(vecTemp.begin() + slide);
+		iNumToShuffle--;
+	}
+	m_iCurrentSlide = 0;
+	m_iNextSlide = 1;
+}
 
 
 

@@ -37,9 +37,8 @@ void CPicture::Free()
 	}
 }
 
-IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int &iOriginalWidth, int &iOriginalHeight, int iMaxWidth, int iMaxHeight, bool bCreateThumb)
+CxImage* CPicture::LoadImage(const CStdString& strFileName, int &iOriginalWidth, int &iOriginalHeight, int iMaxWidth, int iMaxHeight)
 {
-	IDirect3DTexture8* pTexture=NULL;
 	CStdString strExtension;
 	CStdString strCachedFile;
 	DWORD dwImageType=0xffff;
@@ -78,21 +77,18 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int &iOriginalW
     strCachedFile=strFileName;
   }
 
-//	pTexture = LoadNative(strCachedFile);
-//	if (pTexture) return pTexture;
-
 	if (!m_bSectionLoaded)
 	{
 		CSectionLoader::Load("CXIMAGE");
 		m_bSectionLoaded=true;
 	}
 
-	CxImage image(dwImageType);
+	CxImage* pImage = new CxImage(dwImageType);
   try
   {
-	  if (!image.Load(strCachedFile.c_str(),dwImageType) || !image.IsValid())
+	  if (!pImage->Load(strCachedFile.c_str(),dwImageType) || !pImage->IsValid())
 	  {
-			CLog::Log(LOGERROR, "PICTURE::load: Unable to open image: %s Error:%s\n", strCachedFile.c_str(), image.GetLastError());
+			CLog::Log(LOGERROR, "PICTURE::load: Unable to open image: %s Error:%s\n", strCachedFile.c_str(), pImage->GetLastError());
 		  return NULL;
 	  }
   }
@@ -106,8 +102,8 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int &iOriginalW
     return NULL;
   }
 
-	m_dwWidth  = iOriginalWidth  = image.GetWidth();
-	m_dwHeight = iOriginalHeight = image.GetHeight();
+	m_dwWidth  = iOriginalWidth  = pImage->GetWidth();
+	m_dwHeight = iOriginalHeight = pImage->GetHeight();
 
 	bool bResize=false;
 	float fAspect= ((float)m_dwWidth) / ((float)m_dwHeight);
@@ -128,23 +124,33 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int &iOriginalW
 
   if (bResize)
   {
-		if (!image.Resample(m_dwWidth,m_dwHeight, QUALITY) || !image.IsValid())
+		if (!pImage->Resample(m_dwWidth,m_dwHeight, QUALITY) || !pImage->IsValid())
 		{
 			CLog::Log(LOGERROR, "PICTURE::Load: Unable to resample picture: %s\n", strCachedFile.c_str());
 			return NULL;
 		}
 	}
 
-	m_dwWidth=image.GetWidth();
-	m_dwHeight=image.GetHeight();
+	m_dwWidth=pImage->GetWidth();
+	m_dwHeight=pImage->GetHeight();
 
-	pTexture = GetTexture(image);
+	return pImage;
+}
+
+IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int &iOriginalWidth, int &iOriginalHeight, int iMaxWidth, int iMaxHeight, bool bCreateThumb)
+{
+	CxImage *pImage = LoadImage(strFileName, iOriginalWidth, iOriginalHeight, iMaxWidth, iMaxHeight);
+	if (!pImage) return NULL;
+
+	IDirect3DTexture8* pTexture = GetTexture(*pImage);
 	if (bCreateThumb)
 	{
 		CStdString strThumbnail;
 		CUtil::GetThumbnail(strFileName, strThumbnail);
-		CreateThumbFromImage(strFileName, strThumbnail, image, MAX_THUMB_WIDTH, MAX_THUMB_HEIGHT, true);
+		CreateThumbFromImage(strFileName, strThumbnail, *pImage, MAX_THUMB_WIDTH, MAX_THUMB_HEIGHT, true);
 	}
+	delete pImage;
+	pImage = NULL;
 	return pTexture;
 }
 
@@ -730,4 +736,75 @@ bool CPicture::Convert(const CStdString& strSource,const CStdString& strDest)
   }
 
 	return true;
+}
+
+void CPicture::CreateFolderThumb(CStdString &strFolder, CStdString *strThumbs)
+{	// we want to mold the thumbs together into one single one
+  CStdString strThumbnail;
+  CUtil::GetThumbnail(strFolder, strThumbnail);
+	CxImage image(MAX_THUMB_WIDTH, MAX_THUMB_HEIGHT, 32, CXIMAGE_FORMAT_PNG);
+	CxImage *pImage = NULL;
+	int iWidth = MAX_THUMB_WIDTH/2;
+	int iHeight = MAX_THUMB_HEIGHT/2;
+	for (int i=0; i<2; i++)
+	{
+		for (int j=0; j<2; j++)
+		{
+			int width, height;
+			bool bBlank = false;
+			if (strThumbs[i*2+j].IsEmpty())
+				bBlank = true;
+			if (!bBlank)
+			{
+				CStdString strImageThumb;
+				CUtil::GetThumbnail(strThumbs[i*2+j], strImageThumb);
+				pImage = LoadImage(strImageThumb, width, height, iWidth-2, iHeight-2);
+			}
+			if (!pImage)
+				bBlank = true;
+			if (!bBlank)
+			{
+				int iOffX = (iWidth-2-pImage->GetWidth())/2;
+				int iOffY = (iHeight-2-pImage->GetHeight())/2;
+				for (int x=0; x<iWidth; x++)
+				{
+					for (int y=0; y<iHeight; y++)
+					{
+						RGBQUAD rgb;
+						BYTE alpha = 0xFF;
+						if (x < iOffX || x >= iOffX+(int)pImage->GetWidth() || y < iOffY || y >= iOffY+(int)pImage->GetHeight())
+						{
+							rgb.rgbBlue = 0; rgb.rgbGreen = 0; rgb.rgbRed = 0;
+							alpha = 0;	// transparent
+						}
+						else
+							rgb=pImage->GetPixelColor(x-iOffX,y-iOffY);
+						image.SetPixelColor(x+j*iWidth, y+(1-i)*iHeight, rgb);
+//						image.AlphaSet(x+j*iWidth, y+i*iHeight, alpha);
+					}
+				}
+				delete pImage;
+				pImage = NULL;
+			}
+			else
+			{	// no image - just fill with black alpha
+				for (int x=0; x<iWidth; x++)
+				{
+					for (int y=0; y<iHeight; y++)
+					{
+						RGBQUAD rgb;
+						rgb.rgbBlue = 0; rgb.rgbGreen = 0; rgb.rgbRed = 0;
+						BYTE alpha = 0;	// transparent
+						image.SetPixelColor(x+j*iWidth, y+(1-i)*iHeight, rgb);
+//						image.AlphaSet(x+j*iWidth, y+i*iHeight, alpha);
+					}
+				}
+			}
+		}
+	}
+	::DeleteFile(strThumbnail.c_str());
+	if (!image.Save(strThumbnail.c_str(), CXIMAGE_FORMAT_PNG))
+	{
+		CLog::Log(LOGERROR, "Unable to save thumb file");
+	}
 }

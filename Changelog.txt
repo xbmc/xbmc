@@ -5,6 +5,12 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 02-11-2004 added: GUI code for monkeyh1
+  - 02-11-2004 added: Context menu to My Pictures
+  - 02-11-2004 added: Random slideshow ability
+  - 02-11-2004 added: Recursive thumb generation
+  - 02-11-2004 added: Folder thumbs for picture folders
+  - 02-11-2004 fixed: Remote INFO button wasn't working for show file info
   - 02-11-2004 updated: German language file
   - 02-11-2004 fixed: After showing video/album info item is selected
   - 02-11-2004 added: my music songs, Shoutcast Top 500 streams share
