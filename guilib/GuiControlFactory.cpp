@@ -151,6 +151,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
   int         iThumbYPosBig=14;
   int         iThumbWidthBig=100;
   int         iThumbHeightBig=100;
+  DWORD		dwBuddyControlID=0;
 	
 	// get defaults from reference control
 	if (pReference)
@@ -167,6 +168,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			strLabel		= ((CGUILabelControl*)pReference)->GetLabel();
 			dwTextColor = ((CGUILabelControl*)pReference)->GetTextColor();
 			dwAlign			= ((CGUILabelControl*)pReference)->GetAlignment();
+			dwDisabledColor = ((CGUILabelControl*)pReference)->GetDisabledColor();
 		}
 		if (strType=="fadelabel")
 		{
@@ -245,7 +247,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			iType									= ((CGUISpinControl*)pReference)->GetType();
 			dwWidth								= ((CGUISpinControl*)pReference)->GetSpinWidth();
 			dwHeight							= ((CGUISpinControl*)pReference)->GetSpinHeight();
-
+			dwDisabledColor				= ((CGUISpinControl*)pReference)->GetDisabledColor() ;
 		}
 		if (strType=="slider")
 		{
@@ -469,6 +471,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	GetDWORD(pControlNode,"textureHeightBig",textureHeightBig);
   GetDWORD(pControlNode,"itemWidthBig",itemWidthBig);
 	GetDWORD(pControlNode,"itemHeightBig",itemHeightBig);
+	GetDWORD(pControlNode,"buddycontrolid",dwBuddyControlID);
 	
 
 	if ( GetString(pControlNode, "label", strTmp))
@@ -486,7 +489,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
   if (strType=="label")
   {
 			if (!bLoadReferences) if (!bLoadReferences) g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight);
-      CGUILabelControl* pControl = new CGUILabelControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strFont,strLabel,dwTextColor,dwAlign, bHasPath);
+      CGUILabelControl* pControl = new CGUILabelControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strFont,strLabel,dwTextColor,dwDisabledColor,dwAlign, bHasPath);
       pControl->SetColourDiffuse(dwColorDiffuse);
       pControl->SetVisible(bVisible);
       return pControl;
@@ -584,7 +587,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       pControl->SetNavigation(up,down,left,right);
       pControl->SetColourDiffuse(dwColorDiffuse);
       pControl->SetVisible(bVisible);
-			pControl->SetReverse(bReverse);
+	  pControl->SetReverse(bReverse);
+	  pControl->SetBuddyControlID(dwBuddyControlID);
+	  pControl->SetDisabledColor(dwDisabledColor);
       return pControl;
   }
 

@@ -243,7 +243,7 @@ namespace PYXBMC
 			ControlLabel* pControlLabel = (ControlLabel*)pControl;
 			pControl->pGUIControl = new CGUILabelControl(pControl->iParentId, pControl->iControlId,
 					pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
-					pControlLabel->strFont, pControlLabel->strText, pControlLabel->dwTextColor, 0, false);
+					pControlLabel->strFont, pControlLabel->strText, pControlLabel->dwTextColor, pControlLabel->dwTextColor, 0, false);
 		}
 
 		// Control Fade Label
