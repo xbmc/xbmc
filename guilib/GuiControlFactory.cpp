@@ -300,6 +300,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   int iAlpha = 0;
   bool bWrapAround = true;
   bool bSmoothScrolling = true;
+  bool bKeepAspectRatio = false;
 
   /////////////////////////////////////////////////////////////////////////////
   // Read default properties from reference controls
@@ -515,11 +516,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
     {
       strTexture = ((CGUIImage *)pReference)->GetFileName();
       dwColorKey = ((CGUIImage *)pReference)->GetColorKey();
+      bKeepAspectRatio = ((CGUIImage *)pReference)->GetKeepAspectRatio();
     }
     else if (strType == "infoimage")
     {
       strTexture = ((CGUIInfoImage *)pReference)->GetFileName();
       dwColorKey = ((CGUIInfoImage *)pReference)->GetColorKey();
+      bKeepAspectRatio = ((CGUIInfoImage *)pReference)->GetKeepAspectRatio();
       vecInfo.push_back(((CGUIInfoImage *)pReference)->GetInfo());
     }
     else if (strType == "listcontrol")
@@ -916,6 +919,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
   GetInt(pControlNode, "alpha", iAlpha);
   GetBoolean(pControlNode, "wraparound", bWrapAround);
   GetBoolean(pControlNode, "smoothscrolling", bSmoothScrolling);
+  GetBoolean(pControlNode, "keepaspectratio", bKeepAspectRatio);
 
   /////////////////////////////////////////////////////////////////////////////
   // Instantiate a new control using the properties gathered above
@@ -1183,6 +1187,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
+    pControl->SetKeepAspectRatio(bKeepAspectRatio);
     pControl->SetVisible(bVisible);
     return pControl;
   }
@@ -1193,6 +1198,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const TiXmlNode* pCont
 
     pControl->SetNavigation(up, down, left, right);
     pControl->SetColourDiffuse(dwColorDiffuse);
+    pControl->SetKeepAspectRatio(bKeepAspectRatio);
     pControl->SetVisible(bVisible);
     pControl->SetInfo(vecInfo[0]);
     return pControl;
