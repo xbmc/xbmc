@@ -337,25 +337,34 @@ bool CMPlayer::openfile(const CStdString& strFile)
 {
 	closefile();
 
+  // setup the cache size mplayer uses
   int iCacheSize=1024;
+  // for DVD/CD's or remote shares we use 8 megs
   if (CUtil::IsDVD(strFile) || CUtil::IsISO9660(strFile) || CUtil::IsRemote(strFile) )
   {
     iCacheSize=8192;
   }
+  
+  // for audio files we dont need a cache
   if (CUtil::IsAudio(strFile) && !CUtil::IsVideo(strFile) )
   {
     iCacheSize=0;
   }
+
+  // for shoutcast, use cache of 256 kbyte
   if ( CUtil::IsShoutCast(strFile) ) 
   {
     iCacheSize=256;
   }
   
+  // cache (remote) subtitles to HD
 	CUtil::CacheSubtitles(strFile);
   CUtil::PrepareSubtitleFonts();
 	m_iPTS			= 0;
 	m_bPaused	  = false;
 
+  // first init mplayer. This is needed 2 find out all information
+  // like audio channels, fps etc
 	load();
 
   char *argv[30];
@@ -375,9 +384,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
   options.GetOptions(argc,argv);
   
 	mplayer_init(argc,argv);
-	
   mplayer_setcache_size(iCacheSize);
-	
 	int iRet=mplayer_open_file(strFile.c_str());
 	if (iRet < 0)
 	{
@@ -385,24 +392,32 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		closefile();
 		return false;
 	}
-	m_bIsPlaying= true;
 
-  if (!CUtil::IsShoutCast(strFile) ) 
+  if (CUtil::IsShoutCast(strFile) ) 
   {
-	  char strFourCC[10],strVidFourCC[10];
-	  char strAudioCodec[128],strVideoCodec[128];
-	  long lBitRate;
-	  long lSampleRate;
-	  int	 iChannels;
-	  BOOL bVBR;
-	  float fFPS;
-	  unsigned int   iWidth;
-	  unsigned int   iHeight;
-	  long  lFrames2Early;
-	  long  lFrames2Late;
+    // for shoutcast we're done.
+  }
+  else
+  {
+    // for other files, check the codecs/audio channels etc etc...
+	  char          strFourCC[10],strVidFourCC[10];
+	  char          strAudioCodec[128],strVideoCodec[128];
+	  long          lBitRate;
+	  long          lSampleRate;
+	  int	          iChannels;
+	  BOOL          bVBR;
+	  float         fFPS;
+	  unsigned int  iWidth;
+	  unsigned int  iHeight;
+	  long          lFrames2Early;
+	  long          lFrames2Late;
+    bool          bNeed2Restart=false;
+
+    // get the audio & video info from the file
 	  mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
     mplayer_GetVideoInfo(strVidFourCC,strVideoCodec, &fFPS, &iWidth,&iHeight, &lFrames2Early, &lFrames2Late);
 
+    // do we need 2 do frame rate conversions ?
     if (g_stSettings.m_bFrameRateConversions && CUtil::IsVideo(strFile) )
     {
       DWORD dwVideoStandard=XGetVideoStandard();
@@ -410,149 +425,96 @@ bool CMPlayer::openfile(const CStdString& strFile)
       {
         // PAL. Framerate for pal=25.0fps
         // do frame rate conversions for NTSC movie playback under PAL
-        if (fFPS <= 24.5f )
+        if (fFPS >= 23.0 && fFPS <= 24.5f )
         {
           // 23.978  fps -> 25fps frame rate conversion
           options.SetSpeed(25.0f / fFPS); 
           options.SetFPS(25.0f);
+          bNeed2Restart=true;
         }
       }
       else
       {
-        //NTSC framerate=29.978 fps
+        //NTSC framerate=23.976 fps
         // do frame rate conversions for PAL movie playback under NTSC
-        if (fFPS<=29.0)
+        if (fFPS>=24 && fFPS <= 25.5)
         {
           options.SetSpeed(23.976f / fFPS); 
           options.SetFPS(23.976f);
+          bNeed2Restart=true;
         }
       }
     }
 
-	  // if AC3 pass Thru is enabled
 	  bool bSupportsSPDIFOut=(XGetAudioFlags() & (DSSPEAKER_ENABLE_AC3 | DSSPEAKER_ENABLE_DTS)) != 0;
-   
-	  if (bSupportsSPDIFOut && g_stSettings.m_bAC3PassThru )
+
+    // if xbox only got stereo output, then limit number of channels to 2
+    if (!bSupportsSPDIFOut)
+    {
+      if (iChannels > 2) 
+      {
+        options.SetChannels(2);
+        iChannels=2;
+        bNeed2Restart=true;
+      }
+    }
+
+	  // check if AC3 passthrough is enabled in MS dashboard
+    // ifso we need 2 check if this movie has AC3 5.1 sound and if thats true
+    // we reopen the movie with the ac3 5.1 passthrough audio filter
+    if (bSupportsSPDIFOut && g_stSettings.m_bAC3PassThru )
 	  {
 		  // and the movie has an AC3 audio stream
 		  if ( strstr(strAudioCodec,"AC3-liba52") && (lSampleRate==48000) )
 		  {
-			  //then close file and reopen it, 
-			  //but now enable the AC3 passthru audio codecs hwac3
-			  mplayer_close_file();
         options.SetChannels(2);
         options.SetAC3PassTru(true);
-			  options.GetOptions(argc,argv);
-			  load();
-			  mplayer_init(argc,argv);
-			  mplayer_setcache_size(iCacheSize);
-
-			  int iRet=mplayer_open_file(strFile.c_str());
-			  if (iRet < 0)
-			  {
-				  OutputDebugString("cmplayer::openfile() openfile failed\n");
-				  closefile();
-				  return false;
-			  }
-			  m_bIsPlaying= true;
+        bNeed2Restart=true;
 		  }
 	  }
 
+    // if DMO filter is used we need 2 remap the audio speaker layout (MS does things differently)
 	  if( strstr(strAudioCodec,"DMO") && (iChannels==6) )
 	  {
-		  mplayer_close_file();
       options.SetChannels(6);
       options.SetChannelMapping("channels=6:6:0:0:1:1:2:4:3:5:4:2:5:3");
-		  options.GetOptions(argc,argv);
-		  load();
-		  mplayer_init(argc,argv);
-      mplayer_setcache_size(iCacheSize);
-		  int iRet=mplayer_open_file(strFile.c_str());
-		  if (iRet < 0)
-		  {
-			  OutputDebugString("cmplayer::openfile() openfile failed\n");
-			  closefile();
-			  return false;
-		  }
-		  m_bIsPlaying= true;
+      bNeed2Restart=true;
 	  }	
 
-	  mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
+    // remap audio speaker layout for files with 5 audio channels 
+    if (iChannels==5)
+    {
+      options.SetChannels(6);
+      options.SetChannelMapping("channels=6:5:0:0:1:1:2:2:3:3:4:4:5:5");
+      bNeed2Restart=true;
+    }
+    // remap audio speaker layout for files with 3 audio channels 
+    if (iChannels==3)
+    {
+      options.SetChannels(4);
+      options.SetChannelMapping("channels=4:4:0:0:1:1:2:2:2:3");
+      bNeed2Restart=true;
+    }
 
-   
-	  if ( !strstr(strAudioCodec,"SPDIF") ) 
-	  {
-      if (!bSupportsSPDIFOut)
-      {
-        if (iChannels > 2) iChannels=2;
-      }
-		  switch(iChannels)
-		  {
-			  case 1:
-			  case 2:
-			  case 4:
-				  mplayer_close_file();
-          if ( iChannels !=2) options.SetChannels(iChannels);
-          else options.SetChannels(0);
-          options.GetOptions(argc,argv);
-				  load();
-				  mplayer_init(argc,argv);
-          mplayer_setcache_size(iCacheSize);
+    if (bNeed2Restart)
+    {
+			mplayer_close_file();
+      options.GetOptions(argc,argv);
+			load();
+			mplayer_init(argc,argv);
+      mplayer_setcache_size(iCacheSize);
 
-				  iRet=mplayer_open_file(strFile.c_str());
-				  if (iRet < 0)
-				  {
-					  OutputDebugString("cmplayer::openfile() openfile failed\n");
-					  closefile();
-					  return false;
-				  }
-				  m_bIsPlaying= true;
-			  break;
-  			
-			  case 5:
-				  mplayer_close_file();
-
-          options.SetChannels(6);
-          options.SetChannelMapping("channels=6:5:0:0:1:1:2:2:3:3:4:4:5:5");
-          options.GetOptions(argc,argv);
-				  load();
-				  mplayer_init(argc,argv);
-          mplayer_setcache_size(iCacheSize);
-				  iRet=mplayer_open_file(strFile.c_str());
-				  if (iRet < 0)
-				  {
-					  OutputDebugString("cmplayer::openfile() openfile failed\n");
-					  closefile();
-					  return false;
-				  }
-				  m_bIsPlaying= true;
-			  break;
-
-			  case 3:
-				  mplayer_close_file();
-  				
-          options.SetChannels(4);
-          options.SetChannelMapping("channels=4:4:0:0:1:1:2:2:2:3");
-          options.GetOptions(argc,argv);
-				  load();
-				  mplayer_init(argc,argv);
-          mplayer_setcache_size(iCacheSize);
-				  iRet=mplayer_open_file(strFile.c_str());
-				  if (iRet < 0)
-				  {
-					  OutputDebugString("cmplayer::openfile() openfile failed\n");
-					  closefile();
-					  return false;
-				  }
-				  m_bIsPlaying= true;
-			  break;
-  			
-			  case 6:
-			  default:
-			  break;
-		  }
-	  }
+			iRet=mplayer_open_file(strFile.c_str());
+			if (iRet < 0)
+			{
+				OutputDebugString("cmplayer::openfile() openfile failed\n");
+				closefile();
+				return false;
+			}
+			
+    }
   }
+  m_bIsPlaying= true;
 	if ( ThreadHandle() == NULL)
 	{
 		Create();
