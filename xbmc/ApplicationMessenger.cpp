@@ -45,7 +45,6 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
 	else m_vecMessages.push_back(msg);
 	lock.Leave();
 
-	//if playing fullscreen video
 	if (message.hWaitEvent)
 	{
 		WaitForSingleObject(message.hWaitEvent, INFINITE);
@@ -96,6 +95,10 @@ void CApplicationMessenger::ProcessMessages()
 
 				case TMSG_MEDIA_PAUSE:
 					if (g_application.m_pPlayer) g_application.m_pPlayer->Pause();
+					break;
+
+				case TMSG_EXECUTE_SCRIPT:
+					m_pythonParser.evalFile(pMsg->strParam.c_str());
 					break;
 			}
 			if (pMsg->hWaitEvent)

@@ -63,6 +63,7 @@ private:
 	DWORD							dThreadId;
 	bool							bInitialized;
 	bool							bThreadInitialize;
+	bool							bStartup;
 	HANDLE						m_hEvent;
 
 	//Vector with list of threads used for running scripts

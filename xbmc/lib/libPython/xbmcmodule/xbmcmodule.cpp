@@ -1,5 +1,6 @@
 #include "..\..\..\application.h"
 #include "..\python.h"
+#include "control.h"
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
@@ -12,7 +13,7 @@ extern "C" {
 
 namespace PYXBMC
 {
-	extern PyTypeObject WindowType;
+	extern PyTypeObject Window_Type;
 	extern PyTypeObject DialogType;
 	extern PyTypeObject DialogProgressType;
 
@@ -92,15 +93,34 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	PyObject* XBMC_ExecuteScript(PyObject *self, PyObject *args)
+	{
+		char *cLine;
+		if (!PyArg_ParseTuple(args, "s", &cLine))	return NULL;
+
+		ThreadMessage tMsg = {TMSG_EXECUTE_SCRIPT};
+		tMsg.strParam = cLine;
+		g_applicationMessenger.SendMessage(tMsg);
+
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
 	// define c functions to be used in python here
 	PyMethodDef xbmcMethods[] = {
 		{"output", (PyCFunction)XBMC_Output, METH_VARARGS, "output(line) writes a message to debug terminal"},
+		{"executescript", (PyCFunction)XBMC_ExecuteScript, METH_VARARGS, ""},
 		{"mediaplay", (PyCFunction)XBMC_MediaPlay, METH_VARARGS, ""},
 		{"mediastop", (PyCFunction)XBMC_MediaStop, METH_VARARGS, ""},
 		{"mediapause", (PyCFunction)XBMC_MediaPause, METH_VARARGS, ""},
 		{"shutdown", (PyCFunction)XBMC_Shutdown, METH_VARARGS, ""},
 		{"dashboard", (PyCFunction)XBMC_Dashboard, METH_VARARGS, ""},
 		{"restart", (PyCFunction)XBMC_Restart, METH_VARARGS, ""},
+		{NULL, NULL, 0, NULL}
+	};
+
+	// define c functions to be used in python here
+	PyMethodDef xbmcGuiMethods[] = {
 		{NULL, NULL, 0, NULL}
 	};
 
@@ -112,27 +132,42 @@ namespace PYXBMC
 	PyMODINIT_FUNC
 	initxbmc(void) 
 	{
-		PyObject* module;
+		// init general xbmc modules
+		PyObject* pXbmcModule;
 
-		//WindowType.tp_new = PyType_GenericNew;
+		pXbmcModule = Py_InitModule("xbmc", xbmcMethods);
+		if (pXbmcModule == NULL) return;
+
+		// init xbmc gui modules
+		PyObject* pXbmcGuiModule;
+
 		DialogType.tp_new = PyType_GenericNew;
 		DialogProgressType.tp_new = PyType_GenericNew;
 
-		if (PyType_Ready(&WindowType) < 0 ||
+		if (PyType_Ready(&Window_Type) < 0 ||
+				PyType_Ready(&Control_Type) < 0 ||
+				PyType_Ready(&ControlLabel_Type) < 0 ||
+				PyType_Ready(&ControlImage_Type) < 0 ||
 				PyType_Ready(&DialogType) < 0 ||
 				PyType_Ready(&DialogProgressType) < 0)
 			return;
 
-		Py_INCREF(&WindowType);
+		Py_INCREF(&Window_Type);
+		Py_INCREF(&Control_Type);
+		Py_INCREF(&ControlLabel_Type);
+		Py_INCREF(&ControlImage_Type);
 		Py_INCREF(&DialogType);
 		Py_INCREF(&DialogProgressType);
 
-		module = Py_InitModule("xbmc", xbmcMethods);
-		if (module == NULL) return;
+		pXbmcGuiModule = Py_InitModule("xbmcgui", xbmcGuiMethods);
+		if (pXbmcGuiModule == NULL) return;
 
-    PyModule_AddObject(module, "Window", (PyObject*)&WindowType);
-		PyModule_AddObject(module, "Dialog", (PyObject*)&DialogType);
-		PyModule_AddObject(module, "DialogProgress", (PyObject *)&DialogProgressType);
+    PyModule_AddObject(pXbmcGuiModule, "Window", (PyObject*)&Window_Type);
+		//PyModule_AddObject(pXbmcGuiModule, "Control", (PyObject*)&Control_Type);
+		PyModule_AddObject(pXbmcGuiModule, "ControlLabel", (PyObject*)&ControlLabel_Type);
+		PyModule_AddObject(pXbmcGuiModule, "ControlImage", (PyObject*)&	ControlImage_Type);
+		PyModule_AddObject(pXbmcGuiModule, "Dialog", (PyObject*)&DialogType);
+		PyModule_AddObject(pXbmcGuiModule, "DialogProgress", (PyObject *)&DialogProgressType);
 	}
 }
 

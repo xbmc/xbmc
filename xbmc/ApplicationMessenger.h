@@ -7,6 +7,7 @@
 // defines here
 #define TMSG_DIALOG_DOMODAL       100
 #define TMSG_WRITE_SCRIPT_OUTPUT  101
+#define TMSG_EXECUTE_SCRIPT				102
 
 #define TMSG_MEDIA_PLAY           200
 #define TMSG_MEDIA_STOP           201

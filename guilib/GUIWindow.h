@@ -20,6 +20,7 @@ public:
   virtual void    		OnAction(const CAction &action);
   virtual bool    		OnMessage(CGUIMessage& message);
   void            		Add(CGUIControl* pControl);
+	void								Remove(DWORD dwId);
   int             		GetFocusControl();
   void            		SelectNextControl();
   DWORD           		GetID(void) const;

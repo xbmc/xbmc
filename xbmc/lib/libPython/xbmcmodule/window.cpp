@@ -1,8 +1,11 @@
-#include "..\python.h"
+#include "window.h"
+#include "control.h"
 #include "..\..\..\application.h"
 #include "GuiLabelControl.h"
 
 #define ACTIVE_WINDOW	m_gWindowManager.GetActiveWindow()
+
+using namespace std;
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
@@ -19,12 +22,6 @@ extern "C" {
 
 namespace PYXBMC
 {
-	typedef struct {
-    PyObject_HEAD
-		int iWindowId;
-		int iOldWindowId;
-	} Window;
-
 	PyObject* Window_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
 	{
 		Window *self;
@@ -44,8 +41,11 @@ namespace PYXBMC
 		while(id < 3100 && m_gWindowManager.GetWindow(id) != NULL) id++;
 		self->iWindowId = id;
 		self->iOldWindowId = 0;
+		self->bIsCreatedByPython = true;
+		self->pWindow = m_gWindowManager.GetWindow(id);
 
 		CGUIWindow* pWindow = new CGUIWindow(id);
+
 		g_graphicsContext.Lock();
 		m_gWindowManager.Add(pWindow);
 		g_graphicsContext.Unlock();
@@ -55,13 +55,36 @@ namespace PYXBMC
 
 	void Window_Dealloc(Window* self)
 	{
-		CGUIWindow* pWindow;
 		g_graphicsContext.Lock();
-		pWindow = m_gWindowManager.GetWindow(self->iWindowId);
-		m_gWindowManager.Remove(self->iWindowId);
+		// first change to an existing window
+		if (ACTIVE_WINDOW == self->iWindowId)
+		{
+			if(m_gWindowManager.GetWindow(self->iOldWindowId))
+			{
+				m_gWindowManager.ActivateWindow(self->iOldWindowId);
+			}
+			// old window does not exist anymore, switch to home
+			else m_gWindowManager.ActivateWindow(0);
+		}
+
+		// free all recources in use by controls
+		vector<Control*>::iterator it = self->vecControls.begin();
+		while (it != self->vecControls.end())
+		{
+			Control* pControl = *it;
+
+			// initialize control to zero
+			pControl->pGUIControl->FreeResources();
+			delete pControl->pGUIControl;
+			pControl->pGUIControl = NULL;
+			pControl->iControlId = 0;
+			pControl->iParentId = 0;
+			Py_DECREF(pControl);
+
+			++it;
+		}
+
 		g_graphicsContext.Unlock();
-		pWindow->FreeResources();
-		delete pWindow;
 
 		self->ob_type->tp_free((PyObject*)self);
 	}
@@ -99,7 +122,7 @@ namespace PYXBMC
 
 	PyObject* Window_Show(Window *self, PyObject *args)
 	{
-		self->iOldWindowId = ACTIVE_WINDOW;
+		if (self->iOldWindowId != self->iWindowId) self->iOldWindowId = ACTIVE_WINDOW;
 
 		g_graphicsContext.Lock();
 		m_gWindowManager.ActivateWindow(self->iWindowId);
@@ -113,55 +136,138 @@ namespace PYXBMC
 	{ 
 		g_graphicsContext.Lock();
 		m_gWindowManager.ActivateWindow(self->iOldWindowId);
+		self->iOldWindowId = 0;
 		g_graphicsContext.Unlock();
 
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
 
-	PyObject* Window_AddLabel(Window *self, PyObject *args)
+	PyObject* Window_AddControl(Window *self, PyObject *args)
 	{ 
-		//const char *cLine[4];
-		//CStdStringW wstrLine[4];
-
 		CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
 		if (!pWindow) return NULL;
 
-		//for (int i = 0; i < 4; i++)	cLine[i] = NULL;
-		// get lines, last 2 lines are optional.
-		//if (!PyArg_ParseTuple(args, "ss|ss", &cLine[0], &cLine[1], &cLine[2], &cLine[3]))	return NULL;
-
-		// convert char strings to wchar strings and set the header + line 1, 2 and 3 for dialog
-		/*for (int i = 0; i < 4; i++)
+		Control* pControl;
+		if (!PyArg_ParseTuple(args, "O", &pControl)) return NULL;
+		// type checking, object should be of type Control
+		if(strcmp(((PyObject*)pControl)->ob_type->tp_base->tp_name, Control_Type.tp_name))
 		{
-			if (cLine[i]) wstrLine[i] = cLine[i];
-			else wstrLine[i] = L"";
+			PyErr_SetString((PyObject*)self, "Object should be of type Control");
+			return NULL;
 		}
-	*/
-		CGUIControl* pControl = new CGUILabelControl(ACTIVE_WINDOW ,
-				4500, 100, 100, 200, 200,
-				"font13", L"python test label", 0xFFFFFFFF, 0, false);
+
+		if(pControl->iControlId != 0)
+		{
+			PyErr_SetString((PyObject*)self, "Control is already used");
+			return NULL;
+		}
+
+		pControl->iParentId = self->iWindowId;
+		// assign control id, if id is already in use, try next id
+		do pControl->iControlId = ++self->iCurrentControlId;
+		while (pWindow->GetControl(pControl->iControlId));
+
+		// Control Label
+		if (!strcmp(pControl->ob_type->tp_name, ControlLabel_Type.tp_name))
+		{
+			ControlLabel* pControlLabel = (ControlLabel*)pControl;
+			pControl->pGUIControl = new CGUILabelControl(pControl->iParentId, pControl->iControlId,
+					pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
+					pControlLabel->strFont, pControlLabel->strText, pControlLabel->dwTextColor, 0, false);
+		}
+
+		// Image
+		else if (!strcmp(pControl->ob_type->tp_name, ControlImage_Type.tp_name))
+		{
+			ControlImage* pControlImage = (ControlImage*)pControl;
+			pControl->pGUIControl = new CGUIImage(pControl->iParentId, pControl->iControlId,
+					pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
+					pControlImage->strFileName, pControlImage->strColorKey);
+		}
+
+		// add control to list and allocate recources for the control
+		Py_INCREF(pControl);
+		self->vecControls.push_back(pControl);
+		pControl->pGUIControl->AllocResources();
 
 		g_graphicsContext.Lock();
-		pWindow->Add(pControl);
+		pWindow->Add(pControl->pGUIControl);
 		g_graphicsContext.Unlock();
+
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	PyObject* Window_RemoveControl(Window *self, PyObject *args)
+	{ 
+		CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+		if (!pWindow) return NULL;
+
+		Control* pControl;
+		if (!PyArg_ParseTuple(args, "O", &pControl)) return NULL;
+		// type checking, object should be of type Control
+		if(strcmp(((PyObject*)pControl)->ob_type->tp_base->tp_name, Control_Type.tp_name))
+		{
+			PyErr_SetString((PyObject*)self, "Object should be of type Control");
+			return NULL;
+		}
+
+		if(!pWindow->GetControl(pControl->iControlId))
+		{
+			PyErr_SetString((PyObject*)self, "Control does not exist in window");
+			return NULL;
+		}
+
+		// delete control from vecControls in window object
+		vector<Control*>::iterator it = self->vecControls.begin();
+		while (it != self->vecControls.end())
+		{
+      Control* control = *it;
+			if (control->iControlId == pControl->iControlId)
+			{
+				it = self->vecControls.erase(it);
+			} else ++it;
+		}
+
+		g_graphicsContext.Lock();
+
+		pWindow->Remove(pControl->iControlId);
+		pControl->pGUIControl->FreeResources();
+		delete pControl->pGUIControl;
+
+		// initialize control to zero
+		pControl->pGUIControl = NULL;
+		pControl->iControlId = 0;
+		pControl->iParentId = 0;
+		Py_DECREF(pControl);
+		g_graphicsContext.Unlock();
+
+
 
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
 
 	PyMethodDef Window_methods[] = {
-		{"load", (PyCFunction)Window_Load, METH_VARARGS, ""},
+		//{"load", (PyCFunction)Window_Load, METH_VARARGS, ""},
 		{"show", (PyCFunction)Window_Show, METH_VARARGS, ""},
 		{"close", (PyCFunction)Window_Close, METH_VARARGS, ""},
-		{"addlabel", (PyCFunction)Window_AddLabel, METH_VARARGS, ""},
+		{"addControl", (PyCFunction)Window_AddControl, METH_VARARGS, ""},
+		{"removeControl", (PyCFunction)Window_RemoveControl, METH_VARARGS, ""},
 		{NULL, NULL, 0, NULL}
 	};
 
-	PyTypeObject WindowType = {
+// Restore code and data sections to normal.
+#pragma code_seg()
+#pragma data_seg()
+#pragma bss_seg()
+#pragma const_seg()
+
+	PyTypeObject Window_Type = {
 			PyObject_HEAD_INIT(NULL)
 			0,                         /*ob_size*/
-			"xbmc.Window",             /*tp_name*/
+			"xbmcgui.Window",         /*tp_name*/
 			sizeof(Window),            /*tp_basicsize*/
 			0,                         /*tp_itemsize*/
 			(destructor)Window_Dealloc,/*tp_dealloc*/

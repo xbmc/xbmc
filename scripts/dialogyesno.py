@@ -1,6 +1,6 @@
-import xbmc
+import xbmc, xbmcgui
 
-dialog = xbmc.Dialog()
+dialog = xbmcgui.Dialog()
 selected = dialog.yesno("header", "doit", "line2", "line3")
 
 dialog.ok("error", "user selected" + str(selected))

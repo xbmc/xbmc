@@ -104,7 +104,7 @@ namespace PYXBMC
 	PyTypeObject DialogType = {
 			PyObject_HEAD_INIT(NULL)
 			0,                         /*ob_size*/
-			"xbmc.Dialog",             /*tp_name*/
+			"xbmcgui.Dialog",             /*tp_name*/
 			sizeof(Dialog),            /*tp_basicsize*/
 			0,                         /*tp_itemsize*/
 			0,                         /*tp_dealloc*/
@@ -230,10 +230,16 @@ namespace PYXBMC
 		{NULL, NULL, 0, NULL}
 	};
 
+// Restore code and data sections to normal.
+#pragma code_seg()
+#pragma data_seg()
+#pragma bss_seg()
+#pragma const_seg()
+
 	PyTypeObject DialogProgressType = {
 			PyObject_HEAD_INIT(NULL)
 			0,                         /*ob_size*/
-			"xbmc.DialogProgress",     /*tp_name*/
+			"xbmcgui.DialogProgress",     /*tp_name*/
 			sizeof(DialogProgress),    /*tp_basicsize*/
 			0,                         /*tp_itemsize*/
 			0,                         /*tp_dealloc*/
