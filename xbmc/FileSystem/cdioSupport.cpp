@@ -448,7 +448,9 @@ int CCdIoSupport::GuessFilesystem(int start_session, track_t track_num)
 				//	Read disc label
 				if (ReadBlock(32, start_session, 5, track_num) < 0)
 					return ret;
-				m_strDiscLabel=buffer[5]+25;
+				//	we are using ISO/UDF cd's as iso, 
+				//	no need to get UDF disc label
+				//m_strDiscLabel=buffer[5]+25;
 				ret=FS_ISO_UDF;
 			}
 #if 0
@@ -664,9 +666,15 @@ CCdInfo* CCdIoSupport::GetCdInfo()
 			{
 				//	Is UDF 1.02
 				if (m_nUDFVerMajor>0x1)
+				{
 					ti.nfsInfo=FS_UNKNOWN;
+					m_strDiscLabel.Empty();
+				}
 				else if (m_nUDFVerMinor>0x2)
+				{
 					ti.nfsInfo=FS_UNKNOWN;
+					m_strDiscLabel.Empty();
+				}
 			}
 			
 			if ((m_nFs & FS_MASK)==FS_ISO_UDF)
