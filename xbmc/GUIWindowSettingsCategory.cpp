@@ -515,6 +515,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
 			pControl->AddLabel(g_localizeStrings.Get(13355), RENDER_PIXEL_SHADER);
 			pControl->AddLabel(g_localizeStrings.Get(13356), RENDER_OVERLAYS);
 			pControl->AddLabel(g_localizeStrings.Get(13357), RENDER_COMBO);
+			pControl->AddLabel(g_localizeStrings.Get(13358), RENDER_RGB_SHADER);
 			pControl->SetValue(pSettingInt->GetData());
 		}
 		iPosY+=iGapY;

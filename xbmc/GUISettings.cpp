@@ -317,7 +317,7 @@ CGUISettings::CGUISettings(void)
 	AddCategory(5, "Filters", 230);
 	AddInt(1, "Filters.Flicker", 13100, 1, 0, 1, 5, SPIN_CONTROL_INT);
 	AddBool(2, "Filters.Soften", 215, false);
-	AddInt(3, "Filters.RenderMethod", 13354, RENDER_PIXEL_SHADER, RENDER_PIXEL_SHADER, 1, RENDER_COMBO, SPIN_CONTROL_TEXT);
+	AddInt(3, "Filters.RenderMethod", 13354, RENDER_PIXEL_SHADER, RENDER_PIXEL_SHADER, 1, RENDER_RGB_SHADER, SPIN_CONTROL_TEXT);
 	AddBool(4, "Filters.Noise", 14058, false);
 	AddInt(5, "Filters.NoiseLevel", 14058, 10, 1, 1, 100, SPIN_CONTROL_INT);
 
