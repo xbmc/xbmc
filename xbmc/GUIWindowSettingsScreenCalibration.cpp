@@ -11,7 +11,8 @@
 #define CONTROL_BOTTOM_RIGHT	9
 #define CONTROL_SUBTITLES		10
 #define CONTROL_PIXEL_RATIO		11
-#define CONTROL_VIDEO			12
+#define CONTROL_VIDEO			20
+#define CONTROL_OSD				12
 
 
 
@@ -52,6 +53,11 @@ void CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 	{
 		x = 0;
 		y = g_settings.m_ResInfo[m_Res[m_iCurRes]].iSubtitles;
+	}
+	else if (m_iControl == CONTROL_OSD)
+	{
+		x = 0;
+		y = (g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight + g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
 	}
 	else // (m_iControl == CONTROL_PIXEL_RATIO)
 	{
@@ -135,7 +141,7 @@ void CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 
 		case ACTION_CALIBRATE_SWAP_ARROWS:
 			m_iControl++;
-			if (m_iControl > CONTROL_PIXEL_RATIO)
+			if (m_iControl > CONTROL_OSD)
 				m_iControl = CONTROL_TOP_LEFT;
 			m_iSpeed=1;
 			m_iCountU=0;
@@ -194,6 +200,9 @@ void CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 			if (y > g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight) y=g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight;
 			if (y < g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight-128) y=g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight-128;
 			g_settings.m_ResInfo[m_Res[m_iCurRes]].iSubtitles=y;
+		break;
+		case CONTROL_OSD:
+			g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset = (y - g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight);
 		break;
 		case CONTROL_PIXEL_RATIO:
 			float fPixelRatio = (float)y/x;
@@ -264,6 +273,8 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
 			  pControl->EnableCalibration(false);
 			  pControl=(CGUIImage*)GetControl(CONTROL_PIXEL_RATIO);
 			  pControl->EnableCalibration(false);
+			  pControl=(CGUIImage*)GetControl(CONTROL_OSD);
+			  pControl->EnableCalibration(false);
 			  m_fPixelRatioBoxHeight=(float)pControl->GetHeight();
       }
 			return true;
@@ -288,7 +299,10 @@ void CGUIWindowSettingsScreenCalibration::Render()
 	pControl=(CGUIImage*)GetControl(CONTROL_PIXEL_RATIO);
   if (pControl)
 	  pControl->SetVisible(false);
-  
+  pControl=(CGUIImage*)GetControl(CONTROL_OSD);
+  if (pControl)
+	  pControl->SetVisible(false);
+
 	int iXOff,iYOff;
 	CStdString strStatus;
 	switch (m_iControl)
@@ -374,6 +388,30 @@ void CGUIWindowSettingsScreenCalibration::Render()
 			  strStatus.Format("%s (%5.3f)",strMode,g_settings.m_ResInfo[m_Res[m_iCurRes]].fPixelRatio);
 			  SET_CONTROL_LABEL(GetID(), CONTROL_LABEL_ROW2,	278);
       }
+		}
+		break;
+
+		case CONTROL_OSD:
+		{
+			iXOff = g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.left;
+			iYOff = g_settings.m_ResInfo[m_Res[m_iCurRes]].iSubtitles;
+			iYOff = (g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight + g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
+
+			int iScreenWidth = g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.width;
+
+			pControl=(CGUIImage*)GetControl(CONTROL_OSD);
+			if (pControl) 
+			{
+			  pControl->SetVisible(true);
+			  int iTextureWidth = pControl->GetTextureWidth();
+			  int iTextureHeight = pControl->GetTextureHeight();
+
+			  pControl->SetPosition(iXOff+(iScreenWidth-iTextureWidth)/2, iYOff-iTextureHeight);
+			  CStdString strMode;
+			  CUtil::Unicode2Ansi(g_localizeStrings.Get(469).c_str(),strMode);
+			  strStatus.Format("%s (%i, Offset=%i)",strMode,iYOff,g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
+			  SET_CONTROL_LABEL(GetID(), CONTROL_LABEL_ROW2,	468);
+			}
 		}
 		break;
 	}

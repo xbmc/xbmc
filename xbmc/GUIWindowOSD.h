@@ -18,6 +18,7 @@ public:
 	virtual bool	OnMessage(CGUIMessage& message);
 	virtual void	OnAction(const CAction &action);
 	virtual void	Render();
+	virtual bool	SubMenuVisible();
 
 private:
 	virtual void	Get_TimeInfo();
@@ -26,7 +27,7 @@ private:
 	virtual void	ToggleSubMenu(DWORD iButtonID, DWORD iBackID);
 	virtual void	SetSliderValue(float fMin, float fMax, float fValue, DWORD iControlID);
 	virtual void	SetCheckmarkValue(BOOL bValue, DWORD iControlID);
-	virtual void	Handle_ControlSetting(DWORD iControlID);
+	virtual void	Handle_ControlSetting(DWORD iControlID, DWORD wID);
 	virtual void	PopulateBookmarks();
 	virtual void	PopulateAudioStreams();
 	virtual void	PopulateSubTitles();

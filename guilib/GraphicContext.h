@@ -53,6 +53,7 @@ struct RESOLUTION_INFO	{
 	int iWidth;
 	int iHeight;
 	int iSubtitles;
+	int iOSDYOffset;	// Y offset for OSD (applied to all Y pos in skin)
 	DWORD dwFlags;
 	float fPixelRatio;
 	char strMode[11];

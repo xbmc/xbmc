@@ -51,6 +51,7 @@ CSettings::CSettings(void)
   m_ResInfo[HDTV_1080i].Overscan.width = 1920;
   m_ResInfo[HDTV_1080i].Overscan.height = 1080;
   m_ResInfo[HDTV_1080i].iSubtitles = 1080;
+  m_ResInfo[HDTV_1080i].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
   m_ResInfo[HDTV_1080i].iWidth = 1920;
   m_ResInfo[HDTV_1080i].iHeight = 1080;
   m_ResInfo[HDTV_1080i].dwFlags = D3DPRESENTFLAG_INTERLACED|D3DPRESENTFLAG_WIDESCREEN;
@@ -62,6 +63,7 @@ CSettings::CSettings(void)
   m_ResInfo[HDTV_720p].Overscan.width = 1280;
   m_ResInfo[HDTV_720p].Overscan.height = 720;
   m_ResInfo[HDTV_720p].iSubtitles = 720;
+  m_ResInfo[HDTV_720p].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
   m_ResInfo[HDTV_720p].iWidth = 1280;
   m_ResInfo[HDTV_720p].iHeight = 720;
   m_ResInfo[HDTV_720p].dwFlags = D3DPRESENTFLAG_PROGRESSIVE|D3DPRESENTFLAG_WIDESCREEN;
@@ -73,6 +75,7 @@ CSettings::CSettings(void)
   m_ResInfo[HDTV_480p_4x3].Overscan.width = 720;
   m_ResInfo[HDTV_480p_4x3].Overscan.height = 480;
   m_ResInfo[HDTV_480p_4x3].iSubtitles = 480;
+  m_ResInfo[HDTV_480p_4x3].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
   m_ResInfo[HDTV_480p_4x3].iWidth = 720;
   m_ResInfo[HDTV_480p_4x3].iHeight = 480;
   m_ResInfo[HDTV_480p_4x3].dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
@@ -84,6 +87,7 @@ CSettings::CSettings(void)
   m_ResInfo[HDTV_480p_16x9].Overscan.width = 720;
   m_ResInfo[HDTV_480p_16x9].Overscan.height = 480;
   m_ResInfo[HDTV_480p_16x9].iSubtitles = 480;
+  m_ResInfo[HDTV_480p_16x9].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
   m_ResInfo[HDTV_480p_16x9].iWidth = 720;
   m_ResInfo[HDTV_480p_16x9].iHeight = 480;
   m_ResInfo[HDTV_480p_16x9].dwFlags = D3DPRESENTFLAG_PROGRESSIVE|D3DPRESENTFLAG_WIDESCREEN;
@@ -95,6 +99,7 @@ CSettings::CSettings(void)
   m_ResInfo[NTSC_4x3].Overscan.width = 720;
   m_ResInfo[NTSC_4x3].Overscan.height = 480;
   m_ResInfo[NTSC_4x3].iSubtitles = 480;
+  m_ResInfo[NTSC_4x3].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
   m_ResInfo[NTSC_4x3].iWidth = 720;
   m_ResInfo[NTSC_4x3].iHeight = 480;
   m_ResInfo[NTSC_4x3].dwFlags = 0;
@@ -106,6 +111,7 @@ CSettings::CSettings(void)
   m_ResInfo[NTSC_16x9].Overscan.width = 720;
   m_ResInfo[NTSC_16x9].Overscan.height = 480;
   m_ResInfo[NTSC_16x9].iSubtitles = 480;
+  m_ResInfo[NTSC_16x9].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
   m_ResInfo[NTSC_16x9].iWidth = 720;
   m_ResInfo[NTSC_16x9].iHeight = 480;
   m_ResInfo[NTSC_16x9].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
@@ -117,6 +123,7 @@ CSettings::CSettings(void)
   m_ResInfo[PAL_4x3].Overscan.width = 720;
   m_ResInfo[PAL_4x3].Overscan.height = 576;
   m_ResInfo[PAL_4x3].iSubtitles = 576;
+  m_ResInfo[PAL_4x3].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
   m_ResInfo[PAL_4x3].iWidth = 720;
   m_ResInfo[PAL_4x3].iHeight = 576;
   m_ResInfo[PAL_4x3].dwFlags = 0;
@@ -128,6 +135,7 @@ CSettings::CSettings(void)
   m_ResInfo[PAL_16x9].Overscan.width = 720;
   m_ResInfo[PAL_16x9].Overscan.height = 576;
   m_ResInfo[PAL_16x9].iSubtitles = 576;
+  m_ResInfo[PAL_16x9].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
   m_ResInfo[PAL_16x9].iWidth = 720;
   m_ResInfo[PAL_16x9].iHeight = 576;
   m_ResInfo[PAL_16x9].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
@@ -139,6 +147,7 @@ CSettings::CSettings(void)
   m_ResInfo[PAL60_4x3].Overscan.width = 720;
   m_ResInfo[PAL60_4x3].Overscan.height = 480;
   m_ResInfo[PAL60_4x3].iSubtitles = 480;
+  m_ResInfo[PAL60_4x3].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
   m_ResInfo[PAL60_4x3].iWidth = 720;
   m_ResInfo[PAL60_4x3].iHeight = 480;
   m_ResInfo[PAL60_4x3].dwFlags = 0;
@@ -150,6 +159,7 @@ CSettings::CSettings(void)
   m_ResInfo[PAL60_16x9].Overscan.width = 720;
   m_ResInfo[PAL60_16x9].Overscan.height = 480;
   m_ResInfo[PAL60_16x9].iSubtitles = 480;
+  m_ResInfo[PAL60_16x9].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
   m_ResInfo[PAL60_16x9].iWidth = 720;
   m_ResInfo[PAL60_16x9].iHeight = 480;
   m_ResInfo[PAL60_16x9].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
@@ -704,6 +714,7 @@ bool CSettings::LoadCalibration(const CStdString& strCalibrationFile)
 		GetInteger(pResolution, "subtitles", m_ResInfo[iRes].iSubtitles,576,m_ResInfo[iRes].iHeight-128,m_ResInfo[iRes].iHeight);
 //		GetInteger(pResolution, "flags", (int &)m_ResInfo[iRes].dwFlags,0,INT_MIN,INT_MAX);
 		GetFloat(pResolution, "pixelratio", m_ResInfo[iRes].fPixelRatio,128.0f/117.0f,0.5f,2.0f);
+		GetInteger(pResolution, "osdyoffset", m_ResInfo[iRes].iOSDYOffset,0,-1028,1028);
 
 		// get the overscan info		
 		TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
@@ -715,10 +726,11 @@ bool CSettings::LoadCalibration(const CStdString& strCalibrationFile)
 			GetInteger(pOverscan, "height", m_ResInfo[iRes].Overscan.height,576,300,10000);
 		}
     CLog::Log("  calibration for %s %ix%i",m_ResInfo[iRes].strMode,m_ResInfo[iRes].iWidth,m_ResInfo[iRes].iHeight);
-    CLog::Log("    subtitle yposition:%i pixelratio:%03.3f offset:(%i,%i) width:%i height:%i", 
+	CLog::Log("    subtitle yposition:%i pixelratio:%03.3f offset:(%i,%i) width:%i height:%i osdyoffset:%i", 
                    m_ResInfo[iRes].iSubtitles, m_ResInfo[iRes].fPixelRatio,
                 m_ResInfo[iRes].Overscan.left,m_ResInfo[iRes].Overscan.top, 
-                m_ResInfo[iRes].Overscan.width,m_ResInfo[iRes].Overscan.height);
+                m_ResInfo[iRes].Overscan.width,m_ResInfo[iRes].Overscan.height,
+				m_ResInfo[iRes].iOSDYOffset);
 
 		// iterate around
 		pResolution = pResolution->NextSiblingElement("resolution");
@@ -744,6 +756,7 @@ bool CSettings::SaveCalibration(const CStdString& strCalibrationFile) const
 		SetInteger(pNode, "width", m_ResInfo[i].iWidth);
 		SetInteger(pNode, "height", m_ResInfo[i].iHeight);
 		SetInteger(pNode, "subtitles", m_ResInfo[i].iSubtitles);
+		SetInteger(pNode, "osdyoffset", m_ResInfo[i].iOSDYOffset);
 		SetInteger(pNode, "flags", m_ResInfo[i].dwFlags);
 		SetFloat(pNode, "pixelratio", m_ResInfo[i].fPixelRatio);
 		// create the overscan child
