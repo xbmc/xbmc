@@ -90,7 +90,8 @@ protected:
 
 	void	UpdateGamesPlayerCount();
 
-	void	ChangeState();
+	void	PreviousView();
+	void	NextView();
 	void	ChangeState(State aNewState);
 
 	void	Enter(CArenaItem& aArena);
