@@ -42,11 +42,11 @@ public:
 	void						AddMsgTarget( IMsgTargetCallback* pMsgTarget );
 	int							GetActiveWindow() const;
   bool            IsRouted() const;
+  CGUIWindow*										m_pRouteWindow;
 private:
   vector <CGUIWindow*>					m_vecWindows;
   int														m_iActiveWindow;
 	IWindowManagerCallback*				m_pCallback;
-  CGUIWindow*										m_pRouteWindow;
 	vector <CGUIMessage*>					m_vecThreadMessages;
 	CRITICAL_SECTION							m_critSection;
 	vector <IMsgTargetCallback*>	m_vecMsgTargets;
