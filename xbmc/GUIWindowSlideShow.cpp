@@ -137,7 +137,10 @@ IDirect3DTexture8* CGUIWindowSlideShow::GetPreviousSlide(DWORD& dwWidth, DWORD& 
 
 void  CGUIWindowSlideShow::ShowNext()
 {
-	if (m_bSlideShow) return;
+  //if in a slideshow show next picture and reset timer.
+  if (m_bSlideShow) {
+    m_lSlideTime=timeGetTime();
+  }
 //	if (m_pSurfaceBackGround) m_pSurfaceBackGround->Release();
 	if (m_pTextureBackGround) m_pTextureBackGround->Release();
 
@@ -147,7 +150,10 @@ void  CGUIWindowSlideShow::ShowNext()
 
 void  CGUIWindowSlideShow::ShowPrevious()
 {
-	if (m_bSlideShow) return;
+  //if in a slideshow show previous picture and reset timer.
+  if (m_bSlideShow){
+    m_lSlideTime=timeGetTime();
+  }
 //	if (m_pSurfaceBackGround) m_pSurfaceBackGround->Release();
 	if (m_pTextureBackGround) m_pTextureBackGround->Release();
 
