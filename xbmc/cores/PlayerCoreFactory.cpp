@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "PlayerCoreFactory.h"
 #include "mplayer.h"
 #include "cddaplayer.h"

@@ -1,4 +1,5 @@
 
+#include "stdafx.h"
 #include ".\osdoptionboolean.h"
 
 #include "localizestrings.h"

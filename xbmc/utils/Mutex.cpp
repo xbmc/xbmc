@@ -1,3 +1,5 @@
+
+#include "../stdafx.h"
 #include "Mutex.h"
 
 CMutex::CMutex()

@@ -18,12 +18,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifdef _XBOX
-#include <xtl.h>
-#else
-#include <windows.h>
-#endif
-
+#include "stdafx.h"
 #include <stdio.h>
 #include "AsyncDirectSound.h"
 #include "../../settings.h"

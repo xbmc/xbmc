@@ -1,4 +1,6 @@
 
+#include "../stdafx.h"
+
 #include ".\musicinfoscraper.h"
 #include ".\http.h"
 #include ".\htmlutil.h"

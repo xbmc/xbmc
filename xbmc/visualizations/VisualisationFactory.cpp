@@ -1,3 +1,4 @@
+#include "../stdafx.h"
 #include "VisualisationFactory.h"
 #include "../cores/DllLoader/dll.h"
 #include "../util.h"

@@ -1,3 +1,4 @@
+#include "../stdafx.h"
 /*
  * XBoxMediaPlayer
  * Copyright (c) 2002 d7o3g4q and RUNTiME

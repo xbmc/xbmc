@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "virtualdirectory.h"
 #include "FactoryDirectory.h"
 #include "../settings.h"

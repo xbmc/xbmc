@@ -26,6 +26,7 @@
  *
  **********************************************************************/
 
+#include "stdafx.h"
 #include "qry_dat.h"
 #pragma warning (disable:4800)
 #pragma warning (disable:4244)

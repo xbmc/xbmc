@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\..\..\application.h"
 #include "..\..\..\playlistplayer.h"
 #include "..\..\..\util.h"

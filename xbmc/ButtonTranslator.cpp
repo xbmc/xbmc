@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "ButtonTranslator.h"
 #include "XBIRRemote.h"
 #include "../guilib/Key.h"

@@ -2,6 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+#include "stdafx.h"
 #include "Shortcut.h"
 #include "settings.h"
 #include "tinyxml/tinyxml.h"

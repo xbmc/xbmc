@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "fileitem.h"
 #include "settings.h"
 

@@ -2,6 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+#include "stdafx.h"
 #include "RTVDirectory.h"
 #include "tinyxml/tinyxml.h"
 #include "../url.h"

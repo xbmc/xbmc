@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "mplayer.h"
 #include "mplayer/mplayer.h"
 #include "../util.h"

@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "GUIWindowVideoOverlay.h"
 #include "settings.h"
 #include "guiWindowManager.h"

@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "playlistfactory.h"
 #include "Playlistm3u.h"
 #include "PlaylistPLS.h"

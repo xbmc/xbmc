@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "musicInfoTag.h"
 #include "util.h"
 using namespace MUSIC_INFO;

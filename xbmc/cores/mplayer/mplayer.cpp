@@ -1,4 +1,5 @@
-#include <xtl.h>
+
+#include "stdafx.h"
 #include "audio.h"
 #include "video.h"
 #include "../DllLoader/dll.h"
