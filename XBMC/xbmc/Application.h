@@ -52,6 +52,7 @@
 #include "GUIWindowMusicTop100.h" 
 #include "GUIWindowWeather.h"		//WEATHER
 #include "GUIWindowSettingsWeather.h"	//WEATHER SETTINGS
+#include "GUIWindowSettingsCache.h"
 #include "LocalizeStrings.h"
 #include "utils/sntp.h"
 #include "utils/delaycontroller.h"
@@ -165,9 +166,10 @@ public:
 	bool		m_bInactive;	// CB: SCREENSAVER PATCH
 	bool		m_bScreenSave;	// CB: SCREENSAVER PATCH
 	DWORD		m_dwSaverTick;	// CB: SCREENSAVER PATCH
-	CGUIWindowWeather						m_guiMyWeather;	//WEATHER
+	CGUIWindowWeather						    m_guiMyWeather;	//WEATHER
 	CGUIWindowSettingsWeather				m_guiSettingsWeather; //WEATHER SETTINGS
-	DWORD					m_dwSkinTime;
+  CGUIWindowSettingsCache         m_guiSettingsCache;
+	DWORD					                  m_dwSkinTime;
 protected:
   int                     m_iPlaySpeed;
 	bool										m_bOverlayEnabled;
