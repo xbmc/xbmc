@@ -209,8 +209,8 @@ CSettings::CSettings(void)
 	g_stSettings.m_iMyProgramsViewAsIcons=1;
   g_stSettings.m_iMyVideoPlaylistViewAsIcons=1;
 	g_stSettings.m_bMyProgramsSortAscending=true;
-	g_stSettings.m_bMyProgramsFlatten=false;
-	g_stSettings.m_bMyProgramsDefaultXBE=false;
+	g_stSettings.m_bMyProgramsFlatten=true;
+	g_stSettings.m_bMyProgramsDefaultXBE=true;
   strcpy(g_stSettings.szDashboard,"C:\\xboxdash.xbe");
   strcpy(g_stSettings.m_szAlternateSubtitleDirectory,"");
   strcpy(g_stSettings.m_strLocalIPAdres,"");
