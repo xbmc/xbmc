@@ -46,23 +46,69 @@ void CGUIRAMControl::Render()
 		m_pMonitor->Create(this);
 	}
 
-	int nRecentMovies = (int) m_movies.size();
+	DWORD dwImageX;
+	
+	// current images
+	dwImageX = m_dwPosX + ((m_dwThumbnailWidth + m_dwThumbnailSpaceX)*RECENT_MOVIES);
 
-	DWORD dwImageX = m_dwPosX;
-
-	for(int i=0; i<nRecentMovies; i++)
+	for(int i=RECENT_MOVIES-1; i>=0; i--)
 	{
-		Movie& movie = m_movies[i];
+		Movie& movie = m_current[i];
 
-		if (movie.pImage!=NULL)
+		bool bIsNewImageAvailable = m_new[i].bValid;
+	
+		if (movie.bValid && movie.pImage)
 		{
+			dwImageX -= m_dwThumbnailWidth + m_dwThumbnailSpaceX;
+
+			movie.nAlpha += bIsNewImageAvailable ? -8:8;
+
+			if (movie.nAlpha<0)
+			{
+				movie.pImage->FreeResources();
+				m_current[i] = m_new[i];
+				m_new[i].bValid = false;
+			}
+			else if (movie.nAlpha>255)
+			{
+				movie.nAlpha = 255;
+			}
+			
+			movie.pImage->SetAlpha((DWORD)movie.nAlpha);
 			movie.pImage->SetPosition(dwImageX,m_dwPosY);
-			movie.pImage->Render();
-			dwImageX += movie.pImage->GetWidth() + m_dwThumbnailSpaceX;
+			movie.pImage->Render();		
+		}
+		else
+		{
+			m_current[i] = m_new[i];
+			m_new[i].bValid = false;
 		}
 	}
 
-	WCHAR wszText[512];
+	// new images
+	dwImageX = m_dwPosX + ((m_dwThumbnailWidth + m_dwThumbnailSpaceX)*RECENT_MOVIES);
+
+	for(int i=RECENT_MOVIES-1; i>=0; i--)
+	{
+		Movie& movie = m_new[i];
+
+		if (movie.bValid && movie.pImage)
+		{
+			dwImageX -= m_dwThumbnailWidth + m_dwThumbnailSpaceX;	
+			movie.pImage->SetAlpha((DWORD)movie.nAlpha);
+			movie.pImage->SetPosition(dwImageX,m_dwPosY);
+			movie.pImage->Render();		
+		}
+		else if (m_current[i].bValid)
+		{
+			dwImageX -= m_dwThumbnailWidth + m_dwThumbnailSpaceX;	
+		}
+	}
+
+
+
+
+	WCHAR wszText[256];
 	FLOAT fTextX = (FLOAT) m_dwPosX + m_dwWidth;
 	FLOAT fTextY = (FLOAT) m_dwPosY + m_dwThumbnailHeight + m_dwThumbnailSpaceY;
 
@@ -75,17 +121,17 @@ void CGUIRAMControl::Render()
 		fTextY += m_fFontHeight + (FLOAT) m_dwTextSpaceY;
 	}
 
-	if ((m_pFont2) && (nRecentMovies>0))
+	if (m_pFont2)
 	{
-		for(int i=0; i<nRecentMovies; i++)
+		for(int i=0; i<RECENT_MOVIES; i++)
 		{
-			Movie& movie = m_movies[i];
-
-			swprintf(wszText, L"%S", movie.strTitle.c_str() );
-	
-			m_pFont2->DrawText(	fTextX, fTextY, m_dwTextColor, wszText, XBFONT_RIGHT);
-
-			fTextY += m_fFont2Height + (FLOAT) m_dwTextSpaceY;
+			Movie& movie = m_current[i];
+			if(movie.bValid)
+			{
+				swprintf(wszText, L"%S", movie.strTitle.c_str() );
+				m_pFont2->DrawText(	fTextX, fTextY, m_dwTextColor, wszText, XBFONT_RIGHT);
+				fTextY += m_fFont2Height + (FLOAT) m_dwTextSpaceY;
+			}
 		}
 	}
 
@@ -98,10 +144,18 @@ void CGUIRAMControl::OnMediaUpdate(	INT nIndex, CStdString& strFilepath,
 	CLog::Log( "OnMediaUpdate: " );
 	CLog::Log( strFilepath.c_str() );
 	
+	if (m_current[nIndex].strFilepath.Equals(strFilepath))
+	{
+		CLog::Log( "OnMediaUpdate complete." );
+		return;		
+	}
+
 	Movie movie;
 	movie.strFilepath	= strFilepath;
 	movie.strTitle		= strTitle;
 	movie.pImage		= NULL;
+	movie.nAlpha		= 32;
+	movie.bValid		= true;
 
 	if (!strImagePath.IsEmpty())
 	{
@@ -109,7 +163,7 @@ void CGUIRAMControl::OnMediaUpdate(	INT nIndex, CStdString& strFilepath,
 		movie.pImage->AllocResources();
 	}
 
-	m_movies.push_back(movie);
+	m_new[nIndex] = movie;
 
 	CLog::Log( "OnMediaUpdate complete." );
 }
