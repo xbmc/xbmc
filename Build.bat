@@ -9,12 +9,15 @@ rem Set the path for xbepatch
 rem Set the path for WinRARs rar.exe (freeware)
 rem and finally set the options for the final rar.
 rem ---------------------------------------------
+rem Remove 'rem' from %NET% to compile and/or clean the solution prior packing it.
+rem Remove 'rem' from 'xcopy web/python' to copy these to the BUILD directory.
+rem ---------------------------------------------
 
 TITLE XBMC Build Prepare Script
 ECHO Wait while preparing the build.
 ECHO ------------------------------
 rem	CONFIG START
-	set NET=C:\Progra~1\Micros~2.NET\Common7\IDE\devenv.exe
+	set NET=C:\Progra~1\Micros~1.NET\Common7\IDE\devenv.exe
 	set OPTS=xbmc.sln /build release
 	set CLEAN=xbmc.sln /clean release
 	set XBE=xbepatch.exe
@@ -25,7 +28,7 @@ rem	CONFIG END
 rem ---------------------------------------------
 ECHO Compiling Solution...
 rem %NET% %CLEAN%
-rem %NET% %OPTS%
+%NET% %OPTS%
 ECHO Done!
 ECHO ------------------------------
 ECHO Copying files...
