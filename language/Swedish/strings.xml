@@ -708,17 +708,17 @@
   <string><id>14022</id><value>Bibliotek</value></string>
   <string><id>14023</id><value>Ingen TV</value></string>
   <string><id>14024</id><value>Skriv in största närmaste stad</value></string>
-  <string><id>14025</id><value>Video Cache   - Hårddisk</value></string>
-  <string><id>14026</id><value>              - DVDRom</value></string>
-  <string><id>14027</id><value>              - Lokalt nätverk</value></string>
-  <string><id>14028</id><value>              - Internet</value></string>
-  <string><id>14029</id><value>Ljud Cache    - Hårddisk</value></string>
-  <string><id>14030</id><value>              - DVDRom</value></string>
-  <string><id>14031</id><value>              - Lokalt nätverk</value></string>
-  <string><id>14032</id><value>              - Internet</value></string>
-  <string><id>14033</id><value>DVD Cache     - Hårddisk</value></string>
-  <string><id>14034</id><value>              - DVDRom</value></string>
-  <string><id>14035</id><value>              - Lokalt nätverk</value></string>
+  <string><id>14025</id><value>Video Cache  - Hårddisk</value></string>
+  <string><id>14026</id><value>          - DVDRom</value></string>
+  <string><id>14027</id><value>          - Lokalt nätverk</value></string>
+  <string><id>14028</id><value>          - Internet</value></string>
+  <string><id>14029</id><value>Ljud Cache   - Hårddisk</value></string>
+  <string><id>14030</id><value>          - DVDRom</value></string>
+  <string><id>14031</id><value>          - Lokalt nätverk</value></string>
+  <string><id>14032</id><value>          - Internet</value></string>
+  <string><id>14033</id><value>DVD Cache    - Hårddisk</value></string>
+  <string><id>14034</id><value>          - DVDRom</value></string>
+  <string><id>14035</id><value>          - Lokalt nätverk</value></string>
   <string><id>14036</id><value>Servrar</value></string>
   <string><id>14037</id><value>Look and Feel</value></string>
   <string><id>14038</id><value>Nätverks inställningar ändrade</value></string>
@@ -742,4 +742,66 @@
   <string><id>14056</id><value>Stoppa scan</value></string>
   <string><id>14057</id><value>Inte möjligt medans du scannar för mediainfo</value></string>
   <string><id>14058</id><value>Lägg till extra fillmbrus</value></string>
+  <string><id>15000</id><value>XLink Kai</value></string>
+  <string><id>15001</id><value>Tjänsten är inte kontaktbar, vill du försöka</value></string>
+  <string><id>15002</id><value>återupprätta anslutningen med XboxMediaCenter?</value></string>
+  <string><id>15003</id><value>Skriv in ditt meddelande.</value></string>
+  <string><id>15004</id><value>Du har blivir inbjuden att spela %s.</value></string>
+  <string><id>15005</id><value>Datum: %s</value></string>
+  <string><id>15006</id><value>Från: %s</value></string>
+  <string><id>15007</id><value>Inbjudan</value></string>
+  <string><id>15008</id><value>Du har blivir inbjuden till %s.</value></string>
+  <string><id>15009</id><value>Offline</value></string>
+  <string><id>15010</id><value>Vänner</value></string>
+  <string><id>15011</id><value>Vy: Vänner</value></string>
+  <string><id>15012</id><value>Join</value></string>
+  <string><id>15013</id><value>Röst</value></string>
+  <string><id>15014</id><value>Bjud in</value></string>
+  <string><id>15015</id><value>Ta bort</value></string>
+  <string><id>15016</id><value>Spel</value></string>
+  <string><id>15017</id><value>Vy: Spel</value></string>
+  <string><id>15018</id><value>Enter</value></string>
+  <string><id>15019</id><value>Lägg till</value></string>
+  <string><id>15020</id><value>Värd</value></string>
+  <string><id>15021</id><value>Arena</value></string>
+  <string><id>15022</id><value>Vy: Arena</value></string>
+  <string><id>15023</id><value>Spela</value></string>
+  <string><id>15024</id><value>Lägg till</value></string>
+  <string><id>15025</id><value>Värd</value></string>
+  <string><id>15026</id><value>Chat</value></string>
+  <string><id>15027</id><value>Vy: Chat</value></string>
+  <string><id>15028</id><value>Tangentbord</value></string>
+  <string><id>15029</id><value>Ett lösenord behövs för att besöka denna arena.</value></string>
+  <string><id>15030</id><value>Tjänsten har kopplats från</value></string>
+  <string><id>15031</id><value>XLink Kai Authentication</value></string>
+  <string><id>15032</id><value>Ditt användarnamn och lösenord nekades av</value></string>
+  <string><id>15033</id><value>orbital servern. Undersök dina inställningar.</value></string>
+  <string><id>15034</id><value>kom just online</value></string>
+  <string><id>15035</id><value>har startat en röst chat</value></string>
+  <string><id>15036</id><value>har skickat dig en inbjudan</value></string>
+  <string><id>15037</id><value>XBMC kan inte kontrollera om ditt nätverk är nåbart.</value></string>
+  <string><id>15038</id><value>Du kan komma att ha problem att gå med i spel eller att stå som värd.</value></string>
+  <string><id>15039</id><value>XboxMediaCenter kunde inte hitta spelet automatiskt.</value></string>
+  <string><id>15040</id><value>Sätt i speldisken eller tryck A för att avbryta</value></string>
+  <string><id>15041</id><value>och starta spelet manuellt.</value></string>
+  <string><id>15042</id><value>Tillträde nekades</value></string>
+  <string><id>15043</id><value>%s kommer in i chatten.</value></string>
+  <string><id>15044</id><value>%s lämnar chatten.</value></string>
+  <string><id>15045</id><value>Skriv in det personliga meddelandet.</value></string>
+  <string><id>15046</id><value>Nuvarande Arena</value></string>
+  <string><id>15047</id><value>Skriv in ett lösenord för din arena.</value></string>
+  <string><id>15048</id><value>Skriv en beskriving för din arena.</value></string>
+  <string><id>15049</id><value>Stå värd för ett spel</value></string>
+  <string><id>15050</id><value>Stå som värd i en privat arena</value></string>
+  <string><id>15051</id><value>Max antal spelare</value></string>
+  <string><id>15052</id><value>Lösenord</value></string>
+  <string><id>15053</id><value>Beskrivning</value></string>
+  <string><id>15054</id><value>Inbjudnings Dialog</value></string>
+  <string><id>15055</id><value>Välj spel:</value></string>
+  <string><id>15056</id><value>Skriv in meddelande:</value></string>
+  <string><id>15057</id><value>Skicka</value></string>
+  <string><id>15058</id><value>Värd</value></string>
+  <string><id>15059</id><value>Inbjudan accepterad!</value></string>
+  <string><id>15060</id><value>Meddelande här</value></string>
+  <string><id>15061</id><value>Du är inbjuden att spela %s.</value></string>
 </strings>
