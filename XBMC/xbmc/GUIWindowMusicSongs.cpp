@@ -773,50 +773,57 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
 
 	if (nMyMusicSortMethod==0||nMyMusicSortMethod==2||nMyMusicSortMethod==8)
 	{
-			if (pItem->m_bIsFolder) 
-				pItem->SetLabel2("");
-			else 
+		if (pItem->m_bIsFolder) 
+			pItem->SetLabel2("");
+		else 
+		{
+			if (pItem->m_dwSize > 0) 
 			{
-				if (pItem->m_dwSize > 0) 
+				CStdString strFileSize;
+				CUtil::GetFileSize(pItem->m_dwSize, strFileSize);
+				pItem->SetLabel2(strFileSize);
+			}
+			if ((nMyMusicSortMethod==0 || nMyMusicSortMethod==8) && pItem->m_musicInfoTag.Loaded()) 
+			{
+				int nDuration=pItem->m_musicInfoTag.GetDuration();
+				if (nDuration)
 				{
-					CStdString strFileSize;
-					CUtil::GetFileSize(pItem->m_dwSize, strFileSize);
-					pItem->SetLabel2(strFileSize);
-				}
-				if ((nMyMusicSortMethod==0 || nMyMusicSortMethod==8) && pItem->m_musicInfoTag.Loaded()) 
-				{
-					int nDuration=pItem->m_musicInfoTag.GetDuration();
-					if (nDuration)
-					{
-						CStdString strDuration;
-						CUtil::SecondsToHMSString(nDuration, strDuration);
-						pItem->SetLabel2(strDuration);
-					}
-				}
-				//	cdda items always have duration
-				if ((nMyMusicSortMethod==0 || nMyMusicSortMethod==8) && CStdString(CUtil::GetExtension(pItem->m_strPath))==".cdda")
-				{
-					int nDuration=pItem->m_musicInfoTag.GetDuration();
-					if (nDuration)
-					{
-						CStdString strDuration;
-						CUtil::SecondsToHMSString(nDuration, strDuration);
-						pItem->SetLabel2(strDuration);
-					}
+					CStdString strDuration;
+					CUtil::SecondsToHMSString(nDuration, strDuration);
+					pItem->SetLabel2(strDuration);
 				}
 			}
+			//	cdda items always have duration
+			if ((nMyMusicSortMethod==0 || nMyMusicSortMethod==8) && CStdString(CUtil::GetExtension(pItem->m_strPath))==".cdda")
+			{
+				int nDuration=pItem->m_musicInfoTag.GetDuration();
+				if (nDuration)
+				{
+					CStdString strDuration;
+					CUtil::SecondsToHMSString(nDuration, strDuration);
+					pItem->SetLabel2(strDuration);
+				}
+			}
+		}
+	}
+	else
+	{
+		if (pItem->m_stTime.wYear)
+		{
+			CStdString strDateTime;
+			CUtil::GetDate(pItem->m_stTime, strDateTime);
+			pItem->SetLabel2(strDateTime);
 		}
 		else
-		{
-			if (pItem->m_stTime.wYear)
-			{
-				CStdString strDateTime;
-				CUtil::GetDate(pItem->m_stTime, strDateTime);
-				pItem->SetLabel2(strDateTime);
-			}
-			else
-				pItem->SetLabel2("");
-		}
+			pItem->SetLabel2("");
+	}
+
+	//	set thumbs and default icons
+	if (!pItem->m_bIsShareOrDrive)
+	{
+		CUtil::SetMusicThumb(pItem);
+		CUtil::FillInDefaultIcon(pItem);
+	}
 }
 
 void CGUIWindowMusicSongs::DoSort(VECFILEITEMS& items)

@@ -46,6 +46,7 @@ protected:
 					bool							DoSearch(const CStdString strDir,const CStdString& strSearch,VECFILEITEMS& items);
 					bool							HaveDiscOrConnection( CStdString& strPath, int iDriveType );
 					bool							GetKeyboard(CStdString& strInput);
+	virtual	void							GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
 	virtual	void							ShowThumbPanel();
 					bool							ViewByIcon();
 					bool							ViewByLargeIcon();

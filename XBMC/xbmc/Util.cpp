@@ -17,6 +17,7 @@
 #include "playlistfactory.h"
 #include "ThumbnailCache.h"
 #include "application.h"
+#include "picture.h"
 
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;
@@ -899,90 +900,6 @@ void CUtil::FillInDefaultIcons(VECFILEITEMS &items)
 
 void CUtil::FillInDefaultIcon(CFileItem* pItem)
 {
-	if (pItem->GetIconImage()=="")
-	{
-		if (pItem->m_bIsFolder)
-		{
-			pItem->SetIconImage("defaultFolder.png");
-		}
-		if (!pItem->m_bIsFolder)
-		{
-			CStdString strExtension;
-			CUtil::GetExtension(pItem->m_strPath,strExtension);
-			
-			for (int i=0; i < (int)g_settings.m_vecIcons.size(); ++i)
-			{
-				CFileTypeIcon& icon=g_settings.m_vecIcons[i];
-
-				if (CUtil::cmpnocase(strExtension.c_str(), icon.m_strName)==0)
-				{
-					pItem->SetIconImage(icon.m_strIcon);
-					break;
-				}
-			}
-		}
-	}
-
-	if (pItem->GetThumbnailImage()=="")
-	{
-		if (pItem->GetIconImage()!="")
-		{
-			CStdString strBig;
-			int iPos=pItem->GetIconImage().Find(".");
-			strBig=pItem->GetIconImage().Left(iPos);
-			strBig+="Big";
-			strBig+=pItem->GetIconImage().Right(pItem->GetIconImage().size()-(iPos));
-			pItem->SetThumbnailImage(strBig);
-		}
-	}
-}
-
-void CUtil::SetThumbs(VECFILEITEMS &items)
-{
-  for (int i=0; i < (int)items.size(); ++i)
-  {
-    CFileItem* pItem=items[i];
-		SetThumb(pItem);
-  }
-}
-
-bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
-{
-  CStdString strFolderImage;
-  strThumb="";
-	AddFileToFolder(strFolder, "folder.jpg", strFolderImage);
-
-	if (CUtil::IsRemote(strFolder) )
-	{
-    CURL url(strFolder);
-    if (url.GetProtocol() =="http" || url.GetProtocol()=="HTTP") return false;
-    if (url.GetProtocol() =="shout" || url.GetProtocol()=="SHOUT") return false;
-    if (url.GetProtocol() =="mms" || url.GetProtocol()=="MMS") return false;
-		CUtil::GetThumbnail( strFolderImage,strThumb);
-		CFile file;
-		if ( file.Cache(strFolderImage.c_str(), strThumb.c_str(),NULL,NULL))
-		{
-			return true;
-		}
-		else
-		{
-			if (CUtil::FileExists(strThumb))
-			{
-				return true;
-			}
-		}
-	}
-	else if (CUtil::FileExists(strFolderImage) )
-	{
-		strThumb=strFolderImage;
-    return true;
-	}
-  strThumb="";
-  return false;
-}
-
-void CUtil::SetThumb(CFileItem* pItem)
-{
   CStdString strThumb;
   bool bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
 	if (!pItem->m_bIsFolder)
@@ -1085,8 +1002,93 @@ void CUtil::SetThumb(CFileItem* pItem)
 		}
 	}
 
+	if (pItem->GetIconImage()=="")
+	{
+		if (pItem->m_bIsFolder)
+		{
+			pItem->SetIconImage("defaultFolder.png");
+		}
+		if (!pItem->m_bIsFolder)
+		{
+			CStdString strExtension;
+			CUtil::GetExtension(pItem->m_strPath,strExtension);
+			
+			for (int i=0; i < (int)g_settings.m_vecIcons.size(); ++i)
+			{
+				CFileTypeIcon& icon=g_settings.m_vecIcons[i];
+
+				if (CUtil::cmpnocase(strExtension.c_str(), icon.m_strName)==0)
+				{
+					pItem->SetIconImage(icon.m_strIcon);
+					break;
+				}
+			}
+		}
+	}
+
+	if (pItem->GetThumbnailImage()=="")
+	{
+		if (pItem->GetIconImage()!="")
+		{
+			CStdString strBig;
+			int iPos=pItem->GetIconImage().Find(".");
+			strBig=pItem->GetIconImage().Left(iPos);
+			strBig+="Big";
+			strBig+=pItem->GetIconImage().Right(pItem->GetIconImage().size()-(iPos));
+			pItem->SetThumbnailImage(strBig);
+		}
+	}
+}
+
+void CUtil::SetThumbs(VECFILEITEMS &items)
+{
+  for (int i=0; i < (int)items.size(); ++i)
+  {
+    CFileItem* pItem=items[i];
+		SetThumb(pItem);
+  }
+}
+
+bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
+{
+  CStdString strFolderImage;
+  strThumb="";
+	AddFileToFolder(strFolder, "folder.jpg", strFolderImage);
+
+	if (CUtil::IsRemote(strFolder) )
+	{
+    CURL url(strFolder);
+    if (url.GetProtocol() =="http" || url.GetProtocol()=="HTTP") return false;
+    if (url.GetProtocol() =="shout" || url.GetProtocol()=="SHOUT") return false;
+    if (url.GetProtocol() =="mms" || url.GetProtocol()=="MMS") return false;
+		CUtil::GetThumbnail( strFolderImage,strThumb);
+		CFile file;
+		if ( file.Cache(strFolderImage.c_str(), strThumb.c_str(),NULL,NULL))
+		{
+			return true;
+		}
+		else
+		{
+			if (CUtil::FileExists(strThumb))
+			{
+				return true;
+			}
+		}
+	}
+	else if (CUtil::FileExists(strFolderImage) )
+	{
+		strThumb=strFolderImage;
+    return true;
+	}
+  strThumb="";
+  return false;
+}
+
+void CUtil::SetThumb(CFileItem* pItem)
+{
 	if ( !pItem->HasThumbnail() )
 	{
+		CStdString strThumb;
 		CUtil::GetThumbnail( pItem->m_strPath,strThumb);
 		if (!CUtil::FileExists(strThumb) )
 		{
@@ -1205,23 +1207,23 @@ void CUtil::RemoveTempFiles()
 		}
 	} while (FindNextFile(hFind, &wfd));
 
-	CStdString strTempThumbDir;
-	strTempThumbDir.Format("%s\\thumbs\\temp\\*.tbn",g_stSettings.m_szAlbumDirectory);
-	memset(&wfd,0,sizeof(wfd));
+	//CStdString strTempThumbDir;
+	//strTempThumbDir.Format("%s\\thumbs\\temp\\*.tbn",g_stSettings.m_szAlbumDirectory);
+	//memset(&wfd,0,sizeof(wfd));
 
-	CAutoPtrFind hFind1( FindFirstFile(strTempThumbDir.c_str(),&wfd));
-	if (!hFind1.isValid())
-		return ;
-	do
-	{
-		if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
-		{
-			CStdString strFile;
-			strFile.Format("%s\\thumbs\\temp\\",g_stSettings.m_szAlbumDirectory);
-			strFile += wfd.cFileName;
-			DeleteFile(strFile.c_str());
-		}
-	} while (FindNextFile(hFind1, &wfd));
+	//CAutoPtrFind hFind1( FindFirstFile(strTempThumbDir.c_str(),&wfd));
+	//if (!hFind1.isValid())
+	//	return ;
+	//do
+	//{
+	//	if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
+	//	{
+	//		CStdString strFile;
+	//		strFile.Format("%s\\thumbs\\temp\\",g_stSettings.m_szAlbumDirectory);
+	//		strFile += wfd.cFileName;
+	//		DeleteFile(strFile.c_str());
+	//	}
+	//} while (FindNextFile(hFind1, &wfd));
 }
 
 bool CUtil::IsHD(const CStdString& strFileName)
@@ -1855,3 +1857,101 @@ void CUtil::GetVideoThumbnail(const CStdString& strIMDBID, CStdString& strThumb)
   strThumb= szThumbNail;
 }
 
+void CUtil::SetMusicThumbs(VECFILEITEMS &items)
+{
+  for (int i=0; i < (int)items.size(); ++i)
+  {
+    CFileItem* pItem=items[i];
+		SetMusicThumb(pItem);
+  }
+}
+
+void CUtil::SetMusicThumb(CFileItem* pItem)
+{
+	CStdString strThumb;
+	CStdString strAlbum=pItem->m_musicInfoTag.GetAlbum();
+	//	Set album thumb for file (or directory in albumwindow)
+	if (!strAlbum.IsEmpty())
+	{
+		CStdString strPath, strFileName;
+		if (!pItem->m_bIsFolder)
+			CUtil::Split(pItem->m_strPath, strPath, strFileName);
+		else
+			strPath=pItem->m_strPath;
+		// look for a permanent thumb (Q:\albums\thumbs)
+		CUtil::GetAlbumThumb(strAlbum+strPath,strThumb);
+		if (CUtil::ThumbExists(strThumb,true) )
+		{
+			pItem->SetIconImage(strThumb);
+			pItem->SetThumbnailImage(strThumb);
+		}
+		else 
+		{
+			// look for a temporary thumb (Q:\albums\thumbs\temp)
+			CUtil::GetAlbumThumb(strAlbum+strPath,strThumb, true);
+			if (CUtil::ThumbExists(strThumb, true) )
+			{
+				pItem->SetIconImage(strThumb);
+				pItem->SetThumbnailImage(strThumb);
+			}
+			else if (pItem->m_bIsFolder) //	fill thumb for directory in albumwindow
+			{
+				CUtil::AddFileToFolder(pItem->m_strPath, "folder.jpg", strThumb);
+				if (CUtil::ThumbExists(strThumb, true))
+				{
+					//	We found a folder.jpg
+					CStdString strFolderThumb;
+					CUtil::GetAlbumThumb(strThumb,strFolderThumb, true);
+					if (!CUtil::ThumbExists(strFolderThumb))
+					{
+						// resize it and save it to the temp thumb dir
+						CPicture pic;
+						if (pic.CreateAlbumThumbnail(strThumb, strThumb))
+						{
+							strThumb=strFolderThumb;
+							CUtil::ThumbCacheAdd(strThumb, true);
+						}
+					}
+					else
+					{
+						strThumb=strFolderThumb;
+					}
+					pItem->SetIconImage(strThumb);
+					pItem->SetThumbnailImage(strThumb);
+				}
+				else
+				{
+					strThumb="music.jpg";
+					pItem->SetIconImage("music.jpg");
+				}
+			}
+		}
+	}
+	//	do we have a normal folder
+	if (strAlbum.IsEmpty() && pItem->m_bIsFolder && pItem->GetLabel()!="..")
+	{
+		// Check for folder.jpg
+		CUtil::AddFileToFolder(pItem->m_strPath, "folder.jpg", strThumb);
+		if (CUtil::ThumbExists(strThumb, true))
+		{
+			//	We found a folder.jpg
+			CStdString strFolderThumb;
+			CUtil::GetAlbumThumb(strThumb,strFolderThumb, true);
+			if (!CUtil::ThumbExists(strFolderThumb))
+			{
+				// resize it and save it to the temp thumb dir
+				CPicture pic;
+				if (pic.CreateAlbumThumbnail(strThumb, strThumb))
+				{
+					strThumb=strFolderThumb;
+					CUtil::ThumbCacheAdd(strThumb, true);
+					pItem->SetThumbnailImage(strThumb);
+				}
+			}
+			else
+			{
+					pItem->SetThumbnailImage(strThumb);
+			}
+		}
+	}
+}

@@ -19,7 +19,6 @@
 #include <algorithm>
 #include "GuiUserMessages.h"
 #include "GUIThumbnailPanel.h"
-#include "picture.h"
 
 #define CONTROL_BTNVIEWASICONS		2
 #define CONTROL_BTNTYPE						6
@@ -277,6 +276,8 @@ void CGUIWindowMusicBase::UpdateListControl()
 	{
 		CFileItem* pItem=m_vecItems[i];
 
+		//	Format label for listcontrol
+		//	and set thumb/icon for item
 		OnFileItemFormatLabel(pItem);
 	}
 
@@ -324,7 +325,7 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 		CFileItem* pItem=m_vecItems[iItem];
 		if (pItem->m_bIsFolder && pItem->GetLabel() != "..")
 		{
-			strSelectedItem=pItem->m_strPath;
+			GetDirectoryHistoryString(pItem, strSelectedItem);
 		}
 	}
 
@@ -379,97 +380,18 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 	{
 		CFileItem* pItem=m_vecItems[i];
 
-
 		//	Update selected item
-		if (!bSelectedFound && pItem->m_strPath==strSelectedItem)
+		if (!bSelectedFound)
 		{
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,i);
-			CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,i);
-			bSelectedFound=true;
-		}
-
-
-		CStdString strThumb;
-		CStdString strAlbum=pItem->m_musicInfoTag.GetAlbum();
-		//	Set album thumb for file (or directory in albumwindow)
-		if (!strAlbum.IsEmpty())
-		{
-			CStdString strPath, strFileName;
-			if (!pItem->m_bIsFolder)
-				CUtil::Split(pItem->m_strPath, strPath, strFileName);
-			else
-				strPath=pItem->m_strPath;
-			// look for a permanent thumb (Q:\albums\thumbs)
-			CUtil::GetAlbumThumb(strAlbum+strPath,strThumb);
-			if (CUtil::ThumbExists(strThumb,true) )
+			CStdString strHistory;
+			GetDirectoryHistoryString(pItem, strHistory);
+			if (strHistory==strSelectedItem)
 			{
-				pItem->SetIconImage(strThumb);
-				pItem->SetThumbnailImage(strThumb);
-			}
-			else 
-			{
-				// look for a temporary thumb (Q:\albums\thumbs\temp)
-				CUtil::GetAlbumThumb(strAlbum+strPath,strThumb, true);
-				if (CUtil::ThumbExists(strThumb, true) )
-				{
-					pItem->SetIconImage(strThumb);
-					pItem->SetThumbnailImage(strThumb);
-				}
-				else if (pItem->m_bIsFolder) //	fill thumb for directory in albumwindow
-				{
-					CUtil::AddFileToFolder(pItem->m_strPath, "folder.jpg", strThumb);
-					if (CUtil::ThumbExists(strThumb, true))
-					{
-						//	We found a folder.jpg, resize it and save it to the temp thumb dir
-						CStdString strFolderThumb;
-						CUtil::GetAlbumThumb(strThumb,strFolderThumb, true);
-						if (!CUtil::ThumbExists(strFolderThumb))
-						{
-							CPicture pic;
-							pic.CreateAlbumThumbnail(strThumb, strThumb);
-							strThumb=strFolderThumb;
-							CUtil::ThumbCacheAdd(strThumb, true);
-						}
-						else
-						{
-							strThumb=strFolderThumb;
-						}
-						pItem->SetIconImage(strThumb);
-						pItem->SetThumbnailImage(strThumb);
-					}
-					else
-					{
-						strThumb="music.jpg";
-						pItem->SetIconImage("music.jpg");
-					}
-				}
-				else
-				{
-					//	no thumb found, clean up previous guesses
-					strThumb.Empty();
-				}
+				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,i);
+				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,i);
+				bSelectedFound=true;
 			}
 		}
-		//	only set default thumbs if no album cover is available
-		if (strThumb.IsEmpty())
-		{
-			CUtil::SetThumb(pItem);
-			CUtil::FillInDefaultIcon(pItem);
-		}
-
-
-		// Hack for Top 100 window that a correct looking icon is shown
-		// CONTROL_THUMB in top 100 is a listcontrol, so big iconimages have to be shown
-		// if its enabled
-		if (GetID()==WINDOW_MUSIC_TOP100 && strThumb.IsEmpty() && ViewByIcon())
-			pItem->SetIconImage(pItem->GetThumbnailImage());
-
-		// Hack for Album window that a correct looking icon for subdirs is show
-		// CONTROL_THUMB in album is a listcontrol, so big iconimages have to be shown
-		// if its enabled
-		if (GetID()==WINDOW_MUSIC_ALBUM && strThumb.IsEmpty() && !m_strDirectory.IsEmpty() && ViewByIcon())
-			pItem->SetIconImage(pItem->GetThumbnailImage());
-
 
 		//	synchronize playlist with current directory
 		if (!strFileName.IsEmpty() && pItem->m_strPath == strFileName)
@@ -477,8 +399,8 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 			pItem->Select(true);
 		}
 
+	}
 
-	} //	for (int i=0; i < (int)m_vecItems.size(); ++i)
 }
 
 void CGUIWindowMusicBase::GoParentFolder()
@@ -948,7 +870,7 @@ void CGUIWindowMusicBase::OnSearch()
 			CFileItem* pNewItem=new CFileItem(*pItem);
 			m_vecItems.push_back(pNewItem);
 		}
-		CUtil::SetThumbs(m_vecItems);
+		CUtil::SetMusicThumbs(m_vecItems);
 		CUtil::FillInDefaultIcons(m_vecItems);
 		UpdateListControl();
 		UpdateButtons();
@@ -1037,4 +959,12 @@ void CGUIWindowMusicBase::ShowThumbPanel()
 			pControl->SetItemWidth(128);
 		}
   }
+}
+
+void CGUIWindowMusicBase::GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString)
+{
+	strHistoryString=pItem->m_strPath;
+
+	if (CUtil::HasSlashAtEnd(strHistoryString))
+		strHistoryString.Delete(strHistoryString.size()-1);
 }
