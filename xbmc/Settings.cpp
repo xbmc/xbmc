@@ -1132,7 +1132,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetFloat(pElement, "headroom", g_stSettings.m_fVolumeHeadroom,6.0f,0.0f,12.0f);
 		GetBoolean(pElement, "UseDigitalOutput", g_stSettings.m_bUseDigitalOutput);
 		GetBoolean(pElement, "HQmusicaudio", g_stSettings.m_bResampleMusicAudio);
-		GetBoolean(pElement, "HQvideoaudio", g_stSettings.m_bResampleVideoAudio);
+		//DON'T ALLOW AUDIO RESAMPLING FOR VIDEO AT ALL. ALLWAYS LET IT BE DISBLED
+		//GetBoolean(pElement, "HQvideoaudio", g_stSettings.m_bResampleVideoAudio);
 	}
 
 	// post processing
