@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 06-03-2005 added: Voice support for Karaoke mode (SF Patch #1114097) - thanks stcogolin!
   - 06-03-2005 fixed: Music thumbs previously scanned on smb shares were not shown in music overlay or filelists in Music->Files view.
   - 06-03-2005 changed: keymap.xml updated to allow skip and ffw/rew when in vis.
   - 06-03-2005 fixed: my music Nav window: play action works again, and artists list now sorts excluding "the"

@@ -85,6 +85,9 @@ public:
 	virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
   bool          GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, DWORD* dwChannelMask, int Type, int Channels);
 
+    //Cdg voice callback (Karaoke patch (114097))
+	static void	CdgVoiceDataCallback( DWORD dwPort, DWORD dwSize, VOID* pvData, VOID* pContext );
+
 private:
 	IAudioCallback* m_pCallback;
 	LONG				m_lFadeVolume;

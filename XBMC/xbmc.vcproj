@@ -652,6 +652,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\CdgParser.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\CdgVoiceManager.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\CdgVoiceManager.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\Crc32.cpp">
 				</File>
 				<File

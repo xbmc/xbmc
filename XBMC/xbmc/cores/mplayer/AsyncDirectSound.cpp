@@ -25,6 +25,7 @@
 #include "../../utils/log.h"
 #include "MPlayer.h"
 #include "../../util.h"
+#include "../../application.h"	// Karaoke patch (114097)
 
 #define VOLUME_MIN    DSBVOLUME_MIN
 #define VOLUME_MAX    DSBVOLUME_MAX
@@ -68,6 +69,8 @@ void CASyncDirectSound::DoWork()
 		m_pCallback->OnAudioData(m_VisBuffer, m_VisBytes);
 		m_VisBytes = 0;
 	}
+
+	g_application.m_CdgParser.ProcessVoice();	// Karaoke patch (114097)
 }
 
 bool CASyncDirectSound::GetMixBin(DSMIXBINVOLUMEPAIR* dsmbvp, int* MixBinCount, DWORD* dwChannelMask, int Type, int Channels)
@@ -438,6 +441,20 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	{
 		m_Resampler.InitConverter(uiSamplesPerSec, uiBitsPerSample, iChannels, 48000, 16, m_dwPacketSize);
 	}
+
+	// Karaoke patch (114097) ...
+	if( g_guiSettings.GetBool("Karaoke.VoiceEnabled") )
+	{
+		CDG_VOICE_MANAGER_CONFIG VoiceConfig;
+		VoiceConfig.dwVoicePacketTime       = 20;       // 20ms
+		VoiceConfig.dwMaxStoredPackets      = 5;
+		VoiceConfig.pDSound                 = m_pDSound;
+		VoiceConfig.pCallbackContext        = this;
+		VoiceConfig.pfnVoiceDeviceCallback = NULL;
+		VoiceConfig.pfnVoiceDataCallback    = CdgVoiceDataCallback;
+		g_application.m_CdgParser.StartVoice(&VoiceConfig);
+	}
+	// ... Karaoke patch (114097)
 }
 
 //***********************************************************************************************
@@ -452,6 +469,9 @@ CASyncDirectSound::~CASyncDirectSound()
 HRESULT CASyncDirectSound::Deinitialize()
 {
 	OutputDebugString("CASyncDirectSound::Deinitialize\n");
+
+	g_application.m_CdgParser.FreeVoice();	// Karaoke patch (114097)
+
 	m_bIsAllocated = false;
 	if (m_pStream)
 	{
@@ -900,4 +920,12 @@ void CASyncDirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeaker
 	for (DWORD i=0; i<dsmb.dwMixBinCount;i++)
 		m_pDSound->SetMixBinHeadroom(i, DWORD(g_guiSettings.GetInt("AudioOutput.Headroom")/6));
     m_iCurrentAudioStream = iAudioStream;
+}
+
+// Voice Manager Callback (Karaoke patch (114097))
+void CASyncDirectSound::CdgVoiceDataCallback( DWORD dwPort, DWORD dwSize, VOID* pvData, VOID* pContext )
+{
+	CASyncDirectSound* pThis = (CASyncDirectSound*) pContext;
+	if(pThis->m_pCallback)
+		pThis->m_pCallback->OnAudioData( (unsigned char*) pvData , dwSize );
 }
