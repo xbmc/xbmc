@@ -392,51 +392,44 @@ bool CMPlayer::openfile(const CStdString& strFile)
 {
   int iCacheSize=1024;
   closefile();
-
+  bool bFileOnHD(false);
+  bool bFileOnISO(false);
+  bool bFileOnUDF(false);
+  bool bFileOnInternet(false);
+  bool bFileOnLAN(false);
+  
   CURL url(strFile);
-  bool bStreamingAudio=false;
-  // for shoutcast, use cache of 512 kbyte
-  if (url.GetProtocol()=="http") bStreamingAudio=true;
-  if (url.GetProtocol()=="shout") bStreamingAudio=true;
-  if (url.GetProtocol()=="mms") bStreamingAudio=true;
-  if (url.GetProtocol()=="rtp") bStreamingAudio=true;
+  if ( CUtil::IsHD(strFile) )           bFileOnHD=true;
+  else if ( CUtil::IsISO9660(strFile) ) bFileOnISO=true;
+  else if ( CUtil::IsDVD(strFile) )     bFileOnUDF=true;
+  else if (url.GetProtocol()=="http")   bFileOnInternet=true;
+  else if (url.GetProtocol()=="shout")  bFileOnInternet=true;
+  else if (url.GetProtocol()=="mms")    bFileOnInternet=true;
+  else if (url.GetProtocol()=="rtp")    bFileOnInternet=true;
+  else bFileOnLAN=true;
+
+  bool bIsVideo =CUtil::IsVideo(strFile);
+  bool bIsAudio =CUtil::IsAudio(strFile);
+  bool bIsDVD(false);
+  if (strFile.Find("dvd://") >=0 )
+  {
+    bIsDVD=true;
+    bIsVideo=true;
+  }
+
+  iCacheSize=GetCacheSize(bFileOnHD,bFileOnISO,bFileOnUDF,bFileOnInternet,bFileOnLAN, bIsVideo, bIsAudio, bIsDVD);
   try
   {
-    if (bStreamingAudio)
+    if (bFileOnInternet)
     {
       m_dlgCache = new CDlgCache();
       m_dlgCache->Update();
     }
-
     
-    CLog::Log("mplayer play:%s", strFile.c_str());
-    // setup the cache size mplayer uses
-    // for DVD/CD's or remote shares we use 8 megs
-    if (CUtil::IsDVD(strFile) || CUtil::IsISO9660(strFile) || CUtil::IsRemote(strFile) )
-    {
-      iCacheSize=8192;
-    }
-    
-    // for audio files we use 256kbyte cache
-    if (CUtil::IsAudio(strFile) && !CUtil::IsVideo(strFile) )
-    {
-      iCacheSize=256;
-    }
-    if (strFile.Find("dvd://") >=0 )
-    {
-      iCacheSize=16384;
-    }
-
-    
-    if (bStreamingAudio)
-    {
-      iCacheSize=512;
-    }
-    
-    //CLog::Log("  cache sizem:%i kbyte",iCacheSize);
+    CLog::Log("mplayer play:%s cachesize:%i", strFile.c_str(), iCacheSize);
     
     // cache (remote) subtitles to HD
-    if (!bStreamingAudio)
+    if (!bFileOnInternet && bIsVideo)
     {
 	    CUtil::CacheSubtitles(strFile);
     }
@@ -480,7 +473,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
     
     //CLog::Log("  open 1st time");
 	  mplayer_init(argc,argv);
-    if (!g_stSettings.m_bNoCache) mplayer_setcache_size(iCacheSize);
+    mplayer_setcache_size(iCacheSize);
 	  int iRet=mplayer_open_file(strFile.c_str());
 	  if (iRet < 0)
 	  {
@@ -491,9 +484,9 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		  return false;
 	  }
 
-    if (bStreamingAudio ) 
+    if (bFileOnInternet ) 
     {
-      // for shoutcast we're done.
+      // for streaming we're done.
     }
     else
     {
@@ -630,7 +623,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
         options.GetOptions(argc,argv);
 			  load();
 			  mplayer_init(argc,argv);
-        if (!g_stSettings.m_bNoCache) mplayer_setcache_size(iCacheSize);
+        mplayer_setcache_size(iCacheSize);
 			  iRet=mplayer_open_file(strFile.c_str());
 			  if (iRet < 0)
 			  {
@@ -645,15 +638,15 @@ bool CMPlayer::openfile(const CStdString& strFile)
     }
     m_bIsPlaying= true;
 
-    // if it turns out to b a video file after all, then 
-    // make sure the cache is set to at least 1 meg
-    if (HasVideo() && iCacheSize==512)
+    bIsVideo=HasVideo();
+    bIsAudio=HasAudio();
+    int iNewCacheSize=GetCacheSize(bFileOnHD,bFileOnISO,bFileOnUDF,bFileOnInternet,bFileOnLAN, bIsVideo, bIsAudio, bIsDVD);
+    if (iNewCacheSize!=iCacheSize)
     {
-      CLog::Log("update cache to 2 megs");
-      if (!g_stSettings.m_bNoCache) mplayer_setcache_size(2048);
-      Sleep(1000);
+      CLog::Log("upgrade cachesize to %i", iNewCacheSize);
+      mplayer_setcache_size(iCacheSize);
     }
-
+    
 	  if ( ThreadHandle() == NULL)
 	  {
 		  Create();
@@ -1076,4 +1069,41 @@ void CMPlayer::ToFFRW(int iSpeed)
   mplayer_ToFFRW( iSpeed);
   //SwitchToThread();
   //xbox_video_wait();
+}
+
+
+int CMPlayer::GetCacheSize(bool bFileOnHD,bool bFileOnISO,bool bFileOnUDF,bool bFileOnInternet,bool bFileOnLAN, bool bIsVideo, bool bIsAudio, bool bIsDVD)
+{
+  if (g_stSettings.m_bNoCache) return 0;
+
+  if (bFileOnHD)
+  {
+    if ( bIsDVD  ) return g_stSettings.m_iCacheSizeHD[CACHE_VOB];
+    if ( bIsVideo) return g_stSettings.m_iCacheSizeHD[CACHE_VIDEO];
+    if ( bIsAudio) return g_stSettings.m_iCacheSizeHD[CACHE_AUDIO];
+  }
+  if (bFileOnISO)
+  {
+    if ( bIsDVD  ) return g_stSettings.m_iCacheSizeISO[CACHE_VOB];
+    if ( bIsVideo) return g_stSettings.m_iCacheSizeISO[CACHE_VIDEO];
+    if ( bIsAudio) return g_stSettings.m_iCacheSizeISO[CACHE_AUDIO];
+  }
+  if (bFileOnUDF)
+  {
+    if ( bIsDVD  ) return g_stSettings.m_iCacheSizeUDF[CACHE_VOB];
+    if ( bIsVideo) return g_stSettings.m_iCacheSizeUDF[CACHE_VIDEO];
+    if ( bIsAudio) return g_stSettings.m_iCacheSizeUDF[CACHE_AUDIO];
+  }
+  if (bFileOnInternet)
+  {
+    if ( bIsDVD  ) return g_stSettings.m_iCacheSizeInternet[CACHE_VOB];
+    if ( bIsVideo) return g_stSettings.m_iCacheSizeInternet[CACHE_VIDEO];
+    if ( bIsAudio) return g_stSettings.m_iCacheSizeInternet[CACHE_AUDIO];
+  }
+  if (bFileOnLAN)
+  {
+    if ( bIsDVD  ) return g_stSettings.m_iCacheSizeLAN[CACHE_VOB];
+    if ( bIsVideo) return g_stSettings.m_iCacheSizeLAN[CACHE_VIDEO];
+    if ( bIsAudio) return g_stSettings.m_iCacheSizeLAN[CACHE_AUDIO];
+  }
 }

@@ -15,6 +15,10 @@ using namespace std;
 #define SHARE_TYPE_VIRTUAL_DVD	3
 #define SHARE_TYPE_REMOTE				4
 
+
+#define CACHE_AUDIO 0
+#define CACHE_VIDEO 1
+#define CACHE_VOB   2
 class CShare
 {
 	public:
@@ -236,6 +240,14 @@ public:
 	int				m_iWeatherRefresh;		//WEATHER
 	char			m_szExternalDVDPlayer[128];
   bool      m_bNoCache;
+  int       m_iSmallStepBackSeconds;
+  int       m_iSmallStepBackTries;
+  int       m_iSmallStepBackDelay;
+  int       m_iCacheSizeHD[3];
+  int       m_iCacheSizeUDF[3];
+  int       m_iCacheSizeISO[3];
+  int       m_iCacheSizeLAN[3];
+  int       m_iCacheSizeInternet[3];
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;
