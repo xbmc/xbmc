@@ -68,7 +68,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
 				{
           m_isoReader.Reset();
 					m_DriveState = DRIVE_OPEN;
-					SetNewDVDShareUrl( "D:\\" ,false,"(open)");
+					SetNewDVDShareUrl( "D:\\" ,false,"DVD-ROM (Open)");
 					//	Send Message to GUI that disc been ejected
 					CGUIMessage msg( GUI_MSG_DVDDRIVE_EJECTED_CD, 0, 0, 0, 0, NULL );
 					waitLock.Leave();
@@ -82,7 +82,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
         {
 					// drive is not ready (closing, opening)
           m_isoReader.Reset();
-					SetNewDVDShareUrl( "D:\\" ,false,"(busy)");
+					SetNewDVDShareUrl( "D:\\" ,false,"DVD-ROM (Busy)");
           m_DriveState = DRIVE_NOT_READY;
 					//	DVD-ROM in undefined state
 					//	better delete old CD Information
@@ -109,7 +109,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
 						// nothing in there...
             m_isoReader.Reset();
 						m_DriveState = DRIVE_CLOSED_NO_MEDIA;
-						SetNewDVDShareUrl( "D:\\" ,false,"(empty)");
+						SetNewDVDShareUrl( "D:\\" ,false,"DVD-ROM (Empty)");
             //	Send Message to GUI that disc has changed
 						CGUIMessage msg( GUI_MSG_DVDDRIVE_CHANGED_CD, 0, 0, 0, 0, NULL );
 						waitLock.Leave();
@@ -200,7 +200,9 @@ void CDetectDVDMedia::DetectMediaType()
   sprintf( buf, "disc label:%s\n", m_pCdInfo->GetDiscLabel().c_str() );
 	OutputDebugString( buf );
 
-  SetNewDVDShareUrl( strNewUrl ,bCDDA, m_pCdInfo->GetDiscLabel());
+  CStdString strLabel;
+  strLabel.Format("DVD-ROM (%s)",m_pCdInfo->GetDiscLabel().c_str());
+  SetNewDVDShareUrl( strNewUrl ,bCDDA, strLabel);
 }
 
 void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA, const CStdString& strDiscLabel ) 
