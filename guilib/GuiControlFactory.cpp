@@ -107,6 +107,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	DWORD				dwSpinColor;
 	DWORD				dwSpinWidth,dwSpinHeight,dwSpinPosX,dwSpinPosY;
 	CStdString  strTextureCheckMark;
+	CStdString  strTextureCheckMarkNF;
 	DWORD				dwCheckWidth, dwCheckHeight;
 	CStdString	strTextureRadioFocus,strTextureRadioNoFocus;
 	CStdString	strSubType;
@@ -192,6 +193,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		if (strType=="checkmark")
 		{
 			strTextureCheckMark	= ((CGUICheckMarkControl*)pReference)->GetCheckMarkTextureName();
+			strTextureCheckMarkNF	= ((CGUICheckMarkControl*)pReference)->GetCheckMarkTextureNameNF();
 			dwCheckWidth				= ((CGUICheckMarkControl*)pReference)->GetCheckMarkWidth();
 			dwCheckHeight				= ((CGUICheckMarkControl*)pReference)->GetCheckMarkHeight();
 			dwAlign							= ((CGUICheckMarkControl*)pReference)->GetAlignment();
@@ -349,7 +351,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	GetDWORD(pControlNode,"MarkWidth",dwCheckWidth);
 	GetDWORD(pControlNode,"MarkHeight",dwCheckHeight);
 	GetString(pControlNode,"textureCheckmark",strTextureCheckMark);
-
+  GetString(pControlNode,"textureCheckmarkNoFocus",strTextureCheckMarkNF);
 	GetString(pControlNode,"textureRadioFocus",strTextureRadioFocus);
 	GetString(pControlNode,"textureRadioNoFocus",strTextureRadioNoFocus);
 
@@ -475,7 +477,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
   if (strType=="checkmark")
   {
 			if (!bLoadReferences) g_graphicsContext.ScaleRectToScreenResolution(dwPosX,dwPosY,dwWidth, dwHeight);
-			CGUICheckMarkControl* pControl = new CGUICheckMarkControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strTextureCheckMark,dwCheckWidth,dwCheckHeight,dwAlign);
+			CGUICheckMarkControl* pControl = new CGUICheckMarkControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,strTextureCheckMark,strTextureCheckMarkNF,dwCheckWidth,dwCheckHeight,dwAlign);
       pControl->SetLabel(strFont,strLabel,dwTextColor);
       pControl->SetDisabledColor(dwDisabledColor);
       pControl->SetNavigation(up,down,left,right);

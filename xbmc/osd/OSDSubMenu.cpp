@@ -82,7 +82,7 @@ void COSDSubMenu::Draw()
 	  for (int i=0; i < (int)m_vecOptions.size(); ++i)
 	  {
 		  IOSDOption* pOption=m_vecOptions[i];
-		  pOption->Draw(m_iXPos+40, 40+m_iYPos+i*34, i==m_iCurrentOption);
+		  pOption->Draw(m_iXPos+40, 40+m_iYPos+i*34, i==m_iCurrentOption,m_bOptionSelected);
 	  }
   }
 }
@@ -106,6 +106,7 @@ bool COSDSubMenu::OnAction(const CAction& action)
 
 	if (action.wID==ACTION_MOVE_UP)
 	{
+    m_bOptionSelected=false;
 		if ( m_iCurrentOption > 0)
 		{
 			m_iCurrentOption--;
@@ -119,6 +120,7 @@ bool COSDSubMenu::OnAction(const CAction& action)
 
 	if (action.wID==ACTION_MOVE_DOWN)
 	{
+    m_bOptionSelected=false;
 		if ( m_iCurrentOption+1 < (int)m_vecOptions.size() )
 		{
 			m_iCurrentOption++;

@@ -7,18 +7,21 @@
 
 using namespace OSD;
 COSDOptionBoolean::COSDOptionBoolean(int iHeading)
+:m_image(0, 1, 0, 0, 0, 0, "check-box.png",0)
 {
 	m_bValue=false;
   m_iHeading=iHeading;
 }
 
 COSDOptionBoolean::COSDOptionBoolean(int iHeading,bool bValue)
+:m_image(0, 1, 0, 0, 0, 0, "check-box.png",0)
 {
   iHeading=iHeading;
 	m_bValue=bValue;
 }
 
 COSDOptionBoolean::COSDOptionBoolean(const COSDOptionBoolean& option)
+:m_image(0, 1, 0, 0, 0, 0, "check-box.png",0)
 {
 	*this=option;
 }
@@ -41,7 +44,7 @@ IOSDOption* COSDOptionBoolean::Clone() const
 }
 
 
-void COSDOptionBoolean::Draw(int x, int y, bool bFocus)
+void COSDOptionBoolean::Draw(int x, int y, bool bFocus,bool bSelected)
 {
   DWORD dwColor=0xff999999;
   if (bFocus)
@@ -56,6 +59,14 @@ void COSDOptionBoolean::Draw(int x, int y, bool bFocus)
                               5, 
                               5,
                               0xFF020202);
+  }
+
+  if (m_bValue && bSelected)
+  {
+    m_image.SetPosition(x+200,y);
+    m_image.AllocResources();
+    m_image.Render();
+    m_image.FreeResources();
   }
 }
 
