@@ -20,17 +20,19 @@ CVisualisation::~CVisualisation()
   g_application.m_CdgParser.FreeGraphics();
 }
 
-void CVisualisation::Create()
+void CVisualisation::Create(int posx, int posy, int width, int height)
 {
   // allow vis. to create internal things needed
-  // pass it the screen width,height
+  // pass it the location,width,height
   // and the name of the visualisation.
-  int iWidth = g_graphicsContext.GetWidth();
-  int iHeight = g_graphicsContext.GetHeight();
+  m_posX = posx;
+  m_posY = posy;
+  m_width = width;
+  m_height = height;
   char szTmp[129];
-  sprintf(szTmp, "create:%ix%i %s\n", iWidth, iHeight, m_strVisualisationName.c_str());
+  sprintf(szTmp, "create:%ix%i at %ix%ix %s\n", width, height, posx, posy, m_strVisualisationName.c_str());
   OutputDebugString(szTmp);
-  m_pVisz->Create (g_graphicsContext.Get3DDevice(), iWidth, iHeight, m_strVisualisationName.c_str());
+  m_pVisz->Create (g_graphicsContext.Get3DDevice(), posx, posy, width, height, m_strVisualisationName.c_str());
   if (g_guiSettings.GetBool("Karaoke.Enabled"))
     g_application.m_CdgParser.AllocGraphics();
 }
@@ -55,9 +57,11 @@ void CVisualisation::AudioData(const short* pAudioData, int iAudioDataLength, fl
 void CVisualisation::Render()
 {
   // ask visz. to render itself
+  g_graphicsContext.SetViewPort((float)m_posX, (float)m_posY, (float)m_width, (float)m_height);
   m_pVisz->Render();
   if (g_guiSettings.GetBool("Karaoke.Enabled"))
     g_application.m_CdgParser.Render();
+  g_graphicsContext.RestoreViewPort();
   // CLog::Log(LOGERROR, "Test");
 }
 
