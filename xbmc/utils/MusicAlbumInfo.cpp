@@ -118,102 +118,204 @@ const CMusicSong& CMusicAlbumInfo::GetSong(int iSong)
 bool	CMusicAlbumInfo::Parse(const CStdString& strHTML)
 {
 	m_vecSongs.erase(m_vecSongs.begin(),m_vecSongs.end());
+	CHTMLUtil  util;
 	CStdString strHTMLLow=strHTML;
 	strHTMLLow.MakeLower();
-	int iStartOfTable=strHTMLLow.Find("artist&nbsp;");
-	if (iStartOfTable< 0) return false;
-	iStartOfTable=strHTMLLow.ReverseFind("<table",iStartOfTable);
-	if (iStartOfTable < 0) return false;
+	
+	//	Extract Cover URL
+	int iStartOfCover=strHTMLLow.Find("photo/image text");
+	if (iStartOfCover>=0)
+	{
+		iStartOfCover=strHTMLLow.ReverseFind("<img", iStartOfCover);
+		int iEndOfCover=strHTMLLow.Find(">", iStartOfCover);
+		CStdString strCover=strHTMLLow.Mid(iStartOfCover, iEndOfCover);
+		util.getAttributeOfTag(strCover, "src=", m_strImageURL);
+	}
 
-	CHTMLUtil  util;
+	//	Extract Review
+	int iStartOfReview=strHTMLLow.Find("id=\"bio\"");
+	if (iStartOfReview>=0)
+	{
+		iStartOfReview=strHTMLLow.Find("<table", iStartOfReview);
+		if (iStartOfReview>=0)
+		{
+			CHTMLTable table;
+			CStdString strTable=strHTML.Right((int)strHTML.size()-iStartOfReview);
+			table.Parse(strTable);
+
+			if (table.GetRows()>0)
+			{
+				CHTMLRow row=table.GetRow(1);
+				CStdString strReview=row.GetColumValue(0);
+				util.RemoveTags(strReview);
+				util.ConvertHTMLToAnsi(strReview, m_strReview);
+			}
+		}
+	}
+
+	if (m_strReview.IsEmpty())
+		m_strReview=g_localizeStrings.Get(414);
+	
+	//	Extract album, artist...
+	int iStartOfTable=strHTMLLow.Find("<table cellpadding=\"0\" cellspacing=\"0\">");
+	if (iStartOfTable< 0) return false;
+
 	CHTMLTable table;
 	CStdString strTable=strHTML.Right((int)strHTML.size()-iStartOfTable);
 	table.Parse(strTable);
-	for (int iRow=0; iRow < table.GetRows(); iRow++)
+
+	//	Check if page has the album browser
+	int iStartRow=2;
+	if (strHTMLLow.Find("class=\"album-browser\"")==-1)
+		iStartRow=1;
+
+	for (int iRow=iStartRow; iRow < table.GetRows(); iRow++)
 	{
 		const CHTMLRow& row=table.GetRow(iRow);
-		int iColums=row.GetColumns();
-		if (iColums>1)
+
+		CStdString strColumn=row.GetColumValue(0);
+		CHTMLTable valueTable;
+		valueTable.Parse(strColumn);
+		strColumn=valueTable.GetRow(0).GetColumValue(0);
+		util.RemoveTags(strColumn);
+
+		if (strColumn.Find("Artist") >=0 && valueTable.GetRows()>=2)
 		{
-			const CStdString strColum1=row.GetColumValue(0);
-			const CStdString strValue =row.GetColumValue(1);
-			if (strColum1.Find("Artist") >=0)
-			{
-				util.getValueOfTag(	strValue,m_strArtist);			
-			}
-			if (strColum1.Find("Date of Release") >=0)
-			{
-				util.getValueOfTag(	strValue,m_strDateOfRelease);
+			CStdString strValue=valueTable.GetRow(2).GetColumValue(0);
+			m_strArtist=strValue;
+			util.RemoveTags(m_strArtist);
+		}
+		if (strColumn.Find("Album") >=0 && valueTable.GetRows()>=2)
+		{
+			CStdString strValue=valueTable.GetRow(2).GetColumValue(0);
+			m_strTitle=strValue;
+			util.RemoveTags(m_strTitle);
+		}
+		if (strColumn.Find("Release Date") >=0 && valueTable.GetRows()>=2)
+		{
+			CStdString strValue=valueTable.GetRow(2).GetColumValue(0);
+			m_strDateOfRelease=strValue;
+			util.RemoveTags(m_strDateOfRelease);
 
-				//	extract the year out of something like "1998 (release)" or "12 feb 2003"
-				int nPos=m_strDateOfRelease.Find("19");
-				if (nPos>-1)
+			//	extract the year out of something like "1998 (release)" or "12 feb 2003"
+			int nPos=m_strDateOfRelease.Find("19");
+			if (nPos>-1)
+			{
+				if ((int)m_strDateOfRelease.size() >= nPos+3 && ::isdigit(m_strDateOfRelease.GetAt(nPos+2))&&::isdigit(m_strDateOfRelease.GetAt(nPos+3)))
 				{
-					if ((int)m_strDateOfRelease.size() >= nPos+3 && ::isdigit(m_strDateOfRelease.GetAt(nPos+2))&&::isdigit(m_strDateOfRelease.GetAt(nPos+3)))
-					{
-						CStdString strYear=m_strDateOfRelease.Mid(nPos, 4);
-						m_strDateOfRelease=strYear;
-					}
-					else
-					{
-						nPos=m_strDateOfRelease.Find("19", nPos+2);
-						if (nPos>-1)
-						{
-							if ((int)m_strDateOfRelease.size() >= nPos+3 && ::isdigit(m_strDateOfRelease.GetAt(nPos+2))&&::isdigit(m_strDateOfRelease.GetAt(nPos+3)))
-							{
-								CStdString strYear=m_strDateOfRelease.Mid(nPos, 4);
-								m_strDateOfRelease=strYear;
-							}
-						}
-					}
+					CStdString strYear=m_strDateOfRelease.Mid(nPos, 4);
+					m_strDateOfRelease=strYear;
 				}
-
-				nPos=m_strDateOfRelease.Find("20");
-				if (nPos>-1)
+				else
 				{
-					if ((int)m_strDateOfRelease.size() > nPos+3 && ::isdigit(m_strDateOfRelease.GetAt(nPos+2))&&::isdigit(m_strDateOfRelease.GetAt(nPos+3)))
+					nPos=m_strDateOfRelease.Find("19", nPos+2);
+					if (nPos>-1)
 					{
-						CStdString strYear=m_strDateOfRelease.Mid(nPos, 4);
-						m_strDateOfRelease=strYear;
-					}
-					else
-					{
-						nPos=m_strDateOfRelease.Find("20", nPos+1);
-						if (nPos>-1)
+						if ((int)m_strDateOfRelease.size() >= nPos+3 && ::isdigit(m_strDateOfRelease.GetAt(nPos+2))&&::isdigit(m_strDateOfRelease.GetAt(nPos+3)))
 						{
-							if ((int)m_strDateOfRelease.size() > nPos+3 && ::isdigit(m_strDateOfRelease.GetAt(nPos+2))&&::isdigit(m_strDateOfRelease.GetAt(nPos+3)))
-							{
-								CStdString strYear=m_strDateOfRelease.Mid(nPos, 4);
-								m_strDateOfRelease=strYear;
-							}
+							CStdString strYear=m_strDateOfRelease.Mid(nPos, 4);
+							m_strDateOfRelease=strYear;
 						}
 					}
 				}
 			}
-			if (strColum1.Find("Genre") >=0)
+
+			nPos=m_strDateOfRelease.Find("20");
+			if (nPos>-1)
 			{
-				util.getValueOfTag(	strValue,m_strGenre);			
+				if ((int)m_strDateOfRelease.size() > nPos+3 && ::isdigit(m_strDateOfRelease.GetAt(nPos+2))&&::isdigit(m_strDateOfRelease.GetAt(nPos+3)))
+				{
+					CStdString strYear=m_strDateOfRelease.Mid(nPos, 4);
+					m_strDateOfRelease=strYear;
+				}
+				else
+				{
+					nPos=m_strDateOfRelease.Find("20", nPos+1);
+					if (nPos>-1)
+					{
+						if ((int)m_strDateOfRelease.size() > nPos+3 && ::isdigit(m_strDateOfRelease.GetAt(nPos+2))&&::isdigit(m_strDateOfRelease.GetAt(nPos+3)))
+						{
+							CStdString strYear=m_strDateOfRelease.Mid(nPos, 4);
+							m_strDateOfRelease=strYear;
+						}
+					}
+				}
 			}
-			if (strColum1.Find("Tones") >=0)
+		}
+		if (strColumn.Find("Genre") >=0 && valueTable.GetRows()>=1)
+		{
+			CStdString strHTML=valueTable.GetRow(1).GetColumValue(0);
+			CStdString strTag;
+			int iStartOfGenre=util.FindTag(strHTML,"<li",strTag);
+			if (iStartOfGenre>=0)
 			{
-				util.getValueOfTag(	strValue,m_strTones);			
+				iStartOfGenre+=(int)strTag.size();
+				int iEndOfGenre=util.FindClosingTag(strHTML,"li", strTag,iStartOfGenre)-1;
+				if (iEndOfGenre < 0)
+				{
+					iEndOfGenre=(int)strHTML.size();
+				}
+				
+				CStdString strValue=strHTML.Mid(iStartOfGenre,1+iEndOfGenre-iStartOfGenre);
+				m_strGenre=strValue;
+				util.RemoveTags(m_strGenre);
 			}
-			if (strColum1.Find("Styles") >=0)
+
+			if (valueTable.GetRow(0).GetColumns()>=2)
 			{
-				util.getValueOfTag(	strValue,m_strStyles);			
+				strColumn=valueTable.GetRow(0).GetColumValue(2);
+				util.RemoveTags(strColumn);
+
+				if (strColumn.Find("Styles") >=0)
+				{
+					CStdString strHTML=valueTable.GetRow(1).GetColumValue(1);
+					CStdString strTag;
+					int iStartOfStyle=0;
+					while (iStartOfStyle>=0)
+					{
+						iStartOfStyle=util.FindTag(strHTML, "<li", strTag, iStartOfStyle);
+						iStartOfStyle+=(int)strTag.size();
+						int iEndOfStyle=util.FindClosingTag(strHTML, "li", strTag, iStartOfStyle)-1;
+						if (iEndOfStyle < 0)
+							break;
+						
+						CStdString strValue=strHTML.Mid(iStartOfStyle, 1+iEndOfStyle-iStartOfStyle);
+						util.RemoveTags(strValue);
+						m_strStyles+=strValue + ", ";
+					}
+
+					m_strStyles.TrimRight(", ");
+				}
 			}
-			if (strColum1.Find("AMG Rating") >=0)
-			{
-				CStdString strRating, strTag, strPic;
-				util.getValueOfTag(	strValue,strRating);
-				strRating.Delete(0, 16);
-				strRating.Delete(1, 4);
-				m_iRating=atoi(strRating);
-			}
-			if (strColum1.Find("Album Title") >=0)
-			{
-				util.getValueOfTag(	strValue,m_strTitle);			
-			}
+		}
+		if (strColumn.Find("Moods") >=0)
+		{
+				CStdString strHTML=valueTable.GetRow(1).GetColumValue(0);
+				CStdString strTag;
+				int iStartOfMoods=0;
+				while (iStartOfMoods>=0)
+				{
+					iStartOfMoods=util.FindTag(strHTML, "<li", strTag, iStartOfMoods);
+					iStartOfMoods+=(int)strTag.size();
+					int iEndOfMoods=util.FindClosingTag(strHTML, "li", strTag, iStartOfMoods)-1;
+					if (iEndOfMoods < 0)
+						break;
+					
+					CStdString strValue=strHTML.Mid(iStartOfMoods, 1+iEndOfMoods-iStartOfMoods);
+					util.RemoveTags(strValue);
+					m_strTones+=strValue + ", ";
+				}
+
+				m_strTones.TrimRight(", ");
+		}
+		if (strColumn.Find("Rating") >=0)
+		{
+			CStdString strValue=valueTable.GetRow(1).GetColumValue(0);
+			CStdString strRating;
+			util.getAttributeOfTag(strValue, "src=", strRating);
+			strRating.Delete(0, 25);
+			strRating.Delete(1, 4);
+			m_iRating=atoi(strRating);
 		}
 	}
 
@@ -232,63 +334,8 @@ bool	CMusicAlbumInfo::Parse(const CStdString& strHTML)
 		m_strTitle=g_localizeStrings.Get(416);
 
 
-	// parse review/image
-	iStartOfTable=strHTML.Find("REVIEW",0);
-	if (iStartOfTable >= 0)
-	{
-		strTable=strHTML.Right((int)strHTML.size()-iStartOfTable);
-		table.Parse(strTable);
-		int iRows=table.GetRows();
-		if (iRows > 0)
-		{
-			const CHTMLRow& row=table.GetRow(0);
-			int iColums=row.GetColumns();
-			if (iColums>=1)
-			{
-				const CStdString strReviewAndImage=row.GetColumValue(0);
-				
-				util.getAttributeOfTag(strReviewAndImage,"src=",m_strImageURL);
-				m_strReview=strReviewAndImage;
-				util.RemoveTags(m_strReview);
-				util.ConvertHTMLToAnsi(m_strReview, m_strReview);
-			}
-		}
-	}
-	else
-	{
-		//	parse image if no review available
-		iStartOfTable=strHTMLLow.Find("artist&nbsp;");
-		if (iStartOfTable>= 0)
-		{
-			iStartOfTable=strHTMLLow.Find("<table",iStartOfTable);
-			if (iStartOfTable >= 0)
-			{
-				CHTMLUtil  util;
-				CHTMLTable table;
-				CStdString strTable=strHTML.Right((int)strHTML.size()-iStartOfTable);
-				table.Parse(strTable);
-
-				int iRows=table.GetRows();
-				if (iRows > 0)
-				{
-					const CHTMLRow& row=table.GetRow(0);
-					int iColums=row.GetColumns();
-					if (iColums>=1)
-					{
-						const CStdString strColum1=row.GetColumValue(0);
-						if (strColum1.Find("<IMG") > -1)
-							util.getAttributeOfTag(strColum1,"src=",m_strImageURL);
-					}
-				}
-			}
-		}
-	}
-
-	if (m_strReview.IsEmpty())
-		m_strReview=g_localizeStrings.Get(414);
-
 	// parse songs...
-	iStartOfTable=strHTMLLow.Find("htrk1.gif",0);
+	iStartOfTable=strHTMLLow.Find("id=\"expansiontable1\"",0);
 	if (iStartOfTable >= 0)
 	{
 		iStartOfTable=strHTMLLow.ReverseFind("<table",iStartOfTable);
@@ -296,68 +343,42 @@ bool	CMusicAlbumInfo::Parse(const CStdString& strHTML)
 		{
 			strTable=strHTML.Right((int)strHTML.size()-iStartOfTable);
 			table.Parse(strTable);
-			for (int iRow=0; iRow < table.GetRows(); iRow++)
+			for (int iRow=1; iRow < table.GetRows(); iRow++)
 			{
 				const CHTMLRow& row=table.GetRow(iRow);
 				int iCols=row.GetColumns();
-				if (iCols >=5)
+				if (iCols >=7)
 				{
-					bool bSongReview=false;
-					CStdString strTrack;
-					for (int i=0; i < iCols;i++)
-					{
-						strTrack=row.GetColumValue(i);
-						if (strTrack.Find("review")>-1)
-							bSongReview=true;
-						int ipos=strTrack.Find(".");
-						if (ipos>=0)
-						{
-							bool bok=true;
-							for (int x=0; x <ipos; x++)
-							{
-								if (!isdigit( strTrack[x] ) )
-								{
-									bok=false;
-									break;
-								}
-							}
-							if (bok) break;
-						}
-					}
-					CStdString strNameAndDuration;
-					if (bSongReview)
-						strNameAndDuration=row.GetColumValue(5);
-					else
-						strNameAndDuration=row.GetColumValue(4);
 
-					
-					CStdString strName,strDuration="0";
+					//	Tracknumber
+					int iTrack=atoi(row.GetColumValue(2));
+
+					//	Songname
+					CStdString strValue, strName;
+					strValue=row.GetColumValue(4);
+					util.RemoveTags(strValue);
+					strValue.Trim();
+					if (strValue.Find("[*]")>-1)
+						strValue.TrimRight("[*]");
+					util.ConvertHTMLToAnsi(strValue, strName);
+
+					//	Duration
 					int iDuration=0;
-					util.getValueOfTag(strNameAndDuration,strName);
-					int iPos=strNameAndDuration.ReverseFind("-");
-					if (iPos > 0)
+					CStdString strDuration=row.GetColumValue(6);
+					int iPos=strDuration.Find(":");
+					if (iPos>=0)
 					{
-						iPos+=2;
-						strDuration=strNameAndDuration.Right( (int)strNameAndDuration.size()-iPos);
-						CStdString strMin="0", strSec="0";
-						iPos=strDuration.Find(":");
-						if (iPos>=0)
-						{
-							strMin=strDuration.Left(iPos);
-							iPos++;
-							strSec=strDuration.Right((int)strDuration.size()-iPos);
-							int iMin=atoi(strMin.c_str());
-							int iSec=atoi(strSec.c_str());
-							iDuration=iMin*60+iSec;
-						}
+						CStdString strMin, strSec;
+						strMin=strDuration.Left(iPos);
+						iPos++;
+						strSec=strDuration.Right((int)strDuration.size()-iPos);
+						int iMin=atoi(strMin.c_str());
+						int iSec=atoi(strSec.c_str());
+						iDuration=iMin*60+iSec;
 					}
-					iPos=strTrack.Find(".");
-					if (iPos > 0) strTrack = strTrack.Left(iPos);
 
-					int iTrack=atoi(strTrack.c_str());
-					CStdString strStripped;
-					util.ConvertHTMLToAnsi(strName, strStripped);
-					CMusicSong newSong(iTrack, strStripped, iDuration);
+					//	Create new song object
+					CMusicSong newSong(iTrack, strName, iDuration);
 					m_vecSongs.push_back(newSong);
 				}
 			}
