@@ -1,10 +1,8 @@
 #include "GUIWindowWeather.h"
 #include "settings.h"
 #include "guiWindowManager.h"
-#include "guiDialogProgress.h"
 #include "GUIDialogOK.h"
 #include "localizestrings.h"
-
 #include "util.h"
 #include <algorithm>
 
@@ -40,6 +38,7 @@
 #define PARTNER_ID				"1004124588"			//weather.com partner id
 #define PARTNER_KEY				"079f24145f208494"		//weather.com partner key
 
+
 /*
 FIXME'S
 >strings are not centered
@@ -49,15 +48,23 @@ FIXME'S
 >weather.com doesn't return xml for some area codes? UKXX1000, UKXX1201 (not my fault?)
 
 LONGTERM:
->Allow mixing of units (eg oC and mph for us crazy brits)
 >Add settings screen with text input search for location code
 	+ select metric/imperial or (F/C and MPH / KMH seperatly)
 */
-
-int FtoC(int Far)
+int ConvertSpeed(int curSpeed)
 {
-	return (int)((Far-32)*(5.0/9.0) + 0.5);  //0.5 for rounding (seems a bit hacky)
+	//we might not need to convert at all
+	if((g_stSettings.m_szWeatherFTemp[0] == 'C' && g_stSettings.m_szWeatherFSpeed[0] == 'K') ||
+		(g_stSettings.m_szWeatherFTemp[0] == 'F' && g_stSettings.m_szWeatherFSpeed[0] == 'M'))
+		return curSpeed;
+
+	//got through that so if temp is C, speed must be M
+	if(g_stSettings.m_szWeatherFTemp[0] == 'C')
+		return (int)(curSpeed / (8.0/5.0));
+	else
+		return (int)(curSpeed * (8.0/5.0));
 }
+
 CGUIWindowWeather::CGUIWindowWeather(void)
 :CGUIWindow(0)
 {
@@ -83,6 +90,8 @@ CGUIWindowWeather::CGUIWindowWeather(void)
 		strcpy(m_dfForcast[i].m_szHigh, "");
 		strcpy(m_dfForcast[i].m_szLow, "");
 	}
+
+	srand(timeGetTime());
 }
 
 CGUIWindowWeather::~CGUIWindowWeather(void)
@@ -108,31 +117,21 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
 		break;
 
 		case GUI_MSG_WINDOW_INIT:
-    {
 				CGUIWindow::OnMessage(message);
-        int iYpos=170;
-        if (!UsingPAL()) iYpos=140;
-				pNowImage = new CGUIImage(GetID(), CONTROL_IMAGENOWICON, 220, iYpos, 128, 128, m_szNowIcon, 0);
-				Add(pNowImage);
 
-        
-        iYpos=445;
-        if (!UsingPAL()) iYpos=365;
+				//do image id to control stuff so we can use them later
+				pNowImage = (CGUIImage*)GetControl(CONTROL_IMAGENOWICON);	
 				for(int i=0; i<NUM_DAYS; i++) 
-				{
-					m_dfForcast[i].pImage = new CGUIImage(GetID(), CONTROL_IMAGED0IMG+(i*10), 180+(i*125), iYpos, 64, 64, m_dfForcast[i].m_szIcon, 0);
-					Add(m_dfForcast[i].pImage);
-				}
-
+					m_dfForcast[i].pImage = (CGUIImage*)GetControl(CONTROL_IMAGED0IMG+(i*10));
 				UpdateButtons();
-    }
+				m_lRefreshTime = timeGetTime() - (g_stSettings.m_iWeatherRefresh*60000) + 2000; //refresh in 2 seconds
 		break;
 
 		case GUI_MSG_CLICKED:
 		{
 			int iControl=message.GetSenderId();
 			if (iControl == CONTROL_BTNREFRESH)
-				RefreshMe();	//refresh clicked so do a complete update
+				RefreshMe(false);	//refresh clicked so do a complete update (not an autoUpdate)
 		}
 		break;
 	}
@@ -146,12 +145,11 @@ void CGUIWindowWeather::UpdateButtons()
 	SET_CONTROL_LABEL(GetID(), CONTROL_LABELLOCATION, m_szLocation);
 	SET_CONTROL_LABEL(GetID(), CONTROL_LABELUPDATED, m_szUpdated);
 
-
-  int iYpos=170;
-  if (!UsingPAL()) iYpos=140;
 	//urgh, remove, create then add image each refresh to update nicely
 	Remove(pNowImage->GetID());
-	pNowImage = new CGUIImage(GetID(), CONTROL_IMAGENOWICON, 220, iYpos, 128, 128, m_szNowIcon, 0);
+	int posX = pNowImage->GetXPosition();
+	int posY = pNowImage->GetYPosition();
+	pNowImage = new CGUIImage(GetID(), CONTROL_IMAGENOWICON, posX, posY, 128, 128, m_szNowIcon, 0);
 	Add(pNowImage);
 
 	SET_CONTROL_LABEL(GetID(), CONTROL_LABELNOWCOND, m_szNowCond);
@@ -171,8 +169,6 @@ void CGUIWindowWeather::UpdateButtons()
 	SET_CONTROL_LABEL(GetID(), CONTROL_STATICHUMI, 406);		//Humidity
 	
 
-  iYpos=445;
-  if (!UsingPAL()) iYpos=365;
 
 	for(int i=0; i<NUM_DAYS; i++)
 	{
@@ -183,7 +179,9 @@ void CGUIWindowWeather::UpdateButtons()
 		
 		//Seems a bit messy, but works. Remove, Create and then Add the image to update nicely
 		Remove(m_dfForcast[i].pImage->GetID());
-		m_dfForcast[i].pImage = new CGUIImage(GetID(), CONTROL_IMAGED0IMG+(i*10), 180+(i*125), iYpos, 64, 64, m_dfForcast[i].m_szIcon, 0);
+		int posX = m_dfForcast[i].pImage->GetXPosition();
+		int posY = m_dfForcast[i].pImage->GetYPosition();
+		m_dfForcast[i].pImage = new CGUIImage(GetID(), CONTROL_IMAGED0IMG+(i*10), posX, posY, 64, 64, m_dfForcast[i].m_szIcon, 0);
 		Add(m_dfForcast[i].pImage);
 	}
 }
@@ -191,50 +189,29 @@ void CGUIWindowWeather::UpdateButtons()
 
 void CGUIWindowWeather::Render()
 {
+	DWORD dwTimeElapsed = timeGetTime() - m_lRefreshTime;
+	if(dwTimeElapsed >= (DWORD)(g_stSettings.m_iWeatherRefresh * 60000))
+		RefreshMe(true);	//do an autoUpdate refresh
+
 	CGUIWindow::Render();
 }
 
 bool CGUIWindowWeather::Download(const CStdString& strWeatherFile)
 {
-	CGUIDialogProgress* 	pDlgProgress	 = (CGUIDialogProgress*)m_gWindowManager.GetWindow(101);
-	CGUIDialogOK* 		 	pDlgOK			 = (CGUIDialogOK*)m_gWindowManager.GetWindow(2002);
-	CStdString				strPath, strURL;
+	CStdString			strURL;
 	
-	//progress dialog for download
-	pDlgProgress->SetHeading(410);							//"Accessing Weather.com"
-	pDlgProgress->SetLine(0, 411);							//"Getting Weather For:"
-	pDlgProgress->SetLine(1, g_stSettings.m_szWeatherArea);	//Area code
-	if(strlen(m_szLocation) > 1)							//got the location string yet?
-		pDlgProgress->SetLine(2, m_szLocation);
-	else
-		pDlgProgress->SetLine(2, "");
-	pDlgProgress->StartModal(GetID());
-	pDlgProgress->Progress();
-
-	char c_units = g_stSettings.m_szWeatherFormat[0];
-	if(c_units == 'i')	//weather.com uses 's'tandard instead of imperial :)
+	char c_units = g_stSettings.m_szWeatherFTemp[0];	//convert from temp units to metric/standard
+	if(c_units == 'F')	//we'll convert the speed later depending on what thats set to
 		c_units = 's';
+	else
+		c_units = 'm';
 
 	strURL.Format("http://xoap.weather.com/weather/local/%s?cc=*&unit=%c&dayf=4&prod=xoap&par=%s&key=%s",
 				g_stSettings.m_szWeatherArea, c_units, PARTNER_ID, PARTNER_KEY);
 
 	m_httpGrabber.SetHTTPVer(0);	//set to HTTP/1.0 to download nicely
-	bool res = m_httpGrabber.Download(strURL, strWeatherFile);
-	pDlgProgress->Close();
-	
-	if(!res)
-	{
-		// show failed dialog...
-		pDlgOK->SetHeading(412);	//"Unable to get weather data"
-		pDlgOK->SetLine(0, "");
-		pDlgOK->SetLine(1, L"");
-		pDlgOK->SetLine(2, L"");
-		pDlgOK->DoModal(GetID());
-	}
-
-	return res;
+	return m_httpGrabber.Download(strURL, strWeatherFile);
 }
-
 
 bool CGUIWindowWeather::LoadWeather(const CStdString& strWeatherFile)
 {
@@ -249,12 +226,7 @@ bool CGUIWindowWeather::LoadWeather(const CStdString& strWeatherFile)
 	// load the xml file
 	TiXmlDocument xmlDoc;
 	if (!xmlDoc.LoadFile(strWeatherFile))
-	{
-		OutputDebugString("Unable to load:");
-		OutputDebugString(strWeatherFile.c_str());
-		OutputDebugString("\n");
 		return false;
-	}
 
 	TiXmlElement *pRootElement = xmlDoc.RootElement();
 
@@ -272,19 +244,18 @@ bool CGUIWindowWeather::LoadWeather(const CStdString& strWeatherFile)
 		pDlgOK->SetLine(1, L"");
 		pDlgOK->SetLine(2, L"");
 		pDlgOK->DoModal(GetID());
-		return false;
+		return true;	//we got a message so do display a second in refreshme()
 	}
 
-	// units (C or F and mph or km/h)
-	TiXmlElement *pElement = pRootElement->FirstChildElement("head");
-	if(pElement)
-	{
-		GetString(pElement, "ut", szUnitTemp, "C");
-		GetString(pElement, "us", szUnitSpeed, "km/h");
-	}
+	// units (C or F and mph or km/h) 
+	strcpy(szUnitTemp, g_stSettings.m_szWeatherFTemp);
+	if(g_stSettings.m_szWeatherFSpeed[0] == 'M')
+		strcpy(szUnitSpeed, "mph");
+	else
+		strcpy(szUnitSpeed, "km/h");
 
 	// location
-	pElement = pRootElement->FirstChildElement("loc");
+	TiXmlElement *pElement = pRootElement->FirstChildElement("loc");
 	if(pElement)
 	{
 		GetString(pElement, "dnam", m_szLocation, "");
@@ -311,6 +282,7 @@ bool CGUIWindowWeather::LoadWeather(const CStdString& strWeatherFile)
 		if(pNestElement)
 		{
 			GetInteger(pNestElement, "s", iTmpInt);			//current wind strength
+			iTmpInt = ConvertSpeed(iTmpInt);				//convert speed if needed
 			GetString(pNestElement, "t", iTmpStr, "N");		//current wind direction
 
 			//From <dir eg NW> at <speed> km/h		 g_localizeStrings.Get(407)
@@ -371,7 +343,7 @@ bool CGUIWindowWeather::LoadWeather(const CStdString& strWeatherFile)
 					GetInteger(pDayTimeElement, "icon", iTmpInt);
 					sprintf(m_dfForcast[i].m_szIcon, "Q:\\weather\\64x64\\%i.png", iTmpInt);
 					GetString(pDayTimeElement, "t", m_dfForcast[i].m_szOverview, "");
-					SplitLongString(m_dfForcast[i].m_szOverview, 7, 15);
+					SplitLongString(m_dfForcast[i].m_szOverview, 6, 15);
 				}
 			}
 			pOneDayElement = pOneDayElement->NextSiblingElement("day");
@@ -410,43 +382,59 @@ void CGUIWindowWeather::GetInteger(const TiXmlElement* pRootElement, const CStdS
 }
 
 //Do a complete download, parse and update
-void CGUIWindowWeather::RefreshMe()
+void CGUIWindowWeather::RefreshMe(bool autoUpdate)
 {
 	//message strings for refresh of images
 	CGUIMessage msgDe(GUI_MSG_WINDOW_DEINIT,0,0);
 	CGUIMessage msgRe(GUI_MSG_WINDOW_INIT,0,0,WINDOW_INVALID);
 	CStdString strWeatherFile = "Q:\\weather\\curWeather.xml";
+
+	CGUIDialogProgress*	pDlgProgress	= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+	CGUIDialogOK* 		pDlgOK			= (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+	bool dlRes = false, ldRes = false;
+
+	//progress dialog for download
+	if(pDlgProgress && !autoUpdate) //dont display progress dialog on autoupdate or it crashes! :|
+	{
+		pDlgProgress->SetHeading(410);							//"Accessing Weather.com"
+		pDlgProgress->SetLine(0, 411);							//"Getting Weather For:"
+		pDlgProgress->SetLine(1, g_stSettings.m_szWeatherArea);	//Area code
+		if(strlen(m_szLocation) > 1)							//got the location string yet?
+			pDlgProgress->SetLine(2, m_szLocation);
+		else
+			pDlgProgress->SetLine(2, "");
+		pDlgProgress->StartModal(GetID());
+		pDlgProgress->Progress();
+	}	
+
+	//Do The Download
+	dlRes = Download(strWeatherFile);		
 	
-	Download(strWeatherFile);		//download
-	LoadWeather(strWeatherFile);	//parse
-	UpdateButtons();
+	if(pDlgProgress && !autoUpdate)	//close progress dialog
+		pDlgProgress->Close();
 
-	//Send the refresh messages
-	OnMessage(msgDe);
-	OnMessage(msgRe);
-}
+	if(dlRes)	//dont load if download failed
+		ldRes = LoadWeather(strWeatherFile);	//parse
 
+	//if the download or load failed, display an error message
+	if((!dlRes || !ldRes) && pDlgOK && !autoUpdate) //this will probably crash on an autoupdate as well, but not tested
+	{
+		// show failed dialog...
+		pDlgOK->SetHeading(412);	//"Unable to get weather data"
+		pDlgOK->SetLine(0, "");
+		pDlgOK->SetLine(1, L"");
+		pDlgOK->SetLine(2, L"");
+		pDlgOK->DoModal(GetID());
+	} else if(dlRes && ldRes)	//download and load went ok so update
+	{
+		UpdateButtons();
 
-//was a nice idea, but the label's width isn't set in code, only manually in the .xml?
-void CGUIWindowWeather::CenterLabel(DWORD dwControlID, DWORD dwWidth)
-{
-	/*CGUIControl* pControl = (CGUIControl*)GetControl(dwControlID);
-	DWORD x = (dwWidth - pControl->GetWidth()) / 2;
-	x += pControl->GetXPosition();*/
+		//Send the refresh messages
+		OnMessage(msgDe);
+		OnMessage(msgRe);
+	}
 
-	/*	CGUIDialogOK* 		 	pDlgOK			 = (CGUIDialogOK*)m_gWindowManager.GetWindow(2002);
-		char inte[10];
-		itoa(dwWidth, inte, 10);
-		pDlgOK->SetHeading(inte);	//aaaaand more strings
-		itoa(pControl->GetWidth(), inte, 10);
-		pDlgOK->SetLine(0, inte);
-		itoa(pControl->GetXPosition(), inte, 10);
-		pDlgOK->SetLine(1, inte);
-		itoa(x, inte, 10);
-		pDlgOK->SetLine(2, inte);
-		pDlgOK->DoModal(GetID());*/
-
-	//pControl->SetPosition(x, pControl->GetYPosition());
+	m_lRefreshTime = timeGetTime(); //update the refresh time (even if refresh failed to stop it trying over and over)
 }
 
 //splitStart + End are the chars to search between for a space to replace with a \n
@@ -488,11 +476,4 @@ void CGUIWindowWeather::LocalizeDay(char *szDay)
 		strLocDay = "";
 
 	strcpy(szDay, strLocDay.GetBuffer(strLocDay.GetLength()));
-}
-
-bool CGUIWindowWeather::UsingPAL()
-{
-  DWORD dwStandard = XGetVideoStandard();
-  bool bUsingPAL   = (dwStandard==XC_VIDEO_STANDARD_PAL_I);    // current video standard:PAL or NTSC 
-  return bUsingPAL;
 }
