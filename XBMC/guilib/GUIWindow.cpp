@@ -259,6 +259,7 @@ bool CGUIWindow::LoadReference(const CStdString& strFileName, VECREFERENCECONTOL
 
 bool CGUIWindow::Load(const CStdString& strFileNameAndPath)
 {
+  m_vecPositions.erase(m_vecPositions.begin(),m_vecPositions.end());
   CStdString strFileName=strFileNameAndPath;
 	TiXmlDocument xmlDoc;
   CStdString strPath;
@@ -358,6 +359,7 @@ bool CGUIWindow::Load(const CStdString& strFileNameAndPath)
 		struct stReferenceControl stControl=referencecontrols[i];
 		delete stControl.m_pControl;
 	}
+  OnSkinLoaded();
   return true;
 }
 
@@ -638,5 +640,18 @@ void CGUIWindow::ResetAllControls()
   {
     CGUIControl* pControl= m_vecControls[i];
 		pControl->SetWidth( pControl->GetWidth() );
+	}
+}
+
+void CGUIWindow::OnSkinLoaded()
+{
+	for (int i=0;i < (int)m_vecControls.size(); ++i)
+  {
+    CGUIControl* pControl= m_vecControls[i];
+    CPosition pos;
+    pos.pControl=pControl;
+    pos.x=pControl->GetXPosition();
+    pos.y=pControl->GetYPosition();
+    m_vecPositions.push_back(pos);
 	}
 }
