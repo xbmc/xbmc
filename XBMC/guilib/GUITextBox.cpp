@@ -123,14 +123,13 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
         m_iOffset=(m_upDown.GetValue()-1)*m_iItemsPerPage;
       }
     }
-    if (message.GetMessage() == GUI_MSG_LABEL_ADD)
+    if (message.GetMessage() == GUI_MSG_LABEL2_SET)
     {
 			int iItem=message.GetParam1();
-			CStdString strLabel=(const CHAR*)message.GetLPVOID();
 			if (iItem >=0 && iItem < (int)m_vecItems.size())
 			{
 				CGUIListItem& item=m_vecItems[iItem];
-				item.SetLabel2(strLabel);
+				item.SetLabel2( message.GetLabel() );
 			}
 		}
 
@@ -140,8 +139,7 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
       m_vecItems.erase(m_vecItems.begin(),m_vecItems.end());
       m_upDown.SetRange(1,1);
       m_upDown.SetValue(1);
-      const char* strLabel=(const char*)message.GetLPVOID();
-			SetText(strLabel);
+			SetText( message.GetLabel() );
     }
 
     if (message.GetMessage() == GUI_MSG_LABEL_RESET)
@@ -260,7 +258,7 @@ void CGUITextBox::OnPageDown()
     m_iOffset=(m_upDown.GetValue()-1)*m_iItemsPerPage;
   }
 }
-void CGUITextBox::SetText(const string &strText)
+void CGUITextBox::SetText(const wstring &strText)
 {
 	m_vecItems.erase(m_vecItems.begin(),m_vecItems.end());
 	// start wordwrapping
@@ -275,7 +273,7 @@ void CGUITextBox::SetText(const string &strText)
   while( pos < (int)strText.size() )
   {
     // Get the current letter in the string
-    char letter = strText[pos];
+    char letter = (char)strText[pos];
 
     // Handle the newline character
     if (letter == '\n' )

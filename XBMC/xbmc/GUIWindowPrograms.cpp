@@ -57,8 +57,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
       // make controls 100-110 invisible...
 			for (int i=100; i < 110; i++)
       {
-        CGUIMessage msg(GUI_MSG_HIDDEN,GetID(), i);
-        g_graphicsContext.SendMessage(msg);
+				SET_CONTROL_HIDDEN(GetID(), i);
       }
 			// create bookmark buttons
       int iStartID=100;
@@ -67,14 +66,8 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 			{
 				CShare& share = g_settings.m_vecMyProgramsBookmarks[i];
 				
-        CGUIMessage msg(GUI_MSG_VISIBLE,GetID(), i+iStartID);
-        g_graphicsContext.SendMessage(msg);
-
-				WCHAR wszText[1024];
-				swprintf(wszText,L"%S", share.strName.c_str());
-				CGUIMessage msg2(GUI_MSG_LABEL_SET,GetID(), i+iStartID,0,0,(void*)wszText);
-        g_graphicsContext.SendMessage(msg2);
-        
+				SET_CONTROL_VISIBLE(GetID(), i+iStartID);
+				SET_CONTROL_LABEL(GetID(), i+iStartID,share.strName);
 			}
 
       
@@ -543,36 +536,24 @@ void CGUIWindowPrograms::UpdateButtons()
 {
     if (g_stSettings.m_bMyProgramsViewAsIcons) 
     {
-      CGUIMessage msg(GUI_MSG_HIDDEN,GetID(), CONTROL_LIST);
-      g_graphicsContext.SendMessage(msg);
-      CGUIMessage msg2(GUI_MSG_VISIBLE,GetID(), CONTROL_THUMBS);
-      g_graphicsContext.SendMessage(msg2);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
+			SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
     }
     else
     {
-      CGUIMessage msg(GUI_MSG_HIDDEN,GetID(), CONTROL_THUMBS);
-      g_graphicsContext.SendMessage(msg);
-      CGUIMessage msg2(GUI_MSG_VISIBLE,GetID(), CONTROL_LIST);
-      g_graphicsContext.SendMessage(msg2);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
+      SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
     }
 
     const WCHAR *szText;
+		int iString=101;
     if (!g_stSettings.m_bMyProgramsViewAsIcons) 
     {
-      szText=g_localizeStrings.Get(100).c_str();
+      iString=100;
     }
-    else
-    {
-      szText=g_localizeStrings.Get(101).c_str();
-    }
-    CGUIMessage msg2(GUI_MSG_LABEL_SET,GetID(),CONTROL_BTNVIEWAS,0,0,(void*)szText);
-    g_graphicsContext.SendMessage(msg2);         
+		SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWAS,iString);
+		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTMETHOD,g_stSettings.m_bMyProgramsSortMethod+103);
 
-
-    szText=g_localizeStrings.Get(g_stSettings.m_bMyProgramsSortMethod+103).c_str();
-    
-    CGUIMessage msg3(GUI_MSG_LABEL_SET,GetID(),CONTROL_BTNSORTMETHOD,0,0,(void*)szText);
-    g_graphicsContext.SendMessage(msg3); 
 
     if ( g_stSettings.m_bMyProgramsSortAscending)
     {
@@ -594,8 +575,8 @@ void CGUIWindowPrograms::UpdateButtons()
     WCHAR wszText[20];
     szText=g_localizeStrings.Get(127).c_str();
     swprintf(wszText,L"%i %s", iItems,szText);
-    CGUIMessage msg4(GUI_MSG_LABEL_SET,GetID(),CONTROL_LABELFILES,0,0,(void*)wszText);
-    g_graphicsContext.SendMessage(msg4); 
+    
+		SET_CONTROL_LABEL(GetID(), CONTROL_LABELFILES,wszText);
     
 
 }

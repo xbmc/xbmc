@@ -51,35 +51,36 @@ bool CGUIDialogOK::IsConfirmed() const
 
 void  CGUIDialogOK::SetHeading(const wstring& strLine)
 {
-	int iControl=1;
-  CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),iControl,0,0,(void*)strLine.c_str());
-  OnMessage(msg);
+	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),1);
+	msg.SetLabel(strLine);
+	OnMessage(msg);
 
 }
 
 void CGUIDialogOK::SetLine(int iLine, const wstring& strLine)
 {
-	int iControl=iLine+2;
-
-  CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),iControl,0,0,(void*)strLine.c_str());
-  OnMessage(msg);
+	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),iLine+2);
+	msg.SetLabel(strLine);
+	OnMessage(msg);
 }
 
 void CGUIDialogOK::SetLine(int iLine, const string& strLine)
 {
-	WCHAR wszLine[1024];
-	swprintf(wszLine,L"%S", strLine.c_str());
-	SetLine(iLine,wszLine);
+	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),iLine+2);
+	msg.SetLabel(strLine);
+	OnMessage(msg);
 }
 void CGUIDialogOK::SetHeading(int iString)
 {
-	const WCHAR* pszTxt=g_localizeStrings.Get(iString).c_str();
-	SetHeading(pszTxt);
+	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),1);
+	msg.SetLabel(iString);
+	OnMessage(msg);
 }
 
 
 void	CGUIDialogOK::SetLine(int iLine, int iString)
 {
-	const WCHAR* pszTxt=g_localizeStrings.Get(iString).c_str();
-	SetLine(iLine,pszTxt);
+	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),iLine+2);
+	msg.SetLabel(iString);
+	OnMessage(msg);
 }

@@ -112,13 +112,8 @@ void CGUIWindowMusicInfo::Update()
 
 	if (m_bViewReview)
 	{
-			CStdString strReview=m_pAlbum->GetReview();
-			CGUIMessage msg4(GUI_MSG_LABEL_SET,GetID(),CONTROL_TEXTAREA,0,0,(void*)strReview.c_str());
-			g_graphicsContext.SendMessage(msg4);
-			
-			const WCHAR* pszText=g_localizeStrings.Get(182).c_str();
-			CGUIMessage msg5(GUI_MSG_LABEL_SET,GetID(),CONTROL_BTN_TRACKS,0,0,(void*)pszText);
-			g_graphicsContext.SendMessage(msg5);
+			SET_CONTROL_LABEL(GetID(), CONTROL_TEXTAREA,m_pAlbum->GetReview());
+			SET_CONTROL_LABEL(GetID(), CONTROL_BTN_TRACKS,182);
 	}
 	else
 	{
@@ -132,8 +127,9 @@ void CGUIWindowMusicInfo::Update()
 							song.GetSongName().c_str());
 			strLine+=strTmp;
 		};
-		CGUIMessage msg4(GUI_MSG_LABEL_SET,GetID(),CONTROL_TEXTAREA,0,0,(void*)strLine.c_str());
-		g_graphicsContext.SendMessage(msg4);
+
+		SET_CONTROL_LABEL(GetID(), CONTROL_TEXTAREA,strLine);
+
 		for (int i=0; i < m_pAlbum->GetNumberOfSongs();++i)
 		{
 			const CMusicSong& song=m_pAlbum->GetSong(i);
@@ -142,12 +138,12 @@ void CGUIWindowMusicInfo::Update()
 			int iMin=iSec/60;
 			iSec = iSec%60;
 			strTmp.Format("%i:%02.2i",iMin,iSec);
-			CGUIMessage msg3(GUI_MSG_LABEL_ADD,GetID(),CONTROL_TEXTAREA,i,0,(void*)strTmp.c_str());
+			CGUIMessage msg3(GUI_MSG_LABEL2_SET,GetID(),CONTROL_TEXTAREA,i,0);
+			msg3.SetLabel(strTmp);
 			g_graphicsContext.SendMessage(msg3);
 		}
-		const WCHAR* pszText=g_localizeStrings.Get(183).c_str();
-		CGUIMessage msg5(GUI_MSG_LABEL_SET,GetID(),CONTROL_BTN_TRACKS,0,0,(void*)pszText);
-		g_graphicsContext.SendMessage(msg5);
+
+		SET_CONTROL_LABEL(GetID(), CONTROL_BTN_TRACKS,183);
 
 	}
 
@@ -156,10 +152,11 @@ void CGUIWindowMusicInfo::Update()
 void CGUIWindowMusicInfo::SetLabel(int iControl, const CStdString& strLabel)
 {
 	if (strLabel.size()==0)	return;
-	WCHAR wszText[1024];
-	swprintf(wszText,L"%S", strLabel.c_str());
-	CGUIMessage msg4(GUI_MSG_LABEL_SET,GetID(),iControl,0,0,(void*)wszText);
-	g_graphicsContext.SendMessage(msg4); 
+	
+	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),iControl);
+	msg.SetLabel(strLabel);
+	OnMessage(msg);
+
 }
 
 void  CGUIWindowMusicInfo::Render()
@@ -195,7 +192,7 @@ void CGUIWindowMusicInfo::Refresh()
 		http.Download(strImage,strThumb);
 	}
 	CStdString strAlbum;
-	CUtil::GetAlbumCacheName(m_pAlbum->GetTitle(),strAlbum);
+	CUtil::GetAlbumInfo(m_pAlbum->GetTitle(),strAlbum);
 	m_pAlbum->Save(strAlbum);
 
 	if (CUtil::FileExists(strThumb) )

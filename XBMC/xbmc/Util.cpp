@@ -10,7 +10,9 @@
 #include "graphiccontext.h"
 #include "sectionloader.h"
 #include "lib/cximage/ximage.h"
+#include "filesystem/file.h"
 
+using namespace XFILE;
 char g_szTitleIP[32];
 
 CUtil::CUtil(void)
@@ -371,7 +373,7 @@ void CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNew
 	if ( strExtension.size() )
 	{
 		
-		strChangedFile=strFile.substr(0, strFile.size()-4) ;
+		strChangedFile=strFile.substr(0, strFile.size()-strExtension.size()) ;
 		strChangedFile+=strNewExtension;
 	}
 	else
@@ -383,8 +385,13 @@ void CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNew
 
 void CUtil::GetExtension(const CStdString& strFile, CStdString& strExtension)
 {
-	strExtension=strFile.substr( strFile.size()-4,4);
-	if (strExtension.c_str()[0] != '.') strExtension="";
+	int iPos=strFile.ReverseFind(".");
+	if (iPos <0)
+	{
+		strExtension="";
+		return;
+	}
+	strExtension=strFile.Right( strFile.size()-iPos);
 }
 
 void CUtil::Lower(CStdString& strText)
@@ -554,7 +561,7 @@ void CUtil::SaveDateTime(SYSTEMTIME& dateTime, FILE *fd)
 }
 
 
-void CUtil::GetSongCacheName(const CStdString& strFileName, CStdString& strSongCacheName)
+void CUtil::GetSongInfo(const CStdString& strFileName, CStdString& strSongCacheName)
 {
 	Crc32 crc;
 	crc.Reset();
@@ -569,7 +576,7 @@ void CUtil::GetAlbumThumb(const CStdString& strFileName, CStdString& strThumb)
   crc.Compute(strFileName.c_str(),strlen(strFileName.c_str()));
 	strThumb.Format("%s\\%x.tbn",g_stSettings.m_szAlbumDirectory,crc);
 }
-void CUtil::GetAlbumCacheName(const CStdString& strFileName, CStdString& strAlbumThumb)
+void CUtil::GetAlbumInfo(const CStdString& strFileName, CStdString& strAlbumThumb)
 {
 	CStdString strTmp="";
 	for (int i=0; i < (int)strFileName.size(); ++i)
@@ -582,6 +589,21 @@ void CUtil::GetAlbumCacheName(const CStdString& strFileName, CStdString& strAlbu
 	crc.Reset();
   crc.Compute(strTmp.c_str(),strTmp.size());
 	strAlbumThumb.Format("%s\\%x.ai",g_stSettings.m_szAlbumDirectory,crc);
+}
+
+void CUtil::GetAlbumDatabase(const CStdString& strFileName, CStdString& strAlbumThumb)
+{
+	CStdString strTmp="";
+	for (int i=0; i < (int)strFileName.size(); ++i)
+	{
+		char kar=strFileName[i];
+		if ( isalpha( (byte)kar) ) strTmp +=kar;
+	}
+	strTmp.ToLower();
+	Crc32 crc;
+	crc.Reset();
+  crc.Compute(strTmp.c_str(),strTmp.size());
+	strAlbumThumb.Format("%s\\%x.aldbs",g_stSettings.m_szAlbumDirectory,crc);
 }
 bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
 {
@@ -760,4 +782,107 @@ DWORD CUtil::GetXbeID( const CStdString& strFilePath)
 		CloseHandle(hFile);
 	}
 	return dwReturn;
+}
+void CUtil::FillInDefaultIcons(VECFILEITEMS &items)
+{
+	for (int i=0; i < (int)items.size(); ++i)
+	{
+		CFileItem* pItem=items[i];
+		if (pItem->GetThumbnailImage()=="")
+		{
+			if (pItem->GetIconImage()=="")
+			{
+				if (pItem->m_bIsFolder)
+				{
+					pItem->SetIconImage("defaultFolder.png");
+				}
+				else
+				{
+					CStdString strExtension;
+					CUtil::GetExtension(pItem->m_strPath,strExtension);
+					
+					for (int i=0; i < (int)g_settings.m_vecIcons.size(); ++i)
+					{
+						CFileTypeIcon& icon=g_settings.m_vecIcons[i];
+
+						if (CUtil::cmpnocase(strExtension.c_str(), icon.m_strName)==0)
+						{
+							pItem->SetIconImage(icon.m_strIcon);
+							break;
+						}
+					}
+				}
+			}
+
+			if (pItem->GetIconImage()!="")
+			{
+				CStdString strBig;
+				int iPos=pItem->GetIconImage().Find(".");
+				strBig=pItem->GetIconImage().Left(iPos);
+				strBig+="Big";
+				strBig+=pItem->GetIconImage().Right(pItem->GetIconImage().size()-(iPos));
+				pItem->SetThumbnailImage(strBig);
+			}
+		}
+	}
+}
+
+void CUtil::SetThumbs(VECFILEITEMS &items)
+{
+  CStdString strThumb;
+  for (int i=0; i < (int)items.size(); ++i)
+  {
+    CFileItem* pItem=items[i];
+		pItem->m_bIsShareOrDrive=false;
+		if (!pItem->m_bIsFolder)
+		{
+			if (CUtil::IsPicture(pItem->m_strPath) )
+			{
+				pItem->SetIconImage("defaultPicture.png");
+			}
+			if (CUtil::IsAudio(pItem->m_strPath) ||
+					pItem->m_strPath.Find(".aldbs")>=0)
+			{
+				pItem->SetIconImage("defaultAudio.png");
+			}
+			if (CUtil::IsXBE(pItem->m_strPath) )
+			{
+				pItem->SetIconImage("defaultProgram.png");
+			}
+			if (CUtil::IsVideo(pItem->m_strPath) )
+			{
+				pItem->SetIconImage("defaultVideo.png");
+			}
+		}
+		
+		if (pItem->HasThumbnail() )
+		{
+			CUtil::GetThumbnail( pItem->m_strPath,strThumb);
+      
+			CFile file;
+			CStdString strThumbnailFileName;
+			CUtil::ReplaceExtension(pItem->m_strPath,".tbn", strThumbnailFileName);
+			if ( file.Cache(strThumbnailFileName.c_str(), strThumb.c_str()))
+			{
+				pItem->SetThumbnailImage(strThumb);
+			}
+			else
+			{
+				
+				CUtil::GetThumbnail(pItem->m_strPath,strThumb);
+				if (CUtil::FileExists(strThumb) )
+				{
+					pItem->SetThumbnailImage(strThumb);
+				}
+			}
+		}
+		else
+		{
+			CUtil::GetThumbnail(pItem->m_strPath,strThumb);
+			if (CUtil::FileExists(strThumb))
+			{
+				pItem->SetThumbnailImage(strThumb);
+			}
+		}
+  }
 }

@@ -1,6 +1,8 @@
 #pragma once
 #include <xtl.h>
 #include "stdstring.h"
+#include "fileitem.h"
+
 using namespace std;
 
 class CUtil
@@ -41,12 +43,14 @@ public:
 	static int	LoadInt( FILE *fd);
 	static void LoadDateTime(SYSTEMTIME& dateTime, FILE *fd);
 	static void SaveDateTime(SYSTEMTIME& dateTime, FILE *fd);
-	static void GetSongCacheName(const CStdString& strFileName, CStdString& strSongCacheName);
+	static void GetSongInfo(const CStdString& strFileName, CStdString& strSongCacheName);
 	static void GetAlbumThumb(const CStdString& strFileName, CStdString& strAlbumThumb);
-	static void GetAlbumCacheName(const CStdString& strFileName, CStdString& strAlbumThumb);
+	static void GetAlbumInfo(const CStdString& strFileName, CStdString& strAlbumThumb);
+	static void GetAlbumDatabase(const CStdString& strFileName, CStdString& strAlbumThumb);
 	static bool GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon);
 	static bool GetXBEDescription(const CStdString& strFileName, CStdString& strDescription);
 	static DWORD GetXbeID( const CStdString& strFilePath);
-
+	static void FillInDefaultIcons(VECFILEITEMS &items);
+	static void SetThumbs(VECFILEITEMS &items);
   virtual ~CUtil(void);
 };

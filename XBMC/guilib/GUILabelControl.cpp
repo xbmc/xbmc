@@ -37,7 +37,7 @@ bool CGUILabelControl::OnMessage(CGUIMessage& message)
   {
     if (message.GetMessage() == GUI_MSG_LABEL_SET)
     {
-      m_strLabel = (WCHAR*)message.GetLPVOID();
+      m_strLabel = message.GetLabel();
       return true;
     }
   }

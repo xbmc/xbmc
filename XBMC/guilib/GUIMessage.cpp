@@ -1,4 +1,5 @@
 #include "guimessage.h"
+#include "localizestrings.h"
 
 
 CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, void* lpVoid)
@@ -90,4 +91,17 @@ void	CGUIMessage::SetLabel(const wstring& wstrLabel)
 const wstring& CGUIMessage::GetLabel() const
 {
 	return m_strLabel;
+}
+void CGUIMessage::SetLabel(const string& strLabel)
+{
+	if (!strLabel.size()) return;
+	WCHAR* wszLabel = new WCHAR[strLabel.size()+1];
+	swprintf(wszLabel,L"%S",strLabel.c_str());
+	m_strLabel=wszLabel;
+	delete [] wszLabel;
+}
+void CGUIMessage::SetLabel(int iString)
+{
+	const WCHAR* pszString=g_localizeStrings.Get(iString).c_str();
+	m_strLabel=pszString;
 }

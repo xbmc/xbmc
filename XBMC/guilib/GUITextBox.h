@@ -34,7 +34,7 @@ public:
   virtual void FreeResources() ;
 
 protected:
-	void				 SetText(const string &strText);
+	void				 SetText(const wstring &strText);
   void         OnRight();
   void         OnLeft();
   void         OnDown();

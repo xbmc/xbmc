@@ -11,8 +11,6 @@
 //			- keep groups together when sorting (hd, shares,...)
 //			-	ftp server
 //      - thumbnails need 2b centered in folder icon
-//
-// guilib:
 //		  - thumbnail: render text with disolving alpha
 //      - screen calibration offsets
 //  		- 4:3/16:9 aspect ratio

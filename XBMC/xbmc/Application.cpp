@@ -14,14 +14,14 @@
 	#pragma comment (lib,"xbmc/lib/libsmb/libsmbd.lib")      // SECTIONNAME=LIBSMB
 	#pragma comment (lib,"xbmc/lib/cximage/ImageLibd.lib")   // SECTIONNAME=CXIMAGE
 	#pragma comment (lib,"xbmc/lib/libID3/i3dlibd.lib")			 // SECTIONNAME=LIBID3
-	#pragma comment (lib,"guilib\\debug\\guiLib.lib")
+	#pragma comment (lib,"guilib/debug/guiLib.lib")				 // -
 #else
 //  #pragma comment (lib,"lib/filezilla/xbfilezilla.lib")
 	#pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")          
   #pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")           
 	#pragma comment (lib,"xbmc/lib/cximage/ImageLib.lib")
 	#pragma comment (lib,"xbmc/lib/libID3/i3dlib.lib")					
-	#pragma comment (lib,"guiLib\\release\\guiLib.lib")
+	#pragma comment (lib,"guiLib/release/guiLib.lib")
 #endif
 
 
@@ -160,21 +160,21 @@ HRESULT CApplication::Initialize()
     
   }
 	LoadSkin(g_stSettings.szDefaultSkin);
-  m_gWindowManager.Add(&m_guiHome);
-  m_gWindowManager.Add(&m_guiPrograms);
-	m_gWindowManager.Add(&m_guiPictures);
-  m_gWindowManager.Add(&m_guiMyFiles);
-  m_gWindowManager.Add(&m_guiMyMusic);
-	m_gWindowManager.Add(&m_guiMyVideo);
-	m_gWindowManager.Add(&m_guiSettings);
-	m_gWindowManager.Add(&m_guiSettingsGeneral);
-  m_gWindowManager.Add(&m_guiDialogYesNo);
-  m_gWindowManager.Add(&m_guiDialogProgress);
-  m_gWindowManager.Add(&m_keyboard);
-	m_gWindowManager.Add(&m_guiSystemInfo);
-	m_gWindowManager.Add(&m_guiMusicInfo);
-	m_gWindowManager.Add(&m_guiDialogSelect);
-	m_gWindowManager.Add(&m_guiDialogOK);
+  m_gWindowManager.Add(&m_guiHome);							// window id = 0
+  m_gWindowManager.Add(&m_guiPrograms);					// window id = 1
+	m_gWindowManager.Add(&m_guiPictures);					// window id = 2
+  m_gWindowManager.Add(&m_guiMyFiles);					// window id = 3
+  m_gWindowManager.Add(&m_guiMyMusic);					// window id = 5
+	m_gWindowManager.Add(&m_guiMyVideo);					// window id = 6
+	m_gWindowManager.Add(&m_guiSettings);					// window id = 4
+	m_gWindowManager.Add(&m_guiSettingsGeneral);	// window id = 8
+	m_gWindowManager.Add(&m_guiSystemInfo);				// window id = 7
+  m_gWindowManager.Add(&m_guiDialogYesNo);			// window id = 100
+  m_gWindowManager.Add(&m_guiDialogProgress);		// window id = 101
+  m_gWindowManager.Add(&m_keyboard);						// window id = 1000
+	m_gWindowManager.Add(&m_guiDialogSelect);			// window id = 2000
+	m_gWindowManager.Add(&m_guiMusicInfo);				// window id = 2001
+	m_gWindowManager.Add(&m_guiDialogOK);					// window id = 2002
   g_graphicsContext.Set(m_pd3dDevice,m_d3dpp.BackBufferWidth,m_d3dpp.BackBufferHeight, (m_d3dpp.Flags&D3DPRESENTFLAG_WIDESCREEN) !=0 );
   m_keyboard.Initialize();
 	m_ctrDpad.SetDelays(g_stSettings.m_iMoveDelayController,g_stSettings.m_iRepeatDelayController);

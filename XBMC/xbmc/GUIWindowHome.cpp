@@ -29,8 +29,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       // make controls 101-110 invisible...
       for (int iControl=102; iControl < 110; iControl++)
       {
-        CGUIMessage msg(GUI_MSG_HIDDEN,GetID(), iControl);
-        g_graphicsContext.SendMessage(msg);
+				SET_CONTROL_HIDDEN(GetID(), iControl);
       }
     }
 
@@ -42,11 +41,9 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         // make controls 101-110 invisible...
         for (int i=102; i < 110; i++)
         {
-          CGUIMessage msg(GUI_MSG_HIDDEN,GetID(), i);
-          g_graphicsContext.SendMessage(msg);
+					SET_CONTROL_HIDDEN(GetID(), i);
         }
-        CGUIMessage msg(GUI_MSG_VISIBLE,GetID(), iControl+100);
-        g_graphicsContext.SendMessage(msg);
+				SET_CONTROL_VISIBLE(GetID(), iControl+100);
       }
     }
     break;
@@ -112,12 +109,12 @@ void CGUIWindowHome::Render()
 
   GetDate(szText,&time);
 	
-  CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),200,0,0,(void*)szText);
-  g_graphicsContext.SendMessage(msg);
+	SET_CONTROL_LABEL(GetID(), 200,szText);
+	SET_CONTROL_LABEL(GetID(), 201,szText);
 
 	GetTime(szText,&time);
-	CGUIMessage msg2(GUI_MSG_LABEL_SET,GetID(),201,0,0,(void*)szText);
-  g_graphicsContext.SendMessage(msg2);
+
+	SET_CONTROL_LABEL(GetID(), 201,szText);
 
   CGUIWindow::Render();
 }
