@@ -311,6 +311,13 @@ bool CGUIListControl::OnMessage(CGUIMessage& message)
       {
         m_iOffset=(m_upDown.GetValue()-1)*m_iItemsPerPage;
 				while (m_iOffset+m_iCursorY >= (int)m_vecItems.size()) m_iCursorY--;
+
+				//	moving to the last page
+				if (m_iOffset+m_iItemsPerPage>(int)m_vecItems.size())
+				{
+					m_iOffset=m_vecItems.size()-m_iItemsPerPage;
+					m_iCursorY=m_iItemsPerPage-1;
+				}
       }
     }
     if (message.GetMessage() == GUI_MSG_LOSTFOCUS ||
@@ -353,6 +360,13 @@ bool CGUIListControl::OnMessage(CGUIMessage& message)
 					iPage++;
 					m_iOffset+=m_iItemsPerPage;
 					m_iCursorY -=m_iItemsPerPage;
+				}
+				//	moving to the last item, make sure the whole page is filled
+				if (message.GetParam1() == (int)m_vecItems.size()-1)
+				{
+					m_iOffset=m_vecItems.size()-m_iItemsPerPage;
+					m_iCursorY=m_iItemsPerPage-1;
+
 				}
 				m_upDown.SetValue(iPage);
 			}
