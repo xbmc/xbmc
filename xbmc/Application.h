@@ -99,6 +99,7 @@ public:
 	void				CheckShutdown();
 	void									ResetAllControls();
   virtual void          Process();
+  void                  ResetScreenSaver();
 	CGUIWindowHome									m_guiHome;
   CGUIWindowPrograms							m_guiPrograms;
   CGUIWindowSettingsPrograms      m_guiSettingsPrograms;

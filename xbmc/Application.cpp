@@ -363,6 +363,7 @@ void CApplication::Render()
         }
       }
       Sleep(50);
+      ResetScreenSaver();
       return;
 		}
 	}
@@ -450,6 +451,7 @@ void CApplication::OnKey(CKey& key)
   if (key.GetButtonCode() != KEY_BUTTON_LEFT_THUMB_STICK &&
       key.GetButtonCode() != KEY_BUTTON_RIGHT_THUMB_STICK)
   {
+    ResetScreenSaver();
 	  m_bInactive=false;		// reset the inactive flag as a key has been pressed
   
 	  if (m_bScreenSave)		// Screen saver is active
@@ -465,6 +467,7 @@ void CApplication::OnKey(CKey& key)
 			  m_pd3dDevice->SetGammaRamp(0, &m_OldRamp);	// put the old gamma ramp back in place
 		  }
 	  }
+    ResetScreenSaver();
   }
 	// get the current window to send to
 	int iWin = m_gWindowManager.GetActiveWindow();
@@ -813,10 +816,21 @@ void CApplication::RenderFullScreen()
 //	OutputDebugString("RenderFullScreen Done\n");
 }
 
+void CApplication::ResetScreenSaver()
+{
+  if (m_bInactive) 
+  {
+    m_dwSaverTick=timeGetTime();	// Start the timer going ...
+    m_dwSpinDownTime=timeGetTime();
+  }
+}
+
 void CApplication::CheckScreenSaver()
 {
 	D3DGAMMARAMP Ramp;
 	FLOAT fFadeLevel;
+
+  if ( m_gWindowManager.IsRouted()) return;
 
 	if (!m_bInactive)
 	{
@@ -842,7 +856,7 @@ void CApplication::CheckScreenSaver()
 
 		if (m_bInactive) 
 		{
-			m_dwSaverTick=timeGetTime();		// Start the timer going ...
+			m_dwSaverTick=timeGetTime();	// Start the timer going ...
 		}
 	}
 	else
