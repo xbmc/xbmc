@@ -2411,7 +2411,7 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
         //try to get duration from current tag because mplayer doesn't calculate vbr mp3 correctly
         iDuration = m_itemCurrentFile.m_musicInfoTag.GetDuration();
       }
-      if (iDuration <= 0) {
+      if (IsPlaying() && iDuration <= 0) {
         iDuration = m_pPlayer->GetTotalTime();
       }
       //spin down harddisk when the current file being played is not on local harddrive and
