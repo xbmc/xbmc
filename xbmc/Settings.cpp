@@ -277,7 +277,8 @@ CSettings::CSettings(void)
 }
 
 CSettings::~CSettings(void)
-{}
+{
+}
 
 
 void CSettings::Save() const

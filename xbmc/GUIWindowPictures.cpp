@@ -587,7 +587,7 @@ void CGUIWindowPictures::OnClick(int iItem)
   CStdString strPath = pItem->m_strPath;
   if (pItem->m_bIsFolder)
   {
-    if ( !CGUIPassword::IsItemUnlocked( pItem, "pictures" ) )
+    if ( !g_passwordManager.IsItemUnlocked( pItem, "pictures" ) )
       return ;
 
     m_iItemSelected = -1;

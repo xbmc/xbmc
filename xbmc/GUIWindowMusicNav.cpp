@@ -724,7 +724,7 @@ void CGUIWindowMusicNav::OnClick(int iItem)
   {
     if ( pItem->m_bIsShareOrDrive )
     {
-      if ( !CGUIPassword::IsItemUnlocked( pItem, "music" ) )
+      if ( !g_passwordManager.IsItemUnlocked( pItem, "music" ) )
         return ;
 
       if ( !HaveDiscOrConnection( pItem->m_strPath, pItem->m_iDriveType ) )

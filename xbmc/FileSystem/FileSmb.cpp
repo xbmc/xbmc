@@ -4,6 +4,7 @@
 
 #include "../stdafx.h"
 #include "FileSmb.h"
+#include "../GUIPassword.h"
 
 void xb_smbc_log(const char* msg)
 {
@@ -156,7 +157,7 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
   // when opening smb://server xbms will try to find folder.jpg in all shares
   // listed, which will create lot's of open sessions.
 
-  m_fd = smbc_open(strFileName.c_str(), O_RDONLY, 0);
+  m_fd = OpenFile(strFileName);
 
   if (m_fd == -1)
   {
@@ -192,6 +193,49 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
   // We've successfully opened the file!
   smb.Unlock();
   return true;
+}
+
+/// \brief Checks authentication against SAMBA share. Reads password cache created in CSMBDirectory::OpenDir().
+/// \param strAuth The SMB style path
+/// \return SMB file descriptor
+int CFileSMB::OpenFile(CStdString& strAuth)
+{
+  int fd = -1;
+  CStdString strShare;
+
+  CStdString strPath = strAuth;
+  CURL urlIn(strAuth);
+  CStdString strUserName = urlIn.GetUserName();
+  IMAPPASSWORDS it;
+
+  // most of the work of getting the correct username and password is done when the directory is opened
+
+  strShare = urlIn.GetShareName();	// it's only the server\share we're interested in authenticating
+
+  it = g_passwordManager.m_mapSMBPasswordCache.find(strShare);
+  if(it != g_passwordManager.m_mapSMBPasswordCache.end())
+  {
+    // if share found in cache use it to supply username and password
+    CURL url(it->second);		// map value contains the full url of the originally authenticated share. map key is just the share
+    CStdString strPassword = url.GetPassWord();
+    strUserName = url.GetUserName();
+    urlIn.SetPassword(strPassword);
+    urlIn.SetUserName(strUserName);
+    urlIn.GetURL(strPath);
+  }
+
+  fd = smbc_open(strPath.c_str(), O_RDONLY, 0);
+  // TODO: Run a loop here that prompts for our username/password as appropriate?
+  // We have the ability to run a file (eg from a button action) without browsing to
+  // the directory first.  In the case of a password protected share that we do
+  // not have the authentication information for, the above smbc_open() will have
+  // returned negative, and the file will not be opened.  While this is not a particular
+  // likely scenario, we might want to implement prompting for the password in this case.
+  // The code from SMBDirectory can be used for this.
+  if(fd >= 0)
+    strAuth = strPath;
+
+  return fd;
 }
 
 bool CFileSMB::Exists(const CURL& url)

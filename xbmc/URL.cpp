@@ -7,6 +7,7 @@ CURL::CURL(const CStdString& strURL)
   m_strDomain = "";
   m_strUserName = "";
   m_strPassword = "";
+  m_strShareName="";
   m_strFileName = "";
   m_strProtocol = "";
   m_strFileType = "";
@@ -114,6 +115,13 @@ CURL::CURL(const CStdString& strURL)
     if ((int)strURL.size() > iPos)
     {
       m_strFileName = strURL.Right(strURL.size() - iPos);
+      m_strShareName = m_strHostName;
+      m_strShareName += "/";
+      iSlash = m_strFileName.Find("/"); 
+      if(iSlash < 0)
+        m_strShareName += m_strFileName;
+      else
+        m_strShareName += m_strFileName.Left(iSlash);
     }
   }
 
@@ -149,7 +157,8 @@ CURL::CURL(const CURL &url)
 }
 
 CURL::~CURL()
-{}
+{
+}
 
 CURL& CURL::operator= (const CURL& source)
 {
@@ -202,6 +211,11 @@ int CURL::GetPort() const
 const CStdString& CURL::GetHostName() const
 {
   return m_strHostName;
+}
+
+const CStdString&  CURL::GetShareName() const
+{
+  return m_strShareName;
 }
 
 const CStdString& CURL::GetDomain() const

@@ -19,6 +19,7 @@ public:
   const CStdString& GetFileName() const;
   const CStdString& GetProtocol() const;
   const CStdString& GetFileType() const;
+  const CStdString& GetShareName() const;
   void GetURL(CStdString& strURL) const;
   void GetURLPath(CStdString& strPath) const;
   void GetURLWithoutUserDetails(CStdString& strURL) const;
@@ -29,6 +30,7 @@ public:
 protected:
   int m_iPort;
   CStdString m_strHostName;
+  CStdString m_strShareName;
   CStdString m_strDomain;
   CStdString m_strUserName;
   CStdString m_strPassword;
