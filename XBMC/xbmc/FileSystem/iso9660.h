@@ -154,18 +154,20 @@ public:
 	int									FindNextFile( HANDLE szLocalFolder, WIN32_FIND_DATA *wfdFile );
 	bool								FindClose( HANDLE szLocalFolder );
 	DWORD								SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHigh,  DWORD dwMoveMethod  );
-	DWORD								GetFileSize(HANDLE hFile,LPDWORD lpFileSizeHigh  );
-	DWORD								GetFilePosition(HANDLE hFile);
-
+	INT64								GetFileSize();
+	INT64								GetFilePosition();
+	INT64								Seek(int fd, INT64 lOffset, int whence);
 	HANDLE							OpenFile( const char* filename );
-	int									ReadFile( char * pBuffer, int * piSize, DWORD *totalread );
-	void								CloseFile( HANDLE );
+	long								ReadFile(int fd, byte *pBuffer, long lSize);
+	void								CloseFile();
 
 protected:
 	struct iso_dirtree*					ReadRecursiveDirFromSector( DWORD sector, const char * );
 	struct iso_dirtree*					FindFolder( char *Folder );
 	string											GetThinText(WCHAR* strTxt, int iLen );
-	char*												m_pCache;
+	bool												ReadSectorFromCache(DWORD sector, byte** ppBuffer);
+	void												ReleaseSectorFromCache(DWORD sector);
+
 	struct iso_dirtree*					m_dirtree;
 	struct iso9660info					m_info;
 	bool												m_bUseMode2;
@@ -176,11 +178,23 @@ protected:
 	struct iso_dirtree*					m_searchpointer;
 	struct iso_directories*			m_paths;	
 	struct iso_directories*			m_lastpath;
-	DWORD												m_dwStartSector;
 	
 	vector<struct iso_dirtree*> m_vecDirsAndFiles;
 	static int									m_iReferences;
 	static HANDLE								m_hCDROM;
+
+	#define CIRC_BUFFER_SIZE 10
+	DWORD				m_dwCircBuffBegin;
+	DWORD				m_dwCircBuffEnd;
+	DWORD				m_dwCircBuffSectorStart;
+
+	DWORD				m_dwStartBlock;
+	DWORD				m_dwCurrentBlock;				// Current being read Block
+	INT64				m_dwFilePos;
+	BYTE*       m_pBuffer;
+	DWORD				m_dwFileSize;
+
+
 };
 
 #endif
