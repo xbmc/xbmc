@@ -879,11 +879,10 @@ bool CApplication::PlayFile(const CStdString& strFile)
 	if ( url.GetProtocol() == "cdda")
 	{
 		strNewPlayer = "cdda";
-//		m_DetectDVDType.StopThread();
 	}
 	if (m_pPlayer)
 	{
-		if (m_strCurrentPlayer != strNewPlayer)
+		if (m_strCurrentPlayer != strNewPlayer || !CUtil::IsAudio(strFile) )
 		{
 			delete m_pPlayer;
 			m_pPlayer=NULL;

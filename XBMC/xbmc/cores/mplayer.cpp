@@ -125,18 +125,22 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			closefile();
 			return false;
 		}
-
+	
+		// if AC3 pass Thru is enabled
 		bool bSupportsSPDIFOut=(XGetAudioFlags() & (DSSPEAKER_ENABLE_AC3 | DSSPEAKER_ENABLE_DTS)) != 0;
 		if (CUtil::IsAudio(strFile)) bSupportsSPDIFOut=false;
 		if (g_stSettings.m_iChannels==6 && bSupportsSPDIFOut && g_stSettings.m_bAC3PassThru )
 		{
 			CStdString strAudioInfo;
 			GetAudioInfo( strAudioInfo);
+			// and the movie has an AC3 audio stream
 			if ( strAudioInfo.Find("AC3") >=0)
 			{
-				//reopen. now with AC3
+				//then close file and 
+				//reopen it, but now enable the AC3 pass thru audio filter
 				mplayer_close_file();
-				char *argv[] = {"xbmc.xbe", "-ac","hwac3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
+				argc=10;
+				char *argv[] = {"xbmc.xbe", "-channels","2", "-ac","hwac3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
 				mplayer_init(argc,argv);
 				mplayer_setcache_size(1024);
 				if (CUtil::IsAudio(strFile) )
