@@ -384,7 +384,8 @@ void CApplication::FrameMove()
 	WORD wDpad = wButtons&(XINPUT_GAMEPAD_DPAD_UP|XINPUT_GAMEPAD_DPAD_DOWN|XINPUT_GAMEPAD_DPAD_LEFT|XINPUT_GAMEPAD_DPAD_RIGHT);
 	
 	WORD wDir = m_ctrDpad.DpadInput(wDpad,0!=pGamepad->bAnalogButtons[XINPUT_GAMEPAD_LEFT_TRIGGER],0!=pGamepad->bAnalogButtons[XINPUT_GAMEPAD_RIGHT_TRIGGER]);
-	wDir |= m_ctrIR.IRInput(wRemotes);
+
+	wRemotes=m_ctrIR.IRInput(wRemotes);
 
 	bool bGotKey=false;
 
@@ -485,58 +486,104 @@ void CApplication::FrameMove()
     OnKey(key);   
   } 
 	
-  switch (pRemote->wPressedButtons)
+  switch (wRemotes)
 	{
-		case XINPUT_IR_REMOTE_MENU:
+		case DC_LEFTTRIGGER:
+		{
+			bGotKey=true;
+			CKey key(true,KEY_BUTTON_LEFT_TRIGGER,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+			OnKey(key);   
+		}
+		break;
+		case DC_RIGHTTRIGGER:
+		{
+			bGotKey=true;
+			CKey key(true,KEY_BUTTON_RIGHT_TRIGGER,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+			OnKey(key);   
+		}
+		break;
+
+		case DC_LEFT:
+		{
+			bGotKey=true;
+			CKey key(true,KEY_BUTTON_DPAD_LEFT,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+			OnKey(key);   
+		}
+		break;
+		case DC_RIGHT:
+		{
+			bGotKey=true;
+			CKey key(true,KEY_BUTTON_DPAD_RIGHT,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+			OnKey(key);   
+		}
+		break;
+		
+		case DC_UP:
+		{
+			bGotKey=true;
+			CKey key(true,KEY_BUTTON_DPAD_UP,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+			OnKey(key);   
+		}
+		break;
+
+		case DC_DOWN:
+		{
+			bGotKey=true;
+			CKey key(true,KEY_BUTTON_DPAD_DOWN,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+			OnKey(key);   
+		}
+		break;
+
+		case DC_REMOTE_MENU:
     {
 			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_MENU);
       OnKey(key);   
 		  break;
     }
-		case XINPUT_IR_REMOTE_BACK:
+		case DC_REMOTE_BACK:
     {
 			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_BACK);
       OnKey(key);   
 		  break;
     }
-		case XINPUT_IR_REMOTE_SELECT:
+		case DC_REMOTE_SELECT:
     {
 			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_SELECT);
       OnKey(key);   
 		  break;
     }
-		case XINPUT_IR_REMOTE_DISPLAY:
+		case DC_REMOTE_DISPLAY:
     {
 			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_DISPLAY);
       OnKey(key);   
 		  break;
     }
-		case XINPUT_IR_REMOTE_TITLE:
+		case DC_REMOTE_TITLE:
     {
 			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_TITLE);
       OnKey(key);   
 		  break;
     }
-		case XINPUT_IR_REMOTE_INFO:
+		case DC_REMOTE_INFO:
     {
 			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_INFO);
       OnKey(key);   
 		  break;
     }
-		case XINPUT_IR_REMOTE_PLAY:
+		case DC_REMOTE_PLAY:
     {
 			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_PLAY);
       OnKey(key);   
 		  break;
     }
-		case XINPUT_IR_REMOTE_PAUSE:
+		case DC_REMOTE_PAUSE:
     {
 			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_PAUSE);
@@ -550,7 +597,7 @@ void CApplication::FrameMove()
 			}
 		  break;
     }
-		case XINPUT_IR_REMOTE_STOP:
+		case DC_REMOTE_STOP:
     {
 			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_STOP);
@@ -564,7 +611,7 @@ void CApplication::FrameMove()
 			}
 		  break;
     }
-		case XINPUT_IR_REMOTE_SKIP_MINUS:
+		case DC_REMOTE_SKIP_MINUS:
     {
 			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_SKIPMINUS);
@@ -575,7 +622,7 @@ void CApplication::FrameMove()
 			}
 		  break;
     }
-		case XINPUT_IR_REMOTE_SKIP_PLUS:
+		case DC_REMOTE_SKIP_PLUS:
     {
 			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_SKIPPLUS);
@@ -587,89 +634,73 @@ void CApplication::FrameMove()
 		  break;
     }
 
-	case XINPUT_IR_REMOTE_0:
+	case DC_REMOTE_0:
     {
 			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_0);
       OnKey(key);   
 		  break;
     }
-    case XINPUT_IR_REMOTE_1:
+    case DC_REMOTE_1:
     {
 			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_1);
       OnKey(key);   
 		  break;
     }
-    case XINPUT_IR_REMOTE_2:
+    case DC_REMOTE_2:
     {
 			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_2);
       OnKey(key);   
 		  break;
     }
-    case XINPUT_IR_REMOTE_3:
+    case DC_REMOTE_3:
     {
 			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_3);
       OnKey(key);   
 		  break;
     }
-    case XINPUT_IR_REMOTE_4:
+    case DC_REMOTE_4:
     {
 			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_4);
       OnKey(key);   
 		  break;
     }
-    case XINPUT_IR_REMOTE_5:
+    case DC_REMOTE_5:
     {
 			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_5);
       OnKey(key);   
 		  break;
     }
-    case XINPUT_IR_REMOTE_6:
+    case DC_REMOTE_6:
     {
 			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_6);
       OnKey(key);   
 		  break;
     }
-    case XINPUT_IR_REMOTE_7:
+    case DC_REMOTE_7:
     {
 			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_7);
       OnKey(key);   
 		  break;
     }
-    case XINPUT_IR_REMOTE_8:
+    case DC_REMOTE_8:
     {
 			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_8);
       OnKey(key);   
 		  break;
     }
-    case XINPUT_IR_REMOTE_9:
+    case DC_REMOTE_9:
     {
 			bGotKey=true;
 		  CKey key(true,KEY_REMOTE_9);
-      OnKey(key);   
-		  break;
-    }
-
-    case XINPUT_IR_REMOTE_REVERSE:
-    {
-			bGotKey=true;
-		  CKey key(true,KEY_REMOTE_REVERSE);
-      OnKey(key);   
-		  break;
-    }
-
-    case XINPUT_IR_REMOTE_FORWARD:
-    {
-			bGotKey=true;
-		  CKey key(true,KEY_REMOTE_FORWARD);
       OnKey(key);   
 		  break;
     }
