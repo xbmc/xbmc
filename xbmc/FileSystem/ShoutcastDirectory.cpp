@@ -14,6 +14,14 @@
 #include "../GUIDialogOK.h"
 #include "../PlayListFactory.h"
 
+//	Quoting shoutcast on how ofter users could update their streams list:
+//	"You can either choose to cache this data on your own server, 
+//	or limit the number of requests from your clients to us. 
+//	We ask that a client not make a request for the XML list more 
+//	frequently than once per 5 minutes. If we see excessive requests 
+//	coming it, we disable per service or per IP."
+//
+//	So this cache will be refreshed every 30 min for now.
 #define CACHE_VALID_TIME 30.0f*60.0f
 
 CShoutcastDirectory::CShoutcastDirectory(void)
