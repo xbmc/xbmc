@@ -110,7 +110,7 @@ void CGUIListControl::Render()
 				float fTextHeight,fTextWidth;
         swprintf(wszText,L"%S", strLabel2.c_str() );
 				m_pFont2->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
-				dMaxWidth -= (DWORD)(fTextWidth);
+				dMaxWidth -= (DWORD)(fTextWidth+20);
 			}
 
 			swprintf(wszText,L"%S", pItem->GetLabel().c_str() );
