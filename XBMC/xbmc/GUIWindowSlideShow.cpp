@@ -186,7 +186,7 @@ void CGUIWindowSlideShow::Render()
 
 	if (m_bSlideShow || !m_pTextureBackGround) 
 	{
-
+  
 		if (iSlides > 1 || m_pTextureBackGround==NULL)
 		{
 			if (m_pTextureCurrent==NULL)
@@ -206,6 +206,7 @@ void CGUIWindowSlideShow::Render()
 							iNewMethod=rand() % MAX_RENDER_METHODS;
 						} while ( iNewMethod==m_iTransistionMethod);
 						m_iTransistionMethod=iNewMethod;
+            g_application.ResetScreenSaver();
 					}
 				}
 			}
@@ -315,6 +316,7 @@ void CGUIWindowSlideShow::Render()
 			m_pTextureCurrent=NULL; 
 			m_pSurfaceCurrent=NULL;
 			m_lSlideTime=timeGetTime();
+      g_application.ResetScreenSaver();
 		}
 	}
 
