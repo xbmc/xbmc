@@ -591,9 +591,6 @@ void CGUIWindowFullScreen::RenderFullScreen()
   if (g_application.m_guiDialogVolumeBar.IsRunning())
   {
 	  g_application.m_guiDialogVolumeBar.Render();
-	  // and the mouse pointer...
-	  if (g_Mouse.IsActive()) g_application.m_guiPointer.Render();
-	  return;
   }
 
   if (m_bOSDVisible)

@@ -45,7 +45,7 @@ public:
 	void				SetText(const CStdString &aLabel);
 	void				SetText(const wstring & aLabel);
   void        SetHyperLink(long dwWindowID);
-	void				SetScriptAction(const CStdString& strScriptAction);
+	void				SetExecuteAction(const CStdString& strExecuteAction);
 	const	CStdString& GetTexutureFocusName() const { return m_imgFocus.GetFileName(); };
 	const	CStdString& GetTexutureNoFocusName() const { return m_imgNoFocus.GetFileName(); };
 	DWORD	GetTextOffsetX() const { return m_dwTextOffsetX;};
@@ -57,7 +57,7 @@ public:
 	const char *			GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
 	const wstring			GetLabel() const { return m_strLabel; };
 	DWORD							GetHyperLink() const { return m_lHyperLinkWindowID;};
-	const CStdString& GetScriptAction() const { return m_strScriptAction; };
+	const CStdString& GetExecuteAction() const { return m_strExecuteAction; };
 
 protected:
   virtual void				Update() ;
@@ -72,6 +72,6 @@ protected:
 	D3DCOLOR						m_dwTextColor;
   D3DCOLOR						m_dwDisabledColor;
   long								m_lHyperLinkWindowID;
-	CStdString					m_strScriptAction;
+	CStdString					m_strExecuteAction;
 };
 #endif

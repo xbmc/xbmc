@@ -288,6 +288,34 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
   }
 }
 
+/// \brief Runs an executable file
+/// \param szPath1 Path of executeable to run
+/// \param szParameters Any parameters to pass to the executeable being run
+void CUtil::RunXBE(const char* szPath1, char* szParameters)
+{
+	char szDevicePath[1024];
+	char szPath[1024];
+	char szXbePath[1024];
+	strcpy(szPath,szPath1);
+	char* szBackslash = strrchr(szPath,'\\');
+	*szBackslash=0x00;
+	char* szXbe = &szBackslash[1];
+
+	char* szColon = strrchr(szPath,':');
+	*szColon=0x00;
+	char* szDrive = szPath;
+	char* szDirectory = &szColon[1];
+
+	CIoSupport helper;
+	helper.GetPartition( (LPCSTR) szDrive, szDevicePath);
+
+	strcat(szDevicePath,szDirectory);
+	wsprintf(szXbePath,"d:\\%s",szXbe);
+
+	g_application.Stop();
+
+	CUtil::LaunchXbe(szDevicePath,szXbePath,szParameters);
+}
 
 //*********************************************************************************************
 void CUtil::LaunchXbe(char* szPath, char* szXbe, char* szParameters)
