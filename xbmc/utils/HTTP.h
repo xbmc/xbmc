@@ -30,26 +30,27 @@ public:
 	void 		SetCookie(const string& strCookie);
 	bool 		Get(string& strURL, string& strHTML);
 	bool 		Download(const string &strURL, const string &strFileName);
-	void		SetHTTPVer(unsigned int iVer);
 protected:
-	bool   BreakURL(const string& strURL, string& strHostName, int& iPort, string& Page);
-	bool	 Send(char* pBuffer, int iLen);
-	bool	 Connect();
-	int 		Open(const string& strURL, const char* verb, string& strHeaders, string& strData);
-	bool 		Recv(char* pBuffer, int iLen, int& iRead, bool bFill);
+	bool		BreakURL(const string& strURL, string& strHostName, int& iPort, string& Page);
+	bool		Send(char* pBuffer, int iLen);
+	bool		Connect();
+	int 		Open(const string& strURL, const char* verb, const char* pData);
+	bool 		Recv(int iLen);
 	void 		Close();
-	int			FindLength(const string& strHeaders);
+	bool		ReadData(string& strData);
 
-	string m_strProxyServer;
-	int    m_iProxyPort;
 	CAutoPtrSocket m_socket;
 	WSAEVENT hEvent;
 	
+	string m_strProxyServer;
 	string m_strHostName;
-	int    m_iPort;
-	int			m_iHTTPver;
-private:
 	string m_strCookie;
+	string m_strHeaders;
+	int    m_iProxyPort;
+	int    m_iPort;
+
+	char*  m_RecvBuffer;
+	int    m_RecvBytes;
 };
 
 #endif // !defined(AFX_HTTP_H__A368CB6F_3D08_4966_9F9F_961A59CB4EC7__INCLUDED_)
