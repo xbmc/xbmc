@@ -22,7 +22,7 @@ CURL::CURL(const CStdString& strURL)
   if (!strURL.size()) return;
 	char szURL[1024];
 	strcpy(szURL,strURL.c_str());
-	if ( isalpha(szURL[0]) && szURL[1] == ':')
+	if ( szURL[1] == ':')
 	{
 		// form is drive:directoryandfile
 		m_strFileName=strURL;
