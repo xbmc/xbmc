@@ -84,7 +84,7 @@ HRESULT CApplication::Create()
 
 	// Transfer the resolution information to our graphics context
 	g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
-	g_settings.Load();
+	m_bSettingsLoaded=g_settings.Load();
 	helper.Remap("C:,Harddisk0\\Partition2");
 	helper.Remap("E:,Harddisk0\\Partition1");
 	helper.Remount("D:","Cdrom0");
@@ -230,6 +230,14 @@ HRESULT CApplication::Initialize()
 	m_DetectDVDType.Create( false);
 
 
+  if (!m_bSettingsLoaded)
+  {
+    m_guiDialogOK.SetHeading(279);
+    m_guiDialogOK.SetLine(0,280);
+    m_guiDialogOK.SetLine(1,281);
+    m_guiDialogOK.SetLine(2,L"");
+    m_guiDialogOK.DoModal(g_stSettings.m_iStartupWindow);
+  }
 
 	return S_OK;
 }
