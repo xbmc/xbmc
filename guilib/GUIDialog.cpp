@@ -11,6 +11,7 @@ CGUIDialog::CGUIDialog(DWORD dwID)
 	m_pParentWindow			= NULL;
 	m_iPrevOverlayAllowed	= -1;
 	m_bModal				= true;
+  m_bRunning      = false;
 }
 
 CGUIDialog::~CGUIDialog(void)
