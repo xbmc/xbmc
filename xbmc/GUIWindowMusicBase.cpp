@@ -21,6 +21,7 @@
 #include "GUIThumbnailPanel.h"
 #include "GUIListControl.h"
 #include "FileSystem/DirectoryCache.h"
+#include "cdrip/cddaripper.h"
 
 #define CONTROL_BTNVIEWASICONS		2
 #define CONTROL_BTNTYPE						6
@@ -1497,6 +1498,100 @@ void CGUIWindowMusicBase::Render()
 			pFont->GetTextExtent(wszText, &fWidth, &fHeight);
 			pFont->DrawText((float)iX, (float)iY-fHeight, 0xffffffff, wszText.c_str(), XBFONT_CENTER_X|XBFONT_CENTER_Y);
 			pFont->DrawText((float)iX, (float)iY+fHeight, 0xffffffff, wszText2.c_str(), XBFONT_CENTER_X|XBFONT_CENTER_Y);
+		}
+	}
+}
+
+void CGUIWindowMusicBase::OnPopupMenu(int iItem)
+{
+	// calculate our position
+	int iPosX=200;
+	int iPosY=100;
+	CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_LIST);
+	if (pList)
+	{
+		iPosX = pList->GetXPosition()+pList->GetWidth()/2;
+		iPosY = pList->GetYPosition()+pList->GetHeight()/2;
+	}	
+	// mark the item
+	m_vecItems[iItem]->Select(true);
+	// popup the context menu
+	CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+	if (!pMenu) return;
+	// clean any buttons not needed
+	pMenu->ClearButtons();
+	// add the needed buttons
+	pMenu->AddButton(13351);	// Music Information
+	pMenu->AddButton(13347);	// Queue Item
+	pMenu->AddButton(13350);	// Now Playing...
+	pMenu->AddButton(137);		// Search...
+	if (g_application.m_guiDialogMusicScan.IsRunning())
+		pMenu->AddButton(13353);	// Stop Scanning
+	else
+		pMenu->AddButton(13352);	// Scan Folder to Database
+	pMenu->AddButton(600);		// Rip CD Audio
+	pMenu->AddButton(5);			// Settings...
+
+	// turn off Rip CD Audio button if we don't have a CDDA disk in
+	CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
+	if (!CDetectDVDMedia::IsDiscInDrive() || !pCdInfo || !pCdInfo->IsAudio(1))
+		pMenu->EnableButton(6, false);
+	// turn off the now playing button if nothing is playing
+	if (!g_application.IsPlayingAudio())
+		pMenu->EnableButton(3, false);
+	// turn off the Scan button if we're not in files view
+	if (GetID() != WINDOW_MUSIC_FILES)
+		pMenu->EnableButton(5, false);
+	// position it correctly
+	pMenu->SetPosition(iPosX-pMenu->GetWidth()/2, iPosY-pMenu->GetHeight()/2);
+	pMenu->DoModal(GetID());
+	switch (pMenu->GetButton())
+	{
+	case 1:	// Music Information
+		OnInfo(iItem);
+		break;
+	case 2:	// Queue Item
+		OnQueueItem(iItem);
+		break;
+	case 3:	// Now Playing...
+		m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+		return;
+		break;
+	case 4:	// Search
+		OnSearch();
+		break;
+	case 5:	// Scan...
+		OnScan();
+		break;
+	case 6:	// Rip CD...
+		OnRipCD();
+		break;
+	case 7:	// Settings
+		m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);
+		return;
+		break;
+	}
+	m_vecItems[iItem]->Select(false);
+}
+
+void CGUIWindowMusicBase::OnRipCD()
+{
+	CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
+	if (CDetectDVDMedia::IsDiscInDrive() && pCdInfo && pCdInfo->IsAudio(1))
+	{
+		if (!CUtil::IsCDDA(g_application.CurrentFile()))
+		{
+			CCDDARipper ripper;
+			ripper.RipCD();
+		}
+		else
+		{
+			CGUIDialogOK*	pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+			pDlgOK->SetHeading(257); // Error
+			pDlgOK->SetLine(0, "Can't rip CD or Track while playing from CD"); // 
+			pDlgOK->SetLine(1, ""); // 
+			pDlgOK->SetLine(2, "");
+			pDlgOK->DoModal(GetID());
 		}
 	}
 }

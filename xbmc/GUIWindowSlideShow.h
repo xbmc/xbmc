@@ -148,6 +148,7 @@ public:
 
 private:
   void				RenderPause();
+	void				RenderErrorMessage();
   void				Rotate();
   void				Zoom(int iZoom);
 	void				Move(float fX, float fY);

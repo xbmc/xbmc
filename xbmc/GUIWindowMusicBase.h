@@ -65,7 +65,7 @@ protected:
 		\brief Will be called when an popup context menu has been asked for
 		\param iItem List/thumb control item that has been clicked on
 		*/
-	virtual void							OnPopupMenu(int iItem) {OnInfo(iItem);};
+	virtual void							OnPopupMenu(int iItem);
  	/*!
 		\brief Will be called for every item to set the label and thumbs
 		\param pItem Item to be formated
@@ -93,6 +93,8 @@ protected:
 	virtual void							AddItemToPlayList(const CFileItem* pItem);
 					int								GetSelectedItem();
           void							SetSelectedItem(int index);
+					void							OnRipCD();
+	virtual void							OnScan() {};
 					void							OnSearch();
 	virtual	void							OnSearchItemFound(const CFileItem* pItem);
 	virtual void							DoSearch(const CStdString& strSearch,VECFILEITEMS& items);
