@@ -40,7 +40,7 @@ const string iso9660::ParseName(struct	iso9660_Directory& isodir)
 	if (isodir.FileName[iPos] == 'R' && isodir.FileName[iPos+1]=='R')
 	{
 		// rockridge
-		iPos+=5;
+		iPos+=5;	
 		do
 		{
 			if (isodir.FileName[iPos]=='N'&& isodir.FileName[iPos+1]=='M')
