@@ -162,9 +162,10 @@ bool CFileSMB::Open(const char* strUserName, const char* strPassword,const char 
 			}
 		}
 		smb.Unlock();
-		// int error = map_nt_error_from_unix(errno);
-		// nt_errstr(error);
-		// get_friendly_nt_error_msg(error);
+		// write error to logfile
+		int nt_error = map_nt_error_from_unix(errno);
+		CLog::Log("FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'",
+				szFileName, errno, nt_error, get_friendly_nt_error_msg(nt_error));
 		return false;
 	}
 	UINT64 ret = smbc_lseek(m_fd, 0, SEEK_END);
