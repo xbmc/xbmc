@@ -26,6 +26,7 @@
 	#pragma comment (lib,"xbmc/cores/dllLoader/debug/dllloader.lib")				   // -
 	#pragma comment (lib, "xbmc/lib/libcdio/libcdiod.lib" )
 	#pragma comment (lib, "xbmc/lib/libshout/libshoutd.lib" )
+	#pragma comment (lib,"xbmc/lib/libRTV/libRTVd.lib")    // SECTIONNAME=LIBRTV
 #else
 //  #pragma comment (lib,"lib/filezilla/xbfilezilla.lib")
 	#pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")          
@@ -40,6 +41,7 @@
 	#pragma comment (lib,"xbmc/cores/dllLoader/release/dllloader.lib")				   // -
 	#pragma comment (lib, "xbmc/lib/libcdio/libcdio.lib" )
 	#pragma comment (lib, "xbmc/lib/libshout/libshout.lib" )
+	#pragma comment (lib,"xbmc/lib/libRTV/libRTV.lib")
 #endif
 
 extern int m_iAudioStreamIDX;
