@@ -1,185 +1,185 @@
-
 #include "stdafx.h"
 #include "audio.h"
 #include "video.h"
 #include "../DllLoader/dll.h"
 #include "mplayer.h"
+
 //deal wma, and wmv dlls in openfile, and closefile functions
 extern DllLoader * wmaDMOdll;
 extern DllLoader * wmvDMOdll;
 extern DllLoader * wmsDMOdll;
 extern "C" BOOL WINAPI dllFreeLibrary(HINSTANCE hLibModule);
 
-int							(__cdecl* pInitPlayer)(int argc, char* argvp[]);
-int							(__cdecl* pOpenFile)(const char*);
-int							(__cdecl* pProcess)();
-int							(__cdecl* pCloseFile)();
-void						(__cdecl* pSetAudioFunctions)(ao_functions_t* pFunctions);
-ao_functions_t* (__cdecl* pGetAudioFunctions)();
-int							(__cdecl* pAudioOutFormatBits)(int);
-ao_data_t*			(__cdecl* pGetAOData)(void);
-void						(__cdecl* pSetVideoFunctions)(vo_functions_t*);
-void						(__cdecl* pMplayerPutKey)(int);
-void						(__cdecl* pVODrawText)(int dxs,int dys,void (*draw_alpha)(int x0,int y0, int w,int h, unsigned char* src, unsigned char *srca, int stride));
-void						(__cdecl* pAspectSaveScreenres)(int scrw, int scrh);
-void						(__cdecl* pAspectSavePrescale)(int scrw, int scrh);
-void						(__cdecl* pAspectSaveOrig)(int scrw, int scrh);
-void						(__cdecl* pAspect)(unsigned int*, unsigned int*, int);
-void						(__cdecl* pVODrawAlphayv12)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride);
-void						(__cdecl* pVODrawAlphayuy2)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride);
-void						(__cdecl* pVODrawAlphargb24)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride);
-void						(__cdecl* pVODrawAlphargb32)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride);
-void						(__cdecl* pVODrawAlphargb15)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride);
-void						(__cdecl* pVODrawAlphargb16)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride);
-__int64					(__cdecl* pGetPTS)();
-BOOL						(__cdecl* pHasVideo)();
-BOOL						(__cdecl* pHasAudio)();
-void						(__cdecl* pyv12toyuy2)(const unsigned char *ysrc, const unsigned char *usrc, const unsigned char *vsrc, unsigned char *dst,unsigned int width, unsigned int height,int lumStride, int chromStride, int dstStride);
-int							(__cdecl* pImageOutput)(IMAGE * image, unsigned int width,int height,unsigned int edged_width, unsigned char * dst[4], unsigned int dst_stride[4],int csp,int interlaced);
-void						(__cdecl* pInitColorConversions)();
-void						(__cdecl* pSetCacheSize)(int);
-void						(__cdecl* pGetAudioInfo)(char* strFourCC,char* strAudioCodec, long* bitrate, long* samplerate, int* channels, int* bVBR);
-void						(__cdecl* pGetVideoInfo)(char* strFourCC,char* strVideoCodec, float* fps, unsigned int* iWidth,unsigned int* iHeight, long* tooearly, long* toolate);
-void						(__cdecl* pGetGeneralInfo)(long* lFramesDropped, int* iQuality, int* iCacheFilled, float* fTotalCorrection, float* fAVDelay);
+int					(__cdecl*	pInitPlayer)(int argc, char* argvp[]);
+int					(__cdecl*	pOpenFile)(const char*);
+int					(__cdecl*	pProcess)();
+int					(__cdecl*	pCloseFile)();
+void				(__cdecl*	pSetAudioFunctions)(ao_functions_t*	pFunctions);
+ao_functions_t*	(__cdecl*	pGetAudioFunctions)();
+int						(__cdecl*	pAudioOutFormatBits)(int);
+ao_data_t*		(__cdecl*	pGetAOData)(void);
+void					(__cdecl*	pSetVideoFunctions)(vo_functions_t*);
+void					(__cdecl*	pMplayerPutKey)(int);
+void					(__cdecl*	pVODrawText)(int dxs,int dys,void	(*draw_alpha)(int	x0,int y0, int w,int h,	unsigned char* src,	unsigned char	*srca, int stride));
+void					(__cdecl*	pAspectSaveScreenres)(int	scrw,	int	scrh);
+void					(__cdecl*	pAspectSavePrescale)(int scrw, int scrh);
+void					(__cdecl*	pAspectSaveOrig)(int scrw, int scrh);
+void					(__cdecl*	pAspect)(unsigned	int*,	unsigned int*, int);
+void					(__cdecl*	pVODrawAlphayv12)(int	w,int	h, unsigned	char*	src, unsigned	char *srca,	int	srcstride, unsigned	char*	dstbase,int	dststride);
+void					(__cdecl*	pVODrawAlphayuy2)(int	w,int	h, unsigned	char*	src, unsigned	char *srca,	int	srcstride, unsigned	char*	dstbase,int	dststride);
+void					(__cdecl*	pVODrawAlphargb24)(int w,int h,	unsigned char* src,	unsigned char	*srca, int srcstride,	unsigned char* dstbase,int dststride);
+void					(__cdecl*	pVODrawAlphargb32)(int w,int h,	unsigned char* src,	unsigned char	*srca, int srcstride,	unsigned char* dstbase,int dststride);
+void					(__cdecl*	pVODrawAlphargb15)(int w,int h,	unsigned char* src,	unsigned char	*srca, int srcstride,	unsigned char* dstbase,int dststride);
+void					(__cdecl*	pVODrawAlphargb16)(int w,int h,	unsigned char* src,	unsigned char	*srca, int srcstride,	unsigned char* dstbase,int dststride);
+__int64				(__cdecl*	pGetPTS)();
+BOOL					(__cdecl*	pHasVideo)();
+BOOL					(__cdecl*	pHasAudio)();
+void					(__cdecl*	pyv12toyuy2)(const unsigned	char *ysrc,	const	unsigned char	*usrc, const unsigned	char *vsrc,	unsigned char	*dst,unsigned	int	width, unsigned	int	height,int lumStride,	int	chromStride, int dstStride);
+int						(__cdecl*	pImageOutput)(IMAGE	*	image, unsigned	int	width,int	height,unsigned	int	edged_width, unsigned	char * dst[4], unsigned	int	dst_stride[4],int	csp,int	interlaced);
+void					(__cdecl*	pInitColorConversions)();
+void					(__cdecl*	pSetCacheSize)(int);
+void					(__cdecl*	pGetAudioInfo)(char* strFourCC,char* strAudioCodec,	long*	bitrate, long* samplerate, int*	channels,	int* bVBR);
+void					(__cdecl*	pGetVideoInfo)(char* strFourCC,char* strVideoCodec,	float* fps,	unsigned int*	iWidth,unsigned	int* iHeight,	long*	tooearly,	long*	toolate);
+void					(__cdecl*	pGetGeneralInfo)(long* lFramesDropped, int*	iQuality,	int* iCacheFilled, float*	fTotalCorrection,	float* fAVDelay);
 
-void						(__cdecl* psetAVDelay)(float);
-void						(__cdecl* psetSubtitleDelay)(float);
-void						(__cdecl* psetPercentage)(int);
-void						(__cdecl* psetSubtitle)(int);
-void						(__cdecl* pshowSubtitle)(int);
-void						(__cdecl* psetAudioLanguage)(int);
-void						(__cdecl* psetTime)(int);
-void						(__cdecl* pToFFRW)(int);
+void					(__cdecl*	psetAVDelay)(float);
+void					(__cdecl*	psetSubtitleDelay)(float);
+void					(__cdecl*	psetPercentage)(int);
+void					(__cdecl*	psetSubtitle)(int);
+void					(__cdecl*	pshowSubtitle)(int);
+void					(__cdecl*	psetAudioLanguage)(int);
+void					(__cdecl*	psetTime)(int);
+void					(__cdecl*	pToFFRW)(int);
 
-float					  (__cdecl* pgetAVDelay)();
-float					  (__cdecl* pgetSubtitleDelay)();
-int 						(__cdecl* pgetPercentage)();
-int             (__cdecl* pgetSubtitle)();
-int             (__cdecl* pgetSubtitleCount)();
-int             (__cdecl* pgetSubtitleVisible)();
-int             (__cdecl* pgetAudioLanguageCount)();
-int             (__cdecl* pgetAudioLanguage)();
-int             (__cdecl* pgetAudioStream)();
-int             (__cdecl* pgetAudioStreamCount)();
-int             (__cdecl* pgetAudioStreamInfo)(int iStream, stream_language_t* stream_info);
-int				(__cdecl* pgetSubtitleStreamInfo)(int iStream, stream_language_t* stream_info);
-int 			(__cdecl* pgetTime)();
-__int64         (__cdecl* pgetCurrentTime)();
-void            (__cdecl* pShowOSD)(int);
+float					(__cdecl*	pgetAVDelay)();
+float					(__cdecl*	pgetSubtitleDelay)();
+int						(__cdecl*	pgetPercentage)();
+int						(__cdecl*	pgetSubtitle)();
+int						(__cdecl*	pgetSubtitleCount)();
+int						(__cdecl*	pgetSubtitleVisible)();
+int						(__cdecl*	pgetAudioLanguageCount)();
+int						(__cdecl*	pgetAudioLanguage)();
+int						(__cdecl*	pgetAudioStream)();
+int						(__cdecl*	pgetAudioStreamCount)();
+int						(__cdecl*	pgetAudioStreamInfo)(int iStream,	stream_language_t* stream_info);
+int						(__cdecl*	pgetSubtitleStreamInfo)(int	iStream, stream_language_t*	stream_info);
+int						(__cdecl*	pgetTime)();
+__int64				(__cdecl*	pgetCurrentTime)();
+void					(__cdecl*	pShowOSD)(int);
 
 extern "C" 
 {
-  void mplayer_showosd(int bonoff)
-  {
-    return pShowOSD(bonoff);
-  }
-  __int64 mplayer_getCurrentTime()
-  {
-    return pgetCurrentTime();
-  }
+	void mplayer_showosd(int bonoff)
+	{
+		return pShowOSD(bonoff);
+	}
+	__int64 mplayer_getCurrentTime()
+	{
+		return pgetCurrentTime();
+	}
 
-  void mplayer_ToFFRW(int iSpeed)
-  {
-    pToFFRW(iSpeed);
-  }
+	void mplayer_ToFFRW(int iSpeed)
+	{
+		pToFFRW(iSpeed);
+	}
 
-  void mplayer_setTime(int iTime)
-  {
-    psetTime(iTime);
-  }
+	void mplayer_setTime(int iTime)
+	{
+		psetTime(iTime);
+	}
 
-  int mplayer_getTime()
-  {
-    return pgetTime();
-  }
-  int mplayer_getAudioLanguageCount()
-  {
-    return pgetAudioLanguageCount();
-  }
-  
-  int mplayer_getAudioLanguage()
-  {
-    return pgetAudioLanguage();
-  }
-  
-  int mplayer_getAudioStream()
-  {
-    return pgetAudioStream();
-  }
+	int mplayer_getTime()
+	{
+		return pgetTime();
+	}
+	int mplayer_getAudioLanguageCount()
+	{
+		return pgetAudioLanguageCount();
+	}
 
-  int mplayer_getAudioStreamCount()
-  {
-    return pgetAudioStreamCount();
-  }
+	int mplayer_getAudioLanguage()
+	{
+		return pgetAudioLanguage();
+	}
 
-  int mplayer_getAudioStreamInfo(int iStream, stream_language_t* stream_info)
-  {
-	return pgetAudioStreamInfo(iStream, stream_info);
-  }
+	int mplayer_getAudioStream()
+	{
+		return pgetAudioStream();
+	}
 
-  void mplayer_setAudioLanguage(int iAudioLang)
-  {
-    psetAudioLanguage(iAudioLang);
-  }
+	int mplayer_getAudioStreamCount()
+	{
+		return pgetAudioStreamCount();
+	}
 
-  int mplayer_getSubtitle()
-  {
-    return pgetSubtitle();
-  }
-  int mplayer_getSubtitleCount()
-  {
-    return pgetSubtitleCount();
-  }
+	int mplayer_getAudioStreamInfo(int iStream, stream_language_t* stream_info)
+	{
+		return pgetAudioStreamInfo(iStream, stream_info);
+	}
 
-  void mplayer_setSubtitle(int iSubtitle)
-  {
-     psetSubtitle(iSubtitle);
-  }
+	void mplayer_setAudioLanguage(int iAudioLang)
+	{
+		psetAudioLanguage(iAudioLang);
+	}
 
-  void mplayer_showSubtitle(int bOnOff)
-  {
-    pshowSubtitle(bOnOff);
-  }
+	int mplayer_getSubtitle()
+	{
+		return pgetSubtitle();
+	}
+	int mplayer_getSubtitleCount()
+	{
+		return pgetSubtitleCount();
+	}
 
-  int mplayer_SubtitleVisible()
-  {
-    return pgetSubtitleVisible();
-  }
+	void mplayer_setSubtitle(int iSubtitle)
+	{
+		psetSubtitle(iSubtitle);
+	}
 
-  int mplayer_getSubtitleStreamInfo(int iStream, stream_language_t* stream_info)
-  {
-	return pgetSubtitleStreamInfo(iStream, stream_info);
-  }
+	void mplayer_showSubtitle(int bOnOff)
+	{
+		pshowSubtitle(bOnOff);
+	}
 
-  void mplayer_setAVDelay(float fDelay)
-  {
-    psetAVDelay(fDelay);
-  }
-  
-  float mplayer_getAVDelay()
-  {
-    return pgetAVDelay();
-  }
+	int mplayer_SubtitleVisible()
+	{
+		return pgetSubtitleVisible();
+	}
 
-  void mplayer_setSubtitleDelay(float fDelay)
-  {
-    psetSubtitleDelay(fDelay);
-  }
+	int mplayer_getSubtitleStreamInfo(int iStream, stream_language_t* stream_info)
+	{
+		return pgetSubtitleStreamInfo(iStream, stream_info);
+	}
 
-  float mplayer_getSubtitleDelay()
-  {
-    return pgetSubtitleDelay();
-  }
+	void mplayer_setAVDelay(float fDelay)
+	{
+		psetAVDelay(fDelay);
+	}
 
-  void mplayer_setPercentage(int iPercent)
-  {
-    psetPercentage(iPercent);
-  }
+	float mplayer_getAVDelay()
+	{
+		return pgetAVDelay();
+	}
 
-  int mplayer_getPercentage()
-  {
-    return pgetPercentage();
-  }
+	void mplayer_setSubtitleDelay(float fDelay)
+	{
+		psetSubtitleDelay(fDelay);
+	}
+
+	float mplayer_getSubtitleDelay()
+	{
+		return pgetSubtitleDelay();
+	}
+
+	void mplayer_setPercentage(int iPercent)
+	{
+		psetPercentage(iPercent);
+	}
+
+	int mplayer_getPercentage()
+	{
+		return pgetPercentage();
+	}
 
 	void mplayer_GetAudioInfo(char* strFourCC,char* strAudioCodec, long* bitrate, long* samplerate, int* channels, int* bVBR)
 	{
@@ -196,7 +196,7 @@ extern "C"
 		pGetGeneralInfo(lFramesDropped, iQuality, iCacheFilled, fTotalCorrection, fAVDelay);
 	}
 
-	void	mplayer_setcache_size(int iCacheSize)
+	void    mplayer_setcache_size(int iCacheSize)
 	{
 		pSetCacheSize(iCacheSize);
 	}
@@ -210,12 +210,12 @@ extern "C"
 	}
 
 
-	BOOL		mplayer_HasVideo()
+	BOOL            mplayer_HasVideo()
 	{
 		return pHasVideo();
 	}
 
-	BOOL		mplayer_HasAudio()
+	BOOL            mplayer_HasAudio()
 	{
 		return pHasAudio();
 	}
@@ -242,7 +242,7 @@ extern "C"
 
 	int mplayer_open_file(const char* szFile)
 	{
-		wmaDMOdll = NULL;					//hacks for free library for DMOs
+		wmaDMOdll = NULL;                                       //hacks for free library for DMOs
 		wmvDMOdll = NULL;
 		wmsDMOdll = NULL;
 		return pOpenFile(szFile);
@@ -299,7 +299,7 @@ extern "C"
 		pVODrawAlphargb16(w,h, src, srca, srcstride, dstbase,dststride);
 	}
 
-	
+
 
 	void aspect_save_orig(int orgw, int orgh)
 	{
@@ -346,14 +346,14 @@ extern "C"
 
 		dll.ResolveExport("mplayer_init", &pProc);
 		pInitPlayer=(int (__cdecl*)(int argc, char* argvp[]))pProc;
-		
+
 		dll.ResolveExport("mplayer_open_file", &pProc);
 		pOpenFile=(int (__cdecl*)(const char* ))pProc;
-		
+
 		dll.ResolveExport("mplayer_process", &pProc);
 		pProcess=(int (__cdecl*)())pProc;
 
-		
+
 		dll.ResolveExport("mplayer_close_file", &pProc);
 		pCloseFile=(int (__cdecl*)())pProc;
 
@@ -442,7 +442,7 @@ extern "C"
 		dll.ResolveExport("mplayer_getPercentage", &pProc);
 		pgetPercentage=(int(__cdecl*)())pProc;
 
-    dll.ResolveExport("mplayer_getSubtitle", &pProc);
+		dll.ResolveExport("mplayer_getSubtitle", &pProc);
 		pgetSubtitle=(int(__cdecl*)())pProc;
 
 		dll.ResolveExport("mplayer_getSubtitleCount", &pProc);
@@ -463,16 +463,16 @@ extern "C"
 
 		dll.ResolveExport("mplayer_showSubtitle", &pProc);
 		pshowSubtitle=(void(__cdecl*)(int))pProc;
-  
+
 		dll.ResolveExport("mplayer_getAudioLanguageCount", &pProc);
 		pgetAudioLanguageCount=(int(__cdecl*)())pProc;
-    
+
 		dll.ResolveExport("mplayer_getAudioLanguage", &pProc);
 		pgetAudioLanguage=(int(__cdecl*)())pProc;
-    
+
 		dll.ResolveExport("mplayer_getAudioStream", &pProc);
 		pgetAudioStream=(int(__cdecl*)())pProc;
-    
+
 		dll.ResolveExport("mplayer_getAudioStreamCount", &pProc);
 		pgetAudioStreamCount=(int(__cdecl*)())pProc;
 
@@ -489,13 +489,13 @@ extern "C"
 		pgetTime=(int(__cdecl*)())pProc;
 
 		dll.ResolveExport("mplayer_ToFFRW", &pProc);
- 		pToFFRW=(void(__cdecl*)(int))pProc;
+		pToFFRW=(void(__cdecl*)(int))pProc;
 
-    dll.ResolveExport("mplayer_getCurrentTime", &pProc);
- 		pgetCurrentTime=(__int64(__cdecl*)())pProc;
+		dll.ResolveExport("mplayer_getCurrentTime", &pProc);
+		pgetCurrentTime=(__int64(__cdecl*)())pProc;
 
-    dll.ResolveExport("mplayer_showosd", &pProc);
- 		pShowOSD=(void(__cdecl*)(int))pProc;
+		dll.ResolveExport("mplayer_showosd", &pProc);
+		pShowOSD=(void(__cdecl*)(int))pProc;
 
 		pSetVideoFunctions(&video_functions);
 		pSetAudioFunctions(&audio_functions);
