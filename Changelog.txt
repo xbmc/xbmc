@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 10-02-2005 updated: Korean language file (Thnx to akoakoako)
   - 10-02-2005 fixed: Weather localization.
   - 10-02-2005 fixed: [ 1119893 ] XLink Kai window freezes after chatting then pressing left
   - 10-02-2005 added: More infolabel stuff to the infomanager, plus updated various places to use the new methods.  See http://www.xboxmediaplayer.de/cgi-bin/forums/ikonboard.pl?act=ST;f=7;t=10459; for more info.
