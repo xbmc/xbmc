@@ -1967,7 +1967,15 @@
 	<string>
 		<id>732</id>
 		<value>Save &amp; Apply</value>
-	</string>	
+	</string>
+	<string>
+		<id>733</id>
+		<value>Web Server Password</value>
+	</string>
+	<string>
+		<id>734</id>
+		<value>No Pass</value>
+	</string>
 	<string>
 		<id>998</id>
 		<value>XLink Kai</value>
