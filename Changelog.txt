@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 21-11-2004 added: GUIConsoleControl, for future use with Kai text-chat (and any other dialog that wants it!). 
   - 20-11-2004 fixed: [ 1068230 ] LCD Setting reverts to SmartXX (on restart). 
   - 20-11-2004 fixed: allow empty password in Kai hosted private arenas. 
   - 19-11-2004 changed: Embedded XBE icon now gets generated as program.tbn alongside program.xbe
