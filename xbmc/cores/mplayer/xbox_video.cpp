@@ -1153,30 +1153,40 @@ static unsigned int put_image(mp_image_t *mpi)
 //	while (!g_graphicsContext.Get3DDevice()->GetOverlayUpdateStatus()) Sleep(10);
 //	g_graphicsContext.Unlock();
 
-//	if((mpi->flags&MP_IMGFLAG_DIRECT)||(mpi->flags&MP_IMGFLAG_DRAW_CALLBACK)) 
+	if((mpi->flags&MP_IMGFLAG_DIRECT)||(mpi->flags&MP_IMGFLAG_DRAW_CALLBACK)) 
 	{
 //		memcpy(m_TextureBuffer[m_iBackBuffer], m_RenderBuffer[m_iBackBuffer], ytexture_pitch*image_height + uvtexture_pitch*image_height);
 
 		m_bFlip=true;
 		return VO_TRUE;
 	}
-	return VO_FALSE;
 
-//	if (mpi->flags&MP_IMGFLAG_PLANAR)
-//	{
-//		for (int y=0; y < mpi->h; ++y)
-//		{
-//			memcpy(image+y*dstride,mpi->planes[0]+mpi->stride[0]*y,2*mpi->width);
-//		}
-//	}
-//	else
-//	{
-//		//packed
-//		memcpy( image, mpi->planes[0], image_height * dstride);
-//	}
-//
-//	m_bFlip=true;
-//	return VO_TRUE;
+	if (mpi->flags&MP_IMGFLAG_PLANAR)
+	{
+    byte* image=(byte*)m_TextureBuffer[m_iBackBuffer];
+		for (int y=0; y < mpi->h; ++y)
+		{
+			memcpy(image+y*ytexture_pitch,mpi->planes[0]+mpi->stride[0]*y,mpi->width);
+		}
+    image=(byte*)(BYTE*)m_TextureBuffer[m_iBackBuffer]+ ytexture_pitch*image_height;
+		for (int y=0; y < (mpi->h/2); ++y)
+		{
+			memcpy(image+y*uvtexture_pitch,mpi->planes[1]+mpi->stride[1]*y,mpi->width/2);
+		}
+    image=(byte*)m_TextureBuffer[m_iBackBuffer]+ ytexture_pitch*image_height + uvtexture_pitch*(image_height/2);
+		for (int y=0; y < (mpi->h)/2; ++y)
+		{
+			memcpy(image+y*uvtexture_pitch,mpi->planes[2]+mpi->stride[2]*y,mpi->width/2);
+		}
+	}
+	else
+	{
+		//packed
+		//memcpy( &m_TextureBuffer[m_iBackBuffer], mpi->planes[0], image_height * ytexture_pitch);
+	}
+
+	m_bFlip=true;
+	return VO_TRUE;
 }
 /********************************************************************************************************
 Set up the video system. You get the dimensions and flags.
