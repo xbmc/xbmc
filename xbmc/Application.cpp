@@ -324,8 +324,11 @@ void CApplication::OnKey(CKey& key)
 			ResetVideoWindow();
 			return;
 		}
-		m_guiWindowFullScreen.OnKey(key);
-		return;
+		if (g_graphicsContext.IsFullScreenVideo())
+		{
+			m_guiWindowFullScreen.OnKey(key);
+			return;
+		}
 	}
 	m_gWindowManager.OnKey(key);   
 }

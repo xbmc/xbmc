@@ -1,51 +1,38 @@
 XBMC key mappings:
-	 general key mappings:
-		  page up/down
-				  controller: left/right trigger
-				  remote		: REVERSE/FORWARD
-				  
-      up/down/left/right
-					controller: use DPAD
-					remote    : use up/up/left/right
-					
-			selecting stuff:
-					controller: A button
-					remote    : select 
-					
-					
-   my pictures:
-      when viewing a picture/slideshow
-        left/right/up/down : move when in zoom mode
-        left/right         : next/prev picture when not in zoom mode
-        black              : show file info
-        START              : pause/continue
-        X                  : zoom out
-        A                  : zoom in 
-   
-   my files:
-      switch between source/destination window
-					controller:BLACK			
-					remote    :DISPLAY
-      
-      (de)select files/directory
-					controller: Y button
-					remote    : play button
-   
-   my music:
-			switch between files & playlist
-					controller:L/R trigger/BLACK			
-					remote    :DISPLAY
+--------------------------
 
-			add/remove file 2/from playlist
-					controller: Y button
-					remote    : play button
+general key mappings:
+	page up/down																	controller: L/R trigger			remote		: REVERSE/FORWARD
+  up/down/left/right														controller: use DPAD				remote    : use up/down/left/right
+	selecting stuff:															controller: A button 				remote    : select 
+			
+Keymappings when playing audio songs:
+	stop song																			controller: ?								remote    : stop
+	next/previous song														controller: ?								remote    : skip- and skip+
+	pause song																		controller: ?								remote    : pause
 					
-			find album info for file	
-					controller: WHITE button
-					remote    : info button	
+Keymappings when playing movies:
+	switch between fullscreen video/GUI:					controller: X button				remote:   : DISPLAY button					
+	pause																					controller: ?								remote    : pause
+	stop     																			controller: ?								remote    : stop
 					
-   my videos:
-			find IMDB info for file
-					controller: WHITE button
-					remote    : info button	
-					
+My Pictures when viewing a slideshow or picture:
+  move when in zoom mode												controller: DPAD						remote		: use up/down/left/right
+  next/prev picture															controller: DPAD L/R				remote		: use left/right
+  show file info																controller: black						remote    : info
+  pause/continue																controller: start						remote    : pause
+  zoom out																			controller: X								remote    : 0-9
+  zoom in																				controller: A								remote    : 0-9
+   
+my files:
+  switch between source/destination window			controller:BLACK						remote    :DISPLAY
+  (de)select files/directory										controller: Y button				remote    : play button
+   
+my music:
+	switch between files & playlist								controller:BLACK						remote    :DISPLAY
+	add/remove file 2/from playlist								controller: Y button				remote    : play button
+	find album info for file											controller: WHITE button		remote    : info button	
+			
+my videos:
+	find IMDB info for file												controller: WHITE button		remote    : info button	
+			

@@ -2,7 +2,7 @@
 //
 // todo for demo 8:
 //		- fopen... in dllloader for subtitles
-//		- .fli files dont work
+//		- .fli , the animatrix & sweet home alabama files dont work
 //		- startup of video takes couple of seconds, why?
 //		- check bobbin007 autodetect on .it
 //		- iso9660 doesnt work?
