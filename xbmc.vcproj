@@ -489,6 +489,18 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIWindowSettingsMyVideo.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIWindowSettingsNetwork.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowSettingsNetworkIP.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowSettingsNetworkKai.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowSettingsNetworkProxy.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIWindowSettingsProfile.cpp">
 				</File>
 				<File
@@ -1074,6 +1086,18 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettingsMyVideo.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsNetwork.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsNetworkIP.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsNetworkKai.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsNetworkProxy.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettingsProfile.h">

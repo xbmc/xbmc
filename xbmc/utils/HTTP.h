@@ -50,6 +50,7 @@ protected:
 	string m_strCookie;
 	string m_strHeaders;
 	
+	bool   m_bProxyEnabled;
 	int    m_iProxyPort;
 	int    m_iPort;
 
