@@ -16,7 +16,7 @@ public:
 private:
   bool              IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);
 protected:
-	virtual void      SetIMDBThumbs(VECFILEITEMS& items) {};
+	virtual void      SetIMDBThumbs(CFileItemList& items) {};
   void							UpdateThumbPanel();
 	// overrideable stuff for the different window classes
   virtual bool      ViewByLargeIcon()=0;
@@ -24,7 +24,7 @@ protected:
 	virtual void			SetViewMode(int iMode)=0;
 	virtual int				SortMethod()=0;
 	virtual bool			SortAscending()=0;
-	virtual void			SortItems(VECFILEITEMS& items)=0;
+	virtual void			SortItems(CFileItemList& items)=0;
 	virtual void			FormatItemLabels()=0;
   virtual void			UpdateButtons();
 	virtual void			OnPopupMenu(int iItem);
@@ -33,7 +33,7 @@ protected:
 	void							OnSort();
 	virtual void			Update(const CStdString &strDirectory) {};	// CONSOLIDATE??
 	virtual void			OnClick(int iItem) {};		// CONSOLIDATE??
-	virtual void			GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items) {}; //FIXME - this should be in all classes
+	virtual void			GetDirectory(const CStdString &strDirectory, CFileItemList &items) {}; //FIXME - this should be in all classes
 
 	void							GoParentFolder();
   virtual void			OnInfo(int iItem);
@@ -49,7 +49,7 @@ protected:
   void							AddItemToPlayList(const CFileItem* pItem);
 
 	CVirtualDirectory		m_rootDir;
-  VECFILEITEMS        m_vecItems;
+  CFileItemList        m_vecItems;
 	CFileItem						m_Directory;
 	CDirectoryHistory		m_history;
   int                 m_iItemSelected;

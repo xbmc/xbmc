@@ -12,6 +12,6 @@ namespace DIRECTORY
   public:
     CCDDADirectory(void);
     virtual ~CCDDADirectory(void);
-    virtual bool  GetDirectory(const CStdString& strPath,VECFILEITEMS &items);
+    virtual bool  GetDirectory(const CStdString& strPath,CFileItemList &items);
   };
 };

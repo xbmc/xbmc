@@ -33,7 +33,7 @@
 //****************************************************************************************************************************
 struct SSortVideoTitleByTitle
 {
-	bool operator()(CFileItem* pStart, CFileItem* pEnd)
+	static bool Sort(CFileItem* pStart, CFileItem* pEnd)
 	{
     CFileItem& rpStart=*pStart;
     CFileItem& rpEnd=*pEnd;
@@ -158,7 +158,7 @@ void CGUIWindowVideoTitle::OnAction(const CAction &action)
   if (action.wID == ACTION_DELETE_ITEM)
   {
     int iItem=GetSelectedItem();
-    if (iItem < 0|| iItem >= (int)m_vecItems.size()) return;
+    if (iItem < 0|| iItem >= (int)m_vecItems.Size()) return;
 	  
 		CFileItem* pItem=m_vecItems[iItem];
     if (pItem->m_bIsFolder) return;
@@ -224,7 +224,7 @@ bool CGUIWindowVideoTitle::OnMessage(CGUIMessage& message)
 //****************************************************************************************************************************
 void CGUIWindowVideoTitle::FormatItemLabels()
 {
-  for (int i=0; i < (int)m_vecItems.size(); i++)
+  for (int i=0; i < (int)m_vecItems.Size(); i++)
   {
     CFileItem* pItem=m_vecItems[i];
     if (g_stSettings.m_iMyVideoTitleSortMethod==0||g_stSettings.m_iMyVideoTitleSortMethod==2)
@@ -255,9 +255,9 @@ void CGUIWindowVideoTitle::FormatItemLabels()
   }
 }
 
-void CGUIWindowVideoTitle::SortItems(VECFILEITEMS& items)
+void CGUIWindowVideoTitle::SortItems(CFileItemList& items)
 {
-  sort(items.begin(), items.end(), SSortVideoTitleByTitle());
+	items.Sort(SSortVideoTitleByTitle::Sort);
 }
 
 //****************************************************************************************************************************
@@ -266,7 +266,7 @@ void CGUIWindowVideoTitle::Update(const CStdString &strDirectory)
   // get selected item
 	int iItem=GetSelectedItem();
 	CStdString strSelectedItem="";
-	if (iItem >=0 && iItem < (int)m_vecItems.size())
+	if (iItem >=0 && iItem < (int)m_vecItems.Size())
 	{
 		CFileItem* pItem=m_vecItems[iItem];
 		if (pItem->GetLabel() != "..")
@@ -296,16 +296,16 @@ void CGUIWindowVideoTitle::Update(const CStdString &strDirectory)
     pItem->m_fRating     = movie.m_fRating; 
     pItem->m_stTime.wYear= movie.m_iYear;
     pItem->m_strDVDLabel = movie.m_strDVDLabel;
-		m_vecItems.push_back(pItem);
+		m_vecItems.Add(pItem);
   }
   SET_CONTROL_LABEL(LABEL_TITLE,m_Directory.m_strPath);
   
-	CUtil::SetThumbs(m_vecItems);
+	m_vecItems.SetThumbs();
   SetIMDBThumbs(m_vecItems);
 
 	// Fill in default icons
 	CStdString strPath;
-	for (int i=0; i<(int)m_vecItems.size(); i++)
+	for (int i=0; i<(int)m_vecItems.Size(); i++)
 	{
 		CFileItem* pItem=m_vecItems[i];
 		strPath=pItem->m_strPath;
@@ -332,7 +332,7 @@ void CGUIWindowVideoTitle::Update(const CStdString &strDirectory)
 		}
 	}
 
-  for (int i=0; i < (int)m_vecItems.size(); ++i)
+  for (int i=0; i < (int)m_vecItems.Size(); ++i)
 	{
 		CFileItem* pItem=m_vecItems[i];
 		if (pItem->m_strPath==strSelectedItem)
@@ -347,7 +347,7 @@ void CGUIWindowVideoTitle::Update(const CStdString &strDirectory)
 //****************************************************************************************************************************
 void CGUIWindowVideoTitle::OnClick(int iItem)
 {
-	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
+	if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return;
   CFileItem* pItem=m_vecItems[iItem];
   CStdString strPath=pItem->m_strPath;
 

@@ -16,7 +16,7 @@
 
 struct SSortScriptsByName
 {
-	bool operator()(CFileItem* pStart, CFileItem* pEnd)
+	static bool Sort(CFileItem* pStart, CFileItem* pEnd)
 	{
     CFileItem& rpStart=*pStart;
     CFileItem& rpEnd=*pEnd;
@@ -253,7 +253,7 @@ void CGUIWindowScripts::UpdateButtons()
     g_graphicsContext.SendMessage(msg);
   }
 
-  int iItems=m_vecItems.size();
+  int iItems=m_vecItems.Size();
   if (iItems)
   {
     CFileItem* pItem=m_vecItems[0];
@@ -274,7 +274,7 @@ void CGUIWindowScripts::ClearFileItems()
   CGUIMessage msg2(GUI_MSG_LABEL_RESET,GetID(),CONTROL_THUMBS,0,0,NULL);
   g_graphicsContext.SendMessage(msg2);         
 
-	CFileItemList itemlist(m_vecItems); // will clean up everything
+	m_vecItems.Clear(); // will clean up everything
 }
 
 void CGUIWindowScripts::OnSort()
@@ -285,7 +285,7 @@ void CGUIWindowScripts::OnSort()
   CGUIMessage msg2(GUI_MSG_LABEL_RESET,GetID(),CONTROL_THUMBS,0,0,NULL);
   g_graphicsContext.SendMessage(msg2);         
 
-  for (int i=0; i < (int)m_vecItems.size(); i++)
+  for (int i=0; i < m_vecItems.Size(); i++)
   {
     CFileItem* pItem=m_vecItems[i];
     if (g_stSettings.m_iScriptsSortMethod==0||g_stSettings.m_iScriptsSortMethod==2)
@@ -311,9 +311,9 @@ void CGUIWindowScripts::OnSort()
     }
   }
 
-  sort(m_vecItems.begin(), m_vecItems.end(), SSortScriptsByName());
+	m_vecItems.Sort(SSortScriptsByName::Sort);
 
-  for (int i=0; i < (int)m_vecItems.size(); i++)
+  for (int i=0; i < (int)m_vecItems.Size(); i++)
   {
     CFileItem* pItem=m_vecItems[i];
     CGUIMessage msg(GUI_MSG_LABEL_ADD,GetID(),CONTROL_LIST,0,0,(void*)pItem);
@@ -328,7 +328,7 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
 	// get selected item
 	int iItem=GetSelectedItem();
 	CStdString strSelectedItem="";
-	if (iItem >=0 && iItem < (int)m_vecItems.size())
+	if (iItem >=0 && iItem < m_vecItems.Size())
 	{
 		CFileItem* pItem=m_vecItems[iItem];
 		if (pItem->GetLabel() != "..")
@@ -357,7 +357,7 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
 				pItem->m_strPath=strParentPath;
 				pItem->m_bIsFolder=true;
 				pItem->m_bIsShareOrDrive=false;
-				m_vecItems.push_back(pItem);
+				m_vecItems.Add(pItem);
 			}
 			m_strParentPath = strParentPath;
 		}
@@ -372,15 +372,15 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
 			pItem->m_strPath="";
 			pItem->m_bIsShareOrDrive=false;
 			pItem->m_bIsFolder=true;
-			m_vecItems.push_back(pItem);
+			m_vecItems.Add(pItem);
 		}
 		m_strParentPath = "";
   }
 
 	m_Directory.m_strPath=strDirectory;
 	m_rootDir.GetDirectory(strDirectory,m_vecItems);
-	CUtil::SetThumbs(m_vecItems);
-	CUtil::FillInDefaultIcons(m_vecItems);
+	m_vecItems.SetThumbs();
+	m_vecItems.FillInDefaultIcons();
 
 	/* check if any python scripts are running. If true, place "(Running)" after the item.
 	 * since stopping a script can take up to 10 seconds or more,we display 'stopping'
@@ -394,7 +394,7 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
 		{
 			const char* filename = g_pythonParser.getFileName(id);
 
-			for (int i=0; i < (int)m_vecItems.size(); i++)
+			for (int i=0; i < m_vecItems.Size(); i++)
 			{
 				CFileItem* pItem=m_vecItems[i];
 				if (pItem->m_strPath == filename)
@@ -433,7 +433,7 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
 		}
 	}
 
-	for (int i=0; i < (int)m_vecItems.size(); ++i)
+	for (int i=0; i < (int)m_vecItems.Size(); ++i)
 	{
 		CFileItem* pItem=m_vecItems[i];
 		if (pItem->m_strPath==strSelectedItem)
@@ -465,7 +465,7 @@ int CGUIWindowScripts::GetSelectedItem()
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
   g_graphicsContext.SendMessage(msg);         
   int iItem=msg.GetParam1();
-	if (iItem >= (int)m_vecItems.size())
+	if (iItem >= (int)m_vecItems.Size())
 		return -1;
 	return iItem;
 }
@@ -473,7 +473,7 @@ int CGUIWindowScripts::GetSelectedItem()
 
 void CGUIWindowScripts::OnClick(int iItem)
 {
-	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
+	if ( iItem < 0 || iItem >= (int)m_vecItems.Size() ) return;
   CFileItem* pItem=m_vecItems[iItem];
   CStdString strPath=pItem->m_strPath;
 

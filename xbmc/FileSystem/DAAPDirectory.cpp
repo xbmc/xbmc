@@ -70,7 +70,7 @@ void  CDAAPDirectory::CloseDAAP(void)
 	g_application.m_DAAPPtr = NULL;
 }
 
-bool  CDAAPDirectory::GetDirectory(const CStdString& strPath, VECFILEITEMS &items)
+bool  CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
 	int c;
 	wchar_t wStrFile[1024]; // buffer for converting strings
@@ -166,7 +166,7 @@ bool  CDAAPDirectory::GetDirectory(const CStdString& strPath, VECFILEITEMS &item
 				CFileItem* pItem = new CFileItem(strFile);
 				pItem->m_strPath = strRoot + m_thisHost->dbplaylists->playlists[c].itemname;
 				pItem->m_bIsFolder = true;
-				items.push_back(new CFileItem(*pItem));
+				items.Add(new CFileItem(*pItem));
 			}
 		}
 		else if (m_currLevel == 0)	// playlists, so show albums
@@ -198,7 +198,7 @@ bool  CDAAPDirectory::GetDirectory(const CStdString& strPath, VECFILEITEMS &item
 						CFileItem* pItem = new CFileItem(cur->artist);
 						pItem->m_strPath = strRoot + cur->artist;
 						pItem->m_bIsFolder = true;
-						items.push_back(new CFileItem(*pItem));
+						items.Add(new CFileItem(*pItem));
 						cur = cur->next;
 					}
 				}
@@ -241,7 +241,7 @@ bool  CDAAPDirectory::GetDirectory(const CStdString& strPath, VECFILEITEMS &item
 							pItem->m_musicInfoTag.SetDuration((int) (m_currentSongItems[idx].songtime / 1000));
 							pItem->m_musicInfoTag.SetLoaded(true);
 							
-							items.push_back(new CFileItem(*pItem));
+							items.Add(new CFileItem(*pItem));
 						}
 					}
 				}
@@ -266,7 +266,7 @@ bool  CDAAPDirectory::GetDirectory(const CStdString& strPath, VECFILEITEMS &item
 					CFileItem* pItem = new CFileItem(curAlbum->album);
 					pItem->m_strPath = strRoot + curAlbum->album;
 					pItem->m_bIsFolder = true;
-					items.push_back(new CFileItem(*pItem));
+					items.Add(new CFileItem(*pItem));
 					curAlbum = curAlbum->next;
 				}
 			}
@@ -294,7 +294,7 @@ bool  CDAAPDirectory::GetDirectory(const CStdString& strPath, VECFILEITEMS &item
 					pItem->m_musicInfoTag.SetDuration((int) (m_currentSongItems[c].songtime / 1000));
 					pItem->m_musicInfoTag.SetLoaded(true);
 					
-					items.push_back(new CFileItem(*pItem));
+					items.Add(new CFileItem(*pItem));
 				}
 			}
 		}

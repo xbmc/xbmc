@@ -31,7 +31,7 @@ void CVirtualDirectory::SetShares(VECSHARES& vecShares)
 	\note If \e strPath is an empty string, the share \e items have thumbnails and icons set, else the thumbnails
 				and icons have to be set manually.
 	*/
-bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
+bool CVirtualDirectory::GetDirectory(const CStdString& strPath,CFileItemList &items)
 {
   CStdString strPath2=strPath;
   CStdString strPath3=strPath;
@@ -72,7 +72,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 		}
 	}
 
- items.erase(items.begin(),items.end());
+ items.Clear();
  for (int i=0; i < (int)m_vecShares->size(); ++i)
 	{
 		CShare& share=m_vecShares->at(i);
@@ -107,7 +107,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 		strBig+="Big";
 		strBig+=strIcon.Right(strIcon.size()-(iPos));
 		pItem->SetThumbnailImage(strBig);
-		items.push_back(pItem);
+		items.Add(pItem);
 	}
 
   return true;

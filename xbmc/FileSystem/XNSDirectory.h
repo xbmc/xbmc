@@ -10,6 +10,6 @@ namespace DIRECTORY
   public:
     CXNSDirectory(void);
     virtual ~CXNSDirectory(void);
-    virtual bool  GetDirectory(const CStdString& strPath,VECFILEITEMS &items);
+    virtual bool  GetDirectory(const CStdString& strPath,CFileItemList &items);
   };
 }

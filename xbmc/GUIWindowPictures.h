@@ -18,7 +18,7 @@ public:
 
 protected:
 	void							GoParentFolder();
-	void							GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items);
+	void							GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   void							OnClick(int iItem);
 	void							OnPopupMenu(int iItem);
   void							OnSort();
@@ -39,7 +39,7 @@ protected:
   void							SetViewMode(int iMode);
 	int								SortMethod();
 	bool							SortAscending();
-	void							SortItems(VECFILEITEMS& items);
+	void							SortItems(CFileItemList& items);
   void              UpdateThumbPanel();
 	void              GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
 	void							SetHistoryForPath(const CStdString& strDirectory);
@@ -47,7 +47,7 @@ protected:
 	void							CreateFolderThumbs(bool bRecurse = false);
   void              AddDir(CGUIWindowSlideShow *pSlideShow,const CStdString& strPath);
 	CVirtualDirectory		m_rootDir;
-  VECFILEITEMS				m_vecItems;
+  CFileItemList				m_vecItems;
 	CFileItem						m_Directory;
 	CGUIDialogProgress*	m_dlgProgress;
 	CDirectoryHistory		m_history;

@@ -19,9 +19,9 @@ public:
   bool    Open() ;
   void	  Close() ;
   long    AddProgram(const CStdString& strFilenameAndPath, DWORD titleId, const CStdString& strDescription, const CStdString& strBookmark);
-  long	  GetFile(const CStdString& strFilenameAndPath, VECFILEITEMS& programs);
-  void	  GetProgramsByBookmark(CStdString& strBookmark, VECFILEITEMS& programs, bool bOnlyDefaultXBE);
-  void	  GetProgramsByPath(const CStdString& strPath, VECFILEITEMS& programs, int idepth, bool bOnlyDefaultXBE);
+  long	  GetFile(const CStdString& strFilenameAndPath, CFileItemList& programs);
+  void	  GetProgramsByBookmark(CStdString& strBookmark, CFileItemList& programs, bool bOnlyDefaultXBE);
+  void	  GetProgramsByPath(const CStdString& strPath, CFileItemList& programs, int idepth, bool bOnlyDefaultXBE);
   bool    GetXBEPathByTitleId(const DWORD titleId, CStdString& strPathAndFilename);
   bool    IncTimesPlayed(const CStdString& strFileName1);
   bool	  EntryExists(const CStdString& strPath, const CStdString& strBookmark);

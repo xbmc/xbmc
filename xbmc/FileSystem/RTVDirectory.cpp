@@ -25,7 +25,7 @@ CRTVDirectory::~CRTVDirectory(void)
 }
 
 //*********************************************************************************************
-bool  CRTVDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
+bool  CRTVDirectory::GetDirectory(const CStdString& strPath,CFileItemList &items)
 {
 	CURL url(strPath);
   
@@ -61,7 +61,7 @@ bool  CRTVDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 				// share of either type--simple file listing or ReplayGuide listing.
 				pItem->m_strPath = strRoot + rtv[i].hostname;
 				pItem->m_bIsFolder = true;
-				items.push_back(pItem);
+				items.Add(pItem);
 			}
 			free(rtv);
 			return true;
@@ -232,7 +232,7 @@ bool  CRTVDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 					// E.g., a 30 minute show will show as 29.3 KB in XBMC.
 					pItem->m_dwSize=dwFileSize * 1000;
 					pItem->m_bIsFolder = bIsFolder;
-					items.push_back(pItem);
+					items.Add(pItem);
 				}
 			}
 
@@ -277,7 +277,7 @@ bool  CRTVDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 						pItem->m_bIsFolder=false;
 						// The list returned by the RTV doesn't include file sizes, unfortunately
 						//pItem->m_dwSize = atol(szSize);
-						items.push_back(pItem);
+						items.Add(pItem);
 					}
 				}
 			}

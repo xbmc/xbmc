@@ -13,7 +13,7 @@ CDirectory::~CDirectory()
 {
 }
 
-bool CDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
+bool CDirectory::GetDirectory(const CStdString& strPath,CFileItemList &items)
 {
   bool bSucces;
   IDirectory* pDirectory = CFactoryDirectory().Create(strPath);

@@ -13,7 +13,7 @@ CISO9660Directory::~CISO9660Directory(void)
 {
 }
 
-bool  CISO9660Directory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
+bool  CISO9660Directory::GetDirectory(const CStdString& strPath,CFileItemList &items)
 {	
 	static char szTemp[1024];
 	CStdString strRoot=strPath;
@@ -67,7 +67,7 @@ bool  CISO9660Directory::GetDirectory(const CStdString& strPath,VECFILEITEMS &it
  //               FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
  //               FileTimeToSystemTime(&localTime, &pItem->m_stTime);
         	
-                items.push_back(pItem);      
+                items.Add(pItem);      
               }
             }
             else
@@ -81,7 +81,7 @@ bool  CISO9660Directory::GetDirectory(const CStdString& strPath,VECFILEITEMS &it
                 pItem->m_dwSize=CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
 //					      FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
 //					      FileTimeToSystemTime(&localTime, &pItem->m_stTime);
-					      items.push_back(pItem);
+					      items.Add(pItem);
 				      }
             }
           }

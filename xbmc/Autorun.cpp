@@ -81,8 +81,7 @@ void CAutorun::RunXboxCd()
 
 void CAutorun::RunCdda()
 {
-	VECFILEITEMS	vecItems;
-	CFileItemList itemlist(vecItems);
+	CFileItemList	vecItems;
 
 	if (g_stSettings.m_szExternalCDDAPlayer[0])
 	{
@@ -95,12 +94,12 @@ void CAutorun::RunCdda()
 		if ( !pDir->GetDirectory( "cdda://local/", vecItems ) )
 			return;
 
-		if ( vecItems.size() <= 0 )
+		if ( vecItems.Size() <= 0 )
 			return;
 
 		int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
 
-		for (int i=0; i < (int)vecItems.size(); i++)
+		for (int i=0; i < vecItems.Size(); i++)
 		{
 			CFileItem* pItem=vecItems[i];
 			CPlayList::CPlayListItem playlistItem;
@@ -141,7 +140,7 @@ void CAutorun::RunISOMedia()
 bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot)
 {
 	bool bPlaying(false);
-	VECFILEITEMS vecItems;
+	CFileItemList vecItems;
 	CFileItemList itemlist(vecItems);
 	char szSlash='\\';
 	if (strDrive.Find("iso9660") != -1) szSlash='/';
@@ -152,7 +151,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
 	}
 
   // check root...
-  for (int i=0; i < (int)vecItems.size(); i++)
+  for (int i=0; i < vecItems.Size(); i++)
   {
 		CFileItem* pItem=vecItems[i];
 		if (pItem->m_bIsFolder)
@@ -240,7 +239,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
   // check subdirs
   if (!bPlaying)
   {
-    for (int i=0; i < (int)vecItems.size(); i++)
+    for (int i=0; i < vecItems.Size(); i++)
     {
 		  CFileItem* pItem=vecItems[i];
 		  if (pItem->m_bIsFolder)

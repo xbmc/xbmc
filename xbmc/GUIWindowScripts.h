@@ -27,7 +27,7 @@ protected:
   bool							HaveDiscOrConnection( CStdString& strPath, int iDriveType );
 
 	CVirtualDirectory		m_rootDir;
-  VECFILEITEMS				m_vecItems;
+  CFileItemList				m_vecItems;
 	CFileItem					m_Directory;
 	CStdString					m_strParentPath;
 	CDirectoryHistory		m_history;

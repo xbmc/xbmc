@@ -19,7 +19,7 @@ CCDDADirectory::~CCDDADirectory(void)
 }
 
 
-bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
+bool  CCDDADirectory::GetDirectory(const CStdString& strPath,CFileItemList &items)
 {
 	//	Reads the tracks from an audio cd and looks for cddb information on the internet
 
@@ -140,7 +140,7 @@ bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 		if (file.Stat(pItem->m_strPath, &s64)==0)
 			pItem->m_dwSize=s64.st_size;
 
-		items.push_back(pItem);
+		items.Add(pItem);
 	}
 	return true;
 }

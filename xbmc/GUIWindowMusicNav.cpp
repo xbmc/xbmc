@@ -27,7 +27,7 @@
 
 struct SSortMusicNav
 {
-	bool operator()(CFileItem* pStart, CFileItem* pEnd)
+	static bool Sort(CFileItem* pStart, CFileItem* pEnd)
 	{
     	CFileItem& rpStart=*pStart;
    		CFileItem& rpEnd=*pEnd;
@@ -200,10 +200,13 @@ struct SSortMusicNav
 		return true;
 	}
 
-	int m_iSortMethod;
-	int m_bSortAscending;
-	CStdString m_strDirectory;
+	static int m_iSortMethod;
+	static int m_bSortAscending;
+	static CStdString m_strDirectory;
 };
+int SSortMusicNav::m_iSortMethod;
+int SSortMusicNav::m_bSortAscending;
+CStdString SSortMusicNav::m_strDirectory;
 
 CGUIWindowMusicNav::CGUIWindowMusicNav(void)
 :CGUIWindowMusicBase()
@@ -286,7 +289,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 					g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Clear();
 					g_playlistPlayer.Reset();
 					int nFolderCount=0;
-					for (int i = 0; i < (int) m_vecItems.size(); i++) 
+					for (int i = 0; i < m_vecItems.Size(); i++) 
 					{
 						CFileItem* pItem = m_vecItems[i];
 						if (pItem->m_bIsFolder) 
@@ -302,7 +305,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 					}
 				}
 
-				for (int i=0; i<(int)m_vecItems.size(); i++)
+				for (int i=0; i<m_vecItems.Size(); i++)
 				{
 					CFileItem* pItem = m_vecItems[i];
 					if (pItem->m_strPath==strSelected)
@@ -381,14 +384,14 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 	return CGUIWindowMusicBase::OnMessage(message);
 }
 
-void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items)
+void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
 	CLog::Log(LOGDEBUG,"CGUIWindowMusicNav::GetDirectory(%s), strGenre = [%s], strArtist = [%s], strAlbum = [%s]",strDirectory.c_str(),m_strGenre.c_str(),m_strArtist.c_str(),m_strAlbum.c_str());
 
 	// cleanup items
-	if (items.size())
+	if (items.Size())
 	{
-		CFileItemList itemlist(items);
+		items.Clear();
 	}
 
 	switch (m_iState)
@@ -410,7 +413,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 				CFileItem* pFileItem = new CFileItem(vecRoot[i]);
 				pFileItem->m_strPath = vecRoot[i];
 				pFileItem->m_bIsFolder = true;
-				items.push_back(pFileItem);
+				items.Add(pFileItem);
 			}
 		}
 		break;
@@ -426,7 +429,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 				CFileItem* pFileItem = new CFileItem("..");
 				pFileItem->m_strPath="";
 				pFileItem->m_bIsFolder=true;
-				items.push_back(pFileItem);
+				items.Add(pFileItem);
 			}
 
 			// get genres from the database
@@ -442,7 +445,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 				CFileItem* pFileItem = new CFileItem(g_localizeStrings.Get(15105));
 				pFileItem->m_strPath="";
 				pFileItem->m_bIsFolder=true;
-				items.push_back(pFileItem);
+				items.Add(pFileItem);
 
 				for (int i=0; i < (int)genres.size(); ++i)
 				{
@@ -450,7 +453,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 					CFileItem* pFileItem = new CFileItem(strGenre);
 					pFileItem->m_strPath=strGenre;
 					pFileItem->m_bIsFolder=true;
-					items.push_back(pFileItem);
+					items.Add(pFileItem);
 				}
 			}
 		}
@@ -467,7 +470,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 				CFileItem* pFileItem = new CFileItem("..");
 				pFileItem->m_strPath="";
 				pFileItem->m_bIsFolder=true;
-				items.push_back(pFileItem);
+				items.Add(pFileItem);
 			}
 
 			// get artists from the database
@@ -483,7 +486,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 				CFileItem* pFileItem = new CFileItem(g_localizeStrings.Get(15103));
 				pFileItem->m_strPath="";
 				pFileItem->m_bIsFolder=true;
-				items.push_back(pFileItem);
+				items.Add(pFileItem);
 
 				for (int i=0; i < (int)artists.size(); ++i)
 				{
@@ -491,7 +494,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 					CFileItem* pFileItem = new CFileItem(strArtist);
 					pFileItem->m_strPath=strArtist;
 					pFileItem->m_bIsFolder=true;
-					items.push_back(pFileItem);
+					items.Add(pFileItem);
 				}
 			}
 		}
@@ -507,7 +510,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 				CFileItem* pFileItem = new CFileItem("..");
 				pFileItem->m_strPath="";
 				pFileItem->m_bIsFolder=true;
-				items.push_back(pFileItem);
+				items.Add(pFileItem);
 			}
 
 			// get albums from the database
@@ -523,13 +526,13 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 				CFileItem* pFileItem = new CFileItem(g_localizeStrings.Get(15102));
 				pFileItem->m_strPath="";
 				pFileItem->m_bIsFolder=true;
-				items.push_back(pFileItem);
+				items.Add(pFileItem);
 
 				for (int i=0; i < (int)albums.size(); ++i)
 				{
 					CAlbum &album = albums[i];
 					CFileItem* pFileItem = new CFileItem(album);
-					items.push_back(pFileItem);
+					items.Add(pFileItem);
 				}
 			}
 		}
@@ -545,7 +548,7 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 				CFileItem* pFileItem = new CFileItem("..");
 				pFileItem->m_strPath="";
 				pFileItem->m_bIsFolder=true;
-				items.push_back(pFileItem);
+				items.Add(pFileItem);
 			}
 
 			// get songs from the database
@@ -561,13 +564,13 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 				CFileItem* pFileItem = new CFileItem(g_localizeStrings.Get(15104));
 				pFileItem->m_strPath="";
 				pFileItem->m_bIsFolder=true;
-				items.push_back(pFileItem);
+				items.Add(pFileItem);
 
 				for (int i=0; i < (int)songs.size(); ++i)
 				{
 					CSong &song = songs[i];
 					CFileItem* pFileItem = new CFileItem(song);
-					items.push_back(pFileItem);
+					items.Add(pFileItem);
 				}
 			}
 		}
@@ -682,7 +685,7 @@ void CGUIWindowMusicNav::UpdateButtons()
 	SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS,iString);
 
 	// Update object count
-	int iItems=m_vecItems.size();
+	int iItems=m_vecItems.Size();
 	if (iItems)
 	{
 		CFileItem* pItem=m_vecItems[0];
@@ -825,7 +828,7 @@ void CGUIWindowMusicNav::OnClick(int iItem)
 		int nFolderCount=0;
 		g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP).Clear();
 		g_playlistPlayer.Reset();
-		for ( int i = 0; i < (int) m_vecItems.size(); i++ ) 
+		for ( int i = 0; i < m_vecItems.Size(); i++ ) 
 		{
 			CFileItem* pItem = m_vecItems[i];
 			if ( pItem->m_bIsFolder ) 
@@ -889,37 +892,36 @@ void CGUIWindowMusicNav::OnFileItemFormatLabel(CFileItem* pItem)
 	pItem->FillInDefaultIcon();
 }
 
-void CGUIWindowMusicNav::DoSort(VECFILEITEMS& items)
+void CGUIWindowMusicNav::DoSort(CFileItemList& items)
 {
 	// dont sort the root window
 	if (m_iState==SHOW_ROOT)
 		return;
 
-	SSortMusicNav sortmethod;
-	sortmethod.m_strDirectory=m_Directory.m_strPath;
+	SSortMusicNav::m_strDirectory=m_Directory.m_strPath;
 
 	if (m_iState==SHOW_GENRES)
 	{
-		sortmethod.m_iSortMethod=g_stSettings.m_iMyMusicNavRootSortMethod;
-		sortmethod.m_bSortAscending=g_stSettings.m_bMyMusicNavGenresSortAscending;
+		SSortMusicNav::m_iSortMethod=g_stSettings.m_iMyMusicNavRootSortMethod;
+		SSortMusicNav::m_bSortAscending=g_stSettings.m_bMyMusicNavGenresSortAscending;
 	}
 	else if (m_iState==SHOW_ARTISTS)
 	{
-		sortmethod.m_iSortMethod=g_stSettings.m_iMyMusicNavRootSortMethod;
-		sortmethod.m_bSortAscending=g_stSettings.m_bMyMusicNavArtistsSortAscending;
+		SSortMusicNav::m_iSortMethod=g_stSettings.m_iMyMusicNavRootSortMethod;
+		SSortMusicNav::m_bSortAscending=g_stSettings.m_bMyMusicNavArtistsSortAscending;
 	}
 	else if (m_iState==SHOW_ALBUMS)
 	{
-		sortmethod.m_iSortMethod=g_stSettings.m_iMyMusicNavAlbumsSortMethod;
-		sortmethod.m_bSortAscending=g_stSettings.m_bMyMusicNavAlbumsSortAscending;
+		SSortMusicNav::m_iSortMethod=g_stSettings.m_iMyMusicNavAlbumsSortMethod;
+		SSortMusicNav::m_bSortAscending=g_stSettings.m_bMyMusicNavAlbumsSortAscending;
 	}
 	else if (m_iState==SHOW_SONGS)
 	{
-		sortmethod.m_iSortMethod=g_stSettings.m_iMyMusicNavSongsSortMethod;
-		sortmethod.m_bSortAscending=g_stSettings.m_bMyMusicNavSongsSortAscending;
+		SSortMusicNav::m_iSortMethod=g_stSettings.m_iMyMusicNavSongsSortMethod;
+		SSortMusicNav::m_bSortAscending=g_stSettings.m_bMyMusicNavSongsSortAscending;
 	}
 
-	sort(items.begin(), items.end(), sortmethod);
+	items.Sort(SSortMusicNav::Sort);
 }
 
 void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
@@ -935,7 +937,7 @@ void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
 			m_strArtist.Empty();
 			CStdString strPath = "db://Search/Artist/";
 			Update(strPath);
-			for (int i=0; i<(int)m_vecItems.size(); i++)
+			for (int i=0; i<(int)m_vecItems.Size(); i++)
 			{
 				CFileItem* pItem=m_vecItems[i];
 				if (pItem->m_strPath==pSelItem->m_strPath)
@@ -973,7 +975,7 @@ void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
 			m_history.Set(strHistory, strPath);
 			m_history.Set(strPath, "");
 
-			for (int i=0; i<(int)m_vecItems.size(); i++)
+			for (int i=0; i<(int)m_vecItems.Size(); i++)
 			{
 				CFileItem* pItem=m_vecItems[i];
 				if (pItem->m_strPath==pSelItem->m_strPath)
@@ -1018,7 +1020,7 @@ void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
 
 		m_history.Set(m_strArtist, "");
 
-		for (int i=0; i<(int)m_vecItems.size(); i++)
+		for (int i=0; i<(int)m_vecItems.Size(); i++)
 		{
 			CFileItem* pItem=m_vecItems[i];
 			if (pItem->m_strPath==pSelItem->m_strPath)
@@ -1043,7 +1045,7 @@ void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
 /// \brief Search for songs, artists and albums with search string \e strSearch in the musicdatabase and return the found \e items
 /// \param strSearch The search string 
 /// \param items Items Found
-void CGUIWindowMusicNav::DoSearch(const CStdString& strSearch,VECFILEITEMS& items)
+void CGUIWindowMusicNav::DoSearch(const CStdString& strSearch,CFileItemList& items)
 {
 	VECARTISTS artists;
 	g_musicDatabase.GetArtistsByName(strSearch, artists);
@@ -1058,7 +1060,7 @@ void CGUIWindowMusicNav::DoSearch(const CStdString& strSearch,VECFILEITEMS& item
 			pItem->m_strPath=strArtist;
 			pItem->m_bIsFolder=true;
 			pItem->SetLabel("[" + strSong + "] " + strArtist);
-			items.push_back(pItem);
+			items.Add(pItem);
 		}
 	}
 
@@ -1073,7 +1075,7 @@ void CGUIWindowMusicNav::DoSearch(const CStdString& strSearch,VECFILEITEMS& item
 			CAlbum& album=albums[i];
 			CFileItem* pItem=new CFileItem(album);
 			pItem->SetLabel("[" + strAlbum + "] " + album.strAlbum + " - " + album.strArtist);
-			items.push_back(pItem);
+			items.Add(pItem);
 		}
 	}
 
@@ -1088,7 +1090,7 @@ void CGUIWindowMusicNav::DoSearch(const CStdString& strSearch,VECFILEITEMS& item
 			CSong& song=songs[i];
 			CFileItem* pItem=new CFileItem(song);
 			pItem->SetLabel("[" + strSong + "] " + song.strTitle + " - " + song.strArtist + " - " + song.strAlbum);
-			items.push_back(pItem);
+			items.Add(pItem);
 		}
 	}
 }
@@ -1203,11 +1205,10 @@ void CGUIWindowMusicNav::AddItemToPlayList(const CFileItem* pItem)
 		}
 
 		m_iState=SHOW_SONGS;
-		VECFILEITEMS items;
-		CFileItemList itemlist(items);
+		CFileItemList items;
 		GetDirectory("Playlist", items);
 		DoSort(items);
-		for (int i=0; i < (int) items.size(); ++i)
+		for (int i=0; i < items.Size(); ++i)
 		{
 			if (!items[i]->m_strPath.IsEmpty())
 				AddItemToPlayList(items[i]);
@@ -1282,11 +1283,10 @@ void CGUIWindowMusicNav::AddItemToTempPlayList(const CFileItem* pItem)
 		}
 
 		m_iState=SHOW_SONGS;
-		VECFILEITEMS items;
-		CFileItemList itemlist(items);
+		CFileItemList items;
 		GetDirectory("Playlist", items);
 		DoSort(items);
-		for (int i=0; i < (int) items.size(); ++i)
+		for (int i=0; i < items.Size(); ++i)
 		{
 			if (!items[i]->m_strPath.IsEmpty())
 				AddItemToTempPlayList(items[i]);

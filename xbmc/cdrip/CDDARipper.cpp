@@ -272,7 +272,7 @@ bool CCDDARipper::RipCD()
 	}
 
 	// get cd cdda contents
-	VECFILEITEMS vecItems;
+	CFileItemList vecItems;
 	DIRECTORY::CCDDADirectory directory;
 	directory.GetDirectory("cdda://local/", vecItems);
 
@@ -311,7 +311,7 @@ bool CCDDARipper::RipCD()
 	}
 
 	// rip all tracks one by one, if one fails we quit and return false
-	for (unsigned int i = 0; i < vecItems.size() && bResult == true; i++)
+	for (int i = 0; i < vecItems.Size() && bResult == true; i++)
 	{
 		char* cExt = GetExtension(g_guiSettings.GetInt("CDDARipper.Encoder"));
 		// get track number from "cdda://local/0.cdda"

@@ -18,13 +18,11 @@ CDirectoryCache::~CDirectoryCache(void)
 }
 
 
-bool  CDirectoryCache::GetDirectory(const CStdString& strPath1,VECFILEITEMS &items) 
+bool  CDirectoryCache::GetDirectory(const CStdString& strPath1,CFileItemList &items) 
 {
 	CSingleLock lock(m_cs);
 
-  {
-    CFileItemList itemlist(items); // will clean up everything
-  }
+  items.Clear();
 
   CStdString strPath=strPath1;
 	if (CUtil::HasSlashAtEnd(strPath))
@@ -33,15 +31,15 @@ bool  CDirectoryCache::GetDirectory(const CStdString& strPath1,VECFILEITEMS &ite
   ivecCache i=g_directoryCache.m_vecCache.begin();
   while (i != g_directoryCache.m_vecCache.end() )
   {
-    CDir& dir=*i;
-    if (dir.m_strPath==strPath)
+    CDir* dir=*i;
+    if (dir->m_strPath==strPath)
     {
       
-      for (int i=0; i < (int) dir.m_Items.size(); ++i)
+      for (int i=0; i < (int) dir->m_Items.Size(); ++i)
       {
         CFileItem* pItem= new CFileItem();
-        (*pItem) = *(dir.m_Items[i]);
-        items.push_back(pItem);
+        (*pItem) = *(dir->m_Items[i]);
+        items.Add(pItem);
       }
 
       return true;
@@ -51,7 +49,7 @@ bool  CDirectoryCache::GetDirectory(const CStdString& strPath1,VECFILEITEMS &ite
   return false;
 }
 
-void  CDirectoryCache::SetDirectory(const CStdString& strPath1,const VECFILEITEMS &items)
+void  CDirectoryCache::SetDirectory(const CStdString& strPath1,const CFileItemList &items)
 {
 	CSingleLock lock(m_cs);
 
@@ -60,15 +58,9 @@ void  CDirectoryCache::SetDirectory(const CStdString& strPath1,const VECFILEITEM
 		strPath.Delete(strPath.size()-1);
 
   g_directoryCache.ClearDirectory(strPath);
-  CDir dir;
-  dir.m_strPath=strPath;
-	dir.m_Items.reserve(items.size());
-
-  for (int i=0; i < (int) items.size(); ++i)
-  {
-    CFileItem* pItem = items[i];
-    dir.m_Items.push_back(pItem);
-  }
+  CDir* dir=new CDir;
+  dir->m_strPath=strPath;
+	dir->m_Items.Append(items);
   g_directoryCache.m_vecCache.push_back(dir);
 }
 
@@ -83,13 +75,11 @@ void  CDirectoryCache::ClearDirectory(const CStdString& strPath1)
   ivecCache i=g_directoryCache.m_vecCache.begin();
   while (i != g_directoryCache.m_vecCache.end() )
   {
-    CDir& dir=*i;
-    if (dir.m_strPath==strPath)
+    CDir* dir=*i;
+    if (dir->m_strPath==strPath)
     {
-      {
-        CFileItemList itemlist(dir.m_Items); // will clean up everything
-      }
-
+      dir->m_Items.Clear(); // will clean up everything
+			delete dir;
       g_directoryCache.m_vecCache.erase(i);
       return;
     }
@@ -112,13 +102,13 @@ bool  CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
   ivecCache i=g_directoryCache.m_vecCache.begin();
   while (i != g_directoryCache.m_vecCache.end() )
   {
-    CDir& dir=*i;
-    if (dir.m_strPath==strPath)
+    CDir* dir=*i;
+    if (dir->m_strPath==strPath)
     {
       bInCache=true;
-      for (int i=0; i < (int) dir.m_Items.size(); ++i)
+      for (int i=0; i < (int) dir->m_Items.Size(); ++i)
       {
-        CFileItem* pItem=dir.m_Items[i];
+        CFileItem* pItem=dir->m_Items[i];
         if ( CUtil::cmpnocase(pItem->m_strPath,strFixedFile)==0)
         {
           return true;
@@ -137,12 +127,11 @@ void  CDirectoryCache::Clear()
   ivecCache i=g_directoryCache.m_vecCache.begin();
   while (i != g_directoryCache.m_vecCache.end() )
   {
-    CDir& dir=*i;
-		if (!IsCacheDir(dir.m_strPath))
+    CDir* dir=*i;
+		if (!IsCacheDir(dir->m_strPath))
     {
-			{
-				CFileItemList itemlist(dir.m_Items); // will clean up everything
-			}
+			dir->m_Items.Clear(); // will clean up everything
+			delete dir;
 			g_directoryCache.m_vecCache.erase(i);
     }
 
@@ -157,9 +146,9 @@ void  CDirectoryCache::InitCache(set<CStdString>& dirs)
 	for (it=dirs.begin(); it!=dirs.end(); ++it)
 	{
     CStdString& strDir=*it;
-		VECFILEITEMS items;
-		CFileItemList itemList(items);
+		CFileItemList items;
 		dir.GetDirectory(strDir, items);
+		items.Clear();
 	}
 }
 
@@ -168,12 +157,11 @@ void  CDirectoryCache::ClearCache(set<CStdString>& dirs)
   ivecCache i=g_directoryCache.m_vecCache.begin();
   while (i != g_directoryCache.m_vecCache.end() )
   {
-    CDir& dir=*i;
-		if (dirs.find(dir.m_strPath)!=dirs.end())
+    CDir* dir=*i;
+		if (dirs.find(dir->m_strPath)!=dirs.end())
     {
-			{
-				CFileItemList itemlist(dir.m_Items); // will clean up everything
-			}
+			dir->m_Items.Clear(); // will clean up everything
+			delete dir;
 			g_directoryCache.m_vecCache.erase(i);
     }
 		else

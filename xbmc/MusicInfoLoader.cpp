@@ -27,9 +27,9 @@ void CMusicInfoLoader::Process()
 {
 	try
 	{
-		VECFILEITEMS& vecItems=(*m_pVecItems);
+		CFileItemList& vecItems=(*m_pVecItems);
 
-		if (vecItems.size()<=0)
+		if (vecItems.Size()<=0)
 			return;
 
 		//	Load previously cached items from HD
@@ -41,7 +41,7 @@ void CMusicInfoLoader::Process()
 
 		m_musicDatabase.Open();
 
-		for (int i=0; i<(int)vecItems.size(); ++i)
+		for (int i=0; i<(int)vecItems.Size(); ++i)
 		{
 			CFileItem* pItem=vecItems[i];
 
@@ -149,7 +149,7 @@ void CMusicInfoLoader::OnExit()
 	m_bRunning=false;
 }
 
-void CMusicInfoLoader::Load(VECFILEITEMS& items)
+void CMusicInfoLoader::Load(CFileItemList& items)
 {
 	m_pVecItems=&items;
 	StopThread();
@@ -191,9 +191,9 @@ void CMusicInfoLoader::LoadCache(const CStdString& strFileName, MAPFILEITEMS& it
 	}
 }
 
-void CMusicInfoLoader::SaveCache(const CStdString& strFileName, VECFILEITEMS& items)
+void CMusicInfoLoader::SaveCache(const CStdString& strFileName, CFileItemList& items)
 {
-	int iSize=items.size();
+	int iSize=items.Size();
 
 	if (iSize<=0)
 		return;
@@ -203,7 +203,7 @@ void CMusicInfoLoader::SaveCache(const CStdString& strFileName, VECFILEITEMS& it
 	if (file.OpenForWrite(strFileName))
 	{
 		CArchive ar(&file, CArchive::store);
-		ar << (int)items.size();
+		ar << (int)items.Size();
 		for (int i=0; i<iSize; i++)
 		{
 			CFileItem* pItem=items[i];
