@@ -13,7 +13,7 @@
   </string>
   <string>
     <id>3</id>
-    <value>Videos</value>
+    <value>Vidéos</value>
   </string>
   <string>
     <id>4</id>
@@ -27,7 +27,6 @@
     <id>7</id>
     <value>Fichiers</value>
   </string>
-  
   <string>
     <id>11</id>
     <value>Lundi</value>
@@ -56,13 +55,10 @@
     <id>17</id>
     <value>Dimanche</value>
   </string>
-  
-    
   <string>
     <id>21</id>
     <value>Janvier</value>
   </string>
-  
   <string>
     <id>22</id>
     <value>Février</value>
@@ -365,7 +361,7 @@
   </string> 
   <string>
     <id>164</id>
-    <value>Pas de disque</value>
+    <value>Tiroir vide</value>
   </string> 
   <string>
     <id>165</id>
@@ -373,19 +369,19 @@
   </string> 
   <string>
     <id>166</id>
-    <value>Skin:</value>
+    <value>Skin :</value>
   </string> 
   <string>
     <id>167</id>
-    <value>Serveur FTP:</value>
+    <value>Serveur FTP :</value>
   </string> 
   <string>
     <id>168</id>
-    <value>Serveur Horaire:</value>
+    <value>Serveur Horaire :</value>
   </string> 
   <string>
     <id>169</id>
-    <value>Résolution:</value>
+    <value>Résolution :</value>
   </string> 
   <string>
     <id>170</id>
@@ -561,11 +557,11 @@
   </string> 
   <string>
     <id>213</id>
-    <value>Configuration de l'interface</value>
+    <value>Config interface</value>
   </string> 
   <string>
     <id>214</id>
-    <value>Config. de l'affichage</value>
+    <value>Config écran</value>
   </string> 
   <string>
     <id>215</id>
@@ -609,7 +605,7 @@
   </string> 
   <string>
     <id>225</id>
-    <value>Temps de transition</value>
+    <value>Durée transitions</value>
   </string> 
   <string>
     <id>226</id>
@@ -625,7 +621,7 @@
   </string> 
   <string>
     <id>229</id>
-    <value>Temps de rotation HDD (mins)</value>
+    <value>Temps de rotation HDD </value>
  </string> 
   <string>
     <id>230</id>
@@ -657,11 +653,11 @@
   </string> 
   <string>
     <id>237</id>
-    <value>Rapport optique (-) :</value>
+    <value>Optique (-) :</value>
   </string> 
   <string>
     <id>238</id>
-    <value>Rapport optique (+) :</value>
+    <value>Optique (+) :</value>
   </string>
   <string>
     <id>240</id>
@@ -793,11 +789,11 @@
   </string>
   <string>
     <id>272</id>
-    <value>Compensation overscan : haut-gauche</value>
+    <value>Compensation taille affichage : haut-gauche</value>
   </string>
   <string>
     <id>273</id>
-    <value>Compensation overscan : bas-droite</value>
+    <value>Compensation taille affichage : bas-droite</value>
   </string>
   <string>
     <id>274</id>
@@ -809,7 +805,7 @@
   </string>
   <string>
     <id>276</id>
-    <value>Déplacer la flèeche pour modifier la quantité d'overscan</value>
+    <value>Déplacer la flèeche pour modifier la taille d'affichage</value>
   </string>
   <string>
     <id>277</id>
@@ -861,7 +857,7 @@
   </string>
   <string>
     <id>289</id>
-    <value>Taille</value>
+    <value>Corp de texte</value>
   </string>
   <string>
     <id>290</id>
@@ -893,7 +889,7 @@
   </string>
   <string>
     <id>297</id>
-    <value>4. Synchronisation audio/video</value>
+    <value>4. Synchro. audio/video</value>
   </string>
   <string>
     <id>298</id>
@@ -941,7 +937,7 @@
   </string>
   <string>
     <id>310</id>
-    <value>Ajustement automatique de la lumière/contraste</value>
+    <value>Ajuster lumière/contraste</value>
   </string>
   <string>
     <id>311</id>
@@ -1033,31 +1029,51 @@
   </string>
   <string>
     <id>333</id>
-    <value>Voulez vous réorganiser votre base de données musicale ?</value>
+    <value>Voulez vous réorganiser votre BDD musicale ?</value>
   </string>
   <string>
     <id>334</id>
-    <value>Réorganiser la base de données de mes musiques</value>
+    <value>Réorganiser la BDD des musiques</value>
   </string>
   <string>
     <id>335</id>
-    <value>Commencer</value>
+    <value>Lancer</value>
   </string>
   <string>
     <id>336</id>
-    <value>Ajuster le taux de rafraichissement</value>
+    <value>Ajuster Tx. Rafraich.</value>
+  </string>
+    <string>
+    <id>337</id>
+    <value>Sortie audio :</value>
+  </string>
+  <string>
+    <id>338</id>
+    <value>Analogique</value>
+  </string>
+  <string>
+    <id>339</id>
+    <value>Digitale</value>
   </string>
   <string>
     <id>340</id>
-    <value>Various Artists</value>
+    <value>Artistes</value>
   </string>
   <string>
     <id>341</id>
     <value>Jouez le DVD</value>
   </string>
   <string>
+    <id>342</id>
+    <value>Séquences</value>
+  </string>
+  <string>
+    <id>343</id>
+    <value>7. Ajuster Tx. rafraich.</value>
+  </string>
+  <string>
     <id>344</id>
-    <value>Acteurrs</value>
+    <value>Acteurs</value>
   </string>
   <string>
     <id>345</id>
@@ -1097,7 +1113,7 @@
   </string>
   <string>
     <id>354</id>
-    <value>Trainées de Matrix</value>
+    <value>Trainées (Matrix)</value>
   </string>
   <string>
     <id>355</id>
@@ -1109,18 +1125,134 @@
   </string>
   <string>
     <id>357</id>
-    <value>Arret automatique de la console</value>
+    <value>Arret de la console</value>
+  </string>
+  <string>
+    <id>358</id>
+    <value>Tous les albums</value>
+  </string>
+  <string>
+    <id>359</id>
+    <value>Albums récents</value>
+  </string>
+  <string>
+    <id>360</id>
+    <value>Ecran de veille</value>
   </string>
   <string>
     <id>361</id>
-    <value>Diaporama inversé</value>
+    <value>Diapo. inversé</value>
   </string>   
   <string>
     <id>362</id>
-    <value>Transparence de l'economiseur d'écran (%)</value>
+    <value>Transparence (%)</value>
   </string>
   <string>
     <id>363</id>
     <value>Lister par fichier</value>
+  </string>
+  <string>
+    <id>364</id>
+    <value>DD/DTS multicannal</value>
   </string>   
+  <string>
+    <id>365</id>
+    <value>Lister par nom</value>
+  </string>   
+  <string>
+    <id>366</id>
+    <value>Lister par année</value>
+  </string>   
+  <string>
+    <id>367</id>
+    <value>Lister par note</value>
+  </string>   
+  <string>
+    <id>368</id>
+    <value>IMDB</value>
+  </string>   
+  <string>
+    <id>369</id>
+    <value>Titre</value>
+  </string>
+  <string>
+    <id>401</id>
+    <value>Météo</value>
+  </string>   
+  <string>
+    <id>402</id>
+    <value>Feels Like</value>
+  </string> 
+  <string>
+    <id>403</id>
+    <value>Indice d'exposition UV</value>
+  </string>
+  <string>
+    <id>404</id>
+    <value>Vent</value>
+  </string>   
+  <string>
+    <id>405</id>
+    <value>Condensation</value>
+  </string> 
+  <string>
+    <id>406</id>
+    <value>Humiditée</value>
+  </string> 
+  <string>
+    <id>407</id>
+    <value>De</value>
+  </string>
+  <string>
+    <id>408</id>
+    <value>A</value>
+  </string>      
+  <string>
+    <id>410</id>
+    <value>Interrogation de Weather.com</value>
+  </string>       
+  <string>
+    <id>411</id>
+    <value>Récupère la météo pour :</value>
+  </string> 
+  <string>
+    <id>412</id>
+    <value>La récupération de la météo à échoué</value>
+  </string>    
+  <string>
+    <id>413</id>
+    <value>Manuel</value>
+  </string>    
+  <string>
+    <id>414</id>
+    <value>Pas de critique pour cet album</value>
+  </string>    
+  <string>
+    <id>415</id>
+    <value>Télécharge l'aperçu...</value>
+  </string> 
+  <string>
+    <id>416</id>
+    <value>Non disponible</value>
+  </string> 
+  <string>
+    <id>417</id>
+    <value>Grande icones</value>
+  </string>
+  <string>
+    <id>418</id>
+    <value>Mes Vidéos/Genres</value>
+  </string> 
+  <string>
+    <id>419</id>
+    <value>Mes Vidéos/Acteurs</value>
+  </string> 
+  <string>
+    <id>420</id>
+    <value>Mes Vidéos/Années</value>
+  </string> 
+  <string>
+    <id>421</id>
+    <value>Mes Vidéos/Titre</value>
+  </string> 
 </strings>
