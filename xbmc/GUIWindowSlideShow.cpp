@@ -22,9 +22,11 @@
 #define PICTURE_VIEW_BOX_COLOR			0xffffff00	// YELLOW
 #define PICTURE_VIEW_BOX_BACKGROUND	0xff000000	// BLACK
 
-#define LABEL_ROW1			10
-#define LABEL_ROW2			11
+#define BAR_IMAGE					1
+#define LABEL_ROW1				10
+#define LABEL_ROW2				11
 #define LABEL_ROW2_EXTRA	12
+#define CONTROL_PAUSE			13
 
 CBackgroundPicLoader::CBackgroundPicLoader()
 {
@@ -908,8 +910,20 @@ void CGUIWindowSlideShow::Render()
 		}
 	}
 	
-	if (!m_bShowInfo)
-		return;
+	if (m_bShowInfo)
+	{
+		SET_CONTROL_VISIBLE(BAR_IMAGE);
+		SET_CONTROL_VISIBLE(LABEL_ROW1);
+		SET_CONTROL_VISIBLE(LABEL_ROW2);
+		SET_CONTROL_VISIBLE(LABEL_ROW2_EXTRA);
+	}
+	else
+	{
+		SET_CONTROL_HIDDEN(BAR_IMAGE);
+		SET_CONTROL_HIDDEN(LABEL_ROW1);
+		SET_CONTROL_HIDDEN(LABEL_ROW2);
+		SET_CONTROL_HIDDEN(LABEL_ROW2_EXTRA);
+	}
 
 	CGUIWindow::Render();
 }
@@ -1038,7 +1052,16 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 }
 
 void CGUIWindowSlideShow::RenderPause()
-{
+{	// display the pause icon
+	if (m_bPause)
+	{
+		SET_CONTROL_VISIBLE(CONTROL_PAUSE);
+	}
+	else
+	{
+		SET_CONTROL_HIDDEN(CONTROL_PAUSE);
+	}
+/*
 	static DWORD dwCounter=0;
 	dwCounter++;
 	if (dwCounter > 25)
@@ -1046,12 +1069,8 @@ void CGUIWindowSlideShow::RenderPause()
 		dwCounter=0;
 	}
 	if (!m_bPause) return;
-	if (dwCounter <13) return;
-	CGUIFont* pFont=g_fontManager.GetFont("font13");
-	const WCHAR *szText;
-	szText=g_localizeStrings.Get(112).c_str();
-	if (pFont)
-		pFont->DrawShadowText(500.0,60.0,0xff000000,szText);
+	if (dwCounter <13) return;*/
+	
 }
 
 void CGUIWindowSlideShow::Rotate()

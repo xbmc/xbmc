@@ -34,7 +34,7 @@ protected:
 	virtual void			SortItems(VECFILEITEMS& items)=0;
 	virtual void			FormatItemLabels()=0;
   virtual void			UpdateButtons();
-	virtual void			OnPopupMenu(int iItem) { OnInfo(iItem); };
+	virtual void			OnPopupMenu(int iItem);
 
   void							Clear();
 	void							OnSort();
@@ -44,6 +44,7 @@ protected:
 
 	void							GoParentFolder();
   virtual void			OnInfo(int iItem);
+	virtual void			OnScan() {};
 	int								GetSelectedItem();
 	void							DisplayEmptyDatabaseMessage(bool bDisplay);
 
