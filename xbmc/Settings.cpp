@@ -48,6 +48,9 @@ CSettings::CSettings(void)
 	strcpy( g_stSettings.m_szCDDBIpAdres,"");
 	g_stSettings.m_bUseCDDB=false;
 	g_stSettings.m_iMyMusicViewMethod=2;//view songs
+	g_stSettings.m_bMyMusicSortAscending=true;
+	g_stSettings.m_bMyVideoSortAscending=true;
+	g_stSettings.m_bMyFilesSortAscending=true;
 }
 
 CSettings::~CSettings(void)
