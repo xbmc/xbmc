@@ -765,12 +765,12 @@ static int tdfx_vid_ioctl(struct inode *inode, struct file *file, unsigned int c
 
 
 
-static ssize_t tdfx_vid_read(struct file *file, char *buf, size_t count, l__int64 *ppos)
+static ssize_t tdfx_vid_read(struct file *file, char *buf, size_t count, loff_t *ppos)
 {
 	return 0;
 }
 
-static ssize_t tdfx_vid_write(struct file *file, const char *buf, size_t count, l__int64 *ppos)
+static ssize_t tdfx_vid_write(struct file *file, const char *buf, size_t count, loff_t *ppos)
 {
 
 	return 0;
