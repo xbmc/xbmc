@@ -3,6 +3,8 @@
 #pragma once
 
 #include "XBMCConfiguration.h"
+#include "..\..\xbox\iosupport.h"
+#include "..\..\util.h"
 
 #pragma code_seg("WEB_TEXT")
 #pragma data_seg("WEB_DATA")
@@ -302,6 +304,8 @@ int CXbmcConfiguration::RemoveBookmark( int eid, webs_t wp, int argc, char_t **a
 /*
  * Save configuration to a file (filename)
  * var filename = filename to which the configuration has to be written
+ * is only a filename is specified and no directory we save it in the same dir that
+ * our executable is in.
  */
 int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, int argc, char_t **argv)
 {
@@ -321,13 +325,24 @@ int CXbmcConfiguration::SaveConfiguration( int eid, webs_t wp, int argc, char_t 
 	}
 
 	// Save configuration to file
-	if (filename)
+	CStdString strPath(filename);
+	if (strPath.find(":\\") == -1)
 	{
-		if (!xbmcCfg.SaveFile(filename))
-		{
-			websError(wp, 500, T("Could not save to file\n"));
-			return -1;
-		}
+		// only filename specified, this means whe have to lookup the directory where
+		// our executable is in and add the filename to it
+		// note, we don't use 'Q:\\' here since 'Q:\\' is always mapped to our xbmc home dir
+		// and when using xbmc as dash our configfile has to be saved to 'c:\\'
+		char szXBEFileName[1024];
+		CIoSupport helper;
+		helper.GetXbePath(szXBEFileName);
+		strrchr(szXBEFileName,'\\')[0] = 0;
+		strPath.Format("%s\\%s", szXBEFileName, filename);
+	}
+
+	if (!xbmcCfg.SaveFile(strPath))
+	{
+		websError(wp, 500, T("Could not save to file\n"));
+		return -1;
 	}
 	return 0;
 }
