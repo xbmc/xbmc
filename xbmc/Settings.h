@@ -234,6 +234,11 @@ public:
 		char		  m_szHTTPProxy[128];
 		int			  m_iWebServerPort;
 
+    bool  m_bAutoTemperature;
+    int   m_iTargetTemperature;
+    bool  m_bFanSpeedControl;
+    int   m_iFanSpeed;
+
 		int		m_iShutdownTime;
 		int		m_iScreenSaverTime;		// CB: SCREENSAVER PATCH
 		int		m_iScreenSaverMode;		// CB: SCREENSAVER

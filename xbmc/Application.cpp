@@ -27,6 +27,7 @@
 #include "utils/KaiClient.h"
 #include "utils/MemUnit.h"
 #include "FileSystem/DAAPDirectory.h"
+#include "utils/FanController.h"
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
@@ -836,6 +837,14 @@ void CApplication::StartServices()
 	CLCDFactory factory;
 	g_lcd=factory.Create();
 	g_lcd->Initialize();
+
+	CLog::Log("start fancontroller");
+  if (g_stSettings.m_bAutoTemperature) {
+    CFanController::Instance()->Start(g_stSettings.m_iTargetTemperature);
+  }
+  else if (g_stSettings.m_bFanSpeedControl) {
+    CFanController::Instance()->SetFanSpeed(g_stSettings.m_iFanSpeed);
+  }
 }
 
 void CApplication::StopServices() 
@@ -851,6 +860,9 @@ void CApplication::StopServices()
 	g_lcd->Stop();
   g_lcd->WaitForThreadExit(INFINITE);
   delete g_lcd;
+
+	CLog::Log("stop fancontroller");
+  CFanController::Instance()->Stop();
 }
 
 void CApplication::DelayLoadSkin()
