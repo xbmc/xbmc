@@ -231,7 +231,7 @@ unsigned int CFileXBMSP::Read(void *lpBuf, __int64 uiBufSize)
 	{
 		return 0;
 	}
-	memcpy(lpBuf, buf, buflen);
+	fast_memcpy(lpBuf, buf, buflen);
 	free(buf);
 	m_filePos += buflen;
 	return buflen;

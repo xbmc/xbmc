@@ -2476,3 +2476,93 @@ void CUtil::SortFileItemsByName(VECFILEITEMS& items, bool bSortAscending/*=true*
 	sortmethod.m_bSortAscending=bSortAscending;
 	sort(items.begin(), items.end(), sortmethod);
 }
+
+// around 50% faster than memcpy
+// only worthwhile if the destination buffer is not likely to be read back immediately
+// and the number of bytes copied is >16
+// somewhat faster if the source and destination are a multiple of 16 bytes apart
+void fast_memcpy(void* d, const void* s, unsigned n)
+{
+	__asm {
+		mov edx,n
+		mov esi,s
+		prefetchnta [esi]
+		prefetchnta [esi+32]
+		mov edi,d
+
+		// pre align
+		mov eax,edi
+		mov ecx,16
+		and eax,15
+		sub ecx,eax
+		cmp edx,ecx
+		jb fmc_exit_main
+		sub edx,ecx
+
+		test ecx,ecx
+fmc_start_pre:
+		jz fmc_exit_pre
+
+		mov al,[esi]
+		mov [edi],al
+
+		inc esi
+		inc edi
+		dec ecx
+		jmp fmc_start_pre
+
+fmc_exit_pre:
+		mov eax,esi
+		and eax,15
+		jnz fmc_notaligned
+
+		// main copy, aligned
+		mov ecx,edx
+		shr ecx,4
+fmc_start_main_a:
+		jz fmc_exit_main
+
+		prefetchnta [esi+32]
+		movaps xmm0,[esi]
+		movntps [edi],xmm0
+
+		add esi,16
+		add edi,16
+		dec ecx
+		jmp fmc_start_main_a
+
+fmc_notaligned:
+		// main copy, unaligned
+		mov ecx,edx
+		shr ecx,4
+fmc_start_main_u:
+		jz fmc_exit_main
+
+		prefetchnta [esi+32]
+		movups xmm0,[esi]
+		movntps [edi],xmm0
+
+		add esi,16
+		add edi,16
+		dec ecx
+		jmp fmc_start_main_u
+
+fmc_exit_main:
+
+		// post align
+		mov ecx,edx
+		and ecx,15
+fmc_start_post:
+		jz fmc_exit_post
+
+		mov al,[esi]
+		mov [edi],al
+
+		inc esi
+		inc edi
+		dec ecx
+		jmp fmc_start_post
+
+fmc_exit_post:
+	}
+}

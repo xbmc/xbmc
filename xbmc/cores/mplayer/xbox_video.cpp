@@ -353,7 +353,7 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 		// Create texture buffer
 		if (m_TextureBuffer[i])
 			XPhysicalFree(m_TextureBuffer[i]);
-		m_TextureBuffer[i] = (BYTE*)XPhysicalAlloc(ytexture_pitch*ytexture_height + uvtexture_pitch*uvtexture_height*2, MAXULONG_PTR, 128, PAGE_READWRITE);
+		m_TextureBuffer[i] = (BYTE*)XPhysicalAlloc(ytexture_pitch*ytexture_height + uvtexture_pitch*uvtexture_height*2, MAXULONG_PTR, 128, PAGE_READWRITE | PAGE_WRITECOMBINE);
 
 		// blank the textures (just in case)
 		memset(m_TextureBuffer[i], 0, ytexture_pitch*ytexture_height);
@@ -720,10 +720,6 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
   byte* image=(byte*)m_TextureBuffer[iBuffer];
   DWORD dstride=ytexture_pitch;
 	vo_draw_alpha_yv12(w,h,src,srca,stride,((unsigned char *) image) + dstride*y0 + 2*x0,dstride);
-  // flush CPU cache. This way all data is back in memory and GPU (pixelshader) can access it
-  __asm {
-    wbinvd
-  }
 }
 
 //********************************************************************************************************
@@ -755,7 +751,7 @@ static void video_uninit(void)
 //	g_graphicsContext.Get3DDevice()->EnableOverlay(FALSE);
 	for (int i=0; i < NUM_BUFFERS; i++)
 	{
-		if (m_TextureBuffer[i]) D3D_FreeContiguousMemory(m_TextureBuffer[i]);
+		if (m_TextureBuffer[i]) XPhysicalFree(m_TextureBuffer[i]);
 		m_TextureBuffer[i] = NULL;
 	}
 	for (int i = 0; i < 2; ++i)
@@ -797,6 +793,7 @@ static unsigned int video_preinit(const char *arg)
 
 	return 0;
 }
+
 //********************************************************************************************************
 static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,int h,int x,int y )
 {
@@ -815,7 +812,7 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
   d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer]+ytexture_pitch*y+x;                
   s=src[0];                           
   for(i=0;i<(DWORD)h;i++){
-    memcpy(d,s,w);                  
+    fast_memcpy(d,s,w);                  
     s+=stride[0];                  
     d+=ytexture_pitch;
   }
@@ -826,25 +823,21 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
   d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer] + ytexture_pitch*ytexture_height+ uvtexture_pitch*y+x;
   s=src[1];
   for(i=0;i<(DWORD)h;i++){
-      memcpy(d,s,w);
-      s+=stride[1];
-      d+=uvtexture_pitch;
+    fast_memcpy(d,s,w);
+    s+=stride[1];
+    d+=uvtexture_pitch;
   }
 	// copy V
   d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer] + ytexture_pitch*ytexture_height + uvtexture_pitch*uvtexture_height+ uvtexture_pitch*y+x;
   s=src[2];
   for(i=0;i<(DWORD)h;i++){
-    memcpy(d,s,w);
+    fast_memcpy(d,s,w);
     s+=stride[2];
     d+=uvtexture_pitch;
   }
 
   if (iBottom+1>=(int)image_height)
   {
-    // flush CPU cache. This way all data is back in memory and GPU (pixelshader) can access it
-    __asm {
-      wbinvd
-    }
     ++m_iDecodeBuffer %= NUM_BUFFERS;
     m_bFlip++;
    // char szTmp[128];
@@ -852,6 +845,7 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
    //     image_height,iOrgY,iOrgY+iOrgH,m_iDecodeBuffer ,m_iRenderBuffer, m_bFlip);
    // OutputDebugString(szTmp);
   }
+
   return 0;
 }
 
@@ -1083,7 +1077,7 @@ static unsigned int video_draw_frame(unsigned char *src[])
 {
 	DebugBreak();
   byte* image=(BYTE*)m_TextureBuffer[m_iDecodeBuffer];
-	memcpy( image, *src, ytexture_pitch * image_height );
+	fast_memcpy( image, *src, ytexture_pitch * image_height );
 	return 0;
 }
 
@@ -1123,7 +1117,7 @@ static unsigned int put_image(mp_image_t *mpi)
       s=mpi->planes[0];
       for(i=0;i<h;i++)
       {
-        memcpy(d,s,w);
+        fast_memcpy(d,s,w);
         s+=mpi->stride[0];
         d+=dstride;
       }
@@ -1139,7 +1133,7 @@ static unsigned int put_image(mp_image_t *mpi)
       d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer] + ytexture_pitch*ytexture_height + dstride*y+x;
       s=mpi->planes[1];
       for(i=0;i<h;i++){
-        memcpy(d,s,w);
+        fast_memcpy(d,s,w);
         s+=mpi->stride[1];
         d+=dstride;
       }
@@ -1150,7 +1144,7 @@ static unsigned int put_image(mp_image_t *mpi)
       d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer] + ytexture_pitch*ytexture_height + uvtexture_pitch*uvtexture_height + dstride*y+x;
       s=mpi->planes[2];
       for(i=0;i<h;i++){
-        memcpy(d,s,w);
+        fast_memcpy(d,s,w);
         s+=mpi->stride[2];
         d+=dstride;
       }
@@ -1160,13 +1154,9 @@ static unsigned int put_image(mp_image_t *mpi)
 	{
 		//packed - this isn't going to work!
 		DebugBreak();
-    memcpy( m_TextureBuffer[m_iDecodeBuffer], mpi->planes[0], ytexture_height * ytexture_pitch);
+    fast_memcpy( m_TextureBuffer[m_iDecodeBuffer], mpi->planes[0], ytexture_height * ytexture_pitch);
 	}
 
-  // flush CPU cache. This way all data is back in memory and GPU (pixelshader) can access it
-  __asm {
-      wbinvd
-    }
   ++m_iDecodeBuffer %= NUM_BUFFERS;
   m_bFlip++;
 

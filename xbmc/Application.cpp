@@ -47,7 +47,7 @@
 	#pragma comment (lib,"xbmc/lib/libsidplay/libsidutilsd.lib")		// SECTIONNAME=SID_RW,SID_RX
 	#pragma comment (lib,"xbmc/lib/libsidplay/resid_builderd.lib")	// SECTIONNAME=SID_RW,SID_RX
 #else
-//  #pragma comment (lib,"lib/filezilla/xbfilezilla.lib")
+  //#pragma comment (lib,"lib/filezilla/xbfilezilla.lib")
 	#pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")          
   #pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")           
 	#pragma comment (lib,"xbmc/lib/cximage/ImageLib.lib")
