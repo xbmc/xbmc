@@ -121,6 +121,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 
 void CGUIWindowVisualisation::Render()
 {
+  g_application.ResetScreenSaver();
 	CSingleLock lock(m_critSection);
 	if (m_pVisualisation)
 	{
