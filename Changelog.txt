@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 16-01-2005 updated: Korean language file (Thnx to akoakoako)
+  - 16-01-2005 updated: Polish language file (Thnx to napek)
   - 16-01-2005 fixed: CDDA playback broken
   - 15-01-2005 added: [ 1097508 ] Fix for FTP logging, new GetTime/DateFormat functions (Thanks to jarkkom)
                       Logging is disabled by default, xbfilezilla will write a daily logfile to /xbmc/Logs/

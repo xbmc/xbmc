@@ -27,7 +27,8 @@
   <string><id>30</id><value>10월</value></string>
   <string><id>31</id><value>11월</value></string>
   <string><id>32</id><value>12월</value></string>
-  <string><id>33</id><value>일</value></string>
+  <string><id>98</id><value>보기: 자동</value></string>
+  <string><id>99</id><value>보기: 자동(Big)</value></string>
   <string><id>100</id><value>아이콘</value></string>
   <string><id>101</id><value>목록</value></string>
   <string><id>102</id><value>자동검색</value></string>
@@ -133,6 +134,7 @@
   <string><id>202</id><value>배급사</value></string>
   <string><id>203</id><value>줄거리 개요</value></string>
   <string><id>204</id><value>등급</value></string>
+  <string><id>2050</id><value>상영시간:</value></string>
   <string><id>205</id><value>투표</value></string>
   <string><id>206</id><value>출연</value></string>
   <string><id>207</id><value>줄거리</value></string>
@@ -147,26 +149,26 @@
   <string><id>216</id><value>확대</value></string>
   <string><id>217</id><value>늘리기</value></string>
   <string><id>218</id><value>DVD 드라이브</value></string>
-  <string><id>219</id><value>디스크를 넣어 주세요</value></string>
+  <string><id>219</id><value>디스크를 넣어 주십시오</value></string>
   <string><id>220</id><value>원격 공유</value></string>
   <string><id>221</id><value>네트워크가 연결되어 있지 않음</value></string>
   <string><id>222</id><value>취소</value></string>
   <string><id>223</id><value>자동 와이드 스크린 전환</value></string>
-  <string><id>224</id><value>변경속도</value></string>
-  <string><id>225</id><value>트랜지션 시간</value></string>
+  <string><id>224</id><value>변경 속도</value></string>
+  <string><id>225</id><value>전환 시간</value></string>
   <string><id>226</id><value>PAL60 활성화</value></string>
   <string><id>227</id><value>CDDB 활성화</value></string>
-  <string><id>228</id><value>로드시 연주목록 섞기</value></string>
+  <string><id>228</id><value>불러올때 재생목록 섞기</value></string>
   <string><id>229</id><value>하드절전모드시간(분단위)</value></string>
   <string><id>230</id><value>필터 변경</value></string>
   <string><id>231</id><value>없음</value></string>
-  <string><id>232</id><value>포인트</value></string>
+  <string><id>232</id><value>Point</value></string>
   <string><id>233</id><value>Linear</value></string>
   <string><id>234</id><value>Anisotropic</value></string>
   <string><id>235</id><value>Quincunx</value></string>
   <string><id>236</id><value>Gaussian Cubic</value></string>
-  <string><id>237</id><value>Minification:</value></string>
-  <string><id>238</id><value>Magnification:</value></string>
+  <string><id>237</id><value>축소:</value></string>
+  <string><id>238</id><value>확대:</value></string>
   <string><id>240</id><value>DVD 자동실행</value></string>
   <string><id>241</id><value>VCD/SVCD 자동실행</value></string>
   <string><id>242</id><value>음악 CD 자동실행</value></string>
@@ -181,16 +183,16 @@
   <string><id>251</id><value>대상 디렉토리 선택</value></string>
   <string><id>252</id><value>- 모든 스피커 출력</value></string>
   <string><id>253</id><value>채널수</value></string>
-  <string><id>254</id><value>- DD Stereo Passthrough</value></string>
+  <string><id>254</id><value>- DTS 지원 리시버 사용</value></string>
   <string><id>255</id><value>CDDB</value></string>
   <string><id>256</id><value>CDDB 정보 요청중</value></string>
-  <string><id>257</id><value>에러</value></string>
+  <string><id>257</id><value>오류</value></string>
   <string><id>258</id><value>ID3 태그활성화</value></string>
   <string><id>259</id><value>여는중</value></string>
   <string><id>260</id><value>인터넷라디오</value></string>
   <string><id>261</id><value>대기중....</value></string>
   <string><id>262</id><value>스크립트 출력</value></string>
-  <string><id>263</id><value>HTTP 서버</value></string>
+  <string><id>263</id><value>웹 서버 활성화</value></string>
   <string><id>264</id><value>음악녹음</value></string>
   <string><id>265</id><value>녹음 중지</value></string>
   <string><id>266</id><value>트랙순</value></string>
@@ -203,21 +205,21 @@
   <string><id>273</id><value>우측 하단 화면크기 조정</value></string>
   <string><id>274</id><value>자막 위치</value></string>
   <string><id>275</id><value>픽셀 비율 조정</value></string>
-  <string><id>276</id><value>화살표를 움직여서 화면크기를 조절하세요</value></string>
-  <string><id>277</id><value>수평바를 위아래로 움직여 자막위치를 변경하세요 </value></string>
-  <string><id>278</id><value>정사각형이 되도록 직사각형을 조절하세요</value></string>
-  <string><id>279</id><value>설정을 로드할 수 없음</value></string>
-  <string><id>280</id><value>기본설정대로 뒤로 이동</value></string>
-  <string><id>281</id><value>.xml 파일을 확인하세요</value></string>
-  <string><id>282</id><value>%i 아이템 발견</value></string>
+  <string><id>276</id><value>화살표를 움직여서 화면크기를 조절하십시오</value></string>
+  <string><id>277</id><value>수평바를 위아래로 움직여 자막위치를 변경하십시오</value></string>
+  <string><id>278</id><value>정사각형이 되도록 직사각형을 조절하십시오</value></string>
+  <string><id>279</id><value>설정을 불러들일 수 없음</value></string>
+  <string><id>280</id><value>기본 대체 설정 사용</value></string>
+  <string><id>281</id><value>.xml 파일을 확인하십시오</value></string>
+  <string><id>282</id><value>%i 항목 발견</value></string>
   <string><id>283</id><value>검색 결과</value></string>
-  <string><id>284</id><value>찾은 결과 없음</value></string>
+  <string><id>284</id><value>검색 결과 없음</value></string>
   <string><id>285</id><value>Deinterlace 필터</value></string>
   <string><id>286</id><value>Postprocessing 필터</value></string>
   <string><id>287</id><value>자막 변경</value></string>
   <string><id>288</id><value>폰트 이름</value></string>
   <string><id>289</id><value>자막 크기</value></string>
-  <string><id>290</id><value>볼륨 증가 (dB)</value></string>
+  <string><id>290</id><value>볼륨 증폭 (dB)</value></string>
   <string><id>291</id><value>비디오</value></string>
   <string><id>292</id><value>오디오</value></string>
   <string><id>293</id><value>자막</value></string>
@@ -238,7 +240,7 @@
   <string><id>309</id><value>수평 deblocking 필터</value></string>
   <string><id>310</id><value>자동 밝기/명암</value></string>
   <string><id>311</id><value>Dering</value></string>
-  <string><id>312</id><value>(0=auto)</value></string>
+  <string><id>312</id><value>(0=자동)</value></string>
   <string><id>313</id><value>DB 정리중</value></string>
   <string><id>314</id><value>준비중...</value></string>
   <string><id>315</id><value>DB 오류</value></string>
@@ -265,9 +267,9 @@
   <string><id>336</id><value>프레임 비율조정</value></string>
   <string><id>337</id><value>오디오 출력</value></string>
   <string><id>338</id><value>아날로그</value></string>
-  <string><id>339</id><value>디지탈</value></string>
+  <string><id>339</id><value>디지털</value></string>
   <string><id>340</id><value>각종 음악가</value></string>
-  <string><id>341</id><value>DVD 플레이</value></string>
+  <string><id>341</id><value>DVD 재생</value></string>
   <string><id>342</id><value>영화</value></string>
   <string><id>343</id><value>프레임 비율 조정 </value></string>
   <string><id>344</id><value>배우</value></string>
@@ -290,17 +292,17 @@
   <string><id>361</id><value>R. 슬라이드쇼</value></string>
   <string><id>362</id><value>스크린세이버 흐림정도 (%)</value></string>
   <string><id>363</id><value>파일순</value></string>
-  <string><id>364</id><value>- DD/DTS Multichannel Passthrough</value></string>
+  <string><id>364</id><value>- AC3 지원 리시버 사용</value></string>
   <string><id>365</id><value>이름순</value></string>
   <string><id>366</id><value>연도순</value></string>
   <string><id>367</id><value>등급순</value></string>
   <string><id>368</id><value>IMDB</value></string>
   <string><id>369</id><value>제목</value></string>
   <string><id>370</id><value>폭풍우</value></string>
-  <string><id>371</id><value>일부분</value></string>
+  <string><id>371</id><value>일부</value></string>
   <string><id>372</id><value>대부분</value></string>
-  <string><id>373</id><value>화창한</value></string>
-  <string><id>374</id><value>구름낀</value></string>
+  <string><id>373</id><value>화창함</value></string>
+  <string><id>374</id><value>흐림</value></string>
   <string><id>375</id><value>눈</value></string>
   <string><id>376</id><value>비</value></string>
   <string><id>377</id><value>천둥</value></string>
@@ -311,9 +313,9 @@
   <string><id>382</id><value>드문드문</value></string>
   <string><id>383</id><value>바람</value></string>
   <string><id>384</id><value>강한</value></string>
-  <string><id>385</id><value>맑게갠</value></string>
-  <string><id>386</id><value>Clear</value></string>
-  <string><id>387</id><value>Clouds</value></string>
+  <string><id>385</id><value>맑음</value></string>
+  <string><id>386</id><value>맑음</value></string>
+  <string><id>387</id><value>구름</value></string>
   <string><id>388</id><value>N/A</value></string>
   <string><id>389</id><value>N/A</value></string>
   <string><id>390</id><value>N/A</value></string>
@@ -333,12 +335,12 @@
   <string><id>404</id><value>바람</value></string>
   <string><id>405</id><value>이슬점</value></string>
   <string><id>406</id><value>습도</value></string>
-  <string><id>407</id><value>방향에서</value></string>
-  <string><id>408</id><value>로</value></string>
+  <string><id>407</id><value>풍향:</value></string>
+  <string><id>408</id><value>풍속:</value></string>
   <string><id>410</id><value>Weather.com 접속</value></string>
   <string><id>411</id><value>날씨:</value></string>
   <string><id>412</id><value>날씨 데이터를 얻을 수 없음.</value></string>
-  <string><id>413</id><value>매뉴얼</value></string>
+  <string><id>413</id><value>직접입력</value></string>
   <string><id>414</id><value>이 앨범에 리뷰가 없음</value></string>
   <string><id>415</id><value>섬네일 다운로드...</value></string>
   <string><id>416</id><value>사용 불가</value></string>
@@ -353,8 +355,8 @@
   <string><id>425</id><value>앨범 정보 찾지 못함.</value></string>
   <string><id>426</id><value>CDDB 정보 찾지 못함.</value></string>
   <string><id>427</id><value>디스크:</value></string>
-  <string><id>428</id><value>올바른 CD/DVD를 넣어주세요</value></string>
-  <string><id>429</id><value>다음 CD/DVD 를 넣어주세요</value></string>
+  <string><id>428</id><value>올바른 CD/DVD를 넣어주십시오</value></string>
+  <string><id>429</id><value>다음 CD/DVD 를 넣어주십시오</value></string>
   <string><id>430</id><value>DVD# 순</value></string>
   <string><id>431</id><value>캐시 안함</value></string>
   <string><id>432</id><value>DB에서 영화를 삭제합니까?</value></string>
@@ -376,6 +378,7 @@
   <string><id>448</id><value>LCD</value></string>
   <string><id>449</id><value>활성화됨</value></string>
   <string><id>450</id><value>세로</value></string>
+  <string><id>4501</id><value>LCD 종류</value></string>
   <string><id>451</id><value>첫번째 열 주소:</value></string>
   <string><id>452</id><value>두번째 열 주소:</value></string>
   <string><id>453</id><value>세번째 열 주소:</value></string>
@@ -383,7 +386,7 @@
   <string><id>455</id><value>가로</value></string>
   <string><id>456</id><value>모드:</value></string>
   <string><id>457</id><value>보기 전환</value></string>
-  <string><id>458</id><value>B/Mark</value></string>
+  <string><id>458</id><value>북마크</value></string>
   <string><id>459</id><value>자막</value></string>
   <string><id>460</id><value>오디오 스트림</value></string>
   <string><id>461</id><value>[활성화]</value></string>
@@ -393,16 +396,16 @@
   <string><id>465</id><value>명암</value></string>
   <string><id>466</id><value>감마</value></string>
   <string><id>467</id><value>Type</value></string>
-  <string><id>468</id><value>바를 움직여서 OSD 위치를 변경하세요. </value></string>
+  <string><id>468</id><value>바를 움직여서 OSD 위치를 변경하십시오</value></string>
   <string><id>469</id><value>OSD 위치</value></string>
   <string><id>470</id><value>Credits</value></string>
   <string><id>471</id><value>모드칩</value></string>
-  <string><id>472</id><value>OSD 시간초과</value></string>
+  <string><id>472</id><value>OSD 표시시간</value></string>
   <string><id>473</id><value>고음질 리샘플링</value></string>
   <string><id>474</id><value>끄기</value></string>
   <string><id>475</id><value>음악만</value></string>
   <string><id>476</id><value>음악 & 비디오</value></string>
-  <string><id>477</id><value>재생목록을 읽을 수 없음.</value></string>
+  <string><id>477</id><value>재생목록을 읽을 수 없음</value></string>
   <string><id>478</id><value>OSD</value></string>
   <string><id>479</id><value>스킨과 언어</value></string>
   <string><id>480</id><value>사용자 인터페이스</value></string>
@@ -413,9 +416,9 @@
   <string><id>485</id><value>앨범 삭제</value></string>
   <string><id>486</id><value>반복</value></string>
   <string><id>487</id><value>한곡 반복</value></string>
-  <string><id>488</id><value>폴더 플레이리스트 반복</value></string>
-  <string><id>489</id><value>플레이리스트 사용</value></string>
-  <string><id>490</id><value>리스트와 아이콘 자동 전환</value></string>
+  <string><id>488</id><value>폴더 반복 재생</value></string>
+  <string><id>489</id><value>재생목록 사용</value></string>
+  <string><id>490</id><value>목록과 아이콘 자동 전환</value></string>
   <string><id>491</id><value>- 큰 아이콘</value></string>
   <string><id>492</id><value>자막 확대</value></string>
   <string><id>493</id><value>고급 사용자 설정</value></string>
@@ -431,24 +434,24 @@
   <string><id>503</id><value>읽는중</value></string>
   <string><id>504</id><value>비어있음</value></string>
   <string><id>505</id><value>미디어 정보 읽는중...</value></string>
-  <string><id>506</id><value>description을 디렉토리 이름으로 사용</value></string>
+  <string><id>506</id><value>설명을 디렉토리 이름으로 사용</value></string>
   <string><id>507</id><value>정렬: 사용빈도</value></string>
-  <string><id>508</id><value>Shortcuts 이나 스캔을 사용하지 않음</value></string>
+  <string><id>508</id><value>바로가기나 검색을 사용하지 않음</value></string>
   <string><id>600</id><value>시디 추출</value></string>
   <string><id>601</id><value>중간</value></string>
   <string><id>602</id><value>표준</value></string>
   <string><id>603</id><value>최대</value></string>
   <string><id>604</id><value>고정 비트레이트</value></string>
   <string><id>605</id><value>추출중...</value></string>
-  <string><id>606</id><value>트랙 넘버:</value></string>
-  <string><id>607</id><value>To:</value></string>
+  <string><id>606</id><value>트랙 번호:</value></string>
+  <string><id>607</id><value>대상:</value></string>
   <string><id>608</id><value>시디나 트랙을 추출 할수 없습니다</value></string>
   <string><id>609</id><value>XboxMediaCenter.xml에 CDDARipPath가 설정되지 않았습니다</value></string>
   <string><id>620</id><value>시디 추출</value></string>
   <string><id>621</id><value>인코더</value></string>
   <string><id>622</id><value>음질</value></string>
   <string><id>623</id><value>비트 레이트</value></string>
-  <string><id>624</id><value>트랙 넘버 포함</value></string>
+  <string><id>624</id><value>트랙 번호 포함</value></string>
   <string><id>625</id><value>모든 음악</value></string>
   <string><id>629</id><value>View Mode</value></string>
   <string><id>630</id><value>보통</value></string>
@@ -461,39 +464,57 @@
   <string><id>700</id><value>데이터베이스 정리</value></string>
   <string><id>701</id><value>데이터베이스로부터 오래된 음악 제거</value></string>
   <string><id>702</id><value>이 경로는 이미 스캔되었음</value></string>
-  <string><id>703</id><value>이 경로의 모든 음악을 업데이트하려면 예를 누르세요</value></string>
-  <string><id>704</id><value>새로운 음악만 추가하려면 아니오를 누르세요</value></string>
+  <string><id>703</id><value>이 경로의 모든 음악을 업데이트하려면 예를 누르십시오</value></string>
+  <string><id>704</id><value>새로운 음악만 추가하려면 아니오를 누르십시오</value></string>
   <string><id>705</id><value>네트워크</value></string>
-  <string><id>706</id><value>HTTP Proxy Host</value></string>
-  <string><id>707</id><value>HTTP Proxy Port</value></string>
-  <string><id>708</id><value>Enable HTTP Proxy</value></string>
-  <string><id>709</id><value>XLink Kai XTag</value></string>
-  <string><id>710</id><value>XLink Kai Password</value></string>
+  <string><id>706</id><value>HTTP 프록시 호스트</value></string>
+  <string><id>707</id><value>HTTP 프록시 포트</value></string>
+  <string><id>708</id><value>HTTP 프록시 사용</value></string>
+  <string><id>709</id><value>XLink Kai X테그</value></string>
+  <string><id>710</id><value>XLink Kai 비밀번호</value></string>
   <string><id>711</id><value>인터텟 프로토콜(IP)</value></string>
-  <string><id>712</id><value>잘못된 포트를 설정했음. 1 과 65535사이의 값을 넣으세요.</value></string>
-  <string><id>713</id><value>HTTP Proxy</value></string>
+  <string><id>712</id><value>잘못된 포트를 설정했음. 1 과 65535사이의 값을 넣으십시오</value></string>
+  <string><id>713</id><value>HTTP 프록시</value></string>
   <string><id>714</id><value>XLink Kai</value></string>
   <string><id>715</id><value>할당</value></string>
   <string><id>716</id><value>자동 (DHCP)</value></string>
-  <string><id>717</id><value>수동 (Static)</value></string>
-  <string><id>718</id><value>기본설정 (Dashboard)</value></string>
+  <string><id>717</id><value>수동 (고정)</value></string>
+  <string><id>718</id><value>기본 (대시보드설정)</value></string>
   <string><id>719</id><value>IP 주소</value></string>
-  <string><id>720</id><value>Netmask</value></string>
+  <string><id>720</id><value>넷마스크</value></string>
   <string><id>721</id><value>기본 게이트웨이</value></string>
   <string><id>722</id><value>DNS 서버</value></string>
   <string><id>723</id><value>저장 및 재시작</value></string>
-  <string><id>724</id><value>잘못된 주소 입력. AAA.BBB.CCC.DDD같이 입력하세요</value></string>
-  <string><id>725</id><value>0과 255사이의 숫자로.</value></string>
-  <string><id>726</id><value>변화값이 저장되지 않음. 저장하지 않고 계속하시겠습니까?</value></string>
+  <string><id>724</id><value>잘못된 주소 입력. AAA.BBB.CCC.DDD같이 입력하십시오</value></string>
+  <string><id>725</id><value>0과 255사이의 숫자로</value></string>
+  <string><id>726</id><value>변경값이 저장되지 않음. 저장하지 않고 계속하시겠습니까?</value></string>
   <string><id>727</id><value>웹 서버</value></string>
   <string><id>728</id><value>FTP 서버</value></string>
   <string><id>729</id><value>인터넷 시간</value></string>
   <string><id>730</id><value>웹 서버 포트</value></string>
-  <string><id>731</id><value>타임 서버 호스트</value></string>
-  <string><id>732</id><value>저장및 적용</value></string>
+  <string><id>731</id><value>시간서버 주소</value></string>
+  <string><id>732</id><value>저장 및  적용</value></string>
   <string><id>733</id><value>웹 서버 암호</value></string>
   <string><id>734</id><value>암호 없음</value></string>
-  <string><id>735</id><value>문자셋:</value></string>
+  <string><id>735</id><value>- 문자셋</value></string>
+  <string><id>736</id><value>- 스타일</value></string>  
+  <string><id>737</id><value>색상:</value></string>
+  <string><id>738</id><value>보통</value></string>  
+  <string><id>739</id><value>굵게</value></string>  
+  <string><id>740</id><value>기울임꼴</value></string>  
+  <string><id>741</id><value>굵은 기울임꼴</value></string>  
+  <string><id>742</id><value>흰색</value></string>  
+  <string><id>743</id><value>노란색</value></string>
+  <string><id>744</id><value>파일</value></string>    
+  <string><id>745</id><value>현재 보기에서 검색 결과 없음</value></string>    
+  <string><id>746</id><value>파일 보기로 변경</value></string>
+  <string><id>747</id><value>메모리가 부족해 이미지를 불러올 수 없습니다</value></string>
+  <string><id>748</id><value>경로 변경</value></string>
+  <string><id>749</id><value>공유 추가</value></string>
+  <string><id>750</id><value>확실합니까?</value></string>
+  <string><id>751</id><value>공유 제거</value></string>  
+  <string><id>752</id><value>공유 경로 변경</value></string>
+  <string><id>753</id><value>공유 이름 변경</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>온라인 게이밍</value></string>
   <string><id>10000</id><value>홈</value></string>
@@ -522,11 +543,11 @@
   <string><id>10025</id><value>비디오/제목</value></string>
   <string><id>10026</id><value>설정-&gt;일반-&gt;캐쉬</value></string>
   <string><id>10027</id><value>설정-&gt;일반-&gt;자동실행</value></string>
-  <string><id>10028</id><value>비디오/상영목록</value></string>
+  <string><id>10028</id><value>비디오/재생목록</value></string>
   <string><id>10029</id><value>설정-&gt;일반-&gt;LCD</value></string>
   <string><id>10100</id><value>예/아니오 대화창</value></string>
   <string><id>10101</id><value>진행 대화창</value></string>
-  <string><id>10500</id><value>음악/연주목록</value></string>
+  <string><id>10500</id><value>음악/재생목록</value></string>
   <string><id>10501</id><value>음악/파일</value></string>
   <string><id>10502</id><value>음악/앨범</value></string>
   <string><id>10503</id><value>음악/음악가</value></string>
@@ -535,13 +556,58 @@
   <string><id>11000</id><value>키보드</value></string>
   <string><id>12000</id><value>대화창 선택</value></string>
   <string><id>12001</id><value>음악/정보</value></string>
-  <string><id>12002</id><value>대화창 OK</value></string>
+  <string><id>12002</id><value>확인 대화창</value></string>
   <string><id>12003</id><value>비디오/정보</value></string>
   <string><id>12004</id><value>스크립트/정보</value></string>
   <string><id>12005</id><value>전체 화면 보기</value></string>
   <string><id>12006</id><value>오디오 시각화</value></string>
   <string><id>12007</id><value>사진/슬라이드 쇼</value></string>
-  <string><id>12008</id><value>Filestacking 대화창</value></string>
+  <string><id>12008</id><value>파일관리 대화창</value></string>
+  <string><id>12310</id><value>0</value></string>
+  <string><id>12311</id><value>1</value></string>
+  <string><id>12312</id><value>2</value></string>
+  <string><id>12313</id><value>3</value></string>
+  <string><id>12314</id><value>4</value></string>
+  <string><id>12315</id><value>5</value></string>
+  <string><id>12316</id><value>6</value></string>
+  <string><id>12317</id><value>7</value></string>
+  <string><id>12318</id><value>8</value></string>
+  <string><id>12319</id><value>9</value></string>
+  <string><id>12320</id><value>c</value></string>
+  <string><id>12321</id><value>ok</value></string>
+  <string><id>12322</id><value>*</value></string>
+  <string><id>12324</id><value>XBMC 전체 잠금</value></string>
+  <string><id>12325</id><value>폴더 잠금</value></string>
+  <string><id>12326</id><value>비밀번호 입력</value></string>
+  <string><id>12327</id><value>전체 잠금 코드를 입력후 엔터를 누르십시오,</value></string>
+  <string><id>12328</id><value>잠금 해제 코드를 입력후 엔터를 누르십시오,</value></string> 
+  <string><id>12329</id><value>- C 버튼을 누르면 취소</value></string>
+  <string><id>12330</id><value>XBOX 패드 조합을 입력한 후</value></string>
+  <string><id>12331</id><value>start버튼을 누르십시오 - back버튼을 누르면 취소</value></string>
+  <string><id>12332</id><value>공유 잠금</value></string>
+  <string><id>12333</id><value>공유 잠금 해제</value></string>
+  <string><id>12334</id><value>공유 잠금 초기화</value></string>
+  <string><id>12335</id><value>공유 잠금 제거</value></string>
+  <string><id>12336</id><value>사용할 잠금 방법 선택:</value></string>
+  <string><id>12337</id><value>숫자 비밀번호</value></string>
+  <string><id>12338</id><value>패드 버튼 조합</value></string>
+  <string><id>12339</id><value>텍스트 비밀번호</value></string>
+  <string><id>12340</id><value>새 비밀번호 입력</value></string>
+  <string><id>12341</id><value>새 비밀번호 다시 입력</value></string>
+  <string><id>12342</id><value>잘못된 비밀번호,</value></string>
+  <string><id>12343</id><value>재시도 남음 </value></string>
+  <string><id>12344</id><value>입력된 비밀번호가 일치하지 않습니다</value></string>
+  <string><id>12345</id><value>접근 불가</value></string>
+  <string><id>12346</id><value>비밀번호 재입력 회수제한을 넘어섰습니다</value></string>
+  <string><id>12347</id><value>XBOX를 종료합니다</value></string>
+  <string><id>12348</id><value>항목 잠김</value></string>
+  <string><id>12349</id><value>다음 시작까지 잠금코드를 기억할까요?</value></string>
+  <string><id>12350</id><value>(설정 항목을 열게되면 자동적으로</value></string>
+  <string><id>12351</id><value>전체 잠금 기능이 작동됩니다)</value></string>
+  <string><id>12352</id><value>전체 잠금 코드를 입력 하고</value></string>
+  <string><id>12353</id><value>공유 잠금을 활성화 하십시오</value></string>
+  <string><id>12354</id><value>다음 시작까지 공유잠금을 해제합니까?</value></string>
+  <string><id>12355</id><value>폴더 잠금기능이 활성화됩니다)</value></string>
   <string><id>12600</id><value>날씨</value></string>
   <string><id>12900</id><value>화면 보호기</value></string>
   <string><id>12901</id><value>전체화면 OSD</value></string>
@@ -550,6 +616,8 @@
   <string><id>13002</id><value>비디오만</value></string>
   <string><id>13003</id><value>- 지연:</value></string>
   <string><id>13004</id><value>- 최소 파일 지속기간:</value></string>
+  <string><id>13005</id><value>전원 끔</value></string>
+  <string><id>13006</id><value>대시보드</value></string>
   <string><id>13100</id><value>화면 떨림 방지</value></string>
   <string><id>13200</id><value>프로파일</value></string>
   <string><id>13201</id><value>프로파일 '%s' 삭제?</value></string>
@@ -557,25 +625,26 @@
   <string><id>13203</id><value>프로파일 '%s' 성공적으로 읽어들임</value></string>
   <string><id>13204</id><value>마지막으로 읽어들인 프로파일:</value></string>
   <string><id>13205</id><value>알려지지 않음</value></string>
+  <string><id>13299</id><value>목표 온도</value></string>
   <string><id>13300</id><value>팬 속도:</value></string>
   <string><id>13301</id><value>자동 온도 조절</value></string>
   <string><id>13302</id><value>팬 속도 조절</value></string>
   <string><id>13303</id><value>스킨 폰트</value></string>
-  <string><id>13304</id><value>Flipping Bi-Directional 문자열 활성화</value></string>
-  <string><id>13305</id><value>RSS Feeds 활성화</value></string>
-  <string><id>13306</id><value>부모 폴더 항목 감춤</value></string>
-  <string><id>13307</id><value>트랙 숫자 감춤</value></string>
+  <string><id>13304</id><value>역방향 문자열의 뒤집기 활성화</value></string>
+  <string><id>13305</id><value>RSS 피드 활성화</value></string>
+  <string><id>13306</id><value>상위 폴더 항목 숨기기</value></string>
+  <string><id>13307</id><value>트랙 번호 숨기기</value></string>
   <string><id>13308</id><value>XBMC만 재시작하는 대신에</value></string>
   <string><id>13309</id><value>XBOX를 재시작하기를 원하십니까?</value></string>
   <string><id>13310</id><value>확대 효과</value></string>
-  <string><id>13311</id><value>Float 효과</value></string>
-  <string><id>13312</id><value>Black Bar 감소</value></string>
+  <string><id>13311</id><value>떠다니는 효과</value></string>
+  <string><id>13312</id><value>테두리 감소</value></string>
   <string><id>13313</id><value>리셋/재시작</value></string>
   <string><id>13314</id><value>음악 OSD 타임아웃</value></string>
   <string><id>13315</id><value>썸네일 생성</value></string>
-  <string><id>13316</id><value>재귀 썸네일</value></string>
+  <string><id>13316</id><value>순환 썸네일</value></string>
   <string><id>13317</id><value>슬라이드쇼 보기</value></string>
-  <string><id>13318</id><value>재귀 슬라이드쇼</value></string>
+  <string><id>13318</id><value>순환 슬라이드쇼</value></string>
   <string><id>13319</id><value>무작위</value></string>
   <string><id>13320</id><value>스테레오</value></string>
   <string><id>13321</id><value>왼쪽만</value></string>
@@ -585,19 +654,40 @@
   <string><id>13325</id><value>전경 투명도</value></string>
   <string><id>13326</id><value>A/V 지연</value></string>
   <string><id>13327</id><value>가라오케</value></string>
-  <string><id>13328</id><value>%s not found.</value></string>
-  <string><id>13329</id><value>Error opening %s</value></string>
-  <string><id>13330</id><value>Unable to load %s</value></string>
-  <string><id>13331</id><value>에러: 메모리 부족</value></string>
+  <string><id>13328</id><value>%s 찾지 못함</value></string>
+  <string><id>13329</id><value>열기 오류 - %s</value></string>
+  <string><id>13330</id><value>읽을 수 없음 - %s </value></string>
+  <string><id>13331</id><value>오류: 메모리 부족</value></string>
   <string><id>13332</id><value>위로 이동</value></string>
   <string><id>13333</id><value>아래로 이동</value></string>
   <string><id>13334</id><value>라벨 편집</value></string>
-  <string><id>13335</id><value>기본값으로 만듬</value></string>
+  <string><id>13335</id><value>기본값으로</value></string>
   <string><id>13336</id><value>버튼 제거</value></string>
-  <string><id>13337</id><value>- 2 채널 PCM Passthrough</value></string>
-  <string><id>14000</id><value>연속 재생: Off</value></string>
-  <string><id>14001</id><value>연속 재생: Simple</value></string>
-  <string><id>14002</id><value>연속 재생: Fuzzy</value></string>
+  <string><id>13337</id><value>- 2 채널 PCM 출력</value></string>
+  <string><id>13338</id><value>전면 LED</value></string>
+  <string><id>13339</id><value>전면 LED 색상</value></string>
+  <string><id>13340</id><value>변경안함</value></string>
+  <string><id>13341</id><value>녹색</value></string>
+  <string><id>13342</id><value>오랜지색</value></string>
+  <string><id>13343</id><value>붉은색</value></string>
+  <string><id>13344</id><value>순환</value></string>
+  <string><id>13345</id><value>재생시 LED 끔</value></string>
+  <string><id>13346</id><value>영화 정보</value></string>
+  <string><id>13347</id><value>대기 항목</value></string>
+  <string><id>13348</id><value>IMDb 검색...</value></string>
+  <string><id>13349</id><value>전체 파일 검색</value></string>
+  <string><id>13350</id><value>지금 재생...</value></string>
+  <string><id>13351</id><value>앨범 정보</value></string>
+  <string><id>13352</id><value>폴더를 검색해 데이터베이스에 입력</value></string>
+  <string><id>13353</id><value>검색 중지</value></string>
+  <string><id>13354</id><value>렌더링 방식</value></string>
+  <string><id>13355</id><value>픽셀 쉐이더</value></string>
+  <string><id>13356</id><value>YUY2 오버레이</value></string>
+  <string><id>13357</id><value>빠른 YUY2 오버레이</value></string>
+  
+  <string><id>14000</id><value>연속 재생: 끔</value></string>
+  <string><id>14001</id><value>연속 재생: 간단</value></string>
+  <string><id>14002</id><value>연속 재생: 자동</value></string>
   <string><id>14003</id><value>재생목록 파일 다운로드하는 중...</value></string>
   <string><id>14004</id><value>스트림 목록 다운로드하는 중...</value></string>
   <string><id>14005</id><value>스트림 목록 분석하는 중...</value></string>
@@ -605,40 +695,40 @@
   <string><id>14007</id><value>재생목록 파일 다운로드 실패</value></string>
   <string><id>14008</id><value>Kai 알림 활성화</value></string>
   <string><id>14009</id><value>게임 디렉토리</value></string>
-  <string><id>14010</id><value>Autoswitch to Thumbs based on</value></string>
-  <string><id>14011</id><value>Enable Autoswitching to Thumbs View</value></string>
-  <string><id>14012</id><value>- 큰 아이콘 사용하기</value></string>
-  <string><id>14013</id><value>- Switch Based on</value></string>
+  <string><id>14010</id><value>자동 섬네일 보기 변경 - </value></string>
+  <string><id>14011</id><value>자동 섬네일 보기 변경 활성화</value></string>
+  <string><id>14012</id><value>- 큰 아이콘 사용</value></string>
+  <string><id>14013</id><value>- 변경 기준 :</value></string>
   <string><id>14014</id><value>- 퍼센트</value></string>
-  <string><id>14015</id><value>No Files and at least one Thumb</value></string>
-  <string><id>14016</id><value>At least one File and Thumb</value></string>
-  <string><id>14017</id><value>Percentage of Thumbs</value></string>
-  <string><id>14018</id><value>옵션 보기</value></string>
+  <string><id>14015</id><value>파일 없이 한개 이상의 섬네일</value></string>
+  <string><id>14016</id><value>한개 이상의 파일과 섬네일</value></string>
+  <string><id>14017</id><value>섬네일 비율</value></string>
+  <string><id>14018</id><value>보기 옵션</value></string>
   <string><id>14019</id><value>지역코드 1 변경</value></string>
   <string><id>14020</id><value>지역코드 2 변경</value></string>
   <string><id>14021</id><value>지역코드 3 변경</value></string>
-  <string><id>14022</id><value>Library</value></string>
-  <string><id>14023</id><value>No TV</value></string>
-  <string><id>14024</id><value>Enter the nearest large town or US ZIP code</value></string>
+  <string><id>14022</id><value>라이브러리</value></string>
+  <string><id>14023</id><value>TV 사용안함</value></string>
+  <string><id>14024</id><value>근방의 도시나 우편번호(US ZIP)입력</value></string>
   <string><id>14025</id><value>비디오 캐쉬   - 하드디스크</value></string>
   <string><id>14026</id><value>              - DVD롬</value></string>
-  <string><id>14027</id><value>              - 지역 네트워크</value></string>
+  <string><id>14027</id><value>              - 로컬 네트워크</value></string>
   <string><id>14028</id><value>              - 인터넷</value></string>
   <string><id>14029</id><value>오디오 캐쉬   - 하드디스크</value></string>
   <string><id>14030</id><value>              - DVD롬</value></string>
-  <string><id>14031</id><value>              - 지역 네트워크</value></string>
+  <string><id>14031</id><value>              - 로컬 네트워크</value></string>
   <string><id>14032</id><value>              - 인터넷</value></string>
   <string><id>14033</id><value>DVD 캐쉬      - 하드디스크</value></string>
   <string><id>14034</id><value>              - DVD롬</value></string>
-  <string><id>14035</id><value>              - 지역 네트워크</value></string>
-  <string><id>14036</id><value>서버들</value></string>
+  <string><id>14035</id><value>              - 로컬 네트워크</value></string>
+  <string><id>14036</id><value>서버</value></string>
   <string><id>14037</id><value>보기와 느낌</value></string>
-  <string><id>14038</id><value>네트워크 설정이 변경되었습니다.</value></string>
-  <string><id>14039</id><value>변경값을 적용하려면 XBMC를 재시작해야 합니다.</value></string>
+  <string><id>14038</id><value>네트워크 설정이 변경되었습니다</value></string>
+  <string><id>14039</id><value>변경값을 적용하려면 XBMC를 재시작해야 합니다</value></string>
   <string><id>14040</id><value>지금 재시작하시겠습니까?</value></string>
-  <string><id>14041</id><value>Post Processing</value></string>
-  <string><id>14042</id><value>Engine IP 주소</value></string>
-  <string><id>14043</id><value>- 재생하는 동안에 종료하기</value></string>
+  <string><id>14041</id><value>후 처리</value></string>
+  <string><id>14042</id><value>엔진 IP 주소</value></string>
+  <string><id>14043</id><value>- 재생하는 동안에도 종료</value></string>
   <string><id>14044</id><value>%i 분</value></string>
   <string><id>14045</id><value>%i 초</value></string>
   <string><id>14046</id><value>%i 밀리초</value></string>
@@ -649,5 +739,8 @@
   <string><id>14051</id><value>12 시간 시계로 보여주기</value></string>
   <string><id>14052</id><value>초기 화면에서 월과 일을 뒤바꾸기</value></string>
   <string><id>14053</id><value>GUI 필터</value></string>
-  <string><id>14054</id><value>인터넷 찾기 활성화</value></string>
+  <string><id>14054</id><value>인터넷 검색 활성화</value></string>
+  <string><id>14055</id><value>백그라운드 검색 사용</value></string>
+  <string><id>14056</id><value>검색 중지</value></string>
+  <string><id>14057</id><value>미디어 정보 검색중에는 사용 불가</value></string>
 </strings>
