@@ -221,7 +221,7 @@ CreditLine_t Credits[] =
 	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"was first announced" },
 
   // section gamestr17
-  {  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Gamestr17" },
+  {  50,  50,   4000,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   36, L"Gamester17" },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"Special thanks to everyone on the" },
 	{  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"XBMC/XBMP-Team," },
   {  50,  50,    800,      0, 4000, 4000, EFF_IN_ASCEND |EFF_OUT_ASCEND ,   20, L"and users who don't complain" },
