@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-02-2005 added: Keymapping for python debug - only runs from the Scripts window - thanks to EnderW + NotWired.
   - 13-02-2005 fixed: [ 1121387 ]	Fatal exception after dir up and select in an empty folder
   - 12-02-2005 added: New infolabels: System.FreeSpace(C) returns freespace on C (E, F, or G) and Network.IPAddress
   - 12-02-2005 fixed: Rebuilt image libs - seems to cure TIFF loading issues.
