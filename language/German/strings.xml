@@ -747,4 +747,67 @@
   <string><id>14056</id><value>Stop</value></string>
   <string><id>14057</id><value>Nicht möglich während des Durchsuchens</value></string>
   <string><id>14058</id><value>Filmkörnungseffekt</value></string>
+
+  <string><id>15000</id><value>XLink Kai</value></string>
+  <string><id>15001</id><value>Keine Verbindung zu Kai XLink, möchtest du versuchen</value></string>
+  <string><id>15002</id><value>eine Verbindung mit Xbox Media Center aufzubauen?</value></string>
+  <string><id>15003</id><value>Bitte die Nachricht eingeben.</value></string>
+  <string><id>15004</id><value>Du wurdest eingeladen %s zu spielen.</value></string>
+  <string><id>15005</id><value>Datum: %s</value></string>
+  <string><id>15006</id><value>Von: %s</value></string>
+  <string><id>15007</id><value>Einladung</value></string>
+  <string><id>15008</id><value>Du wurdest eingeladen %s beizutreten.</value></string>
+  <string><id>15009</id><value>Offline</value></string>
+  <string><id>15010</id><value>Freunde</value></string>
+  <string><id>15011</id><value>Ansicht: Freunde</value></string>
+  <string><id>15012</id><value>Beitreten</value></string>
+  <string><id>15013</id><value>Voice</value></string>
+  <string><id>15014</id><value>Einladen</value></string>
+  <string><id>15015</id><value>Entfernen</value></string>
+  <string><id>15016</id><value>Spiele</value></string>
+  <string><id>15017</id><value>Ansicht: Spiele</value></string>
+  <string><id>15018</id><value>Eintreten</value></string>
+  <string><id>15019</id><value>Hinzufügen</value></string>
+  <string><id>15020</id><value>Hosten</value></string>
+  <string><id>15021</id><value>Arenen</value></string>
+  <string><id>15022</id><value>Ansicht: Arenen</value></string>
+  <string><id>15023</id><value>Spielen</value></string>
+  <string><id>15024</id><value>Hinzufügen</value></string>
+  <string><id>15025</id><value>Hosten</value></string>
+  <string><id>15026</id><value>Chat</value></string>
+  <string><id>15027</id><value>Ansicht: Chat</value></string>
+  <string><id>15028</id><value>Tastatur</value></string>
+  <string><id>15029</id><value>Es wird ein Passwort benötigt um dieser Arena beizutreten.</value></string>
+  <string><id>15030</id><value>Verbindung zu XLink Kai unterbrochen</value></string>
+  <string><id>15031</id><value>XLink Kai Authentifikation</value></string>
+  <string><id>15032</id><value>Dein Benutzername und/oder dein Passwort wurde vom</value></string>
+  <string><id>15033</id><value>Orbital Server abgelehnt. Bitte die Konfiguration überprüfen.</value></string>
+  <string><id>15034</id><value>hat sich angemeldet</value></string>
+  <string><id>15035</id><value>hat einen voice chat initiiert</value></string>
+  <string><id>15036</id><value>hat dir eine Einladung gesendet</value></string>
+  <string><id>15037</id><value>XBMC ist es unmöglich zu bestätigen das dein Netzwerk erreichbar ist.</value></string>
+  <string><id>15038</id><value>Du könntest schwierigkeiten haben Spiele zu Hosten oder ihnen beizutreten.</value></string>
+  <string><id>15039</id><value>Xbox Media Center konnte das Spiel nicht automatisch finden.</value></string>
+  <string><id>15040</id><value>Bitte die DVD in die XBOX einlegen oder 'A' drücken um abzubrechen</value></string>
+  <string><id>15041</id><value>und das Spiel manuell zu starten.</value></string>
+  <string><id>15042</id><value>Zugriff verweigert</value></string>
+  <string><id>15043</id><value>%s ist dem Chat beigetreten.</value></string>
+  <string><id>15044</id><value>%s hat den Chat verlassen.</value></string>
+  <string><id>15045</id><value>Bitte die persönliche Nachricht eingeben.</value></string>
+  <string><id>15046</id><value>Diese Arena</value></string>
+  <string><id>15047</id><value>Bitte ein Passwort für deine Arena eingeben.</value></string>
+  <string><id>15048</id><value>Bitte eine Beschreibung für deine Arena eingeben.</value></string>
+  <string><id>15049</id><value>Spiel hosten</value></string>
+  <string><id>15050</id><value>Private Arena hosten</value></string>
+  <string><id>15051</id><value>Spieler Anzahl</value></string>
+  <string><id>15052</id><value>Passwort</value></string>
+  <string><id>15053</id><value>Beschreibung</value></string>
+  <string><id>15054</id><value>Einladen Dialog</value></string>
+  <string><id>15055</id><value>Spiel wählen:</value></string>
+  <string><id>15056</id><value>Nachricht eingeben:</value></string>
+  <string><id>15057</id><value>Senden</value></string>
+  <string><id>15058</id><value>Host</value></string>
+  <string><id>15059</id><value>Einladung akzeptiert!</value></string>
+  <string><id>15060</id><value>Nachricht hier</value></string>
+  <string><id>15061</id><value>Du bist eingeladen %s zu spielen.</value></string>
 </strings>
