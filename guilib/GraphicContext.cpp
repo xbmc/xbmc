@@ -187,31 +187,14 @@ void CGraphicContext::SetOverlay(bool bOnOff)
 
 bool CGraphicContext::IsValidResolution(RESOLUTION res)
 {
-	bool bCanDoWidescreen = g_videoConfig.HasWidescreen();
-	if (g_videoConfig.HasPAL())
-	{
-		bool bCanDoPAL60 = g_videoConfig.HasPAL60();
-		if (res == PAL_4x3) return true;
-		if (res == PAL_16x9 && bCanDoWidescreen) return true;
-		if (res == PAL60_4x3 && bCanDoPAL60) return true;
-		if (res == PAL60_16x9 && bCanDoPAL60 && bCanDoWidescreen) return true;
-	}
-	else	// NTSC Screenmodes
-	{
-		if (res == NTSC_4x3) return true;
-		if (res == NTSC_16x9 && bCanDoWidescreen) return true;
-		if (res == HDTV_480p_4x3 && g_videoConfig.Has480p()) return true;
-		if (res == HDTV_480p_16x9 && g_videoConfig.Has480p() && bCanDoWidescreen) return true;
-		if (res == HDTV_720p && g_videoConfig.Has720p()) return true;
-		if (res == HDTV_1080i && g_videoConfig.Has1080i()) return true;
-	}
-	return false;
+  return g_videoConfig.IsValidResolution(res);
 }
 
 void CGraphicContext::GetAllowedResolutions(vector<RESOLUTION> &res, bool bAllowPAL60)
 {
 	bool bCanDoWidescreen = g_videoConfig.HasWidescreen();
 	res.clear();
+	res.push_back(AUTORES);
 	if (g_videoConfig.HasPAL())
 	{
 		res.push_back(PAL_4x3);
@@ -242,7 +225,7 @@ void CGraphicContext::SetGUIResolution(RESOLUTION &res)
 {
 	CLog::Log(LOGDEBUG, "Setting resolution %i", res);
 	SetVideoResolution(res);
-	CLog::Log(LOGDEBUG, "We set resolution %i", res);
+  CLog::Log(LOGDEBUG, "We set resolution %i", m_Resolution);
 	if (!m_pd3dParams) return;
 	m_iScreenWidth=m_pd3dParams->BackBufferWidth ;
 	m_iScreenHeight=m_pd3dParams->BackBufferHeight;
@@ -251,13 +234,14 @@ void CGraphicContext::SetGUIResolution(RESOLUTION &res)
 
 void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
 {
+  if (res == AUTORES)
+  {
+    res = g_videoConfig.GetBestMode();
+  }
 	if (!IsValidResolution(res))
 	{	// Choose a failsafe resolution that we can actually display
 		CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
-		if (g_videoConfig.HasPAL())
-			res = PAL_4x3;
-		else
-			res = NTSC_4x3;
+		res = g_videoConfig.GetSafeMode();
 	}
 	if (!m_pd3dParams)
 	{
