@@ -14,13 +14,15 @@ public:
   CGUIListItem(void);
   CGUIListItem(bool bHasImage, const CStdString& strLabel);
   virtual ~CGUIListItem(void);
+
   const CStdString& GetLabel() const;
   const CStdString& GetLabel2() const;
-  bool          HasImage() const;
+  bool              HasImage() const;
   CStdString        m_strLabel;
   CStdString        m_strLabel2;
   CStdString        m_strThumbnailImage;
-  bool          m_bImage;
-  CGUIImage*    m_pImage;
+  bool              m_bImage;
+  CGUIImage*        m_pImage;
+  bool              m_bSelected;
 };
 #endif

@@ -6,6 +6,7 @@ CGUIListItem::CGUIListItem(void)
   m_strLabel="";
   m_bImage=false;
   m_pImage=NULL;
+  m_bSelected=false;
 }
 
 CGUIListItem::CGUIListItem(bool bHasImage, const CStdString& strLabel)
@@ -14,6 +15,7 @@ CGUIListItem::CGUIListItem(bool bHasImage, const CStdString& strLabel)
   m_bImage=bHasImage;
   m_strLabel=strLabel;
   m_pImage=NULL;
+  m_bSelected=false;
 }
 
 CGUIListItem::~CGUIListItem(void)

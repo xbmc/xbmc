@@ -10,13 +10,14 @@ CGUIListControl::CGUIListControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPo
                                  const CStdString& strUp, const CStdString& strDown, 
                                  const CStdString& strUpFocus, const CStdString& strDownFocus, 
                                  DWORD dwSpinColor,DWORD dwSpinX, DWORD dwSpinY,
-                                 const CStdString& strFont, DWORD dwTextColor,
+                                 const CStdString& strFont, DWORD dwTextColor,DWORD dwSelectedColor,
                                  const CStdString& strButton, const CStdString& strButtonFocus)
 :CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight)
 ,m_imgFolder(dwParentID, dwControlId, dwPosX, dwPosY, 0,0,strImageIcon)
 ,m_upDown(dwControlId, 0, dwSpinX, dwSpinY, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwSpinColor, SPIN_CONTROL_TYPE_INT)
 ,m_imgButton(dwControlId, 0, dwPosX, dwPosY, dwWidth, dwHeight, strButtonFocus,strButton)
 {
+  m_dwSelectedColor=dwSelectedColor;
   m_iOffset=0;
   m_iItemsPerPage=10;
   m_iItemHeight=10;
@@ -71,13 +72,16 @@ void CGUIListControl::Render()
         m_imgFolder.Render();
       }
 
+      DWORD dwColor=m_dwTextColor;
+      if (pItem->m_bSelected)
+        dwColor=m_dwSelectedColor;
       
 			dwPosX += m_imgFolder.GetWidth()+2;
       swprintf(wszText,L"%S", pItem->GetLabel().c_str() );
       bool bSelected(false);
       if (i == m_iCursorY && HasFocus() && m_iSelect== CONTROL_LIST)
         bSelected=true;
-      RenderText( (float)dwPosX, (float)dwPosY+2, m_dwTextColor, wszText,bSelected);
+      RenderText( (float)dwPosX, (float)dwPosY+2, dwColor, wszText,bSelected);
       
 		
       CStdString strLabel2=pItem->GetLabel2();
@@ -85,7 +89,7 @@ void CGUIListControl::Render()
       {
         dwPosX=m_dwPosX+m_dwWidth-16;
         swprintf(wszText,L"%S", strLabel2.c_str() );
-        m_pFont->DrawText((float)dwPosX, (float)dwPosY+2,m_dwTextColor,wszText,XBFONT_RIGHT); 
+        m_pFont->DrawText((float)dwPosX, (float)dwPosY+2,dwColor,wszText,XBFONT_RIGHT); 
       }	
       dwPosY += (DWORD)m_iItemHeight;
     }
@@ -190,24 +194,28 @@ void CGUIListControl::OnKey(const CKey& key)
 
   switch (key.GetButtonCode())
   {
+    case KEY_REMOTE_DOWN:
     case KEY_BUTTON_DPAD_DOWN:
     {
       OnDown();
     }
     break;
     
+    case KEY_REMOTE_UP:
     case KEY_BUTTON_DPAD_UP:
     {
       OnUp();
     }
     break;
 
+    case KEY_REMOTE_LEFT:
     case KEY_BUTTON_DPAD_LEFT:
     {
       OnLeft();
     }
     break;
 
+    case KEY_REMOTE_RIGHT:
     case KEY_BUTTON_DPAD_RIGHT:
     {
       OnRight();
@@ -218,7 +226,7 @@ void CGUIListControl::OnKey(const CKey& key)
     {
       if (m_iSelect==CONTROL_LIST)
       {
-          CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
+          CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(),key.GetButtonCode());
           g_graphicsContext.SendMessage(msg);
       }
       else

@@ -51,7 +51,7 @@ void CGUISpinControl::OnKey(const CKey& key)
         return;
       }
     }
-    if (key.GetButtonCode()==KEY_BUTTON_A)
+    if (key.GetButtonCode()==KEY_BUTTON_A || key.GetButtonCode() == KEY_REMOTE_SELECT)
     {
       switch (m_iType)
       {

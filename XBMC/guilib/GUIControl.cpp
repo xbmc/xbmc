@@ -51,6 +51,7 @@ void CGUIControl::OnKey(const CKey& key)
   if (!key.IsButton() ) return;
   switch (key.GetButtonCode())
   {
+    case KEY_REMOTE_DOWN:
     case KEY_BUTTON_DPAD_DOWN:
     {
       SetFocus(false);
@@ -59,6 +60,7 @@ void CGUIControl::OnKey(const CKey& key)
     }
     break;
     
+    case KEY_REMOTE_UP:
     case KEY_BUTTON_DPAD_UP:
     {
       SetFocus(false);
@@ -66,7 +68,8 @@ void CGUIControl::OnKey(const CKey& key)
       g_graphicsContext.SendMessage(msg);
     }
     break;
-
+    
+    case KEY_REMOTE_LEFT:
     case KEY_BUTTON_DPAD_LEFT:
     {
       SetFocus(false);
@@ -75,6 +78,7 @@ void CGUIControl::OnKey(const CKey& key)
     }
     break;
 
+    case KEY_REMOTE_RIGHT:
     case KEY_BUTTON_DPAD_RIGHT:
     {
       SetFocus(false);
