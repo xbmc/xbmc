@@ -292,6 +292,7 @@ public:
   int       m_iLCDRows;
   int       m_iLCDAdress[4];
   int       m_iLCDMode;
+  int       m_iLCDBackLight;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;
