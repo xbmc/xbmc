@@ -4977,7 +4977,18 @@ int mplayer_getTime()
 void mplayer_ToFFRW(int iSpeed)
 {
   m_iPlaySpeed=iSpeed;
-  
+
+  //If stream can't be seeked, disble ff/rw
+  if(demuxer && !demuxer->seekable)
+  {
+    if(iSpeed != 1)
+    {
+      strncpy(osd_show_text_buffer, "Unable to FF/RW in this stream", 64);      
+      osd_show_text=sh_video->fps;
+    }
+    return;
+  }
+
   if(!sh_video) 
   {
     if(iSpeed == 1)
@@ -5002,7 +5013,7 @@ void mplayer_ToFFRW(int iSpeed)
   if (iSpeed == 1)
   {
       if(ffrw_speed != 0) {//We where rewinding or fastforwarding before        
-        rel_seek_secs  = 0.001;
+        rel_seek_secs  = 0.1;
         abs_seek_pos   = 0;
         //Dump audio buffer immidiatly      
         audio_out->reset();
