@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "iso9660directory.h"
 #include "../xbox/iosupport.h"
 #include "../sectionloader.h"

@@ -1,3 +1,5 @@
+
+#include "../stdafx.h"
 #include ".\htmlutil.h"
 using namespace HTML;
 

@@ -1,3 +1,5 @@
+
+#include "../stdafx.h"
 #include ".\musicsong.h"
 #include "../util.h"
 using namespace MUSIC_GRABBER;

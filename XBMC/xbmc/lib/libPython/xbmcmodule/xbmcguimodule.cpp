@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\..\..\application.h"
 #include "..\python.h"
 #include "..\structmember.h"

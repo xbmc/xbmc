@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "factorydirectory.h"
 #include "HDDirectory.h"
 #include "ISO9660Directory.h"

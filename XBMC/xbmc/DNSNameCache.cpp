@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "dnsnamecache.h"
 #include "lib/common/xbnet.h"
 #include "utils/log.h"

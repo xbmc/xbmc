@@ -1,5 +1,6 @@
 #pragma once
 
+#include "stdafx.h"
 #include "musicInfoTagLoaderFactory.h"
 #include "MusicInfoTagLoaderMP3.h"
 #include "MusicInfoTagLoaderOgg.h"

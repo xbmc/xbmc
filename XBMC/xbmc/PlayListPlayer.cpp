@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "PlayListPlayer.h"
 #include "application.h"
 #include "util.h"

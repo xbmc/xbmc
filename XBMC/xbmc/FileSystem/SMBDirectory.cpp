@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 /*
  * know bugs:
  * - doing smbc_stat on for example an IPC_SHARE leaves an open socket

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\python.h"
 #include "..\..\..\application.h"
 #include "GuiLabelControl.h"

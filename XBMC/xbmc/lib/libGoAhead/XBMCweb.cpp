@@ -1,3 +1,4 @@
+#include "stdafx.h"
 /*
  * XBMCweb.c -- Active Server Page Support
  *

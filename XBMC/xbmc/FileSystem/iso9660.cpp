@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 /*
 	Redbook			: CDDA	
 	Yellowbook	: CDROM

@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "ApplicationMessenger.h"
 #include "application.h"
 #include "xbox/xkutils.h"

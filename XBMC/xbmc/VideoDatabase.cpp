@@ -3,6 +3,8 @@
 //** see docs/videodatabase.png for a diagram of the database
 //**
 //********************************************************************************************************************************
+
+#include "stdafx.h"
 #include ".\videodatabase.h"
 #include "utils/fstrcmp.h"
 #include "utils/log.h"

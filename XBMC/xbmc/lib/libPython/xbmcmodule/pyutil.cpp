@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "pyutil.h"
 #include <wchar.h>
 #include "stdstring.h"

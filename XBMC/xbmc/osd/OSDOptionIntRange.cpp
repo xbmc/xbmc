@@ -1,4 +1,5 @@
 
+#include "stdafx.h"
 #include ".\OSDOptionIntRange.h"
 
 #include "localizestrings.h"

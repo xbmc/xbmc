@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "directory.h"
 #include "../util.h"
 

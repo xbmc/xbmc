@@ -202,7 +202,7 @@
 				EnableEnhancedInstructionSet="1"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough=""
+				PrecompiledHeaderThrough="stdafx.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
 				DebugInformationFormat="0"/>
@@ -1028,10 +1028,10 @@
 				RelativePath=".\xbmc\cores\ModPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
@@ -1634,10 +1634,10 @@
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">

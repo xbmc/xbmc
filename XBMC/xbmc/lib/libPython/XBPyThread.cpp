@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "XBPyThread.h"
 #include "XBPython.h"
 

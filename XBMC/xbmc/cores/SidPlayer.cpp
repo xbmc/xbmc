@@ -1,5 +1,6 @@
 // Most of this based on playsid
 
+#include "stdafx.h"
 #include "sidplayer.h"
 #include "../utils/log.h"
 #include <sidplay/builders/resid.h>

@@ -1,4 +1,5 @@
 
+#include "stdafx.h"
 #include ".\osdoptionbutton.h"
 
 #include "localizestrings.h"

@@ -1,3 +1,5 @@
+
+#include "../stdafx.h"
 #include "log.h"
 #include <share.h>
 

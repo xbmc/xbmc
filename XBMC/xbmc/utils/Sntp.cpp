@@ -1,3 +1,5 @@
+
+#include "../stdafx.h"
 /*
 Module : SNTP.CPP
 Purpose: implementation for a MFC class to encapsulate the SNTP protocol

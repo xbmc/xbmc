@@ -1,3 +1,4 @@
+#include "stdafx.h"
 /* WebServer.cpp: implementation of the CWebServer class.
  * A darivation of:  main.c -- Main program for the GoAhead WebServer
  *

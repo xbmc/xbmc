@@ -1,4 +1,5 @@
 
+#include "stdafx.h"
 #include "DirectoryHistory.h"
 #include "../util.h"
 

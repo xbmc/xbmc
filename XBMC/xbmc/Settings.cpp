@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "settings.h"
 #include "util.h"
 #include "utils/log.h"

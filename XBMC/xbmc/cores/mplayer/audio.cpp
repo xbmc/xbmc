@@ -1,4 +1,5 @@
-#include <xtl.h>
+
+#include "stdafx.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include "audio.h"
