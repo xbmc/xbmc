@@ -340,10 +340,28 @@ void CMusicDatabase::CheckVariousArtistsAndCoverArt()
 		if (CUtil::ThumbCached(strTempCoverArt))
 		{
 			//	Yes.
-			//	Copy as permanent directory thumb
+			VECALBUMS albums;
+			GetAlbumsByPath(album.strPath, albums);
 			CUtil::GetAlbumThumb(album.strPath, strCoverArt);
-			::CopyFile(strTempCoverArt, strCoverArt, false);
-
+			//	Do we have more then one album in this directory...
+			if (albums.size()==1)
+			{
+				//	...no, copy as permanent directory thumb
+				if (::CopyFile(strTempCoverArt, strCoverArt, false))
+					CUtil::ThumbCacheAdd(strCoverArt, true);
+			}
+			else if (CUtil::ThumbCached(strCoverArt))
+			{
+				//	...yes, we have more then one album in this directory
+				//	and have saved a thumb for this directory from another album
+				//	so delete the directory thumb.
+				if (CUtil::ThumbExists(strCoverArt))
+				{
+					if (::DeleteFile(strCoverArt))
+						CUtil::ThumbCacheAdd(strCoverArt, false);
+				}
+			}
+			
 			//	And move as permanent thumb for files and directory, where
 			//	album and path is known
 			CUtil::GetAlbumThumb(album.strAlbum+album.strPath, strCoverArt);
@@ -1324,6 +1342,47 @@ bool CMusicDatabase::GetAlbumByPath(const CStdString& strPath1, CAlbum& album)
 	catch(...)
 	{
     CLog::Log("CMusicDatabase:GetAlbumByPath() for %s failed", strPath1.c_str());
+	}
+
+	return false;
+}
+
+bool CMusicDatabase::GetAlbumsByPath(const CStdString& strPath1, VECALBUMS& albums)
+{
+	try
+	{
+		CStdString strPath=strPath1;
+		albums.erase(albums.begin(), albums.end());
+		//	musicdatabase always stores directories 
+		//	without a slash at the end 
+		if (CUtil::HasSlashAtEnd(strPath))
+			strPath.Delete(strPath.size()-1);
+		RemoveInvalidChars(strPath);
+
+		if (NULL==m_pDB.get()) return false;
+		if (NULL==m_pDS.get()) return false;
+		CStdString strSQL;
+		strSQL.Format("select * from album,artist,path where album.idArtist=artist.idArtist and album.idPath=path.idPath and path.strPath='%s'", strPath );
+		if (!m_pDS->query(strSQL.c_str())) return false;
+		int iRowsFound = m_pDS->num_rows();
+		if (iRowsFound== 0) return false;
+
+		while (!m_pDS->eof()) 
+		{
+			CAlbum album;
+			album.strAlbum  = m_pDS->fv("album.strAlbum").get_asString();
+			album.strArtist = m_pDS->fv("artist.strArtist").get_asString();
+			album.strPath   = m_pDS->fv("path.strPath").get_asString();
+			albums.push_back(album);
+			m_pDS->next();
+		}
+
+		m_pDS->close();	//	cleanup recordset data
+		return true;
+	}
+	catch(...)
+	{
+    CLog::Log("CMusicDatabase:GetAlbumsByPath() for %s failed", strPath1.c_str());
 	}
 
 	return false;
