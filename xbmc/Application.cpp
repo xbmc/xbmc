@@ -84,6 +84,8 @@ HRESULT CApplication::Create()
 	helper.Unmount("Q:");
 	helper.Mount("Q:", szDevicePath);	
 
+  ::DeleteFile("Q:\\xbmc.old.log");
+  ::MoveFile("Q:\\xbmc.log","Q:\\xbmc.old.log");
   CLog::Log("-----------------------------------------------------------------------");
   CLog::Log("starting...");
   CLog::Log("Q is mapped to:%s",szDevicePath);
@@ -132,6 +134,8 @@ HRESULT CApplication::Create()
 
 			helper.Unmount("Q:");
 			helper.Mount("Q:", szDevicePath);	
+      ::DeleteFile("Q:\\xbmc.old.log");
+      ::MoveFile("Q:\\xbmc.log","Q:\\xbmc.old.log");
       CLog::Log("Q is mapped to:%s",szDevicePath);
 		}
 	}
