@@ -1,5 +1,5 @@
 <!-- Danish language for XBMC            -->
-<!-- Based on 2003-12-31 english strings -->
+<!-- Based on 2003-04-19 english strings -->
 <!-- Translation done by Jan West        --> 
 
 <strings>
@@ -28,9 +28,17 @@
     <value>Indstillinger</value>
   </string>
   <string>
+    <id>6</id>
+    <value>XBOX Media Center 2004-04-19 build</value>
+  </string>
+  <string>
     <id>7</id>
     <value>Dokumenter</value>
   </string>
+  <string>
+    <id>8</id>
+    <value>Vejret</value>
+  </string>  
   <string>
     <id>11</id>
     <value>Mandag</value>
@@ -59,10 +67,12 @@
     <id>17</id>
     <value>Søndag</value>
   </string>
+
   <string>
     <id>21</id>
     <value>Januar</value>
   </string>
+
   <string>
     <id>22</id>
     <value>Februar</value>
@@ -109,11 +119,11 @@
   </string>  
   <string>
     <id>100</id>
-    <value>Ikoner</value>
+    <value>Maske: Ikoner</value>
   </string>  
   <string>
     <id>101</id>
-    <value>Liste</value>
+    <value>Maske: Liste</value>
   </string>  
   <string>
     <id>102</id>
@@ -121,15 +131,15 @@
   </string>  
   <string>
     <id>103</id>
-    <value>Sorter på navn</value>
+    <value>Sorter på: Navn</value>
   </string> 
   <string>
     <id>104</id>
-    <value>Sorter på dato</value>
+    <value>Sorter på: Dato</value>
   </string>    
   <string>
     <id>105</id>
-    <value>Sorter på str</value>
+    <value>Sorter på: Stør</value>
   </string>      
   <string>
     <id>106</id>
@@ -145,11 +155,11 @@
   </string>   
   <string>
     <id>109</id>
-    <value>Lav minibillede</value>
+    <value>Lav ikoner</value>
   </string>   
   <string>
     <id>110</id>
-    <value>Lav minibilleder</value>
+    <value>Lav ikoner</value>
   </string>   
   <string>
     <id>111</id>
@@ -161,11 +171,11 @@
   </string>   
   <string>
     <id>113</id>
-    <value>Dokumenter : Kilde</value>
+    <value>Filer : Kilde</value>
   </string>   
   <string>
     <id>114</id>
-    <value>Dokumenter : Destination</value>
+    <value>Filer : Destination</value>
   </string>   
   <string>
     <id>115</id>
@@ -189,27 +199,27 @@
   </string>   
   <string>
     <id>120</id>
-    <value>Bekræft kopiering</value>
+    <value>Bekræft fil kopiering</value>
   </string>   
   <string>
     <id>121</id>
-    <value>Bekræft flytning</value>
+    <value>Bekræft fil flytning</value>
   </string>   
   <string>
     <id>122</id>
-    <value>Bekræft sletning</value>
+    <value>Bekræft fil sletning</value>
   </string>   
   <string>
     <id>123</id>
-    <value>Skal disse dokumenter kopieres?</value>
+    <value>Skal disse filer kopieres?</value>
   </string>   
   <string>
     <id>124</id>
-    <value>Skal disse dokumenter flyttes?</value>
+    <value>Skal disse filer flyttes?</value>
   </string>   
   <string>
     <id>125</id>
-    <value>Skal disse dokumenter slettes?</value>
+    <value>Skal disse filer slettes?</value>
   </string>  
   <string>
     <id>126</id>
@@ -229,7 +239,7 @@
   </string> 
   <string>
     <id>130</id>
-    <value>System oplysninger</value>
+    <value>System status</value>
   </string>  
   <string>
     <id>131</id>
@@ -245,7 +255,7 @@
   </string>  
   <string>
     <id>134</id>
-    <value>Vis numre</value>
+    <value>Numre</value>
   </string>  
   <string>
     <id>135</id>
@@ -281,7 +291,7 @@
   </string> 
   <string>
     <id>143</id>
-    <value>Nuværende:</value>
+    <value>Gældende:</value>
   </string> 
   <string>
     <id>144</id>
@@ -381,7 +391,7 @@
   </string> 
   <string>
     <id>168</id>
-    <value>Tids server:</value>
+    <value>Synkroniser tid:</value>
   </string> 
   <string>
     <id>169</id>
@@ -449,7 +459,7 @@
   </string> 
   <string>
     <id>185</id>
-    <value>Søger album</value>
+    <value>Søger efter album</value>
   </string> 
   <string>
     <id>186</id>
@@ -501,35 +511,35 @@
   </string> 
   <string>
     <id>198</id>
-    <value>Indlæser Film detaljer</value>
+    <value>Indlæser film detaljer</value>
   </string> 
   <string>
     <id>199</id>
-    <value>Instruktør</value>
+    <value>Instruktør:</value>
   </string> 
   <string>
     <id>200</id>
-    <value>Rulletekster</value>
+    <value>Forfatter:</value>
   </string> 
   <string>
     <id>201</id>
-    <value>År</value>
+    <value>Årstal:</value>
   </string> 
   <string>
     <id>202</id>
-    <value>Undertitel</value>
+    <value>Undertitel:</value>
   </string> 
   <string>
     <id>203</id>
-    <value>Handlingen kort</value>
+    <value>Handlingen kort:</value>
   </string> 
   <string>
     <id>204</id>
-    <value>Bedømmelse</value>
+    <value>Bedømmelse:</value>
   </string> 
   <string>
     <id>205</id>
-    <value>Stemmer</value>
+    <value>Stemmer:</value>
   </string> 
   <string>
     <id>206</id>
@@ -557,7 +567,7 @@
   </string> 
   <string>
     <id>212</id>
-    <value>Programmer fundet</value>
+    <value>programmer fundet</value>
   </string> 
   <string>
     <id>213</id>
@@ -573,7 +583,7 @@
   </string> 
   <string>
     <id>216</id>
-    <value>Zoom</value>
+    <value>Forstør</value>
   </string> 
   <string>
     <id>217</id>
@@ -601,7 +611,7 @@
   </string> 
   <string>
     <id>223</id>
-    <value>Vælg bedste opløsning til film</value>
+    <value>Automatisk bredformat skift</value>
   </string> 
   <string>
     <id>224</id>
@@ -653,7 +663,7 @@
   </string> 
   <string>
     <id>236</id>
-    <value>Gaussisk Kubisk</value>
+    <value>Gaussisk kubisk</value>
   </string> 
   <string>
     <id>237</id>
@@ -721,7 +731,7 @@
   </string>
   <string>
     <id>254</id>
-    <value>AC3 gennemgang</value>
+    <value>DD Stereo gennemgang</value>
   </string>
   <string>
     <id>255</id>
@@ -739,7 +749,6 @@
     <id>258</id>
     <value>Aktiver ID3 info</value>
   </string>
-</strings>
   <string>
     <id>259</id>
     <value>Åbner</value>
@@ -766,27 +775,27 @@
   </string>
   <string>
     <id>265</id>
-    <value>Stop optager</value>
+    <value>Stands optagelse</value>
   </string>
   <string>
     <id>266</id>
-    <value>Sorter på nummer</value>
+    <value>Sorter på: Nummer</value>
   </string>
   <string>
     <id>267</id>
-    <value>Sorter på tid</value>
+    <value>Sorter på: Tid</value>
   </string>
   <string>
     <id>268</id>
-    <value>Sorter på titel</value>
+    <value>Sorter på: Titel</value>
   </string>
   <string>
     <id>269</id>
-    <value>Sorter på kunstner</value>
+    <value>Sorter på: Kunstner</value>
   </string>
   <string>
     <id>270</id>
-    <value>Sorter på album</value>
+    <value>Sorter på: Album</value>
   </string>
   <string>
     <id>271</id>
@@ -804,12 +813,10 @@
     <id>274</id>
     <value>Placering af undertekster</value>
   </string>
-
   <string>
     <id>275</id>
-    <value>Pixel Ratio Adjustment</value>
+    <value>Justering af Pixel Ratio</value>
   </string>
-
   <string>
     <id>276</id>
     <value>Flyt pilen for at ændre placering</value>
@@ -828,11 +835,11 @@
   </string>
   <string>
     <id>280</id>
-    <value>falder tilbage til standard indstillinger</value>
+    <value>bruger standard indstillinger</value>
   </string>
   <string>
     <id>281</id>
-    <value>Check venligst .xml dokumenterne</value>
+    <value>Check venligst .xml filerne</value>
   </string>
   <string>
     <id>282</id>
@@ -846,19 +853,17 @@
     <id>284</id>
     <value>Intet resultat fundet</value>
   </string>
-
   <string>
     <id>285</id>
     <value>Deinterlace filter</value>
   </string>
-
   <string>
     <id>286</id>
     <value>Efterbehandlings filter</value>
   </string>
   <string>
     <id>287</id>
-    <value>Undertekster</value>
+    <value>SRT Undertekster</value>
   </string>
   <string>
     <id>288</id>
@@ -886,23 +891,23 @@
   </string>
   <string>
     <id>294</id>
-    <value>1. Opret bogmærke</value>
+    <value>Opret bogmærke</value>
   </string>
   <string>
     <id>295</id>
-    <value>2. Skift bogmærke</value>
+    <value>Skift bogmærke</value>
   </string>
   <string>
     <id>296</id>
-    <value>3. Slet bogmærke</value>
+    <value>Slet bogmærke</value>
   </string>
   <string>
     <id>297</id>
-    <value>4. Billed/Lyd forsinkelse</value>
+    <value>Billed/Lyd forsinkelse</value>
   </string>
   <string>
     <id>298</id>
-    <value>5. Rulle</value>
+    <value>Position</value>
   </string>
   <string>
     <id>300</id>
@@ -918,36 +923,32 @@
   </string>
   <string>
     <id>303</id>
-    <value>1. Forsinkelse</value>
+    <value>Forsinkelse</value>
   </string>
   <string>
     <id>304</id>
-    <value>2. Sprog</value>
+    <value>Sprog</value>
   </string>
   <string>
     <id>305</id>
-    <value>3. Til/Fra</value>
+    <value>Aktiveret</value>
   </string>
-
   <string>
     <id>306</id>
-    <value>6. Non-Interleaved</value>
+    <value>Non-Interleaved</value>
   </string>
-
   <string>
     <id>307</id>
     <value>Automatisk</value>
   </string>
-
   <string>
     <id>308</id>
-    <value>vertical deblocking filter</value>
+    <value>vertical deblokerings filter</value>
   </string>
   <string>
     <id>309</id>
-    <value>horizontal deblocking filter</value>
+    <value>horizontal deblokerings filter</value>
   </string>
-
   <string>
     <id>310</id>
     <value>Automatisk lysstyrke/kontrast</value>
@@ -998,22 +999,20 @@
   </string>
   <string>
     <id>322</id>
-    <value>Søger genre...</value>
+    <value>Søger genrer...</value>
   </string>
   <string>
     <id>323</id>
     <value>Reorganiserings fejl</value>
   </string>
-
   <string>
     <id>324</id>
-    <value>Searching pathes...</value>
+    <value>Gennemsøger stier...</value>
   </string>
   <string>
     <id>325</id>
-    <value>Error reorganizing pathes</value>
+    <value>Reorganiserings fejl</value>
   </string>
-
   <string>
     <id>326</id>
     <value>Søger efter album...</value>
@@ -1074,4 +1073,619 @@
     <id>340</id>
     <value>Diverse kunstnere</value>
   </string>
+  <string>
+    <id>341</id>
+    <value>Afspil DVD</value>
+  </string>
+  <string>
+    <id>342</id>
+    <value>Film</value>
+  </string>
+  <string>
+    <id>343</id>
+    <value>Juster billedhastighed</value>
+  </string>
+  <string>
+    <id>344</id>
+    <value>Skuespillere</value>
+  </string>
+  <string>
+    <id>345</id>
+    <value>Årstal</value>
+  </string>
+  <string>
+    <id>346</id>
+    <value>Stabel</value>
+  </string>
+  <string>
+    <id>347</id>
+    <value>Udflad</value>
+  </string>
+  <string>
+    <id>348</id>
+    <value>Udflad mappestruktur</value>
+  </string>
+  <string>
+    <id>349</id>
+    <value>Vis kun default.xbe</value>
+  </string>
+  <string>
+    <id>350</id>
+    <value>Programmer</value>
+  </string>
+  <string>
+    <id>351</id>
+    <value>Fra</value>
+  </string>
+  <string>
+    <id>352</id>
+    <value>Dæmp</value>
+  </string>
+  <string>
+    <id>353</id>
+    <value>Sort</value>
+  </string>
+  <string>
+    <id>354</id>
+    <value>Matrix</value>
+  </string>
+  <string>
+    <id>355</id>
+    <value>Pauseskærm efter</value>
+  </string>
+  <string>
+    <id>356</id>
+    <value>Pauseskærms tilstand</value>
+  </string>
+  <string>
+    <id>357</id>
+    <value>Sluk efter</value>
+  </string>
+  <string>
+    <id>358</id>
+    <value>Alle album</value>
+  </string>
+  <string>
+    <id>359</id>
+    <value>Seneste album</value>
+  </string>
+  <string>
+    <id>360</id>
+    <value>Pauseskærm</value>
+  </string>
+  <string>
+    <id>361</id>
+    <value>Vis billedserie</value>
+  </string>   
+  <string>
+    <id>362</id>
+    <value>Pauseskærm nedtoning (%)</value>
+  </string>
+  <string>
+    <id>363</id>
+    <value>Sorter på: Fil</value>
+  </string>   
+  <string>
+    <id>364</id>
+    <value>DD/DTS Multikanal gennemgang</value>
+  </string>   
+  <string>
+    <id>365</id>
+    <value>Sorter på: Navn</value>
+  </string>   
+  <string>
+    <id>366</id>
+    <value>Sorter på: Årstal</value>
+  </string>   
+  <string>
+    <id>367</id>
+    <value>Sorter på: Vurdering</value>
+  </string>   
+  <string>
+    <id>368</id>
+    <value>IMDB</value>
+  </string>   
+  <string>
+    <id>369</id>
+    <value>Titel</value>
+  </string>
+  <string>
+    <id>370</id>
+    <value>Storm</value>
+  </string>
+  <string>
+    <id>371</id>
+    <value>Delvist</value>
+  </string>
+  <string>
+    <id>372</id>
+    <value>Mest</value>
+  </string>
+  <string>
+    <id>373</id>
+    <value>Solrigt</value>
+  </string>
+  <string>
+    <id>374</id>
+    <value>Skyet</value>
+  </string>
+  <string>
+    <id>375</id>
+    <value>Sne</value>
+  </string>
+  <string>
+    <id>376</id>
+    <value>Regn</value>
+  </string>
+  <string>
+    <id>377</id>
+    <value>Lys</value>
+  </string>
+  <string>
+    <id>378</id>
+    <value>Formiddag</value>
+  </string>
+  <string>
+    <id>379</id>
+    <value>Eftermiddag</value>
+  </string>
+  <string>
+    <id>380</id>
+    <value>Byger</value>
+  </string>
+  <string>
+    <id>381</id>
+    <value>Nogle</value>
+  </string>
+  <string>
+    <id>382</id>
+    <value>Spredte</value>
+  </string>
+  <string>
+    <id>383</id>
+    <value>Vind</value>
+  </string>
+  <string>
+    <id>384</id>
+    <value>Hård</value>
+  </string>
+  <string>
+    <id>385</id>
+    <value>Frisk</value>
+  </string>
+
+  <string>
+    <id>396</id> 
+    <value>Vælg placering</value> 
+  </string>
+  <string>
+    <id>397</id> 
+    <value>Opdaterings interval</value> 
+  </string>
+  <string>
+    <id>398</id> 
+    <value>Temperatur skala</value> 
+  </string>
+  <string>
+    <id>399</id> 
+    <value>Hastigheds skala</value> 
+  </string>
+  <string>
+    <id>400</id> 
+    <value>Vejr</value> 
+  </string>
+  <string>
+    <id>401</id>
+    <value>Temp</value>
+  </string>   
+  <string>
+    <id>402</id>
+    <value>Føles som</value>
+  </string> 
+  <string>
+    <id>403</id>
+    <value>UV Index</value>
+  </string>
+  <string>
+    <id>404</id>
+    <value>Vind</value>
+  </string>   
+  <string>
+    <id>405</id>
+    <value>Dug punkt</value>
+  </string> 
+  <string>
+    <id>406</id>
+    <value>Fugtighed</value>
+  </string> 
+  <string>
+    <id>407</id>
+    <value>Fra</value>
+  </string>
+  <string>
+    <id>408</id>
+    <value>med</value>
+  </string>      
+  <string>
+    <id>410</id>
+    <value>Forbinder til Weather.com</value>
+  </string>       
+  <string>
+    <id>411</id>
+    <value>Henter vejrdata til:</value>
+  </string> 
+  <string>
+    <id>412</id>
+    <value>Kan ikke hente vejrdata</value>
+  </string>    
+  <string>
+    <id>413</id>
+    <value>Manuelt</value>
+  </string>    
+  <string>
+    <id>414</id>
+    <value>Ingen anmeldelse til dette album</value>
+  </string>    
+  <string>
+    <id>415</id>
+    <value>Henter ikon...</value>
+  </string> 
+  <string>
+    <id>416</id>
+    <value>Ikke tilgængelig</value>
+  </string> 
+  <string>
+    <id>417</id>
+    <value>Maske: Store ikoner</value>
+  </string> 
+  <string>
+    <id>418</id>
+    <value>Film/Genre</value>
+  </string> 
+  <string>
+    <id>419</id>
+    <value>Film/Skuespillere</value>
+  </string> 
+  <string>
+    <id>420</id>
+    <value>Film/Årstal</value>
+  </string> 
+  <string>
+    <id>421</id>
+    <value>Film/Titel</value>
+  </string> 
+  <string>
+    <id>422</id>
+    <value>Slet albuminfo</value>
+  </string> 
+  <string>
+    <id>423</id>
+    <value>Slet CDDB info</value>
+  </string> 
+  <string>
+    <id>424</id>
+    <value>Vælg</value>
+  </string> 
+  <string>
+    <id>425</id>
+    <value>Ingen albuminfo fundet.</value>
+  </string> 
+  <string>
+    <id>426</id>
+    <value>Ingen CDDB info fundet.</value>
+  </string> 
+  <string>
+    <id>427</id>
+    <value>Skuffe:</value>
+  </string> 
+  <string>
+    <id>428</id>
+    <value>Isæt rigtig CD/DVD</value>
+  </string> 
+  <string>
+    <id>429</id>
+    <value>Vær venlig at isætte følgende CD/DVD</value>
+  </string>  
+  <string>
+    <id>430</id>
+    <value>Sorter på: DVD#</value>
+  </string>  
+  <string>
+    <id>431</id>
+    <value>Ingen cache</value>
+  </string> 
+  <string>
+    <id>432</id>
+    <value>Slet film fra databasen</value>
+  </string>  
+  <string>
+    <id>433</id>
+    <value>Er du sikker på at du vil slette</value>
+  </string>  
+  <string>
+    <id>434</id>
+    <value>filmen?</value>
+  </string> 
+  <string>
+    <id>435</id>
+    <value>Spor</value>
+  </string> 
+  <string>
+    <id>436</id>
+    <value>Årstal:</value>
+  </string> 
+  <string>
+    <id>437</id>
+    <value>Længde:</value>
+  </string> 
+  <string>
+    <id>438</id>
+    <value>Åben fil</value>
+  </string> 
+  <string>
+    <id>439</id>
+    <value>Cache</value>
+  </string> 
+  <string>
+    <id>440</id>
+    <value>Harddisk</value>
+  </string> 
+  <string>
+    <id>441</id>
+    <value>UDF</value>
+  </string> 
+  <string>
+    <id>442</id>
+    <value>LAN</value>
+  </string> 
+  <string>
+    <id>443</id>
+    <value>Internet</value>
+  </string> 
+  <string>
+    <id>444</id>
+    <value>billede</value>
+  </string> 
+  <string>
+    <id>445</id>
+    <value>lyd</value>
+  </string> 
+  <string>
+    <id>446</id>
+    <value>DVD</value>
+  </string> 
+  <string>
+    <id>447</id>
+    <value>Afspil automatisk</value>
+  </string> 
+  <string>
+    <id>448</id>
+    <value>LCD</value>
+  </string> 
+  <string>
+    <id>449</id>
+    <value>Aktiveret</value>
+  </string> 
+  <string>
+    <id>450</id>
+    <value>Kolonner</value>
+  </string> 
+  <string>
+    <id>451</id>
+    <value>Række 1 adresse:</value>
+  </string> 
+  <string>
+    <id>452</id>
+    <value>Række 2 adresse:</value>
+  </string> 
+  <string>
+    <id>453</id>
+    <value>Række 3 adresse:</value>
+  </string> 
+  <string>
+    <id>454</id>
+    <value>Række 4 adresse:</value>
+  </string> 
+  <string>
+    <id>455</id>
+    <value>Rækker:</value>
+  </string> 
+  <string>
+    <id>456</id>
+    <value>Tilstand:</value>
+  </string> 
+  <string>
+    <id>457</id>
+    <value>Skift maske</value>
+  </string> 
+  <string>
+    <id>458</id>
+    <value>B/Marker</value>
+  </string>
+  <string>
+    <id>459</id>
+    <value>Undertekster</value>
+  </string>
+  <string>
+    <id>460</id>
+    <value>Lyd kanal</value>
+  </string>
+  <string>
+    <id>461</id>
+    <value>[aktiv]</value>
+  </string>
+  <string>
+    <id>462</id>
+    <value>Undertekst</value>
+  </string>
+  <string>
+    <id>463</id>
+    <value>Baggrundslys</value>
+  </string>
+  <string>
+    <id>464</id>
+    <value>Lysstyrke</value>
+  </string> 
+  <string>
+    <id>465</id>
+    <value>Kontrast</value>
+  </string> 
+  <string>
+    <id>466</id>
+    <value>Gamma</value>
+  </string> 
+  <string>
+    <id>467</id>
+    <value>Type</value>
+  </string> 
+  <string>
+    <id>468</id>
+    <value>Flyt bjælken for at ændre OSD placering</value>
+  </string>
+  <string>
+    <id>469</id>
+    <value>OSD Placering</value>
+  </string>
+  <string>
+    <id>470</id>
+    <value>Tak til</value>
+  </string>
+  <string>
+    <id>471</id>
+    <value>Modchip</value>
+  </string>
+  <string>
+    <id>472</id>
+    <value>OSD Timeout</value>
+  </string>
+  <string>
+    <id>473</id>
+    <value>High Quality Resampling</value>
+  </string>
+  <string>
+    <id>474</id>
+    <value>Fra</value>
+  </string>
+  <string>
+    <id>475</id>
+    <value>Kun music</value>
+  </string>
+  <string>
+    <id>476</id>
+    <value>Musik & Film</value>
+  </string>
+  <string>
+    <id>477</id>
+    <value>Kan ikke indlæse hitliste</value>
+  </string>
+  <string>
+    <id>478</id>
+    <value>OSD</value>
+  </string>
+  <string>
+    <id>479</id>
+    <value>Overflade og sprog</value>
+  </string>
+  <string>
+    <id>480</id>
+    <value>Bruger grænseflade</value>
+  </string>
+  <string>
+    <id>481</id>
+    <value>Lyd indstillinger</value>
+  </string>
+  <string>
+    <id>482</id>
+    <value>Om XBMC</value>
+  </string>
+  <string>
+    <id>483</id>
+    <value>Album</value>
+  </string>
+  <string>
+    <id>484</id>
+    <value>Kunstner</value>
+  </string>
+  <string>
+    <id>485</id>
+    <value>Slet album</value>
+  </string>
+  <string>
+    <id>486</id>
+    <value>Gentag</value>
+  </string>
+  <string>
+    <id>487</id>
+    <value>Gentag een</value>
+  </string>
+  <string>
+    <id>488</id>
+    <value>Gentag mappe hitliste</value>
+  </string>
+  <string>
+    <id>489</id>
+    <value>Brug hitliste i numre</value>
+  </string>
+  <string>
+    <id>490</id>
+    <value>Skift automatisk mellem liste og ikoner i numre</value>
+  </string>
+  <string>
+    <id>491</id>
+    <value>Brug store ikoner</value>
+  </string>
+  <string>
+    <id>492</id>
+    <value>Forstør VobSubs</value>
+  </string>
+
+<string><id>10000</id><value>Forside</value></string>
+<string><id>10001</id><value>Programmer</value></string>
+<string><id>10002</id><value>Billeder</value></string>
+<string><id>10003</id><value>Filer</value></string>
+<string><id>10004</id><value>Indstillinger</value></string>
+<string><id>10005</id><value>Musik</value></string>
+<string><id>10006</id><value>Film</value></string>
+<string><id>10007</id><value>System status</value></string>
+<string><id>10008</id><value>Indstillinger->Generelt</value></string>
+<string><id>10009</id><value>Indstillinger->Skærm</value></string>
+<string><id>10010</id><value>Indstillinger->Skærm->Kalibrer skærmareal</value></string>
+<string><id>10011</id><value>Indstillinger->Skærm->Kalibrer filmareal</value></string>
+<string><id>10012</id><value>Indstillinger->Billedserie</value></string>
+<string><id>10013</id><value>Indstillinger->Skærm->Filtre</value></string>
+<string><id>10014</id><value>Indstillinger->Musik</value></string>
+<string><id>10015</id><value>Indstillinger->Skærm->Undertekster</value></string>
+<string><id>10016</id><value>Indstillinger->Skærm->Pauseskærm</value></string>
+<string><id>10017</id><value>Indstillinger->Vejret</value></string>
+<string><id>10020</id><value>Indstillinger->Makroer</value></string>
+<string><id>10021</id><value>Film/genre</value></string>
+<string><id>10022</id><value>Film/skuespiller</value></string>
+<string><id>10023</id><value>Film/årstal</value></string>
+<string><id>10024</id><value>Indstillinger->Programmer</value></string>
+<string><id>10025</id><value>Film/titel</value></string>
+<string><id>10026</id><value>Indstillinger->Generelt->Cache</value></string>
+<string><id>10027</id><value>Indstillinger->Generelt->Afspil automatisk</value></string>
+<string><id>10028</id><value>Film/hitliste</value></string>
+<string><id>10029</id><value>Indstillinger->Generelt->LCD</value></string>
+<string><id>10100</id><value>Ja/nej dialog</value></string>
+<string><id>10101</id><value>Progress dialog</value></string>
+<string><id>10500</id><value>Musik/hitliste</value></string>
+<string><id>10501</id><value>Musik/filer</value></string>
+<string><id>10502</id><value>Musik/album</value></string>
+<string><id>10503</id><value>Musik/kunstnere</value></string>
+<string><id>10504</id><value>Musik/genrer</value></string>
+<string><id>10505</id><value>Musik/top100</value></string>
+<string><id>11000</id><value>tastatur</value></string>
+<string><id>12000</id><value>Vælg dialog</value></string>
+<string><id>12001</id><value>Musik/info</value></string>
+<string><id>12002</id><value>Dialog OK</value></string>
+<string><id>12003</id><value>Film/info</value></string>
+<string><id>12004</id><value>Makroer/info</value></string>
+<string><id>12005</id><value>Fuldskærms film</value></string>
+<string><id>12006</id><value>Lyd fremviser</value></string>
+<string><id>12007</id><value>Billeder/billedserie</value></string>
+<string><id>12008</id><value>Staknings dialog</value></string>
+<string><id>12600</id><value>Vejret</value></string>
+<string><id>12900</id><value>Pauseskærm</value></string>
+<string><id>12901</id><value>Fuldskærms OSD</value></string>
 </strings>
