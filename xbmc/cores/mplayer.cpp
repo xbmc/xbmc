@@ -1369,9 +1369,9 @@ int CMPlayer::GetVolume()
 {
 	return mplayer_getVolume();
 }
-void CMPlayer::SetVolume(int iPercentage)
+void CMPlayer::SetVolume(long nVolume)
 {
-	mplayer_setVolume(iPercentage);
+	mplayer_setVolume(nVolume);
 }
 
 void CMPlayer::SetContrast(bool bPlus)

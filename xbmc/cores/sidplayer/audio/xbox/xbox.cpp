@@ -203,8 +203,16 @@ void Audio_Xbox::close(void)
 
 void Audio_Xbox::pause(void)
 {
-	pStream->Pause(DSSTREAMPAUSE_PAUSE);
-	isPlaying = false;
+	if (pStream)
+	{
+		pStream->Pause(DSSTREAMPAUSE_PAUSE);
+		isPlaying = false;
+	}
 }
 
+void Audio_Xbox::SetVolume(long nValue)
+{
+	if (pStream)
+		pStream->SetVolume(nValue);
+}
 #endif

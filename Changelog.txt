@@ -5,6 +5,19 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 03-08-2004 needed:  Textures.xpr needs repacking!
+  - 03-08-2004 changed: Replaced old virtual keyboard with new skinnable one.
+  - 03-08-2004 changed: Updated strings 216 and 217 (Zoom and Stretch) to make better sense.
+  - 03-08-2004 removed: ACTION_ASPECT_RATIO now no longer needed.
+  - 03-08-2004 changed: Zoom and Stretch are now fully controllable from the Video OSD.
+                        Can Zoom up to 200%, and can change the pixel ratio from 0.5:1 -> 2:1.
+  - 03-08-2004 added: USB Mouse support.  Left/Right/Middle buttons + Wheel supported.
+  - 03-08-2004 added: Two new controls (CGUIMoverControl and CGUIResizeControl) to better
+                      perform calibration with the Mouse.  All controls (except OSD positioning) are on
+                      screen at the same time.
+  - 03-08-2004 added: Volume control - mapped to right thumbstick up/down
+  - 03-08-2004 changed: CDDA player is now gapless :)
+  - 03-08-2004 added: GetAction() now checks keymap.xml for popup dialog specific actions
   - 01-08-2004 added: auto temperature control (Settings->General->System)
   - 01-08-2004 added: fanspeed control (Settings->General->System)
   - 01-08-2004 fixed: incorrect cpu temperature decimal value calculation

@@ -601,6 +601,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIWindowPictures.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIWindowPointer.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIWindowPrograms.cpp">
 				</File>
 				<File
@@ -801,6 +804,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GuiDialogSelect.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIDialogVolumeBar.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIDialogYesNo.cpp">
 				</File>
 			</Filter>
@@ -957,6 +963,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\GUIDialogSelect.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIDialogVolumeBar.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIDialogYesNo.h">
 			</File>
 			<File
@@ -1006,6 +1015,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowPictures.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowPointer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowPrograms.h">
@@ -1170,10 +1182,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\cores\ModPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">

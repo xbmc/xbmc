@@ -39,6 +39,9 @@ using namespace std;
 #define CDDARIP_QUALITY_STANDARD 2
 #define CDDARIP_QUALITY_EXTREME  3
 
+#define VOLUME_MINIMUM -6000	// -60dB
+#define VOLUME_MAXIMUM 0		// 0dB
+
 /*!
 \ingroup windows
 \brief Represents a share.
@@ -257,8 +260,8 @@ public:
     int       m_iFlickerFilterUI; // 0..5
 		bool			m_bSoftenVideo;
 		bool			m_bSoftenUI;
-		bool			m_bZoom;
-		bool			m_bStretch;
+		float			m_fZoomAmount;
+		float			m_fUserPixelRatio;
 		bool			m_bAutoWidescreenSwitching;
 		bool			m_bUpsampleVideo;
 		bool			m_bAllowPAL60;
@@ -391,6 +394,7 @@ public:
 		char      m_strRipPath[MAX_PATH + 1];
 
 		char      m_szFlipBiDiCharset[128];
+		int		  m_nVolumeLevel;				// measured in 100th's of a dB.  0dB is max, -60.00dB is min
 	};
 
 	VECSHARES					m_vecMyProgramsBookmarks;

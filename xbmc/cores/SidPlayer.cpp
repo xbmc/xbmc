@@ -6,6 +6,7 @@
 #include <sidplay/builders/resid.h>
 #include "../SectionLoader.h"
 #include "../util.h"
+#include "../settings.h"
 #include "../FileSystem/File.h"
 
 #pragma comment(linker,"/merge:SID_RD=SID_RX")
@@ -153,6 +154,8 @@ bool SidPlayer::createOutput (OUTPUTS driver, const SidTuneInfo *tuneInfo)
 		return false;
 	}
 
+	// Set the volume level
+	SetVolume(g_stSettings.m_nVolumeLevel);
 	// Configure with user settings
 	m_driver.cfg.frequency = m_engCfg.frequency;
 	m_driver.cfg.precision = m_engCfg.precision;
@@ -533,8 +536,10 @@ void SidPlayer::ToggleFrameDrop()
 }
 
 
-void SidPlayer::SetVolume(bool bPlus)
+void SidPlayer::SetVolume(long nVolume)
 {
+	if (m_driver.device)
+		m_driver.device->SetVolume(nVolume);
 }
 
 void SidPlayer::SetContrast(bool bPlus)

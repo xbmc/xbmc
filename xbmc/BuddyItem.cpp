@@ -55,21 +55,21 @@ void CBuddyItem::OnPaint(CGUIItem::RenderContext* pContext)
 	CGUIListExItem::RenderContext* pDC = (CGUIListExItem::RenderContext*)pContext;
 	if ( (pDC) && (m_pPingIcon) && (m_dwPing>0) && (m_dwPing<=PING_MAX_LATENCY) )
 	{
-		DWORD dwPosY = pDC->m_dwPositionY;
-		dwPosY += (pDC->m_pButton->GetHeight() - m_pPingIcon->GetHeight())/2;
+		int iPosY = pDC->m_iPositionY;
+		iPosY += (pDC->m_pButton->GetHeight() - m_pPingIcon->GetHeight())/2;
 
-		DWORD dwPosX = pDC->m_dwPositionX + pDC->m_pButton->GetWidth();
-		dwPosX -= ( (m_pPingIcon->GetWidth()+PING_SPACING) * PING_MAX_RATING ) + PING_OFFSETX;
+		int iPosX = pDC->m_iPositionX + pDC->m_pButton->GetWidth();
+		iPosX -= ( (m_pPingIcon->GetWidth()+PING_SPACING) * PING_MAX_RATING ) + PING_OFFSETX;
 
 		DWORD dwStep = PING_MAX_LATENCY / PING_MAX_RATING;
 		DWORD dwRating = PING_MAX_RATING - (m_dwPing/dwStep);
 
 		for (DWORD dwGraduation=0; dwGraduation<dwRating; dwGraduation++)
 		{
-			m_pPingIcon->SetPosition(dwPosX,dwPosY);
+			m_pPingIcon->SetPosition(iPosX,iPosY);
 			m_pPingIcon->Render();
 
-			dwPosX += m_pPingIcon->GetWidth() + PING_SPACING;
+			iPosX += m_pPingIcon->GetWidth() + PING_SPACING;
 		}
 	}
 }

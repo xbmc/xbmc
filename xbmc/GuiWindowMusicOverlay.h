@@ -13,7 +13,8 @@ public:
 	virtual ~CGUIWindowMusicOverlay(void);
   virtual bool				OnMessage(CGUIMessage& message);
   virtual void				OnAction(const CAction &action);
-	virtual void				Render();
+	virtual void			OnMouse();
+  virtual void				Render();
 	void								SetID3Tag(ID3_Tag& tag);
 	void								SetCurrentFile(const CStdString& strFile);
 	IDirect3DTexture8* 	m_pTexture;

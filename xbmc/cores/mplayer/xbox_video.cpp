@@ -374,38 +374,45 @@ static void CalculateFrameAspectRatio()
 		fSourceFrameRatio = fImageFrameRatio*fPALPixelRatio*fNon4by3Correction;
 }
 
-void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float iScreenWidth, float iScreenHeight, RECT* displayRect) {
-  		// scale up image as much as possible
-		// and keep the aspect ratio (introduces with black bars)
+void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth, float fScreenHeight, RECT* displayRect)
+{
+  	// scale up image as much as possible
+	// and keep the aspect ratio (introduces with black bars)
+	// calculate the correct output frame ratio (using the users pixel ratio setting
+	// and the output pixel ratio setting)
+	float fOutputFrameRatio = fSourceFrameRatio*g_stSettings.m_fUserPixelRatio / g_settings.m_ResInfo[m_iResolution].fPixelRatio; 
 
-  float fOutputFrameRatio = fSourceFrameRatio / g_settings.m_ResInfo[m_iResolution].fPixelRatio; 
-//		if (m_iResolution == HDTV_1080i) fOutputFrameRatio *= 2;
+	// maximize the movie width
+	float fNewWidth  = fScreenWidth;
+	float fNewHeight = fNewWidth/fOutputFrameRatio;
 
-		// maximize the movie width
-		float fNewWidth  = iScreenWidth;
-		float fNewHeight = fNewWidth/fOutputFrameRatio;
+	if (fNewHeight > fScreenHeight)
+	{
+		fNewHeight = fScreenHeight;
+		fNewWidth = fNewHeight*fOutputFrameRatio;
+	}
 
-		if (fNewHeight > iScreenHeight)
-		{
-			fNewHeight = iScreenHeight;
-			fNewWidth = fNewHeight*fOutputFrameRatio;
-		}
+	// this shouldnt happen, but just make sure that everything still fits onscreen
+	if (fNewWidth > fScreenWidth || fNewHeight > fScreenHeight)
+	{
+		fNewWidth=(float)image_width;
+		fNewHeight=(float)image_height;
+	}
 
-		// this shouldnt happen, but just make sure that everything still fits onscreen
-		if (fNewWidth > iScreenWidth || fNewHeight > iScreenHeight)
-		{
-			fNewWidth=(float)image_width;
-			fNewHeight=(float)image_height;
-		}
+	// Scale the movie up by set zoom amount (only in fullscreen mode, though)
+	if (g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating())
+	{
+		fNewWidth *= g_stSettings.m_fZoomAmount;
+		fNewHeight *= g_stSettings.m_fZoomAmount;
+	}
+	// Centre the movie
+	float fPosY = (fScreenHeight - fNewHeight)/2;
+	float fPosX = (fScreenWidth  - fNewWidth)/2;
 
-		// Centre the movie
-		float iPosY = (iScreenHeight - fNewHeight)/2;
-		float iPosX = (iScreenWidth  - fNewWidth)/2;
-
-		displayRect->left   = (int)(iPosX + fOffsetX1);
-		displayRect->right  = (int)(displayRect->left + fNewWidth + 0.5f);
-		displayRect->top    = (int)(iPosY + fOffsetY1);
-		displayRect->bottom = (int)(displayRect->top + fNewHeight + 0.5f);
+	displayRect->left   = (int)(fPosX + fOffsetX1);
+	displayRect->right  = (int)(displayRect->left + fNewWidth + 0.5f);
+	displayRect->top    = (int)(fPosY + fOffsetY1);
+	displayRect->bottom = (int)(displayRect->top + fNewHeight + 0.5f);
 }
 //********************************************************************************************************
 unsigned int Directx_ManageDisplay()
@@ -413,11 +420,11 @@ unsigned int Directx_ManageDisplay()
 	RESOLUTION iRes = g_graphicsContext.GetVideoResolution();
 	float fOffsetX1 = (float)g_settings.m_ResInfo[iRes].Overscan.left;
 	float fOffsetY1 = (float)g_settings.m_ResInfo[iRes].Overscan.top;
-	float iScreenWidth = (float)g_settings.m_ResInfo[iRes].Overscan.width;
-	float iScreenHeight = (float)g_settings.m_ResInfo[iRes].Overscan.height;
+	float iScreenWidth = (float)(g_settings.m_ResInfo[iRes].Overscan.right-g_settings.m_ResInfo[iRes].Overscan.left);
+	float iScreenHeight = (float)(g_settings.m_ResInfo[iRes].Overscan.bottom-g_settings.m_ResInfo[iRes].Overscan.top);
 
-  //we need dimensions of the video how it would be rendered fullscreen in normal view (for subs)
-  CalcNormalDisplayRect(fOffsetX1, fOffsetY1, iScreenWidth, iScreenHeight, &normalFullScreenVideoDisplayRect);
+	//we need dimensions of the video how it would be rendered fullscreen in normal view (for subs)
+	CalcNormalDisplayRect(fOffsetX1, fOffsetY1, iScreenWidth, iScreenHeight, &normalFullScreenVideoDisplayRect);
   
 	if( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
 	{
@@ -427,85 +434,20 @@ unsigned int Directx_ManageDisplay()
 		fOffsetX1    = (float)rv.left;
 		fOffsetY1    = (float)rv.top;
 	}
-  viewportRect.left   = (int)fOffsetX1;
-  viewportRect.top    = (int)fOffsetY1;
-  viewportRect.right  = int(fOffsetX1 + iScreenWidth);
+	viewportRect.left   = (int)fOffsetX1;
+	viewportRect.top    = (int)fOffsetY1;
+	viewportRect.right  = int(fOffsetX1 + iScreenWidth);
 	viewportRect.bottom = int(fOffsetY1 + iScreenHeight);
 
-  //we need dimensions of the video how it would be rendered in normal view actual size (for subs)
-  CalcNormalDisplayRect(fOffsetX1, fOffsetY1, iScreenWidth, iScreenHeight, &normalVideoDisplayRect);
+	//we need dimensions of the video how it would be rendered in normal view actual size (for subs)
+	CalcNormalDisplayRect(fOffsetX1, fOffsetY1, iScreenWidth, iScreenHeight, &normalVideoDisplayRect);
 
-	// Correct for HDTV_1080i -> 540p
-	// don't think we need this if we're not using overlays
-//	if (iRes == HDTV_1080i)
-//	{
-//		fOffsetY1/=2;
-//		iScreenHeight/=2;
-//	}
-
-	//if( g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() )
-	{
-		if (g_stSettings.m_bStretch)
-		{
-			// stretch the movie so it occupies the entire screen (aspect ratio = gone)
-			rs.left   = 0;
-			rs.top    = 0;
-			rs.right  = image_width;
-			rs.bottom = image_height ;
-			rd.left   = (int)fOffsetX1;
-			rd.right  = (int)rd.left+(int)iScreenWidth;
-			rd.top    = (int)fOffsetY1;
-			rd.bottom = (int)rd.top+(int)iScreenHeight;
-
-			return 0;
-		}
-
-		if (g_stSettings.m_bZoom)
-		{
-			// zoom / panscan the movie so that it fills the entire screen
-			// and keeps the Aspect ratio
-
-			// calculate AR compensation (see http://www.iki.fi/znark/video/conversion)
-			float fOutputFrameRatio = fSourceFrameRatio / g_settings.m_ResInfo[iRes].fPixelRatio; 
-//			if (m_iResolution == HDTV_1080i) fOutputFrameRatio *= 2;
-
-			// assume that the movie is widescreen first, so use full height
-			float fVertBorder=0;
-			float fNewHeight = (float)( iScreenHeight);
-			float fNewWidth  =  fNewHeight*fOutputFrameRatio;
-			float fHorzBorder= (fNewWidth-(float)iScreenWidth)/2.0f;
-			float fFactor = fNewWidth / ((float)image_width);
-			fHorzBorder = fHorzBorder/fFactor;
-
-			if ( (int)fNewWidth < iScreenWidth )
-			{
-				fHorzBorder=0;
-				fNewWidth  = (float)( iScreenWidth);
-				fNewHeight = fNewWidth/fOutputFrameRatio;
-				fVertBorder= (fNewHeight-(float)iScreenHeight)/2.0f;
-				fFactor = fNewWidth / ((float)image_width);
-				fVertBorder = fVertBorder/fFactor;
-			}
-			rs.left   = (int)fHorzBorder;
-			rs.top    = (int)fVertBorder;
-			rs.right  = (int)image_width  - (int)fHorzBorder;
-			rs.bottom = (int)image_height - (int)fVertBorder;
-			rd.left   = (int)fOffsetX1;
-			rd.right  = (int)rd.left + (int)iScreenWidth;
-			rd.top    = (int)fOffsetY1;
-			rd.bottom = (int)rd.top + (int)iScreenHeight;
-
-			return 0;
-		}
-
-    // NORMAL
-		// source rect
-		rs.left   = 0;
-		rs.top    = 0;
-		rs.right  = image_width;
-		rs.bottom = image_height;
-    CalcNormalDisplayRect(fOffsetX1, fOffsetY1, iScreenWidth, iScreenHeight, &rd);
-  }
+	// source rect
+	rs.left   = 0;
+	rs.top    = 0;
+	rs.right  = image_width;
+	rs.bottom = image_height;
+	CalcNormalDisplayRect(fOffsetX1, fOffsetY1, iScreenWidth, iScreenHeight, &rd);
 	return 0;
 }
 
@@ -548,7 +490,7 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
 
   m_OSDRect.left   = (float)normalVideoDisplayRect.left + (float)x0 * xscale;
   m_OSDRect.right  = (float)normalVideoDisplayRect.left + (float)(x0 + w) * xscale;
-  float relBottom  = float(viewportRect.bottom - viewportRect.top - g_settings.m_ResInfo[m_iResolution].Overscan.top) / (float)(g_settings.m_ResInfo[m_iResolution].Overscan.height);
+  float relBottom  = float(viewportRect.bottom - viewportRect.top - g_settings.m_ResInfo[m_iResolution].Overscan.top) / (float)(g_settings.m_ResInfo[m_iResolution].Overscan.bottom-g_settings.m_ResInfo[m_iResolution].Overscan.top);
   m_OSDRect.bottom = viewportRect.top + (float)g_settings.m_ResInfo[m_iResolution].iSubtitles * relBottom;
   m_OSDRect.top    = m_OSDRect.bottom - (float)h * yscale;
   //hmm little off center when enlarge subs... center it

@@ -4,6 +4,7 @@
 #include "../util.h"
 #include "../application.h"
 #include "../utils/log.h"
+#include "../settings.h"
 #include "../SectionLoader.h"
 #include "../URL.h"
 
@@ -65,7 +66,8 @@ ModPlayer::ModPlayer(IPlayerCallback& callback) :IPlayer(callback)
 		CLog::Log("ModPlayer: Could not initialize sound, reason: %s", MikMod_strerror(mikxboxGetErrno()));
 	}
 
-	mikxboxSetMusicVolume(127);
+	SetVolume(g_stSettings.m_nVolumeLevel);
+//	mikxboxSetMusicVolume(127);
 	mikxboxSetCallback(ModCallback);
 }
 
@@ -217,7 +219,12 @@ void ModPlayer::SetSaturation(bool bPlus)
 {
 }
 
-
+void ModPlayer::SetVolume(long nVolume)
+{
+	// mikxbox uses a range of (0 -> 127).  Convert our mB range to this...
+	float fVolume = (float(nVolume - VOLUME_MINIMUM))/(float)(VOLUME_MAXIMUM-VOLUME_MINIMUM)*127.0f;
+	mikxboxSetMusicVolume((int)(fVolume + 0.5f));
+}
 
 void ModPlayer::GetAudioInfo( CStdString& strAudioInfo)
 {

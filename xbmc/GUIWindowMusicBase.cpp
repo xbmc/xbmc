@@ -13,7 +13,6 @@
 #include "PlayListFactory.h"
 #include "util.h"
 #include "url.h"
-#include "keyboard/virtualkeyboard.h"
 #include "PlayListM3U.h"
 #include "application.h"
 #include "playlistplayer.h"
@@ -255,7 +254,6 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 				CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_nSelectedItem);
 				CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_nSelectedItem);
 			}
-
 			return true;
 		}
 		break;
@@ -303,15 +301,15 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         int iItem=GetSelectedItem();
 				int iAction=message.GetParam1();
 
-				if (iAction == ACTION_QUEUE_ITEM)
+				if (iAction == ACTION_QUEUE_ITEM || iAction == ACTION_MOUSE_RIGHT_CLICK)
         {
 					OnQueueItem(iItem);
         }
-        else if (iAction==ACTION_SHOW_INFO)
+        else if (iAction==ACTION_SHOW_INFO || iAction == ACTION_MOUSE_MIDDLE_CLICK)
         {
           OnInfo(iItem);
         }
-        else if (iAction==ACTION_SELECT_ITEM)
+        else if (iAction==ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
         {
           OnClick(iItem);
         }
@@ -1065,23 +1063,21 @@ void CGUIWindowMusicBase::OnSearch()
 ///	\param strInput Set as defaultstring in keyboard and retrieves the input from keyboard
 bool CGUIWindowMusicBase::GetKeyboard(CStdString& strInput)
 {
-	CXBVirtualKeyboard* pKeyboard = (CXBVirtualKeyboard*)m_gWindowManager.GetWindow(WINDOW_VIRTUAL_KEYBOARD);
-  if (!pKeyboard) return false;
-	pKeyboard->Reset();
-	WCHAR wsString[1024];
-  swprintf( wsString,L"%S", strInput.c_str() );
-	pKeyboard->SetText(wsString);
+	CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+	if (!pKeyboard) return false;
+	// setup keyboard
+	pKeyboard->CenterWindow();
+	pKeyboard->SetText(strInput);
 	pKeyboard->DoModal(m_gWindowManager.GetActiveWindow());
-	if (pKeyboard->IsConfirmed())
-	{
-		const WCHAR* pSearchString=pKeyboard->GetText();
-		CUtil::Unicode2Ansi(pSearchString,strInput);
+	pKeyboard->Close();	
+
+	if (pKeyboard->IsDirty())
+	{	// have text - update this.
+		strInput = pKeyboard->GetText();
 		if (strInput.IsEmpty())
 			return false;
-
 		return true;
 	}
-
 	return false;
 }
 

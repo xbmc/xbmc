@@ -36,6 +36,7 @@
 #include "GUIDialogProgress.h"
 #include "GUIDialogSelect.h"
 #include "GUIDialogFileStacking.h"
+#include "GUIDialogVolumeBar.h"
 #include "GUIWindowSystemInfo.h"
 #include "GUIWindowSettingsLCD.h"
 #include "GUIWindowSettingsGeneral.h"
@@ -73,6 +74,7 @@
 #include "GUIWindowWeather.h"		//WEATHER
 #include "GUIWindowSettingsWeather.h"	//WEATHER SETTINGS
 #include "GUIWindowSettingsCache.h"
+#include "GUIWindowPointer.h"		// Mouse pointer
 #include "LocalizeStrings.h"
 #include "utils/sntp.h"
 #include "utils/delaycontroller.h"
@@ -144,6 +146,8 @@ public:
 	void					ResetAllControls();
 	virtual void			Process();
 	void					ResetScreenSaver();
+	int						GetVolume() const;  
+	void					SetVolume(int iPercent);  
 	int						GetPlaySpeed() const;  
 	void					SetPlaySpeed(int iSpeed);
 	bool									IsButtonDown(DWORD code);
@@ -160,6 +164,7 @@ public:
 	CGUIDialogYesNo									m_guiDialogYesNo;
 	CGUIDialogProgress							m_guiDialogProgress;
 	CGUIDialogOK										m_guiDialogOK;
+	CGUIDialogVolumeBar									m_guiDialogVolumeBar;
 	CGUIWindowMyFiles								m_guiMyFiles;
 	CGUIWindowVideo									m_guiMyVideo;
 	CGUIWindowSettings							m_guiSettings;
@@ -210,8 +215,9 @@ public:
 	CGUIWindowSettingsAudio					m_guiSettingsAudio;
 	CGUIWindowSettingsMyVideo				m_guiSettingsMyVideo;
 	CGUIWindowSettingsMyMusic				m_guiSettingsMyMusic;
+	CGUIWindowPointer						m_guiPointer;
 
-  CXBVirtualKeyboard   						m_keyboard;
+	CXBVirtualKeyboard   						m_keyboard;
 	CSNTPClient											m_sntpClient;
 	CDetectDVDMedia									m_DetectDVDType;
 	CAutorun												m_Autorun;
@@ -238,6 +244,7 @@ public:
 
 protected:
   void                    UpdateLCD();
+  bool					  SwitchToFullScreen();
 	void										FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork);
   bool                    m_bXboxMediacenterLoaded,m_bSettingsLoaded;
   CIMDBMovie              m_tagCurrentMovie;
