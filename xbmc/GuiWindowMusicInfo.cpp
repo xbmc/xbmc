@@ -212,8 +212,20 @@ void CGUIWindowMusicInfo::Refresh()
 		//	permanent thumb
 		CHTTP http;
 		http.Download(strImage,strThumb);
+		
+		//	Was the download successfull...
+		if (CUtil::FileExists(strThumb))
+		{
+			if (!CUtil::IsCDDA(m_pAlbum->GetAlbumPath()))
+			{
+				//	...also save a copy as directory thumb,
+				//	if the album isn't located on an audio cd.
+				CStdString strFolderThumb;
+				CUtil::GetAlbumThumb(m_pAlbum->GetAlbumPath(),strFolderThumb);
+				::CopyFile( strThumb, strFolderThumb, false);
+			}
+		}
 	}
-
 
 	if (CUtil::FileExists(strThumb) )
 	{
@@ -221,17 +233,6 @@ void CGUIWindowMusicInfo::Refresh()
 		m_pTexture=picture.Load(strThumb);
 		m_iTextureWidth=picture.GetWidth();
 		m_iTextureHeight=picture.GetWidth();
-		CUtil::ThumbCacheAdd(strThumb, true);
-
-		if (!CUtil::IsCDDA(m_pAlbum->GetAlbumPath()))
-		{
-			//	Also save a copy as directory thumb,
-			//	if the album isn't located on an audio cd.
-			CStdString strFolderThumb;
-			CUtil::GetAlbumThumb(m_pAlbum->GetAlbumPath(),strFolderThumb);
-			::CopyFile( strThumb, strFolderThumb, false);
-			CUtil::ThumbCacheAdd(strFolderThumb, true);
-		}
 	}
 	Update();
 }
