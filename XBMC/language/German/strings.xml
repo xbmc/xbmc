@@ -162,7 +162,7 @@
   <string><id>227</id><value>CDDB aktivieren</value></string>
   <string><id>228</id><value>Playlisten shuffeln nach dem laden</value></string>
   <string><id>229</id><value>Festplatte abschalten</value></string>
-  <string><id>230</id><value>Filter</value></string>
+  <string><id>230</id><value>Video Filter</value></string>
   <string><id>231</id><value>Keine</value></string>
   <string><id>232</id><value>Punkt</value></string>
   <string><id>233</id><value>Linear</value></string>
@@ -672,4 +672,5 @@
   <string><id>14050</id><value>%i.0 dB</value></string>
   <string><id>14051</id><value>12 Stunden Uhr anzeigen</value></string>
   <string><id>14052</id><value>Monat und Tag im Home Screen tauschen</value></string>
-</strings>
+  <string><id>14053</id><value>GUI Filter</value></string>
+/strings>
