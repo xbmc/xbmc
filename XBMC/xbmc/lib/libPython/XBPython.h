@@ -9,6 +9,7 @@
 #include <vector>
 #include "XBPyThread.h"
 #include "IMsgSenderCallback.h"
+#include "..\..\cores\IPlayer.h"
 
 extern "C" {
 	extern void initxbmc(void);
@@ -26,12 +27,17 @@ typedef struct {
 }PyElem;
 
 typedef std::vector<PyElem> PyList;
+typedef std::vector<PVOID> PlayerCallbackList;
 
-class XBPython : public IMsgSenderCallback
+class XBPython : public IMsgSenderCallback, public IPlayerCallback
 {
 public:
 	      XBPython();
 	virtual void SendMessage(CGUIMessage& message);
+	virtual void OnPlayBackEnded();
+	virtual void OnPlayBackStarted();
+	void	RegisterPythonPlayerCallBack(IPlayerCallback* pCallback);
+	void	UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback);
 	void	Initialize();
 	void	Finalize();
 	void	FreeResources();
@@ -69,6 +75,7 @@ private:
 
 	//Vector with list of threads used for running scripts
 	PyList vecPyList;
+	PlayerCallbackList vecPlayerCallbackList;
 	CRITICAL_SECTION	m_critSection;
 };
 

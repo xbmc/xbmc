@@ -77,6 +77,102 @@ namespace PYXBMC
 		return true;
 	}
 
+	/* Searches for a control in Window->vecControls
+	 * If we can't find any but the window has the controlId (in case of a not python window)
+	 * we create a new control with basic functionality
+	 */
+	Control* Window_GetControlById(Window* self, int iControlId)
+	{
+		Control* pControl = NULL;
+		CGUIWindow* pWindow = NULL;
+
+		// lock xbmc GUI before accessing data from it
+		PyGUILock();
+
+		pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+		if (!pWindow)
+		{
+			PyGUIUnlock();
+			return NULL;
+		}
+
+		// check if control exists
+		CGUIControl* pGUIControl = (CGUIControl*)pWindow->GetControl(iControlId);
+		PyGUIUnlock();
+		if (!pGUIControl)
+		{
+			// control does not exist.
+			PyErr_SetString(PyExc_Exception, "Control does not exist");
+			return NULL;
+		}
+
+		// find in window vector first!!!
+		// this saves us from creating a complete new control
+		vector<Control*>::iterator it = self->vecControls.begin();
+		while (it != self->vecControls.end())
+		{
+      Control* control = *it;
+			if (control->iControlId == iControlId)
+			{
+				Py_INCREF(control);
+				return control;
+			} else ++it;
+		}
+
+		// allocate a new control with a new reference
+		switch(pGUIControl->GetControlType())
+		{
+		case CGUIControl::GUICONTROL_BUTTON:
+			pControl = (Control*)ControlButton_Type.tp_alloc(&ControlButton_Type, 0);
+			break;
+		case CGUIControl::GUICONTROL_LABEL:
+			pControl = (Control*)ControlLabel_Type.tp_alloc(&ControlLabel_Type, 0);
+			break;
+		case CGUIControl::GUICONTROL_SPIN:
+			pControl = (Control*)ControlSpin_Type.tp_alloc(&ControlSpin_Type, 0);
+			break;
+		case CGUIControl::GUICONTROL_FADELABEL:
+			pControl = (Control*)ControlFadeLabel_Type.tp_alloc(&ControlFadeLabel_Type, 0);
+			break;
+		case CGUIControl::GUICONTROL_TEXTBOX:
+			pControl = (Control*)ControlTextBox_Type.tp_alloc(&ControlTextBox_Type, 0);
+			break;
+		case CGUIControl::GUICONTROL_IMAGE:
+			pControl = (Control*)ControlImage_Type.tp_alloc(&ControlImage_Type, 0);
+			break;
+		case CGUIControl::GUICONTROL_LIST:
+			pControl = (Control*)ControlList_Type.tp_alloc(&ControlList_Type, 0);
+			break;
+		}
+
+		if (!pControl)
+		{
+			// throw an exeption
+			PyErr_SetString(PyExc_Exception, "Unknown control type for python");
+			return NULL;
+		}
+
+		PyGUILock();
+
+		// we have a valid control here, fill in all the 'Control' data
+		pControl->pGUIControl = pGUIControl;
+		pControl->iControlId = pGUIControl->GetID();
+		pControl->iParentId = self->iWindowId;
+		pControl->dwHeight = pGUIControl->GetHeight();
+		pControl->dwWidth = pGUIControl->GetWidth();
+		pControl->dwPosX = pGUIControl->GetXPosition();
+		pControl->dwPosY = pGUIControl->GetYPosition();
+		pControl->iControlUp = pGUIControl->GetControlIdUp();
+		pControl->iControlDown = pGUIControl->GetControlIdDown();
+		pControl->iControlLeft = pGUIControl->GetControlIdLeft();
+		pControl->iControlRight = pGUIControl->GetControlIdRight();
+
+		PyGUIUnlock();
+
+		// return the control with increased reference (+1)
+		return pControl;
+	}
+
 	PyObject* Window_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
 	{
 		Window *self;
@@ -358,97 +454,10 @@ namespace PYXBMC
 
 	PyObject* Window_GetControl(Window *self, PyObject *args)
 	{
-		CGUIWindow* pWindow = NULL;
 		int iControlId;
-		Control* pControl = NULL;
-
 		if (!PyArg_ParseTuple(args, "i", &iControlId)) return NULL;
 
-		// lock xbmc GUI before accessing data from it
-		PyGUILock();
-
-		pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
-		if (!pWindow)
-		{
-			PyGUIUnlock();
-			return NULL;
-		}
-
-		// check if control exists
-		CGUIControl* pGUIControl = (CGUIControl*)pWindow->GetControl(iControlId);
-		PyGUIUnlock();
-		if (!pGUIControl)
-		{
-			// control does not exist.
-			PyErr_SetString(PyExc_Exception, "Control does not exist");
-			return NULL;
-		}
-
-		// find in window vector first!!!
-		// this saves us from creating a complete new control
-		vector<Control*>::iterator it = self->vecControls.begin();
-		while (it != self->vecControls.end())
-		{
-      Control* control = *it;
-			if (control->iControlId == iControlId)
-			{
-				Py_INCREF(control);
-				return (PyObject*)control;
-			} else ++it;
-		}
-
-		// allocate a new control with a new reference
-		switch(pGUIControl->GetControlType())
-		{
-		case CGUIControl::GUICONTROL_BUTTON:
-			pControl = (Control*)ControlButton_Type.tp_alloc(&ControlButton_Type, 0);
-			break;
-		case CGUIControl::GUICONTROL_LABEL:
-			pControl = (Control*)ControlLabel_Type.tp_alloc(&ControlLabel_Type, 0);
-			break;
-		case CGUIControl::GUICONTROL_SPIN:
-			pControl = (Control*)ControlSpin_Type.tp_alloc(&ControlSpin_Type, 0);
-			break;
-		case CGUIControl::GUICONTROL_FADELABEL:
-			pControl = (Control*)ControlFadeLabel_Type.tp_alloc(&ControlFadeLabel_Type, 0);
-			break;
-		case CGUIControl::GUICONTROL_TEXTBOX:
-			pControl = (Control*)ControlTextBox_Type.tp_alloc(&ControlTextBox_Type, 0);
-			break;
-		case CGUIControl::GUICONTROL_IMAGE:
-			pControl = (Control*)ControlImage_Type.tp_alloc(&ControlImage_Type, 0);
-			break;
-		case CGUIControl::GUICONTROL_LIST:
-			pControl = (Control*)ControlList_Type.tp_alloc(&ControlList_Type, 0);
-			break;
-		}
-
-		if (!pControl)
-		{
-			// throw an exeption
-			PyErr_SetString(PyExc_Exception, "Unknown control type for python");
-			return NULL;
-		}
-
-		PyGUILock();
-
-		// we have a valid control here, fill in all the 'Control' data
-		pControl->pGUIControl = pGUIControl;
-		pControl->iControlId = pGUIControl->GetID();
-		pControl->iParentId = self->iWindowId;
-		pControl->dwHeight = pGUIControl->GetHeight();
-		pControl->dwWidth = pGUIControl->GetWidth();
-		pControl->dwPosX = pGUIControl->GetXPosition();
-		pControl->dwPosY = pGUIControl->GetYPosition();
-		pControl->iControlUp = pGUIControl->GetControlIdUp();
-		pControl->iControlDown = pGUIControl->GetControlIdDown();
-		pControl->iControlLeft = pGUIControl->GetControlIdLeft();
-		pControl->iControlRight = pGUIControl->GetControlIdRight();
-
-		PyGUIUnlock();
-
-		// return the control with increased reference (+1)
-		return (PyObject*)pControl;
+		return (PyObject*)Window_GetControlById(self, iControlId);
 	}
 
 	PyDoc_STRVAR(setFocus__doc__,
@@ -484,6 +493,32 @@ namespace PYXBMC
 
 		Py_INCREF(Py_None);
 		return Py_None;
+	}
+
+	PyDoc_STRVAR(getFocus__doc__,
+		"getFocus(self, Control) -- returns the control which is focused.\n"
+		"Throws: SystemError, on Internal error\n"
+		"        RuntimeError, if no control has focus\n"
+		"\n");
+
+	PyObject* Window_GetFocus(Window *self, PyObject *args)
+	{
+		int iControlId = -1;
+		CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+		if (PyWindowIsNull(pWindow)) return NULL;
+		
+
+		PyGUILock();
+		iControlId = pWindow->GetFocusControl();
+		PyGUIUnlock();
+
+		if(iControlId == -1)
+		{
+			PyErr_SetString(PyExc_RuntimeError, "No control in this window has focus");
+			return NULL;
+		}
+
+		return (PyObject*)Window_GetControlById(self, iControlId); 
 	}
 
 	PyDoc_STRVAR(removeControl__doc__,
@@ -569,6 +604,7 @@ namespace PYXBMC
 		{"getControl", (PyCFunction)Window_GetControl, METH_VARARGS, getControl__doc__},
 		{"removeControl", (PyCFunction)Window_RemoveControl, METH_VARARGS, removeControl__doc__},
 		{"setFocus", (PyCFunction)Window_SetFocus, METH_VARARGS, setFocus__doc__},
+		{"getFocus", (PyCFunction)Window_GetFocus, METH_VARARGS, getFocus__doc__},
 		{"getHeight", (PyCFunction)Window_GetHeight, METH_VARARGS, getHeight__doc__},
 		{"getWidth", (PyCFunction)Window_GetWidth, METH_VARARGS, getWidth__doc__},
 		{NULL, NULL, 0, NULL}
