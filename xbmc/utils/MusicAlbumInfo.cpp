@@ -56,6 +56,12 @@ const CStdString& CMusicAlbumInfo::GetTitle() const
 {
 	return m_strTitle;
 }
+
+void CMusicAlbumInfo::SetTitle(const CStdString& strTitle)
+{
+	m_strTitle=strTitle;
+}
+
 const CStdString& CMusicAlbumInfo::GetTitle2() const
 {
 	return m_strTitle2;
