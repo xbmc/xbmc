@@ -9,6 +9,7 @@
 #include <algorithm>
 #include "GUIDialogOK.h"
 #include "DetectDVDType.h"
+#include "sectionloader.h"
 
 #define CONTROL_BTNVIEWASICONS		2
 #define CONTROL_BTNSORTBY					3
@@ -157,10 +158,12 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
     case GUI_MSG_WINDOW_DEINIT:
       Clear();
 			m_slideShow.Reset();
+			CSectionLoader::Load("CXIMAGE");
     break;
 
     case GUI_MSG_WINDOW_INIT:
 		{
+			CSectionLoader::Unload("CXIMAGE");
 			m_strDirectory=g_stSettings.m_szDefaultPictures;
 
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(101);
