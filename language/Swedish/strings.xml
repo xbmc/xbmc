@@ -717,7 +717,7 @@
   </string>
   <string>
     <id>252</id>
-    <value>Signal till alla högtalare</value>
+    <value>Stereo signal till alla högtalare</value>
   </string>
   <string>
     <id>253</id>
@@ -725,7 +725,7 @@
   </string>
   <string>
     <id>254</id>
-    <value>DD Stereo passthrough</value>
+    <value>DTS kapabel förstärkare</value>
   </string>
   <string>
     <id>255</id>
@@ -957,7 +957,7 @@
   </string>
   <string>
     <id>313</id>
-    <value>Omorganisera databas</value>
+    <value>Rensar databasen</value>
   </string>
   <string>
     <id>314</id>
@@ -971,50 +971,51 @@
     <id>316</id>
     <value>Söker sånger...</value>
   </string>
-  <string>
-    <id>317</id>
-    <value>Omorganisation lyckad</value>
+ <string>
+  <id>317</id>
+ <value>Rensning av databasen lyckades</value>
   </string>
   <string>
-    <id>318</id>
-    <value>Markerar borttagna låtar</value>
+  <id>318</id>
+ <value>Rensar låtar...</value>
   </string>
   <string>
-    <id>319</id>
-    <value>Fel vid omorganisation av låtar</value>
+  <id>319</id>
+ <value>Fel vid rensning av låtar</value>
   </string>
   <string>
-    <id>320</id>
-    <value>Letar efter artists...</value>
+  <id>320</id>
+ <value>Rensar artister...</value>
   </string>
   <string>
-    <id>321</id>
-    <value>Fel vid omorganisation av artists</value>
+  <id>321</id>
+ <value>Fel vid rensning av artister</value>
   </string>
   <string>
-    <id>322</id>
-    <value>Söker genres...</value>
+  <id>322</id>
+ <value>Rensar genres...</value>
   </string>
   <string>
-    <id>323</id>
-    <value>Fel vid omorganisation av genres</value>
+  <id>323</id>
+ <value>Fel vid rensning av genres</value>
   </string>
   <string>
-    <id>324</id>
-    <value>Söker vägar...</value>
+  <id>324</id>
+ <value>Rensar sökvägar...</value>
   </string>
   <string>
-    <id>325</id>
-    <value>Fel vid omorganisation av vägar</value>
+  <id>325</id>
+ <value>Fel vid rensning av sökvägar</value>
   </string>
   <string>
-    <id>326</id>
-    <value>Söker efter albums...</value>
+  <id>326</id>
+ <value>Rensar album...</value>
   </string>
   <string>
-    <id>327</id>
-    <value>Fel vid omorganisation av albums</value>
+  <id>327</id>
+ <value>Fel vid rensning av album</value>
   </string>
+
   <string>
     <id>328</id>
     <value>Skriver förändringar...</value>
@@ -1037,11 +1038,11 @@
   </string>
   <string>
     <id>333</id>
-    <value>Vill du omorganisera din musikdatabas?</value>
+    <value>Vill du rensa musik databasen?</value>
   </string>
   <string>
     <id>334</id>
-    <value>Omorganisera min musikdatabas</value>
+    <value>Rensa musik databasen</value>
   </string>
   <string>
     <id>335</id>
@@ -1162,7 +1163,7 @@
   </string>   
   <string>
     <id>364</id>
-    <value>DD/DTS Flerkanal-ljud</value>
+    <value>AC3 kapabel förstärkare</value>
   </string>   
   <string>
     <id>365</id>
@@ -1870,6 +1871,29 @@
  <string>
  <id>636</id>
  <value>Egen</value>
+ </string>
+
+ <string>
+ <id>700</id>
+ <value>Rensa Databasen</value>
+ </string>
+
+ <string>
+ <id>701</id>
+ <value>Radera gammla låtar från databasen</value>
+ </string>
+
+ <string>
+ <id>702</id>
+ <value>Denna sökväg har scannats innan.</value>
+ </string>
+ <string>
+ <id>703</id>
+ <value>Välj Ja för att uppdatera sånger.</value>
+ </string>
+ <string>
+ <id>704</id>
+ <value>Välj Nej för att bara lägga till nya sånger.</value>
  </string>
 
  <string>
