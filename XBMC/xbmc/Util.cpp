@@ -1276,10 +1276,13 @@ bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
     {
       CFile file;
       // then cache folder.jpg to xbox HD
-      if ( file.Cache(strFolderImage.c_str(), strThumb.c_str(),NULL,NULL))
-      {
-        return true;
-      }
+	  if(file.Exists(strFolderImage))
+	  {
+		if ( file.Cache(strFolderImage.c_str(), strThumb.c_str(),NULL,NULL))
+		{
+			return true;
+		}
+	  }
     }
     else
     {
