@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 17-11-2004 fixed: Buttonscroller, icon is not shown when last control is not the scroller
   - 17-11-2004 fixed: Kai hosting within private arenas (with sophisticated hosting options to follow soon)
   - 16-11-2004 fixed: Accurate Kai reporting of XBOX Live Communicator / Headset status.
   - 16-11-2004 fixed: Improved performance sorting Kai views (Friends, Games and Arenas).
