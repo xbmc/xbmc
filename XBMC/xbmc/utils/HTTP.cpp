@@ -486,6 +486,12 @@ bool CHTTP::Recv(int iLen)
 		}
 		m_RecvBytes+=n;
 		iLen-=n;
+
+		if (bUnknown)
+		{
+			m_RecvBuffer[m_RecvBytes] = 0;
+			return true; // got some data, don't get any more
+		}
 	}
 	m_RecvBuffer[m_RecvBytes] = 0;
 	return true;
@@ -518,7 +524,8 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 
 	// send request...
 	char* szHTTPHEADER = (char*)_alloca(300 + m_strHostName.size() + m_strCookie.size() + (pData ? strlen(pData) : 0));
-  strcpy(szHTTPHEADER,"Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/msword, */*\r\n"
+	strcpy(szHTTPHEADER,"Connection: close\r\n"
+											"Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/msword, */*\r\n"
 											"Accept-Language: en-us\r\n"
 											"Host:");
 	strcat(szHTTPHEADER,m_strHostName.c_str());
@@ -641,6 +648,7 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 				strURL.insert(0, m_strHostName.c_str());
 				strURL.insert(0, "http://");
 			}
+			CLog::Log("%d Redirected: %s", status, strURL.c_str());
 			m_RecvBytes = 0;
 			return Open(strURL, verb, pData);
 		}
