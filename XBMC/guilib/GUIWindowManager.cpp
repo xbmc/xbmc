@@ -17,6 +17,7 @@ CGUIWindowManager::~CGUIWindowManager(void)
 
 void CGUIWindowManager::Initialize()
 {
+  m_iActiveWindow=-1;
   g_graphicsContext.setMessageSender(this);
 }
 

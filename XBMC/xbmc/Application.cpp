@@ -311,7 +311,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_gWindowManager.AddMsgTarget(this);
 	m_gWindowManager.AddMsgTarget(&g_playlistPlayer);
 	m_gWindowManager.SetCallback(*this);
-
+  m_gWindowManager.Initialize();
 }
 
 
