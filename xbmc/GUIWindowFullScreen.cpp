@@ -463,21 +463,28 @@ void CGUIWindowFullScreen::ShowOSD()
 
   COSDSubMenu audioMenu(292,100,100);
   iValue=g_application.m_pPlayer->GetAudioStreamCount();
-  COSDOptionIntRange   optionAudioStream(MENU_ACTION_AUDIO_STREAM,302,false,1,iValue,1,g_stSettings.m_iAudioStream+1);
-  audioMenu.AddOption(&optionAudioStream);
+  if (iValue>1)
+  {
+    COSDOptionIntRange   optionAudioStream(MENU_ACTION_AUDIO_STREAM,302,false,1,iValue,1,g_stSettings.m_iAudioStream+1);
+    audioMenu.AddOption(&optionAudioStream);
+  }
 
   COSDSubMenu SubtitleMenu(293,100,100);
   fValue=g_application.m_pPlayer->GetSubTitleDelay();
   COSDOptionFloatRange optionSubtitleDelay(MENU_ACTION_SUBTITLEDELAY,303,-10.0f,10.0f,0.01f,fValue);
   
-  iValue=mplayer_getSubtitle();
-  COSDOptionIntRange   optionSubtitleLanguage(MENU_ACTION_SUBTITLELANGUAGE,304,false,0,mplayer_getSubtitleCount()-1,1,iValue);
+
 
   iValue=mplayer_SubtitleVisible();
   COSDOptionBoolean    optionEnable(MENU_ACTION_SUBTITLEONOFF,305, (iValue!=0));
 
   SubtitleMenu.AddOption(&optionSubtitleDelay);
-  SubtitleMenu.AddOption(&optionSubtitleLanguage);
+  if (mplayer_getSubtitleCount() > 1)
+  {
+    iValue=mplayer_getSubtitle();
+    COSDOptionIntRange   optionSubtitleLanguage(MENU_ACTION_SUBTITLELANGUAGE,304,false,0,mplayer_getSubtitleCount()-1,1,iValue);
+    SubtitleMenu.AddOption(&optionSubtitleLanguage);
+  }  
   SubtitleMenu.AddOption(&optionEnable);
 
   m_osdMenu.AddSubMenu(videoMenu);

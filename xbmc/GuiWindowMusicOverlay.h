@@ -19,4 +19,14 @@ public:
 	IDirect3DTexture8* 	m_pTexture;
 	int									m_iTextureWidth;
 	int									m_iTextureHeight;
+protected:
+  int                 m_iFrames;
+  int                 m_iPosOrgIcon;
+  int                 m_iPosOrgPlay;
+  int                 m_iPosOrgPause;
+  int                 m_iPosOrgInfo;
+  int                 m_iPosOrgBigPlayTime;
+  int                 m_iPosOrgPlayTime;
+  int                 m_iPosOrgRectangle;
+  void SetPosition(int iControl, int iStep, int iMaxSteps,int iOrgPos);
 };
