@@ -105,6 +105,10 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 			m_pVisualisation=NULL;
 			m_bInitialized=false;
 			ClearBuffers();
+
+			// remove z-buffer
+			RESOLUTION res = g_graphicsContext.GetVideoResolution();
+			g_graphicsContext.SetVideoResolution(res, FALSE);
 		}
 		break;
 
@@ -138,6 +142,10 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 				// Create new audio buffers
 				CreateBuffers();
 			}
+
+			// setup a z-buffer
+			RESOLUTION res = g_graphicsContext.GetVideoResolution();
+			g_graphicsContext.SetVideoResolution(res, TRUE);
 			return true;
 		}
 	}
