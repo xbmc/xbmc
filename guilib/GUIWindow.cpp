@@ -162,6 +162,12 @@ void CGUIWindow::OnAction(const CAction &action)
       return;
     }
   }
+
+  // no control has focus?
+  // set focus to the default control then
+
+  CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(),m_dwDefaultFocusControlID);
+  OnMessage(msg);
 }
 
 
