@@ -9,6 +9,9 @@ struct CSettings::stSettings g_stSettings;
 
 CSettings::CSettings(void)
 {
+
+  strcpy(g_stSettings.m_szSubtitleFont,"");
+  g_stSettings.m_iSubtitleHeight=0;
   g_stSettings.m_bPostProcessing=true;
   g_stSettings.m_bDeInterlace=false;
 	g_stSettings.m_bAudioOnAllSpeakers=false;
@@ -671,6 +674,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     
 		GetBoolean(pElement, "postprocessing", g_stSettings.m_bPostProcessing);
 		GetBoolean(pElement, "deinterlace", g_stSettings.m_bDeInterlace);
+      
+		GetInteger(pElement, "subtitleheight",g_stSettings.m_iSubtitleHeight);
+		GetString(pElement, "subtitlefont", g_stSettings.m_szSubtitleFont,"");
 	}
 	// myscripts settings
 	pElement = pRootElement->FirstChildElement("myscripts");
@@ -855,6 +861,9 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 
 	SetBoolean(pNode, "postprocessing", g_stSettings.m_bPostProcessing);
 	SetBoolean(pNode, "deinterlace", g_stSettings.m_bDeInterlace);
+
+	SetInteger(pNode, "subtitleheight",g_stSettings.m_iSubtitleHeight);
+	SetString(pNode, "subtitlefont", g_stSettings.m_szSubtitleFont);
 
 	// myscripts settings
 	TiXmlElement scriptsNode("myscripts");

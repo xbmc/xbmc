@@ -465,6 +465,12 @@
 				RelativePath=".\xbmc\GUIWindowSettingsSlideShow.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowSettingsSubtitles.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsSubtitles.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowSettingsUICalibration.cpp">
 			</File>
 			<File
