@@ -193,6 +193,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	CStdString	strExecuteAction="";
 	CStdString	strRSSUrl="";
 	CStdString  strTitle="";
+	CStdString	strRSSTags="";
 
 	DWORD		dwThumbWidth = 80;
 	DWORD		dwThumbHeight = 128;
@@ -242,6 +243,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		{
 			strFont				= ((CGUIRSSControl*)pReference)->GetFontName();
 			strRSSUrl			= ((CGUIRSSControl*)pReference)->GetUrl();
+			strRSSTags		= ((CGUIRSSControl*)pReference)->GetTags();
 			dwTextColor3		= ((CGUIRSSControl*)pReference)->GetChannelTextColor();
 			dwTextColor2		= ((CGUIRSSControl*)pReference)->GetHeadlineTextColor();
 			dwTextColor			= ((CGUIRSSControl*)pReference)->GetNormalTextColor();
@@ -606,6 +608,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	GetDWORD(pControlNode,"disposition",dwDisposition);
 	GetString(pControlNode,"feed",strRSSUrl);
 	GetString(pControlNode,"title",strTitle);
+	GetString(pControlNode,"tagset",strRSSTags);
 	GetHex(pControlNode, "headlinecolor", dwTextColor2);
 	GetHex(pControlNode, "titlecolor", dwTextColor3);
 
@@ -749,7 +752,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	{
 		CGUIRSSControl* pControl = new CGUIRSSControl(
 					dwParentId,dwID,iPosX,iPosY,dwWidth,dwHeight,
-					strFont,dwTextColor3,dwTextColor2,dwTextColor,strRSSUrl);
+					strFont,dwTextColor3,dwTextColor2,dwTextColor,strRSSUrl,strRSSTags);
 
 		pControl->SetColourDiffuse(dwColorDiffuse);
 		pControl->SetVisible(bVisible);

@@ -12,6 +12,7 @@
 #include "Thread.h"
 #include "StdString.h"
 #include "TinyXml\TinyXml.h"
+#include <list>
 
 using namespace std;
 
@@ -35,6 +36,7 @@ public:
 	bool	Load(CStdString& aFile);
 	bool	Parse(LPSTR szBuffer);
 	void	getFeed(CStdString& strText, LPBYTE& pbColors);
+	void	AddTag(const CStdString addTag);
 
 private:
 	void Process();
@@ -42,12 +44,13 @@ private:
 	void GetNewsItems(TiXmlElement* channelXmlNode);
 	void AddString(CStdString aString, int aColour);
 
-	IRssObserver*	m_pObserver;
-	CStdString		m_strUrl;
-	CStdString		m_strFeed;
-	CStdString		m_strColors;
-	INT				m_iLeadingSpaces;
-	TiXmlDocument	m_xml;
+	IRssObserver*			m_pObserver;
+	CStdString				m_strUrl;
+	CStdString				m_strFeed;
+	CStdString				m_strColors;
+	INT								m_iLeadingSpaces;
+	TiXmlDocument			m_xml;
+	list <CStdString>	m_tagSet;
 };
 
 #endif // !defined(AFX_RSSREADER_H__157FED93_0CDE_4295_A9AF_75BEF4E81761__INCLUDED_)
