@@ -25,35 +25,44 @@ CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
 
 void CGUIWindowFullScreen::OnAction(const CAction &action)
 {
-	if (action.wID == ACTION_ASPECT_RATIO)
+	switch (action.wID)
 	{
-		m_bShowStatus=true;
-		m_dwLastTime=timeGetTime();
-		// zoom->stretch
-		if (g_stSettings.m_bZoom)
-		{
-			g_stSettings.m_bZoom=false;
-			g_stSettings.m_bStretch=true;
-			g_settings.Save();
+		case ACTION_SHOW_GUI:
+			// switch back to the menu
+			OutputDebugString("Switching to GUI\n");
+			m_gWindowManager.PreviousWindow();
+			if (g_application.m_pPlayer)
+				g_application.m_pPlayer->Update();
+			OutputDebugString("Now in GUI\n");
 			return;
-		}
-		// stretch->normal
-		if (g_stSettings.m_bStretch)
+		break;
+		case ACTION_ASPECT_RATIO:
 		{
-			g_stSettings.m_bZoom=false;
+			m_bShowStatus=true;
+			m_dwLastTime=timeGetTime();
+			// zoom->stretch
+			if (g_stSettings.m_bZoom)
+			{
+				g_stSettings.m_bZoom=false;
+				g_stSettings.m_bStretch=true;
+				g_settings.Save();
+				return;
+			}
+			// stretch->normal
+			if (g_stSettings.m_bStretch)
+			{
+				g_stSettings.m_bZoom=false;
+				g_stSettings.m_bStretch=false;
+				g_settings.Save();
+				return;
+			}
+			// normal->zoom
+			g_stSettings.m_bZoom=true;
 			g_stSettings.m_bStretch=false;
 			g_settings.Save();
 			return;
 		}
-		// normal->zoom
-		g_stSettings.m_bZoom=true;
-		g_stSettings.m_bStretch=false;
-		g_settings.Save();
-		return;
-
-	}
-	switch (action.wID)
-	{
+		break;
 		case ACTION_STEP_BACK:
 			g_application.m_pPlayer->Seek(false,false);
 		break;
@@ -88,6 +97,8 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 
 		case ACTION_STOP:
 			g_application.m_pPlayer->closefile();
+			// Switch back to the previous window (GUI)
+			m_gWindowManager.PreviousWindow();
 		break;
 
 		case ACTION_PAUSE:
@@ -114,11 +125,41 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 
 bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 {
-
+	switch (message.GetMessage())
+	{
+		case GUI_MSG_WINDOW_INIT:
+		{
+			CGUIWindow::OnMessage(message);
+			g_graphicsContext.Lock();
+			g_graphicsContext.SetFullScreenVideo( true );
+			g_graphicsContext.Unlock();
+			if (g_application.m_pPlayer)
+				g_application.m_pPlayer->Update();
+			return true;
+		}
+		case GUI_MSG_WINDOW_DEINIT:
+		{
+			g_graphicsContext.Lock();
+			g_graphicsContext.SetFullScreenVideo( false );
+			g_graphicsContext.Unlock();
+			if (g_application.m_pPlayer)
+				g_application.m_pPlayer->Update(true);	
+			// Pause so that we make sure that our fullscreen renderer has finished...
+			Sleep(100);
+		}
+	}
 	return CGUIWindow::OnMessage(message);
 }
 
+// Dummy override of Render() - RenderFullScreen() is where the action takes place
+// this is called via mplayer when the video window is flipped (indicating a frame
+// change) so that we get smooth video playback
 void CGUIWindowFullScreen::Render()
+{
+	return;
+}
+
+void CGUIWindowFullScreen::RenderFullScreen()
 {
 	m_fFrameCounter+=1.0f;
 	FLOAT fTimeSpan=(float)(timeGetTime()-m_dwFPSTime);
@@ -163,7 +204,7 @@ void CGUIWindowFullScreen::Render()
 
 		CStdString strStatus2;
 		int  iResolution=g_graphicsContext.GetVideoResolution();
-		strStatus2.Format("%ix%i %s", resInfo[iResolution].iWidth, resInfo[iResolution].iHeight, resInfo[iResolution].strMode);
+		strStatus2.Format("%ix%i %s", g_settings.m_ResInfo[iResolution].iWidth, g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].strMode);
 
 		{
 			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 

@@ -687,18 +687,14 @@ void CGUIWindowSlideShow::DoRotate()
 void CGUIWindowSlideShow::GetOutputRect(const int iSourceWidth, const int iSourceHeight, int& x, int& y, int& width, int& height)
 {
 	// calculate aspect ratio correction factor
-	D3DPRESENT_PARAMETERS params;
-	g_application.GetD3DParameters(params);
-	RESOLUTION iRes = CUtil::GetResolution(params);
-	int iOffsetX1 = g_settings.m_movieCalibration[iRes].left;
-	int iOffsetY1 = g_settings.m_movieCalibration[iRes].top;
-	int iOffsetX2 = g_settings.m_movieCalibration[iRes].right;
-	int iOffsetY2 = g_settings.m_movieCalibration[iRes].bottom;
+	RESOLUTION iRes = g_graphicsContext.GetVideoResolution();
+	int iOffsetX1 = g_settings.m_ResInfo[iRes].Overscan.left;
+	int iOffsetY1 = g_settings.m_ResInfo[iRes].Overscan.top;
+	int iScreenWidth = g_settings.m_ResInfo[iRes].Overscan.width;
+	int iScreenHeight = g_settings.m_ResInfo[iRes].Overscan.height;
 
-	int iScreenWidth = resInfo[iRes].iWidth + iOffsetX2-iOffsetX1;
-	int iScreenHeight = resInfo[iRes].iHeight + iOffsetY2-iOffsetY1;
 	float fSourceFrameAR = (float)iSourceWidth/iSourceHeight;
-	float fOutputFrameAR = fSourceFrameAR / resInfo[iRes].fPixelRatio;
+	float fOutputFrameAR = fSourceFrameAR / g_settings.m_ResInfo[iRes].fPixelRatio;
 	width = iScreenWidth;
 	height = (int)(width / fOutputFrameAR);
 	if (height > iScreenHeight)
@@ -706,8 +702,8 @@ void CGUIWindowSlideShow::GetOutputRect(const int iSourceWidth, const int iSourc
 		height = iScreenHeight;
 		width = (int)(height * fOutputFrameAR);
 	}
-	x = (resInfo[iRes].iWidth - width)/2 + iOffsetX1;
-	y = (resInfo[iRes].iHeight - height)/2 + iOffsetY1;
+	x = (g_settings.m_ResInfo[iRes].Overscan.width - width)/2 + iOffsetX1;
+	y = (g_settings.m_ResInfo[iRes].Overscan.height - height)/2 + iOffsetY1;
 }
 
 void CGUIWindowSlideShow::Zoom(int iZoom)

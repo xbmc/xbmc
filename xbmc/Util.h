@@ -2,7 +2,6 @@
 #include <xtl.h>
 #include "stdstring.h"
 #include "fileitem.h"
-#include "cores/mplayer/xbox_video.h"
 
 using namespace std;
 
@@ -68,7 +67,6 @@ public:
 	static void GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon );
 	static void RemoveTempFiles();
 
-	static RESOLUTION GetResolution(D3DPRESENT_PARAMETERS &params);
 	// Added by JM to determine possible type of file from framesize
 	static bool IsNTSC_VCD(int iWidth, int iHeight);
 	static bool IsNTSC_SVCD(int iWidth, int iHeight);

@@ -1,10 +1,11 @@
 #pragma once
 
 #include "tinyxml/tinyxml.h"
-#define CONFIG_VERSION 0x000B
+#define CONFIG_VERSION 0x000C
 
 #include <xtl.h>
 #include "stdstring.h"
+#include "GraphicContext.h"
 #include <vector>
 using namespace std;
 
@@ -37,13 +38,6 @@ public:
 };
 typedef vector<CFileTypeIcon> VECFILETYPEICONS;
 typedef vector<CFileTypeIcon>::iterator IVECFILETYPEICONS;
-typedef struct _CALIBRATION	{
-	  int left;
-	  int top;
-	  int right;
-	  int bottom;
-	  int subtitles;
-  } CALIBRATION;
 
 class CSettings
 {
@@ -136,7 +130,7 @@ public:
 		bool			m_bHTTPServerEnabled;
 		int       m_iSlideShowTransistionFrames;
 		int       m_iSlideShowStayTime;
-		int				m_iScreenResolution;
+		RESOLUTION		m_ScreenResolution;
 		int			  m_iHTTPProxyPort;
 		char		  m_szHTTPProxy[128];
 
@@ -182,8 +176,7 @@ public:
   VECSHARES					m_vecMyMusicShares;
   VECSHARES					m_vecMyVideoShares;
   VECFILETYPEICONS	m_vecIcons;
-	CALIBRATION			m_movieCalibration[20];
-
+	RESOLUTION_INFO			m_ResInfo[10];
 protected:
 	bool GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName);
 	int	 GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName);

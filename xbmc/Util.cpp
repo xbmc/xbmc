@@ -1086,35 +1086,6 @@ bool CUtil::IsHD(const CStdString& strFileName)
 	return true;
 }
 
-
-RESOLUTION	CUtil::GetResolution(D3DPRESENT_PARAMETERS &params)
-{
-	int iWidth = params.BackBufferWidth;
-	int iHeight = params.BackBufferHeight;
-	bool bProgressive = (params.Flags & D3DPRESENTFLAG_PROGRESSIVE) != 0;
-	bool bWidescreen = (params.Flags & D3DPRESENTFLAG_WIDESCREEN) != 0;
-	bool bPAL = (XGetVideoStandard()==XC_VIDEO_STANDARD_PAL_I);
-
-	if (iWidth==resInfo[HDTV_1080i].iWidth && iHeight==resInfo[HDTV_1080i].iHeight) return HDTV_1080i;
-	if (iWidth==resInfo[HDTV_720p].iWidth && iHeight==resInfo[HDTV_720p].iHeight) return HDTV_720p;
-
-	if (!bPAL)
-	{
-		if (iWidth==resInfo[HDTV_480p_16_9].iWidth && iHeight==resInfo[HDTV_480p_16_9].iHeight && bProgressive && bWidescreen) return HDTV_480p_16_9;
-		if (iWidth==resInfo[HDTV_480p_4_3].iWidth && iHeight==resInfo[HDTV_480p_4_3].iHeight && bProgressive && !bWidescreen) return HDTV_480p_4_3;
-		if (iWidth==resInfo[NTSC_16_9].iWidth && iHeight==resInfo[NTSC_16_9].iHeight && !bProgressive && bWidescreen) return NTSC_16_9;
-		if (iWidth==resInfo[NTSC_4_3].iWidth && iHeight==resInfo[NTSC_4_3].iHeight && !bProgressive && !bWidescreen) return NTSC_4_3;
-	}
-	else
-	{
-		if (iWidth==resInfo[PAL_16_9].iWidth && iHeight==resInfo[PAL_16_9].iHeight && bWidescreen) return PAL_16_9;
-		if (iWidth==resInfo[PAL_4_3].iWidth && iHeight==resInfo[PAL_4_3].iHeight && !bWidescreen) return PAL_4_3;
-		if (iWidth==resInfo[PAL60_16_9].iWidth && iHeight==resInfo[PAL60_16_9].iHeight && bWidescreen) return PAL60_16_9;
-		if (iWidth==resInfo[PAL60_4_3].iWidth && iHeight==resInfo[PAL60_4_3].iHeight && !bWidescreen) return PAL60_4_3;
-	}
-	return PAL_4_3;
-}
-
 // Following 6 routines added by JM to determine (possible) source type based
 // on frame size
 bool CUtil::IsNTSC_VCD(int iWidth, int iHeight)
