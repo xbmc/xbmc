@@ -15,8 +15,14 @@ extern "C" {
 
 namespace PYXBMC
 {
-	PyObject* ControlFadeLabel_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
+	PyObject* ControlFadeLabel_New(
+        PyTypeObject *type,
+        PyObject *args,
+        PyObject *kwds )
 	{
+		static char *keywords[] = {	
+			"x", "y", "width", "height", "font", "textColor",
+            "alignment", NULL };
 		ControlFadeLabel *self;
 		char *cFont = NULL;
 		char *cTextColor = NULL;
@@ -24,12 +30,30 @@ namespace PYXBMC
 		self = (ControlFadeLabel*)type->tp_alloc(type, 0);
 		if (!self) return NULL;
 		
-		if (!PyArg_ParseTuple(args, "llll|ss", &self->dwPosX, &self->dwPosY, &self->dwWidth, &self->dwHeight,
-			&cFont, &cTextColor)) return NULL;
+		// set up default values in case they are not supplied
+        self->strFont = "font13";
+        self->dwTextColor = 0xffffffff;
+        self->dwAlign = XBFONT_LEFT;
 
-		self->strFont = cFont ? cFont : "font13";
+		if (!PyArg_ParseTupleAndKeywords(
+            args,
+            kwds,
+            "llll|ssl",
+            keywords,
+            &self->dwPosX,
+            &self->dwPosY,
+            &self->dwWidth,
+            &self->dwHeight,
+			&cFont,
+            &cTextColor,
+            &self->dwAlign ))
+        {
+            Py_DECREF( self );
+            return NULL;
+        }
+
+        if (cFont) self->strFont = cFont;
 		if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
-		else self->dwTextColor = 0xffffffff;
 
 		self->pGUIControl = NULL;
 
@@ -45,9 +69,16 @@ namespace PYXBMC
 
 	CGUIControl* ControlFadeLabel_Create(ControlFadeLabel* pControl)
 	{
-		pControl->pGUIControl = new CGUIFadeLabelControl(pControl->iParentId, pControl->iControlId,
-				pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
-				pControl->strFont, pControl->dwTextColor, XBFONT_LEFT);
+		pControl->pGUIControl = new CGUIFadeLabelControl(
+            pControl->iParentId,
+            pControl->iControlId,
+			pControl->dwPosX,
+            pControl->dwPosY,
+            pControl->dwWidth,
+            pControl->dwHeight,
+			pControl->strFont,
+            pControl->dwTextColor,
+            pControl->dwAlign );
 
 		CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
 		pControl->pGUIControl->OnMessage(msg);
@@ -107,10 +138,15 @@ namespace PYXBMC
 		"ControlFadeLabel class.\n"
 		"Control that scroll's lables"
 		"\n"
-		"ControlFadeLabel(int x, int y, int width, int height[, font, textColor])\n"
+		"ControlFadeLabel(x, y, width, height, font, textColor, alignment)\n"
 		"\n"
-		"font      : string fontname (example, 'font13' / 'font14')\n"
-		"textColor : hexString (example, '0xFFFF3300')");
+        "x         : x coordinate of control\n"
+        "y         : y coordinate of control\n"
+        "width     : width of control\n"
+        "height    : height of control\n"
+		"font      : string fontname (example, 'font13' / 'font14') (opt)\n"
+		"textColor : hexString e.g. '0xFFFF3300' (opt)\n"
+        "alignment : alignment of text - see xbfont.h (opt)\n" );
 
 // Restore code and data sections to normal.
 #pragma code_seg()

@@ -18,11 +18,23 @@ namespace PYXBMC
 	extern PyObject* ControlSpin_New(void);
 
 
-	PyObject* ControlList_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
+	PyObject* ControlList_New(
+        PyTypeObject *type,
+        PyObject *args,
+        PyObject *kwds)
 	{
+		static char *keywords[] = {	
+			"x", "y", "width", "height", "font",
+			"textColor", "buttonTexture", "buttonFocusTexture",
+            // maintain order of above items for backward compatibility
+            "selectedColor",
+            "imageWidth", "imageHeight",
+            "itemTextXOffset", "itemTextYOffset",
+            "itemHeight", "space", "alignmentY", NULL };
 		ControlList *self;
 		char *cFont = NULL;
 		char *cTextColor = NULL;
+        char *cSelectedColor = NULL;
 		char *cTextureButton = NULL;
 		char *cTextureButtonFocus = NULL;
 		
@@ -31,27 +43,67 @@ namespace PYXBMC
 		
 		// create a python spin control
 		self->pControlSpin = (ControlSpin*)ControlSpin_New();
-		if (!self->pControlSpin) return NULL;
+		if (!self->pControlSpin)
+        {
+            Py_DECREF( self );
+            return NULL;
+        }
 
-		if (!PyArg_ParseTuple(args, "llll|ss", &self->dwPosX, &self->dwPosY, &self->dwWidth, &self->dwHeight,
-			&cFont, &cTextColor, &cTextureButton, &cTextureButtonFocus)) return NULL;
-
-		// set default values if needed
-		self->strFont = cFont ? cFont : "font13";
-
-		if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
-		else self->dwTextColor = 0xe0f0f0f0;//0xffffffff;
-
-		self->dwSelectedColor = 0xffffffff;//0xFFF8BC70;
-
-		// if texture is supplied use it, else get default ones
-		self->strTextureButton = cTextureButton ? cTextureButton : PyGetDefaultImage("listcontrol", "textureNoFocus", "list-nofocus.png");		
-		self->strTextureButtonFocus = cTextureButtonFocus ? cTextureButtonFocus : PyGetDefaultImage("listcontrol", "textureFocus", "list-focus.png");	
-
+		// initialize default values
+        self->strFont = "font13";
+		self->dwTextColor = 0xe0f0f0f0;
+		self->dwSelectedColor = 0xffffffff;
 		self->dwImageHeight = 10;
 		self->dwImageWidth = 10;
 		self->dwItemHeight = 27;
 		self->dwSpace = 2;
+        self->dwItemTextXOffset = CONTROL_TEXT_OFFSET_X;
+        self->dwItemTextYOffset = CONTROL_TEXT_OFFSET_Y;
+        self->dwAlignmentY = XBFONT_CENTER_Y;
+
+		if (!PyArg_ParseTupleAndKeywords(
+            args,
+            kwds,
+            "llll|ssssslllllll",
+            keywords,
+            &self->dwPosX,
+            &self->dwPosY,
+            &self->dwWidth,
+            &self->dwHeight,
+			&cFont,
+            &cTextColor,
+            &cTextureButton,
+            &cTextureButtonFocus,
+            &cSelectedColor,
+            &self->dwImageWidth,
+            &self->dwImageHeight,
+            &self->dwItemTextXOffset,
+            &self->dwItemTextYOffset,
+            &self->dwItemHeight,
+            &self->dwSpace,
+            &self->dwAlignmentY ))
+        {
+            Py_DECREF( self );
+            return NULL;
+        }
+
+		// set specified values
+        if (cFont) self->strFont = cFont;
+		if (cTextColor)
+        {
+            sscanf( cTextColor, "%x", &self->dwTextColor );
+        }
+		if (cSelectedColor)
+        {
+            sscanf( cSelectedColor, "%x", &self->dwSelectedColor );
+        }
+		self->strTextureButton = cTextureButton ?
+            cTextureButton :
+            PyGetDefaultImage(
+                "listcontrol", "textureNoFocus", "list-nofocus.png");		
+		self->strTextureButtonFocus = cTextureButtonFocus ?
+            cTextureButtonFocus :
+            PyGetDefaultImage("listcontrol", "textureFocus", "list-focus.png");	
 
 		// default values for spin control
 		self->pControlSpin->dwPosX = self->dwPosX + self->dwWidth - 35;
@@ -62,8 +114,8 @@ namespace PYXBMC
 
 	void ControlList_Dealloc(ControlList* self)
 	{
-		// delete spincontrol
-		Py_DECREF(self->pControlSpin);
+		// conditionally delete spincontrol
+		Py_XDECREF(self->pControlSpin);
 
 		// delete all ListItem from vector
 		vector<ListItem*>::iterator it = self->vecItems.begin();
@@ -80,20 +132,37 @@ namespace PYXBMC
 
 	CGUIControl* ControlList_Create(ControlList* pControl)
 	{
-		pControl->pGUIControl = new CGUIListControl(pControl->iParentId, pControl->iControlId,
-				pControl->dwPosX, pControl->dwPosY, pControl->dwWidth, pControl->dwHeight,
-				pControl->strFont, pControl->pControlSpin->dwWidth, pControl->pControlSpin->dwHeight,
-				pControl->pControlSpin->strTextureUp, pControl->pControlSpin->strTextureDown, pControl->pControlSpin->strTextureUpFocus,
-				pControl->pControlSpin->strTextureDownFocus, pControl->pControlSpin->dwColor, pControl->pControlSpin->dwPosX,
-				pControl->pControlSpin->dwPosY, pControl->strFont, pControl->dwTextColor,
-				pControl->dwSelectedColor, pControl->strTextureButton, pControl->strTextureButtonFocus,
-				CONTROL_TEXT_OFFSET_X, CONTROL_TEXT_OFFSET_Y);
+		pControl->pGUIControl = new CGUIListControl(
+            pControl->iParentId,
+            pControl->iControlId,
+			pControl->dwPosX,
+            pControl->dwPosY,
+            pControl->dwWidth,
+            pControl->dwHeight,
+			pControl->strFont,
+            pControl->pControlSpin->dwWidth,
+            pControl->pControlSpin->dwHeight,
+			pControl->pControlSpin->strTextureUp,
+            pControl->pControlSpin->strTextureDown,
+            pControl->pControlSpin->strTextureUpFocus,
+			pControl->pControlSpin->strTextureDownFocus,
+            pControl->pControlSpin->dwColor,
+            pControl->pControlSpin->dwPosX,
+			pControl->pControlSpin->dwPosY,
+            pControl->strFont,
+            pControl->dwTextColor,
+			pControl->dwSelectedColor,
+            pControl->strTextureButton,
+            pControl->strTextureButtonFocus,
+			pControl->dwItemTextXOffset,
+            pControl->dwItemTextYOffset );
 
 		CGUIListControl* pListControl = (CGUIListControl*)pControl->pGUIControl;
-		pListControl->SetImageDimensions(pControl->dwImageWidth, pControl->dwImageHeight);
+		pListControl->SetImageDimensions(
+            pControl->dwImageWidth, pControl->dwImageHeight );
 		pListControl->SetItemHeight(pControl->dwItemHeight);
 		pListControl->SetSpace(pControl->dwSpace);
-		pListControl->SetAlignmentY(XBFONT_CENTER_Y);
+		pListControl->SetAlignmentY( pControl->dwAlignmentY );
 
 
 		// set values for spincontrol
@@ -201,11 +270,24 @@ PyDoc_STRVAR(addItem__doc__,
 
 	PyObject* ControlList_SetImageDimensions(ControlList *self, PyObject *args)
 	{
-		if (!PyArg_ParseTuple(args, "ll", &self->dwImageWidth, &self->dwImageHeight)) return NULL;
+		if (!PyArg_ParseTuple(
+            args,
+            "ll",
+            &self->dwImageWidth,
+            &self->dwImageHeight))
+        {
+            return NULL;
+        }
 
 		PyGUILock();
-		CGUIListControl* pListControl = (CGUIListControl*) self->pGUIControl;
-		pListControl->SetImageDimensions(self->dwImageWidth, self->dwImageHeight);
+        if (self->pGUIControl)
+        {
+            CGUIListControl* pListControl =
+                (CGUIListControl*) self->pGUIControl;
+            pListControl->SetImageDimensions(
+                self->dwImageWidth,
+                self->dwImageHeight );
+        }
 		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
@@ -220,8 +302,12 @@ PyDoc_STRVAR(addItem__doc__,
 		if (!PyArg_ParseTuple(args, "l", &self->dwItemHeight)) return NULL;
 
 		PyGUILock();
-		CGUIListControl* pListControl = (CGUIListControl*) self->pGUIControl;
+        if (self->pGUIControl)
+        {
+            CGUIListControl* pListControl =
+                (CGUIListControl*) self->pGUIControl;
 		pListControl->SetItemHeight(self->dwItemHeight);
+        }
 		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
@@ -236,8 +322,12 @@ PyDoc_STRVAR(addItem__doc__,
 		if (!PyArg_ParseTuple(args, "l", &self->dwSpace)) return NULL;
 
 		PyGUILock();
-		CGUIListControl* pListControl = (CGUIListControl*) self->pGUIControl;
+        if (self->pGUIControl)
+        {
+            CGUIListControl* pListControl =
+                (CGUIListControl*) self->pGUIControl;
 		pListControl->SetSpace(self->dwSpace);
+        }
 		PyGUIUnlock();
 
 		Py_INCREF(Py_None);
@@ -302,7 +392,30 @@ PyDoc_STRVAR(addItem__doc__,
 	PyDoc_STRVAR(controlList__doc__,
 		"ControlList class.\n"
 		"\n"
-		"ControlList(int x, int y, int width, int height[, buttonTexture, buttonFocusTexture])");
+		"ControlList(\n"
+        "   x, y, width, height, font, textColor,\n"
+        "   buttonTexture, buttonFocusTexture,\n"
+        "   selectedColor, imageWidth, imageHeight,\n"
+        "   itemTextXOffset, itemTextYOffset,\n"
+        "   itemHeight, space, alignmentY )\n"
+		"\n"
+        "x                  : integer x coordinate of control\n"
+        "y                  : integer y coordinate of control\n"
+        "width              : integer width of control\n"
+        "height             : integer height of control\n"
+		"font               : font used for label text e.g. 'font13' (opt)\n"
+		"textColor          : color of item text e.g. '0xFFFFFFFF' (opt)\n"
+		"buttonTexture      : texture filename for item (opt)\n"
+		"buttonFocusTexture : texture filename for focused item (opt)\n"
+		"selectedColor      : color of selected item text e.g. '0xFFFFFFFF' (opt)\n"
+        "imageWidth         : integer width of item icon or thumbnail (opt)\n"
+        "imageHeight        : integer height of item icon or thumbnail (opt)\n"
+		"itemTextXOffset    : integer x offset of item label (opt)\n"
+		"itemTextYOffset    : integer y offset of item label (opt)\n"
+		"itemHeight         : integer height item (opt)\n"
+		"space              : integer space between items (opt)\n"
+		"alignmentY         : integer y-axis alignment - see xbfont.h (opt)\n"
+        );
 
 // Restore code and data sections to normal.
 #pragma code_seg()
