@@ -359,11 +359,11 @@ bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize,
 {
 	DWORD dwImageType=CXIMAGE_FORMAT_JPG;
 
+	if (!strExtension.size()) return false;
+
 	BYTE* pPicture = new BYTE[nBufSize];
 	memcpy(pPicture, pBuffer, nBufSize);
 	
-	if (!strExtension.size()) return false;
-
 	if ( 0==CUtil::cmpnocase(strExtension.c_str(),"bmp") ) dwImageType=CXIMAGE_FORMAT_BMP;
 	if ( 0==CUtil::cmpnocase(strExtension.c_str(),"bitmap") ) dwImageType=CXIMAGE_FORMAT_BMP;
 	if ( 0==CUtil::cmpnocase(strExtension.c_str(),"gif") ) dwImageType=CXIMAGE_FORMAT_GIF;
@@ -385,7 +385,6 @@ bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize,
 
   try
 	{
-
 		CxImage image(dwImageType);
 		if (!image.Decode(pPicture,nBufSize,dwImageType))
 		{
@@ -427,19 +426,21 @@ bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize,
     }
 		if (!image.Save(strThumbFileName.c_str(),CXIMAGE_FORMAT_JPG))
     {
-			CLog::Log("PICTURE::createthumbnailfrommemory: Unable to save image:%s Error:%s\n", strThumbFileName, image.GetLastError());
+			CLog::Log("PICTURE::createthumbnailfrommemory: Unable to save image:%s Error:%s\n", strThumbFileName.c_str(), image.GetLastError());
 			delete[] pPicture;
 
       ::DeleteFile(strThumbFileName.c_str());
       return false;
     }
+		delete[] pPicture;
+		return true;
 	}
   catch(...)
   {
-		CLog::Log("PICTURE::createthumbnailfrommemory: exception: memfile\n");
+		CLog::Log("PICTURE::createthumbnailfrommemory: exception: memfile FileType: %s\n", strExtension.c_str());
   }
 	delete[] pPicture;
-	return true;
+	return false;
 }
 
 void CPicture::RenderImage(IDirect3DTexture8* pTexture,int x, int y, int width, int height, int iTextureWidth, int iTextureHeight, bool bRGB)
