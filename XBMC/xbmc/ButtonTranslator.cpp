@@ -117,13 +117,13 @@ void CButtonTranslator::GetAction(WORD wWindow, const CKey &key, CAction &action
 	action.fAmount2 = 0;
 	action.m_dwButtonCode = key.GetButtonCode();
 	// get the action amounts of the analog buttons
-	if (key.GetButtonCode() == KEY_BUTTON_LEFT_TRIGGER)
+	if (key.GetButtonCode() == KEY_BUTTON_LEFT_ANALOG_TRIGGER)
 	{
-		action.fAmount1 = key.GetLeftTrigger();
+		action.fAmount1 = (float)key.GetLeftTrigger()/255.0f;
 	}
-	if (key.GetButtonCode() == KEY_BUTTON_RIGHT_TRIGGER)
+	if (key.GetButtonCode() == KEY_BUTTON_RIGHT_ANALOG_TRIGGER)
 	{
-		action.fAmount1 = key.GetRightTrigger();
+		action.fAmount1 = (float)key.GetRightTrigger()/255.0f;
 	}
 	if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK)
 	{
@@ -192,6 +192,8 @@ void CButtonTranslator::MapAction(WORD wAction, TiXmlNode *pNode, buttonMap &map
 			if (strButton == "rightthumbstickright")	wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
 			if (strButton == "lefttrigger")				wButtonCode = KEY_BUTTON_LEFT_TRIGGER;
 			if (strButton == "righttrigger")			wButtonCode = KEY_BUTTON_RIGHT_TRIGGER;
+			if (strButton == "leftanalogtrigger") wButtonCode = KEY_BUTTON_LEFT_ANALOG_TRIGGER;
+			if (strButton == "rightanalogtrigger") wButtonCode = KEY_BUTTON_RIGHT_ANALOG_TRIGGER;
 			if (strButton == "dpadleft")				wButtonCode = KEY_BUTTON_DPAD_LEFT;
 			if (strButton == "dpadright")				wButtonCode = KEY_BUTTON_DPAD_RIGHT;
 			if (strButton == "dpadup")					wButtonCode = KEY_BUTTON_DPAD_UP;

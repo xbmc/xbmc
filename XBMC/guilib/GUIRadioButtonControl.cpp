@@ -3,10 +3,10 @@
 
 CGUIRadioButtonControl::CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
 											   const CStdString& strTextureFocus,const CStdString& strTextureNoFocus,
-											   DWORD dwTextOffsetX, DWORD dwTextOffsetY,
+											   DWORD dwTextOffsetX, DWORD dwTextOffsetY, DWORD dwTextAlign,
 											   const CStdString& strRadioFocus,const CStdString& strRadioNoFocus
 											   )
-:CGUIButtonControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strTextureFocus,strTextureNoFocus, dwTextOffsetX, dwTextOffsetY)
+:CGUIButtonControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strTextureFocus,strTextureNoFocus, dwTextOffsetX, dwTextOffsetY, dwTextAlign)
 ,m_imgRadioFocus(dwParentID, dwControlId, iPosX, iPosY,16,16,strRadioFocus)
 ,m_imgRadioNoFocus(dwParentID, dwControlId, iPosX, iPosY,16,16,strRadioNoFocus)
 {

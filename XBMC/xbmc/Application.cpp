@@ -979,7 +979,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	if (!m_guiHome.Load( "home.xml"))
 	{
 		// failed to load home.xml
-		// fallback to mediacenter skin
+		// fallback to default skin
 		if ( CUtil::cmpnocase(strSkin.c_str(),"Project Mayhem") !=0)
 		{
 			CLog::Log(LOGERROR, "failed to load home.xml for skin:%s, fallback to Project Mayhem skin", strSkin.c_str());
@@ -1629,6 +1629,9 @@ void CApplication::UpdateLCD()
 
 void CApplication::FrameMove()
 {
+	// reset the fullscreen analog options if needed
+	m_guiWindowFullScreen.m_bSmoothFFwdRewd = false;
+
 	if (g_lcd) UpdateLCD();
 	// read raw input from controller, remote control, and mouse
 	ReadInput();
@@ -1713,6 +1716,19 @@ void CApplication::FrameMove()
 	{
 		bGotKey=true;
 		CKey key(KEY_BUTTON_RIGHT_THUMB_STICK_LEFT,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,-pGamepad->fX2,pGamepad->fY2);
+		OnKey(key);
+	}
+	// analog trigger detection
+	if (bLeftTrigger)
+	{
+		bGotKey=true;
+		CKey key(KEY_BUTTON_LEFT_ANALOG_TRIGGER,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
+		OnKey(key);
+	}
+	if (bRightTrigger)
+	{
+		bGotKey=true;
+		CKey key(KEY_BUTTON_RIGHT_ANALOG_TRIGGER,bLeftTrigger,bRightTrigger,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 		OnKey(key);
 	}
 	if ( wDir & DC_LEFTTRIGGER)

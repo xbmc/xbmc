@@ -26,6 +26,8 @@ public:
   virtual void    OnExecute(int iAction, const IOSDOption* option);
   bool            m_bOSDVisible;
   void			  SetViewMode(int iViewMode);
+	bool				m_bSmoothFFwdRewd;
+	bool				m_bDiscreteFFwdRewd;
 
 private:
 	void				Update();

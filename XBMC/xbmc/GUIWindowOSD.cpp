@@ -175,6 +175,12 @@ void CGUIWindowOSD::OnAction(const CAction &action)
 		}
 		break;
 
+		case ACTION_ANALOG_REWIND:
+		case ACTION_ANALOG_FORWARD:
+		{	// call base class
+			g_application.m_guiWindowFullScreen.OnAction(action);
+		}
+		break;
 		case ACTION_REWIND:
 		{
 			// push a message through to this window to handle the remote control button

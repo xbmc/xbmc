@@ -19,6 +19,7 @@ CGUIListControl::CGUIListControl(DWORD dwParentID, DWORD dwControlId, int iPosX,
 {
   m_dwSelectedColor=dwSelectedColor;
   m_iOffset=0;
+	m_fSmoothScrollOffset=0;
   m_iItemsPerPage=10;
   m_iItemHeight=10;
   m_pFont=g_fontManager.GetFont(strFontName);
@@ -284,7 +285,6 @@ void CGUIListControl::OnAction(const CAction &action)
 			}
 		}
 		break;
-
 		case ACTION_PAGE_DOWN:
 		{
 			if (m_iOffset == (int)m_vecItems.size()-m_iItemsPerPage || (int)m_vecItems.size()<m_iItemsPerPage)
@@ -295,6 +295,41 @@ void CGUIListControl::OnAction(const CAction &action)
 			else
 			{	// scroll down to the next page
 				Scroll(m_iItemsPerPage);
+			}
+		}
+		break;
+		// smooth scrolling (for analog controls)
+		case ACTION_SCROLL_UP:
+		{
+			m_fSmoothScrollOffset+=action.fAmount1*action.fAmount1;
+			while (m_fSmoothScrollOffset>0.4)
+			{
+				m_fSmoothScrollOffset-=0.4f;
+				if (m_iOffset>0 && m_iCursorY<=m_iItemsPerPage/2)
+				{
+					Scroll(-1);
+				}
+				else if (m_iCursorY>0)
+				{
+					m_iCursorY--;
+				}
+			}
+		}
+		break;
+		case ACTION_SCROLL_DOWN:
+		{
+			m_fSmoothScrollOffset+=action.fAmount1*action.fAmount1;
+			while (m_fSmoothScrollOffset>0.4)
+			{
+				m_fSmoothScrollOffset-=0.4f;
+				if (m_iOffset + m_iItemsPerPage < (int)m_vecItems.size() && m_iCursorY>=m_iItemsPerPage/2)
+				{
+					Scroll(1);
+				}
+				else if (m_iCursorY<m_iItemsPerPage-1)
+				{
+					m_iCursorY++;
+				}
 			}
 		}
 		break;

@@ -327,7 +327,8 @@ void CGUIControl::OnMouseOver()
 {
 	if (g_Mouse.GetState() != MOUSE_STATE_DRAG)
 		g_Mouse.SetState(MOUSE_STATE_FOCUS);
-	SetFocus(true);
+	CGUIMessage msg(GUI_MSG_SETFOCUS, GetParentID(), GetID());
+	g_graphicsContext.SendMessage(msg);
 }
 
 void CGUIControl::SetGroup(int iGroup)
