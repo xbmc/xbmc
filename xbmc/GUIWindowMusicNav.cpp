@@ -344,6 +344,14 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         // use play button to add folders of items to temp playlist
         if (iAction == ACTION_MUSIC_PLAY)
         {
+          // if playback is paused or playback speed != 1, return
+          if (g_application.IsPlayingAudio())
+          {
+            if (g_application.m_pPlayer->IsPaused()) return true;
+            if (g_application.GetPlaySpeed() != 1) return true;
+          }
+          
+          // not playing audio, or playback speed == 1
           PlayItem(iItem);
         }
       }
