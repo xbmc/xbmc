@@ -75,10 +75,10 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 			m_bViewReview=true;
       CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_DISC,0,0,NULL);
       g_graphicsContext.SendMessage(msg);         
-			for (int i=0; i < 100; ++i)
+			for (int i=0; i < 1000; ++i)
 			{
 				CStdString strItem;
-        strItem.Format("DVD#%02.2i", i);
+        strItem.Format("DVD#%03i", i);
 				CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_DISC,0,0);
 				msg2.SetLabel(strItem);
 				g_graphicsContext.SendMessage(msg2);    
@@ -112,9 +112,14 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
         int iDVD=0;
         if (strlen(szNumber))
         {
-          sscanf(szNumber,"%i", &iDVD);
-          if (iDVD <0 && iDVD >=100)
-            iDVD=-1;
+          int x=0;
+          while (szNumber[x]=='0' && x < strlen(szNumber) ) x++;
+          if (x < strlen(szNumber))
+          {
+            sscanf(&szNumber[x],"%i", &iDVD);
+            if (iDVD <0 && iDVD >=1000)
+              iDVD=-1;
+          }
         }
         if (iDVD<=0) iDVD=0;
         iItem=iDVD;
