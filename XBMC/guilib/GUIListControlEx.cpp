@@ -190,17 +190,6 @@ void CGUIListControlEx::OnAction(const CAction &action)
 
 bool CGUIListControlEx::OnMessage(CGUIMessage& message)
 {
-	if (!m_pList)
-	{
-		if ( (message.GetControlId() == GetID()) &&
-			 (message.GetMessage() == GUI_MSG_LABEL_BIND) )
-		{
-			m_pList = (CGUIList*) message.GetLPVOID();
-		}
-
-		return CGUIControl::OnMessage(message);
-	}
-
 	if (message.GetControlId() == GetID() )
 	{
 		if (message.GetSenderId()==0)
@@ -225,10 +214,15 @@ bool CGUIListControlEx::OnMessage(CGUIMessage& message)
 		if (message.GetMessage() == GUI_MSG_LABEL_BIND)
 		{
 			CGUIList* pNewList = (CGUIList*) message.GetLPVOID();
-			CGUIList* pOldList = m_pList;
-			pOldList->Lock();
-			m_pList = pNewList;
-			pOldList->Release();
+      if (!m_pList)
+        m_pList = pNewList;
+      else
+      {
+		    CGUIList* pOldList = m_pList;
+		    pOldList->Lock();
+		    m_pList = pNewList;
+		    pOldList->Release();
+      }
 		}
 
 		if (message.GetMessage()==GUI_MSG_ITEM_SELECTED)
