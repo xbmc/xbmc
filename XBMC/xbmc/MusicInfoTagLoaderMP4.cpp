@@ -42,7 +42,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
 			file.Close();
 			return false;
 		}
-		
+
 		char* pBuffer=NULL;
 		u_int16_t nTrackNum=0;
 		u_int16_t nTrackCount=0;
@@ -147,7 +147,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
 			{
 				CStdString strCoverArt, strPath, strFileName;
 				CUtil::Split(tag.GetURL(), strPath, strFileName);
-				CUtil::GetAlbumThumb(tag.GetAlbum()+strPath, strCoverArt,true);
+				CUtil::GetAlbumThumb(tag.GetAlbum(), strPath, strCoverArt,true);
 
 				CPicture pic;
 				if (pic.CreateAlbumThumbnailFromMemory(pCover, nSize, "", strCoverArt))

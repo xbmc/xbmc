@@ -72,7 +72,7 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
 			if (iControl==CONTROL_BTN_REFRESH)
 			{
 				CStdString strThumb;
-				CUtil::GetAlbumThumb(m_pAlbum->GetTitle()+m_pAlbum->GetAlbumPath(),strThumb);
+				CUtil::GetAlbumThumb(m_pAlbum->GetTitle(), m_pAlbum->GetAlbumPath(),strThumb);
 
         CUtil::ClearCache();
 				if (CUtil::FileExists(strThumb))
@@ -116,12 +116,12 @@ void CGUIWindowMusicInfo::Update()
 
 	SetLabel(CONTROL_GENRE, m_pAlbum->GetGenre() );
 	{
-	CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_TONE); 
+	CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_TONE);
     OnMessage(msg1);
 	}
 	{
 	strTmp=m_pAlbum->GetTones(); strTmp.Trim();
-	CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TONE); 
+	CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TONE);
     msg1.SetLabel( strTmp );
     OnMessage(msg1);
 	}
@@ -140,7 +140,7 @@ void CGUIWindowMusicInfo::Update()
 			const CMusicSong& song=m_pAlbum->GetSong(i);
 			CStdString strTmp;
 			strTmp.Format("%i. %-30s\n",
-							song.GetTrack(), 
+							song.GetTrack(),
 							song.GetSongName());
 			strLine+=strTmp;
 		};
@@ -151,7 +151,7 @@ void CGUIWindowMusicInfo::Update()
 		{
 			const CMusicSong& song=m_pAlbum->GetSong(i);
 			CStdString strTmp;
-			
+
 			if (song.GetDuration()>0)
 				CUtil::SecondsToHMSString(song.GetDuration(), strTmp);
 
@@ -171,7 +171,7 @@ void CGUIWindowMusicInfo::SetLabel(int iControl, const CStdString& strLabel)
 	CStdString strLabel1=strLabel;
 	if (strLabel1.size()==0)
 		strLabel1=g_localizeStrings.Get(416);
-	
+
 	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),iControl);
 	msg.SetLabel(strLabel1);
 	OnMessage(msg);
@@ -188,10 +188,10 @@ void CGUIWindowMusicInfo::Refresh()
 {
 	CStdString strThumb;
 	CStdString strImage=m_pAlbum->GetImageURL();
-	CUtil::GetAlbumThumb(m_pAlbum->GetTitle()+m_pAlbum->GetAlbumPath(),strThumb);
+	CUtil::GetAlbumThumb(m_pAlbum->GetTitle(), m_pAlbum->GetAlbumPath(),strThumb);
 	if (!CUtil::FileExists(strThumb) && !strImage.IsEmpty() )
 	{
-		//	Download image and save as 
+		//	Download image and save as
 		//	permanent thumb
 		CHTTP http;
 		http.Download(strImage,strThumb);

@@ -72,7 +72,8 @@ public:
 	static void LoadDateTime(SYSTEMTIME& dateTime, FILE *fd);
 	static void SaveDateTime(SYSTEMTIME& dateTime, FILE *fd);
 	static void GetSongInfo(const CStdString& strFileName, CStdString& strSongCacheName);
-	static void GetAlbumThumb(const CStdString& strFileName, CStdString& strAlbumThumb, bool bTempDir=false);
+	static void GetAlbumFolderThumb(const CStdString& strFileName, CStdString& strAlbumThumb, bool bTempDir=false);
+	static void GetAlbumThumb(const CStdString& strAlbumName, const CStdString& strFileName, CStdString& strThumb, bool bTempDir=false);
 	static void GetAlbumInfo(const CStdString& strFileName, CStdString& strAlbumThumb);
 	static void GetAlbumDatabase(const CStdString& strFileName, CStdString& strAlbumThumb);
 	static bool GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon);
