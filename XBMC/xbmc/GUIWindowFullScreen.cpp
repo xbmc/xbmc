@@ -29,6 +29,12 @@
 #define MENU_ACTION_AUDIO_STREAM 8
 
 #define IMG_PAUSE     16
+#define IMG_2X	      17
+#define IMG_4X	      18
+#define IMG_8X		  19
+#define IMG_16X       20
+#define IMG_32X       21
+
 extern int m_iAudioStreamIDX;
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 :CGUIWindow(0)
@@ -203,6 +209,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 		break;
 
 		case ACTION_STOP:
+      m_iSpeed=1;
 			g_application.m_pPlayer->closefile();
 			// Switch back to the previous window (GUI)
 			m_gWindowManager.PreviousWindow();
@@ -287,6 +294,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 		{
       m_bLastRender=false;
       m_bOSDVisible=false;
+      m_iSpeed=1;
 			CGUIWindow::OnMessage(message);
       g_graphicsContext.Lock();
 			g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
@@ -308,6 +316,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 			// Pause so that we make sure that our fullscreen renderer has finished...
 			Sleep(100);
       m_bOSDVisible=false;
+      m_iSpeed=1;
       HideOSD();
 		}
 	}
@@ -332,6 +341,7 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   if (m_bShowStatus) return true;
   if (m_bShowInfo) return true;
   if (m_bOSDVisible) return true;
+  if (m_iSpeed != 1) return true;
   if (m_bLastRender)
   {
     m_bLastRender=false;
@@ -368,6 +378,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
   {
     SET_CONTROL_HIDDEN(GetID(),IMG_PAUSE);  
   }
+ 
 	if (m_bShowStatus)
 	{
 		if ( (timeGetTime() - m_dwTimeStatusShowTime) >=5000)
@@ -495,9 +506,62 @@ void CGUIWindowFullScreen::RenderFullScreen()
     OnMessage(msg);
   }	
 
+	if(m_iSpeed)
+	{
+		SET_CONTROL_HIDDEN(GetID(),IMG_2X);
+		SET_CONTROL_HIDDEN(GetID(),IMG_4X);
+		SET_CONTROL_HIDDEN(GetID(),IMG_8X);
+		SET_CONTROL_HIDDEN(GetID(),IMG_16X);
+		SET_CONTROL_HIDDEN(GetID(),IMG_32X);
+		bRenderGUI=true;
+		if(m_iSpeed == 2 || m_iSpeed == -2)
+		{
+			SET_CONTROL_VISIBLE(GetID(),IMG_2X);
+		}
+		else if(m_iSpeed == 4 || m_iSpeed == -4)
+		{
+			SET_CONTROL_VISIBLE(GetID(),IMG_4X);
+		}
+		else if(m_iSpeed == 8 || m_iSpeed == -8)
+		{
+			SET_CONTROL_VISIBLE(GetID(),IMG_8X);
+		}
+		else if(m_iSpeed == 16 || m_iSpeed == -16)
+		{
+			SET_CONTROL_VISIBLE(GetID(),IMG_16X);
+		}
+		else if(m_iSpeed == 32 || m_iSpeed == -32)
+		{
+			SET_CONTROL_VISIBLE(GetID(),IMG_32X);
+		}
+		else
+		{
+			SET_CONTROL_HIDDEN(GetID(),IMG_2X);
+			SET_CONTROL_HIDDEN(GetID(),IMG_4X);
+			SET_CONTROL_HIDDEN(GetID(),IMG_8X);
+			SET_CONTROL_HIDDEN(GetID(),IMG_16X);
+			SET_CONTROL_HIDDEN(GetID(),IMG_32X);
+		}
+	}
+	else
+	{
+		SET_CONTROL_HIDDEN(GetID(),IMG_2X);
+		SET_CONTROL_HIDDEN(GetID(),IMG_4X);
+		SET_CONTROL_HIDDEN(GetID(),IMG_8X);
+		SET_CONTROL_HIDDEN(GetID(),IMG_16X);
+		SET_CONTROL_HIDDEN(GetID(),IMG_32X);
+	}
+
   if ( bRenderGUI)
   {
-    if (m_bShowStatus||m_bShowInfo)
+	if (g_application.m_pPlayer->IsPaused() || m_iSpeed != 1)
+	{
+	  SET_CONTROL_HIDDEN(GetID(),LABEL_ROW1);
+      SET_CONTROL_HIDDEN(GetID(),LABEL_ROW2);
+      SET_CONTROL_HIDDEN(GetID(),LABEL_ROW3);
+      SET_CONTROL_HIDDEN(GetID(),BLUE_BAR);
+	}
+    else if (m_bShowStatus||m_bShowInfo)
     {
       SET_CONTROL_VISIBLE(GetID(),LABEL_ROW1);
       SET_CONTROL_VISIBLE(GetID(),LABEL_ROW2);
@@ -707,15 +771,17 @@ void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
 void CGUIWindowFullScreen::ChangetheSpeed(DWORD action)
 {
 	if (action == ACTION_REWIND && m_iSpeed == 1) // Enables Rewinding
-		m_iSpeed *=-4;
+		m_iSpeed *=-2;
 	else if (action == ACTION_REWIND && m_iSpeed > 1) //goes down a notch if you're FFing
-		m_iSpeed /=4;
+		m_iSpeed /=2;
 	else if (action == ACTION_FORWARD && m_iSpeed < 1) //goes up a notch if you're RWing
-		m_iSpeed /= 4;
+		m_iSpeed /= 2;
 	else 
-		m_iSpeed *= 4;
+		m_iSpeed *= 2;
 
 	if (action == ACTION_FORWARD && m_iSpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
+		m_iSpeed = 1;
+	if (m_iSpeed > 32 || m_iSpeed < -32)
 		m_iSpeed = 1;
 	g_application.m_pPlayer->ToFFRW(m_iSpeed);
 }	
