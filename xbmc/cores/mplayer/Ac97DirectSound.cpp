@@ -78,15 +78,16 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback,int iChannels, unsi
 		m_pbSampleData[dwX] = (BYTE*)XPhysicalAlloc( m_dwPacketSize, MAXULONG_PTR,0,PAGE_READWRITE|PAGE_NOCACHE);
 	m_adwStatus		 = new DWORD[ m_dwNumPackets ];
 
-	 
-	  // Create DirectSound
 	HRESULT hr;
+#if 0	 
+	  // Create DirectSound
 	hr= DirectSoundCreate( NULL, &m_pDSound, NULL ) ;
   if( DS_OK != hr  )
 	{
 		OutputDebugString("DirectSoundCreate() failed");
     return;
 	}
+#endif
 	m_nCurrentVolume = GetMaximumVolume();
 
 	for( DWORD j = 0; j < m_dwNumPackets; j++ )
@@ -250,6 +251,7 @@ DWORD CAc97DirectSound::GetSpace()
 DWORD CAc97DirectSound::AddPackets(unsigned char *data, DWORD len)
 {
 
+	HRESULT hr;
 	DWORD		dwIndex = 0;
 	DWORD   iBytesCopied=0;
 
@@ -281,8 +283,8 @@ DWORD CAc97DirectSound::AddPackets(unsigned char *data, DWORD len)
 
 			memcpy(xmpAudio.pvBuffer,&data[iBytesCopied],iSize);
 
-			m_pDigitalOutput->Process( &xmpAudio, NULL );
-			m_pAnalogOutput->Process( &xmpAudio, NULL );
+			hr=m_pDigitalOutput->Process( &xmpAudio, NULL );
+			hr=m_pAnalogOutput->Process( &xmpAudio, NULL );
 
 			iBytesCopied+=iSize;
 			len -=iSize;
