@@ -254,9 +254,6 @@ static int libc_open ( dvdcss_t dvdcss, char const *psz_device )
 }
 
 #if defined( WIN32 )
-#ifdef _XBOX
-extern HANDLE xboxopendvdrom();
-#endif //!_XBOX
 static int win2k_open ( dvdcss_t dvdcss, char const *psz_device )
 {
 #ifdef _XBOX
@@ -279,7 +276,12 @@ static int win2k_open ( dvdcss_t dvdcss, char const *psz_device )
     if (!dvdcss->b_file)
     {
       printf("open dvdrom\n");
-     (HANDLE) dvdcss->i_fd = xboxopendvdrom();
+      HANDLE hDll = LoadLibrary("kernel32.dll");
+      FARPROC xboxopendvdrom = GetProcAddress(hDll, "xboxopendvdrom");
+      if (xboxopendvdrom!=NULL)
+        (HANDLE) dvdcss->i_fd = xboxopendvdrom();
+      else
+        printf("Unable to get address of xboxopendvdrom function!\n");
     }
     else
     {
