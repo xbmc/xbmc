@@ -30,13 +30,13 @@ CDVDPlayerVideo::CDVDPlayerVideo(CDVDDemuxSPU* spu, CDVDClock* pClock) : CThread
 
   InitializeCriticalSection(&m_critCodecSection);
   m_packetQueue.SetMaxSize(5 * 256 * 1024); // 1310720
-  
+
   pdvdVideo = &m_dvdVideo;
-  
+
   // create sections and event for thread sync (should be destroyed at video stop)
   InitializeCriticalSection(&m_critSection);
   m_hEvent = CreateEvent(NULL, false, false, "dvd picture queue event");
-  
+
 }
 
 CDVDPlayerVideo::~CDVDPlayerVideo()
@@ -44,7 +44,7 @@ CDVDPlayerVideo::~CDVDPlayerVideo()
   // close the stream, and don't wait for the audio to be finished
   // CloseStream(true);
   DeleteCriticalSection(&m_critCodecSection);
-  
+
   DeleteCriticalSection(&m_critSection);
   CloseHandle(m_hEvent);
 }
@@ -52,17 +52,17 @@ CDVDPlayerVideo::~CDVDPlayerVideo()
 bool CDVDPlayerVideo::OpenStream(CodecID codecID, int iWidth, int iHeight, CDemuxStreamVideo* pDemuxStreamVideo)
 {
   m_pDemuxStreamVideo = pDemuxStreamVideo;
-  
+
   // should alway's be NULL!!!!, it will probably crash anyway when deleting m_pVideoCodec here.
   if (m_pVideoCodec)
   {
     CLog::Log(LOGFATAL, "CDVDPlayerVideo::OpenStream() m_pVideoCodec != NULL");
     return false;
   }
-  
+
   CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", codecID);
   m_pVideoCodec = CDVDFactoryCodec::CreateVideoCodec(codecID);
-  
+
   if (!m_pVideoCodec->Open(codecID, iWidth, iHeight))
   {
     m_pVideoCodec->Dispose();
@@ -70,12 +70,12 @@ bool CDVDPlayerVideo::OpenStream(CodecID codecID, int iWidth, int iHeight, CDemu
     m_pVideoCodec = NULL;
     return false;
   }
-  
+
   m_packetQueue.Init();
-  
+
   CLog::Log(LOGNOTICE, "Creating video thread");
-	Create();
-	
+  Create();
+
   return true;
 }
 
@@ -90,13 +90,13 @@ void CDVDPlayerVideo::CloseStream(bool bWaitForBuffers)
 
   // wait for decode_video thread to end
   CLog::Log(LOGNOTICE, "waiting for video thread to exit");
-  
+
   StopThread(); // will set this->m_bStop to true
   this->WaitForThreadExit(INFINITE);
-  
+
   m_packetQueue.End();
   m_overlay.Clear();
-  
+
   CLog::Log(LOGNOTICE, "deleting video codec");
   if (m_pVideoCodec)
   {
@@ -104,15 +104,15 @@ void CDVDPlayerVideo::CloseStream(bool bWaitForBuffers)
     delete m_pVideoCodec;
     m_pVideoCodec = NULL;
   }
-  
+
   m_pDemuxStreamVideo = NULL;
 }
 
 void CDVDPlayerVideo::OnStartup()
 {
-    pictq_size = 0;
-    pictq_rindex = 0;
-    pictq_windex = 0;
+  pictq_size = 0;
+  pictq_rindex = 0;
+  pictq_windex = 0;
 }
 
 void CDVDPlayerVideo::Process()
@@ -126,7 +126,7 @@ void CDVDPlayerVideo::Process()
   int dvdstate;
 
   m_bRunningVideo = true;
-  
+
   hVideoRefreshThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)video_refresh_thread, this, 0, NULL);
   SetThreadPriority(hVideoRefreshThread, THREAD_PRIORITY_TIME_CRITICAL);
 
@@ -135,13 +135,13 @@ void CDVDPlayerVideo::Process()
     while (m_iSpeed == 0 && !m_packetQueue.RecievedAbortRequest()) Sleep(5);
 
     if (m_packetQueue.Get(&pPacket, 1, (void**)&dvdstate) < 0) break;
-     
+
     pts = 0;
     if (pPacket->dts != DVD_NOPTS_VALUE) pts = pPacket->dts;
 
     EnterCriticalSection(&m_critCodecSection);
     int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize);
-    
+
     // loop while no error
     while (!(iDecoderState & VC_ERROR))
     {
@@ -150,18 +150,18 @@ void CDVDPlayerVideo::Process()
       {
         // try to retrieve the picture (should never fail!), unless there is a demuxer bug ofcours
         if (m_pVideoCodec->GetPicture(&picture))
-        {/*
-          if (dvdstate == DVDSTATE_STILL)
-          {
-            // copy still to buffer for later use
-            if (pDVDPlayer->m_dvd.pStillPicture)
-            {
-              OutputDebugString("ERROR !!!, picture already allocated, memoryleak!");
-            }
-            pDVDPlayer->m_dvd.pStillPicture = CDVDCodecUtils::AllocatePicture(picture.iWidth, picture.iHeight);
-            CDVDCodecUtils::CopyPicture(pDVDPlayer->m_dvd.pStillPicture, &picture);
-          }
-*/
+        { /*
+                    if (dvdstate == DVDSTATE_STILL)
+                    {
+                      // copy still to buffer for later use
+                      if (pDVDPlayer->m_dvd.pStillPicture)
+                      {
+                        OutputDebugString("ERROR !!!, picture already allocated, memoryleak!");
+                      }
+                      pDVDPlayer->m_dvd.pStillPicture = CDVDCodecUtils::AllocatePicture(picture.iWidth, picture.iHeight);
+                      CDVDCodecUtils::CopyPicture(pDVDPlayer->m_dvd.pStillPicture, &picture);
+                    }
+          */
           if (OutputPicture(&picture, pts) < 0)
           {
             // LeaveCriticalSection(&m_critCodecSection);
@@ -174,7 +174,7 @@ void CDVDPlayerVideo::Process()
           m_pVideoCodec->Reset();
         }
       }
-      
+
       // if the decoder needs more data, we just break this loop
       // and try to get more data from the videoQueue
       // in case of a DVD_STILLPICTURE there is never more data, just break so we can keep the picture for later
@@ -184,17 +184,17 @@ void CDVDPlayerVideo::Process()
       iDecoderState = m_pVideoCodec->Decode(NULL, NULL);
     }
     LeaveCriticalSection(&m_critCodecSection);
-    
+
     // all data is used by the decoder, we can safely free it now
     CDVDDemuxUtils::FreeDemuxPacket(pPacket);
   }
-  
+
   CLog::Log(LOGNOTICE, "wating for video_refresh_thread");
   m_bRunningVideo = false;
   WaitForSingleObject(hVideoRefreshThread, INFINITE);
-  
+
   CLog::Log(LOGNOTICE, "thread end: video_thread");
-  
+
   CLog::Log(LOGNOTICE, "uninitting video device");
 }
 
@@ -206,10 +206,10 @@ void CDVDPlayerVideo::OnExit()
     CDVDCodecUtils::FreePicture(m_pOverlayPicture);
   }
   m_pOverlayPicture = NULL;
-  
+
   m_dvdVideo.UnInit();
   m_bInitializedOutputDevice = false;
-  
+
   CLog::Log(LOGNOTICE, "thread end: audio_thread");
 }
 
@@ -253,7 +253,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
 
     /* update video clock for next frame */
     frame_delay = ((__int64)m_pDemuxStreamVideo->iFpsScale * DVD_TIME_BASE) / m_pDemuxStreamVideo->iFpsRate;
-    
+
     /* for MPEG2, the frame can be repeated, so we update the clock accordingly */
     if (pPicture->iRepeatPicture) frame_delay += pPicture->iRepeatPicture * (frame_delay / 2);
 
@@ -267,9 +267,10 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
     // pts should always be valid here for the picture
     while (1) CLog::DebugLog("CDVDPlayerVideo::OutputPicture, invalid pts value");
 #endif
+
   }
   // end of compute
-  
+
   // wait  until we have space to put a new picture
   EnterCriticalSection(&m_critSection);
   while (pictq_size >= VIDEO_PICTURE_QUEUE_SIZE && !m_packetQueue.RecievedAbortRequest())
@@ -279,22 +280,22 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
     EnterCriticalSection(&m_critSection);
   }
   LeaveCriticalSection(&m_critSection);
-  
+
   if (m_packetQueue.RecievedAbortRequest()) return -1;
 
   vp = &pictq[pictq_windex];
 
   float fFps = ((float)m_pDemuxStreamVideo->iFpsRate / m_pDemuxStreamVideo->iFpsScale);
-  
+
   if (!m_bInitializedOutputDevice)
   {
     CLog::Log(LOGNOTICE, "Initializing video device");
-    
+
     m_dvdVideo.Init();
 
     CLog::Log(LOGNOTICE, "  fps: %f, pwidth: %i, pheight: %i, dwidth: %i, dheight: %i",
-        fFps, pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight);
-        
+              fFps, pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight);
+
     m_dvdVideo.Config(fFps, pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight);
     m_bInitializedOutputDevice = true;
   }
@@ -302,9 +303,9 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
   if (m_bInitializedOutputDevice)
   {
     DVDOverlayPicture* pOverlayPicture = m_overlay.Get();
-    
+
     if (pOverlayPicture && (pOverlayPicture->bForced || (m_bRenderSubs
-      && pOverlayPicture->iPTSStartTime <= pts && pOverlayPicture->iPTSStopTime >= pts)))
+                            && pOverlayPicture->iPTSStartTime <= pts && pOverlayPicture->iPTSStopTime >= pts)))
     {
       // create overlay picture if not already done
       if (!m_pOverlayPicture)
@@ -315,7 +316,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
       // copy picture to overlay
       YUVOverlay overlay = m_dvdVideo.LockYUVOverlay();
       CDVDCodecUtils::CopyPictureToOverlay(&overlay, pPicture);
-      
+
       // display subtitle, if bForced is true, it's a menu overlay and we should crop it
       m_overlay.RenderYUV(&overlay, pOverlayPicture, pOverlayPicture->bForced);
 
@@ -334,23 +335,23 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, __int64 pts1)
     {
       m_overlay.Remove();
     }
-    
+
     vp->pts = pts;
 
     /* now we can update the picture count */
     if (++pictq_windex == VIDEO_PICTURE_QUEUE_SIZE) pictq_windex = 0;
-    
+
     EnterCriticalSection(&m_critSection);
     pictq_size++;
     LeaveCriticalSection(&m_critSection);
-    
+
     if (m_iSpeed < 0 && m_iSpeed > 1)
     {
       // ffwd or rw
       //is->seek_req = 1;
       //is->seek_pos = (unsigned __int64)(pts * AV_TIME_BASE) + (m_iSpeed * 400000);
     }
-  
+
   }
   return 0;
 }
@@ -393,15 +394,15 @@ __int64 CDVDPlayerVideo::GetDiff()
 {
   return 0LL;
 }
-  
+
 /* called to display each frame */
 DWORD video_refresh_thread(void *arg)
 {
   CDVDPlayerVideo* pDVDPlayerVideo = (CDVDPlayerVideo*)arg;
   DVDVideoPicture *vp;
-  
+
   CLog::Log(LOGNOTICE, "running thread: video_refresh_thread");
-  
+
   while (pDVDPlayerVideo->m_bRunningVideo)
   {
     if (pDVDPlayerVideo->pictq_size == 0 || pDVDPlayerVideo->m_iSpeed == 0)
@@ -420,25 +421,25 @@ DWORD video_refresh_thread(void *arg)
 
       // we could drop some frames here too if iSleepTime < 0, but I don't think it will be any
       // use at this stage currently (drawing pictures isn't taking the most processing power)
-      
+
       // sleep
       if (iSleepTime > 0) usleep(iSleepTime);
-    
+
       // display picture
       // we expect the video device to be initialized here
       pDVDPlayerVideo->m_dvdVideo.FlipPage();
-      
+
       // update queue size and signal for next picture
       if (++pDVDPlayerVideo->pictq_rindex == VIDEO_PICTURE_QUEUE_SIZE) pDVDPlayerVideo->pictq_rindex = 0;
-      
+
       EnterCriticalSection(&pDVDPlayerVideo->m_critSection);
       pDVDPlayerVideo->pictq_size--;
       SetEvent(pDVDPlayerVideo->m_hEvent);
       LeaveCriticalSection(&pDVDPlayerVideo->m_critSection);
-      
+
     }
   }
   CLog::Log(LOGNOTICE, "thread end: video_refresh_thread");
-  
+
   return 0;
 }

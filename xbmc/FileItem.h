@@ -1,7 +1,7 @@
 /*!
-  \file FileItem.h
-  \brief
-  */
+ \file FileItem.h
+ \brief
+ */
 #pragma once
 #include "guilistitem.h"
 #include "song.h"
@@ -15,7 +15,7 @@ using namespace MUSIC_INFO;
   \sa CFileItemList
   */
 class CFileItem :
-  public CGUIListItem, public ISerializable
+      public CGUIListItem, public ISerializable
 {
 public:
   CFileItem(void);
@@ -27,58 +27,58 @@ public:
   CFileItem(const CShare& share);
   virtual ~CFileItem(void);
 
-          void          Clear();
-  const   CFileItem&    operator=(const CFileItem& item);
-  virtual void          Serialize(CArchive& ar);
+  void Clear();
+  const CFileItem& operator=(const CFileItem& item);
+  virtual void Serialize(CArchive& ar);
 
-          bool          IsVideo() const;
-          bool          IsPicture() const;
-          bool          IsAudio() const;
-          bool          IsCUESheet() const;
-          bool          IsShoutCast() const;
-          bool          IsInternetStream() const;
-          bool          HasDefaultThumb() const;
-          bool          HasDefaultIcon() const;
-          bool          IsPlayList() const;
-          bool          IsPythonScript() const;
-          bool          IsXBE() const;
-          bool          IsDefaultXBE() const;
-          bool          IsShortCut() const;
-          bool          IsNFO() const;
-          bool          IsDVDImage() const;
-          bool          IsDVDFile(bool bVobs=true, bool bIfos=true) const;
-          bool          IsRAR() const;
-          bool          IsISO9660() const;
-          bool          IsCDDA() const;
-          bool          IsDVD() const;
-          bool          IsHD() const;
-          bool          IsRemote() const;
-          bool          IsSmb() const;
-          bool          IsVirtualDirectoryRoot() const;
-          bool          IsReadOnly() const;
+  bool IsVideo() const;
+  bool IsPicture() const;
+  bool IsAudio() const;
+  bool IsCUESheet() const;
+  bool IsShoutCast() const;
+  bool IsInternetStream() const;
+  bool HasDefaultThumb() const;
+  bool HasDefaultIcon() const;
+  bool IsPlayList() const;
+  bool IsPythonScript() const;
+  bool IsXBE() const;
+  bool IsDefaultXBE() const;
+  bool IsShortCut() const;
+  bool IsNFO() const;
+  bool IsDVDImage() const;
+  bool IsDVDFile(bool bVobs = true, bool bIfos = true) const;
+  bool IsRAR() const;
+  bool IsISO9660() const;
+  bool IsCDDA() const;
+  bool IsDVD() const;
+  bool IsHD() const;
+  bool IsRemote() const;
+  bool IsSmb() const;
+  bool IsVirtualDirectoryRoot() const;
+  bool IsReadOnly() const;
 
-          void          RemoveExtension();
-          void          CleanFileName();
-          void          FillInDefaultIcon();
-          void          SetThumb();
-          void          SetMusicThumb();
+  void RemoveExtension();
+  void CleanFileName();
+  void FillInDefaultIcon();
+  void SetThumb();
+  void SetMusicThumb();
 
 public:
-          CStdString    m_strPath;            ///< complete path to item
-          bool          m_bIsShareOrDrive;    ///< is this a root share/drive
-          int           m_iDriveType;     ///< If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CShare::m_iDriveType
-          SYSTEMTIME    m_stTime;             ///< file creation date & time
-          __int64       m_dwSize;             ///< file size (0 for folders)
-          float         m_fRating;
-          CStdString    m_strDVDLabel;
-          CMusicInfoTag m_musicInfoTag;
-          int           m_iprogramCount;
-          int           m_idepth;
-          long          m_lStartOffset;
-          long          m_lEndOffset;
-          int           m_iLockMode;
-          CStdStringW   m_strLockCode;
-          int           m_iBadPwdCount;
+  CStdString m_strPath;            ///< complete path to item
+  bool m_bIsShareOrDrive;    ///< is this a root share/drive
+  int m_iDriveType;     ///< If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CShare::m_iDriveType
+  SYSTEMTIME m_stTime;             ///< file creation date & time
+  __int64 m_dwSize;             ///< file size (0 for folders)
+  float m_fRating;
+  CStdString m_strDVDLabel;
+  CMusicInfoTag m_musicInfoTag;
+  int m_iprogramCount;
+  int m_idepth;
+  long m_lStartOffset;
+  long m_lEndOffset;
+  int m_iLockMode;
+  CStdStringW m_strLockCode;
+  int m_iBadPwdCount;
 };
 
 /*!
@@ -121,29 +121,29 @@ class CFileItemList : public ISerializable
 public:
   CFileItemList();
   virtual ~CFileItemList();
-  virtual void          Serialize(CArchive& ar);
-          CFileItem*    operator[] (int iItem);
-  const   CFileItem*    operator[] (int iItem) const;
-          void          Clear();
-          void          ClearKeepPointers();
-          void          Add(CFileItem* pItem);
-          void          Remove(CFileItem* pItem);
-          void          Remove(int iItem);
-          CFileItem*    Get(int iItem);
-  const   CFileItem*    Get(int iItem) const;
-          int           Size() const;
-          bool          IsEmpty() const;
-          void          Append(const CFileItemList& itemlist);
-          void          Reserve(int iCount);
-          void          Sort(FILEITEMLISTCOMPARISONFUNC func);
-          void          SetThumbs();
-          void          SetMusicThumbs();
-          void          FillInDefaultIcons();
-          int           GetFolderCount() const;
-          int           GetFileCount() const;
-          void          FilterCueItems();
-          void          RemoveExtensions();
-          void          CleanFileNames();
+  virtual void Serialize(CArchive& ar);
+  CFileItem* operator[] (int iItem);
+  const CFileItem* operator[] (int iItem) const;
+  void Clear();
+  void ClearKeepPointers();
+  void Add(CFileItem* pItem);
+  void Remove(CFileItem* pItem);
+  void Remove(int iItem);
+  CFileItem* Get(int iItem);
+  const CFileItem* Get(int iItem) const;
+  int Size() const;
+  bool IsEmpty() const;
+  void Append(const CFileItemList& itemlist);
+  void Reserve(int iCount);
+  void Sort(FILEITEMLISTCOMPARISONFUNC func);
+  void SetThumbs();
+  void SetMusicThumbs();
+  void FillInDefaultIcons();
+  int GetFolderCount() const;
+  int GetFileCount() const;
+  void FilterCueItems();
+  void RemoveExtensions();
+  void CleanFileNames();
 private:
-          VECFILEITEMS  m_items;
+  VECFILEITEMS m_items;
 };

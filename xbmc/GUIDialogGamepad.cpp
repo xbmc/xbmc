@@ -3,10 +3,10 @@
 #include "util.h"
 
 CGUIDialogGamepad::CGUIDialogGamepad(void)
-:CGUIDialog(0)
+    : CGUIDialog(0)
 {
-	m_bConfirmed=false;
-  m_bCanceled=false;
+  m_bConfirmed = false;
+  m_bCanceled = false;
   CStdStringW m_strUserInput = L"";
   CStdStringW m_strPassword = L"";
   int m_iRetries = 0;
@@ -14,129 +14,127 @@ CGUIDialogGamepad::CGUIDialogGamepad(void)
 }
 
 CGUIDialogGamepad::~CGUIDialogGamepad(void)
-{
-}
+{}
 
 void CGUIDialogGamepad::OnAction(const CAction &action)
 {
-    if  ((action.m_dwButtonCode >= KEY_BUTTON_A && 
-                action.m_dwButtonCode <= KEY_BUTTON_RIGHT_TRIGGER) || 
-                (action.m_dwButtonCode >= KEY_BUTTON_DPAD_UP && 
-                action.m_dwButtonCode <= KEY_BUTTON_DPAD_RIGHT))
+  if ((action.m_dwButtonCode >= KEY_BUTTON_A &&
+       action.m_dwButtonCode <= KEY_BUTTON_RIGHT_TRIGGER) ||
+      (action.m_dwButtonCode >= KEY_BUTTON_DPAD_UP &&
+       action.m_dwButtonCode <= KEY_BUTTON_DPAD_RIGHT))
+  {
+    switch (action.m_dwButtonCode)
     {
-        switch (action.m_dwButtonCode)
-        {
-        case KEY_BUTTON_A               :   m_strUserInput+="A";    break;
-        case KEY_BUTTON_B               :   m_strUserInput+="B";    break;
-        case KEY_BUTTON_X               :   m_strUserInput+="X";    break;
-        case KEY_BUTTON_Y               :   m_strUserInput+="Y";    break;
-        case KEY_BUTTON_BLACK           :   m_strUserInput+="K";    break;
-        case KEY_BUTTON_WHITE           :   m_strUserInput+="W";    break;
-        case KEY_BUTTON_LEFT_TRIGGER    :   m_strUserInput+="(";    break;
-        case KEY_BUTTON_RIGHT_TRIGGER   :   m_strUserInput+=")";    break;
-        case KEY_BUTTON_DPAD_UP         :   m_strUserInput+="U";    break;
-        case KEY_BUTTON_DPAD_DOWN       :   m_strUserInput+="D";    break;
-        case KEY_BUTTON_DPAD_LEFT       :   m_strUserInput+="L";    break;
-        case KEY_BUTTON_DPAD_RIGHT      :   m_strUserInput+="R";    break;
-        default                         :   return;                 break;
-        }
-        
-        CStdStringW strHiddenInput(m_strUserInput);
-        for (int i = 0; i < (int)strHiddenInput.size(); i++)
-        {
-          strHiddenInput[i] = m_cHideInputChar;
-        }
-        SetLine(2, strHiddenInput);
-        return;
+    case KEY_BUTTON_A : m_strUserInput += "A"; break;
+    case KEY_BUTTON_B : m_strUserInput += "B"; break;
+    case KEY_BUTTON_X : m_strUserInput += "X"; break;
+    case KEY_BUTTON_Y : m_strUserInput += "Y"; break;
+    case KEY_BUTTON_BLACK : m_strUserInput += "K"; break;
+    case KEY_BUTTON_WHITE : m_strUserInput += "W"; break;
+    case KEY_BUTTON_LEFT_TRIGGER : m_strUserInput += "("; break;
+    case KEY_BUTTON_RIGHT_TRIGGER : m_strUserInput += ")"; break;
+    case KEY_BUTTON_DPAD_UP : m_strUserInput += "U"; break;
+    case KEY_BUTTON_DPAD_DOWN : m_strUserInput += "D"; break;
+    case KEY_BUTTON_DPAD_LEFT : m_strUserInput += "L"; break;
+    case KEY_BUTTON_DPAD_RIGHT : m_strUserInput += "R"; break;
+    default : return ; break;
     }
-    else if (action.m_dwButtonCode == KEY_BUTTON_BACK || action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU || action.wID == ACTION_PARENT_DIR)
-		{
-        m_bConfirmed=false;
-        m_bCanceled=true;
-        m_strUserInput=L"";
-		    m_bHideInputChars = true;
-        Close();
-        return;
-		}
-    else if  (action.m_dwButtonCode == KEY_BUTTON_START)
-    {
-        m_bConfirmed=false;
-        m_bCanceled=false;
-        if (m_strUserInput!=m_strPassword.ToUpper())
-        {
-            // incorrect password entered
-            m_iRetries--;
 
-            // don't clean up if the calling code wants the bad user input
-            if (m_bUserInputCleanup)
-                m_strUserInput=L"";
-            else
-                m_bUserInputCleanup = true;
+    CStdStringW strHiddenInput(m_strUserInput);
+    for (int i = 0; i < (int)strHiddenInput.size(); i++)
+    {
+      strHiddenInput[i] = m_cHideInputChar;
+    }
+    SetLine(2, strHiddenInput);
+    return ;
+  }
+  else if (action.m_dwButtonCode == KEY_BUTTON_BACK || action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU || action.wID == ACTION_PARENT_DIR)
+  {
+    m_bConfirmed = false;
+    m_bCanceled = true;
+    m_strUserInput = L"";
+    m_bHideInputChars = true;
+    Close();
+    return ;
+  }
+  else if (action.m_dwButtonCode == KEY_BUTTON_START)
+  {
+    m_bConfirmed = false;
+    m_bCanceled = false;
+    if (m_strUserInput != m_strPassword.ToUpper())
+    {
+      // incorrect password entered
+      m_iRetries--;
+
+      // don't clean up if the calling code wants the bad user input
+      if (m_bUserInputCleanup)
+        m_strUserInput = L"";
+      else
+        m_bUserInputCleanup = true;
 
       m_bHideInputChars = true;
-            Close();
-            return;
-        }
-
-        // correct password entered
-        m_bConfirmed=true;
-        m_iRetries=0;
-        m_strUserInput=L"";
-    m_bHideInputChars = true;
-        Close();
-        return;
+      Close();
+      return ;
     }
-    else if (action.wID >= REMOTE_0 && action.wID <= REMOTE_9)
-	{
-	}
-	else
-	{
-		CGUIDialog::OnAction(action);
-	}
+
+    // correct password entered
+    m_bConfirmed = true;
+    m_iRetries = 0;
+    m_strUserInput = L"";
+    m_bHideInputChars = true;
+    Close();
+    return ;
+  }
+  else if (action.wID >= REMOTE_0 && action.wID <= REMOTE_9)
+  {}
+  else
+  {
+    CGUIDialog::OnAction(action);
+  }
 }
 
 bool CGUIDialogGamepad::OnMessage(CGUIMessage& message)
 {
-	switch ( message.GetMessage() )
+  switch ( message.GetMessage() )
   {
-    case GUI_MSG_WINDOW_INIT:
-    {            
-			m_bConfirmed=false;
-			m_bCanceled=false;
-			m_cHideInputChar = g_localizeStrings.Get(12322).c_str()[0];
-			CGUIDialog::OnMessage(message);
-/*
-			// Borrowing strUserInput for the next if/else statement
-			if (0 < m_iRetries)
-			{
-				CStdStringW strLine;
-				strLine.Format(L"%s %i %s", g_localizeStrings.Get(12342).c_str(), m_iRetries, g_localizeStrings.Get(12343).c_str());
-				SetLine(2, strLine);
-			}
-			else
-			{
-				SetLine(2, L"");
-			}
-			m_strUserInput = "";
-*/
-			return true;
-		}
-		break;
-
-    case GUI_MSG_CLICKED:
+  case GUI_MSG_WINDOW_INIT:
     {
-      int iControl=message.GetSenderId();
-			int iAction=message.GetParam1();
-            m_bConfirmed=false;
-            m_bCanceled=false;
-			if (1||ACTION_SELECT_ITEM==iAction)
-			{
-                // nothing to do, there are no selectable controls in this dialog
-			}
-		}
-		break;
-	}
-	return CGUIDialog::OnMessage(message);
+      m_bConfirmed = false;
+      m_bCanceled = false;
+      m_cHideInputChar = g_localizeStrings.Get(12322).c_str()[0];
+      CGUIDialog::OnMessage(message);
+      /*
+         // Borrowing strUserInput for the next if/else statement
+         if (0 < m_iRetries)
+         {
+          CStdStringW strLine;
+          strLine.Format(L"%s %i %s", g_localizeStrings.Get(12342).c_str(), m_iRetries, g_localizeStrings.Get(12343).c_str());
+          SetLine(2, strLine);
+         }
+         else
+         {
+          SetLine(2, L"");
+         }
+         m_strUserInput = "";
+      */ 
+      return true;
+    }
+    break;
+
+  case GUI_MSG_CLICKED:
+    {
+      int iControl = message.GetSenderId();
+      int iAction = message.GetParam1();
+      m_bConfirmed = false;
+      m_bCanceled = false;
+      if (1 || ACTION_SELECT_ITEM == iAction)
+      {
+        // nothing to do, there are no selectable controls in this dialog
+      }
+    }
+    break;
+  }
+  return CGUIDialog::OnMessage(message);
 }
 
 // \brief Show gamepad keypad and replace aTextString with user input.
@@ -145,7 +143,7 @@ bool CGUIDialogGamepad::OnMessage(CGUIMessage& message)
 // \param bHideUserInput Masks user input as asterisks if set as true.  Currently not yet implemented.
 // \return true if successful display and user input. false if unsucessful display, no user input, or canceled editing.
 bool CGUIDialogGamepad::ShowAndGetInput(CStdStringW& aTextString, const CStdStringW &dlgHeading, bool bHideUserInput)
-{  
+{
   // Prompt user for input
   CStdStringW strUserInput = L"";
   if (ShowAndVerifyInput(strUserInput, dlgHeading, aTextString, L"", L"", true, bHideUserInput))
@@ -200,9 +198,9 @@ bool CGUIDialogGamepad::ShowAndGetNewPassword(CStdStringW& strNewPassword)
 // \param dlgLine1 String shown on dialog line 1. Converts to localized string if contains a positive integer.
 // \param dlgLine2 String shown on dialog line 2. Converts to localized string if contains a positive integer.
 // \return 0 if successful display and user input. 1 if unsucessful input. -1 if no user input or canceled editing.
-int CGUIDialogGamepad::ShowAndVerifyPassword(CStdStringW& strPassword, const CStdStringW& dlgHeading, 
-                                           const CStdStringW& dlgLine0, const CStdStringW& dlgLine1, 
-                                           const CStdStringW& dlgLine2)
+int CGUIDialogGamepad::ShowAndVerifyPassword(CStdStringW& strPassword, const CStdStringW& dlgHeading,
+    const CStdStringW& dlgLine0, const CStdStringW& dlgLine1,
+    const CStdStringW& dlgLine2)
 {
   // make a copy of strPassword to prevent from overwriting it later
   CStdStringW strPassTemp = strPassword;
@@ -246,9 +244,9 @@ int CGUIDialogGamepad::ShowAndVerifyPassword(CStdStringW& strPassword, const CSt
 // \param bGetUserInput If set as true and return=true, strToVerify is overwritten with user input string.
 // \param bHideInputChars Masks user input as asterisks if set as true.  Currently not yet implemented.
 // \return true if successful display and user input. false if unsucessful display, no user input, or canceled editing.
-bool CGUIDialogGamepad::ShowAndVerifyInput(CStdStringW& strToVerify, const CStdStringW& dlgHeading, 
-                                           const CStdStringW& dlgLine0, const CStdStringW& dlgLine1, 
-                                           const CStdStringW& dlgLine2, bool bGetUserInput, bool bHideInputChars)
+bool CGUIDialogGamepad::ShowAndVerifyInput(CStdStringW& strToVerify, const CStdStringW& dlgHeading,
+    const CStdStringW& dlgLine0, const CStdStringW& dlgLine1,
+    const CStdStringW& dlgLine2, bool bGetUserInput, bool bHideInputChars)
 {
   // Prompt user for password input
   CGUIDialogGamepad *pDialog = (CGUIDialogGamepad *)m_gWindowManager.GetWindow(WINDOW_DIALOG_GAMEPAD);
@@ -297,52 +295,52 @@ bool CGUIDialogGamepad::ShowAndVerifyInput(CStdStringW& strToVerify, const CStdS
 
 bool CGUIDialogGamepad::IsConfirmed() const
 {
-	return m_bConfirmed;
+  return m_bConfirmed;
 }
 
 bool CGUIDialogGamepad::IsCanceled() const
 {
-	return m_bCanceled;
+  return m_bCanceled;
 }
 
-void  CGUIDialogGamepad::SetHeading(const wstring& strLine)
+void CGUIDialogGamepad::SetHeading(const wstring& strLine)
 {
-	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),1);
-	msg.SetLabel(strLine);
-	OnMessage(msg);
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 1);
+  msg.SetLabel(strLine);
+  OnMessage(msg);
 }
 
-void  CGUIDialogGamepad::SetHeading(const string& strLine)
+void CGUIDialogGamepad::SetHeading(const string& strLine)
 {
-	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),1);
-	msg.SetLabel(strLine);
-	OnMessage(msg);
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 1);
+  msg.SetLabel(strLine);
+  OnMessage(msg);
 }
 
 void CGUIDialogGamepad::SetLine(int iLine, const wstring& strLine)
 {
-	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),iLine+2);
-	msg.SetLabel(strLine);
-	OnMessage(msg);
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iLine + 2);
+  msg.SetLabel(strLine);
+  OnMessage(msg);
 }
 
 void CGUIDialogGamepad::SetLine(int iLine, const string& strLine)
 {
-	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),iLine+2);
-	msg.SetLabel(strLine);
-	OnMessage(msg);
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iLine + 2);
+  msg.SetLabel(strLine);
+  OnMessage(msg);
 }
 void CGUIDialogGamepad::SetHeading(int iString)
 {
-	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),1);
-	msg.SetLabel(iString);
-	OnMessage(msg);
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 1);
+  msg.SetLabel(iString);
+  OnMessage(msg);
 }
 
 
-void	CGUIDialogGamepad::SetLine(int iLine, int iString)
+void CGUIDialogGamepad::SetLine(int iLine, int iString)
 {
-	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),iLine+2);
-	msg.SetLabel(iString);
-	OnMessage(msg);
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iLine + 2);
+  msg.SetLabel(iString);
+  OnMessage(msg);
 }

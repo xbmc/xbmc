@@ -41,54 +41,54 @@
 //          FrameMove()           - To animate the scene
 //          Render()              - To render the scene
 //-----------------------------------------------------------------------------
-class CXBApplicationEx  : public IWindowManagerCallback
+class CXBApplicationEx : public IWindowManagerCallback
 {
 public:
-      D3DPRESENT_PARAMETERS m_d3dpp;
+  D3DPRESENT_PARAMETERS m_d3dpp;
 
-    // Main objects used for creating and rendering the 3D scene
-     LPDIRECT3D8           m_pD3D;              // The D3D enumerator object
-     LPDIRECT3DDEVICE8     m_pd3dDevice;        // The D3D rendering device
-     LPDIRECT3DSURFACE8    m_pBackBuffer;       // The back buffer
-     //LPDIRECT3DSURFACE8    m_pDepthBuffer;      // The depth buffer
+  // Main objects used for creating and rendering the 3D scene
+  LPDIRECT3D8 m_pD3D;              // The D3D enumerator object
+  LPDIRECT3DDEVICE8 m_pd3dDevice;        // The D3D rendering device
+  LPDIRECT3DSURFACE8 m_pBackBuffer;       // The back buffer
+  //LPDIRECT3DSURFACE8    m_pDepthBuffer;      // The depth buffer
 
-    // Variables for timing
-    FLOAT      m_fTime;             // Current absolute time in seconds
-    FLOAT      m_fElapsedTime;      // Elapsed absolute time since last frame
-    FLOAT      m_fAppTime;          // Current app time in seconds
-    FLOAT      m_fElapsedAppTime;   // Elapsed app time since last frame
-    BOOL       m_bPaused;           // Whether app time is paused by user
-    FLOAT      m_fFPS;              // instantaneous frame rate
-    WCHAR      m_strFrameRate[20];  // Frame rate written to a CStdString
-    HANDLE     m_hFrameCounter;     // Handle to frame rate perf counter
-    bool       m_bStop;
-    // Members to init the XINPUT devices.
-     XDEVICE_PREALLOC_TYPE* m_InputDeviceTypes;
-    DWORD                  m_dwNumInputDeviceTypes;
-     XBGAMEPAD*             m_Gamepad;
-     XBGAMEPAD              m_DefaultGamepad;
+  // Variables for timing
+  FLOAT m_fTime;             // Current absolute time in seconds
+  FLOAT m_fElapsedTime;      // Elapsed absolute time since last frame
+  FLOAT m_fAppTime;          // Current app time in seconds
+  FLOAT m_fElapsedAppTime;   // Elapsed app time since last frame
+  BOOL m_bPaused;           // Whether app time is paused by user
+  FLOAT m_fFPS;              // instantaneous frame rate
+  WCHAR m_strFrameRate[20];  // Frame rate written to a CStdString
+  HANDLE m_hFrameCounter;     // Handle to frame rate perf counter
+  bool m_bStop;
+  // Members to init the XINPUT devices.
+  XDEVICE_PREALLOC_TYPE* m_InputDeviceTypes;
+  DWORD m_dwNumInputDeviceTypes;
+  XBGAMEPAD* m_Gamepad;
+  XBGAMEPAD m_DefaultGamepad;
 
-// XBMP 6.0 - START
-    XBIR_REMOTE						 m_IR_Remote[4];
-    XBIR_REMOTE            m_DefaultIR_Remote;
-// XBMP 6.0 - END
+  // XBMP 6.0 - START
+  XBIR_REMOTE m_IR_Remote[4];
+  XBIR_REMOTE m_DefaultIR_Remote;
+  // XBMP 6.0 - END
 
-    // Helper functions
-    HRESULT RenderGradientBackground( DWORD dwTopColor, DWORD dwBottomColor );
+  // Helper functions
+  HRESULT RenderGradientBackground( DWORD dwTopColor, DWORD dwBottomColor );
 
-    // Overridable functions for the 3D scene created by the app
-    virtual HRESULT Initialize()            { return S_OK; }
-    virtual HRESULT Cleanup()               { return S_OK; }
-    void ReadInput();
+  // Overridable functions for the 3D scene created by the app
+  virtual HRESULT Initialize() { return S_OK; }
+  virtual HRESULT Cleanup() { return S_OK; }
+  void ReadInput();
 
 public:
-    // Functions to create, run, and clean up the application
-    virtual HRESULT Create();
-    INT     Run();
-    VOID    Destroy();
-    virtual void Process();
-    // Internal constructor
-    CXBApplicationEx();
+  // Functions to create, run, and clean up the application
+  virtual HRESULT Create();
+  INT Run();
+  VOID Destroy();
+  virtual void Process();
+  // Internal constructor
+  CXBApplicationEx();
 };
 
 #endif // !defined(AFX_XBAPPLICATIONEX_H__B5474945_70C7_4084_B345_0F1874AC77BA__INCLUDED_)

@@ -10,207 +10,206 @@ using namespace DIRECTORY;
 
 CMusicInfoLoader::CMusicInfoLoader()
 {
-	m_bRunning=false;
+  m_bRunning = false;
 }
 
 CMusicInfoLoader::~CMusicInfoLoader()
 {
-
 }
 
 void CMusicInfoLoader::OnStartup()
 {
-	m_bRunning=true;
+  m_bRunning = true;
 }
 
 void CMusicInfoLoader::Process()
 {
-	try
-	{
-		CFileItemList& vecItems=(*m_pVecItems);
+  try
+  {
+    CFileItemList& vecItems = (*m_pVecItems);
 
-		if (vecItems.Size()<=0)
-			return;
+    if (vecItems.Size() <= 0)
+      return ;
 
-		//	Load previously cached items from HD
-		if (!m_strCacheFileName.IsEmpty())
-			LoadCache(m_strCacheFileName, m_mapFileItems);
+    // Load previously cached items from HD
+    if (!m_strCacheFileName.IsEmpty())
+      LoadCache(m_strCacheFileName, m_mapFileItems);
 
-		//	Precache album thumbs
-		g_directoryCache.InitMusicThumbCache();
+    // Precache album thumbs
+    g_directoryCache.InitMusicThumbCache();
 
-		m_musicDatabase.Open();
+    m_musicDatabase.Open();
 
-		for (int i=0; i<(int)vecItems.Size(); ++i)
-		{
-			CFileItem* pItem=vecItems[i];
+    for (int i = 0; i < (int)vecItems.Size(); ++i)
+    {
+      CFileItem* pItem = vecItems[i];
 
-			if (m_bStop)
-				break;
+      if (m_bStop)
+        break;
 
-			if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsNFO() || pItem->IsInternetStream())
-				continue;
+      if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsNFO() || pItem->IsInternetStream())
+        continue;
 
-			//	Fill in tag for the item
-			LoadItem(pItem);
+      // Fill in tag for the item
+      LoadItem(pItem);
 
-			//	Notify observer a item 
-			//	is loaded.
-			if (m_pObserver)
-			{
-				g_graphicsContext.Lock();
-				m_pObserver->OnItemLoaded(pItem);
-				g_graphicsContext.Unlock();
-			}
-		}
+      // Notify observer a item
+      // is loaded.
+      if (m_pObserver)
+      {
+        g_graphicsContext.Lock();
+        m_pObserver->OnItemLoaded(pItem);
+        g_graphicsContext.Unlock();
+      }
+    }
 
-		//	clear precached album thumbs
-		g_directoryCache.ClearMusicThumbCache();
+    // clear precached album thumbs
+    g_directoryCache.ClearMusicThumbCache();
 
-		//	cleanup last loaded songs from database
-		m_songsMap.erase(m_songsMap.begin(),m_songsMap.end());
+    // cleanup last loaded songs from database
+    m_songsMap.erase(m_songsMap.begin(), m_songsMap.end());
 
-		//	cleanup cache loaded from HD
-		it=m_mapFileItems.begin();
-		while(it!=m_mapFileItems.end())
-		{
-			delete it->second;
-			it++;
-		}
-		m_mapFileItems.erase(m_mapFileItems.begin(), m_mapFileItems.end());
+    // cleanup cache loaded from HD
+    it = m_mapFileItems.begin();
+    while (it != m_mapFileItems.end())
+    {
+      delete it->second;
+      it++;
+    }
+    m_mapFileItems.erase(m_mapFileItems.begin(), m_mapFileItems.end());
 
-		//	Save loaded items to HD
-		if (!m_strCacheFileName.IsEmpty())
-			SaveCache(m_strCacheFileName, vecItems);
+    // Save loaded items to HD
+    if (!m_strCacheFileName.IsEmpty())
+      SaveCache(m_strCacheFileName, vecItems);
 
-		m_musicDatabase.Close();
-	}
-	catch(...)
-	{
-		CLog::Log(LOGERROR, "tagloaderthread: Unhandled exception");
-	}
+    m_musicDatabase.Close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "tagloaderthread: Unhandled exception");
+  }
 }
 
 void CMusicInfoLoader::LoadItem(CFileItem* pItem)
 {
-	if (pItem->m_musicInfoTag.Loaded())
-		return;
+  if (pItem->m_musicInfoTag.Loaded())
+    return ;
 
-	CStdString strFileName, strPath;
-	CUtil::GetDirectory(pItem->m_strPath, strPath);
+  CStdString strFileName, strPath;
+  CUtil::GetDirectory(pItem->m_strPath, strPath);
 
-	//	First query cached items
-	it=m_mapFileItems.find(pItem->m_strPath);
-	if (it!=m_mapFileItems.end()&& it->second->m_musicInfoTag.Loaded() && CUtil::CompareSystemTime(&it->second->m_stTime, &pItem->m_stTime)==0)
-	{
-		pItem->m_musicInfoTag=it->second->m_musicInfoTag;
-	}
-	else
-	{
-		//	Have we loaded this item from database before
-		IMAPSONGS it=m_songsMap.find(pItem->m_strPath);
-		if (it!=m_songsMap.end())
-		{
-			CSong& song=it->second;
-			pItem->m_musicInfoTag.SetSong(song);
-		}
-		else if (strPath!=m_strPrevPath)
-		{
-			//	The item is from another directory as the last one,
-			//	query the database for the new directory...
-			m_musicDatabase.GetSongsByPath(strPath, m_songsMap);
+  // First query cached items
+  it = m_mapFileItems.find(pItem->m_strPath);
+  if (it != m_mapFileItems.end() && it->second->m_musicInfoTag.Loaded() && CUtil::CompareSystemTime(&it->second->m_stTime, &pItem->m_stTime) == 0)
+  {
+    pItem->m_musicInfoTag = it->second->m_musicInfoTag;
+  }
+  else
+  {
+    // Have we loaded this item from database before
+    IMAPSONGS it = m_songsMap.find(pItem->m_strPath);
+    if (it != m_songsMap.end())
+    {
+      CSong& song = it->second;
+      pItem->m_musicInfoTag.SetSong(song);
+    }
+    else if (strPath != m_strPrevPath)
+    {
+      // The item is from another directory as the last one,
+      // query the database for the new directory...
+      m_musicDatabase.GetSongsByPath(strPath, m_songsMap);
 
-			//	...and look if we find it
-			IMAPSONGS it=m_songsMap.find(pItem->m_strPath);
-			if (it!=m_songsMap.end())
-			{
-				CSong& song=it->second;
-				pItem->m_musicInfoTag.SetSong(song);
-			}
-		}
+      // ...and look if we find it
+      IMAPSONGS it = m_songsMap.find(pItem->m_strPath);
+      if (it != m_songsMap.end())
+      {
+        CSong& song = it->second;
+        pItem->m_musicInfoTag.SetSong(song);
+      }
+    }
 
-		//	Nothing found, load tag from file
-		if (g_guiSettings.GetBool("MyMusic.UseTags") && !pItem->m_musicInfoTag.Loaded())
-		{
-			// get correct tag parser
-			CMusicInfoTagLoaderFactory factory;
-			auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
-			if (NULL != pLoader.get())
-					// get id3tag
-				pLoader->Load(pItem->m_strPath,pItem->m_musicInfoTag);
-		}
-	}
+    // Nothing found, load tag from file
+    if (g_guiSettings.GetBool("MyMusic.UseTags") && !pItem->m_musicInfoTag.Loaded())
+    {
+      // get correct tag parser
+      CMusicInfoTagLoaderFactory factory;
+      auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
+      if (NULL != pLoader.get())
+        // get id3tag
+        pLoader->Load(pItem->m_strPath, pItem->m_musicInfoTag);
+    }
+  }
 
-	m_strPrevPath=strPath;
+  m_strPrevPath = strPath;
 }
 
 void CMusicInfoLoader::OnExit()
 {
-	m_bRunning=false;
+  m_bRunning = false;
 }
 
 void CMusicInfoLoader::Load(CFileItemList& items)
 {
-	m_pVecItems=&items;
-	StopThread();
-	Create();
+  m_pVecItems = &items;
+  StopThread();
+  Create();
 }
 
 bool CMusicInfoLoader::IsLoading()
 {
-	return m_bRunning;
+  return m_bRunning;
 }
 
 void CMusicInfoLoader::SetObserver(IMusicInfoLoaderObserver* pObserver)
 {
-	m_pObserver=pObserver;
+  m_pObserver = pObserver;
 }
 
 void CMusicInfoLoader::UseCacheOnHD(const CStdString& strFileName)
 {
-	m_strCacheFileName=strFileName;
+  m_strCacheFileName = strFileName;
 }
 
 void CMusicInfoLoader::LoadCache(const CStdString& strFileName, MAPFILEITEMS& items)
 {
-	CFile file;
+  CFile file;
 
-	if (file.Open(strFileName))
-	{
-		CArchive ar(&file, CArchive::load);
-		int iSize=0;
-		ar >> iSize;
-		for (int i=0; i<iSize; i++)
-		{
-			CFileItem* pItem=new CFileItem();
-			ar >> *pItem;
-			items.insert(MAPFILEITEMSPAIR(pItem->m_strPath, pItem));
-		}
-		ar.Close();
-		file.Close();
-	}
+  if (file.Open(strFileName))
+  {
+    CArchive ar(&file, CArchive::load);
+    int iSize = 0;
+    ar >> iSize;
+    for (int i = 0; i < iSize; i++)
+    {
+      CFileItem* pItem = new CFileItem();
+      ar >> *pItem;
+      items.insert(MAPFILEITEMSPAIR(pItem->m_strPath, pItem));
+    }
+    ar.Close();
+    file.Close();
+  }
 }
 
 void CMusicInfoLoader::SaveCache(const CStdString& strFileName, CFileItemList& items)
 {
-	int iSize=items.Size();
+  int iSize = items.Size();
 
-	if (iSize<=0)
-		return;
+  if (iSize <= 0)
+    return ;
 
-	CFile file;
+  CFile file;
 
-	if (file.OpenForWrite(strFileName))
-	{
-		CArchive ar(&file, CArchive::store);
-		ar << (int)items.Size();
-		for (int i=0; i<iSize; i++)
-		{
-			CFileItem* pItem=items[i];
-			ar << *pItem;
-		}
-		ar.Close();
-		file.Close();
-	}
+  if (file.OpenForWrite(strFileName))
+  {
+    CArchive ar(&file, CArchive::store);
+    ar << (int)items.Size();
+    for (int i = 0; i < iSize; i++)
+    {
+      CFileItem* pItem = items[i];
+      ar << *pItem;
+    }
+    ar.Close();
+    file.Close();
+  }
 
 }

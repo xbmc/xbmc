@@ -4,50 +4,49 @@
 #include "util.h"
 
 CGUIDialogYesNo::CGUIDialogYesNo(void)
-:CGUIDialog(0)
+    : CGUIDialog(0)
 {
-	m_bConfirmed=false;
+  m_bConfirmed = false;
 }
 
 CGUIDialogYesNo::~CGUIDialogYesNo(void)
-{
-}
+{}
 
 bool CGUIDialogYesNo::OnMessage(CGUIMessage& message)
 {
-	switch ( message.GetMessage() )
+  switch ( message.GetMessage() )
   {
-    case GUI_MSG_WINDOW_INIT:
+  case GUI_MSG_WINDOW_INIT:
     {
-			CGUIDialog::OnMessage(message);
-			m_bConfirmed=false;
-			return true;
-		}
-		break;
+      CGUIDialog::OnMessage(message);
+      m_bConfirmed = false;
+      return true;
+    }
+    break;
 
-    case GUI_MSG_CLICKED:
+  case GUI_MSG_CLICKED:
     {
-      int iControl=message.GetSenderId();
-			int iAction=message.GetParam1();
-			if (1||ACTION_SELECT_ITEM==iAction)
-			{
-				if (iControl==10)
-				{
-					m_bConfirmed=false;
-					Close();
-					return true;
-				}
-				if (iControl==11)
-				{
-					m_bConfirmed=true;
-					Close();
-					return true;
-				}
-			}
-		}
-		break;
-	}
-	return CGUIDialog::OnMessage(message);
+      int iControl = message.GetSenderId();
+      int iAction = message.GetParam1();
+      if (1 || ACTION_SELECT_ITEM == iAction)
+      {
+        if (iControl == 10)
+        {
+          m_bConfirmed = false;
+          Close();
+          return true;
+        }
+        if (iControl == 11)
+        {
+          m_bConfirmed = true;
+          Close();
+          return true;
+        }
+      }
+    }
+    break;
+  }
+  return CGUIDialog::OnMessage(message);
 }
 
 // \brief Show CGUIDialogYesNo dialog, then wait for user to dismiss it.
@@ -56,7 +55,7 @@ bool CGUIDialogYesNo::OnMessage(CGUIMessage& message)
 // \param dlgLine1 String shown on dialog line 1. Converts to localized string if contains a positive integer.
 // \param dlgLine2 String shown on dialog line 2. Converts to localized string if contains a positive integer.
 // \return true if user selects Yes, false if user selects No.
-bool CGUIDialogYesNo::ShowAndGetInput(const CStdStringW& dlgHeading, const CStdStringW& dlgLine0, 
+bool CGUIDialogYesNo::ShowAndGetInput(const CStdStringW& dlgHeading, const CStdStringW& dlgLine0,
                                       const CStdStringW& dlgLine1, const CStdStringW& dlgLine2)
 {
   CGUIDialogYesNo *pDialog = &(g_application.m_guiDialogYesNo);
@@ -89,47 +88,47 @@ bool CGUIDialogYesNo::ShowAndGetInput(const CStdStringW& dlgHeading, const CStdS
 
 bool CGUIDialogYesNo::IsConfirmed() const
 {
-	return m_bConfirmed;
+  return m_bConfirmed;
 }
 
-void  CGUIDialogYesNo::SetHeading(const wstring& strLine)
+void CGUIDialogYesNo::SetHeading(const wstring& strLine)
 {
-	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),1);
-	msg.SetLabel(strLine);
-	OnMessage(msg);
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 1);
+  msg.SetLabel(strLine);
+  OnMessage(msg);
 }
 
-void  CGUIDialogYesNo::SetHeading(const string& strLine)
+void CGUIDialogYesNo::SetHeading(const string& strLine)
 {
-	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),1);
-	msg.SetLabel(strLine);
-	OnMessage(msg);
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 1);
+  msg.SetLabel(strLine);
+  OnMessage(msg);
 }
 
 void CGUIDialogYesNo::SetLine(int iLine, const wstring& strLine)
 {
-	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),iLine+2);
-	msg.SetLabel(strLine);
-	OnMessage(msg);
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iLine + 2);
+  msg.SetLabel(strLine);
+  OnMessage(msg);
 }
 
 void CGUIDialogYesNo::SetLine(int iLine, const string& strLine)
 {
-	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),iLine+2);
-	msg.SetLabel(strLine);
-	OnMessage(msg);
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iLine + 2);
+  msg.SetLabel(strLine);
+  OnMessage(msg);
 }
 void CGUIDialogYesNo::SetHeading(int iString)
 {
-	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),1);
-	msg.SetLabel(iString);
-	OnMessage(msg);
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 1);
+  msg.SetLabel(iString);
+  OnMessage(msg);
 }
 
 
-void	CGUIDialogYesNo::SetLine(int iLine, int iString)
+void CGUIDialogYesNo::SetLine(int iLine, int iString)
 {
-	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),iLine+2);
-	msg.SetLabel(iString);
-	OnMessage(msg);
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iLine + 2);
+  msg.SetLabel(iString);
+  OnMessage(msg);
 }

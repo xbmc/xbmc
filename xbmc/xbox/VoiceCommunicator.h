@@ -8,44 +8,44 @@ class CVoiceManager;
 class CVoiceCommunicator
 {
 public:
-    friend CVoiceManager;
+  friend CVoiceManager;
 
-    CVoiceCommunicator();
-    ~CVoiceCommunicator();
+  CVoiceCommunicator();
+  ~CVoiceCommunicator();
 
-    HRESULT Initialize( CVoiceManager* pManager );
-    HRESULT Shutdown();
+  HRESULT Initialize( CVoiceManager* pManager );
+  HRESULT Shutdown();
 
-    HRESULT ResetMicrophone();
-    HRESULT ResetHeadphone();
-    HRESULT OnInsertion( DWORD dwSlot );
-    HRESULT OnRemoval();
+  HRESULT ResetMicrophone();
+  HRESULT ResetHeadphone();
+  HRESULT OnInsertion( DWORD dwSlot );
+  HRESULT OnRemoval();
 
-    HRESULT GetMicrophonePacket( XMEDIAPACKET* pPacket, DWORD dwIndex );
-    HRESULT SubmitMicrophonePacket( XMEDIAPACKET* pPacket );
+  HRESULT GetMicrophonePacket( XMEDIAPACKET* pPacket, DWORD dwIndex );
+  HRESULT SubmitMicrophonePacket( XMEDIAPACKET* pPacket );
 
-    HRESULT GetHeadphonePacket( XMEDIAPACKET* pPacket, DWORD dwIndex );
-    HRESULT SubmitHeadphonePacket( XMEDIAPACKET* pPacket );
+  HRESULT GetHeadphonePacket( XMEDIAPACKET* pPacket, DWORD dwIndex );
+  HRESULT SubmitHeadphonePacket( XMEDIAPACKET* pPacket );
 
-    friend VOID CALLBACK MicrophoneCallback( LPVOID, LPVOID, DWORD );
-    friend VOID CALLBACK HeadphoneCallback( LPVOID, LPVOID, DWORD );
+  friend VOID CALLBACK MicrophoneCallback( LPVOID, LPVOID, DWORD );
+  friend VOID CALLBACK HeadphoneCallback( LPVOID, LPVOID, DWORD );
 
 private:
-    CVoiceManager*  m_pManager;
-    LONG            m_lSlot;
-    XMediaObject*   m_pMicrophoneXMO;
-    XMediaObject*   m_pHeadphoneXMO;
+  CVoiceManager* m_pManager;
+  LONG m_lSlot;
+  XMediaObject* m_pMicrophoneXMO;
+  XMediaObject* m_pHeadphoneXMO;
 
-	SpeexBits		m_bits;
-	int				m_bitrate;
-	int				m_enc_frame_size;
-	void*			m_enc_state;
+  SpeexBits m_bits;
+  int m_bitrate;
+  int m_enc_frame_size;
+  void* m_enc_state;
 
-    DWORD           m_dwSRCReadPosition;
-    DWORD           m_dwRampTime;
+  DWORD m_dwSRCReadPosition;
+  DWORD m_dwRampTime;
 
-    BYTE*           m_pbMicrophoneBuffer;
-    BYTE*           m_pbHeadphoneBuffer;
+  BYTE* m_pbMicrophoneBuffer;
+  BYTE* m_pbHeadphoneBuffer;
 };
 
 

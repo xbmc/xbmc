@@ -1,14 +1,14 @@
 /*
 **********************************
 **********************************
-**      BROUGHT TO YOU BY:		**
+**      BROUGHT TO YOU BY:  **
 **********************************
 **********************************
-**								**
-**		  [TEAM ASSEMBLY]		**
-**								**
-**		www.team-assembly.com	**
-**								**
+**        **
+**    [TEAM ASSEMBLY]  **
+**        **
+**  www.team-assembly.com **
+**        **
 ******************************************************************************************************
 * This is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -26,10 +26,10 @@
 ******************************************************************************************************
 
 ********************************************************************************************************
-**	     XKCRC.H - General CRC Class' Header
+**      XKCRC.H - General CRC Class' Header
 ********************************************************************************************************
 **
-**	This is the Class Header, see the .CPP file for more comments and implementation details.
+** This is the Class Header, see the .CPP file for more comments and implementation details.
 **
 ********************************************************************************************************
 
@@ -48,22 +48,22 @@ Reason: Prepared for Public Release
 
 #pragma once
 #if defined (_WINDOWS)
-	#pragma message ("Compiling for WINDOWS: " __FILE__)
-	#include <afxwin.h>         // MFC core and standard components
+ #pragma message ("Compiling for WINDOWS: " __FILE__)
+ #include <afxwin.h>         // MFC core and standard components
 #elif defined (_XBOX)
-	#pragma message ("Compiling for XBOX: " __FILE__)
-	#include <xtl.h>
+ #pragma message ("Compiling for XBOX: " __FILE__)
+ #include <xtl.h>
 #else
-	#error ERRR: Have to Define _WINDOWS or _XBOX !!
+ #error ERRR: Have to Define _WINDOWS or _XBOX !!
 #endif
 
 
 class XKCRC
 {
 public:
-	XKCRC(void);
-	virtual ~XKCRC(void);
+  XKCRC(void);
+  virtual ~XKCRC(void);
 
-	static void QuickCRC(UCHAR* CRCVAL, UCHAR* inData, DWORD  dataLen);
+  static void QuickCRC(UCHAR* CRCVAL, UCHAR* inData, DWORD dataLen);
 
 };

@@ -8,25 +8,23 @@
 #include "dvdplayer\DVDPlayer.h"
 
 CPlayerCoreFactory::CPlayerCoreFactory()
-{
-}
+{}
 CPlayerCoreFactory::~CPlayerCoreFactory()
-{
-}
+{}
 
-IPlayer* CPlayerCoreFactory::CreatePlayer(const CStdString& strCore,IPlayerCallback& callback) const
+IPlayer* CPlayerCoreFactory::CreatePlayer(const CStdString& strCore, IPlayerCallback& callback) const
 {
-	CStdString strCoreLower=strCore;
-	strCoreLower.ToLower();
-	if (strCoreLower == "dvdplayer") return new CDVDPlayer(callback);
-	if (strCoreLower == "mplayer") return new CMPlayer(callback);
-	if (strCoreLower == "cdda") return new CCDDAPlayer(callback);
-	if (strCoreLower == "mod") return new ModPlayer(callback);
-	if (strCoreLower == "sid") return new SidPlayer(callback);
-	//if (strCoreLower=="xine") return new CXinePlayer(callback);
+  CStdString strCoreLower = strCore;
+  strCoreLower.ToLower();
+  if (strCoreLower == "dvdplayer") return new CDVDPlayer(callback);
+  if (strCoreLower == "mplayer") return new CMPlayer(callback);
+  if (strCoreLower == "cdda") return new CCDDAPlayer(callback);
+  if (strCoreLower == "mod") return new ModPlayer(callback);
+  if (strCoreLower == "sid") return new SidPlayer(callback);
+  //if (strCoreLower=="xine") return new CXinePlayer(callback);
 
-	// default = mplayer
-	return new CMPlayer(callback);
+  // default = mplayer
+  return new CMPlayer(callback);
 }
 
 

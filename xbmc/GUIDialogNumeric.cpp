@@ -3,10 +3,10 @@
 #include "util.h"
 
 CGUIDialogNumeric::CGUIDialogNumeric(void)
-:CGUIDialog(0)
+    : CGUIDialog(0)
 {
-  m_bConfirmed=false;
-  m_bCanceled=false;
+  m_bConfirmed = false;
+  m_bCanceled = false;
   CStdStringW m_strUserInput = L"";
   CStdStringW m_strPassword = L"";
   int m_iRetries = 0;
@@ -15,63 +15,62 @@ CGUIDialogNumeric::CGUIDialogNumeric(void)
 }
 
 CGUIDialogNumeric::~CGUIDialogNumeric(void)
-{
-}
+{}
 
 void CGUIDialogNumeric::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU || action.wID == ACTION_PARENT_DIR)
   {
-    m_bConfirmed=false;
-    m_bCanceled=true;
-    m_strUserInput=L"";
+    m_bConfirmed = false;
+    m_bCanceled = true;
+    m_strUserInput = L"";
     m_bHideInputChars = true;
     Close();
-    return;
+    return ;
   }
-  else if  (action.m_dwButtonCode == KEY_BUTTON_START || action.wID == ACTION_MUSIC_PLAY)
+  else if (action.m_dwButtonCode == KEY_BUTTON_START || action.wID == ACTION_MUSIC_PLAY)
   {
-    m_bConfirmed=false;
-    m_bCanceled=false;
-    if (m_strUserInput!=m_strPassword)
+    m_bConfirmed = false;
+    m_bCanceled = false;
+    if (m_strUserInput != m_strPassword)
     {
       // incorrect password entered
       m_iRetries--;
 
       // don't clean up if the calling code wants the bad user input
       if (m_bUserInputCleanup)
-        m_strUserInput=L"";
+        m_strUserInput = L"";
       else
         m_bUserInputCleanup = true;
 
       m_bHideInputChars = true;
       Close();
-      return;
+      return ;
     }
 
     // correct password entered
-    m_bConfirmed=true;
-    m_iRetries=0;
-    m_strUserInput=L"";
+    m_bConfirmed = true;
+    m_iRetries = 0;
+    m_strUserInput = L"";
     m_bHideInputChars = true;
     Close();
-    return;
+    return ;
   }
   else if (action.wID >= REMOTE_0 && action.wID <= REMOTE_9)
   {
-    m_strUserInput+=(char)action.wID - 10;
+    m_strUserInput += (char)action.wID - 10;
     if (!m_bHideInputChars)
     {
       SetLine(2, m_strUserInput);
     }
     else
     {
-			CStdStringW strHiddenInput(m_strUserInput);
-			for (int i = 0; i < (int)strHiddenInput.size(); i++)
-			{
-				strHiddenInput[i] = m_cHideInputChar;
-			}
-			SetLine(2, strHiddenInput);
+      CStdStringW strHiddenInput(m_strUserInput);
+      for (int i = 0; i < (int)strHiddenInput.size(); i++)
+      {
+        strHiddenInput[i] = m_cHideInputChar;
+      }
+      SetLine(2, strHiddenInput);
     }
   }
   else
@@ -85,41 +84,41 @@ bool CGUIDialogNumeric::OnMessage(CGUIMessage& message)
   switch ( message.GetMessage() )
   {
   case GUI_MSG_WINDOW_INIT:
-    {            
-      m_bConfirmed=false;
-      m_bCanceled=false;
+    {
+      m_bConfirmed = false;
+      m_bCanceled = false;
       m_cHideInputChar = g_localizeStrings.Get(12322).c_str()[0];
       CGUIDialog::OnMessage(message);
-/*
-      // Borrowing strUserInput for the next if/else statement
-      if (0 < m_iRetries)
-      {
-        CStdStringW strLine;
-        strLine.Format(L"%s %i %s", g_localizeStrings.Get(12342).c_str(), m_iRetries, g_localizeStrings.Get(12343).c_str());
-        SetLine(2, strLine);
-      }
-      else
-      {
-        SetLine(2, L"");
-      }
-      m_strUserInput = "";
-*/
+      /*
+            // Borrowing strUserInput for the next if/else statement
+            if (0 < m_iRetries)
+            {
+              CStdStringW strLine;
+              strLine.Format(L"%s %i %s", g_localizeStrings.Get(12342).c_str(), m_iRetries, g_localizeStrings.Get(12343).c_str());
+              SetLine(2, strLine);
+            }
+            else
+            {
+              SetLine(2, L"");
+            }
+            m_strUserInput = "";
+      */ 
       return true;
     }
     break;
 
   case GUI_MSG_CLICKED:
     {
-      int iControl=message.GetSenderId();
-      int iAction=message.GetParam1();
-      m_bConfirmed=false;
-      m_bCanceled=false;
-      if (1||ACTION_SELECT_ITEM==iAction)
+      int iControl = message.GetSenderId();
+      int iAction = message.GetParam1();
+      m_bConfirmed = false;
+      m_bCanceled = false;
+      if (1 || ACTION_SELECT_ITEM == iAction)
       {
 
         if (9 < iControl && 20 > iControl)  // User numeric entry via dialog button UI
         {
-          m_strUserInput+=(char)iControl + 38;
+          m_strUserInput += (char)iControl + 38;
           if (!m_bHideInputChars)
           {
             SetLine(2, m_strUserInput);
@@ -135,24 +134,24 @@ bool CGUIDialogNumeric::OnMessage(CGUIMessage& message)
           }
           return true;
         }
-        if (iControl==20)  // Cancel
+        if (iControl == 20)  // Cancel
         {
-          m_bCanceled=true;
-          m_strUserInput=L"";
+          m_bCanceled = true;
+          m_strUserInput = L"";
           m_bHideInputChars = true;
           Close();
           return true;
         }
-        if (iControl==21)  // OK, user submits password
+        if (iControl == 21)  // OK, user submits password
         {
-          if (m_strUserInput!=m_strPassword)
+          if (m_strUserInput != m_strPassword)
           {
             // incorrect password entered
             m_iRetries--;
 
             // don't clean up if the calling code wants the bad user input
             if (m_bUserInputCleanup)
-              m_strUserInput=L"";
+              m_strUserInput = L"";
             else
               m_bUserInputCleanup = true;
 
@@ -162,9 +161,9 @@ bool CGUIDialogNumeric::OnMessage(CGUIMessage& message)
           }
 
           // correct password entered
-          m_bConfirmed=true;
-          m_iRetries=0;
-          m_strUserInput=L"";
+          m_bConfirmed = true;
+          m_iRetries = 0;
+          m_strUserInput = L"";
           m_bHideInputChars = true;
           Close();
           return true;
@@ -182,7 +181,7 @@ bool CGUIDialogNumeric::OnMessage(CGUIMessage& message)
 // \param bHideUserInput Masks user input as asterisks if set as true.  Currently not yet implemented.
 // \return true if successful display and user input. false if unsucessful display, no user input, or canceled editing.
 bool CGUIDialogNumeric::ShowAndGetInput(CStdStringW& aTextString, const CStdStringW &dlgHeading, bool bHideUserInput)
-{  
+{
   // Prompt user for input
   CStdStringW strUserInput = L"";
   if (ShowAndVerifyInput(strUserInput, dlgHeading, aTextString, L"", L"", true, bHideUserInput))
@@ -237,9 +236,9 @@ bool CGUIDialogNumeric::ShowAndGetNewPassword(CStdStringW& strNewPassword)
 // \param dlgLine1 String shown on dialog line 1. Converts to localized string if contains a positive integer.
 // \param dlgLine2 String shown on dialog line 2. Converts to localized string if contains a positive integer.
 // \return 0 if successful display and user input. 1 if unsucessful input. -1 if no user input or canceled editing.
-int CGUIDialogNumeric::ShowAndVerifyPassword(CStdStringW& strPassword, const CStdStringW& dlgHeading, 
-                                           const CStdStringW& dlgLine0, const CStdStringW& dlgLine1, 
-                                           const CStdStringW& dlgLine2)
+int CGUIDialogNumeric::ShowAndVerifyPassword(CStdStringW& strPassword, const CStdStringW& dlgHeading,
+    const CStdStringW& dlgLine0, const CStdStringW& dlgLine1,
+    const CStdStringW& dlgLine2)
 {
   // make a copy of strPassword to prevent from overwriting it later
   CStdStringW strPassTemp = strPassword;
@@ -283,9 +282,9 @@ int CGUIDialogNumeric::ShowAndVerifyPassword(CStdStringW& strPassword, const CSt
 // \param bGetUserInput If set as true and return=true, strToVerify is overwritten with user input string.
 // \param bHideInputChars Masks user input as asterisks if set as true.  Currently not yet implemented.
 // \return true if successful display and user input. false if unsucessful display, no user input, or canceled editing.
-bool CGUIDialogNumeric::ShowAndVerifyInput(CStdStringW& strToVerify, const CStdStringW& dlgHeading, 
-                                           const CStdStringW& dlgLine0, const CStdStringW& dlgLine1, 
-                                           const CStdStringW& dlgLine2, bool bGetUserInput, bool bHideInputChars)
+bool CGUIDialogNumeric::ShowAndVerifyInput(CStdStringW& strToVerify, const CStdStringW& dlgHeading,
+    const CStdStringW& dlgLine0, const CStdStringW& dlgLine1,
+    const CStdStringW& dlgLine2, bool bGetUserInput, bool bHideInputChars)
 {
   // Prompt user for password input
   CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)m_gWindowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
@@ -342,44 +341,44 @@ bool CGUIDialogNumeric::IsCanceled() const
   return m_bCanceled;
 }
 
-void  CGUIDialogNumeric::SetHeading(const wstring& strLine)
+void CGUIDialogNumeric::SetHeading(const wstring& strLine)
 {
-  CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),1);
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 1);
   msg.SetLabel(strLine);
   OnMessage(msg);
 }
 
-void  CGUIDialogNumeric::SetHeading(const string& strLine)
+void CGUIDialogNumeric::SetHeading(const string& strLine)
 {
-  CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),1);
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 1);
   msg.SetLabel(strLine);
   OnMessage(msg);
 }
 
 void CGUIDialogNumeric::SetLine(int iLine, const wstring& strLine)
 {
-  CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),iLine+2);
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iLine + 2);
   msg.SetLabel(strLine);
   OnMessage(msg);
 }
 
 void CGUIDialogNumeric::SetLine(int iLine, const string& strLine)
 {
-  CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),iLine+2);
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iLine + 2);
   msg.SetLabel(strLine);
   OnMessage(msg);
 }
 void CGUIDialogNumeric::SetHeading(int iString)
 {
-  CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),1);
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), 1);
   msg.SetLabel(iString);
   OnMessage(msg);
 }
 
 
-void	CGUIDialogNumeric::SetLine(int iLine, int iString)
+void CGUIDialogNumeric::SetLine(int iLine, int iString)
 {
-  CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),iLine+2);
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), iLine + 2);
   msg.SetLabel(iString);
   OnMessage(msg);
 }

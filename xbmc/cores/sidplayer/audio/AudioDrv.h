@@ -1,10 +1,10 @@
 /***************************************************************************
-                          AudioDrv.h  -  Just include all the drivers
-                             -------------------
-    begin                : Thu Jul 20 2000
-    copyright            : (C) 2000 by Simon White
-    email                : s_a_white@email.com
- ***************************************************************************/
+                         AudioDrv.h  -  Just include all the drivers
+                            -------------------
+   begin                : Thu Jul 20 2000
+   copyright            : (C) 2000 by Simon White
+   email                : s_a_white@email.com
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -13,9 +13,14 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- ***************************************************************************/
+ ***************************************************************************/ 
 /***************************************************************************
  *  $Log$
+ *  Revision 1.2  2005/03/19 17:33:04  jmarshallnz
+ *  Formatting for tabs -> 2 spaces
+ *
+ *    - 19-03-2005 added: <autodetectFG> tag to XBoxMediaCenter.xml.  Set to false if you have an old bios that causes a crash on autodetection.
+ *
  *  Revision 1.1  2004/03/09 00:18:24  butcheruk
  *  Sid playback support
  *

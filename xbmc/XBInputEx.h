@@ -11,7 +11,8 @@
 
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #include "XBIRRemote.h"
@@ -24,9 +25,10 @@ extern "C" {
 
 typedef struct _XINPUT_STATEEX
 {
-    DWORD dwPacketNumber;
-    XINPUT_IR_REMOTE IR_Remote;
-} XINPUT_STATEEX, *PXINPUT_STATEEX;
+  DWORD dwPacketNumber;
+  XINPUT_IR_REMOTE IR_Remote;
+}
+XINPUT_STATEEX, *PXINPUT_STATEEX;
 
 
 //-----------------------------------------------------------------------------
@@ -35,18 +37,18 @@ typedef struct _XINPUT_STATEEX
 //-----------------------------------------------------------------------------
 struct XBIR_REMOTE : public XINPUT_IR_REMOTE
 {
-    // Device properties
-    XINPUT_CAPABILITIES caps;
-    HANDLE     hDevice;
+  // Device properties
+  XINPUT_CAPABILITIES caps;
+  HANDLE hDevice;
 
 
-	// Rumble properties
-    XINPUT_RUMBLE   Remote_Feedback;
-    XINPUT_FEEDBACK Feedback;
+  // Rumble properties
+  XINPUT_RUMBLE Remote_Feedback;
+  XINPUT_FEEDBACK Feedback;
 
-    // Flags for whether game pad was just inserted or removed
-    BOOL       bInserted;
-    BOOL       bRemoved;
+  // Flags for whether game pad was just inserted or removed
+  BOOL bInserted;
+  BOOL bRemoved;
 };
 
 //-----------------------------------------------------------------------------

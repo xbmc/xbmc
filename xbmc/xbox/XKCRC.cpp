@@ -1,15 +1,15 @@
-#include "../stdafx.h"
+#include "../stdafx.h" 
 /*
 **********************************
 **********************************
-**      BROUGHT TO YOU BY:		**
+**      BROUGHT TO YOU BY:  **
 **********************************
 **********************************
-**								**
-**		  [TEAM ASSEMBLY]		**
-**								**
-**		www.team-assembly.com	**
-**								**
+**        **
+**    [TEAM ASSEMBLY]  **
+**        **
+**  www.team-assembly.com **
+**        **
 ******************************************************************************************************
 * This is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -25,16 +25,16 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ******************************************************************************************************
-
+ 
 ********************************************************************************************************
-**	     XKCRC.CPP - General CRC Class' Implementation
+**      XKCRC.CPP - General CRC Class' Implementation
 ********************************************************************************************************
 **
-**	Containss functions to do a simple CRC check on a block of data..  
-**	might be more ways of elegantly doing this, but for now this has to work...
+** Containss functions to do a simple CRC check on a block of data..  
+** might be more ways of elegantly doing this, but for now this has to work...
 **
 ********************************************************************************************************
-
+ 
 UPDATE LOG:
 --------------------------------------------------------------------------------------------------------
 Date: 02/18/2003
@@ -45,47 +45,45 @@ Date: 01/06/2003
 By: UNDEAD [team-assembly]
 Reason: Prepared for Public Release
 --------------------------------------------------------------------------------------------------------
-
+ 
 */
 #include "XKCRC.h"
 
 XKCRC::XKCRC(void)
-{
-}
+{}
 
 XKCRC::~XKCRC(void)
+{}
+
+
+void XKCRC::QuickCRC(UCHAR* CRCVAL, UCHAR* inData, DWORD dataLen)
 {
-}
+
+  LPBYTE CRC_Data = new BYTE[dataLen + 4];
+  ZeroMemory(CRC_Data, dataLen + 4);
+  memcpy(CRC_Data + 0x01 , inData, dataLen - 1); //We Circle shift the whole bunch 1 byte to the right
+  memcpy(CRC_Data, inData + dataLen - 1, 0x01); //We Circle shift the whole bunch 1 byte to the right
 
 
-void XKCRC::QuickCRC(UCHAR* CRCVAL, UCHAR* inData, DWORD  dataLen)
-{
+  BYTE CRCVALUE[4];
+  ZeroMemory(CRCVALUE, 4);
 
-	LPBYTE CRC_Data = new BYTE[dataLen+4];
-	ZeroMemory(CRC_Data, dataLen+4);
-	memcpy(CRC_Data + 0x01 , inData, dataLen-1); //We Circle shift the whole bunch 1 byte to the right
-	memcpy(CRC_Data, inData + dataLen-1, 0x01); //We Circle shift the whole bunch 1 byte to the right
+  for (int CRCPos = 0; CRCPos < 4; CRCPos++)
+  {
+    WORD CRCPosVal = 0xFFFF;
 
-    
-	BYTE CRCVALUE[4];
-	ZeroMemory(CRCVALUE,4);
+    for (DWORD l = CRCPos; l < dataLen; l += 4)
+    {
+      LPWORD tmpWrd = (LPWORD)(&CRC_Data[l]);
+      WORD ival = *tmpWrd;
+      CRCPosVal = CRCPosVal - ival;
+    }
 
-	for (int CRCPos=0; CRCPos<4; CRCPos++)
-	{
-		WORD CRCPosVal = 0xFFFF;
-	
-		for (DWORD l=CRCPos; l<dataLen; l+=4)
-		{
-			LPWORD tmpWrd = (LPWORD)(&CRC_Data[l]);
-			WORD ival = *tmpWrd;
-			CRCPosVal = CRCPosVal - ival;
-		}
+    CRCPosVal &= 0xFF00;
+    CRCVALUE[CRCPos] = (BYTE) (CRCPosVal >> 8);
+  }
 
-		CRCPosVal &= 0xFF00;
-		CRCVALUE[CRCPos] = (BYTE) (CRCPosVal >> 8);
-	}
-
-	memcpy(CRCVAL, CRCVALUE, 4);
-	delete[] CRC_Data;
+  memcpy(CRCVAL, CRCVALUE, 4);
+  delete[] CRC_Data;
 
 }

@@ -6,40 +6,40 @@
 
 namespace MUSIC_INFO
 {
-	class IMusicInfoLoaderObserver
-	{
-	public:
-		virtual void OnItemLoaded(CFileItem* pItem)=0;
-	};
+class IMusicInfoLoaderObserver
+{
+public:
+  virtual void OnItemLoaded(CFileItem* pItem) = 0;
+};
 
-	class CMusicInfoLoader : public CThread
-	{
-	public:
-		CMusicInfoLoader();
-		virtual ~CMusicInfoLoader();
+class CMusicInfoLoader : public CThread
+{
+public:
+  CMusicInfoLoader();
+  virtual ~CMusicInfoLoader();
 
-						void		Load(CFileItemList& items);
-						bool		IsLoading();
-		virtual void		OnStartup();
-		virtual void		OnExit();
-						void		UseCacheOnHD(const CStdString& strFileName);
-		virtual void		Process();
-						void		SetObserver(IMusicInfoLoaderObserver* pObserver);
+  void Load(CFileItemList& items);
+  bool IsLoading();
+  virtual void OnStartup();
+  virtual void OnExit();
+  void UseCacheOnHD(const CStdString& strFileName);
+  virtual void Process();
+  void SetObserver(IMusicInfoLoaderObserver* pObserver);
 
-	protected:
-						void		LoadItem(CFileItem* pItem);
-						void		LoadCache(const CStdString& strFileName, MAPFILEITEMS& items);
-						void		SaveCache(const CStdString& strFileName, CFileItemList& items);
+protected:
+  void LoadItem(CFileItem* pItem);
+  void LoadCache(const CStdString& strFileName, MAPFILEITEMS& items);
+  void SaveCache(const CStdString& strFileName, CFileItemList& items);
 
-	protected:
-		CFileItemList*								m_pVecItems;
-		IMusicInfoLoaderObserver*		m_pObserver;
-		CStdString									m_strCacheFileName;
-		bool												m_bRunning;
-		MAPFILEITEMS								m_mapFileItems;
-		IMAPFILEITEMS								it;
-		MAPSONGS										m_songsMap;
-		CStdString									m_strPrevPath;
-		CMusicDatabase							m_musicDatabase;
-	};
+protected:
+  CFileItemList* m_pVecItems;
+  IMusicInfoLoaderObserver* m_pObserver;
+  CStdString m_strCacheFileName;
+  bool m_bRunning;
+  MAPFILEITEMS m_mapFileItems;
+  IMAPFILEITEMS it;
+  MAPSONGS m_songsMap;
+  CStdString m_strPrevPath;
+  CMusicDatabase m_musicDatabase;
+};
 };

@@ -4,36 +4,36 @@
 
 CKaiRequestList::CKaiRequestList(void)
 {
-	InitializeCriticalSection(&m_critical);
+  InitializeCriticalSection(&m_critical);
 }
 
 CKaiRequestList::~CKaiRequestList(void)
 {
-	DeleteCriticalSection(&m_critical);
+  DeleteCriticalSection(&m_critical);
 }
 
 void CKaiRequestList::QueueRequest(CStdString& aRequest)
 {
-	EnterCriticalSection(&m_critical);
-	
-	m_requests.push(aRequest);
+  EnterCriticalSection(&m_critical);
 
-	LeaveCriticalSection(&m_critical);
+  m_requests.push(aRequest);
+
+  LeaveCriticalSection(&m_critical);
 }
 
 
 bool CKaiRequestList::GetNext(CStdString& aRequest)
 {
-	EnterCriticalSection(&m_critical);
-	
-	bool bPending = m_requests.size()>0;
-	if (bPending)
-	{
-		aRequest = m_requests.front();
-		m_requests.pop();
-	}
+  EnterCriticalSection(&m_critical);
 
-	LeaveCriticalSection(&m_critical);
+  bool bPending = m_requests.size() > 0;
+  if (bPending)
+  {
+    aRequest = m_requests.front();
+    m_requests.pop();
+  }
 
-	return bPending;
+  LeaveCriticalSection(&m_critical);
+
+  return bPending;
 }

@@ -6,10 +6,10 @@ enum CodecID;
 
 enum StreamType
 {
-  STREAM_NONE,  // if unknown
-  STREAM_AUDIO, // audio stream
-  STREAM_VIDEO, // video stream
-  STREAM_DATA   // data stream (eg. dvd spu's) 
+  STREAM_NONE,   // if unknown
+  STREAM_AUDIO,  // audio stream
+  STREAM_VIDEO,  // video stream
+  STREAM_DATA   // data stream (eg. dvd spu's)
 };
 
 /*
@@ -32,11 +32,11 @@ public:
   {
     strInfo = "";
   }
-  
+
   int iId; // file stream id
   CodecID codec;
   StreamType type;
-  
+
   int iDuration; // in seconds
   void* pPrivate; // private pointer or the demuxer
 };
@@ -49,13 +49,13 @@ public:
     iFpsScale = 0;
     iFpsRate = 0;
   }
-  
+
   int iFpsScale; // scale of 1000 and a rate of 29970 will result in 29.97 fps
   int iFpsRate;
   int iHeight; // height of the stream reported by the demuxer
   int iWidth; // width of the stream reported by the demuxer
 };
-  
+
 class CDemuxStreamAudio : public CDemuxStream
 {
 public:
@@ -64,11 +64,11 @@ public:
     iChannels = 0;
     iSampleRate = 0;
   }
-  
+
   int iChannels;
   int iSampleRate;
 };
-  
+
 class CDVDDemux
 {
 public:
@@ -76,12 +76,13 @@ public:
   typedef struct DemuxPacket
   {
     BYTE* pData; // data
-    int   iSize; // data size
-    int   iStreamId; // integer representing the stream index
-    
+    int iSize; // data size
+    int iStreamId; // integer representing the stream index
+
     unsigned __int64 pts; // pts in DVD_TIME_BASE
     unsigned __int64 dts; // dts in DVD_TIME_BASE
-  } DemuxPacket;
+  }
+  DemuxPacket;
 
   /*
    * Open the demuxer, returns true on success
@@ -104,7 +105,7 @@ public:
    * Seek, time in msec calculated from stream start
    */
   virtual bool Seek(int iTime) = 0;
-  
+
   /*
    * returns the total time in msec
    */
@@ -117,9 +118,9 @@ public:
    * return nr of streams, 0 if none
    */
   virtual int GetNrOfStreams() = 0;
-    
+
 protected:
   CDVDInputStream* m_pInput;
-  
+
   // global stream info
 };

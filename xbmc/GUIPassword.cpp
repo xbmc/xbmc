@@ -6,10 +6,10 @@
 #include "xbox/xkutils.h"
 
 CGUIPassword::CGUIPassword(void)
-:CGUIDialog(0)
+    : CGUIDialog(0)
 {
-  m_bConfirmed=false;
-  m_bCanceled=false;
+  m_bConfirmed = false;
+  m_bCanceled = false;
   CStdStringW m_strUserInput = L"";
   CStdStringW m_strPassword = L"";
   int m_iRetries = 0;
@@ -17,8 +17,7 @@ CGUIPassword::CGUIPassword(void)
 }
 
 CGUIPassword::~CGUIPassword(void)
-{
-}
+{}
 
 /// \brief Tests if the user is allowed to access the share folder
 /// \param pItem The share folder item to access
@@ -57,21 +56,21 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const CStdString &strType)
     switch (pItem->m_iLockMode)
     {
     case LOCK_MODE_NUMERIC:
-        if (!g_application.m_bMasterLockOverridesLocalPasswords)
-          iResult = CGUIDialogNumeric::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
-        break;
+      if (!g_application.m_bMasterLockOverridesLocalPasswords)
+        iResult = CGUIDialogNumeric::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
+      break;
     case LOCK_MODE_GAMEPAD:
-        if (!g_application.m_bMasterLockOverridesLocalPasswords)
-          iResult = CGUIDialogGamepad::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
-        break;
+      if (!g_application.m_bMasterLockOverridesLocalPasswords)
+        iResult = CGUIDialogGamepad::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
+      break;
     case LOCK_MODE_QWERTY:
-        if (!g_application.m_bMasterLockOverridesLocalPasswords)
-          iResult = CGUIDialogKeyboard::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
-        break;
+      if (!g_application.m_bMasterLockOverridesLocalPasswords)
+        iResult = CGUIDialogKeyboard::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
+      break;
     default:
-        // pItem->m_iLockMode isn't set to an implemented lock mode, so treat as unlocked
-        return true;
-        break;
+      // pItem->m_iLockMode isn't set to an implemented lock mode, so treat as unlocked
+      return true;
+      break;
     }
 
     switch (iResult)
@@ -145,26 +144,26 @@ bool CGUIPassword::IsItemUnlocked(CShare* pItem, const CStdString &strType)
       strHeading = L"12325";
     else
     */
-      strHeading = L"12348";
+    strHeading = L"12348";
 
     switch (pItem->m_iLockMode)
     {
     case LOCK_MODE_NUMERIC:
-        if (!g_application.m_bMasterLockOverridesLocalPasswords)
-          iResult = CGUIDialogNumeric::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
-        break;
+      if (!g_application.m_bMasterLockOverridesLocalPasswords)
+        iResult = CGUIDialogNumeric::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
+      break;
     case LOCK_MODE_GAMEPAD:
-        if (!g_application.m_bMasterLockOverridesLocalPasswords)
-          iResult = CGUIDialogGamepad::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
-        break;
+      if (!g_application.m_bMasterLockOverridesLocalPasswords)
+        iResult = CGUIDialogGamepad::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
+      break;
     case LOCK_MODE_QWERTY:
-        if (!g_application.m_bMasterLockOverridesLocalPasswords)
-          iResult = CGUIDialogKeyboard::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
-        break;
+      if (!g_application.m_bMasterLockOverridesLocalPasswords)
+        iResult = CGUIDialogKeyboard::ShowAndVerifyPassword(pItem->m_strLockCode, strHeading, iRetries);
+      break;
     default:
-        // pItem->m_iLockMode isn't set to an implemented lock mode, so treat as unlocked
-        return true;
-        break;
+      // pItem->m_iLockMode isn't set to an implemented lock mode, so treat as unlocked
+      return true;
+      break;
     }
 
     switch (iResult)
@@ -230,17 +229,17 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser)
   switch (g_stSettings.m_iMasterLockMode)
   {
   case LOCK_MODE_NUMERIC:
-      iVerifyPasswordResult = CGUIDialogNumeric::ShowAndVerifyPassword((CStdStringW)g_stSettings.szMasterLockCode, L"12324", L"12327", L"12329", L"");
-      break;
+    iVerifyPasswordResult = CGUIDialogNumeric::ShowAndVerifyPassword((CStdStringW)g_stSettings.szMasterLockCode, L"12324", L"12327", L"12329", L"");
+    break;
   case LOCK_MODE_GAMEPAD:
-      iVerifyPasswordResult = CGUIDialogGamepad::ShowAndVerifyPassword((CStdStringW)g_stSettings.szMasterLockCode, L"12324", L"12352", L"12331", L"");
-      break;
+    iVerifyPasswordResult = CGUIDialogGamepad::ShowAndVerifyPassword((CStdStringW)g_stSettings.szMasterLockCode, L"12324", L"12352", L"12331", L"");
+    break;
   case LOCK_MODE_QWERTY:
-      iVerifyPasswordResult = CGUIDialogKeyboard::ShowAndVerifyPassword((CStdStringW)g_stSettings.szMasterLockCode, L"12324", 0);
-      break;
-  default:  // must not be supported, treat as unlocked
-      iVerifyPasswordResult = 0;
-      break;
+    iVerifyPasswordResult = CGUIDialogKeyboard::ShowAndVerifyPassword((CStdStringW)g_stSettings.szMasterLockCode, L"12324", 0);
+    break;
+  default:   // must not be supported, treat as unlocked
+    iVerifyPasswordResult = 0;
+    break;
   }
 
   if (1 == iVerifyPasswordResult)
@@ -294,11 +293,11 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
           Sleep(200);
           XKUtils::XBOXPowerOff();
 #endif
-          return;
+          return ;
         }
         // Tell the user they ran out of retry attempts
         CGUIDialogOK::ShowAndGetInput(L"12345", L"12346", L"", L"");
-        return;
+        return ;
       }
     }
     // Tell user they entered a bad password
@@ -312,7 +311,7 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
     // user entered correct mastercode, reset retries to max allowed
     g_application.m_iMasterLockRetriesRemaining = g_stSettings.m_iMasterLockMaxRetry;
   }
-  return;
+  return ;
 }
 
 bool CGUIPassword::IsConfirmed() const
