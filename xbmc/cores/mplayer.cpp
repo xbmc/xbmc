@@ -609,12 +609,6 @@ bool CMPlayer::openfile(const CStdString& strFile)
             iChannels=2;
           }
         }
-		// Turn off volume amplification for the digital out on 48kHz 2 channel files
-		if (g_stSettings.m_bUseDigitalOutput)
-		{
-			if (!bIsVideo && iChannels==2 && lSampleRate == 48000)
-				options.SetVolumeAmplification(-5.98f);
-		}
         // remap audio speaker layout for files with 5 audio channels 
         if (iChannels==5)
         {
