@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 16-03-2005 fixed: videoplayer.year showed 0 if no movie (or no movie info) was available.
+  - 16-03-2005 fixed: musicplayer.title sometimes showed file extension if Hide File Extensions was on.
   - 16-03-2005 fixed: Animated Gifs only show the first frame
   - 16-03-2005 fixed: GUIWindowManager now correctly dispatches messages to modeless windows
   - 16-03-2005 added: mute support for the media center extender remote
