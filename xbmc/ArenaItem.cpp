@@ -8,6 +8,8 @@ CArenaItem::CArenaItem(CStdString& strLabel) : CGUIListExItem(strLabel)
 {
 	SetCookie( CKaiClient::Item::Arena );
 	m_strVector="/";
+	m_strDescription="";
+	m_strPassword="";
 }
 
 CArenaItem::~CArenaItem(void)
