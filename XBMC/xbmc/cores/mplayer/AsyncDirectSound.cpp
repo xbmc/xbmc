@@ -322,7 +322,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	else if (!mplayer_HasVideo())
 		m_dwNumPackets=64*iChannels;
 	else
-		m_dwNumPackets=8*iChannels;
+		m_dwNumPackets=12*iChannels;
 
 	m_adwStatus    = new DWORD[ m_dwNumPackets ];
 	m_pbSampleData = new PBYTE[ m_dwNumPackets ];
@@ -400,7 +400,7 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	XMEDIAINFO info;
 	m_pStream->GetInfo(&info);
   //align m_dwPacketSize to dwInputSize
-  int fSize = 1024 / info.dwInputSize;
+  int fSize = 768 / info.dwInputSize;
 	fSize *= info.dwInputSize;
 	m_dwPacketSize=(int)fSize;
 
