@@ -1232,6 +1232,9 @@
 				RelativePath=".\xbmc\cores\EMUmsvcrt.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\cores\EMUOLE32.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\cores\EMUregistry.c">
 			</File>
 			<File
@@ -1251,6 +1254,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\cores\exportsmisc.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\exportsOLE32.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\cores\exportsreg.cpp">
