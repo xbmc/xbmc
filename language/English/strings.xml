@@ -381,11 +381,11 @@
 	</string>
 	<string>
 		<id>167</id>
-		<value>FTP server</value>
+		<value>Enable FTP Server</value>
 	</string>
 	<string>
 		<id>168</id>
-		<value>Synchronize Time</value>
+		<value>Enable Internet Time Synchronization</value>
 	</string>
 	<string>
 		<id>169</id>
@@ -761,7 +761,7 @@
 	</string>
 	<string>
 		<id>263</id>
-		<value>HTTP server</value>
+		<value>Enable Web Server</value>
 	</string>
 	<string>
 		<id>264</id>
@@ -1930,7 +1930,7 @@
 	</string>
 	<string>
 		<id>723</id>
-		<value>Save Settings and Reset XBox</value>
+		<value>Save &amp; Reset XBox</value>
 	</string>
 	<string>
 		<id>724</id>
@@ -1944,6 +1944,30 @@
 		<id>726</id>
 		<value>Changes not saved. Continue without saving?</value>
 	</string>
+	<string>
+		<id>727</id>
+		<value>Web Server Settings</value>
+	</string>	
+	<string>
+		<id>728</id>
+		<value>FTP Server Settings</value>
+	</string>	
+	<string>
+		<id>729</id>
+		<value>Internet Time Settings</value>
+	</string>	
+	<string>
+		<id>730</id>
+		<value>Web Server Port:</value>
+	</string>	
+	<string>
+		<id>731</id>
+		<value>Time Server Host:</value>
+	</string>
+	<string>
+		<id>732</id>
+		<value>Save &amp; Apply</value>
+	</string>	
 	<string>
 		<id>998</id>
 		<value>XLink Kai</value>
