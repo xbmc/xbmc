@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 24-01-2005 fixed: music info tag, remove possible \r\n at the end of a tag field (artist, title...)
   - 24-01-2005 updated: Finnish language file (Thnx to jutski)
   - 24-01-2005 updated: German (Austrian) language file (Thnx to CEOMR)
   - 24-01-2005 updated: Norwegian language file (Thnx to vnmartinsen)
