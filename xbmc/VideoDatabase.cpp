@@ -124,7 +124,7 @@ bool CVideoDatabase::Open()
 	}
 
 	m_pDS->exec("PRAGMA cache_size=8192\n");
-	m_pDS->exec("PRAGMA synchronous='OFF'\n");
+	m_pDS->exec("PRAGMA synchronous='NORMAL'\n");
 	m_pDS->exec("PRAGMA count_changes='OFF'\n");
 //	m_pDS->exec("PRAGMA temp_store='MEMORY'\n");
 	return true;
