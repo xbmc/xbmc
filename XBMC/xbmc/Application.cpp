@@ -1539,12 +1539,21 @@ void CApplication::UpdateLCD()
 				if (iLine < 4 && strLine!="") g_lcd->SetLine(iLine++,strLine);
 				strLine=m_itemCurrentFile.m_musicInfoTag.GetArtist();
 				if (iLine < 4 && strLine!="") g_lcd->SetLine(iLine++,strLine);
+        strLine=m_itemCurrentFile.m_musicInfoTag.GetAlbum();
 				SYSTEMTIME systemtime;
-				m_itemCurrentFile.m_musicInfoTag.GetReleaseDate(systemtime);
-				if (iLine < 4 && systemtime.wYear>=1900)
+        m_itemCurrentFile.m_musicInfoTag.GetReleaseDate(systemtime);
+        if (iLine < 4 && strLine!="")
 				{
-					strLine.Format("%i", systemtime.wYear);
-					g_lcd->SetLine(iLine++,strLine);
+					if (systemtime.wYear>=1900)
+					{
+						CStdString strYearLine;
+						strYearLine.Format("%s (%i)", strLine.c_str(), systemtime.wYear);
+						g_lcd->SetLine(iLine++,strYearLine);
+					}
+					else
+					{
+						g_lcd->SetLine(iLine++,strLine);
+					}
 				}
 				while (iLine < 4) g_lcd->SetLine(iLine++,"");
 			}
