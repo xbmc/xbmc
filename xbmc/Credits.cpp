@@ -79,7 +79,7 @@ struct CreditLine_t
 	{  50,  65,    100,   7200,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Obstler" },
 	{  50,  75,    100,   7100,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Pike" },
 
-	{  50,  35,   8100,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Poing" },
+	{  50,  35,   8100,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"poing" },
 	{  50,  45,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"RUNTiME" },
 	{  50,  55,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Shadow_Mx" },
 	{  50,  65,      0,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"xAD" },
