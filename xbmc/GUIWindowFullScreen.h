@@ -4,6 +4,8 @@
 #include "osd/osdmenu.h"
 #include "osd/iexecutor.h"
 #include "utils/CriticalSection.h"
+#include "../guilib/GUIFontTTF.h"
+
 using namespace OSD;
 class CGUIWindowFullScreen :
   public CGUIWindow,
@@ -33,6 +35,7 @@ private:
 	void				Update();
 	void				ShowOSD();
 	void				HideOSD();
+	void				RenderTTFSubtitles();
 
 	bool				m_bShowTime;
 	bool				m_bShowCodecInfo;
@@ -45,9 +48,11 @@ private:
 	FLOAT				m_fFPS;
 	COSDMenu			m_osdMenu;
 	CCriticalSection	m_section;
+	CCriticalSection	m_fontLock;
 	bool				m_bLastRender;
 	int					m_strTimeStamp[5];
 	int					m_iTimeCodePosition;
 	int					m_iCurrentBookmark;
 	DWORD				m_dwOSDTimeOut;
+	CGUIFontTTF* 		m_subtitleFont;
 };

@@ -34,12 +34,12 @@ CGUIControlFactory::~CGUIControlFactory(void)
 
 bool CGUIControlFactory::GetHex(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwHexValue)
 {
-
 	TiXmlNode* pNode=pRootNode->FirstChild(strTag );
 	if (!pNode) return false;
 	sscanf(pNode->FirstChild()->Value(),"%x", &dwHexValue );
 	return true;
 }
+
 bool CGUIControlFactory::GetDWORD(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwDWORDValue)
 {
 	TiXmlNode* pNode=pRootNode->FirstChild(strTag );
@@ -47,6 +47,7 @@ bool CGUIControlFactory::GetDWORD(const TiXmlNode* pRootNode, const char* strTag
 	dwDWORDValue= atol(pNode->FirstChild()->Value());
 	return true;
 }
+
 bool CGUIControlFactory::GetLong(const TiXmlNode* pRootNode, const char* strTag, long& lLongValue)
 {
 	TiXmlNode* pNode=pRootNode->FirstChild(strTag );
@@ -59,6 +60,50 @@ bool CGUIControlFactory::GetInt(const TiXmlNode* pRootNode, const char* strTag, 
 	TiXmlNode* pNode=pRootNode->FirstChild(strTag );
 	if (!pNode) return false;
 	iIntValue = atoi(pNode->FirstChild()->Value());
+	return true;
+}
+
+bool CGUIControlFactory::GetIntRange(const TiXmlNode* pRootNode, const char* strTag, int& iMinValue, int& iMaxValue, int& iIntervalValue)
+{
+	TiXmlNode* pNode=pRootNode->FirstChild(strTag);
+	if (!pNode) return false;
+	iMinValue = atoi(pNode->FirstChild()->Value());
+	char* maxValue = strchr(pNode->FirstChild()->Value(), ',');
+	if (maxValue)
+	{
+		maxValue++;
+		iMaxValue = atoi(maxValue);
+
+		char* intervalValue = strchr(maxValue, ',');
+		if (intervalValue)
+		{
+			intervalValue++;
+			iIntervalValue = atoi(intervalValue);
+		}
+	}
+
+	return true;
+}
+
+bool CGUIControlFactory::GetFloatRange(const TiXmlNode* pRootNode, const char* strTag, float& fMinValue, float& fMaxValue, float& fIntervalValue)
+{
+	TiXmlNode* pNode=pRootNode->FirstChild(strTag);
+	if (!pNode) return false;
+	fMinValue = (float) atof(pNode->FirstChild()->Value());
+	char* maxValue = strchr(pNode->FirstChild()->Value(), ',');
+	if (maxValue)
+	{
+		maxValue++;
+		fMaxValue = (float) atof(maxValue);
+
+		char* intervalValue = strchr(maxValue, ',');
+		if (intervalValue)
+		{
+			intervalValue++;
+			fIntervalValue = (float) atoi(intervalValue);
+		}
+	}
+
 	return true;
 }
 
@@ -156,6 +201,12 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	CStdString	strTextureRadioFocus,strTextureRadioNoFocus;
 	CStdString	strSubType;
 	int			iType=SPIN_CONTROL_TYPE_TEXT;
+	int			iMin = 0;
+	int			iMax = 100;
+	int			iInterval = 1;
+	float		fMin = 0.0f;
+	float		fMax = 1.0f;
+	float		fInterval = 0.1f;
 	bool		bReverse=false;
 	bool        bShadow;
 	CStdString	strTextureBg, strLeft,strRight,strMid,strMidFocus;
@@ -630,6 +681,11 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		}
 	}
 
+	if (!GetIntRange(pControlNode,"range",iMin,iMax,iInterval))
+	{
+		GetFloatRange(pControlNode,"range",fMin,fMax,fInterval);
+	}
+
 	GetBoolean(pControlNode,"reverse",bReverse);
 
 	GetPath(pControlNode,"texturebg",strTextureBg);
@@ -867,6 +923,17 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		pControl->SetTextOffsetX(lTextOffsetX);
 		pControl->SetTextOffsetY(lTextOffsetY);
 		pControl->SetAlignmentY(dwAlignY);
+
+		if (iType == SPIN_CONTROL_TYPE_INT)
+		{
+			pControl->SetRange(iMin, iMax);
+		}
+		else if (iType == SPIN_CONTROL_TYPE_FLOAT)
+		{
+			pControl->SetFloatRange(fMin, fMax);
+			pControl->SetFloatInterval(fInterval);
+		}
+
 		return pControl;
 	}
 	if (strType=="slider")

@@ -10,6 +10,7 @@
 #include "videodatabase.h"
 #include "cores/mplayer/ASyncDirectSound.h"
 #include "playlistplayer.h"
+#include "utils/CharsetConverter.h"
 
 #include <stdio.h>
 
@@ -69,6 +70,8 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 	m_dwFPSTime=timeGetTime();
 	m_bSmoothFFwdRewd = false;
 	m_bDiscreteFFwdRewd = false;
+	m_subtitleFont = NULL;
+
   // audio
   //  - language
   //  - volume
@@ -117,6 +120,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 			CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0,0,0,NULL);
 			g_application.m_guiWindowOSD.OnMessage(msg);	// Send a de-init msg to the OSD
 			m_bOSDVisible=false;
+
 		}
 		else
 		{
@@ -388,24 +392,44 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 	{
 		case GUI_MSG_WINDOW_INIT:
 		{
-      m_bLastRender=false;
-      m_bOSDVisible=false;
-      CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness,g_settings.m_iContrast,g_settings.m_iGamma,true);
-      g_graphicsContext.SetFullScreenVideo(false);//turn off to prevent calibration to OSD position
-      CGUIWindow::OnMessage(message);
-      g_graphicsContext.Lock();
+			m_bLastRender=false;
+			m_bOSDVisible=false;
+			CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness,g_settings.m_iContrast,g_settings.m_iGamma,true);
+			g_graphicsContext.SetFullScreenVideo(false);//turn off to prevent calibration to OSD position
+			CGUIWindow::OnMessage(message);
+			g_graphicsContext.Lock();
 			g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
 			g_graphicsContext.SetFullScreenVideo( true );
 			g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
 			g_graphicsContext.Unlock();
 			if (g_application.m_pPlayer)
 				g_application.m_pPlayer->Update();
-      HideOSD();
-      m_iCurrentBookmark=0;
-      m_bShowCodecInfo = false;
-      m_bShowViewModeInfo = false;
+			HideOSD();
+			m_iCurrentBookmark=0;
+			m_bShowCodecInfo = false;
+			m_bShowViewModeInfo = false;
 			// set the correct view mode
 			SetViewMode(g_stSettings.m_iViewMode);
+
+			if (CUtil::IsUsingTTFSubtitles())
+			{
+				CSingleLock lock(m_fontLock);
+
+				if (m_subtitleFont)
+					delete m_subtitleFont;
+
+				m_subtitleFont = new CGUIFontTTF("__subtitle__");
+				CStdString fontPath = "Q:\\Media\\Fonts\\";
+				fontPath += g_stSettings.m_szSubtitleFont;
+				if (!m_subtitleFont->Load(fontPath, g_stSettings.m_iSubtitleHeight, g_stSettings.m_iSubtitleTTFStyle))
+				{
+					delete m_subtitleFont;
+					m_subtitleFont = NULL;
+				}
+			}
+			else
+				m_subtitleFont = NULL;
+
 			return true;
 		}
 		case GUI_MSG_WINDOW_DEINIT:
@@ -417,21 +441,22 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 			Sleep(100);
 
 			CSingleLock lock(m_section);
-      if (m_bOSDVisible)
-      {
-        CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0,0,0,NULL);
-			  g_application.m_guiWindowOSD.OnMessage(msg);	// Send a de-init msg to the OSD
-      }
-      m_bOSDVisible=false;
-      CGUIWindow::OnMessage(message);
-      CUtil::RestoreBrightnessContrastGamma();
-			g_graphicsContext.Lock();
-			g_graphicsContext.SetFullScreenVideo( false );
-			g_graphicsContext.Unlock();
+			if (m_bOSDVisible)
+			{
+			CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0,0,0,NULL);
+					g_application.m_guiWindowOSD.OnMessage(msg);	// Send a de-init msg to the OSD
+			}
+			m_bOSDVisible=false;
+			CGUIWindow::OnMessage(message);
+			CUtil::RestoreBrightnessContrastGamma();
+				g_graphicsContext.Lock();
+				g_graphicsContext.SetFullScreenVideo( false );
+				g_graphicsContext.Unlock();
       
-      m_iCurrentBookmark=0;
-      HideOSD();
-      return true;
+			m_iCurrentBookmark=0;
+			HideOSD();
+
+			return true;
 		}
     case GUI_MSG_SETFOCUS:
     case GUI_MSG_LOSTFOCUS:
@@ -487,10 +512,13 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   if (g_application.m_guiDialogVolumeBar.IsRunning()) return true; // volume bar is onscreen
   if (m_bOSDVisible) return true;
   if (g_Mouse.IsActive()) return true;
+  if (CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subtitleFont)
+	  return true;
   if (m_bLastRender)
   {
     m_bLastRender=false;
   }
+ 
   return false;
 }
 
@@ -626,6 +654,8 @@ void CGUIWindowFullScreen::RenderFullScreen()
 	  if (g_Mouse.IsActive()) g_application.m_guiPointer.Render();
     return;
   }
+
+    RenderTTFSubtitles();
 
 	if (m_bShowTime && m_iTimeCodePosition != 0)
 	{
@@ -796,6 +826,45 @@ void CGUIWindowFullScreen::RenderFullScreen()
   }
 	// and lastly render the mouse pointer...
 	if (g_Mouse.IsActive()) g_application.m_guiPointer.Render();
+}
+
+void CGUIWindowFullScreen::RenderTTFSubtitles()
+{
+	if (CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subtitleFont)
+	{
+		CSingleLock lock(m_fontLock);
+
+		subtitle* sub = mplayer_GetCurrentSubtitle();
+
+		if (sub != NULL)
+		{
+			CStdStringW subtitleText = L"";
+
+			for (int i = 0; i < sub->lines; i++)
+			{
+				if (i != 0)
+				{
+					subtitleText += L"\n";
+				}
+
+				CStdStringA S = sub->text[i];
+				CStdStringW W;
+				g_charsetConverter.subtitleCharsetToFontCharset(S, W);
+				subtitleText += W;
+			}
+
+			int m_iResolution = g_graphicsContext.GetVideoResolution();
+
+			float w;
+			float h;
+			m_subtitleFont->GetTextExtent(subtitleText.c_str(), &w, &h);
+
+			float x = (float) g_settings.m_ResInfo[m_iResolution].iWidth / 2;
+			float y = (float) g_settings.m_ResInfo[m_iResolution].iSubtitles - h;
+
+			m_subtitleFont->DrawText(x, y, g_stSettings.m_iSubtitleTTFColor, subtitleText.c_str(), XBFONT_CENTER_X);
+		}
+	}
 }
 
 void CGUIWindowFullScreen::HideOSD()

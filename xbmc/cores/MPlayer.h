@@ -156,4 +156,5 @@ protected:
 	DllLoader*                                      m_pDLL;
 	__int64                                                 m_iPTS;
 	Options                                 options;
+	bool									m_bSubsVisibleTTF;
 };
