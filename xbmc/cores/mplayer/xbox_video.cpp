@@ -50,6 +50,8 @@ LPDIRECT3DSURFACE8					m_pSurface[2]={NULL,NULL};				  // Overlay Surfaces
 bool												m_bFlip=false;
 static int									m_iDeviceWidth;
 static int									m_iDeviceHeight;
+static DWORD                m_dwDeviceFlags;
+static int									m_iDeviceRefreshRate;
 bool												m_bFullScreen=false;
 bool												m_bWidescreen=false;
 float												m_fFPS;
@@ -91,10 +93,15 @@ void restore_resolution()
   D3DPRESENT_PARAMETERS params;
 	g_application.GetD3DParameters(params);
 	if (params.BackBufferWidth != m_iDeviceWidth ||
-		  params.BackBufferHeight !=m_iDeviceHeight)
+		  params.BackBufferHeight !=m_iDeviceHeight ||
+			params.Flags != m_dwDeviceFlags ||
+			m_iDeviceRefreshRate != params.FullScreen_RefreshRateInHz)
+			
 	{
-		m_iDeviceWidth  = g_graphicsContext.GetWidth();
-		m_iDeviceHeight = g_graphicsContext.GetHeight();
+		m_iDeviceWidth										= g_graphicsContext.GetWidth();
+		m_iDeviceHeight										= g_graphicsContext.GetHeight();
+		m_dwDeviceFlags										= params.Flags;
+		m_iDeviceRefreshRate							= params.FullScreen_RefreshRateInHz	;
 		g_graphicsContext.Get3DDevice()->Reset(&params);
 	}
 }
@@ -183,6 +190,8 @@ void choose_best_resolution(float fps)
 		// Update our member variables with the new parameters
 		m_iDeviceWidth  = params.BackBufferWidth;
 		m_iDeviceHeight = params.BackBufferHeight;
+		m_dwDeviceFlags = params.Flags;
+		m_iDeviceRefreshRate=params.FullScreen_RefreshRateInHz;
 		m_iResolution=CUtil::GetResolution( m_iDeviceWidth, m_iDeviceHeight, bUsingPAL, bPal60);
 		g_graphicsContext.SetVideoResolution(m_iResolution);
 		return;
@@ -281,7 +290,8 @@ void choose_best_resolution(float fps)
 	}
 	m_iDeviceWidth  = params.BackBufferWidth;
 	m_iDeviceHeight = params.BackBufferHeight;
-
+	m_dwDeviceFlags = params.Flags;
+	m_iDeviceRefreshRate=params.FullScreen_RefreshRateInHz;
 
 	m_iResolution=CUtil::GetResolution( m_iDeviceWidth, m_iDeviceHeight, bUsingPAL, bPal60);
 	g_graphicsContext.SetVideoResolution(m_iResolution);
