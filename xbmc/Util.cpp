@@ -2932,20 +2932,14 @@ fms_exit_post:
 // Creates the directory and subdirectories if needed.
 bool CUtil::CreateDirectoryEx(const CStdString& strPath)
 {
-	HANDLE file;
-	WIN32_FIND_DATA	findData;
 	std::vector<string> strArray;
-	DWORD dwFileAttributes;
 
 	string path = strPath;
 	int iSize = strPath.size();
 	if (path.at(iSize-1) == '\\') path.erase(iSize-1, iSize-1); // remove slash at end
 
 	// return true if directory already exist
-	file = FindFirstFile(path.c_str(), &findData);
-	dwFileAttributes = findData.dwFileAttributes;
-	FindClose(file);
-	if(dwFileAttributes == FILE_ATTRIBUTE_DIRECTORY) return true;
+	if (CDirectory::Exists(strPath)) return true;
 
 	/* split strPath up into an array
 	 * f:\\music\\album\\ will result in
@@ -2963,16 +2957,13 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
 	// create the directories
 	for(unsigned int i = 0; i < strArray.size(); i++)
 	{
-		CreateDirectory(strArray[i].c_str(),NULL);
+		CDirectory::Create(strArray[i].c_str());
 	}
-
+	
+  strArray.clear();
+  
 	// is the directory successfully created ?
-	file = FindFirstFile(path.c_str(),&findData);
-	dwFileAttributes = findData.dwFileAttributes;
-	FindClose(file);
-	strArray.clear();
-	if(dwFileAttributes != FILE_ATTRIBUTE_DIRECTORY) return false;
-
+  if (!CDirectory::Exists(strPath)) return false;
 	return true;
 }
 

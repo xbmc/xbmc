@@ -63,7 +63,7 @@ public:
 
 bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallback* pCallback, void* pContext)
 {
-	if ( Open(strFileName,true))
+	if (Open(strFileName, true))
 	{
 		if (GetLength()<=0)
 		{
@@ -72,76 +72,75 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 			return false;
 		}
 
-		::DeleteFile(szDest);
-		CAutoPtrHandle hMovie ( CreateFile( szDest, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL ) );
-		if (!hMovie.isValid() )
+		CFile::Delete(szDest);
+		CFile newFile;
+		if (!newFile.OpenForWrite(szDest))
 		{
 			delete m_pFile;
-			m_pFile=NULL;
+			m_pFile = NULL;
 			return false;
 		}
 
 		// 128k is optimal for xbox
-		int iBufferSize=128*1024;
+		int iBufferSize = 128*1024;
 
 		//	WORKAROUND: 
 		//	Protocol is xbms? Must use a smaller buffer
 		//	else nothing will be cached and the file is
 		//	filled with garbage. :(
 		CURL url(strFileName);
-		CStdString strProtocol=url.GetProtocol();
+		CStdString strProtocol = url.GetProtocol();
 		strProtocol.ToLower();
-		if (strProtocol=="xbms" )
-			iBufferSize=120*1024; 
+		if (strProtocol=="xbms") iBufferSize=120*1024; 
 
 		// ouch, auto_ptr doesn't work for arrays!
 		//auto_ptr<char> buffer ( new char[16384]);
 		CAutoBuffer buffer(iBufferSize);
 		int iRead;
 
-		UINT64 llFileSize=GetLength();
-		UINT64 llFileSizeOrg=llFileSize;
-		UINT64 llPos=0;
-		DWORD  ipercent=0;
-		char *szFileName = strrchr(strFileName,'\\');
-		if (!szFileName) szFileName = strrchr(strFileName,'/');
+		UINT64 llFileSize = GetLength();
+		UINT64 llFileSizeOrg = llFileSize;
+		UINT64 llPos = 0;
+		DWORD  ipercent = 0;
+		char *szFileName = strrchr(strFileName, '\\');
+		if (!szFileName) szFileName = strrchr(strFileName, '/');
 
 		// Presize file for faster writes
-		LARGE_INTEGER size;
+		/*LARGE_INTEGER size;
 		size.QuadPart = llFileSizeOrg;
 		::SetFilePointerEx(hMovie, size, 0, FILE_BEGIN);
 		::SetEndOfFile(hMovie);
 		size.QuadPart = 0;
-		::SetFilePointerEx(hMovie, size, 0, FILE_BEGIN);
+		::SetFilePointerEx(hMovie, size, 0, FILE_BEGIN);*/
 
-		while (llFileSize>0)
+		while (llFileSize > 0)
 		{
       g_application.ResetScreenSaver();
-			int iBytesToRead=iBufferSize;
-			if (iBytesToRead>llFileSize) 
+			int iBytesToRead = iBufferSize;
+			if (iBytesToRead > llFileSize) 
 			{
-				iBytesToRead=llFileSize;
+				iBytesToRead = llFileSize;
 			}
-			iRead=Read(buffer.get(),iBytesToRead);
+			iRead = Read(buffer.get(), iBytesToRead);
 			if (iRead > 0)
 			{
-				DWORD dwWrote;
-				WriteFile( (HANDLE)hMovie,buffer.get(),iRead,&dwWrote,NULL);
+				//DWORD dwWrote;
+				newFile.Write(buffer.get(), iRead);
 				llFileSize -= iRead;
-				llPos+= iRead;
-				float fPercent=(float)llPos;
+				llPos += iRead;
+				float fPercent =(float)llPos;
 				fPercent /= ((float)llFileSizeOrg);
-				fPercent*=100.0;
-				if ( (int)fPercent != ipercent)
+				fPercent *= 100.0;
+				if ((int)fPercent != ipercent)
 				{
-					ipercent=(int)fPercent;
+					ipercent = (int)fPercent;
 					if (pCallback)
 					{
-						if (!pCallback->OnFileCallback(pContext,ipercent))
+						if (!pCallback->OnFileCallback(pContext, ipercent))
 						{
 							// canceled
 							Close();
-							::DeleteFile(szDest);
+							CFile::Delete(szDest);
 							return false;
 						}
 					}
@@ -150,7 +149,7 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 			if (iRead != iBytesToRead) 
 			{
 				Close();
-				::DeleteFile(szDest);
+				CFile::Delete(szDest);
 				return false;
 			}
 		}
@@ -177,6 +176,17 @@ bool CFile::Open(const char* strFileName, bool bBinary)
   CURL url(strFileName);
 
   return m_pFile->Open(url,bBinary);
+}
+
+bool CFile::OpenForWrite(const char* strFileName, bool bBinary)
+{
+	CFileFactory factory;
+	m_pFile = factory.CreateLoader(strFileName);
+	if (!m_pFile) return false;
+
+  CURL url(strFileName);
+
+  return m_pFile->OpenForWrite(url, bBinary);
 }
 
 bool CFile::Exists(const char* strFileName)
@@ -258,4 +268,28 @@ int CFile::Write(const void* lpBuf, __int64 uiBufSize)
 	if (m_pFile) 
 		return m_pFile->Write(lpBuf,uiBufSize);
 	return -1;
+}
+
+bool CFile::Delete(const char* strFileName)
+{
+  bool bSucces;
+  IFile* pFile = CFileFactory().CreateLoader(strFileName);
+  if (!pFile) return false;
+  
+  bSucces = pFile->Delete(strFileName);
+  delete pFile;
+  
+  return bSucces;
+}
+
+bool CFile::Rename(const char* strFileName, const char* strNewFileName)
+{
+  bool bSucces;
+  IFile* pFile = CFileFactory().CreateLoader(strNewFileName);
+  if (!pFile) return false;
+  
+  bSucces = pFile->Rename(strFileName, strNewFileName);
+  delete pFile;
+  
+  return bSucces;
 }

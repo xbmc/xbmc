@@ -1,7 +1,7 @@
 #pragma once
 #include "../fileitem.h"
 #include "../settings.h"
-#include "directory.h"
+#include "idirectory.h"
 
 #include <string>
 #include "stdstring.h"
@@ -15,7 +15,7 @@ namespace DIRECTORY
 		\ingroup windows 
 		\brief Get access to shares and it's directories.
 		*/
-	class CVirtualDirectory : public CDirectory
+	class CVirtualDirectory : public IDirectory
   {
   public:
     CVirtualDirectory(void);
@@ -27,6 +27,6 @@ namespace DIRECTORY
   
   protected:
     void          CacheThumbs(VECFILEITEMS &items);
-    VECSHARES*     m_vecShares;
+    VECSHARES*    m_vecShares;
   };
 };

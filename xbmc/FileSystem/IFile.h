@@ -31,8 +31,9 @@ namespace XFILE
 	  virtual ~IFile();
 
 	  virtual bool					Open(const CURL& url, bool bBinary=true)=0;
+	  virtual bool          OpenForWrite(const CURL& url, bool bBinary = true) { return false; };
 	  virtual bool					Exists(const CURL& url)=0;
-	  virtual int					Stat(const CURL& url, struct __stat64* buffer)=0;
+	  virtual int           Stat(const CURL& url, struct __stat64* buffer)=0;
 
 	  virtual unsigned int	Read(void* lpBuf, __int64 uiBufSize)=0;
 		virtual int						Write(const void* lpBuf, __int64 uiBufSize) {return -1;};
@@ -41,7 +42,10 @@ namespace XFILE
 	  virtual void					Close()=0;
 	  virtual __int64			  GetPosition()=0;
 	  virtual __int64			  GetLength()=0;
-	  virtual bool          CanSeek() {return true;};
+	  virtual bool          CanSeek() {return true;}
+	  
+	  virtual bool          Delete(const char* strFileName) { return false; }
+    virtual bool          Rename(const char* strFileName, const char* strNewFileName) { return false; }
   };
 };
 

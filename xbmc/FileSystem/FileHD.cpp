@@ -35,7 +35,7 @@ CFileHD::CFileHD()
 //*********************************************************************************************
 CFileHD::~CFileHD()
 {
-
+ if (m_hFile != INVALID_HANDLE_VALUE) Close();
 }
 //*********************************************************************************************
 bool CFileHD::Open(const CURL& url, bool bBinary)
@@ -43,8 +43,8 @@ bool CFileHD::Open(const CURL& url, bool bBinary)
 	CStdString strFile(url.GetFileName());
 	strFile.Replace("/", "\\");
 
-	m_hFile.attach( CreateFile(strFile.c_str(),GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,0,NULL));
-	if ( !m_hFile.isValid() ) return false;
+	m_hFile.attach(CreateFile(strFile.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL));
+	if (!m_hFile.isValid()) return false;
 
 	m_i64FilePos=0;
 	LARGE_INTEGER i64Size;
@@ -73,9 +73,11 @@ int CFileHD::Stat(const CURL& url, struct __stat64* buffer)
 
 
 //*********************************************************************************************
-bool CFileHD::OpenForWrite(const char* strFileName)
+bool CFileHD::OpenForWrite(const CURL& url, bool bBinary)
 {
-	CStdString strFile(strFileName);
+	CStdString strFile;
+	url.GetURL(strFile);
+	
 	strFile.Replace("/", "\\");
 
 	m_hFile.attach(CreateFile(strFile.c_str(),GENERIC_READ|GENERIC_WRITE,FILE_SHARE_READ,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL));
@@ -229,6 +231,16 @@ int CFileHD::Write(const void* lpBuf, __int64 uiBufSize)
 {
 	if (!m_hFile.isValid()) return -1;
 	DWORD dwNumberOfBytesWritten=0;
-	WriteFile((HANDLE)m_hFile, lpBuf, (DWORD)uiBufSize,&dwNumberOfBytesWritten,NULL);
+	WriteFile((HANDLE)m_hFile, lpBuf, (DWORD)uiBufSize, &dwNumberOfBytesWritten, NULL);
 	return (int)dwNumberOfBytesWritten;
+}
+
+bool CFileHD::Delete(const char* strFileName)
+{
+  return DeleteFile(strFileName) ? true : false;
+}
+
+bool CFileHD::Rename(const char* strFileName, const char* strNewFileName)
+{
+  return MoveFile(strFileName, strNewFileName) ? true : false;
 }

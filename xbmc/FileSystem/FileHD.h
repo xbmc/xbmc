@@ -32,8 +32,11 @@ namespace XFILE
 		virtual __int64			  Seek(__int64 iFilePosition, int iWhence=SEEK_SET);
 		virtual void					Close();
 
-		bool									OpenForWrite(const char* strFileName);
+		virtual bool					OpenForWrite(const CURL& url, bool bBinary=true);
 		unsigned int					Write(void *lpBuf, __int64 uiBufSize);
+		
+		virtual bool          Delete(const char* strFileName);
+    virtual bool          Rename(const char* strFileName, const char* strNewFileName);
 	protected:
 		CAutoPtrHandle				m_hFile;
 		__int64								m_i64FileLength;
