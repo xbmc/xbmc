@@ -933,23 +933,23 @@
 	</string>
 	<string>
 		<id>307</id>
-		<value>Auto</value>
+		<value>- Automatic postprocessing</value>
 	</string>
 	<string>
 		<id>308</id>
-		<value>vertical deblocking filter</value>
+		<value>- vertical deblocking filter</value>
 	</string>
 	<string>
 		<id>309</id>
-		<value>horizontal deblocking filter</value>
+		<value>- horizontal deblocking filter</value>
 	</string>
 	<string>
 		<id>310</id>
-		<value>Auto brightness/contrast</value>
+		<value>- Auto brightness/contrast</value>
 	</string>
 	<string>
 		<id>311</id>
-		<value>Dering</value>
+		<value>- Dering</value>
 	</string>
 	<string>
 		<id>312</id>
@@ -1723,12 +1723,11 @@
 		<id>505</id>
 		<value>Loading media info from files...</value>
 	</string>
-	<string>
+
+		<string>
 		<id>506</id>
 		<value>Use directory names for description</value>
-	</string>
-
-	<string>
+	</string> <string>
 		<id>600</id>
 		<value>Rip CD</value>
 	</string>
