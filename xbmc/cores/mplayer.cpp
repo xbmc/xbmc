@@ -494,7 +494,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
       }
     }
     options.SetAudioStream(m_iAudioStreamIDX);
-    if (bIsVideo) 
+    if (1 /* bIsVideo*/) 
     {
       options.SetVolumeAmplification(g_stSettings.m_fVolumeAmplification);
     }
