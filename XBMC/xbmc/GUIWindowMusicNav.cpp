@@ -189,9 +189,9 @@ struct SSortMusicNav
       }
 
       if (m_bSortAscending)
-        return (strcmp(szfilename1, szfilename2) < 0);
+        return StringUtils::AlphaNumericCompare(szfilename1, szfilename2);
       else
-        return (strcmp(szfilename1, szfilename2) >= 0);
+        return !StringUtils::AlphaNumericCompare(szfilename1, szfilename2);
     }
 
     if (!rpStart.m_bIsFolder) return false;
