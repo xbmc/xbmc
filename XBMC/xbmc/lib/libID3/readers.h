@@ -3,6 +3,7 @@
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
+// Copyright 2002 Thijmen Klok (thijmen@id3lib.org)
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -28,6 +29,16 @@
 #ifndef _ID3LIB_READERS_H_
 #define _ID3LIB_READERS_H_
 
+#if defined(__BORLANDC__)
+// due to a bug in borland it sometimes still wants mfc compatibility even when you disable it
+#  if defined(_MSC_VER)
+#    undef _MSC_VER
+#  endif
+#  if defined(__MFC_COMPAT__)
+#    undef __MFC_COMPAT__
+#  endif
+#endif
+
 #include "id3lib_streams.h"
 #include "reader.h"
 
@@ -40,9 +51,9 @@ class ID3_CPP_EXPORT ID3_IStreamReader : public ID3_Reader
   ID3_IStreamReader(istream& reader) : _stream(reader) { ; }
   virtual ~ID3_IStreamReader() { ; }
   virtual void close() { ; }
-  
+
   virtual int_type peekChar() { return _stream.peek(); }
-    
+
   /** Read up to \c len chars into buf and advance the internal position
    ** accordingly.  Returns the number of characters read into buf.
    **/
@@ -58,33 +69,33 @@ class ID3_CPP_EXPORT ID3_IStreamReader : public ID3_Reader
 
   virtual pos_type getBeg() { return 0; }
   virtual pos_type getCur() { return _stream.tellg(); }
-  virtual pos_type getEnd() 
-  { 
+  virtual pos_type getEnd()
+  {
     pos_type cur = this->getCur();
     _stream.seekg(0, ios::end);
     pos_type end = this->getCur();
     this->setCur(cur);
     return end;
   }
-    
+
   /** Set the value of the internal position for reading.
    **/
   virtual pos_type setCur(pos_type pos) { _stream.seekg(pos); return pos; }
 };
-  
+
 class ID3_CPP_EXPORT ID3_IFStreamReader : public ID3_IStreamReader
 {
   ifstream& _file;
  public:
   ID3_IFStreamReader(ifstream& reader)
     : ID3_IStreamReader(reader), _file(reader) { ; }
-    
-  virtual void close() 
-  { 
+
+  virtual void close()
+  {
     _file.close();
   }
 };
-  
+
 class ID3_CPP_EXPORT ID3_MemoryReader : public ID3_Reader
 {
   const char_type* _beg;
@@ -112,16 +123,16 @@ class ID3_CPP_EXPORT ID3_MemoryReader : public ID3_Reader
   };
   virtual ~ID3_MemoryReader() { ; }
   virtual void close() { ; }
-    
-  virtual int_type peekChar() 
-  { 
+
+  virtual int_type peekChar()
+  {
     if (!this->atEnd())
     {
-      return *_cur; 
+      return *_cur;
     }
     return END_OF_READER;
   }
-    
+
   /** Read up to \c len chars into buf and advance the internal position
    ** accordingly.  Returns the number of characters read into buf.
    **/
@@ -130,22 +141,22 @@ class ID3_CPP_EXPORT ID3_MemoryReader : public ID3_Reader
     return this->readChars(reinterpret_cast<char_type *>(buf), len);
   }
   virtual size_type readChars(char_type buf[], size_type len);
-    
-  virtual pos_type getCur() 
-  { 
-    return _cur - _beg; 
+
+  virtual pos_type getCur()
+  {
+    return _cur - _beg;
   }
-    
+
   virtual pos_type getBeg()
   {
     return _beg - _beg;
   }
-    
+
   virtual pos_type getEnd()
   {
     return _end - _beg;
   }
-    
+
   /** Set the value of the internal position for reading.
    **/
   virtual pos_type setCur(pos_type pos)

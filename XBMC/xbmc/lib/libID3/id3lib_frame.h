@@ -3,6 +3,7 @@
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
+// Copyright 2002 Thijmen Klok (thijmen@id3lib.org)
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -28,7 +29,17 @@
 #ifndef _ID3LIB_FRAME_H_
 #define _ID3LIB_FRAME_H_
 
-#include "globals.h" //has <stdlib.h> "sized_types.h"
+#if defined(__BORLANDC__)
+// due to a bug in borland it sometimes still wants mfc compatibility even when you disable it
+#  if defined(_MSC_VER)
+#    undef _MSC_VER
+#  endif
+#  if defined(__MFC_COMPAT__)
+#    undef __MFC_COMPAT__
+#  endif
+#endif
+
+#include "globals.h" //has <stdlib.h> "id3/sized_types.h"
 
 class ID3_Field;
 class ID3_FrameImpl;
@@ -57,16 +68,16 @@ public:
   ID3_Frame(const ID3_Frame&);
 
   virtual ~ID3_Frame();
-  
+
   void        Clear();
 
   bool        SetID(ID3_FrameID id);
   ID3_FrameID GetID() const;
-  
+
   ID3_Field*  GetField(ID3_FieldID name) const;
 
   size_t      NumFields() const;
-  
+
   const char* GetDescription() const;
   static const char* GetDescription(ID3_FrameID);
 
@@ -75,7 +86,7 @@ public:
   ID3_Frame&  operator=(const ID3_Frame &);
   bool        HasChanged() const;
   bool        Parse(ID3_Reader&);
-  void        Render(ID3_Writer&) const;
+  ID3_Err     Render(ID3_Writer&) const;
   size_t      Size();
   bool        Contains(ID3_FieldID fld) const;
   bool        SetSpec(ID3_V2Spec);
@@ -87,7 +98,7 @@ public:
 
   bool        SetEncryptionID(uchar id);
   uchar       GetEncryptionID() const;
-  
+
   bool        SetGroupingID(uchar id);
   uchar       GetGroupingID() const;
 

@@ -3,6 +3,7 @@
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
+// Copyright 2002 Thijmen Klok (thijmen@id3lib.org)
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -28,7 +29,18 @@
 #ifndef _ID3LIB_FIELD_H_
 #define _ID3LIB_FIELD_H_
 
-#include "globals.h" //has <stdlib.h> "sized_types.h"
+#if defined(__BORLANDC__)
+// due to a bug in borland it sometimes still wants mfc compatibility even when you disable it
+#  if defined(_MSC_VER)
+#    undef _MSC_VER
+#  endif
+#  if defined(__MFC_COMPAT__)
+#    undef __MFC_COMPAT__
+#  endif
+#endif
+
+#include "globals.h" //has <stdlib.h> "id3/sized_types.h"
+#include "id3lib_strings.h"
 
 class ID3_Reader;
 class ID3_Writer;
@@ -56,6 +68,9 @@ public:
   virtual const char*   GetRawTextItem(size_t) const = 0;
   virtual size_t        Add(const char*) = 0;
 
+  virtual dami::String  GetText() const = 0;
+  virtual size_t        SetText(dami::String) = 0;
+
   // Unicode string field functions
   virtual ID3_Field&    operator= (const unicode_t* s) = 0;
   virtual size_t        Set(const unicode_t*) = 0;
@@ -71,18 +86,23 @@ public:
   virtual const uchar*  GetRawBinary() const = 0;
   virtual void          FromFile(const char*) = 0;
   virtual void          ToFile(const char *sInfo) const = 0;
-  
+  virtual dami::BString GetBinary() const = 0;
+
   // miscelaneous functions
   virtual ID3_Field&    operator=( const ID3_Field & ) = 0;
   virtual bool          InScope(ID3_V2Spec spec) const = 0;
 
   virtual ID3_FieldID   GetID() const = 0;
+  virtual ID3_FieldID   GetLinkedField() const =0;
   virtual ID3_FieldType GetType() const = 0;
   virtual bool          SetEncoding(ID3_TextEnc enc) = 0;
+  virtual bool          SetLinkedSize(size_t newfixedsize) = 0;
+  virtual bool          HasFixedSize() = 0;
   virtual ID3_TextEnc   GetEncoding() const = 0;
+  virtual bool          HasFlag(const flags_t flag) const = 0;
   virtual bool          IsEncodable() const = 0;
 
-  virtual void          Render(ID3_Writer&) const = 0;
+  virtual ID3_Err       Render(ID3_Writer&) const = 0;
   virtual bool          Parse(ID3_Reader&) = 0;
   virtual bool          HasChanged() const = 0;
 

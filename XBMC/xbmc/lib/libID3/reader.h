@@ -3,6 +3,7 @@
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
+// Copyright 2002 Thijmen Klok (thijmen@id3lib.org)
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -28,7 +29,17 @@
 #ifndef _ID3LIB_READER_H_
 #define _ID3LIB_READER_H_
 
-#include "globals.h" //has <stdlib.h> "sized_types.h"
+#if defined(__BORLANDC__)
+// due to a bug in borland it sometimes still wants mfc compatibility even when you disable it
+#  if defined(_MSC_VER)
+#    undef _MSC_VER
+#  endif
+#  if defined(__MFC_COMPAT__)
+#    undef __MFC_COMPAT__
+#  endif
+#endif
+
+#include "globals.h" //has <stdlib.h> "id3/sized_types.h"
 
 class ID3_CPP_EXPORT ID3_Reader
 {
@@ -39,7 +50,7 @@ class ID3_CPP_EXPORT ID3_Reader
   typedef  int32 off_type;
   typedef  int16 int_type;
   static const int_type END_OF_READER;
-  
+
   /** Close the reader.  Any further actions on the reader should fail.
    **/
   virtual void close() = 0;
@@ -59,14 +70,14 @@ class ID3_CPP_EXPORT ID3_Reader
 
   /**
    ** Read a single character and advance the internal position.  Note that the
-   ** interal position may advance more than one byte for a single character 
+   ** interal position may advance more than one byte for a single character
    ** read.  Returns END_OF_READER if there isn't a character to read.
    **/
-  virtual int_type readChar() 
+  virtual int_type readChar()
   {
     if (this->atEnd())
-    { 
-      return END_OF_READER; 
+    {
+      return END_OF_READER;
     }
     char_type ch;
     this->readChars(&ch, 1);
@@ -74,11 +85,11 @@ class ID3_CPP_EXPORT ID3_Reader
   }
 
   /**
-   ** Return the next character to be read without advancing the internal 
+   ** Return the next character to be read without advancing the internal
    ** position.  Returns END_OF_READER if there isn't a character to read.
    **/
   virtual int_type peekChar() = 0;
-  
+
   /** Read up to \c len characters into buf and advance the internal position
    ** accordingly.  Returns the number of characters read into buf.  Note that
    ** the value returned may be less than the number of bytes that the internal
@@ -89,9 +100,9 @@ class ID3_CPP_EXPORT ID3_Reader
   {
     return this->readChars(reinterpret_cast<char_type *>(buf), len);
   }
-  
+
   /** Skip up to \c len chars in the stream and advance the internal position
-   ** accordingly.  Returns the number of characters actually skipped (may be 
+   ** accordingly.  Returns the number of characters actually skipped (may be
    ** less than requested).
    **/
   virtual size_type skipChars(size_type len)
@@ -113,15 +124,15 @@ class ID3_CPP_EXPORT ID3_Reader
     {
       return size_type(-1);
     }
-    
+
     if (end >= cur)
     {
       return end - cur;
     }
-    
+
     return 0;
   }
-  
+
   virtual bool atEnd() { return this->getCur() >= this->getEnd(); }
 };
 
