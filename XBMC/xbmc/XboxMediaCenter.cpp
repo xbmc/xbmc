@@ -12,14 +12,11 @@
 //			- in debug mode CSMBDirectory gives a stack corruption
 //
 //			- zoom/stretch
-//					- zoom doesnt work if movie height > movie width
 //					- easy way 2 switch between zoom/stretch/normal
 //					- 4:3 / 16:9 compensation for movies
 //
 //			- subtitles:
-//					- subtitles are resized in stretch mode 2?
-//					- if zooming causes the movie to use most of the screen then put subtitles in video
-//					- try to keep subtitles on bottom of screen
+//					- if zoom/stretch : change subtitle font factor
 //
 //		  - video
 //				- video starts pretty slooowww..
@@ -28,12 +25,12 @@
 //
 // bugs reported by users
 //		    - MrMario64 : some (divx) movies crash
+//		    - pike|afk  : .vobs crash after 8 mins?
 //				
 // feature requests by users:
 //				- pike|afk  : version number for mplayer.dll
 //				- pike|afk  : keep groups together when sorting (hd, shares, dirs, files, ...)
 //			  - ???				: autoupdate for mplayer.dll
-//				- MrMario64 : pageup/down : must b made easier. Its too annoying now (dont forget remote!)
 //		    - MrMario64 : delete album info
 //		    - MrMario64 : cross-fade 
 //

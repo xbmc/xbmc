@@ -5,6 +5,7 @@ general key mappings:
 	page up/down																	controller: L/R trigger			remote		: REVERSE/FORWARD
   up/down/left/right														controller: use DPAD				remote    : use up/down/left/right
 	selecting stuff:															controller: A button 				remote    : select 
+	back to previous menu													controller: back		 				remote    : back
 			
 Keymappings when playing audio songs:
 	stop song																			controller: ?								remote    : stop
@@ -12,7 +13,8 @@ Keymappings when playing audio songs:
 	pause song																		controller: ?								remote    : pause
 					
 Keymappings when playing movies:
-	switch between fullscreen video/GUI:					controller: X button				remote:   : DISPLAY button					
+	switch between fullscreen video/GUI:					controller: X button				remote:   : menu button					
+	in fullscreen mode:zoom/stretch/normal				controller: START button    remote    : DISPLAY button
 	pause																					controller: ?								remote    : pause
 	stop     																			controller: ?								remote    : stop
 					
