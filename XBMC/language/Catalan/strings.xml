@@ -8,7 +8,6 @@
   <!-- String with id 6 should not be set here, only in the english language file !-->
   <string><id>7</id><value>Arxius</value></string>
   <string><id>8</id><value>El Temps</value></string>
-  <string><id>9</id><value>Digital+</value></string>
   <string><id>11</id><value>Dilluns</value></string>
   <string><id>12</id><value>Dimarts</value></string>
   <string><id>13</id><value>Dimecres</value></string>
@@ -27,21 +26,23 @@
   <string><id>29</id><value>Setembre</value></string>
   <string><id>30</id><value>Octubre</value></string>
   <string><id>31</id><value>Novembre</value></string>
-  <string><id>32</id><value>Decembre</value></string>
+  <string><id>32</id><value>Desembre</value></string>
+  <string><id>98</id><value>Veure: Auto</value></string>
+  <string><id>99</id><value>Veure: Gran</value></string>
   <string><id>100</id><value>Veure: Icones</value></string>
   <string><id>101</id><value>Veure: Llista</value></string>
-  <string><id>102</id><value>Scan</value></string>
+  <string><id>102</id><value>Explorar</value></string>
   <string><id>103</id><value>Ordenar: Nom</value></string>
   <string><id>104</id><value>Ordenar: Data</value></string>
   <string><id>105</id><value>Ordenar: Tamany</value></string>
   <string><id>106</id><value>No</value></string>
   <string><id>107</id><value>Si</value></string>
   <string><id>108</id><value>Diapositives</value></string>
-  <string><id>109</id><value>Crear Thumbs</value></string>
-  <string><id>110</id><value>Crear Thumbnails</value></string>
-  <string><id>111</id><value>Shortcuts</value></string>
+  <string><id>109</id><value>Crear Miniatures</value></string>
+  <string><id>110</id><value>Crear Miniatures</value></string>
+  <string><id>111</id><value>Dreceres</value></string>
   <string><id>112</id><value>PAUSA</value></string>
-  <string><id>113</id><value>Arxius: Font</value></string>
+  <string><id>113</id><value>Arxius: Origen</value></string>
   <string><id>114</id><value>Arxius: Destí</value></string>
   <string><id>115</id><value>Copiar</value></string>
   <string><id>116</id><value>Moure</value></string>
@@ -58,13 +59,13 @@
   <string><id>127</id><value>Objectes</value></string>
   <string><id>128</id><value>General</value></string>
   <string><id>129</id><value>Diapositives</value></string>
-  <string><id>130</id><value>Sistema</value></string>
+  <string><id>130</id><value>Info del Sistema</value></string>
   <string><id>131</id><value>Pantalla</value></string>
   <string><id>132</id><value>Àlbums</value></string>
   <string><id>133</id><value>Artistes</value></string>
   <string><id>134</id><value>Cançons</value></string>
   <string><id>135</id><value>Gèneres</value></string>
-  <string><id>136</id><value>Playlists</value></string>
+  <string><id>136</id><value>Llistes Reprod.</value></string>
   <string><id>137</id><value>Buscar</value></string>
   <string><id>138</id><value>INFORMACIÓ DEL SISTEMA</value></string>
   <string><id>139</id><value>Temperatures:</value></string>
@@ -79,31 +80,31 @@
   <string><id>148</id><value>DHCP</value></string>
   <string><id>149</id><value>MAC</value></string>
   <string><id>150</id><value>IP</value></string>
-  <string><id>151</id><value>Link:</value></string>
+  <string><id>151</id><value>Enllaç:</value></string>
   <string><id>152</id><value>Half duplex</value></string>
   <string><id>153</id><value>Full duplex</value></string>
   <string><id>154</id><value>Disc Dur</value></string>
   <string><id>155</id><value>Unitat</value></string>
-  <string><id>156</id><value>Llibres</value></string>
+  <string><id>156</id><value>Lliures</value></string>
   <string><id>157</id><value>Video</value></string>
   <string><id>158</id><value>Memòria Lliure</value></string>
-  <string><id>159</id><value>No link</value></string>
+  <string><id>159</id><value>Sense enllaç</value></string>
   <string><id>160</id><value>Lliure</value></string>
   <string><id>161</id><value>No disponible</value></string>
-  <string><id>162</id><value>Lector obert</value></string>
+  <string><id>162</id><value>Safata oberta</value></string>
   <string><id>163</id><value>Llegint</value></string>
   <string><id>164</id><value>Sense Disc</value></string>
   <string><id>165</id><value>Disc Present</value></string>
   <string><id>166</id><value>Pell:</value></string>
-  <string><id>167</id><value>FTP Server:</value></string>
-  <string><id>168</id><value>Time Server:</value></string>
+  <string><id>167</id><value>Activar Servidor FTP</value></string>
+  <string><id>168</id><value>Activar sincr. Horaria de Internet</value></string>
   <string><id>169</id><value>Resolució:</value></string>
   <string><id>170</id><value>Àlbum:</value></string>
   <string><id>171</id><value>Artista:</value></string>
-  <string><id>172</id><value>Data de la Release:</value></string>
+  <string><id>172</id><value>Data de Llançament:</value></string>
   <string><id>173</id><value>Vot:</value></string>
   <string><id>174</id><value>Gènere:</value></string>
-  <string><id>175</id><value>Tones:</value></string>
+  <string><id>175</id><value>Tons:</value></string>
   <string><id>176</id><value>Estíl:</value></string>
   <string><id>177</id><value>Crítica:</value></string>
   <string><id>178</id><value>Pistes:</value></string>
@@ -124,73 +125,74 @@
   <string><id>193</id><value>Scan</value></string>
   <string><id>194</id><value>Buscant...</value></string>
   <string><id>195</id><value>Sense info a IMDB!</value></string>
-  <string><id>196</id><value>Selec. Video:</value></string>
-  <string><id>197</id><value>Mirant info a IMDB</value></string>
-  <string><id>198</id><value>Carregant detalls del video</value></string>
+  <string><id>196</id><value>Selec. Pel·lícula:</value></string>
+  <string><id>197</id><value>Cercant info a IMDB</value></string>
+  <string><id>198</id><value>Carregant detalls de la Pel·lícula</value></string>
   <string><id>199</id><value>Director:</value></string>
-  <string><id>200</id><value>Crèdits:</value></string>
+  <string><id>200</id><value>Guió:</value></string>
   <string><id>201</id><value>Any:</value></string>
   <string><id>202</id><value>Destacable:</value></string>
   <string><id>203</id><value>Resum:</value></string>
   <string><id>204</id><value>Valoració:</value></string>
+  <string><id>2050</id><value>Durada:</value></string>
   <string><id>205</id><value>Vots:</value></string>
-  <string><id>206</id><value>Casting:</value></string>
-  <string><id>207</id><value>Plot</value></string>
+  <string><id>206</id><value>Repartiment:</value></string>
+  <string><id>207</id><value>Sinopsi</value></string>
   <string><id>208</id><value>Play</value></string>
   <string><id>209</id><value>Següent</value></string>
   <string><id>210</id><value>Anterior</value></string>
-  <string><id>211</id><value>Buscant utilitats</value></string>
+  <string><id>211</id><value>Cercant utilitats</value></string>
   <string><id>212</id><value>utilitats trobades</value></string>
-  <string><id>213</id><value>Calibració UI</value></string>
-  <string><id>214</id><value>Calib. Video</value></string>
-  <string><id>215</id><value>Soften</value></string>
+  <string><id>213</id><value>Centrar Interfície d'Usuari</value></string>
+  <string><id>214</id><value>Calibració de Video</value></string>
+  <string><id>215</id><value>Suavitzar</value></string>
   <string><id>216</id><value>Zoom</value></string>
-  <string><id>217</id><value>Estirar</value></string>
+  <string><id>217</id><value>Relació del Pixel</value></string>
   <string><id>218</id><value>Lector DVD</value></string>
   <string><id>219</id><value>Inserir Disc</value></string>
   <string><id>220</id><value>Arxiu Remot</value></string>
   <string><id>221</id><value>La xarxa no està connectada</value></string>
   <string><id>222</id><value>Cancel.lar</value></string>
-  <string><id>223</id><value>Escull la millor resolució per al video</value></string>
+  <string><id>223</id><value>Conmutació automàtica WideScreen</value></string>
   <string><id>224</id><value>Velocitat</value></string>
-  <string><id>225</id><value>Temps de trans.</value></string>
+  <string><id>225</id><value>Temps de transició</value></string>
   <string><id>226</id><value>Activar PAL60</value></string>
   <string><id>227</id><value>Activar CDDB</value></string>
-  <string><id>228</id><value>Playlist Aleatori al iniciar</value></string>
-  <string><id>229</id><value>Temps d'apagada del HDD</value></string>
-  <string><id>230</id><value>Filtres</value></string>
+  <string><id>228</id><value>Llista Reprod. Aleatoria al iniciar</value></string>
+  <string><id>229</id><value>Temps d'aturada del HDD</value></string>
+  <string><id>230</id><value>Filtres de Video</value></string>
   <string><id>231</id><value>Res</value></string>
   <string><id>232</id><value>Punt</value></string>
   <string><id>233</id><value>Linear</value></string>
   <string><id>234</id><value>Anisotròpic</value></string>
   <string><id>235</id><value>Quincunx</value></string>
   <string><id>236</id><value>Gaussian Cubic</value></string>
-  <string><id>237</id><value>Minification:</value></string>
-  <string><id>238</id><value>Magnification:</value></string>
-  <string><id>240</id><value>Autorun DVD-Video</value></string>
-  <string><id>241</id><value>Autorun VCD/SVCD</value></string>
-  <string><id>242</id><value>Autorun Audio-CD</value></string>
-  <string><id>243</id><value>Autorun XBOX Games</value></string>
-  <string><id>244</id><value>Autorun Videos</value></string>
-  <string><id>245</id><value>Autorun Música</value></string>
-  <string><id>246</id><value>Autorun Fotos</value></string>
+  <string><id>237</id><value>Minification</value></string>
+  <string><id>238</id><value>Magnification</value></string>
+  <string><id>240</id><value>Autoexecutar DVD-Video</value></string>
+  <string><id>241</id><value>Autoexecutar VCD/SVCD</value></string>
+  <string><id>242</id><value>Autoexecutar Audio-CD</value></string>
+  <string><id>243</id><value>Autoexecutar XBOX Games</value></string>
+  <string><id>244</id><value>Autoexecutar Videos</value></string>
+  <string><id>245</id><value>Autoexecutar Música</value></string>
+  <string><id>246</id><value>Autoexecutar Imatges</value></string>
   <string><id>247</id><value>Scripts</value></string>
   <string><id>248</id><value>Idioma</value></string>
   <string><id>249</id><value>Música</value></string>
   <string><id>250</id><value>Visualitzacions</value></string>
-  <string><id>251</id><value>Seleccioni destí</value></string>
-  <string><id>252</id><value>Tots els altaveus</value></string>
+  <string><id>251</id><value>Seleccioni directori de destí</value></string>
+  <string><id>252</id><value>- Sortida Estèreo a tots els altaveus</value></string>
   <string><id>253</id><value>Número de canals</value></string>
-  <string><id>254</id><value>Activar DD Stereo-Òptic</value></string>
+  <string><id>254</id><value>- Activar Sortida DTS</value></string>
   <string><id>255</id><value>CDDB</value></string>
-  <string><id>256</id><value>Querying freedb for CDDB info</value></string>
+  <string><id>256</id><value>Preguntant freedb per info CDDB</value></string>
   <string><id>257</id><value>Error</value></string>
-  <string><id>258</id><value>Activar ID3 tags</value></string>
+  <string><id>258</id><value>Mostrar etiquetes ID3</value></string>
   <string><id>259</id><value>Apertura</value></string>
   <string><id>260</id><value>Shoutcast</value></string>
   <string><id>261</id><value>Esperant per començar....</value></string>
-  <string><id>262</id><value>Scripts</value></string>
-  <string><id>263</id><value>Servidor HTTP:</value></string>
+  <string><id>262</id><value>Scripts de Sortida</value></string>
+  <string><id>263</id><value>Activar Servidor HTTP</value></string>
   <string><id>264</id><value>Gravar</value></string>
   <string><id>265</id><value>Parar Gravació</value></string>
   <string><id>266</id><value>Ordre: Pista</value></string>
@@ -199,23 +201,23 @@
   <string><id>269</id><value>Ordre: Artista</value></string>
   <string><id>270</id><value>Ordre: Àlbum</value></string>
   <string><id>271</id><value>Top 100</value></string>
-  <string><id>272</id><value>Ajust cantonada esquerra</value></string>
-  <string><id>273</id><value>Ajust cantonada dreta</value></string>
+  <string><id>272</id><value>Ajust cantonada sup. esquerra</value></string>
+  <string><id>273</id><value>Ajust cantonada inf. dreta</value></string>
   <string><id>274</id><value>Posició dels subtítols</value></string>
-  <string><id>275</id><value>Ajust Pixel Ratio</value></string>
-  <string><id>276</id><value>Mogui la fletxa per canviar l'overscan</value></string>
+  <string><id>275</id><value>Ajust Proporció del Pixel</value></string>
+  <string><id>276</id><value>Mogui la fletxa per canviar la posició de la imatge</value></string>
   <string><id>277</id><value>Mogui la barra per canviar la posició del subtítols</value></string>
-  <string><id>278</id><value>Canviï el rectangle fins veure un quadrat</value></string>
+  <string><id>278</id><value>Canviï el rectangle fins veure un quadrat perfecte</value></string>
   <string><id>279</id><value>Impossible carregar les opcions</value></string>
-  <string><id>280</id><value>Utilitzar per defecte fallbacks</value></string>
-  <string><id>281</id><value>Comprovar .xml</value></string>
-  <string><id>282</id><value>Trobats %i</value></string>
+  <string><id>280</id><value>Utilitzar per defecte excepcions</value></string>
+  <string><id>281</id><value>Si us plau, verifiqui els fitxers XML</value></string>
+  <string><id>282</id><value>Trobats %i elements</value></string>
   <string><id>283</id><value>Resultats</value></string>
   <string><id>284</id><value>No hi han resultats</value></string>
   <string><id>285</id><value>Filtre Desentrallaçat</value></string>
   <string><id>286</id><value>Filtre Postprocés</value></string>
-  <string><id>287</id><value>subtítols</value></string>
-  <string><id>288</id><value>Fonts</value></string>
+  <string><id>287</id><value>Subtítols</value></string>
+  <string><id>288</id><value>Font</value></string>
   <string><id>289</id><value>Tamany</value></string>
   <string><id>290</id><value>Sò amplificat (dB)</value></string>
   <string><id>291</id><value>Video</value></string>
@@ -224,24 +226,24 @@
   <string><id>294</id><value>Crear marca</value></string>
   <string><id>295</id><value>Totes les marques</value></string>
   <string><id>296</id><value>Netejar marques</value></string>
-  <string><id>297</id><value>Retràs</value></string>
-  <string><id>298</id><value>Slider</value></string>
+  <string><id>297</id><value>Retràs AV</value></string>
+  <string><id>298</id><value>Barra desp</value></string>
   <string><id>300</id><value>1. Idioma</value></string>
   <string><id>301</id><value>2. Volum</value></string>
   <string><id>302</id><value>3. Cadena</value></string>
   <string><id>303</id><value>Retràs</value></string>
   <string><id>304</id><value>Idioma</value></string>
-  <string><id>305</id><value>On/Off</value></string>
-  <string><id>306</id><value>Non-Interleaved</value></string>
-  <string><id>307</id><value>Auto</value></string>
-  <string><id>308</id><value>Filtre vertical deblocking</value></string>
-  <string><id>309</id><value>Filtre horitzontal deblocking</value></string>
-  <string><id>310</id><value>Auto contrast/brillantor</value></string>
-  <string><id>311</id><value>Dering</value></string>
+  <string><id>305</id><value>Activat</value></string>
+  <string><id>306</id><value>No-Entrellaçat</value></string>
+  <string><id>307</id><value>- Postprocés Automàtic</value></string>
+  <string><id>308</id><value>- Filtre Desbloqueig Vertical</value></string>
+  <string><id>309</id><value>- Filtre Desbloqueig Horitzontal</value></string>
+  <string><id>310</id><value>- Auto contrast/brillantor</value></string>
+  <string><id>311</id><value>- Dering</value></string>
   <string><id>312</id><value>(0=auto)</value></string>
   <string><id>313</id><value>Reorganitzar base de dades</value></string>
   <string><id>314</id><value>Preparant...</value></string>
-  <string><id>315</id><value>Error a la base</value></string>
+  <string><id>315</id><value>Error a la Base de Dades</value></string>
   <string><id>316</id><value>Buscant cançons...</value></string>
   <string><id>317</id><value>Reorganizació amb èxit</value></string>
   <string><id>318</id><value>Borrar cançons seleccionades</value></string>
@@ -250,8 +252,8 @@
   <string><id>321</id><value>Error al reorganitzar</value></string>
   <string><id>322</id><value>Buscant gèneres...</value></string>
   <string><id>323</id><value>Error al reorganitzar</value></string>
-  <string><id>324</id><value>Buscant pathes...</value></string>
-  <string><id>325</id><value>Error al reorganitzar pathes</value></string>
+  <string><id>324</id><value>Buscant rutes...</value></string>
+  <string><id>325</id><value>Error al reorganitzar rutes</value></string>
   <string><id>326</id><value>Buscant Àlbums...</value></string>
   <string><id>327</id><value>Error al reorganitzar</value></string>
   <string><id>328</id><value>Escrivint canvis...</value></string>
@@ -261,36 +263,36 @@
   <string><id>332</id><value>Error al comprimir</value></string>
   <string><id>333</id><value>Vol reorganitzar la base de dades?</value></string>
   <string><id>334</id><value>Reorganitzar la base de dades</value></string>
-  <string><id>335</id><value>Inici</value></string>
-  <string><id>336</id><value>Ajus.Framerate</value></string>
-  <string><id>337</id><value>Sortida d'Àudio:</value></string>
+  <string><id>335</id><value>Inicia</value></string>
+  <string><id>336</id><value>Ajus. Framerate</value></string>
+  <string><id>337</id><value>Sortida d'Àudio</value></string>
   <string><id>338</id><value>Analògic</value></string>
   <string><id>339</id><value>Digital</value></string>
   <string><id>340</id><value>Varis artistes</value></string>
-  <string><id>341</id><value>Play DVD</value></string>
+  <string><id>341</id><value>Reprod. DVD</value></string>
   <string><id>342</id><value>Pel.lícules</value></string>
   <string><id>343</id><value>Ajustar Framerate</value></string>
   <string><id>344</id><value>Actors</value></string>
   <string><id>345</id><value>Any</value></string>
   <string><id>346</id><value>Agrupar</value></string>
   <string><id>347</id><value>Desagrupar</value></string>
-  <string><id>348</id><value>Desplegar</value></string>
+  <string><id>348</id><value>Desplegar estructura directoris</value></string>
   <string><id>349</id><value>Mostrar només Default.xbe</value></string>
   <string><id>350</id><value>Programes</value></string>
   <string><id>351</id><value>Off</value></string>
-  <string><id>352</id><value>Dim</value></string>
-  <string><id>353</id><value>negre</value></string>
-  <string><id>354</id><value>Matrix Trails</value></string>
+  <string><id>352</id><value>Enfosquir</value></string>
+  <string><id>353</id><value>Negre</value></string>
+  <string><id>354</id><value>Matrix</value></string>
   <string><id>355</id><value>Temps per al salvapantalles</value></string>
   <string><id>356</id><value>Mode salvapantalles</value></string>
   <string><id>357</id><value>Tiemps per al apagat</value></string>
   <string><id>358</id><value>Tots els Àlbums</value></string>
-  <string><id>359</id><value>Àlbum Recent</value></string>
+  <string><id>359</id><value>Àlbums Recents</value></string>
   <string><id>360</id><value>Salvapantalles</value></string>
-  <string><id>361</id><value>R. SlideShow</value></string>
+  <string><id>361</id><value>Presentació</value></string>
   <string><id>362</id><value>Nivell de foscor (%)</value></string>
   <string><id>363</id><value>Ordre: Arxiu</value></string>
-  <string><id>364</id><value>Activar sortida DD/DTS Multicannal</value></string>
+  <string><id>364</id><value>- Activar Sortida AC3 5.1</value></string>
   <string><id>365</id><value>Ordre: Nom</value></string>
   <string><id>366</id><value>Ordre: Any</value></string>
   <string><id>367</id><value>Ordre: Puntuació</value></string>
@@ -300,20 +302,20 @@
   <string><id>371</id><value>Parcialment</value></string>
   <string><id>372</id><value>Majorment</value></string>
   <string><id>373</id><value>Assolejat</value></string>
-  <string><id>374</id><value>Nuvolós</value></string>
+  <string><id>374</id><value>Núvol</value></string>
   <string><id>375</id><value>Neu</value></string>
   <string><id>376</id><value>Pluja</value></string>
   <string><id>377</id><value>Clar</value></string>
   <string><id>378</id><value>AM</value></string>
   <string><id>379</id><value>PM</value></string>
-  <string><id>380</id><value>Ruixat</value></string>
+  <string><id>380</id><value>Ruixats</value></string>
   <string><id>381</id><value>Poc</value></string>
   <string><id>382</id><value>Dispers</value></string>
   <string><id>383</id><value>Vent</value></string>
   <string><id>384</id><value>Fort</value></string>
-  <string><id>385</id><value>Acceptable</value></string>
+  <string><id>385</id><value>Serè</value></string>
   <string><id>386</id><value>Clar</value></string>
-  <string><id>387</id><value>Núvols</value></string>
+  <string><id>387</id><value>Núvol</value></string>
   <string><id>388</id><value>N/D</value></string>
   <string><id>389</id><value>N/D</value></string>
   <string><id>390</id><value>N/D</value></string>
@@ -323,12 +325,12 @@
   <string><id>394</id><value>N/D</value></string>
   <string><id>395</id><value>N/D</value></string>
   <string><id>396</id><value>Seleccioni Lloc</value></string>
-  <string><id>397</id><value>Refrescar Temps</value></string>
+  <string><id>397</id><value>Temps Actualització</value></string>
   <string><id>398</id><value>Unitat Temperatura</value></string>
   <string><id>399</id><value>Unitat velocitat</value></string>
   <string><id>400</id><value>Temps</value></string>
   <string><id>401</id><value>Temp</value></string>
-  <string><id>402</id><value>Ambient</value></string>
+  <string><id>402</id><value>S. Tèrmica</value></string>
   <string><id>403</id><value>Índex UV</value></string>
   <string><id>404</id><value>Vent</value></string>
   <string><id>405</id><value>Rosada</value></string>
@@ -336,11 +338,11 @@
   <string><id>407</id><value>Des de</value></string>
   <string><id>408</id><value>fins</value></string>
   <string><id>410</id><value>Accedint a weather.com</value></string>
-  <string><id>411</id><value>Mostrant temps:</value></string>
+  <string><id>411</id><value>Recuperant El Temps per:</value></string>
   <string><id>412</id><value>Imposible connectar</value></string>
   <string><id>413</id><value>Manual</value></string>
-  <string><id>414</id><value>No hi ha review per aquest Àlbum</value></string>
-  <string><id>415</id><value>Descarregar thumbnail...</value></string>
+  <string><id>414</id><value>No hi ha anàlisi d'aquest Àlbum</value></string>
+  <string><id>415</id><value>Descarregant caràtula...</value></string>
   <string><id>416</id><value>No disponible</value></string>
   <string><id>417</id><value>Veure: Gran</value></string>
   <string><id>418</id><value>Els meus Videos/Gèneres</value></string>
@@ -350,10 +352,10 @@
   <string><id>422</id><value>Borrar info de l'Àlbum</value></string>
   <string><id>423</id><value>Borrar CDDB</value></string>
   <string><id>424</id><value>Selecciona</value></string>
-  <string><id>425</id><value>No hi ha info. de l'Àlbum.</value></string>
+  <string><id>425</id><value>No hi ha info de l'Àlbum.</value></string>
   <string><id>426</id><value>No hi ha info CDDB.</value></string>
   <string><id>427</id><value>Disc:</value></string>
-  <string><id>428</id><value>Insereixi un CD/DVD correcte</value></string>
+  <string><id>428</id><value>Insereixi un CD/DVD vàlid</value></string>
   <string><id>429</id><value>Insereixi el següent CD/DVD</value></string>
   <string><id>430</id><value>Ordre: DVD#</value></string>
   <string><id>431</id><value>No Cache</value></string>
@@ -372,7 +374,7 @@
   <string><id>444</id><value>Video</value></string>
   <string><id>445</id><value>Audio</value></string>
   <string><id>446</id><value>DVD</value></string>
-  <string><id>447</id><value>Autorun</value></string>
+  <string><id>447</id><value>Autoexecutar</value></string>
   <string><id>448</id><value>LCD</value></string>
   <string><id>449</id><value>Activat</value></string>
   <string><id>450</id><value>Columnes</value></string>
@@ -389,7 +391,7 @@
   <string><id>460</id><value>Cadena d'Àudio</value></string>
   <string><id>461</id><value>[Activar]</value></string>
   <string><id>462</id><value>Subtítol</value></string>
-  <string><id>463</id><value>Backlight</value></string>
+  <string><id>463</id><value>Retroil·luminació</value></string>
   <string><id>464</id><value>Brillantor</value></string>
   <string><id>465</id><value>Contrast</value></string>
   <string><id>466</id><value>Gamma</value></string>
@@ -398,30 +400,30 @@
   <string><id>469</id><value>Posició OSD</value></string>
   <string><id>470</id><value>Crèdits</value></string>
   <string><id>471</id><value>Modchip</value></string>
-  <string><id>472</id><value>OSD Timeout</value></string>
-  <string><id>473</id><value>High Quality Resampling</value></string>
-  <string><id>474</id><value>Off</value></string>
+  <string><id>472</id><value>Temps en pantalla del OSD</value></string>
+  <string><id>473</id><value>Remostreig d'Alta Qualitat</value></string>
+  <string><id>474</id><value>Apagat</value></string>
   <string><id>475</id><value>Només Música</value></string>
   <string><id>476</id><value>Música i Video</value></string>
   <string><id>477</id><value>Imposible carregar la llista de reproducció</value></string>
   <string><id>478</id><value>OSD</value></string>
   <string><id>479</id><value>Llengua i Pell (Skin)</value></string>
-  <string><id>480</id><value>Interficie d'Usuari</value></string>
+  <string><id>480</id><value>Interfície d'Usuari</value></string>
   <string><id>481</id><value>Opcions Àudio</value></string>
-  <string><id>482</id><value>Crèdits XBMC</value></string>
+  <string><id>482</id><value>En quant a XBMC</value></string>
   <string><id>483</id><value>Àlbum</value></string>
   <string><id>484</id><value>Artista</value></string>
   <string><id>485</id><value>Borrar Àlbum</value></string>
   <string><id>486</id><value>Repetir</value></string>
   <string><id>487</id><value>Repetir Una</value></string>
-  <string><id>488</id><value>Repetir Llista</value></string>
-  <string><id>489</id><value>Usa Llista en Cançons</value></string>
-  <string><id>490</id><value>Auto switch llista i icones en cançons</value></string>
-  <string><id>491</id><value>Usar icones grans</value></string>
+  <string><id>488</id><value>Repetir Carpetes</value></string>
+  <string><id>489</id><value>Autoreproduir Següent ítem</value></string>
+  <string><id>490</id><value>Auto llista i icones en cançons</value></string>
+  <string><id>491</id><value>- Usar icones grans</value></string>
   <string><id>492</id><value>Allargar subtítols</value></string>
   <string><id>493</id><value>Opcions Avançades (Experts Only!)</value></string>
   <string><id>494</id><value>Overall Audio Headroom (dB)</value></string>
-  <string><id>495</id><value>Upsample videos to GUI resolution</value></string>
+  <string><id>495</id><value>Upsample Videos to GUI Resolution</value></string>
   <string><id>496</id><value>Calibració</value></string>
   <string><id>497</id><value>Amagar extensions</value></string>
   <string><id>498</id><value>Per Tipus:</value></string>
@@ -433,9 +435,9 @@
   <string><id>504</id><value>Buit</value></string>
   <string><id>505</id><value>Carregant informació des d'arxiu...</value></string>
   <string><id>506</id><value>Usar el nom del directori com a descripció</value></string>
-  <string><id>507</id><value>Ordenar: Us</value></string>
-  <string><id>508</id><value>No usar dreceres ni el Scan</value></string>
-  <string><id>600</id><value>Rip CD</value></string>
+  <string><id>507</id><value>Ordenar: Ús</value></string>
+  <string><id>508</id><value>No usar dreceres ni Explorar</value></string>
+  <string><id>600</id><value>Ripejar CD Audio</value></string>
   <string><id>601</id><value>Medi</value></string>
   <string><id>602</id><value>Estandard</value></string>
   <string><id>603</id><value>Extrem</value></string>
@@ -459,13 +461,67 @@
   <string><id>634</id><value>Adaptar 16:9</value></string>
   <string><id>635</id><value>Tamany Original</value></string>
   <string><id>636</id><value>Personalitzat</value></string>
+  <string><id>700</id><value>Borrar la llibreria</value></string>
+  <string><id>701</id><value>Eliminant cançons antigues de la llibreria</value></string>
+  <string><id>702</id><value>Aquesta ruta ja ha estat explorada.</value></string>
+  <string><id>703</id><value>Prem SI per actualitzar totes les cançons d'aquesta ruta</value></string>
+  <string><id>704</id><value>Prem NO per només afegir les noves cançons</value></string>
+  <string><id>705</id><value>Xarxa</value></string>
+  <string><id>706</id><value>- Adreça del Proxy HTTP</value></string>
+  <string><id>707</id><value>- Port del Proxy HTTP</value></string>
+  <string><id>708</id><value>Activar Proxy HTTP</value></string>
+  <string><id>709</id><value>XLink Kai XTag</value></string>
+  <string><id>710</id><value>XLink Kai Password</value></string>
+  <string><id>711</id><value>Internet Protocol (IP)</value></string>
+  <string><id>712</id><value>Port especificat invàlid. Valors entre 1 i 65535.</value></string>
+  <string><id>713</id><value>Proxy HTTP</value></string>
+  <string><id>714</id><value>XLink Kai</value></string>
+  <string><id>715</id><value>Asignació</value></string>
+  <string><id>716</id><value>Automàtica (DHCP)</value></string>
+  <string><id>717</id><value>Manual (Estàtica)</value></string>
+  <string><id>718</id><value>Per defecte (Dashboard)</value></string>
+  <string><id>719</id><value>- Adreça IP</value></string>
+  <string><id>720</id><value>- Màscara de subxarxa</value></string>
+  <string><id>721</id><value>- Porta d'enllaç</value></string>
+  <string><id>722</id><value>- Servidor DNS</value></string>
+  <string><id>723</id><value>Guardar i resetejar la Xbox</value></string>
+  <string><id>724</id><value>Adreça especificada invàlida. Valors deuen ser AAA.BBB.CCC.DDD</value></string>
+  <string><id>725</id><value>amb nombres compresos entre 0 i 255.</value></string>
+  <string><id>726</id><value>Canvis no guardats. Continuar sense guardar?</value></string>
+  <string><id>727</id><value>Servidor Web</value></string>
+  <string><id>728</id><value>Servidor FTP</value></string>
+  <string><id>729</id><value>Servidors Horaris de Internet</value></string>
+  <string><id>730</id><value>- Port Servidor Web</value></string>
+  <string><id>731</id><value>- Adreça Servidor Horari</value></string>
+  <string><id>732</id><value>Guardar i Aplicar</value></string>
+  <string><id>733</id><value>- Password del Servidor Web</value></string>
+  <string><id>734</id><value>Sense PW</value></string>
+  <string><id>735</id><value>Caràcters</value></string>
+  <string><id>736</id><value>- Estil</value></string>
+  <string><id>737</id><value>- Color</value></string>
+  <string><id>738</id><value>Normal</value></string>
+  <string><id>739</id><value>Negreta</value></string>
+  <string><id>740</id><value>Cursiva</value></string>
+  <string><id>741</id><value>Negreta Cursiva</value></string>
+  <string><id>742</id><value>Blanc</value></string>
+  <string><id>743</id><value>Groc</value></string>
+  <string><id>744</id><value>Fitxers</value></string>
+  <string><id>745</id><value>No hi ha info per aquest tipus de vista</value></string>
+  <string><id>746</id><value>Canviar a vista per fitxers</value></string>
+  <string><id>747</id><value>Error carregant imatge</value></string>
+  <string><id>748</id><value>Editar ruta</value></string>
+  <string><id>749</id><value>Afegir Recurs Compartit</value></string>
+  <string><id>750</id><value>Estas segur?</value></string>
+  <string><id>751</id><value>Eliminant Recurs Compartit</value></string>
+  <string><id>752</id><value>Editar Ruta del Recurs Compartit</value></string>
+  <string><id>753</id><value>Editar Nom Recurs Compartit</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Joc Online</value></string>
-  <string><id>10000</id><value>Home</value></string>
+  <string><id>10000</id><value>Inici</value></string>
   <string><id>10001</id><value>Els Meus Programes</value></string>
   <string><id>10002</id><value>Les Meves Imatges</value></string>
   <string><id>10003</id><value>Els Meus Arxius</value></string>
-  <string><id>10004</id><value>Opcions</value></string>
+  <string><id>10004</id><value>Ajustaments</value></string>
   <string><id>10005</id><value>La Meva Música</value></string>
   <string><id>10006</id><value>Els Meus Videos</value></string>
   <string><id>10007</id><value>Informació del sistema</value></string>
@@ -506,23 +562,178 @@
   <string><id>12005</id><value>Pantalla completa</value></string>
   <string><id>12006</id><value>Visualitzacions</value></string>
   <string><id>12007</id><value>Les Meves Imatges/slideshow</value></string>
-  <string><id>12008</id><value>Filestacking dialog</value></string>
+  <string><id>12008</id><value>Diàleg Apilar Fitxers</value></string>
+  <string><id>12310</id><value>0</value></string>
+  <string><id>12311</id><value>1</value></string>
+  <string><id>12312</id><value>2</value></string>
+  <string><id>12313</id><value>3</value></string>
+  <string><id>12314</id><value>4</value></string>
+  <string><id>12315</id><value>5</value></string>
+  <string><id>12316</id><value>6</value></string>
+  <string><id>12317</id><value>7</value></string>
+  <string><id>12318</id><value>8</value></string>
+  <string><id>12319</id><value>9</value></string>
+  <string><id>12320</id><value>c</value></string>
+  <string><id>12321</id><value>ok</value></string>
+  <string><id>12322</id><value>*</value></string>
+  <string><id>12324</id><value>Bloqueig Mestre del XBMC</value></string>
+  <string><id>12325</id><value>Carpeta Bloquejada</value></string>
+  <string><id>12326</id><value>Escrigui la contrasenya</value></string>
+  <string><id>12327</id><value>Escrigui el Codi Mestre i</value></string>
+  <string><id>12328</id><value>Escrigui el Codi per Desbloquejar i</value></string> 
+  <string><id>12329</id><value>premi Enter, o C per cancel·lar</value></string>
+  <string><id>12330</id><value>Premi una combinació de botons en el</value></string>
+  <string><id>12331</id><value>comandament i pulsi Start, o Back para cancel·lar</value></string>
+  <string><id>12332</id><value>Bloquejar Distribució</value></string>
+  <string><id>12333</id><value>Desbloquejar Distribució</value></string>
+  <string><id>12334</id><value>Resetejar Bloqueig</value></string>
+  <string><id>12335</id><value>Eliminar Bloqueig</value></string>
+  <string><id>12336</id><value>Seleccionar tipus de bloqueig a utilitzar:</value></string>
+  <string><id>12337</id><value>Contrasenya Numèrica</value></string>
+  <string><id>12338</id><value>Combinació de botons</value></string>
+  <string><id>12339</id><value>Contrasenya Alfanumèrica</value></string>
+  <string><id>12340</id><value>Escrigui la nova contrasenya</value></string>
+  <string><id>12341</id><value>Reescrigui la nova contrasenya</value></string>
+  <string><id>12342</id><value>Incorrecte, queden</value></string>
+  <string><id>12343</id><value>intents</value></string>
+  <string><id>12344</id><value>Les contrasenyes no son iguals.</value></string>
+  <string><id>12345</id><value>Accès Denegat</value></string>
+  <string><id>12346</id><value>S'ha excedit el limit d'intents.</value></string>
+  <string><id>12347</id><value>La XBOX se apagarà ara.</value></string>
   <string><id>12600</id><value>El Temps</value></string>
   <string><id>12900</id><value>Salvapantalles</value></string>
   <string><id>12901</id><value>OSD pantalla completa</value></string>
   <string><id>13000</id><value>Sistema</value></string>
-  <string><id>13001</id><value>Apagat del HDD</value></string>
+  <string><id>13001</id><value>Apagat inmediat del HDD</value></string>
   <string><id>13002</id><value>Només video</value></string>
   <string><id>13003</id><value>- Retràs</value></string>
   <string><id>13004</id><value>- Duració mínima del arxiu</value></string>
+  <string><id>13005</id><value>Apagar</value></string> 
+  <string><id>13006</id><value>Dashboard</value></string> 
   <string><id>13100</id><value>Filtre anti-vibració</value></string>
-  <string><id>13200</id><value>Configuracions</value></string>
-  <string><id>13201</id><value>Borrar configuracions '%s'?</value></string>
-  <string><id>13202</id><value>Guardar aquesta configuració...</value></string>
-  <string><id>13203</id><value>Configuracion '%s' carregada amb èxit</value></string>
-  <string><id>13204</id><value>Darrera configuració carregada:</value></string>
+  <string><id>13200</id><value>Perfils</value></string>
+  <string><id>13201</id><value>Borrar perfil '%s'?</value></string>
+  <string><id>13202</id><value>Guardar estat actual com a Perfil...</value></string>
+  <string><id>13203</id><value>Perfil '%s' carregat amb èxit</value></string>
+  <string><id>13204</id><value>Darrer Perfil carregat:</value></string>
   <string><id>13205</id><value>Desconegut</value></string>
-  <string><id>13300</id><value>Fanspeed:</value></string>
-  <string><id>13301</id><value>Control de temperatura</value></string>
-  <string><id>13302</id><value>Control Fanspeed</value></string>
+  <string><id>13299</id><value>Temperatura màxima</value></string>
+  <string><id>13300</id><value>Vel. del Ventilador:</value></string>
+  <string><id>13301</id><value>Autocontrol de temperatura</value></string>
+  <string><id>13302</id><value>Control Vel. Ventilador</value></string>
+  <string><id>13303</id><value>Font de la Pell (Skin)</value></string>
+  <string><id>13304</id><value>Permetre moure a la vegada sequències bidireccionals</value></string>
+  <string><id>13305</id><value>Activar informació RSS</value></string>
+  <string><id>13306</id><value>Ocultar la icona de pujar la carpeta</value></string>
+  <string><id>13307</id><value>Ocultar números de pista</value></string>
+  <string><id>13308</id><value>Desitja reiniciar la xbox</value></string>
+  <string><id>13309</id><value>en lloc del XBMC?</value></string>
+  <string><id>13310</id><value>Efecte de zoom</value></string>
+  <string><id>13311</id><value>Efecte flotant</value></string>
+  <string><id>13312</id><value>Reducció de les barres negres</value></string>
+  <string><id>13313</id><value>Resetejar/Reiniciar</value></string>
+  <string><id>13314</id><value>Temps en pantalla del OSD</value></string>
+  <string><id>13315</id><value>Crear caràtules</value></string>
+  <string><id>13316</id><value>Caràtules recurrents</value></string>
+  <string><id>13317</id><value>Veure presentació</value></string>
+  <string><id>13318</id><value>Diapositiva recursiva</value></string>
+  <string><id>13319</id><value>Aleatori</value></string>
+  <string><id>13320</id><value>Estèreo</value></string>
+  <string><id>13321</id><value>Només esquerre</value></string>
+  <string><id>13322</id><value>Només dret</value></string>
+  <string><id>13323</id><value>Activar CD+G</value></string>
+  <string><id>13324</id><value>Translucidesa del Fons</value></string>
+  <string><id>13325</id><value>Translucidesa del Primer Pla</value></string>
+  <string><id>13326</id><value>Retras A/V</value></string>
+  <string><id>13327</id><value>Karaoke</value></string>
+  <string><id>13328</id><value>%s no trobat.</value></string>
+  <string><id>13329</id><value>Error al abrir %s</value></string>
+  <string><id>13330</id><value>Imposible carregar %s</value></string>
+  <string><id>13331</id><value>Error: sense memòria.</value></string>
+  <string><id>13332</id><value>Moure Amunt</value></string>
+  <string><id>13333</id><value>Moure Avall</value></string>
+  <string><id>13334</id><value>Editar etiqueta</value></string>
+  <string><id>13335</id><value>Crear per defecte</value></string>
+  <string><id>13336</id><value>Borrar botó</value></string>
+  <string><id>13337</id><value>- Redireccionar a 2 Canals PCM</value></string>  
+  <string><id>13338</id><value>LED frontal</value></string>
+  <string><id>13339</id><value>Color del LED frontal</value></string>
+  <string><id>13340</id><value>Deixar-ho com està</value></string>
+  <string><id>13341</id><value>Verd</value></string>
+  <string><id>13342</id><value>Taronja</value></string>
+  <string><id>13343</id><value>Vermell</value></string>
+  <string><id>13344</id><value>Cíclic</value></string>
+  <string><id>13345</id><value>Apagar el LED al reproduir</value></string>
+  <string><id>13346</id><value>Info de la pel·lícula</value></string>
+  <string><id>13347</id><value>Possar objecte a la cua</value></string>
+  <string><id>13348</id><value>Cercar a IMDB...</value></string>
+  <string><id>13349</id><value>Cercar info de tot</value></string>
+  <string><id>13350</id><value>Reproduir ara...</value></string>
+  <string><id>13351</id><value>Info del àlbum</value></string>
+  <string><id>13352</id><value>Explorar en Base Dades</value></string>
+  <string><id>13353</id><value>Detenir l'exploració</value></string>
+  <string><id>13354</id><value>Mètode Rende</value></string>
+  <string><id>13355</id><value>Pixel Shader</value></string>
+  <string><id>13356</id><value>YUY2 Overlays</value></string>
+  <string><id>13357</id><value>Combinació Overlays/Shader</value></string>
+  
+  <string><id>14000</id><value>Apilar: No</value></string>
+  <string><id>14001</id><value>Apilar: Simple</value></string>
+  <string><id>14002</id><value>Apilar: Aleatori</value></string>
+  <string><id>14003</id><value>Descarregant fitxer de listes...</value></string>
+  <string><id>14004</id><value>Descarregant llista de streams...</value></string>
+  <string><id>14005</id><value>Analitzant llista de streams...</value></string>
+  <string><id>14006</id><value>La descarrega de la llista de streams ha fallat</value></string>
+  <string><id>14007</id><value>La descarrega del fitxer de llistes ha fallat</value></string>
+  <string><id>14008</id><value>Activar notificacions Kai</value></string>
+  <string><id>14009</id><value>Directori de jocs</value></string>
+  <string><id>14010</id><value>Autoconmutar les caràtules basant-se en</value></string>
+  <string><id>14011</id><value>Activar Autoconmutació en les vistes de caràtules</value></string>
+  <string><id>14012</id><value>- Emprar Icones Grans</value></string>
+  <string><id>14013</id><value>- Mètode</value></string>
+  <string><id>14014</id><value>- Percentatge</value></string>
+  <string><id>14015</id><value>Sense fitxers i com a mínim una caràtula</value></string>
+  <string><id>14016</id><value>Com a mínim un fitxer i una caràtula</value></string>
+  <string><id>14017</id><value>Porcentatge de las caràtules</value></string>
+  <string><id>14018</id><value>Opcions Vista</value></string>
+  <string><id>14019</id><value>Codi d'àrea 1</value></string>
+  <string><id>14020</id><value>Codi d'àrea 2</value></string>
+  <string><id>14021</id><value>Codi d'àrea 3</value></string>
+  <string><id>14022</id><value>Llibreries</value></string>
+  <string><id>14023</id><value>Sense TV</value></string>
+  <string><id>14024</id><value>Escrigui la ciutat més propera o el codi ZIP de USA</value></string>
+  <string><id>14025</id><value>Video Cache   - Disc Dur</value></string>
+  <string><id>14026</id><value>              - DVDRom</value></string>
+  <string><id>14027</id><value>              - Xarxa Local</value></string>
+  <string><id>14028</id><value>              - Internet</value></string>
+  <string><id>14029</id><value>Audio Cache   - Disc Dur</value></string>
+  <string><id>14030</id><value>              - DVDRom</value></string>
+  <string><id>14031</id><value>              - Xarxa Local</value></string>
+  <string><id>14032</id><value>              - Internet</value></string>
+  <string><id>14033</id><value>DVD Cache     - Disc Dur</value></string>
+  <string><id>14034</id><value>              - DVDRom</value></string>
+  <string><id>14035</id><value>              - Xarxa Local</value></string>
+  <string><id>14036</id><value>Servidors</value></string>
+  <string><id>14037</id><value>Aparença</value></string>
+  <string><id>14038</id><value>Configuració de Xarxa canviada</value></string>
+  <string><id>14039</id><value>XBMC requereix reiniciar-se per a poder canviar la seva</value></string>
+  <string><id>14040</id><value>configuració de xarxa.  Desitja reiniciar ara?</value></string>
+  <string><id>14041</id><value>Postprocesat</value></string>
+  <string><id>14042</id><value>Adreça IP del motor</value></string>
+  <string><id>14043</id><value>- Apagar encara que estigui reproduint</value></string>
+  <string><id>14044</id><value>%i mins</value></string>
+  <string><id>14045</id><value>%i segs</value></string>
+  <string><id>14046</id><value>%i ms</value></string>
+  <string><id>14047</id><value>%i %%</value></string>
+  <string><id>14048</id><value>%i kbps</value></string>
+  <string><id>14049</id><value>%i kb</value></string>
+  <string><id>14050</id><value>%i.0 dB</value></string>
+  <string><id>14051</id><value>Veure el rellotge en format 12 hores</value></string>
+  <string><id>14052</id><value>Invertir mes i dia en el menú principal</value></string>
+  <string><id>14053</id><value>Filtres GUI</value></string>
+  <string><id>14054</id><value>Activar cerca a Internet</value></string>
+  <string><id>14055</id><value>Emprar exploració oculta</value></string>
+  <string><id>14056</id><value>Aturar l'exploració</value></string>
+  <string><id>14057</id><value>No es possible mentre s'explorar la informació dels medis</value></string>
+  <string><id>14058</id><value>Efecte Gra</value></string>
 </strings>
