@@ -155,8 +155,6 @@ void CGUIWindowVisualisation::Render()
 			try
 			{
 				m_pVisualisation->Render();
-
-				D3DDevice::BlockUntilVerticalBlank();
 			}
 			catch(...)
 			{
