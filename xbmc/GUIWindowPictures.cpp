@@ -708,7 +708,7 @@ void CGUIWindowPictures::OnSlideShow()
 	m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
 }
 
-void CGUIWindowPictures::OnCreateThumbs()
+bool CGUIWindowPictures::OnCreateThumbs()
 {
   if (m_dlgProgress) 
   {
@@ -719,10 +719,22 @@ void CGUIWindowPictures::OnCreateThumbs()
   // calculate the number of items to take thumbs of
   int iTotalItems = m_vecItems.size()-CUtil::GetFolderCount(m_vecItems);
   int iCurrentItem = 0;
+  
+  if (m_dlgProgress->IsCanceled()) return false;
+  
+  bool bCancel=false;
+
   // now run through and create the thumbs
   for (int i=0; i < (int)m_vecItems.size();++i)
   {
     CFileItem* pItem=m_vecItems[i];
+	
+	if (m_dlgProgress->IsCanceled())
+	{
+		bCancel=true;
+		break;
+	}
+
     if (!pItem->m_bIsFolder)
     {	
 		iCurrentItem++;
@@ -741,11 +753,14 @@ void CGUIWindowPictures::OnCreateThumbs()
       }
 			CPicture picture;
       picture.CreateThumnail(pItem->m_strPath);
+	  
+	  if (bCancel) break;
     }
   }
   CSectionLoader::Unload("CXIMAGE");
 	if (m_dlgProgress) m_dlgProgress->Close();
   Update(m_strDirectory);
+  return !bCancel;
 }
 
 void CGUIWindowPictures::Render()
