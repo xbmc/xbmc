@@ -19,6 +19,9 @@ namespace OSD
 		virtual void Draw(int x, int y, bool bFocus=false, bool bSelected=false);
 		virtual bool OnAction(IExecutor& executor,const CAction& action);
     float GetValue() const;
+    
+    virtual int  GetMessage() const {return m_iAction;};
+    virtual void SetValue(int iValue){};
 	private:
     CGUISliderControl m_slider;
     int m_iAction;

@@ -91,7 +91,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 			return;
 		break;
 		default:
-        CSingleLock lock(m_section);      
+//        CSingleLock lock(m_section);      
         m_osdMenu.OnAction(*this,action);
         SET_CONTROL_FOCUS(GetID(), m_osdMenu.GetSelectedMenu()+BTN_OSD_VIDEO); 
 		  break;
@@ -398,6 +398,12 @@ void CGUIWindowFullScreen::RenderFullScreen()
   {
     CGUIWindow::Render();
     CSingleLock lock(m_section);      
+
+    if (g_application.m_pPlayer)
+    {
+      int iValue=g_application.m_pPlayer->GetPercentage();
+      m_osdMenu.SetValue(MENU_ACTION_SEEK,iValue);
+    }
 	  m_osdMenu.Draw();
     return;
   }
@@ -497,6 +503,7 @@ void CGUIWindowFullScreen::OnExecute(int iAction, const IOSDOption* option)
     {
       const COSDOptionIntRange* intOption = (const COSDOptionIntRange*)option;
       g_application.m_pPlayer->SeekPercentage(intOption->GetValue());
+      
     }
     break;
 
