@@ -2279,8 +2279,9 @@
   <string><id>13307</id><value>Hide Track Numbers</value></string>
   <string><id>13308</id><value>Do you wish to do a hard reboot</value></string>
   <string><id>13309</id><value>instead of a reset?</value></string>
-  <string><id>13310</id><value>Transistion zoom</value></string>
-  <string><id>13311</id><value>Transistion float</value></string>
-  <string><id>13312</id><value>Border reduction</value></string>
+  <string><id>13310</id><value>Zoom effect</value></string>
+  <string><id>13311</id><value>Float effect</value></string>
+  <string><id>13312</id><value>Black bar reduction</value></string>
   <string><id>13313</id><value>Reset/Reboot</value></string>
+  <string><id>13314</id><value>Music OSD Timeout</value></string>
 </strings>

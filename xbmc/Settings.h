@@ -427,6 +427,7 @@ public:
 
 		bool			m_bEnableRSS; // disable RSS feeds?
 		bool			m_bShowFreeMem;
+		int				m_iMusicOSDTimeout;  // music OSD timeout
 	};
 
 	VECSHARES					m_vecMyProgramsBookmarks;
