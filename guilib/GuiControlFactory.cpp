@@ -12,6 +12,7 @@
 #include "guiListControlEx.h"
 #include "guiImage.h"
 #include "GUILabelControl.h"
+#include "GUIEditControl.h"
 #include "GUIFadeLabelControl.h"
 #include "GUICheckMarkControl.h"
 #include "GUIThumbnailPanel.h"
@@ -293,6 +294,14 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwTextColor			= ((CGUILabelControl*)pReference)->GetTextColor();
 			dwAlign				= ((CGUILabelControl*)pReference)->m_dwTextAlign;
 			dwDisabledColor		= ((CGUILabelControl*)pReference)->GetDisabledColor();
+		}
+		else if (strType=="edit")
+		{
+			strFont				= ((CGUIEditControl*)pReference)->GetFontName();
+			strLabel			= ((CGUIEditControl*)pReference)->GetLabel();
+			dwTextColor			= ((CGUIEditControl*)pReference)->GetTextColor();
+			dwAlign				= ((CGUIEditControl*)pReference)->m_dwTextAlign;
+			dwDisabledColor		= ((CGUIEditControl*)pReference)->GetDisabledColor();
 		}
 		else if (strType=="fadelabel")
 		{
@@ -828,6 +837,16 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 					dwParentId,dwID,iPosX,iPosY,dwWidth,dwHeight,
 					strFont,strLabel,dwTextColor,dwDisabledColor,
 					dwAlign, bHasPath);
+
+		pControl->SetColourDiffuse(dwColorDiffuse);
+		pControl->SetVisible(bVisible);
+		return pControl;
+	}
+	if (strType=="edit")
+	{
+		CGUIEditControl* pControl = new CGUIEditControl(
+					dwParentId,dwID,iPosX,iPosY,dwWidth,dwHeight,
+					strFont,strLabel,dwTextColor,dwDisabledColor);
 
 		pControl->SetColourDiffuse(dwColorDiffuse);
 		pControl->SetVisible(bVisible);
