@@ -408,8 +408,8 @@ struct SSortProgramsByName
 			switch ( g_stSettings.m_bMyProgramsSortMethod ) 
 			{
 				case 0:	//	Sort by Filename
-          strcpy(szfilename1, rpStart.m_strPath.c_str());
-					strcpy(szfilename2, rpEnd.m_strPath.c_str());
+					strcpy(szfilename1, rpStart.GetLabel().c_str());
+					strcpy(szfilename2, rpEnd.GetLabel().c_str());
 					break;
 				case 1: // Sort by Date
           if ( rpStart.m_stTime.wYear > rpEnd.m_stTime.wYear ) return bGreater;
