@@ -158,7 +158,7 @@ bool CEncoderLame::Close()
 	FILE* file = fopen(m_strFile.c_str(), "rb+");
 	if(!file)
 	{
-		CLog::Log(LOGERROR, "Error: Cannot open file for writing tags: %s", m_strFile);
+		CLog::Log(LOGERROR, "Error: Cannot open file for writing tags: %s", m_strFile.c_str());
 		return false;
 	}
 

@@ -13,6 +13,7 @@
 #include "..\filesystem\CDDADirectory.h"
 #include "..\detectdvdtype.h"
 #include "..\localizestrings.h"
+#include "..\filesystem\file.h"
 
 CCDDARipper::CCDDARipper()
 {
@@ -108,12 +109,21 @@ int CCDDARipper::RipChunk(int& nPercent)
 bool CCDDARipper::Rip(int iTrack, const char* strFile, MUSIC_INFO::CMusicInfoTag& infoTag)
 {
 	int	iPercent, iOldPercent = 0;
-	bool bCancled = false;
+	bool bCancelled = false;
+	const char* strFilename = strFile;
 
 	CLog::Log(LOGINFO, "Start ripping track %i to %s", iTrack, strFile);
 
-		// init ripper
-	if (!Init(iTrack, strFile, &infoTag))
+  // if we are ripping to a samba share, rip it to hd first and then copy it it the share
+  if (CUtil::IsRemote(strFile)) strFilename = tempnam("Z:\\", "");
+  if (!strFilename)
+  {
+    CLog::Log(LOGERROR, "CCDDARipper: Error opening file");
+    return false;
+   }
+  
+	// init ripper
+	if (!Init(iTrack, strFilename, &infoTag))
 	{
 		CLog::Log(LOGERROR, "Error: CCDDARipper::Init failed");
 		return false;
@@ -137,11 +147,11 @@ bool CCDDARipper::Rip(int iTrack, const char* strFile, MUSIC_INFO::CMusicInfoTag
 	g_graphicsContext.Unlock();
 
 	// start ripping
-	while(!bCancled && CDDARIP_DONE != RipChunk(iPercent))
+	while(!bCancelled && CDDARIP_DONE != RipChunk(iPercent))
 	{
 		pDlgProgress->ProgressKeys();
-		bCancled = pDlgProgress->IsCanceled();
-		if (!bCancled && iPercent > (iOldPercent + 2)) // update each 2%, it's a bit faster then every 1%
+		bCancelled = pDlgProgress->IsCanceled();
+		if (!bCancelled && iPercent > (iOldPercent + 2)) // update each 2%, it's a bit faster then every 1%
 		{
 			// update dialog
 			iOldPercent = iPercent;
@@ -153,10 +163,33 @@ bool CCDDARipper::Rip(int iTrack, const char* strFile, MUSIC_INFO::CMusicInfoTag
 	// close dialog and deinit ripper
 	pDlgProgress->Close();
 	DeInit();
-
-	if (bCancled) CLog::Log(LOGWARNING, "User Cancelled CDDA Rip");
+	
+  if (CUtil::IsRemote(strFile) && !bCancelled)
+  {
+    // copy the ripped track to the share
+    CFile file;
+    if (!file.Cache(strFilename, strFile))
+    {
+      CLog::Log(LOGINFO, "Error copying file from %s to %s", strFilename, strFile);
+		  // show error
+		  g_graphicsContext.Lock();
+		  CGUIDialogOK*	pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+		  pDlgOK->SetHeading("Error copying");
+		  pDlgOK->SetLine(0, CStdString(strFilename) + " to");
+		  pDlgOK->SetLine(1, strFile);
+		  pDlgOK->SetLine(2, "");
+		  pDlgOK->DoModal(m_gWindowManager.GetActiveWindow());
+		  g_graphicsContext.Unlock();
+		  CFile::Delete(strFilename);
+		  return false;
+    }
+    // delete cached file
+    CFile::Delete(strFilename);
+  }
+  
+	if (bCancelled) CLog::Log(LOGWARNING, "User Cancelled CDDA Rip");
 	else CLog::Log(LOGINFO, "Finished ripping track %i", iTrack);
-	return !bCancled;
+	return !bCancelled;
 }
 
 // rip a single track from cd
@@ -165,7 +198,8 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
 	int iTrack = 0;
 	CStdString strFile;
 	CStdString strDirectory = g_stSettings.m_strRipPath;
-	if (!CUtil::HasSlashAtEnd(strDirectory)) strDirectory += "\\";
+	if (!CUtil::HasSlashAtEnd(strDirectory)) CUtil::AddDirectorySeperator(strDirectory);
+	bool bIsFATX = !CUtil::IsSmb(strDirectory);
 
 	if (pItem->m_strPath.Find(".cdda") < 0) return false;
 	if (strDirectory.size() < 3)
@@ -189,7 +223,8 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
 	// if album name is set, then we use this as the directory to place the new file in.
 	if (pItem->m_musicInfoTag.GetAlbum().size() > 0)
 	{
-		strDirectory += CUtil::MakeLegalFATXFileName(pItem->m_musicInfoTag.GetAlbum().c_str(), false) + '\\';
+		strDirectory += CUtil::MakeLegalFileName(pItem->m_musicInfoTag.GetAlbum().c_str(), false, bIsFATX);
+		CUtil::AddDirectorySeperator(strDirectory);
 	}
 
 	// Create directory if it doesn't exist
@@ -206,7 +241,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
 		else
 			track = pItem->m_musicInfoTag.GetTitle();
 
-		strFile = strDirectory + CUtil::MakeLegalFATXFileName((track + cExt).c_str(), true);
+		strFile = strDirectory + CUtil::MakeLegalFileName((track + cExt).c_str(), true, bIsFATX);
 	}
 	else
 		strFile.Format("%s%s%02i%s", strDirectory.c_str(), "Track-", iTrack, cExt);
@@ -220,7 +255,8 @@ bool CCDDARipper::RipCD()
 	bool bResult = true;
 	CStdString strFile;
 	CStdString strDirectory = g_stSettings.m_strRipPath;
-	if (!CUtil::HasSlashAtEnd(strDirectory)) strDirectory += "\\";
+	if (!CUtil::HasSlashAtEnd(strDirectory)) CUtil::AddDirectorySeperator(strDirectory);
+	bool bIsFATX = !CUtil::IsSmb(strDirectory);
 
 	// return here if cd is not a CDDA disc
 	MEDIA_DETECT::CCdInfo* pInfo = MEDIA_DETECT::CDetectDVDMedia::GetCdInfo();
@@ -249,7 +285,10 @@ bool CCDDARipper::RipCD()
 	// if album name from first item is set,
 	// then we use this as the directory to place the new file in.
 	if (vecItems[0]->m_musicInfoTag.GetAlbum().size() > 0)
-		strDirectory += CUtil::MakeLegalFATXFileName(vecItems[0]->m_musicInfoTag.GetAlbum().c_str(), false) + '\\';
+	{
+		strDirectory += CUtil::MakeLegalFileName(vecItems[0]->m_musicInfoTag.GetAlbum().c_str(), false, bIsFATX);
+		CUtil::AddDirectorySeperator(strDirectory);
+  }		
 	else
 	{
 		// create a directory based on current date
@@ -262,7 +301,8 @@ bool CCDDARipper::RipCD()
 			strDate.Format("%04i-%02i-%02i-%i", datetime.wYear, datetime.wMonth, datetime.wDay, iNumber);
 			if (!CUtil::FileExists(strDirectory + strDate))
 			{
-				strDirectory += strDate + "\\";
+				strDirectory += strDate;
+				CUtil::AddDirectorySeperator(strDirectory);
 				break;
 			}
 			iNumber++;
@@ -288,7 +328,7 @@ bool CCDDARipper::RipCD()
 			else
 				track = vecItems[i]->m_musicInfoTag.GetTitle();
 
-			strFile = strDirectory + CUtil::MakeLegalFATXFileName((track + cExt).c_str(), true);
+			strFile = strDirectory + CUtil::MakeLegalFileName((track + cExt).c_str(), true, bIsFATX);
 		}
 		else
 			strFile.Format("%s%s%02i%s", strDirectory.c_str(), "Track-", iTrack, cExt);
