@@ -1774,6 +1774,7 @@ void CMusicDatabase::EmptyCache()
 	m_genreCache.erase(m_genreCache.begin(), m_genreCache.end());
 	m_pathCache.erase(m_pathCache.begin(), m_pathCache.end());
 	m_albumCache.erase(m_albumCache.begin(), m_albumCache.end());
+	m_thumbCache.erase(m_thumbCache.begin(), m_thumbCache.end());
 }
 
 bool CMusicDatabase::GetSongsByPathes(SETPATHES& pathes, MAPSONGS& songs)
