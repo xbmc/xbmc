@@ -42,6 +42,9 @@ void    mplayer_setTime(int iTime);
 int     mplayer_getTime();
 __int64 mplayer_getCurrentTime();
 void    mplayer_ToFFRW(int iSpeed);
+void		mplayer_setVolume(int iPercentage);
+int     mplayer_getVolume();
+
 #ifdef __cplusplus
 }
 #endif

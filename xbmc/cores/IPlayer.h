@@ -31,7 +31,8 @@ public:
 	virtual void	  Seek(bool bPlus=true, bool bLargeStep=false)=0;
   virtual void    SeekPercentage(int iPercent=0){};
   virtual int     GetPercentage(){return 0;};
-	virtual void		SetVolume(bool bPlus=true)=0;	
+  virtual void		SetVolume(int iPercentage){};	
+  virtual int     GetVolume(){return 0;};	
 	virtual void		SetContrast(bool bPlus=true)=0;	
 	virtual void		SetBrightness(bool bPlus=true)=0;	
 	virtual void		SetHue(bool bPlus=true)=0;	

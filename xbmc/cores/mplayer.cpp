@@ -848,13 +848,13 @@ void CMPlayer::ToggleFrameDrop()
 	mplayer_put_key('d');
 }
 
-
-void CMPlayer::SetVolume(bool bPlus)
+int CMPlayer::GetVolume()
 {
-	if (bPlus)
-		mplayer_put_key('0');
-	else
-		mplayer_put_key('9');
+  return mplayer_getVolume();
+}
+void CMPlayer::SetVolume(int iPercentage)
+{
+  mplayer_setVolume(iPercentage);
 }
 
 void CMPlayer::SetContrast(bool bPlus)

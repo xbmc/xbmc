@@ -75,7 +75,8 @@ public:
 	virtual void		ToggleFrameDrop();
 	virtual void		SubtitleOffset(bool bPlus=true);
 	virtual void	  Seek(bool bPlus=true, bool bLargeStep=false);
-	virtual void		SetVolume(bool bPlus=true);	
+	virtual void		SetVolume(int iPercentage);	
+  virtual int     GetVolume();	
 	virtual void		SetContrast(bool bPlus=true);	
 	virtual void		SetBrightness(bool bPlus=true);	
 	virtual void		SetHue(bool bPlus=true);	
