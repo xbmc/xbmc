@@ -83,7 +83,7 @@ bool CMusicDatabase::CreateTables()
 	{
     m_pDB->start_transaction();
     m_pDS->exec("CREATE TABLE artist ( idArtist integer primary key, strArtist text)\n");
-    m_pDS->exec("CREATE TABLE album ( idAlbum integer primary key, strAlbum text)\n");
+    m_pDS->exec("CREATE TABLE album ( idAlbum integer primary key, idArtist integer, strAlbum text)\n");
 		m_pDS->exec("CREATE TABLE genre ( idGenre integer primary key, strGenre text)\n");
 		m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idArtist integer, idAlbum integer, idGenre integer, strTitle text, iTrack integer, iDuration integer, iYear integer, strFileName text)\n");
 		m_pDS->exec("CREATE TABLE albuminfo ( idAlbumInfo integer primary key, idAlbum integer, idArtist integer,iYear integer, idGenre integer, strTones text, strStyles text, strReview text, strImage text, iRating integer)\n");
@@ -110,9 +110,9 @@ void CMusicDatabase::AddSong(const CSong& song1)
 #if 1
 	if (NULL==m_pDB) return ;
 	if (NULL==m_pDS) return ;
-	long lAlbumId  = AddAlbum(song.strAlbum);
 	long lGenreId  = AddGenre(song.strGenre);
 	long lArtistId = AddArtist(song.strArtist);
+	long lAlbumId  = AddAlbum(song.strAlbum,lArtistId);
 
 	char szSQL[1024];
 	sprintf(szSQL,"select * from song where idAlbum=%i AND idGenre=%i AND idArtist=%i AND strTitle='%s'", lAlbumId,lGenreId,lArtistId,song.strTitle.c_str());
@@ -128,7 +128,7 @@ void CMusicDatabase::AddSong(const CSong& song1)
 }
 
 
-long CMusicDatabase::AddAlbum(const string& strAlbum1)
+long CMusicDatabase::AddAlbum(const string& strAlbum1, long lArtistId)
 {
 	string strAlbum=strAlbum1;
 	RemoveInvalidChars(strAlbum);
@@ -142,10 +142,9 @@ long CMusicDatabase::AddAlbum(const string& strAlbum1)
 	if (m_pDS->num_rows() == 0) 
 	{
 		// doesnt exists, add it
-		strSQL = "insert into album (idAlbum, strAlbum) values( NULL, '" ;
-		strSQL +=strAlbum;
-		strSQL +="')";
-		m_pDS->exec(strSQL.c_str());
+		char sSQL[1024];
+		sprintf(sSQL,"insert into album (idAlbum, strAlbum,idArtist) values( NULL, '%s',%i)", strAlbum.c_str(),lArtistId);
+		m_pDS->exec(sSQL);
 		long lAlbumID=sqlite_last_insert_rowid(m_pDB->getHandle());
 		return lAlbumID;
 	}
@@ -364,14 +363,15 @@ bool CMusicDatabase::GetAlbums(VECALBUMS& albums)
 	if (NULL==m_pDB) return false;
 	if (NULL==m_pDS) return false;
 	char szSQL[1024];
-	sprintf(szSQL,"select * from album" );
+	sprintf(szSQL,"select * from album,artist where album.idArtist=artist.idArtist" );
 	if (!m_pDS->query(szSQL)) return false;
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound== 0) return false;
 	while (!m_pDS->eof()) 
 	{
 		CAlbum album;
-		album.strAlbum  = m_pDS->fv("strAlbum").get_asString();
+		album.strAlbum  = m_pDS->fv("album.strAlbum").get_asString();
+		album.strArtist = m_pDS->fv("artist.strArtist").get_asString();
 		albums.push_back(album);
 		m_pDS->next();
 	}
@@ -394,9 +394,9 @@ long CMusicDatabase::AddAlbumInfo(const CAlbum& album1)
 #if 1
 	if (NULL==m_pDB) return -1;
 	if (NULL==m_pDS) return -1;
-	long lAlbumId  = AddAlbum(album.strAlbum);
 	long lGenreId  = AddGenre(album.strGenre);
 	long lArtistId = AddArtist(album.strArtist);
+	long lAlbumId  = AddAlbum(album.strAlbum,lArtistId);
 
 	char szSQL[1024];
 	sprintf(szSQL,"select * from albuminfo where idAlbum=%i AND idGenre=%i AND idArtist=%i ", lAlbumId,lGenreId,lArtistId);

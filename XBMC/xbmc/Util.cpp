@@ -627,65 +627,8 @@ void CUtil::GetAlbumThumb(const CStdString& strFileName, CStdString& strThumb)
   crc.Compute(strFileName.c_str(),strlen(strFileName.c_str()));
 	strThumb.Format("%s\\thumbs\\%x.tbn",g_stSettings.m_szAlbumDirectory,crc);
 }
-void CUtil::GetAlbumInfo(const CStdString& strFileName, CStdString& strAlbumThumb)
-{
-	CStdString strTmp="";
-	for (int i=0; i < (int)strFileName.size(); ++i)
-	{
-		char kar=strFileName[i];
-		if ( isalpha( (byte)kar) ) strTmp +=kar;
-	}
-	strTmp.ToLower();
-	Crc32 crc;
-	crc.Reset();
-  crc.Compute(strTmp.c_str(),strTmp.size());
-	strAlbumThumb.Format("%s\\albuminfo\\%x.ai",g_stSettings.m_szAlbumDirectory,crc);
-}
 
-void CUtil::GetAlbumDatabase(const CStdString& strFileName, CStdString& strAlbumThumb)
-{
-	CStdString strTmp="";
-	for (int i=0; i < (int)strFileName.size(); ++i)
-	{
-		char kar=strFileName[i];
-		if ( isalpha( (byte)kar) ) strTmp +=kar;
-	}
-	strTmp.ToLower();
-	Crc32 crc;
-	crc.Reset();
-  crc.Compute(strTmp.c_str(),strTmp.size());
-	strAlbumThumb.Format("%s\\albumdbs\\%x.aldbs",g_stSettings.m_szAlbumDirectory,crc);
-}
 
-void CUtil::GetArtistDatabase(const CStdString& strFileName, CStdString& strArtistDBS)
-{
-	CStdString strTmp="";
-	for (int i=0; i < (int)strFileName.size(); ++i)
-	{
-		char kar=strFileName[i];
-		if ( isalpha( (byte)kar) ) strTmp +=kar;
-	}
-	strTmp.ToLower();
-	Crc32 crc;
-	crc.Reset();
-  crc.Compute(strTmp.c_str(),strTmp.size());
-	strArtistDBS.Format("%s\\artistdbs\\%x.ardbs",g_stSettings.m_szAlbumDirectory,crc);
-}
-
-void CUtil::GetGenreDatabase(const CStdString& strFileName, CStdString& strGenreDBS)
-{
-	CStdString strTmp="";
-	for (int i=0; i < (int)strFileName.size(); ++i)
-	{
-		char kar=strFileName[i];
-		if ( isalpha( (byte)kar) ) strTmp +=kar;
-	}
-	strTmp.ToLower();
-	Crc32 crc;
-	crc.Reset();
-  crc.Compute(strTmp.c_str(),strTmp.size());
-	strGenreDBS.Format("%s\\genredbs\\%x.grdbs",g_stSettings.m_szAlbumDirectory,crc);
-}
 bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
 {
   // check if thumbnail already exists
@@ -926,8 +869,7 @@ void CUtil::SetThumbs(VECFILEITEMS &items)
 			}
 
 			// album database
-			if (CUtil::IsAudio(pItem->m_strPath) ||
-					pItem->m_strPath.Find(".aldbs")>=0)
+			if ( CUtil::IsAudio(pItem->m_strPath) )
 			{
 				pItem->SetIconImage("defaultAudio.png");
 			}
