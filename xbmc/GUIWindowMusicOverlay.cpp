@@ -30,6 +30,11 @@ using namespace MUSIC_INFO;
 #define CONTROL_FF_LOGO  7
 #define CONTROL_RW_LOGO  8
 
+#define CONTROL_TITLE		51
+#define CONTROL_ALBUM		52
+#define CONTROL_ARTIST	53
+#define CONTROL_YEAR		54
+
 #define STEPS 25
 
 CGUIWindowMusicOverlay::CGUIWindowMusicOverlay()
@@ -396,72 +401,123 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
   m_lStartOffset = 0;
 
 	int nTrackNum=ID3_GetTrackNum( &id3tag );
-	{
-		ShowControl(CONTROL_LOGO_PIC); 
-	}
-	{
-		CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_INFO); 
-		OnMessage(msg1);
-	}
-	if (NULL != pTitle.get())
-	{
-		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-		msg1.SetLabel(pTitle.get() );
-		OnMessage(msg1);
-    tag.SetTitle(pTitle.get() );
-	}
 
-	if (NULL != pArtist.get())
+	ShowControl(CONTROL_LOGO_PIC); 
+
+	if ( NULL != pTitle.get() ) tag.SetTitle( pTitle.get() );
+	if ( NULL != pArtist.get() ) tag.SetArtist( pArtist.get() );
+	if ( NULL != pAlbum.get() ) tag.SetAlbum( pAlbum.get() );
+	if ( nTrackNum >=1 ) tag.SetTrackNumber( nTrackNum );
+	if ( NULL != pGenre.get() ) tag.SetGenre( pGenre.get() );
+	if ( NULL != pYear.get() )
 	{
-		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-		msg1.SetLabel( pArtist.get());
-		OnMessage(msg1);
-    
-    tag.SetArtist(pArtist.get() );
-	}
-		
-	if ( NULL != pAlbum.get())
-	{
-		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-		msg1.SetLabel( pAlbum.get() );
-		OnMessage(msg1);
-    tag.SetAlbum(pAlbum.get() );
-	}
-		
-	if (nTrackNum >=1)
-	{
-		CStdString strText=g_localizeStrings.Get(435);
-		if (strText.GetAt(strText.size()-1) != ' ')
-			strText+=" ";
-		CStdString strTrack;
-		strTrack.Format(strText+"%i", nTrackNum);
-		
-		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-		msg1.SetLabel( strTrack );
-		OnMessage(msg1);
-    
-    tag.SetTrackNumber(nTrackNum);
-	}
-	if (NULL != pYear.get() )
-	{
-		CStdString strText=g_localizeStrings.Get(436);
-		if (strText.GetAt(strText.size()-1) != ' ')
-			strText+=" ";
-		CStdString strYear;
-		strYear.Format(strText+"%s", pYear.get());
-		
-		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-		msg1.SetLabel( strYear );
-		OnMessage(msg1);
     SYSTEMTIME sysTime;
     sysTime.wYear=atoi(pYear.get());
     tag.SetReleaseDate(sysTime);
 	}
+	UpdateInfo(tag);
   g_application.SetCurrentSong(tag);
 }
 
-/// \brief Tries to set the music tag information for \e strFile to window.
-/// \param strFile Audiofile to set.
+/// \brief Updates the music information on screen from the \e tag info.
+/// \param tag Tag data to set
+void CGUIWindowMusicOverlay::UpdateInfo(const CMusicInfoTag &tag)
+{
+	// Display available tag information in fade label control and
+	// individual label controls
+
+	// reset the fadelabel control
+	{
+		CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_INFO); 
+		OnMessage(msg1);
+	}
+
+	if (tag.GetTitle().size())
+	{	// Title
+		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+		msg1.SetLabel(tag.GetTitle());
+		OnMessage(msg1);
+		CGUIMessage msg2(GUI_MSG_LABEL_SET, GetID(), CONTROL_TITLE); 
+		msg2.SetLabel(tag.GetTitle());
+		OnMessage(msg2);
+	}
+
+	if (tag.GetArtist().size())
+	{	//	Artist
+		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+		msg1.SetLabel(tag.GetArtist());
+		OnMessage(msg1);
+		CGUIMessage msg2(GUI_MSG_LABEL_SET, GetID(), CONTROL_ARTIST); 
+		msg2.SetLabel(tag.GetArtist());
+		OnMessage(msg2);
+	}
+
+	if (tag.GetAlbum().size())
+	{	//	Album
+		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+		msg1.SetLabel(tag.GetAlbum());
+		OnMessage(msg1);
+		CGUIMessage msg2(GUI_MSG_LABEL_SET, GetID(), CONTROL_ALBUM); 
+		msg2.SetLabel(tag.GetAlbum());
+		OnMessage(msg2);
+	}
+
+	int iTrack=tag.GetTrackNumber();
+	if (iTrack >=1)
+	{
+		//	Tracknumber
+		CStdString strText=g_localizeStrings.Get(435);	//	"Track"
+		if (strText.GetAt(strText.size()-1) != ' ')
+			strText+=" ";
+		CStdString strTrack;
+		strTrack.Format(strText+"%i", iTrack);
+		
+		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+		msg1.SetLabel(strTrack);
+		OnMessage(msg1);
+	}
+
+	SYSTEMTIME systemtime;
+	tag.GetReleaseDate(systemtime);
+	int iYear=systemtime.wYear;
+	if (iYear >=1900)
+	{
+		//	Year
+		CStdString strText=g_localizeStrings.Get(436);	//	"Year:"
+		if (strText.GetAt(strText.size()-1) != ' ')
+			strText+=" ";
+		CStdString strYear;
+		strYear.Format(strText+"%i", iYear);
+		
+		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+		msg1.SetLabel(strYear);
+		OnMessage(msg1);
+		CGUIMessage msg2(GUI_MSG_LABEL_SET, GetID(), CONTROL_YEAR); 
+		msg2.SetLabel(strYear);
+		OnMessage(msg2);
+	}
+
+	if (tag.GetDuration() > 0)
+	{
+		//	Duration
+		CStdString strDuration, strTime;
+
+		CStdString strText=g_localizeStrings.Get(437);
+		if (strText.GetAt(strText.size()-1) != ' ')
+			strText+=" ";
+
+		CUtil::SecondsToHMSString(tag.GetDuration(), strTime);
+
+		strDuration=strText+strTime;
+		
+		CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
+		msg1.SetLabel( strDuration );
+		OnMessage(msg1);
+	}
+}
+
+/// \brief Tries to set the music tag information for \e item to window.
+/// \param item Audiofile to set.
 void CGUIWindowMusicOverlay::SetCurrentFile(CFileItem& item)
 {
 	//	Release previously shown album 
@@ -560,77 +616,7 @@ void CGUIWindowMusicOverlay::SetCurrentFile(CFileItem& item)
 		//	display only, if we have a title
 		if (tag.GetTitle().size())
 		{
-			//	Display available tag information in fade label control
-
-			CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-			msg1.SetLabel(tag.GetTitle());
-			OnMessage(msg1);
-			
-			if (tag.GetArtist().size())
-			{
-				//	Artist
-				CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-				msg1.SetLabel(tag.GetArtist());
-				OnMessage(msg1);
-			}
-			
-			if (tag.GetAlbum().size())
-			{
-				//	Album
-				CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-				msg1.SetLabel(tag.GetAlbum());
-				OnMessage(msg1);
-			}
-			
-			int iTrack=tag.GetTrackNumber();
-			if (iTrack >=1)
-			{
-				//	Tracknumber
-				CStdString strText=g_localizeStrings.Get(435);	//	"Track"
-				if (strText.GetAt(strText.size()-1) != ' ')
-					strText+=" ";
-				CStdString strTrack;
-				strTrack.Format(strText+"%i", iTrack);
-				
-				CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-				msg1.SetLabel(strTrack);
-				OnMessage(msg1);
-			}
-
-			SYSTEMTIME systemtime;
-			tag.GetReleaseDate(systemtime);
-			int iYear=systemtime.wYear;
-			if (iYear >=1900)
-			{
-				//	Year
-				CStdString strText=g_localizeStrings.Get(436);	//	"Year:"
-				if (strText.GetAt(strText.size()-1) != ' ')
-					strText+=" ";
-				CStdString strYear;
-				strYear.Format(strText+"%i", iYear);
-				
-				CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-				msg1.SetLabel(strYear);
-				OnMessage(msg1);
-			}
-
-			if (tag.GetDuration() > 0)
-			{
-				//	Duration
-				CStdString strDuration, strTime;
-
-				CStdString strText=g_localizeStrings.Get(437);
-				if (strText.GetAt(strText.size()-1) != ' ')
-					strText+=" ";
-
-				CUtil::SecondsToHMSString(tag.GetDuration(), strTime);
-
-				strDuration=strText+strTime;
-				
-				CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
-				msg1.SetLabel( strDuration );
-				OnMessage(msg1);
-			}
+			UpdateInfo(tag);
 		}	//	if (tag.GetTitle().size())
 		else 
 		{

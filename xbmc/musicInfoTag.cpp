@@ -78,7 +78,7 @@ const CStdString& CMusicInfoTag::GetGenre() const
 	return m_strGenre;
 }
 
-void CMusicInfoTag::GetReleaseDate(SYSTEMTIME& dateTime)
+void CMusicInfoTag::GetReleaseDate(SYSTEMTIME& dateTime) const
 {
 	memcpy(&dateTime,&m_dwReleaseDate,sizeof(m_dwReleaseDate) );
 }
