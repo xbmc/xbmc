@@ -32,6 +32,10 @@ public:
 	void									SetViewWindow(const RECT&	rc) ;
 	void									SetFullScreenVideo(bool bOnOff); 
 	bool									IsFullScreenVideo() const; 
+	bool									IsCalibrating() const; 
+	void									SetCalibrating(bool bOnOff); 
+	void									SetVideoResolution(int iResolution);
+	int 									GetVideoResolution() const;
 	void									SetOffset(int iXoffset, int iYoffset);
 	void									Lock();
 	void									Unlock();
@@ -51,6 +55,8 @@ protected:
 	int											m_iScreenOffsetX;
 	int											m_iScreenOffsetY;
 	bool										m_bShowPreviewWindow;
+	bool										m_bCalibrating;
+	int											m_iVideoResolution;
 };
 
 extern CGraphicContext g_graphicsContext;

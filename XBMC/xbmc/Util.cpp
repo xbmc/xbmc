@@ -1072,3 +1072,74 @@ bool CUtil::IsHD(const CStdString& strFileName)
 	if ( url.GetProtocol().size() ) return false;
 	return true;
 }
+
+
+int	CUtil::GetResolution(int iWidth, int iHeight, bool bPAL, bool bPAL60)
+{
+	if (iWidth==1920 && iHeight==1080) return 1;
+	if (iWidth==1280 && iHeight==720 ) return 2;
+
+	if (!bPAL)
+	{
+		if (iWidth==640 && iHeight==480) return 3;
+		if (iWidth==720 && iHeight==480) return 4;
+	}
+	else
+	{
+		if (bPAL60)
+		{
+			if (iWidth==640 && iHeight==480) return 5;
+			if (iWidth==720 && iHeight==480) return 6;
+			if (iWidth==720 && iHeight==576) return 7;
+		}
+		else
+		{
+			if (iWidth==640 && iHeight==480) return 8;
+			if (iWidth==720 && iHeight==480) return 9;
+			if (iWidth==720 && iHeight==576) return 10;
+		}
+
+	}
+	return 0;
+}
+void	CUtil::GetResolutionParams(int m_iResolution,  int& iScreenWidth , int& iScreenHeight,bool& bPAL, bool& bPAL60)
+{
+	iScreenWidth=720;
+	iScreenHeight=576;
+	bPAL=true;
+	bPAL60=false;
+	switch (m_iResolution)
+	{
+		case 1:
+			iScreenWidth=1920; iScreenHeight=1080;
+		break;
+		case 2:
+			iScreenWidth=1280; iScreenHeight=720;
+		break;
+		case 3:
+			iScreenWidth=640;  iScreenHeight=480;bPAL=false;
+		break;
+		case 4:
+			iScreenWidth=720; iScreenHeight=480; bPAL=false;
+		break;
+		case 5:
+			iScreenWidth=640; iScreenHeight=480; bPAL=true; bPAL60=true;
+		break;
+		case 6:
+			iScreenWidth=720; iScreenHeight=480; bPAL=true; bPAL60=true;
+		break;
+		case 7:
+			iScreenWidth=720; iScreenHeight=576; bPAL=true; bPAL60=true;
+		break;
+
+		case 8:
+			iScreenWidth=640; iScreenHeight=480; bPAL=true; bPAL60=false;
+		break;
+		case 9:
+			iScreenWidth=720; iScreenHeight=480; bPAL=true; bPAL60=false;
+		break;
+		case 10:
+			iScreenWidth=720; iScreenHeight=576; bPAL=true; bPAL60=false;
+		break;
+	}
+}
