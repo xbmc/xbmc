@@ -143,7 +143,7 @@ CreditLine_t Credits[] =
 
   // Special Thanks crossfade 34, on 60, fadeout 4
   {  50,  22,   7680,   7200,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Special Thanks to" },
-  {  50,  35,      0,   7200,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"The Joker of Team Avalaunch" },
+  {  50,  35,      0,   7200,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team Avalaunch (who helped us with some troubling code)" },
   {  50,  45,      0,   7200,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team Complex" },
   {  50,  55,      0,   7200,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team EvoX" },
   {  50,  65,      0,   7200,  480,  480, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Xbox-scene.com" },
