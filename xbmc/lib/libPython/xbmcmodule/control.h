@@ -9,14 +9,28 @@
 #define Control_Check(op) PyObject_TypeCheck(op, &Control_Type)
 #define Control_CheckExact(op) ((op)->ob_type == &Control_Type)
 
+#define ControlButton_Check(op) PyObject_TypeCheck(op, &ControlButton_Type)
 #define ControlButton_CheckExact(op) ((op)->ob_type == &ControlButton_Type)
+
+#define ControlList_Check(op) PyObject_TypeCheck(op, &ControlList_Type)
 #define ControlList_CheckExact(op) ((op)->ob_type == &ControlList_Type)
-#define Control_CheckExact(op) ((op)->ob_type == &Control_Type)
+
+#define ControlSpin_Check(op) PyObject_TypeCheck(op, &ControlSpin_Type)
 #define ControlSpin_CheckExact(op) ((op)->ob_type == &ControlSpin_Type)
+
+#define ControlLabel_Check(op) PyObject_TypeCheck(op, &ControlLabel_Type)
 #define ControlLabel_CheckExact(op) ((op)->ob_type == &ControlLabel_Type)
+
+#define ControlFadeLabel_Check(op) PyObject_TypeCheck(op, &ControlFadeLabel_Type)
 #define ControlFadeLabel_CheckExact(op) ((op)->ob_type == &ControlFadeLabel_Type)
+
+#define ControlTextBox_Check(op) PyObject_TypeCheck(op, &ControlTextBox_Type)
 #define ControlTextBox_CheckExact(op) ((op)->ob_type == &ControlTextBox_Type)
+
+#define ControlImage_Check(op) PyObject_TypeCheck(op, &ControlImage_Type)
 #define ControlImage_CheckExact(op) ((op)->ob_type == &ControlImage_Type)
+
+// -----------------
 
 #define PyObject_HEAD_XBMC_CONTROL		\
     PyObject_HEAD				\
