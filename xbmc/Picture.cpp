@@ -3,6 +3,9 @@
 #include "sectionloader.h"
 #include "filesystem/file.h"
 #include "utils/log.h"
+#include "autoptrhandle.h"
+
+using namespace AUTOPTR;
 
 #define QUALITY 0
 #define MAX_THUMB_WIDTH 128
@@ -361,8 +364,8 @@ bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize,
 
 	if (!strExtension.size()) return false;
 
-	BYTE* pPicture = new BYTE[nBufSize];
-	memcpy(pPicture, pBuffer, nBufSize);
+	auto_aptr<BYTE> pPicture(new BYTE[nBufSize]);
+	memcpy(pPicture.get(), pBuffer, nBufSize);
 	
 	if ( 0==CUtil::cmpnocase(strExtension.c_str(),"bmp") ) dwImageType=CXIMAGE_FORMAT_BMP;
 	if ( 0==CUtil::cmpnocase(strExtension.c_str(),"bitmap") ) dwImageType=CXIMAGE_FORMAT_BMP;
@@ -386,10 +389,9 @@ bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize,
   try
 	{
 		CxImage image(dwImageType);
-		if (!image.Decode(pPicture,nBufSize,dwImageType))
+		if (!image.Decode(pPicture.get(),nBufSize,dwImageType))
 		{
 			CLog::Log("PICTURE::createthumbnailfrommemory: Unable to load image from memory Error:%s\n", image.GetLastError());
-			delete[] pPicture;
 			return false;
 		}
 		m_dwWidth=image.GetWidth();
@@ -427,19 +429,16 @@ bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize,
 		if (!image.Save(strThumbFileName.c_str(),CXIMAGE_FORMAT_JPG))
     {
 			CLog::Log("PICTURE::createthumbnailfrommemory: Unable to save image:%s Error:%s\n", strThumbFileName.c_str(), image.GetLastError());
-			delete[] pPicture;
 
       ::DeleteFile(strThumbFileName.c_str());
       return false;
     }
-		delete[] pPicture;
 		return true;
 	}
   catch(...)
   {
 		CLog::Log("PICTURE::createthumbnailfrommemory: exception: memfile FileType: %s\n", strExtension.c_str());
   }
-	delete[] pPicture;
 	return false;
 }
 

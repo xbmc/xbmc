@@ -66,7 +66,7 @@ bool Xcddb::closeSocket()
 //-------------------------------------------------------------------------------------------------------------------
 bool Xcddb::Send( const void *buffer, int bytes )
 {
-	auto_ptr<char> tmp_buffer (new char[bytes+10]);
+	auto_aptr<char> tmp_buffer (new char[bytes+10]);
 	strcpy(tmp_buffer.get(),(const char*)buffer);
 	tmp_buffer.get()[bytes]='.';
 	tmp_buffer.get()[bytes+1]=0x0d;
