@@ -84,7 +84,7 @@ bool CIMDB::FindMovie(const CStdString &strMovie,IMDB_MOVIELIST& movielist)
 	}
 
 	char *szXML = new char[50000];
-	if (!IMDbGetSearchResults(szXML, strHTML.c_str(), strURL.c_str()))
+	if (!IMDbGetSearchResults(szXML, strHTML.c_str(), m_http.m_redirectedURL.c_str()))
 	{
 		CLog::Log(LOGERROR, "IMDB: Unable to parse web site");
 		return false;
