@@ -116,6 +116,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			char *argv[] = {"xbmc.xbe", "-ac","hwac3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
 			mplayer_init(argc,argv);
 		}
+
 		else
 		{
 			char szChannels[12];
