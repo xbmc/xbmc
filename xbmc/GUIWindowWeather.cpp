@@ -159,6 +159,9 @@ void CGUIWindowWeather::UpdateButtons()
 
 void CGUIWindowWeather::Render()
 {
+	// update our controls
+	UpdateButtons();
+
 	CGUIWindow::Render();
 }
 
@@ -168,13 +171,5 @@ void CGUIWindowWeather::Refresh()
 	// quietly return if Internet lookups are disabled
 	if (!g_guiSettings.GetBool("Network.EnableInternet")) return;
 
-	// update our controls
-	UpdateButtons();
-
-	static bool bOnce=false;
-	if (!bOnce)
-	{
-		bOnce=true;
-		g_weatherManager.Refresh(m_iCurWeather);
-	}
+	g_weatherManager.Refresh(m_iCurWeather);
 }
