@@ -17,6 +17,40 @@
 #define KEY_BUTTON_DPAD_UP    11
 #define KEY_BUTTON_DPAD_LEFT  12
 #define KEY_BUTTON_DPAD_RIGHT 13
+
+
+
+#define KEY_REMOTE_REVERSE    100
+#define KEY_REMOTE_FORWARD    101
+#define KEY_REMOTE_PLAY       102
+#define KEY_REMOTE_STOP       103
+#define KEY_REMOTE_SKIPMINUS  104
+#define KEY_REMOTE_SKIPPLUS   105
+#define KEY_REMOTE_PAUSE      106
+#define KEY_REMOTE_TITLE      107
+#define KEY_REMOTE_SELECT     108
+#define KEY_REMOTE_INFO       109
+#define KEY_REMOTE_BACK       110
+#define KEY_REMOTE_DISPLAY    111
+#define KEY_REMOTE_MENU       112
+
+#define KEY_REMOTE_DOWN       113
+#define KEY_REMOTE_UP         114
+#define KEY_REMOTE_LEFT       115
+#define KEY_REMOTE_RIGHT      116
+
+#define KEY_REMOTE_0          200
+#define KEY_REMOTE_1          201
+#define KEY_REMOTE_2          202
+#define KEY_REMOTE_3          203
+#define KEY_REMOTE_4          204
+#define KEY_REMOTE_5          205
+#define KEY_REMOTE_6          206
+#define KEY_REMOTE_7          207
+#define KEY_REMOTE_8          208
+#define KEY_REMOTE_9          209
+
+
 class CKey
 {
 public:
