@@ -1150,4 +1150,8 @@
     <id>361</id>
     <value>R. SlideShow</value>
   </string>   
+  <string>
+    <id>362</id>
+    <value>Screensaver Fade Level (%)</value>
+  </string>
 </strings>
