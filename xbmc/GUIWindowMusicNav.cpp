@@ -188,7 +188,6 @@ struct SSortMusicNav
 				break;
 			}
 
-
 			for (int i=0; i < (int)strlen(szfilename1); i++)
 				szfilename1[i]=tolower((unsigned char)szfilename1[i]);
 			
@@ -391,7 +390,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 
 void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items)
 {
-	CLog::Log(LOGDEBUG,"CGUIWindowMusicNav::GetDirectory, strGenre = [%s], strArtist = [%s], strAlbum = [%s]",m_strGenre.c_str(),m_strArtist.c_str(),m_strAlbum.c_str());
+	CLog::Log(LOGDEBUG,"CGUIWindowMusicNav::GetDirectory(%s), strGenre = [%s], strArtist = [%s], strAlbum = [%s]",strDirectory.c_str(),m_strGenre.c_str(),m_strArtist.c_str(),m_strAlbum.c_str());
 
 	// cleanup items
 	if (items.size())
@@ -436,7 +435,6 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 				pFileItem->m_bIsFolder=true;
 				items.push_back(pFileItem);
 			}
-			m_strParentPath = "";
 
 			// get genres from the database
 			VECGENRES genres;	
@@ -478,10 +476,6 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 				pFileItem->m_bIsFolder=true;
 				items.push_back(pFileItem);
 			}
-			if (m_iPath >= 8)
-				m_strParentPath = g_localizeStrings.Get(135); // Genres
-			else
-				m_strParentPath = "";
 
 			// get artists from the database
 			VECARTISTS artists;
@@ -522,12 +516,6 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 				pFileItem->m_bIsFolder=true;
 				items.push_back(pFileItem);
 			}
-			if (m_iPath == 2)
-				m_strParentPath = "";
-			else if (m_iPath >= 8)
-				m_strParentPath = m_strGenre;
-			else
-				m_strParentPath = g_localizeStrings.Get(133); // Artists
 
 			// get albums from the database
 			VECALBUMS albums;
@@ -566,12 +554,6 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 				pFileItem->m_bIsFolder=true;
 				items.push_back(pFileItem);
 			}
-			if (m_iPath == 1)
-				m_strParentPath = "";
-			else if (m_iPath >= 4)
-				m_strParentPath = m_strArtist;
-			else
-				m_strParentPath = g_localizeStrings.Get(132); // Albums
 
 			// get songs from the database
 			VECSONGS songs;
@@ -598,9 +580,6 @@ void CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, VECFILEITE
 		}
 		break;
 	}
-
-	// parent path??
-	CLog::Log(LOGDEBUG,"CGUIWindowMusicNav::GetDirectory(), m_strParentPath = [%s]",m_strParentPath.c_str());
 }
 
 void CGUIWindowMusicNav::UpdateButtons()
@@ -764,6 +743,9 @@ void CGUIWindowMusicNav::OnClick(int iItem)
 {
 	CFileItem* pItem = m_vecItems[iItem];
 	CStdString strPath = pItem->m_strPath;
+	CStdString strNextPath = m_Directory.m_strPath;
+	if (strNextPath.IsEmpty())
+		strNextPath = "db://";
 	if (pItem->m_bIsFolder)
 	{
 		if ( pItem->m_bIsShareOrDrive ) 
@@ -783,14 +765,14 @@ void CGUIWindowMusicNav::OnClick(int iItem)
 			return;
 		}
 		else
-		{		
+		{
 			switch (m_iState)
 			{
 				//	set state to the new directory
 				case SHOW_ROOT:
 				{
 					// genres
-					if (strPath.Equals(CStdString(g_localizeStrings.Get(135))))
+					if (strPath.Equals(CStdString(g_localizeStrings.Get(135).c_str())))
 						m_iState = SHOW_GENRES;
 					// artists
 					else if (strPath.Equals(CStdString(g_localizeStrings.Get(133).c_str())))
@@ -832,21 +814,17 @@ void CGUIWindowMusicNav::OnClick(int iItem)
 				{
 					m_iState = SHOW_SONGS;
 					m_iPath += m_iState;
+					m_strAlbum = pItem->m_musicInfoTag.GetAlbum();
 
 					// clicked on "All Albums" ?
 					if (strPath.IsEmpty())
 						m_strAlbum.Empty();
-					// no, set the path to the album title
-					else
-					{
-						strPath = pItem->m_musicInfoTag.GetAlbum();
-						m_strAlbum = strPath;
-					}
 				}
 				break;
 			}
 		}
-		Update(strPath);
+		strNextPath += pItem->GetLabel() + "/";
+		Update(strNextPath);
 	}
 	else
 	{
@@ -962,7 +940,8 @@ void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
 			m_strGenre.Empty();
 			m_strAlbum.Empty();
 			m_strArtist.Empty();
-			Update("");
+			CStdString strPath = "db://Search/Artist/";
+			Update(strPath);
 			for (int i=0; i<(int)m_vecItems.size(); i++)
 			{
 				CFileItem* pItem=m_vecItems[i];
@@ -993,12 +972,13 @@ void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
 			m_strArtist=pSelItem->m_musicInfoTag.GetArtist();
 			m_strAlbum.Empty();
 
-			Update(m_strArtist);
+			CStdString strPath = "db://Search/Albums/" + m_strArtist;
+			Update(strPath);
 
 			CStdString strHistory;
 			GetDirectoryHistoryString(pSelItem, strHistory);
-			m_history.Set(strHistory, m_strArtist);
-			m_history.Set(m_strArtist, "");
+			m_history.Set(strHistory, strPath);
+			m_history.Set(strPath, "");
 
 			for (int i=0; i<(int)m_vecItems.size(); i++)
 			{
@@ -1155,16 +1135,26 @@ void CGUIWindowMusicNav::GoParentFolder()
 		m_strArtist.Empty();
 		m_strGenre.Empty();
 	}
-  CStdString strPath(m_strParentPath), strOldPath(m_Directory.m_strPath);
-	Update(strPath);
 
-  if(!g_guiSettings.GetBool("FileLists.FullDirectoryHistory"))
-    m_history.Remove(strOldPath); //Delete current path
+	CStdString strOldPath = m_Directory.m_strPath;
+	CUtil::GetParentPath(strOldPath, m_strParentPath);
+
+	// parent path??
+	CLog::Log(LOGDEBUG,"CGUIWindowMusicNav::GoParentFolder(%s), m_strParentPath = [%s]",strOldPath.c_str(),m_strParentPath.c_str());
+
+	Update(m_strParentPath);
+
+	if(!g_guiSettings.GetBool("FileLists.FullDirectoryHistory"))
+		m_history.Remove(strOldPath); // delete current path
 }
 
 void CGUIWindowMusicNav::GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString)
 {
-	strHistoryString=pItem->m_strPath;
+	//strHistoryString=pItem->m_strPath;
+	strHistoryString = m_Directory.m_strPath;
+	if (!CUtil::HasSlashAtEnd(strHistoryString))
+		strHistoryString += "/";
+	strHistoryString += pItem->GetLabel();
 }
 
 /// \brief Add file or folder and its subfolders to playlist
