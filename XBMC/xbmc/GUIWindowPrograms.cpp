@@ -65,7 +65,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
             CGUIWindow::OnMessage(message);
 			m_database.Open();
             m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-            if (m_strDirectory=="?")
+			if (m_strDirectory=="?")
                 m_strDirectory=g_stSettings.m_szDefaultPrograms;
 
             // make controls 100-110 invisible...
@@ -451,9 +451,11 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 
 	for (int j=0; j < (int)pathArray.size(); j++)
 	{
-		m_strDirectory=pathArray[j];
+		m_strDirectory=pathArray[j];			// we want to set m_strDirectory to just the one path for LoadDirectory
 		LoadDirectory(pathArray[j], depth);
 	}
+
+	m_strDirectory=strDir;						// let's set it back to the full path now
 
 	if (m_bookmarkName=="shortcuts")
 		bOnlyDefaultXBE=false;			// let's do this so that we don't only grab default.xbe from database when getting shortcuts
