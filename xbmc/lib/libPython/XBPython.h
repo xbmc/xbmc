@@ -36,6 +36,7 @@ public:
 	virtual void SendMessage(CGUIMessage& message);
 	virtual void OnPlayBackEnded();
 	virtual void OnPlayBackStarted();
+	virtual void OnPlayBackStopped();
 	void	RegisterPythonPlayerCallBack(IPlayerCallback* pCallback);
 	void	UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback);
 	void	Initialize();

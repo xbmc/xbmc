@@ -9,6 +9,7 @@ class IPlayerCallback
 public:
 	virtual void OnPlayBackEnded()=0;
 	virtual void OnPlayBackStarted()=0;
+	virtual void OnPlayBackStopped()=0;
 };
 
 class IPlayer

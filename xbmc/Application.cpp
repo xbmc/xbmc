@@ -2567,7 +2567,7 @@ void CApplication::OnPlayBackEnded()
 	//playback ended
 	m_iPlaySpeed=1;
 
-	// informs python script currently running playback has started
+	// informs python script currently running playback has ended
 	// (does nothing if python is not loaded)
 	g_pythonParser.OnPlayBackEnded();
 
@@ -2589,6 +2589,20 @@ void CApplication::OnPlayBackStarted()
   CheckNetworkHDSpinDown(true);
 
   StartLEDControl(true);   
+}
+
+void CApplication::OnPlayBackStopped()
+{
+	// informs python script currently running playback has ended
+	// (does nothing if python is not loaded)
+	g_pythonParser.OnPlayBackStopped();
+
+	m_CdgParser.Free();
+	OutputDebugString("Playback was stopped\n");
+	CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
+	m_gWindowManager.SendMessage(msg);
+
+	StartLEDControl(false);	
 }
 
 bool CApplication::IsPlaying() const
@@ -2630,11 +2644,8 @@ void CApplication::StopPlaying()
     }
 		m_pPlayer->CloseFile();
 	}
-	m_CdgParser.Free();
-	CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
-	m_gWindowManager.SendMessage(msg);
 
-	StartLEDControl(false);	
+	OnPlayBackStopped();
 }
 
 
@@ -3073,6 +3084,11 @@ bool CApplication::OnMessage(CGUIMessage& message)
 				}
 			}
 
+			if (!m_pPlayer)
+			{
+      	m_CdgParser.Free();
+      }
+
 			if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow()==WINDOW_FULLSCREEN_VIDEO)
 			{
 				m_gWindowManager.PreviousWindow();
@@ -3129,8 +3145,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
 				if (m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
 					m_gWindowManager.PreviousWindow();
 			}
+     	m_CdgParser.Free();
+      SAFE_DELETE(m_pPlayer);
 		}
-		break;
+    break;
 	case GUI_MSG_FULLSCREEN:
 		{	// Switch to fullscreen, if we can
 			SwitchToFullScreen();
@@ -3306,6 +3324,57 @@ void CApplication::SetCurrentSong(const CMusicInfoTag& tag)
 void CApplication::SetCurrentMovie(const CIMDBMovie& tag)
 {
 	m_tagCurrentMovie=tag;
+}
+
+//
+// Returns the total time in seconds of the current media.  Fractional
+// portions of a second are possible - but not necessarily supported by the
+// player class.  This returns a double to be consistent with GetTime() and
+// SeekTime().
+//
+double CApplication::GetTotalTime() const
+{
+    double rc = 0.0;
+
+    if (IsPlaying() && m_pPlayer)
+    {
+        rc = m_pPlayer->GetTotalTime();
+    }
+
+    return rc;
+}
+
+//
+// Returns the current time in seconds of the currently playing media.
+// Fractional portions of a second are possible.  This returns a double to
+// consistent with GetTotalTime() and SeekTime().
+//
+double CApplication::GetTime() const
+{
+    double rc = 0.0;
+
+    if (IsPlaying() && m_pPlayer)
+    {
+        rc = static_cast<double>(m_pPlayer->GetTime());
+    }
+
+    return rc;
+}
+
+//
+// Sets the current position of the currently playing media to the specified
+// time in seconds.  Fractional portions of a second are valid.  The passed
+// time is the time offset from the beginning of the file as opposed to a
+// delta from the current position.  This method accepts a double to be
+// consistent with GetTime() and GetTotalTime().
+//
+void CApplication::SeekTime( double dTime )
+{
+    if (IsPlaying() && m_pPlayer && (dTime >= 0.0))
+    {
+        // convert to milliseconds
+        m_pPlayer->SeekTime( static_cast<__int64>( dTime * 1000.0 ) );
+    }
 }
 
 // using InterlockedExchangePointer so the python library doesn't have to worry

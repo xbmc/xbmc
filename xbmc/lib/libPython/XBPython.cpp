@@ -32,7 +32,7 @@ void XBPython::SendMessage(CGUIMessage& message)
 	evalFile(message.GetStringParam().c_str());
 }
 
-// message all registered callbacks that we stopted playing
+// message all registered callbacks that xbmc stopped playing
 void XBPython::OnPlayBackEnded()
 {
 	if (!bInitialized) return;
@@ -54,6 +54,19 @@ void XBPython::OnPlayBackStarted()
 	while (it != vecPlayerCallbackList.end())
 	{
 		((IPlayerCallback*)(*it))->OnPlayBackStarted();
+		it++;
+	}
+}
+
+// message all registered callbacks that user stopped playing
+void XBPython::OnPlayBackStopped()
+{
+	if (!bInitialized) return;
+
+	PlayerCallbackList::iterator it = vecPlayerCallbackList.begin();
+	while (it != vecPlayerCallbackList.end())
+	{
+		((IPlayerCallback*)(*it))->OnPlayBackStopped();
 		it++;
 	}
 }
