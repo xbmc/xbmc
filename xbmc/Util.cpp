@@ -1722,7 +1722,7 @@ void CUtil::PrepareSubtitleFonts()
   if (g_guiSettings.GetInt("Subtitles.Height")==0) return;
 
   CStdString strPath,strHomePath,strSearchMask;
-  if(g_guiSettings.GetBool("MyVideos.AlternateMPlayer"))
+  if(!g_guiSettings.GetBool("MyVideos.AlternateMPlayer"))
     strHomePath = "Q:\\system\\players";
   else
     strHomePath = "Q:";
