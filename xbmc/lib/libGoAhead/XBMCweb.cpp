@@ -21,6 +21,7 @@
 #include "..\..\playlistplayer.h"
 #include "..\..\url.h"
 #include "..\..\filesystem\CDDADirectory.h"
+#include "..\..\playlistfactory.h"
 
 #pragma code_seg("WEB_TEXT")
 #pragma data_seg("WEB_DATA")
@@ -772,9 +773,62 @@ int CXbmcWeb::xbmcCatalog( int eid, webs_t wp, char_t *parameter)
 								GetNavigatorState() == WEB_NAV_MUSICPLAYLIST ||
 								GetNavigatorState() == WEB_NAV_VIDEOPLAYLIST)
 						{
-							SetCurrentMediaItem(*itm);
-							g_applicationMessenger.MediaStop();
-							g_applicationMessenger.MediaPlay(itm->m_strPath);
+							if (CUtil::IsPlayList(itm->m_strPath))
+							{
+								int iPlayList = PLAYLIST_MUSIC;
+								if (GetNavigatorState() == WEB_NAV_VIDEOS) iPlayList = PLAYLIST_VIDEO;
+
+								// load a playlist like .m3u, .pls
+								// first get correct factory to load playlist
+								CPlayListFactory factory;
+								auto_ptr<CPlayList> pPlayList (factory.Create(itm->m_strPath));
+								if ( NULL != pPlayList.get())
+								{
+									// load it
+									if (!pPlayList->Load(itm->m_strPath))
+									{
+										//hmmm unable to load playlist?
+										return -1;
+									}
+
+									// clear current playlist
+									CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlayList);
+									playlist.Clear();
+
+									// add each item of the playlist to the playlistplayer
+									for (int i=0; i < (int)pPlayList->size(); ++i)
+									{
+										const CPlayList::CPlayListItem& playListItem =(*pPlayList)[i];
+										CStdString strLabel=playListItem.GetDescription();
+										if (strLabel.size()==0) 
+											strLabel=CUtil::GetFileName(playListItem.GetFileName());
+
+										CPlayList::CPlayListItem playlistItem;
+										playlistItem.SetFileName(playListItem.GetFileName());
+										playlistItem.SetDescription(strLabel);
+										playlistItem.SetDuration(playListItem.GetDuration());
+
+										g_playlistPlayer.GetPlaylist(iPlayList).Add(playlistItem);
+									}
+
+									g_playlistPlayer.SetCurrentPlaylist(iPlayList);
+
+									// play first item in playlist
+									g_applicationMessenger.PlayListPlayerPlay(0);
+
+									// set current file item
+									CFileItem item(playlist[0].GetDescription());
+									item.m_strPath = playlist[0].GetFileName();
+									SetCurrentMediaItem(item);
+								}
+							}
+							else
+							{
+								// just play the file
+								SetCurrentMediaItem(*itm);
+								g_applicationMessenger.MediaStop();
+								g_applicationMessenger.MediaPlay(itm->m_strPath);
+							}
 						}
 						else
 						{
