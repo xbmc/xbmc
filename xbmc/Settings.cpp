@@ -414,13 +414,16 @@ void CSettings::GetString(const TiXmlElement* pRootElement, const CStdString& st
 	const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
 	if (pChild)
 	{
-		CStdString strValue=pChild->FirstChild()->Value();
-		if (strValue.size() )
-		{
-			if (strValue !="-")
-				strcpy(szValue,strValue.c_str());
-		}
-	}
+    if (pChild->FirstChild())
+    {
+		  CStdString strValue=pChild->FirstChild()->Value();
+		  if (strValue.size() )
+		  {
+			  if (strValue !="-")
+				  strcpy(szValue,strValue.c_str());
+		  }
+	  }
+  }
 	if (strlen(szValue)==0)
 	{
 		strcpy(szValue,strDefaultValue.c_str());
