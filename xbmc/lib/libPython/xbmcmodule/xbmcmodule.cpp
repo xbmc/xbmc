@@ -9,6 +9,8 @@
 #include "localizestrings.h"
 #include "..\..\..\xbox\iosupport.h"
 #include <ConIo.h>
+#include "infotagvideo.h"
+#include "infotagmusic.h"
 
 // include for constants
 #include "pyutil.h"
@@ -50,14 +52,14 @@ namespace PYXBMC
 	}
 
 	PyDoc_STRVAR(log__doc__,
-		"log(string) -- Write a string to xbmc's log file with log level 7.\n");
+		"log(string) -- Write a string to xbmc's log file with log level 6.\n");
 
 	PyObject* XBMC_Log(PyObject *self, PyObject *args)
 	{
 		char *s_line;
 		if (!PyArg_ParseTuple(args, "s", &s_line))	return NULL;
 
-		CLog::Log(LOGNONE, s_line);
+		CLog::Log(LOGFATAL, s_line);
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -113,6 +115,38 @@ namespace PYXBMC
 		ThreadMessage tMsg = {TMSG_EXECUTE_SCRIPT};
 		tMsg.strParam = cLine;
 		g_applicationMessenger.SendMessage(tMsg);
+
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	PyDoc_STRVAR(sleep__doc__,
+		"sleep(int time) -- Sleeps for 'time' msec.\n"
+		"\n"
+		"Throws: PyExc_TypeError, if time is not a  integer\n"
+		"This is usefull you have for example a Player class that is waiting for onPlayBackEnded()\n"
+		"calls");
+
+	PyObject* XBMC_Sleep(PyObject *self, PyObject *args)
+	{
+		PyObject *pObject;
+		if (!PyArg_ParseTuple(args, "O", &pObject))	return NULL;
+		if (!PyInt_Check(pObject))
+		{
+			PyErr_Format(PyExc_TypeError, "argument must be a bool(integer) value");
+			return NULL;
+		}
+
+		long i = PyInt_AsLong(pObject);
+		while(i != 0)
+		{
+			Py_BEGIN_ALLOW_THREADS
+			Sleep(500);
+			Py_END_ALLOW_THREADS
+
+			Py_MakePendingCalls();
+			i = PyInt_AsLong(pObject);
+		}
 
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -221,6 +255,7 @@ namespace PYXBMC
 		{"output", (PyCFunction)XBMC_Output, METH_VARARGS, output__doc__},
 		{"log", (PyCFunction)XBMC_Log, METH_VARARGS, log__doc__},
 		{"executescript", (PyCFunction)XBMC_ExecuteScript, METH_VARARGS, executeScript__doc__},
+		{"sleep", (PyCFunction)XBMC_Sleep, METH_VARARGS, sleep__doc__},
 		{"shutdown", (PyCFunction)XBMC_Shutdown, METH_VARARGS, shutdown__doc__},
 		{"dashboard", (PyCFunction)XBMC_Dashboard, METH_VARARGS, dashboard__doc__},
 		{"restart", (PyCFunction)XBMC_Restart, METH_VARARGS, restart__doc__},
@@ -250,12 +285,16 @@ namespace PYXBMC
 		if (PyType_Ready(&Keyboard_Type) < 0 ||
 				PyType_Ready(&Player_Type) < 0 ||
 				PyType_Ready(&PlayList_Type) < 0 ||
-				PyType_Ready(&PlayListItem_Type)) return;
+				PyType_Ready(&PlayListItem_Type) < 0 ||
+				PyType_Ready(&InfoTagMusic_Type) < 0 ||
+				PyType_Ready(&InfoTagVideo_Type) < 0) return;
 		
 		Py_INCREF(&Keyboard_Type);
 		Py_INCREF(&Player_Type);
 		Py_INCREF(&PlayList_Type);
 		Py_INCREF(&PlayListItem_Type);
+		Py_INCREF(&InfoTagMusic_Type);
+		Py_INCREF(&InfoTagVideo_Type);
 
 		pXbmcModule = Py_InitModule("xbmc", xbmcMethods);
 		if (pXbmcModule == NULL) return;
@@ -264,12 +303,15 @@ namespace PYXBMC
 		PyModule_AddObject(pXbmcModule, "Player", (PyObject*)&Player_Type);
 		PyModule_AddObject(pXbmcModule, "PlayList", (PyObject*)&PlayList_Type);
 		PyModule_AddObject(pXbmcModule, "PlayListItem", (PyObject*)&PlayListItem_Type);
+		PyModule_AddObject(pXbmcModule, "InfoTagMusic", (PyObject*)&InfoTagMusic_Type);
+		PyModule_AddObject(pXbmcModule, "InfoTagVideo", (PyObject*)&InfoTagVideo_Type);
 
 		// constants
 		PyModule_AddStringConstant(pXbmcModule, "__author__",			PY_XBMC_AUTHOR);
-		PyModule_AddStringConstant(pXbmcModule, "__date__",				"12 April 2004");
-		PyModule_AddStringConstant(pXbmcModule, "__version__",		"1.0");
+		PyModule_AddStringConstant(pXbmcModule, "__date__",				"18 August 2004");
+		PyModule_AddStringConstant(pXbmcModule, "__version__",		"1.1");
 		PyModule_AddStringConstant(pXbmcModule, "__credits__",		PY_XBMC_CREDITS);
+		PyModule_AddStringConstant(pXbmcModule, "__platform__",		PY_XBMC_PLATFORM);
 
 		// playlist constants
 		PyModule_AddIntConstant(pXbmcModule, "PLAYLIST_MUSIC", PLAYLIST_MUSIC);
