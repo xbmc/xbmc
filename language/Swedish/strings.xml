@@ -252,7 +252,7 @@
   </string>  
   <string>
     <id>134</id>
-    <value>Låtar</value>
+    <value>Låtar:</value>
   </string>  
   <string>
     <id>135</id>
@@ -1276,7 +1276,7 @@
       <id>401</id>
       <value>Temp</value>
     </string>
-<string>
+  <string>
     <id>402</id>
     <value>Känns Som</value>
   </string> 
@@ -1490,8 +1490,9 @@
    </string> 
    <string>
      <id>457</id>
-     <value>Växla vy</value>
+     <value>Växla Vy:</value>
    </string> 
+
  <string><id>10000</id><value>Start</value></string>
  <string><id>10001</id><value>Mina Program</value></string>
  <string><id>10002</id><value>Mina Bilder</value></string>
