@@ -211,14 +211,14 @@ void CGUIListControl::RenderText(float fPosX, float fPosY, float fMaxWidth,DWORD
 							szText[i+1]=0;
 						}
 						if (fPosY >=0.0)
-              m_pFont->DrawTextWidth(fPosX-iScrollX,fPosY,m_dwTextColor,szText,fMaxWidth);
+              m_pFont->DrawTextWidth(fPosX-iScrollX,fPosY,dwTextColor,szText,fMaxWidth);
 						
 					}
 					else
 					{
 						iStartFrame++;
 						if (fPosY >=0.0)
-              m_pFont->DrawTextWidth(fPosX,fPosY,m_dwTextColor,wszText,fMaxWidth);
+              m_pFont->DrawTextWidth(fPosX,fPosY,dwTextColor,wszText,fMaxWidth);
 					}
     }
   }

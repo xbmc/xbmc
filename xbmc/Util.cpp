@@ -441,15 +441,15 @@ bool CUtil::HasSlashAtEnd(const CStdString& strFile)
 {
 	if (strFile.Left(2)=="D:" || strFile.Left(2)=="d:")
 		return true;
+
 	return false;
 }
- bool CUtil::IsCDDA(const CStdString& strFile)
+bool CUtil::IsCDDA(const CStdString& strFile)
 {
-	CStdString strLeft=strFile.Left(5);
-	strLeft.ToLower();
-	if (strLeft=="cdda:")
-		return true;
-	return false;
+CURL url(strFile);
+if (url.GetProtocol()==".cdda") 
+	return true;
+return false;
 }
 bool CUtil::IsISO9660(const CStdString& strFile)
 {
