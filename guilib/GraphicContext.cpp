@@ -423,7 +423,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].iWidth = 720;
 			m_pResInfo[res].iHeight = 480;
 			m_pResInfo[res].dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
-			m_pResInfo[res].fPixelRatio = 72.0f/79.0f;
+			m_pResInfo[res].fPixelRatio = 4320.0f/4739.0f;
 			strcpy(m_pResInfo[res].strMode,"480p 4:3");
 		break;
 		case HDTV_480p_16x9:
@@ -436,7 +436,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].iWidth = 720;
 			m_pResInfo[res].iHeight = 480;
 			m_pResInfo[res].dwFlags = D3DPRESENTFLAG_PROGRESSIVE|D3DPRESENTFLAG_WIDESCREEN;
-			m_pResInfo[res].fPixelRatio = 72.0f/79.0f*4.0f/3.0f;
+			m_pResInfo[res].fPixelRatio = 4320.0f/4739.0f*4.0f/3.0f;
 			strcpy(m_pResInfo[res].strMode,"480p 16:9");
 		break;
 		case NTSC_4x3:
@@ -449,7 +449,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].iWidth = 720;
 			m_pResInfo[res].iHeight = 480;
 			m_pResInfo[res].dwFlags = 0;
-			m_pResInfo[res].fPixelRatio = 72.0f/79.0f;
+			m_pResInfo[res].fPixelRatio = 4320.0f/4739.0f;
 			strcpy(m_pResInfo[res].strMode,"NTSC 4:3");
 		break;
 		case NTSC_16x9:
@@ -462,7 +462,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].iWidth = 720;
 			m_pResInfo[res].iHeight = 480;
 			m_pResInfo[res].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
-			m_pResInfo[res].fPixelRatio = 72.0f/79.0f*4.0f/3.0f;
+			m_pResInfo[res].fPixelRatio = 4320.0f/4739.0f*4.0f/3.0f;
 			strcpy(m_pResInfo[res].strMode,"NTSC 16:9");
 		break;
 		case PAL_4x3:
@@ -501,7 +501,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].iWidth = 720;
 			m_pResInfo[res].iHeight = 480;
 			m_pResInfo[res].dwFlags = 0;
-			m_pResInfo[res].fPixelRatio = 72.0f/79.0f;
+			m_pResInfo[res].fPixelRatio = 4320.0f/4739.0f;
 			strcpy(m_pResInfo[res].strMode,"PAL60 4:3");
 		break;
 		case PAL60_16x9:
@@ -514,8 +514,17 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 			m_pResInfo[res].iWidth = 720;
 			m_pResInfo[res].iHeight = 480;
 			m_pResInfo[res].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
-			m_pResInfo[res].fPixelRatio = 72.0f/79.0f*4.0f/3.0f;
+			m_pResInfo[res].fPixelRatio = 4320.0f/4739.0f*4.0f/3.0f;
 			strcpy(m_pResInfo[res].strMode,"PAL60 16:9");
 		break;
 	}
+}
+
+float CGraphicContext::GetPixelRatio(RESOLUTION iRes) const 
+{
+	if (iRes == HDTV_1080i || iRes == HDTV_720p) return 1.0f;
+	if (iRes == HDTV_480p_4x3 || iRes == NTSC_4x3 || iRes == PAL60_4x3) return 4320.0f/4739.0f;
+	if (iRes == HDTV_480p_16x9 || iRes == NTSC_16x9 || iRes == PAL60_16x9) return 4320.0f/4739.0f*4.0f/3.0f;
+	if (iRes == PAL_16x9) return 128.0f/117.0f*4.0f/3.0f;
+	return 128.0f/117.0f;
 }

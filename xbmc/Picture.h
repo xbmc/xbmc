@@ -9,8 +9,9 @@ class CPicture
 public:
 	CPicture(void);
 	virtual ~CPicture(void);
-	IDirect3DTexture8*	Load(const CStdString& strFilename, int &iOriginalWidth, int &iOriginalHeight, int iMaxWidth=128, int iMaxHeight=128);
+	IDirect3DTexture8*	Load(const CStdString& strFilename, int &iOriginalWidth, int &iOriginalHeight, int iMaxWidth=128, int iMaxHeight=128, bool bCreateThumb = false);
 
+  bool                CreateThumbFromImage(const CStdString &strFileName, const CStdString& strThumbnailImage, CxImage& image, int iMaxWidth, int iMaxHeight, bool bWrongFormat = false);
   bool                CreateThumnail(const CStdString& strFileName);
   bool                CreateAlbumThumbnail(const CStdString& strFileName, const CStdString& strAlbum);
 	bool								CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName);
