@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 31-10-2004 added: [ 1051008 ] CD-TEXT support (doesn't work on all drives!!!) (Thnx to mog)
   - 31-10-2004 added: <allowoverlay> tag to give skinners the ability to enable/disable the overlay windows via xml file
   - 30-10-2004 added: SF patch #1056254	New simple-stacking mode for video
   - 30-10-2004 added: Possibility for skinners to define their own windows (custom*.xml where * is a number)

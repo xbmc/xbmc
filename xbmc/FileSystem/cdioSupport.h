@@ -3,6 +3,7 @@
 //					and detecting the filesystem on the Disc.
 //
 //	by Bobbin007 in 2003
+//  CD-Text support by Mog - Oct 2004
 //	
 //	
 //
@@ -12,7 +13,12 @@
 #include <xtl.h>
 #include "../xbox/iosupport.h"
 #include "stdstring.h"
+
+#include "../lib/libcdio/inttypes.h"
+#include "../lib/libcdio/types.h"
 #include "../lib/libcdio/cdio.h"
+#include "../lib/libcdio/cd_types.h"
+#include "../lib/libcdio/cdtext.h"
 
 namespace MEDIA_DETECT 
 {
@@ -80,15 +86,32 @@ namespace MEDIA_DETECT
 		int nFrames;		//	Can be used for cddb query 
 		int nMins;			//	minutes playtime part of Track
 		int nSecs;			//	seconds playtime part of Track
+		cdtext_t cdtext;	//  CD-Text for this track
 	} trackinfo;
 
 
 	class CCdInfo
 	{
 	public:
-		CCdInfo() { m_bHasCDDBInfo=true; ZeroMemory( (void*)&m_ti, sizeof( m_ti ) ); m_nLenght = m_nFirstTrack = m_nNumTrack = m_nNumAudio = m_nFirstAudio = m_nNumData = m_nFirstData = 0; }
-		virtual ~CCdInfo() {}
+		CCdInfo()
+		{ 
+			m_bHasCDDBInfo=true; 
+			cdtext_init(&m_cdtext); 
+			for (int i = 0; i < 100; i++)
+				cdtext_init(&m_ti[i].cdtext); 
+
+			m_nLenght = m_nFirstTrack = m_nNumTrack = m_nNumAudio = m_nFirstAudio = m_nNumData = m_nFirstData = 0; 
+		}
+		virtual ~CCdInfo() 
+		{ 
+			cdtext_destroy(&m_cdtext); 
+			for (int i = 0; i < 100; i++) 
+				cdtext_destroy(&m_ti[i].cdtext); 
+		}
+
 		trackinfo GetTrackInformation( int nTrack ) { return m_ti[nTrack-1]; }
+		cdtext_t GetDiscCDTextInformation() { return m_cdtext; }
+
 		bool HasDataTracks() { return (m_nNumData > 0); }
 		bool HasAudioTracks() { return (m_nNumAudio > 0); }
 		int GetFirstTrack() { return m_nFirstTrack; }
@@ -190,6 +213,7 @@ namespace MEDIA_DETECT
 		void SetDataTrackCount( int nCount ) { m_nNumData = nCount; }
 		void SetAudioTrackCount( int nCount ) { m_nNumAudio = nCount; }
 		void SetTrackInformation( int nTrack, trackinfo nInfo ) { if ( nTrack > 0 && nTrack <= 99  ) m_ti[nTrack-1] = nInfo; }
+		void SetDiscCDTextInformation( cdtext_t cdtext ) { m_cdtext = cdtext;  }
 
 		void SetCddbDiscId( ULONG ulCddbDiscId ) { m_ulCddbDiscId = ulCddbDiscId; }
 		void SetDiscLength( int nLenght ) { m_nLenght = nLenght; }
@@ -210,6 +234,7 @@ namespace MEDIA_DETECT
 		int m_nLenght;			//	Disclenght can be used for cddb query, also see trackinfo.nFrames
 		bool m_bHasCDDBInfo;
 		CStdString	m_strDiscLabel;
+		cdtext_t m_cdtext;		//  CD-Text for this disc
 	};
 
 	class CCdIoSupport
@@ -231,6 +256,8 @@ namespace MEDIA_DETECT
 		void	PrintAnalysis(int fs, int num_audio);
 
 		CCdInfo*		GetCdInfo();
+		void	GetCdTextInfo(trackinfo *pti, int trackNum);
+
 	protected:
 		int		ReadBlock(int superblock, uint32_t offset, uint8_t bufnum, track_t track_num);
 		bool	IsIt(int num);
@@ -265,7 +292,6 @@ namespace MEDIA_DETECT
 		track_t m_nFirstTrackNum;
 
 		CStdString m_strDiscLabel;
-
 
 		int                        m_nFirstData;        /* # of first data track */
 		int                        m_nNumData;                /* # of data tracks */
