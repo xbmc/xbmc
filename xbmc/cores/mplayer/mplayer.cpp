@@ -210,12 +210,12 @@ extern "C"
 	}
 
 
-	BOOL            mplayer_HasVideo()
+	BOOL mplayer_HasVideo()
 	{
 		return pHasVideo();
 	}
 
-	BOOL            mplayer_HasAudio()
+	BOOL mplayer_HasAudio()
 	{
 		return pHasAudio();
 	}
@@ -325,7 +325,10 @@ extern "C"
 
 	void mplayer_get_current_module(char* s, int n)
 	{
-		pGetCurrentModule(s, n);
+		if (pGetCurrentModule)
+			pGetCurrentModule(s, n);
+		else
+			strcpy(s, "unknown");
 	}
 
 	void mplayer_load_dll(DllLoader& dll)
