@@ -1,6 +1,7 @@
 
-<!-- T³umaczenie:   NaPeK -->
-<!-- Kontakt:       napek@poczta.fm -->
+<!-- T³umaczenie NaPeK(napek@poczta.fm) -->
+<!-- Wszelkie zmodyfikacje t³umaczenia powinny spe³niaæ nastêpuj¹ce warunki: -->
+<!-- Wprowadzaj¹cy modyfikacje nie mo¿e byæ anonimowy, nale¿y pozostawiæ informacje o pierwotnym autorze -->
 
 <strings>
   <string><id>0</id><value>Gry & Programy</value></string>
@@ -31,6 +32,8 @@
   <string><id>30</id><value>PaŸdziernik</value></string>
   <string><id>31</id><value>Listopad</value></string>
   <string><id>32</id><value>Grudzieñ</value></string>
+  <string><id>98</id><value>Podgl¹d: Auto</value></string>
+  <string><id>99</id><value>Podgl¹d: Auto Du¿y</value></string>
   <string><id>100</id><value>Ikony</value></string>
   <string><id>101</id><value>Lista</value></string>
   <string><id>102</id><value>Skanuj</value></string>
@@ -293,11 +296,11 @@
   <string><id>360</id><value>Wygaszacz</value></string>
   <string><id>361</id><value>SlideShow</value></string>
   <string><id>362</id><value>Poziom przezroczystoœci wygaszacza (%)</value></string>
-  <string><id>363</id><value>Sortuj: Plikami</value></string>
+  <string><id>363</id><value>Sortuj plikami</value></string>
   <string><id>364</id><value>Multikana³owe przejœcie DD/DTS</value></string>
-  <string><id>365</id><value>Sortuj: Nazwami</value></string>
-  <string><id>366</id><value>Sortuj: Latami</value></string>
-  <string><id>367</id><value>Sortuj: Ocenami</value></string>
+  <string><id>365</id><value>Sortuj nazwami</value></string>
+  <string><id>366</id><value>Sortuj latami</value></string>
+  <string><id>367</id><value>Sortuj ocenami</value></string>
   <string><id>368</id><value>IMDB</value></string>
   <string><id>369</id><value>Tytu³</value></string>
   <string><id>370</id><value>Burze</value></string>
@@ -316,6 +319,16 @@
   <string><id>383</id><value>Wiatr</value></string>
   <string><id>384</id><value>Silny</value></string>
   <string><id>385</id><value>£agodny</value></string>
+  <string><id>386</id><value>Czysto</value></string>
+  <string><id>387</id><value>Pochmurnie</value></string>
+  <string><id>388</id><value>Wczeœnie</value></string>
+  <string><id>389</id><value>Przelotny deszcz</value></string>
+  <string><id>390</id><value>Œnie¿yce</value></string>
+  <string><id>391</id><value>Niskie</value></string>
+  <string><id>392</id><value>Œrednie</value></string>
+  <string><id>393</id><value>Wysokie</value></string>
+  <string><id>394</id><value>N/A</value></string>
+  <string><id>395</id><value>N/A</value></string>
   <string><id>396</id><value>Wybierz Lokacje</value></string>
   <string><id>397</id><value>Odœwie¿ czas</value></string>
   <string><id>398</id><value>Jednostki temperatury</value></string>
@@ -370,6 +383,7 @@
   <string><id>448</id><value>LCD</value></string>
   <string><id>449</id><value>W³¹czone</value></string>
   <string><id>450</id><value>Kolumn</value></string>
+  <string><id>4501</id><value>Typ LCD</value></string>
   <string><id>451</id><value>Row 1 adress:</value></string>
   <string><id>452</id><value>Row 2 adress:</value></string>
   <string><id>453</id><value>Row 3 adress:</value></string>
@@ -426,6 +440,9 @@
   <string><id>504</id><value>Pusty</value></string>
   <string><id>505</id><value>Wczytuje informacje o mediach z plików...</value></string>
   <string><id>506</id><value>U¿yj nazw katalogów dla opisów</value></string>
+  <string><id>507</id><value>Sortuj u¿yciem</value></string>
+  <string><id>508</id><value>Nie u¿ywaj skrutów</value></string>
+  <string><id>509</id><value>Buforuj miniaturki programów</value></string>
   <string><id>600</id><value>Zgraj CD</value></string>
   <string><id>601</id><value>Œrednia</value></string>
   <string><id>602</id><value>Standardowa</value></string>
@@ -509,8 +526,23 @@
   <string><id>756</id><value>Edytuj nazwê programu</value></string>
   <string><id>757</id><value>Edytuj œcie¿kê</value></string>
   <string><id>758</id><value>Usuwam link programu</value></string>  
-  <string><id>999</id><value>Rozgrywka Online</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
+  <string><id>999</id><value>Rozgrywka Online</value></string>
+  <string><id>1396</id><value>Znoszenie</value></string>
+  <string><id>1397</id><value>i</value></string>
+  <string><id>1398</id><value>Zamarzanie</value></string>
+  <string><id>1399</id><value>N/A</value></string>
+  <string><id>1400</id><value>N/A</value></string>
+  <string><id>1401</id><value>N/A</value></string>
+  <string><id>1402</id><value>N/A</value></string>
+  <string><id>1403</id><value>N/A</value></string>
+  <string><id>1404</id><value>N/A</value></string>
+  <string><id>1405</id><value>N/A</value></string>
+  <string><id>1406</id><value>N/A</value></string>
+  <string><id>1407</id><value>N/A</value></string>
+  <string><id>1408</id><value>N/A</value></string>
+  <string><id>1409</id><value>N/A</value></string>
+  <string><id>1410</id><value>N/A</value></string>
   <string><id>10000</id><value>Ekran g³ówny</value></string>
   <string><id>10001</id><value>Moje programy</value></string>
   <string><id>10002</id><value>Moje obrazy</value></string>
@@ -602,7 +634,6 @@
   <string><id>12353</id><value>i reaktywuj kod</value></string>
   <string><id>12354</id><value>Ignorowaæ zabezpieczenia folderow do nastepnego uruchomienia?</value></string>
   <string><id>12355</id><value>automatycznie w³¹cz zabezpieczenia filderów.)</value></string>
-
   <string><id>12600</id><value>Moja pogoda</value></string>
   <string><id>12900</id><value>Wygaszacz</value></string>
   <string><id>12901</id><value>Pe³no ekranowe OSD</value></string>
@@ -611,6 +642,8 @@
   <string><id>13002</id><value>Tylko Video</value></string>
   <string><id>13003</id><value>- OpóŸnienie</value></string>
   <string><id>13004</id><value>- Minimalny czas trwania</value></string>
+  <string><id>13005</id><value>Wy³¹cz</value></string>
+  <string><id>13006</id><value>Dashboard</value></string>
   <string><id>13100</id><value>Filtr Migotanie</value></string>
   <string><id>13200</id><value>Profile</value></string>
   <string><id>13201</id><value>Usuñ profil '%s'?</value></string>
@@ -618,6 +651,9 @@
   <string><id>13203</id><value>Profil '%s' za³adowany pomyœlnie</value></string>
   <string><id>13204</id><value>Ostatnio za³adowany profil:</value></string>
   <string><id>13205</id><value>Nieznany</value></string>
+  <string><id>13206</id><value>Nadpisz</value></string>
+  <string><id>13207</id><value>Nadpisz profil '%s'?</value></string>
+  <string><id>13299</id><value>Temperatura</value></string>
   <string><id>13300</id><value>Prêdkoœæ wiatraka:</value></string>
   <string><id>13301</id><value>Automatyczna kontrola temperatury</value></string>
   <string><id>13302</id><value>Kontrola obrotów wiatraka</value></string>
@@ -678,7 +714,7 @@
   <string><id>13357</id><value>Kombinacja nak³adek i shader'a</value></string>
   <string><id>13358</id><value>Wysoka jakoœæ Pixel Shader</value></string>
   <string><id>13359</id><value>Œrednia jakoœæ Pixel Shader</value></string>
-
+  <string><id>13360</id><value>Generuj miniaturki</value></string>
   <string><id>14000</id><value>Stacking: Wy³.</value></string>
   <string><id>14001</id><value>Stacking: Prosty</value></string>
   <string><id>14002</id><value>Stacking: Rozmyty</value></string>
@@ -704,17 +740,15 @@
   <string><id>14022</id><value>Biblioteka</value></string>
   <string><id>14023</id><value>Bez TV</value></string>
   <string><id>14024</id><value>Podaj najbli¿sze du¿e miasto lub kod pocztowy US</value></string>
-  <string><id>14025</id><value>Buforowanie Video  - Twardy dysk</value></string>
-  <string><id>14026</id><value>                   - DVDRom</value></string>
-  <string><id>14027</id><value>                   - Sieæ lokalna</value></string>
-  <string><id>14028</id><value>                   - Internet</value></string>
-  <string><id>14029</id><value>Buforowanie Audio  - Twardy dysk</value></string>
-  <string><id>14030</id><value>                   - DVDRom</value></string>
-  <string><id>14031</id><value>                   - Sieæ lokalna</value></string>
-  <string><id>14032</id><value>                   - Internet</value></string>
-  <string><id>14033</id><value>Buforowanie DVD    - Twardy dysk</value></string>
-  <string><id>14034</id><value>                   - DVDRom</value></string>
-  <string><id>14035</id><value>                   - Sieæ lokalna</value></string>
+  <string><id>14025</id><value>Budor Video/Audio/DVD - Dysk twardy</value></string>
+  <string><id>14026</id><value>Bufor Video - DVDRom</value></string>
+  <string><id>14027</id><value>- Sieæ lokalna</value></string>
+  <string><id>14028</id><value>- Internet</value></string>
+  <string><id>14030</id><value>Bufor Audio - DVDRom</value></string>
+  <string><id>14031</id><value>- Sieæ lokalna</value></string>
+  <string><id>14032</id><value>- Internet</value></string>
+  <string><id>14034</id><value>Bufor DVD - DVDRom</value></string>
+  <string><id>14035</id><value>- Sieæ lokalna</value></string>
   <string><id>14036</id><value>Serwery</value></string>
   <string><id>14037</id><value>Wygl¹d</value></string>
   <string><id>14038</id><value>Ustawienia sieciowe zmienione</value></string>
@@ -741,7 +775,7 @@
   <string><id>14059</id><value>Szukaj miniatur w udzia³ach sieciowych</value></string>
   <string><id>14060</id><value>Nieznany typ bufora</value></string>
   <string><id>14061</id><value>Automatycznie</value></string>
-
+  <string><id>14062</id><value>Wpisz nazwê u¿ytkownika dla</value></string>
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Serwis nie jest podlaczony, czy chcesz siê</value></string>
   <string><id>15002</id><value>pod³¹czyæ za pomoc¹ XBMC?</value></string>
