@@ -921,7 +921,7 @@
   </string>
   <string>
     <id>305</id>
-    <value>On/Off</value>
+    <value>Activé</value>
   </string>
   <string>
     <id>306</id>
@@ -1571,6 +1571,61 @@
     <id>478</id>
     <value>Réglages écran</value>
   </string>
+  <string>
+    <id>479</id>
+    <value>Skin et langue</value>
+  </string>
+  <string>
+    <id>480</id>
+    <value>Interface</value>
+  </string>
+  <string>
+    <id>481</id>
+    <value>Options audios</value>
+  </string>
+  <string>
+    <id>482</id>
+    <value>A propos d'XBMC</value>
+  </string>
+  <string>
+    <id>483</id>
+    <value>Album</value>
+  </string>
+  <string>
+    <id>484</id>
+    <value>Artiste</value>
+  </string>
+  <string>
+    <value>Supprimer l'album</value>
+    </string>
+  <string>
+    <id>486</id>
+    <value>Répéter</value>
+  </string>
+  <string>
+    <id>487</id>
+    <value>Répéter une fois</value>
+  </string>
+  <string>
+    <id>488</id>
+    <value>Répéter le dossier de listes</value>
+  </string>
+  <string>
+    <id>489</id>
+    <value>Utiliser la liste</value>
+  </string>
+  <string>
+    <id>490</id>
+    <value>Basculer automatiquement entre listes et icones</value>
+  </string>
+  <string>
+    <id>491</id>
+    <value>Utiliser de grandes icones</value>
+  </string>
+  <string>
+    <id>492</id>
+    <value>Agrandir les sous-titres</value>
+  </string> 
 <string><id>10000</id><value>Accueil</value></string>
 <string><id>10001</id><value>Mes Programes</value></string>
 <string><id>10002</id><value>Mes Images</value></string>
