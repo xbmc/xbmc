@@ -216,7 +216,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
         UpdateButtons();
         UpdateListControl();
 
-				if (m_nTempPlayListWindow==GetID() && g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC_TEMP)
+				if (m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory.Find(m_strDirectory) > -1 && g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC_TEMP)
 				{
 					int nSong=g_playlistPlayer.GetCurrentSong();
 					const CPlayList::CPlayListItem item=g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP)[nSong];
