@@ -360,7 +360,7 @@ int DllLoader::Parse()
 
 	int Offset = 0;
 	fseek(fp, 0x3c, SEEK_SET);
-	fread(&Offset, 1, 1, fp);
+	fread(&Offset, sizeof(int),1, fp);
 	if (Offset <= 0)
 	{
 		fclose(fp);

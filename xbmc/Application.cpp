@@ -64,8 +64,6 @@ HRESULT CApplication::Create()
   CIoSupport helper;
   helper.Remap("C:,Harddisk0\\Partition2");
   helper.Remap("E:,Harddisk0\\Partition1");
-  helper.Remap("F:,Harddisk0\\Partition6");
-  helper.Remap("G:,Harddisk0\\Partition7"); // used for the LBA-48 hack allowing >120 gig
   helper.Remount("D:","Cdrom0");
 	
 	{
@@ -83,6 +81,16 @@ HRESULT CApplication::Create()
 	strSkinPath+=CStdString("\\skin");
 
 	g_settings.Load();
+
+	if ( g_stSettings.m_bUseFDrive )
+	{
+		helper.Remap("F:,Harddisk0\\Partition6");
+	}
+	if ( g_stSettings.m_bUseGDrive )
+	{
+		helper.Remap("G:,Harddisk0\\Partition7"); // used for the LBA-48 hack allowing >120 gig
+	}
+
 	CStdString strLanguagePath;
 	strLanguagePath.Format("%s\\language\\%s\\strings.xml", strPath.c_str(),g_stSettings.szDefaultLanguage);
 	g_localizeStrings.Load(strLanguagePath );

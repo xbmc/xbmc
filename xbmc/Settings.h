@@ -154,6 +154,8 @@ public:
 		bool			m_bAutorunPictures;
 		char      szDefaultLanguage[256];
 		char      szDefaultVisualisation[256];
+		bool		  m_bUseFDrive;
+		bool		  m_bUseGDrive;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;
