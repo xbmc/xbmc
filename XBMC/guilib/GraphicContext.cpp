@@ -39,12 +39,12 @@ void CGraphicContext::Set(LPDIRECT3DDEVICE8 p3dDevice, int iWidth, int iHeight)
   m_iScreenHeight=iHeight;
 }
 
-void CGraphicContext::SetMediaDir(const string& strMediaDir)
+void CGraphicContext::SetMediaDir(const CStdString& strMediaDir)
 {
   m_strMediaDir=strMediaDir;
 }
 
-const string& CGraphicContext::GetMediaDir()
+const CStdString& CGraphicContext::GetMediaDir()
 {
   return m_strMediaDir;
 }

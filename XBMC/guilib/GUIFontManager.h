@@ -8,7 +8,7 @@
 #include "guifont.h"
 
 #include <vector>
-#include <string>
+#include "stdstring.h"
 using namespace std;
 
 class GUIFontManager
@@ -16,9 +16,9 @@ class GUIFontManager
 public:
   GUIFontManager(void);
   virtual ~GUIFontManager(void);
-	CGUIFont*  Load(const string& strFontName,const string& strFilename);
-  void       LoadFonts(const string& strFilename);
-  CGUIFont*	GetFont(const string& strFontName);
+	CGUIFont*  Load(const CStdString& strFontName,const CStdString& strFilename);
+  void       LoadFonts(const CStdString& strFilename);
+  CGUIFont*	GetFont(const CStdString& strFontName);
 protected:
   vector<CGUIFont*> m_vecFonts;
 };

@@ -9,14 +9,15 @@ CGUIFont::~CGUIFont(void)
 }
 
 
-const string& CGUIFont::GetFontName() const
+const CStdString& CGUIFont::GetFontName() const
 {
   return m_strFontName;
 }
 
-bool CGUIFont::Load(const string& strFontName,const string& strFilename)
+bool CGUIFont::Load(const CStdString& strFontName,const CStdString& strFilename)
 {
-  string strPath=g_graphicsContext.GetMediaDir()+"\\fonts\\";
+  CStdString strPath=g_graphicsContext.GetMediaDir();
+	strPath+="\\fonts\\";
   strPath+=strFilename;
   m_strFontName=strFontName;
   return (CXBFont::Create(strPath.c_str())==S_OK);

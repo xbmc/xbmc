@@ -2,7 +2,7 @@
 #include "guifontmanager.h"
 
 
-CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const string& strFont,const wstring& strLabel, DWORD dwTextColor, DWORD dwTextAlign)
+CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFont,const wstring& strLabel, DWORD dwTextColor, DWORD dwTextAlign)
 :CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight)
 {
   m_strLabel=strLabel;

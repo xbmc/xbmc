@@ -1,6 +1,6 @@
 #include "guiradiobuttoncontrol.h"
 
-CGUIRadioButtonControl::CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const string& strTextureFocus,const string& strTextureNoFocus, const string& strRadioFocus,const string& strRadioNoFocus)
+CGUIRadioButtonControl::CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus, const CStdString& strRadioFocus,const CStdString& strRadioNoFocus)
 :CGUIButtonControl(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight, strTextureFocus,strTextureNoFocus)
 ,m_imgRadioFocus(dwParentID, dwControlId, dwPosX, dwPosY,16,16,strTextureFocus)
 ,m_imgRadioNoFocus(dwParentID, dwControlId, dwPosX, dwPosY,16,16,strTextureNoFocus)

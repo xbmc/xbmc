@@ -22,6 +22,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				OptimizeForProcessor="2"
+				AdditionalIncludeDirectories="../"
 				PreprocessorDefinitions="_DEBUG;_XBOX;_LIB"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -512,6 +513,9 @@
 			</File>
 			<File
 				RelativePath="LocalizeStrings.h">
+			</File>
+			<File
+				RelativePath="StdString.h">
 			</File>
 			<File
 				RelativePath="TextureManager.h">

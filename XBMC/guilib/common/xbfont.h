@@ -142,7 +142,7 @@ public:
     HRESULT Create( D3DTexture* pFontTexture, VOID* pFontData );
     HRESULT Destroy();
 
-    // Returns the dimensions of a text string
+    // Returns the dimensions of a text CStdString
     HRESULT GetTextExtent( const WCHAR* strText, FLOAT* pWidth, 
                            FLOAT* pHeight, BOOL bFirstLineOnly=FALSE ) const;
     HRESULT GetTextExtent( const WCHAR* strText, DWORD cchText, FLOAT* pWidth, 

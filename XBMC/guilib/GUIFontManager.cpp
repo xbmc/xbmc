@@ -12,7 +12,7 @@ GUIFontManager::~GUIFontManager(void)
 }
 
 
-CGUIFont* GUIFontManager::Load(const string& strFontName,const string& strFilename)
+CGUIFont* GUIFontManager::Load(const CStdString& strFontName,const CStdString& strFilename)
 {
   //check if font already exists
   CGUIFont* pFont = GetFont(strFontName);
@@ -35,7 +35,7 @@ CGUIFont* GUIFontManager::Load(const string& strFontName,const string& strFilena
   return NULL;
 }
 
-CGUIFont*	GUIFontManager::GetFont(const string& strFontName)
+CGUIFont*	GUIFontManager::GetFont(const CStdString& strFontName)
 {
   for (int i=0; i < (int)m_vecFonts.size(); ++i)
   {
@@ -45,7 +45,7 @@ CGUIFont*	GUIFontManager::GetFont(const string& strFontName)
   return NULL;
 }
 
-void GUIFontManager::LoadFonts(const string& strFilename)
+void GUIFontManager::LoadFonts(const CStdString& strFilename)
 {
   TiXmlDocument xmlDoc;
   if ( !xmlDoc.LoadFile(strFilename.c_str()) )
@@ -58,22 +58,22 @@ void GUIFontManager::LoadFonts(const string& strFilename)
   }
   TiXmlElement* pRootElement =xmlDoc.RootElement();
 
-  string strValue=pRootElement->Value();
-  if (strValue!=string("fonts")) return ;
+  CStdString strValue=pRootElement->Value();
+  if (strValue!=CStdString("fonts")) return ;
   const TiXmlNode *pChild = pRootElement->FirstChild();
   while (pChild)
   {
-    string strValue=pChild->Value();
+    CStdString strValue=pChild->Value();
     if (strValue=="font")
     {  
       const TiXmlNode *pNode = pChild->FirstChild("name");
       if (pNode)
       {
-          string strFontName=pNode->FirstChild()->Value();
+          CStdString strFontName=pNode->FirstChild()->Value();
           const TiXmlNode *pNode = pChild->FirstChild("filename");
           if (pNode)
           {
-            string strFontFileName=pNode->FirstChild()->Value();
+            CStdString strFontFileName=pNode->FirstChild()->Value();
             Load(strFontName,strFontFileName);
           }
       }

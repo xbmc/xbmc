@@ -3,7 +3,7 @@
 #include "guiWindowManager.h"
 
 
-CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const string& strTextureFocus,const string& strTextureNoFocus)
+CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus)
 :CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight)
 ,m_imgFocus(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight, strTextureFocus)
 ,m_imgNoFocus(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight, strTextureNoFocus)
@@ -114,7 +114,7 @@ void CGUIButtonControl::FreeResources()
 }
 
 
-void CGUIButtonControl::SetLabel(const string& strFontName,const string& strLabel,D3DCOLOR dwColor)
+void CGUIButtonControl::SetLabel(const CStdString& strFontName,const CStdString& strLabel,D3DCOLOR dwColor)
 {
   WCHAR wszText[1024];
   swprintf(wszText,L"%S",strLabel.c_str());
@@ -123,7 +123,7 @@ void CGUIButtonControl::SetLabel(const string& strFontName,const string& strLabe
 	m_pFont=g_fontManager.GetFont(strFontName);
 }
 
-void CGUIButtonControl::SetLabel(const string& strFontName,const wstring& strLabel,D3DCOLOR dwColor)
+void CGUIButtonControl::SetLabel(const CStdString& strFontName,const wstring& strLabel,D3DCOLOR dwColor)
 {
 	m_strLabel=strLabel;
 	m_dwTextColor=dwColor;

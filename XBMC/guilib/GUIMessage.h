@@ -21,7 +21,7 @@
 #define GUI_MSG_SELECTED       10   // control = selected
 #define GUI_MSG_DESELECTED     11   // control = not selected
 
-#define GUI_MSG_LABEL_ADD      12   // add label 2 spin control (lpvoid points to char* string)
+#define GUI_MSG_LABEL_ADD      12   // add label 2 spin control (lpvoid points to char* CStdString)
 
 #define GUI_MSG_LABEL_SET      13
 

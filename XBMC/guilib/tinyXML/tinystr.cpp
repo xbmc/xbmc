@@ -28,12 +28,12 @@ distribution.
 
 
 #include <stdlib.h>
-#include <string.h>
+#include "../StdString.h"
 #include <ctype.h>
 
 #include "tinystr.h"
 
-// TiXmlString constructor, based on a C string
+// TiXmlString constructor, based on a C CStdString
 TiXmlString::TiXmlString (const char* instring)
 {
     unsigned newlen;
@@ -157,7 +157,7 @@ void TiXmlString::append( const char* str, int len )
         allocated = new_alloc;
     }
     else
-        // we know we can safely append the new string
+        // we know we can safely append the new CStdString
         strncat (cstring, str, len);
 }
 
@@ -195,7 +195,7 @@ void TiXmlString::append( const char * suffix )
         allocated = new_alloc;
     }
     else
-        // we know we can safely append the new string
+        // we know we can safely append the new CStdString
         strcat (cstring, suffix);
 }
 

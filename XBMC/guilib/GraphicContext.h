@@ -6,7 +6,7 @@
 #include "GUIMessage.h"
 #include "IMsgSenderCallback.h"
 
-#include <string>
+#include "stdstring.h"
 using namespace std;
 
 class CGraphicContext
@@ -21,8 +21,8 @@ public:
   void              SendMessage(CGUIMessage& message);
   void              setMessageSender(IMsgSenderCallback* pCallback);
   DWORD             GetNewID();
-  const string&     GetMediaDir();
-  void              SetMediaDir(const string& strMediaDir);
+  const CStdString&     GetMediaDir();
+  void              SetMediaDir(const CStdString& strMediaDir);
 
 protected:
   IMsgSenderCallback*     m_pCallback;
@@ -30,7 +30,7 @@ protected:
   int                     m_iScreenHeight;
   int                     m_iScreenWidth;
   DWORD                   m_dwID;
-  string                  m_strMediaDir;
+  CStdString                  m_strMediaDir;
 };
 
 extern CGraphicContext g_graphicsContext;

@@ -11,7 +11,7 @@
 #include "guiButtonControl.h"
 #include "guiListItem.h"
 #include <vector>
-#include <string>
+#include "stdstring.h"
 using namespace std;
 
 class CGUIThumbnailPanel :
@@ -19,15 +19,15 @@ class CGUIThumbnailPanel :
 {
 public:
   CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, 
-                    const string& strFontName, 
-                    const string& strImageIcon,
-                    const string& strImageIconFocus,
+                    const CStdString& strFontName, 
+                    const CStdString& strImageIcon,
+                    const CStdString& strImageIconFocus,
                     DWORD dwitemWidth, DWORD dwitemHeight,
                     DWORD dwSpinWidth,DWORD dwSpinHeight,
-                    const string& strUp, const string& strDown, 
-                    const string& strUpFocus, const string& strDownFocus, 
+                    const CStdString& strUp, const CStdString& strDown, 
+                    const CStdString& strUpFocus, const CStdString& strDownFocus, 
                     DWORD dwSpinColor,DWORD dwSpinX, DWORD dwSpinY,
-                    const string& strFont, DWORD dwTextColor);
+                    const CStdString& strFont, DWORD dwTextColor);
   virtual ~CGUIThumbnailPanel(void);
   virtual void Render();
   virtual void OnKey(const CKey& key) ;
@@ -35,8 +35,9 @@ public:
 
   virtual void AllocResources() ;
   virtual void FreeResources() ;
-  void         SetScrollySuffix(string wstrSuffix);
+  void         SetScrollySuffix(CStdString wstrSuffix);
 protected:
+	void				 RenderItem(bool bFocus,DWORD dwPosX, DWORD dwPosY, CGUIListItem* pItem);
   void         RenderText(float fPosX, float fPosY, DWORD dwTextColor, WCHAR* wszText,bool bScroll );
   void         OnRight();
   void         OnLeft();
@@ -51,6 +52,9 @@ protected:
 	int										m_iCursorY;
   int                   m_iRows;
   int                   m_iColumns;
+	bool									m_bScrollUp;
+	bool									m_bScrollDown;
+	int										m_iScrollCounter;
   wstring               m_strSuffix;
   DWORD                 m_dwTextColor;
   CGUIFont*             m_pFont;

@@ -5,13 +5,13 @@
 #include "gui3d.h"
 #include "guicontrol.h"
 #include "guimessage.h"
-#include <string>
+#include "stdstring.h"
 using namespace std;
 
 class CGUIImage : public CGUIControl
 {
 public:
-  CGUIImage(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const string& strTexture,DWORD dwColorKey=0);
+  CGUIImage(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTexture,DWORD dwColorKey=0);
   virtual ~CGUIImage(void);
   
   virtual void Render();
@@ -37,7 +37,7 @@ protected:
   DWORD                   m_dwColorKey;
   LPDIRECT3DTEXTURE8      m_pTexture;
   LPDIRECT3DVERTEXBUFFER8 m_pVB;
-  string                  m_strFileName;
+  CStdString                  m_strFileName;
   int                     m_iTextureWidth;
   int                     m_iTextureHeight;
   int                     m_iBitmap;

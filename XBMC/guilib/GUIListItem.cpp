@@ -8,7 +8,7 @@ CGUIListItem::CGUIListItem(void)
   m_pImage=NULL;
 }
 
-CGUIListItem::CGUIListItem(bool bHasImage, const string& strLabel)
+CGUIListItem::CGUIListItem(bool bHasImage, const CStdString& strLabel)
 {
   m_strLabel2="";
   m_bImage=bHasImage;
@@ -27,13 +27,13 @@ CGUIListItem::~CGUIListItem(void)
 }
 
 
-const string& CGUIListItem::GetLabel() const
+const CStdString& CGUIListItem::GetLabel() const
 {
   return m_strLabel;
 }
 
 
-const string& CGUIListItem::GetLabel2() const
+const CStdString& CGUIListItem::GetLabel2() const
 {
   return m_strLabel2;
 }

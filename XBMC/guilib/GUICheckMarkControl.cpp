@@ -2,7 +2,7 @@
 #include "guifontmanager.h"
 
 
-CGUICheckMarkControl::CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const string& strTextureCheckMark,DWORD dwCheckWidth, DWORD dwCheckHeight)
+CGUICheckMarkControl::CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureCheckMark,DWORD dwCheckWidth, DWORD dwCheckHeight)
 :CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight)
 ,m_imgCheckMark(dwParentID, dwControlId, dwPosX, dwPosY,dwCheckWidth, dwCheckHeight, strTextureCheckMark)
 {
@@ -84,7 +84,7 @@ void CGUICheckMarkControl::FreeResources()
 }
 
 
-void CGUICheckMarkControl::SetLabel(const string& strFontName,const string& strLabel,D3DCOLOR dwColor)
+void CGUICheckMarkControl::SetLabel(const CStdString& strFontName,const CStdString& strLabel,D3DCOLOR dwColor)
 {
   WCHAR wszText[1024];
   swprintf(wszText,L"%S",strLabel.c_str());
@@ -93,7 +93,7 @@ void CGUICheckMarkControl::SetLabel(const string& strFontName,const string& strL
 	m_pFont=g_fontManager.GetFont(strFontName);
 }
 
-void CGUICheckMarkControl::SetLabel(const string& strFontName,const wstring& strLabel,D3DCOLOR dwColor)
+void CGUICheckMarkControl::SetLabel(const CStdString& strFontName,const wstring& strLabel,D3DCOLOR dwColor)
 {
 	m_strLabel=strLabel;
 	m_dwTextColor=dwColor;

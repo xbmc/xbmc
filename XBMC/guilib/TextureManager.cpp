@@ -13,7 +13,7 @@ CGUITextureManager::~CGUITextureManager(void)
 }
 
 
-LPDIRECT3DTEXTURE8 CGUITextureManager::GetTexture(const string& strTextureName, DWORD dwColorKey)
+LPDIRECT3DTEXTURE8 CGUITextureManager::GetTexture(const CStdString& strTextureName, DWORD dwColorKey)
 {
   for (int i=0; i < (int)m_vecTextures.size(); ++i)
   {
@@ -27,7 +27,8 @@ LPDIRECT3DTEXTURE8 CGUITextureManager::GetTexture(const string& strTextureName, 
 
   LPDIRECT3DTEXTURE8      pTexture;
 
-  string strPath=g_graphicsContext.GetMediaDir()+"\\media\\";
+  CStdString strPath=g_graphicsContext.GetMediaDir();
+	strPath+="\\media\\";
   strPath+=strTextureName;
   if (strTextureName.c_str()[1] == ':')
     strPath=strTextureName;
@@ -49,7 +50,7 @@ LPDIRECT3DTEXTURE8 CGUITextureManager::GetTexture(const string& strTextureName, 
   return pTexture;
 }
 
-void CGUITextureManager::ReleaseTexture(const string& strTextureName)
+void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName)
 {
   ivecTextures i;
   i = m_vecTextures.begin();

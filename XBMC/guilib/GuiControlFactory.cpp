@@ -23,7 +23,7 @@ CGUIControlFactory::~CGUIControlFactory(void)
 CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pControlNode)
 {
   const TiXmlNode* pType=pControlNode->FirstChild("type");
-  string strType=pType->FirstChild()->Value();
+  CStdString strType=pType->FirstChild()->Value();
 
   DWORD  dwPosX=0,dwPosY=0;
   DWORD  dwWidth=0, dwHeight=0;
@@ -59,7 +59,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
   if (strType=="label")
   {
       wstring strLabel;
-      string  strFont;
+      CStdString  strFont;
       D3DCOLOR dwTextColor;
       sscanf(pControlNode->FirstChild("textcolor" )->FirstChild()->Value(),"%x",&dwTextColor);
       DWORD dwLabelID=atol(pControlNode->FirstChild("label")->FirstChild()->Value());
@@ -70,7 +70,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       pNode=pControlNode->FirstChild("align");
       if (pNode)
       {
-        string strAlign=pControlNode->FirstChild("align")->FirstChild()->Value();      
+        CStdString strAlign=pControlNode->FirstChild("align")->FirstChild()->Value();      
         if (strAlign=="right") dwAlign=XBFONT_RIGHT;
       }
 
@@ -82,7 +82,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
   if (strType=="button")
   {
       wstring strLabel;
-      string strFont,strTextureFocus,strTextureNoFocus;
+      CStdString strFont,strTextureFocus,strTextureNoFocus;
       D3DCOLOR dwTextColor;
       D3DCOLOR dwDisabledColor;
       sscanf(pControlNode->FirstChild("disabledcolor" )->FirstChild()->Value(),"%x",&dwDisabledColor);
@@ -117,8 +117,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
   if (strType=="togglebutton")
   {
       wstring strLabel;
-      string strFont,strTextureFocus,strTextureNoFocus;
-      string strTextureAltFocus,strTextureAltNoFocus;
+      CStdString strFont,strTextureFocus,strTextureNoFocus;
+      CStdString strTextureAltFocus,strTextureAltNoFocus;
       D3DCOLOR dwTextColor;
       D3DCOLOR dwDisabledColor;
       sscanf(pControlNode->FirstChild("disabledcolor" )->FirstChild()->Value(),"%x",&dwDisabledColor);
@@ -155,7 +155,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
   if (strType=="buttonM")
   {
       wstring strLabel;
-      string strFont,strTextureFocus,strTextureNoFocus;
+      CStdString strFont,strTextureFocus,strTextureNoFocus;
       D3DCOLOR dwTextColor;
       D3DCOLOR dwDisabledColor;
       DWORD dwItems;
@@ -192,7 +192,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
   if (strType=="checkmark")
   {
       wstring strLabel;
-      string strFont,strTextureCheckMark;
+      CStdString strFont,strTextureCheckMark;
       D3DCOLOR dwTextColor;
       D3DCOLOR dwDisabledColor;
       DWORD dwCheckWidth, dwCheckHeight;
@@ -217,8 +217,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
   if (strType=="radiobutton")
   {
       wstring strLabel;
-      string strFont,strTextureFocus,strTextureNoFocus;
-      string strTextureRadioFocus,strTextureRadioNoFocus;
+      CStdString strFont,strTextureFocus,strTextureNoFocus;
+      CStdString strTextureRadioFocus,strTextureRadioNoFocus;
       D3DCOLOR dwTextColor;
       D3DCOLOR dwDisabledColor;
       sscanf(pControlNode->FirstChild("disabledcolor" )->FirstChild()->Value(),"%x",&dwDisabledColor);
@@ -248,8 +248,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
   if (strType=="spincontrol")
   {
-      string strFont,strUp,strDown;
-      string strUpFocus,strDownFocus;
+      CStdString strFont,strUp,strDown;
+      CStdString strUpFocus,strDownFocus;
       strUp=pControlNode->FirstChild("textureUp")->FirstChild()->Value();
       strDown=pControlNode->FirstChild("textureDown")->FirstChild()->Value();
       strUpFocus=pControlNode->FirstChild("textureUpFocus")->FirstChild()->Value();
@@ -258,7 +258,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       D3DCOLOR dwTextColor;
       sscanf(pControlNode->FirstChild("textcolor" )->FirstChild()->Value(),"%x",&dwTextColor);
   
-      string strSubType=pControlNode->FirstChild("subtype")->FirstChild()->Value();
+      CStdString strSubType=pControlNode->FirstChild("subtype")->FirstChild()->Value();
       int iType;
       if ( strSubType=="int") iType=SPIN_CONTROL_TYPE_INT;
       else if ( strSubType=="float") iType=SPIN_CONTROL_TYPE_FLOAT;
@@ -273,7 +273,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
  
   if (strType=="image")
   {
-      string strTexture;
+      CStdString strTexture;
       strTexture=pControlNode->FirstChild("texture")->FirstChild()->Value();
   
       D3DCOLOR dwColorKey=0xffffffff;
@@ -288,8 +288,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
   }
  if (strType=="listcontrol")
  {
-      string strFont,strUp,strDown;
-      string strUpFocus,strDownFocus;
+      CStdString strFont,strUp,strDown;
+      CStdString strUpFocus,strDownFocus;
       strUp=pControlNode->FirstChild("textureUp")->FirstChild()->Value();
       strDown=pControlNode->FirstChild("textureDown")->FirstChild()->Value();
       strUpFocus=pControlNode->FirstChild("textureUpFocus")->FirstChild()->Value();
@@ -299,15 +299,15 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       sscanf(pControlNode->FirstChild("textcolor" )->FirstChild()->Value(),"%x",&dwTextColor);
       sscanf(pControlNode->FirstChild("spinColor" )->FirstChild()->Value(),"%x",&dwSpinColor);
       
-      string strImage=pControlNode->FirstChild("image")->FirstChild()->Value();
+      CStdString strImage=pControlNode->FirstChild("image")->FirstChild()->Value();
 
       DWORD dwSpinWidth=atol(pControlNode->FirstChild("spinWidth" )->FirstChild()->Value());
       DWORD dwSpinHeight=atol(pControlNode->FirstChild("spinHeight" )->FirstChild()->Value());
       DWORD dwSpinPosX=atol(pControlNode->FirstChild("spinPosX" )->FirstChild()->Value());
 			DWORD dwSpinPosY=atol(pControlNode->FirstChild("spinPosY" )->FirstChild()->Value());
 
-      string strButton=pControlNode->FirstChild("textureNoFocus")->FirstChild()->Value();
-      string strButtonFocus=pControlNode->FirstChild("textureFocus")->FirstChild()->Value();
+      CStdString strButton=pControlNode->FirstChild("textureNoFocus")->FirstChild()->Value();
+      CStdString strButtonFocus=pControlNode->FirstChild("textureFocus")->FirstChild()->Value();
 
       CGUIListControl* pControl = new CGUIListControl(dwParentId,dwID,dwPosX,dwPosY,dwWidth, dwHeight,
                                                       strFont,
@@ -323,7 +323,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       pNode=pControlNode->FirstChild("suffix" );
       if (pNode)
       {
-        string strSuffix=pControlNode->FirstChild("suffix" )->FirstChild()->Value();
+        CStdString strSuffix=pControlNode->FirstChild("suffix" )->FirstChild()->Value();
         pControl->SetScrollySuffix(strSuffix);
       }
       return pControl;
@@ -331,8 +331,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
  if (strType=="thumbnailpanel")
  {
-      string strFont,strUp,strDown;
-      string strUpFocus,strDownFocus, strSuffix;
+      CStdString strFont,strUp,strDown;
+      CStdString strUpFocus,strDownFocus, strSuffix;
 
 
 
@@ -349,8 +349,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       sscanf(pControlNode->FirstChild("itemWidth" )->FirstChild()->Value(),"%i",&dwitemWidth);
       sscanf(pControlNode->FirstChild("itemHeight" )->FirstChild()->Value(),"%i",&dwitemHeight);
       
-      string strImage=pControlNode->FirstChild("imageFolder")->FirstChild()->Value();
-      string strImageFocus=pControlNode->FirstChild("imageFolderFocus")->FirstChild()->Value();
+      CStdString strImage=pControlNode->FirstChild("imageFolder")->FirstChild()->Value();
+      CStdString strImageFocus=pControlNode->FirstChild("imageFolderFocus")->FirstChild()->Value();
 
       DWORD dwSpinWidth=atol(pControlNode->FirstChild("spinWidth" )->FirstChild()->Value());
       DWORD dwSpinHeight=atol(pControlNode->FirstChild("spinHeight" )->FirstChild()->Value());
