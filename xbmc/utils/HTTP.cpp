@@ -634,6 +634,7 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 
 void CHTTP::Close()
 {
+	int e = WSAGetLastError(); // make sure it's preserved
 	m_socket.reset();
 	if (hEvent != WSA_INVALID_EVENT)
 		WSACloseEvent(hEvent);
@@ -642,4 +643,5 @@ void CHTTP::Close()
 	if (m_RecvBuffer)
 		delete [] m_RecvBuffer;
 	m_RecvBuffer = 0;
+	WSASetLastError(e);
 }
