@@ -242,54 +242,19 @@ void  CURL::GetURL(CStdString& strURL) const
 		strURL=m_strFileName;
 		return;
 	}
-	strURL=m_strProtocol;
-	strURL+="://";
-	if (m_strDomain!="")
-	{
-		strURL+=m_strDomain;
-		strURL+=";";
-	}
-	if (m_strUserName!="" && m_strPassword!="")
-	{	
-		strURL+=m_strUserName;
-		strURL+=":";
-		strURL+=m_strPassword;
-		strURL+="@";
-	}
-	else if (m_strUserName!="")
-	{
-		strURL+=m_strUserName;
-		strURL+=":";
-		strURL+="@";
-	} 
-	else if (m_strDomain!="")
-		strURL+="@";
-
-	if (m_strHostName!="")
-	{
-		strURL+=m_strHostName;
-		if ( HasPort() )
-		{
-			CStdString strPort;
-			strPort.Format("%i", m_iPort);
-			strURL += ":";
-			strURL += strPort;
-		}
-		strURL+="/";
-	}
-	strURL+=m_strFileName;
-
+	GetURLWithoutFilename(strURL);
+	strURL += m_strFileName;
 }
 
 void CURL::GetURLWithoutUserDetails(CStdString& strURL) const
 {
-	if (m_strProtocol=="")
+	if (m_strProtocol == "")
 	{
-		strURL=m_strFileName;
+		strURL = m_strFileName;
 		return;
 	}
 	strURL=m_strProtocol;
-	strURL+="://";
+	strURL += "://";
 
 	if (m_strHostName!="")
 	{
@@ -304,4 +269,49 @@ void CURL::GetURLWithoutUserDetails(CStdString& strURL) const
 		strURL+="/";
 	}
 	strURL+=m_strFileName;
+}
+
+void CURL::GetURLWithoutFilename(CStdString& strURL) const
+{
+	if (m_strProtocol == "")
+	{
+		strURL = m_strFileName;
+		return;
+	}
+	strURL = m_strProtocol;
+	strURL += "://";
+	
+	if (m_strDomain != "")
+	{
+		strURL += m_strDomain;
+		strURL += ";";
+	}
+	if (m_strUserName != "" && m_strPassword != "")
+	{	
+		strURL += m_strUserName;
+		strURL += ":";
+		strURL += m_strPassword;
+		strURL += "@";
+	}
+	else if (m_strUserName != "")
+	{
+		strURL += m_strUserName;
+		strURL += ":";
+		strURL += "@";
+	} 
+	else if (m_strDomain != "")
+		strURL += "@";
+
+	if (m_strHostName != "")
+	{
+		strURL += m_strHostName;
+		if (HasPort())
+		{
+			CStdString strPort;
+			strPort.Format("%i", m_iPort);
+			strURL += ":";
+			strURL += strPort;
+		}
+		strURL += "/";
+	}
 }
