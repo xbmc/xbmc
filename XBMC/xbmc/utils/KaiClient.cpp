@@ -1,81 +1,37 @@
 #include "stdafx.h"
 #include "KaiClient.h"
 #include "Log.h"
-#include "..\settings.h"
+#include "../Settings.h"
+#include "dsstdfx.h"
+#include "../Crc32.h"
 
 CKaiClient* CKaiClient::client = NULL;
 
-struct KAIVECTOR
+//#define SPEEX_LOOPBACK 1
+
+#ifdef SPEEX_LOOPBACK
+DWORD g_speexLoopbackPlayerId = 0xDEADBEEF;
+#endif
+
+void CKaiClient::QueryVector(DWORD aTitleId)
 {
-	DWORD dwTitleId;
-	CHAR* szVector;
-};
-
-KAIVECTOR g_kaiVectors[] = {
-
-0x4D530041,"Arena/XBox/Sports/Amped 2",
-0x4D53001E,"Arena/XBox/Third Person Shooter/Brute Force",
-0x54540010,"Arena/XBox/Driving/Carve",
-0x544D000B,"Arena/XBox/Third Person Shooter/Clone Wars",
-0x4C410004,"Arena/XBox/Third Person Shooter/Clone Wars",
-0x4D530036,"Arena/XBox/First Person Shooter/CounterStrike",
-0x4D530021,"Arena/XBox/Flying/Crimson Skies",
-0x49470027,"Arena/XBox/First Person Shooter/Dead Mans Hand",
-0x55530004,"Arena/XBox/Sports/Deathrow",
-0x55530006,"Arena/XBox/First Person Shooter/Ghost Recon",
-0x55530007,"Arena/XBox/First Person Shooter/Ghost Recon Island Thunder",
-0x4D530004,"Arena/XBox/First Person Shooter/Halo",
-0x4D530034,"Arena/XBox/Sports/Inside Pitch 2003",
-0x4C41000B,"Arena/XBox/First Person Shooter/Jedi Academy",
-0x4D53005D,"Arena/XBox/Sports/Links 2004",
-0x4D530017,"Arena/XBox/Third Person Shooter/Mech Assault",
-0x54540008,"Arena/XBox/Driving/Midnight Club 2",
-0x4D53002A,"Arena/XBox/Driving/Midtown Madness 3",
-0x54510008,"Arena/XBox/Driving/Moto GP",
-0x54510016,"Arena/XBox/Driving/Moto GP 2",
-0x41560022,"Arena/XBox/Driving/MTX Mototrax",
-0x4D530028,"Arena/XBox/Sports/NFL Fever 2003",
-0x4D53004D,"Arena/XBox/Sports/NFL Fever 2004",
-0x53450017,"Arena/XBox/Sports/NHL 2K3",
-0x4D53004E,"Arena/XBox/Sports/NHL Rivals 2004",
-0x4D53004B,"Arena/XBox/Driving/Project Gotham Racing 2",
-0x55530013,"Arena/XBox/First Person Shooter/Rainbow Six 3",
-0x53450021,"Arena/XBox/Driving/Sega GT Online",
-0x54540004,"Arena/XBox/First Person Shooter/Serious Sam",
-0x4156001B,"Arena/XBox/First Person Shooter/Soldier Of Fortune 2",
-0x55530019,"Arena/XBox/First Person Shooter/Splinter Cell Pandora Tomorrow",
-0x4553000A,"Arena/XBox/First Person Shooter/Time Splitters 2",
-0x4156002D,"Arena/XBox/Sports/Tony Hawk Underground",
-0x41560001,"Arena/XBox/Sports/Tony Hawk 2",
-0x41560004,"Arena/XBox/Sports/Tony Hawk 3",
-0x41560017,"Arena/XBox/Sports/Tony Hawk 4",
-0x4D530035,"Arena/XBox/Sports/Top Spin",
-0x49470024,"Arena/XBox/First Person Shooter/Unreal",
-0x4947003C,"Arena/XBox/First Person Shooter/Unreal II",
-0x4D530027,"Arena/XBox/Third Person Shooter/Whacked",
-0x41560010,"Arena/XBox/First Person Shooter/Wolfenstein",
-0x55530009,"Arena/XBox/First Person Shooter/XIII",
-0x186418CD,"Arena/XBox/Homebrew/XLime",
-
-0,0};
-
-void CKaiClient::ResolveVector(DWORD aTitleId)
-{
-//	CStdString strVectorMessage;
-//	strVectorMessage.Format("KAI_CLIENT_VECTOR;%s;",aVector);
-//	Send(server_addr, KAI_PORT, strVectorMessage);
-
-	//Spoof response
-	int i=0;
-	while(g_kaiVectors[i].dwTitleId!=0)
+	if (client_state==State::Authenticated)
 	{
-		if ( (g_kaiVectors[i].dwTitleId==aTitleId) && (observer!=NULL) )
-		{
-			CStdString defaultVector = g_kaiVectors[i].szVector;
-			observer->OnSupportedTitle(aTitleId, defaultVector );
-		}
+		CStdString strResolveMessage;
+		CStdString strQuestion;
+		strQuestion.Format("%x",aTitleId);
+		strResolveMessage.Format("KAI_CLIENT_APP_SPECIFIC;XBE_0x%s;",strQuestion.ToUpper().c_str());
+		Send(server_addr, strResolveMessage);
+	}
+}
 
-		i++;
+void CKaiClient::QueryVectorPlayerCount(CStdString& aVector)
+{
+	if (client_state==State::Authenticated)
+	{
+		CStdString strQueryMessage;
+		strQueryMessage.Format("KAI_CLIENT_SPECIFIC_COUNT;%s;",aVector.c_str());
+		Send(server_addr, strQueryMessage);
 	}
 }
 
@@ -83,7 +39,58 @@ CKaiClient::CKaiClient(void) : CUdpClient()
 {
 	CLog::Log(LOGNOTICE, "KAICLIENT: Instantiating...");
 	observer = NULL;
+	m_bHosting = FALSE;
+
+	// outbound packet queue, we collect packets in this queue until we have sufficient
+	// to send them to the xlink engine.
+	CStdString strEgress = "egress";
+	//m_pEgress  = new CMediaPacketQueue(strEgress,COMPRESSED_FRAME_SIZE,MAX_VOICE_PER_SEND);
+	m_pEgress  = new CMediaPacketQueue(strEgress);
+
 	Create();
+
+	CLog::Log(LOGNOTICE, "KAICLIENT: Ready.");
+}
+
+void CKaiClient::Initialize()
+{
+	CLog::Log(LOGNOTICE, "KAICLIENT: Initializing DirectSound...");
+	DirectSoundCreate( NULL, &m_pDSound, NULL );
+
+	DSEFFECTIMAGELOC dsImageLoc;
+	dsImageLoc.dwI3DL2ReverbIndex = GraphI3DL2_I3DL2Reverb;
+	dsImageLoc.dwCrosstalkIndex = GraphXTalk_XTalk;
+
+	CLog::Log(LOGNOTICE, "KAICLIENT: Loading sound effects image...");
+	LPDSEFFECTIMAGEDESC pdsImageDesc;
+	XAudioDownloadEffectsImage( "Q:\\dsstdfx.bin", &dsImageLoc, XAUDIO_DOWNLOADFX_EXTERNFILE, &pdsImageDesc );
+
+	// Configure the voice manager.
+	VOICE_MANAGER_CONFIG VoiceConfig;
+	VoiceConfig.dwVoicePacketTime       = 20;      // 20ms per microphone callback
+	VoiceConfig.dwMaxRemotePlayers      = 12;      // 12 remote players
+	VoiceConfig.dwFirstSRCEffectIndex   = GraphVoice_Voice_0;
+	VoiceConfig.pEffectImageDesc        = pdsImageDesc;
+	VoiceConfig.pDSound                 = m_pDSound;
+	VoiceConfig.dwMaxStoredPackets      = MAX_VOICE_PER_SEND;
+
+	VoiceConfig.pCallbackContext        = this;
+	VoiceConfig.pfnCommunicatorCallback = CommunicatorCallback;
+	VoiceConfig.pfnVoiceDataCallback    = VoiceDataCallback;
+
+	CLog::Log(LOGNOTICE, "KAICLIENT: Initializing voice manager...");
+	m_VoiceTimer.Start();
+	g_VoiceManager.Initialize( &VoiceConfig );
+
+	m_bSpeex = FALSE;
+	CLog::Log(LOGNOTICE, "KAICLIENT: Sound system intialized.");
+
+	#ifdef SPEEX_LOOPBACK
+	g_VoiceManager.EnterChatSession();
+	m_VoiceTimer.StartZero();
+	m_bSpeex = TRUE;
+	g_VoiceManager.AddChatter(g_speexLoopbackPlayerId);
+	#endif
 }
 
 CKaiClient::~CKaiClient(void)
@@ -105,7 +112,12 @@ void CKaiClient::SetObserver(IBuddyObserver* aObserver)
 {
 	if (observer != aObserver)
 	{
+		// Enable call back methods
 		observer = aObserver;
+
+		aObserver->OnInitialise(this);
+
+		// Discover location of KAI engine
 		Discover();
 	}
 }
@@ -149,13 +161,36 @@ void CKaiClient::RemoveContact(CStdString& aContact)
 	}
 }
 
-void CKaiClient::Invite(CStdString& aPlayer, CStdString& aPersonalMessage, CStdString& aVector)
+void CKaiClient::Invite(CStdString& aPlayer, CStdString& aVector, CStdString& aMessage)
 {
 	if (client_state==State::Authenticated)
 	{
 		CStdString strInvitationMessage;
-		strInvitationMessage.Format("KAI_CLIENT_PM;%s;%s;",aPlayer,aPersonalMessage);
+		strInvitationMessage.Format("KAI_CLIENT_INVITE;%s;%s;%s;",aPlayer,aVector,aMessage);
+
+		//OutputDebugString(strInvitationMessage.c_str());
+		//OutputDebugString("\r\n");
+
 		Send(server_addr, strInvitationMessage);
+	}
+}
+
+void CKaiClient::Host(CStdString& aPassword, int aPlayerLimit, CStdString& aDescription)
+{
+	if (client_state==State::Authenticated)
+	{
+		CStdString strHostMessage;
+		strHostMessage.Format("KAI_CLIENT_CREATE_VECTOR;%s;%d;%s;",aPassword,aPlayerLimit,aDescription);
+		Send(server_addr, strHostMessage);
+	}
+}
+void CKaiClient::SetHostingStatus(BOOL bIsHosting)
+{
+	if (client_state==State::Authenticated)
+	{
+		CStdString strStatusMessage;
+		strStatusMessage.Format("KAI_CLIENT_ARENA_STATUS;%d;%d;",bIsHosting ? 1:0, 1);
+		Send(server_addr, strStatusMessage);
 	}
 }
 
@@ -194,17 +229,17 @@ void CKaiClient::Discover()
 	client_state = State::Discovering;
 	CStdString strInitiateDiscoveryMessage = "KAI_CLIENT_DISCOVER;";
 	Broadcast(KAI_SYSTEM_PORT, strInitiateDiscoveryMessage);
-	//Send("192.168.1.2", KAI_SYSTEM_PORT, strInitiateDiscoveryMessage);
 }
 
 void CKaiClient::Detach()
 {	
-	CStdString strDisconnectionMessage = "KAI_CLIENT_DETACH;";
-
-	client_state = State::Disconnecting;
-
-	//	Send(server_addr, strDisconnectionMessage);
-	Broadcast(KAI_SYSTEM_PORT, strDisconnectionMessage);
+	if (client_state==State::Authenticated)
+	{
+		CStdString strDisconnectionMessage = "KAI_CLIENT_DETACH;";
+		client_state = State::Disconnecting;
+		Send(server_addr, strDisconnectionMessage);
+		Broadcast(KAI_SYSTEM_PORT, strDisconnectionMessage);
+	}
 }
 
 
@@ -238,9 +273,129 @@ void CKaiClient::Login(LPCSTR aUsername, LPCSTR aPassword)
 	Send(server_addr, strLoginMessage);
 }
 
-void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage)
+void CKaiClient::QueryUserProfile(CStdString& aPlayerName)
+{	
+	if (client_state==State::Authenticated)
+	{
+		CStdString strQueryMessage;
+		strQueryMessage.Format("KAI_CLIENT_GET_PROFILE;%s;", aPlayerName.c_str());
+		Send(server_addr, strQueryMessage);
+	}
+}
+
+void CKaiClient::QueryAvatar(CStdString& aPlayerName)
+{	
+	if (client_state==State::Authenticated)
+	{
+		CStdString strQueryMessage;
+		strQueryMessage.Format("KAI_CLIENT_AVATAR;%s;", aPlayerName.c_str());
+		Send(server_addr, strQueryMessage);
+	}
+}
+
+void CKaiClient::SetBearerCaps(BOOL bIsHeadsetPresent)
+{	
+	if (client_state==State::Authenticated)
+	{
+		CStdString strStatusMessage;
+		strStatusMessage.Format("KAI_CLIENT_CAPS;01%s;", bIsHeadsetPresent ? "2":"" );
+		Send(server_addr, strStatusMessage);
+	}
+}
+
+void CKaiClient::EnableContactVoice(CStdString& aContactName, BOOL bEnable)
+{	
+	if (client_state==State::Authenticated)
+	{
+		CStdString strVoiceMessage;
+		strVoiceMessage.Format("KAI_CLIENT_SPEEX_%s;%s;", bEnable ? "ON":"OFF",
+			aContactName.c_str());
+		Send(server_addr, strVoiceMessage);
+	}
+}
+
+void CKaiClient::QueueContactVoice(CStdString& aContactName, DWORD aPlayerId, LPBYTE pMessage, DWORD dwMessageLength)
+{
+	if (client_state==State::Authenticated)
+	{
+		CStdString header;
+		header.Format("KAI_CLIENT_SPEEX;%s;",aContactName.c_str());
+
+		int frames = 0;
+		for(DWORD messageOffset = header.length(); messageOffset < dwMessageLength; messageOffset += COMPRESSED_FRAME_SIZE)
+		{
+			frames++;
+
+			// we need to persist this buffer before we can have it queued
+			g_VoiceManager.ReceivePacket(
+				aPlayerId,
+				(LPVOID) &pMessage[messageOffset],
+				COMPRESSED_FRAME_SIZE ); 
+		}
+
+		//char szDebug[128];
+		//sprintf(szDebug,"RX KAI SPEEX %d frames, total: %u bytes.\r\n",frames,dwMessageLength);
+		//OutputDebugString(szDebug);
+	}
+}
+
+
+void CKaiClient::SendVoiceDataToEngine()
+{
+	if (client_state==State::Authenticated)
+	{
+		if (!m_pEgress->IsEmpty())
+		{
+			CHAR* buffer= new CHAR[700];
+
+			#ifndef SPEEX_LOOPBACK
+			sprintf(buffer,"KAI_CLIENT_SPEEX;");
+			#else
+			sprintf(buffer,"KAI_CLIENT_SPEEX;SpeexLoopback;");
+			#endif
+
+			int nPackets = m_pEgress->Size();
+
+			//char szDebug[128];
+			//sprintf(szDebug,"Sending %d packets\r\n", nPackets);
+			//OutputDebugString(szDebug);
+
+			int messageOffset = strlen(buffer);
+			for(int i=0; i<nPackets; i++, messageOffset+= COMPRESSED_FRAME_SIZE)
+			{
+				//XMEDIAPACKET outboundPacket = {0};
+				//m_pEgress->Pop(outboundPacket);
+				XMEDIAPACKET outboundPacket;
+				m_pEgress->Read(outboundPacket);
+				
+				memcpy((LPVOID)&buffer[messageOffset],outboundPacket.pvBuffer,COMPRESSED_FRAME_SIZE);
+
+				//m_pEgress->Dispose(outboundPacket);
+				*outboundPacket.pdwStatus = XMEDIAPACKET_STATUS_SUCCESS;
+			}
+
+			#ifndef SPEEX_LOOPBACK
+			Send(server_addr, (LPBYTE)buffer, messageOffset);
+			#else
+			CStdString strName = "SpeexLoopback";
+			QueueContactVoice(strName,g_speexLoopbackPlayerId,(LPBYTE)buffer,messageOffset);
+			#endif
+		}
+	}
+
+	// reset buffer and stopwatch
+	m_VoiceTimer.StartZero();
+}
+
+
+
+
+void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LPBYTE pMessage, DWORD dwMessageLength)
 {
 //	CLog::Log(aMessage);	
+//	OutputDebugString("KAI: ");
+//	OutputDebugString(aMessage.c_str());
+//	OutputDebugString("\r\n");
 
 	CHAR* szMessage = strtok( (char*)((LPCSTR)aMessage), ";"); 
 
@@ -268,13 +423,30 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage)
 			if (strcmp(szMessage,"KAI_CLIENT_LOGGED_IN")==0)
 			{
 				client_state = State::Authenticated;
-//				Sleep(1000);
-//				CStdString aRootVector = KAI_ARENA;
-//				EnterVector(aRootVector);
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_NOT_LOGGED_IN")==0)
 			{
-				Login(g_stSettings.szOnlineUsername, g_stSettings.szOnlinePassword);
+				// has XBMC user set up KAI username and password?
+				if (g_stSettings.szOnlineUsername[0]==0)
+				{
+					CStdString strDefaultUsername = strtok(NULL, ";");  
+					CStdString strDefaultPassword = strtok(NULL, ";");  
+					
+					// has KAI engine provided us with a default username and password?
+					if (strDefaultUsername.length()>0 && strDefaultPassword.length()>0)
+					{
+						strcpy(g_stSettings.szOnlineUsername,strDefaultUsername.c_str());
+						strcpy(g_stSettings.szOnlinePassword,strDefaultPassword.c_str());
+
+						// auto login with KAI credentials
+						Login(g_stSettings.szOnlineUsername, g_stSettings.szOnlinePassword);
+					}
+				}
+				else
+				{
+					// auto login with XBMC credentials
+					Login(g_stSettings.szOnlineUsername, g_stSettings.szOnlinePassword);
+				}
 			}
 			break;
 
@@ -282,9 +454,9 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage)
 			if (strcmp(szMessage,"KAI_CLIENT_USER_DATA")==0)
 			{
 				client_state = State::Authenticated;
-//				Sleep(1000);
-//				CStdString aRootVector = KAI_ARENA;
-//				EnterVector(aRootVector);
+
+				CStdString strCaseCorrectedName = strtok(NULL, ";");
+				sprintf(g_stSettings.szOnlineUsername,strCaseCorrectedName.c_str());
 			}
 			break;
 
@@ -310,13 +482,90 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage)
 					observer->OnContactOnline( strContactName );
 				}
 			}
+			else if (strcmp(szMessage,"KAI_CLIENT_SPEEX_ON")==0)
+			{
+				if (observer!=NULL)
+				{
+					CStdString strContactName = strtok(NULL, ";");  			  
+					observer->OnContactSpeexStatus(strContactName,true);
+				}
+			}
+			else if (strcmp(szMessage,"KAI_CLIENT_SPEEX_OFF")==0)
+			{
+				if (observer!=NULL)
+				{
+					CStdString strContactName = strtok(NULL, ";");  			  
+					observer->OnContactSpeexStatus(strContactName,false);
+				}
+			}
+			else if (strcmp(szMessage,"KAI_CLIENT_SPEEX_START")==0)
+			{
+				if (!m_bSpeex)
+				{
+					CLog::Log(LOGINFO,"Speex started.");
+
+					g_VoiceManager.EnterChatSession();
+					m_VoiceTimer.StartZero();
+					m_bSpeex = TRUE;
+				}
+			}
+			else if (strcmp(szMessage,"KAI_CLIENT_SPEEX")==0)
+			{
+				CStdString strContactName = strtok(NULL, ";");
+
+				if (m_bSpeex)
+				{
+					DWORD playerId = Crc32FromString(strContactName);
+					BOOL bRegistered = g_VoiceManager.IsPlayerRegistered( playerId );
+					BOOL bAvailable = TRUE;
+
+					if (!bRegistered)
+					{
+						//CStdString strDebug;
+						//strDebug.Format("Adding chatter %s\r\n",strContactName.c_str());
+						//OutputDebugString(strDebug.c_str());
+						bAvailable = SUCCEEDED(g_VoiceManager.AddChatter(playerId));
+					}
+					if (bAvailable)
+					{
+						QueueContactVoice(strContactName,playerId,pMessage,dwMessageLength);
+						if (observer!=NULL)
+						{
+							observer->OnContactSpeex(strContactName);
+						}
+					}
+					else
+					{
+						CLog::Log(LOGERROR,"Failed to queue contact voice.");
+					}
+				}
+
+			}
+			else if (strcmp(szMessage,"KAI_CLIENT_SPEEX_STOP")==0)
+			{
+				if (m_bSpeex)
+				{
+					CLog::Log(LOGINFO,"Speex stopped.");
+					m_bSpeex = FALSE;
+
+					g_VoiceManager.LeaveChatSession();
+				}
+			}
+			else if (strcmp(szMessage,"KAI_CLIENT_SPEEX_RING")==0)
+			{
+				if (observer!=NULL)
+				{
+					CStdString strContactName = strtok(NULL, ";");  				  
+					observer->OnContactSpeexRing( strContactName );
+				}
+			}
 			else if (strcmp(szMessage,"KAI_CLIENT_CONTACT_PING")==0)
 			{
 				if (observer!=NULL)
 				{
 					CHAR* szContact = strtok(NULL, ";");
 					CStdString strContactName = szContact;
-					CStdString strVector = "Online";
+					CStdString strVector = "Idle";
 
 					if ( szContact[strlen(szContact)+1] != ';' )
 					{
@@ -324,8 +573,10 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage)
 					}
 
 					CStdString strPing = strtok(NULL, ";");
+					CStdString strCaps = strtok(NULL, ";");
 
-					observer->OnContactPing(strContactName, strVector, strPing);
+					observer->OnContactPing(strContactName, strVector, 
+						strtoul(strPing.c_str(),NULL,10), 0, strCaps);
 				}
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_REMOVE_CONTACT")==0)
@@ -337,13 +588,47 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage)
 					observer->OnContactRemove( strContactName );
 				}
 			}
+			else if (strcmp(szMessage,"KAI_CLIENT_INVITE")==0)
+			{
+				if (observer!=NULL)
+				{
+					CStdString strContactName = strtok(NULL, ";");  
+					CStdString strVector = strtok(NULL, ";");  
+					CStdString strTime = strtok(NULL, ";");  
+					CStdString strMessage = strtok(NULL, ";"); 
+
+					observer->OnContactInvite( strContactName, strVector, strTime, strMessage );
+				}
+			}
 			else if (strcmp(szMessage,"KAI_CLIENT_VECTOR")==0)
 			{
-				CStdString strVector = strtok(NULL, ";");  
+				CStdString strVector = strtok(NULL, ";"); 
+
+				bool bInPrivateRoom = strVector.Find(g_stSettings.szOnlineUsername)>0;
+
+				// check to see if we've left our private room and we're still hosting			
+				if (m_bHosting)
+				{
+					if (!bInPrivateRoom)
+					{
+						// set our status to looking to join games as opposed to hosting them
+						SetHostingStatus(FALSE);
+					}
+				}
+				else
+				{
+					if (bInPrivateRoom)
+					{
+						// set our status to looking to host games as opposed to joining them
+						SetHostingStatus(TRUE);
+					}
+				}
+
+				CStdString strCanCreate = strtok(NULL, ";");  
 				if (observer!=NULL)
 				{
 					client_vector = strVector;
-					observer->OnEnterArena(strVector);
+					observer->OnEnterArena(strVector,atoi(strCanCreate.c_str()));
 				}
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_SUB_VECTOR")==0)
@@ -361,15 +646,15 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage)
 											strDescription,
 											atoi(strPlayers.c_str()),
 											atoi(strPlayerLimit.c_str()),
-											atoi(strIsPrivate.c_str())	);
+											atoi(strIsPrivate.c_str()),
+											false );
 				}
 			}
-			
-			///////////////////////////////////////////////////////////////////////////
-			// AJS - Added this extra opcode for user created arenas - treat them    //
-			// just like you would a normal arena - they have different segments     //
-			// past seg2, but you dont use those anyway :)                           //
-			///////////////////////////////////////////////////////////////////////////
+			else if (strcmp(szMessage,"KAI_CLIENT_ARENA_STATUS")==0)
+			{
+				CStdString strMode			= strtok(NULL, ";");
+				m_bHosting = atoi(strMode.c_str()) >0;
+			}
 
 			else if (strcmp(szMessage,"KAI_CLIENT_USER_SUB_VECTOR")==0)
 			{
@@ -386,10 +671,22 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage)
 											strDescription,
 											atoi(strPlayers.c_str()),
 											atoi(strPlayerLimit.c_str()),
-											atoi(strIsPrivate.c_str())	);
+											atoi(strIsPrivate.c_str()),
+											true );
 				}
 			}
 
+			else if (strcmp(szMessage,"KAI_CLIENT_SUB_VECTOR_UPDATE")==0)
+			{
+				CStdString strVector		= strtok(NULL, ";");
+				CStdString strPlayers		= strtok(NULL, ";");
+
+				if (observer!=NULL)
+				{
+					observer->OnUpdateArena( strVector,
+											 atoi(strPlayers.c_str()) );
+				}
+			}
 			else if (strcmp(szMessage,"KAI_CLIENT_VECTOR_DISALLOWED")==0)
 			{
 				CStdString strVector		= strtok(NULL, ";");
@@ -416,8 +713,40 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage)
 				{
 					CStdString strContactName = strtok(NULL, ";");
 					CStdString strPing = strtok(NULL, ";");
+					CStdString strStatus = strtok(NULL, ";"); // 0 - idle, 1 - join, 2- host, 3-dedicated host
+					CStdString strPlayers = strtok(NULL, ";");
+					CStdString strCaps = strtok(NULL, ";");
+					observer->OnOpponentPing(strContactName,
+						strtoul(strPing.c_str(),NULL,10), atoi(strStatus.c_str()), strCaps);
+				}
+			}
+			else if (strcmp(szMessage,"KAI_CLIENT_USER_PROFILE")==0)
+			{
+				if (observer!=NULL)
+				{
+					CStdString strOpponent  = strtok(NULL, ";");
+					CStdString strAge		= strtok(NULL, ";");
+					CStdString strBandwidth	= strtok(NULL, ";");
+					CStdString strLocation	= strtok(NULL, ";");
+					CStdString strXBOX		= strtok(NULL, ";");
+					CStdString strGCN		= strtok(NULL, ";");
+					CStdString strPS2		= strtok(NULL, ";");
+					CStdString strBio		= strtok(NULL, ";");
 
-					observer->OnOpponentPing(strContactName, strPing);
+					observer->OnUpdateOpponent(strOpponent, strAge, strBandwidth, strLocation, strBio );
+				}
+			}
+			else if (strcmp(szMessage,"KAI_CLIENT_AVATAR")==0)
+			{
+				if (observer!=NULL)
+				{
+					CStdString strOpponent  = strtok(NULL, ";");
+					CStdString strUrl		= strtok(NULL, ";");
+
+					if (strUrl.length()>0)
+					{
+						observer->OnUpdateOpponent(strOpponent, strUrl);
+					}
 				}
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_LEAVES_VECTOR")==0)
@@ -429,6 +758,103 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage)
 					observer->OnOpponentLeave( strContactName );
 				}
 			}
+			else if (strcmp(szMessage,"KAI_CLIENT_APP_SPECIFIC")==0)
+			{
+				if (observer!=NULL)
+				{
+					CStdString strQuestion = strtok(NULL, ";"); 
+					CStdString strAnswer = strtok(NULL, ";");  
+
+					if (strQuestion.Find("XBE_")==0)
+					{
+						CStdString strTitleId = strQuestion.Mid(4);
+						DWORD dwTitleId = strtoul(strTitleId.c_str(),NULL,16);
+						observer->OnSupportedTitle(dwTitleId, strAnswer );
+						QueryVectorPlayerCount(strAnswer);
+					}
+				}
+			}
+			else if (strcmp(szMessage,"KAI_CLIENT_SPECIFIC_COUNT")==0)
+			{
+				if (observer!=NULL)
+				{
+					CStdString strVector		= strtok(NULL, ";");
+					CStdString strPlayers		= strtok(NULL, ";");
+					observer->OnUpdateArena(strVector, atoi(strPlayers));
+				}
+			}
 			break;
 	}
+}
+
+void CKaiClient::ProcessVoice()
+{
+	g_VoiceManager.ProcessVoice();
+
+	// Make sure we send voice data at an appropriate rate
+	if( m_VoiceTimer.GetElapsedSeconds() > VOICE_SEND_INTERVAL )
+	{
+		SendVoiceDataToEngine();
+	}
+}
+// Called whenever voice data is produced by the voice system
+void CKaiClient::VoiceDataCallback( DWORD dwPort, DWORD dwSize, VOID* pvData, VOID* pContext )
+{
+    CKaiClient* pThis = (CKaiClient*)pContext;
+    pThis->OnVoiceData( dwPort, dwSize, pvData );
+}
+
+void CKaiClient::OnVoiceData( DWORD dwControllerPort, DWORD dwSize, VOID* pvData )
+{
+	if (m_bSpeex)
+	{
+		//XMEDIAPACKET xmp = {0};
+		//xmp.dwMaxSize = dwSize;
+		//xmp.pvBuffer = pvData;
+
+		//m_pEgress->Push(xmp);
+		m_pEgress->Write((LPBYTE)pvData);
+
+		// We've set up our voice timer such that it SHOULD cause us to send out 
+		// our buffered voice data before the buffer fills up.  However, things
+		// like framerate glitches, etc., could cause us to fill up before we 
+		// notice the timer has fired.
+		if( m_pEgress->Size() == MAX_VOICE_PER_SEND )
+		{
+			SendVoiceDataToEngine();
+		}
+	}
+}
+
+
+
+// Called whenever a voice communicator event occurs e.g. insertions/removals
+void CKaiClient::CommunicatorCallback( DWORD dwPort, VOICE_COMMUNICATOR_EVENT event, VOID* pContext )
+{
+    CKaiClient* pThis = (CKaiClient*)pContext;
+    pThis->OnCommunicatorEvent( dwPort, event );
+}
+
+void CKaiClient::OnCommunicatorEvent( DWORD dwControllerPort, VOICE_COMMUNICATOR_EVENT event )
+{
+    switch( event )
+    {
+    case VOICE_COMMUNICATOR_INSERTED:
+		CLog::Log(LOGINFO,"Voice communicator inserted.");
+        g_VoiceManager.SetLoopback( dwControllerPort, FALSE );
+		SetBearerCaps(TRUE);
+        break;
+
+    case VOICE_COMMUNICATOR_REMOVED:
+		CLog::Log(LOGINFO,"Voice communicator removed.");
+		SetBearerCaps(FALSE);
+        break;
+    }
+}
+
+DWORD CKaiClient::Crc32FromString(CStdString& aString)
+{
+	Crc32 crc;
+	crc.Compute(aString.c_str(),aString.length());
+	return (DWORD)crc;
 }
