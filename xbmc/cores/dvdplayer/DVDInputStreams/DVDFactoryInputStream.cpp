@@ -4,11 +4,12 @@
 #include "DVDInputStream.h"
 #include "DVDInputStreamFile.h"
 #include "DVDInputStreamNavigator.h"
-#include "..\..\..\util.h"
+#include "..\..\..\fileitem.h"
 
 CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const char* strFile)
 {
-  if (CUtil::IsDVDFile(strFile, false, true) || CUtil::IsDVDImage(strFile) ||
+  CFileItem item(strFile, false);
+  if (item.IsDVDFile(false, true) || item.IsDVDImage() ||
       strncmp(strFile, "\\Device\\Cdrom0", 14) == 0)
   {
     return (new CDVDInputStreamNavigator(pPlayer));

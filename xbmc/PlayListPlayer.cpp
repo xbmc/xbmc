@@ -98,7 +98,7 @@ void CPlayListPlayer::PlayNext(bool bAutoPlay)
 	if (bAutoPlay)
 	{
 		const CPlayList::CPlayListItem& item = playlist[iSong];
-		if ( CUtil::IsShoutCast(item.GetFileName()) )
+		if ( item.IsShoutCast() )
 		{
 			return;
 		}
@@ -151,7 +151,7 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay)
 	m_iCurrentSong=iSong;
 	const CPlayList::CPlayListItem& item=playlist[m_iCurrentSong];
 
-	if (!CUtil::IsShoutCast(item.GetFileName()))
+	if (!item.IsShoutCast())
 	{
 		if (iPreviousSong<0)
 		{
@@ -165,7 +165,7 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay)
 		}
 	}
 
-	if(!g_application.PlayFile(CFileItem(item), bAutoPlay))
+	if(!g_application.PlayFile(item, bAutoPlay))
 	{
 		//	Count entries in current playlist
 		//	that couldn't be played

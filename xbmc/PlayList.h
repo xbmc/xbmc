@@ -2,6 +2,7 @@
 
 #include "StdString.h"
 #include "musicInfoTag.h"
+#include "fileitem.h"
 
 #include <vector>
 
@@ -13,7 +14,7 @@ namespace PLAYLIST
 	class CPlayList
 	{
 	public:
-		class CPlayListItem
+		class CPlayListItem : public CFileItem
 		{
 			public:
 				CPlayListItem();
@@ -40,12 +41,7 @@ namespace PLAYLIST
 				CMusicInfoTag				GetMusicTag() const;
 
 			protected:
-				CStdString m_strFilename;
-				CStdString m_strDescription;
 				long			 m_lDuration;
-				long			m_lStartOffset;
-				long			m_lEndOffset;
-				CMusicInfoTag	m_musicInfoTag;
 		};
 		CPlayList(void);
 		virtual ~CPlayList(void);
@@ -61,6 +57,7 @@ namespace PLAYLIST
 		int									size() const;
 		int									RemoveDVDItems();
 		const CPlayList::CPlayListItem& operator[] (int iItem)  const;
+		CPlayList::CPlayListItem& operator[] (int iItem);
 
 	protected:
 		CStdString		m_strPlayListName;

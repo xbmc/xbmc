@@ -207,7 +207,7 @@ void CGUIWindowMusicTop100::OnClick(int iItem)
 
 	//	Save current window and directroy to know where the selected item was
 	m_nTempPlayListWindow=GetID();
-	m_strTempPlayListDirectory=m_strDirectory;
+	m_strTempPlayListDirectory=m_Directory.m_strPath;
 	if (CUtil::HasSlashAtEnd(m_strTempPlayListDirectory))
 		m_strTempPlayListDirectory.Delete(m_strTempPlayListDirectory.size()-1);
 
@@ -223,8 +223,8 @@ void CGUIWindowMusicTop100::OnFileItemFormatLabel(CFileItem* pItem)
 	}
 
 	//	set thumbs and default icons
-	CUtil::SetMusicThumb(pItem);
-	CUtil::FillInDefaultIcon(pItem);
+	pItem->SetMusicThumb();
+	pItem->FillInDefaultIcon();
 
 	// CONTROL_THUMB in top 100 is a listcontrol, so big 
 	// iconimages have to be shown if its enabled

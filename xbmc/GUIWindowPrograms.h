@@ -31,7 +31,7 @@ protected:
 	void				GoParentFolder();
 	CGUIDialogProgress*	m_dlgProgress;  
 	VECFILEITEMS		m_vecItems;
-	CStdString			m_strDirectory;
+	CFileItem			m_Directory;
 	CStdString			m_shareDirectory;
 	int					m_iLastControl;
 	int					m_iSelectedItem;

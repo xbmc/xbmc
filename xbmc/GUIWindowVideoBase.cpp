@@ -141,8 +141,9 @@ struct SSortVideoByName
 CGUIWindowVideoBase::CGUIWindowVideoBase()
 :CGUIWindow(0)
 {
-	m_strDirectory="?";
-  m_iItemSelected=-1;
+	m_Directory.m_strPath="?";
+	m_Directory.m_bIsFolder=true;
+	m_iItemSelected=-1;
 	m_iLastControl=-1;
 	m_bDisplayEmptyDatabaseMessage = false;
 }
@@ -174,16 +175,16 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
   {
 		case GUI_MSG_DVDDRIVE_EJECTED_CD:
 		{
-			if ( !m_strDirectory.IsEmpty() ) {
-				if ( CUtil::IsCDDA( m_strDirectory ) || CUtil::IsDVD( m_strDirectory ) || CUtil::IsISO9660( m_strDirectory ) ) {
+			if ( !m_Directory.IsVirtualDirectoryRoot() ) {
+				if ( m_Directory.IsCDDA() || m_Directory.IsDVD() || m_Directory.IsISO9660() ) {
 					//	Disc has changed and we are inside a DVD Drive share, get out of here :)
-					m_strDirectory = "";
-					Update( m_strDirectory );
+					m_Directory.m_strPath = "";
+					Update( m_Directory.m_strPath );
 				}
 			}
 			else {
 				int iItem = GetSelectedItem();
-				Update( m_strDirectory );
+				Update( m_Directory.m_strPath );
 				CONTROL_SELECT_ITEM(CONTROL_LIST,iItem)
 				CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem)
 			}
@@ -192,9 +193,9 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 
 		case GUI_MSG_DVDDRIVE_CHANGED_CD:
 		{
-			if ( m_strDirectory.IsEmpty() ) {
+			if ( m_Directory.IsVirtualDirectoryRoot() ) {
 				int iItem = GetSelectedItem();
-				Update( m_strDirectory );
+				Update( m_Directory.m_strPath );
 				CONTROL_SELECT_ITEM(CONTROL_LIST,iItem)
 				CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem)
 			}
@@ -219,7 +220,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 			if (m_iLastControl>-1)
 				SET_CONTROL_FOCUS(m_iLastControl, 0);
 
-			Update(m_strDirectory);
+			Update(m_Directory.m_strPath);
 
       UpdateThumbPanel();
       if (m_iItemSelected >=0)
@@ -480,7 +481,7 @@ bool CGUIWindowVideoBase::HaveDiscOrConnection( CStdString& strPath, int iDriveT
 			  dlg->DoModal( GetID() );
       }
 			int iItem = GetSelectedItem();
-			Update( m_strDirectory );
+			Update( m_Directory.m_strPath );
 			CONTROL_SELECT_ITEM(CONTROL_LIST,iItem)
 			CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem)
 			return false;
@@ -680,7 +681,8 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
                   {
                     CStdString strFolderImage;
                     CUtil::AddFileToFolder(strFolder, "folder.jpg", strFolderImage);                  
-                    if (CUtil::IsRemote(strFolder) || CUtil::IsDVD(strFolder) || CUtil::IsISO9660(strFolder) )
+										CFileItem folder(strFolder, true);
+										if (folder.IsRemote() || folder.IsDVD() || folder.IsISO9660() )
                     {
                       CStdString strThumb;
                       CUtil::GetThumbnail( strFolderImage,strThumb);
@@ -753,7 +755,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
 
 		//	HACK: If we are in files view
 		//	autoswitch between list/thumb control
-		if (GetID()==WINDOW_VIDEOS && !m_strDirectory.IsEmpty() && g_guiSettings.GetBool("VideoLists.UseAutoSwitching"))
+		if (GetID()==WINDOW_VIDEOS && !m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("VideoLists.UseAutoSwitching"))
 		{
 			SetViewMode(CAutoSwitch::GetView(m_vecItems));
 
@@ -816,7 +818,7 @@ void CGUIWindowVideoBase::OnManualIMDB()
 
 bool CGUIWindowVideoBase::ViewByIcon()
 {
-  if ( m_strDirectory.IsEmpty() )
+  if ( m_Directory.IsVirtualDirectoryRoot() )
   {
     if (g_stSettings.m_iMyVideoRootViewAsIcons != VIEW_AS_LIST) return true;
   }
@@ -860,7 +862,8 @@ bool CGUIWindowVideoBase::CheckMovie(const CStdString& strFileName)
  
   CIMDBMovie movieDetails;
   m_database.GetMovieInfo(strFileName,movieDetails);
-  if ( !CUtil::IsDVD(movieDetails.m_strPath) && !CUtil::IsISO9660(movieDetails.m_strPath)) return true;
+	CFileItem movieFile(movieDetails.m_strPath, false);
+  if ( !movieFile.IsDVD() && !movieFile.IsISO9660()) return true;
   CGUIDialogOK *pDlgOK= (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
   if (!pDlgOK) return true;
   while (1)
@@ -907,11 +910,11 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem)
 
 		// recursive
 		if (pItem->GetLabel() == "..") return;
-		CStdString strDirectory=m_strDirectory;
-		m_strDirectory=pItem->m_strPath;
+		CStdString strDirectory=m_Directory.m_strPath;
+		m_Directory.m_strPath=pItem->m_strPath;
 		VECFILEITEMS items;
 		CFileItemList itemlist(items);
-		GetDirectory(m_strDirectory, items);
+		GetDirectory(m_Directory.m_strPath, items);
     
     SortItems(items);
 
@@ -919,11 +922,11 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItem* pItem)
 		{
 			AddItemToPlayList(items[i]);
 		}
-		m_strDirectory=strDirectory;
+		m_Directory.m_strPath=strDirectory;
 	}
 	else
 	{
-    if (!CUtil::IsNFO(pItem->m_strPath) && CUtil::IsVideo(pItem->m_strPath) && !CUtil::IsPlayList(pItem->m_strPath))
+		if (!pItem->IsNFO() && pItem->IsVideo() && !pItem->IsPlayList())
 		{
 			CPlayList::CPlayListItem playlistItem ;
 			playlistItem.SetFileName(pItem->m_strPath);

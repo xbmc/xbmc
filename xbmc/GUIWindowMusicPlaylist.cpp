@@ -108,6 +108,15 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 		{
 			if (m_tagloader.IsLoading())
 				m_tagloader.StopThread();
+
+			for (int i=0; i<(int)m_vecItems.size(); ++i)
+			{
+				CFileItem* pItem=m_vecItems[i];
+				pItem->FreeIcons();
+				//	Do not clear musicinfo for cue items
+				if (pItem->m_lEndOffset==0) 
+					pItem->m_musicInfoTag.Clear();
+			}
 		}
 		break;
 
@@ -246,7 +255,7 @@ void CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iAction)
       CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
       if (playlist.Swap(iSelected, iNew))
       {
-        Update(m_strDirectory);
+        Update(m_Directory.m_strPath);
         SetSelectedItem(iNew);
         return;
       }
@@ -257,7 +266,7 @@ void CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, VECFI
 {
 	if (items.size()) 
 	{
-		CFileItemList itemlist(items); // will clean up everything
+		ClearFileItems();
 	}
 
 	CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
@@ -271,25 +280,17 @@ void CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, VECFI
 
 	for (int i=0; i < playlist.size(); ++i)
 	{
-		const CPlayList::CPlayListItem& item = playlist[i];
+		CPlayList::CPlayListItem& item = playlist[i];
 
 		CStdString strFileName = item.GetFileName();
 		CStdString strPath,strFName;
 		CUtil::Split( strFileName, strPath, strFName);
-    if(CUtil::HasSlashAtEnd(strFileName))
-      strFileName.Delete(strFileName.size());
-
-		m_Pathes.insert(strPath);
-		
-		CFileItem *pItem = new CFileItem(item);
+		if(CUtil::HasSlashAtEnd(strFileName))
+			strFileName.Delete(strFileName.size());
 
 		CStdString strLabel;
-		//	No label from Playlist, set filename as default
-		if (item.GetDescription().IsEmpty())
-			strLabel.Format("%02.2i. %s", i+1, strFName);
-		else
-			strLabel.Format("%02.2i. %s", i+1, item.GetDescription());
-		pItem->SetLabel(strLabel);
+		strLabel.Format("%02.2i. %s", i+1, strFName);
+		item.SetLabel(strLabel);
 
 		if (item.GetDuration())
 		{
@@ -298,12 +299,12 @@ void CGUIWindowMusicPlayList::GetDirectory(const CStdString &strDirectory, VECFI
 			{
 				CStdString str;
 				CUtil::SecondsToHMSString(nDuration, str);
-				pItem->SetLabel2(str);
+				item.SetLabel2(str);
 			}
 			else
-				pItem->SetLabel2("");
+				item.SetLabel2("");
 		}
-		items.push_back(pItem);
+		items.push_back(&item);
 	}
 
 	//	Set default icons first,
@@ -379,7 +380,7 @@ void CGUIWindowMusicPlayList::ShufflePlayList()
 		}
 	}
 
-	Update(m_strDirectory);
+	Update(m_Directory.m_strPath);
 }
 
 void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
@@ -565,7 +566,7 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
 	else
 	{
 		//	If we have a cdda track without cddb information,...
-		if (!pItem->m_musicInfoTag.Loaded() && CUtil::IsCDDA(pItem->m_strPath) )
+		if (!pItem->m_musicInfoTag.Loaded() && pItem->IsCDDA() )
 		{
 			//	...we have the duration for display
 			int nDuration=pItem->m_musicInfoTag.GetDuration();
@@ -589,10 +590,11 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
 	//	Remove default icons
 	pItem->FreeIcons();
 	//	and reset thumbs and default icons
-	CUtil::SetMusicThumb(pItem);
-	CUtil::FillInDefaultIcon(pItem);
+	pItem->SetMusicThumb();
+	pItem->FillInDefaultIcon();
 }
-void  CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)
+
+void CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)
 {
 	if (m_tagloader.IsLoading())
 		m_tagloader.StopThread();
@@ -600,4 +602,15 @@ void  CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)
 	CGUIWindowMusicBase::Update(strDirectory);
 
 	m_tagloader.Load(m_vecItems);
+}
+
+void CGUIWindowMusicPlayList::ClearFileItems()
+{
+  CGUIMessage msg1(GUI_MSG_LABEL_RESET,GetID(),CONTROL_LIST,0,0,NULL);
+  g_graphicsContext.SendMessage(msg1);
+
+  CGUIMessage msg2(GUI_MSG_LABEL_RESET,GetID(),CONTROL_THUMBS,0,0,NULL);
+  g_graphicsContext.SendMessage(msg2);
+
+  m_vecItems.clear();
 }

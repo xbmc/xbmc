@@ -57,7 +57,7 @@ protected:
 
 	CVirtualDirectory		m_rootDir;
   VECFILEITEMS        m_vecItems;
-	CStdString					m_strDirectory;
+	CFileItem						m_Directory;
 	CDirectoryHistory		m_history;
   int                 m_iItemSelected;
   CGUIDialogProgress*	m_dlgProgress;

@@ -40,7 +40,6 @@ void CPicture::Free()
 CxImage* CPicture::LoadImage(const CStdString& strFileName, int &iOriginalWidth, int &iOriginalHeight, int iMaxWidth, int iMaxHeight)
 {
 	CStdString strExtension;
-	CStdString strCachedFile;
 	DWORD dwImageType=0xffff;
 
 	CUtil::GetExtension(strFileName,strExtension);
@@ -58,23 +57,24 @@ CxImage* CPicture::LoadImage(const CStdString& strFileName, int &iOriginalWidth,
 	if ( 0==CUtil::cmpnocase(strExtension.c_str(),".tga") ) dwImageType=CXIMAGE_FORMAT_TGA;
 	if ( 0==CUtil::cmpnocase(strExtension.c_str(),".pcx") ) dwImageType=CXIMAGE_FORMAT_PCX;
 
-
-  if (! CUtil::IsHD(strFileName))
+	CFileItem fileName(strFileName, false);
+	CFileItem cachedFile("", false);
+  if (! fileName.IsHD())
   {
-	  strCachedFile="Z:\\cachedpic";
-	  strCachedFile+= strExtension;
+	  cachedFile.m_strPath="Z:\\cachedpic";
+	  cachedFile.m_strPath+= strExtension;
 	  CFile file;
-    ::DeleteFile(strCachedFile.c_str());
-	  if ( !file.Cache(strFileName.c_str(),strCachedFile.c_str(),NULL,NULL) )
+    ::DeleteFile(cachedFile.m_strPath.c_str());
+	  if ( !file.Cache(fileName.m_strPath.c_str(),cachedFile.m_strPath.c_str(),NULL,NULL) )
 	  {
-      ::DeleteFile(strCachedFile.c_str());
-			CLog::Log(LOGERROR, "PICTURE::LoadImage: Unable to cache file %s\n", strFileName.c_str());
+      ::DeleteFile(cachedFile.m_strPath.c_str());
+			CLog::Log(LOGERROR, "PICTURE::LoadImage: Unable to cache file %s\n", fileName.m_strPath.c_str());
 		  return NULL;
 	  }
   }
   else
   {
-    strCachedFile=strFileName;
+    cachedFile.m_strPath=fileName.m_strPath;
   }
 
 	if (!m_bSectionLoaded)
@@ -89,26 +89,26 @@ CxImage* CPicture::LoadImage(const CStdString& strFileName, int &iOriginalWidth,
 	int iHeight = iMaxHeight;
   try
   {
-		CLog::Log(LOGDEBUG, "PICTURE::LoadImage: Attempting to load %s", strCachedFile.c_str());
-	  if (!pImage->Load(strCachedFile.c_str(),dwImageType,iWidth,iHeight) || !pImage->IsValid())
+		CLog::Log(LOGDEBUG, "PICTURE::LoadImage: Attempting to load %s", cachedFile.m_strPath.c_str());
+	  if (!pImage->Load(cachedFile.m_strPath.c_str(),dwImageType,iWidth,iHeight) || !pImage->IsValid())
 	  {
-			CLog::Log(LOGERROR, "PICTURE::LoadImage: Unable to open image: %s Error:%s\n", strCachedFile.c_str(), pImage->GetLastError());
+			CLog::Log(LOGERROR, "PICTURE::LoadImage: Unable to open image: %s Error:%s\n", cachedFile.m_strPath.c_str(), pImage->GetLastError());
 			delete pImage;
 		  return NULL;
 	  }
   }
   catch(...)
   {
-		CLog::Log(LOGERROR, "PICTURE::LoadImage: Unable to open image: %s\n", strCachedFile.c_str());
-    if (CUtil::IsHD(strCachedFile) )
+		CLog::Log(LOGERROR, "PICTURE::LoadImage: Unable to open image: %s\n", cachedFile.m_strPath.c_str());
+    if (cachedFile.IsHD() )
     {
-      ::DeleteFile(strCachedFile.c_str());
+      ::DeleteFile(cachedFile.m_strPath.c_str());
     }
 		delete pImage;
     return NULL;
   }
 	
-	CLog::Log(LOGDEBUG, "PICTURE::LoadImage: Loaded %s successfully.", strCachedFile.c_str());
+	CLog::Log(LOGDEBUG, "PICTURE::LoadImage: Loaded %s successfully.", cachedFile.m_strPath.c_str());
 
 	iOriginalWidth = iWidth;
 	iOriginalHeight = iHeight;
@@ -136,7 +136,7 @@ CxImage* CPicture::LoadImage(const CStdString& strFileName, int &iOriginalWidth,
   {
 		if (!pImage->Resample(m_dwWidth,m_dwHeight, QUALITY) || !pImage->IsValid())
 		{
-			CLog::Log(LOGERROR, "PICTURE::LoadImage: Unable to resample picture: %s\n", strCachedFile.c_str());
+			CLog::Log(LOGERROR, "PICTURE::LoadImage: Unable to resample picture: %s\n", cachedFile.m_strPath.c_str());
 			delete pImage;
 			return NULL;
 		}
@@ -283,7 +283,8 @@ bool CPicture::CreateThumnail(const CStdString& strFileName)
 {
   CStdString strThumbnail;
   CUtil::GetThumbnail(strFileName, strThumbnail);
-  bool bCacheFile=CUtil::IsRemote(strFileName);
+	CFileItem fileName(strFileName, false);
+  bool bCacheFile=fileName.IsRemote();
 	return DoCreateThumbnail(strFileName, strThumbnail, MAX_THUMB_WIDTH, MAX_THUMB_HEIGHT,bCacheFile);
 }
 
@@ -642,7 +643,8 @@ bool CPicture::Convert(const CStdString& strSource,const CStdString& strDest)
 	if ( 0==CUtil::cmpnocase(strExtension.c_str(),".pcx") ) dwImageType=CXIMAGE_FORMAT_PCX;
 
 
-  if (!CUtil::IsHD(strSource))
+	CFileItem source(strSource, false);
+  if (!source.IsHD())
   {
 	  strCachedFile="Z:\\cachedpic";
 	  strCachedFile+= strExtension;

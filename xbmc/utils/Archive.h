@@ -5,7 +5,7 @@ class CArchive;
 
 class ISerializable
 {
-	friend CArchive;
+public:
 	virtual void Serialize(CArchive& ar)=0;
 };
 

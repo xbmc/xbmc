@@ -255,7 +255,7 @@ CStdString CGUIInfoManager::GetCurrentPlayTime()
 void CGUIInfoManager::SetCurrentSong(const CFileItem &item)
 {
 	//	No audio file, we are finished here
-	if (!CUtil::IsAudio(item.m_strPath) )
+	if (!item.IsAudio() )
 		return;
 
 	m_currentSong = item;
@@ -368,8 +368,8 @@ void CGUIInfoManager::SetCurrentSong(const CFileItem &item)
 	}
 
 	//	Find a thumb for this file.
-	CUtil::SetMusicThumb(&m_currentSong);
-	CUtil::FillInDefaultIcon(&m_currentSong);
+	m_currentSong.SetMusicThumb();
+	m_currentSong.FillInDefaultIcon();
 }
 
 wstring CGUIInfoManager::GetSystemHeatInfo(const CStdString &strInfo)

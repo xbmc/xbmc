@@ -114,8 +114,12 @@ void CApplicationMessenger::ProcessMessages()
 
 					//g_application.StopPlaying();
 					// play file
-					CFileItem item;
-					item.m_strPath = pMsg->strParam;
+					CFileItem item(pMsg->strParam, false);
+					if (item.IsAudio())
+						item.SetMusicThumb();
+					else
+						item.SetThumb();
+					item.FillInDefaultIcon();
 					g_application.PlayFile(item);
 				}
 				break;

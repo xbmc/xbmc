@@ -107,8 +107,9 @@ struct SSortVideoYearByName
 //****************************************************************************************************************************
 CGUIWindowVideoYear::CGUIWindowVideoYear()
 {
-	m_strDirectory="";
-  m_iItemSelected=-1;
+	m_Directory.m_strPath="";
+	m_Directory.m_bIsFolder=true;
+	m_iItemSelected=-1;
 	m_iLastControl=-1;
 }
 
@@ -140,7 +141,7 @@ bool CGUIWindowVideoYear::OnMessage(CGUIMessage& message)
       int iControl=message.GetSenderId();
       if (iControl==CONTROL_BTNSORTBY) // sort by
       {
-        if (m_strDirectory.size())
+        if (!m_Directory.IsVirtualDirectoryRoot())
         {
 					g_stSettings.m_iMyVideoYearSortMethod++;
 					if (g_stSettings.m_iMyVideoYearSortMethod>=3)
@@ -152,7 +153,7 @@ bool CGUIWindowVideoYear::OnMessage(CGUIMessage& message)
       }
       else if (iControl==CONTROL_BTNSORTASC) // sort asc
       {
-				if (m_strDirectory.IsEmpty())
+				if (m_Directory.IsVirtualDirectoryRoot())
 	        g_stSettings.m_bMyVideoYearRootSortAscending=!g_stSettings.m_bMyVideoYearRootSortAscending;
 				else
 	        g_stSettings.m_bMyVideoYearSortAscending=!g_stSettings.m_bMyVideoYearSortAscending;
@@ -201,7 +202,7 @@ void CGUIWindowVideoYear::FormatItemLabels()
 void CGUIWindowVideoYear::SortItems(VECFILEITEMS& items)
 {
   SSortVideoYearByName sortmethod;
-	if (m_strDirectory.IsEmpty())
+	if (m_Directory.IsVirtualDirectoryRoot())
 	{
 		sortmethod.m_iSortMethod=g_stSettings.m_iMyVideoYearRootSortMethod;
 		sortmethod.m_bSortAscending=g_stSettings.m_bMyVideoYearRootSortAscending;
@@ -226,12 +227,12 @@ void CGUIWindowVideoYear::Update(const CStdString &strDirectory)
 		if (pItem->m_bIsFolder && pItem->GetLabel() != "..")
 		{
 			strSelectedItem=pItem->m_strPath;
-			m_history.Set(strSelectedItem,m_strDirectory);
+			m_history.Set(strSelectedItem,m_Directory.m_strPath);
 		}
 	}
   ClearFileItems();
-  m_strDirectory=strDirectory;
-  if (m_strDirectory=="")
+  m_Directory.m_strPath=strDirectory;
+  if (m_Directory.IsVirtualDirectoryRoot())
   {
     VECMOVIEYEARS years;
     m_database.GetYears( years);
@@ -259,7 +260,7 @@ void CGUIWindowVideoYear::Update(const CStdString &strDirectory)
 		}
 		m_strParentPath = "";
 		VECMOVIES movies;
-		m_database.GetMoviesByYear(m_strDirectory, movies);
+		m_database.GetMoviesByYear(m_Directory.m_strPath, movies);
 		for (int i=0; i < (int)movies.size(); ++i)
 		{
 			CIMDBMovie movie=movies[i];
@@ -276,7 +277,7 @@ void CGUIWindowVideoYear::Update(const CStdString &strDirectory)
 			pItem->m_stTime.wYear= movie.m_iYear;
 			m_vecItems.push_back(pItem);
 		}
-		SET_CONTROL_LABEL(LABEL_YEAR,m_strDirectory);
+		SET_CONTROL_LABEL(LABEL_YEAR,m_Directory.m_strPath);
   }
 	CUtil::SetThumbs(m_vecItems);
   SetIMDBThumbs(m_vecItems);
@@ -290,13 +291,13 @@ void CGUIWindowVideoYear::Update(const CStdString &strDirectory)
 		//	Fake a videofile
 		pItem->m_strPath=pItem->m_strPath+".avi";
 
-		CUtil::FillInDefaultIcon(pItem);
+		pItem->FillInDefaultIcon();
 		pItem->m_strPath=strPath;
 	}
 
   OnSort();
   UpdateButtons();
-  strSelectedItem=m_history.Get(m_strDirectory);	
+  strSelectedItem=m_history.Get(m_Directory.m_strPath);	
 
 	m_iLastControl=GetFocusedControl();
 
@@ -385,13 +386,13 @@ void CGUIWindowVideoYear::OnClick(int iItem)
 void CGUIWindowVideoYear::OnInfo(int iItem)
 {
 	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
-  if ( m_strDirectory.IsEmpty() ) return;
+  if ( m_Directory.IsVirtualDirectoryRoot() ) return;
 	CGUIWindowVideoBase::OnInfo(iItem);
 }
 
 bool CGUIWindowVideoYear::ViewByIcon()
 {
-  if ( m_strDirectory.IsEmpty() )
+  if ( m_Directory.IsVirtualDirectoryRoot() )
   {
     if (g_stSettings.m_iMyVideoYearRootViewAsIcons != VIEW_AS_LIST) return true;
   }
@@ -404,7 +405,7 @@ bool CGUIWindowVideoYear::ViewByIcon()
 
 bool CGUIWindowVideoYear::ViewByLargeIcon()
 {
-  if ( m_strDirectory.IsEmpty() )
+  if ( m_Directory.IsVirtualDirectoryRoot() )
   {
     if (g_stSettings.m_iMyVideoYearRootViewAsIcons == VIEW_AS_LARGEICONS) return true;
   }
@@ -417,7 +418,7 @@ bool CGUIWindowVideoYear::ViewByLargeIcon()
 
 void CGUIWindowVideoYear::SetViewMode(int iViewMode)
 {
-  if ( m_strDirectory.IsEmpty() )
+  if ( m_Directory.IsVirtualDirectoryRoot() )
     g_stSettings.m_iMyVideoYearRootViewAsIcons = iViewMode;
   else
     g_stSettings.m_iMyVideoYearViewAsIcons = iViewMode;
@@ -425,7 +426,7 @@ void CGUIWindowVideoYear::SetViewMode(int iViewMode)
 
 int CGUIWindowVideoYear::SortMethod()
 {
-	if (m_strDirectory.IsEmpty())
+	if (m_Directory.IsVirtualDirectoryRoot())
 		return g_stSettings.m_iMyVideoYearRootSortMethod+365;
 	else
 		return g_stSettings.m_iMyVideoYearSortMethod+365;
@@ -433,7 +434,7 @@ int CGUIWindowVideoYear::SortMethod()
 
 bool CGUIWindowVideoYear::SortAscending()
 {
-	if (m_strDirectory.IsEmpty())
+	if (m_Directory.IsVirtualDirectoryRoot())
 		return g_stSettings.m_bMyVideoYearRootSortAscending;
 	else
 		return g_stSettings.m_bMyVideoYearSortAscending;

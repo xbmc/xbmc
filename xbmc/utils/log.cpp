@@ -105,3 +105,8 @@ void CLog::DebugLog(const char *format, ... )
 	strcat(tmp, "\n");
 	OutputDebugString(tmp);
 }
+
+int CLog::GetLevel()
+{
+	return g_stSettings.m_iLogLevel;
+}

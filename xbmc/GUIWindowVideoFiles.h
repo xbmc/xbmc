@@ -28,7 +28,7 @@ protected:
 	virtual void			SetViewMode(int iMode);
 	virtual int				SortMethod();
 	virtual bool			SortAscending();
-  virtual void			AddFileToDatabase(const CStdString& strFile);
+  virtual void			AddFileToDatabase(const CFileItem* pItem);
 	virtual void			FormatItemLabels();
 	virtual void			SortItems(VECFILEITEMS& items);
   virtual void			UpdateButtons();
