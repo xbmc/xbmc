@@ -1,5 +1,6 @@
 #include "..\..\..\application.h"
 #include "..\..\..\playlistplayer.h"
+#include "..\..\..\util.h"
 #include "player.h"
 #include "playlist.h"
 
@@ -36,31 +37,37 @@ namespace PYXBMC
 	// play a file or python playlist
 	PyObject* Player_Play(Player *self, PyObject *args)
 	{
-		char *cFileName;
-		PyObject *pObject;
+		PyObject *pObject = NULL;
 
-		if (PyArg_ParseTuple(args, "s", &cFileName))
-		{
-			g_applicationMessenger.MediaPlay(cFileName);
-		}
-		else if (PyArg_ParseTuple(args, "O", &pObject))
-		{
-			if(PlayList_Check(pObject))
-			{
-				// play a python playlist (a playlist from playlistplayer.cpp)
-				PlayList* pPlayList = (PlayList*)pObject;
-				self->iPlayList = pPlayList->iPlayList;
-				g_playlistPlayer.SetCurrentPlaylist(pPlayList->iPlayList);
-				g_applicationMessenger.PlayListPlayerPlay(0);
-			}
-		}
-		else
+		if (!PyArg_ParseTuple(args, "|O", &pObject)) return NULL;
+
+		if (pObject == NULL)
 		{
 			// play current file in playlist
 			if (g_playlistPlayer.GetCurrentPlaylist() != self->iPlayList)
 			{
 				g_playlistPlayer.SetCurrentPlaylist(self->iPlayList);
-				g_applicationMessenger.PlayListPlayerPlay(g_playlistPlayer.GetCurrentSong());
+			}
+			g_applicationMessenger.PlayListPlayerPlay(g_playlistPlayer.GetCurrentSong());
+		}
+		else if(PlayList_Check(pObject))
+		{
+			// play a python playlist (a playlist from playlistplayer.cpp)
+			PlayList* pPlayList = (PlayList*)pObject;
+			self->iPlayList = pPlayList->iPlayList;
+			g_playlistPlayer.SetCurrentPlaylist(pPlayList->iPlayList);
+			g_applicationMessenger.PlayListPlayerPlay(0);
+		}
+		else if (PyString_Check(pObject))
+		{
+			if (CUtil::IsPlayList(PyString_AsString(pObject)))
+			{
+				PyErr_SetString(PyExc_ValueError, "Only python playlists are supported (see xbmc.PlayList)");
+				return NULL;
+			}
+			else
+			{
+				g_applicationMessenger.MediaPlay(PyString_AsString(pObject));
 			}
 		}
 
