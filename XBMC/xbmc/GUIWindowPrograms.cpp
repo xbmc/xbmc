@@ -314,7 +314,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
 										m_vecItems.push_back(pItem);
 									}
 
-									else if (CUtil::IsShortCut(strSubFile)) 
+									else if (CUtil::IsShortCut(subwfd.cFileName)) 
 									{
 										CFileItem *pItem = new CFileItem(strSubDescription);
 										pItem->m_strPath=strSubFile;
