@@ -27,7 +27,7 @@ public:
 	virtual ~CHTTP();
 
 	bool 		Open(const string& strURL);
-	bool 		Recv(unsigned char* pBuffer, int iLen, int& iRead);
+	bool 		Recv(char* pBuffer, int iLen, int& iRead, bool bFill);
 	void 		Close();
 	bool 		Post(const string& strURL, const string& strPostData, string& strHTML);
 	void 		SetCookie(const string& strCookie);
@@ -36,12 +36,13 @@ public:
 	void		SetHTTPVer(unsigned int iVer);
 protected:
 	bool   BreakURL(const string& strURL, string& strHostName, int& iPort, string& Page);
-	bool	 Send(unsigned char* pBuffer, int iLen);
+	bool	 Send(char* pBuffer, int iLen);
 	bool	 Connect();
 
 	string m_strProxyServer;
 	int    m_iProxyPort;
 	CAutoPtrSocket m_socket;
+	WSAEVENT hEvent;
 	
 	string m_strHostName;
 	int    m_iPort;
