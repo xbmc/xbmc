@@ -1194,6 +1194,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
         // first search for file in our list of the current directory
 				CSong song;
         bool bFound(false);
+        bool bFoundInHddCache(false);
 				IMAPSONGS it=songsMap.find(pItem->m_strPath);
 				if (it!=songsMap.end())
 				{
@@ -1207,6 +1208,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 					if (it!=itemsMap.end())
 					{
 						pItem->m_musicInfoTag=it->second->m_musicInfoTag;
+						bFoundInHddCache=true;
 						bFound=true;
 					}
 				}
@@ -1228,7 +1230,6 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 				{
           // if id3 tag scanning is turned on OR we're scanning the directory
           // then parse id3tag from file
-					iTagsLoaded++;
 					if (g_guiSettings.GetBool("MyMusic.UseTags") || m_bScan)
 					{
             // get correct tag parser
@@ -1240,11 +1241,12 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 							if ( pLoader->Load(pItem->m_strPath,tag))
 							{
 								bNewFile=true;
+								iTagsLoaded++;
 							}
 						}
 					}
 				} // of if ( !bFound )
-				else if (!tag.Loaded()) //	Loaded from cache?
+				else if (!tag.Loaded() && !bFoundInHddCache) //	Loaded from cache?
 				{
 					tag.SetSong(song);
 				}
