@@ -71,9 +71,11 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback,int iChannels, unsi
 													&m_wfx
 													);
 
+  m_dwPacketSize=1152;
+  m_dwNumPackets=8*iChannels;
 
 	// Create enough samples to hold approx 2 sec worth of audio.
-	m_dwNumPackets = ( (m_wfx.nSamplesPerSec / ( m_dwPacketSize / ((uiBitsPerSample/8) * m_wfx.nChannels) )) / 2);
+//	m_dwNumPackets = ( (m_wfx.nSamplesPerSec / ( m_dwPacketSize / ((uiBitsPerSample/8) * m_wfx.nChannels) )) / 2);
 	for (DWORD dwX=0; dwX < m_dwNumPackets ; dwX++)
 		m_pbSampleData[dwX] = (BYTE*)XPhysicalAlloc( m_dwPacketSize, MAXULONG_PTR,0,PAGE_READWRITE|PAGE_NOCACHE);
 	m_adwStatus		 = new DWORD[ m_dwNumPackets ];
@@ -344,4 +346,5 @@ void CAc97DirectSound::UnRegisterAudioCallback()
 {
 	m_pCallback=NULL;
 }
+
 
