@@ -34,6 +34,9 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_WINDOW_INIT:
 		{
+      m_dwFPSTime=timeGetTime();
+      m_dwFrames=0;
+      m_fFPS=0.0f;
 			m_dwlastTime=0;
 		}
 		break;
@@ -43,8 +46,18 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 
 void CGUIWindowSystemInfo::Render()
 {
+  
 	GetValues();
 	CGUIWindow::Render();
+  DWORD dwTimeSpan=timeGetTime()-  m_dwFPSTime;
+  if (dwTimeSpan >=1000)
+  {
+    m_fFPS= ((float)m_dwFrames*1000.0f) / ((float)dwTimeSpan);
+    m_dwFPSTime=timeGetTime();
+    m_dwFrames=0;
+  }
+  m_dwFrames++;
+  
 }
 
 void  CGUIWindowSystemInfo::GetValues()
@@ -246,8 +259,14 @@ void  CGUIWindowSystemInfo::GetValues()
 			SET_CONTROL_LABEL(GetID(), 11,wszStatus);
 	}
 	{
+
 		WCHAR wszText[128];
-		swprintf(wszText,L"%ix%i%s",g_graphicsContext.GetWidth(),g_graphicsContext.GetHeight(),(g_graphicsContext.IsWidescreen() ? L"@16:9":L"@4:3"));
+    int  iResolution=g_stSettings.m_ScreenResolution;
+    swprintf(wszText,L"%ix%i %S %02.2f Hz.", 
+            g_settings.m_ResInfo[iResolution].iWidth, 
+            g_settings.m_ResInfo[iResolution].iHeight, 
+            g_settings.m_ResInfo[iResolution].strMode,
+            m_fFPS);
 		SET_CONTROL_LABEL(GetID(), 14,wszText);
 	}
 
