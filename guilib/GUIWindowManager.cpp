@@ -91,7 +91,7 @@ void CGUIWindowManager::OnKey(const CKey& key)
   }
   if (m_iActiveWindow < 0) return;
   CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
-  pWindow->OnKey(key);
+  if (pWindow) pWindow->OnKey(key);
 }
 
 void CGUIWindowManager::Render()
