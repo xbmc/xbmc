@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 11-11-2004 fixed: minor bugs like delay calculation in audio output device
+  - 11-11-2004 added: Implementation of 2 channel PCM passthrough 
   - 11-11-2004 added: GUI setting for 2 channel PCM passthrough
   - 11-11-2004 fixed: multi byte language cue file not open correctly over SMB share
   - 11-11-2004 changed: Use msdash audio settings for analog audio (Stereo <-> Dolby Surround) instead of forcing Dolby Surround

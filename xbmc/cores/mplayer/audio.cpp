@@ -152,7 +152,7 @@ static int audio_init(int rate,int channels,int format,int flags)
 		{
 			channels=2;
 			// ac3 passthru
-			m_pAudioDecoder = new CAc97DirectSound(m_pAudioCallback,channels,rate,ao_format_bits);
+			m_pAudioDecoder = new CAc97DirectSound(m_pAudioCallback,channels,rate,ao_format_bits,bAC3PassThru);
 		}
 		else
 		{	// check if we should resample this audio
@@ -164,7 +164,11 @@ static int audio_init(int rate,int channels,int format,int flags)
 			}
 			if( channels==3 || channels==5 || channels>6 )
 				return 1;		// this is an ugly hack due to our code use mplayer_open_file for both playing file, and format detecttion
-			m_pAudioDecoder = new CASyncDirectSound(m_pAudioCallback,channels,rate,ao_format_bits, bResample,0, strAudioCodec);
+
+			if( channels==2 && !mplayer_HasVideo() && (lSampleRate==48000 || bResample) && g_stSettings.m_bUseDigitalOutput && g_stSettings.m_bPCMPassthrough ) // need add menu options here
+				m_pAudioDecoder = new CAc97DirectSound(m_pAudioCallback,channels,rate,ao_format_bits,bAC3PassThru, bResample);
+			else
+				m_pAudioDecoder = new CASyncDirectSound(m_pAudioCallback,channels,rate,ao_format_bits, bResample,0, strAudioCodec);
 		}
     pao_data->channels	= channels;
     pao_data->samplerate= rate;
@@ -245,10 +249,11 @@ static float audio_get_delay()
 	if (!m_pAudioDecoder) return 0;
 	FLOAT fDelay=m_pAudioDecoder->GetDelay();
 	// check our output rate...
+	fDelay += (float)pao_data->buffersize / (float)pao_data->bps;	//data in pao_data buffer is not resample yet
   if (m_pAudioDecoder->IsResampling())
-	fDelay += (float)(m_pAudioDecoder->GetBytesInBuffer() + pao_data->buffersize) / (float)48000*pao_data->channels*2;
+	fDelay += (float)m_pAudioDecoder->GetBytesInBuffer() / (float)48000*pao_data->channels*2;
   else
-	fDelay += (float)(m_pAudioDecoder->GetBytesInBuffer() + pao_data->buffersize) / (float)pao_data->bps;
+	fDelay += (float)m_pAudioDecoder->GetBytesInBuffer() / (float)pao_data->bps;
 	return fDelay;
 
   //mplayer:
