@@ -3,8 +3,8 @@
 #include "guifontmanager.h"
 
 
-CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFont,const wstring& strLabel, DWORD dwTextColor, DWORD dwDisabledColor, DWORD dwTextAlign, bool bHasPath)
-:CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight)
+CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFont,const wstring& strLabel, DWORD dwTextColor, DWORD dwDisabledColor, DWORD dwTextAlign, bool bHasPath)
+:CGUIControl(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight)
 {
   m_strLabel=strLabel;
   m_pFont=g_fontManager.GetFont(strFont);
@@ -37,7 +37,7 @@ void CGUILabelControl::Render()
 	{
 		if (IsDisabled())
 		{
-			m_pFont->DrawText((float)m_dwPosX, (float)m_dwPosY,m_dwDisabledColor,m_strLabel.c_str(),m_dwTextAlign,(float)m_dwWidth);
+			m_pFont->DrawText((float)m_iPosX, (float)m_iPosY,m_dwDisabledColor,m_strLabel.c_str(),m_dwTextAlign,(float)m_dwWidth);
 		}
 		else
 		{
@@ -51,7 +51,7 @@ void CGUILabelControl::Render()
 				}
 			}
 
-			m_pFont->DrawText((float)m_dwPosX, (float)m_dwPosY,m_dwTextColor,label.c_str(),m_dwTextAlign, (float)m_dwWidth);
+			m_pFont->DrawText((float)m_iPosX, (float)m_iPosY,m_dwTextColor,label.c_str(),m_dwTextAlign, (float)m_dwWidth);
 		}
 	}
 }

@@ -38,6 +38,8 @@
 #define	GUI_MSG_LABEL2_SET		 17
 #define	GUI_MSG_SHOWRANGE      18
 
+#define GUI_MSG_FULLSCREEN		19		// should go to fullscreen window (vis or video)
+
 #define GUI_MSG_USER         1000
 #include <string>
 using namespace std;
@@ -131,6 +133,16 @@ using namespace std;
 #define SET_CONTROL_VISIBLE(dwSenderId, dwControlID) \
 { \
 	CGUIMessage msg(GUI_MSG_VISIBLE, dwSenderId, dwControlID); \
+	g_graphicsContext.SendMessage(msg); \
+}
+
+/*!
+	\ingroup winmsg
+	\brief 
+	*/
+#define SEND_CLICK_MESSAGE(dwID, dwParentID, dwAction) \
+{ \
+	CGUIMessage msg(GUI_MSG_CLICKED, dwID, dwParentID, dwAction); \
 	g_graphicsContext.SendMessage(msg); \
 }
 

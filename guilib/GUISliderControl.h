@@ -26,10 +26,10 @@ class CGUISliderControl :
   public CGUIControl
 {
 public:
-	CGUISliderControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strBackGroundTexture,const CStdString& strMidTexture,const CStdString& strMidTextureFocus,int iType);
+	CGUISliderControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strBackGroundTexture,const CStdString& strMidTexture,const CStdString& strMidTextureFocus,int iType);
 	virtual ~CGUISliderControl(void);
 	virtual void Render();
-	virtual bool CanFocus() const;  
+//	virtual bool CanFocus() const;  
 	virtual void 	OnAction(const CAction &action);
 	virtual void PreAllocResources();
 	virtual void AllocResources();
@@ -47,13 +47,18 @@ public:
 	int 				GetType() const;
 	const CStdString& GetBackGroundTextureName() const { return m_guiBackground.GetFileName();};
 	const CStdString& GetBackTextureMidName() const { return m_guiMid.GetFileName();};
-  	DWORD	GetControlOffsetX() const { return m_dwControlOffsetX;};
-	DWORD	GetControlOffsetY() const { return m_dwControlOffsetY;};
-  	void	SetControlOffsetX(DWORD dwControlOffsetX) { m_dwControlOffsetX=dwControlOffsetX;};
-	void	SetControlOffsetY(DWORD dwControlOffsetY) { m_dwControlOffsetY=dwControlOffsetY;};
-
+  	int		GetControlOffsetX() const { return m_iControlOffsetX;};
+	int		GetControlOffsetY() const { return m_iControlOffsetY;};
+  	void	SetControlOffsetX(int iControlOffsetX) { m_iControlOffsetX=iControlOffsetX;};
+	void	SetControlOffsetY(int iControlOffsetY) { m_iControlOffsetY=iControlOffsetY;};
+	virtual bool HitTest(int iPosX, int iPosY) const;
+	virtual void OnMouseClick(DWORD dwButton);
+	virtual void OnMouseDrag();
+	virtual void OnMouseWheel();
 protected:
 	virtual void	Update() ;
+	virtual void	Move(int iNumSteps);
+	virtual void	SetFromPosition(int iPosX, int iPosY);
 	CGUIImage		m_guiBackground;
 	CGUIImage		m_guiMid;
 	CGUIImage		m_guiMidFocus;
@@ -66,7 +71,7 @@ protected:
 	int				m_iValue;
 	float			m_fValue;
 	float			m_fInterval;
-	DWORD			m_dwControlOffsetX;
-	DWORD			m_dwControlOffsetY;
+	int				m_iControlOffsetX;
+	int				m_iControlOffsetY;
 };
 #endif

@@ -27,19 +27,28 @@ using namespace std;
 class CGUIListControl : public CGUIControl
 {
 public:
-  CGUIListControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, 
+  CGUIListControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, 
                   const CStdString& strFontName, 
                   DWORD dwSpinWidth,DWORD dwSpinHeight,
                   const CStdString& strUp, const CStdString& strDown, 
                   const CStdString& strUpFocus, const CStdString& strDownFocus, 
-                  DWORD dwSpinColor,DWORD dwSpinX, DWORD dwSpinY,
+                  DWORD dwSpinColor,int iSpinX, int iSpinY,
                   const CStdString& strFont, DWORD dwTextColor,DWORD dwSelectedColor,
                   const CStdString& strButton, const CStdString& strButtonFocus,
 				  DWORD dwItemTextOffsetX, DWORD dwItemTextOffsetY);
   virtual ~CGUIListControl(void);
   virtual void 					Render();
   virtual void 					OnAction(const CAction &action);
+  virtual void         			OnRight();
+  virtual void         			OnLeft();
+  virtual void         			OnDown();
+  virtual void         			OnUp();
+  virtual void 					OnMouseOver();
+  virtual void 					OnMouseClick(DWORD dwButton);
+  virtual void					OnMouseDoubleClick(DWORD dwButton);
+  virtual void 					OnMouseWheel();
   virtual bool 					OnMessage(CGUIMessage& message);
+  virtual bool					HitTest(int iPosX, int iPosY) const;
 
 	virtual void PreAllocResources();
   virtual void 					AllocResources() ;
@@ -53,6 +62,7 @@ public:
 	void									SetColors2(DWORD dwTextColor, DWORD dwSelectedColor);
 	void						SetPageControlVisible(bool bVisible);
   int                   GetSelectedItem(CStdString& strLabel);
+	bool				SelectItemFromPoint(int iPosX, int iPosY);
 	DWORD									GetTextColor() const { return m_dwTextColor;};
 	DWORD									GetTextColor2() const { return m_dwTextColor2;};
 	DWORD									GetSelectedColor() const { return m_dwSelectedColor;};
@@ -66,8 +76,8 @@ public:
 	const	CStdString&			GetTexutureUpFocusName() const { return m_upDown.GetTexutureUpFocusName(); };
 	const	CStdString&			GetTexutureDownFocusName() const { return m_upDown.GetTexutureDownFocusName(); };
 	DWORD									GetSpinTextColor() const { return m_upDown.GetTextColor();};
-	DWORD									GetSpinX() const { return m_upDown.GetXPosition();};
-	DWORD									GetSpinY() const { return m_upDown.GetYPosition();};
+	int										GetSpinX() const { return m_upDown.GetXPosition();};
+	int										GetSpinY() const { return m_upDown.GetYPosition();};
 	DWORD									GetSpace() const { return m_iSpaceBetweenItems;};
 	DWORD									GetItemHeight() const { return m_iItemHeight;	};
 	DWORD									GetButtonTextOffsetX() const { return m_imgButton.GetTextOffsetX();};
@@ -84,12 +94,8 @@ public:
 protected:
    
   void         					RenderText(float fPosX, float fPosY,float fMaxWidth, DWORD dwTextColor, WCHAR* wszText,bool bScroll );
-  void         					OnRight();
-  void         					OnLeft();
-  void         					OnDown();
-  void         					OnUp();
-  void         					OnPageUp();
-  void         					OnPageDown();
+  void							Scroll(int iAmount);
+  int							GetPage();
 	int										m_iSpaceBetweenItems;
   int                   m_iOffset;
   int                   m_iItemsPerPage;

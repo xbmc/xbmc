@@ -6,8 +6,8 @@
 
 extern CApplication g_application;
 
-CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFontName, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, D3DCOLOR dwNormalColor, CStdString& strUrl)
-:CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight)
+CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFontName, D3DCOLOR dwChannelColor, D3DCOLOR dwHeadlineColor, D3DCOLOR dwNormalColor, CStdString& strUrl)
+:CGUIControl(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight)
 {
 	m_strUrl			= strUrl;
 	m_dwChannelColor	= dwChannelColor;
@@ -80,8 +80,8 @@ void CGUIRSSControl::OnFeedUpdate(CStdString& aFeed, LPBYTE aColorArray)
 
 void CGUIRSSControl::RenderText()
 {
-	float fPosX = (float) m_dwPosX;
-	float fPosY = (float) m_dwPosY;
+	float fPosX = (float) m_iPosX;
+	float fPosY = (float) m_iPosY;
 	float fMaxWidth = (float)m_dwWidth;
 
 	float fPosCX=fPosX;

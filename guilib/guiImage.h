@@ -21,11 +21,11 @@ using namespace std;
 class CGUIImage : public CGUIControl
 {
 public:
-  CGUIImage(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTexture,DWORD dwColorKey=0);
+  CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTexture,DWORD dwColorKey=0);
   virtual ~CGUIImage(void);
   
   virtual void Render();
-  virtual void Render(DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight);
+  virtual void Render(int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight);
   virtual void OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);
 	virtual void PreAllocResources();

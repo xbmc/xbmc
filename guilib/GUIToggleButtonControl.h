@@ -22,7 +22,7 @@ using namespace std;
 class CGUIToggleButtonControl : public CGUIControl
 {
 public:
-  CGUIToggleButtonControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus, const CStdString& strAltTextureFocus,const CStdString& strAltTextureNoFocus);
+  CGUIToggleButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus, const CStdString& strAltTextureFocus,const CStdString& strAltTextureNoFocus);
   virtual ~CGUIToggleButtonControl(void);
   
   virtual void Render();
@@ -31,7 +31,7 @@ public:
 	virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
-  virtual void SetPosition(DWORD dwPosX, DWORD dwPosY);
+  virtual void SetPosition(int iPosX, int iPosY);
   virtual void SetAlpha(DWORD dwAlpha);
   virtual void SetColourDiffuse(D3DCOLOR colour);
   virtual void SetDisabledColor(D3DCOLOR color);
@@ -51,6 +51,7 @@ public:
 	const CStdString& GetFontName() const { return m_pFont->GetFontName(); };
 	const wstring			GetLabel() const { return m_strLabel; };
 	DWORD							GetHyperLink() const { return m_lHyperLinkWindowID;};
+	virtual void	OnMouseClick(DWORD dwButton);
 
 protected:
   virtual void       Update() ;

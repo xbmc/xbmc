@@ -26,6 +26,8 @@
 #include "GUIProgressControl.h"
 #include "GUISliderControl.h"
 #include "GUISelectButtonControl.h"
+#include "GUIMoverControl.h"
+#include "GUIResizeControl.h"
 #include "SkinInfo.h"
 #include "../xbmc/application.h"
 #include "../xbmc/xbox/XKUtils.h"
@@ -43,7 +45,7 @@ CGUIWindow::CGUIWindow(DWORD dwID)
   m_dwPreviousWindowId=WINDOW_HOME;
   m_dwDefaultFocusControlID=0;
   m_bRelativeCoords = false;
-  m_dwPosX = m_dwPosY = m_dwWidth = m_dwHeight = 0;
+  m_iPosX = m_iPosY = m_dwWidth = m_dwHeight = 0;
 }
 
 CGUIWindow::~CGUIWindow(void)
@@ -152,6 +154,14 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 			{
 				stControl.m_pControl = new CGUISelectButtonControl(*((CGUISelectButtonControl*)it->m_pControl));
 			}
+			else if (!strcmp(it->m_szType,"mover"))
+			{
+				stControl.m_pControl = new CGUIMoverControl(*((CGUIMoverControl*)it->m_pControl));
+			}
+			else if (!strcmp(it->m_szType,"resize"))
+			{
+				stControl.m_pControl = new CGUIResizeControl(*((CGUIResizeControl*)it->m_pControl));
+			}
 			controls.push_back(stControl);
 		}
 		return true;
@@ -171,7 +181,6 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
     CLog::Log("references.xml doesnt contain <controls>");
     return false;
   }
-
 	CGUIControlFactory factory;
 	string strType;
 	const TiXmlNode *pControl = pRootElement->FirstChild();
@@ -192,7 +201,6 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 		}
 		pControl=pControl->NextSibling();
 	}
-
 	CacheFilename = strReferenceFile;
 	ControlsCache.clear();
 	for (IVECREFERENCECONTOLS it = controls.begin(); it != controls.end(); ++it)
@@ -279,6 +287,14 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 		{
 			stControl.m_pControl = new CGUISelectButtonControl(*((CGUISelectButtonControl*)it->m_pControl));
 		}
+		else if (!strcmp(it->m_szType,"mover"))
+		{
+			stControl.m_pControl = new CGUIMoverControl(*((CGUIMoverControl*)it->m_pControl));
+		}
+		else if (!strcmp(it->m_szType,"resize"))
+		{
+			stControl.m_pControl = new CGUIResizeControl(*((CGUIResizeControl*)it->m_pControl));
+		}
 		ControlsCache.push_back(stControl);
 	}
 
@@ -317,7 +333,6 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 	VECREFERENCECONTOLS  referencecontrols;
 	IVECREFERENCECONTOLS it;
 	LoadReference(referencecontrols);
- 
   const TiXmlNode *pChild = pRootElement->FirstChild();
   while (pChild)
   {
@@ -342,13 +357,13 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 		TiXmlNode* pPosX=pChild->FirstChild("posX");
 		if (pPosX)
 		{
-			m_dwPosX = atol(pPosX->FirstChild()->Value());
+			m_iPosX = atoi(pPosX->FirstChild()->Value());
 		}
 
 		TiXmlNode* pPosY=pChild->FirstChild("posY");
 		if (pPosY)
 		{
-			m_dwPosY = atol(pPosY->FirstChild()->Value());
+			m_iPosY = atoi(pPosY->FirstChild()->Value());
 		}
     }
     else if (strValue=="controls")
@@ -413,18 +428,18 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   return true;
 }
 
-void CGUIWindow::SetPosition(DWORD dwPosX, DWORD dwPosY)
+void CGUIWindow::SetPosition(int iPosX, int iPosY)
 {
-	m_dwPosX = dwPosX;
-	m_dwPosY = dwPosY;
+	m_iPosX = iPosX;
+	m_iPosY = iPosY;
 }
 
 void CGUIWindow::CenterWindow()
 {
 	if (m_bRelativeCoords)
 	{
-		m_dwPosX = (g_graphicsContext.GetWidth() - m_dwWidth) / 2;
-		m_dwPosY = (g_graphicsContext.GetHeight() - m_dwHeight) / 2;
+		m_iPosX = (g_graphicsContext.GetWidth() - m_dwWidth) / 2;
+		m_iPosY = (g_graphicsContext.GetHeight() - m_dwHeight) / 2;
 	}
 }
 
@@ -438,11 +453,11 @@ void CGUIWindow::Render()
 
 		if (m_bRelativeCoords)
 		{			
-			DWORD dwPosX = pControl->GetXPosition();
-			DWORD dwPosY = pControl->GetYPosition();
-			pControl->SetPosition(dwPosX+m_dwPosX, dwPosY+m_dwPosY);
+			int iPosX = pControl->GetXPosition();
+			int iPosY = pControl->GetYPosition();
+			pControl->SetPosition(iPosX+m_iPosX, iPosY+m_iPosY);
 			pControl->Render();
-			pControl->SetPosition(dwPosX, dwPosY);
+			pControl->SetPosition(iPosX, iPosY);
 		}
 		else
 		{
@@ -483,25 +498,130 @@ void CGUIWindow::OnAction(const CAction &action)
 		else
 			PowerButtonDown = false;
 	}
+	if (action.wID == ACTION_MOUSE)
+	{
+		OnMouseAction();
+		return;
+	}
+	for (ivecControls i=m_vecControls.begin();i != m_vecControls.end(); ++i)
+	{
+		CGUIControl* pControl= *i;
+		if (pControl->HasFocus() )
+		{
+			pControl->OnAction(action);
+			return;
+		}
+	}
 
-  ivecControls i;
-  for (i=m_vecControls.begin();i != m_vecControls.end(); ++i)
-  {
-    CGUIControl* pControl= *i;
-    if (pControl->HasFocus() )
-    {
-      pControl->OnAction(action);
-      return;
-    }
-  }
-
-  // no control has focus?
-  // set focus to the default control then
-
-  CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(),m_dwDefaultFocusControlID);
-  OnMessage(msg);
+	// no control has focus?
+	// set focus to the default control then
+	CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(),m_dwDefaultFocusControlID);
+	OnMessage(msg);
 }
 
+// OnMouseAction - called by OnAction()
+void CGUIWindow::OnMouseAction()
+{	// correct the mouse coordinates if we are using relative coordinates
+	if (m_bRelativeCoords)
+	{
+		g_Mouse.iPosX -= m_iPosX;
+		g_Mouse.iPosY -= m_iPosY;
+	}
+	bool bHandled = false;
+	// check if we have exclusive access
+	if (g_Mouse.GetExclusiveWindowID()==GetID())
+	{	// we have exclusive access to the mouse...
+		CGUIControl *pControl = (CGUIControl *)GetControl(g_Mouse.GetExclusiveControlID());
+		if (pControl)
+		{	// this control has exclusive access to the mouse
+			HandleMouse(pControl);
+			// re-correct the mouse coordinates if we are using relative coordinates
+			if (m_bRelativeCoords)
+			{
+				g_Mouse.iPosX += m_iPosX;
+				g_Mouse.iPosY += m_iPosY;
+			}
+			return;
+		}
+	}
+
+	// run through the controls, and find which one is under the pointer
+	for (ivecControls i=m_vecControls.begin(); i!=m_vecControls.end(); ++i)
+	{
+		CGUIControl *pControl = *i;
+		if (pControl->CanFocus())
+		{
+			if (!bHandled && pControl->HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+			{	// OK, now check which action we should perform
+				bHandled = HandleMouse(pControl);
+			}
+			else
+			{	// make sure that focus is not set
+				pControl->SetFocus(false);
+			}
+		}
+	}
+	if (!bHandled)
+	{	// haven't handled this action - call the window message handlers
+		OnMouse();
+	}
+	// correct the mouse coordinates if we are using relative coordinates
+	if (m_bRelativeCoords)
+	{
+		g_Mouse.iPosX += m_iPosX;
+		g_Mouse.iPosY += m_iPosY;
+	}
+}
+
+// Handles any mouse actions that are not handled by a control
+// default is to go back a window on a right click.
+// This function should be overridden for other windows
+void CGUIWindow::OnMouse()
+{	
+	if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
+	{	// no control found to absorb this click - go to previous menu
+		CAction action;
+		action.wID = ACTION_PREVIOUS_MENU;
+		OnAction(action);
+	}
+}
+
+bool CGUIWindow::HandleMouse(CGUIControl *pControl)
+{
+	bool bHandled = false;
+	// Issue the MouseOver event to highlight the item, and perform any pointer changes
+	pControl->OnMouseOver();
+	if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
+	{	// Left click
+		pControl->OnMouseClick(MOUSE_LEFT_BUTTON);
+		bHandled = true;
+	}
+	if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
+	{	// Right click
+		pControl->OnMouseClick(MOUSE_RIGHT_BUTTON);
+		bHandled = true;
+	}
+	if (g_Mouse.bClick[MOUSE_MIDDLE_BUTTON])
+	{	// Middle click
+		pControl->OnMouseClick(MOUSE_MIDDLE_BUTTON);
+		bHandled = true;
+	}
+	if (g_Mouse.bDoubleClick[MOUSE_LEFT_BUTTON])
+	{	// Left double click
+		pControl->OnMouseDoubleClick(MOUSE_LEFT_BUTTON);
+		bHandled = true;
+	}
+	if (g_Mouse.bHold[MOUSE_LEFT_BUTTON] && (g_Mouse.cMickeyX || g_Mouse.cMickeyY))
+	{	// Mouse Drag
+		pControl->OnMouseDrag();
+	}
+	if (g_Mouse.cWheel)
+	{	// Mouse wheel
+		pControl->OnMouseWheel();
+		bHandled = true;
+	}
+	return true; //bHandled;
+}
 
 DWORD CGUIWindow::GetID(void) const
 {

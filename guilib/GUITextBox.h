@@ -27,7 +27,7 @@ using namespace std;
 class CGUITextBox : public CGUIControl
 {
 public:
-  CGUITextBox(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, 
+  CGUITextBox(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, 
                   const CStdString& strFontName, 
                   DWORD dwSpinWidth,DWORD dwSpinHeight,
                   const CStdString& strUp, const CStdString& strDown, 
@@ -37,6 +37,10 @@ public:
   virtual ~CGUITextBox(void);
   virtual void Render();
   virtual void OnAction(const CAction &action) ;
+  virtual void OnRight();
+  virtual void OnLeft();
+  virtual void OnDown();
+  virtual void OnUp();
   virtual bool OnMessage(CGUIMessage& message);
 
 	virtual void PreAllocResources();
@@ -51,14 +55,15 @@ public:
 	const	CStdString&			GetTexutureUpFocusName() const { return m_upDown.GetTexutureUpFocusName(); };
 	const	CStdString&			GetTexutureDownFocusName() const { return m_upDown.GetTexutureDownFocusName(); };
 	DWORD									GetSpinTextColor() const { return m_upDown.GetTextColor();};
-	DWORD									GetSpinX() const { return m_upDown.GetXPosition();};
-	DWORD									GetSpinY() const { return m_upDown.GetYPosition();};
+	int										GetSpinX() const { return m_upDown.GetXPosition();};
+	int										GetSpinY() const { return m_upDown.GetYPosition();};
 	void				 SetText(const wstring &strText);
+	virtual bool		HitTest(int iPosX, int iPosY) const;
+	virtual void		OnMouseOver();
+	virtual void		OnMouseClick(DWORD dwButton);
+	virtual void		OnMouseWheel();
+
 protected:
-  void         OnRight();
-  void         OnLeft();
-  void         OnDown();
-  void         OnUp();
   void         OnPageUp();
   void         OnPageDown();
 

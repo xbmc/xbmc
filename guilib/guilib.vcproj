@@ -298,6 +298,9 @@
 				RelativePath=".\GUIMessage.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIMoverControl.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIProgressControl.cpp">
 			</File>
 			<File
@@ -305,6 +308,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIRAMControl.cpp">
+			</File>
+			<File
+				RelativePath=".\GUIResizeControl.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIRSSControl.cpp">
@@ -450,6 +456,9 @@
 				RelativePath=".\GUIMessage.h">
 			</File>
 			<File
+				RelativePath=".\GUIMoverControl.h">
+			</File>
+			<File
 				RelativePath=".\GUIProgressControl.h">
 			</File>
 			<File
@@ -457,6 +466,9 @@
 			</File>
 			<File
 				RelativePath=".\GUIRAMControl.h">
+			</File>
+			<File
+				RelativePath=".\GUIResizeControl.h">
 			</File>
 			<File
 				RelativePath=".\GUIRSSControl.h">
@@ -522,6 +534,12 @@
 		<Filter
 			Name="common"
 			Filter="">
+			<File
+				RelativePath=".\common\mouse.cpp">
+			</File>
+			<File
+				RelativePath=".\common\mouse.h">
+			</File>
 			<File
 				RelativePath=".\common\uix.h">
 			</File>

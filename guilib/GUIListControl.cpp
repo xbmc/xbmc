@@ -4,18 +4,18 @@
 
 #define CONTROL_LIST		0
 #define CONTROL_UPDOWN	1
-CGUIListControl::CGUIListControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, 
+CGUIListControl::CGUIListControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, 
                                  const CStdString& strFontName, 
                                  DWORD dwSpinWidth,DWORD dwSpinHeight,
                                  const CStdString& strUp, const CStdString& strDown, 
                                  const CStdString& strUpFocus, const CStdString& strDownFocus, 
-                                 DWORD dwSpinColor,DWORD dwSpinX, DWORD dwSpinY,
+                                 DWORD dwSpinColor,int iSpinX, int iSpinY,
                                  const CStdString& strFont, DWORD dwTextColor,DWORD dwSelectedColor,
                                  const CStdString& strButton, const CStdString& strButtonFocus,
 								 DWORD dwItemTextOffsetX, DWORD dwItemTextOffsetY)
-:CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight)
-,m_upDown(dwControlId, 0, dwSpinX, dwSpinY, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwSpinColor, SPIN_CONTROL_TYPE_INT)
-,m_imgButton(dwControlId, 0, dwPosX, dwPosY, dwWidth, dwHeight, strButtonFocus,strButton, dwItemTextOffsetX, dwItemTextOffsetY)
+:CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
+,m_upDown(dwControlId, 0, iSpinX, iSpinY, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwSpinColor, SPIN_CONTROL_TYPE_INT)
+,m_imgButton(dwControlId, 0, iPosX, iPosY, dwWidth, dwHeight, strButtonFocus,strButton, dwItemTextOffsetX, dwItemTextOffsetY)
 {
   m_dwSelectedColor=dwSelectedColor;
   m_iOffset=0;
@@ -51,11 +51,11 @@ void CGUIListControl::Render()
   if (!IsVisible()) return;
   CGUIControl::Render();
   WCHAR wszText[1024];
-  DWORD dwPosY=m_dwPosY;
+  int iPosY=m_iPosY;
 	
   for (int i=0; i < m_iItemsPerPage; i++)
   {
-		DWORD dwPosX=m_dwPosX;
+		int iPosX=m_iPosX;
     if (i+m_iOffset < (int)m_vecItems.size() )
     {
       // render item
@@ -70,7 +70,7 @@ void CGUIListControl::Render()
 				// render no-focused line
         m_imgButton.SetFocus(false);
 			}
-      m_imgButton.SetPosition(m_dwPosX, dwPosY);	
+      m_imgButton.SetPosition(m_iPosX, iPosY);	
       m_imgButton.Render();
       
 			// render the icon
@@ -88,10 +88,10 @@ void CGUIListControl::Render()
 				pImage->SetWidth(m_iImageWidth);
 				pImage->SetHeight(m_iImageHeight);
 				// center vertically
-				pImage->SetPosition(dwPosX+8, dwPosY+(m_iItemHeight-m_iImageHeight)/2);
+				pImage->SetPosition(iPosX+8, iPosY+(m_iItemHeight-m_iImageHeight)/2);
 				pImage->Render();
       }
-			dwPosX+=(m_iImageWidth+10);
+			iPosX+=(m_iImageWidth+10);
 
 			// render the text
       DWORD dwColor=m_dwTextColor;
@@ -100,7 +100,7 @@ void CGUIListControl::Render()
         dwColor=m_dwSelectedColor;
 			}
       
-			dwPosX +=m_iTextOffsetX;
+			iPosX +=m_iTextOffsetX;
       bool bSelected(false);
       if (i == m_iCursorY && HasFocus() && m_iSelect== CONTROL_LIST)
 			{
@@ -122,7 +122,7 @@ void CGUIListControl::Render()
 			}
 
 			swprintf(wszText,L"%S", pItem->GetLabel().c_str() );
-			RenderText((float)dwPosX, (float)dwPosY+2+m_iTextOffsetY, (FLOAT)dMaxWidth, dwColor, wszText,bSelected);
+			RenderText((float)iPosX, (float)iPosY+2+m_iTextOffsetY, (FLOAT)dMaxWidth, dwColor, wszText,bSelected);
       
       if (strLabel2.size()>0)
       {
@@ -132,17 +132,21 @@ void CGUIListControl::Render()
 					dwColor=m_dwSelectedColor2;
 				}
 				if (!m_iTextOffsetX2)
-					dwPosX=m_dwPosX+m_dwWidth-16;
+					iPosX=m_iPosX+m_dwWidth-16;
 				else
-					dwPosX=m_dwPosX+m_iTextOffsetX2;
+					iPosX=m_iPosX+m_iTextOffsetX2;
 
         swprintf(wszText,L"%S", strLabel2.c_str() );
-        m_pFont2->DrawText((float)dwPosX, (float)dwPosY+2+m_iTextOffsetY2,dwColor,wszText,XBFONT_RIGHT); 
+        m_pFont2->DrawText((float)iPosX, (float)iPosY+2+m_iTextOffsetY2,dwColor,wszText,XBFONT_RIGHT); 
       }	
-      dwPosY += (DWORD)(m_iItemHeight+m_iSpaceBetweenItems);
+      iPosY += (DWORD)(m_iItemHeight+m_iSpaceBetweenItems);
     }
   }
-	if (m_bUpDownVisible) m_upDown.Render();
+	if (m_bUpDownVisible)
+	{
+		m_upDown.SetValue(GetPage());
+		m_upDown.Render();
+	}
 }
 
 void CGUIListControl::RenderText(float fPosX, float fPosY, float fMaxWidth,DWORD dwTextColor, WCHAR* wszText,bool bScroll )
@@ -263,60 +267,48 @@ void CGUIListControl::RenderText(float fPosX, float fPosY, float fMaxWidth,DWORD
 
 void CGUIListControl::OnAction(const CAction &action)
 {
-  switch (action.wID)
-  {
-    case ACTION_PAGE_UP:
-      OnPageUp();
-    break;
+	switch (action.wID)
+	{
+		case ACTION_PAGE_UP:
+		{	// scroll up a page
+			Scroll(-m_iItemsPerPage);
+		}
+		break;
 
-    case ACTION_PAGE_DOWN:
-      OnPageDown();
-    break;
+		case ACTION_PAGE_DOWN:
+		{	// scroll down a page
+			Scroll(m_iItemsPerPage);
+		}
+		break;
 
-    case ACTION_MOVE_DOWN:
-    {
-      OnDown();
-    }
-    break;
-    
-     case ACTION_MOVE_UP:
-    {
-      OnUp();
-    }
-    break;
-
-    case ACTION_MOVE_LEFT:
-    {
-      OnLeft();
-    }
-    break;
-
-    case ACTION_MOVE_RIGHT:
-    {
-      OnRight();
-    }
-    break;
-
-    default:
-    {
-      if (m_iSelect==CONTROL_LIST)
-      {
-          CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.wID);
-          g_graphicsContext.SendMessage(msg);
-      }
-      else
-      {
-        m_upDown.OnAction(action);
-      }
-    }
-  }
+		case ACTION_MOVE_LEFT:
+		case ACTION_MOVE_RIGHT:
+		case ACTION_MOVE_DOWN:
+		case ACTION_MOVE_UP:
+		{	// use base class implementation
+			CGUIControl::OnAction(action);
+		}
+		break;
+		
+		default:
+		{
+			if (m_iSelect == CONTROL_LIST)
+			{	// Don't know what to do, so send to our parent window.
+				SEND_CLICK_MESSAGE(GetID(), GetParentID(), action.wID);
+			}
+			else
+			{	// send action to the page control
+				m_upDown.OnAction(action);
+			}
+		}
+	}
 }
 
 bool CGUIListControl::OnMessage(CGUIMessage& message)
 {
   if (message.GetControlId() == GetID() )
   {
-    if (message.GetSenderId()==0)
+    if (message.GetSenderId()==0) // page spin control
     {
       if (message.GetMessage() == GUI_MSG_CLICKED)
       {
@@ -363,22 +355,50 @@ bool CGUIListControl::OnMessage(CGUIMessage& message)
 		{
 			if (message.GetParam1() >=0 && message.GetParam1() < (int)m_vecItems.size())
 			{
-				int iPage=1;
+				// Check that m_iOffset is valid
+				if (m_iOffset>(int)m_vecItems.size()-m_iItemsPerPage) m_iOffset = m_vecItems.size()-m_iItemsPerPage;
+				if (m_iOffset<0) m_iOffset=0;
+				// Select the item requested
+				int iItem = message.GetParam1();
+				if (iItem >= m_iOffset && iItem < m_iOffset+m_iItemsPerPage)
+				{	// the item is on the current page, so don't change it.
+					m_iCursorY=iItem-m_iOffset;
+				}
+				else if (iItem < m_iOffset)
+				{	// item is on a previous page - make it the first item on the page
+					m_iCursorY=0;
+					m_iOffset=iItem;
+				}
+				else // (iItem >= m_iOffset+m_iItemsPerPage)
+				{	// item is on a later page - make it the last item on the page
+					m_iCursorY=m_iItemsPerPage-1;
+					m_iOffset=iItem-m_iCursorY;
+				}
+/*				int iPage=1;
 				m_iOffset=0;
 				m_iCursorY=message.GetParam1();
 				while (m_iCursorY >= m_iItemsPerPage)
 				{
 					iPage++;
 					m_iOffset+=m_iItemsPerPage;
-					m_iCursorY -=m_iItemsPerPage;
+					m_iCursorY-=m_iItemsPerPage;
 				}
 				//	moving to the last item, make sure the whole page is filled
 				if (message.GetParam1() == (int)m_vecItems.size()-1 && (int)m_vecItems.size()-1>m_iItemsPerPage )
 				{
 					m_iOffset=m_vecItems.size()-m_iItemsPerPage;
 					m_iCursorY=m_iItemsPerPage-1;
-				}
-				m_upDown.SetValue(iPage);
+				}*/
+//				m_upDown.SetValue(iPage);
+/*
+				m_iOffset = message.GetParam1();
+				m_iCursorY = 0;
+				//	moving to the last item, make sure the whole page is filled
+				if (message.GetParam1() == (int)m_vecItems.size()-1 && (int)m_vecItems.size()-1>m_iItemsPerPage )
+				{
+					m_iOffset=m_vecItems.size()-m_iItemsPerPage;
+					m_iCursorY=m_iItemsPerPage-1;
+				}*/
 			}
 		}
   }
@@ -428,95 +448,64 @@ void CGUIListControl::FreeResources()
 
 void CGUIListControl::OnRight()
 {
-  CKey key(KEY_BUTTON_DPAD_RIGHT);
-  CAction action;
-  action.wID = ACTION_MOVE_RIGHT;
-  if (m_iSelect==CONTROL_LIST) 
-  {
-    if (m_upDown.GetMaximum() > 1)
-    {
-      m_iSelect=CONTROL_UPDOWN;
-      m_upDown.SetFocus(true);
-      if (!m_upDown.HasFocus()) 
-      {
-        m_iSelect=CONTROL_LIST;
-      }
-    }
-  }
-  else
-  {
-    m_upDown.OnAction(action);
-    if (!m_upDown.HasFocus()) 
-    {
-      m_iSelect=CONTROL_LIST;
-    }
-  }
+	if (m_iSelect==CONTROL_LIST) 
+	{	// Only move to up/down control if we have move than 1 page
+		if (m_upDown.GetMaximum() > 1)
+		{	// Move to updown control
+			m_iSelect=CONTROL_UPDOWN;
+			m_upDown.SetFocus(true);
+		}
+	}
+	else
+		m_upDown.OnRight();
+	if (!m_upDown.HasFocus()) 
+		m_iSelect=CONTROL_LIST;
 }
 
 void CGUIListControl::OnLeft()
 {
-  CKey key(KEY_BUTTON_DPAD_LEFT);
-  CAction action;
-  action.wID = ACTION_MOVE_LEFT;
-  if (m_iSelect==CONTROL_LIST) 
-  {
-    CGUIControl::OnAction(action);
+	if (m_iSelect==CONTROL_LIST) 
+		CGUIControl::OnLeft();
+	else
+		m_upDown.OnLeft();
     if (!m_upDown.HasFocus()) 
-    {
-      m_iSelect=CONTROL_LIST;
-    }
-  }
-  else
-  {
-    m_upDown.OnAction(action);
-    if (!m_upDown.HasFocus()) 
-    {
-      m_iSelect=CONTROL_LIST;
-    }
-  }
+		m_iSelect=CONTROL_LIST;
 }
 
 void CGUIListControl::OnUp()
 {
-  CKey key(KEY_BUTTON_DPAD_UP);
-  CAction action;
-  action.wID = ACTION_MOVE_UP;
-  if (m_iSelect==CONTROL_LIST) 
-  {
-    if (m_iCursorY > 0) 
-    {
-      m_iCursorY--;
-    }
-    else if (m_iCursorY ==0 && m_iOffset)
-    {
-      m_iOffset--;
-    }
-    else
-    {
+	if (m_iSelect==CONTROL_LIST) 
+	{
+		if (m_iCursorY > 0) 
+		{
+			m_iCursorY--;
+		}
+		else if (m_iCursorY ==0 && m_iOffset)
+		{
+			m_iOffset--;
+		}
+		else
+		{
 			// move 2 last item in list
-			CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), GetID(), m_vecItems.size() -1); 
-			OnMessage(msg);
-    }
-  }
-  else
-  {
-    m_upDown.OnAction(action);
-    if (!m_upDown.HasFocus()) 
-    {
-      m_iSelect=CONTROL_LIST;
-    }  
-  }
+			m_iOffset = m_vecItems.size() - m_iItemsPerPage;
+			if (m_iOffset<0) m_iOffset=0;
+			m_iCursorY = m_vecItems.size() - m_iOffset - 1;
+	    }
+	}
+	else
+	{
+		m_upDown.OnUp();
+		if (!m_upDown.HasFocus()) 
+			m_iSelect=CONTROL_LIST;
+	}
 }
 
 void CGUIListControl::OnDown()
 {
-  CKey key(KEY_BUTTON_DPAD_DOWN);
-  CAction action;
-  action.wID = ACTION_MOVE_DOWN;
-  if (m_iSelect==CONTROL_LIST) 
-  {
-    if (m_iCursorY+1 < m_iItemsPerPage)
-    {
+	if (m_iSelect==CONTROL_LIST) 
+	{
+		if (m_iCursorY+1 < m_iItemsPerPage)
+		{
 			if (m_iOffset+1+m_iCursorY <  (int)m_vecItems.size())
 			{
 				m_iCursorY++;
@@ -524,41 +513,32 @@ void CGUIListControl::OnDown()
 			else
 			{
 				// move first item in list
-				CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), GetID(), 0); 
-				OnMessage(msg);
+				m_iOffset = 0;
+				m_iCursorY = 0;
 			}
-    }
-    else 
-    {
+		}
+		else 
+		{
 			if (m_iOffset+1+m_iCursorY <  (int)m_vecItems.size())
 			{
 				m_iOffset++;
-
-				int iPage=1;
-				int iSel=m_iOffset+m_iCursorY;
-				while (iSel >= m_iItemsPerPage)
-				{
-					iPage++;
-					iSel -= m_iItemsPerPage;
-				}
-				m_upDown.SetValue(iPage);
 			}
 			else
 			{
 				// move first item in list
-				CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), GetID(), 0); 
-				OnMessage(msg);
+				m_iOffset = 0;
+				m_iCursorY = 0;
 			}
-    }
-  }
-  else
-  {
-    m_upDown.OnAction(action);
-    if (!m_upDown.HasFocus()) 
-    {
-      CGUIControl::OnAction(action);
-    }  
-  }
+		}
+	}
+	else
+	{
+		m_upDown.OnDown();
+		if (!m_upDown.HasFocus()) 
+		{
+			CGUIControl::OnDown();
+		} 
+	}
 }
 
 void CGUIListControl::SetScrollySuffix(const CStdString& wstrSuffix)
@@ -568,47 +548,26 @@ void CGUIListControl::SetScrollySuffix(const CStdString& wstrSuffix)
   m_strSuffix=wsSuffix;
 }
 
-
-void CGUIListControl::OnPageUp()
+// scrolls the said amount (should be able to use this for OnPageUp() and OnPageDown() as well...
+void CGUIListControl::Scroll(int iAmount)
 {
-  int iPage = m_upDown.GetValue();
-  if (iPage > 1)
-  {
-    iPage--;
-    m_upDown.SetValue(iPage);
-    m_iOffset=(m_upDown.GetValue()-1)*m_iItemsPerPage;
-  }
-	else 
-	{
-		// already on page 1, then select the 1st item
-		m_iCursorY=0;
-	}
+	m_iOffset += iAmount;
+	if (m_iOffset > (int)m_vecItems.size()-m_iItemsPerPage) m_iOffset = m_vecItems.size()-m_iItemsPerPage;
+	if (m_iOffset<0) m_iOffset = 0;
 }
 
-void CGUIListControl::OnPageDown()
+// returns which page we are on
+int CGUIListControl::GetPage()
 {
-  int iPages=m_vecItems.size() / m_iItemsPerPage;
-  if (m_vecItems.size() % m_iItemsPerPage) iPages++;
-
-  int iPage = m_upDown.GetValue();
-  if (iPage+1 <= iPages)
-  {
-    iPage++;
-    m_upDown.SetValue(iPage);
-    m_iOffset=(m_upDown.GetValue()-1)*m_iItemsPerPage;
-  }
+	if (m_iOffset >= (int)m_vecItems.size()-m_iItemsPerPage)
+	{
+		m_iOffset = m_vecItems.size()-m_iItemsPerPage;
+		if (m_iOffset < 0) m_iOffset = 0;
+		return m_vecItems.size()/m_iItemsPerPage+1;
+	}
 	else
-	{
-		// already on last page, move 2 last item in list
-		CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), GetID(), m_vecItems.size() -1); 
-		OnMessage(msg);
-	}
-  if (m_iOffset+m_iCursorY >= (int)m_vecItems.size() )
-  {
-    m_iCursorY = (m_vecItems.size()-m_iOffset)-1;
-  }
+		return m_iOffset/m_iItemsPerPage+1;
 }
-
 
 void CGUIListControl::SetTextOffsets(int iXoffset, int iYOffset,int iXoffset2, int iYOffset2)
 {
@@ -662,8 +621,84 @@ int CGUIListControl::GetSelectedItem(CStdString& strLabel)
   return iItem;
 }
 
+bool CGUIListControl::SelectItemFromPoint(int iPosX, int iPosY)
+{
+	int iRow = iPosY/(m_iItemHeight+m_iSpaceBetweenItems);
+	if (iRow >= 0 && iRow < m_iItemsPerPage && iRow + m_iOffset < (int)m_vecItems.size())
+	{
+		m_iCursorY = iRow;
+		return true;
+	}
+	return false;
+}
+
 void CGUIListControl::SetPageControlVisible(bool bVisible)
 {
 	m_bUpDownVisible = bVisible;
 	return;
+}
+
+bool CGUIListControl::HitTest(int iPosX, int iPosY) const
+{
+	if (m_upDown.HitTest(iPosX, iPosY))
+		return true;
+	return CGUIControl::HitTest(iPosX, iPosY);
+}
+
+void CGUIListControl::OnMouseOver()
+{
+	// check if we are near the spin control
+	if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+	{
+		m_upDown.OnMouseOver();
+	}
+	else
+	{
+		m_upDown.SetFocus(false);
+		// select the item under the pointer
+		if (SelectItemFromPoint(g_Mouse.iPosX-m_iPosX, g_Mouse.iPosY-m_iPosY))
+			CGUIControl::OnMouseOver();
+	}
+}
+
+void CGUIListControl::OnMouseClick(DWORD dwButton)
+{
+	if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+	{
+		m_upDown.OnMouseClick(dwButton);
+	}
+	else
+	{
+		if (SelectItemFromPoint(g_Mouse.iPosX-m_iPosX, g_Mouse.iPosY-m_iPosY))
+		{	// send click message to window
+			SEND_CLICK_MESSAGE(GetID(), GetParentID(), ACTION_MOUSE_CLICK+dwButton);
+		}
+	}
+}
+
+void CGUIListControl::OnMouseDoubleClick(DWORD dwButton)
+{
+	if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+	{
+		m_upDown.OnMouseDoubleClick(dwButton);
+	}
+	else
+	{
+		if (SelectItemFromPoint(g_Mouse.iPosX-m_iPosX, g_Mouse.iPosY-m_iPosY))
+		{	// send double click message to window
+			SEND_CLICK_MESSAGE(GetID(), GetParentID(), ACTION_MOUSE_DOUBLE_CLICK+dwButton);
+		}
+	}
+}
+
+void CGUIListControl::OnMouseWheel()
+{
+	if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+	{
+		m_upDown.OnMouseWheel();
+	}
+	else
+	{	// scroll
+		Scroll(-g_Mouse.cWheel);
+	}
 }

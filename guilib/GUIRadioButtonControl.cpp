@@ -1,14 +1,14 @@
 #include "stdafx.h"
 #include "guiradiobuttoncontrol.h"
 
-CGUIRadioButtonControl::CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight,
+CGUIRadioButtonControl::CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight,
 											   const CStdString& strTextureFocus,const CStdString& strTextureNoFocus,
 											   DWORD dwTextOffsetX, DWORD dwTextOffsetY,
 											   const CStdString& strRadioFocus,const CStdString& strRadioNoFocus
 											   )
-:CGUIButtonControl(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight, strTextureFocus,strTextureNoFocus, dwTextOffsetX, dwTextOffsetY)
-,m_imgRadioFocus(dwParentID, dwControlId, dwPosX, dwPosY,16,16,strRadioFocus)
-,m_imgRadioNoFocus(dwParentID, dwControlId, dwPosX, dwPosY,16,16,strRadioNoFocus)
+:CGUIButtonControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight, strTextureFocus,strTextureNoFocus, dwTextOffsetX, dwTextOffsetY)
+,m_imgRadioFocus(dwParentID, dwControlId, iPosX, iPosY,16,16,strRadioFocus)
+,m_imgRadioNoFocus(dwParentID, dwControlId, iPosX, iPosY,16,16,strRadioNoFocus)
 {
 	ControlType = GUICONTROL_RADIO;
 }
@@ -62,10 +62,10 @@ void CGUIRadioButtonControl::AllocResources()
   m_imgRadioFocus.AllocResources();
   m_imgRadioNoFocus.AllocResources();
 
-  DWORD dwPosX=(m_dwPosX+m_dwWidth-8) - 16;
-  DWORD dwPosY=m_dwPosY+(m_dwHeight-16)/2;
-  m_imgRadioFocus.SetPosition(dwPosX,dwPosY);
-  m_imgRadioNoFocus.SetPosition(dwPosX,dwPosY);
+  int iPosX=(m_iPosX+m_dwWidth-8) - 16;
+  int iPosY=m_iPosY+(m_dwHeight-16)/2;
+  m_imgRadioFocus.SetPosition(iPosX,iPosY);
+  m_imgRadioNoFocus.SetPosition(iPosX,iPosY);
   
 
 }

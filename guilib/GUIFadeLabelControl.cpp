@@ -3,8 +3,8 @@
 #include "guifontmanager.h"
 
 
-CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFont, DWORD dwTextColor, DWORD dwTextAlign)
-:CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight)
+CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFont, DWORD dwTextColor, DWORD dwTextAlign)
+:CGUIControl(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight)
 {
   m_pFont=g_fontManager.GetFont(strFont);
   m_dwTextColor=dwTextColor;
@@ -38,7 +38,7 @@ void CGUIFadeLabelControl::Render()
     DWORD iWidth=(DWORD)m_pFont->GetTextWidth(strLabel.c_str());
     if (iWidth < m_dwWidth)
     {
-      m_pFont->DrawText( (float)m_dwPosX,(float)m_dwPosY,m_dwTextColor,(WCHAR*)strLabel.c_str());
+      m_pFont->DrawText( (float)m_iPosX,(float)m_iPosY,m_dwTextColor,(WCHAR*)strLabel.c_str());
       return;
     }
   }
@@ -47,7 +47,7 @@ void CGUIFadeLabelControl::Render()
 		DWORD dwAlpha = (0xff/12) * m_iCurrentFrame;
 		dwAlpha <<=24;
 		dwAlpha += ( m_dwTextColor &0x00ffffff);
-		m_pFont->DrawTextWidth((float)m_dwPosX,(float)m_dwPosY,dwAlpha,(WCHAR*)strLabel.c_str(),(float)m_dwWidth);
+		m_pFont->DrawTextWidth((float)m_iPosX,(float)m_iPosY,dwAlpha,(WCHAR*)strLabel.c_str(),(float)m_dwWidth);
 
 		m_iCurrentFrame++;
 		if (m_iCurrentFrame >=12)
@@ -57,7 +57,7 @@ void CGUIFadeLabelControl::Render()
 	}
 	else
 	{
-		if ( RenderText((float)m_dwPosX, (float)m_dwPosY, (float) m_dwWidth,m_dwTextColor, (WCHAR*)strLabel.c_str(), true ))
+		if ( RenderText((float)m_iPosX, (float)m_iPosY, (float) m_dwWidth,m_dwTextColor, (WCHAR*)strLabel.c_str(), true ))
 		{
 			m_iCurrentLabel++;
 			scroll_pos = 0;
