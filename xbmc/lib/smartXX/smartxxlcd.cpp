@@ -19,6 +19,7 @@ DDRAM address      54 55 56 57 58 59 5a 5b 5c 5d 5e 5f 60 61 62 63 64 65 66 67
 #define SCROLL_SPEED_IN_MSEC 250
 #define DISP_O			        0xF700		// Display Port
 #define DISP_O_LIGHT			  0xF701		// Display Port brightness control
+#define DISP_O_CONTRAST			  0xF703		// Display Port contrast control
 #define DISP_CTR_TIME		    2		      // Controll Timing for Display routine
 
 #define DISPCON_RS		      0x02		  // some Display definitions
@@ -129,6 +130,11 @@ void CSmartXXLCD::Initialize()
 void CSmartXXLCD::SetBackLight(int iLight)
 {
   m_iBackLight=iLight;
+}
+
+void CSmartXXLCD::SetContrast(int iContrast)
+{
+  m_iContrast=iContrast;
 }
 
 //*************************************************************************************************************
@@ -408,6 +414,20 @@ void CSmartXXLCD::DisplaySetBacklight(unsigned char level)
   }
 }
 //************************************************************************************************************************
+//Set brightness level 
+//************************************************************************************************************************
+void CSmartXXLCD::DisplaySetContrast(unsigned char level) 
+{
+  if (g_stSettings.m_iLCDType==LCD_MODE_TYPE_LCD)
+  {
+    float fBackLight=((float)level)/100.0f;
+    fBackLight*=63.0f;
+    int iNewLevel=(int)fBackLight;
+    if (iNewLevel==31) iNewLevel=32;
+    outb(DISP_O_CONTRAST, iNewLevel&63);
+  }
+}
+//************************************************************************************************************************
 void CSmartXXLCD::DisplayInit()
 {
 	outb(DISP_O,0);
@@ -441,7 +461,8 @@ void CSmartXXLCD::DisplayInit()
 //************************************************************************************************************************
 void CSmartXXLCD::Process()
 {
-  int iOldLight=-1;  
+  int iOldLight=-1;
+  int iOldContrast=-1;
 
   
   m_iColumns = g_stSettings.m_iLCDColumns;
@@ -451,6 +472,7 @@ void CSmartXXLCD::Process()
   m_iRow3adr = g_stSettings.m_iLCDAdress[2];
   m_iRow4adr = g_stSettings.m_iLCDAdress[3];
   m_iBackLight= g_stSettings.m_iLCDBackLight;
+  m_iContrast = g_stSettings.m_iLCDContrast;
   if (m_iRows >= MAX_ROWS) m_iRows=MAX_ROWS-1;
 
   DisplayInit();
@@ -462,6 +484,12 @@ void CSmartXXLCD::Process()
       // backlight setting changed
       iOldLight=m_iBackLight;
       DisplaySetBacklight(m_iBackLight);
+    }
+    if (m_iContrast != iOldContrast)
+    {
+      // contrast setting changed
+      iOldContrast=m_iContrast;
+      DisplaySetContrast(m_iContrast);
     }
 	  DisplayBuildCustomChars();
 	  for (int iLine=0; iLine < (int)m_iRows; ++iLine)

@@ -48,6 +48,9 @@ void CXeniumLCD::SetBackLight(int iLight)
 {
   m_iBackLight=iLight;
 }
+void CXeniumLCD::SetContrast(int iContrast)
+{
+}
 
 //*************************************************************************************************************
 void CXeniumLCD::Stop()
