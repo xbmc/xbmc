@@ -82,24 +82,30 @@ class CCriticalSectionWrapper
 public:
 	CCriticalSectionWrapper()
 	{
+		m_bInitialized = TRUE;
 		InitializeCriticalSection(&m_criticalSection);
 	}
 
 	~CCriticalSectionWrapper()
 	{
-		DeleteCriticalSection(&m_criticalSection);
+		if (m_bInitialized)
+			DeleteCriticalSection(&m_criticalSection);
+		m_bInitialized = FALSE;
 	}
 
 	void Lock()
 	{
-		EnterCriticalSection(&m_criticalSection);
+		if (m_bInitialized)
+			EnterCriticalSection(&m_criticalSection);
 	}
 	void Unlock()
 	{
-		LeaveCriticalSection(&m_criticalSection);
+		if (m_bInitialized)
+			LeaveCriticalSection(&m_criticalSection);
 	}
 protected:
 	CRITICAL_SECTION m_criticalSection;
+	BOOL m_bInitialized;
 };
 #define CCRITICALSECTIONWRAPPERINCLUDED
 #endif
@@ -290,7 +296,7 @@ public:
 						
 						if (pSocket->m_lEvent & FD_READ)
 						{
-							DWORD nBytes;
+							DWORD nBytes = 0;
 							if (!nErrorCode)
 								if (!pSocket->IOCtl(FIONREAD, &nBytes))
 									nErrorCode = WSAGetLastError();
@@ -553,7 +559,7 @@ public:
 			CAsyncSocketExHelperWindow *pWnd=(CAsyncSocketExHelperWindow *)GetWindowLong(hWnd, GWL_USERDATA);
 			ASSERT(pWnd);
 
-			CAsyncSocketEx *pSocket;
+			CAsyncSocketEx *pSocket = NULL;
 			for (int i=0; i<pWnd->m_nWindowDataSize; i++)
 			{
 				pSocket = pWnd->m_pAsyncSocketExWindowData[i].m_pSocket;
@@ -561,11 +567,10 @@ public:
 					pSocket->m_hAsyncGetHostByNameHandle == (HANDLE)wParam)
 					break;
 			}
-			if (i == pWnd->m_nWindowDataSize)
+			if (!pSocket)
 				return 0;
 
 			int nErrorCode = lParam >> 16;
-			int len = lParam % 0xFFFF;
 			if (nErrorCode)
 			{
 				pSocket->OnConnect(nErrorCode);
@@ -815,7 +820,6 @@ void CAsyncSocketEx::Close()
 		WSACancelAsyncRequest(m_hAsyncGetHostByNameHandle);
 #endif
 	m_hAsyncGetHostByNameHandle = NULL;
-
 }
 
 BOOL CAsyncSocketEx::InitAsyncSocketExInstance()
@@ -941,8 +945,8 @@ int CAsyncSocketEx::Send(const void* lpBuf, int nBufLen, int nFlags /*=0*/)
 #endif //NOLAYERS
 		return send(m_SocketData.hSocket, (LPSTR)lpBuf, nBufLen, nFlags);
 }
-/*
-BOOL CAsyncSocketEx::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
+
+/*BOOL CAsyncSocketEx::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
 {
 #ifndef NOLAYERS
 	if (m_pFirstLayer)
@@ -982,7 +986,7 @@ BOOL CAsyncSocketEx::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
 #ifndef NOSOCKETSTATES
 			SetState(connecting);
 #endif //NOSOCKETSTATES
-			return TRUE;
+			return FALSE;
 		}
 
 		sockAddr.sin_port = htons((u_short)nHostPort);
@@ -991,6 +995,7 @@ BOOL CAsyncSocketEx::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
 	}
 }
 */
+
 
 //copied from 8.3 
 BOOL CAsyncSocketEx::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
@@ -1030,7 +1035,6 @@ BOOL CAsyncSocketEx::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
 		return CAsyncSocketEx::Connect((SOCKADDR*)&sockAddr, sizeof(sockAddr));
 	}
 }
-
 
 BOOL CAsyncSocketEx::Connect( const SOCKADDR* lpSockAddr, int nSockAddrLen )
 {

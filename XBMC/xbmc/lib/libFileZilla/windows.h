@@ -43,6 +43,7 @@ public:
 
 protected:
 	CRITICAL_SECTION m_criticalSection;
+	BOOL m_bInitialized;
 };
 
 // some defines to elliminate duplicate names in XBMP

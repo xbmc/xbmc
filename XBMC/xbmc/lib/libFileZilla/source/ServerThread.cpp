@@ -26,6 +26,7 @@
 #include "Options.h"
 #include "version.h"
 #include "Permissions.h"
+#include "ExternalIpCheck.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -68,6 +69,7 @@ BOOL CServerThread::InitInstance()
 	
 	m_timerid=SetTimer(0, 0, 1000, 0);
 	m_nRateTimer=SetTimer(0, 0, 100, 0);
+	m_nRateTimer=SetTimer(0, 0, 100, 0);
 	m_bQuit=FALSE;
 	m_nRecvCount=0;
 	m_nSendCount=0;
@@ -76,13 +78,20 @@ BOOL CServerThread::InitInstance()
 
 	EGCS;
 	if (m_sInstanceList.empty())
-		m_bIsSlMaster = TRUE;
+		m_bIsMaster = TRUE;
 	else
-		m_bIsSlMaster = FALSE;
+		m_bIsMaster = FALSE;
 	m_sInstanceList.push_back(this);
 	LGCS;
 
 	m_nLoopCount = 0;
+
+	m_threadsync.Lock();
+	if (!m_bIsMaster)
+		m_pExternalIpCheck = NULL;
+	else
+		m_pExternalIpCheck = new CExternalIpCheck(this);
+	m_threadsync.Unlock();
 
 	return TRUE;
 }
@@ -98,13 +107,16 @@ DWORD CServerThread::ExitInstance()
 	KillTimer(0, m_nRateTimer);
 	WSACleanup();
 
-	if (m_bIsSlMaster)
+	if (m_bIsMaster)
 	{
 		EGCS;
 		m_sInstanceList.remove(this);
 		if (!m_sInstanceList.empty())
-			m_sInstanceList.front()->m_bIsSlMaster = TRUE;
+			m_sInstanceList.front()->m_bIsMaster = TRUE;
 		LGCS;
+
+		delete m_pExternalIpCheck;
+		m_pExternalIpCheck = NULL;
 	}
 	return 0;
 }
@@ -338,6 +350,13 @@ void CServerThread::OnTimer(WPARAM wParam,LPARAM lParam)
 		for (std::map<int, CControlSocket *>::iterator iter=m_LocalUserIDs.begin(); iter!=m_LocalUserIDs.end(); iter++)
 			iter->second->CheckForTimeout();
 		m_threadsync.Unlock();
+
+		if (m_bIsMaster && !m_pExternalIpCheck)
+		{
+			m_threadsync.Lock();
+			m_pExternalIpCheck = new CExternalIpCheck(this);
+			m_threadsync.Unlock();
+		}
 	}
 	else if (wParam==m_nRateTimer)
 	{
@@ -352,7 +371,7 @@ void CServerThread::OnTimer(WPARAM wParam,LPARAM lParam)
 				m_nRecvCount=0;
 		}
 
-		if (m_bIsSlMaster)
+		if (m_bIsMaster)
 		{
 			EGCS;
 
@@ -539,6 +558,12 @@ void CServerThread::OnTimer(WPARAM wParam,LPARAM lParam)
 			LGCS;
 		}
 		ProcessNewSlQuota();
+	}
+	else if (m_pExternalIpCheck && wParam == m_pExternalIpCheck->m_nTimerID)
+	{
+		m_threadsync.Lock();
+		m_pExternalIpCheck->OnTimer();
+		m_threadsync.Unlock();
 	}
 }
 
@@ -831,6 +856,46 @@ void CServerThread::GatherTransferedBytes()
 				m_SlQuota.nUploaded += iter->second->m_SlQuota.nUploaded;
 
 		 iter->second->m_SlQuota.bDownloadBypassed = iter->second->m_SlQuota.bUploadBypassed = FALSE;
+	}
+	m_threadsync.Unlock();
+}
+
+CStdString CServerThread::GetExternalIP()
+{
+	CStdString ip;
+	m_threadsync.Lock();
+	if (m_pExternalIpCheck)
+		ip = m_pExternalIpCheck->GetIP();
+	else
+	{
+		EGCS;
+		CServerThread *pThread = m_sInstanceList.front();
+		pThread->m_threadsync.Lock();
+		if (pThread != this && pThread->m_pExternalIpCheck)
+			ip = pThread->m_pExternalIpCheck->GetIP();
+		pThread->m_threadsync.Unlock();
+		LGCS;
+	}
+	m_threadsync.Unlock();
+
+	return ip;
+}
+
+void CServerThread::ExternalIPFailed()
+{
+	CStdString ip;
+	m_threadsync.Lock();
+	if (m_pExternalIpCheck)
+		m_pExternalIpCheck->TriggerUpdate();
+	else
+	{
+		EGCS;
+		CServerThread *pThread = m_sInstanceList.front();
+		pThread->m_threadsync.Lock();
+		if (pThread != this && pThread->m_pExternalIpCheck)
+			pThread->m_pExternalIpCheck->TriggerUpdate();
+		pThread->m_threadsync.Unlock();
+		LGCS;
 	}
 	m_threadsync.Unlock();
 }

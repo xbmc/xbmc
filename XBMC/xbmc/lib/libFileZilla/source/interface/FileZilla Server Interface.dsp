@@ -108,10 +108,6 @@ SOURCE=.\misc\BrowseForFolder.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ChildView.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ConnectDialog.cpp
 # End Source File
 # Begin Source File
@@ -201,6 +197,14 @@ SOURCE=.\OptionsLoggingPage.cpp
 # Begin Source File
 
 SOURCE=.\OptionsMiscPage.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\OptionsPage.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\OptionsPasvPage.cpp
 # End Source File
 # Begin Source File
 
@@ -305,10 +309,6 @@ SOURCE=.\misc\BrowseForFolder.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ChildView.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\ConnectDialog.h
 # End Source File
 # Begin Source File
@@ -378,6 +378,14 @@ SOURCE=.\OptionsLoggingPage.h
 # Begin Source File
 
 SOURCE=.\OptionsMiscPage.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\OptionsPage.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\OptionsPasvPage.h
 # End Source File
 # Begin Source File
 

@@ -1,8 +1,28 @@
+// FileZilla Server - a Windows ftp server
+
+// Copyright (C) 2002 - Tim Kosse <tim.kosse@gmx.de>
+
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
 // OptionsSpeedLimitPage.cpp: Implementierungsdatei
 //
 
 #include "stdafx.h"
 #include "filezilla server.h"
+#include "OptionsDlg.h"
+#include "OptionsPage.h"
 #include "OptionsSpeedLimitPage.h"
 #include "SpeedLimitRuleDlg.h"
 
@@ -10,8 +30,8 @@
 // COptionsSpeedLimitPage dialog
 
 
-COptionsSpeedLimitPage::COptionsSpeedLimitPage() 
-	: CSAPrefsSubDlg(IDD)
+COptionsSpeedLimitPage::COptionsSpeedLimitPage(COptionsDlg *pOptionsDlg) 
+	: COptionsPage(pOptionsDlg, IDD)
 {	
 	//{{AFX_DATA_INIT(COptionsSpeedLimitPage)
 	m_DownloadSpeedLimitType = -1;
@@ -27,7 +47,7 @@ COptionsSpeedLimitPage::~COptionsSpeedLimitPage()
 
 void COptionsSpeedLimitPage::DoDataExchange(CDataExchange* pDX)
 {
-	CSAPrefsSubDlg::DoDataExchange(pDX);
+	COptionsPage::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(COptionsSpeedLimitPage)
 	DDX_Control(pDX, IDC_SPEEDLIMIT_DOWNLOAD_UP, m_DownloadUpCtrl);
 	DDX_Control(pDX, IDC_SPEEDLIMIT_DOWNLOAD_RULES_LIST, m_DownloadRulesListCtrl);
@@ -51,7 +71,7 @@ void COptionsSpeedLimitPage::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(COptionsSpeedLimitPage, CSAPrefsSubDlg)
+BEGIN_MESSAGE_MAP(COptionsSpeedLimitPage, COptionsPage)
 	//{{AFX_MSG_MAP(COptionsSpeedLimitPage)
 	ON_BN_CLICKED(IDC_SPEEDLIMIT_DOWNLOAD1, OnRadio)
 	ON_BN_CLICKED(IDC_SPEEDLIMIT_DOWNLOAD_ADD, OnSpeedlimitDownloadAdd)
@@ -101,7 +121,7 @@ void COptionsSpeedLimitPage::SetCtrlState()
 
 BOOL COptionsSpeedLimitPage::OnInitDialog() 
 {
-	CSAPrefsSubDlg::OnInitDialog();
+	COptionsPage::OnInitDialog();
 	
 	// TODO: Add extra initialization here
 	SetCtrlState();
@@ -359,4 +379,20 @@ void COptionsSpeedLimitPage::OnDblclkSpeedlimitUploadRulesList()
 			m_UploadRulesListCtrl.SetCurSel( curSel);
 		}
 	}
+}
+
+void COptionsSpeedLimitPage::LoadData()
+{
+	m_DownloadSpeedLimitType = m_pOptionsDlg->GetOptionVal(OPTION_DOWNLOADSPEEDLIMITTYPE);
+	m_UploadSpeedLimitType = m_pOptionsDlg->GetOptionVal(OPTION_UPLOADSPEEDLIMITTYPE);
+	m_DownloadValue = m_pOptionsDlg->GetOptionVal(OPTION_DOWNLOADSPEEDLIMIT);
+	m_UploadValue = m_pOptionsDlg->GetOptionVal(OPTION_UPLOADSPEEDLIMIT);
+}
+
+void COptionsSpeedLimitPage::SaveData()
+{
+	m_pOptionsDlg->SetOption(OPTION_DOWNLOADSPEEDLIMITTYPE, m_DownloadSpeedLimitType);
+	m_pOptionsDlg->SetOption(OPTION_DOWNLOADSPEEDLIMIT, m_DownloadValue);
+	m_pOptionsDlg->SetOption(OPTION_UPLOADSPEEDLIMITTYPE, m_UploadSpeedLimitType);
+	m_pOptionsDlg->SetOption(OPTION_UPLOADSPEEDLIMIT, m_UploadValue);
 }

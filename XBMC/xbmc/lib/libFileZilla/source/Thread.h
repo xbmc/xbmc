@@ -1,13 +1,3 @@
-/*
-  This file has been modified for use in XBFileZilla.
-
-  Taken from FileZilla Server 0.8.3 release
-
-  changes:
-  - make CThread::Run() a virtual method, not really necessary, but saves me from 
-    creating a separate thread class
-
-*/
 // FileZilla Server - a Windows ftp server
 
 // Copyright (C) 2002 - Tim Kosse <tim.kosse@gmx.de>

@@ -21,6 +21,8 @@
 
 #include "stdafx.h"
 #include "filezilla server.h"
+#include "OptionsDlg.h"
+#include "OptionsPage.h"
 #include "OptionsGeneralPage.h"
 
 #ifdef _DEBUG
@@ -33,8 +35,8 @@ static char THIS_FILE[] = __FILE__;
 // Dialogfeld COptionsGeneralPage 
 
 
-COptionsGeneralPage::COptionsGeneralPage(CWnd* pParent /*=NULL*/)
-	: CSAPrefsSubDlg(COptionsGeneralPage::IDD, pParent)
+COptionsGeneralPage::COptionsGeneralPage(COptionsDlg *pOptionsDlg, CWnd* pParent /*=NULL*/)
+	: COptionsPage(pOptionsDlg, COptionsGeneralPage::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(COptionsGeneralPage)
 	m_MaxUsers = _T("");
@@ -49,7 +51,7 @@ COptionsGeneralPage::COptionsGeneralPage(CWnd* pParent /*=NULL*/)
 
 void COptionsGeneralPage::DoDataExchange(CDataExchange* pDX)
 {
-	CSAPrefsSubDlg::DoDataExchange(pDX);
+	COptionsPage::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(COptionsGeneralPage)
 	DDX_Text(pDX, IDC_MAXUSERS, m_MaxUsers);
 	DDV_MaxChars(pDX, m_MaxUsers, 9);
@@ -67,7 +69,7 @@ void COptionsGeneralPage::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(COptionsGeneralPage, CSAPrefsSubDlg)
+BEGIN_MESSAGE_MAP(COptionsGeneralPage, COptionsPage)
 	//{{AFX_MSG_MAP(COptionsGeneralPage)
 		// HINWEIS: Der Klassen-Assistent fügt hier Zuordnungsmakros für Nachrichten ein
 	//}}AFX_MSG_MAP
@@ -75,3 +77,48 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // Behandlungsroutinen für Nachrichten COptionsGeneralPage 
+
+BOOL COptionsGeneralPage::IsDataValid()
+{
+	if (!UpdateData(TRUE))
+		return FALSE;
+
+	int port = atoi(m_Port);
+	if (port<1 || port>65535)
+	{
+		m_pOptionsDlg->ShowPage(this);
+		GetDlgItem(IDC_PORT)->SetFocus();
+		AfxMessageBox("Please enter a value between 1 and 65535 for the port!");
+		return FALSE;
+	}
+	int threadnum = atoi(m_Threadnum);
+	if (threadnum<1 || threadnum>50)
+	{
+		m_pOptionsDlg->ShowPage(this);
+		GetDlgItem(IDC_THREADNUM)->SetFocus();
+		AfxMessageBox("Please enter a value between 1 and 50 for the number of Threads!");
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+void COptionsGeneralPage::LoadData()
+{
+	m_Port.Format("%d", m_pOptionsDlg->GetOptionVal(OPTION_SERVERPORT));	
+	m_Threadnum.Format("%d", m_pOptionsDlg->GetOptionVal(OPTION_THREADNUM));	
+	m_MaxUsers.Format("%d", m_pOptionsDlg->GetOptionVal(OPTION_MAXUSERS));	
+	m_Timeout.Format("%d", m_pOptionsDlg->GetOptionVal(OPTION_TIMEOUT));	
+	m_NoTransferTimeout.Format("%d", m_pOptionsDlg->GetOptionVal(OPTION_NOTRANSFERTIMEOUT));
+	m_LoginTimeout.Format("%d", m_pOptionsDlg->GetOptionVal(OPTION_LOGINTIMEOUT));
+}
+
+void COptionsGeneralPage::SaveData()
+{
+	m_pOptionsDlg->SetOption(OPTION_SERVERPORT, atoi(m_Port));
+	m_pOptionsDlg->SetOption(OPTION_THREADNUM, atoi(m_Threadnum));
+	m_pOptionsDlg->SetOption(OPTION_MAXUSERS, atoi(m_MaxUsers));
+	m_pOptionsDlg->SetOption(OPTION_TIMEOUT, atoi(m_Timeout));
+	m_pOptionsDlg->SetOption(OPTION_NOTRANSFERTIMEOUT, atoi(m_NoTransferTimeout));
+	m_pOptionsDlg->SetOption(OPTION_LOGINTIMEOUT, atoi(m_LoginTimeout));
+}

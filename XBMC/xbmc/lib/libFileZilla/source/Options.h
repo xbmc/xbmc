@@ -46,6 +46,7 @@ public:
 	void SetOption(int nOptionID, LPCTSTR value);
 	void SetOption(int nOptionID, _int64 value);
 	int GetCurrentSpeedLimit(int nMode);
+	void ReloadConfig();
 	
 protected:
 	static CCriticalSectionWrapper m_Sync;

@@ -613,6 +613,12 @@
 				RelativePath="source\AsyncSocketEx.h">
 			</File>
 			<File
+				RelativePath=".\source\ExternalIpCheck.cpp">
+			</File>
+			<File
+				RelativePath=".\source\ExternalIpCheck.h">
+			</File>
+			<File
 				RelativePath="source\FileLogger.cpp">
 				<FileConfiguration
 					Name="Release|Xbox">

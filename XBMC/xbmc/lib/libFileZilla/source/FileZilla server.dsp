@@ -106,7 +106,7 @@ PostBuild_Cmds="$(OutDir)\FileZilla Server.exe" /stop	"$(OutDir)\FileZilla Serve
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /Yu"stdafx.h" /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /Yu"stdafx.h" /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /Yu"stdafx.h" /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x407 /d "_DEBUG"
@@ -167,6 +167,10 @@ SOURCE=.\AsyncSocketExLayer.cpp
 # Begin Source File
 
 SOURCE=.\ControlSocket.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ExternalIpCheck.cpp
 # End Source File
 # Begin Source File
 
@@ -275,7 +279,15 @@ SOURCE=.\AsyncSocketExLayer.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\config.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\ControlSocket.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ExternalIpCheck.h
 # End Source File
 # Begin Source File
 

@@ -28,8 +28,8 @@
 #include "stdafx.h"
 #include "version.h"
 
-#define XBFILEZILLA_VERSION "1.3"
-#define FILEZILLA_VERSION "0.8.7"
+#define XBFILEZILLA_VERSION "1.4"
+#define FILEZILLA_VERSION "0.8.8"
 
 CStdString GetVersionString()
 {

@@ -1,11 +1,3 @@
-/*
-  This file has been modified for use in XBFileZilla.
-
-  Taken from FileZilla Server 0.8.3 release
-
-  changes:
-  - changed initial welcome message
-*/
 // FileZilla Server - a Windows ftp server
 
 // Copyright (C) 2002 - Tim Kosse <tim.kosse@gmx.de>
@@ -41,6 +33,7 @@ std::list<COptions *> COptions::m_InstanceList;
 CCriticalSectionWrapper COptions::m_Sync;
 COptions::t_OptionsCache COptions::m_sOptionsCache[OPTIONS_NUM];
 BOOL COptions::m_bInitialized=FALSE;
+
 
 
 #if defined(_XBOX)
@@ -228,6 +221,10 @@ void COptions::SetOption(int nOptionID, _int64 value)
 		if (value < 256 || value > (1024*1024))
 			value = 4096;
 		break;
+	case OPTION_CUSTOMPASVIPTYPE:
+		if (value < 0 || value > 2)
+			value = 0;
+		break;
 	}
 		
 	Init();
@@ -358,7 +355,8 @@ void COptions::SetOption(int nOptionID, LPCTSTR value)
 						if (sockAddr.sin_addr.s_addr != INADDR_NONE)
 						{
 							sub = inet_ntoa(sockAddr.sin_addr);
-							for (std::list<CStdString>::iterator iter = ipBindList.begin(); iter!=ipBindList.end(); iter++)
+							std::list<CStdString>::iterator iter;
+							for (iter = ipBindList.begin(); iter!=ipBindList.end(); iter++)
 								if (*iter==sub)
 									break;
 							if (iter == ipBindList.end())
@@ -382,11 +380,12 @@ void COptions::SetOption(int nOptionID, LPCTSTR value)
 				if (sockAddr.sin_addr.s_addr != INADDR_NONE)
 				{
 					sub = inet_ntoa(sockAddr.sin_addr);
-					for (std::list<CStdString>::iterator iter = ipBindList.begin(); iter!=ipBindList.end(); iter++)
+					std::list<CStdString>::iterator iter;
+					for (iter = ipBindList.begin(); iter!=ipBindList.end(); iter++)
 						if (*iter==sub)
 							break;
-						if (iter == ipBindList.end())
-							ipBindList.push_back(sub);
+					if (iter == ipBindList.end())
+						ipBindList.push_back(sub);
 				}
 				sub = "";
 			}
@@ -546,6 +545,9 @@ CStdString COptions::GetOption(int nOptionID)
 			m_sOptionsCache[nOptionID-1].str+="\r\nPlease visit http://sourceforge.net/projects/filezilla/";
 #endif
 			break;
+		case OPTION_CUSTOMPASVIPSERVER:
+			m_sOptionsCache[nOptionID-1].str = "http://filezilla.sourceforge.net/misc/ip.php";
+			break;
 		default:
 			m_sOptionsCache[nOptionID-1].str="";
 			m_sOptionsCache[nOptionID-1].bCached=TRUE;
@@ -600,6 +602,9 @@ _int64 COptions::GetOptionVal(int nOptionID)
 				break;
 			case OPTION_BUFFERSIZE:
 				m_sOptionsCache[nOptionID-1].value = 4096;
+				break;
+			case OPTION_CUSTOMPASVIPTYPE:
+				m_sOptionsCache[nOptionID-1].value = 0;
 				break;
 			default:
 				m_sOptionsCache[nOptionID-1].value=0;
@@ -773,9 +778,11 @@ BOOL COptions::FreeXML(CMarkupSTL *pXML)
 
 BOOL COptions::GetAsCommand(char **pBuffer, DWORD *nBufferLength)
 {
-	m_Sync.Lock();
+	int i;
 	DWORD len = 2;
-	for (int i=0; i<OPTIONS_NUM; i++)
+
+	m_Sync.Lock();
+	for (i=0; i<OPTIONS_NUM; i++)
 	{
 		len+=1;
 		if (!m_Options[i].nType)
@@ -857,7 +864,8 @@ BOOL COptions::ParseOptionsCommand(unsigned char *pData, DWORD dwDataLength, BOO
 	if (num!=OPTIONS_NUM)
 		return FALSE;
 	
-	for (int i=0; i<num; i++)
+	int i;
+	for (i = 0; i < num; i++)
 	{
 		if ((DWORD)(p-pData)>=dwDataLength)
 			return FALSE;
@@ -1326,4 +1334,88 @@ int COptions::GetCurrentSpeedLimit(int nMode)
 				}
 		}
 	}
+}
+
+void COptions::ReloadConfig()
+{
+	m_Sync.Lock();
+
+	m_bInitialized = TRUE;
+	CFileStatus64 status;
+	CMarkupSTL xml;
+	TCHAR buffer[MAX_PATH + 1000]; //Make it large enough
+	GetModuleFileName( 0, buffer, MAX_PATH );
+	LPTSTR pos=_tcsrchr(buffer, '\\');
+	if (pos)
+		*++pos=0;
+	_tcscat(buffer, _T("FileZilla Server.xml"));
+	
+	for (int i=0; i<OPTIONS_NUM; i++)
+		m_sOptionsCache[i].bCached = FALSE;
+	
+	if (!GetStatus64(buffer, status) )
+	{
+		xml.AddElem( _T("FileZillaServer") );
+		if (!xml.Save(buffer))
+		{
+			m_Sync.Unlock();
+			return;
+		}
+	}
+	else if (status.m_attribute&FILE_ATTRIBUTE_DIRECTORY)
+	{
+		m_Sync.Unlock();
+		return;
+	}
+		
+	if (xml.Load(buffer))
+	{
+		if (xml.FindElem( _T("FileZillaServer") ))
+		{
+			if (!xml.FindChildElem( _T("Settings") ))
+				xml.AddChildElem( _T("Settings") );
+			
+			CStdString str;
+			xml.IntoElem();
+			str=xml.GetTagName();
+			while (xml.FindChildElem())
+			{
+				CStdString value=xml.GetChildData();
+				CStdString name=xml.GetChildAttrib( _T("name") );
+				CStdString type=xml.GetChildAttrib( _T("type") );
+				for (int i=0;i<OPTIONS_NUM;i++)
+				{
+					if (!_tcscmp(name, m_Options[i].name))
+					{
+						if (m_sOptionsCache[i].bCached)
+							break;
+						else
+						{
+							if (type=="numeric")
+							{
+								if (m_Options[i].nType!=1)
+									break;
+								_int64 value64=_ttoi64(value);
+								if (IsNumeric(value))
+									SetOption(i+1, value64);
+							}
+							else
+							{
+								if (m_Options[i].nType!=0)
+									break;
+								SetOption(i+1, value);
+							}
+						}
+						break;
+					}
+				}
+			}
+			ReadSpeedLimits(&xml);
+			
+			m_Sync.Unlock();
+			UpdateInstances();
+			return;
+		}
+	}
+	m_Sync.Unlock();
 }

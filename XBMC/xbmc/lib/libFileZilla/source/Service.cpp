@@ -40,6 +40,7 @@ BOOL nServiceRunning;
 DWORD nServiceCurrentStatus;
 
 int SetAdminPort(LPCTSTR pszPort);
+int ReloadConfig();
 int CompatMain(LPCTSTR lpCmdLine);
 
 int APIENTRY WinMain(HINSTANCE hInstance,
@@ -66,9 +67,13 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 		nAction = 5;
 	else if (_tcslen(lpCmdLine) >= 11 && !_tcsncmp(lpCmdLine, "/adminport ", 11))
 		nAction = 6;
+	else if (!_tcscmp(lpCmdLine, "/reload-config"))
+		nAction = 7;
 
 	if (nAction == 6)
 		return SetAdminPort(lpCmdLine + 11);
+	else if (nAction == 7)
+		return ReloadConfig();
 	
 	hScm = OpenSCManager(0, 0, SC_MANAGER_CONNECT);
 	
@@ -407,6 +412,17 @@ int SetAdminPort(LPCTSTR pszPort)
 	return 0;
 }
 
+int ReloadConfig()
+{
+	HWND hWnd = FindWindow(_T("FileZilla Server Helper Window"), _T("FileZilla Server Helper Window"));
+
+	if (!hWnd)
+		return 0;
+	
+	return PostMessage(hWnd, WM_FILEZILLA_SERVERMSG, FSM_RELOADCONFIG, 0);
+
+}
+
 int CompatMain(LPCTSTR lpCmdLine)
 {
 	int nAction = 0;
@@ -423,9 +439,13 @@ int CompatMain(LPCTSTR lpCmdLine)
 		return 0;
 	else if (!_tcscmp(lpCmdLine, "/install auto"))
 		return 0;
+	else if (!_tcscmp(lpCmdLine, "/reload-config"))
+		nAction = 4;
 
 	if (nAction == 3)
 		return SetAdminPort(lpCmdLine + 11);
+	else if (nAction == 4)
+		return ReloadConfig();
 
 	HWND hWnd = FindWindow(_T("FileZilla Server Helper Window"), _T("FileZilla Server Helper Window"));
 	if (nAction == 1 && hWnd)

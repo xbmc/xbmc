@@ -16,37 +16,16 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-// stdafx.cpp : Quelltextdatei, die nur die Standard-Includes einbindet
-//	FileZilla server.pch ist die vorcompilierte Header-Datei
-//	stdafx.obj enthält die vorcompilierte Typinformation
-
-#include "stdafx.h"
 
 
 
-HWND hMainWnd = NULL;
-
-CCriticalSectionWrapper::CCriticalSectionWrapper()
-{
-	m_bInitialized = TRUE;
-	InitializeCriticalSection(&m_criticalSection);
-}
-
-CCriticalSectionWrapper::~CCriticalSectionWrapper()
-{
-	if (m_bInitialized)
-		DeleteCriticalSection(&m_criticalSection);
-	m_bInitialized = FALSE;
-}
-
-void CCriticalSectionWrapper::Lock()
-{
-	if (m_bInitialized)
-		EnterCriticalSection(&m_criticalSection);
-}
-
-void CCriticalSectionWrapper::Unlock()
-{
-	if (m_bInitialized)
-		LeaveCriticalSection(&m_criticalSection);
-}
+/* Check if the Platform SDK is installed. Especially in VC6 some components like
+ * the theme api and debugging tools api aren't installed by default, The Platform SDK
+ * includes the required headers.
+ * Unfortunately there is no safe way to tell whether the platform SDK is installed.
+ * One way to guess it is over the INVALID_SET_FILE_POINTER define, it at least is not 
+ * defined in the header files of VC6, but it is defined in the Platform SDK.
+ */
+#ifndef INVALID_SET_FILE_POINTER
+#error Please download and install the latest MS Platform SDK from http://www.microsoft.com/msdownload/platformsdk/sdkupdate/
+#endif

@@ -28,13 +28,18 @@
 /////////////////////////////////////////////////////////////////////////////
 // Dialogfeld COptionsGeneralPage 
 
-class COptionsGeneralPage : public CSAPrefsSubDlg
+class COptionsDlg;
+class COptionsGeneralPage : public COptionsPage
 {
 // Konstruktion
 public:
-	COptionsGeneralPage(CWnd* pParent = NULL);   // Standardkonstruktor
+	COptionsGeneralPage(COptionsDlg *pOptionsDlg, CWnd* pParent = NULL);   // Standardkonstruktor
 
-// Dialogfelddaten
+	virtual BOOL IsDataValid();
+	virtual void SaveData();
+	virtual void LoadData();
+
+	// Dialogfelddaten
 	//{{AFX_DATA(COptionsGeneralPage)
 	enum { IDD = IDD_OPTIONS_GENERAL };
 	CString	m_MaxUsers;

@@ -80,6 +80,7 @@ public:
 	BOOL GetAsCommand(char **pBuffer, DWORD *nBufferLength);
 	BOOL ParseUsersCommand(unsigned char *pData, DWORD dwDataLength);
 	void AutoCreateDirs(const char *username);
+	void ReloadConfig();
 	
 protected:
 	BOOL Init();

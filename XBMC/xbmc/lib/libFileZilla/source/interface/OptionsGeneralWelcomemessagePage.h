@@ -28,13 +28,17 @@
 /////////////////////////////////////////////////////////////////////////////
 // Dialogfeld COptionsGeneralWelcomemessagePage 
 
-class COptionsGeneralWelcomemessagePage : public CSAPrefsSubDlg
+class COptionsDlg;
+class COptionsGeneralWelcomemessagePage : public COptionsPage
 {
 // Konstruktion
 public:
-	COptionsGeneralWelcomemessagePage(CWnd* pParent = NULL);   // Standardkonstruktor
+	COptionsGeneralWelcomemessagePage(COptionsDlg *pOptionsDlg, CWnd* pParent = NULL);   // Standardkonstruktor
 
-// Dialogfelddaten
+	virtual void SaveData();
+	virtual void LoadData();
+
+	// Dialogfelddaten
 	//{{AFX_DATA(COptionsGeneralWelcomemessagePage)
 	enum { IDD = IDD_OPTIONS_GENERAL_WELCOMEMESSAGE };
 	CString	m_WelcomeMessage;

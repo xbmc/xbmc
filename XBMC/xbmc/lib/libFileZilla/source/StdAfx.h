@@ -43,6 +43,8 @@
 
 #include "shlobj.h"
 
+#include "config.h"
+
 #include "..\..\..\guilib\stdstring.h"
 
 #include "MFC64bitFix.h"
@@ -63,7 +65,7 @@ const UINT WM_FILEZILLA_THREADMSG = ::RegisterWindowMessage(FILEZILLA_THREAD_MES
 #define FSM_THREADCANQUIT 2
 #define FSM_SEND 3
 #define FSM_RECV 4
-
+#define FSM_RELOADCONFIG 5
 
 #define FTM_NEWSOCKET 0
 #define FTM_DELSOCKET 1
@@ -126,6 +128,7 @@ public:
 
 protected:
 	CRITICAL_SECTION m_criticalSection;
+	BOOL m_bInitialized;
 };
 #define CCRITICALSECTIONWRAPPERINCLUDED
 #endif

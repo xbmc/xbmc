@@ -21,6 +21,8 @@
 
 #include "stdafx.h"
 #include "filezilla server.h"
+#include "OptionsDlg.h"
+#include "OptionsPage.h"
 #include "OptionsGeneralWelcomemessagePage.h"
 
 #ifdef _DEBUG
@@ -33,8 +35,8 @@ static char THIS_FILE[] = __FILE__;
 // Dialogfeld COptionsGeneralWelcomemessagePage 
 
 
-COptionsGeneralWelcomemessagePage::COptionsGeneralWelcomemessagePage(CWnd* pParent /*=NULL*/)
-	: CSAPrefsSubDlg(COptionsGeneralWelcomemessagePage::IDD, pParent)
+COptionsGeneralWelcomemessagePage::COptionsGeneralWelcomemessagePage(COptionsDlg *pOptionsDlg, CWnd* pParent /*=NULL*/)
+	: COptionsPage(pOptionsDlg, COptionsGeneralWelcomemessagePage::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(COptionsGeneralWelcomemessagePage)
 	m_WelcomeMessage = _T("");
@@ -44,7 +46,7 @@ COptionsGeneralWelcomemessagePage::COptionsGeneralWelcomemessagePage(CWnd* pPare
 
 void COptionsGeneralWelcomemessagePage::DoDataExchange(CDataExchange* pDX)
 {
-	CSAPrefsSubDlg::DoDataExchange(pDX);
+	COptionsPage::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(COptionsGeneralWelcomemessagePage)
 	DDX_Text(pDX, IDC_OPTIONS_GENERAL_WELCOMEMESSAGE_WELCOMEMESSAGE, m_WelcomeMessage);
 	DDV_MaxChars(pDX, m_WelcomeMessage, 1500);
@@ -52,7 +54,7 @@ void COptionsGeneralWelcomemessagePage::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(COptionsGeneralWelcomemessagePage, CSAPrefsSubDlg)
+BEGIN_MESSAGE_MAP(COptionsGeneralWelcomemessagePage, COptionsPage)
 	//{{AFX_MSG_MAP(COptionsGeneralWelcomemessagePage)
 		// HINWEIS: Der Klassen-Assistent fügt hier Zuordnungsmakros für Nachrichten ein
 	//}}AFX_MSG_MAP
@@ -60,3 +62,40 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // Behandlungsroutinen für Nachrichten COptionsGeneralWelcomemessagePage 
+
+void COptionsGeneralWelcomemessagePage::LoadData()
+{
+	m_WelcomeMessage = m_pOptionsDlg->GetOption(OPTION_WELCOMEMESSAGE);
+}
+
+void COptionsGeneralWelcomemessagePage::SaveData()
+{
+	CString msg = m_WelcomeMessage;
+	std::list<CString> msgLines;
+	int oldpos=0;
+	msg.Replace("\r\n", "\n");
+	int pos=msg.Find("\n");
+	CString line;
+	while (pos!=-1)
+	{
+		if (pos)
+		{
+			line = msg.Mid(oldpos, pos-oldpos);
+			line=line.Left(70);
+			line.TrimRight(" ");
+			if (msgLines.size() || line!="")
+				msgLines.push_back(line);
+		}
+		oldpos=pos+1;
+		pos=msg.Find("\n", oldpos);
+	}
+	line=msg.Mid(oldpos);
+	if (line!="")
+		msgLines.push_back(line);
+	msg="";
+	for (std::list<CString>::iterator iter=msgLines.begin(); iter!=msgLines.end(); iter++)
+		msg+=*iter+"\r\n";
+	msg.TrimRight("\r\n");
+
+	m_pOptionsDlg->SetOption(OPTION_WELCOMEMESSAGE, msg);
+}

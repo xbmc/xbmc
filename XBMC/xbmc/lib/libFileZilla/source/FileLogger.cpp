@@ -213,7 +213,8 @@ BOOL CFileLogger::CheckLogFile()
 				SetFilePointer(m_hLogFile, curWritePos, 0, FILE_BEGIN);
 				if (bFirst) //Assure log starts with complete line
 				{
-					for (unsigned int i=0; i<numread; i++)
+					unsigned int i;
+					for (i=0; i<numread; i++)
 					{
 						if (buffer[i] == '\n')
 							break;

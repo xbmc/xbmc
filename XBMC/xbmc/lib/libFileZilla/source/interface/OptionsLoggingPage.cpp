@@ -18,6 +18,8 @@
 
 #include "stdafx.h"
 #include "filezilla server.h"
+#include "OptionsDlg.h"
+#include "OptionsPage.h"
 #include "OptionsLoggingPage.h"
 
 #ifdef _DEBUG
@@ -30,8 +32,8 @@ static char THIS_FILE[] = __FILE__;
 // Dialogfeld COptionsLoggingPage 
 
 
-COptionsLoggingPage::COptionsLoggingPage(CWnd* pParent /*=NULL*/)
-	: CSAPrefsSubDlg(COptionsLoggingPage::IDD, pParent)
+COptionsLoggingPage::COptionsLoggingPage(COptionsDlg *pOptionsDlg, CWnd* pParent /*=NULL*/)
+	: COptionsPage(pOptionsDlg, COptionsLoggingPage::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(COptionsLoggingPage)
 	m_bDelete = FALSE;
@@ -46,7 +48,7 @@ COptionsLoggingPage::COptionsLoggingPage(CWnd* pParent /*=NULL*/)
 
 void COptionsLoggingPage::DoDataExchange(CDataExchange* pDX)
 {
-	CSAPrefsSubDlg::DoDataExchange(pDX);
+	COptionsPage::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(COptionsLoggingPage)
 	DDX_Control(pDX, IDC_OPTIONS_LOGGING_LOGTYPE, m_cLogtype);
 	DDX_Control(pDX, IDC_OPTIONS_LOGGING_LOGTYPE2, m_cLogtype2);
@@ -66,7 +68,7 @@ void COptionsLoggingPage::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(COptionsLoggingPage, CSAPrefsSubDlg)
+BEGIN_MESSAGE_MAP(COptionsLoggingPage, COptionsPage)
 	//{{AFX_MSG_MAP(COptionsLoggingPage)
 	ON_BN_CLICKED(IDC_OPTIONS_LOGGING_ENABLE, OnOptionsLoggingChangedOption)
 	ON_BN_CLICKED(IDC_OPTIONS_LOGGING_DELETE, OnOptionsLoggingChangedOption)
@@ -81,7 +83,7 @@ END_MESSAGE_MAP()
 
 BOOL COptionsLoggingPage::OnInitDialog() 
 {
-	CSAPrefsSubDlg::OnInitDialog();
+	COptionsPage::OnInitDialog();
 	
 	//Set ctrl states
 	OnOptionsLoggingChangedOption();
@@ -122,4 +124,30 @@ void COptionsLoggingPage::OnOptionsLoggingChangedOption()
 		m_cDeleteTime.EnableWindow(FALSE);
 	}
 	
+}
+
+void COptionsLoggingPage::LoadData()
+{
+	m_bEnable = m_pOptionsDlg->GetOptionVal(OPTION_ENABLELOGGING);
+
+	int nLimit = m_pOptionsDlg->GetOptionVal(OPTION_LOGLIMITSIZE);
+	m_bLimit = nLimit ? TRUE : FALSE;
+	if (nLimit)
+		m_LimitSize.Format("%d", nLimit);
+
+	m_nLogtype = m_pOptionsDlg->GetOptionVal(OPTION_LOGTYPE);
+
+	int nDelete = m_pOptionsDlg->GetOptionVal(OPTION_LOGDELETETIME);
+	m_bDelete = nDelete ? TRUE : FALSE;
+	if (nDelete)
+		m_DeleteTime.Format("%d", nDelete);
+
+}
+
+void COptionsLoggingPage::SaveData()
+{
+	m_pOptionsDlg->SetOption(OPTION_ENABLELOGGING, m_bEnable);
+	m_pOptionsDlg->SetOption(OPTION_LOGLIMITSIZE, m_bLimit ? _ttoi(m_LimitSize) : 0);
+	m_pOptionsDlg->SetOption(OPTION_LOGTYPE, m_nLogtype);
+	m_pOptionsDlg->SetOption(OPTION_LOGDELETETIME, m_bDelete ? _ttoi(m_DeleteTime) : 0);
 }

@@ -28,25 +28,21 @@
 /////////////////////////////////////////////////////////////////////////////
 // Dialogfeld COptionsMiscPage 
 
-class COptionsMiscPage : public CSAPrefsSubDlg
+class COptionsDlg;
+class COptionsMiscPage : public COptionsPage
 {
 // Konstruktion
 public:
-	COptionsMiscPage(CWnd* pParent = NULL);   // Standardkonstruktor
+	COptionsMiscPage(COptionsDlg *pOptionsDlg, CWnd* pParent = NULL);   // Standardkonstruktor
+
+	virtual void SaveData();
+	virtual void LoadData();
 
 // Dialogfelddaten
 	//{{AFX_DATA(COptionsMiscPage)
 	enum { IDD = IDD_OPTIONS_MISC };
-	CEdit	m_cCustomPASVMinPort;
-	CEdit	m_cCustomPASVMaxPort;
-	CEdit	m_cCustomPASVString;
 	BOOL	m_bDontShowPass;
 	BOOL	m_bStartMinimized;
-	BOOL	m_bEnableCustomPASV;
-	CString	m_sCustomPASVString;
-	CString	m_sCustomPASVHelp;
-	CString	m_CustomPasvMinPort;
-	CString	m_CustomPasvMaxPort;
 	CString	m_TransferBufferSize;
 	//}}AFX_DATA
 
@@ -64,7 +60,6 @@ protected:
 	// Generierte Nachrichtenzuordnungsfunktionen
 	//{{AFX_MSG(COptionsMiscPage)
 	virtual BOOL OnInitDialog();
-	afx_msg void OnOptionsMiscCustomPasv();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

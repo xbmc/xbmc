@@ -55,8 +55,7 @@ CServer::CServer()
 
 CServer::~CServer()
 {
-	if (m_pListenSocket)
-		delete m_pListenSocket;
+	delete m_pListenSocket;
 	m_pListenSocket = NULL;
 
 	for (std::list<CAdminListenSocket*>::iterator iter = m_AdminListenSocketList.begin(); iter!=m_AdminListenSocketList.end(); iter++)
@@ -122,7 +121,7 @@ bool CServer::Create()
 	m_pFileLogger->Log("Initializing Server.");
 	
 	m_pListenSocket = new CListenSocket(this);
-	m_pListenSocket->m_pThreadList=&m_ThreadArray;
+	m_pListenSocket->m_pThreadList = &m_ThreadArray;
 	
 	//TODO Start on startup check
 	int nPort = (int)m_pOptions->GetOptionVal(OPTION_SERVERPORT);
@@ -292,6 +291,13 @@ LRESULT CServer::OnServerMessage(WPARAM wParam, LPARAM lParam)
 		memcpy(buffer+1, &lParam, 4);
 		m_pAdminInterface->SendCommand(2, 7, buffer, 5);
 		m_nRecvCount += lParam;
+	}
+	else if (wParam == FSM_RELOADCONFIG)
+	{
+		COptions options;
+		options.ReloadConfig();
+		CPermissions perm;
+		perm.ReloadConfig();
 	}
 	return 0;
 }
@@ -489,7 +495,7 @@ BOOL CServer::ProcessCommand(CAdminSocket *pAdminSocket, int nID, unsigned char 
 						if (!m_pListenSocket->Create((int)m_pOptions->GetOptionVal(OPTION_SERVERPORT), SOCK_STREAM,FD_ACCEPT,0) || !m_pListenSocket->Listen())
 						{
 							delete m_pListenSocket;
-							m_pListenSocket = 0;
+							m_pListenSocket = NULL;
 							str.Format("Failed to create listen socket on port %I64d. Server is not online!", m_pOptions->GetOptionVal(OPTION_SERVERPORT));
 							ShowStatus(str,1);
 							m_nServerState = 0;

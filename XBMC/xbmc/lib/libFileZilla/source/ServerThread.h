@@ -31,6 +31,7 @@ class CServerThread;
 class COptions;
 class CPermissions;
 class t_user;
+class CExternalIpCheck;
 
 typedef struct
 {
@@ -44,6 +45,8 @@ typedef struct
 class CServerThread : public CThread
 {
 public:
+	virtual CStdString GetExternalIP();
+	virtual void ExternalIPFailed();
 	void DontQuit();
 	CServerThread();
 
@@ -88,7 +91,7 @@ protected:
 
 	//Speed limit code
 	static std::list<CServerThread *> m_sInstanceList; //First instance is the SL master
-	BOOL m_bIsSlMaster;
+	BOOL m_bIsMaster;
 	int m_nLoopCount;
 	int m_nLastDlLimit;
 	int m_nLastUlLimit;
@@ -102,6 +105,7 @@ protected:
 
 	CStdString m_RawWelcomeMessage;
 	std::list<CStdString> m_ParsedWelcomeMessage;
+	CExternalIpCheck *m_pExternalIpCheck;
 };
 
 /////////////////////////////////////////////////////////////////////////////

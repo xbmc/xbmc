@@ -28,14 +28,20 @@
 /////////////////////////////////////////////////////////////////////////////
 // Dialogfeld COptionsAdminInterfacePage 
 
-class COptionsAdminInterfacePage : public CSAPrefsSubDlg
+class COptionsDlg;
+class COptionsAdminInterfacePage : public COptionsPage
 {
 // Konstruktion
 public:
-	CString m_IpBindingsResult;
-	COptionsAdminInterfacePage(CWnd* pParent = NULL);   // Standardkonstruktor
+	COptionsAdminInterfacePage(COptionsDlg *pOptionsDlg, CWnd* pParent = NULL);   // Standardkonstruktor
 
-// Dialogfelddaten
+	virtual BOOL IsDataValid();
+	virtual void SaveData();
+	virtual void LoadData();
+
+	CString m_IpBindingsResult;
+	
+	// Dialogfelddaten
 	//{{AFX_DATA(COptionsAdminInterfacePage)
 	enum { IDD = IDD_OPTIONS_ADMININTERFACE };
 	CButton	m_cChangePass;
@@ -48,7 +54,6 @@ public:
 	CString	m_NewPass2;
 	BOOL	m_bChangePass;
 	//}}AFX_DATA
-
 
 // Überschreibungen
 	// Vom Klassen-Assistenten generierte virtuelle Funktionsüberschreibungen

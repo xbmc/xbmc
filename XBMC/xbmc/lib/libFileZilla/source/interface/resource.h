@@ -28,6 +28,7 @@
 #define IDD_USERS_GENERAL               122
 #define IDD_USERS_SPEEDLIMIT            123
 #define IDI_EMPTY                       124
+#define IDD_OPTIONS_PASV                124
 #define IDI_GREEN                       125
 #define IDI_YELLOW                      126
 #define IDI_RED                         127
@@ -58,6 +59,7 @@
 #define IDS_OPTIONSPAGE_MISC            152
 #define IDS_OPTIONSPAGE_SECURITY        153
 #define IDS_OPTIONSPAGE_SPEEDLIMIT      154
+#define IDS_OPTIONSPAGE_PASV            155
 #define IDB_DONATE                      156
 #define IDC_CAPTION_BAR                 1000
 #define IDC_CHECK_DAY1                  1001
@@ -187,6 +189,16 @@
 #define IDC_USERS_SPEEDLIMIT_SERVERBYPASS_UPLOAD 1125
 #define IDC_VERSION                     1126
 #define IDC_DONATE                      1127
+#define IDD_OPTIONS_PASV_USEPORTRANGE   1134
+#define IDC_OPTIONS_PASV_PORTMIN        1135
+#define IDC_OPTIONS_PASV_PORTMAX        1136
+#define IDC_OPTIONS_PASV_NOLOCAL        1137
+#define IDC_OPTIONS_PASV_IPTYPE1        1138
+#define IDC_OPTIONS_PASV_IPTYPE2        1139
+#define IDC_OPTIONS_PASV_IPTYPE3        1140
+#define IDC_OPTIONS_PASV_IP             1141
+#define IDC_OPTIONS_PASV_URL            1142
+#define IDC_OPTIONS_PASV_TEXT           1143
 #define ID_ACTIVE                       32768
 #define ID_DIRMENU_ADD                  32769
 #define ID_DIRMENU_REMOVE               32770
@@ -227,7 +239,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        157
 #define _APS_NEXT_COMMAND_VALUE         32800
-#define _APS_NEXT_CONTROL_VALUE         1128
+#define _APS_NEXT_CONTROL_VALUE         1144
 #define _APS_NEXT_SYMED_VALUE           1227
 #endif
 #endif
