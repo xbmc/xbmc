@@ -241,33 +241,54 @@ offset_t CFileXBMSP::Seek(offset_t iFilePosition, int iWhence)
 			newpos = m_fileSize - iFilePosition;
 			break;
 	}
-	if (newpos < 1)
-		newpos = 0;
-	if (newpos > m_fileSize)
-		newpos = m_fileSize;
-	if ((newpos == 0) && (m_filePos != 0))
+	if (newpos < 0)       		newpos = 0;
+	if (newpos > m_fileSize)	newpos = m_fileSize;
+  if (newpos == m_filePos) return m_filePos;
+	if ( newpos == 0 )
 	{
-		if (cc_xstream_client_file_rewind(m_connection, m_handle) ==
-			CC_XSTREAM_CLIENT_OK)
+    // goto beginning
+		if (cc_xstream_client_file_rewind(m_connection, m_handle) == CC_XSTREAM_CLIENT_OK)
 		{
 			m_filePos = newpos;
 		}
+    else
+    {
+      int x=1;
+    }
+	}
+	else if ( newpos == m_fileSize )
+	{
+    // goto end
+		if (cc_xstream_client_file_end(m_connection, m_handle) == CC_XSTREAM_CLIENT_OK)
+		{
+			m_filePos = newpos;
+		}
+    else
+    {
+      int x=1;
+    }
 	}
 	else if (newpos > m_filePos)
 	{
-		if (cc_xstream_client_file_forward(m_connection, m_handle, (size_t)(newpos - m_filePos), 0) ==
-			CC_XSTREAM_CLIENT_OK)
+		if (cc_xstream_client_file_forward(m_connection, m_handle, (size_t)(newpos - m_filePos), 0) ==CC_XSTREAM_CLIENT_OK)
 		{
 			m_filePos = newpos;
 		}
+    else
+    {
+      int x=1;
+    }
 	}
 	else if (newpos < m_filePos)
 	{
-		if (cc_xstream_client_file_backwards(m_connection, m_handle, (size_t)(m_filePos - newpos), 0) ==
-			CC_XSTREAM_CLIENT_OK)
+		if (cc_xstream_client_file_backwards(m_connection, m_handle, (size_t)(m_filePos - newpos), 0) ==CC_XSTREAM_CLIENT_OK)
 		{
 			m_filePos = newpos;
 		}
+    else
+    {
+      int x=1;
+    }
 	}
 	return m_filePos;
 }

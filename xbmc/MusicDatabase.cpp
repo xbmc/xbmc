@@ -158,7 +158,7 @@ void CMusicDatabase::AddSong(const CSong& song1)
 	DWORD dwCRC;
 	Crc32 crc;
 	crc.Reset();
-	crc.Compute(song.strFileName.c_str(),strlen(song.strFileName.c_str()));
+	crc.Compute(song1.strFileName.c_str(),strlen(song1.strFileName.c_str()));
 	dwCRC=crc;
 
 	char szSQL[1024];
