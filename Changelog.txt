@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 08-03-2005 fixed: Removed "fuzzy matching" code in video database - fixes same thumb used for The Matrix and The Matrix 2.
+  - 08-03-2005 added: Dim LCD backlight if LED is set to off on video playback.  Thanks to Babyblue.
   - 08-03-2005 updated: Italian language file (Thnx to kotix)
   - 08-03-2005 updated: German (Austrian) language file (Thnx to CEOMR)
   - 08-03-2005 added: infolabel values, MusicPlayer.TimeRemaining and VideoPlayer.TimeRemaining
