@@ -1414,4 +1414,8 @@
     <id>437</id>
     <value>Duration:</value>
   </string> 
+  <string>
+    <id>438</id>
+    <value>Opening file</value>
+  </string> 
 </strings>
