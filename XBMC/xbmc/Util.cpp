@@ -1439,7 +1439,7 @@ void CUtil::FillInDefaultIcons(VECFILEITEMS &items)
 
 void CUtil::FillInDefaultIcon(CFileItem* pItem)
 {
-	CLog::Log(LOGINFO, "FillInDefaultIcon(%s)", pItem->GetLabel().c_str());
+	//CLog::Log(LOGINFO, "FillInDefaultIcon(%s)", pItem->GetLabel().c_str());
   // find the default icon for a file or folder item
   // for files this can be the (depending on the file type)
   //   default picture for photo's
@@ -1652,7 +1652,7 @@ bool CUtil::GetFolderThumb(const CStdString& strFolder, CStdString& strThumb)
     {
       CFile file;
       // then cache folder.jpg to xbox HD
-	  if(file.Exists(strFolderImage))
+	  if (g_guiSettings.GetBool("VideoLibrary.FindRemoteThumbs") && (file.Exists(strFolderImage)))
 	  {
 		if ( file.Cache(strFolderImage.c_str(), strThumb.c_str(),NULL,NULL))
 		{
@@ -1726,6 +1726,7 @@ void CUtil::SetThumb(CFileItem* pItem)
 	// If it is on the DVD and is an XBE, let's grab get the thumbnail again
 	if (!CUtil::FileExists(strCachedThumbnail) || (CUtil::IsXBE(strFileName) && CUtil::IsDVD(strFileName)) )
   {
+    if (CUtil::IsRemote(strFileName) && !g_guiSettings.GetBool("VideoLibrary.FindRemoteThumbs")) return;
 		// get the path for the  thumbnail
 		CUtil::GetThumbnail( strFileName,strThumb);
     // local cached thumb does not exists
@@ -2728,6 +2729,7 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
 			}
 			else
 			{
+        if (CUtil::IsRemote(pItem->m_strPath) && !g_guiSettings.GetBool("MusicLibrary.FindRemoteThumbs")) return;
 				//	create cached thumb, if a .tbn file is found
 				//	on a remote share
 				if (CUtil::FileExists(strThumb))
@@ -2785,6 +2787,7 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
 			CUtil::GetAlbumFolderThumb(strPath,strFolderThumb, true);
 			if (!CUtil::FileExists(strFolderThumb))
 			{
+        if (CUtil::IsRemote(pItem->m_strPath) && !g_guiSettings.GetBool("MusicLibrary.FindRemoteThumbs")) return;
 				if (pItem->m_bIsFolder)
 				{
 					CStdString strFolderTbn=strPath;
