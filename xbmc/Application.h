@@ -34,6 +34,7 @@
 #include "keyboard/virtualkeyboard.h"
 #include "lib/libPython/XboxPython.h"
 #include "cores/IPlayer.h"
+#include "DetectDVDType.h"
 
 #include <vector>
 using namespace std;
@@ -86,6 +87,7 @@ public:
 	CGUIWindowVideoOverlay					m_guiWindowVideoOverlay;
   CXBVirtualKeyboard   						m_keyboard;
 	CSNTPClient											m_sntpClient;
+	CDetectDVDMedia									m_DetectDVDType;
 	CDelayController								m_ctrDpad;
 	CDelayController								m_ctrIR;
 	Python*													m_pPhytonParser;

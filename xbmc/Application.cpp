@@ -18,9 +18,10 @@ using namespace PLAYLIST;
 	#pragma comment (lib,"xbmc/lib/libID3/i3dlibd.lib")			 // SECTIONNAME=LIBID3
 	#pragma comment (lib,"xbmc/lib/libCDRip/cdripd.lib")		 // SECTIONNAME=LIBCDRIP
 	#pragma comment (lib,"xbmc/lib/libPython/pythond.lib")	 // SECTIONNAME=PYTHON
+	#pragma comment (lib,"xbmc/lib/sqlLite/libSQLited.lib")    
 	#pragma comment (lib,"guilib/debug/guiLib.lib")				   // -
 	#pragma comment (lib,"xbmc/cores/dllLoader/debug/dllloader.lib")				   // -
-	
+	#pragma comment (lib, "xbmc/lib/libcdio/libcdiod.lib" )
 #else
 //  #pragma comment (lib,"lib/filezilla/xbfilezilla.lib")
 	#pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")          
@@ -29,8 +30,10 @@ using namespace PLAYLIST;
 	#pragma comment (lib,"xbmc/lib/libID3/i3dlib.lib")					
 	#pragma comment (lib,"xbmc/lib/libCDRip/cdrip.lib")						
 	#pragma comment (lib,"xbmc/lib/libPython/python.lib")		 
+	#pragma comment (lib,"xbmc/lib/sqlLite/libSQLite.lib")    
 	#pragma comment (lib,"guiLib/release/guiLib.lib")
 	#pragma comment (lib,"xbmc/cores/dllLoader/release/dllloader.lib")				   // -
+	#pragma comment (lib, "xbmc/lib/libcdio/libcdio.lib" )
 #endif
 
 
@@ -178,7 +181,9 @@ HRESULT CApplication::Initialize()
 
 	CreateDirectory((strDir+"\\cddb").c_str(),NULL);
 
-	
+	//	Start Thread for DVD Mediatype detection
+	m_DetectDVDType.Create( true );
+
   // initialize network
   
   if ( CUtil::InitializeNetwork(g_stSettings.m_strLocalIPAdres,
@@ -639,6 +644,7 @@ void CApplication::Stop()
 		delete m_pPlayer;
 		m_pPlayer=NULL;
 	}
+	m_DetectDVDType.StopThread();
 	m_sntpClient.StopThread();
 	m_guiMusicOverlay.FreeResources();
 	m_guiWindowVideoOverlay.FreeResources();
