@@ -21,7 +21,7 @@ void CGUIRadioButtonControl::Render()
 {
   if (!IsVisible()) return ;
   CGUIButtonControl::Render();
-  if ( IsSelected() )
+  if ( IsSelected() && !IsDisabled() )
   {
     //    if ( HasFocus() )
     //   {
