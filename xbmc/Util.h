@@ -52,5 +52,7 @@ public:
 	static DWORD GetXbeID( const CStdString& strFilePath);
 	static void FillInDefaultIcons(VECFILEITEMS &items);
 	static void SetThumbs(VECFILEITEMS &items);
+	static void GetArtistDatabase(const CStdString& strFileName, CStdString& strArtistDBS);
+	static void GetGenreDatabase(const CStdString& strFileName, CStdString& strGenreDBS);
   virtual ~CUtil(void);
 };

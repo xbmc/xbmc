@@ -77,7 +77,6 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus,DWORD dwPosX, DWORD dwPosY, CGUI
     }
     else
     {
-      pImage->SetPosition(dwPosX+4,dwPosY+16);
       pImage->Render();
     }
   }

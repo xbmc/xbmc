@@ -276,3 +276,13 @@ void CGUIImage::Process()
 		}
 	}
 }
+void CGUIImage::SetTextureWidth(int iWidth)
+{
+	m_iTextureWidth=iWidth;
+	Update();
+}
+void CGUIImage::SetTextureHeight(int iHeight)
+{
+	m_iTextureWidth=iHeight;
+	Update();
+}

@@ -34,7 +34,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xapilibd.lib d3dx8d.lib d3d8d.lib xgraphicsd.lib dsoundd.lib xboxkrnld.lib xonlined.lib "
+				AdditionalDependencies="xapilibd.lib d3dx8d.lib d3d8d.lib xgraphicsd.lib dsoundd.lib xboxkrnl.lib xonlined.lib "
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
@@ -290,6 +290,12 @@
 				RelativePath=".\xbmc\Application.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\artistdatabase.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\ArtistDirectory.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\Crc32.cpp">
 			</File>
 			<File
@@ -297,6 +303,12 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\FileItem.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\genredatabase.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GenreDirectory.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIDialogOK.cpp">
@@ -415,6 +427,12 @@
 				RelativePath=".\xbmc\Application.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\artistdatabase.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\ArtistDirectory.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\Crc32.h">
 			</File>
 			<File
@@ -422,6 +440,12 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\FileItem.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\genredatabase.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GenreDirectory.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIDialogOK.h">

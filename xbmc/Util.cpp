@@ -605,6 +605,36 @@ void CUtil::GetAlbumDatabase(const CStdString& strFileName, CStdString& strAlbum
   crc.Compute(strTmp.c_str(),strTmp.size());
 	strAlbumThumb.Format("%s\\%x.aldbs",g_stSettings.m_szAlbumDirectory,crc);
 }
+
+void CUtil::GetArtistDatabase(const CStdString& strFileName, CStdString& strArtistDBS)
+{
+	CStdString strTmp="";
+	for (int i=0; i < (int)strFileName.size(); ++i)
+	{
+		char kar=strFileName[i];
+		if ( isalpha( (byte)kar) ) strTmp +=kar;
+	}
+	strTmp.ToLower();
+	Crc32 crc;
+	crc.Reset();
+  crc.Compute(strTmp.c_str(),strTmp.size());
+	strArtistDBS.Format("%s\\%x.ardbs",g_stSettings.m_szAlbumDirectory,crc);
+}
+
+void CUtil::GetGenreDatabase(const CStdString& strFileName, CStdString& strGenreDBS)
+{
+	CStdString strTmp="";
+	for (int i=0; i < (int)strFileName.size(); ++i)
+	{
+		char kar=strFileName[i];
+		if ( isalpha( (byte)kar) ) strTmp +=kar;
+	}
+	strTmp.ToLower();
+	Crc32 crc;
+	crc.Reset();
+  crc.Compute(strTmp.c_str(),strTmp.size());
+	strGenreDBS.Format("%s\\%x.grdbs",g_stSettings.m_szAlbumDirectory,crc);
+}
 bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
 {
   // check if thumbnail already exists

@@ -24,7 +24,8 @@ public:
   virtual bool CanFocus() const;
   void         Select(int iBitmap);
   void         SetItems(int iItems);
-
+	void				 SetTextureWidth(int iWidth);
+	void				 SetTextureHeight(int iHeight);
 protected:
   virtual void       Update();
 	void							 Process();
