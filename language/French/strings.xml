@@ -377,11 +377,11 @@
 	</string>
 	<string>
 		<id>167</id>
-		<value>Serveur FTP :</value>
+		<value>Activer le serveur FTP</value>
 	</string>
 	<string>
 		<id>168</id>
-		<value>Serveur Horaire :</value>
+		<value>Activer la synchronisation temporelle</value>
 	</string>
 	<string>
 		<id>169</id>
@@ -757,7 +757,7 @@
 	</string>
 	<string>
 		<id>263</id>
-		<value>Serveur HTTP :</value>
+		<value>Activer le serveur HTTP</value>
 	</string>
 	<string>
 		<id>264</id>
@@ -1846,13 +1846,124 @@
         <value>Choisissez Oui pour mettre à jour tous les titres de ce répertoire</value>
     </string>
     <string>
-       	<id>704</id>
+        <id>704</id>
         <value>Choisissez Non pour seulement rajouter les nouveaux morceaux.</value>
     </string>
-           	
+	<string>
+        <id>705</id>
+		<value>Réseau</value>
+	</string>
+	<string>
+		<id>706</id>
+		<value>Adresse du proxy</value>
+	</string>
+	<string>
+		<id>707</id>
+		<value>Port du proxy</value>
+	</string>
+	<string>
+		<id>708</id>
+		<value>Activer le proxy HTTP</value>
+	</string>
+	<string>
+		<id>709</id>
+		<value>xTag XLink Kai</value>
+	</string>
+	<string>
+		<id>710</id>
+		<value>Mot de passe XLink Kai</value>
+	</string>
+	<string>
+		<id>711</id>
+		<value>Protocole Internet (IP)</value>
+	</string>
+	<string>
+		<id>712</id>
+		<value>Port invalide spécifié. Doit être comprit entre 1 et 65535.</value>
+	</string>
+	<string>
+		<id>713</id>
+		<value>Proxy HTTP</value>
+	</string>	
+	<string>
+		<id>714</id>
+		<value>XLink Kai</value>
+	</string>	
+	<string>
+		<id>715</id>
+		<value>Attribution</value>
+    </string>	
+	<string>
+		<id>716</id>
+		<value>Automatique (DHCP)</value>
+	</string>	
+	<string>
+		<id>717</id>
+		<value>Manuelle (Statique)</value>
+	</string>	
+	<string>
+		<id>718</id>
+		<value>Defaut (Dashboard)</value>
+	</string>	
+	<string>
+ 		<id>719</id>
+		<value>Addresse IP</value>
+	</string>	
+	<string>
+		<id>720</id>
+		<value>Masque de sous-réseau</value>
+	</string>	
+	<string>
+		<id>721</id>
+		<value>Passerelle par défaut</value>
+	</string>	
+	<string>
+		<id>722</id>
+		<value>Serveur de noms</value>
+	</string>
+	<string>
+		<id>723</id>
+		<value>Enregistrer et redemarrer</value>
+	</string>
+	<string>
+		<id>724</id>
+		<value>Adresse invalide spécifiée. Doit être de type AAA.BBB.CCC.DDD</value>
+	</string>
+	<string>
+		<id>725</id>
+		<value>avec des nombres de 0 à 255.</value>
+	</string>
+ 	<string>
+		<id>726</id>
+		<value>Les changements n'ont pas été enregistrés. Continuer sans sauvegarder ?</value>
+	</string>
+		<id>727</id>
+		<value>Serveur Web</value>
+	</string>	
+	<string>
+		<id>728</id>
+		<value>Serveur FTP</value>
+	</string>	
+	<string>
+		<id>729</id>
+		<value>Serveur d'heure</value>
+	</string>	
+	<string>
+		<id>730</id>
+		<value>Port du serveur Web</value>
+	</string>	
+	<string>
+		<id>731</id>
+		<value>Adresse du serveur d'heure</value>
+	</string>
+	<string>
+		<id>732</id>
+		<value>Enregistrer et appliquer</value>
+	</string>	
+
 	<string>
 		<id>998</id>
-		<value>XLink KAI</value>
+		<value>XLink Kai</value>
 	</string>
 	<string>
 		<id>999</id>
@@ -2113,10 +2224,10 @@
     </string>
     <string>
         <id>13303</id>
-        <value>Fonte du thème :</value>
+        <value>Fonte du thème</value>
     </string>
     <string>
         <id>13303</id>
-        <value>Encodage de caractère :</value>
+        <value>Encodage de caractère</value>
     </string>
 </strings>
