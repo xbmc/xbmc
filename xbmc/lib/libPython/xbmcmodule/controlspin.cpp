@@ -60,10 +60,12 @@ namespace PYXBMC
 		self->dwPosY = 0;
 		self->dwWidth = 16;
 		self->dwHeight = 16;
-    self->strTextureUp = "scroll-up.png";
-		self->strTextureDown = "scroll-down.png";
-		self->strTextureUpFocus = "scroll-up-focus.png";
-		self->strTextureDownFocus = "scroll-down-focus.png";
+
+		// get default images
+    self->strTextureUp = GetDefaultImage("listcontrol", "textureUp", "scroll-up.png");
+		self->strTextureDown = GetDefaultImage("listcontrol", "textureDown", "scroll-down.png");
+		self->strTextureUpFocus = GetDefaultImage("listcontrol", "textureUpFocus", "scroll-up-focus.png");
+		self->strTextureDownFocus = GetDefaultImage("listcontrol", "textureDownFocus", "scroll-down-focus.png");
 
 		return (PyObject*)self;
 	}
