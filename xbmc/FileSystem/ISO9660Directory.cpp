@@ -49,7 +49,7 @@ bool  CISO9660Directory::GetDirectory(const CStdString& strPath,VECFILEITEMS &it
 			if (strSearchMask[i]=='/') strSearchMask[i]='\\';
 		}
 
-      FILETIME localTime;
+//      FILETIME localTime;
       hFind = m_isoReader.FindFirstFile((char*)strSearchMask.c_str(),&wfd);
 	    if (hFind!=NULL)
 	    {
