@@ -24,6 +24,7 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dw
   m_iRenderHeight=dwHeight;
 	m_iImageWidth = 0;
 	m_iImageHeight = 0;
+	m_bWasVisible = m_bVisible;
 }
 
 
@@ -153,7 +154,14 @@ void CGUIImage::Render(DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight
 
 void CGUIImage::Render()
 {
-	if (!IsVisible()) return;
+	if (m_bVisible && !m_bWasVisible)
+	{
+		m_iCurrentLoop = 0;
+		m_iCurrentImage = 0;
+	}
+
+	m_bWasVisible = m_bVisible;
+	if (!m_bVisible) return;
 	if (!m_vecTextures.size())
 		return ;
 	if (!m_pVB)
