@@ -2287,4 +2287,9 @@
   <string><id>14000</id><value>Stacking: Off</value></string>
   <string><id>14001</id><value>Stacking: Simple</value></string>
   <string><id>14002</id><value>Stacking: Fuzzy</value></string>
+  <string><id>14003</id><value>Downloading playlist file...</value></string>
+  <string><id>14004</id><value>Downloading streams list...</value></string>
+  <string><id>14005</id><value>Parsing streams list...</value></string>
+  <string><id>14006</id><value>Downloading streams list failed</value></string>
+  <string><id>14007</id><value>Downloading playlist file failed</value></string>
 </strings>
