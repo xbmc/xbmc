@@ -49,9 +49,15 @@ void CAc97DirectSound::StreamCallback(LPVOID pPacketContext, DWORD dwStatus)
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 //***********************************************************************************************
-CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback,int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample)
+CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback,int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool  bAC3DTS, bool bResample)
 {
 	m_pCallback=pCallback;
+	m_bAc3DTS = bAC3DTS;
+
+	m_bResampleAudio = false;
+	if (bResample && g_stSettings.m_bResampleMusicAudio && uiSamplesPerSec != 48000)
+		m_bResampleAudio = true;
+
 	m_dwPacketSize		 = 1152 * (uiBitsPerSample/8) * iChannels;
 	m_bPause           = false;
 	m_bMute            = false;
@@ -62,11 +68,7 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback,int iChannels, unsi
 	
 	ZeroMemory(&m_wfx,sizeof(m_wfx)); 
 	m_wfx.cbSize=sizeof(m_wfx);
-	XAudioCreatePcmFormat(  iChannels,
-													uiSamplesPerSec, 
-													uiBitsPerSample,
-													&m_wfx
-													);
+	XAudioCreatePcmFormat(  iChannels, 48000, 16,&m_wfx	); //passthrough is always 48000KHz/16bit
 
   m_dwNumPackets=8*iChannels;
 
@@ -108,9 +110,13 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback,int iChannels, unsi
 	for (DWORD dwX=1; dwX < m_dwNumPackets; dwX++)
 		m_pbSampleData[dwX] = m_pbSampleData[dwX-1] + m_dwPacketSize;
 	
-	bool bAC3DTS=true;
 	hr=m_pDigitalOutput->SetMode(bAC3DTS ? DSAC97_MODE_ENCODED : DSAC97_MODE_PCM);
 	m_bIsAllocated   = true;
+
+	if (m_bResampleAudio)
+	{
+		m_Resampler.InitConverter(uiSamplesPerSec, uiBitsPerSample, iChannels, 48000, 16, m_dwPacketSize);
+	}
 }
 
 //***********************************************************************************************
@@ -246,12 +252,80 @@ DWORD CAc97DirectSound::GetSpace()
 		}
 	}
 	DWORD dwSize= iFreePackets*m_dwPacketSize;
+	if (m_bResampleAudio)
+	{	// calculate the actual amount of data that we can handle
+		float fBytesPerSecOutput = 48000*m_wfx.wBitsPerSample*m_wfx.nChannels; //code copy from AsyncDircetsound
+		dwSize = (DWORD)((float)dwSize*(float)m_Resampler.GetInputBitrate()/fBytesPerSecOutput);
+	}
 	return dwSize;
+}
+
+//***********************************************************************************************
+DWORD CAc97DirectSound::AddPacketsResample(unsigned char *pData, DWORD iLeft)
+{
+	DWORD   dwIndex = 0;
+	DWORD   iBytesCopied=0;
+	while (true)
+	{
+		// Get the next free packet to fill with our output audio
+		if( FindFreePacket(dwIndex) )
+		{
+			XMEDIAPACKET xmpAudio = {0};
+
+			// loop around, grabbing data from the input buffer and resampling 
+			// until we fill up this packet
+			while(true)
+			{
+				// check if we have resampled data to send
+				if (m_Resampler.GetData(m_pbSampleData[dwIndex]))
+				{
+					// Set up audio packet
+					m_adwStatus[ dwIndex ] = XMEDIAPACKET_STATUS_PENDING;
+					xmpAudio.dwMaxSize        = m_dwPacketSize;
+					xmpAudio.pvBuffer         = m_pbSampleData[dwIndex];
+					xmpAudio.pdwStatus        = &m_adwStatus[ dwIndex ];
+					xmpAudio.pdwCompletedSize = NULL;
+					xmpAudio.prtTimestamp     = NULL;
+					xmpAudio.pContext         = m_pbSampleData[dwIndex];
+					// Process the audio
+					if (DS_OK != m_pDigitalOutput->Process( &xmpAudio, NULL ))
+					{
+						return iBytesCopied;
+					}
+					// Okay - we've done this bit, update our data info
+					//buffered_bytes+=m_dwPacketSize;
+					// break to get another packet and restart the loop
+					break;
+				}
+				else
+				{	// put more data into the resampler
+					int iSize = m_Resampler.PutData(&pData[iBytesCopied], iLeft);
+					if (iSize == -1)
+					{	// Failed - we don't have enough data
+						return iBytesCopied;
+					}
+					else
+					{	// Success - update the amount that we have processed
+						iBytesCopied+=(DWORD)iSize;
+						iLeft -=iSize;
+					}
+					// Now loop back around and output data, or read more in
+				}
+			}
+		}
+		else
+		{	// no packets free - send data back to sender
+			return iBytesCopied;
+		}
+	}
+	return iBytesCopied;
 }
 
 //***********************************************************************************************
 DWORD CAc97DirectSound::AddPackets(unsigned char *data, DWORD len)
 {
+	if (m_bResampleAudio)
+		return AddPacketsResample(data, len);
 
 	HRESULT hr;
 	DWORD		dwIndex = 0;
@@ -323,13 +397,19 @@ DWORD CAc97DirectSound::GetBytesInBuffer()
 //***********************************************************************************************
 FLOAT CAc97DirectSound::GetDelay()
 {
-	return 0.028f;		//(fake PCM output 8ms) + (receiver 20ms)
+	if(m_bAc3DTS)
+		return 0.028f;		//(fake PCM output 8ms) + (receiver 20ms)
+	else
+		return 0.008f;		//PCM passthrough
 }
 
 //***********************************************************************************************
 DWORD CAc97DirectSound::GetChunkLen()
 {
-	return m_dwPacketSize;
+	if (m_bResampleAudio)
+		return m_Resampler.GetMaxInputSize();
+	else
+		return m_dwPacketSize;
 }
 //***********************************************************************************************
 int CAc97DirectSound::SetPlaySpeed(int iSpeed)

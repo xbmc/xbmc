@@ -37,19 +37,24 @@
 
 #include "IDirectSoundRenderer.h"
 #include "IAudioCallback.h"
+#include "../ssrc.h"
+
 extern void RegisterAudioCallback(IAudioCallback* pCallback);
 extern void UnRegisterAudioCallback();
 
 class CAc97DirectSound : public IDirectSoundRenderer
 {
 public:
-	CAc97DirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample);
+	CAc97DirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool  bAC3DTS = true, bool bResample = false);
 	virtual ~CAc97DirectSound();
 
 	virtual void 		UnRegisterAudioCallback();
 	virtual void 		RegisterAudioCallback(IAudioCallback* pCallback);
 	virtual DWORD 	GetChunkLen();
 	virtual FLOAT 	GetDelay();
+
+	virtual DWORD AddPacketsResample(unsigned char* data, DWORD len);
+	virtual bool IsResampling() { return m_bResampleAudio; }
 	virtual DWORD 	AddPackets(unsigned char* data, DWORD len);
 	virtual DWORD		GetSpace();
 	virtual HRESULT Deinitialize();
@@ -88,6 +93,11 @@ private:
 	LONGLONG       				m_startTime;
 	WAVEFORMATEXTENSIBLE	m_wfxex;
 	LPDIRECTSOUND8        m_pDSound;
+
+	//add for 44.1KHz 2 Channel audio Passthrough after software resample
+	bool					m_bAc3DTS;	//input stream property
+	bool					m_bResampleAudio;
+	Cssrc					m_Resampler;
 };
 
 #endif // !defined(AFX_AC97AUDIORENDERER_H__B590A94D_D15E_43A6_A41D_527BD441B5F5__INCLUDED_)
