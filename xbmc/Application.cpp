@@ -785,7 +785,9 @@ void CApplication::OnKey(CKey& key)
 void CApplication::UpdateLCD()
 {
   static lTickCount=0;
-  if (GetTickCount()-lTickCount >=1000)
+  long lTimeOut=1000;
+  if ( m_iPlaySpeed != 1) lTimeOut=0;
+  if ( ((long)GetTickCount()-lTickCount) >=lTimeOut)
   {
     CStdString strTime;
     CStdString strIcon;
