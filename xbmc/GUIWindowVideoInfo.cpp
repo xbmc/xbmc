@@ -1,16 +1,9 @@
 
 #include "stdafx.h"
 #include "GUIWindowVideoInfo.h"
-#include "graphiccontext.h"
-#include "localizestrings.h"
-#include "utils/http.h"
-#include "utils/log.h"
 #include "util.h"
 #include "picture.h"
 #include "application.h"
-#include "videodatabase.h"
-#include "filesystem/directorycache.h"
-#include "GUISettings.h"
 
 #define	CONTROL_TITLE				20
 #define	CONTROL_DIRECTOR			21

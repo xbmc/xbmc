@@ -1,4 +1,3 @@
-#include "stdafx.h"
 
 /* WebServer.cpp: implementation of the CWebServer class.
  * A darivation of:  main.c -- Main program for the GoAhead WebServer
@@ -10,11 +9,9 @@
  * See the file "license.txt" for usage and redistribution license requirements
  */
 
-#include <io.h>
-#include <vector>
+#include "../../stdafx.h"
 #include "WebServer.h"
 #include "XBMCWeb.h"
-#include "..\..\utils\log.h"
 
 #ifdef SPYCE_SUPPORT
 #include "SpyceModule.h"

@@ -1,21 +1,8 @@
 
 #include "stdafx.h"
 #include "guiwindowscripts.h"
-#include "settings.h"
-#include "guiWindowManager.h"
-#include "localizestrings.h"
 #include "util.h"
-#include "url.h"
-#include "utils/imdb.h"
-#include "GUIDialogOK.h"
-#include "GUIDialogprogress.h"
-#include "GUIDialogSelect.h" 
 #include "application.h"
-#include <algorithm>
-#include "DetectDVDType.h"
-#include "nfofile.h"
-#include "filesystem/file.h"
-#include "sectionLoader.h"
 #include "lib/libPython/XBPython.h"
 
 #define CONTROL_BTNVIEWASICONS		2

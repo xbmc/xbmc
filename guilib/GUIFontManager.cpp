@@ -1,10 +1,9 @@
 #include "stdafx.h"
-#include "guifontmanager.h"
-#include "tinyxml/tinyxml.h"
-#include "../xbmc/utils/log.h"
+#include "GUIFontManager.h"
+#include "GraphicContext.h"
 #include "SkinInfo.h"
-#include "guifontxpr.h"
-#include "guifontttf.h"
+#include "GUIFontXPR.h"
+#include "GUIFontTTF.h"
 #include <xfont.h>
 
 GUIFontManager  g_fontManager;

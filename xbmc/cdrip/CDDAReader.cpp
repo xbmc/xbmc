@@ -1,6 +1,5 @@
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "CDDAReader.h"
-#include "../utils/log.h"
 
 #define SECTOR_COUNT 55
 

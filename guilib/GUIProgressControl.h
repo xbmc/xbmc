@@ -7,12 +7,8 @@
 #define GUILIB_GUIPROGRESSCONTROL_H
 
 #pragma once
-#include "gui3d.h"
-#include "guicontrol.h"
-#include "guimessage.h"
-#include "guiImage.h"
-#include "stdstring.h"
-using namespace std;
+
+#include "GUIImage.h"
 
 /*!
 	\ingroup controls

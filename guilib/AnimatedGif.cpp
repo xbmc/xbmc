@@ -27,7 +27,7 @@
 //
 // ****************************************************************************
 
-#include "animatedgif.h"
+#include "AnimatedGif.h"
 #include "../xbmc/Util.h"
 
 #pragma pack(1)

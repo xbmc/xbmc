@@ -1,30 +1,18 @@
-
 #include "stdafx.h"
-#include "guiwindowprograms.h"
-#include "localizestrings.h"
-#include "GUIWindowManager.h"
+#include "GUIWindowPrograms.h"
 #include "util.h"
-#include "url.h"
 #include "Xbox\IoSupport.h"
 #include "Xbox\Undocumented.h"
-#include "crc32.h"
-#include "settings.h"
 #include "lib/cximage/ximage.h"
 #include "Shortcut.h"
-#include "guidialog.h"
-#include "sectionLoader.h"
 #include "application.h"
 #include "filesystem/HDDirectory.h"
 #include "filesystem/directorycache.h"
-#include "autoptrhandle.h"
 #include "GUIThumbnailPanel.h"
-#include "utils/log.h"
-#include <algorithm>
 #include "AutoSwitch.h"
 #include "GUIPassword.h"
 #include "GUIDialogContextMenu.h"
 
-using namespace AUTOPTR;
 using namespace DIRECTORY;
 
 #define VIEW_AS_LIST           0

@@ -1,15 +1,8 @@
 #pragma once
-#include "guiwindow.h"
-#include "filesystem/VirtualDirectory.h"
-#include "filesystem/DirectoryHistory.h"
-#include "FileItem.h"
-#include "GUIDialogProgress.h"
-#include "videodatabase.h"
-
-#include "stdstring.h"
-#include <vector>
-using namespace std;
-using namespace DIRECTORY;
+#include "GUIWindow.h"
+#include "FileSystem/VirtualDirectory.h"
+#include "FileSystem/DirectoryHistory.h"
+#include "VideoDatabase.h"
 
 class CGUIWindowVideoBase : 	public CGUIWindow
 {

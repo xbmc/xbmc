@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "guimessage.h"
-#include "localizestrings.h"
+#include "GUIMessage.h"
+#include "LocalizeStrings.h"
 
 
 CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, void* lpVoid)

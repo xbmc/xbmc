@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "guispincontrol.h"
-#include "guifontmanager.h"
+#include "GUISpinControl.h"
+#include "GUIFontManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
 #define SPIN_BUTTON_DOWN 1

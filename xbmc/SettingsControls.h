@@ -1,11 +1,8 @@
 #pragma once
 
-#include <xtl.h>
-#include "stdstring.h"
 #include "GUISpinControlEx.h"
 #include "GUIButtonControl.h"
 #include "GUIRadioButtonControl.h"
-#include "GUISettings.h"
 
 class CBaseSettingControl
 {

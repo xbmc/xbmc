@@ -7,17 +7,9 @@
 #define GUILIB_GUITEXTBOX_H
 
 #pragma once
-#include "gui3d.h"
-#include "guicontrol.h"
-#include "guimessage.h"
-#include "guifont.h"
-#include "guiimage.h"
-#include "guispincontrol.h"
-#include "guiButtonControl.h"
-#include "guiListItem.h"
-#include <vector>
-#include "stdstring.h"
-using namespace std;
+#include "GUISpinControl.h"
+#include "GUIButtonControl.h"
+#include "GUIListItem.h"
 
 
 /*!

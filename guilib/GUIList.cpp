@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "GUIList.h"
-#include "../xbmc/utils/log.h"
 #include <algorithm>
 
 CGUIList::CGUIList()

@@ -2,7 +2,6 @@
 #pragma once
 
 #include "DVDInputStream.h"
-#include "..\..\..\filesystem\file.h"
 
 class CDVDInputStreamFile : public CDVDInputStream
 {

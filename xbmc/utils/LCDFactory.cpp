@@ -1,7 +1,6 @@
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "lcdfactory.h"
-#include "../settings.h"
 #include "../lib/smartxx/smartxxLCD.h"
 #include "../lib/libXenium/XeniumLCD.h"
 #include "../lib/x3lcd/x3lcd.h"

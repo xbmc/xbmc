@@ -1,16 +1,8 @@
-
 #include "stdafx.h"
 #include "GUIWindowWeather.h"
 #include "GUISpinControl.h"
-#include "GUIDialogOK.h"
-#include "guiWindowManager.h"
-#include "settings.h"
-#include "localizestrings.h"
-#include "util.h"
-#include <algorithm>
-#include "utils/log.h"
-#include "GUIDialogSelect.h"
-#include "utils/Weather.h"
+#include "Util.h"
+#include "Utils/Weather.h"
 
 #define SPEED_KMH 0
 #define SPEED_MPH 1
@@ -167,9 +159,6 @@ void CGUIWindowWeather::UpdateButtons()
 
 void CGUIWindowWeather::Render()
 {
-	// update our controls
-	UpdateButtons();
-
 	CGUIWindow::Render();
 }
 
@@ -179,5 +168,13 @@ void CGUIWindowWeather::Refresh()
 	// quietly return if Internet lookups are disabled
 	if (!g_guiSettings.GetBool("Network.EnableInternet")) return;
 
-	g_weatherManager.Refresh(m_iCurWeather);
+	// update our controls
+	UpdateButtons();
+
+	static bool bOnce=false;
+	if (!bOnce)
+	{
+		bOnce=true;
+		g_weatherManager.Refresh(m_iCurWeather);
+	}
 }

@@ -1,5 +1,5 @@
 #pragma once
-#include "guiwindow.h"
+#include "GUIWindow.h"
 
 class CGUIWindowPointer :
 	public CGUIWindow

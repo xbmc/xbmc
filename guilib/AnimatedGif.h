@@ -35,14 +35,6 @@
 
 
 // Windows specific types and constants:
-#ifndef _XBOX
-#include <windows.h>
-#else
-#include <xtl.h>
-#endif
-
-#include <vector>
-using namespace std;
 
 #pragma pack(1)
 

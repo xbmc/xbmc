@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "guiimage.h"
-#include "texturemanager.h"
+#include "GUIImage.h"
+#include "TextureManager.h"
 #include "../xbmc/settings.h"
 
 

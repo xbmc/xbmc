@@ -1,11 +1,9 @@
-#include "stdafx.h"
+#include "../../../stdafx.h"
 #include "..\..\..\playlistplayer.h"
 #include "..\..\..\util.h"
 #include "pyplaylist.h"
 #include "..\structmember.h"
 #include "..\..\..\playlistfactory.h"
-
-using namespace std;
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")

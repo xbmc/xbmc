@@ -1,10 +1,5 @@
-
 #include "stdafx.h"
 #include "GUIWindowScriptsInfo.h"
-#include "graphiccontext.h"
-#include "localizestrings.h"
-#include "util.h"
-#include "application.h"
 
 #define CONTROL_TEXTAREA 5
 

@@ -7,8 +7,6 @@
 #define GUILIB_GUIItem_H
 
 #pragma once
-#include "stdstring.h"
-using namespace std;
 
 class CGUIItem
 {

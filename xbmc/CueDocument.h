@@ -1,6 +1,5 @@
 #pragma once
 
-#include "filesystem/File.h"
 #include "musicdatabase.h"
 
 #define MAX_PATH_SIZE 1024

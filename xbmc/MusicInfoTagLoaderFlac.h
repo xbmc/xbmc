@@ -1,10 +1,7 @@
 #pragma once
 
 #include "musicinfotag.h"
-#include "stdstring.h"
 #include "IMusicInfoTagLoader.h"
-
-#include "filesystem/file.h"
 
 #include "FlacTag.h"
 

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Archive.h"
 
 #define BUFFER_MAX 4096

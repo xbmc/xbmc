@@ -8,22 +8,17 @@
 
 #pragma once
 
-#include <map>
-#include <string>
-#include <vector>
-using namespace std;
-#include "guiControl.h" 
-#include "guiCallback.h"
+#include "GUIControl.h"
 
 #define ON_CLICK_MESSAGE(i,c,m) \
 { \
-	EventHandler<c, CGUIMessage&> clickHandler(this, m); \
+	GUIEventHandler<c, CGUIMessage&> clickHandler(this, m); \
 	m_mapClickEvents[i] = clickHandler; \
 } \
 
 #define ON_SELECTED_MESSAGE(i,c,m) \
 { \
-	EventHandler<c, CGUIMessage&> selectedHandler(this, m); \
+	GUIEventHandler<c, CGUIMessage&> selectedHandler(this, m); \
 	m_mapSelectedEvents[i] = selectedHandler; \
 } \
 
@@ -90,11 +85,11 @@ protected:
 		CGUIControl*	m_pControl;
 	};
 
-	typedef Event<CGUIMessage&> CLICK_EVENT; 
+	typedef GUIEvent<CGUIMessage&> CLICK_EVENT; 
 	typedef map<int, CLICK_EVENT> MAPCONTROLCLICKEVENTS;
 	MAPCONTROLCLICKEVENTS m_mapClickEvents;
 
-	typedef Event<CGUIMessage&> SELECTED_EVENT; 
+	typedef GUIEvent<CGUIMessage&> SELECTED_EVENT; 
 	typedef map<int, SELECTED_EVENT> MAPCONTROLSELECTEDEVENTS;
 	MAPCONTROLSELECTEDEVENTS m_mapSelectedEvents;
 

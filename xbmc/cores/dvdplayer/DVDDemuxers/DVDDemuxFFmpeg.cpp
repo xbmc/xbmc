@@ -1,5 +1,5 @@
 
-#include "stdafx.h"
+#include "../../../stdafx.h"
 #include "..\DVDPlayerDLL.h"
 
 #include "..\ffmpeg\ffmpeg.h"
@@ -7,8 +7,6 @@
 #include "DVDDemuxFFmpeg.h"
 #include "..\DVDInputStreams\DVDInputStream.h"
 #include "DVDdemuxUtils.h"
-#include "..\..\..\utils\log.h"
-#include <errno.h>
 #include "..\DVDClock.h" // for DVD_TIME_BASE
 
 // class CDemuxStreamVideoFFmpeg

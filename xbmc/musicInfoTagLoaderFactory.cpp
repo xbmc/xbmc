@@ -1,16 +1,15 @@
-#pragma once
-
 #include "stdafx.h"
-#include "musicInfoTagLoaderFactory.h"
+#include "MusicInfoTagLoaderFactory.h"
 #include "MusicInfoTagLoaderMP3.h"
 #include "MusicInfoTagLoaderOgg.h"
 #include "MusicInfoTagLoaderWMA.h"
 #include "MusicInfoTagLoaderFlac.h"
 #include "MusicInfoTagLoaderMP4.h"
+#include "MusicInfoTagLoaderCDDA.h"
 #include "util.h"
-#include "url.h"
 
 using namespace MUSIC_INFO;
+
 CMusicInfoTagLoaderFactory::CMusicInfoTagLoaderFactory()
 {
 }
@@ -53,6 +52,11 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
 	else if (strExtension==".m4a")
 	{
 		CMusicInfoTagLoaderMP4 *pTagLoader= new CMusicInfoTagLoaderMP4();
+		return (IMusicInfoTagLoader*)pTagLoader;
+	}
+	else if (strExtension==".cdda")
+	{
+		CMusicInfoTagLoaderCDDA *pTagLoader= new CMusicInfoTagLoaderCDDA();
 		return (IMusicInfoTagLoader*)pTagLoader;
 	}
 	return NULL;

@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include <vector>
-#include "stdstring.h"
 #include "../lib/libiconv/iconv.h"
 #include "../lib/libfribidi/fribidi.h"
 

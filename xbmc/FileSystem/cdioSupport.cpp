@@ -1,12 +1,8 @@
-
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "cdiosupport.h"
-#include <xtl.h>
 #include "../lib/libcdio/cdio.h"
 #include "../lib/libcdio/logging.h"
-#include "../xbox/Undocumented.h"
 #include "../lib/libcdio/util.h"
-#include "../utils/log.h"
 
 using namespace MEDIA_DETECT;
 

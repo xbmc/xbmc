@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ImusicInfoTagLoader.h"
-#include "stdstring.h"
 
 using namespace MUSIC_INFO;
 

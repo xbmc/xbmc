@@ -1,9 +1,7 @@
 #ifndef XBOX_VIDEO_RENDERER
 #define XBOX_VIDEO_RENDERER
-#include <xtl.h>
 
 #include "video.h"
-#include "../../settings.h"
 #include "XBoxRenderer.h"
 
 class CXBoxRenderManager

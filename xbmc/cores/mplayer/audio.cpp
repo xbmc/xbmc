@@ -1,16 +1,13 @@
 
-#include "stdafx.h"
-#include <stdio.h>
-#include <stdlib.h>
+#include "../../stdafx.h"
 #include "audio.h"
 #include "IDirectSoundRenderer.h"
 #include "ASyncDirectSound.h"
 #include "Ac97DirectSound.h"
 #include "IAudioCallback.h"
-#include "../../settings.h"
 #include "mplayer.h"
 #include "xbox_video.h"
-#include "../../utils/log.h"
+
 IDirectSoundRenderer* m_pAudioDecoder=NULL;
 
 static IAudioCallback* m_pAudioCallback=NULL;

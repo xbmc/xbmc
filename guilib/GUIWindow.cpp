@@ -1,22 +1,21 @@
 #include "stdafx.h"
-#include "guiwindow.h"
+#include "GUIWindow.h"
 #include "LocalizeStrings.h"
-#include "texturemanager.h"
-#include "tinyxml/tinyxml.h"
-#include "../xbmc/utils/log.h"
+#include "TextureManager.h"
 #include "../xbmc/util.h"
 #include "GUIControlFactory.h"
-#include "guiButtonControl.h"
-#include "guiConditionalButtonControl.h"
-#include "guiSpinButtonControl.h"
-#include "guiRadioButtonControl.h"
-#include "guiSpinControl.h"
-#include "guiRSSControl.h"
-#include "guiRAMControl.h"
-#include "guiConsoleControl.h"
-#include "guiListControl.h"
-#include "guiListControlEx.h"
-#include "guiImage.h"
+#include "GUIButtonControl.h"
+#include "GUIConditionalButtonControl.h"
+#include "GUISpinButtonControl.h"
+#include "GUIRadioButtonControl.h"
+#include "GUISpinControl.h"
+#include "GUISpinControlEx.h"
+#include "GUIRSSControl.h"
+#include "GUIRAMControl.h"
+#include "GUIConsoleControl.h"
+#include "GUIListControl.h"
+#include "GUIListControlEx.h"
+#include "GUIImage.h"
 #include "GUILabelControl.h"
 #include "GUIEditControl.h"
 #include "GUIFadeLabelControl.h"
@@ -25,23 +24,20 @@
 #include "GUIMButtonControl.h"
 #include "GUIToggleButtonControl.h" 
 #include "GUITextBox.h" 
-#include "guiVideoControl.h"
+#include "GUIVideoControl.h"
 #include "GUIProgressControl.h"
 #include "GUISliderControl.h"
 #include "GUISelectButtonControl.h"
 #include "GUIMoverControl.h"
 #include "GUIResizeControl.h"
 #include "GUIButtonScroller.h"
-#include "SkinInfo.h"
-#include "../xbmc/application.h"
-#include "../xbmc/xbox/XKUtils.h"
 #include "GUIInfoLabelControl.h"
 #include "GUIInfoFadeLabelControl.h"
 #include "GUIInfoImage.h"
-//#include "../xbmc/util.h"
-
-#include<string>
-using namespace std;
+#include "SkinInfo.h"
+#include "../xbmc/xbox/XKUtils.h"
+#include "../xbmc/Application.h"
+#include "../xbmc/ApplicationMessenger.h"
 
 CStdString CGUIWindow::CacheFilename = "";
 CGUIWindow::VECREFERENCECONTOLS CGUIWindow::ControlsCache;
@@ -794,7 +790,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
         wstrLine=g_localizeStrings.Get(10000+GetID());
         CUtil::Unicode2Ansi(wstrLine,strLine);
         OutputDebugString("------------------- GUI_MSG_WINDOW_INIT ");
-        OutputDebugString(strLine.c_str());
+				OutputDebugString(strLine.c_str());
         OutputDebugString("------------------- \n");
       AllocResources();
 		  if (message.GetParam1()!=WINDOW_INVALID)
@@ -813,7 +809,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       wstrLine=g_localizeStrings.Get(10000+GetID());
       CUtil::Unicode2Ansi(wstrLine,strLine);
       OutputDebugString("------------------- GUI_MSG_WINDOW_DEINIT ");
-      OutputDebugString(strLine.c_str());
+			OutputDebugString(strLine.c_str());
       OutputDebugString("------------------- \n");
       FreeResources();
       return true;

@@ -1,5 +1,3 @@
-
-#include "stdafx.h"
 /*
  * XBoxMediaPlayer
  * Copyright (c) 2002 Frodo
@@ -19,12 +17,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
+
+#include "../stdafx.h"
 #include "FileXBMSP.h"
-#include "../sectionLoader.h"
 #include "../util.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <fcntl.h>
 #include <sys/stat.h>
 
 static UINT64 strtouint64(const char *s)
@@ -234,6 +230,7 @@ int CFileXBMSP::Stat(const CURL& url, struct __stat64* buffer)
 		buffer->st_size = this->m_fileSize;
 		buffer->st_mode = _S_IFREG;
 		Close();
+		return 0;
 	}
 	errno = ENOENT;
 	return -1;

@@ -1,9 +1,8 @@
 
-#include "stdafx.h"
+#include "../stdafx.h"
 
 #include "FileFactory.h"
 #include "FileShoutcast.h"
-#include "../url.h"
 #include "FileISO.h"
 #include "FileRelax.h"
 #include "FileHD.h"
@@ -13,6 +12,7 @@
 #include "FileSndtrk.h"
 #include "FileDAAP.h"
 #include "FileCDDA.h"
+
 using namespace XFILE;
 
 CFileFactory::CFileFactory()

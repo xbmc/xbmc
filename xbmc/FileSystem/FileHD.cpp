@@ -1,5 +1,5 @@
 
-#include "stdafx.h"
+#include "../stdafx.h"
 /*
  * XBoxMediaPlayer
  * Copyright (c) 2002 Frodo

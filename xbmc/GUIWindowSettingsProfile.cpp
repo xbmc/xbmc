@@ -1,9 +1,7 @@
-
 #include "stdafx.h"
 #include "GUIWindowSettingsProfile.h"
 #include "Profile.h"
-#include "Settings.h"
-#include "../guilib/GUIListItem.h"
+#include "../guilib/GUIListControl.h"
 #include "util.h"
 #include "application.h"
 

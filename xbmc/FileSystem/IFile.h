@@ -9,21 +9,10 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#ifdef _XBOX
-#include <xtl.h>
-#else
-#include <windows.h>
-#endif
-
-//typedef __int64 __int64;
-
-#include "stdstring.h"
 #include "..\URL.h"
-using namespace std;
 
 namespace XFILE
 {
-
   class IFile  
   {
   public:

@@ -1,9 +1,6 @@
 
 #pragma once
 
-#include <xtl.h>
-#include <string>
-
 class CDVDInputStream;
 enum CodecID;
 

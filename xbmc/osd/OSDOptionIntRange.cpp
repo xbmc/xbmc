@@ -1,11 +1,10 @@
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include ".\OSDOptionIntRange.h"
-
-#include "localizestrings.h"
-#include "guifont.h"
 #include "guifontmanager.h"
+
 using namespace OSD;
+
 COSDOptionIntRange::COSDOptionIntRange(int iAction,int iHeading, bool bPercent)
 :m_slider(0, 1, 0, 0, 0, 0, "osd-pnl-bar.bmp","xb-ctl-nibv.bmp","xb-ctl-nibv.bmp",0)
 {

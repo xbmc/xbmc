@@ -7,16 +7,9 @@
 #define GUILIB_FONTMANAGER_H
 
 #pragma once
-#include "gui3d.h"
 
-#include "graphiccontext.h"
-#include "guifont.h"
-
-#include "tinyxml/tinyxml.h"
-
-#include <vector>
-#include "stdstring.h"
-using namespace std;
+//	Forward
+class CGUIFont;
 
 /*!
 	\ingroup textures

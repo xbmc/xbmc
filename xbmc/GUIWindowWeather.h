@@ -1,12 +1,5 @@
 #pragma once
-#include "guiImage.h"
-#include "guiLabelControl.h"
-#include "guiwindow.h"
-#include "stdstring.h"
-#include "utils\HTTP.h"
-#include "tinyxml/tinyxml.h"
-#include "guiDialogProgress.h"
-#include "utils/thread.h"
+#include "GUIWindow.h"
 
 class CGUIWindowWeather : 	public CGUIWindow
 {

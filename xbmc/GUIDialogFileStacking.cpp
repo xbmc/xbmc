@@ -1,8 +1,5 @@
-
 #include "stdafx.h"
 #include "GUIDialogFileStacking.h"
-#include "guiWindowManager.h"
-#include "localizeStrings.h"
 
 CGUIDialogFileStacking::CGUIDialogFileStacking(void)
 :CGUIDialog(0)

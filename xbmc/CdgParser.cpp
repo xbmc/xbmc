@@ -1,16 +1,7 @@
 #include "stdafx.h"
 #include "CdgParser.h"
 #include "application.h"
-#include "utils/singlelock.h"
 #include "util.h"
-#include "settings.h"
-#include "stdstring.h"
-#include "GraphicContext.h"
-#include <xgraphics.h>
-#include <xbutil.h>
-#include "localizestrings.h"
-#include "guifont.h"
-#include "utils/log.h"
 
 //CdgLoader
 CCdgLoader::CCdgLoader()

@@ -1,8 +1,6 @@
 #pragma once
 
-#include "directory.h"
-#include <vector>
-
+#include "idirectory.h"
 
 class CSoundtrack
 {

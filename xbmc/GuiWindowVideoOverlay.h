@@ -1,10 +1,7 @@
 #pragma once
-#include "guiwindow.h"
+#include "GUIWindow.h"
 
-#include "stdstring.h"
 #include "FileItem.h"
-#include <vector>
-using namespace std;
 
 class CGUIWindowVideoOverlay: 	public CGUIWindow
 {

@@ -1,18 +1,11 @@
-
 #include "stdafx.h"
 #include "GUISettings.h"
 #include "application.h"
 #include "util.h"
-#include "utils/log.h"
-#include "localizestrings.h"
-#include "stdstring.h"
-#include "GraphicContext.h"
 #include "GUIWindowMusicBase.h"
 #include "utils/FanController.h"
 #include "XBAudioConfig.h"
 #include "XBVideoConfig.h"
-
-using namespace std;
 
 //	String id's of the masks
 #define MASK_MINS			14044

@@ -7,15 +7,8 @@
 #define GUILIB_GUIListExItem_H
 
 #pragma once
-#include "gui3d.h"
-#include "guicontrol.h"
-#include "guimessage.h"
-#include "guifont.h"
-#include "guiimage.h"
-#include "guiButtonControl.h"
-#include "guiitem.h"
-#include "stdstring.h"
-using namespace std;
+#include "GUIButtonControl.h"
+#include "GUIItem.h"
 
 /*!
 	\ingroup controls

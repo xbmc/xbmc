@@ -1,11 +1,8 @@
 
 #include "stdafx.h"
 #include "musicinfotagloadermp4.h"
-#include "sectionloader.h"
 #include "Util.h"
 #include "picture.h"
-#include "utils/log.h"
-#include "autoptrhandle.h"
 #include "XMP4File.h"
 
 using namespace AUTOPTR;

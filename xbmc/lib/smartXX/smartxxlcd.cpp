@@ -1,11 +1,7 @@
 
-#include "../stdafx.h"
+#include "../../stdafx.h"
 #include "smartxxlcd.h"
-#include "../../settings.h"
-#include "../../utils/log.h"
-#include <xtl.h>
 #include "conio.h"
-#include "../../util.h"
 #include "../../Util.h"
 
 /*

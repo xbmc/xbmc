@@ -21,15 +21,7 @@
 #ifndef ISO9660_H
 #define ISO9660_H
 #pragma once
-#ifdef _XBOX
-#include "xtl.h"
-#else
-#include <windows.h>
-#endif
 #include "../xbox/IoSupport.h"
-#include <vector>
-#include <string>
-using namespace std;
 
 #pragma pack(1)
 struct iso9660_VolumeDescriptor

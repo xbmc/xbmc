@@ -1,6 +1,6 @@
 #pragma once
 #include "../filesystem/file.h"
-#include "StdString.h"
+
 class CArchive;
 
 class ISerializable

@@ -1,5 +1,4 @@
-#include "stdafx.h"
-#include "..\..\..\applicationmessenger.h"
+#include "../../../stdafx.h"
 #include "..\..\..\application.h"
 #include "..\..\..\playlistplayer.h"
 #include "..\..\..\util.h"
@@ -8,8 +7,6 @@
 #include "pyutil.h"
 #include "infotagvideo.h"
 #include "infotagmusic.h"
-
-using namespace std;
 
 // player callback class
 

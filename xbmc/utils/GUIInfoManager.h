@@ -7,11 +7,8 @@
 #define GUILIB_GUIInfoManager_H
 #pragma once
 
-#include "stdstring.h"
 #include "../MusicInfoTag.h"
 #include "../FileItem.h"
-
-using namespace std;
 
 /*!
 	\ingroup strings

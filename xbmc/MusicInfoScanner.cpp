@@ -6,10 +6,6 @@
 #include "Filesystem/hddirectory.h"
 #include "FileSystem/DirectoryCache.h"
 #include "Util.h"
-#include "settings.h"
-#include "utils/Log.h"
-#include "GUISettings.h"
-#include "SectionLoader.h"
 #include "Application.h"
 
 using namespace MUSIC_INFO;

@@ -1,14 +1,9 @@
 #pragma once
+#include "GUIWindow.h"
+#include "FileItem.h"
 #include "filesystem/VirtualDirectory.h"
 #include "filesystem/DirectoryHistory.h"
-#include "filesystem/file.h"
-#include "guiwindow.h"
-#include "FileItem.h"
-#include "stdstring.h"
-#include "GUIDialogProgress.h"
-#include <vector>
-#include <string>
-using namespace std;
+
 using namespace DIRECTORY;
 
 class CGUIWindowFileManager :

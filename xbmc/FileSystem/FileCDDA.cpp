@@ -1,8 +1,8 @@
+#include "../stdafx.h"
 #include "filecdda.h"
-#include "../lib/libcdio/util.h"
-#include "../utils/log.h"
 #include <sys/stat.h>
 #include "../util.h"
+#include "../lib/libcdio/util.h"
 
 using namespace XFILE;
 

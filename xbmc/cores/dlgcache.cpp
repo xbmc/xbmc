@@ -1,7 +1,6 @@
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "dlgcache.h"
-#include "guiWindowManager.h"
 
 CDlgCache::CDlgCache()
 {

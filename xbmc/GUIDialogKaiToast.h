@@ -1,7 +1,5 @@
 #pragma once
-#include "StdString.h"
 #include "guiDialog.h"
-#include <queue>
 
 class CGUIImage;
 
@@ -37,7 +35,7 @@ protected:
 	DWORD m_dwIconWidth;
 	DWORD m_dwIconHeight;
 
-	typedef std::queue<Notification> TOASTQUEUE;
+	typedef queue<Notification> TOASTQUEUE;
 	TOASTQUEUE m_notifications;
 	CRITICAL_SECTION m_critical;
 };

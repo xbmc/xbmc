@@ -7,13 +7,8 @@
 #define GUILIB_GUIEditControl_H
 
 #pragma once
-#include "gui3D.h"
-#include "guiControl.h"
-#include "guiLabelControl.h"
-#include "guiMessage.h"
-#include "guiFont.h"
-#include "StdString.h"
-using namespace std;
+
+#include "GUILabelControl.h"
 
 /*!
 	\ingroup controls

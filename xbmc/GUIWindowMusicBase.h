@@ -4,20 +4,15 @@
 	*/
 
 #pragma once
-#include "guiwindow.h"
-#include "filesystem/VirtualDirectory.h"
-#include "filesystem/directoryhistory.h"
+#include "GUIWindow.h"
+#include "FileSystem/VirtualDirectory.h"
+#include "FileSystem/DirectoryHistory.h"
 #include "MusicDatabase.h"
 #include "FileItem.h"
-#include "GUIDialogProgress.h"
-#include "playlist.h"
-#include "musicInfoTagLoaderFactory.h"
-#include "utils/MusicInfoScraper.h"
-#include "utils/log.h"
+#include "PlayList.h"
+#include "MusicInfoTagLoaderFactory.h"
+#include "Utils/MusicInfoScraper.h"
 
-#include "stdstring.h"
-#include <vector>
-using namespace std;
 using namespace DIRECTORY;
 using namespace PLAYLIST;
 

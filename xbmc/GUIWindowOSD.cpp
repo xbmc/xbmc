@@ -1,6 +1,4 @@
-
 #include "stdafx.h"
-#include "localizestrings.h"
 #include "GUIWindowOSD.h"
 #include "application.h"
 #include "GUIProgressControl.h"
@@ -8,12 +6,7 @@
 #include "GUIToggleButtonControl.h"
 #include "guilistcontrol.h"
 #include "GUIImage.h"
-#include "settings.h"
-#include "guiFontManager.h"
 #include "util.h"
-#include "sectionloader.h"
-//#include "cores/mplayer/mplayer.h"
-#include "utils/log.h"
 #include "utils/GUIInfoManager.h"
 #include "cores/mplayer/xbox_video.h"
 

@@ -7,18 +7,8 @@
 #define GUILIB_GUIRAMControl_H
 
 #pragma once
-#include "gui3D.h"
-#include "guiControl.h"
-#include "guiMessage.h"
-#include "guiFont.h"
-#include "guiButtonControl.h"
-#include "guiImage.h"
-#include "stdString.h"
+#include "GUIButtonControl.h"
 #include "..\XBMC\Utils\MediaMonitor.h"
-
-#include <vector>
-
-using namespace std;
 
 /*!
 	\ingroup controls

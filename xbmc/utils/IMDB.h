@@ -11,10 +11,7 @@
 #endif // _MSC_VER > 1000
 
 #include "http.h"
-#include "StdString.h"
 #include "../cores/DllLoader/dll.h"
-#include <vector>
-#include "tinyxml/tinyxml.h"
 
 class CIMDBUrl
 {

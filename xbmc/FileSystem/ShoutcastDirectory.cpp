@@ -1,17 +1,10 @@
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "shoutcastdirectory.h"
 #include "directorycache.h"
-#include "TinyXML.h"
-#include "file.h"
 #include "../lib/libid3/zlib.h"
-#include "../url.h"
 #include "../util.h"
 #include "../utils/http.h"
-#include "../utils/log.h"
-#include "GUIWindowManager.h"
-#include "../GUIDialogProgress.h"
-#include "../GUIDialogOK.h"
 #include "../PlayListFactory.h"
 
 //	Quoting shoutcast on how ofter users could update their streams list:

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "directory.h"
+#include "idirectory.h"
 
 using namespace DIRECTORY;
 namespace DIRECTORY

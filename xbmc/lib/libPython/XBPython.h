@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include <xtl.h>
-#include <vector>
 #include "XBPyThread.h"
 #include "IMsgSenderCallback.h"
 #include "..\..\cores\IPlayer.h"
@@ -16,8 +14,6 @@ extern "C" {
 	extern void initxbmcgui(void);
 	extern void free_arenas(void);
 }
-
-using namespace std;
 
 typedef struct {
 	int id;

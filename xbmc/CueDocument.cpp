@@ -32,9 +32,9 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include "stdafx.h"
 #include "cuedocument.h"
 #include "util.h"
-#include "utils/CharsetConverter.h"
 
 CCueDocument::CCueDocument(void)
 {

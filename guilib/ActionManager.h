@@ -4,12 +4,8 @@
 	*/
 
 #pragma once
-#include "gui3d.h"
 #include "GUIMessage.h"
 #include "IMsgSenderCallback.h"
-
-#include "stdstring.h"
-using namespace std;
 
 /*!
 	\ingroup actionkeys

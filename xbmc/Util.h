@@ -1,9 +1,7 @@
 #pragma once
-#include "stdstring.h"
 #include "fileitem.h"
 #include "playlist.h"
 
-#include <map>
 struct network_info
 {
 	char ip[32];

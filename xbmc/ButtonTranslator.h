@@ -1,11 +1,5 @@
 #pragma once
 
-#include "tinyxml/tinyxml.h"
-#include "key.h"
-#include <xtl.h>
-#include "stdstring.h"
-#include <map>
-
 struct CButtonAction
 {
 	WORD wID;

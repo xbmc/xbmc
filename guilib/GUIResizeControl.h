@@ -7,12 +7,8 @@
 #define GUILIB_GUIRESIZECONTROL_H
 
 #pragma once
-#include "gui3d.h"
-#include "guicontrol.h"
-#include "guimessage.h"
-#include "guiimage.h"
-#include "stdstring.h"
-using namespace std;
+
+#include "GUIImage.h"
 
 #define DIRECTION_NONE	0
 #define DIRECTION_UP	1

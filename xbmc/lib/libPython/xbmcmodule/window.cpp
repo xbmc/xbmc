@@ -1,7 +1,6 @@
-#include "stdafx.h"
+#include "../../../stdafx.h"
 #include "window.h"
 #include "dialog.h"
-#include "guiwindowmanager.h"
 #include "GuiLabelControl.h"
 #include "GuiListControl.h"
 #include "GuiFadeLabelControl.h"
@@ -9,8 +8,6 @@
 #include "pyutil.h"
 
 #define ACTIVE_WINDOW	m_gWindowManager.GetActiveWindow()
-
-using namespace std;
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")

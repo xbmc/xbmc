@@ -9,6 +9,16 @@
 //-----------------------------------------------------------------------------
 // Globals for the Remote
 //-----------------------------------------------------------------------------
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+extern XPP_DEVICE_TYPE XDEVICE_TYPE_IR_REMOTE_TABLE;
+#define     XDEVICE_TYPE_IR_REMOTE           (&XDEVICE_TYPE_IR_REMOTE_TABLE)
+
+#ifdef __cplusplus
+}
+#endif
 
 #define INTERVAL 100 // msec
 

@@ -1,15 +1,11 @@
 #include "stdafx.h"
 #include "GUIInfoManager.h"
-#include "log.h"
 #include "Weather.h"
-#include "LocalizeStrings.h"
-#include "../GUISettings.h"
 #include "../Application.h"
 #include "../Util.h"
 
 // stuff for current song
 #include "../filesystem/CDDADirectory.h"
-#include "../url.h"
 #include "../musicInfoTagLoaderFactory.h"
 #include "../filesystem/SndtrkDirectory.h"
 
@@ -207,10 +203,17 @@ CStdString CGUIInfoManager::GetMusicLabel(const CStdString &strItem)
 			strTrack.Format("%02i", tag.GetTrackNumber());
 		return strTrack;
 	}
-	else if (strItem == "duration" && tag.GetDuration()>0)
+	else if (strItem == "duration")
 	{
-		CStdString strDuration;
-		CUtil::SecondsToHMSString(tag.GetDuration(), strDuration);
+		CStdString strDuration = "00:00";
+		if (tag.GetDuration()>0)
+			CUtil::SecondsToHMSString(tag.GetDuration(), strDuration);
+		else
+		{
+			unsigned int iTotal = g_application.m_pPlayer->GetTotalTime();
+			if (iTotal>0)
+				CUtil::SecondsToHMSString(iTotal, strDuration, true);
+		}
 		return strDuration;
 	}
 	return "";
@@ -300,76 +303,35 @@ CStdString CGUIInfoManager::GetCurrentPlayTimeRemaining()
 void CGUIInfoManager::SetCurrentSong(const CFileItem &item)
 {
 	//	No audio file, we are finished here
-	if (!item.IsAudio() )
+	if (!item.IsAudio())
 		return;
 
 	m_currentSong = item;
 
 	//	Get a reference to the item's tag
 	CMusicInfoTag& tag=m_currentSong.m_musicInfoTag;
-	CURL url(m_currentSong.m_strPath);
 	// check if we don't have the tag already loaded
 	if (!tag.Loaded())
 	{
-		//	if the file is a cdda track, ...
-		if (url.GetProtocol()=="cdda" )
+		//	we have a audio file.
+		//	Look if we have this file in database...
+		bool bFound=false;
+		if (g_musicDatabase.Open())
 		{
-			VECFILEITEMS  items;
-			CCDDADirectory dir;
-			//	... use the directory of the cd to 
-			//	get its cddb information...
-			if (dir.GetDirectory("D:",items))
-			{
-				for (int i=0; i < (int)items.size(); ++i)
-				{
-					CFileItem* pItem=items[i];
-					if (pItem->m_strPath==m_currentSong.m_strPath)
-					{
-						//	...and find current track to use
-						//	cddb information for display.
-						m_currentSong=*pItem;
-					}
-				}
-			}
-			{
-				CFileItemList itemlist(items);	//	cleanup everything
-			}
-		}
-		else
-		{
-			//	we have a audio file.
-			//	Look if we have this file in database...
-			bool bFound=false;
 			CSong song;
-			if (g_musicDatabase.Open())
-			{
-				bFound=g_musicDatabase.GetSongByFileName(m_currentSong.m_strPath, song);
-				g_musicDatabase.Close();
-			}
+			bFound=g_musicDatabase.GetSongByFileName(m_currentSong.m_strPath, song);
+			m_currentSong.m_musicInfoTag.SetSong(song);
+			g_musicDatabase.Close();
+		}
+
+		if (!bFound)
+		{
 			// always get id3 info for the overlay
-			if (!bFound)// && g_stSettings.m_bUseID3)
-			{
-				//	...no, try to load the tag of the file.
-				CMusicInfoTagLoaderFactory factory;
-				auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(m_currentSong.m_strPath));
-				//	Do we have a tag loader for this file type?
-				if (NULL != pLoader.get())
-				{
-					// yes, load its tag
-					if ( !pLoader->Load(m_currentSong.m_strPath,tag))
-					{
-						//	Failed!
-						tag.SetLoaded(false);
-						//	just to be sure :-)
-					}
-				}
-			}
-			else
-			{
-				//	...yes, this file is found in database
-				//	fill the tag of our fileitem
-				tag.SetSong(song);
-			}
+			CMusicInfoTagLoaderFactory factory;
+			auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(m_currentSong.m_strPath));
+			//	Do we have a tag loader for this file type?
+			if (NULL != pLoader.get())
+				pLoader->Load(m_currentSong.m_strPath,tag);
 		}
 	}
 
@@ -381,7 +343,7 @@ void CGUIInfoManager::SetCurrentSong(const CFileItem &item)
 			//	No title in tag, show filename only
 			CSndtrkDirectory dir;
 			char NameOfSong[64];
-			if (dir.FindTrackName(item.m_strPath,NameOfSong))
+			if (dir.FindTrackName(m_currentSong.m_strPath,NameOfSong))
 				tag.SetTitle(NameOfSong);
 			else
 				tag.SetTitle( CUtil::GetFileName(m_currentSong.m_strPath) );
@@ -390,7 +352,7 @@ void CGUIInfoManager::SetCurrentSong(const CFileItem &item)
 	else 
 	{
 		//	If we have a cdda track without cddb information,...
-		if ( url.GetProtocol()=="cdda" )
+		if (m_currentSong.IsCDDA())
 		{
 			//	we have the tracknumber...
 			int iTrack=tag.GetTrackNumber();

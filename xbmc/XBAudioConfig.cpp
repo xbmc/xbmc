@@ -1,4 +1,6 @@
+#include "stdafx.h"
 #include "XBAudioConfig.h"
+#include "xbox/undocumented.h"
 
 XBAudioConfig g_audioConfig;
 

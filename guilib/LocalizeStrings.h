@@ -5,12 +5,8 @@
 
 #ifndef GUILIB_LOCALIZESTRINGS_H
 #define GUILIB_LOCALIZESTRINGS_H
-#pragma once
-#include "gui3d.h"
 
-#include "stdstring.h"
-#include <map>
-using namespace std;
+#pragma once
 
 /*!
 	\ingroup strings

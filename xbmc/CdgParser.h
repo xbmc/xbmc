@@ -1,9 +1,6 @@
 #ifndef CDGREADER_H
 #define CDGREADER_H
 
-#include "utils/thread.h"
-#include "utils/criticalsection.h"
-#include  "FileSystem/File.h"
 #include "Cdg.h"
 #include "xbstopwatch.h"
 #include "CdgVoiceManager.h"	// Karaoke patch (114097)

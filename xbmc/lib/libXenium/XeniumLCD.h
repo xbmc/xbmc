@@ -1,10 +1,8 @@
 #pragma once
-#include "stdstring.h"
 #include "../../utils/thread.h"
-#include "../../utils/event.h"
 #include "../../utils/lcd.h"
 #include "xenium.h"
-using namespace std;
+
 #define MAX_ROWS 20
 
 class CXeniumLCD : public ILCD

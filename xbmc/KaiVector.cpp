@@ -4,8 +4,6 @@
 
 #include "stdafx.h"
 #include "KaiVector.h"
-#include "settings.h"
-#include "tinyxml/tinyxml.h"
 #include "util.h"
 #include "utils/http.h"
 

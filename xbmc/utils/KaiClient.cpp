@@ -1,10 +1,7 @@
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "KaiClient.h"
 #include "KaiRequestList.h"
-#include "Log.h"
-#include "../Settings.h"
 #include "../Application.h"
-#include "../Crc32.h"
 #include "dsstdfx.h"
 
 CKaiClient* CKaiClient::client = NULL;

@@ -1,10 +1,8 @@
 
-#include "stdafx.h"
+#include "../../stdafx.h"
 #include "dvdaudio.h"
 #include "..\mplayer\ASyncDirectSound.h"
 #include "..\..\util.h"
-#include "..\..\utils\log.h"
-#include "..\..\utils\SingleLock.h"
 #include "DVDClock.h"
 
 CDVDAudio::CDVDAudio()

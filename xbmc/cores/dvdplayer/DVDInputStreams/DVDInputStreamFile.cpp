@@ -1,9 +1,8 @@
 
-#include "stdafx.h"
+#include "../../../stdafx.h"
 #include "DVDInputStreamFile.h"
 
 #include "..\..\..\util.h"
-#include "..\..\..\utils/log.h"
 
 CDVDInputStreamFile::CDVDInputStreamFile() : CDVDInputStream()
 {

@@ -1,17 +1,14 @@
-
-#include "../stdafx.h"
 // HTTP.cpp: implementation of the CHTTP class.
 //
 //////////////////////////////////////////////////////////////////////
 
+
+#include "../stdafx.h"
 #include "HTTP.h"
-#include "stdstring.h"
 #ifdef _XBOX
 #include "../dnsnamecache.h"
 #endif
 
-#include "../settings.h"
-#include "log.h"
 #include "../util.h"
 
 //////////////////////////////////////////////////////////////////////

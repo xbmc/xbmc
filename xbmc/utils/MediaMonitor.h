@@ -10,18 +10,11 @@
 #endif // _MSC_VER > 1000
 
 #include "Thread.h"
-#include "StdString.h"
 #include "IMDB.h"
-#include "../Settings.h"
-#include "../FileItem.h"
-#include "../FileSystem/Directory.h"
+#include "../FileSystem/iDirectory.h"
 #include "../VideoDatabase.h"
 
-#include <vector>
-
 #define RECENT_MOVIES	3
-
-using namespace std;
 
 class IMediaObserver
 {

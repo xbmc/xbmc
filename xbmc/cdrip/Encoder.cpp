@@ -1,5 +1,5 @@
+#include "../stdafx.h"
 #include "Encoder.h"
-#include "..\utils\log.h"
 #include "..\util.h"
 
 bool CEncoder::Init(const char* strFile, int iInChannels, int iInRate, int iInBits)

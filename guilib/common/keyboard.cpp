@@ -1,6 +1,5 @@
+#include "../stdafx.h"
 #include "keyboard.h"
-#include "../key.h"
-#include "../../xbmc/utils/log.h"
 
 CKeyboard g_Keyboard;	// global
 

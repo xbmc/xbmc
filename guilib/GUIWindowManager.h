@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "guiwindow.h"
+#include "GUIWindow.h"
 #include "IMsgSenderCallback.h"
 #include "IWindowManagerCallback.h"
 #include "IMsgTargetCallback.h"

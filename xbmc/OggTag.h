@@ -1,7 +1,6 @@
 //------------------------------
 // COggTag in 2003 by Bobbin007
 //------------------------------
-#include "FileSystem/file.h"
 
 namespace MUSIC_INFO {
 

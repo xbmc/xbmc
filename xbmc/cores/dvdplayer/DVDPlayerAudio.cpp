@@ -1,9 +1,8 @@
 
-#include "stdafx.h"
+#include "../../stdafx.h"
 #include "DVDPlayerAudio.h"
 #include "DVDCodecs\DVDAudioCodec.h"
 #include "DVDCodecs\DVDFactoryCodec.h"
-#include "..\..\utils\log.h"
 #include "..\..\util.h"
 #include "DVDClock.h"
 

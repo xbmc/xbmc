@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "../../../stdafx.h"
 #include "dialog.h"
 #include "..\python.h"
 #include "pyutil.h"

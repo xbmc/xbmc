@@ -1,7 +1,6 @@
 #pragma once
 
 #include "musicinfotag.h"
-#include "stdstring.h"
 
 using namespace MUSIC_INFO;
 

@@ -32,6 +32,7 @@ protected:
 					void				LoadDirectoryCache(const CStdString& strDirectory, MAPFILEITEMS& items);
 					void				SaveDirectoryCache(const CStdString& strDirectory, VECFILEITEMS& items);
 					void				DeleteDirectoryCache();
+					void				DeleteRemoveableMediaDirectoryCache();
 
 	CStdString					m_strPrevDir;
 };

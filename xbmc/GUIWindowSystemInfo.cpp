@@ -1,13 +1,10 @@
 #include "stdafx.h"
-#include "guiwindowsysteminfo.h"
-#include "settings.h"
-#include "guiWindowManager.h"
-#include "localizestrings.h"
+#include "GUIWindowSystemInfo.h"
 #include "xbox/iosupport.h"
 #include <ConIo.h>
-#include "utils/FanController.h"
+#include "Utils/FanController.h"
 #include "cores/DllLoader/dll.h"
-#include "utils/GUIInfoManager.h"
+#include "Utils/GUIInfoManager.h"
 
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 :CGUIWindow(0)
