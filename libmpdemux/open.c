@@ -112,9 +112,9 @@ static void smb_auth_fn(const char *server, const char *share,
 // Open a new stream  (stdin/file/vcd/url)
 
 stream_t* open_stream(char* filename,char** options, int* file_format){
-	stream_t* stream=NULL;
+stream_t* stream=NULL;
 char *escfilename=NULL;
-	int f=-1;
+int f=-1;
 off_t len;
 
   // Check if playlist or unknown 
@@ -447,8 +447,8 @@ off_t len;
 		// ... (unimplemented)
 		//    return NULL;
 		stream=new_stream(-1,STREAMTYPE_DVD);
-		stream->start_pos=(__int64)d->cur_pack*2048;
-		stream->end_pos=(__int64)(d->cur_pgc->cell_playback[d->last_cell-1].last_sector)*2048;
+  stream->start_pos=(off_t)d->cur_pack*2048;
+  stream->end_pos=(off_t)(d->cur_pgc->cell_playback[d->last_cell-1].last_sector)*2048;
 		mp_msg(MSGT_DVD,MSGL_V,"DVD start=%d end=%d  \n",d->cur_pack,d->cur_pgc->cell_playback[d->last_cell-1].last_sector);
 		stream->priv=(void*)d;
 		return stream;
@@ -468,7 +468,7 @@ off_t len;
 #endif
 		if(f<0){ mp_msg(MSGT_OPEN,MSGL_ERR,MSGTR_FileNotFound,filename);return NULL; }
 
-		len=_lseeki64(f,0,SEEK_END); _lseeki64(f,0,SEEK_SET);
+       len=lseek(f,0,SEEK_END); lseek(f,0,SEEK_SET);
 		if (len == -1)
 			return NULL;
 
@@ -489,14 +489,12 @@ off_t len;
      //fix filenames with special characters 
      escfilename = malloc(strlen(filename)*4);
      url_escape_string(escfilename,filename);
-	printf("check %s\n", filename);
+     mp_msg(MSGT_OPEN,MSGL_V,"Filename for url is now %s\n",escfilename);
      url = url_new(escfilename);
     }
 	if(url) {
-		printf("url:protocol=%s\n", url->protocol);
+	if (strcmp(url->protocol, "smb")==0){
 #ifdef LIBSMBCLIENT
-		if (strcmp(url->protocol, "smb")==0)
-		{
 
 			// we need init of libsmbclient
 			int err;
@@ -527,8 +525,11 @@ off_t len;
 			stream=new_stream(f,STREAMTYPE_SMB);
 			stream->end_pos=len;
 			return stream;
-		}
+#else
+	    mp_msg(MSGT_OPEN,MSGL_ERR,MSGTR_SMBNotCompiled);
+	    return NULL;
 #endif
+		}
 		printf("protocol:%s",url->protocol);
 		if (stricmp(url->protocol, "http") ==0||
 			stricmp(url->protocol, "mms") ==0||
@@ -538,16 +539,12 @@ off_t len;
 		{
 			printf("open stream protocol:%s\n", url->protocol);
 			stream=new_stream(f,STREAMTYPE_STREAM);
-			if( streaming_start( stream, file_format, url )<0)
-			{
-				printf("failed 2 start stream\n");
-				//mp_msg(MSGT_OPEN,MSGL_ERR,MSGTR_UnableOpenURL, filename);
+	if( streaming_start( stream, file_format, url )<0){
+          mp_msg(MSGT_OPEN,MSGL_ERR,MSGTR_UnableOpenURL, filename);
 				url_free(url);
 				return NULL;
-			} 
-			else 
-			{
-				printf("stream opened\n");
+	} else {
+        mp_msg(MSGT_OPEN,MSGL_INFO,MSGTR_ConnToServer, url->hostname );
 				url_free(url);
 				return stream;
 			}
