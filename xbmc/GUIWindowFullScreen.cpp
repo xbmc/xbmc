@@ -127,6 +127,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 			if (g_application.m_pPlayer)
 				g_application.m_pPlayer->Update();
 			OutputDebugString("Now in GUI\n");
+
 			return;
     }
     break;
@@ -362,7 +363,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 		{
       m_bLastRender=false;
       m_bOSDVisible=false;
-      
+      CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness,g_settings.m_iContrast,g_settings.m_iGamma,true);
 			CGUIWindow::OnMessage(message);
       g_graphicsContext.Lock();
 			g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
@@ -377,6 +378,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 		}
 		case GUI_MSG_WINDOW_DEINIT:
 		{
+      CUtil::RestoreBrightnessContrastGamma();
 			g_graphicsContext.Lock();
 			g_graphicsContext.SetFullScreenVideo( false );
 			g_graphicsContext.Unlock();

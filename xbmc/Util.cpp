@@ -25,6 +25,7 @@ using namespace MEDIA_DETECT;
 using namespace XFILE;
 using namespace PLAYLIST;
 char g_szTitleIP[32];
+static D3DGAMMARAMP oldramp;
 
 CUtil::CUtil(void)
 {
@@ -2099,6 +2100,17 @@ CStdString CUtil::GetNextFilename(const char* fn_template, int max)
 	return ""; // no fn generated
 }
 
+void CUtil::InitGamma()
+{
+  g_graphicsContext.Get3DDevice()->GetGammaRamp(&oldramp);
+}
+void CUtil::RestoreBrightnessContrastGamma()
+{
+  g_graphicsContext.Lock();
+  g_graphicsContext.Get3DDevice()->SetGammaRamp(D3DSGR_IMMEDIATE , &oldramp);
+  g_graphicsContext.Unlock();
+}
+
 void CUtil::SetBrightnessContrastGammaPercent(int iBrightNess, int iContrast, int iGamma, bool bImmediate)
 {
   if (iBrightNess < 0) iBrightNess=0;
@@ -2137,17 +2149,18 @@ void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float G
 	g_graphicsContext.Unlock();
 }
 
+
 void CUtil::FlashScreen(bool bImmediate, bool bOn)
 {
 	static bool bInFlash = false;
-	static D3DGAMMARAMP oldramp;
+	
 	if (bInFlash == bOn)
 		return;
 	bInFlash = bOn;
 	g_graphicsContext.Lock();
 	if (bOn)
 	{
-		g_graphicsContext.Get3DDevice()->GetGammaRamp(&oldramp);
+		
 		SetBrightnessContrastGamma(0.5f, 1.2f, 2.0f, bImmediate);
 	}
 	else
