@@ -18,6 +18,9 @@
 #include "../util.h"
 #include "../sectionLoader.h"
 #include "../url.h"
+#include "../applicationmessenger.h"
+#include "../GUIWindowManager.h"
+#include "../GUIDialogOk.h"
 
 CSMBDirectory::CSMBDirectory(void)
 {
@@ -64,7 +67,25 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	int fd = smbc_opendir(strUtfPath);
 	smb.Unlock();
 
-	if (fd < 0) return false;
+	if (fd < 0)
+	{
+		int error;
+		if (errno == ENODEV) error = NT_STATUS_INVALID_COMPUTER_NAME;
+		else error = map_nt_error_from_unix(errno);
+		
+		const char* cError = get_friendly_nt_error_msg(error);
+		
+		CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+		pDialog->SetHeading(257);
+    pDialog->SetLine(0,cError);
+		pDialog->SetLine(1,L"");
+    pDialog->SetLine(2,L"");
+
+		ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
+		g_applicationMessenger.SendMessage(tMsg, false);
+
+		return false;
+	}
 	else
 	{
 		struct smbc_dirent* dirEnt;
