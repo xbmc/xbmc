@@ -22,6 +22,7 @@
 
 #include "xbmcweb.h"
 #include "xbmcconfiguration.h"
+#include "xbmchttp.h"
 
 static CXbmcWeb* pXbmcWeb;
 static CXbmcConfiguration* pXbmcWebConfig;
@@ -57,6 +58,7 @@ CWebServer::CWebServer()
 {
   pXbmcWeb = new CXbmcWeb();
   pXbmcWebConfig = new CXbmcConfiguration();
+  pXbmcHttp = new CXbmcHttp();
   m_port = 80;					/* Server port */
   m_szPassword[0] = '\0';
 
@@ -69,6 +71,7 @@ CWebServer::~CWebServer()
   CloseHandle(m_hEvent);
   if (pXbmcWeb) delete pXbmcWeb;
   if (pXbmcWebConfig) delete pXbmcWebConfig;
+  if (pXbmcHttp) delete pXbmcHttp;
 }
 
 DWORD CWebServer::SuspendThread()
@@ -196,6 +199,7 @@ int CWebServer::initWebs()
 	websAspDefine(T("aspTest"), aspTest);
 	websFormDefine(T("formTest"), formTest);
 	websFormDefine(T("xbmcForm"), XbmcWebsForm);
+	websFormDefine(T("xbmcHttp"), XbmcHttpCommand);
 
 	//Create the Form handlers for the User Management pages
 	#ifdef USER_MANAGEMENT_SUPPORT
@@ -468,6 +472,12 @@ void formTest(webs_t wp, char_t *path, char_t *query)
 #pragma data_seg()
 #pragma bss_seg()
 #pragma const_seg()
+
+void  XbmcHttpCommand(webs_t wp, char_t *path, char_t *query) 
+{																
+	if (!pXbmcHttp) return ;
+	return pXbmcHttp->xbmcForm(wp, path, query);	
+}																
 
 int XbmcWebsAspCommand(int eid, webs_t wp, int argc, char_t **argv)
 {
