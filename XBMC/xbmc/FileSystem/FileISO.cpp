@@ -68,7 +68,7 @@ unsigned int CFileISO::Read(void *lpBuf, offset_t uiBufSize)
 	DWORD dwTotalBytesRead;
 	int   iBytes2Read=(int)uiBufSize;
 	if (!m_pIsoReader) return -1;
-	int iRead=m_pIsoReader->ReadFile( (byte*)lpBuf,&iBytes2Read,&dwTotalBytesRead);
+	int iRead=m_pIsoReader->ReadFile( (char*)lpBuf,&iBytes2Read,&dwTotalBytesRead);
 	if (iRead < 0) return -1;
 	m_i64FilePos+=dwTotalBytesRead;
 	return (unsigned int)dwTotalBytesRead;

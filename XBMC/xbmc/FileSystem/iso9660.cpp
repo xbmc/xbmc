@@ -1,6 +1,10 @@
 #include "iso9660.h"
 //#define _DEBUG_OUTPUT 1
+
 #define RET_ERR -1
+
+
+
 struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, char *path )
 {
 	struct iso_dirtree *dir;
@@ -23,20 +27,20 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, char *pat
 	dir->next = 0;
 	file_pointer = dir;
 
-	::SetFilePointer( info.ISO_HANDLE, 2048 * sector,0,FILE_BEGIN );
+	::SetFilePointer( info.ISO_HANDLE, info.iso.wSectorSizeLE * sector,0,FILE_BEGIN );
 	DWORD lpNumberOfBytesRead = 0;
 
-	Curr_dir_cache = (char*)malloc( 2048 );
+	Curr_dir_cache = (char*)malloc( info.iso.wSectorSizeLE );
 
-	::ReadFile( info.ISO_HANDLE, Curr_dir_cache, 2048, &lpNumberOfBytesRead, NULL );
+	::ReadFile( info.ISO_HANDLE, Curr_dir_cache, info.iso.wSectorSizeLE, &lpNumberOfBytesRead, NULL );
 	memcpy( &isodir, Curr_dir_cache, sizeof(isodir) );
 	memcpy( &curr_dir, Curr_dir_cache, sizeof(isodir) );
 	
-	if( curr_dir.dwFileLengthLE > 2048 )
+	if( curr_dir.dwFileLengthLE > info.iso.wSectorSizeLE )
 	{
 		free( Curr_dir_cache );
 		Curr_dir_cache = (char*)malloc( isodir.dwFileLengthLE );
-		::SetFilePointer( info.ISO_HANDLE, 2048 * sector,0,FILE_BEGIN );
+		::SetFilePointer( info.ISO_HANDLE, info.iso.wSectorSizeLE * sector,0,FILE_BEGIN );
 		::ReadFile( info.ISO_HANDLE, Curr_dir_cache , curr_dir.dwFileLengthLE, &lpNumberOfBytesRead, NULL );
 	}
 	iso9660searchpointer = 0;
@@ -71,7 +75,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, char *pat
 			iso9660searchpointer += isodir.ucRecordLength;
 		else 
 		{
-			iso9660searchpointer = (iso9660searchpointer - (iso9660searchpointer % 2048)) + 2048;
+			iso9660searchpointer = (iso9660searchpointer - (iso9660searchpointer % info.iso.wSectorSizeLE)) + info.iso.wSectorSizeLE;
 		}
 		if( curr_dir.dwFileLengthLE <= iso9660searchpointer )
 		{
@@ -143,7 +147,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, char *pat
 			iso9660searchpointer += isodir.ucRecordLength;
 		else 
 		{
-			iso9660searchpointer = (iso9660searchpointer - (iso9660searchpointer % 2048)) + 2048;
+			iso9660searchpointer = (iso9660searchpointer - (iso9660searchpointer % info.iso.wSectorSizeLE)) + info.iso.wSectorSizeLE;
 		}
 		if( curr_dir.dwFileLengthLE <= iso9660searchpointer )
 		{
@@ -214,11 +218,16 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, char *pat
 iso9660::iso9660( char *filename )
 {
 	char temp[10];
+
+	alignmentadjust=0;
+	Cached_Sector=0;
+	Cache=0;
+
 	paths = 0;
 	lastpath = 0;
 	memset(&info,0,sizeof(info));
 	info.Curr_dir_cache = 0;
-	info.Curr_dir = (char*)malloc( 2048 );
+	info.Curr_dir = (char*)malloc( info.iso.wSectorSizeLE );
 	strcpy( info.Curr_dir, "\\" );
 
 	if( strlen( filename ) != 3 )
@@ -278,12 +287,18 @@ iso9660::~iso9660(  )
 	free(info.Curr_dir);
 	if(info.Curr_dir_cache)
 		free(info.Curr_dir_cache);
+	if( Cache )
+		free( Cache );
 	CloseHandle( info.ISO_HANDLE );
+	if( Cache )
+		free( Cache );
 }
 
 struct iso_dirtree *iso9660::FindFolder( char *Folder )
 {
-	char work[2048];
+	char *work;
+	
+	work = (char *)malloc(info.iso.wSectorSizeLE);
 
 	char *temp;
 	struct iso_directories *lastpath;
@@ -312,6 +327,7 @@ struct iso_dirtree *iso9660::FindFolder( char *Folder )
 			return lastpath->dir;
 		lastpath = lastpath->next;
 	}
+	free ( work );
 	return 0;
 }
 
@@ -423,28 +439,52 @@ HANDLE iso9660::OpenFile( char* filename, DWORD location )
 
 void iso9660::CloseFile( HANDLE )
 {
+	if( Cache )
+		free( Cache );
 }
 
 
 DWORD iso9660::SetFilePointer(HANDLE hFile,  LONG lDistanceToMove,  PLONG lpDistanceToMoveHigh,  DWORD dwMoveMethod )
 {
 
-	// doesn't reaelly care about handle
+	// doesn't really care about handle
 	int calc;
 
 	switch( dwMoveMethod )
 	{
 	case( FILE_BEGIN ):
 		calc = 0-(info.curr_filepos - lDistanceToMove);   // if we're going to pos 2 from beginning, and current file-read is at 1000 - we're going 998 back.
+
+		alignmentadjust = calc % info.iso.wSectorSizeLE;
+		if( alignmentadjust )
+		{
+			calc -= alignmentadjust;
+		}
         ::SetFilePointer( info.ISO_HANDLE, calc,0,FILE_CURRENT);
         info.curr_filepos = lDistanceToMove;
 		break;
+
+
 	case( FILE_CURRENT ):
-        ::SetFilePointer( info.ISO_HANDLE, lDistanceToMove,0,FILE_CURRENT);  // pretty straightforward
+
+		calc = info.curr_filepos + lDistanceToMove;
+		alignmentadjust = calc % info.iso.wSectorSizeLE;
+		calc = lDistanceToMove;
+		if( alignmentadjust )
+		{
+			calc -= alignmentadjust;
+		}
+		::SetFilePointer( info.ISO_HANDLE, calc,0,FILE_CURRENT);  // pretty straightforward
         info.curr_filepos += lDistanceToMove;
 		break;
+
 	case( FILE_END ):
 		calc = (openfileinfo.dwFileLengthLE + lDistanceToMove ) -  info.curr_filepos;
+		alignmentadjust = calc % info.iso.wSectorSizeLE;
+		if( alignmentadjust )
+		{
+			calc -= alignmentadjust;
+		}
         ::SetFilePointer( info.ISO_HANDLE, calc,0,FILE_CURRENT);  // pretty straightforward
         info.curr_filepos = calc;
 		break;		
@@ -460,14 +500,65 @@ DWORD iso9660::GetFileSize(HANDLE hFile,LPDWORD lpFileSizeHigh  )
 }
 
 
-int iso9660::ReadFile( void * pBuffer, int * piSize, DWORD *totalread )
+int iso9660::ReadFile( char * pBuffer, int * piSize, DWORD *totalread )
 {
-	
 	DWORD dwBytesRead=0;
+	DWORD totalbytesread = 0;
+	DWORD dwBytes2Read = *piSize;
+	DWORD bufferpointer=0;
+
+	// if first part of wanted block is unaligned....
+	if( alignmentadjust )
+	{
+		// if cache exists, the desired block is already in memory - no need to load it
+		if( !Cache )
+		{
+            Cache = (char*) malloc( info.iso.wSectorSizeLE );
+			for( int t=0; t<5; ++t )
+			{
+				if(::ReadFile( info.ISO_HANDLE, Cache, info.iso.wSectorSizeLE, &dwBytesRead,NULL ) == ( BOOL )FALSE )
+				{
+					if( t == 4 )
+					{
+						*totalread = 0;
+						return ( int )RET_ERR;
+					}
+				}
+				else
+					t = 5;
+			}
+		}
+		if( ( dwBytes2Read + alignmentadjust ) < info.iso.wSectorSizeLE )  // actually.... next read will be in the block as well
+		{
+			memcpy( pBuffer, Cache + alignmentadjust, dwBytes2Read);
+			alignmentadjust += dwBytes2Read;
+			*totalread = dwBytes2Read;
+			info.curr_filepos += dwBytes2Read;
+			return dwBytes2Read;
+		}
+		bufferpointer = info.iso.wSectorSizeLE - alignmentadjust;
+		memcpy( pBuffer, Cache + alignmentadjust, info.iso.wSectorSizeLE - alignmentadjust);
+		free( Cache );
+		Cache = 0;
+		info.curr_filepos += info.iso.wSectorSizeLE-alignmentadjust;
+		dwBytes2Read -= info.iso.wSectorSizeLE-alignmentadjust;
+		alignmentadjust = 0;
+		totalbytesread += bufferpointer;
+	}
+
+
+
+	alignmentadjust = dwBytes2Read % info.iso.wSectorSizeLE;
+	if( alignmentadjust )
+		dwBytes2Read -= alignmentadjust;
+
+	Cache = (char*)malloc(dwBytes2Read);
+
 	for( int t=0; t<5; ++t )
 	{
-		if(::ReadFile( info.ISO_HANDLE,pBuffer, *piSize, &dwBytesRead,NULL ) == ( BOOL )FALSE )
+		if(::ReadFile( info.ISO_HANDLE, Cache, dwBytes2Read, &dwBytesRead,NULL ) == ( BOOL )FALSE )
 		{
+			int error = GetLastError();
 			if( t == 4 )
 			{
 				*totalread = 0;
@@ -476,15 +567,41 @@ int iso9660::ReadFile( void * pBuffer, int * piSize, DWORD *totalread )
 		}
 		else
 		{
-/*			if( info.curr_filesize < (info.curr_filepos+dwBytesRead) )
-				dwBytesRead = info.curr_filesize - info.curr_filepos;*/
+			memcpy( pBuffer + bufferpointer, Cache,  dwBytesRead );
+			free( Cache );
+			Cache = 0;
+			bufferpointer += dwBytesRead;
 			DWORD dwBytesToRead=min((DWORD)info.curr_filesize - info.curr_filepos, (DWORD)*piSize );
 			info.curr_filepos += dwBytesToRead;
 			t = 5;
 			*totalread = dwBytesToRead;
+			totalbytesread += dwBytesRead;
 		}
 	}
-	return dwBytesRead;
+
+	// if end of block is unaligned...
+	if( alignmentadjust )
+	{
+		Cache = (char *)malloc( info.iso.wSectorSizeLE );
+		for( int t=0; t<5; ++t )
+		{
+			if(::ReadFile( info.ISO_HANDLE,Cache , info.iso.wSectorSizeLE, &dwBytesRead,NULL ) == ( BOOL )FALSE )
+			{
+				if( t == 4 )
+				{
+					*totalread = 0;
+					return ( int )RET_ERR;
+				}
+			}
+			else
+				t = 5;
+		}
+		memcpy( pBuffer + bufferpointer, Cache,  alignmentadjust );
+		bufferpointer += alignmentadjust;
+		info.curr_filepos += dwBytesRead;
+		totalbytesread += dwBytesRead;
+	}
+	return bufferpointer;
 }
 
 
@@ -495,7 +612,7 @@ string iso9660::GetThinText(WCHAR* strTxt, int iLen )
 	m_strReturn="";
 	for (int i=0; i < iLen; i++)
 	{
-		m_strReturn += strTxt[i];
+		m_strReturn += (char)strTxt[i];
 	}
 	return m_strReturn ;
 }
