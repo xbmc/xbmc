@@ -81,7 +81,7 @@ bool CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum)
 			if (iCol==1 && !strColum.IsEmpty())
 				strAlbumName="("+strColum+")";
 
-			if (iCol==3)
+			if (iCol==2)
 			{
 				CStdString strArtist=strColum;
 				util.RemoveTags(strArtist);
@@ -89,13 +89,13 @@ bool CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum)
 					strAlbumName="- " + strArtist + " " + strAlbumName;
 			}
 
-			if (iCol==5)
+			if (iCol==4)
 			{
 				CStdString strAlbum=strColum;
 				util.RemoveTags(strAlbum);
 				strAlbumName=strAlbum + " " + strAlbumName;
 			}
-			if (iCol==5 && strColum.Find("a href=\"javascript:j('") >= 0)
+			if (iCol==4 && strColum.Find("a href=\"javascript:j('") >= 0)
 			{
 				int iPos=strColum.Find(">");
 				if (iPos >= 0)
