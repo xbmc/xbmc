@@ -727,6 +727,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 			CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
 			pControl->SetEnabled(g_guiSettings.GetString("ScreenSaver.Mode")=="Dim");
 		}
+		else if (strSetting == "ScreenSaver.Preview")
+		{
+			CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
+			pControl->SetEnabled(g_guiSettings.GetString("ScreenSaver.Mode")!="None");
+		}
 		else if (strSetting.Left(16) == "Weather.AreaCode")
 		{
 			CSettingString *pSetting = (CSettingString *)GetSetting(strSetting)->GetSetting();
