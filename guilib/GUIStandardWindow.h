@@ -7,15 +7,15 @@
 // classes that much easier.
 
 class CGUIStandardWindow :
-	public CGUIWindow
+      public CGUIWindow
 {
 public:
-	CGUIStandardWindow(void);
-	virtual ~CGUIStandardWindow(void);
+  CGUIStandardWindow(void);
+  virtual ~CGUIStandardWindow(void);
 
-	virtual bool	OnMessage(CGUIMessage& message);
-	virtual void	OnAction(const CAction &action);
+  virtual bool OnMessage(CGUIMessage& message);
+  virtual void OnAction(const CAction &action);
 
 protected:
-	int						m_iLastControl;
+  int m_iLastControl;
 };

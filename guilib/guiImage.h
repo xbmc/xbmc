@@ -1,7 +1,7 @@
 /*!
-	\file guiImage.h
-	\brief 
-	*/
+\file guiImage.h
+\brief 
+*/
 
 #ifndef GUILIB_GUIIMAGECONTROL_H
 #define GUILIB_GUIIMAGECONTROL_H
@@ -11,65 +11,65 @@
 #include "GUIControl.h"
 
 /*!
-	\ingroup controls
-	\brief 
-	*/
+ \ingroup controls
+ \brief 
+ */
 class CGUIImage : public CGUIControl
 {
 public:
-  CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTexture,DWORD dwColorKey=0);
+  CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTexture, DWORD dwColorKey = 0);
   CGUIImage(const CGUIImage &left);
   virtual ~CGUIImage(void);
-  
+
   virtual void Render();
   virtual void Render(int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight);
   virtual void OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);
-	virtual void PreAllocResources();
+  virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
   virtual bool CanFocus() const;
 
-  void         Select(int iBitmap);
-  void         SetItems(int iItems);
-	void				 SetTextureWidth(int iWidth);
-	void				 SetTextureHeight(int iHeight);
-	int					 GetTextureWidth() const;
-	int					 GetTextureHeight() const;
+  void Select(int iBitmap);
+  void SetItems(int iItems);
+  void SetTextureWidth(int iWidth);
+  void SetTextureHeight(int iHeight);
+  int GetTextureWidth() const;
+  int GetTextureHeight() const;
 
-  void              SetFileName(const CStdString& strFileName);
-	const CStdString& GetFileName() const {return m_strFileName;};
-	DWORD						  GetColorKey() const {return m_dwColorKey;};
-  void              SetKeepAspectRatio(bool bOnOff);
-  bool              GetKeepAspectRatio() const;
-  int               GetRenderWidth() const;
-  int               GetRenderHeight() const;
-	void							SetCornerAlpha(DWORD dwLeftTop, DWORD dwRightTop, DWORD dwLeftBottom, DWORD dwRightBottom);
+  void SetFileName(const CStdString& strFileName);
+  const CStdString& GetFileName() const { return m_strFileName;};
+  DWORD GetColorKey() const { return m_dwColorKey;};
+  void SetKeepAspectRatio(bool bOnOff);
+  bool GetKeepAspectRatio() const;
+  int GetRenderWidth() const;
+  int GetRenderHeight() const;
+  void SetCornerAlpha(DWORD dwLeftTop, DWORD dwRightTop, DWORD dwLeftBottom, DWORD dwRightBottom);
 
 protected:
-  virtual void       Update();
-  void    				   UpdateVB();
-	void							 Process();
-  static const DWORD FVF_VERTEX = D3DFVF_XYZRHW|D3DFVF_DIFFUSE|D3DFVF_TEX0;
+  virtual void Update();
+  void UpdateVB();
+  void Process();
+  static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX0;
 
-  DWORD                   m_dwColorKey;
-  CStdString              m_strFileName;
-  int                     m_iTextureWidth;
-  int                     m_iTextureHeight;
-	int                     m_iImageWidth;
-	int                     m_iImageHeight;
-  int                     m_iBitmap;
-  DWORD                   m_dwItems;
-  int                     m_iCurrentLoop;
-	int										  m_iCurrentImage;
-	DWORD										m_dwFrameCounter;
-  bool                    m_bKeepAspectRatio;
+  DWORD m_dwColorKey;
+  CStdString m_strFileName;
+  int m_iTextureWidth;
+  int m_iTextureHeight;
+  int m_iImageWidth;
+  int m_iImageHeight;
+  int m_iBitmap;
+  DWORD m_dwItems;
+  int m_iCurrentLoop;
+  int m_iCurrentImage;
+  DWORD m_dwFrameCounter;
+  bool m_bKeepAspectRatio;
   vector <LPDIRECT3DTEXTURE8> m_vecTextures;
-	LPDIRECT3DPALETTE8			m_pPalette;
-  int                     m_iRenderWidth;
-  int                     m_iRenderHeight;
-	bool										m_bWasVisible;
-	DWORD										m_dwAlpha[4];
+  LPDIRECT3DPALETTE8 m_pPalette;
+  int m_iRenderWidth;
+  int m_iRenderHeight;
+  bool m_bWasVisible;
+  DWORD m_dwAlpha[4];
 
   //vertex values
   float m_fX;
