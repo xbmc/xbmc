@@ -544,13 +544,11 @@ void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
 			CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
 			CSndtrkDirectory dir;
 			char NameOfSong[64];
-			NameOfSong[0] = 0;
-			dir.FindTrackName(strFile,NameOfSong);
-			CLog::Log("Song is %s",NameOfSong);
-			if(NameOfSong[0] != 0)
+			bool foundname = dir.FindTrackName(strFile,NameOfSong);
+			if(foundname == true)
 				msg1.SetLabel(NameOfSong);
 			else
-				msg1.SetLabel( CUtil::GetTitleFromPath(strFile) );
+				msg1.SetLabel( CUtil::GetFileName(strFile) );
 			OnMessage(msg1);
 		}
 	}	//	if (tag.Loaded())
