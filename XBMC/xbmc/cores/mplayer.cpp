@@ -175,6 +175,12 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     m_vecOptions.push_back("-fps");
     strTmp.Format("%f", m_fFPS);
     m_vecOptions.push_back(strTmp);
+
+    // set subtitle fps
+    m_vecOptions.push_back("-subfps");
+    strTmp.Format("%f", m_fFPS);
+    m_vecOptions.push_back(strTmp);
+
   }
 
   if ( m_iChannels) 
