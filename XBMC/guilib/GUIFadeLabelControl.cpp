@@ -93,13 +93,16 @@ bool CGUIFadeLabelControl::RenderText(float fPosX, float fPosY, float fMaxWidth,
   float fTextHeight,fTextWidth;
   m_pFont->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
 
+	float fPosCX=fPosX;
+	float fPosCY=fPosY;
+	g_graphicsContext.Correct(fPosCX, fPosCY);
 	D3DVIEWPORT8 newviewport,oldviewport;
 	g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
 	float fHeight=60;
 	if (fHeight+fPosY >= g_graphicsContext.GetHeight() )
 		fHeight = g_graphicsContext.GetHeight() - fPosY -1;
-	newviewport.X      = (DWORD)fPosX;
-	newviewport.Y			 = (DWORD)fPosY;
+	newviewport.X      = (DWORD)fPosCX;
+	newviewport.Y			 = (DWORD)fPosCY;
 	newviewport.Width  = (DWORD)(fMaxWidth-5.0f);
 	newviewport.Height = (DWORD)(fHeight);
 	newviewport.MinZ   = 0.0f;
