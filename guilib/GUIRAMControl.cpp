@@ -40,6 +40,7 @@ CGUIRAMControl::CGUIRAMControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX
 	}
 
 	m_iSelection = 0;
+	m_dwCounter = 0;
 }
 
 CGUIRAMControl::~CGUIRAMControl(void)
@@ -136,15 +137,14 @@ void CGUIRAMControl::Render()
 		}
 	}
 
-
-
-
 	WCHAR wszText[256];
 	FLOAT fTextX = (FLOAT) m_dwPosX + m_dwWidth;
 	FLOAT fTextY = (FLOAT) m_dwPosY + m_dwThumbnailHeight + m_dwThumbnailSpaceY;
 
 	if (m_pFont)
 	{
+		bool bBusy = (m_pMonitor && m_pMonitor->IsBusy() && (++m_dwCounter%50>25) );
+
 		swprintf(wszText,L"Recently Added to My Videos");
 
 		m_pFont->DrawText(	fTextX - CONTROL_POSX_ADJUSTMENT, fTextY, m_dwTitleColor, wszText, XBFONT_RIGHT);
@@ -219,9 +219,12 @@ void CGUIRAMControl::OnAction(const CAction &action)
 
 		case ACTION_SHOW_INFO:
 		{
-			CLog::Log("Show info start");
 			UpdateTitle(m_current[m_iSelection].strFilepath, m_iSelection);
-			CLog::Log("Show info complete");
+		}
+
+		case ACTION_SHOW_GUI:
+		{
+			UpdateAllTitles();
 		}
 
 		default:
@@ -230,6 +233,14 @@ void CGUIRAMControl::OnAction(const CAction &action)
 			break;
 		}
 	}
+}
+
+
+void CGUIRAMControl::UpdateAllTitles()
+{
+	CMediaMonitor::Command command;
+	command.rCommand = CMediaMonitor::CommandType::Seed;
+	m_pMonitor->QueueCommand(command);
 }
 
 void CGUIRAMControl::UpdateTitle(CStdString& strFilepath, INT nIndex)

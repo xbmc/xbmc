@@ -63,6 +63,7 @@ public:
 
 protected:
 
+	void UpdateAllTitles();
 	void UpdateTitle(CStdString& strFilepath, INT nIndex);
 
 	CMediaMonitor*		m_pMonitor;
@@ -70,6 +71,7 @@ protected:
 	Movie				m_new[RECENT_MOVIES];
 	CGUIButtonControl*  m_pTextButton[RECENT_MOVIES];
 	INT					m_iSelection;
+	DWORD				m_dwCounter;
 
 	FLOAT			m_fFontHeight;
 	FLOAT			m_fFont2Height;
