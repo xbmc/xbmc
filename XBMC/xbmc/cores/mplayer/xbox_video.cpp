@@ -272,6 +272,7 @@ RESOLUTION GetResolution()
 //********************************************************************************************************
 void DeleteOSDTextures(int index)
 {
+  g_graphicsContext.Lock();
   if (m_pOSDYTexture[index]) {
     m_pOSDYTexture[index]->Release();
     m_pOSDYTexture[index] = NULL;
@@ -282,11 +283,13 @@ void DeleteOSDTextures(int index)
     CLog::Log(LOGDEBUG, "Deleted OSD textures (%i)", index);
   }
   m_iOSDTextureHeight[index] = 0;
+  g_graphicsContext.Unlock();
 }
 
 //********************************************************************************************************
 void DeleteVideoTextures(int index)
 {
+  g_graphicsContext.Lock();
   if (m_YTexture[index]) {
     m_YTexture[index]->Release();
     m_YTexture[index] = NULL;
@@ -300,6 +303,7 @@ void DeleteVideoTextures(int index)
     m_VTexture[index] = NULL;
     CLog::Log(LOGDEBUG, "Deleted video textures (%i)", index);
   }
+  g_graphicsContext.Unlock();
 }
 
 //********************************************************************************************************
