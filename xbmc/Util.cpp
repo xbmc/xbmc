@@ -317,7 +317,7 @@ bool CUtil::InitializeNetwork(const char* szLocalAddress, const char* szLocalSub
 		return false;
   }
 
-  if (CUtil::cmpnocase(szLocalAddress,"dhcp") )
+  if (CUtil::cmpnocase(szLocalAddress,"dhcp")==0 )
   {
     XNetStartupParams sXNetStartup;
     WSADATA sWSAData;
