@@ -44,6 +44,7 @@ static unsigned int 				primary_image_format;
 static float						fSourceFrameRatio=0;				//frame aspect ratio of video
 static unsigned int 				fs = 0;                             //display in window or fullscreen
 static unsigned int 				dstride;                            //surface stride
+bool								m_bPauseDrawing=false;				// whether we have paused drawing or not
 
 int									iClearSubtitleRegion[2]={0,0};			// amount of subtitle region to clear
 LPDIRECT3DTEXTURE8					m_pSubtitleTexture[2]={NULL,NULL};
@@ -51,14 +52,12 @@ static unsigned char*				subtitleimage=NULL;                      //image data
 static unsigned int 				subtitlestride;                            //surface stride
 LPDIRECT3DVERTEXBUFFER8				m_pSubtitleVB;							// vertex buffer for subtitles
 
-int									m_dwVisibleOverlay=0;
+int									m_iBackBuffer=0;
 LPDIRECT3DTEXTURE8					m_pOverlay[2]={NULL,NULL};			// Overlay textures
 LPDIRECT3DSURFACE8					m_pSurface[2]={NULL,NULL};			// Overlay Surfaces
 bool								m_bFlip=false;
 
-bool								m_bFullScreen=false;
-float								m_fFPS;
-static RESOLUTION					m_iResolution=PAL_4_3;
+static RESOLUTION					m_iResolution=PAL_4x3;
 
 typedef struct directx_fourcc_caps
 {
@@ -89,39 +88,8 @@ static directx_fourcc_caps g_ddpf[] =
 static void video_flip_page(void);
 
 //********************************************************************************************************
-void restore_resolution()
-{
-	D3DPRESENT_PARAMETERS params;
-	g_application.GetD3DParameters(params);
-	RESOLUTION iOldResolution = CUtil::GetResolution(params);
-	if (iOldResolution != m_iResolution)
-			
-	{
-		m_iResolution=iOldResolution;
-		g_graphicsContext.Get3DDevice()->Reset(&params);
-	}
-}
-
-void obtain_resolution_parameters(RESOLUTION iResolution, D3DPRESENT_PARAMETERS &params)
-{
-	params.BackBufferWidth = resInfo[iResolution].iWidth;
-	params.BackBufferHeight = resInfo[iResolution].iHeight;
-	params.Flags = resInfo[iResolution].dwFlags;
-	if (iResolution == PAL60_4_3 || iResolution == PAL60_16_9)
-	{
-		params.FullScreen_RefreshRateInHz = 60;
-	}
-	else
-	{
-		params.FullScreen_RefreshRateInHz = 0;
-	}
-}
-
-//********************************************************************************************************
 void choose_best_resolution(float fps)
 {
-	D3DPRESENT_PARAMETERS params;
-	g_application.GetD3DParameters(params);
 	DWORD dwStandard = XGetVideoStandard();
 	DWORD dwFlags	   = XGetVideoFlags();
 
@@ -153,9 +121,6 @@ void choose_best_resolution(float fps)
 		bWidescreen = true;
 	}
 
-	// Save our current screenmode parameters
-	RESOLUTION iOldResolution = CUtil::GetResolution(params);
-
 	// if video switching is not allowed then use current resolution (with pal 60 if needed)
 	// PERHAPS ALSO SUPPORT WIDESCREEN SWITCHING HERE??
 	// if we're not in fullscreen mode then use current resolution 
@@ -164,34 +129,28 @@ void choose_best_resolution(float fps)
 		    (! ( g_graphicsContext.IsFullScreenVideo()|| g_graphicsContext.IsCalibrating())  )
 			)
 	{
-		m_iResolution = iOldResolution;
+		m_iResolution = g_graphicsContext.GetVideoResolution();
 		// Check to see if we are using a PAL screen capable of PAL60
 		if (bUsingPAL)
 		{
 			// FIXME - Fix for autochange of widescreen once GUI option is implemented
-			bWidescreen = (resInfo[iOldResolution].dwFlags&D3DPRESENTFLAG_WIDESCREEN)!=0;
+			bWidescreen = (g_settings.m_ResInfo[m_iResolution].dwFlags&D3DPRESENTFLAG_WIDESCREEN)!=0;
 			if (bPal60)
 			{
 				if (bWidescreen)
-					m_iResolution = PAL60_16_9;
+					m_iResolution = PAL60_16x9;
 				else
-					m_iResolution = PAL60_4_3;
+					m_iResolution = PAL60_4x3;
 			}
 			else
 			{
 				if (bWidescreen)
-					m_iResolution = PAL_16_9;
+					m_iResolution = PAL_16x9;
 				else
-					m_iResolution = PAL_4_3;
+					m_iResolution = PAL_4x3;
 			}
 		}
-		// Now check if our resolution has changed, or if we've switched the widescreen flag
-		if ((m_iResolution != iOldResolution) )
-		{
-			obtain_resolution_parameters(m_iResolution, params);
-			g_graphicsContext.Get3DDevice()->Reset(&params);
-		}
-		// Update our member variables with the new parameters
+		// Change our screen resolution
 		g_graphicsContext.SetVideoResolution(m_iResolution);
 		return;
 	}
@@ -205,16 +164,16 @@ void choose_best_resolution(float fps)
 		if (bPal60)
 		{
 			if (bWidescreen)
-				m_iResolution = PAL60_16_9;
+				m_iResolution = PAL60_16x9;
 			else
-				m_iResolution = PAL60_4_3;
+				m_iResolution = PAL60_4x3;
 		}
 		else		// PAL50
 		{
 			if (bWidescreen)
-				m_iResolution = PAL_16_9;
+				m_iResolution = PAL_16x9;
 			else
-				m_iResolution = PAL_4_3;
+				m_iResolution = PAL_4x3;
 		}
 	}
 	else			// NTSC resolutions
@@ -238,28 +197,20 @@ void choose_best_resolution(float fps)
 			if (dwFlags&XC_VIDEO_FLAGS_HDTV_480p)
 			{
 				if (bWidescreen)
-					m_iResolution = HDTV_480p_16_9;
+					m_iResolution = HDTV_480p_16x9;
 				else
-					m_iResolution = HDTV_480p_4_3;
+					m_iResolution = HDTV_480p_4x3;
 			}
 			else
 			{
 				if (bWidescreen)
-					m_iResolution = NTSC_16_9;
+					m_iResolution = NTSC_16x9;
 				else
-					m_iResolution = NTSC_4_3;
+					m_iResolution = NTSC_4x3;
 			}
 		}
 	}
-	// Check to see if we need to reset the D3DDevice
-	// Has the resolution changed?
-	// Have we changed the widescreen flag?
-	if (m_iResolution != iOldResolution)
-	{
-		obtain_resolution_parameters(m_iResolution, params);
-		g_graphicsContext.Get3DDevice()->Reset(&params);
-	}
-	// Finished - update our video resolution parameter in the device context
+	// Finished - update our video resolution
 	g_graphicsContext.SetVideoResolution(m_iResolution);
 }
 
@@ -270,6 +221,7 @@ void choose_best_resolution(float fps)
 //**********************************************************************************************
 static void ClearSubtitleRegion(int iTexture)
 {
+//	OutputDebugString("Clearing subs\n");
 	for (int y=SUBTITLE_TEXTURE_HEIGHT-iClearSubtitleRegion[iTexture]; y < SUBTITLE_TEXTURE_HEIGHT; y++)
 	{
 		for (int x=0; x < (int)(subtitlestride); x+=2)
@@ -287,17 +239,17 @@ void xbox_video_update_subtitle_position()
 		return;
 	VERTEX* vertex=NULL;
 	m_pSubtitleVB->Lock( 0, 0, (BYTE**)&vertex, 0L );
-	float fSubtitleHeight = (float)resInfo[m_iResolution].iWidth/SUBTITLE_TEXTURE_WIDTH*SUBTITLE_TEXTURE_HEIGHT;
-	float fSubtitlePosition = resInfo[m_iResolution].iHeight + g_settings.m_movieCalibration[m_iResolution].subtitles - fSubtitleHeight;
+	float fSubtitleHeight = (float)g_settings.m_ResInfo[m_iResolution].iWidth/SUBTITLE_TEXTURE_WIDTH*SUBTITLE_TEXTURE_HEIGHT;
+	float fSubtitlePosition = g_settings.m_ResInfo[m_iResolution].iSubtitles - fSubtitleHeight;
 	vertex[0].p = D3DXVECTOR4( 0,	fSubtitlePosition,		0, 0 );
 	vertex[0].tu = 0;
 	vertex[0].tv = 0;
 
-	vertex[1].p = D3DXVECTOR4( (float)resInfo[m_iResolution].iWidth,	fSubtitlePosition,		0, 0 );
+	vertex[1].p = D3DXVECTOR4( (float)g_settings.m_ResInfo[m_iResolution].iWidth,	fSubtitlePosition,		0, 0 );
 	vertex[1].tu = SUBTITLE_TEXTURE_WIDTH;
 	vertex[1].tv = 0;
 
-	vertex[2].p = D3DXVECTOR4( (float)resInfo[m_iResolution].iWidth, fSubtitlePosition + fSubtitleHeight,	0, 0 );
+	vertex[2].p = D3DXVECTOR4( (float)g_settings.m_ResInfo[m_iResolution].iWidth, fSubtitlePosition + fSubtitleHeight,	0, 0 );
 	vertex[2].tu = SUBTITLE_TEXTURE_WIDTH;
 	vertex[2].tv = SUBTITLE_TEXTURE_HEIGHT;
 
@@ -431,13 +383,11 @@ static void CalculateFrameAspectRatio()
 //********************************************************************************************************
 static unsigned int Directx_ManageDisplay()
 {
-	float fOffsetX1 = (float)g_settings.m_movieCalibration[m_iResolution].left;
-	float fOffsetY1 = (float)g_settings.m_movieCalibration[m_iResolution].top;
-	float fOffsetX2 = (float)g_settings.m_movieCalibration[m_iResolution].right;
-	float fOffsetY2 = (float)g_settings.m_movieCalibration[m_iResolution].bottom;
-
-	float iScreenWidth =(float)resInfo[m_iResolution].iWidth + fOffsetX2-fOffsetX1;
-	float iScreenHeight=(float)resInfo[m_iResolution].iHeight + fOffsetY2-fOffsetY1;
+	RESOLUTION iRes = g_graphicsContext.GetVideoResolution();
+	float fOffsetX1 = (float)g_settings.m_ResInfo[iRes].Overscan.left;
+	float fOffsetY1 = (float)g_settings.m_ResInfo[iRes].Overscan.top;
+	float iScreenWidth = (float)g_settings.m_ResInfo[iRes].Overscan.width;
+	float iScreenHeight = (float)g_settings.m_ResInfo[iRes].Overscan.height;
 
 	if( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
 	{
@@ -446,12 +396,10 @@ static unsigned int Directx_ManageDisplay()
 		iScreenHeight= (float)rv.bottom-rv.top;
 		fOffsetX1    = (float)rv.left;
 		fOffsetY1    = (float)rv.top;
-		fOffsetX2    = 0.0f;
-		fOffsetY2    = 0.0f;
 	}
 
 	// Correct for HDTV_1080i -> 540p
-	if (m_iResolution == HDTV_1080i)
+	if (iRes == HDTV_1080i)
 	{
 		fOffsetY1/=2;
 		iScreenHeight/=2;
@@ -481,7 +429,7 @@ static unsigned int Directx_ManageDisplay()
 				// and keeps the Aspect ratio
 
 				// calculate AR compensation (see http://www.iki.fi/znark/video/conversion)
-				float fOutputFrameRatio = fSourceFrameRatio / resInfo[m_iResolution].fPixelRatio; 
+				float fOutputFrameRatio = fSourceFrameRatio / g_settings.m_ResInfo[iRes].fPixelRatio; 
 				if (m_iResolution == HDTV_1080i) fOutputFrameRatio *= 2;
 
 				// assume that the movie is widescreen first, so use full height
@@ -518,7 +466,7 @@ static unsigned int Directx_ManageDisplay()
 		// scale up image as much as possible
 		// and keep the aspect ratio (introduces with black bars)
 
-		float fOutputFrameRatio = fSourceFrameRatio / resInfo[m_iResolution].fPixelRatio; 
+		float fOutputFrameRatio = fSourceFrameRatio / g_settings.m_ResInfo[iRes].fPixelRatio; 
 		if (m_iResolution == HDTV_1080i) fOutputFrameRatio *= 2;
 
 		// maximize the movie width
@@ -570,10 +518,10 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
 	// if we're not in stretch mode try to put the subtitles below the video
 	if ( y0 > (int)(image_height/2)  )
 	{
-		if (iClearSubtitleRegion[m_dwVisibleOverlay] < h)
-			iClearSubtitleRegion[m_dwVisibleOverlay] = h;
 		int xpos = (SUBTITLE_TEXTURE_WIDTH-w)/2;
+//		OutputDebugString("Rendering Subs\n");
 		vo_draw_alpha_rgb32(w,h,src,srca,stride,((unsigned char *) subtitleimage) + subtitlestride*(SUBTITLE_TEXTURE_HEIGHT-h) + 4*xpos,subtitlestride);
+		iClearSubtitleRegion[m_iBackBuffer] = h;
 		return;
 	}
 	vo_draw_alpha_yuy2(w,h,src,srca,stride,((unsigned char *) image) + dstride*y0 + 2*x0,dstride);
@@ -626,8 +574,8 @@ static unsigned int query_format(unsigned int format)
 //      Uninit the whole system, this is on the same "level" as preinit.
 static void video_uninit(void)
 {
-	restore_resolution();
-	OutputDebugString("video_uninit\n");
+	OutputDebugString("video_uninit\n");	
+
 	g_graphicsContext.Get3DDevice()->EnableOverlay(FALSE);
 	for (int i=0; i <=1; i++)
 	{
@@ -653,11 +601,11 @@ static void video_check_events(void)
 /*init the video system (to support querying for supported formats)*/
 static unsigned int video_preinit(const char *arg)
 {
-	m_iResolution=PAL_4_3;
+	m_iResolution=PAL_4x3;
+	m_bPauseDrawing=false;
 	for (int i=0; i<2; i++) iClearSubtitleRegion[i] = 0;
-	m_dwVisibleOverlay=0;
+	m_iBackBuffer=0;
 	m_bFlip=false;
-	m_bFullScreen=false;
 	fs=1;
   return 0;
 }
@@ -687,15 +635,17 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
   return 0;
 }
 
-void xbox_video_render_subtitles()
+void xbox_video_render_subtitles(bool bUseBackBuffer)
 {
-  if (!m_pSubtitleTexture[m_dwVisibleOverlay])
+	int iTexture = bUseBackBuffer ? m_iBackBuffer : 1-m_iBackBuffer;
+  if (!m_pSubtitleTexture[iTexture])
 		return ;
 
 	if (!m_pSubtitleVB)
 		return;
+//	OutputDebugString("Rendering subs to screen\n");
     // Set state to render the image
-    g_graphicsContext.Get3DDevice()->SetTexture( 0, m_pSubtitleTexture[m_dwVisibleOverlay]);
+    g_graphicsContext.Get3DDevice()->SetTexture( 0, m_pSubtitleTexture[iTexture]);
     g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
     g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
     g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
@@ -726,71 +676,51 @@ static void video_flip_page(void)
 {
 	if (!m_bFlip) return;
 	m_bFlip=false;
-	m_pOverlay[m_dwVisibleOverlay]->UnlockRect(0);			
-
+	m_pOverlay[m_iBackBuffer]->UnlockRect(0);			
+	m_pSubtitleTexture[m_iBackBuffer]->UnlockRect(0);
+//	OutputDebugString("video_flip_page ...");
 	Directx_ManageDisplay();
-	if ( g_graphicsContext.IsFullScreenVideo() )
+	if (!m_bPauseDrawing)
 	{
-		g_graphicsContext.Lock();
-		g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
-		g_application.RenderFullScreen();
-		// update our subtitle position
-		xbox_video_update_subtitle_position();
-		xbox_video_render_subtitles();
-	  g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      
-		g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_dwVisibleOverlay], &rs, &rd, TRUE, 0x00010001  );
-		g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
-		g_graphicsContext.Unlock();
+		if (g_graphicsContext.IsFullScreenVideo() )
+		{
+			g_graphicsContext.Lock();
+			g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
+			g_application.RenderFullScreen();
+			// update our subtitle position
+			xbox_video_update_subtitle_position();
+			xbox_video_render_subtitles(true);
+			g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      
+			g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_iBackBuffer], &rs, &rd, TRUE, 0x00010001  );
+			g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
+			g_graphicsContext.Unlock();
+		}
+		else
+		{
+			g_graphicsContext.Lock();
+			g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_iBackBuffer], &rs, &rd, TRUE, 0x00010001  );
+			g_graphicsContext.Unlock();
+		}
 	}
-/*	else if ( g_graphicsContext.IsCalibrating() )
-	{
-		g_graphicsContext.Lock();
-		// update our subtitle position
-		SetSubtitlePosition();
-		RenderSubtitles();
-		g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_dwVisibleOverlay], &rs, &rd, TRUE, 0x00010001  );
-		g_graphicsContext.Unlock();
-	}*/
-	else
-	{
-		g_graphicsContext.Lock();
-		g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_dwVisibleOverlay], &rs, &rd, TRUE, 0x00010001  );
-		g_graphicsContext.Unlock();
-	}
-
-	m_dwVisibleOverlay=1-m_dwVisibleOverlay;
+	m_iBackBuffer=1-m_iBackBuffer;
 
 	D3DLOCKED_RECT rectLocked;
-	if ( D3D_OK == m_pOverlay[m_dwVisibleOverlay]->LockRect(0,&rectLocked,NULL,0L  ))
+	if ( D3D_OK == m_pOverlay[m_iBackBuffer]->LockRect(0,&rectLocked,NULL,0L  ))
 	{
 		dstride=rectLocked.Pitch;
 		image  =(unsigned char*)rectLocked.pBits;
 	}
 	D3DLOCKED_RECT rectLocked2;
-	if ( D3D_OK == m_pSubtitleTexture[m_dwVisibleOverlay]->LockRect(0,&rectLocked2,NULL,0L  ))
+	if ( D3D_OK == m_pSubtitleTexture[m_iBackBuffer]->LockRect(0,&rectLocked2,NULL,0L  ))
 	{
 		subtitlestride=rectLocked2.Pitch;
 		subtitleimage  =(unsigned char*)rectLocked2.pBits;
 	}
 
-	if (iClearSubtitleRegion[m_dwVisibleOverlay])
-		ClearSubtitleRegion(m_dwVisibleOverlay);
+	if (iClearSubtitleRegion[m_iBackBuffer])
+		ClearSubtitleRegion(m_iBackBuffer);
 
-	bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
-	if ( m_bFullScreen != bFullScreen )
-	{
-		m_bFullScreen= bFullScreen;
-		g_graphicsContext.Lock();
-		if (m_bFullScreen) 
-		{
-			choose_best_resolution(m_fFPS);
-		}
-		else 
-		{
-			restore_resolution();
-		}
-		g_graphicsContext.Unlock();
-	}
+//	OutputDebugString("Done\n");
 }
 
 void xbox_video_getRect(RECT& SrcRect, RECT& DestRect)
@@ -801,7 +731,7 @@ void xbox_video_getRect(RECT& SrcRect, RECT& DestRect)
 
 void xbox_video_getAR(float& fAR)
 {
-	float fOutputPixelRatio = resInfo[m_iResolution].fPixelRatio;
+	float fOutputPixelRatio = g_settings.m_ResInfo[m_iResolution].fPixelRatio;
 	if (m_iResolution == HDTV_1080i)
 		fOutputPixelRatio /= 2;
 	float fWidth = (float)(rd.right - rd.left);
@@ -809,40 +739,16 @@ void xbox_video_getAR(float& fAR)
 	fAR = fWidth/fHeight*fOutputPixelRatio;
 }
 
-void xbox_video_update()
+void xbox_video_update(bool bPauseDrawing)
 {
+//	OutputDebugString("Calling xbox_video_update ... ");
+	m_bPauseDrawing = bPauseDrawing;
 	bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
-	if ( m_bFullScreen != bFullScreen )
-	{
-		m_bFullScreen= bFullScreen;
-		g_graphicsContext.Lock();
-		if (m_bFullScreen) 
-		{
-			choose_best_resolution(m_fFPS);
-		}
-		else 
-		{
-			restore_resolution();
-		}
-		g_graphicsContext.Unlock();
-	}
+	g_graphicsContext.Lock();
+	g_graphicsContext.SetVideoResolution(bFullScreen ? m_iResolution:g_stSettings.m_ScreenResolution);
+	g_graphicsContext.Unlock();
 	Directx_ManageDisplay();
-	if ( g_graphicsContext.IsFullScreenVideo() )
-	{
-		g_graphicsContext.Lock();
-		g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
-		g_application.RenderFullScreen();
-	  g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      
-		g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_dwVisibleOverlay], &rs, &rd, TRUE, 0x00010001  );
-		g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
-		g_graphicsContext.Unlock();
-	}
-	else
-	{
-		g_graphicsContext.Lock();
-		g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_dwVisibleOverlay], &rs, &rd, TRUE, 0x00010001  );
-		g_graphicsContext.Unlock();
-	}
+//	OutputDebugString("Done \n");
 }
 /********************************************************************************************************
   draw_frame(): this is the older interface, this displays only complete
@@ -932,13 +838,10 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
 	image_height	 = height;
 	d_image_width  = d_width;
 	d_image_height = d_height;
-	m_fFPS = fps;
-
-	m_bFullScreen=g_graphicsContext.IsFullScreenVideo();
 
 	// calculate the input frame aspect ratio
 	CalculateFrameAspectRatio();
-	choose_best_resolution(m_fFPS);
+	choose_best_resolution(fps);
 
 	fs=1;//fullscreen
 
@@ -946,7 +849,7 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
 	Directx_CreateOverlay(image_format);
 	// get stride
 	D3DLOCKED_RECT rectLocked;
-	if ( D3D_OK == m_pOverlay[m_dwVisibleOverlay]->LockRect(0,&rectLocked,NULL,0L  ) )
+	if ( D3D_OK == m_pOverlay[m_iBackBuffer]->LockRect(0,&rectLocked,NULL,0L  ) )
 	{
 		dstride=rectLocked.Pitch;
 		image  =(unsigned char*)rectLocked.pBits;

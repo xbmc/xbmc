@@ -492,13 +492,13 @@ extern void xbox_audio_registercallback(IAudioCallback* pCallback);
 extern void xbox_audio_unregistercallback();
 extern void xbox_video_getRect(RECT& SrcRect, RECT& DestRect);
 extern void xbox_video_getAR(float& fAR);
-extern void xbox_video_update();
+extern void xbox_video_update(bool bPauseDrawing);
 extern void xbox_video_update_subtitle_position();
-extern void xbox_video_render_subtitles();
+extern void xbox_video_render_subtitles(bool bUseBackBuffer);
 
-void CMPlayer::Update()
+void CMPlayer::Update(bool bPauseDrawing)
 {
-	xbox_video_update();
+	xbox_video_update(bPauseDrawing);
 }
 
 void CMPlayer::GetVideoRect(RECT& SrcRect, RECT& DestRect)
@@ -539,7 +539,7 @@ void CMPlayer::UpdateSubtitlePosition()
 
 void CMPlayer::RenderSubtitles()
 {
-	xbox_video_render_subtitles();
+	xbox_video_render_subtitles(false);
 }
 
 bool CMPlayer::CanRecord() 

@@ -86,16 +86,8 @@ void CButtonTranslator::Load()
 	// Done!
 }
 
-void CButtonTranslator::ReGetAction(WORD wWindow, CAction &action)
-{	// use our stored Key
-	GetAction(wWindow, m_Key, action);
-}
-
 void CButtonTranslator::GetAction(WORD wWindow, const CKey &key, CAction &action)
 {
-	// store the key, so that if we have to, we can change windows at a later date
-	// and retrieve a new action...
-	m_Key = key;
 	// try to get the action from the current window
 	WORD wAction = GetActionCode(wWindow, key);
 	// if it's invalid, try to get it from the global map

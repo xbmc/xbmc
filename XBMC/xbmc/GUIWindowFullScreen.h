@@ -10,6 +10,7 @@ public:
   virtual bool    OnMessage(CGUIMessage& message);
   virtual void    OnAction(const CAction &action);
 	virtual void		Render();
+	void				RenderFullScreen();
 
 private:
 	bool						m_bShowInfo;

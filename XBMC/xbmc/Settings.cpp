@@ -15,7 +15,6 @@ CSettings::CSettings(void)
 	g_stSettings.m_bMyMusicSortArtistsMethod=0;	//	Name
 	g_stSettings.m_bMyMusicSortGenresMethod=0;	//	Name
 	g_stSettings.m_bMyMusicSortSongsMethod=5;	//	Title
-	memset(m_movieCalibration,0, sizeof(m_movieCalibration));
 	g_stSettings.m_bAudioOnAllSpeakers=false;
 	g_stSettings.m_iChannels=2;
 	g_stSettings.m_bUseID3=true;
@@ -46,7 +45,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bMyProgramsFlatten=false;
   strcpy(g_stSettings.szDashboard,"C:\\xboxdash.xbe");
   g_stSettings.m_iStartupWindow=0;
-  g_stSettings.m_iScreenResolution=0;
+  g_stSettings.m_ScreenResolution=PAL_4x3;
   strcpy(g_stSettings.m_strLocalIPAdres,"");
   strcpy(g_stSettings.m_strLocalNetmask,"");
   strcpy(g_stSettings.m_strGateway,"");
@@ -126,10 +125,10 @@ void CSettings::Save() const
 		fwrite(&g_stSettings,sizeof(g_stSettings),1,systemSettings);
 		fclose(systemSettings);
 	}
-	FILE *calibrationSettings = fopen("T:\\calibration.bin","wb+");
+	FILE *calibrationSettings = fopen("T:\\Calibration.bin","wb+");
     if (calibrationSettings!=NULL)
 	{
-		fwrite(m_movieCalibration,sizeof(m_movieCalibration),1,calibrationSettings);
+		fwrite(m_ResInfo,sizeof(m_ResInfo),1,calibrationSettings);
 		fclose(calibrationSettings);
 	}
 }
@@ -159,17 +158,22 @@ void CSettings::Load()
 	{
 		OutputDebugString("settings not found\n");
 	}
+	// Reset to defaults
+	for (int i=0;i<10; i++)
+	{
+		g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
+	}
 	// load calibration file...
-	FILE* calibrationSettings = fopen("T:\\calibration.bin","rb");
+	FILE* calibrationSettings = fopen("T:\\Calibration.bin","rb");
 	if (calibrationSettings!=NULL)
 	{
-		OutputDebugString("found calibration.bin\n");
-		fread(m_movieCalibration,sizeof(m_movieCalibration),1,calibrationSettings);
+		OutputDebugString("found Calibration.bin\n");
+		fread(m_ResInfo,sizeof(m_ResInfo),1,calibrationSettings);
 		fclose(calibrationSettings);
 	}
 	else
 	{
-		OutputDebugString("calibration.bin not found\n");
+		OutputDebugString("Calibration.bin not found\n");
 	}
 	// load xml file...
 	CStdString strXMLFile;

@@ -37,7 +37,7 @@ public:
 	virtual void		GetAudioInfo( CStdString& strAudioInfo);
 	virtual void		GetVideoInfo( CStdString& strVideoInfo);
 	virtual void		GetGeneralInfo( CStdString& strVideoInfo);
-	virtual void    Update();
+	virtual void		Update(bool bPauseDrawing=false);
 	virtual void		GetVideoRect(RECT& SrcRect, RECT& DestRect);
 	virtual void		GetVideoAspectRatio(float& fAR);
 	virtual void		AudioOffset(bool bPlus=true);

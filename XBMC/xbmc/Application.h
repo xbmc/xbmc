@@ -23,7 +23,7 @@
 #include "GUIWindowSettingsGeneral.h"
 #include "GUIWindowSettingsScreen.h"
 #include "GUIWindowSettingsUICalibration.h"
-#include "GUIWindowSettingsMovieCalibration.h"
+#include "GUIWindowSettingsScreenCalibration.h"
 #include "GUIWindowMusicInfo.h" 
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowScriptsInfo.h"
@@ -76,7 +76,6 @@ public:
 	bool									IsPlayingAudio() const ;
 	bool									IsPlayingVideo() const ;
 	void									OnKey(CKey& key);
-	void									GetD3DParameters(D3DPRESENT_PARAMETERS& params);
 	void									RenderFullScreen();
 	void									SpinHD();
 	void									ResetAllControls();
@@ -97,7 +96,7 @@ public:
 	CGUIWindowScriptsInfo						m_guiScriptsInfo;
 	CGUIWindowSettingsScreen				m_guiSettingsScreen;
 	CGUIWindowSettingsUICalibration	m_guiSettingsUICalibration;
-	CGUIWindowSettingsMovieCalibration m_guiSettingsMovieCalibration;
+	CGUIWindowSettingsScreenCalibration m_guiSettingsScreenCalibration;
 	CGUIWindowSettingsSlideShow			m_guiSettingsSlideShow;
 	CGUIWindowScripts								m_guiScripts;
 	CGUIWindowSettingsFilter				m_guiSettingsFilter;

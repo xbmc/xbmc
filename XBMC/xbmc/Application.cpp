@@ -81,6 +81,8 @@ HRESULT CApplication::Create()
 	string strSkinPath=strPath;
 	strSkinPath+=CStdString("\\skin");
 
+	// Transfer the resolution information to our graphics context
+	g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
 	g_settings.Load();
 	helper.Remap("C:,Harddisk0\\Partition2");
 	helper.Remap("E:,Harddisk0\\Partition1");
@@ -98,71 +100,10 @@ HRESULT CApplication::Create()
 	CStdString strLanguagePath;
 	strLanguagePath.Format("%s\\language\\%s\\strings.xml", strPath.c_str(),g_stSettings.szDefaultLanguage);
 	g_localizeStrings.Load(strLanguagePath );
-	// HACK FOR BUTTON MAPPING
 	g_buttonTranslator.Load();
-	// END HACK
 
-	DWORD dwStandard=XGetVideoStandard();
-	DWORD dwFlags=XGetVideoFlags();
-	bool bCanDoWidescreen = (dwFlags & XC_VIDEO_FLAGS_WIDESCREEN)!=0;	// can widescreen be enabled?
-
-	//	0	PAL 720x576 @ 4:3
-	//	1	PAL 720x576 @ 16:9
-	//	2	NTSC 720x480 @ 4:3
-	//	3	NTSC 720x480 @ 16:9
-	//	4	HDTV 1920x1080 @ 16:9
-	//	5	HDTV 1280x720  @ 16:9
-	
-	if (g_stSettings.m_iScreenResolution==4) //HDTV 1920x1080 @ 16:9
-	{
-		if ( dwFlags&XC_VIDEO_FLAGS_HDTV_1080i)
-		{
-			m_d3dpp.BackBufferWidth        = 1920;
-			m_d3dpp.BackBufferHeight       = 1080;
-			m_d3dpp.Flags=D3DPRESENTFLAG_WIDESCREEN;
-		}
-		else g_stSettings.m_iScreenResolution=-1;
-	}
-	else if (g_stSettings.m_iScreenResolution==5) //HDTV 1280x720  @ 16:9
-	{
-		if ( dwFlags&XC_VIDEO_FLAGS_HDTV_720p)
-		{
-			m_d3dpp.BackBufferWidth        = 1280;
-			m_d3dpp.BackBufferHeight       = 720;
-			m_d3dpp.Flags=D3DPRESENTFLAG_WIDESCREEN|D3DPRESENTFLAG_PROGRESSIVE;
-		}
-		else g_stSettings.m_iScreenResolution=-1;
-	}
-
-	if (g_stSettings.m_iScreenResolution <= 3)
-	{
-		if (dwStandard==XC_VIDEO_STANDARD_PAL_I)
-		{
-			if (g_stSettings.m_iScreenResolution<0 || g_stSettings.m_iScreenResolution>1)
-				g_stSettings.m_iScreenResolution=0;
-			m_d3dpp.BackBufferWidth        = 720;
-			m_d3dpp.BackBufferHeight       = 576;
-			if (g_stSettings.m_iScreenResolution==1)
-			{
-				if (bCanDoWidescreen)
-					m_d3dpp.Flags=D3DPRESENTFLAG_WIDESCREEN;
-			}
-		}
-		else
-		{
-			//ntsc
-			if (g_stSettings.m_iScreenResolution<2 || g_stSettings.m_iScreenResolution>3)
-				g_stSettings.m_iScreenResolution=2;
-			m_d3dpp.BackBufferWidth        = 720;
-			m_d3dpp.BackBufferHeight       = 480;
-			if (g_stSettings.m_iScreenResolution==3)
-			{
-				if (bCanDoWidescreen)
-					m_d3dpp.Flags=D3DPRESENTFLAG_WIDESCREEN;
-			}
-		}
-	}
-
+	g_graphicsContext.SetGUIResolution(g_stSettings.m_ScreenResolution);
+	g_graphicsContext.SetOffset(g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY);
 	m_gWindowManager.Initialize();
 	g_actionManager.SetScriptActionCallback(&m_pythonParser);
 	return CXBApplicationEx::Create();
@@ -233,7 +174,7 @@ HRESULT CApplication::Initialize()
 				m_pWebServer->Start(ipadres.c_str(), 80, "Q:\\web");
 			}  
   }
-	g_graphicsContext.Set(m_pd3dDevice,m_d3dpp.BackBufferWidth,m_d3dpp.BackBufferHeight, g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY, (m_d3dpp.Flags&D3DPRESENTFLAG_WIDESCREEN) !=0 );
+	g_graphicsContext.SetD3DDevice(m_pd3dDevice);//,m_d3dpp.BackBufferWidth,m_d3dpp.BackBufferHeight, g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY, (m_d3dpp.Flags&D3DPRESENTFLAG_WIDESCREEN) !=0 );
 	LoadSkin(g_stSettings.szDefaultSkin);
   m_gWindowManager.Add(&m_guiHome);											// window id = 0
   m_gWindowManager.Add(&m_guiPrograms);									// window id = 1
@@ -246,7 +187,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiSettingsGeneral);					// window id = 8
 	m_gWindowManager.Add(&m_guiSettingsScreen);						// window id = 9
 	m_gWindowManager.Add(&m_guiSettingsUICalibration);		// window id = 10
-	m_gWindowManager.Add(&m_guiSettingsMovieCalibration);	// window id = 11
+	m_gWindowManager.Add(&m_guiSettingsScreenCalibration);	// window id = 11
 	m_gWindowManager.Add(&m_guiSettingsSlideShow);				// window id = 12 slideshow:window id 2007
 	m_gWindowManager.Add(&m_guiSettingsFilter);						// window id = 13
 	m_gWindowManager.Add(&m_guiSettingsMusic);						// window id = 14
@@ -260,7 +201,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiDialogOK);									// window id = 2002
 	m_gWindowManager.Add(&m_guiVideoInfo);								// window id = 2003
 	m_gWindowManager.Add(&m_guiScriptsInfo);							// window id = 2004
-
+	m_gWindowManager.Add(&m_guiWindowFullScreen);				// window id = 2005
 	m_gWindowManager.Add(&m_guiWindowVisualisation);			// window id = 2006
 	m_gWindowManager.Add(&m_guiWindowSlideshow);				// window id = 2007
 
@@ -296,8 +237,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiMusicOverlay.FreeResources();
 	m_guiMusicOverlay.ClearAll();
 	
-	m_guiWindowFullScreen.FreeResources();
-	m_guiWindowFullScreen.ClearAll();
+//	m_guiWindowFullScreen.FreeResources();
+//	m_guiWindowFullScreen.ClearAll();
 
 	m_gWindowManager.DeInitialize();
 	g_TextureManager.Cleanup();
@@ -324,8 +265,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiVideoInfo.Load( strSkinPath+"\\DialogVideoInfo.xml" );  
 	m_guiMusicOverlay.Load( strSkinPath+"\\musicOverlay.xml" );  
 	m_guiSettingsScreen.Load( strSkinPath+"\\settingsScreen.xml" );
-  m_guiSettingsUICalibration.Load( strSkinPath+"\\settingsUICalibration.xml" );
-	m_guiSettingsMovieCalibration.Load( strSkinPath+"\\settingsMovieCalibration.xml" );
+	m_guiSettingsUICalibration.Load( strSkinPath+"\\settingsUICalibration.xml" );
+	m_guiSettingsScreenCalibration.Load( strSkinPath+"\\settingsScreenCalibration.xml" );
 	m_guiSettingsSlideShow.Load( strSkinPath+"\\SettingsSlideShow.xml" );
 	m_guiSettingsFilter.Load( strSkinPath+"\\SettingsFilter.xml" );
 	m_guiWindowVideoOverlay.Load( strSkinPath+"\\videoOverlay.xml" );
@@ -337,7 +278,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 	m_guiMusicOverlay.AllocResources();
 	m_guiWindowVideoOverlay.AllocResources();
-	m_guiWindowFullScreen.AllocResources();
+//	m_guiWindowFullScreen.AllocResources();
 	m_gWindowManager.AddMsgTarget(this);
 	m_gWindowManager.SetCallback(*this);
 
@@ -352,7 +293,7 @@ void CApplication::Render()
 	g_applicationMessenger.ProcessMessages();
 	
 	// dont show GUI when playing full screen video
-	if ( IsPlayingVideo() )
+	if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
 	{
 		if ( g_graphicsContext.IsFullScreenVideo() ) 
 		{
@@ -362,6 +303,9 @@ void CApplication::Render()
 			Sleep(50);
 			return;
 		}
+	}
+	if (IsPlayingVideo())
+	{
 		g_graphicsContext.EnablePreviewWindow(true);
 	}
 	else
@@ -450,25 +394,14 @@ void CApplication::OnKey(CKey& key)
 
 	if ( IsPlayingVideo() )
 	{
-		if (action.wID == ACTION_SHOW_GUI)
+		if (action.wID == ACTION_SHOW_GUI && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
 		{
-			// switch between fullscreen & normal video screen
+			// switch to fullscreen mode
+			OutputDebugString("Flushing Texture Manager\n");
 			g_TextureManager.Flush();
-			g_graphicsContext.Lock();
-			g_graphicsContext.SetFullScreenVideo( !g_graphicsContext.IsFullScreenVideo() );
-			g_graphicsContext.Unlock();
-			m_pd3dDevice->BlockUntilVerticalBlank();      
-			Sleep(50);
-			m_pd3dDevice->BlockUntilVerticalBlank();      
-			Sleep(200);
-			m_pPlayer->Update();
-			return;
-		}
-		if (g_graphicsContext.IsFullScreenVideo())
-		{
-			// get the new action for the FullScreenVideo window
-			g_buttonTranslator.ReGetAction(WINDOW_FULLSCREEN_VIDEO, action);
-			m_guiWindowFullScreen.OnAction(action);
+			OutputDebugString("Switching to FullScreen\n");
+			m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+			OutputDebugString("Now in Fullscreen mode\n");
 			return;
 		}
 	}
@@ -485,7 +418,7 @@ void CApplication::OnKey(CKey& key)
 	}
 	m_gWindowManager.OnAction(action);
 
-	// handle extra global presses (FIXME)
+	// handle extra global presses
 	if (action.wID == ACTION_PAUSE)
 	{
 		if(m_pPlayer) m_pPlayer->Pause();
@@ -722,6 +655,7 @@ bool CApplication::PlayFile(const CStdString& strFile)
 
 void CApplication::OnPlayBackEnded()
 {
+	OutputDebugString("Playback has finished\n");
 	CGUIMessage msg( GUI_MSG_PLAYBACK_ENDED, 0, 0, 0, 0, NULL );
 	m_gWindowManager.SendThreadMessage( msg );
 }
@@ -757,14 +691,17 @@ bool CApplication::IsPlayingVideo() const
 	return false;
 }
 
-
-void CApplication::GetD3DParameters(D3DPRESENT_PARAMETERS& params)
-{
-	memcpy(&params, &m_d3dpp, sizeof(params));
-}
 void CApplication::RenderFullScreen()
 {
-	m_guiWindowFullScreen.Render();
+//	m_guiWindowFullScreen.RenderFullScreen();
+//	OutputDebugString("RenderFullScreen ...\n");
+	if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+	{
+//		OutputDebugString("Actually doing RenderFullScreen\n");
+		CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)m_gWindowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
+		pFSWin->RenderFullScreen();
+	}
+//	OutputDebugString("RenderFullScreen Done\n");
 }
 
 void CApplication::SpinHD()
@@ -805,7 +742,7 @@ void CApplication::SpinHD()
 		{
 			bool bTimeOut=(long)(timeGetTime() - m_dwIdleTime) >= 10L*1000L ;
 			// music stopped.
-			if (m_gWindowManager.GetActiveWindow()==2006)
+			if (m_gWindowManager.GetActiveWindow()==WINDOW_VISUALISATION)
 			{
 				if (g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size() ==0 || bTimeOut)
 				{
@@ -830,7 +767,7 @@ void CApplication::ResetAllControls()
 {
 	m_guiMusicOverlay.ResetAllControls();
 	m_guiWindowVideoOverlay.ResetAllControls();
-	m_guiWindowFullScreen.ResetAllControls();
+//	m_guiWindowFullScreen.ResetAllControls();
 }
 bool CApplication::OnMessage(CGUIMessage& message)
 {
@@ -855,6 +792,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
 			{
 				g_playlistPlayer.PlayNext(true);
 			}
+			if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow()==WINDOW_FULLSCREEN_VIDEO)
+				m_gWindowManager.PreviousWindow();
 		}
 		break;
 
