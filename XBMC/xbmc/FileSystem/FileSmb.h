@@ -49,6 +49,7 @@ namespace XFILE
 		virtual bool					ReadString(char *szLine, int iLineLength);
 		virtual unsigned int	Read(void* lpBuf, __int64 uiBufSize);
 		virtual bool					Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport, bool bBinary=true);
+		virtual bool			Exists(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport);
 		virtual __int64			GetLength();
 		virtual __int64			GetPosition();
 		int										Write(const void* lpBuf, __int64 uiBufSize);
