@@ -2078,6 +2078,7 @@
 <string><id>13334</id><value>Editar Etiqueta</value></string>
 <string><id>13335</id><value>Fazer Padrão</value></string>
 <string><id>13336</id><value>Remover Botão</value></string>
+<string><id>13337</id><value>2 Canais PCM (Direto)</value></string>
 <string><id>14000</id><value>Stacking: Off</value></string>
 <string><id>14001</id><value>Stacking: Simple</value></string>
 <string><id>14002</id><value>Stacking: Fuzzy</value></string>
@@ -2086,4 +2087,6 @@
 <string><id>14005</id><value>Conferindo lista de streams...</value></string>
 <string><id>14006</id><value>Não foi possível baixar a lista de streams</value></string>
 <string><id>14007</id><value>Não foi possível baixar a lista de arquivos</value></string>
+<string><id>14008</id><value>Ativar notificação do Kai</value></string>
+<string><id>14009</id><value>Diretório de Jogos</value></string>
 </strings>
