@@ -869,3 +869,10 @@ void CApplication::SpinHD()
 		}
 	}
 }
+
+void CApplication::ResetAllControls()
+{
+	m_guiMusicOverlay.ResetAllControls();
+	m_guiWindowVideoOverlay.ResetAllControls();
+	m_guiWindowFullScreen.ResetAllControls();
+}
