@@ -12,6 +12,7 @@
 #include "FileRTV.h"
 #include "FileSndtrk.h"
 #include "FileDAAP.h"
+#include "FileCDDA.h"
 using namespace XFILE;
 
 CFileFactory::CFileFactory()
@@ -27,6 +28,7 @@ IFile* CFileFactory::CreateLoader(const CStdString& strFileName)
 {
 	CURL url(strFileName);
 	CStdString strProtocol=url.GetProtocol();
+	strProtocol.MakeLower();
 
 	if (strProtocol=="http")				return NULL;
 	if (strProtocol=="iso9660")			return (IFile*)new CFileISO();
@@ -37,6 +39,7 @@ IFile* CFileFactory::CreateLoader(const CStdString& strFileName)
 	if (strProtocol=="rtv")					return (IFile*)new CFileRTV();
 	if (strProtocol=="soundtrack")	return (IFile*)new CFileSndtrk();
 	if (strProtocol=="daap")				return (IFile*)new CFileDAAP();
+	if (strProtocol=="cdda")				return (IFile*)new CFileCDDA();
 
   return (IFile*)new CFileHD();
 }

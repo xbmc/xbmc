@@ -20,7 +20,7 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const CStdString& strCore,IPlayerCallb
 	strCoreLower.ToLower();
 	if (strCoreLower == "dvdplayer") return new CDVDPlayer(callback);
 	if (strCoreLower == "mplayer") return new CMPlayer(callback);
-	if (strCoreLower == "cdda") return new CDDAPlayer(callback);
+	if (strCoreLower == "cdda") return new CCDDAPlayer(callback);
 	if (strCoreLower == "mod") return new ModPlayer(callback);
 	if (strCoreLower == "sid") return new SidPlayer(callback);
 	//if (strCoreLower=="xine") return new CXinePlayer(callback);

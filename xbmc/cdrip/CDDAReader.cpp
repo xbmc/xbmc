@@ -14,12 +14,6 @@ CCDDAReader::CCDDAReader()
 	m_hReadEvent = CreateEvent(NULL, false, false, "rip read event");
 	m_hDataReadyEvent = CreateEvent(NULL, false, false, "rip dataready event");
 	m_hStopEvent = CreateEvent(NULL, false, false, "rip stop event");
-
-	m_pCdIo = NULL;
-
-	m_lsnStart = 0;
-	m_lsnEnd = 0;
-	m_lsnCurrent = 0;
 }
 
 CCDDAReader::~CCDDAReader()
@@ -36,23 +30,13 @@ CCDDAReader::~CCDDAReader()
 	if (m_sRipBuffer[1].pbtStream) delete []m_sRipBuffer[1].pbtStream;
 }
 
-bool CCDDAReader::Init(int iTrack)
+bool CCDDAReader::Init(const char* strFileName)
 {
-	m_pCdIo=cdio_open_win32("D:");
-
 	// Open the Ripper session
-	if (!m_pCdIo)
-	{
-		CLog::Log(LOGERROR, "Error: Opening DVD-Drive failed");
+	if (!m_fileCdda.Open(strFileName))
 		return false;
-	}
 
-	// Get Sart and end of the track to rip
-	m_lsnStart = cdio_get_track_lsn(m_pCdIo, iTrack);
-	m_lsnEnd = cdio_get_track_last_lsn(m_pCdIo, iTrack);
-	m_lsnCurrent = m_lsnStart;
-
-	CLog::Log(LOGINFO, "Track %d, Sectors %d", iTrack,	m_lsnEnd - m_lsnStart);
+	CLog::Log(LOGINFO, "%s, Sectors %d", strFileName, m_fileCdda.GetLength()/CDIO_CD_FRAMESIZE_RAW);
 
 	// allocate 2 buffers
 	// read around 128k per chunk. This makes the cd reading less noisy.
@@ -79,39 +63,29 @@ bool CCDDAReader::DeInit()
 	m_sRipBuffer[1].pbtStream = NULL;
 
 	// Close the Ripper session
-	if (m_pCdIo)
-	{
-		cdio_destroy(m_pCdIo);
-		m_pCdIo=NULL;
-	}
+	m_fileCdda.Close();
 
 	return true;
 }
 
 int CCDDAReader::GetPercent()
 {
-	return ((m_lsnCurrent-m_lsnStart)*100)/(m_lsnEnd-m_lsnStart);
+	return (int)((m_fileCdda.GetPosition()*100)/m_fileCdda.GetLength());
 }
 
 int CCDDAReader::ReadChunk()
 {
-	// Are there enough sectors left to rip a fill chunk
-	int iSectorCount=SECTOR_COUNT;
-	while (m_lsnCurrent+iSectorCount>m_lsnEnd && iSectorCount>1)
-		iSectorCount--;
-
 	// Read data
-	if (cdio_read_audio_sectors(m_pCdIo, m_sRipBuffer[m_iCurrentBuffer].pbtStream, m_lsnCurrent, iSectorCount)!=DRIVER_OP_SUCCESS)
+	DWORD dwBytesRead=m_fileCdda.Read(m_sRipBuffer[m_iCurrentBuffer].pbtStream, SECTOR_COUNT*CDIO_CD_FRAMESIZE_RAW);
+	if (dwBytesRead==0)
 	{
 		m_sRipBuffer[m_iCurrentBuffer].lBytesRead=0;
-		CLog::Log(LOGERROR, "Reading %d sectors of audio data starting at lsn %d failed", iSectorCount, m_lsnCurrent);
 		return CDDARIP_ERR;
 	}
 
-	m_sRipBuffer[m_iCurrentBuffer].lBytesRead=CDIO_CD_FRAMESIZE_RAW*iSectorCount;
-	m_lsnCurrent+=iSectorCount;
+	m_sRipBuffer[m_iCurrentBuffer].lBytesRead=dwBytesRead;
 
-	if (m_lsnCurrent == m_lsnEnd) return CDDARIP_DONE; 
+	if (m_fileCdda.GetPosition() == m_fileCdda.GetLength()) return CDDARIP_DONE; 
 
 	return CDDARIP_OK;
 }
