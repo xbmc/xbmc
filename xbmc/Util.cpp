@@ -1544,6 +1544,10 @@ void CUtil::CacheSubtitles(const CStdString& strMovie)
           {
             ::DeleteFile(strFile.c_str());
           }
+					else if (strFile.Find("vobsub_queue")>=0 )
+					{
+						::DeleteFile(strFile.c_str());
+					}
         }
       }
     } while (FindNextFile((HANDLE)hFind, &wfd));
