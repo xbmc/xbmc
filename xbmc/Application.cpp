@@ -112,7 +112,7 @@ HRESULT CApplication::Create()
 	}
 
 	CStdString strLanguagePath;
-	strLanguagePath.Format("%s\\language\\%s\\strings.xml", strPath.c_str(),g_stSettings.szDefaultLanguage);
+	strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_stSettings.szDefaultLanguage);
 	g_localizeStrings.Load(strLanguagePath );
 	g_buttonTranslator.Load();
 
