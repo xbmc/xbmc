@@ -3209,7 +3209,6 @@ bool CMusicDatabase::GetAlbumsNav(VECALBUMS& albums, const CStdString &strGenre1
     strSQL2 += "join song on exgenresong.idsong = song.idsong ";
     strSQL2 += "join path on song.idpath = path.idpath ";
     strSQL2 += "join album on song.idalbum = album.idalbum ";
-    strSQL2 += "join artist on song.idartist = artist.idartist ";
 
     // get albums by primary genre and extra artist
     CStdString strSQL3;
@@ -3261,17 +3260,19 @@ bool CMusicDatabase::GetAlbumsNav(VECALBUMS& albums, const CStdString &strGenre1
       iQuery += 2;
     }
 
-    // if no genre and artist, need to bind artists to album table
+    // if no artist, need to bind artists to album table
     // so that albums show up with "Various Artists"
-    if (iQuery == 0)
+    // otherwise the album shows up once for each artist!
+    if (iQuery < 2)
     {
       strSQL1 += "join artist on album.idartist = artist.idartist ";
-      strSQL1 += "group by album.strAlbum ";
+      strSQL2 += "join artist on album.idartist = artist.idartist ";
     }
-    // otherwise bind artists to song table
+    // if the artist is provided, bind artists to song table
     else
     {
       strSQL1 += "join artist on song.idartist = artist.idartist ";
+      strSQL2 += "join artist on song.idartist = artist.idartist ";
     }
 
     strSQL1 += strWhere;
@@ -3283,12 +3284,12 @@ bool CMusicDatabase::GetAlbumsNav(VECALBUMS& albums, const CStdString &strGenre1
     // no genre, no artist
     // only get albums
     if (iQuery == 0)
-      strSQL = strSQL1;
+      strSQL = strSQL1 + "group by album.idalbum ";
 
     // genre only
     // get albums off primary and secondary genres
     else if (iQuery == 1)
-      strSQL = strSQL1 + "union " + strSQL2;
+      strSQL = strSQL1 + "union " + strSQL2 + "group by album.idalbum ";
 
     // artist only
     // get albums off primary and secondary artists
@@ -3329,7 +3330,7 @@ bool CMusicDatabase::GetAlbumsNav(VECALBUMS& albums, const CStdString &strGenre1
   return false;
 }
 
-bool CMusicDatabase::GetSongsNav(VECSONGS& songs, const CStdString &strGenre1, const CStdString &strArtist1, const CStdString &strAlbum1)
+bool CMusicDatabase::GetSongsNav(VECSONGS& songs, const CStdString &strGenre1, const CStdString &strArtist1, const CStdString &strAlbum1, const CStdString &strAlbumPath1)
 {
   try
   {
@@ -3357,6 +3358,11 @@ bool CMusicDatabase::GetSongsNav(VECSONGS& songs, const CStdString &strGenre1, c
       RemoveInvalidChars(strAlbum);
       iQueryType += 1;
     }
+    CStdString strAlbumPath = strAlbumPath1;
+    if (!strAlbumPath.IsEmpty())
+    {
+      RemoveInvalidChars(strAlbumPath);
+    }
 
     CStdString strSQL;
     CStdString strWhere;
@@ -3375,7 +3381,7 @@ bool CMusicDatabase::GetSongsNav(VECSONGS& songs, const CStdString &strGenre1, c
       // filtered by album
       if (iQueryType == 1)
       {
-        strWhere.Format("where album.strAlbum = '%s' ", strAlbum.c_str());
+        strWhere.Format("where album.strAlbum = '%s' and path.strPath = '%s' ", strAlbum.c_str(), strAlbumPath.c_str());
         strSQL += strWhere;
       }
     }
@@ -3451,6 +3457,18 @@ bool CMusicDatabase::GetSongsNav(VECSONGS& songs, const CStdString &strGenre1, c
       if (iQueryTypeWhere >= 1)
       {
         strTemp.Format("album.strAlbum = '%s' ", strAlbum.c_str());
+        if (strWhere.IsEmpty())
+          strWhere += "where ";
+        else
+          strWhere += "and ";
+        strWhere += strTemp;
+      }
+      
+      // need to filter by album path if its available to distinguish between
+      // albums of the same name in different directories
+      if (!strAlbumPath.IsEmpty())
+      {
+        strTemp.Format("path.strPath = '%s' ", strAlbumPath.c_str());
         if (strWhere.IsEmpty())
           strWhere += "where ";
         else

@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 29-03-2005 fixed: duplicate album entries in My Music Nav window for Various Artists albums when no artist filter is applied
   - 29-03-2005 fixed: Videodatabase wasn't retrieving boolean values from database correctly (ex. FrameRateAdjustment wherent being restored)
   - 29-03-2005 fixed: Incorrect options given to mplayer when framerateadjustement was enabled. Could have been cause of problems with autosync and subtitles.
   - 28-03-2005 updated: Chinese (Traditional) language file (Thnx to woozc)
