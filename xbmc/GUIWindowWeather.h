@@ -40,10 +40,12 @@ protected:
 	void					LocalizeDay(char *szDay);
 	void					LocalizeOverview(char *szStr);
 	void					LocalizeOverviewToken(char *szStr);
+	void					LoadLocalizedToken();
+
 
 
 	CHTTP					m_httpGrabber;
-	char					m_szLocation[256];
+	char					m_szLocation[3][100];
 	char					m_szUpdated[256];
 	char					m_szNowIcon[256];
 	char					m_szNowCond[256];
@@ -60,4 +62,8 @@ protected:
 	DWORD					m_lRefreshTime;		//for autorefresh
 
 	unsigned int			m_iCurWeather;
+
+	map<wstring,DWORD> m_localizedTokens;
+	typedef map<wstring,DWORD>::const_iterator ilocalizedTokens;
+
 };
