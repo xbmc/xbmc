@@ -1021,6 +1021,9 @@ void xbox_video_render()
 	g_graphicsContext.Get3DDevice()->SetTexture(1, NULL);
 	g_graphicsContext.Get3DDevice()->SetTexture(2, NULL);
 
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_YUVENABLE, FALSE );
+	g_graphicsContext.Get3DDevice()->SetPixelShader( NULL );
+
 	xbox_video_render_osd();
 }
 //************************************************************************************
