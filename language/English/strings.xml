@@ -1688,6 +1688,10 @@
 		<value>Calibration</value>
 	</string>
 	<string>
+		<id>497</id>
+		<value>Hide Media Extensions</value>
+	</string>
+	<string>
 		<id>10000</id>
 		<value>Home</value>
 	</string>

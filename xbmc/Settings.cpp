@@ -311,6 +311,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_iSambaDebugLevel = 0;
 	strcpy(g_stSettings.m_strSambaWorkgroup, "WORKGROUP");
 	strcpy(g_stSettings.m_strSambaWinsServer, "");
+	g_stSettings.m_bHideExtensions = false;
 }
 
 CSettings::~CSettings(void)
@@ -1058,6 +1059,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetString(pElement, "areacode2", g_stSettings.m_szWeatherArea[1], "NLXX0002");			//WEATHER SETTINGS
 		GetString(pElement, "areacode3", g_stSettings.m_szWeatherArea[2], "CAXX0343");			//WEATHER SETTINGS
 		GetInteger(pElement, "osdtimeout", g_stSettings.m_iOSDTimeout,5,0,INT_MAX);
+		GetBoolean(pElement, "hideextensions", g_stSettings.m_bHideExtensions);
 	}
 	// slideshow settings
 	pElement = pRootElement->FirstChildElement("slideshow");
@@ -1377,6 +1379,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetString(pNode, "areacode2", g_stSettings.m_szWeatherArea[1]);			//WEATHER SETTINGS
 	SetString(pNode, "areacode3", g_stSettings.m_szWeatherArea[2]);			//WEATHER SETTINGS
 	SetInteger(pNode, "osdtimeout", g_stSettings.m_iOSDTimeout);
+	SetBoolean(pNode, "hideextensions", g_stSettings.m_bHideExtensions);
 
 	// slideshow settings
 	TiXmlElement slideshowNode("slideshow");
