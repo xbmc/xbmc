@@ -70,7 +70,7 @@ protected:
   void LocalizeDay(char *szDay);
   void LoadLocalizedToken();
   void SplitLongString(char *szString, int splitStart, int splitEnd);
-
+  int ConvertSpeed(int speed);
   map<wstring, DWORD> m_localizedTokens;
   typedef map<wstring, DWORD>::const_iterator ilocalizedTokens;
 
