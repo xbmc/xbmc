@@ -413,6 +413,7 @@ void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
 	//	If we have tag information, ...
 	if (tag.Loaded())
 	{
+    g_application.SetCurrentSong(tag);
 		//	...display them in window
 
 		//	display only, if we have a title

@@ -349,7 +349,6 @@ HRESULT CApplication::Initialize()
 
   CLog::Log("initialize done");	
   g_lcd.Initialize();
-  g_lcd.SetLine(0,"XBMC running...");
 	return S_OK;
 }
 
@@ -752,29 +751,159 @@ void CApplication::OnKey(CKey& key)
     }
   }
 }
-
-void CApplication::FrameMove()
+void CApplication::UpdateLCD()
 {
-
   static lTickCount=0;
   if (GetTickCount()-lTickCount >=1000)
   {
-    SYSTEMTIME time;
-	  GetLocalTime(&time);
     CStdString strTime;
-    strTime.Format("%02.2i:%02.2i:%02.2i %02.2i-%02.2i-%02.2i", time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
-    g_lcd.SetLine(1,strTime);
-	  MEMORYSTATUS stat;
-	  GlobalMemoryStatus(&stat);
-		DWORD dwMegFree=stat.dwAvailPhys / (1024*1024);
-    strTime.Format("Freemem:%i meg", dwMegFree);
-    g_lcd.SetLine(2,strTime);
+    CStdString strIcon;
+    CStdString strLine;
+    if (IsPlayingVideo())
+    {
+      // line 0: play symbol current time/total time
+      // line 1: movie filename / title
+      // line 2: genre
+      // line 3: year
+      CStdString strTotalTime;
+      unsigned int tmpvar = g_application.m_pPlayer->GetTotalTime();
+		  if(tmpvar != 0)
+		  {
+			  int ihour = tmpvar / 3600;
+			  int imin  = (tmpvar-ihour*3600) / 60;
+			  int isec = (tmpvar-ihour*3600) % 60;
+        strTotalTime.Format("/%2.2d:%2.2d:%2.2d", ihour,imin,isec);
+		  }
+      else 
+      {
+			  strTotalTime=" ";
+      }
 
-		int  iResolution=g_graphicsContext.GetVideoResolution();
-		strTime.Format("%ix%i %s", g_settings.m_ResInfo[iResolution].iWidth, g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].strMode);
-    g_lcd.SetLine(3,strTime);
+      __int64 lPTS=10*g_application.m_pPlayer->GetTime();
+      int hh = (int)(lPTS / 36000) % 100;
+      int mm = (int)((lPTS / 600) % 60);
+      int ss = (int)((lPTS /  10) % 60);
+      if (hh >=1)
+	    {
+        strTime.Format("%02.2i:%02.2i:%02.2i",hh,mm,ss);
+	    }
+	    else
+	    {
+		    strTime.Format("%02.2i:%02.2i",mm,ss);
+	    }
+      if (m_iPlaySpeed < 1) 
+        strIcon.Format("RW:%ix", m_iPlaySpeed);
+      else if (m_iPlaySpeed > 1) 
+        strIcon.Format("FF:%ix", m_iPlaySpeed);
+      else if (m_pPlayer->IsPaused())
+        strIcon.Format("\7");
+      else
+        strIcon.Format("\5");
+      strLine.Format("%s %s%s", strIcon.c_str(), strTime.c_str(), strTotalTime.c_str());
+      g_lcd.SetLine(0,strLine);
+
+      strLine=CUtil::GetFileName(m_strCurrentFile);
+      int iLine=1;
+      if (m_tagCurrentMovie.m_strTitle!="") strLine=m_tagCurrentMovie.m_strTitle;
+      g_lcd.SetLine(iLine++,strLine);
+
+      if (iLine<4 && m_tagCurrentMovie.m_strGenre!="") g_lcd.SetLine(iLine++,m_tagCurrentMovie.m_strGenre);
+      if (iLine<4 && m_tagCurrentMovie.m_iYear>1900) 
+      {
+        strLine.Format("%i", m_tagCurrentMovie.m_iYear);
+        g_lcd.SetLine(iLine++,strLine);
+      }
+      while (iLine < 4) g_lcd.SetLine(iLine++,"");
+
+    }
+    else if (IsPlayingAudio())
+    {
+      // Show:
+      // line 0: play symbol current time/total time
+      // line 1: song title
+      // line 2: artist
+      // line 3: release date
+      __int64 lPTS=g_application.m_pPlayer->GetPTS();
+      int hh = (int)(lPTS / 36000) % 100;
+      int mm = (int)((lPTS / 600) % 60);
+      int ss = (int)((lPTS /  10) % 60);
+      if (hh >=1)
+	    {
+        strTime.Format("%02.2i:%02.2i:%02.2i",hh,mm,ss);
+	    }
+	    else
+	    {
+		    strTime.Format("%02.2i:%02.2i",mm,ss);
+	    }
+      if (m_iPlaySpeed < 1) 
+        strIcon.Format("RW:%ix", m_iPlaySpeed);
+      else if (m_iPlaySpeed > 1) 
+        strIcon.Format("FF:%ix", m_iPlaySpeed);
+      else if (m_pPlayer->IsPaused())
+        strIcon.Format("\7");
+      else
+        strIcon.Format("\5");
+      strLine.Format("%s %s", strIcon.c_str(), strTime.c_str());
+      
+      int iLine=1;
+      if (m_tagCurrentSong.Loaded())
+      {
+        int iDuration=m_tagCurrentSong.GetDuration();
+        if (iDuration>0)
+        {
+          CStdString strDuration;
+          CUtil::SecondsToHMSString(iDuration, strDuration);
+          strLine.Format("%s %s/%s", strIcon.c_str(), strTime.c_str(),strDuration.c_str());
+        }
+        g_lcd.SetLine(0,strLine);
+        strLine=m_tagCurrentSong.GetTitle();
+        if (iLine < 4 && strLine!="") g_lcd.SetLine(iLine++,strLine);
+        strLine=m_tagCurrentSong.GetArtist();
+        if (iLine < 4 && strLine!="") g_lcd.SetLine(iLine++,strLine);
+        SYSTEMTIME systemtime;
+        m_tagCurrentSong.GetReleaseDate(systemtime);
+        if (iLine < 4 && systemtime.wYear>=1900)
+        {
+          strLine.Format("%i", systemtime.wYear);
+          g_lcd.SetLine(iLine++,strLine);
+        }
+        while (iLine < 4) g_lcd.SetLine(iLine++,"");
+      }
+      else
+      {
+        g_lcd.SetLine(0,strLine);
+        g_lcd.SetLine(1,"");
+        g_lcd.SetLine(2,"");
+        g_lcd.SetLine(3,"");
+      }
+    }
+    else
+    {
+      // line 0: XBMC running...
+      // line 1: time/date
+      // line 2: free memory (megs)
+      // line 3: GUI resolution
+      g_lcd.SetLine(0,"XBMC running...");
+      SYSTEMTIME time;
+	    GetLocalTime(&time);
+      strTime.Format("%02.2i:%02.2i:%02.2i %02.2i-%02.2i-%02.2i", time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
+      g_lcd.SetLine(1,strTime);
+	    MEMORYSTATUS stat;
+	    GlobalMemoryStatus(&stat);
+		  DWORD dwMegFree=stat.dwAvailPhys / (1024*1024);
+      strTime.Format("Freemem:%i meg", dwMegFree);
+      g_lcd.SetLine(2,strTime);
+		  int  iResolution=g_graphicsContext.GetVideoResolution();
+		  strTime.Format("%ix%i %s", g_settings.m_ResInfo[iResolution].iWidth, g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].strMode);
+      g_lcd.SetLine(3,strTime);
+    }
     lTickCount=GetTickCount();
   }
+}
+
+void CApplication::FrameMove()
+{
+  UpdateLCD();
   // read raw input from controller & remote control
 	ReadInput();
 	XBIR_REMOTE* pRemote	= &m_DefaultIR_Remote;
@@ -967,6 +1096,8 @@ void CApplication::Stop()
 
 bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 {
+  m_tagCurrentSong.SetLoaded(false);
+  m_tagCurrentMovie.Reset();
   m_iPlaySpeed=1;
   if (!bRestart)
   {
@@ -1520,4 +1651,12 @@ void CApplication::SetPlaySpeed(int iSpeed)
 int CApplication::GetPlaySpeed() const
 {
   return m_iPlaySpeed;
+}
+void CApplication::SetCurrentSong(const CMusicInfoTag& tag)
+{
+  m_tagCurrentSong=tag;
+}
+void CApplication::SetCurrentMovie(const CIMDBMovie& tag)
+{
+  m_tagCurrentMovie=tag;
 }
