@@ -858,6 +858,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\Autorun.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\utils\BiDi.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\BuddyItem.h">
 			</File>
 			<File
@@ -1545,6 +1548,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			Filter="">
 			<File
 				RelativePath=".\xbmc\AutoPtrHandle.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\BiDi.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\CriticalSection.cpp">

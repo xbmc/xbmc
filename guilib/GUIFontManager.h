@@ -12,6 +12,8 @@
 #include "graphiccontext.h"
 #include "guifont.h"
 
+#include "tinyxml/tinyxml.h"
+
 #include <vector>
 #include "stdstring.h"
 using namespace std;
@@ -27,10 +29,12 @@ public:
   virtual ~GUIFontManager(void);
 	CGUIFont*				Load(const CStdString& strFontName,const CStdString& strFilename);
 	void						Unload(const CStdString& strFontName);
-  void						LoadFonts();
+  void						LoadFonts(const CStdString& strFontSet);
   CGUIFont*				GetFont(const CStdString& strFontName);
 	void						Clear();
 protected:
+	void LoadFonts(const TiXmlNode* fontNode);
+
   vector<CGUIFont*> m_vecFonts;
 };
 
