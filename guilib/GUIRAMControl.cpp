@@ -7,6 +7,7 @@
 #include "..\xbmc\Utils\fstrcmp.h"
 #include "..\xbmc\Application.h"
 #include "..\xbmc\PlayListPlayer.h"
+#include "..\xbmc\GUIsettings.h"
 
 extern CApplication g_application;
 
@@ -62,7 +63,7 @@ CGUIRAMControl::~CGUIRAMControl(void)
 
 void CGUIRAMControl::Render()
 {
-	if (!IsVisible())
+	if (!IsVisible() || !g_guiSettings.GetBool("Network.EnableInternet"))
 	{
 		return;
 	}

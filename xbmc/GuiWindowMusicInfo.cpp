@@ -8,6 +8,7 @@
 #include "util.h"
 #include "picture.h"
 #include "application.h"
+#include "GUIsettings.h"
 
 #define	CONTROL_ALBUM		20
 #define	CONTROL_ARTIST	21
@@ -184,6 +185,13 @@ void  CGUIWindowMusicInfo::Render()
 
 void CGUIWindowMusicInfo::Refresh()
 {
+	// quietly return if Internet lookups are disabled
+	if (!g_guiSettings.GetBool("Network.EnableInternet"))
+	{
+		Update();
+		return;
+	}
+
 	CStdString strThumb;
 	CStdString strImage=m_pAlbum->GetImageURL();
 	CUtil::GetAlbumThumb(m_pAlbum->GetTitle(), m_pAlbum->GetAlbumPath(),strThumb);

@@ -671,4 +671,5 @@
   <string><id>14051</id><value>Show 12 hour clock</value></string>
   <string><id>14052</id><value>Swap month and day in home screen</value></string>
   <string><id>14053</id><value>GUI Filters</value></string>
+  <string><id>14054</id><value>Enable Internet Lookups</value></string>
 </strings>
