@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+<<<<<<< Changelog.txt
+  - 24-08-2004 fixed: album info from allmusic.com
   - 23-08-2004 fixed: Fan was always set to custom mode even if tempcontrol and fanspeed were both disabled
   - 23-08-2004 updated: Spanish string.xml (thnx ezar2003)
   - 23-08-2004 added: mplayer.dll version info to SystemInfo screen when available.

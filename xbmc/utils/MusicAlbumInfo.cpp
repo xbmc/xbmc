@@ -122,6 +122,9 @@ bool	CMusicAlbumInfo::Parse(const CStdString& strHTML)
 	CStdString strHTMLLow=strHTML;
 	strHTMLLow.MakeLower();
 	
+  if (strHTML.Find("id=\"albumpage\"")==-1)
+    return false;
+
 	//	Extract Cover URL
 	int iStartOfCover=strHTMLLow.Find("image.allmusic.com");
 	if (iStartOfCover>=0)
@@ -129,7 +132,7 @@ bool	CMusicAlbumInfo::Parse(const CStdString& strHTML)
 		iStartOfCover=strHTMLLow.ReverseFind("<img", iStartOfCover);
 		int iEndOfCover=strHTMLLow.Find(">", iStartOfCover);
 		CStdString strCover=strHTMLLow.Mid(iStartOfCover, iEndOfCover);
-		util.getAttributeOfTag(strCover, "src=", m_strImageURL);
+		util.getAttributeOfTag(strCover, "src=\"", m_strImageURL);
 	}
 
 	//	Extract Review
@@ -156,8 +159,10 @@ bool	CMusicAlbumInfo::Parse(const CStdString& strHTML)
 	if (m_strReview.IsEmpty())
 		m_strReview=g_localizeStrings.Get(414);
 	
+  
 	//	Extract album, artist...
-	int iStartOfTable=strHTMLLow.Find("<table cellpadding=\"0\" cellspacing=\"0\">");
+	int iStartOfTable=strHTMLLow.Find("id=\"albumpage\"");
+  iStartOfTable=strHTMLLow.Find("<table cellpadding=\"0\" cellspacing=\"0\">", iStartOfTable);
 	if (iStartOfTable< 0) return false;
 
 	CHTMLTable table;

@@ -13,6 +13,7 @@
 #include "playlist.h"
 #include "musicInfoTagLoaderFactory.h"
 #include "utils/MusicInfoScraper.h"
+#include "utils/log.h"
 
 #include "stdstring.h"
 #include <vector>
