@@ -598,6 +598,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 				const TiXmlNode *pNodeName=pChild->FirstChild("name");
 				const TiXmlNode *pPathName=pChild->FirstChild("path");
 				const TiXmlNode *pCacheNode=pChild->FirstChild("cache");
+				const TiXmlNode *pDepthNode=pChild->FirstChild("depth");
 				if (pNodeName && pPathName)
 				{
 					const char* szName=pNodeName->FirstChild()->Value();
@@ -609,6 +610,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 					share.strName=szName;
 					share.strPath=szPath;
 					share.m_iBufferSize=0;
+					share.m_iDepthSize=1;
 					CStdString strPath=share.strPath;
 					strPath.ToUpper();
 					if (strPath.Left(4)=="UDF:")
@@ -635,6 +637,10 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 						share.m_iBufferSize=atoi( pCacheNode->FirstChild()->Value() );
 					}
 
+					if (pDepthNode)
+					{
+						share.m_iDepthSize=atoi( pDepthNode->FirstChild()->Value() );
+					}
 
 
 					ConvertHomeVar(share.strPath);
