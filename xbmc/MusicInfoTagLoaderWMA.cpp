@@ -13,6 +13,25 @@ using namespace MUSIC_INFO;
 using namespace XFILE;
 using namespace AUTOPTR;
 
+CStdString fixString(CStdString &ansiString)
+// ucs2CharsetToStringCharset is always called even when not required resulting in some strings
+// twice the length they should be. This function is a quick fix to the problem. The correct
+// solution would be to call ucs2CharsetToStringCharset only when necessary.
+{
+	int halfLen=ansiString.length()/2-1;
+	CStdString out="";
+
+	if (halfLen>0)
+		if (*(ansiString.Mid(halfLen,1).c_str())==0 &&
+			*(ansiString.Mid(halfLen+1,1).c_str())==0)
+			out = ansiString.Left(halfLen);
+	if (out=="")
+		return ansiString ;
+	else
+		return out ;
+}
+
+
 //	WMA metadata attribut types
 //	http://msdn.microsoft.com/library/en-us/wmform/htm/attributelist.asp
 typedef enum WMT_ATTR_DATATYPE
@@ -110,11 +129,12 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 
 			iOffset+=10;
 
-			CStdString ansiString;
+			CStdString ansiString="";
 			g_charsetConverter.ucs2CharsetToStringCharset((LPWSTR)(pData.get()+iOffset), ansiString);
-			tag.SetTitle(ansiString);	// titel
+			tag.SetTitle(fixString(ansiString));	// titel
+			ansiString="";
 			g_charsetConverter.ucs2CharsetToStringCharset((LPWSTR)(pData.get()+iOffset+nTitleSize), ansiString);
-			tag.SetArtist(ansiString);
+			tag.SetArtist(fixString(ansiString));
 
 			//General(ZT("Copyright"))=(LPWSTR)(pData.get()+iOffset+(nTitleSize+nAuthorSize));
 			//General(ZT("Comments"))=(LPWSTR)(pData.get()+iOffset+(nTitleSize+nAuthorSize+nCopyrightSize));
@@ -204,6 +224,7 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 				//	Parse frame value
 				LPWSTR	pwszValue;
 				CStdString ansiStringValue;
+				CStdString ansiString;
 				BOOL		bValue;
 				DWORD		dwValue;
 				DWORD		qwValue;
@@ -213,7 +234,9 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
 				if (iFrameType==WMT_TYPE_STRING)
 				{
 					pwszValue=(LPWSTR)(pData.get()+iOffset);
-					g_charsetConverter.ucs2CharsetToStringCharset(pwszValue, ansiStringValue);
+					ansiString="";
+					g_charsetConverter.ucs2CharsetToStringCharset(pwszValue, ansiString);
+					ansiStringValue=fixString(ansiString);
 				}
 				else if (iFrameType==WMT_TYPE_BINARY)
 					pValue=(BYTE*)(pData.get()+iOffset);	//	Raw data
