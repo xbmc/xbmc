@@ -1257,9 +1257,11 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
     g_stSettings.m_bNonInterleaved=false;
     m_iAudioStreamIDX=-1;
 
+    // switch 2 default settings...
     g_settings.m_iBrightness=50;
     g_settings.m_iContrast=50;
     g_settings.m_iGamma=50;
+    CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness,g_settings.m_iContrast,g_settings.m_iGamma);
   }
   m_strCurrentFile=strFile;
   
