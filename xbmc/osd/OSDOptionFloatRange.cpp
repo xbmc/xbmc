@@ -6,6 +6,7 @@
 #include "guifontmanager.h"
 using namespace OSD;
 COSDOptionFloatRange::COSDOptionFloatRange(int iAction, int iHeading)
+:m_slider(0, 1, 0, 0, 0, 0, "osd-pnl-bar.bmp","xb-ctl-nibv.bmp")
 {
 	m_fMin=0.0f;
   m_fMax=1.0f;
@@ -16,6 +17,7 @@ COSDOptionFloatRange::COSDOptionFloatRange(int iAction, int iHeading)
 }
 
 COSDOptionFloatRange::COSDOptionFloatRange(int iAction, int iHeading,float fStart, float fEnd, float fInterval, float fValue)
+:m_slider(0, 1, 0, 0, 0, 0, "osd-pnl-bar.bmp","xb-ctl-nibv.bmp")
 {
 	m_fMin=fStart;
   m_fMax=fEnd;
@@ -26,6 +28,7 @@ COSDOptionFloatRange::COSDOptionFloatRange(int iAction, int iHeading,float fStar
 }
 
 COSDOptionFloatRange::COSDOptionFloatRange(const COSDOptionFloatRange& option)
+:m_slider(0, 1, 0, 0, 0, 0, "osd-pnl-bar.bmp","xb-ctl-nibv.bmp")
 {
 	*this=option;
 }
@@ -68,12 +71,28 @@ void COSDOptionFloatRange::Draw(int x, int y, bool bFocus,bool bSelected)
                               5, 
                               5,
                               0xFF020202);
+    WCHAR strValue[128];
+    swprintf(strValue,L"%2.2f",m_fValue);
+    pFont13->DrawShadowText( (float)x+150,(float)y, dwColor,
+                              strValue, 0,
+                              0, 
+                              5, 
+                              5,
+                              0xFF020202);
   }
+  float fRange=(float)(m_fMax-m_fMin);
+  float fPos  =(float)(m_fValue-m_fMin);
+  float fPercent = (fPos/fRange)*100.0f;
+  m_slider.SetPercentage( (int) fPercent);
+  m_slider.AllocResources();
+  m_slider.SetPosition(x+200,y);
+  m_slider.Render();
+  m_slider.FreeResources();
 }
 
 bool COSDOptionFloatRange::OnAction(IExecutor& executor, const CAction& action)
 {
-	if (action.wID==ACTION_MOVE_UP)
+	if (action.wID==ACTION_PAGE_DOWN)
 	{
     if (m_fValue+m_fInterval <=m_fMax)
     {
@@ -83,9 +102,10 @@ bool COSDOptionFloatRange::OnAction(IExecutor& executor, const CAction& action)
     {
       m_fValue=m_fMin;
     }
+    executor.OnExecute(m_iAction,this);
     return true;
 	}
-	if (action.wID==ACTION_MOVE_DOWN)
+	if (action.wID==ACTION_PAGE_UP)
 	{
     if (m_fValue-m_fInterval >=m_fMin)
     {
@@ -95,7 +115,13 @@ bool COSDOptionFloatRange::OnAction(IExecutor& executor, const CAction& action)
     {
       m_fValue=m_fMax;
     }
+    executor.OnExecute(m_iAction,this);
 		return true;
 	}
   return false;
+}
+
+float COSDOptionFloatRange::GetValue() const
+{
+  return m_fValue;
 }

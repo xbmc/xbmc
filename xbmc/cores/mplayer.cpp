@@ -721,3 +721,35 @@ bool CMPlayer::Record(bool bOnOff)
 	m_pShoutCastRipper->StopRecording();
 	return true;
 }
+
+
+void CMPlayer::SeekPercentage(int iPercent)
+{
+  mplayer_setPercentage( iPercent);
+}
+
+int CMPlayer::GetPercentage()
+{
+  return mplayer_getPercentage( );
+}
+
+
+void    CMPlayer::SetAVDelay(float fValue)
+{
+  mplayer_setAVDelay(fValue);
+}
+
+float   CMPlayer::GetAVDelay()
+{
+  return mplayer_getAVDelay();
+}
+
+void    CMPlayer::SetSubTittleDelay(float fValue)
+{
+  mplayer_setSubtitleDelay(fValue);
+}
+
+float   CMPlayer::GetSubTitleDelay()
+{
+  return mplayer_getSubtitleDelay();
+}

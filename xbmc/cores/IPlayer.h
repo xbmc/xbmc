@@ -29,6 +29,8 @@ public:
 	virtual void		ToggleFrameDrop()=0;
 	virtual void		SubtitleOffset(bool bPlus=true)=0;	
 	virtual void	  Seek(bool bPlus=true, bool bLargeStep=false)=0;
+  virtual void    SeekPercentage(int iPercent=0){};
+  virtual int     GetPercentage(){return 0;};
 	virtual void		SetVolume(bool bPlus=true)=0;	
 	virtual void		SetContrast(bool bPlus=true)=0;	
 	virtual void		SetBrightness(bool bPlus=true)=0;	
@@ -47,6 +49,10 @@ public:
 	virtual bool		CanRecord() {return false;};
 	virtual bool		IsRecording() {return false;};
 	virtual bool		Record(bool bOnOff) {return false;};
+  virtual void    SetAVDelay(float fValue=0.0f){};
+  virtual float   GetAVDelay(){return 0.0f;};
+  virtual void    SetSubTittleDelay(float fValue=0.0f){};
+  virtual float   GetSubTitleDelay(){return 0.0f;};
 protected:
 	IPlayerCallback& m_callback;
 };
