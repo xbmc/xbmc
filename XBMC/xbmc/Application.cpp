@@ -670,8 +670,13 @@ void CApplication::Stop()
 	Destroy();
 }
 
-bool CApplication::PlayFile(const CStdString& strFile)
+bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 {
+  if (!bRestart)
+  {
+    OutputDebugString("new file set audiostream:0\n");
+    g_stSettings.m_iAudioStream=0;
+  }
   m_strCurrentFile=strFile;
 	CURL url(strFile);
 	CStdString strNewPlayer = "mplayer";
@@ -975,11 +980,11 @@ void CApplication::Restart(bool bSamePosition)
   
   if (false==bSamePosition)
   {
-    PlayFile(m_strCurrentFile);
+    PlayFile(m_strCurrentFile,true);
     return;
   }
   int iPercentage=m_pPlayer->GetPercentage();
-  if (  PlayFile(m_strCurrentFile) )
+  if (  PlayFile(m_strCurrentFile,true) )
   {
     m_pPlayer->SeekPercentage(iPercentage);
   }

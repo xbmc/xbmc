@@ -195,6 +195,7 @@ public:
     bool      m_bPPdering;
     bool      m_bFrameRateConversions;
     bool      m_bUseDigitalOutput;
+    int       m_iAudioStream;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;

@@ -9,6 +9,7 @@ struct CSettings::stSettings g_stSettings;
 
 CSettings::CSettings(void)
 {
+  g_stSettings.m_iAudioStream=0;
   g_stSettings.m_bPPAuto=true;
   g_stSettings.m_bPPVertical=false;
   g_stSettings.m_bPPHorizontal=false;
