@@ -333,6 +333,9 @@
 				RelativePath=".\xbmc\GuiWindowMusicInfo.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowMusicOverlay.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowMyFiles.cpp">
 			</File>
 			<File
@@ -474,6 +477,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\GuiWindowMusicInfo.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GuiWindowMusicOverlay.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowMyFiles.h">

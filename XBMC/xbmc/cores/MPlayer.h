@@ -11,12 +11,13 @@ class CMPlayer : public IPlayer, public CThread
 public:
 	CMPlayer(IPlayerCallback& callback);
 	virtual ~CMPlayer();
-	virtual bool	openfile(const CStdString& strFile);
-	virtual bool  closefile();
-	virtual bool  IsPlaying() const;
-	virtual void  Pause();
-	virtual bool	IsPaused() const;
-	void					Unload();
+	virtual bool		openfile(const CStdString& strFile);
+	virtual bool		closefile();
+	virtual bool		IsPlaying() const;
+	virtual void		Pause();
+	virtual bool		IsPaused() const;
+	void						Unload();
+	virtual __int64	GetPTS();
 protected:
 	virtual void		OnStartup();
 	virtual void		OnExit();
@@ -26,4 +27,5 @@ protected:
 	bool						m_bStopPlaying;
 	DllLoader*			m_pDLL;
 	CEvent					m_startEvent;
+	__int64					m_iPTS;
 };

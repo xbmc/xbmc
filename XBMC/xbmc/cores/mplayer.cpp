@@ -7,6 +7,7 @@ CMPlayer::CMPlayer(IPlayerCallback& callback)
 {
 	m_pDLL=NULL;
 	m_bIsPlaying=NULL;
+	m_bPaused=false;
 }
 
 CMPlayer::~CMPlayer()
@@ -16,6 +17,8 @@ CMPlayer::~CMPlayer()
 
 bool CMPlayer::openfile(const CStdString& strFile)
 {
+	m_iPTS=0;
+	m_bPaused=false;
 	closefile();
 	if (!m_pDLL)
 	{
@@ -117,6 +120,12 @@ void CMPlayer::Process()
 						{
 							m_bIsPlaying=false;
 						}
+						
+						__int64 iPTS=mplayer_get_pts();
+						if (iPTS)
+						{
+							m_iPTS=iPTS;
+						}
 					}
 					else 
 					{
@@ -154,4 +163,12 @@ void  CMPlayer::Pause()
 bool CMPlayer::IsPaused() const
 {
 	return m_bPaused;
+}
+
+
+__int64	CMPlayer::GetPTS()
+{
+	if (!m_pDLL) return 0;
+	if (!m_bIsPlaying) return 0;
+	return m_iPTS;
 }
