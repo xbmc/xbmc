@@ -116,7 +116,7 @@ bool  CDAAPDirectory::GetDirectory(const CStdString& strPath, VECFILEITEMS &item
 			return false;
 		}
 
-		if (DAAP_ClientHost_Connect(m_thisHost) < 0)
+		if ((int)DAAP_ClientHost_Connect(m_thisHost) < 0)
 		{
 			CloseDAAP();
 			return false;
