@@ -778,6 +778,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 				if (bookmarks.size()<=0) return;						// no bookmarks? leave if so ...
 
 				g_application.m_pPlayer->SeekTime((long) bookmarks[m_iCurrentBookmark]);	// set mplayers play position
+				PopulateBookmarks();
 			}
 		}
 		break;
@@ -813,6 +814,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 			{
 				mplayer_showSubtitle(true);			// Turn on subtitles
 			}
+			PopulateSubTitles(); //Redrew subtitle menu
 		}
 		break;
 
@@ -823,6 +825,9 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 				CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),OSD_SUBTITLE_LIST,0,0,NULL);
 				OnMessage(msg);								// retrieve the selected list item
 				mplayer_setSubtitle(msg.GetParam1());		// set the current subtitle
+				mplayer_showSubtitle(true);                 // make sure we are showing subs
+				SetCheckmarkValue(true,OSD_SUBTITLE_ONOFF);
+				PopulateSubTitles();
 			}
 		}
 		break;
@@ -887,12 +892,12 @@ void CGUIWindowOSD::PopulateAudioStreams()
 
 	CStdString strLabel = g_localizeStrings.Get(460).c_str();					// "Audio Stream"
 	CStdString strActiveLabel = (WCHAR*)g_localizeStrings.Get(461).c_str();		// "[active]"
-
+	
 	// cycle through each audio stream and add it to our list control
 	for (int i=0; i < iValue; ++i)
 	{
 		CStdString strItem;
-		if (g_stSettings.m_iAudioStream == i)
+		if (g_stSettings.m_iAudioStream == i)	
 		{
 			// formats to 'Audio Stream X [active]'
 			strItem.Format(strLabel + " %2i " + strActiveLabel,i+1);	// this audio stream is active, show as such
@@ -920,7 +925,9 @@ void CGUIWindowOSD::PopulateAudioStreams()
 void CGUIWindowOSD::PopulateSubTitles()
 {
 	// get the number of subtitles in the current movie
+	int bEnabled = mplayer_SubtitleVisible();
 	int iValue=mplayer_getSubtitleCount();
+	
   CLog::DebugLog("total subs:%i current sub:%i",iValue,mplayer_getSubtitle());
 
 	// tell the list control not to show the page x/y spin control
@@ -933,12 +940,14 @@ void CGUIWindowOSD::PopulateSubTitles()
 
 	CStdString strLabel = g_localizeStrings.Get(462).c_str();					// "Subtitle"
 	CStdString strActiveLabel = (WCHAR*)g_localizeStrings.Get(461).c_str();		// "[active]"
+	
+	
 
 	// cycle through each subtitle and add it to our list control
 	for (int i=0; i < iValue; ++i)
 	{
 		CStdString strItem;
-		if (mplayer_getSubtitle() == i)		// this subtitle is active, show as such
+		if (mplayer_getSubtitle() == i && bEnabled)		// this subtitle is active, show as such
 		{
 			// formats to 'Subtitle X [active]'
 			strItem.Format(strLabel + " %2i " + strActiveLabel,i+1);	// this audio stream is active, show as such
@@ -959,7 +968,7 @@ void CGUIWindowOSD::PopulateSubTitles()
 	}
 
 	// set the current active subtitle as the selected item in the list control
-	CGUIMessage msgSet(GUI_MSG_ITEM_SELECT,GetID(),OSD_SUBTITLE_LIST,g_stSettings.m_iAudioStream,0,NULL);
+	CGUIMessage msgSet(GUI_MSG_ITEM_SELECT,GetID(),OSD_SUBTITLE_LIST,mplayer_getSubtitle(),0,NULL);
 	OnMessage(msgSet);
 }
 
