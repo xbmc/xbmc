@@ -11,11 +11,16 @@ public:
 	virtual bool	OnMessage(CGUIMessage& message);
 
 	bool			IsConfirmed() const;
+	bool			GetSelectedVector(CStdString& aVector);
+	void			GetPersonalMessage(CStdString& aMessage);
 	void			SetGames(CGUIList* aGamesList);
 
 protected:
 	virtual void OnInitWindow();
 protected:
+	bool m_bMessage;
 	bool m_bConfirmed;
+	int m_iSelectedIndex;
 	CGUIList* m_pGames;
+	CStdString m_strMessage;
 };
