@@ -53,9 +53,6 @@ protected:
   int			m_iHeight;
   int			m_iStyle;
   CStdString	m_strFilename;
-
-  static LPDIRECT3DSURFACE8 m_pSurface;
-  static int m_iCountSurface;
 };
 
 #endif
