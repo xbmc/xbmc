@@ -89,6 +89,17 @@ void CMediaMonitor::Process()
 			{
 				selections[sel++] = i;
 			}
+			else
+			{
+				// items are similar, find out which one is more likely to be CD1
+				long valueA = parse_AggregateValue(aMovie.strFilepath);
+				long valueB = parse_AggregateValue(m_movies.at(selections[sel-1]).strFilepath);
+
+				if (valueA<valueB)
+				{
+					m_movies.at(selections[sel-1]).strFilepath = aMovie.strFilepath;
+				}
+			}
 		}
 		else
 		{
@@ -473,4 +484,14 @@ bool CMediaMonitor::parse_Similar(CStdString& strFilepath1, CStdString& strFilep
 	int similarity = (identical*100) / ((len1<=len2) ? len1 : len2);
 
 	return (similarity>=aPercentage);
+}
+
+long CMediaMonitor::parse_AggregateValue(CStdString& strFilepath)
+{
+	long count = 0;
+	for(int i=0; i<strFilepath.GetLength(); i++)
+	{
+		count+=strFilepath[i];
+	}
+	return count;
 }

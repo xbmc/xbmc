@@ -61,6 +61,8 @@ private:
 	static bool parse_Similar(CStdString& strFilepath1, CStdString& strFilepath2, int aPercentage);
 	static int	parse_GetStart(char* szText);
 	static int	parse_GetLength(char* szText, int start);
+	static long parse_AggregateValue(CStdString& strFilepath);
+
 	IMediaObserver*	m_pObserver;
 	MOVIELIST		m_movies;
 	CVideoDatabase  m_database;
