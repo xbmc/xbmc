@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 24-10-2004 added: New Slideshow
+  - 24-10-2004 added: context menu is mapped to TITLE on the remote
   - 24-10-2004 added: dialog to allow user to do a reboot instead of reset
   - 23-10-2004 updated: German language file
   - 23-10-2004 changed: Greek language file (Thnx to modon)

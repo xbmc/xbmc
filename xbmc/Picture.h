@@ -9,7 +9,7 @@ class CPicture
 public:
 	CPicture(void);
 	virtual ~CPicture(void);
-	IDirect3DTexture8*	Load(const CStdString& strFilename, int iRotate=0, int iMaxWidth=128, int iMaxHeight=128, bool bRGB=true);
+	IDirect3DTexture8*	Load(const CStdString& strFilename, int &iOriginalWidth, int &iOriginalHeight, int iMaxWidth=128, int iMaxHeight=128);
 
   bool                CreateThumnail(const CStdString& strFileName);
   bool                CreateAlbumThumbnail(const CStdString& strFileName, const CStdString& strAlbum);
@@ -18,7 +18,7 @@ public:
 	bool                Convert(const CStdString& strSource,const CStdString& strDest);
 	DWORD								GetWidth() const;
 	DWORD								GetHeight() const;
-	void								RenderImage(IDirect3DTexture8* pTexture, int x, int y, int width, int height, int iTextureWidth, int iTextureHeight, int iTextureLeft=0, int iTextureTop=0);
+	void								RenderImage(IDirect3DTexture8* pTexture, float x, float y, float width, float height, int iTextureWidth, int iTextureHeight, int iTextureLeft=0, int iTextureTop=0, DWORD dwAlpha=0xFF);
 
 protected:
 	IDirect3DTexture8*	LoadNative(const CStdString& strFilename);
