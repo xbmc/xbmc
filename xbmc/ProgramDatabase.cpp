@@ -6,11 +6,11 @@
 
 #include "stdafx.h"
 #include ".\programdatabase.h"
+#include "settings.h"
 #include "utils/fstrcmp.h"
 #include "utils/log.h"
 #include "util.h"
 
-#define PROGRAMDATABASE "Q:\\albums\\MyPrograms3.db"
 //********************************************************************************************************************************
 CProgramDatabase::CProgramDatabase(void)
 {
@@ -60,11 +60,14 @@ void CProgramDatabase::RemoveInvalidChars(CStdString& strTxt)
 //********************************************************************************************************************************
 bool CProgramDatabase::Open()
 {
+	CStdString programDatabase=g_stSettings.m_szAlbumDirectory;
+	programDatabase+="\\MyPrograms3.db";
+
 	Close();
 
 	// test id dbs already exists, if not we need 2 create the tables
 	bool bDatabaseExists=false;
-	FILE* fd= fopen(PROGRAMDATABASE,"rb");
+	FILE* fd= fopen(programDatabase,"rb");
 	if (fd)
 	{
 		bDatabaseExists=true;
@@ -72,14 +75,14 @@ bool CProgramDatabase::Open()
 	}
 
 	m_pDB.reset(new SqliteDatabase() ) ;
-	m_pDB->setDatabase(PROGRAMDATABASE);
+	m_pDB->setDatabase(programDatabase);
 
 	m_pDS.reset(m_pDB->CreateDataset());
 	if ( m_pDB->connect() != DB_CONNECTION_OK) 
 	{
-		CLog::Log("programdatabase::unable to open %s",PROGRAMDATABASE);
+		CLog::Log("programdatabase::unable to open %s",programDatabase);
 		Close();
-		::DeleteFile(PROGRAMDATABASE);
+		::DeleteFile(programDatabase);
 		return false;
 	}
 
@@ -87,9 +90,9 @@ bool CProgramDatabase::Open()
 	{
 		if (!CreateTables()) 
 		{
-			CLog::Log("programdatabase::unable to create %s",PROGRAMDATABASE);
+			CLog::Log("programdatabase::unable to create %s",programDatabase);
 			Close();
-			::DeleteFile(PROGRAMDATABASE);
+			::DeleteFile(programDatabase);
 			return false;
 		}
 	}
