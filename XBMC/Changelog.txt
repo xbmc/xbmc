@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+
+  - 19-10-2004 fixed: [ 1049621 ] hdd spindown broken
   - 17-10-2004 fixed: python controls like labels and buttons are now verticaly aligned by default
   - 17-10-2004 fixed: Thumbnail panel spin control related crash + page no. issues
   - 17-10-2004 fixed: mplayer leaks memory (partial fix)
