@@ -1066,6 +1066,22 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_RAWDV)
    }
 }
 #endif
+//=============== Try to open as MPEG-TY file: =================
+// #ifdef _XBOX : leave this before the audio checking part. If mplayer
+// check's first if it is an audio file it will play this tivo file as audio.
+if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_MPEG_TY)
+{
+	printf("aaaaaaaaaaaa12");
+  demuxer=new_demuxer(stream,DEMUXER_TYPE_MPEG_TY,audio_id,video_id,dvdsub_id);
+  if(ds_fill_buffer(demuxer->video)){
+      mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat,"TiVo");
+      file_format=DEMUXER_TYPE_MPEG_TY;
+  } else {
+      free_demuxer(demuxer);
+      demuxer = NULL;
+  }
+}
+
 //=============== Try to open as audio file: =================
 if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_AUDIO){
   demuxer=new_demuxer(stream,DEMUXER_TYPE_AUDIO,audio_id,video_id,dvdsub_id);
@@ -1090,18 +1106,6 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_XMMS){
   }
 }
 #endif
-//=============== Try to open as MPEG-TY file: =================
-if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_MPEG_TY)
-{
-  demuxer=new_demuxer(stream,DEMUXER_TYPE_MPEG_TY,audio_id,video_id,dvdsub_id);
-  if(ds_fill_buffer(demuxer->video)){
-      mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat,"TiVo");
-      file_format=DEMUXER_TYPE_MPEG_TY;
-  } else {
-      free_demuxer(demuxer);
-      demuxer = NULL;
-  }
-}
 //=============== Try to open as a RTP stream: ===========
  if(file_format==DEMUXER_TYPE_RTP) {
    demuxer=new_demuxer(stream,DEMUXER_TYPE_RTP,audio_id,video_id,dvdsub_id);
