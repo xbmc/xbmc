@@ -67,7 +67,7 @@ public:
 	void						StreamCallback(LPVOID pPacketContext, DWORD dwStatus);
 	virtual int			SetPlaySpeed(int iSpeed);
 	virtual void    WaitCompletion();
-	virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
+  virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers){};
 
 private:
 	IAudioCallback* m_pCallback;
