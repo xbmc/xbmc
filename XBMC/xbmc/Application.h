@@ -190,12 +190,13 @@ public:
 	DWORD					                  m_dwSkinTime;
 protected:
   void                    UpdateLCD();
+  bool                    m_bXboxMediacenterLoaded,m_bSettingsLoaded,m_bCalibrationLoaded;;
   CIMDBMovie              m_tagCurrentMovie;
   CMusicInfoTag           m_tagCurrentSong;
   int                     m_iPlaySpeed;
 	bool										m_bOverlayEnabled;
 	CStdString							m_strCurrentPlayer;
-  bool                    m_bSettingsLoaded;
+  bool                    m_bAllSettingsLoaded;
   CStdString              m_strCurrentFile;
   D3DGAMMARAMP m_OldRamp;			// CB: SCREENSAVER PATCH
 };

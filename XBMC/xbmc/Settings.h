@@ -90,7 +90,7 @@ public:
   CSettings(void);
   virtual ~CSettings(void);
 
-	bool	Load();
+	bool	Load(bool& bXboxMediacenter, bool& bSettings, bool &bCalibration);
 	void	Save() const;
 
   struct stSettings

@@ -114,7 +114,7 @@ HRESULT CApplication::Create()
 	g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
 
   CLog::Log("load settings...");
-	m_bSettingsLoaded=g_settings.Load();
+	m_bAllSettingsLoaded=g_settings.Load(m_bXboxMediacenterLoaded,m_bSettingsLoaded,m_bCalibrationLoaded);
 	
   CLog::Log("map drives...");
   CLog::Log("  map drive C:");
@@ -244,6 +244,17 @@ HRESULT CApplication::Initialize()
   CreateDirectory(g_stSettings.m_szAlternateSubtitleDirectory,NULL);
   
   // initialize network
+  if (!m_bXboxMediacenterLoaded)
+  {
+    CLog::Log("using default network settings");
+    strcpy (g_stSettings.m_strLocalIPAdres,"192.168.0.1");
+    strcpy (g_stSettings.m_strLocalNetmask,"255.255.255.0");
+    strcpy (g_stSettings.m_strGateway,"");
+    strcpy (g_stSettings.m_strNameServer,"");
+    g_stSettings.m_bFTPServerEnabled=true;
+    g_stSettings.m_bHTTPServerEnabled=false;
+    g_stSettings.m_bTimeServerEnabled=false;
+  }
   CLog::Log("initialize network ip:[%s] netmask:[%s] gateway:[%s] nameserver:[%s]",
                     g_stSettings.m_strLocalIPAdres,
                     g_stSettings.m_strLocalNetmask,
@@ -261,7 +272,7 @@ HRESULT CApplication::Initialize()
 			  m_sntpClient.Create(); 
       }
       
-			if (!m_bSettingsLoaded ||g_stSettings.m_bHTTPServerEnabled)
+			if (g_stSettings.m_bHTTPServerEnabled)
 			{
         CLog::Log("start webserver");
 				CSectionLoader::Load("LIBHTTP");
@@ -271,7 +282,7 @@ HRESULT CApplication::Initialize()
 				m_pWebServer->Start(ipadres.c_str(), 80, "Q:\\web");
 			} 
 
-      if (g_stSettings.m_bFTPServerEnabled)
+      if ( g_stSettings.m_bFTPServerEnabled)
 			{
         CLog::Log("start ftpserver");
 				m_pFileZilla = new CXBFileZilla("Q:\\");
@@ -359,7 +370,7 @@ HRESULT CApplication::Initialize()
 	m_DetectDVDType.Create( false);
 
 
-  if (!m_bSettingsLoaded)
+  if (!m_bAllSettingsLoaded)
   {
     CLog::Log("settings not correct, show dialog");	
 		CStdString test;
@@ -370,7 +381,6 @@ HRESULT CApplication::Initialize()
     m_guiDialogOK.SetLine(2,L"");
     m_guiDialogOK.DoModal(g_stSettings.m_iStartupWindow);
   }
-
   if (g_stSettings.m_bLCDUsed)
   {
     if (g_stSettings.m_iLCDMode==LCD_MODE_NOTV)
