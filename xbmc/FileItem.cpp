@@ -9,6 +9,7 @@ CFileItem::CFileItem(const CFileItem& item)
 
 CFileItem::CFileItem(void)
 {
+  m_fRating=0.0f;
   m_dwSize=0;
   m_bIsFolder=false;
   m_bIsShareOrDrive=false;
@@ -21,6 +22,7 @@ CFileItem::CFileItem(const CStdString& strLabel)
 :CGUIListItem(strLabel)
 {
   m_dwSize=0;
+  m_fRating=0.0f;
   m_bIsFolder=false;
   m_bIsShareOrDrive=false;
 	memset(&m_stTime,0,sizeof(m_stTime));
@@ -50,6 +52,8 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
 	memcpy(&m_stTime,&item.m_stTime,sizeof(SYSTEMTIME));
 	m_dwSize=item.m_dwSize;
 	m_musicInfoTag=item.m_musicInfoTag;
+  
+  m_fRating=item.m_fRating;
 	return *this;
 }
 

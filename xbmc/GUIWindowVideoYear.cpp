@@ -52,34 +52,20 @@ struct SSortVideoYearByName
 
 			switch ( g_stSettings.m_iMyVideoYearSortMethod ) 
 			{
-				case 0:	//	Sort by Filename
+				case 0:	//	Sort by name
 					strcpy(szfilename1, rpStart.GetLabel().c_str());
 					strcpy(szfilename2, rpEnd.GetLabel().c_str());
 					break;
-				case 1: // Sort by Date
+
+				case 1: // Sort by year
           if ( rpStart.m_stTime.wYear > rpEnd.m_stTime.wYear ) return bGreater;
 					if ( rpStart.m_stTime.wYear < rpEnd.m_stTime.wYear ) return !bGreater;
-					
-					if ( rpStart.m_stTime.wMonth > rpEnd.m_stTime.wMonth ) return bGreater;
-					if ( rpStart.m_stTime.wMonth < rpEnd.m_stTime.wMonth ) return !bGreater;
-					
-					if ( rpStart.m_stTime.wDay > rpEnd.m_stTime.wDay ) return bGreater;
-					if ( rpStart.m_stTime.wDay < rpEnd.m_stTime.wDay ) return !bGreater;
-
-					if ( rpStart.m_stTime.wHour > rpEnd.m_stTime.wHour ) return bGreater;
-					if ( rpStart.m_stTime.wHour < rpEnd.m_stTime.wHour ) return !bGreater;
-
-					if ( rpStart.m_stTime.wMinute > rpEnd.m_stTime.wMinute ) return bGreater;
-					if ( rpStart.m_stTime.wMinute < rpEnd.m_stTime.wMinute ) return !bGreater;
-
-					if ( rpStart.m_stTime.wSecond > rpEnd.m_stTime.wSecond ) return bGreater;
-					if ( rpStart.m_stTime.wSecond < rpEnd.m_stTime.wSecond ) return !bGreater;
 					return true;
 				break;
 
-        case 2:
-          if ( rpStart.m_dwSize > rpEnd.m_dwSize) return bGreater;
-					if ( rpStart.m_dwSize < rpEnd.m_dwSize) return !bGreater;
+        case 2: // sort by rating
+          if ( rpStart.m_fRating < rpEnd.m_fRating) return bGreater;
+					if ( rpStart.m_fRating > rpEnd.m_fRating) return !bGreater;
 					return true;
         break;
 
@@ -208,9 +194,12 @@ bool CGUIWindowVideoYear::OnMessage(CGUIMessage& message)
       }
       else if (iControl==CONTROL_BTNSORTBY) // sort by
       {
+        if (m_strDirectory.size())
+        {
         g_stSettings.m_iMyVideoYearSortMethod++;
         if (g_stSettings.m_iMyVideoYearSortMethod>=3) g_stSettings.m_iMyVideoYearSortMethod=0;
 				g_settings.Save();
+        }
         UpdateButtons();
         OnSort();
       }
@@ -286,7 +275,7 @@ void CGUIWindowVideoYear::UpdateButtons()
       iString=100;
     }
 		SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
-		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyVideoYearSortMethod+103);
+		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyVideoYearSortMethod+365);
 
     if ( g_stSettings.m_bMyVideoYearSortAscending)
     {
@@ -338,9 +327,9 @@ void CGUIWindowVideoYear::OnSort()
 			if (pItem->m_bIsFolder) pItem->SetLabel2("");
       else 
 			{
-				CStdString strFileSize;
-				CUtil::GetFileSize(pItem->m_dwSize, strFileSize);
-				pItem->SetLabel2(strFileSize);
+        CStdString strRating;
+        strRating.Format("%2.2f", pItem->m_fRating);
+				pItem->SetLabel2(strRating);
 			}
     }
     else
@@ -348,7 +337,7 @@ void CGUIWindowVideoYear::OnSort()
       if (pItem->m_stTime.wYear)
 			{
 				CStdString strDateTime;
-        CUtil::GetDate(pItem->m_stTime, strDateTime);
+        strDateTime.Format("%i",pItem->m_stTime.wYear); 
         pItem->SetLabel2(strDateTime);
 			}
       else
@@ -424,7 +413,8 @@ void CGUIWindowVideoYear::Update(const CStdString &strDirectory)
         CStdString strThumb;
         CUtil::GetThumbnail(movie.m_strSearchString,strThumb);
         pItem->SetThumbnailImage(strThumb);
-
+        pItem->m_fRating     = movie.m_fRating; 
+        pItem->m_stTime.wYear= movie.m_iYear;
 			  m_vecItems.push_back(pItem);
       }
       SET_CONTROL_LABEL(GetID(), LABEL_YEAR,m_strDirectory);

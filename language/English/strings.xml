@@ -1161,5 +1161,17 @@
   <string>
     <id>364</id>
     <value>DD/DTS Multichannel Passthrough</value>
+  </string>   
+  <string>
+    <id>365</id>
+    <value>Sort by name</value>
+  </string>   
+  <string>
+    <id>366</id>
+    <value>Sort by year</value>
+  </string>   
+  <string>
+    <id>367</id>
+    <value>Sort by rating</value>
   </string>
 </strings>
