@@ -167,6 +167,18 @@ namespace PYXBMC
 		return Py_None;
 	}
 
+	// Player_OnPlayBackStopped
+	PyDoc_STRVAR(onPlayBackStopped__doc__,
+		"onPlayBackStopped() -- onPlayBackStopped method.\n"
+		"\n"
+		"Will be called when user stops xbmc playing a file");
+
+	PyObject* Player_OnPlayBackStopped(PyObject *self, PyObject *args)
+	{
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
 	// Player_IsPlaying
 	PyDoc_STRVAR(isPlaying__doc__,
 		"isPlayingAudio() -- returns True is xbmc is playing a file.");
@@ -249,6 +261,73 @@ namespace PYXBMC
 		return (PyObject*)InfoTagMusic_FromCMusicInfoTag(*(g_application.GetCurrentSong()));
 	}
 
+	// Player_GetTotalTime
+	PyDoc_STRVAR(getTotalTime__doc__,
+		"getTotalTime() -- Returns the total time of the current playing media in\n"
+        "                  seconds.  This is only accurate to the full second.\n"
+		"\n"
+		"Throws: Exception, if player is not playing a file.\n"
+		"");
+
+	PyObject* Player_GetTotalTime(PyObject *self)
+	{
+		if (!g_application.IsPlaying())
+		{
+			PyErr_SetString(PyExc_Exception, "XBMC is not playing any media file");
+			return NULL;
+		}
+
+		return PyFloat_FromDouble(g_application.GetTotalTime());
+	}
+
+	// Player_GetTime
+	PyDoc_STRVAR(getTime__doc__,
+		"getTime() -- Returns the current time of the current playing media as fractional seconds.\n"
+		"\n"
+		"Throws: Exception, if player is not playing a file.\n"
+		"");
+
+	PyObject* Player_GetTime(PyObject *self)
+	{
+        double dTime = 0.0;
+
+		if (!g_application.IsPlaying())
+		{
+			PyErr_SetString(PyExc_Exception, "XBMC is not playing any media file");
+			return NULL;
+		}
+
+        dTime = g_application.GetTime();
+		return Py_BuildValue("d", dTime);
+	}
+
+	// Player_SeekTime
+	PyDoc_STRVAR(seekTime__doc__,
+		"seekTime() -- Seeks the specified amount of time as fractional seconds.\n"
+        "              The time specified is relative to the beginning of the\n"
+        "              currently playing media file.\n"
+		"\n"
+		"Throws: Exception, if player is not playing a file.\n"
+		"");
+
+	PyObject* Player_SeekTime(PyObject *self, PyObject *args)
+	{
+        double pTime = 0.0;
+
+		if (!g_application.IsPlaying())
+		{
+			PyErr_SetString(PyExc_Exception, "XBMC is not playing any media file");
+			return NULL;
+		}
+
+		if (!PyArg_ParseTuple(args, "d", &pTime)) return NULL;
+
+        g_application.SeekTime( pTime );
+
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
 	PyMethodDef Player_methods[] = {
 		{"play", (PyCFunction)Player_Play, METH_VARARGS, play__doc__},
 		{"stop", (PyCFunction)Player_Stop, METH_VARARGS, stop__doc__},
@@ -257,12 +336,16 @@ namespace PYXBMC
 		{"playprevious", (PyCFunction)Player_PlayPrevious, METH_VARARGS, playprevious__doc__},
 		{"onPlayBackStarted", (PyCFunction)Player_OnPlayBackStarted, METH_VARARGS, onPlayBackStarted__doc__},
 		{"onPlayBackEnded", (PyCFunction)Player_OnPlayBackEnded, METH_VARARGS, onPlayBackEnded__doc__},
+		{"onPlayBackStopped", (PyCFunction)Player_OnPlayBackStopped, METH_VARARGS, onPlayBackStopped__doc__},
 		{"isPlaying", (PyCFunction)Player_IsPlaying, METH_VARARGS, isPlaying__doc__},
 		{"isPlayingAudio", (PyCFunction)Player_IsPlayingAudio, METH_VARARGS, isPlayingAudio__doc__},
 		{"isPlayingVideo", (PyCFunction)Player_IsPlayingVideo, METH_VARARGS, isPlayingVideo__doc__},
 		{"getPlayingFile", (PyCFunction)Player_GetPlayingFile, METH_VARARGS, getPlayingFile__doc__},		
 		{"getMusicInfoTag", (PyCFunction)Player_GetMusicInfoTag, METH_VARARGS, getMusicInfoTag__doc__},
 		{"getVideoInfoTag", (PyCFunction)Player_GetVideoInfoTag, METH_VARARGS, getVideoInfoTag__doc__},
+		{"getTotalTime", (PyCFunction)Player_GetTotalTime, METH_NOARGS, getTotalTime__doc__},
+		{"getTime", (PyCFunction)Player_GetTime, METH_NOARGS, getTime__doc__},
+		{"seekTime", (PyCFunction)Player_SeekTime, METH_VARARGS, seekTime__doc__},
 		{NULL, NULL, 0, NULL}
 	};
 

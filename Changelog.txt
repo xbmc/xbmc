@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 11-03-2005 fixed: mplayer wasn't freed after a playlist had ended.
+  - 11-03-2005 added: [ 1160414 ] Added new methods to xbmc.Player python class. onPlayBackStopped() (user stop), getTotalTime() (duration of current media), getTime() (position of current media), seekTime( double pos ) (seek to specified position) - thanks to gimblefoot
   - 11-03-2005 added: [ 1160400 ] Added ControlCheckMark in Python - thanks to gimblefoot
   - 10-03-2005 added: My Music label format now accepts %F for filename
   - 10-03-2005 changed: My Music Nav window now uses a virtual path for better "back" handling (thanks to Elupus for the idea)
