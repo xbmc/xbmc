@@ -21,6 +21,7 @@ public:
 	void					RenderUpdate() { if (!m_bChanging && m_pRenderer) m_pRenderer->RenderUpdate(); };
 	void					CheckScreenSaver() { if (!m_bChanging && m_pRenderer) m_pRenderer->CheckScreenSaver(); };
 	void					SetupScreenshot();
+  void          SetViewMode(int iViewMode) { if (!m_bChanging && m_pRenderer) m_pRenderer->SetViewMode(iViewMode); };
 
 	// Functions called from mplayer
 inline void         WaitForFlip();

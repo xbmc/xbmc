@@ -727,6 +727,9 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement)
 		SetInt("AudioOutput.Mode", AUDIO_ANALOG);
 	SetBool("AudioOutput.AC3PassThrough", g_audioConfig.GetAC3Enabled());
 	SetBool("AudioOutput.DTSPassThrough", g_audioConfig.GetDTSEnabled());
+  CLog::Log(LOGINFO, "Using %s output", GetInt("AudioOutput.Mode") == AUDIO_ANALOG ? "analog" : "digital");
+  CLog::Log(LOGINFO, "AC3 pass through is %s", GetBool("AudioOutput.AC3PassThrough") ? "enabled" : "disabled");
+  CLog::Log(LOGINFO, "DTS pass through is %s", GetBool("AudioOutput.DTSPassThrough") ? "enabled" : "disabled");
 	g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)GetInt("LookAndFeel.Resolution");
 	CLog::Log(LOGNOTICE, "Checking resolution %i", g_guiSettings.m_LookAndFeelResolution);
 	g_videoConfig.PrintInfo();
