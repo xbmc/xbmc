@@ -31,6 +31,8 @@ echo "[ Running configure script for XBMC ]"
 --disable-tv \
 --disable-vidix \
 --disable-inet6 \
+--disable-termcap \
+--enable-libdts \
 --enable-largefiles \
 --enable-winsock2 \
 --enable-fribidi \
