@@ -119,6 +119,10 @@ bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 			}
 			else 
 			{
+				if (bCloseProgress)
+				{
+					pDialogProgress->Close();
+				}
 				pCdInfo->SetNoCDDBInfo();
 				//	..no, an error occured, display it to the user
 				pDialogOK->SetHeading(255);
