@@ -10,6 +10,7 @@
 #include "musicdatabase.h"
 #include "url.h"
 #include "autorun.h"
+#include "ActionManager.h"
 using namespace PLAYLIST;
 
 #ifdef _DEBUG
@@ -164,6 +165,8 @@ HRESULT CApplication::Create()
 		}
 	}
 
+	m_gWindowManager.Initialize();
+	g_actionManager.SetScriptActionCallback(&m_pythonParser);
 	return CXBApplicationEx::Create();
 }
 

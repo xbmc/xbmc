@@ -8,12 +8,16 @@ CGUIWindowManager::CGUIWindowManager(void)
 	m_pCallback=NULL;
   m_pRouteWindow=NULL;
   m_iActiveWindow=-1;
-  g_graphicsContext.setMessageSender(this);
 }
 
 CGUIWindowManager::~CGUIWindowManager(void)
 {
 	DeleteCriticalSection(&m_critSection);
+}
+
+void CGUIWindowManager::Initialize()
+{
+  g_graphicsContext.setMessageSender(this);
 }
 
 void CGUIWindowManager::SendMessage(CGUIMessage& message)

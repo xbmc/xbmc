@@ -21,7 +21,7 @@ XBPython::XBPython()
 	InitializeCriticalSection(&m_critSection);
 	m_hEvent = CreateEvent(NULL, false, false, "pythonEvent");
 	dThreadId = GetCurrentThreadId();
-	g_actionManager.SetScriptActionCallback(this);
+	
 }
 
 void XBPython::SendMessage(CGUIMessage& message)
@@ -32,7 +32,6 @@ void XBPython::SendMessage(CGUIMessage& message)
 void XBPython::Initialize()
 {
 	g_sectionLoader.Load("PYTHON");
-
 	if(!bInitialized)
 	{
 		if(dThreadId == GetCurrentThreadId())

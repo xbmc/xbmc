@@ -18,6 +18,7 @@ CGraphicContext::CGraphicContext(void)
 	m_bShowPreviewWindow=false;
 	m_bCalibrating=false;
 	m_iVideoResolution=0;
+	m_pCallback=NULL;
 }
 
 CGraphicContext::~CGraphicContext(void)

@@ -4,6 +4,7 @@ CActionManager g_actionManager;
 
 CActionManager::CActionManager(void)
 {
+	m_pScriptActionCallback=NULL;
 }
 
 CActionManager::~CActionManager(void)

@@ -15,6 +15,7 @@ CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, DWORD 
 	m_dwDisabledColor	= 0xFF606060; 
 	m_pFont=NULL;
   m_lHyperLinkWindowID=-1;
+	m_strScriptAction="";
 }
 
 CGUIButtonControl::~CGUIButtonControl(void)

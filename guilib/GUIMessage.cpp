@@ -11,6 +11,7 @@ CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD
   m_dwParam2=dwParam2;
   m_lpVoid=lpVoid;
 	m_strLabel=L"";
+	m_strParam="";
 }
 
 CGUIMessage::CGUIMessage(const CGUIMessage& msg)
@@ -65,6 +66,7 @@ const CGUIMessage& CGUIMessage::operator = (const CGUIMessage& msg)
   m_lpVoid=msg.m_lpVoid;
 	m_strLabel=msg.m_strLabel;
   m_dwSenderID=msg.m_dwSenderID;
+	m_strParam=msg.m_strParam;
   return *this;
 }
 
