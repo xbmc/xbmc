@@ -47,7 +47,9 @@ CURL::CURL(const CStdString& strURL)
 
 	// check for username/password
 	int iAlphaSign=strURL.Find("@",iPos);
-	if (iAlphaSign>=0)
+  int iSlash=strURL.Find("/",iPos); //to allow for @'s in filenames
+
+	if (iAlphaSign>=0 && (iAlphaSign < iSlash || iSlash < 0))
 	{
 		// username/password found
 		CStdString strUserNamePassword=strURL.Mid(iPos,iAlphaSign-iPos);
@@ -77,7 +79,6 @@ CURL::CURL(const CStdString& strURL)
 	}
 	
 	// detect hostname:port/
-  int iSlash=strURL.Find("/",iPos);
 	if (iSlash<0) 
 	{
 		CStdString strHostNameAndPort=strURL.Right(strURL.size()-iPos);
