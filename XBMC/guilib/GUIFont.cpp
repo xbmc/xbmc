@@ -62,7 +62,7 @@ void CGUIFont::DrawTextWidth(FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
 
 	int iMinCharsLeft;
 	int iStrLength = wcslen(wszText);
-	while (fTextWidth >= fMaxWidth)
+	while (fTextWidth >= fMaxWidth && fTextWidth > 0)
 	{
 		iMinCharsLeft = (int)((fTextWidth - fMaxWidth) / m_iMaxCharWidth);
 		if (iMinCharsLeft > 5)

@@ -29,6 +29,7 @@
 #include "GUIButtonScroller.h"
 #include "GUISpinControlEx.h"
 #include "GUIInfoLabelControl.h"
+#include "GUIInfoFadeLabelControl.h"
 #include "GUIInfoImage.h"
 
 CGUIControlFactory::CGUIControlFactory(void)
@@ -135,6 +136,25 @@ bool CGUIControlFactory::GetString(const TiXmlNode* pRootNode, const char* strTa
 	return true;
 }
 
+bool CGUIControlFactory::GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, CStdStringArray& vecStringValue)
+{
+	TiXmlNode* pNode=pRootNode->FirstChild(strTag );
+	if (!pNode) return false;
+  vecStringValue.clear();
+  bool bFound = false;
+  while (pNode)
+  {
+	  TiXmlNode *pChild = pNode->FirstChild();
+	  if (pChild != NULL)
+    {
+      vecStringValue.push_back(pChild->Value());
+      bFound = true;
+    }
+    pNode = pNode->NextSibling(strTag);
+  }
+	return bFound;
+}
+
 bool CGUIControlFactory::GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringPath)
 {
 	TiXmlNode* pNode=pRootNode->FirstChild(strTag );
@@ -189,7 +209,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	wstring		strLabel=L"";
 	CStdString  strFont="";
 	CStdString  strTmp;
-	CStdString	strInfo;
+	CStdStringArray	vecInfo;
 	DWORD     	dwTextColor=0xFFFFFFFF;
 	DWORD		dwAlign=XBFONT_LEFT;
 	DWORD		dwAlignY=0;
@@ -308,7 +328,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwTextColor		= ((CGUIInfoLabelControl*)pReference)->GetTextColor();
 			dwAlign				= ((CGUIInfoLabelControl*)pReference)->m_dwTextAlign;
 			dwDisabledColor		= ((CGUIInfoLabelControl*)pReference)->GetDisabledColor();
-			strInfo				= ((CGUIInfoLabelControl *)pReference)->GetInfo();
+			vecInfo.push_back(((CGUIInfoLabelControl *)pReference)->GetInfo());
 		}
 		else if (strType=="edit")
 		{
@@ -324,7 +344,14 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			dwTextColor			= ((CGUIFadeLabelControl*)pReference)->GetTextColor();
 			dwAlign				= ((CGUIFadeLabelControl*)pReference)->GetAlignment();
 		}
-		else if (strType=="rss")
+		else if (strType=="infofadelabel")
+		{
+			strFont				= ((CGUIInfoFadeLabelControl*)pReference)->GetFontName();
+			dwTextColor			= ((CGUIInfoFadeLabelControl*)pReference)->GetTextColor();
+			dwAlign				= ((CGUIInfoFadeLabelControl*)pReference)->GetAlignment();
+      vecInfo       = ((CGUIInfoFadeLabelControl*)pReference)->GetInfo();
+		}
+    else if (strType=="rss")
 		{
 			strFont				= ((CGUIRSSControl*)pReference)->GetFontName();
 			strRSSUrl			= ((CGUIRSSControl*)pReference)->GetUrl();
@@ -493,7 +520,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		{
 			strTexture			= ((CGUIInfoImage *)pReference)->GetFileName();
 			dwColorKey			= ((CGUIInfoImage *)pReference)->GetColorKey();
-			strInfo					= ((CGUIInfoImage *)pReference)->GetInfo();
+			vecInfo.push_back(((CGUIInfoImage *)pReference)->GetInfo());
 		}
 		else if (strType=="listcontrol")
 		{
@@ -724,7 +751,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
 	GetString(pControlNode,"script", strExecuteAction);	// left in for backwards compatibility.
 	GetString(pControlNode,"execute", strExecuteAction);
-	GetString(pControlNode,"info", strInfo);
+
+	GetMultipleString(pControlNode,"info", vecInfo);
 	GetHex(pControlNode,"disabledcolor",dwDisabledColor);
 	GetPath(pControlNode,"textureDownFocus",strTextureDownFocus);
 	GetPath(pControlNode,"textureUpFocus",strTextureUpFocus);
@@ -910,7 +938,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
 		pControl->SetColourDiffuse(dwColorDiffuse);
 		pControl->SetVisible(bVisible);
-		pControl->SetInfo(strInfo);
+		pControl->SetInfo(vecInfo[0]);
 		return pControl;
 	}
 	if (strType=="edit")
@@ -938,6 +966,17 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 
 		pControl->SetColourDiffuse(dwColorDiffuse);
 		pControl->SetVisible(bVisible);
+		return pControl;
+	}  
+	if (strType=="infofadelabel")
+	{
+		CGUIInfoFadeLabelControl* pControl = new CGUIInfoFadeLabelControl(
+					dwParentId,dwID,iPosX,iPosY,dwWidth,dwHeight,
+					strFont,dwTextColor,dwAlign);
+
+		pControl->SetColourDiffuse(dwColorDiffuse);
+		pControl->SetVisible(bVisible);
+		pControl->SetInfo(vecInfo);
 		return pControl;
 	}  
 	if (strType=="spinbutton")
@@ -1152,7 +1191,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		pControl->SetNavigation(up,down,left,right);
 		pControl->SetColourDiffuse(dwColorDiffuse);
 		pControl->SetVisible(bVisible);
-		pControl->SetInfo(strInfo);
+		pControl->SetInfo(vecInfo[0]);
 		return pControl;
 	}
 	if (strType=="listcontrol")

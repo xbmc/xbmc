@@ -289,6 +289,9 @@
 				RelativePath=".\guiImage.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIInfoFadeLabelControl.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIInfoImage.cpp">
 			</File>
 			<File
@@ -475,6 +478,9 @@
 			</File>
 			<File
 				RelativePath=".\guiImage.h">
+			</File>
+			<File
+				RelativePath=".\GUIInfoFadeLabelControl.h">
 			</File>
 			<File
 				RelativePath=".\GUIInfoImage.h">
