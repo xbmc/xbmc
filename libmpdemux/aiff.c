@@ -1,7 +1,7 @@
 /*
     AIFF Audio Utilities
     
-    Copyright (c) 2004, Jake Luck <xbmc@10k.org>
+    Copyright (c) 2004, Jake Luck <xbmcjake@10k.org>
     All rights reserved.
     BSD License
     http://www.opensource.org/licenses/bsd-license.php
