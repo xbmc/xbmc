@@ -30,6 +30,8 @@ namespace XFILE
 	class CFileSMB : public IFile  
 	{
 	public:
+		CFileSMB();
+		virtual ~CFileSMB();
 		virtual void					Close();
 		virtual offset_t			Seek(offset_t iFilePosition, int iWhence=SEEK_SET);
 		virtual bool					ReadString(char *szLine, int iLineLength);
@@ -37,20 +39,14 @@ namespace XFILE
 		virtual bool					Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport, bool bBinary=true);
 		virtual offset_t			GetLength();
 		virtual offset_t			GetPosition();
-		CFileSMB();
-		virtual ~CFileSMB();
 
 	protected:
-		SMB*			m_pSMB;
+		static SMB*			m_pSMB;
+		static int			m_iReferences;
 		offset_t	m_fileSize;
-
 		bool			m_bBinary;
 		int				m_fd;
-		//SMB m_smb;
-
 	};
-
 };
 
 #endif // !defined(AFX_FILESMB_H__2C4AB5BC_0742_458D_95EA_E9C77BA5663D__INCLUDED_)
-

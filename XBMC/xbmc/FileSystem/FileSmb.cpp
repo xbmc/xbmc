@@ -10,12 +10,9 @@
 #include "../sectionloader.h"
 #include "../settings.h"
 using namespace XFILE;
+SMB* XFILE::CFileSMB::m_pSMB=NULL;
+int XFILE::CFileSMB::m_iReferences=0;
 
-//////////////////////////////////////////////////////////////////////
-
-// Construction/Destruction
-
-//////////////////////////////////////////////////////////////////////
 static char szPassWd[128];
 static char szUserName[128];
 
@@ -46,21 +43,34 @@ public:
 
 CFileSMB::CFileSMB()
 {
-	CSectionLoader::Load("LIBSMB");
-	m_pSMB=NULL;
+	if (!m_iReferences)
+	{
+		CSectionLoader::Load("LIBSMB");
+		m_pSMB=NULL;
+	}
+	m_iReferences++;
 	m_fd = -1;
 }
 
 CFileSMB::~CFileSMB()
 {
 	Close();
-	CSectionLoader::Unload("LIBSMB");
+	m_iReferences--;
+	if (0==m_iReferences)
+	{
+		if (m_pSMB)
+			delete m_pSMB;
+		m_pSMB=NULL;
+		CSectionLoader::Unload("LIBSMB");
+	}
 }
 
 
 
 offset_t CFileSMB::GetPosition()
 {
+	if (!m_pSMB) return 0;
+	if (m_fd <0) return 0;
 	int pos = m_pSMB->lseek(m_fd, 0, SEEK_CUR);
 	if( pos < 0 )
 		return 0;
@@ -69,16 +79,19 @@ offset_t CFileSMB::GetPosition()
 
 offset_t CFileSMB::GetLength()
 {
+	if (!m_pSMB) return 0;
+	if (m_fd <0) return 0;
 	return m_fileSize;
 }
 
 bool CFileSMB::Open(const char* strUserName, const char* strPassword,const char *strHostName, const char *strFileName,int iport, bool bBinary)
 {
-
-	// the samba code does not interpret binary/text.  We may
+	Close();
 	
-  m_pSMB = new SMB();
-
+	if (!m_pSMB)
+	{
+		m_pSMB = new SMB();
+	}
 	if( g_stSettings.m_strNameServer[0] != 0x00 )
 		m_pSMB->setNBNSAddress(g_stSettings.m_strNameServer);
 
@@ -137,6 +150,8 @@ bool CFileSMB::Open(const char* strUserName, const char* strPassword,const char 
 
 unsigned int CFileSMB::Read(void *lpBuf, offset_t uiBufSize)
 {
+	if (!m_pSMB) return 0;
+	if (m_fd <0) return 0;
 	int bytesRead = m_pSMB->read(m_fd, lpBuf, (int)uiBufSize);
 	if( bytesRead <= 0 )
 	{
@@ -151,6 +166,8 @@ unsigned int CFileSMB::Read(void *lpBuf, offset_t uiBufSize)
 
 bool CFileSMB::ReadString(char *szLine, int iLineLength)
 {
+	if (!m_pSMB) return false;
+	if (m_fd <0) return false;
 	offset_t iFilePos=GetPosition();
 
 	int iBytesRead=m_pSMB->read(m_fd, (unsigned char*)szLine, iLineLength);
@@ -207,6 +224,9 @@ bool CFileSMB::ReadString(char *szLine, int iLineLength)
 offset_t CFileSMB::Seek(offset_t iFilePosition, int iWhence)
 
 {
+	if (!m_pSMB) return 0;
+	if (m_fd <0) return 0;
+
 	INT64 pos = m_pSMB->lseek(m_fd, (int)iFilePosition, iWhence);
 
 	if( pos < 0 )
@@ -220,16 +240,11 @@ offset_t CFileSMB::Seek(offset_t iFilePosition, int iWhence)
 
 
 void CFileSMB::Close()
-
 {
-	if (m_pSMB)
+	if (m_fd>=0)
 	{
-		if (m_fd>=0)
-			m_pSMB->close(m_fd);
-		delete m_pSMB;
+		m_pSMB->close(m_fd);
 	}
-	m_pSMB=NULL;
 	m_fd = -1;
-	
 }
 
