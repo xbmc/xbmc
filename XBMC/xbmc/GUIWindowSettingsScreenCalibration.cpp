@@ -169,6 +169,7 @@ void CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 			m_iCurRes++;
 			if (m_iCurRes == m_Res.size())
 				m_iCurRes = 0;
+      Sleep(1000);
 			g_graphicsContext.SetGUIResolution(m_Res[m_iCurRes]);
       
       g_application.m_guiWindowOSD.ResetAllControls();
