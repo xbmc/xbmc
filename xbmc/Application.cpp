@@ -2196,6 +2196,40 @@ void CApplication::FrameMove()
     OnKey(key);
   }
   // direction specific keys (for defining different actions for each direction)
+  // left thumb stick
+  bIsDown = (pGamepad->fY1 > 0 && pGamepad->fX1 < pGamepad->fY1 && -pGamepad->fX1 < pGamepad->fY1);
+  if (lastAnalogKey == KEY_BUTTON_LEFT_THUMB_STICK_UP || bIsDown)
+  {
+    bGotKey = true;
+    lastAnalogKey = bIsDown ? KEY_BUTTON_LEFT_THUMB_STICK_UP : 0;
+    CKey key(KEY_BUTTON_LEFT_THUMB_STICK_UP, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    OnKey(key);
+  }
+  bIsDown = (pGamepad->fY1 < 0 && pGamepad->fX1 < -pGamepad->fY1 && -pGamepad->fX1 < -pGamepad->fY1);
+  if (lastAnalogKey == KEY_BUTTON_LEFT_THUMB_STICK_DOWN || bIsDown)
+  {
+    bGotKey = true;
+    lastAnalogKey = bIsDown ? KEY_BUTTON_LEFT_THUMB_STICK_DOWN : 0;
+    CKey key(KEY_BUTTON_LEFT_THUMB_STICK_DOWN, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, -pGamepad->fY2);
+    OnKey(key);
+  }
+  bIsDown = (pGamepad->fX1 > 0 && pGamepad->fY1 < pGamepad->fX1 && -pGamepad->fY1 < pGamepad->fX1);
+  if (lastAnalogKey == KEY_BUTTON_LEFT_THUMB_STICK_RIGHT || bIsDown)
+  {
+    bGotKey = true;
+    lastAnalogKey = bIsDown ? KEY_BUTTON_LEFT_THUMB_STICK_RIGHT : 0;
+    CKey key(KEY_BUTTON_LEFT_THUMB_STICK_RIGHT, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, pGamepad->fX2, pGamepad->fY2);
+    OnKey(key);
+  }
+  bIsDown = (pGamepad->fX1 < 0 && pGamepad->fY1 < -pGamepad->fX1 && -pGamepad->fY1 < -pGamepad->fX1);
+  if (lastAnalogKey == KEY_BUTTON_LEFT_THUMB_STICK_LEFT || bIsDown)
+  {
+    bGotKey = true;
+    lastAnalogKey = bIsDown ? KEY_BUTTON_LEFT_THUMB_STICK_LEFT : 0;
+    CKey key(KEY_BUTTON_LEFT_THUMB_STICK_LEFT, bLeftTrigger, bRightTrigger, pGamepad->fX1, pGamepad->fY1, -pGamepad->fX2, pGamepad->fY2);
+    OnKey(key);
+  }
+  // right thumb stick
   bIsDown = (pGamepad->fY2 > 0 && pGamepad->fX2 < pGamepad->fY2 && -pGamepad->fX2 < pGamepad->fY2);
   if (lastAnalogKey == KEY_BUTTON_RIGHT_THUMB_STICK_UP || bIsDown)
   {
