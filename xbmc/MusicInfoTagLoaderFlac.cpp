@@ -69,7 +69,7 @@ bool CMusicInfoTagLoaderFlac::Load(const CStdString& strFileName, CMusicInfoTag&
 	}
 	catch(...)
 	{
-		CLog::Log("Tag loader flac: exception in file %s", strFileName.c_str());
+		CLog::Log(LOGERROR, "Tag loader flac: exception in file %s", strFileName.c_str());
 	}
 
 	tag.SetLoaded(false);

@@ -352,6 +352,7 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.m_strRipPath, "");
 
 	g_stSettings.m_nVolumeLevel = 0;
+	g_stSettings.m_iLogLevel = LOGNOTICE;
 }
 
 CSettings::~CSettings(void)
@@ -370,7 +371,7 @@ void CSettings::Save() const
   }
 	if (!SaveSettings("T:\\settings.xml", true))
 	{
-		CLog::Log("Unable to save settings to T:\\settings.xml");
+		CLog::Log(LOGERROR, "Unable to save settings to T:\\settings.xml");
 	}
 }
 
@@ -378,17 +379,17 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 {
 	// load settings file...
 	bXboxMediacenter=bSettings=false;
-	CLog::Log("loading T:\\settings.xml");
+	CLog::Log(LOGNOTICE, "loading T:\\settings.xml");
 	if (!LoadSettings("T:\\settings.xml", true))
 	{
-		CLog::Log("Unable to load T:\\settings.xml, creating new T:\\settings.xml with default values");
+		CLog::Log(LOGERROR, "Unable to load T:\\settings.xml, creating new T:\\settings.xml with default values");
 		Save();
 		if (!(bSettings=LoadSettings("T:\\settings.xml", true)))
 			return false;
 	}
 
 	// load xml file...
-	CLog::Log("loading Q:\\XboxMediaCenter.xml");
+	CLog::Log(LOGNOTICE, "loading Q:\\XboxMediaCenter.xml");
 	CStdString strXMLFile = "Q:\\XboxMediaCenter.xml";
 	TiXmlDocument xmlDoc;
 	if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) ) 
@@ -404,6 +405,8 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 		g_LoadErrorStr.Format("%s Doesn't contain <xboxmediacenter>",strXMLFile.c_str());
 		return false;
 	}
+
+	GetInteger(pRootElement, "loglevel", g_stSettings.m_iLogLevel, LOGWARNING, LOGDEBUG, LOGNONE);
 
 	TiXmlElement* pFileTypeIcons =pRootElement->FirstChildElement("filetypeicons");
 	TiXmlNode* pFileType=pFileTypeIcons->FirstChild();
@@ -598,7 +601,7 @@ void CSettings::ConvertHomeVar(CStdString& strText)
 
 void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items,CStdString& strDefault)
 {
-	CLog::Log("  Parsing <%s> tag", strTagName.c_str());
+	CLog::Log(LOGDEBUG, "  Parsing <%s> tag", strTagName.c_str());
 	strDefault="";
 	const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
 	if (pChild)
@@ -616,9 +619,9 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 				if (pNodeName && pPathName)
 				{
 					const char* szName=pNodeName->FirstChild()->Value();
-					CLog::Log("    Share Name: %s", szName);
+					CLog::Log(LOGDEBUG, "    Share Name: %s", szName);
 					const char* szPath=pPathName->FirstChild()->Value();
-					CLog::Log("    Share Path: %s", szPath);
+					CLog::Log(LOGDEBUG, "    Share Path: %s", szPath);
 
 					CShare share;
 					share.strName=szName;
@@ -663,7 +666,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 				}
 				else
 				{
-					CLog::Log("    <name> and/or <path> not properly defined within <bookmark>");
+					CLog::Log(LOGERROR, "    <name> and/or <path> not properly defined within <bookmark>");
 				}
 
 			}
@@ -675,7 +678,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 					const char* pszText=pChild->FirstChild()->Value();
 					if (strlen(pszText) > 0)
 						strDefault=pszText;
-					CLog::Log("    Setting <default> share to : %s", strDefault.c_str());
+					CLog::Log(LOGDEBUG, "    Setting <default> share to : %s", strDefault.c_str());
 				}
 			}
 			pChild=pChild->NextSibling();
@@ -683,7 +686,7 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 	}
 	else 
 	{
-		CLog::Log("  <%s> tag is missing or XboxMediaCenter.xml is malformed", strTagName.c_str());
+		CLog::Log(LOGERROR, "  <%s> tag is missing or XboxMediaCenter.xml is malformed", strTagName.c_str());
 	}
 }
 
@@ -708,7 +711,7 @@ void CSettings::GetString(const TiXmlElement* pRootElement, const CStdString& st
 		strcpy(szValue,strDefaultValue.c_str());
 	}
 
-	CLog::Log("  %s: %s", strTagName.c_str(), szValue); 
+	CLog::Log(LOGDEBUG, "  %s: %s", strTagName.c_str(), szValue); 
 }
 
 void CSettings::GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue, const int iDefault, const int iMin, const int iMax)
@@ -722,7 +725,7 @@ void CSettings::GetInteger(const TiXmlElement* pRootElement, const CStdString& s
 	else
 		iValue=iDefault;
 
-	CLog::Log("  %s: %d", strTagName.c_str(), iValue);
+	CLog::Log(LOGDEBUG, "  %s: %d", strTagName.c_str(), iValue);
 }
 
 void CSettings::GetFloat(const TiXmlElement* pRootElement, const CStdString& strTagName, float& fValue, const float fDefault, const float fMin, const float fMax)
@@ -736,7 +739,7 @@ void CSettings::GetFloat(const TiXmlElement* pRootElement, const CStdString& str
 	else
 		fValue=fDefault;
 
-	CLog::Log("  %s: %f", strTagName.c_str(), fValue);
+	CLog::Log(LOGDEBUG, "  %s: %f", strTagName.c_str(), fValue);
 }
 
 void CSettings::GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName, bool& bValue)
@@ -840,8 +843,8 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
 			GetInteger(pOverscan, "right", m_ResInfo[iRes].Overscan.right,m_ResInfo[iRes].iWidth,m_ResInfo[iRes].iWidth/2,m_ResInfo[iRes].iWidth*3/2);
 			GetInteger(pOverscan, "bottom", m_ResInfo[iRes].Overscan.bottom,m_ResInfo[iRes].iHeight,m_ResInfo[iRes].iHeight/2,m_ResInfo[iRes].iHeight*3/2);
 		}
-		CLog::Log("  calibration for %s %ix%i",m_ResInfo[iRes].strMode,m_ResInfo[iRes].iWidth,m_ResInfo[iRes].iHeight);
-		CLog::Log("    subtitle yposition:%i pixelratio:%03.3f offsets:(%i,%i)->(%i,%i) osdyoffset:%i", 
+		CLog::Log(LOGINFO, "  calibration for %s %ix%i",m_ResInfo[iRes].strMode,m_ResInfo[iRes].iWidth,m_ResInfo[iRes].iHeight);
+		CLog::Log(LOGINFO, "    subtitle yposition:%i pixelratio:%03.3f offsets:(%i,%i)->(%i,%i) osdyoffset:%i", 
 			m_ResInfo[iRes].iSubtitles, m_ResInfo[iRes].fPixelRatio,
 			m_ResInfo[iRes].Overscan.left,m_ResInfo[iRes].Overscan.top, 
 			m_ResInfo[iRes].Overscan.right,m_ResInfo[iRes].Overscan.bottom,
@@ -1629,7 +1632,7 @@ bool CSettings::SaveSettingsToProfile(int index)
 
 bool CSettings::LoadProfiles(const TiXmlElement* pRootElement, const CStdString& strSettingsFile)
 {
- 	CLog::Log("  Parsing <profiles> tag");
+ 	CLog::Log(LOGINFO, "  Parsing <profiles> tag");
 	const TiXmlNode *pChild = pRootElement->FirstChild("profiles");
 	if (pChild)
 	{
@@ -1644,9 +1647,9 @@ bool CSettings::LoadProfiles(const TiXmlElement* pRootElement, const CStdString&
 				if (pProfileName && pProfileFile)
 				{
 					const char* szName=pProfileName->FirstChild()->Value();
-					CLog::Log("    Profile Name: %s", szName);
+					CLog::Log(LOGDEBUG, "    Profile Name: %s", szName);
 					const char* szPath=pProfileFile->FirstChild()->Value();
-					CLog::Log("    Profile Filename: %s", szPath);
+					CLog::Log(LOGDEBUG, "    Profile Filename: %s", szPath);
 
 					CProfile profile;
           CStdString str = szName;
@@ -1657,7 +1660,7 @@ bool CSettings::LoadProfiles(const TiXmlElement* pRootElement, const CStdString&
 				}
 				else
 				{
-					CLog::Log("    <name> and/or <file> not properly defined within <profile>");
+					CLog::Log(LOGERROR, "    <name> and/or <file> not properly defined within <profile>");
 				}
 			}
 			pChild=pChild->NextSibling();
@@ -1666,7 +1669,7 @@ bool CSettings::LoadProfiles(const TiXmlElement* pRootElement, const CStdString&
 	}
 	else 
 	{
-		CLog::Log("  <profiles> tag is missing or %s is malformed", strSettingsFile.c_str());
+		CLog::Log(LOGERROR, "  <profiles> tag is missing or %s is malformed", strSettingsFile.c_str());
     return false;
 	}
 }

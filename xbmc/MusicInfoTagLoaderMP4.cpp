@@ -37,7 +37,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
 		}
 		catch(MP4Error* e)
 		{
-			CLog::Log("Tag loader mp4: %s, errno=%i in file %s", e->m_errstring, e->m_errno, strFileName.c_str());
+			CLog::Log(LOGERROR, "Tag loader mp4: %s, errno=%i in file %s", e->m_errstring, e->m_errno, strFileName.c_str());
 			delete e;
 			return false;
 		}
@@ -56,7 +56,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
 		}
 		catch(MP4Error* e)
 		{
-			CLog::Log("Tag loader mp4: %s, errno=%i in file %s", e->m_errstring, e->m_errno, strFileName.c_str());
+			CLog::Log(LOGERROR, "Tag loader mp4: %s, errno=%i in file %s", e->m_errstring, e->m_errno, strFileName.c_str());
 			delete e;
 		}
 
@@ -72,7 +72,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
 		}
 		catch(MP4Error* e)
 		{
-			CLog::Log("Tag loader mp4: %s, errno=%i in file %s", e->m_errstring, e->m_errno, strFileName.c_str());
+			CLog::Log(LOGERROR, "Tag loader mp4: %s, errno=%i in file %s", e->m_errstring, e->m_errno, strFileName.c_str());
 			delete e;
 			tag.SetLoaded(false);
 			return false;
@@ -88,7 +88,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
 		}
 		catch(MP4Error* e)
 		{
-			CLog::Log("Tag loader mp4: %s, errno=%i in file %s", e->m_errstring, e->m_errno, strFileName.c_str());
+			CLog::Log(LOGERROR, "Tag loader mp4: %s, errno=%i in file %s", e->m_errstring, e->m_errno, strFileName.c_str());
 			delete e;
 		}
 
@@ -102,7 +102,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
 		}
 		catch(MP4Error* e)
 		{
-			CLog::Log("Tag loader mp4: %s, errno=%i in file %s", e->m_errstring, e->m_errno, strFileName.c_str());
+			CLog::Log(LOGERROR, "Tag loader mp4: %s, errno=%i in file %s", e->m_errstring, e->m_errno, strFileName.c_str());
 			delete e;
 		}
 
@@ -118,7 +118,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
 		}
 		catch(MP4Error* e)
 		{
-			CLog::Log("Tag loader mp4: %s, errno=%i in file %s", e->m_errstring, e->m_errno, strFileName.c_str());
+			CLog::Log(LOGERROR, "Tag loader mp4: %s, errno=%i in file %s", e->m_errstring, e->m_errno, strFileName.c_str());
 			delete e;
 		}
 
@@ -131,7 +131,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
 		}
 		catch(MP4Error* e)
 		{
-			CLog::Log("Tag loader mp4: %s, errno=%i in file %s", e->m_errstring, e->m_errno, strFileName.c_str());
+			CLog::Log(LOGERROR, "Tag loader mp4: %s, errno=%i in file %s", e->m_errstring, e->m_errno, strFileName.c_str());
 			delete e;
 		}
 
@@ -155,7 +155,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
 				else
 				{
 					CUtil::ThumbCacheAdd(strCoverArt, false);
-					CLog::Log("Tag loader mp4: Unable to create album art for %s (size=%d)", tag.GetURL().c_str(), nSize);
+					CLog::Log(LOGERROR, "Tag loader mp4: Unable to create album art for %s (size=%d)", tag.GetURL().c_str(), nSize);
 				}
 
 				delete pCover;
@@ -163,7 +163,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
 		}
 		catch(MP4Error* e)
 		{
-			CLog::Log("Tag loader mp4: %s, errno=%i in file %s", e->m_errstring, e->m_errno, strFileName.c_str());
+			CLog::Log(LOGERROR, "Tag loader mp4: %s, errno=%i in file %s", e->m_errstring, e->m_errno, strFileName.c_str());
 			delete e;
 			if (pCover)
 				delete pCover;
@@ -180,7 +180,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
 		}
 		catch(MP4Error* e)
 		{
-			CLog::Log("Tag loader mp4: %s, errno=%i in file %s", e->m_errstring, e->m_errno, strFileName.c_str());
+			CLog::Log(LOGERROR, "Tag loader mp4: %s, errno=%i in file %s", e->m_errstring, e->m_errno, strFileName.c_str());
 			delete e;
 		}
 
@@ -189,7 +189,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
 	}
 	catch(...)
 	{
-		CLog::Log("Tag loader mp4: exception in file %s", strFileName.c_str());
+		CLog::Log(LOGERROR, "Tag loader mp4: exception in file %s", strFileName.c_str());
 	}
 
 	tag.SetLoaded(false);

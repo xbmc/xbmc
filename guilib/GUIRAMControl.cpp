@@ -294,7 +294,7 @@ void CGUIRAMControl::PlayMovie(CStdString& strFilePath)
 		// if for some strange reason we couldn't find any matching files (can't think of any reason why!)
 		if (movies.size() <=0)
 		{
-			CLog::Log("*WARNING* Wibble! CGUIRAMControl was unable to find matching file!");
+			CLog::Log(LOGWARNING, "*WARNING* Wibble! CGUIRAMControl was unable to find matching file!");
 
 			// might as well play the file that we do know about!
 			g_application.PlayFile( strFilePath );
@@ -378,8 +378,8 @@ void CGUIRAMControl::UpdateTitle(CStdString& strFilepath, INT nIndex)
 void CGUIRAMControl::OnMediaUpdate(	INT nIndex, CStdString& strFilepath,
 								CStdString& strTitle, CStdString& strImagePath)
 {
-	CLog::Log( "OnMediaUpdate: " );
-	CLog::Log( strFilepath.c_str() );
+	CLog::Log(LOGINFO, "OnMediaUpdate: " );
+	CLog::Log(LOGINFO, strFilepath.c_str() );
 	
  	if (strTitle.GetLength()>64)
 	{
@@ -389,7 +389,7 @@ void CGUIRAMControl::OnMediaUpdate(	INT nIndex, CStdString& strFilepath,
 	if ( (m_current[nIndex].strFilepath.Equals(strFilepath)) &&
 		(m_current[nIndex].strTitle.Equals(strTitle)) )
 	{
-		CLog::Log( "OnMediaUpdate complete." );
+		CLog::Log(LOGINFO, "OnMediaUpdate complete." );
 		return;		
 	}
 
@@ -413,7 +413,7 @@ void CGUIRAMControl::OnMediaUpdate(	INT nIndex, CStdString& strFilepath,
 
 	m_new[nIndex] = movie;
 
-	CLog::Log( "OnMediaUpdate complete." );
+	CLog::Log(LOGINFO, "OnMediaUpdate complete." );
 }
 
 

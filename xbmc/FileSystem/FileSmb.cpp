@@ -14,7 +14,7 @@ using namespace XFILE;
 
 void xb_smbc_log(const char* msg)
 {
-	CLog::Log("%s%s", "smb: ", msg);
+	CLog::Log(LOGINFO, "%s%s", "smb: ", msg);
 }
 
 void xb_smbc_auth(const char *srv, const char *shr, char *wg, int wglen, 
@@ -174,7 +174,7 @@ bool CFileSMB::Open(const CURL& url, bool bBinary)
 		smb.Unlock();
 		// write error to logfile
 		int nt_error = map_nt_error_from_unix(errno);
-		CLog::Log("FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'",
+		CLog::Log(LOGERROR, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'",
 				strFileName.c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
 		return false;
 	}

@@ -173,54 +173,54 @@ void CCdIoSupport::PrintAnalysis(int fs, int num_audio)
   switch(fs & FS_MASK) 
 	{
 		case FS_UDF:
-			CLog::Log("CD-ROM with UDF filesystem");
+			CLog::Log(LOGINFO, "CD-ROM with UDF filesystem");
     break;
   case FS_NO_DATA:
-    CLog::Log("CD-ROM with audio tracks");
+    CLog::Log(LOGINFO, "CD-ROM with audio tracks");
     break;
   case FS_ISO_9660:
-    CLog::Log("CD-ROM with ISO 9660 filesystem");
+    CLog::Log(LOGINFO, "CD-ROM with ISO 9660 filesystem");
     if (fs & JOLIET) 
 		{
-			CLog::Log(" with joliet extension level %d", m_nJolietLevel);
+			CLog::Log(LOGINFO, " with joliet extension level %d", m_nJolietLevel);
 		}
 		if (fs & ROCKRIDGE) 
 		{
-			CLog::Log(" and rockridge extensions");
+			CLog::Log(LOGINFO, " and rockridge extensions");
 		}
     break;
   case FS_ISO_9660_INTERACTIVE:
-    CLog::Log("CD-ROM with CD-RTOS and ISO 9660 filesystem");
+    CLog::Log(LOGINFO, "CD-ROM with CD-RTOS and ISO 9660 filesystem");
     break;
   case FS_HIGH_SIERRA:
-    CLog::Log("CD-ROM with High Sierra filesystem");
+    CLog::Log(LOGINFO, "CD-ROM with High Sierra filesystem");
     break;
   case FS_INTERACTIVE:
-    CLog::Log("CD-Interactive%s", num_audio > 0 ? "/Ready" : "");
+    CLog::Log(LOGINFO, "CD-Interactive%s", num_audio > 0 ? "/Ready" : "");
     break;
   case FS_HFS:
-    CLog::Log("CD-ROM with Macintosh HFS");
+    CLog::Log(LOGINFO, "CD-ROM with Macintosh HFS");
     break;
   case FS_ISO_HFS:
-    CLog::Log("CD-ROM with both Macintosh HFS and ISO 9660 filesystem");
+    CLog::Log(LOGINFO, "CD-ROM with both Macintosh HFS and ISO 9660 filesystem");
     break;
   case FS_ISO_UDF:
-    CLog::Log("CD-ROM with both UDF and ISO 9660 filesystem");
+    CLog::Log(LOGINFO, "CD-ROM with both UDF and ISO 9660 filesystem");
     break;
   case FS_UFS:
-    CLog::Log("CD-ROM with Unix UFS");
+    CLog::Log(LOGINFO, "CD-ROM with Unix UFS");
     break;
   case FS_EXT2:
-    CLog::Log("CD-ROM with Linux second extended filesystem");
+    CLog::Log(LOGINFO, "CD-ROM with Linux second extended filesystem");
 	  break;
   case FS_3DO:
-    CLog::Log("CD-ROM with Panasonic 3DO filesystem");
+    CLog::Log(LOGINFO, "CD-ROM with Panasonic 3DO filesystem");
     break;
   case FS_UDFX:
-    CLog::Log("CD-ROM with UDFX filesystem");
+    CLog::Log(LOGINFO, "CD-ROM with UDFX filesystem");
     break;
   case FS_UNKNOWN:
-    CLog::Log("CD-ROM with unknown filesystem");
+    CLog::Log(LOGINFO, "CD-ROM with unknown filesystem");
     break;
   }
 
@@ -230,7 +230,7 @@ void CCdIoSupport::PrintAnalysis(int fs, int num_audio)
   case FS_ISO_9660_INTERACTIVE:
   case FS_ISO_HFS:
 	case FS_ISO_UDF:
-    CLog::Log("ISO 9660: %i blocks, label `%.32s'\n",
+    CLog::Log(LOGINFO, "ISO 9660: %i blocks, label `%.32s'\n",
 	  m_nIsofsSize, buffer[0]+40);
     break;
   }
@@ -239,46 +239,46 @@ void CCdIoSupport::PrintAnalysis(int fs, int num_audio)
 	{
   case FS_UDF:
 	case FS_ISO_UDF:
-		CLog::Log("UDF: version %x.%02.2x\n",
+		CLog::Log(LOGINFO, "UDF: version %x.%02.2x\n",
 	  m_nUDFVerMajor, m_nUDFVerMinor);
     break;
   }
 
   if (m_nFirstData == 1 && num_audio > 0) 
 	{
-    CLog::Log("mixed mode CD   ");
+    CLog::Log(LOGINFO, "mixed mode CD   ");
   }
   if (fs & XA) 
 	{
-    CLog::Log("XA sectors   ");
+    CLog::Log(LOGINFO, "XA sectors   ");
   }
   if (fs & MULTISESSION) 
 	{
-    CLog::Log("Multisession, offset = %i   ",m_nMsOffset);
+    CLog::Log(LOGINFO, "Multisession, offset = %i   ",m_nMsOffset);
   }
   if (fs & HIDDEN_TRACK) 
 	{
-    CLog::Log("Hidden Track   ");
+    CLog::Log(LOGINFO, "Hidden Track   ");
   }
   if (fs & PHOTO_CD) 
 	{
-    CLog::Log("%sPhoto CD   ", num_audio > 0 ? " Portfolio " : "");
+    CLog::Log(LOGINFO, "%sPhoto CD   ", num_audio > 0 ? " Portfolio " : "");
   }
   if (fs & CDTV) 
 	{
-    CLog::Log("Commodore CDTV   ");
+    CLog::Log(LOGINFO, "Commodore CDTV   ");
   }
   if (m_nFirstData > 1) 
 	{
-    CLog::Log("CD-Plus/Extra   ");
+    CLog::Log(LOGINFO, "CD-Plus/Extra   ");
   }
   if (fs & BOOTABLE) 
 	{
-    CLog::Log("bootable CD   ");
+    CLog::Log(LOGINFO, "bootable CD   ");
   }
   if (fs & VIDEOCDI && num_audio == 0) 
 	{
-    CLog::Log("Video CD   ");
+    CLog::Log(LOGINFO, "Video CD   ");
 #ifdef HAVE_VCDINFO
     if (!opts.no_vcd) 
 		{
@@ -289,7 +289,7 @@ void CCdIoSupport::PrintAnalysis(int fs, int num_audio)
   }
   if (fs & CVD) 
 	{
-    CLog::Log("Chaoji Video CD");
+    CLog::Log(LOGINFO, "Chaoji Video CD");
   }
 }
 
@@ -589,8 +589,8 @@ CCdInfo* CCdIoSupport::GetCdInfo()
 	info->SetFirstDataTrack( m_nFirstData );
 
 	char buf[1024];
-	CLog::Log("CD Analysis Report");
-	CLog::Log(STRONG);
+	CLog::Log(LOGINFO, "CD Analysis Report");
+	CLog::Log(LOGINFO, STRONG);
     
     /* try to find out what sort of CD we have */
 	if (0 == m_nNumData) 
@@ -698,11 +698,11 @@ CCdInfo* CCdIoSupport::GetCdInfo()
 				/* track is beyond last session -> new session found */
 				m_nMsOffset = m_nStartTrack;
 
-				CLog::Log("Session #%d starts at track %2i, LSN: %6i,"
+				CLog::Log(LOGINFO, "Session #%d starts at track %2i, LSN: %6i,"
 							" ISO 9660 blocks: %6i",
 							j++, i, m_nStartTrack, m_nIsofsSize);
 
-				CLog::Log("ISO 9660: %i blocks, label '%.32s'\n",
+				CLog::Log(LOGINFO, "ISO 9660: %i blocks, label '%.32s'\n",
 							m_nIsofsSize, buffer[0]+40);
 				m_nFs |= MULTISESSION;
 				ti.nfsInfo = m_nFs;

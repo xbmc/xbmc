@@ -161,7 +161,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
 void CDetectDVDMedia::DetectMediaType()
 {
 	bool bCDDA(false);
-	CLog::Log("Detecting DVD-ROM media filesystem...");
+	CLog::Log(LOGINFO, "Detecting DVD-ROM media filesystem...");
 
 	CStdString strNewUrl;
 	CCdIoSupport cdio;
@@ -176,10 +176,10 @@ void CDetectDVDMedia::DetectMediaType()
 	m_pCdInfo = cdio.GetCdInfo();
 	if (m_pCdInfo==NULL) 
 	{
-		CLog::Log("Detection of DVD-ROM media failed.");
+		CLog::Log(LOGERROR, "Detection of DVD-ROM media failed.");
 		return;
 	}
-	CLog::Log("Tracks overall:%i; Audio tracks:%i; Data tracks:%i",
+	CLog::Log(LOGINFO, "Tracks overall:%i; Audio tracks:%i; Data tracks:%i",
 	m_pCdInfo->GetTrackCount(),
 	m_pCdInfo->GetAudioTrackCount(),
 	m_pCdInfo->GetDataTrackCount() );
@@ -216,16 +216,16 @@ void CDetectDVDMedia::DetectMediaType()
 		}
 	}
 
-	CLog::Log("Using protocol %s", strNewUrl.c_str());
+	CLog::Log(LOGINFO, "Using protocol %s", strNewUrl.c_str());
 
 	if (m_pCdInfo->IsValidFs())
 	{
 		if (!m_pCdInfo->IsAudio(1))
-			CLog::Log("Disc label: %s", m_pCdInfo->GetDiscLabel().c_str());
+			CLog::Log(LOGINFO, "Disc label: %s", m_pCdInfo->GetDiscLabel().c_str());
 	}
 	else
 	{
-		CLog::Log("Filesystem is not supported");
+		CLog::Log(LOGWARNING, "Filesystem is not supported");
 	}
 
   CStdString strLabel="";
@@ -361,7 +361,7 @@ bool CDetectDVDMedia::IsDiscInDrive()
 		// allow the application to poll once every five seconds
 		if ((clock()-m_LastPoll)>5000)
 		{
-			CLog::Log("Polling PC-DVDROM...");
+			CLog::Log(LOGINFO, "Polling PC-DVDROM...");
 
 			CIoSupport helper;
 			if (helper.Remount("D:","Cdrom0")==S_OK)

@@ -118,7 +118,7 @@ static void __cdecl FEH_TextOut(XFONT* pFont, int iLine, const wchar_t* fmt, ...
 	va_end(args);
 	
 	if (!(iLine & 0x8000))
-		CLog::Log("%S", buf);
+		CLog::Log(LOGFATAL, "%S", buf);
 
 	bool Center = (iLine & 0x10000) > 0;
 	pFont->SetTextAlignment(Center ? XFONT_CENTER : XFONT_LEFT);
@@ -136,13 +136,13 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 {
 	// XBMC couldn't start for some reason...
 	// g_LoadErrorStr should contain the reason
-	CLog::Log("Emergency recovery console starting...");
+	CLog::Log(LOGWARNING, "Emergency recovery console starting...");
 
 	bool HaveGamepad = !InitD3D;
 	bool Pal = XGetVideoStandard() == XC_VIDEO_STANDARD_PAL_I;
 	if (InitD3D)
 	{
-		CLog::Log("Init display in default mode: %s", Pal ? "PAL" : "NTSC");
+		CLog::Log(LOGFATAL, "Init display in default mode: %s", Pal ? "PAL" : "NTSC");
 		// init D3D with defaults (NTSC or PAL standard res)
 		m_d3dpp.BackBufferWidth        = 720;
 		m_d3dpp.BackBufferHeight       = Pal ? 576 : 480;
@@ -154,14 +154,14 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 
 		if (!(m_pD3D = Direct3DCreate8(D3D_SDK_VERSION)))
 		{
-			CLog::Log("FATAL ERROR: Unable to create Direct3D!");
+			CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create Direct3D!");
 			Sleep(INFINITE); // die
 		}
 
 		// Create the device
 		if (m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_d3dpp, &m_pd3dDevice) != S_OK)
 		{
-			CLog::Log("FATAL ERROR: Unable to create D3D Device!");
+			CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create D3D Device!");
 			Sleep(INFINITE); // die
 		}
 
@@ -178,7 +178,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 	XFONT* pFont;
 	if (XFONT_OpenDefaultFont(&pFont) != S_OK)
 	{
-		CLog::Log("FATAL ERROR: Unable to open default font!");
+		CLog::Log(LOGFATAL, "FATAL ERROR: Unable to open default font!");
 		Sleep(INFINITE); // die
 	}
 
@@ -468,11 +468,11 @@ HRESULT CApplication::Create()
 
 	::DeleteFile("Q:\\xbmc.old.log");
 	::MoveFile("Q:\\xbmc.log","Q:\\xbmc.old.log");
-	CLog::Log("-----------------------------------------------------------------------");
-	CLog::Log("starting...");
-	CLog::Log("Q is mapped to:%s",szDevicePath);
+	CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
+	CLog::Log(LOGNOTICE, "starting...");
+	CLog::Log(LOGNOTICE, "Q is mapped to:%s",szDevicePath);
 
-	CLog::Log("load settings...");
+	CLog::Log(LOGNOTICE, "load settings...");
 	g_LoadErrorStr = "Unable to load settings";
 	m_bAllSettingsLoaded=g_settings.Load(m_bXboxMediacenterLoaded,m_bSettingsLoaded);
 	if (!m_bAllSettingsLoaded)
@@ -481,26 +481,26 @@ HRESULT CApplication::Create()
   // Transfer the resolution information to our graphics context
 	g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
 
-	CLog::Log("map drives...");
-	CLog::Log("  map drive C:");
+	CLog::Log(LOGINFO, "map drives...");
+	CLog::Log(LOGINFO, "  map drive C:");
 	helper.Remap("C:,Harddisk0\\Partition2");
 
-	CLog::Log("  map drive E:");
+	CLog::Log(LOGINFO, "  map drive E:");
 	helper.Remap("E:,Harddisk0\\Partition1");
 
-	CLog::Log("  map drive D:");
+	CLog::Log(LOGINFO, "  map drive D:");
 	helper.Remount("D:","Cdrom0");
 
 	if (g_stSettings.m_bUseFDrive) 
 	{
-		CLog::Log("  map drive F:");
+		CLog::Log(LOGINFO, "  map drive F:");
 		helper.Remap("F:,Harddisk0\\Partition6");
 	}
 
 	// used for the LBA-48 hack allowing >120 gig
 	if (g_stSettings.m_bUseGDrive) 
 	{
-		CLog::Log("  map drive G:");
+		CLog::Log(LOGINFO, "  map drive G:");
 		helper.Remap("G:,Harddisk0\\Partition7");
 	}
 
@@ -508,7 +508,7 @@ HRESULT CApplication::Create()
 	// if there is, we check if it's a xbmc dir and map to it Q:
 	if (strlen(g_stSettings.szHomeDir) > 1)
 	{
-		CLog::Log("map Q: to homedir:%s...",g_stSettings.szHomeDir);
+		CLog::Log(LOGNOTICE, "map Q: to homedir:%s...",g_stSettings.szHomeDir);
 		// home dir is defined in xboxmediacenter.xml
 		CStdString strHomePath = g_stSettings.szHomeDir;
 
@@ -523,7 +523,7 @@ HRESULT CApplication::Create()
 			::DeleteFile("Q:\\xbmc.old.log");
 			::MoveFile("Q:\\xbmc.log","Q:\\xbmc.old.log");
 			CLog::Close();
-			CLog::Log("Q is mapped to:%s",szDevicePath);
+			CLog::Log(LOGNOTICE, "Q is mapped to:%s",szDevicePath);
 		}
 		else
 		{
@@ -535,24 +535,24 @@ HRESULT CApplication::Create()
 	CStdString strLanguagePath;
 	strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_stSettings.szDefaultLanguage);
 
-	CLog::Log("load language file:%s",strLanguagePath.c_str());
+	CLog::Log(LOGINFO, "load language file:%s",strLanguagePath.c_str());
 	if (!g_localizeStrings.Load(strLanguagePath ))
 		FatalErrorHandler(true, false, true);
 
-	CLog::Log("load keymapping");
+	CLog::Log(LOGINFO, "load keymapping");
 	if (!g_buttonTranslator.Load())
 		FatalErrorHandler(true, false, true);
 
-	CLog::Log("setup DirectX");
+	CLog::Log(LOGINFO, "setup DirectX");
 	g_graphicsContext.SetGUIResolution(g_stSettings.m_GUIResolution);
 	g_graphicsContext.SetOffset(g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY);
 
 	int  iResolution=g_stSettings.m_GUIResolution;
-	CLog::Log(" GUI format %ix%i %s",
+	CLog::Log(LOGINFO, " GUI format %ix%i %s",
 		g_settings.m_ResInfo[iResolution].iWidth, 
 		g_settings.m_ResInfo[iResolution].iHeight, 
 		g_settings.m_ResInfo[iResolution].strMode);
-	CLog::Log(" GUI screen offset (%i,%i)", g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY);
+	CLog::Log(LOGINFO, " GUI screen offset (%i,%i)", g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY);
 	m_gWindowManager.Initialize();
 	g_actionManager.SetScriptActionCallback(&m_pythonParser);
 	return CXBApplicationEx::Create();
@@ -560,7 +560,7 @@ HRESULT CApplication::Create()
 
 HRESULT CApplication::Initialize()
 {
-	CLog::Log("creating subdirectories");
+	CLog::Log(LOGINFO, "creating subdirectories");
 	if (g_stSettings.szThumbnailsDirectory[0]==0)
 	{
 		strcpy(g_stSettings.szThumbnailsDirectory,"Q:\\thumbs");
@@ -592,11 +592,11 @@ HRESULT CApplication::Initialize()
 	CreateDirectory(g_stSettings.m_szMusicRecordingDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szScreenshotsDirectory, NULL);
 
-	CLog::Log("  thumbnails folder:%s", g_stSettings.szThumbnailsDirectory);
-	CLog::Log("  shortcuts folder:%s", g_stSettings.m_szShortcutDirectory);
-	CLog::Log("  albums folder:%s", g_stSettings.m_szAlbumDirectory);
-	CLog::Log("  recording folder:%s", g_stSettings.m_szMusicRecordingDirectory);
-	CLog::Log("  screenshots folder:%s", g_stSettings.m_szScreenshotsDirectory);
+	CLog::Log(LOGINFO, "  thumbnails folder:%s", g_stSettings.szThumbnailsDirectory);
+	CLog::Log(LOGINFO, "  shortcuts folder:%s", g_stSettings.m_szShortcutDirectory);
+	CLog::Log(LOGINFO, "  albums folder:%s", g_stSettings.m_szAlbumDirectory);
+	CLog::Log(LOGINFO, "  recording folder:%s", g_stSettings.m_szMusicRecordingDirectory);
+	CLog::Log(LOGINFO, "  screenshots folder:%s", g_stSettings.m_szScreenshotsDirectory);
 
 	string strAlbumDir=g_stSettings.m_szAlbumDirectory;
 	CreateDirectory((strAlbumDir+"\\playlists").c_str(),NULL);
@@ -614,7 +614,7 @@ HRESULT CApplication::Initialize()
 	{
 		strcpy(g_stSettings.m_szAlternateSubtitleDirectory,"Q:\\subtitles");
 	}
-	CLog::Log("  subtitle folder:%s", g_stSettings.m_szAlternateSubtitleDirectory);
+	CLog::Log(LOGINFO, "  subtitle folder:%s", g_stSettings.m_szAlternateSubtitleDirectory);
 	CreateDirectory(g_stSettings.m_szAlternateSubtitleDirectory,NULL);
 
 	InitMemoryUnits();
@@ -622,7 +622,7 @@ HRESULT CApplication::Initialize()
 	// initialize network
 	if (!m_bXboxMediacenterLoaded)
 	{
-		CLog::Log("using default network settings");
+		CLog::Log(LOGINFO, "using default network settings");
 		strcpy (g_stSettings.m_strLocalIPAdres,"192.168.0.100");
 		strcpy (g_stSettings.m_strLocalNetmask,"255.255.255.0");
 		strcpy (g_stSettings.m_strGateway,"192.168.0.1");
@@ -631,7 +631,7 @@ HRESULT CApplication::Initialize()
 		g_stSettings.m_bHTTPServerEnabled=false;
 		g_stSettings.m_bTimeServerEnabled=false;
 	}
-	CLog::Log("initialize network ip:[%s] netmask:[%s] gateway:[%s] nameserver:[%s]",
+	CLog::Log(LOGNOTICE, "initialize network ip:[%s] netmask:[%s] gateway:[%s] nameserver:[%s]",
 		g_stSettings.m_strLocalIPAdres,
 		g_stSettings.m_strLocalNetmask,
 		g_stSettings.m_strGateway,
@@ -642,7 +642,7 @@ HRESULT CApplication::Initialize()
 		g_stSettings.m_strGateway,
 		g_stSettings.m_strNameServer) )
 	{
-		CLog::Log("initialize network failed");
+		CLog::Log(LOGERROR, "initialize network failed");
 	}
 
 	// set filters
@@ -650,10 +650,10 @@ HRESULT CApplication::Initialize()
 	g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MAGFILTER, g_stSettings.m_maxFilter );
 
 	g_graphicsContext.SetD3DDevice(m_pd3dDevice);
-	CLog::Log("load default skin:[%s]",g_stSettings.szDefaultSkin);
+	CLog::Log(LOGNOTICE, "load default skin:[%s]",g_stSettings.szDefaultSkin);
 	LoadSkin(g_stSettings.szDefaultSkin);
 
-	CLog::Log("initializing skin");
+	CLog::Log(LOGINFO, "initializing skin");
 	m_gWindowManager.Add(&m_guiHome);											// window id = 0
 	m_gWindowManager.Add(&m_guiPrograms);									// window id = 1
 	m_gWindowManager.Add(&m_guiPictures);									// window id = 2
@@ -718,19 +718,19 @@ HRESULT CApplication::Initialize()
 	CKaiClient::GetInstance()->SetObserver(&m_guiMyBuddies);
 
 	/* window id's 3000 - 3100 are reserved for python */
-	CLog::Log("initializing virtual keyboard");	
+	CLog::Log(LOGINFO, "initializing virtual keyboard");	
 	m_keyboard.Initialize();
 
 	m_ctrDpad.SetDelays(g_stSettings.m_iMoveDelayController,g_stSettings.m_iRepeatDelayController);
 	m_ctrIR.SetDelays(g_stSettings.m_iMoveDelayIR,g_stSettings.m_iRepeatDelayIR);
 
 	m_gWindowManager.ActivateWindow(g_stSettings.m_iStartupWindow);
-	CLog::Log("removing tempfiles");	
+	CLog::Log(LOGINFO, "removing tempfiles");	
 	CUtil::RemoveTempFiles();
 
 	if (!m_bAllSettingsLoaded)
 	{
-		CLog::Log("settings not correct, show dialog");	
+		CLog::Log(LOGWARNING, "settings not correct, show dialog");	
 		CStdString test;
 		CUtil::GetHomePath(test);
 		m_guiDialogOK.SetHeading(279);
@@ -740,7 +740,7 @@ HRESULT CApplication::Initialize()
 		m_guiDialogOK.DoModal(g_stSettings.m_iStartupWindow);
 	}
 
-	CLog::Log("initialize done");	
+	CLog::Log(LOGNOTICE, "initialize done");	
 	CUtil::InitGamma();
   StartServices();
 	if (g_stSettings.m_bLCDUsed)
@@ -758,7 +758,7 @@ void CApplication::StartWebServer()
 {
  	if (g_stSettings.m_bHTTPServerEnabled && CUtil::IsNetworkUp())
 	{
-		CLog::Log("start webserver");
+		CLog::Log(LOGNOTICE, "start webserver");
 		CSectionLoader::Load("LIBHTTP");
 		m_pWebServer = new CWebServer();
 		CStdString ipadres;
@@ -771,7 +771,7 @@ void CApplication::StopWebServer()
 {
  	if (m_pWebServer)
 	{
-		CLog::Log("stop webserver");
+		CLog::Log(LOGNOTICE, "stop webserver");
 		m_pWebServer->Stop();
     m_pWebServer->WaitForThreadExit(INFINITE);
 		delete m_pWebServer;
@@ -784,7 +784,7 @@ void CApplication::StartFtpServer()
 {
 	if ( g_stSettings.m_bFTPServerEnabled && CUtil::IsNetworkUp())
 	{
-		CLog::Log("start ftpserver");
+		CLog::Log(LOGNOTICE, "start ftpserver");
     if (!m_pFileZilla) {
 			m_pFileZilla = new CXBFileZilla("Q:\\");
   		m_pFileZilla->Start();
@@ -796,7 +796,7 @@ void CApplication::StopFtpServer()
 {
   /* filezilla doesn't like to be deleted?
   if (m_pFileZilla) {
-		CLog::Log("stop ftpserver");
+		CLog::Log(LOGINFO, "stop ftpserver");
 		m_pFileZilla->Stop();
     delete m_pFileZilla;
     m_pFileZilla = NULL;
@@ -808,14 +808,14 @@ void CApplication::StartTimeServer()
 {
  	if (g_stSettings.m_bTimeServerEnabled && CUtil::IsNetworkUp())
 	{
-		CLog::Log("start timeserver thread");
+		CLog::Log(LOGNOTICE, "start timeserver thread");
 		m_sntpClient.Create(); 
 	}
 }
 
 void CApplication::StopTimeServer()
 {
-  CLog::Log("stop time server");
+  CLog::Log(LOGNOTICE, "stop time server");
 	m_sntpClient.StopThread();
 }
 
@@ -826,10 +826,10 @@ void CApplication::StartServices()
   StartFtpServer();
 
   //	Start Thread for DVD Mediatype detection
-	CLog::Log("start dvd mediatype detection");	
+	CLog::Log(LOGNOTICE, "start dvd mediatype detection");	
 	m_DetectDVDType.Create( false);
 
-	CLog::Log("initializing playlistplayer");	
+	CLog::Log(LOGNOTICE, "initializing playlistplayer");	
 	g_playlistPlayer.Repeat(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistRepeat);
 	g_playlistPlayer.Repeat(PLAYLIST_MUSIC_TEMP, g_stSettings.m_bMyMusicRepeat);
 	g_playlistPlayer.Repeat(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistRepeat);
@@ -839,7 +839,7 @@ void CApplication::StartServices()
 	g_lcd=factory.Create();
 	g_lcd->Initialize();
 
-	CLog::Log("start fancontroller");
+	CLog::Log(LOGNOTICE, "start fancontroller");
   if (g_stSettings.m_bAutoTemperature) {
     CFanController::Instance()->Start(g_stSettings.m_iTargetTemperature);
   }
@@ -854,15 +854,15 @@ void CApplication::StopServices()
   StopTimeServer();
   StopFtpServer();
 
-	CLog::Log("stop dvd detect media");
+	CLog::Log(LOGNOTICE, "stop dvd detect media");
 	m_DetectDVDType.StopThread();
 
-	CLog::Log("stop LCD");
+	CLog::Log(LOGNOTICE, "stop LCD");
 	g_lcd->Stop();
   g_lcd->WaitForThreadExit(INFINITE);
   delete g_lcd;
 
-	CLog::Log("stop fancontroller");
+	CLog::Log(LOGNOTICE, "stop fancontroller");
   CFanController::Instance()->Stop();
 }
 
@@ -885,18 +885,18 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	CStdString strSkinPath = "Q:\\skin\\";
 	strSkinPath+=strSkin;
 
-	CLog::Log("  load skin from:%s",strSkinPath.c_str());	
+	CLog::Log(LOGINFO, "  load skin from:%s",strSkinPath.c_str());	
 
 	if ( IsPlaying() )
 	{
-		CLog::Log(" stop playing...");
+		CLog::Log(LOGINFO, " stop playing...");
 		m_pPlayer->closefile();
 		m_strCurrentFile="";
 		delete m_pPlayer;
 		m_pPlayer=NULL;
 	}
 
-	CLog::Log("  delete old skin...");
+	CLog::Log(LOGINFO, "  delete old skin...");
 	m_guiWindowVideoOverlay.FreeResources();
 	m_guiWindowVideoOverlay.ClearAll();
 
@@ -914,22 +914,22 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	// Load in the skin.xml file if it exists
 	g_SkinInfo.Load(strSkinPath);
 
-	CLog::Log("  load fonts for skin...");
+	CLog::Log(LOGINFO, "  load fonts for skin...");
 	g_graphicsContext.SetMediaDir(strSkinPath);
 	g_fontManager.LoadFonts();
 
 	LARGE_INTEGER start;
 	QueryPerformanceCounter(&start);
 
-	CLog::Log("  load new skin...");
+	CLog::Log(LOGINFO, "  load new skin...");
 	if (!m_guiHome.Load( "home.xml"))
 	{
 		// failed to load home.xml
 		// fallback to mediacenter skin
 		if ( CUtil::cmpnocase(strSkin.c_str(),"mediacenter") !=0)
 		{
-			CLog::Log("failed to load home.xml for skin:%s, fallback to mediacenter skin", strSkin.c_str());
-			LoadSkin("mediacenter");
+			CLog::Log(LOGERROR, "failed to load home.xml for skin:%s, fallback to Project Mayhem skin", strSkin.c_str());
+			LoadSkin("Project Mayhem");
 			return;
 		}
 	}
@@ -1003,7 +1003,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	QueryPerformanceFrequency(&freq);
 	CLog::DebugLog("Load Skin XML: %.2fms", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart);
 
-	CLog::Log("  initialize new skin...");
+	CLog::Log(LOGINFO, "  initialize new skin...");
 	m_guiPointer.AllocResources();
 	m_guiMusicOverlay.AllocResources();
 	m_guiWindowVideoOverlay.AllocResources();
@@ -1011,7 +1011,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_gWindowManager.AddMsgTarget(&g_playlistPlayer);
 	m_gWindowManager.SetCallback(*this);
 	m_gWindowManager.Initialize();
-	CLog::Log("  skin loaded...");
+	CLog::Log(LOGINFO, "  skin loaded...");
 }
 
 
@@ -1784,7 +1784,7 @@ void CApplication::Stop()
 	try
 	{
     m_bStop = true;
-		CLog::Log("stop all");
+		CLog::Log(LOGNOTICE, "stop all");
 
 		CKaiClient::GetInstance()->RemoveObserver();
 
@@ -1792,7 +1792,7 @@ void CApplication::Stop()
 
 		if (m_pPlayer)
 		{
-			CLog::Log("stop mplayer");
+			CLog::Log(LOGNOTICE, "stop mplayer");
 			delete m_pPlayer;
 			m_pPlayer=NULL;
 		}
@@ -1807,22 +1807,22 @@ void CApplication::Stop()
 		}
 
 		//g_lcd->StopThread();
-		CLog::Log("stop python");
+		CLog::Log(LOGNOTICE, "stop python");
 		g_applicationMessenger.Cleanup();
 		m_pythonParser.FreeResources();
 
-		CLog::Log("unload skin");
+		CLog::Log(LOGNOTICE, "unload skin");
 		m_guiMusicOverlay.FreeResources();
 		m_guiWindowVideoOverlay.FreeResources();
 		g_fontManager.Clear();
 		m_gWindowManager.DeInitialize();
 		g_TextureManager.Cleanup();
 
-		CLog::Log("unload sections");
+		CLog::Log(LOGNOTICE, "unload sections");
 		CSectionLoader::UnloadAll();
-		CLog::Log("destroy");
+		CLog::Log(LOGNOTICE, "destroy");
 		Destroy();
-		CLog::Log("stopped");
+		CLog::Log(LOGNOTICE, "stopped");
 	}
 	catch(...)
 	{

@@ -111,27 +111,27 @@ void CMediaMonitor::DispatchNextCommand()
 		case CommandType::Seed:
 		{
 			// update all movie information
-			CLog::Log("Seeding database... started.");
+			CLog::Log(LOGINFO, "Seeding database... started.");
 			Scan(true);
-			CLog::Log("Seeding database... completed.");
+			CLog::Log(LOGINFO, "Seeding database... completed.");
 			break;
 		}
 
 		case CommandType::Refresh:
 		{
 			// get information for the latest 3 movies
-			CLog::Log("Refreshing latest movies... started.");
+			CLog::Log(LOGINFO, "Refreshing latest movies... started.");
 			Scan(false);
-			CLog::Log("Refreshing latest movies... completed.");
+			CLog::Log(LOGINFO, "Refreshing latest movies... completed.");
 			break;
 		}
 
 		case CommandType::Update:
 		{
 			// update the information for a specific movie
-			CLog::Log("Updating movie... started.");
+			CLog::Log(LOGINFO, "Updating movie... started.");
 			UpdateTitle(command.nParam1,command.strParam1,command.strParam2);
-			CLog::Log("Updating movie... completed.");
+			CLog::Log(LOGINFO, "Updating movie... completed.");
 			break;
 		}
 	}
@@ -288,7 +288,7 @@ bool CMediaMonitor::GetMovieInfo(CStdString& strFilepath, CIMDBMovie& aMovieReco
 
 	CStdString debug;
 	debug.Format("New filepath: %s\nQuerying: %s",strFilepath.c_str(),strName.c_str());
-	CLog::Log(debug);
+	CLog::Log(LOGDEBUG, debug);
 
 	// Query IMDB and populate the record
 	if (imdb_GetMovieInfo(strName,aMovieRecord))

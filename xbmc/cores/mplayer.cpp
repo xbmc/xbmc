@@ -449,7 +449,7 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 
 	if ( m_iAudioStream >=0)
 	{
-		CLog::Log(" Playing audio stream: %d", m_iAudioStream);
+		CLog::Log(LOGINFO, " Playing audio stream: %d", m_iAudioStream);
 		m_vecOptions.push_back("-aid");
 		strTmp.Format("%i", m_iAudioStream);
 		m_vecOptions.push_back(strTmp);
@@ -457,7 +457,7 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 
 	if ( m_iSubtitleStream >=0)
 	{
-		CLog::Log(" Playing subtitle stream: %d", m_iSubtitleStream);
+		CLog::Log(LOGINFO, " Playing subtitle stream: %d", m_iSubtitleStream);
 		m_vecOptions.push_back("-sid");
 		strTmp.Format("%i", m_iSubtitleStream);
 		m_vecOptions.push_back(strTmp);
@@ -496,14 +496,14 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 
 	if (m_strFlipBiDiCharset.length()>0)
 	{
-			CLog::Log("Flipping bi-directional subtitles in charset %s", g_stSettings.m_szFlipBiDiCharset);
+			CLog::Log(LOGINFO, "Flipping bi-directional subtitles in charset %s", g_stSettings.m_szFlipBiDiCharset);
 			m_vecOptions.push_back("-fribidi-charset");
 			m_vecOptions.push_back(m_strFlipBiDiCharset);
 			m_vecOptions.push_back("-flip-hebrew");
 	}
 	else
 	{
-		CLog::Log("Flipping bi-directional subtitles disabled");
+		CLog::Log(LOGINFO, "Flipping bi-directional subtitles disabled");
 		m_vecOptions.push_back("-noflip-hebrew");
 	}
 
@@ -661,14 +661,14 @@ bool CMPlayer::load()
 		m_pDLL = new DllLoader("Q:\\mplayer\\mplayer.dll");
 		if( !m_pDLL->Parse() )
 		{
-			CLog::Log("cmplayer::load() parse failed");
+			CLog::Log(LOGERROR, "cmplayer::load() parse failed");
 			delete m_pDLL;
 			m_pDLL=NULL;
 			return false;
 		}
 		if( !m_pDLL->ResolveImports()  )
 		{
-			CLog::Log("cmplayer::load() resolve imports failed");
+			CLog::Log(LOGERROR, "cmplayer::load() resolve imports failed");
 		}
 		mplayer_load_dll(*m_pDLL);
 	}
@@ -735,7 +735,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			m_dlgCache->Update();
 		}
 
-		CLog::Log("mplayer play:%s cachesize:%i", strFile.c_str(), iCacheSize);
+		CLog::Log(LOGINFO, "mplayer play:%s cachesize:%i", strFile.c_str(), iCacheSize);
 
 		// cache (remote) subtitles to HD
 		if (!bFileOnInternet && bIsVideo && !bIsDVD)
@@ -801,14 +801,14 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		if(bFileIsDVDImage)
 		{
 			options.SetDVDDevice(strFile);
-			CLog::Log(" dvddevice: %s", strFile.c_str());
+			CLog::Log(LOGINFO, " dvddevice: %s", strFile.c_str());
 		}
 		else if(bFileIsDVDIfoFile)
 		{
 			CStdString strPath;
 			CUtil::GetParentPath(strFile, strPath);
 			options.SetDVDDevice(strPath);
-			CLog::Log(" dvddevice: %s", strPath.c_str());
+			CLog::Log(LOGINFO, " dvddevice: %s", strPath.c_str());
 		}	
 
  		CStdString strExtension;
@@ -829,14 +829,14 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			{
 				// fixes large opendml avis - mplayer can't handle big indices
 				options.SetNoIdx(true);
-				CLog::Log("Trying to play a large avi file. Setting -noidx");
+				CLog::Log(LOGINFO, "Trying to play a large avi file. Setting -noidx");
 			}
 		}
 
 		if (CUtil::IsRAR(strFile))
 		{
 			options.SetNoIdx(true);
-			CLog::Log("Trying to play a rar file (%s). Setting -noidx", strFile.c_str());
+			CLog::Log(LOGINFO, "Trying to play a rar file (%s). Setting -noidx", strFile.c_str());
 			// -noidx enables mplayer to play an .avi file from a streaming source that is not seekable.
 			// it tells mplayer to _not_ try getting the avi index from the end of the file.
 			// this option is enabled if we try play video from a rar file, as there is a modified version
@@ -865,7 +865,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		options.GetOptions(argc,argv);
 		
 
-		//CLog::Log("  open 1st time");
+		//CLog::Log(LOGINFO, "  open 1st time");
 		mplayer_init(argc,argv);
 		mplayer_setcache_size(iCacheSize);
 		mplayer_setcache_backbuffer(iCacheSizeBackBuffer);
@@ -917,7 +917,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 						options.SetSpeed(25.0f / fFPS); 
 						options.SetFPS(25.0f);
 						bNeed2Restart=true;
-						CLog::Log("  --restart cause we use ntsc->pal framerate conversion");
+						CLog::Log(LOGINFO, "  --restart cause we use ntsc->pal framerate conversion");
 					}
 				}
 				else
@@ -929,7 +929,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 						options.SetSpeed(23.976f / fFPS); 
 						options.SetFPS(23.976f);
 						bNeed2Restart=true;
-						CLog::Log("  --restart cause we use pal->ntsc framerate conversion");
+						CLog::Log(LOGINFO, "  --restart cause we use pal->ntsc framerate conversion");
 					}
 				}
 			}
@@ -964,7 +964,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 						// Could be DTS - lets restart to see
 						options.SetAC3PassTru(true);
 						options.SetChannels(6);
-						CLog::Log("  --------------- restart to test for DTS ---------------");
+						CLog::Log(LOGINFO, "  --------------- restart to test for DTS ---------------");
 						mplayer_close_file();
 						options.GetOptions(argc,argv);
 						load();
@@ -1023,7 +1023,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 					options.SetChannels(6);
 					options.SetChannelMapping("channels=6:6:0:0:1:1:2:4:3:5:4:2:5:3");
 					bNeed2Restart=true;
-					CLog::Log("  --restart cause speaker mapping needs fixing");
+					CLog::Log(LOGINFO, "  --restart cause speaker mapping needs fixing");
 				}	
 				// AAC has a different channel mapping.. C, FL, FR, SL, SR, LFE
 				if ( strstr(strAudioCodec, "AAC") && (iChannels==6))
@@ -1040,7 +1040,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 					}
 					
 					bNeed2Restart=true;
-					CLog::Log("  --restart cause speaker mapping needs fixing");		
+					CLog::Log(LOGINFO, "  --restart cause speaker mapping needs fixing");		
 				}
 				// OGG has yet another channel mapping.. we need a better way for this FL, C, FR, SL, SR, LFE
 				if ( strstr(strAudioCodec, "OggVorbis") && (iChannels==6))
@@ -1058,7 +1058,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 					}
 					
 					bNeed2Restart=true;
-					CLog::Log("  --restart cause speaker mapping needs fixing");		
+					CLog::Log(LOGINFO, "  --restart cause speaker mapping needs fixing");		
 				}
 
 
@@ -1077,7 +1077,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 					options.SetChannels(6);
 					options.SetChannelMapping("channels=6:5:0:0:1:1:2:2:3:3:4:4:5:5");
 					bNeed2Restart=true;
-					CLog::Log("  --restart cause audio channels changed:5");
+					CLog::Log(LOGINFO, "  --restart cause audio channels changed:5");
 				}
 				// remap audio speaker layout for files with 3 audio channels 
 				if (iChannels==3)
@@ -1085,7 +1085,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 					options.SetChannels(4);
 					options.SetChannelMapping("channels=4:4:0:0:1:1:2:2:2:3");
 					bNeed2Restart=true;
-					CLog::Log("  --restart cause audio channels changed:3");
+					CLog::Log(LOGINFO, "  --restart cause audio channels changed:3");
 				}
 
 				if (iChannels==1 || iChannels==2||iChannels==4)
@@ -1094,7 +1094,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 					if ( iChannels ==2) iChannels=0;
 					if (iChan!=iChannels)
 					{
-						CLog::Log("  --restart cause audio channels changed");
+						CLog::Log(LOGINFO, "  --restart cause audio channels changed");
 						options.SetChannels(iChannels);
 						bNeed2Restart=true; 
 					}
@@ -1103,8 +1103,8 @@ bool CMPlayer::openfile(const CStdString& strFile)
 
 			if (bNeed2Restart)
 			{
-				CLog::Log("  --------------- restart ---------------");
-				//CLog::Log("  open 2nd time");
+				CLog::Log(LOGINFO, "  --------------- restart ---------------");
+				//CLog::Log(LOGINFO, "  open 2nd time");
 				mplayer_close_file();
 				options.GetOptions(argc,argv);
 				load();
@@ -1132,7 +1132,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		int iNewCacheSize=GetCacheSize(bFileOnHD,bFileOnISO,bFileOnUDF,bFileOnInternet,bFileOnLAN, bIsVideo, bIsAudio, bIsDVD);
 		if (iNewCacheSize > iCacheSize)
 		{
-			CLog::Log("detected video. Cachesize is now %i, (was %i)", iNewCacheSize,iCacheSize);
+			CLog::Log(LOGINFO, "detected video. Cachesize is now %i, (was %i)", iNewCacheSize,iCacheSize);
 			mplayer_setcache_size(iCacheSize);
 		}
 
@@ -1144,7 +1144,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 	}
 	catch(...)
 	{
-		CLog::Log("cmplayer::openfile() %s failed",strFile.c_str());
+		CLog::Log(LOGERROR, "cmplayer::openfile() %s failed",strFile.c_str());
 		if (m_dlgCache) delete m_dlgCache;
 		m_dlgCache=NULL;  
 		closefile();
@@ -1230,8 +1230,8 @@ void CMPlayer::Process()
 			{
 				char module[100];
 				mplayer_get_current_module(module, sizeof(module));
-				CLog::Log("mplayer generated exception in %s", module);
-				//CLog::Log("mplayer generated exception!");
+				CLog::Log(LOGERROR, "mplayer generated exception in %s", module);
+				//CLog::Log(LOGERROR, "mplayer generated exception!");
 				exceptionCount++;
 
 				// bad codec detection
@@ -1598,7 +1598,7 @@ void      CMPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
 {
 	stream_language_t slt;
 	mplayer_getSubtitleStreamInfo(iStream, &slt);
-	CLog::Log("Stream:%d language:%d", iStream, slt.language);
+	CLog::Log(LOGINFO, "Stream:%d language:%d", iStream, slt.language);
 	if(slt.language != 0)
 	{               
 		char lang[3];

@@ -35,7 +35,7 @@ int CEncoderWav::Encode(int nNumBytesRead, BYTE* pbtStream)
 	// write stream to file (no conversion needed at this time)
 	if (FileWrite(pbtStream, nNumBytesRead) == -1)
 	{ 
-		CLog::Log("Error writing buffer to file");
+		CLog::Log(LOGERROR, "Error writing buffer to file");
 		return 0;
 	}
 

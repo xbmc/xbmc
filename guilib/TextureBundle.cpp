@@ -101,7 +101,7 @@ bool CTextureBundle::OpenBundle()
 
 	if (ALIGN % XGetDiskSectorSize(strPath.Left(3).c_str()))
 	{
-		CLog::Log("Disk sector size is not supported, caching textures.xpr");
+		CLog::Log(LOGWARNING, "Disk sector size is not supported, caching textures.xpr");
 
 		WIN32_FIND_DATA FindData[2];
 		FindClose(FindFirstFile(strPath.c_str(), &FindData[0]));
@@ -113,7 +113,7 @@ bool CTextureBundle::OpenBundle()
 		{
 			if (!CopyFile(strPath, "Z:\\Textures.xpr", FALSE))
 			{
-				CLog::Log("Unable to open file: %s: %x", strPath.c_str(), GetLastError());
+				CLog::Log(LOGERROR, "Unable to open file: %s: %x", strPath.c_str(), GetLastError());
 				return false;
 			}
 			m_hFile = CreateFile(strPath.c_str(), GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, 0, OPEN_EXISTING, 0, 0);
@@ -129,7 +129,7 @@ bool CTextureBundle::OpenBundle()
 	m_hFile = CreateFile(strPath.c_str(), GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, 0, OPEN_EXISTING, FILE_FLAG_NO_BUFFERING|FILE_FLAG_OVERLAPPED, 0);
 	if (m_hFile == INVALID_HANDLE_VALUE)
 	{
-		CLog::Log("Unable to open file: %s: %x", strPath.c_str(), GetLastError());
+		CLog::Log(LOGERROR, "Unable to open file: %s: %x", strPath.c_str(), GetLastError());
 		return false;
 	}
 
@@ -195,7 +195,7 @@ bool CTextureBundle::OpenBundle()
 	return true;
 
 LoadError:
-	CLog::Log("Unable to load file: %s: %x", strPath.c_str(), GetLastError());
+	CLog::Log(LOGERROR, "Unable to load file: %s: %x", strPath.c_str(), GetLastError());
 	CloseHandle(m_hFile); m_hFile = INVALID_HANDLE_VALUE;
 	return false;
 }
@@ -228,7 +228,7 @@ bool CTextureBundle::HasFile(const CStdString& Filename)
 	GetFileTime(m_hFile, NULL, NULL, &ts);
 	if (CompareFileTime(&m_TimeStamp, &ts))
 	{
-		CLog::Log("Texture bundle has changed, reloading");
+		CLog::Log(LOGINFO, "Texture bundle has changed, reloading");
 		Cleanup();
 		if (!OpenBundle())
 			return false;
@@ -275,7 +275,7 @@ bool CTextureBundle::PreloadFile(const CStdString& Filename)
 			DWORD n;
 			if (!ReadFile(m_hFile, m_PreLoadBuffer[m_PreloadIdx], ReadSize, &n, &m_Ovl[m_PreloadIdx]) && GetLastError() != ERROR_IO_PENDING)
 			{
-				CLog::Log("Error loading texture: %s: %x", Filename.c_str(), GetLastError());
+				CLog::Log(LOGERROR, "Error loading texture: %s: %x", Filename.c_str(), GetLastError());
 				free(m_PreLoadBuffer[m_PreloadIdx]);
 				m_PreLoadBuffer[m_PreloadIdx] = 0;
 				m_CurFileHeader[m_PreloadIdx] = m_FileHeaders.end();
@@ -289,7 +289,7 @@ bool CTextureBundle::PreloadFile(const CStdString& Filename)
 		{
 			MEMORYSTATUS stat;
 			GlobalMemoryStatus(&stat);
-			CLog::Log("Out of memory loading texture: %s (need %d bytes, have %d bytes)", name.c_str(), ReadSize, stat.dwAvailPhys);
+			CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %d bytes, have %d bytes)", name.c_str(), ReadSize, stat.dwAvailPhys);
 		}
 	}
 	return false;
@@ -319,7 +319,7 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
 	{
 		MEMORYSTATUS stat;
 		GlobalMemoryStatus(&stat);
-		CLog::Log("Out of memory loading texture: %s (need %d bytes, have %d bytes)", name.c_str(), 
+		CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %d bytes, have %d bytes)", name.c_str(), 
 			m_CurFileHeader[m_LoadIdx]->second.UnpackedSize, stat.dwAvailPhys);
 		return E_OUTOFMEMORY;
 	}
@@ -327,7 +327,7 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
 	DWORD n;
 	if (!GetOverlappedResult(m_hFile, &m_Ovl[m_LoadIdx], &n, TRUE) || n < m_CurFileHeader[m_LoadIdx]->second.PackedSize)
 	{
-		CLog::Log("Error loading texture: %s: %x", Filename.c_str(), GetLastError());
+		CLog::Log(LOGERROR, "Error loading texture: %s: %x", Filename.c_str(), GetLastError());
 		return E_FAIL;
 	}
 
@@ -336,7 +336,7 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
 	if (lzo1x_decompress(m_PreLoadBuffer[m_LoadIdx], m_CurFileHeader[m_LoadIdx]->second.PackedSize, UnpackedBuf, &s, NULL) != LZO_E_OK ||
 		s != m_CurFileHeader[m_LoadIdx]->second.UnpackedSize)
 	{
-		CLog::Log("Error loading texture: %s: Decompression error", Filename.c_str());
+		CLog::Log(LOGERROR, "Error loading texture: %s: Decompression error", Filename.c_str());
 		hr = E_FAIL;
 	}
 
@@ -427,7 +427,7 @@ HRESULT CTextureBundle::LoadTexture(LPDIRECT3DDEVICE8 pDevice, const CStdString&
 	return S_OK;
 
 PackedLoadError:
-	CLog::Log("Error loading texture: %s: Invalid data", Filename.c_str());
+	CLog::Log(LOGERROR, "Error loading texture: %s: Invalid data", Filename.c_str());
 	delete [] pTex;
 	if (pPal) delete pPal;
 	return E_FAIL;
@@ -519,7 +519,7 @@ int CTextureBundle::LoadAnim(LPDIRECT3DDEVICE8 pDevice, const CStdString& Filena
 	return nTextures;
 
 PackedAnimError:
-	CLog::Log("Error loading texture: %s: Invalid data", Filename.c_str());
+	CLog::Log(LOGERROR, "Error loading texture: %s: Invalid data", Filename.c_str());
 	if (ppTex)
 	{
 		for (int i = 0; i < nTextures; ++i)

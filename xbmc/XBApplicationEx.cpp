@@ -89,7 +89,7 @@ HRESULT CXBApplicationEx::Create()
     // Create the Direct3D object
     if( NULL == ( m_pD3D = Direct3DCreate8(D3D_SDK_VERSION) ) )
     {
-        CLog::Log( "XBAppEx: Unable to create Direct3D!" );
+        CLog::Log(LOGFATAL,  "XBAppEx: Unable to create Direct3D!" );
         return E_FAIL;
     }
 
@@ -98,18 +98,18 @@ HRESULT CXBApplicationEx::Create()
                                            D3DCREATE_HARDWARE_VERTEXPROCESSING, 
                                            &m_d3dpp, &m_pd3dDevice ) ) )
     {
-        CLog::Log("XBAppEx: Could not create D3D device!" );
-        CLog::Log(" width/height:(%ix%i)" , m_d3dpp.BackBufferWidth,m_d3dpp.BackBufferHeight);
-        CLog::Log(" refreshrate:%i" , m_d3dpp.FullScreen_RefreshRateInHz);
+        CLog::Log(LOGFATAL, "XBAppEx: Could not create D3D device!" );
+        CLog::Log(LOGFATAL, " width/height:(%ix%i)" , m_d3dpp.BackBufferWidth,m_d3dpp.BackBufferHeight);
+        CLog::Log(LOGFATAL, " refreshrate:%i" , m_d3dpp.FullScreen_RefreshRateInHz);
         if (m_d3dpp.Flags & D3DPRESENTFLAG_WIDESCREEN)
-          CLog::Log(" 16:9 widescreen");  
+          CLog::Log(LOGFATAL, " 16:9 widescreen");  
         else
-          CLog::Log(" 4:3");  
+          CLog::Log(LOGFATAL, " 4:3");  
 
         if (m_d3dpp.Flags & D3DPRESENTFLAG_INTERLACED)
-          CLog::Log(" interlaced");  
+          CLog::Log(LOGFATAL, " interlaced");  
         if (m_d3dpp.Flags & D3DPRESENTFLAG_PROGRESSIVE)
-          CLog::Log(" progressive");  
+          CLog::Log(LOGFATAL, " progressive");  
         return hr;
     }
 
@@ -134,14 +134,14 @@ HRESULT CXBApplicationEx::Create()
     // Create the gamepad devices
     if( FAILED( hr = XBInput_CreateGamepads( &m_Gamepad ) ) )
     {
-        CLog::Log(  "XBAppEx: Call to CreateGamepads() failed!" );
+        CLog::Log(LOGERROR,   "XBAppEx: Call to CreateGamepads() failed!" );
         return hr;
     }
 
     // Create the IR Remote devices
     if( FAILED( hr = XBInput_CreateIR_Remotes( ) ) )
     {
-        CLog::Log(  "XBAppEx: Call to CreateIRRemotes() failed!" );
+        CLog::Log(LOGERROR,   "XBAppEx: Call to CreateIRRemotes() failed!" );
         return hr;
     }
 
@@ -151,7 +151,7 @@ HRESULT CXBApplicationEx::Create()
     // Initialize the app's device-dependent objects
     if( FAILED( hr = Initialize() ) )
     {
-        CLog::Log(  "XBAppEx: Call to Initialize() failed!" );
+        CLog::Log(LOGERROR,   "XBAppEx: Call to Initialize() failed!" );
         return hr;
     }
 
@@ -184,7 +184,7 @@ VOID CXBApplicationEx::Destroy()
 //-----------------------------------------------------------------------------
 INT CXBApplicationEx::Run()
 {
-  CLog::Log( "Running the application..." );
+  CLog::Log(LOGNOTICE,  "Running the application..." );
 
     // Get the frequency of the timer
     LARGE_INTEGER qwTicksPerSec;
@@ -254,7 +254,7 @@ INT CXBApplicationEx::Run()
         }
         catch(...)
         {
-          CLog::Log("exception in CApplication::Process()");
+          CLog::Log(LOGERROR, "exception in CApplication::Process()");
         }
         // Frame move the scene
         try
@@ -263,7 +263,7 @@ INT CXBApplicationEx::Run()
         }
         catch(...)
         {
-          CLog::Log("exception in CApplication::FrameMove()");
+          CLog::Log(LOGERROR, "exception in CApplication::FrameMove()");
         }
 
         // Render the scene
@@ -273,10 +273,10 @@ INT CXBApplicationEx::Run()
         }
         catch(...)
         {
-          CLog::Log("exception in CApplication::Render()");
+          CLog::Log(LOGERROR, "exception in CApplication::Render()");
         }
     }
-    CLog::Log( "application stopped..." );
+    CLog::Log(LOGNOTICE, "application stopped..." );
     return 0;
 }
 
