@@ -153,7 +153,27 @@ void CDetectDVDMedia::DetectMediaType()
 		OutputDebugString( "Detection of DVD-ROM media failed.\n" );
 		return;
 	}
-	if (m_pCdInfo->IsUDF(1) || m_pCdInfo->IsUDFX(1) )
+	char szLog[128];
+	sprintf(szLog,"tracks:%i audio tracks:%i data tracks:%i\n",
+		m_pCdInfo->GetTrackCount(),
+		m_pCdInfo->GetAudioTrackCount(),
+		m_pCdInfo->GetDataTrackCount() );
+	OutputDebugString(szLog);
+
+	bool bUDF=false;
+	for (int iTrack=m_pCdInfo->GetFirstDataTrack(); iTrack <= m_pCdInfo->GetDataTrackCount(); iTrack++)
+	{
+		sprintf(szLog,"  track:%i audio:%i UDF:%i UDFX:%i iso9660:%i\n", 
+						iTrack,
+						m_pCdInfo->IsAudio( iTrack ),
+						m_pCdInfo->IsUDF(iTrack),
+						m_pCdInfo->IsUDFX(iTrack),
+						m_pCdInfo->IsIso9660( iTrack ) || m_pCdInfo->IsIso9660Interactive( iTrack ) );
+		OutputDebugString(szLog);
+
+		if ( m_pCdInfo->IsUDF(iTrack)||m_pCdInfo->IsUDFX(iTrack)) bUDF=true;
+	}
+	if ( bUDF )
 	{
 		strNewUrl = "D:\\";
 	}

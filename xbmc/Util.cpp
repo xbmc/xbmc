@@ -1158,3 +1158,24 @@ void CUtil::RemoveIllegalChars( CStdString& strText)
 		*cursor = '_';
 	strText=szRemoveIllegal;
 }
+
+void CUtil::CacheSubtitles(const CStdString& strMovie)
+{
+	char * sub_exts[] = {  ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx",NULL};
+	int iPos=0;
+	while (sub_exts[iPos])
+	{
+		CStdString strSource,strDest;
+		strDest.Format("T:\\subtitle%s", sub_exts[iPos]);
+
+		::DeleteFile(strDest);
+		if (CUtil::IsVideo(strMovie))
+		{
+			strSource=strMovie;
+			CUtil::ReplaceExtension(strMovie,sub_exts[iPos],strSource);
+			CFile file;
+			file.Cache(strSource.c_str(), strDest.c_str(),NULL,NULL);
+		}
+		iPos++;
+	}
+}

@@ -84,6 +84,8 @@ bool CMPlayer::openfile(const CStdString& strFile)
 {
 	closefile();
 
+	CUtil::CacheSubtitles(strFile);
+
 	m_iPTS			= 0;
 	m_bPaused	  = false;
 	m_bIsPlaying= true;
