@@ -79,6 +79,7 @@ void xbox_audio_wait_completion();
 void audio_pause();
 void audio_resume();
 
+extern void tracker_free_mplayer_dlls(void);
 extern "C" void free_registry(void);
 extern void xbox_video_wait();
 extern void xbox_video_CheckScreenSaver();	// Screensaver check
@@ -1223,6 +1224,9 @@ void CMPlayer::Unload()
     delete m_pDLL;
 		dllReleaseAll( );
 		m_pDLL=NULL;
+		
+		// free unfreed mplayer dll's
+		tracker_free_mplayer_dlls();		
 	}
 }
 

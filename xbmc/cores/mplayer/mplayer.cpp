@@ -7,13 +7,6 @@
 #include <vector>
 #include "../../utils/log.h"
 extern void* fs_seg;
-extern std::vector<DllLoader *> m_vecDlls;
-
-//deal wma, and wmv dlls in openfile, and closefile functions
-extern DllLoader * wmaDMOdll;
-extern DllLoader * wmvDMOdll;
-extern DllLoader * wmsDMOdll;
-extern "C" BOOL WINAPI dllFreeLibrary(HINSTANCE hLibModule);
 
 extern void audio_uninit(int);
 extern void video_uninit(void);
@@ -265,9 +258,6 @@ extern "C"
 
 	int mplayer_open_file(const char* szFile)
 	{
-		wmaDMOdll = NULL;                                       //hacks for free library for DMOs
-		wmvDMOdll = NULL;
-		wmsDMOdll = NULL;
 		return pOpenFile(szFile);
 	}
 
@@ -276,27 +266,8 @@ extern "C"
 		int hr = pCloseFile();
     audio_uninit(1); //Fix to make sure audio device is deleted
     video_uninit(); //Fix to make sure audio device is deleted
-		if (wmaDMOdll) 
-			dllFreeLibrary( (HINSTANCE)wmaDMOdll );
-		wmaDMOdll = NULL;
-		if (wmvDMOdll) 
-			dllFreeLibrary( (HINSTANCE)wmvDMOdll );
-		wmvDMOdll = NULL;
-		if (wmsDMOdll) 
-			dllFreeLibrary( (HINSTANCE)wmsDMOdll );
-		wmsDMOdll = NULL;
 
-		// Unload unfreed dll's !!!there could be more dll's running, for example python dll's
-		/*
-		for (int i = m_vecDlls.size()-1; i >= 0; i--)
-		{
-			DllLoader * dll = m_vecDlls[i];			
-			CLog::Log(LOGDEBUG,"Freeing Unfreed DLL: %s handle: 0x%x", dll->GetDLLName(), dll);
-			dllFreeLibrary((HINSTANCE)dll);
-		}*/
-		
-
-		// Free allocated memory for FS segment
+  	// Free allocated memory for FS segment
 		if (fs_seg != NULL) {
 			CLog::Log(LOGDEBUG,"Freeing FS segment @ 0x%x", fs_seg);
 			free(fs_seg);
