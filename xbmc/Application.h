@@ -10,10 +10,13 @@
 #include "key.h"
 #include "GUIWindowHome.h"
 #include "GUIWindowPrograms.h"
+#include "GUIWindowSettingsPrograms.h"
 #include "GUIWindowPictures.h"
 #include "GUIWindowMyFiles.h"
 #include "GUIWindowVideo.h"
 #include "GUIWindowVideoGenre.h"
+#include "GUIWindowVideoActors.h"
+#include "GUIWindowVideoYear.h"
 #include "GUIWindowSettings.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
@@ -95,6 +98,7 @@ public:
   virtual void          Process();
 	CGUIWindowHome									m_guiHome;
   CGUIWindowPrograms							m_guiPrograms;
+  CGUIWindowSettingsPrograms      m_guiSettingsPrograms;
 	CGUIWindowPictures							m_guiPictures;
 	CGUIDialogYesNo									m_guiDialogYesNo;
 	CGUIDialogProgress							m_guiDialogProgress;
@@ -129,6 +133,8 @@ public:
 	CGUIWindowMusicTop100						m_guiMyMusicTop100;
   CGUIWindowSettingsSubtitles     m_guiSettingsSubtitles;
   CGUIWindowVideoGenre            m_guiVideoGenre;
+  CGUIWindowVideoActors           m_guiVideoActors;
+	CGUIWindowVideoYear             m_guiVideoYear;
   CXBVirtualKeyboard   						m_keyboard;
 	CSNTPClient											m_sntpClient;
 	CDetectDVDMedia									m_DetectDVDType;

@@ -54,21 +54,28 @@ void CGUIWindowMusicOverlay::SetPosition(int iControl, int iStep, int iSteps,int
   fPos *= -((float)iStep);
   fPos += (float)iScreenHeight;
   CGUIControl* pControl=(CGUIControl*)GetControl(iControl);
-  pControl->SetPosition(pControl->GetXPosition(), (int)fPos);
+  if (pControl) pControl->SetPosition(pControl->GetXPosition(), (int)fPos);
 }
+int CGUIWindowMusicOverlay::GetControlYPosition(int iControl)
+{
+   CGUIControl* pControl=(CGUIControl*)GetControl(iControl);
+   if (!pControl) return 0;
+   return pControl->GetYPosition();
+}
+
 void CGUIWindowMusicOverlay::Render()
 {
 	if (!g_application.m_pPlayer) return;
 	if ( g_application.m_pPlayer->HasVideo()) return;
   if (m_iPosOrgIcon==0)
   {
-    m_iPosOrgRectangle=GetControl(0)->GetYPosition();
-    m_iPosOrgIcon=GetControl(CONTROL_LOGO_PIC)->GetYPosition();
-    m_iPosOrgPlay=GetControl(CONTROL_PLAY_LOGO)->GetYPosition();
-    m_iPosOrgPause=GetControl(CONTROL_PAUSE_LOGO)->GetYPosition();
-    m_iPosOrgInfo=GetControl(CONTROL_INFO)->GetYPosition();
-    m_iPosOrgPlayTime=GetControl(CONTROL_PLAYTIME)->GetYPosition();
-    m_iPosOrgBigPlayTime=GetControl(CONTROL_BIG_PLAYTIME)->GetYPosition();
+    m_iPosOrgRectangle=GetControlYPosition(0);
+    m_iPosOrgIcon=GetControlYPosition(CONTROL_LOGO_PIC);
+    m_iPosOrgPlay=GetControlYPosition(CONTROL_PLAY_LOGO);
+    m_iPosOrgPause=GetControlYPosition(CONTROL_PAUSE_LOGO);
+    m_iPosOrgInfo=GetControlYPosition(CONTROL_INFO);
+    m_iPosOrgPlayTime=GetControlYPosition(CONTROL_PLAYTIME);
+    m_iPosOrgBigPlayTime=GetControlYPosition(CONTROL_BIG_PLAYTIME);
   }  
   if ( m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION)
   {
@@ -171,14 +178,17 @@ void CGUIWindowMusicOverlay::Render()
 	{
 		
 		const CGUIControl* pControl = GetControl(CONTROL_LOGO_PIC); 
-		float fXPos=(float)pControl->GetXPosition();
-		float fYPos=(float)pControl->GetYPosition();
-		int iWidth=pControl->GetWidth();
-		int iHeight=pControl->GetHeight();
-		g_graphicsContext.Correct(fXPos,fYPos);
+    if (pControl)
+    {
+		  float fXPos=(float)pControl->GetXPosition();
+		  float fYPos=(float)pControl->GetYPosition();
+		  int iWidth=pControl->GetWidth();
+		  int iHeight=pControl->GetHeight();
+		  g_graphicsContext.Correct(fXPos,fYPos);
 
-		CPicture picture;
-		picture.RenderImage(m_pTexture,(int)fXPos,(int)fYPos,iWidth,iHeight,m_iTextureWidth,m_iTextureHeight);
+		  CPicture picture;
+		  picture.RenderImage(m_pTexture,(int)fXPos,(int)fYPos,iWidth,iHeight,m_iTextureWidth,m_iTextureHeight);
+    }
 	}
 }
 

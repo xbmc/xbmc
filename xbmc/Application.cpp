@@ -208,6 +208,9 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(&m_guiSettingsSubtitles);				// window id = 15
 	m_gWindowManager.Add(&m_guiScripts);									// window id = 20
   m_gWindowManager.Add(&m_guiVideoGenre);								// window id = 21
+  m_gWindowManager.Add(&m_guiVideoActors);							// window id = 22
+	m_gWindowManager.Add(&m_guiVideoYear);							  // window id = 23
+  m_gWindowManager.Add(&m_guiSettingsPrograms);					// window id = 24
 
   m_gWindowManager.Add(&m_guiDialogYesNo);							// window id = 100
   m_gWindowManager.Add(&m_guiDialogProgress);						// window id = 101
@@ -280,11 +283,14 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiMyFiles.Load( strSkinPath+"\\myfiles.xml" );  
 	m_guiMyVideo.Load( strSkinPath+"\\myvideo.xml" );  
   m_guiVideoGenre.Load( strSkinPath+"\\myvideogenre.xml" );  
+  m_guiVideoActors.Load( strSkinPath+"\\myvideoactors.xml" );  
+	m_guiVideoYear.Load( strSkinPath+"\\myvideoYear.xml" );  
 	m_guiSettings.Load( strSkinPath+"\\settings.xml" );  
 	m_guiSystemInfo.Load( strSkinPath+"\\SettingsSystemInfo.xml" );  
 	m_guiMusicInfo.Load( strSkinPath+"\\DialogAlbumInfo.xml" );  
 	m_guiScriptsInfo.Load( strSkinPath+"\\DialogScriptInfo.xml" ); 
 	m_guiSettingsGeneral.Load( strSkinPath+"\\SettingsGeneral.xml" );  
+  m_guiSettingsPrograms.Load( strSkinPath+"\\SettingsPrograms.xml" );  
 	m_guiDialogYesNo.Load( strSkinPath+"\\dialogYesNo.xml" );  
 	m_guiDialogProgress.Load( strSkinPath+"\\dialogProgress.xml" );  
   m_guiMyMusicPlayList.Load( strSkinPath+"\\mymusicplaylist.xml" );
@@ -768,6 +774,7 @@ bool CApplication::NeedRenderFullScreen()
 	if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
 	{
 		CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)m_gWindowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
+    if (!pFSWin) return false;
 		return pFSWin->NeedRenderFullScreen();
 	}
   return false;
@@ -779,6 +786,7 @@ void CApplication::RenderFullScreen()
 	{
 //		OutputDebugString("Actually doing RenderFullScreen\n");
 		CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)m_gWindowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
+    if (!pFSWin) return ;
 		pFSWin->RenderFullScreen();
 	}
 //	OutputDebugString("RenderFullScreen Done\n");

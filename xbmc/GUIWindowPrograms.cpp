@@ -48,7 +48,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
     case GUI_MSG_WINDOW_INIT:
     {
 			CGUIWindow::OnMessage(message);
-			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(101);
+			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 			m_strDirectory = "Q:\\shortcuts";
       // make controls 100-110 invisible...
 			for (int i=100; i < 110; i++)
@@ -88,7 +88,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
       int iControl=message.GetSenderId();
       if (iControl==CONTROL_BTNVIEWAS)
       {
-				//CGUIDialog* pDialog=(CGUIDialog*)m_gWindowManager.GetWindow(100);
+				//CGUIDialog* pDialog=(CGUIDialog*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
 				//pDialog->DoModal(GetID());
 
         g_stSettings.m_bMyProgramsViewAsIcons=!g_stSettings.m_bMyProgramsViewAsIcons;
@@ -208,8 +208,6 @@ void CGUIWindowPrograms::OnAction(const CAction &action)
 {
 	if (action.wID == ACTION_PREVIOUS_MENU)
     {
-        g_stSettings.m_iMyProgramsSelectedItem = GetSelectedItem();
-        g_settings.Save();
         m_gWindowManager.PreviousWindow();
         return;
     }
@@ -220,6 +218,8 @@ void CGUIWindowPrograms::OnAction(const CAction &action)
 void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
 {
 	WIN32_FIND_DATA wfd;
+  bool   bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
+  bool	bFlattenDir=g_stSettings.m_bMyProgramsFlatten;
   bool   bRecurseSubDirs(true);
 	memset(&wfd,0,sizeof(wfd));
 	CStdString strRootDir=strDirectory;
@@ -255,12 +255,45 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory)
           pItem->m_bIsFolder=true;
           FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
           FileTimeToSystemTime(&localTime, &pItem->m_stTime);
-  	
-          m_vecItems.push_back(pItem);      
+          m_vecItems.push_back(pItem);
         }
-      }
-      else
-      {
+	      else
+		    {
+		      if (bFlattenDir)
+		      {
+
+			      WIN32_FIND_DATA subwfd;
+			      CStdString strSubSearchMask="";
+			      strSubSearchMask=strFile;
+			      strSubSearchMask+="\\";
+			      bOnlyDefaultXBE ? strSubSearchMask+="default.xbe" : strSubSearchMask+="*.xbe";
+			      CAutoPtrFind subhFind ( FindFirstFile(strSubSearchMask.c_str(), &subwfd)) ;
+			      if (hFind.isValid())
+			      {
+					    do
+					    {
+						    if (subwfd.cFileName[0]!=0)
+						    {
+							    CStdString strSubDescription;
+							    CStdString strSubFile=strFile;
+							    strSubFile+="\\";
+							    strSubFile+=subwfd.cFileName;
+							    CUtil::GetXBEDescription(strSubFile, strSubDescription);
+							    CFileItem *pItem = new CFileItem(strSubDescription);
+							    pItem->m_strPath=strSubFile;
+							    pItem->m_bIsFolder=false;
+							    pItem->m_dwSize=subwfd.nFileSizeLow;
+							    FileTimeToLocalFileTime(&subwfd.ftLastWriteTime,&localTime);
+							    FileTimeToSystemTime(&localTime, &pItem->m_stTime);
+							    m_vecItems.push_back(pItem);
+						    }
+					    } while (FindNextFile(subhFind, &subwfd));
+				    }
+			    }
+		    }
+       }
+       else
+       {
         if (CUtil::IsXBE(strFileName))
         {
           CStdString strDescription;
@@ -304,11 +337,24 @@ void CGUIWindowPrograms::Clear()
 
 void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 {
+  bool	 bFlattenDir=g_stSettings.m_bMyProgramsFlatten;
+  bool   bParentPath(false);
+  bool   bPastBookMark(false);
+  CStdString strParentPath;
+
   Clear();
 	CStdString strShortCutsDir = "Q:\\shortcuts";
- 
-  CStdString strParentPath;
-  if (CUtil::GetParentPath(strDirectory,strParentPath))
+
+  bParentPath=CUtil::GetParentPath(strDirectory,strParentPath);
+
+  for (int i=0; i < (int)g_settings.m_vecMyProgramsBookmarks.size(); ++i)
+  {
+	  CShare& share = g_settings.m_vecMyProgramsBookmarks[i];
+	  if ( strParentPath==share.strPath) bPastBookMark=true;
+  }
+
+
+  if ( strParentPath.size() && bParentPath && !bFlattenDir && !bPastBookMark)
   {
 		if (strDirectory != strShortCutsDir)
 		{
@@ -337,8 +383,6 @@ void CGUIWindowPrograms::OnClick(int iItem)
   }
   else
   {
-    g_stSettings.m_iMyProgramsSelectedItem = GetSelectedItem();
-    g_settings.Save();
 
     // launch xbe...
     char szPath[1024];
@@ -601,13 +645,16 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 	const WCHAR* pszText=(WCHAR*)g_localizeStrings.Get(212).c_str();
 	WCHAR wzTotal[128];
 	swprintf(wzTotal,L"%i %s",iTotalAppsFound, pszText );
-	m_dlgProgress->SetHeading(211);
-	m_dlgProgress->SetLine(0,wzTotal);
-	m_dlgProgress->SetLine(1,"");
-	m_dlgProgress->SetLine(2,m_strDirectory );
-	m_dlgProgress->StartModal(GetID());
-	m_dlgProgress->Progress();
-
+	if (m_dlgProgress)
+  {
+    m_dlgProgress->SetHeading(211);
+	  m_dlgProgress->SetLine(0,wzTotal);
+	  m_dlgProgress->SetLine(1,"");
+	  m_dlgProgress->SetLine(2,m_strDirectory );
+	  m_dlgProgress->StartModal(GetID());
+	  m_dlgProgress->Progress();
+  }
+	bool   bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
 	bool bScanSubDirs=true;
 	bool bFound=false;
 	DeleteThumbs(items);
@@ -648,7 +695,7 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 					rootDir.SetMask(".xbe");
 					rootDir.GetDirectory(pItem->m_strPath,subDirItems);
 					bOpen=false;	
-					m_dlgProgress->Close();
+					if (m_dlgProgress) m_dlgProgress->Close();
 					OnScan(subDirItems,iTotalAppsFound);
 					m_strDirectory=strDir;
 				}
@@ -656,7 +703,7 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 		}
 		else
 		{
-			if (CUtil::IsXBE(pItem->m_strPath) )
+			if ( bOnlyDefaultXBE ? CUtil::IsDefaultXBE(pItem->m_strPath) : CUtil::IsXBE(pItem->m_strPath) )
 			{
 				bFound=true;
 				CStdString strTotal;
@@ -667,13 +714,16 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 				CUtil::GetXBEDescription(pItem->m_strPath,strDescription);
 				if (strDescription=="")
 					strDescription=CUtil::GetFileName(pItem->m_strPath);
-				m_dlgProgress->SetLine(0, wzTotal);
-				m_dlgProgress->SetLine(1,strDescription);
-				m_dlgProgress->Progress();
+				if (m_dlgProgress)
+        {
+          m_dlgProgress->SetLine(0, wzTotal);
+				  m_dlgProgress->SetLine(1,strDescription);
+				  m_dlgProgress->Progress();
+        }
 			}
 		}
 	}
-	if (bOpen)
+	if (bOpen && m_dlgProgress)
 		m_dlgProgress->Close();
 }
 

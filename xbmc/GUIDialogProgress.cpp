@@ -123,7 +123,7 @@ bool CGUIDialogProgress::IsCanceled() const
 void CGUIDialogProgress::SetPercentage(int iPercentage)
 {
 	CGUIProgressControl* pControl = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS_BAR);
-	pControl->SetPercentage(iPercentage);
+	if (pControl) pControl->SetPercentage(iPercentage);
 }
 void CGUIDialogProgress::ShowProgressBar(bool bOnOff)
 {
