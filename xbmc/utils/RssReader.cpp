@@ -21,7 +21,6 @@ CRssReader::CRssReader() : CThread()
 
 CRssReader::~CRssReader()
 {
-
 }
 
 void CRssReader::Create(IRssObserver* aObserver, CStdString& aUrl, INT iLeadingSpaces)
