@@ -24,7 +24,9 @@
 				PreprocessorDefinitions="_DEBUG;_XBOX"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
+				SmallerTypeCheck="TRUE"
 				RuntimeLibrary="1"
+				BufferSecurityCheck="TRUE"
 				EnableEnhancedInstructionSet="1"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
@@ -178,19 +180,24 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
+				GlobalOptimizations="TRUE"
+				FavorSizeOrSpeed="2"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
 				AdditionalIncludeDirectories="guilib;guilib/common;guilib/tinyxml"
 				PreprocessorDefinitions="NDEBUG;_XBOX"
-				StringPooling="TRUE"
+				StringPooling="FALSE"
+				BasicRuntimeChecks="0"
+				SmallerTypeCheck="FALSE"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
+				BufferSecurityCheck="FALSE"
+				EnableFunctionLevelLinking="FALSE"
 				EnableEnhancedInstructionSet="1"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="2"/>
+				DebugInformationFormat="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -218,7 +225,7 @@
 			<Tool
 				Name="XboxImageTool"
 				FileName="$(TargetDir)default.xbe"
-				StackSize="0x40000"
+				StackSize="0x80000"
 				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;LIBID3;PYTHON"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
@@ -288,12 +295,6 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\Crc32.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\DetectDVDType.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\DetectDVDType.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\DNSNameCache.cpp">
@@ -609,12 +610,6 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\cddb.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\FileSystem\cdioSupport.cpp">
-			</File>
-			<File
-				RelativePath=".\xbmc\FileSystem\cdioSupport.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\Directory.cpp">

@@ -33,10 +33,8 @@ bool CMusicDatabase::Open()
 	Close();
 
 	// test id dbs already exists, if not we need 2 create the tables
-	string strDbs=g_stSettings.m_szAlbumDirectory;
-	strDbs+="\\MyMusic.db";
 	bool bDatabaseExists=false;
-	FILE* fd= fopen(strDbs.c_str(),"rb");
+	FILE* fd= fopen("Q:\\albums\\MyMusic.db","rb");
 	if (fd)
 	{
 		bDatabaseExists=true;
@@ -44,7 +42,7 @@ bool CMusicDatabase::Open()
 	}
 
 	m_pDB = new SqliteDatabase();
-  m_pDB->setDatabase(strDbs.c_str());
+  m_pDB->setDatabase("Q:\\albums\\MyMusic.db");
 	
   m_pDS = m_pDB->CreateDataset();
 	if ( m_pDB->connect() != DB_CONNECTION_OK) 

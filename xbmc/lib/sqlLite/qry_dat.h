@@ -33,7 +33,7 @@
 #include <stdlib.h>
 #include <map>
 #include <vector>
-//#include <iostream>
+#include <iostream>
 using namespace std;
 enum fType { 
 	ft_String,
@@ -121,7 +121,7 @@ public:
   field_value& operator= (const double d)
     {set_asDouble(d); return *this;}
   field_value& operator= (const field_value & fv);
-#if 0  
+  
   //class ostream;
   friend ostream& operator<< (ostream& os, const field_value &fv)
   {switch (fv.get_fType()) {
@@ -163,7 +163,7 @@ public:
     }
   }
   }
-#endif
+
   void set_isNull(){is_null=true;}
   void set_asString(const char *s);
   void set_asString(const string & s);

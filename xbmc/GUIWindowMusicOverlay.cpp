@@ -177,30 +177,29 @@ void CGUIWindowMusicOverlay::Render()
 					msg1.SetLabel( CUtil::GetFileName(strFile) );
 					OnMessage(msg1);
 			}
-		}
-
-		CMusicDatabase dbs;
-		if ( dbs.Open() )
-		{
-			CAlbum album;
-			if ( dbs.GetAlbumInfo(strAlbum, album) )
+		
+			if ( dbs.Open() )
 			{
-				CStdString strThumb;
-				CUtil::GetAlbumThumb(album.strAlbum,strThumb);
-				if (CUtil::FileExists(strThumb) )
+				CAlbum album;
+				if ( dbs.GetAlbumInfo(strAlbum, album) )
 				{
-					CPicture picture;
-					m_pTexture=picture.Load(strThumb);
-					m_iTextureWidth=picture.GetWidth();
-					m_iTextureHeight=picture.GetHeight();
-					if (m_pTexture)
-					{							
-						CGUIMessage msg1(GUI_MSG_HIDDEN, GetID(), CONTROL_LOGO_PIC); 
-						OnMessage(msg1);
+					CStdString strThumb;
+					CUtil::GetAlbumThumb(album.strAlbum,strThumb);
+					if (CUtil::FileExists(strThumb) )
+					{
+						CPicture picture;
+						m_pTexture=picture.Load(strThumb);
+						m_iTextureWidth=picture.GetWidth();
+						m_iTextureHeight=picture.GetHeight();
+						if (m_pTexture)
+						{							
+							CGUIMessage msg1(GUI_MSG_HIDDEN, GetID(), CONTROL_LOGO_PIC); 
+							OnMessage(msg1);
+						}
 					}
+				
 				}
-			
+				dbs.Close();
 			}
-			dbs.Close();
 		}
 	}
