@@ -380,139 +380,147 @@ void CMusicDatabase::CheckVariousArtistsAndCoverArt()
 	if (m_albumCache.size()<=0)
 		return;
 
-	map <CStdString, CAlbumCache>::const_iterator it;
-
-	VECSONGS songs;
-	for (it=m_albumCache.begin(); it!=m_albumCache.end(); ++it)
+	try
 	{
-		CAlbumCache album = it->second;
-		long lAlbumId=album.idAlbum;
-		CStdString strSQL;
-		// Albums by various artists will have different songs with different artists
-		GetSongsByAlbum(album.strAlbum, album.strPath, songs);
-		long lVariousArtistsId=-1;
-		long lArtistsId=-1;
-		bool bVarious = false;
-		bool bSingleArtistCompilation=false;
-		CStdString strArtist;
-		if (songs.size()>1)
-		{
-			//	Are the artists of this album all the same
-			for (int i=0; i < (int)songs.size()-1; i++)
-			{
-				CSong song=songs[i];
-				CSong song1=songs[i+1];
+		map <CStdString, CAlbumCache>::const_iterator it;
 
-				CStdStringArray vecArtists, vecArtists1;
-				CStdString strArtist, strArtist1;
-				int iNumArtists=StringUtils::SplitString(song.strArtist, " / ", vecArtists);
-				int iNumArtists1=StringUtils::SplitString(song1.strArtist, " / ", vecArtists1);
-				strArtist=vecArtists[0];
-				strArtist1=vecArtists1[0];
-				strArtist.TrimRight();
-				strArtist1.TrimRight();
-				// Only check the first artist if its different
-				if (strArtist!=strArtist1)
-				{
-					CStdString strVariousArtists=g_localizeStrings.Get(340);
-					lVariousArtistsId = AddArtist(strVariousArtists);
-					bSingleArtistCompilation=false;
-					bVarious=true;
-					break;
-				}
-				else if (iNumArtists>1 && iNumArtists1>1 && song.strArtist!=song1.strArtist)
-				{
-					// Artists don't all agree.  Instead of some complex function to compare all
-					// the artists of each particular track, let's just take the first artist
-					// and just use that.
-					bSingleArtistCompilation=true;
-					lArtistsId = AddArtist(vecArtists[0]);
-				}
-			}
-		}
-
-		if (bVarious)
+		VECSONGS songs;
+		for (it=m_albumCache.begin(); it!=m_albumCache.end(); ++it)
 		{
+			CAlbumCache album = it->second;
+			long lAlbumId=album.idAlbum;
 			CStdString strSQL;
-			strSQL.Format("UPDATE album SET iNumArtists=1, idArtist=%i where idAlbum=%i", lVariousArtistsId, album.idAlbum);
-			m_pDS->exec(strSQL.c_str());
-			// we must also update our exartistalbum mapping.
-			// In the case of multiple artists, we need to add entries to extra artist album table so that we
-			// can find the albums by a particular artist (even if they only contribute a single song to the
-			// album in question)
-			strSQL.Format("DELETE from exartistalbum where idAlbum=%i", album.idAlbum);
-			m_pDS->exec(strSQL.c_str());
-			// run through the songs and add the artists we need to link to...
-			CStdStringArray vecArtists;
-			for (int i=0; i<(int)songs.size(); i++)
+			// Albums by various artists will have different songs with different artists
+			GetSongsByAlbum(album.strAlbum, album.strPath, songs);
+			long lVariousArtistsId=-1;
+			long lArtistsId=-1;
+			bool bVarious = false;
+			bool bSingleArtistCompilation=false;
+			CStdString strArtist;
+			if (songs.size()>1)
 			{
-				CStdStringArray vecTemp;
-				StringUtils::SplitString(songs[i].strArtist, " / ", vecTemp);
-				for (int j=0; j<(int)vecTemp.size(); j++)
-					vecArtists.push_back(vecTemp[j]);
-			}
-			AddExtraArtists(vecArtists, 0, album.idAlbum, true);
-		}
-
-		if (bSingleArtistCompilation)
-		{
-			CStdString strSQL;
-			strSQL.Format("UPDATE album SET iNumArtists=1, idArtist=%i where idAlbum=%i", lArtistsId, album.idAlbum);
-			m_pDS->exec(strSQL.c_str());
-			// we must also update our exartistalbum mapping.
-			// In the case of multiple artists, we need to add entries to extra artist album table so that we
-			// can find the albums by a particular artist (even if they only contribute a single song to the
-			// album in question)
-			strSQL.Format("DELETE from exartistalbum where idAlbum=%i", album.idAlbum);
-			m_pDS->exec(strSQL.c_str());
-			// run through the songs and add the artists we need to link to...
-			CStdStringArray vecArtists;
-			for (int i=0; i<(int)songs.size(); i++)
-			{
-				CStdStringArray vecTemp;
-				StringUtils::SplitString(songs[i].strArtist, " / ", vecTemp);
-				for (int j=1; j<(int)vecTemp.size(); j++)
-					vecArtists.push_back(vecTemp[j]);
-			}
-			AddExtraArtists(vecArtists, 0, album.idAlbum, true);
-		}
-
-		CStdString strTempCoverArt;
-		CStdString strCoverArt;
-		CUtil::GetAlbumThumb(album.strAlbum, album.strPath, strTempCoverArt, true);
-		//	Was the album art of this album read during scan?
-		if (CUtil::ThumbCached(strTempCoverArt))
-		{
-			//	Yes.
-			VECALBUMS albums;
-			GetAlbumsByPath(album.strPath, albums);
-			CUtil::GetAlbumFolderThumb(album.strPath, strCoverArt);
-			//	Do we have more then one album in this directory...
-			if (albums.size()==1)
-			{
-				//	...no, copy as permanent directory thumb
-				if (::CopyFile(strTempCoverArt, strCoverArt, false))
-					CUtil::ThumbCacheAdd(strCoverArt, true);
-			}
-			else if (CUtil::ThumbCached(strCoverArt))
-			{
-				//	...yes, we have more then one album in this directory
-				//	and have saved a thumb for this directory from another album
-				//	so delete the directory thumb.
-				if (CUtil::ThumbExists(strCoverArt))
+				//	Are the artists of this album all the same
+				for (int i=0; i < (int)songs.size()-1; i++)
 				{
-					if (::DeleteFile(strCoverArt))
-						CUtil::ThumbCacheAdd(strCoverArt, false);
+					CSong song=songs[i];
+					CSong song1=songs[i+1];
+
+					CStdStringArray vecArtists, vecArtists1;
+					CStdString strArtist, strArtist1;
+					int iNumArtists=StringUtils::SplitString(song.strArtist, " / ", vecArtists);
+					int iNumArtists1=StringUtils::SplitString(song1.strArtist, " / ", vecArtists1);
+					strArtist=vecArtists[0];
+					strArtist1=vecArtists1[0];
+					strArtist.TrimRight();
+					strArtist1.TrimRight();
+					// Only check the first artist if its different
+					if (strArtist!=strArtist1)
+					{
+						CStdString strVariousArtists=g_localizeStrings.Get(340);
+						lVariousArtistsId = AddArtist(strVariousArtists);
+						bSingleArtistCompilation=false;
+						bVarious=true;
+						break;
+					}
+					else if (iNumArtists>1 && iNumArtists1>1 && song.strArtist!=song1.strArtist)
+					{
+						// Artists don't all agree.  Instead of some complex function to compare all
+						// the artists of each particular track, let's just take the first artist
+						// and just use that.
+						bSingleArtistCompilation=true;
+						lArtistsId = AddArtist(vecArtists[0]);
+					}
 				}
 			}
 
-			//	And move as permanent thumb for files and directory, where
-			//	album and path is known
-			CUtil::GetAlbumThumb(album.strAlbum, album.strPath, strCoverArt);
-			::MoveFileEx(strTempCoverArt, strCoverArt, MOVEFILE_REPLACE_EXISTING);
+			if (bVarious)
+			{
+				CStdString strSQL;
+				strSQL.Format("UPDATE album SET iNumArtists=1, idArtist=%i where idAlbum=%i", lVariousArtistsId, album.idAlbum);
+				m_pDS->exec(strSQL.c_str());
+				// we must also update our exartistalbum mapping.
+				// In the case of multiple artists, we need to add entries to extra artist album table so that we
+				// can find the albums by a particular artist (even if they only contribute a single song to the
+				// album in question)
+				strSQL.Format("DELETE from exartistalbum where idAlbum=%i", album.idAlbum);
+				m_pDS->exec(strSQL.c_str());
+				// run through the songs and add the artists we need to link to...
+				CStdStringArray vecArtists;
+				for (int i=0; i<(int)songs.size(); i++)
+				{
+					CStdStringArray vecTemp;
+					StringUtils::SplitString(songs[i].strArtist, " / ", vecTemp);
+					for (int j=0; j<(int)vecTemp.size(); j++)
+						vecArtists.push_back(vecTemp[j]);
+				}
+			AddExtraArtists(vecArtists, 0, album.idAlbum, true);
+			}
+
+			if (bSingleArtistCompilation)
+			{
+				CStdString strSQL;
+				strSQL.Format("UPDATE album SET iNumArtists=1, idArtist=%i where idAlbum=%i", lArtistsId, album.idAlbum);
+				m_pDS->exec(strSQL.c_str());
+				// we must also update our exartistalbum mapping.
+				// In the case of multiple artists, we need to add entries to extra artist album table so that we
+				// can find the albums by a particular artist (even if they only contribute a single song to the
+				// album in question)
+				strSQL.Format("DELETE from exartistalbum where idAlbum=%i", album.idAlbum);
+				m_pDS->exec(strSQL.c_str());
+				// run through the songs and add the artists we need to link to...
+				CStdStringArray vecArtists;
+				for (int i=0; i<(int)songs.size(); i++)
+				{
+					CStdStringArray vecTemp;
+					StringUtils::SplitString(songs[i].strArtist, " / ", vecTemp);
+					for (int j=1; j<(int)vecTemp.size(); j++)
+						vecArtists.push_back(vecTemp[j]);
+				}
+			AddExtraArtists(vecArtists, 0, album.idAlbum, true);
+			}
+
+			CStdString strTempCoverArt;
+			CStdString strCoverArt;
+			CUtil::GetAlbumThumb(album.strAlbum, album.strPath, strTempCoverArt, true);
+			//	Was the album art of this album read during scan?
+			if (CUtil::ThumbCached(strTempCoverArt))
+			{
+				//	Yes.
+				VECALBUMS albums;
+				GetAlbumsByPath(album.strPath, albums);
+				CUtil::GetAlbumFolderThumb(album.strPath, strCoverArt);
+				//	Do we have more then one album in this directory...
+				if (albums.size()==1)
+				{
+					//	...no, copy as permanent directory thumb
+					if (::CopyFile(strTempCoverArt, strCoverArt, false))
+						CUtil::ThumbCacheAdd(strCoverArt, true);
+				}
+				else if (CUtil::ThumbCached(strCoverArt))
+				{
+					//	...yes, we have more then one album in this directory
+					//	and have saved a thumb for this directory from another album
+					//	so delete the directory thumb.
+					if (CUtil::ThumbExists(strCoverArt))
+					{
+						if (::DeleteFile(strCoverArt))
+							CUtil::ThumbCacheAdd(strCoverArt, false);
+					}
+				}
+
+				//	And move as permanent thumb for files and directory, where
+				//	album and path is known
+				CUtil::GetAlbumThumb(album.strAlbum, album.strPath, strCoverArt);
+				::MoveFileEx(strTempCoverArt, strCoverArt, MOVEFILE_REPLACE_EXISTING);
+			}
 		}
+		m_albumCache.erase(m_albumCache.begin(), m_albumCache.end());
 	}
-	m_albumCache.erase(m_albumCache.begin(), m_albumCache.end());
+	catch(...)
+	{
+		CLog::Log(LOGERROR, "musicdatabase:unable to checkvariousartistsandcoverart");
+	}
+
 }
 
 long CMusicDatabase::AddGenre(const CStdString& strGenre1)
@@ -672,9 +680,9 @@ void CMusicDatabase::AddExtraArtists(const CStdStringArray &vecArtists, long lSo
 		}
 	}
 	catch(...)
-    {
+  {
 		CLog::Log(LOGERROR, "CMusicDatabase:AddExtraArtists(%i,%i) failed", lSongId, lAlbumId);
-    }
+  }
 }
 
 void CMusicDatabase::AddExtraGenres(const CStdStringArray &vecGenres, long lSongId, long lAlbumId, bool bCheck)
@@ -2137,17 +2145,16 @@ bool CMusicDatabase::UpdateAlbumInfoSongs(long idAlbumInfo, const VECSONGS& song
 	return false;
 }
 
-CStdString CMusicDatabase::GetSubpathsFromPath(const CStdString &strPath)
+bool CMusicDatabase::GetSubpathsFromPath(const CStdString &strPath, CStdString& strPathIds)
 {
-	CStdString strPathIds;
 	try
 	{
-		if (NULL==m_pDB.get()) return strPathIds;
-		if (NULL==m_pDS.get()) return strPathIds;
+		if (NULL==m_pDB.get()) return false;
+		if (NULL==m_pDS.get()) return false;
 		CStdString strSQL;
 		// get all the path id's that are sub dirs of this directory
 		strSQL.Format("select idPath from path where strPath like '%s%%'", strPath.c_str());
-		if (!m_pDS->query(strSQL.c_str())) return strPathIds;
+		if (!m_pDS->query(strSQL.c_str())) return false;
 		// create the idPath search string
 		strPathIds = "(";
 		while (!m_pDS->eof())
@@ -2158,12 +2165,13 @@ CStdString CMusicDatabase::GetSubpathsFromPath(const CStdString &strPath)
 		strPathIds.TrimRight(", ");
 		strPathIds += ")";
     m_pDS->close();
+		return true;
 	}
 	catch(...)
 	{
-		CLog::Log(LOGERROR, "Error in GetSubpathsFromPath()");
+		CLog::Log(LOGERROR, "GetSubpathsFromPath() failed or was aborted!");
 	}
-	return strPathIds;
+	return false;
 }
 
 bool CMusicDatabase::RemoveSongsFromPaths(const CStdString &strPathIds)
@@ -2206,7 +2214,7 @@ bool CMusicDatabase::RemoveSongsFromPaths(const CStdString &strPathIds)
 	}
 	catch(...)
 	{
-		CLog::Log(LOGERROR, "RemoveSongsFromPath() failed!");
+		CLog::Log(LOGERROR, "RemoveSongsFromPath() failed or was aborted!");
 	}
 	return false;
 }
@@ -2255,7 +2263,7 @@ bool CMusicDatabase::CleanupAlbumsFromPaths(const CStdString &strPathIds)
 	}
 	catch(...)
 	{
-		CLog::Log(LOGERROR, "Exception in CMusicDatabase::CleanupAlbumsFromPaths()");
+		CLog::Log(LOGERROR, "Exception in CMusicDatabase::CleanupAlbumsFromPaths() or was aborted");
 	}
 	return false;
 }
@@ -2381,7 +2389,7 @@ bool CMusicDatabase::CleanupPaths()
 	}
 	catch(...)
 	{
-		CLog::Log(LOGERROR, "Exception in CMusicDatabase::CleanupPaths()");
+		CLog::Log(LOGERROR, "Exception in CMusicDatabase::CleanupPaths() or was aborted");
 	}
 	return false;
 }
@@ -2407,7 +2415,7 @@ bool CMusicDatabase::CleanupArtists()
 	}
 	catch(...)
 	{
-	    CLog::Log(LOGERROR, "Exception in CMusicDatabase::CleanupArtists()");
+	    CLog::Log(LOGERROR, "Exception in CMusicDatabase::CleanupArtists() or was aborted");
 	}
 	return false;
 }
@@ -2428,7 +2436,7 @@ bool CMusicDatabase::CleanupGenres()
 	}
 	catch(...)
 	{
-	    CLog::Log(LOGERROR, "Exception in CMusicDatabase::CleanupGenres()");
+	    CLog::Log(LOGERROR, "Exception in CMusicDatabase::CleanupGenres() or was aborted");
 	}
 	return false;
 }
@@ -2532,6 +2540,11 @@ bool CMusicDatabase::Compress()
 		return false;
 	}
 	return true;
+}
+
+void CMusicDatabase::Interupt()
+{
+	m_pDS->interrupt();
 }
 
 void CMusicDatabase::DeleteAlbumInfo()
