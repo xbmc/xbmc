@@ -14,6 +14,7 @@ CGUIDialogProgress::~CGUIDialogProgress(void)
 
 void CGUIDialogProgress::StartModal(DWORD dwParentId)
 {
+
 	m_dwParentWindowID=dwParentId;
 	m_pParentWindow=m_gWindowManager.GetWindow( m_dwParentWindowID);
 	if (!m_pParentWindow)
@@ -27,7 +28,6 @@ void CGUIDialogProgress::StartModal(DWORD dwParentId)
   // active this window...
   CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
   OnMessage(msg);
-
 	m_bRunning=true;
 }
 
@@ -73,4 +73,9 @@ void	CGUIDialogProgress::SetLine(int iLine, int iString)
 	CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),iLine+2);
 	msg.SetLabel(iString);
 	OnMessage(msg);
+}
+
+void CGUIDialogProgress::Close()
+{
+	CGUIDialog::Close();
 }

@@ -1,6 +1,7 @@
 
 #include "GUIDialogSelect.h"
 #include "localizestrings.h"
+#include "application.h"
 
 #define CONTROL_HEADING	4
 #define CONTROL_LIST 3
@@ -36,10 +37,12 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 		case GUI_MSG_WINDOW_DEINIT:
     {
 			Reset();
+			g_application.EnableOverlay();			
 		}
 		break;
     case GUI_MSG_WINDOW_INIT:
     {
+			g_application.DisableOverlay();
 			m_iSelected=-1;
 			CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_LIST,0,0,NULL);
 			g_graphicsContext.SendMessage(msg);         
