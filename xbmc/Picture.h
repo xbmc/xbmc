@@ -17,7 +17,7 @@ public:
 	bool                Convert(const CStdString& strSource,const CStdString& strDest);
 	DWORD								GetWidth() const;
 	DWORD								GetHeight() const;
-	void								RenderImage(IDirect3DTexture8* pTexture, int x, int y, int width, int height, int iTextureWidth, int iTextureHeight, bool bRGB=true);
+	void								RenderImage(IDirect3DTexture8* pTexture, int x, int y, int width, int height, int iTextureWidth, int iTextureHeight, int iTextureLeft=0, int iTextureTop=0);
 
 protected:
 	bool								DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, int nMaxWidth, int nMaxHeight, bool bCacheFile=true);
