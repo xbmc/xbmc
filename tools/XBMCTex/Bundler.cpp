@@ -2,6 +2,10 @@
 #include ".\bundler.h"
 #include "../../xbmc/lib/liblzo/lzo1x.h"
 
+// alignment of file blocks - should be a multiple of the sector size of the disk and a power of 2
+// HDD sector = 512 bytes, DVD/CD sector = 2048 bytes
+#define ALIGN (2048)
+
 bool CBundler::StartBundle()
 {
 	Data = (BYTE*)VirtualAlloc(0, 512 * 1024 * 1024, MEM_RESERVE, PAGE_NOACCESS);
@@ -27,7 +31,7 @@ int CBundler::WriteBundle(const char* Filename)
 	XPRHeader.dwMagic = XPR_MAGIC_VALUE | (2 << 24); // version 2
 	XPRHeader.dwHeaderSize = Offset;
 
-	Offset = (Offset + 511) & ~511;
+	Offset = (Offset + (ALIGN-1)) & ~(ALIGN-1);
 	XPRHeader.dwTotalSize = Offset + DataSize;
 
 	// buffer data
@@ -104,7 +108,7 @@ bool CBundler::AddFile(const char* Filename, int nBuffers, const void** Buffers,
 
 	VirtualFree(buf, 0, MEM_RELEASE);
 
-	DataSize += (Header.PackedSize + 511) & ~511;
+	DataSize += (Header.PackedSize + (ALIGN-1)) & ~(ALIGN-1);
 	FileHeaders.push_back(Header);
 	return true;
 }

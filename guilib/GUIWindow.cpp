@@ -314,11 +314,11 @@ bool CGUIWindow::Load(const CStdString& strFileNameAndPath)
     {
       m_dwWindowId=atoi(pChild->FirstChild()->Value());
     }
-    if (strValue=="defaultcontrol")
+    else if (strValue=="defaultcontrol")
     {
       m_dwDefaultFocusControlID=atoi(pChild->FirstChild()->Value());
     }
-    if (strValue=="controls")
+    else if (strValue=="controls")
     {
 			
        const TiXmlNode *pControl = pChild->FirstChild();
@@ -338,6 +338,7 @@ bool CGUIWindow::Load(const CStdString& strFileNameAndPath)
 						if (strType==stControl.m_szType)
 						{
 							pGUIReferenceControl=stControl.m_pControl;
+							break;
 						}
 					}
 					CGUIControlFactory factory;
@@ -646,7 +647,7 @@ void CGUIWindow::ResetAllControls()
 
 void CGUIWindow::OnWindowLoaded()
 {
-  m_vecControls.erase(m_vecControls.begin(),m_vecControls.end());
+  //m_vecControls.erase(m_vecControls.begin(),m_vecControls.end());
 	for (int i=0;i < (int)m_vecControls.size(); ++i)
   {
     CGUIControl* pControl= m_vecControls[i];
