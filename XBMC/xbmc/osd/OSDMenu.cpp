@@ -151,3 +151,13 @@ int  COSDMenu::GetSelectedMenu() const
 {
   return m_iCurrentSubMenu;
 }
+
+
+void COSDMenu::SetValue(int iMessage, int iValue)
+{
+  for (int i=0; i < (int)m_vecSubMenus.size(); ++i)
+  {
+    COSDSubMenu* pSubMenu=m_vecSubMenus[i];
+    pSubMenu->SetValue(iMessage,iValue);
+  }
+}

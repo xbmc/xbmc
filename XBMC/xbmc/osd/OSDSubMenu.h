@@ -24,7 +24,7 @@ namespace OSD
 		
 		int  GetY() const;
 		void SetY(int X) ;
-
+    void SetValue(int iMessage, int iValue);
 	private:
     void Clear();
 		typedef	vector<IOSDOption*>::iterator ivecOptions;	

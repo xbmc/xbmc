@@ -56,6 +56,7 @@ LPDIRECT3DSURFACE8      m_pSurface[2]={NULL,NULL};      // Overlay Surfaces
 bool                    m_bFlip=false;
 bool                    m_bRenderGUI=false;
 static RESOLUTION       m_iResolution=PAL_4x3;
+bool                    m_bFlipped;
 
 typedef struct directx_fourcc_caps
 {
@@ -743,9 +744,21 @@ static void video_flip_page(void)
     ClearSubtitleRegion(m_iBackBuffer);
     m_bRenderGUI=true;
   }
-//  OutputDebugString("Done\n");
+
+  m_bFlipped=true;
 }
 
+//********************************************************************************************************
+void xbox_video_wait()
+{
+  int iTmp=0;
+  m_bFlipped=false;
+  while (!m_bFlipped && iTmp < 300)
+  {
+    Sleep(10);
+    iTmp++;
+  }
+}
 //********************************************************************************************************
 void xbox_video_getRect(RECT& SrcRect, RECT& DestRect)
 {
