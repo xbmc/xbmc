@@ -36,13 +36,17 @@ CHTTP::CHTTP(const string& strProxyServer, int iProxyPort)
 CHTTP::CHTTP()
 :m_socket(INVALID_SOCKET)
 {
-	m_bProxyEnabled=g_guiSettings.GetBool("Network.UseHTTPProxy");
-	m_strProxyServer=g_guiSettings.GetString("Network.HTTPProxyServer").c_str();
-	m_iProxyPort=atoi(g_guiSettings.GetString("Network.HTTPProxyPort").c_str());
-	m_strCookie="";
-	hEvent = WSA_INVALID_EVENT;
-	m_RecvBytes = 0;
-	m_RecvBuffer = 0;
+  m_strProxyServer = "";
+	m_bProxyEnabled  = g_guiSettings.GetBool("Network.UseHTTPProxy");
+  if (m_bProxyEnabled)
+  {
+	  m_strProxyServer = g_guiSettings.GetString("Network.HTTPProxyServer").c_str();
+	  m_iProxyPort     = atoi(g_guiSettings.GetString("Network.HTTPProxyPort").c_str());
+  }
+	m_strCookie     = "";
+	hEvent          = WSA_INVALID_EVENT;
+	m_RecvBytes     = 0;
+	m_RecvBuffer    = 0;
 	m_redirectedURL = "";
 }
 
