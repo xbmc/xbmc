@@ -6,19 +6,16 @@
 CGUIFontTTF::CGUIFontTTF(const CStdString& strFontName) : CGUIFont(strFontName)
 {
 	m_pTrueTypeFont = NULL;
+	m_pSurface = NULL;
 }
 
 CGUIFontTTF::~CGUIFontTTF(void)
 {
-	m_usedTTFRefCount[m_strFilename]--;
-
-	if (m_usedTTFRefCount[m_strFilename] == 0)
-	{
-		m_usedTTFRefCount.erase(m_strFilename);
-		m_usedTTFs.erase(m_strFilename);
-
+	if (m_pTrueTypeFont)
 		XFONT_Release(m_pTrueTypeFont);
-	}
+
+	if (m_pSurface)
+		m_pSurface->Release();
 }
 
 // Change font style: XFONT_NORMAL, XFONT_BOLD, XFONT_ITALICS, XFONT_BOLDITALICS
@@ -35,25 +32,15 @@ bool CGUIFontTTF::Load(const CStdString& strFilename, int iHeight, int iStyle)
 	WCHAR wszFilename[256];
 	swprintf(wszFilename, L"%S", strFilename.c_str());
 
-	if (m_usedTTFs[strFilename] == NULL)
-	{
-		if( FAILED( XFONT_OpenTrueTypeFont ( wszFilename,
-											dwFontCacheSize,&m_pTrueTypeFont ) ) )
-			return false;
-
-		m_usedTTFs[strFilename] = m_pTrueTypeFont;
-		m_usedTTFRefCount[strFilename] = 1;
-	}
-	else
-	{
-		m_pTrueTypeFont = m_usedTTFs[strFilename];
-		m_usedTTFRefCount[strFilename]++;
-	}
+	if( FAILED( XFONT_OpenTrueTypeFont ( wszFilename,
+										dwFontCacheSize,&m_pTrueTypeFont ) ) )
+		return false;
 
 	m_pTrueTypeFont->SetTextHeight( iHeight );
 	m_pTrueTypeFont->SetTextStyle( iStyle );
+	
 	// Anti-Alias the font -- 0 for no anti-alias, 2 for some, 4 for MAX!
-	m_pTrueTypeFont->SetTextAntialiasLevel( 0 );
+	m_pTrueTypeFont->SetTextAntialiasLevel( 2 );
 	m_pTrueTypeFont->SetTextAlignment(XFONT_CENTER);
 
 	float fTextHeight;
@@ -74,9 +61,6 @@ void CGUIFontTTF::DrawColourTextImpl(FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw2
 
 void CGUIFontTTF::DrawTextImpl( FLOAT sx, FLOAT sy, DWORD dwColor, const WCHAR* strText, DWORD cchText, DWORD dwFlags,FLOAT fMaxPixelWidth )
 {
-	m_pTrueTypeFont->SetTextHeight(m_iHeight);
-	m_pTrueTypeFont->SetTextStyle(m_iStyle);
-
 	if (dwFlags & XBFONT_CENTER_Y)
 	{
 	    FLOAT w, h;
@@ -90,7 +74,7 @@ void CGUIFontTTF::DrawTextImpl( FLOAT sx, FLOAT sy, DWORD dwColor, const WCHAR* 
 	WCHAR buf[1024];
 	int len = cchText;
 	int i = 0,j = 0;
-	unsigned lineHeight = m_pTrueTypeFont->GetTextHeight();
+	unsigned lineHeight = m_iHeight;
 	unsigned lineWidth;
 	while (i < len)
 	{
@@ -106,14 +90,17 @@ void CGUIFontTTF::DrawTextImpl( FLOAT sx, FLOAT sy, DWORD dwColor, const WCHAR* 
 		buf[j-i] = L'\0';
 
 		// determine the position of the line
-		m_pTrueTypeFont->GetTextExtent(buf, -1, &lineWidth);
-		int ll = wcslen(buf);
-		while (fMaxPixelWidth > 0 && ll >= 2 && lineWidth > fMaxPixelWidth + 60)
+		if (fMaxPixelWidth > 0)
 		{
-			buf[ll-2] = L'.';
-			buf[ll-1] = L'\0';
-			ll--;
 			m_pTrueTypeFont->GetTextExtent(buf, -1, &lineWidth);
+			int ll = wcslen(buf);
+			while (fMaxPixelWidth > 0 && ll >= 2 && lineWidth > fMaxPixelWidth + 60)
+			{
+				buf[ll-2] = L'.';
+				buf[ll-1] = L'\0';
+				ll--;
+				m_pTrueTypeFont->GetTextExtent(buf, -1, &lineWidth);
+			}
 		}
 
 		DWORD flags = (dwFlags & XBFONT_LEFT ? XFONT_LEFT : 0) |
@@ -135,16 +122,12 @@ void CGUIFontTTF::DrawTextImpl( FLOAT sx, FLOAT sy, DWORD dwColor, const WCHAR* 
 void CGUIFontTTF::GetTextExtent( const WCHAR* strText, FLOAT* pWidth, 
                            FLOAT* pHeight, BOOL bFirstLineOnly)
 {
-	m_pTrueTypeFont->SetTextHeight(m_iHeight);
-	m_pTrueTypeFont->SetTextStyle(m_iStyle);
-
-	unsigned width, lineHeight;
+	unsigned width;
 	// First let's calculate width
 	WCHAR buf[1024];
 	int len = wcslen(strText);
 	int i = 0,j = 0;
 	*pWidth = *pHeight = 0.0f;
-	lineHeight = m_pTrueTypeFont->GetTextHeight();
 
 	while (j < len) 
 	{
@@ -161,19 +144,10 @@ void CGUIFontTTF::GetTextExtent( const WCHAR* strText, FLOAT* pWidth,
 		m_pTrueTypeFont->GetTextExtent(buf, -1, &width);
 		if (width > *pWidth)
 			*pWidth = (float) width;
-		*pHeight += lineHeight;
+		*pHeight += m_iHeight;
 
 		i = j+1;
 
-/*
-	this was originally from XBMP - is this required in XBMC?
-
-		if (g_graphicsContext.IsCorrectionEnabled())
-		{	
-			*pWidth  /= WIDE_SCREEN_COMPENSATIONX;
-			*pHeight /= WIDE_SCREEN_COMPENSATIONY;
-		}
-*/
 		if (bFirstLineOnly)
 			return;
 	}
@@ -184,39 +158,12 @@ void CGUIFontTTF::GetTextExtent( const WCHAR* strText, FLOAT* pWidth,
 
 void CGUIFontTTF::DrawTrueType(LONG nPosX, LONG nPosY, WCHAR* text, int len)
 {
-	if (m_pTrueTypeFont==NULL)
+	if (!m_pTrueTypeFont)
 		return;
 
-	LPDIRECT3DSURFACE8 pSurface;
+	if (!m_pSurface)
+		D3DDevice::GetBackBuffer(0,D3DBACKBUFFER_TYPE_MONO, &m_pSurface);
 
 	// draw to back buffer
-	D3DDevice::GetBackBuffer(0,D3DBACKBUFFER_TYPE_MONO, &pSurface);
-
-	int count = 0;
-		
-	for (int i = 0; i <= len; i++)
-	{
-		if (i == len || (text[i]==0x0A) || (text[i]==0x0D))
-		{
-			if (count == 0)
-				continue;
-
-			m_pTrueTypeFont->TextOut( pSurface, &text[i-count], count, nPosX, nPosY );
-
-			count = 0;
-
-			if (i + 1 < len && text[i+1] == 0x0A)
-				i++;		// Windows LF
-
-			nPosY += m_iHeight;
-			continue;
-		}
-
-		count++;
-	}
-
-	pSurface->Release();
+	m_pTrueTypeFont->TextOut(m_pSurface, text, len, nPosX, nPosY);
 }
-
-stdext::hash_map<string, XFONT*> CGUIFontTTF::m_usedTTFs;
-stdext::hash_map<string, int>	 CGUIFontTTF::m_usedTTFRefCount;
