@@ -27,7 +27,7 @@ bool CGUIDialogOK::OnMessage(CGUIMessage& message)
     case GUI_MSG_CLICKED:
     {
 			int iAction=message.GetParam1();
-			if (ACTION_SELECT_ITEM==iAction)
+			if (1||ACTION_SELECT_ITEM==iAction)
 			{
 				int iControl=message.GetSenderId();
 				if (iControl==10)
