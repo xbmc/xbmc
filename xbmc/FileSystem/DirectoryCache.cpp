@@ -1,9 +1,7 @@
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "DirectoryCache.h"
 #include "../util.h"
-#include "../utils/SingleLock.h"
-#include "../settings.h"
 
 CDirectoryCache g_directoryCache;
 

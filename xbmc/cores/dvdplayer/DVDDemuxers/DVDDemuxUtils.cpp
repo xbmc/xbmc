@@ -1,5 +1,5 @@
 
-#include "stdafx.h"
+#include "../../../stdafx.h"
 #include "DVDDemuxUtils.h"
 
 void CDVDDemuxUtils::FreeDemuxPacket(CDVDDemux::DemuxPacket* pPacket)

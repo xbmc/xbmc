@@ -1,5 +1,5 @@
+#include "stdafx.h"
 #include "XMP4File.h"
-#include "filesystem/file.h"
 
 using namespace MUSIC_INFO;
 using namespace XFILE;

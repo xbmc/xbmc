@@ -1,8 +1,6 @@
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "EncoderVorbis.h"
-#include "..\utils\log.h"
 #include "..\util.h"
-#include "..\settings.h"
 #include "..\cores\DllLoader\Dll.h"
 #include "EncoderDLL.h"
 

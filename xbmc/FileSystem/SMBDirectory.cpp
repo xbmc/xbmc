@@ -1,5 +1,3 @@
-
-#include "stdafx.h"
 /*
  * know bugs:
  * - when opening a server for the first time with ip adres and the second time
@@ -11,17 +9,10 @@
  * debugging is set to a max of 10 for release builds (see local.h)
  */
 
+#include "../stdafx.h"
 #include "smbdirectory.h"
-#include "../settings.h"
 #include "../util.h"
-#include "../utils/log.h"
-#include "../sectionLoader.h"
-#include "../url.h"
-#include "../applicationmessenger.h"
-#include "../GUIWindowManager.h"
-#include "../GUIDialogOk.h"
 #include "directorycache.h"
-#include "../utils/CharsetConverter.h"
 
 CSMBDirectory::CSMBDirectory(void)
 {

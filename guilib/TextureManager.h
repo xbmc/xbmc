@@ -6,12 +6,6 @@
 #ifndef GUILIB_TEXTUREMANAGER_H
 #define GUILIB_TEXTUREMANAGER_H
 
-#include <vector>
-#include <list>
-#include "stdstring.h"
-using namespace std;
-
-#include "gui3d.h"
 #include "TextureBundle.h"
 
 #pragma once

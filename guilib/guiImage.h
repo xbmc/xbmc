@@ -7,12 +7,8 @@
 #define GUILIB_GUIIMAGECONTROL_H
 
 #pragma once
-#include "gui3d.h"
-#include "guicontrol.h"
-#include "guimessage.h"
-#include "stdstring.h"
-#include <vector>
-using namespace std;
+
+#include "GUIControl.h"
 
 /*!
 	\ingroup controls

@@ -1,9 +1,7 @@
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "xbmsdirectory.h"
-#include "../url.h"
 #include "../util.h"
-#include "../sectionloader.h"
 #include "directorycache.h"
 
 extern "C" {

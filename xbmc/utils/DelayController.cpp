@@ -1,5 +1,3 @@
-
-#include "../stdafx.h"
 //-----------------------------------------------------------------------------
 // File: DelayController.cpp
 //
@@ -10,7 +8,8 @@
 // 
 //-----------------------------------------------------------------------------
 
-#include <xtl.h>
+
+#include "../stdafx.h"
 #include "../XBInputEx.h"
 #include "DelayController.h"
 

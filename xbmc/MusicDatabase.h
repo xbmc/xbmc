@@ -4,14 +4,8 @@
 	*/
 #pragma once
 #include "lib/sqlLite/sqlitedataset.h"
-#include "StdString.h"
-#include "StringUtils.h"
-#include <vector>
-#include <set>
-#include <memory>
 #include "MusicInfotag.h"
 
-using namespace std;
 using namespace MUSIC_INFO;
 using namespace dbiplus;
 

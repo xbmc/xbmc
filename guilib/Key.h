@@ -7,9 +7,7 @@
 #define GUILIB_KEY
 
 #pragma once
-#include "gui3d.h"
 #include "../xbmc/XBIRRemote.h"
-#include "StdString.h"
 
 // Analogue - don't change order
 #define KEY_BUTTON_A                        256

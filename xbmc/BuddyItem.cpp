@@ -1,7 +1,6 @@
 
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "BuddyItem.h"
-#include "Settings.h"
 #include "Utils/KaiClient.h"
 
 #define PING_OFFSETX		8

@@ -2,10 +2,6 @@
 #include "stdafx.h"
 #include "playlistwpl.h"
 #include "util.h"
-#include "tinyxml/tinyxml.h"
-#include "autoptrhandle.h"
-
-using namespace AUTOPTR;
 
 /* ------------------------ example wpl playlist file ---------------------------------
 		<?wpl version="1.0"?>

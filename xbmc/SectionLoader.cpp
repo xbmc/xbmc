@@ -1,9 +1,5 @@
-
 #include "stdafx.h"
 #include "sectionloader.h"
-#include "stdstring.h"
-#include <xtl.h>
-
 
 class CSectionLoader g_sectionLoader;
 

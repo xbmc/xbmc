@@ -1,6 +1,5 @@
 #include "..\python.h"
 #include "GUIControl.h"
-#include <vector>
 #include "listitem.h"
 
 #pragma once

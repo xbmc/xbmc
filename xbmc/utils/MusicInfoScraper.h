@@ -1,8 +1,6 @@
 #pragma once
 #include "MusicAlbumInfo.h"
-#include "stdstring.h"
-#include <vector>
-using namespace std;
+
 using namespace MUSIC_GRABBER;
 
 namespace MUSIC_GRABBER

@@ -1,14 +1,9 @@
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "xnsdirectory.h"
-#include "tinyxml/tinyxml.h"
 #include "../DNSNameCache.h"
-#include "../url.h"
 #include "../util.h"
-#include "../autoptrhandle.h"
 #include "directorycache.h"
-
-using namespace AUTOPTR;
 
 CXNSDirectory::CXNSDirectory(void)
 {

@@ -4,10 +4,8 @@
 #include <sidplay/utils/SidDatabase.h>
 #include "sidplayer/audio/AudioDrv.h"
 #include "sidplayer/IniConfig.h"
-#include "stdstring.h"
 #include "iplayer.h"
 #include "../utils/thread.h"
-#include "../utils/event.h"
 
 class SidPlayer : public IPlayer, public CThread, private Event
 {

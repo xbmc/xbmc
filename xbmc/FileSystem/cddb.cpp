@@ -1,6 +1,4 @@
 
-#include "stdafx.h"
-
 //-----------------------------------------------------------------------------
 // File: cddb.cpp
 //
@@ -10,14 +8,14 @@
 //
 //-----------------------------------------------------------------------------
 
-
+#include "../stdafx.h"
 #include "cddb.h"
 #include "../dnsnamecache.h"
 #include "../lib/libID3/id3.h"
 #include "../util.h"
-#include "../utils/CharsetConverter.h"
 
 using namespace CDDB;
+
 //-------------------------------------------------------------------------------------------------------------------
 Xcddb::Xcddb() 
 :m_cddb_socket(INVALID_SOCKET)

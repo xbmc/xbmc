@@ -7,13 +7,9 @@
 #define GUILIB_GRAPHICCONTEXT_H
 
 #pragma once
-#include "gui3d.h"
-#include "GUIMessage.h"
-#include "IMsgSenderCallback.h"
-#include "stdstring.h"
-#include <vector>
 
-using namespace std;
+#include "IMsgSenderCallback.h"
+#include "common/mouse.h"
 
 /*!
 	\ingroup graphics

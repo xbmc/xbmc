@@ -1,10 +1,5 @@
 #pragma once
-
-#include <string>
-using namespace std;
-
 #include "GraphicContext.h"
-#include "tinyxml/tinyxml.h"
 
 class CSkinInfo
 {

@@ -1,6 +1,4 @@
 #pragma once
-#include "StdString.h"
-#include <queue>
 
 class CKaiRequestList
 {

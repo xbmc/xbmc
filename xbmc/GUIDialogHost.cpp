@@ -1,17 +1,10 @@
-
 #include "stdafx.h"
-#include "settings.h"
-#include "guiDialogHost.h"
-#include "guiWindowManager.h"
+#include "GUIDialogHost.h"
 #include "GUISpinControl.h"
 #include "GUILabelControl.h"
 #include "GUIButtonControl.h"
-#include "GUIDialogKeyboard.h"
 #include "GUIRadioButtonControl.h"
-#include "localizeStrings.h"
 #include "Utils/KaiClient.h"
-#include <vector>
-using namespace std;
 
 #define CTL_CHECKMARK_HOSTING_TYPE	3101
 #define CTL_LABEL_PLAYER_LIMIT		3102

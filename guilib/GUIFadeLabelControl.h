@@ -7,13 +7,8 @@
 #define GUILIB_GUIFADELABELCONTROL_H
 
 #pragma once
-#include "gui3d.h"
-#include "guicontrol.h"
-#include "guimessage.h"
-#include "guifont.h"
-#include "stdstring.h"
-#include <vector>
-using namespace std;
+
+#include "GUIControl.h"
 
 /*!
 	\ingroup controls

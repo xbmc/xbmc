@@ -1,6 +1,5 @@
 #include "stdafx.h"
-#include "guifontxpr.h"
-#include "../xbmc/utils/log.h"
+#include "GUIFontXPR.h"
 
 CGUIFontXPR::CGUIFontXPR(const CStdString& strFontName) : CGUIFont(strFontName)
 {

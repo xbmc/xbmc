@@ -29,8 +29,8 @@
   <string><id>32</id><value>12월</value></string>
   <string><id>98</id><value>보기: 자동</value></string>
   <string><id>99</id><value>보기: 자동(Big)</value></string>
-  <string><id>100</id><value>보기: 아이콘</value></string>
-  <string><id>101</id><value>보기: 목록</value></string>
+  <string><id>100</id><value>아이콘</value></string>
+  <string><id>101</id><value>목록</value></string>
   <string><id>102</id><value>자동검색</value></string>
   <string><id>103</id><value>이름순</value></string>
   <string><id>104</id><value>날짜순</value></string>
@@ -42,8 +42,8 @@
   <string><id>110</id><value>미리보기 생성</value></string>
   <string><id>111</id><value>바로가기</value></string>
   <string><id>112</id><value>일시정지</value></string>
-  <string><id>113</id><value>파일 : 원본</value></string>
-  <string><id>114</id><value>파일 : 대상</value></string>
+  <string><id>113</id><value>내 파일 : 원본</value></string>
+  <string><id>114</id><value>내 파일 : 대상</value></string>
   <string><id>115</id><value>복사</value></string>
   <string><id>116</id><value>이동</value></string>
   <string><id>117</id><value>삭제</value></string>
@@ -52,9 +52,9 @@
   <string><id>120</id><value>파일 복사 확인</value></string>
   <string><id>121</id><value>파일 이동 확인</value></string>
   <string><id>122</id><value>파일 삭제 확인</value></string>
-  <string><id>123</id><value>파일을 복사하시겠습니까?</value></string>
-  <string><id>124</id><value>파일을 이동하시겠습니까?</value></string>
-  <string><id>125</id><value>파일을 삭제하시겠습니까?</value></string>
+  <string><id>123</id><value>이 파일들을 복사하시겠습니까?</value></string>
+  <string><id>124</id><value>이 파일들을 이동하시겠습니까?</value></string>
+  <string><id>125</id><value>이 파일들을 삭제하시겠습니까?</value></string>
   <string><id>126</id><value>상태</value></string>
   <string><id>127</id><value>항목</value></string>
   <string><id>128</id><value>일반 설정</value></string>
@@ -68,7 +68,7 @@
   <string><id>136</id><value>재생목록</value></string>
   <string><id>137</id><value>검색</value></string>
   <string><id>138</id><value>시스템 정보</value></string>
-  <string><id>139</id><value>장치온도:</value></string>
+  <string><id>139</id><value>장치온도</value></string>
   <string><id>140</id><value>CPU:</value></string>
   <string><id>141</id><value>GPU:</value></string>
   <string><id>142</id><value>시간:</value></string>
@@ -117,7 +117,7 @@
   <string><id>185</id><value>앨범 검색중</value></string>
   <string><id>186</id><value>확인</value></string>
   <string><id>187</id><value>앨범이 없습니다!</value></string>
-  <string><id>188</id><value>모두 선택</value></string>
+  <string><id>188</id><value>전부 선택</value></string>
   <string><id>189</id><value>미디어 정보 탐색중</value></string>
   <string><id>190</id><value>저장</value></string>
   <string><id>191</id><value>순서섞기</value></string>
@@ -128,14 +128,14 @@
   <string><id>196</id><value>영화 선택:</value></string>
   <string><id>197</id><value>IMDB 정보 요청중</value></string>
   <string><id>198</id><value>영화 상세정보 읽는중</value></string>
-  <string><id>199</id><value>감독:</value></string>
-  <string><id>200</id><value>각본:</value></string>
-  <string><id>201</id><value>연도:</value></string>
-  <string><id>202</id><value>요약:</value></string>
-  <string><id>203</id><value>줄거리 개요:</value></string>
-  <string><id>204</id><value>등급:</value></string>
+  <string><id>199</id><value>감독</value></string>
+  <string><id>200</id><value>제작정보</value></string>
+  <string><id>201</id><value>연도</value></string>
+  <string><id>202</id><value>배급사</value></string>
+  <string><id>203</id><value>줄거리 개요</value></string>
+  <string><id>204</id><value>등급</value></string>
   <string><id>2050</id><value>상영시간:</value></string>
-  <string><id>205</id><value>투표:</value></string>
+  <string><id>205</id><value>투표</value></string>
   <string><id>206</id><value>출연</value></string>
   <string><id>207</id><value>줄거리</value></string>
   <string><id>208</id><value>재생</value></string>
@@ -160,15 +160,15 @@
   <string><id>227</id><value>CDDB 활성화</value></string>
   <string><id>228</id><value>불러올때 재생목록 섞기</value></string>
   <string><id>229</id><value>하드절전모드시간(분단위)</value></string>
-  <string><id>230</id><value>비디오 필터</value></string>
+  <string><id>230</id><value>필터 변경</value></string>
   <string><id>231</id><value>없음</value></string>
   <string><id>232</id><value>Point</value></string>
   <string><id>233</id><value>Linear</value></string>
   <string><id>234</id><value>Anisotropic</value></string>
   <string><id>235</id><value>Quincunx</value></string>
   <string><id>236</id><value>Gaussian Cubic</value></string>
-  <string><id>237</id><value>축소</value></string>
-  <string><id>238</id><value>확대</value></string>
+  <string><id>237</id><value>축소:</value></string>
+  <string><id>238</id><value>확대:</value></string>
   <string><id>240</id><value>DVD 자동실행</value></string>
   <string><id>241</id><value>VCD/SVCD 자동실행</value></string>
   <string><id>242</id><value>음악 CD 자동실행</value></string>
@@ -218,7 +218,7 @@
   <string><id>286</id><value>Postprocessing 필터</value></string>
   <string><id>287</id><value>자막 변경</value></string>
   <string><id>288</id><value>폰트 이름</value></string>
-  <string><id>289</id><value>- 크기</value></string>
+  <string><id>289</id><value>자막 크기</value></string>
   <string><id>290</id><value>볼륨 증폭 (dB)</value></string>
   <string><id>291</id><value>비디오</value></string>
   <string><id>292</id><value>오디오</value></string>
@@ -236,10 +236,10 @@
   <string><id>305</id><value>활성화됨</value></string>
   <string><id>306</id><value>Non-Interleaved</value></string>
   <string><id>307</id><value>- 자동 postprocessing</value></string>
-  <string><id>308</id><value>- 수직 deblocking 필터</value></string>
-  <string><id>309</id><value>- 수평 deblocking 필터</value></string>
-  <string><id>310</id><value>- 자동 밝기/명암</value></string>
-  <string><id>311</id><value>- Dering</value></string>
+  <string><id>308</id><value>수직 deblocking 필터</value></string>
+  <string><id>309</id><value>수평 deblocking 필터</value></string>
+  <string><id>310</id><value>자동 밝기/명암</value></string>
+  <string><id>311</id><value>Dering</value></string>
   <string><id>312</id><value>(0=자동)</value></string>
   <string><id>313</id><value>DB 정리중</value></string>
   <string><id>314</id><value>준비중...</value></string>
@@ -316,14 +316,14 @@
   <string><id>385</id><value>맑음</value></string>
   <string><id>386</id><value>맑음</value></string>
   <string><id>387</id><value>구름</value></string>
-  <string><id>388</id><value>이른</value></string>
-  <string><id>389</id><value>소나기</value></string>
-  <string><id>390</id><value>눈보라</value></string>
-  <string><id>391</id><value>낮은</value></string>
-  <string><id>392</id><value>중간</value></string>
-  <string><id>393</id><value>높은</value></string>
-  <string><id>394</id><value>안개</value></string>
-  <string><id>395</id><value>흐린 안개</value></string>
+  <string><id>388</id><value>N/A</value></string>
+  <string><id>389</id><value>N/A</value></string>
+  <string><id>390</id><value>N/A</value></string>
+  <string><id>391</id><value>N/A</value></string>
+  <string><id>392</id><value>N/A</value></string>
+  <string><id>393</id><value>N/A</value></string>
+  <string><id>394</id><value>N/A</value></string>
+  <string><id>395</id><value>N/A</value></string>
   <string><id>396</id><value>지역 선택</value></string>
   <string><id>397</id><value>새로고침 시간</value></string>
   <string><id>398</id><value>온도 단위</value></string>
@@ -339,12 +339,12 @@
   <string><id>408</id><value>풍속:</value></string>
   <string><id>410</id><value>Weather.com 접속</value></string>
   <string><id>411</id><value>날씨:</value></string>
-  <string><id>412</id><value>날씨 데이터를 얻을 수 없음</value></string>
+  <string><id>412</id><value>날씨 데이터를 얻을 수 없음.</value></string>
   <string><id>413</id><value>직접입력</value></string>
   <string><id>414</id><value>이 앨범에 리뷰가 없음</value></string>
-  <string><id>415</id><value>미리보기 다운로드...</value></string>
+  <string><id>415</id><value>섬네일 다운로드...</value></string>
   <string><id>416</id><value>사용 불가</value></string>
-  <string><id>417</id><value>보기: 큰 아이콘</value></string>
+  <string><id>417</id><value>큰 아이콘</value></string>
   <string><id>418</id><value>내 비디오/장르</value></string>
   <string><id>419</id><value>내 비디오/배우</value></string>
   <string><id>420</id><value>내 비디오/연도</value></string>
@@ -352,16 +352,16 @@
   <string><id>422</id><value>앨범 정보 삭제</value></string>
   <string><id>423</id><value>CDDB 정보 삭제</value></string>
   <string><id>424</id><value>선택</value></string>
-  <string><id>425</id><value>앨범 정보 찾지 못함</value></string>
-  <string><id>426</id><value>CDDB 정보 찾지 못함</value></string>
+  <string><id>425</id><value>앨범 정보 찾지 못함.</value></string>
+  <string><id>426</id><value>CDDB 정보 찾지 못함.</value></string>
   <string><id>427</id><value>디스크:</value></string>
   <string><id>428</id><value>올바른 CD/DVD를 넣어주십시오</value></string>
   <string><id>429</id><value>다음 CD/DVD 를 넣어주십시오</value></string>
   <string><id>430</id><value>DVD# 순</value></string>
   <string><id>431</id><value>캐시 안함</value></string>
   <string><id>432</id><value>DB에서 영화를 삭제합니까?</value></string>
-  <string><id>433</id><value>동영상을 삭제하시겠습니까</value></string>
-  <string><id>434</id><value>?</value></string>
+  <string><id>433</id><value>삭제하시겠습니까?</value></string>
+  <string><id>434</id><value>영화?</value></string>
   <string><id>435</id><value>트랙</value></string>
   <string><id>436</id><value>연도:</value></string>
   <string><id>437</id><value>재생시간:</value></string>
@@ -395,7 +395,7 @@
   <string><id>464</id><value>밝기</value></string>
   <string><id>465</id><value>명암</value></string>
   <string><id>466</id><value>감마</value></string>
-  <string><id>467</id><value>종류</value></string>
+  <string><id>467</id><value>Type</value></string>
   <string><id>468</id><value>바를 움직여서 OSD 위치를 변경하십시오</value></string>
   <string><id>469</id><value>OSD 위치</value></string>
   <string><id>470</id><value>Credits</value></string>
@@ -420,7 +420,7 @@
   <string><id>489</id><value>재생목록 사용</value></string>
   <string><id>490</id><value>목록과 아이콘 자동 전환</value></string>
   <string><id>491</id><value>- 큰 아이콘</value></string>
-  <string><id>492</id><value>Vobsub 자막 크기 변경</value></string>
+  <string><id>492</id><value>자막 확대</value></string>
   <string><id>493</id><value>고급 사용자 설정</value></string>
   <string><id>494</id><value>전반적인 오디오 헤드룸 (dB)</value></string>
   <string><id>495</id><value>비디오를 화면 해상도로 올림</value></string>
@@ -454,7 +454,7 @@
   <string><id>623</id><value>비트 레이트</value></string>
   <string><id>624</id><value>트랙 번호 포함</value></string>
   <string><id>625</id><value>모든 음악</value></string>
-  <string><id>629</id><value>출력 모드</value></string>
+  <string><id>629</id><value>View Mode</value></string>
   <string><id>630</id><value>보통</value></string>
   <string><id>631</id><value>확대</value></string>
   <string><id>632</id><value>늘림 4:3</value></string>
@@ -523,11 +523,11 @@
   <string><id>758</id><value>프로그램 연결 제거</value></string>  
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>온라인 게이밍</value></string>
-  <string><id>1000</id><value>화면보호기 미리보기</value></string>
+  <string><id>1000</id><value>스크린세이버 미리보기</value></string>
 
-  <string><id>1396</id><value>뜬</value></string>
+  <string><id>1396</id><value>뜬 </value></string>
   <string><id>1397</id><value>, </value></string>
-  <string><id>1398</id><value>몹시 추운</value></string>
+  <string><id>1398</id><value>매우 추운</value></string>
   <string><id>1399</id><value>N/A</value></string>
   <string><id>1400</id><value>N/A</value></string>
   <string><id>1401</id><value>N/A</value></string>
@@ -540,7 +540,7 @@
   <string><id>1408</id><value>N/A</value></string>
   <string><id>1409</id><value>N/A</value></string>
   <string><id>1410</id><value>N/A</value></string>
-    
+
   <string><id>10000</id><value>홈</value></string>
   <string><id>10001</id><value>프로그램</value></string>
   <string><id>10002</id><value>사진</value></string>
@@ -576,24 +576,24 @@
   <string><id>10502</id><value>음악/앨범</value></string>
   <string><id>10503</id><value>음악/음악가</value></string>
   <string><id>10504</id><value>음악/장르</value></string>
-  <string><id>10505</id><value>음악/최고의 100곡</value></string>
-  <string><id>10506</id><value>프로그램</value></string>
-  <string><id>10507</id><value>환경설정</value></string>
-  <string><id>10508</id><value>일기예보</value></string>
-  <string><id>10509</id><value>온라인 게임</value></string>
-  <string><id>10510</id><value>확장</value></string>
-  <string><id>10511</id><value>시스템 정보</value></string>
-  <string><id>10512</id><value>음악 - 앨범</value></string>
-  <string><id>10513</id><value>음악 - 음악가</value></string>
-  <string><id>10514</id><value>음악 - 장르</value></string>
-  <string><id>10515</id><value>음악 - Top 100</value></string>
-  <string><id>10516</id><value>음악 - 라이브러리</value></string>
-  <string><id>10517</id><value>음악 - 재생목록</value></string>
-  <string><id>10518</id><value>비디오 - 배우</value></string>
-  <string><id>10519</id><value>비디오 - 장르</value></string>
-  <string><id>10520</id><value>비디오 - 제목</value></string>
-  <string><id>10521</id><value>비디오 - 연도</value></string>
-  <string><id>10522</id><value>비디오 - 재생목록</value></string>
+  <string><id>10505</id><value>음악/베스트 100곡</value></string>
+  <string><id>10506</id><value>응용</value></string>
+  <string><id>10507</id><value>측하</value></string>
+  <string><id>10508</id><value>기상예보</value></string>
+  <string><id>10509</id><value>네크웍 게임</value></string>
+  <string><id>10510</id><value>확장자명</value></string>
+  <string><id>10511</id><value>시스템정보</value></string>
+  <string><id>10512</id><value>내 음악 - 앨범</value></string>
+  <string><id>10513</id><value>내 음악 - 음악가</value></string>
+  <string><id>10514</id><value>내 음악 - 장르</value></string>
+  <string><id>10515</id><value>내 음악 - TOP 100곡</value></string>
+  <string><id>10516</id><value>내 음악 - 라이브러리</value></string>
+  <string><id>10517</id><value>내 음악 - 재생목록</value></string>
+  <string><id>10518</id><value>내 비디오 - 배우별</value></string>
+  <string><id>10519</id><value>내 비디오 - 장르별Genres</value></string>
+  <string><id>10520</id><value>내 비디오 - 제목별</value></string>
+  <string><id>10521</id><value>내 비디오 - 제작년도별</value></string>
+  <string><id>10522</id><value>내 비디오 - 재생목록</value></string>
   <string><id>10523</id><value>앨범 정보</value></string>
   <string><id>10524</id><value>영화 정보</value></string>
   <string><id>11000</id><value>키보드</value></string>
@@ -686,8 +686,8 @@
   <string><id>13312</id><value>테두리 감소</value></string>
   <string><id>13313</id><value>리셋/재시작</value></string>
   <string><id>13314</id><value>음악 OSD 타임아웃</value></string>
-  <string><id>13315</id><value>미리보기 생성</value></string>
-  <string><id>13316</id><value>순환 미리보기</value></string>
+  <string><id>13315</id><value>썸네일 생성</value></string>
+  <string><id>13316</id><value>순환 썸네일</value></string>
   <string><id>13317</id><value>슬라이드쇼 보기</value></string>
   <string><id>13318</id><value>순환 슬라이드쇼</value></string>
   <string><id>13319</id><value>무작위</value></string>
@@ -727,10 +727,10 @@
   <string><id>13353</id><value>검색 중지</value></string>
   <string><id>13354</id><value>렌더링 방식</value></string>
   <string><id>13355</id><value>저화질 픽셀 쉐이더</value></string>
-  <string><id>13356</id><value>하드웨어 오버레이</value></string>
+  <string><id>13356</id><value>H/W 오버레이</value></string>
   <string><id>13357</id><value>고화질 픽셀 쉐이더</value></string>
-  <string><id>13360</id><value>미리보기 생성</value></string>
-  
+  <string><id>13360</id><value>썸네일 만들기</value></string>  
+
   <string><id>14000</id><value>연속 재생: 끔</value></string>
   <string><id>14001</id><value>연속 재생: 간단</value></string>
   <string><id>14002</id><value>연속 재생: 자동</value></string>
@@ -741,14 +741,14 @@
   <string><id>14007</id><value>재생목록 파일 다운로드 실패</value></string>
   <string><id>14008</id><value>Kai 알림 활성화</value></string>
   <string><id>14009</id><value>게임 디렉토리</value></string>
-  <string><id>14010</id><value>자동 미리보기 변경 - </value></string>
-  <string><id>14011</id><value>자동 미리보기 변경 활성화</value></string>
+  <string><id>14010</id><value>자동 섬네일 보기 변경 - </value></string>
+  <string><id>14011</id><value>자동 섬네일 보기 변경 활성화</value></string>
   <string><id>14012</id><value>- 큰 아이콘 사용</value></string>
   <string><id>14013</id><value>- 변경 기준 :</value></string>
   <string><id>14014</id><value>- 퍼센트</value></string>
-  <string><id>14015</id><value>파일 없이 한개 이상의 미리보기</value></string>
-  <string><id>14016</id><value>한개 이상의 파일과 미리보기</value></string>
-  <string><id>14017</id><value>미리보기 비율</value></string>
+  <string><id>14015</id><value>파일 없이 한개 이상의 섬네일</value></string>
+  <string><id>14016</id><value>한개 이상의 파일과 섬네일</value></string>
+  <string><id>14017</id><value>섬네일 비율</value></string>
   <string><id>14018</id><value>보기 옵션</value></string>
   <string><id>14019</id><value>지역코드 1 변경</value></string>
   <string><id>14020</id><value>지역코드 2 변경</value></string>
@@ -855,11 +855,11 @@
   <string><id>15059</id><value>초대가 수락됨!</value></string>
   <string><id>15060</id><value>메시지</value></string>
   <string><id>15061</id><value>%s 게임에 초대 되었습니다</value></string>
-  <string><id>15062</id><value>대체 mplayer 위치 사용</value></string>
-  <string><id>15100</id><value>탐색</value></string>
+  <string><id>15062</id><value>대체 mplayer 코어 사용</value></string>
+  <string><id>15100</id><value>찾아보기</value></string>
   <string><id>15101</id><value>데이타베이스</value></string>
-  <string><id>15102</id><value>* 모든 앨범</value></string>
-  <string><id>15103</id><value>* 모든 음악가</value></string>
-  <string><id>15104</id><value>* 모든 음악</value></string>
-  <string><id>15105</id><value>* 모든 장르</value></string>
+  <string><id>15102</id><value>* 전체 앨범별</value></string>
+  <string><id>15103</id><value>* 전체 음악가별</value></string>
+  <string><id>15104</id><value>* 전체 곡목별</value></string>
+  <string><id>15105</id><value>* 전체 장르별</value></string>
 </strings>

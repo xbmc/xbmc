@@ -1,5 +1,5 @@
+#include "../stdafx.h"
 #include "lcd.h"
-#include "../GUISettings.h"
 
 void ILCD::StringToLCDCharSet(CStdString& strText)
 {

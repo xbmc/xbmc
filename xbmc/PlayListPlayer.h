@@ -1,10 +1,7 @@
 #pragma once
 
-#include "StdString.h"
 #include "playlist.h"
 #include "IMsgTargetCallback.h"
-#include "GUIMessage.h"
-#include <vector>
 
 #define PLAYLIST_NONE			 -1
 #define PLAYLIST_MUSIC			0
@@ -12,7 +9,6 @@
 #define PLAYLIST_VIDEO			2
 #define PLAYLIST_VIDEO_TEMP	3
 
-using namespace std;
 using namespace PLAYLIST;
 
 namespace PLAYLIST

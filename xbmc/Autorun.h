@@ -9,9 +9,6 @@
 #pragma once
 #include "filesystem/factoryDirectory.h"
 
-#include <memory>
-using namespace std;
-
 namespace MEDIA_DETECT 
 {
 	class CAutorun

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "thread.h"
-#include "stdstring.h"
 
 class CSplash : public CThread
 {

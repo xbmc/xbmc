@@ -1,7 +1,5 @@
 #pragma once
-#include "GUIPythonWindowDialog.h"
 #include "GUIPythonWindow.h"
-#include "..\python.h"
 
 class CGUIPythonWindowDialog : public CGUIPythonWindow
 {

@@ -7,7 +7,7 @@
 #define GUILIB_IMSGSENDERCALLBACK
 
 #pragma once
-#include "guimessage.h"
+#include "GUIMessage.h"
 
 /*!
 	\ingroup winman

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #define XFONT_TRUETYPE 
-#include "guifontttf.h"
-#include "../xbmc/utils/log.h"
+#include "GUIFontTTF.h"
+#include "GraphicContext.h"
 
 CGUIFontTTF::CGUIFontTTF(const CStdString& strFontName) : CGUIFont(strFontName)
 {

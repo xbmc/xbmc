@@ -1,5 +1,5 @@
 #pragma once
-#include "StdString.h"
+
 #include "KaiItem.h"
 
 class CArenaItem : public CKaiItem

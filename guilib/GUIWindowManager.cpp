@@ -1,6 +1,5 @@
 #include "stdafx.h"
-#include "guiwindowmanager.h"
-#include "../xbmc/utils/log.h"
+#include "GUIWindowManager.h"
 
 CGUIWindowManager m_gWindowManager;
 

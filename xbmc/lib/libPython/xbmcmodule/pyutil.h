@@ -1,7 +1,4 @@
 #include "..\python.h"
-#include <string>
-
-using namespace std;
 
 #ifdef __cplusplus
 extern "C" {

@@ -8,13 +8,6 @@
 
 #pragma once
 
-#include <xtl.h>
-#include <xvoice.h>
-#include <xonline.h>
-#include <queue>
-#include <vector>
-#include "stdstring.h"
-
 #define MPQ_MAX_PACKETS	60
 #define MPQ_PACKET_SIZE	20
 

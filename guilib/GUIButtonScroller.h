@@ -1,7 +1,6 @@
 #pragma once
-#include "guicontrol.h"
-#include "guifontmanager.h"
-#include "guiimage.h"
+
+#include "GUIImage.h"
 
 class CButton
 {

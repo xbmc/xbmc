@@ -1,9 +1,6 @@
 #pragma once
 
 #include "directory.h"
-#include <vector>
-#include <set>
-#include "../utils/CriticalSection.h"
 
 using namespace DIRECTORY;
 

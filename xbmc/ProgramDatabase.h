@@ -1,10 +1,7 @@
 #pragma once
 #include "lib/sqlLite/sqlitedataset.h"
-#include "StdString.h"
 #include "FileItem.h"
-#include <vector>
-#include <memory>
-using namespace std;
+
 using namespace dbiplus;
 
 typedef vector<CStdString> VECPROGRAMPATHS;

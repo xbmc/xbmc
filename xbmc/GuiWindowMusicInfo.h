@@ -1,10 +1,7 @@
 #pragma once
 #include "GUIDialog.h"
-#include "guiwindowmanager.h"
 #include "utils/MusicInfoScraper.h"
 using namespace MUSIC_GRABBER;
-
-#include "stdstring.h"
 
 class CGUIWindowMusicInfo :
   public CGUIDialog

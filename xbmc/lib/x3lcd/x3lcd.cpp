@@ -1,9 +1,6 @@
 
-#include "../stdafx.h"
+#include "../../stdafx.h"
 #include "x3lcd.h"
-#include "../../settings.h"
-#include "../../utils/log.h"
-#include <xtl.h>
 #include "conio.h"
 #include "../../util.h"
 

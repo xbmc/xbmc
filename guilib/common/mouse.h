@@ -1,9 +1,6 @@
 #ifndef MOUSE_H
 #define MOUSE_H
 
-#define DEBUG_MOUSE
-#include <xtl.h>
-
 #define MOUSE_DOUBLE_CLICK_LENGTH	500L
 #define MOUSE_ACTIVE_LENGTH			5000L
 

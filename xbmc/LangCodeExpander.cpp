@@ -1,7 +1,5 @@
+#include "stdafx.h"
 #include "langcodeexpander.h"
-#include "tinyxml/tinyxml.h"
-#include "utils/log.h"
-#include "GUISettings.h"
 
 CLangCodeExpander g_LangCodeExpander;
 

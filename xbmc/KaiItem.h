@@ -1,6 +1,5 @@
 #pragma once
 #include "GUIListExItem.h"
-#include "StdString.h"
 #include "Utils/DownloadQueueManager.h"
 
 class CKaiItem : public CGUIListExItem, public IDownloadQueueObserver

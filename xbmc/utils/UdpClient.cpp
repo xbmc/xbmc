@@ -1,9 +1,6 @@
 
 #include "stdafx.h"
 #include "UdpClient.h"
-#include "Log.h"
-#include "graphiccontext.h"
-#include "../Settings.h"
 
 #define UDPCLIENT_DEBUG_LEVEL	LOGDEBUG
 

@@ -2,10 +2,7 @@
 #include "stdafx.h"
 #include "GUIDialogVolumeBar.h"
 #include "GUISliderControl.h"
-#include "guiWindowManager.h"
-#include "settings.h"
-#include "application.h"
-#include "localizeStrings.h"
+#include "Application.h"
 
 // May need to change this so that it is "modeless" rather than Modal,
 // though it works reasonably well as is...

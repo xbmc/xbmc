@@ -27,7 +27,7 @@
  **********************************************************************/
 
 
-
+#include "../../stdafx.h"
 #include "dataset.h"
 
 #pragma warning (disable:4800)

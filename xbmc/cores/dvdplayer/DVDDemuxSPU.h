@@ -1,6 +1,5 @@
 
 #pragma once
-#include <xtl.h>
 #include "DVDCodecs\DVDVideoCodec.h"
 struct AVPicture;
 

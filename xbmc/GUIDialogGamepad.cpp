@@ -1,8 +1,5 @@
-
 #include "stdafx.h"
 #include "guidialogGamepad.h"
-#include "guiWindowManager.h"
-#include "localizeStrings.h"
 #include "util.h"
 
 CGUIDialogGamepad::CGUIDialogGamepad(void)

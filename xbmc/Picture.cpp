@@ -2,13 +2,6 @@
 #include "stdafx.h"
 #include "picture.h"
 #include "util.h"
-#include "sectionloader.h"
-#include "filesystem/file.h"
-#include "utils/log.h"
-#include "autoptrhandle.h"
-#include "settings.h"
-
-using namespace AUTOPTR;
 
 #define QUALITY 0
 #define MAX_THUMB_WIDTH 128

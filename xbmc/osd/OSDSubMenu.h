@@ -1,7 +1,6 @@
 #pragma once
 #include "IOSDOption.h"
-#include <vector>
-using namespace std;
+
 namespace OSD
 {
 	class COSDSubMenu

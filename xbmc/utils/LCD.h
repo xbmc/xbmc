@@ -1,8 +1,6 @@
 #pragma once
-#include "stdstring.h"
 #include "thread.h"
-#include "../utils/event.h"
-using namespace std;
+
 #define MAX_ROWS 20
 
 class ILCD : public CThread

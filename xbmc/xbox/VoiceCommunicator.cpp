@@ -1,7 +1,6 @@
+#include "../stdafx.h"
 #include "VoiceCommunicator.h"
 #include "VoiceManager.h"
-#include <cassert>
-#include <stdio.h>
 
 // Defined in VoiceManager.cpp
 extern const DWORD VOICE_SAMPLING_RATE;

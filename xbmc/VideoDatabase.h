@@ -1,12 +1,8 @@
 #pragma once
 #include "lib/sqlLite/sqlitedataset.h"
-#include "StdString.h"
 #include "utils\IMDB.h"
 #include "settings/VideoSettings.h"
 
-#include <vector>
-#include <memory>
-using namespace std;
 using namespace dbiplus;
 
 typedef vector<CStdString> VECMOVIEYEARS;

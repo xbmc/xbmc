@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "GUIWindowMusicPlayList.h"
-#include "localizestrings.h"
 #include "util.h"
 #include "PlayListM3U.h"
 #include "application.h"

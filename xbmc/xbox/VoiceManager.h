@@ -1,12 +1,7 @@
 #ifndef VOICEMANAGER_H
 #define VOICEMANAGER_H
 
-#include <xtl.h>
-#include <xvoice.h>
-#include <xonline.h>
 #include "VoiceCommunicator.h"
-#include <vector>
-
 
 // Enumeration for communicator-related events
 enum VOICE_COMMUNICATOR_EVENT

@@ -46,9 +46,6 @@ int XbmcWebsAspConfigSetOption( int eid, webs_t wp, int argc, char_t **argv);
 // group for default xbox user
 #define WEBSERVER_UM_GROUP "sys_xbox"
 
-#include <xtl.h>
-#include "..\..\utils\Thread.h"
-
 class CWebServer : public CThread
 {
 public:

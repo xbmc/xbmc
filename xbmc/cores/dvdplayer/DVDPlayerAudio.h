@@ -1,6 +1,5 @@
 #pragma once
 #include "../../utils/thread.h"
-#include "../../utils/event.h"
 
 #include "DVDAudio.h"
 #include "DVDClock.h"

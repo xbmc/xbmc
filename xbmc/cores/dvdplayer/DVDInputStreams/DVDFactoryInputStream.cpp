@@ -1,5 +1,5 @@
 
-#include "stdafx.h"
+#include "../../../stdafx.h"
 #include "DVDFactoryInputStream.h"
 #include "DVDInputStream.h"
 #include "DVDInputStreamFile.h"

@@ -1,19 +1,12 @@
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "CDDARipper.h"
 #include "CDDAReader.h"
-#include "..\utils\log.h"
 #include "..\util.h"
-#include "..\GUIDialogProgress.h"
-#include "..\GUIDialogOK.h"
-#include "..\guiWindowManager.h"
-#include "..\settings.h"
 #include "EncoderLame.h"
 #include "EncoderWav.h"
 #include "EncoderVorbis.h"
 #include "..\filesystem\CDDADirectory.h"
 #include "..\detectdvdtype.h"
-#include "..\localizestrings.h"
-#include "..\filesystem\file.h"
 
 CCDDARipper::CCDDARipper()
 {

@@ -1,8 +1,6 @@
-#include "stdafx.h"
+#include "../../stdafx.h"
 #include "XBPython.h"
-#include "..\..\sectionLoader.h"
 #include "ActionManager.h"
-#include "..\..\utils\log.h"
 
 	 /* PY_RW stay's loaded as longs as m_pPythonParser != NULL.
 	  * When someone runs a script for the first time both sections PYTHON and PY_RW

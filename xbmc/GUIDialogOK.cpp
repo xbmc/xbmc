@@ -1,8 +1,5 @@
-
 #include "stdafx.h"
-#include "guidialogok.h"
-#include "guiWindowManager.h"
-#include "localizeStrings.h"
+#include "GUIDialogOK.h"
 #include "application.h"
 #include "util.h"
 

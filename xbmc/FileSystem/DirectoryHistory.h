@@ -1,9 +1,5 @@
 #pragma once
 
-#include "stdstring.h"
-#include <vector>
-using namespace std;
-
 class CDirectoryHistory
 {
 public:

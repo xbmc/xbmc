@@ -1,5 +1,5 @@
 
-#include "stdafx.h"
+#include "../stdafx.h"
 /*
 	Redbook			: CDDA	
 	Yellowbook	: CDROM
@@ -19,10 +19,7 @@ ISO9660
 
 */
 #include "iso9660.h"
-#include "../utils/singlelock.h"
-#include "../utils/CharsetConverter.h"
 
-#include "stdstring.h"
 //#define _DEBUG_OUTPUT 1
 
 class iso9660 m_isoReader;

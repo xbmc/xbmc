@@ -1,5 +1,5 @@
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "factorydirectory.h"
 #include "HDDirectory.h"
 #include "ISO9660Directory.h"
@@ -11,7 +11,6 @@
 #include "SndtrkDirectory.h"
 #include "DAAPDirectory.h"
 #include "shoutcastdirectory.h"
-#include "../url.h"
 
 CFactoryDirectory::CFactoryDirectory(void)
 {

@@ -2,13 +2,6 @@
 #include "iplayer.h"
 #include "dllLoader/dll.h"
 #include "mplayer/mplayer.h"
-#include "stdstring.h"
-#include "../utils/thread.h"
-#include "../utils/event.h"
-#include <vector>
-#include <string>
-
-using namespace std;
 
 class CMPlayer : public IPlayer, public CThread
 {

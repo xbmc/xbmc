@@ -7,7 +7,7 @@
 #define GUILIB_IMSGTARGETCALLBACK
 
 #pragma once
-#include "guimessage.h"
+#include "GUIMessage.h"
 
 /*!
 	\ingroup winman

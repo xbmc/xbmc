@@ -27,7 +27,7 @@
  **********************************************************************/
 
 
-#include "stdafx.h"
+#include "../../stdafx.h"
 #include <iostream>
 #include <string>
 

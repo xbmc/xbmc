@@ -1,7 +1,5 @@
 #pragma once
-#include "StdString.h"
 #include "DownloadQueue.h"
-#include <vector>
 
 #define MAX_DOWNLOAD_QUEUES		3
 

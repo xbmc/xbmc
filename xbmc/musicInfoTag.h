@@ -1,10 +1,9 @@
 #pragma once
 
-#include "stdstring.h"
-#include "utils/archive.h"
-
 class CSong;
 class CAlbum;
+
+#include "utils/archive.h"
 
 namespace MUSIC_INFO
 {

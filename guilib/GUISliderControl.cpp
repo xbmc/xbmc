@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "GUISliderControl.h"
-#include "guifontmanager.h"
+#include "GUIFontManager.h"
 
 
 CGUISliderControl::CGUISliderControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strBackGroundTexture,const CStdString& strMidTexture,const CStdString& strMidTextureFocus,int iType)

@@ -1,5 +1,5 @@
 
-#include "stdafx.h"
+#include "../../stdafx.h"
 #include "DVDClock.h"
 
 CDVDClock::CDVDClock()

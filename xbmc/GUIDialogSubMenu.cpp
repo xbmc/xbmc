@@ -1,11 +1,8 @@
-
 #include "stdafx.h"
-#include "guidialogsubmenu.h"
-#include "guiWindowManager.h"
-#include "localizeStrings.h"
-#include "application.h"
+#include "GUIDialogSubMenu.h"
+#include "Application.h"
 #include "Credits.h"
-#include "util.h"
+#include "Util.h"
 
 #define CONTROL_BTN_SHUTDOWN		10
 #define CONTROL_BTN_DASHBOARD		11

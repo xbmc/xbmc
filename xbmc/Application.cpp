@@ -1,20 +1,14 @@
 
 #include "stdafx.h"
-#include <XFont.h>
 #include "application.h"
 #include "utils/lcd.h"
 #include "xbox\iosupport.h"
 #include "xbox/xkutils.h"
-#include "utils/log.h"
-#include "settings.h"
 #include "util.h"
-#include "sectionLoader.h"
 #include "texturemanager.h"
-#include "stdstring.h"
 #include "cores/playercorefactory.h"
 #include "playlistplayer.h"
 #include "musicdatabase.h"
-#include "url.h"
 #include "autorun.h"
 #include "ActionManager.h"
 #include "utils/LCDFactory.h"
@@ -29,7 +23,6 @@
 #include "utils/MemUnit.h"
 #include "FileSystem/DAAPDirectory.h"
 #include "utils/FanController.h"
-#include "utils/CharsetConverter.h"
 #include "XBVideoConfig.h"
 #include "GUIStandardWindow.h"
 #include "utils/LED.h"
@@ -37,6 +30,10 @@
 #include "lib/libGoAhead/xbmchttp.h"
 #include "utils/GUIInfoManager.h"
 #include "PlaylistFactory.h"
+#include "GUIFontManager.h"
+#include "SkinInfo.h"
+#include "lib/libPython/XBPython.h"
+#include "ButtonTranslator.h"
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory

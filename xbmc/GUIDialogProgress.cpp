@@ -1,8 +1,5 @@
-
 #include "stdafx.h"
-#include "guidialogprogress.h"
-#include "guiWindowManager.h"
-#include "localizeStrings.h"
+#include "GUIDialogProgress.h"
 #include "GUIProgressControl.h"
 #include "application.h"
 

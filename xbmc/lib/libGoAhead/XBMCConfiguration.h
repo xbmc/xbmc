@@ -1,7 +1,6 @@
 #pragma once
 
 #include "includes.h"
-#include "..\..\..\guilib\tinyXML\tinyxml.h"
 
 class CXbmcConfiguration
 {

@@ -1,6 +1,5 @@
 #pragma once
-#include "StdString.h"
-#include "guiDialog.h"
+#include "GUIDialog.h"
 #include "MusicInfoScanner.h"
 #include "utils/CriticalSection.h"
 

@@ -1,11 +1,11 @@
 #include "stdafx.h"
-#include "texturemanager.h"
-#include "graphiccontext.h"
-#include "animatedgif.h"
-#include "../xbmc/utils/log.h"
-#include <xgraphics.h>
+#include "TextureManager.h"
+#include "AnimatedGif.h"
 #include "PackedTexture.h"
-#include "../xbmc/Util.h"
+#include "GraphicContext.h"
+#include <XGraphics.h>
+
+extern void fast_memcpy(void* d, const void* s, unsigned n);
 
 extern "C" void dllprintf( const char *format, ... );
 

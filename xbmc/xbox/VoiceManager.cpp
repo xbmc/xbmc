@@ -1,6 +1,5 @@
+#include "stdafx.h"
 #include "VoiceManager.h"
-#include <cassert>
-#include <stdio.h>
 #include "MediaPacketQueue.h"
 #include "../Utils/KaiVoice.h"
 

@@ -1,16 +1,13 @@
 
 #include "stdafx.h"
-#include "localizestrings.h"
 #include "GUIWindowSlideShow.h"
-#include "application.h"
-#include "picture.h"
-#include "settings.h"
-#include "guiFontManager.h"
-#include "util.h"
-#include "sectionloader.h"
-#include "texturemanager.h"
-#include "guilabelcontrol.h"
+#include "Application.h"
+#include "Picture.h"
+#include "Util.h"
+#include "TextureManager.h"
+#include "GUILabelControl.h"
 #include "cores/ssrc.h"
+#include "GUIFontManager.h"
 
 #define MAX_RENDER_METHODS 9
 #define MAX_ZOOM_FACTOR    10

@@ -1,9 +1,7 @@
 
-#include "StdAfx.h"
-#include "Settings.h"
+#include "stdafx.h"
 #include "ArenaItem.h"
 #include "Utils/KaiClient.h"
-#include "Utils/CharsetConverter.h"
 
 CGUIImage* CArenaItem::m_pPrivateIcon		= NULL;
 

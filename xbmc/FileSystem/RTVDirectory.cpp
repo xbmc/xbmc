@@ -2,12 +2,9 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "RTVDirectory.h"
-#include "tinyxml/tinyxml.h"
-#include "../url.h"
 #include "../util.h"
-#include "../sectionloader.h"
 
 extern "C" {
 	#include "../lib/librtv/interface.h"

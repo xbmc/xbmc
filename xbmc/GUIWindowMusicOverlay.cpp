@@ -1,25 +1,9 @@
 
 #include "stdafx.h"
 #include "GUIWindowMusicOverlay.h"
-#include "settings.h"
-#include "guiWindowManager.h"
-#include "localizestrings.h"
 #include "util.h"
-#include "stdstring.h"
 #include "application.h"
-#include "MusicInfoTag.h"
-#include "picture.h"
-#include "musicdatabase.h"
-#include "filesystem/CDDADirectory.h"
-#include "url.h"
-#include "lib/libID3/tag.h"
-#include "lib/libID3/misc_support.h"
-#include "musicInfoTagLoaderFactory.h"
-#include "filesystem/SndtrkDirectory.h"
-#include "utils/log.h"
 #include "utils/GUIInfoManager.h"
-
-using namespace MUSIC_INFO;
 
 #define CONTROL_LOGO_PIC_BACK    0
 #define CONTROL_LOGO_PIC    1

@@ -4,7 +4,7 @@
 	*/
 
 #pragma once
-#include "guiwindow.h"
+#include "GUIWindow.h"
 
 /*!
 	\ingroup winmsg

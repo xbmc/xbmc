@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "GUIDialogMusicScan.h"
-#include "guiWindowManager.h"
-#include "settings.h"
 #include "application.h"
-#include "localizeStrings.h"
 
 #define CONTROL_LABELSTATUS			401
 #define CONTROL_LABELDIRECTORY	402

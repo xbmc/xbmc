@@ -1,6 +1,6 @@
+#include "../stdafx.h"
 #include "mouse.h"
 #include "../key.h"
-#include "../../xbmc/utils/log.h"
 
 CMouse g_Mouse;	// global
 

@@ -1,10 +1,8 @@
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "iso9660directory.h"
 #include "../xbox/iosupport.h"
-#include "../sectionloader.h"
 #include "iso9660.h"
-#include "../url.h"
 #include "../util.h"
 
 CISO9660Directory::CISO9660Directory(void)

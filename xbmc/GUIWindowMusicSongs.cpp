@@ -1,16 +1,11 @@
 
 #include "stdafx.h"
 #include "GUIWindowMusicSongs.h"
-#include "guiWindowManager.h"
-#include "localizestrings.h"
 #include "PlayListFactory.h"
-#include "util.h"
-#include "application.h"
-#include "playlistplayer.h"
-#include "SectionLoader.h"
-#include "cuedocument.h"
+#include "Util.h"
+#include "Application.h"
+#include "CUEDocument.h"
 #include "AutoSwitch.h"
-#include "crc32.h"
 #include "GUIPassword.h"
 
 #define CONTROL_BTNVIEWASICONS		2
@@ -284,6 +279,12 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 					Update(m_Directory.m_strPath);
 				}
 			}
+		}
+		break;
+
+		case GUI_MSG_DVDDRIVE_EJECTED_CD:
+		{
+			DeleteRemoveableMediaDirectoryCache();
 		}
 		break;
 
@@ -957,7 +958,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 	g_musicDatabase.GetSongsByPath(m_Directory.m_strPath,songsMap);
 
 	// Nothing in database and id3 tags disabled; dont load tags from cdda files
-	if ((songsMap.size()==0 && !g_guiSettings.GetBool("MyMusic.UseTags")) || m_Directory.IsCDDA())
+	if (songsMap.size()==0 && !g_guiSettings.GetBool("MyMusic.UseTags"))
 		return;
 
 	//	Do we have cached items
@@ -1401,15 +1402,18 @@ void CGUIWindowMusicSongs::OnPopupMenu(int iItem)
 
 void CGUIWindowMusicSongs::LoadDirectoryCache(const CStdString& strDirectory, MAPFILEITEMS& items)
 {
-	CStdString strDir=strDirectory;
-	if (CUtil::HasSlashAtEnd(strDir))
-		strDir.Delete(strDir.size()-1);
+	CFileItem directory(strDirectory, true);
+	if (CUtil::HasSlashAtEnd(directory.m_strPath))
+		directory.m_strPath.Delete(directory.m_strPath.size()-1);
 
 	Crc32 crc;
-	crc.ComputeFromLowerCase(strDir);
+	crc.ComputeFromLowerCase(directory.m_strPath);
 
 	CStdString strFileName;
-	strFileName.Format("Z:\\%x.fi", crc);
+	if (directory.IsCDDA() || directory.IsDVD() || directory.IsISO9660())
+		strFileName.Format("Z:\\r-%x.fi", crc);
+	else
+		strFileName.Format("Z:\\%x.fi", crc);
 
 	CFile file;
 	if (file.Open(strFileName))
@@ -1435,15 +1439,18 @@ void CGUIWindowMusicSongs::SaveDirectoryCache(const CStdString& strDirectory, VE
 	if (iSize<=0)
 		return;
 
-	CStdString strDir=strDirectory;
-	if (CUtil::HasSlashAtEnd(strDir))
-		strDir.Delete(strDir.size()-1);
+	CFileItem directory(strDirectory, true);
+	if (CUtil::HasSlashAtEnd(directory.m_strPath))
+		directory.m_strPath.Delete(directory.m_strPath.size()-1);
 
 	Crc32 crc;
-	crc.ComputeFromLowerCase(strDir);
+	crc.ComputeFromLowerCase(directory.m_strPath);
 
 	CStdString strFileName;
-	strFileName.Format("Z:\\%x.fi", crc);
+	if (directory.IsCDDA() || directory.IsDVD() || directory.IsISO9660())
+		strFileName.Format("Z:\\r-%x.fi", crc);
+	else
+		strFileName.Format("Z:\\%x.fi", crc);
 
 	CFile file;
 	if (file.OpenForWrite(strFileName))
@@ -1467,6 +1474,25 @@ void CGUIWindowMusicSongs::DeleteDirectoryCache()
   memset(&wfd,0,sizeof(wfd));
 
 	CAutoPtrFind hFind( FindFirstFile("Z:\\*.fi",&wfd));
+  if (!hFind.isValid())
+    return ;
+  do
+  {
+    if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
+    {
+			CStdString strFile= "Z:\\";
+      strFile += wfd.cFileName;
+      DeleteFile(strFile.c_str());
+    }
+  } while (FindNextFile(hFind, &wfd));
+}
+
+void CGUIWindowMusicSongs::DeleteRemoveableMediaDirectoryCache()
+{
+  WIN32_FIND_DATA wfd;
+  memset(&wfd,0,sizeof(wfd));
+
+	CAutoPtrFind hFind( FindFirstFile("Z:\\r-*.fi",&wfd));
   if (!hFind.isValid())
     return ;
   do

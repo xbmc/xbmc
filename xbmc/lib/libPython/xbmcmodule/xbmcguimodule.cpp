@@ -1,11 +1,10 @@
-#include "stdafx.h"
+#include "../../../stdafx.h"
 #include "..\python.h"
 #include "..\structmember.h"
 #include "control.h"
 #include "window.h"
 #include "dialog.h"
 #include "pyutil.h"
-#include "guiwindowmanager.h"
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")

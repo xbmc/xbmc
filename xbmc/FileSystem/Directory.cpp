@@ -1,7 +1,7 @@
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "directory.h"
-#include "../util.h"
+#include "factorydirectory.h"
 
 using namespace DIRECTORY;
 

@@ -1,11 +1,9 @@
-
-#include "stdafx.h"
+#include "../stdafx.h"
 #include ".\osdmenu.h"
-#include "graphiccontext.h"
-#include "guifont.h"
 #include "guifontmanager.h"
-#include "../settings.h"
+
 using namespace OSD;
+
 COSDMenu::COSDMenu()
 {		
 	m_iCurrentSubMenu=0;

@@ -6,9 +6,7 @@
 
 #include "stdafx.h"
 #include ".\programdatabase.h"
-#include "settings.h"
 #include "utils/fstrcmp.h"
-#include "utils/log.h"
 #include "util.h"
 
 //********************************************************************************************************************************

@@ -1,9 +1,6 @@
 #pragma once
-#include "stdstring.h"
-#include "Thread.h"
-#include <vector>
 
-using namespace std;
+#include "Thread.h"
 
 class CUdpClient : CThread
 {

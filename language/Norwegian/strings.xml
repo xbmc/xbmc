@@ -1,4 +1,4 @@
-<!-- Based on English XML v1.174. Last updated by vnmartinsen  !-->
+<!-- Based on English XML v1.175. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -747,6 +747,11 @@
   <string><id>13374</id><value>- Port 3 tale</value></string>
   <string><id>13375</id><value>Aktiver enhet</value></string>
   <string><id>13376</id><value>Volum(%)</value></string>
+  <string><id>13377</id><value>Standard visningsmodus</value></string>
+  <string><id>13378</id><value>Standard lysstyrke</value></string>
+  <string><id>13379</id><value>Standard kontrast</value></string>
+  <string><id>13380</id><value>Standard gamma</value></string>
+  <string><id>13381</id><value>Fortsett avspilling</value></string>
 
   <string><id>14000</id><value>Stabling: Av</value></string>
   <string><id>14001</id><value>Stabling: Enkel</value></string>

@@ -8,10 +8,7 @@
 
 #pragma once
 
-#include "gui3d.h"
-#include "guiimage.h"
-#include "stdstring.h"
-using namespace std;
+#include "GUIImage.h"
 
 /*!
 	\ingroup controls

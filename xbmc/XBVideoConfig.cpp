@@ -1,5 +1,5 @@
+#include "stdafx.h"
 #include "XBVideoConfig.h"
-#include "utils/log.h"
 
 XBVideoConfig g_videoConfig;
 

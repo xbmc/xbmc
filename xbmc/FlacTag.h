@@ -1,7 +1,6 @@
 //------------------------------
 // CFlacTag in 2003 by JMarshall
 //------------------------------
-#include "FileSystem/file.h"
 #include "Oggtag.h"
 
 namespace MUSIC_INFO {

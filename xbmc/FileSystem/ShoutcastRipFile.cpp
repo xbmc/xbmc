@@ -1,12 +1,9 @@
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "ShoutcastRipFile.h"
-#include "../settings.h"
 #include "../util.h"
-#include "stdstring.h"
 #include "../MusicInfoTagLoaderMP3.h"
-#include "file.h"
-using namespace XFILE;
+
 	CShoutcastRipFile::CShoutcastRipFile()
 	{
 		m_recState.bRecording = false;

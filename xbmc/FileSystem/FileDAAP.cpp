@@ -18,13 +18,9 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "FileDAAP.h"
-#include "../sectionLoader.h"
 #include "../util.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <fcntl.h>
 #include <sys/stat.h>
 
 static UINT64 strtouint64(const char *s)

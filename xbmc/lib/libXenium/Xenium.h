@@ -3,7 +3,6 @@
 #define XENIUM_LCD_H
 
 #pragma once
-#include <xtl.h>
 
 class Xenium 
 {

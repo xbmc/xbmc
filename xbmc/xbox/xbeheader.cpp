@@ -1,7 +1,5 @@
 #include "../stdafx.h"
 #include "xbeheader.h"
-#include "../autoptrhandle.h"
-using namespace AUTOPTR;
 
 CXBE::CXBE()
 {

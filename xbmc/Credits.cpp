@@ -1,16 +1,12 @@
+#include "stdafx.h"
 #define _WCTYPE_INLINE_DEFINED
-#include <list>
-#include <map>
 #include <process.h>
-#include "GraphicContext.h"
 #include "GUIFontManager.h"
 #include "credits.h"
 #include "Application.h"
 #include "lib/mikxbox/mikmod.h"
 #include "lib/mikxbox/mikxbox.h"
-#include "SectionLoader.h"
 #include "credits_res.h"
-#include "utils/Log.h"
 #include "lib/liblzo/LZO1X.H"
 #include "SkinInfo.h"
 #include "util.h"

@@ -18,17 +18,14 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "DAAPDirectory.h"
-#include "../url.h"
 #include "../util.h"
-#include "../sectionloader.h"
 #include "directorycache.h"
 #include "../lib/libsmb/xbLibSmb.h"
 #include "../application.h"
 // using the smb library for UTF-8 conversion
 #include "../lib/libsmb/xbLibSmb.h"
-//#include "../utils/CharsetConverter.h"
 
 CDAAPDirectory::CDAAPDirectory(void)
 {

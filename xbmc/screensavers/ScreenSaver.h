@@ -8,11 +8,8 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
-#include <xtl.h>
+
 #include "../cores/DllLoader/dll.h"
-#include "stdstring.h"
-#include <memory>
-using namespace std;
 
 #ifdef __cplusplus
 extern "C" {

@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "SkinInfo.h"
-#include "../xbmc/utils/log.h"
-#include "../xbmc/util.h"
-#include "../xbmc/settings.h"
+#include "../xbmc/Util.h"
+#include "../xbmc/Settings.h"
 
 #define SKIN_MIN_VERSION 1.22
 

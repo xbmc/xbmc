@@ -1,6 +1,4 @@
 #pragma once
-#include "stdstring.h"
-#include "../GUIDialogprogress.h"
 
 class CDlgCache
 {

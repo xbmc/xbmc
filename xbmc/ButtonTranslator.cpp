@@ -1,9 +1,5 @@
-
 #include "stdafx.h"
 #include "ButtonTranslator.h"
-#include "XBIRRemote.h"
-#include "../guilib/Key.h"
-#include "utils/log.h"
 #include "util.h"
 
 CButtonTranslator g_buttonTranslator;
