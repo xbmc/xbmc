@@ -296,9 +296,16 @@ void CMusicDatabase::CheckVariousArtistsAndCoverArt()
 		CStdString strTempCoverArt;
 		CStdString strCoverArt;
 		CUtil::GetAlbumThumb(album.strAlbum+album.strPath, strTempCoverArt, true);
-		//	Was the thumb of this album read during scan?
+		//	Was the album art of this album read during scan?
 		if (CUtil::ThumbCached(strTempCoverArt))
 		{
+			//	Yes.
+			//	Copy as permanent directory thumb
+			CUtil::GetAlbumThumb(album.strPath, strCoverArt);
+			::CopyFile(strTempCoverArt, strCoverArt, false);
+
+			//	And move as permanent thumb for files and directory, where
+			//	album and path is known
 			CUtil::GetAlbumThumb(album.strAlbum+album.strPath, strCoverArt);
 			::MoveFileEx(strTempCoverArt, strCoverArt, MOVEFILE_REPLACE_EXISTING);
 		}

@@ -78,8 +78,7 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
 				if ( m_pAlbum->Load())
 				{
 					CStdString strThumb;
-					CStdString strImage=m_pAlbum->GetImageURL();
-					CUtil::GetThumbnail(strImage,strThumb);
+					CUtil::GetAlbumThumb(m_pAlbum->GetTitle()+m_pAlbum->GetAlbumPath(),strThumb);
 					DeleteFile(strThumb.c_str());
 				}
 				Refresh();
@@ -207,8 +206,10 @@ void CGUIWindowMusicInfo::Refresh()
 	CStdString strThumb;
 	CStdString strImage=m_pAlbum->GetImageURL();
 	CUtil::GetAlbumThumb(m_pAlbum->GetTitle()+m_pAlbum->GetAlbumPath(),strThumb);
-	if (!CUtil::ThumbExists(strThumb) )
+	if (!CUtil::FileExists(strThumb) )
 	{
+		//	Download image and save as 
+		//	permanent thumb
 		CHTTP http;
 		http.Download(strImage,strThumb);
 	}
@@ -221,6 +222,12 @@ void CGUIWindowMusicInfo::Refresh()
 		m_iTextureWidth=picture.GetWidth();
 		m_iTextureHeight=picture.GetWidth();
 		CUtil::ThumbCacheAdd(strThumb, true);
+
+		//	Also save a copy as directory thumb.
+		CStdString strFolderThumb;
+		CUtil::GetAlbumThumb(m_pAlbum->GetAlbumPath(),strFolderThumb);
+		::CopyFile( strThumb, strFolderThumb, false);
+		CUtil::ThumbCacheAdd(strFolderThumb, true);
 	}
 	Update();
 }
