@@ -238,7 +238,7 @@ bool CFileShoutcast::Open(const CURL& url, bool bBinary)
 			if (dlgProgress)
       {
         dlgProgress->SetLine(1, 257); 
-			  dlgProgress->SetLine(2,"Connection to server to slow...");
+			  dlgProgress->SetLine(2,"Connection to server too slow...");
 			  dlgProgress->Close();
       }
 			return false;
