@@ -23,7 +23,6 @@
 #undef HAVE_AV_CONFIG_H
 #endif
 
-#include "..\osdep\myhook.h"
 #include "avcodec.h"
 #include <dts.h>
 
