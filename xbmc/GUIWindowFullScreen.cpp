@@ -33,11 +33,12 @@ extern int m_iAudioStreamIDX;
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 :CGUIWindow(0)
 {
-	timestamp[0]=0;
-	ts_counter=0;
+	m_strTimeStamp[0]=0;
+	m_iTimeCodePosition=0;
 	m_bShowTime=false;
 	m_bShowInfo=false;
-	m_dwLastTime=0;
+	m_dwTimeStatusShowTime=0;
+	m_dwTimeCodeTimeout=0;
 	m_fFPS=0;
 	m_fFrameCounter=0.0f;
 	m_dwFPSTime=timeGetTime();
@@ -117,7 +118,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 		case ACTION_ASPECT_RATIO:
 		{
 			m_bShowStatus=true;
-			m_dwLastTime=timeGetTime();
+			m_dwTimeStatusShowTime=timeGetTime();
 			// zoom->stretch
 			if (g_stSettings.m_bZoom)
 			{
@@ -351,7 +352,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
   }
 	if (m_bShowStatus)
 	{
-		if ( (timeGetTime() - m_dwLastTime) >=5000)
+		if ( (timeGetTime() - m_dwTimeStatusShowTime) >=5000)
 		{
 			m_bShowStatus=false;
 			return;
@@ -443,21 +444,39 @@ void CGUIWindowFullScreen::RenderFullScreen()
 	  m_osdMenu.Draw();
     return;
   }
-    if (m_bShowTime && ts_counter != 0)
-  {
-	  bRenderGUI=true;
-	  char displaytime[12] = "??:??";
-	CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 
-	for(int count = 0; count < ts_counter; count++)
+    
+	if (m_bShowTime && m_iTimeCodePosition != 0)
 	{
-		if(timestamp[count] == -1)
-			displaytime[count] = ':';
+		if ( (timeGetTime() - m_dwTimeCodeTimeout) >=2500)
+		{
+			m_bShowTime=false;
+			m_iTimeCodePosition = 0;
+			return;
+		}
+	  bRenderGUI=true;
+	  char displaytime[16] = "??:??/??:??:??";
+		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 
+		for(int count = 0; count < m_iTimeCodePosition; count++)
+		{
+			if(m_strTimeStamp[count] == -1)
+				displaytime[count] = ':';
+			else
+				displaytime[count] = (char)m_strTimeStamp[count]+48;
+			}
+		unsigned int tmpvar = g_application.m_pPlayer->GetTime();
+		if(tmpvar != 0)
+		{
+			int ihour = tmpvar / 3600;
+			int imin  = (tmpvar-ihour*3600) / 60;
+			int isec = (tmpvar-ihour*3600) % 60;
+			sprintf(&displaytime[5], "/%2.2d:%2.2d:%2.2d\n", ihour,imin,isec);
+		}
 		else
-			displaytime[count] = (char)timestamp[count]+48;
-    }
-	msg.SetLabel(displaytime); 
+			sprintf(&displaytime[5], "/00:00:00\n");
+		msg.SetLabel(displaytime); 
     OnMessage(msg);
-  }		
+  }	
+
   if ( bRenderGUI)
   {
     if (m_bShowStatus||m_bShowInfo)
@@ -643,28 +662,27 @@ void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
 	if(remote >=58 && remote <= 67) //Make sure it's only for the remote
 	{
 		m_bShowTime = true;
+		m_dwTimeCodeTimeout=timeGetTime();
 		int	itime = remote - 58;
-			if(ts_counter <= 4 && ts_counter != 2)
-			{
-				timestamp[ts_counter++] = itime;
-				if(ts_counter == 2)
-					timestamp[ts_counter++] = -1;
-			}
-            if(ts_counter > 4)
-			{
-				long itotal,ih,im,is=0;                 
-				ih =  (timestamp[0]-0)*10;
-				ih += (timestamp[1]-0);   
-				im =  (timestamp[3]-0)*10;   
-				im += (timestamp[4]-0);   
-				im*=60;
-				ih*=3600; 
-				itotal = ih+im+is;
-				unsigned int temp = g_application.m_pPlayer->GetTime();
-
-        if((unsigned int)itotal < temp)
-					g_application.m_pPlayer->SeekTime(itotal);
-				ts_counter = 0;
-			}
+		if(m_iTimeCodePosition <= 4 && m_iTimeCodePosition != 2)
+		{
+			m_strTimeStamp[m_iTimeCodePosition++] = itime;
+			if(m_iTimeCodePosition == 2)
+				m_strTimeStamp[m_iTimeCodePosition++] = -1;
+		}
+    if(m_iTimeCodePosition > 4)
+		{
+			long itotal,ih,im,is=0;                 
+			ih =  (m_strTimeStamp[0]-0)*10;
+			ih += (m_strTimeStamp[1]-0);   
+			im =  (m_strTimeStamp[3]-0)*10;   
+			im += (m_strTimeStamp[4]-0);   
+			im*=60;
+			ih*=3600; 
+			itotal = ih+im+is;
+			if(itotal < g_application.m_pPlayer->GetTime())
+				g_application.m_pPlayer->SeekTime(itotal);
+			m_iTimeCodePosition = 0;
+		}
 	}
 }

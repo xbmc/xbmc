@@ -151,7 +151,7 @@ namespace PYXBMC
 		// get lines, last 3 lines are optional.
 		if (!PyArg_ParseTuple(args, "s|sss", &cLine[0], &cLine[1], &cLine[2], &cLine[3]))	return NULL;
 
-		CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(101);
+		CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
 		// convert char strings to wchar strings and set the header + line 1, 2 and 3 for dialog
 		mbsrtowcs(line, &cLine[0], 128, NULL);
@@ -179,7 +179,7 @@ namespace PYXBMC
 		int percentage = 0;
 		if (!PyArg_ParseTuple(args, "i", &percentage))	return NULL;
 
-		CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(101);
+		CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
 		g_graphicsContext.Lock();
 		if (percentage >= 0 && percentage <= 100)
@@ -200,7 +200,7 @@ namespace PYXBMC
 	PyObject* Dialog_ProgressIsCanceled(PyObject *self, PyObject *args)
 	{
 		bool canceled = false;
-		CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(101);
+		CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
 		g_graphicsContext.Lock();
 		canceled = pDialog->IsCanceled();
@@ -211,7 +211,7 @@ namespace PYXBMC
 
 	PyObject* Dialog_ProgressClose(PyObject *self, PyObject *args)
 	{
-		CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(101);
+		CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
 		g_graphicsContext.Lock();
 		pDialog->Close();

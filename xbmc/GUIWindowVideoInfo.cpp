@@ -191,29 +191,32 @@ void  CGUIWindowVideoInfo::Render()
 
   //OutputDebugString("render texture\n");
 	const CGUIControl* pControl=GetControl(CONTROL_IMAGE);
-	float x=(float)pControl->GetXPosition();
-	float y=(float)pControl->GetYPosition();
-	DWORD width=pControl->GetWidth();
-	DWORD height=pControl->GetHeight();
-	g_graphicsContext.Correct(x,y);
-
-  DWORD dwWidth=m_iTextureWidth;
-  DWORD dwHeight=m_iTextureHeight;
-  float fAspect= ((float)dwWidth) / ((float)dwHeight);
-  if (dwWidth > width )
+  if (pControl)
   {
-    dwWidth  = width;
-    dwHeight = (DWORD)( ( (float)height) / fAspect);
-  }
+	  float x=(float)pControl->GetXPosition();
+	  float y=(float)pControl->GetYPosition();
+	  DWORD width=pControl->GetWidth();
+	  DWORD height=pControl->GetHeight();
+	  g_graphicsContext.Correct(x,y);
 
-  if (dwHeight > height )
-  {
-    dwHeight = height;
-    dwWidth  = (DWORD)(  fAspect * ( (float)height) );
+    DWORD dwWidth=m_iTextureWidth;
+    DWORD dwHeight=m_iTextureHeight;
+    float fAspect= ((float)dwWidth) / ((float)dwHeight);
+    if (dwWidth > width )
+    {
+      dwWidth  = width;
+      dwHeight = (DWORD)( ( (float)height) / fAspect);
+    }
+
+    if (dwHeight > height )
+    {
+      dwHeight = height;
+      dwWidth  = (DWORD)(  fAspect * ( (float)height) );
+    }
+  	
+	  CPicture picture;
+	  picture.RenderImage(m_pTexture,(int)x,(int)y,dwWidth,dwHeight,m_iTextureWidth,m_iTextureHeight);
   }
-	
-	CPicture picture;
-	picture.RenderImage(m_pTexture,(int)x,(int)y,dwWidth,dwHeight,m_iTextureWidth,m_iTextureHeight);
 }
 
 

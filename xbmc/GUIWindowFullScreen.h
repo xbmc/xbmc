@@ -10,8 +10,6 @@ class CGUIWindowFullScreen :
   public IExecutor
 {
 public:
-	int timestamp[5];
-	int ts_counter;
   CGUIWindowFullScreen(void);
   virtual ~CGUIWindowFullScreen(void);
   virtual bool    OnMessage(CGUIMessage& message);
@@ -20,17 +18,17 @@ public:
 	void				    RenderFullScreen();
   bool            NeedRenderFullScreen();
   bool            OSDVisible() const;
-  void  ChangetheTimeCode(DWORD remote);
-  
-   virtual void   OnExecute(int iAction, const IOSDOption* option);
+  void						ChangetheTimeCode(DWORD remote);  
+  virtual void    OnExecute(int iAction, const IOSDOption* option);
 private:
   void            ShowOSD();
   void            HideOSD();
 
-    bool						m_bShowTime;
+  bool						m_bShowTime;
 	bool						m_bShowInfo;
 	bool						m_bShowStatus;
-	DWORD						m_dwLastTime;
+	DWORD						m_dwTimeStatusShowTime;
+	DWORD						m_dwTimeCodeTimeout;
 	DWORD						m_dwFPSTime;
 	float						m_fFrameCounter;
 	FLOAT						m_fFPS;
@@ -38,4 +36,6 @@ private:
   bool            m_bOSDVisible;
   CCriticalSection m_section;
   bool            m_bLastRender;
+	int							m_strTimeStamp[5];
+	int							m_iTimeCodePosition;
 };

@@ -166,6 +166,7 @@ void CApplicationMessenger::ProcessWindowMessages()
 				case TMSG_DIALOG_DOMODAL: //doModel of window
 				{
 					CGUIDialog* pDialog = (CGUIDialog*)m_gWindowManager.GetWindow(pMsg->dwParam1);
+          if (!pDialog) return;
 					pDialog->DoModal(pMsg->dwParam2);
 				}
 				break;
@@ -175,7 +176,8 @@ void CApplicationMessenger::ProcessWindowMessages()
 					//send message to window 2004 (CGUIWindowScriptsInfo)
 					CGUIMessage msg(GUI_MSG_USER, 0, 0);
 					msg.SetLabel(pMsg->strParam);
-					m_gWindowManager.GetWindow(2004)->OnMessage(msg);
+					CGUIWindow* pWindowScripts=m_gWindowManager.GetWindow(WINDOW_SCRIPTS_INFO);
+          if (pWindowScripts) pWindowScripts->OnMessage(msg);
 				}
 				break;
 			}

@@ -33,10 +33,13 @@ bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 //		cddb.setCDDBIpAdress(g_stSettings.m_szCDDBIpAdres);
 		cddb.setCacheDir(strDir);
 		bool b_cddb_names_ok(false);
-		CGUIDialogProgress* pDialogProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(101);
-		CGUIDialogOK* pDialogOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(2002);
-		CGUIDialogSelect *pDlgSelect= (CGUIDialogSelect*)m_gWindowManager.GetWindow(2000);
+		CGUIDialogProgress* pDialogProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+		CGUIDialogOK* pDialogOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+		CGUIDialogSelect *pDlgSelect= (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
 
+    if (!pDialogProgress) return false;
+    if (!pDialogOK) return false;
+    if (!pDlgSelect) return false;
 		int nTracks = CDetectDVDMedia::GetCdInfo()->GetTrackCount();
 		CCdInfo* pCdInfo = CDetectDVDMedia::GetCdInfo();
 		if ( nTracks > 0)

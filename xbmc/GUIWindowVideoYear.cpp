@@ -3,7 +3,7 @@
 //  - if movie does not exists when play movie is called then show dialog asking to insert the correct CD
 //  - show if movie has subs
 
-#include "guiwindowVideoGenre.h"
+#include "GUIWindowVideoYear.h"
 #include "settings.h"
 #include "guiWindowManager.h"
 #include "localizestrings.h"
@@ -25,16 +25,16 @@
 #define CONTROL_BTNVIEWASICONS		 2
 #define CONTROL_BTNSORTBY					 3
 #define CONTROL_BTNSORTASC				 4
-#define CONTROL_ACTORS             5
+#define CONTROL_MOVIES             5
 #define CONTROL_PLAY_DVD           6
 #define CONTROL_STACK              7
 #define CONTROL_LIST							10
 #define CONTROL_THUMBS						11
 #define CONTROL_LABELFILES        12
-#define LABEL_GENRE              100
+#define LABEL_YEAR              100
 
 //****************************************************************************************************************************
-struct SSortVideoGenreByName
+struct SSortVideoYearByName
 {
 	bool operator()(CFileItem* pStart, CFileItem* pEnd)
 	{
@@ -43,13 +43,13 @@ struct SSortVideoGenreByName
 		if (rpStart.GetLabel()=="..") return true;
 		if (rpEnd.GetLabel()=="..") return false;
 		bool bGreater=true;
-		if (g_stSettings.m_bMyVideoGenreSortAscending) bGreater=false;
+		if (g_stSettings.m_bMyVideoYearSortAscending) bGreater=false;
     if ( rpStart.m_bIsFolder   == rpEnd.m_bIsFolder)
 		{
 			char szfilename1[1024];
 			char szfilename2[1024];
 
-			switch ( g_stSettings.m_iMyVideoGenreSortMethod ) 
+			switch ( g_stSettings.m_iMyVideoYearSortMethod ) 
 			{
 				case 0:	//	Sort by Filename
 					strcpy(szfilename1, rpStart.GetLabel().c_str());
@@ -96,7 +96,7 @@ struct SSortVideoGenreByName
 				szfilename2[i]=tolower((unsigned char)szfilename2[i]);
 			//return (rpStart.strPath.compare( rpEnd.strPath )<0);
 
-			if (g_stSettings.m_bMyVideoGenreSortAscending)
+			if (g_stSettings.m_bMyVideoYearSortAscending)
 				return (strcmp(szfilename1,szfilename2)<0);
 			else
 				return (strcmp(szfilename1,szfilename2)>=0);
@@ -107,19 +107,19 @@ struct SSortVideoGenreByName
 };
 
 //****************************************************************************************************************************
-CGUIWindowVideoGenre::CGUIWindowVideoGenre()
+CGUIWindowVideoYear::CGUIWindowVideoYear()
 {
 	m_strDirectory="";
   m_iItemSelected=-1;
 }
 
 //****************************************************************************************************************************
-CGUIWindowVideoGenre::~CGUIWindowVideoGenre()
+CGUIWindowVideoYear::~CGUIWindowVideoYear()
 {
 }
 
 //****************************************************************************************************************************
-void CGUIWindowVideoGenre::OnAction(const CAction &action)
+void CGUIWindowVideoYear::OnAction(const CAction &action)
 {
   	if (action.wID == ACTION_PARENT_DIR)
 	{
@@ -136,7 +136,7 @@ void CGUIWindowVideoGenre::OnAction(const CAction &action)
 }
 
 //****************************************************************************************************************************
-bool CGUIWindowVideoGenre::OnMessage(CGUIMessage& message)
+bool CGUIWindowVideoYear::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
@@ -198,24 +198,24 @@ bool CGUIWindowVideoGenre::OnMessage(CGUIMessage& message)
       if (iControl==CONTROL_BTNVIEWASICONS)
       {
 		  if ( m_strDirectory.IsEmpty() )
-		    g_stSettings.m_bMyVideoGenreRootViewAsIcons=!g_stSettings.m_bMyVideoGenreRootViewAsIcons;
+		    g_stSettings.m_bMyVideoYearRootViewAsIcons=!g_stSettings.m_bMyVideoYearRootViewAsIcons;
 		  else
-		    g_stSettings.m_bMyVideoGenreViewAsIcons=!g_stSettings.m_bMyVideoGenreViewAsIcons;
+		    g_stSettings.m_bMyVideoYearViewAsIcons=!g_stSettings.m_bMyVideoYearViewAsIcons;
 
 				g_settings.Save();
         UpdateButtons();
       }
       else if (iControl==CONTROL_BTNSORTBY) // sort by
       {
-        g_stSettings.m_iMyVideoGenreSortMethod++;
-        if (g_stSettings.m_iMyVideoGenreSortMethod>=3) g_stSettings.m_iMyVideoGenreSortMethod=0;
+        g_stSettings.m_iMyVideoYearSortMethod++;
+        if (g_stSettings.m_iMyVideoYearSortMethod>=3) g_stSettings.m_iMyVideoYearSortMethod=0;
 				g_settings.Save();
         UpdateButtons();
         OnSort();
       }
       else if (iControl==CONTROL_BTNSORTASC) // sort asc
       {
-        g_stSettings.m_bMyVideoGenreSortAscending=!g_stSettings.m_bMyVideoGenreSortAscending;
+        g_stSettings.m_bMyVideoYearSortAscending=!g_stSettings.m_bMyVideoYearSortAscending;
 				g_settings.Save();
         UpdateButtons();
         OnSort();
@@ -247,9 +247,9 @@ bool CGUIWindowVideoGenre::OnMessage(CGUIMessage& message)
 					OnClick(iItem);
 				}
       }
-      else if (iControl==CONTROL_ACTORS)
+      else if (iControl==CONTROL_MOVIES)
       {
-        m_gWindowManager.ActivateWindow(WINDOW_VIDEO_ACTOR);
+        m_gWindowManager.ActivateWindow(WINDOW_VIDEOS);
         return true;
       }
     }
@@ -258,17 +258,17 @@ bool CGUIWindowVideoGenre::OnMessage(CGUIMessage& message)
 }
 
 //****************************************************************************************************************************
-void CGUIWindowVideoGenre::UpdateButtons()
+void CGUIWindowVideoYear::UpdateButtons()
 {
 
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
 	bool bViewIcon = false;
 	if ( m_strDirectory.IsEmpty() ) {
-		bViewIcon = g_stSettings.m_bMyVideoGenreRootViewAsIcons;
+		bViewIcon = g_stSettings.m_bMyVideoYearRootViewAsIcons;
 	}
 	else {
-		bViewIcon = g_stSettings.m_bMyVideoGenreViewAsIcons;
+		bViewIcon = g_stSettings.m_bMyVideoYearViewAsIcons;
 	}
    if (bViewIcon) 
     {
@@ -285,9 +285,9 @@ void CGUIWindowVideoGenre::UpdateButtons()
       iString=100;
     }
 		SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
-		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyVideoGenreSortMethod+103);
+		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyVideoYearSortMethod+103);
 
-    if ( g_stSettings.m_bMyVideoGenreSortAscending)
+    if ( g_stSettings.m_bMyVideoYearSortAscending)
     {
       CGUIMessage msg(GUI_MSG_DESELECTED,GetID(), CONTROL_BTNSORTASC);
       g_graphicsContext.SendMessage(msg);
@@ -312,13 +312,13 @@ void CGUIWindowVideoGenre::UpdateButtons()
 }
 
 //****************************************************************************************************************************
-void CGUIWindowVideoGenre::Clear()
+void CGUIWindowVideoYear::Clear()
 {
 	CFileItemList itemlist(m_vecItems); // will clean up everything
 }
 
 //****************************************************************************************************************************
-void CGUIWindowVideoGenre::OnSort()
+void CGUIWindowVideoYear::OnSort()
 {
  CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_LIST,0,0,NULL);
   g_graphicsContext.SendMessage(msg);         
@@ -332,7 +332,7 @@ void CGUIWindowVideoGenre::OnSort()
   for (int i=0; i < (int)m_vecItems.size(); i++)
   {
     CFileItem* pItem=m_vecItems[i];
-    if (g_stSettings.m_iMyVideoGenreSortMethod==0||g_stSettings.m_iMyVideoGenreSortMethod==2)
+    if (g_stSettings.m_iMyVideoYearSortMethod==0||g_stSettings.m_iMyVideoYearSortMethod==2)
     {
 			if (pItem->m_bIsFolder) pItem->SetLabel2("");
       else 
@@ -356,7 +356,7 @@ void CGUIWindowVideoGenre::OnSort()
   }
 
   
-  sort(m_vecItems.begin(), m_vecItems.end(), SSortVideoGenreByName());
+  sort(m_vecItems.begin(), m_vecItems.end(), SSortVideoYearByName());
 
   for (int i=0; i < (int)m_vecItems.size(); i++)
   {
@@ -369,7 +369,7 @@ void CGUIWindowVideoGenre::OnSort()
 }
 
 //****************************************************************************************************************************
-void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
+void CGUIWindowVideoYear::Update(const CStdString &strDirectory)
 {
   // get selected item
 	int iItem=GetSelectedItem();
@@ -387,17 +387,17 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
   m_strDirectory=strDirectory;
   if (m_strDirectory=="")
   {
-    VECMOVIEGENRES genres;
-    m_database.GetGenres( genres);
-    for (int i=0; i < (int)genres.size(); ++i)
+    VECMOVIEYEARS years;
+    m_database.GetYears( years);
+    for (int i=0; i < (int)years.size(); ++i)
     {
-			CFileItem *pItem = new CFileItem(genres[i]);
-			pItem->m_strPath=genres[i];
+			CFileItem *pItem = new CFileItem(years[i]);
+			pItem->m_strPath=years[i];
 			pItem->m_bIsFolder=true;
       pItem->m_bIsShareOrDrive=false;
 			m_vecItems.push_back(pItem);
     }
-    SET_CONTROL_LABEL(GetID(), LABEL_GENRE,"");
+    SET_CONTROL_LABEL(GetID(), LABEL_YEAR,"");
   }
   else
   {
@@ -408,7 +408,7 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
 			m_vecItems.push_back(pItem);
 
       VECMOVIES movies;
-      m_database.GetMoviesByGenre(m_strDirectory, movies);
+      m_database.GetMoviesByYear(m_strDirectory, movies);
       for (int i=0; i < (int)movies.size(); ++i)
       {
         CIMDBMovie movie=movies[i];
@@ -426,20 +426,20 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
 
 			  m_vecItems.push_back(pItem);
       }
-      SET_CONTROL_LABEL(GetID(), LABEL_GENRE,m_strDirectory);
+      SET_CONTROL_LABEL(GetID(), LABEL_YEAR,m_strDirectory);
   }
 	CUtil::SetThumbs(m_vecItems);
   SetIMDBThumbs(m_vecItems);
 	CUtil::FillInDefaultIcons(m_vecItems);
   OnSort();
   UpdateButtons();
-
   strSelectedItem=m_history.Get(m_strDirectory);	
+
   bool bViewAsIcon = false;
 	if ( m_strDirectory.IsEmpty() )
-		bViewAsIcon = g_stSettings.m_bMyVideoGenreRootViewAsIcons;
+		bViewAsIcon = g_stSettings.m_bMyVideoYearRootViewAsIcons;
 	else
-		bViewAsIcon = g_stSettings.m_bMyVideoGenreViewAsIcons;
+		bViewAsIcon = g_stSettings.m_bMyVideoYearViewAsIcons;
 
 	if ( bViewAsIcon ) {	
 		SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS);
@@ -447,7 +447,6 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
 	else {
 		SET_CONTROL_FOCUS(GetID(), CONTROL_LIST);
 	}
-
   for (int i=0; i < (int)m_vecItems.size(); ++i)
 	{
 		CFileItem* pItem=m_vecItems[i];
@@ -461,13 +460,13 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
 }
 
 //****************************************************************************************************************************
-void CGUIWindowVideoGenre::Render()
+void CGUIWindowVideoYear::Render()
 {
 	CGUIWindow::Render();
 }
 
 //****************************************************************************************************************************
-void CGUIWindowVideoGenre::OnClick(int iItem)
+void CGUIWindowVideoYear::OnClick(int iItem)
 {
   CFileItem* pItem=m_vecItems[iItem];
   CStdString strPath=pItem->m_strPath;
@@ -495,12 +494,12 @@ void CGUIWindowVideoGenre::OnClick(int iItem)
     if (movies.size() >1)
     {
       CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
-      if (dlg)
+		  if (dlg)
       {
-		    dlg->SetNumberOfFiles(movies.size());
+        dlg->SetNumberOfFiles(movies.size());
 		    dlg->DoModal(GetID());
+		    iSelectedFile = dlg->GetSelectedFile();
       }
-		  iSelectedFile = dlg->GetSelectedFile();
       if (iSelectedFile < 1) return;
     }
 		CStdString strFileName=movies[iSelectedFile-1];
@@ -515,7 +514,7 @@ void CGUIWindowVideoGenre::OnClick(int iItem)
 	}
 }
 
-void CGUIWindowVideoGenre::OnInfo(int iItem)
+void CGUIWindowVideoYear::OnInfo(int iItem)
 {
   CFileItem* pItem=m_vecItems[iItem];
   if (pItem->m_bIsFolder) return;
@@ -528,15 +527,16 @@ void CGUIWindowVideoGenre::OnInfo(int iItem)
   ShowIMDB(strFile,strFilePath, "" ,false);
 }
 
-int CGUIWindowVideoGenre::GetSelectedItem()
+
+int CGUIWindowVideoYear::GetSelectedItem()
 {
 	int iControl;
 	bool bViewIcon = false;
 	if ( m_strDirectory.IsEmpty() ) {
-		bViewIcon = g_stSettings.m_bMyVideoGenreRootViewAsIcons;
+		bViewIcon = g_stSettings.m_bMyVideoYearRootViewAsIcons;
 	}
 	else {
-		bViewIcon = g_stSettings.m_bMyVideoGenreViewAsIcons;
+		bViewIcon = g_stSettings.m_bMyVideoYearViewAsIcons;
 	}
 	if ( bViewIcon) 
 	{
@@ -550,7 +550,6 @@ int CGUIWindowVideoGenre::GetSelectedItem()
   int iItem=msg.GetParam1();
 	return iItem;
 }
-
-void CGUIWindowVideoGenre::SetIMDBThumbs(VECFILEITEMS& items)
+void CGUIWindowVideoYear::SetIMDBThumbs(VECFILEITEMS& items)
 {
 }

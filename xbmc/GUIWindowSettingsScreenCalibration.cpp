@@ -255,14 +255,17 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
 			}
 			// disable the UI calibration for our controls...
 			CGUIImage *pControl=(CGUIImage*)GetControl(CONTROL_BOTTOM_RIGHT);
-			pControl->EnableCalibration(false);
-			pControl=(CGUIImage*)GetControl(CONTROL_TOP_LEFT);
-			pControl->EnableCalibration(false);
-			pControl=(CGUIImage*)GetControl(CONTROL_SUBTITLES);
-			pControl->EnableCalibration(false);
-			pControl=(CGUIImage*)GetControl(CONTROL_PIXEL_RATIO);
-			pControl->EnableCalibration(false);
-			m_fPixelRatioBoxHeight=(float)pControl->GetHeight();
+      if (pControl)
+      {
+			  pControl->EnableCalibration(false);
+			  pControl=(CGUIImage*)GetControl(CONTROL_TOP_LEFT);
+			  pControl->EnableCalibration(false);
+			  pControl=(CGUIImage*)GetControl(CONTROL_SUBTITLES);
+			  pControl->EnableCalibration(false);
+			  pControl=(CGUIImage*)GetControl(CONTROL_PIXEL_RATIO);
+			  pControl->EnableCalibration(false);
+			  m_fPixelRatioBoxHeight=(float)pControl->GetHeight();
+      }
 			return true;
 		}
 		break;
@@ -274,13 +277,18 @@ void CGUIWindowSettingsScreenCalibration::Render()
 {
 	// hide all our controls
 	CGUIImage* pControl=(CGUIImage*)GetControl(CONTROL_BOTTOM_RIGHT);
-	pControl->SetVisible(false);
+  if (pControl)
+	  pControl->SetVisible(false);
 	pControl=(CGUIImage*)GetControl(CONTROL_SUBTITLES);
-	pControl->SetVisible(false);
+  if (pControl)
+	  pControl->SetVisible(false);
 	pControl=(CGUIImage*)GetControl(CONTROL_TOP_LEFT);
-	pControl->SetVisible(false);
+  if (pControl)
+	  pControl->SetVisible(false);
 	pControl=(CGUIImage*)GetControl(CONTROL_PIXEL_RATIO);
-	pControl->SetVisible(false);
+  if (pControl)
+	  pControl->SetVisible(false);
+  
 	int iXOff,iYOff;
 	CStdString strStatus;
 	switch (m_iControl)
@@ -290,8 +298,11 @@ void CGUIWindowSettingsScreenCalibration::Render()
 			iXOff = g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.left;
 			iYOff = g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.top;
 			pControl=(CGUIImage*)GetControl(CONTROL_TOP_LEFT);
-			pControl->SetVisible(true);
-			pControl->SetPosition(iXOff, iYOff);
+      if (pControl)
+      {
+			  pControl->SetVisible(true);
+			  pControl->SetPosition(iXOff, iYOff);
+      }
 			CStdString strMode;
 			CUtil::Unicode2Ansi(g_localizeStrings.Get(272).c_str(),strMode);
 			strStatus.Format("%s (%i,%i)",strMode,iXOff,iYOff);
@@ -305,16 +316,19 @@ void CGUIWindowSettingsScreenCalibration::Render()
 			iXOff += g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.width;
 			iYOff += g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.height;
 			pControl=(CGUIImage*)GetControl(CONTROL_BOTTOM_RIGHT);
-			pControl->SetVisible(true);
-			int iTextureWidth = pControl->GetTextureWidth();
-			int iTextureHeight = pControl->GetTextureHeight();
-			pControl->SetPosition(iXOff-iTextureWidth,iYOff-iTextureHeight);
-			int iXOff1 = g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth - iXOff;
-			int iYOff1 = g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight - iYOff;
-			CStdString strMode;
-			CUtil::Unicode2Ansi(g_localizeStrings.Get(273).c_str(),strMode);
-			strStatus.Format("%s (%i,%i)",strMode,iXOff1,iYOff1);
-			SET_CONTROL_LABEL(GetID(), CONTROL_LABEL_ROW2,	276);
+			if (pControl) 
+      {
+        pControl->SetVisible(true);
+			  int iTextureWidth = pControl->GetTextureWidth();
+			  int iTextureHeight = pControl->GetTextureHeight();
+			  pControl->SetPosition(iXOff-iTextureWidth,iYOff-iTextureHeight);
+			  int iXOff1 = g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth - iXOff;
+			  int iYOff1 = g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight - iYOff;
+			  CStdString strMode;
+			  CUtil::Unicode2Ansi(g_localizeStrings.Get(273).c_str(),strMode);
+			  strStatus.Format("%s (%i,%i)",strMode,iXOff1,iYOff1);
+			  SET_CONTROL_LABEL(GetID(), CONTROL_LABEL_ROW2,	276);
+      }
 		}
 		break;
 		case CONTROL_SUBTITLES:
@@ -325,35 +339,41 @@ void CGUIWindowSettingsScreenCalibration::Render()
 			int iScreenWidth = g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.width;
 
 			pControl=(CGUIImage*)GetControl(CONTROL_SUBTITLES);
-			pControl->SetVisible(true);
-			int iTextureWidth = pControl->GetTextureWidth();
-			int iTextureHeight = pControl->GetTextureHeight();
+			if (pControl) 
+      {
+        pControl->SetVisible(true);
+			  int iTextureWidth = pControl->GetTextureWidth();
+			  int iTextureHeight = pControl->GetTextureHeight();
 
-			pControl->SetPosition(iXOff+(iScreenWidth-iTextureWidth)/2, iYOff-iTextureHeight);
-			CStdString strMode;
-			CUtil::Unicode2Ansi(g_localizeStrings.Get(274).c_str(),strMode);
-			strStatus.Format("%s (%i)",strMode,iYOff);
-			SET_CONTROL_LABEL(GetID(), CONTROL_LABEL_ROW2,	277);
+			  pControl->SetPosition(iXOff+(iScreenWidth-iTextureWidth)/2, iYOff-iTextureHeight);
+			  CStdString strMode;
+			  CUtil::Unicode2Ansi(g_localizeStrings.Get(274).c_str(),strMode);
+			  strStatus.Format("%s (%i)",strMode,iYOff);
+			  SET_CONTROL_LABEL(GetID(), CONTROL_LABEL_ROW2,	277);
+      }
 		}
 		break;
 		case CONTROL_PIXEL_RATIO:
 		{
 			float fSqrtRatio = sqrt(g_settings.m_ResInfo[m_Res[m_iCurRes]].fPixelRatio);
 			pControl=(CGUIImage*)GetControl(CONTROL_PIXEL_RATIO);
-			pControl->SetVisible(true);
-			int iControlHeight = (int)(m_fPixelRatioBoxHeight*fSqrtRatio);
-			int iControlWidth = (int)(m_fPixelRatioBoxHeight / fSqrtRatio);
-			pControl->SetWidth(iControlWidth);
-			pControl->SetHeight(iControlHeight);
-			iXOff = g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.left;
-			iYOff = g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.top;
-			int iScreenWidth = g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.width;
-			int iScreenHeight = g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.height;
-			pControl->SetPosition(iXOff + (iScreenWidth-iControlWidth)/2,iYOff + (iScreenHeight-iControlHeight)/2);
-			CStdString strMode;
-			CUtil::Unicode2Ansi(g_localizeStrings.Get(275).c_str(),strMode);
-			strStatus.Format("%s (%5.3f)",strMode,g_settings.m_ResInfo[m_Res[m_iCurRes]].fPixelRatio);
-			SET_CONTROL_LABEL(GetID(), CONTROL_LABEL_ROW2,	278);
+			if (pControl) 
+      {
+        pControl->SetVisible(true);
+			  int iControlHeight = (int)(m_fPixelRatioBoxHeight*fSqrtRatio);
+			  int iControlWidth = (int)(m_fPixelRatioBoxHeight / fSqrtRatio);
+			  pControl->SetWidth(iControlWidth);
+			  pControl->SetHeight(iControlHeight);
+			  iXOff = g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.left;
+			  iYOff = g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.top;
+			  int iScreenWidth = g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.width;
+			  int iScreenHeight = g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.height;
+			  pControl->SetPosition(iXOff + (iScreenWidth-iControlWidth)/2,iYOff + (iScreenHeight-iControlHeight)/2);
+			  CStdString strMode;
+			  CUtil::Unicode2Ansi(g_localizeStrings.Get(275).c_str(),strMode);
+			  strStatus.Format("%s (%5.3f)",strMode,g_settings.m_ResInfo[m_Res[m_iCurRes]].fPixelRatio);
+			  SET_CONTROL_LABEL(GetID(), CONTROL_LABEL_ROW2,	278);
+      }
 		}
 		break;
 	}

@@ -149,7 +149,7 @@ bool CFileShoutcast::Open(const char* strUserName, const char* strPassword,const
 								OPT_SEARCH_PORTS |
 								OPT_ADD_ID3;
 
-	CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(101);
+	CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
 	strcpy(m_opt.output_directory, "./");
 	m_opt.proxyurl[0] = (char)NULL;
@@ -164,16 +164,19 @@ bool CFileShoutcast::Open(const char* strUserName, const char* strPassword,const
 	}
 	strncpy(m_opt.url, szURL, MAX_URL_LEN);
 	sprintf(m_opt.useragent, "x%s",strFileName);
-	dlgProgress->SetHeading(260);
-	dlgProgress->SetLine(0,259);
-	dlgProgress->SetLine(1,szURL);
-	dlgProgress->SetLine(2,"");
-	dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
-	dlgProgress->Progress();
+	if (dlgProgress)
+  {
+    dlgProgress->SetHeading(260);
+	  dlgProgress->SetLine(0,259);
+	  dlgProgress->SetLine(1,szURL);
+	  dlgProgress->SetLine(2,"");
+	  dlgProgress->StartModal(m_gWindowManager.GetActiveWindow());
+	  dlgProgress->Progress();
+  }
 	
 	if ((ret = rip_manager_start(rip_callback, &m_opt)) != SR_SUCCESS)
 	{
-		dlgProgress->Close();
+		if (dlgProgress) dlgProgress->Close();
 		return false;
 	}
 	int iShoutcastTimeout = 10 * SHOUTCASTTIMEOUT; //i.e: 10 * 10 = 100 * 100ms = 10s
@@ -188,10 +191,13 @@ bool CFileShoutcast::Open(const char* strUserName, const char* strPassword,const
 		}
 		else
 		{
-			dlgProgress->SetLine(1, 257); 
-			dlgProgress->SetLine(2,"Connection timed out...");
-			Sleep(1500);
-			dlgProgress->Close();
+			if (dlgProgress)
+      {
+        dlgProgress->SetLine(1, 257); 
+			  dlgProgress->SetLine(2,"Connection timed out...");
+			  Sleep(1500);
+			  dlgProgress->Close();
+      }
 			return false;
 		}
 		iCount++;
@@ -209,15 +215,21 @@ bool CFileShoutcast::Open(const char* strUserName, const char* strPassword,const
 			char szTmp[1024];
 			//g_dialog.SetCaption(0, "Shoutcast" );
 			sprintf(szTmp,"Buffering %i bytes", m_ringbuf.GetMaxReadSize());
-			dlgProgress->SetLine(2,szTmp );
-			dlgProgress->Progress();
+			if (dlgProgress)
+      {
+        dlgProgress->SetLine(2,szTmp );
+			  dlgProgress->Progress();
+      }
 			
 			sprintf(szTmp,"%s",m_ripInfo.filename);
 			for (int i=0; i < (int)strlen(szTmp); i++)
 				szTmp[i]=tolower((unsigned char)szTmp[i]);
 			szTmp[50]=0;
-			dlgProgress->SetLine(1,szTmp );
-			dlgProgress->Progress();
+			if (dlgProgress) 
+      {
+        dlgProgress->SetLine(1,szTmp );
+			  dlgProgress->Progress();
+      }
 		}
 		else //it's not really a connection timeout, but it's here, 
 				 //where things get boring, if connection is slow.
@@ -225,26 +237,35 @@ bool CFileShoutcast::Open(const char* strUserName, const char* strPassword,const
 				 //but if it does it sucks to wait here forever.
 				 //CHANGED: Other message here
 		{
-			dlgProgress->SetLine(1, 257); 
-			dlgProgress->SetLine(2,"Connection to server to slow...");
-			dlgProgress->Close();
+			if (dlgProgress)
+      {
+        dlgProgress->SetLine(1, 257); 
+			  dlgProgress->SetLine(2,"Connection to server to slow...");
+			  dlgProgress->Close();
+      }
 			return false;
 		}
 		iCount++;
 	}
 	if ( m_fileState.bRipError )
 	{
-		dlgProgress->SetLine(1,255);
-		dlgProgress->SetLine(2,m_errorInfo.error_str);
-		dlgProgress->Progress();
+    if (dlgProgress)
+    {
+		  dlgProgress->SetLine(1,255);
+		  dlgProgress->SetLine(2,m_errorInfo.error_str);
+		  dlgProgress->Progress();
 
-		Sleep(1500);
-		dlgProgress->Close();
+		  Sleep(1500);
+		  dlgProgress->Close();
+    }
 		return false;
 	}
-	dlgProgress->SetLine(2,261);
-	dlgProgress->Progress();
-	dlgProgress->Close();
+	if (dlgProgress)
+  {
+    dlgProgress->SetLine(2,261);
+	  dlgProgress->Progress();
+	  dlgProgress->Close();
+  }
 	return true;
 }
 

@@ -221,9 +221,12 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
         {
           CGUIControl* pControl= *i;
 
-          if ( message.GetControlId() == pControl->GetID() )
+          if (pControl)
           {
-            pControl->OnMessage(message);
+            if ( message.GetControlId() == pControl->GetID() )
+            {
+              pControl->OnMessage(message);
+            }
           }
         }
       }
@@ -236,9 +239,12 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
   for (i=m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
     CGUIControl* pControl= *i;
-    if ( message.GetControlId() == pControl->GetID() )
+    if (pControl)
     {
-      return pControl->OnMessage(message);
+      if ( message.GetControlId() == pControl->GetID() )
+      {
+        return pControl->OnMessage(message);
+      }
     }
   }
   return false;
