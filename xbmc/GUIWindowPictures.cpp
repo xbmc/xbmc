@@ -26,6 +26,7 @@
 #define CONTROL_BTNSLIDESHOW_RECURSIVE			7
 
 #define CONTROL_BTNCREATETHUMBS		8
+#define CONTROL_SHUFFLE						9
 #define CONTROL_LIST							10
 #define CONTROL_THUMBS						11
 #define CONTROL_LABELFILES         12
@@ -219,6 +220,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 			  CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_iItemSelected)
 			  CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_iItemSelected)
       }
+
 			return true;
 		}
     break;
@@ -288,7 +290,12 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       {
 				OnCreateThumbs();
       }
-      else if (iControl==CONTROL_LIST||iControl==CONTROL_THUMBS)  // list/thumb control
+			else if (iControl==CONTROL_SHUFFLE)
+			{
+				g_stSettings.m_bSlideShowShuffle = !g_stSettings.m_bSlideShowShuffle;
+				g_settings.Save();
+			}
+			else if (iControl==CONTROL_LIST||iControl==CONTROL_THUMBS)  // list/thumb control
       {
          // get selected item
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
@@ -436,56 +443,67 @@ void CGUIWindowPictures::UpdateButtons()
     SET_CONTROL_VISIBLE(GetID(), CONTROL_LIST);
   }
 
-    ShowThumbPanel();
-		SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
+	if (g_stSettings.m_bSlideShowShuffle)
+	{
+		CGUIMessage msg2(GUI_MSG_SELECTED,GetID(),CONTROL_SHUFFLE,0,0,NULL);
+		g_graphicsContext.SendMessage(msg2);  
+	}
+	else
+	{
+		CGUIMessage msg2(GUI_MSG_DESELECTED,GetID(),CONTROL_SHUFFLE,0,0,NULL);
+		g_graphicsContext.SendMessage(msg2);  
+	}
 
-		//	Update sort by button
-		if (m_strDirectory.IsEmpty())
+  ShowThumbPanel();
+	SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
+
+	//	Update sort by button
+	if (m_strDirectory.IsEmpty())
+	{
+		if (g_stSettings.m_iMyPicturesRootSortMethod==0)
 		{
-			if (g_stSettings.m_iMyPicturesRootSortMethod==0)
-			{
-				SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyPicturesRootSortMethod+103);
-			}
-			else
-			{
-				SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,498);	//	Sort by: Type
-			}
+			SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyPicturesRootSortMethod+103);
 		}
 		else
 		{
-			SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyPicturesSortMethod+103);
+			SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,498);	//	Sort by: Type
 		}
+	}
+	else
+	{
+		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyPicturesSortMethod+103);
+	}
 
-		//	Update sorting control
-		bool bSortAscending=false;
-		if (m_strDirectory.IsEmpty())
-			bSortAscending=g_stSettings.m_bMyPicturesRootSortAscending;
-		else
-			bSortAscending=g_stSettings.m_bMyPicturesSortAscending;
+	//	Update sorting control
+	bool bSortAscending=false;
+	if (m_strDirectory.IsEmpty())
+		bSortAscending=g_stSettings.m_bMyPicturesRootSortAscending;
+	else
+		bSortAscending=g_stSettings.m_bMyPicturesSortAscending;
 
-		if (bSortAscending)
-    {
-      CGUIMessage msg(GUI_MSG_DESELECTED,GetID(), CONTROL_BTNSORTASC);
-      g_graphicsContext.SendMessage(msg);
-    }
-    else
-    {
-      CGUIMessage msg(GUI_MSG_SELECTED,GetID(), CONTROL_BTNSORTASC);
-      g_graphicsContext.SendMessage(msg);
-    }
+	if (bSortAscending)
+  {
+    CGUIMessage msg(GUI_MSG_DESELECTED,GetID(), CONTROL_BTNSORTASC);
+    g_graphicsContext.SendMessage(msg);
+  }
+  else
+  {
+    CGUIMessage msg(GUI_MSG_SELECTED,GetID(), CONTROL_BTNSORTASC);
+    g_graphicsContext.SendMessage(msg);
+  }
 
-    int iItems=m_vecItems.size();
-    if (iItems)
-    {
-      CFileItem* pItem=m_vecItems[0];
-      if (pItem->GetLabel()=="..") iItems--;
-    }
-    WCHAR wszText[20];
-    const WCHAR* szText=g_localizeStrings.Get(127).c_str();
-    swprintf(wszText,L"%i %s", iItems,szText);
+  int iItems=m_vecItems.size();
+  if (iItems)
+  {
+    CFileItem* pItem=m_vecItems[0];
+    if (pItem->GetLabel()=="..") iItems--;
+  }
+  WCHAR wszText[20];
+  const WCHAR* szText=g_localizeStrings.Get(127).c_str();
+  swprintf(wszText,L"%i %s", iItems,szText);
 
-		
-		SET_CONTROL_LABEL(GetID(), CONTROL_LABELFILES,wszText);
+	
+	SET_CONTROL_LABEL(GetID(), CONTROL_LABELFILES,wszText);
 }
 
 
