@@ -2398,6 +2398,11 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 	bool bResult=m_pPlayer->openfile(m_itemCurrentFile.m_strPath, m_itemCurrentFile.m_lStartOffset*1000/75);
 	if (bResult)
 	{
+    if ( IsPlayingVideo())
+		{
+      //pause video until screen is setup
+      m_pPlayer->Pause();
+    }
 		g_infoManager.SetCurrentSong(item);
 		m_guiMusicOverlay.Update();
 		m_guiWindowVideoOverlay.SetCurrentFile(m_itemCurrentFile.m_strPath);
@@ -2417,6 +2422,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 		{
 			// then switch to fullscreen video mode if we can
 			SwitchToFullScreen();
+      //screen is setup, resume playing
+      m_pPlayer->Pause();
 		}
 	}
 	return bResult;
