@@ -112,6 +112,14 @@
 		<value>December</value>
 	</string>
 	<string>
+		<id>98</id>
+		<value>View: Auto</value>
+	</string>
+	<string>
+		<id>99</id>
+		<value>View: Auto Big</value>
+	</string>
+	<string>
 		<id>100</id>
 		<value>View: Icons</value>
 	</string>
@@ -1041,11 +1049,11 @@
 	</string>
 	<string>
 		<id>333</id>
-		<value>Do you want to clean the music database?</value>
+		<value>Do you want to clean the music library?</value>
 	</string>
 	<string>
 		<id>334</id>
-		<value>Clean the music database</value>
+		<value>Clean the music library</value>
 	</string>
 	<string>
 		<id>335</id>
@@ -1629,7 +1637,7 @@
 	</string>
 	<string>
 		<id>480</id>
-		<value>User Interface</value>
+		<value>Appearance</value>
 	</string>
 	<string>
 		<id>481</id>
@@ -1665,7 +1673,7 @@
 	</string>
 	<string>
 		<id>489</id>
-		<value>Use playlist in folders</value>
+		<value>Auto play next item</value>
 	</string>
 	<string>
 		<id>490</id>
@@ -1677,7 +1685,7 @@
 	</string>
 	<string>
 		<id>492</id>
-		<value>Enlarge Subtitles</value>
+		<value>Enlarge Vobsubs</value>
 	</string>
 	<string>
 		<id>493</id>
@@ -1842,11 +1850,11 @@
 	</string>
 	<string>
 		<id>700</id>
-		<value>Cleaning up Database</value>
+		<value>Cleaning up Library</value>
 	</string>
 	<string>
 		<id>701</id>
-		<value>Removing old songs from the Database</value>
+		<value>Removing old songs from the Library</value>
 	</string>
 	<string>
 		<id>702</id>
@@ -2273,7 +2281,8 @@
   <string><id>13203</id><value>Profile '%s' loaded successfully</value></string>
   <string><id>13204</id><value>Last loaded profile:</value></string>
   <string><id>13205</id><value>Unknown</value></string>
-  <string><id>13300</id><value>Fanspeed:</value></string>
+  <string><id>13299</id><value>Target Temperature:</value></string>
+  <string><id>13300</id><value>Fan Speed:</value></string>
   <string><id>13301</id><value>Auto temperature control</value></string>
   <string><id>13302</id><value>Fanspeed control</value></string>
   <string><id>13303</id><value>Skin Fonts</value></string>
@@ -2321,4 +2330,36 @@
   <string><id>14007</id><value>Downloading playlist file failed</value></string>
   <string><id>14008</id><value>Enable Kai notifications</value></string>
   <string><id>14009</id><value>Games directory</value></string>
+  <string><id>14010</id><value>Autoswitch Options</value></string>
+  <string><id>14011</id><value>Enable Autoswitching?</value></string>
+  <string><id>14012</id><value>Use Large Icons</value></string>
+  <string><id>14013</id><value>Method:</value></string>
+  <string><id>14014</id><value>Percentage:</value></string>
+  <string><id>14015</id><value>Thumbpanel if no files</value></string>
+  <string><id>14016</id><value>Listpanel if no folders</value></string>
+  <string><id>14017</id><value>Percentage of thumbs</value></string>
+  <string><id>14018</id><value>View Options</value></string>
+  <string><id>14019</id><value>Area code 1</value></string>
+  <string><id>14020</id><value>Area code 2</value></string>
+  <string><id>14021</id><value>Area code 3</value></string>
+  <string><id>14022</id><value>Library</value></string>
+  <string><id>14023</id><value>No TV</value></string>
+  <string><id>14024</id><value>Enter the nearest large town or US ZIP code</value></string>
+  <string><id>14025</id><value>Video from harddisk</value></string>
+  <string><id>14026</id><value>Video from DVDRom</value></string>
+  <string><id>14027</id><value>Video from Local Network</value></string>
+  <string><id>14028</id><value>Video from Internet</value></string>
+  <string><id>14029</id><value>Audio from harddisk</value></string>
+  <string><id>14030</id><value>Audio from DVDRom</value></string>
+  <string><id>14031</id><value>Audio from Local Network</value></string>
+  <string><id>14032</id><value>Audio from Internet</value></string>
+  <string><id>14033</id><value>DVD from harddisk</value></string>
+  <string><id>14034</id><value>DVD from DVDRom</value></string>
+  <string><id>14035</id><value>DVD from Local Network</value></string>
+  <string><id>14036</id><value>Servers</value></string>
+  <string><id>14037</id><value>Look and Feel</value></string>
+  <string><id>14038</id><value>Network settings changed</value></string>
+  <string><id>14039</id><value>XBMC requires to restart to change your</value></string>
+  <string><id>14040</id><value>network setup.  Would you like to restart now?</value></string>
+  <string><id>14041</id><value>Post Processing</value></string>
 </strings>
