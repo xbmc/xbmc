@@ -1,5 +1,6 @@
 #include "guiimage.h"
 #include "texturemanager.h"
+#include "../xbmc/settings.h"
 
 
 
@@ -19,6 +20,9 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dw
 	m_dwFrameCounter=0;
   m_bKeepAspectRatio=false;
   m_iCurrentLoop=0;
+  m_iRenderWidth=dwWidth;
+  m_iRenderHeight=dwHeight;
+
 }
 
 
@@ -64,6 +68,7 @@ void CGUIImage::Render(DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight
 
   float nw =(float)dwWidth;
   float nh=(float)dwHeight;
+
 
 	if (CalibrationEnabled())
 	{
@@ -225,30 +230,39 @@ void CGUIImage::Update()
   if (m_dwHeight==0) 
     m_dwHeight=m_iTextureHeight;
 
-  if (m_bKeepAspectRatio && m_iTextureWidth && m_iTextureHeight)
-  {
-    DWORD dwWidth =m_iTextureWidth;
-    DWORD dwHeight=m_iTextureHeight;
-    float fAspect= ((float)dwWidth) / ((float)dwHeight);
-    if (dwWidth > m_dwWidth )
-    {
-      dwWidth  = m_dwWidth;
-      dwHeight = (DWORD)( ( (float)m_dwHeight) / fAspect);
-    }
-
-    if (dwHeight > m_dwHeight )
-    {
-      dwHeight = m_dwHeight;
-      dwWidth  = (DWORD)(  fAspect * ( (float)m_dwHeight) );
-    }
-    m_dwWidth=dwWidth;
-    m_dwHeight=dwHeight;
-  }
 
   float nw =(float)m_dwWidth;
   float nh=(float)m_dwHeight;
 
+  if (m_bKeepAspectRatio && m_iTextureWidth && m_iTextureHeight)
+  {
+    int iResolution=g_stSettings.m_ScreenResolution;
+    float fSourceFrameRatio = ((float)m_iTextureWidth) / ((float)m_iTextureHeight);
+    float fOutputFrameRatio = fSourceFrameRatio / g_settings.m_ResInfo[iResolution].fPixelRatio; 
+    if (iResolution == HDTV_1080i) fOutputFrameRatio *= 2;
 
+    // maximize the thumbnails width
+    float fNewWidth  = (float)m_dwWidth;
+    float fNewHeight = fNewWidth/fOutputFrameRatio;
+
+    if (fNewHeight > m_dwHeight)
+    {
+      fNewHeight = (float)m_dwHeight;
+      fNewWidth = fNewHeight*fOutputFrameRatio;
+    }
+    // this shouldnt happen, but just make sure that everything still fits onscreen
+    if (fNewWidth > m_dwWidth || fNewHeight > m_dwHeight)
+    {
+      fNewWidth=(float)m_dwWidth;
+      fNewHeight=(float)m_dwHeight;
+    }
+    nw=fNewWidth;
+    nh=fNewHeight;
+  }
+
+
+  m_iRenderWidth=(int)nw;
+  m_iRenderHeight=(int)nh;
 
 	if (CalibrationEnabled())
 	{
@@ -352,4 +366,14 @@ void CGUIImage::SetKeepAspectRatio(bool bOnOff)
 bool CGUIImage::GetKeepAspectRatio() const
 {
   return m_bKeepAspectRatio;
+}
+
+
+int CGUIImage::GetRenderWidth() const
+{
+  return m_iRenderWidth;
+}
+int CGUIImage::GetRenderHeight() const
+{
+  return m_iRenderHeight;
 }
