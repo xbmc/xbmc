@@ -529,7 +529,8 @@ void CVideoDatabase::GetMoviesByGenre(CStdString& strGenre1, VECMOVIES& movies)
 	if (NULL==m_pDB.get()) return ;
 	if (NULL==m_pDS.get()) return ;
   CStdString strSQL;
-  strSQL.Format("select * from actorlinkmovie,genre,movie,path,movieinfo,actors where genre.idGenre=genrelinkmovie.idGenre and genrelinkmovie.idmovie=movie.idmovie and movie.idpath=path.idpath and movieinfo.idmovie=movie.idmovie and genre.strGenre='%s' and movieinfo.iddirector=actors.idActor", strGenre.c_str());
+  strSQL.Format("select * from genrelinkmovie,genre,movie,path,movieinfo,actors where genrelinkmovie.idGenre=genre.idGenre and genrelinkmovie.idmovie=movie.idmovie and movie.idpath=path.idpath and movieinfo.idmovie=movie.idmovie and genre.strGenre='%s' and movieinfo.iddirector=actors.idActor", strGenre.c_str());
+
   m_pDS->query( strSQL.c_str() );
   if (m_pDS->num_rows() == 0)  return;
   while (!m_pDS->eof()) 
@@ -547,7 +548,8 @@ void CVideoDatabase::GetMoviesByGenre(CStdString& strGenre1, VECMOVIES& movies)
     details.m_strGenre=m_pDS->fv("movieinfo.strGenre").get_asString();
     details.m_strPictureURL=m_pDS->fv("movieinfo.strPictureURL").get_asString();
     details.m_strTitle=m_pDS->fv("movieinfo.strTitle").get_asString();
-
+    details.m_strSearchString=m_pDS->fv("path.strPath").get_asString();
+    details.m_strSearchString+=m_pDS->fv("path.strFilename").get_asString();
     movies.push_back(details);
     m_pDS->next();
   }
@@ -581,6 +583,8 @@ void CVideoDatabase::GetMoviesByActor(CStdString& strActor1, VECMOVIES& movies)
     details.m_strGenre=m_pDS->fv("movieinfo.strGenre").get_asString();
     details.m_strPictureURL=m_pDS->fv("movieinfo.strPictureURL").get_asString();
     details.m_strTitle=m_pDS->fv("movieinfo.strTitle").get_asString();
+    details.m_strSearchString=m_pDS->fv("path.strPath").get_asString();
+    details.m_strSearchString+=m_pDS->fv("path.strFilename").get_asString();
 
     movies.push_back(details);
     m_pDS->next();

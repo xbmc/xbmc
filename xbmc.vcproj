@@ -713,6 +713,12 @@
 				RelativePath=".\xbmc\GUIWindowVideo.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowVideoGenre.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowVideoGenre.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GuiWindowVideoInfo.h">
 			</File>
 			<File
