@@ -139,7 +139,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	CStdString  strTmp;
 	DWORD     	dwTextColor=0xFFFFFFFF;
 	DWORD		dwAlign=XBFONT_LEFT;
-	DWORD		dwAlignY=XBFONT_CENTER_Y;
+	DWORD		dwAlignY=0;
 	CStdString  strTextureFocus,strTextureNoFocus,strTextureUpFocus,strTextureDownFocus;
 	CStdString	strTextureAltFocus,strTextureAltNoFocus;
 	DWORD		dwDisabledColor=0xffffffff;;

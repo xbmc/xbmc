@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 07-09-2004 fixed: <aligny> now defaults to top instead of center (should make textoffsetY work unless overridden by aligny)
   - 07-09-2004 added: SF patch 1019867: Fix Matrix Screensaver to work in 1080i (thanks kraqh3d)
   - 07-09-2004 added: SF patch 1016454: Proper MP3 Genre Parsing (thanks kraqh3d)
   - 07-09-2004 added: SF patch 1013484: Disable RSS streams from GUI (thanks kraqh3d)
