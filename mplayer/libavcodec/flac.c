@@ -638,9 +638,6 @@ static int flac_decode_frame(AVCodecContext *avctx,
                     int bits_count= get_bits_count(&s->gb);
 
                     metadata_streaminfo(s);
-                    buf= &s->bitstream[s->bitstream_index];
-                    init_get_bits(&s->gb, buf, buf_size*8);
-                    skip_bits(&s->gb, bits_count);
 
                     dump_headers(s);
                     break;}
