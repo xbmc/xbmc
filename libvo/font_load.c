@@ -156,42 +156,60 @@ while(fgets(sor,1020,f)){
       }
   } else    
 
-  if(strcmp(section,"[files]")==0)
-	{
+  if(strcmp(section,"[files]")==0) {
+#ifdef XBOX
       char *default_dir=MPLAYER_DATADIR "\\font";
-      if(pdb==2 && strcmp(p[0],"alpha")==0)
-			{
+#else
+      char *default_dir=MPLAYER_DATADIR "/font";
+#endif
+      if(pdb==2 && strcmp(p[0],"alpha")==0) {
     	  char *cp;
-				if (!(cp=malloc(strlen(desc->fpath)+strlen(p[1])+2))) return NULL;
+	  if (!(cp=malloc(strlen(desc->fpath)+strlen(p[1])+2))) return NULL;
 
-				snprintf(cp,strlen(desc->fpath)+strlen(p[1])+2,"%s\\%s",desc->fpath,p[1]);
-				if(!((desc->pic_a[fontdb]=load_raw(cp,verbose))))
-				{
-					free(cp);
-					if (!(cp=malloc(strlen(default_dir)+strlen(p[1])+2))) 
-						return NULL;
-					snprintf(cp,strlen(default_dir)+strlen(p[1])+2,"%s\\%s", default_dir,p[1]);
-					if (!((desc->pic_a[fontdb]=load_raw(cp,verbose))))
-					{
-						printf("Can't load font bitmap: %s\n",p[1]);
-						free(cp);
-						return NULL;
-					}
-				}
-				free(cp);
-        continue;
+#ifdef _XBOX
+	  snprintf(cp,strlen(desc->fpath)+strlen(p[1])+2,"%s\\%s",
+#else
+	  snprintf(cp,strlen(desc->fpath)+strlen(p[1])+2,"%s/%s",
+#endif
+		desc->fpath,p[1]);
+          if(!((desc->pic_a[fontdb]=load_raw(cp,verbose)))) {
+		free(cp);
+		if (!(cp=malloc(strlen(default_dir)+strlen(p[1])+2))) 
+		   return NULL;
+#ifdef _XBOX
+		snprintf(cp,strlen(default_dir)+strlen(p[1])+2,"%s\\%s",
+#else
+		snprintf(cp,strlen(default_dir)+strlen(p[1])+2,"%s/%s",
+#endif
+			 default_dir,p[1]);
+		if (!((desc->pic_a[fontdb]=load_raw(cp,verbose)))) {
+		   printf("Can't load font bitmap: %s\n",p[1]);
+		   free(cp);
+		   return NULL;
+		}
+          }
+	  free(cp);
+          continue;
       }
       if(pdb==2 && strcmp(p[0],"bitmap")==0){
     	  char *cp;
 	  if (!(cp=malloc(strlen(desc->fpath)+strlen(p[1])+2))) return NULL;
 
+#ifdef _XBOX
 	  snprintf(cp,strlen(desc->fpath)+strlen(p[1])+2,"%s\\%s",
+#else
+	  snprintf(cp,strlen(desc->fpath)+strlen(p[1])+2,"%s/%s",
+#endif
 		desc->fpath,p[1]);
           if(!((desc->pic_b[fontdb]=load_raw(cp,verbose)))){
 		free(cp);
 		if (!(cp=malloc(strlen(default_dir)+strlen(p[1])+2))) 
 		   return NULL;
+#ifdef _XBOX
 		snprintf(cp,strlen(default_dir)+strlen(p[1])+2,"%s\\%s",
+#else
+		snprintf(cp,strlen(default_dir)+strlen(p[1])+2,"%s/%s",
+#endif
 			 default_dir,p[1]);
 		if (!((desc->pic_b[fontdb]=load_raw(cp,verbose)))){
 		   printf("Can't load font bitmap: %s\n",p[1]);
@@ -202,8 +220,7 @@ while(fgets(sor,1020,f)){
 	  free(cp);
           continue;
       }
-  } 
-	else
+  }	else
 
   if(strcmp(section,"[info]")==0){
       if(pdb==2 && strcmp(p[0],"name")==0){
