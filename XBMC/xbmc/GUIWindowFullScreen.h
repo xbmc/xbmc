@@ -1,6 +1,8 @@
 #pragma once
 #include "guiwindow.h"
 #include "guiwindowmanager.h"
+#include "osd/osdmenu.h"
+using namespace OSD;
 class CGUIWindowFullScreen :
   public CGUIWindow
 {
@@ -19,4 +21,5 @@ private:
 	DWORD						m_dwFPSTime;
 	float						m_fFrameCounter;
 	FLOAT						m_fFPS;
+  COSDMenu        m_osdMenu;
 };

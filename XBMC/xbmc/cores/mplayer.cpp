@@ -72,7 +72,22 @@ CMPlayer::Options::Options()
     m_iChannels=0;
     m_bAC3PassTru=false;
     m_strChannelMapping="";
+    m_fVolumeAmplification=0.0f;
 }
+
+float CMPlayer::Options::GetVolumeAmplification() const
+{
+  return m_fVolumeAmplification;
+}
+
+void CMPlayer::Options::SetVolumeAmplification(float fDB) 
+{
+  if (fDB < -200.0f) fDB=-200.0f;
+  if (fDB >   60.0f) fDB=60.0f;
+  m_fVolumeAmplification=fDB;
+}
+
+
 int CMPlayer::Options::GetChannels() const
 {
   return m_iChannels;
@@ -133,6 +148,13 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
       m_vecOptions.push_back("pp=lb");
     else
       m_vecOptions.push_back("pp");
+  }
+
+  if (m_fVolumeAmplification > 0.1f || m_fVolumeAmplification < -0.1f)
+  {
+    strTmp.Format("volume=%2.2f:0",m_fVolumeAmplification);
+    m_vecOptions.push_back("-af");
+    m_vecOptions.push_back(strTmp);
   }
 
   m_vecOptions.push_back("1.avi");
@@ -220,8 +242,9 @@ bool CMPlayer::openfile(const CStdString& strFile)
   int argc=8;
   Options options;
   options.SetChannels(6);
+  options.SetVolumeAmplification(g_stSettings.m_fVolumeAmplification);
   options.GetOptions(argc,argv);
-
+  
 	mplayer_init(argc,argv);
 	
   mplayer_setcache_size(iCacheSize);

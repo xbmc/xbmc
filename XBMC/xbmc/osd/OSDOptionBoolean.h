@@ -9,7 +9,7 @@ namespace OSD
 		COSDOptionBoolean(void);
 		COSDOptionBoolean(bool bValue);
 		COSDOptionBoolean(const COSDOptionBoolean& option);
-		OSD::COSDOptionBoolean operator = (const COSDOptionBoolean& option);
+		const OSD::COSDOptionBoolean& operator = (const COSDOptionBoolean& option);
 
 
 		virtual ~COSDOptionBoolean(void);

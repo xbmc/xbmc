@@ -3,6 +3,9 @@
 #include "settings.h"
 #include "application.h"
 #include "util.h"
+#include "osd/OSDOptionFloatRange.h"
+#include "osd/OSDOptionIntRange.h"
+#include "osd/OSDOptionBoolean.h"
 
 #define LABEL_ROW1 10
 #define LABEL_ROW2 11
@@ -16,6 +19,43 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 	m_fFPS=0;
 	m_fFrameCounter=0.0f;
 	m_dwFPSTime=timeGetTime();
+
+  // audio
+  //  - language
+  //  - volume
+  //  - stream
+
+  // video
+  //  - Create Bookmark
+  //  - Cycle bookmarks
+  //  - Clear bookmarks
+  //  - jump to specific time
+  //  - slider
+  //  - av delay
+
+  // subtitles
+  //  - delay
+  //  - language
+  
+  COSDSubMenu videoMenu(291,100,100);
+  COSDOptionFloatRange optionAVDelay(-10.0f,10.0f,0.01f,0.0f);
+  COSDOptionIntRange   optionPercentage(0,100,1,0);
+  videoMenu.AddOption(&optionAVDelay);
+  videoMenu.AddOption(&optionPercentage);
+  
+
+  COSDSubMenu audioMenu(292,300,100);
+
+  COSDSubMenu SubtitleMenu(293,500,100);
+  COSDOptionFloatRange optionSubtitleDelay(-10.0f,10.0f,0.01f,0.0f);
+  COSDOptionBoolean    optionEnable;
+
+  SubtitleMenu.AddOption(&optionSubtitleDelay);
+  SubtitleMenu.AddOption(&optionEnable);
+
+  m_osdMenu.AddSubMenu(videoMenu);
+  m_osdMenu.AddSubMenu(audioMenu);
+  m_osdMenu.AddSubMenu(SubtitleMenu);
 }
 
 CGUIWindowFullScreen::~CGUIWindowFullScreen(void)

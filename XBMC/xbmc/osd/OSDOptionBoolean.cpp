@@ -16,7 +16,7 @@ COSDOptionBoolean::COSDOptionBoolean(const COSDOptionBoolean& option)
 	*this=option;
 }
 
-OSD::COSDOptionBoolean COSDOptionBoolean::operator = (const COSDOptionBoolean& option)
+const OSD::COSDOptionBoolean& COSDOptionBoolean::operator = (const COSDOptionBoolean& option)
 {
 	if (this==&option) return *this;
 	m_bValue=option.m_bValue;

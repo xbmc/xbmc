@@ -30,8 +30,8 @@ void COSDMenu::Clear()
 	{
 		COSDSubMenu* pSubMenu=*i;
 		delete pSubMenu;
+    i=m_vecSubMenus.erase(i);
 	}
-	m_vecSubMenus.erase(m_vecSubMenus.begin(),m_vecSubMenus.end());
 }
 
 
@@ -41,7 +41,7 @@ COSDMenu* COSDMenu::Clone()
 }
 
 
-COSDMenu& COSDMenu::operator = (const COSDMenu& menu)
+const COSDMenu& COSDMenu::operator = (const COSDMenu& menu)
 {
 	if (&menu==this) return *this;
   Clear();

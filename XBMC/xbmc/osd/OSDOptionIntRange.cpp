@@ -22,7 +22,7 @@ COSDOptionIntRange::COSDOptionIntRange(const COSDOptionIntRange& option)
 	*this=option;
 }
 
-OSD::COSDOptionIntRange COSDOptionIntRange::operator = (const COSDOptionIntRange& option)
+const OSD::COSDOptionIntRange& COSDOptionIntRange::operator = (const COSDOptionIntRange& option)
 {
 	if (this==&option) return *this;
 
