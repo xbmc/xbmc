@@ -11,10 +11,23 @@
 #include "application.h"
 #include "Credits.h"
 
-CGUIWindowHome::CGUIWindowHome(void)
-:CGUIWindow(0)
+#define CONTROL_BTN_SHUTDOWN		10
+#define CONTROL_BTN_DASHBOARD		11
+#define CONTROL_BTN_REBOOT			12
+#define CONTROL_BTN_CREDITS			13
+#define CONTROL_BTN_ONLINE			14
+
+
+CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(0)
 {
-  m_iLastControl=-1;
+	m_iLastControl=-1;
+	m_iLastMenuOption=-1;
+
+	ON_CLICK_MESSAGE(CONTROL_BTN_SHUTDOWN,	CGUIWindowHome, OnClickShutdown);	
+	ON_CLICK_MESSAGE(CONTROL_BTN_DASHBOARD,	CGUIWindowHome, OnClickDashboard);	
+	ON_CLICK_MESSAGE(CONTROL_BTN_REBOOT,	CGUIWindowHome, OnClickReboot);	
+	ON_CLICK_MESSAGE(CONTROL_BTN_CREDITS,	CGUIWindowHome, OnClickCredits);	
+	ON_CLICK_MESSAGE(CONTROL_BTN_ONLINE,	CGUIWindowHome, OnClickOnlineGaming);	
 }
 
 CGUIWindowHome::~CGUIWindowHome(void)
@@ -24,107 +37,106 @@ CGUIWindowHome::~CGUIWindowHome(void)
 
 bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 {
-  switch ( message.GetMessage() )
-  {
-    case GUI_MSG_WINDOW_INIT:
-    {
-      int iFocusControl=m_iLastControl;
+	switch ( message.GetMessage() )
+	{
+		case GUI_MSG_WINDOW_INIT:
+		{
+			int iFocusControl=m_iLastControl;
 			CGUIWindow::OnMessage(message);
-      // make controls 101-120 invisible...
-      for (int iControl=102; iControl < 120; iControl++)
-      {
-				SET_CONTROL_HIDDEN(GetID(), iControl);
-      }
-	    if (iFocusControl<0)
-      {
-        iFocusControl=GetFocusedControl();
-		    m_iLastControl=iFocusControl;
-	    }
-
-	    SET_CONTROL_FOCUS(GetID(), iFocusControl, 0);
-
-			return true;
-    }
-
-    case GUI_MSG_SETFOCUS:
-    {
-      int iControl=message.GetControlId();
-      m_iLastControl=iControl;
-      if (iControl>=2 && iControl <=9)
-      {
-        // make controls 101-120 invisible...
-        for (int i=102; i < 120; i++)
-        {
-					SET_CONTROL_HIDDEN(GetID(), i);
-        }
-				SET_CONTROL_VISIBLE(GetID(), iControl+100);
-      }
-    }
-    break;
-
-    case GUI_MSG_CLICKED:
-    {
-      int iControl=message.GetSenderId();
-      m_iLastControl=iControl;
-      switch (iControl)
-      {
-
-        case 10: // powerdown
-        {
-					g_application.Stop();
-          XKUtils::XBOXPowerOff();
-        }
-        break;
-
-        case 11: // execute dashboard
-        {
-          char* szBackslash = strrchr(g_stSettings.szDashboard,'\\');
-		      *szBackslash=0x00;
-		      char* szXbe = &szBackslash[1];
-
-		      char* szColon = strrchr(g_stSettings.szDashboard,':');
-		      *szColon=0x00;
-		      char* szDrive = g_stSettings.szDashboard;
-		      char* szDirectory = &szColon[1];
-          
-          char szDevicePath[1024];
-          char szXbePath[1024];
-          CIoSupport helper;
-		      helper.GetPartition( (LPCSTR) szDrive, szDevicePath);
-
-		      strcat(szDevicePath,szDirectory);
-		      wsprintf(szXbePath,"d:\\%s",szXbe);
-
-					g_application.Stop();
-
-          CUtil::LaunchXbe(szDevicePath,szXbePath,NULL);
-        }
-        break;
       
-				case 12:
-				{
-					g_application.Stop();
-					XKUtils::XBOXPowerCycle();
-				}
-				break;
-
-				case 13:
-				{
-					RunCredits();
-				}
-				break;
-
-				case 14:
-				{
-					m_gWindowManager.ActivateWindow( WINDOW_BUDDIES );
-				}
-				break;
+			// make controls 101-120 invisible...
+			for (int iControl=102; iControl < 120; iControl++)
+			{
+				SET_CONTROL_HIDDEN(GetID(), iControl);
 			}
-    }
-    break;
-  }
 
-  return CGUIWindow::OnMessage(message);
+			if (m_iLastMenuOption>0)
+			{
+				SET_CONTROL_VISIBLE(GetID(), m_iLastMenuOption+100);
+			}
+
+			if (iFocusControl<0)
+			{
+				iFocusControl=GetFocusedControl();
+				m_iLastControl=iFocusControl;
+			}
+
+			SET_CONTROL_FOCUS(GetID(), iFocusControl, 0);
+			return true;
+		}
+
+		case GUI_MSG_SETFOCUS:
+		{
+			int iControl = message.GetControlId();
+			m_iLastControl=iControl;
+			if (iControl>=2 && iControl <=9)
+			{
+				m_iLastMenuOption = m_iLastControl;
+
+				// make controls 101-120 invisible...
+				for (int i=102; i < 120; i++)
+				{
+						SET_CONTROL_HIDDEN(GetID(), i);
+				}
+		
+				SET_CONTROL_VISIBLE(GetID(), iControl+100);
+			    break;
+			}
+		}
+
+		case GUI_MSG_CLICKED:
+		{
+			m_iLastControl = message.GetSenderId();
+			break;
+		}
+	}
+	return CGUIWindow::OnMessage(message);
+}
+
+void CGUIWindowHome::OnClickShutdown(CGUIMessage& aMessage)
+{
+	g_application.Stop();
+	XKUtils::XBOXPowerOff();
+}
+
+void CGUIWindowHome::OnClickDashboard(CGUIMessage& aMessage)
+{
+	char* szBackslash = strrchr(g_stSettings.szDashboard,'\\');
+	*szBackslash=0x00;
+	char* szXbe = &szBackslash[1];
+
+	char* szColon = strrchr(g_stSettings.szDashboard,':');
+	*szColon=0x00;
+	char* szDrive = g_stSettings.szDashboard;
+	char* szDirectory = &szColon[1];
+
+	char szDevicePath[1024];
+	char szXbePath[1024];
+	CIoSupport helper;
+	helper.GetPartition( (LPCSTR) szDrive, szDevicePath);
+
+	strcat(szDevicePath,szDirectory);
+	wsprintf(szXbePath,"d:\\%s",szXbe);
+
+	g_application.Stop();
+
+	CUtil::LaunchXbe(szDevicePath,szXbePath,NULL);
+}
+
+void CGUIWindowHome::OnClickReboot(CGUIMessage& aMessage)
+{
+	g_application.Stop();
+	XKUtils::XBOXPowerCycle();
+}
+
+void CGUIWindowHome::OnClickCredits(CGUIMessage& aMessage)
+{
+	RunCredits();
+}
+
+void CGUIWindowHome::OnClickOnlineGaming(CGUIMessage& aMessage)
+{
+	m_gWindowManager.ActivateWindow( WINDOW_BUDDIES );
 }
 
 void CGUIWindowHome::OnAction(const CAction &action)

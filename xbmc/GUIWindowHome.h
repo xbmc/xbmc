@@ -12,8 +12,17 @@ public:
   virtual void    Render();
 
 protected:
-  VOID GetDate(WCHAR* szDate, LPSYSTEMTIME pTime);
-  VOID GetTime(WCHAR* szTime, LPSYSTEMTIME pTime);
+
+	void OnClickShutdown(CGUIMessage& aMessage);
+	void OnClickDashboard(CGUIMessage& aMessage);
+	void OnClickReboot(CGUIMessage& aMessage);
+	void OnClickCredits(CGUIMessage& aMessage);
+	void OnClickOnlineGaming(CGUIMessage& aMessage);
+
+	VOID GetDate(WCHAR* szDate, LPSYSTEMTIME pTime);
+	VOID GetTime(WCHAR* szTime, LPSYSTEMTIME pTime);
+
 	IDirect3DTexture8* m_pTexture;
-  int                m_iLastControl;
+	int m_iLastControl;
+	int m_iLastMenuOption;
 };
