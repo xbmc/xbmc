@@ -634,6 +634,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 			CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
 			pControl->SetEnabled(CUtil::IsUsingTTFSubtitles() && g_charsetConverter.isBidiCharset(g_guiSettings.GetString("Subtitles.CharSet")));
 		}
+		else if (strSetting == "LookAndFeel.CharSet")
+		{	// TODO: Determine whether we are using a TTF font or not.
+//			CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+//			if (pControl) pControl->SetEnabled(g_guiSettings.GetString("LookAndFeel.Font").Right(4) == ".ttf");
+		}
 		else if (strSetting == "ScreenSaver.DimLevel")
 		{
 			CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());

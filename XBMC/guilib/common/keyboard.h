@@ -21,8 +21,8 @@ public:
 
 private:
 	// variables for mouse state
-	XINPUT_STATE	m_KeyboardState[4];					// one for each port
-	HANDLE				m_hKeyboardDevice[4];				// handle to each device
+	XINPUT_STATE	m_KeyboardState[4*2];					// one for each port
+	HANDLE				m_hKeyboardDevice[4*2];				// handle to each device
 	DWORD					m_dwKeyboardPort;						// mask of ports that currently hold a keyboard	
 	XINPUT_DEBUG_KEYSTROKE m_CurrentKeyStroke;
 

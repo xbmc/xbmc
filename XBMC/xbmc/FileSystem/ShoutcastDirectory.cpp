@@ -260,9 +260,10 @@ bool CShoutcastDirectory::DownloadPlaylists(VECFILEITEMS &items)
 
         //  This has to be this ugly way, if we delete the 
         //  xml document at once it would take ages.
-        TiXmlElement* pEntry1=pEntry->NextSiblingElement("entry");
-        pPlaylist->RemoveChild(pEntry);
-        pEntry=pEntry1;
+//				TiXmlElement* pEntry1=pEntry->NextSiblingElement("entry");
+//        pPlaylist->RemoveChild(pEntry);
+//        pEntry=pEntry1;
+        pEntry = pEntry->NextSiblingElement("entry");
 
         items.push_back(pItem);
         vecCacheItems.push_back(new CFileItem(*pItem));
@@ -284,6 +285,7 @@ bool CShoutcastDirectory::DownloadPlaylists(VECFILEITEMS &items)
   }
 
   if (dlgProgress) dlgProgress->Close();
+	CLog::DebugLog("Finished Parsing");
   return true;
 }
 
@@ -305,6 +307,7 @@ bool  CShoutcastDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &
     else
     {
       DownloadPlaylists(items);
+			CLog::DebugLog("Returned from Parsing");
       CacheItems(items);
     }
     for (int i=0; i<(int)items.size(); ++i)

@@ -4,6 +4,13 @@
 
 CKeyboard g_Keyboard;	// global
 
+static DWORD anKeyboardBitmapTable[4*2] =
+{
+	1<<0,  1<<1,  1<<2,  1<<3,
+	1<<16, 1<<17, 1<<18, 1<<19
+};
+
+
 CKeyboard::CKeyboard()
 {
 	ZeroMemory(&m_CurrentKeyStroke, sizeof XINPUT_DEBUG_KEYSTROKE);
@@ -39,9 +46,9 @@ void CKeyboard::Initialize()
 	m_dwKeyboardPort = XGetDevices( XDEVICE_TYPE_DEBUG_KEYBOARD );
 
 	// Obtain handles to keyboard devices
-  for( DWORD i=0; i < XGetPortCount(); i++ )
+  for( DWORD i=0; i < XGetPortCount()*2; i++ )
   {
-    if( ( m_hKeyboardDevice[i] == NULL ) && ( m_dwKeyboardPort & ( 1 << i ) ) ) 
+    if( ( m_hKeyboardDevice[i] == NULL ) && ( m_dwKeyboardPort & anKeyboardBitmapTable[i] ) ) 
     {
       // Get a handle to the device
       XINPUT_POLLING_PARAMETERS pollValues;
@@ -51,8 +58,17 @@ void CKeyboard::Initialize()
       pollValues.bOutputInterval = 32;
       pollValues.ReservedMBZ1    = 0;
       pollValues.ReservedMBZ2    = 0;
-			m_hKeyboardDevice[i] = XInputOpen( XDEVICE_TYPE_DEBUG_KEYBOARD, i, 
-																				XDEVICE_NO_SLOT, &pollValues );
+
+			if (i<XGetPortCount())
+			{
+				m_hKeyboardDevice[i] = XInputOpen( XDEVICE_TYPE_DEBUG_KEYBOARD, i, 
+																					XDEVICE_NO_SLOT, &pollValues );
+			}
+			else
+			{
+				m_hKeyboardDevice[i] = XInputOpen( XDEVICE_TYPE_DEBUG_KEYBOARD, i-XGetPortCount(), 
+																					XDEVICE_BOTTOM_SLOT, &pollValues );
+			}
  			CLog::Log(LOGINFO, "Keyboard found on port %i", i);
    }
   }
@@ -68,10 +84,10 @@ void CKeyboard::Update()
 	ZeroMemory(&m_CurrentKeyStroke, sizeof XINPUT_DEBUG_KEYSTROKE);
 
   // Loop through all ports
-  for( DWORD i=0; i < XGetPortCount(); i++ )
+  for( DWORD i=0; i < XGetPortCount()*2; i++ )
   {
     // Handle removed devices.
-    if( dwRemovals & (1<<i) )
+    if( dwRemovals & anKeyboardBitmapTable[i] )
     {
       XInputClose( m_hKeyboardDevice[i] );
       m_hKeyboardDevice[i] = NULL;
@@ -79,7 +95,7 @@ void CKeyboard::Update()
     }
 
     // Handle inserted devices
-    if( dwInsertions & (1<<i) )
+    if( dwInsertions & anKeyboardBitmapTable[i] )
     {
       // Now open the device
       XINPUT_POLLING_PARAMETERS pollValues;
@@ -90,8 +106,16 @@ void CKeyboard::Update()
       pollValues.ReservedMBZ1    = 0;
       pollValues.ReservedMBZ2    = 0;
 
-      m_hKeyboardDevice[i] = XInputOpen( XDEVICE_TYPE_DEBUG_KEYBOARD, i, 
-                                          XDEVICE_NO_SLOT, &pollValues );
+			if (i<XGetPortCount())
+			{
+				m_hKeyboardDevice[i] = XInputOpen( XDEVICE_TYPE_DEBUG_KEYBOARD, i, 
+																					XDEVICE_NO_SLOT, &pollValues );
+			}
+			else
+			{
+				m_hKeyboardDevice[i] = XInputOpen( XDEVICE_TYPE_DEBUG_KEYBOARD, i-XGetPortCount(), 
+																					XDEVICE_BOTTOM_SLOT, &pollValues );
+			}
  			CLog::Log(LOGINFO, "Keyboard inserted in port %i", i);
 
 			m_bKeyDown = false;
