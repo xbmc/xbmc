@@ -2,6 +2,7 @@
 
 #include "musicInfoTagLoaderFactory.h"
 #include "MusicInfoTagLoaderMP3.h"
+#include "MusicInfoTagLoaderOgg.h"
 #include "util.h"
 
 using namespace MUSIC_INFO;
@@ -21,6 +22,11 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
 	if (strExtension==".mp3")
 	{
 		CMusicInfoTagLoaderMP3 *pTagLoader= new CMusicInfoTagLoaderMP3();
+		return (IMusicInfoTagLoader*)pTagLoader;
+	}
+	if (strExtension==".ogg")
+	{
+		CMusicInfoTagLoaderOgg *pTagLoader= new CMusicInfoTagLoaderOgg();
 		return (IMusicInfoTagLoader*)pTagLoader;
 	}
 	return NULL;
