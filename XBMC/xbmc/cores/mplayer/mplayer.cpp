@@ -15,6 +15,9 @@ extern DllLoader * wmvDMOdll;
 extern DllLoader * wmsDMOdll;
 extern "C" BOOL WINAPI dllFreeLibrary(HINSTANCE hLibModule);
 
+extern void audio_uninit(int);
+extern void video_uninit(void);
+
 int					(__cdecl*	pInitPlayer)(int argc, char* argvp[]);
 int					(__cdecl*	pOpenFile)(const char*);
 int					(__cdecl*	pProcess)();
@@ -271,6 +274,8 @@ extern "C"
 	int mplayer_close_file()
 	{
 		int hr = pCloseFile();
+    audio_uninit(1); //Fix to make sure audio device is deleted
+    video_uninit(); //Fix to make sure audio device is deleted
 		if (wmaDMOdll) 
 			dllFreeLibrary( (HINSTANCE)wmaDMOdll );
 		wmaDMOdll = NULL;
