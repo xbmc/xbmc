@@ -42,7 +42,7 @@ void CGUIImage::Render(DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight
   float x=(float)dwPosX;
   float y=(float)dwPosY;
 
-#if ALLOW_TEXTURE_COMPRESSION
+#ifdef ALLOW_TEXTURE_COMPRESSION
 	if (0==m_iImageWidth|| 0==m_iImageHeight)
 	{
 		D3DSURFACE_DESC desc;
@@ -99,7 +99,7 @@ void CGUIImage::Render(DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight
 	{
 		g_graphicsContext.Correct(x, y);
 	}
-#if ALLOW_TEXTURE_COMPRESSION
+#ifdef ALLOW_TEXTURE_COMPRESSION
 	float uoffs = float(m_iBitmap * m_dwWidth) / float(m_iImageWidth);
 	float u = float(m_iTextureWidth) / float(m_iImageWidth);
 	float v = float(m_iTextureHeight) / float(m_iImageHeight);
@@ -162,7 +162,7 @@ void CGUIImage::Render()
 	Process();
 
 	// Set state to render the image
-#if ALLOW_TEXTURE_COMPRESSION
+#ifdef ALLOW_TEXTURE_COMPRESSION
   g_graphicsContext.Get3DDevice()->SetPalette( 0, m_pPalette);
 #endif
 	g_graphicsContext.Get3DDevice()->SetTexture( 0, m_vecTextures[m_iCurrentImage] );
@@ -256,7 +256,7 @@ void CGUIImage::Update()
 
   float x=(float)m_dwPosX;
   float y=(float)m_dwPosY;
-#if ALLOW_TEXTURE_COMPRESSION
+#ifdef ALLOW_TEXTURE_COMPRESSION
 	if (0==m_iImageWidth|| 0==m_iImageHeight)
 	{
 		D3DSURFACE_DESC desc;
@@ -342,7 +342,7 @@ void CGUIImage::Update()
 	{
 		g_graphicsContext.Correct(x, y);
 	}
-#if ALLOW_TEXTURE_COMPRESSION
+#ifdef ALLOW_TEXTURE_COMPRESSION
 	float uoffs = float(m_iBitmap * m_dwWidth) / float(m_iImageWidth);
 	float u = float(m_iTextureWidth) / float(m_iImageWidth);
 	float v = float(m_iTextureHeight) / float(m_iImageHeight);
