@@ -498,11 +498,13 @@ LONG WINAPI CApplication::UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *E
   g_LoadErrorStr.Format("%s (0x%08x)\n at 0x%08x", 
     pExceptionString, ExceptionInfo->ExceptionRecord->ExceptionCode,
 	ExceptionInfo->ExceptionRecord->ExceptionAddress);
+  
+  if (!g_stSettings.m_bUnhandledExceptionToFatalError)
+    CLog::Log(LOGFATAL, "%s", g_LoadErrorStr.c_str());
+  else
+    g_application.FatalErrorHandler(false, true, true);
 
-  g_application.FatalErrorHandler(false, true, true);
-
-  // not useful since previous function never returns
-  return EXCEPTION_EXECUTE_HANDLER;
+  return ExceptionInfo->ExceptionRecord->ExceptionCode;
 }
 
 HRESULT CApplication::Create()
@@ -1146,6 +1148,9 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 		delete m_pPlayer;
 		m_pPlayer=NULL;
 	}
+
+  char *pCrash = NULL;
+  *pCrash = 'T';
 
 	CLog::Log(LOGINFO, "  delete old skin...");
 	m_guiWindowVideoOverlay.FreeResources();
