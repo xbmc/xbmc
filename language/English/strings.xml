@@ -1050,4 +1050,16 @@
     <id>336</id>
     <value>Adj. Framerate</value>
   </string>
+  <string>
+    <id>337</id>
+    <value>Audio Output:</value>
+  </string>
+  <string>
+    <id>338</id>
+    <value>Analog</value>
+  </string>
+  <string>
+    <id>339</id>
+    <value>Digital</value>
+  </string>
 </strings>
