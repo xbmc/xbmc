@@ -5,10 +5,6 @@
 
 class CAutoTexBuffer;
 
-// if you define this the whole bundle is cached in ram all the time
-// Makes almost no difference with the preloading
-//#define CACHE_WHOLE_BUNDLE
-
 class CTextureBundle
 {
 	struct FileHeader_t
@@ -25,11 +21,7 @@ class CTextureBundle
 	OVERLAPPED m_Ovl[2];
 	int m_PreloadIdx;
 	int m_LoadIdx;
-
-#ifdef CACHE_WHOLE_BUNDLE
-	BYTE* m_BundleCache;
-	DWORD m_CacheOffset;
-#endif
+	FILETIME m_TimeStamp;
 
 	bool OpenBundle();
 	HRESULT LoadFile(const CStdString& Filename, CAutoTexBuffer& UnpackedBuf);
