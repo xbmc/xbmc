@@ -522,13 +522,26 @@ void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor,
     return;
   }
   else
-		{
+	{
+		float fPosCX=fPosX;
+		float fPosCY=fPosY;
+		g_graphicsContext.Correct(fPosCX, fPosCY);
+		if (fPosCX <0) fPosCX=0.0f;
+		if (fPosCY <0) fPosCY=0.0f;
+		if (fPosCY >g_graphicsContext.GetHeight()) fPosCY=(float)g_graphicsContext.GetHeight();
+		float fHeight=60.0f;
+		if (fHeight+fPosCY >= g_graphicsContext.GetHeight() )
+			fHeight = g_graphicsContext.GetHeight() - fPosCY -1;
+		if (fHeight <= 0) return ;
+
+		float fwidth=fMaxWidth-5.0f;
+
 		D3DVIEWPORT8 newviewport,oldviewport;
 		g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
-		newviewport.X      = (DWORD)fPosX;
-		newviewport.Y			 = (DWORD)fPosY;
-		newviewport.Width  = (DWORD)(fMaxWidth-5.0);
-		newviewport.Height = (DWORD)(60.0f);
+		newviewport.X      = (DWORD)fPosCX;
+		newviewport.Y			 = (DWORD)fPosCY;
+		newviewport.Width  = (DWORD)(fwidth);
+		newviewport.Height = (DWORD)(fHeight);
 		newviewport.MinZ   = 0.0f;
 		newviewport.MaxZ   = 1.0f;
 		g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
