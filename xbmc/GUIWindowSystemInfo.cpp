@@ -9,8 +9,6 @@
 #include "cores/DllLoader/dll.h"
 #include "utils/GUIInfoManager.h"
 
-extern char g_szTitleIP[32];
-
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 :CGUIWindow(0)
 {
@@ -193,9 +191,8 @@ void  CGUIWindowSystemInfo::GetValues()
 			SET_CONTROL_LABEL(7,wzmac_addr);
 		}
 		{
-
 			const WCHAR* pszIP=g_localizeStrings.Get(150).c_str();
-			swprintf(wzIP,L"%s: %S",pszIP,g_szTitleIP);
+			swprintf(wzIP,L"%s: %s",pszIP,g_infoManager.GetLabel("Network.IPAddress").c_str());
 			SET_CONTROL_LABEL(8,wzIP);
 		}
 
@@ -226,62 +223,11 @@ void  CGUIWindowSystemInfo::GetValues()
 	}
 
 
-	{
-		ULARGE_INTEGER lTotalFreeBytes;
-		WCHAR wszHD[64];
+	SET_CONTROL_LABEL(10,g_infoManager.GetFreeSpace("C"));
+	SET_CONTROL_LABEL(12,g_infoManager.GetFreeSpace("E"));
+	SET_CONTROL_LABEL(13,g_infoManager.GetFreeSpace("F"));
+	SET_CONTROL_LABEL(17,g_infoManager.GetFreeSpace("G"));
 
-		const WCHAR *pszDrive=g_localizeStrings.Get(155).c_str();
-		const WCHAR *pszFree=g_localizeStrings.Get(160).c_str();
-		const WCHAR *pszUnavailable=g_localizeStrings.Get(161).c_str();
-		if (GetDiskFreeSpaceEx( "C:\\", NULL, NULL, &lTotalFreeBytes))
-		{
-			swprintf(wszHD, L"%s C: %u Mb ", pszDrive,lTotalFreeBytes.QuadPart/1048576); //To make it MB
-			wcscat(wszHD,pszFree);
-		} 
-		else {
-			swprintf(wszHD, L"%s C: ",pszDrive);
-			wcscat(wszHD,pszUnavailable);
-		}
-		{
-			SET_CONTROL_LABEL(10,wszHD);
-		}
-		if (GetDiskFreeSpaceEx( "E:\\", NULL, NULL, &lTotalFreeBytes))
-		{
-			swprintf(wszHD, L"%s E: %u Mb ", pszDrive,lTotalFreeBytes.QuadPart/1048576); //To make it MB
-			wcscat(wszHD,pszFree);
-		} 
-		else {
-			swprintf(wszHD, L"%s E: ",pszDrive);
-			wcscat(wszHD,pszUnavailable);
-		}
-		{
-			SET_CONTROL_LABEL(12,wszHD);
-		}
-		if (GetDiskFreeSpaceEx( "F:\\", NULL, NULL, &lTotalFreeBytes))
-		{
-			swprintf(wszHD, L"%s F: %u Mb ", pszDrive,lTotalFreeBytes.QuadPart/1048576); //To make it MB
-			wcscat(wszHD,pszFree);
-		} 
-		else {
-			swprintf(wszHD, L"%s F: ",pszDrive);
-			wcscat(wszHD,pszUnavailable);
-		}
-		{
-			SET_CONTROL_LABEL(13,wszHD);
-		}
-		if (GetDiskFreeSpaceEx( "G:\\", NULL, NULL, &lTotalFreeBytes))
-		{
-			swprintf(wszHD, L"%s G: %u Mb ", pszDrive,lTotalFreeBytes.QuadPart/1048576); //To make it MB
-			wcscat(wszHD,pszFree);
-		} 
-		else {
-			swprintf(wszHD, L"%s G: ",pszDrive);
-			wcscat(wszHD,pszUnavailable);
-		}
-		{
-			SET_CONTROL_LABEL(17,wszHD);
-		}
-	}
 	{
 
 		CIoSupport m_pIOhelp;
