@@ -2099,6 +2099,21 @@ CStdString CUtil::GetNextFilename(const char* fn_template, int max)
 	return ""; // no fn generated
 }
 
+void CUtil::SetBrightnessContrastGammaPercent(int iBrightNess, int iContrast, int iGamma, bool bImmediate)
+{
+  if (iBrightNess < 0) iBrightNess=0;
+  if (iBrightNess >100) iBrightNess=100;
+  if (iContrast < 0) iContrast=0;
+  if (iContrast >100) iContrast=100;
+  if (iGamma < 0) iGamma=0;
+  if (iGamma >100) iGamma=100;
+
+  float fBrightNess=(((float)iBrightNess)/50.0f) -1.0f;
+  float fContrast=(((float)iContrast)/33.3f);
+  float fGamma=(((float)iGamma)/33.3f)+0.5f;
+  CUtil::SetBrightnessContrastGamma(fBrightNess, fContrast, fGamma, bImmediate);
+}
+
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x))
 // Valid ranges:
 //  brightness -1 -> 1

@@ -1257,6 +1257,9 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
     g_stSettings.m_bNonInterleaved=false;
     m_iAudioStreamIDX=-1;
 
+    g_settings.m_iBrightness=50;
+    g_settings.m_iContrast=50;
+    g_settings.m_iGamma=50;
   }
   m_strCurrentFile=strFile;
   
