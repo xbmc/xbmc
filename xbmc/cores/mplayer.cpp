@@ -601,6 +601,13 @@ bool CMPlayer::openfile(const CStdString& strFile)
 	{
 		Create();
 	}
+
+  // if it turns out to b a video file after all, then 
+  // make sure the cache is set to at least 1 meg
+  if (HasVideo() && iCacheSize==256)
+  {
+    mplayer_setcache_size(1024);
+  }
 	
 	return true;
 }
