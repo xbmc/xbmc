@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 29-10-2004 added: My Programs now displays shares in panel (same as other sections)
   - 28-10-2004 updated: Oct 24th compiled mplayer.dll
   - 28-10-2004 changed: removed .nfo from XboxMediaCenter.xml default <videoextensions> and added .rar|.001
   - 28-10-2004 updated: added .001 to be handled as rar in Util.cpp (used with ccxstream_unrar for streaming video from rar files)
