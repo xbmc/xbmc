@@ -1052,7 +1052,7 @@
   </string>
   <string>
     <id>334</id>
-    <value>Musikbibliothek aufräumen</value>
+    <value>Musikbibliothek aufräumen...</value>
   </string>
   <string>
     <id>335</id>
@@ -1304,7 +1304,7 @@
   </string>
   <string>
     <id>397</id>
-    <value>Aktualisieren nach </value>
+    <value>Aktualisieren alle</value>
   </string>
   <string>
     <id>398</id>
@@ -1400,11 +1400,11 @@
   </string>
   <string>
     <id>422</id>
-    <value>Albuminfo löschen</value>
+    <value>Albuminfo löschen...</value>
   </string>
   <string>
     <id>423</id>
-    <value>CDDB info löschen</value>
+    <value>CDDB info löschen...</value>
   </string>
   <string>
     <id>424</id>
@@ -1536,7 +1536,7 @@
   </string>
   <string>
     <id>455</id>
-    <value>Reihen:</value>
+    <value>Reihen</value>
   </string>
   <string>
     <id>456</id>
@@ -1992,11 +1992,11 @@
   </string>
   <string>
     <id>736</id>
-    <value>Stil:</value>
+    <value>Stil</value>
   </string>
   <string>
     <id>737</id>
-    <value>Farbe:</value>
+    <value>Farbe</value>
   </string>
   <string>
     <id>738</id>
@@ -2315,8 +2315,12 @@
     <value>Unbekannt</value>
   </string>
   <string>
+    <id>13299</id>
+    <value>Angestrebte Temperatur</value>
+  </string>
+  <string>
     <id>13300</id>
-    <value>Lüfter Geschw.:</value>
+    <value>Geschwindigkeit in %</value>
   </string>
   <string>
     <id>13301</id>
@@ -2324,7 +2328,7 @@
   </string>
   <string>
     <id>13302</id>
-    <value>Lüftergeschwindigkeit</value>
+    <value>Lüftergeschwindigkeit einstellen</value>
   </string>
   <string>
     <id>13303</id>
@@ -2372,7 +2376,7 @@
   </string>
   <string>
     <id>13314</id>
-    <value>Music OSD deaktivieren nach</value>
+    <value>OSD deaktivieren nach</value>
   </string>
   <string>
     <id>13315</id>
@@ -2506,37 +2510,136 @@
     <id>14009</id>
     <value>Spiele Verzeichnis</value>
   </string>
-  <string><id>14010</id><value>Autoswitch Optionen</value></string>
-  <string><id>14011</id><value>Autoswitching aktivieren?</value></string>
-  <string><id>14012</id><value>Große Symbole verwenden</value></string>
-  <string><id>14013</id><value>Methode:</value></string>
-  <string><id>14014</id><value>Prozent:</value></string>
-  <string><id>14015</id><value>Symbole wenn keine Dateien</value></string>
-  <string><id>14016</id><value>Liste wenn keine Verzeichnisse</value></string>
-  <string><id>14017</id><value>Symbole in Prozent</value></string>
-  <string><id>14018</id><value>Ansicht</value></string>
-  <string><id>14019</id><value>Ort 1</value></string>
-  <string><id>14020</id><value>Ort 2</value></string>
-  <string><id>14021</id><value>Ort 3</value></string>
-  <string><id>14022</id><value>Bibliothek</value></string>
-  <string><id>14023</id><value>Kein TV</value></string>
-  <string><id>14024</id><value>Bitte eine nächstgelege große Stadt oder einen US ZIP code eingeben</value></string>
-  <string><id>14025</id><value>Video von Festplatte</value></string>
-  <string><id>14026</id><value>Video von DVDRom</value></string>
-  <string><id>14027</id><value>Video vom lokalen Netzwerk</value></string>
-  <string><id>14028</id><value>Video aus dem Internet</value></string>
-  <string><id>14029</id><value>Audio von Festplatte</value></string>
-  <string><id>14030</id><value>Audio von DVDRom</value></string>
-  <string><id>14031</id><value>Audio vom lokalen Netzwerk</value></string>
-  <string><id>14032</id><value>Audio aus dem Internet</value></string>
-  <string><id>14033</id><value>DVD von Festplatte</value></string>
-  <string><id>14034</id><value>DVD von DVDRom</value></string>
-  <string><id>14035</id><value>DVD vom lokalen Netzwerk</value></string>
-  <string><id>14036</id><value>Server</value></string>
-  <string><id>14037</id><value>Darstellung</value></string>
-  <string><id>14038</id><value>Netwerkeinstellungen verändert</value></string>
-  <string><id>14039</id><value>XBMC muss neu gestartet werden damit die Änderungen</value></string>
-  <string><id>14040</id><value>Wirksam werden.  Soll jetzt neu gestartet werden?</value></string>
-  <string><id>14041</id><value>Post Processing</value></string>
-  <string><id>14042</id><value>Engine IP Addresse</value></string>
+  <string>
+    <id>14010</id>
+    <value>Autoswitch Optionen</value>
+  </string>
+  <string>
+    <id>14011</id>
+    <value>Autoswitching aktivieren</value>
+  </string>
+  <string>
+    <id>14012</id>
+    <value>Große Symbole verwenden</value>
+  </string>
+  <string>
+    <id>14013</id>
+    <value>Methode</value>
+  </string>
+  <string>
+    <id>14014</id>
+    <value>Prozent</value>
+  </string>
+  <string>
+    <id>14015</id>
+    <value>Symbole wenn keine Dateien</value>
+  </string>
+  <string>
+    <id>14016</id>
+    <value>Liste wenn keine Verzeichnisse</value>
+  </string>
+  <string>
+    <id>14017</id>
+    <value>Symbole in Prozent</value>
+  </string>
+  <string>
+    <id>14018</id>
+    <value>Ansicht</value>
+  </string>
+  <string>
+    <id>14019</id>
+    <value>Ort 1</value>
+  </string>
+  <string>
+    <id>14020</id>
+    <value>Ort 2</value>
+  </string>
+  <string>
+    <id>14021</id>
+    <value>Ort 3</value>
+  </string>
+  <string>
+    <id>14022</id>
+    <value>Bibliothek</value>
+  </string>
+  <string>
+    <id>14023</id>
+    <value>Kein TV</value>
+  </string>
+  <string>
+    <id>14024</id>
+    <value>Bitte eine nächstgelege große Stadt oder einen US ZIP code eingeben</value>
+  </string>
+  <string>
+    <id>14025</id>
+    <value>Video von Festplatte</value>
+  </string>
+  <string>
+    <id>14026</id>
+    <value>Video von DVDRom</value>
+  </string>
+  <string>
+    <id>14027</id>
+    <value>Video vom lokalen Netzwerk</value>
+  </string>
+  <string>
+    <id>14028</id>
+    <value>Video aus dem Internet</value>
+  </string>
+  <string>
+    <id>14029</id>
+    <value>Audio von Festplatte</value>
+  </string>
+  <string>
+    <id>14030</id>
+    <value>Audio von DVDRom</value>
+  </string>
+  <string>
+    <id>14031</id>
+    <value>Audio vom lokalen Netzwerk</value>
+  </string>
+  <string>
+    <id>14032</id>
+    <value>Audio aus dem Internet</value>
+  </string>
+  <string>
+    <id>14033</id>
+    <value>DVD von Festplatte</value>
+  </string>
+  <string>
+    <id>14034</id>
+    <value>DVD von DVDRom</value>
+  </string>
+  <string>
+    <id>14035</id>
+    <value>DVD vom lokalen Netzwerk</value>
+  </string>
+  <string>
+    <id>14036</id>
+    <value>Server</value>
+  </string>
+  <string>
+    <id>14037</id>
+    <value>Darstellung</value>
+  </string>
+  <string>
+    <id>14038</id>
+    <value>Netwerkeinstellungen verändert</value>
+  </string>
+  <string>
+    <id>14039</id>
+    <value>XBMC muss neu gestartet werden damit die Änderungen</value>
+  </string>
+  <string>
+    <id>14040</id>
+    <value>wirksam werden.  Soll jetzt neu gestartet werden?</value>
+  </string>
+  <string>
+    <id>14041</id>
+    <value>Post Processing</value>
+  </string>
+  <string>
+    <id>14042</id>
+    <value>Engine IP Addresse</value>
+  </string>
 </strings>
