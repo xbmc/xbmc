@@ -513,8 +513,10 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		if (!bFileOnInternet && bIsVideo)
 		{
 			CUtil::CacheSubtitles(strFile);
+			CUtil::PrepareSubtitleFonts();
 		}
-		CUtil::PrepareSubtitleFonts();
+		else
+			CUtil::ClearSubtitles();
 		m_iPTS			= 0;
 		m_bPaused	  = false;
 

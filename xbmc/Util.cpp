@@ -1513,6 +1513,36 @@ void CUtil::RemoveIllegalChars( CStdString& strText)
   strText=szRemoveIllegal;
 }
 
+void CUtil::ClearSubtitles()
+{
+	//delete cached subs
+	WIN32_FIND_DATA wfd;
+	CAutoPtrFind hFind ( FindFirstFile("Z:\\*.*",&wfd));
+
+	if (hFind.isValid())
+	{
+		do
+		{
+			if (wfd.cFileName[0]!=0)
+			{
+				if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)==0 )
+				{
+					CStdString strFile;
+					strFile.Format("Z:\\%s", wfd.cFileName);
+					if (strFile.Find("subtitle")>=0 )
+					{
+						::DeleteFile(strFile.c_str());
+					}
+					else if (strFile.Find("vobsub_queue")>=0 )
+					{
+						::DeleteFile(strFile.c_str());
+					}
+				}
+			}
+		} while (FindNextFile((HANDLE)hFind, &wfd));
+	}
+}
+
 void CUtil::CacheSubtitles(const CStdString& strMovie)
 {
   char * sub_exts[] = {  ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx",".ifo", NULL};
@@ -1523,35 +1553,8 @@ void CUtil::CacheSubtitles(const CStdString& strMovie)
   if (CUtil::HasSlashAtEnd(strPath)) strPath=strPath.Left(strPath.size()-1);
 
   g_directoryCache.ClearDirectory(strPath);
-  g_directoryCache.ClearDirectory(strPath);
 
-
-  //delete cached subs
-  WIN32_FIND_DATA wfd;
-  CAutoPtrFind hFind ( FindFirstFile("Z:\\*.*",&wfd));
-
-  if (hFind.isValid())
-  {
-    do
-    {
-      if (wfd.cFileName[0]!=0)
-      {
-        if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)==0 )
-        {
-          CStdString strFile;
-          strFile.Format("Z:\\%s", wfd.cFileName);
-          if (strFile.Find("subtitle")>=0 )
-          {
-            ::DeleteFile(strFile.c_str());
-          }
-					else if (strFile.Find("vobsub_queue")>=0 )
-					{
-						::DeleteFile(strFile.c_str());
-					}
-        }
-      }
-    } while (FindNextFile((HANDLE)hFind, &wfd));
-  }
+	ClearSubtitles();
 
   CURL url(strMovie);
   if (url.GetProtocol() =="http" || url.GetProtocol()=="HTTP") return ;
