@@ -117,6 +117,15 @@ bool CPlayListPLS::Load(const CStdString& strFileName)
 	}
 	file.Close();
 
+	// check for missing entries
+	for (ivecItems p = m_vecItems.begin(); p != m_vecItems.end(); ++p)
+	{
+		while (p->GetFileName().empty() && p != m_vecItems.end())
+		{
+			p = m_vecItems.erase(p);
+		}
+	}
+
 	return true;
 }
 
