@@ -108,10 +108,10 @@ bool  CSndtrkDirectory::IsAlone(const CStdString& strPath)
 	return true;
 }
 
-void CSndtrkDirectory::FindTrackName(const CStdString& strPath, char *NameOfSong)
+bool CSndtrkDirectory::FindTrackName(const CStdString& strPath, char *NameOfSong)
 {
 	char* ptr = strstr(strPath.c_str(),"E:\\TDATA\\fffe0000\\music\\");
-	if(ptr == NULL)	return;
+	if(ptr == NULL)	return false;
 	ptr+=strlen("E:\\TDATA\\fffe0000\\music\\");
 	char album[5];
 	int x = 0;
@@ -144,9 +144,10 @@ void CSndtrkDirectory::FindTrackName(const CStdString& strPath, char *NameOfSong
 		if(dwSongId==SongID)
 		{
 			wcstombs(NameOfSong,Songname,64);
-			return;
+			return true;
 		}
 		x++;
 	}
+	return false;
 }
 
