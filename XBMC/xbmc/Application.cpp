@@ -754,6 +754,7 @@ void CApplication::OnKey(CKey& key)
 
 void CApplication::FrameMove()
 {
+
   static lTickCount=0;
   if (GetTickCount()-lTickCount >=1000)
   {
@@ -762,6 +763,15 @@ void CApplication::FrameMove()
     CStdString strTime;
     strTime.Format("%02.2i:%02.2i:%02.2i %02.2i-%02.2i-%02.2i", time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
     g_lcd.SetLine(1,strTime);
+	  MEMORYSTATUS stat;
+	  GlobalMemoryStatus(&stat);
+		DWORD dwMegFree=stat.dwAvailPhys / (1024*1024);
+    strTime.Format("Freemem:%i meg", dwMegFree);
+    g_lcd.SetLine(2,strTime);
+
+		int  iResolution=g_graphicsContext.GetVideoResolution();
+		strTime.Format("%ix%i %s", g_settings.m_ResInfo[iResolution].iWidth, g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].strMode);
+    g_lcd.SetLine(3,strTime);
     lTickCount=GetTickCount();
   }
   // read raw input from controller & remote control
