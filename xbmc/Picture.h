@@ -38,7 +38,6 @@ private:
   static const DWORD FVF_VERTEX = D3DFVF_XYZRHW|D3DFVF_DIFFUSE|D3DFVF_TEX1;
 
 	IDirect3DTexture8*				GetTexture( CxImage& image );
-	IDirect3DTexture8*				GetYUY2Texture( CxImage& image );
 	void											Free();
 	bool											m_bSectionLoaded;
 	DWORD											m_dwHeight;
