@@ -78,6 +78,7 @@ void audio_pause();
 void audio_resume();
 
 extern void tracker_free_mplayer_dlls(void);
+extern "C" void save_registry(void);
 extern "C" void free_registry(void);
 extern void xbox_video_wait();
 extern void xbox_video_CheckScreenSaver();	// Screensaver check
@@ -567,6 +568,7 @@ CMPlayer::~CMPlayer()
 		criticalsection_head = entry->Next;
 		delete entry;
 	}	//fix winnt and xbox critical data mismatch issue.
+  save_registry(); // save registry to disk
 	free_registry();	//free memory take by registry structures
 	smb.Purge(); // close any open smb sessions
 }
