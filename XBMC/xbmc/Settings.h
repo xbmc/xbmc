@@ -22,18 +22,52 @@ using namespace std;
 #define CACHE_AUDIO 0
 #define CACHE_VIDEO 1
 #define CACHE_VOB   2
+
+
+/*!
+	\ingroup windows
+	\brief Represents a share.
+	\sa VECSHARES, IVECSHARES
+	*/
 class CShare
 {
 	public:
     CShare(){};
     virtual ~CShare(){};
-		CStdString strName;
-		CStdString strPath;
-		int        m_iBufferSize;
+		CStdString strName;	///< Name of the share, can be choosen freely.
+		CStdString strPath;	///< Path of the share, eg. iso9660:// or F:
+		int        m_iBufferSize;		///< Cachesize of the share
+
+		/*!
+			\brief The type of the share.
+
+				Value can be:
+				- SHARE_TYPE_UNKNOWN \n
+					Unknown share, maybe a wrong path.
+				- SHARE_TYPE_LOCAL \n
+					Harddisk share.
+				- SHARE_TYPE_DVD \n
+					DVD-ROM share of the build in drive, strPath may vary.
+				- SHARE_TYPE_VIRTUAL_DVD \n
+					DVD-ROM share, strPath is fix.
+				- SHARE_TYPE_REMOTE \n
+					Network share.
+			*/
 		int        m_iDriveType;
 
 };
+/*!
+	\ingroup windows
+	\brief A vector to hold CShare objects.
+	\sa CShare, IVECSHARES
+	*/
 typedef vector<CShare> VECSHARES;
+
+/*!
+	\ingroup windows
+	\brief Iterator of VECSHARES.
+	\sa CShare, VECSHARES
+	*/
 typedef vector<CShare>::iterator IVECSHARES;
 
 class CFileTypeIcon
