@@ -211,6 +211,26 @@ HRESULT CVoiceManager::Initialize( VOICE_MANAGER_CONFIG* pConfig )
 {
     HRESULT hr = S_OK;
 
+    // Set up chatters
+    m_pChatters                     = NULL;
+    m_bIsInChatSession              = FALSE;
+    m_pLoopbackChatters             = NULL;
+
+    // Set up communicators
+    m_dwConnectedCommunicators      = 0;
+    m_dwMicrophoneState             = 0;
+    m_dwHeadphoneState              = 0;
+    m_dwLoopback                    = 0;
+    m_dwEnabled                     = 0x0000000F;
+    m_bVoiceThroughSpeakers         = FALSE;
+
+    // Set up buffers
+    m_pbTempEncodedPacket           = NULL;
+    m_pbCompletedPackets            = NULL;
+    m_dwNumCompletedPackets         = 0;
+
+	m_nSilentFrameCounter			= 0;
+
     // Must have at least 1 remote player
     assert( pConfig->dwMaxRemotePlayers > 0 );
 
@@ -581,10 +601,6 @@ HRESULT CVoiceManager::OnCompletedPacket( DWORD dwControllerPort, VOID* pvData, 
     {
         // If this communicator is in loopback mode, we'll submit the packet
         // to the corresponding loopback chatter
-//      XMEDIAPACKET xmp = {0};
-//      xmp.dwMaxSize = dwSize;
-//      xmp.pvBuffer = pvData;
-//		m_pLoopbackChatters[ dwControllerPort ].pPacketQueue->Push(xmp);
 		m_pLoopbackChatters[ dwControllerPort ].pPacketQueue->Write((LPBYTE)pvData);
     }
     else
@@ -929,12 +945,7 @@ HRESULT CVoiceManager::ReceivePacket( DWORD dwPlayer, VOID* pvData, INT nSize )
     DWORD chatterIndex = ChatterIndexFromDUID( dwPlayer );
     if( chatterIndex < m_cfg.dwMaxRemotePlayers )
     {
-        //XMEDIAPACKET xmp = {0};
-
         // Send the packet to the queue
-        //xmp.pvBuffer  = pvData;
-        //xmp.dwMaxSize = nSize;
-		//m_pChatters[ chatterIndex ].pPacketQueue->Push(xmp);
 		m_pChatters[ chatterIndex ].pPacketQueue->Write((LPBYTE)pvData);
     }
     else
@@ -1223,13 +1234,8 @@ HRESULT CVoiceManager::MicrophonePacketCallback( DWORD dwPort, LPVOID pPacketCon
 			{
 				high=pSample[i];
 			}
-			if (pSample[i]<low)
-			{
-				low=pSample[i];
-			}
 		}
 
-		short difference = high-low;
 		m_nSilentFrameCounter = (high<100) ? (m_nSilentFrameCounter+1) : 0;
 
 		// If we haven't detected 3000ms (150 frames) of silence then encode the
@@ -1319,19 +1325,9 @@ HRESULT CVoiceManager::StreamPacketCallback( REMOTE_CHATTER* pChatter, LPVOID pP
     //      drift compensation buffer, then submit the last
     //      packet to the stream.
 	XMEDIAPACKET xmpCompressed;
-//	if (!pChatter->pPacketQueue->IsEmpty())
+
 	if (pChatter->pPacketQueue->Read(xmpCompressed))
 	{
-		// Queue has a packet ready
-		//XMEDIAPACKET    xmpCompressed;
-
-		// Grab a temporary packet
-		//GetTemporaryPacket( &xmpCompressed );
-
-		// Get a packet from the queue - this must succeed, since the
-		// queue just told us it was ready to give us data
-		//pChatter->pPacketQueue->Pop(xmpCompressed);
-		
         // The queue gave us a compressed packet - we need to decode it
         pChatter->bIsTalking = TRUE;
 
@@ -1342,7 +1338,6 @@ HRESULT CVoiceManager::StreamPacketCallback( REMOTE_CHATTER* pChatter, LPVOID pP
 		speex_bits_read_from(&pChatter->m_bits, (char*) xmpCompressed.pvBuffer, xmpCompressed.dwMaxSize);
 		speex_decode(pChatter->m_dec_state, &pChatter->m_bits, (short*)xmpDriftPacket.pvBuffer);
 
-		//pChatter->pPacketQueue->Dispose(xmpCompressed);
 		*xmpCompressed.pdwStatus = XMEDIAPACKET_STATUS_SUCCESS;
 
         // Restore floating point state

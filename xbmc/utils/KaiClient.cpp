@@ -37,60 +37,84 @@ void CKaiClient::QueryVectorPlayerCount(CStdString& aVector)
 
 CKaiClient::CKaiClient(void) : CUdpClient()
 {
-	CLog::Log(LOGNOTICE, "KAICLIENT: Instantiating...");
+	CLog::Log(LOGINFO, "KAICLIENT: Instantiating...");
 	observer = NULL;
-	m_bHosting = FALSE;
+	m_bHosting	= FALSE;
+	m_pDSound	= NULL;
 
-	// outbound packet queue, we collect packets in this queue until we have sufficient
-	// to send them to the xlink engine.
+	// outbound packet queue, collects compressed audio until sufficient to send
 	CStdString strEgress = "egress";
-	//m_pEgress  = new CMediaPacketQueue(strEgress,COMPRESSED_FRAME_SIZE,MAX_VOICE_PER_SEND);
 	m_pEgress  = new CMediaPacketQueue(strEgress);
 
 	Create();
 
-	CLog::Log(LOGNOTICE, "KAICLIENT: Ready.");
+	CLog::Log(LOGINFO, "KAICLIENT: Ready.");
 }
 
-void CKaiClient::Initialize()
+void CKaiClient::VoiceChatStart()
 {
-	CLog::Log(LOGNOTICE, "KAICLIENT: Initializing DirectSound...");
-	DirectSoundCreate( NULL, &m_pDSound, NULL );
+	if(!m_pDSound)
+	{
+		CLog::Log(LOGINFO, "KAICLIENT: Initializing DirectSound...");
+		if (FAILED(DirectSoundCreate( NULL, &m_pDSound, NULL )))
+		{
+			CLog::Log(LOGERROR, "KAICLIENT: Failed to initialize DirectSound.");
+		}
 
-	DSEFFECTIMAGELOC dsImageLoc;
-	dsImageLoc.dwI3DL2ReverbIndex = GraphI3DL2_I3DL2Reverb;
-	dsImageLoc.dwCrosstalkIndex = GraphXTalk_XTalk;
+		DSEFFECTIMAGELOC dsImageLoc;
+		dsImageLoc.dwI3DL2ReverbIndex = GraphI3DL2_I3DL2Reverb;
+		dsImageLoc.dwCrosstalkIndex = GraphXTalk_XTalk;
 
-	CLog::Log(LOGNOTICE, "KAICLIENT: Loading sound effects image...");
-	LPDSEFFECTIMAGEDESC pdsImageDesc;
-	XAudioDownloadEffectsImage( "dsstdfx", &dsImageLoc, XAUDIO_DOWNLOADFX_XBESECTION, &pdsImageDesc );
+		CLog::Log(LOGINFO, "KAICLIENT: Loading sound effects image...");
+		LPDSEFFECTIMAGEDESC pdsImageDesc;
+		if (FAILED(XAudioDownloadEffectsImage( "dsstdfx", &dsImageLoc, XAUDIO_DOWNLOADFX_XBESECTION, &pdsImageDesc )))
+		{
+			CLog::Log(LOGERROR, "KAICLIENT: Failed to load image.");
+		}
 
-	// Configure the voice manager.
-	VOICE_MANAGER_CONFIG VoiceConfig;
-	VoiceConfig.dwVoicePacketTime       = 20;      // 20ms per microphone callback
-	VoiceConfig.dwMaxRemotePlayers      = 12;      // 12 remote players
-	VoiceConfig.dwFirstSRCEffectIndex   = GraphVoice_Voice_0;
-	VoiceConfig.pEffectImageDesc        = pdsImageDesc;
-	VoiceConfig.pDSound                 = m_pDSound;
-	VoiceConfig.dwMaxStoredPackets      = MAX_VOICE_PER_SEND;
+		// Configure the voice manager.
+		VOICE_MANAGER_CONFIG VoiceConfig;
+		VoiceConfig.dwVoicePacketTime       = 20;      // 20ms per microphone callback
+		VoiceConfig.dwMaxRemotePlayers      = 12;      // 12 remote players
+		VoiceConfig.dwFirstSRCEffectIndex   = GraphVoice_Voice_0;
+		VoiceConfig.pEffectImageDesc        = pdsImageDesc;
+		VoiceConfig.pDSound                 = m_pDSound;
+		VoiceConfig.dwMaxStoredPackets      = MAX_VOICE_PER_SEND;
 
-	VoiceConfig.pCallbackContext        = this;
-	VoiceConfig.pfnCommunicatorCallback = CommunicatorCallback;
-	VoiceConfig.pfnVoiceDataCallback    = VoiceDataCallback;
+		VoiceConfig.pCallbackContext        = this;
+		VoiceConfig.pfnCommunicatorCallback = CommunicatorCallback;
+		VoiceConfig.pfnVoiceDataCallback    = VoiceDataCallback;
 
-	CLog::Log(LOGNOTICE, "KAICLIENT: Initializing voice manager...");
-	m_VoiceTimer.Start();
-	g_VoiceManager.Initialize( &VoiceConfig );
+		CLog::Log(LOGNOTICE, "KAICLIENT: Initializing voice manager...");
+		if (FAILED(g_VoiceManager.Initialize( &VoiceConfig )))
+		{
+			CLog::Log(LOGERROR, "KAICLIENT: Failed to initialize voice manager.");
+		}
 
-	m_bSpeex = FALSE;
-	CLog::Log(LOGNOTICE, "KAICLIENT: Sound system intialized.");
+		CLog::Log(LOGINFO, "KAICLIENT: Voice chat enabled.");
 
-	#ifdef SPEEX_LOOPBACK
-	g_VoiceManager.EnterChatSession();
-	m_VoiceTimer.StartZero();
-	m_bSpeex = TRUE;
-	g_VoiceManager.AddChatter(g_speexLoopbackPlayerId);
-	#endif
+		g_VoiceManager.EnterChatSession();
+		m_VoiceTimer.StartZero();
+
+		#ifdef SPEEX_LOOPBACK
+		g_VoiceManager.AddChatter(g_speexLoopbackPlayerId);
+		#endif
+	}
+}
+
+void CKaiClient::VoiceChatStop()
+{
+	if(m_pDSound)
+	{
+		CLog::Log(LOGINFO, "KAICLIENT: Releasing DirectSound...");
+		g_VoiceManager.LeaveChatSession();
+// TODO: we really ought to shutdown, but somethings up - I can never seem to reinit properly.
+//		g_VoiceManager.Shutdown();
+		m_pDSound->Release();
+		m_pDSound=NULL;
+		m_pEgress->Flush();
+		CLog::Log(LOGINFO, "KAICLIENT: Voice chat disabled.");
+	}
 }
 
 CKaiClient::~CKaiClient(void)
@@ -363,14 +387,11 @@ void CKaiClient::SendVoiceDataToEngine()
 			int messageOffset = strlen(buffer);
 			for(int i=0; i<nPackets; i++, messageOffset+= COMPRESSED_FRAME_SIZE)
 			{
-				//XMEDIAPACKET outboundPacket = {0};
-				//m_pEgress->Pop(outboundPacket);
 				XMEDIAPACKET outboundPacket;
 				m_pEgress->Read(outboundPacket);
 				
 				memcpy((LPVOID)&buffer[messageOffset],outboundPacket.pvBuffer,COMPRESSED_FRAME_SIZE);
 
-				//m_pEgress->Dispose(outboundPacket);
 				*outboundPacket.pdwStatus = XMEDIAPACKET_STATUS_SUCCESS;
 			}
 
@@ -500,20 +521,13 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_SPEEX_START")==0)
 			{
-				if (!m_bSpeex)
-				{
-					CLog::Log(LOGINFO,"Speex started.");
-
-					g_VoiceManager.EnterChatSession();
-					m_VoiceTimer.StartZero();
-					m_bSpeex = TRUE;
-				}
+				VoiceChatStart();
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_SPEEX")==0)
 			{
 				CStdString strContactName = strtok(NULL, ";");
 
-				if (m_bSpeex)
+				if (m_pDSound)
 				{
 					DWORD playerId = Crc32FromString(strContactName);
 					BOOL bRegistered = g_VoiceManager.IsPlayerRegistered( playerId );
@@ -539,17 +553,10 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 						CLog::Log(LOGERROR,"Failed to queue contact voice.");
 					}
 				}
-
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_SPEEX_STOP")==0)
 			{
-				if (m_bSpeex)
-				{
-					CLog::Log(LOGINFO,"Speex stopped.");
-					m_bSpeex = FALSE;
-
-					g_VoiceManager.LeaveChatSession();
-				}
+				VoiceChatStop();
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_SPEEX_RING")==0)
 			{
@@ -789,12 +796,15 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 
 void CKaiClient::ProcessVoice()
 {
-	g_VoiceManager.ProcessVoice();
-
-	// Make sure we send voice data at an appropriate rate
-	if( m_VoiceTimer.GetElapsedSeconds() > VOICE_SEND_INTERVAL )
+	if (m_pDSound)
 	{
-		SendVoiceDataToEngine();
+		g_VoiceManager.ProcessVoice();
+
+		// Make sure we send voice data at an appropriate rate
+		if( m_VoiceTimer.GetElapsedSeconds() > VOICE_SEND_INTERVAL )
+		{
+			SendVoiceDataToEngine();
+		}
 	}
 }
 // Called whenever voice data is produced by the voice system
@@ -806,13 +816,8 @@ void CKaiClient::VoiceDataCallback( DWORD dwPort, DWORD dwSize, VOID* pvData, VO
 
 void CKaiClient::OnVoiceData( DWORD dwControllerPort, DWORD dwSize, VOID* pvData )
 {
-	if (m_bSpeex)
+	if (m_pDSound)
 	{
-		//XMEDIAPACKET xmp = {0};
-		//xmp.dwMaxSize = dwSize;
-		//xmp.pvBuffer = pvData;
-
-		//m_pEgress->Push(xmp);
 		m_pEgress->Write((LPBYTE)pvData);
 
 		// We've set up our voice timer such that it SHOULD cause us to send out 

@@ -793,7 +793,6 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiMyBuddies);						    // window id = 2700 BUDDIES
 
 	g_DownloadManager.Initialize();
-	CKaiClient::GetInstance()->Initialize();
 	CKaiClient::GetInstance()->SetObserver(&m_guiMyBuddies);
 
 	/* window id's 3000 - 3100 are reserved for python */
