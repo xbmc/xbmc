@@ -101,6 +101,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
         CONTROL_ENABLE(GetID(),CONTROL_DISC);
         char szNumber[1024];
         int iPos=0;
+        bool bNumber=false;
         for (int i=0; i < (int)m_pMovie->m_strDVDLabel.size();++i)
         {
           char kar=m_pMovie->m_strDVDLabel.GetAt(i);
@@ -109,12 +110,19 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
             szNumber[iPos]=kar;
             iPos++;
             szNumber[iPos]=0;
+            bNumber=true;
+          }
+          else
+          {
+            if (bNumber) break;
           }
         }
         int iDVD=0;
         if (strlen(szNumber))
         {
           sscanf(szNumber,"%i", &iDVD);
+          if (iDVD <0 && iDVD >=100)
+            iDVD=0;
         }
         if (iDVD<=0) iDVD=1;
         iItem=iDVD+1;
