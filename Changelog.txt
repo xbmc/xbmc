@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 24-08-2004 fixed: my video: directory history for virtual directory was broken
   - 24-08-2004 fixed: album info from allmusic.com
   - 23-08-2004 fixed: Fan was always set to custom mode even if tempcontrol and fanspeed were both disabled
   - 23-08-2004 updated: Spanish string.xml (thnx ezar2003)
