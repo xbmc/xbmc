@@ -1180,8 +1180,18 @@ static void lschunks(demuxer_t* demuxer,int level,off_t endpos,mov_track_t* trak
 		      mp_msg(MSGT_DEMUX, MSGL_INFO, "Using default QT grayscale palette\n");
 		      if (palette_count == 16)
 		        memcpy(palette_map, qt_default_grayscale_palette_16, 16 * 4);
-		      else if (palette_count == 256)
+		      else if (palette_count == 256) {
 		        memcpy(palette_map, qt_default_grayscale_palette_256, 256 * 4);
+		        if (trak->fourcc == mmioFOURCC('c','v','i','d')) {
+		          int i;
+		          // Hack for grayscale CVID, negative palette
+		          // If you have samples where this is not required contact me (rxt)
+		          mp_msg(MSGT_DEMUX, MSGL_INFO, "MOV: greyscale cvid with default palette,"
+		            " enabling negative palette hack.\n");
+		          for (i = 0; i < 256 * 4; i++)
+		            palette_map[i] = palette_map[i] ^ 0xff;
+		        }
+		      }
 		    }
 		    else
 		    {
@@ -1252,7 +1262,7 @@ static void lschunks(demuxer_t* demuxer,int level,off_t endpos,mov_track_t* trak
 		break;
 	    }
 	    case MOV_TRAK_GENERIC:
-		mp_msg(MSGT_DEMUX, MSGL_INFO, "Generic track - not completly understood! (id: %d)\n",
+		mp_msg(MSGT_DEMUX, MSGL_INFO, "Generic track - not completely understood! (id: %d)\n",
 		    trak->id);
 		/* XXX: Also this contains the FLASH data */
 
@@ -1794,3 +1804,30 @@ void demux_seek_mov(demuxer_t *demuxer,float pts,int flags){
 
 }
 
+#ifdef _XBOX
+int demux_mov_control(demuxer_t *demuxer, int cmd, void *arg)
+{
+	mov_priv_t *priv = demuxer->priv;
+    demux_stream_t* ds;
+    ds=demuxer->video;
+
+    switch (cmd) {
+        case DEMUXER_CTRL_GET_TIME_LENGTH:
+	    if (priv->duration == 0 && priv->timescale == 0)
+	        return DEMUXER_CTRL_DONTKNOW;
+
+	    *((unsigned long *)arg) = priv->duration / priv->timescale;
+	    return DEMUXER_CTRL_OK;
+
+	case DEMUXER_CTRL_GET_PERCENT_POS:
+	    if (priv->duration == 0)
+	        return DEMUXER_CTRL_DONTKNOW;
+
+	    *((int *)arg) = (int)(100 * ds->pts / (priv->duration / priv->timescale));
+	    return DEMUXER_CTRL_OK;
+
+	default:
+	    return DEMUXER_CTRL_NOTIMPL;
+    }
+}
+#endif

@@ -1,6 +1,6 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
-** Copyright (C) 2003 M. Bakker, Ahead Software AG, http://www.nero.com
+** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -22,7 +22,9 @@
 ** Commercial non-GPL licensing of this software is possible.
 ** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
 **
+** Initially modified for use with MPlayer by Arpad Gereöffy on 2003/08/30
 ** $Id$
+** detailed CVS changelog at http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
 **/
 
 #ifndef __SBR_QMF_H__
@@ -38,13 +40,13 @@ qmfs_info *qmfs_init(uint8_t channels);
 void qmfs_end(qmfs_info *qmfs);
 
 void sbr_qmf_analysis_32(sbr_info *sbr, qmfa_info *qmfa, const real_t *input,
-                         qmf_t *X, uint8_t offset, uint8_t kx);
-void sbr_qmf_analysis_64(qmfa_info *qmfa, const real_t *input,
-                         qmf_t *X, uint8_t maxband, uint8_t offset);
-void sbr_qmf_synthesis_32(qmfs_info *qmfs, const qmf_t *X,
+                         qmf_t X[MAX_NTSRHFG][32], uint8_t offset, uint8_t kx);
+void sbr_qmf_synthesis_64(sbr_info *sbr, qmfs_info *qmfs, qmf_t X[MAX_NTSRHFG][64],
                           real_t *output);
-void sbr_qmf_synthesis_64(sbr_info *sbr, qmfs_info *qmfs, const qmf_t *X,
-                          real_t *output);
+#ifdef USE_SSE
+void sbr_qmf_synthesis_64_sse(sbr_info *sbr, qmfs_info *qmfs, qmf_t X[MAX_NTSRHFG][64],
+                              real_t *output);
+#endif
 
 
 #ifdef __cplusplus

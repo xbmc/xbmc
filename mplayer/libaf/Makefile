@@ -8,7 +8,7 @@ OBJS=$(SRCS:.c=.o)
 
 CFLAGS  = $(OPTFLAGS) -I. -Wall $(EXTRA_INC)
 
-ifeq ($(TARGET_MINGW32),yes)
+ifeq ($(TARGET_OS),MINGW32)
 CFLAGS += -D_IO_H_
 endif
 
@@ -19,6 +19,7 @@ endif
 
 $(LIBNAME):     $(OBJS) Makefile
 	$(AR) r $(LIBNAME) $(OBJS)
+	$(RANLIB) $(LIBNAME)
 
 $(OBJS):af.h control.h dsp.h filter.h window.h af_mp.h
 

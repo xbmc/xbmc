@@ -25,13 +25,16 @@ HRESULT STDCALL CoInitialize(LPVOID pvReserved);
 void STDCALL CoUninitialize(void); 
 #endif
 
-
+#ifdef _XBOX
 HRESULT STDCALL CoInitialize(LPVOID pvReserved)
 {
 }
-void STDCALL CoUninitialize(void) 
+void STDCALL CoUninitialize(void)
 {
 }
+#endif
+
+//void trapbug();
 
 static void DS_Filter_Start(DS_Filter* This)
 {

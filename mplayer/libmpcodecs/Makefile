@@ -21,7 +21,7 @@ endif
 
 ENCODER_SRCS=ve.c ve_divx4.c ve_lavc.c ve_vfw.c ve_raw.c ve_libdv.c ve_xvid.c ve_xvid4.c ve_qtvideo.c ve_nuv.c
 
-NATIVE_SRCS=native/RTjpegN.c native/cinepak.c native/minilzo.c native/nuppelvideo.c native/qtrle.c native/roqav.c native/xa_gsm.c native/decode144.c native/decode288.c
+NATIVE_SRCS=native/RTjpegN.c native/cinepak.c native/minilzo.c native/nuppelvideo.c native/roqav.c native/xa_gsm.c native/decode144.c native/decode288.c
 
 ifeq ($(FAME),yes)
 VFILTER_SRCS += vf_fame.c
@@ -58,9 +58,11 @@ all:    $(LIBNAME) $(LIBNAME2)
 
 $(LIBNAME):     $(OBJS)
 	$(AR) r $(LIBNAME) $(OBJS)
+	$(RANLIB) $(LIBNAME)
 
 $(LIBNAME2):     $(OBJS2)
 	$(AR) r $(LIBNAME2) $(OBJS2)
+	$(RANLIB) $(LIBNAME2)
 
 clean:
 	rm -f *.o *.a *~

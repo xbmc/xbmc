@@ -2,8 +2,8 @@
 #define __TIMER_H
 
 void InitTimer();
-unsigned long GetTimer();
-unsigned long GetTimerMS();
+unsigned int GetTimer();
+unsigned int GetTimerMS();
 //int uGetTimer();
 float GetRelativeTime();
 

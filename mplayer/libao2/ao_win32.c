@@ -30,6 +30,8 @@
 #include "../libvo/fastmemcpy.h"
 #include "osdep/timer.h"
 
+#define WAVE_FORMAT_DOLBY_AC3_SPDIF 0x0092
+
 #define SAMPLESIZE   1024
 #define BUFFER_SIZE  4096
 #define BUFFER_COUNT 16
@@ -37,7 +39,9 @@
 
 static WAVEHDR*     waveBlocks;         //pointer to our ringbuffer memory
 static HWAVEOUT     hWaveOut;           //handle to the waveout device
+#ifdef _XBOX
 static DWORD        restoredvolume;     //saves the volume to restore after playing
+#endif
 static unsigned int buf_write=0;
 static unsigned int buf_write_pos=0;
 static int          full_buffers=0;
@@ -51,6 +55,8 @@ static ao_info_t info =
 	"Sascha Sommer <saschasommer@freenet.de>",
 	""
 };
+
+#ifdef _XBOX
 ao_functions_t audio_out_win32;
 ao_data_t* GetAOData(){
 	return &ao_data;
@@ -72,12 +78,10 @@ void SetAudioFunctions(ao_functions_t* pFunctions)
 	printf(" done\n");
 }
 
-ao_functions_t* GetAudioFunctions() {	
+ao_functions_t* GetAudioFunctions() {
 	return &audio_out_win32;
 }
-
-#if 0
-
+#else
 LIBAO_EXTERN(win32)
 
 static void CALLBACK waveOutProc(HWAVEOUT hWaveOut,UINT uMsg,DWORD dwInstance,  
@@ -148,11 +152,20 @@ static int init(int rate,int channels,int format,int flags)
 	//fill waveformatex
     ZeroMemory( &wformat, sizeof(WAVEFORMATEX));
     wformat.cbSize          = 0; /* size of _extra_ info */
-	wformat.wFormatTag      = WAVE_FORMAT_PCM;  
     wformat.nChannels       = channels;                
     wformat.nSamplesPerSec  = rate;            
-    wformat.wBitsPerSample  = audio_out_format_bits(format); 
-    wformat.nBlockAlign     = wformat.nChannels * (wformat.wBitsPerSample >> 3);
+    if(format == AFMT_AC3)
+    {
+        wformat.wFormatTag      = WAVE_FORMAT_DOLBY_AC3_SPDIF;
+        wformat.wBitsPerSample  = 16;
+        wformat.nBlockAlign     = 4;
+    }
+    else 
+    {
+        wformat.wFormatTag      = WAVE_FORMAT_PCM;
+        wformat.wBitsPerSample  = audio_out_format_bits(format); 
+        wformat.nBlockAlign     = wformat.nChannels * (wformat.wBitsPerSample >> 3);
+    }       
     wformat.nAvgBytesPerSec = wformat.nSamplesPerSec * wformat.nBlockAlign;
  	
     //open sound device
@@ -178,7 +191,6 @@ static int init(int rate,int channels,int format,int flags)
 		mp_msg(MSGT_AO, MSGL_ERR,"ao_win32: unable to open wave mapper device\n");
 		return 0;
     }
-    //save volume
 	//allocate buffer memory as one big block
 	buffer = malloc(totalBufferSize);
 	memset(buffer,0x0,totalBufferSize);
@@ -278,4 +290,4 @@ static float get_delay()
 {
 	return (float)(buffered_bytes + ao_data.buffersize)/(float)ao_data.bps;
 }
-#endif
+#endif //!_XBOX

@@ -4,11 +4,6 @@
  * (C) 2001, MPlayer team.
  */
 
-//XBOX - Temporarily reverted to pre pre4 cod,
-//someting weird is going on with the new code. 
-//the connect command gets a struct the seems to be offset 4 bytes.
-//probably related to the new support for ipv6.
-
 //#define DUMP2FILE
 
 #include <stdio.h>
@@ -37,9 +32,7 @@
 #include "cookies.h"
 #include "url.h"
 #include "asf.h"
-#ifndef STREAMING_LIVE_DOT_COM
 #include "rtp.h"
-#endif
 #include "pnm.h"
 #include "realrtsp/rtsp_session.h"
 
@@ -99,7 +92,8 @@ static struct {
 	// OGG Streaming
 	{ "application/x-ogg", DEMUXER_TYPE_OGG },
 	// NullSoft Streaming Video
-	{ "video/nsv", DEMUXER_TYPE_NSV}
+	{ "video/nsv", DEMUXER_TYPE_NSV},
+	{ "misc/ultravox", DEMUXER_TYPE_NSV}
 
 };
 
@@ -153,7 +147,6 @@ streaming_ctrl_free( streaming_ctrl_t *streaming_ctrl ) {
 	free( streaming_ctrl );
 }
 
-#ifndef STREAMING_LIVE_DOT_COM
 int
 read_rtp_from_server(int fd, char *buffer, int length) {
 	struct rtpheader rh;
@@ -173,7 +166,6 @@ read_rtp_from_server(int fd, char *buffer, int length) {
 	memcpy(buffer, data, len);
 	return(len);
 }
-#endif
 
 
 // Converts an address family constant to a string
@@ -199,73 +191,143 @@ int
 connect2Server_with_af(char *host, int port, int af,int verb) {
 	int socket_server_fd;
 	int err, err_len;
-	int val,ret,count = 0;
+	int ret,count = 0;
 	fd_set set;
 	struct timeval tv;
-	struct sockaddr_in four;
+	union {
+		struct sockaddr_in four;
+#ifdef HAVE_AF_INET6
+		struct sockaddr_in6 six;
+#endif
+	} server_address;
+	size_t server_address_size;
+	void *our_s_addr;	// Pointer to sin_addr or sin6_addr
 	struct hostent *hp=NULL;
+	char buf[255];
 	
+#ifdef HAVE_WINSOCK2
+	u_long val;
+#endif
 	
 	socket_server_fd = socket(af, SOCK_STREAM, 0);
 	
-  printf("connect2Server_with_af(%s:%i)\n", host,port);
+	
 	if( socket_server_fd==-1 ) {
-    printf("Failed to create socket:\n");
-		return -1;
+//		mp_msg(MSGT_NETWORK,MSGL_ERR,"Failed to create %s socket:\n", af2String(af));
+		return -2;
 	}
 
-  memset(&four, 0,sizeof(four));
-	four.sin_family=af;
-	four.sin_port=htons(port);			
-	if ( inet_addr(host)==INADDR_NONE )
-	{
-		hp=(struct hostent*)gethostbyname( host );
-		if( hp==NULL ) 
-    {
-			//if(verb) printf("Couldn't resolve name for %s: %s\n", af2String(af), host);
-      printf("unable to resolve host\n");
-			return -1;
-		}
-    else
-    {
-      unsigned long *dwPtr=(unsigned long*)hp->h_addr_list[0];
-      four.sin_addr.S_un.S_addr = dwPtr[0];
-    }
+	switch (af) {
+		case AF_INET:  our_s_addr = (void *) &server_address.four.sin_addr; break;
+#ifdef HAVE_AF_INET6
+		case AF_INET6: our_s_addr = (void *) &server_address.six.sin6_addr; break;
+#endif
+		default:
+			mp_msg(MSGT_NETWORK,MSGL_ERR, "Unknown address family %d:\n", af);
+			return -2;
 	}
-  else
-  {
-    unsigned long addr = inet_addr(host);
-		four.sin_addr.S_un.S_addr=addr;
-  }
+	
+	
+	bzero(&server_address, sizeof(server_address));
+	
+#ifndef HAVE_WINSOCK2
+#ifdef USE_ATON
+	if (inet_aton(host, our_s_addr)!=1)
+#else
+	if (inet_pton(af, host, our_s_addr)!=1)
+#endif
+#else
+	if ( inet_addr(host)==INADDR_NONE )
+#endif
+	{
+		if(verb) mp_msg(MSGT_NETWORK,MSGL_STATUS,"Resolving %s for %s...\n", host, af2String(af));
+		
+#ifdef HAVE_GETHOSTBYNAME2
+		hp=(struct hostent*)gethostbyname2( host, af );
+#else
+		hp=(struct hostent*)gethostbyname( host );
+#endif
+		if( hp==NULL ) {
+			if(verb) mp_msg(MSGT_NETWORK,MSGL_ERR,"Couldn't resolve name for %s: %s\n", af2String(af), host);
+			return -2;
+		}
+		
+		memcpy( our_s_addr, (void*)hp->h_addr, hp->h_length );
+	}
+#ifdef HAVE_WINSOCK2
+	else {
+		unsigned long addr = inet_addr(host);
+		memcpy( our_s_addr, (void*)&addr, sizeof(addr) );
+	}
+#endif
+	
+	switch (af) {
+		case AF_INET:
+			server_address.four.sin_family=af;
+			server_address.four.sin_port=htons(port);			
+			server_address_size = sizeof(server_address.four);
+			break;
+#ifdef HAVE_AF_INET6		
+		case AF_INET6:
+			server_address.six.sin6_family=af;
+			server_address.six.sin6_port=htons(port);
+			server_address_size = sizeof(server_address.six);
+			break;
+#endif
+		default:
+			mp_msg(MSGT_NETWORK,MSGL_ERR, "Unknown address family %d:\n", af);
+			return -2;
+	}
+
+#if defined(USE_ATON) || defined(HAVE_WINSOCK2)
+#ifdef _XBOX
+	//inet_ntoa is buggy in XBMC, fix it
+	//for now, just copy the host
+	strcpy(buf, host);
+#else
+	strncpy( buf, inet_ntoa( *((struct in_addr*)our_s_addr) ), 255);
+#endif
+#else
+	inet_ntop(af, our_s_addr, buf, 255);
+#endif
+	if(verb) mp_msg(MSGT_NETWORK,MSGL_STATUS,"Connecting to server %s[%s]:%d ...\n", host, buf , port );
+
+	// Turn the socket as non blocking so we can timeout on the connection
+#ifndef HAVE_WINSOCK2
+	fcntl( socket_server_fd, F_SETFL, fcntl(socket_server_fd, F_GETFL) | O_NONBLOCK );
+#else
 	val = 1;
 	ioctlsocket( socket_server_fd, FIONBIO, &val );
-
-  printf("connecting...[%i]  [%i] [%x]\n",four.sin_family, port, four.sin_port);
-	if( connect( socket_server_fd, (struct sockaddr*)&four, sizeof(four) )==-1 ) 
-  {
+#endif
+#ifdef _XBOX
+	if( connect( socket_server_fd, (struct sockaddr*)&server_address.four, sizeof(server_address.four) )==-1 ) {
+#else
+	if( connect( socket_server_fd, (struct sockaddr*)&server_address, server_address_size )==-1 ) {
+#endif
+#ifndef HAVE_WINSOCK2
+		if( errno!=EINPROGRESS ) {
+#else
 		if( (WSAGetLastError() != WSAEINPROGRESS) && (WSAGetLastError() != WSAEWOULDBLOCK) ) {
-			//if(verb) printf("Failed to connect to server with %s\n", af2String(af));
-      printf("connect failed\n");
+#endif
+			if(verb) mp_msg(MSGT_NETWORK,MSGL_ERR,"Failed to connect to server with %s\n", af2String(af));
 			closesocket(socket_server_fd);
 			return -1;
 		}
 	}
- printf("wait...\n"); 
 	tv.tv_sec = 0;
 	tv.tv_usec = 500000;
 	FD_ZERO( &set );
 	FD_SET( socket_server_fd, &set );
 	// When the connection will be made, we will have a writable fd
-	while((ret = select(socket_server_fd+1, NULL, &set, NULL, &tv)) == 0) 
-  {
-	      if( ret<0 ) printf("select failed\n");
+	while((ret = select(socket_server_fd+1, NULL, &set, NULL, &tv)) == 0) {
+	      if( ret<0 ) mp_msg(MSGT_NETWORK,MSGL_ERR,"select failed\n");
 	      else if(ret > 0) break;
-	      else if(count > 30 ) {
-		      if(count > 30)
-		        printf("Connection timeout\n");
-		      else
-		        printf("Connection interuppted by user\n");
-		      return -1;
+	      else if(count > 30 || mp_input_check_interrupt(500)) {
+		if(count > 30)
+		  mp_msg(MSGT_NETWORK,MSGL_ERR,"Connection timeout\n");
+		else
+		  mp_msg(MSGT_NETWORK,MSGL_V,"Connection interuppted by user\n");
+		return -3;
 	      }
 	      count++;
 	      FD_ZERO( &set );
@@ -273,7 +335,7 @@ connect2Server_with_af(char *host, int port, int af,int verb) {
 	      tv.tv_sec = 0;
 	      tv.tv_usec = 500000;
 	}
-  printf("connected...\n");
+
 	// Turn back the socket as blocking
 #ifndef HAVE_WINSOCK2
 	fcntl( socket_server_fd, F_SETFL, fcntl(socket_server_fd, F_GETFL) & ~O_NONBLOCK );
@@ -282,8 +344,8 @@ connect2Server_with_af(char *host, int port, int af,int verb) {
 	ioctlsocket( socket_server_fd, FIONBIO, &val );
 #endif
 
-#if 0	
-  // Check if there were any error
+#ifndef _XBOX //XBOX doesnt support SO_ERROR option for getsockopt
+	// Check if there were any error
 	err_len = sizeof(int);
 	ret =  getsockopt(socket_server_fd,SOL_SOCKET,SO_ERROR,&err,&err_len);
 	if(ret < 0) {
@@ -295,7 +357,7 @@ connect2Server_with_af(char *host, int port, int af,int verb) {
 		return -1;
 	}
 #endif
-  printf("return socket:%i (%i)", socket_server_fd, (socket_server_fd<0) );
+	
 	return socket_server_fd;
 }
 
@@ -396,7 +458,10 @@ http_send_request( URL_t *url, off_t pos ) {
 		server_url = url;
 		http_set_uri( http_hdr, server_url->file );
 	}
-	snprintf(str, 256, "Host: %s", server_url->hostname );
+	if (server_url->port && server_url->port != 80)
+	    snprintf(str, 256, "Host: %s:%d", server_url->hostname, server_url->port );
+	else
+	    snprintf(str, 256, "Host: %s", server_url->hostname );
 	http_set_field( http_hdr, str);
 	if (network_useragent)
 	{
@@ -635,8 +700,8 @@ extension=NULL;
 		if( !strcasecmp(url->protocol, "rtsp") ) {
 			// Try Real rtsp:// first (it's always built in)
 			// If it fails, try live.com (if compiled in)
-						*file_format = DEMUXER_TYPE_REAL;
-						return 0;
+			*file_format = DEMUXER_TYPE_REAL;
+			return 0;
 		// Checking for SIP
 		} else if( !strcasecmp(url->protocol, "sip") ) {
 #ifdef STREAMING_LIVE_DOT_COM
@@ -648,8 +713,7 @@ extension=NULL;
 #endif
 		}
 
-#ifndef STREAMING_LIVE_DOT_COM
-	// Old, hacked RTP support, which works for MPEG Program Streams
+	// Old, hacked RTP support, which works for MPEG Streams
 	//   RTP streams only:
 		// Checking for RTP
 		if( !strcasecmp(url->protocol, "rtp") ) {
@@ -659,7 +723,6 @@ extension=NULL;
 			}
 			return 0;
 		}
-#endif
 
 		// Checking for ASF
 		if( !strncasecmp(url->protocol, "mms", 3) ) {
@@ -687,12 +750,14 @@ extension=NULL;
 			}
 			
 			streaming_ctrl->data = (void*)http_hdr;
+
 			// Check if we can make partial content requests and thus seek in http-streams
 		        if( http_hdr!=NULL && http_hdr->status_code==200 ) {
 			    char *accept_ranges;
 			    if( (accept_ranges = http_get_field(http_hdr,"Accept-Ranges")) != NULL )
 				seekable = strncmp(accept_ranges,"bytes",5)==0;
-      }
+			} 
+
 			// Check if the response is an ICY status_code reason_phrase
 			if( !strcasecmp(http_hdr->protocol, "ICY") ) {
 				switch( http_hdr->status_code ) {
@@ -715,10 +780,10 @@ extension=NULL;
 						// If content-type == video/nsv we most likely have a winamp video stream 
 						// otherwise it should be mp3. if there are more types consider adding mime type 
 						// handling like later
-				                if ( (field_data = http_get_field(http_hdr, "content-type")) != NULL && !strcmp(field_data, "video/nsv"))
+				                if ( (field_data = http_get_field(http_hdr, "content-type")) != NULL && (!strcmp(field_data, "video/nsv") || !strcmp(field_data, "misc/ultravox")))
 							*file_format = DEMUXER_TYPE_NSV;
 						else
-						*file_format = DEMUXER_TYPE_AUDIO;
+							*file_format = DEMUXER_TYPE_AUDIO;
 						return 0;
 					}
 					case 400: // Server Full
@@ -738,6 +803,7 @@ extension=NULL;
 						return -1;
 				}
 			}
+
 			// Assume standard http if not ICY			
 			switch( http_hdr->status_code ) {
 				case 200: // OK
@@ -785,6 +851,7 @@ extension=NULL;
 			return -1;
 		}
 	} while( redirect );
+
 	return -1;
 }
 
@@ -984,6 +1051,8 @@ realrtsp_streaming_start( stream_t *stream ) {
 		if(fd<0) return -1;
 		
 		mrl = malloc(sizeof(char)*(strlen(stream->streaming_ctrl->url->hostname)+strlen(stream->streaming_ctrl->url->file)+16));
+		if (stream->streaming_ctrl->url->file[0] == '/')
+		    stream->streaming_ctrl->url->file++;
 		sprintf(mrl,"rtsp://%s:%i/%s",stream->streaming_ctrl->url->hostname,port,stream->streaming_ctrl->url->file);
 		rtsp = rtsp_session_start(fd,&mrl, stream->streaming_ctrl->url->file,
 			stream->streaming_ctrl->url->hostname, port, &redirected);
@@ -1013,9 +1082,8 @@ realrtsp_streaming_start( stream_t *stream ) {
 }
 
 
-#ifndef STREAMING_LIVE_DOT_COM
 // Start listening on a UDP port. If multicast, join the group.
-int
+static int
 rtp_open_socket( URL_t *url ) {
 	int socket_server_fd, rxsockbufsz;
 	int err, err_len;
@@ -1023,6 +1091,7 @@ rtp_open_socket( URL_t *url ) {
 	struct sockaddr_in server_address;
 	struct ip_mreq mcast;
         struct timeval tv;
+	struct hostent *hp;
 
 	mp_msg(MSGT_NETWORK,MSGL_V,"Listening for traffic on %s:%d ...\n", url->hostname, url->port );
 
@@ -1034,12 +1103,16 @@ rtp_open_socket( URL_t *url ) {
 	}
 
 	if( isalpha(url->hostname[0]) ) {
-		struct hostent *hp =(struct hostent*)gethostbyname( url->hostname );
+#ifndef HAVE_WINSOCK2
+		hp =(struct hostent*)gethostbyname( url->hostname );
 		if( hp==NULL ) {
 			mp_msg(MSGT_NETWORK,MSGL_ERR,"Counldn't resolve name: %s\n", url->hostname);
 			return -1;
 		}
 		memcpy( (void*)&server_address.sin_addr.s_addr, (void*)hp->h_addr, hp->h_length );
+#else
+		server_address.sin_addr.s_addr = htonl(INADDR_ANY);
+#endif
 	} else {
 #ifndef HAVE_WINSOCK2
 #ifdef USE_ATON
@@ -1048,17 +1121,12 @@ rtp_open_socket( URL_t *url ) {
 		inet_pton(AF_INET, url->hostname, &server_address.sin_addr);
 #endif
 #else
-		unsigned int addr = inet_addr(url->hostname);
-		memcpy( (void*)&server_address.sin_addr, (void*)&addr, sizeof(addr) );
+		server_address.sin_addr.s_addr = htonl(INADDR_ANY);
 #endif
 	}
 	server_address.sin_family=AF_INET;
 	server_address.sin_port=htons(url->port);
-#ifndef HAVE_WINSOCK2
-  printf("linux");
-#else
-  printf("windows");
-#endif
+
 	if( bind( socket_server_fd, (struct sockaddr*)&server_address, sizeof(server_address) )==-1 ) {
 #ifndef HAVE_WINSOCK2
 		if( errno!=EINPROGRESS ) {
@@ -1070,6 +1138,20 @@ rtp_open_socket( URL_t *url ) {
 			return -1;
 		}
 	}
+	
+#ifdef HAVE_WINSOCK2
+	if (isalpha(url->hostname[0])) {
+		hp =(struct hostent*)gethostbyname( url->hostname );
+		if( hp==NULL ) {
+			mp_msg(MSGT_NETWORK,MSGL_ERR,"Counldn't resolve name: %s\n", url->hostname);
+			return -1;
+		}
+		memcpy( (void*)&server_address.sin_addr.s_addr, (void*)hp->h_addr, hp->h_length );
+	} else {
+		unsigned int addr = inet_addr(url->hostname);
+		memcpy( (void*)&server_address.sin_addr, (void*)&addr, sizeof(addr) );
+	}
+#endif
 
 	// Increase the socket rx buffer size to maximum -- this is UDP
 	rxsockbufsz = 240 * 1024;
@@ -1094,6 +1176,7 @@ rtp_open_socket( URL_t *url ) {
 	if( select(socket_server_fd+1, &set, NULL, NULL, &tv)>0 ) {
         //if( select(socket_server_fd+1, &set, NULL, NULL, NULL)>0 ) {
 		err_len = sizeof( err );
+#ifndef _XBOX //XBOX doesnt support SO_ERROR option for getsockopt
 		getsockopt( socket_server_fd, SOL_SOCKET, SO_ERROR, &err, &err_len );
 		if( err ) {
 			mp_msg(MSGT_NETWORK,MSGL_ERR,"Timeout! No data from host %s\n", url->hostname );
@@ -1101,16 +1184,17 @@ rtp_open_socket( URL_t *url ) {
 			closesocket(socket_server_fd);
 			return -1;
 		}
+#endif
 	}
 	return socket_server_fd;
 }
 
-int
+static int
 rtp_streaming_read( int fd, char *buffer, int size, streaming_ctrl_t *streaming_ctrl ) {
     return read_rtp_from_server( fd, buffer, size );
 }
 
-int
+static int
 rtp_streaming_start( stream_t *stream ) {
 	streaming_ctrl_t *streaming_ctrl;
 	int fd;
@@ -1132,7 +1216,6 @@ rtp_streaming_start( stream_t *stream ) {
 	streaming_ctrl->status = streaming_playing_e;
 	return 0;
 }
-#endif
 
 int
 streaming_start(stream_t *stream, int *demuxer_type, URL_t *url) {
@@ -1164,7 +1247,6 @@ streaming_start(stream_t *stream, int *demuxer_type, URL_t *url) {
 	// Get the bandwidth available
 	stream->streaming_ctrl->bandwidth = network_bandwidth;
 	
-#ifndef STREAMING_LIVE_DOT_COM
 	// For RTP streams, we usually don't know the stream type until we open it.
 	if( !strcasecmp( stream->streaming_ctrl->url->protocol, "rtp")) {
 		if(stream->fd >= 0) {
@@ -1174,7 +1256,6 @@ streaming_start(stream_t *stream, int *demuxer_type, URL_t *url) {
 		stream->fd = -1;
 		ret = rtp_streaming_start( stream );
 	} else
-#endif
 
 	if( !strcasecmp( stream->streaming_ctrl->url->protocol, "pnm")) {
 		stream->fd = -1;

@@ -1,6 +1,6 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
-** Copyright (C) 2002 A. Kurpiers
+** Copyright (C) 2002-2004 A. Kurpiers
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -22,9 +22,10 @@
 ** Commercial non-GPL licensing of this software is possible.
 ** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
 **
+** Initially modified for use with MPlayer by Arpad Gereöffy on 2003/08/30
 ** $Id$
+** detailed CVS changelog at http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
 **/
-
 
 #include "common.h"
 #include "structs.h"
@@ -154,11 +155,10 @@ uint8_t reordered_spectral_data(faacDecHandle hDecoder, ic_stream *ics, bitfile 
     bits_t	Segment[ 512 ];
 
     uint8_t PCW_decoded=0;
-    uint16_t segment_index=0, codeword_index=0;
     uint16_t nshort = hDecoder->frameLength/8;
 
 
-    memset (spectral_data, 0, hDecoder->frameLength*sizeof(uint16_t));
+    /*memset (spectral_data, 0, hDecoder->frameLength*sizeof(uint16_t));*/
 
     if (ics->length_of_reordered_spectral_data == 0)
         return 0; /* nothing to do */

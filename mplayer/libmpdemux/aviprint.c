@@ -9,7 +9,6 @@
 #include "stream.h"
 #include "demuxer.h"
 
-
 #include "aviheader.h"
 #include "ms_hdr.h"
 

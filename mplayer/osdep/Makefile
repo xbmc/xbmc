@@ -3,7 +3,8 @@ include ../config.mak
 
 LIBNAME = libosdep.a
 
-SRCS= shmem.c strsep.c vsscanf.c scandir.c gettimeofday.c fseeko.c # timer.c
+SRCS= shmem.c strsep.c strl.c vsscanf.c scandir.c gettimeofday.c fseeko.c \
+      # timer.c
 
 ifeq ($(TARGET_ARCH_X86),yes)
 ifeq ($(TARGET_OS),Linux)
@@ -16,10 +17,10 @@ timer = timer-lx.c
 ifeq ($(TARGET_OS),Darwin)
 timer = timer-darwin.c
 endif
-ifeq ($(TARGET_CYGWIN),yes)
+ifeq ($(TARGET_OS),CYGWIN)
 timer = timer-win2.c
 endif
-ifeq ($(TARGET_MINGW32),yes)
+ifeq ($(TARGET_OS),MINGW32)
 timer = timer-win2.c
 getch = getch2-win.c
 SRCS += glob-win.c
@@ -41,6 +42,7 @@ CFLAGS  = $(OPTFLAGS) -I. -I.. $(EXTRA_INC)
 
 $(LIBNAME):     $(OBJS)
 	$(AR) r $(LIBNAME) $(OBJS)
+	$(RANLIB) $(LIBNAME)
 
 all:    $(LIBNAME)
 

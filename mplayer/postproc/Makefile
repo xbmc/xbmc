@@ -4,7 +4,12 @@ include ../config.mak
 SWSLIB = libswscale.a
 
 SWSSRCS=swscale.c rgb2rgb.c yuv2rgb.c
+
 SWSOBJS=$(SWSSRCS:.c=.o)
+
+ifeq ($(TARGET_ALTIVEC),yes)
+SWSOBJS +=  yuv2rgb_altivec.o
+endif
 
 CFLAGS  = $(OPTFLAGS) $(MLIB_INC) -I. -I.. $(EXTRA_INC)
 # -I/usr/X11R6/include/
@@ -20,6 +25,7 @@ all:    $(SWSLIB)
 
 $(SWSLIB):     $(SWSOBJS)
 	$(AR) r $(SWSLIB) $(SWSOBJS)
+	$(RANLIB) $(SWSLIB)
 
 clean:
 	rm -f *.o *.a *~ *.so cs_test swscale-example
@@ -43,3 +49,4 @@ swscale-example: swscale-example.o $(SWSLIB)
 ifneq ($(wildcard .depend),)
 include .depend
 endif
+

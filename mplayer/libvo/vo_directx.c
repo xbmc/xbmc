@@ -1,6 +1,6 @@
 /******************************************************************************
  * vo_directx.c: Directx v2 or later DirectDraw interface for MPlayer
- * Copyright (c) 2002 Sascha Sommer <saschasommer@freenet.de>.
+ * Copyright (c) 2002 - 2004 Sascha Sommer <saschasommer@freenet.de>.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +30,12 @@
 #include "fastmemcpy.h"
 #include "../input/input.h"
 #include "../osdep/keycodes.h"
+#include "../input/mouse.h"
 #include "../mp_msg.h"
 #include "aspect.h"
 #include "geometry.h"
+
+#ifdef _XBOX
 vo_functions_t video_out_directx;
 void SetVideoFunctions(vo_functions_t* pFunctions)
 {
@@ -47,12 +50,11 @@ void SetVideoFunctions(vo_functions_t* pFunctions)
 	video_out_directx.check_events=pFunctions->check_events;
 	video_out_directx.uninit=pFunctions->uninit;
 }
-
-#if 0 
-static LPDIRECTDRAW2        g_lpdd = NULL;          //DirectDraw Object
-static LPDIRECTDRAWSURFACE  g_lpddsPrimary = NULL;  //Primary Surface: viewport through the Desktop
-static LPDIRECTDRAWSURFACE  g_lpddsOverlay = NULL;  //Overlay Surface
-static LPDIRECTDRAWSURFACE  g_lpddsBack = NULL;     //Back surface
+#else
+static LPDIRECTDRAW7        g_lpdd = NULL;          //DirectDraw Object
+static LPDIRECTDRAWSURFACE7  g_lpddsPrimary = NULL;  //Primary Surface: viewport through the Desktop
+static LPDIRECTDRAWSURFACE7  g_lpddsOverlay = NULL;  //Overlay Surface
+static LPDIRECTDRAWSURFACE7  g_lpddsBack = NULL;     //Back surface
 static LPDIRECTDRAWCLIPPER  g_lpddclipper;          //clipper object, can only be used without overlay
 static DDSURFACEDESC2		ddsdsf;                 //surface descripiton needed for locking
 static HINSTANCE            hddraw_dll;             //handle to ddraw.dll
@@ -75,6 +77,7 @@ static COLORREF windowcolor = RGB(0,0,16);          //windowcolor == colorkey
 static int adapter_count=0;
 static GUID selected_guid;
 static GUID *selected_guid_ptr = NULL;
+static float window_aspect;
 
 extern void mplayer_put_key(int code);              //let mplayer handel the keyevents 
 extern void vo_draw_text(int dxs,int dys,void (*draw_alpha)(int x0,int y0, int w,int h, unsigned char* src, unsigned char *srca, int stride));
@@ -110,7 +113,7 @@ static directx_fourcc_caps g_ddpf[] =
 	{"IYUV ",IMGFMT_IYUV ,0,{sizeof(DDPIXELFORMAT), DDPF_FOURCC,MAKEFOURCC('I','Y','U','V'),0,0,0,0,0}},   //same as i420
 	{"YVU9 ",IMGFMT_YVU9 ,0,{sizeof(DDPIXELFORMAT), DDPF_FOURCC,MAKEFOURCC('Y','V','U','9'),0,0,0,0,0}},	
 	{"YUY2 ",IMGFMT_YUY2 ,0,{sizeof(DDPIXELFORMAT), DDPF_FOURCC,MAKEFOURCC('Y','U','Y','2'),0,0,0,0,0}},
-//	{"UYVY ",IMGFMT_UYVY ,0,{sizeof(DDPIXELFORMAT), DDPF_FOURCC,MAKEFOURCC('U','Y','V','Y'),0,0,0,0,0}},
+	{"UYVY ",IMGFMT_UYVY ,0,{sizeof(DDPIXELFORMAT), DDPF_FOURCC,MAKEFOURCC('U','Y','V','Y'),0,0,0,0,0}},
 	{"RGB15",IMGFMT_RGB15,0,{sizeof(DDPIXELFORMAT), DDPF_RGB, 0, 16,  0x0000001F, 0x000003E0, 0x00007C00, 0}},   //RGB 5:5:5
 	{"BGR15",IMGFMT_BGR15,0,{sizeof(DDPIXELFORMAT), DDPF_RGB, 0, 16,  0x00007C00, 0x000003E0, 0x0000001F, 0}},   
 	{"RGB16",IMGFMT_RGB16,0,{sizeof(DDPIXELFORMAT), DDPF_RGB, 0, 16,  0x0000001F, 0x000007E0, 0x0000F800, 0}},   //RGB 5:6:5
@@ -192,7 +195,7 @@ static uint32_t Directx_CreatePrimarySurface()
 	if(g_lpddsPrimary)g_lpddsPrimary->lpVtbl->Release(g_lpddsPrimary);
 	g_lpddsPrimary=NULL;
 	
-    if(vidmode)g_lpdd->lpVtbl->SetDisplayMode(g_lpdd,vm_width,vm_height,vm_bpp,refresh_rate,0);
+    if(vidmode)g_lpdd->lpVtbl->SetDisplayMode(g_lpdd,vm_width,vm_height,vm_bpp,vo_refresh_rate,0);
     ZeroMemory(&ddsd, sizeof(ddsd));
     ddsd.dwSize = sizeof(ddsd);
     //set flags and create a primary surface.
@@ -286,6 +289,8 @@ static uint32_t Directx_CreateOverlay(uint32_t imgfmt)
 			 {mp_msg(MSGT_VO, MSGL_ERR,"unsupported mode\n");break;}  
 		  case DDERR_OUTOFVIDEOMEMORY:
 			 {mp_msg(MSGT_VO, MSGL_ERR,"not enough video memory\n");break;}
+          default:
+             mp_msg(MSGT_VO, MSGL_ERR,"create surface failed with 0x%x\n",ddrval);       
 	   }
 	   return 1;
 	}
@@ -358,7 +363,7 @@ static BOOL WINAPI EnumCallbackEx(GUID FAR *lpGUID, LPSTR lpDriverDescription, L
         mp_msg(MSGT_VO, MSGL_INFO ,"%s", lpDriverDescription);
     }
     
-    if(adapter_count == adapter_num){
+    if(adapter_count == vo_adapter_num){
         if (!lpGUID)
             selected_guid_ptr = NULL;
         else
@@ -392,7 +397,7 @@ static uint32_t Directx_InitDirectDraw()
 		return 1;
     }
 	
-	if(adapter_num){ //display other than default
+	if(vo_adapter_num){ //display other than default
         OurDirectDrawEnumerateEx = (LPDIRECTDRAWENUMERATEEX) GetProcAddress(hddraw_dll,"DirectDrawEnumerateExA");
         if (!OurDirectDrawEnumerateEx){
             FreeLibrary( hddraw_dll );
@@ -405,8 +410,8 @@ static uint32_t Directx_InitDirectDraw()
         // enumerate all display devices attached to the desktop
         OurDirectDrawEnumerateEx(EnumCallbackEx, NULL, DDENUM_ATTACHEDSECONDARYDEVICES );
 
-        if(adapter_num >= adapter_count)
-            mp_msg(MSGT_VO, MSGL_ERR,"Selected adapter (%d) doesn't exist: Default Display Adapter selected\n",adapter_num);
+        if(vo_adapter_num >= adapter_count)
+            mp_msg(MSGT_VO, MSGL_ERR,"Selected adapter (%d) doesn't exist: Default Display Adapter selected\n",vo_adapter_num);
     }
 
 	OurDirectDrawCreateEx = (void *)GetProcAddress(hddraw_dll, "DirectDrawCreateEx");
@@ -458,7 +463,7 @@ static uint32_t Directx_InitDirectDraw()
 	        mp_msg(MSGT_VO, MSGL_FATAL,"<vo_directx><FATAL ERROR>can't set displaymode\n");
 	        return 1;
 		}
-	    mp_msg(MSGT_VO, MSGL_V,"<vo_directx><INFO>Inited adapter %i for %i x %i @ %i \n",adapter_num,vm_width,vm_height,vm_bpp);	
+	    mp_msg(MSGT_VO, MSGL_V,"<vo_directx><INFO>Inited adapter %i for %i x %i @ %i \n",vo_adapter_num,vm_width,vm_height,vm_bpp);	
 	    return 0;	
 	}
 	if (g_lpdd->lpVtbl->SetCooperativeLevel(g_lpdd, hWnd, DDSCL_NORMAL) != DD_OK) // or DDSCL_SETFOCUSWINDOW
@@ -482,58 +487,46 @@ static void check_events(void)
 
 static uint32_t Directx_ManageDisplay()
 {   
-    RECT            rd_window;
     HRESULT         ddrval;
     DDCAPS          capsDrv;
     DDOVERLAYFX     ovfx;
     DWORD           dwUpdateFlags=0;
-    HWND            hWndafter;
-    uint32_t        xscreen = GetSystemMetrics(SM_CXSCREEN);
-    uint32_t        yscreen = GetSystemMetrics(SM_CYSCREEN);
-	POINT           point_window;
-    uint32_t width,height;
-	
-    if(vidmode){
-	  xscreen=vm_width;
-	  yscreen=vm_height;
-	} 
-	if(vo_fs || vidmode)
-	{
-		/*center and zoom image*/
-		rd_window.top = 0;
-	    rd_window.left = 0;
-	    rd_window.right = xscreen;
-	    rd_window.bottom = yscreen;
-	    aspect(&width,&height,A_ZOOM);
-	    rd.left = (xscreen-width)/2;
-		rd.right = rd.left+width;
-	    rd.top = (yscreen-height)/2;
-	    rd.bottom = rd.top + height;
-        if(ShowCursor(FALSE)>=0)while(ShowCursor(FALSE)>=0){}        
-	}
-	else /*windowed*/
-	{
-		GetClientRect (hWnd, &rd_window);
-        if((rd_window.top == rd_window.bottom)&&!nooverlay)   
-		{
-			/*window is minimized let's hide our overlay*/
-			ddrval = g_lpddsOverlay->lpVtbl->UpdateOverlay(g_lpddsOverlay,NULL, g_lpddsPrimary, NULL, DDOVER_HIDE, NULL); //hide the overlay
-	        return 0;
-		}
-		/*width and height are zero therefore we have to get them from the window size*/
-		width=rd_window.right - rd_window.left;
-		height=rd_window.bottom - rd_window.top;
-	    point_window.x = 0;  //overlayposition relative to the window
-        point_window.y = 0;
-        ClientToScreen(hWnd,&point_window);  
-		rd.left = point_window.x;
-        rd.top = point_window.y;
-		rd.bottom = rd.top + height;
-		rd.right = rd.left + width;
-        rd_window = rd;
-        ShowCursor(TRUE);          
-	}
-
+    int width,height;
+   
+    if(vo_fs || vidmode){
+      aspect(&width,&height,A_ZOOM);
+      rd.left=(vo_screenwidth-width)/2;
+      rd.top=(vo_screenheight-height)/2;
+      if(ShowCursor(FALSE)>=0)while(ShowCursor(FALSE)>=0){}
+    }
+    else {
+      POINT pt;
+      pt.x = 0;  //overlayposition relative to the window
+      pt.y = 0;
+      ClientToScreen(hWnd,&pt);  
+      GetClientRect(hWnd, &rd);
+	  width=rd.right - rd.left;
+	  height=rd.bottom - rd.top;
+	  rd.left = pt.x;
+      rd.top = pt.y; 
+      if(!nooverlay && (!width || !height)){
+	    /*window is minimized*/
+	    ddrval = g_lpddsOverlay->lpVtbl->UpdateOverlay(g_lpddsOverlay,NULL, g_lpddsPrimary, NULL, DDOVER_HIDE, NULL);
+	    return 0;
+	  }
+      if(vo_keepaspect){
+          int tmpheight=((float)width/window_aspect);
+          tmpheight+=tmpheight%2;       
+          if(tmpheight > height){
+            width=((float)height*window_aspect);
+            width+=width%2;       
+          }
+          else height=tmpheight;
+      }    
+      while(ShowCursor(TRUE)<=0){}
+    }
+    rd.right=rd.left+width;
+    rd.bottom=rd.top+height;
 
 	/*ok, let's workaround some overlay limitations*/
 	if(!nooverlay)
@@ -544,31 +537,6 @@ static uint32_t Directx_ManageDisplay()
         ZeroMemory(&capsDrv, sizeof(capsDrv));
         capsDrv.dwSize = sizeof(capsDrv);
         if(g_lpdd->lpVtbl->GetCaps(g_lpdd,&capsDrv, NULL) != DD_OK)return 1;
-		/*do not allow to zoom or shrink if hardware isn't able to do so*/
-		if((width < image_width)&& !(capsDrv.dwFXCaps & DDFXCAPS_OVERLAYSHRINKX))
-		{
-			if(capsDrv.dwFXCaps & DDFXCAPS_OVERLAYSHRINKXN)mp_msg(MSGT_VO, MSGL_ERR,"<vo_directx><ERROR>can only shrinkN\n");
-	        else mp_msg(MSGT_VO, MSGL_ERR,"<vo_directx><ERROR>can't shrink x\n");
-	        width=image_width;
-		}
-		else if((width > image_width)&& !(capsDrv.dwFXCaps & DDFXCAPS_OVERLAYSTRETCHX))
-		{
-			if(capsDrv.dwFXCaps & DDFXCAPS_OVERLAYSTRETCHXN)mp_msg(MSGT_VO, MSGL_ERR,"<vo_directx><ERROR>can only stretchN\n"); 
-	        else mp_msg(MSGT_VO, MSGL_ERR,"<vo_directx><ERROR>can't stretch x\n");
-	        width = image_width;
-		}
-		if((height < image_height) && !(capsDrv.dwFXCaps & DDFXCAPS_OVERLAYSHRINKY))
-		{
-			if(capsDrv.dwFXCaps & DDFXCAPS_OVERLAYSHRINKYN)mp_msg(MSGT_VO, MSGL_ERR,"<vo_directx><ERROR>can only shrinkN\n");
-	        else mp_msg(MSGT_VO, MSGL_ERR,"<vo_directx><ERROR>can't shrink y\n");
-	        height = image_height;
-		}
-		else if((height > image_height ) && !(capsDrv.dwFXCaps & DDFXCAPS_OVERLAYSTRETCHY))
-		{
-			if(capsDrv.dwFXCaps & DDFXCAPS_OVERLAYSTRETCHYN)mp_msg(MSGT_VO, MSGL_ERR,"<vo_directx><ERROR>can only stretchN\n");
-	        else mp_msg(MSGT_VO, MSGL_ERR,"<vo_directx><ERROR>can't stretch y\n");
-	        height = image_height;
-		}
 		/*get minimum stretch, depends on display adaptor and mode (refresh rate!) */
         uStretchFactor1000 = capsDrv.dwMinOverlayStretch>1000 ? capsDrv.dwMinOverlayStretch : 1000;
         rd.right = ((width+rd.left)*uStretchFactor1000+999)/1000;
@@ -576,54 +544,50 @@ static uint32_t Directx_ManageDisplay()
         /*calculate xstretch1000 and ystretch1000*/
         xstretch1000 = ((rd.right - rd.left)* 1000)/image_width ;
         ystretch1000 = ((rd.bottom - rd.top)* 1000)/image_height;
-        /*handle move outside of window with cropping
-		  not really needed with colorkey, but shouldn't hurt*/
 		rs.left=0;
 		rs.right=image_width;
 		rs.top=0;
 		rs.bottom=image_height;
-        if(!vo_fs)rd_window = rd;         /*don't crop the window !!!*/
-        if(rd.left < 0)         //move out left
+        if(rd.left < 0)rs.left=(-rd.left*1000)/xstretch1000;
+        if(rd.top < 0)rs.top=(-rd.top*1000)/ystretch1000;
+        if(rd.right > vo_screenwidth)rs.right=((vo_screenwidth-rd.left)*1000)/xstretch1000;
+        if(rd.bottom > vo_screenheight)rs.bottom=((vo_screenheight-rd.top)*1000)/ystretch1000;
+		/*do not allow to zoom or shrink if hardware isn't able to do so*/
+		if((width < image_width)&& !(capsDrv.dwFXCaps & DDFXCAPS_OVERLAYSHRINKX))
 		{
-           rs.left=(-rd.left*1000)/xstretch1000;
-           rd.left = 0; 
+			if(capsDrv.dwFXCaps & DDFXCAPS_OVERLAYSHRINKXN)mp_msg(MSGT_VO, MSGL_ERR,"<vo_directx><ERROR>can only shrinkN\n");
+	        else mp_msg(MSGT_VO, MSGL_ERR,"<vo_directx><ERROR>can't shrink x\n");
+	        rd.right=rd.left+image_width;
 		}
-        else rs.left=0;
-        if(rd.top < 0)          //move out up
+		else if((width > image_width)&& !(capsDrv.dwFXCaps & DDFXCAPS_OVERLAYSTRETCHX))
 		{
-	       rs.top=(-rd.top*1000)/ystretch1000;
-	       rd.top = 0;
+			if(capsDrv.dwFXCaps & DDFXCAPS_OVERLAYSTRETCHXN)mp_msg(MSGT_VO, MSGL_ERR,"<vo_directx><ERROR>can only stretchN\n"); 
+	        else mp_msg(MSGT_VO, MSGL_ERR,"<vo_directx><ERROR>can't stretch x\n");
+	        rd.right = rd.left+image_width;
 		}
-        else rs.top = 0;
-        if(rd.right > xscreen)  //move out right
+		if((height < image_height) && !(capsDrv.dwFXCaps & DDFXCAPS_OVERLAYSHRINKY))
 		{
-	       rs.right=((xscreen-rd.left)*1000)/xstretch1000;
-	       rd.right= xscreen;
+			if(capsDrv.dwFXCaps & DDFXCAPS_OVERLAYSHRINKYN)mp_msg(MSGT_VO, MSGL_ERR,"<vo_directx><ERROR>can only shrinkN\n");
+	        else mp_msg(MSGT_VO, MSGL_ERR,"<vo_directx><ERROR>can't shrink y\n");
+	        rd.bottom = rd.top + image_height;
 		}
-        else rs.right = image_width;
-        if(rd.bottom > yscreen) //move out down
+		else if((height > image_height ) && !(capsDrv.dwFXCaps & DDFXCAPS_OVERLAYSTRETCHY))
 		{
-	       rs.bottom=((yscreen-rd.top)*1000)/ystretch1000;
-	       rd.bottom= yscreen;
-		}
-        else rs.bottom= image_height;
+			if(capsDrv.dwFXCaps & DDFXCAPS_OVERLAYSTRETCHYN)mp_msg(MSGT_VO, MSGL_ERR,"<vo_directx><ERROR>can only stretchN\n");
+	        else mp_msg(MSGT_VO, MSGL_ERR,"<vo_directx><ERROR>can't stretch y\n");
+	        rd.bottom = rd.top + image_height;
+		} 
 		/*the last thing to check are alignment restrictions
           these expressions (x & -y) just do alignment by dropping low order bits...
           so to round up, we add first, then truncate*/
-		if ((capsDrv.dwCaps & DDCAPS_ALIGNBOUNDARYSRC) && capsDrv.dwAlignBoundarySrc)
-			rs.left = (rs.left + capsDrv.dwAlignBoundarySrc / 2) & -(signed)(capsDrv.dwAlignBoundarySrc);
-        if ((capsDrv.dwCaps & DDCAPS_ALIGNSIZESRC) && capsDrv.dwAlignSizeSrc)
-			rs.right = rs.left + ((rs.right - rs.left + capsDrv.dwAlignSizeSrc / 2) & -(signed) (capsDrv.dwAlignSizeSrc));
-        if ((capsDrv.dwCaps & DDCAPS_ALIGNBOUNDARYDEST) && capsDrv.dwAlignBoundaryDest)
-		{
-			rd.left = (rd.left + capsDrv.dwAlignBoundaryDest / 2) & -(signed)(capsDrv.dwAlignBoundaryDest);
-	        if(!vo_fs)rd_window.left = (rd_window.left + capsDrv.dwAlignBoundaryDest / 2) & -(signed)(capsDrv.dwAlignBoundaryDest); //don't forget the window
-		}
-        if ((capsDrv.dwCaps & DDCAPS_ALIGNSIZEDEST) && capsDrv.dwAlignSizeDest)
-		{
-			rd.right = rd.left + ((rd.right - rd.left) & -(signed) (capsDrv.dwAlignSizeDest));
-	        if(!vo_fs)rd_window.right = rd_window.left + ((rd_window.right - rd_window.left) & -(signed) (capsDrv.dwAlignSizeDest)); //don't forget the window
-		}
+		if((capsDrv.dwCaps & DDCAPS_ALIGNBOUNDARYSRC) && capsDrv.dwAlignBoundarySrc)
+		  rs.left = (rs.left + capsDrv.dwAlignBoundarySrc / 2) & -(signed)(capsDrv.dwAlignBoundarySrc);
+        if((capsDrv.dwCaps & DDCAPS_ALIGNSIZESRC) && capsDrv.dwAlignSizeSrc)
+		  rs.right = rs.left + ((rs.right - rs.left + capsDrv.dwAlignSizeSrc / 2) & -(signed) (capsDrv.dwAlignSizeSrc));
+        if((capsDrv.dwCaps & DDCAPS_ALIGNBOUNDARYDEST) && capsDrv.dwAlignBoundaryDest)
+		  rd.left = (rd.left + capsDrv.dwAlignBoundaryDest / 2) & -(signed)(capsDrv.dwAlignBoundaryDest);
+        if((capsDrv.dwCaps & DDCAPS_ALIGNSIZEDEST) && capsDrv.dwAlignSizeDest)
+		  rd.right = rd.left + ((rd.right - rd.left) & -(signed) (capsDrv.dwAlignSizeDest));
 		/*create an overlay FX structure to specify a destination color key*/
 		ZeroMemory(&ovfx, sizeof(ovfx));
         ovfx.dwSize = sizeof(ovfx);
@@ -649,20 +613,24 @@ static uint32_t Directx_ManageDisplay()
     }       
 	
     if(!vidmode && !vo_fs){
-        if(vo_ontop)SetWindowPos(hWnd,HWND_TOPMOST,0,0,0,0,SWP_SHOWWINDOW|SWP_NOSIZE|SWP_NOMOVE|SWP_NOOWNERZORDER); 
-	    else SetWindowPos(hWnd,HWND_NOTOPMOST,0,0,0,0,SWP_SHOWWINDOW|SWP_NOSIZE|SWP_NOMOVE|SWP_NOOWNERZORDER); 
+          RECT rdw=rd;
+          AdjustWindowRect(&rdw,WS_OVERLAPPEDWINDOW|WS_SIZEBOX,FALSE);
+//          printf("window: %i %i %ix%i\n",rdw.left,rdw.top,rdw.right - rdw.left,rdw.bottom - rdw.top);      
+          SetWindowPos(hWnd,(vo_ontop)?HWND_TOPMOST:HWND_NOTOPMOST,rdw.left,rdw.top,rdw.right-rdw.left,rdw.bottom-rdw.top,SWP_NOOWNERZORDER); 
     }
+    else SetWindowPos(hWndFS,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOOWNERZORDER);
 
-				 
-    //printf("Window:x:%i,y:%i,w:%i,h:%i\n",rd_window.left,rd_window.top,rd_window.right - rd_window.left,rd_window.bottom - rd_window.top);
-    //printf("Overlay:x1:%i,y1:%i,x2:%i,y2:%i,w:%i,h:%i\n",rd.left,rd.top,rd.right,rd.bottom,rd.right - rd.left,rd.bottom - rd.top);
-    //printf("Source:x1:%i,x2:%i,y1:%i,y2:%i\n",rs.left,rs.right,rs.top,rs.bottom);
-    //printf("Image:x:%i->%i,y:%i->%i\n",image_width,d_image_width,image_height,d_image_height);
-	
-	
-	/*for nonoverlay mode we are finished, for overlay mode we have to display the overlay first*/
+  	/*for nonoverlay mode we are finished, for overlay mode we have to display the overlay first*/
 	if(nooverlay)return 0;
+
+    /*make sure the overlay is inside the screen*/
+    if(rd.left<0)rd.left=0;
+    if(rd.right>vo_screenwidth)rd.right=vo_screenwidth;
+    if(rd.top<0)rd.top=0;
+    if(rd.bottom>vo_screenheight)rd.bottom=vo_screenheight;
+    
 	
+//    printf("overlay: %i %i %ix%i\n",rd.left,rd.top,rd.right - rd.left,rd.bottom - rd.top);
 	ddrval = g_lpddsOverlay->lpVtbl->UpdateOverlay(g_lpddsOverlay,&rs, g_lpddsPrimary, &rd, dwUpdateFlags, &ovfx);
     if(FAILED(ddrval))
     {
@@ -699,6 +667,8 @@ static uint32_t Directx_ManageDisplay()
 					if(ddrval !=DD_OK)mp_msg(MSGT_VO, MSGL_FATAL ,"<vo_directx><FATAL ERROR>UpdateOverlay failed again\n" );
 					break;
 				}
+            default:
+                mp_msg(MSGT_VO, MSGL_ERR ," 0x%x\n",ddrval);      
 		}
 	    /*ok we can't do anything about it -> hide overlay*/
 		if(ddrval != DD_OK)
@@ -845,6 +815,8 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 {
 	switch (message)
     {
+        case WM_MOUSEACTIVATE:
+            return MA_ACTIVATEANDEAT;       
 	    case WM_NCACTIVATE:
         {
             if(vidmode && adapter_count > 2) //only disable if more than one adapter.
@@ -919,6 +891,35 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
         case WM_CHAR:
 		{
 			mplayer_put_key(wParam);
+			break;
+		}
+        case WM_LBUTTONDOWN:
+		{
+			if (!vo_nomouse_input)
+				mplayer_put_key(MOUSE_BTN0);
+			break;
+		}
+        case WM_MBUTTONDOWN:
+		{
+			if (!vo_nomouse_input)
+				mplayer_put_key(MOUSE_BTN1);
+			break;
+		}
+        case WM_RBUTTONDOWN:
+		{
+			if (!vo_nomouse_input)
+				mplayer_put_key(MOUSE_BTN2);
+			break;
+		}
+        case WM_MOUSEWHEEL:
+		{
+			if (vo_nomouse_input)
+				break;
+			int x = GET_WHEEL_DELTA_WPARAM(wParam);
+			if (x > 0)
+				mplayer_put_key(MOUSE_BTN3);
+			else
+				mplayer_put_key(MOUSE_BTN4);
 			break;
 		}
 		
@@ -1176,6 +1177,7 @@ config(uint32_t width, uint32_t height, uint32_t d_width, uint32_t d_height, uin
     }	
 	aspect_save_screenres(vo_screenwidth,vo_screenheight);
     aspect(&d_image_width, &d_image_height, A_NOZOOM);
+    window_aspect= (float)d_image_width / (float)d_image_height;
     vo_dx = 0;
     vo_dy = 0;   
     if(!vidmode){
@@ -1192,8 +1194,8 @@ config(uint32_t width, uint32_t height, uint32_t d_width, uint32_t d_height, uin
         rd.top = vo_dy;
         rd.right = rd.left + d_image_width;
         rd.bottom = rd.top + d_image_height;
-        AdjustWindowRect(&rd,WS_OVERLAPPEDWINDOW| WS_SIZEBOX,0);
-        SetWindowPos(hWnd,NULL, rd.left, rd.top,rd.right-rd.left,rd.bottom-rd.top,SWP_SHOWWINDOW|SWP_NOOWNERZORDER); 
+        AdjustWindowRect(&rd,WS_OVERLAPPEDWINDOW|WS_SIZEBOX,FALSE);  
+        SetWindowPos(hWnd,NULL, vo_dx, vo_dy,rd.right-rd.left,rd.bottom-rd.top,SWP_SHOWWINDOW|SWP_NOOWNERZORDER); 
     }
     else ShowWindow(hWnd,SW_SHOW); 
      
@@ -1291,4 +1293,4 @@ static uint32_t control(uint32_t request, void *data, ...)
     };
     return VO_NOTIMPL;
 }
-#endif
+#endif //!_XBOX

@@ -64,6 +64,7 @@ static int seek_forward(stream_t *s,off_t newpos) {
   }
   return 1;
 }
+
 #ifdef _XBOX
 void close_f(struct stream_st *s)
 {
@@ -73,6 +74,7 @@ void close_f(struct stream_st *s)
 	s->fd=0;
 }
 #endif
+
 static int open_f(stream_t *stream,int mode, void* opts, int* file_format) {
   int f;
   mode_t m = 0;
@@ -88,6 +90,7 @@ static int open_f(stream_t *stream,int mode, void* opts, int* file_format) {
     m_struct_free(&stream_opts,opts);
     return STREAM_UNSUPORTED;
   }
+
 #ifndef _XBOX
   if(!p->filename) {
     mp_msg(MSGT_OPEN,MSGL_ERR, "[file] No filename\n");
@@ -99,6 +102,7 @@ static int open_f(stream_t *stream,int mode, void* opts, int* file_format) {
 #if defined(__CYGWIN__)|| defined(__MINGW32__)
   m |= O_BINARY;
 #endif    
+
 #ifndef _XBOX
   if(!strcmp(p->filename,"-")){
     if(mode == STREAM_READ) {
@@ -112,7 +116,7 @@ static int open_f(stream_t *stream,int mode, void* opts, int* file_format) {
   } else {
     f=open(p->filename,m);
 #else
-    f=open(stream->url,m);
+	f=open(stream->url,m);
 #endif
     if(f<0) {
       mp_msg(MSGT_OPEN,MSGL_ERR,MSGTR_FileNotFound,p->filename);
@@ -122,6 +126,7 @@ static int open_f(stream_t *stream,int mode, void* opts, int* file_format) {
 #ifndef _XBOX
   }
 #endif
+
   len=lseek(f,0,SEEK_END); lseek(f,0,SEEK_SET);
   if(len == -1) {
     stream->seek = seek_forward;
@@ -145,6 +150,7 @@ static int open_f(stream_t *stream,int mode, void* opts, int* file_format) {
 #ifdef _XBOX
   stream->close=close_f;
 #endif
+
   m_struct_free(&stream_opts,opts);
   return STREAM_OK;
 }

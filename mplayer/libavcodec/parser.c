@@ -60,6 +60,7 @@ AVCodecParserContext *av_parser_init(int codec_id)
             return NULL;
         }
     }
+    s->fetch_timestamp=1;
     return s;
 }
 
@@ -87,14 +88,18 @@ int av_parser_parse(AVCodecParserContext *s,
         s->cur_frame_dts[k] = dts;
 
         /* fill first PTS/DTS */
-        if (s->cur_offset == 0) {
+        if (s->fetch_timestamp){
+            s->fetch_timestamp=0;
             s->last_pts = pts;
             s->last_dts = dts;
+            s->cur_frame_pts[k] =
+            s->cur_frame_dts[k] = AV_NOPTS_VALUE;
         }
     }
 
     /* WARNING: the returned index can be negative */
     index = s->parser->parser_parse(s, avctx, poutbuf, poutbuf_size, buf, buf_size);
+//av_log(NULL, AV_LOG_DEBUG, "parser: in:%lld, %lld, out:%lld, %lld, in:%d out:%d id:%d\n", pts, dts, s->last_pts, s->last_dts, buf_size, *poutbuf_size, avctx->codec_id);
     /* update the file pointer */
     if (*poutbuf_size) {
         /* fill the data for the current frame */
@@ -116,8 +121,15 @@ int av_parser_parse(AVCodecParserContext *s,
                 break;
             k = (k - 1) & (AV_PARSER_PTS_NB - 1);
         }
+
         s->last_pts = s->cur_frame_pts[k];
         s->last_dts = s->cur_frame_dts[k];
+        
+        /* some parsers tell us the packet size even before seeing the first byte of the next packet,
+           so the next pts/dts is in the next chunk */
+        if(index == buf_size){
+            s->fetch_timestamp=1;
+        }
     }
     if (index < 0)
         index = 0;
@@ -269,7 +281,7 @@ static void mpegvideo_extract_headers(AVCodecParserContext *s,
     int32_t start_code;
     int frame_rate_index, ext_type, bytes_left;
     int frame_rate_ext_n, frame_rate_ext_d;
-    int top_field_first, repeat_first_field, progressive_frame;
+    int picture_structure, top_field_first, repeat_first_field, progressive_frame;
     int horiz_size_ext, vert_size_ext;
 
     s->repeat_pict = 0;
@@ -316,6 +328,7 @@ static void mpegvideo_extract_headers(AVCodecParserContext *s,
                     break;
                 case 0x8: /* picture coding extension */
                     if (bytes_left >= 5) {
+                        picture_structure = buf[2]&3;
                         top_field_first = buf[3] & (1 << 7);
                         repeat_first_field = buf[3] & (1 << 1);
                         progressive_frame = buf[4] & (1 << 7);
@@ -331,6 +344,11 @@ static void mpegvideo_extract_headers(AVCodecParserContext *s,
                                 s->repeat_pict = 1;
                             }
                         }
+                        
+                        /* the packet only represents half a frame 
+                           XXX,FIXME maybe find a different solution */
+                        if(picture_structure != 3)
+                            s->repeat_pict = -1;
                     }
                     break;
                 }
@@ -426,7 +444,7 @@ static int av_mpeg4_decode_header(AVCodecParserContext *s1,
     return ret;
 }
 
-int mpeg4video_parse_init(AVCodecParserContext *s)
+static int mpeg4video_parse_init(AVCodecParserContext *s)
 {
     ParseContext1 *pc = s->priv_data;
 

@@ -208,7 +208,7 @@ void free_demuxer(demuxer_t *demuxer){
       demux_close_smjpeg(demuxer); return;
     case DEMUXER_TYPE_DEMUXERS:
       demux_close_demuxers(demuxer); return;
-    case DEMUXER_TYPE_AVI: 
+    case DEMUXER_TYPE_AVI:
     case DEMUXER_TYPE_AVI_NI:
     case DEMUXER_TYPE_AVI_NINI:
       demux_close_avi(demuxer); return;
@@ -375,8 +375,8 @@ int demux_fill_buffer(demuxer_t *demux,demux_stream_t *ds){
     case DEMUXER_TYPE_GIF: return demux_gif_fill_buffer(demux);
 #endif
     case DEMUXER_TYPE_LMLM4: return demux_lmlm4_fill_buffer(demux);
-    case DEMUXER_TYPE_MPEG_TS: 
-    case DEMUXER_TYPE_MPEG4_IN_TS: 
+    case DEMUXER_TYPE_MPEG_TS:
+    case DEMUXER_TYPE_MPEG4_IN_TS:
 	return demux_ts_fill_buffer(demux);
     case DEMUXER_TYPE_REALAUDIO: return demux_ra_fill_buffer(demux);
 #ifdef USE_LIBAVFORMAT
@@ -690,13 +690,13 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_AVI){
     if(id==mmioFOURCC('R','I','F','F')){
       stream_read_dword_le(demuxer->stream); //filesize
       id=stream_read_dword_le(demuxer->stream); // "AVI "
-      if(id==formtypeAVI){ 
+      if(id==formtypeAVI){
         mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat,"AVI");
         file_format=DEMUXER_TYPE_AVI;
       } else {
         free_demuxer(demuxer);
         demuxer = NULL;
-      }	
+      }
     }
   }
 }
@@ -836,7 +836,7 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_FLI){
     stream_seek(demuxer->stream, 4);
     id=stream_read_word_le(demuxer->stream);
     // check for the FLI file magic number
-    if((id==0xAF11) || (id==0xAF12)){ 
+    if((id==0xAF11) || (id==0xAF12)){
       mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat,"FLI");
       file_format=DEMUXER_TYPE_FLI;
     } else {
@@ -851,7 +851,7 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_FILM){
   {
     int signature=stream_read_fourcc(demuxer->stream);
     // check for the FLI file magic number
-    if(signature==mmioFOURCC('F', 'I', 'L', 'M')){ 
+    if(signature==mmioFOURCC('F', 'I', 'L', 'M')){
       mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat,"FILM");
       file_format=DEMUXER_TYPE_FILM;
     } else {
@@ -900,7 +900,7 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_BMP){
 if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_OGG){
   demuxer=new_demuxer(stream,DEMUXER_TYPE_OGG,audio_id,video_id,dvdsub_id);
   if(demux_ogg_open(demuxer)){
-      mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat,"OGG");
+      mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat,"Ogg");
       file_format=DEMUXER_TYPE_OGG;
   } else {
       free_demuxer(demuxer);
@@ -949,7 +949,7 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_MPEG_PS){
  file_format=DEMUXER_TYPE_UNKNOWN;
  while(pes>=0){
   demuxer=new_demuxer(stream,DEMUXER_TYPE_MPEG_PS,audio_id,video_id,dvdsub_id);
-  
+
   // try to pre-detect PES:
   tmppos=stream_tell(demuxer->stream);
   tmp=stream_read_dword(demuxer->stream);
@@ -958,7 +958,7 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_MPEG_PS){
       if(tmp>1 && tmp<=2048) pes=0; // demuxer->synced=3; // PES...
   }
   stream_seek(demuxer->stream,tmppos);
-  
+
   if(!pes) demuxer->synced=3; // hack!
 
   num_elementary_packets100=0;
@@ -1001,7 +1001,7 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_MPEG_PS){
         --pes;continue; // tricky...
       }
       file_format=DEMUXER_TYPE_MPEG_ES; //  <-- hack is here :)
-    } else 
+    } else
 #if 1
     // fuzzy mpeg4-es detection. do NOT enable without heavy testing of mpeg formats detection!
     if(num_elementary_packets1B6>3 && num_elementary_packets12x>=1 &&
@@ -1012,7 +1012,7 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_MPEG_PS){
 #endif
 #if 1
     // fuzzy h264-es detection. do NOT enable without heavy testing of mpeg formats detection!
-    if((num_h264_slice>3 || (num_h264_dpa>3 && num_h264_dpb>3 && num_h264_dpc>3)) && 
+    if((num_h264_slice>3 || (num_h264_dpa>3 && num_h264_dpb>3 && num_h264_dpc>3)) &&
        /* FIXME num_h264_sps>=1 && */ num_h264_pps>=1 && num_h264_idr>=1 &&
        num_elementary_packets1B6==0 && num_elementary_packetsPES==0 &&
        demuxer->synced<2){
@@ -1041,11 +1041,11 @@ if(file_format==DEMUXER_TYPE_MPEG_ES || file_format==DEMUXER_TYPE_MPEG4_ES  || f
     demuxer = NULL;
   } else {
     switch(file_format){
-    case DEMUXER_TYPE_MPEG_ES: 
+    case DEMUXER_TYPE_MPEG_ES:
         mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat, "MPEG-ES"); break;
-    case DEMUXER_TYPE_MPEG4_ES: 
+    case DEMUXER_TYPE_MPEG4_ES:
         mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat, "MPEG4-ES"); break;
-    case DEMUXER_TYPE_H264_ES: 
+    case DEMUXER_TYPE_H264_ES:
         mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat, "H264-ES"); break;
     }
   }
@@ -1066,9 +1066,11 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_RAWDV)
    }
 }
 #endif
+
+#ifdef _XBOX
 //=============== Try to open as MPEG-TY file: =================
 // #ifdef _XBOX : leave this before the audio checking part. If mplayer
-// check's first if it is an audio file it will play this tivo file as audio.
+// check's first if it is an audio file it will play this tivo as audio.
 if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_MPEG_TY)
 {
   demuxer=new_demuxer(stream,DEMUXER_TYPE_MPEG_TY,audio_id,video_id,dvdsub_id);
@@ -1080,6 +1082,7 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_MPEG_TY)
       demuxer = NULL;
   }
 }
+#endif //!_XBOX
 
 //=============== Try to open as audio file: =================
 if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_AUDIO){
@@ -1105,6 +1108,20 @@ if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_XMMS){
   }
 }
 #endif
+#ifndef _XBOX //function moved to before audio checking
+//=============== Try to open as MPEG-TY file: =================
+if(file_format==DEMUXER_TYPE_UNKNOWN || file_format==DEMUXER_TYPE_MPEG_TY)
+{
+  demuxer=new_demuxer(stream,DEMUXER_TYPE_MPEG_TY,audio_id,video_id,dvdsub_id);
+  if(ds_fill_buffer(demuxer->video)){
+      mp_msg(MSGT_DEMUXER,MSGL_INFO,MSGTR_Detected_XXX_FileFormat,"TiVo");
+      file_format=DEMUXER_TYPE_MPEG_TY;
+  } else {
+      free_demuxer(demuxer);
+      demuxer = NULL;
+  }
+}
+#endif //!_XBOX
 //=============== Try to open as a RTP stream: ===========
  if(file_format==DEMUXER_TYPE_RTP) {
    demuxer=new_demuxer(stream,DEMUXER_TYPE_RTP,audio_id,video_id,dvdsub_id);
@@ -1209,7 +1226,7 @@ switch(file_format){
 	 demuxer = new_demuxers_demuxer(demuxer,od,demuxer);
      }
 #endif
-   }       
+   }
    return demuxer;
 //  break;
  }
@@ -1350,7 +1367,7 @@ switch(file_format){
    break;
  }
 #endif
- case DEMUXER_TYPE_MPEG_TS: 
+ case DEMUXER_TYPE_MPEG_TS:
  case DEMUXER_TYPE_MPEG4_IN_TS: {
   demux_open_ts(demuxer);
   break;
@@ -1486,7 +1503,7 @@ if(!demuxer->seekable){
     // clear demux buffers:
     if(sh_audio){ ds_free_packs(d_audio);sh_audio->a_buffer_len=0;}
     ds_free_packs(d_video);
-    
+
     demuxer->stream->eof=0; // clear eof flag
     demuxer->video->eof=0;
     demuxer->audio->eof=0;
@@ -1512,7 +1529,7 @@ switch(demuxer->file_format){
 
   case DEMUXER_TYPE_MPEG_TY:
       demux_seek_ty(demuxer,rel_seek_secs,flags);  break;
-  
+
   case DEMUXER_TYPE_H264_ES:
   case DEMUXER_TYPE_MPEG4_ES:
   case DEMUXER_TYPE_MPEG_ES:
@@ -1533,7 +1550,7 @@ switch(demuxer->file_format){
 
   case DEMUXER_TYPE_PVA:
       demux_seek_pva(demuxer,rel_seek_secs,flags); break;
-      
+
   case DEMUXER_TYPE_FLI:
       demux_seek_fli(demuxer,rel_seek_secs,flags);  break;
   case DEMUXER_TYPE_FILM:
@@ -1579,7 +1596,7 @@ int demux_info_add(demuxer_t *demuxer, char *opt, char *param)
     int n = 0;
 
 
-    for(n = 0; info && info[2*n] != NULL; n++) 
+    for(n = 0; info && info[2*n] != NULL; n++)
       {
 	if(!strcasecmp(opt,info[2*n]))
 	  {
@@ -1587,7 +1604,7 @@ int demux_info_add(demuxer_t *demuxer, char *opt, char *param)
 	    return 0;
 	  }
       }
-    
+
     info = demuxer->info = (char**)realloc(info,(2*(n+2))*sizeof(char*));
     info[2*n] = strdup(opt);
     info[2*n+1] = strdup(param);
@@ -1633,6 +1650,9 @@ extern int demux_audio_control(demuxer_t *demuxer, int cmd, void *arg);
 extern int demux_ogg_control(demuxer_t *demuxer, int cmd, void *arg);
 extern int demux_real_control(demuxer_t *demuxer, int cmd, void *arg);
 extern int demux_lavf_control(demuxer_t *demuxer, int cmd, void *arg);
+#ifdef _XBOX
+extern int demux_mov_control(demuxer_t *demuxer, int cmd, void *arg);
+#endif
 
 int demux_control(demuxer_t *demuxer, int cmd, void *arg) {
     switch(demuxer->type) {
@@ -1670,6 +1690,10 @@ int demux_control(demuxer_t *demuxer, int cmd, void *arg) {
         case DEMUXER_TYPE_LAVF:
 	    return demux_lavf_control(demuxer, cmd, arg);
 #endif
+#ifdef _XBOX
+    case DEMUXER_TYPE_MOV:
+	    return demux_mov_control(demuxer, cmd, arg);
+#endif
 
 	default:
 	    return DEMUXER_CTRL_NOTIMPL;
@@ -1678,18 +1702,18 @@ int demux_control(demuxer_t *demuxer, int cmd, void *arg) {
 
 
 
-unsigned long demuxer_get_time_length(demuxer_t *demuxer){     
-    unsigned long get_time_ans;     
+unsigned long demuxer_get_time_length(demuxer_t *demuxer){
+    unsigned long get_time_ans;
     if (demux_control(demuxer, DEMUXER_CTRL_GET_TIME_LENGTH,(void *)&get_time_ans)<=0)  {
-        get_time_ans=0;     
+        get_time_ans=0;
     }
     return get_time_ans;
 }
 
-int demuxer_get_percent_pos(demuxer_t *demuxer){     
-    int ans;     
+int demuxer_get_percent_pos(demuxer_t *demuxer){
+    int ans;
     if (demux_control(demuxer, DEMUXER_CTRL_GET_PERCENT_POS, &ans)<=0)  {
-        ans=0;     
+        ans=0;
     }
     if (ans>100 || ans<0) ans=0;
     return ans;

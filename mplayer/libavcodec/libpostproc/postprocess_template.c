@@ -170,6 +170,7 @@ asm volatile(
  * Do a vertical low pass filter on the 8x16 block (only write to the 8x8 block in the middle)
  * using the 9-Tap Filter (1,1,2,2,4,2,2,1,1)/16
  */
+#ifndef HAVE_ALTIVEC
 static inline void RENAME(doVertLowPass)(uint8_t *src, int stride, PPContext *c)
 {
 #if defined (HAVE_MMX2) || defined (HAVE_3DNOW)
@@ -316,30 +317,32 @@ static inline void RENAME(doVertLowPass)(uint8_t *src, int stride, PPContext *c)
 		const int first= ABS(src[0] - src[l1]) < c->QP ? src[0] : src[l1];
 		const int last= ABS(src[l8] - src[l9]) < c->QP ? src[l9] : src[l8];
 
-		int sums[9];
-		sums[0] = first + src[l1];
-		sums[1] = src[l1] + src[l2];
-		sums[2] = src[l2] + src[l3];
-		sums[3] = src[l3] + src[l4];
-		sums[4] = src[l4] + src[l5];
-		sums[5] = src[l5] + src[l6];
-		sums[6] = src[l6] + src[l7];
-		sums[7] = src[l7] + src[l8];
-		sums[8] = src[l8] + last;
+		int sums[10];
+		sums[0] = 4*first + src[l1] + src[l2] + src[l3] + 4;
+		sums[1] = sums[0] - first  + src[l4];
+		sums[2] = sums[1] - first  + src[l5];
+		sums[3] = sums[2] - first  + src[l6];
+		sums[4] = sums[3] - first  + src[l7];
+		sums[5] = sums[4] - src[l1] + src[l8];
+		sums[6] = sums[5] - src[l2] + last;
+		sums[7] = sums[6] - src[l3] + last;
+		sums[8] = sums[7] - src[l4] + last;
+		sums[9] = sums[8] - src[l5] + last;
 
-		src[l1]= ((sums[0]<<2) + ((first + sums[2])<<1) + sums[4] + 8)>>4;
-		src[l2]= ((src[l2]<<2) + ((first + sums[0] + sums[3])<<1) + sums[5] + 8)>>4;
-		src[l3]= ((src[l3]<<2) + ((first + sums[1] + sums[4])<<1) + sums[6] + 8)>>4;
-		src[l4]= ((src[l4]<<2) + ((sums[2] + sums[5])<<1) + sums[0] + sums[7] + 8)>>4;
-		src[l5]= ((src[l5]<<2) + ((sums[3] + sums[6])<<1) + sums[1] + sums[8] + 8)>>4;
-		src[l6]= ((src[l6]<<2) + ((last + sums[7] + sums[4])<<1) + sums[2] + 8)>>4;
-		src[l7]= (((last + src[l7])<<2) + ((src[l8] + sums[5])<<1) + sums[3] + 8)>>4;
-		src[l8]= ((sums[8]<<2) + ((last + sums[6])<<1) + sums[4] + 8)>>4;
+		src[l1]= (sums[0] + sums[2] + 2*src[l1])>>4;
+		src[l2]= (sums[1] + sums[3] + 2*src[l2])>>4;
+		src[l3]= (sums[2] + sums[4] + 2*src[l3])>>4;
+		src[l4]= (sums[3] + sums[5] + 2*src[l4])>>4;
+		src[l5]= (sums[4] + sums[6] + 2*src[l5])>>4;
+		src[l6]= (sums[5] + sums[7] + 2*src[l6])>>4;
+		src[l7]= (sums[6] + sums[8] + 2*src[l7])>>4;
+		src[l8]= (sums[7] + sums[9] + 2*src[l8])>>4;
 
 		src++;
 	}
 #endif
 }
+#endif //HAVE_ALTIVEC
 
 #if 0
 /**
@@ -582,6 +585,7 @@ static inline void RENAME(vertX1Filter)(uint8_t *src, int stride, PPContext *co)
 #endif
 }
 
+#ifndef HAVE_ALTIVEC
 static inline void RENAME(doVertDefFilter)(uint8_t src[], int stride, PPContext *c)
 {
 #if defined (HAVE_MMX2) || defined (HAVE_3DNOW)
@@ -1027,6 +1031,9 @@ src-=8;
 		"psubw %%mm6, %%mm1				\n\t"
 #endif
 
+		"movd %2, %%mm2					\n\t" // QP
+		"punpcklbw %%mm7, %%mm2				\n\t"
+
 		"movq %%mm7, %%mm6				\n\t" // 0
 		"pcmpgtw %%mm4, %%mm6				\n\t" // sign(2L2 - 5L3 + 5L4 - 2L5)
 		"pxor %%mm6, %%mm4				\n\t"
@@ -1035,7 +1042,6 @@ src-=8;
 		"pxor %%mm7, %%mm5				\n\t"
 		"psubw %%mm7, %%mm5				\n\t" // |2H2 - 5H3 + 5H4 - 2H5|
 // 100 opcodes
-		"movd %2, %%mm2					\n\t" // QP
 		"psllw $3, %%mm2				\n\t" // 8QP
 		"movq %%mm2, %%mm3				\n\t" // 8QP
 		"pcmpgtw %%mm4, %%mm2				\n\t"
@@ -1149,7 +1155,9 @@ src-=8;
 	}
 #endif
 }
+#endif //HAVE_ALTIVEC
 
+#ifndef HAVE_ALTIVEC
 static inline void RENAME(dering)(uint8_t src[], int stride, PPContext *c)
 {
 #if defined (HAVE_MMX2) || defined (HAVE_3DNOW)
@@ -1505,6 +1513,7 @@ DERING_CORE((%0, %1, 8),(%%edx, %1, 4) ,%%mm2,%%mm4,%%mm0,%%mm3,%%mm5,%%mm1,%%mm
 #endif
 #endif
 }
+#endif //HAVE_ALTIVEC
 
 /**
  * Deinterlaces the given block by linearly interpolating every second line.
@@ -2194,6 +2203,7 @@ static inline void RENAME(transpose2)(uint8_t *dst, int dstStride, uint8_t *src)
 #endif
 //static int test=0;
 
+#ifndef HAVE_ALTIVEC
 static inline void RENAME(tempNoiseReducer)(uint8_t *src, int stride,
 				    uint8_t *tempBlured, uint32_t *tempBluredPast, int *maxNoise)
 {
@@ -2501,7 +2511,7 @@ L2_DIFF_CORE((%0, %%ecx), (%1, %%ecx))
 {
 	int y;
 	int d=0;
-	int sysd=0;
+//	int sysd=0;
 	int i;
 
 	for(y=0; y<8; y++)
@@ -2516,7 +2526,7 @@ L2_DIFF_CORE((%0, %%ecx), (%1, %%ecx))
 //			if(y==0 || y==7) d1+= d1>>1;
 //			d+= ABS(d1);
 			d+= d1*d1;
-			sysd+= d1;
+//			sysd+= d1;
 		}
 	}
 	i=d;
@@ -2602,6 +2612,541 @@ Switch between
 }
 #endif
 }
+#endif //HAVE_ALTIVEC
+
+#ifdef HAVE_MMX
+/**
+ * accurate deblock filter
+ */
+static always_inline void RENAME(do_a_deblock)(uint8_t *src, int step, int stride, PPContext *c){
+	int64_t dc_mask, eq_mask;
+	int64_t sums[10*8*2];
+	src+= step*3; // src points to begin of the 8x8 Block
+//START_TIMER
+asm volatile(
+		"movq %0, %%mm7					\n\t" 
+		"movq %1, %%mm6					\n\t" 
+                : : "m" (c->mmxDcOffset[c->nonBQP]),  "m" (c->mmxDcThreshold[c->nonBQP])
+                );
+                
+asm volatile(
+		"leal (%2, %3), %%eax				\n\t"
+//	0	1	2	3	4	5	6	7	8	9
+//	%1	eax	eax+%2	eax+2%2	%1+4%2	ecx	ecx+%2	ecx+2%2	%1+8%2	ecx+4%2
+
+		"movq (%2), %%mm0				\n\t"
+		"movq (%%eax), %%mm1				\n\t"
+                "movq %%mm1, %%mm3				\n\t"
+                "movq %%mm1, %%mm4				\n\t"
+		"psubb %%mm1, %%mm0				\n\t" // mm0 = differnece
+		"paddb %%mm7, %%mm0				\n\t"
+		"pcmpgtb %%mm6, %%mm0				\n\t"
+
+		"movq (%%eax,%3), %%mm2				\n\t"
+                PMAXUB(%%mm2, %%mm4)
+                PMINUB(%%mm2, %%mm3, %%mm5)
+		"psubb %%mm2, %%mm1				\n\t"
+		"paddb %%mm7, %%mm1				\n\t"
+		"pcmpgtb %%mm6, %%mm1				\n\t"
+		"paddb %%mm1, %%mm0				\n\t"
+
+		"movq (%%eax, %3, 2), %%mm1			\n\t"
+                PMAXUB(%%mm1, %%mm4)
+                PMINUB(%%mm1, %%mm3, %%mm5)
+		"psubb %%mm1, %%mm2				\n\t"
+		"paddb %%mm7, %%mm2				\n\t"
+		"pcmpgtb %%mm6, %%mm2				\n\t"
+		"paddb %%mm2, %%mm0				\n\t"
+		
+		"leal (%%eax, %3, 4), %%eax			\n\t"
+
+		"movq (%2, %3, 4), %%mm2			\n\t"
+                PMAXUB(%%mm2, %%mm4)
+                PMINUB(%%mm2, %%mm3, %%mm5)
+		"psubb %%mm2, %%mm1				\n\t"
+		"paddb %%mm7, %%mm1				\n\t"
+		"pcmpgtb %%mm6, %%mm1				\n\t"
+		"paddb %%mm1, %%mm0				\n\t"
+
+		"movq (%%eax), %%mm1				\n\t"
+                PMAXUB(%%mm1, %%mm4)
+                PMINUB(%%mm1, %%mm3, %%mm5)
+		"psubb %%mm1, %%mm2				\n\t"
+		"paddb %%mm7, %%mm2				\n\t"
+		"pcmpgtb %%mm6, %%mm2				\n\t"
+		"paddb %%mm2, %%mm0				\n\t"
+
+		"movq (%%eax, %3), %%mm2			\n\t"
+                PMAXUB(%%mm2, %%mm4)
+                PMINUB(%%mm2, %%mm3, %%mm5)
+		"psubb %%mm2, %%mm1				\n\t"
+		"paddb %%mm7, %%mm1				\n\t"
+		"pcmpgtb %%mm6, %%mm1				\n\t"
+		"paddb %%mm1, %%mm0				\n\t"
+
+		"movq (%%eax, %3, 2), %%mm1			\n\t"
+                PMAXUB(%%mm1, %%mm4)
+                PMINUB(%%mm1, %%mm3, %%mm5)
+		"psubb %%mm1, %%mm2				\n\t"
+		"paddb %%mm7, %%mm2				\n\t"
+		"pcmpgtb %%mm6, %%mm2				\n\t"
+		"paddb %%mm2, %%mm0				\n\t"
+
+		"movq (%2, %3, 8), %%mm2			\n\t"
+                PMAXUB(%%mm2, %%mm4)
+                PMINUB(%%mm2, %%mm3, %%mm5)
+		"psubb %%mm2, %%mm1				\n\t"
+		"paddb %%mm7, %%mm1				\n\t"
+		"pcmpgtb %%mm6, %%mm1				\n\t"
+		"paddb %%mm1, %%mm0				\n\t"
+
+		"movq (%%eax, %3, 4), %%mm1			\n\t"
+		"psubb %%mm1, %%mm2				\n\t"
+		"paddb %%mm7, %%mm2				\n\t"
+		"pcmpgtb %%mm6, %%mm2				\n\t"
+		"paddb %%mm2, %%mm0				\n\t"
+		"psubusb %%mm3, %%mm4				\n\t"
+
+                "movq %4, %%mm7					\n\t" // QP,..., QP
+		"paddusb %%mm7, %%mm7				\n\t" // 2QP ... 2QP
+		"pcmpgtb %%mm4, %%mm7				\n\t" // Diff < 2QP -> FF
+		"movq %%mm7, %1					\n\t"
+
+		"pxor %%mm6, %%mm6				\n\t"
+		"movq %5, %%mm7					\n\t"
+		"punpcklbw %%mm7, %%mm7				\n\t"
+		"punpcklbw %%mm7, %%mm7				\n\t"
+		"punpcklbw %%mm7, %%mm7				\n\t"
+		"psubb %%mm0, %%mm6				\n\t"
+		"pcmpgtb %%mm7, %%mm6				\n\t"
+		"movq %%mm6, %0					\n\t"
+
+		: "=m" (eq_mask), "=m" (dc_mask)
+		: "r" (src), "r" (step), "m" (c->pQPb), "m"(c->ppMode.flatnessThreshold)
+		: "%eax"
+		);
+
+	if(dc_mask & eq_mask){
+		int offset= -8*step;
+		int64_t *temp_sums= sums;
+
+		asm volatile(
+		"movq %2, %%mm0					\n\t"  // QP,..., QP
+		"pxor %%mm4, %%mm4				\n\t"
+
+		"movq (%0), %%mm6				\n\t"
+		"movq (%0, %1), %%mm5				\n\t"
+		"movq %%mm5, %%mm1				\n\t"
+		"movq %%mm6, %%mm2				\n\t"
+		"psubusb %%mm6, %%mm5				\n\t"
+		"psubusb %%mm1, %%mm2				\n\t"
+		"por %%mm5, %%mm2				\n\t" // ABS Diff of lines
+		"psubusb %%mm2, %%mm0				\n\t" // diff >= QP -> 0
+		"pcmpeqb %%mm4, %%mm0				\n\t" // diff >= QP -> FF
+
+		"pxor %%mm6, %%mm1				\n\t"
+		"pand %%mm0, %%mm1				\n\t"
+		"pxor %%mm1, %%mm6				\n\t"
+		// 0:QP  6:First
+
+		"movq (%0, %1, 8), %%mm5			\n\t"
+		"addl %1, %0					\n\t" // %0 points to line 1 not 0
+		"movq (%0, %1, 8), %%mm7			\n\t"
+		"movq %%mm5, %%mm1				\n\t"
+		"movq %%mm7, %%mm2				\n\t"
+		"psubusb %%mm7, %%mm5				\n\t"
+		"psubusb %%mm1, %%mm2				\n\t"
+		"por %%mm5, %%mm2				\n\t" // ABS Diff of lines
+		"movq %2, %%mm0					\n\t"  // QP,..., QP
+		"psubusb %%mm2, %%mm0				\n\t" // diff >= QP -> 0
+		"pcmpeqb %%mm4, %%mm0				\n\t" // diff >= QP -> FF
+
+		"pxor %%mm7, %%mm1				\n\t"
+		"pand %%mm0, %%mm1				\n\t"
+		"pxor %%mm1, %%mm7				\n\t"
+		
+		"movq %%mm6, %%mm5				\n\t"
+		"punpckhbw %%mm4, %%mm6				\n\t"
+		"punpcklbw %%mm4, %%mm5				\n\t"
+		// 4:0 5/6:First 7:Last
+
+		"movq %%mm5, %%mm0				\n\t"
+		"movq %%mm6, %%mm1				\n\t"
+		"psllw $2, %%mm0				\n\t"
+		"psllw $2, %%mm1				\n\t"
+		"paddw "MANGLE(w04)", %%mm0			\n\t"
+		"paddw "MANGLE(w04)", %%mm1			\n\t"
+
+#define NEXT\
+		"movq (%0), %%mm2				\n\t"\
+		"movq (%0), %%mm3				\n\t"\
+		"addl %1, %0					\n\t"\
+		"punpcklbw %%mm4, %%mm2				\n\t"\
+		"punpckhbw %%mm4, %%mm3				\n\t"\
+		"paddw %%mm2, %%mm0				\n\t"\
+		"paddw %%mm3, %%mm1				\n\t"
+
+#define PREV\
+		"movq (%0), %%mm2				\n\t"\
+		"movq (%0), %%mm3				\n\t"\
+		"addl %1, %0					\n\t"\
+		"punpcklbw %%mm4, %%mm2				\n\t"\
+		"punpckhbw %%mm4, %%mm3				\n\t"\
+		"psubw %%mm2, %%mm0				\n\t"\
+		"psubw %%mm3, %%mm1				\n\t"
+
+				
+		NEXT //0
+		NEXT //1
+		NEXT //2
+		"movq %%mm0, (%3)				\n\t"
+		"movq %%mm1, 8(%3)				\n\t"
+
+		NEXT //3
+		"psubw %%mm5, %%mm0				\n\t"
+		"psubw %%mm6, %%mm1				\n\t"
+		"movq %%mm0, 16(%3)				\n\t"
+		"movq %%mm1, 24(%3)				\n\t"
+
+		NEXT //4
+		"psubw %%mm5, %%mm0				\n\t"
+		"psubw %%mm6, %%mm1				\n\t"
+		"movq %%mm0, 32(%3)				\n\t"
+		"movq %%mm1, 40(%3)				\n\t"
+
+		NEXT //5
+		"psubw %%mm5, %%mm0				\n\t"
+		"psubw %%mm6, %%mm1				\n\t"
+		"movq %%mm0, 48(%3)				\n\t"
+		"movq %%mm1, 56(%3)				\n\t"
+
+		NEXT //6
+		"psubw %%mm5, %%mm0				\n\t"
+		"psubw %%mm6, %%mm1				\n\t"
+		"movq %%mm0, 64(%3)				\n\t"
+		"movq %%mm1, 72(%3)				\n\t"
+
+		"movq %%mm7, %%mm6				\n\t"
+		"punpckhbw %%mm4, %%mm7				\n\t"
+		"punpcklbw %%mm4, %%mm6				\n\t"
+		
+		NEXT //7
+		"movl %4, %0					\n\t"
+		"addl %1, %0					\n\t"
+		PREV //0
+		"movq %%mm0, 80(%3)				\n\t"
+		"movq %%mm1, 88(%3)				\n\t"
+
+		PREV //1
+		"paddw %%mm6, %%mm0				\n\t"
+		"paddw %%mm7, %%mm1				\n\t"
+		"movq %%mm0, 96(%3)				\n\t"
+		"movq %%mm1, 104(%3)				\n\t"
+		
+		PREV //2
+		"paddw %%mm6, %%mm0				\n\t"
+		"paddw %%mm7, %%mm1				\n\t"
+		"movq %%mm0, 112(%3)				\n\t"
+		"movq %%mm1, 120(%3)				\n\t"
+
+		PREV //3
+		"paddw %%mm6, %%mm0				\n\t"
+		"paddw %%mm7, %%mm1				\n\t"
+		"movq %%mm0, 128(%3)				\n\t"
+		"movq %%mm1, 136(%3)				\n\t"
+
+		PREV //4
+		"paddw %%mm6, %%mm0				\n\t"
+		"paddw %%mm7, %%mm1				\n\t"
+		"movq %%mm0, 144(%3)				\n\t"
+		"movq %%mm1, 152(%3)				\n\t"
+
+		"movl %4, %0					\n\t" //FIXME
+
+		: "+&r"(src)
+		: "r" (step), "m" (c->pQPb), "r"(sums), "g"(src)
+		);
+
+		src+= step; // src points to begin of the 8x8 Block
+
+		asm volatile(
+		"movq %4, %%mm6					\n\t"
+		"pcmpeqb %%mm5, %%mm5				\n\t"
+		"pxor %%mm6, %%mm5				\n\t"
+		"pxor %%mm7, %%mm7				\n\t"
+
+		"1:						\n\t"
+		"movq (%1), %%mm0				\n\t"
+		"movq 8(%1), %%mm1				\n\t"
+		"paddw 32(%1), %%mm0				\n\t"
+		"paddw 40(%1), %%mm1				\n\t"
+		"movq (%0, %3), %%mm2				\n\t"
+		"movq %%mm2, %%mm3				\n\t"
+		"movq %%mm2, %%mm4				\n\t"
+		"punpcklbw %%mm7, %%mm2				\n\t"
+		"punpckhbw %%mm7, %%mm3				\n\t"
+		"paddw %%mm2, %%mm0				\n\t"
+		"paddw %%mm3, %%mm1				\n\t"
+		"paddw %%mm2, %%mm0				\n\t"
+		"paddw %%mm3, %%mm1				\n\t"
+		"psrlw $4, %%mm0				\n\t"
+		"psrlw $4, %%mm1				\n\t"
+		"packuswb %%mm1, %%mm0				\n\t"
+		"pand %%mm6, %%mm0				\n\t"
+		"pand %%mm5, %%mm4				\n\t"
+		"por %%mm4, %%mm0				\n\t"
+		"movq %%mm0, (%0, %3)				\n\t"
+		"addl $16, %1					\n\t"
+		"addl %2, %0					\n\t"
+		" js 1b						\n\t"
+
+		: "+r"(offset), "+r"(temp_sums)
+		: "r" (step), "r"(src - offset), "m"(dc_mask & eq_mask)
+		);
+	}else
+		src+= step; // src points to begin of the 8x8 Block
+
+	if(eq_mask != -1LL){
+		uint8_t *temp_src= src;
+		asm volatile(
+		"pxor %%mm7, %%mm7				\n\t"
+		"leal -40(%%esp), %%ecx				\n\t" // make space for 4 8-byte vars
+		"andl $0xFFFFFFF8, %%ecx			\n\t" // align
+//	0	1	2	3	4	5	6	7	8	9
+//	%0	eax	eax+%1	eax+2%1	%0+4%1	ecx	ecx+%1	ecx+2%1	%1+8%1	ecx+4%1
+
+		"movq (%0), %%mm0				\n\t"
+		"movq %%mm0, %%mm1				\n\t"
+		"punpcklbw %%mm7, %%mm0				\n\t" // low part of line 0
+		"punpckhbw %%mm7, %%mm1				\n\t" // high part of line 0
+
+		"movq (%0, %1), %%mm2				\n\t"
+		"leal (%0, %1, 2), %%eax			\n\t"
+		"movq %%mm2, %%mm3				\n\t"
+		"punpcklbw %%mm7, %%mm2				\n\t" // low part of line 1
+		"punpckhbw %%mm7, %%mm3				\n\t" // high part of line 1
+
+		"movq (%%eax), %%mm4				\n\t"
+		"movq %%mm4, %%mm5				\n\t"
+		"punpcklbw %%mm7, %%mm4				\n\t" // low part of line 2
+		"punpckhbw %%mm7, %%mm5				\n\t" // high part of line 2
+
+		"paddw %%mm0, %%mm0				\n\t" // 2L0
+		"paddw %%mm1, %%mm1				\n\t" // 2H0
+		"psubw %%mm4, %%mm2				\n\t" // L1 - L2
+		"psubw %%mm5, %%mm3				\n\t" // H1 - H2
+		"psubw %%mm2, %%mm0				\n\t" // 2L0 - L1 + L2
+		"psubw %%mm3, %%mm1				\n\t" // 2H0 - H1 + H2
+
+		"psllw $2, %%mm2				\n\t" // 4L1 - 4L2
+		"psllw $2, %%mm3				\n\t" // 4H1 - 4H2
+		"psubw %%mm2, %%mm0				\n\t" // 2L0 - 5L1 + 5L2
+		"psubw %%mm3, %%mm1				\n\t" // 2H0 - 5H1 + 5H2
+
+		"movq (%%eax, %1), %%mm2			\n\t"
+		"movq %%mm2, %%mm3				\n\t"
+		"punpcklbw %%mm7, %%mm2				\n\t" // L3
+		"punpckhbw %%mm7, %%mm3				\n\t" // H3
+
+		"psubw %%mm2, %%mm0				\n\t" // 2L0 - 5L1 + 5L2 - L3
+		"psubw %%mm3, %%mm1				\n\t" // 2H0 - 5H1 + 5H2 - H3
+		"psubw %%mm2, %%mm0				\n\t" // 2L0 - 5L1 + 5L2 - 2L3
+		"psubw %%mm3, %%mm1				\n\t" // 2H0 - 5H1 + 5H2 - 2H3
+		"movq %%mm0, (%%ecx)				\n\t" // 2L0 - 5L1 + 5L2 - 2L3
+		"movq %%mm1, 8(%%ecx)				\n\t" // 2H0 - 5H1 + 5H2 - 2H3
+
+		"movq (%%eax, %1, 2), %%mm0			\n\t"
+		"movq %%mm0, %%mm1				\n\t"
+		"punpcklbw %%mm7, %%mm0				\n\t" // L4
+		"punpckhbw %%mm7, %%mm1				\n\t" // H4
+
+		"psubw %%mm0, %%mm2				\n\t" // L3 - L4
+		"psubw %%mm1, %%mm3				\n\t" // H3 - H4
+		"movq %%mm2, 16(%%ecx)				\n\t" // L3 - L4
+		"movq %%mm3, 24(%%ecx)				\n\t" // H3 - H4
+		"paddw %%mm4, %%mm4				\n\t" // 2L2
+		"paddw %%mm5, %%mm5				\n\t" // 2H2
+		"psubw %%mm2, %%mm4				\n\t" // 2L2 - L3 + L4
+		"psubw %%mm3, %%mm5				\n\t" // 2H2 - H3 + H4
+
+		"leal (%%eax, %1), %0				\n\t"
+		"psllw $2, %%mm2				\n\t" // 4L3 - 4L4
+		"psllw $2, %%mm3				\n\t" // 4H3 - 4H4
+		"psubw %%mm2, %%mm4				\n\t" // 2L2 - 5L3 + 5L4
+		"psubw %%mm3, %%mm5				\n\t" // 2H2 - 5H3 + 5H4
+//50 opcodes so far
+		"movq (%0, %1, 2), %%mm2			\n\t"
+		"movq %%mm2, %%mm3				\n\t"
+		"punpcklbw %%mm7, %%mm2				\n\t" // L5
+		"punpckhbw %%mm7, %%mm3				\n\t" // H5
+		"psubw %%mm2, %%mm4				\n\t" // 2L2 - 5L3 + 5L4 - L5
+		"psubw %%mm3, %%mm5				\n\t" // 2H2 - 5H3 + 5H4 - H5
+		"psubw %%mm2, %%mm4				\n\t" // 2L2 - 5L3 + 5L4 - 2L5
+		"psubw %%mm3, %%mm5				\n\t" // 2H2 - 5H3 + 5H4 - 2H5
+
+		"movq (%%eax, %1, 4), %%mm6			\n\t"
+		"punpcklbw %%mm7, %%mm6				\n\t" // L6
+		"psubw %%mm6, %%mm2				\n\t" // L5 - L6
+		"movq (%%eax, %1, 4), %%mm6			\n\t"
+		"punpckhbw %%mm7, %%mm6				\n\t" // H6
+		"psubw %%mm6, %%mm3				\n\t" // H5 - H6
+
+		"paddw %%mm0, %%mm0				\n\t" // 2L4
+		"paddw %%mm1, %%mm1				\n\t" // 2H4
+		"psubw %%mm2, %%mm0				\n\t" // 2L4 - L5 + L6
+		"psubw %%mm3, %%mm1				\n\t" // 2H4 - H5 + H6
+
+		"psllw $2, %%mm2				\n\t" // 4L5 - 4L6
+		"psllw $2, %%mm3				\n\t" // 4H5 - 4H6
+		"psubw %%mm2, %%mm0				\n\t" // 2L4 - 5L5 + 5L6
+		"psubw %%mm3, %%mm1				\n\t" // 2H4 - 5H5 + 5H6
+
+		"movq (%0, %1, 4), %%mm2			\n\t"
+		"movq %%mm2, %%mm3				\n\t"
+		"punpcklbw %%mm7, %%mm2				\n\t" // L7
+		"punpckhbw %%mm7, %%mm3				\n\t" // H7
+
+		"paddw %%mm2, %%mm2				\n\t" // 2L7
+		"paddw %%mm3, %%mm3				\n\t" // 2H7
+		"psubw %%mm2, %%mm0				\n\t" // 2L4 - 5L5 + 5L6 - 2L7
+		"psubw %%mm3, %%mm1				\n\t" // 2H4 - 5H5 + 5H6 - 2H7
+
+		"movq (%%ecx), %%mm2				\n\t" // 2L0 - 5L1 + 5L2 - 2L3
+		"movq 8(%%ecx), %%mm3				\n\t" // 2H0 - 5H1 + 5H2 - 2H3
+
+#ifdef HAVE_MMX2
+		"movq %%mm7, %%mm6				\n\t" // 0
+		"psubw %%mm0, %%mm6				\n\t"
+		"pmaxsw %%mm6, %%mm0				\n\t" // |2L4 - 5L5 + 5L6 - 2L7|
+		"movq %%mm7, %%mm6				\n\t" // 0
+		"psubw %%mm1, %%mm6				\n\t"
+		"pmaxsw %%mm6, %%mm1				\n\t" // |2H4 - 5H5 + 5H6 - 2H7|
+		"movq %%mm7, %%mm6				\n\t" // 0
+		"psubw %%mm2, %%mm6				\n\t"
+		"pmaxsw %%mm6, %%mm2				\n\t" // |2L0 - 5L1 + 5L2 - 2L3|
+		"movq %%mm7, %%mm6				\n\t" // 0
+		"psubw %%mm3, %%mm6				\n\t"
+		"pmaxsw %%mm6, %%mm3				\n\t" // |2H0 - 5H1 + 5H2 - 2H3|
+#else
+		"movq %%mm7, %%mm6				\n\t" // 0
+		"pcmpgtw %%mm0, %%mm6				\n\t"
+		"pxor %%mm6, %%mm0				\n\t"
+		"psubw %%mm6, %%mm0				\n\t" // |2L4 - 5L5 + 5L6 - 2L7|
+		"movq %%mm7, %%mm6				\n\t" // 0
+		"pcmpgtw %%mm1, %%mm6				\n\t"
+		"pxor %%mm6, %%mm1				\n\t"
+		"psubw %%mm6, %%mm1				\n\t" // |2H4 - 5H5 + 5H6 - 2H7|
+		"movq %%mm7, %%mm6				\n\t" // 0
+		"pcmpgtw %%mm2, %%mm6				\n\t"
+		"pxor %%mm6, %%mm2				\n\t"
+		"psubw %%mm6, %%mm2				\n\t" // |2L0 - 5L1 + 5L2 - 2L3|
+		"movq %%mm7, %%mm6				\n\t" // 0
+		"pcmpgtw %%mm3, %%mm6				\n\t"
+		"pxor %%mm6, %%mm3				\n\t"
+		"psubw %%mm6, %%mm3				\n\t" // |2H0 - 5H1 + 5H2 - 2H3|
+#endif
+
+#ifdef HAVE_MMX2
+		"pminsw %%mm2, %%mm0				\n\t"
+		"pminsw %%mm3, %%mm1				\n\t"
+#else
+		"movq %%mm0, %%mm6				\n\t"
+		"psubusw %%mm2, %%mm6				\n\t"
+		"psubw %%mm6, %%mm0				\n\t"
+		"movq %%mm1, %%mm6				\n\t"
+		"psubusw %%mm3, %%mm6				\n\t"
+		"psubw %%mm6, %%mm1				\n\t"
+#endif
+
+		"movd %2, %%mm2					\n\t" // QP
+		"punpcklbw %%mm7, %%mm2				\n\t"
+
+		"movq %%mm7, %%mm6				\n\t" // 0
+		"pcmpgtw %%mm4, %%mm6				\n\t" // sign(2L2 - 5L3 + 5L4 - 2L5)
+		"pxor %%mm6, %%mm4				\n\t"
+		"psubw %%mm6, %%mm4				\n\t" // |2L2 - 5L3 + 5L4 - 2L5|
+		"pcmpgtw %%mm5, %%mm7				\n\t" // sign(2H2 - 5H3 + 5H4 - 2H5)
+		"pxor %%mm7, %%mm5				\n\t"
+		"psubw %%mm7, %%mm5				\n\t" // |2H2 - 5H3 + 5H4 - 2H5|
+// 100 opcodes
+		"psllw $3, %%mm2				\n\t" // 8QP
+		"movq %%mm2, %%mm3				\n\t" // 8QP
+		"pcmpgtw %%mm4, %%mm2				\n\t"
+		"pcmpgtw %%mm5, %%mm3				\n\t"
+		"pand %%mm2, %%mm4				\n\t"
+		"pand %%mm3, %%mm5				\n\t"
+
+
+		"psubusw %%mm0, %%mm4				\n\t" // hd
+		"psubusw %%mm1, %%mm5				\n\t" // ld
+
+
+		"movq "MANGLE(w05)", %%mm2			\n\t" // 5
+		"pmullw %%mm2, %%mm4				\n\t"
+		"pmullw %%mm2, %%mm5				\n\t"
+		"movq "MANGLE(w20)", %%mm2			\n\t" // 32
+		"paddw %%mm2, %%mm4				\n\t"
+		"paddw %%mm2, %%mm5				\n\t"
+		"psrlw $6, %%mm4				\n\t"
+		"psrlw $6, %%mm5				\n\t"
+
+		"movq 16(%%ecx), %%mm0				\n\t" // L3 - L4
+		"movq 24(%%ecx), %%mm1				\n\t" // H3 - H4
+
+		"pxor %%mm2, %%mm2				\n\t"
+		"pxor %%mm3, %%mm3				\n\t"
+
+		"pcmpgtw %%mm0, %%mm2				\n\t" // sign (L3-L4)
+		"pcmpgtw %%mm1, %%mm3				\n\t" // sign (H3-H4)
+		"pxor %%mm2, %%mm0				\n\t"
+		"pxor %%mm3, %%mm1				\n\t"
+		"psubw %%mm2, %%mm0				\n\t" // |L3-L4|
+		"psubw %%mm3, %%mm1				\n\t" // |H3-H4|
+		"psrlw $1, %%mm0				\n\t" // |L3 - L4|/2
+		"psrlw $1, %%mm1				\n\t" // |H3 - H4|/2
+
+		"pxor %%mm6, %%mm2				\n\t"
+		"pxor %%mm7, %%mm3				\n\t"
+		"pand %%mm2, %%mm4				\n\t"
+		"pand %%mm3, %%mm5				\n\t"
+
+#ifdef HAVE_MMX2
+		"pminsw %%mm0, %%mm4				\n\t"
+		"pminsw %%mm1, %%mm5				\n\t"
+#else
+		"movq %%mm4, %%mm2				\n\t"
+		"psubusw %%mm0, %%mm2				\n\t"
+		"psubw %%mm2, %%mm4				\n\t"
+		"movq %%mm5, %%mm2				\n\t"
+		"psubusw %%mm1, %%mm2				\n\t"
+		"psubw %%mm2, %%mm5				\n\t"
+#endif
+		"pxor %%mm6, %%mm4				\n\t"
+		"pxor %%mm7, %%mm5				\n\t"
+		"psubw %%mm6, %%mm4				\n\t"
+		"psubw %%mm7, %%mm5				\n\t"
+		"packsswb %%mm5, %%mm4				\n\t"
+		"movq %3, %%mm1					\n\t"
+		"pandn %%mm4, %%mm1				\n\t"
+		"movq (%0), %%mm0				\n\t"
+		"paddb   %%mm1, %%mm0				\n\t"
+		"movq %%mm0, (%0)				\n\t"
+		"movq (%0, %1), %%mm0				\n\t"
+		"psubb %%mm1, %%mm0				\n\t"
+		"movq %%mm0, (%0, %1)				\n\t"
+
+		: "+r" (temp_src)
+		: "r" (step), "m" (c->pQPb), "m"(eq_mask)
+		: "%eax", "%ecx"
+		);
+	}
+/*if(step==16){
+    STOP_TIMER("step16")
+}else{
+    STOP_TIMER("stepX")
+}*/
+}
+#endif //HAVE_MMX
 
 static void RENAME(postProcess)(uint8_t src[], int srcStride, uint8_t dst[], int dstStride, int width, int height,
 	QP_STORE_T QPs[], int QPStride, int isColor, PPContext *c);
@@ -2789,7 +3334,7 @@ static void RENAME(postProcess)(uint8_t src[], int srcStride, uint8_t dst[], int
 	uint64_t * const yHistogram= c.yHistogram;
 	uint8_t * const tempSrc= c.tempSrc;
 	uint8_t * const tempDst= c.tempDst;
-	const int mbWidth= isColor ? (width+7)>>3 : (width+15)>>4;
+	//const int mbWidth= isColor ? (width+7)>>3 : (width+15)>>4;
 
 #ifdef HAVE_MMX
 	for(i=0; i<57; i++){
@@ -2808,7 +3353,8 @@ static void RENAME(postProcess)(uint8_t src[], int srcStride, uint8_t dst[], int
 		|| (mode & LOWPASS5_DEINT_FILTER)) copyAhead=14;
 	else if(   (mode & V_DEBLOCK)
 		|| (mode & LINEAR_IPOL_DEINT_FILTER)
-		|| (mode & MEDIAN_DEINT_FILTER)) copyAhead=13;
+		|| (mode & MEDIAN_DEINT_FILTER)
+		|| (mode & V_A_DEBLOCK)) copyAhead=13;
 	else if(mode & V_X1_FILTER) copyAhead=11;
 //	else if(mode & V_RK1_FILTER) copyAhead=10;
 	else if(mode & DERING) copyAhead=9;
@@ -3104,6 +3650,8 @@ static void RENAME(postProcess)(uint8_t src[], int srcStride, uint8_t dst[], int
 						RENAME(doVertLowPass)(dstBlock, stride, &c);
 					else if(t==2)
 						RENAME(doVertDefFilter)(dstBlock, stride, &c);
+				}else if(mode & V_A_DEBLOCK){
+					RENAME(do_a_deblock)(dstBlock, stride, 1, &c);
 				}
 			}
 
@@ -3125,6 +3673,8 @@ static void RENAME(postProcess)(uint8_t src[], int srcStride, uint8_t dst[], int
 						RENAME(doVertLowPass)(tempBlock1, 16, &c);
 					else if(t==2)
 						RENAME(doVertDefFilter)(tempBlock1, 16, &c);
+				}else if(mode & H_A_DEBLOCK){
+					RENAME(do_a_deblock)(tempBlock1, 16, 1, &c);
 				}
 
 				RENAME(transpose2)(dstBlock-4, dstStride, tempBlock1 + 4*16);
@@ -3134,13 +3684,29 @@ static void RENAME(postProcess)(uint8_t src[], int srcStride, uint8_t dst[], int
 					horizX1Filter(dstBlock-4, stride, QP);
 				else if(mode & H_DEBLOCK)
 				{
-					if( isHorizDC(dstBlock-4, stride, &c))
-					{
-						if(isHorizMinMaxOk(dstBlock-4, stride, QP))
-							doHorizLowPass(dstBlock-4, stride, QP);
-					}
-					else
-						doHorizDefFilter(dstBlock-4, stride, QP);
+#ifdef HAVE_ALTIVEC
+					unsigned char __attribute__ ((aligned(16))) tempBlock[272];
+					transpose_16x8_char_toPackedAlign_altivec(tempBlock, dstBlock - (4 + 1), stride);
+
+					const int t=vertClassify_altivec(tempBlock-48, 16, &c);
+					if(t==1) {
+						doVertLowPass_altivec(tempBlock-48, 16, &c);
+                                                transpose_8x16_char_fromPackedAlign_altivec(dstBlock - (4 + 1), tempBlock, stride);
+                                        }
+					else if(t==2) {
+						doVertDefFilter_altivec(tempBlock-48, 16, &c);
+                                                transpose_8x16_char_fromPackedAlign_altivec(dstBlock - (4 + 1), tempBlock, stride);
+                                        }
+#else
+					const int t= RENAME(horizClassify)(dstBlock-4, stride, &c);
+
+					if(t==1)
+						RENAME(doHorizLowPass)(dstBlock-4, stride, &c);
+					else if(t==2)
+						RENAME(doHorizDefFilter)(dstBlock-4, stride, &c);
+#endif
+				}else if(mode & H_A_DEBLOCK){
+					RENAME(do_a_deblock)(dstBlock-8, 1, stride, &c);
 				}
 #endif
 				if(mode & DERING)

@@ -54,7 +54,7 @@ extern const uint8_t ff_zigzag_direct[64];
 extern const uint8_t ff_zigzag248_direct[64];
 
 /* pixel operations */
-#define MAX_NEG_CROP 384
+#define MAX_NEG_CROP 1024
 
 /* temporary */
 extern uint32_t squareTbl[512];
@@ -162,6 +162,7 @@ typedef struct DSPContext {
     me_cmp_func rd[5];
     me_cmp_func vsad[5];
     me_cmp_func vsse[5];
+    me_cmp_func nsse[5];
 
     me_cmp_func me_pre_cmp[5];
     me_cmp_func me_cmp[5];
@@ -203,7 +204,7 @@ typedef struct DSPContext {
      * @param line_size number of bytes in a horizontal line of block
      * @param h height
      */
-    op_pixels_func put_no_rnd_pixels_tab[2][4];
+    op_pixels_func put_no_rnd_pixels_tab[4][4];
 
     /**
      * Halfpel motion compensation with no rounding (a+b)>>1.
@@ -215,7 +216,7 @@ typedef struct DSPContext {
      * @param line_size number of bytes in a horizontal line of block
      * @param h height
      */
-    op_pixels_func avg_no_rnd_pixels_tab[2][4];
+    op_pixels_func avg_no_rnd_pixels_tab[4][4];
     
     void (*put_no_rnd_pixels_l2[2])(uint8_t *block/*align width (8 or 16)*/, const uint8_t *a/*align 1*/, const uint8_t *b/*align 1*/, int line_size, int h);
     
@@ -260,6 +261,8 @@ typedef struct DSPContext {
     
     void (*h263_v_loop_filter)(uint8_t *src, int stride, int qscale);
     void (*h263_h_loop_filter)(uint8_t *src, int stride, int qscale);
+
+    void (*h261_loop_filter)(uint8_t *src, int stride);
 
     /* (I)DCT */
     void (*fdct)(DCTELEM *block/* align 16*/);
@@ -564,6 +567,11 @@ static inline long int lrintf(float x)
     return (int)(rint(x));
 #endif
 }
+#else
+#ifndef _ISOC9X_SOURCE
+#define _ISOC9X_SOURCE
+#endif
+#include <math.h>
 #endif
 
 #endif

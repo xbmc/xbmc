@@ -1,6 +1,6 @@
 /*
 ** FAAD2 - Freeware Advanced Audio (AAC) Decoder including SBR decoding
-** Copyright (C) 2003 M. Bakker, Ahead Software AG, http://www.nero.com
+** Copyright (C) 2003-2004 M. Bakker, Ahead Software AG, http://www.nero.com
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -22,7 +22,9 @@
 ** Commercial non-GPL licensing of this software is possible.
 ** For more info contact Ahead Software through Mpeg4AAClicense@nero.com.
 **
+** Initially modified for use with MPlayer by Arpad Gereöffy on 2003/08/30
 ** $Id$
+** detailed CVS changelog at http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
 **/
 
 #ifndef __DECODER_H__
@@ -57,12 +59,6 @@ extern "C" {
 #define FAAD_FMT_32BIT  3
 #define FAAD_FMT_FLOAT  4
 #define FAAD_FMT_DOUBLE 5
-#define FAAD_FMT_16BIT_DITHER  6
-#define FAAD_FMT_16BIT_L_SHAPE 7
-#define FAAD_FMT_16BIT_M_SHAPE 8
-#define FAAD_FMT_16BIT_H_SHAPE 9
-
-#define FAAD_FMT_DITHER_LOWEST FAAD_FMT_16BIT_DITHER
 
 #define LC_DEC_CAP            (1<<0)
 #define MAIN_DEC_CAP          (1<<1)
@@ -84,9 +80,9 @@ extern "C" {
 
 int8_t* FAADAPI faacDecGetErrorMessage(uint8_t errcode);
 
-uint32_t FAADAPI faacDecGetCapabilities();
+uint32_t FAADAPI faacDecGetCapabilities(void);
 
-faacDecHandle FAADAPI faacDecOpen();
+faacDecHandle FAADAPI faacDecOpen(void);
 
 faacDecConfigurationPtr FAADAPI faacDecGetCurrentConfiguration(faacDecHandle hDecoder);
 
@@ -117,16 +113,6 @@ void* FAADAPI faacDecDecode(faacDecHandle hDecoder,
                             faacDecFrameInfo *hInfo,
                             uint8_t *buffer,
                             uint32_t buffer_size);
-
-element *decode_sce_lfe(faacDecHandle hDecoder,
-                        faacDecFrameInfo *hInfo, bitfile *ld,
-                        real_t **spec_coef, uint8_t id_syn_ele);
-element *decode_cpe(faacDecHandle hDecoder,
-                    faacDecFrameInfo *hInfo, bitfile *ld,
-                    real_t **spec_coef, uint8_t id_syn_ele);
-element **raw_data_block(faacDecHandle hDecoder, faacDecFrameInfo *hInfo,
-                         bitfile *ld, element **elements,
-                         real_t **spec_coef, program_config *pce, drc_info *drc);
 
 #ifdef _WIN32
   #pragma pack(pop)

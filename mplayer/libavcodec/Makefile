@@ -11,7 +11,7 @@ CFLAGS=$(OPTFLAGS) -DHAVE_AV_CONFIG_H -I.. -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_S
 
 OBJS= common.o utils.o mem.o allcodecs.o \
       mpegvideo.o jrevdct.o jfdctfst.o jfdctint.o\
-      mpegaudio.o ac3enc.o mjpeg.o resample.o dsputil.o \
+      mpegaudio.o ac3enc.o mjpeg.o resample.o resample2.o dsputil.o \
       motion_est.o imgconvert.o imgresample.o \
       mpeg12.o mpegaudiodec.o pcm.o simple_idct.o \
       ratecontrol.o adpcm.o eval.o dv.o error_resilience.o \
@@ -55,7 +55,7 @@ ASM_OBJS=
 
 # codecs which are patented in some non free countries like the us
 ifeq ($(CONFIG_RISKY),yes)
-OBJS+= h263.o msmpeg4.o h263dec.o svq1.o rv10.o wmadec.o indeo3.o
+OBJS+= h263.o h261.o msmpeg4.o h263dec.o svq1.o rv10.o wmadec.o indeo3.o
 endif
 
 ifeq ($(HAVE_XVMC_ACCEL),yes)
@@ -71,6 +71,11 @@ ifneq ($(CONFIG_A52BIN),yes)
 OBJS+= liba52/bit_allocate.o liba52/bitstream.o liba52/downmix.o \
 	liba52/imdct.o  liba52/parse.o liba52/crc.o liba52/resample.o
 endif
+endif
+
+# currently using libdts for dts decoding
+ifeq ($(CONFIG_DTS),yes)
+OBJS+= dtsdec.o
 endif
 
 ifeq ($(CONFIG_FAAD),yes)

@@ -883,7 +883,10 @@ static unsigned short ati_card_ids[] =
  DEVICE_ATI_RADEON_R300_AF,
  DEVICE_ATI_RADEON_RV350_AP,
  DEVICE_ATI_RADEON_RV350_AR,
+ DEVICE_ATI_RADEON_R350_AH,
+ DEVICE_ATI_RADEON_R350_AI,
  DEVICE_ATI_RADEON_R350_NH,
+ DEVICE_ATI_RADEON_R360_NJ,
  DEVICE_ATI_RV350_MOBILITY_RADEON,
  DEVICE_ATI_RV350_MOBILITY_RADEON2
 #endif
@@ -927,7 +930,11 @@ vidix_capability_t def_cap =
 void probe_fireGL_driver() {
   Display *dp = XOpenDisplay ((void*)0);
   int n = 0;
-  char **extlist = XListExtensions (dp, &n);
+  char **extlist;
+  if (dp==NULL) {
+       return;
+  }
+  extlist = XListExtensions (dp, &n);
   XCloseDisplay (dp);
   if (extlist) {
     int i;
@@ -1063,6 +1070,9 @@ int vixProbe( int verbose,int force )
             case DEVICE_ATI_RADEON_RV350_AP:
             case DEVICE_ATI_RADEON_RV350_AR:
             case DEVICE_ATI_RADEON_R350_NH:
+            case DEVICE_ATI_RADEON_R350_AH:
+            case DEVICE_ATI_RADEON_R350_AI:
+            case DEVICE_ATI_RADEON_R360_NJ:
             case DEVICE_ATI_RV350_MOBILITY_RADEON:
             case DEVICE_ATI_RV350_MOBILITY_RADEON2:
               RadeonFamily = 350;
@@ -1153,6 +1163,7 @@ int vixInit( void )
     case 120:
     case 150:
     case 250:
+    case 280:
       is_shift_required=1;
       break;
     default:

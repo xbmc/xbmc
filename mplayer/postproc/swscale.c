@@ -1726,7 +1726,10 @@ int sws_setColorspaceDetails(SwsContext *c, const int inv_table[4], int srcRange
 
 	yuv2rgb_c_init_tables(c, inv_table, srcRange, brightness, contrast, saturation);
 	//FIXME factorize
-	
+
+#ifdef HAVE_ALTIVEC
+	yuv2rgb_altivec_init_tables (c, inv_table);
+#endif	
 	return 0;
 }
 
@@ -1905,6 +1908,18 @@ SwsContext *sws_getContext(int srcW, int srcH, int origSrcFormat, int dstW, int 
 				    c->swScale= PlanarToUyvyWrapper;
 			}
 		}
+
+#ifdef HAVE_ALTIVEC
+		if ((c->flags & SWS_CPU_CAPS_ALTIVEC) &&
+		    ((srcFormat == IMGFMT_YV12 && 
+		      (dstFormat == IMGFMT_YUY2 || dstFormat == IMGFMT_UYVY)))) {
+		  // unscaled YV12 -> packed YUV, we want speed
+		  if (dstFormat == IMGFMT_YUY2)
+		    c->swScale= yv12toyuy2_unscaled_altivec;
+		  else
+		    c->swScale= yv12touyvy_unscaled_altivec;
+		}
+#endif
 
 		/* simple copy */
 		if(   srcFormat == dstFormat
