@@ -42,7 +42,7 @@ my files:
    
 my music:
   switch between files & playlist               controller: BLACK           remote    : DISPLAY
-  add/remove file 2/from playlist               controller: Y button        remote    : play button
+  add/remove file 2/from playlist               controller: Y button        remote    : title button
   find album info for file                      controller: WHITE button    remote    : info button 
       
 my videos:
