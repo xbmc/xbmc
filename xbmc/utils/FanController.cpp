@@ -31,7 +31,6 @@ CFanController::CFanController()
   systemFanSpeed     = GetFanSpeed();
   currentFanSpeed    = systemFanSpeed;
   calculatedFanSpeed = systemFanSpeed;
-  SetFanSpeed(systemFanSpeed-1);//hack to get it going, without this it won't set the fanspeed on boot
 }
 
 
@@ -70,7 +69,7 @@ void CFanController::Process()
 
     CalcSpeed(targetTemp);
 
-    SetFanSpeed(calculatedFanSpeed);
+    SetFanSpeed(calculatedFanSpeed, false);
 
     cpuLastTemp = cpuTemp;
     gpuLastTemp = gpuTemp;
@@ -87,6 +86,10 @@ void CFanController::SetTargetTemperature(int targetTemperature)
 void  CFanController::RestoreStartupSpeed() 
 {
   SetFanSpeed(systemFanSpeed);
+	Sleep(100);
+  //disable custom fanmode
+ 	HalWriteSMBusValue(PIC_ADDRESS, FAN_MODE, 0, 0);
+  inCustomMode = false;
 }
 
 void CFanController::Start(int targetTemperature) 
@@ -99,9 +102,10 @@ void CFanController::Start(int targetTemperature)
 void CFanController::Stop()
 {
   StopThread();
-  RestoreStartupSpeed();
-  //lock the fan, this sets the speed back to bios value
- 	//HalWriteSMBusValue(PIC_ADDRESS, FAN_MODE, 0, 0);
+  if (inCustomMode)
+  {
+    RestoreStartupSpeed();
+  }
 }
 
 int CFanController::GetFanSpeed()
@@ -115,16 +119,26 @@ void CFanController::GetFanSpeedInternal()
   HalReadSMBusValue(PIC_ADDRESS, FAN_READBACK, 0, (LPBYTE)&currentFanSpeed);
 }
 
-void CFanController::SetFanSpeed(const int fanspeed)
+void CFanController::SetFanSpeed(const int fanspeed, const bool force)
 {
   if (fanspeed < 0) return;
   if (fanspeed > 50) return;
-  if (currentFanSpeed == fanspeed) return;
-  currentFanSpeed = fanspeed;
+  if ((currentFanSpeed == fanspeed) && (!force)) return;
+  if (force) 
+  {
+    //on boot or first time set it needs a kickstart in releasemode for some reason
+    //it works fine without this block in debugmode...
+ 	  HalWriteSMBusValue(PIC_ADDRESS, FAN_MODE, 0, 1);
+	  Sleep(10);
+  	HalWriteSMBusValue(PIC_ADDRESS, FAN_REGISTER, 0, fanspeed);
+  }
   //enable custom fanspeeds
  	HalWriteSMBusValue(PIC_ADDRESS, FAN_MODE, 0, 1);
 	Sleep(10);
 	HalWriteSMBusValue(PIC_ADDRESS, FAN_REGISTER, 0, fanspeed);
+	Sleep(10);
+  currentFanSpeed = fanspeed;
+  inCustomMode    = true;
 }
 
 float CFanController::GetGPUTemp()
