@@ -12,23 +12,47 @@ CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, DWORD dw
   m_dwdwTextAlign=dwTextAlign;
 	m_bHasPath = bHasPath;
   m_dwDisabledColor = dwDisabledColor;
+  m_bShowCursor = false;
+  m_dwCounter = 0;
 }
 
 CGUILabelControl::~CGUILabelControl(void)
 {
 }
 
+void CGUILabelControl::ShowCursor(bool bShow)
+{
+	m_bShowCursor = bShow;
+}
 
 void CGUILabelControl::Render()
 {
-	if (!IsVisible() ) return;
-  if (m_pFont)
-  {
-	  if (!IsDisabled())
-		m_pFont->DrawText((float)m_dwPosX, (float)m_dwPosY,m_dwTextColor,m_strLabel.c_str(),m_dwdwTextAlign); 
-	  else
-	    m_pFont->DrawText((float)m_dwPosX, (float)m_dwPosY,m_dwDisabledColor,m_strLabel.c_str(),m_dwdwTextAlign); 
-  }
+	if (!IsVisible() )
+	{
+		return;
+	}
+
+	if (m_pFont)
+	{
+		if (IsDisabled())
+		{
+			m_pFont->DrawText((float)m_dwPosX, (float)m_dwPosY,m_dwDisabledColor,m_strLabel.c_str(),m_dwdwTextAlign); 
+		}
+		else
+		{
+			CStdStringW label = m_strLabel;
+
+			if (m_bShowCursor)
+			{
+				if (++m_dwCounter % 50 >= 25)
+				{
+					label+=L"|";
+				}
+			}
+
+			m_pFont->DrawText((float)m_dwPosX, (float)m_dwPosY,m_dwTextColor,label.c_str(),m_dwdwTextAlign); 
+		}
+	}
 }
 
 

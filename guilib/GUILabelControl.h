@@ -34,6 +34,7 @@ public:
 	const CStdString& GetFontName() const { return m_pFont->GetFontName(); };
 	const wstring			GetLabel() const { return m_strLabel; };
 	void	SetText(CStdString aLabel);
+	void	ShowCursor(bool bShow=true);
 protected:
 	void							ShortenPath();
 protected:
@@ -43,5 +44,7 @@ protected:
   DWORD                   m_dwdwTextAlign;
 	bool										m_bHasPath;
   DWORD		m_dwDisabledColor;
+  bool m_bShowCursor;
+  DWORD m_dwCounter;
 };
 #endif
