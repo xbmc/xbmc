@@ -979,7 +979,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	{
 		// failed to load home.xml
 		// fallback to mediacenter skin
-		if ( CUtil::cmpnocase(strSkin.c_str(),"mediacenter") !=0)
+		if ( CUtil::cmpnocase(strSkin.c_str(),"Project Mayhem") !=0)
 		{
 			CLog::Log(LOGERROR, "failed to load home.xml for skin:%s, fallback to Project Mayhem skin", strSkin.c_str());
 			LoadSkin("Project Mayhem");
