@@ -27,17 +27,21 @@ bool CGUIDialogYesNo::OnMessage(CGUIMessage& message)
     case GUI_MSG_CLICKED:
     {
       int iControl=message.GetSenderId();
-			if (iControl==10)
+			int iAction=message.GetParam1();
+			if (ACTION_SELECT_ITEM==iAction)
 			{
-				m_bConfirmed=false;
-				Close();
-				return true;
-			}
-			if (iControl==11)
-			{
-				m_bConfirmed=true;
-				Close();
-				return true;
+				if (iControl==10)
+				{
+					m_bConfirmed=false;
+					Close();
+					return true;
+				}
+				if (iControl==11)
+				{
+					m_bConfirmed=true;
+					Close();
+					return true;
+				}
 			}
 		}
 		break;
