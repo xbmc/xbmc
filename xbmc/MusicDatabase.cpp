@@ -399,6 +399,10 @@ long CMusicDatabase::AddPath(const CStdString& strPath1)
 	try
 	{
 		CStdString strPath=strPath1;
+		//	musicdatabase always stores directories 
+		//	without a slash at the end 
+		if (CUtil::HasSlashAtEnd(strPath))
+			strPath.Delete(strPath.size()-1);
 		RemoveInvalidChars(strPath);
 
 		if (NULL==m_pDB.get()) return -1;
@@ -580,6 +584,10 @@ bool CMusicDatabase::GetSongsByAlbum(const CStdString& strAlbum1, const CStdStri
 	{
 		CStdString strAlbum=strAlbum1;
 		CStdString strPath=strPath1;
+		//	musicdatabase always stores directories 
+		//	without a slash at the end 
+		if (CUtil::HasSlashAtEnd(strPath))
+			strPath.Delete(strPath.size()-1);
 		RemoveInvalidChars(strAlbum);
 		RemoveInvalidChars(strPath);
 
@@ -850,6 +858,10 @@ bool CMusicDatabase::GetAlbumInfo(const CStdString& strAlbum1, const CStdString&
 	{
 		CStdString strAlbum = strAlbum1;
 		CStdString strPath = strPath1;
+		//	musicdatabase always stores directories 
+		//	without a slash at the end 
+		if (CUtil::HasSlashAtEnd(strPath))
+			strPath.Delete(strPath.size()-1);
 		RemoveInvalidChars(strAlbum);
 		RemoveInvalidChars(strPath);
 		CStdString strSQL;
@@ -973,6 +985,10 @@ bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, VECSONGS& songs)
 	{
 		songs.erase(songs.begin(),songs.end());
 		CStdString strPath=strPath1;
+		//	musicdatabase always stores directories 
+		//	without a slash at the end 
+		if (CUtil::HasSlashAtEnd(strPath))
+			strPath.Delete(strPath.size()-1);
 		RemoveInvalidChars(strPath);
 		if (NULL==m_pDB.get()) return false;
 		if (NULL==m_pDS.get()) return false;
@@ -1017,6 +1033,10 @@ bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, MAPSONGS& songs)
 	{
 		songs.erase(songs.begin(),songs.end());
 		CStdString strPath=strPath1;
+		//	musicdatabase always stores directories 
+		//	without a slash at the end 
+		if (CUtil::HasSlashAtEnd(strPath))
+			strPath.Delete(strPath.size()-1);
 		RemoveInvalidChars(strPath);
 		if (NULL==m_pDB.get()) return false;
 		if (NULL==m_pDS.get()) return false;
@@ -1122,6 +1142,10 @@ bool CMusicDatabase::GetSongsByPathes(SETPATHES& pathes, MAPSONGS& songs)
 		for (ISETPATHES it=pathes.begin(); it!=pathes.end(); it++)
 		{
 			CStdString strPath=*it;
+			//	musicdatabase always stores directories 
+			//	without a slash at the end 
+			if (CUtil::HasSlashAtEnd(strPath))
+				strPath.Delete(strPath.size()-1);
 			RemoveInvalidChars(strPath);
 
 			CStdString strPart;

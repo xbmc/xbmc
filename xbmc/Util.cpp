@@ -198,14 +198,12 @@ void CUtil::LaunchXbe(char* szPath, char* szXbe, char* szParameters)
 bool CUtil::FileExists(const CStdString& strFileName)
 {
 	if (strFileName.size()==0) return false;
-  FILE *fd;
-  fd=fopen(strFileName.c_str(),"rb");
-  if (fd != NULL)
-  {
-    fclose(fd);
-    return true;
-  }
-  return false;
+	CFile file;
+	if (!file.Open(strFileName))
+		return false;
+
+	file.Close();
+	return true;
 }
 
 void CUtil::GetThumbnail(const CStdString& strFileName, CStdString& strThumb)
