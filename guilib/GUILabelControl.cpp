@@ -98,6 +98,8 @@ bool CGUILabelControl::OnMessage(CGUIMessage& message)
 
 void CGUILabelControl::ShortenPath()
 {
+	if (!m_pFont)
+		return;
 	if ( m_dwWidth <= 0 )
 		return;
 	if ( m_strLabel.size() <= 0 )

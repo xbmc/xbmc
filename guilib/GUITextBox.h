@@ -47,7 +47,7 @@ public:
   virtual void AllocResources() ;
   virtual void FreeResources() ;
 	DWORD									GetTextColor() const { return m_dwTextColor;};
-	const CStdString&			GetFontName() const { return m_pFont->GetFontName(); };
+	const char*						GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
 	DWORD									GetSpinWidth() const { return m_upDown.GetWidth()/2; };
 	DWORD									GetSpinHeight() const { return m_upDown.GetHeight(); };
 	const	CStdString&			GetTexutureUpName() const { return m_upDown.GetTexutureUpName(); };

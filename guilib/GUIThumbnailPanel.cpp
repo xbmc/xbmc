@@ -386,11 +386,7 @@ void CGUIThumbnailPanel::Calculate()
 	m_iLastItem=-1;
   float fWidth,fHeight;
   
-  // height of 1 item = folder image height + text row height + space in between
-  m_pFont->GetTextExtent( L"y", &fWidth,&fHeight);
-  
-  
-  fWidth =(float)m_iItemWidth;
+ 	fWidth =(float)m_iItemWidth;
   fHeight=(float)m_iItemHeight;
   float fTotalHeight= (float)(m_dwHeight -5);
   m_iRows		        = (int)(fTotalHeight / fHeight);
@@ -541,6 +537,7 @@ void CGUIThumbnailPanel::OnDown()
 
 void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor, WCHAR* wszText,bool bScroll )
 {
+	if (!m_pFont) return;
 	static int scroll_pos = 0;
 	static int iScrollX=0;
 	static int iLastItem=-1;

@@ -33,7 +33,7 @@ public:
 	DWORD				GetChannelTextColor() const { return m_dwChannelColor;};
 	DWORD				GetHeadlineTextColor() const { return m_dwHeadlineColor;};
 	DWORD				GetNormalTextColor() const { return m_dwTextColor;};
-	const CStdString&	GetFontName() const { return m_pFont->GetFontName(); };
+	const char *GetFontName() const { return m_pFont ? m_pFont->GetFontName().c_str() : ""; };
 	const CStdString&	GetUrl() const { return m_strUrl; };
 
 protected:

@@ -22,7 +22,7 @@ const CStdString& CGUIFont::GetFontName() const
 
 bool CGUIFont::Load(const CStdString& strFontName,const CStdString& strFilename)
 {
-  CStdString strPath;
+	CStdString strPath;
 	if (strFilename[1] != ':')
 	{
 		strPath=g_graphicsContext.GetMediaDir();
@@ -31,20 +31,27 @@ bool CGUIFont::Load(const CStdString& strFontName,const CStdString& strFilename)
 	}
 	else
 		strPath=strFilename;
-  m_strFontName=strFontName;
-  CLog::Log(LOGINFO, "Load font:%s path:%s", m_strFontName.c_str(), strPath.c_str());
-  bool bResult= (CXBFont::Create(strPath.c_str())==S_OK);
-	if (!bResult)
+	m_strFontName=strFontName;
+	try
 	{
-    CLog::Log(LOGERROR, "failed to load Load font:%s path:%s", m_strFontName.c_str(), strPath.c_str());
+		CLog::Log(LOGINFO, "Load font:%s path:%s", m_strFontName.c_str(), strPath.c_str());
+		bool bResult= (CXBFont::Create(strPath.c_str())==S_OK);
+		if (!bResult)
+		{
+			CLog::Log(LOGERROR, "failed to load Load font:%s path:%s", m_strFontName.c_str(), strPath.c_str());
+		}
+		else
+		{
+			float fTextHeight;
+			GetTextExtent( L"W", &m_iMaxCharWidth,&fTextHeight);
+		}
+		return bResult;
 	}
-	else
+	catch(...)
 	{
-		float fTextHeight;
-		GetTextExtent( L"W", &m_iMaxCharWidth,&fTextHeight);
+		CLog::Log(LOGERROR, "failed to load font:%s file:%s", m_strFontName.c_str(), strPath.c_str());
 	}
-		
-	return bResult;
+	return false;
 }
 
 void CGUIFont::DrawShadowText( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,

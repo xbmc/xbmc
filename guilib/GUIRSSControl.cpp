@@ -18,8 +18,9 @@ CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, int iPosX, i
 	WCHAR wTmp[2];
 	wTmp[0]=L' ';
 	wTmp[1]=0;
-    float fWidth,fHeight;
-	m_pFont->GetTextExtent(wTmp,&fWidth,&fHeight);
+	float fWidth,fHeight;
+	if (m_pFont)
+		m_pFont->GetTextExtent(wTmp,&fWidth,&fHeight);
 	m_iLeadingSpaces	= (int) (dwWidth / fWidth);
 	m_iCharIndex		= 0;
 	m_iStartFrame		= 0;
@@ -80,6 +81,9 @@ void CGUIRSSControl::OnFeedUpdate(CStdString& aFeed, LPBYTE aColorArray)
 
 void CGUIRSSControl::RenderText()
 {
+	if (!m_pFont)
+		return;
+
 	float fPosX = (float) m_iPosX;
 	float fPosY = (float) m_iPosY;
 	float fMaxWidth = (float)m_dwWidth;
