@@ -78,6 +78,7 @@ int m_iAudioStreamIDX=-1;
 static CDlgCache* m_dlgCache=NULL;
 CMPlayer::Options::Options()
 {
+	m_bResample=false;
     m_bNoCache=false;
     m_iChannels=0;
     m_bAC3PassTru=false;
@@ -322,6 +323,18 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     m_vecOptions.push_back("-af");
     m_vecOptions.push_back(strTmp);
   }
+  if (m_bResample)
+  {
+    m_vecOptions.push_back("-af");
+	// 48kHz resampling
+	// format is: rate=sample_rate:bSloppy:quality
+	// where bSloppy is 1 if we don't care about accurate output rate
+	// and quality is:
+	//     0   - linear interpolation (fast, but bad quality)
+	//     1   - polyphase filtered with integer math
+	//     2   - polyphase filtered with float math (slowest)
+	m_vecOptions.push_back("resample=48000:0:1");//,format=2unsignedint");
+  }
 
   if (m_bNonInterleaved)
   {
@@ -484,6 +497,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
     {
       options.SetVolumeAmplification(g_stSettings.m_fVolumeAmplification);
     }
+
     options.GetOptions(argc,argv);
     
     //CLog::Log("  open 1st time");
@@ -643,7 +657,16 @@ bool CMPlayer::openfile(const CStdString& strFile)
         }
       }
 
-    
+    // Check whether we want to upsample to 48kHz using mplayer
+	// This is of higher quality than resampling in hardware, but comes
+	// at the expense of a bigger CPU hit.
+	if (!bIsVideo && iChannels<=2 && lSampleRate!=48000 && g_stSettings.m_bResample)
+	{
+		options.SetResample(true);
+		bNeed2Restart=true;
+		CLog::Log("  --restart cause we want to resample to 48kHz");
+	}
+
       if (bNeed2Restart)
       {
         CLog::Log("  --------------- restart ---------------");
