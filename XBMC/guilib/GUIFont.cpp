@@ -20,8 +20,14 @@ bool CGUIFont::Load(const CStdString& strFontName,const CStdString& strFilename)
 	strPath+="\\fonts\\";
   strPath+=strFilename;
   m_strFontName=strFontName;
-  return (CXBFont::Create(strPath.c_str())==S_OK);
-
+  bool bResult= (CXBFont::Create(strPath.c_str())==S_OK);
+	if (!bResult)
+	{
+		OutputDebugString("Unable to load font:");
+		OutputDebugString(strFilename.c_str());
+		OutputDebugString("\n");
+	}
+	return bResult;
 }
 
 void CGUIFont::DrawShadowText( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,

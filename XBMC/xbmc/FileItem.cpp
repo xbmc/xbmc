@@ -4,7 +4,7 @@ CFileItem::CFileItem(void)
 {
   m_dwSize=0;
   m_bIsFolder=false;
-  m_bIsShareOrDrive=true;
+  m_bIsShareOrDrive=false;
 	memset(&m_stTime,0,sizeof(m_stTime));
   
 }

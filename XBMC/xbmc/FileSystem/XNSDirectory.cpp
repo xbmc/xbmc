@@ -124,6 +124,40 @@ bool  CXNSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 			const TiXmlNode *pathNode=pChild->FirstChild("PATH");
 			const TiXmlNode *atrbNode=pChild->FirstChild("ATTRIB");
 
+			const TiXmlNode *DateNode=pChild->FirstChild("DATE");
+			const TiXmlNode *TimeNode=pChild->FirstChild("TIME");
+			const TiXmlNode *SizeNode=pChild->FirstChild("SIZE");
+			
+			SYSTEMTIME dtDateTime;
+			DWORD dwFileSize=0;
+			memset(&dtDateTime,0,sizeof(dtDateTime));
+			if (SizeNode)
+			{
+				dwFileSize=atol( SizeNode->FirstChild()->Value() );
+			}
+			if (DateNode)
+			{
+				CStdString strDate=DateNode->FirstChild()->Value();
+				int iYear,iMonth,iDay;
+				iDay=atoi(strDate.Left(2).c_str());
+				iMonth=atoi(strDate.Mid(3,2).c_str());
+				iYear=atoi(strDate.Mid(6,4).c_str());
+				dtDateTime.wYear=iYear;
+				dtDateTime.wMonth=iMonth;
+				dtDateTime.wDay=iDay;
+			}
+			if (TimeNode)
+			{
+				CStdString strTime=TimeNode->FirstChild()->Value();
+				int iHour,iMin,iSec;
+				iHour=atoi(strTime.Left(2).c_str());
+				iMin=atoi(strTime.Mid(2,2).c_str());
+				iSec=atoi(strTime.Mid(4,2).c_str());
+				dtDateTime.wHour=iHour;
+				dtDateTime.wMinute=iMin;
+				dtDateTime.wSecond=iSec;
+			}
+
 			int attrib = 0;
 			if (atrbNode)
 			{
@@ -156,6 +190,8 @@ bool  CXNSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 			if ( bIsFolder || IsAllowed( szPath) )
 			{
 				CFileItem*  pItem = new CFileItem(strLabel);
+				memcpy(&pItem->m_stTime, &dtDateTime,sizeof(dtDateTime));
+				pItem->m_dwSize=dwFileSize;
 				char szBuf[1024];
 				sprintf(szBuf,"xns://%s:%i/%s", url.GetHostName().c_str(), iport, szPath);
 				pItem->m_strPath=szBuf;
@@ -163,9 +199,6 @@ bool  CXNSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 				if (attrib & FILE_ATTRIBUTE_DIRECTORY)
 					pItem->m_bIsFolder=true;
 
-				// file creation time is not supported by relax
-				memset(&pItem->m_stTime,0,sizeof(pItem->m_stTime));
-				pItem->m_dwSize=0;
 				items.push_back(pItem);
 			}
 		}

@@ -1,21 +1,19 @@
 // guiTest.cpp : Defines the entry point for the application.
 //
 // graphics:
+//			- pike:special icon for files (they now use the folder icon)
 //
 // need 2 test: 
 //      - tijd van files (loopt 1 uur voor/achter??)
-//      - dialog wat groter gemaakt
-//			- icon filetypes 
+//      - dialog wat groter ge	maakt
 // bugs: 
-//			- ntsc / 16:9
-//
+//			- reboot button blinks 1/2 speed???
+//	
 // algemeen:
+//			- datum/tijd van Relax
+//			- keep groups together when sorting (hd, shares,...)
 //			-	ftp server
 //      - thumbnails : centreren in folder indien thumb <64x64
-//      - file info box
-//      - show if movie contains a subtitle
-//      - show if mp3  contains id3 tag info
-//      - show picture dimensions in thumbnail view
 //
 // guilib:
 //		  - alpha text voor thumbnail
@@ -30,6 +28,7 @@
 //      - show selected image in file browser
 //
 // my music:
+//			- http://www.saunalahti.fi/~cse/html/tag.html
 //		  - show track, filename, time in listview
 //	    - show fileinfo:id3v1/id3v2/mpeg info 
 //		  - sort : path,filename, length,track
