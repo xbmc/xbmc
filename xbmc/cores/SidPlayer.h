@@ -26,7 +26,7 @@ public:
 	virtual bool		HasAudio();
 	virtual void		ToggleOSD();
 	virtual void		SwitchToNextLanguage();
-	virtual __int64	GetPTS();
+	virtual __int64 GetTime();
 	virtual void		ToggleSubtitles();
 	virtual void		ToggleFrameDrop();
 	virtual void		SubtitleOffset(bool bPlus=true);	

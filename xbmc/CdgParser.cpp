@@ -255,7 +255,7 @@ void CCdgReader::Process()
 		if(fCurTime > 2.0f && bIsFirstPass)
 		{
 			//Sync the playback with mplayer after 2 secs.
-			m_fStartingTime = 0.10f*g_application.m_pPlayer->GetTime();
+			m_fStartingTime = g_application.m_pPlayer->GetTime()*0.001f;
 			m_Timer.StartZero();
 			fCurTime = 0.0f;
 			bIsFirstPass = false;
@@ -585,7 +585,7 @@ bool	CCdgParser::StartReader()
 	if(!AllocReader()) return false;
 	if(m_pLoader)
 		m_pReader->Attach(m_pLoader);
-	m_pReader->Start(0.10f*g_application.m_pPlayer->GetTime());
+	m_pReader->Start(0.001f*g_application.m_pPlayer->GetTime());
 	return true;	
 }
 void	CCdgParser::StopReader()

@@ -689,14 +689,13 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying( webs_t wp)
 		websWrite(wp,"\n<li>SongNo:%i\n", g_playlistPlayer.GetCurrentSong());
 		__int64 lPTS=-1;
 		if (g_application.IsPlayingVideo()) {
-			lPTS=10*g_application.m_pPlayer->GetTime();
+      lPTS = g_application.m_pPlayer->GetTime()/100;
 			websWrite(wp, "\n<li>Type:Video") ;
 		}
-		else 
-			if (g_application.IsPlayingAudio()) {
-				lPTS=g_application.m_pPlayer->GetPTS();
-				websWrite(wp, "\n<li>Type:Audio") ;
-			}
+		else if (g_application.IsPlayingAudio()) {
+      lPTS = g_application.m_pPlayer->GetTime()/100;
+			websWrite(wp, "\n<li>Type:Audio") ;
+		}
 		CStdString thumb;
 
 		CUtil::GetThumbnail(fn,thumb);

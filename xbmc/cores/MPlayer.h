@@ -93,7 +93,6 @@ public:
 	virtual void		ToggleOSD();
 	virtual void		SwitchToNextLanguage();
 
-	virtual __int64	GetPTS() ;
 	virtual void		ToggleSubtitles();
 	virtual void		ToggleFrameDrop();
 	virtual void		SubtitleOffset(bool bPlus=true);
@@ -139,7 +138,7 @@ public:
 
 	virtual void		SeekTime(__int64 iTime=0);
 	virtual int			GetTotalTime();
-	virtual __int64	GetTime();
+	virtual __int64 GetTime();
 	virtual void		ToFFRW(int iSpeed=0);
 	virtual void		ShowOSD(bool bOnoff);
 	virtual void		DoAudioWork();
