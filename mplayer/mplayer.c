@@ -3177,31 +3177,34 @@ if(auto_quality>0){
   if(ffrw_speed<0.0f)
   {
     float v_pts = v_pts=sh_video ? sh_video->pts : d_video->pts;
+    
+    //Play at maximum speed mplayer can do. We will delay the amount we want to.
+    playback_speed=100;
 
     osd_function = OSD_REW;
-    if(ffrw_sstepnum <= 0)
+    if(ffrw_sstepnum >= ffrw_sstepframes && blit_frame)
     {
-      //Don't seek forward
+      //Don't seek forward, and only display frames every half second
       while(rel_seek_secs > -0.5f) 
       {
         float newpts = (GetTimerMS() - ffrw_starttime)*ffrw_speed / 1000.0f + (float)ffrw_startpts;     
         rel_seek_secs= newpts - v_pts;
-        usec_sleep(0);
+        abs_seek_pos=0;
+        usec_sleep(0); //Sleep 1 ms
       }
-      ffrw_sstepnum=ffrw_sstepframes;
-      playback_speed=2/sh_video->fps; //Take it slow
+      //Beginning of file, seek absolute instead.
+      //Something seems to be going wrong when seeking back all the way to the beginning
+      if((v_pts + rel_seek_secs) < 1.0f)
+      {
+        abs_seek_pos=1;
+        rel_seek_secs=0;
+      }
+
+      ffrw_sstepnum=0;
     }
     else
     {
-      ffrw_sstepnum--;
-      playback_speed=100; //full speed ahead
-    }
-
-    //Beginning of file, seek absolute instead
-    if(v_pts + rel_seek_secs < 0.0f)
-    {
-      abs_seek_pos=1;
-      rel_seek_secs=0;
+      ffrw_sstepnum++;
     }
 
     osd_visible=sh_video->fps; // 1 sec
@@ -3211,12 +3214,15 @@ if(auto_quality>0){
   }
   else if(ffrw_speed>0.0f)
   {
-    //If we diff more than 2 seconds from where we are supposed to be, adjust to correct pos.
     float v_pts = v_pts=sh_video ? sh_video->pts : d_video->pts;
     float newpts = (GetTimerMS() - ffrw_starttime)*ffrw_speed / 1000.0f + (float)ffrw_startpts;    
+    //If we diff more than 2 seconds from where we are supposed to be
+    //and we have rendered ffrw_sstepframes frames, seek to correct pos.
     if( (newpts - v_pts) > 2.0f && ffrw_sstepnum >= ffrw_sstepframes)
     {
-        rel_seek_secs= newpts - v_pts + ffrw_speed/8.0f; //Give it an headstart
+      rel_seek_secs= newpts - v_pts;
+      abs_seek_pos=0;
+      ffrw_sstepnum=0;
     }
     else
     {
@@ -3229,41 +3235,52 @@ if(auto_quality>0){
 	  vo_osd_progbar_value=demuxer_get_percent_pos(demuxer) * 256 / 100;
 	  vo_osd_changed(OSDTYPE_PROGBAR);
   }
-  else if(ffrw_sstepframes==-1 && sh_video && d_video && sh_audio && d_audio) //Set to tell mplayer to resync audio & video
+  else if(ffrw_sstepframes==-1) //Set to tell mplayer to resync audio & video
   {
+
+    //Tell mplayer to seek a short bit ahead. 
+    //Attempt to seek one frame ahead, will likely meen next keyframe
+    rel_seek_secs=1/sh_video->fps + 0.00001f;
+
+    //The code below tries to sync up audio to current video location but it doesn't
+    //work properly so i've reverted it to seeking a short bit instead
+#if 0
     //Reset variables as these may have gone nuts during FF/RW
     c_total=0;
     drop_frame_cnt=0;
     too_slow_frame_cnt=0;
     too_fast_frame_cnt=0;
+    frame_time_remaining=0;
     
     //Video pts
     float v_pts = v_pts=sh_video ? sh_video->pts : d_video->pts;
-    //Skip packets till we are almost in sync with audio
-    //This will only affect FF as RW will skip all the time.
 
     audio_out->reset();
 
-    int i=0;
-    while(1){      
-      if(sh_audio && !d_audio->eof){
-
-        float a_pts=d_audio->pts + (ds_tell_pts(d_audio)-sh_audio->a_in_buffer_len)/(float)sh_audio->i_bps;
-        if(v_pts > a_pts && i<1000000){ //Check sync, and have failsafe for demuxer that don't implement skip frame
-          skip_audio_frame(sh_audio); // skip current audio frame
-          sh_audio->delay = 0;
-          i++;
-          continue;
+    //Skip packets till we are almost in sync with audio
+    //This seem to work to some degree, but not good enough
+    if(sh_video && d_video && sh_audio && d_audio)
+    {
+      int i=0;
+      while(1){      
+        if(sh_audio && !d_audio->eof){
+          float a_pts=d_audio->pts + (ds_tell_pts(d_audio)-sh_audio->a_in_buffer_len)/(float)sh_audio->i_bps;
+          if(v_pts > a_pts && ++i<1000000){ //Check sync, and have failsafe for demuxer that don't implement skip frame
+            skip_audio_frame(sh_audio); // skip current audio frame
+            sh_audio->delay = 0;
+            continue;
+          }
         }
+        if(i>0)
+          printf("Skipped %d audio frames to catch audio up to video", i);
+        break;
       }
-      if(i>0)
-        printf("Skipped %d audio frames to catch audio up to video", i);
-      break;
     }
 
     //Reset differnt part so they resync
     if(vo_spudec) spudec_reset(vo_spudec);
     if(vo_vobsub) vobsub_reset(vo_vobsub);
+#endif
 
     //Show progbar for 1 second.
     osd_visible=sh_video->fps; // 1 sec
@@ -5049,6 +5066,8 @@ int mplayer_getTime()
 
 void mplayer_ToFFRW(int iSpeed)
 {
+  static int oldframedrop=-1;
+
   m_iPlaySpeed=iSpeed;
 
   //If stream can't be seeked, disble ff/rw
@@ -5083,6 +5102,13 @@ void mplayer_ToFFRW(int iSpeed)
     return;
   }
 
+  //Restore frame_dropping if it was changed
+  if(oldframedrop!=-1)
+  {
+    frame_dropping=oldframedrop;
+    oldframedrop=-1;
+  }
+
   //For video
   if (iSpeed == 1)
   {
@@ -5099,7 +5125,6 @@ void mplayer_ToFFRW(int iSpeed)
       ffrw_sstepnum=0;
       ffrw_startpts=0;
       ffrw_starttime=0;
-    
 
       osd_function=OSD_PLAY;
 
@@ -5115,11 +5140,17 @@ void mplayer_ToFFRW(int iSpeed)
       ffrw_startpts=voldpts;
       ffrw_starttime=GetTimerMS();
       ffrw_sstepnum=0;
-      ffrw_sstepframes = 20; //Minimum frames rendered before next seek again
+      ffrw_sstepframes = 10; //Minimum frames rendered before next seek is allowed again
 
       abs_seek_pos   = 0;
       rel_seek_secs  = 0; 
       osd_function   = OSD_FFW;
+
+      if(oldframedrop==-1)
+      {
+        oldframedrop=frame_dropping;
+        frame_dropping=1; //Allow framedrop to speed up
+      }
 
       playback_speed = iSpeed;
       ffrw_speed=playback_speed;
@@ -5138,6 +5169,13 @@ void mplayer_ToFFRW(int iSpeed)
       abs_seek_pos   = 0;
       rel_seek_secs  = 0; 
       osd_function   = OSD_REW;
+
+      //Don't allow framedropping as it will hinder our rw code
+      if(oldframedrop==-1)
+      {
+        oldframedrop=frame_dropping;
+        frame_dropping=0;
+      }
 
       playback_speed = 100; //Play att full speed, and let ffrw code keep sync
       ffrw_speed = iSpeed;
