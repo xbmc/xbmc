@@ -15,6 +15,7 @@ public:
   virtual void    OnAction(const CAction &action);
   virtual void    Render();
 	void						SetMovie(CIMDBMovie& movie);
+  bool            NeedRefresh() const;
 
 protected:
 	void										Refresh();
@@ -25,4 +26,5 @@ protected:
 	int											m_iTextureWidth;
 	int											m_iTextureHeight;
 	bool										m_bViewReview;
+  bool                    m_bRefresh;
 };
