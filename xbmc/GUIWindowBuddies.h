@@ -14,6 +14,8 @@
 using namespace std;
 #include <map>
 
+// TODO: OnEnterArenaFailed, may incorrectly prompt user for password when not needed.
+
 class CGUIWindowBuddies : 	public CGUIWindow, public IBuddyObserver
 {
 public:
