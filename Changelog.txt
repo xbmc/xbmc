@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 25-08-2004 changed: volumebar resources are allocated at startup to avoid hd spinup during movie
+  - 25-08-2004 fixed: ac3/dts settings were reset to disabled on application stop
   - 24-08-2004 added: my music playlist: Showing progress dialog if loading takes more the 1,5 secs.
   - 24-08-2004 fixed: my video: directory history for virtual directory was broken
   - 24-08-2004 fixed: album info from allmusic.com
