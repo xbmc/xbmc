@@ -18,6 +18,49 @@ ao_info_t audio_info =  {
 		"SaschaSommer <saschasommer@freenet.de>",
 		""
 };
+extern "C" int mplayer_getVolume()
+{
+  if (!m_pAudioDecoder) return 0;
+  float fVolumeMin=(float)m_pAudioDecoder->GetMinimumVolume();
+  float fVolumeMax=(float)m_pAudioDecoder->GetMaximumVolume();
+  if (fVolumeMax > fVolumeMin)
+  {
+    float fWidth = (fVolumeMax-fVolumeMin);
+    float fCurr  = m_pAudioDecoder->GetCurrentVolume() - fVolumeMin;
+    float fPercent=(fCurr/fWidth)*100.0f;
+    return (int)fPercent;
+  }
+  else
+  {
+    float fWidth = (fVolumeMin-fVolumeMax);
+    float fCurr  = m_pAudioDecoder->GetCurrentVolume() - fVolumeMax;
+    float fPercent=(fCurr/fWidth)*100.0f;
+    return (int)fPercent;
+  }
+}
+
+extern "C" void mplayer_setVolume(int iPercentage)
+{
+  if (!m_pAudioDecoder) return;
+  float fVolumeMin=(float)m_pAudioDecoder->GetMinimumVolume();
+  float fVolumeMax=(float)m_pAudioDecoder->GetMaximumVolume();
+  if (fVolumeMax > fVolumeMin)
+  {
+    float fWidth = (fVolumeMax-fVolumeMin);
+    fWidth/=100.0f;
+    fWidth*= ((float)iPercentage);
+    fWidth+=fVolumeMin;
+    m_pAudioDecoder->SetCurrentVolume( (LONG)fWidth);
+  }
+  else
+  {
+    float fWidth = (fVolumeMin-fVolumeMax);
+    fWidth/=100.0f;
+    fWidth*= ((float)iPercentage);
+    fWidth+=fVolumeMax;
+    m_pAudioDecoder->SetCurrentVolume( (LONG)fWidth);
+  }
+}
 
 ao_data_t* pao_data=NULL;
 //******************************************************************************************
