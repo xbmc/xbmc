@@ -48,6 +48,7 @@ public:
 	virtual ~CGUIWindowMusicBase(void);
   virtual bool							OnMessage(CGUIMessage& message);
   virtual void							OnAction(const CAction& action);
+	virtual void							Render();
 protected:
 	/*!
  		\brief Overwrite to fill fileitems from a source
@@ -96,6 +97,7 @@ protected:
 	virtual	void							ShowThumbPanel();
 					bool							ViewByIcon();
 					bool							ViewByLargeIcon();
+					void							DisplayEmptyDatabaseMessage(bool bDisplay);
 
 	CStdString								m_strDirectory;	///< Holds the current direcotry path after calling Update()
 	CVirtualDirectory					m_rootDir;	///< Used to get directories from shares and the shares itself
@@ -132,4 +134,5 @@ protected:
 	int												m_nSelectedItem;	///< Backups the last selected item before window is deinitialized
 	int												m_iLastControl;	///< Backups the last selected control before window is deinitialized
 	long		m_lPlayListSeq;	// sequence number for the playlist
+	bool		m_bDisplayEmptyDatabaseMessage;		///< If true we display a message informing the user to switch back to the Files view.
 };

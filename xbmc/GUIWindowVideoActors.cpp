@@ -307,7 +307,7 @@ void CGUIWindowVideoActors::UpdateButtons()
 	g_graphicsContext.SendMessage(msg);
 
 	//	Add labels to the window selection
-	CStdString strItem=g_localizeStrings.Get(342);	//	Movies
+	CStdString strItem=g_localizeStrings.Get(744);	//	Files
 	CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_BTNTYPE);
 	msg2.SetLabel(strItem);
 	g_graphicsContext.SendMessage(msg2);
@@ -512,7 +512,9 @@ void CGUIWindowVideoActors::Update(const CStdString &strDirectory)
   {
     VECMOVIEACTORS actors;
     m_database.GetActors( actors);
-    for (int i=0; i < (int)actors.size(); ++i)
+ 		// Display an error message if the database doesn't contain any actors
+		DisplayEmptyDatabaseMessage(actors.empty());
+		for (int i=0; i < (int)actors.size(); ++i)
     {
 			CFileItem *pItem = new CFileItem(actors[i]);
 			pItem->m_strPath=actors[i];
@@ -592,12 +594,6 @@ void CGUIWindowVideoActors::Update(const CStdString &strDirectory)
 			break;
 		}
 	}
-}
-
-//****************************************************************************************************************************
-void CGUIWindowVideoActors::Render()
-{
-	CGUIWindow::Render();
 }
 
 //****************************************************************************************************************************

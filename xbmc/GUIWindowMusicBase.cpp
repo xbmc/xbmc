@@ -19,6 +19,7 @@
 #include <algorithm>
 #include "GuiUserMessages.h"
 #include "GUIThumbnailPanel.h"
+#include "GUIListControl.h"
 
 #define CONTROL_BTNVIEWASICONS		2
 #define CONTROL_BTNTYPE						6
@@ -39,6 +40,7 @@ CGUIWindowMusicBase::CGUIWindowMusicBase ()
 {
 	m_nSelectedItem=-1;
 	m_iLastControl=-1;
+	m_bDisplayEmptyDatabaseMessage=false;
 }
 
 CGUIWindowMusicBase::~CGUIWindowMusicBase ()
@@ -1160,7 +1162,7 @@ void CGUIWindowMusicBase::UpdateButtons()
 	g_graphicsContext.SendMessage(msg);
 
 	//	Add labels to the window selection
-	CStdString strItem=g_localizeStrings.Get(134);	//	Songs
+	CStdString strItem=g_localizeStrings.Get(744);	//	Files
 	CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_BTNTYPE);
 	msg2.SetLabel(strItem);
 	g_graphicsContext.SendMessage(msg2);
@@ -1310,4 +1312,30 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumI
     CLog::Log(LOGERROR, "Exception while downloading album info");
   }
 	return false;
+}
+
+void CGUIWindowMusicBase::DisplayEmptyDatabaseMessage(bool bDisplay)
+{
+	m_bDisplayEmptyDatabaseMessage = bDisplay;
+}
+
+void CGUIWindowMusicBase::Render()
+{
+	CGUIWindow::Render();
+	if (m_bDisplayEmptyDatabaseMessage)
+	{
+		CGUIListControl *pControl = (CGUIListControl *)GetControl(CONTROL_LIST);
+		int iX = pControl->GetXPosition()+pControl->GetWidth()/2;
+		int iY = pControl->GetYPosition()+pControl->GetHeight()/2;
+		CGUIFont *pFont = g_fontManager.GetFont(pControl->GetFontName());
+		if (pFont)
+		{
+			float fWidth, fHeight;
+			CStdStringW wszText = g_localizeStrings.Get(745);	// "No scanned information for this view"
+			CStdStringW wszText2 = g_localizeStrings.Get(746); // "Switch back to Files view"
+			pFont->GetTextExtent(wszText, &fWidth, &fHeight);
+			pFont->DrawText((float)iX, (float)iY-fHeight, 0xffffffff, wszText.c_str(), XBFONT_CENTER_X|XBFONT_CENTER_Y);
+			pFont->DrawText((float)iX, (float)iY+fHeight, 0xffffffff, wszText2.c_str(), XBFONT_CENTER_X|XBFONT_CENTER_Y);
+		}
+	}
 }
