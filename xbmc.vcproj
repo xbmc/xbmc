@@ -1012,6 +1012,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\FileSystem\File.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\FileSystem\FileCDDA.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\FileSystem\FileFactory.h">
 			</File>
 			<File
@@ -1539,6 +1542,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\File.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\FileSystem\FileCDDA.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\FileSystem\FileDAAP.cpp">

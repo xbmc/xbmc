@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 02-03-2005 changed: moved cdda reading to CFileCdda class
+  - 02-03-2005 fixed: cdda player, couldn't seek to the start of a track
+  - 02-03-2005 fixed: cdda player, gui was choppy when seeking
   - 02-03-2005 added: new infofadelabel control.  Works like infolabel, except you can have multiple <info> tags.  See the PM MusicOverlay.xml files for an example.
   - 02-03-2005 updated: German language file (Thnx to klapperx)
   - 02-03-2005 updated: Norwegian language file (Thnx to vnm)

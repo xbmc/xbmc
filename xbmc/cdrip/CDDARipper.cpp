@@ -25,9 +25,9 @@ CCDDARipper::~CCDDARipper()
 	if(m_pEncoder) delete m_pEncoder;
 }
 
-bool CCDDARipper::Init(int iTrack, const char* strFile, MUSIC_INFO::CMusicInfoTag* infoTag)
+bool CCDDARipper::Init(const CStdString& strTrackFile, const CStdString& strFile, MUSIC_INFO::CMusicInfoTag* infoTag)
 {
-	m_cdReader.Init(iTrack);
+	m_cdReader.Init(strTrackFile);
 
 	switch(g_guiSettings.GetInt("CDDARipper.Encoder"))
 	{
@@ -46,7 +46,7 @@ bool CCDDARipper::Init(int iTrack, const char* strFile, MUSIC_INFO::CMusicInfoTa
 	if (infoTag)
 	{
 		CStdString strTrack;
-		strTrack.Format("%i", iTrack);
+		strTrack.Format("%i", atoi(strTrackFile.substr(13, strTrackFile.size() - 13 - 5).c_str()) + 1);
 
 		m_pEncoder->SetComment("Ripped with XBMC");
 		m_pEncoder->SetArtist(infoTag->GetArtist().c_str());
@@ -58,7 +58,7 @@ bool CCDDARipper::Init(int iTrack, const char* strFile, MUSIC_INFO::CMusicInfoTa
 	}
 
 	// init encoder
-	if(!m_pEncoder->Init(strFile, 2, 44100, 16))
+	if(!m_pEncoder->Init(strFile.c_str(), 2, 44100, 16))
 	{
 		m_cdReader.DeInit();
 		delete m_pEncoder;
@@ -103,13 +103,13 @@ int CCDDARipper::RipChunk(int& nPercent)
 
 // rip a single track from cd to hd
 // strFileName has to be a valid filename and the directory must exist
-bool CCDDARipper::Rip(int iTrack, const char* strFile, MUSIC_INFO::CMusicInfoTag& infoTag)
+bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile, MUSIC_INFO::CMusicInfoTag& infoTag)
 {
 	int	iPercent, iOldPercent = 0;
 	bool bCancelled = false;
-	const char* strFilename = strFile;
+	const char* strFilename = strFile.c_str();
 
-	CLog::Log(LOGINFO, "Start ripping track %i to %s", iTrack, strFile);
+	CLog::Log(LOGINFO, "Start ripping track %s to %s", strTrackFile, strFile);
 
   // if we are ripping to a samba share, rip it to hd first and then copy it it the share
 	CFileItem file(strFile, false);
@@ -121,7 +121,7 @@ bool CCDDARipper::Rip(int iTrack, const char* strFile, MUSIC_INFO::CMusicInfoTag
    }
   
 	// init ripper
-	if (!Init(iTrack, strFilename, &infoTag))
+	if (!Init(strTrackFile, strFilename, &infoTag))
 	{
 		CLog::Log(LOGERROR, "Error: CCDDARipper::Init failed");
 		return false;
@@ -130,6 +130,7 @@ bool CCDDARipper::Rip(int iTrack, const char* strFile, MUSIC_INFO::CMusicInfoTag
 	// setup the progress dialog
 	CGUIDialogProgress*	pDlgProgress	= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 	CStdStringW strLine0, strLine1;
+	int iTrack=atoi(strTrackFile.substr(13, strTrackFile.size() - 13 - 5).c_str()) + 1;
 	strLine0.Format(L"%ls %i", g_localizeStrings.Get(606).c_str(), iTrack); // Track Number: %i
 	strLine1.Format(L"%ls %hs", g_localizeStrings.Get(607).c_str(), strFile);// To: %s
 	pDlgProgress->SetHeading(605); // Ripping
@@ -166,7 +167,7 @@ bool CCDDARipper::Rip(int iTrack, const char* strFile, MUSIC_INFO::CMusicInfoTag
   {
     // copy the ripped track to the share
     CFile file;
-    if (!file.Cache(strFilename, strFile))
+    if (!file.Cache(strFilename, strFile.c_str()))
     {
       CLog::Log(LOGINFO, "Error copying file from %s to %s", strFilename, strFile);
 		  // show error
@@ -186,7 +187,7 @@ bool CCDDARipper::Rip(int iTrack, const char* strFile, MUSIC_INFO::CMusicInfoTag
   }
   
 	if (bCancelled) CLog::Log(LOGWARNING, "User Cancelled CDDA Rip");
-	else CLog::Log(LOGINFO, "Finished ripping track %i", iTrack);
+	else CLog::Log(LOGINFO, "Finished ripping %s", strTrackFile);
 	return !bCancelled;
 }
 
@@ -245,7 +246,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
 	else
 		strFile.Format("%s%s%02i%s", strDirectory.c_str(), "Track-", iTrack, cExt);
 
-	return Rip(iTrack, strFile.c_str(), pItem->m_musicInfoTag);
+	return Rip(pItem->m_strPath, strFile.c_str(), pItem->m_musicInfoTag);
 }
 
 bool CCDDARipper::RipCD()
@@ -340,7 +341,7 @@ bool CCDDARipper::RipCD()
 		DWORD dwTick=timeGetTime();
 		
 		// return false if Rip returned false (this means an error or the user cancelled
-		if (!Rip(iTrack, strFile.c_str(), vecItems[i]->m_musicInfoTag)) return false;
+		if (!Rip(vecItems[i]->m_strPath, strFile.c_str(), vecItems[i]->m_musicInfoTag)) return false;
 
 		dwTick = timeGetTime() - dwTick;
 		CStdString strTmp;
