@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 02-02-2005 updated: Italian language file (Thnx to kotix)
+  - 02-02-2005 updated: German language file
+  - 02-02-2005 updated: Finnish language file (Thnx to jutski)
+  - 02-02-2005 updated: Norwegian language file (Thnx to vnmartinsen)
   - 02-02-2005 changed: removed libcdrip from project, libcdio replaces it
   - 02-02-2005 changed: cd ripper now uses libcdio for ripping
   - 02-02-2005 changed: cdda player is now based on libcdio 
