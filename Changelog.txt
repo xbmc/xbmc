@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+
+  - 13-11-2004 fixed: Lockup adding artist folders to playlist (sf bug #1062846)
   - 13-11-2004 fixed: Alpha level errors that occured with some button types (radio button etc.)
   - 13-11-2004 fixed: prevent switching to vis during slideshow (stops slideshow)
   - 13-11-2004 updated: French language file (Thnx to modhack2)
