@@ -883,7 +883,7 @@ void CASyncDirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeaker
             GetMixBin(dsmbvp8, &iMixBinCount, &dwCMask, DSMIXBINTYPE_STEREORIGHT, 2);
 			break;
 		default:			//Undefined
-			CLog::Log(LOGERROR, "Invalid Mixbin type specified, reverting to standard");
+			CLog::Log(LOGERROR, "Invalid Audio channel type specified, doing nothing");
 			return;
 	}
 	
