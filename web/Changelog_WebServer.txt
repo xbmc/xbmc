@@ -28,6 +28,9 @@ Project Mayhem WebServer V1.1
  - add some hidden features ;)
  
 = Changelog =====================
+
+ 2005/01/15: bobbin007
+    - fixed: [ 1096896 ] Can't remove files from the playlists
  
  2004/12/10: jmarshall
     - fixed: [ 1080520 ] web interface: unqueing doesn't work - thanks to re.solve + BombrMan
