@@ -177,6 +177,7 @@ public:
 	void							CloseFile(HANDLE hFile);
   void              Reset();
   void              Scan();
+	bool							IsScanned();
 
 protected:
 	struct iso_dirtree*					ReadRecursiveDirFromSector( DWORD sector, const char * );
