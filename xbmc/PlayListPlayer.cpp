@@ -88,7 +88,7 @@ void CPlayListPlayer::Play(int iSong)
 
 	if (!CUtil::IsShoutCast(item.GetFileName()))
 	{
-		CGUIMessage msg( GUI_MSG_PLAYLIST_PLAY_NEXT_PREV, 0, 0, GetCurrentPlaylist(), MAKELONG(m_iCurrentSong, iPreviousSong), (LPVOID)&item );
+		CGUIMessage msg( GUI_MSG_PLAYLIST_PLAY_NEXT_PREV, 0, 0, GetCurrentPlaylist(), 0, (LPVOID)&item );
 		m_gWindowManager.SendThreadMessage( msg );
 	}
 	g_application.PlayFile( item.GetFileName() );	
