@@ -207,18 +207,49 @@ bool CPlayListPLS::LoadAsxInfo(CStdString& strData)
 		}
 
 		TiXmlElement *pRootElement = xmlDoc.RootElement();
+    //TODO: can timy xml parse case-insensitive?
 		TiXmlElement *pElement = pRootElement->FirstChildElement("entry");
-		while (pElement)
+    if (!pElement) pElement = pRootElement->FirstChildElement("Entry");
+    if (!pElement) pElement = pRootElement->FirstChildElement("ENTRY");
+    if (!pElement) 
+    { // no entry, let's see if there's any entryref's
+      pElement = pRootElement->FirstChildElement("entryref");
+      if (!pElement) pElement = pRootElement->FirstChildElement("Entryref");
+      if (!pElement) pElement = pRootElement->FirstChildElement("EntryRef");
+      if (!pElement) pElement = pRootElement->FirstChildElement("ENTRYREF");
+      while (pElement)
+      {
+			  CStdString strRef = pElement->Attribute("href");
+			  if (strRef == "") strRef = pElement->Attribute("Href");
+			  if (strRef == "") strRef = pElement->Attribute("HRef");
+			  if (strRef == "") strRef = pElement->Attribute("HREF");
+
+			  if (strRef != "")
+			  { // found an entryref, let's try loading that url
+          LoadFromWeb(strRef);
+			  }
+  			pElement = pElement->NextSiblingElement();
+      }
+    }
+    else while (pElement)
 		{
 			TiXmlElement *pRef = pElement->FirstChildElement("ref");
-			CStdString strMMS = pRef->Attribute("href");
+			if (!pRef) pRef = pElement->FirstChildElement("Ref");
+			if (!pRef) pRef = pElement->FirstChildElement("REF");
+      if (pRef)
+      {
+			  CStdString strMMS = pRef->Attribute("href");
+			  if (strMMS == "") strMMS = pRef->Attribute("Href");
+			  if (strMMS == "") strMMS = pRef->Attribute("HRef");
+			  if (strMMS == "") strMMS = pRef->Attribute("HREF");
 
-			if (strMMS != "")
-			{
-				CLog::Log(LOGINFO, "Adding element %s", strMMS.c_str());
-				CPlayListItem newItem(strMMS,strMMS,0);
-				Add(newItem);
-			}
+			  if (strMMS != "")
+			  {
+				  CLog::Log(LOGINFO, "Adding element %s", strMMS.c_str());
+				  CPlayListItem newItem(strMMS,strMMS,0);
+				  Add(newItem);
+			  }
+      }
 			pElement = pElement->NextSiblingElement();
 		}
 	}
