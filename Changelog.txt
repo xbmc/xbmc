@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 01-04-2005 fixed: vcd's/svcd's autostart only the first movie on a cd
   - 01-04-2005 fixed: [ 1171973 ]  visualisations and screensaver xml have missing end tags (Thanks to jaap3)
   - 01-04-2005 fixed: crash when <value> of a <string> tag in a language file is empty
   - 01-04-2005 updated: Finnish language file (Thnx to jutski)
