@@ -9,3 +9,4 @@ xbmc.ilk
 xbmc.map
 *.sbr
 *.pch
+*.lib
