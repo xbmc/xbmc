@@ -15,6 +15,9 @@ public:
 	void				RenderFullScreen();
 
 private:
+  void            ShowOSD();
+  void            HideOSD();
+
 	bool						m_bShowInfo;
 	bool						m_bShowStatus;
 	DWORD						m_dwLastTime;
@@ -22,4 +25,5 @@ private:
 	float						m_fFrameCounter;
 	FLOAT						m_fFPS;
   COSDMenu        m_osdMenu;
+  bool            m_bOSDVisible;
 };

@@ -1,4 +1,8 @@
 #include ".\osdmenu.h"
+#include "graphiccontext.h"
+#include "guifont.h"
+#include "guifontmanager.h"
+#include "../settings.h"
 using namespace OSD;
 COSDMenu::COSDMenu()
 {		
@@ -61,11 +65,16 @@ const COSDMenu& COSDMenu::operator = (const COSDMenu& menu)
 
 void COSDMenu::Draw()
 {
-	for (int i=0; i < (int)m_vecSubMenus.size(); ++i)
-	{
-		COSDSubMenu* pSubMenu=m_vecSubMenus[i];
-		pSubMenu->Draw();
-	}
+	g_graphicsContext.Get3DDevice()->SetSoftDisplayFilter(true);
+	g_graphicsContext.Get3DDevice()->SetFlickerFilter(5);
+
+  
+	COSDSubMenu* pSubMenu=m_vecSubMenus[m_iCurrentSubMenu];
+	pSubMenu->Draw();
+	
+	
+  g_graphicsContext.Get3DDevice()->SetSoftDisplayFilter(g_stSettings.m_bSoften);
+	g_graphicsContext.Get3DDevice()->SetFlickerFilter(g_stSettings.m_bSoften ? 5 : 1);
 }
 
 bool COSDMenu::OnAction(const CAction& action)
