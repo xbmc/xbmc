@@ -519,6 +519,7 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
   if (m_bShowViewModeInfo) return true;
   if (m_bShowCurrentTime) return true;
   if (g_application.m_guiDialogVolumeBar.IsRunning()) return true; // volume bar is onscreen
+  if (g_application.m_guiDialogKaiToast.IsRunning()) return true; // kai toast is onscreen
   if (m_bOSDVisible) return true;
   if (g_Mouse.IsActive()) return true;
   if (CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subtitleFont)
@@ -652,6 +653,11 @@ void CGUIWindowFullScreen::RenderFullScreen()
   if (g_application.m_guiDialogVolumeBar.IsRunning())
   {
 	  g_application.m_guiDialogVolumeBar.Render();
+  }
+  // Check if we need to render the popup kai toast...
+  if (g_application.m_guiDialogKaiToast.IsRunning())
+  {
+	  g_application.m_guiDialogKaiToast.Render();
   }
 
   if (m_bOSDVisible)

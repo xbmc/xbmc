@@ -20,8 +20,11 @@ class IBuddyObserver
 {
 	public:
 		virtual void OnInitialise(CKaiClient* pClient)=0;
+		virtual void OnEngineDetached()=0;
+		virtual void OnAuthenticationFailed(CStdString& aUsername)=0;
 		virtual void OnContactOffline(CStdString& aContact)=0;
 		virtual void OnContactOnline(CStdString& aContact)=0;
+		virtual void OnContactsOnline(int nCount)=0;
 		virtual void OnContactPing(CStdString& aContact, CStdString& aVector, DWORD aPing, int aStatus, CStdString& aBearerCapability)=0;
 		virtual void OnContactRemove(CStdString& aContact)=0;
 		virtual void OnContactSpeexStatus(CStdString& aContact, bool bSpeexEnabled)=0;
@@ -68,14 +71,15 @@ public:
 
 	CStdString GetCurrentVector();
 
-	void ProcessVoice();
+	bool IsEngineConnected();
+	void DoWork();
 
     // Public so that CVoiceManager can get to them
     static void VoiceDataCallback( DWORD dwPort, DWORD dwSize, VOID* pvData, VOID* pContext );
     static void CommunicatorCallback( DWORD dwPort, VOICE_COMMUNICATOR_EVENT event, VOID* pContext );
 
 protected:
-	enum State {Discovering,Attaching,Querying,LoggingIn,Authenticated,Disconnecting};
+	enum State {Discovering,Attaching,Querying,LoggingIn,Authenticated,Disconnected};
 
 	void Discover();
 	void Attach(SOCKADDR_IN& aAddress);
@@ -107,7 +111,10 @@ private:
 	State client_state;
 	IBuddyObserver* observer;
 	CStdString client_vector;
-	BOOL m_bHosting;
+	BOOL	m_bHosting;
+	BOOL	m_bContactsSettling;
+	INT		m_nFriendsOnline;
+	DWORD	m_dwTimer;
 
 	// KAI Speex support
     LPDIRECTSOUND8		m_pDSound;

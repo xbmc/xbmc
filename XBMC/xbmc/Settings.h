@@ -464,6 +464,8 @@ public:
 		int       m_iOSDTimeout;		// OSD timeout in seconds
 		char      szOnlineUsername[32]; // KAITAG (username)
 		char      szOnlinePassword[32]; // corresponding password
+		char      szOnlineGamesDir[32]; // user games directory path
+		bool	  m_bOnlineNotifications; // kai notifications
 		bool      m_mplayerDebug;
 		int       m_iSambaDebugLevel;
 		char      m_strSambaWorkgroup[128];

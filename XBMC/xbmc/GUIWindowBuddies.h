@@ -24,8 +24,11 @@ public:
 	virtual ~CGUIWindowBuddies(void);
 
 	virtual void			OnInitialise(CKaiClient* pClient);
+	virtual void			OnEngineDetached();
+	virtual void			OnAuthenticationFailed(CStdString& aUsername);
 	virtual void			OnContactOffline(CStdString& aFriend);
 	virtual void			OnContactOnline(CStdString& aFriend);
+	virtual void			OnContactsOnline(int nCount);
 	virtual void			OnContactPing(CStdString& aFriend, CStdString& aVector, DWORD aPing, int aStatus, CStdString& aBearerCapability);
 	virtual void			OnContactRemove(CStdString& aFriend);
 	virtual void			OnContactSpeexStatus(CStdString& aFriend, bool bSpeexEnabled);
@@ -64,6 +67,7 @@ protected:
 	void OnSelectListItem	(CGUIMessage& aMessage);
 
 	void	QueryInstalledGames();
+	bool	GetGamePathFromTitleId(DWORD aTitleId, CStdString& aGamePath);
 	void	UpdatePanel();
 	void	UpdateFriends();
 	void	UpdateArena();
@@ -97,11 +101,17 @@ protected:
 
 	CGUIImage*	m_pOpponentImage;
 	CGUIImage*  m_pCurrentAvatar;
+	CBuddyItem* m_pMe;
 
 	CKaiClient* m_pKaiClient;
+
+	BOOL		m_bContactNotifications;
 
 	DWORD		m_dwGamesUpdateTimer;
 
 	typedef map<CStdString,Invitation> INVITETABLE;
 	INVITETABLE m_invitations;
+
+	typedef map<CStdString,DWORD> TITLETABLE;
+	TITLETABLE m_titles;
 };
