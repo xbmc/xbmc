@@ -329,7 +329,8 @@ CGUISettings::CGUISettings(void)
 	AddBool(6, "Network.UseHTTPProxy", 708, false);
 	AddString(7, "Network.HTTPProxyServer", 706, "");
 	AddString(8, "Network.HTTPProxyPort", 707, "8080");
-		
+	AddBool(9, "Network.EnableInternet", 14054, true);
+
 	AddCategory(6, "Servers", 14036);
 	AddBool(1, "Servers.FTPServer", 167, true);
 	AddBool(2, "Servers.TimeServer", 168, false);
