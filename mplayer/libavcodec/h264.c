@@ -4479,17 +4479,15 @@ decode_intra_mb:
                     } else {
                         ref[list][i] = -1;
                     }
-                    h->ref_cache[list][ scan8[4*i]   ]=h->ref_cache[list][ scan8[4*i]+1 ]=
+                                                       h->ref_cache[list][ scan8[4*i]+1 ]=
                     h->ref_cache[list][ scan8[4*i]+8 ]=h->ref_cache[list][ scan8[4*i]+9 ]= ref[list][i];
                 }
             }
         }
 
         for(list=0; list<2; list++){
-
             for(i=0; i<4; i++){
-                //h->ref_cache[list][ scan8[4*i]   ]=h->ref_cache[list][ scan8[4*i]+1 ]=
-                //h->ref_cache[list][ scan8[4*i]+8 ]=h->ref_cache[list][ scan8[4*i]+9 ]= ref[list][i];
+                h->ref_cache[list][ scan8[4*i]   ]=h->ref_cache[list][ scan8[4*i]+1 ];
 
                 if(IS_DIR(h->sub_mb_type[i], 0, list) && !IS_DIRECT(h->sub_mb_type[i])){
                     const int sub_mb_type= h->sub_mb_type[i];
@@ -5119,7 +5117,7 @@ static int decode_slice(H264Context *h){
         ff_init_cabac_states( &h->cabac, ff_h264_lps_range, ff_h264_mps_state, ff_h264_lps_state, 64 );
         ff_init_cabac_decoder( &h->cabac,
                                s->gb.buffer + get_bits_count(&s->gb)/8,
-                               ( s->gb.size_in_bits - get_bits_count(&s->gb) ) );
+                               ( s->gb.size_in_bits - get_bits_count(&s->gb) + 7)/8);
         /* calculate pre-state */
         for( i= 0; i < 399; i++ ) {
             int pre;
@@ -5151,7 +5149,7 @@ static int decode_slice(H264Context *h){
                 s->mb_y--;
             }
 
-            if( ret < 0 ) {
+            if( ret < 0 || h->cabac.bytestream > h->cabac.bytestream_end + 1) {
                 av_log(h->s.avctx, AV_LOG_ERROR, "error while decoding MB %d %d\n", s->mb_x, s->mb_y);
                 ff_er_add_slice(s, s->resync_mb_x, s->resync_mb_y, s->mb_x, s->mb_y, (AC_ERROR|DC_ERROR|MV_ERROR)&part_mask);
                 return -1;
@@ -5520,8 +5518,7 @@ static inline int decode_picture_parameter_set(H264Context *h){
  * finds the end of the current frame in the bitstream.
  * @return the position of the first byte of the next frame, or -1
  */
-static int find_frame_end(MpegEncContext *s, uint8_t *buf, int buf_size){
-    ParseContext *pc= &s->parse_context;
+static int find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size){
     int i;
     uint32_t state;
 //printf("first %02X%02X%02X%02X\n", buf[0], buf[1],buf[2],buf[3]);
@@ -5542,6 +5539,27 @@ static int find_frame_end(MpegEncContext *s, uint8_t *buf, int buf_size){
     
     pc->state= state;
     return END_NOT_FOUND;
+}
+
+static int h264_parse(AVCodecParserContext *s,
+                      AVCodecContext *avctx,
+                      uint8_t **poutbuf, int *poutbuf_size, 
+                      const uint8_t *buf, int buf_size)
+{
+    ParseContext *pc = s->priv_data;
+    int next;
+    
+    next= find_frame_end(pc, buf, buf_size);
+
+    if (ff_combine_frame(pc, next, (uint8_t **)&buf, &buf_size) < 0) {
+        *poutbuf = NULL;
+        *poutbuf_size = 0;
+        return buf_size;
+    }
+
+    *poutbuf = (uint8_t *)buf;
+    *poutbuf_size = buf_size;
+    return next;
 }
 
 static int decode_nal_units(H264Context *h, uint8_t *buf, int buf_size){
@@ -5637,6 +5655,8 @@ static int decode_nal_units(H264Context *h, uint8_t *buf, int buf_size){
             break;
         case NAL_FILTER_DATA:
             break;
+	default:
+	    av_log(avctx, AV_LOG_ERROR, "Unknown NAL code: %d\n", h->nal_unit_type);
         }        
 
         //FIXME move after where irt is set
@@ -5693,17 +5713,15 @@ static int decode_frame(AVCodecContext *avctx,
     s->flags= avctx->flags;
     s->flags2= avctx->flags2;
 
-    *data_size = 0;
-   
    /* no supplementary picture */
     if (buf_size == 0) {
         return 0;
     }
     
     if(s->flags&CODEC_FLAG_TRUNCATED){
-        int next= find_frame_end(s, buf, buf_size);
+        int next= find_frame_end(&s->parse_context, buf, buf_size);
         
-        if( ff_combine_frame(s, next, &buf, &buf_size) < 0 )
+        if( ff_combine_frame(&s->parse_context, next, &buf, &buf_size) < 0 )
             return buf_size;
 //printf("next:%d buf_size:%d last_index:%d\n", next, buf_size, s->parse_context.last_index);
     }
@@ -5968,6 +5986,14 @@ AVCodec h264_decoder = {
     decode_end,
     decode_frame,
     /*CODEC_CAP_DRAW_HORIZ_BAND |*/ CODEC_CAP_DR1 | CODEC_CAP_TRUNCATED,
+};
+
+AVCodecParser h264_parser = {
+    { CODEC_ID_H264 },
+    sizeof(ParseContext),
+    NULL,
+    h264_parse,
+    ff_parse_close,
 };
 
 #include "svq3.c"

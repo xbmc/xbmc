@@ -71,8 +71,8 @@ sample_t * a52_init (uint32_t mm_accel)
     }   
     
     if (samples == NULL)
-	return NULL;
-
+	return NULL;    
+    
     imdct_init (mm_accel);
     downmix_accel_init(mm_accel);
     

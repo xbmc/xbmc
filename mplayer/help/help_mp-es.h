@@ -1,10 +1,10 @@
 // Spanish translation by:
 // Leandro Lucarella <leandro at lucarella.com.ar>,
 // Jesús Climent <jesus.climent at hispalinux.es>,
-// Sefanja Ruijsenaars <sefanja at gmx.net>
+// Sefanja Ruijsenaars <sefanja at gmx.net>,
 // Andoni Zubimendi <andoni at lpsat.net>
 
-// Updated to help_mp-en.h v1.115
+// Updated to help_mp-en.h v1.119
 
 // ========================= MPlayer help ===========================
 
@@ -17,7 +17,7 @@ static char help_text[]=
 " -vo <driver[:disp]>  Seleccionar driver de salida de vídeo y dispositivo ('-vo help' para obtener una lista).\n"
 " -ao <driver[:disp]>  Seleccionar driver de salida de audio y dispositivo ('-ao help' para obtener una lista).\n"
 #ifdef HAVE_VCD
-" vcd://<numpista>      Reproducir pista de VCD (Video CD) desde un dispositivo en vez de un archivo regular.\n"
+" vcd://<numpista>      Reproducir pista de (S)VCD (Super Video CD) (acceso directo al dispositivo, no montado)\n"
 #endif
 #ifdef USE_DVDREAD
 " dvd://<número>        Reproducir título o pista de DVD desde un dispositivo en vez de un archivo regular.\n"
@@ -118,7 +118,7 @@ static char help_text[]=
 #define MSGTR_NoSound "Audio: sin sonido.\n"
 #define MSGTR_FPSforced "FPS forzado en %5.3f  (ftime: %5.3f).\n"
 
-#define MSGTR_CompiledWithRuntimeDetection "Compilado con detección RUNTIME CPU - esto no es óptimo! Para obtener mejor rendimiento, recompila MPlayer con --disable-runtime-cpudetection.\n"
+#define MSGTR_CompiledWithRuntimeDetection "Compilado con detección en tiempo de ejecución de CPU - esto no es óptimo! Para obtener mejor rendimiento, recompila MPlayer con --disable-runtime-cpudetection.\n"
 #define MSGTR_CompiledWithCPUExtensions "Compilado para CPU x86 con extensiones:"
 #define MSGTR_AvailableVideoOutputPlugins "Plugins de salida de vídeo disponibles:\n"
 #define MSGTR_AvailableVideoOutputDrivers "Drivers de salida de vídeo disponibles:\n"
@@ -358,7 +358,7 @@ static char help_text[]=
 #define MSGTR_CouldNotFindVideoFilter "No se pudo encontrar el filtro de vídeo '%s'.\n"
 #define MSGTR_CouldNotOpenVideoFilter "No se pudo abrir el filtro de vídeo '%s'.\n"
 #define MSGTR_OpeningVideoFilter "Abriendo filtro de vídeo: "
-#define MSGTR_CannotFindColorspace "No se pudo encontrar espacio de color común, ni siquiera insertando 'scale' :(.\n"
+#define MSGTR_CannotFindColorspace "No se pudo encontrar espacio de color concordante, ni siquiera insertando 'scale' :(.\n"
 
 // vd.c
 #define MSGTR_CodecDidNotSet "VDec: el codec no declaró sh->disp_w y sh->disp_h, intentando solucionarlo!\n"
@@ -367,6 +367,10 @@ static char help_text[]=
 #define MSGTR_MovieAspectIsSet "Aspecto es %.2f:1 - prescalando a aspecto correcto.\n"
 #define MSGTR_MovieAspectUndefined "Aspecto de película no es definido - no se ha aplicado prescalado.\n"
 
+// x11_common.c
+#define MSGTR_EwmhFullscreenStateFailed "\nX11: ¡No se pudo enviar evento de pantalla completa EWMH!\n"
+
+#define MSGTR_NeedAfVolume "Mixer: Este controlador de salida de audio necesita \"-af volumén\" para cambiar el volumén.\n"
 
 // ====================== GUI messages/buttons ========================
 
@@ -411,9 +415,9 @@ static char help_text[]=
 
 // --- skin loader error messages
 #define MSGTR_SKIN_ERRORMESSAGE "[skin] error en configuración de skin en la línea %d: %s"
-#define MSGTR_SKIN_WARNING1 "[skin] advertencia en configuración de skin en la línea %d: widget encontrado pero \"section\" posterior no encontrada (%s)"
-#define MSGTR_SKIN_WARNING2 "[skin] advertencia en configuración de skin en la línea %d: widget encontrado pero \"subsection\" posterior no encontrada (%s)"
-#define MSGTR_SKIN_WARNING3 "[skin] advertencia en configuración de skin en la linea %d: subsection no suportada por widget (%s)"
+#define MSGTR_SKIN_WARNING1 "[skin] advertencia en archivo de configuración en la línea %d:\n control (%s) encontrado pero no se encontro \"section\" antes"
+#define MSGTR_SKIN_WARNING2 "[skin] advertencia en archivo de configuración en la línea %d:\n control (%s) encontrado pero no se encontro \"subsection\" antes"
+#define MSGTR_SKIN_WARNING3 "[skin] advertencia en archivo de configuración en la linea %d:\nesta subsección no esta soportada por control (%s)"
 #define MSGTR_SKIN_BITMAP_16bit  "Mapa de bits de 16 bits o menos no soportado (%s).\n"
 #define MSGTR_SKIN_BITMAP_FileNotFound  "Archivo no encontrado (%s).\n"
 #define MSGTR_SKIN_BITMAP_BMPReadError "Error al leer BMP (%s).\n"

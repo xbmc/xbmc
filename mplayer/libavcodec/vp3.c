@@ -2056,7 +2056,7 @@ static void render_fragments(Vp3DecodeContext *s,
     unsigned char *last_plane;
     unsigned char *golden_plane;
     int stride;
-    int motion_x, motion_y;
+    int motion_x = 0xdeadbeef, motion_y = 0xdeadbeef;
     int upper_motion_limit, lower_motion_limit;
     int motion_halfpel_index;
     uint8_t *motion_source;
@@ -2473,8 +2473,6 @@ static int vp3_decode_frame(AVCodecContext *avctx,
     Vp3DecodeContext *s = avctx->priv_data;
     GetBitContext gb;
     static int counter = 0;
-
-    *data_size = 0;
 
     init_get_bits(&gb, buf, buf_size * 8);
     

@@ -306,8 +306,7 @@ static int decode_slice(MpegEncContext *s){
  * finds the end of the current frame in the bitstream.
  * @return the position of the first byte of the next frame, or -1
  */
-static int mpeg4_find_frame_end(MpegEncContext *s, uint8_t *buf, int buf_size){
-    ParseContext *pc= &s->parse_context;
+int ff_mpeg4_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size){
     int vop_found, i;
     uint32_t state;
     
@@ -326,23 +325,25 @@ static int mpeg4_find_frame_end(MpegEncContext *s, uint8_t *buf, int buf_size){
         }
     }
 
-    if(vop_found){    
-      for(; i<buf_size; i++){
-        state= (state<<8) | buf[i];
-        if((state&0xFFFFFF00) == 0x100){
-            pc->frame_start_found=0;
-            pc->state=-1; 
-            return i-3;
+    if(vop_found){
+        /* EOF considered as end of frame */
+        if (buf_size == 0)
+            return 0;
+        for(; i<buf_size; i++){
+            state= (state<<8) | buf[i];
+            if((state&0xFFFFFF00) == 0x100){
+                pc->frame_start_found=0;
+                pc->state=-1; 
+                return i-3;
+            }
         }
-      }
     }
     pc->frame_start_found= vop_found;
     pc->state= state;
     return END_NOT_FOUND;
 }
 
-static int h263_find_frame_end(MpegEncContext *s, uint8_t *buf, int buf_size){
-    ParseContext *pc= &s->parse_context;
+static int h263_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size){
     int vop_found, i;
     uint32_t state;
     
@@ -377,6 +378,27 @@ static int h263_find_frame_end(MpegEncContext *s, uint8_t *buf, int buf_size){
     return END_NOT_FOUND;
 }
 
+static int h263_parse(AVCodecParserContext *s,
+                           AVCodecContext *avctx,
+                           uint8_t **poutbuf, int *poutbuf_size, 
+                           const uint8_t *buf, int buf_size)
+{
+    ParseContext *pc = s->priv_data;
+    int next;
+    
+    next= h263_find_frame_end(pc, buf, buf_size);
+
+    if (ff_combine_frame(pc, next, (uint8_t **)&buf, &buf_size) < 0) {
+        *poutbuf = NULL;
+        *poutbuf_size = 0;
+        return buf_size;
+    }
+
+    *poutbuf = (uint8_t *)buf;
+    *poutbuf_size = buf_size;
+    return next;
+}
+
 int ff_h263_decode_frame(AVCodecContext *avctx, 
                              void *data, int *data_size,
                              uint8_t *buf, int buf_size)
@@ -395,8 +417,6 @@ uint64_t time= rdtsc();
     s->flags= avctx->flags;
     s->flags2= avctx->flags2;
 
-    *data_size = 0;
-
     /* no supplementary picture */
     if (buf_size == 0) {
         /* special case for last picture */
@@ -414,15 +434,15 @@ uint64_t time= rdtsc();
         int next;
         
         if(s->codec_id==CODEC_ID_MPEG4){
-            next= mpeg4_find_frame_end(s, buf, buf_size);
+            next= ff_mpeg4_find_frame_end(&s->parse_context, buf, buf_size);
         }else if(s->codec_id==CODEC_ID_H263){
-            next= h263_find_frame_end(s, buf, buf_size);
+            next= h263_find_frame_end(&s->parse_context, buf, buf_size);
         }else{
             av_log(s->avctx, AV_LOG_ERROR, "this codec doesnt support truncated bitstreams\n");
             return -1;
         }
         
-        if( ff_combine_frame(s, next, &buf, &buf_size) < 0 )
+        if( ff_combine_frame(&s->parse_context, next, &buf, &buf_size) < 0 )
             return buf_size;
     }
 
@@ -526,6 +546,9 @@ retry:
         if(s->xvid_build && s->xvid_build<=12)
             s->workaround_bugs|= FF_BUG_EDGE;
 
+        if(s->xvid_build && s->xvid_build<=32)
+            s->workaround_bugs|= FF_BUG_DC_CLIP;
+
 #define SET_QPEL_FUNC(postfix1, postfix2) \
     s->dsp.put_ ## postfix1 = ff_put_ ## postfix2;\
     s->dsp.put_no_rnd_ ## postfix1 = ff_put_no_rnd_ ## postfix2;\
@@ -540,6 +563,9 @@ retry:
         if(s->lavc_build && s->lavc_build<4670){
             s->workaround_bugs|= FF_BUG_EDGE;
         }
+        
+        if(s->lavc_build && s->lavc_build<=4712)
+            s->workaround_bugs|= FF_BUG_DC_CLIP;
 
         if(s->divx_version)
             s->workaround_bugs|= FF_BUG_DIRECT_BLOCKSIZE;
@@ -597,7 +623,14 @@ retry:
     fprintf(f, "%d %d %f\n", buf_size, s->qscale, buf_size*(double)s->qscale);
 }
 #endif
-       
+
+#ifdef HAVE_MMX
+    if(s->codec_id == CODEC_ID_MPEG4 && s->xvid_build && avctx->idct_algo == FF_IDCT_AUTO && (mm_flags & MM_MMX) && !(s->flags&CODEC_FLAG_BITEXACT)){
+        avctx->idct_algo= FF_IDCT_LIBMPEG2MMX;
+        avctx->width= 0; // force reinit
+    }
+#endif
+
         /* After H263 & mpeg4 header decode we have the height, width,*/
         /* and other parameters. So then we could init the picture   */
         /* FIXME: By the way H263 decoder is evolving it should have */
@@ -625,7 +658,7 @@ retry:
     s->current_picture.key_frame= s->pict_type == I_TYPE;
 
     /* skip b frames if we dont have reference frames */
-    if(s->last_picture_ptr==NULL && s->pict_type==B_TYPE) return get_consumed_bytes(s, buf_size);
+    if(s->last_picture_ptr==NULL && (s->pict_type==B_TYPE || s->dropable)) return get_consumed_bytes(s, buf_size);
     /* skip b frames if we are in a hurry */
     if(avctx->hurry_up && s->pict_type==B_TYPE) return get_consumed_bytes(s, buf_size);
     /* skip everything if we are in a hurry>=5 */
@@ -842,4 +875,12 @@ AVCodec flv_decoder = {
     ff_h263_decode_end,
     ff_h263_decode_frame,
     CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1
+};
+
+AVCodecParser h263_parser = {
+    { CODEC_ID_H263 },
+    sizeof(ParseContext),
+    NULL,
+    h263_parse,
+    ff_parse_close,
 };

@@ -1401,7 +1401,7 @@ static void mga_param_buff_fill( mga_card_t * card )
 }
 
 
-static ssize_t mga_vid_read(struct file *file, char *buf, size_t count, l__int64 *ppos)
+static ssize_t mga_vid_read(struct file *file, char *buf, size_t count, loff_t *ppos)
 {
 	uint32_t size;
 	mga_card_t * card = (mga_card_t *) file->private_data;
@@ -1415,7 +1415,7 @@ static ssize_t mga_vid_read(struct file *file, char *buf, size_t count, l__int64
 	return size;
 }
 
-static ssize_t mga_vid_write(struct file *file, const char *buf, size_t count, l__int64 *ppos)
+static ssize_t mga_vid_write(struct file *file, const char *buf, size_t count, loff_t *ppos)
 {
 	mga_card_t * card = (mga_card_t *) file->private_data;
 

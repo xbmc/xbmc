@@ -475,10 +475,6 @@ static int encode_init(AVCodecContext *avctx)
     
     switch(avctx->pix_fmt){
     case PIX_FMT_YUV420P:
-        if(avctx->strict_std_compliance>=0){
-            av_log(avctx, AV_LOG_ERROR, "YV12-huffyuv is experimental, there WILL be no compatbility! (use (v)strict=-1)\n");
-            return -1;
-        }
         s->bitstream_bpp= 12;
         break;
     case PIX_FMT_YUV422P:
@@ -683,8 +679,6 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, uint8
     AVFrame * const p= &s->picture;
 
     AVFrame *picture = data;
-
-    *data_size = 0;
 
     /* no supplementary picture */
     if (buf_size == 0)
@@ -916,8 +910,6 @@ static int decode_end(AVCodecContext *avctx)
     for(i=0; i<3; i++){
         free_vlc(&s->vlc[i]);
     }
-    
-    avcodec_default_free_buffers(avctx);
 
     return 0;
 }

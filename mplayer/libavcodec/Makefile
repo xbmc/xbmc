@@ -11,7 +11,7 @@ CFLAGS=$(OPTFLAGS) -DHAVE_AV_CONFIG_H -I.. -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_S
 
 OBJS= common.o utils.o mem.o allcodecs.o \
       mpegvideo.o jrevdct.o jfdctfst.o jfdctint.o\
-      mpegaudio.o ac3enc.o mjpeg.o resample.o dsputil.o \
+      mpegaudio.o ac3enc.o mjpeg.o resample.o resample2.o dsputil.o \
       motion_est.o imgconvert.o imgresample.o \
       mpeg12.o mpegaudiodec.o pcm.o simple_idct.o \
       ratecontrol.o adpcm.o eval.o dv.o error_resilience.o \
@@ -20,7 +20,7 @@ OBJS= common.o utils.o mem.o allcodecs.o \
       roqvideo.o dpcm.o interplayvideo.o xan.o rpza.o cinepak.o msrle.o \
       msvideo1.o vqavideo.o idcinvideo.o adx.o rational.o faandct.o 8bps.o \
       smc.o parser.o flicvideo.o truemotion1.o vmdav.o lcl.o qtrle.o g726.o \
-      flac.o vp3dsp.o
+      flac.o vp3dsp.o integer.o
 
 ifeq ($(AMR_NB),yes)
 ifeq ($(AMR_NB_FIXED),yes)
@@ -55,7 +55,7 @@ ASM_OBJS=
 
 # codecs which are patented in some non free countries like the us
 ifeq ($(CONFIG_RISKY),yes)
-OBJS+= h263.o msmpeg4.o h263dec.o svq1.o rv10.o wmadec.o indeo3.o
+OBJS+= h263.o h261.o msmpeg4.o h263dec.o svq1.o rv10.o wmadec.o indeo3.o
 endif
 
 ifeq ($(HAVE_XVMC_ACCEL),yes)
@@ -71,6 +71,11 @@ ifneq ($(CONFIG_A52BIN),yes)
 OBJS+= liba52/bit_allocate.o liba52/bitstream.o liba52/downmix.o \
 	liba52/imdct.o  liba52/parse.o liba52/crc.o liba52/resample.o
 endif
+endif
+
+# currently using libdts for dts decoding
+ifeq ($(CONFIG_DTS),yes)
+OBJS+= dtsdec.o
 endif
 
 ifeq ($(CONFIG_FAAD),yes)
@@ -162,6 +167,14 @@ ifeq ($(TARGET_ARCH_SH4),yes)
 OBJS+= sh4/idct_sh4.o sh4/dsputil_sh4.o sh4/dsputil_align.o
 endif
 
+ifeq ($(TARGET_ARCH_SPARC),yes)
+OBJS+=sparc/dsputil_vis.o
+sparc/%.o: sparc/%.c
+	$(CC) -mcpu=ultrasparc -mtune=ultrasparc $(CFLAGS) -c -o $@ $< 
+endif
+ifeq ($(TARGET_ARCH_SPARC64),yes)
+CFLAGS+= -mcpu=ultrasparc -mtune=ultrasparc
+endif
 
 SRCS := $(OBJS:.o=.c) $(ASM_OBJS:.o=.S)
 OBJS := $(OBJS) $(ASM_OBJS)
@@ -216,6 +229,7 @@ clean: $(CLEANAMR)
 	   ppc/*.o ppc/*~ \
 	   ps2/*.o ps2/*~ \
 	   sh4/*.o sh4/*~ \
+	   sparc/*.o sparc/*~ \
 	   liba52/*.o liba52/*~ \
 	   apiexample $(TESTS)
 	$(MAKE) -C libpostproc clean

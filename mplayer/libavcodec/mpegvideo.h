@@ -32,6 +32,7 @@
 
 enum OutputFormat {
     FMT_MPEG1,
+    FMT_H261,
     FMT_H263,
     FMT_MJPEG, 
     FMT_H264,
@@ -196,6 +197,7 @@ struct MpegEncContext;
  * Motion estimation context.
  */
 typedef struct MotionEstContext{
+    AVCodecContext *avctx;
     int skip;                          ///< set if ME is skiped for the current MB 
     int co_located_mv[4][2];           ///< mv from last p frame for direct mode ME 
     int direct_basis_mv[4][2];
@@ -226,6 +228,10 @@ typedef struct MotionEstContext{
     uint8_t *ref[4][4];
     int stride;
     int uvstride;
+    /* temp variables for picture complexity calculation */
+    int mc_mb_var_sum_temp;
+    int mb_var_sum_temp;
+    int scene_change_score;
 /*    cmp, chroma_cmp;*/
     op_pixels_func (*hpel_put)[4];
     op_pixels_func (*hpel_avg)[4];
@@ -393,7 +399,6 @@ typedef struct MpegEncContext {
     uint8_t (*p_field_select_table[2]);
     uint8_t (*b_field_select_table[2][2]);
     int me_method;                       ///< ME algorithm 
-    int scene_change_score;
     int mv_dir;
 #define MV_DIR_BACKWARD  1
 #define MV_DIR_FORWARD   2
@@ -508,10 +513,6 @@ typedef struct MpegEncContext {
     int misc_bits; ///< cbp, mb_type
     int last_bits; ///< temp var used for calculating the above vars
     
-    /* temp variables for picture complexity calculation */
-    int mc_mb_var_sum_temp;
-    int mb_var_sum_temp;
-
     /* error concealment / resync */
     int error_count;
     uint8_t *error_status_table;       ///< table of the error status of each MB  
@@ -669,6 +670,8 @@ typedef struct MpegEncContext {
 #define CHROMA_420 1
 #define CHROMA_422 2
 #define CHROMA_444 3
+    int chroma_x_shift;//depend on pix_format, that depend on chroma_format
+    int chroma_y_shift;
 
     int progressive_frame;
     int full_pel[2];
@@ -703,6 +706,10 @@ typedef struct MpegEncContext {
                            DCTELEM *block/*align 16*/, int n, int qscale);
     void (*dct_unquantize_h263_inter)(struct MpegEncContext *s, 
                            DCTELEM *block/*align 16*/, int n, int qscale);
+    void (*dct_unquantize_h261_intra)(struct MpegEncContext *s, 
+                           DCTELEM *block/*align 16*/, int n, int qscale);
+    void (*dct_unquantize_h261_inter)(struct MpegEncContext *s, 
+                           DCTELEM *block/*align 16*/, int n, int qscale);
     void (*dct_unquantize_intra)(struct MpegEncContext *s, // unquantizer to use (mpeg4 can use both)
                            DCTELEM *block/*align 16*/, int n, int qscale);
     void (*dct_unquantize_inter)(struct MpegEncContext *s, // unquantizer to use (mpeg4 can use both)
@@ -717,7 +724,7 @@ int DCT_common_init(MpegEncContext *s);
 void MPV_decode_defaults(MpegEncContext *s);
 int MPV_common_init(MpegEncContext *s);
 void MPV_common_end(MpegEncContext *s);
-void MPV_decode_mb(MpegEncContext *s, DCTELEM block[6][64]);
+void MPV_decode_mb(MpegEncContext *s, DCTELEM block[12][64]);
 int MPV_frame_start(MpegEncContext *s, AVCodecContext *avctx);
 void MPV_frame_end(MpegEncContext *s);
 int MPV_encode_init(AVCodecContext *avctx);
@@ -749,7 +756,8 @@ void ff_draw_horiz_band(MpegEncContext *s, int y, int h);
 void ff_emulated_edge_mc(uint8_t *buf, uint8_t *src, int linesize, int block_w, int block_h, 
                                     int src_x, int src_y, int w, int h);
 #define END_NOT_FOUND -100
-int ff_combine_frame( MpegEncContext *s, int next, uint8_t **buf, int *buf_size);
+int ff_combine_frame(ParseContext *pc, int next, uint8_t **buf, int *buf_size);
+void ff_parse_close(AVCodecParserContext *s);
 void ff_mpeg_flush(AVCodecContext *avctx);
 void ff_print_debug_info(MpegEncContext *s, AVFrame *pict);
 void ff_write_quant_matrix(PutBitContext *pb, int16_t *matrix);
@@ -812,6 +820,7 @@ void mpeg1_encode_mb(MpegEncContext *s,
 void ff_mpeg1_encode_init(MpegEncContext *s);
 void ff_mpeg1_encode_slice_header(MpegEncContext *s);
 void ff_mpeg1_clean_buffers(MpegEncContext *s);
+int ff_mpeg1_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size);
 
 
 /** RLTable. */
@@ -851,6 +860,7 @@ extern const uint8_t ff_h263_chroma_qscale_table[32];
 extern const uint8_t ff_h263_loop_filter_strength[32];
 
 
+/* h263.c, h263dec.c */
 int ff_h263_decode_init(AVCodecContext *avctx);
 int ff_h263_decode_frame(AVCodecContext *avctx, 
                              void *data, int *data_size,
@@ -901,7 +911,9 @@ int ff_mpeg4_get_video_packet_prefix_length(MpegEncContext *s);
 int ff_h263_resync(MpegEncContext *s);
 int ff_h263_get_gob_height(MpegEncContext *s);
 int ff_mpeg4_set_direct_mv(MpegEncContext *s, int mx, int my);
-inline int ff_h263_round_chroma(int x);
+int ff_h263_round_chroma(int x);
+void ff_h263_encode_motion(MpegEncContext * s, int val, int f_code);
+int ff_mpeg4_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size);
 
 
 /* rv10.c */

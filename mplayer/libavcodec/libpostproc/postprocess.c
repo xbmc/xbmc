@@ -1,6 +1,8 @@
 /*
     Copyright (C) 2001-2003 Michael Niedermayer (michaelni@gmx.at)
 
+    AltiVec optimizations (C) 2004 Romain Dolbeau <romain@dolbeau.org>
+
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
@@ -22,16 +24,17 @@
  */
  
 /*
-			C	MMX	MMX2	3DNow
-isVertDC		Ec	Ec
-isVertMinMaxOk		Ec	Ec
-doVertLowPass		E		e	e
-doVertDefFilter		Ec	Ec	e	e
-isHorizDC		Ec	Ec
-isHorizMinMaxOk		a	E
-doHorizLowPass		E		e	e
-doHorizDefFilter	Ec	Ec	e	e
-deRing			E		e	e*
+			C	MMX	MMX2	3DNow	AltiVec
+isVertDC		Ec	Ec			Ec
+isVertMinMaxOk		Ec	Ec			Ec
+doVertLowPass		E		e	e	Ec
+doVertDefFilter		Ec	Ec	e	e	Ec
+isHorizDC		Ec	Ec			Ec
+isHorizMinMaxOk		a	E			Ec
+doHorizLowPass		E		e	e	Ec
+doHorizDefFilter	Ec	Ec	e	e	Ec
+do_a_deblock		Ec	E	Ec	E
+deRing			E		e	e*	Ecp
 Vertical RKAlgo1	E		a	a
 Horizontal RKAlgo1			a	a
 Vertical X1#		a		E	E
@@ -40,7 +43,7 @@ LinIpolDeinterlace	e		E	E*
 CubicIpolDeinterlace	a		e	e*
 LinBlendDeinterlace	e		E	E*
 MedianDeinterlace#	E	Ec	Ec
-TempDeNoiser#		E		e	e
+TempDeNoiser#		E		e	e	Ec
 
 * i dont have a 3dnow CPU -> its untested, but noone said it doesnt work so it seems to work
 # more or less selfinvented filters so the exactness isnt too meaningfull
@@ -48,6 +51,7 @@ E = Exact implementation
 e = allmost exact implementation (slightly different rounding,...)
 a = alternative / approximate impl
 c = checked against the other implementations (-vo md5)
+p = partially optimized, still some work to do
 */
 
 /*
@@ -88,6 +92,10 @@ try to unroll inner for(x=0 ... loop to avoid these damn if(x ... checks
 
 #include "mangle.h" //FIXME should be supressed
 
+#ifdef HAVE_ALTIVEC_H
+#include <altivec.h>
+#endif
+
 #ifndef HAVE_MEMALIGN
 #define memalign(a,b) malloc(b)
 #endif
@@ -105,12 +113,15 @@ try to unroll inner for(x=0 ... loop to avoid these damn if(x ... checks
 
 #if defined(__GNUC__) && (__GNUC__ > 3 || __GNUC__ == 3 && __GNUC_MINOR__ > 0)
 #    define attribute_used __attribute__((used))
+#    define always_inline __attribute__((always_inline)) inline
 #else
 #    define attribute_used
+#    define always_inline inline
 #endif
 
 #ifdef ARCH_X86
 static uint64_t __attribute__((aligned(8))) attribute_used w05=		0x0005000500050005LL;
+static uint64_t __attribute__((aligned(8))) attribute_used w04=		0x0004000400040004LL;
 static uint64_t __attribute__((aligned(8))) attribute_used w20=		0x0020002000200020LL;
 static uint64_t __attribute__((aligned(8))) attribute_used b00= 		0x0000000000000000LL;
 static uint64_t __attribute__((aligned(8))) attribute_used b01= 		0x0101010101010101LL;
@@ -119,11 +130,10 @@ static uint64_t __attribute__((aligned(8))) attribute_used b08= 		0x080808080808
 static uint64_t __attribute__((aligned(8))) attribute_used b80= 		0x8080808080808080LL;
 #endif
 
-
 static uint8_t clip_table[3*256];
 static uint8_t * const clip_tab= clip_table + 256;
 
-static int verbose= 0;
+static const int verbose= 0;
 
 static const int attribute_used deringThreshold= 20;
 
@@ -136,6 +146,8 @@ static struct PPFilter filters[]=
 	{"vr", "rkvdeblock", 		1, 2, 4, V_RK1_FILTER},*/
 	{"h1", "x1hdeblock", 		1, 1, 3, H_X1_FILTER},
 	{"v1", "x1vdeblock", 		1, 2, 4, V_X1_FILTER},
+	{"ha", "ahdeblock", 		1, 1, 3, H_A_DEBLOCK},
+	{"va", "avdeblock", 		1, 2, 4, V_A_DEBLOCK},
 	{"dr", "dering", 		1, 5, 6, DERING},
 	{"al", "autolevels", 		0, 1, 2, LEVEL_FIX},
 	{"lb", "linblenddeint", 	1, 1, 4, LINEAR_BLEND_DEINT_FILTER},
@@ -151,19 +163,13 @@ static struct PPFilter filters[]=
 
 static char *replaceTable[]=
 {
-	"default", 	"hdeblock:a,vdeblock:a,dering:a,autolevels,tmpnoise:a:150:200:400",
-	"de", 		"hdeblock:a,vdeblock:a,dering:a,autolevels,tmpnoise:a:150:200:400",
-	"fast", 	"x1hdeblock:a,x1vdeblock:a,dering:a,autolevels,tmpnoise:a:150:200:400",
-	"fa", 		"x1hdeblock:a,x1vdeblock:a,dering:a,autolevels,tmpnoise:a:150:200:400",
+	"default", 	"hdeblock:a,vdeblock:a,dering:a",
+	"de", 		"hdeblock:a,vdeblock:a,dering:a",
+	"fast", 	"x1hdeblock:a,x1vdeblock:a,dering:a",
+	"fa", 		"x1hdeblock:a,x1vdeblock:a,dering:a",
+	"ac", 		"ha:a:128:7,va:a,dering:a",
 	NULL //End Marker
 };
-
-#ifdef ARCH_X86
-static inline void unusedVariableWarningFixer()
-{
-	if(w05 + w20 + b00 + b01 + b02 + b08 + b80 == 0) b00=0;
-}
-#endif
 
 
 #ifdef ARCH_X86
@@ -201,7 +207,7 @@ static inline void prefetcht2(void *p)
 /**
  * Check if the given 8x8 Block is mostly "flat"
  */
-static inline int isHorizDC(uint8_t src[], int stride, PPContext *c)
+static inline int isHorizDC_C(uint8_t src[], int stride, PPContext *c)
 {
 	int numEq= 0;
 	int y;
@@ -247,7 +253,7 @@ static inline int isVertDC_C(uint8_t src[], int stride, PPContext *c){
 	return numEq > c->ppMode.flatnessThreshold;
 }
 
-static inline int isHorizMinMaxOk(uint8_t src[], int stride, int QP)
+static inline int isHorizMinMaxOk_C(uint8_t src[], int stride, int QP)
 {
 	int i;
 #if 1
@@ -311,6 +317,17 @@ static inline int isVertMinMaxOk_C(uint8_t src[], int stride, int QP)
 #endif
 }
 
+static inline int horizClassify_C(uint8_t src[], int stride, PPContext *c){
+	if( isHorizDC_C(src, stride, c) ){
+		if( isHorizMinMaxOk_C(src, stride, c->QP) )
+			return 1;
+		else
+			return 0;
+	}else{
+		return 2;
+	}
+}
+
 static inline int vertClassify_C(uint8_t src[], int stride, PPContext *c){
 	if( isVertDC_C(src, stride, c) ){
 		if( isVertMinMaxOk_C(src, stride, c->QP) )
@@ -322,14 +339,14 @@ static inline int vertClassify_C(uint8_t src[], int stride, PPContext *c){
 	}
 }
 
-static inline void doHorizDefFilter(uint8_t dst[], int stride, int QP)
+static inline void doHorizDefFilter_C(uint8_t dst[], int stride, PPContext *c)
 {
 	int y;
 	for(y=0; y<BLOCK_SIZE; y++)
 	{
-		const int middleEnergy= 5*(dst[4] - dst[5]) + 2*(dst[2] - dst[5]);
+		const int middleEnergy= 5*(dst[4] - dst[3]) + 2*(dst[2] - dst[5]);
 
-		if(ABS(middleEnergy) < 8*QP)
+		if(ABS(middleEnergy) < 8*c->QP)
 		{
 			const int q=(dst[3] - dst[4])/2;
 			const int leftEnergy=  5*(dst[2] - dst[1]) + 2*(dst[0] - dst[3]);
@@ -363,34 +380,34 @@ static inline void doHorizDefFilter(uint8_t dst[], int stride, int QP)
  * Do a horizontal low pass filter on the 10x8 block (dst points to middle 8x8 Block)
  * using the 9-Tap Filter (1,1,2,2,4,2,2,1,1)/16 (C version)
  */
-static inline void doHorizLowPass(uint8_t dst[], int stride, int QP)
+static inline void doHorizLowPass_C(uint8_t dst[], int stride, PPContext *c)
 {
-
 	int y;
 	for(y=0; y<BLOCK_SIZE; y++)
 	{
-		const int first= ABS(dst[-1] - dst[0]) < QP ? dst[-1] : dst[0];
-		const int last= ABS(dst[8] - dst[7]) < QP ? dst[8] : dst[7];
+		const int first= ABS(dst[-1] - dst[0]) < c->QP ? dst[-1] : dst[0];
+		const int last= ABS(dst[8] - dst[7]) < c->QP ? dst[8] : dst[7];
 
-		int sums[9];
-		sums[0] = first + dst[0];
-		sums[1] = dst[0] + dst[1];
-		sums[2] = dst[1] + dst[2];
-		sums[3] = dst[2] + dst[3];
-		sums[4] = dst[3] + dst[4];
-		sums[5] = dst[4] + dst[5];
-		sums[6] = dst[5] + dst[6];
-		sums[7] = dst[6] + dst[7];
-		sums[8] = dst[7] + last;
+		int sums[10];
+		sums[0] = 4*first + dst[0] + dst[1] + dst[2] + 4;
+		sums[1] = sums[0] - first  + dst[3];
+		sums[2] = sums[1] - first  + dst[4];
+		sums[3] = sums[2] - first  + dst[5];
+		sums[4] = sums[3] - first  + dst[6];
+		sums[5] = sums[4] - dst[0] + dst[7];
+		sums[6] = sums[5] - dst[1] + last;
+		sums[7] = sums[6] - dst[2] + last;
+		sums[8] = sums[7] - dst[3] + last;
+		sums[9] = sums[8] - dst[4] + last;
 
-		dst[0]= ((sums[0]<<2) + ((first + sums[2])<<1) + sums[4] + 8)>>4;
-		dst[1]= ((dst[1]<<2) + ((first + sums[0] + sums[3])<<1) + sums[5] + 8)>>4;
-		dst[2]= ((dst[2]<<2) + ((first + sums[1] + sums[4])<<1) + sums[6] + 8)>>4;
-		dst[3]= ((dst[3]<<2) + ((sums[2] + sums[5])<<1) + sums[0] + sums[7] + 8)>>4;
-		dst[4]= ((dst[4]<<2) + ((sums[3] + sums[6])<<1) + sums[1] + sums[8] + 8)>>4;
-		dst[5]= ((dst[5]<<2) + ((last + sums[7] + sums[4])<<1) + sums[2] + 8)>>4;
-		dst[6]= (((last + dst[6])<<2) + ((dst[7] + sums[5])<<1) + sums[3] + 8)>>4;
-		dst[7]= ((sums[8]<<2) + ((last + sums[6])<<1) + sums[4] + 8)>>4;
+		dst[0]= (sums[0] + sums[2] + 2*dst[0])>>4;
+		dst[1]= (sums[1] + sums[3] + 2*dst[1])>>4;
+		dst[2]= (sums[2] + sums[4] + 2*dst[2])>>4;
+		dst[3]= (sums[3] + sums[5] + 2*dst[3])>>4;
+		dst[4]= (sums[4] + sums[6] + 2*dst[4])>>4;
+		dst[5]= (sums[5] + sums[7] + 2*dst[5])>>4;
+		dst[6]= (sums[6] + sums[8] + 2*dst[6])>>4;
+		dst[7]= (sums[7] + sums[9] + 2*dst[7])>>4;
 
 		dst+= stride;
 	}
@@ -462,12 +479,123 @@ static inline void horizX1Filter(uint8_t *src, int stride, int QP)
 	}
 }
 
+/**
+ * accurate deblock filter
+ */
+static always_inline void do_a_deblock_C(uint8_t *src, int step, int stride, PPContext *c){
+	int y;
+	const int QP= c->QP;
+	const int dcOffset= ((c->nonBQP*c->ppMode.baseDcDiff)>>8) + 1;
+	const int dcThreshold= dcOffset*2 + 1;
+//START_TIMER
+	src+= step*4; // src points to begin of the 8x8 Block
+	for(y=0; y<8; y++){
+		int numEq= 0;
+
+		if(((unsigned)(src[-1*step] - src[0*step] + dcOffset)) < dcThreshold) numEq++;
+		if(((unsigned)(src[ 0*step] - src[1*step] + dcOffset)) < dcThreshold) numEq++;
+		if(((unsigned)(src[ 1*step] - src[2*step] + dcOffset)) < dcThreshold) numEq++;
+		if(((unsigned)(src[ 2*step] - src[3*step] + dcOffset)) < dcThreshold) numEq++;
+		if(((unsigned)(src[ 3*step] - src[4*step] + dcOffset)) < dcThreshold) numEq++;
+		if(((unsigned)(src[ 4*step] - src[5*step] + dcOffset)) < dcThreshold) numEq++;
+		if(((unsigned)(src[ 5*step] - src[6*step] + dcOffset)) < dcThreshold) numEq++;
+		if(((unsigned)(src[ 6*step] - src[7*step] + dcOffset)) < dcThreshold) numEq++;
+		if(((unsigned)(src[ 7*step] - src[8*step] + dcOffset)) < dcThreshold) numEq++;
+		if(numEq > c->ppMode.flatnessThreshold){
+			int min, max, x;
+			
+			if(src[0] > src[step]){
+			    max= src[0];
+			    min= src[step];
+			}else{
+			    max= src[step];
+			    min= src[0];
+			}
+			for(x=2; x<8; x+=2){
+				if(src[x*step] > src[(x+1)*step]){
+					if(src[x    *step] > max) max= src[ x   *step];
+					if(src[(x+1)*step] < min) min= src[(x+1)*step];
+				}else{
+					if(src[(x+1)*step] > max) max= src[(x+1)*step];
+					if(src[ x   *step] < min) min= src[ x   *step];
+				}
+			}
+			if(max-min < 2*QP){
+				const int first= ABS(src[-1*step] - src[0]) < QP ? src[-1*step] : src[0];
+				const int last= ABS(src[8*step] - src[7*step]) < QP ? src[8*step] : src[7*step];
+				
+				int sums[10];
+				sums[0] = 4*first + src[0*step] + src[1*step] + src[2*step] + 4;
+				sums[1] = sums[0] - first       + src[3*step];
+				sums[2] = sums[1] - first       + src[4*step];
+				sums[3] = sums[2] - first       + src[5*step];
+				sums[4] = sums[3] - first       + src[6*step];
+				sums[5] = sums[4] - src[0*step] + src[7*step];
+				sums[6] = sums[5] - src[1*step] + last;
+				sums[7] = sums[6] - src[2*step] + last;
+				sums[8] = sums[7] - src[3*step] + last;
+				sums[9] = sums[8] - src[4*step] + last;
+
+				src[0*step]= (sums[0] + sums[2] + 2*src[0*step])>>4;
+				src[1*step]= (sums[1] + sums[3] + 2*src[1*step])>>4;
+				src[2*step]= (sums[2] + sums[4] + 2*src[2*step])>>4;
+				src[3*step]= (sums[3] + sums[5] + 2*src[3*step])>>4;
+				src[4*step]= (sums[4] + sums[6] + 2*src[4*step])>>4;
+				src[5*step]= (sums[5] + sums[7] + 2*src[5*step])>>4;
+				src[6*step]= (sums[6] + sums[8] + 2*src[6*step])>>4;
+				src[7*step]= (sums[7] + sums[9] + 2*src[7*step])>>4;
+			}
+		}else{
+			const int middleEnergy= 5*(src[4*step] - src[3*step]) + 2*(src[2*step] - src[5*step]);
+
+			if(ABS(middleEnergy) < 8*QP)
+			{
+				const int q=(src[3*step] - src[4*step])/2;
+				const int leftEnergy=  5*(src[2*step] - src[1*step]) + 2*(src[0*step] - src[3*step]);
+				const int rightEnergy= 5*(src[6*step] - src[5*step]) + 2*(src[4*step] - src[7*step]);
+
+				int d= ABS(middleEnergy) - MIN( ABS(leftEnergy), ABS(rightEnergy) );
+				d= MAX(d, 0);
+	
+				d= (5*d + 32) >> 6;
+				d*= SIGN(-middleEnergy);
+	
+				if(q>0)
+				{
+					d= d<0 ? 0 : d;
+					d= d>q ? q : d;
+				}
+				else
+				{
+					d= d>0 ? 0 : d;
+					d= d<q ? q : d;
+				}
+	
+				src[3*step]-= d;
+				src[4*step]+= d;
+			}
+		}
+
+		src += stride;
+	}
+/*if(step==16){
+    STOP_TIMER("step16")
+}else{
+    STOP_TIMER("stepX")
+}*/
+}
 
 //Note: we have C, MMX, MMX2, 3DNOW version there is no 3DNOW+MMX2 one
 //Plain C versions
 #if !defined (HAVE_MMX) || defined (RUNTIME_CPUDETECT)
 #define COMPILE_C
 #endif
+
+#ifdef ARCH_POWERPC
+#ifdef HAVE_ALTIVEC
+#define COMPILE_ALTIVEC
+#endif //HAVE_ALTIVEC
+#endif //ARCH_POWERPC
 
 #ifdef ARCH_X86
 
@@ -487,6 +615,7 @@ static inline void horizX1Filter(uint8_t *src, int stride, int QP)
 #undef HAVE_MMX
 #undef HAVE_MMX2
 #undef HAVE_3DNOW
+#undef HAVE_ALTIVEC
 #undef ARCH_X86
 
 #ifdef COMPILE_C
@@ -497,6 +626,16 @@ static inline void horizX1Filter(uint8_t *src, int stride, int QP)
 #define RENAME(a) a ## _C
 #include "postprocess_template.c"
 #endif
+
+#ifdef ARCH_POWERPC
+#ifdef COMPILE_ALTIVEC
+#undef RENAME
+#define HAVE_ALTIVEC
+#define RENAME(a) a ## _altivec
+#include "postprocess_altivec_template.c"
+#include "postprocess_template.c"
+#endif
+#endif //ARCH_POWERPC
 
 //MMX versions
 #ifdef COMPILE_MMX
@@ -555,6 +694,13 @@ static inline void postProcess(uint8_t src[], int srcStride, uint8_t dst[], int 
 	else
 		postProcess_C(src, srcStride, dst, dstStride, width, height, QPs, QPStride, isColor, c);
 #else
+#ifdef ARCH_POWERPC
+#ifdef HAVE_ALTIVEC
+        else if(c->cpuCaps & PP_CPU_CAPS_ALTIVEC)
+		postProcess_altivec(src, srcStride, dst, dstStride, width, height, QPs, QPStride, isColor, c);
+        else
+#endif
+#endif
 		postProcess_C(src, srcStride, dst, dstStride, width, height, QPs, QPStride, isColor, c);
 #endif
 #else //RUNTIME_CPUDETECT
@@ -564,6 +710,8 @@ static inline void postProcess(uint8_t src[], int srcStride, uint8_t dst[], int 
 		postProcess_3DNow(src, srcStride, dst, dstStride, width, height, QPs, QPStride, isColor, c);
 #elif defined (HAVE_MMX)
 		postProcess_MMX(src, srcStride, dst, dstStride, width, height, QPs, QPStride, isColor, c);
+#elif defined (HAVE_ALTIVEC)
+		postProcess_altivec(src, srcStride, dst, dstStride, width, height, QPs, QPStride, isColor, c);
 #else
 		postProcess_C(src, srcStride, dst, dstStride, width, height, QPs, QPStride, isColor, c);
 #endif
@@ -594,6 +742,8 @@ char *pp_help=
 "			the h & v deblocking filters share these\n"
 "			so you can't set different thresholds for h / v\n"
 "vb	vdeblock	(2 threshold)		vertical deblocking filter\n"
+"ha	hadeblock	(2 threshold)		horizontal deblocking filter\n"
+"va	vadeblock	(2 threshold)		vertical deblocking filter\n"
 "h1	x1hdeblock				experimental h deblock filter 1\n"
 "v1	x1vdeblock				experimental v deblock filter 1\n"
 "dr	dering					deringing filter\n"
@@ -604,8 +754,8 @@ char *pp_help=
 "ci	cubicipoldeint				cubic interpolating deinterlacer\n"
 "md	mediandeint				median deinterlacer\n"
 "fd	ffmpegdeint				ffmpeg deinterlacer\n"
-"de	default					hb:a,vb:a,dr:a,al\n"
-"fa	fast					h1:a,v1:a,dr:a,al\n"
+"de	default					hb:a,vb:a,dr:a\n"
+"fa	fast					h1:a,v1:a,dr:a\n"
 "tn	tmpnoise	(3 threshold)		temporal noise reducer\n"
 "			1. <= 2. <= 3.		larger -> stronger filtering\n"
 "fq	forceQuant	<quantizer>		force quantizer\n"
@@ -755,7 +905,8 @@ pp_mode_t *pp_get_mode_by_name_and_quality(char *name, int quality)
 						}
 					}
 				}
-				else if(filters[i].mask == V_DEBLOCK || filters[i].mask == H_DEBLOCK)
+				else if(filters[i].mask == V_DEBLOCK   || filters[i].mask == H_DEBLOCK 
+				     || filters[i].mask == V_A_DEBLOCK || filters[i].mask == H_A_DEBLOCK)
 				{
 					int o;
 

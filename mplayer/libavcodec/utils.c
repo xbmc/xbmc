@@ -27,7 +27,11 @@
 #include "avcodec.h"
 #include "dsputil.h"
 #include "mpegvideo.h"
+#include "integer.h"
 #include <stdarg.h>
+#include <limits.h>
+
+static void avcodec_default_free_buffers(AVCodecContext *s);
 
 void *av_mallocz(unsigned int size)
 {
@@ -154,6 +158,16 @@ void avcodec_align_dimensions(AVCodecContext *s, int *width, int *height){
         if(s->codec_id == CODEC_ID_SVQ1){
             w_align=64;
             h_align=64;
+        }
+    case PIX_FMT_RGB555:
+        if(s->codec_id == CODEC_ID_RPZA){
+            w_align=4;
+            h_align=4;
+        }
+    case PIX_FMT_PAL8:
+        if(s->codec_id == CODEC_ID_SMC){
+            w_align=4;
+            h_align=4;
         }
         break;
     default:
@@ -449,24 +463,25 @@ int avcodec_open(AVCodecContext *avctx, AVCodec *codec)
 int avcodec_encode_audio(AVCodecContext *avctx, uint8_t *buf, int buf_size, 
                          const short *samples)
 {
-    int ret;
-
-    ret = avctx->codec->encode(avctx, buf, buf_size, (void *)samples);
-    avctx->frame_number++;
-    return ret;
+    if((avctx->codec->capabilities & CODEC_CAP_DELAY) || samples){
+        int ret = avctx->codec->encode(avctx, buf, buf_size, (void *)samples);
+        avctx->frame_number++;
+        return ret;
+    }else
+        return 0;
 }
 
 int avcodec_encode_video(AVCodecContext *avctx, uint8_t *buf, int buf_size, 
                          const AVFrame *pict)
 {
-    int ret;
-
-    ret = avctx->codec->encode(avctx, buf, buf_size, (void *)pict);
+    if((avctx->codec->capabilities & CODEC_CAP_DELAY) || pict){
+        int ret = avctx->codec->encode(avctx, buf, buf_size, (void *)pict);
+        avctx->frame_number++;
+        emms_c(); //needed to avoid a emms_c() call before every return;
     
-    emms_c(); //needed to avoid a emms_c() call before every return;
-
-    avctx->frame_number++;
-    return ret;
+        return ret;
+    }else
+        return 0;
 }
 
 /** 
@@ -484,6 +499,7 @@ int avcodec_decode_video(AVCodecContext *avctx, AVFrame *picture,
 {
     int ret;
     
+    *got_picture_ptr= 0;
     ret = avctx->codec->decode(avctx, picture, got_picture_ptr, 
                                buf, buf_size);
 
@@ -504,6 +520,7 @@ int avcodec_decode_audio(AVCodecContext *avctx, int16_t *samples,
 {
     int ret;
 
+    *frame_size_ptr= 0;
     ret = avctx->codec->decode(avctx, samples, frame_size_ptr, 
                                buf, buf_size);
     avctx->frame_number++;
@@ -514,6 +531,7 @@ int avcodec_close(AVCodecContext *avctx)
 {
     if (avctx->codec->close)
         avctx->codec->close(avctx);
+    avcodec_default_free_buffers(avctx);
     av_freep(&avctx->priv_data);
     avctx->codec = NULL;
     return 0;
@@ -567,7 +585,7 @@ AVCodec *avcodec_find_decoder_by_name(const char *name)
     return NULL;
 }
 
-AVCodec *avcodec_find(enum CodecID id)
+static AVCodec *avcodec_find(enum CodecID id)
 {
     AVCodec *p;
     p = first_avcodec;
@@ -738,7 +756,7 @@ void avcodec_flush_buffers(AVCodecContext *avctx)
         avctx->codec->flush(avctx);
 }
 
-void avcodec_default_free_buffers(AVCodecContext *s){
+static void avcodec_default_free_buffers(AVCodecContext *s){
     int i, j;
 
     if(s->internal_buffer==NULL) return;
@@ -768,74 +786,57 @@ char av_get_pict_type_char(int pict_type){
 }
 
 int av_reduce(int *dst_nom, int *dst_den, int64_t nom, int64_t den, int64_t max){
-    int exact=1, sign=0;
-    int64_t gcd;
+    AVRational a0={0,1}, a1={1,0};
+    int sign= (nom<0) ^ (den<0);
+    int64_t gcd= ff_gcd(ABS(nom), ABS(den));
 
-    assert(den != 0);
-
-    if(den < 0){
-        den= -den;
-        nom= -nom;
+    nom = ABS(nom)/gcd;
+    den = ABS(den)/gcd;
+    if(nom<=max && den<=max){
+        a1= (AVRational){nom, den};
+        den=0;
     }
     
-    if(nom < 0){
-        nom= -nom;
-        sign= 1;
+    while(den){
+        int64_t x       = nom / den;
+        int64_t next_den= nom - den*x;
+        int64_t a2n= x*a1.num + a0.num;
+        int64_t a2d= x*a1.den + a0.den;
+
+        if(a2n > max || a2d > max) break;
+
+        a0= a1;
+        a1= (AVRational){a2n, a2d};
+        nom= den;
+        den= next_den;
     }
+    assert(ff_gcd(a1.num, a1.den) == 1);
     
-    gcd = ff_gcd(nom, den);
-    nom /= gcd;
-    den /= gcd;
+    *dst_nom = sign ? -a1.num : a1.num;
+    *dst_den = a1.den;
     
-    if(nom > max || den > max){
-        AVRational a0={0,1}, a1={1,0};
-        exact=0;
-
-        for(;;){
-            int64_t x= nom / den;
-            int64_t a2n= x*a1.num + a0.num;
-            int64_t a2d= x*a1.den + a0.den;
-
-            if(a2n > max || a2d > max) break;
-
-            nom %= den;
-        
-            a0= a1;
-            a1= (AVRational){a2n, a2d};
-            if(nom==0) break;
-            x= nom; nom=den; den=x;
-        }
-        nom= a1.num;
-        den= a1.den;
-    }
-    
-    assert(ff_gcd(nom, den) == 1);
-    
-    if(sign) nom= -nom;
-    
-    *dst_nom = nom;
-    *dst_den = den;
-    
-    return exact;
+    return den==0;
 }
 
-int64_t av_rescale(int64_t a, int b, int c){
-    uint64_t h, l;
+int64_t av_rescale(int64_t a, int64_t b, int64_t c){
+    AVInteger ai, ci;
     assert(c > 0);
     assert(b >=0);
     
     if(a<0) return -av_rescale(-a, b, c);
     
-    h= a>>32;
-    if(h==0) return a*b/c;
+    if(b<=INT_MAX && c<=INT_MAX){
+        if(a<=INT_MAX)
+            return (a * b + c/2)/c;
+        else
+            return a/c*b + (a%c*b + c/2)/c;
+    }
     
-    l= a&0xFFFFFFFF;
-    l *= b;
-    h *= b;
-
-    l += (h%c)<<32;
-
-    return ((h/c)<<32) + l/c;
+    ai= av_mul_i(av_int2i(a), av_int2i(b));
+    ci= av_int2i(c);
+    ai= av_add_i(ai, av_shr_i(ci,1));
+    
+    return av_i2int(av_div_i(ai, ci));
 }
 
 /* av_log API */
@@ -889,3 +890,8 @@ void av_log_set_callback(void (*callback)(void*, int, const char*, va_list))
     av_log_callback = callback;
 }
 
+#if !defined(HAVE_PTHREADS) && !defined(HAVE_W32THREADS)
+int avcodec_thread_init(AVCodecContext *s, int thread_count){
+    return -1;
+}
+#endif

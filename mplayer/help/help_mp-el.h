@@ -1,6 +1,6 @@
-// sync'ed with help_mp-en.h 1.115
+// sync'ed with help_mp-en.h 1.121
 // Translated by: Ioannis Panteleakis <pioann@csd.auth.gr>
-// Various corrections and additions by: ironhell3 <ironhell3@hotmail.com>
+// Various corrections and additions by: Haris Kouzinopoulos <ironhell3@hotmail.com>
 
 // ========================= MPlayer help ===========================
 
@@ -353,6 +353,16 @@ static char help_text[]=
 #define MSGTR_MovieAspectIsSet "Η αναλογία της ταινίας είναι %.2f:1 - προκλιμάκωση για την διόρθωση της εμφάνισης της ταινίας.\n"
 #define MSGTR_MovieAspectUndefined "Η αναλογία της ταινίας δεν είναι ορισμένη - δεν εφαρμόζεται προκλιμάκωση.\n"
 
+// vd_dshow.c, vd_dmo.c
+#define MSGTR_DownloadCodecPackage "Θα πρέπει να αναβαθμήσετε ή να εγκαταστήσετε το πακέτο με τα codecs.\nΔείτε τη διεύθυνση http://mplayerhq.hu/homepage/dload.html\n"
+#define MSGTR_DShowInitOK "Πληροφορία: το βίντεο codec Win32/DShow αρχικοποιήθηκε επιτυχώς.\n"
+#define MSGTR_DMOInitOK "Πληροφορία: το βίντεο codec Win32/DMO αρχικοποιήθηκε επιτυχώς.\n"
+
+// x11_common.c
+#define MSGTR_EwmhFullscreenStateFailed "\nX11: Αδύνατη η αποστολή του γεγονότος EWMH fullscreen!\n"
+
+#define MSGTR_NeedAfVolume "Μίκτης: Αυτός ο οδηγός ήχου απαιτεί \"-af volume\" για την αλλαγή της έντασης ήχου.\n"
+
 // ====================== GUI messages/buttons ========================
 
 #ifdef HAVE_NEW_GUI
@@ -380,8 +390,8 @@ static char help_text[]=
 // --- buttons ---
 #define MSGTR_Ok "Εντάξει"
 #define MSGTR_Cancel "Άκυρο"
-#define MSGTR_Add "Πρόσθεσε"
-#define MSGTR_Remove "Αφαίρεσε"
+#define MSGTR_Add "Προσθήκη"
+#define MSGTR_Remove "Αφαίρεση"
 #define MSGTR_Clear "Καθάρισμα"
 #define MSGTR_Config "Προτιμήσεις"
 #define MSGTR_ConfigDriver "Προτίμηση οδηγού"
@@ -426,12 +436,12 @@ static char help_text[]=
 #define MSGTR_MENU_PlayDVD "Αναπαραγωγή DVD..."
 #define MSGTR_MENU_PlayURL "Αναπαραγωγή URL..."
 #define MSGTR_MENU_LoadSubtitle "Άνοιγμα υποτίτλου..."
-#define MSGTR_MENU_DropSubtitle "Απομάκρυνση υποτίτλου..."
+#define MSGTR_MENU_DropSubtitle "Αφαίρεση υποτίτλου..."
 #define MSGTR_MENU_LoadExternAudioFile "Άνοιγμα εξωτερικού αρχείου ήχου..."
 #define MSGTR_MENU_Playing "Αναπαραγωγή..."
 #define MSGTR_MENU_Play "Αναπαραγωγή"
 #define MSGTR_MENU_Pause "Παύση"
-#define MSGTR_MENU_Stop "Στοπ"
+#define MSGTR_MENU_Stop "Σταμάτημα"
 #define MSGTR_MENU_NextStream "Επόμενο κανάλι"
 #define MSGTR_MENU_PrevStream "Προηγούμενο κανάλι"
 #define MSGTR_MENU_Size "Μέγεθος"
@@ -511,14 +521,14 @@ static char help_text[]=
 #define MSGTR_PREFERENCES_OSDTimer "Μετρητής χρόνου και δείκτες"
 #define MSGTR_PREFERENCES_OSDProgress "Μόνο Μπάρες Προόδου"
 #define MSGTR_PREFERENCES_OSDTimerPercentageTotalTime "Χρόνος, ποσοστό επί της εκατό και συνολικός χρόνος"
-#define MSGTR_PREFERENCES_Subtitle "Υπότιτλος:"
-#define MSGTR_PREFERENCES_SUB_Delay "Καθυστέρηση: "
+#define MSGTR_PREFERENCES_Subtitle "Υπότιτλοι:"
+#define MSGTR_PREFERENCES_SUB_Delay "Καθυστέρηση:"
 #define MSGTR_PREFERENCES_SUB_FPS "FPS:"
-#define MSGTR_PREFERENCES_SUB_POS "Θέση: "
+#define MSGTR_PREFERENCES_SUB_POS "Θέση:"
 #define MSGTR_PREFERENCES_SUB_AutoLoad "Απενεργοποίηση αυτόματου φορτώματος υποτίτλων"
 #define MSGTR_PREFERENCES_SUB_Unicode "Unicode υπότιτλος"
 #define MSGTR_PREFERENCES_SUB_MPSUB "Μετατροπή εισαγόμενου υπότιτλου σε υπότιτλο τύπου MPlayer"
-#define MSGTR_PREFERENCES_SUB_SRT "Μετατροπή εισαγόμενου υπότιτλου σε τύπο SubViewer(SRT) χρόνο-βασιζόμενο"
+#define MSGTR_PREFERENCES_SUB_SRT "Μετατροπή εισαγόμενου υπότιτλου σε υπότιτλο τύπο SubViewer(SRT)"
 #define MSGTR_PREFERENCES_SUB_Overlap "Εναλλαγή του overlapping υποτίτλου"
 #define MSGTR_PREFERENCES_Font "Γραμματοσειρά:"
 #define MSGTR_PREFERENCES_FontFactor "Παράγοντας της γραμματοσειράς:"
@@ -564,7 +574,7 @@ static char help_text[]=
 #define MSGTR_PREFERENCES_FontEncoding20 "Ταϊλανδέζικη κωδικοσειρά (CP874)"
 #define MSGTR_PREFERENCES_FontEncoding21 "Κυριλλική Windows (CP1251)"
 #define MSGTR_PREFERENCES_FontEncoding22 "Σλάβικα/Κεντρικά Ευρωπαϊκά Windows (CP1250)"
-#define MSGTR_PREFERENCES_FontNoAutoScale "Όχι αυτόματη κλιμάκωση"
+#define MSGTR_PREFERENCES_FontNoAutoScale "Χωρίς αυτόματη κλιμάκωση"
 #define MSGTR_PREFERENCES_FontPropWidth "Αναλογία με το πλάτος της ταινίας"
 #define MSGTR_PREFERENCES_FontPropHeight "Αναλογία με το ύψος της ταινίας"
 #define MSGTR_PREFERENCES_FontPropDiagonal "Αναλογία με τη διαγώνιο της ταινίας"
@@ -575,14 +585,14 @@ static char help_text[]=
 #define MSGTR_PREFERENCES_FontOSDScale "OSD κλιμάκωση:"
 #define MSGTR_PREFERENCES_Cache "Ενεργοποίηση/απενεργοποίηση της cache"
 #define MSGTR_PREFERENCES_CacheSize "Μέγεθος της cache: "
-#define MSGTR_PREFERENCES_LoadFullscreen "Εκκίνηση σε πλήρης οθόνη"
-#define MSGTR_PREFERENCES_SaveWinPos "Αποθήκευση θέσης παραθύρου"
+#define MSGTR_PREFERENCES_LoadFullscreen "Εκκίνηση σε πλήρη οθόνη"
+#define MSGTR_PREFERENCES_SaveWinPos "Αποθήκευση της θέσης του παραθύρου"
 #define MSGTR_PREFERENCES_XSCREENSAVER "Απενεργοποίηση της προστασίας οθόνης"
 #define MSGTR_PREFERENCES_PlayBar "Ενεργοποίηση της playbar"
 #define MSGTR_PREFERENCES_AutoSync "Ενεργοποίηση/απενεργοποίηση του αυτόματου συγχρονισμού"
 #define MSGTR_PREFERENCES_AutoSyncValue "Αυτόματος συγχρονισμός: "
-#define MSGTR_PREFERENCES_CDROMDevice "CD-ROM συσκευή:"
-#define MSGTR_PREFERENCES_DVDDevice "DVD συσκευή:"
+#define MSGTR_PREFERENCES_CDROMDevice "Συσκευή CD-ROM:"
+#define MSGTR_PREFERENCES_DVDDevice "Συσκευή DVD:"
 #define MSGTR_PREFERENCES_FPS "FPS ταινίας:"
 #define MSGTR_PREFERENCES_ShowVideoWindow "Εμφάνιση του Video Window όταν δεν είναι ενεργοποιημένο"
 
