@@ -42,6 +42,8 @@ CGUIWindowVideoPlaylist::CGUIWindowVideoPlaylist(void)
 :CGUIWindow(0)
 {
   m_strDirectory="";
+	m_iLastControl=-1;
+	m_iItemSelected=-1;
 }
 CGUIWindowVideoPlaylist::~CGUIWindowVideoPlaylist(void)
 {
@@ -86,6 +88,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 		{
       OutputDebugString("deinit guiwindowvideoplaylist!\n");
 			m_iItemSelected=GetSelectedItem();
+			m_iLastControl=GetFocusedControl();
 		}
 		break;
 
@@ -100,16 +103,6 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 			{
 				m_iLastControl=CONTROL_BTNVIEWASICONS;
 				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
-			}
-
-			if (g_playlistPlayer.Repeated(PLAYLIST_VIDEO))
-			{
-				CONTROL_SELECT(GetID(), CONTROL_BTNREPEAT);
-			}
-
-			if (g_playlistPlayer.RepeatedOne(PLAYLIST_VIDEO))
-			{
-				CONTROL_SELECT(GetID(), CONTROL_BTNREPEATONE);
 			}
 
 			if (m_iItemSelected>-1)
@@ -411,6 +404,19 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
   swprintf(wszText,L"%i %s", iItems,szText);
 
 	SET_CONTROL_LABEL(GetID(), CONTROL_LABELFILES,wszText);
+
+	//	Update Repeat/Repeat One button
+	if (g_playlistPlayer.Repeated(PLAYLIST_VIDEO))
+	{
+		CONTROL_SELECT(GetID(), CONTROL_BTNREPEAT);
+	}
+
+	if (g_playlistPlayer.RepeatedOne(PLAYLIST_VIDEO))
+	{
+		CONTROL_SELECT(GetID(), CONTROL_BTNREPEATONE);
+	}
+
+
 }
 
 bool CGUIWindowVideoPlaylist::ViewByIcon()
@@ -521,8 +527,6 @@ void CGUIWindowVideoPlaylist::Update(const CStdString &strDirectory)
 			GetDirectoryHistoryString(pItem, strSelectedItem);
 		}
 	}
-
-	m_iLastControl=GetFocusedControl();
 
 	ClearFileItems();
 
