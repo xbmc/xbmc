@@ -59,7 +59,8 @@ CXBApplicationEx::CXBApplicationEx()
     m_d3dpp.BackBufferFormat       = D3DFMT_LIN_A8R8G8B8;
     m_d3dpp.BackBufferCount        = 1;
     m_d3dpp.EnableAutoDepthStencil = FALSE;
-    m_d3dpp.SwapEffect             = D3DSWAPEFFECT_DISCARD;
+    m_d3dpp.SwapEffect             = D3DSWAPEFFECT_DISCARD ;
+		m_d3dpp.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 
     // Specify number and type of input devices this app will be using. By
     // default, you can use 0 and NULL, which triggers XInputDevices() to

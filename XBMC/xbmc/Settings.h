@@ -107,6 +107,11 @@ public:
 		char			m_szDefaultVideos[128];
 		char			m_szCDDBIpAdres[128];
 		bool			m_bUseCDDB;
+		int				m_iUIOffsetX;
+		int				m_iUIOffsetY;
+		bool			m_bSoften;
+		bool			m_bZoom;
+		bool			m_bStretch;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;

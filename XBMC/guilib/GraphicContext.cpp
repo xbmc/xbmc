@@ -9,6 +9,8 @@ CGraphicContext::CGraphicContext(void)
 {
   m_iScreenWidth=720;
   m_iScreenHeight=576;
+	m_iScreenOffsetX=0;
+	m_iScreenOffsetY=0;
   m_pd3dDevice=NULL;
   m_dwID=0;
   m_strMediaDir="D:\\media";
@@ -34,8 +36,10 @@ int  CGraphicContext::GetHeight() const
   return m_iScreenHeight;
 }
 
-void CGraphicContext::Set(LPDIRECT3DDEVICE8 p3dDevice, int iWidth, int iHeight, bool bWideScreen)
+void CGraphicContext::Set(LPDIRECT3DDEVICE8 p3dDevice, int iWidth, int iHeight, int iOffsetX, int iOffsetY, bool bWideScreen)
 {
+	m_iScreenOffsetX=iOffsetX;
+	m_iScreenOffsetY=iOffsetY;
   m_pd3dDevice=p3dDevice;
   m_iScreenWidth=iWidth;
   m_iScreenHeight=iHeight;
@@ -75,14 +79,14 @@ bool CGraphicContext::IsWidescreen() const
 }
 
 
-VOID CGraphicContext::Correct(FLOAT& fCoordinateX, FLOAT& fCoordinateY, FLOAT& fCoordinateX2, FLOAT& fCoordinateY2)  const
+void CGraphicContext::Correct(FLOAT& fCoordinateX, FLOAT& fCoordinateY, FLOAT& fCoordinateX2, FLOAT& fCoordinateY2)  const
 {
-	if (! IsWidescreen() ) return;
+	fCoordinateX  += (float)m_iScreenOffsetX;
+	fCoordinateY  += (float)m_iScreenOffsetY;
+	
+	fCoordinateX2 += (float)m_iScreenOffsetX;
+	fCoordinateY2 += (float)m_iScreenOffsetY;
 
-	fCoordinateX	*= WIDE_SCREEN_COMPENSATIONX;
-	fCoordinateX2	*= WIDE_SCREEN_COMPENSATIONX;
-	fCoordinateY	*= WIDE_SCREEN_COMPENSATIONY;
-	fCoordinateY2	*= WIDE_SCREEN_COMPENSATIONY;
 }
 
 void CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheight)
@@ -114,4 +118,20 @@ void CGraphicContext::SetViewWindow(const RECT&	rc)
 	m_videoRect.top   = rc.top;
 	m_videoRect.right = rc.right;
 	m_videoRect.bottom= rc.bottom;
+}
+
+void CGraphicContext::SetFullScreenVideo(bool bOnOff)
+{
+	m_bFullScreenVideo=bOnOff;
+}
+
+bool CGraphicContext::IsFullScreenVideo() const
+{
+	return m_bFullScreenVideo;
+}
+
+void CGraphicContext::SetOffset(int iXoffset, int iYoffset)
+{
+	m_iScreenOffsetX=iXoffset;
+	m_iScreenOffsetY=iYoffset;
 }

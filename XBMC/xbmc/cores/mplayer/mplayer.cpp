@@ -31,9 +31,13 @@ BOOL						(__cdecl* pHasAudio)();
 void						(__cdecl* pyv12toyuy2)(const unsigned char *ysrc, const unsigned char *usrc, const unsigned char *vsrc, unsigned char *dst,unsigned int width, unsigned int height,int lumStride, int chromStride, int dstStride);
 int							(__cdecl* pImageOutput)(IMAGE * image, unsigned int width,int height,unsigned int edged_width, unsigned char * dst, unsigned int dst_stride,int csp,int interlaced);
 void						(__cdecl* pInitColorConversions)();
-
+void						(__cdecl* pSetCacheSize)(int);
 extern "C" 
 {
+	void	mplayer_setcache_size(int iCacheSize)
+	{
+		pSetCacheSize(iCacheSize);
+	}
 	void init_color_conversions()
 	{
 		pInitColorConversions();
@@ -232,6 +236,9 @@ void mplayer_load_dll(DllLoader& dll)
 
 	dll.ResolveExport("init_color_conversions", &pProc);
 	pInitColorConversions=(void(__cdecl*)())pProc;
+
+	dll.ResolveExport("mplayer_setcache_size", &pProc);
+	pSetCacheSize=(void(__cdecl*)(int))pProc;
 
 	pSetVideoFunctions(&video_functions);
 	pSetAudioFunctions(&audio_functions);

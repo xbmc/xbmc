@@ -41,8 +41,7 @@ static DWORD    						destcolorkey;                       //colorkey for our sur
 int												  m_dwVisibleOverlay=0;
 LPDIRECT3DTEXTURE8					m_pOverlay[2]={NULL,NULL};					// Overlay textures
 LPDIRECT3DSURFACE8					m_pSurface[2]={NULL,NULL};				  // Overlay Surfaces
-	
-
+bool												m_bFlip=false;
 typedef struct directx_fourcc_caps
 {
     char*							img_format_name;      //human readable name
@@ -51,7 +50,7 @@ typedef struct directx_fourcc_caps
 } directx_fourcc_caps;
 
 
-#define DIRECT3D8CAPS VFCAP_CSP_SUPPORTED |VFCAP_OSD 
+#define DIRECT3D8CAPS VFCAP_CSP_SUPPORTED |VFCAP_OSD |VFCAP_HWSCALE_UP|VFCAP_HWSCALE_DOWN
 static directx_fourcc_caps g_ddpf[] =
 {
     {"YUY2 ",IMGFMT_YUY2 ,DIRECT3D8CAPS|VFCAP_CSP_SUPPORTED_BY_HW},
@@ -155,7 +154,8 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
   //printf("Source:x1:%i,x2:%i,y1:%i,y2:%i\n",rs.left,rs.right,rs.top,rs.bottom);
   //printf("Image:x:%i->%i,y:%i->%i\n",image_width,d_image_width,image_height,d_image_height);
 
-  return 0;
+  
+	return 0;
 }
 
 //***********************************************************************************************************
@@ -168,7 +168,6 @@ static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height
 static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned char *srca, int stride)
 {
 	vo_draw_alpha_yv12(w,h,src,srca,stride,((unsigned char *) image) + dstride*y0 + x0,dstride);
-	//vo_draw_alpha_yuy2(w,h,src,srca,stride,((unsigned char *) image) + dstride*y0 + 2*x0 + 1,dstride);
 }
 
 static void video_draw_osd(void)
@@ -207,6 +206,7 @@ static void video_check_events(void)
 
 static unsigned int video_preinit(const char *arg)
 {
+	m_bFlip=false;
 	fs=1;
   return 0;
 }
@@ -225,14 +225,28 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
 								 dstride>>1,							//	dst stride
 								 XVID_CSP_YUY2 ,0);
 
+	if (y+h+16 >= (int)image_height) m_bFlip=true;
 //  yv12toyuy2(src[0],src[1],src[2],image + dstride*y + 2*x ,w,h,stride[0],stride[1],dstride);
   return 0;
 }
 
 static void video_flip_page(void)
 {
+	if (!m_bFlip) return;
 	m_pOverlay[m_dwVisibleOverlay]->UnlockRect(0);			
-	g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_dwVisibleOverlay], &rs, &rd, FALSE, 0x00010001  );
+
+	if ( g_graphicsContext.IsFullScreenVideo())
+	{
+		g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0xff202020, 1.0f, 0L );
+	  g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      
+		g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_dwVisibleOverlay], &rs, &rd, FALSE, 0x00010001  );
+		g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
+	}
+	else
+	{
+		g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_dwVisibleOverlay], &rs, &rd, FALSE, 0x00010001  );
+	}
+
 
 	m_dwVisibleOverlay=1-m_dwVisibleOverlay;
 	D3DLOCKED_RECT rectLocked;

@@ -51,6 +51,11 @@ CSettings::CSettings(void)
 	g_stSettings.m_bMyMusicSortAscending=true;
 	g_stSettings.m_bMyVideoSortAscending=true;
 	g_stSettings.m_bMyFilesSortAscending=true;
+	g_stSettings.m_iUIOffsetX=0;
+	g_stSettings.m_iUIOffsetY=0;
+	g_stSettings.m_bSoften=false;
+	g_stSettings.m_bZoom=false;
+	g_stSettings.m_bStretch=false;
 }
 
 CSettings::~CSettings(void)

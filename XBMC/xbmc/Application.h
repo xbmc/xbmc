@@ -20,6 +20,8 @@
 #include "GUIDialogSelect.h"
 #include "GUIWindowSystemInfo.h"
 #include "GUIWindowSettingsGeneral.h"
+#include "GUIWindowSettingsScreen.h"
+#include "GUIWindowSettingsUICalibration.h"
 #include "GUIWindowMusicInfo.h" 
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowMusicOverlay.h"
@@ -53,30 +55,33 @@ public:
 	bool									PlayFile(const CStdString& strFile);
 	void									EnableOverlay();
 	void									DisableOverlay();
+	bool									IsPlayingAudio() const ;
+	bool									IsPlayingVideo() const ;
 
-  CGUIWindowHome        m_guiHome;
-  CGUIWindowPrograms    m_guiPrograms;
-	CGUIWindowPictures		m_guiPictures;
-	CGUIDialogYesNo				m_guiDialogYesNo;
-	CGUIDialogProgress		m_guiDialogProgress;
-	CGUIDialogOK					m_guiDialogOK;
-	CGUIWindowMyFiles			m_guiMyFiles;
-	CGUIWindowMusic				m_guiMyMusic;
-	CGUIWindowVideo				m_guiMyVideo;
-	CGUIWindowSettings		m_guiSettings;
-	CGUIWindowSystemInfo	m_guiSystemInfo;
-	CGUIWindowSettingsGeneral m_guiSettingsGeneral;
-	CGUIWindowMusicInfo			m_guiMusicInfo;
-	CGUIWindowVideoInfo			m_guiVideoInfo;
-	CGUIWindow							m_guiSettingsScreen;
-	CGUIDialogSelect				m_guiDialogSelect;
-	CGUIWindowMusicOverlay	m_guiMusicOverlay;
-  CXBVirtualKeyboard   		m_keyboard;
-	CSNTPClient							m_sntpClient;
-	CDelayController				m_ctrDpad;
-	CDelayController				m_ctrIR;
-	Python*									m_pPhytonParser;
-	IPlayer*								m_pPlayer;
+  CGUIWindowHome									m_guiHome;
+  CGUIWindowPrograms							m_guiPrograms;
+	CGUIWindowPictures							m_guiPictures;
+	CGUIDialogYesNo									m_guiDialogYesNo;
+	CGUIDialogProgress							m_guiDialogProgress;
+	CGUIDialogOK										m_guiDialogOK;
+	CGUIWindowMyFiles								m_guiMyFiles;
+	CGUIWindowMusic									m_guiMyMusic;
+	CGUIWindowVideo									m_guiMyVideo;
+	CGUIWindowSettings							m_guiSettings;
+	CGUIWindowSystemInfo						m_guiSystemInfo;
+	CGUIWindowSettingsGeneral				m_guiSettingsGeneral;
+	CGUIWindowMusicInfo							m_guiMusicInfo;
+	CGUIWindowVideoInfo							m_guiVideoInfo;
+	CGUIWindowSettingsScreen				m_guiSettingsScreen;
+	CGUIWindowSettingsUICalibration	m_guiSettingsUICalibration;
+	CGUIDialogSelect								m_guiDialogSelect;
+	CGUIWindowMusicOverlay					m_guiMusicOverlay;
+  CXBVirtualKeyboard   						m_keyboard;
+	CSNTPClient											m_sntpClient;
+	CDelayController								m_ctrDpad;
+	CDelayController								m_ctrIR;
+	Python*													m_pPhytonParser;
+	IPlayer*												m_pPlayer;
 protected:
 	bool										m_bOverlayEnabled;
 	vector<int>							m_vecScriptIds;

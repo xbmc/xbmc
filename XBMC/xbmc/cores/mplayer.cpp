@@ -1,5 +1,6 @@
 #include "mplayer.h"
 #include "mplayer/mplayer.h"
+#include "../util.h"
 
 extern "C" void dllReleaseAll( );
 
@@ -48,6 +49,12 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		mplayer_init(argc,argv);
 		mplayer_put_key('o');
 		Create();
+	}
+
+	mplayer_setcache_size(1024);
+	if (CUtil::IsAudio(strFile) )
+	{
+		mplayer_setcache_size(0);
 	}
 
 	int iRet=mplayer_open_file(strFile.c_str());
@@ -107,11 +114,13 @@ void CMPlayer::Process()
 				dllReleaseAll( );
 				m_pDLL=NULL;
 			}
+//			SetThreadPriority( GetCurrentThread(),THREAD_PRIORITY_NORMAL);
 			return;
 		}
 
 		if (m_pDLL && bGotStartEvent )
 		{
+			//SetThreadPriority( GetCurrentThread(),THREAD_PRIORITY_HIGHEST);
 			m_startEvent.Reset();
 			if (m_bIsPlaying) 
 			{

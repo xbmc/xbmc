@@ -15,7 +15,7 @@ public:
   CGraphicContext(void);
   ~CGraphicContext(void);
   LPDIRECT3DDEVICE8			Get3DDevice();
-  void									Set(LPDIRECT3DDEVICE8 p3dDevice, int iWidth, int iHeight, bool bWideScreen=false);
+  void									Set(LPDIRECT3DDEVICE8 p3dDevice, int iWidth, int iHeight, int iOffsetX, int iOffsetY, bool bWideScreen=false);
   int										GetWidth() const;
   int										GetHeight() const;
   void									SendMessage(CGUIMessage& message);
@@ -24,11 +24,14 @@ public:
   const CStdString&     GetMediaDir() const;
   void									SetMediaDir(const CStdString& strMediaDir);
 	bool									IsWidescreen() const;
-	VOID									Correct(FLOAT& fCoordinateX, FLOAT& fCoordinateY, FLOAT& fCoordinateX2, FLOAT& fCoordinateY2) const;
+	void									Correct(FLOAT& fCoordinateX, FLOAT& fCoordinateY, FLOAT& fCoordinateX2, FLOAT& fCoordinateY2) const;
 	void									SetViewPort(float fx, float fy , float fwidth, float fheight);
 	void									RestoreViewPort();
 	const RECT&						GetViewWindow() const;
 	void									SetViewWindow(const RECT&	rc) ;
+	void									SetFullScreenVideo(bool bOnOff); 
+	bool									IsFullScreenVideo() const; 
+	void									SetOffset(int iXoffset, int iYoffset);
 protected:
   IMsgSenderCallback*     m_pCallback;
   LPDIRECT3DDEVICE8       m_pd3dDevice;
@@ -39,6 +42,9 @@ protected:
   CStdString              m_strMediaDir;
 	D3DVIEWPORT8						m_oldviewport;
 	RECT										m_videoRect;
+	bool										m_bFullScreenVideo;
+	int											m_iScreenOffsetX;
+	int											m_iScreenOffsetY;
 };
 
 extern CGraphicContext g_graphicsContext;
