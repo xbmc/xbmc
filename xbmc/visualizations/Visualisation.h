@@ -9,7 +9,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 #include <xtl.h>
-
+#include "../cores/DllLoader/dll.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -40,7 +40,7 @@ public:
 class CVisualisation
 {
 public:
-	CVisualisation(struct Visualisation* pVisz);
+	CVisualisation(struct Visualisation* pVisz,DllLoader* pLoader);
 	virtual ~CVisualisation();
 
 	// Things that MUST be supplied by the child classes
@@ -52,6 +52,7 @@ public:
 	void GetInfo(VIS_INFO *info);
 private:
 	struct Visualisation* m_pVisz;
+	DllLoader* m_pLoader;
 };
 
 

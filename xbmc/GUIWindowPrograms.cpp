@@ -116,12 +116,26 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 				rootDir.SetMask(".xbe");
 				rootDir.GetDirectory("C:\\",m_vecItems);
         OnScan(m_vecItems,iTotalApps);
+
 				Clear();
+				rootDir.SetMask(".xbe");
 				rootDir.GetDirectory("E:\\",m_vecItems);
         OnScan(m_vecItems,iTotalApps);
-				Clear();
-				rootDir.GetDirectory("F:\\",m_vecItems);
-        OnScan(m_vecItems,iTotalApps);
+				
+				if (g_stSettings.m_bUseFDrive)
+				{
+					Clear();
+					rootDir.SetMask(".xbe");
+					rootDir.GetDirectory("F:\\",m_vecItems);
+					OnScan(m_vecItems,iTotalApps);
+				}
+				if (g_stSettings.m_bUseGDrive)
+				{
+					Clear();
+					rootDir.SetMask(".xbe");
+					rootDir.GetDirectory("G:\\",m_vecItems);
+					OnScan(m_vecItems,iTotalApps);
+				}
 				Clear();
 
 				Update(m_strDirectory);

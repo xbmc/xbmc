@@ -32,5 +32,5 @@ CVisualisation* CVisualisationFactory::LoadVisualisation(const CStdString& strVi
 	}
 	pGetModule=(void (__cdecl*)(struct Visualisation*))pProc;
 	pGetModule(pVisz);
-	return new CVisualisation(pVisz);
+	return new CVisualisation(pVisz,pDLL);
 }

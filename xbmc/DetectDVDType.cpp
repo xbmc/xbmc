@@ -6,10 +6,10 @@
 
 using namespace XISO9660;
 
-CMutex CDetectDVDMedia::m_muReadingMedia;
-CEvent CDetectDVDMedia::m_evAutorun;
-int CDetectDVDMedia::m_DriveState = DRIVE_CLOSED_NO_MEDIA;
-CCdInfo* CDetectDVDMedia::m_pCdInfo = NULL;
+CCriticalSection CDetectDVDMedia::m_muReadingMedia;
+CEvent					 CDetectDVDMedia::m_evAutorun;
+int							 CDetectDVDMedia::m_DriveState = DRIVE_CLOSED_NO_MEDIA;
+CCdInfo*				 CDetectDVDMedia::m_pCdInfo = NULL;
 
 CDetectDVDMedia::CDetectDVDMedia()
 {
@@ -26,14 +26,21 @@ CDetectDVDMedia::~CDetectDVDMedia()
 
 void CDetectDVDMedia::OnStartup()
 {
-	SetPriority( THREAD_PRIORITY_LOWEST );
+//	SetPriority( THREAD_PRIORITY_LOWEST );
 }
 
 void CDetectDVDMedia::Process() 
 {
-	while ( !m_bStop ) {
+	while ( !m_bStop ) 
+	{
+		Sleep(500);
 		UpdateDvdrom();
 		m_bStartup = false;
+		if ( m_bAutorun ) 
+		{
+			m_evAutorun.Set();
+			m_bAutorun = false;
+		}
 	}
 }
 
@@ -48,74 +55,81 @@ VOID CDetectDVDMedia::UpdateDvdrom()
 	//	Signal for WaitMediaReady()
 	//	that we are busy detecting the
 	//	newly inserted media.
-	m_muReadingMedia.Wait();
-
-	DWORD dwCurrentState;
-	do
 	{
-		dwCurrentState = GetTrayState();
-		switch(dwCurrentState)
-		{
-			case DRIVE_OPEN:
-				{
-				m_DriveState = DRIVE_OPEN;
-				//	Send Message to GUI that disc been ejected
-				CGUIMessage msg( GUI_MSG_DVDDRIVE_EJECTED_CD, 0, 0, 0, 0, NULL );
-				m_gWindowManager.SendThreadMessage( msg );
+		CSingleLock waitLock(m_muReadingMedia);
 
-				}
-				break;
-			case DRIVE_NOT_READY:
-				// drive is not ready (closing, opening)
-				m_DriveState = DRIVE_NOT_READY;
-				//	DVD-ROM in undefined state
-				//	better delete old CD Information
-				if ( m_pCdInfo != NULL ) {
-					delete m_pCdInfo;
-					m_pCdInfo = NULL;
-				}
-				Sleep(6000);
-				break;
-			case DRIVE_READY:
-				// drive is ready
-				//m_DriveState = DRIVE_READY;
-				break;
-			case DRIVE_CLOSED_NO_MEDIA:
+		DWORD dwCurrentState;
+		
+			dwCurrentState = GetTrayState();
+			switch(dwCurrentState)
+			{
+				case DRIVE_OPEN:
 				{
-				// nothing in there...
-				m_DriveState = DRIVE_CLOSED_NO_MEDIA;
-				//	Send Message to GUI that disc has changed
-				CGUIMessage msg( GUI_MSG_DVDDRIVE_CHANGED_CD, 0, 0, 0, 0, NULL );
-				m_gWindowManager.SendThreadMessage( msg );
-				}
-				break;
-			case DRIVE_CLOSED_MEDIA_PRESENT:
-				{
-					m_DriveState = DRIVE_CLOSED_MEDIA_PRESENT;
-					// drive has been closed and is ready
-					OutputDebugString("Drive closed media present, remounting...\n");
-					m_helper.Remount("D:","Cdrom0");
-					//	Detect ISO9660(mode1/mode2) or CDDA filesystem
-					DetectMediaType();
-					CGUIMessage msg( GUI_MSG_DVDDRIVE_CHANGED_CD, 0, 0, 0, 0, (void*) m_pCdInfo );
+					m_DriveState = DRIVE_OPEN;
+					//	Send Message to GUI that disc been ejected
+					CGUIMessage msg( GUI_MSG_DVDDRIVE_EJECTED_CD, 0, 0, 0, 0, NULL );
+					waitLock.Leave();
 					m_gWindowManager.SendThreadMessage( msg );
-					//	Tell the application object that a new Cd is inserted
-					//	So autorun can be started.
-					if ( !m_bStartup )
-						m_bAutorun = true;
+					return;
 				}
 				break;
-		}
-	} while ( m_DriveState != DRIVE_OPEN && m_DriveState != DRIVE_CLOSED_NO_MEDIA && m_DriveState != DRIVE_CLOSED_MEDIA_PRESENT  );
+				
+				case DRIVE_NOT_READY:
+					// drive is not ready (closing, opening)
+					m_DriveState = DRIVE_NOT_READY;
+					//	DVD-ROM in undefined state
+					//	better delete old CD Information
+					if ( m_pCdInfo != NULL ) 
+					{
+						delete m_pCdInfo;
+						m_pCdInfo = NULL;
+					}
+					waitLock.Leave();
+					Sleep(6000);
+					return;
+				break;
+				
+				case DRIVE_READY:
+					// drive is ready
+					//m_DriveState = DRIVE_READY;
+					return;
+				break;
+				case DRIVE_CLOSED_NO_MEDIA:
+					{
+						// nothing in there...
+						m_DriveState = DRIVE_CLOSED_NO_MEDIA;
+						//	Send Message to GUI that disc has changed
+						CGUIMessage msg( GUI_MSG_DVDDRIVE_CHANGED_CD, 0, 0, 0, 0, NULL );
+						waitLock.Leave();
+						m_gWindowManager.SendThreadMessage( msg );
+						return;
+					}
+					break;
+				case DRIVE_CLOSED_MEDIA_PRESENT:
+					{
+						m_DriveState = DRIVE_CLOSED_MEDIA_PRESENT;
+						// drive has been closed and is ready
+						OutputDebugString("Drive closed media present, remounting...\n");
+						m_helper.Remount("D:","Cdrom0");
+						//	Detect ISO9660(mode1/mode2) or CDDA filesystem
+						DetectMediaType();
+						CGUIMessage msg( GUI_MSG_DVDDRIVE_CHANGED_CD, 0, 0, 0, 0, (void*) m_pCdInfo );
+						waitLock.Leave();
+						m_gWindowManager.SendThreadMessage( msg );
+						//	Tell the application object that a new Cd is inserted
+						//	So autorun can be started.
+						if ( !m_bStartup )
+							m_bAutorun = true;
+						return;
+					}
+					break;
+			}
 
-	//	We have finished media detection
-	//	Signal for WaitMediaReady()
-	m_muReadingMedia.Release();
-
-	if ( m_bAutorun ) {
-		m_evAutorun.Set();
-		m_bAutorun = false;
+		//	We have finished media detection
+		//	Signal for WaitMediaReady()
 	}
+
+
 }
 
 //	Generates the drive url, (like iso9660://)
@@ -239,20 +253,18 @@ DWORD CDetectDVDMedia::GetTrayState()
 //	Wait for drive, to finish media detection.
 void CDetectDVDMedia::WaitMediaReady()
 {
-	m_muReadingMedia.Wait();
-	m_muReadingMedia.Release();
+	CSingleLock waitLock(m_muReadingMedia);
 }
 
 //	Static function
 //	Whether a disc is in drive
 bool CDetectDVDMedia::IsDiscInDrive()
 {
-	m_muReadingMedia.Wait();
+	CSingleLock waitLock(m_muReadingMedia);
 	bool bResult = true;
 	if ( m_DriveState != DRIVE_CLOSED_MEDIA_PRESENT ) {
 		bResult = false;
 	}
-	m_muReadingMedia.Release();
 	return bResult;
 }
 
@@ -263,8 +275,7 @@ bool CDetectDVDMedia::IsDiscInDrive()
 //	Can be NULL
 CCdInfo* CDetectDVDMedia::GetCdInfo()
 {
-	m_muReadingMedia.Wait();
+	CSingleLock waitLock(m_muReadingMedia);
 	CCdInfo* pCdInfo = m_pCdInfo;
-	m_muReadingMedia.Release();
 	return pCdInfo;
 }
