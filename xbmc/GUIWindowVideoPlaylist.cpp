@@ -689,6 +689,7 @@ void CGUIWindowVideoPlaylist::RemovePlayListItem(int iItem)
 
 	g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).Remove(iItem);
 
+  /*
 	//	Correct the current playing song in playlistplayer
 	if (g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_VIDEO && g_application.IsPlayingVideo())
 	{
@@ -714,6 +715,10 @@ void CGUIWindowVideoPlaylist::RemovePlayListItem(int iItem)
 		CONTROL_SELECT_ITEM(CONTROL_LIST,iItem-1)
 		CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem-1)
 	}
+  */
+  
+  // fix
+  Update(m_Directory.m_strPath);
 }
 
 void CGUIWindowVideoPlaylist::ShufflePlayList()
