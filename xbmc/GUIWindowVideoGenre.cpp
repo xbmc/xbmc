@@ -241,7 +241,8 @@ bool CGUIWindowVideoGenre::OnMessage(CGUIMessage& message)
         int iAction=message.GetParam1();
         if (iAction == ACTION_SHOW_INFO) 
         {
-					OnInfo(iItem);
+          if (m_strDirectory!="")
+					  OnInfo(iItem);
         }
         if (iAction == ACTION_SELECT_ITEM)
 				{
@@ -413,7 +414,7 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
       SET_CONTROL_LABEL(GetID(), LABEL_GENRE,m_strDirectory);
   }
 	CUtil::SetThumbs(m_vecItems);
-  SetIMDBThumbs(m_vecItems);
+  SetIMDBThumbs(m_vecItems,true);
 	CUtil::FillInDefaultIcons(m_vecItems);
   OnSort();
   UpdateButtons();
@@ -446,11 +447,6 @@ void CGUIWindowVideoGenre::OnClick(int iItem)
 
 	CStdString strExtension;
 	CUtil::GetExtension(pItem->m_strPath,strExtension);
-	if ( CUtil::cmpnocase(strExtension.c_str(),".nfo") ==0) 
-	{
-		OnInfo(iItem);
-		return;
-	}
 
   if (pItem->m_bIsFolder)
   {
