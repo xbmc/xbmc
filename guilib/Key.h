@@ -177,6 +177,7 @@
 #define WINDOW_DIALOG_YES_NO          100
 #define WINDOW_DIALOG_PROGRESS        101
 #define WINDOW_DIALOG_INVITE	      102
+#define WINDOW_DIALOG_KEYBOARD	      103
 #define WINDOW_MUSIC_PLAYLIST         500
 #define WINDOW_MUSIC_FILES            501
 #define WINDOW_MUSIC_ALBUM            502
