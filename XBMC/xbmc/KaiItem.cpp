@@ -11,6 +11,11 @@
 CKaiItem::CKaiItem(CStdString& strLabel) : CGUIListExItem(strLabel)
 {
 	m_pAvatar			= NULL;
+
+	if (IsAvatarCached())
+	{
+		UseCachedAvatar();
+	}
 }
 
 CKaiItem::~CKaiItem(void)
@@ -76,7 +81,7 @@ void CKaiItem::GetAvatarFilePath(CStdString& aFilePath)
 	// Generate a unique identifier from player name    
 	Crc32 crc;
 	crc.Compute(m_strName.c_str(),m_strName.length());
-	aFilePath.Format("Q:\\thumbs\\avatar-%x.jpg",(DWORD)crc);
+	aFilePath.Format("Q:\\thumbs\\kai\\avatar-%x.jpg",(DWORD)crc);
 }
 
 void CKaiItem::OnFileComplete(TICKET aTicket, CStdString& aFilePath, INT aByteRxCount, Result aResult)
