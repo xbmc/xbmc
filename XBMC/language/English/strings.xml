@@ -1286,4 +1286,16 @@
     <id>426</id>
     <value>No CDDB info found.</value>
   </string> 
+  <string>
+    <id>427</id>
+    <value>Disc:</value>
+  </string> 
+  <string>
+    <id>428</id>
+    <value>Insert correct CD/DVD</value>
+  </string> 
+  <string>
+    <id>429</id>
+    <value>Please insert the following CD/DVD</value>
+  </string> 
 </strings>
