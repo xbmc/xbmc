@@ -527,16 +527,14 @@ void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
 			//	No title in tag, show filename only
 			CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_INFO); 
 			CSndtrkDirectory dir;
-			//char *NameOfSong=new char[64];
 			char NameOfSong[64];
-			*NameOfSong = NULL;
+			NameOfSong[0] = 0;
 			dir.FindTrackName(strFile,NameOfSong);
 			CLog::Log("Song is %s",NameOfSong);
-			if(NameOfSong != NULL)
+			if(NameOfSong[0] != 0)
 				msg1.SetLabel(NameOfSong);
 			else
 				msg1.SetLabel( CUtil::GetFileName(strFile) );
-			//delete [] NameOfSong;
 			OnMessage(msg1);
 		}
 	}	//	if (tag.Loaded())
