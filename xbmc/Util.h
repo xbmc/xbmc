@@ -103,5 +103,6 @@ public:
   static void PlayDVD();
   static DWORD SetUpNetwork( bool resetmode, struct network_info& networkinfo );
   static bool  GetFolderThumb(const CStdString& strFolder, CStdString& strThumb);
+  static void GetVideoThumbnail(const CStdString& strIMDBID, CStdString& strThumb);
 
 };
