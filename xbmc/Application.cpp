@@ -466,14 +466,15 @@ HRESULT CApplication::Create()
 	CLog::Log("-----------------------------------------------------------------------");
 	CLog::Log("starting...");
 	CLog::Log("Q is mapped to:%s",szDevicePath);
-	// Transfer the resolution information to our graphics context
-	g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
 
 	CLog::Log("load settings...");
 	g_LoadErrorStr = "Unable to load settings";
-	m_bAllSettingsLoaded=g_settings.Load(m_bXboxMediacenterLoaded,m_bSettingsLoaded,m_bCalibrationLoaded);
+	m_bAllSettingsLoaded=g_settings.Load(m_bXboxMediacenterLoaded,m_bSettingsLoaded);
 	if (!m_bAllSettingsLoaded)
 		FatalErrorHandler(true, true, true);
+
+  // Transfer the resolution information to our graphics context
+	g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
 
 	CLog::Log("map drives...");
 	CLog::Log("  map drive C:");
@@ -631,35 +632,10 @@ HRESULT CApplication::Initialize()
 		g_stSettings.m_strGateway,
 		g_stSettings.m_strNameServer);
 
-	if ( CUtil::InitializeNetwork(g_stSettings.m_strLocalIPAdres,
+	if ( !CUtil::InitializeNetwork(g_stSettings.m_strLocalIPAdres,
 		g_stSettings.m_strLocalNetmask,
 		g_stSettings.m_strGateway,
 		g_stSettings.m_strNameServer) )
-	{
-		if (g_stSettings.m_bTimeServerEnabled)
-		{
-			CLog::Log("start timeserver thread");
-			m_sntpClient.Create(); 
-		}
-
-		if (g_stSettings.m_bHTTPServerEnabled)
-		{
-			CLog::Log("start webserver");
-			CSectionLoader::Load("LIBHTTP");
-			m_pWebServer = new CWebServer();
-			CStdString ipadres;
-			CUtil::GetTitleIP(ipadres);
-			m_pWebServer->Start(ipadres.c_str(), g_stSettings.m_iWebServerPort, "Q:\\web");
-		} 
-
-		if ( g_stSettings.m_bFTPServerEnabled)
-		{
-			CLog::Log("start ftpserver");
-			m_pFileZilla = new CXBFileZilla("Q:\\");
-			m_pFileZilla->Start();
-		}
-	}
-	else
 	{
 		CLog::Log("initialize network failed");
 	}
@@ -707,6 +683,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiSettingsAudio);					    // window id = 31
   m_gWindowManager.Add(&m_guiSettingsSytem);            // window id = 32
   m_gWindowManager.Add(&m_guiSettingsCDRipper);					// window id = 33
+  m_gWindowManager.Add(&m_guiSettingsProfile);          // window id = 34
 	m_gWindowManager.Add(&m_guiDialogYesNo);							// window id = 100
 	m_gWindowManager.Add(&m_guiDialogProgress);						// window id = 101
 	m_gWindowManager.Add(&m_guiMyMusicPlayList);					// window id = 500
@@ -745,16 +722,6 @@ HRESULT CApplication::Initialize()
 	CLog::Log("removing tempfiles");	
 	CUtil::RemoveTempFiles();
 
-	//	Start Thread for DVD Mediatype detection
-	CLog::Log("start dvd mediatype detection");	
-	m_DetectDVDType.Create( false);
-
-	CLog::Log("initializing playlistplayer");	
-	g_playlistPlayer.Repeat(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistRepeat);
-	g_playlistPlayer.Repeat(PLAYLIST_MUSIC_TEMP, g_stSettings.m_bMyMusicRepeat);
-	g_playlistPlayer.Repeat(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistRepeat);
-	g_playlistPlayer.Repeat(PLAYLIST_VIDEO_TEMP, false);
-
 	if (!m_bAllSettingsLoaded)
 	{
 		CLog::Log("settings not correct, show dialog");	
@@ -767,6 +734,9 @@ HRESULT CApplication::Initialize()
 		m_guiDialogOK.DoModal(g_stSettings.m_iStartupWindow);
 	}
 
+	CLog::Log("initialize done");	
+	CUtil::InitGamma();
+  StartServices();
 	if (g_stSettings.m_bLCDUsed)
 	{
 		if (g_stSettings.m_iLCDMode==LCD_MODE_NOTV)
@@ -775,13 +745,81 @@ HRESULT CApplication::Initialize()
 			m_gWindowManager.ActivateWindow(WINDOW_MUSIC_FILES);
 		}
 	}
+	return S_OK;
+}
 
-	CLog::Log("initialize done");	
+void CApplication::StartServices() 
+{
+  if (CUtil::IsNetworkUp()) {
+		if (g_stSettings.m_bTimeServerEnabled)
+		{
+			CLog::Log("start timeserver thread");
+			m_sntpClient.Create(); 
+		}
+
+		if (g_stSettings.m_bHTTPServerEnabled)
+		{
+			CLog::Log("start webserver");
+			CSectionLoader::Load("LIBHTTP");
+			m_pWebServer = new CWebServer();
+			CStdString ipadres;
+			CUtil::GetTitleIP(ipadres);
+			m_pWebServer->Start(ipadres.c_str(), g_stSettings.m_iWebServerPort, "Q:\\web");
+		} 
+
+		if ( g_stSettings.m_bFTPServerEnabled)
+		{
+			CLog::Log("start ftpserver");
+      if (!m_pFileZilla) {
+			  m_pFileZilla = new CXBFileZilla("Q:\\");
+  			m_pFileZilla->Start();
+      }
+		}
+  }
+ 	//	Start Thread for DVD Mediatype detection
+	CLog::Log("start dvd mediatype detection");	
+	m_DetectDVDType.Create( false);
+
+	CLog::Log("initializing playlistplayer");	
+	g_playlistPlayer.Repeat(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistRepeat);
+	g_playlistPlayer.Repeat(PLAYLIST_MUSIC_TEMP, g_stSettings.m_bMyMusicRepeat);
+	g_playlistPlayer.Repeat(PLAYLIST_VIDEO, g_stSettings.m_bMyVideoPlaylistRepeat);
+	g_playlistPlayer.Repeat(PLAYLIST_VIDEO_TEMP, false);
+
 	CLCDFactory factory;
 	g_lcd=factory.Create();
 	g_lcd->Initialize();
-	CUtil::InitGamma();
-	return S_OK;
+}
+
+void CApplication::StopServices() 
+{
+ 	if (m_pWebServer)
+	{
+		CLog::Log("stop webserver");
+		m_pWebServer->Stop();
+		delete m_pWebServer;
+		m_pWebServer = NULL;
+    CSectionLoader::Unload("LIBHTTP");
+	}
+
+  /* filezilla doesn't like to be deleted?
+  if (m_pFileZilla) {
+		CLog::Log("stop ftpserver");
+		m_pFileZilla->Stop();
+    delete m_pFileZilla;
+    m_pFileZilla = NULL;
+  }
+  */
+
+  CLog::Log("stop time server");
+	m_sntpClient.StopThread();
+
+	CLog::Log("stop dvd detect media");
+	m_DetectDVDType.StopThread();
+
+	CLog::Log("stop LCD");
+	g_lcd->Stop();
+  delete g_lcd;
 }
 
 void CApplication::DelayLoadSkin()
@@ -866,6 +904,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiSettingsGeneral.Load("SettingsGeneral.xml");
 	m_guiSettingsPrograms.Load("SettingsPrograms.xml");
 	m_guiSettingsSytem.Load("SettingsSystem.xml");
+  m_guiSettingsProfile.Load("SettingsProfile.xml");
 	m_guiDialogYesNo.Load("dialogYesNo.xml");
 	m_guiDialogProgress.Load("dialogProgress.xml");
 	m_guiMyMusicPlayList.Load("mymusicplaylist.xml");
@@ -1653,13 +1692,7 @@ void CApplication::Stop()
 
 		CKaiClient::GetInstance()->RemoveObserver();
 
-		if (m_pWebServer)
-		{
-			CLog::Log("stop webserver");
-			m_pWebServer->Stop();
-			delete m_pWebServer;
-			m_pWebServer = NULL;
-		}
+    StopServices();
 
 		if (m_pPlayer)
 		{
@@ -1672,16 +1705,6 @@ void CApplication::Stop()
 		CLog::Log("stop python");
 		g_applicationMessenger.Cleanup();
 		m_pythonParser.FreeResources();
-
-		CLog::Log("stop dvd detect media");
-		m_DetectDVDType.StopThread();
-
-		CLog::Log("stop LCD");
-		g_lcd->Stop();
-
-
-		CLog::Log("stop time server");
-		m_sntpClient.StopThread();
 
 		CLog::Log("unload skin");
 		m_guiMusicOverlay.FreeResources();
