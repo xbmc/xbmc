@@ -1,6 +1,7 @@
 #pragma once
 #include "guiwindow.h"
 #include "guiwindowmanager.h"
+
 class CGUIWindowHome :
   public CGUIWindow
 {
@@ -12,12 +13,13 @@ public:
   virtual void    Render();
 
 protected:
-
+	void OnPopupContextMenu();
 	void OnClickShutdown(CGUIMessage& aMessage);
 	void OnClickDashboard(CGUIMessage& aMessage);
 	void OnClickReboot(CGUIMessage& aMessage);
 	void OnClickCredits(CGUIMessage& aMessage);
 	void OnClickOnlineGaming(CGUIMessage& aMessage);
+	void UpdateButtonScroller();
 
 	VOID GetDate(WCHAR* szDate, LPSYSTEMTIME pTime);
 	VOID GetTime(WCHAR* szTime, LPSYSTEMTIME pTime);

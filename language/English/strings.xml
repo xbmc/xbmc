@@ -2301,6 +2301,11 @@
   <string><id>13329</id><value>Error opening %s</value></string>
   <string><id>13330</id><value>Unable to load %s</value></string>
   <string><id>13331</id><value>Error: out of memory.</value></string>
+  <string><id>13332</id><value>Move Up</value></string>
+  <string><id>13333</id><value>Move Down</value></string>
+  <string><id>13334</id><value>Edit Label</value></string>
+  <string><id>13335</id><value>Make Default</value></string>
+  <string><id>13336</id><value>Remove Button</value></string>
   <string><id>14000</id><value>Stacking: Off</value></string>
   <string><id>14001</id><value>Stacking: Simple</value></string>
   <string><id>14002</id><value>Stacking: Fuzzy</value></string>

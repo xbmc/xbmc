@@ -26,6 +26,8 @@ CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, 
 	m_iImageWidth = 0;
 	m_iImageHeight = 0;
 	m_bWasVisible = m_bVisible;
+	for (int i=0; i<4; i++)
+		m_dwAlpha[i] = 0xFF;
 	ControlType = GUICONTROL_IMAGE;
 }
 
@@ -406,11 +408,14 @@ void CGUIImage::Update()
   vertex[3].tu = (float)iXOffset;
   vertex[3].tv = (float)m_iTextureHeight;
 #endif
- 
-  vertex[0].col = m_colDiffuse;
-	vertex[1].col = m_colDiffuse;
-	vertex[2].col = m_colDiffuse;
-	vertex[3].col = m_colDiffuse;
+
+	for (int i=0; i<4; i++)
+	{
+		D3DCOLOR color = m_colDiffuse;
+		if (m_dwAlpha[i] != 0xFF)
+			color = (m_dwAlpha[i] << 24) | (m_colDiffuse & 0x00FFFFFF);
+		vertex[i].col = color;
+	}
   m_pVB->Unlock();  
 }
 
@@ -517,3 +522,12 @@ void CGUIImage::SetFileName(const CStdString& strFileName)
   m_strFileName = strFileName;
   AllocResources();
 }
+
+void CGUIImage::SetCornerAlpha(DWORD dwLeftTop, DWORD dwRightTop, DWORD dwLeftBottom, DWORD dwRightBottom)
+{
+	m_dwAlpha[0] = dwLeftTop;
+	m_dwAlpha[1] = dwRightTop;
+	m_dwAlpha[2] = dwLeftBottom;
+	m_dwAlpha[3] = dwRightBottom;
+}
+

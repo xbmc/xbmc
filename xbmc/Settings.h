@@ -117,6 +117,50 @@ public:
 typedef vector<CFileTypeIcon> VECFILETYPEICONS;
 typedef vector<CFileTypeIcon>::iterator IVECFILETYPEICONS;
 
+
+class CButtonScrollerSettings
+{
+public:
+	CButtonScrollerSettings() {};
+	~CButtonScrollerSettings()
+	{
+		Clear();
+	}
+	void Clear()
+	{
+		for (unsigned int i=0; i<m_vecButtons.size(); i++)
+		{
+			CButton *pButton = m_vecButtons[i];
+			if (pButton)
+				delete pButton;
+		}
+		m_vecButtons.clear();
+	};
+	class CButton
+	{
+	public:
+		CButton(const wstring strLabel, const CStdString &strExecute, const int iIcon)
+		{
+			m_dwLabel = -1;
+			m_strLabel = strLabel;
+			m_strExecute = strExecute;
+			m_iIcon = iIcon;
+		};
+		CButton(DWORD dwLabel, const CStdString &strExecute, const int iIcon)
+		{
+			m_dwLabel = dwLabel;
+			m_strExecute = strExecute;
+			m_iIcon = iIcon;
+		};
+		DWORD				m_dwLabel;
+		wstring			m_strLabel;
+		CStdString	m_strExecute;
+		int					m_iIcon;
+	};
+	vector<CButton *> m_vecButtons;
+	int							m_iDefaultButton;
+};
+
 class CSettings
 {
 public:
@@ -133,6 +177,7 @@ public:
 	bool UpdateBookmark(const CStdString &strType, const CStdString &strOldName, const CStdString &strName, const CStdString &strPath);
 	bool DeleteBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath);
 	bool AddBookmark(const CStdString &strType, const CStdString &strName, const CStdString &strPath);
+	bool SaveHomeButtons();
 
 	struct stSettings
 	{
@@ -445,6 +490,7 @@ public:
 		int		m_iCdgBgAlpha;
 		int		m_iCdgFgAlpha;
 		float		m_fCdgAVDelay;
+
 	};
 
 	// cache copies of these parsed values, to avoid re-parsing over and over
@@ -465,6 +511,7 @@ public:
 	int               m_iBrightness;
 	int               m_iContrast;
 	int               m_iGamma;
+	CButtonScrollerSettings m_buttonSettings;
 protected:
 	void GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName, bool& bValue);
 	void GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
@@ -491,6 +538,7 @@ protected:
 
 	bool LoadXml();
 	void CloseXml();
+	void LoadHomeButtons(TiXmlElement* pRootElement);
 
 	TiXmlDocument	xbmcXml;	// for editing the xml file from within XBMC
 	bool					xbmcXmlLoaded;

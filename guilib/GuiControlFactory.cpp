@@ -23,6 +23,7 @@
 #include "GUISelectButtonControl.h"
 #include "GUIMoverControl.h"
 #include "GUIResizeControl.h"
+#include "GUIButtonScroller.h"
 
 CGUIControlFactory::CGUIControlFactory(void)
 {
@@ -113,7 +114,7 @@ bool CGUIControlFactory::GetBoolean(const TiXmlNode* pRootNode, const char* strT
 	if (!pNode) return false;
 	CStdString strEnabled=pNode->FirstChild()->Value();
 	strEnabled.ToLower();
-	if (strEnabled=="off" || strEnabled=="no"||strEnabled=="disabled") bBoolValue=false;
+	if (strEnabled=="off" || strEnabled=="no" || strEnabled=="disabled" || strEnabled=="false") bBoolValue=false;
 	else bBoolValue=true;
 	return true;
 }
@@ -262,7 +263,15 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	int         iThumbYPosBig=14;
 	int         iThumbWidthBig=100;
 	int         iThumbHeightBig=100;
-	DWORD		dwBuddyControlID=0;
+	DWORD				dwBuddyControlID=0;
+	int					iNumSlots=7;
+	int					iButtonGap=5;
+	int					iDefaultSlot=2;
+	int					iMovementRange=2;
+	bool				bHorizontal=false;
+	int					iAlpha=0;
+	bool				bWrapAround=true;
+	bool				bSmoothScrolling=true;
 
 	/////////////////////////////////////////////////////////////////////////////
 	// Read default properties from reference controls
@@ -563,6 +572,25 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			strTextureFocus		= ((CGUIResizeControl*)pReference)->GetTextureFocusName();
 			strTextureNoFocus	= ((CGUIResizeControl*)pReference)->GetTextureNoFocusName();
 		}
+		else if (strType=="buttonscroller")
+		{
+			strTextureFocus		= ((CGUIButtonScroller*)pReference)->GetTextureFocusName();
+			strTextureNoFocus	= ((CGUIButtonScroller*)pReference)->GetTextureNoFocusName();
+			strFont						= ((CGUIButtonScroller*)pReference)->GetFontName();
+			dwTextColor				= ((CGUIButtonScroller*)pReference)->GetTextColor();
+			dwAlign						= ((CGUIButtonScroller*)pReference)->GetTextAlign() & 0x00000003;
+			dwAlignY					= ((CGUIButtonScroller*)pReference)->GetTextAlign() & 0x00000004;
+			lTextOffsetX			= ((CGUIButtonScroller*)pReference)->GetTextOffsetX();
+			lTextOffsetY			= ((CGUIButtonScroller*)pReference)->GetTextOffsetY();
+			iNumSlots					= ((CGUIButtonScroller*)pReference)->GetNumSlots();
+			iButtonGap				= ((CGUIButtonScroller*)pReference)->GetButtonGap();
+			iDefaultSlot			= ((CGUIButtonScroller*)pReference)->GetDefaultSlot();
+			iMovementRange		= ((CGUIButtonScroller*)pReference)->GetMovementRange();
+			bHorizontal				= ((CGUIButtonScroller*)pReference)->GetHorizontal();
+			iAlpha						= ((CGUIButtonScroller*)pReference)->GetAlpha();
+			bWrapAround				= ((CGUIButtonScroller*)pReference)->GetWrapAround();
+			bSmoothScrolling	= ((CGUIButtonScroller*)pReference)->GetSmoothScrolling();
+		}
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////
@@ -759,6 +787,26 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			}
 		}
 	}
+
+	// stuff for button scroller
+	if ( GetString(pControlNode, "orientation", strTmp) )
+	{
+		if (strTmp.ToLower() == "horizontal")
+			bHorizontal = true;
+	}
+	if (GetInt(pControlNode,"buttongap",iButtonGap))
+	{
+		if (bHorizontal)
+			g_graphicsContext.ScaleXCoord(iButtonGap, res);
+		else
+			g_graphicsContext.ScaleYCoord(iButtonGap, res);
+	}
+	GetInt(pControlNode,"numbuttons",iNumSlots);
+	GetInt(pControlNode,"movement",iMovementRange);
+	GetInt(pControlNode,"defaultbutton",iDefaultSlot);
+	GetInt(pControlNode,"alpha",iAlpha);
+	GetBoolean(pControlNode,"wraparound",bWrapAround);
+	GetBoolean(pControlNode,"smoothscrolling",bSmoothScrolling);
 
 	/////////////////////////////////////////////////////////////////////////////
 	// Instantiate a new control using the properties gathered above
@@ -1094,6 +1142,16 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		CGUIResizeControl* pControl = new CGUIResizeControl(
 					dwParentId,dwID,iPosX,iPosY,dwWidth,dwHeight,
 					strTextureFocus,strTextureNoFocus);
+		return pControl;
+	}
+	if (strType=="buttonscroller")
+	{
+		CGUIButtonScroller* pControl = new CGUIButtonScroller(
+					dwParentId,dwID,iPosX,iPosY,dwWidth,dwHeight,iButtonGap,iNumSlots,iDefaultSlot,
+					iMovementRange,bHorizontal,iAlpha,bWrapAround,bSmoothScrolling,
+					strTextureFocus,strTextureNoFocus,lTextOffsetX,lTextOffsetY,dwAlign|dwAlignY);
+		pControl->SetFont(strFont, dwTextColor);
+		pControl->SetNavigation(up,down,left,right);
 		return pControl;
 	}
 
