@@ -1400,8 +1400,11 @@ void CApplication::SetPlaySpeed(int iSpeed)
   if (!IsPlayingAudio() && !IsPlayingVideo()) return;
   m_iPlaySpeed=iSpeed;
 
-  __int64 iTime= m_pPlayer->GetTime();
-  iTime/= (__int64)10;
+  __int64 iTime;
+  if ( IsPlayingVideo())
+    iTime= m_pPlayer->GetPTS(); // for VIDEO pts are accurate during FF/RW
+  else
+    iTime= m_pPlayer->GetTime() / (__int64)10; // for AUDIO the playtime is accurate during FF/RW
   m_pPlayer->ToFFRW(m_iPlaySpeed);
   if (m_pAudioDecoder)
   {
