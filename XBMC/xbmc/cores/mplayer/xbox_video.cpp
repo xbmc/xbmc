@@ -65,7 +65,7 @@ unsigned int CXBoxRenderManager::QueryFormat(unsigned int format)
 }
 
 // Functions called from mplayer
-void CXBoxRenderManager::WaitForFlip()
+inline void CXBoxRenderManager::WaitForFlip()
 {
 	if (!m_bChanging && m_pRenderer)
 		m_pRenderer->WaitForFlip();
@@ -79,34 +79,34 @@ unsigned int CXBoxRenderManager::Configure(unsigned int width, unsigned int heig
 		return m_pRenderer->Configure(width, height, d_width, d_height, options, title, format);
 	return 0;
 }
-unsigned int CXBoxRenderManager::GetImage(mp_image_t *mpi)
+inline unsigned int CXBoxRenderManager::GetImage(mp_image_t *mpi)
 {
 	if (!m_bChanging && m_pRenderer)
 		return m_pRenderer->GetImage(mpi);
 	return VO_FALSE;
 }
-unsigned int CXBoxRenderManager::PutImage(mp_image_t *mpi)
+inline unsigned int CXBoxRenderManager::PutImage(mp_image_t *mpi)
 {
 	if (!m_bChanging && m_pRenderer)
 		return m_pRenderer->PutImage(mpi);
 	return VO_FALSE;
 }
 
-unsigned int CXBoxRenderManager::DrawFrame(unsigned char *src[])
+inline unsigned int CXBoxRenderManager::DrawFrame(unsigned char *src[])
 {
 	if (!m_bChanging && m_pRenderer)
 		return m_pRenderer->DrawFrame(src);
 	return 0;
 }
 
-unsigned int CXBoxRenderManager::DrawSlice(unsigned char *src[], int stride[], int w,int h,int x,int y)
+inline unsigned int CXBoxRenderManager::DrawSlice(unsigned char *src[], int stride[], int w,int h,int x,int y)
 {
 	if (!m_bChanging && m_pRenderer)
 		return m_pRenderer->DrawSlice(src, stride, w, h, x, y);
 	return 0;
 }
 
-void CXBoxRenderManager::FlipPage()
+inline void CXBoxRenderManager::FlipPage()
 {
 	if (m_bPauseDrawing) return;
 	if (!m_bChanging && m_pRenderer)
@@ -147,7 +147,7 @@ void CXBoxRenderManager::UnInit()
 	}
 }
 
-void CXBoxRenderManager::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,unsigned char *srca, int stride)
+inline void CXBoxRenderManager::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,unsigned char *srca, int stride)
 {
 	if (m_bPauseDrawing) return;
 	if (!m_bChanging && m_pRenderer)
@@ -215,24 +215,6 @@ static void video_draw_osd(void)
   vo_draw_text(g_renderManager.GetOSDWidth(), g_renderManager.GetOSDHeight(), draw_alpha);
 }
 
-/********************************************************************************************************
-   VOCTRL_QUERY_FORMAT  -  queries if a given pixelformat is supported.
-    It also returns various flags decsirbing the capabilities
-    of the driver with teh given mode. for the flags, see file vfcaps.h !
-    the most important flags, every driver must properly report
-    these:
-        0x1  -  supported (with or without conversion)
-        0x2  -  supported without conversion (define 0x1 too!)
-        0x100  -  driver/hardware handles timing (blocking)
-    also SET sw/hw scaling and osd support flags, and flip,
-    and accept_stride if you implement VOCTRL_DRAW_IMAGE (see bellow)
-    NOTE: VOCTRL_QUERY_FORMAT may be called _before_ first config()
-    but is always called between preinit() and uninit()
-*/
-static unsigned int query_format(unsigned int format)
-{
-	return g_renderManager.QueryFormat(format);
-}
 
 //********************************************************************************************************
 //      Uninit the whole system, this is on the same "level" as preinit.
@@ -282,17 +264,6 @@ static unsigned int video_draw_frame(unsigned char *src[])
 	return g_renderManager.DrawFrame(src);
 }
 
-//********************************************************************************************************
-static unsigned int get_image(mp_image_t *mpi)
-{
-	return g_renderManager.GetImage(mpi);
-}
-
-//********************************************************************************************************
-static unsigned int put_image(mp_image_t *mpi)
-{
-	return g_renderManager.PutImage(mpi);
-}
 /********************************************************************************************************
   Set up the video system. You get the dimensions and flags.
     width, height: size of the source image
@@ -329,10 +300,24 @@ static unsigned int video_control(unsigned int request, void *data, ...)
           //libmpcodecs Direct Rendering interface
           //You need to update mpi (mp_image.h) structure, for example,
           //look at vo_x11, vo_sdl, vo_xv or mga_common.
-    return get_image((mp_image_t *)data);
+    return g_renderManager.GetImage((mp_image_t *)data);
 
+/********************************************************************************************************
+   VOCTRL_QUERY_FORMAT  -  queries if a given pixelformat is supported.
+    It also returns various flags decsirbing the capabilities
+    of the driver with teh given mode. for the flags, see file vfcaps.h !
+    the most important flags, every driver must properly report
+    these:
+        0x1  -  supported (with or without conversion)
+        0x2  -  supported without conversion (define 0x1 too!)
+        0x100  -  driver/hardware handles timing (blocking)
+    also SET sw/hw scaling and osd support flags, and flip,
+    and accept_stride if you implement VOCTRL_DRAW_IMAGE (see bellow)
+    NOTE: VOCTRL_QUERY_FORMAT may be called _before_ first config()
+    but is always called between preinit() and uninit()
+*/
     case VOCTRL_QUERY_FORMAT:
-      return query_format(*((unsigned int*)data));
+      return g_renderManager.QueryFormat(*((unsigned int*)data));
 
     case VOCTRL_DRAW_IMAGE:
     /*  replacement for the current draw_slice/draw_frame way of
@@ -342,8 +327,8 @@ static unsigned int video_control(unsigned int request, void *data, ...)
         old-style draw_* functils will be called!
         Note: draw_slice is still mandatory, for per-slice rendering!
     */
-
-      return put_image( (mp_image_t*)data );
+      
+      return g_renderManager.PutImage((mp_image_t *)data);
 //      return VO_NOTIMPL;
 
     case VOCTRL_FULLSCREEN:
