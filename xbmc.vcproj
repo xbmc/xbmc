@@ -444,6 +444,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\CueDocument.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIDialogContextMenu.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowFileManager.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\stdafx.cpp">
 			</File>
 			<File
@@ -601,55 +607,55 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				<File
 					RelativePath=".\xbmc\GUIWindowVideoYear.cpp">
 				</File>
-			</Filter>
-			<Filter
-				Name="GUI Other"
-				Filter="">
-				<File
-					RelativePath=".\xbmc\GUIWindowBuddies.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowFullScreen.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowHome.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowMyFiles.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowOSD.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowPictures.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowPointer.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowPrograms.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowScreensaver.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowScripts.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowScriptsInfo.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSlideShow.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSystemInfo.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowVisualisation.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowWeather.cpp">
-				</File>
+				<Filter
+					Name="GUI Other"
+					Filter="">
+					<File
+						RelativePath=".\xbmc\GUIWindowBuddies.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\GUIWindowFullScreen.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\GUIWindowHome.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\GUIWindowMyFiles.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\GUIWindowOSD.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\GUIWindowPictures.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\GUIWindowPointer.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\GUIWindowPrograms.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\GUIWindowScreensaver.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\GUIWindowScripts.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\GUIWindowScriptsInfo.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\GUIWindowSlideShow.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\GUIWindowSystemInfo.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\GUIWindowVisualisation.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\GUIWindowWeather.cpp">
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Playlist"
@@ -974,6 +980,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\GenreDirectory.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIDialogContextMenu.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIDialogFileStacking.h">
 			</File>
 			<File
@@ -1005,6 +1014,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowBuddies.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowFileManager.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowFullScreen.h">
@@ -1235,10 +1247,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\cores\ModPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
@@ -1889,10 +1901,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
