@@ -396,7 +396,7 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 	if (iItem >=0 && iItem < (int)m_vecItems.size())
 	{
 		CFileItem* pItem=m_vecItems[iItem];
-		if (pItem->m_bIsFolder && pItem->GetLabel() != "..")
+		if (pItem->GetLabel() != "..")
 		{
 			GetDirectoryHistoryString(pItem, strSelectedItem);
 			m_history.Set(strSelectedItem,m_Directory.m_strPath);
