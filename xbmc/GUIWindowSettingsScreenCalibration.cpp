@@ -249,7 +249,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
 			g_settings.Save();
 			g_graphicsContext.SetCalibrating(false);
 			// reset our screen resolution to what it was initially
-			g_graphicsContext.SetGUIResolution(g_stSettings.m_ScreenResolution);
+			g_graphicsContext.SetGUIResolution(g_stSettings.m_GUIResolution);
 			// Inform the player so we can update the resolution
 			if (g_application.m_pPlayer)
 				g_application.m_pPlayer->Update();	

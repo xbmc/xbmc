@@ -189,7 +189,7 @@ public:
 		bool			m_bHTTPServerEnabled;
 		int       m_iSlideShowTransistionFrames;
 		int       m_iSlideShowStayTime;
-		RESOLUTION		m_ScreenResolution;
+		RESOLUTION		m_GUIResolution;
 		int			  m_iHTTPProxyPort;
 		char		  m_szHTTPProxy[128];
 

@@ -20,7 +20,7 @@ class CGUIControlFactory
 public:
   CGUIControlFactory(void);
   virtual ~CGUIControlFactory(void);
-  CGUIControl* Create(DWORD dwParentId,const TiXmlNode* pControlNode, CGUIControl* pReference,bool bLoadReferences);
+  CGUIControl* Create(DWORD dwParentId,const TiXmlNode* pControlNode, CGUIControl* pReference, RESOLUTION res);
 private:
 	bool GetDWORD(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwDWORDValue);
 	bool GetHex(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwHexValue);
@@ -28,6 +28,7 @@ private:
 	bool GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntValue);
 	bool GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& bBoolValue);
 	bool GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue);
+	bool GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringPath);
 	bool GetAlignment(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
 };
 #endif

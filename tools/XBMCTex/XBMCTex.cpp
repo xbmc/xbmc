@@ -432,400 +432,453 @@ bool ConvertP8(LPDIRECT3DSURFACE8 pSrcSurf, LPDIRECT3DSURFACE8& pDstSurf, DWORD*
 }
 
 #undef CheckHR
-#define CheckHR(hr) if (FAILED(hr)) { printf("ERROR: %08x\n", hr); continue; }
+#define CheckHR(hr) if (FAILED(hr)) { printf("ERROR: %08x\n", hr); return; }
 
-void ConvertFiles(const char* Dir, const char* Filename, double MaxMSE)
+void ConvertFile(const char* Dir, const char* Filename, double MaxMSE)
 {
 	HRESULT hr;
+	LPDIRECT3DSURFACE8 pSrcSurf = NULL;
+	char OutFilename[52];
+	if (Dir)
+		_snprintf(OutFilename, 52, "%s\\%s", Dir, Filename);
+	else
+		_snprintf(OutFilename, 52, "%s", Filename);
+	OutFilename[51] = 0;
 
-	WIN32_FIND_DATAA FindData;
-	HANDLE hFind = FindFirstFile(Filename, &FindData);
-	if (hFind != INVALID_HANDLE_VALUE)
+	printf("%s: ", OutFilename);
+	TRACE1("%s:\n", OutFilename);
+	int n = strlen(OutFilename);
+	if (n < 40)
+		printf("%*c", 40-n, ' ');
+
+	if (pSrcSurf)
+		pSrcSurf->Release();
+	pSrcSurf = NULL;
+
+	// Load up the file
+	D3DXIMAGE_INFO info;
+	hr = D3DXGetImageInfoFromFile(Filename, &info);
+	CheckHR(hr);
+
+	PrintImageInfo(info);
+
+	UINT Width = PadPow2(info.Width);
+	UINT Height = PadPow2(info.Height);
+
+	TotalSrcPixels += info.Width * info.Height;
+	TotalDstPixels += Width * Height;
+	float Waste = 100.f * (float)(Width * Height - info.Width * info.Height) / (float)(Width * Height);
+
+	UncompressedSize += Width * Height * 4;
+
+	// Special case for 256-colour files - just directly drop into a P8 xpr
+	if (info.Format == D3DFMT_P8)
 	{
-		LPDIRECT3DSURFACE8 pSrcSurf = NULL;
-		do {
-			if (!(FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+		hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_A8R8G8B8, &pSrcSurf);
+		CheckHR(hr);
+
+		hr = D3DXLoadSurfaceFromFile(pSrcSurf, NULL, NULL, Filename, NULL, D3DX_FILTER_NONE, 0, NULL);
+		CheckHR(hr);
+
+		FixTransparency(pSrcSurf);
+
+		if (Width * Height > 4096)
+		{
+			// DXT1 for P8s if lossless and more than 4k image
+			LPDIRECT3DSURFACE8 pTempSurf;
+			hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_A8R8G8B8, &pTempSurf);
+			CheckHR(hr);
+
+			hr = D3DXLoadSurfaceFromSurface(pTempSurf, NULL, NULL, pSrcSurf, NULL, NULL, D3DX_FILTER_NONE, 0);
+			CheckHR(hr);
+
+			double CMSE, AMSE;
+			TRACE0(" Checking     DXT1: ");
+			if (!GetFormatMSE(info, pTempSurf, D3DFMT_DXT1, CMSE, AMSE))
 			{
-				char OutFilename[52];
-				if (Dir)
-					_snprintf(OutFilename, 52, "%s/%s", Dir, FindData.cFileName);
-				else
-					_snprintf(OutFilename, 52, "%s", FindData.cFileName);
-				OutFilename[51] = 0;
-
-				printf("%s: ", OutFilename);
-				TRACE1("%s:\n", OutFilename);
-				int n = strlen(OutFilename);
-				if (n < 40)
-					printf("%*c", 40-n, ' ');
-
-				if (pSrcSurf)
-					pSrcSurf->Release();
-				pSrcSurf = NULL;
-
-				// Load up the file
-				D3DXIMAGE_INFO info;
-				hr = D3DXGetImageInfoFromFile(FindData.cFileName, &info);
-				CheckHR(hr);
-
-				PrintImageInfo(info);
-
-				UINT Width = PadPow2(info.Width);
-				UINT Height = PadPow2(info.Height);
-
-				TotalSrcPixels += info.Width * info.Height;
-				TotalDstPixels += Width * Height;
-				float Waste = 100.f * (float)(Width * Height - info.Width * info.Height) / (float)(Width * Height);
-
-				UncompressedSize += Width * Height * 4;
-
-				// Special case for 256-colour files - just directly drop into a P8 xpr
-				if (info.Format == D3DFMT_P8)
-				{
-					hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_A8R8G8B8, &pSrcSurf);
-					CheckHR(hr);
-
-					hr = D3DXLoadSurfaceFromFile(pSrcSurf, NULL, NULL, FindData.cFileName, NULL, D3DX_FILTER_NONE, 0, NULL);
-					CheckHR(hr);
-
-					FixTransparency(pSrcSurf);
-
-					if (Width * Height > 4096)
-					{
-						// DXT1 for P8s if lossless and more than 4k image
-						LPDIRECT3DSURFACE8 pTempSurf;
-						hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_A8R8G8B8, &pTempSurf);
-						CheckHR(hr);
-
-						hr = D3DXLoadSurfaceFromSurface(pTempSurf, NULL, NULL, pSrcSurf, NULL, NULL, D3DX_FILTER_NONE, 0);
-						CheckHR(hr);
-
-						double CMSE, AMSE;
-						TRACE0(" Checking     DXT1: ");
-						if (!GetFormatMSE(info, pTempSurf, D3DFMT_DXT1, CMSE, AMSE))
-						{
-							pTempSurf->Release();
-							continue;
-						}
-						TRACE2("CMSE=%05.2f, AMSE=%07.2f\n", CMSE, AMSE);
-						if (CMSE <= 1e-6 && AMSE <= 1e-6)
-						{
-							printf("DXT1     %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
-							TRACE0(" Selected Format: DXT1\n");
-							WriteXPR(OutFilename, info, pTempSurf, XB_D3DFMT_DXT1, NULL);
-
-							pTempSurf->Release();
-							continue;
-						}
-						pTempSurf->Release();
-					}
-
-					printf("P8       %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
-					TRACE0(" Selected Format: P8\n");
-
-					LPDIRECT3DSURFACE8 pTempSurf;
-					DWORD pal[256];
-					ConvertP8(pSrcSurf, pTempSurf, pal);
-
-					WriteXPR(OutFilename, info, pTempSurf, XB_D3DFMT_P8, pal);
-					pTempSurf->Release();
-					continue;
-				}
-
-				hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_A8R8G8B8, &pSrcSurf);
-				CheckHR(hr);
-
-				hr = D3DXLoadSurfaceFromFile(pSrcSurf, NULL, NULL, FindData.cFileName, NULL, D3DX_FILTER_NONE, 0, NULL);
-				CheckHR(hr);
-
-				// special case for small files - all textures are alloced on page granularity so just output uncompressed
-				// dxt is crap on small files anyway
-				if (Width * Height <= 1024)
-				{
-					printf("A8R8G8B8 %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
-					TRACE0(" Selected Format: A8R8G8B8\n");
-
-					WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_A8R8G8B8, NULL);
-					continue;
-				}
-
-				FixTransparency(pSrcSurf);
-
-				// Find the best format within specified tolerance
-				double CMSE, AMSE[2];
-
-				// DXT1 is the preferred format as it's smallest
-				TRACE0(" Checking     DXT1: ");
-				if (!GetFormatMSE(info, pSrcSurf, D3DFMT_DXT1, CMSE, AMSE[0]))
-					continue;
-				TRACE2("CMSE=%05.2f, AMSE=%07.2f\n", CMSE, AMSE[0]);
-				if (CMSE <= MaxMSE && AMSE[0] <= MaxMSE)
-				{
-					printf("DXT1     %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
-					TRACE0(" Selected Format: DXT1\n");
-
-					WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_DXT1, NULL);
-					continue;
-				}
-
-				// Use P8 is possible as it's lossless
-				LPDIRECT3DSURFACE8 pTempSurf;
-				DWORD pal[256];
-				if (ConvertP8(pSrcSurf, pTempSurf, pal))
-				{
-					printf("P8       %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
-					TRACE0(" Selected Format: P8\n");
-
-					WriteXPR(OutFilename, info, pTempSurf, XB_D3DFMT_P8, pal);
-					pTempSurf->Release();
-					continue;
-				}
-
-				// DXT3/5 are the same size so use whichever is better if good enough
-				// CMSE will be equal for both
-				TRACE0(" Checking     DXT3: ");
-				if (!GetFormatMSE(info, pSrcSurf, D3DFMT_DXT3, CMSE, AMSE[0]))
-					continue;
-				TRACE2("CMSE=%05.2f, AMSE=%07.2f\n", CMSE, AMSE[0]);
-
-				TRACE0(" Checking     DXT5: ");
-				if (!GetFormatMSE(info, pSrcSurf, D3DFMT_DXT5, CMSE, AMSE[1]))
-					continue;
-				TRACE2("CMSE=%05.2f, AMSE=%07.2f\n", CMSE, AMSE[1]);
-
-				if (AMSE[0] <= AMSE[1])
-				{
-					if (CMSE <= MaxMSE && AMSE[0] <= MaxMSE)
-					{
-						printf("DXT3     %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
-						TRACE0(" Selected Format: DXT3\n");
-
-						WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_DXT3, NULL);
-						continue;
-					}
-				}
-				else
-				{
-					if (CMSE <= MaxMSE && AMSE[1] <= MaxMSE)
-					{
-						printf("DXT5     %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
-						TRACE0(" Selected Format: DXT5\n");
-
-						WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_DXT5, NULL);
-						continue;
-					}
-				}
-
-				// No good compressed format so use uncompressed
-
-				// A1R5G5B5 is worth a try I guess...
-				TRACE0(" Checking A1R5G5B5: ");
-				if (!GetFormatMSE(info, pSrcSurf, D3DFMT_A1R5G5B5, CMSE, AMSE[0]))
-					continue;
-				TRACE2("CMSE=%05.2f, AMSE=%07.2f\n", CMSE, AMSE[0]);
-				if (CMSE <= MaxMSE && AMSE[0] <= MaxMSE)
-				{
-					printf("A1R5G5B5 %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
-					TRACE0(" Selected Format: A1R5G5B5\n");
-
-					LPDIRECT3DSURFACE8 pTempSurf;
-					hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_A1R5G5B5, &pTempSurf);
-					CheckHR(hr);
-
-					hr = D3DXLoadSurfaceFromSurface(pTempSurf, NULL, NULL, pSrcSurf, NULL, NULL, D3DX_FILTER_NONE, 0);
-					CheckHR(hr);
-
-					WriteXPR(OutFilename, info, pTempSurf, XB_D3DFMT_A1R5G5B5, NULL);
-
-					pTempSurf->Release();
-					continue;
-				}
-
-				// Use A8R8G8B8
-				printf("A8R8G8B8 %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
-				TRACE0(" Selected Format: A8R8G8B8\n");
-
-				WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_A8R8G8B8, NULL);
+				pTempSurf->Release();
+				return;
 			}
-		} while (FindNextFile(hFind, &FindData));
-		FindClose(hFind);
+			TRACE2("CMSE=%05.2f, AMSE=%07.2f\n", CMSE, AMSE);
+			if (CMSE <= 1e-6 && AMSE <= 1e-6)
+			{
+				printf("DXT1     %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
+				TRACE0(" Selected Format: DXT1\n");
+				WriteXPR(OutFilename, info, pTempSurf, XB_D3DFMT_DXT1, NULL);
 
-		if (pSrcSurf)
-			pSrcSurf->Release();
+				pTempSurf->Release();
+				return;
+			}
+			pTempSurf->Release();
+		}
+
+		printf("P8       %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
+		TRACE0(" Selected Format: P8\n");
+
+		LPDIRECT3DSURFACE8 pTempSurf;
+		DWORD pal[256];
+		ConvertP8(pSrcSurf, pTempSurf, pal);
+
+		WriteXPR(OutFilename, info, pTempSurf, XB_D3DFMT_P8, pal);
+		pTempSurf->Release();
+		return;
 	}
+
+	hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_A8R8G8B8, &pSrcSurf);
+	CheckHR(hr);
+
+	hr = D3DXLoadSurfaceFromFile(pSrcSurf, NULL, NULL, Filename, NULL, D3DX_FILTER_NONE, 0, NULL);
+	CheckHR(hr);
+
+	// special case for small files - all textures are alloced on page granularity so just output uncompressed
+	// dxt is crap on small files anyway
+	if (Width * Height <= 1024)
+	{
+		printf("A8R8G8B8 %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
+		TRACE0(" Selected Format: A8R8G8B8\n");
+
+		WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_A8R8G8B8, NULL);
+		return;
+	}
+
+	FixTransparency(pSrcSurf);
+
+	// Find the best format within specified tolerance
+	double CMSE, AMSE[2];
+
+	// DXT1 is the preferred format as it's smallest
+	TRACE0(" Checking     DXT1: ");
+	if (!GetFormatMSE(info, pSrcSurf, D3DFMT_DXT1, CMSE, AMSE[0]))
+		return;
+	TRACE2("CMSE=%05.2f, AMSE=%07.2f\n", CMSE, AMSE[0]);
+	if (CMSE <= MaxMSE && AMSE[0] <= MaxMSE)
+	{
+		printf("DXT1     %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
+		TRACE0(" Selected Format: DXT1\n");
+
+		WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_DXT1, NULL);
+		return;
+	}
+
+	// Use P8 is possible as it's lossless
+	LPDIRECT3DSURFACE8 pTempSurf;
+	DWORD pal[256];
+	if (ConvertP8(pSrcSurf, pTempSurf, pal))
+	{
+		printf("P8       %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
+		TRACE0(" Selected Format: P8\n");
+
+		WriteXPR(OutFilename, info, pTempSurf, XB_D3DFMT_P8, pal);
+		pTempSurf->Release();
+		return;
+	}
+
+	// DXT3/5 are the same size so use whichever is better if good enough
+	// CMSE will be equal for both
+	TRACE0(" Checking     DXT3: ");
+	if (!GetFormatMSE(info, pSrcSurf, D3DFMT_DXT3, CMSE, AMSE[0]))
+		return;
+	TRACE2("CMSE=%05.2f, AMSE=%07.2f\n", CMSE, AMSE[0]);
+
+	TRACE0(" Checking     DXT5: ");
+	if (!GetFormatMSE(info, pSrcSurf, D3DFMT_DXT5, CMSE, AMSE[1]))
+		return;
+	TRACE2("CMSE=%05.2f, AMSE=%07.2f\n", CMSE, AMSE[1]);
+
+	if (AMSE[0] <= AMSE[1])
+	{
+		if (CMSE <= MaxMSE && AMSE[0] <= MaxMSE)
+		{
+			printf("DXT3     %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
+			TRACE0(" Selected Format: DXT3\n");
+
+			WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_DXT3, NULL);
+			return;
+		}
+	}
+	else
+	{
+		if (CMSE <= MaxMSE && AMSE[1] <= MaxMSE)
+		{
+			printf("DXT5     %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
+			TRACE0(" Selected Format: DXT5\n");
+
+			WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_DXT5, NULL);
+			return;
+		}
+	}
+
+	// No good compressed format so use uncompressed
+
+	// A1R5G5B5 is worth a try I guess...
+	TRACE0(" Checking A1R5G5B5: ");
+	if (!GetFormatMSE(info, pSrcSurf, D3DFMT_A1R5G5B5, CMSE, AMSE[0]))
+		return;
+	TRACE2("CMSE=%05.2f, AMSE=%07.2f\n", CMSE, AMSE[0]);
+	if (CMSE <= MaxMSE && AMSE[0] <= MaxMSE)
+	{
+		printf("A1R5G5B5 %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
+		TRACE0(" Selected Format: A1R5G5B5\n");
+
+		LPDIRECT3DSURFACE8 pTempSurf;
+		hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_A1R5G5B5, &pTempSurf);
+		CheckHR(hr);
+
+		hr = D3DXLoadSurfaceFromSurface(pTempSurf, NULL, NULL, pSrcSurf, NULL, NULL, D3DX_FILTER_NONE, 0);
+		CheckHR(hr);
+
+		WriteXPR(OutFilename, info, pTempSurf, XB_D3DFMT_A1R5G5B5, NULL);
+
+		pTempSurf->Release();
+		return;
+	}
+
+	// Use A8R8G8B8
+	printf("A8R8G8B8 %4dx%-4d (%5.2f%% waste)\n", Width, Height, Waste);
+	TRACE0(" Selected Format: A8R8G8B8\n");
+
+	WriteXPR(OutFilename, info, pSrcSurf, XB_D3DFMT_A8R8G8B8, NULL);
+
+	if (pSrcSurf)
+		pSrcSurf->Release();
 }
 
 // only works for gifs or other 256-colour anims
-void ConvertAnims(const char* Dir, const char* Filename, double MaxMSE)
+void ConvertAnim(const char* Dir, const char* Filename, double MaxMSE)
 {
 	HRESULT hr;
+	LPDIRECT3DSURFACE8 pSrcSurf = NULL;
 
+	char OutFilename[52];
+	if (Dir)
+		_snprintf(OutFilename, 52, "%s/%s", Dir, Filename);
+	else
+		_snprintf(OutFilename, 52, "%s", Filename);
+	OutFilename[51] = 0;
+
+	printf("%s: ", OutFilename);
+	TRACE1("%s:\n", OutFilename);
+	int n = strlen(OutFilename);
+	if (n < 40)
+		printf("%*c", 40-n, ' ');
+
+	// Load up the file
+	CAnimatedGifSet Anim;
+	int nImages = Anim.LoadGIF(Filename);
+	if (!nImages)
+	{
+		puts("ERROR: Unable to load gif (file corrupt?)");
+		return;
+	}
+	if (nImages > 65535)
+	{
+		printf("ERROR: Too many frames in gif (%d > 65535)\n", nImages);
+		return;
+	}
+
+	PrintAnimInfo(Anim);
+
+	UINT Width = PadPow2(Anim.FrameWidth);
+	UINT Height = PadPow2(Anim.FrameHeight);
+
+	D3DXIMAGE_INFO info;
+	info.Width = Anim.FrameWidth;
+	info.Height = Anim.FrameHeight;
+	info.MipLevels = 1;
+	info.Depth = 0;
+	info.ResourceType = D3DRTYPE_SURFACE;
+	info.Format = D3DFMT_P8;
+	info.ImageFileFormat = D3DXIFF_PNG;
+
+	PALETTEENTRY pal[256];
+	memcpy(pal, Anim.m_vecimg[0]->Palette, 256 * sizeof(PALETTEENTRY));
+	for (int i = 0; i < 256; i++)
+		pal[i].peFlags = 0xff; // alpha
+	if (Anim.m_vecimg[0]->Transparency && Anim.m_vecimg[0]->Transparent >= 0)
+		memset(&pal[Anim.m_vecimg[0]->Transparent], 0, sizeof(PALETTEENTRY));
+
+	// setup xpr header
+	WriteXPRHeader((DWORD*)pal, nImages);
+	if (nImages > 1)
+	{
+		XPRFile.AnimInfo->RealSize = (info.Width & 0xffff) | ((info.Height & 0xffff) << 16);
+		XPRFile.AnimInfo->nLoops = Anim.nLoops;
+	}
+
+	int nActualImages = 0;
+
+	TotalSrcPixels += info.Width * info.Height * nImages;
+	TotalDstPixels += Width * Height * nImages;
+	float Waste = 100.f * (float)(Width * Height - info.Width * info.Height) / (float)(Width * Height);
+
+	// alloc hash buffer
+	BYTE (*HashBuf)[20] = new BYTE[nImages][20];
+
+	for (int i = 0; i < nImages; ++i)
+	{
+		if (pSrcSurf)
+			pSrcSurf->Release();
+		pSrcSurf = NULL;
+
+		printf("%3d%%\b\b\b\b", 100 * i / nImages);
+
+		UncompressedSize += Width * Height;
+		CAnimatedGif* pGif = Anim.m_vecimg[i];
+
+		if (nImages > 1)
+			XPRFile.Texture[i].RealSize = pGif->Delay;
+
+		// generate sha1 hash
+		SHA1((BYTE*)pGif->Raster, pGif->BytesPerRow * pGif->Height, HashBuf[i]);
+
+		// duplicate scan
+		int j;
+		for (j = 0; j < i; ++j)
+		{
+			if (!memcmp(HashBuf[j], HashBuf[i], 20))
+			{
+				// duplicate image!
+				TRACE2(" %03d: Duplicate of %03d\n", i, j);
+				AppendXPRImageLink(j);
+				break;
+			}
+		}
+		if (j < i)
+			continue;
+
+		++nActualImages;
+
+		// DXT1 for P8s if lossless
+		hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_A8R8G8B8, &pSrcSurf);
+		CheckHR(hr);
+
+		D3DLOCKED_RECT slr;
+		hr = pSrcSurf->LockRect(&slr, NULL, D3DLOCK_READONLY);
+		CheckHR(hr);
+
+		BYTE* src = (BYTE*)pGif->Raster;
+		DWORD* dst = (DWORD*)slr.pBits;
+		DWORD* dwPal = (DWORD*)pal;
+		for (int y = 0; y < pGif->Height; ++y)
+		{
+			for (UINT x = 0; x < Width; ++x)
+				*dst++ = dwPal[*src++];
+		}
+		memset(dst, 0, (Height - pGif->Height) * slr.Pitch);
+
+		pSrcSurf->UnlockRect();
+
+		double CMSE, AMSE;
+		TRACE1(" %03d: Checking DXT1: ", i);
+		if (!GetFormatMSE(info, pSrcSurf, D3DFMT_DXT1, CMSE, AMSE))
+			return;
+		TRACE2("CMSE=%05.2f, AMSE=%07.2f\n", CMSE, AMSE);
+		if (CMSE <= 1e-6 && AMSE <= 1e-6)
+		{
+			TRACE1(" %03d: Selected Format: DXT1\n", i);
+			AppendXPRImage(info, pSrcSurf, XB_D3DFMT_DXT1);
+			return;
+		}
+		pSrcSurf->Release();
+
+		hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_P8, &pSrcSurf);
+		CheckHR(hr);
+
+		hr = pSrcSurf->LockRect(&slr, NULL, D3DLOCK_READONLY);
+		CheckHR(hr);
+
+		memcpy((BYTE*)slr.pBits, pGif->Raster, pGif->Height * slr.Pitch);
+		memset((BYTE*)slr.pBits + pGif->Height * slr.Pitch, pGif->Transparent, (Height - pGif->Height) * slr.Pitch);
+
+		pSrcSurf->UnlockRect();
+
+		TRACE1(" %03d: Selected Format: P8\n", i);
+		AppendXPRImage(info, pSrcSurf, XB_D3DFMT_P8);
+	}
+
+	delete [] HashBuf;
+	
+	printf("(%5df) %4dx%-4d (%5.2f%% waste)\n", nActualImages, Width, Height, Waste);
+
+	CommitXPR(OutFilename);
+	if (pSrcSurf)
+		pSrcSurf->Release();
+}
+
+// returns true for png, bmp, tga, jpg and dds files, otherwise returns false
+bool IsGraphicsFile(char *strFileName)
+{
+	int n = (int)strlen(strFileName);
+	if (n<4)
+		return false;
+	if (strnicmp(&strFileName[n-4], ".png", 4) &&
+		strnicmp(&strFileName[n-4], ".bmp", 4) &&
+		strnicmp(&strFileName[n-4], ".tga", 4) &&
+		strnicmp(&strFileName[n-4], ".jpg", 4) &&
+		strnicmp(&strFileName[n-4], ".dds", 4))
+		return false;
+	return true;
+}
+
+// returns true if it's a ".gif" otherwise returns false
+bool IsGraphicsAnim(char *strFileName)
+{
+	int n = (int)strlen(strFileName);
+	if (n<4 || strnicmp(&strFileName[n-4], ".gif", 4))
+		return false;
+	return true;
+}
+
+void ConvertDirectory(const char *strFullPath, char *strRelativePath, double MaxMSE)
+{
+	// Set our current directory
+	if (strFullPath)
+		SetCurrentDirectory(strFullPath);
+	// Get our current pathname
+	char strCurrentPath[MAX_PATH];
+	GetCurrentDirectory(MAX_PATH, strCurrentPath);
+
+	// Now run through our directory, and find all subdirs
 	WIN32_FIND_DATAA FindData;
+	char Filename[4] = "*.*";
 	HANDLE hFind = FindFirstFile(Filename, &FindData);
 	if (hFind != INVALID_HANDLE_VALUE)
 	{
-		LPDIRECT3DSURFACE8 pSrcSurf = NULL;
-		do {
-			if (!(FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+		do
+		{
+			// Check if we've found a subdir
+			if (FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 			{
-				char OutFilename[52];
-				if (Dir)
-					_snprintf(OutFilename, 52, "%s/%s", Dir, FindData.cFileName);
-				else
-					_snprintf(OutFilename, 52, "%s", FindData.cFileName);
-				OutFilename[51] = 0;
-
-				printf("%s: ", OutFilename);
-				TRACE1("%s:\n", OutFilename);
-				int n = strlen(OutFilename);
-				if (n < 40)
-					printf("%*c", 40-n, ' ');
-
-				// Load up the file
-				CAnimatedGifSet Anim;
-				int nImages = Anim.LoadGIF(FindData.cFileName);
-				if (!nImages)
+				// ignore any directory starting with a '.'
+				if (strnicmp(FindData.cFileName,".",1))
 				{
-					puts("ERROR: Unable to load gif (file corrupt?)");
-					continue;
+					char strNewFullPath[MAX_PATH];
+					char strNewRelativePath[MAX_PATH];
+					sprintf(strNewFullPath, "%s\\%s", strCurrentPath, FindData.cFileName);
+					if (strRelativePath)
+						sprintf(strNewRelativePath, "%s\\%s", strRelativePath, FindData.cFileName);
+					else
+						sprintf(strNewRelativePath, "%s", FindData.cFileName);
+					// Recurse into the new directory
+					ConvertDirectory(strNewFullPath, strNewRelativePath, MaxMSE);
+					// Restore our current directory
+					SetCurrentDirectory(strCurrentPath);
 				}
-				if (nImages > 65535)
-				{
-					printf("ERROR: Too many frames in gif (%d > 65535)\n", nImages);
-					continue;
-				}
-
-				PrintAnimInfo(Anim);
-
-				UINT Width = PadPow2(Anim.FrameWidth);
-				UINT Height = PadPow2(Anim.FrameHeight);
-
-				D3DXIMAGE_INFO info;
-				info.Width = Anim.FrameWidth;
-				info.Height = Anim.FrameHeight;
-				info.MipLevels = 1;
-				info.Depth = 0;
-				info.ResourceType = D3DRTYPE_SURFACE;
-				info.Format = D3DFMT_P8;
-				info.ImageFileFormat = D3DXIFF_PNG;
-
-				PALETTEENTRY pal[256];
-				memcpy(pal, Anim.m_vecimg[0]->Palette, 256 * sizeof(PALETTEENTRY));
-				for (int i = 0; i < 256; i++)
-					pal[i].peFlags = 0xff; // alpha
-				if (Anim.m_vecimg[0]->Transparency && Anim.m_vecimg[0]->Transparent >= 0)
-					memset(&pal[Anim.m_vecimg[0]->Transparent], 0, sizeof(PALETTEENTRY));
-
-				// setup xpr header
-				WriteXPRHeader((DWORD*)pal, nImages);
-				if (nImages > 1)
-				{
-					XPRFile.AnimInfo->RealSize = (info.Width & 0xffff) | ((info.Height & 0xffff) << 16);
-					XPRFile.AnimInfo->nLoops = Anim.nLoops;
-				}
-
-				int nActualImages = 0;
-
-				TotalSrcPixels += info.Width * info.Height * nImages;
-				TotalDstPixels += Width * Height * nImages;
-				float Waste = 100.f * (float)(Width * Height - info.Width * info.Height) / (float)(Width * Height);
-
-				// alloc hash buffer
-				BYTE (*HashBuf)[20] = new BYTE[nImages][20];
-
-				for (int i = 0; i < nImages; ++i)
-				{
-					if (pSrcSurf)
-						pSrcSurf->Release();
-					pSrcSurf = NULL;
-
-					printf("%3d%%\b\b\b\b", 100 * i / nImages);
-
-					UncompressedSize += Width * Height;
-					CAnimatedGif* pGif = Anim.m_vecimg[i];
-
-					if (nImages > 1)
-						XPRFile.Texture[i].RealSize = pGif->Delay;
-
-					// generate sha1 hash
-					SHA1((BYTE*)pGif->Raster, pGif->BytesPerRow * pGif->Height, HashBuf[i]);
-
-					// duplicate scan
-					int j;
-					for (j = 0; j < i; ++j)
-					{
-						if (!memcmp(HashBuf[j], HashBuf[i], 20))
-						{
-							// duplicate image!
-							TRACE2(" %03d: Duplicate of %03d\n", i, j);
-							AppendXPRImageLink(j);
-							break;
-						}
-					}
-					if (j < i)
-						continue;
-
-					++nActualImages;
-
-					// DXT1 for P8s if lossless
-					hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_A8R8G8B8, &pSrcSurf);
-					CheckHR(hr);
-
-					D3DLOCKED_RECT slr;
-					hr = pSrcSurf->LockRect(&slr, NULL, D3DLOCK_READONLY);
-					CheckHR(hr);
-
-					BYTE* src = (BYTE*)pGif->Raster;
-					DWORD* dst = (DWORD*)slr.pBits;
-					DWORD* dwPal = (DWORD*)pal;
-					for (int y = 0; y < pGif->Height; ++y)
-					{
-						for (UINT x = 0; x < Width; ++x)
-							*dst++ = dwPal[*src++];
-					}
-					memset(dst, 0, (Height - pGif->Height) * slr.Pitch);
-
-					pSrcSurf->UnlockRect();
-
-					double CMSE, AMSE;
-					TRACE1(" %03d: Checking DXT1: ", i);
-					if (!GetFormatMSE(info, pSrcSurf, D3DFMT_DXT1, CMSE, AMSE))
-						continue;
-					TRACE2("CMSE=%05.2f, AMSE=%07.2f\n", CMSE, AMSE);
-					if (CMSE <= 1e-6 && AMSE <= 1e-6)
-					{
-						TRACE1(" %03d: Selected Format: DXT1\n", i);
-						AppendXPRImage(info, pSrcSurf, XB_D3DFMT_DXT1);
-						continue;
-					}
-					pSrcSurf->Release();
-
-					hr = pD3DDevice->CreateImageSurface(Width, Height, D3DFMT_P8, &pSrcSurf);
-					CheckHR(hr);
-
-					hr = pSrcSurf->LockRect(&slr, NULL, D3DLOCK_READONLY);
-					CheckHR(hr);
-
-					memcpy((BYTE*)slr.pBits, pGif->Raster, pGif->Height * slr.Pitch);
-					memset((BYTE*)slr.pBits + pGif->Height * slr.Pitch, pGif->Transparent, (Height - pGif->Height) * slr.Pitch);
-
-					pSrcSurf->UnlockRect();
-
-					TRACE1(" %03d: Selected Format: P8\n", i);
-					AppendXPRImage(info, pSrcSurf, XB_D3DFMT_P8);
-				}
-
-				delete [] HashBuf;
-				
-				printf("(%5df) %4dx%-4d (%5.2f%% waste)\n", nActualImages, Width, Height, Waste);
-
-				CommitXPR(OutFilename);
 			}
-		} while (FindNextFile(hFind, &FindData));
+			else
+			{	// just files - check if it's an allowed graphics file
+				if (IsGraphicsFile(FindData.cFileName))
+				{	// got a graphics file
+					ConvertFile(strRelativePath,FindData.cFileName, MaxMSE);
+				}
+				if (IsGraphicsAnim(FindData.cFileName))
+				{	// got a .gif anim
+					ConvertAnim(strRelativePath,FindData.cFileName, MaxMSE);
+				}
+			}
+		}
+		while (FindNextFile(hFind, &FindData));
 		FindClose(hFind);
-
-		if (pSrcSurf)
-			pSrcSurf->Release();
 	}
 }
 
@@ -932,9 +985,6 @@ int main(int argc, char* argv[])
 	char HomeDir[MAX_PATH];
 	GetCurrentDirectory(MAX_PATH, HomeDir);
 
-	if (InputDir)
-		SetCurrentDirectory(InputDir);
-
 	XPRFile.OutputBuf = (char*)VirtualAlloc(0, 64 * 1024 * 1024, MEM_RESERVE, PAGE_NOACCESS);
 	if (!XPRFile.OutputBuf)
 	{
@@ -946,24 +996,8 @@ int main(int argc, char* argv[])
 
 	Bundler.StartBundle();
 
-	ConvertFiles(NULL, "*.png", MaxMSE);
-	ConvertFiles(NULL, "*.bmp", MaxMSE);
-	ConvertFiles(NULL, "*.tga", MaxMSE);
-	ConvertFiles(NULL, "*.jpg", MaxMSE);
-	ConvertFiles(NULL, "*.dds", MaxMSE);
-	ConvertAnims(NULL, "*.gif", MaxMSE);
-
-	DWORD attr = GetFileAttributes("..\\pal\\media");
-	if (attr != -1 && (attr & FILE_ATTRIBUTE_DIRECTORY))
-	{
-		SetCurrentDirectory("..\\pal\\media");
-		ConvertFiles("pal", "*.png", MaxMSE);
-		ConvertFiles("pal", "*.bmp", MaxMSE);
-		ConvertFiles("pal", "*.tga", MaxMSE);
-		ConvertFiles("pal", "*.jpg", MaxMSE);
-		ConvertFiles("pal", "*.dds", MaxMSE);
-		ConvertAnims("pal", "*.gif", MaxMSE);
-	}
+	// Scan the input directory (or current dir if false) for media files
+	ConvertDirectory(InputDir, NULL, MaxMSE);
 
 	VirtualFree(XPRFile.OutputBuf, 0, MEM_RELEASE);
 
@@ -971,7 +1005,7 @@ int main(int argc, char* argv[])
 	pD3D->Release();
 
 	SetCurrentDirectory(HomeDir);
-	attr = GetFileAttributes(OutputFilename);
+	DWORD attr = GetFileAttributes(OutputFilename);
 	if (attr != -1 && (attr & FILE_ATTRIBUTE_DIRECTORY))
 	{
 		SetCurrentDirectory(OutputFilename);

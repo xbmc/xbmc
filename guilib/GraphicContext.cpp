@@ -291,26 +291,28 @@ RESOLUTION CGraphicContext::GetVideoResolution() const
 	return m_Resolution;
 }
 
-void CGraphicContext::ScaleRectToScreenResolution(DWORD& left, DWORD&  top, DWORD& right, DWORD& bottom)
+void CGraphicContext::ScaleRectToScreenResolution(DWORD& left, DWORD&  top, DWORD& right, DWORD& bottom, RESOLUTION res)
 {
-	float fPercentX = ((float)m_iScreenWidth ) / 720.0f;
-	float fPercentY = ((float)m_iScreenHeight) / 576.0f;
+	if (res == INVALID) return;
+	float fPercentX = ((float)m_iScreenWidth ) / ((float)m_pResInfo[res].iWidth);
+	float fPercentY = ((float)m_iScreenHeight) / ((float)m_pResInfo[res].iHeight);
 	left   = (DWORD) ( (float(left))	 * fPercentX); 
 	top    = (DWORD) ( (float(top))		 * fPercentY); 
 	right  = (DWORD) ( (float(right))	 * fPercentX); 
 	bottom = (DWORD) ( (float(bottom)) * fPercentY); 
 }
-void CGraphicContext::ScalePosToScreenResolution(DWORD& x, DWORD&  y)
+void CGraphicContext::ScalePosToScreenResolution(DWORD& x, DWORD&  y, RESOLUTION res)
 {
-	float fPercentX = ((float)m_iScreenWidth ) / 720.0f;
-	float fPercentY = ((float)m_iScreenHeight) / 576.0f;
+	if (res == INVALID) return;
+	float fPercentX = ((float)m_iScreenWidth ) / ((float)m_pResInfo[res].iWidth);
+	float fPercentY = ((float)m_iScreenHeight) / ((float)m_pResInfo[res].iHeight);
 	x  = (DWORD) ( (float(x))		 * fPercentX); 
 	y  = (DWORD) ( (float(y))		 * fPercentY); 
 }
 
 void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 {
-	// 1080i (540p for overlays)
+	// 1080i
 	switch (res)
 	{
 		case HDTV_1080i:

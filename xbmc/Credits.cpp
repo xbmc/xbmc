@@ -12,6 +12,7 @@
 #include "credits_res.h"
 #include "utils/Log.h"
 #include "lib/liblzo/LZO1X.H"
+#include "SkinInfo.h"
 
 // Transition effects for text, must specific exactly one in and one out effect
 enum CRED_EFFECTS
@@ -868,27 +869,9 @@ void RunCredits()
 		}
 	}
 
-	int SkinIdx = 0;
-	CStdString SkinCreditsPath(g_graphicsContext.GetMediaDir());
-	SkinCreditsPath += "\\credits.txt";
-	FILE* fp = fopen(SkinCreditsPath.c_str(), "r");
-	if (fp)
-	{
-		static wchar_t SkinNames[6][50];
-		while (fgetws(SkinNames[SkinIdx], 45, fp) && SkinIdx < 6)
-		{
-			int n = wcslen(SkinNames[SkinIdx]) - 1;
-			while (iswspace(SkinNames[SkinIdx][n]))
-				SkinNames[SkinIdx][n--] = 0;
-			Credits[SkinOffset + SkinIdx].Text = SkinNames[SkinIdx];
-			++SkinIdx;
-		}
-		fclose(fp);
-	}
-	if (SkinIdx)
-		wcscat((wchar_t*)Credits[SkinOffset].Text, L" Skin");
-	for (; SkinIdx < 6; ++SkinIdx)
-		Credits[SkinOffset + SkinIdx].Text = NULL;
+	// Load the skin credits from <skindir>\skin.xml
+	for (int i=0; i<6; i++)
+		Credits[SkinOffset + i].Text = g_SkinInfo.GetCreditsLine(i);
 
 	FixedCredits = true;
 

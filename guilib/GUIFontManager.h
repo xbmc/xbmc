@@ -27,7 +27,7 @@ public:
   virtual ~GUIFontManager(void);
 	CGUIFont*				Load(const CStdString& strFontName,const CStdString& strFilename);
 	void						Unload(const CStdString& strFontName);
-  void						LoadFonts(const CStdString& strFilename);
+  void						LoadFonts();
   CGUIFont*				GetFont(const CStdString& strFontName);
 	void						Clear();
 protected:
