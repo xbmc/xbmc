@@ -9,7 +9,13 @@
 #include "FileSmb.h"
 #include "../sectionloader.h"
 #include "../settings.h"
+#include "../utils/log.h"
 using namespace XFILE;
+
+void xb_smbc_log(const char* msg)
+{
+	CLog::Log("%s%s", "smb: ", msg);
+}
 
 void xb_smbc_auth(const char *srv, const char *shr, char *wg, int wglen, 
 			char *un, int unlen,  char *pw, int pwlen)
@@ -34,11 +40,17 @@ void CSMB::Init()
 	{
 		// set ip and subnet
 		set_xbox_interface(g_stSettings.m_strLocalIPAdres, g_stSettings.m_strLocalNetmask);
+		// set log function
+		set_log_callback(xb_smbc_log);
 
-		if(!smbc_init(xb_smbc_auth, 2/*Debug Level*/))
+		if(!smbc_init(xb_smbc_auth, g_stSettings.m_iSambaDebugLevel))
 		{
-			// set wins nameserver
-			lp_do_parameter(-1, "wins server", g_stSettings.m_strNameServer);
+			// set wins nameserver and workgroup
+			if (strlen(g_stSettings.m_strSambaWorkgroup) > 1)
+				lp_do_parameter(-1, "workgroup", g_stSettings.m_strSambaWorkgroup);
+			if (strlen(g_stSettings.m_strSambaWinsServer) > 1)
+				lp_do_parameter(-1, "wins server", g_stSettings.m_strSambaWinsServer);
+
 			binitialized = true;
 		}
 	}
