@@ -676,7 +676,7 @@ static void RenderCredits(const list<CreditLine_t*>& ActiveList, DWORD& Gamma, D
 			// Render
 			float x;
 			float y;
-			DWORD alpha;
+			DWORD alpha=0;
 
 			if (Time < pCredit->Time + pCredit->InDuration)
 			{
