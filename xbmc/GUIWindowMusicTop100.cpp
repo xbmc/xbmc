@@ -148,11 +148,11 @@ void CGUIWindowMusicTop100::UpdateButtons()
 	switch (m_iViewAsIconsRoot)
   {
     case VIEW_AS_LIST:
-      iString=100; // view as icons
+      iString=101; // view as list
     break;
     
     case VIEW_AS_ICONS:
-      iString=101; // view as list
+      iString=100; // view as icons
       bViewIcon=true;
     break;
   }
