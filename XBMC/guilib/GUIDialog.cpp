@@ -9,8 +9,6 @@ CGUIDialog::CGUIDialog(DWORD dwID)
 {
 	m_dwParentWindowID		= 0;
 	m_pParentWindow			= NULL;
-	m_dwPrevRouteWindow		= WINDOW_INVALID;
-	m_pPrevRouteWindow		= NULL;
 	m_bPrevOverlayAllowed	= true;
 	m_bModal				= true;
 }
@@ -71,29 +69,6 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
 	return CGUIWindow::OnMessage(message);
 }
 
-void CGUIDialog::Render()
-{
-	// render the parent window
-	if (m_bModal)
-	{
-		//Parent is rendered by the WindowManager
-		//if (m_pParentWindow)
-		//{
-		//	m_pParentWindow->Render();
-		//}
-
-		// render the previous route window
-		if (m_pPrevRouteWindow)
-		{
-			m_pPrevRouteWindow->Render();
-		}
-	}
-
-	// render this dialog box
-	CGUIWindow::Render();
-}
-
-
 void CGUIDialog::Close()
 {
 	CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0);
@@ -101,7 +76,7 @@ void CGUIDialog::Close()
 
 	if (m_bModal)
 	{
-		m_gWindowManager.UnRoute(m_dwPrevRouteWindow);
+		m_gWindowManager.UnRoute(GetID());
 	}
 	else
 	{
@@ -111,8 +86,6 @@ void CGUIDialog::Close()
 	m_pParentWindow = NULL;
 	m_bRunning = false;
 }
-
-
 
 void CGUIDialog::DoModal(DWORD dwParentId)
 {
@@ -125,15 +98,8 @@ void CGUIDialog::DoModal(DWORD dwParentId)
 		return;
 	}
 
-	if (m_gWindowManager.m_pRouteWindow == this)
-	{
-		// already routed to this dialog
-		return;
-	}
-
 	m_bModal			= true;
-	m_dwPrevRouteWindow	= m_gWindowManager.RouteToWindow(GetID());
-	m_pPrevRouteWindow	= m_gWindowManager.GetWindow(m_dwPrevRouteWindow);
+	m_gWindowManager.RouteToWindow(this);
 
 	// active this window...
 	CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
@@ -145,8 +111,6 @@ void CGUIDialog::DoModal(DWORD dwParentId)
 		m_gWindowManager.Process();
 	}
 }
-
-
 
 void CGUIDialog::Show(DWORD dwParentId)
 {

@@ -38,17 +38,18 @@ public:
 	void			Process();
 	void			SetCallback(IWindowManagerCallback& callback);
 	void			DeInitialize();
-	DWORD           RouteToWindow(DWORD dwID);
+	void           RouteToWindow(CGUIWindow* pWindow);
 	void            UnRoute(DWORD dwID);
+	int             GetTopMostRoutedWindowID() const;
 	void			SendThreadMessage(CGUIMessage& message);
 	void			DispatchThreadMessages();
 	void			AddMsgTarget( IMsgTargetCallback* pMsgTarget );
 	int				GetActiveWindow() const;
 	bool            IsRouted() const;
-	CGUIWindow*		m_pRouteWindow;
 private:
 	vector <CGUIWindow*>	m_vecWindows;
 	vector <CGUIWindow*>	m_vecModelessWindows;
+	vector <CGUIWindow*>	m_vecModalWindows;
 	vector <CGUIWindow*>	m_vecCustomWindows;
 
 	int								m_iActiveWindow;
