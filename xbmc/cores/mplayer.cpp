@@ -93,7 +93,7 @@ const char * dvd_audio_stream_channels[6] =
 const char * dvd_audio_stream_langs[DVDLANGUAGES][2] = 
 { {"en", "English"}, {"es", "Spanish"}, {"de", "German"}, {"sv", "Swedish"}, {"nl", "Dutch"}, {"fi", "Finish"},{"is", "Iclandic"}, {"fr", "French"}};
 
-
+bool   m_bCanceling=false;
 static CDlgCache* m_dlgCache=NULL;
 CMPlayer::Options::Options()
 {
@@ -520,11 +520,17 @@ void update_cache_dialog(const char* tmp)
 	{
 		m_dlgCache->SetMessage(tmp);
 		m_dlgCache->Update();
+		if(m_dlgCache->IsCanceled() && !m_bCanceling)
+		{
+			m_bCanceling = true;
+			mplayer_exit_player();
+		}
 	}
 }
 bool CMPlayer::openfile(const CStdString& strFile)
 {
 	int iRet=-1;
+	m_bCanceling=false;
 	int iCacheSize=1024;
 	int iCacheSizeBackBuffer = 20; // 50 % backbuffer is mplayers default
 	closefile();
@@ -701,7 +707,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			iRet=mplayer_open_file(GetDVDArgument(strFile).c_str());
 		else
 			iRet=mplayer_open_file(strFile.c_str());
-		if (iRet <= 0)
+		if (iRet <= 0 || m_bCanceling)
 		{
       throw iRet;
 		}
@@ -803,7 +809,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 							iRet=mplayer_open_file(GetDVDArgument(strFile).c_str());
 						else
 							iRet=mplayer_open_file(strFile.c_str());
-						if (iRet <= 0)
+						if (iRet <= 0 || m_bCanceling)
 						{
 							throw iRet;
 						}
@@ -943,7 +949,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 					iRet=mplayer_open_file(GetDVDArgument(strFile).c_str());
 				else
 					iRet=mplayer_open_file(strFile.c_str());
-				if (iRet <= 0)
+				if (iRet <= 0 || m_bCanceling)
 				{
           throw iRet;
 				}

@@ -67,6 +67,7 @@ int						(__cdecl*	pgetTime)();
 __int64				(__cdecl*	pgetCurrentTime)();
 void					(__cdecl*	pShowOSD)(int);
 void					(__cdecl* pGetCurrentModule)(char* s, int n);
+void                     (__cdecl* pExitPlayer)(char* how);
 
 extern "C" 
 {
@@ -204,7 +205,8 @@ extern "C"
 
 	void mplayer_setcache_backbuffer(int iCacheBackBuffer)
 	{
-		pSetCacheBackBuffer(iCacheBackBuffer);
+		if(pSetCacheBackBuffer)
+			pSetCacheBackBuffer(iCacheBackBuffer);
 	}
 
 	void init_color_conversions()
@@ -338,6 +340,12 @@ extern "C"
 			strcpy(s, "unknown");
 	}
 
+	void mplayer_exit_player(void)
+	{
+		if(pExitPlayer)
+			pExitPlayer("");
+	}
+
 	void mplayer_load_dll(DllLoader& dll)
 	{
 		dll.ResolveExport("audio_out_format_bits", (void**)&pAudioOutFormatBits);
@@ -395,6 +403,7 @@ extern "C"
 		dll.ResolveExport("mplayer_getCurrentTime", (void**)&pgetCurrentTime);
 		dll.ResolveExport("mplayer_showosd", (void**)&pShowOSD);
 		dll.ResolveExport("mplayer_get_current_module", (void**)&pGetCurrentModule);
+		dll.ResolveExport("exit_player", (void**)&pExitPlayer);
 
 		pSetVideoFunctions(&video_functions);
 		pSetAudioFunctions(&audio_functions);
