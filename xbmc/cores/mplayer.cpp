@@ -89,9 +89,157 @@ const char * dvd_audio_stream_types[8] =
 const char * dvd_audio_stream_channels[6] =
 { "mono", "stereo", "unknown", "unknown", "5.1/6.1", "5.1" };
 
-#define DVDLANGUAGES 8
+#define DVDLANGUAGES 144
 const char * dvd_audio_stream_langs[DVDLANGUAGES][2] = 
-{ {"en", "English"}, {"es", "Spanish"}, {"de", "German"}, {"sv", "Swedish"}, {"nl", "Dutch"}, {"fi", "Finish"},{"is", "Iclandic"}, {"fr", "French"}};
+{ 	{"--", "(Not detected)"},
+	{"cc", "Closed Caption"},
+	{"aa", "Afar"},
+	{"ab", "Abkhazian"},
+	{"af", "Afrikaans"},
+	{"am", "Amharic"},
+	{"ar", "Arabic"},
+	{"as", "Assamese"},
+	{"ay", "Aymara"},
+	{"az", "Azerbaijani"},
+	{"ba", "Bashkir"},
+	{"be", "Byelorussian"},
+	{"bg", "Bulgarian"},
+	{"bh", "Bihari"},
+	{"bi", "Bislama"},
+	{"bn", "Bengali; Bangla"},
+	{"bo", "Tibetan"},
+	{"br", "Breton"},
+	{"ca", "Catalan"},
+	{"co", "Corsican"},
+	{"cs", "Czech"},
+	{"cy", "Welsh"},
+	{"da", "Dansk"},
+	{"de", "Deutsch"},
+	{"dz", "Bhutani"},
+	{"el", "Greek"},
+	{"en", "English"},
+	{"eo", "Esperanto"},
+	{"es", "Espanol"},
+	{"et", "Estonian"},
+	{"eu", "Basque"},
+	{"fa", "Persian"},
+	{"fi", "Finnish"},
+	{"fj", "Fiji"},
+	{"fo", "Faroese"},
+	{"fr", "Francais"},
+	{"fy", "Frisian"},
+	{"ga", "Irish"},
+	{"gd", "Scots Gaelic"},
+	{"gl", "Galician"},
+	{"gn", "Guarani"},
+	{"gu", "Gujarati"},
+	{"ha", "Hausa"},
+	{"he", "Hebrew"},
+	{"hi", "Hindi"},
+	{"hr", "Hrvatski"},
+	{"hu", "Hungarian"},
+	{"hy", "Armenian"},
+	{"ia", "Interlingua"},
+	{"id", "Indonesian"},
+	{"ie", "Interlingue"},
+	{"ik", "Inupiak"},
+	{"in", "Indonesian"},
+	{"is", "Islenska"},
+	{"it", "Italiano"},
+	{"iu", "Inuktitut"},
+	{"iw", "Hebrew"},
+	{"ja", "Japanese"},
+	{"ji", "Yiddish"},
+	{"jw", "Javanese"},
+	{"ka", "Georgian"},
+	{"kk", "Kazakh"},
+	{"kl", "Greenlandic"},
+	{"km", "Cambodian"},
+	{"kn", "Kannada"},
+	{"ko", "Korean"},
+	{"ks", "Kashmiri"},
+	{"ku", "Kurdish"},
+	{"ky", "Kirghiz"},
+	{"la", "Latin"},
+	{"ln", "Lingala"},
+	{"lo", "Laothian"},
+	{"lt", "Lithuanian"},
+	{"lv", "Latvian, Lettish"},
+	{"mg", "Malagasy"},
+	{"mi", "Maori"},
+	{"mk", "Macedonian"},
+	{"ml", "Malayalam"},
+	{"mn", "Mongolian"},
+	{"mo", "Moldavian"},
+	{"mr", "Marathi"},
+	{"ms", "Malay"},
+	{"mt", "Maltese"},
+	{"my", "Burmese"},
+	{"na", "Nauru"},
+	{"ne", "Nepali"},
+	{"nl", "Nederlands"},
+	{"no", "Norsk"},
+	{"oc", "Occitan"},
+	{"om", "(Afan) Oromo"},
+	{"or", "Oriya"},
+	{"pa", "Punjabi"},
+	{"pl", "Polish"},
+	{"ps", "Pashto, Pushto"},
+	{"pt", "Portugues"},
+	{"qu", "Quechua"},
+	{"rm", "Rhaeto-Romance"},
+	{"rn", "Kirundi"},
+	{"ro", "Romanian"},
+	{"ru", "Russian"},
+	{"rw", "Kinyarwanda"},
+	{"sa", "Sanskrit"},
+	{"sd", "Sindhi"},
+	{"sg", "Sangho"},
+	{"sh", "Serbo-Croatian"},
+	{"si", "Sinhalese"},
+	{"sk", "Slovak"},
+	{"sl", "Slovenian"},
+	{"sm", "Samoan"},
+	{"sn", "Shona"},
+	{"so", "Somali"},
+	{"sq", "Albanian"},
+	{"sr", "Serbian"},
+	{"ss", "Siswati"},
+	{"st", "Sesotho"},
+	{"su", "Sundanese"},
+	{"sv", "Svenska"},
+	{"sw", "Swahili"},
+	{"ta", "Tamil"},
+	{"te", "Telugu"},
+	{"tg", "Tajik"},
+	{"th", "Thai"},
+	{"ti", "Tigrinya"},
+	{"tk", "Turkmen"},
+	{"tl", "Tagalog"},
+	{"tn", "Setswana"},
+	{"to", "Tonga"},
+	{"tr", "Turkish"},
+	{"ts", "Tsonga"},
+	{"tt", "Tatar"},
+	{"tw", "Twi"},
+	{"ug", "Uighur"},
+	{"uk", "Ukrainian"},
+	{"ur", "Urdu"},
+	{"uz", "Uzbek"},
+	{"vi", "Vietnamese"},
+	{"vo", "Volapuk"},
+	{"wo", "Wolof"},
+	{"xh", "Xhosa"},
+	{"yi", "Yiddish"},				// formerly ji
+	{"yo", "Yoruba"},
+	{"za", "Zhuang"},
+	{"zh", "Chinese"},
+	{"zu", "Zulu"}
+};
+
+
+
+
 
 bool   m_bCanceling=false;
 static CDlgCache* m_dlgCache=NULL;
@@ -255,8 +403,9 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 		m_vecOptions.push_back("-noidx");    
 	}
 	
+	//MOVED TO mplayer.conf
 	//Enable mplayer's internal highly accurate sleeping.
-	m_vecOptions.push_back("-softsleep");    
+	//m_vecOptions.push_back("-softsleep");    
 
 	//limit A-V sync correction in order to get smoother playback.
 	//defaults to 0.01 but for high quality videos 0.0001 results in 
@@ -303,14 +452,15 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 		strTmp.Format("%i", m_iSubtitleStream);
 		m_vecOptions.push_back(strTmp);
 	}
-	else
-	{
+	//MOVED TO mplayer.conf to allow it to be overridden on a per file basis
+	//	else
+	//	{
 		//Force mplayer to allways allocate a subtitle demuxer, otherwise we 
 		//might not be able to enable it later. Will make sure later that it isn't visible.
 		//For after 1.0 add command to ask for a specific language as an alternative.
-		m_vecOptions.push_back("-sid");
-		m_vecOptions.push_back("0");
-	}
+		//m_vecOptions.push_back("-sid");
+		//m_vecOptions.push_back("0");
+	//	}
 
 	if ( m_iChannels) 
 	{
