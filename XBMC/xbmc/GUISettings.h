@@ -42,6 +42,19 @@ using namespace std;
 #define MODCHIP_XENIUM    1
 #define MODCHIP_XECUTER3  2
 
+// LED settings
+#define LED_COLOUR_NO_CHANGE	0
+#define LED_COLOUR_GREEN			1
+#define LED_COLOUR_ORANGE			2
+#define LED_COLOUR_RED				3
+#define LED_COLOUR_CYCLE			4
+#define LED_COLOUR_OFF				5
+
+#define LED_PLAYBACK_OFF					0
+#define LED_PLAYBACK_VIDEO				1
+#define LED_PLAYBACK_MUSIC				2
+#define LED_PLAYBACK_VIDEO_MUSIC	3
+
 #define SPIN_DOWN_NONE		0
 #define SPIN_DOWN_MUSIC		1
 #define SPIN_DOWN_VIDEO		2

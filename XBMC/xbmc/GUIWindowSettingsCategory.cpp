@@ -13,6 +13,7 @@
 #include "XBAudioConfig.h"
 #include "XBVideoConfig.h"
 #include "utils/lcd.h"
+#include "utils/led.h"
 #include "utils/LCDFactory.h"
 #include "utils/FanController.h"
 #include "GUIDialogYesNo.h"
@@ -448,6 +449,27 @@ void CGUIWindowSettingsCategory::CreateSettings()
 		{
 			FillInScreenSavers(pSetting);
 		}
+		else if (strSetting == "LED.Colour")
+		{
+			CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+			CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+			pControl->AddLabel(g_localizeStrings.Get(13340), LED_COLOUR_NO_CHANGE);
+			pControl->AddLabel(g_localizeStrings.Get(13341), LED_COLOUR_GREEN);
+			pControl->AddLabel(g_localizeStrings.Get(13342), LED_COLOUR_ORANGE);
+			pControl->AddLabel(g_localizeStrings.Get(13343), LED_COLOUR_RED);
+			pControl->AddLabel(g_localizeStrings.Get(13344), LED_COLOUR_CYCLE);
+			pControl->SetValue(pSettingInt->GetData());
+		}
+		else if (strSetting == "LED.DisableOnPlayback")
+		{
+			CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+			CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+			pControl->AddLabel(g_localizeStrings.Get(106), LED_PLAYBACK_OFF);					// No
+			pControl->AddLabel(g_localizeStrings.Get(13002), LED_PLAYBACK_VIDEO);			// Video Only
+			pControl->AddLabel(g_localizeStrings.Get(475), LED_PLAYBACK_MUSIC);				// Music Only
+			pControl->AddLabel(g_localizeStrings.Get(476), LED_PLAYBACK_VIDEO_MUSIC);	// Video & Music
+			pControl->SetValue(pSettingInt->GetData());
+		}
 		iPosY+=iGapY;
 	}
 	// fix first and last navigation
@@ -649,6 +671,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 			CSettingString *pSetting = (CSettingString *)GetSetting(strSetting)->GetSetting();
 			CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
 			pControl->SetText2(pSetting->GetData());
+		}
+		else if (strSetting == "LED.DisableOnPlayback")
+		{
+			CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
+			pControl->SetEnabled(g_guiSettings.GetInt("LED.Colour")!=LED_COLOUR_NO_CHANGE);
 		}
 	}
 }
@@ -932,6 +959,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 		else
 			strScreenSaver = pControl->GetCurrentLabel() + ".xbs";
 		pSettingString->SetData(strScreenSaver);
+	}
+	else if (strSetting == "LED.Colour")
+	{	// Alter LED Colour immediately
+		ILED::CLEDControl(((CSettingInt *)pSettingControl->GetSetting())->GetData());
 	}
 	g_settings.Save();
 	UpdateSettings();
