@@ -567,8 +567,6 @@ bool CGUIWindowMusicBase::HaveDiscOrConnection( CStdString& strPath, int iDriveT
 /// \param iItem Item in list/thumb control
 void CGUIWindowMusicBase::OnInfo(int iItem)
 {
-	int iSelectedItem=GetSelectedItem();
-	bool bUpdate=false;
 	CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
   CFileItem* pItem;
 	pItem=m_vecItems[iItem];
@@ -614,7 +612,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 			//	No album name found for folder. Look into
 			//	the directory, but don't save to database
 			VECFILEITEMS items;
-			m_rootDir.GetDirectory(pItem->m_strPath, items);
+			GetDirectory(pItem->m_strPath, items);
 			OnRetrieveMusicInfo(items);
 
 			//	Get first album name found in directory
@@ -648,14 +646,18 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 			strLabel=strAlbum;
 	}
 
+	ShowAlbumInfo(strLabel, strPath, bSaveDb, false);
+}
 
-	bool bRefresh=false;
+void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strPath, bool bSaveDb, bool bRefresh)
+{
+	bool bUpdate=false;
 	// check cache
 	CAlbum albuminfo;
-	if ( g_musicDatabase.GetAlbumInfo(strLabel, strPath, albuminfo) )
+	if (!bRefresh && g_musicDatabase.GetAlbumInfo(strAlbum, strPath, albuminfo))
 	{
 		VECSONGS songs;
-		g_musicDatabase.GetSongsByAlbum(strLabel, strPath, songs);
+		g_musicDatabase.GetSongsByAlbum(strAlbum, strPath, songs);
 
 		vector<CMusicSong> vecSongs;
 		for (int i=0; i<(int)songs.size(); i++)
@@ -681,38 +683,16 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
     }
 	}
 
-	// show dialog box indicating we're searching the album
-  if (m_dlgProgress)
-  {
-	  m_dlgProgress->SetHeading(185);
-	  m_dlgProgress->SetLine(0,strLabel);
-	  m_dlgProgress->SetLine(1,"");
-	  m_dlgProgress->SetLine(2,"");
-	  m_dlgProgress->StartModal(GetID());
-	  m_dlgProgress->Progress();
-  }
-	
 	// find album info
 	CMusicAlbumInfo album;
-	if (FindAlbumInfo(strLabel, album))
+	if (FindAlbumInfo(strAlbum, album))
 	{
-		if (m_dlgProgress) 
-    {
-      m_dlgProgress->SetHeading(185);
-			m_dlgProgress->SetLine(0,album.GetTitle2());
-			m_dlgProgress->SetLine(1,"");
-			m_dlgProgress->SetLine(2,"");
-			m_dlgProgress->Progress();
-    }
-
 		// download the album info
 		bool bLoaded=album.Loaded();
-		if (!bLoaded) 
-			bLoaded=album.Load();
 		if ( bLoaded )
 		{
 			// set album title from musicinfotag, not the one we got from allmusic.com
-			album.SetTitle(strLabel);
+			album.SetTitle(strAlbum);
 			// set path, needed to store album in database
 			album.SetAlbumPath(strPath);
 
@@ -744,12 +724,18 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
       {
 				pDlgAlbumInfo->SetAlbum(album);
 				pDlgAlbumInfo->DoModal(GetID());
+				if (pDlgAlbumInfo->NeedRefresh())
+				{
+					ShowAlbumInfo(strAlbum, strPath, bSaveDb, true);
+					return;
+				}
       }
 			bUpdate=true;
 		}
 		else
 		{
 			// failed 2 download album info
+			CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
 			if (pDlgOK)
 			{
 				pDlgOK->SetHeading(185);
@@ -761,15 +747,17 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 		}
 	}
 
-	if (m_dlgProgress) 
-    m_dlgProgress->Close();
-
 	if (bUpdate)
 	{
+		int iSelectedItem=GetSelectedItem();
 		Update(m_strDirectory);
 		CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iSelectedItem);
 		CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iSelectedItem);
 	}
+
+	if (m_dlgProgress) 
+    m_dlgProgress->Close();
+
 }
 
 /// \brief Can be overwritten to implement an own tag filling function.
@@ -1054,10 +1042,21 @@ void CGUIWindowMusicBase::OnSearchItemFound(const CFileItem* pItem)
 
 }
 
-bool CGUIWindowMusicBase::FindAlbumInfo(CStdString& strAlbum, CMusicAlbumInfo& album)
+bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumInfo& album)
 {
 	CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
 
+	// show dialog box indicating we're searching the album
+  if (m_dlgProgress)
+  {
+	  m_dlgProgress->SetHeading(185);
+	  m_dlgProgress->SetLine(0,strAlbum);
+	  m_dlgProgress->SetLine(1,"");
+	  m_dlgProgress->SetLine(2,"");
+	  m_dlgProgress->StartModal(GetID());
+	  m_dlgProgress->Progress();
+  }
+	
 	CMusicInfoScraper scraper;
 	if (scraper.FindAlbuminfo(strAlbum))
 	{
@@ -1108,6 +1107,21 @@ bool CGUIWindowMusicBase::FindAlbumInfo(CStdString& strAlbum, CMusicAlbumInfo& a
 
 			// ok, downloading the album info
 			album = scraper.GetAlbum(iSelectedAlbum);
+
+			if (m_dlgProgress) 
+			{
+				m_dlgProgress->SetHeading(185);
+				m_dlgProgress->SetLine(0,album.GetTitle2());
+				m_dlgProgress->SetLine(1,"");
+				m_dlgProgress->SetLine(2,"");
+				m_dlgProgress->Progress();
+			}
+
+			// download the album info
+			bool bLoaded=album.Loaded();
+			if (!bLoaded) 
+				bLoaded=album.Load();
+
 			return true;
 		}
 		else 

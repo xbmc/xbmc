@@ -78,7 +78,8 @@ protected:
 					void							GoParentFolder();
 					void							RetrieveMusicInfo();
 					void							OnInfo(int iItem);
-					bool							FindAlbumInfo(CStdString& strAlbum, CMusicAlbumInfo& album);
+					bool							FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumInfo& album);
+					void							ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strPath, bool bSaveDb, bool bRefresh);
 					void							ClearFileItems();
 					void							Update(const CStdString &strDirectory);
 					void							UpdateListControl();
