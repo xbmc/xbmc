@@ -55,6 +55,11 @@
 #define STATUS_NO_INFO 0
 #define STATUS_CODEC_INFO 1
 #define STATUS_SIZE_INFO 2
+
+#define VIEW_MODE_NORMAL	0
+#define VIEW_MODE_ZOOM		1
+#define VIEW_MODE_STRETCH	2
+
 extern IDirectSoundRenderer* m_pAudioDecoder;
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 :CGUIWindow(0)
@@ -63,12 +68,13 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 	m_iTimeCodePosition=0;
 	m_bShowTime=false;
 	m_iShowInfo=STATUS_NO_INFO;
+	m_dwShowInfoTimeout=0;
 	m_bShowCurrentTime=false;
 	m_dwTimeCodeTimeout=0;
 	m_fFPS=0;
 	m_fFrameCounter=0.0f;
 	m_dwFPSTime=timeGetTime();
-
+	m_iViewMode = VIEW_MODE_NORMAL;
   // audio
   //  - language
   //  - volume
@@ -224,6 +230,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 		{
 			m_iShowInfo++;
 			if (m_iShowInfo > STATUS_SIZE_INFO) m_iShowInfo = STATUS_NO_INFO;
+			m_dwShowInfoTimeout = timeGetTime();
 		}
 		break;
 
@@ -304,7 +311,57 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 			ChangetheTimeCode(REMOTE_9);
 		break;
 
-
+		case ACTION_ASPECT_RATIO:
+		{	// toggle the aspect ratio mode
+			m_iViewMode++;
+			m_iShowInfo = STATUS_SIZE_INFO;
+			m_dwShowInfoTimeout = timeGetTime();
+			if (m_iViewMode > VIEW_MODE_STRETCH) m_iViewMode = VIEW_MODE_NORMAL;
+			if (m_iViewMode == VIEW_MODE_NORMAL)
+			{	// normal mode...
+				g_stSettings.m_fUserPixelRatio = 1.0;
+				g_stSettings.m_fZoomAmount = 1.0;
+			}
+			else if (m_iViewMode == VIEW_MODE_ZOOM)
+			{	// zoom image so no black bars
+				g_stSettings.m_fUserPixelRatio = 1.0;
+				// get our calibrated full screen resolution
+				RESOLUTION iRes = g_graphicsContext.GetVideoResolution();
+				float fOffsetX1 = (float)g_settings.m_ResInfo[iRes].Overscan.left;
+				float fOffsetY1 = (float)g_settings.m_ResInfo[iRes].Overscan.top;
+				float fScreenWidth = (float)(g_settings.m_ResInfo[iRes].Overscan.right-g_settings.m_ResInfo[iRes].Overscan.left);
+				float fScreenHeight = (float)(g_settings.m_ResInfo[iRes].Overscan.bottom-g_settings.m_ResInfo[iRes].Overscan.top);
+				float fSourceFrameRatio;
+				g_application.m_pPlayer->GetVideoAspectRatio(fSourceFrameRatio);
+				float fOutputFrameRatio = fSourceFrameRatio * g_stSettings.m_fUserPixelRatio / g_settings.m_ResInfo[iRes].fPixelRatio; 
+				// now calculate the correct zoom amount.  First zoom to full height.
+				float fNewHeight = fScreenHeight;
+				float fNewWidth = fNewHeight*fOutputFrameRatio;
+				if (fNewWidth < fScreenWidth)
+				{	// zoom to full width
+					fNewWidth = fScreenWidth;
+					fNewHeight = fNewWidth/fOutputFrameRatio;
+				}
+				// and set the zoom amount.
+				g_stSettings.m_fZoomAmount = fNewWidth/fScreenWidth;
+			}
+			else // if (m_iViewMode == VIEW_MODE_STRETCH)
+			{	// stretch image to boundaries
+				g_stSettings.m_fZoomAmount = 1.0;
+				// get our calibrated full screen resolution
+				RESOLUTION iRes = g_graphicsContext.GetVideoResolution();
+				float fOffsetX1 = (float)g_settings.m_ResInfo[iRes].Overscan.left;
+				float fOffsetY1 = (float)g_settings.m_ResInfo[iRes].Overscan.top;
+				float fScreenWidth = (float)(g_settings.m_ResInfo[iRes].Overscan.right-g_settings.m_ResInfo[iRes].Overscan.left);
+				float fScreenHeight = (float)(g_settings.m_ResInfo[iRes].Overscan.bottom-g_settings.m_ResInfo[iRes].Overscan.top);
+				float fSourceFrameRatio;
+				g_application.m_pPlayer->GetVideoAspectRatio(fSourceFrameRatio);
+				// now we need to set g_stSettings.m_fUserPixelRatio so that 
+				// fOutputFrameRatio = fScreenWidth/fScreenHeight.
+				g_stSettings.m_fUserPixelRatio = (fScreenWidth/fScreenHeight)/fSourceFrameRatio*g_settings.m_ResInfo[iRes].fPixelRatio;
+			}
+		}
+		break;
  		case ACTION_SMALL_STEP_BACK:
      {
  
@@ -376,6 +433,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 				g_application.m_pPlayer->Update();
       HideOSD();
       m_iCurrentBookmark=0;
+			m_iViewMode = VIEW_MODE_NORMAL;					// reset viewmode
 			return true;
 		}
 		case GUI_MSG_WINDOW_DEINIT:
@@ -495,6 +553,11 @@ void CGUIWindowFullScreen::RenderFullScreen()
   }
  
 	//------------------------
+	if (m_iShowInfo != STATUS_NO_INFO)
+	{	// timeout??
+		if (timeGetTime() - m_dwShowInfoTimeout > 2500)
+			m_iShowInfo = STATUS_NO_INFO;
+	}
 	if (m_iShowInfo == STATUS_CODEC_INFO) 
 	{
 		bRenderGUI=true;
@@ -523,8 +586,9 @@ void CGUIWindowFullScreen::RenderFullScreen()
 			OnMessage(msg);
 		}
 	}
-	if (m_iShowInfo == STATUS_SIZE_INFO)
+	else if (m_iShowInfo == STATUS_SIZE_INFO)
 	{
+		// check if we've timed out...
 	    bRenderGUI=true;
 		// show sizing information
 		RECT SrcRect, DestRect;
@@ -535,7 +599,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
 			CStdString strSizing;
 			strSizing.Format("Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1)", 
 												SrcRect.right,SrcRect.bottom,
-												DestRect.right,DestRect.bottom, g_stSettings.m_fZoomAmount, fAR, g_stSettings.m_fUserPixelRatio);
+												DestRect.right,DestRect.bottom, g_stSettings.m_fZoomAmount, fAR*g_stSettings.m_fUserPixelRatio, g_stSettings.m_fUserPixelRatio);
 			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 
 			msg.SetLabel(strSizing);
 			OnMessage(msg);

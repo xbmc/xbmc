@@ -1073,10 +1073,7 @@ void xbox_video_CheckScreenSaver()
 //********************************************************************************************************
 void xbox_video_getAR(float& fAR)
 {
-	float fOutputPixelRatio = g_settings.m_ResInfo[m_iResolution].fPixelRatio;
-	float fWidth = (float)(rd.right - rd.left);
-	float fHeight = (float)(rd.bottom - rd.top);
-	fAR = fWidth/fHeight*fOutputPixelRatio;
+	fAR = fSourceFrameRatio;
 }
 
 //********************************************************************************************************
