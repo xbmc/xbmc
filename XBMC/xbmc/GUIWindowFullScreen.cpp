@@ -45,6 +45,10 @@
 #define IMG_32X       21
 
 #define LABEL_CURRENT_TIME 22
+
+#define STATUS_NO_INFO 0
+#define STATUS_CODEC_INFO 1
+#define STATUS_SIZE_INFO 2
 extern IDirectSoundRenderer* m_pAudioDecoder;
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 :CGUIWindow(0)
@@ -52,9 +56,8 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 	m_strTimeStamp[0]=0;
 	m_iTimeCodePosition=0;
 	m_bShowTime=false;
-	m_bShowInfo=false;
+	m_iShowInfo=STATUS_NO_INFO;
 	m_bShowCurrentTime=false;
-	m_dwTimeStatusShowTime=0;
 	m_dwTimeCodeTimeout=0;
 	m_fFPS=0;
 	m_fFrameCounter=0.0f;
@@ -148,35 +151,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
     }
     break;
 
-		case ACTION_ASPECT_RATIO:
-		{
-			// Only switch if the status bar is on screen
-			if (m_bShowStatus)
-			{
-				if (g_stSettings.m_bZoom)
-				{	// zoom->stretch
-					g_stSettings.m_bZoom=false;
-					g_stSettings.m_bStretch=true;
-				}
-				else if (g_stSettings.m_bStretch)
-				{	// stretch->normal
-					g_stSettings.m_bZoom=false;
-					g_stSettings.m_bStretch=false;
-				}
-				else
-				{	// normal->zoom
-					g_stSettings.m_bZoom=true;
-					g_stSettings.m_bStretch=false;
-				}
-			}
-			// Update the status bar time
-			m_bShowStatus=true;
-			m_dwTimeStatusShowTime=timeGetTime();
-			return;
-		}
-		break;
-		
-    case ACTION_STEP_BACK:
+	case ACTION_STEP_BACK:
     {
       int iPercent=g_application.m_pPlayer->GetPercentage();
       if (iPercent>=2)
@@ -186,7 +161,7 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
     }
 		break;
 
-		case ACTION_STEP_FORWARD:
+	case ACTION_STEP_FORWARD:
     {      
       int iPercent=g_application.m_pPlayer->GetPercentage();
 			if (iPercent+2<=100)
@@ -240,9 +215,10 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 		break;
 
 		case ACTION_SHOW_CODEC:
-    {
-      m_bShowInfo = !m_bShowInfo;
-    }
+		{
+			m_iShowInfo++;
+			if (m_iShowInfo > STATUS_SIZE_INFO) m_iShowInfo = STATUS_NO_INFO;
+		}
 		break;
 
 		case ACTION_NEXT_SUBTITLE:
@@ -430,6 +406,23 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 	return CGUIWindow::OnMessage(message);
 }
 
+void CGUIWindowFullScreen::OnMouse()
+{
+	if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
+	{	// no control found to absorb this click - go back to GUI
+		CAction action;
+		action.wID = ACTION_SHOW_GUI;
+		OnAction(action);
+		return;
+	}
+	if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
+	{	// no control found to absorb this click - toggle the OSD
+		CAction action;
+		action.wID = ACTION_SHOW_OSD;
+		OnAction(action);
+	}
+}
+
 // Dummy override of Render() - RenderFullScreen() is where the action takes place
 // this is called via mplayer when the video window is flipped (indicating a frame
 // change) so that we get smooth video playback
@@ -452,10 +445,11 @@ bool CGUIWindowFullScreen::NeedRenderFullScreen()
     m_dwTimeCodeTimeout=timeGetTime();
   }
   if (m_bShowTime) return true;
-  if (m_bShowStatus) return true;
-  if (m_bShowInfo) return true;
+  if (m_iShowInfo) return true;
   if (m_bShowCurrentTime) return true;
+  if (g_application.m_guiDialogVolumeBar.IsRunning()) return true; // volume bar is onscreen
   if (m_bOSDVisible) return true;
+  if (g_Mouse.IsActive()) return true;
   if (m_bLastRender)
   {
     m_bLastRender=false;
@@ -494,50 +488,67 @@ void CGUIWindowFullScreen::RenderFullScreen()
     SET_CONTROL_HIDDEN(GetID(),IMG_PAUSE);  
   }
  
-	if (m_bShowStatus)
+	//------------------------
+	if (m_iShowInfo == STATUS_CODEC_INFO) 
 	{
-		//if ( (timeGetTime() - m_dwTimeStatusShowTime) > (g_stSettings.m_iOSDTimeout * 1000))
-		if ( (timeGetTime() - m_dwTimeStatusShowTime) >=5000)
-		{
-			m_bShowStatus=false;
-			return;
-		}
-    bRenderGUI=true;
-		CStdString strStatus;
-		if (g_stSettings.m_bZoom) strStatus="Zoom";
-		else if (g_stSettings.m_bStretch) strStatus="Stretch";
-		else strStatus="Normal";
-
-		if (g_stSettings.m_bSoftenVideo)
-			strStatus += "  |  Soften";
-		else
-			strStatus += "  |  No Soften";
-
-		RECT SrcRect;
-		RECT DestRect;
-		g_application.m_pPlayer->GetVideoRect(SrcRect, DestRect);
-		CStdString strRects;
-		float fAR;
-		g_application.m_pPlayer->GetVideoAspectRatio(fAR);
-		strRects.Format(" | (%i,%i)-(%i,%i)->(%i,%i)-(%i,%i) AR:%2.2f", 
-											SrcRect.left,SrcRect.top,
-											SrcRect.right,SrcRect.bottom,
-											DestRect.left,DestRect.top,
-											DestRect.right,DestRect.bottom, fAR);
-		strStatus += strRects;
-
-		CStdString strStatus2;
-		int  iResolution=g_graphicsContext.GetVideoResolution();
-		strStatus2.Format("%ix%i %s", g_settings.m_ResInfo[iResolution].iWidth, g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].strMode);
-
-		{
+		bRenderGUI=true;
+		// show audio codec info
+		CStdString strAudio, strVideo, strGeneral;
+		g_application.m_pPlayer->GetAudioInfo(strAudio);
+		{	
 			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 
-			msg.SetLabel(strStatus); 
+			msg.SetLabel(strAudio); 
 			OnMessage(msg);
 		}
-		{
+		// show video codec info
+		g_application.m_pPlayer->GetVideoInfo(strVideo);
+		{	
 			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2); 
-			msg.SetLabel(strStatus2); 
+			msg.SetLabel(strVideo); 
+			OnMessage(msg);
+		}
+		// show general info
+		g_application.m_pPlayer->GetGeneralInfo(strGeneral);
+		{	
+			CStdString strGeneralFPS;
+			strGeneralFPS.Format("fps:%02.2f %s", m_fFPS, strGeneral.c_str() );
+			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3); 
+			msg.SetLabel(strGeneralFPS); 
+			OnMessage(msg);
+		}
+	}
+	if (m_iShowInfo == STATUS_SIZE_INFO)
+	{
+	    bRenderGUI=true;
+		// show sizing information
+		RECT SrcRect, DestRect;
+		float fAR;
+		g_application.m_pPlayer->GetVideoRect(SrcRect, DestRect);
+		g_application.m_pPlayer->GetVideoAspectRatio(fAR);
+		{
+			CStdString strSizing;
+			strSizing.Format("Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1)", 
+												SrcRect.right,SrcRect.bottom,
+												DestRect.right,DestRect.bottom, g_stSettings.m_fZoomAmount, fAR, g_stSettings.m_fUserPixelRatio);
+			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 
+			msg.SetLabel(strSizing);
+			OnMessage(msg);
+		}
+		// show resolution information
+		int iResolution=g_graphicsContext.GetVideoResolution();
+		{
+			CStdString strStatus;
+			strStatus.Format("%ix%i %s", g_settings.m_ResInfo[iResolution].iWidth, g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].strMode);
+			if (g_stSettings.m_bSoftenVideo)
+				strStatus += "  |  Soften";
+			else
+				strStatus += "  |  No Soften";
+
+			CStdString strFilter;
+			strFilter.Format("  |  Flicker Filter: %i", g_stSettings.m_iFlickerFilterVideo);
+			strStatus += strFilter;
+			CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2); 
+			msg.SetLabel(strStatus); 
 			OnMessage(msg);
 		}
 		{
@@ -547,44 +558,25 @@ void CGUIWindowFullScreen::RenderFullScreen()
 		}
 	}
 
-	//------------------------
-	if (m_bShowInfo) 
+  // Check if we need to render the popup volume bar...
+  if (g_application.m_guiDialogVolumeBar.IsRunning())
   {
-    bRenderGUI=true;
-	  // show audio codec info
-	  CStdString strAudio, strVideo, strGeneral;
-	  g_application.m_pPlayer->GetAudioInfo(strAudio);
-	  {	
-		  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1); 
-		  msg.SetLabel(strAudio); 
-		  OnMessage(msg);
-	  }
-	  // show video codec info
-	  g_application.m_pPlayer->GetVideoInfo(strVideo);
-	  {	
-		  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2); 
-		  msg.SetLabel(strVideo); 
-		  OnMessage(msg);
-	  }
-	  // show general info
-	  g_application.m_pPlayer->GetGeneralInfo(strGeneral);
-	  {	
-		  CStdString strGeneralFPS;
-		  strGeneralFPS.Format("fps:%02.2f %s", m_fFPS, strGeneral.c_str() );
-		  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3); 
-		  msg.SetLabel(strGeneralFPS); 
-		  OnMessage(msg);
-	  }
+	  g_application.m_guiDialogVolumeBar.Render();
+	  // and the mouse pointer...
+	  if (g_Mouse.IsActive()) g_application.m_guiPointer.Render();
+	  return;
   }
+
   if (m_bOSDVisible)
   {
 	  // tell the OSD window to draw itself
     CSingleLock lock(m_section);
 	  g_application.m_guiWindowOSD.Render();
-
+	  // Render the mouse pointer, if visible...
+	  if (g_Mouse.IsActive()) g_application.m_guiPointer.Render();
     return;
   }
-    
+
 	if (m_bShowTime && m_iTimeCodePosition != 0)
 	{
 		if ( (timeGetTime() - m_dwTimeCodeTimeout) >=2500)
@@ -715,7 +707,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
       SET_CONTROL_HIDDEN(GetID(),LABEL_ROW3);
       SET_CONTROL_HIDDEN(GetID(),BLUE_BAR);
 	}
-    else if (m_bShowStatus||m_bShowInfo)
+    else if (m_iShowInfo)
     {
       SET_CONTROL_VISIBLE(GetID(),LABEL_ROW1);
       SET_CONTROL_VISIBLE(GetID(),LABEL_ROW2);
@@ -738,6 +730,8 @@ void CGUIWindowFullScreen::RenderFullScreen()
     }
 	  CGUIWindow::Render();
   }
+	// and lastly render the mouse pointer...
+	if (g_Mouse.IsActive()) g_application.m_guiPointer.Render();
 }
 
 void CGUIWindowFullScreen::HideOSD()

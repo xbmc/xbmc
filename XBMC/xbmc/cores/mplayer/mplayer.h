@@ -51,7 +51,7 @@ void		mplayer_setTime(int	iTime);
 int			mplayer_getTime();
 __int64	mplayer_getCurrentTime();
 void		mplayer_ToFFRW(int iSpeed);
-void		mplayer_setVolume(int	iPercentage);
+void		mplayer_setVolume(long nVolume);
 int			mplayer_getVolume();
 void		mplayer_get_current_module(char* s, int n);
 void         mplayer_exit_player(void); 

@@ -16,7 +16,8 @@ public:
   virtual void    FreeResources();
   virtual bool    OnMessage(CGUIMessage& message);
   virtual void    OnAction(const CAction &action);
-	virtual void		Render();
+  virtual void	  OnMouse();
+  virtual void		Render();
 	void				    RenderFullScreen();
   bool            NeedRenderFullScreen();
   bool            OSDVisible() const;
@@ -31,10 +32,8 @@ private:
   void            HideOSD();
 
   bool						m_bShowTime;
-	bool						m_bShowInfo;
-	bool						m_bShowStatus;
+	int							m_iShowInfo;
 	bool						m_bShowCurrentTime;
-	DWORD						m_dwTimeStatusShowTime;
 	DWORD						m_dwTimeCodeTimeout;
 	DWORD						m_dwFPSTime;
 	float						m_fFrameCounter;

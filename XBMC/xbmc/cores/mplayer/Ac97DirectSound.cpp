@@ -25,7 +25,7 @@
 #include "../../settings.h"
 #include "../../util.h"
 
-#define VOLUME_MIN		-6000
+#define VOLUME_MIN		DSBVOLUME_MIN
 #define VOLUME_MAX		DSBVOLUME_MAX
 
 
@@ -174,19 +174,19 @@ HRESULT CAc97DirectSound::Stop()
 //***********************************************************************************************
 LONG CAc97DirectSound::GetMinimumVolume() const
 {
-	return 0;
+	return VOLUME_MIN;
 }
 
 //***********************************************************************************************
 LONG CAc97DirectSound::GetMaximumVolume() const
 {
-	return 6000;
+	return VOLUME_MAX;
 }
 
 //***********************************************************************************************
 LONG CAc97DirectSound::GetCurrentVolume() const
 {
-	return 6000;
+	return VOLUME_MAX;
 }
 
 //***********************************************************************************************

@@ -271,7 +271,8 @@ CASyncDirectSound::CASyncDirectSound(IAudioCallback* pCallback,int iChannels, un
 	for (DWORD dwX=1; dwX < m_dwNumPackets ; dwX++)
 		m_pbSampleData[dwX] = m_pbSampleData[dwX-1] + m_dwPacketSize;
 
-	m_nCurrentVolume = GetMaximumVolume();
+	// set volume (from settings)
+	m_nCurrentVolume = g_stSettings.m_nVolumeLevel;
 	m_pStream->SetVolume( m_nCurrentVolume );
 
 	// Set the headroom of the stream to 0 (to allow the maximum volume)

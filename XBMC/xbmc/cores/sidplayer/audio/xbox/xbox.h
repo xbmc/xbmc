@@ -62,6 +62,7 @@ public:  // --------------------------------------------------------- public
     void *write ();
     void  pause ();
 		void Eof();
+		void SetVolume(long nVolume);
 };
 
 #endif // _XBOX

@@ -54,8 +54,8 @@ CSettings::CSettings(void)
 
 	m_ResInfo[HDTV_1080i].Overscan.left = 0;
 	m_ResInfo[HDTV_1080i].Overscan.top = 0;
-	m_ResInfo[HDTV_1080i].Overscan.width = 1920;
-	m_ResInfo[HDTV_1080i].Overscan.height = 1080;
+	m_ResInfo[HDTV_1080i].Overscan.right = 1920;
+	m_ResInfo[HDTV_1080i].Overscan.bottom = 1080;
 	m_ResInfo[HDTV_1080i].iSubtitles = 1080;
 	m_ResInfo[HDTV_1080i].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
 	m_ResInfo[HDTV_1080i].iWidth = 1920;
@@ -66,8 +66,8 @@ CSettings::CSettings(void)
 
 	m_ResInfo[HDTV_720p].Overscan.left = 0;
 	m_ResInfo[HDTV_720p].Overscan.top = 0;
-	m_ResInfo[HDTV_720p].Overscan.width = 1280;
-	m_ResInfo[HDTV_720p].Overscan.height = 720;
+	m_ResInfo[HDTV_720p].Overscan.right = 1280;
+	m_ResInfo[HDTV_720p].Overscan.bottom = 720;
 	m_ResInfo[HDTV_720p].iSubtitles = 720;
 	m_ResInfo[HDTV_720p].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
 	m_ResInfo[HDTV_720p].iWidth = 1280;
@@ -78,8 +78,8 @@ CSettings::CSettings(void)
 
 	m_ResInfo[HDTV_480p_4x3].Overscan.left = 0;
 	m_ResInfo[HDTV_480p_4x3].Overscan.top = 0;
-	m_ResInfo[HDTV_480p_4x3].Overscan.width = 720;
-	m_ResInfo[HDTV_480p_4x3].Overscan.height = 480;
+	m_ResInfo[HDTV_480p_4x3].Overscan.right = 720;
+	m_ResInfo[HDTV_480p_4x3].Overscan.bottom = 480;
 	m_ResInfo[HDTV_480p_4x3].iSubtitles = 480;
 	m_ResInfo[HDTV_480p_4x3].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
 	m_ResInfo[HDTV_480p_4x3].iWidth = 720;
@@ -90,8 +90,8 @@ CSettings::CSettings(void)
 
 	m_ResInfo[HDTV_480p_16x9].Overscan.left = 0;
 	m_ResInfo[HDTV_480p_16x9].Overscan.top = 0;
-	m_ResInfo[HDTV_480p_16x9].Overscan.width = 720;
-	m_ResInfo[HDTV_480p_16x9].Overscan.height = 480;
+	m_ResInfo[HDTV_480p_16x9].Overscan.right = 720;
+	m_ResInfo[HDTV_480p_16x9].Overscan.bottom = 480;
 	m_ResInfo[HDTV_480p_16x9].iSubtitles = 480;
 	m_ResInfo[HDTV_480p_16x9].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
 	m_ResInfo[HDTV_480p_16x9].iWidth = 720;
@@ -102,8 +102,8 @@ CSettings::CSettings(void)
 
 	m_ResInfo[NTSC_4x3].Overscan.left = 0;
 	m_ResInfo[NTSC_4x3].Overscan.top = 0;
-	m_ResInfo[NTSC_4x3].Overscan.width = 720;
-	m_ResInfo[NTSC_4x3].Overscan.height = 480;
+	m_ResInfo[NTSC_4x3].Overscan.right = 720;
+	m_ResInfo[NTSC_4x3].Overscan.bottom = 480;
 	m_ResInfo[NTSC_4x3].iSubtitles = 480;
 	m_ResInfo[NTSC_4x3].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
 	m_ResInfo[NTSC_4x3].iWidth = 720;
@@ -114,8 +114,8 @@ CSettings::CSettings(void)
 
 	m_ResInfo[NTSC_16x9].Overscan.left = 0;
 	m_ResInfo[NTSC_16x9].Overscan.top = 0;
-	m_ResInfo[NTSC_16x9].Overscan.width = 720;
-	m_ResInfo[NTSC_16x9].Overscan.height = 480;
+	m_ResInfo[NTSC_16x9].Overscan.right = 720;
+	m_ResInfo[NTSC_16x9].Overscan.bottom = 480;
 	m_ResInfo[NTSC_16x9].iSubtitles = 480;
 	m_ResInfo[NTSC_16x9].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
 	m_ResInfo[NTSC_16x9].iWidth = 720;
@@ -126,8 +126,8 @@ CSettings::CSettings(void)
 
 	m_ResInfo[PAL_4x3].Overscan.left = 0;
 	m_ResInfo[PAL_4x3].Overscan.top = 0;
-	m_ResInfo[PAL_4x3].Overscan.width = 720;
-	m_ResInfo[PAL_4x3].Overscan.height = 576;
+	m_ResInfo[PAL_4x3].Overscan.right = 720;
+	m_ResInfo[PAL_4x3].Overscan.bottom = 576;
 	m_ResInfo[PAL_4x3].iSubtitles = 576;
 	m_ResInfo[PAL_4x3].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
 	m_ResInfo[PAL_4x3].iWidth = 720;
@@ -138,8 +138,8 @@ CSettings::CSettings(void)
 
 	m_ResInfo[PAL_16x9].Overscan.left = 0;
 	m_ResInfo[PAL_16x9].Overscan.top = 0;
-	m_ResInfo[PAL_16x9].Overscan.width = 720;
-	m_ResInfo[PAL_16x9].Overscan.height = 576;
+	m_ResInfo[PAL_16x9].Overscan.right = 720;
+	m_ResInfo[PAL_16x9].Overscan.bottom = 576;
 	m_ResInfo[PAL_16x9].iSubtitles = 576;
 	m_ResInfo[PAL_16x9].iOSDYOffset = 0;	// Y offset for OSD (applied to all Y pos in skin)
 	m_ResInfo[PAL_16x9].iWidth = 720;
@@ -150,8 +150,8 @@ CSettings::CSettings(void)
 
 	m_ResInfo[PAL60_4x3].Overscan.left = 0;
 	m_ResInfo[PAL60_4x3].Overscan.top = 0;
-	m_ResInfo[PAL60_4x3].Overscan.width = 720;
-	m_ResInfo[PAL60_4x3].Overscan.height = 480;
+	m_ResInfo[PAL60_4x3].Overscan.right = 720;
+	m_ResInfo[PAL60_4x3].Overscan.bottom = 480;
 	m_ResInfo[PAL60_4x3].iSubtitles = 480;
 	m_ResInfo[PAL60_4x3].iOSDYOffset = -75;	// Y offset for OSD (applied to all Y pos in skin)
 	m_ResInfo[PAL60_4x3].iWidth = 720;
@@ -162,8 +162,8 @@ CSettings::CSettings(void)
 
 	m_ResInfo[PAL60_16x9].Overscan.left = 0;
 	m_ResInfo[PAL60_16x9].Overscan.top = 0;
-	m_ResInfo[PAL60_16x9].Overscan.width = 720;
-	m_ResInfo[PAL60_16x9].Overscan.height = 480;
+	m_ResInfo[PAL60_16x9].Overscan.right = 720;
+	m_ResInfo[PAL60_16x9].Overscan.bottom = 480;
 	m_ResInfo[PAL60_16x9].iSubtitles = 480;
 	m_ResInfo[PAL60_16x9].iOSDYOffset = -75;	// Y offset for OSD (applied to all Y pos in skin)
 	m_ResInfo[PAL60_16x9].iWidth = 720;
@@ -311,8 +311,8 @@ CSettings::CSettings(void)
 	g_stSettings.m_bSoftenVideo=false;
   g_stSettings.m_iFlickerFilterUI=5;
 	g_stSettings.m_bSoftenUI=false;
-	g_stSettings.m_bZoom=false;
-	g_stSettings.m_bStretch=false;
+	g_stSettings.m_fZoomAmount=1.0f;
+	g_stSettings.m_fUserPixelRatio=1.0f;
 
 	g_stSettings.m_bAutoWidescreenSwitching=false;
 	g_stSettings.m_bUpsampleVideo=true;
@@ -350,6 +350,8 @@ CSettings::CSettings(void)
 	g_stSettings.m_iRipQuality = CDDARIP_QUALITY_CBR;
 	g_stSettings.m_iRipBitRate = 192;
 	strcpy(g_stSettings.m_strRipPath, "");
+
+	g_stSettings.m_nVolumeLevel = 0;
 }
 
 CSettings::~CSettings(void)
@@ -835,14 +837,14 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
 		{
 			GetInteger(pOverscan, "left", m_ResInfo[iRes].Overscan.left,0,-m_ResInfo[iRes].iWidth/4,m_ResInfo[iRes].iWidth/4);
 			GetInteger(pOverscan, "top", m_ResInfo[iRes].Overscan.top,0,-m_ResInfo[iRes].iHeight/4,m_ResInfo[iRes].iHeight/4);
-			GetInteger(pOverscan, "width", m_ResInfo[iRes].Overscan.width,m_ResInfo[iRes].iWidth-m_ResInfo[iRes].Overscan.left,m_ResInfo[iRes].iWidth/2,m_ResInfo[iRes].iWidth*3/2);
-			GetInteger(pOverscan, "height", m_ResInfo[iRes].Overscan.height,m_ResInfo[iRes].iHeight-m_ResInfo[iRes].Overscan.top,m_ResInfo[iRes].iHeight/2,m_ResInfo[iRes].iHeight*3/2);
+			GetInteger(pOverscan, "right", m_ResInfo[iRes].Overscan.right,m_ResInfo[iRes].iWidth,m_ResInfo[iRes].iWidth/2,m_ResInfo[iRes].iWidth*3/2);
+			GetInteger(pOverscan, "bottom", m_ResInfo[iRes].Overscan.bottom,m_ResInfo[iRes].iHeight,m_ResInfo[iRes].iHeight/2,m_ResInfo[iRes].iHeight*3/2);
 		}
 		CLog::Log("  calibration for %s %ix%i",m_ResInfo[iRes].strMode,m_ResInfo[iRes].iWidth,m_ResInfo[iRes].iHeight);
-		CLog::Log("    subtitle yposition:%i pixelratio:%03.3f offset:(%i,%i) width:%i height:%i osdyoffset:%i", 
+		CLog::Log("    subtitle yposition:%i pixelratio:%03.3f offsets:(%i,%i)->(%i,%i) osdyoffset:%i", 
 			m_ResInfo[iRes].iSubtitles, m_ResInfo[iRes].fPixelRatio,
 			m_ResInfo[iRes].Overscan.left,m_ResInfo[iRes].Overscan.top, 
-			m_ResInfo[iRes].Overscan.width,m_ResInfo[iRes].Overscan.height,
+			m_ResInfo[iRes].Overscan.right,m_ResInfo[iRes].Overscan.bottom,
 			m_ResInfo[iRes].iOSDYOffset);
 
 		// iterate around
@@ -874,8 +876,8 @@ bool CSettings::SaveCalibration(TiXmlNode* pRootNode) const
 		TiXmlNode *pOverscanNode = pNode->InsertEndChild(overscanElement);
 		SetInteger(pOverscanNode, "left", m_ResInfo[i].Overscan.left);
 		SetInteger(pOverscanNode, "top", m_ResInfo[i].Overscan.top);
-		SetInteger(pOverscanNode, "width", m_ResInfo[i].Overscan.width);
-		SetInteger(pOverscanNode, "height", m_ResInfo[i].Overscan.height);
+		SetInteger(pOverscanNode, "right", m_ResInfo[i].Overscan.right);
+		SetInteger(pOverscanNode, "bottom", m_ResInfo[i].Overscan.bottom);
 	}
   return true;
 }
@@ -1182,8 +1184,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetBoolean(pElement, "softenvideo", g_stSettings.m_bSoftenVideo);
 		GetBoolean(pElement, "softenui", g_stSettings.m_bSoftenUI);
 		GetBoolean(pElement, "framerateconversion", g_stSettings.m_bFrameRateConversions);
-		GetBoolean(pElement, "zoom", g_stSettings.m_bZoom);
-		GetBoolean(pElement, "stretch", g_stSettings.m_bStretch);
+		GetFloat(pElement, "zoomamount", g_stSettings.m_fZoomAmount, 1.0f, 1.0f, 2.0f);
+		GetFloat(pElement, "pixelratio", g_stSettings.m_fUserPixelRatio, 1.0f, 0.5f, 2.0f);
 		GetBoolean(pElement, "allowswitching", g_stSettings.m_bAutoWidescreenSwitching);
 		GetBoolean(pElement, "upsamplevideo", g_stSettings.m_bUpsampleVideo);
 		GetBoolean(pElement, "allowpal60", g_stSettings.m_bAllowPAL60);
@@ -1207,6 +1209,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetBoolean(pElement, "HQmusicaudio", g_stSettings.m_bResampleMusicAudio);
 		//DON'T ALLOW AUDIO RESAMPLING FOR VIDEO AT ALL. ALLWAYS LET IT BE DISBLED
 		//GetBoolean(pElement, "HQvideoaudio", g_stSettings.m_bResampleVideoAudio);
+		GetInteger(pElement, "volumelevel", g_stSettings.m_nVolumeLevel, VOLUME_MAXIMUM, VOLUME_MINIMUM, VOLUME_MAXIMUM);
 	}
 
 	// post processing
@@ -1559,8 +1562,8 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	SetBoolean(pNode, "softenvideo", g_stSettings.m_bSoftenVideo);
 	SetBoolean(pNode, "softenui", g_stSettings.m_bSoftenUI);
 	SetBoolean(pNode, "framerateconversion", g_stSettings.m_bFrameRateConversions);
-	SetBoolean(pNode, "zoom", g_stSettings.m_bZoom);
-	SetBoolean(pNode, "stretch", g_stSettings.m_bStretch);
+	SetFloat(pNode, "zoomamount", g_stSettings.m_fZoomAmount);
+	SetFloat(pNode, "pixelratio", g_stSettings.m_fUserPixelRatio);
 	SetBoolean(pNode, "allowswitching", g_stSettings.m_bAutoWidescreenSwitching);
 	SetBoolean(pNode, "upsamplevideo", g_stSettings.m_bUpsampleVideo);
 	SetBoolean(pNode, "allowpal60", g_stSettings.m_bAllowPAL60);
@@ -1583,6 +1586,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	SetBoolean(pNode, "UseDigitalOutput", g_stSettings.m_bUseDigitalOutput);
 	SetBoolean(pNode, "HQmusicaudio", g_stSettings.m_bResampleMusicAudio);
 	SetBoolean(pNode, "HQvideoaudio", g_stSettings.m_bResampleVideoAudio);
+	SetInteger(pNode, "volumelevel", g_stSettings.m_nVolumeLevel);
 
 	TiXmlElement postprocNode("PostProcessing");
 	pNode = pRoot->InsertEndChild(postprocNode);

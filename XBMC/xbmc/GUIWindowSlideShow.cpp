@@ -780,8 +780,8 @@ void CGUIWindowSlideShow::GetOutputRect(const int iSourceWidth, const int iSourc
 	RESOLUTION iRes = g_graphicsContext.GetVideoResolution();
 	int iOffsetX1 = g_settings.m_ResInfo[iRes].Overscan.left;
 	int iOffsetY1 = g_settings.m_ResInfo[iRes].Overscan.top;
-	int iScreenWidth = g_settings.m_ResInfo[iRes].Overscan.width;
-	int iScreenHeight = g_settings.m_ResInfo[iRes].Overscan.height;
+	int iScreenWidth = g_settings.m_ResInfo[iRes].Overscan.right - g_settings.m_ResInfo[iRes].Overscan.left;
+	int iScreenHeight = g_settings.m_ResInfo[iRes].Overscan.bottom - g_settings.m_ResInfo[iRes].Overscan.top;
 	float fPixelRatio = g_settings.m_ResInfo[iRes].fPixelRatio;
 
 	float fSourceFrameAR = (float)iSourceWidth/iSourceHeight;
