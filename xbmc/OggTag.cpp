@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "xtl.h"
 #include "oggtag.h"
+#include "../xbmc/utils/CharsetConverter.h"
 
 using namespace MUSIC_INFO;
 
@@ -106,7 +107,8 @@ void COggTag::ProcessVorbisComment(const char *pBuffer)
         I1=(int*)(pBuffer+Pos);			// Length of comment
         strncpy(C1, pBuffer+Pos+4, I1[0]);
         C1[I1[0]]='\0';
-		CStdString strItem = C1;		// convert to string
+		CStdString strItem;
+		g_charsetConverter.utf8ToStringCharset(C1, strItem);		// convert UTF-8 to charset string
 		// Parse the tag entry
 		parseTagEntry( strItem );
         // Increment our position in the file buffer
