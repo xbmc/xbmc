@@ -24,10 +24,14 @@
     <value>Paramètres</value>
   </string>
   <string>
+    <id>6</id>
+    <value>Version CVS de XBOX Media Center</value>
+  </string>
+  <string>
     <id>7</id>
     <value>Fichiers</value>
   </string>
- 
+  
   <string>
     <id>11</id>
     <value>Lundi</value>
@@ -1050,5 +1054,65 @@
   <string>
     <id>340</id>
     <value>Various Artists</value>
+  </string>
+  <string>
+    <id>341</id>
+    <value>Jouez le DVD</value>
+  </string>
+  <string>
+    <id>344</id>
+    <value>Acteurrs</value>
+  </string>
+  <string>
+    <id>345</id>
+    <value>Année</value>
+  </string>
+  <string>
+    <id>346</id>
+    <value>Empiler</value>
+  </string>
+  <string>
+    <id>347</id>
+    <value>Dépiler</value>
+  </string>
+  <string>
+    <id>348</id>
+    <value>Montrer toute l'arborescence</value>
+  </string>
+  <string>
+    <id>349</id>
+    <value>Montrer seulement les fichiers Default.xbe</value>
+  </string>
+  <string>
+    <id>350</id>
+    <value>Programmes</value>
+  </string>
+  <string>
+    <id>351</id>
+    <value>Off</value>
+  </string>
+  <string>
+    <id>352</id>
+    <value>Faible</value>
+  </string>
+  <string>
+    <id>353</id>
+    <value>Noir</value>
+  </string>
+  <string>
+    <id>354</id>
+    <value>Trainées de Matrix</value>
+  </string>
+  <string>
+    <id>355</id>
+    <value>Mise en veille</value>
+  </string>
+  <string>
+    <id>356</id>
+    <value>Mode de l'écran de veille</value>
+  </string>
+  <string>
+    <id>357</id>
+    <value>Arret automatique de la console</value>
   </string>
 </strings>
