@@ -9,6 +9,10 @@ extern "C" {
 namespace PYXBMC
 {
 	typedef struct {
+    PyObject_HEAD
+	} Dialog;
+
+	typedef struct {
     PyObject_HEAD_XBMC_WINDOW
 	} WindowDialog;
 
@@ -18,6 +22,7 @@ namespace PYXBMC
 
 	extern PyTypeObject WindowDialog_Type;
 	extern PyTypeObject DialogProgress_Type;
+	extern PyTypeObject Dialog_Type;
 }
 
 #ifdef __cplusplus
