@@ -4,10 +4,7 @@
 #include "settings.h"
 #include "application.h"
 #include "util.h"
-//#include "osd/OSDOptionFloatRange.h"
-//#include "osd/OSDOptionIntRange.h"
-//#include "osd/OSDOptionBoolean.h"
-//#include "osd/OSDOptionButton.h"
+#include "utils/log.h"
 #include "cores/mplayer/mplayer.h"
 #include "utils/singlelock.h"
 #include "videodatabase.h"
@@ -398,7 +395,13 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 		}
 		case GUI_MSG_WINDOW_DEINIT:
 		{
-      CSingleLock lock(m_section);
+			// Pause player before lock or the app will deadlock
+			if (g_application.m_pPlayer)
+				g_application.m_pPlayer->Update(true);	
+			// Pause so that we make sure that our fullscreen renderer has finished...
+			Sleep(100);
+
+			CSingleLock lock(m_section);
       if (m_bOSDVisible)
       {
         CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0,0,0,NULL);
@@ -410,10 +413,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 			g_graphicsContext.Lock();
 			g_graphicsContext.SetFullScreenVideo( false );
 			g_graphicsContext.Unlock();
-			if (g_application.m_pPlayer)
-				g_application.m_pPlayer->Update(true);	
-			// Pause so that we make sure that our fullscreen renderer has finished...
-			Sleep(100);
       
       m_iCurrentBookmark=0;
       HideOSD();
