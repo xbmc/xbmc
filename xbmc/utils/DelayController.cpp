@@ -298,7 +298,7 @@ WORD	CDelayController::StickInput( int x, int y )
 WORD    CDelayController::DIRInput( WORD wDir )
 {
 	WORD wResult = 0;
-
+	if (!wDir) return 0;
 	if ( m_dwRepeatDelay == 0 )
 	{
 		m_dwRepeatDelay = 200;
@@ -310,19 +310,23 @@ WORD    CDelayController::DIRInput( WORD wDir )
 
 	if ( wDir != m_wLastDir )
 	{
+		// key pressed is different then previous key
 		if ( wDir >=DC_UP )
 		{
+			// key is pressed
 			wResult = wDir;
 			m_dwTimer = GetTickCount()+m_dwRepeatDelay;
 		}
 		else
 		{
+			// no key is pressed
 			m_dwTimer = GetTickCount();
 		}
 		m_iCount=0;
 	}
 	else
 	{
+		// key pressed is the same as last time
 		if ( m_iCount > 10 )
 		{
 			if ( wDir >= DC_UP )
