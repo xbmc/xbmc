@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 #include "settings.h"
+#include "application.h"
 #include "util.h"
 #include "utils/log.h"
 #include "localizestrings.h"
@@ -352,6 +353,13 @@ CSettings::~CSettings(void)
 
 void CSettings::Save() const
 {
+  if (g_application.m_bStop)
+  {
+    //don't save settings when we're busy stopping the application
+    //a lot of screens try to save settings on deinit and deinit is called
+    //for every screen when the application is stopping.
+    return;
+  }
 	if (!SaveSettings("T:\\settings.xml", true))
 	{
 		CLog::Log("Unable to save settings to T:\\settings.xml");

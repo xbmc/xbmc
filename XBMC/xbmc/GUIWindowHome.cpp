@@ -124,8 +124,7 @@ void CGUIWindowHome::OnClickDashboard(CGUIMessage& aMessage)
 
 void CGUIWindowHome::OnClickReboot(CGUIMessage& aMessage)
 {
-	g_application.Stop();
-	XKUtils::XBOXPowerCycle();
+  g_applicationMessenger.Restart();
 }
 
 void CGUIWindowHome::OnClickCredits(CGUIMessage& aMessage)
