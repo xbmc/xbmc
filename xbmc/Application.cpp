@@ -1244,6 +1244,15 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 		{
 			m_bSpinDown=false;
 		}
+    else
+    {
+      if (g_stSettings.m_iHDSpinDownTime!=0)
+      {
+        m_bSpinDown=true;
+        CIoSupport helper;
+			  helper.SpindownHarddisk();
+      }
+    }
 	
 	  m_dwIdleTime=timeGetTime();
 
