@@ -2023,7 +2023,11 @@
 	<string>
 		<id>746</id>
 		<value>Switch to the Files view</value>
-	</string>		
+	</string>
+	<string>
+		<id>747</id>
+		<value>Not enough available memory to load image</value>
+	</string>
 	<string>
 		<id>998</id>
 		<value>XLink Kai</value>

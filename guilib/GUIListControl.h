@@ -88,6 +88,8 @@ public:
 	DWORD									GetTextOffsetY() const { return m_iTextOffsetY;};
 	DWORD									GetTextOffsetX2() const { return m_iTextOffsetX2;};
 	DWORD									GetTextOffsetY2() const { return m_iTextOffsetY2;};
+	void									SetAlignmentY(DWORD dwAlign) { m_dwTextAlign = dwAlign; };
+	DWORD									GetAlignmentY() const { return m_dwTextAlign;};
 	DWORD									GetImageWidth() const { return m_iImageWidth;};
 	DWORD									GetImageHeight() const { return m_iImageHeight;};
 	const wstring&				GetSuffix() const { return m_strSuffix;};
@@ -109,6 +111,7 @@ protected:
 	int										m_iTextOffsetY;
 	int										m_iTextOffsetX2;
 	int										m_iTextOffsetY2;
+	DWORD									m_dwTextAlign;
 	int										m_iImageWidth;
 	int										m_iImageHeight;
 	bool				m_bUpDownVisible;

@@ -76,6 +76,7 @@ private:
   int                     m_iZoomLeft,m_iZoomTop;
   int					  m_iZoomWidth, m_iZoomHeight;
   int                     m_iRotate;
+	bool										m_bErrorMessage;
 
 	vector<CStdString>		 m_vecSlides;
 	typedef vector<CStdString>::iterator ivecSlides;
