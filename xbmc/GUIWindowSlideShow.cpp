@@ -747,7 +747,8 @@ void CGUIWindowSlideShow::RenderPause()
 	CGUIFont* pFont=g_fontManager.GetFont("font13");
 	const WCHAR *szText;
 	szText=g_localizeStrings.Get(112).c_str();
-	pFont->DrawShadowText(500.0,60.0,0xff000000,szText);
+	if (pFont)
+		pFont->DrawShadowText(500.0,60.0,0xff000000,szText);
 }
 
 void CGUIWindowSlideShow::DoRotate()

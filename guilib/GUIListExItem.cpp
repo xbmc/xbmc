@@ -83,6 +83,8 @@ void CGUIListExItem::OnPaint(CGUIItem::RenderContext* pContext)
 
 void CGUIListExItem::RenderText(float fPosX, float fPosY, float fMaxWidth, DWORD dwTextColor, WCHAR* wszText, CGUIFont* pFont )
 {
+	if (!pFont)
+		return;
 	static int scroll_pos = 0;
 	static int iScrollX=0;
 	static int iLastItem=-1;

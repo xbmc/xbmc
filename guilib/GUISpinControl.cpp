@@ -390,44 +390,44 @@ void CGUISpinControl::Render()
 		m_imgspinDownFocus.SetPosition((int)m_fMaxTextWidth + 5+iPosX, m_iPosY);
 		m_imgspinDown.SetPosition((int)m_fMaxTextWidth + 5+iPosX, m_iPosY);
 	}
-    else if (( m_dwAlign== XBFONT_LEFT) && (m_pFont))
-    {
+  else if (( m_dwAlign== XBFONT_LEFT) && (m_pFont))
+  {
 		m_imgspinUpFocus.SetPosition((int)fTextWidth + 5+iPosX+ m_imgspinDown.GetWidth(), m_iPosY);
 		m_imgspinUp.SetPosition((int)fTextWidth + 5+iPosX+ m_imgspinDown.GetWidth(), m_iPosY);
 		m_imgspinDownFocus.SetPosition((int)fTextWidth + 5+iPosX, m_iPosY);
 		m_imgspinDown.SetPosition((int)fTextWidth + 5+iPosX, m_iPosY);
-    }
+  }
 
-    if (m_iSelect==SPIN_BUTTON_UP && !CanMoveUp())
-    {
+  if (m_iSelect==SPIN_BUTTON_UP && !CanMoveUp())
+  {
 		m_iSelect=SPIN_BUTTON_DOWN;
-    }
+  }
 
-    if (m_iSelect==SPIN_BUTTON_DOWN && !CanMoveDown())
-    {
-        m_iSelect=SPIN_BUTTON_UP;
-    }
+  if (m_iSelect==SPIN_BUTTON_DOWN && !CanMoveDown())
+  {
+		m_iSelect=SPIN_BUTTON_UP;
+  }
 
-    if ( HasFocus() )
-    {
-        if (m_iSelect==SPIN_BUTTON_UP && CanMoveUp())
-            m_imgspinUpFocus.Render();
-        else
-            m_imgspinUp.Render();
+  if ( HasFocus() )
+  {
+		if (m_iSelect==SPIN_BUTTON_UP && CanMoveUp())
+			m_imgspinUpFocus.Render();
+		else
+			m_imgspinUp.Render();
 
-        if (m_iSelect==SPIN_BUTTON_DOWN && CanMoveDown())
-            m_imgspinDownFocus.Render();
-        else
-            m_imgspinDown.Render();
-    }
-    else
-    {
-        m_imgspinUp.Render();
-        m_imgspinDown.Render();
-    }
+		if (m_iSelect==SPIN_BUTTON_DOWN && CanMoveDown())
+			m_imgspinDownFocus.Render();
+		else
+			m_imgspinDown.Render();
+  }
+  else
+  {
+    m_imgspinUp.Render();
+    m_imgspinDown.Render();
+  }
 
-    if (m_pFont)
-    {
+  if (m_pFont)
+  {
 		float fPosY;
 		if (m_dwAlignY==XBFONT_CENTER_Y)
 		{
@@ -441,9 +441,9 @@ void CGUISpinControl::Render()
 		}
 
 		float fPosX = (float)(m_iPosX+m_lTextOffsetX) -3;
-        if ( HasFocus() )
+		if ( HasFocus() )
 		{
-            m_pFont->DrawText(fPosX, fPosY, m_dwTextColor,wszText,m_dwAlign);
+			m_pFont->DrawText(fPosX, fPosY, m_dwTextColor,wszText,m_dwAlign);
 		}
 		else
 		{

@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 20-08-2004 fixed:  Possible font related crashes.
   - 20-08-2004 changed: Used new seeking for better accuracy for .cue files.
   - 20-08-2004 fixed:   Album view - some albums weren't treated as folders.
   - 20-08-2004 changed: Passthrough of AC3/DTS is always used unless samplerate != 48kHz
