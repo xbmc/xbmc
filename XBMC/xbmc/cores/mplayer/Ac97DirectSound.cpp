@@ -316,7 +316,7 @@ DWORD CAc97DirectSound::GetBytesInBuffer()
 //***********************************************************************************************
 FLOAT CAc97DirectSound::GetDelay()
 {
-	return 0.028;		//(fake PCM output 8ms) + (receiver 20ms)
+	return 0.028f;		//(fake PCM output 8ms) + (receiver 20ms)
 }
 
 //***********************************************************************************************
