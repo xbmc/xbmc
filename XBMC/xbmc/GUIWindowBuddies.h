@@ -76,6 +76,10 @@ protected:
 	void OnClickHostButton		(CGUIMessage& aMessage);
 	void OnClickKeyboardButton	(CGUIMessage& aMessage);
 	void OnClickListItem		(CGUIMessage& aMessage);
+	void OnClickTabFriends		(CGUIMessage& aMessage);
+	void OnClickTabGames		(CGUIMessage& aMessage);
+	void OnClickTabArena		(CGUIMessage& aMessage);
+	void OnClickTabChat			(CGUIMessage& aMessage);
 	void OnSelectListItem		(CGUIMessage& aMessage);
 
 	void	QueryInstalledGames();
@@ -91,6 +95,7 @@ protected:
 
 	void	Enter(CArenaItem& aArena);
 	void	Play(CStdString& aVector);
+	void	SelectTab(int nTabId);
 
 	static bool	SortFriends(CGUIItem* pStart, CGUIItem* pEnd);
 	static bool	SortGames(CGUIItem* pStart, CGUIItem* pEnd);
