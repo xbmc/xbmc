@@ -46,15 +46,16 @@ public:
 		float        GetFPS() const; 
 		void         GetOptions(int& argc, char* argv[]);
 		void         SetDVDDevice(const string & strDevice);
-		void		SetFlipBiDiCharset(const string& strCharset);
+		void         SetFlipBiDiCharset(const string& strCharset);
 	private:
-		bool  m_bResampleAudio;
+		bool    m_bResampleAudio;
 		bool    m_bNoCache;
 		bool    m_bNoIdx;
 		float   m_fSpeed;
 		float   m_fFPS;
 		int     m_iChannels;
 		int     m_iAudioStream;
+		int     m_iCacheSizeBackBuffer; // percent of cache used for back buffering
 		bool    m_bAC3PassTru;
 		float   m_fVolumeAmplification;
 		bool    m_bNonInterleaved;
