@@ -204,11 +204,20 @@ void CGUIWindowManager::ActivateWindow(int iWindowID)
 			}
 			else
 			{
-				// we are going to a new window - put our current window into it's previous window ID
 				CGUIWindow *pWindowTest = m_vecWindows[iPrevActiveWindow];
 				DWORD dwID = pWindowTest->GetID();
-				CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,m_vecWindows[iPrevActiveWindow]->GetID(), iWindowID);
-				pWindow->OnMessage(msg);
+				if (pWindowTest==pWindow)
+				{
+					// we are going to the same window - leave previous window ID as is
+					CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,pWindow->GetPreviousWindowID(), iWindowID);
+					pWindow->OnMessage(msg);
+				}
+				else
+				{
+					// we are going to a new window - put our current window into it's previous window ID
+					CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,m_vecWindows[iPrevActiveWindow]->GetID(), iWindowID);
+					pWindow->OnMessage(msg);
+				}
 			}
 
 			return;
