@@ -1554,8 +1554,6 @@ void CGUIWindowMusicSongs::FilterItems(VECFILEITEMS &items)
 
 void CGUIWindowMusicSongs::OnPopupMenu(int iItem)
 {
-	// mark the item
-	m_vecItems[iItem]->Select(true);
 	// calculate our position
 	int iPosX=200;
 	int iPosY=100;
@@ -1567,6 +1565,8 @@ void CGUIWindowMusicSongs::OnPopupMenu(int iItem)
 	}	
 	if ( m_strDirectory.IsEmpty() )
 	{
+		// mark the item
+		m_vecItems[iItem]->Select(true);
 		// and do the popup menu
 		if (CGUIDialogContextMenu::BookmarksMenu("music", m_vecItems[iItem]->GetLabel(), m_vecItems[iItem]->m_strPath, iPosX, iPosY))
 		{
