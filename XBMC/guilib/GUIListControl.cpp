@@ -451,8 +451,19 @@ void CGUIListControl::OnDown()
     }
     else 
     {
-      m_upDown.SetFocus(true);
-      m_iSelect = CONTROL_UPDOWN;
+			if (m_iOffset+1+m_iCursorY <  (int)m_vecItems.size())
+			{
+				m_iOffset++;
+
+				int iPage=1;
+				int iSel=m_iOffset+m_iCursorY;
+				while (iSel >= m_iItemsPerPage)
+				{
+					iPage++;
+					iSel -= m_iItemsPerPage;
+				}
+				m_upDown.SetValue(iPage);
+			}
     }
   }
   else
