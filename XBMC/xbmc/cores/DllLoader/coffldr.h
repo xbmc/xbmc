@@ -15,16 +15,15 @@ protected:
     Image_Data_Directory_t  *Directory;
     SectionHeader_t         *SectionHeader;
 
-	// Allocated structures...
+	// Allocated structures...	hModule now hold the master Memory handle
     SymbolTable_t           *SymTable;
     char                    *StringTable;
     char                    **SectionData;
-    char                    **SectionData_M;
+	void					*hModule_M;		//actual memory allocate before alignment
 
 // Unnecessary data
 //  This is data that is used only during linking and is not necessary
 //  while the program is running in general
-
 
     int                     NumberOfSymbols;
     int                     SizeOfStringTable;
@@ -60,7 +59,7 @@ protected:
     void PerformFixups(void);
 
 public:
-	void	*hModule;			//standard windows HINSTANCE handle
+	void	*hModule;			//standard windows HINSTANCE handle hold the whole image
 	unsigned long EntryAddress;	//Initialize entry point
     int ParseCoff(FILE *fp);
     CoffLoader();

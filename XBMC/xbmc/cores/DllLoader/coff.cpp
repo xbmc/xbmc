@@ -28,36 +28,32 @@ const char *DATA_DIR_NAME[16] = {
 
 CoffLoader::CoffLoader()
 {
-	hModule = 0;
+	hModule_M = NULL;
+	hModule	  = NULL;	
 	SymTable = 0;
     StringTable = 0;
-    SectionData = 0;			//changed to memory aglined locations
-	SectionData_M = 0;			//used to alloc memory before alignment 
+	SectionData = 0;
 }
 
 CoffLoader::~CoffLoader()
 {
-    if( hModule )
-        delete hModule;
-    if( SymTable )
+	if( hModule_M ) {
+        delete [] hModule_M;
+		hModule_M = NULL;
+		hModule   = NULL;
+	}
+	if( SymTable ) {
         delete [] SymTable;
-    if( StringTable )
+		SymTable = 0;
+	}
+	if( StringTable ) {
         delete [] StringTable;
-    if( SectionData_M )
-    {
-        for( int i = 0; i < NumOfSections; i++)
-			if (SectionData_M[i])
-				delete [] SectionData_M[i];
-        delete [] SectionData_M;
-    }
-	if (SectionData)
-		delete [] SectionData;
-
-	hModule = 0;
-    SymTable = 0;
-    StringTable = 0;
-	SectionData = 0;
-    SectionData_M = 0;
+		StringTable = 0;
+	}
+	if( SectionData ) {
+        delete [] SectionData;
+		SectionData = 0;
+	}
 }
 
 int CoffLoader::LoadCoffHModule(FILE *fp)
@@ -94,13 +90,19 @@ int CoffLoader::LoadCoffHModule(FILE *fp)
 	if (readcount != WINHDR_SIZE)	//test file size error
 		return 0;
 	
-	hModule = new(char[tempWindowsHeader.SizeOfHeaders]);		//need align ??
+	//check SizeOfImage by VMA calculation
+	unsigned long page_align=tempWindowsHeader.SectionAlignment?(tempWindowsHeader.SectionAlignment-1):0;
+	hModule_M = new char[tempWindowsHeader.SizeOfImage+page_align];
+	if (hModule_M == NULL)
+        return 0;			//memory allocation fails
+	
+	hModule = (void *)( ((unsigned long)hModule_M + page_align)&~page_align );
+
 	rewind(fp); 
     readcount = fread(hModule, 1, tempWindowsHeader.SizeOfHeaders, fp);
 	if (readcount != tempWindowsHeader.SizeOfHeaders)			//file size error
 		return 0;
 
-	
 	CoffFileHeader = (COFF_FileHeader_t *) ( (char*)hModule + FileHeaderOffset );
     NumOfSections = CoffFileHeader->NumberOfSections;
 	
@@ -208,55 +210,55 @@ int CoffLoader::LoadStringTable(FILE *fp)
 
 int CoffLoader::LoadSections(FILE *fp)
 {
-
     NumOfSections = CoffFileHeader->NumberOfSections;
-    SectionData = new char*[CoffFileHeader->NumberOfSections];
-    SectionData_M = new char*[CoffFileHeader->NumberOfSections];
-    if( !SectionData || !SectionData_M )
+	
+	SectionData = new char*[NumOfSections];
+    if( !SectionData )
         return 0;
-
-    for (int SctnCnt = 0; SctnCnt < CoffFileHeader->NumberOfSections; SctnCnt++)
+	
+	//////check VMA size!!!!!
+	unsigned long vma_size = 0;
+	for (int SctnCnt = 0; SctnCnt < NumOfSections; SctnCnt++) 
+	{
+	SectionHeader_t *ScnHdr=(SectionHeader_t *)(SectionHeader + SctnCnt);
+	vma_size = max(vma_size, ScnHdr->VirtualAddress + ScnHdr->SizeOfRawData);
+	vma_size = max(vma_size, ScnHdr->VirtualAddress + ScnHdr->VirtualSize);
+	}
+		
+	if (WindowsHeader->SizeOfImage <  vma_size)  
+		return 0;			//something wrong with file
+	
+    for (int SctnCnt = 0; SctnCnt < NumOfSections; SctnCnt++)
     {
 		SectionHeader_t *ScnHdr=(SectionHeader_t *)(SectionHeader + SctnCnt);
-		
-		//Changed code to read sections aglin to page boundary
-		unsigned long page_align=(WindowsHeader&&WindowsHeader->SectionAlignment)?(WindowsHeader->SectionAlignment-1):0;
-		SectionData_M[SctnCnt] = new char[max(ScnHdr->VirtualSize,ScnHdr->SizeOfRawData) + page_align];
-        if( SectionData_M[SctnCnt] )
-        {
-			//pointer round to page size defined in windows header
-			SectionData[SctnCnt] = (char*)( ((unsigned long)(SectionData_M[SctnCnt])+page_align) & ~page_align );
-            fseek(fp, ScnHdr->PtrToRawData, SEEK_SET);
-            fread(SectionData[SctnCnt], 1, ScnHdr->SizeOfRawData, fp);
+		SectionData[SctnCnt] = ((char*)hModule + ScnHdr->VirtualAddress);
 
-			//debug blocks
-			char szBuf[128];
-			char namebuf[9];
-			for (int iii=0; iii<8; iii++)
-				namebuf[iii]= ScnHdr->Name[iii];
-			namebuf[8]='\0';
-			sprintf(szBuf,"Load code Sections %s Memory %p, Aligned %p, Length %x\n",
-				namebuf,SectionData_M[SctnCnt],SectionData[SctnCnt],
-				max(ScnHdr->VirtualSize,ScnHdr->SizeOfRawData));
+		fseek(fp, ScnHdr->PtrToRawData, SEEK_SET);
+        fread(SectionData[SctnCnt], 1, ScnHdr->SizeOfRawData, fp);
+
+		//debug blocks
+		char szBuf[128];
+		char namebuf[9];
+		for (int i=0; i<8; i++)
+			namebuf[i]= ScnHdr->Name[i];
+		namebuf[8]='\0';
+		sprintf(szBuf,"Load code Sections %s Memory %p,Length %x\n",namebuf,
+				SectionData[SctnCnt],max(ScnHdr->VirtualSize,ScnHdr->SizeOfRawData));
 			OutputDebugString(szBuf);
 
-			if ( ScnHdr->SizeOfRawData < ScnHdr->VirtualSize )		//initialize BSS data in the end of section
-			{
-				memset((char*)((long)(SectionData[SctnCnt])+ScnHdr->SizeOfRawData),0,ScnHdr->VirtualSize-ScnHdr->SizeOfRawData);
-			}
+		if ( ScnHdr->SizeOfRawData < ScnHdr->VirtualSize )		//initialize BSS data in the end of section
+		{
+			memset((char*)((long)(SectionData[SctnCnt])+ScnHdr->SizeOfRawData),0,ScnHdr->VirtualSize-ScnHdr->SizeOfRawData);
+		}
             
-			if (ScnHdr->Characteristics & IMAGE_SCN_CNT_BSS)		//initialize whole .BSS section, pure .BSS is obsolete
-			{
-				memset(SectionData[SctnCnt], 0, ScnHdr->VirtualSize);
-			}
+		if (ScnHdr->Characteristics & IMAGE_SCN_CNT_BSS)		//initialize whole .BSS section, pure .BSS is obsolete
+		{
+			memset(SectionData[SctnCnt], 0, ScnHdr->VirtualSize);
+		}
 
 #ifdef DUMPING_DATA
-            PrintSection(SectionHeader + SctnCnt, SectionData[SctnCnt]);
+		PrintSection(SectionHeader + SctnCnt, SectionData[SctnCnt]);
 #endif
-		} else {
-			//FIXME output error message
-			return 0;
-		}
     }
     return 1;
 }
