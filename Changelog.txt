@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 08-10-2004 added: <showfreemem> tag to XboxMediaCenter.xml to help track memory issues
+                      No need to update XBoxMediaCenter.xml unless you want this feature.
   - 07-10-2004 fixed: Spin controls showed range unnecessarily.
   - 07-10-2004 updated: Hebrew language file by okets
   - 07-10-2004 changed: Reset instead of powercycle on pressing reboot. [ 1041020 ]

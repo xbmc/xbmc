@@ -1243,26 +1243,31 @@ void CApplication::Render()
 #ifdef _DEBUG
 					pFont->DrawText( 60, 60, 0xffffffff, wszText);
 #else
-					pFont->DrawText( 60, 40, 0xffffffff, wszText);
+					if (g_stSettings.m_bShowFreeMem)
+						pFont->DrawText( 60, 60, 0xffffffff, wszText);
+					else
+						pFont->DrawText( 60, 40, 0xffffffff, wszText);
 #endif
 				}
 				iShowRemoteCode--;
 			}
 		}
 
-#ifdef _DEBUG
-		// in debug mode, show freememory
-		CStdStringW wszText;
-		wszText.Format(L"FreeMem %d/%d",stat.dwAvailPhys,
-			stat.dwTotalPhys);
-
-		CGUIFont* pFont=g_fontManager.GetFont("font13");
-		if (pFont)
-		{
-			pFont->DrawText( 60, 40, 0xffffffff, wszText);
-		}
+#ifndef _DEBUG
+		if (g_stSettings.m_bShowFreeMem)
 #endif
+		{
+			// in debug mode, show freememory
+			CStdStringW wszText;
+			wszText.Format(L"FreeMem %d/%d",stat.dwAvailPhys,
+				stat.dwTotalPhys);
 
+			CGUIFont* pFont=g_fontManager.GetFont("font13");
+			if (pFont)
+			{
+				pFont->DrawText( 60, 40, 0xffffffff, wszText);
+			}
+		}
 	}
 	// Present the backbuffer contents to the display
 	m_pd3dDevice->BlockUntilVerticalBlank();
