@@ -235,8 +235,26 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res)
 		else
 			res = NTSC_4x3;
 	}
+	bool NeedReset = false;
+	if (m_bFullScreenVideo)
+	{
+		if (m_pd3dParams->FullScreen_PresentationInterval != D3DPRESENT_INTERVAL_ONE)
+		{
+			m_pd3dParams->FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_ONE;
+			NeedReset = true;
+		}
+	}
+	else
+	{
+		if (m_pd3dParams->FullScreen_PresentationInterval != D3DPRESENT_INTERVAL_IMMEDIATE)
+		{
+			m_pd3dParams->FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+			NeedReset = true;
+		}
+	}
 	if (m_Resolution != res)
 	{	
+		NeedReset = true;
 		m_pd3dParams->BackBufferWidth = m_pResInfo[res].iWidth;
 		m_pd3dParams->BackBufferHeight = m_pResInfo[res].iHeight;
 		m_pd3dParams->Flags = m_pResInfo[res].dwFlags;
@@ -255,12 +273,12 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res)
 		{
 			m_pd3dParams->FullScreen_RefreshRateInHz = 0;
 		}
-		if (m_pd3dDevice)
-    {
-      Sleep(500);
-			m_pd3dDevice->Reset(m_pd3dParams);
-    }
   }
+	if (NeedReset && m_pd3dDevice)
+	{
+		//Sleep(500);
+		m_pd3dDevice->Reset(m_pd3dParams);
+	}
   if (m_pd3dDevice)
   {
 	    m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
