@@ -7,7 +7,9 @@
 #include "../xbox/iosupport.h"
 #include "../application.h"
 #include "cddb.h"
-
+#include "../GUIDialogProgress.h"
+#include "../guidialogok.h"
+#include "../GUIDialogSelect.h"
 using namespace CDDB;
 
 CCDDADirectory::CCDDADirectory(void)
@@ -31,41 +33,69 @@ bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 		cddb.setCDDBIpAdress(g_stSettings.m_szCDDBIpAdres);
 		cddb.setCacheDir(strDir);
 		bool b_cddb_names_ok(false);
+		CGUIDialogProgress* pDialogProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(101);
+		CGUIDialogOK* pDialogOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(2002);
+		CGUIDialogSelect *pDlgSelect= (CGUIDialogSelect*)m_gWindowManager.GetWindow(2000);
+
 		int nTracks = CDetectDVDMedia::GetCdInfo()->GetTrackCount();
 		CCdInfo* pCdInfo = CDetectDVDMedia::GetCdInfo();
 		if ( nTracks > 0)
 		{
 			if (g_stSettings.m_bUseCDDB)
 			{
+				bool bCloseProgress(false);
 				if ( !cddb.isCDCached( pCdInfo ) ) 
 				{
-						//g_dialog.DoModalLess();
-						//g_dialog.SetCaption(0, "CDDB" );
-						//g_dialog.SetMessage(0, "Quering CD at " );
-						//g_dialog.SetMessage(1, g_playerSettings.szCddbServer );
-						//g_dialog.Render();
+					pDialogProgress->SetHeading(255);//CDDB
+					pDialogProgress->SetLine(0,"");// Querying freedb for CDDB info
+					pDialogProgress->SetLine(1,256);
+					pDialogProgress->SetLine(2,"");
+					pDialogProgress->StartModal(m_gWindowManager.GetActiveWindow());
+					pDialogProgress->Progress();
+					bCloseProgress=true;
 				}
+				
 				if ( !cddb.queryCDinfo( pCdInfo ) )
 				{
+					if (bCloseProgress)
+					{
+						pDialogProgress->Close();
+					}
 					int lasterror=cddb.getLastError();
 
 					if (lasterror == E_WAIT_FOR_INPUT)
 					{
 						//	Inexact match found in cddb
 						//	How to handle?
+						pDlgSelect->Reset();
+						pDlgSelect->SetHeading(255);
+						int i=0;
+						while (1)
+						{
+							string strTitle=cddb.getInexactTitle(i++) ;
+							if (strTitle =="") break;
+							pDlgSelect->Add(strTitle);
+						}
+						pDlgSelect->DoModal(m_gWindowManager.GetActiveWindow());
+
 					}
 					else 
 					{
 						//show error message 1.5 seconds
-						//g_dialog.SetCaption(0, "Error" );
-						//g_dialog.SetMessage(0, cddb.getLastErrorText() );
-						//g_dialog.Render();
-						//Sleep(1500);
+						pDialogOK->SetHeading(255);
+						pDialogOK->SetLine(0,257);//ERROR
+						pDialogOK->SetLine(1,cddb.getLastErrorText() );
+						pDialogOK->SetLine(2,"");
+						pDialogOK->DoModal(m_gWindowManager.GetActiveWindow() );
 					}
 				}
 				else
 				{
 					// Jep, tracks are received
+					if (bCloseProgress)
+					{
+						pDialogProgress->Close();
+					}
 					b_cddb_names_ok=true;
 				}
 			} // if (g_stSettings.m_bUseCDDB)
