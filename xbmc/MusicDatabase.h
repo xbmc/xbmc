@@ -191,6 +191,7 @@ public:
 	bool		GetRecentlyPlayedAlbums(VECALBUMS& albums);
 	bool		GetSongsByPathes(SETPATHES& pathes, MAPSONGS& songs);
 	bool		GetAlbumByPath(const CStdString& strPath, CAlbum& album);
+	bool		GetAlbumsByPath(const CStdString& strPath, VECALBUMS& albums);
 	bool		FindAlbumsByName(const CStdString& strSearch, VECALBUMS& albums);
 	bool		FindSongsByName(const CStdString& strSearch, VECSONGS& songs);
 	bool		FindSongsByNameAndArtist(const CStdString& strSearch, VECSONGS& songs);

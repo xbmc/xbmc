@@ -158,7 +158,10 @@ void CGUIWindowMusicInfo::Update()
 		{
 			const CMusicSong& song=m_pAlbum->GetSong(i);
 			CStdString strTmp;
-			CUtil::SecondsToHMSString(song.GetDuration(), strTmp);
+			
+			if (song.GetDuration()>0)
+				CUtil::SecondsToHMSString(song.GetDuration(), strTmp);
+
 			CGUIMessage msg3(GUI_MSG_LABEL2_SET,GetID(),CONTROL_TEXTAREA,i,0);
 			msg3.SetLabel(strTmp);
 			g_graphicsContext.SendMessage(msg3);
@@ -227,11 +230,17 @@ void CGUIWindowMusicInfo::Refresh()
 			if (!CUtil::IsCDDA(m_pAlbum->GetAlbumPath()))
 			{
 				//	...also save a copy as directory thumb,
-				//	if the album isn't located on an audio cd.
-				CStdString strFolderThumb;
-				CUtil::GetAlbumThumb(m_pAlbum->GetAlbumPath(),strFolderThumb);
-				if (::CopyFile(strThumb, strFolderThumb, false))
-					CUtil::ThumbCacheAdd(strFolderThumb, true);
+				//	if the album isn't located on an audio cd
+				//	and its the only album in this directory.
+				VECALBUMS albums;
+				g_musicDatabase.GetAlbumsByPath(m_pAlbum->GetAlbumPath(), albums);
+				if (albums.size()==1)
+				{
+					CStdString strFolderThumb;
+					CUtil::GetAlbumThumb(m_pAlbum->GetAlbumPath(),strFolderThumb);
+					if (::CopyFile(strThumb, strFolderThumb, false))
+						CUtil::ThumbCacheAdd(strFolderThumb, true);
+				}
 			}
 		}
 	}
