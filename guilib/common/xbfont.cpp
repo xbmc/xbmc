@@ -687,6 +687,136 @@ HRESULT CXBFont::DrawTextEx( FLOAT fOriginX, FLOAT fOriginY, DWORD dwColor,
 
 
 
+//-----------------------------------------------------------------------------
+// Name: DrawColourText()
+// Desc: Draws text as textured multi-colored polygons
+//-----------------------------------------------------------------------------
+HRESULT CXBFont::DrawColourText( FLOAT fOriginX, FLOAT fOriginY, DWORD* pdw256ColorPalette,
+                           const WCHAR* strText, BYTE* pbColours, DWORD cchText, DWORD dwFlags,
+                           FLOAT fMaxPixelWidth )
+{
+    // Set up stuff (i.e. lock the vertex buffer) to prepare for drawing text
+    Begin();
+
+    // Set the starting screen position
+    m_fCursorX = floorf( fOriginX );
+    m_fCursorY = floorf( fOriginY );
+
+    // Adjust for padding
+    fOriginY -= m_fFontTopPadding;
+
+    FLOAT fEllipsesPixelWidth = m_fXScaleFactor * 3.0f * (m_Glyphs[m_TranslatorTable[L'.']].wOffset + m_Glyphs[m_TranslatorTable[L'.']].wAdvance);
+
+    if( dwFlags & XBFONT_TRUNCATED )
+    {
+        // Check if we will really need to truncate the CStdString
+        if( fMaxPixelWidth <= 0.0f )
+        {
+            dwFlags &= (~XBFONT_TRUNCATED);
+        }
+        else
+        {
+            FLOAT w, h;
+            GetTextExtent( strText, cchText, &w, &h, TRUE );
+    
+            // If not, then clear the flag
+            if( w <= fMaxPixelWidth )
+                dwFlags &= (~XBFONT_TRUNCATED);
+        }
+    }
+
+    // If vertically centered, offset the starting m_fCursorY value
+    if( dwFlags & XBFONT_CENTER_Y )
+    {
+        FLOAT w, h;
+        GetTextExtent( strText, &w, &h );
+        m_fCursorY = floorf( m_fCursorY - h/2 );
+    }
+
+    // Set a flag so we can determine initial justification effects
+    BOOL bStartingNewLine = TRUE;
+
+    while( cchText-- )
+    {
+        // If starting text on a new line, determine justification effects
+        if( bStartingNewLine )
+        {
+            if( dwFlags & (XBFONT_RIGHT|XBFONT_CENTER_X) )
+            {
+                // Get the extent of this line
+                FLOAT w, h;
+                GetTextExtent( strText, &w, &h, TRUE );
+
+                // Offset this line's starting m_fCursorX value
+                if( dwFlags & XBFONT_RIGHT )
+                    m_fCursorX = floorf( fOriginX - w );
+                if( dwFlags & XBFONT_CENTER_X )
+                    m_fCursorX = floorf( fOriginX - w/2 );
+            }
+            bStartingNewLine = FALSE;
+        }
+
+        // Get the current letter in the CStdString
+        WCHAR letter = *strText++;
+
+		DWORD dwColor = pdw256ColorPalette[*pbColours++];
+
+	    // Set the color for all the current letter vertices to follow
+	    D3DDevice::SetVertexDataColor( D3DVSDE_DIFFUSE, dwColor );
+
+        // Handle the newline character
+        if( letter == L'\n' )
+        {
+            m_fCursorX  = fOriginX;
+            m_fCursorY += m_fFontYAdvance;
+            bStartingNewLine = TRUE;
+            continue;
+        }
+
+        // Translate unprintable characters
+        GLYPH_ATTR* pGlyph = &m_Glyphs[ (letter<=m_cMaxGlyph) ? m_TranslatorTable[letter] : 0 ];
+
+        FLOAT fOffset  = m_fXScaleFactor * (FLOAT)pGlyph->wOffset;
+        FLOAT fAdvance = m_fXScaleFactor * (FLOAT)pGlyph->wAdvance;
+        FLOAT fWidth   = m_fXScaleFactor * (FLOAT)pGlyph->wWidth;
+        FLOAT fHeight  = m_fYScaleFactor * m_fFontHeight;
+
+        if( dwFlags & XBFONT_TRUNCATED )
+        {
+            // Check if we will be exceeded the max allowed width
+            if( m_fCursorX + fOffset + fWidth + fEllipsesPixelWidth + m_fSlantFactor > fOriginX + fMaxPixelWidth )
+            {
+                // Yup. Let's draw the ellipses, then bail
+                DrawText( m_fCursorX, m_fCursorY, dwColor, L"..." );
+                End();
+                return S_OK;
+            }
+        }
+
+        // Setup the screen coordinates
+        m_fCursorX += fOffset;
+        FLOAT left1  = m_fCursorX;
+        FLOAT left2  = left1 + m_fSlantFactor;
+        FLOAT right1 = left1 + fWidth;
+        FLOAT right2 = left2 + fWidth;
+        FLOAT top    = m_fCursorY;
+        FLOAT bottom = top + fHeight;
+        m_fCursorX += fAdvance;
+
+        // Draw the quad using SetVertexData
+        D3DDevice::SetVertexData4f( D3DVSDE_VERTEX, left1,  bottom, pGlyph->tu1, pGlyph->tv2 );
+        D3DDevice::SetVertexData4f( D3DVSDE_VERTEX, left2,  top,    pGlyph->tu1, pGlyph->tv1 );
+        D3DDevice::SetVertexData4f( D3DVSDE_VERTEX, right2, top,    pGlyph->tu2, pGlyph->tv1 );
+        D3DDevice::SetVertexData4f( D3DVSDE_VERTEX, right1, bottom, pGlyph->tu2, pGlyph->tv2 );
+    }
+
+    // Call End() to complete the begin/end pair for drawing text
+    End();
+
+    return S_OK;
+}
+
+
 
 //-----------------------------------------------------------------------------
 // Name: End()
