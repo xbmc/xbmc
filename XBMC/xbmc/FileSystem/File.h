@@ -23,6 +23,11 @@ using namespace std;
 
 namespace XFILE
 {
+	class IFileCallback
+	{
+	public:
+		virtual bool OnFileCallback(void* pContext, int ipercent)=0;
+	};
   class CFile   
   {
   public:
@@ -32,7 +37,7 @@ namespace XFILE
 	  unsigned int	Read(void* lpBuf, offset_t uiBufSize);
 		int						Write(const void* lpBuf, offset_t uiBufSize);
 	  bool					Open(const char* strFileName, bool bBinary=true);
-	  bool					Cache(const char* strFileName, const char* szDest, bool bShowCacheDialog=true);
+		bool					Cache(const char* strFileName, const char* szDest, XFILE::IFileCallback* pCallback, void* pContext);
 	  bool					ReadString(char *szLine, int iLineLength);
 	  offset_t			Seek(offset_t iFilePosition, int iWhence=SEEK_SET);
 	  void					Close();

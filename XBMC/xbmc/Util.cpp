@@ -924,7 +924,7 @@ void CUtil::SetThumbs(VECFILEITEMS &items)
 				if ( strDir != pItem->m_strPath )
 				{
 					CFile file;
-					file.Cache(pItem->m_strPath, strDir);
+					file.Cache(pItem->m_strPath, strDir,NULL,NULL);
 				}
 			}
 			if (CUtil::IsShortCut(pItem->m_strPath) )
@@ -950,7 +950,7 @@ void CUtil::SetThumbs(VECFILEITEMS &items)
 					CFile file;
 					CStdString strThumbnailFileName;
 					CUtil::ReplaceExtension(pItem->m_strPath,".tbn", strThumbnailFileName);
-					if ( file.Cache(strThumbnailFileName.c_str(), strThumb.c_str()))
+					if ( file.Cache(strThumbnailFileName.c_str(), strThumb.c_str(),NULL,NULL))
 					{
 						pItem->SetThumbnailImage(strThumb);
 					}

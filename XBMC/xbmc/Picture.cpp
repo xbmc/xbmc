@@ -50,7 +50,7 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate,int
 	strCachedFile="T:\\cachedpic";
 	strCachedFile+= strExtension;
 	CFile file;
-	if ( !file.Cache(strFileName.c_str(),strCachedFile.c_str()) )
+	if ( !file.Cache(strFileName.c_str(),strCachedFile.c_str(),NULL,NULL) )
 	{
 		return NULL;
 	}
@@ -240,7 +240,7 @@ bool CPicture::CreateThumnail(const CStdString& strFileName)
 	strCachedFile="T:\\cachedpic";
 	strCachedFile+= strExtension;
 	CFile file;
-	if ( !file.Cache(strFileName.c_str(),strCachedFile.c_str()) )
+	if ( !file.Cache(strFileName.c_str(),strCachedFile.c_str(),NULL,NULL) )
 	{
 		return NULL;
 	}
