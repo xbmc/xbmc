@@ -627,15 +627,16 @@ extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR libname)
 		  strcmp(libname, "KERNEL32.DLL") == 0 || strcmp(libname, "KERNEL32") == 0 )
 		return (HMODULE)MODULE_HANDLE_kernel32;
 	
-	auto_ptr<char> plibname ( new char[strlen(libname)+120]); 
-	sprintf(plibname.get(), "%s\\%s", DEFAULT_DLLPATH ,(char *)libname);
-	DllLoader * dllhandle = new DllLoader(plibname.get());
-	
+	char* plibname = new char[strlen(libname)+120]; 
+	sprintf(plibname, "%s\\%s", DEFAULT_DLLPATH ,(char *)libname);
+	DllLoader * dllhandle = new DllLoader(plibname);
+	delete[] plibname;
+
 	int hr = dllhandle->Parse();
 	if ( hr == 0 ) 
 	{
 		char szBuf[128];
-		sprintf(szBuf,"Failed to open %s, check codecs.conf and file existence.\n",plibname);
+		sprintf(szBuf,"Failed to open %s\\%s, check codecs.conf and file existence.\n",DEFAULT_DLLPATH, libname);
 		OutputDebugString(szBuf);	
 		delete dllhandle;
 		return NULL;
