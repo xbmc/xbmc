@@ -54,7 +54,7 @@
 				Name="VCPreLinkEventTool"/>
 			<Tool
 				Name="XboxDeploymentTool"
-				RemotePath="xe:\guilib\default.xbe"/>
+				RemotePath="xe:\MyXBMC\default.xbe"/>
 			<Tool
 				Name="XboxImageTool"
 				FileName="$(TargetDir)default.xbe"
@@ -438,6 +438,9 @@
 				RelativePath=".\xbmc\GUIWindowPrograms.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowScreensaver.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowScripts.cpp">
 			</File>
 			<File
@@ -469,6 +472,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettingsScreenCalibration.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsScreensaver.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettingsSlideShow.cpp">
@@ -695,6 +701,9 @@
 				RelativePath=".\xbmc\GUIWindowPrograms.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowScreensaver.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowScripts.h">
 			</File>
 			<File
@@ -714,6 +723,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettingsScreenCalibration.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsScreensaver.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettingsSlideShow.h">
