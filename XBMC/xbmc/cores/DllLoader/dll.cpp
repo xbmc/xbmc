@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 #include <memory>
+#include <map>
+#include <list>
 
 #include <string.h>
 #include "dll.h"
@@ -16,6 +18,90 @@ static int ResolveName(char *Name, char* Function, void **Fixup);
 DllLoader * wmaDMOdll;
 DllLoader * wmvDMOdll;
 DllLoader * wmsDMOdll;
+
+
+// Allocation tracking for vis modules that leak
+
+struct DllTrackInfo {
+	DllLoader* pDll;
+	unsigned MinAddr;
+	unsigned MaxAddr;
+	std::map<unsigned, unsigned> AllocList;
+};
+
+std::list<DllTrackInfo> TrackedDlls;
+typedef std::list<DllTrackInfo>::iterator TrackedDllsIter;
+
+inline std::map<unsigned,unsigned>* get_track_list(unsigned addr)
+{
+	for (TrackedDllsIter it = TrackedDlls.begin(); it != TrackedDlls.end(); ++it)
+	{
+		if (addr >= it->MinAddr && addr <= it->MaxAddr)
+		{
+			return &it->AllocList;
+		}
+	}
+	return NULL;
+}
+
+extern "C" void* __cdecl track_malloc(size_t s)
+{
+	unsigned loc;
+	__asm mov eax,[ebp+4]
+	__asm mov loc,eax
+
+	std::map<unsigned,unsigned>* pList = get_track_list(loc);
+
+	void* p = malloc(s);
+	if (pList)
+		(*pList)[(unsigned)p] = s;
+	return p;
+}
+
+extern "C" void* __cdecl track_calloc(size_t n, size_t s)
+{
+	unsigned loc;
+	__asm mov eax,[ebp+4]
+	__asm mov loc,eax
+
+	std::map<unsigned,unsigned>* pList = get_track_list(loc);
+
+	void* p = calloc(n, s);
+	if (pList)
+		(*pList)[(unsigned)p] = n * s;
+	return p;
+}
+
+extern "C" void* __cdecl track_realloc(void* p, size_t s)
+{
+	unsigned loc;
+	__asm mov eax,[ebp+4]
+	__asm mov loc,eax
+
+	std::map<unsigned,unsigned>* pList = get_track_list(loc);
+
+	void* q = realloc(p, s);
+	if (pList)
+	{
+		if (p != q)
+			pList->erase((unsigned)p);
+		(*pList)[(unsigned)q] = s;
+	}
+	return q;
+}
+
+extern "C" void __cdecl track_free(void* p)
+{
+	unsigned loc;
+	__asm mov eax,[ebp+4]
+	__asm mov loc,eax
+
+	std::map<unsigned,unsigned>* pList = get_track_list(loc);
+
+	if (pList)
+		pList->erase((unsigned)p);
+	free(p);
+}
 
 
 #ifdef DUMPING_DATA
@@ -132,6 +218,24 @@ int DllLoader::ResolveImports(void)
 #endif
 		ImportDirTable_t *Imp = ImportDirTable;
 
+		std::map<unsigned, unsigned>* pList = NULL;
+		for (TrackedDllsIter it = TrackedDlls.begin(); it != TrackedDlls.end(); ++it)
+		{
+			if (it->pDll == this)
+			{
+				pList = &it->AllocList;
+				for (int i = 0; i < NumOfSections; ++i)
+				{
+					if (!memcmp(SectionHeader[i].Name, ".text", 6))
+					{
+						it->MinAddr = (unsigned)hModule + SectionHeader[i].VirtualAddress;
+						it->MaxAddr = it->MinAddr + SectionHeader[i].VirtualSize;
+						break;
+					}
+				}
+				break;
+			}
+		}
 
 		while(  Imp->ImportLookupTable_RVA !=0 ||
 			Imp->TimeStamp != 0 ||
@@ -183,7 +287,28 @@ int DllLoader::ResolveImports(void)
 						*Addr = (unsigned long) dummy_Unresolved;
 						bResult=0;
 					} else {
-                        *Addr = (unsigned long)Fixup;
+						if (pList)
+						{
+							// alter fixup for memory tracking
+							if (!strcmp(ImpName, "malloc"))
+							{
+								Fixup = track_malloc;
+							}
+							else if (!strcmp(ImpName, "calloc"))
+							{
+								Fixup = track_calloc;
+							}
+							else if (!strcmp(ImpName, "realloc"))
+							{
+								Fixup = track_realloc;
+							}
+							else if (!strcmp(ImpName, "free"))
+							{
+								Fixup = track_free;
+							}
+						}
+
+						*Addr = (unsigned long)Fixup;
 					}
 				}
 				Table++;
@@ -324,12 +449,20 @@ int DllLoader::ResolveName(char *Name, char* Function, void **Fixup)
 	return 0;
 }
 
-DllLoader::DllLoader(char *_dll)
+DllLoader::DllLoader(const char *_dll, bool track)
 {
 	ImportDirTable = 0;        
 	Dll = new char[strlen(_dll)+1];
 	strcpy(Dll, _dll);
 	Exports = 0;
+
+	if (track)
+	{
+		DllTrackInfo TrackInfo;
+		TrackInfo.pDll = this;
+		TrackInfo.MinAddr = TrackInfo.MaxAddr = 0;
+		TrackedDlls.push_back(TrackInfo);
+	}
 }
 
 DllLoader::~DllLoader()
@@ -348,6 +481,30 @@ DllLoader::~DllLoader()
 		delete entry;
 	}
 	Head=NULL;*/
+
+	for (TrackedDllsIter it = TrackedDlls.begin(); it != TrackedDlls.end(); ++it)
+	{
+		if (it->pDll == this)
+		{
+			if (!it->AllocList.empty())
+			{
+				char temp[128];
+				sprintf(temp, "%s: Detected memory leaks: %d leaks\n", Dll, it->AllocList.size());
+				OutputDebugString(temp);
+				unsigned total = 0;
+				for (std::map<unsigned, unsigned>::iterator p = it->AllocList.begin(); p != it->AllocList.end(); ++p)
+				{
+					total += p->second;
+					free((void*)p->first);
+				}
+				sprintf(temp, "%s: Total bytes leaked: %d\n", Dll, total);
+				OutputDebugString(temp);
+			}
+			TrackedDlls.erase(it);
+			break;
+		}
+	}
+
 	ImportDirTable = 0;
 	delete [] Dll;
 
