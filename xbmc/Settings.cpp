@@ -253,7 +253,6 @@ CSettings::CSettings(void)
   g_stSettings.m_fPixelRatio = 1.0f;
 
   g_stSettings.m_bDisplayRemoteCodes = false;
-  g_stSettings.m_mplayerDebug = false;
   g_stSettings.m_iSambaDebugLevel = 0;
   strcpy(g_stSettings.m_strSambaWorkgroup, "WORKGROUP");
   strcpy(g_stSettings.m_strSambaWinsServer, "");
@@ -444,7 +443,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
   GetString(pRootElement, "dvdplayer", g_stSettings.m_szExternalDVDPlayer, "");
   GetString(pRootElement, "cddaplayer", g_stSettings.m_szExternalCDDAPlayer, "");
-  GetBoolean(pRootElement, "mplayerdebug", g_stSettings.m_mplayerDebug);
 
   GetString(pRootElement, "CDDARipPath", g_stSettings.m_strRipPath, "");
 

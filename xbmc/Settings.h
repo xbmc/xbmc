@@ -413,7 +413,6 @@ public:
     char szOnlineArenaPassword[32]; // private arena password
     char szOnlineArenaDescription[64]; // private arena description
 
-    bool m_mplayerDebug;
 
     int m_iMasterLockMaxRetry; // maximum # of password retries a user gets for all locked shares
     int m_iMasterLockStartupLock; // prompts user for szMasterLockCode on startup if true

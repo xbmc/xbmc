@@ -595,7 +595,6 @@ HRESULT CApplication::Create()
   //Check for X+Y - if pressed, set debug log mode and mplayer debuging on
   if (m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_X] && m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_Y])
   {
-    g_stSettings.m_mplayerDebug = true;
     g_stSettings.m_iLogLevel = LOGDEBUG;
     g_stSettings.m_bShowFreeMem = true;
     CLog::Log(LOGINFO, "Key combination detected for full debug logging (X+Y)");
