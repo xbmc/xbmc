@@ -540,7 +540,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		// shoutcast is always stereo
 		if (CUtil::IsShoutCast(strFile) ) 
 		{
-			options.SetChannels(2);
+			options.SetChannels(0);
 			bSupportsAC3Out = false;
 			bSupportsDTSOut = false;
 		}
@@ -707,28 +707,28 @@ bool CMPlayer::openfile(const CStdString& strFile)
 					if (lNewSampleRate==48000)
 					{	// yep - was DTS after all!
 						options.SetAC3PassTru(true);
-						options.SetChannels(2);
+						//options.SetChannels(2);
 						bNeed2Restart=false;
 					}
 					else
 					{	// nope - must be non-48kHz AC3 or something else...
 						options.SetAC3PassTru(false);
-						options.SetChannels(6);
+						iChannels = iNewChannels;
 						bNeed2Restart=true;
 					}
 				}
-				if (lSampleRate==48000 && g_stSettings.m_bUseDigitalOutput && bSupportsAC3Out)
+				else if (lSampleRate==48000 && g_stSettings.m_bUseDigitalOutput && bSupportsAC3Out)
 				{	// sample rate is OK
 					if (iChannels == 2 && g_stSettings.m_bDDStereoPassThrough)
 					{	// YES - change to pass through mode
 						options.SetAC3PassTru(true);
-						options.SetChannels(2);
+						//options.SetChannels(2);
 						bNeed2Restart=true;
 					}
 					if (iChannels > 2 && g_stSettings.m_bDD_DTSMultiChannelPassThrough)
 					{	// YES - change to pass through mode
 						options.SetAC3PassTru(true);
-						options.SetChannels(2);
+						//options.SetChannels(2);
 						bNeed2Restart=true;
 					}
 				}
@@ -775,8 +775,6 @@ bool CMPlayer::openfile(const CStdString& strFile)
 				{
 					int iChan=options.GetChannels();
 					if ( iChannels ==2) iChannels=0;
-					//if ( iChannels !=2) iChannels=2;
-					//else iChannels=0;
 					if (iChan!=iChannels)
 					{
 						CLog::Log("  --restart cause audio channels changed");
@@ -1157,8 +1155,8 @@ extern void xbox_audio_unregistercallback();
 extern void xbox_video_getRect(RECT& SrcRect, RECT& DestRect);
 extern void xbox_video_getAR(float& fAR);
 extern void xbox_video_update(bool bPauseDrawing);
-extern void xbox_video_update_subtitle_position();
-extern void xbox_video_render_subtitles();
+//extern void xbox_video_update_subtitle_position();
+//extern void xbox_video_render_subtitles();
 
 void CMPlayer::Update(bool bPauseDrawing)
 {
@@ -1196,15 +1194,15 @@ void CMPlayer::SwitchToNextAudioLanguage()
 
 }
 
-void CMPlayer::UpdateSubtitlePosition()
-{
-	xbox_video_update_subtitle_position();
-}
-
-void CMPlayer::RenderSubtitles()
-{
-	xbox_video_render_subtitles();
-}
+//void CMPlayer::UpdateSubtitlePosition()
+//{
+//	xbox_video_update_subtitle_position();
+//}
+//
+//void CMPlayer::RenderSubtitles()
+//{
+//	xbox_video_render_subtitles();
+//}
 
 bool CMPlayer::CanRecord() 
 {
