@@ -25,7 +25,6 @@ rem	CONFIG START
 	set RAROPS=a -r -idp -inul -m5 XBMC.rar BUILD
 	set TEX=XBMCTex.exe
 	set SKINS=..\Skins
-	set CODECS=..\Codecs
 rem	CONFIG END
 rem ---------------------------------------------
 ECHO Compiling Solution...
@@ -57,9 +56,9 @@ xcopy system BUILD\system /E /Q /I /Y
 rem xcopy web BUILD\web /E /Q /I /Y
 rem xcopy python BUILD\python /E /Q /I /Y
 rem xcopy %SKINS% Build\Skin /E /Q /I /Y
-rem xcopy %CODECS% Build\system\mplayer\codecs /E /Q /I /Y
 xcopy media BUILD\media /E /Q /I /Y
 del BUILD\media\dsstdfx.bin
+del BUILD\system\players\mplayer\codecs\.cvsignore
 
 REM ECHO ------------------------------
 REM ECHO Removing CVS directories from build
