@@ -312,7 +312,7 @@ void CGUIThumbnailPanel::OnAction(const CAction &action)
 				{
 					m_iCursorX++;
 				}
-				else if (m_iCursorY<m_iRows-1)
+				else if (m_iCursorY<m_iRows-1 && m_iOffset + m_iCursorY*m_iColumns+m_iCursorX < (int)m_vecItems.size()-1)
 				{
 					m_iCursorY++;
 					m_iCursorX=0;
