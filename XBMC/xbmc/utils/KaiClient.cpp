@@ -9,7 +9,7 @@
 CKaiClient* CKaiClient::client = NULL;
 
 //#define SPEEX_LOOPBACK 1
-#define	KAI_CONTACT_SETTLING_PERIOD		10000L
+#define	KAI_CONTACT_SETTLING_PERIOD		15000L
 
 #ifdef SPEEX_LOOPBACK
 DWORD g_speexLoopbackPlayerId = 0xDEADBEEF;
