@@ -42,8 +42,9 @@ using namespace std;
 #define LCD_MODE_NORMAL		1
 #define LCD_MODE_NOTV     2
 
-#define LCD_MODE_TYPE_LCD 0
-#define LCD_MODE_TYPE_VFD 1
+#define LCD_TYPE_LCD_HD44780 0
+#define LCD_TYPE_LCD_KS0073  1
+#define LCD_TYPE_VFD         2
 
 #define MODCHIP_SMARTXX   0
 #define MODCHIP_XENIUM    1
