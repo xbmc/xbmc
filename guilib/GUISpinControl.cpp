@@ -136,8 +136,9 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
 
       case GUI_MSG_LABEL_ADD:
       {
-        WCHAR *pLabel=(WCHAR *)message.GetLPVOID();
-        AddLabel(pLabel);
+        WCHAR wszLabel[1024];
+				wcscpy(wszLabel, (WCHAR *)message.GetLPVOID() );
+        AddLabel(wszLabel);
         return true;
       }
       break;
@@ -148,8 +149,7 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
 
 				if (m_iType==SPIN_CONTROL_TYPE_TEXT)
 				{
-					const WCHAR* wsLabel=GetLabel();
-					message.SetLPVOID( (LPVOID*)wsLabel  );
+					message.SetLabel( m_vecLabels[m_iValue]);
 				}
 				return true;
 			}

@@ -9,6 +9,7 @@ CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD
   m_dwParam1=dwParam1;
   m_dwParam2=dwParam2;
   m_lpVoid=lpVoid;
+	m_strLabel=L"";
 }
 
 CGUIMessage::CGUIMessage(const CGUIMessage& msg)
@@ -61,6 +62,7 @@ const CGUIMessage& CGUIMessage::operator = (const CGUIMessage& msg)
   m_dwParam1=msg.m_dwParam1;
   m_dwParam2=msg.m_dwParam2;
   m_lpVoid=msg.m_lpVoid;
+	m_strLabel=msg.m_strLabel;
   m_dwSenderID=msg.m_dwSenderID;
   return *this;
 }
@@ -79,4 +81,13 @@ void CGUIMessage::SetParam2(DWORD dwParam2)
 void CGUIMessage::SetLPVOID(void* lpVoid)
 {
   m_lpVoid=lpVoid;
+}
+
+void	CGUIMessage::SetLabel(const wstring& wstrLabel)
+{
+	m_strLabel=wstrLabel;
+}
+const wstring& CGUIMessage::GetLabel() const
+{
+	return m_strLabel;
 }

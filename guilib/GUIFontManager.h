@@ -19,6 +19,7 @@ public:
 	CGUIFont*				Load(const CStdString& strFontName,const CStdString& strFilename);
   void						LoadFonts(const CStdString& strFilename);
   CGUIFont*				GetFont(const CStdString& strFontName);
+	void						Clear();
 protected:
   vector<CGUIFont*> m_vecFonts;
 };

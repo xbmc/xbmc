@@ -118,7 +118,9 @@ void CGUIWindowManager::DeInitialize()
     CGUIWindow* pWindow=m_vecWindows[i];
     CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0);
     pWindow->OnMessage(msg);
+		pWindow->ClearAll();
   }
+	m_pRouteWindow=NULL;
 }
 
 void CGUIWindowManager::RouteToWindow(DWORD dwID)
