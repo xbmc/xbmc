@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 28-03-2005 added: user-agent to mplayer.conf, "MPEG" needed for old SHOUTcast-servers. Please leave intact.
   - 27-03-2005 changed: Made sure triggers submit a keypress wen released. Makes sure ff/rw resumes properly on trigger release
   - 27-05 2005 updated: mplayer.dll, fixes rewind jumps back to beginning when resuming playback.
   - 26-03-2005 changed: UseTags and FindRemoteThumbs are automatically enabled when a music scan starts, and restored when completed
