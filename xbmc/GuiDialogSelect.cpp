@@ -63,13 +63,18 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_CLICKED:
     {
+			
       int iControl=message.GetSenderId();
 			if (CONTROL_LIST==iControl)
 			{
-				CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
-				g_graphicsContext.SendMessage(msg);         
-				m_iSelected=msg.GetParam1();
-				Close();
+				int iAction=message.GetParam1();
+				if (ACTION_SELECT_ITEM==iAction)
+				{
+					CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
+					g_graphicsContext.SendMessage(msg);         
+					m_iSelected=msg.GetParam1();
+					Close();
+				}
 			}
     }
     break;

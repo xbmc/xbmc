@@ -99,11 +99,15 @@ bool CGUIDialogProgress::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_CLICKED:
     {
-      int iControl=message.GetSenderId();
-			if (iControl==10)
+			int iAction=message.GetParam1();
+			if (ACTION_SELECT_ITEM==iAction)
 			{
-				m_bCanceled=true;
-				return true;
+				int iControl=message.GetSenderId();
+				if (iControl==10)
+				{
+					m_bCanceled=true;
+					return true;
+				}
 			}
 		}
 		break;
