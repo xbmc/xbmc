@@ -91,7 +91,9 @@ public:
 	void									SetFullScreenVideo(bool bOnOff); 
 	bool									IsFullScreenVideo() const; 
 	bool									IsCalibrating() const; 
-	void									SetCalibrating(bool bOnOff); 
+	void									SetCalibrating(bool bOnOff);
+  bool                  IsOverlayAllowed() const;
+  void                  SetOverlay(bool bOnOff);
 	void									SetGUIResolution(RESOLUTION &res);
 	void									GetAllowedResolutions(vector<RESOLUTION> &res, bool bAllowPAL60 = false);
 	bool									IsValidResolution(RESOLUTION res);
@@ -129,6 +131,7 @@ protected:
 	int											m_iScreenOffsetY;
 	bool										m_bShowPreviewWindow;
 	bool										m_bCalibrating;
+  bool                    m_bShowOverlay;
 	RESOLUTION									m_Resolution;
 	RESOLUTION_INFO								*m_pResInfo;
 };

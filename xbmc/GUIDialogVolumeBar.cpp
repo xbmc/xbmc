@@ -37,7 +37,7 @@ void CGUIDialogVolumeBar::OnAction(const CAction &action)
 		Close();
 		return;
 	}
-	CGUIWindow::OnAction(action);
+	CGUIDialog::OnAction(action);
 }
 
 bool CGUIDialogVolumeBar::OnMessage(CGUIMessage& message)

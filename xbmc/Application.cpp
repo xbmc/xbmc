@@ -96,7 +96,6 @@ CApplication::CApplication(void)
 	m_bSpinDown        = false;
   m_bNetworkSpinDown = false;
 	m_dwSpinDownTime   = timeGetTime();
-	m_bOverlayEnabled  = true;
 	m_pWebServer       = NULL;
 	m_pFileZilla       = NULL;
 	m_pPlayer          = NULL;
@@ -1267,7 +1266,7 @@ void CApplication::Render()
 	m_gWindowManager.Render();
 
 	// check if we're playing a file
-	if (  m_bOverlayEnabled )
+	if (g_graphicsContext.IsOverlayAllowed())
 	{
 		// if we're playing a movie
 		if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
@@ -1824,7 +1823,7 @@ void CApplication::FrameMove()
 		action.fAmount1 = (float) m_guiPointer.GetPosX();
 		action.fAmount2 = (float) m_guiPointer.GetPosY();
 		// send mouse event to the music + video overlays, if they're enabled
-		if (  m_bOverlayEnabled )
+		if (g_graphicsContext.IsOverlayAllowed())
 		{
 			// if we're playing a movie
 			if ( IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
@@ -2242,15 +2241,6 @@ void CApplication::OnPlayBackStarted()
 	m_gWindowManager.SendThreadMessage(msg);
 
   CheckNetworkHDSpinDown(true);
-}
-
-void CApplication::EnableOverlay()
-{
-	m_bOverlayEnabled=true;
-}
-void CApplication::DisableOverlay()
-{
-	m_bOverlayEnabled=false;
 }
 
 bool CApplication::IsPlaying() const

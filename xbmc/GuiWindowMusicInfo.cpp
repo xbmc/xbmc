@@ -36,11 +36,11 @@ CGUIWindowMusicInfo::~CGUIWindowMusicInfo(void)
 void CGUIWindowMusicInfo::OnAction(const CAction &action)
 {
 	if (action.wID == ACTION_PREVIOUS_MENU)
-    {
+  {
 		Close();
 		return;
-    }
-	CGUIWindow::OnAction(action);
+  }
+	CGUIDialog::OnAction(action);
 }
 
 bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
@@ -50,14 +50,12 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
 		case GUI_MSG_WINDOW_DEINIT:
 		{
 			m_pAlbum=NULL;
-			g_application.EnableOverlay();
 		}
 		break;
 
     case GUI_MSG_WINDOW_INIT:
     {
-			CGUIWindow::OnMessage(message);
-			g_application.DisableOverlay();
+			CGUIDialog::OnMessage(message);
 			m_bViewReview=true;
 			m_bRefresh=false;
 			Refresh();
@@ -93,7 +91,7 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
     break;
   }
 
-  return CGUIWindow::OnMessage(message);
+  return CGUIDialog::OnMessage(message);
 }
 
 void CGUIWindowMusicInfo::SetAlbum(CMusicAlbumInfo& album)

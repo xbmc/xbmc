@@ -430,8 +430,6 @@ void CGUIWindowMusicSongs::OnScan()
 
 	DWORD dwTick=timeGetTime();
 
-	g_application.DisableOverlay();
-
 	// check whether we have scanned here before
 	bool m_bUpdateAll = false;
 	CStdString strPaths;
@@ -460,6 +458,11 @@ void CGUIWindowMusicSongs::OnScan()
 	CSectionLoader::Load("LIBMP4");
 
 	CUtil::ThumbCacheClear();
+
+  bool bOverlayAllowed=g_graphicsContext.IsOverlayAllowed();
+
+  if (bOverlayAllowed)
+    g_graphicsContext.SetOverlay(false);
 
 	g_musicDatabase.BeginTransaction();
 
@@ -516,7 +519,8 @@ void CGUIWindowMusicSongs::OnScan()
 
 	CUtil::ThumbCacheClear();
 
-	g_application.EnableOverlay();
+  if (bOverlayAllowed)
+    g_graphicsContext.SetOverlay(true);
 
 	m_dlgProgress->Close();
 
