@@ -74,12 +74,12 @@ void CGUIListExItem::OnPaint(CGUIItem::RenderContext* pContext)
 
 		if (m_pIcon)
 		{
-			// render the icon
-			m_pIcon->SetPosition(iPosX, iPosY+5);
+			// render the icon (centered vertically)
+			m_pIcon->SetPosition(iPosX, iPosY+((int)pDC->m_pButton->GetHeight() - (int)m_pIcon->GetHeight())/2);
 			m_pIcon->Render();
 		}
 
-		iPosX += 20;
+		iPosX += m_pIcon->GetWidth();
 
 		if (pDC->m_pFont)
 		{
@@ -91,8 +91,16 @@ void CGUIListExItem::OnPaint(CGUIItem::RenderContext* pContext)
 
 			CStdStringW strUnicode;
 			g_charsetConverter.stringCharsetToFontCharset(strDisplayText, strUnicode);
-
-			RenderText((FLOAT)iPosX, (FLOAT)iPosY+2, (FLOAT)pDC->m_pButton->GetWidth(), dwColor, (WCHAR*) strUnicode.c_str(), pDC->m_pFont);
+			
+			float fPosX = (float)iPosX+pDC->m_pButton->GetTextOffsetX();
+			float fPosY = (float)iPosY+pDC->m_pButton->GetTextOffsetY();
+			if (pDC->m_pButton->GetTextAlign() & XBFONT_CENTER_Y)
+			{
+				float fTextHeight,fTextWidth;
+				pDC->m_pFont->GetTextExtent( strUnicode.c_str(), &fTextWidth, &fTextHeight);
+				fPosY = (float)iPosY + ((float)pDC->m_pButton->GetHeight()-fTextHeight)/2;
+			}
+			RenderText(fPosX, fPosY, (FLOAT)pDC->m_pButton->GetWidth(), dwColor, (WCHAR*) strUnicode.c_str(), pDC->m_pFont);
 		}
 	}
 }
