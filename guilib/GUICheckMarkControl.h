@@ -35,6 +35,8 @@ public:
   const CStdString& GetCheckMarkTextureNameNF() const { return m_imgCheckMarkNoFocus.GetFileName(); };
   void              SetSelected(bool bOnOff);
   bool              GetSelected() const;
+  void              SetShadow(bool bOnOff);
+  bool              GetShadow() const;
 protected:
   CGUIImage     m_imgCheckMark;
   CGUIImage     m_imgCheckMarkNoFocus;
@@ -43,5 +45,6 @@ protected:
   wstring       m_strLabel;
   DWORD         m_dwDisabledColor;
 	DWORD					m_dwAlign;  
+  bool          m_bShadow;
 };
 #endif
