@@ -148,8 +148,8 @@
   <string><id>213</id><value>Bildschirm zentrieren..</value></string>
   <string><id>214</id><value>Bildschirm kalibrieren..</value></string>
   <string><id>215</id><value>Weichzeichnen</value></string>
-  <string><id>216</id><value>Vergrößern</value></string>
-  <string><id>217</id><value>Strecken</value></string>
+  <string><id>216</id><value>Vergrößerung</value></string>
+  <string><id>217</id><value>Bildverhältnis</value></string>
   <string><id>218</id><value>DVD Laufwerk</value></string>
   <string><id>219</id><value>CD/DVD einlegen</value></string>
   <string><id>220</id><value>Freigabe</value></string>
@@ -206,7 +206,7 @@
   <string><id>272</id><value>Bildbereich oben links ausrichten</value></string>
   <string><id>273</id><value>Bildbereich unten rechts ausrichten</value></string>
   <string><id>274</id><value>Untertitelposition</value></string>
-  <string><id>275</id><value>Pixelverhältnis einstellen</value></string>
+  <string><id>275</id><value>Bildverhältnis einstellen</value></string>
   <string><id>276</id><value>Bewege den Pfeil um den Bildbereich einzustellen</value></string>
   <string><id>277</id><value>Bewege den Balken um die Untertitelposition einzustellen</value></string>
   <string><id>278</id><value>Ändere das Rechteck so das es ein perfektes Quadrat ergibt</value></string>
@@ -367,7 +367,7 @@
   <string><id>435</id><value>Track</value></string>
   <string><id>436</id><value>Jahr:</value></string>
   <string><id>437</id><value>Dauer:</value></string>
-  <string><id>438</id><value>öffne Datei</value></string>
+  <string><id>438</id><value>Datei wird geöffnet</value></string>
   <string><id>439</id><value>Speicher</value></string>
   <string><id>440</id><value>Festplatte</value></string>
   <string><id>441</id><value>UDF</value></string>
@@ -394,9 +394,9 @@
   <string><id>461</id><value>[aktiv]</value></string>
   <string><id>462</id><value>Untertitel</value></string>
   <string><id>463</id><value>- Hintergrundlicht</value></string>
-  <string><id>464</id><value>Helligkeit</value></string>
+  <string><id>464</id><value>- Helligkeit</value></string>
   <string><id>465</id><value>- Kontrast</value></string>
-  <string><id>466</id><value>Gamma</value></string>
+  <string><id>466</id><value>- Gamma</value></string>
   <string><id>467</id><value>Typ:</value></string>
   <string><id>468</id><value>Bewege die Leiste um die OSD Einstellung zu ändern.</value></string>
   <string><id>469</id><value>OSD Position</value></string>
@@ -409,7 +409,7 @@
   <string><id>476</id><value>Audio &amp; Video</value></string>
   <string><id>477</id><value>Wiedergabeliste konnte nicht geladen werden!</value></string>
   <string><id>478</id><value>OSD Einblendzeit</value></string>
-  <string><id>479</id><value>Darstellung-Sprache</value></string>
+  <string><id>479</id><value>Benutzeroberfläche</value></string>
   <string><id>480</id><value>Darstellung</value></string>
   <string><id>481</id><value>Audio Optionen</value></string>
   <string><id>482</id><value>Info über XBMC</value></string>
@@ -512,11 +512,16 @@
   <string><id>746</id><value>Bitte wieder zur Ansicht "Dateien" wechseln.</value></string>
   <string><id>747</id><value>Fehler beim Laden des Bildes</value></string>
   <string><id>748</id><value>Pfad ändern</value></string>
-  <string><id>749</id><value>Freigabe hinzufügen</value></string>
+  <string><id>749</id><value>Verknüpfung hinzuf.</value></string>
   <string><id>750</id><value>Sind sie sicher?</value></string>
-  <string><id>751</id><value>Freigabe löschen</value></string>
-  <string><id>752</id><value>Freigabe: Pfad ändern</value></string>
-  <string><id>753</id><value>Freigabe: Name ändern</value></string>
+  <string><id>751</id><value>Verknüpfung löschen</value></string>
+  <string><id>752</id><value>Verknüpfung: Pfad [ändern]:</value></string>
+  <string><id>753</id><value>Verknüpfung: Bezeichnung [ändern]:</value></string>
+  <string><id>754</id><value>Verknüpfung hinzuf.</value></string> 
+  <string><id>755</id><value>Verknüpfung: Pfad (ändern):</value></string> 
+  <string><id>756</id><value>Verknüpfung: Bezeichnung (ändern):</value></string> 
+  <string><id>757</id><value>Pfadtiefe (ändern): [Zahl]</value></string> 
+  <string><id>758</id><value>Verknüpfung löschen</value></string> 
   <string><id>998</id><value>Online spielen</value></string>
   <string><id>999</id><value>Online spielen</value></string>
   <string><id>10000</id><value>Hauptmenü</value></string>
@@ -586,8 +591,8 @@
   <string><id>12329</id><value>oder um abzubrechen C drücken</value></string> 
   <string><id>12330</id><value>Gamepad Tastenkombination eingeben</value></string> 
   <string><id>12331</id><value>und Start drücken, um abzubrechen Back</value></string> 
-  <string><id>12332</id><value>Freigabe sperren</value></string> 
-  <string><id>12333</id><value>Freigabe entsperren</value></string> 
+  <string><id>12332</id><value>Zugriff sperren</value></string> 
+  <string><id>12333</id><value>Entsperren</value></string> 
   <string><id>12334</id><value>Sperre zurücksetzen</value></string> 
   <string><id>12335</id><value>Sperre entfernen</value></string> 
   <string><id>12336</id><value>Kennwortart wählen:</value></string> 
@@ -710,7 +715,7 @@
   <string><id>14021</id><value>- Ortskennzahl 3</value></string>
   <string><id>14022</id><value>Datenbank</value></string>
   <string><id>14023</id><value>Kein TV</value></string>
-  <string><id>14024</id><value>Stadt oder US Postleitzahl eingeben</value></string>
+  <string><id>14024</id><value>Stadt oder US Postleitzahl eingeben:</value></string>
   <string><id>14025</id><value>Video Cache   - Festplatte</value></string>
   <string><id>14026</id><value>              - DVD Laufwerk</value></string>
   <string><id>14027</id><value>              - lokales Netzwerk</value></string>
@@ -746,8 +751,8 @@
   <string><id>14057</id><value>Nicht möglich während Suche nach Medieninfos</value></string>
   <string><id>14058</id><value>Filmkörnungseffekt</value></string>
   <string><id>15000</id><value>XLink Kai</value></string>
-  <string><id>15001</id><value>Es besteht keine Verbindung mit XLink, soll</value></string> 
-  <string><id>15002</id><value>XBMC versuchen mit XLink zu verbinden?</value></string> 
+  <string><id>15001</id><value>Es besteht keine Verbindung mit XLink,</value></string> 
+  <string><id>15002</id><value>soll XBMC versuchen mit XLink zu verbinden?</value></string> 
   <string><id>15003</id><value>Nachricht eingeben.</value></string> 
   <string><id>15004</id><value>Für %s bestand eine Einladung.</value></string> 
   <string><id>15005</id><value>Datum: %s</value></string> 
@@ -766,8 +771,8 @@
   <string><id>15018</id><value>Eintreten</value></string> 
   <string><id>15019</id><value>Hinzufügen</value></string> 
   <string><id>15020</id><value>Hosten</value></string> 
-  <string><id>15021</id><value>Arenen</value></string> 
-  <string><id>15022</id><value>Ansicht: Arenen</value></string> 
+  <string><id>15021</id><value>Arena</value></string> 
+  <string><id>15022</id><value>Ansicht: Arena</value></string> 
   <string><id>15023</id><value>Spielen</value></string> 
   <string><id>15024</id><value>Hinzufügen</value></string> 
   <string><id>15025</id><value>Hosten</value></string> 
@@ -785,21 +790,21 @@
   <string><id>15037</id><value>Netzwerkerreichbarkeit nicht feststellbar.</value></string> 
   <string><id>15038</id><value>Probleme Spiele zu hosten oder beizutreten möglich.</value></string> 
   <string><id>15039</id><value>Spiel wurde von XBMC nicht gefunden.</value></string> 
-  <string><id>15040</id><value>Bitte DVD einlegen und Spiel manuell starten</value></string> 
-  <string><id>15041</id><value>oder um abzubrechen A drücken .</value></string> 
+  <string><id>15040</id><value>Bitte DVD einlegen und Spiel manuell starten,</value></string> 
+  <string><id>15041</id><value>oder um abzubrechen A drücken.</value></string> 
   <string><id>15042</id><value>Zugriff verweigert</value></string> 
   <string><id>15043</id><value>%s dem Chat beigetreten.</value></string> 
   <string><id>15044</id><value>%s hat Chat verlassen.</value></string> 
   <string><id>15045</id><value>Persönliche Nachricht eingeben.</value></string> 
   <string><id>15046</id><value>Aktuelle Arena</value></string> 
-  <string><id>15047</id><value>Arena Kennwort bitte eingeben.</value></string> 
-  <string><id>15048</id><value>Arena Beschreibung bitte eingeben.</value></string> 
+  <string><id>15047</id><value>Arena Kennwort bitte eingeben:</value></string> 
+  <string><id>15048</id><value>Arena Beschreibung bitte eingeben:</value></string> 
   <string><id>15049</id><value>Spiel hosten</value></string> 
   <string><id>15050</id><value>Privat Arena hosten</value></string> 
   <string><id>15051</id><value>Spieler Anzahl</value></string> 
   <string><id>15052</id><value>Kennwort</value></string> 
   <string><id>15053</id><value>Beschreibung</value></string> 
-  <string><id>15054</id><value>Invite Dialog</value></string> 
+  <string><id>15054</id><value>Einladung</value></string> 
   <string><id>15055</id><value>Spiel wählen:</value></string> 
   <string><id>15056</id><value>Nachricht eingeben:</value></string> 
   <string><id>15057</id><value>Senden</value></string> 
