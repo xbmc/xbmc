@@ -366,6 +366,7 @@ HRESULT CApplication::Initialize()
   }
   CLog::Log("initialize done");	
   g_lcd.Initialize();
+  CUtil::InitGamma();
 	return S_OK;
 }
 
@@ -1258,10 +1259,10 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
     m_iAudioStreamIDX=-1;
 
     // switch 2 default settings...
-    g_settings.m_iBrightness=50;
-    g_settings.m_iContrast=50;
-    g_settings.m_iGamma=50;
-    CUtil::SetBrightnessContrastGammaPercent(g_settings.m_iBrightness,g_settings.m_iContrast,g_settings.m_iGamma,true);
+    g_settings.m_iBrightness=40;
+    g_settings.m_iContrast=40;
+    g_settings.m_iGamma=40;
+    
   }
   m_strCurrentFile=strFile;
   
@@ -1311,6 +1312,7 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 		    g_graphicsContext.SetFullScreenVideo(true);
 		    m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
       }
+      
     }
 
     if ( !CUtil::IsHD(m_strCurrentFile) )
