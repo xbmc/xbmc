@@ -280,15 +280,23 @@ ao_functions_t audio_functions=
 	audio_resume
 };
 
-extern void xbox_audio_registercallback(IAudioCallback* pCallback)
+void xbox_audio_registercallback(IAudioCallback* pCallback)
 {
 	if (!m_pAudioDecoder) return;
 	m_pAudioCallback=pCallback;
 	m_pAudioDecoder->RegisterAudioCallback(pCallback);
 }
-extern void xbox_audio_unregistercallback()
+void xbox_audio_unregistercallback()
 {
 	if (!m_pAudioDecoder) return;
 	m_pAudioDecoder->UnRegisterAudioCallback();
 	m_pAudioCallback=NULL;
+}
+
+
+void xbox_audio_wait_completion()
+{
+	if (!m_pAudioDecoder)
+		return;
+	m_pAudioDecoder->WaitCompletion();
 }
