@@ -527,7 +527,7 @@ void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
 	if (iItem >=0 && iItem < (int)m_vecItems.size())
 	{
 		CFileItem* pItem=m_vecItems[iItem];
-		if (pItem->m_bIsFolder && pItem->GetLabel() != "..")
+		if (pItem->GetLabel() != "..")
 		{
 			GetDirectoryHistoryString(pItem, strSelectedItem);
 			m_history.Set(strSelectedItem,m_Directory.m_strPath);
@@ -948,8 +948,11 @@ int CGUIWindowPictures::GetSelectedItem()
 
 void CGUIWindowPictures::GoParentFolder()
 {
-	CStdString strPath=m_strParentPath;
+	CStdString strPath(m_strParentPath), strOldPath(m_Directory.m_strPath);
 	Update(strPath);
+
+  if(!g_guiSettings.GetBool("FileLists.FullDirectoryHistory"))
+    m_history.Remove(strOldPath); //Delete current path
 }
 
 bool CGUIWindowPictures::ViewByIcon()

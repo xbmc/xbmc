@@ -883,5 +883,6 @@
   <string><id>15103</id><value>* All Artists</value></string>
   <string><id>15104</id><value>* All Songs</value></string>
   <string><id>15105</id><value>* All Genres</value></string>
+  <string><id>15106</id><value>Remember selected file on forward navigation</value></string>
 </strings>
 

@@ -344,7 +344,7 @@ void CGUIWindowScripts::Update(const CStdString &strDirectory)
 	if (iItem >=0 && iItem < (int)m_vecItems.size())
 	{
 		CFileItem* pItem=m_vecItems[iItem];
-		if (pItem->m_bIsFolder && pItem->GetLabel() != "..")
+		if (pItem->GetLabel() != "..")
 		{
 			strSelectedItem=pItem->m_strPath;
 			m_history.Set(strSelectedItem,m_Directory.m_strPath);
@@ -588,21 +588,11 @@ void CGUIWindowScripts::Render()
 
 void CGUIWindowScripts::GoParentFolder()
 {
-	CStdString strPath=m_strParentPath;
+	CStdString strPath(m_strParentPath), strOldPath(m_Directory.m_strPath);
 	Update(strPath);
-/*
-	if (m_strDirectory.IsEmpty()) return;
-	CStdString strParent;
-	if (CUtil::GetParentPath(m_strDirectory, strParent))
-	{
-		Update(strParent);
-	}*/
-/* 	if (!m_vecItems.size()) return;
-  CFileItem* pItem=m_vecItems[0];
-  CStdString strPath=pItem->m_strPath;
-  if (pItem->m_bIsFolder && pItem->GetLabel()=="..")
-  {
-    Update(strPath);
-  }*/
   UpdateButtons();
+
+  if(!g_guiSettings.GetBool("FileLists.FullDirectoryHistory"))
+    m_history.Remove(strOldPath); //Delete current path
+
 }

@@ -799,9 +799,13 @@ void CGUIWindowVideoBase::GoParentFolder()
 {
 	// don't call Update() with m_strParentPath, as we update m_strParentPath before the
 	// directory is retrieved.
-	CStdString strPath=m_strParentPath;
+	CStdString strPath(m_strParentPath), strOldPath(m_Directory.m_strPath);
 	Update(strPath);
   UpdateButtons();
+
+  if(!g_guiSettings.GetBool("FileLists.FullDirectoryHistory"))
+    m_history.Remove(strOldPath); //Delete current path
+
 }
 
 void CGUIWindowVideoBase::OnManualIMDB()
