@@ -180,6 +180,8 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 			m_strNetworkSubnet = g_guiSettings.GetString("Network.Subnet");
 			m_strNetworkGateway = g_guiSettings.GetString("Network.Gateway");
 			m_strNetworkDNS = g_guiSettings.GetString("Network.DNS");
+			m_dwResTime     = 0;
+			m_OldResolution = (RESOLUTION)g_guiSettings.GetInt("LookAndFeel.Resolution");
 			int iFocusControl=m_iLastControl;
 
 			SetupControls();
@@ -196,6 +198,10 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 		break;
 	case GUI_MSG_WINDOW_DEINIT:
 		{
+			//restore resolution setting to original if we were in the middle of changing
+			if (m_dwResTime) g_guiSettings.SetInt("LookAndFeel.Resolution", m_OldResolution);
+			m_OldResolution = INVALID;
+
 			// Hardware based stuff
 			// TODO: This should be done in a completely separate screen
 			// to give warning to the user that it writes to the EEPROM.
@@ -729,7 +735,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 
 void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 {
-	int iOldResolution;
 	CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
 	if (strSetting.Left(16) == "Weather.AreaCode")
 	{
@@ -741,10 +746,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 			if (CGUIWindowWeather::GetSearchResults(strSearch, strResult))
 				((CSettingString *)pSettingControl->GetSetting())->SetData(strResult);
 		}
-	}
-	else if (strSetting == "LookAndFeel.Resolution")
-	{	// save our resolution info (so we can see if things have actually changed)
-		iOldResolution = ((CSettingInt *)pSettingControl->GetSetting())->GetData();
 	}
 	// call the control to do it's thing
 	pSettingControl->OnClick();
@@ -974,24 +975,16 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 	}
 	else if (strSetting == "LookAndFeel.Resolution")
 	{	// new resolution choosen... - update if necessary
-		CSettingInt *pSettingInt = (CSettingInt *)pSettingControl->GetSetting();
-		int iControlID = pSettingControl->GetID();
-		CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControlID,0,0,NULL);
-		g_graphicsContext.SendMessage(msg);
-		RESOLUTION newRes = (RESOLUTION)msg.GetParam1();//((CGUISpinControlEx *)GetControl(iControlID))->GetValue();
-		if (newRes != g_guiSettings.GetInt("LookAndFeel.Resolution"))
-		{
-			// change the resolution on the fly
-      //set our option
-			g_guiSettings.SetInt("LookAndFeel.Resolution", newRes);
-      //set the gui resolution, if newRes is AUTORES newRes will be set to the highest available resolution
-			g_graphicsContext.SetGUIResolution(newRes);
-      //set our lookandfeelres to the resolution set in graphiccontext
-      g_guiSettings.m_LookAndFeelResolution = newRes;
-			g_application.LoadSkin(g_guiSettings.GetString("LookAndFeel.Skin"));
-			m_gWindowManager.ActivateWindow(GetID());
-		}
-		SET_CONTROL_FOCUS(iControlID, newRes);	// not sure if that will work....
+    CSettingInt *pSettingInt = (CSettingInt *)pSettingControl->GetSetting();
+    int iControlID = pSettingControl->GetID();
+    CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControlID,0,0,NULL);
+    g_graphicsContext.SendMessage(msg);
+    m_NewResolution = (RESOLUTION)msg.GetParam1();
+    // delay change of resolution
+    if (m_NewResolution != m_OldResolution)
+    {
+      m_dwResTime = timeGetTime() + 2000;
+    }
 	}
 	else if (strSetting == "LookAndFeel.Language")
 	{	// new language choosen...
@@ -1118,6 +1111,29 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, int iPosX, int i
 
 void CGUIWindowSettingsCategory::Render()
 {
+  // check if we need to set a new resolution
+  if (m_dwResTime && timeGetTime() >= m_dwResTime)
+  {
+    m_dwResTime = 0;
+
+    if (m_NewResolution != m_OldResolution)
+    {
+      unsigned iCtrlID = GetFocusedControl();
+      CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iCtrlID,0,0,NULL);
+      g_graphicsContext.SendMessage(msg);
+      //set our option
+      g_guiSettings.SetInt("LookAndFeel.Resolution", m_NewResolution);
+      m_OldResolution = m_NewResolution;
+      //set the gui resolution, if newRes is AUTORES newRes will be set to the highest available resolution
+      g_graphicsContext.SetGUIResolution(m_NewResolution);
+      //set our lookandfeelres to the resolution set in graphiccontext
+      g_guiSettings.m_LookAndFeelResolution = m_NewResolution;
+      g_application.LoadSkin(g_guiSettings.GetString("LookAndFeel.Skin"));
+      m_gWindowManager.ActivateWindow(GetID());
+      SET_CONTROL_FOCUS(iCtrlID, g_guiSettings.GetInt("LookAndFeel.Resolution"));
+    }
+  }
+
 	bool bAlphaFaded = false;
 	CGUIButtonControl *pButton = (CGUIButtonControl *)GetControl(CONTROL_START_BUTTONS + m_iSection);
 	if (pButton && !pButton->HasFocus())

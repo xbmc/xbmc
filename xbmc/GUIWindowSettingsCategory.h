@@ -39,6 +39,9 @@ protected:
 	vector<CBaseSettingControl *> m_vecSettings;
 	int m_iSection;
 	int m_iScreen;
+	DWORD		   m_dwResTime;
+	RESOLUTION m_OldResolution;
+	RESOLUTION m_NewResolution;
 	vecSettingsCategory m_vecSections;
 	CGUISpinControlEx *m_pOriginalSpin;
 	CGUIRadioButtonControl *m_pOriginalRadioButton;
