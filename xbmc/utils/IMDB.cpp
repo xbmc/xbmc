@@ -125,8 +125,16 @@ bool CIMDB::FindMovie(const string &strMovie,IMDB_MOVIELIST& movielist)
 					*pURL=0;
 					pURL++;
 					*pURL=0;
-					strcpy(szURL, pAHREF);
-					strcpy(szTitle, pURL+1);
+          char* pURLEnd=strstr(pURL+1,"<");
+          strcpy(szURL, pAHREF);
+					if (pURLEnd)  
+          {
+            *pURLEnd=0;
+            strcpy(szTitle, pURL+1);
+            *pURLEnd='<';
+          }
+          else
+            strcpy(szTitle, pURL+1);
 					html.ConvertHTMLToAnsi(szTitle, url.m_strTitle);
 		
 					sprintf(szURL,"http://us.imdb.com/%s", &pAHREF[1]);
