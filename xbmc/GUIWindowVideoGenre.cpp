@@ -1,7 +1,5 @@
 //todo: 
 // - directory history
-// - g_stSettings.m_bMyVideoRootViewAsIcons
-// - g_stSettings.m_bMyVideoViewAsIcons
 // - if movie is directory then show files in directory...
 // - if movie does not exists when play movie is called then show dialog asking to insert the correct CD
 
@@ -43,13 +41,13 @@ struct SSortVideoGenreByName
 		if (rpStart.GetLabel()=="..") return true;
 		if (rpEnd.GetLabel()=="..") return false;
 		bool bGreater=true;
-		if (g_stSettings.m_bMyVideoSortAscending) bGreater=false;
+		if (g_stSettings.m_bMyVideoGenreSortAscending) bGreater=false;
     if ( rpStart.m_bIsFolder   == rpEnd.m_bIsFolder)
 		{
 			char szfilename1[1024];
 			char szfilename2[1024];
 
-			switch ( g_stSettings.m_iMyVideoSortMethod ) 
+			switch ( g_stSettings.m_iMyVideoGenreSortMethod ) 
 			{
 				case 0:	//	Sort by Filename
 					strcpy(szfilename1, rpStart.GetLabel().c_str());
@@ -96,7 +94,7 @@ struct SSortVideoGenreByName
 				szfilename2[i]=tolower((unsigned char)szfilename2[i]);
 			//return (rpStart.strPath.compare( rpEnd.strPath )<0);
 
-			if (g_stSettings.m_bMyVideoSortAscending)
+			if (g_stSettings.m_bMyVideoGenreSortAscending)
 				return (strcmp(szfilename1,szfilename2)<0);
 			else
 				return (strcmp(szfilename1,szfilename2)>=0);
@@ -196,24 +194,24 @@ bool CGUIWindowVideoGenre::OnMessage(CGUIMessage& message)
       if (iControl==CONTROL_BTNVIEWASICONS)
       {
 		  if ( m_strDirectory.IsEmpty() )
-		    g_stSettings.m_bMyVideoRootViewAsIcons=!g_stSettings.m_bMyVideoRootViewAsIcons;
+		    g_stSettings.m_bMyVideoGenreRootViewAsIcons=!g_stSettings.m_bMyVideoGenreRootViewAsIcons;
 		  else
-		    g_stSettings.m_bMyVideoViewAsIcons=!g_stSettings.m_bMyVideoViewAsIcons;
+		    g_stSettings.m_bMyVideoGenreViewAsIcons=!g_stSettings.m_bMyVideoGenreViewAsIcons;
 
 				g_settings.Save();
         UpdateButtons();
       }
       else if (iControl==CONTROL_BTNSORTBY) // sort by
       {
-        g_stSettings.m_iMyVideoSortMethod++;
-        if (g_stSettings.m_iMyVideoSortMethod >=3) g_stSettings.m_iMyVideoSortMethod=0;
+        g_stSettings.m_iMyVideoGenreSortMethod++;
+        if (g_stSettings.m_iMyVideoGenreSortMethod>=3) g_stSettings.m_iMyVideoGenreSortMethod=0;
 				g_settings.Save();
         UpdateButtons();
         OnSort();
       }
       else if (iControl==CONTROL_BTNSORTASC) // sort asc
       {
-        g_stSettings.m_bMyVideoSortAscending=!g_stSettings.m_bMyVideoSortAscending;
+        g_stSettings.m_bMyVideoGenreSortAscending=!g_stSettings.m_bMyVideoGenreSortAscending;
 				g_settings.Save();
         UpdateButtons();
         OnSort();
@@ -262,10 +260,10 @@ void CGUIWindowVideoGenre::UpdateButtons()
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
 	bool bViewIcon = false;
 	if ( m_strDirectory.IsEmpty() ) {
-		bViewIcon = g_stSettings.m_bMyVideoRootViewAsIcons;
+		bViewIcon = g_stSettings.m_bMyVideoGenreRootViewAsIcons;
 	}
 	else {
-		bViewIcon = g_stSettings.m_bMyVideoViewAsIcons;
+		bViewIcon = g_stSettings.m_bMyVideoGenreViewAsIcons;
 	}
    if (bViewIcon) 
     {
@@ -282,9 +280,9 @@ void CGUIWindowVideoGenre::UpdateButtons()
       iString=100;
     }
 		SET_CONTROL_LABEL(GetID(), CONTROL_BTNVIEWASICONS,iString);
-		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyVideoSortMethod+103);
+		SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyVideoGenreSortMethod+103);
 
-    if ( g_stSettings.m_bMyVideoSortAscending)
+    if ( g_stSettings.m_bMyVideoGenreSortAscending)
     {
       CGUIMessage msg(GUI_MSG_DESELECTED,GetID(), CONTROL_BTNSORTASC);
       g_graphicsContext.SendMessage(msg);
@@ -328,7 +326,7 @@ void CGUIWindowVideoGenre::OnSort()
   for (int i=0; i < (int)m_vecItems.size(); i++)
   {
     CFileItem* pItem=m_vecItems[i];
-    if (g_stSettings.m_iMyVideoSortMethod==0||g_stSettings.m_iMyVideoSortMethod==2)
+    if (g_stSettings.m_iMyVideoGenreSortMethod==0||g_stSettings.m_iMyVideoGenreSortMethod==2)
     {
 			if (pItem->m_bIsFolder) pItem->SetLabel2("");
       else 
@@ -413,9 +411,9 @@ void CGUIWindowVideoGenre::Update(const CStdString &strDirectory)
 
   bool bViewAsIcon = false;
 	if ( m_strDirectory.IsEmpty() )
-		bViewAsIcon = g_stSettings.m_bMyVideoRootViewAsIcons;
+		bViewAsIcon = g_stSettings.m_bMyVideoGenreRootViewAsIcons;
 	else
-		bViewAsIcon = g_stSettings.m_bMyVideoViewAsIcons;
+		bViewAsIcon = g_stSettings.m_bMyVideoGenreViewAsIcons;
 
 	if ( bViewAsIcon ) {	
 		SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS);

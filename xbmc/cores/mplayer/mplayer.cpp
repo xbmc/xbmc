@@ -47,6 +47,7 @@ void						(__cdecl* psetPercentage)(int);
 void						(__cdecl* psetSubtitle)(int);
 void						(__cdecl* pshowSubtitle)(int);
 void						(__cdecl* psetAudioLanguage)(int);
+void						(__cdecl* psetTime)(int);
 
 float					  (__cdecl* pgetAVDelay)();
 float					  (__cdecl* pgetSubtitleDelay)();
@@ -58,8 +59,18 @@ int             (__cdecl* pgetAudioLanguageCount)();
 int             (__cdecl* pgetAudioLanguage)();
 int             (__cdecl* pgetAudioStream)(int);
 int             (__cdecl* pgetAudioStreamCount)();
+int 			(__cdecl* pgetTime)();
 extern "C" 
 {
+  void mplayer_setTime(int iTime)
+  {
+    psetTime(iTime);
+  }
+
+  int mplayer_getTime()
+  {
+    return pgetTime();
+  }
   int mplayer_getAudioLanguageCount()
   {
     return pgetAudioLanguageCount();
@@ -434,6 +445,12 @@ extern "C"
 
 		dll.ResolveExport("mplayer_setAudioLanguage", &pProc);
 		psetAudioLanguage=(void(__cdecl*)(int))pProc;
+
+		dll.ResolveExport("mplayer_setTime", &pProc);
+		psetTime=(void(__cdecl*)(int))pProc;
+
+		dll.ResolveExport("mplayer_getTime", &pProc);
+		pgetTime=(int(__cdecl*)())pProc;
 
 		pSetVideoFunctions(&video_functions);
 		pSetAudioFunctions(&audio_functions);

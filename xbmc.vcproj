@@ -1063,6 +1063,12 @@
 				RelativePath=".\xbmc\utils\Event.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\utils\fstrcmp.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\fstrcmp.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\utils\HTMLTable.cpp">
 			</File>
 			<File

@@ -96,6 +96,8 @@ public:
   virtual void    SetSubTittleDelay(float fValue=0.0f);
   virtual float   GetSubTitleDelay();
   virtual int     GetAudioStreamCount();
+  virtual void	  SeekTime(int iTime=0);
+  virtual int	  GetTime();
 protected:
   bool                load();
 	virtual void				OnStartup();

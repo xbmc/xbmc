@@ -958,4 +958,14 @@ int     CMPlayer::GetAudioStreamCount()
   return mplayer_getAudioStreamCount();
 }
 
+void CMPlayer::SeekTime(int iTime)
+{
+  mplayer_setTime( iTime);
+  SwitchToThread();
+  xbox_video_wait();
+}
 
+int CMPlayer::GetTime()
+{
+  return mplayer_getTime();
+}
