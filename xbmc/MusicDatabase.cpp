@@ -294,8 +294,8 @@ bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName1, CSong& so
 	if (NULL==m_pDS) return false;
 	char szSQL[1024];
 	sprintf(szSQL,"select * from song,album,genre,artist,path where song.idPath=path.idPath and song.idAlbum=album.idAlbum and song.idGenre=genre.idGenre and song.idArtist=artist.idArtist and strFileName='%s' and strPath='%s'",
-									strPath.c_str(),
-									strFName.c_str() );
+									strFName.c_str(),
+									strPath.c_str());
 	if (!m_pDS->query(szSQL)) return false;
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound== 0) return false;
