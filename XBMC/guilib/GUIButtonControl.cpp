@@ -46,21 +46,14 @@ void CGUIButtonControl::Render()
 			dwAlphaChannel = 63-(dwAlphaCounter%64);
 
 		dwAlphaChannel += 192;
-		
-		SetAlpha(dwAlphaChannel );
+		dwAlphaChannel = DWORD((float)m_dwAlpha*(float)dwAlphaChannel/255.0f);
+		m_imgFocus.SetAlpha(dwAlphaChannel);
 		m_imgFocus.SetVisible(true);
 		m_imgNoFocus.SetVisible(false);
 		m_dwFrameCounter++;
   }
-  else if (m_bSelected)
-  {
-		SetAlpha(0x60);
-		m_imgNoFocus.SetVisible(false);
-		m_imgFocus.SetVisible(true);
-  }
   else 
   {
-		SetAlpha(0xFF);
 		m_imgFocus.SetVisible(false);
 		m_imgNoFocus.SetVisible(true);
   }
