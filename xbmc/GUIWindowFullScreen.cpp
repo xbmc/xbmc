@@ -150,25 +150,28 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
 
 		case ACTION_ASPECT_RATIO:
 		{
+			// Only switch if the status bar is on screen
+			if (m_bShowStatus)
+			{
+				if (g_stSettings.m_bZoom)
+				{	// zoom->stretch
+					g_stSettings.m_bZoom=false;
+					g_stSettings.m_bStretch=true;
+				}
+				else if (g_stSettings.m_bStretch)
+				{	// stretch->normal
+					g_stSettings.m_bZoom=false;
+					g_stSettings.m_bStretch=false;
+				}
+				else
+				{	// normal->zoom
+					g_stSettings.m_bZoom=true;
+					g_stSettings.m_bStretch=false;
+				}
+			}
+			// Update the status bar time
 			m_bShowStatus=true;
 			m_dwTimeStatusShowTime=timeGetTime();
-			// zoom->stretch
-			if (g_stSettings.m_bZoom)
-			{
-				g_stSettings.m_bZoom=false;
-				g_stSettings.m_bStretch=true;
-				return;
-			}
-			// stretch->normal
-			if (g_stSettings.m_bStretch)
-			{
-				g_stSettings.m_bZoom=false;
-				g_stSettings.m_bStretch=false;
-				return;
-			}
-			// normal->zoom
-			g_stSettings.m_bZoom=true;
-			g_stSettings.m_bStretch=false;
 			return;
 		}
 		break;

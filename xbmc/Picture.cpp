@@ -306,9 +306,9 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
 		m_bSectionLoaded=true;
 	}
 
-  try
+	try
 	{
-
+		bool bNeedToConvert = dwImageType != CXIMAGE_FORMAT_JPG;
 		CxImage image(dwImageType);
 		if (!image.Load(strCachedFile.c_str(),dwImageType))
 		{
@@ -318,46 +318,64 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
 		m_dwWidth=image.GetWidth();
 		m_dwHeight=image.GetHeight();
 	  
-    bool bResize=false;
-    float fAspect= ((float)m_dwWidth) / ((float)m_dwHeight);
-		
-    if (m_dwWidth > (DWORD)nMaxWidth )
-    {
-      bResize=true;
-      m_dwWidth  = nMaxWidth;
-      m_dwHeight = (DWORD)( ( (float)m_dwWidth) / fAspect);
-    }
+		bool bResize=false;
+		float fAspect= ((float)m_dwWidth) / ((float)m_dwHeight);
+			
+		if (m_dwWidth > (DWORD)nMaxWidth )
+		{
+			bResize=true;
+			m_dwWidth  = nMaxWidth;
+			m_dwHeight = (DWORD)( ( (float)m_dwWidth) / fAspect);
+		}
 
-    if (m_dwHeight > (DWORD)nMaxHeight )
-    {
-      bResize=true;
-      m_dwHeight =nMaxHeight;
-      m_dwWidth  = (DWORD)(  fAspect * ( (float)m_dwHeight) );
-    }
+		if (m_dwHeight > (DWORD)nMaxHeight )
+		{
+			bResize=true;
+			m_dwHeight =nMaxHeight;
+			m_dwWidth  = (DWORD)(  fAspect * ( (float)m_dwHeight) );
+		}
 
-    if (bResize)
-    {
+		if (bResize)
+		{
 			image.Resample(m_dwWidth,m_dwHeight, QUALITY);
 			m_dwWidth=image.GetWidth();
 			m_dwHeight=image.GetHeight();
+			bNeedToConvert = true;
 		}
 
-    ::DeleteFile(strThumbFileName.c_str());
-    if ( image.GetNumColors() )
-    {
-      image.IncreaseBpp(24);
-    }
-		if (!image.Save(strThumbFileName.c_str(),CXIMAGE_FORMAT_JPG))
-    {
-			CLog::Log("PICTURE::docreatethumbnail: Unable to save image: %s Error:%s\n", strThumbFileName.c_str(), image.GetLastError());
-      ::DeleteFile(strThumbFileName.c_str());
-      return false;
-    }
+		::DeleteFile(strThumbFileName.c_str());
+		if ( image.GetNumColors() )
+		{
+			image.IncreaseBpp(24);
+			bNeedToConvert = true;
+		}
+		// only resave the image if we have to (quality of the JPG saver isn't too hot!)
+		if (bNeedToConvert)
+		{
+			// May as well have decent quality thumbs
+			image.SetJpegQuality(90);
+			if (!image.Save(strThumbFileName.c_str(),CXIMAGE_FORMAT_JPG))
+			{
+				CLog::Log("PICTURE::docreatethumbnail: Unable to save image: %s Error:%s\n", strThumbFileName.c_str(), image.GetLastError());
+				::DeleteFile(strThumbFileName.c_str());
+				return false;
+			}
+		}
+		else
+		{	// Don't need to convert the file - cache it instead
+			CFile file;
+			if ( !file.Cache(strFileName.c_str(),strThumbFileName.c_str(),NULL,NULL) )
+			{
+				CLog::Log("PICTURE::docreatethumbnail: Unable to copy file %s\n", strFileName.c_str());
+				::DeleteFile(strThumbFileName.c_str());
+				return false;
+			}
+		}
 	}
-  catch(...)
-  {
-			CLog::Log("PICTURE::docreatethumbnail: exception: %s\n", strCachedFile.c_str());
-  }
+	catch(...)
+	{
+		CLog::Log("PICTURE::docreatethumbnail: exception: %s\n", strCachedFile.c_str());
+	}
 	return true;
 }
 
@@ -435,6 +453,7 @@ bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize,
     {
       image.IncreaseBpp(24);
     }
+		image.SetJpegQuality(90);	// decent quality thumbs needed!
 		if (!image.Save(strThumbFileName.c_str(),CXIMAGE_FORMAT_JPG))
     {
 			CLog::Log("PICTURE::createthumbnailfrommemory: Unable to save image:%s Error:%s\n", strThumbFileName.c_str(), image.GetLastError());
@@ -579,6 +598,7 @@ bool CPicture::Convert(const CStdString& strSource,const CStdString& strDest)
     {
       image.IncreaseBpp(24);
     }
+		image.SetJpegQuality(90);	// decent quality thumbs needed!
 		if (!image.Save(strDest.c_str(),CXIMAGE_FORMAT_JPG))
     {
 			CLog::Log("PICTURE::convert: Unable to save image: %s Error:%s\n", strDest.c_str(), image.GetLastError());

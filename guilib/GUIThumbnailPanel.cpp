@@ -70,25 +70,23 @@ CGUIThumbnailPanel::~CGUIThumbnailPanel(void)
 void CGUIThumbnailPanel::RenderItem(bool bFocus,DWORD dwPosX, DWORD dwPosY, CGUIListItem* pItem)
 {
 
-  float fTextHeight,fTextWidth;
-  m_pFont->GetTextExtent( L"W", &fTextWidth,&fTextHeight);
-
   WCHAR wszText[1024];
   float fTextPosY =(float)dwPosY+ (float)m_iTextureHeight;
 	swprintf(wszText,L"%S", pItem->GetLabel().c_str() );
 
   DWORD dwColor=m_dwTextColor;
+  DWORD dwCenteredPosX = dwPosX + (m_iItemWidth-m_iTextureWidth)/2;
 	if (pItem->IsSelected()) dwColor=m_dwSelectedColor;
   if (bFocus && HasFocus()&&m_iSelect==CONTROL_LIST )
   {
-    m_imgFolderFocus.SetPosition(dwPosX, dwPosY);
+    m_imgFolderFocus.SetPosition(dwCenteredPosX, dwPosY);
 		if (m_bShowTexture) m_imgFolderFocus.Render();
     
     RenderText((float)dwPosX,(float)fTextPosY,dwColor,wszText,true);
   }
   else
   {
-    m_imgFolder.SetPosition(dwPosX, dwPosY);
+ 	m_imgFolder.SetPosition(dwCenteredPosX, dwPosY);
     if (m_bShowTexture) m_imgFolder.Render();
     
     RenderText((float)dwPosX,(float)fTextPosY,dwColor,wszText,false);
@@ -99,13 +97,13 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus,DWORD dwPosX, DWORD dwPosY, CGUI
 		CGUIImage *pImage=pItem->GetThumbnail();
 		if (!pImage )
     {
-			pImage=new CGUIImage(0,0,m_iThumbXPos+dwPosX,m_iThumbYPos+dwPosY,m_iThumbWidth,m_iThumbHeight,pItem->GetThumbnailImage(),0x0);
+			pImage=new CGUIImage(0,0,m_iThumbXPos+dwCenteredPosX,m_iThumbYPos+dwPosY,m_iThumbWidth,m_iThumbHeight,pItem->GetThumbnailImage(),0x0);
       pImage->SetKeepAspectRatio(true);
       pImage->AllocResources();
 			pItem->SetThumbnail(pImage);
       int xOff=(m_iThumbWidth-pImage->GetRenderWidth())/2;
       int yOff=(m_iThumbHeight-pImage->GetRenderHeight())/2;
-      pImage->SetPosition(m_iThumbXPos+dwPosX+xOff,m_iThumbYPos+dwPosY+yOff);
+      pImage->SetPosition(m_iThumbXPos+dwCenteredPosX+xOff,m_iThumbYPos+dwPosY+yOff);
     }
     else
     {
@@ -113,7 +111,7 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus,DWORD dwPosX, DWORD dwPosY, CGUI
       pImage->SetHeight(m_iThumbHeight);
       int xOff=(m_iThumbWidth-pImage->GetRenderWidth())/2;
       int yOff=(m_iThumbHeight-pImage->GetRenderHeight())/2;
-      pImage->SetPosition(m_iThumbXPos+dwPosX+xOff,m_iThumbYPos+dwPosY+yOff);
+      pImage->SetPosition(m_iThumbXPos+dwCenteredPosX+xOff,m_iThumbYPos+dwPosY+yOff);
       pImage->Render();
     }
   }
@@ -216,7 +214,15 @@ void CGUIThumbnailPanel::Render()
 		if (m_iScrollCounter<=0)
 		{
 			m_bScrollDown=false;
-      m_iOffset+=m_iColumns;
+			m_iOffset+=m_iColumns;
+			// Check if we need to update our position
+			if (!ValidItem(m_iCursorX, m_iCursorY))
+			{	// select the last item available
+				int iPos = m_vecItems.size()-1-m_iOffset;
+				m_iCursorY = iPos / m_iColumns;
+				m_iCursorX = iPos % m_iColumns;
+			}
+			// Update the page counter
 			int iPage = m_iOffset/(m_iRows*m_iColumns);
 			m_upDown.SetValue(iPage+1);
 		}
@@ -551,19 +557,17 @@ void CGUIThumbnailPanel::OnDown()
 
     if (m_iCursorY+1==m_iRows)
     {
-      m_iOffset+= m_iColumns;
-      if ( !ValidItem(m_iCursorX,m_iCursorY) ) 
-			{
-        m_iOffset-= m_iColumns;
-			}
-			else
-			{
-				m_iOffset-= m_iColumns;
-				m_iScrollCounter=m_iItemHeight;
-				m_bScrollDown=true;
-			}
-      return;
-    }
+		m_iOffset+= m_iColumns;
+		// Check if we can scroll down.
+		// This will be if we have an item underneath us, or if we have a row underneath us
+		if ( ValidItem(m_iCursorX,m_iCursorY) || (unsigned)(m_iOffset+m_iColumns*m_iCursorY) < m_vecItems.size()) 
+		{	// Yes, we can scroll down
+			m_iScrollCounter=m_iItemHeight;
+			m_bScrollDown=true;
+		}
+		m_iOffset-= m_iColumns;
+		return;
+	}
     else
     {
       if ( ValidItem(m_iCursorX,m_iCursorY+1) )
@@ -597,7 +601,8 @@ void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor,
 
   float fTextHeight,fTextWidth;
   m_pFont->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
-	float fMaxWidth=(float)m_iTextureWidth;
+	float fMaxWidth=(float)m_iItemWidth*0.9f;
+	fPosX += ((float)m_iItemWidth-fMaxWidth)/2.0f;
   if (!bScroll)
   {
 	// Center text to make it look nicer...
