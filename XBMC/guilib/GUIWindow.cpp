@@ -17,6 +17,7 @@
 #include "guiListControlEx.h"
 #include "guiImage.h"
 #include "GUILabelControl.h"
+#include "GUIEditControl.h"
 #include "GUIFadeLabelControl.h"
 #include "GUICheckMarkControl.h"
 #include "GUIThumbnailPanel.h"
@@ -81,6 +82,10 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 			if (!strcmp(it->m_szType,"label"))
 			{
 				stControl.m_pControl = new CGUILabelControl(*((CGUILabelControl*)it->m_pControl));
+			}
+			else if (!strcmp(it->m_szType,"edit"))
+			{
+				stControl.m_pControl = new CGUIEditControl(*((CGUIEditControl*)it->m_pControl));
 			}
 			else if (!strcmp(it->m_szType,"videowindow"))
 			{
@@ -222,6 +227,10 @@ bool CGUIWindow::LoadReference(VECREFERENCECONTOLS& controls)
 		if (!strcmp(it->m_szType,"label"))
 		{
 			stControl.m_pControl = new CGUILabelControl(*((CGUILabelControl*)it->m_pControl));
+		}
+		else if (!strcmp(it->m_szType,"edit"))
+		{
+			stControl.m_pControl = new CGUIEditControl(*((CGUIEditControl*)it->m_pControl));
 		}
 		else if (!strcmp(it->m_szType,"videowindow"))
 		{

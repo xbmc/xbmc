@@ -5,6 +5,7 @@
 #include "GUIWindowBuddies.h"
 #include "settings.h"
 #include "guiWindowManager.h"
+#include "GUIEditControl.h"
 #include "GUIDialogInvite.h"
 #include "GUIDialogHost.h"
 #include "GUIDialogProgress.h"
@@ -50,6 +51,7 @@
 #define CONTROL_LABELPLAYERCNT	3073				// Arena Player Count
 
 #define CONTROL_KAI_CONSOLE		3074				// Text Chat console
+#define CONTROL_KAI_TEXTEDIT	3075				// Text Edit control
 
 #define SET_CONTROL_DISABLED(dwSenderId, dwControlID) \
 { \
@@ -562,8 +564,17 @@ void CGUIWindowBuddies::OnAction(const CAction &action)
 {
 	if (window_state == State::Chat && (action.wID & KEY_ASCII || action.wID & KEY_VKEY) )
 	{
-		CGUIMessage dummy(0,0,0);
-		OnClickKeyboardButton(dummy);
+		CGUIEditControl* pEdit = ((CGUIEditControl*)GetControl(CONTROL_KAI_TEXTEDIT));
+		if (pEdit)
+		{
+			// use inline text edit control
+			pEdit->OnKeyPress(action.wID);
+		}
+		else
+		{	// use virtual keyboard
+			CGUIMessage dummy(0,0,0);
+			OnClickKeyboardButton(dummy);
+		}
 		return;
 	}
 
