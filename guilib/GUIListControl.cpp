@@ -400,15 +400,22 @@ void CGUIListControl::OnRight()
   action.wID = ACTION_MOVE_RIGHT;
   if (m_iSelect==CONTROL_LIST) 
   {
-    m_iSelect=CONTROL_UPDOWN;
-    m_upDown.SetFocus(true);
+    if (m_upDown.GetMaximum() > 1)
+    {
+      m_iSelect=CONTROL_UPDOWN;
+      m_upDown.SetFocus(true);
+      if (!m_upDown.HasFocus()) 
+      {
+        m_iSelect=CONTROL_LIST;
+      }
+    }
   }
   else
   {
     m_upDown.OnAction(action);
     if (!m_upDown.HasFocus()) 
     {
-      CGUIControl::OnAction(action);
+      m_iSelect=CONTROL_LIST;
     }
   }
 }
@@ -421,6 +428,10 @@ void CGUIListControl::OnLeft()
   if (m_iSelect==CONTROL_LIST) 
   {
     CGUIControl::OnAction(action);
+    if (!m_upDown.HasFocus()) 
+    {
+      m_iSelect=CONTROL_LIST;
+    }
   }
   else
   {
