@@ -215,12 +215,7 @@ bool CGUIWindowVideoGenre::OnMessage(CGUIMessage& message)
       else if (iControl==CONTROL_PLAY_DVD)
       {
           // play movie...
-		    g_TextureManager.Flush();
-		    g_graphicsContext.SetFullScreenVideo(true);
-		    m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
-        CIoSupport helper;
-        helper.Remount("D:","Cdrom0");
-        g_application.PlayFile("dvd://1");
+        CUtil::PlayDVD();
       }
       else if (iControl==CONTROL_LIST||iControl==CONTROL_THUMBS)  // list/thumb control
       {
@@ -511,9 +506,6 @@ void CGUIWindowVideoGenre::OnClick(int iItem)
     }
 
     // play movie...
-		g_TextureManager.Flush();
-		g_graphicsContext.SetFullScreenVideo(true);
-		m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
 		g_playlistPlayer.PlayNext();
 	}
 }

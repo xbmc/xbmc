@@ -285,6 +285,22 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
       return;
     }
     break;
+
+ 		case ACTION_SMALL_STEP_BACK:
+    {
+      int orgpos=g_application.m_pPlayer->GetTime();
+      int jumpsize = 8; // secs; of course better if configurable
+      int setpos=(orgpos > jumpsize) ? orgpos-jumpsize : 0; // First jump = 2*jumpsize
+      int newpos;
+      do
+      {
+        setpos = (setpos > jumpsize) ? setpos-jumpsize : 0;
+        g_application.m_pPlayer->SeekTime(setpos);
+        Sleep(300);
+        newpos = (int)g_application.m_pPlayer->GetTime();
+      } while ( (newpos>orgpos-jumpsize) && (setpos>0) );
+    }
+    break;
 	}
 	CGUIWindow::OnAction(action);
 }
