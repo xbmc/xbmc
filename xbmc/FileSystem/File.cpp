@@ -235,6 +235,11 @@ void CFile::Close()
 	}
 }
 
+void CFile::Flush()
+{
+	if (m_pFile) m_pFile->Flush();
+}  
+
 //*********************************************************************************************
 __int64 CFile::Seek(__int64 iFilePosition, int iWhence)
 {

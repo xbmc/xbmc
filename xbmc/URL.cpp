@@ -275,7 +275,7 @@ void CURL::GetURLWithoutFilename(CStdString& strURL) const
 {
 	if (m_strProtocol == "")
 	{
-		strURL = m_strFileName;
+		strURL = m_strFileName.substr(0, 2); // only copy 'e:'
 		return;
 	}
 	strURL = m_strProtocol;

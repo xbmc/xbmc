@@ -310,7 +310,11 @@ bool CCDDARipper::RipCD()
 	}
 
 	// Create directory if it doesn't exist
-	CUtil::CreateDirectoryEx(strDirectory);
+	if (!CUtil::CreateDirectoryEx(strDirectory))
+	{
+	  CLog::Log(LOGERROR, "Unable to create directory '%s'", strDirectory.c_str());
+	  return false;
+	}
 
 	// rip all tracks one by one, if one fails we quit and return false
 	for (unsigned int i = 0; i < vecItems.size() && bResult == true; i++)
