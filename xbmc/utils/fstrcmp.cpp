@@ -522,20 +522,22 @@ compareseq (int xoff, int xlim, int yoff, int ylim, int minimal)
       c = diag (xoff, xlim, yoff, ylim, minimal, &part);
       if (c == 1)
 	{
+/*
 #if 0
-	  /* This should be impossible, because it implies that one of
+	  / * This should be impossible, because it implies that one of
 	     the two subsequences is empty, and that case was handled
 	     above without calling `diag'.  Let's verify that this is
-	     true.  */
+	     true.  * /
 	  abort ();
 #else
+*/
 	  /* The two subsequences differ by a single insert or delete;
 	     record it and we are done.  */
 	  if (part.xmid - part.ymid < xoff - yoff)
 	    ++string[1].edit_count;
 	  else
 	    ++string[0].edit_count;
-#endif
+//#endif
 	}
       else
 	{

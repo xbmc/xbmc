@@ -655,13 +655,14 @@ void CoffLoader::PrintSection(SectionHeader_t *ScnHdr, char* data)
         printf("\n\n");
     }
 
+/*
 #if 0
     if (ScnHdr->NumRelocations > 0)
     {                       
         // Print Section Relocations
         ObjReloc_t ObjReloc;
 
-        fseek(fp, ScnHdr->PtrToRelocations/* + CoffBeginOffset*/, SEEK_SET);
+        fseek(fp, ScnHdr->PtrToRelocations/ * + CoffBeginOffset* /, SEEK_SET);
         printf("RELOCATIONS\n");
         printf("                     Symbol    Symbol\n");
         printf(" Offset    Type      Index     Name\n");
@@ -702,7 +703,7 @@ void CoffLoader::PrintSection(SectionHeader_t *ScnHdr, char* data)
         int LineCnt = 0;
         int BaseLineNum = -1;
 
-        fseek(fp, ScnHdr->PtrToLineNums/* + CoffBeginOffset*/, SEEK_SET);
+        fseek(fp, ScnHdr->PtrToLineNums/ * + CoffBeginOffset* /, SEEK_SET);
         printf("LINE NUMBERS");
         for (int i = 0; i < ScnHdr->NumLineNumbers; i++)
         {
@@ -753,6 +754,8 @@ void CoffLoader::PrintSection(SectionHeader_t *ScnHdr, char* data)
         printf("\n");
     }
 #endif
+*/
+
     printf("\n");
 }
 

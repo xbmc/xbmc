@@ -806,6 +806,11 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
   int   iBottom=y+h;
   int iOrgY=y;
   int iOrgH=h;
+
+	while (m_YTexture[m_iDecodeBuffer].IsBusy()) Sleep(1);
+	while (m_UTexture[m_iDecodeBuffer].IsBusy()) Sleep(1);
+	while (m_VTexture[m_iDecodeBuffer].IsBusy()) Sleep(1);
+
   // copy Y
   d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer]+ytexture_pitch*y+x;                
   s=src[0];                           
@@ -928,12 +933,13 @@ static void video_flip_page(void)
 {
   if (m_bPauseDrawing) return;
   
-	if (m_bFlip<=0) 
+	int nextbuf = (m_iRenderBuffer+1) % NUM_BUFFERS;
+	if (m_bFlip<=0 || nextbuf == m_iDecodeBuffer)
   {
     return;
   }
 	m_bFlip--;
-  ++m_iRenderBuffer %= NUM_BUFFERS;
+  m_iRenderBuffer = nextbuf;
 	m_pSubtitleTexture[m_iBackBuffer]->UnlockRect(0);
   
 
@@ -979,6 +985,7 @@ static void video_flip_page(void)
 	g_graphicsContext.Unlock();
 
 	m_bFlipped=true;
+/*
 #if 0
 	// when movie is running,
 	// check the FPS again after 50 frames
@@ -999,6 +1006,7 @@ static void video_flip_page(void)
 		}
 	}
 #endif
+*/
 }
 
 //********************************************************************************************************
@@ -1073,6 +1081,7 @@ void xbox_video_update(bool bPauseDrawing)
 //********************************************************************************************************
 static unsigned int video_draw_frame(unsigned char *src[])
 {
+	DebugBreak();
   byte* image=(BYTE*)m_TextureBuffer[m_iDecodeBuffer];
 	memcpy( image, *src, ytexture_pitch * image_height );
 	return 0;
@@ -1081,45 +1090,14 @@ static unsigned int video_draw_frame(unsigned char *src[])
 //********************************************************************************************************
 static unsigned int get_image(mp_image_t *mpi)
 {
-#if 0
-  while (m_YTexture[m_iRenderBuffer].IsBusy()) Sleep(1);
-	while (m_UTexture[m_iRenderBuffer].IsBusy()) Sleep(1);
-	while (m_VTexture[m_iRenderBuffer].IsBusy()) Sleep(1);
-
-	if((mpi->width==ytexture_pitch && mpi->width/2==uvtexture_pitch) || (mpi->flags& (MP_IMGFLAG_ACCEPT_WIDTH|MP_IMGFLAG_ACCEPT_STRIDE)))
-	{
-		if((mpi->flags&MP_IMGFLAG_PLANAR))
-		{
-      
-			mpi->planes[0]=(BYTE*)m_TextureBuffer[m_iRenderBuffer];
-			mpi->planes[1]=(BYTE*)m_TextureBuffer[m_iRenderBuffer] + ytexture_pitch*ytexture_height;
-			mpi->planes[2]=(BYTE*)m_TextureBuffer[m_iRenderBuffer] + ytexture_pitch*ytexture_height + uvtexture_pitch*uvtexture_height;
-      
-			mpi->stride[0]=ytexture_pitch;
-			mpi->stride[1]=uvtexture_pitch;
-			mpi->stride[2]=uvtexture_pitch;
-			mpi->width=image_width;
-			mpi->height=image_height;
-			mpi->flags|=MP_IMGFLAG_DIRECT;
-			return VO_TRUE;
-		}
-	}
-#endif
 	return VO_FALSE;
 }
 //********************************************************************************************************
 static unsigned int put_image(mp_image_t *mpi)
 {
-	if((mpi->flags&MP_IMGFLAG_DIRECT)||(mpi->flags&MP_IMGFLAG_DRAW_CALLBACK)) 
+	if((mpi->flags&MP_IMGFLAG_DIRECT) || (mpi->flags&MP_IMGFLAG_DRAW_CALLBACK))
 	{
-    // flush CPU cache. This way all data is back in memory and GPU (pixelshader) can access it
-    __asm {
-      wbinvd
-    }
-    //++m_iDecodeBuffer %= NUM_BUFFERS;
-    //m_bFlip++;
-
-		return VO_TRUE;
+		return VO_FALSE;
 	}
   DWORD  i = 0;
   BYTE   *d;
@@ -1128,6 +1106,10 @@ static unsigned int put_image(mp_image_t *mpi)
   DWORD y = mpi->y;
   DWORD w = mpi->w;
   DWORD h = mpi->h;
+
+	while (m_YTexture[m_iDecodeBuffer].IsBusy()) Sleep(1);
+	while (m_UTexture[m_iDecodeBuffer].IsBusy()) Sleep(1);
+	while (m_VTexture[m_iDecodeBuffer].IsBusy()) Sleep(1);
 
 	if (mpi->flags&MP_IMGFLAG_PLANAR)
 	{
@@ -1176,8 +1158,9 @@ static unsigned int put_image(mp_image_t *mpi)
 	}
 	else
 	{
-		//packed
-    memcpy( m_TextureBuffer[m_iBackBuffer], mpi->planes[0], ytexture_height * ytexture_pitch);
+		//packed - this isn't going to work!
+		DebugBreak();
+    memcpy( m_TextureBuffer[m_iDecodeBuffer], mpi->planes[0], ytexture_height * ytexture_pitch);
 	}
 
   // flush CPU cache. This way all data is back in memory and GPU (pixelshader) can access it
