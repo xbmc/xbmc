@@ -2296,6 +2296,7 @@ bool CMusicDatabase::CleanupSongs()
 		while (!m_pDS->eof())
 		{// get the full song path
 			CStdString strFileName = m_pDS->fv("path.strPath").get_asString();
+	    CUtil::AddDirectorySeperator(strFileName);
 			strFileName += m_pDS->fv("song.strFileName").get_asString();
 			if (!CUtil::FileExists(strFileName))
 			{// file no longer exists, so add to deletion list
