@@ -20,6 +20,7 @@ public:
 	void						Add(const CStdString& strLabel);
 	int							GetSelectedLabel() const;
 	void						SetHeading(const wstring& strLine);
+	void						SetHeading(int iString);
 protected:
 	int							m_iSelected;
 	vector<CGUIListItem*> m_vecList;

@@ -132,8 +132,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_WINDOW_INIT:
 		{
-			if ( CUtil::IsRemote(m_strDirectory) )
-				m_strDirectory="";
+			m_strDirectory=g_stSettings.m_szDefaultPictures;
 
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(101);
 			m_rootDir.SetMask(g_stSettings.m_szMyPicturesExtensions);
@@ -428,7 +427,7 @@ void CGUIWindowPictures::OnCreateThumbs()
 {
   CPicture picture;
 	m_dlgProgress->SetHeading(110);
-
+	m_dlgProgress->StartModal(GetID());
   for (int i=0; i < (int)m_vecItems.size();++i)
   {
     CFileItem* pItem=m_vecItems[i];

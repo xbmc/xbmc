@@ -9,13 +9,16 @@ CTexture::CTexture()
   m_iReferenceCount=0;
   m_pTexture=NULL;
   m_iDelay=100;
+	m_iWidth=m_iHeight=0;
 }
 
-CTexture::CTexture(LPDIRECT3DTEXTURE8 pTexture, int iDelay)
+CTexture::CTexture(LPDIRECT3DTEXTURE8 pTexture,int iWidth, int iHeight, int iDelay)
 {
   m_iReferenceCount=0;
   m_pTexture=pTexture;
   m_iDelay=iDelay;
+	m_iWidth=iWidth;
+	m_iHeight=iHeight;
 }
 
 CTexture::~CTexture()
@@ -60,10 +63,12 @@ int CTexture::GetRef() const
 }
 
 
-LPDIRECT3DTEXTURE8 CTexture::GetTexture()
+LPDIRECT3DTEXTURE8 CTexture::GetTexture(int& iWidth, int& iHeight)
 {
   if (!m_pTexture) return NULL;
   m_iReferenceCount++;
+	iWidth=m_iWidth;
+	iHeight=m_iHeight;
   return m_pTexture;
 }
 
@@ -147,12 +152,12 @@ int CTextureMap::GetDelay(int iPicture) const
 }
 
 
-LPDIRECT3DTEXTURE8 CTextureMap::GetTexture(int iPicture)
+LPDIRECT3DTEXTURE8 CTextureMap::GetTexture(int iPicture,int& iWidth, int& iHeight)
 {
   if (iPicture < 0 || iPicture >= (int)m_vecTexures.size()) return NULL;
   
   CTexture* pTexture = m_vecTexures[iPicture];
-  return pTexture->GetTexture();
+  return pTexture->GetTexture(iWidth,iHeight);
 }
 
 
@@ -167,14 +172,14 @@ CGUITextureManager::~CGUITextureManager(void)
 }
 
 
-LPDIRECT3DTEXTURE8 CGUITextureManager::GetTexture(const CStdString& strTextureName, int iItem)
+LPDIRECT3DTEXTURE8 CGUITextureManager::GetTexture(const CStdString& strTextureName,int iItem, int& iWidth, int& iHeight)
 {
   for (int i=0; i < (int)m_vecTextures.size(); ++i)
   {
     CTextureMap *pMap=m_vecTextures[i];
     if (pMap->GetName() == strTextureName)
     {
-      return  pMap->GetTexture(iItem);
+      return  pMap->GetTexture(iItem, iWidth,iHeight);
     }
   }
   return NULL;
@@ -265,7 +270,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 		      } // of for (DWORD y=0; y < (DWORD)pImage->Height; y++)
 		      pTexture->UnlockRect( 0 );
 	      } // of if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
-        CTexture* pclsTexture = new CTexture(pTexture);
+        CTexture* pclsTexture = new CTexture(pTexture,iWidth,iHeight);
         pMap->Add(pclsTexture);
 		  } // of if (g_graphicsContext.Get3DDevice()->CreateTexture
     } // of for (int iImage=0; iImage < iImages; iImage++)
@@ -274,18 +279,21 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
   } // of if (strPath.Right(4).ToLower()==".gif")
 
   // normal picture
-
+	D3DXIMAGE_INFO info;
   if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), strPath.c_str(),
 		 D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
-		 D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, NULL, NULL, &pTexture)!=D3D_OK)
+		 D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture)!=D3D_OK)
 	{
 		OutputDebugString("Texture manager unable to find file: ");
 		OutputDebugString(strPath.c_str());
 		OutputDebugString("\n");
 		return NULL;
 	}
+	CStdString strLog;
+	strLog.Format("%s %ix%i\n", strTextureName.c_str(),info.Width,info.Height);
+	OutputDebugString(strLog.c_str());
   CTextureMap* pMap = new CTextureMap(strTextureName);
-  CTexture* pclsTexture = new CTexture(pTexture);
+	CTexture* pclsTexture = new CTexture(pTexture,info.Width,info.Height);
   pMap->Add(pclsTexture);
   m_vecTextures.push_back(pMap);
   return 1;

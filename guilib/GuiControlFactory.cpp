@@ -498,6 +498,15 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
         pControl->SetScrollySuffix(strSuffix);
       }
       pControl->SetVisible(bVisible);
+			int iTextureWidth=80;
+			int iTextureHeight=80;
+			pNode=pControlNode->FirstChild("textureWidth" );
+			if (pNode) 
+				iTextureWidth=atol(pNode->FirstChild()->Value() );
+			pNode=pControlNode->FirstChild("textureHeight" );
+			if (pNode) 
+				iTextureHeight=atol(pNode->FirstChild()->Value() );
+			pControl->SetTextureDimensions(iTextureWidth,iTextureHeight);
       return pControl;
   }
  

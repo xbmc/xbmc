@@ -25,7 +25,7 @@ void CPicture::Free()
 	}
 }
 
-IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate)
+IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate,int iMaxWidth, int iMaxHeight)
 {
 	IDirect3DTexture8* pTexture=NULL;
 	CStdString strExtension;
@@ -75,7 +75,7 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate)
     bool bResize=false;
     float fAspect= ((float)m_dwWidth) / ((float)m_dwHeight);
 		
-    if (m_dwWidth > (DWORD)g_graphicsContext.GetWidth() )
+		if (m_dwWidth > (DWORD)g_graphicsContext.GetWidth() )
     {
       bResize=true;
       m_dwWidth  = g_graphicsContext.GetWidth();
@@ -86,6 +86,19 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate)
     {
       bResize=true;
       m_dwHeight =g_graphicsContext.GetHeight();
+      m_dwWidth  = (DWORD)(  fAspect * ( (float)m_dwHeight) );
+    }
+		if (iMaxWidth > (DWORD)g_graphicsContext.GetWidth() )
+    {
+      bResize=true;
+      m_dwWidth  = iMaxWidth;
+      m_dwHeight = (DWORD)( ( (float)m_dwWidth) / fAspect);
+    }
+
+    if (iMaxHeight > (DWORD)g_graphicsContext.GetHeight() )
+    {
+      bResize=true;
+      m_dwHeight =iMaxHeight;
       m_dwWidth  = (DWORD)(  fAspect * ( (float)m_dwHeight) );
     }
 

@@ -21,10 +21,15 @@
 #include "GUIWindowSystemInfo.h"
 #include "GUIWindowSettingsGeneral.h"
 #include "GUIWindowMusicInfo.h" 
+#include "GUIWindowVideoInfo.h"
 #include "LocalizeStrings.h"
 #include "utils/sntp.h"
 #include "utils/delaycontroller.h"
 #include "keyboard/virtualkeyboard.h"
+#include "lib/libPython/XboxPython.h"
+
+#include <vector>
+using namespace std;
 
 class CApplication :
   public CXBApplicationEx
@@ -39,6 +44,8 @@ public:
 
 	void						Stop();
 	void						LoadSkin(const CStdString& strSkin);
+	void						ExecuteScript(const CStdString& strScript);
+	void						ProcessScripts();
   CGUIWindowHome        m_guiHome;
   CGUIWindowPrograms    m_guiPrograms;
 	CGUIWindowPictures		m_guiPictures;
@@ -52,11 +59,16 @@ public:
 	CGUIWindowSystemInfo	m_guiSystemInfo;
 	CGUIWindowSettingsGeneral m_guiSettingsGeneral;
 	CGUIWindowMusicInfo		m_guiMusicInfo;
+	CGUIWindowVideoInfo   m_guiVideoInfo;
 	CGUIDialogSelect			m_guiDialogSelect;
   CXBVirtualKeyboard    m_keyboard;
 	CSNTPClient						m_sntpClient;
 	CDelayController			m_ctrDpad;
 	CDelayController			m_ctrIR;
+	Python*								m_pPhytonParser;
+protected:
+	vector<int>						m_vecScriptIds;
+	typedef vector<int>::iterator ivecScriptIds;
 };
 
 extern CApplication g_application;

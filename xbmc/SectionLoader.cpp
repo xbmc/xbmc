@@ -1,4 +1,5 @@
 #include "sectionloader.h"
+#include "stdstring.h"
 #include <xtl.h>
 
 
@@ -26,15 +27,18 @@ bool CSectionLoader::Load(const CStdString& strSection)
 {
   if (CSectionLoader::IsLoaded(strSection)) return true;
 
-  OutputDebugString("LoadSection:");
-  OutputDebugString(strSection.c_str());
-  OutputDebugString("\n");
+	CStdString strLog;
   if ( NULL==XLoadSection(strSection.c_str() ) )
   {
-    OutputDebugString("Section load failed!!!\n");
+		strLog.Format("Section %s load failed!!\n", strSection.c_str());
+    OutputDebugString(strLog.c_str() );
     return false;
   }
+	HANDLE hHandle=XGetSectionHandle(strSection.c_str());
 
+	strLog.Format("Section %s loaded size:%i\n", strSection.c_str(),XGetSectionSize(hHandle) );
+  OutputDebugString(strLog.c_str() );
+	
   CSection newSection;
   newSection.m_strSectionName=strSection;
   newSection.m_lReferenceCount=1;

@@ -43,17 +43,8 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_WINDOW_INIT:
     {
-      if (m_strDirectory=="")
-      {
-        if (g_stSettings.m_szShortcutDirectory[0] != 0)
-        {
-          m_strDirectory=g_stSettings.m_szShortcutDirectory;
-        }
-        else
-        {
-          m_strDirectory="E:\\";
-        }
-      }
+			CUtil::GetHomePath(m_strDirectory);
+			m_strDirectory+="\\shortcuts";
       // make controls 100-110 invisible...
 			for (int i=100; i < 110; i++)
       {

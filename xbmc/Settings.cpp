@@ -40,6 +40,13 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.m_szMyPicturesExtensions,".bmp|.jpg|.png|.gif|.pcx|.tif|.jpeg");
 	strcpy(g_stSettings.m_szMyMusicExtensions,".ac3|.aac|.nfo|.pls|.rm|.sc|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u");
 	strcpy(g_stSettings.m_szMyVideoExtensions,".nfo|.rm|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli");
+	
+	strcpy( g_stSettings.m_szDefaultMusic, "");	
+	strcpy( g_stSettings.m_szDefaultPictures, "");	
+	strcpy( g_stSettings.m_szDefaultFiles, "");	
+	strcpy( g_stSettings.m_szDefaultVideos, "");	
+	strcpy( g_stSettings.m_szCDDBIpAdres,"");
+	g_stSettings.m_bUseCDDB=false;
 }
 
 CSettings::~CSettings(void)
@@ -134,6 +141,10 @@ void CSettings::Load()
   GetString(pRootElement, "skin", g_stSettings.szDefaultSkin,"MediaCenter");
 	GetString(pRootElement, "dashboard", g_stSettings.szDashboard,"C:\\xboxdash.xbe");
 	
+	
+	GetString(pRootElement, "CDDBIpAdres", g_stSettings.m_szCDDBIpAdres,"194.97.4.18");
+	g_stSettings.m_bUseCDDB=GetBoolean(pRootElement, "CDDBEnabled");
+
 	GetString(pRootElement, "ipadres", g_stSettings.m_strLocalIPAdres,"");
 	GetString(pRootElement, "netmask", g_stSettings.m_strLocalNetmask,"");
 	GetString(pRootElement, "defaultgateway", g_stSettings.m_strGateway,"");
@@ -184,11 +195,25 @@ void CSettings::Load()
   }
 
   // parse my programs bookmarks...
-	GetShares(pRootElement,"myprograms",m_vecMyProgramsBookmarks);
-	GetShares(pRootElement,"pictures",m_vecMyPictureShares);
-  GetShares(pRootElement,"files",m_vecMyFilesShares);
-  GetShares(pRootElement,"music",m_vecMyMusicShares);
+	CStdString strDefault;
+	GetShares(pRootElement,"myprograms",m_vecMyProgramsBookmarks,strDefault);
 	
+
+	GetShares(pRootElement,"pictures",m_vecMyPictureShares,strDefault);
+	if (strDefault.size())
+		strcpy( g_stSettings.m_szDefaultPictures, strDefault.c_str());
+
+  GetShares(pRootElement,"files",m_vecMyFilesShares,strDefault);
+	if (strDefault.size())
+		strcpy( g_stSettings.m_szDefaultFiles, strDefault.c_str());
+
+  GetShares(pRootElement,"music",m_vecMyMusicShares,strDefault);
+	if (strDefault.size())
+		strcpy( g_stSettings.m_szDefaultMusic, strDefault.c_str());	
+
+  GetShares(pRootElement,"video",m_vecMyVideoShares,strDefault);
+	if (strDefault.size())
+		strcpy( g_stSettings.m_szDefaultVideos, strDefault.c_str());	
 
 }
 
@@ -217,8 +242,9 @@ void CSettings::ConvertHomeVar(CStdString& strText)
 	strText=szText;
 }
 
-void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items)
+void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items,CStdString& strDefault)
 {
+	strDefault="";
 	const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
 	if (pChild)
 	{
@@ -253,6 +279,10 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 
 					items.push_back(share);
 				}
+			}
+			if (strValue=="default")
+			{
+				strDefault=pChild->FirstChild()->Value();
 			}
 		  pChild=pChild->NextSibling();
 		}

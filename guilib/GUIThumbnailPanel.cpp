@@ -33,6 +33,8 @@ CGUIThumbnailPanel::CGUIThumbnailPanel(DWORD dwParentID, DWORD dwControlId, DWOR
 	m_bScrollDown=false;
 	m_iScrollCounter=0;
 	m_iLastItem=-1;
+	m_iTextureWidth=80;
+	m_iTextureHeight=80;
 }
 
 CGUIThumbnailPanel::~CGUIThumbnailPanel(void)
@@ -46,7 +48,7 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus,DWORD dwPosX, DWORD dwPosY, CGUI
   m_pFont->GetTextExtent( L"W", &fTextWidth,&fTextHeight);
 
   WCHAR wszText[1024];
-  float fTextPosY =dwPosY+ m_imgFolder.GetHeight()-2*fTextHeight;
+  float fTextPosY =dwPosY+ m_iTextureHeight;
 	swprintf(wszText,L"%S", pItem->GetLabel().c_str() );
 
   DWORD dwColor=m_dwTextColor;
@@ -327,6 +329,10 @@ void CGUIThumbnailPanel::AllocResources()
   m_upDown.AllocResources();
   m_imgFolder.AllocResources();
   m_imgFolderFocus.AllocResources();
+	m_imgFolder.SetWidth(m_iTextureWidth);
+	m_imgFolder.SetHeight(m_iTextureHeight);
+	m_imgFolderFocus.SetWidth(m_iTextureWidth);
+	m_imgFolderFocus.SetHeight(m_iTextureHeight);
 	m_iLastItem=-1;
   float fWidth,fHeight;
   
@@ -492,7 +498,7 @@ void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor,
 
   float fTextHeight,fTextWidth;
   m_pFont->GetTextExtent( wszText, &fTextWidth,&fTextHeight);
-  float fMaxWidth=m_imgFolder.GetWidth()-m_imgFolder.GetWidth()/10.0f;
+	float fMaxWidth=m_iItemWidth - m_iItemWidth/10.0f;
   if (!bScroll || fTextWidth <= fMaxWidth)
   {
     m_pFont->DrawTextWidth(fPosX,fPosY,dwTextColor,wszText,fMaxWidth);
@@ -618,4 +624,9 @@ void CGUIThumbnailPanel::OnPageDown()
     m_iCursorY--;
   }
 
+}
+void CGUIThumbnailPanel::SetTextureDimensions(int iWidth, int iHeight)
+{
+	m_iTextureWidth=iWidth;
+	m_iTextureHeight=iHeight;
 }
