@@ -357,6 +357,9 @@
 				RelativePath=".\xbmc\GUIWindowSettingsScreen.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowSettingsSlideShow.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowSettingsUICalibration.cpp">
 			</File>
 			<File
@@ -387,10 +390,16 @@
 				RelativePath=".\xbmc\MusicInfoTagLoaderMP3.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\MusicInfoTagLoaderOgg.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\NfoFile.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\NfoFile.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\OggTag.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\Picture.cpp">
@@ -527,6 +536,9 @@
 				RelativePath=".\xbmc\GUIWindowSettingsScreen.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowSettingsSlideShow.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowSettingsUICalibration.h">
 			</File>
 			<File
@@ -549,6 +561,12 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\MusicInfoTagLoaderMP3.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\MusicInfoTagLoaderOgg.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\OggTag.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\Picture.h">
