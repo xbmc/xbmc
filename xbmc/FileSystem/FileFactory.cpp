@@ -10,6 +10,7 @@
 #include "FileSMB.h"
 #include "FileXBMSP.h"
 #include "FileRTV.h"
+#include "FileSndtrk.h"
 using namespace XFILE;
 
 CFileFactory::CFileFactory()
@@ -51,6 +52,10 @@ IFile* CFileFactory::CreateLoader(const CStdString& strFileName)
 	if (strProtocol=="rtv")
 	{
 		return (IFile*)new CFileRTV();
+	}
+	if (strProtocol=="soundtrack")
+	{
+		return (IFile*)new CFileSndtrk();
 	}
 
   return (IFile*)new CFileHD();
