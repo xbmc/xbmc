@@ -9,8 +9,8 @@ struct CSettings::stSettings g_stSettings;
 
 CSettings::CSettings(void)
 {
-  m_iSlideShowTransistionFrames=25;
-  m_iSlideShowStayTime=3000;
+  g_stSettings.m_iSlideShowTransistionFrames=25;
+  g_stSettings.m_iSlideShowStayTime=3000;
 	g_stSettings.dwFileVersion =CONFIG_VERSION;
 	g_stSettings.m_bMyProgramsViewAsIcons=false;
 	g_stSettings.m_bMyProgramsSortAscending=true;
@@ -18,12 +18,15 @@ CSettings::CSettings(void)
 	g_stSettings.m_bMyProgramsFlatten=false;
   strcpy(g_stSettings.szDashboard,"C:\\xboxdash.xbe");
   g_stSettings.m_iStartupWindow=0;
-  g_stSettings.m_bFTPServer=false;
+  
   strcpy(g_stSettings.m_strLocalIPAdres,"");
   strcpy(g_stSettings.m_strLocalNetmask,"");
   strcpy(g_stSettings.m_strGateway,"");
 	strcpy(g_stSettings.m_strNameServer,"");
 	strcpy(g_stSettings.m_strTimeServer,"");
+	g_stSettings.m_bTimeServerEnabled=false;
+	g_stSettings.m_bFTPServerEnabled=false;
+
   strcpy(g_stSettings.szDefaultSkin,"MediaCenter");
 	g_stSettings.m_bMyPicturesViewAsIcons=false;
 	g_stSettings.m_bMyPicturesSortAscending=true;
@@ -82,6 +85,18 @@ void CSettings::Load()
   CStdString strValue=pRootElement->Value();
 	if ( strValue != "xboxmediacenter") return ;
 
+	TiXmlElement* pFileTypeIcons =pRootElement->FirstChildElement("filetypeicons");
+	TiXmlNode* pFileType=pFileTypeIcons->FirstChild();
+	while (pFileType)
+	{
+		CFileTypeIcon icon;
+		icon.m_strName=".";
+		icon.m_strName+=pFileType->Value();
+		icon.m_strIcon=pFileType->FirstChild()->Value();
+		m_vecIcons.push_back(icon);
+		pFileType=pFileType->NextSibling();
+	}
+
 	TiXmlElement* pDelaysElement =pRootElement->FirstChildElement("delays");
 	if (pDelaysElement)
 	{
@@ -116,7 +131,7 @@ void CSettings::Load()
 	GetString(pRootElement, "videoextensions", g_stSettings.m_szMyVideoExtensions,".nfo|.rm|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli");
 
 	g_stSettings.m_iStartupWindow=GetInteger(pRootElement, "startwindow");
-	g_stSettings.m_bFTPServer=GetBoolean(pRootElement,"enabled");
+	
 
   CStdString strDir;
   strDir=g_stSettings.m_szShortcutDirectory;
@@ -135,7 +150,6 @@ void CSettings::Load()
 		const WCHAR* szText;
     szText=g_localizeStrings.Get(111).c_str();
     CShare share;
-    share.strIcon="";
     share.strPath=g_stSettings.m_szShortcutDirectory;
     CUtil::Unicode2Ansi(szText,share.strName);
      m_vecMyProgramsBookmarks.push_back(share);
@@ -187,7 +201,6 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 			{
 				const TiXmlNode *pNodeName=pChild->FirstChild("name");
 				const TiXmlNode *pPathName=pChild->FirstChild("path");
-				const TiXmlNode *pIconNode=pChild->FirstChild("icon");
         const TiXmlNode *pCacheNode=pChild->FirstChild("cache");
 				if (pNodeName && pPathName)
 				{
@@ -197,13 +210,8 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 					CShare share;
 					share.strName=szName;
 					share.strPath=szPath;
-          share.strIcon="";
 					share.m_iBufferSize=0;
 
-          if (pIconNode)
-          {
-            share.strIcon=pIconNode->FirstChild()->Value();
-          }
           
           if (pCacheNode)
           {

@@ -5,9 +5,9 @@
 // need 2 test: 
 //      - tijd van files (loopt 1 uur voor/achter??)
 //      - dialog wat groter gemaakt
-//
+//			- icon filetypes 
 // bugs: 
-//			- ntsc
+//			- ntsc / 16:9
 //
 // algemeen:
 //			-	ftp server
@@ -46,9 +46,6 @@
 //
 // settings:
 //			- general:
-//					- select skin
-//					- ftpserver enabled
-//				  - time synchronisation enabled
 //          - restore to default settings
 //			- Slideshow
 //					- specify mypics transition time/slideshow time

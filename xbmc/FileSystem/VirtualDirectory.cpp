@@ -1,5 +1,6 @@
 #include "virtualdirectory.h"
 #include "FactoryDirectory.h"
+#include "../settings.h"
 #include "file.h"
 #include "../util.h"
 
@@ -56,12 +57,21 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 		pItem->m_bIsFolder=true;
     pItem->m_bIsShareOrDrive=false;
 		pItem->m_strPath=share.strPath;
-		pItem->SetIconImage(share.strIcon);
+
+		CStdString strIcon;
+		if (CUtil::IsRemote(pItem->m_strPath) )
+			strIcon="defaultNetwork.png";	
+		else if (CUtil::IsDVD(pItem->m_strPath) )
+			strIcon="defaultDVDRom.png";
+		else 
+			strIcon="defaultHardDisk.png";
+
+		pItem->SetIconImage(strIcon);
 		CStdString strBig;
-		int iPos=share.strIcon.Find(".");
-		strBig=share.strIcon.Left(iPos);
+		int iPos=strIcon.Find(".");
+		strBig=strIcon.Left(iPos);
 		strBig+="Big";
-		strBig+=share.strIcon.Right(share.strIcon.size()-(iPos));
+		strBig+=strIcon.Right(strIcon.size()-(iPos));
 		pItem->SetThumbnailImage(strBig);
 		items.push_back(pItem);
 	}
@@ -137,8 +147,25 @@ void  CVirtualDirectory::CacheThumbs(VECFILEITEMS &items)
 			}
 		}
 
+		
 		if (pItem->GetThumbnailImage()=="")
 		{
+			if (pItem->GetIconImage()=="")
+			{
+				CStdString strExtension;
+				CUtil::GetExtension(pItem->m_strPath,strExtension);
+				for (int i=0; i < (int)g_settings.m_vecIcons.size(); ++i)
+				{
+					CFileTypeIcon& icon=g_settings.m_vecIcons[i];
+
+					if (CUtil::cmpnocase(strExtension.c_str(), icon.m_strName)==0)
+					{
+						pItem->SetIconImage(icon.m_strName);
+						break;
+					}
+				}
+			}
+
 			if (pItem->GetIconImage()!="")
 			{
 				CStdString strBig;
@@ -147,7 +174,6 @@ void  CVirtualDirectory::CacheThumbs(VECFILEITEMS &items)
 				strBig+="Big";
 				strBig+=pItem->GetIconImage().Right(pItem->GetIconImage().size()-(iPos));
 				pItem->SetThumbnailImage(strBig);
-
 			}
 		}
   }

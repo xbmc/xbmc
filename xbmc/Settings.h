@@ -14,13 +14,23 @@ class CShare
     CShare(){};
     virtual ~CShare(){};
 		CStdString strName;
-		CStdString strIcon;
 		CStdString strPath;
 		int        m_iBufferSize;
 
 };
 typedef vector<CShare> VECSHARES;
 typedef vector<CShare>::iterator IVECSHARES;
+
+class CFileTypeIcon
+{
+public:
+	CFileTypeIcon(){};
+	virtual ~CFileTypeIcon(){};
+	CStdString m_strName;
+	CStdString m_strIcon;
+};
+typedef vector<CFileTypeIcon> VECFILETYPEICONS;
+typedef vector<CFileTypeIcon>::iterator IVECFILETYPEICONS;
 
 class CSettings
 {
@@ -45,7 +55,7 @@ public:
     char	    szThumbnailsDirectory[1024];
     char      szDashboard[1024];
     int       m_iStartupWindow;
-    bool      m_bFTPServer;
+    
 
     char      m_strLocalIPAdres[32];
     char      m_strLocalNetmask[32];
@@ -80,13 +90,17 @@ public:
 
 		int				m_iMoveDelayController;
 		int				m_iRepeatDelayController;
-
+			
+		bool			m_bTimeServerEnabled;
+		bool			m_bFTPServerEnabled;
+		int       m_iSlideShowTransistionFrames;
+		int       m_iSlideShowStayTime;
   };
-  int       m_iSlideShowTransistionFrames;
-  int       m_iSlideShowStayTime;
-  VECSHARES	m_vecMyProgramsBookmarks;
-	VECSHARES	m_vecMyPictureShares;
-  VECSHARES	m_vecMyFilesShares;
+
+  VECSHARES					m_vecMyProgramsBookmarks;
+	VECSHARES					m_vecMyPictureShares;
+  VECSHARES					m_vecMyFilesShares;
+  VECFILETYPEICONS	m_vecIcons;
 
 protected:
 	bool GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName);
