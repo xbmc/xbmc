@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 07-11-2004 added: xbmc will now check for necessary files when executing a python script
   - 07-11-2004 Updated finnish strings.xml (thanks nanite1k)
   - 06-11-2004 updated: Italian language file (Thnx to kotix)
   - 06-11-2004 updated: Dutch language file (Thnx to joepmeloenx)
