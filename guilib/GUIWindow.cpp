@@ -390,7 +390,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
           CGUIControl* pControl= *i;
           if (pControl->HasFocus() ) 
           {
-            CGUIMessage msgLostFocus(GUI_MSG_LOSTFOCUS,GetID(),pControl->GetID()  );
+            CGUIMessage msgLostFocus(GUI_MSG_LOSTFOCUS,GetID(),pControl->GetID(),message.GetControlId());
             pControl->OnMessage(msgLostFocus);
           }
         }
