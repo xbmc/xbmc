@@ -416,11 +416,25 @@ void CApplication::Render()
 
 void CApplication::OnKey(CKey& key)
 {
+	CAction action;
 	// get the current window to send to
 	int iWin = m_gWindowManager.GetActiveWindow();
+  if (iWin==WINDOW_FULLSCREEN_VIDEO)
+  {
+    if (m_guiWindowFullScreen.OSDVisible() )
+    {
+	    g_buttonTranslator.GetAction(WINDOW_HOME, key, action);
+    }
+    else
+    {
+	    g_buttonTranslator.GetAction(iWin, key, action);
+    }
+  }
+  else
+  {
+    g_buttonTranslator.GetAction(iWin, key, action);
+  }
 	// now translate our key into an action id (Transfer into button translator!!)
-	CAction action;
-	g_buttonTranslator.GetAction(iWin, key, action);
 
 	if ( IsPlayingVideo() )
 	{
