@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 15-03-2005 fixed: all windows, last control was not focused
   - 15-03-2005 fixed: memory leak in rgbrenderer.
   - 15-03-2005 fixed: switching from PM3 to another skin, the settings window is misplaced
   - 15-03-2005 changed: list, listex and thumbcontrol can not be focused anymore if they have no items

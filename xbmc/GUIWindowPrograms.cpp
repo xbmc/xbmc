@@ -56,6 +56,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
 	case GUI_MSG_WINDOW_INIT:
 		{
+      int iLastControl=m_iLastControl;
 			CGUIWindow::OnMessage(message);
 			m_database.Open();
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
@@ -141,10 +142,16 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 			}
 
 
-			if (m_iLastControl>-1)
-				SET_CONTROL_FOCUS(m_iLastControl, 0);
-
 			UpdateDir(m_Directory.m_strPath);
+
+			if (iLastControl>-1)
+      {
+				SET_CONTROL_FOCUS(iLastControl, 0);
+      }
+      else
+      {
+        SET_CONTROL_FOCUS(m_dwDefaultFocusControlID, 0);
+      }
 
 			if (m_iSelectedItem>-1)
 			{
