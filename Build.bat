@@ -53,8 +53,14 @@ rem xcopy web BUILD\web /E /Q /I /Y
 rem xcopy python BUILD\python /E /Q /I /Y
 rem xcopy %SKINS% Build\Skin /E /Q /I /Y
 rem xcopy %CODECS% Build\mplayer\codecs /E /Q /I /Y
+
+ECHO ------------------------------
+ECHO Removing CVS directories from build
+FOR /R BUILD %%d IN (CVS) DO @RD /S /Q %%d
+
 ECHO ------------------------------
 ECHO Rarring...
 %RAR% %RAROPS%
+
 ECHO ------------------------------
 ECHO finished!
