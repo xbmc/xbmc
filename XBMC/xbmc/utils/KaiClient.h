@@ -17,10 +17,12 @@ class IBuddyObserver
 		virtual void OnContactRemove(CStdString& aContact)=0;
 		virtual void OnSupportedTitle(DWORD dwTitle, CStdString& aVector)=0;
 		virtual void OnEnterArena(CStdString& aVector)=0;
+		virtual void OnEnterArenaFailed(CStdString& aVector, CStdString& aReason)=0;
 		virtual void OnOpponentEnter(CStdString& aContact)=0;
 		virtual void OnOpponentPing(CStdString& aOpponent, CStdString& aPing)=0;
 		virtual void OnOpponentLeave(CStdString& aContact)=0;
-		virtual void OnNewArena(CStdString& aVector)=0;
+		virtual void OnNewArena(CStdString& aVector, CStdString& aDescription,
+								int nPlayers, int nPlayerLimit, int bPrivate)=0;
 };
 
 class CKaiClient : public CUdpClient
@@ -33,7 +35,7 @@ public:
 
 	void SetObserver(IBuddyObserver* aObserver);
 	void RemoveObserver();
-	void EnterVector(CStdString& aVector);
+	void EnterVector(CStdString& aVector, CStdString& aPassword);
 	void ExitVector();
 	void GetSubVectors(CStdString& aVector);
 	void ResolveVector(DWORD aTitleId);

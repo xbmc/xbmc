@@ -17,4 +17,9 @@ public:
 	static void GetTier(Tier aTier, CStdString aVector, CStdString& aTierName);
 
 	CStdString m_strVector;
+	CStdString m_strDescription;
+	CStdString m_strPassword;
+	int m_nPlayers;
+	int m_nPlayerLimit;
+	bool m_bIsPrivate;
 };

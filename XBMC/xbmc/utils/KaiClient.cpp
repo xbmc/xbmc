@@ -118,16 +118,12 @@ void CKaiClient::RemoveObserver()
 	}
 }
 
-void CKaiClient::EnterVector(CStdString& aVector)
+void CKaiClient::EnterVector(CStdString& aVector, CStdString& aPassword)
 {	
 	if (client_state==State::Authenticated)
 	{
 		CStdString strVectorMessage;
-
-		//////////////////////////////////////////////////////////////////////////////////////////
-		// AJS - Extra ; - empty segment (is used for "password") - blank for all public arenas //
-		//////////////////////////////////////////////////////////////////////////////////////////
-		strVectorMessage.Format("KAI_CLIENT_VECTOR;%s;;",aVector);
+		strVectorMessage.Format("KAI_CLIENT_VECTOR;%s;%s;",aVector,aPassword);
 
 		Send(server_addr, strVectorMessage);
 	}
@@ -181,7 +177,8 @@ void CKaiClient::ExitVector()
 		if (vectorDelimiter>0)
 		{
 			CStdString previousVector = client_vector.Mid(0,vectorDelimiter);
-			EnterVector(previousVector);
+			CStdString strPassword = "";
+			EnterVector(previousVector,strPassword);
 		}
 	}
 }
@@ -351,10 +348,20 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage)
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_SUB_VECTOR")==0)
 			{
-				CStdString strVector = strtok(NULL, ";");  
+				CStdString strVector		= strtok(NULL, ";");
+				CStdString strPlayers		= strtok(NULL, ";");
+				CStdString strSubVectors	= strtok(NULL, ";");
+				CStdString strIsPrivate		= strtok(NULL, ";");
+				CStdString strPlayerLimit	= strtok(NULL, ";");
+				CStdString strDescription	= "Public Arena";
+
 				if (observer!=NULL)
 				{
-					observer->OnNewArena(strVector);
+					observer->OnNewArena(	strVector,
+											strDescription,
+											atoi(strPlayers.c_str()),
+											atoi(strPlayerLimit.c_str()),
+											atoi(strIsPrivate.c_str())	);
 				}
 			}
 			
@@ -366,10 +373,31 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage)
 
 			else if (strcmp(szMessage,"KAI_CLIENT_USER_SUB_VECTOR")==0)
 			{
-				CStdString strVector = strtok(NULL, ";");  
+				CStdString strVector		= strtok(NULL, ";");
+				CStdString strPlayers		= strtok(NULL, ";");
+				CStdString strSubVectors	= strtok(NULL, ";");
+				CStdString strIsPrivate		= strtok(NULL, ";");
+				CStdString strPlayerLimit	= strtok(NULL, ";");
+				CStdString strDescription	= strtok(NULL, ";");
+
 				if (observer!=NULL)
 				{
-					observer->OnNewArena(strVector);
+					observer->OnNewArena(	strVector,
+											strDescription,
+											atoi(strPlayers.c_str()),
+											atoi(strPlayerLimit.c_str()),
+											atoi(strIsPrivate.c_str())	);
+				}
+			}
+
+			else if (strcmp(szMessage,"KAI_CLIENT_VECTOR_DISALLOWED")==0)
+			{
+				CStdString strVector		= strtok(NULL, ";");
+				CStdString strReason		= strtok(NULL, ";");
+
+				if (observer!=NULL)
+				{
+					observer->OnEnterArenaFailed( strVector, strReason );
 				}
 			}
 
