@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 02-03-2005 added: Screensavers from the competition.
   - 02-03-2005 changed: Rendering of CGUIImage -> big boost in gui framerate (most noticeable in 1080i)
   - 02-03-2005 fixed: [ 1155038 ] "Video calibration" error
   - 02-03-2005 changed: moved cdda reading to CFileCdda class
