@@ -44,6 +44,8 @@ xcopy mplayer BUILD\mplayer /E /Q /I /Y
 xcopy skin\MediaCenter\fonts BUILD\skin\MediaCenter\fonts /E /Q /I /Y
 xcopy skin\MediaCenter\*.xml BUILD\skin\MediaCenter /E /Q /I /Y
 %TEX% -input skin\MediaCenter\media -output BUILD\skin\MediaCenter\media
+xcopy skin\Projec~1\fonts "BUILD\skin\Project Mayhem\fonts" /E /Q /I /Y
+xcopy skin\Projec~1\*.xml "BUILD\skin\Project Mayhem\" /E /Q /I /Y
 xcopy credits BUILD\credits /Q /I /Y
 xcopy language BUILD\language /E /Q /I /Y
 xcopy xbmc\keyboard\media BUILD\media /E /Q /I /Y
