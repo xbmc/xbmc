@@ -323,48 +323,6 @@ IDirect3DTexture8* CPicture::GetYUY2Texture( CxImage& image  )
 	return pTexture;
 }
 
-void CPicture::MergeOverlay(BYTE *plane, int stride, RECT rs, RECT rd, BYTE *dplane, int dstride)
-{
-	if (!m_bSectionLoaded)
-	{
-		CSectionLoader::Load("CXIMAGE");
-		m_bSectionLoaded=true;
-	}
-
-	CxImage image(rs.right-rs.left, rs.bottom-rs.top, 24, 0);
-	for (int y=0; y<rs.bottom-rs.top; y++)
-	{
-		for (int x=0; x<rs.right-rs.left; x+=2)
-		{
-			RGBQUAD yuv;
-			yuv.rgbRed = plane[2*x];
-			yuv.rgbGreen = plane[2*x+1];
-			yuv.rgbBlue = plane[2*x+3];
-			RGBQUAD rgb = image.YUVtoRGB(yuv);
-			image.SetPixelColor(x, y, rgb);
-			yuv.rgbRed = plane[2*x+2];
-			rgb = image.YUVtoRGB(yuv);
-			image.SetPixelColor(x+1, y,rgb);
-		}
-		plane += stride;
-	}
-	image.Resample(rd.right-rd.left, rd.bottom-rd.top);
-	// ok - now merge with the backbuffer
-	unsigned int *d = (unsigned int *)(dplane + rd.top*dstride + rd.left*4);
-	for (int y=0; y < rd.bottom-rd.top; y++)
-	{
-		for (int x=0; x < rd.right-rd.left; x++)
-		{
-			if (d[x] == 0x00010001)
-			{
-				RGBQUAD rgb = image.GetPixelColor(x, y);
-				d[x] = (rgb.rgbRed << 16) + (rgb.rgbGreen << 8) + rgb.rgbBlue;
-			}
-		}
-		d += (dstride/4);
-	}
-}
-
 bool CPicture::CreateAlbumThumbnail(const CStdString& strFileName, const CStdString& strAlbum)
 {
   CStdString strThumbnail;
