@@ -998,3 +998,64 @@ void CGUIWindowVideoBase::DisplayEmptyDatabaseMessage(bool bDisplay)
 {
 	m_bDisplayEmptyDatabaseMessage = bDisplay;
 }
+
+void CGUIWindowVideoBase::OnPopupMenu(int iItem)
+{
+	// calculate our position
+	int iPosX=200;
+	int iPosY=100;
+	CGUIListControl *pList = (CGUIListControl *)GetControl(CONTROL_LIST);
+	if (pList)
+	{
+		iPosX = pList->GetXPosition()+pList->GetWidth()/2;
+		iPosY = pList->GetYPosition()+pList->GetHeight()/2;
+	}	
+	// mark the item
+	m_vecItems[iItem]->Select(true);
+	// popup the context menu
+	CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+	if (!pMenu) return;
+	// clean any buttons not needed
+	pMenu->ClearButtons();
+	// add the needed buttons
+	pMenu->AddButton(13346);	// Show Video Information
+	pMenu->AddButton(13347);	// Add to Playlist
+	pMenu->AddButton(13350);	// Now Playing...
+	pMenu->AddButton(13349);	// Query Info For All Files
+	pMenu->AddButton(13348);	// Search IMDb...
+	pMenu->AddButton(5);			// Settings
+
+	// turn off the now playing button if nothing is playing
+	if (!g_application.IsPlayingVideo())
+		pMenu->EnableButton(3, false);
+	// turn off the query info button if we aren't in files view
+	if (GetID() != WINDOW_VIDEOS)
+		pMenu->EnableButton(4, false);
+	// position it correctly
+	pMenu->SetPosition(iPosX-pMenu->GetWidth()/2, iPosY-pMenu->GetHeight()/2);
+	pMenu->DoModal(GetID());
+	switch (pMenu->GetButton())
+	{
+	case 1:	// Show Video Information
+		OnInfo(iItem);
+		break;
+	case 2:	// Add to Playlist
+		OnQueueItem(iItem);
+		break;
+	case 3:	// Now Playing...
+		m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
+		return;
+		break;
+	case 4:	// Query Info For All Files
+		OnScan();
+		break;
+	case 5:	// Search IMDb...
+		OnManualIMDB();
+		break;
+	case 6:	// Settings
+		m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS);
+		return;
+		break;
+	}
+	m_vecItems[iItem]->Select(false);
+}
