@@ -413,9 +413,7 @@ void CGUIWindowPictures::OnSlideShow()
 void CGUIWindowPictures::OnCreateThumbs()
 {
   CPicture picture;
-	m_dlgProgress->StartModal( GetID() );
-	const WCHAR *szText=g_localizeStrings.Get(110).c_str();
-	m_dlgProgress->SetHeading(szText);
+	m_dlgProgress->SetHeading(110);
 
   for (int i=0; i < (int)m_vecItems.size();++i)
   {
@@ -424,7 +422,7 @@ void CGUIWindowPictures::OnCreateThumbs()
     {
 			WCHAR wstrProgress[128];
 			WCHAR wstrFile[128];
-      swprintf(wstrProgress,L"   progres:%i/%i", i, m_vecItems.size() );
+      swprintf(wstrProgress,L"   progress:%i/%i", i, m_vecItems.size() );
       swprintf(wstrFile,L"   picture:%S", pItem->GetLabel().c_str() );
 
 			m_dlgProgress->SetLine(0, wstrFile);

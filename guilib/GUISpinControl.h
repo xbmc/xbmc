@@ -20,22 +20,22 @@ class CGUISpinControl :  public CGUIControl
 public:  
   CGUISpinControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CStdString& strFont, DWORD dwTextColor, int iType,DWORD dwAlign=XBFONT_RIGHT);
   virtual ~CGUISpinControl(void);
-  virtual void Render();
-  virtual void OnKey(const CKey& key) ;
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual void AllocResources();
-  virtual void FreeResources();
-  virtual void SetPosition(DWORD dwPosX, DWORD dwPosY);
+  virtual void 	Render();
+  virtual void 	OnKey(const CKey& key) ;
+  virtual bool 	OnMessage(CGUIMessage& message);
+  virtual void 	AllocResources();
+  virtual void 	FreeResources();
+  virtual void 	SetPosition(DWORD dwPosX, DWORD dwPosY);
   virtual DWORD GetWidth() const;
-  void SetRange(int iStart, int iEnd);
-  void SetFloatRange(float fStart, float fEnd);
-  void SetValue(int iValue);
-  void SetFloatValue(float fValue);
-  int  GetValue() const;
-  float GetFloatValue() const;
-  void AddLabel(const WCHAR* strLabel);
-  const WCHAR* GetLabel() const;
-  virtual void SetFocus(bool bOnOff);
+  void 					SetRange(int iStart, int iEnd);
+  void 					SetFloatRange(float fStart, float fEnd);
+  void 					SetValue(int iValue);
+  void 					SetFloatValue(float fValue);
+  int  					GetValue() const;
+  float					GetFloatValue() const;
+  void					AddLabel(const WCHAR* strLabel, int  iValue);
+  const WCHAR*	GetLabel() const;
+  virtual void	SetFocus(bool bOnOff);
 protected:
   int       m_iStart;
   int       m_iEnd;
@@ -46,6 +46,7 @@ protected:
   int       m_iType;
   int       m_iSelect;
   vector<wstring> m_vecLabels;
+  vector<int>			m_vecValues;
 	CGUIImage m_imgspinUp;
 	CGUIImage m_imgspinDown;
 	CGUIImage m_imgspinUpFocus;

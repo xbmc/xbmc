@@ -12,15 +12,16 @@ class CGUIWindow
 public:
   CGUIWindow(DWORD dwID);
   virtual ~CGUIWindow(void);
-  bool            Load(const CStdString& strFileName);
-  virtual void    Render();
-  virtual void    OnKey(const CKey& key);
-  virtual bool    OnMessage(CGUIMessage& message);
-  void            Add(CGUIControl* pControl);
-  int             GetFocusControl();
-  void            SelectNextControl();
-  DWORD           GetID(void) const;
-	void						ClearAll();
+  bool            		Load(const CStdString& strFileName);
+  virtual void    		Render();
+  virtual void    		OnKey(const CKey& key);
+  virtual bool    		OnMessage(CGUIMessage& message);
+  void            		Add(CGUIControl* pControl);
+  int             		GetFocusControl();
+  void            		SelectNextControl();
+  DWORD           		GetID(void) const;
+	const CGUIControl*	GetControl(int iControl) const;
+	void								ClearAll();
 protected:
   vector<CGUIControl*> m_vecControls;
   typedef vector<CGUIControl*>::iterator ivecControls;

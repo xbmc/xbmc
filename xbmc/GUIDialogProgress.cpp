@@ -1,5 +1,6 @@
 #include "guidialogprogress.h"
 #include "guiWindowManager.h"
+#include "localizeStrings.h"
 
 CGUIDialogProgress::CGUIDialogProgress(void)
 :CGUIDialog(0)
@@ -52,4 +53,23 @@ void CGUIDialogProgress::SetLine(int iLine, const wstring& strLine)
 
   CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),iControl,0,0,(void*)strLine.c_str());
   OnMessage(msg);
+}
+
+void CGUIDialogProgress::SetLine(int iLine, const string& strLine)
+{
+	WCHAR wszLine[1024];
+	swprintf(wszLine,L"%S", strLine.c_str());
+	SetLine(iLine,wszLine);
+}
+void CGUIDialogProgress::SetHeading(int iString)
+{
+	const WCHAR* pszTxt=g_localizeStrings.Get(iString).c_str();
+	SetHeading(pszTxt);
+}
+
+
+void	CGUIDialogProgress::SetLine(int iLine, int iString)
+{
+	const WCHAR* pszTxt=g_localizeStrings.Get(iString).c_str();
+	SetLine(iLine,pszTxt);
 }

@@ -293,7 +293,13 @@
 				RelativePath=".\xbmc\FileItem.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIDialogOK.cpp">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIDialogProgress.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GuiDialogSelect.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIDialogYesNo.cpp">
@@ -303,6 +309,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowMusic.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GuiWindowMusicInfo.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowMyFiles.cpp">
@@ -391,7 +400,13 @@
 				RelativePath=".\xbmc\FileItem.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIDialogOK.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIDialogProgress.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIDialogSelect.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIDialogYesNo.h">
@@ -401,6 +416,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowMusic.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GuiWindowMusicInfo.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowMyFiles.h">
@@ -688,6 +706,42 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\DelayController.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\HTMLTable.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\HTMLTable.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\HTMLUtil.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\HTMLUtil.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\HTTP.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\HTTP.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\MusicAlbumInfo.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\MusicInfoScraper.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\MusicInfoScraper.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\MusicSong.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\MusicSong.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\Sntp.cpp">

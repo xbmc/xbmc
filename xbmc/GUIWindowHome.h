@@ -13,4 +13,5 @@ public:
 protected:
   VOID GetDate(WCHAR* szDate, LPSYSTEMTIME pTime);
   VOID GetTime(WCHAR* szTime, LPSYSTEMTIME pTime);
+	IDirect3DTexture8* m_pTexture;
 };

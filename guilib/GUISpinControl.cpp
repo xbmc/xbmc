@@ -134,6 +134,7 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
 			case GUI_MSG_LABEL_RESET:
 			{
 				m_vecLabels.erase(m_vecLabels.begin(),m_vecLabels.end());
+				m_vecValues.erase(m_vecValues.begin(),m_vecValues.end());
 				SetValue(0);
         return true;
 			}
@@ -143,7 +144,8 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
       {
         WCHAR wszLabel[1024];
 				wcscpy(wszLabel, (WCHAR *)message.GetLPVOID() );
-        AddLabel(wszLabel);
+				int iValue=message.GetParam1();
+        AddLabel(wszLabel, iValue);
         return true;
       }
       break;
@@ -155,6 +157,7 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
 				if (m_iType==SPIN_CONTROL_TYPE_TEXT)
 				{
 					message.SetLabel( m_vecLabels[m_iValue]);
+					message.SetParam1(m_vecValues[m_iValue]);
 				}
 				return true;
 			}
@@ -287,9 +290,10 @@ float CGUISpinControl::GetFloatValue() const
 }
 
 
-void CGUISpinControl::AddLabel(const WCHAR* strLabel)
+void CGUISpinControl::AddLabel(const WCHAR* strLabel, int iValue)
 {
   m_vecLabels.push_back(strLabel);
+	m_vecValues.push_back(iValue);
 }
 
 const WCHAR* CGUISpinControl::GetLabel() const

@@ -1,18 +1,18 @@
-#include "guidialogyesno.h"
+#include "guidialogok.h"
 #include "guiWindowManager.h"
 #include "localizeStrings.h"
 
-CGUIDialogYesNo::CGUIDialogYesNo(void)
+CGUIDialogOK::CGUIDialogOK(void)
 :CGUIDialog(0)
 {
 	m_bConfirmed=false;
 }
 
-CGUIDialogYesNo::~CGUIDialogYesNo(void)
+CGUIDialogOK::~CGUIDialogOK(void)
 {
 }
 
-bool CGUIDialogYesNo::OnMessage(CGUIMessage& message)
+bool CGUIDialogOK::OnMessage(CGUIMessage& message)
 {
 	switch ( message.GetMessage() )
   {
@@ -43,13 +43,13 @@ bool CGUIDialogYesNo::OnMessage(CGUIMessage& message)
 	return CGUIDialog::OnMessage(message);
 }
 
-bool CGUIDialogYesNo::IsConfirmed() const
+bool CGUIDialogOK::IsConfirmed() const
 {
 	return m_bConfirmed;
 }
 
 
-void  CGUIDialogYesNo::SetHeading(const wstring& strLine)
+void  CGUIDialogOK::SetHeading(const wstring& strLine)
 {
 	int iControl=1;
   CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),iControl,0,0,(void*)strLine.c_str());
@@ -57,7 +57,7 @@ void  CGUIDialogYesNo::SetHeading(const wstring& strLine)
 
 }
 
-void CGUIDialogYesNo::SetLine(int iLine, const wstring& strLine)
+void CGUIDialogOK::SetLine(int iLine, const wstring& strLine)
 {
 	int iControl=iLine+2;
 
@@ -65,20 +65,20 @@ void CGUIDialogYesNo::SetLine(int iLine, const wstring& strLine)
   OnMessage(msg);
 }
 
-void CGUIDialogYesNo::SetLine(int iLine, const string& strLine)
+void CGUIDialogOK::SetLine(int iLine, const string& strLine)
 {
 	WCHAR wszLine[1024];
 	swprintf(wszLine,L"%S", strLine.c_str());
 	SetLine(iLine,wszLine);
 }
-void CGUIDialogYesNo::SetHeading(int iString)
+void CGUIDialogOK::SetHeading(int iString)
 {
 	const WCHAR* pszTxt=g_localizeStrings.Get(iString).c_str();
 	SetHeading(pszTxt);
 }
 
 
-void	CGUIDialogYesNo::SetLine(int iLine, int iString)
+void	CGUIDialogOK::SetLine(int iLine, int iString)
 {
 	const WCHAR* pszTxt=g_localizeStrings.Get(iString).c_str();
 	SetLine(iLine,pszTxt);

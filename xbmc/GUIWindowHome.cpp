@@ -93,7 +93,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 				case 12:
 				{
 					g_application.Stop();
-					XKUtils::XBOXReset();
+					XKUtils::XBOXPowerCycle();
 				}
       }
     }

@@ -105,16 +105,8 @@ void CGUIThumbnailPanel::Render()
 		iScrollYOffset=m_iItemHeight-m_iScrollCounter;
 	}
 
-	D3DVIEWPORT8 oldviewport, newviewport;
-	g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
 
-	newviewport.X      = m_dwPosX;
-	newviewport.Y			 = m_dwPosY;
-	newviewport.Width  = m_iColumns*m_iItemWidth;
-	newviewport.Height = m_iRows*m_iItemHeight;
-	newviewport.MinZ   = 0.0f;
-	newviewport.MaxZ   = 1.0f;
-	g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
+	g_graphicsContext.SetViewPort( (float)m_dwPosX, (float)m_dwPosY, (float)m_iColumns*m_iItemWidth, (float)m_iRows*m_iItemHeight);
 
 	if (m_bScrollUp)
 	{
@@ -167,7 +159,7 @@ void CGUIThumbnailPanel::Render()
     }
 	}
 
-	g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
+	g_graphicsContext.RestoreViewPort();
   m_upDown.Render();
 
 	//
@@ -479,14 +471,13 @@ void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor,
     return;
   }
   else
-  {
-		D3DVIEWPORT8 oldviewport, newviewport;
+		{
+		D3DVIEWPORT8 newviewport,oldviewport;
 		g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
-
 		newviewport.X      = (DWORD)fPosX;
 		newviewport.Y			 = (DWORD)fPosY;
-		newviewport.Width  = (DWORD)(fMaxWidth-5.0f);
-		newviewport.Height = 60;
+		newviewport.Width  = (DWORD)(fMaxWidth-5.0);
+		newviewport.Height = (DWORD)(60.0f);
 		newviewport.MinZ   = 0.0f;
 		newviewport.MaxZ   = 1.0f;
 		g_graphicsContext.Get3DDevice()->SetViewport(&newviewport);
@@ -553,6 +544,7 @@ void CGUIThumbnailPanel::RenderText(float fPosX, float fPosY, DWORD dwTextColor,
               m_pFont->DrawTextWidth(fPosX,fPosY,m_dwTextColor,wszText,fMaxWidth);
 					}
     }
+		
 		g_graphicsContext.Get3DDevice()->SetViewport(&oldviewport);
 
   }
