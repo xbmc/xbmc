@@ -58,6 +58,8 @@
 #define CONTROL_KAI_TAB_ARENA	3082				// Arena tab button
 #define CONTROL_KAI_TAB_CHAT	3083				// Chat tab button
 
+#define KAI_XBOX_ROOT		"Arena/XBox"
+
 #define SET_CONTROL_DISABLED(dwSenderId, dwControlID) \
 { \
 	CGUIMessage msg(GUI_MSG_DISABLED, dwSenderId, dwControlID); \
@@ -694,7 +696,7 @@ void CGUIWindowBuddies::UpdatePanel()
 		if (pBuddy->m_bIsOnline)
 		{
 			SET_CONTROL_ENABLED(GetID(), CONTROL_BTNINVITE);
-			if (pBuddy->m_strVector!="Idle")
+			if (pBuddy->m_strVector!="Home")
 			{
 				SET_CONTROL_ENABLED(GetID(), CONTROL_BTNJOIN);
 			}
@@ -781,10 +783,6 @@ void CGUIWindowBuddies::Render()
 		}
 	}
 
-	// Update current Arena name
-	CStdString arenaName="";
-	SET_CONTROL_LABEL(GetID(),  CONTROL_LABELUPDATED, arenaName);
-
 	// Update mode/item selection specific labels
 	switch(window_state)
 	{
@@ -793,27 +791,19 @@ void CGUIWindowBuddies::Render()
 			UpdateFriends();
 			break;
 		}
-		case State::Chat:
-		{
-			CStdString currentVector = m_pKaiClient->GetCurrentVector();
-			INT arenaDelimiter = currentVector.ReverseFind('/')+1;
-			arenaName = currentVector.Mid(arenaDelimiter);
-			SET_CONTROL_LABEL(GetID(),  CONTROL_LABELUPDATED, arenaName);
-			break;
-		}
-		case State::Arenas:
-		{
-			CStdString currentVector = m_pKaiClient->GetCurrentVector();
-			INT arenaDelimiter = currentVector.ReverseFind('/')+1;
-			arenaName = currentVector.Mid(arenaDelimiter);
-			SET_CONTROL_LABEL(GetID(),  CONTROL_LABELUPDATED, arenaName);
-		}
 		case State::Games:
 		{
 			UpdateArena();
 			break;
 		}
 	}
+
+	// Update current Arena name
+	CStdString currentVector = m_pKaiClient->GetCurrentVector();
+	INT arenaDelimiter = currentVector.ReverseFind('/')+1;
+	CStdString arenaName = arenaDelimiter>0 ? currentVector.Mid(arenaDelimiter) : "Home" ;
+	if (arenaName.CompareNoCase("xbox")==0) arenaName = arenaName.ToUpper();
+	SET_CONTROL_LABEL(GetID(),  CONTROL_LABELUPDATED, arenaName);
 }
 
 void CGUIWindowBuddies::UpdateFriends()
@@ -1114,7 +1104,7 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 
 			if (m_pKaiClient->GetCurrentVector().IsEmpty())
 			{
-				CStdString aRootVector = KAI_SYSTEM_ROOT;
+				CStdString aRootVector = KAI_XBOX_ROOT;
 				CStdString strPassword = "";
 				m_pKaiClient->EnterVector(aRootVector,strPassword);
 			}

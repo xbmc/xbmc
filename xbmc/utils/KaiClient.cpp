@@ -649,7 +649,7 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 				{
 					CHAR* szContact = strtok(NULL, ";");
 					CStdString strContactName = szContact;
-					CStdString strVector = "Idle";
+					CStdString strVector = "Home";
 
 					if ( szContact[strlen(szContact)+1] != ';' )
 					{
