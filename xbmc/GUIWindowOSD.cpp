@@ -16,7 +16,7 @@
 //#include "cores/mplayer/mplayer.h"
 #include "utils/log.h"
 
-#define OSD_VIDEOPROGRESS 1
+#define OSD_VIDEOPROGRESS 101
 #define OSD_SKIPBWD 210
 #define OSD_REWIND 211
 #define OSD_STOP 212
