@@ -2363,4 +2363,5 @@
   <string><id>14040</id><value>network setup.  Would you like to restart now?</value></string>
   <string><id>14041</id><value>Post Processing</value></string>
   <string><id>14042</id><value>Engine IP Address</value></string>
+  <string><id>14043</id><value>- Shutdown while playing</value></string>
 </strings>

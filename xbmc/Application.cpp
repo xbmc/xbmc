@@ -2506,7 +2506,11 @@ void CApplication::CheckShutdown()
 	// counted from when the screensaver activates.
 	if (!m_bInactive)
 	{
-		if (IsPlayingVideo() && !m_pPlayer->IsPaused())	// are we playing a movie?
+		if (g_guiSettings.GetBool("System.ShutDownWhilePlaying"))	// shutdown if active
+		{
+			m_bInactive=true;
+		}
+		else if (IsPlayingVideo() && !m_pPlayer->IsPaused())	// are we playing a movie?
 		{
 			m_bInactive=false;
 		}
@@ -2532,7 +2536,12 @@ void CApplication::CheckShutdown()
 	{
 		if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_guiSettings.GetInt("System.ShutDownTime")*60*1000L) )
 		{
-			if (m_pPlayer && m_pPlayer->IsPlaying())	// if we're playing something don't shutdown
+			bool bShutDown=false;
+			if (g_guiSettings.GetBool("System.ShutDownWhilePlaying"))	// shutdown if active
+			{
+				bShutDown=true;
+			}
+			else if (m_pPlayer && m_pPlayer->IsPlaying())	// if we're playing something don't shutdown
 			{
 				m_dwSaverTick=timeGetTime();
 			}
@@ -2542,8 +2551,11 @@ void CApplication::CheckShutdown()
 			}
 			else										// not playing
 			{
-				g_applicationMessenger.Shutdown(); // Turn off the box
+				bShutDown=true;
 			}
+
+			if (bShutDown)
+				g_applicationMessenger.Shutdown(); // Turn off the box
 		}
 	}
 

@@ -209,10 +209,11 @@ CGUISettings::CGUISettings(void)
 	AddInt(3, "System.RemotePlayHDSpinDownMinDuration", 13004, 20, 0, 1, 20, SPIN_CONTROL_INT_PLUS, "%i mins"); // Minutes
 	AddInt(4, "System.RemotePlayHDSpinDownDelay", 13003, 20, 5, 5, 300, SPIN_CONTROL_INT_PLUS, "%i secs");	// seconds
 	AddInt(5,"System.ShutDownTime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, "%i mins");
-	AddBool(6,"System.FanSpeedControl", 13302, false);
-	AddInt(7,"System.FanSpeed", 13300, CFanController::Instance()->GetFanSpeed(), 5, 5, 50, SPIN_CONTROL_INT_PLUS, "%i%%");
-	AddBool(8,"System.AutoTemperature", 13301, false);
-	AddInt(9,"System.TargetTemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
+	AddBool(6,"System.ShutDownWhilePlaying", 14043, false);
+	AddBool(7,"System.FanSpeedControl", 13302, false);
+	AddInt(8,"System.FanSpeed", 13300, CFanController::Instance()->GetFanSpeed(), 5, 5, 50, SPIN_CONTROL_INT_PLUS, "%i%%");
+	AddBool(9,"System.AutoTemperature", 13301, false);
+	AddInt(10,"System.TargetTemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
 
 	AddCategory(4, "Autorun", 447);
 	AddBool(1,"Autorun.DVD", 240, true);
