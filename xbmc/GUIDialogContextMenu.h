@@ -10,7 +10,7 @@ public:
   virtual void    OnAction(const CAction &action);
 	virtual bool		OnMessage(CGUIMessage &message);
 	virtual void		DoModal(DWORD dwParentId);
-	virtual void		Close();
+	void						ClearButtons();
 	void						AddButton(int iLabel);
 	void						AddButton(const wstring &strButton);
 	void						EnableButton(int iButton, bool bEnable);
