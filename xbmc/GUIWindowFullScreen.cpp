@@ -1,6 +1,7 @@
 
 #include "GUIWindowFullScreen.h"
 #include "settings.h"
+#include "application.h"
 
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
 :CGUIWindow(0)
@@ -40,6 +41,52 @@ void CGUIWindowFullScreen::OnKey(const CKey& key)
 
 	}
 
+	if ( key.IsButton() )
+	{
+		switch (key.GetButtonCode() )
+		{
+			case KEY_BUTTON_DPAD_LEFT:
+			case KEY_REMOTE_LEFT:
+				g_application.m_pPlayer->Seek(false,false);
+			break;
+
+			case KEY_BUTTON_DPAD_RIGHT:
+			case KEY_REMOTE_RIGHT:
+				g_application.m_pPlayer->Seek(true,false);
+			break;
+
+			
+			case KEY_BUTTON_DPAD_UP:
+			case KEY_REMOTE_UP:
+				g_application.m_pPlayer->Seek(true,true);
+			break;
+
+			case KEY_BUTTON_DPAD_DOWN:
+			case KEY_REMOTE_DOWN:
+				g_application.m_pPlayer->Seek(false,true);
+			break;
+
+			case KEY_BUTTON_BLACK:
+			case KEY_REMOTE_INFO:
+				g_application.m_pPlayer->ToggleOSD();
+			break;
+				
+			case KEY_BUTTON_WHITE:
+			case KEY_REMOTE_TITLE:
+				g_application.m_pPlayer->ToggleSubtitles();
+			break;
+
+			case KEY_BUTTON_A:
+				g_application.m_pPlayer->closefile();
+			break;
+
+			case KEY_BUTTON_BACK:
+				g_application.m_pPlayer->Pause();
+			break;
+
+
+		}
+	}
   CGUIWindow::OnKey(key);
 }
 

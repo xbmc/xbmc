@@ -17,9 +17,20 @@ public:
 	virtual void		Pause();
 	virtual bool		IsPaused() const;
 	virtual void		Unload();
-	virtual __int64	GetPTS();
 	virtual bool		HasVideo();
 	virtual bool		HasAudio();
+	virtual void		ToggleOSD();
+
+	virtual __int64	GetPTS() ;
+	virtual void		ToggleSubtitles();
+	virtual void		ToggleFrameDrop();
+	virtual void		SubtitleOffset(bool bPlus=true);
+	virtual void	  Seek(bool bPlus=true, bool bLargeStep=false);
+	virtual void		SetVolume(bool bPlus=true);	
+	virtual void		SetContrast(bool bPlus=true);	
+	virtual void		SetBrightness(bool bPlus=true);	
+	virtual void		SetHue(bool bPlus=true);	
+	virtual void		SetSaturation(bool bPlus=true);	
 
 protected:
 	virtual void		OnStartup();
