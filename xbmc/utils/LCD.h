@@ -32,6 +32,7 @@ protected:
   unsigned int m_iActualpos;				// actual cursor possition
   bool         m_bUpdate[4];
   CStdString   m_strLine[4];
+  int          m_iPos[4];
   CEvent       m_event;
 
 };
