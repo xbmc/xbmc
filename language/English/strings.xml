@@ -694,6 +694,7 @@
   <string><id>13357</id><value>Combination Overlays/Shader</value></string>
   <string><id>13358</id><value>High Quality Pixel Shader</value></string>
   <string><id>13359</id><value>Medium Quality Pixel Shader</value></string>
+  <string><id>13360</id><value>Generate Thumbs</value></string>
 
   <string><id>14000</id><value>Stacking: Off</value></string>
   <string><id>14001</id><value>Stacking: Simple</value></string>
