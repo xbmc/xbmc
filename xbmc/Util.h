@@ -114,4 +114,5 @@ public:
 	static void FlashScreen(bool bImmediate, bool bOn);
   static void RestoreBrightnessContrastGamma();
   static void InitGamma();
+  static void ClearCache();
 };

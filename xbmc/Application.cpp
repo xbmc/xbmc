@@ -1284,6 +1284,13 @@ void CApplication::Stop()
 
 bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 {
+  CStdString strExtension;
+  CUtil::GetExtension(strFile,strExtension);
+  strExtension.ToLower();
+  if (strExtension==".m3u") return false;
+  if (strExtension==".b4s") return false;
+
+
   m_tagCurrentSong.SetLoaded(false);
   m_tagCurrentMovie.Reset();
   m_iPlaySpeed=1;
