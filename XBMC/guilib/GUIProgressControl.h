@@ -22,7 +22,7 @@ class CGUIProgressControl :
   public CGUIControl
 {
 public:
-  CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, CStdString& strBackGroundTexture,CStdString& strLeftTexture,CStdString& strMidTexture,CStdString& strRightTexture);
+  CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, CStdString& strBackGroundTexture,CStdString& strLeftTexture,CStdString& strMidTexture,CStdString& strRightTexture, CStdString& strOverlayTexture);
   virtual ~CGUIProgressControl(void);
   virtual void Render();
   virtual bool CanFocus() const;  
@@ -36,11 +36,13 @@ public:
 	const CStdString& GetBackTextureLeftName() const { return m_guiLeft.GetFileName();};
 	const CStdString& GetBackTextureRightName() const { return m_guiRight.GetFileName();};
 	const CStdString& GetBackTextureMidName() const { return m_guiMid.GetFileName();};
+	const CStdString& GetBackTextureOverlayName() const { return m_guiOverlay.GetFileName();};
 protected:
 	CGUIImage				m_guiBackground;
 	CGUIImage				m_guiLeft;
 	CGUIImage				m_guiRight;
 	CGUIImage				m_guiMid;
+	CGUIImage				m_guiOverlay;
 	int						m_iPercent;
 };
 #endif
