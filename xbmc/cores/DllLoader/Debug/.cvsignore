@@ -1,0 +1,11 @@
+*.obj
+*.idb
+*.pdb
+*.ncb
+BuildLog.htm
+default.xbe
+xbmc.exe
+xbmc.ilk
+xbmc.map
+*.sbr
+*.pch
