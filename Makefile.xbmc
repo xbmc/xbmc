@@ -46,6 +46,21 @@ ifneq ($(FRIBIDI_LIB),)
 	OBJECTS += $(LIB_PATH)/libfribidi.a
 endif
 
+ifneq ($(ARCH_LIB),)
+	#not entirely sure if this only covers libiconv
+	
+	#dont link with libiconv if we dont link with freetype
+	ifneq ($(FREETYPE_LIB),)
+		NAMES += ICONV
+		OBJECTS += $(LIB_PATH)/libiconv.a
+	endif
+endif
+
+ifneq ($(FREETYPE_LIB),)
+	NAMES += FREETYPE
+	OBJECTS += $(LIB_PATH)/libfreetype.a	
+endif
+
 # targets
 all:	dll
 clean:
