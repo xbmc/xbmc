@@ -191,13 +191,13 @@ void choose_best_resolution()
 	if (params.BackBufferHeight != orgparams.BackBufferHeight ||
 		  params.BackBufferWidth  != orgparams.BackBufferWidth)
 	{
-		m_iDeviceWidth  = params.BackBufferWidth;
-		m_iDeviceHeight = params.BackBufferHeight;
-
-		m_fScreenCompensationX = ( (float)m_iDeviceWidth  ) / ( (float)orgparams.BackBufferWidth  );
-		m_fScreenCompensationY = ( (float)m_iDeviceHeight ) / ( (float)orgparams.BackBufferHeight );
 		g_graphicsContext.Get3DDevice()->Reset(&params);
 	}
+	m_iDeviceWidth  = params.BackBufferWidth;
+	m_iDeviceHeight = params.BackBufferHeight;
+
+	m_fScreenCompensationX = ( (float)m_iDeviceWidth  ) / ( (float)orgparams.BackBufferWidth  );
+	m_fScreenCompensationY = ( (float)m_iDeviceHeight ) / ( (float)orgparams.BackBufferHeight );
 }
 
 
@@ -575,9 +575,8 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
 
 	fs=1;//fullscreen
 
-  Directx_CreateOverlay(image_format);
 	Directx_ManageDisplay(d_image_width,d_image_height);
-
+  Directx_CreateOverlay(image_format);
 	// get stride
 	D3DLOCKED_RECT rectLocked;
 	if ( D3D_OK == m_pOverlay[m_dwVisibleOverlay]->LockRect(0,&rectLocked,NULL,0L  ) )
