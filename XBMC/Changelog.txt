@@ -5,7 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-  - 06-01-2004 changed: New pixel shader output does YV12->RGB in one pass (using Butcher's old code).
+  - 06-01-2005 fixed: filemanager, "Please insert disc" message on local shares
+  - 06-01-2005 changed: New pixel shader output does YV12->RGB in one pass (using Butcher's old code).
   - 06-01-2005 removed: guide mapping from MCE remote in keymap.xml - was an unnecessary double up.
   - 06-01-2005 fixed: [ 1088812 ] Onscreen Keyboard fails when editing shares.
   - 06-01-2005 fixed: [ 1094724 ] Fan speed display bug
