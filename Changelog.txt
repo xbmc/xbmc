@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 19-11-2004 fixed: [ 1066151 ] My Programs: Icon and title not updated when switching DVD`s
+  - 19-11-2004 fixed: [ 1066281 ] Bookmarks on panel (right side) does not use Depth parameter
   - 18-11-2004 fixed: handes high-volume of Kai app_specific requests.
   - 18-11-2004 fixed: Various crashes when subtitle font was set to TTF
   - 18-11-2004 added: Comprehensive Kai hosting options.

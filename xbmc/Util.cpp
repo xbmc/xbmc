@@ -1191,12 +1191,27 @@ bool CUtil::GetXBEIcon(const CStdString& strFilePath, CStdString& strIcon)
 {
   // check if thumbnail already exists
   char szThumbNail[1024];
-  Crc32 crc;
-  crc.Reset();
-  crc.Compute(strFilePath.c_str(),strlen(strFilePath.c_str()));
-  sprintf(szThumbNail,"%s\\%x.tbn",g_stSettings.szThumbnailsDirectory,crc);
-  strIcon= szThumbNail;
-  if (CUtil::FileExists(strIcon) )
+	CStdString strPath="";
+	CStdString strFileName="";
+	CStdString defaultTbn;
+	CUtil::Split(strFilePath, strPath, strFileName);
+	CUtil::ReplaceExtension(strFileName, ".tbn", defaultTbn);
+	if (CUtil::HasSlashAtEnd(strPath))
+		strPath.Delete(strPath.size()-1);
+
+	if (CUtil::IsDVD(strFilePath))		// create CRC for DVD as we can't store default.tbn on DVD
+	{
+	  Crc32 crc;
+    crc.Reset();
+    crc.Compute(strFilePath.c_str(),strlen(strFilePath.c_str()));
+    sprintf(szThumbNail,"%s\\%x.tbn",g_stSettings.szThumbnailsDirectory,crc);
+	}
+	else
+	{
+    sprintf(szThumbNail, "%s%s", strPath.c_str(), defaultTbn.c_str());
+	}
+	strIcon=szThumbNail;
+	if (CUtil::FileExists(strIcon) && !CUtil::IsDVD(strFilePath))   // always create thumbnail for DVD.
   {
     //yes, just return
     return true;
@@ -1706,7 +1721,7 @@ void CUtil::SetThumb(CFileItem* pItem)
     }
   }
 
-  // get filename of cached thumbnail like Q:\thumbs\aed638.tbn
+	// get filename of cached thumbnail like Q:\thumbs\aed638.tbn
   CStdString strCachedThumbnail;
   Crc32 crc;
   crc.Reset();
@@ -1716,7 +1731,8 @@ void CUtil::SetThumb(CFileItem* pItem)
   bool bGotIcon(false);
 
   // does a cached thumbnail exists?
-  if (!CUtil::FileExists(strCachedThumbnail) )
+	// If it is on the DVD and is an XBE, let's grab get the thumbnail again
+	if (!CUtil::FileExists(strCachedThumbnail) || (CUtil::IsXBE(strFileName) && CUtil::IsDVD(strFileName)) )
   {
 		// get the path for the  thumbnail
 		CUtil::GetThumbnail( strFileName,strThumb);
