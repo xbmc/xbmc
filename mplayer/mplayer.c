@@ -424,7 +424,6 @@ static void uninit_player(unsigned int mask){
     if(sh_audio) uninit_audio(sh_audio);
     sh_audio=NULL;
   }
-
   if(mask&INITED_VCODEC){
     inited_flags&=~INITED_VCODEC;
     current_module="uninit_vcodec";
@@ -434,7 +433,6 @@ static void uninit_player(unsigned int mask){
     vf_menu=NULL;
 #endif
   }
- 
   if(mask&INITED_DEMUXER){
     inited_flags&=~INITED_DEMUXER;
     current_module="free_demuxer";
@@ -511,6 +509,7 @@ static void uninit_player(unsigned int mask){
   vo_font = NULL;
 #endif
   current_module=NULL;
+  printf("uninit_player... DONE!"); 
 }
 
 #ifndef _XBOX
@@ -1232,6 +1231,7 @@ int mplayer_init(int argc, char* argv[])
     suboverlap_enabled = 1;
     vobsub_name=NULL;
     font_name=NULL;
+    vo_font=NULL;
     audio_driver_list=NULL;
     video_driver_list=NULL;
     audio_output_format=0;
@@ -4670,6 +4670,7 @@ printf(" unint_player\n");
 // time to uninit all, except global stuff:
 #ifdef _XBOX
 uninit_player(INITED_ALL-(INITED_GUI+(fixed_vo?INITED_VO:0)));
+printf(" uninit_player - done\n");
 #else
 uninit_player(INITED_ALL-(INITED_GUI+INITED_INPUT+(fixed_vo?INITED_VO:0)));
 #endif
