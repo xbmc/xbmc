@@ -325,7 +325,8 @@ extern "C"
 
     CRegExp reg;
 
-    // Year, Director, Top 250, MPAA certification, 
+    // Year, Director, Top 250, MPAA certification, etc.
+    ParseDetails(szXML, szHTML, "title", "\"title\"> *([^<]*)<");
     ParseDetails(szXML, szHTML, "year", "/Sections/Years/([0-9]*)"); 
 		char *pDirectedBy=strstr(szHTML,"Directed by");
     ParseDetails(szXML, pDirectedBy, "director", "<a [^>]*>([^<]*)</a>");
@@ -337,7 +338,7 @@ extern "C"
 
     // Credits
 		char *pCredits=strstr(szHTML,"Writing credits");
-    reg.RegComp("<a [^\n]*\n");
+    reg.RegComp("<a href=\"/name/[^\n]*\n");
     if (reg.RegFind(pCredits) >= 0)
     { // found credits - there can be multiple ones, so separate with a /
       char allcredits[1024];
@@ -346,7 +347,7 @@ extern "C"
       if (credits)
       {
         char *scancredits = credits;
-        reg.RegComp("<a [^>]*>([^<]*)<");
+        reg.RegComp("<a href=\"/name/[^>]*>([^<]*)<");
         while (true)
         {
           reg.RegFind(scancredits);

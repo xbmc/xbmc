@@ -19,6 +19,7 @@ public:
 
 protected:
 	CString GetString(const CString &strField);
+	CString FormatField(const CString &strField);
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()

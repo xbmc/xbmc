@@ -76,3 +76,44 @@ int StringUtils::FindNumber(const CStdString& strInput, const CStdString &strFin
   }
   return numfound;
 }
+
+// Compares separately the numeric and alphabetic parts of a string.
+// returns true if left > right
+bool StringUtils::AlphaNumericCompare(const char *left, const char *right)
+{
+  char *l = (char *)left;
+  char *r = (char *)right;
+  char *ld, *rd;
+  unsigned int lnum, rnum;
+  while (*l != 0 && *r != 0)
+  {
+    // check if we have a numerical value
+    ld = l;
+    lnum = 0;
+    while (*ld >= '0' && *ld <= '9')
+    {
+      lnum *= 10;
+      lnum += *ld++;
+    }
+    rd = r;
+    rnum = 0;
+    while (*rd >= '0' && *rd <= '9')
+    {
+      rnum *= 10;
+      rnum += *rd++;
+    }
+    // do we have numbers?
+    if (lnum != rnum)
+    { // yes - and they're different!
+      return lnum < rnum;
+    }
+    // ok, do a normal comparison.  Add special case stuff (eg '(' characters)) in here later
+    if (*l != *r)
+    {
+      return *l < *r;
+    }
+    l = ld + 1;
+    r = rd + 1;
+  }
+  return false; // files are the same
+}

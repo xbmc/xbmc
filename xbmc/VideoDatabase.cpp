@@ -238,9 +238,8 @@ long CVideoDatabase::GetFile(const CStdString& strFilenameAndPath, long &lPathId
 
     // check for a stackable file
     CStdString fileTitle;
-    CStdString volumePrefix;
-    int volumeNumber;
-    if (!bExact && !CUtil::GetVolumeFromFileName(strFileName, fileTitle, volumePrefix, volumeNumber))
+    CStdString volumeNumber;
+    if (!bExact && !CUtil::GetVolumeFromFileName(strFileName, fileTitle, volumeNumber))
       bExact = true;  // can't stack this file
 
     lPathId = GetPath(strPath);
@@ -270,11 +269,10 @@ long CVideoDatabase::GetFile(const CStdString& strFilenameAndPath, long &lPathId
         else
         {
           CStdString fileTitle2;
-          CStdString volumePrefix2;
-          int volumeNumber2;
-          if (CUtil::GetVolumeFromFileName(strFname, fileTitle2, volumePrefix2, volumeNumber2))
+          CStdString volumeNumber2;
+          if (CUtil::GetVolumeFromFileName(strFname, fileTitle2, volumeNumber2))
           {
-            if (fileTitle.Equals(fileTitle2) && volumePrefix.Equals(volumePrefix2))
+            if (fileTitle.Equals(fileTitle2))
             { // found a file already
               long lFileId = m_pDS->fv("idFile").get_asLong() ;
               lMovieId = m_pDS->fv("idMovie").get_asLong() ;

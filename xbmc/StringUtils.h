@@ -25,6 +25,7 @@ class StringUtils
 public:
   static int StringUtils::SplitString(const CStdString& input, const CStdString& delimiter, CStdStringArray &results);
   static int StringUtils::FindNumber(const CStdString& strInput, const CStdString &strFind);
+  static bool StringUtils::AlphaNumericCompare(const char *left, const char *right);
 };
 
 #endif

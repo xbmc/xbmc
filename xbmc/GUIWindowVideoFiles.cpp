@@ -34,14 +34,6 @@
 #define CONTROL_THUMBS      11
 #define CONTROL_LABELFILES         12
 
-struct SSortVideoListByName
-{
-  bool operator()(CStdString& strItem1, CStdString& strItem2)
-  {
-    return strcmp(strItem1.c_str(), strItem2.c_str()) < 0;
-  }
-};
-
 struct SSortVideoByName
 {
   static bool Sort(CFileItem* pStart, CFileItem* pEnd)
@@ -112,9 +104,9 @@ struct SSortVideoByName
       //return (rpStart.strPath.compare( rpEnd.strPath )<0);
 
       if (m_bSortAscending)
-        return (strcmp(szfilename1, szfilename2) < 0);
+        return StringUtils::AlphaNumericCompare(szfilename1, szfilename2);
       else
-        return (strcmp(szfilename1, szfilename2) >= 0);
+        return !StringUtils::AlphaNumericCompare(szfilename1, szfilename2);
     }
     if (!rpStart.m_bIsFolder) return false;
     return true;
@@ -465,8 +457,7 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
           CStdString fileName1 = CUtil::GetFileName(pItem1->m_strPath);
 
           CStdString fileTitle;
-          CStdString volumePrefix;
-          int volumeNumber;
+          CStdString volumeNumber;
 
           bool searchForStackedFiles = false;
           if (g_stSettings.m_iMyVideoVideoStack == STACK_FUZZY)
@@ -475,13 +466,7 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
           }
           else
           {
-            if (CUtil::GetVolumeFromFileName(fileName1, fileTitle, volumePrefix, volumeNumber))
-            {
-              if (volumeNumber > 1)
-              {
-                searchForStackedFiles = true;
-              }
-            }
+            searchForStackedFiles = CUtil::GetVolumeFromFileName(fileName1, fileTitle, volumeNumber);
           }
 
           if (searchForStackedFiles)
@@ -517,16 +502,13 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
                     // one (-CD1) will be added to the display list
 
                     CStdString fileTitle2;
-                    CStdString volumePrefix2;
-                    int volumeNumber2;
-                    if (CUtil::GetVolumeFromFileName(fileName2, fileTitle2, volumePrefix2, volumeNumber2))
+                    CStdString volumeNumber2;
+                    if (CUtil::GetVolumeFromFileName(fileName2, fileTitle2, volumeNumber2))
                     {
                       // TODO: check volumePrefix - they should be in the
                       // same category, but not necessarily equal!
 
-                      if ((volumeNumber2 == 1)
-                          && volumePrefix.Equals(volumePrefix2)
-                          && fileTitle.Equals(fileTitle2))
+                      if (fileTitle.Equals(fileTitle2) && strcmp(volumeNumber.c_str(), volumeNumber2.c_str()) > 0)
                       {
                         bAdd = false;
                         break;
