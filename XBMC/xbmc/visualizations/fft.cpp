@@ -78,8 +78,8 @@ void fft( float data[], int nn, int isign )
 				j = i + mmax;
 				if (j>=n || i>=n)
 					break;
-				tempr = wr*data[j] - wi*data[j+1];
-				tempi = wr*data[j+1] + wi*data[j];
+				tempr = (float) (wr*data[j] - wi*data[j+1]);
+				tempi = (float) (wr*data[j+1] + wi*data[j]);
 				data[j] = data[i] - tempr;
 				data[j+1] = data[i+1] - tempi;
 				data[i] += tempr;
@@ -112,10 +112,10 @@ void twochannelrfft(float data[], int n)
 
 	for (int j=2; j<n; j+=2)
 	{
-		rep = 0.5*(data[j]+data[nn-j]);
-		rem = 0.5*(data[j]-data[nn-j]);
-		aip = 0.5*(data[j+1]+data[nn1-j]);
-		aim = 0.5*(data[j+1]-data[nn1-j]);
+		rep = (float)(0.5*(data[j]+data[nn-j]));
+		rem = (float)(0.5*(data[j]-data[nn-j]));
+		aip = (float)(0.5*(data[j+1]+data[nn1-j]));
+		aim = (float)(0.5*(data[j+1]-data[nn1-j]));
 		/* this works out the complex FT
 		fft1[j]=rep;
 		fft1[j+1]=aim;
@@ -126,8 +126,8 @@ void twochannelrfft(float data[], int n)
 		fft2[nn-j]=aip;
 		fft2[nn1-j]=rem; */
 		// we just need the amplitudes
-		data[j]=2*(sqr(rep)+sqr(aim));	// was sqrt'd
-		data[j+1]=2*(sqr(rem)+sqr(aip));
+		data[j]	 =(float)(2*(sqr(rep)+sqr(aim)));	// was sqrt'd
+		data[j+1]=(float)(2*(sqr(rem)+sqr(aip)));
 	}
 }
 
@@ -140,7 +140,7 @@ void twochanwithwindow(float data[], int n)
 	float wn;
 	for (int i=0; i<nn; i+=2)
 	{
-		wn = 0.5*(1-cos(M_PI*i/n));
+		wn = (float)(0.5*(1-cos(M_PI*i/n)));
 		data[i]*=wn;
 		data[i+1]*=wn;
 	}
@@ -160,8 +160,8 @@ void twochanwithwindow(float data[], int n)
 		rem = data[j]-data[nn-j];
 		aip = data[j+1]+data[nn1-j];
 		aim = data[j+1]-data[nn1-j];
-		data[j]=0.5*(sqr(rep)+sqr(aim));
-		data[j+1]=0.5*(sqr(rem)+sqr(aip));
+		data[j]  =(float)(0.5*(sqr(rep)+sqr(aim)));
+		data[j+1]=(float)(0.5*(sqr(rem)+sqr(aip)));
 	}
 }
 
