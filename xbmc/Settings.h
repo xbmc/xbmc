@@ -197,6 +197,7 @@ public:
 		int				m_iMyMusicStartWindow;
 		bool			m_bMyMusicRepeat;
 		bool			m_bMyMusicSongInfoInVis;
+    bool      m_bMyMusicSongThumbInVis;
 
 		int 			m_iMyVideoViewAsIcons;
 		int 			m_iMyVideoRootViewAsIcons;

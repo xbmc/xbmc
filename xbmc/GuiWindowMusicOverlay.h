@@ -23,6 +23,7 @@ public:
 
 protected:
   int                 m_iFrames;
+  bool                m_bShowInfo;
   int				  m_iFrameIncrement;
   DWORD				  m_dwTimeout;
   int                 m_iPosOrgIcon;

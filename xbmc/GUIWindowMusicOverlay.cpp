@@ -20,6 +20,7 @@
 
 using namespace MUSIC_INFO;
 
+#define CONTROL_LOGO_PIC_BACK    0
 #define CONTROL_LOGO_PIC    1
 #define CONTROL_PLAYTIME		2
 #define CONTROL_PLAY_LOGO   3
@@ -61,12 +62,12 @@ void CGUIWindowMusicOverlay::OnAction(const CAction &action)
 					//we're not moving, so figure out if we should start moving up or down
 					if (m_iFrames <= 0)
 					{
-						g_stSettings.m_bMyMusicSongInfoInVis=true;
+						m_bShowInfo=true;
 						m_iFrameIncrement = 1;
 					}
 					else
 					{
-						g_stSettings.m_bMyMusicSongInfoInVis=false;
+						m_bShowInfo=false;
 						m_iFrameIncrement = -1;
 					}
 				}
@@ -158,13 +159,13 @@ void CGUIWindowMusicOverlay::Render()
 		SetPosition(CONTROL_BIG_PLAYTIME, m_iFrames,STEPS,m_iPosOrgBigPlayTime);
 		m_iFrames+=m_iFrameIncrement;
 
-		if (!g_stSettings.m_bMyMusicSongInfoInVis && m_iFrames <= 1)
+		if (!m_bShowInfo && m_iFrames <= 1)
 		{
 			m_dwTimeout = 0;
 			m_iFrames = 0;
 			m_iFrameIncrement = 0;
 		}
-		else if (!g_stSettings.m_bMyMusicSongInfoInVis && m_iFrames >= STEPS)
+		else if (!m_bShowInfo && m_iFrames >= STEPS)
 		{
 			m_dwTimeout = 0;
 			m_iFrames = STEPS;
@@ -195,85 +196,113 @@ void CGUIWindowMusicOverlay::Render()
 				m_iFrames = STEPS;
 				m_iFrameIncrement = -1;
 			}
-		}
-	}
-	__int64 lPTS=g_application.m_pPlayer->GetPTS();
-  int hh = (int)(lPTS / 36000) % 100;
-  int mm = (int)((lPTS / 600) % 60);
-  int ss = (int)((lPTS /  10) % 60);
-  //int f1 = lPTS % 10;
-
-  int iSpeed=g_application.GetPlaySpeed();
-  if (hh==0 && mm==0 && ss<5)
-  {
-    if (iSpeed < 1)
-    {
-      iSpeed=1;
-      g_application.SetPlaySpeed(iSpeed);
-      g_application.m_pPlayer->SeekTime(0);
-    }
+	  }
   }
+	
+  if ((m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION) || 
+      (g_stSettings.m_bMyMusicSongInfoInVis)
+  ) {
+    ShowControl( CONTROL_PLAYTIME);
+    ShowControl( CONTROL_INFO);
+    ShowControl( CONTROL_BIG_PLAYTIME);
 
-	char szTime[32];
-	if (hh >=1)
-	{
-		sprintf(szTime,"%02.2i:%02.2i:%02.2i",hh,mm,ss);
-	}
-	else
-	{
-		sprintf(szTime,"%02.2i:%02.2i",mm,ss);
-	}
-	{
-		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_BIG_PLAYTIME); 
-		msg.SetLabel(szTime); 
-		OnMessage(msg); 
-	}
+    __int64 lPTS=g_application.m_pPlayer->GetPTS();
+    int hh = (int)(lPTS / 36000) % 100;
+    int mm = (int)((lPTS / 600) % 60);
+    int ss = (int)((lPTS /  10) % 60);
+    //int f1 = lPTS % 10;
 
-  
-  if (iSpeed !=1)
-  {
-    char szTmp[32];
-    sprintf(szTmp,"(%ix)", iSpeed);
-    strcat(szTime,szTmp);
-    m_iFrames = STEPS ;
-  }
-
-  {
-		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_PLAYTIME); 
-		msg.SetLabel(szTime); 
-		OnMessage(msg); 
-	}
-
-
-	HideControl( CONTROL_PLAY_LOGO); 
-	HideControl( CONTROL_PAUSE_LOGO);
-	HideControl( CONTROL_FF_LOGO); 
-	HideControl( CONTROL_RW_LOGO);  
-	if (g_application.m_pPlayer->IsPaused() )
-	{
-		ShowControl(CONTROL_PAUSE_LOGO);
-	}
-	else
-	{
     int iSpeed=g_application.GetPlaySpeed();
-    if (iSpeed==1)
+    if (hh==0 && mm==0 && ss<5)
     {
-		  ShowControl( CONTROL_PLAY_LOGO); 
+      if (iSpeed < 1)
+      {
+        iSpeed=1;
+        g_application.SetPlaySpeed(iSpeed);
+        g_application.m_pPlayer->SeekTime(0);
+      }
     }
-    else if (iSpeed>1)
-    {
-		  ShowControl(CONTROL_FF_LOGO); 
-    }
-		else
-    {
-      ShowControl(CONTROL_RW_LOGO);  
-    }
-	}
-	CGUIWindow::Render();
 
-	if (m_pTexture)
-	{
-		
+	  char szTime[32];
+	  if (hh >=1)
+	  {
+		  sprintf(szTime,"%02.2i:%02.2i:%02.2i",hh,mm,ss);
+	  }
+	  else
+	  {
+		  sprintf(szTime,"%02.2i:%02.2i",mm,ss);
+	  }
+	  {
+		  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_BIG_PLAYTIME); 
+		  msg.SetLabel(szTime); 
+		  OnMessage(msg); 
+	  }
+
+    
+    if (iSpeed !=1)
+    {
+      char szTmp[32];
+      sprintf(szTmp,"(%ix)", iSpeed);
+      strcat(szTime,szTmp);
+      m_iFrames = STEPS ;
+    }
+
+    {
+		  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_PLAYTIME); 
+		  msg.SetLabel(szTime); 
+		  OnMessage(msg); 
+	  }
+
+
+	  HideControl( CONTROL_PLAY_LOGO); 
+	  HideControl( CONTROL_PAUSE_LOGO);
+	  HideControl( CONTROL_FF_LOGO); 
+	  HideControl( CONTROL_RW_LOGO);  
+	  if (g_application.m_pPlayer->IsPaused() )
+	  {
+		  ShowControl(CONTROL_PAUSE_LOGO);
+	  }
+	  else
+	  {
+      int iSpeed=g_application.GetPlaySpeed();
+      if (iSpeed==1)
+      {
+		    ShowControl( CONTROL_PLAY_LOGO); 
+      }
+      else if (iSpeed>1)
+      {
+		    ShowControl(CONTROL_FF_LOGO); 
+      }
+		  else
+      {
+        ShowControl(CONTROL_RW_LOGO);  
+      }
+	  }
+  }
+  else {
+	  HideControl( CONTROL_PLAY_LOGO); 
+	  HideControl( CONTROL_PAUSE_LOGO);
+	  HideControl( CONTROL_FF_LOGO); 
+	  HideControl( CONTROL_RW_LOGO);  
+    HideControl( CONTROL_PLAYTIME);
+    HideControl( CONTROL_INFO);
+    HideControl( CONTROL_BIG_PLAYTIME);
+  }
+
+  bool bRenderThumb = (
+    (m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION) || 
+    (g_stSettings.m_bMyMusicSongThumbInVis)
+  );
+  if (bRenderThumb) {
+    ShowControl(CONTROL_LOGO_PIC_BACK);
+    ShowControl(CONTROL_LOGO_PIC);
+  }
+  else {
+    HideControl(CONTROL_LOGO_PIC_BACK);
+    HideControl(CONTROL_LOGO_PIC);
+  }
+	CGUIWindow::Render();
+  if ((m_pTexture) && (bRenderThumb)) {
 		const CGUIControl* pControl = GetControl(CONTROL_LOGO_PIC); 
     if (pControl)
     {
@@ -302,8 +331,7 @@ void CGUIWindowMusicOverlay::SetID3Tag(ID3_Tag& id3tag)
 
 	int nTrackNum=ID3_GetTrackNum( &id3tag );
 	{
-		CGUIMessage msg(GUI_MSG_VISIBLE, GetID(), CONTROL_LOGO_PIC); 
-		OnMessage(msg);
+		ShowControl(CONTROL_LOGO_PIC); 
 	}
 	{
 		CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_INFO); 
@@ -379,8 +407,7 @@ void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
 	}
 
 	//	Set image visible that is displayed if no thumb is available
-	CGUIMessage msg(GUI_MSG_VISIBLE, GetID(), CONTROL_LOGO_PIC); 
-	OnMessage(msg);
+	ShowControl(CONTROL_LOGO_PIC); 
 
 	//	Reset scrolling text in window
 	CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_INFO); 
@@ -613,12 +640,11 @@ void CGUIWindowMusicOverlay::SetCurrentFile(const CStdString& strFile)
 		if (m_pTexture)
 		{
 			//	Hide image that is displayed, if no thumb is available
-			CGUIMessage msg1(GUI_MSG_HIDDEN, GetID(), CONTROL_LOGO_PIC); 
-			OnMessage(msg1);
+      HideControl(CONTROL_LOGO_PIC); 
 		}
 	}
 
-	if (g_stSettings.m_bMyMusicSongInfoInVis && m_gWindowManager.GetActiveWindow()==WINDOW_VISUALISATION)
+	if (m_bShowInfo && m_gWindowManager.GetActiveWindow()==WINDOW_VISUALISATION)
 	{
 		//reset timeout
 		m_dwTimeout = 0;
