@@ -270,14 +270,30 @@ void CGUIListControl::OnAction(const CAction &action)
 	switch (action.wID)
 	{
 		case ACTION_PAGE_UP:
-		{	// scroll up a page
-			Scroll(-m_iItemsPerPage);
+		{
+			if (m_iOffset == 0)
+			{	// already on the first page, so move to the first item
+				m_iCursorY = 0;
+				if (m_iCursorY<0) m_iCursorY = 0;
+			}
+			else
+			{	// scroll up to the previous page
+				Scroll(-m_iItemsPerPage);
+			}
 		}
 		break;
 
 		case ACTION_PAGE_DOWN:
-		{	// scroll down a page
-			Scroll(m_iItemsPerPage);
+		{
+			if (m_iOffset == (int)m_vecItems.size()-m_iItemsPerPage || (int)m_vecItems.size()<m_iItemsPerPage)
+			{	// already at the last page, so move to the last item.
+				m_iCursorY = m_vecItems.size()-m_iOffset-1;
+				if (m_iCursorY<0) m_iCursorY = 0;
+			}			
+			else
+			{	// scroll down to the next page
+				Scroll(m_iItemsPerPage);
+			}
 		}
 		break;
 
@@ -551,15 +567,8 @@ void CGUIListControl::SetScrollySuffix(const CStdString& wstrSuffix)
 // scrolls the said amount
 void CGUIListControl::Scroll(int iAmount)
 {
+	// increase or decrease the offset
 	m_iOffset += iAmount;
-	if (m_iOffset > (int)m_vecItems.size())
-	{	// occurs when a page down event happens when we're already on the last page
-		m_iCursorY = m_iItemsPerPage-1;	// choose the last item.
-	}
-	if (m_iOffset == -m_iItemsPerPage)
-	{	// occurs when a page up event happens when we're already on the first page...
-		m_iCursorY = 0;
-	}
 	if (m_iOffset > (int)m_vecItems.size()-m_iItemsPerPage)
 	{
 		m_iOffset = m_vecItems.size()-m_iItemsPerPage;
