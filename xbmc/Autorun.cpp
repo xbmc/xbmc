@@ -88,32 +88,58 @@ void CAutorun::RunCdda()
 	VECFILEITEMS	vecItems;
 	CFileItemList itemlist(vecItems);
 
-	CFactoryDirectory factory;
-	auto_ptr<CDirectory> pDir ( factory.Create( "cdda://local/" ) );
-	if ( !pDir->GetDirectory( "cdda://local/", vecItems ) )
-		return;
-
-	if ( vecItems.size() <= 0 )
-		return;
-
-	int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
-
-	for (int i=0; i < (int)vecItems.size(); i++)
+	if (g_stSettings.m_szExternalCDDAPlayer[0])
 	{
-		CFileItem* pItem=vecItems[i];
-		CPlayList::CPlayListItem playlistItem;
-		playlistItem.SetFileName(pItem->m_strPath);
-		playlistItem.SetDescription(pItem->GetLabel());
-		playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
-		g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Add(playlistItem);
+		char szPath[1024];
+		char szDevicePath[1024];
+		char szXbePath[1024];
+		char szParameters[1024];
+		memset(szParameters,0,sizeof(szParameters));
+		strcpy(szPath,g_stSettings.m_szExternalCDDAPlayer);
+		char* szBackslash = strrchr(szPath,'\\');
+		*szBackslash=0x00;
+		char* szXbe = &szBackslash[1];
+		char* szColon = strrchr(szPath,':');
+		*szColon=0x00;
+		char* szDrive = szPath;
+		char* szDirectory = &szColon[1];
+		CIoSupport helper;
+		helper.GetPartition( (LPCSTR) szDrive, szDevicePath);
+		strcat(szDevicePath,szDirectory);
+		wsprintf(szXbePath,"d:\\%s",szXbe);
+
+		g_application.Stop();
+		CUtil::LaunchXbe(szDevicePath,szXbePath,NULL);
 	}
+	else
+	{
+		CFactoryDirectory factory;
+		auto_ptr<CDirectory> pDir ( factory.Create( "cdda://local/" ) );
+		if ( !pDir->GetDirectory( "cdda://local/", vecItems ) )
+			return;
 
-	CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
-	m_gWindowManager.SendMessage( msg );
+		if ( vecItems.size() <= 0 )
+			return;
 
-	g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-	//	Start playing the items we inserted
-	g_playlistPlayer.Play(nSize);
+		int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
+
+		for (int i=0; i < (int)vecItems.size(); i++)
+		{
+			CFileItem* pItem=vecItems[i];
+			CPlayList::CPlayListItem playlistItem;
+			playlistItem.SetFileName(pItem->m_strPath);
+			playlistItem.SetDescription(pItem->GetLabel());
+			playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
+			g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Add(playlistItem);
+		}
+
+		CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
+		m_gWindowManager.SendMessage( msg );
+
+		g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+		//	Start playing the items we inserted
+		g_playlistPlayer.Play(nSize);
+	}
 }
 
 void CAutorun::RunISOMedia()
