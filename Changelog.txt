@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 14-03-2005 fixed: filelist is updated correctly after removing items from playlists
   - 13-03-2005 fixed: crash in my videos
   - 13-03-2005 added: Cache dialog shows progressbar when caching.
   - 13-03-2005 changed: Radiobutton renders not selected when disabled.
