@@ -12,6 +12,7 @@ LARGE_INTEGER lPerfFreq;
 void InitTimer()
 {
   QueryPerformanceFrequency(&lPerfFreq);
+  GetRelativeTime(); //Needed to set RelativeTime correctly as it will give invalid value otherwise on first run.
 }
 
 unsigned int GetTimer()
