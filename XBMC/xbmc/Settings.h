@@ -73,6 +73,12 @@ public:
 	  int				m_bMyVideoSortMethod;
 	  bool			m_bMyVideoSortAscending;
 
+		int				m_iMoveDelayIR;
+		int				m_iRepeatDelayIR;
+
+		int				m_iMoveDelayController;
+		int				m_iRepeatDelayController;
+
   };
   int       m_iSlideShowTransistionFrames;
   int       m_iSlideShowStayTime;
@@ -83,7 +89,7 @@ public:
 protected:
 	bool GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName);
 	int	 GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName);
-	void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, char* szValue);
+	void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, char* szValue, const CStdString& strDefaultValue);
 	void GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items);
 	void ConvertHomeVar(CStdString& strText);
 };

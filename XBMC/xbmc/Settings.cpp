@@ -29,6 +29,10 @@ CSettings::CSettings(void)
 	g_stSettings.m_bMyPicturesSortAscending=true;
 	g_stSettings.m_bMyPicturesSortMethod=0;
 
+	g_stSettings.m_iMoveDelayIR=220;
+	g_stSettings.m_iRepeatDelayIR=220;
+	g_stSettings.m_iMoveDelayController=220;
+	g_stSettings.m_iRepeatDelayController=220;
 	strcpy(g_stSettings.m_szMyPicturesExtensions,".bmp|.jpg|.png|.gif|.pcx|.tif|.jpeg");
 }
 
@@ -76,18 +80,35 @@ void CSettings::Load()
   CStdString strValue=pRootElement->Value();
 	if ( strValue != "xboxmediacenter") return ;
 
+	TiXmlElement* pDelaysElement =pRootElement->FirstChildElement("delays");
+	if (pDelaysElement)
+	{
+		TiXmlElement* pRemoteDelays			=pDelaysElement->FirstChildElement("remote");
+		TiXmlElement* pControllerDelays =pDelaysElement->FirstChildElement("controller");
+		if (pRemoteDelays)
+		{
+			g_stSettings.m_iMoveDelayIR=GetInteger(pRemoteDelays, "move");
+			g_stSettings.m_iRepeatDelayIR=GetInteger(pRemoteDelays, "repeat");
+		}
 
-  GetString(pRootElement, "skin", g_stSettings.szDefaultSkin);
-	GetString(pRootElement, "dashboard", g_stSettings.szDashboard);
+		if (pControllerDelays)
+		{
+			g_stSettings.m_iMoveDelayController=GetInteger(pControllerDelays, "move");
+			g_stSettings.m_iRepeatDelayController=GetInteger(pControllerDelays, "repeat");
+		}
+	}
+
+  GetString(pRootElement, "skin", g_stSettings.szDefaultSkin,"MediaCenter");
+	GetString(pRootElement, "dashboard", g_stSettings.szDashboard,"C:\\xboxdash.xbe");
 	
-	GetString(pRootElement, "ipadres", g_stSettings.m_strLocalIPAdres);
-	GetString(pRootElement, "netmask", g_stSettings.m_strLocalNetmask);
-	GetString(pRootElement, "defaultgateway", g_stSettings.m_strGateway);
-	GetString(pRootElement, "nameserver", g_stSettings.m_strNameServer);
-	GetString(pRootElement, "timeserver", g_stSettings.m_strTimeServer);
-  GetString(pRootElement, "thumbnails",g_stSettings.szThumbnailsDirectory);
-  GetString(pRootElement, "shortcuts", g_stSettings.m_szShortcutDirectory);
-	GetString(pRootElement, "pictureextensions", g_stSettings.m_szMyPicturesExtensions);
+	GetString(pRootElement, "ipadres", g_stSettings.m_strLocalIPAdres,"192.168.0.174");
+	GetString(pRootElement, "netmask", g_stSettings.m_strLocalNetmask,"255.255.255.0");
+	GetString(pRootElement, "defaultgateway", g_stSettings.m_strGateway,"192.168.0.1");
+	GetString(pRootElement, "nameserver", g_stSettings.m_strNameServer,"192.168.0.1");
+	GetString(pRootElement, "timeserver", g_stSettings.m_strTimeServer,"207.46.248.43");
+  GetString(pRootElement, "thumbnails",g_stSettings.szThumbnailsDirectory,"");
+  GetString(pRootElement, "shortcuts", g_stSettings.m_szShortcutDirectory,"");
+	GetString(pRootElement, "pictureextensions", g_stSettings.m_szMyPicturesExtensions,".bmp|.jpg|.png|.gif|.pcx|.tif|.jpeg");
   
 	g_stSettings.m_iStartupWindow=GetInteger(pRootElement, "startwindow");
 	g_stSettings.m_bFTPServer=GetBoolean(pRootElement,"enabled");
@@ -196,13 +217,17 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 	}
 }
 
-void CSettings::GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, char* szValue)
+void CSettings::GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, char* szValue, const CStdString& strDefaultValue)
 {
 	strcpy(szValue,"");
 	const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
 	if (pChild)
 	{
 		strcpy(szValue,pChild->FirstChild()->Value());
+	}
+	if (strlen(szValue)==0)
+	{
+		strcpy(szValue,strDefaultValue.c_str());
 	}
 }
 
@@ -219,7 +244,7 @@ int CSettings::GetInteger(const TiXmlElement* pRootElement, const CStdString& st
 bool CSettings::GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName)
 {
 	char szString[128];
-	GetString(pRootElement,strTagName,szString);
+	GetString(pRootElement,strTagName,szString,"");
 	if ( CUtil::cmpnocase(szString,"enabled")==0 ||
 			 CUtil::cmpnocase(szString,"yes")==0 ||
 			 CUtil::cmpnocase(szString,"on")==0 ||
