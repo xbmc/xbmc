@@ -1248,10 +1248,10 @@ void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)
 			//find font sizes...
 			CHDDirectory directory;	
 			VECFILEITEMS items;
-			CStdString strPath = "Q:\\mplayer\\font\\";
+			CStdString strPath = "Q:\\system\\players\\mplayer\\font\\";
 	    if(g_guiSettings.GetBool("MyVideos.AlternateMPlayer"))
       {
-        strPath = "Q:\\system\\players\\mplayer\\font\\";
+        strPath = "Q:\\mplayer\\font\\";
       }
 			strPath+=g_guiSettings.GetString("Subtitles.Font");
 			strPath+="\\";
