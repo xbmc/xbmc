@@ -969,7 +969,7 @@
   </string>
   <string>
     <id>316</id>
-    <value>Söker sångs...</value>
+    <value>Söker sånger...</value>
   </string>
   <string>
     <id>317</id>
@@ -1519,7 +1519,7 @@
    </string> 
   <string>
      <id>465</id>
-     <value>kontrast</value>
+     <value>Kontrast</value>
    </string> 
    <string>
      <id>466</id>
@@ -1631,7 +1631,7 @@
    </string>
    <string>
      <id>493</id>
-     <value>Avanserade val (Bara Experter!)</value>
+     <value>Avancerade val (Bara Experter!)</value>
    </string>
    <string>
      <id>494</id>
@@ -1640,6 +1640,10 @@
    <string>
      <id>495</id>
      <value>Upsampla video till GUI upplösning</value>
+   </string>
+   <string>
+     <id>496</id>
+     <value>Kalibration</value>
    </string>
 
 
@@ -1691,7 +1695,7 @@
  <string><id>12006</id><value>Ljud visisalisation</value></string>
  <string><id>12007</id><value>Mina Bilder/Bildspel</value></string>
  <string><id>12008</id><value>Filestacking-dialog</value></string>
- <string><id>12600</id><value>MItt väder</value></string>
+ <string><id>12600</id><value>Mitt väder</value></string>
  <string><id>12900</id><value>Skärmsläckare</value></string>
  <string><id>12901</id><value>Helskärms OSD</value></string>
 
