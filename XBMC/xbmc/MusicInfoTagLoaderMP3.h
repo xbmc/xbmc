@@ -27,6 +27,8 @@ namespace MUSIC_INFO
 
 		virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag);
 	protected:
-		bool ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag );
+		bool ReadTag(ID3_Tag& id3tag, CMusicInfoTag& tag);
+		int	 ReadDuration(CFile& file, const ID3_Tag& id3tag);
+		bool IsMp3FrameHeader(unsigned long head);
 	};
 };
