@@ -111,9 +111,9 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		if (g_stSettings.m_iChannels==6 && bSupportsSPDIFOut && g_stSettings.m_bAC3PassThru )
 		{
 			char szChannels[12];
-			argc=10;
+			argc=8;
 			sprintf(szChannels,"%i", g_stSettings.m_iChannels);
-			char *argv[] = {"xbmc.xbe", "-ac","hwac3","-channels",szChannels,"-autoq", "6", "-vf", "pp", "1.avi",NULL};
+			char *argv[] = {"xbmc.xbe", "-ac","hwac3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
 			mplayer_init(argc,argv);
 		}
 		else
