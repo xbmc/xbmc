@@ -42,12 +42,13 @@ namespace PYXBMC
 		self->iWindowId = id;
 		self->iOldWindowId = 0;
 		self->bIsCreatedByPython = true;
-		self->pWindow = m_gWindowManager.GetWindow(id);
+		self->bModal = false;
+		self->pWindow = new CGUIPythonWindow(id);
 
-		CGUIWindow* pWindow = new CGUIWindow(id);
+		self->pWindow->SetActionCallback((PyObject*)self);
 
 		g_graphicsContext.Lock();
-		m_gWindowManager.Add(pWindow);
+		m_gWindowManager.Add(self->pWindow);
 		g_graphicsContext.Unlock();
 
 		return (PyObject*)self;
@@ -122,7 +123,9 @@ namespace PYXBMC
 
 	PyObject* Window_Show(Window *self, PyObject *args)
 	{
-		if (self->iOldWindowId != self->iWindowId) self->iOldWindowId = ACTIVE_WINDOW;
+		if (self->iOldWindowId != self->iWindowId &&
+				self->iWindowId != ACTIVE_WINDOW)
+			self->iOldWindowId = ACTIVE_WINDOW;
 
 		g_graphicsContext.Lock();
 		m_gWindowManager.ActivateWindow(self->iWindowId);
@@ -133,12 +136,48 @@ namespace PYXBMC
 	}
 
 	PyObject* Window_Close(Window *self, PyObject *args)
-	{ 
+	{
+		self->bModal = false;
+		self->pWindow->PulseActionEvent();
+
 		g_graphicsContext.Lock();
 		m_gWindowManager.ActivateWindow(self->iOldWindowId);
 		self->iOldWindowId = 0;
 		g_graphicsContext.Unlock();
 
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	PyObject* Window_OnAction(Window *self, PyObject *args)
+	{
+		DWORD action;
+		if (!PyArg_ParseTuple(args, "l", &action)) return NULL;
+
+		if(action == ACTION_PREVIOUS_MENU)
+		{
+			Window_Close(self, args);
+		}
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	PyObject* Window_DoModal(Window *self, PyObject *args)
+	{
+		self->bModal = true;
+
+		if(self->iWindowId != ACTIVE_WINDOW) Window_Show(self, NULL);
+
+		while(self->bModal)
+		{
+			Py_BEGIN_ALLOW_THREADS
+			self->pWindow->WaitForActionEvent(INFINITE);
+			Py_END_ALLOW_THREADS
+
+			// only call Py_MakePendingCalls from a python thread
+			Py_MakePendingCalls();
+		}
+		
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
@@ -251,6 +290,8 @@ namespace PYXBMC
 
 	PyMethodDef Window_methods[] = {
 		//{"load", (PyCFunction)Window_Load, METH_VARARGS, ""},
+		{"onAction", (PyCFunction)Window_OnAction, METH_VARARGS, ""},
+		{"doModal", (PyCFunction)Window_DoModal, METH_VARARGS, ""},
 		{"show", (PyCFunction)Window_Show, METH_VARARGS, ""},
 		{"close", (PyCFunction)Window_Close, METH_VARARGS, ""},
 		{"addControl", (PyCFunction)Window_AddControl, METH_VARARGS, ""},

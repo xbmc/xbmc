@@ -55,7 +55,7 @@ namespace PYXBMC
 		msg.SetLabel(self->strText);
 
 		g_graphicsContext.Lock();
-		pControl->pGUIControl->OnMessage(msg);
+		if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
 		g_graphicsContext.Unlock();
 
 		Py_INCREF(Py_None);

@@ -41,12 +41,10 @@ namespace PYXBMC
 
 	PyObject* Control_SetPosition(Control* self, PyObject* args)
 	{
-		DWORD posX = 0;
-		DWORD posY = 0;
-		if (!PyArg_ParseTuple(args, "ll", &posX, &posY)) return NULL;
+		if (!PyArg_ParseTuple(args, "ll", &self->dwPosX, &self->dwPosY)) return NULL;
 
 		g_graphicsContext.Lock();
-		self->pGUIControl->SetPosition(posX, posY);
+		if (self->pGUIControl) self->pGUIControl->SetPosition(self->dwPosX, self->dwPosY);
 		g_graphicsContext.Unlock();
 
 		Py_INCREF(Py_None);
@@ -55,11 +53,10 @@ namespace PYXBMC
 
 	PyObject* Control_SetWidth(Control* self, PyObject* args)
 	{
-		DWORD width;
-		if (!PyArg_ParseTuple(args, "l", &width)) return NULL;
+		if (!PyArg_ParseTuple(args, "l", &self->dwWidth)) return NULL;
 
 		g_graphicsContext.Lock();
-		self->pGUIControl->SetWidth(width);
+		if (self->pGUIControl) self->pGUIControl->SetWidth(self->dwWidth);
 		g_graphicsContext.Unlock();
 
 		Py_INCREF(Py_None);
@@ -68,11 +65,10 @@ namespace PYXBMC
 
 	PyObject* Control_SetHeight(Control* self, PyObject* args)
 	{
-		DWORD height;
-		if (!PyArg_ParseTuple(args, "l", &height)) return NULL;
+		if (!PyArg_ParseTuple(args, "l", &self->dwHeight)) return NULL;
 
 		g_graphicsContext.Lock();
-		self->pGUIControl->SetHeight(height);
+		if (self->pGUIControl) self->pGUIControl->SetHeight(self->dwHeight);
 		g_graphicsContext.Unlock();
 
 		Py_INCREF(Py_None);

@@ -1259,6 +1259,12 @@
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\dialog.cpp">
 					</File>
 					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\GUIPythonWindow.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\GUIPythonWindow.h">
+					</File>
+					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\player.cpp">
 					</File>
 					<File
@@ -1284,6 +1290,9 @@
 					</File>
 					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\window.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\xbmcguimodule.cpp">
 					</File>
 					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\xbmcmodule.cpp">
