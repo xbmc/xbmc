@@ -138,6 +138,8 @@ void RunCredits()
 	pD3DDevice->Clear(0, 0, D3DCLEAR_STENCIL | D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
 	pD3DDevice->Present(0, 0, 0, 0);
 
+	static bool FixedCredits = false;
+
 	DWORD Time = 0;
 	map<int, CGUIFont*> Fonts;
 	for (int i = 0; i < NUM_CREDITS; ++i)
@@ -175,23 +177,28 @@ void RunCredits()
 		}
 
 		// validate credits
-		if ((Credits[i].Effects & EFF_IN_MASK) == EFF_IN_APPEAR)
+		if (!FixedCredits)
 		{
-			Credits[i].Duration += Credits[i].InDuration;
-			Credits[i].InDuration = 0;
-		}
-		if ((Credits[i].Effects & EFF_OUT_MASK) == EFF_OUT_APPEAR)
-		{
-			Credits[i].Duration += Credits[i].OutDuration;
-			Credits[i].OutDuration = 0;
-		}
+			if ((Credits[i].Effects & EFF_IN_MASK) == EFF_IN_APPEAR)
+			{
+				Credits[i].Duration += Credits[i].InDuration;
+				Credits[i].InDuration = 0;
+			}
+			if ((Credits[i].Effects & EFF_OUT_MASK) == EFF_OUT_APPEAR)
+			{
+				Credits[i].Duration += Credits[i].OutDuration;
+				Credits[i].OutDuration = 0;
+			}
 
-		Credits[i].x = Credits[i].x * g_graphicsContext.GetWidth() / 100;
-		Credits[i].y = Credits[i].y * g_graphicsContext.GetHeight() / 100;
+			Credits[i].x = Credits[i].x * g_graphicsContext.GetWidth() / 100;
+			Credits[i].y = Credits[i].y * g_graphicsContext.GetHeight() / 100;
 
-		Credits[i].Time += Time;
-		Time = Credits[i].Time;
+			Credits[i].Time += Time;
+			Time = Credits[i].Time;
+		}
 	}
+
+	FixedCredits = true;
 
 	// music?
 
@@ -382,7 +389,7 @@ void RunCredits()
 				for (map<int, CGUIFont*>::iterator iFont = Fonts.begin(); iFont != Fonts.end(); ++iFont)
 				{
 					CStdString strFont;
-					strFont.Fmt("font%d", iFont->first);
+					strFont.Fmt("creditsfont%d", iFont->first);
 					g_fontManager.Unload(strFont);
 				}
 
