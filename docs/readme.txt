@@ -31,7 +31,7 @@ skin/			->	e:\apps\xbmc\skin		(copy all files & subdirs)
 language/               ->      e:\apps\xbmc\language		(copy all files & subdirs)
 xbmc/keyboard/media	->	e:\apps\xbmc\media		(copy all files & subdirs)
 visualisations    	->	e:\apps\xbmc\visualisations	(copy all files & subdirs)
-scripts/		->	e:\apps\xbmc\scripts		(unpack the .rar file)
+scripts/		->	e:\apps\xbmc\scripts		(these are just samples, only extract if you want to experiment with it)
 python			->	e:\apps\xbmc\python  		(unpack the .rar file)
 web					-> e:\apps\xbmc\web					(unpack the .rar file)
 
