@@ -276,7 +276,7 @@
   <string><id>348</id><value>Montrer toute l'arborescence</value></string>
   <string><id>349</id><value>Montrer seulement les fichiers Default.xbe</value></string>
   <string><id>350</id><value>Programmes</value></string>
-  <string><id>351</id><value>Off</value></string>
+  <string><id>351</id><value>Désactivé</value></string>
   <string><id>352</id><value>Faible</value></string>
   <string><id>353</id><value>Noir</value></string>
   <string><id>354</id><value>Matrix</value></string>
@@ -611,6 +611,28 @@
   <string><id>13334</id><value>Editer le Nom</value></string>
   <string><id>13335</id><value>Mettre par Défaut</value></string>
   <string><id>13336</id><value>Supprimer</value></string>
+  <string><id>13337</id><value>- 2 Channel PCM Passthrough</value></string>
+  <string><id>13338</id><value>LED centrale</value></string>
+  <string><id>13339</id><value>Couleur de la LED centrale</value></string>
+  <string><id>13340</id><value>Par défaut</value></string>
+  <string><id>13341</id><value>Vert</value></string>
+  <string><id>13342</id><value>Orange</value></string>
+  <string><id>13343</id><value>Rouge</value></string>
+  <string><id>13344</id><value>Cyclique</value></string>
+  <string><id>13345</id><value>Eteindre la LED pendant la lecture</value></string>
+  <string><id>13346</id><value>Information du Film</value></string>
+  <string><id>13347</id><value>Ajouter</value></string>
+  <string><id>13348</id><value>Chercher sur IMDb...</value></string>
+  <string><id>13349</id><value>Chercher pour tout</value></string>
+  <string><id>13350</id><value>playliste...</value></string>
+  <string><id>13351</id><value>Information sur l'Album</value></string>
+  <string><id>13352</id><value>Scanner le dossier</value></string>
+  <string><id>13353</id><value>Stopper le scan</value></string>
+  <string><id>13354</id><value>Methode de rendus</value></string>
+  <string><id>13355</id><value>Pixel Shader</value></string>
+  <string><id>13356</id><value>YUY2 Overlays</value></string>
+  <string><id>13357</id><value>Combination Overlays/Shader</value></string>  
+  
   <string><id>14000</id><value>Empiler : désactivé</value></string>
   <string><id>14001</id><value>Empiler : simple</value></string>
   <string><id>14002</id><value>Empiler : brouillé</value></string>
@@ -629,17 +651,17 @@
   <string><id>14015</id><value>Aucun fichier et au moins une vignette</value></string>
   <string><id>14016</id><value>Au moins un fichier et une vignette</value></string>
   <string><id>14017</id><value>Pourcentage des vignettes</value></string>
-  <string><id>14018</id><value>Voir Options</value></string>
+  <string><id>14018</id><value>Options d'affichage</value></string>
   <string><id>14019</id><value>Changer location 1</value></string>
   <string><id>14020</id><value>Changer location 2</value></string>
   <string><id>14021</id><value>Changer location 3</value></string>
   <string><id>14022</id><value>Librairie</value></string>
   <string><id>14023</id><value>Sans TV</value></string>
   <string><id>14024</id><value>Entrez la ville la plus proche ou le code postal</value></string>
-  <string><id>14025</id><value>Video depuis le Disque Dur</value></string>
-  <string><id>14026</id><value>Video depuis le DVDRom</value></string>
-  <string><id>14027</id><value>Video depuis le réseau local</value></string>
-  <string><id>14028</id><value>Video depuis Internet</value></string>
+  <string><id>14025</id><value>Vidéo depuis le Disque Dur</value></string>
+  <string><id>14026</id><value>Vidéo depuis le DVDRom</value></string>
+  <string><id>14027</id><value>Vidéo depuis le réseau local</value></string>
+  <string><id>14028</id><value>Vidéo depuis Internet</value></string>
   <string><id>14029</id><value>Audio depuis le Disque Dur</value></string>
   <string><id>14030</id><value>Audio depuis le DVDRom</value></string>
   <string><id>14031</id><value>Audio depuis le réseau local</value></string>
@@ -666,4 +688,75 @@
   <string><id>14052</id><value>Intervertir le mois et le jour sur l'écran d'accueil</value></string>
   <string><id>14053</id><value>Filtres graphiques</value></string>
   <string><id>14054</id><value>Activer les recherches Internet</value></string>
+  <string><id>14055</id><value>Utiliser le scanne en arrière plan</value></string>
+  <string><id>14056</id><value>Stopper le scan</value></string>
+  <string><id>14057</id><value>Impossible d'afficher les infos pendant le scan</value></string>
+  <string><id>14058</id><value>Effet de grain sur les films</value></string>
+  <string><id>14059</id><value>Utiliser les miniatures perso sur les partages distants</value></string>
+  <string><id>14060</id><value>Cache inconnus - Internet</value></string>
+  <string><id>14061</id><value>Auto</value></string>
+
+  <string><id>15000</id><value>XLink Kai</value></string>
+  <string><id>15001</id><value>Le service n'est pas connecté, voulez vous essayer</value></string>
+  <string><id>15002</id><value>de vous reconnecter avec Xbox Media Center?</value></string>
+  <string><id>15003</id><value>Entrez votre message.</value></string>
+  <string><id>15004</id><value>Vous avez été invité à jouer %s.</value></string>
+  <string><id>15005</id><value>Date: %s</value></string>
+  <string><id>15006</id><value>De: %s</value></string>
+  <string><id>15007</id><value>Invitation</value></string>
+  <string><id>15008</id><value>Vous avez été invité à rejoindre %s.</value></string>
+  <string><id>15009</id><value>Offline</value></string>
+  <string><id>15010</id><value>Amis</value></string>
+  <string><id>15011</id><value>Voir: Amis</value></string>
+  <string><id>15012</id><value>Joindre</value></string>
+  <string><id>15013</id><value>Voix</value></string>
+  <string><id>15014</id><value>Inviter</value></string>
+  <string><id>15015</id><value>Supprimer</value></string>
+  <string><id>15016</id><value>Jeux</value></string>
+  <string><id>15017</id><value>Voir: Jeux</value></string>
+  <string><id>15018</id><value>Entrer</value></string>
+  <string><id>15019</id><value>Ajouter</value></string>
+  <string><id>15020</id><value>Héberger</value></string>
+  <string><id>15021</id><value>Arènes</value></string>
+  <string><id>15022</id><value>Voir: Arènes</value></string>
+  <string><id>15023</id><value>Jouer</value></string>
+  <string><id>15024</id><value>Ajouter</value></string>
+  <string><id>15025</id><value>Héberger</value></string>
+  <string><id>15026</id><value>Chat</value></string>
+  <string><id>15027</id><value>Voir: Chat</value></string>
+  <string><id>15028</id><value>Clavier</value></string>
+  <string><id>15029</id><value>Un mot de passe est nécessaire pour joindre cette Arène.</value></string>
+  <string><id>15030</id><value>Le service a été déconnecté</value></string>
+  <string><id>15031</id><value>XLink Kai Autentification</value></string>
+  <string><id>15032</id><value>Votre login et/ou mot de passe a été rejeté</value></string>
+  <string><id>15033</id><value>orbital serveur. Merci de vérifier votre configuration.</value></string>
+  <string><id>15034</id><value>viens juste de se connecter</value></string>
+  <string><id>15035</id><value>a initialisé un chat vocal</value></string>
+  <string><id>15036</id><value>vous a envoyé une invitation</value></string>
+  <string><id>15037</id><value>XBMC ne peux pas vérifier si votre réseau est accessible</value></string>
+  <string><id>15038</id><value>You may experience difficulties joining or hosting games.</value></string>
+  <string><id>15039</id><value>Xbox Media Center n'arrive pas à détecter vos jeux automatiquement.</value></string>
+  <string><id>15040</id><value>Inserez le jeux dans votre XBOX ou appuyez sur 'A' pour annuler</value></string>
+  <string><id>15041</id><value>et lancez le jeux manuellement.</value></string>
+  <string><id>15042</id><value>Acces refusé</value></string>
+  <string><id>15043</id><value>%s rejoins le chat.</value></string>
+  <string><id>15044</id><value>%s quitte le chat.</value></string>
+  <string><id>15045</id><value>Entrez votre message personel.</value></string>
+  <string><id>15046</id><value>Arène courante</value></string>
+  <string><id>15047</id><value>Entrez un mot de passe pour votre arène.</value></string>
+  <string><id>15048</id><value>Entrez une description pour votre arène.</value></string>
+  <string><id>15049</id><value>Héberger un jeux</value></string>
+  <string><id>15050</id><value>Héberger dans une arène privé</value></string>
+  <string><id>15051</id><value>Joueurs limite</value></string>
+  <string><id>15052</id><value>Mot de passe</value></string>
+  <string><id>15053</id><value>Description</value></string>
+  <string><id>15054</id><value>Invitation</value></string>
+  <string><id>15055</id><value>Choisir un jeux:</value></string>
+  <string><id>15056</id><value>Entrer message:</value></string>
+  <string><id>15057</id><value>Envoyer</value></string>
+  <string><id>15058</id><value>Héberger</value></string>
+  <string><id>15059</id><value>Invitation accepté!</value></string>
+  <string><id>15060</id><value>Votre message</value></string>
+  <string><id>15061</id><value>Vous avez été invité à jouer %s.</value></string>
+  <string><id>15062</id><value>Utiliser le lecteur mplayer alternatif</value></string>
 </strings>
