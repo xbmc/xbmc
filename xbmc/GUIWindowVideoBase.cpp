@@ -1063,8 +1063,10 @@ void CGUIWindowVideoBase::GetStackedFiles(const CStdString &strFilePath, vector<
     strPath.Delete(strPath.size() - 1);
   movies.clear();
   if (g_stSettings.m_iMyVideoVideoStack == STACK_NONE)
+  {
+    movies.push_back(strFilePath);
     return;
-
+  }
   CStdString fileTitle;
   CStdString volumePrefix;
   int volumeNumber;
