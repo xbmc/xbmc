@@ -292,7 +292,7 @@ void CXBApplicationEx::ReadInput()
         XBInput_GetInput( m_Gamepad );
 
 				// XBMP 6.0 - START
-				XBInput_GetInput( m_IR_Remote, m_fTime );
+				XBInput_GetInput( m_IR_Remote );
 				ZeroMemory( &m_DefaultIR_Remote, sizeof(m_DefaultIR_Remote) );
 
 

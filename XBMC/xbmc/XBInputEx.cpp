@@ -9,9 +9,9 @@
 // Globals for the Remote
 //-----------------------------------------------------------------------------
 
-FLOAT lasttime;
+static DWORD dwLastTime=0;
 
-#define INTERVAL 0.1f
+#define INTERVAL 100 // msec
 
 DWORD g_prevPacketNumber[10]={0,0,0,0,0,0,0,0,0,0};
 // Global instance of input states
@@ -75,9 +75,9 @@ HRESULT XBInput_CreateIR_Remotes( XBIR_REMOTE** ppIR_Remote )
 // Name: XBInput_GetInput()
 // Desc: Processes input from the IR Remote
 //-----------------------------------------------------------------------------
-VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote, FLOAT m_fTime)
-{
-	if (m_fTime < lasttime + INTERVAL)
+VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote)
+{/*
+	if (timeGetTime() < dwLastTime + (INTERVAL) )
 	{
 	    for( DWORD i=0; i < XGetPortCount(); i++ )
 	    {
@@ -87,7 +87,7 @@ VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote, FLOAT m_fTime)
 		return;
 	}
 	
-	lasttime = m_fTime;
+	dwLastTime = timeGetTime();*/
     XINPUT_POLLING_PARAMETERS pollValues;
     pollValues.fAutoPoll       = TRUE;
     pollValues.fInterruptOut   = TRUE;

@@ -324,9 +324,14 @@ void CApplication::Render()
 	}
 
   {
-#ifdef _DEBUG
 	  MEMORYSTATUS stat;
 	  GlobalMemoryStatus(&stat);
+		DWORD dwMegFree=stat.dwAvailPhys / (1024*1024);
+		if (dwMegFree <= 10)
+		{
+			g_TextureManager.Flush();
+		}
+#ifdef _DEBUG		
 		CStdStringW wszText;
 		wszText.Format(L"FreeMem %i/%iMB",stat.dwAvailPhys  /(1024*1024),
 																					  stat.dwTotalPhys  /(1024*1024)  );
@@ -386,8 +391,19 @@ void CApplication::FrameMove()
 	
 	WORD wDir = m_ctrDpad.DpadInput(wDpad,0!=pGamepad->bAnalogButtons[XINPUT_GAMEPAD_LEFT_TRIGGER],0!=pGamepad->bAnalogButtons[XINPUT_GAMEPAD_RIGHT_TRIGGER]);
 
-	wRemotes=m_ctrIR.IRInput(wRemotes);
+	CStdString strTmp;
 
+	wRemotes=m_ctrIR.IRInput(wRemotes);
+	if (wRemotes!=0x0 || pRemote->wPressedButtons!=0x0)
+	{
+		strTmp.Format("remote:0x%x 0x%x\n", wRemotes, pRemote->wPressedButtons);
+		OutputDebugString(strTmp.c_str());
+	}
+	if (wButtons!=0x0 || wDir!=0x0)
+	{
+		strTmp.Format("controller:0x%x 0x%x\n", wButtons, wDir);
+		OutputDebugString(strTmp.c_str());
+	}
 	bool bGotKey=false;
 
 	if ( pGamepad->fX1 || pGamepad->fY1 || pGamepad->fX2 || pGamepad->fY2)
@@ -521,6 +537,7 @@ void CApplication::FrameMove()
 		
 		case DC_UP:
 		{
+			OutputDebugString("DC_UP\n");
 			bGotKey=true;
 			CKey key(true,KEY_BUTTON_DPAD_UP,pGamepad->fX1,pGamepad->fY1,pGamepad->fX2,pGamepad->fY2);
 			OnKey(key);   

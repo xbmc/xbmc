@@ -71,7 +71,7 @@ HRESULT XBInput_CreateIR_Remotes( XBIR_REMOTE** ppIR_Remote = NULL );
 // Name: XBInput_GetInput()
 // Desc: Processes input from the ir remote
 //-----------------------------------------------------------------------------
-VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote = NULL, FLOAT m_fTime = NULL);
+VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote = NULL);
 
 
 
