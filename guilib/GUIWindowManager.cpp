@@ -1,14 +1,16 @@
 #include "stdafx.h"
 #include "guiwindowmanager.h"
 #include "../xbmc/utils/log.h"
-CGUIWindowManager     m_gWindowManager;
+
+CGUIWindowManager m_gWindowManager;
 
 CGUIWindowManager::CGUIWindowManager(void)
 {
 	InitializeCriticalSection(&m_critSection);
-	m_pCallback=NULL;
-  m_pRouteWindow=NULL;
-  m_iActiveWindow=-1;
+
+	m_pCallback		= NULL;
+	m_pRouteWindow	= NULL;
+	m_iActiveWindow	= -1;
 }
 
 CGUIWindowManager::~CGUIWindowManager(void)
@@ -18,8 +20,8 @@ CGUIWindowManager::~CGUIWindowManager(void)
 
 void CGUIWindowManager::Initialize()
 {
-  m_iActiveWindow=-1;
-  g_graphicsContext.setMessageSender(this);
+	m_iActiveWindow = -1;
+	g_graphicsContext.setMessageSender(this);
 }
 
 void CGUIWindowManager::SendMessage(CGUIMessage& message)
@@ -28,21 +30,30 @@ void CGUIWindowManager::SendMessage(CGUIMessage& message)
 	for (int i=0; i < (int) m_vecMsgTargets.size(); i++)
 	{
 		IMsgTargetCallback* pMsgTarget = m_vecMsgTargets[i];
+		
 		if (pMsgTarget)
+		{
 			pMsgTarget->OnMessage( message );
+		}
 	}
 
 	//	Have we a routed window...
-  if (m_pRouteWindow)
+	if (m_pRouteWindow)
 	{
 		//	...send the message to it.
 		m_pRouteWindow->OnMessage(message);
 
-		if (m_iActiveWindow < 0) return;
+		if (m_iActiveWindow < 0)
+		{
+			return;
+		}
+
 		CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
+
 		//	Also send the message to the parent of the routed window, if its the target
-		if (message.GetSenderId()==pWindow->GetID() || message.GetControlId()==pWindow->GetID() 
-				|| message.GetSenderId()==0)
+		if ( message.GetSenderId() == pWindow->GetID() ||
+			 message.GetControlId()== pWindow->GetID() ||
+			 message.GetSenderId() == 0 )
 		{
 			pWindow->OnMessage(message);
 		}
@@ -50,16 +61,26 @@ void CGUIWindowManager::SendMessage(CGUIMessage& message)
 	else
 	{
 		//	..no, only call message function of the active window
-		if (m_iActiveWindow < 0) return;
-		CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
+		if (m_iActiveWindow < 0)
+		{
+			return;
+		}
+		
+		CGUIWindow* pWindow = m_vecWindows[m_iActiveWindow];
 		pWindow->OnMessage(message);
 	}
 }
 
 void CGUIWindowManager::Add(CGUIWindow* pWindow)
 {
-  m_vecWindows.push_back(pWindow);
+	m_vecWindows.push_back(pWindow);
 }
+
+void CGUIWindowManager::AddModeless(CGUIWindow* pWindow)
+{
+	m_vecModelessWindows.push_back(pWindow);
+}
+
 
 void CGUIWindowManager::Remove(DWORD dwID)
 {
@@ -76,16 +97,30 @@ void CGUIWindowManager::Remove(DWORD dwID)
 	}
 }
 
+void CGUIWindowManager::RemoveModeless(DWORD dwID)
+{
+	vector<CGUIWindow*>::iterator it = m_vecModelessWindows.begin();
+	while (it != m_vecModelessWindows.end())
+	{
+		CGUIWindow* pWindow = *it;
+		if(pWindow->GetID() == dwID)
+		{
+			m_vecModelessWindows.erase(it);
+			it = m_vecModelessWindows.end();
+		}
+		else it++;
+	}
+}
+
 void CGUIWindowManager::PreviousWindow()
 {
 	// deactivate any window
 	CLog::DebugLog("CGUIWindowManager::PreviousWindow: Deactivate");
-	int iPrevActiveWindow=m_iActiveWindow;
-	int iPrevActiveWindowID=0;
-	if (m_iActiveWindow >=0)
-	{
-    
-    if (m_iActiveWindow >=0 && m_iActiveWindow < (int)m_vecWindows.size())
+
+	int iPrevActiveWindow = m_iActiveWindow;
+	int iPrevActiveWindowID = 0;
+
+	if (m_iActiveWindow >=0 && m_iActiveWindow < (int)m_vecWindows.size())
     {
 		  CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
 		  iPrevActiveWindowID = pWindow->GetPreviousWindowID();
@@ -93,17 +128,17 @@ void CGUIWindowManager::PreviousWindow()
 		  pWindow->OnMessage(msg);
 		  m_iActiveWindow=WINDOW_INVALID;
     }
-	}
 
 	CLog::DebugLog("CGUIWindowManager::PreviousWindow: Activate new");
 	// activate the new window
 	for (int i=0; i < (int)m_vecWindows.size(); i++)
 	{
-		CGUIWindow* pWindow=m_vecWindows[i];
+		CGUIWindow* pWindow = m_vecWindows[i];
+
 		if (pWindow->GetID() == iPrevActiveWindowID) 
 		{
 			CLog::DebugLog("CGUIWindowManager::PreviousWindow: Activating");
-			m_iActiveWindow=i;
+			m_iActiveWindow = i;
 			CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,WINDOW_INVALID);
 			pWindow->OnMessage(msg);
 			return;
@@ -113,8 +148,8 @@ void CGUIWindowManager::PreviousWindow()
 	CLog::DebugLog("CGUIWindowManager::PreviousWindow: No previous");
 	// previous window doesnt exists. (maybe .xml file is invalid or doesnt exists)
 	// so we go back to the previous window
-	m_iActiveWindow=0;
-	CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
+	m_iActiveWindow = 0;
+	CGUIWindow* pWindow = m_vecWindows[m_iActiveWindow];
 	CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,WINDOW_INVALID);
 	pWindow->OnMessage(msg);
 }
@@ -128,6 +163,7 @@ void CGUIWindowManager::RefreshWindow()
 		CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0);
 		pWindow->OnMessage(msg);
 	}
+
 	// reactivate the current window
 	CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
 	CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,WINDOW_INVALID);
@@ -136,44 +172,50 @@ void CGUIWindowManager::RefreshWindow()
 
 void CGUIWindowManager::ActivateWindow(int iWindowID)
 {
-  // deactivate any window
-	int iPrevActiveWindow=m_iActiveWindow;
-  if (m_iActiveWindow >=0)
-  {
-    CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
-    CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0,iWindowID);
-    pWindow->OnMessage(msg);
-    m_iActiveWindow=-1;
-  }
+	// deactivate any window
+	int iPrevActiveWindow = m_iActiveWindow;
+	if (m_iActiveWindow >=0)
+	{
+		CGUIWindow* pWindow = m_vecWindows[m_iActiveWindow];
+		CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0,iWindowID);
+		pWindow->OnMessage(msg);
+		m_iActiveWindow = -1;
+	}
 
-  // activate the new window
-  for (int i=0; i < (int)m_vecWindows.size(); i++)
-  {
-    CGUIWindow* pWindow=m_vecWindows[i];
-    if (pWindow->GetID() == iWindowID) 
-    {
-		m_iActiveWindow=i;
-		// Check to see that this window is not our previous window
-		if (m_vecWindows[iPrevActiveWindow]->GetPreviousWindowID() == iWindowID)
-		{	// we are going to the lsat window - don't update it's previous window id
-			CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,WINDOW_INVALID);
-			pWindow->OnMessage(msg);
+	// activate the new window
+	for (int i=0; i < (int)m_vecWindows.size(); i++)
+	{
+		CGUIWindow* pWindow = m_vecWindows[i];
+
+		if (pWindow->GetID() == iWindowID) 
+		{
+			m_iActiveWindow = i;
+			
+			// Check to see that this window is not our previous window
+			if (m_vecWindows[iPrevActiveWindow]->GetPreviousWindowID() == iWindowID)
+			{
+				// we are going to the lsat window - don't update it's previous window id
+				CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,WINDOW_INVALID);
+				pWindow->OnMessage(msg);
+			}
+			else
+			{
+				// we are going to a new window - put our current window into it's previous window ID
+				CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,m_vecWindows[iPrevActiveWindow]->GetID());
+				pWindow->OnMessage(msg);
+			}
+
+			return;
 		}
-		else
-		{	// we are going to a new window - put our current window into it's previous window ID
-			CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,m_vecWindows[iPrevActiveWindow]->GetID());
-			pWindow->OnMessage(msg);
-		}
-		return;
-    }
-  }
+	}
 
 	// new window doesnt exists. (maybe .xml file is invalid or doesnt exists)
 	// so we go back to the previous window
-	m_iActiveWindow=iPrevActiveWindow;
+	m_iActiveWindow = iPrevActiveWindow;
 	if (m_iActiveWindow >= 0)
 	{
-		CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
+		CGUIWindow* pWindow = m_vecWindows[m_iActiveWindow];
+
 		CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,WINDOW_INVALID);
 		pWindow->OnMessage(msg);
 	}
@@ -182,43 +224,74 @@ void CGUIWindowManager::ActivateWindow(int iWindowID)
 
 void CGUIWindowManager::OnAction(const CAction &action)
 {
-  if (m_pRouteWindow)
-  {
-    m_pRouteWindow->OnAction(action);
-    return;
-  }
-  if (m_iActiveWindow < 0) return;
-  CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
-  if (pWindow) pWindow->OnAction(action);
+	if (m_pRouteWindow)
+	{
+		m_pRouteWindow->OnAction(action);
+	}
+	else if (m_iActiveWindow >= 0)
+	{
+		CGUIWindow* pWindow = m_vecWindows[m_iActiveWindow];
+
+		if (pWindow)
+		{
+			pWindow->OnAction(action);
+		}
+	}
 }
 
 void CGUIWindowManager::Render()
 {
-  if (m_pRouteWindow)
-  {
-    m_pRouteWindow->Render();
-    return;
-  }
-  if (m_iActiveWindow < 0) return;
-  CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
-  pWindow->Render();
+	if (m_pRouteWindow)
+	{
+		m_pRouteWindow->Render();
+		return;
+	}
+  
+	if (m_iActiveWindow < 0)
+	{
+		return;
+	}
+  
+	CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
+	pWindow->Render();
+
+	// render modeless windows
+	int nWindow = 0;
+	int nWindowsPre;
+
+	// continuously evaluate if there are more windows in our list to process
+	while ( nWindow < (nWindowsPre = m_vecModelessWindows.size()) )
+	{
+		m_vecModelessWindows[nWindow]->Render();
+
+		// if the modeless dialog hasn't closed, and removed itself from the list
+		if (nWindowsPre==m_vecModelessWindows.size())
+		{
+			// try the next window
+			nWindow++;
+		}
+	}
 }
 
 CGUIWindow*  CGUIWindowManager::GetWindow(DWORD dwID)
 {
 	if (dwID == WINDOW_INVALID)
+	{
 		return NULL;
-  for (int i=0; i < (int)m_vecWindows.size(); i++)
-  {
-    CGUIWindow* pWindow=m_vecWindows[i];
-    if (pWindow)
-    {
-      if (pWindow->GetID() == dwID) 
-		  {
-			  return pWindow;
-		  }
-    }
 	}
+
+	for (int i=0; i < (int)m_vecWindows.size(); i++)
+	{
+		CGUIWindow* pWindow=m_vecWindows[i];
+		if (pWindow)
+		{
+			if (pWindow->GetID() == dwID) 
+			{
+				return pWindow;
+			}
+		}
+	}
+
 	return NULL;
 }
 
@@ -241,13 +314,15 @@ void CGUIWindowManager::SetCallback(IWindowManagerCallback& callback)
 
 void CGUIWindowManager::DeInitialize()
 {
-  for (int i=0; i < (int)m_vecWindows.size(); i++)
-  {
-    CGUIWindow* pWindow=m_vecWindows[i];
-    CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0);
-    pWindow->OnMessage(msg);
+	for (int i=0; i < (int)m_vecWindows.size(); i++)
+	{
+		CGUIWindow* pWindow=m_vecWindows[i];
+
+		CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0);
+		pWindow->OnMessage(msg);
 		pWindow->ClearAll();
-  }
+	}
+
 	m_pRouteWindow=NULL;
 
 	m_vecMsgTargets.erase( m_vecMsgTargets.begin(), m_vecMsgTargets.end() );
@@ -261,9 +336,11 @@ DWORD CGUIWindowManager::RouteToWindow(DWORD dwID)
 	int iPrevRouteWindow=WINDOW_INVALID; 
 
 	if (m_pRouteWindow!=NULL)
-		iPrevRouteWindow=m_pRouteWindow->GetID();
+	{
+		iPrevRouteWindow = m_pRouteWindow->GetID();
+	}
   
-	m_pRouteWindow=GetWindow(dwID);
+	m_pRouteWindow = GetWindow(dwID);
 
 	return iPrevRouteWindow;
 }
@@ -273,14 +350,19 @@ DWORD CGUIWindowManager::RouteToWindow(DWORD dwID)
 void CGUIWindowManager::UnRoute(DWORD dwID)
 {
 	if (dwID==WINDOW_INVALID)
-		m_pRouteWindow=NULL;
+	{
+		m_pRouteWindow = NULL;
+	}
 	else
-		m_pRouteWindow=GetWindow(dwID);
+	{
+		m_pRouteWindow = GetWindow(dwID);
+	}
 }
 
 void CGUIWindowManager::SendThreadMessage(CGUIMessage& message)
 {
 	::EnterCriticalSection(&m_critSection );
+
 	CGUIMessage* msg = new CGUIMessage(message);
 	m_vecThreadMessages.push_back( msg );
 
@@ -316,13 +398,22 @@ void CGUIWindowManager::AddMsgTarget( IMsgTargetCallback* pMsgTarget )
 
 int CGUIWindowManager::GetActiveWindow() const
 {
-	if (m_iActiveWindow < 0) return 0;
-	CGUIWindow* pWindow=m_vecWindows[m_iActiveWindow];
+	if (m_iActiveWindow < 0)
+	{
+		return 0;
+	}
+
+	CGUIWindow* pWindow = m_vecWindows[m_iActiveWindow];
+	
 	return pWindow->GetID();
 }
 
 bool CGUIWindowManager::IsRouted() const
 {
-  if (m_pRouteWindow) return true;
-  return false;
+	if (m_pRouteWindow)
+	{
+		return true;
+	}
+
+	return false;
 }

@@ -20,35 +20,39 @@
 class CGUIWindowManager:public IMsgSenderCallback
 {
 public:
-  CGUIWindowManager(void);
-  virtual ~CGUIWindowManager(void);  
-  virtual void    SendMessage(CGUIMessage& message);
-	void						Initialize();
-  void            Add(CGUIWindow* pWindow);
-	void						Remove(DWORD dwID);
-  void            ActivateWindow(int iWindowID);
-  void						PreviousWindow();
-  void						RefreshWindow();
-  void            OnAction(const CAction &action);
-  void            Render();
+	CGUIWindowManager(void);
+	virtual ~CGUIWindowManager(void);  
+	virtual void    SendMessage(CGUIMessage& message);
+	void			Initialize();
+	void            Add(CGUIWindow* pWindow);
+	void            AddModeless(CGUIWindow* pWindow);
+	void			Remove(DWORD dwID);
+	void			RemoveModeless(DWORD dwID);
+	void            ActivateWindow(int iWindowID);
+	void			PreviousWindow();
+	void			RefreshWindow();
+	void            OnAction(const CAction &action);
+	void            Render();
 	CGUIWindow*     GetWindow(DWORD dwID);
-	void						Process();
-	void						SetCallback(IWindowManagerCallback& callback);
-	void						DeInitialize();
-  DWORD           RouteToWindow(DWORD dwID);
-  void            UnRoute(DWORD dwID);
-	void						SendThreadMessage(CGUIMessage& message);
-	void						DispatchThreadMessages();
-	void						AddMsgTarget( IMsgTargetCallback* pMsgTarget );
-	int							GetActiveWindow() const;
-  bool            IsRouted() const;
-  CGUIWindow*										m_pRouteWindow;
+	void			Process();
+	void			SetCallback(IWindowManagerCallback& callback);
+	void			DeInitialize();
+	DWORD           RouteToWindow(DWORD dwID);
+	void            UnRoute(DWORD dwID);
+	void			SendThreadMessage(CGUIMessage& message);
+	void			DispatchThreadMessages();
+	void			AddMsgTarget( IMsgTargetCallback* pMsgTarget );
+	int				GetActiveWindow() const;
+	bool            IsRouted() const;
+	CGUIWindow*		m_pRouteWindow;
 private:
-  vector <CGUIWindow*>					m_vecWindows;
-  int														m_iActiveWindow;
-	IWindowManagerCallback*				m_pCallback;
-	vector <CGUIMessage*>					m_vecThreadMessages;
-	CRITICAL_SECTION							m_critSection;
+	vector <CGUIWindow*>	m_vecWindows;
+	vector <CGUIWindow*>	m_vecModelessWindows;
+
+	int								m_iActiveWindow;
+	IWindowManagerCallback*			m_pCallback;
+	vector <CGUIMessage*>			m_vecThreadMessages;
+	CRITICAL_SECTION				m_critSection;
 	vector <IMsgTargetCallback*>	m_vecMsgTargets;
 };
 

@@ -16,20 +16,24 @@ class CGUIDialog :
 public:
 	CGUIDialog(DWORD dwID);
 	virtual ~CGUIDialog(void);
-  virtual bool    OnMessage(CGUIMessage& message);
-  virtual void    Render();
-	void						DoModal(DWORD dwParentId);
-	virtual void		Close();
+
+	virtual bool    OnMessage(CGUIMessage& message);
+	virtual void    Render();
+	void			DoModal(DWORD dwParentId); // modal
+	void			Show(DWORD dwParentId); // modeless
+	virtual void	Close();
 	virtual bool    Load(const CStdString& strFileName, bool bContainsPath = false);
-	virtual bool		IsRunning() const { return m_bRunning; }
-	virtual bool		IsDialog() { return true;};
+	virtual bool	IsRunning() const { return m_bRunning; }
+	virtual bool	IsDialog() { return true;};
 
 protected:
-	DWORD						m_dwParentWindowID;
-	CGUIWindow* 		m_pParentWindow;
-	DWORD						m_dwPrevRouteWindow;
-	CGUIWindow* 		m_pPrevRouteWindow;
-	bool						m_bRunning;
+	DWORD			m_dwParentWindowID;
+	CGUIWindow* 	m_pParentWindow;
+	DWORD			m_dwPrevRouteWindow;
+	CGUIWindow* 	m_pPrevRouteWindow;
+	bool			m_bRunning;
+	bool			m_bModal;
+
 private:
-  bool            m_bPrevOverlayAllowed;
+	bool            m_bPrevOverlayAllowed;
 };
