@@ -1,5 +1,7 @@
 #include ".\osdsubmenu.h"
 #include "localizestrings.h"
+#include "guifont.h"
+#include "guifontmanager.h"
 using namespace OSD;
 COSDSubMenu::COSDSubMenu()
 {		
@@ -63,11 +65,22 @@ COSDSubMenu* COSDSubMenu::Clone() const
 
 void COSDSubMenu::Draw()
 {
-	for (int i=0; i < (int)m_vecOptions.size(); ++i)
-	{
-		IOSDOption* pOption=m_vecOptions[i];
-		pOption->Draw(m_iXPos, m_iYPos+i*34, i==m_iCurrentOption);
-	}
+  CGUIFont* pFont14=g_fontManager.GetFont("font14");
+  if (pFont14)
+  {
+    wstring strHeading=g_localizeStrings.Get(m_iHeading);
+    pFont14->DrawShadowText( (float)m_iXPos,(float)m_iYPos, 0xFFFFFFFF,
+                              strHeading.c_str(), 0,
+                              0, 
+                              5, 
+                              5,
+                              0xFF020202);
+	  for (int i=0; i < (int)m_vecOptions.size(); ++i)
+	  {
+		  IOSDOption* pOption=m_vecOptions[i];
+		  pOption->Draw(m_iXPos+40, 40+m_iYPos+i*34, i==m_iCurrentOption);
+	  }
+  }
 }
 
 bool COSDSubMenu::OnAction(const CAction& action)
