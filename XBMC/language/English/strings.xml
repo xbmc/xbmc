@@ -515,6 +515,11 @@
   <string><id>751</id><value>Removing Share</value></string>
   <string><id>752</id><value>Edit Share Path</value></string>
   <string><id>753</id><value>Edit Share Name</value></string>
+  <string><id>754</id><value>Add Program Link</value></string>
+  <string><id>755</id><value>Edit Program Path</value></string>
+  <string><id>756</id><value>Edit Program Name</value></string>
+  <string><id>757</id><value>Edit Path Depth</value></string>
+  <string><id>758</id><value>Removing Program Link</value></string>  
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Online Gaming</value></string>
   <string><id>10000</id><value>Home</value></string>
@@ -584,10 +589,10 @@
   <string><id>12329</id><value>or press C to cancel</value></string>
   <string><id>12330</id><value>Enter XBOX gamepad button combo and </value></string>
   <string><id>12331</id><value>press Start, or Back to cancel</value></string>
-  <string><id>12332</id><value>Lock Share</value></string>
-  <string><id>12333</id><value>Unlock Share</value></string>
-  <string><id>12334</id><value>Reset Share Lock</value></string>
-  <string><id>12335</id><value>Remove Share Lock</value></string>
+  <string><id>12332</id><value>Set Lock</value></string>
+  <string><id>12333</id><value>Unlock</value></string>
+  <string><id>12334</id><value>Reset Lock</value></string>
+  <string><id>12335</id><value>Remove Lock</value></string>
   <string><id>12336</id><value>Select type of lock to use:</value></string>
   <string><id>12337</id><value>Numeric Password</value></string>
   <string><id>12338</id><value>Gamepad button combo</value></string>
@@ -605,7 +610,7 @@
   <string><id>12350</id><value>(Opening any item in Settings will</value></string>
   <string><id>12351</id><value>automatically re-enable Master Lock.)</value></string>
   <string><id>12352</id><value>Enter Master Code button combo and </value></string>
-  <string><id>12353</id><value>Reactivate Share Lock</value></string>
+  <string><id>12353</id><value>Reactivate Lock</value></string>
   <string><id>12354</id><value>Override folder locks until next boot?</value></string>
   <string><id>12355</id><value>automatically re-enable folder locks.)</value></string>
   <string><id>12600</id><value>My Weather</value></string>
