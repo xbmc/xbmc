@@ -1,7 +1,7 @@
 #pragma once
 
 #include "tinyxml/tinyxml.h"
-#define CONFIG_VERSION 0x000C
+#define CONFIG_VERSION 0x000D
 
 #include <xtl.h>
 #include "stdstring.h"
@@ -148,7 +148,8 @@ public:
 		bool			m_bStretch;
 		bool			m_bAllowVideoSwitching;
 		bool			m_bAllowPAL60;
-		bool			m_bAutoShufflePlaylist;
+
+    bool			m_bAutoShufflePlaylist;
 		int			  m_iHDSpinDownTime;
 		DWORD     m_minFilter ;
 		DWORD     m_maxFilter ;
@@ -168,6 +169,7 @@ public:
 		bool			m_bAC3PassThru;
 		bool			m_bUseID3;
 		char			m_szMusicRecordingDirectory[128];
+    char      m_szAlternateSubtitleDirectory[128];
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;
