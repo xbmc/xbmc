@@ -515,7 +515,11 @@ int demux_mpg_control(demuxer_t *demuxer,int cmd, void *arg){
 	case DEMUXER_CTRL_GET_PERCENT_POS:
 	    if (demuxer->movi_end==demuxer->movi_start) 
     		return DEMUXER_CTRL_DONTKNOW;
-            if (mpg_d && mpg_d->has_valid_timestamps && mpg_d->final_pts > 0.0) {
+#ifdef _XBOX //Seeking sometimes ends up at a position with an invalid timestamp
+        if (mpg_d && mpg_d->has_valid_timestamps && mpg_d->final_pts > 0.0 && mpg_d->last_pts > 0.0) {
+#else
+        if (mpg_d && mpg_d->has_valid_timestamps && mpg_d->final_pts > 0.0) {
+#endif
               *((int *)arg)=(int)(100 * mpg_d->last_pts / mpg_d->final_pts);
               return DEMUXER_CTRL_OK;
             }
