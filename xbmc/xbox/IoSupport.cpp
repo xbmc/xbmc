@@ -30,6 +30,7 @@
 #include "ntddcdrm.h"
 #endif
 #include "stdstring.h"
+#include "../settings.h"
 
 #ifdef _XBOX
 #define CTLCODE(DeviceType, Function, Method, Access) ( ((DeviceType) << 16) | ((Access) << 14) | ((Function) << 2) | (Method)  ) 
@@ -305,35 +306,16 @@ HRESULT CIoSupport::CloseTray()
 DWORD CIoSupport::GetTrayState()
 {
 #ifdef _XBOX
-	HalReadSMCTrayState(&m_dwTrayState,&m_dwTrayCount);
-	return m_dwTrayState;
-
-	if(m_dwTrayState == TRAY_CLOSED_MEDIA_PRESENT) 
+	if (g_stSettings.m_bUsePCDVDROM)
 	{
-		if (m_dwLastTrayState != TRAY_CLOSED_MEDIA_PRESENT)
-		{
-			m_dwLastTrayState = m_dwTrayState;
-			return DRIVE_CLOSED_MEDIA_PRESENT;
-		}
-		else
-		{
-			return DRIVE_READY;
-		}
-	}
-	else if(m_dwTrayState == TRAY_CLOSED_NO_MEDIA)
-	{
-		m_dwLastTrayState = m_dwTrayState;
-		return DRIVE_CLOSED_NO_MEDIA;
-	}
-	else if(m_dwTrayState == TRAY_OPEN)
-	{
-		m_dwLastTrayState = m_dwTrayState;
-		return DRIVE_OPEN;
+		m_dwTrayState = TRAY_CLOSED_MEDIA_PRESENT;
 	}
 	else
 	{
-		m_dwLastTrayState = m_dwTrayState;
+		HalReadSMCTrayState(&m_dwTrayState,&m_dwTrayCount);
 	}
+
+	return m_dwTrayState;
 #endif
 	return DRIVE_NOT_READY;
 }
