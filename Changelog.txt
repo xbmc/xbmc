@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 13-03-2005 added: Cache dialog shows progressbar when caching.
+  - 13-03-2005 changed: Radiobutton renders not selected when disabled.
+  - 13-03-2005 changed: Removed clear of z-buffer in videorenders.
   - 13-03-2005 changed: Replaced all VECFILEITEMS with CFileItemList
   - 13-03-2005 added: VideoPlayer.Genre, VideoPlayer.Year, VideoPlayer.Directory for infolabels/infofadelabels.
   - 13-03-2005 fixed: weather broken since last update

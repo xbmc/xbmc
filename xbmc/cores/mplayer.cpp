@@ -607,7 +607,27 @@ void update_cache_dialog(const char* tmp)
   g_graphicsContext.Lock(); 
   if (m_dlgCache)
 	{
-		m_dlgCache->SetMessage(tmp);
+    CStdString message = tmp;
+    message.Trim();
+    if (int i = message.Find("Cache fill:") >= 0)
+    {
+      if (int j = message.Find('%') >= 0)
+      {
+        CStdString strPercentage = message.Mid(i+11, j - i+11);
+
+        //filter percentage, update progressbar
+        float fPercentage = 0;
+        sscanf(strPercentage.c_str(), "%f", &fPercentage);
+        m_dlgCache->ShowProgressBar(true);
+        //assuming here mplayer cache prefill is set to 20%...
+        m_dlgCache->SetPercentage(int(fPercentage * (100/20)));
+      }
+    }
+    else 
+    {
+      m_dlgCache->ShowProgressBar(false);
+    }
+		m_dlgCache->SetMessage(message);
 		m_dlgCache->Update();
 		if(m_dlgCache->IsCanceled() && !m_bCanceling)
 		{
