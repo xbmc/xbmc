@@ -144,6 +144,7 @@ HRESULT CApplication::Create()
 			helper.GetPartition(strHomePath, szDevicePath);
 			strcat(szDevicePath, &strHomePath.c_str()[2]);
 
+			CLog::Close();
 			helper.Unmount("Q:");
 			helper.Mount("Q:", szDevicePath);	
       ::DeleteFile("Q:\\xbmc.old.log");
