@@ -63,6 +63,16 @@ static int min_fill=0;
 
 int cache_fill_status=0;
 
+#ifdef _XBOX
+int cache_back_buffer = 50;
+// back buffer size in %
+// default = 50
+void mplayer_setcache_backbuffer(int iSize)
+{
+	cache_back_buffer = iSize;
+}
+#endif
+
 void cache_stats(cache_vars_t* s){
   int newb=s->max_filepos-s->read_filepos; // new bytes in the buffer
   printf("0x%06X  [0x%06X]  0x%06X   ",(int)s->min_filepos,(int)s->read_filepos,(int)s->max_filepos);
@@ -208,7 +218,11 @@ cache_vars_t* cache_init(int size,int sector){
   s->buffer=malloc(s->buffer_size);
 #endif
   s->fill_limit=8*sector;
+#ifdef _XBOX
+  s->back_size = (size / 100) * cache_back_buffer;
+#else
   s->back_size=size/2;
+#endif
   s->prefill=size/20; // default: 5%
   return s;
 }
