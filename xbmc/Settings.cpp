@@ -216,7 +216,7 @@ bool CSettings::Load()
 	//g_stSettings.m_bUseCDDB=GetBoolean(pRootElement, "CDDBEnabled");
 
 	GetString(pRootElement, "ipadres", g_stSettings.m_strLocalIPAdres,"");
-	if (g_stSettings.m_strLocalIPAdres != "")
+	if (g_stSettings.m_strLocalIPAdres == "")
 		GetString(pRootElement, "ip", g_stSettings.m_strLocalIPAdres,"");
 	GetString(pRootElement, "netmask", g_stSettings.m_strLocalNetmask,"");
 	GetString(pRootElement, "defaultgateway", g_stSettings.m_strGateway,"");
