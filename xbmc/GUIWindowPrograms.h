@@ -30,9 +30,10 @@ protected:
 	CGUIDialogProgress*	m_dlgProgress;  
   VECFILEITEMS				 m_vecItems;
   CStdString          m_strDirectory;
-	int							m_iLastControl;
-	int							m_iSelectedItem;
-	CStdString		  m_bookmarkName;
+	int				m_iLastControl;
+	int		  		m_iSelectedItem;
+	int				m_iDepth;	
+	CStdString		  m_strBookmarkName;
 	CProgramDatabase      m_database;
   
 };
