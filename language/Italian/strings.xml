@@ -2396,8 +2396,11 @@
 <id>13324</id>
 <value>Trasparenza sfondo</value>
 </string>
-  <string><id>13325</id><value>Trasparenza primo piano</value></string>
   <string>
+<id>13325</id>
+<value>Trasparenza primo piano</value>
+</string>
+<string>
 <id>13326</id>
 <value>Ritardo A/V</value>
 </string>
@@ -2421,6 +2424,12 @@
 <id>13331</id>
 <value>Errore: memoria insufficiente.</value>
 </string>
+  <string><id>13332</id><value>Muovi Su</value></string>
+  <string><id>13333</id><value>Muovi Giu</value></string>
+  <string><id>13334</id><value>Edit Label</value></string>
+  <string><id>13335</id><value>Imposta predefinito</value></string>
+  <string><id>13336</id><value>Rimuovi Pulsante</value></string>
+  <string><id>13337</id><value>2 Canali PCM diretto</value></string>
   <string>
 <id>14000</id>
 <value>Unisci: Spento</value>
@@ -2453,4 +2462,6 @@
 <id>14007</id>
 <value>Scaricamento file playlist fallito</value>
 </string>
+  <string><id>14008</id><value>Abilita notifiche Kai</value></string>
+  <string><id>14009</id><value>Directory Giochi</value></string>
 </strings>
