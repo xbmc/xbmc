@@ -233,7 +233,7 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.m_szWeatherArea, "UKXX0085");	//default WEATHER to London for no good reason
 	strcpy(g_stSettings.m_szWeatherFTemp, "C");			//default WEATHER temp units 
 	strcpy(g_stSettings.m_szWeatherFSpeed, "K");		//default WEATHER speed units
-	g_stSettings.m_iWeatherRefresh = 20;
+	g_stSettings.m_iWeatherRefresh = 30;
 
   g_stSettings.m_minFilter= D3DTEXF_LINEAR;
   g_stSettings.m_maxFilter= D3DTEXF_LINEAR;
@@ -409,21 +409,6 @@ bool CSettings::Load()
   GetShares(pRootElement,"video",m_vecMyVideoShares,strDefault);
 	if (strDefault.size())
 		strcpy( g_stSettings.m_szDefaultVideos, strDefault.c_str());	
-	TiXmlElement* pWeatherElement =pRootElement->FirstChildElement("weather");	//grab WEATHER settings
-	if (pWeatherElement)
-	{
-		GetString(pWeatherElement, "areacode", g_stSettings.m_szWeatherArea, "UKXX0085");
-		GetString(pWeatherElement, "unitT", g_stSettings.m_szWeatherFTemp, "C");
-		//do some validation
-		if(g_stSettings.m_szWeatherFTemp[0] != 'F' && g_stSettings.m_szWeatherFTemp[0] != 'C')
-			g_stSettings.m_szWeatherFTemp[0] = 'C';
-
-		GetString(pWeatherElement, "unitS", g_stSettings.m_szWeatherFSpeed, "K");
-		if(g_stSettings.m_szWeatherFSpeed[0] != 'M' && g_stSettings.m_szWeatherFSpeed[0] != 'K')
-			g_stSettings.m_szWeatherFSpeed[0] = 'K';
-
-		GetInteger(pWeatherElement, "refresh", g_stSettings.m_iWeatherRefresh,1,1,60);
-	}
 
   return true;
 }
@@ -874,6 +859,10 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetInteger(pElement, "screensavermode", g_stSettings.m_iScreenSaverMode,1,0,3);	// 0=Off, 1=Fade to dim, 2=Fade to black, 3=Matrix Trails
 		GetInteger(pElement, "screensaverfade", g_stSettings.m_iScreenSaverFadeLevel,20,1,100);	// default to 20%
 		GetInteger(pElement, "audiostream",g_stSettings.m_iAudioStream,0,0,INT_MAX);
+		GetInteger(pElement, "weatherrefresh", g_stSettings.m_iWeatherRefresh, 15, 15, 120);	//WEATHER SETTINGS
+		GetString(pElement, "weathertemp", g_stSettings.m_szWeatherFTemp, "C");					//WEATHER SETTINGS
+		GetString(pElement, "weatherspeed", g_stSettings.m_szWeatherFSpeed, "K");				//WEATHER SETTINGS
+		GetString(pElement, "areacode", g_stSettings.m_szWeatherArea, "UKXX0085");				//WEATHER SETTINGS
 	}
 	// slideshow settings
 	pElement = pRootElement->FirstChildElement("slideshow");
@@ -1130,6 +1119,10 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetInteger(pNode, "screensavermode", g_stSettings.m_iScreenSaverMode);	// CB: SCREENSAVER PATCH
 	SetInteger(pNode, "screensaverfade", g_stSettings.m_iScreenSaverFadeLevel);
 	SetInteger(pNode, "audiostream",g_stSettings.m_iAudioStream);
+	SetInteger(pNode, "weatherrefresh", g_stSettings.m_iWeatherRefresh);	//WEATHER SETTINGS
+	SetString(pNode, "weathertemp", g_stSettings.m_szWeatherFTemp);			//WEATHER SETTINGS
+	SetString(pNode, "weatherspeed", g_stSettings.m_szWeatherFSpeed);		//WEATHER SETTINGS
+	SetString(pNode, "areacode", g_stSettings.m_szWeatherArea);				//WEATHER SETTINGS
 
   // slideshow settings
 	TiXmlElement slideshowNode("slideshow");
