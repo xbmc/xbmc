@@ -347,28 +347,29 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
     }
     else if (strValue=="coordinates")
     {
-		TiXmlNode* pSystem=pChild->FirstChild("system");
-		if (pSystem)
-		{
-			int iCoordinateSystem = atoi(pSystem->FirstChild()->Value());
-			m_bRelativeCoords = (iCoordinateSystem==1);
-		}
+			TiXmlNode* pSystem=pChild->FirstChild("system");
+			if (pSystem)
+			{
+				int iCoordinateSystem = atoi(pSystem->FirstChild()->Value());
+				m_bRelativeCoords = (iCoordinateSystem==1);
+			}
 
-		TiXmlNode* pPosX=pChild->FirstChild("posX");
-		if (pPosX)
-		{
-			m_iPosX = atoi(pPosX->FirstChild()->Value());
-		}
+			TiXmlNode* pPosX=pChild->FirstChild("posX");
+			if (pPosX)
+			{
+				m_iPosX = atoi(pPosX->FirstChild()->Value());
+				g_graphicsContext.ScaleXCoord(m_iPosX, resToUse);
+			}
 
-		TiXmlNode* pPosY=pChild->FirstChild("posY");
-		if (pPosY)
-		{
-			m_iPosY = atoi(pPosY->FirstChild()->Value());
-		}
+			TiXmlNode* pPosY=pChild->FirstChild("posY");
+			if (pPosY)
+			{
+				m_iPosY = atoi(pPosY->FirstChild()->Value());
+				g_graphicsContext.ScaleYCoord(m_iPosY, resToUse);
+			}
     }
     else if (strValue=="controls")
     {
-			
        const TiXmlNode *pControl = pChild->FirstChild();
        while (pControl)
        {
