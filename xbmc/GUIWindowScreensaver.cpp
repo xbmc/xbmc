@@ -89,6 +89,9 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
 			// remove z-buffer
 			RESOLUTION res = g_graphicsContext.GetVideoResolution();
 			g_graphicsContext.SetVideoResolution(res, FALSE);
+
+			// enable the overlay
+			g_graphicsContext.SetOverlay(true);
 		}
 		break;
 
@@ -120,6 +123,9 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
 			// setup a z-buffer
 			RESOLUTION res = g_graphicsContext.GetVideoResolution();
 			g_graphicsContext.SetVideoResolution(res, TRUE);
+
+			// disable the overlay
+			g_graphicsContext.SetOverlay(false);
 			return true;
 		}
 	}
