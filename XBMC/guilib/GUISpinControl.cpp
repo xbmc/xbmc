@@ -10,6 +10,7 @@ CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPo
 ,m_imgspinUpFocus(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight,strUpFocus)
 ,m_imgspinDownFocus(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight,strDownFocus)
 {
+	m_bReverse=false;
   m_iStart=0;
   m_iEnd=100;
   m_fStart=0.0f;
@@ -38,8 +39,16 @@ void CGUISpinControl::OnKey(const CKey& key)
     {
       if (m_iSelect==SPIN_BUTTON_UP) 
       {
-				if (CanMoveDown() )
-					m_iSelect=SPIN_BUTTON_DOWN;
+				if (m_bReverse)
+				{
+					if (CanMoveUp() )
+						m_iSelect=SPIN_BUTTON_DOWN;
+				}
+				else
+				{
+					if (CanMoveDown() )
+						m_iSelect=SPIN_BUTTON_DOWN;
+				}
         return;
       }
     }
@@ -47,69 +56,35 @@ void CGUISpinControl::OnKey(const CKey& key)
     {
       if (m_iSelect==SPIN_BUTTON_DOWN) 
       {
-				if (CanMoveUp() )
-					m_iSelect=SPIN_BUTTON_UP;
+				if (m_bReverse)
+				{
+					if (CanMoveDown() )
+						m_iSelect=SPIN_BUTTON_UP;
+				}
+				else
+				{
+					if (CanMoveUp() )
+						m_iSelect=SPIN_BUTTON_UP;
+				}
         return;
       }
     }
     if (key.GetButtonCode()==KEY_BUTTON_A || key.GetButtonCode() == KEY_REMOTE_SELECT)
     {
-      switch (m_iType)
-      {
-        case SPIN_CONTROL_TYPE_INT:
-        {
-          if (m_iSelect==SPIN_BUTTON_UP)
-          {
-            if (m_iValue-1 >= m_iStart)
-              m_iValue--;
-          }
-          if (m_iSelect==SPIN_BUTTON_DOWN)
-          {
-            if (m_iValue+1 <= m_iEnd)
-              m_iValue++;
-          }
-          CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
-          g_graphicsContext.SendMessage(msg);
-          return;
-        }
-        break;
-      
-        case SPIN_CONTROL_TYPE_FLOAT:
-        {
-          if (m_iSelect==SPIN_BUTTON_UP)
-          {
-            if (m_fValue-0.1 >= m_fStart)
-              m_fValue-=0.1f;
-          }
-          if (m_iSelect==SPIN_BUTTON_DOWN)
-          {
-            if (m_fValue+0.1 <= m_fEnd)
-              m_fValue+=0.1f;
-          }
-          CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
-          g_graphicsContext.SendMessage(msg);
-          return;
-        }
-        break;
-
-        case SPIN_CONTROL_TYPE_TEXT:
-        {
-          if (m_iSelect==SPIN_BUTTON_UP)
-          {
-            if (m_iValue-1 >= 0)
-              m_iValue--;
-          }
-          if (m_iSelect==SPIN_BUTTON_DOWN)
-          {
-            if (m_iValue+1 < (int)m_vecLabels.size() )
-              m_iValue++;
-          }
-          CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
-          g_graphicsContext.SendMessage(msg);
-          return;
-        }
-        break;
-      }
+			if (m_iSelect==SPIN_BUTTON_UP)
+			{
+				if (m_bReverse)
+					MoveDown();
+				else
+					MoveUp();
+			}
+			if (m_iSelect==SPIN_BUTTON_DOWN)
+			{
+				if (m_bReverse)
+					MoveUp();
+				else
+					MoveDown();
+			}
     }
   }
   CGUIControl::OnKey(key);
@@ -219,24 +194,45 @@ void CGUISpinControl::Render()
 	}
 	if (m_iSelect==SPIN_BUTTON_UP) 
 	{
-		if ( !CanMoveUp() )
-			m_iSelect=SPIN_BUTTON_DOWN;
+		if (m_bReverse)
+		{
+			if ( !CanMoveDown() )
+				m_iSelect=SPIN_BUTTON_DOWN;
+		}
+		else
+		{
+			if ( !CanMoveUp() )
+				m_iSelect=SPIN_BUTTON_DOWN;
+		}
 	}
 
 	if (m_iSelect==SPIN_BUTTON_DOWN) 
 	{
-		if ( !CanMoveDown() )
-			m_iSelect=SPIN_BUTTON_UP;
+		if (m_bReverse)
+		{
+			if ( !CanMoveUp() )
+				m_iSelect=SPIN_BUTTON_UP;
+		}
+		else
+		{
+			if ( !CanMoveDown() )
+				m_iSelect=SPIN_BUTTON_UP;
+		}
 	}
 
 	if ( HasFocus() )
 	{
-		if (m_iSelect==SPIN_BUTTON_UP && CanMoveUp() ) 
+		bool bShow=CanMoveUp();
+		if (m_bReverse) bShow = CanMoveDown();
+
+		if (m_iSelect==SPIN_BUTTON_UP && bShow ) 
       m_imgspinUpFocus.Render();
     else 
       m_imgspinUp.Render();
 
-    if (m_iSelect==SPIN_BUTTON_DOWN && CanMoveDown()) 
+		bShow=CanMoveDown();
+		if (m_bReverse) bShow = CanMoveUp();
+    if (m_iSelect==SPIN_BUTTON_DOWN && bShow) 
 		  m_imgspinDownFocus.Render();
     else
       m_imgspinDown.Render();
@@ -361,6 +357,7 @@ bool CGUISpinControl::CanMoveUp()
 		}
 		break;
 	}
+	return false;
 }
 
 bool CGUISpinControl::CanMoveDown()
@@ -388,4 +385,81 @@ bool CGUISpinControl::CanMoveDown()
 		}
 		break;
 	}
+	return false;
+}
+
+void CGUISpinControl::MoveUp()
+{
+	switch (m_iType)
+	{
+		case SPIN_CONTROL_TYPE_INT:
+		{
+			if (m_iValue-1 >= m_iStart)
+				m_iValue--;
+			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
+			g_graphicsContext.SendMessage(msg);
+			return;
+		}
+		break;
+
+	case SPIN_CONTROL_TYPE_FLOAT:
+		{
+			if (m_fValue-0.1 >= m_fStart)
+				m_fValue-=0.1f;
+			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
+			g_graphicsContext.SendMessage(msg);
+			return;
+		}
+		break;
+
+	case SPIN_CONTROL_TYPE_TEXT:
+		{
+			if (m_iValue-1 >= 0)
+				m_iValue--;
+			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
+			g_graphicsContext.SendMessage(msg);
+			return;
+		}
+		break;
+	}
+}
+
+void CGUISpinControl::MoveDown()
+{
+	switch (m_iType)
+	{
+		case SPIN_CONTROL_TYPE_INT:
+		{
+			if (m_iValue+1 <= m_iEnd)
+				m_iValue++;
+			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
+			g_graphicsContext.SendMessage(msg);
+			return;
+		}
+		break;
+
+		case SPIN_CONTROL_TYPE_FLOAT:
+		{
+			if (m_fValue+0.1 <= m_fEnd)
+				m_fValue+=0.1f;
+			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
+			g_graphicsContext.SendMessage(msg);
+			return;
+		}
+		break;
+
+		case SPIN_CONTROL_TYPE_TEXT:
+		{
+				if (m_iValue+1 < (int)m_vecLabels.size() )
+					m_iValue++;
+			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
+			g_graphicsContext.SendMessage(msg);
+			return;
+		}
+		break;
+	}
+}
+void CGUISpinControl::SetReverse(bool bReverse)
+{
+	m_bReverse=bReverse;
 }
