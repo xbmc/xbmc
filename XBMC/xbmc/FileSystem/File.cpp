@@ -40,6 +40,7 @@ CFile::CFile()
 CFile::~CFile()
 {
 	if (m_pFile) delete m_pFile;
+	m_pFile=NULL;
 }
 
 //*********************************************************************************************
@@ -51,11 +52,11 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 		if (hMovie==NULL)
 		{
 			delete m_pFile;
+			m_pFile=NULL;
 			return false;
 		}
-		char *buffer = new char[16384];
+		auto_ptr<char> buffer ( new char[16384]);
 		int iRead;
-
 
 		long dwFileSize=GetLength();
 		long dwFileSizeOrg=dwFileSize;
@@ -69,11 +70,11 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 			{
 				iBytesToRead=dwFileSize;
 			}
-			iRead=Read(buffer,iBytesToRead);
+			iRead=Read(buffer.get(),iBytesToRead);
 			if (iRead > 0)
 			{
 				DWORD dwWrote;
-				WriteFile(hMovie,buffer,iRead,&dwWrote,NULL);
+				WriteFile(hMovie,buffer.get(),iRead,&dwWrote,NULL);
 				dwFileSize -= iRead;
 				dwPos+= iRead;
 				float fPercent=(float)dwPos;
@@ -89,7 +90,6 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 							// canceled
 							Close();
 							CloseHandle(hMovie);
-							delete [] buffer;
 							::DeleteFile(szDest);
 							return false;
 						}
@@ -100,14 +100,12 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 			{
 				Close();
 				CloseHandle(hMovie);
-				delete [] buffer;
 				::DeleteFile(szDest);
 				return false;
 			}
 		}
 		Close();
 		CloseHandle(hMovie);
-		delete [] buffer;
 		return true;
 	}
 	return false;

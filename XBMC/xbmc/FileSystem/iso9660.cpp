@@ -491,11 +491,12 @@ HANDLE iso9660::OpenFile( const char* filename)
 	
 	m_info.curr_filesize = fileinfo.nFileSizeLow;
 	m_dwStartSector = m_searchpointer->Location;
-
+	DWORD dwSectorSize=m_info.iso.wSectorSizeLE;
 	EnterCriticalSection(&m_critSection);
-//	memcpy(&m_openfileinfo, m_searchpointer, sizeof( m_openfileinfo ));
-	DWORD dwPos = ::SetFilePointer( m_info.ISO_HANDLE, calc ,0,FILE_BEGIN );
-	
+
+	LARGE_INTEGER Displacement;
+	Displacement.QuadPart = ((INT64)m_dwStartSector) * dwSectorSize;
+	DWORD dwPos=::SetFilePointer(m_info.ISO_HANDLE, Displacement.LowPart, &Displacement.HighPart, FILE_BEGIN);
 	DWORD dwBytesRead;
 	int iRead=::ReadFile( m_info.ISO_HANDLE, m_pCache, m_info.iso.wSectorSizeLE, &dwBytesRead,NULL );
 	if( iRead<=0 || dwBytesRead==0)
@@ -572,6 +573,7 @@ int iso9660::ReadFile( char * pBuffer, int * piSize, DWORD *totalread )
 	DWORD dwBytes2Read = *piSize;
 	DWORD dwBytesLeft = m_info.curr_filesize;
 	*totalread = 0;
+	DWORD dwSectorSize=m_info.iso.wSectorSizeLE;
 	if (m_info.ISO_HANDLE==NULL) return -1;
 	if (m_info.curr_filepos>=m_info.curr_filesize) 
 	{
@@ -585,8 +587,8 @@ int iso9660::ReadFile( char * pBuffer, int * piSize, DWORD *totalread )
 
 	while (dwBytes2Read> 0)
 	{
-		DWORD dwCurrentSector = (m_info.curr_filepos /  m_info.iso.wSectorSizeLE) + m_dwStartSector;
-		int iAlignmentadjust = m_info.curr_filepos %  m_info.iso.wSectorSizeLE;
+		DWORD dwCurrentSector = (m_info.curr_filepos /  dwSectorSize) + m_dwStartSector;
+		int iAlignmentadjust = m_info.curr_filepos %  dwSectorSize;
 		if (iAlignmentadjust > 0)
 		{
 			int x=1;
@@ -602,8 +604,10 @@ int iso9660::ReadFile( char * pBuffer, int * piSize, DWORD *totalread )
 			}
 			else
 			{
-				::SetFilePointer( m_info.ISO_HANDLE, dwCurrentSector*m_info.iso.wSectorSizeLE, 0,FILE_BEGIN);
-				iResult=::ReadFile( m_info.ISO_HANDLE, m_pCache, m_info.iso.wSectorSizeLE, &dwBytesRead,NULL );
+				LARGE_INTEGER Displacement;
+				Displacement.QuadPart = ((INT64)dwCurrentSector) * dwSectorSize;
+				DWORD dwPos=::SetFilePointer(m_info.ISO_HANDLE, Displacement.LowPart, &Displacement.HighPart, FILE_BEGIN);
+				iResult=::ReadFile( m_info.ISO_HANDLE, m_pCache, dwSectorSize, &dwBytesRead,NULL );
 			}
 			LeaveCriticalSection(&m_critSection);
 			if (iResult <= 0)
