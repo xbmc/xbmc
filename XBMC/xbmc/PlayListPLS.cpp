@@ -28,8 +28,10 @@ CPlayListPLS::~CPlayListPLS(void)
 
 bool CPlayListPLS::Load(const CStdString& strFileName)
 {
-Clear();
+	CStdString strBasePath;
+	Clear();
 	m_strPlayListName=CUtil::GetFileName(strFileName);
+	CUtil::GetParentPath(strFileName,strBasePath);
 	CFile file;
 	if (!file.Open(strFileName,false) ) 
 	{
@@ -86,6 +88,7 @@ Clear();
 				long lDuration=atol(strDuration.c_str());
 				lDuration*=1000;
 				strFilename.Replace("http:","shout:");
+				CUtil::GetQualifiedFilename(strBasePath,strFilename);
 				CPlayListItem newItem(strInfo,strFilename,lDuration);
 				Add(newItem);
 				strFilename="";
