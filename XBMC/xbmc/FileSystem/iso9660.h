@@ -21,7 +21,11 @@
 #ifndef ISO9660_H
 #define ISO9660_H
 #pragma once
+#ifdef _XBOX
 #include "xtl.h"
+#else
+#include <windows.h>
+#endif
 #include "../xbox/IoSupport.h"
 #include <vector>
 #include <string>
@@ -143,7 +147,7 @@ struct iso_directories
 class iso9660
 {
 public:
-	iso9660( const char *filename );
+	iso9660( );
 	virtual ~iso9660(  );
 
 	HANDLE							FindFirstFile( char *szLocalFolder, WIN32_FIND_DATA *wfdFile );
@@ -167,8 +171,6 @@ protected:
 	bool												m_bUseMode2;
 	CIoSupport									m_IoSupport;
 	string											m_strReturn;
-	HGLOBAL											m_gmXferBuffer;
-	PVOID												m_rawXferBuffer;
 
 	struct iso9660_Directory		m_openfileinfo;
 	struct iso_dirtree*					m_searchpointer;
@@ -177,6 +179,8 @@ protected:
 	DWORD												m_dwStartSector;
 	
 	vector<struct iso_dirtree*> m_vecDirsAndFiles;
+	static int									m_iReferences;
+	static HANDLE								m_hCDROM;
 };
 
 #endif

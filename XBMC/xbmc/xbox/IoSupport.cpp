@@ -23,12 +23,18 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "IoSupport.h"
+#ifdef _XBOX
 #include "Undocumented.h"
+#else
+#include "ntddcdrm.h"
+#endif
 #include "stdstring.h"
 
+#ifdef _XBOX
 #define CTLCODE(DeviceType, Function, Method, Access) ( ((DeviceType) << 16) | ((Access) << 14) | ((Function) << 2) | (Method)  ) 
-#define FSCTL_DISMOUNT_VOLUME  CTLCODE( FILE_DEVICE_FILE_SYSTEM, 0x08, METHOD_BUFFERED, FILE_ANY_ACCESS )
 
+#define FSCTL_DISMOUNT_VOLUME  CTLCODE( FILE_DEVICE_FILE_SYSTEM, 0x08, METHOD_BUFFERED, FILE_ANY_ACCESS )
+#endif
 
 typedef struct 
 {
@@ -88,6 +94,7 @@ CIoSupport::~CIoSupport()
 
 HRESULT CIoSupport::Mount(const char* szDrive, char* szDevice)
 {
+#ifdef _XBOX
 	char szSourceDevice[256];
 	char szDestinationDrive[16];
 
@@ -109,7 +116,7 @@ HRESULT CIoSupport::Mount(const char* szDrive, char* szDevice)
 	};
 
 	IoCreateSymbolicLink(&LinkName, &DeviceName);
-
+#endif
 	return S_OK;
 }
 
@@ -119,6 +126,7 @@ HRESULT CIoSupport::Mount(const char* szDrive, char* szDevice)
 
 HRESULT CIoSupport::Unmount(const char* szDrive)
 {
+#ifdef _XBOX
 	char szDestinationDrive[16];
 	sprintf(szDestinationDrive,"\\??\\%s",szDrive);
 
@@ -130,7 +138,7 @@ HRESULT CIoSupport::Unmount(const char* szDrive)
 	};
 
 	IoDeleteSymbolicLink(&LinkName);
-	
+#endif	
 	return S_OK;
 }
 
@@ -140,6 +148,7 @@ HRESULT CIoSupport::Unmount(const char* szDrive)
 
 HRESULT CIoSupport::Remount(LPCSTR szDrive, LPSTR szDevice)
 {
+#ifdef _XBOX
 	char szSourceDevice[48];
 	sprintf(szSourceDevice,"\\Device\\%s",szDevice);
 
@@ -171,12 +180,13 @@ HRESULT CIoSupport::Remount(LPCSTR szDrive, LPSTR szDevice)
 	}
 	
 	Mount(szDrive,szDevice);
-
+#endif
 	return S_OK;
 }
 
 HRESULT CIoSupport::Remap(char* szMapping)
 {
+#ifdef _XBOX
 	char szMap[32];
 	strcpy(szMap, szMapping );
 
@@ -190,25 +200,30 @@ HRESULT CIoSupport::Remap(char* szMapping)
 		Mount(szMap,&pComma[1]);
 		return S_OK;
 	}
-
+#endif
 	return E_FAIL;
 }
 
 
 HRESULT CIoSupport::EjectTray()
 {
+#ifdef _XBOX
 	HalWriteSMBusValue(0x20, 0x0C, FALSE, 0);  // eject tray
+#endif
 	return S_OK;
 }
 
 HRESULT CIoSupport::CloseTray()
 {
+#ifdef _XBOX
 	HalWriteSMBusValue(0x20, 0x0C, FALSE, 1);  // close tray
+#endif
 	return S_OK;
 }
 
 DWORD CIoSupport::GetTrayState()
 {
+#ifdef _XBOX
 	HalReadSMCTrayState(&m_dwTrayState,&m_dwTrayCount);
 	return m_dwTrayState;
 
@@ -238,19 +253,20 @@ DWORD CIoSupport::GetTrayState()
 	{
 		m_dwLastTrayState = m_dwTrayState;
 	}
-
+#endif
 	return DRIVE_NOT_READY;
 }
 
 HRESULT CIoSupport::Shutdown()
 {
+#ifdef _XBOX
 	// fails assertion on debug bios (symptom lockup unless running dr watson
 	// so you can continue past the failed assertion).
 	if (IsDebug())
 		return E_FAIL;
 
 		HalInitiateShutdown();
-
+#endif
 	return S_OK;
 }
 
@@ -304,11 +320,7 @@ string CIoSupport::GetDrive(const string &szPartition)
 
 HANDLE CIoSupport::OpenCDROM()
 {
-	ANSI_STRING filename;
-	OBJECT_ATTRIBUTES attributes;
-	IO_STATUS_BLOCK status;
 	HANDLE hDevice;
-	NTSTATUS error;
 
 
 	Remount("D:","Cdrom0");
@@ -317,6 +329,11 @@ HANDLE CIoSupport::OpenCDROM()
 	if( !m_rawXferBuffer )
 		return NULL;
 
+#ifdef _XBOX
+	NTSTATUS error;
+	IO_STATUS_BLOCK status;
+	ANSI_STRING filename;
+	OBJECT_ATTRIBUTES attributes;
 	RtlInitAnsiString(&filename,"\\Device\\Cdrom0");
 	InitializeObjectAttributes(&attributes, &filename, OBJ_CASE_INSENSITIVE, NULL);
 	if (!NT_SUCCESS(error = NtCreateFile(&hDevice, 
@@ -331,6 +348,13 @@ HANDLE CIoSupport::OpenCDROM()
 	{
 		return NULL;
 	}
+#else
+
+	hDevice = CreateFile("\\\\.\\Cdrom0", GENERIC_READ,FILE_SHARE_READ,
+																		NULL, OPEN_EXISTING,
+																		FILE_FLAG_RANDOM_ACCESS, NULL );
+
+#endif
 	return hDevice;
 }
 
@@ -362,7 +386,7 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 {
 	DWORD dwBytesReturned;
-	RAW_READ_INFO rawRead;
+	RAW_READ_INFO rawRead={0};
 
 	// Oddly enough, DiskOffset uses the Red Book sector size
 	rawRead.DiskOffset.QuadPart = 2048 * dwSector;
@@ -372,16 +396,21 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
 	for (int i=0; i < 5; i++)
 	{
 		if( DeviceIoControl( hDevice,
-					IOCTL_CDROM_RAW_READ,
-					&rawRead,
-					sizeof(RAW_READ_INFO),
-					m_rawXferBuffer,
-					sizeof(RAW_SECTOR_SIZE),
-					&dwBytesReturned,
-					NULL ) != 0 )
+												IOCTL_CDROM_RAW_READ,
+												&rawRead,
+												sizeof(RAW_READ_INFO),
+												m_rawXferBuffer,
+												RAW_SECTOR_SIZE,
+												&dwBytesReturned,
+												NULL ) != 0 )
 		{
-				memcpy(lpczBuffer, (byte*)m_rawXferBuffer + MODE2_DATA_START, MODE2_DATA_SIZE);
-				return MODE2_DATA_SIZE;
+			memcpy(lpczBuffer, (byte*)m_rawXferBuffer + MODE2_DATA_START, MODE2_DATA_SIZE);
+			return MODE2_DATA_SIZE;
+		}
+		else
+		{
+			int iErr=GetLastError();
+//			printf("%i\n", iErr);
 		}
 	}
 	return -1;
@@ -422,6 +451,7 @@ VOID CIoSupport::CloseCDROM(HANDLE hDevice)
 
 VOID CIoSupport::UpdateDvdrom()
 {
+#ifdef _XBOX
 	OutputDebugString("Starting Dvdrom update.\n");
 	BOOL bClosingTray = false;
 	BOOL bShouldHaveClosed = false;
@@ -475,6 +505,7 @@ VOID CIoSupport::UpdateDvdrom()
 	} while (dwCurrentState<DRIVE_READY);
 
 	OutputDebugString("Dvdrom updated.\n");
+#endif
 }
 
 
@@ -498,6 +529,7 @@ VOID CIoSupport::IdexWritePortUchar(USHORT port, UCHAR data)
 
 VOID CIoSupport::SpindownHarddisk()
 {
+#ifdef _XBOX
 	#define IDE_DEVICE_SELECT_REGISTER	0x01F6
 	#define IDE_COMMAND_REGISTER		0x01F7
 	#define IDE_COMMAND_STANDBY			0xE0
@@ -507,11 +539,13 @@ VOID CIoSupport::SpindownHarddisk()
 	IdexWritePortUchar(IDE_DEVICE_SELECT_REGISTER, 0xA0 );
 	IdexWritePortUchar(IDE_COMMAND_REGISTER, IDE_COMMAND_STANDBY);
 	KeLowerIrql(oldIrql);
+#endif
 }
 
 
 VOID CIoSupport::GetXbePath(char* szDest)
 {
+#ifdef _XBOX
 	//Function to get the XBE Path like:
 	//E:\DevKit\xbplayer\xbplayer.xbe
 
@@ -548,4 +582,5 @@ VOID CIoSupport::GetXbePath(char* szDest)
 		OutputDebugString("cant get xbe path\n");
 		szDest[0]=0;	//somehow we cant get the xbepath :(
 	}
+#endif
 }

@@ -22,7 +22,7 @@ bool  CISO9660Directory::GetDirectory(const CStdString& strPath,VECFILEITEMS &it
   CURL url(strPath);
   
   {
-		iso9660 iso("D:");
+		iso9660 iso;
 	  WIN32_FIND_DATA wfd;
 	  HANDLE					hFind;
 

@@ -33,6 +33,7 @@ namespace XFILE
 	protected:
 		iso9660*			m_pIsoReader;
 		offset_t		  m_i64FilePos;
+		static int		m_iReferences;
 	};
 };
 
