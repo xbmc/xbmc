@@ -27,7 +27,7 @@
     <id>7</id>
     <value>Fichiers</value>
   </string>
-  
+ 
   <string>
     <id>11</id>
     <value>Lundi</value>
@@ -565,7 +565,7 @@
   </string> 
   <string>
     <id>214</id>
-    <value>Configuration de l'affichage</value>
+    <value>Config. de l'affichage</value>
   </string> 
   <string>
     <id>215</id>
@@ -1046,5 +1046,9 @@
   <string>
     <id>336</id>
     <value>Ajuster le taux de rafraichissement</value>
+  </string>
+  <string>
+    <id>340</id>
+    <value>Various Artists</value>
   </string>
 </strings>
