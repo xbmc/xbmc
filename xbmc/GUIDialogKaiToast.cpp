@@ -15,14 +15,19 @@
 #define POPUP_CAPTION_TEXT			401
 #define POPUP_NOTIFICATION_BUTTON	402
 
+
+
 CGUIDialogKaiToast::CGUIDialogKaiToast(void)
 :CGUIDialog(0)
 {
 	m_bNeedsScaling = true;	// make sure we scale this window, as it appears on different resolutions
+
+	InitializeCriticalSection(&m_critical);
 }
 
 CGUIDialogKaiToast::~CGUIDialogKaiToast(void)
 {
+	DeleteCriticalSection(&m_critical);
 }
 
 void CGUIDialogKaiToast::OnAction(const CAction &action)
@@ -66,18 +71,46 @@ bool CGUIDialogKaiToast::OnMessage(CGUIMessage& message)
 	return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogKaiToast::SetNotification(CStdString& aCaption, CStdString& aDescription)
+
+void CGUIDialogKaiToast::QueueNotification(CStdString& aCaption, CStdString& aDescription)
 {
-	CGUIMessage msg1(GUI_MSG_LABEL_SET,GetID(),POPUP_CAPTION_TEXT);
-	msg1.SetLabel(aCaption);
-	OnMessage(msg1);
+	EnterCriticalSection(&m_critical);
+	
+	Notification toast;
+	toast.caption = aCaption;
+	toast.description = aDescription;
+	m_notifications.push(toast);
 
-	CGUIMessage msg2(GUI_MSG_LABEL_SET,GetID(),POPUP_NOTIFICATION_BUTTON);
-	msg2.SetLabel(aDescription);
-	OnMessage(msg2);
-
-	ResetTimer();
+	LeaveCriticalSection(&m_critical);
 }
+
+
+bool CGUIDialogKaiToast::DoWork()
+{
+	EnterCriticalSection(&m_critical);
+	
+	bool bPending = m_notifications.size()>0;
+	if (bPending)
+	{
+		Notification toast = m_notifications.front();
+		m_notifications.pop();
+
+		CGUIMessage msg1(GUI_MSG_LABEL_SET,GetID(),POPUP_CAPTION_TEXT);
+		msg1.SetLabel(toast.caption);
+		OnMessage(msg1);
+
+		CGUIMessage msg2(GUI_MSG_LABEL_SET,GetID(),POPUP_NOTIFICATION_BUTTON);
+		msg2.SetLabel(toast.description);
+		OnMessage(msg2);
+
+		ResetTimer();
+	}
+
+	LeaveCriticalSection(&m_critical);
+
+	return bPending;
+}
+
 
 void CGUIDialogKaiToast::ResetTimer()
 {
