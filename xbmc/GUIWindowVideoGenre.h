@@ -27,7 +27,7 @@ protected:
 	virtual bool			SortAscending();
 
 	virtual void			FormatItemLabels();
-	virtual void			SortItems();
+	virtual void			SortItems(VECFILEITEMS& items);
 	virtual void			Update(const CStdString &strDirectory);
   virtual void			OnClick(int iItem);
   virtual void			OnInfo(int iItem);

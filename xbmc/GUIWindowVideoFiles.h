@@ -30,7 +30,7 @@ protected:
 	virtual bool			SortAscending();
   virtual void			AddFileToDatabase(const CStdString& strFile);
 	virtual void			FormatItemLabels();
-	virtual void			SortItems();
+	virtual void			SortItems(VECFILEITEMS& items);
   virtual void			UpdateButtons();
 	virtual void			Update(const CStdString &strDirectory);
 	void							UpdateDir(const CStdString &strDirectory);
