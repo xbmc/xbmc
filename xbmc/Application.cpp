@@ -977,7 +977,21 @@ HRESULT CApplication::Initialize()
 	}
 	return S_OK;
 }
-
+void CApplication::PrintXBEToLCD(const char* xbePath)
+{
+	int pLine=0;
+	CStdString strXBEName;
+	if (!CUtil::GetXBEDescription(xbePath, strXBEName))
+	{
+		CUtil::GetDirectoryName(xbePath, strXBEName);
+		CUtil::ShortenFileName(strXBEName);
+		CUtil::RemoveIllegalChars(strXBEName);
+	}
+	g_lcd->SetLine(pLine++,"");
+	g_lcd->SetLine(pLine++,"Playing");
+	g_lcd->SetLine(pLine++,strXBEName);
+	g_lcd->SetLine(pLine++,"");
+}
 void CApplication::StartWebServer()
 {
  	if (g_guiSettings.GetBool("Servers.WebServer") && CUtil::IsNetworkUp())
@@ -1109,11 +1123,6 @@ void CApplication::StopServices()
 
 	CLog::Log(LOGNOTICE, "stop dvd detect media");
 	m_DetectDVDType.StopThread();
-
-	CLog::Log(LOGNOTICE, "stop LCD");
-	g_lcd->Stop();
-  g_lcd->WaitForThreadExit(INFINITE);
-  delete g_lcd;
 
 	CLog::Log(LOGNOTICE, "stop fancontroller");
   CFanController::Instance()->Stop();
