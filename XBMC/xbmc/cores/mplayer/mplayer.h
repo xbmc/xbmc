@@ -40,6 +40,7 @@ int     mplayer_getAudioStreamCount();
 void    mplayer_setAudioLanguage(int iAudioLang);
 void    mplayer_setTime(int iTime);
 int     mplayer_getTime();
+__int64 mplayer_getCurrentTime();
 void    mplayer_ToFFRW(int iSpeed);
 #ifdef __cplusplus
 }

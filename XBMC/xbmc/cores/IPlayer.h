@@ -55,7 +55,8 @@ public:
   virtual float   GetSubTitleDelay(){return 0.0f;};
   virtual int     GetAudioStreamCount(){return 1;};
   virtual void	  SeekTime(int iTime=0){};
-  virtual int	  GetTime(){return 0;};
+  virtual __int64 GetTime(){return 0;};
+  virtual int	    GetTotalTime(){return 0;};
   virtual void	  ToFFRW(int iSpeed=0){};
 protected:
 	IPlayerCallback& m_callback;
