@@ -17,7 +17,10 @@ using namespace std;
 
 
 #define LCD_MODE_NORMAL   0
-#define LCD_MODE_NOTV     1   
+#define LCD_MODE_NOTV     1
+
+#define LCD_MODE_TYPE_LCD 0   
+#define LCD_MODE_TYPE_VFD 1   
 
 #define CACHE_AUDIO 0
 #define CACHE_VIDEO 1
@@ -293,6 +296,8 @@ public:
   int       m_iLCDAdress[4];
   int       m_iLCDMode;
   int       m_iLCDBackLight;
+  int       m_iLCDType;
+  int       m_iLCDBrightness;
 	bool			m_bDisplayRemoteCodes;	// Remote code debug info
   };
 
