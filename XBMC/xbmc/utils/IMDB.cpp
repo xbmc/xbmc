@@ -206,6 +206,7 @@ bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
   }
 
   CStdString strTemp;
+  GetString(details, "title", movieDetails.m_strTitle);
   if (GetString(details, "rating", strTemp)) movieDetails.m_fRating = (float)atof(strTemp);
   if (GetString(details, "year", strTemp)) movieDetails.m_iYear = atoi(strTemp);
   if (GetString(details, "top250", strTemp)) movieDetails.m_iTop250 = atoi(strTemp);

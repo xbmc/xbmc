@@ -394,8 +394,6 @@ public:
     bool m_bMyVideoActorStack;
     bool m_bMyVideoGenreStack;
     bool m_bMyVideoYearStack;
-    char m_szMyVideoStackTokens[128];
-    char m_szMyVideoStackSeparators[32];
 
     bool m_bMyVideoCleanTitles;
     char m_szMyVideoCleanTokens[256];
@@ -435,6 +433,8 @@ public:
     bool m_bMute;
 
   };
+
+  CStdStringArray m_MyVideoStackRegExps;
 
   // cache copies of these parsed values, to avoid re-parsing over and over
   CStdString m_szMyVideoStackSeparatorsString;

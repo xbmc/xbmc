@@ -253,7 +253,7 @@ struct CGUIRAMControl::SSortVideoListByName
 {
   bool operator()(CStdString& strItem1, CStdString& strItem2)
   {
-    return strcmp(strItem1.c_str(), strItem2.c_str()) < 0;
+    return StringUtils::AlphaNumericCompare(strItem1.c_str(), strItem2.c_str());
   }
 };
 
@@ -267,12 +267,11 @@ void CGUIRAMControl::PlayMovie(CFileItem& item)
     CStdString fileName = CUtil::GetFileName(item.m_strPath);
 
     CStdString fileTitle;
-    CStdString volumePrefix;
-    int volumeNumber;
+    CStdString volumeNumber;
     bool fileStackable = true;
     if (g_stSettings.m_iMyVideoVideoStack == STACK_SIMPLE)
     {
-      if (!CUtil::GetVolumeFromFileName(fileName, fileTitle, volumePrefix, volumeNumber))
+      if (!CUtil::GetVolumeFromFileName(fileName, fileTitle, volumeNumber))
       {
         fileStackable = false;
       }
@@ -321,11 +320,10 @@ void CGUIRAMControl::PlayMovie(CFileItem& item)
               {
                 // simple stacking
                 CStdString fileTitle2;
-                CStdString volumePrefix2;
-                int volumeNumber2;
-                if (CUtil::GetVolumeFromFileName(fileNameTemp, fileTitle2, volumePrefix2, volumeNumber2))
+                CStdString volumeNumber2;
+                if (CUtil::GetVolumeFromFileName(fileNameTemp, fileTitle2, volumeNumber2))
                 {
-                  if (fileTitle.Equals(fileTitle2) && volumePrefix.Equals(volumePrefix2))
+                  if (fileTitle.Equals(fileTitle2))
                   {
                     stackFile = true;
                   }

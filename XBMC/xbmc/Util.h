@@ -21,7 +21,7 @@ public:
   virtual ~CUtil(void);
   static char* GetExtension(const CStdString& strFileName);
   static void RemoveExtension(CStdString& strFileName);
-  static bool GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumePrefix, int& volumeNumber);
+  static bool GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumeNumber);
   static void CleanFileName(CStdString& strFileName);
   static char* GetFileName(const CStdString& strFileNameAndPath);
   static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath);
@@ -85,13 +85,6 @@ public:
   static void DeleteTDATA();
   static bool GetFolderThumb(const CStdString& strFolder, CStdString& strThumb);
 
-  // Added by JM to determine possible type of file from framesize
-  static bool IsNTSC_VCD(int iWidth, int iHeight);
-  static bool IsNTSC_SVCD(int iWidth, int iHeight);
-  static bool IsNTSC_DVD(int iWidth, int iHeight);
-  static bool IsPAL_VCD(int iWidth, int iHeight);
-  static bool IsPAL_SVCD(int iWidth, int iHeight);
-  static bool IsPAL_DVD(int iWidth, int iHeight);
   static void RemoveIllegalChars( CStdString& strText);
   static void CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached);
   static void ClearSubtitles();
