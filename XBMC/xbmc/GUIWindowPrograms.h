@@ -21,6 +21,7 @@ protected:
   void            OnSort();
   void            UpdateButtons();
   void            Clear();
+	void						DeleteThumbs(VECFILEITEMS& items);
 	CGUIDialogProgress*	m_dlgProgress;  
   VECFILEITEMS				 m_vecItems;
   CStdString          m_strDirectory;

@@ -5,6 +5,7 @@
 #include "Shortcut.h"
 #include "settings.h"
 #include "tinyxml/tinyxml.h"
+#include "util.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -65,10 +66,14 @@ bool CShortcut::Save(const CStdString& strFileName)
 {
   if (g_stSettings.m_szShortcutDirectory[0] == 0) return false;
 
+	CStdString strShort=strFileName;
+	CUtil::ShortenFileName(strShort);
+	CUtil::RemoveIllegalChars(strShort);
   CStdString strTotalPath=g_stSettings.m_szShortcutDirectory;
   strTotalPath+="\\";
-  strTotalPath+=strFileName;
+  strTotalPath+=strShort;
   strTotalPath+=".cut";
+	::DeleteFile(strTotalPath.c_str());
   FILE* fd=fopen(strTotalPath.c_str(), "w");
   if (!fd) return false;
   fprintf(fd,"<shortcut>\r\n");

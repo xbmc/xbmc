@@ -298,15 +298,21 @@ void CGUIWindowPrograms::Clear()
 void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 {
   Clear();
+	CStdString strShortCutsDir;
+	CUtil::GetHomePath(strShortCutsDir);
+	strShortCutsDir+="\\shortcuts";
  
   CStdString strParentPath;
   if (CUtil::GetParentPath(strDirectory,strParentPath))
   {
-    CFileItem *pItem = new CFileItem("..");
-    pItem->m_strPath=strParentPath;
-    pItem->m_bIsShareOrDrive=false;
-    pItem->m_bIsFolder=true;
-    m_vecItems.push_back(pItem);
+		if (strDirectory != strShortCutsDir)
+		{
+			CFileItem *pItem = new CFileItem("..");
+			pItem->m_strPath=strParentPath;
+			pItem->m_bIsShareOrDrive=false;
+			pItem->m_bIsFolder=true;
+			m_vecItems.push_back(pItem);
+		}
   }
  
   LoadDirectory(strDirectory);
@@ -597,6 +603,7 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 
 	bool bScanSubDirs=true;
 	bool bFound=false;
+	DeleteThumbs(items);
 	CUtil::SetThumbs(items);
 	bool bOpen=true;
 	if ((int)m_strDirectory.size() != 2) // true for C:, E:, F:, G:
@@ -651,7 +658,7 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 				swprintf(wzTotal,L"%i %s",iTotalAppsFound, pszText );
 				CStdString strDescription;
 				CUtil::GetXBEDescription(pItem->m_strPath,strDescription);
-				if (strDescription="")
+				if (strDescription=="")
 					strDescription=CUtil::GetFileName(pItem->m_strPath);
 				m_dlgProgress->SetLine(0, wzTotal);
 				m_dlgProgress->SetLine(1,strDescription);
@@ -661,4 +668,21 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 	}
 	if (bOpen)
 		m_dlgProgress->Close();
+}
+
+void CGUIWindowPrograms::DeleteThumbs(VECFILEITEMS& items)
+{
+	for (int i=0; i < (int)items.size(); ++i)
+	{
+		CFileItem *pItem= items[i];
+		if (! pItem->m_bIsFolder)
+		{
+			if (CUtil::IsXBE(pItem->m_strPath) )
+			{
+				CStdString strThumb;
+				CUtil::GetThumbnail(pItem->m_strPath, strThumb);
+				::DeleteFile(strThumb.c_str());
+			}
+		}
+	}
 }
