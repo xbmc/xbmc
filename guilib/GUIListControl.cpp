@@ -609,6 +609,10 @@ int CGUIListControl::GetSelectedItem(CStdString& strLabel)
   {
    CGUIListItem *pItem=m_vecItems[iItem];
    strLabel=pItem->GetLabel();
+   if (pItem->m_bIsFolder)
+   {
+     strLabel.Format("[%s]", pItem->GetLabel().c_str());
+   }
   }
   return iItem;
 }

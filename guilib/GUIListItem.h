@@ -53,6 +53,7 @@ public:
   CGUIImage*				GetIcon();
 	void							FreeIcons();
   void              FreeMemory();
+  bool          m_bIsFolder;					///< is item a folder or a file
 protected:  
   CStdString        m_strLabel;						// text of column1
   CStdString        m_strLabel2;					// text of column2
