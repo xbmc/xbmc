@@ -3,6 +3,7 @@
 #include "..\structmember.h"
 #include "control.h"
 #include "window.h"
+#include "pyutil.h"
 
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
@@ -18,8 +19,24 @@ namespace PYXBMC
 	extern PyTypeObject DialogType;
 	extern PyTypeObject DialogProgressType;
 
+	PyObject* XBMCGUI_Lock(PyObject *self, PyObject *args)
+	{
+		PyGUILock();
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	PyObject* XBMCGUI_Unlock(PyObject *self, PyObject *args)
+	{
+		PyGUIUnlock();
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
 	// define c functions to be used in python here
 	PyMethodDef xbmcGuiMethods[] = {
+		{"lock", (PyCFunction)XBMCGUI_Lock, METH_VARARGS, ""},
+		{"unlock", (PyCFunction)XBMCGUI_Unlock, METH_VARARGS, ""},
 		{NULL, NULL, 0, NULL}
 	};
 

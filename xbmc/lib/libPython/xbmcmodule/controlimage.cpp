@@ -2,6 +2,7 @@
 #include "..\python.h"
 #include "GuiImage.h"
 #include "control.h"
+#include "pyutil.h"
 
 using namespace std;
 
