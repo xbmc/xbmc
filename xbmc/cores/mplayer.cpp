@@ -422,8 +422,18 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
 
 	if(m_strDvdDevice.length()>0)
 	{
+		CStdString strDevice;
+		strDevice = """" + m_strDvdDevice;
+
+		//Make sure we only use forward slashes for path 
+		//since mplayer is manly *nix based this causes less problems.
+		//Our standard file system handles this aswell.
+		strDevice.Replace("\\", "/"); 
+		strDevice.TrimRight("/"); 
+		strDevice += """";
+
 		m_vecOptions.push_back("-dvd-device");
-		m_vecOptions.push_back(CStdString("""") + m_strDvdDevice + CStdString(""""));	
+		m_vecOptions.push_back(strDevice);	
 	}
 	
 	//Only display forced subs for dvds.
@@ -613,10 +623,8 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		}
 		else if(bFileIsDVDIfoFile)
 		{
-			CStdString strPath,strFName;
-			CUtil::Split(strFile,strPath,strFName);
-			if (CUtil::HasSlashAtEnd(strPath)) strPath=strPath.Left(strPath.size()-1);
-
+			CStdString strPath;
+			CUtil::GetParentPath(strFile, strPath);
 			options.SetDVDDevice(strPath);
 			CLog::Log(" dvddevice: %s", strPath.c_str());
 		}	
