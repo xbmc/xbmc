@@ -9,6 +9,13 @@ struct CSettings::stSettings g_stSettings;
 
 CSettings::CSettings(void)
 {
+  g_stSettings.m_bPPAuto=true;
+  g_stSettings.m_bPPVertical=false;
+  g_stSettings.m_bPPHorizontal=false;
+  g_stSettings.m_bPPAutoLevels=false;
+  g_stSettings.m_bPPdering=false;
+  g_stSettings.m_iPPHorizontal=0;
+  g_stSettings.m_iPPVertical=0;
 
   strcpy(g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
   g_stSettings.m_iSubtitleHeight=28;
@@ -744,6 +751,20 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetBoolean(pElement, "autoshuffleplaylist", g_stSettings.m_bAutoShufflePlaylist);
     GetFloat(pElement, "volumeamp", g_stSettings.m_fVolumeAmplification);
 	}
+
+  // post processing
+  pElement = pRootElement->FirstChildElement("PostProcessing");
+	if (pElement)
+	{
+	  GetBoolean(pElement, "PPAuto", g_stSettings.m_bPPAuto);
+	  GetBoolean(pElement, "PPVertical", g_stSettings.m_bPPVertical);
+	  GetBoolean(pElement, "PPHorizontal", g_stSettings.m_bPPHorizontal);
+	  GetBoolean(pElement, "PPAutoLevels", g_stSettings.m_bPPAutoLevels);
+	  GetBoolean(pElement, "PPdering", g_stSettings.m_bPPdering);
+	  GetInteger(pElement, "PPHorizontalVal",g_stSettings.m_iPPHorizontal);
+	  GetInteger(pElement, "PPVerticalVal",g_stSettings.m_iPPVertical);
+  }
+
 	return true;
 }
 
@@ -925,6 +946,17 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetString(pNode, "visualisation", g_stSettings.szDefaultVisualisation);
   SetBoolean(pNode, "autoshuffleplaylist", g_stSettings.m_bAutoShufflePlaylist);
   SetFloat(pNode, "volumeamp", g_stSettings.m_fVolumeAmplification);
+
+	TiXmlElement postprocNode("PostProcessing");
+	pNode = pRoot->InsertEndChild(postprocNode);
+	if (!pNode) return false;
+	SetBoolean(pNode, "PPAuto", g_stSettings.m_bPPAuto);
+	SetBoolean(pNode, "PPVertical", g_stSettings.m_bPPVertical);
+	SetBoolean(pNode, "PPHorizontal", g_stSettings.m_bPPHorizontal);
+	SetBoolean(pNode, "PPAutoLevels", g_stSettings.m_bPPAutoLevels);
+	SetBoolean(pNode, "PPdering", g_stSettings.m_bPPdering);
+	SetInteger(pNode, "PPHorizontalVal",g_stSettings.m_iPPHorizontal);
+	SetInteger(pNode, "PPVerticalVal",g_stSettings.m_iPPVertical);
 
 	// save the file
 	return xmlDoc.SaveFile(strSettingsFile);

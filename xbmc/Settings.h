@@ -1,7 +1,7 @@
 #pragma once
 
 #include "tinyxml/tinyxml.h"
-#define CONFIG_VERSION 0x000D
+#define CONFIG_VERSION 0x000F
 
 #include <xtl.h>
 #include "stdstring.h"
@@ -184,6 +184,13 @@ public:
     int       m_iSubtitleHeight;
     float     m_fVolumeAmplification;
     bool      m_bNonInterleaved;
+    bool      m_bPPAuto;
+    bool      m_bPPVertical;
+    bool      m_bPPHorizontal;
+    bool      m_bPPAutoLevels;
+    int       m_iPPHorizontal;
+    int       m_iPPVertical;
+    bool      m_bPPdering;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;

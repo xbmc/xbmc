@@ -131,8 +131,6 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
   CStdString strTmp;
   m_vecOptions.erase(m_vecOptions.begin(),m_vecOptions.end());
   m_vecOptions.push_back("xbmc.exe");
-  m_vecOptions.push_back("-autoq");
-  m_vecOptions.push_back("6");
 	if ( m_iChannels) 
   {
     m_vecOptions.push_back("-channels");
@@ -150,13 +148,62 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     m_vecOptions.push_back("hwac3");
   }
 
-  if ( g_stSettings.m_bPostProcessing || g_stSettings.m_bDeInterlace )
+  if ( g_stSettings.m_bPostProcessing )
   {
-    m_vecOptions.push_back("-vf");
-    if ( g_stSettings.m_bDeInterlace)
-      m_vecOptions.push_back("pp=lb");
+    if (g_stSettings.m_bPPAuto && !g_stSettings.m_bDeInterlace)
+    {
+      m_vecOptions.push_back("-autoq");
+      m_vecOptions.push_back("100");
+      m_vecOptions.push_back("-vop");
+      m_vecOptions.push_back("pp");      
+    }
     else
-      m_vecOptions.push_back("pp");
+    {
+      CStdString strOpt;
+      strTmp = "pp=";
+      bool bAddComma(false);
+      m_vecOptions.push_back("-vop");
+      if ( g_stSettings.m_bDeInterlace)
+      {
+        if (bAddComma) strTmp +="/";
+        strOpt="ci";
+        bAddComma=true;
+        strTmp += strOpt;
+      }
+      if (g_stSettings.m_bPPdering)
+      {
+        if (bAddComma) strTmp +="/";
+        if (g_stSettings.m_iPPVertical>0) strOpt.Format("vb:%i",g_stSettings.m_iPPVertical);
+        else strOpt="dr";
+        bAddComma=true;
+        strTmp += strOpt;
+      }
+      if (g_stSettings.m_bPPVertical)
+      {
+        if (bAddComma) strTmp +="/";
+        if (g_stSettings.m_iPPVertical>0) strOpt.Format("vb:%i",g_stSettings.m_iPPVertical);
+        else strOpt="vb:a";
+        bAddComma=true;
+        strTmp += strOpt;
+      }
+      if (g_stSettings.m_bPPHorizontal)
+      {
+        if (bAddComma) strTmp +="/";
+        if (g_stSettings.m_iPPHorizontal>0) strOpt.Format("hb:%i",g_stSettings.m_iPPHorizontal);
+        else strOpt="hb:a";
+        bAddComma=true;
+
+        strTmp += strOpt;
+      }
+      if (g_stSettings.m_bPPAutoLevels)
+      {
+        if (bAddComma) strTmp +="/";
+        strOpt="al";
+        bAddComma=true;
+        strTmp += strOpt;
+      }
+      m_vecOptions.push_back(strTmp);
+    }
   }
 
   if (m_fVolumeAmplification > 0.1f || m_fVolumeAmplification < -0.1f)
