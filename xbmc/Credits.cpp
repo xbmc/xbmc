@@ -95,7 +95,7 @@ CreditLine_t Credits[] = {
 	{  50,  55,    100,   7300,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Pope-X" },
 
 	// Website Hosts
-	{  50,  22,   9500,   8000,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Wesite Hosting" },
+	{  50,  22,   9500,   8000,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   36, L"Website Hosting" },
 	{  50,  35,    500,   7500,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"HulleBulle" },
 	{  50,  45,    100,   7400,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"MrX" },
 	{  50,  55,    100,   7300,  800,  800, EFF_IN_FADE   |EFF_OUT_FADE   ,   20, L"Team-XBMC" },
