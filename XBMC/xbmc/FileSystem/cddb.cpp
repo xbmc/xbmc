@@ -785,7 +785,7 @@ void Xcddb::parseData(const char *buffer)
 	//writeLog("parseData Start");
 
 	char *line;
-	const char trenner[2]={'\n',0x0};
+	const char trenner[3]={'\r','\n',0x0};
 	line=strtok((char*)buffer,trenner);
 	int line_cnt=0;
 	while(line = strtok(0,trenner))
