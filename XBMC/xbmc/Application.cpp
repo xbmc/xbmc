@@ -1,5 +1,6 @@
 #include "application.h"
 #include "xbox\iosupport.h"
+#include "xbox/xkutils.h"
 #include "settings.h"
 #include "util.h"
 #include "sectionLoader.h"
@@ -207,6 +208,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiSettingsFilter);						// window id = 13
 	m_gWindowManager.Add(&m_guiSettingsMusic);						// window id = 14
   m_gWindowManager.Add(&m_guiSettingsSubtitles);				// window id = 15
+  m_gWindowManager.Add(&m_guiSettingsScreensaver);				// window id = 16
 	m_gWindowManager.Add(&m_guiScripts);									// window id = 20
   m_gWindowManager.Add(&m_guiVideoGenre);								// window id = 21
   m_gWindowManager.Add(&m_guiVideoActors);							// window id = 22
@@ -231,6 +233,8 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiWindowVisualisation);			// window id = 2006
 	m_gWindowManager.Add(&m_guiWindowSlideshow);					// window id = 2007
 	m_gWindowManager.Add(&m_guiDialogFileStacking);				// window id = 2008
+
+	m_gWindowManager.Add(&m_guiWindowScreensaver);				// window id = 2900 Screensaver
 
 	/* window id's 3000 - 3100 are reserved for python */
   	
@@ -309,6 +313,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiSettingsUICalibration.Load( strSkinPath+"\\settingsUICalibration.xml" );
 	m_guiSettingsScreenCalibration.Load( strSkinPath+"\\settingsScreenCalibration.xml" );
 	m_guiSettingsSlideShow.Load( strSkinPath+"\\SettingsSlideShow.xml" );
+	m_guiSettingsScreensaver.Load( strSkinPath+"\\SettingsScreensaver.xml" );
 	m_guiSettingsFilter.Load( strSkinPath+"\\SettingsFilter.xml" );
 	m_guiWindowVideoOverlay.Load( strSkinPath+"\\videoOverlay.xml" );
 	m_guiWindowFullScreen.Load( strSkinPath+"\\videoFullScreen.xml" );
@@ -317,6 +322,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiSettingsMusic.Load( strSkinPath+"\\SettingsMusic.xml");
 	m_guiWindowSlideshow.Load( strSkinPath+"\\slideshow.xml");
 	m_guiSettingsSubtitles.Load( strSkinPath+"\\SettingsScreenSubtitles.xml");
+	m_guiWindowScreensaver.SetID(WINDOW_SCREENSAVER);		// CB: Matrix Screensaver - saves us having to have our own XML file
+
 	m_guiMusicOverlay.AllocResources();
 	m_guiWindowVideoOverlay.AllocResources();
 	m_gWindowManager.AddMsgTarget(this);
@@ -443,8 +450,16 @@ void CApplication::OnKey(CKey& key)
 	m_bInactive=false;		// reset the inactive flag as a key has been pressed
 	if (m_bScreenSave)		// Screen saver is active
 	{
-		m_pd3dDevice->SetGammaRamp(0, &m_OldRamp);	// put the old gamma ramp back in place
 		m_bScreenSave = false;	// Reset the screensaver active flag
+
+		if (g_stSettings.m_iScreenSaverMode == 3)	// Matrix Trails
+		{
+			m_gWindowManager.PreviousWindow();
+		}
+		else										// Fade to dim or black
+		{
+			m_pd3dDevice->SetGammaRamp(0, &m_OldRamp);	// put the old gamma ramp back in place
+		}
 	}
 	// get the current window to send to
 	int iWin = m_gWindowManager.GetActiveWindow();
@@ -796,6 +811,7 @@ void CApplication::RenderFullScreen()
 void CApplication::CheckScreenSaver()
 {
 	D3DGAMMARAMP Ramp;
+	FLOAT fFadeLevel;
 
 	if (!m_bInactive)
 	{
@@ -828,13 +844,37 @@ void CApplication::CheckScreenSaver()
 	{
 		if (!m_bScreenSave)	// Check we're not already in screensaver mode
 		{
-			if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_stSettings.m_iScreenSaverTime*1000L) )
+			if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_stSettings.m_iScreenSaverTime*60*1000L) )
 			{
 				m_bScreenSave = true;
+				m_dwSaverTick=timeGetTime();		// Save the current time for the shutdown timeout
+
+				switch ( g_stSettings.m_iScreenSaverMode )
+				{
+					case 1:
+						{
+							fFadeLevel = 0.07f;
+						}
+						break;
+
+					case 2:
+						{
+							fFadeLevel = 0;
+						}
+						break;
+
+					case 3:
+						{
+							m_gWindowManager.ActivateWindow(WINDOW_SCREENSAVER);
+							return;
+						}
+						break;
+
+				}
 
 				m_pd3dDevice->GetGammaRamp(&m_OldRamp);	// Store the old gamma ramp
-				// Fade to very dark (approx 7% brightness) ...
-				for (float fade=1.f; fade>=0.07f; fade-=0.01f)
+				// Fade to fFadeLevel
+				for (float fade=1.f; fade>=fFadeLevel; fade-=0.01f)
 				{
 					for(int i=0;i<256;i++)
 					{
@@ -846,6 +886,42 @@ void CApplication::CheckScreenSaver()
 					m_pd3dDevice->SetGammaRamp(D3DSGR_IMMEDIATE, &Ramp);	// use immediate to get a smooth fade
 				}
 			}
+		}
+	}
+
+	return;
+}
+
+void CApplication::CheckShutdown()
+{
+	// Note: if the the screensaver is switched on, the shutdown timeout is
+	// counted from when the screensaver activates.
+	if (!m_bInactive)
+	{
+		if (IsPlayingVideo() && !m_pPlayer->IsPaused())	// are we playing a movie?
+		{
+			m_bInactive=false;
+		}
+		else if (IsPlayingAudio())	// are we playing some music?
+		{
+			m_bInactive=false;
+		}
+		else				// nothing doing here, so start the timer going
+		{
+			m_bInactive=true;
+		}
+
+		if (m_bInactive) 
+		{
+			m_dwSaverTick=timeGetTime();		// Start the timer going ...
+		}
+	}
+	else
+	{
+		if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_stSettings.m_iShutdownTime*60*1000L) )
+		{
+			g_application.Stop();		// Stop ourselves
+			XKUtils::XBOXPowerOff();	// Turn off the box
 		}
 	}
 
@@ -999,7 +1075,8 @@ void CApplication::Process()
 	m_pythonParser.Process();
 
 	SpinHD();
-	if (g_stSettings.m_iScreenSaverTime) CheckScreenSaver();
+	if (g_stSettings.m_iScreenSaverMode) CheckScreenSaver();
+	if (g_stSettings.m_iShutdownTime) CheckShutdown();
 	// process messages, even if a movie is playing
 	g_applicationMessenger.ProcessMessages();
 
