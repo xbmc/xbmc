@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 14-10-2004 changed: cleaned up switching from/to fullscreen code
+  - 14-10-2004 added: now GUI_MSG_PLAYBACK_STARTED is send on file start
+  - 14-10-2004 fixed: hdd spindown never took total time of player to calc spindown
   - 14-10-2004 added: Boxalizer visz updated for sync fix (thanks mynci)
   - 14-10-2004 added: Log INFO message for each window loaded for the skin (to help debug)
   - 14-10-2004 fixed: Music overlay didn't hide all controls/textures + moved up randomly
