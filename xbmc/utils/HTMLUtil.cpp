@@ -27,6 +27,28 @@ int CHTMLUtil::FindTag(const CStdString& strHTML,const CStdString& strTag, CStdS
 	return iStart;
 }
 
+int CHTMLUtil::FindClosingTag(const CStdString& strHTML,const CStdString& strTag, CStdString& strtagFound, int iPos) const
+{
+	CStdString strHTMLLow=strHTML;
+	CStdString strTagLow=strTag;
+	strHTMLLow.ToLower();
+	strTagLow.ToLower();
+	strtagFound="";
+	int iStart=strHTMLLow.Find("</"+strTag,iPos);
+	if (iStart < 0) return -1;
+	int iOpenStart=strHTMLLow.Find("<"+strTag, iPos);
+	while (iOpenStart<iStart && iOpenStart!=-1)
+	{
+		iStart=strHTMLLow.Find("</"+strTag,iStart+1);
+		iOpenStart=strHTMLLow.Find("<"+strTag, iOpenStart+1);
+	}
+
+	int iEnd=strHTMLLow.Find(">",iStart);
+	if (iEnd < 0) iEnd=(int)strHTMLLow.size();
+	strtagFound=strHTMLLow.Mid(iStart,(iEnd+1)-iStart);
+	return iStart;
+}
+
 void CHTMLUtil::getValueOfTag(const CStdString& strTagAndValue, CStdString& strValue)
 {
 	// strTagAndValue contains:
@@ -74,6 +96,9 @@ void CHTMLUtil::RemoveTags(CStdString& strHTML)
 			}
 		}
 	}
+	
+	strReturn.Replace("&mdash;", "--");
+
 	strHTML=strReturn;
 }
 
