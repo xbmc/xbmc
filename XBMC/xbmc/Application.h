@@ -23,6 +23,7 @@
 #include "GUIWindowSettingsScreen.h"
 #include "GUIWindowSettingsUICalibration.h"
 #include "GUIWindowSettingsScreenCalibration.h"
+#include "GUIWindowSettingsSubtitles.h"
 #include "GUIWindowMusicInfo.h" 
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowScriptsInfo.h"
@@ -118,6 +119,7 @@ public:
 	CGUIWindowMusicArtists					m_guiMyMusicArtists;
 	CGUIWindowMusicGenres						m_guiMyMusicGenres;
 	CGUIWindowMusicTop100						m_guiMyMusicTop100;
+  CGUIWindowSettingsSubtitles     m_guiSettingsSubtitles;
   CXBVirtualKeyboard   						m_keyboard;
 	CSNTPClient											m_sntpClient;
 	CDetectDVDMedia									m_DetectDVDType;

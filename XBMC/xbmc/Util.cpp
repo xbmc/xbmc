@@ -1195,3 +1195,34 @@ void CUtil::SecondsToHMSString(long lSeconds, CStdString& strHMS)
 		strHMS.Format("%i:%02.2i",mm,ss);
 
 }
+void CUtil::PrepareSubtitleFonts()
+{				
+  if (strlen(g_stSettings.m_szSubtitleFont)==0) return;
+  if (g_stSettings.m_iSubtitleHeight==0) return;
+
+  CStdString strPath,strHomePath,strSearchMask;
+	CUtil::GetHomePath(strHomePath);
+  strPath.Format("%s\\mplayer\\font\\%s\\%i\\",
+          strHomePath.c_str(),
+	        g_stSettings.m_szSubtitleFont,g_stSettings.m_iSubtitleHeight);
+
+  strSearchMask=strPath+"*.*";
+	WIN32_FIND_DATA wfd;
+  CAutoPtrFind hFind ( FindFirstFile(strSearchMask.c_str(),&wfd));
+	if (hFind.isValid())
+  {
+	  do
+	  {
+		  if (wfd.cFileName[0]!=0)
+		  {
+			  if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)==0 )
+        {
+          CStdString strSource,strDest;
+          strSource.Format("%s%s",strPath.c_str(),wfd.cFileName);
+          strDest.Format("%s\\mplayer\\font\\%s",strHomePath.c_str(),  wfd.cFileName);
+          ::CopyFile(strSource.c_str(),strDest.c_str(),FALSE);
+        }
+      }
+    } while (FindNextFile((HANDLE)hFind, &wfd));
+  }
+}

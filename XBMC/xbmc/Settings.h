@@ -180,6 +180,8 @@ public:
     char      m_szAlternateSubtitleDirectory[128];
     bool      m_bPostProcessing;
     bool      m_bDeInterlace;
+    char      m_szSubtitleFont[40];
+    int       m_iSubtitleHeight;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;
