@@ -30,6 +30,11 @@ bool CMusicInfoTagLoaderOgg::Load(const CStdString& strFileName, CMusicInfoTag& 
       CStdString strArtist = myTag.GetArtist();
       CStdString strAlbum = myTag.GetAlbum();
       CStdString strGenre = myTag.GetGenre();
+      CStdString strMBTID = myTag.GetMusicBrainzTrackID();
+      CStdString strMBAID = myTag.GetMusicBrainzArtistID();
+      CStdString strMBBID = myTag.GetMusicBrainzAlbumID();
+      CStdString strMBAAID = myTag.GetMusicBrainzAlbumArtistID();
+      CStdString strMBTRMID = myTag.GetMusicBrainzTRMID();
 
       tag.SetTrackNumber(myTag.GetTrackNum());
       tag.SetDuration(myTag.GetDuration() / 75); // GetDuration() returns duration in frames
@@ -57,7 +62,26 @@ bool CMusicInfoTagLoaderOgg::Load(const CStdString& strFileName, CMusicInfoTag& 
         dateTime.wYear = atoi(strYear);
         tag.SetReleaseDate(dateTime);
       }
-
+      if (!strMBTID.IsEmpty())
+      {
+        tag.SetMusicBrainzTrackID(strMBTID);
+      }
+      if (!strMBAID.IsEmpty())
+      {
+        tag.SetMusicBrainzAlbumID(strMBAID);
+      }
+      if (!strMBBID.IsEmpty())
+      {
+        tag.SetMusicBrainzAlbumID(strMBBID);
+      }
+      if (!strMBAAID.IsEmpty())
+      {
+        tag.SetMusicBrainzAlbumArtistID(strMBAAID);
+      }
+      if (!strMBTRMID.IsEmpty())
+      {
+        tag.SetMusicBrainzTRMID(strMBTRMID);
+      }
 
       file.Close();
     }

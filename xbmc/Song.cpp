@@ -10,6 +10,11 @@ CSong::CSong(CMusicInfoTag& tag)
   strFileName = tag.GetURL();
   strArtist = tag.GetArtist();
   strAlbum = tag.GetAlbum();
+  strMusicBrainzTrackID = tag.GetMusicBrainzTrackID();
+  strMusicBrainzArtistID = tag.GetMusicBrainzArtistID();
+  strMusicBrainzAlbumID = tag.GetMusicBrainzAlbumID();
+  strMusicBrainzAlbumArtistID = tag.GetMusicBrainzAlbumArtistID();
+  strMusicBrainzTRMID = tag.GetMusicBrainzTRMID();
   iYear = stTime.wYear;
   iTrack = tag.GetTrackNumber();
   iDuration = tag.GetDuration();
@@ -31,6 +36,11 @@ void CSong::Clear()
   strAlbum = "";
   strGenre = "";
   strThumb = "";
+  strMusicBrainzTrackID = "";
+  strMusicBrainzArtistID = "";
+  strMusicBrainzAlbumID = "";
+  strMusicBrainzAlbumArtistID = "";
+  strMusicBrainzTRMID = "";
   iTrack = 0;
   iDuration = 0;
   iYear = 0;

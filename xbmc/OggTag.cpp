@@ -159,6 +159,31 @@ int COggTag::parseTagEntry(CStdString& strTagEntry)
       m_strGenre = strTagValue;
   }
 
+  if ( strTagType == "musicbrainz_trackid" )
+  {
+    m_strMusicBrainzTrackID = strTagValue;
+  }
+
+  if ( strTagType == "musicbrainz_artistid" )
+  {
+    m_strMusicBrainzArtistID = strTagValue;
+  }
+
+  if ( strTagType == "musicbrainz_albumid" )
+  {
+    m_strMusicBrainzAlbumID = strTagValue;
+  }
+
+  if ( strTagType == "musicbrainz_albumartistid" )
+  {
+    m_strMusicBrainzAlbumArtistID = strTagValue;
+  }
+
+  if ( strTagType == "musicbrainz_trmid" )
+  {
+    m_strMusicBrainzTRMID = strTagValue;
+  }
+
   return 0;
 }
 
