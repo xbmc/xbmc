@@ -4,52 +4,48 @@
 #include "iso9660.h"
 #include "../url.h"
 #include "../util.h"
-using namespace XISO9660;
 
 CISO9660Directory::CISO9660Directory(void)
 {
-	CSectionLoader::Load("ISO9660");
 }
 
 CISO9660Directory::~CISO9660Directory(void)
 {
-	CSectionLoader::Unload("ISO9660");
 }
 
 bool  CISO9660Directory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 {	
 	static char szTemp[1024];
-
-	
 	CStdString strRoot=strPath;
 	if (!CUtil::HasSlashAtEnd(strPath) )
 		strRoot+="/";
-
   CURL url(strPath);
   
-	
-  
   {
-	  CIoSupport cdrom;
-	  CISO9660 iso(cdrom);
-	  if (iso.OpenDisc() )
-	  {
+		iso9660 iso("D:");
+	  WIN32_FIND_DATA wfd;
+	  HANDLE					hFind;
 
-	    WIN32_FIND_DATA wfd;
-	    HANDLE hFind;
-
-	    memset(&wfd,0,sizeof(wfd));
+	  memset(&wfd,0,sizeof(wfd));
 
 		CStdString strSearchMask;
 		CStdString strDirectory=url.GetFileName();
 		if (strDirectory!="") 
 		{
-			strSearchMask.Format("/%s",strDirectory.c_str());
+			strSearchMask.Format("\\%s",strDirectory.c_str());
+		}
+		else
+		{
+			strSearchMask="\\";
+		}
+		for (int i=0; i < (int)strSearchMask.size(); ++i )
+		{
+			if (strSearchMask[i]=='/') strSearchMask[i]='\\';
 		}
 
       FILETIME localTime;
 	    hFind = iso.FindFirstFile((char*)strSearchMask.c_str(),&wfd);
-	    if (hFind!=INVALID_HANDLE_VALUE)
+	    if (hFind!=NULL)
 	    {
 	      do
 	      {
@@ -86,9 +82,9 @@ bool  CISO9660Directory::GetDirectory(const CStdString& strPath,VECFILEITEMS &it
             }
           }
         } while (iso.FindNextFile(hFind, &wfd));
+				iso.FindClose(hFind);
       }  
     }
-  }
 	
   return true;
 }

@@ -54,6 +54,7 @@ bool												m_bFullScreen=false;
 bool												m_bPal60Allowed=true;
 static int									m_iResolution=0;
 static float                m_fImageAR;
+static int									m_iConfigCount=0;
 
 typedef struct directx_fourcc_caps
 {
@@ -528,6 +529,7 @@ static void video_check_events(void)
 /*init the video system (to support querying for supported formats)*/
 static unsigned int video_preinit(const char *arg)
 {
+	m_iConfigCount=0;
 	m_iResolution=0;
 	iSubTitleHeight=0;
 	iSubTitlePos=0;
@@ -742,6 +744,9 @@ static unsigned int put_image(mp_image_t *mpi)
 */
 static unsigned int video_config(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, unsigned int options, char *title, unsigned int format)
 {
+	m_iConfigCount++;
+	if (m_iConfigCount !=1) return 0;
+
 	char strFourCC[12];
 	char strVideoCodec[256];
 	float fps;

@@ -15,7 +15,6 @@
 
 
 using namespace XFILE;
-using namespace XISO9660;
 namespace XFILE
 {
 
@@ -32,9 +31,8 @@ namespace XFILE
 		virtual offset_t			Seek(offset_t iFilePosition, int iWhence=SEEK_SET);
 		virtual void					Close();
 	protected:
-		CISO9660*			m_pIsoReader;
-		CIoSupport    m_cdrom;
-
+		iso9660*			m_pIsoReader;
+		offset_t		  m_i64FilePos;
 	};
 };
 

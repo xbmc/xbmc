@@ -1,22 +1,32 @@
-// ISO9660.h: interface for the CISO9660 class.
-//
-//////////////////////////////////////////////////////////////////////
+/*
+* XboxMediaCenter
+* 2003 by The Joker / Avalaunch team
+* 
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
 
-#if !defined(AFX_ISO9660_H__E14E96F8_255B_42D3_9BE2_89FFDD6DFB67__INCLUDED_)
-#define AFX_ISO9660_H__E14E96F8_255B_42D3_9BE2_89FFDD6DFB67__INCLUDED_
-
-#if _MSC_VER > 1000
+#ifndef ISO9660_H
+#define ISO9660_H
 #pragma once
-#endif // _MSC_VER > 1000
-#include <xtl.h>
-#include "../xbox/iosupport.h"
-#include "IsoDir.h"	// Added by ClassView
-
-namespace XISO9660
-{
+#include "xtl.h"
+#include <string>
+using namespace std;
 
 #pragma pack(1)
-struct stVolumeDescriptor
+struct iso9660_VolumeDescriptor
 {
 	unsigned char byOne;												//0
 	char					szSignature[6];								//1-6
@@ -58,7 +68,7 @@ struct stVolumeDescriptor
 } ;
 
 
-struct stDirectory 
+struct iso9660_Directory 
 {
 
 		#define Flag_NotExist		0x01     /* 1-file not exists */
@@ -83,55 +93,82 @@ struct stDirectory
 		BYTE	FileName[128];						//33     identifier
 
 };
-
-
 #pragma pack()
 
-class CISO9660  
+struct iso9660info
 {
+	char	iso9660;			// found iso9660 format ?
+	char	joliet;				// found joliet format ?
+	DWORD	mp3;				// found mp3s  ?
+	DWORD	HeaderPos;			// joliet header position if found, regular if not
+	DWORD	DirSize;			// size of current dir, will be dividable by 2048
+	DWORD	CurrDirPos;			// position of current selected dir
+	char	*Curr_dir_cache;	// current dir in raw format
+	char	*Curr_dir;			// name of current directory
+	DWORD	Curr_dir_sectorsize; // dirs are sometimes bigger than a sector - then we need this info.
+	HANDLE  ISO_HANDLE;
+
+	DWORD   iso9660searchpointer; // for search use
+
+	DWORD	curr_filesize;		// for use when openfile'd a file.
+	DWORD	curr_filepos;		// for use when openfile'd a file.
+
+	struct iso9660_VolumeDescriptor	iso;		// best fitted header
+	struct iso9660_Directory		isodir;
+	struct iso9660_Directory		isofileinfo;
+
+};
+
+struct iso_dirtree
+{
+	char		*path;
+	char		*name;		// name of the directory/file
+	char		type;		// bit 0 = no entry, bit 1 = file, bit 2 = dir
+	DWORD		Location;	// number of the first sector of file data or directory
+	DWORD		Length;						// number of bytes of file data or length of directory
+
+	struct iso_dirtree *dirpointer;	// if type is a dir, this will point to the list in that dir
+	struct iso_dirtree *next;		// pointer to next file/dir in this directory
+};
+
+struct iso_directories
+{
+	char *path;
+	struct iso_dirtree *dir;
+	struct iso_directories *next;
+};
+
+class iso9660
+{
+private:
+	struct iso9660_Directory openfileinfo;
+	struct iso_dirtree *searchpointer;
+	struct iso_directories *paths;	
+	struct iso_directories *lastpath;
 public:
-	CISO9660(CIoSupport& cdrom);
-	virtual ~CISO9660();
+	struct iso_dirtree *dirtree;
+	struct iso9660info info;
+	iso9660( char *filename );
+	~iso9660(  );
+
+	bool IsValid( void );
+	HANDLE FindFirstFile( char *szLocalFolder, WIN32_FIND_DATA *wfdFile );
+	int FindNextFile( HANDLE szLocalFolder, WIN32_FIND_DATA *wfdFile );
+	bool FindClose( HANDLE szLocalFolder );
+	DWORD SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHigh,  DWORD dwMoveMethod  );
+	DWORD GetFileSize(HANDLE hFile,LPDWORD lpFileSizeHigh  );
+
+	HANDLE OpenFile( char* filename, DWORD location );
+	int  ReadFile( void * pBuffer, int * piSize, DWORD *totalread );
+	void CloseFile( HANDLE );
+	struct iso_dirtree *ReadRecursiveDirFromSector( DWORD sector, char * );
+	struct iso_dirtree *FindFolder( char *Folder );
 	
-	bool		OpenDisc();
-	HANDLE	FindFirstFile(char* lpFileName,  LPWIN32_FIND_DATA lpFindFileData);
-	BOOL		FindNextFile(HANDLE hFindFile,  LPWIN32_FIND_DATA lpFindFileData);
-
-
-	int			OpenFile(const char *strFileName);
-	void		CloseFile(int fd);	
-	long		ReadFile(int fd, byte *pBuffer, long lSize);	
-	INT64		Seek(int fd, INT64 lOffset, int whence);	
-	INT64		GetFileSize();
-	INT64		GetFilePosition();
+	string GetThinText(WCHAR* strTxt, int iLen );
 
 protected:
-	bool				ReadSectorFromCache(DWORD sector, byte** ppBuffer);
-	void				ReleaseSectorFromCache(DWORD sector);
-	bool				ReadVolumeDescriptor();
-	bool				IsJoliet();
-	void        ConvertFilename(char*	pszFile,const char* strFileName, int iFileNameLength);
-	void				ReadDirectoryEntries(DWORD dwSector, DWORD dwParent);
+	string m_strReturn;
 
-	CIoSupport								m_cdrom;
-	struct stVolumeDescriptor m_volDescriptor;
-	bool											m_bJoliet;
-	CIsoDir										m_dirs;
-
-	
-	DWORD				m_dwStartBlock;
-	DWORD				m_dwCurrentBlock;				// Current being read Block
-	INT64				m_dwFilePos;
-	BYTE*       m_pBuffer;
-	DWORD				m_dwFileSize;
-
-#define CIRC_BUFFER_SIZE 10
-	DWORD				m_dwCircBuffBegin;
-	DWORD				m_dwCircBuffEnd;
-	DWORD				m_dwCircBuffSectorStart;
-	bool				m_bUsingMode2;
-private:
-	HANDLE m_hDevice;
 };
-};
-#endif // !defined(AFX_ISO9660_H__E14E96F8_255B_42D3_9BE2_89FFDD6DFB67__INCLUDED_)
+
+#endif

@@ -27,8 +27,9 @@
 //*********************************************************************************************
 CFileISO::CFileISO()
 {
-	CSectionLoader::Load("ISO9660");
+//	CSectionLoader::Load("ISO9660");
 	m_pIsoReader=NULL;
+	m_i64FilePos=0;
 }
 
 //*********************************************************************************************
@@ -38,26 +39,23 @@ CFileISO::~CFileISO()
 	{
 		Close();
 	}
-	CSectionLoader::Unload("ISO9660");
+//	CSectionLoader::Unload("ISO9660");
 }
 //*********************************************************************************************
 bool CFileISO::Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName, int iport,bool bBinary)
 {
-  
-	m_pIsoReader = new CISO9660(m_cdrom);
-	if (!m_pIsoReader->OpenDisc() )
+  m_i64FilePos=0;
+	m_pIsoReader = new iso9660("D:");
+	string strFName="\\";
+	strFName+=strFileName;
+	for (int i=0; i < (int)strFName.size(); ++i )
 	{
-		delete m_pIsoReader;
-		m_pIsoReader=NULL;
-		
-    return false;
+		if (strFName[i]=='/') strFName[i]='\\';
 	}
-
-	if ( m_pIsoReader->OpenFile(strFileName) < 0)
+	if ( m_pIsoReader->OpenFile((char*)strFName.c_str(),0) == INVALID_HANDLE_VALUE)
 	{
 		delete m_pIsoReader;
 		m_pIsoReader=NULL;
-		
     return false;
 	}
 	return true;
@@ -67,40 +65,59 @@ bool CFileISO::Open(const char* strUserName, const char* strPassword,const char*
 unsigned int CFileISO::Read(void *lpBuf, offset_t uiBufSize)
 {
 	if (!m_pIsoReader) return -1;
-	return m_pIsoReader->ReadFile(1,(byte*)lpBuf,(long)uiBufSize);
+	DWORD dwTotalBytesRead;
+	int   iBytes2Read=(int)uiBufSize;
+	if (!m_pIsoReader) return -1;
+	int iRead=m_pIsoReader->ReadFile( (byte*)lpBuf,&iBytes2Read,&dwTotalBytesRead);
+	if (iRead < 0) return -1;
+	m_i64FilePos+=dwTotalBytesRead;
+	return (unsigned int)dwTotalBytesRead;
 }
 
 //*********************************************************************************************
 void CFileISO::Close()
 {
 	if (!m_pIsoReader) return ;
-	m_pIsoReader->CloseFile(1);
+	m_pIsoReader->CloseFile( (HANDLE)1);
 	delete m_pIsoReader;
 	m_pIsoReader=NULL;
-  
-  
 }
 
 //*********************************************************************************************
 offset_t CFileISO::Seek(offset_t iFilePosition, int iWhence)
 {
-	if (!m_pIsoReader) return -1;
-	m_pIsoReader->Seek(1,iFilePosition,iWhence);
-	return iFilePosition;
+	LONG lPos=(LONG)iFilePosition;
+	LONG lNewPos=0;
+	switch (iWhence)
+	{
+		case SEEK_SET:
+			m_i64FilePos=m_pIsoReader->SetFilePointer((HANDLE)1, lPos,&lNewPos,FILE_BEGIN);
+		break;
+
+		case SEEK_CUR:
+			m_i64FilePos=m_pIsoReader->SetFilePointer((HANDLE)1, lPos,&lNewPos,FILE_CURRENT);
+		break;
+
+		case SEEK_END:
+			m_i64FilePos=m_pIsoReader->SetFilePointer((HANDLE)1, lPos,&lNewPos,FILE_END);
+		break;
+	}
+	return (m_i64FilePos);
 }
 
 //*********************************************************************************************
 offset_t CFileISO::GetLength()
 {
 	if (!m_pIsoReader) return -1;
-	return m_pIsoReader->GetFileSize();
+	DWORD dwFileSizeHigh;
+	return m_pIsoReader->GetFileSize((HANDLE)1, &dwFileSizeHigh);
 }
 
 //*********************************************************************************************
 offset_t CFileISO::GetPosition()
 {
 	if (!m_pIsoReader) return -1;
-	return m_pIsoReader->GetFilePosition();
+	return m_i64FilePos;
 }
 
 
@@ -110,7 +127,7 @@ bool CFileISO::ReadString(char *szLine, int iLineLength)
 	if (!m_pIsoReader) return false;
 	offset_t iFilePos=GetPosition();
 
-	int iBytesRead=m_pIsoReader->ReadFile(1, (unsigned char*)szLine, iLineLength);
+	int iBytesRead=Read((unsigned char*)szLine, iLineLength);
 	if (iBytesRead <= 0)
 	{
 		return false;

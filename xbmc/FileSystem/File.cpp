@@ -65,7 +65,10 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 		while (dwFileSize>0)
 		{
 			int iBytesToRead=16384;
-			if (iBytesToRead>dwFileSize) iBytesToRead=dwFileSize;
+			if (iBytesToRead>dwFileSize) 
+			{
+				iBytesToRead=dwFileSize;
+			}
 			iRead=Read(buffer,iBytesToRead);
 			if (iRead > 0)
 			{
@@ -93,7 +96,14 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 					}
 				}				
 			}
-			if (iRead != iBytesToRead) break;
+			if (iRead != iBytesToRead) 
+			{
+				Close();
+				CloseHandle(hMovie);
+				delete [] buffer;
+				::DeleteFile(szDest);
+				return false;
+			}
 		}
 		Close();
 		CloseHandle(hMovie);
