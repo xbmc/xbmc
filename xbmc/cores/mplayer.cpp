@@ -593,16 +593,10 @@ bool CMPlayer::openfile(const CStdString& strFile, __int64 iStartTime)
 	bool bFileIsDVDIfoFile(false);
 
 	CURL url(strFile);
-	if ( CUtil::IsHD(strFile) )           bFileOnHD=true;
-	else if ( CUtil::IsISO9660(strFile) ) bFileOnISO=true;
-	else if ( CUtil::IsDVD(strFile) )     bFileOnUDF=true;
-	else if (url.GetProtocol()=="http")   bFileOnInternet=true;
-	else if (url.GetProtocol()=="shout")  bFileOnInternet=true;
-	else if (url.GetProtocol()=="mms")    bFileOnInternet=true;
-	else if (url.GetProtocol()=="ftp")    bFileOnInternet=true;
-	else if (url.GetProtocol()=="udp")    bFileOnInternet=true;
-	else if (url.GetProtocol()=="rtp")    bFileOnInternet=true;
-	else if (url.GetProtocol()=="rtsp")    bFileOnInternet=true;
+	if ( CUtil::IsHD(strFile) )                  bFileOnHD=true;
+	else if ( CUtil::IsISO9660(strFile) )        bFileOnISO=true;
+	else if ( CUtil::IsDVD(strFile) )            bFileOnUDF=true;
+	else if ( CUtil::IsInternetStream(strFile) ) bFileOnInternet=true;
 	else bFileOnLAN=true;
 
 	bool bIsVideo =CUtil::IsVideo(strFile);

@@ -68,6 +68,7 @@ public:
 	static bool IsDVDImage(const CStdString& strLine) ;
 	static bool IsDVDFile(const CStdString& strFile, bool bVobs = true, bool bIfos = true);
 	static bool IsRAR(const CStdString& strLine);
+	static bool IsInternetStream(const CStdString& strFile);
 	static int GetDVDIfoTitle(const CStdString& strPathFile);
 	static void URLEncode(CStdString& strURLData);
 	static bool LoadString(string &strTxt, FILE *fd);
