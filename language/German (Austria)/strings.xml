@@ -143,7 +143,7 @@
   <string><id>208</id><value>Abspielen</value></string>
   <string><id>209</id><value>Nächste</value></string>
   <string><id>210</id><value>Vorherige</value></string>
-  <string><id>211</id><value>Anwendung suchen</value></string>
+  <string><id>211</id><value>Anwendungen suchen</value></string>
   <string><id>212</id><value>Anwendungen gefunden</value></string>
   <string><id>213</id><value>Bildschirm zentrieren..</value></string>
   <string><id>214</id><value>Bildschirm kalibrieren..</value></string>
@@ -578,10 +578,10 @@
   <string><id>12320</id><value>C</value></string> 
   <string><id>12321</id><value>OK</value></string> 
   <string><id>12322</id><value>*</value></string> 
-  <string><id>12324</id><value>XBMC Zugriffskontrolle</value></string> 
+  <string><id>12324</id><value>XBMC Zugriffskontrolle - HauptKennwort</value></string> 
   <string><id>12325</id><value>Verzeichnis gesperrt</value></string> 
-  <string><id>12326</id><value>Kennwort eingeben</value></string> 
-  <string><id>12327</id><value>Kennwort eingeben und E drücken,</value></string> 
+  <string><id>12326</id><value>HauptKennwort eingeben</value></string> 
+  <string><id>12327</id><value>HauptKennwort eingeben und E drücken,</value></string> 
   <string><id>12328</id><value>Kennwort eingeben und E drücken,</value></string> 
   <string><id>12329</id><value>oder für Abbruch C drücken</value></string> 
   <string><id>12330</id><value>Gamepad Tastenkombination eingeben</value></string> 
@@ -601,7 +601,15 @@
   <string><id>12344</id><value>Kennwörter stimmen nicht überein.</value></string> 
   <string><id>12345</id><value>Zugriff verweigert</value></string> 
   <string><id>12346</id><value>Kennwort Eingabelimit erreicht.</value></string> 
-  <string><id>12347</id><value>XBOX wird ausgeschaltet.</value></string> 
+  <string><id>12347</id><value>XBOX wird ausgeschaltet.</value></string>
+  <string><id>12348</id><value>Objekt gesperrt</value></string>
+  <string><id>12349</id><value>HauptKennwort bis Neustart merken?</value></string> 
+  <string><id>12350</id><value>(Öffnen eines Objekts unter Einstellungen</value></string> 
+  <string><id>12351</id><value>aktiviert autom. die Kennworteingabe.)</value></string> 
+  <string><id>12352</id><value>Tastenkombination Kennwort eingeben und</value></string> 
+  <string><id>12353</id><value>aktivieren </value></string>
+  <string><id>12354</id><value>Ordnersperre bis Neustart aufheben?</value></string>
+  <string><id>12355</id><value>aktiviert autom. die Ordnersperre)</value></string>
   <string><id>12600</id><value>Wetter</value></string>
   <string><id>12900</id><value>Bildschirmschoner</value></string>
   <string><id>12901</id><value>Vollbild OSD</value></string>
@@ -674,6 +682,10 @@
   <string><id>13351</id><value>Album Information</value></string>
   <string><id>13352</id><value>Ordner Durchsuchen</value></string>
   <string><id>13353</id><value>Suche anhalten</value></string>
+  <string><id>13354</id><value>Wiedergabe</value></string> 
+  <string><id>13355</id><value>Pixel Shader</value></string> 
+  <string><id>13356</id><value>YUY2 Overlays</value></string> 
+  <string><id>13357</id><value>Kombination aus Overlays/Shader</value></string>
   <string><id>14000</id><value>Koppeln deakt.</value></string>
   <string><id>14001</id><value>Koppeln einfach</value></string>
   <string><id>14002</id><value>Koppeln unpräz.</value></string>
@@ -731,5 +743,6 @@
   <string><id>14054</id><value>Internetmenüpunkte aktivieren</value></string>
   <string><id>14055</id><value>Durchsuchen im Hintergrund aktivieren</value></string> 
   <string><id>14056</id><value>Suche anhalten</value></string> 
-  <string><id>14057</id><value>Nicht möglich während Suche nach Medieninfos</value></string> 
+  <string><id>14057</id><value>Nicht möglich während Suche nach Medieninfos</value></string>
+  <string><id>14058</id><value>Filmkörnungseffekt</value></string>
 </strings>
