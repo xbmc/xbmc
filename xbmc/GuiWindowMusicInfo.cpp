@@ -66,6 +66,7 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
 			g_application.DisableOverlay();
 			m_pTexture=NULL;
 			m_bViewReview=true;
+			m_bRefresh=false;
 			Refresh();
 			return true;
     }
@@ -77,15 +78,17 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
       int iControl=message.GetSenderId();
 			if (iControl==CONTROL_BTN_REFRESH)
 			{
-				if ( m_pAlbum->Load())
-				{
-					CStdString strThumb;
-					CUtil::GetAlbumThumb(m_pAlbum->GetTitle()+m_pAlbum->GetAlbumPath(),strThumb);
+				CStdString strThumb;
+				CUtil::GetAlbumThumb(m_pAlbum->GetTitle()+m_pAlbum->GetAlbumPath(),strThumb);
 
-          CUtil::ClearCache();
+        CUtil::ClearCache();
+				if (CUtil::FileExists(strThumb))
 					DeleteFile(strThumb.c_str());
-				}
-				Refresh();
+
+				//Refresh();
+				m_bRefresh=true;
+				Close();
+				return true;
 			}
 
 			if (iControl==CONTROL_BTN_TRACKS)
@@ -210,7 +213,7 @@ void CGUIWindowMusicInfo::Refresh()
 	CStdString strThumb;
 	CStdString strImage=m_pAlbum->GetImageURL();
 	CUtil::GetAlbumThumb(m_pAlbum->GetTitle()+m_pAlbum->GetAlbumPath(),strThumb);
-	if (!CUtil::FileExists(strThumb) )
+	if (!CUtil::FileExists(strThumb) && !strImage.IsEmpty() )
 	{
 		//	Download image and save as 
 		//	permanent thumb
@@ -241,4 +244,9 @@ void CGUIWindowMusicInfo::Refresh()
 		m_iTextureHeight=picture.GetWidth();
 	}
 	Update();
+}
+
+bool CGUIWindowMusicInfo::NeedRefresh() const
+{
+  return m_bRefresh;
 }

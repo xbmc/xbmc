@@ -1696,6 +1696,14 @@
 		<value>Sort by: Type</value>
 	</string>
 	<string>
+		<id>499</id>
+		<value>Unable to connect to www.allmusic.com</value>
+	</string>
+	<string>
+		<id>500</id>
+		<value>Downloading album info failed</value>
+	</string>
+	<string>
 		<id>10000</id>
 		<value>Home</value>
 	</string>

@@ -16,6 +16,7 @@ public:
   virtual void    OnAction(const CAction &action);
   virtual void    Render();
 	void						SetAlbum(CMusicAlbumInfo& album);
+  bool            NeedRefresh() const;
 protected:
 	void										Refresh();
 	void										Update();
@@ -25,4 +26,5 @@ protected:
 	int											m_iTextureWidth;
 	int											m_iTextureHeight;
 	bool										m_bViewReview;
+  bool                    m_bRefresh;
 };
