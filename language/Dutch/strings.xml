@@ -1,667 +1,661 @@
 <strings>
-<string><id>0</id><value>Mijn Programma's</value></string>
-<string><id>1</id><value>Mijn Afbeeldingen</value></string>
-<string><id>2</id><value>Mijn Muziek</value></string>
-<string><id>3</id><value>Mijn Films</value></string>
-<string><id>4</id><value>TV Gids</value></string>
-<string><id>5</id><value>Instellingen</value></string>
-<string><id>7</id><value>Bestandsbeheer</value></string>
-<string><id>8</id><value>Weerbericht</value></string>
-<string><id>11</id><value>maandag</value></string>
-<string><id>12</id><value>dinsdag</value></string>
-<string><id>13</id><value>woensdag</value></string>
-<string><id>14</id><value>donderdag</value></string>
-<string><id>15</id><value>vrijdag</value></string>
-<string><id>16</id><value>zaterdag</value></string>
-<string><id>17</id><value>zondag</value></string>
-<string><id>21</id><value>Januari</value></string>
-<string><id>22</id><value>Februari</value></string>
-<string><id>23</id><value>Maart</value></string>
-<string><id>24</id><value>April</value></string>
-<string><id>25</id><value>Mei</value></string>
-<string><id>26</id><value>Juni</value></string>
-<string><id>27</id><value>Juli</value></string>
-<string><id>28</id><value>Augustus</value></string>
-<string><id>29</id><value>September</value></string>
-<string><id>30</id><value>Oktober</value></string>
-<string><id>31</id><value>November</value></string>
-<string><id>32</id><value>December</value></string>
-<string><id>98</id><value>Weergave: Auto</value></string> 
-<string><id>99</id><value>Weergave: Auto Groot</value></string>
-<string><id>100</id><value>Weergave:Iconen</value></string>
-<string><id>101</id><value>Weergave:Lijst</value></string>
-<string><id>102</id><value>Scannen</value></string>
-<string><id>103</id><value>Sorteer Op:Naam</value></string> 
-<string><id>104</id><value>Sorteer Op:Datum</value></string>
-<string><id>105</id><value>Sorteer Op:Formaat</value></string>
-<string><id>106</id><value>NEE</value></string> 
-<string><id>107</id><value>JA</value></string> 
-<string><id>108</id><value>Schuifvoorstelling</value></string> 
-<string><id>109</id><value>Maak Thumbs</value></string> 
-<string><id>110</id><value>Maak Thumbnails</value></string> 
-<string><id>111</id><value>Snelkoppelingen</value></string> 
-<string><id>112</id><value>Gepauzeerd</value></string> 
-<string><id>113</id><value>Mijn Bestanden: Bron</value></string> 
-<string><id>114</id><value>Mijn Bestanden: Bestemming</value></string> 
-<string><id>115</id><value>Kopiëer</value></string>   
-<string><id>116</id><value>Verplaats</value></string> 
-<string><id>117</id><value>Verwijder</value></string> 
-<string><id>118</id><value>Hernoem</value></string> 
-<string><id>119</id><value>Nieuwe Map</value></string> 
-<string><id>120</id><value>Bevestig Bestand(en) Kopiëren</value></string> 
-<string><id>121</id><value>Bevestig Bestand(en) Verplaatsen</value></string> 
-<string><id>122</id><value>Bevestig Bestand(en) Verwijderen</value></string> 
-<string><id>123</id><value>Weet u zeker dat u deze bestanden wilt kopiëren?</value></string> 
-<string><id>124</id><value>Weet u zeker dat u deze bestanden wilt verplaatsen?</value></string> 
-<string><id>125</id><value>Weet u zeker dat u deze bestanden wilt verwijderen?</value></string>
-<string><id>126</id><value>Status</value></string>
-<string><id>127</id><value>Objekten</value></string>
-<string><id>128</id><value>Algemeen</value></string> 
-<string><id>129</id><value>Voorstelling</value></string> 
-<string><id>130</id><value>Systeem Informatie</value></string>
-<string><id>131</id><value>Scherm</value></string>
-<string><id>132</id><value>Albums</value></string>
-<string><id>133</id><value>Artiesten</value></string>
-<string><id>134</id><value>Bekijk Nummer</value></string>
-<string><id>135</id><value>Genres</value></string>
-<string><id>136</id><value>Afspeellijsten</value></string>
-<string><id>137</id><value>Zoeken</value></string>
-<string><id>138</id><value>Systeem Informatie</value></string>
-<string><id>139</id><value>Temperatuur:</value></string> 
-<string><id>140</id><value>CPU:</value></string> 
-<string><id>141</id><value>GPU:</value></string> 
-<string><id>142</id><value>Tijd:</value></string> 
-<string><id>143</id><value>Huidige:</value></string> 
-<string><id>144</id><value>Bouw:</value></string> 
-<string><id>145</id><value>Netwerk:</value></string> 
-<string><id>146</id><value>Type:</value></string> 
-<string><id>147</id><value>Statisch</value></string> 
-<string><id>148</id><value>DHCP</value></string> 
-<string><id>149</id><value>MAC</value></string> 
-<string><id>150</id><value>IP</value></string> 
-<string><id>151</id><value>Verbinding:</value></string> 
-<string><id>152</id><value>Half Duplex</value></string>
-<string><id>153</id><value>Full Duplex</value></string> 
-<string><id>154</id><value>Opslag</value></string> 
-<string><id>155</id><value>Station</value></string> 
-<string><id>156</id><value>Vrij</value></string> 
-<string><id>157</id><value>Video</value></string> 
-<string><id>158</id><value>Vrij geheugen:</value></string> 
-<string><id>159</id><value>Geen Verbinding</value></string> 
-<string><id>160</id><value>Vrij</value></string> 
-<string><id>161</id><value>Niet Beschikbaar</value></string> 
-<string><id>162</id><value>Lade Open</value></string> 
-<string><id>163</id><value>Inlezen</value></string> 
-<string><id>164</id><value>Geen Disc</value></string> 
-<string><id>165</id><value>Disc Aanwezig</value></string> 
-<string><id>166</id><value>Skin:</value></string> 
-<string><id>167</id><value>FTP Server:</value></string> 
-<string><id>168</id><value>Tijd Synchroniseren:</value></string> 
-<string><id>169</id><value>Resolutie:</value></string> 
-<string><id>170</id><value>Album:</value></string> 
-<string><id>171</id><value>Artiest:</value></string> 
-<string><id>172</id><value>Datum van Publicatie:</value></string> 
-<string><id>173</id><value>Waardering:</value></string> 
-<string><id>174</id><value>Genre:</value></string> 
-<string><id>175</id><value>Tonen:</value></string> 
-<string><id>176</id><value>Stijlen:</value></string> 
-<string><id>177</id><value>Beschrijving:</value></string> 
-<string><id>178</id><value>Nummers:</value></string> 
-<string><id>179</id><value>Nummer</value></string> 
-<string><id>180</id><value>Tijdsduur</value></string> 
-<string><id>181</id><value>Selecteer Album</value></string> 
-<string><id>182</id><value>Nummer</value></string> 
-<string><id>183</id><value>Beschrijving</value></string> 
-<string><id>184</id><value>Verversen</value></string> 
-<string><id>185</id><value>Zoeken naar album</value></string> 
-<string><id>186</id><value>OK</value></string>
-<string><id>187</id><value>Geen albums gevonden!</value></string>
-<string><id>188</id><value>Selecteer Alles</value></string>
-<string><id>189</id><value>Scannen Mediainformatie</value></string>
-<string><id>190</id><value>Opslaan</value></string>
-<string><id>191</id><value>Willekeurige Volgorde</value></string>
-<string><id>192</id><value>Leegmaken</value></string>
-<string><id>193</id><value>Scannen</value></string>
-<string><id>194</id><value>Zoeken...</value></string> 
-<string><id>195</id><value>Geen IMDB informatie gevonden!</value></string> 
-<string><id>196</id><value>Selecteer Film:</value></string> 
-<string><id>197</id><value>Aanspreken van IMDB informatie</value></string> 
-<string><id>198</id><value>Film Gegevens Laden</value></string> 
-<string><id>199</id><value>Regisseur:</value></string> 
-<string><id>200</id><value>Schrijver:</value></string> 
-<string><id>201</id><value>Jaar:</value></string>
-<string><id>202</id><value>Tagline:</value></string> 
-<string><id>203</id><value>Plot Outline:</value></string> 
-<string><id>204</id><value>Waardering:</value></string>
-<string><id>2050</id><value>Lengte:</value></string>
-<string><id>205</id><value>Stemmen:</value></string> 
-<string><id>206</id><value>Cast:</value></string> 
-<string><id>207</id><value>Plot</value></string> 
-<string><id>208</id><value>Afspelen</value></string> 
-<string><id>209</id><value>Volgende</value></string> 
-<string><id>210</id><value>Vorige</value></string> 
-<string><id>211</id><value>Zoeken naar applicaties</value></string> 
-<string><id>212</id><value>Gevonden Applicaties</value></string> 
-<string><id>213</id><value>UI Kalibratie</value></string> 
-<string><id>214</id><value>Scherm Kalibratie</value></string> 
-<string><id>215</id><value>Verzachten</value></string> 
-<string><id>216</id><value>Zoomen</value></string> 
-<string><id>217</id><value>Uitrekken</value></string> 
-<string><id>218</id><value>DVD Station</value></string> 
-<string><id>219</id><value>Plaats Disc</value></string> 
-<string><id>220</id><value>Gedeeld op afstand</value></string> 
-<string><id>221</id><value>Netwerk is niet verbonden</value></string> 
-<string><id>222</id><value>Annuleren</value></string> 
-<string><id>223</id><value>Automatisch weergeven in breedbeeld</value></string> 
-<string><id>224</id><value>Wisseltijd</value></string> 
-<string><id>225</id><value>Overgangstijd</value></string> 
-<string><id>226</id><value>PAL60 Gebruiken</value></string> 
-<string><id>227</id><value>CDDB Gebruiken</value></string> 
-<string><id>228</id><value>Willekeurige volgorde van afspeellijst bij laden</value></string> 
-<string><id>229</id><value>HD Spindown tijd (min)</value></string> 
-<string><id>230</id><value>Filters</value></string> 
-<string><id>231</id><value>Geen</value></string> 
-<string><id>232</id><value>Punt</value></string> 
-<string><id>233</id><value>Linear</value></string> 
-<string><id>234</id><value>Anisotropisch</value></string> 
-<string><id>235</id><value>Quincunx</value></string> 
-<string><id>236</id><value>Gaussian Cubic</value></string> 
-<string><id>237</id><value>Verkleinen:</value></string> 
-<string><id>238</id><value>Vergroten:</value></string>
-<string><id>240</id><value>Autom. afspelen DVD-Video</value></string>
-<string><id>241</id><value>Autom. afspelen VCD/SVCD</value></string>
-<string><id>242</id><value>Autom. afspelen Audio-CD</value></string>
-<string><id>243</id><value>Autom. afspelen XBOX Spellen</value></string>
-<string><id>244</id><value>Autom. afspelen Videos</value></string>
-<string><id>245</id><value>Autom. afspelen Muziek</value></string>
-<string><id>246</id><value>Autom. afspelen Afbeeldingen</value></string>
-<string><id>247</id><value>Scripts</value></string>
-<string><id>248</id><value>Taal</value></string>
-<string><id>249</id><value>Muziek</value></string>
-<string><id>250</id><value>Visualisatie</value></string>
-<string><id>251</id><value>Selecteer Doel Locatie</value></string>
-<string><id>252</id><value>- Geluid naar alle speakers</value></string>
-<string><id>253</id><value>Aantal Kanalen</value></string>
-<string><id>254</id><value>- Dolby Digital Stereo uit</value></string>
-<string><id>255</id><value>CDDB</value></string>
-<string><id>256</id><value>CD aan het opzoeken in CDDB</value></string>
-<string><id>257</id><value>Fout</value></string>
-<string><id>258</id><value>ID3 tags inschakelen</value></string>
-<string><id>259</id><value>Openen</value></string>
-<string><id>260</id><value>Shoutcast</value></string>
-<string><id>261</id><value>Wachten op start</value></string>
-<string><id>262</id><value>Scripts Output</value></string>
-<string><id>263</id><value>Web server:</value></string>
-<string><id>264</id><value>Opnemen</value></string>
-<string><id>265</id><value>Stop Opname</value></string>
-<string><id>266</id><value>Sorteer op:Naam</value></string>
-<string><id>267</id><value>Sorteer op:Tijd</value></string>
-<string><id>268</id><value>Sorteer op:Titel</value></string>
-<string><id>269</id><value>Sorteer op:Artiest</value></string>
-<string><id>270</id><value>Sorteer op:Album</value></string>
-<string><id>271</id><value>Top 100</value></string>
-<string><id>272</id><value>Beeld positie: Linksboven</value></string>
-<string><id>273</id><value>Beeld positie: Rechtsonder</value></string>
-<string><id>274</id><value>Ondertitel Positie</value></string>
-<string><id>275</id><value>Pixel ratio aanpassing</value></string>
-<string><id>276</id><value>Beweeg de pijlen om de overscan te aan te passen</value></string>
-<string><id>277</id><value>Beweeg de stick om de ondertitels te verplaatsen</value></string>
-<string><id>278</id><value>Pas de rechthoek aan zodat deze precies vierkant is</value></string>
-<string><id>279</id><value>Fout tijdens het laden van de instellingen</value></string>
-<string><id>280</id><value>Gebruik standaard instellingen</value></string>
-<string><id>281</id><value>Controleer de .xml bestanden</value></string>
-<string><id>282</id><value>Heeft %i items gevonden</value></string>
-<string><id>283</id><value>Zoekresultaten</value></string>
-<string><id>284</id><value>Niets Gevonden</value></string>
-<string><id>285</id><value>Deinterlace Filter</value></string>
-<string><id>286</id><value>Voorbewerkings Filter</value></string>
-<string><id>287</id><value>SRT Ondertitels</value></string>
-<string><id>288</id><value>Lettertype</value></string>
-<string><id>289</id><value>Formaat</value></string>
-<string><id>290</id><value>Volume Versterking (dB)</value></string>
-<string><id>291</id><value>Beeld</value></string>
-<string><id>292</id><value>Geluid</value></string>
-<string><id>293</id><value>Ondertitels</value></string>
-<string><id>294</id><value>Maak Snelkoppeling</value></string>
-<string><id>295</id><value>Rouleer door snelkoppelingen</value></string>
-<string><id>296</id><value>Verwijder Snelkoppelingen</value></string>
-<string><id>297</id><value>Beeldvertraging</value></string>
-<string><id>298</id><value>Diavoorstelling</value></string>
-<string><id>300</id><value>1. Taal</value></string>
-<string><id>301</id><value>2. Volume</value></string>
-<string><id>302</id><value>3. Geluid</value></string>
-<string><id>303</id><value>Vertraging</value></string>
-<string><id>304</id><value>Taal</value></string>
-<string><id>305</id><value>Aan</value></string>
-<string><id>306</id><value>Non-Interleaved</value></string>
-<string><id>307</id><value>- Automatisch</value></string>
-<string><id>308</id><value>- Verticaal deblocking filter</value></string>
-<string><id>309</id><value>- Horizontaal deblocking filter</value></string>
-<string><id>310</id><value>- Automatische helderheid/contrast</value></string>
-<string><id>311</id><value>- Dering</value></string>
-<string><id>312</id><value>(0=auto)</value></string>
-<string><id>313</id><value>Schoon database op</value></string>
-<string><id>314</id><value>Voorbereiden...</value></string>
-<string><id>315</id><value>Database fout</value></string>
-<string><id>316</id><value>Zoeken op nummers...</value></string>
-<string><id>317</id><value>Klaar met opschonen</value></string>
-<string><id>318</id><value>Markeren verwijderde nummers</value></string>
-<string><id>319</id><value>Fout tijdens reorganiseren nummers</value></string>
-<string><id>320</id><value>Zoeken op Artiesten...</value></string>
-<string><id>321</id><value>Fout herkennen Artiesten</value></string>
-<string><id>322</id><value>Zoeken op genre...</value></string>
-<string><id>323</id><value>Fout tijdens reorganiseren genres</value></string>
-<string><id>324</id><value>Zoeken op locatie...</value></string>
-<string><id>325</id><value>Fout tijdens reorganiseren locaties</value></string>
-<string><id>326</id><value>Zoeken op Albums...</value></string>
-<string><id>327</id><value>Fout tijdens reorganiseren albums</value></string>
-<string><id>328</id><value>Aanpassingen opslaan...</value></string>
-<string><id>329</id><value>Fout tijdens opslaan aanpassingen</value></string>
-<string><id>330</id><value>Een moment geduld a.u.b. ...</value></string>
-<string><id>331</id><value>Comprimeren database...</value></string>
-<string><id>332</id><value>Fout tijdens comprimeren database</value></string>
-<string><id>333</id><value>Wilt u de muziek bibliotheek opschonen?</value></string>
-<string><id>334</id><value>Muziek database opschonen</value></string>
-<string><id>335</id><value>Start</value></string>
-<string><id>336</id><value>Framerate aanpassen</value></string>
-<string><id>337</id><value>Geluidsweergave:</value></string>
-<string><id>338</id><value>Analoog</value></string>
-<string><id>339</id><value>Digitaal</value></string>
-<string><id>340</id><value>Diverse Artiesten</value></string>
-<string><id>341</id><value>Speel DVD af</value></string>
-<string><id>342</id><value>Films</value></string>
-<string><id>343</id><value>Framerate Aanpassen</value></string>
-<string><id>344</id><value>Acteurs</value></string>
-<string><id>345</id><value>Jaar</value></string>
-<string><id>346</id><value>Delen Invoegen</value></string>
-<string><id>347</id><value>Delen Uittrekken</value></string>
-<string><id>348</id><value>Vouw mapstructuur in</value></string>
-<string><id>349</id><value>Laat alleen de Default.xbe zien</value></string>
-<string><id>350</id><value>Programma's</value></string>
-<string><id>351</id><value>Uit</value></string>
-<string><id>352</id><value>Dimmen</value></string>
-<string><id>353</id><value>Zwart</value></string>
-<string><id>354</id><value>Matrix Sporen</value></string>
-<string><id>355</id><value>Screensaver wachttijd</value></string>
-<string><id>356</id><value>Screensaver mode</value></string>
-<string><id>357</id><value>Afsluit wachttijd</value></string>
-<string><id>358</id><value>Alle albums</value></string>
-<string><id>359</id><value>Recente albums</value></string>
-<string><id>360</id><value>Screensaver</value></string>
-<string><id>361</id><value>Diavoorstelling</value></string> 
-<string><id>362</id><value>Screensaver donker (%)</value></string>
-<string><id>363</id><value>Sorteer op bestand</value></string> 
-<string><id>364</id><value>- DD/DTS doorgeven</value></string> 
-<string><id>365</id><value>Sorteer op naam</value></string> 
-<string><id>366</id><value>Sorteer op jaar</value></string> 
-<string><id>367</id><value>Sorteer op waardering</value></string> 
-<string><id>368</id><value>IMDB</value></string> 
-<string><id>369</id><value>Titel</value></string>
-<string><id>370</id><value>Onweer</value></string>
-<string><id>371</id><value>Gedeeltelijk</value></string>
-<string><id>372</id><value>Veel</value></string>
-<string><id>373</id><value>Zonnig</value></string>
-<string><id>374</id><value>Bewolkt</value></string>
-<string><id>375</id><value>Sneeuw</value></string>
-<string><id>376</id><value>Regen</value></string>
-<string><id>377</id><value>Lichtelijk</value></string>
-<string><id>378</id><value>AM</value></string>
-<string><id>379</id><value>PM</value></string>
-<string><id>380</id><value>Buien</value></string>
-<string><id>381</id><value>Aantal</value></string>
-<string><id>382</id><value>Verspreid</value></string>
-<string><id>383</id><value>Wind</value></string>
-<string><id>384</id><value>Sterk</value></string>
-<string><id>385</id><value>Mooi</value></string>
-<string><id>386</id><value>Helder</value></string>
-<string><id>387</id><value>Wolken</value></string>
-<string><id>388</id><value>Niet beschikbaar</value></string>
-<string><id>389</id><value>Niet beschikbaar</value></string>
-<string><id>390</id><value>Niet beschikbaar</value></string>
-<string><id>391</id><value>Niet beschikbaar</value></string>
-<string><id>392</id><value>Niet beschikbaar</value></string>
-<string><id>393</id><value>Niet beschikbaar</value></string>
-<string><id>394</id><value>Niet beschikbaar</value></string>
-<string><id>395</id><value>Niet beschikbaar</value></string>
-<string><id>396</id><value>Selecteer Lokatie</value> </string>
-<string><id>397</id><value>Vernieuw tijd</value> </string>
-<string><id>398</id><value>Temperatuur eenheid</value> </string>
-<string><id>399</id><value>Windsnelheid eenheid</value> </string>
-<string><id>400</id><value>Het Weer</value></string>
-<string><id>401</id><value>Temperatuur</value></string> 
-<string><id>402</id><value>Voelt als</value></string> 
-<string><id>403</id><value>UV Index</value></string>
-<string><id>404</id><value>Wind</value></string> 
-<string><id>405</id><value>Dauw temp.</value></string> 
-<string><id>406</id><value>Vochtigheid</value></string> 
-<string><id>407</id><value>Van</value></string>
-<string><id>408</id><value>Op</value></string>
-<string><id>410</id><value>Weather.com openen</value></string> 
-<string><id>411</id><value>Ophalen weergegevens voor:</value></string> 
-<string><id>412</id><value>Fout tijdens ophalen gegevens</value></string>
-<string><id>413</id><value>Handmatig</value></string>
-<string><id>414</id><value>Geen recensie voor dit album</value></string>
-<string><id>415</id><value>Miniatuurafbeelding downloaden...</value></string> 
-<string><id>416</id><value>Niet beschikbaar</value></string> 
-<string><id>417</id><value>Weergave:Grote iconen</value></string> 
-<string><id>418</id><value>Mijn Videos/Genres</value></string> 
-<string><id>419</id><value>Mijn Videos/Acteurs</value></string> 
-<string><id>420</id><value>Mijn Videos/Jaren</value></string> 
-<string><id>421</id><value>Mijn Videos/Titel</value></string>
-<string><id>422</id><value>Verwijder albuminfo</value></string> 
-<string><id>423</id><value>Verwijder CDDB info</value></string> 
-<string><id>424</id><value>Selecteer</value></string> 
-<string><id>425</id><value>Geen Album info gevonden.</value></string> 
-<string><id>426</id><value>Geen CDDB info gevonden.</value></string> 
-<string><id>427</id><value>Disc:</value></string> 
-<string><id>428</id><value>Leg de juiste CD/DVD in</value></string> 
-<string><id>429</id><value>Leg de volgende CD/DVD in</value></string>
-<string><id>430</id><value>Sorteer op DVD#</value></string>
-<string><id>431</id><value>Geen tijdelijke opslag</value></string>
-<string><id>432</id><value>Verwijder film uit database</value></string>
-<string><id>433</id><value>Wilt u de film definitief</value></string>
-<string><id>434</id><value>Verwijderen?</value></string> 
-<string><id>435</id><value>Nummer</value></string> 
-<string><id>436</id><value>Jaar:</value></string> 
-<string><id>437</id><value>Lengte:</value></string> 
-<string><id>438</id><value>Openen bestand</value></string> 
-<string><id>439</id><value>Cache</value></string> 
-<string><id>440</id><value>Harde Schijf</value></string> 
-<string><id>441</id><value>UDF</value></string> 
-<string><id>442</id><value>LAN</value></string> 
-<string><id>443</id><value>Internet</value></string> 
-<string><id>444</id><value>Video</value></string> 
-<string><id>445</id><value>Geluid</value></string> 
-<string><id>446</id><value>DVD</value></string> 
-<string><id>447</id><value>Automatisch Starten</value></string> 
-<string><id>448</id><value>LCD</value></string> 
-<string><id>449</id><value>Geactiveerd</value></string> 
-<string><id>450</id><value>Kolommen</value></string> 
-<string><id>4501</id><value>LCD Type</value></string>
-<string><id>451</id><value>Adres rij 1:</value></string> 
-<string><id>452</id><value>Adres rij 2:</value></string> 
-<string><id>453</id><value>Adres rij 3:</value></string> 
-<string><id>454</id><value>Adres rij 4:</value></string> 
-<string><id>455</id><value>Rijen:</value></string> 
-<string><id>456</id><value>Modus:</value></string> 
-<string><id>457</id><value>Wijzig Weergave</value></string> 
-<string><id>458</id><value>B/Mark</value></string>
-<string><id>459</id><value>Ondertitels</value></string>
-<string><id>460</id><value>Geluidskanaal</value></string>
-<string><id>461</id><value>[actief]</value></string>
-<string><id>462</id><value>Ondertitel</value></string>
-<string><id>463</id><value>Verlichting</value></string>
-<string><id>464</id><value>Helderheid</value></string> 
-<string><id>465</id><value>Contrast</value></string> 
-<string><id>466</id><value>Gamma</value></string> 
-<string><id>467</id><value>Type</value></string> 
-<string><id>468</id><value>Verplaats de stick om het OSD te verplaatsen.</value></string>
-<string><id>469</id><value>OSD Positie</value></string>
-<string><id>470</id><value>Credits</value></string>
-<string><id>471</id><value>Modchip</value></string>
-<string><id>472</id><value>OSD vertraging</value></string>
-<string><id>473</id><value>Hoge kwaliteit resampling</value></string>
-<string><id>474</id><value>Uit</value></string>
-<string><id>475</id><value>Alleen Geluid</value></string>
-<string><id>476</id><value>Beeld &amp; Geluid</value></string>
-<string><id>477</id><value>Playlist kon niet worden geladen</value></string>
-<string><id>478</id><value>On Screen Display</value></string>
-<string><id>479</id><value>Skin &amp; Taal</value></string>
-<string><id>480</id><value>UIterlijk</value></string>
-<string><id>481</id><value>Geluidinstellingen</value></string>
-<string><id>482</id><value>Over XBMC</value></string>
-<string><id>483</id><value>Album</value></string>
-<string><id>484</id><value>Artiest</value></string>
-<string><id>485</id><value>Verwijder album</value></string>
-<string><id>486</id><value>Herhaal</value></string>
-<string><id>487</id><value>Herhaal een</value></string>
-<string><id>488</id><value>Herhaal playlist in map</value></string>
-<string><id>489</id><value>Automatisch afspelen volgend nummer</value></string>
-<string><id>490</id><value>Kies automatisch lijst of iconen in nummers</value></string>
-<string><id>491</id><value>- Gebruik grote iconen</value></string>
-<string><id>492</id><value>Vergroot ondertiteling</value></string>
-<string><id>493</id><value>Geavanceerde opties (Alleen experts!)</value></string>
-<string><id>494</id><value>Algemene audio headroom (dB)</value></string>
-<string><id>495</id><value>Upsample video naar GUI resolutie</value></string>
-<string><id>496</id><value>Kalibratie</value></string>
-<string><id>497</id><value>Verberg media extensies</value></string>
-<string><id>498</id><value>Sorteer op:Type</value></string>
-<string><id>499</id><value>Kan geen verbinding maken met www.allmusic.com</value></string>
-<string><id>500</id><value>Downloaden album info mislukt</value></string>
-<string><id>501</id><value>Zoeken naar album namen...</value></string>
-<string><id>502</id><value>Open</value></string>
-<string><id>503</id><value>Bezig</value></string>
-<string><id>504</id><value>Leeg</value></string>
-<string><id>505</id><value>Media info inlezen van bestanden...</value></string>
-<string><id>506</id><value>Gebruik mapnamen voor beschrijving</value></string>
-<string><id>507</id><value>Sorteren op: Gebruik</value></string>
-<string><id>508</id><value>Gebruik geen snelkoppelingen of scanfunctie</value></string>
-<string><id>600</id><value>Kopiëer cd</value></string>
-<string><id>601</id><value>Middelmatig</value></string>
-<string><id>602</id><value>Standaard</value></string>
-<string><id>603</id><value>Extreem</value></string>
-<string><id>604</id><value>Constante bit rate</value></string>
-<string><id>605</id><value>Kopiëren...</value></string>
-<string><id>606</id><value>Track nummer:</value></string>
-<string><id>607</id><value>Naar:</value></string>
-<string><id>608</id><value>Kopiëren van CD of nummer mislukt</value></string>
-<string><id>609</id><value>CDDA doelmap is niet aangegeven in XboxMediaCenter.xml</value></string>
-<string><id>620</id><value>Cd's kopiëren</value></string>
-<string><id>621</id><value>Encoder</value></string>
-<string><id>622</id><value>Kwaliteit</value></string>
-<string><id>623</id><value>Bit rate</value></string>
-<string><id>624</id><value>Gebruik track nummer</value></string>
-<string><id>625</id><value>Alle nummers van</value></string>
-<string><id>629</id><value>Weergave</value></string>
-<string><id>630</id><value>Normaal</value></string>
-<string><id>631</id><value>Inzoomen</value></string>
-<string><id>632</id><value>Uitrekken 4:3</value></string>
-<string><id>633</id><value>Uitrekken 14:9</value></string>
-<string><id>634</id><value>Uitrekken 16:9</value></string>
-<string><id>635</id><value>Originele Grootte</value></string>
-<string><id>636</id><value>Custom</value></string>
-<string><id>700</id><value>Schoon Bibliotheek op</value></string>
-<string><id>701</id><value>Verwijder oude nummers uit de Bibliotheek</value></string>
-<string><id>702</id><value>Deze directory is eerder gescanned</value></string>
-<string><id>703</id><value>Kies Ja om alle nummers in deze map te updaten</value></string>
-<string><id>704</id><value>Kies Nee om alleen nieuwe nummers toe te voegen</value></string>
-<string><id>705</id><value>Netwerk</value></string>
-<string><id>706</id><value>HTTP Proxy Host</value></string>
-<string><id>707</id><value>HTTP Proxy Poort</value></string>
-<string><id>708</id><value>Schakel HTTP Proxy in</value></string>
-<string><id>709</id><value>XLink Kai XTag</value></string>
-<string><id>710</id><value>XLink Kai Paswoord</value></string>
-<string><id>711</id><value>Internet Protocol (IP)</value></string>
-<string><id>712</id><value>Ongeldige waarde.Waarde moet tussen 1 en 65535 liggen.</value></string>
-<string><id>713</id><value>HTTP Proxy</value></string>	
-<string><id>714</id><value>XLink Kai</value></string>	
-<string><id>715</id><value>Toewijzing</value></string>	
-<string><id>716</id><value>Automatisch verkrijgen(DHCP)</value></string>	
-<string><id>717</id><value>Handmatig kiezen (Statisch)</value></string>	
-<string><id>718</id><value>Verkrijgen van dashboard</value></string>	
-<string><id>719</id><value>IP Adres</value></string>	
-<string><id>720</id><value>Netmask</value></string>	
-<string><id>721</id><value>Standaard Gateway</value></string>	
-<string><id>722</id><value>DNS Server</value></string>
-<string><id>723</id><value>Opslaan &amp; Herstart</value></string>
-<string><id>724</id><value>Ongeldig addres opgegeven. Waarde moet AAA.BBB.CCC.DDD zijn</value></string>
-<string><id>725</id><value>Met getallen tussen 0 en 255.</value></string>
-<string><id>726</id><value>Veranderingen niet opgeslagen. Doorgaan zonder op te slaan?</value></string>
-<string><id>727</id><value>Web Server</value></string>	
-<string><id>728</id><value>FTP Server</value></string>	
-<string><id>729</id><value>Internet Tijd</value></string>	
-<string><id>730</id><value>Webserver Poort</value></string>	
-<string><id>731</id><value>Tijdserver Host</value></string>
-<string><id>732</id><value>Opslaan &amp; Toepassen</value></string>
-<string><id>733</id><value>Webserver Paswoord</value></string>
-<string><id>734</id><value>Geen Paswoord</value></string>
-<string><id>735</id><value>Tekenset:</value></string>	
-<string><id>736</id><value>Stijl:</value></string>	
-<string><id>737</id><value>Kleur:</value></string>
-<string><id>738</id><value>Normaal</value></string>	
-<string><id>739</id><value>Bold</value></string>	
-<string><id>740</id><value>Italics</value></string>	
-<string><id>741</id><value>Bold Italics</value></string>	
-<string><id>742</id><value>Wit</value></string>	
-<string><id>743</id><value>Geel</value></string>
-<string><id>744</id><value>Bestanden</value></string>	
-<string><id>745</id><value>Geen gescande informatie in deze weergave</value></string>		
-<string><id>746</id><value>Wissel naar bestandsweergave</value></string>
-<string><id>747</id><value>Onvoldoende geheugen om afbeelding te laden</value></string>
-<string><id>748</id><value>Wijzig Share</value></string>
-<string><id>749</id><value>Voeg share toe</value></string>
-<string><id>750</id><value>Weet u het zeker?</value></string>
-<string><id>751</id><value>Verwijder Share</value></string>
-<string><id>752</id><value>Wijzig locatie share</value></string>
-<string><id>753</id><value>Wijzig Naam Share</value></string>
-<string><id>998</id><value>XLink KAI</value></string>
-<string><id>999</id><value>Online Gamen</value></string>
-<string><id>10000</id><value>Home</value></string>
-<string><id>10001</id><value>Mijn Programma's</value></string>
-<string><id>10002</id><value>Mijn Afbeeldingen</value></string>
-<string><id>10003</id><value>Mijn Bestanden</value></string>
-<string><id>10004</id><value>Instellingen</value></string>
-<string><id>10005</id><value>Mijn Muziek</value></string>
-<string><id>10006</id><value>Mijn Films</value></string>
-<string><id>10007</id><value>Systeem informatie</value></string>
-<string><id>10008</id><value>Instellingen-&gt;Hoofdinstellingen</value></string>
-<string><id>10009</id><value>Instellingen-&gt;Scherm</value></string>
-<string><id>10010</id><value>Instellingen-&gt;Scherm-&gt;UI kalibratie</value></string>
-<string><id>10011</id><value>Instellingen-&gt;Scherm-&gt;Scherm kalibratie</value></string>
-<string><id>10012</id><value>Instellingen-&gt;Diavoorstelling</value></string>
-<string><id>10013</id><value>Instellingen-&gt;Scherm-&gt;Filters</value></string>
-<string><id>10014</id><value>Instellingen-&gt;Muziek</value></string>
-<string><id>10015</id><value>Instellingen-&gt;Scherm-&gt;Ondertitels</value></string>
-<string><id>10016</id><value>Instellingen-&gt;Scherm-&gt;Schermbeveiliging</value></string>
-<string><id>10017</id><value>Instellingen-&gt;Het Weer</value></string>
-<string><id>10020</id><value>Instellingen-&gt;Scripts</value></string>
-<string><id>10021</id><value>Mijn Films/genre</value></string>
-<string><id>10022</id><value>Mijn Films/Acteur</value></string>
-<string><id>10023</id><value>Mijn Films/Jaar</value></string>
-<string><id>10024</id><value>Instellingen-&gt;Programma's</value></string>
-<string><id>10025</id><value>Mijn Films/Titel</value></string>
-<string><id>10026</id><value>Instellingen-&gt;Hoofdinstellingen-&gt;Cache</value></string>
-<string><id>10027</id><value>Instellingen-&gt;Hoofdinstellingen-&gt;Automatisch afspelen</value></string>
-<string><id>10028</id><value>Mijn Films/playlist</value></string>
-<string><id>10029</id><value>Instellingen-&gt;Hoofdinstellingen-&gt;LCD</value></string>
-<string><id>10100</id><value>Ja/Nee Scherm</value></string>
-<string><id>10101</id><value>Voortgang scherm</value></string>
-<string><id>10500</id><value>Mijn Muziek/playlist</value></string>
-<string><id>10501</id><value>Mijn Muziek/bestanden</value></string>
-<string><id>10502</id><value>Mijn Muziek/albums</value></string>
-<string><id>10503</id><value>Mijn Muziek/artiesten</value></string>
-<string><id>10504</id><value>Mijn Muziek/genres</value></string>
-<string><id>10505</id><value>Mijn Muziek/top100</value></string>
-<string><id>11000</id><value>Toetsenbord</value></string>
-<string><id>12000</id><value>Selecteer scherm</value></string>
-<string><id>12001</id><value>Mijn Muziek/info</value></string>
-<string><id>12002</id><value>Bevestigings Scherm</value></string>
-<string><id>12003</id><value>Mijn Films/Info</value></string>
-<string><id>12004</id><value>Mijn Scripts/Info</value></string>
-<string><id>12005</id><value>Volledig scherm</value></string>
-<string><id>12006</id><value>Geluidsvisualisatie</value></string>
-<string><id>12007</id><value>Mijn Afbeeldingen/Diavoorstelling</value></string>
-<string><id>12008</id><value>Bestand Scherm</value></string>
-<string><id>12600</id><value>Het weer</value></string>
-<string><id>12900</id><value>Schermbeveiliging</value></string>
-<string><id>12901</id><value>Volledig scherm On Screen Display</value></string>
-<string><id>13000</id><value>Systeem</value></string>
-<string><id>13001</id><value>Onmiddelijke HD spindown</value></string>
-<string><id>13002</id><value>Alleen beeld</value></string>
-<string><id>13003</id><value>- Vertraging</value></string>
-<string><id>13004</id><value>- Minimale bestandsduur</value></string>
-<string><id>13100</id><value>Flikker filter</value></string>
-<string><id>13200</id><value>Profielen</value></string>
-<string><id>13201</id><value>Profiel '%s' verwijderen?</value></string>
-<string><id>13202</id><value>Bewaar huidige instellingen in profiel...</value></string>
-<string><id>13203</id><value>Laden van profiel '%s' geslaagd</value></string>
-<string><id>13204</id><value>Laatst gebruikte profiel:</value></string>
-<string><id>13205</id><value>Onbekend</value></string>
-<string><id>13299</id><value>Doeltemperatuur:</value></string>
-<string><id>13300</id><value>Ventilator Snelheid:</value></string>
-<string><id>13301</id><value>Automatische Temperatuurregeling</value></string>
-<string><id>13302</id><value>Ventilator Snelheidsregeling</value></string>
-<string><id>13303</id><value>Lettertype voor skin</value></string>
-<string><id>13304</id><value>Omdraaien Bi-Directionele Strings inschakelen</value></string>
-<string><id>13305</id><value>RSS Feeds inschakelen</value></string>
-<string><id>13306</id><value>Verberg hoofdmapitems</value></string>
-<string><id>13307</id><value>Verberg tracknummers</value></string>
-<string><id>13308</id><value>Wilt u de xbox opnieuw opstarten(hardboot)</value></string>
-<string><id>13309</id><value>In plaats van alleen XBMC herstarten?(softboot)</value></string>
-<string><id>13310</id><value>Zoom Effect</value></string>
-<string><id>13311</id><value>Zweef Effect</value></string>
-<string><id>13312</id><value>Zwarte balk reductie</value></string>
-<string><id>13313</id><value>Reset/Reboot</value></string>
-<string><id>13314</id><value>Muziek OSD sluittijd</value></string>
-<string><id>13315</id><value>Maak Thumbnails</value></string>
-<string><id>13316</id><value>Recursieve Thumbnails</value></string> 
-<string><id>13317</id><value>Bekijk Schuifvoorstelling</value></string>
-<string><id>13318</id><value>Recursieve Schuifvoorstelling</value></string>
-<string><id>13319</id><value>Willekeurige volgorde</value></string>
-<string><id>13320</id><value>Stereo</value></string>
-<string><id>13321</id><value>Alleen links</value></string> 
-<string><id>13322</id><value>Alleen rechts</value></string>
-<string><id>13323</id><value>CD+G Inschakelen</value></string>
-<string><id>13324</id><value>Achtergrond Doorzichtigheid</value></string> 
-<string><id>13325</id><value>Voorgrond Doorzichtigheid</value></string>
-<string><id>13326</id><value>A/V vertraging</value></string> 
-<string><id>13327</id><value>Karaoke</value></string>
-<string><id>13328</id><value>%s Niet Gevonden</value></string> 
-<string><id>13329</id><value>Fout tijdens openen %s</value></string> 
-<string><id>13330</id><value>%s Kan niet geladen worden</value></string>
-<string><id>13331</id><value>Fout: geheugen tekort.</value></string>
-<string><id>13332</id><value>Omhoog</value></string> 
-<string><id>13333</id><value>Omlaag</value></string> 
-<string><id>13334</id><value>Pas Label Aan</value></string> 
-<string><id>13335</id><value>Maak Standaard</value></string> 
-<string><id>13336</id><value>Verwijder Knop</value></string>
-<string><id>13337</id><value>2 kanaals PCM weergave</value></string>
-<string><id>14000</id><value>Delen Invoegen: Uit</value></string>
-<string><id>14001</id><value>Delen Invoegen: Simpel</value></string> 
-<string><id>14002</id><value>Delen Invoegen: Fuzzy</value></string>
-<string><id>14003</id><value>Downloaden van playlist bestand...</value></string>
-<string><id>14004</id><value>Downloaden van streams lijst...</value></string>
-<string><id>14005</id><value>Uitpakken streams lijst...</value></string>
-<string><id>14006</id><value>Downloaden van streams lijst mislukt</value></string> 
-<string><id>14007</id><value>Downloaden van playlist bestand mislukt</value></string>
-<string><id>14008</id><value>Kai notificaties aanzetten</value></string> 
-<string><id>14009</id><value>Speldirectory</value></string>
-<string><id>14010</id><value>Autoswitch Opties</value></string> 
-<string><id>14011</id><value>Autoswitching Inschakelen?</value></string> 
-<string><id>14012</id><value>Gebruik Grote Iconen</value></string> 
-<string><id>14013</id><value>Methode:</value></string> 
-<string><id>14014</id><value>Percentage:</value></string> 
-<string><id>14015</id><value>Thumbpaneel bij geen bestanden</value></string> 
-<string><id>14016</id><value>Lijstpaneel bij geen mappen</value></string> 
-<string><id>14017</id><value>Percentage Thumbnails</value></string> 
-<string><id>14018</id><value>Weergave Opties</value></string> 
-<string><id>14019</id><value>Area code 1</value></string> 
-<string><id>14020</id><value>Area code 2</value></string> 
-<string><id>14021</id><value>Area code 3</value></string> 
-<string><id>14022</id><value>Bibliotheek</value></string> 
-<string><id>14023</id><value>Geen TV</value></string> 
-<string><id>14024</id><value>Vul de dichtbijzijnste grote plaats in of US ZIP code</value></string> 
-<string><id>14025</id><value>Video vanaf Harde Schijf</value></string> 
-<string><id>14026</id><value>Video vanaf DVDRom</value></string> 
-<string><id>14027</id><value>Video vanaf Lokaal Netwerk</value></string> 
-<string><id>14028</id><value>Video vanaf Internet</value></string> 
-<string><id>14029</id><value>Audio vanaf Harde Schijf</value></string> 
-<string><id>14030</id><value>Audio vanaf DVDRom</value></string> 
-<string><id>14031</id><value>Audio vanaf Lokaal Netwerk</value></string> 
-<string><id>14032</id><value>Audio vanaf Internet</value></string> 
-<string><id>14033</id><value>DVD vanaf Harde Schijf</value></string> 
-<string><id>14034</id><value>DVD vanaf DVDRom</value></string>
-<string><id>14035</id><value>DVD vanaf Lokaal Netwerk</value></string> 
-<string><id>14036</id><value>Servers</value></string> 
-<string><id>14037</id><value>Kijk en Voel</value></string> 
-<string><id>14038</id><value>Netwerkinstellingen veranderd</value></string> 
-<string><id>14039</id><value>XBMC moet herstarten om de netwerkinstellingen</value></string> 
-<string><id>14040</id><value>te veranderen.Wilt u nu herstarten?</value></string> 
-<string><id>14041</id><value>Post Processing</value></string>
-
-
-
-
-
-
+  <string><id>0</id><value>Mijn Programma's</value></string>
+  <string><id>1</id><value>Mijn Afbeeldingen</value></string>
+  <string><id>2</id><value>Mijn Muziek</value></string>
+  <string><id>3</id><value>Mijn Films</value></string>
+  <string><id>4</id><value>TV Gids</value></string>
+  <string><id>5</id><value>Instellingen</value></string>
+  <string><id>7</id><value>Bestandsbeheer</value></string>
+  <string><id>8</id><value>Weerbericht</value></string>
+  <string><id>11</id><value>maandag</value></string>
+  <string><id>12</id><value>dinsdag</value></string>
+  <string><id>13</id><value>woensdag</value></string>
+  <string><id>14</id><value>donderdag</value></string>
+  <string><id>15</id><value>vrijdag</value></string>
+  <string><id>16</id><value>zaterdag</value></string>
+  <string><id>17</id><value>zondag</value></string>
+  <string><id>21</id><value>Januari</value></string>
+  <string><id>22</id><value>Februari</value></string>
+  <string><id>23</id><value>Maart</value></string>
+  <string><id>24</id><value>April</value></string>
+  <string><id>25</id><value>Mei</value></string>
+  <string><id>26</id><value>Juni</value></string>
+  <string><id>27</id><value>Juli</value></string>
+  <string><id>28</id><value>Augustus</value></string>
+  <string><id>29</id><value>September</value></string>
+  <string><id>30</id><value>Oktober</value></string>
+  <string><id>31</id><value>November</value></string>
+  <string><id>32</id><value>December</value></string>
+  <string><id>98</id><value>Weergave: Auto</value></string> 
+  <string><id>99</id><value>Weergave: Auto Groot</value></string>
+  <string><id>100</id><value>Weergave:Iconen</value></string>
+  <string><id>101</id><value>Weergave:Lijst</value></string>
+  <string><id>102</id><value>Scannen</value></string>
+  <string><id>103</id><value>Sorteer Op:Naam</value></string> 
+  <string><id>104</id><value>Sorteer Op:Datum</value></string>
+  <string><id>105</id><value>Sorteer Op:Formaat</value></string>
+  <string><id>106</id><value>NEE</value></string> 
+  <string><id>107</id><value>JA</value></string> 
+  <string><id>108</id><value>Schuifvoorstelling</value></string> 
+  <string><id>109</id><value>Maak Thumbs</value></string> 
+  <string><id>110</id><value>Maak Thumbnails</value></string> 
+  <string><id>111</id><value>Snelkoppelingen</value></string> 
+  <string><id>112</id><value>Gepauzeerd</value></string> 
+  <string><id>113</id><value>Mijn Bestanden: Bron</value></string> 
+  <string><id>114</id><value>Mijn Bestanden: Bestemming</value></string> 
+  <string><id>115</id><value>Kopiëer</value></string>   
+  <string><id>116</id><value>Verplaats</value></string> 
+  <string><id>117</id><value>Verwijder</value></string> 
+  <string><id>118</id><value>Hernoem</value></string> 
+  <string><id>119</id><value>Nieuwe Map</value></string> 
+  <string><id>120</id><value>Bevestig Bestand(en) Kopiëren</value></string> 
+  <string><id>121</id><value>Bevestig Bestand(en) Verplaatsen</value></string> 
+  <string><id>122</id><value>Bevestig Bestand(en) Verwijderen</value></string> 
+  <string><id>123</id><value>Weet u zeker dat u deze bestanden wilt kopiëren?</value></string> 
+  <string><id>124</id><value>Weet u zeker dat u deze bestanden wilt verplaatsen?</value></string> 
+  <string><id>125</id><value>Weet u zeker dat u deze bestanden wilt verwijderen?</value></string>
+  <string><id>126</id><value>Status</value></string>
+  <string><id>127</id><value>Objekten</value></string>
+  <string><id>128</id><value>Algemeen</value></string> 
+  <string><id>129</id><value>Voorstelling</value></string> 
+  <string><id>130</id><value>Systeem Informatie</value></string>
+  <string><id>131</id><value>Scherm</value></string>
+  <string><id>132</id><value>Albums</value></string>
+  <string><id>133</id><value>Artiesten</value></string>
+  <string><id>134</id><value>Bekijk Nummer</value></string>
+  <string><id>135</id><value>Genres</value></string>
+  <string><id>136</id><value>Afspeellijsten</value></string>
+  <string><id>137</id><value>Zoeken</value></string>
+  <string><id>138</id><value>Systeem Informatie</value></string>
+  <string><id>139</id><value>Temperatuur:</value></string> 
+  <string><id>140</id><value>CPU:</value></string> 
+  <string><id>141</id><value>GPU:</value></string> 
+  <string><id>142</id><value>Tijd:</value></string> 
+  <string><id>143</id><value>Huidige:</value></string> 
+  <string><id>144</id><value>Bouw:</value></string> 
+  <string><id>145</id><value>Netwerk:</value></string> 
+  <string><id>146</id><value>Type:</value></string> 
+  <string><id>147</id><value>Statisch</value></string> 
+  <string><id>148</id><value>DHCP</value></string> 
+  <string><id>149</id><value>MAC</value></string> 
+  <string><id>150</id><value>IP</value></string> 
+  <string><id>151</id><value>Verbinding:</value></string> 
+  <string><id>152</id><value>Half Duplex</value></string>
+  <string><id>153</id><value>Full Duplex</value></string> 
+  <string><id>154</id><value>Opslag</value></string> 
+  <string><id>155</id><value>Station</value></string> 
+  <string><id>156</id><value>Vrij</value></string> 
+  <string><id>157</id><value>Video</value></string> 
+  <string><id>158</id><value>Vrij geheugen:</value></string> 
+  <string><id>159</id><value>Geen Verbinding</value></string> 
+  <string><id>160</id><value>Vrij</value></string> 
+  <string><id>161</id><value>Niet Beschikbaar</value></string> 
+  <string><id>162</id><value>Lade Open</value></string> 
+  <string><id>163</id><value>Inlezen</value></string> 
+  <string><id>164</id><value>Geen Disc</value></string> 
+  <string><id>165</id><value>Disc Aanwezig</value></string> 
+  <string><id>166</id><value>Skin:</value></string> 
+  <string><id>167</id><value>FTP Server:</value></string> 
+  <string><id>168</id><value>Tijd Synchroniseren:</value></string> 
+  <string><id>169</id><value>Resolutie:</value></string> 
+  <string><id>170</id><value>Album:</value></string> 
+  <string><id>171</id><value>Artiest:</value></string> 
+  <string><id>172</id><value>Datum van Publicatie:</value></string> 
+  <string><id>173</id><value>Waardering:</value></string> 
+  <string><id>174</id><value>Genre:</value></string> 
+  <string><id>175</id><value>Tonen:</value></string> 
+  <string><id>176</id><value>Stijlen:</value></string> 
+  <string><id>177</id><value>Beschrijving:</value></string> 
+  <string><id>178</id><value>Nummers:</value></string> 
+  <string><id>179</id><value>Nummer</value></string> 
+  <string><id>180</id><value>Tijdsduur</value></string> 
+  <string><id>181</id><value>Selecteer Album</value></string> 
+  <string><id>182</id><value>Nummer</value></string> 
+  <string><id>183</id><value>Beschrijving</value></string> 
+  <string><id>184</id><value>Verversen</value></string> 
+  <string><id>185</id><value>Zoeken naar album</value></string> 
+  <string><id>186</id><value>OK</value></string>
+  <string><id>187</id><value>Geen albums gevonden!</value></string>
+  <string><id>188</id><value>Selecteer Alles</value></string>
+  <string><id>189</id><value>Scannen Mediainformatie</value></string>
+  <string><id>190</id><value>Opslaan</value></string>
+  <string><id>191</id><value>Willekeurige Volgorde</value></string>
+  <string><id>192</id><value>Leegmaken</value></string>
+  <string><id>193</id><value>Scannen</value></string>
+  <string><id>194</id><value>Zoeken...</value></string> 
+  <string><id>195</id><value>Geen IMDB informatie gevonden!</value></string> 
+  <string><id>196</id><value>Selecteer Film:</value></string> 
+  <string><id>197</id><value>Aanspreken van IMDB informatie</value></string> 
+  <string><id>198</id><value>Film Gegevens Laden</value></string> 
+  <string><id>199</id><value>Regisseur:</value></string> 
+  <string><id>200</id><value>Schrijver:</value></string> 
+  <string><id>201</id><value>Jaar:</value></string>
+  <string><id>202</id><value>Tagline:</value></string> 
+  <string><id>203</id><value>Plot Outline:</value></string> 
+  <string><id>204</id><value>Waardering:</value></string>
+  <string><id>2050</id><value>Lengte:</value></string>
+  <string><id>205</id><value>Stemmen:</value></string> 
+  <string><id>206</id><value>Cast:</value></string> 
+  <string><id>207</id><value>Plot</value></string> 
+  <string><id>208</id><value>Afspelen</value></string> 
+  <string><id>209</id><value>Volgende</value></string> 
+  <string><id>210</id><value>Vorige</value></string> 
+  <string><id>211</id><value>Zoeken naar applicaties</value></string> 
+  <string><id>212</id><value>Gevonden Applicaties</value></string> 
+  <string><id>213</id><value>UI Kalibratie</value></string> 
+  <string><id>214</id><value>Scherm Kalibratie</value></string> 
+  <string><id>215</id><value>Verzachten</value></string> 
+  <string><id>216</id><value>Zoomen</value></string> 
+  <string><id>217</id><value>Uitrekken</value></string> 
+  <string><id>218</id><value>DVD Station</value></string> 
+  <string><id>219</id><value>Plaats Disc</value></string> 
+  <string><id>220</id><value>Gedeeld op afstand</value></string> 
+  <string><id>221</id><value>Netwerk is niet verbonden</value></string> 
+  <string><id>222</id><value>Annuleren</value></string> 
+  <string><id>223</id><value>Automatisch weergeven in breedbeeld</value></string> 
+  <string><id>224</id><value>Wisseltijd</value></string> 
+  <string><id>225</id><value>Overgangstijd</value></string> 
+  <string><id>226</id><value>PAL60 Gebruiken</value></string> 
+  <string><id>227</id><value>CDDB Gebruiken</value></string> 
+  <string><id>228</id><value>Willekeurige volgorde van afspeellijst bij laden</value></string> 
+  <string><id>229</id><value>HD Spindown tijd (min)</value></string> 
+  <string><id>230</id><value>Filters</value></string> 
+  <string><id>231</id><value>Geen</value></string> 
+  <string><id>232</id><value>Punt</value></string> 
+  <string><id>233</id><value>Linear</value></string> 
+  <string><id>234</id><value>Anisotropisch</value></string> 
+  <string><id>235</id><value>Quincunx</value></string> 
+  <string><id>236</id><value>Gaussian Cubic</value></string> 
+  <string><id>237</id><value>Verkleinen:</value></string> 
+  <string><id>238</id><value>Vergroten:</value></string>
+  <string><id>240</id><value>Autom. afspelen DVD-Video</value></string>
+  <string><id>241</id><value>Autom. afspelen VCD/SVCD</value></string>
+  <string><id>242</id><value>Autom. afspelen Audio-CD</value></string>
+  <string><id>243</id><value>Autom. afspelen XBOX Spellen</value></string>
+  <string><id>244</id><value>Autom. afspelen Videos</value></string>
+  <string><id>245</id><value>Autom. afspelen Muziek</value></string>
+  <string><id>246</id><value>Autom. afspelen Afbeeldingen</value></string>
+  <string><id>247</id><value>Scripts</value></string>
+  <string><id>248</id><value>Taal</value></string>
+  <string><id>249</id><value>Muziek</value></string>
+  <string><id>250</id><value>Visualisatie</value></string>
+  <string><id>251</id><value>Selecteer Doel Locatie</value></string>
+  <string><id>252</id><value>- Geluid naar alle speakers</value></string>
+  <string><id>253</id><value>Aantal Kanalen</value></string>
+  <string><id>254</id><value>- Dolby Digital Stereo uit</value></string>
+  <string><id>255</id><value>CDDB</value></string>
+  <string><id>256</id><value>CD aan het opzoeken in CDDB</value></string>
+  <string><id>257</id><value>Fout</value></string>
+  <string><id>258</id><value>ID3 tags inschakelen</value></string>
+  <string><id>259</id><value>Openen</value></string>
+  <string><id>260</id><value>Shoutcast</value></string>
+  <string><id>261</id><value>Wachten op start</value></string>
+  <string><id>262</id><value>Scripts Output</value></string>
+  <string><id>263</id><value>Web server:</value></string>
+  <string><id>264</id><value>Opnemen</value></string>
+  <string><id>265</id><value>Stop Opname</value></string>
+  <string><id>266</id><value>Sorteer op:Naam</value></string>
+  <string><id>267</id><value>Sorteer op:Tijd</value></string>
+  <string><id>268</id><value>Sorteer op:Titel</value></string>
+  <string><id>269</id><value>Sorteer op:Artiest</value></string>
+  <string><id>270</id><value>Sorteer op:Album</value></string>
+  <string><id>271</id><value>Top 100</value></string>
+  <string><id>272</id><value>Beeld positie: Linksboven</value></string>
+  <string><id>273</id><value>Beeld positie: Rechtsonder</value></string>
+  <string><id>274</id><value>Ondertitel Positie</value></string>
+  <string><id>275</id><value>Pixel ratio aanpassing</value></string>
+  <string><id>276</id><value>Beweeg de pijlen om de overscan te aan te passen</value></string>
+  <string><id>277</id><value>Beweeg de stick om de ondertitels te verplaatsen</value></string>
+  <string><id>278</id><value>Pas de rechthoek aan zodat deze precies vierkant is</value></string>
+  <string><id>279</id><value>Fout tijdens het laden van de instellingen</value></string>
+  <string><id>280</id><value>Gebruik standaard instellingen</value></string>
+  <string><id>281</id><value>Controleer de .xml bestanden</value></string>
+  <string><id>282</id><value>Heeft %i items gevonden</value></string>
+  <string><id>283</id><value>Zoekresultaten</value></string>
+  <string><id>284</id><value>Niets Gevonden</value></string>
+  <string><id>285</id><value>Deinterlace Filter</value></string>
+  <string><id>286</id><value>Voorbewerkings Filter</value></string>
+  <string><id>287</id><value>SRT Ondertitels</value></string>
+  <string><id>288</id><value>Lettertype</value></string>
+  <string><id>289</id><value>Formaat</value></string>
+  <string><id>290</id><value>Volume Versterking (dB)</value></string>
+  <string><id>291</id><value>Beeld</value></string>
+  <string><id>292</id><value>Geluid</value></string>
+  <string><id>293</id><value>Ondertitels</value></string>
+  <string><id>294</id><value>Maak Snelkoppeling</value></string>
+  <string><id>295</id><value>Rouleer door snelkoppelingen</value></string>
+  <string><id>296</id><value>Verwijder Snelkoppelingen</value></string>
+  <string><id>297</id><value>Beeldvertraging</value></string>
+  <string><id>298</id><value>Diavoorstelling</value></string>
+  <string><id>300</id><value>1. Taal</value></string>
+  <string><id>301</id><value>2. Volume</value></string>
+  <string><id>302</id><value>3. Geluid</value></string>
+  <string><id>303</id><value>Vertraging</value></string>
+  <string><id>304</id><value>Taal</value></string>
+  <string><id>305</id><value>Aan</value></string>
+  <string><id>306</id><value>Non-Interleaved</value></string>
+  <string><id>307</id><value>- Automatisch</value></string>
+  <string><id>308</id><value>- Verticaal deblocking filter</value></string>
+  <string><id>309</id><value>- Horizontaal deblocking filter</value></string>
+  <string><id>310</id><value>- Automatische helderheid/contrast</value></string>
+  <string><id>311</id><value>- Dering</value></string>
+  <string><id>312</id><value>(0=auto)</value></string>
+  <string><id>313</id><value>Schoon database op</value></string>
+  <string><id>314</id><value>Voorbereiden...</value></string>
+  <string><id>315</id><value>Database fout</value></string>
+  <string><id>316</id><value>Zoeken op nummers...</value></string>
+  <string><id>317</id><value>Klaar met opschonen</value></string>
+  <string><id>318</id><value>Markeren verwijderde nummers</value></string>
+  <string><id>319</id><value>Fout tijdens reorganiseren nummers</value></string>
+  <string><id>320</id><value>Zoeken op Artiesten...</value></string>
+  <string><id>321</id><value>Fout herkennen Artiesten</value></string>
+  <string><id>322</id><value>Zoeken op genre...</value></string>
+  <string><id>323</id><value>Fout tijdens reorganiseren genres</value></string>
+  <string><id>324</id><value>Zoeken op locatie...</value></string>
+  <string><id>325</id><value>Fout tijdens reorganiseren locaties</value></string>
+  <string><id>326</id><value>Zoeken op Albums...</value></string>
+  <string><id>327</id><value>Fout tijdens reorganiseren albums</value></string>
+  <string><id>328</id><value>Aanpassingen opslaan...</value></string>
+  <string><id>329</id><value>Fout tijdens opslaan aanpassingen</value></string>
+  <string><id>330</id><value>Een moment geduld a.u.b. ...</value></string>
+  <string><id>331</id><value>Comprimeren database...</value></string>
+  <string><id>332</id><value>Fout tijdens comprimeren database</value></string>
+  <string><id>333</id><value>Wilt u de muziek bibliotheek opschonen?</value></string>
+  <string><id>334</id><value>Muziek database opschonen</value></string>
+  <string><id>335</id><value>Start</value></string>
+  <string><id>336</id><value>Framerate aanpassen</value></string>
+  <string><id>337</id><value>Geluidsweergave:</value></string>
+  <string><id>338</id><value>Analoog</value></string>
+  <string><id>339</id><value>Digitaal</value></string>
+  <string><id>340</id><value>Diverse Artiesten</value></string>
+  <string><id>341</id><value>Speel DVD af</value></string>
+  <string><id>342</id><value>Films</value></string>
+  <string><id>343</id><value>Framerate Aanpassen</value></string>
+  <string><id>344</id><value>Acteurs</value></string>
+  <string><id>345</id><value>Jaar</value></string>
+  <string><id>346</id><value>Delen Invoegen</value></string>
+  <string><id>347</id><value>Delen Uittrekken</value></string>
+  <string><id>348</id><value>Vouw mapstructuur in</value></string>
+  <string><id>349</id><value>Laat alleen de Default.xbe zien</value></string>
+  <string><id>350</id><value>Programma's</value></string>
+  <string><id>351</id><value>Uit</value></string>
+  <string><id>352</id><value>Dimmen</value></string>
+  <string><id>353</id><value>Zwart</value></string>
+  <string><id>354</id><value>Matrix Sporen</value></string>
+  <string><id>355</id><value>Screensaver wachttijd</value></string>
+  <string><id>356</id><value>Screensaver mode</value></string>
+  <string><id>357</id><value>Afsluit wachttijd</value></string>
+  <string><id>358</id><value>Alle albums</value></string>
+  <string><id>359</id><value>Recente albums</value></string>
+  <string><id>360</id><value>Screensaver</value></string>
+  <string><id>361</id><value>Diavoorstelling</value></string> 
+  <string><id>362</id><value>Screensaver donker (%)</value></string>
+  <string><id>363</id><value>Sorteer op bestand</value></string> 
+  <string><id>364</id><value>- DD/DTS doorgeven</value></string> 
+  <string><id>365</id><value>Sorteer op naam</value></string> 
+  <string><id>366</id><value>Sorteer op jaar</value></string> 
+  <string><id>367</id><value>Sorteer op waardering</value></string> 
+  <string><id>368</id><value>IMDB</value></string> 
+  <string><id>369</id><value>Titel</value></string>
+  <string><id>370</id><value>Onweer</value></string>
+  <string><id>371</id><value>Gedeeltelijk</value></string>
+  <string><id>372</id><value>Veel</value></string>
+  <string><id>373</id><value>Zonnig</value></string>
+  <string><id>374</id><value>Bewolkt</value></string>
+  <string><id>375</id><value>Sneeuw</value></string>
+  <string><id>376</id><value>Regen</value></string>
+  <string><id>377</id><value>Lichtelijk</value></string>
+  <string><id>378</id><value>AM</value></string>
+  <string><id>379</id><value>PM</value></string>
+  <string><id>380</id><value>Buien</value></string>
+  <string><id>381</id><value>Aantal</value></string>
+  <string><id>382</id><value>Verspreid</value></string>
+  <string><id>383</id><value>Wind</value></string>
+  <string><id>384</id><value>Sterk</value></string>
+  <string><id>385</id><value>Mooi</value></string>
+  <string><id>386</id><value>Helder</value></string>
+  <string><id>387</id><value>Wolken</value></string>
+  <string><id>388</id><value>Niet beschikbaar</value></string>
+  <string><id>389</id><value>Niet beschikbaar</value></string>
+  <string><id>390</id><value>Niet beschikbaar</value></string>
+  <string><id>391</id><value>Niet beschikbaar</value></string>
+  <string><id>392</id><value>Niet beschikbaar</value></string>
+  <string><id>393</id><value>Niet beschikbaar</value></string>
+  <string><id>394</id><value>Niet beschikbaar</value></string>
+  <string><id>395</id><value>Niet beschikbaar</value></string>
+  <string><id>396</id><value>Selecteer Lokatie</value> </string>
+  <string><id>397</id><value>Vernieuw tijd</value> </string>
+  <string><id>398</id><value>Temperatuur eenheid</value> </string>
+  <string><id>399</id><value>Windsnelheid eenheid</value> </string>
+  <string><id>400</id><value>Het Weer</value></string>
+  <string><id>401</id><value>Temperatuur</value></string> 
+  <string><id>402</id><value>Voelt als</value></string> 
+  <string><id>403</id><value>UV Index</value></string>
+  <string><id>404</id><value>Wind</value></string> 
+  <string><id>405</id><value>Dauw temp.</value></string> 
+  <string><id>406</id><value>Vochtigheid</value></string> 
+  <string><id>407</id><value>Van</value></string>
+  <string><id>408</id><value>Op</value></string>
+  <string><id>410</id><value>Weather.com openen</value></string> 
+  <string><id>411</id><value>Ophalen weergegevens voor:</value></string> 
+  <string><id>412</id><value>Fout tijdens ophalen gegevens</value></string>
+  <string><id>413</id><value>Handmatig</value></string>
+  <string><id>414</id><value>Geen recensie voor dit album</value></string>
+  <string><id>415</id><value>Miniatuurafbeelding downloaden...</value></string> 
+  <string><id>416</id><value>Niet beschikbaar</value></string> 
+  <string><id>417</id><value>Weergave:Grote iconen</value></string> 
+  <string><id>418</id><value>Mijn Videos/Genres</value></string> 
+  <string><id>419</id><value>Mijn Videos/Acteurs</value></string> 
+  <string><id>420</id><value>Mijn Videos/Jaren</value></string> 
+  <string><id>421</id><value>Mijn Videos/Titel</value></string>
+  <string><id>422</id><value>Verwijder albuminfo</value></string> 
+  <string><id>423</id><value>Verwijder CDDB info</value></string> 
+  <string><id>424</id><value>Selecteer</value></string> 
+  <string><id>425</id><value>Geen Album info gevonden.</value></string> 
+  <string><id>426</id><value>Geen CDDB info gevonden.</value></string> 
+  <string><id>427</id><value>Disc:</value></string> 
+  <string><id>428</id><value>Leg de juiste CD/DVD in</value></string> 
+  <string><id>429</id><value>Leg de volgende CD/DVD in</value></string>
+  <string><id>430</id><value>Sorteer op DVD#</value></string>
+  <string><id>431</id><value>Geen tijdelijke opslag</value></string>
+  <string><id>432</id><value>Verwijder film uit database</value></string>
+  <string><id>433</id><value>Wilt u de film definitief</value></string>
+  <string><id>434</id><value>Verwijderen?</value></string> 
+  <string><id>435</id><value>Nummer</value></string> 
+  <string><id>436</id><value>Jaar:</value></string> 
+  <string><id>437</id><value>Lengte:</value></string> 
+  <string><id>438</id><value>Openen bestand</value></string> 
+  <string><id>439</id><value>Cache</value></string> 
+  <string><id>440</id><value>Harde Schijf</value></string> 
+  <string><id>441</id><value>UDF</value></string> 
+  <string><id>442</id><value>LAN</value></string> 
+  <string><id>443</id><value>Internet</value></string> 
+  <string><id>444</id><value>Video</value></string> 
+  <string><id>445</id><value>Geluid</value></string> 
+  <string><id>446</id><value>DVD</value></string> 
+  <string><id>447</id><value>Automatisch Starten</value></string> 
+  <string><id>448</id><value>LCD</value></string> 
+  <string><id>449</id><value>Geactiveerd</value></string> 
+  <string><id>450</id><value>Kolommen</value></string> 
+  <string><id>4501</id><value>LCD Type</value></string>
+  <string><id>451</id><value>Adres rij 1:</value></string> 
+  <string><id>452</id><value>Adres rij 2:</value></string> 
+  <string><id>453</id><value>Adres rij 3:</value></string> 
+  <string><id>454</id><value>Adres rij 4:</value></string> 
+  <string><id>455</id><value>Rijen:</value></string> 
+  <string><id>456</id><value>Modus:</value></string> 
+  <string><id>457</id><value>Wijzig Weergave</value></string> 
+  <string><id>458</id><value>B/Mark</value></string>
+  <string><id>459</id><value>Ondertitels</value></string>
+  <string><id>460</id><value>Geluidskanaal</value></string>
+  <string><id>461</id><value>[actief]</value></string>
+  <string><id>462</id><value>Ondertitel</value></string>
+  <string><id>463</id><value>Verlichting</value></string>
+  <string><id>464</id><value>Helderheid</value></string> 
+  <string><id>465</id><value>Contrast</value></string> 
+  <string><id>466</id><value>Gamma</value></string> 
+  <string><id>467</id><value>Type</value></string> 
+  <string><id>468</id><value>Verplaats de stick om het OSD te verplaatsen.</value></string>
+  <string><id>469</id><value>OSD Positie</value></string>
+  <string><id>470</id><value>Credits</value></string>
+  <string><id>471</id><value>Modchip</value></string>
+  <string><id>472</id><value>OSD vertraging</value></string>
+  <string><id>473</id><value>Hoge kwaliteit resampling</value></string>
+  <string><id>474</id><value>Uit</value></string>
+  <string><id>475</id><value>Alleen Geluid</value></string>
+  <string><id>476</id><value>Beeld &amp; Geluid</value></string>
+  <string><id>477</id><value>Playlist kon niet worden geladen</value></string>
+  <string><id>478</id><value>On Screen Display</value></string>
+  <string><id>479</id><value>Skin &amp; Taal</value></string>
+  <string><id>480</id><value>UIterlijk</value></string>
+  <string><id>481</id><value>Geluidinstellingen</value></string>
+  <string><id>482</id><value>Over XBMC</value></string>
+  <string><id>483</id><value>Album</value></string>
+  <string><id>484</id><value>Artiest</value></string>
+  <string><id>485</id><value>Verwijder album</value></string>
+  <string><id>486</id><value>Herhaal</value></string>
+  <string><id>487</id><value>Herhaal een</value></string>
+  <string><id>488</id><value>Herhaal playlist in map</value></string>
+  <string><id>489</id><value>Automatisch afspelen volgend nummer</value></string>
+  <string><id>490</id><value>Kies automatisch lijst of iconen in nummers</value></string>
+  <string><id>491</id><value>- Gebruik grote iconen</value></string>
+  <string><id>492</id><value>Vergroot ondertiteling</value></string>
+  <string><id>493</id><value>Geavanceerde opties (Alleen experts!)</value></string>
+  <string><id>494</id><value>Algemene audio headroom (dB)</value></string>
+  <string><id>495</id><value>Upsample video naar GUI resolutie</value></string>
+  <string><id>496</id><value>Kalibratie</value></string>
+  <string><id>497</id><value>Verberg media extensies</value></string>
+  <string><id>498</id><value>Sorteer op:Type</value></string>
+  <string><id>499</id><value>Kan geen verbinding maken met www.allmusic.com</value></string>
+  <string><id>500</id><value>Downloaden album info mislukt</value></string>
+  <string><id>501</id><value>Zoeken naar album namen...</value></string>
+  <string><id>502</id><value>Open</value></string>
+  <string><id>503</id><value>Bezig</value></string>
+  <string><id>504</id><value>Leeg</value></string>
+  <string><id>505</id><value>Media info inlezen van bestanden...</value></string>
+  <string><id>506</id><value>Gebruik mapnamen voor beschrijving</value></string>
+  <string><id>507</id><value>Sorteren op: Gebruik</value></string>
+  <string><id>508</id><value>Gebruik geen snelkoppelingen of scanfunctie</value></string>
+  <string><id>600</id><value>Kopiëer cd</value></string>
+  <string><id>601</id><value>Middelmatig</value></string>
+  <string><id>602</id><value>Standaard</value></string>
+  <string><id>603</id><value>Extreem</value></string>
+  <string><id>604</id><value>Constante bit rate</value></string>
+  <string><id>605</id><value>Kopiëren...</value></string>
+  <string><id>606</id><value>Track nummer:</value></string>
+  <string><id>607</id><value>Naar:</value></string>
+  <string><id>608</id><value>Kopiëren van CD of nummer mislukt</value></string>
+  <string><id>609</id><value>CDDA doelmap is niet aangegeven in XboxMediaCenter.xml</value></string>
+  <string><id>620</id><value>Cd's kopiëren</value></string>
+  <string><id>621</id><value>Encoder</value></string>
+  <string><id>622</id><value>Kwaliteit</value></string>
+  <string><id>623</id><value>Bit rate</value></string>
+  <string><id>624</id><value>Gebruik track nummer</value></string>
+  <string><id>625</id><value>Alle nummers van</value></string>
+  <string><id>629</id><value>Weergave</value></string>
+  <string><id>630</id><value>Normaal</value></string>
+  <string><id>631</id><value>Inzoomen</value></string>
+  <string><id>632</id><value>Uitrekken 4:3</value></string>
+  <string><id>633</id><value>Uitrekken 14:9</value></string>
+  <string><id>634</id><value>Uitrekken 16:9</value></string>
+  <string><id>635</id><value>Originele Grootte</value></string>
+  <string><id>636</id><value>Custom</value></string>
+  <string><id>700</id><value>Schoon Bibliotheek op</value></string>
+  <string><id>701</id><value>Verwijder oude nummers uit de Bibliotheek</value></string>
+  <string><id>702</id><value>Deze directory is eerder gescanned</value></string>
+  <string><id>703</id><value>Kies Ja om alle nummers in deze map te updaten</value></string>
+  <string><id>704</id><value>Kies Nee om alleen nieuwe nummers toe te voegen</value></string>
+  <string><id>705</id><value>Netwerk</value></string>
+  <string><id>706</id><value>HTTP Proxy Host</value></string>
+  <string><id>707</id><value>HTTP Proxy Poort</value></string>
+  <string><id>708</id><value>Schakel HTTP Proxy in</value></string>
+  <string><id>709</id><value>XLink Kai XTag</value></string>
+  <string><id>710</id><value>XLink Kai Paswoord</value></string>
+  <string><id>711</id><value>Internet Protocol (IP)</value></string>
+  <string><id>712</id><value>Ongeldige waarde.Waarde moet tussen 1 en 65535 liggen.</value></string>
+  <string><id>713</id><value>HTTP Proxy</value></string>	
+  <string><id>714</id><value>XLink Kai</value></string>	
+  <string><id>715</id><value>Toewijzing</value></string>	
+  <string><id>716</id><value>Automatisch verkrijgen(DHCP)</value></string>	
+  <string><id>717</id><value>Handmatig kiezen (Statisch)</value></string>	
+  <string><id>718</id><value>Verkrijgen van dashboard</value></string>	
+  <string><id>719</id><value>IP Adres</value></string>	
+  <string><id>720</id><value>Netmask</value></string>	
+  <string><id>721</id><value>Standaard Gateway</value></string>	
+  <string><id>722</id><value>DNS Server</value></string>
+  <string><id>723</id><value>Opslaan &amp; Herstart</value></string>
+  <string><id>724</id><value>Ongeldig addres opgegeven. Waarde moet AAA.BBB.CCC.DDD zijn</value></string>
+  <string><id>725</id><value>Met getallen tussen 0 en 255.</value></string>
+  <string><id>726</id><value>Veranderingen niet opgeslagen. Doorgaan zonder op te slaan?</value></string>
+  <string><id>727</id><value>Web Server</value></string>	
+  <string><id>728</id><value>FTP Server</value></string>	
+  <string><id>729</id><value>Internet Tijd</value></string>	
+  <string><id>730</id><value>Webserver Poort</value></string>	
+  <string><id>731</id><value>Tijdserver Host</value></string>
+  <string><id>732</id><value>Opslaan &amp; Toepassen</value></string>
+  <string><id>733</id><value>Webserver Paswoord</value></string>
+  <string><id>734</id><value>Geen Paswoord</value></string>
+  <string><id>735</id><value>Tekenset:</value></string>	
+  <string><id>736</id><value>Stijl:</value></string>	
+  <string><id>737</id><value>Kleur:</value></string>
+  <string><id>738</id><value>Normaal</value></string>	
+  <string><id>739</id><value>Bold</value></string>	
+  <string><id>740</id><value>Italics</value></string>	
+  <string><id>741</id><value>Bold Italics</value></string>	
+  <string><id>742</id><value>Wit</value></string>	
+  <string><id>743</id><value>Geel</value></string>
+  <string><id>744</id><value>Bestanden</value></string>	
+  <string><id>745</id><value>Geen gescande informatie in deze weergave</value></string>		
+  <string><id>746</id><value>Wissel naar bestandsweergave</value></string>
+  <string><id>747</id><value>Onvoldoende geheugen om afbeelding te laden</value></string>
+  <string><id>748</id><value>Wijzig Share</value></string>
+  <string><id>749</id><value>Voeg share toe</value></string>
+  <string><id>750</id><value>Weet u het zeker?</value></string>
+  <string><id>751</id><value>Verwijder Share</value></string>
+  <string><id>752</id><value>Wijzig locatie share</value></string>
+  <string><id>753</id><value>Wijzig Naam Share</value></string>
+  <string><id>998</id><value>XLink KAI</value></string>
+  <string><id>999</id><value>Online Gamen</value></string>
+  <string><id>10000</id><value>Home</value></string>
+  <string><id>10001</id><value>Mijn Programma's</value></string>
+  <string><id>10002</id><value>Mijn Afbeeldingen</value></string>
+  <string><id>10003</id><value>Mijn Bestanden</value></string>
+  <string><id>10004</id><value>Instellingen</value></string>
+  <string><id>10005</id><value>Mijn Muziek</value></string>
+  <string><id>10006</id><value>Mijn Films</value></string>
+  <string><id>10007</id><value>Systeem informatie</value></string>
+  <string><id>10008</id><value>Instellingen-&gt;Hoofdinstellingen</value></string>
+  <string><id>10009</id><value>Instellingen-&gt;Scherm</value></string>
+  <string><id>10010</id><value>Instellingen-&gt;Scherm-&gt;UI kalibratie</value></string>
+  <string><id>10011</id><value>Instellingen-&gt;Scherm-&gt;Scherm kalibratie</value></string>
+  <string><id>10012</id><value>Instellingen-&gt;Diavoorstelling</value></string>
+  <string><id>10013</id><value>Instellingen-&gt;Scherm-&gt;Filters</value></string>
+  <string><id>10014</id><value>Instellingen-&gt;Muziek</value></string>
+  <string><id>10015</id><value>Instellingen-&gt;Scherm-&gt;Ondertitels</value></string>
+  <string><id>10016</id><value>Instellingen-&gt;Scherm-&gt;Schermbeveiliging</value></string>
+  <string><id>10017</id><value>Instellingen-&gt;Het Weer</value></string>
+  <string><id>10020</id><value>Instellingen-&gt;Scripts</value></string>
+  <string><id>10021</id><value>Mijn Films/genre</value></string>
+  <string><id>10022</id><value>Mijn Films/Acteur</value></string>
+  <string><id>10023</id><value>Mijn Films/Jaar</value></string>
+  <string><id>10024</id><value>Instellingen-&gt;Programma's</value></string>
+  <string><id>10025</id><value>Mijn Films/Titel</value></string>
+  <string><id>10026</id><value>Instellingen-&gt;Hoofdinstellingen-&gt;Cache</value></string>
+  <string><id>10027</id><value>Instellingen-&gt;Hoofdinstellingen-&gt;Automatisch afspelen</value></string>
+  <string><id>10028</id><value>Mijn Films/playlist</value></string>
+  <string><id>10029</id><value>Instellingen-&gt;Hoofdinstellingen-&gt;LCD</value></string>
+  <string><id>10100</id><value>Ja/Nee Scherm</value></string>
+  <string><id>10101</id><value>Voortgang scherm</value></string>
+  <string><id>10500</id><value>Mijn Muziek/playlist</value></string>
+  <string><id>10501</id><value>Mijn Muziek/bestanden</value></string>
+  <string><id>10502</id><value>Mijn Muziek/albums</value></string>
+  <string><id>10503</id><value>Mijn Muziek/artiesten</value></string>
+  <string><id>10504</id><value>Mijn Muziek/genres</value></string>
+  <string><id>10505</id><value>Mijn Muziek/top100</value></string>
+  <string><id>11000</id><value>Toetsenbord</value></string>
+  <string><id>12000</id><value>Selecteer scherm</value></string>
+  <string><id>12001</id><value>Mijn Muziek/info</value></string>
+  <string><id>12002</id><value>Bevestigings Scherm</value></string>
+  <string><id>12003</id><value>Mijn Films/Info</value></string>
+  <string><id>12004</id><value>Mijn Scripts/Info</value></string>
+  <string><id>12005</id><value>Volledig scherm</value></string>
+  <string><id>12006</id><value>Geluidsvisualisatie</value></string>
+  <string><id>12007</id><value>Mijn Afbeeldingen/Diavoorstelling</value></string>
+  <string><id>12008</id><value>Bestand Scherm</value></string>
+  <string><id>12600</id><value>Het weer</value></string>
+  <string><id>12900</id><value>Schermbeveiliging</value></string>
+  <string><id>12901</id><value>Volledig scherm On Screen Display</value></string>
+  <string><id>13000</id><value>Systeem</value></string>
+  <string><id>13001</id><value>Onmiddelijke HD spindown</value></string>
+  <string><id>13002</id><value>Alleen beeld</value></string>
+  <string><id>13003</id><value>- Vertraging</value></string>
+  <string><id>13004</id><value>- Minimale bestandsduur</value></string>
+  <string><id>13100</id><value>Flikker filter</value></string>
+  <string><id>13200</id><value>Profielen</value></string>
+  <string><id>13201</id><value>Profiel '%s' verwijderen?</value></string>
+  <string><id>13202</id><value>Bewaar huidige instellingen in profiel...</value></string>
+  <string><id>13203</id><value>Laden van profiel '%s' geslaagd</value></string>
+  <string><id>13204</id><value>Laatst gebruikte profiel:</value></string>
+  <string><id>13205</id><value>Onbekend</value></string>
+  <string><id>13299</id><value>Doeltemperatuur:</value></string>
+  <string><id>13300</id><value>Ventilator Snelheid:</value></string>
+  <string><id>13301</id><value>Automatische Temperatuurregeling</value></string>
+  <string><id>13302</id><value>Ventilator Snelheidsregeling</value></string>
+  <string><id>13303</id><value>Lettertype voor skin</value></string>
+  <string><id>13304</id><value>Omdraaien Bi-Directionele Strings inschakelen</value></string>
+  <string><id>13305</id><value>RSS Feeds inschakelen</value></string>
+  <string><id>13306</id><value>Verberg hoofdmapitems</value></string>
+  <string><id>13307</id><value>Verberg tracknummers</value></string>
+  <string><id>13308</id><value>Wilt u de xbox opnieuw opstarten(hardboot)</value></string>
+  <string><id>13309</id><value>In plaats van alleen XBMC herstarten?(softboot)</value></string>
+  <string><id>13310</id><value>Zoom Effect</value></string>
+  <string><id>13311</id><value>Zweef Effect</value></string>
+  <string><id>13312</id><value>Zwarte balk reductie</value></string>
+  <string><id>13313</id><value>Reset/Reboot</value></string>
+  <string><id>13314</id><value>Muziek OSD sluittijd</value></string>
+  <string><id>13315</id><value>Maak Thumbnails</value></string>
+  <string><id>13316</id><value>Recursieve Thumbnails</value></string> 
+  <string><id>13317</id><value>Bekijk Schuifvoorstelling</value></string>
+  <string><id>13318</id><value>Recursieve Schuifvoorstelling</value></string>
+  <string><id>13319</id><value>Willekeurige volgorde</value></string>
+  <string><id>13320</id><value>Stereo</value></string>
+  <string><id>13321</id><value>Alleen links</value></string> 
+  <string><id>13322</id><value>Alleen rechts</value></string>
+  <string><id>13323</id><value>CD+G Inschakelen</value></string>
+  <string><id>13324</id><value>Achtergrond Doorzichtigheid</value></string> 
+  <string><id>13325</id><value>Voorgrond Doorzichtigheid</value></string>
+  <string><id>13326</id><value>A/V vertraging</value></string> 
+  <string><id>13327</id><value>Karaoke</value></string>
+  <string><id>13328</id><value>%s Niet Gevonden</value></string> 
+  <string><id>13329</id><value>Fout tijdens openen %s</value></string> 
+  <string><id>13330</id><value>%s Kan niet geladen worden</value></string>
+  <string><id>13331</id><value>Fout: geheugen tekort.</value></string>
+  <string><id>13332</id><value>Omhoog</value></string> 
+  <string><id>13333</id><value>Omlaag</value></string> 
+  <string><id>13334</id><value>Pas Label Aan</value></string> 
+  <string><id>13335</id><value>Maak Standaard</value></string> 
+  <string><id>13336</id><value>Verwijder Knop</value></string>
+  <string><id>13337</id><value>2 kanaals PCM weergave</value></string>
+  <string><id>14000</id><value>Delen Invoegen: Uit</value></string>
+  <string><id>14001</id><value>Delen Invoegen: Simpel</value></string> 
+  <string><id>14002</id><value>Delen Invoegen: Fuzzy</value></string>
+  <string><id>14003</id><value>Downloaden van playlist bestand...</value></string>
+  <string><id>14004</id><value>Downloaden van streams lijst...</value></string>
+  <string><id>14005</id><value>Uitpakken streams lijst...</value></string>
+  <string><id>14006</id><value>Downloaden van streams lijst mislukt</value></string> 
+  <string><id>14007</id><value>Downloaden van playlist bestand mislukt</value></string>
+  <string><id>14008</id><value>Kai notificaties aanzetten</value></string> 
+  <string><id>14009</id><value>Speldirectory</value></string>
+  <string><id>14010</id><value>Autoswitch Opties</value></string> 
+  <string><id>14011</id><value>Autoswitching Inschakelen?</value></string> 
+  <string><id>14012</id><value>Gebruik Grote Iconen</value></string> 
+  <string><id>14013</id><value>Methode:</value></string> 
+  <string><id>14014</id><value>Percentage:</value></string> 
+  <string><id>14015</id><value>Thumbpaneel bij geen bestanden</value></string> 
+  <string><id>14016</id><value>Lijstpaneel bij geen mappen</value></string> 
+  <string><id>14017</id><value>Percentage Thumbnails</value></string> 
+  <string><id>14018</id><value>Weergave Opties</value></string> 
+  <string><id>14019</id><value>Area code 1</value></string> 
+  <string><id>14020</id><value>Area code 2</value></string> 
+  <string><id>14021</id><value>Area code 3</value></string> 
+  <string><id>14022</id><value>Bibliotheek</value></string> 
+  <string><id>14023</id><value>Geen TV</value></string> 
+  <string><id>14024</id><value>Vul de dichtbijzijnste grote plaats in of US ZIP code</value></string> 
+  <string><id>14025</id><value>Video vanaf Harde Schijf</value></string> 
+  <string><id>14026</id><value>Video vanaf DVDRom</value></string> 
+  <string><id>14027</id><value>Video vanaf Lokaal Netwerk</value></string> 
+  <string><id>14028</id><value>Video vanaf Internet</value></string> 
+  <string><id>14029</id><value>Audio vanaf Harde Schijf</value></string> 
+  <string><id>14030</id><value>Audio vanaf DVDRom</value></string> 
+  <string><id>14031</id><value>Audio vanaf Lokaal Netwerk</value></string> 
+  <string><id>14032</id><value>Audio vanaf Internet</value></string> 
+  <string><id>14033</id><value>DVD vanaf Harde Schijf</value></string> 
+  <string><id>14034</id><value>DVD vanaf DVDRom</value></string>
+  <string><id>14035</id><value>DVD vanaf Lokaal Netwerk</value></string> 
+  <string><id>14036</id><value>Servers</value></string> 
+  <string><id>14037</id><value>Kijk en Voel</value></string> 
+  <string><id>14038</id><value>Netwerkinstellingen veranderd</value></string> 
+  <string><id>14039</id><value>XBMC moet herstarten om de netwerkinstellingen</value></string> 
+  <string><id>14040</id><value>te veranderen.Wilt u nu herstarten?</value></string> 
+  <string><id>14041</id><value>Post Processing</value></string>
 </strings>

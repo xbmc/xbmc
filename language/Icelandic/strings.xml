@@ -1,1901 +1,476 @@
 <strings>
-  <string>
-    <id>0</id>
-    <value>Forrit</value>
-  </string>
-  <string>
-    <id>1</id>
-    <value>Ljósmyndir</value>
-  </string>
-  <string>
-    <id>2</id>
-    <value>Tónlist</value>
-  </string>
-  <string>
-    <id>3</id>
-    <value>Kvikmyndir</value>
-  </string>
-  <string>
-    <id>4</id>
-    <value>Sjónvarpsvísir</value>
-  </string>
-  <string>
-    <id>5</id>
-    <value>Stillingar</value>
-  </string>
-  <string>
-    <id>7</id>
-    <value>Skráarsýsl</value>
-  </string>
-  <string>
-     <id>8</id>
-     <value>Veður</value>
-  </string>
-  <string>
-    <id>11</id>
-    <value>Mánudagur</value>
-  </string>
-  <string>
-    <id>12</id>
-    <value>Þriðjudagur</value>
-  </string>
-  <string>
-    <id>13</id>
-    <value>Miðvikudagur</value>
-  </string>
-  <string>
-    <id>14</id>
-    <value>Fimmtudagur</value>
-  </string>
-  <string>
-    <id>15</id>
-    <value>Föstudagur</value>
-  </string>
-  <string>
-    <id>16</id>
-    <value>Laugardagur</value>
-  </string>  
-  <string>
-    <id>17</id>
-    <value>Sunnudagur</value>
-  </string>
-  
-   
-  <string>
-    <id>21</id>
-    <value>Janúar</value>
-  </string>
-  
-  <string>
-    <id>22</id>
-    <value>Febrúar</value>
-  </string>  
-  <string>
-    <id>23</id>
-    <value>Mars</value>
-  </string>  
-  <string>
-    <id>24</id>
-    <value>Apríl</value>
-  </string>  
-  <string>
-    <id>25</id>
-    <value>Maí</value>
-  </string>  
-  <string>
-    <id>26</id>
-    <value>Júní</value>
-  </string>  
-  <string>
-    <id>27</id>
-    <value>Júlí</value>
-  </string>  
-  <string>
-    <id>28</id>
-    <value>Ágúst</value>
-  </string>  
-  <string>
-    <id>29</id>
-    <value>September</value>
-  </string>  
-  <string>
-    <id>30</id>
-    <value>Október</value>
-  </string>  
-  <string>
-    <id>31</id>
-    <value>Nóvember</value>
-  </string>  
-  <string>
-    <id>32</id>
-    <value>Desember</value>
-  </string>  
-  <string>
-    <id>100</id>
-    <value>Sjá sem tákn</value>
-  </string>  
-  <string>
-    <id>101</id>
-    <value>Sjá sem lista</value>
-  </string>  
-  <string>
-    <id>102</id>
-    <value>Skanna</value>
-  </string>  
-  <string>
-    <id>103</id>
-    <value>Eftir nafni</value>
-  </string> 
-  <string>
-    <id>104</id>
-    <value>Eftir aldri</value>
-  </string>    
-  <string>
-    <id>105</id>
-    <value>Eftir stærð</value>
-  </string>      
-  <string>
-    <id>106</id>
-    <value>Nei</value>
-  </string>     
-  <string>
-    <id>107</id>
-    <value>Já</value>
-  </string>   
-  <string>
-    <id>108</id>
-    <value>Myndasýning</value>
-  </string>   
-  <string>
-    <id>109</id>
-    <value>Gera smámyndir</value>
-  </string>   
-  <string>
-    <id>110</id>
-    <value>Gera smámyndir</value>
-  </string>   
-  <string>
-    <id>111</id>
-    <value>Flýtival</value>
-  </string>   
-  <string>
-    <id>112</id>
-    <value>Stöðvað</value>
-  </string>   
-  <string>
-    <id>113</id>
-    <value>Skráarsýsl : Uppruni</value>
-  </string>   
-  <string>
-    <id>114</id>
-    <value>Skráarsýsl : Áfangastaður</value>
-  </string>   
-  <string>
-    <id>115</id>
-    <value>Afrita</value>
-  </string>   
-  <string>
-    <id>116</id>
-    <value>Færa</value>
-  </string>   
-  <string>
-    <id>117</id>
-    <value>Eyða</value>
-  </string>   
-  <string>
-    <id>118</id>
-    <value>Endurnefna</value>
-  </string>   
-  <string>
-    <id>119</id>
-    <value>Ný mappa</value>
-  </string>   
-  <string>
-    <id>120</id>
-    <value>Staðfesta afritun</value>
-  </string>   
-  <string>
-    <id>121</id>
-    <value>Staðfesta færslu</value>
-  </string>   
-  <string>
-    <id>122</id>
-    <value>Staðfesta eyðingu</value>
-  </string>   
-  <string>
-    <id>123</id>
-    <value>Afrita þessar skrár?</value>
-  </string>   
-  <string>
-    <id>124</id>
-    <value>Færa þessar skrár?</value>
-  </string>   
-  <string>
-    <id>125</id>
-    <value>Eyða þessum skrám?</value>
-  </string>  
-  <string>
-    <id>126</id>
-    <value>Staða</value>
-  </string>  
-  <string>
-    <id>127</id>
-    <value>Hlutir</value>
-  </string>  
-  <string>
-    <id>128</id>
-    <value>Almennt</value>
-  </string> 
-  <string>
-    <id>129</id>
-    <value>Myndasýning</value>
-  </string> 
-  <string>
-    <id>130</id>
-    <value>Kerfisupplýsingar</value>
-  </string>  
-  <string>
-    <id>131</id>
-    <value>Skjár</value>
-  </string>  
-  <string>
-    <id>132</id>
-    <value>Hljómplötur</value>
-  </string>  
-  <string>
-    <id>133</id>
-    <value>Listamenn</value>
-  </string>  
-  <string>
-    <id>134</id>
-    <value>Sjá lög</value>
-  </string>  
-  <string>
-    <id>135</id>
-    <value>Flokkar</value>
-  </string>  
-  <string>
-    <id>136</id>
-    <value>Lagalistar</value>
-  </string>  
-  <string>
-    <id>137</id>
-    <value>Leita</value>
-  </string>  
-  <string>
-    <id>138</id>
-    <value>KERFISUPPLÝSINGAR</value>
-  </string>  
-  <string>
-    <id>139</id>
-    <value>Hitastig:</value>
-  </string> 
-  <string>
-    <id>140</id>
-    <value>CPU:</value>
-  </string> 
-  <string>
-    <id>141</id>
-    <value>GPU:</value>
-  </string> 
-  <string>
-    <id>142</id>
-    <value>Klukka:</value>
-  </string> 
-  <string>
-    <id>143</id>
-    <value>Núna:</value>
-  </string> 
-  <string>
-    <id>144</id>
-    <value>Hugbúnaður:</value>
-  </string> 
-  <string>
-    <id>145</id>
-    <value>Netkerfi:</value>
-  </string> 
-  <string>
-    <id>146</id>
-    <value>Tegund:</value>
-  </string> 
-  <string>
-    <id>147</id>
-    <value>Föst IP</value>
-  </string> 
-  <string>
-    <id>148</id>
-    <value>DHCP</value>
-  </string> 
-  <string>
-    <id>149</id>
-    <value>MAC</value>
-  </string> 
-  <string>
-    <id>150</id>
-    <value>IP:</value>
-  </string> 
-  <string>
-    <id>151</id>
-    <value>Tenging:</value>
-  </string> 
-  <string>
-    <id>152</id>
-    <value>Hálf virkni</value>
-  </string> 
-  <string>
-    <id>153</id>
-    <value>Full virkni</value>
-  </string> 
-  <string>
-    <id>154</id>
-    <value>Geymslurými</value>
-  </string> 
-  <string>
-    <id>155</id>
-    <value>Drif</value>
-  </string> 
-  <string>
-    <id>156</id>
-    <value>Laust</value>
-  </string> 
-  <string>
-    <id>157</id>
-    <value>Mynd</value>
-  </string> 
-  <string>
-    <id>158</id>
-    <value>Laust minni</value>
-  </string> 
-  <string>
-    <id>159</id>
-    <value>Engin tenging</value>
-  </string> 
-  <string>
-    <id>160</id>
-    <value>Laust</value>
-  </string> 
-  <string>
-    <id>161</id>
-    <value>Ófáanlegt</value>
-  </string> 
-  <string>
-    <id>162</id>
-    <value>Bakki opinn</value>
-  </string> 
-  <string>
-    <id>163</id>
-    <value>Les</value>
-  </string> 
-  <string>
-    <id>164</id>
-    <value>Enginn diskur</value>
-  </string> 
-  <string>
-    <id>165</id>
-    <value>Diskur í bakka</value>
-  </string> 
-  <string>
-    <id>166</id>
-    <value>Húð:</value>
-  </string> 
-  <string>
-    <id>167</id>
-    <value>FTP þjónn:</value>
-  </string> 
-  <string>
-    <id>168</id>
-    <value>Tímaþjónn:</value>
-  </string> 
-  <string>
-    <id>169</id>
-    <value>Upplausn:</value>
-  </string> 
-  <string>
-    <id>170</id>
-    <value>Hljómplata:</value>
-  </string> 
-  <string>
-    <id>171</id>
-    <value>Listamaður:</value>
-  </string> 
-  <string>
-    <id>172</id>
-    <value>Útgáfudagur:</value>
-  </string> 
-  <string>
-    <id>173</id>
-    <value>Einkunn:</value>
-  </string> 
-  <string>
-    <id>174</id>
-    <value>Tegund:</value>
-  </string> 
-  <string>
-    <id>175</id>
-    <value>Tónar:</value>
-  </string> 
-  <string>
-    <id>176</id>
-    <value>Stílar:</value>
-  </string> 
-  <string>
-    <id>177</id>
-    <value>Umsögn:</value>
-  </string> 
-  <string>
-    <id>178</id>
-    <value>Lög:</value>
-  </string> 
-  <string>
-    <id>179</id>
-    <value>Lag</value>
-  </string> 
-  <string>
-    <id>180</id>
-    <value>Lengd</value>
-  </string> 
-  <string>
-    <id>181</id>
-    <value>Veldu hljómplötu</value>
-  </string> 
-  <string>
-    <id>182</id>
-    <value>Lög</value>
-  </string> 
-  <string>
-    <id>183</id>
-    <value>Umsögn</value>
-  </string> 
-  <string>
-    <id>184</id>
-    <value>Endurlesa</value>
-  </string> 
-  <string>
-    <id>185</id>
-    <value>Leita að hljómplötu</value>
-  </string> 
-  <string>
-    <id>186</id>
-    <value>Í lagi</value>
-  </string>  
-  <string>
-    <id>187</id>
-    <value>Ekkert fannst!</value>
-  </string>  
-  <string>
-    <id>188</id>
-    <value>Velja allt</value>
-  </string>  
-  <string>
-    <id>189</id>
-    <value>Skoða upplýsingar</value>
-  </string>  
-  <string>
-    <id>190</id>
-    <value>Vista</value>
-  </string>  
-  <string>
-    <id>191</id>
-    <value>Endurraða</value>
-  </string>  
-  <string>
-    <id>192</id>
-    <value>Hreinsa</value>
-  </string>  
-  <string>
-    <id>193</id>
-    <value>Leita</value>
-  </string>  
-  <string>
-    <id>194</id>
-    <value>Leitar...</value>
-  </string> 
-  <string>
-    <id>195</id>
-    <value>Engar IMDB upplýsingar fundust!</value>
-  </string> 
-  <string>
-    <id>196</id>
-    <value>Veldu kvikmynd:</value>
-  </string> 
-  <string>
-    <id>197</id>
-    <value>Spyr IMDB</value>
-  </string> 
-  <string>
-    <id>198</id>
-    <value>Hleð upplýsingum um mynd</value>
-  </string> 
-  <string>
-    <id>199</id>
-    <value>Leikstjóri</value>
-  </string> 
-  <string>
-    <id>200</id>
-    <value>Upplýsingar</value>
-  </string> 
-  <string>
-    <id>201</id>
-    <value>Ár</value>
-  </string> 
-  <string>
-    <id>202</id>
-    <value>Auglýsingarorð</value>
-  </string> 
-  <string>
-    <id>203</id>
-    <value>Söguþráður</value>
-  </string> 
-  <string>
-    <id>204</id>
-    <value>Einkunn</value>
-  </string> 
-  <string>
-    <id>205</id>
-    <value>Atkvæði</value>
-  </string> 
-  <string>
-    <id>206</id>
-    <value>Leikarar</value>
-  </string> 
-  <string>
-    <id>207</id>
-    <value>Söguþráður</value>
-  </string> 
-  <string>
-    <id>208</id>
-    <value>Spila</value>
-  </string> 
-  <string>
-    <id>209</id>
-    <value>Næsta</value>
-  </string> 
-  <string>
-    <id>210</id>
-    <value>Fyrri</value>
-  </string> 
-  <string>
-    <id>211</id>
-    <value>Leita að forritum</value>
-  </string> 
-  <string>
-    <id>212</id>
-    <value>forrit fundust</value>
-  </string> 
-  <string>
-    <id>213</id>
-    <value>Viðmótsstilling</value>
-  </string> 
-  <string>
-    <id>214</id>
-    <value>Skjástilling</value>
-  </string> 
-  <string>
-    <id>215</id>
-    <value>Mýkja</value>
-  </string> 
-  <string>
-    <id>216</id>
-    <value>Stækka</value>
-  </string> 
-  <string>
-    <id>217</id>
-    <value>Teygja</value>
-  </string> 
-  <string>
-    <id>218</id>
-    <value>DVD Drif</value>
-  </string> 
-  <string>
-    <id>219</id>
-    <value>Setjið disk inn</value>
-  </string> 
-  <string>
-    <id>220</id>
-    <value>Fjarlæg geymsla</value>
-  </string> 
-  <string>
-    <id>221</id>
-    <value>Netkerfi ótengt</value>
-  </string> 
-  <string>
-    <id>222</id>
-    <value>Hætta við</value>
-  </string> 
-  <string>
-    <id>223</id>
-    <value>Velja bestu upplausn fyrir myndbönd</value>
-  </string> 
-  <string>
-    <id>224</id>
-    <value>Hraði</value>
-  </string> 
-  <string>
-    <id>225</id>
-    <value>Breytingarhraði</value>
-  </string> 
-  <string>
-    <id>226</id>
-    <value>Virkja PAL60</value>
-  </string> 
-  <string>
-    <id>227</id>
-    <value>Virkja CDDB</value>
-  </string> 
-  <string>
-    <id>228</id>
-    <value>Endurraða lagalista í byrjun</value>
-  </string> 
-  <string>
-    <id>229</id>
-    <value>Hvíldartími harðdisks (mín)</value>
-  </string> 
-  <string>
-    <id>230</id>
-    <value>Síur</value>
-  </string> 
-  <string>
-    <id>231</id>
-    <value>Engin</value>
-  </string> 
-  <string>
-    <id>232</id>
-    <value>Punktur</value>
-  </string> 
-  <string>
-    <id>233</id>
-    <value>Línulegur</value>
-  </string> 
-  <string>
-    <id>234</id>
-    <value>Anisotropic</value>
-  </string> 
-  <string>
-    <id>235</id>
-    <value>Quincunx</value>
-  </string> 
-  <string>
-    <id>236</id>
-    <value>Gaussian Cubic</value>
-  </string> 
-  <string>
-    <id>237</id>
-    <value>Minnkun:</value>
-  </string> 
-  <string>
-    <id>238</id>
-    <value>Stækkun:</value>
-  </string>
-  <string>
-    <id>240</id>
-    <value>Sjálfkeyra  DVD-Myndir</value>
-  </string>
-  <string>
-    <id>241</id>
-    <value>Sjálfkeyra VCD/SVCD</value>
-  </string>
-  <string>
-    <id>242</id>
-    <value>Sjálfkeyra hljóðdiska</value>
-  </string>
-  <string>
-    <id>243</id>
-    <value>Sjálfkeyra XBOX leiki</value>
-  </string>
-  <string>
-    <id>244</id>
-    <value>Sjálfkeyra myndbönd</value>
-  </string>
-  <string>
-    <id>245</id>
-    <value>Sjálfkeyra tónlist</value>
-  </string>
-  <string>
-    <id>246</id>
-    <value>Sjálfkeyra ljósmyndir</value>
-  </string>
-  <string>
-    <id>247</id>
-    <value>Skriftur</value>
-  </string>
-  <string>
-    <id>248</id>
-    <value>Tungumál</value>
-  </string>
-  <string>
-    <id>249</id>
-    <value>Tónlist</value>
-  </string>
-  <string>
-    <id>250</id>
-    <value>Myndskreyting</value>
-  </string>
-  <string>
-    <id>251</id>
-    <value>Veldu ákvörðunarstað</value>
-  </string>
-  <string>
-    <id>252</id>
-    <value>Senda í alla hátalara</value>
-  </string>
-  <string>
-    <id>253</id>
-    <value>Fjöldi rása</value>
-  </string>
-  <string>
-    <id>254</id>
-    <value>AC3 áframtenging</value>
-  </string>
-  <string>
-    <id>255</id>
-    <value>CDDB</value>
-  </string>
-  <string>
-    <id>256</id>
-    <value>Spyr freedb um upplýsingar</value>
-  </string>
-  <string>
-    <id>257</id>
-    <value>Villa</value>
-  </string>
-  <string>
-    <id>258</id>
-    <value>Virkja ID3 merkingar</value>
-  </string>
-  <string>
-    <id>259</id>
-    <value>Opna</value>
-  </string>
-  <string>
-    <id>260</id>
-    <value>Shoutcast netútvarp</value>
-  </string>
-  <string>
-    <id>261</id>
-    <value>Bíð eftir upphafi....</value>
-  </string>
-  <string>
-    <id>262</id>
-    <value>Skriftuúttak</value>
-  </string>
-  <string>
-    <id>263</id>
-    <value>HTTP þjónn:</value>
-  </string>
-  <string>
-    <id>264</id>
-    <value>Taka upp</value>
-  </string>
-  <string>
-    <id>265</id>
-    <value>Stövða upptöku</value>
-  </string>
-  <string>
-    <id>266</id>
-    <value>Flokka eftir lagi</value>
-  </string>
-  <string>
-    <id>267</id>
-    <value>Flokka eftir tíma</value>
-  </string>
-  <string>
-    <id>268</id>
-    <value>Flokka eftir titli</value>
-  </string>
-  <string>
-    <id>269</id>
-    <value>Flokka eftir listamanni</value>
-  </string>
-  <string>
-    <id>270</id>
-    <value>Flokka eftir hljómplötu</value>
-  </string>
-  <string>
-    <id>271</id>
-    <value>Topp 100</value>
-  </string>
-  <string>
-    <id>272</id>
-    <value>Efri-vinstri yfirflóðsjöfnun</value>
-  </string>
-  <string>
-    <id>273</id>
-    <value>Neðri-hægri yfirflóðsjöfnun</value>
-  </string>
-  <string>
-    <id>274</id>
-    <value>Staðsetning þýðingartexta</value>
-  </string>
-  <string>
-    <id>275</id>
-    <value>Stillingar skjápunktahlutfalla</value>
-  </string>
-  <string>
-    <id>276</id>
-    <value>Færðu örina til að breyta yfirflóði myndar</value>
-  </string>
-  <string>
-    <id>277</id>
-    <value>Færðu strikið til að breyta staðsetningu þýðingartexta</value>
-  </string>
-  <string>
-    <id>278</id>
-    <value>Breyttu ferhyrningnum þar til hliðarnar eru jafnar</value>
-  </string>
-  <string>
-    <id>279</id>
-    <value>Gat ekki hlaðið stillingum</value>
-  </string>
-  <string>
-    <id>280</id>
-    <value>Nota sjálfgefin gildi</value>
-  </string>
-  <string>
-    <id>281</id>
-    <value>Vinsamlegast athugið .xml skrár</value>
-  </string>
-	<string>
-		<id>282</id>
-		<value>fann %i atriði</value>
-	</string>
-	<string>
-		<id>283</id>
-		<value>Leitarniðurstöður</value>
-	</string>
-	<string>
-		<id>284</id>
-		<value>Ekkert fannst</value>
-	</string>
-	<string>
-		<id>285</id>
-		<value>Deinterlace sía</value>
-	</string>
-	<string>
-		<id>286</id>
-		<value>Eftirvinnslusía</value>
-	</string>
-	<string>
-		<id>287</id>
-		<value>SRT Skjátextar</value>
-	</string>
-	<string>
-		<id>288</id>
-		<value>Leturgerð</value>
-	</string>
-	<string>
-		<id>289</id>
-		<value>Stærð</value>
-	</string>
-	<string>
-		<id>290</id>
-		<value>Hljóðmögnun (dB)</value>
-	</string>
-	<string>
-		<id>291</id>
-		<value>Mynd</value>
-	</string>
-	<string>
-		<id>292</id>
-		<value>Hljóð</value>
-	</string>
-	<string>
-		<id>293</id>
-		<value>Skjátextar</value>
-	</string>
-	<string>
-		<id>294</id>
-		<value>Gera bókarmerki</value>
-	</string>
-	<string>
-		<id>295</id>
-		<value>Raða bókarmerkjum</value>
-	</string>
-	<string>
-		<id>296</id>
-		<value>Hreinsa bókarmerki</value>
-	</string>
-	<string>
-		<id>297</id>
-		<value>M/H Seinkun</value>
-	</string>
-	<string>
-		<id>298</id>
-		<value>Sleði</value>
-	</string>
-	<string>
-		<id>300</id>
-		<value>1. Tungumál</value>
-	</string>
-	<string>
-		<id>301</id>
-		<value>2. Hljóðstyrkur</value>
-	</string>
-	<string>
-		<id>302</id>
-		<value>3. Straumur</value>
-	</string>
-	<string>
-		<id>303</id>
-		<value>Seinkun</value>
-	</string>
-	<string>
-		<id>304</id>
-		<value>Tungumál</value>
-	</string>
-	<string>
-		<id>305</id>
-		<value>Virkt</value>
-	</string>
-	<string>
-		<id>306</id>
-		<value>Non-Interleaved</value>
-	</string>
-	<string>
-		<id>307</id>
-		<value>Sjálfvirkt</value>
-	</string>
-	<string>
-		<id>308</id>
-		<value>vertical deblocking sía</value>
-	</string>
-	<string>
-		<id>309</id>
-		<value>horizontal deblocking sía</value>
-	</string>
-	<string>
-		<id>310</id>
-		<value>Sjálfvirk birta/skerpa</value>
-	</string>
-	<string>
-		<id>311</id>
-		<value>Dering</value>
-	</string>
-	<string>
-		<id>312</id>
-		<value>(0=sjálfv.)</value>
-	</string>
-	<string>
-		<id>313</id>
-		<value>Endurraða gagnagrunni</value>
-	</string>
-	<string>
-		<id>314</id>
-		<value>Undirbý...</value>
-	</string>
-	<string>
-		<id>315</id>
-		<value>Gagnagrunnsvilla</value>
-	</string>
-	<string>
-		<id>316</id>
-		<value>Leita í lögum...</value>
-	</string>
-	<string>
-		<id>317</id>
-		<value>Endurröðun tókst</value>
-	</string>
-	<string>
-		<id>318</id>
-		<value>Merki eydd lög</value>
-	</string>
-	<string>
-		<id>319</id>
-		<value>Villa við endurröðun laga</value>
-	</string>
-	<string>
-		<id>320</id>
-		<value>Leita í listamönnum...</value>
-	</string>
-	<string>
-		<id>321</id>
-		<value>Villa við endurröðun listamanna</value>
-	</string>
-	<string>
-		<id>322</id>
-		<value>Leita í tegundum...</value>
-	</string>
-	<string>
-		<id>323</id>
-		<value>Villa við endurröðun tegunda</value>
-	</string>
-	<string>
-		<id>324</id>
-		<value>Leita í slóðum...</value>
-	</string>
-	<string>
-		<id>325</id>
-		<value>Villa við endurröðun slóða</value>
-	</string>
-	<string>
-		<id>326</id>
-		<value>Leita í plötum...</value>
-	</string>
-	<string>
-		<id>327</id>
-		<value>Villa við endurröðun platna</value>
-	</string>
-	<string>
-		<id>328</id>
-		<value>Vista breytingar...</value>
-	</string>
-	<string>
-		<id>329</id>
-		<value>Villa við vistun breytinga</value>
-	</string>
-	<string>
-		<id>330</id>
-		<value>Gæti tekið sinn tíma...</value>
-	</string>
-	<string>
-		<id>331</id>
-		<value>Þjappa gagnagrunni...</value>
-	</string>
-	<string>
-		<id>332</id>
-		<value>Villa við þjöppun gagnagrunns</value>
-	</string>
-	<string>
-		<id>333</id>
-		<value>Viltu endurraða tónlistargrunni?</value>
-	</string>
-	<string>
-		<id>334</id>
-		<value>Endurraða tónlistargrunni</value>
-	</string>
-	<string>
-		<id>335</id>
-		<value>Byrja</value>
-	</string>
-	<string>
-		<id>336</id>
-		<value>Stilla rammafjölda</value>
-	</string>
-	<string>
-		<id>337</id>
-		<value>Hljóðútgangur:</value>
-	</string>
-	<string>
-		<id>338</id>
-		<value>Hliðrænt</value>
-	</string>
-	<string>
-		<id>339</id>
-		<value>Stafrænt</value>
-	</string>
-	<string>
-		<id>340</id>
-		<value>Ýmsir flytjendur</value>
-	</string>
-	<string>
-		<id>341</id>
-		<value>Spila DVD</value>
-	</string>
-	<string>
-		<id>342</id>
-		<value>Kvikmyndir</value>
-	</string>
-	<string>
-		<id>343</id>
-		<value>Stilla rammafjölda</value>
-	</string>
-	<string>
-		<id>344</id>
-		<value>Leikarar</value>
-	</string>
-	<string>
-		<id>345</id>
-		<value>Ár</value>
-	</string>
-	<string>
-		<id>346</id>
-		<value>Stafla</value>
-	</string>
-	<string>
-		<id>347</id>
-		<value>Afstafla</value>
-	</string>
-	<string>
-		<id>348</id>
-		<value>Fletja möpputré</value>
-	</string>
-	<string>
-		<id>349</id>
-		<value>Sýna aðeins Default.xbe</value>
-	</string>
-	<string>
-		<id>350</id>
-		<value>Forrits</value>
-	</string>
-	<string>
-		<id>351</id>
-		<value>Slökkt</value>
-	</string>
-	<string>
-		<id>352</id>
-		<value>Dekkja</value>
-	</string>
-	<string>
-		<id>353</id>
-		<value>Svart</value>
-	</string>
-	<string>
-		<id>354</id>
-		<value>Matrix skjár</value>
-	</string>
-	<string>
-		<id>355</id>
-		<value>Skjáhvíla eftir</value>
-	</string>
-	<string>
-		<id>356</id>
-		<value>Skjáhvíla</value>
-	</string>
-	<string>
-		<id>357</id>
-		<value>Slökkt eftir</value>
-	</string>
-	<string>
-		<id>358</id>
-		<value>Allar plötur</value>
-	</string>
-	<string>
-		<id>359</id>
-		<value>Nýlegar plötur</value>
-	</string>
-	<string>
-		<id>360</id>
-		<value>Skjáhvíla</value>
-	</string>
-	<string>
-		<id>361</id>
-		<value>R. Myndasýning</value>
-	</string>
-	<string>
-		<id>362</id>
-		<value>Myrkvun skjáhvílu (%)</value>
-	</string>
-	<string>
-		<id>363</id>
-		<value>Raða eftir: Skrám</value>
-	</string>
-	<string>
-		<id>364</id>
-		<value>Dolby Digital/DTS gegnumtenging</value>
-	</string>
-	<string>
-		<id>365</id>
-		<value>Raða eftir: Nafni</value>
-	</string>
-	<string>
-		<id>366</id>
-		<value>Raða eftir: Ártali</value>
-	</string>
-	<string>
-		<id>367</id>
-		<value>Raða eftir: Einkunn</value>
-	</string>
-	<string>
-		<id>368</id>
-		<value>IMDB</value>
-	</string>
-	<string>
-		<id>369</id>
-		<value>Titill</value>
-	</string>
-	<string>
-		<id>370</id>
-		<value>Þrumuveður</value>
-	</string>
-	<string>
-		<id>371</id>
-		<value>Hálf</value>
-	</string>
-	<string>
-		<id>372</id>
-		<value>Að mestu</value>
-	</string>
-	<string>
-		<id>373</id>
-		<value>Sólskin</value>
-	</string>
-	<string>
-		<id>374</id>
-		<value>Skýjað</value>
-	</string>
-	<string>
-		<id>375</id>
-		<value>Snjór</value>
-	</string>
-	<string>
-		<id>376</id>
-		<value>Rigning</value>
-	</string>
-	<string>
-		<id>377</id>
-		<value>Létt</value>
-	</string>
-	<string>
-		<id>378</id>
-		<value>FH</value>
-	</string>
-	<string>
-		<id>379</id>
-		<value>EH</value>
-	</string>
-	<string>
-		<id>380</id>
-		<value>Skúrir</value>
-	</string>
-	<string>
-		<id>381</id>
-		<value>Fá</value>
-	</string>
-	<string>
-		<id>382</id>
-		<value>Dreifð</value>
-	</string>
-	<string>
-		<id>383</id>
-		<value>Vindur</value>
-	</string>
-	<string>
-		<id>384</id>
-		<value>Sterkt</value>
-	</string>
-	<string>
-		<id>385</id>
-		<value>Létt</value>
-	</string>
-	<string>
-		<id>386</id>
-		<value>Bjart</value>
-	</string>
-	<string>
-		<id>387</id>
-		<value>Ský</value>
-	</string>
-	<string>
-		<id>388</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>389</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>390</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>391</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>392</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>393</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>394</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>395</id>
-		<value>N/A</value>
-	</string>
-	<string>
-		<id>396</id>
-		<value>Veldu staðsetningu</value>
-	</string>
-	<string>
-		<id>397</id>
-		<value>Glæðingartími</value>
-	</string>
-	<string>
-		<id>398</id>
-		<value>Hitamælieiningar</value>
-	</string>
-	<string>
-		<id>399</id>
-		<value>Hraðamælieiningar</value>
-	</string>
-	<string>
-		<id>400</id>
-		<value>Veður</value>
-	</string>
-	<string>
-		<id>401</id>
-		<value>Hiti</value>
-	</string>
-	<string>
-		<id>402</id>
-		<value>Skynjað sem</value>
-	</string>
-	<string>
-		<id>403</id>
-		<value>UV einingar</value>
-	</string>
-	<string>
-		<id>404</id>
-		<value>Vindur</value>
-	</string>
-	<string>
-		<id>405</id>
-		<value>Daggarmark</value>
-	</string>
-	<string>
-		<id>406</id>
-		<value>Raki</value>
-	</string>
-	<string>
-		<id>407</id>
-		<value>Frá</value>
-	</string>
-	<string>
-		<id>408</id>
-		<value>við</value>
-	</string>
-	<string>
-		<id>410</id>
-		<value>Tengist Weather.com</value>
-	</string>
-	<string>
-		<id>411</id>
-		<value>Sæki veðurgögn fyrir:</value>
-	</string>
-	<string>
-		<id>412</id>
-		<value>Finn ekki veðurgögn</value>
-	</string>
-	<string>
-		<id>413</id>
-		<value>Handvirkt</value>
-	</string>
-	<string>
-		<id>414</id>
-		<value>Engin umsögn um þessa plötu</value>
-	</string>
-	<string>
-		<id>415</id>
-		<value>Sæki smámynd...</value>
-	</string>
-	<string>
-		<id>416</id>
-		<value>Ekki til</value>
-	</string>
-	<string>
-		<id>417</id>
-		<value>Sýn: Stór tákn</value>
-	</string>
-	<string>
-		<id>418</id>
-		<value>Kvikmyndir/Gerðir</value>
-	</string>
-	<string>
-		<id>419</id>
-		<value>Kvikmyndir/Leikarar</value>
-	</string>
-	<string>
-		<id>420</id>
-		<value>Kvikmyndir/Ártöl</value>
-	</string>
-	<string>
-		<id>421</id>
-		<value>Kvikmyndir/Titlar</value>
-	</string>
-	<string>
-		<id>422</id>
-		<value>Eyða plötuupplýsingum</value>
-	</string>
-	<string>
-		<id>423</id>
-		<value>Eyða CDDB upplýsingum</value>
-	</string>
-	<string>
-		<id>424</id>
-		<value>Velja</value>
-	</string>
-	<string>
-		<id>425</id>
-		<value>Engar plötuupplýsingar fundust.</value>
-	</string>
-	<string>
-		<id>426</id>
-		<value>Engar CDDB upplýsingar fundust.</value>
-	</string>
-	<string>
-		<id>427</id>
-		<value>Diskur:</value>
-	</string>
-	<string>
-		<id>428</id>
-		<value>Settu inn réttan CD/DVD</value>
-	</string>
-	<string>
-		<id>429</id>
-		<value>Settu inn eftirfarandi CD/DVD</value>
-	</string>
-	<string>
-		<id>430</id>
-		<value>Raða eftir: DVD#</value>
-	</string>
-	<string>
-		<id>431</id>
-		<value>Ekkert biðminni</value>
-	</string>
-	<string>
-		<id>432</id>
-		<value>Eyða kvikmynd úr grunni</value>
-	</string>
-	<string>
-		<id>433</id>
-		<value>Viltu fjarlægja</value>
-	</string>
-	<string>
-		<id>434</id>
-		<value>kvikmyndina?</value>
-	</string>
-	<string>
-		<id>435</id>
-		<value>Lag</value>
-	</string>
-	<string>
-		<id>436</id>
-		<value>Ár:</value>
-	</string>
-	<string>
-		<id>437</id>
-		<value>Lengd:</value>
-	</string>
-	<string>
-		<id>438</id>
-		<value>Opna skrá</value>
-	</string>
-	<string>
-		<id>439</id>
-		<value>Biðminni</value>
-	</string>
-	<string>
-		<id>440</id>
-		<value>Harður diskur</value>
-	</string>
-	<string>
-		<id>441</id>
-		<value>UDF</value>
-	</string>
-	<string>
-		<id>442</id>
-		<value>LAN</value>
-	</string>
-	<string>
-		<id>443</id>
-		<value>Internet</value>
-	</string>
-	<string>
-		<id>444</id>
-		<value>mynd</value>
-	</string>
-	<string>
-		<id>445</id>
-		<value>hljóð</value>
-	</string>
-	<string>
-		<id>446</id>
-		<value>DVD</value>
-	</string>
-	<string>
-		<id>447</id>
-		<value>Sjálfkeyra</value>
-	</string>
-	<string>
-		<id>448</id>
-		<value>LCD</value>
-	</string>
-	<string>
-		<id>449</id>
-		<value>Virkt</value>
-	</string>
-	<string>
-		<id>450</id>
-		<value>Dálkar</value>
-	</string>
-	<string>
-		<id>451</id>
-		<value>Röð 1 adress:</value>
-	</string>
-	<string>
-		<id>452</id>
-		<value>Röð 2 adress:</value>
-	</string>
-	<string>
-		<id>453</id>
-		<value>Röð 3 adress:</value>
-	</string>
-	<string>
-		<id>454</id>
-		<value>Röð 4 adress:</value>
-	</string>
-	<string>
-		<id>455</id>
-		<value>Raðir:</value>
-	</string>
-	<string>
-		<id>456</id>
-		<value>Hamur:</value>
-	</string>
-	<string>
-		<id>457</id>
-		<value>Breyta sýn</value>
-	</string>
-	<string>
-		<id>458</id>
-		<value>B/Mark</value>
-	</string>
-	<string>
-		<id>459</id>
-		<value>Textar</value>
-	</string>
-	<string>
-		<id>460</id>
-		<value>Hljóðstraumur</value>
-	</string>
-	<string>
-		<id>461</id>
-		<value>[virkt]</value>
-	</string>
-	<string>
-		<id>462</id>
-		<value>Skjátexti</value>
-	</string>
-	<string>
-		<id>463</id>
-		<value>Baklýsing</value>
-	</string>
-	<string>
-		<id>464</id>
-		<value>Birta</value>
-	</string>
-	<string>
-		<id>465</id>
-		<value>Skerpa</value>
-	</string>
-	<string>
-		<id>466</id>
-		<value>Gamma</value>
-	</string>
-	<string>
-		<id>467</id>
-		<value>Gerð</value>
-	</string>
-	<string>
-		<id>468</id>
-		<value>Hreyfðu súluna til að breyta staðsetningu</value>
-	</string>
-	<string>
-		<id>469</id>
-		<value>OSD staðsetning</value>
-	</string>
-	<string>
-		<id>470</id>
-		<value>Þakkir</value>
-	</string>
-	<string>
-		<id>471</id>
-		<value>Breytikubbur</value>
-	</string>
-	<string>
-		<id>472</id>
-		<value>OSD tími</value>
-	</string>
-	<string>
-		<id>473</id>
-		<value>Hágæða endurvinnsla</value>
-	</string>
-	<string>
-		<id>474</id>
-		<value>Af</value>
-	</string>
-	<string>
-		<id>475</id>
-		<value>Bara tónlist</value>
-	</string>
-	<string>
-		<id>476</id>
-		<value>Tónlist &amp; mynd</value>
-	</string>
-	<string>
-		<id>477</id>
-		<value>Gat ekki hlaðið lagalista</value>
-	</string>
-	<string>
-		<id>478</id>
-		<value>OSD</value>
-	</string>
-	<string>
-		<id>479</id>
-		<value>Húð og tungumál</value>
-	</string>
-	<string>
-		<id>480</id>
-		<value>Viðmót</value>
-	</string>
-	<string>
-		<id>481</id>
-		<value>Hljóðvalmöguleikar</value>
-	</string>
-	<string>
-		<id>482</id>
-		<value>Um XBMC</value>
-	</string>
-	<string>
-		<id>483</id>
-		<value>Plötur</value>
-	</string>
-	<string>
-		<id>484</id>
-		<value>Listamenn</value>
-	</string>
-	<string>
-		<id>485</id>
-		<value>Eyða plötu</value>
-	</string>
-	<string>
-		<id>486</id>
-		<value>Endurtaka</value>
-	</string>
-	<string>
-		<id>487</id>
-		<value>Endurtaka eitt</value>
-	</string>
-	<string>
-		<id>488</id>
-		<value>Endurtaka lagalista í möppu</value>
-	</string>
-	<string>
-		<id>489</id>
-		<value>Nota lagalista í lög</value>
-	</string>
-	<string>
-		<id>490</id>
-		<value>Skipta sjálfvirkt milli lista og tákna</value>
-	</string>
-	<string>
-		<id>491</id>
-		<value>Nota stór tákn</value>
-	</string>
-	<string>
-		<id>492</id>
-		<value>Stækka skjátexta</value>
-	</string>
-	<string>
-		<id>493</id>
-		<value>Frekari valmöguleikar (fyrir sérfræðinga!)</value>
-	</string>
-	<string>
-		<id>494</id>
-		<value>Heildarhljóðsvið (dB)</value>
-	</string>
-	<string>
-		<id>495</id>
-		<value>Stækka kvikmyndir í viðmótsupplausn</value>
-	</string>
-	<string>
-		<id>496</id>
-		<value>Stillingar</value>
-	</string>
-	<string>
-		<id>497</id>
-		<value>Fela skráarendingar</value>
-	</string>
-	<string>
-		<id>498</id>
-		<value>Raða eftir: Tegund</value>
-	</string>
-	<string>
-		<id>499</id>
-		<value>Get ekki tengst www.allmusic.com</value>
-	</string>
-	<string>
-		<id>500</id>
-		<value>Niðurhal plötuupplýsinga brást</value>
-	</string>
-	<string>
-		<id>10000</id>
-		<value>Heim</value>
-	</string>
-	<string>
-		<id>10001</id>
-		<value>Forrit</value>
-	</string>
-	<string>
-		<id>10002</id>
-		<value>Ljósmyndir</value>
-	</string>
-	<string>
-		<id>10003</id>
-		<value>Skráarsýsl</value>
-	</string>
-	<string>
-		<id>10004</id>
-		<value>Stillingar</value>
-	</string>
-	<string>
-		<id>10005</id>
-		<value>Tónlist</value>
-	</string>
-	<string>
-		<id>10006</id>
-		<value>Kvikmyndir</value>
-	</string>
-	<string>
-		<id>10007</id>
-		<value>Kerfisupplýsingar</value>
-	</string>
-	<string>
-		<id>10008</id>
-		<value>Stillingar-&gt;Almennar</value>
-	</string>
-	<string>
-		<id>10009</id>
-		<value>Stillingar-&gt;Skjár</value>
-	</string>
-	<string>
-		<id>10010</id>
-		<value>Stillingar-&gt;Skjár-&gt;Viðmótsstilling</value>
-	</string>
-	<string>
-		<id>10011</id>
-		<value>Stillingar-&gt;Skjár-&gt;Skjástillingar</value>
-	</string>
-	<string>
-		<id>10012</id>
-		<value>Stillingar-&gt;Myndasýning</value>
-	</string>
-	<string>
-		<id>10013</id>
-		<value>Stillingar-&gt;Skjár-&gt;Síur</value>
-	</string>
-	<string>
-		<id>10014</id>
-		<value>Stillingar-&gt;Tónlist</value>
-	</string>
-	<string>
-		<id>10015</id>
-		<value>Stillingar-&gt;Skjár-&gt;Skjátextar</value>
-	</string>
-	<string>
-		<id>10016</id>
-		<value>Stillingar-&gt;Skjár-&gt;Skjáhvíla</value>
-	</string>
-	<string>
-		<id>10017</id>
-		<value>Stillingar-&gt;Veður</value>
-	</string>
-	<string>
-		<id>10020</id>
-		<value>Stillingar-&gt;Skriftur</value>
-	</string>
-	<string>
-		<id>10021</id>
-		<value>Kvikmyndir/gerðír</value>
-	</string>
-	<string>
-		<id>10022</id>
-		<value>Kvikmyndir/leikari</value>
-	</string>
-	<string>
-		<id>10023</id>
-		<value>Kvikmyndir/ártal</value>
-	</string>
-	<string>
-		<id>10024</id>
-		<value>Stillingar-&gt;Forrit</value>
-	</string>
-	<string>
-		<id>10025</id>
-		<value>Kvikmyndir/titill</value>
-	</string>
-	<string>
-		<id>10026</id>
-		<value>Stillingar-&gt;Almennt-&gt;Biðminni</value>
-	</string>
-	<string>
-		<id>10027</id>
-		<value>Stillingar-&gt;Almennt-&gt;Sjálfkeyrsla</value>
-	</string>
-	<string>
-		<id>10028</id>
-		<value>Kvikmyndir/listi</value>
-	</string>
-	<string>
-		<id>10029</id>
-		<value>Stillingar-&gt;Almennt-&gt;LCD</value>
-	</string>
-	<string>
-		<id>10100</id>
-		<value>Já/Nei skilti</value>
-	</string>
-	<string>
-		<id>10101</id>
-		<value>Vinnsluskilti</value>
-	</string>
-	<string>
-		<id>10500</id>
-		<value>Tónlist/lagalisti</value>
-	</string>
-	<string>
-		<id>10501</id>
-		<value>Tónlist/skrár</value>
-	</string>
-	<string>
-		<id>10502</id>
-		<value>Tónlist/plötur</value>
-	</string>
-	<string>
-		<id>10503</id>
-		<value>Tónlist/listamenn</value>
-	</string>
-	<string>
-		<id>10504</id>
-		<value>Tónlist/gerðir</value>
-	</string>
-	<string>
-		<id>10505</id>
-		<value>Tónlist/topp 100</value>
-	</string>
-	<string>
-		<id>11000</id>
-		<value>lyklaborð</value>
-	</string>
-	<string>
-		<id>12000</id>
-		<value>Valskilti</value>
-	</string>
-	<string>
-		<id>12001</id>
-		<value>Tónlist/upplýsingar</value>
-	</string>
-	<string>
-		<id>12002</id>
-		<value>Skilti í lagi</value>
-	</string>
-	<string>
-		<id>12003</id>
-		<value>Kvikmyndir/Uppl.</value>
-	</string>
-	<string>
-		<id>12004</id>
-		<value>Skriptur/Uppl.</value>
-	</string>
-	<string>
-		<id>12005</id>
-		<value>Heilskjásmynd</value>
-	</string>
-	<string>
-		<id>12006</id>
-		<value>Myndrænt hljóð</value>
-	</string>
-	<string>
-		<id>12007</id>
-		<value>Ljósmyndir/myndasýning</value>
-	</string>
-	<string>
-		<id>12008</id>
-		<value>Skjalaröðunarskilti</value>
-	</string>
-	<string>
-		<id>12600</id>
-		<value>Veður</value>
-	</string>
-	<string>
-		<id>12900</id>
-		<value>Skjáhvíla</value>
-	</string>
-	<string>
-		<id>12901</id>
-		<value>Heilskjár OSD</value>
-	</string>
+  <string><id>0</id><value>Forrit</value></string>
+  <string><id>1</id><value>Ljósmyndir</value></string>
+  <string><id>2</id><value>Tónlist</value></string>
+  <string><id>3</id><value>Kvikmyndir</value></string>
+  <string><id>4</id><value>Sjónvarpsvísir</value></string>
+  <string><id>5</id><value>Stillingar</value></string>
+  <string><id>7</id><value>Skráarsýsl</value></string>
+  <string><id>8</id><value>Veður</value></string>
+  <string><id>11</id><value>Mánudagur</value></string>
+  <string><id>12</id><value>Þriðjudagur</value></string>
+  <string><id>13</id><value>Miðvikudagur</value></string>
+  <string><id>14</id><value>Fimmtudagur</value></string>
+  <string><id>15</id><value>Föstudagur</value></string>
+  <string><id>16</id><value>Laugardagur</value></string>
+  <string><id>17</id><value>Sunnudagur</value></string>
+  <string><id>21</id><value>Janúar</value></string>
+  <string><id>22</id><value>Febrúar</value></string>
+  <string><id>23</id><value>Mars</value></string>
+  <string><id>24</id><value>Apríl</value></string>
+  <string><id>25</id><value>Maí</value></string>
+  <string><id>26</id><value>Júní</value></string>
+  <string><id>27</id><value>Júlí</value></string>
+  <string><id>28</id><value>Ágúst</value></string>
+  <string><id>29</id><value>September</value></string>
+  <string><id>30</id><value>Október</value></string>
+  <string><id>31</id><value>Nóvember</value></string>
+  <string><id>32</id><value>Desember</value></string>
+  <string><id>100</id><value>Sjá sem tákn</value></string>
+  <string><id>101</id><value>Sjá sem lista</value></string>
+  <string><id>102</id><value>Skanna</value></string>
+  <string><id>103</id><value>Eftir nafni</value></string>
+  <string><id>104</id><value>Eftir aldri</value></string>
+  <string><id>105</id><value>Eftir stærð</value></string>
+  <string><id>106</id><value>Nei</value></string>
+  <string><id>107</id><value>Já</value></string>
+  <string><id>108</id><value>Myndasýning</value></string>
+  <string><id>109</id><value>Gera smámyndir</value></string>
+  <string><id>110</id><value>Gera smámyndir</value></string>
+  <string><id>111</id><value>Flýtival</value></string>
+  <string><id>112</id><value>Stöðvað</value></string>
+  <string><id>113</id><value>Skráarsýsl : Uppruni</value></string>
+  <string><id>114</id><value>Skráarsýsl : Áfangastaður</value></string>
+  <string><id>115</id><value>Afrita</value></string>
+  <string><id>116</id><value>Færa</value></string>
+  <string><id>117</id><value>Eyða</value></string>
+  <string><id>118</id><value>Endurnefna</value></string>
+  <string><id>119</id><value>Ný mappa</value></string>
+  <string><id>120</id><value>Staðfesta afritun</value></string>
+  <string><id>121</id><value>Staðfesta færslu</value></string>
+  <string><id>122</id><value>Staðfesta eyðingu</value></string>
+  <string><id>123</id><value>Afrita þessar skrár?</value></string>
+  <string><id>124</id><value>Færa þessar skrár?</value></string>
+  <string><id>125</id><value>Eyða þessum skrám?</value></string>
+  <string><id>126</id><value>Staða</value></string>
+  <string><id>127</id><value>Hlutir</value></string>
+  <string><id>128</id><value>Almennt</value></string>
+  <string><id>129</id><value>Myndasýning</value></string>
+  <string><id>130</id><value>Kerfisupplýsingar</value></string>
+  <string><id>131</id><value>Skjár</value></string>
+  <string><id>132</id><value>Hljómplötur</value></string>
+  <string><id>133</id><value>Listamenn</value></string>
+  <string><id>134</id><value>Sjá lög</value></string>
+  <string><id>135</id><value>Flokkar</value></string>
+  <string><id>136</id><value>Lagalistar</value></string>
+  <string><id>137</id><value>Leita</value></string>
+  <string><id>138</id><value>KERFISUPPLÝSINGAR</value></string>
+  <string><id>139</id><value>Hitastig:</value></string>
+  <string><id>140</id><value>CPU:</value></string>
+  <string><id>141</id><value>GPU:</value></string>
+  <string><id>142</id><value>Klukka:</value></string>
+  <string><id>143</id><value>Núna:</value></string>
+  <string><id>144</id><value>Hugbúnaður:</value></string>
+  <string><id>145</id><value>Netkerfi:</value></string>
+  <string><id>146</id><value>Tegund:</value></string>
+  <string><id>147</id><value>Föst IP</value></string>
+  <string><id>148</id><value>DHCP</value></string>
+  <string><id>149</id><value>MAC</value></string>
+  <string><id>150</id><value>IP:</value></string>
+  <string><id>151</id><value>Tenging:</value></string>
+  <string><id>152</id><value>Hálf virkni</value></string>
+  <string><id>153</id><value>Full virkni</value></string>
+  <string><id>154</id><value>Geymslurými</value></string>
+  <string><id>155</id><value>Drif</value></string>
+  <string><id>156</id><value>Laust</value></string>
+  <string><id>157</id><value>Mynd</value></string>
+  <string><id>158</id><value>Laust minni</value></string>
+  <string><id>159</id><value>Engin tenging</value></string>
+  <string><id>160</id><value>Laust</value></string>
+  <string><id>161</id><value>Ófáanlegt</value></string>
+  <string><id>162</id><value>Bakki opinn</value></string>
+  <string><id>163</id><value>Les</value></string>
+  <string><id>164</id><value>Enginn diskur</value></string>
+  <string><id>165</id><value>Diskur í bakka</value></string>
+  <string><id>166</id><value>Húð:</value></string>
+  <string><id>167</id><value>FTP þjónn:</value></string>
+  <string><id>168</id><value>Tímaþjónn:</value></string>
+  <string><id>169</id><value>Upplausn:</value></string>
+  <string><id>170</id><value>Hljómplata:</value></string>
+  <string><id>171</id><value>Listamaður:</value></string>
+  <string><id>172</id><value>Útgáfudagur:</value></string>
+  <string><id>173</id><value>Einkunn:</value></string>
+  <string><id>174</id><value>Tegund:</value></string>
+  <string><id>175</id><value>Tónar:</value></string>
+  <string><id>176</id><value>Stílar:</value></string>
+  <string><id>177</id><value>Umsögn:</value></string>
+  <string><id>178</id><value>Lög:</value></string>
+  <string><id>179</id><value>Lag</value></string>
+  <string><id>180</id><value>Lengd</value></string>
+  <string><id>181</id><value>Veldu hljómplötu</value></string>
+  <string><id>182</id><value>Lög</value></string>
+  <string><id>183</id><value>Umsögn</value></string>
+  <string><id>184</id><value>Endurlesa</value></string>
+  <string><id>185</id><value>Leita að hljómplötu</value></string>
+  <string><id>186</id><value>Í lagi</value></string>
+  <string><id>187</id><value>Ekkert fannst!</value></string>
+  <string><id>188</id><value>Velja allt</value></string>
+  <string><id>189</id><value>Skoða upplýsingar</value></string>
+  <string><id>190</id><value>Vista</value></string>
+  <string><id>191</id><value>Endurraða</value></string>
+  <string><id>192</id><value>Hreinsa</value></string>
+  <string><id>193</id><value>Leita</value></string>
+  <string><id>194</id><value>Leitar...</value></string>
+  <string><id>195</id><value>Engar IMDB upplýsingar fundust!</value></string>
+  <string><id>196</id><value>Veldu kvikmynd:</value></string>
+  <string><id>197</id><value>Spyr IMDB</value></string>
+  <string><id>198</id><value>Hleð upplýsingum um mynd</value></string>
+  <string><id>199</id><value>Leikstjóri</value></string>
+  <string><id>200</id><value>Upplýsingar</value></string>
+  <string><id>201</id><value>Ár</value></string>
+  <string><id>202</id><value>Auglýsingarorð</value></string>
+  <string><id>203</id><value>Söguþráður</value></string>
+  <string><id>204</id><value>Einkunn</value></string>
+  <string><id>205</id><value>Atkvæði</value></string>
+  <string><id>206</id><value>Leikarar</value></string>
+  <string><id>207</id><value>Söguþráður</value></string>
+  <string><id>208</id><value>Spila</value></string>
+  <string><id>209</id><value>Næsta</value></string>
+  <string><id>210</id><value>Fyrri</value></string>
+  <string><id>211</id><value>Leita að forritum</value></string>
+  <string><id>212</id><value>forrit fundust</value></string>
+  <string><id>213</id><value>Viðmótsstilling</value></string>
+  <string><id>214</id><value>Skjástilling</value></string>
+  <string><id>215</id><value>Mýkja</value></string>
+  <string><id>216</id><value>Stækka</value></string>
+  <string><id>217</id><value>Teygja</value></string>
+  <string><id>218</id><value>DVD Drif</value></string>
+  <string><id>219</id><value>Setjið disk inn</value></string>
+  <string><id>220</id><value>Fjarlæg geymsla</value></string>
+  <string><id>221</id><value>Netkerfi ótengt</value></string>
+  <string><id>222</id><value>Hætta við</value></string>
+  <string><id>223</id><value>Velja bestu upplausn fyrir myndbönd</value></string>
+  <string><id>224</id><value>Hraði</value></string>
+  <string><id>225</id><value>Breytingarhraði</value></string>
+  <string><id>226</id><value>Virkja PAL60</value></string>
+  <string><id>227</id><value>Virkja CDDB</value></string>
+  <string><id>228</id><value>Endurraða lagalista í byrjun</value></string>
+  <string><id>229</id><value>Hvíldartími harðdisks (mín)</value></string>
+  <string><id>230</id><value>Síur</value></string>
+  <string><id>231</id><value>Engin</value></string>
+  <string><id>232</id><value>Punktur</value></string>
+  <string><id>233</id><value>Línulegur</value></string>
+  <string><id>234</id><value>Anisotropic</value></string>
+  <string><id>235</id><value>Quincunx</value></string>
+  <string><id>236</id><value>Gaussian Cubic</value></string>
+  <string><id>237</id><value>Minnkun:</value></string>
+  <string><id>238</id><value>Stækkun:</value></string>
+  <string><id>240</id><value>Sjálfkeyra  DVD-Myndir</value></string>
+  <string><id>241</id><value>Sjálfkeyra VCD/SVCD</value></string>
+  <string><id>242</id><value>Sjálfkeyra hljóðdiska</value></string>
+  <string><id>243</id><value>Sjálfkeyra XBOX leiki</value></string>
+  <string><id>244</id><value>Sjálfkeyra myndbönd</value></string>
+  <string><id>245</id><value>Sjálfkeyra tónlist</value></string>
+  <string><id>246</id><value>Sjálfkeyra ljósmyndir</value></string>
+  <string><id>247</id><value>Skriftur</value></string>
+  <string><id>248</id><value>Tungumál</value></string>
+  <string><id>249</id><value>Tónlist</value></string>
+  <string><id>250</id><value>Myndskreyting</value></string>
+  <string><id>251</id><value>Veldu ákvörðunarstað</value></string>
+  <string><id>252</id><value>Senda í alla hátalara</value></string>
+  <string><id>253</id><value>Fjöldi rása</value></string>
+  <string><id>254</id><value>AC3 áframtenging</value></string>
+  <string><id>255</id><value>CDDB</value></string>
+  <string><id>256</id><value>Spyr freedb um upplýsingar</value></string>
+  <string><id>257</id><value>Villa</value></string>
+  <string><id>258</id><value>Virkja ID3 merkingar</value></string>
+  <string><id>259</id><value>Opna</value></string>
+  <string><id>260</id><value>Shoutcast netútvarp</value></string>
+  <string><id>261</id><value>Bíð eftir upphafi....</value></string>
+  <string><id>262</id><value>Skriftuúttak</value></string>
+  <string><id>263</id><value>HTTP þjónn:</value></string>
+  <string><id>264</id><value>Taka upp</value></string>
+  <string><id>265</id><value>Stövða upptöku</value></string>
+  <string><id>266</id><value>Flokka eftir lagi</value></string>
+  <string><id>267</id><value>Flokka eftir tíma</value></string>
+  <string><id>268</id><value>Flokka eftir titli</value></string>
+  <string><id>269</id><value>Flokka eftir listamanni</value></string>
+  <string><id>270</id><value>Flokka eftir hljómplötu</value></string>
+  <string><id>271</id><value>Topp 100</value></string>
+  <string><id>272</id><value>Efri-vinstri yfirflóðsjöfnun</value></string>
+  <string><id>273</id><value>Neðri-hægri yfirflóðsjöfnun</value></string>
+  <string><id>274</id><value>Staðsetning þýðingartexta</value></string>
+  <string><id>275</id><value>Stillingar skjápunktahlutfalla</value></string>
+  <string><id>276</id><value>Færðu örina til að breyta yfirflóði myndar</value></string>
+  <string><id>277</id><value>Færðu strikið til að breyta staðsetningu þýðingartexta</value></string>
+  <string><id>278</id><value>Breyttu ferhyrningnum þar til hliðarnar eru jafnar</value></string>
+  <string><id>279</id><value>Gat ekki hlaðið stillingum</value></string>
+  <string><id>280</id><value>Nota sjálfgefin gildi</value></string>
+  <string><id>281</id><value>Vinsamlegast athugið .xml skrár</value></string>
+  <string><id>282</id><value>fann %i atriði</value></string>
+  <string><id>283</id><value>Leitarniðurstöður</value></string>
+  <string><id>284</id><value>Ekkert fannst</value></string>
+  <string><id>285</id><value>Deinterlace sía</value></string>
+  <string><id>286</id><value>Eftirvinnslusía</value></string>
+  <string><id>287</id><value>SRT Skjátextar</value></string>
+  <string><id>288</id><value>Leturgerð</value></string>
+  <string><id>289</id><value>Stærð</value></string>
+  <string><id>290</id><value>Hljóðmögnun (dB)</value></string>
+  <string><id>291</id><value>Mynd</value></string>
+  <string><id>292</id><value>Hljóð</value></string>
+  <string><id>293</id><value>Skjátextar</value></string>
+  <string><id>294</id><value>Gera bókarmerki</value></string>
+  <string><id>295</id><value>Raða bókarmerkjum</value></string>
+  <string><id>296</id><value>Hreinsa bókarmerki</value></string>
+  <string><id>297</id><value>M/H Seinkun</value></string>
+  <string><id>298</id><value>Sleði</value></string>
+  <string><id>300</id><value>1. Tungumál</value></string>
+  <string><id>301</id><value>2. Hljóðstyrkur</value></string>
+  <string><id>302</id><value>3. Straumur</value></string>
+  <string><id>303</id><value>Seinkun</value></string>
+  <string><id>304</id><value>Tungumál</value></string>
+  <string><id>305</id><value>Virkt</value></string>
+  <string><id>306</id><value>Non-Interleaved</value></string>
+  <string><id>307</id><value>Sjálfvirkt</value></string>
+  <string><id>308</id><value>vertical deblocking sía</value></string>
+  <string><id>309</id><value>horizontal deblocking sía</value></string>
+  <string><id>310</id><value>Sjálfvirk birta/skerpa</value></string>
+  <string><id>311</id><value>Dering</value></string>
+  <string><id>312</id><value>(0=sjálfv.)</value></string>
+  <string><id>313</id><value>Endurraða gagnagrunni</value></string>
+  <string><id>314</id><value>Undirbý...</value></string>
+  <string><id>315</id><value>Gagnagrunnsvilla</value></string>
+  <string><id>316</id><value>Leita í lögum...</value></string>
+  <string><id>317</id><value>Endurröðun tókst</value></string>
+  <string><id>318</id><value>Merki eydd lög</value></string>
+  <string><id>319</id><value>Villa við endurröðun laga</value></string>
+  <string><id>320</id><value>Leita í listamönnum...</value></string>
+  <string><id>321</id><value>Villa við endurröðun listamanna</value></string>
+  <string><id>322</id><value>Leita í tegundum...</value></string>
+  <string><id>323</id><value>Villa við endurröðun tegunda</value></string>
+  <string><id>324</id><value>Leita í slóðum...</value></string>
+  <string><id>325</id><value>Villa við endurröðun slóða</value></string>
+  <string><id>326</id><value>Leita í plötum...</value></string>
+  <string><id>327</id><value>Villa við endurröðun platna</value></string>
+  <string><id>328</id><value>Vista breytingar...</value></string>
+  <string><id>329</id><value>Villa við vistun breytinga</value></string>
+  <string><id>330</id><value>Gæti tekið sinn tíma...</value></string>
+  <string><id>331</id><value>Þjappa gagnagrunni...</value></string>
+  <string><id>332</id><value>Villa við þjöppun gagnagrunns</value></string>
+  <string><id>333</id><value>Viltu endurraða tónlistargrunni?</value></string>
+  <string><id>334</id><value>Endurraða tónlistargrunni</value></string>
+  <string><id>335</id><value>Byrja</value></string>
+  <string><id>336</id><value>Stilla rammafjölda</value></string>
+  <string><id>337</id><value>Hljóðútgangur:</value></string>
+  <string><id>338</id><value>Hliðrænt</value></string>
+  <string><id>339</id><value>Stafrænt</value></string>
+  <string><id>340</id><value>Ýmsir flytjendur</value></string>
+  <string><id>341</id><value>Spila DVD</value></string>
+  <string><id>342</id><value>Kvikmyndir</value></string>
+  <string><id>343</id><value>Stilla rammafjölda</value></string>
+  <string><id>344</id><value>Leikarar</value></string>
+  <string><id>345</id><value>Ár</value></string>
+  <string><id>346</id><value>Stafla</value></string>
+  <string><id>347</id><value>Afstafla</value></string>
+  <string><id>348</id><value>Fletja möpputré</value></string>
+  <string><id>349</id><value>Sýna aðeins Default.xbe</value></string>
+  <string><id>350</id><value>Forrits</value></string>
+  <string><id>351</id><value>Slökkt</value></string>
+  <string><id>352</id><value>Dekkja</value></string>
+  <string><id>353</id><value>Svart</value></string>
+  <string><id>354</id><value>Matrix skjár</value></string>
+  <string><id>355</id><value>Skjáhvíla eftir</value></string>
+  <string><id>356</id><value>Skjáhvíla</value></string>
+  <string><id>357</id><value>Slökkt eftir</value></string>
+  <string><id>358</id><value>Allar plötur</value></string>
+  <string><id>359</id><value>Nýlegar plötur</value></string>
+  <string><id>360</id><value>Skjáhvíla</value></string>
+  <string><id>361</id><value>R. Myndasýning</value></string>
+  <string><id>362</id><value>Myrkvun skjáhvílu (%)</value></string>
+  <string><id>363</id><value>Raða eftir: Skrám</value></string>
+  <string><id>364</id><value>Dolby Digital/DTS gegnumtenging</value></string>
+  <string><id>365</id><value>Raða eftir: Nafni</value></string>
+  <string><id>366</id><value>Raða eftir: Ártali</value></string>
+  <string><id>367</id><value>Raða eftir: Einkunn</value></string>
+  <string><id>368</id><value>IMDB</value></string>
+  <string><id>369</id><value>Titill</value></string>
+  <string><id>370</id><value>Þrumuveður</value></string>
+  <string><id>371</id><value>Hálf</value></string>
+  <string><id>372</id><value>Að mestu</value></string>
+  <string><id>373</id><value>Sólskin</value></string>
+  <string><id>374</id><value>Skýjað</value></string>
+  <string><id>375</id><value>Snjór</value></string>
+  <string><id>376</id><value>Rigning</value></string>
+  <string><id>377</id><value>Létt</value></string>
+  <string><id>378</id><value>FH</value></string>
+  <string><id>379</id><value>EH</value></string>
+  <string><id>380</id><value>Skúrir</value></string>
+  <string><id>381</id><value>Fá</value></string>
+  <string><id>382</id><value>Dreifð</value></string>
+  <string><id>383</id><value>Vindur</value></string>
+  <string><id>384</id><value>Sterkt</value></string>
+  <string><id>385</id><value>Létt</value></string>
+  <string><id>386</id><value>Bjart</value></string>
+  <string><id>387</id><value>Ský</value></string>
+  <string><id>388</id><value>N/A</value></string>
+  <string><id>389</id><value>N/A</value></string>
+  <string><id>390</id><value>N/A</value></string>
+  <string><id>391</id><value>N/A</value></string>
+  <string><id>392</id><value>N/A</value></string>
+  <string><id>393</id><value>N/A</value></string>
+  <string><id>394</id><value>N/A</value></string>
+  <string><id>395</id><value>N/A</value></string>
+  <string><id>396</id><value>Veldu staðsetningu</value></string>
+  <string><id>397</id><value>Glæðingartími</value></string>
+  <string><id>398</id><value>Hitamælieiningar</value></string>
+  <string><id>399</id><value>Hraðamælieiningar</value></string>
+  <string><id>400</id><value>Veður</value></string>
+  <string><id>401</id><value>Hiti</value></string>
+  <string><id>402</id><value>Skynjað sem</value></string>
+  <string><id>403</id><value>UV einingar</value></string>
+  <string><id>404</id><value>Vindur</value></string>
+  <string><id>405</id><value>Daggarmark</value></string>
+  <string><id>406</id><value>Raki</value></string>
+  <string><id>407</id><value>Frá</value></string>
+  <string><id>408</id><value>við</value></string>
+  <string><id>410</id><value>Tengist Weather.com</value></string>
+  <string><id>411</id><value>Sæki veðurgögn fyrir:</value></string>
+  <string><id>412</id><value>Finn ekki veðurgögn</value></string>
+  <string><id>413</id><value>Handvirkt</value></string>
+  <string><id>414</id><value>Engin umsögn um þessa plötu</value></string>
+  <string><id>415</id><value>Sæki smámynd...</value></string>
+  <string><id>416</id><value>Ekki til</value></string>
+  <string><id>417</id><value>Sýn: Stór tákn</value></string>
+  <string><id>418</id><value>Kvikmyndir/Gerðir</value></string>
+  <string><id>419</id><value>Kvikmyndir/Leikarar</value></string>
+  <string><id>420</id><value>Kvikmyndir/Ártöl</value></string>
+  <string><id>421</id><value>Kvikmyndir/Titlar</value></string>
+  <string><id>422</id><value>Eyða plötuupplýsingum</value></string>
+  <string><id>423</id><value>Eyða CDDB upplýsingum</value></string>
+  <string><id>424</id><value>Velja</value></string>
+  <string><id>425</id><value>Engar plötuupplýsingar fundust.</value></string>
+  <string><id>426</id><value>Engar CDDB upplýsingar fundust.</value></string>
+  <string><id>427</id><value>Diskur:</value></string>
+  <string><id>428</id><value>Settu inn réttan CD/DVD</value></string>
+  <string><id>429</id><value>Settu inn eftirfarandi CD/DVD</value></string>
+  <string><id>430</id><value>Raða eftir: DVD#</value></string>
+  <string><id>431</id><value>Ekkert biðminni</value></string>
+  <string><id>432</id><value>Eyða kvikmynd úr grunni</value></string>
+  <string><id>433</id><value>Viltu fjarlægja</value></string>
+  <string><id>434</id><value>kvikmyndina?</value></string>
+  <string><id>435</id><value>Lag</value></string>
+  <string><id>436</id><value>Ár:</value></string>
+  <string><id>437</id><value>Lengd:</value></string>
+  <string><id>438</id><value>Opna skrá</value></string>
+  <string><id>439</id><value>Biðminni</value></string>
+  <string><id>440</id><value>Harður diskur</value></string>
+  <string><id>441</id><value>UDF</value></string>
+  <string><id>442</id><value>LAN</value></string>
+  <string><id>443</id><value>Internet</value></string>
+  <string><id>444</id><value>mynd</value></string>
+  <string><id>445</id><value>hljóð</value></string>
+  <string><id>446</id><value>DVD</value></string>
+  <string><id>447</id><value>Sjálfkeyra</value></string>
+  <string><id>448</id><value>LCD</value></string>
+  <string><id>449</id><value>Virkt</value></string>
+  <string><id>450</id><value>Dálkar</value></string>
+  <string><id>451</id><value>Röð 1 adress:</value></string>
+  <string><id>452</id><value>Röð 2 adress:</value></string>
+  <string><id>453</id><value>Röð 3 adress:</value></string>
+  <string><id>454</id><value>Röð 4 adress:</value></string>
+  <string><id>455</id><value>Raðir:</value></string>
+  <string><id>456</id><value>Hamur:</value></string>
+  <string><id>457</id><value>Breyta sýn</value></string>
+  <string><id>458</id><value>B/Mark</value></string>
+  <string><id>459</id><value>Textar</value></string>
+  <string><id>460</id><value>Hljóðstraumur</value></string>
+  <string><id>461</id><value>[virkt]</value></string>
+  <string><id>462</id><value>Skjátexti</value></string>
+  <string><id>463</id><value>Baklýsing</value></string>
+  <string><id>464</id><value>Birta</value></string>
+  <string><id>465</id><value>Skerpa</value></string>
+  <string><id>466</id><value>Gamma</value></string>
+  <string><id>467</id><value>Gerð</value></string>
+  <string><id>468</id><value>Hreyfðu súluna til að breyta staðsetningu</value></string>
+  <string><id>469</id><value>OSD staðsetning</value></string>
+  <string><id>470</id><value>Þakkir</value></string>
+  <string><id>471</id><value>Breytikubbur</value></string>
+  <string><id>472</id><value>OSD tími</value></string>
+  <string><id>473</id><value>Hágæða endurvinnsla</value></string>
+  <string><id>474</id><value>Af</value></string>
+  <string><id>475</id><value>Bara tónlist</value></string>
+  <string><id>476</id><value>Tónlist &amp; mynd</value></string>
+  <string><id>477</id><value>Gat ekki hlaðið lagalista</value></string>
+  <string><id>478</id><value>OSD</value></string>
+  <string><id>479</id><value>Húð og tungumál</value></string>
+  <string><id>480</id><value>Viðmót</value></string>
+  <string><id>481</id><value>Hljóðvalmöguleikar</value></string>
+  <string><id>482</id><value>Um XBMC</value></string>
+  <string><id>483</id><value>Plötur</value></string>
+  <string><id>484</id><value>Listamenn</value></string>
+  <string><id>485</id><value>Eyða plötu</value></string>
+  <string><id>486</id><value>Endurtaka</value></string>
+  <string><id>487</id><value>Endurtaka eitt</value></string>
+  <string><id>488</id><value>Endurtaka lagalista í möppu</value></string>
+  <string><id>489</id><value>Nota lagalista í lög</value></string>
+  <string><id>490</id><value>Skipta sjálfvirkt milli lista og tákna</value></string>
+  <string><id>491</id><value>Nota stór tákn</value></string>
+  <string><id>492</id><value>Stækka skjátexta</value></string>
+  <string><id>493</id><value>Frekari valmöguleikar (fyrir sérfræðinga!)</value></string>
+  <string><id>494</id><value>Heildarhljóðsvið (dB)</value></string>
+  <string><id>495</id><value>Stækka kvikmyndir í viðmótsupplausn</value></string>
+  <string><id>496</id><value>Stillingar</value></string>
+  <string><id>497</id><value>Fela skráarendingar</value></string>
+  <string><id>498</id><value>Raða eftir: Tegund</value></string>
+  <string><id>499</id><value>Get ekki tengst www.allmusic.com</value></string>
+  <string><id>500</id><value>Niðurhal plötuupplýsinga brást</value></string>
+  <string><id>10000</id><value>Heim</value></string>
+  <string><id>10001</id><value>Forrit</value></string>
+  <string><id>10002</id><value>Ljósmyndir</value></string>
+  <string><id>10003</id><value>Skráarsýsl</value></string>
+  <string><id>10004</id><value>Stillingar</value></string>
+  <string><id>10005</id><value>Tónlist</value></string>
+  <string><id>10006</id><value>Kvikmyndir</value></string>
+  <string><id>10007</id><value>Kerfisupplýsingar</value></string>
+  <string><id>10008</id><value>Stillingar-&gt;Almennar</value></string>
+  <string><id>10009</id><value>Stillingar-&gt;Skjár</value></string>
+  <string><id>10010</id><value>Stillingar-&gt;Skjár-&gt;Viðmótsstilling</value></string>
+  <string><id>10011</id><value>Stillingar-&gt;Skjár-&gt;Skjástillingar</value></string>
+  <string><id>10012</id><value>Stillingar-&gt;Myndasýning</value></string>
+  <string><id>10013</id><value>Stillingar-&gt;Skjár-&gt;Síur</value></string>
+  <string><id>10014</id><value>Stillingar-&gt;Tónlist</value></string>
+  <string><id>10015</id><value>Stillingar-&gt;Skjár-&gt;Skjátextar</value></string>
+  <string><id>10016</id><value>Stillingar-&gt;Skjár-&gt;Skjáhvíla</value></string>
+  <string><id>10017</id><value>Stillingar-&gt;Veður</value></string>
+  <string><id>10020</id><value>Stillingar-&gt;Skriftur</value></string>
+  <string><id>10021</id><value>Kvikmyndir/gerðír</value></string>
+  <string><id>10022</id><value>Kvikmyndir/leikari</value></string>
+  <string><id>10023</id><value>Kvikmyndir/ártal</value></string>
+  <string><id>10024</id><value>Stillingar-&gt;Forrit</value></string>
+  <string><id>10025</id><value>Kvikmyndir/titill</value></string>
+  <string><id>10026</id><value>Stillingar-&gt;Almennt-&gt;Biðminni</value></string>
+  <string><id>10027</id><value>Stillingar-&gt;Almennt-&gt;Sjálfkeyrsla</value></string>
+  <string><id>10028</id><value>Kvikmyndir/listi</value></string>
+  <string><id>10029</id><value>Stillingar-&gt;Almennt-&gt;LCD</value></string>
+  <string><id>10100</id><value>Já/Nei skilti</value></string>
+  <string><id>10101</id><value>Vinnsluskilti</value></string>
+  <string><id>10500</id><value>Tónlist/lagalisti</value></string>
+  <string><id>10501</id><value>Tónlist/skrár</value></string>
+  <string><id>10502</id><value>Tónlist/plötur</value></string>
+  <string><id>10503</id><value>Tónlist/listamenn</value></string>
+  <string><id>10504</id><value>Tónlist/gerðir</value></string>
+  <string><id>10505</id><value>Tónlist/topp 100</value></string>
+  <string><id>11000</id><value>lyklaborð</value></string>
+  <string><id>12000</id><value>Valskilti</value></string>
+  <string><id>12001</id><value>Tónlist/upplýsingar</value></string>
+  <string><id>12002</id><value>Skilti í lagi</value></string>
+  <string><id>12003</id><value>Kvikmyndir/Uppl.</value></string>
+  <string><id>12004</id><value>Skriptur/Uppl.</value></string>
+  <string><id>12005</id><value>Heilskjásmynd</value></string>
+  <string><id>12006</id><value>Myndrænt hljóð</value></string>
+  <string><id>12007</id><value>Ljósmyndir/myndasýning</value></string>
+  <string><id>12008</id><value>Skjalaröðunarskilti</value></string>
+  <string><id>12600</id><value>Veður</value></string>
+  <string><id>12900</id><value>Skjáhvíla</value></string>
+  <string><id>12901</id><value>Heilskjár OSD</value></string>
 </strings>
