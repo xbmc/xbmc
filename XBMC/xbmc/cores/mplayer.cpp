@@ -102,10 +102,14 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		}
 		mplayer_load_dll(*m_pDLL);
 	}
-	int argc=8;
-	char szChannels[12];
-	sprintf(szChannels,"%i", g_stSettings.m_iChannels);
-	char *argv[] = {"xbmc.xbe", "-channels",szChannels,"-autoq", "6", "-vf", "pp", "1.avi",NULL};
+//	int argc=8;
+//	char szChannels[12];
+//	sprintf(szChannels,"%i", g_stSettings.m_iChannels);
+//	char *argv[] = {"xbmc.xbe", "-channels",szChannels,"-autoq", "6", "-vf", "pp", "1.avi",NULL};
+
+	int argc=6;
+	char *argv[] = {"xbmc.xbe", "-autoq", "6", "-vf", "pp", "1.avi",NULL};
+
 	mplayer_init(argc,argv);
 
 	
@@ -136,8 +140,10 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			//then close file and 
 			//reopen it, but now enable the AC3 pass thru audio filter
 			mplayer_close_file();
-			int argc=10;
-			char *argv[] = {"xbmc.xbe", "-channels","2", "-ac","hwac3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
+			//int argc=10;
+			//char *argv[] = {"xbmc.xbe", "-channels","2", "-ac","hwac3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
+			int argc=8;
+			char *argv[] = {"xbmc.xbe", "-ac","hwac3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
 			mplayer_init(argc,argv);
 			mplayer_setcache_size(1024);
 			if (CUtil::IsAudio(strFile) )
