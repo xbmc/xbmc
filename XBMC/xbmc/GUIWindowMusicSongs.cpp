@@ -254,7 +254,6 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 
       return CGUIWindowMusicBase::OnMessage(message);
 
-
       /*
       if (bFirstTime)
       {
@@ -292,7 +291,9 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_SCAN_FINISHED:
     {
-      UpdateButtons();
+      //UpdateButtons();
+      Sleep(200);
+      Update(m_Directory.m_strPath);
     }
     break;
 
