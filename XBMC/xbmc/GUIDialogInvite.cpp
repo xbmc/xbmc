@@ -5,7 +5,10 @@
 #include "GUISpinControl.h"
 #include "GUILabelControl.h"
 #include "GUIButtonControl.h"
+#include "GUIDialogKeyboard.h"
 #include "localizeStrings.h"
+#include "Utils/KaiClient.h"
+#include "ArenaItem.h"
 #include <vector>
 using namespace std;
 
@@ -18,11 +21,11 @@ using namespace std;
 #define CTL_LABEL_CONFIRM2	7
 #define CTL_BUTTON_SEND		10
 #define CTL_BUTTON_CANCEL	11
+#define CTL_BUTTON_MESSAGE  20
 #define CTL_SPIN_GAMES		30
 
 
-CGUIDialogInvite::CGUIDialogInvite(void)
-:CGUIDialog(0)
+CGUIDialogInvite::CGUIDialogInvite(void) : CGUIDialog(0)
 {
 	m_bConfirmed=false;
 }
@@ -33,38 +36,21 @@ CGUIDialogInvite::~CGUIDialogInvite(void)
 
 void CGUIDialogInvite::OnInitWindow()
 {
-	CGUISpinControl& spin_control	= *((CGUISpinControl*)GetControl(CTL_SPIN_GAMES));
-	CGUILabelControl& label_caption = *((CGUILabelControl*)GetControl(CTL_LABEL_CAPTION));
-	CGUILabelControl& label_schedul = *((CGUILabelControl*)GetControl(CTL_LABEL_SCHEDULE));
-	CGUILabelControl& label_game	= *((CGUILabelControl*)GetControl(CTL_LABEL_GAME));
-	CGUILabelControl& label_date	= *((CGUILabelControl*)GetControl(CTL_LABEL_DATE));
-	CGUILabelControl& label_time	= *((CGUILabelControl*)GetControl(CTL_LABEL_TIME));
-	CGUILabelControl& label_confirm	= *((CGUILabelControl*)GetControl(CTL_LABEL_CONFIRM));
-	CGUILabelControl& label_confirm2= *((CGUILabelControl*)GetControl(CTL_LABEL_CONFIRM2));
-	CGUIButtonControl& button_send	= *((CGUIButtonControl*)GetControl(CTL_BUTTON_SEND));
-	CGUIButtonControl& button_cancel= *((CGUIButtonControl*)GetControl(CTL_BUTTON_CANCEL));
-
-	// Initialise Labels;
-	label_caption.SetText("INVITE");
-	label_schedul.SetText("Schedule a game and time:");
-	label_game.SetText("GAME:");
-	label_date.SetText("TIME:");
-	label_time.SetText("DATE:");
-	label_confirm.SetText("Please confirm these details and select");
-	label_confirm2.SetText("Send to continue.");
-	button_send.SetText("Send");
-	button_cancel.SetText("Cancel");
+	CGUISpinControl& spin_control		= *((CGUISpinControl*)GetControl(CTL_SPIN_GAMES));
 
 	// Initialise Spin Control
 	if (m_pGames)
 	{
 		spin_control.Clear();
 
+		CStdString strCurrentVector = "Current Arena";
+		spin_control.AddLabel( strCurrentVector, 0);
+
 		CGUIList::GUILISTITEMS& list = m_pGames->Lock();
 
 		for (int i=0; i < (int) list.size(); ++i)
 		{
-			spin_control.AddLabel(list[i]->GetName(), i);
+			spin_control.AddLabel(list[i]->GetName(), i+1);
 		}
 
 		m_pGames->Release();
@@ -86,15 +72,52 @@ bool CGUIDialogInvite::OnMessage(CGUIMessage& message)
 		
 			switch (iControl)
 			{
+				case CTL_BUTTON_MESSAGE:
+				{
+					CStdString strHeading = "Enter your personal message.";
+					if (!m_bMessage)
+					{
+						CGUISpinControl& spin_control	= *((CGUISpinControl*)GetControl(CTL_SPIN_GAMES));
+						INT nIndex = spin_control.GetValue();
+						if(nIndex>0)
+						{
+							CStdString strVector;
+							CStdString strGame;
+							CGUIList::GUILISTITEMS& list = m_pGames->Lock();
+							strVector = ((CArenaItem*)list[nIndex-1])->m_strVector;
+							CArenaItem::GetTier(CArenaItem::Tier::Game,strVector,strGame);
+							m_pGames->Release();
+							m_strMessage.Format("You're invited to play %s.",strGame);
+						}
+						else
+						{
+							m_strMessage="";
+						}
+					}
+					if (CGUIDialogKeyboard::ShowAndGetInput(m_strMessage, strHeading, false))
+					{
+						CGUIButtonControl& button = *((CGUIButtonControl*)GetControl(CTL_BUTTON_MESSAGE));
+						button.SetText(m_strMessage);
+						m_bMessage = TRUE;
+					}
+					break;
+				}
+
 				case CTL_BUTTON_SEND:
+				{
 					m_bConfirmed = true;
+					CGUISpinControl& spin_control	= *((CGUISpinControl*)GetControl(CTL_SPIN_GAMES));
+					m_iSelectedIndex = spin_control.GetValue();
 					Close();
 					break;
+				}
 
 				case CTL_BUTTON_CANCEL:
+				{
 					m_bConfirmed = false;
 					Close();
 					break;
+				}
 			}
 		}
 		break;
@@ -103,9 +126,40 @@ bool CGUIDialogInvite::OnMessage(CGUIMessage& message)
 	return true;
 }
 
+
+void CGUIDialogInvite::GetPersonalMessage(CStdString& aMessage)
+{
+	if (m_bMessage)
+	{
+		aMessage = m_strMessage;
+	}
+}
+
+bool CGUIDialogInvite::GetSelectedVector(CStdString& aVector)
+{
+	if (m_iSelectedIndex>=0)
+	{
+		if (m_iSelectedIndex==0)
+		{
+			aVector = CKaiClient::GetInstance()->GetCurrentVector();
+		}
+		else
+		{
+			CGUIList::GUILISTITEMS& list = m_pGames->Lock();
+			aVector = ((CArenaItem*)list[m_iSelectedIndex-1])->m_strVector;
+			m_pGames->Release();
+		}
+		return true;
+	}
+
+	return false;
+}
+
 void CGUIDialogInvite::SetGames(CGUIList* aGamesList)
 {
 	m_pGames = aGamesList;
+	m_iSelectedIndex=-1;
+	m_bMessage = false;
 }
 
 bool CGUIDialogInvite::IsConfirmed() const

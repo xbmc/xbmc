@@ -1,10 +1,8 @@
 #pragma once
-#include "guilistexitem.h"
-#include "stdstring.h"
-#include <vector>
-using namespace std;
+#include "StdString.h"
+#include "KaiItem.h"
 
-class CArenaItem : public CGUIListExItem
+class CArenaItem : public CKaiItem
 {
 public:
 	enum Tier {Root=0,Platform=1,Genre=2,Game=3,Custom=4};
@@ -13,8 +11,13 @@ public:
 	virtual ~CArenaItem(void);
 
 	Tier GetTier();
-	void GetTier(CArenaItem::Tier aTier, CStdString& aTierName);
-	static void GetTier(Tier aTier, CStdString aVector, CStdString& aTierName);
+	virtual void OnPaint(CGUIItem::RenderContext* pContext);
+	virtual void GetDisplayText(CStdString& aString);
+
+			void GetTier(CArenaItem::Tier aTier, CStdString& aTierName);
+
+	static	void GetTier(Tier aTier, CStdString aVector, CStdString& aTierName);
+	static	void SetIcons(INT aWidth, INT aHeight, const CStdString& aHeadsetTexture);
 
 	CStdString m_strVector;
 	CStdString m_strDescription;
@@ -22,5 +25,8 @@ public:
 
 	int m_nPlayers;
 	int m_nPlayerLimit;
-	bool m_bIsPrivate;
+	bool m_bIsPersonal; // created by another player
+	bool m_bIsPrivate;	// requires a password on entry
+protected:
+	static CGUIImage*	 m_pPrivateIcon;
 };
