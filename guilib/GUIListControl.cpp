@@ -79,9 +79,13 @@ void CGUIListControl::Render()
 			m_imgButton.Render();
       
 			// render the icon
-			if (/*!pItem->HasIcon() &&*/ pItem->HasThumbnail())
-			{	// copy the thumb -> icon
-				pItem->SetIconImage(pItem->GetThumbnailImage());
+			if (pItem->HasThumbnail())
+			{
+				CStdString strThumb = pItem->GetThumbnailImage();
+				if (strThumb.Right(4) == ".tbn" || strThumb.Right(10) == "folder.jpg")
+				{	// copy the thumb -> icon
+					pItem->SetIconImage(pItem->GetThumbnailImage());
+				}
 			}
 			if (pItem->HasIcon() )
       {

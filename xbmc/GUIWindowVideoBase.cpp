@@ -681,7 +681,7 @@ void CGUIWindowVideoBase::ShowIMDB(const CStdString& strMovie, const CStdString&
 		}
 	}
 
-	if (!g_guiSettings.GetBool("VideoLists.HideExtensions") && !bFolder)
+	if (!g_guiSettings.GetBool("FileLists.HideExtensions") && !bFolder)
 		CUtil::RemoveExtension(strMovieName);
 
   bool bContinue;

@@ -61,6 +61,7 @@ void CVisualisation::Render()
 	m_pVisz->Render();
 	if(g_guiSettings.GetBool("Karaoke.Enabled"))
 		g_application.m_CdgParser.Render();
+//	CLog::Log(LOGERROR, "Test");
 }
 
 void CVisualisation::Stop()

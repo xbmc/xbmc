@@ -956,7 +956,7 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
 	}
 	else
 	{	// No tag, so we disable the file extension if it has one
-		if (g_guiSettings.GetBool("MusicLists.HideExtensions"))
+		if (g_guiSettings.GetBool("FileLists.HideExtensions"))
 			CUtil::RemoveExtension(pItem);
 	}
 

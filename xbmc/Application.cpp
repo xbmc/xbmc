@@ -833,6 +833,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiDialogHost);						// window id = 108
 	m_gWindowManager.Add(&m_guiDialogPasswordNumeric);				// window id = 109
 	m_gWindowManager.Add(&m_guiDialogPasswordGamepad);				// window id = 110
+	m_gWindowManager.Add(&m_guiDialogButtonMenu);					// window id = 111
 	m_gWindowManager.Add(&m_guiMyMusicPlayList);					// window id = 500
 	m_gWindowManager.Add(&m_guiMyMusicSongs);							// window id = 501
 	m_gWindowManager.Add(&m_guiMyMusicAlbum);							// window id = 502
@@ -1128,6 +1129,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiDialogPasswordNumeric.Load("dialogNumeric.xml");
 	m_guiDialogPasswordGamepad.Load("dialogGamepad.xml");
 	m_guiDialogSubMenu.Load("dialogSubMenu.xml");
+	m_guiDialogButtonMenu.Load("dialogButtonMenu.xml");
 	m_guiDialogContextMenu.Load("dialogContextMenu.xml");
 	m_guiMyMusicPlayList.Load("mymusicplaylist.xml");
 	m_guiMyMusicSongs.Load("mymusicsongs.xml");
@@ -1252,7 +1254,7 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
 			}
 			else if (strType == "buttonMenu")
 			{
-				pWindow = new CGUIDialogButtonBar();
+				pWindow = new CGUIDialogButtonMenu();
 			}
 			else
 			{
@@ -1826,7 +1828,7 @@ void CApplication::UpdateLCD()
 				{
 					int hour = (time.wHour > 12) ? time.wHour-12 : time.wHour;
 					if (hour == 0) hour = 12;
-					strTime.Format("%02.2i:%02.2i:%02.2i %s", hour, time.wMinute, time.wSecond, time.wHour>12 ? "PM" : "AM");
+					strTime.Format("%02.2i:%02.2i %s", hour, time.wMinute, time.wSecond, time.wHour>12 ? "PM" : "AM");
 				}
 				else
 					strTime.Format("%02.2i:%02.2i:%02.2i", time.wHour,time.wMinute,time.wSecond);
@@ -1896,8 +1898,21 @@ void CApplication::UpdateLCD()
 					else g_lcd->SetLine(1," ");
 					SYSTEMTIME time;
 					GetLocalTime(&time);
-					strLine.Format("%02.2i:%02.2i:%02.2i %02.2i-%02.2i-%02.2i", time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
-					g_lcd->SetLine(2,strLine);
+					CStdString strTime;
+					if (g_guiSettings.GetBool("LookAndFeel.Clock12Hour"))
+					{
+						int hour = (time.wHour > 12) ? time.wHour-12 : time.wHour;
+						if (hour == 0) hour = 12;
+						strTime.Format("%02.2i:%02.2i %s", hour, time.wMinute, time.wSecond, time.wHour>12 ? "PM" : "AM");
+					}
+					else
+						strTime.Format("%02.2i:%02.2i:%02.2i", time.wHour,time.wMinute,time.wSecond);
+					CStdString strDateTime;
+					if (g_guiSettings.GetBool("LookAndFeel.SwapMonthAndDay"))
+						strDateTime.Format("%s %02.2i-%02.2i-%02.2i",strTime.c_str(), time.wMonth,time.wDay,time.wYear);
+					else
+						strDateTime.Format("%s %02.2i-%02.2i-%02.2i",strTime.c_str(), time.wDay,time.wMonth,time.wYear);
+					g_lcd->SetLine(2,strDateTime);
 					MEMORYSTATUS stat;
 					GlobalMemoryStatus(&stat);
 					DWORD dwMegFree=stat.dwAvailPhys / (1024*1024);

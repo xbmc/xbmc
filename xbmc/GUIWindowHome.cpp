@@ -228,7 +228,7 @@ VOID CGUIWindowHome::GetDate(WCHAR* wszDate, LPSYSTEMTIME pTime)
 	if (day && month)
 	{
 		if (g_guiSettings.GetBool("LookAndFeel.SwapMonthAndDay"))
-			swprintf(wszDate,L"%s, %d. %s", day, pTime->wDay, month);
+			swprintf(wszDate,L"%s, %d %s", day, pTime->wDay, month);
 		else
 			swprintf(wszDate,L"%s, %s %d", day, month, pTime->wDay);
 	}

@@ -535,7 +535,7 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 	m_iLastControl=GetFocusedControl();
 
 	CUtil::SetThumbs(m_vecItems);
-	if ((g_guiSettings.GetBool("VideoLists.HideExtensions")) || (g_stSettings.m_bMyVideoCleanTitles))
+	if ((g_guiSettings.GetBool("FileLists.HideExtensions")) || (g_stSettings.m_bMyVideoCleanTitles))
 		CUtil::RemoveExtensions(m_vecItems);
   if (g_stSettings.m_bMyVideoCleanTitles)
     CUtil::CleanFileNames(m_vecItems);

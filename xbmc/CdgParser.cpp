@@ -10,6 +10,7 @@
 #include <xbutil.h>
 #include "localizestrings.h"
 #include "guifont.h"
+#include "utils/log.h"
 
 //CdgLoader
 CCdgLoader::CCdgLoader()
@@ -320,26 +321,29 @@ void CCdgRenderer::Render()
 	}
 	else
 	{	
-		CStdStringW strMessage, strFileName, strText;
-			strFileName = CUtil::GetFileName(m_pReader->GetFileName());
+		CStdString strMessage, strFileName;
+		strFileName = CUtil::GetFileName(m_pReader->GetFileName());
 		switch(m_FileState)
 		{
 		case FILE_ERR_NOT_FOUND:
-				strMessage.Format(g_localizeStrings.Get(NOT_FOUND).c_str(), strFileName.c_str());
+				strMessage.Format("%s not found", strFileName.c_str());
 				break;
 		case FILE_ERR_OPENING:
-				strMessage.Format(g_localizeStrings.Get(ERROR_OPENING).c_str(), strFileName.c_str());
+				strMessage.Format("Error opening %s", strFileName.c_str());
 				break;
 		case FILE_ERR_LOADING:
-				strMessage.Format(g_localizeStrings.Get(UNABLE_TO_LOAD).c_str(), strFileName.c_str());
+				strMessage.Format("Error loading %s", strFileName.c_str());
 				break;
 		case FILE_ERR_NO_MEM:
-				strMessage= g_localizeStrings.Get(ERROR_OUT_OF_MEMORY);
+				strMessage = "Out of memory";
 				break;
 		}
-		CGUIFont* pFont = g_fontManager.GetFont("font14");
+		// don't render the message to the screen, just log it
+		// Hmmm.  Can't seem to be able to log 
+//		CLog::Log(LOGWARNING, "Karaoke CDG Renderer: %s", strMessage.c_str());
+/*		CGUIFont* pFont = g_fontManager.GetFont("font14");
 		if(pFont)
-			pFont->DrawText(60,60, 0xffffffff, strMessage);
+			pFont->DrawText(60,60, 0xffffffff, strMessage);*/
 	}
 }
 

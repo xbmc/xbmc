@@ -479,7 +479,7 @@ void CGUIWindowPictures::UpdateDir(const CStdString &strDirectory)
 
 	m_strDirectory=strDirectory;
 	CUtil::SetThumbs(m_vecItems);
-	if (g_guiSettings.GetBool("Pictures.HideExtensions"))
+	if (g_guiSettings.GetBool("FileLists.HideExtensions"))
 		CUtil::RemoveExtensions(m_vecItems);
 	CUtil::FillInDefaultIcons(m_vecItems);
 	OnSort();

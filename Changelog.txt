@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 12-12-2004 added: dialogButtonMenu.xml - currently used as a shutdown menu.  id is 111.  Assigned to Right Thumb Button.
+  - 12-12-2004 fixed: <align>center for labelcontrols.
+  - 12-12-2004 fixed: Couple of issues with the buttonscroller.
+  - 12-12-2004 changed: Behaviour of icons/thumbs in listview.  Only use thumb if it's a real thumbnail.
   - 12-12-2004 updated: Hebrew language file by okets
   - 12-12-2004 changed: Skin version incremented (as dialogNumeric.xml and dialogGamepad.xml are necessary skin files)
   - 12-12-2004 fixed: Bug in custom window code (custom windows persisted when changing skins)

@@ -41,7 +41,7 @@
 #include "GUIDialogPasswordNumeric.h"
 #include "GUIDialogPasswordGamepad.h"
 #include "GUIDialogSubMenu.h"
-#include "GUIDialogButtonBar.h"
+#include "GUIDialogButtonMenu.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIWindowSystemInfo.h"
 #include "GUIWindowSettingsUICalibration.h"
@@ -161,9 +161,10 @@ public:
 	CGUIDialogOK										m_guiDialogOK;
 	CGUIDialogVolumeBar							m_guiDialogVolumeBar;
 	CGUIDialogKaiToast							m_guiDialogKaiToast;
-	CGUIDialogPasswordNumeric					m_guiDialogPasswordNumeric;
-	CGUIDialogPasswordGamepad					m_guiDialogPasswordGamepad;
+	CGUIDialogPasswordNumeric				m_guiDialogPasswordNumeric;
+	CGUIDialogPasswordGamepad				m_guiDialogPasswordGamepad;
 	CGUIDialogSubMenu								m_guiDialogSubMenu;
+	CGUIDialogButtonMenu						m_guiDialogButtonMenu;
 	CGUIDialogContextMenu						m_guiDialogContextMenu;
 	CGUIWindowFileManager						m_guiFileManager;
 	CGUIWindowVideoFiles						m_guiMyVideo;
