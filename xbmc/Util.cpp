@@ -200,6 +200,7 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
 {
   CURL plItemUrl(strFilename);
   CURL plBaseUrl(strBasePath);
+  int iDotDotLoc, iBeginCut, iEndCut;
 
   if(plBaseUrl.GetProtocol().length()==0) //Base in local directory
   {
@@ -209,15 +210,22 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
       {
         if (strFilename.c_str()[0] == '\\') 
         {
-          strFilename.Replace('/','\\');
           strFilename = strBasePath + strFilename;
+          strFilename.Replace('/','\\');
         }
         else
         {
-          strFilename.Replace('/','\\');
           strFilename = strBasePath + '\\' + strFilename;
+          strFilename.Replace('/','\\');
         }
       }
+    }
+    strFilename.Replace("\\.\\","\\");
+    while((iDotDotLoc = strFilename.Find("\\..\\")) > 0)
+    {
+        iEndCut = iDotDotLoc + 4;
+        iBeginCut = strFilename.Left(iDotDotLoc).ReverseFind('\\')+1;
+        strFilename.Delete(iBeginCut, iEndCut - iBeginCut);
     }
   }
   else //Base is remote
@@ -226,11 +234,21 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
     {
       if (strFilename.c_str()[0] == '/') //Begins with a slash.. not good.. but we try to make the best of it..
       {
-        strFilename.Replace('\\','/');
         strFilename = strBasePath + strFilename;
+        strFilename.Replace('\\','/');
       }
       else
+      {
         strFilename = strBasePath + '/' + strFilename;
+        strFilename.Replace('\\','/');
+      }
+    }
+    strFilename.Replace("/./","/");
+    while((iDotDotLoc = strFilename.Find("/../")) > 0)
+    {
+        iEndCut = iDotDotLoc + 4;
+        iBeginCut = strFilename.Left(iDotDotLoc).ReverseFind('/')+1;
+        strFilename.Delete(iBeginCut, iEndCut - iBeginCut);
     }
   }
 }
