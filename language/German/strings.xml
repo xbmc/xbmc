@@ -1,3 +1,7 @@
+<!-- German (AUSTRIAN) language for XBMC -->
+<!-- Based on 2004-05-09 english strings -->
+<!--     Translation done by CEOMR       --> 
+
 <strings>
   <string>
     <id>0</id>
@@ -13,7 +17,7 @@
   </string>
   <string>
     <id>3</id>
-    <value>Eigene Filme</value>
+    <value>Eigene Videos</value>
   </string>
   <string>
     <id>4</id>
@@ -25,7 +29,7 @@
   </string>
   <string>
     <id>6</id>
-    <value>XBOX Media Center 1.0.0</value>
+    <value>XBOX Media Center CVS build</value>
   </string>
   <string>
     <id>7</id>
@@ -63,10 +67,9 @@
     <id>17</id>
     <value>Sonntag</value>
   </string>
-
   <string>
     <id>21</id>
-    <value>Januar</value>
+    <value>Jänner</value>
   </string>
   <string>
     <id>22</id>
@@ -246,7 +249,7 @@
   </string>  
   <string>
     <id>133</id>
-    <value>Künstler</value>
+    <value>Interpret</value>
   </string>  
   <string>
     <id>134</id>
@@ -378,19 +381,19 @@
   </string> 
   <string>
     <id>166</id>
-    <value>Darstellung</value>
+    <value>Darstellung:</value>
   </string> 
   <string>
     <id>167</id>
-    <value>FTP server</value>
+    <value>FTP server:</value>
   </string> 
   <string>
     <id>168</id>
-    <value>Zeit Server</value>
+    <value>Zeit Server:</value>
   </string> 
   <string>
     <id>169</id>
-    <value>Auflösung</value>
+    <value>Auflösung:</value>
   </string> 
   <string>
     <id>170</id>
@@ -398,7 +401,7 @@
   </string> 
   <string>
     <id>171</id>
-    <value>Künstler:</value>
+    <value>Interpret:</value>
   </string> 
   <string>
     <id>172</id>
@@ -450,7 +453,7 @@
   </string> 
   <string>
     <id>184</id>
-    <value>Aktualis.</value>
+    <value>Aktualisieren</value>
   </string> 
   <string>
     <id>185</id>
@@ -478,7 +481,7 @@
   </string>  
   <string>
     <id>191</id>
-    <value>Zufall</value>
+    <value>Zufällige Wdgb</value>
   </string>  
   <string>
     <id>192</id>
@@ -498,7 +501,7 @@
   </string> 
   <string>
     <id>196</id>
-    <value>Film wählen:</value>
+    <value>Video wählen:</value>
   </string> 
   <string>
     <id>197</id>
@@ -506,7 +509,7 @@
   </string> 
   <string>
     <id>198</id>
-    <value>Lade Filminformationen</value>
+    <value>Lade Videoinformationen</value>
   </string> 
   <string>
     <id>199</id>
@@ -522,11 +525,11 @@
   </string> 
   <string>
     <id>202</id>
-    <value>Beschreibung:</value>
+    <value>Kurzbeschreibung:</value>
   </string> 
   <string>
     <id>203</id>
-    <value>Handlung:</value>
+    <value>Handlungsauszug:</value>
   </string> 
   <string>
     <id>204</id>
@@ -538,7 +541,7 @@
   </string> 
   <string>
     <id>206</id>
-    <value>Künstler</value>
+    <value>Interpret</value>
   </string> 
   <string>
     <id>207</id>
@@ -662,11 +665,11 @@
   </string> 
   <string>
     <id>237</id>
-    <value>Verkleinerung</value>
+    <value>Verkleinerung:</value>
   </string> 
   <string>
     <id>238</id>
-    <value>Vergrößerung</value>
+    <value>Vergrößerung:</value>
   </string>
   <string>
     <id>240</id>
@@ -762,7 +765,7 @@
   </string>
   <string>
     <id>263</id>
-    <value>HTTP Server</value>
+    <value>HTTP Server:</value>
   </string>
   <string>
     <id>264</id>
@@ -778,7 +781,7 @@
   </string>
   <string>
     <id>267</id>
-    <value>n. Zeit. ord.</value>
+    <value>n. Zeit ord.</value>
   </string>
   <string>
     <id>268</id>
@@ -786,7 +789,7 @@
   </string>
   <string>
     <id>269</id>
-    <value>n. Künstler ord.</value>
+    <value>n. Interpret ord.</value>
   </string>
   <string>
     <id>270</id>
@@ -938,11 +941,11 @@
   </string>
   <string>
     <id>308</id>
-    <value>Vertikal-Deblocking</value>
+    <value>Vertikaler Deblocking-Filter</value>
   </string>
   <string>
     <id>309</id>
-    <value>Horizontal-Deblocking</value>
+    <value>Horizontaler Deblocking-Filter</value>
   </string>
   <string>
     <id>310</id>
@@ -982,15 +985,15 @@
   </string>
   <string>
     <id>319</id>
-    <value>Fehler beim reorganisieren</value>
+    <value>Fehler beim Reorganisieren</value>
   </string>
   <string>
     <id>320</id>
-    <value>Durchsuche Künstler...</value>
+    <value>Durchsuche Interpreten...</value>
   </string>
   <string>
     <id>321</id>
-    <value>Fehler beim reorganisieren</value>
+    <value>Fehler beim Reorganisieren</value>
   </string>
   <string>
     <id>322</id>
@@ -998,7 +1001,7 @@
   </string>
   <string>
     <id>323</id>
-    <value>Fehler beim reorganisieren</value>
+    <value>Fehler beim Reorganisieren</value>
   </string>
   <string>
     <id>324</id>
@@ -1006,15 +1009,15 @@
   </string>
   <string>
     <id>325</id>
-    <value>Fehler beim reorganisieren</value>
+    <value>Fehler beim Reorganisieren</value>
   </string>
   <string>
     <id>326</id>
-    <value>Durchsuche Albume...</value>
+    <value>Durchsuche Alben...</value>
   </string>
   <string>
     <id>327</id>
-    <value>Fehler beim reorganisieren</value>
+    <value>Fehler beim Reorganisieren</value>
   </string>
   <string>
     <id>328</id>
@@ -1030,7 +1033,7 @@
   </string>
   <string>
     <id>331</id>
-    <value>Komrimiere Datenbank...</value>
+    <value>Komprimiere Datenbank...</value>
   </string>
   <string>
     <id>332</id>
@@ -1054,7 +1057,7 @@
   </string>
   <string>
     <id>337</id>
-    <value>Audio Ausgabe</value>
+    <value>Audio Ausgabe:</value>
   </string>
   <string>
     <id>338</id>
@@ -1066,7 +1069,7 @@
   </string>
   <string>
     <id>340</id>
-    <value>Versch. Künstler</value>
+    <value>Versch. Interpreten</value>
   </string>
   <string>
     <id>341</id>
@@ -1082,7 +1085,7 @@
   </string>
   <string>
     <id>344</id>
-    <value>Künstler</value>
+    <value>Interpret</value>
   </string>
   <string>
     <id>345</id>
@@ -1114,7 +1117,7 @@
   </string>
   <string>
     <id>352</id>
-    <value>Dimmen</value>
+    <value>Verdunkelung</value>
   </string>
   <string>
     <id>353</id>
@@ -1126,11 +1129,11 @@
   </string>
   <string>
     <id>355</id>
-    <value>Bildschirmschoner-Wartezeit</value>
+    <value>Wartezeit</value>
   </string>
   <string>
     <id>356</id>
-    <value>Bildschirmschoner-Modus</value>
+    <value>Modus</value>
   </string>
   <string>
     <id>357</id>
@@ -1154,7 +1157,7 @@
   </string>   
   <string>
     <id>362</id>
-    <value>Bildschirmschoner-Dimmstufe</value>
+    <value>DimmerungsStärke</value>
   </string>
   <string>
     <id>363</id>
@@ -1218,15 +1221,15 @@
   </string>
   <string>
     <id>378</id>
-    <value>VM</value>
+    <value>vormittags</value>
   </string>
   <string>
     <id>379</id>
-    <value>NM</value>
+    <value>nachmittags</value>
   </string>
   <string>
     <id>380</id>
-    <value>Schauer</value>
+    <value>schauer</value>
   </string>
   <string>
     <id>381</id>
@@ -1250,7 +1253,7 @@
   </string>
   <string>
     <id>386</id>
-    <value>Klar</value>
+    <value>klar</value>
   </string>
   <string>
     <id>387</id>
@@ -1289,24 +1292,24 @@
     <value>N/A</value>
   </string>
   <string>
-  <id>396</id> 
-  <value>Ortauswahl</value> 
+    <id>396</id> 
+    <value>Ortauswahl</value> 
   </string>
   <string>
-  <id>397</id> 
-  <value>Aktualisierungszeit</value> 
+    <id>397</id> 
+    <value>Aktualisierungszeit</value> 
   </string>
   <string>
-  <id>398</id> 
-  <value>Temperatureinheit</value> 
+    <id>398</id> 
+    <value>Temperatureinheit</value> 
   </string>
   <string>
-  <id>399</id> 
-  <value>Windstärkeeinheit</value> 
+    <id>399</id> 
+    <value>Windstärkeeinheit</value> 
   </string>
   <string>
-  <id>400</id> 
-  <value>Wetter</value> 
+    <id>400</id> 
+    <value>Wetter</value> 
   </string>
   <string>
     <id>401</id>
@@ -1338,7 +1341,7 @@
   </string>
   <string>
     <id>408</id>
-    <value>bis</value>
+    <value>mit</value>
   </string>      
   <string>
     <id>410</id>
@@ -1378,7 +1381,7 @@
   </string> 
   <string>
     <id>419</id>
-    <value>Videos/Künstler</value>
+    <value>Videos/Interpret</value>
   </string> 
   <string>
     <id>420</id>
@@ -1502,31 +1505,31 @@
   </string> 
   <string>
     <id>450</id>
-    <value>Spalten</value>
+    <value>Spalten:</value>
   </string> 
   <string>
     <id>451</id>
-    <value>Reihe 1</value>
+    <value>Reihe 1:</value>
   </string> 
   <string>
     <id>452</id>
-    <value>Reihe 2</value>
+    <value>Reihe 2:</value>
   </string> 
   <string>
     <id>453</id>
-    <value>Reihe 3</value>
+    <value>Reihe 3:</value>
   </string> 
   <string>
     <id>454</id>
-    <value>Reihe 4</value>
+    <value>Reihe 4:</value>
   </string> 
   <string>
     <id>455</id>
-    <value>Reihen</value>
+    <value>Reihen:</value>
   </string> 
   <string>
     <id>456</id>
-    <value>Modus</value>
+    <value>Modus:</value>
   </string> 
   <string>
     <id>457</id>
@@ -1538,11 +1541,11 @@
   </string>
   <string>
     <id>459</id>
-    <value>Subs</value>
+    <value>Subtitel</value>
   </string>
   <string>
     <id>460</id>
-    <value>Audiostream</value>
+    <value>Audiospur</value>
   </string>
   <string>
     <id>461</id>
@@ -1554,7 +1557,7 @@
   </string>
   <string>
     <id>463</id>
-    <value>Hintergrundlicht</value>
+    <value>Hintergrundlicht:</value>
   </string>
   <string>
     <id>464</id>
@@ -1570,7 +1573,7 @@
   </string> 
   <string>
     <id>467</id>
-    <value>Typ</value>
+    <value>Typ:</value>
   </string> 
   <string>
     <id>468</id>
@@ -1586,7 +1589,7 @@
   </string>
   <string>
     <id>471</id>
-    <value>Modchip</value>
+    <value>Modchip:</value>
   </string>
   <string>
     <id>472</id>
@@ -1594,7 +1597,7 @@
   </string>
   <string>
     <id>473</id>
-    <value>Resampling (hohe Qualität)</value>
+    <value>Abtastrate verbesser</value>
   </string>
   <string>
     <id>474</id>
@@ -1606,7 +1609,7 @@
   </string>
   <string>
     <id>476</id>
-    <value>Music & Video</value>
+    <value>Musik & Video</value>
   </string>
   <string>
     <id>477</id>
@@ -1638,7 +1641,7 @@
   </string>
   <string>
     <id>484</id>
-    <value>Künstler</value>
+    <value>Interpret</value>
   </string>
   <string>
     <id>485</id>
@@ -1646,11 +1649,11 @@
   </string>
   <string>
     <id>486</id>
-    <value>Titel wiederh.</value>
+    <value>Wiederholen</value>
   </string>
   <string>
     <id>487</id>
-    <value>Alle wiederh.</value>
+    <value>Wiederhole</value>
   </string>
   <string>
     <id>488</id>
@@ -1670,7 +1673,7 @@
   </string>
   <string>
     <id>492</id>
-    <value>Untertitel-Zoom</value>
+    <value>Untertitel vergrößern</value>
   </string>
   <string>
     <id>493</id>
@@ -1684,58 +1687,220 @@
     <id>495</id>
     <value>VideoAbtastrate erhöhen auf GUI Auflösung</value>
   </string>
-
-<string><id>10000</id><value>Hauptmenü</value></string>
-<string><id>10001</id><value>Programme</value></string>
-<string><id>10002</id><value>Bilder</value></string>
-<string><id>10003</id><value>Dateien</value></string>
-<string><id>10004</id><value>Einstellungen</value></string>
-<string><id>10005</id><value>Musik</value></string>
-<string><id>10006</id><value>Videos</value></string>
-<string><id>10007</id><value>Systeminformation</value></string>
-<string><id>10008</id><value>Einstellungen->Allgemein</value></string>
-<string><id>10009</id><value>Einstellungen->Bildschirm</value></string>
-<string><id>10010</id><value>Einstellungen->Bildschirm->UI-Kalibrierung</value></string>
-<string><id>10011</id><value>Einstellungen->Bildschirm->Kalibrierung</value></string>
-<string><id>10012</id><value>Einstellungen->Diaschau</value></string>
-<string><id>10013</id><value>Einstellungen->Bildschirm->Filter</value></string>
-<string><id>10014</id><value>Einstellungen->Musik</value></string>
-<string><id>10015</id><value>Einstellungen->Bildschirm->Untertitel</value></string>
-<string><id>10016</id><value>Einstellungen->Bildschirm->Bildschirmschoner</value></string>
-<string><id>10017</id><value>Einstellungen->Wetter</value></string>
-<string><id>10020</id><value>Einstellungen->Skripte</value></string>
-<string><id>10021</id><value>Videos/Genre</value></string>
-<string><id>10022</id><value>Videos/Künstler</value></string>
-<string><id>10023</id><value>Videos/Jahr</value></string>
-<string><id>10024</id><value>Einstellungen->Programme</value></string>
-<string><id>10025</id><value>Videos/Titel</value></string>
-<string><id>10026</id><value>Einstellungen->Allgemein->Speicher</value></string>
-<string><id>10027</id><value>Einstellungen->Allgemein->Autostart</value></string>
-<string><id>10028</id><value>Videos/Wiedergabeliste</value></string>
-<string><id>10029</id><value>Einstellungen->Allgemein->LCD</value></string>
-<string><id>10100</id><value>JA/NEIN Dialog</value></string>
-<string><id>10101</id><value>inArbeit Dialog</value></string>
-<string><id>10500</id><value>Musik/Wiedergabeliste</value></string>
-<string><id>10501</id><value>Musik/Dateien</value></string>
-<string><id>10502</id><value>Musik/Alben</value></string>
-<string><id>10503</id><value>Musik/Künstler</value></string>
-<string><id>10504</id><value>Musik/Genre</value></string>
-<string><id>10505</id><value>Musik/Top100</value></string>
-<string><id>11000</id><value>Tastatur</value></string>
-<string><id>12000</id><value>Dialogauswahl</value></string>
-<string><id>12001</id><value>Musik/Info</value></string>
-<string><id>12002</id><value>Dialog OK</value></string>
-<string><id>12003</id><value>Videos/Info</value></string>
-<string><id>12004</id><value>Skripte/Info</value></string>
-<string><id>12005</id><value>Vollbild-Video</value></string>
-<string><id>12006</id><value>Audio-Visualisation</value></string>
-<string><id>12007</id><value>Bilder/Diaschau</value></string>
-<string><id>12008</id><value>Dateikomprimierung</value></string>
-<string><id>12600</id><value>Wetter</value></string>
-<string><id>12900</id><value>Bildschirmschoner</value></string>
-<string><id>12901</id><value>Vollbild OSD</value></string>
- 
-<string>
-		<id>497</id>
-		<value>Medien-Dateiendungen verstecken</value>
-	</string> </strings>
+  <string>
+    <id>496</id> 
+    <value>Kalibrierung</value> 
+  </string>
+  <string>
+    <id>497</id> 
+    <value>Dateityp-Erweiterungen ausblenden</value> 
+  </string>
+  <string>
+    <id>498</id>
+    <value>n. Typ ord.</value>
+  </string>
+  <string>
+    <id>499</id>
+    <value>Verbinden mit www.allmusic.com nicht möglich</value>
+  </string>
+  <string>
+    <id>500</id>
+    <value>Fehler beim Erhalten der Albuminformationen </value>
+  </string>
+  <string>
+    <id>10000</id>
+    <value>Hauptmenü</value>
+  </string>
+  <string>
+    <id>10001</id>
+    <value>Programme</value>
+  </string>
+  <string>
+    <id>10002</id>
+    <value>Bilder</value>
+  </string>
+  <string>
+    <id>10003</id>
+    <value>Dateien</value>
+  </string>
+  <string>
+    <id>10004</id>
+    <value>Einstellungen</value>
+  </string>
+  <string>
+    <id>10005</id>
+    <value>Musik</value>
+  </string>
+  <string>
+    <id>10006</id>
+    <value>Videos</value>
+  </string>
+  <string>
+    <id>10007</id>
+    <value>Systeminformation</value>
+  </string>
+  <string>
+    <id>10008</id>
+    <value>Einstellungen->Allgemein</value>
+  </string>
+  <string>
+    <id>10009</id>
+    <value>Einstellungen->Bildschirm</value>
+  </string>
+  <string>
+    <id>10010</id>
+    <value>Einstellungen->Bildschirm->UI-Kalibrierung</value>
+  </string>
+  <string>
+    <id>10011</id>
+    <value>Einstellungen->Bildschirm->Kalibrierung</value>
+  </string>
+  <string>
+    <id>10012</id>
+    <value>Einstellungen->Diaschau</value>
+  </string>
+  <string>
+    <id>10013</id>
+    <value>Einstellungen->Bildschirm->Filter</value>
+  </string>
+  <string>
+    <id>10014</id>
+    <value>Einstellungen->Musik</value>
+  </string>
+  <string>
+    <id>10015</id>
+    <value>Einstellungen->Bildschirm->Untertitel</value>
+  </string>
+  <string>
+    <id>10016</id>
+    <value>Einstellungen->Bildschirm->Bildschirmschoner</value>
+  </string>
+  <string>
+    <id>10017</id>
+    <value>Einstellungen->Wetter</value>
+  </string>
+  <string>
+    <id>10020</id>
+    <value>Einstellungen->Skripte</value>
+  </string>
+  <string>
+    <id>10021</id>
+    <value>Videos/Genre</value>
+  </string>
+  <string>
+    <id>10022</id>
+    <value>Videos/Interpret</value>
+  </string>
+  <string>
+    <id>10023</id>
+    <value>Videos/Jahr</value>
+  </string>
+  <string>
+    <id>10024</id>
+    <value>Einstellungen->Programme</value>
+  </string>
+  <string>
+    <id>10025</id>
+    <value>Videos/Titel</value>
+  </string>
+  <string>
+    <id>10026</id>
+    <value>Einstellungen->Allgemein->Speicher</value>
+  </string>
+  <string>
+    <id>10027</id>
+    <value>Einstellungen->Allgemein->Autostart</value>
+  </string>
+  <string>
+    <id>10028</id>
+    <value>Videos/Wiedergabeliste</value>
+  </string>
+  <string>
+    <id>10029</id>
+    <value>Einstellungen->Allgemein->LCD</value>
+  </string>
+  <string>
+    <id>10100</id>
+    <value>JA/NEIN Dialog</value>
+  </string>
+  <string>
+    <id>10101</id>
+    <value>inArbeit Dialog</value>
+  </string>
+  <string>
+    <id>10500</id>
+    <value>Musik/Wiedergabeliste</value>
+  </string>
+  <string>
+    <id>10501</id>
+    <value>Musik/Dateien</value>
+  </string>
+  <string>
+    <id>10502</id>
+    <value>Musik/Alben</value>
+  </string>
+  <string>
+    <id>10503</id>
+    <value>Musik/Interpret</value>
+  </string>
+  <string>
+    <id>10504</id>
+    <value>Musik/Genre</value>
+  </string>
+  <string>
+    <id>10505</id>
+    <value>Musik/Top100</value>
+  </string>
+  <string>
+    <id>11000</id>
+    <value>Tastatur</value>
+  </string>
+  <string>
+    <id>12000</id>
+    <value>Dialogauswahl</value>
+  </string>
+  <string>
+    <id>12001</id>
+    <value>Musik/Info</value>
+  </string>
+  <string>
+    <id>12002</id>
+    <value>Dialog OK</value>
+  </string>
+  <string>
+    <id>12003</id>
+    <value>Videos/Info</value>
+  </string>
+  <string>
+    <id>12004</id>
+    <value>Skripte/Info</value>
+  </string>
+  <string>
+    <id>12005</id>
+    <value>Vollbild-Video</value>
+  </string>
+  <string>
+    <id>12006</id>
+    <value>Audio-Visualisation</value>
+  </string>
+  <string>
+    <id>12007</id>
+    <value>Bilder/Diaschau</value>
+  </string>
+  <string>
+    <id>12008</id>
+    <value>Dateikomprimierung</value>
+  </string>
+  <string>
+    <id>12600</id>
+    <value>Wetter</value>
+  </string>
+  <string>
+    <id>12900</id>
+    <value>Bildschirmschoner</value>
+  </string>
+  <string>
+    <id>12901</id>
+    <value>Vollbild OSD</value>
+  </string>
+</strings>
