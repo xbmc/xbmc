@@ -875,3 +875,11 @@ void CGUIListControl::OnMouseWheel()
     Scroll( -g_Mouse.cWheel);
   }
 }
+
+bool CGUIListControl::CanFocus() const
+{
+  if (m_vecItems.size()<=0)
+    return false;
+
+  return CGUIControl::CanFocus();
+}

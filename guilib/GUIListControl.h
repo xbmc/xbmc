@@ -41,6 +41,8 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool HitTest(int iPosX, int iPosY) const;
 
+  virtual bool CanFocus() const;
+
   virtual void PreAllocResources();
   virtual void AllocResources() ;
   virtual void FreeResources() ;
