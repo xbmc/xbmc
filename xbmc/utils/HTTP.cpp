@@ -243,7 +243,8 @@ bool CHTTP::Connect()
 	else
 	{
 		// connect to site directly
-		if(inet_addr(m_strHostName.c_str())==INADDR_NONE)
+		service.sin_addr.s_addr = inet_addr(m_strHostName.c_str());
+		if(service.sin_addr.s_addr==INADDR_NONE)
 		{
 			CStdString strIpAddress;
 			CDNSNameCache::Lookup(m_strHostName,strIpAddress);
@@ -269,19 +270,19 @@ bool CHTTP::Connect()
 				}
 			}
 		}
-		else
-		{
-			service.sin_addr.s_addr = inet_addr(m_strHostName.c_str());
-		}
 		service.sin_port = htons(m_iPort);
 	}
 	m_socket.attach(socket(AF_INET,SOCK_STREAM,IPPROTO_TCP));
 	
 	// attempt to connection
-	if (connect((SOCKET)m_socket,(sockaddr*) &service,sizeof(struct sockaddr)) == SOCKET_ERROR)
+	int nTries = 0;
+	while (connect((SOCKET)m_socket,(sockaddr*) &service,sizeof(struct sockaddr)) == SOCKET_ERROR)
 	{
-		Close();
-		return false;
+		if (WSAGetLastError() != WSAETIMEDOUT || ++nTries >= 3) // retry up to 3 times on timeout
+		{
+			Close();
+			return false;
+		}
 	}
 	hEvent = WSACreateEvent();
 	return true;
@@ -303,9 +304,6 @@ bool CHTTP::BreakURL(const string &strURL, string &strHostName, int& iPort, stri
   ptr1 = strstr(url, "://");
   if( ptr1==NULL )
   {
-		//g_dialog.SetCaption(0,"invalid URL");
-		//g_dialog.SetMessage(0,strURL.c_str());
-		//g_dialog.DoModal();
 		return false;
   }
 		    
@@ -319,9 +317,9 @@ bool CHTTP::BreakURL(const string &strURL, string &strHostName, int& iPort, stri
 		
     
   // look if the port is given
-  ptr2 = strstr(ptr1, ":");
+  ptr2 = strchr(ptr1, ':');
   // If the : is after the first / it isn't the port
-  ptr3 = strstr(ptr1, "/");
+  ptr3 = strchr(ptr1, '/');
   if(ptr3 && ptr3 - ptr2 < 0)
       ptr2 = NULL;
   if( ptr2==NULL )
@@ -329,7 +327,7 @@ bool CHTTP::BreakURL(const string &strURL, string &strHostName, int& iPort, stri
     // No port is given
     // Look if a path is given
 		iPort=80;
-    ptr2 = strstr(ptr1, "/");
+    ptr2 = strchr(ptr1, '/');
     if( ptr2==NULL )
     {
         // No path/filename
@@ -355,7 +353,7 @@ bool CHTTP::BreakURL(const string &strURL, string &strHostName, int& iPort, stri
 	strHostName=szHostName;
 
   // Look if a path is given
-  ptr2 = strstr(ptr1, "/");
+  ptr2 = strchr(ptr1, '/');
   if( ptr2!=NULL )
   {
     // A path/filename is given
@@ -480,13 +478,13 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 	m_strHostName="";
 	if (!BreakURL(strURL, m_strHostName, m_iPort, strFile))
 	{
-    CLog::Log("Invalid url: %s\n",strURL.c_str());
+    CLog::Log("Invalid url: %s",strURL.c_str());
 		return 0;
 	}	
 
 	if (!Connect())
 	{
-		CLog::Log("Unable to connect to %s: %d\n",m_strHostName.c_str(), WSAGetLastError());
+		CLog::Log("Unable to connect to %s: %d",m_strHostName.c_str(), WSAGetLastError());
 		return 0;
 	}
 
