@@ -170,10 +170,23 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         {
           if ( g_guiSettings.GetBool("Autorun.VCD") )
           {
-            CFileItem item = *pItem;
-            item.m_strPath.Format("%s%cAVSEQ01.DAT", pItem->m_strPath.c_str(), szSlash);
-            g_application.PlayFile( item );
-            bPlaying = true;
+            CFileItemList items;
+            CDirectory::GetDirectory(pItem->m_strPath, items, ".dat");
+            if (items.Size())
+            {
+              CUtil::SortFileItemsByName(items);
+              for (int i=0; i<items.Size(); ++i)
+              {
+                CFileItem* pItem=items[i];
+                CPlayList::CPlayListItem playlistItem;
+                CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
+                g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Add(playlistItem);
+              }
+
+              g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
+              g_playlistPlayer.Play(0);
+              bPlaying = true;
+            }
             break;
           }
         }
@@ -181,10 +194,23 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         {
           if ( g_guiSettings.GetBool("Autorun.VCD") )
           {
-            CFileItem item = *pItem;
-            item.m_strPath.Format("%s%cAVSEQ01.MPG", pItem->m_strPath.c_str(), szSlash);
-            g_application.PlayFile( item );
-            bPlaying = true;
+            CFileItemList items;
+            CDirectory::GetDirectory(pItem->m_strPath, items, ".mpg");
+            if (items.Size())
+            {
+              CUtil::SortFileItemsByName(items);
+              for (int i=0; i<items.Size(); ++i)
+              {
+                CFileItem* pItem=items[i];
+                CPlayList::CPlayListItem playlistItem;
+                CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
+                g_playlistPlayer.GetPlaylist( PLAYLIST_VIDEO_TEMP ).Add(playlistItem);
+              }
+
+              g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO_TEMP);
+              g_playlistPlayer.Play(0);
+              bPlaying = true;
+            }
             break;
           }
         }
