@@ -1,4 +1,5 @@
 #include "guiwindow.h"
+#include "LocalizeStrings.h"
 #include "texturemanager.h"
 #include "tinyxml/tinyxml.h"
 #include "../xbmc/utils/log.h"
@@ -18,6 +19,7 @@
 #include "guiVideoControl.h"
 #include "GUIProgressControl.h"
 #include "GUISliderControl.h"
+#include "../xbmc/util.h"
 
 #include<string>
 using namespace std;
@@ -363,6 +365,13 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_WINDOW_INIT:
       {
+        CStdString strLine;
+        wstring wstrLine;
+        wstrLine=g_localizeStrings.Get(10000+GetID());
+        CUtil::Unicode2Ansi(wstrLine,strLine);
+        OutputDebugString("------------------- GUI_MSG_WINDOW_INIT ");
+        OutputDebugString(strLine.c_str());
+        OutputDebugString("------------------- \n");
         AllocResources();
 		    if (message.GetParam1()!=WINDOW_INVALID)
 		    {
@@ -376,8 +385,17 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 
     
     case GUI_MSG_WINDOW_DEINIT:
+    {
+      CStdString strLine;
+      wstring wstrLine;
+      wstrLine=g_localizeStrings.Get(10000+GetID());
+      CUtil::Unicode2Ansi(wstrLine,strLine);
+      OutputDebugString("------------------- GUI_MSG_WINDOW_DEINIT ");
+      OutputDebugString(strLine.c_str());
+      OutputDebugString("------------------- \n");
       FreeResources();
       return true;
+    }
     break;
 
     case GUI_MSG_SETFOCUS:
@@ -429,6 +447,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 
 void CGUIWindow::AllocResources()
 {
+  //OutputDebugString(" alloc resources\n");
   ivecControls i;
   for (i=m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
@@ -441,12 +460,13 @@ void CGUIWindow::AllocResources()
 void CGUIWindow::FreeResources()
 {
   ivecControls i;
+  //OutputDebugString(" free resources\n");
   for (i=m_vecControls.begin();i != m_vecControls.end(); ++i)
   {
     CGUIControl* pControl= *i;
     pControl->FreeResources();
   }
-  //g_TextureManager.Dump();
+  g_TextureManager.Dump();
 }
 
 void CGUIWindow::Add(CGUIControl* pControl)

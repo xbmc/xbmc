@@ -57,7 +57,7 @@ class CTextureMap
     int                 GetLoops(int iPicture=0) const;
     void                Add(CTexture* pTexture);
     bool                Release(int iPicture=0);
-    int                 IsEmpty() const;
+    bool                IsEmpty() const;
     void                Dump() const;
 		void							  Flush();
   protected:  
