@@ -235,7 +235,8 @@
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCPreBuildEventTool"
+				CommandLine="$(ProjectDir)xbelogo\makeimages.bat"/>
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
@@ -249,7 +250,9 @@
 				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
-				TitleName="Xbox Media Center"/>
+				TitleName="Xbox Media Center"
+				TitleImage="$(ProjectDir)xbelogo\titleimage.xbx"
+				SaveGameImage="$(ProjectDir)xbelogo\saveimage.xbx"/>
 		</Configuration>
 		<Configuration
 			Name="Release_LTCG|Xbox"
