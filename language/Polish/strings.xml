@@ -26,9 +26,17 @@
     <id>5</id>
     <value>Ustawienia</value>
   </string>
+	<string>
+		<id>6</id>
+		<value>XBOX Media Center CVS build</value>
+	</string>
   <string>
     <id>7</id>
     <value>Moje pliki</value>
+  </string>
+  <string>
+	<id>8</id>
+	<value>Pogoda</value>
   </string>
   <string>
     <id>11</id>
@@ -1095,7 +1103,7 @@
   </string>
   <string>
     <id>348</id>
-    <value>Flatten Directory Hierarchy</value>
+    <value>Splaszczona hierarchia katalogow</value>
   </string>
   <string>
     <id>349</id>
@@ -1110,8 +1118,12 @@
     <value>Wylacz</value>
   </string>
   <string>
+    <id>9999999</id>
+    <value>www.xZoNe.com.pl</value>
+  </string>
+  <string>
     <id>352</id>
-    <value>Dim</value>
+    <value>Przycmiony</value>
   </string>
   <string>
     <id>353</id>
@@ -1123,7 +1135,7 @@
   </string>
   <string>
     <id>355</id>
-    <value>Screensaver Idle Timeout</value>
+    <value>Czas oczekiwania wygaszacza</value>
   </string>
   <string>
     <id>356</id>
@@ -1139,7 +1151,7 @@
   </string>
   <string>
     <id>359</id>
-    <value>Recent albums</value>
+    <value>Ostatnie albumy</value>
   </string>
   <string>
     <id>360</id>
@@ -1187,11 +1199,11 @@
   </string>
   <string>
     <id>371</id>
-    <value>Partly</value>
+    <value>Czesciowo</value>
   </string>
   <string>
     <id>372</id>
-    <value>Mostly</value>
+    <value>Glownie</value>
   </string>
   <string>
     <id>373</id>
@@ -1199,7 +1211,7 @@
   </string>
   <string>
     <id>374</id>
-    <value>pochmurnie</value>
+    <value>Pochmurnie</value>
   </string>
   <string>
     <id>375</id>
@@ -1211,7 +1223,7 @@
   </string>
   <string>
     <id>377</id>
-    <value>Light</value>
+    <value>Pogodnie</value>
   </string>
   <string>
     <id>378</id>
@@ -1223,15 +1235,15 @@
   </string>
   <string>
     <id>380</id>
-    <value>Showers</value>
+    <value>Opady</value>
   </string>
   <string>
     <id>381</id>
-    <value>Few</value>
+    <value>Niewielkie</value>
   </string>
   <string>
     <id>382</id>
-    <value>Scattered</value>
+    <value>Sporadyczne</value>
   </string>
   <string>
     <id>383</id>
@@ -1239,11 +1251,11 @@
   </string>
   <string>
     <id>384</id>
-    <value>Strong</value>
+    <value>Silny</value>
   </string>
   <string>
     <id>385</id>
-    <value>Fair</value>
+    <value>Lagodny</value>
   </string>
   <string>
   <id>396</id> 
@@ -1255,11 +1267,11 @@
   </string>
   <string>
   <id>398</id> 
-  <value>Temperature Units</value> 
+  <value>Jednostki temperatury</value> 
   </string>
   <string>
   <id>399</id> 
-  <value>Speed Units</value> 
+  <value>jednostki predkosci</value> 
   </string>
   <string>
   <id>400</id> 
@@ -1271,11 +1283,11 @@
   </string>   
   <string>
     <id>402</id>
-    <value>Feels Like</value>
+    <value>Samopoczucie</value>
   </string> 
   <string>
     <id>403</id>
-    <value>UV Index</value>
+    <value>Wskaznik UV</value>
   </string>
   <string>
     <id>404</id>
@@ -1283,23 +1295,23 @@
   </string>   
   <string>
     <id>405</id>
-    <value>Dew Point</value>
+    <value>Punkt rosy</value>
   </string> 
   <string>
     <id>406</id>
-    <value>Humidity</value>
+    <value>Wilgotnosc</value>
   </string> 
   <string>
     <id>407</id>
-    <value>From</value>
+    <value>Z</value>
   </string>
   <string>
     <id>408</id>
-    <value>at</value>
+    <value>na</value>
   </string>      
   <string>
     <id>410</id>
-    <value>Accessing Weather.com</value>
+    <value>Kontaktuje sie z Weather.com</value>
   </string>       
   <string>
     <id>411</id>
@@ -1311,11 +1323,11 @@
   </string>    
   <string>
     <id>413</id>
-    <value>Manual</value>
+    <value>Recznie</value>
   </string>    
   <string>
     <id>414</id>
-    <value>No review for this album</value>
+    <value>Nie ma podgladu dla tego albumu</value>
   </string>    
   <string>
     <id>415</id>
@@ -1331,39 +1343,39 @@
   </string> 
   <string>
     <id>418</id>
-    <value>My Videos/Genres</value>
+    <value>Moje Filmy/Gatunki</value>
   </string> 
   <string>
     <id>419</id>
-    <value>My Videos/Actors</value>
+    <value>Moje Filmy/Aktorzy</value>
   </string> 
   <string>
     <id>420</id>
-    <value>My Videos/Years</value>
+    <value>Moje Filmy/Lata</value>
   </string> 
   <string>
     <id>421</id>
-    <value>My Videos/Title</value>
+    <value>Moje Filmy/Tytul</value>
   </string> 
   <string>
     <id>422</id>
-    <value>Delete albuminfo</value>
+    <value>kasuj informacje o albumie</value>
   </string> 
   <string>
     <id>423</id>
-    <value>Delete CDDB info</value>
+    <value>Kasuj informacje z CDDB</value>
   </string> 
   <string>
     <id>424</id>
     <value>Wybierz</value>
-  </string> 
+  </string>  
   <string>
     <id>425</id>
-    <value>No albuminfo found.</value>
+    <value>Nie znalazlem informacji o albumie.</value>
   </string> 
   <string>
     <id>426</id>
-    <value>No CDDB info found.</value>
+    <value>Nie znalazlem informacji CDDB.</value>
   </string> 
   <string>
     <id>427</id>
@@ -1375,15 +1387,15 @@
   </string> 
   <string>
     <id>429</id>
-    <value>Please insert the following CD/DVD</value>
+    <value>Wsadz nastepujacy CD/DVD</value>
   </string>  
   <string>
     <id>430</id>
-    <value>Sort by: DVD#</value>
+    <value>Sortuj po: DVD#</value>
   </string>  
   <string>
     <id>431</id>
-    <value>No Cache</value>
+    <value>Nie do pamieci podrecznej</value>
   </string>  
   <string>
     <id>432</id>
@@ -1391,11 +1403,11 @@
   </string>  
   <string>
     <id>433</id>
-    <value>Are you sure to remove</value>
+    <value>Jestes pewny, ze chcesz usunac</value>
   </string>  
   <string>
     <id>434</id>
-    <value>the movie?</value>
+    <value>film?</value>
   </string> 
   <string>
     <id>435</id>
@@ -1407,7 +1419,7 @@
   </string> 
   <string>
     <id>437</id>
-    <value>Duration:</value>
+    <value>Czas trwania:</value>
   </string> 
   <string>
     <id>438</id>
@@ -1415,7 +1427,7 @@
   </string> 
   <string>
     <id>439</id>
-    <value>Cache</value>
+    <value>Pamiec podreczna</value>
   </string> 
   <string>
     <id>440</id>
@@ -1479,7 +1491,7 @@
   </string> 
   <string>
     <id>455</id>
-    <value>Rows:</value>
+    <value>Linijek:</value>
   </string> 
   <string>
     <id>456</id>
@@ -1495,7 +1507,7 @@
   </string>
   <string>
     <id>459</id>
-    <value>Subs</value>
+    <value>Napisy</value>
   </string>
   <string>
     <id>460</id>
@@ -1511,7 +1523,7 @@
   </string>
   <string>
     <id>463</id>
-    <value>Backlight</value>
+    <value>Podswietlenie</value>
   </string>
   <string>
     <id>464</id>
@@ -1531,12 +1543,150 @@
   </string> 
   <string>
     <id>468</id>
-    <value>Move the bar to change the osd position</value>
+    <value>Przesun belke aby zmienic pozycje osd</value>
   </string>
   <string>
     <id>469</id>
     <value>Pozycja OSD</value>
   </string>
+
+	<string>
+		<id>470</id>
+		<value>Podziekowania</value>
+	</string>
+	<string>
+		<id>471</id>
+		<value>Modchip</value>
+	</string>
+	<string>
+		<id>472</id>
+		<value>OSD Timeout</value>
+	</string>
+	<string>
+		<id>473</id>
+		<value>Resamplowanie w wysokiej jakosci</value>
+	</string>
+	<string>
+		<id>474</id>
+		<value>Wylacz</value>
+	</string>
+	<string>
+		<id>475</id>
+		<value>Tylko muzyka</value>
+	</string>
+	<string>
+		<id>476</id>
+		<value>Music &amp; Video</value>
+	</string>
+	<string>
+		<id>477</id>
+		<value>Nie moge zaladowac playlisty</value>
+	</string>
+	<string>
+		<id>478</id>
+		<value>OSD</value>
+	</string>
+	<string>
+		<id>479</id>
+		<value>Skora i jezyk</value>
+	</string>
+	<string>
+		<id>480</id>
+		<value>Interfejs uzytkownika</value>
+	</string>
+	<string>
+		<id>481</id>
+		<value>Opcje Audio</value>
+	</string>
+	<string>
+		<id>482</id>
+		<value>O XBMC...</value>
+	</string>
+	<string>
+		<id>483</id>
+		<value>Album</value>
+	</string>
+	<string>
+		<id>484</id>
+		<value>Artist</value>
+	</string>
+	<string>
+		<id>485</id>
+		<value>Delete album</value>
+	</string>
+	<string>
+		<id>486</id>
+		<value>Powtarzaj</value>
+	</string>
+	<string>
+		<id>487</id>
+		<value>Powtorz raz</value>
+	</string>
+	<string>
+		<id>488</id>
+		<value>Repeat folder playlist</value>
+	</string>
+	<string>
+		<id>489</id>
+		<value>Use playlist in songs</value>
+	</string>
+	<string>
+		<id>490</id>
+		<value>Auto switch list and icons in songs</value>
+	</string>
+	<string>
+		<id>491</id>
+		<value>Uzywaj duzych ikon</value>
+	</string>
+	<string>
+		<id>492</id>
+		<value>Powieksz napisy</value>
+	</string>
+	<string>
+		<id>493</id>
+		<value>Zaawansowane opcje</value>
+	</string>
+	<string>
+		<id>494</id>
+		<value>Overall Audio Headroom (dB)</value>
+	</string>
+	<string>
+		<id>495</id>
+		<value>Upsample videos to GUI resolution</value>
+	</string>
+	<string>
+		<id>496</id>
+		<value>Kalibracja</value>
+	</string>
+	<string>
+		<id>497</id>
+		<value>Ukryj rozszerzenia plikow</value>
+	</string>
+	<string>
+		<id>498</id>
+		<value>Sortuj typami</value>
+	</string>
+	<string>
+		<id>499</id>
+		<value>Nie moge polaczyc sie z www.allmusic.com</value>
+	</string>
+	<string>
+		<id>500</id>
+		<value>Sciaganie informacji o albumie nie powiodlo sie</value>
+	</string>
+	<string>
+		<id>501</id>
+		<value>Szukam nazw albumow...</value>
+	</string>
+	<string>
+		<id>999</id>
+		<value>Rozgrywka Online</value>
+	</string> 
+	<string>
+		<id>998</id>
+		<value>XLink KAI</value>
+	</string>
+
 <string><id>10000</id><value>Home</value></string>
 <string><id>10001</id><value>Moje programy</value></string>
 <string><id>10002</id><value>Moje obrazy</value></string>
@@ -1566,7 +1716,7 @@
 <string><id>10028</id><value>Moje filmy/playlista</value></string>
 <string><id>10029</id><value>Ustawienia->ogolne->LCD</value></string>
 <string><id>10100</id><value>Tak/nie dialog</value></string>
-<string><id>10101</id><value>Progress dialog</value></string>
+<string><id>10101</id><value>Okienko postepu</value></string>
 <string><id>10500</id><value>Moja muzyka/playlista</value></string>
 <string><id>10501</id><value>Moja muzyka/pliki</value></string>
 <string><id>10502</id><value>Moja muzyka/albumy</value></string>
@@ -1578,12 +1728,12 @@
 <string><id>12001</id><value>Moja muzyka/info</value></string>
 <string><id>12002</id><value>Dialog OK</value></string>
 <string><id>12003</id><value>Moje filmy/Info</value></string>
-<string><id>12004</id><value>My Scripts/Info</value></string>
+<string><id>12004</id><value>Moje skrypty/Info</value></string>
 <string><id>12005</id><value>Fullscreen video</value></string>
 <string><id>12006</id><value>Audio visisalisation</value></string>
 <string><id>12007</id><value>Moje obrazy/slideshow</value></string>
 <string><id>12008</id><value>Filestacking dialog</value></string>
 <string><id>12600</id><value>Moja pogoda</value></string>
 <string><id>12900</id><value>Wygaszacz</value></string>
-<string><id>12901</id><value>Fullscreen OSD</value></string>
+<string><id>12901</id><value>Pelnoekranowe OSD</value></string>
 </strings>
