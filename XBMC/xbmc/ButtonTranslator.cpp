@@ -250,6 +250,27 @@ void CButtonTranslator::MapAction(WORD wAction, const CStdString &strAction, TiX
 			if (strButton == "7")					wButtonCode = XINPUT_IR_REMOTE_7;
 			if (strButton == "8")					wButtonCode = XINPUT_IR_REMOTE_8;
 			if (strButton == "9")					wButtonCode = XINPUT_IR_REMOTE_9;
+			// additional keys from the media center extender for xbox remote
+			if (strButton == "power")				wButtonCode = XINPUT_IR_REMOTE_POWER;
+			if (strButton == "mytv")				wButtonCode = XINPUT_IR_REMOTE_MY_TV;
+			if (strButton == "mymusic")				wButtonCode = XINPUT_IR_REMOTE_MY_MUSIC;
+			if (strButton == "mypictures")			wButtonCode = XINPUT_IR_REMOTE_MY_PICTURES;
+			if (strButton == "myvideo")				wButtonCode = XINPUT_IR_REMOTE_MY_VIDEOS;
+			if (strButton == "record")				wButtonCode = XINPUT_IR_REMOTE_RECORD;
+			if (strButton == "start")				wButtonCode = XINPUT_IR_REMOTE_START;
+			if (strButton == "volumeplus")			wButtonCode = XINPUT_IR_REMOTE_VOLUME_PLUS;
+			if (strButton == "volumeminus")			wButtonCode = XINPUT_IR_REMOTE_VOLUME_MINUS;
+			if (strButton == "channelplus")			wButtonCode = XINPUT_IR_REMOTE_CHANNEL_PLUS;
+			if (strButton == "channelminus")		wButtonCode = XINPUT_IR_REMOTE_CHANNEL_MINUS;
+			if (strButton == "pageplus")			wButtonCode = XINPUT_IR_REMOTE_CHANNEL_PLUS;
+			if (strButton == "pageminus")			wButtonCode = XINPUT_IR_REMOTE_CHANNEL_MINUS;
+			if (strButton == "mute")				wButtonCode = XINPUT_IR_REMOTE_MUTE;
+			if (strButton == "recorededtv")			wButtonCode = XINPUT_IR_REMOTE_RECORDED_TV;
+			if (strButton == "guide")				wButtonCode = XINPUT_IR_REMOTE_TITLE;   // same as title
+			if (strButton == "livetv")				wButtonCode = XINPUT_IR_REMOTE_LIVE_TV;
+			if (strButton == "clear")				wButtonCode = XINPUT_IR_REMOTE_CLEAR;
+			if (strButton == "enter")				wButtonCode = XINPUT_IR_REMOTE_SELECT;  // same as select
+			if (strButton == "xbox")				wButtonCode = XINPUT_IR_REMOTE_DISPLAY; // same as display
 		}
 		if (strNode=="remotecode")
 		{

@@ -5,8 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-  - 28-12-2004 added: [ 1092220 ] Fix an exception for DLL Loader
-  - 28-12-2004 updated: Finnish language file (Thnx to jutski)
+  - 29-12-2004 added: support for xbox media center extender remote (page+/-, vol+/-)
   - 28-12-2004 updated: Polish language file (Thnx to napek)
   - 28-12-2004 fixed: scan of the shoutcast top 500 directory was possible using the context menu
   - 28-12-2004 fixed: shoutcast top 500, first stream disappears when Hide parent folder items is enabled
@@ -23,6 +22,7 @@ added/fixed: (dd-mm-yyyy) (please specify date in CET)
   - 22-12-2004 updated: Finnish language file (Thnx to jutski)
   - 22-12-2004 fixed: [ 1089975 ] Hebrew language file broken
   - 22-12-2004 fixed: reciever looses ac3/dts sync and gets it again when starting playback
+  - 21-12-2004 added: aiff audio playback to mplayer
   - 21-12-2004 fixed: lock of a share can't be removed if maxretry is set to 0
   - 21-12-2004 fixed: locked shares can be added to the playlists
   - 21-12-2004 updated: Polish language file (Thnx to napek)
