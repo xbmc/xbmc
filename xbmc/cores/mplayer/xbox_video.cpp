@@ -35,7 +35,15 @@
 #define SUBTITLE_TEXTURE_WIDTH  720
 #define SUBTITLE_TEXTURE_HEIGHT 120
 
-#define NUM_BUFFERS (2)
+#define NUM_BUFFERS (3)
+
+struct DRAWRECT
+{
+	float left;
+	float top;
+	float right;
+	float bottom;
+};
 
 static RECT                    rd;                             //rect of our stretched image
 static RECT                    rs;                             //rect of our source image
@@ -50,7 +58,6 @@ static int                     iClearSubtitleRegion[2]={0};  // amount of subtit
 static LPDIRECT3DTEXTURE8      m_pSubtitleTexture[2]={NULL};
 static unsigned char*          subtitleimage=NULL;             //image data
 static unsigned int            subtitlestride;                 //surface stride
-static LPDIRECT3DVERTEXBUFFER8 m_pSubtitleVB;                  // vertex buffer for subtitles
 static int                     m_iBackBuffer=0;								// subtitles only
 static int                     m_bFlip=0;
 static bool                    m_bRenderGUI=false;
@@ -58,17 +65,10 @@ static RESOLUTION              m_iResolution=PAL_4x3;
 static bool                    m_bFlipped;
 static float                   m_fps;
 static __int64                 m_lFrameCounter;
+static DRAWRECT								 m_SubRect;
 
-// Video size stuff
-static float                    m_fOffsetX1;
-static float                    m_fOffsetY1;
-static float                    m_iScreenWidth;
-static float                    m_iScreenHeight;
-static bool                     m_bStretch;
-static bool                     m_bZoom;
 
 // YV12 decoder textures
-static LPDIRECT3DVERTEXBUFFER8  m_pVideoVB;
 static D3DTexture               m_YTexture[NUM_BUFFERS];
 static D3DTexture               m_UTexture[NUM_BUFFERS];
 static D3DTexture               m_VTexture[NUM_BUFFERS];
@@ -290,10 +290,7 @@ static void ClearSubtitleRegion(int iTexture)
 //********************************************************************************************************
 void xbox_video_update_subtitle_position()
 {
-	if (!m_pSubtitleVB)
-		return;
 	SUBVERTEX* vertex=NULL;
-	m_pSubtitleVB->Lock( 0, 0, (BYTE**)&vertex, 0L );
 
 	float EnlargeFactor = 1.0f + (g_stSettings.m_iEnlargeSubtitlePercent / 100.0f);
 	float fSubtitleHeight = (float)g_settings.m_ResInfo[m_iResolution].iWidth/SUBTITLE_TEXTURE_WIDTH*SUBTITLE_TEXTURE_HEIGHT;
@@ -301,21 +298,11 @@ void xbox_video_update_subtitle_position()
 	float fSubtitlePosition = g_settings.m_ResInfo[m_iResolution].iSubtitles - fSubtitleHeight;
 	float fWidth = (float)g_settings.m_ResInfo[m_iResolution].iWidth;
 	EnlargeFactor = (EnlargeFactor - 1) / 2;
-	vertex[0].p = D3DXVECTOR4(-fWidth * EnlargeFactor, fSubtitlePosition, 0, 0);
-	vertex[1].p = D3DXVECTOR4(fWidth + fWidth * EnlargeFactor, fSubtitlePosition, 0, 0);
-	vertex[2].p = D3DXVECTOR4(fWidth + fWidth * EnlargeFactor, fSubtitlePosition + fSubtitleHeight, 0, 0);
-	vertex[3].p = D3DXVECTOR4(-fWidth * EnlargeFactor, fSubtitlePosition + fSubtitleHeight, 0, 0);
 
-	vertex[0].tu = 0;
-	vertex[0].tv = 0;
-	vertex[1].tu = SUBTITLE_TEXTURE_WIDTH;
-	vertex[1].tv = 0;
-	vertex[2].tu = SUBTITLE_TEXTURE_WIDTH;
-	vertex[2].tv = SUBTITLE_TEXTURE_HEIGHT;
-	vertex[3].tu = 0;
-	vertex[3].tv = SUBTITLE_TEXTURE_HEIGHT;
-
-	m_pSubtitleVB->Unlock();  
+	m_SubRect.left = -(fWidth * EnlargeFactor);
+	m_SubRect.top = fSubtitlePosition;
+	m_SubRect.right = fWidth + fWidth * EnlargeFactor;
+	m_SubRect.bottom = fSubtitlePosition + fSubtitleHeight;
 }
 
 //********************************************************************************************************
@@ -369,11 +356,6 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 		m_VTexture[i].Register(m_TextureBuffer[i]);
 	}
 
-	// Create our video vertex buffer
-	if (m_pVideoVB)
-		m_pVideoVB->Release();
-	g_graphicsContext.Get3DDevice()->CreateVertexBuffer(4*sizeof(VIDVERTEX), D3DUSAGE_WRITEONLY, 0L, D3DPOOL_DEFAULT, &m_pVideoVB );
-
 	// Create subtitle textures
 	for (int i = 0; i < 2; ++i)
 	{
@@ -398,22 +380,11 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 		m_pSubtitleTexture[i]->UnlockRect(0);
 	}
 
-	// Create our subtitle vertex buffer
-	if (m_pSubtitleVB) m_pSubtitleVB->Release();
-	g_graphicsContext.Get3DDevice()->CreateVertexBuffer( 4*sizeof(SUBVERTEX), D3DUSAGE_WRITEONLY, 0L, D3DPOOL_DEFAULT, &m_pSubtitleVB );
 	xbox_video_update_subtitle_position();
 
 	//g_graphicsContext.Get3DDevice()->EnableOverlay(TRUE);
 
 	g_graphicsContext.Unlock();
-
-	// Reset video size stuff so that the VB is filled
-	m_fOffsetX1 = 0;
-	m_fOffsetY1 = 0;
-	m_iScreenWidth = 0;
-	m_iScreenHeight = 0;
-	m_bStretch = false;
-	m_bZoom = false;
 }
 
 //***************************************************************************************
@@ -496,28 +467,6 @@ unsigned int Directx_ManageDisplay()
 //		iScreenHeight/=2;
 //	}
 
-	// this function is pretty expensive now as it has to take a lock on the VB
-	// need to check if it's really neccessary
-	if (m_fOffsetX1 == fOffsetX1 && m_fOffsetY1 == fOffsetY1 &&
-		m_iScreenWidth == iScreenWidth && m_iScreenHeight == iScreenHeight &&
-		m_bStretch == g_stSettings.m_bStretch && m_bZoom == g_stSettings.m_bZoom)
-		return 0;
-
-	if (!m_pVideoVB)
-		return 1;
-
-	g_graphicsContext.Lock();
-
-	VIDVERTEX* vertex=NULL;
-	m_pVideoVB->Lock(0, 0, (BYTE**)&vertex, 0L);
-
-	m_iScreenWidth = iScreenWidth;
-	m_iScreenHeight = iScreenHeight;
-	m_fOffsetX1 = fOffsetX1;
-	m_fOffsetY1 = fOffsetY1;
-	m_bStretch = g_stSettings.m_bStretch;
-	m_bZoom = g_stSettings.m_bZoom;
-
 	//if( g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() )
 	{
 		if (g_stSettings.m_bStretch)
@@ -531,24 +480,6 @@ unsigned int Directx_ManageDisplay()
 			rd.right  = (int)rd.left+(int)iScreenWidth;
 			rd.top    = (int)fOffsetY1;
 			rd.bottom = (int)rd.top+(int)iScreenHeight;
-
-			vertex[0].p = D3DXVECTOR4(fOffsetX1,              fOffsetY1, 0, 0);
-			vertex[1].p = D3DXVECTOR4(fOffsetX1+iScreenWidth, fOffsetY1, 0, 0);
-			vertex[2].p = D3DXVECTOR4(fOffsetX1+iScreenWidth, fOffsetY1+iScreenHeight, 0, 0);
-			vertex[3].p = D3DXVECTOR4(fOffsetX1,              fOffsetY1+iScreenHeight, 0, 0);
-			vertex[0].tu0 = 0;                  vertex[0].tv0 = 0;
-			vertex[1].tu0 = (float)image_width; vertex[1].tv0 = 0;
-			vertex[2].tu0 = (float)image_width; vertex[2].tv0 = (float)image_height;
-			vertex[3].tu0 = 0;                  vertex[3].tv0 = (float)image_height;
-
-			for (int i = 0; i < 4; ++i)
-			{
-				vertex[i].tu1 = vertex[i].tu2 = vertex[i].tu0 / 2;
-				vertex[i].tv1 = vertex[i].tv2 = vertex[i].tv0 / 2;
-			}
-
-			m_pVideoVB->Unlock();
-			g_graphicsContext.Unlock();
 
 			return 0;
 		}
@@ -587,24 +518,6 @@ unsigned int Directx_ManageDisplay()
 			rd.right  = (int)rd.left + (int)iScreenWidth;
 			rd.top    = (int)fOffsetY1;
 			rd.bottom = (int)rd.top + (int)iScreenHeight;
-
-			vertex[0].p = D3DXVECTOR4(fOffsetX1,              fOffsetY1, 0, 0);
-			vertex[1].p = D3DXVECTOR4(fOffsetX1+iScreenWidth, fOffsetY1, 0, 0);
-			vertex[2].p = D3DXVECTOR4(fOffsetX1+iScreenWidth, fOffsetY1+iScreenHeight, 0, 0);
-			vertex[3].p = D3DXVECTOR4(fOffsetX1,              fOffsetY1+iScreenHeight, 0, 0);
-			vertex[0].tu0 = fHorzBorder;             vertex[0].tv0 = fVertBorder;
-			vertex[1].tu0 = image_width-fHorzBorder; vertex[1].tv0 = fVertBorder;
-			vertex[2].tu0 = image_width-fHorzBorder; vertex[2].tv0 = image_height-fVertBorder;
-			vertex[3].tu0 = fHorzBorder;             vertex[3].tv0 = image_height-fVertBorder;
-
-			for (int i = 0; i < 4; ++i)
-			{
-				vertex[i].tu1 = vertex[i].tu2 = vertex[i].tu0 / 2;
-				vertex[i].tv1 = vertex[i].tv2 = vertex[i].tv0 / 2;
-			}
-
-			m_pVideoVB->Unlock();
-			g_graphicsContext.Unlock();
 
 			return 0;
 		}
@@ -646,24 +559,6 @@ unsigned int Directx_ManageDisplay()
 		rd.right  = (int)(rd.left + fNewWidth + 0.5f);
 		rd.top    = (int)(iPosY + fOffsetY1);
 		rd.bottom = (int)(rd.top + fNewHeight + 0.5f);
-
-		vertex[0].p = D3DXVECTOR4(iPosX+fOffsetX1,                iPosY+fOffsetY1, 0, 0);
-		vertex[1].p = D3DXVECTOR4(iPosX+fOffsetX1+fNewWidth+0.5f, iPosY+fOffsetY1, 0, 0);
-		vertex[2].p = D3DXVECTOR4(iPosX+fOffsetX1+fNewWidth+0.5f, iPosY+fOffsetY1+fNewHeight+0.5f, 0, 0);
-		vertex[3].p = D3DXVECTOR4(iPosX+fOffsetX1,                iPosY+fOffsetY1+fNewHeight+0.5f, 0, 0);
-		vertex[0].tu0 = 0;                  vertex[0].tv0 = 0;
-		vertex[1].tu0 = (float)image_width; vertex[1].tv0 = 0;
-		vertex[2].tu0 = (float)image_width; vertex[2].tv0 = (float)image_height;
-		vertex[3].tu0 = 0;                  vertex[3].tv0 = (float)image_height;
-
-		for (int i = 0; i < 4; ++i)
-		{
-			vertex[i].tu1 = vertex[i].tu2 = vertex[i].tu0 / 2;
-			vertex[i].tv1 = vertex[i].tv2 = vertex[i].tv0 / 2;
-		}
-
-		m_pVideoVB->Unlock();
-		g_graphicsContext.Unlock();
 	}
 	return 0;
 }
@@ -760,10 +655,6 @@ static void video_uninit(void)
 		if ( m_pSubtitleTexture[i]) m_pSubtitleTexture[i]->Release();
 		m_pSubtitleTexture[i]=NULL;
 	}
-	if (m_pVideoVB) m_pVideoVB->Release();
-	m_pVideoVB=NULL;
-	if (m_pSubtitleVB) m_pSubtitleVB->Release();
-	m_pSubtitleVB=NULL;
 	OutputDebugString("video_uninit done\n");
 }
 
@@ -857,8 +748,6 @@ void xbox_video_render_subtitles(bool bUseBackBuffer)
 	if (!m_pSubtitleTexture[iTexture])
 		return;
 
-	if (!m_pSubtitleVB)
-		return;
 	//  OutputDebugString("Rendering subs to screen\n");
 	// Set state to render the image
 	g_graphicsContext.Get3DDevice()->SetTexture( 0, m_pSubtitleTexture[iTexture]);
@@ -883,9 +772,16 @@ void xbox_video_render_subtitles(bool bUseBackBuffer)
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
 	g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_SUBVERTEX );
 	// Render the image
-	g_graphicsContext.Get3DDevice()->SetStreamSource( 0, m_pSubtitleVB, sizeof(SUBVERTEX) );
-	g_graphicsContext.Get3DDevice()->DrawPrimitive( D3DPT_QUADLIST, 0, 1 );
-
+	g_graphicsContext.Get3DDevice()->Begin(D3DPT_QUADLIST);
+  g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, 0.0f, 0.0f );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_SubRect.left, m_SubRect.top, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, SUBTITLE_TEXTURE_WIDTH, 0.0f );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_SubRect.right, m_SubRect.top, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, SUBTITLE_TEXTURE_WIDTH, SUBTITLE_TEXTURE_HEIGHT );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_SubRect.right, m_SubRect.bottom, 0, 0 );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, 0.0f, SUBTITLE_TEXTURE_HEIGHT );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, m_SubRect.left, m_SubRect.bottom, 0, 0 );
+	g_graphicsContext.Get3DDevice()->End();
 }
 //********************************************************************************************************
 void RenderVideo()
@@ -914,8 +810,27 @@ void RenderVideo()
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_ZERO );
 	g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_VIDVERTEX );
 	// Render the image
-	g_graphicsContext.Get3DDevice()->SetStreamSource( 0, m_pVideoVB, sizeof(VIDVERTEX) );
-	g_graphicsContext.Get3DDevice()->DrawPrimitive( D3DPT_QUADLIST, 0, 1 );
+	g_graphicsContext.Get3DDevice()->Begin(D3DPT_QUADLIST);
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left, (float)rs.top );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.left*0.5f, (float)rs.top*0.5f );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.left*0.5f, (float)rs.top*0.5f );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.left, (float)rd.top, 0, 0 );
+
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)rs.top );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.right*0.5f, (float)rs.top*0.5f );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.right*0.5f, (float)rs.top*0.5f );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.right, (float)rd.top, 0, 0 );
+
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)rs.bottom );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.right*0.5f, (float)rs.bottom*0.5f );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.right*0.5f, (float)rs.bottom*0.5f );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.right, (float)rd.bottom, 0, 0 );
+
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left, (float)rs.bottom );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.left*0.5f, (float)rs.bottom*0.5f );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.left*0.5f, (float)rs.bottom*0.5f );
+	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.left, (float)rd.bottom, 0, 0 );
+	g_graphicsContext.Get3DDevice()->End();
 
 	g_graphicsContext.Get3DDevice()->SetPixelShader(NULL);
 	g_graphicsContext.Get3DDevice()->SetTexture( 0, NULL);
@@ -1043,7 +958,7 @@ void xbox_video_render_update()
 {
   if (m_iRenderBuffer < 0 || m_iRenderBuffer >=NUM_BUFFERS) return;
   bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
-	if (m_pVideoVB && m_TextureBuffer[m_iRenderBuffer])
+	if (m_TextureBuffer[m_iRenderBuffer])
 	{
 		g_graphicsContext.Lock();
 		RenderVideo();
@@ -1075,10 +990,8 @@ void xbox_video_update(bool bPauseDrawing)
 //********************************************************************************************************
 static unsigned int video_draw_frame(unsigned char *src[])
 {
-	DebugBreak();
-  byte* image=(BYTE*)m_TextureBuffer[m_iDecodeBuffer];
-	fast_memcpy( image, *src, ytexture_pitch * image_height );
-	return 0;
+	// no support
+	return 1;
 }
 
 //********************************************************************************************************
@@ -1152,9 +1065,7 @@ static unsigned int put_image(mp_image_t *mpi)
 	}
 	else
 	{
-		//packed - this isn't going to work!
-		DebugBreak();
-    fast_memcpy( m_TextureBuffer[m_iDecodeBuffer], mpi->planes[0], ytexture_height * ytexture_pitch);
+		return VO_FALSE; // no packed support
 	}
 
   ++m_iDecodeBuffer %= NUM_BUFFERS;
