@@ -7,7 +7,8 @@
 #include <iostream>
 #include <strstream>
 #include "../DetectDVDType.h"
-
+#include "../autoptrhandle.h"
+using namespace AUTOPTR;
 namespace CDDB
 {
 
@@ -72,7 +73,7 @@ namespace CDDB
 
 	protected:
 		CStdString						m_strNull;
-		SOCKET								m_cddb_socket;  
+		CAutoPtrSocket				m_cddb_socket;  
 		const static int			recv_buffer=4096;
 		int										m_lastError;
 		map<int,CStdString> 	m_mapTitles;

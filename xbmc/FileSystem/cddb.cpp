@@ -13,8 +13,8 @@
 using namespace CDDB;
 //-------------------------------------------------------------------------------------------------------------------
 Xcddb::Xcddb() 
+:m_cddb_socket(INVALID_SOCKET)
 {
-	m_cddb_socket=NULL;
 	m_lastError=0;
 	cddb_ip_adress="194.97.4.18";
 	cCacheDir="";
@@ -38,12 +38,12 @@ bool Xcddb::openSocket()
 	// connect to site directly
 	service.sin_addr.s_addr = inet_addr(cddb_ip_adress.c_str());
 	service.sin_port = htons(port);
-	m_cddb_socket = socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
+	m_cddb_socket.attach( socket(AF_INET,SOCK_STREAM,IPPROTO_TCP));
 
 	// attempt to connection
-	if (connect(m_cddb_socket,(sockaddr*) &service,sizeof(struct sockaddr)) == SOCKET_ERROR)
+	if (connect((SOCKET)m_cddb_socket,(sockaddr*) &service,sizeof(struct sockaddr)) == SOCKET_ERROR)
 	{
-		closeSocket();
+		m_cddb_socket.reset();
 		return false;
 	}
 	return true;
@@ -52,10 +52,9 @@ bool Xcddb::openSocket()
 //-------------------------------------------------------------------------------------------------------------------
 bool Xcddb::closeSocket()
 {
-	if ( m_cddb_socket != NULL ) 
+	if ( m_cddb_socket.isValid() ) 
 	{
-		closesocket(m_cddb_socket);
-		m_cddb_socket=NULL;
+		m_cddb_socket.reset();
 	}
 	return true;
 }
@@ -69,7 +68,7 @@ bool Xcddb::Send( const void *buffer, int bytes )
 	tmp_buffer[bytes+1]=0x0d;
 	tmp_buffer[bytes+2]=0x0a;
 	tmp_buffer[bytes+3]=0x00;
-	int iErr=send(m_cddb_socket,(const char*)tmp_buffer,bytes+3,0);
+	int iErr=send((SOCKET)m_cddb_socket,(const char*)tmp_buffer,bytes+3,0);
 	if (iErr<=0)
 	{
 		delete [] tmp_buffer;
@@ -101,7 +100,7 @@ string Xcddb::Recv(bool wait4point)
 	bool found_211=false;
 	while (true)
 	{
-		long lenRead=recv(m_cddb_socket,(char*)&tmpbuffer,1,0);
+		long lenRead=recv((SOCKET)m_cddb_socket,(char*)&tmpbuffer,1,0);
 		b=tmpbuffer[0];
 		buffer.write(tmpbuffer,1);
 		if(counter==0 && b=='2')
