@@ -360,14 +360,16 @@ static int websHomePageHandler(webs_t wp, char_t *urlPrefix, char_t *webDir,
 		//no default file found, list directory contents
 		WIN32_FIND_DATA FindFileData;
 		HANDLE hFind;
+		bool addsep = (path[strlen(path)] != '/');
 		strcat(dir, "\\*");
 		hFind=FindFirstFile(dir, &FindFileData);
 		websWrite(wp, "%s", "<body><html>\n");
+
 		do
 		{
-			string w = "<a href=/";
-			w += &path[1];
-			w += "/";
+			string w = "<a href=";
+			w += path;
+			if(addsep) w += '/';
 			w += FindFileData.cFileName;
 			w += ">";
 			w += FindFileData.cFileName;

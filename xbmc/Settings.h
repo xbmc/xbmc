@@ -1,7 +1,7 @@
 #pragma once
 
 #include "tinyxml/tinyxml.h"
-#define CONFIG_VERSION 0x0009
+#define CONFIG_VERSION 0x000A
 
 #include <xtl.h>
 #include "stdstring.h"
@@ -127,6 +127,7 @@ public:
 			
 		bool			m_bTimeServerEnabled;
 		bool			m_bFTPServerEnabled;
+		bool			m_bHTTPServerEnabled;
 		int       m_iSlideShowTransistionFrames;
 		int       m_iSlideShowStayTime;
 		int				m_iScreenResolution;

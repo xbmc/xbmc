@@ -217,7 +217,7 @@ HRESULT CApplication::Initialize()
   {
 			m_sntpClient.Create(); 
 	
-			if (false)//g_stSettings.m_bHTTPServerEnabled)
+			if (g_stSettings.m_bHTTPServerEnabled)
 			{
 				CSectionLoader::Load("LIBHTTP");
 				m_pWebServer = new CWebServer();
