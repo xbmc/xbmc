@@ -116,6 +116,7 @@ void CButtonTranslator::GetAction(WORD wWindow, const CKey &key, CAction &action
 	action.wID = wAction;
 	action.fAmount1 = 0;
 	action.fAmount2 = 0;
+	action.m_dwButtonCode = key.GetButtonCode();
 	// get the action amounts of the analog buttons
 	if (key.GetButtonCode() == KEY_BUTTON_LEFT_TRIGGER)
 	{
