@@ -1,3 +1,11 @@
+#!/bin/sh
+
+make -f Makefile.xbmc dll
+exit
+
+### exit script, so we wont execute the lines below
+### the stuff below is pure for historical reasons :)
+
 _OBJECTS="mplayer.o mp_msg.o cpudetect.o codec-cfg.o spudec.o playtree.o playtreeparser.o asxparser.o vobsub.o subreader.o sub_cc.o find_sub.o m_config.o m_option.o parser-cfg.o m_struct.o unrarlib.o mixer.o parser-mpcmd.o libvo/libvo.a libao2/libao2.a libmpcodecs/libmpcodecs.a mp3lib/libMP3.a liba52/liba52.a libmpeg2/libmpeg2.a   libaf/libaf.a libmpdemux/libmpdemux.a input/libinput.a postproc/libswscale.a osdep/libosdep.a libavformat/libavformat.a libavcodec/libavcodec.a xbmcsys/lib/libdts.a xbmcsys/lib/libmad.a xbmcsys/lib/xvidcore.a xbmcsys/lib/libogg.a xbmcsys/lib/libfribidi.a libfaad2/libfaad2.a libmpdvdkit2/libmpdvdkit.a loader/driver.o loader/vfl.o loader/afl.o loader/dshow/libDS_Filter.a loader/dmo/libDMO_Filter.a xbmcsys/xbmc_vobsub/xbmc.o"
 _LIBS="-Lxbmcsys/lib -lws2_32  -lgdi32 -lwinmm -lws2_32 -lm -lstdc++ -lz"
 
