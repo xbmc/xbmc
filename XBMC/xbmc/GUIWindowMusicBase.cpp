@@ -598,6 +598,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 	CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
   CFileItem* pItem;
 	pItem=m_vecItems[iItem];
+  if (pItem->m_bIsFolder && pItem->GetLabel() == "..") return;
 
 	// show dialog box indicating we're searching the album name
   if (m_dlgProgress)
@@ -1469,6 +1470,13 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
 	pMenu->AddButton(600);		// Rip CD Audio
 	pMenu->AddButton(5);			// Settings...
 
+  bool bIsGotoParent = m_vecItems[iItem]->GetLabel() == "..";
+  //turn of info/queue if the current item is goto parent ..
+  if (bIsGotoParent)
+  {
+		pMenu->EnableButton(1, false);
+		pMenu->EnableButton(2, false);
+  }
 	// turn off Rip CD Audio button if we don't have a CDDA disk in
 	CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
 	if (!CDetectDVDMedia::IsDiscInDrive() || !pCdInfo || !pCdInfo->IsAudio(1))
