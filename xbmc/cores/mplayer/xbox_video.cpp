@@ -154,11 +154,10 @@ inline void CXBoxRenderManager::DrawAlpha(int x0, int y0, int w, int h, unsigned
 		m_pRenderer->DrawAlpha(x0, y0, w, h, src, srca, stride);
 }
 
-LPDIRECT3DSURFACE8 CXBoxRenderManager::GetOverlay()
+void CXBoxRenderManager::SetupScreenshot()
 {
 	if (m_pRenderer)
-		return m_pRenderer->GetOverlay();
-	return NULL;
+		m_pRenderer->SetupScreenshot();
 }
 
 //********************************************************************************************************

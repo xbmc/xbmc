@@ -1554,7 +1554,27 @@ void CGUIWindowMusicBase::SetLabelFromTag(CFileItem *pItem)
 			str = tag.GetArtist();
 		}
 		else if (strFormat[iPos2+1] == 'T' && tag.GetTitle().size())
+		{	// title
 			str = tag.GetTitle();
+		}
+		else if (strFormat[iPos2+1] == 'B' && tag.GetAlbum().size())
+		{	// album
+			str = tag.GetAlbum();
+		}
+		else if (strFormat[iPos2+1] == 'G' && tag.GetGenre().size())
+		{	// genre
+			str = tag.GetGenre();
+		}
+		else if (strFormat[iPos2+1] == 'Y')
+		{	// year
+			SYSTEMTIME dateTime;
+			tag.GetReleaseDate(dateTime);
+			if (dateTime.wYear > 0) str.Format("%i",dateTime.wYear);
+		}
+		else if (strFormat[iPos2+1] == '%')
+		{	// %% to print %
+			str = '%';
+		}
 		strLabel+=str;
 		iPos1 = iPos2+2;
 		iPos2 = strFormat.Find('%', iPos1);
