@@ -145,26 +145,31 @@ void CGUIWindowFileManager::OnAction(const CAction &action)
 {
   if (action.wID == ACTION_DELETE_ITEM)
   {
-    OnDelete(GetFocusedControl());
+    OnDelete(GetFocusedList());
     return;
   }
   if (action.wID == ACTION_COPY_ITEM)
   {
-		OnCopy(GetFocusedControl());
+		OnCopy(GetFocusedList());
     return;
   }
   if (action.wID == ACTION_MOVE_ITEM)
   {
-		OnMove(GetFocusedControl());
+		OnMove(GetFocusedList());
     return;
   }
 
 	if (action.wID == ACTION_PARENT_DIR)
 	{
-		GoParentFolder(GetFocusedControl());
+		GoParentFolder(GetFocusedList());
 		return;
 	}
 
+	if (action.wID == ACTION_RENAME)
+	{
+		OnRename(GetFocusedList());
+		return;
+	}
   if (action.wID == ACTION_PREVIOUS_MENU)
 	{
 		m_gWindowManager.PreviousWindow();
@@ -188,8 +193,8 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 				}
 				if (m_strDirectory[i].IsEmpty())
 				{
-					int iItem = GetSelectedItem(CONTROL_LEFT_LIST+i);
-					Update(CONTROL_LEFT_LIST+i, "");
+					int iItem = GetSelectedItem(i);
+					Update(i, "");
 					CONTROL_SELECT_ITEM(GetID(), CONTROL_LEFT_LIST+i, iItem)
 				}
 			}
@@ -201,8 +206,8 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 			{
 				if (m_strDirectory[i].IsEmpty())
 				{
-					int iItem = GetSelectedItem(CONTROL_LEFT_LIST+i);
-					Update(CONTROL_LEFT_LIST+i, "");
+					int iItem = GetSelectedItem(i);
+					Update(i, "");
 					CONTROL_SELECT_ITEM(GetID(), CONTROL_LEFT_LIST+i, iItem)
 				}
 			}
@@ -211,7 +216,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
     case GUI_MSG_WINDOW_DEINIT:
 		{
 			m_iLastControl=GetFocusedControl();
-			m_iItemSelected=GetSelectedItem(m_iLastControl);
+			m_iItemSelected=GetSelectedItem(m_iLastControl-CONTROL_LEFT_LIST);
 			Clear();
 		}	
     break;
@@ -238,8 +243,8 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 
 			for (int i=0; i<2; i++)
 			{
-				int iItem = GetSelectedItem(CONTROL_LEFT_LIST+i);
-				Update(CONTROL_LEFT_LIST+i, m_strDirectory[i]);
+				int iItem = GetSelectedItem(i);
+				Update(i, m_strDirectory[i]);
 				CONTROL_SELECT_ITEM(GetID(), CONTROL_LEFT_LIST+i, iItem)
 			}
 			return true;
@@ -249,148 +254,16 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
     case GUI_MSG_CLICKED:
     {
       int iControl=message.GetSenderId();
-/*      if (iControl==CONTROL_BTNVIEWASICONS)
-      {
 
-				if ( m_bViewSource ) 
-				{
-					if ( m_strSourceDirectory.IsEmpty() )
-								g_stSettings.m_bMyFilesSourceRootViewAsIcons=!g_stSettings.m_bMyFilesSourceRootViewAsIcons;
-					else
-								g_stSettings.m_bMyFilesSourceViewAsIcons=!g_stSettings.m_bMyFilesSourceViewAsIcons;
-				}
-				else 
-				{
-					if ( m_strDestDirectory.IsEmpty() )
-								g_stSettings.m_bMyFilesDestRootViewAsIcons=!g_stSettings.m_bMyFilesDestRootViewAsIcons;
-					else
-								g_stSettings.m_bMyFilesDestViewAsIcons=!g_stSettings.m_bMyFilesDestViewAsIcons;
-				}
-				g_settings.Save();
-				
-        UpdateButtons();
-      }
-      else if (iControl==CONTROL_BTNSORTBY) // sort by
-      {
-				if ( m_bViewSource ) 
-				{
-					if (m_strSourceDirectory.IsEmpty())
-					{
-						if (g_stSettings.m_iMyFilesSourceRootSortMethod==0)
-							g_stSettings.m_iMyFilesSourceRootSortMethod=3;
-						else
-							g_stSettings.m_iMyFilesSourceRootSortMethod=0;
-					}
-					else
-					{
-						g_stSettings.m_iMyFilesSourceSortMethod++;
-						if (g_stSettings.m_iMyFilesSourceSortMethod >=3) g_stSettings.m_iMyFilesSourceSortMethod=0;
-					}
-				}
-				else
-				{
-					if (m_strDestDirectory.IsEmpty())
-					{
-						if (g_stSettings.m_iMyFilesDestRootSortMethod==0)
-							g_stSettings.m_iMyFilesDestRootSortMethod=3;
-						else
-							g_stSettings.m_iMyFilesDestRootSortMethod=0;
-					}
-					else
-					{
-						g_stSettings.m_iMyFilesDestSortMethod++;
-						if (g_stSettings.m_iMyFilesDestSortMethod >=3) g_stSettings.m_iMyFilesDestSortMethod=0;
-					}
-				}
-
-				g_settings.Save();
-        UpdateButtons();
-        OnSort();
-      }
-      else if (iControl==CONTROL_BTNSORTASC) // sort asc
-      {
-				if ( m_bViewSource ) 
-				{
-					if (m_strSourceDirectory.IsEmpty())
-						g_stSettings.m_bMyFilesSourceRootSortAscending=!g_stSettings.m_bMyFilesSourceRootSortAscending;
-					else
-						g_stSettings.m_bMyFilesSourceSortAscending=!g_stSettings.m_bMyFilesSourceSortAscending;
-				}
-				else
-				{
-					if (m_strDestDirectory.IsEmpty())
-						g_stSettings.m_bMyFilesDestRootSortAscending=!g_stSettings.m_bMyFilesDestRootSortAscending;
-					else
-						g_stSettings.m_bMyFilesDestRootSortAscending=!g_stSettings.m_bMyFilesDestRootSortAscending;
-				}
-
-				g_settings.Save();
-        UpdateButtons();
-        OnSort();
-      }
-      else if (iControl==CONTROL_BTNCOPY)
-      {
-        OnCopy();
-      }
-      else if (iControl==CONTROL_BTNMOVE)
-      {
-        OnMove();
-      }
-      else if (iControl==CONTROL_BTNDELETE)
-      {
-        OnDelete();
-      }
-      else if (iControl==CONTROL_BTNRENAME)
-      {
-        OnRename();
-      }
-      else if (iControl==CONTROL_BTNNEWFOLDER)
-      {
-        OnNewFolder();
-      }
-			else if (iControl==CONTROL_BTNSELECTALL)
-			{
-				if (m_bViewSource)
-				{
-					for (int iItem=0;iItem < (int)m_vecSourceItems.size(); ++iItem)
-					{
-						CFileItem* pItem=m_vecSourceItems[iItem];
-						if (!pItem->m_bIsShareOrDrive)
-						{
-							if (pItem->GetLabel() != "..")
-							{
-								// MARK file
-								pItem->Select(!pItem->IsSelected());
-							}
-						}
-					}
-				}
-				else
-				{
-					for (int iItem=0;iItem < (int)m_vecDestItems.size(); ++iItem)
-					{
-						CFileItem* pItem=m_vecDestItems[iItem];
-						if (!pItem->m_bIsShareOrDrive)
-						{
-							if (pItem->GetLabel() != "..")
-							{
-								// MARK file
-								pItem->Select(!pItem->IsSelected());
-							}
-						}
-					}
-				}
-				UpdateButtons();
-			}
-      */
       if (iControl==CONTROL_LEFT_LIST || iControl==CONTROL_RIGHT_LIST)  // list/thumb control
       {
 				// get selected item
-				int iItem = GetSelectedItem(iControl);
+				int list = iControl - CONTROL_LEFT_LIST;
+				int iItem = GetSelectedItem(list);
 				int iAction=message.GetParam1();
 				if (iAction==ACTION_HIGHLIGHT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
 				{
-					OnMark(iControl, iItem);
+					OnMark(list, iItem);
 					if (!g_Mouse.IsActive())
 					{
 							//move to next item
@@ -400,14 +273,16 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 				}
         else if (iAction==ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_DOUBLE_CLICK)
         {
-					OnClick(iControl, iItem);
+					OnClick(list, iItem);
 				}
 				else if (iAction==ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
 				{
-					if (iControl == CONTROL_LEFT_LIST)
-						m_vecLeftItems[iItem]->Select(true);
-					else
-						m_vecRightItems[iItem]->Select(true);
+					bool bDeselect(false);
+					if (!NumSelected(list))
+					{
+						m_vecItems[list][iItem]->Select(true);
+						bDeselect = true;
+					}
 					// popup the context menu
 					CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
 					if (pMenu)
@@ -420,15 +295,15 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 						pMenu->AddButton(115);	// Copy
 						pMenu->AddButton(116);	// Move
 						pMenu->AddButton(119);	// New Folder
-						pMenu->EnableButton(1, CanRename(iControl));
-						pMenu->EnableButton(2, CanDelete(iControl));
-						pMenu->EnableButton(3, CanCopy(iControl));
-						pMenu->EnableButton(4, CanMove(iControl));
-						pMenu->EnableButton(5, CanNewFolder(iControl));
+						pMenu->EnableButton(1, CanRename(list));
+						pMenu->EnableButton(2, CanDelete(list));
+						pMenu->EnableButton(3, CanCopy(list));
+						pMenu->EnableButton(4, CanMove(list));
+						pMenu->EnableButton(5, CanNewFolder(list));
 						// get the position we need...
 						int iPosX=200;
 						int iPosY=100;
-						CGUIListControl *pList = (CGUIListControl *)GetControl(iControl);
+						CGUIListControl *pList = (CGUIListControl *)GetControl(list+CONTROL_LEFT_LIST);
 						if (pList)
 						{
 							pList->GetPointFromItem(iPosX, iPosY);
@@ -444,19 +319,25 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 						switch (pMenu->GetButton())
 						{
 						case 1:
-							OnRename(iControl);
+							OnRename(list);
 							break;
 						case 2:
-							OnDelete(iControl);
+							OnDelete(list);
 							break;
 						case 3:
-							OnCopy(iControl);
+							OnCopy(list);
 							break;
 						case 4:
-							OnMove(iControl);
+							OnMove(list);
 							break;
 						case 5:
-							OnNewFolder(iControl);
+							OnNewFolder(list);
+							break;
+						default:
+							if (bDeselect)
+							{	// deselect item as we didn't do anything
+								m_vecItems[list][iItem]->Select(false);
+							}
 							break;
 						}
 					}
@@ -471,94 +352,52 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 void CGUIWindowFileManager::OnSort(int iList)
 {
   SSortFilesByName sortmethod;
-	if (iList == CONTROL_LEFT_LIST)
+	if (m_strDirectory[iList].IsEmpty())
 	{
-		if (m_strDirectory[0].IsEmpty())
-		{
-			sortmethod.m_iSortMethod=g_stSettings.m_iMyFilesSourceRootSortMethod;
-			sortmethod.m_bSortAscending=g_stSettings.m_bMyFilesSourceRootSortAscending;
-		}
-		else
-		{
-			sortmethod.m_iSortMethod=g_stSettings.m_iMyFilesSourceSortMethod;
-			sortmethod.m_bSortAscending=g_stSettings.m_bMyFilesSourceSortAscending;
-		}
-
-		for (int i=0; i < (int)m_vecLeftItems.size(); i++)
-		{
-			CFileItem* pItem=m_vecLeftItems[i];
-			if (sortmethod.m_iSortMethod==0 || sortmethod.m_iSortMethod==2)
-			{
-				if (pItem->m_bIsFolder) pItem->SetLabel2("");
-				else 
-				{
-					CStdString strFileSize;
-					CUtil::GetFileSize(pItem->m_dwSize, strFileSize);
-					pItem->SetLabel2(strFileSize);
-				}
-			}
-			else
-			{
-				if (pItem->m_stTime.wYear)
-				{
-					CStdString strDateTime;
-					CUtil::GetDate(pItem->m_stTime, strDateTime);
-					pItem->SetLabel2(strDateTime);
-				}
-				else
-					pItem->SetLabel2("");
-			}
-		}
-
-		sort(m_vecLeftItems.begin(), m_vecLeftItems.end(), sortmethod);
+		sortmethod.m_iSortMethod=g_stSettings.m_iMyFilesSourceRootSortMethod;
+		sortmethod.m_bSortAscending=g_stSettings.m_bMyFilesSourceRootSortAscending;
 	}
 	else
 	{
-		if (m_strDirectory[1].IsEmpty())
+		sortmethod.m_iSortMethod=g_stSettings.m_iMyFilesSourceSortMethod;
+		sortmethod.m_bSortAscending=g_stSettings.m_bMyFilesSourceSortAscending;
+	}
+
+	for (int i=0; i < (int)m_vecItems[iList].size(); i++)
+	{
+		CFileItem* pItem=m_vecItems[iList][i];
+		if (sortmethod.m_iSortMethod==0 || sortmethod.m_iSortMethod==2)
 		{
-			sortmethod.m_iSortMethod=g_stSettings.m_iMyFilesSourceRootSortMethod;
-			sortmethod.m_bSortAscending=g_stSettings.m_bMyFilesSourceRootSortAscending;
+			if (pItem->m_bIsFolder) pItem->SetLabel2("");
+			else 
+			{
+				CStdString strFileSize;
+				CUtil::GetFileSize(pItem->m_dwSize, strFileSize);
+				pItem->SetLabel2(strFileSize);
+			}
 		}
 		else
 		{
-			sortmethod.m_iSortMethod=g_stSettings.m_iMyFilesSourceSortMethod;
-			sortmethod.m_bSortAscending=g_stSettings.m_bMyFilesSourceSortAscending;
-		}
-
-		for (int i=0; i < (int)m_vecRightItems.size(); i++)
-		{
-			CFileItem* pItem=m_vecRightItems[i];
-			if (sortmethod.m_iSortMethod==0 || sortmethod.m_iSortMethod==2)
+			if (pItem->m_stTime.wYear)
 			{
-				if (pItem->m_bIsFolder) pItem->SetLabel2("");
-				else 
-				{
-					CStdString strFileSize;
-					CUtil::GetFileSize(pItem->m_dwSize, strFileSize);
-					pItem->SetLabel2(strFileSize);
-				}
+				CStdString strDateTime;
+				CUtil::GetDate(pItem->m_stTime, strDateTime);
+				pItem->SetLabel2(strDateTime);
 			}
 			else
-			{
-				if (pItem->m_stTime.wYear)
-				{
-					CStdString strDateTime;
-					CUtil::GetDate(pItem->m_stTime, strDateTime);
-					pItem->SetLabel2(strDateTime);
-				}
-				else
-					pItem->SetLabel2("");
-			}
+				pItem->SetLabel2("");
 		}
-		sort(m_vecRightItems.begin(), m_vecRightItems.end(), sortmethod);
 	}
-  UpdateControl(iList);
+
+	sort(m_vecItems[iList].begin(), m_vecItems[iList].end(), sortmethod);
+
+	UpdateControl(iList);
 }
 
 void CGUIWindowFileManager::Clear()
 {
-	CFileItemList itemleftlist(m_vecLeftItems); // will clean up everything
-	CFileItemList itemrightlist(m_vecRightItems); // will clean up everything
+	CFileItemList itemleftlist(m_vecItems[0]); // will clean up everything
+	CFileItemList itemrightlist(m_vecItems[1]); // will clean up everything
 }
 
 void CGUIWindowFileManager::UpdateButtons()
@@ -602,46 +441,19 @@ void CGUIWindowFileManager::UpdateButtons()
 	SET_CONTROL_LABEL(GetID(), CONTROL_CURRENTDIRLABEL_RIGHT,strDir);
 
 	// update the number of items in each list
+	for (int i=0; i<2; i++)
 	{
 		WCHAR wszText[20];
 		const WCHAR* szText=g_localizeStrings.Get(127).c_str();
-		int iItems=m_vecLeftItems.size();
+		int iItems=m_vecItems[i].size();
 		if (iItems)
 		{
-			CFileItem* pItem=m_vecLeftItems[0];
+			CFileItem* pItem=m_vecItems[i][0];
 			if (pItem->GetLabel()=="..") iItems--;
 		}
 		swprintf(wszText,L"%i %s", iItems,szText);
-		SET_CONTROL_LABEL(GetID(), CONTROL_NUMFILES_LEFT,wszText);
+		SET_CONTROL_LABEL(GetID(), CONTROL_NUMFILES_LEFT+i, wszText);
 	}
-	{
-		WCHAR wszText[20];
-		const WCHAR* szText=g_localizeStrings.Get(127).c_str();
-		int iItems=m_vecRightItems.size();
-		if (iItems)
-		{
-			CFileItem* pItem=m_vecRightItems[0];
-			if (pItem->GetLabel()=="..") iItems--;
-		}
-		swprintf(wszText,L"%i %s", iItems,szText);
-		SET_CONTROL_LABEL(GetID(), CONTROL_NUMFILES_RIGHT,wszText);
-	}
-/*
-	//	Have we used a button for copy, moving...?
-	int nID=GetFocusedControl();
-	if (nID==CONTROL_BTNCOPY||nID==CONTROL_BTNMOVE||nID==CONTROL_BTNDELETE||nID==CONTROL_BTNRENAME)
-	{
-		const CGUIControl* pControl=GetControl(nID);
-		if (pControl)
-		{
-			//	After selected list control items are
-			//	deselected the previous control must get 
-			//	the focus, since the button is not visible
-			//	anymore.
-			if (!pControl->IsVisible())
-				SelectPreviousControl();
-		}
-	}*/
 }
 
 void CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
@@ -649,82 +461,40 @@ void CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 	// get selected item
 	int iItem=GetSelectedItem(iList);
 	CStdString strSelectedItem="";
-	if (iList == CONTROL_LEFT_LIST)
+
+	if (iItem >=0 && iItem < (int)m_vecItems[iList].size())
 	{
-		if (iItem >=0 && iItem < (int)m_vecLeftItems.size())
+		CFileItem* pItem=m_vecItems[iList][iItem];
+		if (pItem->m_bIsFolder && pItem->GetLabel() != "..")
 		{
-			CFileItem* pItem=m_vecLeftItems[iItem];
-			if (pItem->m_bIsFolder && pItem->GetLabel() != "..")
-			{
-				GetDirectoryHistoryString(pItem, strSelectedItem);
-				m_history[0].Set(strSelectedItem,m_strDirectory[0]);
-			}
-		}
-	}
-	else
-	{
-		if (iItem >=0 && iItem < (int)m_vecRightItems.size())
-		{
-			CFileItem* pItem=m_vecRightItems[iItem];
-			if (pItem->m_bIsFolder && pItem->GetLabel() != "..")
-			{
-				GetDirectoryHistoryString(pItem, strSelectedItem);
-				m_history[1].Set(strSelectedItem,m_strDirectory[1]);
-			}
+			GetDirectoryHistoryString(pItem, strSelectedItem);
+			m_history[iList].Set(strSelectedItem,m_strDirectory[iList]);
 		}
 	}
 
-	if (iList == CONTROL_LEFT_LIST)
-		CFileItemList itemleftlist(m_vecLeftItems); // will clean up everything
-	else
-		CFileItemList itemrightlist(m_vecRightItems); // will clean up everything
+	{
+		CFileItemList itemleftlist(m_vecItems[iList]); // will clean up everything
+	}
 
-	if (iList == CONTROL_LEFT_LIST)
-	{
-		GetDirectory(strDirectory, m_vecLeftItems);
-		m_strDirectory[0]=strDirectory;
-		CUtil::SetThumbs(m_vecLeftItems);
-		CUtil::FillInDefaultIcons(m_vecLeftItems);
-	}
-	else
-	{
-	 	GetDirectory(strDirectory, m_vecRightItems);
-    m_strDirectory[1]=strDirectory;
-		CUtil::SetThumbs(m_vecRightItems);
-		CUtil::FillInDefaultIcons(m_vecRightItems);
-	}
+	GetDirectory(strDirectory, m_vecItems[iList]);
+	m_strDirectory[iList]=strDirectory;
+	CUtil::SetThumbs(m_vecItems[iList]);
+	CUtil::FillInDefaultIcons(m_vecItems[iList]);
+
 
 	OnSort(iList);
   UpdateButtons();
 
-	if (iList == CONTROL_LEFT_LIST)
+	strSelectedItem=m_history[iList].Get(m_strDirectory[iList]);
+	for (int i=0; i < (int)m_vecItems[iList].size(); ++i)
 	{
-		strSelectedItem=m_history[0].Get(m_strDirectory[0]);
-		for (int i=0; i < (int)m_vecLeftItems.size(); ++i)
+		CFileItem* pItem=m_vecItems[iList][i];
+		CStdString strHistory;
+		GetDirectoryHistoryString(pItem, strHistory);
+		if (strHistory==strSelectedItem)
 		{
-			CFileItem* pItem=m_vecLeftItems[i];
-			CStdString strHistory;
-			GetDirectoryHistoryString(pItem, strHistory);
-			if (strHistory==strSelectedItem)
-			{
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_LEFT_LIST, i);
-				break;
-			}
-		}
-	}
-	else
-	{
-		strSelectedItem=m_history[1].Get(m_strDirectory[1]);	
-		for (int i=0; i < (int)m_vecRightItems.size(); ++i)
-		{
-			CFileItem* pItem=m_vecRightItems[i];
-			CStdString strHistory;
-			GetDirectoryHistoryString(pItem, strHistory);
-			if (strHistory==strSelectedItem)
-			{
-				CONTROL_SELECT_ITEM(GetID(), CONTROL_RIGHT_LIST, i);
-				break;
-			}
+			CONTROL_SELECT_ITEM(GetID(), iList+CONTROL_LEFT_LIST, i);
+			break;
 		}
 	}
 }
@@ -732,12 +502,8 @@ void CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 
 void CGUIWindowFileManager::OnClick(int iList, int iItem)
 {
-	CFileItem *pItem;
-  if (iList == CONTROL_LEFT_LIST)
-    pItem=m_vecLeftItems[iItem];
-	else
-		pItem=m_vecRightItems[iItem];
-	
+	CFileItem *pItem=m_vecItems[iList][iItem];
+
   CStdString strPath=pItem->m_strPath;
   if (pItem->m_bIsFolder)
   {
@@ -793,10 +559,10 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( CStdString& strPath, int iDriv
 			  dlg->SetLine( 2, L"" );
 			  dlg->DoModal( GetID() );
       }
-			int iList = GetFocusedControl();
+			int iList = GetFocusedList();
 			int iItem = GetSelectedItem(iList);
 			Update(iList, "");
-			CONTROL_SELECT_ITEM(GetID(), iList, iItem)
+			CONTROL_SELECT_ITEM(GetID(), iList+CONTROL_LEFT_LIST, iItem)
 			return false;
 		}
 	}
@@ -822,36 +588,20 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( CStdString& strPath, int iDriv
 
 void CGUIWindowFileManager::UpdateControl(int iList)
 {
-  CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),iList,0,0,NULL);
+  CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),iList+CONTROL_LEFT_LIST,0,0,NULL);
   g_graphicsContext.SendMessage(msg);         
 
-	if (iList == CONTROL_LEFT_LIST)
+	for (int i=0; i < (int)m_vecItems[iList].size(); i++)
 	{
-		for (int i=0; i < (int)m_vecLeftItems.size(); i++)
-		{
-			CFileItem* pItem=m_vecLeftItems[i];
-			CGUIMessage msg(GUI_MSG_LABEL_ADD,GetID(),CONTROL_LEFT_LIST,0,0,(void*)pItem);
-			g_graphicsContext.SendMessage(msg);    
-		}
-	}
-	else
-	{
-		for (int i=0; i < (int)m_vecRightItems.size(); i++)
-		{
-			CFileItem* pItem=m_vecRightItems[i];
-			CGUIMessage msg(GUI_MSG_LABEL_ADD,GetID(),CONTROL_RIGHT_LIST,0,0,(void*)pItem);
-			g_graphicsContext.SendMessage(msg);    
-		}
+		CFileItem* pItem=m_vecItems[iList][i];
+		CGUIMessage msg(GUI_MSG_LABEL_ADD,GetID(),iList+CONTROL_LEFT_LIST,0,0,(void*)pItem);
+		g_graphicsContext.SendMessage(msg);
 	}
 }
 
 void CGUIWindowFileManager::OnMark(int iList, int iItem)
 {
-	CFileItem* pItem;
-	if (iList == CONTROL_LEFT_LIST)
-		pItem = m_vecLeftItems[iItem];
-	else
-		pItem = m_vecRightItems[iItem];
+	CFileItem* pItem = m_vecItems[iList][iItem];
 
   if (!pItem->m_bIsShareOrDrive)
   {
@@ -1065,14 +815,12 @@ void CGUIWindowFileManager::OnCopy(int iList)
 		m_dlgProgress->SetPercentage(0);
 		m_dlgProgress->ShowProgressBar(true);
 	}
-	if (iList == CONTROL_LEFT_LIST)
-		DoProcess(ACTION_COPY, m_vecLeftItems, m_strDirectory[1]);
-	else
-		DoProcess(ACTION_COPY, m_vecRightItems, m_strDirectory[0]);
+	
+	DoProcess(ACTION_COPY, m_vecItems[iList], m_strDirectory[1-iList]);
+
   if (m_dlgProgress) m_dlgProgress->Close();
 	
-	int list = (iList == CONTROL_LEFT_LIST) ? CONTROL_RIGHT_LIST : CONTROL_LEFT_LIST;
-	Refresh(list);
+	Refresh(1-iList);
 }
 
 void CGUIWindowFileManager::OnMove(int iList)
@@ -1094,10 +842,8 @@ void CGUIWindowFileManager::OnMove(int iList)
 	  m_dlgProgress->SetPercentage(0);
 	  m_dlgProgress->ShowProgressBar(true);
   }
-	if (iList == CONTROL_LEFT_LIST)
-		DoProcess(ACTION_MOVE, m_vecLeftItems, m_strDirectory[1]);
-	else
-		DoProcess(ACTION_MOVE, m_vecRightItems, m_strDirectory[0]);
+	
+	DoProcess(ACTION_MOVE, m_vecItems[iList], m_strDirectory[1-iList]);
 
   if (m_dlgProgress) m_dlgProgress->Close();
 
@@ -1119,11 +865,9 @@ void CGUIWindowFileManager::OnDelete(int iList)
  
   if (m_dlgProgress) m_dlgProgress->StartModal(GetID());
 
-	if (iList == CONTROL_LEFT_LIST)
-		DoProcess(ACTION_DELETE,m_vecLeftItems, m_strDirectory[0]);
-	else
-		DoProcess(ACTION_DELETE,m_vecRightItems, m_strDirectory[1]);
-  if (m_dlgProgress) m_dlgProgress->Close();
+	DoProcess(ACTION_DELETE,m_vecItems[iList], m_strDirectory[iList]);
+
+	if (m_dlgProgress) m_dlgProgress->Close();
 
   Refresh(iList);
 }
@@ -1131,30 +875,16 @@ void CGUIWindowFileManager::OnDelete(int iList)
 void CGUIWindowFileManager::OnRename(int iList)
 {
   CStdString strFile;
-  if (iList == CONTROL_LEFT_LIST)
+  for (int i=0; i < (int)m_vecItems[iList].size();++i)
   {
-    for (int i=0; i < (int)m_vecLeftItems.size();++i)
+    CFileItem* pItem=m_vecItems[iList][i];
+    if (pItem->IsSelected())
     {
-      CFileItem* pItem=m_vecLeftItems[i];
-      if (pItem->IsSelected())
-      {
-        strFile=pItem->m_strPath;
-        break;
-      }
+      strFile=pItem->m_strPath;
+      break;
     }
   }
-  else
-  {
-    for (int i=0; i < (int)m_vecRightItems.size();++i)
-    {
-      CFileItem* pItem=m_vecRightItems[i];
-      if (pItem->IsSelected())
-      {
-        strFile=pItem->m_strPath;
-        break;
-      }
-    }
-  }
+
   RenameFile(strFile);
 
   Refresh(iList);
@@ -1201,11 +931,7 @@ void CGUIWindowFileManager::OnNewFolder(int iList)
 
 	if (pKeyboard->IsDirty())
 	{	// have text - update this.
-		CStdString strNewPath;
-		if (iList == CONTROL_LEFT_LIST) 
-			strNewPath= m_strDirectory[0];
-		else
-			strNewPath= m_strDirectory[1];
+		CStdString strNewPath = m_strDirectory[iList];
 		if (!CUtil::HasSlashAtEnd(strNewPath) ) strNewPath+="\\";
 		CStdString strNewFolderName = pKeyboard->GetText();
 		if (!strNewFolderName.IsEmpty())
@@ -1222,55 +948,39 @@ void CGUIWindowFileManager::Refresh(int iList)
 {
 	int nSel=GetSelectedItem(iList);
 	// update the list views
-	Update(iList, m_strDirectory[iList - CONTROL_LEFT_LIST]);
+	Update(iList, m_strDirectory[iList]);
 
 	UpdateButtons();
   UpdateControl(iList);
 
-	if (iList == CONTROL_LEFT_LIST)
-	{
-		while (nSel>(int)m_vecLeftItems.size())
-			nSel--;
-	}
-	else
-	{
-		while (nSel>(int)m_vecRightItems.size())
-			nSel--;
-	}
+	while (nSel>(int)m_vecItems[iList].size())
+		nSel--;
 
-	CONTROL_SELECT_ITEM(GetID(), iList, nSel);
+	CONTROL_SELECT_ITEM(GetID(), iList+CONTROL_LEFT_LIST, nSel);
 }
 
 
 void CGUIWindowFileManager::Refresh()
 {
-	int iList = GetFocusedControl();
+	int iList = GetFocusedList();
 	int nSel=GetSelectedItem(iList);
 	// update the list views
-	Update(CONTROL_LEFT_LIST, m_strDirectory[0]);
-  Update(CONTROL_RIGHT_LIST, m_strDirectory[1]);
+	Update(0, m_strDirectory[0]);
+  Update(1, m_strDirectory[1]);
 
 	UpdateButtons();
-  UpdateControl(CONTROL_LEFT_LIST);
-	UpdateControl(CONTROL_RIGHT_LIST);
+  UpdateControl(0);
+	UpdateControl(1);
 
-	if (iList == CONTROL_LEFT_LIST)
-	{
-		while (nSel>(int)m_vecLeftItems.size())
-			nSel--;
-	}
-	else
-	{
-		while (nSel>(int)m_vecRightItems.size())
-			nSel--;
-	}
+	while (nSel>(int)m_vecItems[iList].size())
+		nSel--;
 
-	CONTROL_SELECT_ITEM(GetID(), iList, nSel);
+	CONTROL_SELECT_ITEM(GetID(), iList+CONTROL_LEFT_LIST, nSel);
 }
 
 int CGUIWindowFileManager::GetSelectedItem(int iControl)
 {
-	CGUIListControl *pControl = (CGUIListControl *)GetControl(iControl);
+	CGUIListControl *pControl = (CGUIListControl *)GetControl(iControl+CONTROL_LEFT_LIST);
 	if (!pControl) return -1;
 	return pControl->GetSelectedItem();
 }
@@ -1278,16 +988,9 @@ int CGUIWindowFileManager::GetSelectedItem(int iControl)
 void CGUIWindowFileManager::GoParentFolder(int iList)
 {
 	CFileItem *pItem;
-	if (iList == CONTROL_LEFT_LIST)
-	{
-		if (!m_vecLeftItems.size()) return;
-		pItem=m_vecLeftItems[0];
-	}
-	else
-	{
-		if (!m_vecRightItems.size()) return;
-		pItem=m_vecRightItems[0];
-	}
+	if (!m_vecItems[iList].size()) return;
+	pItem=m_vecItems[iList][0];
+
 	CStdString strPath=pItem->m_strPath;
 	if (pItem->m_bIsFolder && pItem->GetLabel()=="..")
 	{
@@ -1396,16 +1099,9 @@ bool CGUIWindowFileManager::CanRename(int iList)
 {
 	// TODO: Renaming of shares (requires writing to xboxmediacenter.xml)
 	// this might be able to be done via the webserver code stuff...
-	if (iList == CONTROL_LEFT_LIST)
-	{
-		if (m_strDirectory[0].IsEmpty()) return false;
-		if (IsReadOnly(m_strDirectory[0])) return false;
-	}
-	else
-	{
-		if (m_strDirectory[1].IsEmpty()) return false;
-		if (IsReadOnly(m_strDirectory[1])) return false;
-	}
+	if (m_strDirectory[iList].IsEmpty()) return false;
+	if (IsReadOnly(m_strDirectory[iList])) return false;
+
 	return true;
 }
 
@@ -1414,58 +1110,31 @@ bool CGUIWindowFileManager::CanCopy(int iList)
 	// can't copy if the destination is not writeable, or if the source is a share!
 	// TODO: Perhaps if the source is removeable media (DVD/CD etc.) we could
 	// put ripping/backup in here.
-	if (iList == CONTROL_LEFT_LIST)
-	{
-		if (m_strDirectory[1].IsEmpty()) return false;
-		if (m_strDirectory[0].IsEmpty()) return false;
-		if (IsReadOnly(m_strDirectory[1])) return false;
-	}
-	else
-	{
-		if (m_strDirectory[0].IsEmpty()) return false;
-		if (m_strDirectory[1].IsEmpty()) return false;
-		if (IsReadOnly(m_strDirectory[0])) return false;
-	}
+	if (m_strDirectory[1-iList].IsEmpty()) return false;
+	if (m_strDirectory[iList].IsEmpty()) return false;
+	if (IsReadOnly(m_strDirectory[1-iList])) return false;
 	return true;
 }
 
 bool CGUIWindowFileManager::CanMove(int iList)
 {
 	// can't move if the destination is not writeable, or if the source is a share or not writeable!
-	if (m_strDirectory[1].IsEmpty()) return false;
-	if (m_strDirectory[0].IsEmpty()) return false;
-	if (IsReadOnly(m_strDirectory[1])) return false;
-	if (IsReadOnly(m_strDirectory[0])) return false;
+	if (m_strDirectory[0].IsEmpty() || IsReadOnly(m_strDirectory[0])) return false;
+	if (m_strDirectory[1].IsEmpty() || IsReadOnly(m_strDirectory[1])) return false;
 	return true;
 }
 
 bool CGUIWindowFileManager::CanDelete(int iList)
 {
-	if (iList == CONTROL_LEFT_LIST)
-	{
-		if (m_strDirectory[0].IsEmpty()) return false;
-		if (IsReadOnly(m_strDirectory[0])) return false;
-	}
-	else
-	{
-		if (m_strDirectory[1].IsEmpty()) return false;
-		if (IsReadOnly(m_strDirectory[1])) return false;
-	}
+	if (m_strDirectory[iList].IsEmpty()) return false;
+	if (IsReadOnly(m_strDirectory[iList])) return false;
 	return true;
 }
 
 bool CGUIWindowFileManager::CanNewFolder(int iList)
 {
-	if (iList == CONTROL_LEFT_LIST)
-	{
-		if (m_strDirectory[0].IsEmpty()) return false;
-		if (IsReadOnly(m_strDirectory[0])) return false;
-	}
-	else
-	{
-		if (m_strDirectory[1].IsEmpty()) return false;
-		if (IsReadOnly(m_strDirectory[1])) return false;
-	}
+	if (m_strDirectory[iList].IsEmpty()) return false;
+	if (IsReadOnly(m_strDirectory[iList])) return false;
 	return true;
 }
 
@@ -1478,4 +1147,19 @@ bool CGUIWindowFileManager::IsReadOnly(const CStdString &strFile) const
 	// no other protocols are writeable??
 	if (CUtil::IsRemote(strFile)) return true;
 	return false;
+}
+
+int CGUIWindowFileManager::NumSelected(int iList)
+{
+	int iSelectedItems = 0;
+	for (int iItem=0; iItem < (int)m_vecItems[iList].size(); ++iItem)
+  {
+    if (m_vecItems[iList][iItem]->IsSelected()) iSelectedItems++;
+	}
+	return iSelectedItems;
+}
+
+int CGUIWindowFileManager::GetFocusedList() const
+{
+	return GetFocusedControl()-CONTROL_LEFT_LIST;
 }

@@ -236,6 +236,7 @@ public:
 
 		int				m_iMoveDelayController;
 		int				m_iRepeatDelayController;
+		float			m_fAnalogDeadzoneController;
 
 		bool			m_bTimeServerEnabled;
 		bool			m_bFTPServerEnabled;
