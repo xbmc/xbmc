@@ -1933,7 +1933,10 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
 	//	Set the album thumb for a file or folder.
 
 	//	Sets thumb by album title or uses files in
-	//	folder like folder.jpg.
+	//	folder like folder.jpg or .tbn files.
+
+  // if it already has a thumbnail, then return
+  if ( pItem->HasThumbnail() ) return;
 
   CStdString strThumb, strPath, strFileName;
 
@@ -1985,20 +1988,60 @@ void CUtil::SetMusicThumb(CFileItem* pItem)
 	//	If we have not found a thumb before, look for a .tbn if its a file
 	if (strThumb.IsEmpty() && !pItem->m_bIsFolder)
 	{
-		Crc32 crc;
-		crc.Reset();
-		crc.Compute(pItem->m_strPath.c_str(),strlen(pItem->m_strPath.c_str()));
-		strThumb.Format("%s\\%x.tbn",g_stSettings.m_szAlbumDirectory,crc);
-		if (CUtil::ThumbExists(strThumb, true))
+		CUtil::ReplaceExtension(pItem->m_strPath, ".tbn", strThumb);
+		if( CUtil::IsRemote(pItem->m_strPath))
 		{
-			//	found a .tbn
-			pItem->SetIconImage(strThumb);
-			pItem->SetThumbnailImage(strThumb);
+			//	Query local cache
+			CStdString strCached;
+			CUtil::GetAlbumThumb(strThumb, strCached, true);
+			if (CUtil::ThumbExists(strCached, true))
+			{
+				//	Remote thumb found in local cache
+				pItem->SetIconImage(strCached);
+				pItem->SetThumbnailImage(strCached);
+			}
+			else
+			{
+				//	create cached thumb, if a .tbn file is found
+				//	on a remote share
+				if (CUtil::ThumbExists(strThumb, true))
+				{
+					//	found, save a thumb 
+					//	to the temp thumb dir.
+					CPicture pic;
+					if (pic.CreateAlbumThumbnail(strThumb, strThumb))
+					{
+						CUtil::ThumbCacheAdd(strCached, true);
+						pItem->SetIconImage(strCached);
+						pItem->SetThumbnailImage(strCached);
+					}
+					else
+					{
+						//	save temp thumb failed,
+						//	no thumb available
+						strThumb.Empty();
+					}
+				}
+				else
+				{
+					//	no thumb available
+					strThumb.Empty();
+				}
+			}
 		}
 		else
 		{
-			//	no .tbn found for file
-			strThumb.Empty();
+			if (CUtil::ThumbExists(strThumb, true))
+			{
+				//	use local .tbn file as thumb
+				pItem->SetIconImage(strThumb);
+				pItem->SetThumbnailImage(strThumb);
+			}
+			else
+			{
+				//	No thumb found
+				strThumb.Empty();
+			}
 		}
 	}
 
