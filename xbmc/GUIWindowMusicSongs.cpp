@@ -1255,6 +1255,16 @@ void CGUIWindowMusicSongs::OnSearchItemFound(const CFileItem* pSelItem)
 			}
 		}
 	}
+
+	const CGUIControl* pControl=GetControl(CONTROL_LIST);
+	if (pControl && pControl->IsVisible())
+	{
+		SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+	}
+	else
+	{
+		SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
+	}
 }
 
 /// \brief Search for a song or a artist with search string \e strSearch in the musicdatabase and return the found \e items
