@@ -17,6 +17,7 @@ protected:
 	virtual void				DoSort(VECFILEITEMS& items);
 	virtual	void				DoSearch(const CStdString& strSearch,VECFILEITEMS& items);
 	virtual	void				OnSearchItemFound(const CFileItem* pItem);
+					void				AutoSwitchControlThumbList();
 
 	virtual void				OnRetrieveMusicInfo(VECFILEITEMS& items);
 
