@@ -827,9 +827,41 @@ to display the whole frame, only update small parts of it.
 */
 static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,int h,int x,int y )
 {
-	DebugBreak();
-	OutputDebugString("video_draw_slice?? (should not happen)\n");
-	return 0;
+  BYTE *s;
+  BYTE *d;
+  DWORD i=0;
+  
+  // copy Y
+  d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer]+ytexture_pitch*y+x;                
+  s=src[0];                           
+  for(i=0;i<(DWORD)h;i++){
+    memcpy(d,s,w);                  
+    s+=stride[0];                  
+    d+=ytexture_pitch;
+  }
+    
+	w/=2;h/=2;x/=2;y/=2;
+	
+	// copy U
+  // d=image+dstride*image_height + uvstride*y+x;
+  d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer] + ytexture_pitch*image_height+ uvtexture_pitch*y+x;
+  s=src[1];
+  for(i=0;i<(DWORD)h;i++){
+      memcpy(d,s,w);
+      s+=stride[1];
+      d+=uvtexture_pitch;
+  }
+	
+	// copy V
+  //d=image+dstride*image_height +uvstride*(image_height/2) + uvstride*y+x;
+  d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer] + ytexture_pitch*image_height + uvtexture_pitch*(image_height/2)+ uvtexture_pitch*y+x;;
+  s=src[2];
+  for(i=0;i<(DWORD)h;i++){
+    memcpy(d,s,w);
+    s+=stride[2];
+    d+=uvtexture_pitch;
+  }
+  return 0;
 }
 
 //********************************************************************************************************
@@ -906,11 +938,15 @@ void RenderVideo()
 	g_graphicsContext.Get3DDevice()->SetTexture( 1, NULL);
 	g_graphicsContext.Get3DDevice()->SetTexture( 2, NULL);
 }
+//************************************************************************************
 static void video_flip_page(void)
 {
 	if (!m_bFlip) return;
 	m_bFlip=false;
-//	m_pOverlay[m_iBackBuffer]->UnlockRect(0);
+	
+  m_iRenderBuffer =m_iDecodeBuffer;
+  ++m_iDecodeBuffer %= NUM_BUFFERS;
+
 	m_pSubtitleTexture[m_iBackBuffer]->UnlockRect(0);
 
 	Directx_ManageDisplay();
@@ -940,8 +976,6 @@ static void video_flip_page(void)
 				g_graphicsContext.Unlock();
 			}
 
-//			while (!g_graphicsContext.Get3DDevice()->GetOverlayUpdateStatus()) Sleep(10);
-//			g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_iBackBuffer], &rs, &rd, TRUE, 0x00010001  );
 
 //		if (m_bRenderGUI)
 //		{
@@ -950,7 +984,7 @@ static void video_flip_page(void)
 			g_graphicsContext.Unlock();
 			m_bRenderGUI=false;
 		}
-		else
+		else // of if (g_graphicsContext.IsFullScreenVideo())
 		{
 //			g_graphicsContext.Lock();
 //			//g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_iBackBuffer], &rs, &rd, TRUE, 0x00010001  );
@@ -960,15 +994,8 @@ static void video_flip_page(void)
 		}
 	}
 
-	++m_iRenderBuffer %= NUM_BUFFERS;
-	m_iBackBuffer = 1-m_iBackBuffer;
 
-//	D3DLOCKED_RECT rectLocked;
-//	if ( D3D_OK == m_pOverlay[m_iBackBuffer]->LockRect(0,&rectLocked,NULL,0L  ))
-//	{
-//		dstride=rectLocked.Pitch;
-//		image  =(unsigned char*)rectLocked.pBits;
-//	}
+	m_iBackBuffer = 1-m_iBackBuffer;
 	g_graphicsContext.Lock();
 	D3DLOCKED_RECT rectLocked2;
 	if ( D3D_OK == m_pSubtitleTexture[m_iBackBuffer]->LockRect(0,&rectLocked2,NULL,0L))
@@ -1092,12 +1119,6 @@ void xbox_video_update(bool bPauseDrawing)
 	Directx_ManageDisplay();
 	if (m_pVideoVB)
 	{
-//		if (m_pSurface[0] && m_pSurface[1])
-//		{
-//			g_graphicsContext.Lock();
-//			g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[1-m_iBackBuffer], &rs, &rd, TRUE, 0x00010001  );
-//			g_graphicsContext.Unlock();
-//		}
 		if (m_TextureBuffer[m_iRenderBuffer])
 		{
 			g_graphicsContext.Lock();
@@ -1127,51 +1148,46 @@ If you implement VOCTRL_DRAW_IMAGE, you can left draw_frame.
 */
 static unsigned int video_draw_frame(unsigned char *src[])
 {
-	DebugBreak();
-	OutputDebugString("video_draw_frame?? (should not happen)\n");
+  byte* image=(BYTE*)m_TextureBuffer[m_iDecodeBuffer];
+	memcpy( image, *src, ytexture_pitch * image_height );
 	return 0;
 }
 
 //********************************************************************************************************
 static unsigned int get_image(mp_image_t *mpi)
 {
-//	g_graphicsContext.Lock();
-//	while (!g_graphicsContext.Get3DDevice()->GetOverlayUpdateStatus()) Sleep(10);
-//	g_graphicsContext.Unlock();
+#if 0
+  while (m_YTexture[m_iRenderBuffer].IsBusy()) Sleep(1);
+	while (m_UTexture[m_iRenderBuffer].IsBusy()) Sleep(1);
+	while (m_VTexture[m_iRenderBuffer].IsBusy()) Sleep(1);
 
-	while (m_YTexture[m_iDecodeBuffer].IsBusy()) Sleep(1);
-	while (m_UTexture[m_iDecodeBuffer].IsBusy()) Sleep(1);
-	while (m_VTexture[m_iDecodeBuffer].IsBusy()) Sleep(1);
-
-	if((mpi->width==ytexture_pitch && mpi->width/2==uvtexture_pitch) || (mpi->flags&MP_IMGFLAG_ACCEPT_STRIDE))
+	if((mpi->width==ytexture_pitch && mpi->width/2==uvtexture_pitch) || (mpi->flags& (MP_IMGFLAG_ACCEPT_WIDTH|MP_IMGFLAG_ACCEPT_STRIDE)))
 	{
-		if((mpi->flags&MP_IMGFLAG_PLANAR) && (mpi->flags & MP_IMGFLAG_YUV))
+		if((mpi->flags&MP_IMGFLAG_PLANAR))
 		{
-			mpi->planes[0]=(BYTE*)m_TextureBuffer[m_iDecodeBuffer];
-			mpi->planes[1]=(BYTE*)m_TextureBuffer[m_iDecodeBuffer] + ytexture_pitch*image_height;
-			mpi->planes[2]=(BYTE*)m_TextureBuffer[m_iDecodeBuffer] + ytexture_pitch*image_height + uvtexture_pitch*(image_height/2);
+      
+			mpi->planes[0]=(BYTE*)m_TextureBuffer[m_iRenderBuffer];
+			mpi->planes[1]=(BYTE*)m_TextureBuffer[m_iRenderBuffer] + ytexture_pitch*image_height;
+			mpi->planes[2]=(BYTE*)m_TextureBuffer[m_iRenderBuffer] + ytexture_pitch*image_height + uvtexture_pitch*(image_height/2);
+      
 			mpi->stride[0]=ytexture_pitch;
 			mpi->stride[1]=uvtexture_pitch;
 			mpi->stride[2]=uvtexture_pitch;
 			mpi->width=image_width;
 			mpi->height=image_height;
 			mpi->flags|=MP_IMGFLAG_DIRECT;
-			++m_iDecodeBuffer %= NUM_BUFFERS;
 			return VO_TRUE;
 		}
 	}
+#endif
 	return VO_FALSE;
 }
 //********************************************************************************************************
 static unsigned int put_image(mp_image_t *mpi)
 {
-//	g_graphicsContext.Lock();
-//	while (!g_graphicsContext.Get3DDevice()->GetOverlayUpdateStatus()) Sleep(10);
-//	g_graphicsContext.Unlock();
 
 	if((mpi->flags&MP_IMGFLAG_DIRECT)||(mpi->flags&MP_IMGFLAG_DRAW_CALLBACK)) 
 	{
-		//memcpy(m_TextureBuffer[m_iBackBuffer], m_RenderBuffer, ytexture_pitch*image_height + uvtexture_pitch*image_height);
 
 		if (mpi->flags & MP_IMGFLAG_READABLE)
 		{
@@ -1180,34 +1196,66 @@ static unsigned int put_image(mp_image_t *mpi)
 				wbinvd
 			}
 		}
-
-		m_bFlip=true;
+    m_bFlip=true;
 		return VO_TRUE;
 	}
+  DWORD  i = 0;
+  BYTE   *d;
+  BYTE   *s;
+  DWORD x = mpi->x;
+  DWORD y = mpi->y;
+  DWORD w = mpi->w;
+  DWORD h = mpi->h;
 
 	if (mpi->flags&MP_IMGFLAG_PLANAR)
 	{
-    byte* image=(byte*)m_TextureBuffer[m_iDecodeBuffer];
-		for (int y=0; y < mpi->h; ++y)
-		{
-			memcpy(image+y*ytexture_pitch,mpi->planes[0]+mpi->stride[0]*y,mpi->width);
-		}
-    image=(byte*)(BYTE*)m_TextureBuffer[m_iDecodeBuffer]+ ytexture_pitch*image_height;
-		for (int y=0; y < (mpi->h/2); ++y)
-		{
-			memcpy(image+y*uvtexture_pitch,mpi->planes[1]+mpi->stride[1]*y,mpi->width/2);
-		}
-    image=(byte*)m_TextureBuffer[m_iDecodeBuffer]+ ytexture_pitch*image_height + uvtexture_pitch*(image_height/2);
-		for (int y=0; y < (mpi->h)/2; ++y)
-		{
-			memcpy(image+y*uvtexture_pitch,mpi->planes[2]+mpi->stride[2]*y,mpi->width/2);
-		}
-		++m_iDecodeBuffer %= NUM_BUFFERS;
+    if(image_format!=IMGFMT_YVU9) video_draw_slice( mpi->planes,(int*)&mpi->stride[0],mpi->w,mpi->h,0,0);
+    else
+    {
+      // copy Y
+      byte* image=(byte*)m_TextureBuffer[m_iDecodeBuffer];
+      DWORD dstride=ytexture_pitch;
+      d=image+dstride*y+x;
+      s=mpi->planes[0];
+      for(i=0;i<h;i++)
+      {
+        memcpy(d,s,w);
+        s+=mpi->stride[0];
+        d+=dstride;
+      }
+      //w/=4;h/=4;x/=4;y/=4;
+      w/=2;
+      h/=2;
+      x/=2;
+      y/=2;
+      
+      // copy V
+      //d=image+dstride*image_height + dstride*y/4+x;
+      dstride=uvtexture_pitch;
+      d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer] + ytexture_pitch*image_height + dstride*y+x;
+      s=mpi->planes[1];
+      for(i=0;i<h;i++){
+        memcpy(d,s,w);
+        s+=mpi->stride[1];
+        d+=dstride;
+      }
+
+
+      // copy U
+      //d=image+dstride*image_height + dstride*image_height/16 + dstride/4*y+x;
+      d=(BYTE*)m_TextureBuffer[m_iDecodeBuffer] + ytexture_pitch*image_height + uvtexture_pitch*(image_height/2) + dstride*y+x;
+      s=mpi->planes[2];
+      for(i=0;i<h;i++){
+        memcpy(d,s,w);
+        s+=mpi->stride[2];
+        d+=dstride;
+      }
+    }
 	}
 	else
 	{
 		//packed
-		//memcpy( &m_TextureBuffer[m_iBackBuffer], mpi->planes[0], image_height * ytexture_pitch);
+    memcpy( m_TextureBuffer[m_iBackBuffer], mpi->planes[0], image_height * ytexture_pitch);
 	}
 
 	m_bFlip=true;
@@ -1260,13 +1308,6 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
 
 	Directx_ManageDisplay();
 	Directx_CreateOverlay(image_format);
-	// get stride
-//	D3DLOCKED_RECT rectLocked;
-//	if ( D3D_OK == m_pOverlay[m_iBackBuffer]->LockRect(0,&rectLocked,NULL,0L  ) )
-//	{
-//		dstride=rectLocked.Pitch;
-//		image  =(unsigned char*)rectLocked.pBits;
-//	}
 	OutputDebugString("video_config() done\n");
 	return 0;
 }
@@ -1315,15 +1356,6 @@ static unsigned int video_control(unsigned int request, void *data, ...)
 	return VO_NOTIMPL;
 }
 
-
-//********************************************************************************************************
-//static vo_info_t video_info =
-//{
-//	"XBOX Direct3D8 YUY2 renderer",
-//		"directx",
-//		"Frodo/JCMarshall",
-//		""
-//};
 
 static vo_info_t video_info =
 {
