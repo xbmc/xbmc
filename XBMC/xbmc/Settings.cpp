@@ -439,6 +439,7 @@ void CSettings::ConvertHomeVar(CStdString& strText)
 
 void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items,CStdString& strDefault)
 {
+	CLog::Log("  Parsing <%s> tag", strTagName.c_str());
 	strDefault="";
 	const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
 	if (pChild)
@@ -451,11 +452,13 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 			{
 				const TiXmlNode *pNodeName=pChild->FirstChild("name");
 				const TiXmlNode *pPathName=pChild->FirstChild("path");
-        const TiXmlNode *pCacheNode=pChild->FirstChild("cache");
+				const TiXmlNode *pCacheNode=pChild->FirstChild("cache");
 				if (pNodeName && pPathName)
 				{
-          const char* szName=pNodeName->FirstChild()->Value();
-          const char* szPath=pPathName->FirstChild()->Value();
+					const char* szName=pNodeName->FirstChild()->Value();
+					CLog::Log("    Share Name: %s", szName);
+					const char* szPath=pPathName->FirstChild()->Value();
+					CLog::Log("    Share Path: %s", szPath);
 
 					CShare share;
 					share.strName=szName;
@@ -480,10 +483,10 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 						share.m_iDriveType = SHARE_TYPE_UNKNOWN;
 
           
-          if (pCacheNode)
-          {
-            share.m_iBufferSize=atoi( pCacheNode->FirstChild()->Value() );
-          }
+					if (pCacheNode)
+					{
+						share.m_iBufferSize=atoi( pCacheNode->FirstChild()->Value() );
+					}
 
           
           
@@ -491,6 +494,11 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 
 					items.push_back(share);
 				}
+				else
+				{
+					CLog::Log("    <name> and/or <path> not properly defined within <bookmark>");
+				}
+
 			}
 			if (strValue=="default")
 			{
@@ -500,10 +508,15 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 					const char* pszText=pChild->FirstChild()->Value();
 					if (strlen(pszText) > 0)
 						strDefault=pszText;
+						CLog::Log("    Setting <default> share to : %s", strDefault.c_str());
 				}
 			}
 		  pChild=pChild->NextSibling();
 		}
+	}
+	else 
+	{
+		CLog::Log("  <%s> tag is missing or XboxMediaCenter.xml is malformed", strTagName.c_str());
 	}
 }
 
@@ -527,6 +540,8 @@ void CSettings::GetString(const TiXmlElement* pRootElement, const CStdString& st
 	{
 		strcpy(szValue,strDefaultValue.c_str());
 	}
+
+	CLog::Log("  %s: %s", strTagName.c_str(), szValue); 
 }
 
 void CSettings::GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue, const int iDefault, const int iMin, const int iMax)
@@ -539,6 +554,8 @@ void CSettings::GetInteger(const TiXmlElement* pRootElement, const CStdString& s
 	} 
 	else
 		iValue=iDefault;
+
+	CLog::Log("  %s: %d", strTagName.c_str(), iValue);
 }
 
 void CSettings::GetFloat(const TiXmlElement* pRootElement, const CStdString& strTagName, float& fValue, const float fDefault, const float fMin, const float fMax)
@@ -551,6 +568,8 @@ void CSettings::GetFloat(const TiXmlElement* pRootElement, const CStdString& str
 	} 
 	else
 		fValue=fDefault;
+
+	CLog::Log("  %s: %f", strTagName.c_str(), fValue);
 }
 
 void CSettings::GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName, bool& bValue)
@@ -566,6 +585,8 @@ void CSettings::GetBoolean(const TiXmlElement* pRootElement, const CStdString& s
 		return;
 	}
 	if (strlen(szString)!=0) bValue = false;
+	
+	CLog::Log("  %s: %s", strTagName.c_str(), bValue ? "true" : "false");
 }
 
 void CSettings::SetString(TiXmlNode* pRootNode, const CStdString& strTagName, const CStdString& strValue) const
