@@ -4,7 +4,7 @@
 #include "../xbmc/util.h"
 #include "../xbmc/settings.h"
 
-#define SKIN_MIN_VERSION 1.2
+#define SKIN_MIN_VERSION 1.21
 
 CSkinInfo g_SkinInfo;	// global
 

@@ -76,6 +76,12 @@ void CGUIWindowManager::Add(CGUIWindow* pWindow)
 	m_vecWindows.push_back(pWindow);
 }
 
+void CGUIWindowManager::AddCustomWindow(CGUIWindow* pWindow)
+{
+	Add(pWindow);
+	m_vecCustomWindows.push_back(pWindow);
+}
+
 void CGUIWindowManager::AddModeless(CGUIWindow* pWindow)
 {
 	m_vecModelessWindows.push_back(pWindow);
@@ -328,6 +334,16 @@ void CGUIWindowManager::DeInitialize()
 	m_pRouteWindow=NULL;
 
 	m_vecMsgTargets.erase( m_vecMsgTargets.begin(), m_vecMsgTargets.end() );
+
+	// destroy our custom windows...
+	for (int i=0; i < (int)m_vecCustomWindows.size(); i++)
+	{
+		CGUIWindow *pWindow = m_vecCustomWindows[i];
+		Remove(pWindow->GetID());
+		delete pWindow;
+	}
+	m_vecCustomWindows.erase( m_vecCustomWindows.begin(), m_vecCustomWindows.end() );
+
 }
 
 /// \brief Route to a window
