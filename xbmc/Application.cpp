@@ -698,6 +698,12 @@ bool CApplication::PlayFile(const CStdString& strFile)
 	{
 		m_guiMusicOverlay.SetCurrentFile(strFile);
 		m_guiWindowVideoOverlay.SetCurrentFile(strFile);
+
+		if ( CUtil::IsRemote(strFile) || CUtil::IsDVD(strFile) || CUtil::IsCDDA(strFile) || CUtil::IsISO9660(strFile) )
+		{
+			CIoSupport helper;
+			helper.SpindownHarddisk();
+		}
 	}
 	return bResult;
 }

@@ -31,7 +31,6 @@ public:
 	virtual void		SetBrightness(bool bPlus=true);	
 	virtual void		SetHue(bool bPlus=true);	
 	virtual void		SetSaturation(bool bPlus=true);	
-
 protected:
 	virtual void		OnStartup();
 	virtual void		OnExit();
