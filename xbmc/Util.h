@@ -66,4 +66,6 @@ public:
 	static void ConvertPathToUrl( const CStdString& strPath, const CStdString& strProtocol, CStdString& strOutUrl );
 	static void GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon );
 	static void RemoveTempFiles();
+	static void	GetResolutionParams(int m_iResolution,  int& iScreenWidth , int& iScreenHeight,bool& bPAL, bool& bPAL60);
+	static int	GetResolution(int iWidth, int iHeight, bool bPAL, bool bPAL60);
 };

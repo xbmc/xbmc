@@ -29,6 +29,7 @@
 #include "GraphicContext.h"
 #include "../../settings.h"
 #include "../../application.h"
+#include "../../util.h"
 
 static RECT                 rd;                     						//rect of our stretched image
 static RECT                 rs;                     						//rect of our source image
@@ -51,8 +52,7 @@ static int									m_iDeviceWidth;
 static int									m_iDeviceHeight;
 bool												m_bFullScreen=false;
 bool												m_bPal60Allowed=true;
-float												m_fScreenCompensationX=1.0f;
-float												m_fScreenCompensationY=1.0f;
+static int									m_iResolution=0;
 
 typedef struct directx_fourcc_caps
 {
@@ -82,47 +82,52 @@ void restore_resolution()
 		m_iDeviceHeight = g_graphicsContext.GetHeight();
 		g_graphicsContext.Get3DDevice()->Reset(&params);
 	}
-	m_fScreenCompensationX=1.0f;
-	m_fScreenCompensationY=1.0f;
 }
 
 //********************************************************************************************************
 void choose_best_resolution(bool bPal60Allowed)
-{
-	if (!g_stSettings.m_bAllowVideoSwitching)
-	{
-		m_iDeviceWidth  = g_graphicsContext.GetWidth();
-		m_iDeviceHeight = g_graphicsContext.GetHeight();
-		m_fScreenCompensationX=1.0f;
-		m_fScreenCompensationY=1.0f;
-		return;
-	}
-
-	if (!g_graphicsContext.IsFullScreenVideo() )
-	{
-		m_iDeviceWidth  = g_graphicsContext.GetWidth();
-		m_iDeviceHeight = g_graphicsContext.GetHeight();
-		m_fScreenCompensationX=1.0f;
-		m_fScreenCompensationY=1.0f;
-		return;
-	}
-
+{ 
   D3DPRESENT_PARAMETERS params, orgparams;
 	g_application.GetD3DParameters(params);
 	g_application.GetD3DParameters(orgparams);
 	DWORD dwStandard = XGetVideoStandard();
 	DWORD dwFlags	   = XGetVideoFlags();
+
+
+	bool bUsingPAL		= (dwStandard==XC_VIDEO_STANDARD_PAL_I);
+	bool bUsingPAL60  = (params.FullScreen_RefreshRateInHz==60);
+
+	if (!g_stSettings.m_bAllowVideoSwitching)
+	{
+		m_iDeviceWidth  = g_graphicsContext.GetWidth();
+		m_iDeviceHeight = g_graphicsContext.GetHeight();
+		m_iResolution=CUtil::GetResolution( m_iDeviceWidth, m_iDeviceHeight, bUsingPAL, bUsingPAL60);
+		g_graphicsContext.SetVideoResolution(m_iResolution);
+		return;
+	}
+
+	if (! ( g_graphicsContext.IsFullScreenVideo()|| g_graphicsContext.IsCalibrating())  )
+	{
+		m_iDeviceWidth  = g_graphicsContext.GetWidth();
+		m_iDeviceHeight = g_graphicsContext.GetHeight();
+		m_iResolution=CUtil::GetResolution( m_iDeviceWidth, m_iDeviceHeight, bUsingPAL, bUsingPAL60);
+		g_graphicsContext.SetVideoResolution(m_iResolution);
+		return;
+	}
+
+	
 	bool bPal60=false;
 	bool bWideScreen=false;
 	if (params.Flags&D3DPRESENTFLAG_WIDESCREEN) bWideScreen=true;
-	if (bPal60Allowed && /*(dwFlags&XC_VIDEO_FLAGS_PAL_60Hz) && */!bWideScreen )
+	if (bPal60Allowed && (dwFlags&XC_VIDEO_FLAGS_PAL_60Hz) && !bWideScreen )
 	{
 		bPal60=true;
 	}
+
 	if ( (dwFlags&XC_VIDEO_FLAGS_HDTV_1080i) && bWideScreen )
 	{
 		//1920x1080 16:9
-		if (dwStandard==XC_VIDEO_STANDARD_PAL_I)
+		if (bUsingPAL)
 		{
 			if (image_width>720 || image_height>576)
 			{
@@ -146,7 +151,7 @@ void choose_best_resolution(bool bPal60Allowed)
 	if ( (dwFlags&XC_VIDEO_FLAGS_HDTV_720p) &&bWideScreen )
 	{
 			//1280x720 16:9
-		if (dwStandard==XC_VIDEO_STANDARD_PAL_I)
+		if (bUsingPAL)
 		{
 			if (image_width>720 || image_height>576)
 			{
@@ -167,7 +172,7 @@ void choose_best_resolution(bool bPal60Allowed)
 	}
 
 
-	if (dwStandard==XC_VIDEO_STANDARD_PAL_I)
+	if (bUsingPAL)
 	{
 		if (image_width <= 720)
 		{
@@ -206,8 +211,10 @@ void choose_best_resolution(bool bPal60Allowed)
 	m_iDeviceWidth  = params.BackBufferWidth;
 	m_iDeviceHeight = params.BackBufferHeight;
 
-	m_fScreenCompensationX = ( (float)m_iDeviceWidth  ) / ( (float)orgparams.BackBufferWidth  );
-	m_fScreenCompensationY = ( (float)m_iDeviceHeight ) / ( (float)orgparams.BackBufferHeight );
+
+	m_iResolution=CUtil::GetResolution( m_iDeviceWidth, m_iDeviceHeight, bUsingPAL, bPal60);
+	g_graphicsContext.SetVideoResolution(m_iResolution);
+
 }
 
 
@@ -248,19 +255,14 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 //********************************************************************************************************
 static unsigned int Directx_ManageDisplay(unsigned int width,unsigned int height)
 {
-	float fOffsetX1 = (float)g_stSettings.m_iMoviesOffsetX1;
-	float fOffsetY1 = (float)g_stSettings.m_iMoviesOffsetY1;
-	float fOffsetX2 = (float)g_stSettings.m_iMoviesOffsetX2;
-	float fOffsetY2 = (float)g_stSettings.m_iMoviesOffsetY2;
+	float fOffsetX1 = (float)g_stSettings.m_rectMovieCalibration[m_iResolution].left;
+	float fOffsetY1 = (float)g_stSettings.m_rectMovieCalibration[m_iResolution].top;
+	float fOffsetX2 = (float)g_stSettings.m_rectMovieCalibration[m_iResolution].right;
+	float fOffsetY2 = (float)g_stSettings.m_rectMovieCalibration[m_iResolution].bottom;
 
-	fOffsetX1 *= m_fScreenCompensationX;
-	fOffsetX2 *= m_fScreenCompensationX;
-	fOffsetY1 *= m_fScreenCompensationY;
-	fOffsetY2 *= m_fScreenCompensationY;
-	
 	float iScreenWidth =(float)m_iDeviceWidth  + fOffsetX2-fOffsetX1;
 	float iScreenHeight=(float)m_iDeviceHeight + fOffsetY2-fOffsetY1;
-	if( g_graphicsContext.IsFullScreenVideo() )
+	if( g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() )
   {
 		if (g_stSettings.m_bStretch)
 		{
@@ -479,8 +481,7 @@ static void video_check_events(void)
 /*init the video system (to support querying for supported formats)*/
 static unsigned int video_preinit(const char *arg)
 {
-	m_fScreenCompensationX=1.0f;
-	m_fScreenCompensationY=1.0f;
+	m_iResolution=0;
 	iSubTitleHeight=0;
 	iSubTitlePos=0;
 	bClearSubtitleRegion=false;
@@ -523,7 +524,7 @@ static void video_flip_page(void)
 	m_pOverlay[m_dwVisibleOverlay]->UnlockRect(0);			
 
 	Directx_ManageDisplay(d_image_width,d_image_height);
-	if ( g_graphicsContext.IsFullScreenVideo())
+	if ( g_graphicsContext.IsFullScreenVideo() )
 	{
 		g_graphicsContext.Lock();
 		g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
@@ -562,15 +563,24 @@ static void video_flip_page(void)
 		}
 	}
 
-	if (m_bFullScreen!=g_graphicsContext.IsFullScreenVideo())
+
+	bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
+	if ( m_bFullScreen != bFullScreen )
 	{
-		m_bFullScreen=g_graphicsContext.IsFullScreenVideo();
+		m_bFullScreen= bFullScreen;
 		g_graphicsContext.Lock();
-		if (m_bFullScreen) choose_best_resolution(m_bPal60Allowed);
-		else restore_resolution();
+		if (m_bFullScreen) 
+		{
+			choose_best_resolution(m_bPal60Allowed);
+		}
+		else 
+		{
+			restore_resolution();
+		}
 		g_graphicsContext.Unlock();
 	}
 }
+
 /********************************************************************************************************
   draw_frame(): this is the older interface, this displays only complete
 	frames, and can do only packed format (YUY2, RGB/BGR).

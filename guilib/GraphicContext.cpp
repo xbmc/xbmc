@@ -16,6 +16,8 @@ CGraphicContext::CGraphicContext(void)
   m_dwID=0;
   m_strMediaDir="D:\\media";
 	m_bShowPreviewWindow=false;
+	m_bCalibrating=false;
+	m_iVideoResolution=0;
 }
 
 CGraphicContext::~CGraphicContext(void)
@@ -166,4 +168,26 @@ void CGraphicContext::Unlock()
 void CGraphicContext::EnablePreviewWindow(bool bEnable)
 {
 	m_bShowPreviewWindow=bEnable;
+}
+
+
+bool CGraphicContext::IsCalibrating() const
+{
+	return m_bCalibrating;
+}
+
+void CGraphicContext::SetCalibrating(bool bOnOff)
+{
+	m_bCalibrating=bOnOff;
+}
+
+
+void CGraphicContext::SetVideoResolution(int iResolution)
+{
+	m_iVideoResolution=iResolution;
+}
+
+int CGraphicContext::GetVideoResolution() const
+{
+	return m_iVideoResolution;
 }

@@ -313,9 +313,13 @@ void CApplication::Render()
 	{
 		// yes, then render the music overlay window
 		if ( IsPlayingVideo() )
+		{
 			m_guiWindowVideoOverlay.Render();
+		}
 		else if ( IsPlayingAudio() ) 
+		{
 			m_guiMusicOverlay.Render();
+		}
 	}
 
   {
@@ -814,6 +818,7 @@ void CApplication::RenderFullScreen()
 {
 	m_guiWindowFullScreen.Render();
 }
+
 void CApplication::SpinHD()
 {
 	if (!m_bSpinDown)

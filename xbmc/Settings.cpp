@@ -9,6 +9,7 @@ struct CSettings::stSettings g_stSettings;
 
 CSettings::CSettings(void)
 {
+	memset(g_stSettings.m_rectMovieCalibration,0, sizeof(g_stSettings.m_rectMovieCalibration));
 	g_stSettings.m_bAllowPAL60=true;
   g_stSettings.m_iSlideShowTransistionFrames=25;
   g_stSettings.m_iSlideShowStayTime=3000;
@@ -76,10 +77,6 @@ CSettings::CSettings(void)
 	g_stSettings.m_bZoom=false;
 	g_stSettings.m_bStretch=false;
 
-	g_stSettings.m_iMoviesOffsetX1=0;
-	g_stSettings.m_iMoviesOffsetY1=0;
-	g_stSettings.m_iMoviesOffsetX2=0;
-	g_stSettings.m_iMoviesOffsetY2=0;
 	g_stSettings.m_bAllowVideoSwitching=true;
 }
 
