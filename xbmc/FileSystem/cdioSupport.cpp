@@ -5,7 +5,7 @@
 #include "../xbox/Undocumented.h"
 #include "../lib/libcdio/util.h"
 
-using namespace XISO9660;
+using namespace MEDIA_DETECT;
 
 /* Some interesting sector numbers stored in the above buffer. */
 #define ISO_SUPERBLOCK_SECTOR  16  /* buffer[0] */

@@ -11,6 +11,7 @@
 #include "stdstring.h"
 
 using namespace PLAYLIST;
+using namespace MEDIA_DETECT;
 
 CAutorun::CAutorun()
 {

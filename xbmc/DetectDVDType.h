@@ -17,44 +17,46 @@
 #include "GuiUserMessages.h"
 #include "guiwindowmanager.h"
 
-using namespace XISO9660;
-
-class CDetectDVDMedia : public CThread
+namespace MEDIA_DETECT 
 {
-public:
-	CDetectDVDMedia();
-	virtual ~CDetectDVDMedia();
 
-	virtual void			OnStartup();
-	virtual void			OnExit();
-	virtual void			Process();
+	class CDetectDVDMedia : public CThread
+	{
+	public:
+		CDetectDVDMedia();
+		virtual ~CDetectDVDMedia();
 
-	static void				WaitMediaReady();
-	static bool				IsDiscInDrive();
+		virtual void			OnStartup();
+		virtual void			OnExit();
+		virtual void			Process();
 
-	static CCdInfo*		GetCdInfo();
+		static void				WaitMediaReady();
+		static bool				IsDiscInDrive();
 
-protected:
-	void							UpdateDvdrom();
-	DWORD							GetTrayState();
-	
-	void							DetectMediaType();
-	void							SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA);
+		static CCdInfo*		GetCdInfo();
 
-private:
-	CIoSupport				m_helper;
-	
-	static CCriticalSection	m_muReadingMedia;
+	protected:
+		void							UpdateDvdrom();
+		DWORD							GetTrayState();
+		
+		void							DetectMediaType();
+		void							SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA);
 
-	static int				m_DriveState;
+	private:
+		CIoSupport				m_helper;
+		
+		static CCriticalSection	m_muReadingMedia;
 
-	static CCdInfo*		m_pCdInfo;
+		static int				m_DriveState;
 
-	bool							m_bStartup;
-	bool							m_bAutorun;
-	DWORD							m_dwTrayState;
-	DWORD							m_dwTrayCount;
-	DWORD							m_dwLastTrayState;
-public:
-	static CEvent			m_evAutorun;
-};
+		static CCdInfo*		m_pCdInfo;
+
+		bool							m_bStartup;
+		bool							m_bAutorun;
+		DWORD							m_dwTrayState;
+		DWORD							m_dwTrayCount;
+		DWORD							m_dwLastTrayState;
+	public:
+		static CEvent			m_evAutorun;
+	};
+}
