@@ -52,13 +52,14 @@ void CAc97DirectSound::StreamCallback(LPVOID pPacketContext, DWORD dwStatus)
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 //***********************************************************************************************
-CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback,int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool  bAC3DTS, bool bResample)
+CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback,int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool  bAC3DTS, bool bResample, bool bDelayFirstAudioPacket)
 {
 	m_pCallback=pCallback;
 	m_bAc3DTS = bAC3DTS;
 
-  m_bFirstPacketDone = false;
-	m_bResampleAudio = false;
+  m_bFirstPacketDone       = false;
+  m_bDelayFirstAudioPacket = bDelayFirstAudioPacket;
+	m_bResampleAudio         = false;
 	if (bResample && g_guiSettings.GetBool("AudioOutput.HighQualityResampling") && uiSamplesPerSec != 48000)
 		m_bResampleAudio = true;
 
@@ -318,7 +319,7 @@ DWORD CAc97DirectSound::AddPackets(unsigned char *data, DWORD len)
   if(!m_bFirstPacketDone)
   {
     m_bFirstPacketDone=true;
-    if(mplayer_HasVideo()) return 0;
+    if(m_bDelayFirstAudioPacket) return 0;
   }
 
 	if (m_bResampleAudio)

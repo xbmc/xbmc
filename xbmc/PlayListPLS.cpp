@@ -170,7 +170,7 @@ bool CPlayListPLS::LoadFromWeb(CStdString& strURL)
 	}
 
 	CLog::Log(LOGINFO, "Content-Type is %s", strContentType.c_str());
-	if (strContentType == "video/x-ms-asf")
+	if ((strContentType == "video/x-ms-asf") || (strContentType == "video/x-ms-asx"))
 	{
 		httpUtil.Get(strURL, strData);
 		return LoadAsxInfo(strData);
