@@ -229,7 +229,7 @@ void CKaiClient::SetHostingStatus(BOOL bIsHosting)
 	if (client_state==State::Authenticated)
 	{
 		CStdString strStatusMessage;
-		strStatusMessage.Format("KAI_CLIENT_ARENA_STATUS;%d;%d;",bIsHosting ? 2:0, 1);
+		strStatusMessage.Format("KAI_CLIENT_ARENA_STATUS;%d;%d;",bIsHosting ? 2:1, 1);
 		Send(server_addr, strStatusMessage);
 	}
 }
@@ -702,7 +702,7 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 			else if (strcmp(szMessage,"KAI_CLIENT_ARENA_STATUS")==0)
 			{
 				CStdString strMode			= strtok(NULL, ";");
-				m_bHosting = atoi(strMode.c_str()) >0;
+				m_bHosting = atoi(strMode.c_str()) >1;
 
 				if (observer!=NULL)
 				{
