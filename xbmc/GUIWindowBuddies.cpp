@@ -1218,6 +1218,7 @@ void CGUIWindowBuddies::OnContactOffline(CStdString& aFriend)
 void CGUIWindowBuddies::OnContactsOnline(INT nCount)
 {
 	m_bContactNotifications = TRUE;
+	m_friends.Sort();
 }
 void CGUIWindowBuddies::OnContactOnline(CStdString& aFriend)
 {
