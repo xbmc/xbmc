@@ -114,17 +114,16 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 			}
 
 
-			UpdateDir(m_strDirectory);
-
 			if (m_iLastControl>-1)
 				SET_CONTROL_FOCUS(m_iLastControl, 0);
+
+			UpdateDir(m_strDirectory);
 
 			if (m_iSelectedItem>-1)
 			{
 				CONTROL_SELECT_ITEM(CONTROL_LIST,m_iSelectedItem);
 				CONTROL_SELECT_ITEM(CONTROL_THUMBS,m_iSelectedItem);
 			}
-			ShowThumbPanel();
 			return true;
 		}
 		break;

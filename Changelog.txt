@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 26-01-2005 fixed: my programs, last focused control is not remembered
   - 26-01-2005 changed: Merged audio/video/dvd cachesize settings for harddisk to 1 setting.
                Added cachesize setting for unknown types on the internet (url's without a known audio or video extension).
                Allow cache sizes of 0.
