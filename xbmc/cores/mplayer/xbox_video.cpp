@@ -46,6 +46,9 @@ struct DRAWRECT
 
 static RECT                   rd;                             //rect of our stretched image
 static RECT                   rs;                             //rect of our source image
+static RECT                   viewportRect;                   //rect of the viewport (screen- or previewsize)
+static RECT                   normalVideoDisplayRect;         //rect of normal video display
+static RECT                   normalFullScreenVideoDisplayRect;  //rect of normal fullscreen video display
 static unsigned int           image_width, image_height;      //image width and height
 static unsigned int           d_image_width, d_image_height;  //image width and height zoomed
 static unsigned int           image_format=0;                 //image format
@@ -66,6 +69,7 @@ static float									m_OSDHeight;
 static DRAWRECT								m_OSDRect;
 static int										m_iOSDBuffer;
 static bool										m_SubsOnOSD;
+static int                    m_iOSDTextureWidth;
 
 // YV12 decoder textures
 static LPDIRECT3DTEXTURE8     m_YTexture[NUM_BUFFERS];
@@ -302,10 +306,10 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 	{
 		if (m_pOSDYTexture[i])
 			m_pOSDYTexture[i]->Release();
-		g_graphicsContext.Get3DDevice()->CreateTexture(image_width, OSD_TEXTURE_HEIGHT, 1, 0, D3DFMT_LIN_L8, 0, &m_pOSDYTexture[i]);
+    g_graphicsContext.Get3DDevice()->CreateTexture(m_iOSDTextureWidth, OSD_TEXTURE_HEIGHT, 1, 0, D3DFMT_LIN_L8, 0, &m_pOSDYTexture[i]);
 		if (m_pOSDATexture[i])
 			m_pOSDATexture[i]->Release();
-		g_graphicsContext.Get3DDevice()->CreateTexture(image_width, OSD_TEXTURE_HEIGHT, 1, 0, D3DFMT_LIN_A8, 0, &m_pOSDATexture[i]);
+		g_graphicsContext.Get3DDevice()->CreateTexture(m_iOSDTextureWidth, OSD_TEXTURE_HEIGHT, 1, 0, D3DFMT_LIN_A8, 0, &m_pOSDATexture[i]);
 
 		m_OSDWidth = m_OSDHeight = 0;
 	}
@@ -369,6 +373,39 @@ static void CalculateFrameAspectRatio()
 		fSourceFrameRatio = fImageFrameRatio*fPALPixelRatio*fNon4by3Correction;
 }
 
+void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float iScreenWidth, float iScreenHeight, RECT* displayRect) {
+  		// scale up image as much as possible
+		// and keep the aspect ratio (introduces with black bars)
+
+  float fOutputFrameRatio = fSourceFrameRatio / g_settings.m_ResInfo[m_iResolution].fPixelRatio; 
+//		if (m_iResolution == HDTV_1080i) fOutputFrameRatio *= 2;
+
+		// maximize the movie width
+		float fNewWidth  = iScreenWidth;
+		float fNewHeight = fNewWidth/fOutputFrameRatio;
+
+		if (fNewHeight > iScreenHeight)
+		{
+			fNewHeight = iScreenHeight;
+			fNewWidth = fNewHeight*fOutputFrameRatio;
+		}
+
+		// this shouldnt happen, but just make sure that everything still fits onscreen
+		if (fNewWidth > iScreenWidth || fNewHeight > iScreenHeight)
+		{
+			fNewWidth=(float)image_width;
+			fNewHeight=(float)image_height;
+		}
+
+		// Centre the movie
+		float iPosY = (iScreenHeight - fNewHeight)/2;
+		float iPosX = (iScreenWidth  - fNewWidth)/2;
+
+		displayRect->left   = (int)(iPosX + fOffsetX1);
+		displayRect->right  = (int)(displayRect->left + fNewWidth + 0.5f);
+		displayRect->top    = (int)(iPosY + fOffsetY1);
+		displayRect->bottom = (int)(displayRect->top + fNewHeight + 0.5f);
+}
 //********************************************************************************************************
 unsigned int Directx_ManageDisplay()
 {
@@ -378,6 +415,11 @@ unsigned int Directx_ManageDisplay()
 	float iScreenWidth = (float)g_settings.m_ResInfo[iRes].Overscan.width;
 	float iScreenHeight = (float)g_settings.m_ResInfo[iRes].Overscan.height;
 
+  //we need dimensions of the video how it would be rendered fullscreen in normal view (for subs)
+  CalcNormalDisplayRect(fOffsetX1, fOffsetY1, iScreenWidth, iScreenHeight, &normalFullScreenVideoDisplayRect);
+  
+  m_iOSDTextureWidth = int(600 * float(normalFullScreenVideoDisplayRect.right - normalFullScreenVideoDisplayRect.left)/g_settings.m_ResInfo[m_iResolution].Overscan.width);
+
 	if( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
 	{
 		const RECT& rv = g_graphicsContext.GetViewWindow();
@@ -386,6 +428,13 @@ unsigned int Directx_ManageDisplay()
 		fOffsetX1    = (float)rv.left;
 		fOffsetY1    = (float)rv.top;
 	}
+  viewportRect.left   = (int)fOffsetX1;
+  viewportRect.top    = (int)fOffsetY1;
+  viewportRect.right  = int(fOffsetX1 + iScreenWidth);
+	viewportRect.bottom = int(fOffsetY1 + iScreenHeight);
+
+  //we need dimensions of the video how it would be rendered in normal view actual size (for subs)
+  CalcNormalDisplayRect(fOffsetX1, fOffsetY1, iScreenWidth, iScreenHeight, &normalVideoDisplayRect);
 
 	// Correct for HDTV_1080i -> 540p
 	// don't think we need this if we're not using overlays
@@ -450,44 +499,14 @@ unsigned int Directx_ManageDisplay()
 			return 0;
 		}
 
-		// NORMAL
-		// scale up image as much as possible
-		// and keep the aspect ratio (introduces with black bars)
-
-		float fOutputFrameRatio = fSourceFrameRatio / g_settings.m_ResInfo[iRes].fPixelRatio; 
-//		if (m_iResolution == HDTV_1080i) fOutputFrameRatio *= 2;
-
-		// maximize the movie width
-		float fNewWidth  = iScreenWidth;
-		float fNewHeight = fNewWidth/fOutputFrameRatio;
-
-		if (fNewHeight > iScreenHeight)
-		{
-			fNewHeight = iScreenHeight;
-			fNewWidth = fNewHeight*fOutputFrameRatio;
-		}
-
-		// this shouldnt happen, but just make sure that everything still fits onscreen
-		if (fNewWidth > iScreenWidth || fNewHeight > iScreenHeight)
-		{
-			fNewWidth=(float)image_width;
-			fNewHeight=(float)image_height;
-		}
-
-		// Centre the movie
-		float iPosY = (iScreenHeight - fNewHeight)/2;
-		float iPosX = (iScreenWidth  - fNewWidth)/2;
-
+    // NORMAL
 		// source rect
 		rs.left   = 0;
 		rs.top    = 0;
 		rs.right  = image_width;
 		rs.bottom = image_height;
-		rd.left   = (int)(iPosX + fOffsetX1);
-		rd.right  = (int)(rd.left + fNewWidth + 0.5f);
-		rd.top    = (int)(iPosY + fOffsetY1);
-		rd.bottom = (int)(rd.top + fNewHeight + 0.5f);
-	}
+    CalcNormalDisplayRect(fOffsetX1, fOffsetY1, iScreenWidth, iScreenHeight, &rd);
+  }
 	return 0;
 }
 
@@ -517,53 +536,67 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
   // this means that the buffer has already been handed off to the RGB converter
 	// solution: have separate OSD textures
 
+	// if it's down the bottom, use sub alpha blending
+  m_SubsOnOSD = (y0 > (int)(normalFullScreenVideoDisplayRect.bottom - normalFullScreenVideoDisplayRect.top) * 4 / 5);
+
+	// scale to fit screen
+  float EnlargeFactor = 1.0f + (g_stSettings.m_iEnlargeSubtitlePercent / 100.0f);
+
+  float xscale   = EnlargeFactor * (float)(normalVideoDisplayRect.right - normalVideoDisplayRect.left) / (float)m_iOSDTextureWidth;
+  float arSource = (float)image_width/(float)image_height;
+  float arDest   = (float)(normalVideoDisplayRect.right-normalVideoDisplayRect.left)/(float)(normalVideoDisplayRect.bottom-normalVideoDisplayRect.top);
+  float yscale   = xscale * (arSource / arDest);
+
+  m_OSDRect.left   = (float)normalVideoDisplayRect.left + (float)x0 * xscale;
+  m_OSDRect.right  = (float)normalVideoDisplayRect.left + (float)(x0 + w) * xscale;
+  float relBottom  = float(viewportRect.bottom - viewportRect.top - g_settings.m_ResInfo[m_iResolution].Overscan.top) / (float)(g_settings.m_ResInfo[m_iResolution].Overscan.height);
+  m_OSDRect.bottom = viewportRect.top + (float)g_settings.m_ResInfo[m_iResolution].iSubtitles * relBottom;
+  m_OSDRect.top    = m_OSDRect.bottom - (float)h * yscale;
+  //hmm little off center when enlarge subs... center it
+  float center = normalVideoDisplayRect.left + (normalVideoDisplayRect.right - normalVideoDisplayRect.left) / 2.0f;
+  float adjust = (m_OSDRect.right - m_OSDRect.left) / 2;
+  m_OSDRect.left  = center - adjust;
+  m_OSDRect.right = center + adjust;
+
+	// clip to buffer
+	if (w > m_iOSDTextureWidth) w = m_iOSDTextureWidth;
+	if (h > OSD_TEXTURE_HEIGHT) h = OSD_TEXTURE_HEIGHT;
+
+  m_OSDWidth  = (float)w;
+  m_OSDHeight = (float)h;
+
+  if (!viewportRect.bottom && !viewportRect.right) {
+    //seems viewport can be already changed here when minimized, if so exit (multithreading problem?)
+    m_OSDWidth = m_OSDHeight = 0;
+    return;
+  }
+	RECT rc = { 0, 0, w, h };
+
 	// flip buffers and wait for gpu
 	m_iOSDBuffer = 1-m_iOSDBuffer;
 	while (m_pOSDYTexture[m_iOSDBuffer]->IsBusy()) Sleep(1);
-	while (m_pOSDYTexture[m_iOSDBuffer]->IsBusy()) Sleep(1);
+	while (m_pOSDATexture[m_iOSDBuffer]->IsBusy()) Sleep(1);
 
-	// if it's down the bottom, use sub alpha blending
-	m_SubsOnOSD = (y0 > (int)image_height * 4 / 5);
-
-	// scale to fit screen
-	float EnlargeFactor = 1.0f + (g_stSettings.m_iEnlargeSubtitlePercent / 100.0f);
-	float xscale = float(rd.right - rd.left) / image_width;
-	float ar = (float)image_width / image_height;
-	float yscale = xscale * (ar / (g_graphicsContext.IsWidescreen() ? 16.0f/9.0f : 4.0f/3.0f));
-  yscale *= EnlargeFactor;
-	m_OSDRect.left   = (float)rd.left + (float)x0 * xscale;
-	m_OSDRect.right  = (float)rd.left + (float)(x0 + w) * xscale;
-	m_OSDRect.bottom = (float)g_settings.m_ResInfo[m_iResolution].iSubtitles;
-	m_OSDRect.top    = m_OSDRect.bottom - (float)h * yscale;
-
-  //enlarge subtitles
-  float center = m_OSDRect.left + (m_OSDRect.right - m_OSDRect.left) / 2.0f;
-  m_OSDRect.left  = center - ((center - m_OSDRect.left) * EnlargeFactor);
-  m_OSDRect.right = center + ((m_OSDRect.right - center) * EnlargeFactor);
-
-	// clip to buffer
-	if (w > (int)image_width) w = image_width;
-	if (h > OSD_TEXTURE_HEIGHT) h = OSD_TEXTURE_HEIGHT;
-
-  m_OSDWidth = (float)w;
-	m_OSDHeight = (float)h;
-
-	RECT rc = { 0, 0, w, h };
-
-	// draw textures
-	D3DLOCKED_RECT lr, lra;
-	m_pOSDYTexture[m_iOSDBuffer]->LockRect(0, &lr, &rc, 0);
-	m_pOSDATexture[m_iOSDBuffer]->LockRect(0, &lra, &rc, 0);
-	vo_draw_alpha_xbox(w,h,src,srca,stride, (BYTE*)lr.pBits, (BYTE*)lra.pBits, lr.Pitch);
-	m_pOSDYTexture[m_iOSDBuffer]->UnlockRect(0);
-	m_pOSDATexture[m_iOSDBuffer]->UnlockRect(0);
+  // draw textures
+  D3DLOCKED_RECT lr, lra;
+  if (
+    (D3D_OK == m_pOSDYTexture[m_iOSDBuffer]->LockRect(0, &lr, &rc, 0)) &&
+    (D3D_OK == m_pOSDATexture[m_iOSDBuffer]->LockRect(0, &lra, &rc, 0))
+  ) {
+    vo_draw_alpha_xbox(w,h,src,srca,stride, (BYTE*)lr.pBits, (BYTE*)lra.pBits, lr.Pitch);
+  }
+  m_pOSDYTexture[m_iOSDBuffer]->UnlockRect(0);
+  m_pOSDATexture[m_iOSDBuffer]->UnlockRect(0);
 }
 
 //********************************************************************************************************
 static void video_draw_osd(void)
 {
   if (m_bPauseDrawing) return;
-	vo_draw_text(image_width, image_height, draw_alpha);
+  //draw on a smaller area when subs are enlarged, area will then be stretched to viewport in draw_alpha
+  float width = (float)m_iOSDTextureWidth;
+  width *= (100.0f - g_stSettings.m_iEnlargeSubtitlePercent) / 100.0f;
+  vo_draw_text((int)width, normalFullScreenVideoDisplayRect.bottom - normalFullScreenVideoDisplayRect.top, draw_alpha);
 }
 
 //********************************************************************************************************
@@ -888,6 +921,8 @@ void xbox_video_render_osd()
 		return;
 	if (!m_OSDWidth || !m_OSDHeight)
 		return;
+  if (!viewportRect.bottom && !viewportRect.right) 
+    return;
 
 	// Set state to render the image
 	g_graphicsContext.Get3DDevice()->SetTexture(0, m_pOSDYTexture[m_iOSDBuffer]);
@@ -897,24 +932,26 @@ void xbox_video_render_osd()
 	/* In mplayer's alpha planes, 0 is transparent, then 1 is nearly
 	opaque upto 255 which is transparent */
 	// means do alphakill + inverse alphablend
-
-	//g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-//	if (m_SubsOnOSD)
-//	{
-//		// subs use mplayer style alpha
-//		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_INVSRCALPHA );
-//		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_SRCALPHA );
+  /*
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+	if (m_SubsOnOSD)
+	{
+		// subs use mplayer style alpha
+		//g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_INVSRCALPHA );
+		//g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_SRCALPHA );
 
 			// Note the mplayer code actually does this
-//		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_ONE );
-//		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_SRCALPHA );
-//	}
-//	else
-//	{
-//		// OSD looks better with src+(1-a)*dst
-//		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_ONE );
-//		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-//	}
+		//g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_ONE );
+		//g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_SRCALPHA );
+	}
+	else
+	{
+		// OSD looks better with src+(1-a)*dst
+		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_ONE );
+		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+	}
+  */
+  
 
 	// Set texture filters
 	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MAGFILTER,  g_stSettings.m_minFilter );
@@ -924,14 +961,16 @@ void xbox_video_render_osd()
 
 	// Clip the output to avoid borders flashing from texture filtering getting texels beyond the valid region
 	D3DRECT rs = { (long)m_OSDRect.left, (long)m_OSDRect.top, (long)m_OSDRect.right, (long)m_OSDRect.bottom };
-	if (rs.x1 < 0)
-		rs.x1 = 0;
-	if (rs.x2 > g_settings.m_ResInfo[m_iResolution].iWidth)
-		rs.x2 = g_settings.m_ResInfo[m_iResolution].iWidth;
-	if (rs.y1 < 0)
-		rs.y1 = 0;
-	if (rs.y2 > g_settings.m_ResInfo[m_iResolution].iHeight)
-		rs.y2 = g_settings.m_ResInfo[m_iResolution].iHeight;
+	if (rs.x1 < rd.left)
+		rs.x1 = rd.left;
+	if (rs.x2 > rd.right)
+		rs.x2 = rd.right;
+  if (rs.y1 < viewportRect.top)
+		rs.y1 = viewportRect.top;
+	if (rs.y2 > viewportRect.bottom)
+		rs.y2 = viewportRect.bottom;
+  if (rs.x2 <= rs.x1 || rs.y2 <= rs.y1) //invalid rect, happens sometimes when switching from fullscreen to gui or back
+    return;
 	g_graphicsContext.Get3DDevice()->SetScissors(1, FALSE, &rs);
 
 	// Render the image
