@@ -20,10 +20,23 @@
 typedef struct mpg_demuxer {
   float last_pts;
   float final_pts;
+  float first_pts;
   int has_valid_timestamps;
 } mpg_demuxer_t;
 
 static int mpeg_pts_error=0;
+
+#ifdef _XBOX
+float demux_mpg_get_first_pts(demuxer_t* demuxer)
+{
+  if (demuxer->priv)
+  {
+    mpg_demuxer_t* mpg_d = demuxer->priv;
+    return mpg_d->first_pts;
+  }
+  return 0;
+}
+#endif
 
 /// Open an mpg physical stream
 int demux_mpg_open(demuxer_t* demuxer) {
@@ -33,11 +46,28 @@ int demux_mpg_open(demuxer_t* demuxer) {
   float half_pts = 0.0;
   mpg_demuxer_t* mpg_d;
 
+#ifdef _XBOX
+  mpg_d = (mpg_demuxer_t*)calloc(1,sizeof(mpg_demuxer_t));
+  demuxer->priv = mpg_d;
+  mpg_d->final_pts = 0.0;
+  mpg_d->has_valid_timestamps = 1;
+
+  if (!ds_fill_buffer(demuxer->video)) 
+  {
+    free(mpg_d);
+    mpg_d=NULL;
+    return 0;
+  }
+  //Remember our first pts given as this is needed for seeking later
+  //some files don't start at 0. This should probably be offset by how much is in the buffer
+  mpg_d->first_pts = mpg_d->last_pts;
+#else
   if (!ds_fill_buffer(demuxer->video)) return 0;
   mpg_d = (mpg_demuxer_t*)calloc(1,sizeof(mpg_demuxer_t));
   demuxer->priv = mpg_d;
   mpg_d->final_pts = 0.0;
   mpg_d->has_valid_timestamps = 1;
+#endif
   if (demuxer->seekable && stream_tell(demuxer->stream) < end_seq_start) {
     stream_seek(s,(pos + end_seq_start / 2));
     while ((!s->eof) && ds_fill_buffer(demuxer->video) && half_pts == 0.0) {
@@ -412,16 +442,27 @@ void demux_seek_mpg(demuxer_t *demuxer,float rel_seek_secs,int flags){
     int precision = 1;
     float oldpts = mpg_d->last_pts;
     off_t oldpos = demuxer->filepos;
-    float newpts = (flags & 1) ? 0.0 : oldpts;
+#ifdef _XBOX
+    float newpts = (flags & 1) ? mpg_d->first_pts : oldpts;
+#else
+    float newpts = (flags & 1) ? 0.0f : oldpts;
+#endif
     off_t newpos = (flags & 1) ? demuxer->movi_start : oldpos;
 
   //================= seek in MPEG ==========================
   //calculate the pts to seek to
     if(flags & 2) {
+#ifdef _XBOX
+      if (mpg_d && mpg_d->has_valid_timestamps && mpg_d->final_pts > 0.0)
+        newpts += (mpg_d->final_pts - mpg_d->first_pts) * rel_seek_secs;
+      else
+        newpts += rel_seek_secs * (demuxer->movi_end - demuxer->movi_start) * (oldpts - mpg_d->first_pts) / oldpos;
+#else
       if (mpg_d->final_pts > 0.0)
         newpts += mpg_d->final_pts * rel_seek_secs;
       else
         newpts += rel_seek_secs * (demuxer->movi_end - demuxer->movi_start) * oldpts / oldpos;
+#endif
     } else
       newpts += rel_seek_secs;
     if (newpts < 0) newpts = 0;
@@ -432,10 +473,17 @@ void demux_seek_mpg(demuxer_t *demuxer,float rel_seek_secs,int flags){
     } else {
 	// time seek (secs)
         if (mpg_d && mpg_d->has_valid_timestamps) {
+#ifdef _XBOX
+          if (mpg_d->final_pts > 0.0)
+            newpos += rel_seek_secs * (demuxer->movi_end - demuxer->movi_start) / (mpg_d->final_pts - mpg_d->first_pts);
+          else if (oldpts > 0.0)
+            newpos += rel_seek_secs * (oldpos - demuxer->movi_start) / (oldpts - mpg_d->first_pts);
+#else
           if (mpg_d->final_pts > 0.0)
             newpos += rel_seek_secs * (demuxer->movi_end - demuxer->movi_start) / mpg_d->final_pts;
           else if (oldpts > 0.0)
             newpos += rel_seek_secs * (oldpos - demuxer->movi_start) / oldpts;
+#endif
         } else if(!sh_video || !sh_video->i_bps) // unspecified or VBR
           newpos+=2324*75*rel_seek_secs; // 174.3 kbyte/sec
         else
