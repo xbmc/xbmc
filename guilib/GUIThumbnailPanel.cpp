@@ -378,7 +378,8 @@ bool CGUIThumbnailPanel::OnMessage(CGUIMessage& message)
       m_upDown.SetRange(1,1);
       m_upDown.SetValue(1);
       m_iCursorX=m_iCursorY=m_iOffset=0;
-
+			m_bScrollUp = false;
+			m_bScrollDown = false;
     }
     if (message.GetMessage()==GUI_MSG_ITEM_SELECTED)
     {
