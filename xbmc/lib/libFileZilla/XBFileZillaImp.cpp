@@ -269,7 +269,7 @@ bool CXBFileZillaImp::GetFreeSpacePrompt(unsigned ReplyCode, CStdString& Prompt)
       Prompt.AppendFormat(_T("[%s %.2f %s] "), mFreeSpaceDrives[i].mDrive.c_str(), freespacedouble, Unit.c_str());
     }
 
-  return true;
+  return !mFreeSpaceDrives.empty();
 }
 
 
