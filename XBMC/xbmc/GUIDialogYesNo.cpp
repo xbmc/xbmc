@@ -18,7 +18,9 @@ bool CGUIDialogYesNo::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_WINDOW_INIT:
     {
+			CGUIDialog::OnMessage(message);
 			m_bConfirmed=false;
+			return true;
 		}
 		break;
 

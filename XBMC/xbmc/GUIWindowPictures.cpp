@@ -179,6 +179,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_WINDOW_INIT:
 		{
+			CGUIWindow::OnMessage(message);
 			CSectionLoader::Unload("CXIMAGE");
 			if (m_strDirectory=="?")
 				m_strDirectory=g_stSettings.m_szDefaultPictures;
@@ -209,6 +210,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 
 			m_rootDir.SetShares(g_settings.m_vecMyPictureShares);
 			Update(m_strDirectory);
+			return true;
 		}
     break;
 
