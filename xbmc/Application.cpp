@@ -330,13 +330,13 @@ void CApplication::Render()
 		CStdStringW wszText;
 		wszText.Format(L"FreeMem %i/%iMB",stat.dwAvailPhys  /(1024*1024),
 																					  stat.dwTotalPhys  /(1024*1024)  );
-#endif
     
     CGUIFont* pFont=g_fontManager.GetFont("font13");
     if (pFont)
     {
 	    pFont->DrawText( 60, 40, 0xffffffff, wszText);
     }
+#endif
 
   }
   // Present the backbuffer contents to the display
