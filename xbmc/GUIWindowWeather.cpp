@@ -59,11 +59,21 @@ int ConvertSpeed(int curSpeed)
 		(g_stSettings.m_szWeatherFTemp[0] == 'F' && g_stSettings.m_szWeatherFSpeed[0] == 'M'))
 		return curSpeed;
 
-	//got through that so if temp is C, speed must be M
+	//got through that so if temp is C, speed must be M or S
 	if(g_stSettings.m_szWeatherFTemp[0] == 'C')
-		return (int)(curSpeed / (8.0/5.0));
+	{
+		if (g_stSettings.m_szWeatherFSpeed[0] == 'S')
+			return (int)(curSpeed * (1000.0/3600.0) + 0.5);		//mps
+		else
+			return (int)(curSpeed / (8.0/5.0));		//mph
+	}
 	else
-		return (int)(curSpeed * (8.0/5.0));
+	{
+		if (g_stSettings.m_szWeatherFSpeed[0] == 'S')
+			return (int)(curSpeed * (8.0/5.0) * (1000.0/3600.0) + 0.5);		//mps
+		else
+			return (int)(curSpeed * (8.0/5.0));		//kph
+	}
 }
 
 CGUIWindowWeather::CGUIWindowWeather(void)
@@ -248,12 +258,15 @@ bool CGUIWindowWeather::LoadWeather(const CStdString& strWeatherFile)
 		return true;	//we got a message so do display a second in refreshme()
 	}
 
-	// units (C or F and mph or km/h) 
+	// units (C or F and mph or km/h or m/s) 
 	strcpy(szUnitTemp, g_stSettings.m_szWeatherFTemp);
+
 	if(g_stSettings.m_szWeatherFSpeed[0] == 'M')
 		strcpy(szUnitSpeed, "mph");
-	else
+	else if(g_stSettings.m_szWeatherFSpeed[0] == 'K')
 		strcpy(szUnitSpeed, "km/h");
+	else
+		strcpy(szUnitSpeed, "m/s");
 
 	// location
 	TiXmlElement *pElement = pRootElement->FirstChildElement("loc");
