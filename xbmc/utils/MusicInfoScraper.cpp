@@ -82,23 +82,36 @@ bool CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum)
 		{
 			CStdString strColum=row.GetColumValue(iCol);
 
+			//	Year
 			if (iCol==1 && !strColum.IsEmpty())
-				strAlbumName="("+strColum+")";
+			{
+				CStdString strYear="("+strColum+")";
+				util.ConvertHTMLToAnsi(strYear, strAlbumName);
+			}
 
+			//	Artist
 			if (iCol==2)
 			{
-				CStdString strArtist=strColum;
-				util.RemoveTags(strArtist);
 				if (strColum!="&nbsp;")
+				{
+					CStdString strArtist;
+					util.RemoveTags(strColum);
+					util.ConvertHTMLToAnsi(strColum, strArtist);
 					strAlbumName="- " + strArtist + " " + strAlbumName;
+				}
 			}
 
+			//	Album
 			if (iCol==4)
 			{
-				CStdString strAlbum=strColum;
-				util.RemoveTags(strAlbum);
+				CStdString strTemp=strColum;
+				util.RemoveTags(strTemp);
+
+				CStdString strAlbum;
+				util.ConvertHTMLToAnsi(strTemp, strAlbum);
 				strAlbumName=strAlbum + " " + strAlbumName;
 			}
+			//	Album URL
 			if (iCol==4 && strColum.Find("<a href") >= 0)
 			{
         CStdString strAlbumURL;
