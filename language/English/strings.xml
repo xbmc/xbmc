@@ -1106,4 +1106,32 @@
     <id>350</id>
     <value>Programs</value>
   </string>
+  <string>
+    <id>351</id>
+    <value>Off</value>
+  </string>
+  <string>
+    <id>352</id>
+    <value>Dim</value>
+  </string>
+  <string>
+    <id>353</id>
+    <value>Black</value>
+  </string>
+  <string>
+    <id>354</id>
+    <value>Matrix Trails</value>
+  </string>
+  <string>
+    <id>355</id>
+    <value>Screensaver Idle Timeout</value>
+  </string>
+  <string>
+    <id>356</id>
+    <value>Screensaver Mode</value>
+  </string>
+  <string>
+    <id>357</id>
+    <value>Shutdown Idle Timeout</value>
+  </string>
 </strings>
