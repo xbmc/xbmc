@@ -344,11 +344,11 @@ void CGUIWindowMusicPlayList::UpdateButtons()
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
 
-	int iString=101;
+	int iString=100;
 	if ( m_bViewAsIconsRoot ) 
 	{
 		SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
-		iString=100;
+		iString=101;
 	}
 	else 
 	{

@@ -35,6 +35,8 @@ namespace MUSIC_GRABBER
 		void							SetTitle(const CStdString& strTitle);
 		bool							Load();
 		bool							Parse(const CStdString& strHTML);
+		void							SetAlbumPath(const CStdString& strAlbumPath);
+		const CStdString&	GetAlbumPath();
 	protected:
 		CStdString		m_strArtist;
 		CStdString		m_strTitle;
@@ -46,6 +48,7 @@ namespace MUSIC_GRABBER
 		CStdString    m_strReview;
 		CStdString	  m_strImageURL;
 		CStdString    m_strAlbumURL;
+		CStdString		m_strAlbumPath;
 		int						m_iRating;
 		bool					m_bLoaded;
 		vector<CMusicSong> m_vecSongs;

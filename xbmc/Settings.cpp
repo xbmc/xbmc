@@ -114,6 +114,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bMyMusicAlbumSortAscending=true;
 	g_stSettings.m_iMyMusicAlbumRootSortMethod=7; //	album
 	g_stSettings.m_iMyMusicAlbumSortMethod=3;	//	tracknum
+	g_stSettings.m_bMyMusicAlbumShowRecent=false;
 
 	g_stSettings.m_bMyMusicArtistsRootViewAsIcons = false;
 	g_stSettings.m_bMyMusicArtistsViewAsIcons = false;
@@ -667,6 +668,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 			GetInteger(pChild, "sortmethodroot",g_stSettings.m_iMyMusicAlbumRootSortMethod);
 			GetBoolean(pChild, "sortascending",g_stSettings.m_bMyMusicAlbumSortAscending);
 			GetBoolean(pChild, "sortascendingroot",g_stSettings.m_bMyMusicAlbumRootSortAscending);
+			GetBoolean(pChild, "showrecentalbums",g_stSettings.m_bMyMusicAlbumShowRecent);
 		}
 		pChild = pElement->FirstChildElement("artist");
 		if (pChild)
@@ -901,6 +903,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 		SetInteger(pChild, "sortmethodroot",g_stSettings.m_iMyMusicAlbumRootSortMethod);
 		SetBoolean(pChild, "sortascending",g_stSettings.m_bMyMusicAlbumSortAscending);
 		SetBoolean(pChild, "sortascendingroot",g_stSettings.m_bMyMusicAlbumRootSortAscending);
+		SetBoolean(pChild, "showrecentalbums",g_stSettings.m_bMyMusicAlbumShowRecent);
 	}
 	{
 		TiXmlElement childNode("artist");

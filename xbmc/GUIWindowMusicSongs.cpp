@@ -295,16 +295,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 			}
  			else if (iControl==CONTROL_BTNSCAN)
 			{
-				// Preload section for ID3 cover art reading
-				CSectionLoader::Load("CXIMAGE");
-
-				m_database.BeginTransaction();
-				if (OnScan(m_vecItems))
-					m_database.CommitTransaction();
-				else
-					m_database.RollbackTransaction();
-
-				CSectionLoader::Unload("CXIMAGE");
+				OnScan();
 			}
 			else if (iControl==CONTROL_BTNREC)
 			{
@@ -392,6 +383,8 @@ void CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, VECFILEI
 	}
 	m_rootDir.GetDirectory(strDirectory,items);
 
+	RetrieveMusicInfo();
+
 	if (strPlayListDir!=strDirectory) 
 	{
 		m_strPrevDir=strDirectory;
@@ -399,23 +392,56 @@ void CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, VECFILEI
 
 }
 
-bool CGUIWindowMusicSongs::OnScan(VECFILEITEMS& items)
+void CGUIWindowMusicSongs::OnScan()
 {
+	DWORD dwTick=timeGetTime();
+
 	m_dlgProgress->SetHeading(189);
 	m_dlgProgress->SetLine(0,"");
 	m_dlgProgress->SetLine(1,"");
 	m_dlgProgress->SetLine(2,m_strDirectory );
 	m_dlgProgress->StartModal(GetID());
 
+	// Preload section for ID3 cover art reading
+	CSectionLoader::Load("CXIMAGE");
+
+	m_database.BeginTransaction();
+
+	if (DoScan(m_vecItems))
+	{
+		m_dlgProgress->SetLine(0,328);
+		m_dlgProgress->SetLine(1,"");
+		m_dlgProgress->SetLine(2,"" );
+		m_database.CommitTransaction();
+	}
+	else
+		m_database.RollbackTransaction();
+
+	m_database.EmptyCache();
+
+	CSectionLoader::Unload("CXIMAGE");
+
+	m_dlgProgress->Close();
+
+	dwTick = timeGetTime() - dwTick;
+	CStdString strTmp;
+	strTmp.Format("OnScan() took %imsec\n",dwTick); 
+	OutputDebugString(strTmp.c_str());
+}
+
+bool CGUIWindowMusicSongs::DoScan(VECFILEITEMS& items)
+{
 	OnRetrieveMusicInfo(items,true);
+	
 	m_dlgProgress->SetLine(2,m_strDirectory );
+
 	if (m_dlgProgress->IsCanceled()) return false;
 	
 	bool bCancel=false;
 	for (int i=0; i < (int)items.size(); ++i)
 	{
 		CFileItem *pItem= items[i];
-		if (m_dlgProgress->IsCanceled()) 
+		if (m_dlgProgress->IsCanceled())
 		{
 			bCancel=true;
 			break;
@@ -430,19 +456,20 @@ bool CGUIWindowMusicSongs::OnScan(VECFILEITEMS& items)
 				VECFILEITEMS subDirItems;
 				CFileItemList itemlist(subDirItems);
 				m_rootDir.GetDirectory(pItem->m_strPath,subDirItems);
-							
-				if (!OnScan(subDirItems))
+
+				if (!DoScan(subDirItems))
 				{
 					bCancel=true;
 				}
 				
+				m_database.CheckVariousArtistsAndCoverArt();
+
 				m_strDirectory=strDir;
 				if (bCancel) break;
 			}
 		}
 	}
 	
-	m_dlgProgress->Close();
 	return !bCancel;
 }
 
@@ -564,13 +591,13 @@ void CGUIWindowMusicSongs::UpdateButtons()
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_LIST);
 	SET_CONTROL_HIDDEN(GetID(), CONTROL_THUMBS);
 
-	int iString=101;
+	int iString=100;
 	if ( m_strDirectory.IsEmpty() ) 
 	{
 		if ( m_bViewAsIconsRoot ) 
 		{
 			SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
-			iString=100;
+			iString=101;
 		}
 		else 
 		{
@@ -582,7 +609,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
 		if ( m_bViewAsIcons ) 
 		{
 			SET_CONTROL_VISIBLE(GetID(), CONTROL_THUMBS);
-			iString=100;
+			iString=101;
 		}
 		else 
 		{

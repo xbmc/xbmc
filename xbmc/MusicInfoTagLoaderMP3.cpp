@@ -106,8 +106,9 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
 
 		if (bFound)
 		{
-			CStdString strCoverArt;
-			CUtil::GetAlbumThumb(tag.GetAlbum(), strCoverArt);
+			CStdString strCoverArt, strPath, strFileName;
+			CUtil::Split(tag.GetURL(), strPath, strFileName);
+			CUtil::GetAlbumThumb(tag.GetAlbum()+strPath, strCoverArt,true);
 			if (!CUtil::FileExists(strCoverArt))
 			{
 				CPicture pic;
@@ -115,7 +116,7 @@ bool CMusicInfoTagLoaderMP3::ReadTag( ID3_Tag& id3tag, CMusicInfoTag& tag )
 				if (nPos>-1)
 					strExtension.Delete(0, nPos+1);
 				ID3_GetPictureDataOfPicType(&id3tag, "T:\\ID3CoverArt."+strExtension, nPicTyp);
-				pic.CreateAlbumThumbnail("T:\\ID3CoverArt."+strExtension, tag.GetAlbum());
+				pic.CreateAlbumThumbnail("T:\\ID3CoverArt."+strExtension, tag.GetAlbum()+strPath);
 				::DeleteFile("T:\\ID3CoverArt."+strExtension);
 			}
 		}

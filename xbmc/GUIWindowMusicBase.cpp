@@ -285,9 +285,9 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 
 	m_history.Set(strSelectedItem,m_strDirectory);
 	m_strDirectory=strDirectory;
+
 	GetDirectory(m_strDirectory, m_vecItems);
 
-	RetrieveMusicInfo();
   UpdateListControl();
 	UpdateButtons();
 
@@ -307,9 +307,6 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 	{
 		SET_CONTROL_FOCUS(GetID(), CONTROL_LIST);
 	}
-
-	CUtil::SetThumbs(m_vecItems);
-	CUtil::FillInDefaultIcons(m_vecItems);
 
 	CStdString strFileName;
 	//	Search current playlist item
@@ -342,21 +339,49 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 			bSelectedFound=true;
 		}
 
-		//	Set album thumb
+		CUtil::FillInDefaultIcon(pItem);
+
+		CStdString strThumb;
 		CStdString strAlbum=pItem->m_musicInfoTag.GetAlbum();
-		if (strAlbum !="")
+		//	Set album thumb
+		if (!strAlbum.IsEmpty())
 		{
-			CStdString strThumb;
-			CUtil::GetAlbumThumb(strAlbum,strThumb);
+			CStdString strPath, strFileName;
+			if (!pItem->m_bIsFolder)
+				CUtil::Split(pItem->m_strPath, strPath, strFileName);
+			else
+				strPath=pItem->m_strPath;
+			// permanent thumbs
+			CUtil::GetAlbumThumb(strAlbum+strPath,strThumb);
 			if (CUtil::FileExists(strThumb) )
 			{
 				pItem->SetIconImage(strThumb);
 				pItem->SetThumbnailImage(strThumb);
 			}
-			else
+			else 
 			{
-				pItem->SetIconImage("music.jpg");
+				// temporary thumbs
+				CUtil::GetAlbumThumb(strAlbum+strPath,strThumb, true);
+				if (!pItem->m_bIsFolder && CUtil::FileExists(strThumb) )
+				{
+					pItem->SetIconImage(strThumb);
+					pItem->SetThumbnailImage(strThumb);
+				}
+				else
+				{
+					strThumb.Empty();
+					pItem->SetIconImage("music.jpg");
+				}
 			}
+		}
+
+		CUtil::SetThumb(pItem);
+		//	SetThumb deleted our previously 
+		//	set album icon image, so we have to set
+		//	it again
+		if (!strThumb.IsEmpty())
+		{
+			pItem->SetIconImage(strThumb);
 		}
 
 		//	syncronize playlist with current directory
@@ -435,7 +460,14 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
   CFileItem* pItem;
 	pItem=m_vecItems[iItem];
 
-  CStdString strPath=pItem->m_strPath;
+  CStdString strPath;
+	if (pItem->m_bIsFolder)
+		strPath=pItem->m_strPath;
+	else
+	{
+		CStdString strFileName;
+		CUtil::Split(pItem->m_strPath, strPath, strFileName);
+	}
 	CMusicInfoScraper scraper;
 	CStdString strExtension;
 	CStdString strLabel=pItem->GetLabel();
@@ -543,7 +575,10 @@ void CGUIWindowMusicBase::OnInfo(int iItem)
 					albuminfo.strImage  = album.GetImageURL();
 					albuminfo.iRating   = album.GetRating();
 					albuminfo.iYear 		= atol( album.GetDateOfRelease().c_str() );
+					albuminfo.strPath   = strPath;
 					m_database.AddAlbumInfo(albuminfo);
+
+					album.SetAlbumPath(strPath);
 				}
 				CGUIWindowMusicInfo *pDlgAlbumInfo= (CGUIWindowMusicInfo*)m_gWindowManager.GetWindow(WINDOW_MUSIC_INFO);
         if (pDlgAlbumInfo)
@@ -664,7 +699,7 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(VECFILEITEMS& items, bool bScan)
             // try finding it in the database
             CStdString strPathName;
             CStdString strFileName;
-            m_database.Split(pItem->m_strPath, strPathName, strFileName);
+            CUtil::Split(pItem->m_strPath, strPathName, strFileName);
             if (strPathName != m_strDirectory)
             {
               if ( m_database.GetSongByFileName(pItem->m_strPath, song) )
@@ -704,6 +739,20 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(VECFILEITEMS& items, bool bScan)
 					}
 				}//if (strExtension!=".cdda" )
 			}//if (!tag.Loaded() )
+			else if (bScan)
+			{
+				bool bFound=false;
+				for (int x=0; x < (int)songsList.size(); ++x)
+				{
+					if (songsList[x].strFileName == pItem->m_strPath)
+					{
+						bFound=true;
+						break;
+					}
+				}
+				if (!bFound)
+					bNewFile=true;
+			}
 
 			if (tag.Loaded() && bScan && bNewFile)
 			{

@@ -245,7 +245,7 @@ IDirect3DTexture8* CPicture::GetYUY2Texture( CxImage& image  )
 bool CPicture::CreateAlbumThumbnail(const CStdString& strFileName, const CStdString& strAlbum)
 {
   CStdString strThumbnail;
-	CUtil::GetAlbumThumb(strAlbum, strThumbnail);
+	CUtil::GetAlbumThumb(strAlbum, strThumbnail,true);
 	return DoCreateThumbnail(strFileName, strThumbnail, MAX_ALBUM_THUMB_WIDTH, MAX_ALBUM_THUMB_HEIGHT);
 }
 
@@ -256,7 +256,7 @@ bool CPicture::CreateThumnail(const CStdString& strFileName)
 	return DoCreateThumbnail(strFileName, strThumbnail, MAX_THUMB_WIDTH, MAX_THUMB_HEIGHT);
 }
 
-bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, int nMaxWidth, int nMaxHeight)
+bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, int nMaxWidth, int nMaxHeight, bool bCacheFile/*=true*/)
 {
 	CStdString strExtension;
 	CStdString strCachedFile;
@@ -278,16 +278,21 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
 	if ( 0==CUtil::cmpnocase(strExtension.c_str(),".pcx") ) dwImageType=CXIMAGE_FORMAT_PCX;
 
 
-	strCachedFile="T:\\cachedpic";
-	strCachedFile+= strExtension;
-	CFile file;
-	if ( !file.Cache(strFileName.c_str(),strCachedFile.c_str(),NULL,NULL) )
+	if (bCacheFile)
 	{
-		OutputDebugString("Unable to cache image:");
-		OutputDebugString(strFileName.c_str());
-		OutputDebugString("\n");
-		return false;
+		strCachedFile="T:\\cachedpic";
+		strCachedFile+= strExtension;
+		CFile file;
+		if ( !file.Cache(strFileName.c_str(),strCachedFile.c_str(),NULL,NULL) )
+		{
+			OutputDebugString("Unable to cache image:");
+			OutputDebugString(strFileName.c_str());
+			OutputDebugString("\n");
+			return false;
+		}
 	}
+	else
+		strCachedFile=strFileName;
 
 	if (!m_bSectionLoaded)
 	{

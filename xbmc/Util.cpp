@@ -699,12 +699,15 @@ void CUtil::GetSongInfo(const CStdString& strFileName, CStdString& strSongCacheN
 	strSongCacheName.Format("%s\\songinfo\\%x.si",g_stSettings.m_szAlbumDirectory,crc);
 }
 
-void CUtil::GetAlbumThumb(const CStdString& strFileName, CStdString& strThumb)
+void CUtil::GetAlbumThumb(const CStdString& strFileName, CStdString& strThumb, bool bTempDir /*=false*/)
 {
 	Crc32 crc;
 	crc.Reset();
   crc.Compute(strFileName.c_str(),strlen(strFileName.c_str()));
-	strThumb.Format("%s\\thumbs\\%x.tbn",g_stSettings.m_szAlbumDirectory,crc);
+	if (bTempDir)
+		strThumb.Format("%s\\thumbs\\temp\\%x.tbn",g_stSettings.m_szAlbumDirectory,crc);
+	else
+		strThumb.Format("%s\\thumbs\\%x.tbn",g_stSettings.m_szAlbumDirectory,crc);
 }
 
 
@@ -885,205 +888,215 @@ DWORD CUtil::GetXbeID( const CStdString& strFilePath)
 	}
 	return dwReturn;
 }
+
 void CUtil::FillInDefaultIcons(VECFILEITEMS &items)
 {
 	for (int i=0; i < (int)items.size(); ++i)
 	{
 		CFileItem* pItem=items[i];
 	
+		FillInDefaultIcon(pItem);
 
-		if (pItem->GetIconImage()=="")
+	}
+}
+
+void CUtil::FillInDefaultIcon(CFileItem* pItem)
+{
+	if (pItem->GetIconImage()=="")
+	{
+		if (pItem->m_bIsFolder)
 		{
-			if (pItem->m_bIsFolder)
+			pItem->SetIconImage("defaultFolder.png");
+		}
+		if (!pItem->m_bIsFolder)
+		{
+			CStdString strExtension;
+			CUtil::GetExtension(pItem->m_strPath,strExtension);
+			
+			for (int i=0; i < (int)g_settings.m_vecIcons.size(); ++i)
 			{
-				pItem->SetIconImage("defaultFolder.png");
-			}
-			if (!pItem->m_bIsFolder)
-			{
-				CStdString strExtension;
-				CUtil::GetExtension(pItem->m_strPath,strExtension);
-				
-				for (int i=0; i < (int)g_settings.m_vecIcons.size(); ++i)
-				{
-					CFileTypeIcon& icon=g_settings.m_vecIcons[i];
+				CFileTypeIcon& icon=g_settings.m_vecIcons[i];
 
-					if (CUtil::cmpnocase(strExtension.c_str(), icon.m_strName)==0)
-					{
-						pItem->SetIconImage(icon.m_strIcon);
-						break;
-					}
+				if (CUtil::cmpnocase(strExtension.c_str(), icon.m_strName)==0)
+				{
+					pItem->SetIconImage(icon.m_strIcon);
+					break;
 				}
 			}
 		}
+	}
 
-		if (pItem->GetThumbnailImage()=="")
+	if (pItem->GetThumbnailImage()=="")
+	{
+		if (pItem->GetIconImage()!="")
 		{
-			if (pItem->GetIconImage()!="")
-			{
-				CStdString strBig;
-				int iPos=pItem->GetIconImage().Find(".");
-				strBig=pItem->GetIconImage().Left(iPos);
-				strBig+="Big";
-				strBig+=pItem->GetIconImage().Right(pItem->GetIconImage().size()-(iPos));
-				pItem->SetThumbnailImage(strBig);
-			}
+			CStdString strBig;
+			int iPos=pItem->GetIconImage().Find(".");
+			strBig=pItem->GetIconImage().Left(iPos);
+			strBig+="Big";
+			strBig+=pItem->GetIconImage().Right(pItem->GetIconImage().size()-(iPos));
+			pItem->SetThumbnailImage(strBig);
 		}
 	}
 }
 
 void CUtil::SetThumbs(VECFILEITEMS &items)
 {
-  CStdString strThumb;
-  bool bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
   for (int i=0; i < (int)items.size(); ++i)
   {
     CFileItem* pItem=items[i];
-		//pItem->m_bIsShareOrDrive=false;
-		if (!pItem->m_bIsFolder)
+		SetThumb(pItem);
+  }
+}
+
+void CUtil::SetThumb(CFileItem* pItem)
+{
+  CStdString strThumb;
+  bool bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
+	if (!pItem->m_bIsFolder)
+	{
+		// picture
+		if (CUtil::IsPicture(pItem->m_strPath) )
 		{
-			// picture
-			if (CUtil::IsPicture(pItem->m_strPath) )
-			{
-				pItem->SetIconImage("defaultPicture.png");
-			}
+			pItem->SetIconImage("defaultPicture.png");
+		}
 
-			// album database
-			if ( CUtil::IsAudio(pItem->m_strPath) )
-			{
-				pItem->SetIconImage("defaultAudio.png");
-			}
+		// album database
+		if ( CUtil::IsAudio(pItem->m_strPath) )
+		{
+			pItem->SetIconImage("defaultAudio.png");
+		}
 
-			// xbe
-			if ( bOnlyDefaultXBE ? CUtil::IsDefaultXBE(pItem->m_strPath) : CUtil::IsXBE(pItem->m_strPath) )
-			{
-				pItem->SetIconImage("defaultProgram.png");
-				if ( !CUtil::IsDVD(pItem->m_strPath) )
-        {
-					CStdString strDescription;
-					if (! CUtil::GetXBEDescription(pItem->m_strPath,strDescription))
-          {
-						CStdString strFName=CUtil::GetFileName(pItem->m_strPath);
-						strDescription=pItem->m_strPath.Left(pItem->m_strPath.size()-strFName.size());
-						if (CUtil::HasSlashAtEnd(strDescription) )
-						{
-							strDescription=strDescription.Left(strDescription.size()-1);
-						}
-						int iPos=strDescription.ReverseFind("\\");
-						if (iPos < 0)
-							iPos=strDescription.ReverseFind("/");
-						if (iPos >=0)
-						{
-							strDescription=strDescription.Right(strDescription.size()-iPos);
-						}
-						else strDescription=strFName;
-					}
-					if (strDescription.size())
-					{
-						CStdString strFname;
-						strFname=CUtil::GetFileName(pItem->m_strPath);
-						strFname.ToLower();
-						if (strFname!="dashupdate.xbe" && strFname!="downloader.xbe" && strFname != "update.xbe")
-						{
-							CShortcut cut;
-							cut.m_strPath=pItem->m_strPath;
-							cut.Save(strDescription);
-						}
-					}
-        }
-			}
-
-			// video
-			if (CUtil::IsVideo(pItem->m_strPath) )
-			{
-				pItem->SetIconImage("defaultVideo.png");
-			}
-
-			// playlist
-			if (CUtil::IsPlayList(pItem->m_strPath) )
-			{
-				CStdString strDir;
-				CStdString strFileName;
-				pItem->SetIconImage("defaultPlaylist.png");
-				strFileName=CUtil::GetFileName(pItem->m_strPath);
-				strDir.Format("%s\\playlists\\%s",g_stSettings.m_szAlbumDirectory,strFileName.c_str());
-				if ( strDir != pItem->m_strPath )
-				{
-					CFile file;
-					file.Cache(pItem->m_strPath, strDir,NULL,NULL);
-				}
-			}
-			if (CUtil::IsShortCut(pItem->m_strPath) )
+		// xbe
+		if ( bOnlyDefaultXBE ? CUtil::IsDefaultXBE(pItem->m_strPath) : CUtil::IsXBE(pItem->m_strPath) )
+		{
+			pItem->SetIconImage("defaultProgram.png");
+			if ( !CUtil::IsDVD(pItem->m_strPath) )
 			{
 				CStdString strDescription;
-				CStdString strFName;
-				strFName=CUtil::GetFileName(pItem->m_strPath);
-				int iPos=strFName.ReverseFind(".");
-				strDescription=strFName.Left(iPos);
-				pItem->SetLabel(strDescription);
-				pItem->SetIconImage("defaultShortcut.png");
+				if (! CUtil::GetXBEDescription(pItem->m_strPath,strDescription))
+				{
+					CStdString strFName=CUtil::GetFileName(pItem->m_strPath);
+					strDescription=pItem->m_strPath.Left(pItem->m_strPath.size()-strFName.size());
+					if (CUtil::HasSlashAtEnd(strDescription) )
+					{
+						strDescription=strDescription.Left(strDescription.size()-1);
+					}
+					int iPos=strDescription.ReverseFind("\\");
+					if (iPos < 0)
+						iPos=strDescription.ReverseFind("/");
+					if (iPos >=0)
+					{
+						strDescription=strDescription.Right(strDescription.size()-iPos);
+					}
+					else strDescription=strFName;
+				}
+				if (strDescription.size())
+				{
+					CStdString strFname;
+					strFname=CUtil::GetFileName(pItem->m_strPath);
+					strFname.ToLower();
+					if (strFname!="dashupdate.xbe" && strFname!="downloader.xbe" && strFname != "update.xbe")
+					{
+						CShortcut cut;
+						cut.m_strPath=pItem->m_strPath;
+						cut.Save(strDescription);
+					}
+				}
+			}
+		}
+
+		// video
+		if (CUtil::IsVideo(pItem->m_strPath) )
+		{
+			pItem->SetIconImage("defaultVideo.png");
+		}
+
+		// playlist
+		if (CUtil::IsPlayList(pItem->m_strPath) )
+		{
+			CStdString strDir;
+			CStdString strFileName;
+			pItem->SetIconImage("defaultPlaylist.png");
+			strFileName=CUtil::GetFileName(pItem->m_strPath);
+			strDir.Format("%s\\playlists\\%s",g_stSettings.m_szAlbumDirectory,strFileName.c_str());
+			if ( strDir != pItem->m_strPath )
+			{
+				CFile file;
+				file.Cache(pItem->m_strPath, strDir,NULL,NULL);
+			}
+		}
+		if (CUtil::IsShortCut(pItem->m_strPath) )
+		{
+			CStdString strDescription;
+			CStdString strFName;
+			strFName=CUtil::GetFileName(pItem->m_strPath);
+			int iPos=strFName.ReverseFind(".");
+			strDescription=strFName.Left(iPos);
+			pItem->SetLabel(strDescription);
+			pItem->SetIconImage("defaultShortcut.png");
+		}
+	}
+	else
+	{
+		if (pItem->GetLabel()=="..")
+		{
+			pItem->SetIconImage("defaultFolderBack.png");
+		}
+	}
+
+	if ( !pItem->HasThumbnail() )
+	{
+		CUtil::GetThumbnail( pItem->m_strPath,strThumb);
+		if (!CUtil::FileExists(strThumb) )
+		{
+			bool bGotIcon(false);
+			if (CUtil::IsRemote(strThumb) )
+			{
+				CFile file;
+				CStdString strThumbnailFileName;
+				CUtil::ReplaceExtension(pItem->m_strPath,".tbn", strThumbnailFileName);
+				if ( file.Cache(strThumbnailFileName.c_str(), strThumb.c_str(),NULL,NULL))
+				{
+					pItem->SetThumbnailImage(strThumb);
+					bGotIcon=true;
+				}
+			}
+			if (!bGotIcon && pItem->GetLabel() != "..")
+			{
+				if (pItem->m_bIsFolder)
+				{
+					CStdString strFolderImage;
+					AddFileToFolder(pItem->m_strPath, "folder.jpg", strFolderImage);
+
+					if (CUtil::IsRemote(pItem->m_strPath) )
+					{
+						CUtil::GetThumbnail( strFolderImage,strThumb);
+						CFile file;
+						if ( file.Cache(strFolderImage.c_str(), strThumb.c_str(),NULL,NULL))
+						{
+							pItem->SetThumbnailImage(strThumb);
+						}
+						else
+						{
+							if (CUtil::FileExists(strThumb))
+							{
+								pItem->SetThumbnailImage(strThumb);
+							}
+						}
+					}
+					else if (CUtil::FileExists(strFolderImage) )
+					{
+						pItem->SetThumbnailImage(strFolderImage);
+					}
+				}
 			}
 		}
 		else
 		{
-			if (pItem->GetLabel()=="..")
-			{
-				pItem->SetIconImage("defaultFolderBack.png");
-			}
+				pItem->SetThumbnailImage(strThumb);
 		}
-		
-		if ( !pItem->HasThumbnail() )
-		{
-			CUtil::GetThumbnail( pItem->m_strPath,strThumb);
-			if (!CUtil::FileExists(strThumb) )
-			{
-        bool bGotIcon(false);
-				if (CUtil::IsRemote(strThumb) )
-				{
-					CFile file;
-					CStdString strThumbnailFileName;
-					CUtil::ReplaceExtension(pItem->m_strPath,".tbn", strThumbnailFileName);
-					if ( file.Cache(strThumbnailFileName.c_str(), strThumb.c_str(),NULL,NULL))
-					{
-						pItem->SetThumbnailImage(strThumb);
-            bGotIcon=true;
-					}
-				}
-        if (!bGotIcon && pItem->GetLabel() != "..")
-        {
-          if (pItem->m_bIsFolder)
-          {
-            CStdString strFolderImage;
-            AddFileToFolder(pItem->m_strPath, "folder.jpg", strFolderImage);
-
-            if (CUtil::IsRemote(pItem->m_strPath) )
-            {
-              CUtil::GetThumbnail( strFolderImage,strThumb);
-              CFile file;
-              if ( file.Cache(strFolderImage.c_str(), strThumb.c_str(),NULL,NULL))
-					    {
-						    pItem->SetThumbnailImage(strThumb);
-					    }
-              else
-              {
-                if (CUtil::FileExists(strThumb))
-                {
-                  pItem->SetThumbnailImage(strThumb);
-                }
-              }
-            }
-            else if (CUtil::FileExists(strFolderImage) )
-            {
-              pItem->SetThumbnailImage(strFolderImage);
-            }
-          }
-        }
-			}
-			else
-			{
-					pItem->SetThumbnailImage(strThumb);
-			}
-		}
-  }
+	}
 }
 
 void CUtil::ShortenFileName(CStdString& strFileNameAndPath)
@@ -1169,8 +1182,11 @@ void CUtil::RemoveTempFiles()
 {
 	WIN32_FIND_DATA wfd;
 	
+	CStdString strAlbumDir;
+	strAlbumDir.Format("%s\\*.tmp",g_stSettings.m_szAlbumDirectory);
 	memset(&wfd,0,sizeof(wfd));
-	CAutoPtrFind hFind( FindFirstFile("Q:\\albums\\*.tmp",&wfd));
+
+	CAutoPtrFind hFind( FindFirstFile(strAlbumDir.c_str(),&wfd));
 	if (!hFind.isValid())
 		return ;
 	do
@@ -1182,6 +1198,23 @@ void CUtil::RemoveTempFiles()
 			DeleteFile(strFile.c_str());
 		}
 	} while (FindNextFile(hFind, &wfd));
+
+	CStdString strTempThumbDir;
+	strTempThumbDir.Format("%s\\thumbs\\temp\\*.tbn",g_stSettings.m_szAlbumDirectory);
+	memset(&wfd,0,sizeof(wfd));
+
+	CAutoPtrFind hFind1( FindFirstFile(strTempThumbDir.c_str(),&wfd));
+	if (!hFind1.isValid())
+		return ;
+	do
+	{
+		if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
+		{
+			string strFile="Q:\\albums\\";
+			strFile += wfd.cFileName;
+			DeleteFile(strFile.c_str());
+		}
+	} while (FindNextFile(hFind1, &wfd));
 }
 
 bool CUtil::IsHD(const CStdString& strFileName)
@@ -1379,6 +1412,7 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
   }
   strResult += strFile;
 }
+
 bool CUtil::IsNFO(const CStdString& strFile)
 {
   char *pExtension=CUtil::GetExtension(strFile);
@@ -1396,4 +1430,19 @@ void CUtil::GetPath(const CStdString& strFileName, CStdString& strPath)
   if (iPos3>iPos1) iPos1=iPos3;
 
   strPath=strFileName.Left(iPos1-1);
+}
+
+void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName)
+{
+	strFileName="";
+	strPath="";
+	int i=strFileNameAndPath.size()-1;
+	while (i > 0)
+	{
+		char ch=strFileNameAndPath[i];
+		if (ch==':' || ch=='/' || ch=='\\') break;
+		else i--;
+	}
+	strPath     = strFileNameAndPath.Left(i);
+	strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i);
 }
