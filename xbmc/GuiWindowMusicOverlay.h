@@ -26,6 +26,7 @@ protected:
 	long			  m_lStartOffset;
   int                 m_iFrames;
   bool                m_bShowInfo;
+  bool				m_bShowInfoAlways;
   int				  m_iFrameIncrement;
   DWORD				  m_dwTimeout;
   int                 m_iPosOrgIcon;
