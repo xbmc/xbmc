@@ -132,6 +132,7 @@
 #define ACTION_OSD_HIDESUBMENU		84  // removes an OSD sub menu. Can be used in videoOSD.xml window id=2901
 #define ACTION_TAKE_SCREENSHOT		85  // take a screenshot
 #define ACTION_POWERDOWN		86  // restart
+#define ACTION_RENAME_ITEM		87  // rename item
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                 9999

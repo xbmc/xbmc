@@ -305,10 +305,10 @@ CSettings::CSettings(void)
 	g_stSettings.m_bMyFilesSourceRootSortAscending=true;
 	g_stSettings.m_bMyFilesDestSortAscending=true;
 	g_stSettings.m_bMyFilesDestRootSortAscending=true;
-  g_stSettings.m_iFlickerFilterVideo=1;
+  g_stSettings.m_iFlickerFilterVideo=0;
 	g_stSettings.m_bSoftenVideo=false;
   g_stSettings.m_iFlickerFilterUI=5;
-	g_stSettings.m_bSoftenUI=true;
+	g_stSettings.m_bSoftenUI=false;
 	g_stSettings.m_bZoom=false;
 	g_stSettings.m_bStretch=false;
 
@@ -352,34 +352,23 @@ CSettings::~CSettings(void)
 
 void CSettings::Save() const
 {
-	if (!SaveSettings("T:\\settings.xml"))
+	if (!SaveSettings("T:\\settings.xml", true))
 	{
 		CLog::Log("Unable to save settings to T:\\settings.xml");
 	}
-	if (!SaveCalibration("T:\\calibration.xml"))
-	{
-		CLog::Log("Unable to save calibration to T:\\calibration.xml");
-	}
 }
 
-bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings, bool &bCalibration)
+bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 {
 	// load settings file...
-	bXboxMediacenter=bSettings=bCalibration=false;
+	bXboxMediacenter=bSettings=false;
 	CLog::Log("loading T:\\settings.xml");
-	if (!LoadSettings("T:\\settings.xml"))
+	if (!LoadSettings("T:\\settings.xml", true))
 	{
 		CLog::Log("Unable to load T:\\settings.xml, creating new T:\\settings.xml with default values");
 		Save();
-		if (!(bSettings=LoadSettings("T:\\settings.xml")))
+		if (!(bSettings=LoadSettings("T:\\settings.xml", true)))
 			return false;
-	}
-	// load calibration file...
-	CLog::Log("loading T:\\calibration.xml");
-	bCalibration=LoadCalibration("T:\\calibration.xml");
-	if (!bCalibration)
-	{
-		CLog::Log("Unable to load T:\\calibration.xml");
 	}
 
 	// load xml file...
@@ -782,23 +771,35 @@ void CSettings::SetBoolean(TiXmlNode* pRootNode, const CStdString& strTagName, b
 		SetString(pRootNode, strTagName, "false");
 }
 
-bool CSettings::LoadCalibration(const CStdString& strCalibrationFile)
+bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& strSettingsFile)
 {
 	// reset the calibration to the defaults
-	for (int i=0; i<10; i++)
-		g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
-	// now load the xml file
-	TiXmlDocument xmlDoc;
-	if (!xmlDoc.LoadFile(strCalibrationFile))
+	//g_graphicsContext.SetD3DParameters(NULL, m_ResInfo);
+	//for (int i=0; i<10; i++)
+	//	g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
+
+  const TiXmlElement *pRootElement;
+  CStdString strTagName = pElement->Value();
+  if (!strcmp(strTagName.c_str(), "calibration")) {
+    pRootElement = pElement;
+  }
+  else {
+	  pRootElement = pElement->FirstChildElement("calibration");
+  }
+	if (!pRootElement)
 	{
-		g_LoadErrorStr.Format("%s, Line %d\n%s", strCalibrationFile.c_str(), xmlDoc.GetLineNo(), xmlDoc.GetErrorDesc());
-		return false;
-	}
-	TiXmlElement *pRootElement = xmlDoc.RootElement();
-	if (CUtil::cmpnocase(pRootElement->Value(),"calibration")!=0)
-	{
-		g_LoadErrorStr.Format("%s Doesn't contain <calibration>", strCalibrationFile.c_str());
-		return false;
+    g_LoadErrorStr.Format("%s Doesn't contain <calibration>", strSettingsFile.c_str());
+    //be nice, try to load from "old" calibration.xml file
+    if (CUtil::FileExists("T:\\calibration.xml")) {
+	    TiXmlDocument xmlDoc;
+	    if (!xmlDoc.LoadFile("T:\\calibration.xml"))
+	    {
+		    return false;
+	    }
+	    TiXmlElement *pOldConfigRootElement = xmlDoc.RootElement();
+      return LoadCalibration(pOldConfigRootElement, "T:\\calibration.xml");
+    }
+    return false;
 	}
 	TiXmlElement *pResolution = pRootElement->FirstChildElement("resolution");
 	while (pResolution)
@@ -818,8 +819,8 @@ bool CSettings::LoadCalibration(const CStdString& strCalibrationFile)
 		TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
 		if (pOverscan)
 		{
-			GetInteger(pOverscan, "left", m_ResInfo[iRes].Overscan.left,0,-g_settings.m_ResInfo[iRes].iWidth/4,g_settings.m_ResInfo[iRes].iWidth/4);
-			GetInteger(pOverscan, "top", m_ResInfo[iRes].Overscan.top,0,-g_settings.m_ResInfo[iRes].iHeight/4,g_settings.m_ResInfo[iRes].iHeight/4);
+			GetInteger(pOverscan, "left", m_ResInfo[iRes].Overscan.left,0,-m_ResInfo[iRes].iWidth/4,m_ResInfo[iRes].iWidth/4);
+			GetInteger(pOverscan, "top", m_ResInfo[iRes].Overscan.top,0,-m_ResInfo[iRes].iHeight/4,m_ResInfo[iRes].iHeight/4);
 			GetInteger(pOverscan, "width", m_ResInfo[iRes].Overscan.width,m_ResInfo[iRes].iWidth-m_ResInfo[iRes].Overscan.left,m_ResInfo[iRes].iWidth/2,m_ResInfo[iRes].iWidth*3/2);
 			GetInteger(pOverscan, "height", m_ResInfo[iRes].Overscan.height,m_ResInfo[iRes].iHeight-m_ResInfo[iRes].Overscan.top,m_ResInfo[iRes].iHeight/2,m_ResInfo[iRes].iHeight*3/2);
 		}
@@ -833,21 +834,18 @@ bool CSettings::LoadCalibration(const CStdString& strCalibrationFile)
 		// iterate around
 		pResolution = pResolution->NextSiblingElement("resolution");
 	}
-	return true;
+  return true;
 }
 
-bool CSettings::SaveCalibration(const CStdString& strCalibrationFile) const
+bool CSettings::SaveCalibration(TiXmlNode* pRootNode) const
 {
-	TiXmlDocument xmlDoc;
 	TiXmlElement xmlRootElement("calibration");
-	TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
-	if (!pRoot) return false;
+	TiXmlNode *pRoot = pRootNode->InsertEndChild(xmlRootElement);
 	for (int i=0; i<10; i++)
 	{
 		// Write the resolution tag
 		TiXmlElement resElement("resolution");
 		TiXmlNode *pNode = pRoot->InsertEndChild(resElement);
-		if (!pNode) return false;
 		// Now write each of the pieces of information we need...
 		SetString(pNode, "description", m_ResInfo[i].strMode);
 		SetInteger(pNode, "id", i);
@@ -860,16 +858,15 @@ bool CSettings::SaveCalibration(const CStdString& strCalibrationFile) const
 		// create the overscan child
 		TiXmlElement overscanElement("overscan");
 		TiXmlNode *pOverscanNode = pNode->InsertEndChild(overscanElement);
-		if (!pOverscanNode) return false;
 		SetInteger(pOverscanNode, "left", m_ResInfo[i].Overscan.left);
 		SetInteger(pOverscanNode, "top", m_ResInfo[i].Overscan.top);
 		SetInteger(pOverscanNode, "width", m_ResInfo[i].Overscan.width);
 		SetInteger(pOverscanNode, "height", m_ResInfo[i].Overscan.height);
 	}
-	return xmlDoc.SaveFile(strCalibrationFile);
+  return true;
 }
 
-bool CSettings::LoadSettings(const CStdString& strSettingsFile)
+bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadprofiles)
 {
 	// load the xml file
 	TiXmlDocument xmlDoc;
@@ -884,6 +881,18 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		g_LoadErrorStr.Format("%s\nDoesn't contain <settings>",strSettingsFile.c_str());
 		return false;
 	}
+
+  if (loadprofiles) {
+    LoadProfiles(pRootElement, strSettingsFile);
+    if (m_vecProfiles.size() == 0) {
+      //no profiles yet, make one based on the default settings
+      CProfile profile;
+      profile.setFileName("profile0.xml");
+      profile.setName("Default settings");
+      m_vecProfiles.push_back(profile);
+      SaveSettingsToProfile(0);
+    }
+  }
 
 	TiXmlElement *pElement = pRootElement->FirstChildElement("lcdsettings");
 	if (pElement)
@@ -1220,16 +1229,22 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetInteger(pElement, "ripbitrate", g_stSettings.m_iRipBitRate, 192, 64, 512);
 	}
 
+  LoadCalibration(pRootElement, strSettingsFile);
+
 	return true;
 }
 
-bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
+bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool saveprofiles) const
 {
 	TiXmlDocument xmlDoc;
 	TiXmlElement xmlRootElement("settings");
 	TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
 	if (!pRoot) return false;
 	// write our tags one by one - just a big list for now (can be flashed up later)
+
+  if (saveprofiles) {
+    SaveProfiles(pRoot);
+  }
 
 	TiXmlElement LCDNode("lcdsettings");
 	TiXmlNode *pNode = pRoot->InsertEndChild(LCDNode);
@@ -1562,6 +1577,86 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetInteger(pNode, "ripquality", g_stSettings.m_iRipQuality);
 	SetInteger(pNode, "ripbitrate", g_stSettings.m_iRipBitRate);
 
+  SaveCalibration(pRoot);
+
 	// save the file
 	return xmlDoc.SaveFile(strSettingsFile);
 }
+
+bool CSettings::LoadProfile(int index)
+{
+  CProfile& profile = m_vecProfiles.at(index);
+  return LoadSettings("T:\\" + profile.getFileName(), false);
+}
+
+bool CSettings::SaveSettingsToProfile(int index)
+{
+  CProfile& profile = m_vecProfiles.at(index);
+  return SaveSettings("T:\\" + profile.getFileName(), false);
+}
+
+
+bool CSettings::LoadProfiles(const TiXmlElement* pRootElement, const CStdString& strSettingsFile)
+{
+ 	CLog::Log("  Parsing <profiles> tag");
+	const TiXmlNode *pChild = pRootElement->FirstChild("profiles");
+	if (pChild)
+	{
+		pChild = pChild->FirstChild();
+		while (pChild>0)
+		{
+			CStdString strValue=pChild->Value();
+			if (strValue=="profile")
+			{
+				const TiXmlNode *pProfileName=pChild->FirstChild("name");
+				const TiXmlNode *pProfileFile=pChild->FirstChild("file");
+				if (pProfileName && pProfileFile)
+				{
+					const char* szName=pProfileName->FirstChild()->Value();
+					CLog::Log("    Profile Name: %s", szName);
+					const char* szPath=pProfileFile->FirstChild()->Value();
+					CLog::Log("    Profile Filename: %s", szPath);
+
+					CProfile profile;
+          CStdString str = szName;
+					profile.setName(str);
+          str = szPath;
+					profile.setFileName(str);
+          m_vecProfiles.push_back(profile);
+				}
+				else
+				{
+					CLog::Log("    <name> and/or <file> not properly defined within <profile>");
+				}
+			}
+			pChild=pChild->NextSibling();
+		}
+    return true;
+	}
+	else 
+	{
+		CLog::Log("  <profiles> tag is missing or %s is malformed", strSettingsFile.c_str());
+    return false;
+	}
+}
+
+
+bool CSettings::SaveProfiles(TiXmlNode* pRootElement) const
+{
+	TiXmlElement xmlCalibrationElement("profiles");
+	TiXmlNode *pProfileNode = pRootElement->InsertEndChild(xmlCalibrationElement);
+  if (!pProfileNode) return false;
+  for (int i=0; i<(int)m_vecProfiles.size(); ++i)
+  {
+    const CProfile& profile=m_vecProfiles.at(i);
+
+		TiXmlElement profileElement("profile");
+		TiXmlNode *pNode = pProfileNode->InsertEndChild(profileElement);
+		if (!pNode) return false;
+		SetString(pNode, "name", profile.getName());
+		SetString(pNode, "file", profile.getFileName());
+  }
+  return true;
+}
+
+
