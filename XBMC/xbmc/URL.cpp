@@ -85,8 +85,8 @@ CURL::CURL(const CStdString& strURL)
 	{
 		if (m_strHostName!="" && m_strFileName !="")
 		{
-			CStdString strFile;
-			m_strFileName.Format("%s/%s", m_strHostName.c_str(),m_strFileName.c_str());
+			CStdString strFileName = m_strFileName;
+			m_strFileName.Format("%s/%s", m_strHostName.c_str(),strFileName.c_str());
 			m_strHostName="";
 		}
 		else
