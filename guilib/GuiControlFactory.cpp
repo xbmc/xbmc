@@ -113,6 +113,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	CStdString	strSubType;
 	int					iType=SPIN_CONTROL_TYPE_TEXT;
 	bool				bReverse=false;
+  bool        bShadow;
 	CStdString	strTextureBg, strLeft,strRight,strMid;
 	CStdString	strTexture;
 	DWORD 			dwColorKey=0xffffffff;
@@ -192,6 +193,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		}
 		if (strType=="checkmark")
 		{
+      bShadow             = ((CGUICheckMarkControl*)pReference)->GetShadow();
 			strTextureCheckMark	= ((CGUICheckMarkControl*)pReference)->GetCheckMarkTextureName();
 			strTextureCheckMarkNF	= ((CGUICheckMarkControl*)pReference)->GetCheckMarkTextureNameNF();
 			dwCheckWidth				= ((CGUICheckMarkControl*)pReference)->GetCheckMarkWidth();
@@ -341,6 +343,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 	GetHex(pControlNode, "textcolor", dwTextColor);
 
  	GetBoolean(pControlNode,"hasPath",bHasPath);
+ 	GetBoolean(pControlNode,"shadow",bShadow);
 
 	GetString(pControlNode,"textureUp",strUp);
 	GetString(pControlNode,"textureDown",strDown);
@@ -488,6 +491,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
       pControl->SetNavigation(up,down,left,right);
       pControl->SetColourDiffuse(dwColorDiffuse);
       pControl->SetVisible(bVisible);
+      pControl->SetShadow(bShadow);
       return pControl;
   }
 

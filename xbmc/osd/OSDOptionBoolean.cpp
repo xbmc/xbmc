@@ -13,6 +13,7 @@ COSDOptionBoolean::COSDOptionBoolean(int iAction,int iHeading)
 	m_bValue=false;
   m_iHeading=iHeading;
   m_iAction=iAction;
+  m_image.SetShadow(true);
 }
 
 COSDOptionBoolean::COSDOptionBoolean(int iAction,int iHeading,bool bValue)
@@ -21,12 +22,14 @@ COSDOptionBoolean::COSDOptionBoolean(int iAction,int iHeading,bool bValue)
   m_iHeading=iHeading;
 	m_bValue=bValue;
   m_iAction=iAction;
+  m_image.SetShadow(true);
 }
 
 COSDOptionBoolean::COSDOptionBoolean(const COSDOptionBoolean& option)
 :m_image(0, 1, 0, 0, 0, 0, "check-box.png","check-boxNF.png",16,16)
 {
 	*this=option;
+  m_image.SetShadow(true);
 }
 
 const OSD::COSDOptionBoolean& COSDOptionBoolean::operator = (const COSDOptionBoolean& option)
