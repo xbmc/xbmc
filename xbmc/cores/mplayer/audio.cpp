@@ -12,6 +12,7 @@
 IDirectSoundRenderer* m_pAudioDecoder=NULL;
 
 static IAudioCallback* m_pAudioCallback=NULL;
+void audio_uninit(int);
 
 ao_info_t audio_info =  {
 		"Windows waveOut audio output",
@@ -124,6 +125,7 @@ static int audio_init(int rate,int channels,int format,int flags)
 		int	 iChannels;
 		BOOL bVBR;
 		bool bAC3PassThru=false;
+    audio_uninit(1); //Make sure nothing else was uninted first. mplayer sometimes forgets.
 
     mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
 		int ao_format_bits = audio_out_format_bits(format); 
@@ -179,7 +181,7 @@ static int audio_init(int rate,int channels,int format,int flags)
 
 //******************************************************************************************
 // close audio device
-static void audio_uninit(int immed)
+void audio_uninit(int immed)
 {
   if (m_pAudioDecoder)
 	{
