@@ -18,7 +18,7 @@
 // Global access to common members
 //-----------------------------------------------------------------------------
 CXBApplicationEx*    g_pXBApp     = NULL;
-LPDIRECT3DDEVICE8  g_pd3dDevice = NULL;
+static LPDIRECT3DDEVICE8  g_pd3dDevice = NULL;
 
 // Deadzone for the gamepad inputs
 const SHORT XINPUT_DEADZONE = (SHORT)( 0.24f * FLOAT(0x7FFF) );
