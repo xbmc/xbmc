@@ -265,7 +265,7 @@
   </string>  
   <string>
     <id>138</id>
-    <value>SYSTEM INFORMATION</value>
+    <value>System Information</value>
   </string>  
   <string>
     <id>139</id>
@@ -361,7 +361,7 @@
   </string> 
   <string>
     <id>162</id>
-    <value>DVD lucka öppen</value>
+    <value>DVD-lucka Öppen</value>
   </string> 
   <string>
     <id>163</id>
@@ -381,11 +381,11 @@
   </string> 
   <string>
     <id>167</id>
-    <value>FTP server:</value>
+    <value>Ftp-Server:</value>
   </string> 
   <string>
     <id>168</id>
-    <value>Synkronisera Tid:</value>
+    <value>Synkronisera tid:</value>
   </string> 
   <string>
     <id>169</id>
@@ -469,7 +469,7 @@
   </string>  
   <string>
     <id>189</id>
-    <value>Indexerar media info</value>
+    <value>Indexerar mediainfo</value>
   </string>  
   <string>
     <id>190</id>
@@ -493,7 +493,7 @@
   </string> 
   <string>
     <id>195</id>
-    <value>Ingen IMDB info hittades!</value>
+    <value>Ingen IMDB-info hittades!</value>
   </string> 
   <string>
     <id>196</id>
@@ -501,7 +501,7 @@
   </string> 
   <string>
     <id>197</id>
-    <value>Förfrågar IMDB info</value>
+    <value>Söker IMDB-info</value>
   </string> 
   <string>
     <id>198</id>
@@ -585,7 +585,7 @@
   </string> 
   <string>
     <id>218</id>
-    <value>DVD spelare</value>
+    <value>DVD-spelare</value>
   </string> 
   <string>
     <id>219</id>
@@ -593,7 +593,7 @@
   </string> 
   <string>
     <id>220</id>
-    <value>Nätverks filer</value>
+    <value>Nätverksfiler</value>
   </string> 
   <string>
     <id>221</id>
@@ -629,7 +629,7 @@
   </string> 
   <string>
     <id>229</id>
-    <value>Tid innan sänkt HD hastighet</value>
+    <value>Tid innan sänkt HD-hastighet</value>
   </string> 
   <string>
     <id>230</id>
@@ -657,11 +657,11 @@
   </string> 
   <string>
     <id>236</id>
-    <value>Gaussisk Kubiskt</value>
+    <value>Gaussisk kubiskt</value>
   </string> 
   <string>
     <id>237</id>
-    <value>Minifiering:</value>
+    <value>Förminskning:</value>
   </string> 
   <string>
     <id>238</id>
@@ -681,7 +681,7 @@
   </string>
   <string>
     <id>243</id>
-    <value>Starta XBOX spel automatiskt</value>
+    <value>Starta XBOX-spel automatiskt</value>
   </string>
   <string>
     <id>244</id>
@@ -689,11 +689,11 @@
   </string>
   <string>
     <id>245</id>
-    <value>Starta Musik automatiskt</value>
+    <value>Starta musik automatiskt</value>
   </string>
   <string>
     <id>246</id>
-    <value>Starta Bilder automatiskt</value>
+    <value>Starta bilder automatiskt</value>
   </string>
   <string>
     <id>247</id>
@@ -713,19 +713,19 @@
   </string>
    <string>
     <id>251</id>
-    <value>Välj Destinations Mapp</value>
+    <value>Välj destinationsmapp</value>
   </string>
   <string>
     <id>252</id>
-    <value>Signal Till Alla Högtalare</value>
+    <value>Signal till alla högtalare</value>
   </string>
   <string>
     <id>253</id>
-    <value>Antal Kanaler</value>
+    <value>Antal kanaler</value>
   </string>
   <string>
     <id>254</id>
-    <value>DD Stereo Passthrough</value>
+    <value>DD Stereo passthrough</value>
   </string>
   <string>
     <id>255</id>
@@ -733,7 +733,7 @@
   </string>
   <string>
     <id>256</id>
-    <value>Frågar freedb för CDDB info</value>
+    <value>Frågar freedb för CDDB-info</value>
   </string>
   <string>
     <id>257</id>
@@ -741,7 +741,7 @@
   </string>
   <string>
     <id>258</id>
-    <value>Aktivera ID3 tags</value>
+    <value>Aktivera ID3-tags</value>
   </string>
   <string>
     <id>259</id>
@@ -753,15 +753,15 @@
   </string>
   <string>
     <id>261</id>
-    <value>Väntar för start....</value>
+    <value>Väntar på start....</value>
   </string>
   <string>
     <id>262</id>
-    <value>Scripts Output</value>
+    <value>Scripts output</value>
   </string>
   <string>
     <id>263</id>
-    <value>HTTP server:</value>
+    <value>HTTP-server:</value>
   </string>
   <string>
     <id>264</id>
@@ -769,27 +769,27 @@
   </string>
   <string>
     <id>265</id>
-    <value>Stop Rec.</value>
+    <value>End rec.</value>
   </string>
   <string>
     <id>266</id>
-    <value>Sortera efter Track</value>
+    <value>Sortera efter låt</value>
   </string>
   <string>
     <id>267</id>
-    <value>Sortera efter Time</value>
+    <value>Sortera efter tid</value>
   </string>
   <string>
     <id>268</id>
-    <value>Sortera efter Title</value>
+    <value>Sortera efter titel</value>
   </string>
   <string>
     <id>269</id>
-    <value>Sortera efter Artist</value>
+    <value>Sortera efter artist</value>
   </string>
   <string>
     <id>270</id>
-    <value>Sortera efter Album</value>
+    <value>Sortera efter album</value>
   </string>
   <string>
     <id>271</id>
@@ -797,19 +797,19 @@
   </string>
   <string>
     <id>272</id>
-    <value>Övre Vänstra Overscan Kompensation</value>
+    <value>Övre vänstra overscan-kompensation</value>
   </string>
   <string>
     <id>273</id>
-    <value>Nedre Högra Overscan Kompensation</value>
+    <value>Nedre högra overscan-kompensation</value>
   </string>
   <string>
     <id>274</id>
-    <value>Undertext Position</value>
+    <value>Undertextposition</value>
   </string>
   <string>
     <id>275</id>
-    <value>Pixel Ratio Justering</value>
+    <value>Pixel ratio-justering</value>
   </string>
   <string>
     <id>276</id>
@@ -817,11 +817,11 @@
   </string>
   <string>
     <id>277</id>
-    <value>Flytta pilen för att flytta undertext position</value>
+    <value>Flytta pilen för att flytta undertextposition</value>
   </string>
   <string>
     <id>278</id>
-    <value>Ändra rektangle så den blir en perfekt fyrkant</value>
+    <value>Ändra rektangeln så den blir en perfekt fyrkant</value>
   </string>
   <string>
     <id>279</id>
@@ -829,19 +829,19 @@
   </string>
   <string>
     <id>280</id>
-    <value>Använder orginal inställningar</value>
+    <value>Använder orginalinställningar</value>
   </string>
 <string>
     <id>281</id>
-    <value>Var god och kolla .xml filerna</value>
+    <value>Var god och kolla .xml-filerna</value>
   </string>
   <string>
     <id>282</id>
-    <value>found %i items</value>
+    <value>hittade %i saker</value>
   </string>
   <string>
     <id>283</id>
-    <value>Search Results</value>
+    <value>Sökresultat</value>
   </string>
   <string>
     <id>284</id>
@@ -849,11 +849,11 @@
   </string>
   <string>
     <id>285</id>
-    <value>Deinterlace filter</value>
+    <value>Deinterlace-filter</value>
   </string>
   <string>
     <id>286</id>
-    <value>Postprocessing filter</value>
+    <value>Postprocessing-filter</value>
   </string>
   <string>
     <id>287</id>
@@ -861,7 +861,7 @@
   </string>
   <string>
     <id>288</id>
-    <value>Font</value>
+    <value>Typsnitt</value>
   </string>
   <string>
     <id>289</id>
@@ -869,7 +869,7 @@
   </string>
   <string>
     <id>290</id>
-    <value>Volym Förstärkning (dB)</value>
+    <value>Volymförstärkning (dB)</value>
   </string>
   <string>
     <id>291</id>
@@ -885,19 +885,19 @@
   </string>
   <string>
     <id>294</id>
-    <value>1. Skapa Bokmärke</value>
+    <value>1. Skapa bokmärke</value>
   </string>
   <string>
     <id>295</id>
-    <value>2. Bläddra Bokmärke</value>
+    <value>2. Bläddra bokmärke</value>
   </string>
   <string>
     <id>296</id>
-    <value>3. Ta Bort Bokmärken</value>
+    <value>3. Ta bort bokmärken</value>
   </string>
   <string>
     <id>297</id>
-    <value>4. A/V Förskjutning</value>
+    <value>4. A/V-förskjutning</value>
   </string>
   <string>
     <id>298</id>
@@ -929,7 +929,7 @@
   </string>
   <string>
     <id>306</id>
-    <value>6. Icke-Interleaved</value>
+    <value>6. Icke-interleaved</value>
   </string>
   <string>
     <id>307</id>
@@ -937,15 +937,15 @@
   </string>
   <string>
     <id>308</id>
-    <value>Vertikal deblocking filter</value>
+    <value>Vertikalt deblocking-filter</value>
   </string>
   <string>
     <id>309</id>
-    <value>horisontal deblocking filter</value>
+    <value>Horisontalt deblocking-filter</value>
   </string>
   <string>
     <id>310</id>
-    <value>Auto Ljus/Kontrast</value>
+    <value>Auto ljus/kontrast</value>
   </string>
   <string>
     <id>311</id>
@@ -965,7 +965,7 @@
   </string>
   <string>
     <id>315</id>
-    <value>Databas Fel</value>
+    <value>Databasfel</value>
   </string>
   <string>
     <id>316</id>
@@ -973,7 +973,7 @@
   </string>
   <string>
     <id>317</id>
-    <value>Omorganisation Lyckad</value>
+    <value>Omorganisation lyckad</value>
   </string>
   <string>
     <id>318</id>
@@ -985,11 +985,11 @@
   </string>
   <string>
     <id>320</id>
-    <value>Letar Efter Artists...</value>
+    <value>Letar efter artists...</value>
   </string>
   <string>
     <id>321</id>
-    <value>Fel vid omorganisation av Artists</value>
+    <value>Fel vid omorganisation av artists</value>
   </string>
   <string>
     <id>322</id>
@@ -997,7 +997,7 @@
   </string>
   <string>
     <id>323</id>
-    <value>Fel vid omorganisation av Genres</value>
+    <value>Fel vid omorganisation av genres</value>
   </string>
   <string>
     <id>324</id>
@@ -1017,7 +1017,7 @@
   </string>
   <string>
     <id>328</id>
-    <value>Skriver Förändringar...</value>
+    <value>Skriver förändringar...</value>
   </string>
   <string>
     <id>329</id>
@@ -1029,7 +1029,7 @@
   </string>
   <string>
     <id>331</id>
-    <value>Komprimerar Databas...</value>
+    <value>Komprimerar databas...</value>
   </string>
   <string>
     <id>332</id>
@@ -1037,11 +1037,11 @@
   </string>
   <string>
     <id>333</id>
-    <value>Vill du omorganisera din musik databas?</value>
+    <value>Vill du omorganisera din musikdatabas?</value>
   </string>
   <string>
     <id>334</id>
-    <value>Omorganisera min musik databas</value>
+    <value>Omorganisera min musikdatabas</value>
   </string>
   <string>
     <id>335</id>
@@ -1049,11 +1049,11 @@
   </string>
   <string>
     <id>336</id>
-    <value>Justera Bilduppdatering</value>
+    <value>Justera bilduppdatering</value>
   </string>
   <string>
     <id>337</id>
-    <value>Ljud Output:</value>
+    <value>Ljudoutput:</value>
   </string>
   <string>
     <id>338</id>
@@ -1065,7 +1065,7 @@
   </string>
   <string>
     <id>340</id>
-    <value>Blandade Artister</value>
+    <value>Blandade artister</value>
   </string>
   <string>
     <id>341</id>
@@ -1097,7 +1097,7 @@
   </string>
   <string>
     <id>348</id>
-    <value>Platta ut Directory Hierarchy</value>
+    <value>Platta ut "directory hierarchy"</value>
   </string>
   <string>
     <id>349</id>
@@ -1121,7 +1121,7 @@
   </string>
   <string>
     <id>354</id>
-    <value>Matrix Stil</value>
+    <value>Matrix-stil</value>
   </string>
   <string>
     <id>355</id>
@@ -1129,11 +1129,11 @@
   </string>
   <string>
     <id>356</id>
-    <value>Skärmsläckar Läge</value>
+    <value>Skärmsläckarläge</value>
   </string>
   <string>
     <id>357</id>
-    <value>Avstängnings tid vid Idle</value>
+    <value>Avstängningstid vid vila</value>
   </string>
   <string>
     <id>358</id>
@@ -1154,15 +1154,15 @@
   </string>   
   <string>
     <id>362</id>
-    <value>Skärmsläckar Fade Nivå (%)</value>
+    <value>Skärmsläckarnivå (%)</value>
   </string>
   <string>
     <id>363</id>
-    <value>Sortera efter Fil</value>
+    <value>Sortera efter fil</value>
   </string>   
   <string>
     <id>364</id>
-    <value>DD/DTS Flerkanal Passthrough</value>
+    <value>DD/DTS Flerkanal-ljud</value>
   </string>   
   <string>
     <id>365</id>
@@ -1174,7 +1174,7 @@
   </string>   
   <string>
     <id>367</id>
-    <value>Sortera efter rating</value>
+    <value>Sortera efter betyg</value>
   </string>   
   <string>
     <id>368</id>
@@ -1251,35 +1251,35 @@
    </string>
     <string>
    <id>396</id> 
-   <value>Välj Plats</value> 
+   <value>Välj plats</value> 
    </string>
    <string>
    <id>397</id> 
-   <value>Uppdaterings Tid</value> 
+   <value>Uppdateringstid</value> 
    </string>
    <string>
-   <id>398</id> 
-   <value>Temperatur Enhet</value> 
+  <id>398</id> 
+   <value>Temperaturenhet</value> 
    </string>
   <string>
-   <id>399</id> 
-   <value>Hastighets Enhet</value> 
+  <id>399</id>  
+  <value>Hastighetsenhet</value> 
    </string>
-   <string>
+  <string>
    <id>400</id> 
-   <value>Väder</value> 
-   </string>
+   <value>Väder</value>
+    </string>
    <string>
       <id>401</id>
       <value>Temp</value>
     </string>
   <string>
     <id>402</id>
-    <value>Känns Som</value>
+    <value>Känns som</value>
   </string> 
   <string>
     <id>403</id>
-    <value>UV Index</value>
+    <value>UV-Index</value>
   </string>
   <string>
     <id>404</id>
@@ -1287,7 +1287,7 @@
   </string>   
   <string>
     <id>405</id>
-    <value>Dagg i luften</value>
+    <value>Daggpunkt</value>
   </string> 
   <string>
     <id>406</id>
@@ -1307,11 +1307,11 @@
   </string>       
   <string>
     <id>411</id>
-    <value>Tar imot Väder för:</value>
+    <value>Tar emot väder för:</value>
   </string> 
   <string>
     <id>412</id>
-    <value>Kunde Inte ta imot Väder data</value>
+    <value>Kunde Inte ta emot väderdata</value>
   </string>    
   <string>
     <id>413</id>
@@ -1319,11 +1319,11 @@
   </string>    
   <string>
     <id>414</id>
-    <value>Ingen review för detta album</value>
+    <value>Ingen recension för detta album</value>
   </string>    
   <string>
     <id>415</id>
-    <value>Laddar Ner thumbnail...</value>
+    <value>Laddar ner miniatyrbild...</value>
   </string> 
   <string>
     <id>416</id>
@@ -1331,31 +1331,31 @@
   </string> 
   <string>
     <id>417</id>
-    <value>Stora Ikoner</value>
+    <value>Stora ikoner</value>
   </string> 
   <string>
     <id>418</id>
-    <value>Mina Filmer/Genres</value>
+    <value>Mina filmer/genres</value>
   </string> 
   <string>
     <id>419</id>
-    <value>Mina Filmer/Skådespelare</value>
+    <value>Mina filmer/skådespelare</value>
   </string> 
   <string>
     <id>420</id>
-    <value>Mina Filmer/År</value>
+    <value>Mina filmer/år</value>
   </string> 
   <string>
     <id>421</id>
-    <value>Mina Filmer/Titel</value>
+    <value>Mina filmer/titel</value>
   </string> 
   <string>
     <id>422</id>
-    <value>Radera Albuminfo</value>
+    <value>Radera albuminfo</value>
   </string> 
   <string>
     <id>423</id>
-    <value>Radera CDDB info</value>
+    <value>Radera CDDB-info</value>
   </string> 
   <string>
     <id>424</id>
@@ -1367,7 +1367,7 @@
   </string> 
   <string>
     <id>426</id>
-    <value>Ingen CDDB info hittad.</value>
+    <value>Ingen CDDB-info hittad.</value>
   </string> 
   <string>
     <id>427</id>
@@ -1387,18 +1387,18 @@
   </string>  
   <string>
     <id>431</id>
-    <value>7. Ingen Cache</value>
+    <value>7. Ingen cache</value>
   </string> 
     <string>
      <id>432</id>
-     <value>Radera filmen från databasen</value>
+    <value>Radera filmen från databasen</value>
    </string> 
    <string>
-     <id>433</id>
+    <id>433</id>
      <value>Är du säker på att ta bort</value>
    </string> 
    <string>
-     <id>434</id>
+   <id>434</id>
      <value>filmen?</value>
    </string>
    <string>
@@ -1406,19 +1406,19 @@
      <value>Låt</value>
    </string> 
    <string>
-     <id>436</id>
-     <value>År:</value>
+    <id>436</id>
+    <value>År:</value> 
+  </string> 
+  <string>
+ <id>437</id>  
+  <value>Speltid</value>
    </string>
-   <string>
-   <id>437</id>
-    <value>Speltid</value>
-   </string>
-   <string>
-     <id>439</id>
-     <value>Cache</value>
-   </string> 
-   <string>
-     <id>440</id>
+  <string>  
+  <id>439</id>
+    <value>Cache</value> 
+  </string>  
+  <string> 
+   <id>440</id>
      <value>Hårddisk</value>
    </string> 
    <string>
@@ -1435,11 +1435,11 @@
    </string> 
    <string>
      <id>444</id>
-     <value>video</value>
+     <value>Video</value>
    </string> 
    <string>
      <id>445</id>
-     <value>audio</value>
+     <value>Ljud</value>
    </string> 
    <string>
      <id>446</id>
@@ -1447,7 +1447,7 @@
    </string>
    <string>
      <id>447</id>
-     <value>Autorun</value>
+     <value>Autostart</value>
    </string> 
   <string>
     <id>448</id>
@@ -1487,7 +1487,7 @@
    </string> 
    <string>
      <id>457</id>
-     <value>Växla Vy:</value>
+     <value>Växla vy:</value>
    </string> 
    <string>
      <id>458</id>
@@ -1495,11 +1495,11 @@
    </string>
    <string>
      <id>459</id>
-     <value>undertext</value>
+     <value>Undertext</value>
    </string>
    <string>
      <id>460</id>
-     <value>Audio Ström</value>
+     <value>Audioström</value>
    </string>
    <string>
      <id>461</id>
@@ -1531,15 +1531,15 @@
   </string> 
   <string>
     <id>468</id>
-    <value>Ställ in OSD Position</value>
+    <value>Ställ in OSD-position</value>
   </string>
   <string>
     <id>469</id>
-    <value>OSD Position</value>
+    <value>OSD-position</value>
   </string>
    <string>
      <id>470</id>
-     <value>Credits</value>
+     <value>Om XBMC</value>
    </string>
    <string>
      <id>471</id>
@@ -1547,11 +1547,11 @@
    </string>
   <string>
     <id>472</id>
-    <value>OSD Timeout</value>
+    <value>OSD timeout</value>
   </string>
    <string>
      <id>473</id>
-     <value>Hög kvalitativ Resampling</value>
+     <value>Högkvalitativ resampling</value>
    </string>
    <string>
      <id>474</id>
@@ -1559,15 +1559,15 @@
    </string>
    <string>
      <id>475</id>
-     <value>Bara Musik</value>
+     <value>Bara musik</value>
    </string>
    <string>
      <id>476</id>
-     <value>Musik & Video</value>
+     <value>Musik & video</value>
    </string>
    <string>
      <id>477</id>
-    <value>Kunde inte ladda playlist</value>
+    <value>Kunde inte ladda spellista</value>
    </string>
   <string>
     <id>478</id>
@@ -1575,15 +1575,15 @@
   </string>
   <string>
     <id>479</id>
-    <value>Skal och Språk</value>
+    <value>Skal och språk</value>
   </string>
   <string>
     <id>480</id>
-    <value>Användar Gränssnitt</value>
+    <value>Användargränssnitt</value>
   </string>
   <string>
     <id>481</id>
-    <value>Ljud Val</value>
+    <value>Ljudval</value>
   </string>
   <string>
     <id>482</id>
@@ -1611,15 +1611,15 @@
    </string>
    <string>
      <id>488</id>
-     <value>Repetera mappens playlist</value>
+     <value>Repetera mappens spellista</value>
    </string>
    <string>
      <id>489</id>
-     <value>Använd playlist i låtarna</value>
+     <value>Använd spellista i låtarna</value>
    </string>
    <string>
      <id>490</id>
-     <value>Auto switcha lista och ikoner i låtar</value>
+     <value>Autobyt lista och ikoner i låtar</value>
    </string>
    <string>
      <id>491</id>
@@ -1627,7 +1627,7 @@
    </string>
    <string>
      <id>492</id>
-     <value>Förstora Undertexter</value>
+     <value>Förstora undertexter</value>
    </string>
 
 
@@ -1650,37 +1650,36 @@
  <string><id>10015</id><value>instllningar->Bildskärm->Undertexter</value></string>
  <string><id>10016</id><value>Inställningar->Bildskärm->Skärmsläckare</value></string>
  <string><id>10017</id><value>Inställningar->Väder</value></string>
- <string><id>10020</id><value>Inställningar->Script</value></string>
+ <string><id>10020</id><value>Inställningar->Skript</value></string>
  <string><id>10021</id><value>Mina Filmer/genre</value></string>
- <string><id>10022</id><value>Mina Filmer/Skådespelare</value></string>
+ <string><id>10022</id><value>Mina Filmer/skådespelare</value></string>
  <string><id>10023</id><value>Mina Filmer/År</value></string>
  <string><id>10024</id><value>Inställningar->Program</value></string>
- <string><id>10025</id><value>Mina Filmer/Titl</value></string>
+ <string><id>10025</id><value>Mina Filmer/Titel</value></string>
  <string><id>10026</id><value>Inställningar->General->Cache</value></string>
  <string><id>10027</id><value>Inställningar->General->Autorun</value></string>
  <string><id>10028</id><value>Mina Filmer/playlist</value></string>
  <string><id>10029</id><value>Inställningar->General->LCD</value></string>
- <string><id>10100</id><value>Ja/Nej dialog</value></string>
+ <string><id>10100</id><value>Ja/Nej-dialog</value></string>
  <string><id>10101</id><value>Progress dialog</value></string>
- <string><id>10500</id><value>Min Musik/playlist</value></string>
+ <string><id>10500</id><value>Min Musik/spellista</value></string>
  <string><id>10501</id><value>Min Musik/filer</value></string>
  <string><id>10502</id><value>Min Musik/album</value></string>
  <string><id>10503</id><value>Min Musik/artister</value></string>
  <string><id>10504</id><value>Min Musik/genres</value></string>
  <string><id>10505</id><value>Min Muisk/top100</value></string>
  <string><id>11000</id><value>Tangentbord</value></string>
- <string><id>12000</id><value>Välj Dialog</value></string>
+ <string><id>12000</id><value>Välj dialog</value></string>
  <string><id>12001</id><value>Min Muisk/info</value></string>
  <string><id>12002</id><value>Dialog OK</value></string>
  <string><id>12003</id><value>Mina Filmer/Info</value></string>
  <string><id>12004</id><value>Mina Scrip/Info</value></string>
- <string><id>12005</id><value>Helskärm video</value></string>
+ <string><id>12005</id><value>Helskärmsvideo</value></string>
  <string><id>12006</id><value>Ljud visisalisation</value></string>
  <string><id>12007</id><value>Mina Bilder/Bildspel</value></string>
- <string><id>12008</id><value>Filestacking dialog</value></string>
+ <string><id>12008</id><value>Filestacking-dialog</value></string>
  <string><id>12600</id><value>MItt väder</value></string>
  <string><id>12900</id><value>Skärmsläckare</value></string>
  <string><id>12901</id><value>Helskärms OSD</value></string>
-
 
 </strings>
