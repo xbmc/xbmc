@@ -853,12 +853,22 @@ void xbox_video_getAR(float& fAR)
 void xbox_video_update(bool bPauseDrawing)
 {
 //  OutputDebugString("Calling xbox_video_update ... ");
+  m_bRenderGUI=true;
   m_bPauseDrawing = bPauseDrawing;
   bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
   g_graphicsContext.Lock();
   g_graphicsContext.SetVideoResolution(bFullScreen ? m_iResolution:g_stSettings.m_ScreenResolution);
   g_graphicsContext.Unlock();
   Directx_ManageDisplay();
+  if (rs.bottom != 0 && rs.right!=0 && rd.bottom !=0 && rd.right !=0)
+  {
+    if (m_pSurface[0] && m_pSurface[1])
+    {
+      g_graphicsContext.Lock();
+      g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[1-m_iBackBuffer], &rs, &rd, TRUE, 0x00010001  );
+      g_graphicsContext.Unlock();
+    }
+  }
 //  OutputDebugString("Done \n");
 }
 /********************************************************************************************************
