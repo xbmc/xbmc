@@ -80,9 +80,9 @@ using namespace std;
 	g_graphicsContext.SendMessage(msg); \
 }
 
-#define SET_CONTROL_FOCUS(dwSenderId, dwControlID) \
+#define SET_CONTROL_FOCUS(dwSenderId, dwControlID, dwParam) \
 { \
-	CGUIMessage msg(GUI_MSG_SETFOCUS, dwSenderId, dwControlID); \
+	CGUIMessage msg(GUI_MSG_SETFOCUS, dwSenderId, dwControlID, dwParam); \
 	g_graphicsContext.SendMessage(msg); \
 }
 

@@ -477,10 +477,10 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
 
 	if ( ViewByIcon() ) 
   {	
-		SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS);
+		SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
 	}
 	else {
-		SET_CONTROL_FOCUS(GetID(), CONTROL_LIST);
+		SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
 	}
 
 	for (int i=0; i < (int)m_vecItems.size(); ++i)

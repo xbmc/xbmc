@@ -494,7 +494,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
       m_osdMenu.SetValue(MENU_ACTION_SEEK,iValue);
     }
 	  m_osdMenu.Draw();
-    SET_CONTROL_FOCUS(GetID(), m_osdMenu.GetSelectedMenu()+BTN_OSD_VIDEO);
+    SET_CONTROL_FOCUS(GetID(), m_osdMenu.GetSelectedMenu()+BTN_OSD_VIDEO, 0);
     return;
   }
     

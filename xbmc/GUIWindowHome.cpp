@@ -40,7 +40,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 		    m_iLastControl=iFocusControl;
 	    }
 
-	    SET_CONTROL_FOCUS(GetID(), iFocusControl);
+	    SET_CONTROL_FOCUS(GetID(), iFocusControl, 0);
 
 			return true;
     }
