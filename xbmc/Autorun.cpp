@@ -15,7 +15,7 @@ using namespace MEDIA_DETECT;
 
 CAutorun::CAutorun()
 {
-
+	m_bEnable=true;
 }
 
 CAutorun::~CAutorun()
@@ -245,8 +245,26 @@ bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAdded
 
 void CAutorun::HandleAutorun()
 {
+	if (!m_bEnable)
+		return;
+
 	if ( ::WaitForSingleObject( CDetectDVDMedia::m_evAutorun.GetHandle(), 10 ) == WAIT_OBJECT_0 ) 
 	{
 		ExecuteAutorun();
 	}
+}
+
+void CAutorun::Enable()
+{
+	m_bEnable=true;
+}
+
+void CAutorun::Disable()
+{
+	m_bEnable=false;
+}
+
+bool CAutorun::IsEnabled()
+{
+	return m_bEnable;
 }
