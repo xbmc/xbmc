@@ -7,12 +7,13 @@ You can customise these settings by editing keymap.xml.
 Global key mappings while in the menus:
   up/down/left/right                            controller: use DPAD        remote    : up/down/left/right arrows
   page up/down                                  controller: L/R trigger     remote    : use up/down controls on screen
-  select/play a file:                           controller: A               remote    : select 
+  select/play a file                            controller: A               remote    : select 
   back to previous menu                         controller: back            remote    : menu
   back to parent directory                      controller: B               remote    : back
         
 Keymappings while playing video:
-  switch between fullscreen video/menu:         controller: X               remote:   : display
+  switch between fullscreen video/menu          controller: X               remote:   : display
+  find IMDB info for file or directory name     controller: white           remote    : info
   in fullscreen mode:
     pause                                       controller: A               remote    : pause
     stop                                        controller: B               remote    : stop
@@ -36,13 +37,14 @@ Keymappings while in the video OSD:
 Keymappings in My Music:
   switch between Visualisation/menu:		controller: X               remote    : display
   previous/next song                            controller: ?               remote    : skip- and skip+
-  select/play a file:                           controller: A               remote    : select 
+  select/play a song                            controller: A               remote    : select 
   pause song                                    controller: ?               remote    : pause
   stop song                                     controller: start           remote    : stop
   in Songs/Album/Artist/Genre/Top100 views:
-    toggle between playlist and file list       controller: black           remote    : title
+    switch to playlist view                     controller: black           remote    : title
+    switch back to filelist                     controller: black           remote    : back
     add item to playlist                        controller: Y               remote    : 0
-
+    find album info (allmusic.com) for file     controller: white           remote    : info
 
 My Pictures when viewing a slideshow or picture:
   move when in zoom mode                        controller: use DPAD        remote    : use up/down/left/right or thumbstick left
@@ -58,12 +60,5 @@ My Files:
   delete item                                   controller: X               remote    : 0
   copy item                                     controller: white           remote    : ?
   move item                                     controller: start           remote    : ?
-   
-My Music menu:
-  switch between files & playlist               controller: black           remote    : menu
-  add/remove file 2/from playlist               controller: Y               remote    : title
-  find album info for file                      controller: white           remote    : info
       
-My Videos menu:
-  find IMDB info for file or directory name     controller: white           remote    : info
-  
+
