@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 11-11-2004 added: Ability to define a built-in function in place of an action <id> in keymap.xml
+                      eg. you can have <id>XBMC.ActivateWindow(501)</id> to go to My Music screen
+                          or you can do <id>XBMC.RunScript(my script.py)</id> etc. etc. 
   - 11-11-2004 added: <description> tag with the real label etc. for the <homebuttons> block in XBoxMediaCenter.xml
   - 11-11-2004 fixed: shutdown button
   - 10-11-2004 added: new control buttonscroller for homepage buttons.
