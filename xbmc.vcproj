@@ -396,13 +396,31 @@
 				RelativePath=".\xbmc\GUIWindowHome.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\GUIWindowMusic.cpp">
+				RelativePath=".\xbmc\GUIWindowMusicAlbum.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowMusicArtists.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowMusicBase.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowMusicGenres.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\GuiWindowMusicInfo.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowMusicOverlay.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowMusicPlaylist.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowMusicSongs.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowMusicTop100.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowMyFiles.cpp">
@@ -614,13 +632,31 @@
 				RelativePath=".\xbmc\GUIWindowHome.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\GUIWindowMusic.h">
+				RelativePath=".\xbmc\GUIWindowMusicAlbum.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowMusicArtists.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowMusicBase.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowMusicGenres.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GuiWindowMusicInfo.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GuiWindowMusicOverlay.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowMusicPlaylist.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowMusicSongs.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowMusicTop100.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowMyFiles.h">
@@ -672,6 +708,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\ImusicInfoTagLoader.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\MusicDatabase.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\musicInfoTagLoaderFactory.h">

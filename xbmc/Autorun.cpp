@@ -68,6 +68,7 @@ void CAutorun::RunXboxCd()
 	if ( !g_stSettings.m_bAutorunDVD && !g_stSettings.m_bAutorunVCD && !g_stSettings.m_bAutorunVideo && !g_stSettings.m_bAutorunMusic && !g_stSettings.m_bAutorunPictures )
 		return;
 
+	int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
 	int nAddedToPlaylist = 0;
 	CFactoryDirectory factory;
 	auto_ptr<CDirectory> pDir ( factory.Create( "D:\\" ) );
@@ -76,7 +77,9 @@ void CAutorun::RunXboxCd()
 	{
 		CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
 		m_gWindowManager.SendMessage( msg );
-		g_playlistPlayer.Play( 0 );
+		g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+		//	Start playing the items we inserted
+		g_playlistPlayer.Play( nSize );
 	}
 }
 
@@ -101,14 +104,16 @@ void CAutorun::RunCdda()
 		CPlayList::CPlayListItem playlistItem;
 		playlistItem.SetFileName(pItem->m_strPath);
 		playlistItem.SetDescription(pItem->GetLabel());
-		playlistItem.SetDuration( pItem->m_musicInfoTag.GetDuration() );
-		g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).Add(playlistItem);
+		playlistItem.SetDuration(pItem->m_musicInfoTag.GetDuration());
+		g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Add(playlistItem);
 	}
 
 	CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
 	m_gWindowManager.SendMessage( msg );
 
-	g_playlistPlayer.Play( nSize );
+	g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+	//	Start playing the items we inserted
+	g_playlistPlayer.Play(nSize);
 }
 
 void CAutorun::RunISOMedia()
@@ -116,6 +121,7 @@ void CAutorun::RunISOMedia()
 	if ( !g_stSettings.m_bAutorunDVD && !g_stSettings.m_bAutorunVCD && !g_stSettings.m_bAutorunVideo && !g_stSettings.m_bAutorunMusic && !g_stSettings.m_bAutorunPictures )
 		return;
 
+	int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
 	int nAddedToPlaylist = 0;
 	CFactoryDirectory factory;
 	auto_ptr<CDirectory> pDir ( factory.Create( "iso9660://" ));
@@ -124,7 +130,9 @@ void CAutorun::RunISOMedia()
 	{
 		CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0, 0, 0, NULL );
 		m_gWindowManager.SendMessage( msg );
-		g_playlistPlayer.Play( 0 );
+		g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+		//	Start playing the items we inserted
+		g_playlistPlayer.Play(nSize);
 	}
 }
 bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot)
@@ -167,6 +175,20 @@ bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAdded
 					{
 						CStdString strFileName;
 						strFileName.Format("%s%cAVSEQ01.DAT",pItem->m_strPath.c_str(),szSlash);
+						g_TextureManager.Flush();
+						g_graphicsContext.SetFullScreenVideo(true);
+						m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+						g_application.PlayFile( strFileName );
+						bPlaying=true;
+						break;
+					}
+				}
+				else if (bRoot && pItem->m_strPath.Find("MPEG2") != -1 )
+				{
+					if ( g_stSettings.m_bAutorunVCD ) 
+					{
+						CStdString strFileName;
+						strFileName.Format("%s%cAVSEQ01.MPG",pItem->m_strPath.c_str(),szSlash);
 						g_TextureManager.Flush();
 						g_graphicsContext.SetFullScreenVideo(true);
 						m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);

@@ -185,7 +185,12 @@ void CUtil::GetFileSize(DWORD dwFileSize, CStdString& strFileSize)
   char szTemp[128];
   if (dwFileSize < 1024)
   {
-    sprintf(szTemp,"%i", dwFileSize);
+		//	substract the integer part of the float value
+		float fRemainder=(((float)dwFileSize)/1024.0f)-floor(((float)dwFileSize)/1024.0f);
+		float fToAdd=0.0f;
+		if (fRemainder < 0.01f)
+			fToAdd=0.1f;
+    sprintf(szTemp,"%2.1f KB", (((float)dwFileSize)/1024.0f)+fToAdd);
     strFileSize=szTemp;
     return;
   }
@@ -867,7 +872,7 @@ void CUtil::SetThumbs(VECFILEITEMS &items)
   for (int i=0; i < (int)items.size(); ++i)
   {
     CFileItem* pItem=items[i];
-		pItem->m_bIsShareOrDrive=false;
+		//pItem->m_bIsShareOrDrive=false;
 		if (!pItem->m_bIsFolder)
 		{
 			// picture
@@ -1175,4 +1180,18 @@ void CUtil::CacheSubtitles(const CStdString& strMovie)
 		}
 		iPos++;
 	}
+}
+
+void CUtil::SecondsToHMSString(long lSeconds, CStdString& strHMS)
+{
+	int hh = lSeconds / 3600;
+	lSeconds = lSeconds%3600;
+	int mm = lSeconds / 60;
+	int ss = lSeconds % 60;
+
+	if (hh>=1)
+		strHMS.Format("%2.2i:%02.2i:%02.2i",hh,mm,ss);
+	else
+		strHMS.Format("%i:%02.2i",mm,ss);
+
 }

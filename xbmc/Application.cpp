@@ -192,7 +192,6 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(&m_guiPrograms);									// window id = 1
 	m_gWindowManager.Add(&m_guiPictures);									// window id = 2
   m_gWindowManager.Add(&m_guiMyFiles);									// window id = 3
-  m_gWindowManager.Add(&m_guiMyMusic);									// window id = 5
 	m_gWindowManager.Add(&m_guiMyVideo);									// window id = 6
 	m_gWindowManager.Add(&m_guiSettings);									// window id = 4
 	m_gWindowManager.Add(&m_guiSystemInfo);								// window id = 7
@@ -207,15 +206,21 @@ HRESULT CApplication::Initialize()
 
   m_gWindowManager.Add(&m_guiDialogYesNo);							// window id = 100
   m_gWindowManager.Add(&m_guiDialogProgress);						// window id = 101
+  m_gWindowManager.Add(&m_guiMyMusicPlayList);					// window id = 500
+	m_gWindowManager.Add(&m_guiMyMusicSongs);							// window id = 501
+  m_gWindowManager.Add(&m_guiMyMusicAlbum);							// window id = 502
+	m_gWindowManager.Add(&m_guiMyMusicArtists);						// window id = 503
+	m_gWindowManager.Add(&m_guiMyMusicGenres);						// window id = 504
+	m_gWindowManager.Add(&m_guiMyMusicTop100);						// window id = 505
   m_gWindowManager.Add(&m_keyboard);										// window id = 1000
 	m_gWindowManager.Add(&m_guiDialogSelect);							// window id = 2000
 	m_gWindowManager.Add(&m_guiMusicInfo);								// window id = 2001
 	m_gWindowManager.Add(&m_guiDialogOK);									// window id = 2002
 	m_gWindowManager.Add(&m_guiVideoInfo);								// window id = 2003
 	m_gWindowManager.Add(&m_guiScriptsInfo);							// window id = 2004
-	m_gWindowManager.Add(&m_guiWindowFullScreen);				// window id = 2005
+	m_gWindowManager.Add(&m_guiWindowFullScreen);					// window id = 2005
 	m_gWindowManager.Add(&m_guiWindowVisualisation);			// window id = 2006
-	m_gWindowManager.Add(&m_guiWindowSlideshow);				// window id = 2007
+	m_gWindowManager.Add(&m_guiWindowSlideshow);					// window id = 2007
 
 	/* window id's 3000 - 3100 are reserved for python */
   	
@@ -268,7 +273,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_guiPrograms.Load( strSkinPath+"\\myprograms.xml" );  
 	m_guiPictures.Load( strSkinPath+"\\mypics.xml" );  
 	m_guiMyFiles.Load( strSkinPath+"\\myfiles.xml" );  
-	m_guiMyMusic.Load( strSkinPath+"\\mymusic.xml" );  
 	m_guiMyVideo.Load( strSkinPath+"\\myvideo.xml" );  
 	m_guiSettings.Load( strSkinPath+"\\settings.xml" );  
 	m_guiSystemInfo.Load( strSkinPath+"\\SettingsSystemInfo.xml" );  
@@ -277,6 +281,12 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiSettingsGeneral.Load( strSkinPath+"\\SettingsGeneral.xml" );  
 	m_guiDialogYesNo.Load( strSkinPath+"\\dialogYesNo.xml" );  
 	m_guiDialogProgress.Load( strSkinPath+"\\dialogProgress.xml" );  
+  m_guiMyMusicPlayList.Load( strSkinPath+"\\mymusicplaylist.xml" );
+	m_guiMyMusicSongs.Load( strSkinPath+"\\mymusicsongs.xml" );
+  m_guiMyMusicAlbum.Load( strSkinPath+"\\mymusicalbum.xml" );
+	m_guiMyMusicArtists.Load( strSkinPath+"\\mymusicartists.xml" );
+	m_guiMyMusicGenres.Load( strSkinPath+"\\mymusicgenres.xml" );
+	m_guiMyMusicTop100.Load( strSkinPath+"\\mymusictop100.xml" );
 	m_guiDialogSelect.Load( strSkinPath+"\\dialogSelect.xml" );  
 	m_guiDialogOK.Load( strSkinPath+"\\dialogOK.xml" );  
 	m_guiVideoInfo.Load( strSkinPath+"\\DialogVideoInfo.xml" );  
@@ -292,10 +302,11 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiWindowVisualisation.Load( strSkinPath+"\\musicVisualisation.xml");
 	m_guiSettingsMusic.Load( strSkinPath+"\\SettingsMusic.xml");
 	m_guiWindowSlideshow.Load( strSkinPath+"\\slideshow.xml");
-
+	
 	m_guiMusicOverlay.AllocResources();
 	m_guiWindowVideoOverlay.AllocResources();
 	m_gWindowManager.AddMsgTarget(this);
+	m_gWindowManager.AddMsgTarget(&g_playlistPlayer);
 	m_gWindowManager.SetCallback(*this);
 
 }
@@ -443,6 +454,8 @@ void CApplication::OnKey(CKey& key)
     {
       m_pPlayer->closefile();
     }
+		CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0, 0, 0, NULL );
+		m_gWindowManager.SendThreadMessage( msg );
 	}  
 	if (action.wID == ACTION_PAUSE)
 	{
@@ -824,21 +837,22 @@ bool CApplication::OnMessage(CGUIMessage& message)
 		{
 			if (message.GetParam1()==PLAYLIST_MUSIC || message.GetParam1()==PLAYLIST_MUSIC_TEMP)
 			{
-				CPlayList::CPlayListItem* item=(CPlayList::CPlayListItem*)message.GetLPVOID();
-
-				//	only Increment Top 100 Counter, if we have not clicked from inside the Top 100 view
-				if (g_stSettings.m_iMyMusicViewMethod==4 //=TYPE_TOP100
-						&& m_gWindowManager.GetActiveWindow()==WINDOW_MUSIC)
+				CPlayList::CPlayListItem* pItem=(CPlayList::CPlayListItem*)message.GetLPVOID();
+				if (pItem)
 				{
-					break;
-				}
-				else
-				{
-					CMusicDatabase db;
-					if (db.Open())
+					//	only Increment Top 100 Counter, if we have not clicked from inside the Top 100 view
+					if (g_stSettings.m_iMyMusicStartWindow==WINDOW_MUSIC_TOP100)
 					{
-						db.IncrTop100CounterByFileName(item->GetFileName());
-						db.Close();
+						break;
+					}
+					else
+					{
+						CMusicDatabase db;
+						if (db.Open())
+						{
+							db.IncrTop100CounterByFileName(pItem->GetFileName());
+							db.Close();
+						}
 					}
 				}
 			}
