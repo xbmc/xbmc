@@ -1787,6 +1787,11 @@
 		<id>624</id>
 		<value>Include Track number</value>
 	</string>
+	<string>
+		<id>625</id>
+		<value>All songs of</value>
+	</string>
+
 	
 	<string>
 		<id>998</id>
@@ -1795,7 +1800,7 @@
 	<string>
 		<id>999</id>
 		<value>Online Gaming</value>
-	</string> 
+	</string>
 	
 	<string>
 		<id>10000</id>
