@@ -1,4 +1,4 @@
-	<!-- Version: 1.6 (2004-09-22) !-->
+	<!-- Version: 1.8 (2004-12-11) updated by vnm !-->
 	<!-- x-halez: TODO: Should sort out naming convention 'song' vs. 'track' ('sang' vs. 'spor' really, since it's Norwegian) !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
@@ -30,10 +30,12 @@
   <string><id>30</id><value>Oktober</value></string>
   <string><id>31</id><value>November</value></string>
   <string><id>32</id><value>Desember</value></string>
+  <string><id>98</id><value>Visning: Auto</value></string>
+  <string><id>99</id><value>Visning: Auto stor</value></string>
 <!-- x-halez: Changed the verb a bit: 'Showing: Icons'. !-->
   <string><id>100</id><value>Viser: Ikoner</value></string>
   <string><id>101</id><value>Viser: Liste</value></string>
-  <string><id>102</id><value>Skan katalogsti</value></string>
+  <string><id>102</id><value>Skann katalogsti</value></string>
 <!-- x-halez: Since this is actually what is shown, and not what you get if you press the button, I changed from a verb to a noun: 'Sorting: Name' !-->
   <string><id>103</id><value>Sortering: Navn</value></string>
   <string><id>104</id><value>Sortering: Dato</value></string>
@@ -99,8 +101,8 @@
   <string><id>163</id><value>Leser</value></string>
   <string><id>164</id><value>Ingen disk</value></string>
   <string><id>165</id><value>Disk tilstede</value></string>
-<!-- x-halez: There isn't really a good translation for skin in Norwegian, but it should be as intuitive as possible. !-->
-  <string><id>166</id><value>Utseende</value></string>
+<!-- vnm: Changed back to original. People using XBMC know what i skin is !-->
+  <string><id>166</id><value>Skin</value></string>
   <string><id>167</id><value>FTP-tjener</value></string>
   <string><id>168</id><value>Tidssynkronisering over internett</value></string>
   <string><id>169</id><value>Oppløsning</value></string>
@@ -139,6 +141,7 @@
   <string><id>202</id><value>Slagord:</value></string>
   <string><id>203</id><value>Handling:</value></string>
   <string><id>204</id><value>Karakter:</value></string>
+  <string><id>2050</id><value>Spilletid:</value></string>
   <string><id>205</id><value>Stemmer:</value></string>
   <string><id>206</id><value>Skuespillere</value></string>
   <string><id>207</id><value>Plott</value></string>
@@ -161,8 +164,8 @@
 <!-- x-halez: TODO: Either 224 and 225 are mixed up in the English strings.xml, or some weird skinbug is present in Mayhem (dunno date right now). I'll leave it according to the original strings.xml for now. !-->
   <string><id>224</id><value>Hastighet</value></string>
   <string><id>225</id><value>Tid mellom overgang</value></string>
-  <string><id>226</id><value>Bruke PAL60</value></string>
-  <string><id>227</id><value>Bruke CDDB</value></string>
+  <string><id>226</id><value>Bruk PAL60</value></string>
+  <string><id>227</id><value>Bruk CDDB</value></string>
   <string><id>228</id><value>Blande spillelisten ved lasting</value></string>
   <string><id>229</id><value>Slå av harddisk etter (min)</value></string>
   <string><id>230</id><value>Filter</value></string>
@@ -174,10 +177,10 @@
   <string><id>236</id><value>Gaussisk-kubisk</value></string>
   <string><id>237</id><value>Forminsking</value></string>
   <string><id>238</id><value>Forstørring</value></string>
-  <string><id>240</id><value>Start DVDer automatisk</value></string>
+  <string><id>240</id><value>Start DVD'er automatisk</value></string>
   <string><id>241</id><value>Start VCD/SVCD automatisk</value></string>
-  <string><id>242</id><value>Start musikk-CDer automatisk</value></string>
-  <string><id>243</id><value>Start XBOX-spill automatisk</value></string>
+  <string><id>242</id><value>Start musikk-CD'er automatisk</value></string>
+  <string><id>243</id><value>Start spill automatisk</value></string>
   <string><id>244</id><value>Start videofilmer automatisk</value></string>
   <string><id>245</id><value>Start musikk automatisk</value></string>
   <string><id>246</id><value>Start bilder automatisk</value></string>
@@ -220,7 +223,7 @@
   <string><id>283</id><value>Søkeresultater</value></string>
   <string><id>284</id><value>Fant ingen treff</value></string>
   <string><id>285</id><value>Deinterlace-filter</value></string>
-  <string><id>286</id><value>Postprosesseringsfilter</value></string>
+  <string><id>286</id><value>Etterprosesseringsfilter</value></string>
   <string><id>287</id><value>SRT-undertekster</value></string>
   <string><id>288</id><value>Skrifttype</value></string>
   <string><id>289</id><value>Størrelse</value></string>
@@ -240,7 +243,7 @@
   <string><id>304</id><value>Språk</value></string>
   <string><id>305</id><value>Aktivert</value></string>
   <string><id>306</id><value>Non-Interleaved</value></string>
-  <string><id>307</id><value>- Automatisk postprosessering</value></string>
+  <string><id>307</id><value>- Automatisk etterprosessering</value></string>
   <string><id>308</id><value>- vertikalt blokk-filter</value></string>
   <string><id>309</id><value>- horisontalt blokk-filter</value></string>
   <string><id>310</id><value>- Automatisk lysstyrke/kontrast</value></string>
@@ -290,7 +293,7 @@
   <string><id>353</id><value>Svart</value></string>
   <string><id>354</id><value>Matrix</value></string>
   <string><id>355</id><value>Start skjermbeskytter etter</value></string>
-  <string><id>356</id><value>Skjermbeskytter modus</value></string>
+  <string><id>356</id><value>Skjermbeskytter-modus</value></string>
   <string><id>357</id><value>Skru av etter</value></string>
   <string><id>358</id><value>Alle album</value></string>
   <string><id>359</id><value>Nyeste album</value></string>
@@ -386,6 +389,7 @@
   <string><id>448</id><value>LCD</value></string>
   <string><id>449</id><value>Aktivert</value></string>
   <string><id>450</id><value>Kolonner</value></string>
+  <string><id>4501</id><value>LCD-type</value></string>
   <string><id>451</id><value>Rad 1 adresse</value></string>
   <string><id>452</id><value>Rad 2 adresse</value></string>
   <string><id>453</id><value>Rad 3 adresse</value></string>
@@ -516,6 +520,13 @@
   <string><id>744</id><value>Filer</value></string>
   <string><id>745</id><value>Ingen skannet informasjon for denne visningen</value></string>
   <string><id>746</id><value>Bytt til filvisning</value></string>
+  <string><id>747</id><value>Ikke nok ledig minne til å laste bilde</value></string>
+  <string><id>748</id><value>Forandre bane</value></string>
+  <string><id>749</id><value>Legg til deling</value></string>
+  <string><id>750</id><value>Er du sikker?</value></string>
+  <string><id>751</id><value>Fjern deling</value></string>
+  <string><id>752</id><value>Forandre delingsbane</value></string>
+  <string><id>753</id><value>Forandre delingsnavn</value></string>
   <string><id>998</id><value>XLink Kai</value></string>
   <string><id>999</id><value>Spill på nettet</value></string>
   <string><id>10000</id><value>Forside</value></string>
@@ -579,6 +590,7 @@
   <string><id>13203</id><value>Profilen '%s' er lastet</value></string>
   <string><id>13204</id><value>Sist lastede profil:</value></string>
   <string><id>13205</id><value>Ukjent</value></string>
+  <string><id>13299</id><value>Temperaturmål</value></string>
   <string><id>13300</id><value>Viftehastighet:</value></string>
   <string><id>13301</id><value>Automatisk temperaturkontroll</value></string>
   <string><id>13302</id><value>Viftehastighetskontroll</value></string>
@@ -586,5 +598,100 @@
 <!-- x-halez: This is probably the worst entry to translate, a bit shaky I'd say this translation is. I've also constructed a new meaning to it: 'Flip strings with characterset'. It is too long in PAL/NTSC 4:3 & 480p though, but really this is purely asthetics, 'cause it won't be used by Norwegians anyway... !-->
   <string><id>13304</id><value>Snu tekstsstrenger med karaktersett</value></string>
 <!-- x-halez: TODO: Should probably be a better word than 'news' at the end here... !-->
-  <string><id>13305</id><value>Aktivér RSS nyheter</value></string>
+  <string><id>13305</id><value>Aktivér RSS-nyheter</value></string>
+  <string><id>13306</id><value>Skjul innhold i overordnet mappe</value></string>
+  <string><id>13307</id><value>Skjul spornummer</value></string>
+  <string><id>13308</id><value>Ønsker du å starte XBOX'en din på nytt</value></string>
+  <string><id>13309</id><value>istedenfor bare XBMC?</value></string>
+  <string><id>13310</id><value>Zoom-effekt</value></string>
+  <string><id>13311</id><value>Flyt-effekt</value></string>
+  <string><id>13312</id><value>Reduksjon av sort felt</value></string>
+  <string><id>13313</id><value>Nullstill/Start på nytt</value></string>
+  <string><id>13314</id><value>Musikk OSD Timeout</value></string>
+  <string><id>13315</id><value>Lag miniatyrbilder</value></string>
+  <string><id>13316</id><value>Rekursive miniatyrbilder</value></string>
+  <string><id>13317</id><value>Se bildevisning</value></string>
+  <string><id>13318</id><value>Rekursiv bildevisning</value></string>
+  <string><id>13319</id><value>Tilfeldiggjør</value></string>
+  <string><id>13320</id><value>Stereo</value></string>
+  <string><id>13321</id><value>Kun venstre</value></string>
+  <string><id>13322</id><value>Kun høyre</value></string>
+  <string><id>13323</id><value>Aktivér CD+G</value></string>
+  <string><id>13324</id><value>Bakgrunn-gjennomsiktighet</value></string>
+  <string><id>13325</id><value>Forgrunn-gjennomsiktighet</value></string>
+  <string><id>13326</id><value>A/V-forsinkelse</value></string>
+  <string><id>13327</id><value>Karaoke</value></string>
+  <string><id>13328</id><value>%s ikke funnet.</value></string>
+  <string><id>13329</id><value>Feil ved åpning av %s</value></string>
+  <string><id>13330</id><value>Kunne ikke laste %s</value></string>
+  <string><id>13331</id><value>Feil: tom for minne.</value></string>
+  <string><id>13332</id><value>Flytt opp</value></string>
+  <string><id>13333</id><value>Flytt ned</value></string>
+  <string><id>13334</id><value>Rediger knapp</value></string>
+  <string><id>13335</id><value>Gjør til standard</value></string>
+  <string><id>13336</id><value>Fjern knapp</value></string>
+  <string><id>13337</id><value>- 2-kanals PCM Passthrough</value></string>
+  <string><id>13338</id><value>Front LED</value></string>
+  <string><id>13339</id><value>Front LED farge</value></string>
+  <string><id>13340</id><value>Standard</value></string>
+  <string><id>13341</id><value>Grønn</value></string>
+  <string><id>13342</id><value>Oransje</value></string>
+  <string><id>13343</id><value>Rød</value></string>
+  <string><id>13344</id><value>Varier</value></string>
+  <string><id>13345</id><value>Skru av LED ved avspilling</value></string>
+  <string><id>14000</id><value>Stabling: Av</value></string>
+  <string><id>14001</id><value>Stabling: Enkel</value></string>
+  <string><id>14002</id><value>Stabling: Fuzzy</value></string>
+  <string><id>14003</id><value>Laster ned spilleliste...</value></string>
+  <string><id>14004</id><value>Laster ned stream-liste...</value></string>
+  <string><id>14005</id><value>Legger til stream-liste...</value></string>
+  <string><id>14006</id><value>Nedlasting av stream-liste feilet</value></string>
+  <string><id>14007</id><value>Nedlasting av spilleliste feilet</value></string>
+  <string><id>14008</id><value>Aktivér Kai-beskjeder</value></string>
+  <string><id>14009</id><value>Spill-mappe</value></string>
+  <string><id>14010</id><value>Bytt automatisk til miniatyrbilder ved</value></string>
+  <string><id>14011</id><value>Aktivér automatisk bytte til miniatyrbilder</value></string>
+  <string><id>14012</id><value>- Bruk store ikoner</value></string>
+  <string><id>14013</id><value>- Bytte basert på</value></string>
+  <string><id>14014</id><value>- Prosent</value></string>
+  <string><id>14015</id><value>Ingen bilder og minst ett m.bilde</value></string>
+  <string><id>14016</id><value>Minst ett bilde og ett m.bilde</value></string>
+  <string><id>14017</id><value>Prosentandel av m.bilder</value></string>
+  <string><id>14018</id><value>Visningsvalg</value></string>
+  <string><id>14019</id><value>Endre sted 1</value></string>
+  <string><id>14020</id><value>Endre sted 2</value></string>
+  <string><id>14021</id><value>Endre sted 3</value></string>
+  <string><id>14022</id><value>Bibliotek</value></string>
+  <string><id>14023</id><value>Ingen TV</value></string>
+  <string><id>14024</id><value>Skriv inn nærmeste store by eller US ZIP kode</value></string>
+  <string><id>14025</id><value>Video fra harddisk</value></string>
+  <string><id>14026</id><value>Video fra DVD-spiller</value></string>
+  <string><id>14027</id><value>Video fra lokalt nettverk</value></string>
+  <string><id>14028</id><value>Video fra internett</value></string>
+  <string><id>14029</id><value>Audio fra harddisk</value></string>
+  <string><id>14030</id><value>Audio fra DVD-spiller</value></string>
+  <string><id>14031</id><value>Audio fra lokalt nettverk</value></string>
+  <string><id>14032</id><value>Audio fra internett</value></string>
+  <string><id>14033</id><value>DVD fra harddisk</value></string>
+  <string><id>14034</id><value>DVD fra DVD-spiller</value></string>
+  <string><id>14035</id><value>DVD fra lokalt nettverk</value></string>
+  <string><id>14036</id><value>Tjenere</value></string>
+  <string><id>14037</id><value>Utseende</value></string>
+  <string><id>14038</id><value>Nettverksinstillingene er forandret</value></string>
+  <string><id>14039</id><value>XBMC må starte på nytt for å forandre</value></string>
+  <string><id>14040</id><value>nettverksinstillingene. Vil du starte på nytt nå?</value></string>
+  <string><id>14041</id><value>Etterprosessering</value></string>
+  <string><id>14042</id><value>Engine IP-adresse</value></string>
+  <string><id>14043</id><value>- Skru av under spilling</value></string>
+  <string><id>14044</id><value>%i min</value></string>
+  <string><id>14045</id><value>%i sek</value></string>
+  <string><id>14046</id><value>%i ms</value></string>
+  <string><id>14047</id><value>%i %%</value></string>
+  <string><id>14048</id><value>%i kbps</value></string>
+  <string><id>14049</id><value>%i kb</value></string>
+  <string><id>14050</id><value>%i.0 dB</value></string>
+  <string><id>14051</id><value>Vis 12-timers klokke</value></string>
+  <string><id>14052</id><value>Bytt om måned og dag i startbildet</value></string>
+  <string><id>14053</id><value>GUI-filtere</value></string>
+  <string><id>14054</id><value>Aktivér internett-søk</value></string>
 </strings>
