@@ -10,11 +10,10 @@
 // stuff for current song
 #include "../filesystem/CDDADirectory.h"
 #include "../url.h"
-//#include "lib/libID3/tag.h"
-//#include "lib/libID3/misc_support.h"
 #include "../musicInfoTagLoaderFactory.h"
 #include "../filesystem/SndtrkDirectory.h"
 
+extern char g_szTitleIP[32];
 
 CGUIInfoManager g_infoManager;
 
@@ -44,7 +43,10 @@ wstring CGUIInfoManager::GetLabel(const CStdString &strInfo)
 		return GetDate();
 	else if (strTest.Left(11) == "musicplayer")
 		strLabel = GetMusicLabel(strTest.Mid(12));
-
+	else if (strTest.Left(16) == "system.freespace")
+		return GetFreeSpace(strTest.Mid(17,1).ToUpper());
+	else if (strTest == "network.ipaddress")
+		strLabel = g_szTitleIP;
 	// convert our CStdString to a wstring (which the label expects!)
 	WCHAR szLabel[256];
 	swprintf(szLabel,L"%S", strLabel.c_str() );
@@ -322,4 +324,28 @@ void CGUIInfoManager::SetCurrentSong(const CFileItem &item)
 	//	Find a thumb for this file.
 	CUtil::SetMusicThumb(&m_currentSong);
 	CUtil::FillInDefaultIcon(&m_currentSong);
+}
+
+wstring CGUIInfoManager::GetFreeSpace(const CStdString &strDrive)
+{
+	ULARGE_INTEGER lTotalFreeBytes;
+	WCHAR wszHD[64];
+	wstring strReturn;
+
+	CStdString strDriveFind = strDrive + ":\\";
+	const WCHAR *pszDrive=g_localizeStrings.Get(155).c_str();
+	const WCHAR *pszFree=g_localizeStrings.Get(160).c_str();
+	const WCHAR *pszUnavailable=g_localizeStrings.Get(161).c_str();
+	if (GetDiskFreeSpaceEx( strDriveFind.c_str(), NULL, NULL, &lTotalFreeBytes))
+	{
+		swprintf(wszHD, L"%s %c: %u Mb ", pszDrive, strDrive[0], lTotalFreeBytes.QuadPart/1048576); //To make it MB
+		wcscat(wszHD,pszFree);
+	} 
+	else
+	{
+		swprintf(wszHD, L"%s %c: ",pszDrive, strDrive[0]);
+		wcscat(wszHD,pszUnavailable);
+	}
+	strReturn = wszHD;
+	return strReturn;
 }
