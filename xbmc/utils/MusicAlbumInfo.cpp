@@ -3,6 +3,7 @@
 #include ".\htmlutil.h"
 #include ".\http.h"
 #include "../util.h"
+#include "localizeStrings.h"
 
 using namespace MUSIC_GRABBER;
 using namespace HTML;
@@ -140,7 +141,52 @@ bool	CMusicAlbumInfo::Parse(const CStdString& strHTML)
 			}
 			if (strColum1.Find("Date of Release") >=0)
 			{
-				util.getValueOfTag(	strValue,m_strDateOfRelease);			
+				util.getValueOfTag(	strValue,m_strDateOfRelease);
+
+				//	extract the year out of something like "1998 (release)" or "12 feb 2003"
+				int nPos=m_strDateOfRelease.Find("19");
+				if (nPos>-1)
+				{
+					if ((int)m_strDateOfRelease.size() >= nPos+3 && ::isdigit(m_strDateOfRelease.GetAt(nPos+2))&&::isdigit(m_strDateOfRelease.GetAt(nPos+3)))
+					{
+						CStdString strYear=m_strDateOfRelease.Mid(nPos, 4);
+						m_strDateOfRelease=strYear;
+					}
+					else
+					{
+						nPos=m_strDateOfRelease.Find("19", nPos+2);
+						if (nPos>-1)
+						{
+							if ((int)m_strDateOfRelease.size() >= nPos+3 && ::isdigit(m_strDateOfRelease.GetAt(nPos+2))&&::isdigit(m_strDateOfRelease.GetAt(nPos+3)))
+							{
+								CStdString strYear=m_strDateOfRelease.Mid(nPos, 4);
+								m_strDateOfRelease=strYear;
+							}
+						}
+					}
+				}
+
+				nPos=m_strDateOfRelease.Find("20");
+				if (nPos>-1)
+				{
+					if ((int)m_strDateOfRelease.size() > nPos+3 && ::isdigit(m_strDateOfRelease.GetAt(nPos+2))&&::isdigit(m_strDateOfRelease.GetAt(nPos+3)))
+					{
+						CStdString strYear=m_strDateOfRelease.Mid(nPos, 4);
+						m_strDateOfRelease=strYear;
+					}
+					else
+					{
+						nPos=m_strDateOfRelease.Find("20", nPos+1);
+						if (nPos>-1)
+						{
+							if ((int)m_strDateOfRelease.size() > nPos+3 && ::isdigit(m_strDateOfRelease.GetAt(nPos+2))&&::isdigit(m_strDateOfRelease.GetAt(nPos+3)))
+							{
+								CStdString strYear=m_strDateOfRelease.Mid(nPos, 4);
+								m_strDateOfRelease=strYear;
+							}
+						}
+					}
+				}
 			}
 			if (strColum1.Find("Genre") >=0)
 			{
@@ -156,8 +202,11 @@ bool	CMusicAlbumInfo::Parse(const CStdString& strHTML)
 			}
 			if (strColum1.Find("AMG Rating") >=0)
 			{
-				CStdString strRating;
-				util.getValueOfTag(	strValue,strRating);			
+				CStdString strRating, strTag, strPic;
+				util.getValueOfTag(	strValue,strRating);
+				strRating.Delete(0, 16);
+				strRating.Delete(1, 4);
+				m_iRating=atoi(strRating);
 			}
 			if (strColum1.Find("Album Title") >=0)
 			{
@@ -165,6 +214,21 @@ bool	CMusicAlbumInfo::Parse(const CStdString& strHTML)
 			}
 		}
 	}
+
+	//	Set to "Not available" if no value from web
+	if (m_strArtist.IsEmpty())
+		m_strArtist=g_localizeStrings.Get(416);
+	if (m_strDateOfRelease.IsEmpty())
+		m_strDateOfRelease=g_localizeStrings.Get(416);
+	if (m_strGenre.IsEmpty())
+		m_strGenre=g_localizeStrings.Get(416);
+	if (m_strTones.IsEmpty())
+		m_strTones=g_localizeStrings.Get(416);
+	if (m_strStyles.IsEmpty())
+		m_strStyles=g_localizeStrings.Get(416);
+	if (m_strTitle.IsEmpty())
+		m_strTitle=g_localizeStrings.Get(416);
+
 
 	// parse review/image
 	iStartOfTable=strHTMLLow.Find("review",0);
@@ -186,6 +250,9 @@ bool	CMusicAlbumInfo::Parse(const CStdString& strHTML)
 			util.ConvertHTMLToAnsi(m_strReview, m_strReview);
 		}
 	}
+
+	if (m_strReview.IsEmpty())
+		m_strReview=" ";
 
 	// parse songs...
 	iStartOfTable=strHTMLLow.Find("htrk1.gif",0);

@@ -732,7 +732,7 @@ bool CMusicDatabase::GetAlbumInfo(const CStdString& strAlbum1, const CStdString&
 	RemoveInvalidChars(strAlbum);
 	RemoveInvalidChars(strPath);
 	CStdString strSQL;
-	strSQL.Format("select * from albuminfo,album,path,genre,artist where albuminfo.idAlbum=album.idAlbum and albuminfo.idGenre=genre.idGenre and albuminfo.idArtist=artist.idArtist and album.strAlbum like '%s' and path.strPath like '%s'",strAlbum, strPath );
+	strSQL.Format("select * from albuminfo,album,path,genre,artist where album.idPath=path.idPath and albuminfo.idAlbum=album.idAlbum and albuminfo.idGenre=genre.idGenre and albuminfo.idArtist=artist.idArtist and album.strAlbum like '%s' and path.strPath like '%s'",strAlbum, strPath );
 	if (!m_pDS->query(strSQL.c_str())) return false;
 	int iRowsFound = m_pDS->num_rows();
 	if (iRowsFound!= 0) 
