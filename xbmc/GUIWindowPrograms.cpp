@@ -256,6 +256,7 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int depth
 	WIN32_FIND_DATA wfd;
 	bool   bOnlyDefaultXBE=g_stSettings.m_bMyProgramsDefaultXBE;
 	bool  bFlattenDir=g_stSettings.m_bMyProgramsFlatten;
+	bool  bUseDirectoryName=g_stSettings.m_bMyProgramsDirectoryName;
 	bool   bRecurseSubDirs(true);
 	bool newDir(false);
 	memset(&wfd,0,sizeof(wfd));
@@ -311,7 +312,8 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int depth
 				if (bOnlyDefaultXBE ? CUtil::IsDefaultXBE(strFileName) : CUtil::IsXBE(strFileName))
 				{
 					CStdString strDescription;
-					if (!CUtil::GetXBEDescription(strFile, strDescription))
+
+					if (!CUtil::GetXBEDescription(strFile, strDescription) || bUseDirectoryName)
 					{
 						CUtil::GetDirectoryName(strFile, strDescription);
 						CUtil::ShortenFileName(strDescription);
