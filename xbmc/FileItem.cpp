@@ -973,6 +973,12 @@ void CFileItemList::Clear()
   }
 }
 
+void CFileItemList::ClearKeepPointers()
+{
+  if (m_items.size())
+    m_items.clear();
+}
+
 void CFileItemList::Add(CFileItem* pItem)
 {
   m_items.push_back(pItem);
