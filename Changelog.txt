@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 23-09-2004 fixed: list item is not centerally aligned when TTF fonts enabled
+  - 23-09-2004 fixed: song title text would overlap with the size/time when TTF fonts enabled
   - 23-09-2004 fixed: thumbnail text would overlap with other thumbnail texts when TTF fonts selected
   - 23-09-2004 fixed: slow scroll speed of RSS with TTF fonts
   - 23-09-2004 fixed: remote not working properly on main screen when TTF fonts selected
