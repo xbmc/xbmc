@@ -67,6 +67,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_iHTTPProxyPort=0;
 	strcpy(g_stSettings.m_szHTTPProxy,"");
   strcpy(g_stSettings.szDefaultSkin,"MediaCenter");
+	strcpy(g_stSettings.szHomeDir,"");
 	g_stSettings.m_bMyPicturesViewAsIcons=false;
 	g_stSettings.m_bMyPicturesRootViewAsIcons=true;
 	g_stSettings.m_bMyPicturesSortAscending=true;
@@ -175,7 +176,8 @@ bool CSettings::Load()
 
 	// load xml file...
 	CStdString strXMLFile;
-	strXMLFile+="Q:\\XboxMediaCenter.xml";
+	CUtil::GetHomePath(strXMLFile);
+	strXMLFile+="\\XboxMediaCenter.xml";
 
 	TiXmlDocument xmlDoc;
   if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) ) 
@@ -221,6 +223,7 @@ bool CSettings::Load()
 	}
 
   //GetString(pRootElement, "skin", g_stSettings.szDefaultSkin,"MediaCenter");
+	GetString(pRootElement, "home", g_stSettings.szHomeDir, "");
 	GetString(pRootElement, "dashboard", g_stSettings.szDashboard,"C:\\xboxdash.xbe");
 	
 	GetInteger(pRootElement, "screensavertime", g_stSettings.m_iScreenSaverTime);	// CB: SCREENSAVER PATCH
@@ -320,8 +323,7 @@ void CSettings::ConvertHomeVar(CStdString& strText)
   char szTemp[1024];
   char *pReplace,*pReplace2;
 
-	CStdString strHomePath;
-	CUtil::GetHomePath(strHomePath);
+	CStdString strHomePath = "Q:";
 	strcpy(szText,strText.c_str());
 
   pReplace = strstr(szText, "$HOME");
