@@ -877,7 +877,16 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 					CStdString strVector		= strtok(NULL, ";");
 					CStdString strOpponent		= strtok(NULL, ";");
 					CStdString strMessage		= strtok(NULL, ";");
-					observer->OnChat(strVector,strOpponent,strMessage);
+					observer->OnChat(strVector,strOpponent,strMessage,false);
+				}
+			}
+			else if (strcmp(szMessage,"KAI_CLIENT_ARENA_PM")==0)
+			{
+				if (observer!=NULL)
+				{
+					CStdString strOpponent		= strtok(NULL, ";");
+					CStdString strMessage		= strtok(NULL, ";");
+					observer->OnChat(client_vector,strOpponent,strMessage,true);
 				}
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_LEAVES_CHAT")==0)
