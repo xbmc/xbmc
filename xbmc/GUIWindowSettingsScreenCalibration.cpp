@@ -411,8 +411,7 @@ void CGUIWindowSettingsScreenCalibration::Render()
 
 		case CONTROL_OSD:
 		{
-      g_application.m_guiWindowOSD.Render();
-			iXOff = g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.left;
+      iXOff = g_settings.m_ResInfo[m_Res[m_iCurRes]].Overscan.left;
 			iYOff = g_settings.m_ResInfo[m_Res[m_iCurRes]].iSubtitles;
 			iYOff = (g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight + g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
 
@@ -421,7 +420,7 @@ void CGUIWindowSettingsScreenCalibration::Render()
 			pControl=(CGUIImage*)GetControl(CONTROL_OSD);
 			if (pControl) 
 			{
-			  pControl->SetVisible(true);
+			  //pControl->SetVisible(true);
 			  int iTextureWidth = pControl->GetTextureWidth();
 			  int iTextureHeight = pControl->GetTextureHeight();
 
@@ -431,6 +430,7 @@ void CGUIWindowSettingsScreenCalibration::Render()
 			  strStatus.Format("%s (%i, Offset=%i)",strMode,iYOff,g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset);
 			  SET_CONTROL_LABEL(GetID(), CONTROL_LABEL_ROW2,	468);
 			}
+			
 		}
 		break;
 	}
@@ -447,4 +447,8 @@ void CGUIWindowSettingsScreenCalibration::Render()
 		g_application.m_pPlayer->UpdateSubtitlePosition();
 		g_application.m_pPlayer->RenderSubtitles();
 	}
+  if (m_iControl==CONTROL_OSD)
+  {
+    g_application.m_guiWindowOSD.Render();
+  }
 }
