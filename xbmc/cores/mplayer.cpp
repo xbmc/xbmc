@@ -848,9 +848,10 @@ void CMPlayer::Process()
 			}
 			catch(...)
 			{
-				char module[100];
-				mplayer_get_current_module(module, sizeof(module));
-				CLog::Log("mplayer generated exception in %s", module);
+				//char module[100];
+				//mplayer_get_current_module(module, sizeof(module));
+				//CLog::Log("mplayer generated exception in %s", module);
+				CLog::Log("mplayer generated exception!");
 				exceptionCount++;
 			}
 
