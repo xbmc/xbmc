@@ -117,6 +117,7 @@ void CCharsetConverter::reset(void)
 {
 	m_iconvStringCharsetToFontCharset = (iconv_t) -1;
 	m_iconvUtf8ToStringCharset = (iconv_t) -1;
+	m_iconvStringCharsetToUtf8 = (iconv_t) -1;
 	m_iconvUcs2CharsetToStringCharset  = (iconv_t) -1;
 	m_iconvSubtitleCharsetToFontCharset = (iconv_t) -1;
 	m_stringFribidiCharset = FRIBIDI_CHARSET_NOT_FOUND;
@@ -233,6 +234,34 @@ void CCharsetConverter::utf8ToStringCharset(const CStdStringA& strSource, CStdSt
 			// return the original..
 			strDest = strSource;
 		}
+	}
+}
+
+void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSource, CStdStringA& strDest)
+{
+	if (m_iconvStringCharsetToUtf8 == (iconv_t) -1)
+	{
+		m_iconvStringCharsetToUtf8 = iconv_open("UTF-8", g_stSettings.m_szStringCharset);
+	}
+
+	if (m_iconvStringCharsetToUtf8 != (iconv_t) -1)
+	{
+		const char* src = strSource.c_str();
+		size_t inBytes = strSource.length() + 1;
+
+		size_t outBytes = (inBytes * 4) + 1;
+		size_t originalOutBytes = outBytes;
+		char *dst = strDest.SetBuf(outBytes);
+
+		if (iconv(m_iconvStringCharsetToUtf8, &src, &inBytes, &dst, &outBytes) == -1)
+		{
+			// For some reason it failed (maybe wrong charset?). Nothing to do but
+			// return the original..
+			strDest = strSource;
+			return;
+		}
+
+		strDest.resize(originalOutBytes - outBytes);
 	}
 }
 
