@@ -1,15 +1,17 @@
 
 #include "stdafx.h"
 #include "GUIWindowWeather.h"
-#include "settings.h"
-#include "guiWindowManager.h"
+#include "GUISpinControl.h"
 #include "GUIDialogOK.h"
+#include "guiWindowManager.h"
+#include "settings.h"
 #include "localizestrings.h"
 #include "util.h"
 #include <algorithm>
 #include "utils/log.h"
 
 #define CONTROL_BTNREFRESH		2
+#define CONTROL_SELECTLOCATION	3
 #define CONTROL_LABELLOCATION	10
 #define CONTROL_LABELUPDATED	11
 #define CONTROL_IMAGELOGO		101
@@ -46,13 +48,6 @@
 FIXME'S
 >strings are not centered
 >weather.com dev account is mine not a general xbmc one
->do something when entering the weather screen for the first time
-	download if current weather is out of date or something?
->weather.com doesn't return xml for some area codes? UKXX1000, UKXX1201 (not my fault?)
-
-LONGTERM:
->Add settings screen with text input search for location code
-	+ select metric/imperial or (F/C and MPH / KMH seperatly)
 */
 int ConvertSpeed(int curSpeed)
 {
@@ -104,6 +99,7 @@ CGUIWindowWeather::CGUIWindowWeather(void)
 		strcpy(m_dfForcast[i].m_szLow, "");
 	}
 
+	m_iCurWeather = 0;
 	srand(timeGetTime());
 }
 
@@ -143,8 +139,15 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
 		case GUI_MSG_CLICKED:
 		{
 			int iControl=message.GetSenderId();
-			if (iControl == CONTROL_BTNREFRESH)
+			if(iControl == CONTROL_BTNREFRESH)
+			{
 				RefreshMe(false);	//refresh clicked so do a complete update (not an autoUpdate)
+			}
+			else if(iControl == CONTROL_SELECTLOCATION)
+			{
+				CGUISpinControl *pTempSpin = (CGUISpinControl*)GetControl(iControl);
+				m_iCurWeather = pTempSpin->GetValue();
+			}
 		}
 		break;
 	}
@@ -197,6 +200,18 @@ void CGUIWindowWeather::UpdateButtons()
 		m_dfForcast[i].pImage = new CGUIImage(GetID(), CONTROL_IMAGED0IMG+(i*10), posX, posY, 64, 64, m_dfForcast[i].m_szIcon, 0);
 		Add(m_dfForcast[i].pImage);
 	}
+
+	CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_SELECTLOCATION, 0, 0, NULL);
+	g_graphicsContext.SendMessage(msg);
+	CGUIMessage msg2(GUI_MSG_LABEL_ADD, GetID(), CONTROL_SELECTLOCATION, 0, 0);
+	for(int i=0; i<3; i++)
+	{
+		msg2.SetLabel(g_stSettings.m_szWeatherArea[i]);
+		g_graphicsContext.SendMessage(msg2);
+	}
+
+	CGUIMessage msgSet(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_SELECTLOCATION, m_iCurWeather, 0, NULL);
+	g_graphicsContext.SendMessage(msgSet);  
 }
 
 
@@ -220,7 +235,7 @@ bool CGUIWindowWeather::Download(const CStdString& strWeatherFile)
 		c_units = 'm';
 
 	strURL.Format("http://xoap.weather.com/weather/local/%s?cc=*&unit=%c&dayf=4&prod=xoap&par=%s&key=%s",
-				g_stSettings.m_szWeatherArea, c_units, PARTNER_ID, PARTNER_KEY);
+				g_stSettings.m_szWeatherArea[m_iCurWeather], c_units, PARTNER_ID, PARTNER_KEY);
 
 	m_httpGrabber.SetHTTPVer(0);	//set to HTTP/1.0 to download nicely
 	return m_httpGrabber.Download(strURL, strWeatherFile);
@@ -405,7 +420,7 @@ void CGUIWindowWeather::RefreshMe(bool autoUpdate)
 	//message strings for refresh of images
 	CGUIMessage msgDe(GUI_MSG_WINDOW_DEINIT,0,0);
 	CGUIMessage msgRe(GUI_MSG_WINDOW_INIT,0,0,WINDOW_INVALID);
-	CStdString strWeatherFile = "Q:\\weather\\curWeather.xml";
+  CStdString strWeatherFile = "Z:\\curWeather.xml";
 
 	CGUIDialogProgress*	pDlgProgress	= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 	CGUIDialogOK* 		pDlgOK			= (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
@@ -416,7 +431,7 @@ void CGUIWindowWeather::RefreshMe(bool autoUpdate)
 	{
 		pDlgProgress->SetHeading(410);							//"Accessing Weather.com"
 		pDlgProgress->SetLine(0, 411);							//"Getting Weather For:"
-		pDlgProgress->SetLine(1, g_stSettings.m_szWeatherArea);	//Area code
+		pDlgProgress->SetLine(1, g_stSettings.m_szWeatherArea[m_iCurWeather]);	//Area code
 		if(strlen(m_szLocation) > 1)							//got the location string yet?
 			pDlgProgress->SetLine(2, m_szLocation);
 		else

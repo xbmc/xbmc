@@ -58,4 +58,6 @@ protected:
 
 	CGUIImage				*pNowImage;
 	DWORD					m_lRefreshTime;		//for autorefresh
+
+	unsigned int			m_iCurWeather;
 };

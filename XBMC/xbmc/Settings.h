@@ -278,7 +278,7 @@ public:
     bool			m_bMyVideoYearStack;
 
     int       m_iVideoStartWindow;
-	char			m_szWeatherArea[10];	//WEATHER
+	char			m_szWeatherArea[3][10];	//WEATHER
 	char			m_szWeatherFTemp[2];	//WEATHER
 	char			m_szWeatherFSpeed[2];	//WEATHER
 	int				m_iWeatherRefresh;		//WEATHER
