@@ -2097,22 +2097,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 		// if file happens to contain video stream
 		if ( IsPlayingVideo())
 		{
-			if (!m_gWindowManager.IsRouted())
-			{
-				// and we're not in fullscreen video mode yet
-				if (m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
-				{
-					// then switch to fullscreen video mode
-					g_TextureManager.Flush();
-					g_graphicsContext.SetFullScreenVideo(true);
-					m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
-				}
-			}
-			else
-			{
-				g_graphicsContext.SetFullScreenVideo(false);
-			}
-
+			// then switch to fullscreen video mode if we can
+			SwitchToFullScreen();
 		}
 	}
 	return bResult;
@@ -2128,8 +2114,8 @@ void CApplication::OnPlayBackEnded()
 	g_pythonParser.OnPlayBackEnded();
 
 	OutputDebugString("Playback has finished\n");
-	CGUIMessage msg( GUI_MSG_PLAYBACK_ENDED, 0, 0, 0, 0, NULL );
-	m_gWindowManager.SendThreadMessage( msg );
+	CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0, 0, 0, NULL);
+	m_gWindowManager.SendThreadMessage(msg);
 }
 
 void CApplication::OnPlayBackStarted()
@@ -2137,6 +2123,9 @@ void CApplication::OnPlayBackStarted()
 	// informs python script currently running playback has started
 	// (does nothing if python is not loaded)
 	g_pythonParser.OnPlayBackStarted();
+
+	CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0, 0, 0, NULL);
+	m_gWindowManager.SendThreadMessage(msg);
 
   CheckNetworkHDSpinDown(true);
 }
@@ -2422,7 +2411,7 @@ void CApplication::CheckNetworkHDSpinDown(bool playbackStarted)
         //try to get duration from current tag because mplayer doesn't calculate vbr mp3 correctly
         iDuration = m_itemCurrentFile.m_musicInfoTag.GetDuration();
       }
-      if (iDuration < 0) {
+      if (iDuration <= 0) {
         iDuration = m_pPlayer->GetTotalTime();
       }
       //spin down harddisk when the current file being played is not on local harddrive and
@@ -2583,7 +2572,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
 			if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow()==WINDOW_FULLSCREEN_VIDEO)
 			{
 				m_gWindowManager.PreviousWindow();
-				g_graphicsContext.SetGUIResolution(g_stSettings.m_GUIResolution);
 			}
 		}
 		break;
@@ -2634,8 +2622,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 				PlayFile(item);
 				if (IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
 				{
-					g_graphicsContext.SetFullScreenVideo(true);
-					m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+					SwitchToFullScreen();
 				}
 			}
 		}
@@ -2809,13 +2796,13 @@ bool CApplication::SwitchToFullScreen()
 		// then switch to fullscreen mode
 		m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
 		g_TextureManager.Flush();
-		g_TextureManager.Dump();
 		return true;
 	}
 	// special case for switching between GUI & visualisation mode. (only if we're playing an audio song)
 	if (IsPlayingAudio() && m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION)
 	{	// then switch to visualisation
 		m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
+		g_TextureManager.Flush();
 		return true;
 	}
 	return false;
