@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 23-12-2004 fixed: Audio cache was always set to 0.
   - 22-12-2004 updated: Italian language file (Thnx to kotix)
   - 22-12-2004 updated: Portuguese (Brazil) language file (Thnx to wellingtontu)
   - 22-12-2004 updated: German (Austrian) language file (Thnx to CEOMR)

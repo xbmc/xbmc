@@ -1541,19 +1541,19 @@ int CMPlayer::GetCacheSize(bool bFileOnHD,bool bFileOnISO,bool bFileOnUDF,bool b
 	{
 		if ( bIsDVD  ) return g_guiSettings.GetInt("CacheDVD.HardDisk");
 		if ( bIsVideo) return g_guiSettings.GetInt("CacheVideo.HardDisk");
-		if ( bIsAudio) return g_guiSettings.GetInt("CacheMusic.HardDisk");
+		if ( bIsAudio) return g_guiSettings.GetInt("CacheAudio.HardDisk");
 	}
 	if (bFileOnISO || bFileOnUDF)
 	{
 		if ( bIsDVD  ) return g_guiSettings.GetInt("CacheDVD.DVDRom");
 		if ( bIsVideo) return g_guiSettings.GetInt("CacheVideo.DVDRom");
-		if ( bIsAudio) return g_guiSettings.GetInt("CacheMusic.DVDRom");
+		if ( bIsAudio) return g_guiSettings.GetInt("CacheAudio.DVDRom");
 	}
 	if (bFileOnInternet)
 	{
 //		if ( bIsDVD  ) return g_guiSettings.GetInt("CacheDVD.Internet");
 		if ( bIsVideo) return g_guiSettings.GetInt("CacheVideo.Internet");
-		if ( bIsAudio) return g_guiSettings.GetInt("CacheMusic.Internet");
+		if ( bIsAudio) return g_guiSettings.GetInt("CacheAudio.Internet");
 		//File is on internet however we don't know what type.
 		//Apperently fixes DreamBox playback.
 		return 4096; 
@@ -1562,7 +1562,7 @@ int CMPlayer::GetCacheSize(bool bFileOnHD,bool bFileOnISO,bool bFileOnUDF,bool b
 	{
 		if ( bIsDVD  ) return g_guiSettings.GetInt("CacheDVD.LAN");
 		if ( bIsVideo) return g_guiSettings.GetInt("CacheVideo.LAN");
-		if ( bIsAudio) return g_guiSettings.GetInt("CacheMusic.LAN");
+		if ( bIsAudio) return g_guiSettings.GetInt("CacheAudio.LAN");
 	}
 	return 1024;
 }
