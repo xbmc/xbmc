@@ -515,14 +515,13 @@ bool CSettings::LoadCalibration(const CStdString& strCalibrationFile)
 	TiXmlDocument xmlDoc;
 	if (!xmlDoc.LoadFile(strCalibrationFile))
 	{
-		OutputDebugString("Unable to load:");
-		OutputDebugString(strCalibrationFile.c_str());
-		OutputDebugString("\n");
+    CLog::Log("Unable to load:%s",strCalibrationFile.c_str());
 		return false;
 	}
 	TiXmlElement *pRootElement = xmlDoc.RootElement();
 	if (CUtil::cmpnocase(pRootElement->Value(),"calibration")!=0)
 	{
+    CLog::Log("%s doesnt start with <calibration>");
 		return false;
 	}
 	TiXmlElement *pResolution = pRootElement->FirstChildElement("resolution");
@@ -542,11 +541,17 @@ bool CSettings::LoadCalibration(const CStdString& strCalibrationFile)
 		TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
 		if (pOverscan)
 		{
-			GetInteger(pOverscan, "left", m_ResInfo[iRes].Overscan.left,0,0,128);
-			GetInteger(pOverscan, "top", m_ResInfo[iRes].Overscan.top,0,0,128);
+			GetInteger(pOverscan, "left", m_ResInfo[iRes].Overscan.left,0,-128,128);
+			GetInteger(pOverscan, "top", m_ResInfo[iRes].Overscan.top,0,-128,128);
 			GetInteger(pOverscan, "width", m_ResInfo[iRes].Overscan.width,720,640,10000);
 			GetInteger(pOverscan, "height", m_ResInfo[iRes].Overscan.height,576,400,10000);
 		}
+    CLog::Log("  calibration for %s %ix%i",m_ResInfo[iRes].strMode,m_ResInfo[iRes].iWidth,m_ResInfo[iRes].iHeight);
+    CLog::Log("    subtitle yposition:%i pixelratio:%03.3f offset:(%i,%i) width:%i height:%i", 
+                   m_ResInfo[iRes].iSubtitles, m_ResInfo[iRes].fPixelRatio,
+                m_ResInfo[iRes].Overscan.left,m_ResInfo[iRes].Overscan.top, 
+                m_ResInfo[iRes].Overscan.width,m_ResInfo[iRes].Overscan.height);
+
 		// iterate around
 		pResolution = pResolution->NextSiblingElement("resolution");
 	}
