@@ -27,14 +27,20 @@ class CGUIRAMControl : public CGUIControl, public IMediaObserver
 {
 public:
 
-	struct Movie
+	class Movie
 	{
+	public:
+		Movie()
+		{
+			bValid = false;
+		}
+
 		CStdString	strFilepath;
 		CStdString	strTitle;
 		CGUIImage*	pImage;
+		int			nAlpha;
+		bool		bValid;
 	};
-
-	typedef std::vector<Movie> RECENTMOVIES;
 
 	CGUIRAMControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFontName, const CStdString& strFont2Name, D3DCOLOR dwTitleColor, D3DCOLOR dwNormalColor);
 	virtual ~CGUIRAMControl(void);
@@ -52,7 +58,9 @@ public:
 protected:
 
 	CMediaMonitor*	m_pMonitor;
-	RECENTMOVIES	m_movies;
+	Movie			m_current[RECENT_MOVIES];
+	Movie			m_new[RECENT_MOVIES];
+
 	FLOAT			m_fFontHeight;
 	FLOAT			m_fFont2Height;
 
