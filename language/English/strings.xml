@@ -1173,5 +1173,9 @@
   <string>
     <id>367</id>
     <value>Sort by rating</value>
+  </string>   
+  <string>
+    <id>368</id>
+    <value>IMDB</value>
   </string>
 </strings>
