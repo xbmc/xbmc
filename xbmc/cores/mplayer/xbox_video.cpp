@@ -75,11 +75,9 @@ static int                    m_iOSDTextureWidth;
 static LPDIRECT3DTEXTURE8     m_YTexture[NUM_BUFFERS];
 static LPDIRECT3DTEXTURE8     m_UTexture[NUM_BUFFERS];
 static LPDIRECT3DTEXTURE8     m_VTexture[NUM_BUFFERS];
-static LPDIRECT3DTEXTURE8     m_RGBTexture[NUM_BUFFERS];
 static DWORD                  m_hPixelShader = 0;
 static int                    m_iYUVDecodeBuffer;
-static int                    m_iRGBRenderBuffer;
-static int                    m_iRGBDecodeBuffer;
+static int                    m_iYUVRenderBuffer;
 static int                    m_bConfigured=false;
 typedef struct directx_fourcc_caps
 {
@@ -266,7 +264,7 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 
 	for (int i = 0; i < NUM_BUFFERS; ++i)
 	{
-		// setup textures as linear luminance only textures, the pixel shader handles translation to RGB
+		// setup textures as linear luminance only textures, the pixel shader handles interleaving 
 		if (m_YTexture[i])
 			m_YTexture[i]->Release();
 		g_graphicsContext.Get3DDevice()->CreateTexture(image_width, image_height, 1, 0, D3DFMT_LIN_L8, 0, &m_YTexture[i]);
@@ -278,9 +276,9 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 		g_graphicsContext.Get3DDevice()->CreateTexture(image_width/2, image_height/2, 1, 0, D3DFMT_LIN_L8, 0, &m_VTexture[i]);
 
 		// RGB conversion buffer
-		if (m_RGBTexture[i])
-			m_RGBTexture[i]->Release();
-		g_graphicsContext.Get3DDevice()->CreateTexture(image_width, image_height, 1, 0, D3DFMT_LIN_X8R8G8B8, 0, &m_RGBTexture[i]);
+//		if (m_RGBTexture[i])
+//			m_RGBTexture[i]->Release();
+//		g_graphicsContext.Get3DDevice()->CreateTexture(image_width, image_height, 1, 0, D3DFMT_LIN_X8R8G8B8, 0, &m_RGBTexture[i]);
 
 		// blank the textures (just in case)
 		D3DLOCKED_RECT lr;
@@ -296,9 +294,9 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 		fast_memset(lr.pBits, 128, lr.Pitch*(image_height/2));
 		m_VTexture[i]->UnlockRect(0);
 
-		m_RGBTexture[i]->LockRect(0, &lr, NULL, 0);
-		fast_memset(lr.pBits, 0, lr.Pitch*image_height);
-		m_RGBTexture[i]->UnlockRect(0);
+//		m_RGBTexture[i]->LockRect(0, &lr, NULL, 0);
+//		fast_memset(lr.pBits, 0, lr.Pitch*image_height);
+//		m_RGBTexture[i]->UnlockRect(0);
 	}
 
   m_iOSDTextureWidth = normalFullScreenVideoDisplayRect.right - normalFullScreenVideoDisplayRect.left;
@@ -415,6 +413,7 @@ void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth,
 	displayRect->top    = (int)(fPosY + fOffsetY1);
 	displayRect->bottom = (int)(displayRect->top + fNewHeight + 0.5f);
 }
+
 //********************************************************************************************************
 unsigned int Directx_ManageDisplay()
 {
@@ -568,9 +567,9 @@ static void video_uninit(void)
 			m_VTexture[i]->Release();
 		m_VTexture[i] = NULL;
 
-		if (m_RGBTexture[i])
-			m_RGBTexture[i]->Release();
-		m_RGBTexture[i] = NULL;
+//		if (m_RGBTexture[i])
+//			m_RGBTexture[i]->Release();
+//		m_RGBTexture[i] = NULL;
 	}
 	// subtitle and osd stuff
 	for (int i = 0; i < 2; ++i)
@@ -595,23 +594,40 @@ static unsigned int video_preinit(const char *arg)
 	m_bPauseDrawing=false;
 //	for (int i=0; i<NUM_BUFFERS; i++) iClearSubtitleRegion[i] = 0;
 	m_iOSDBuffer = 0;
-	m_iRGBRenderBuffer = -1;
-	m_iRGBDecodeBuffer = m_iYUVDecodeBuffer = 0;
+//	m_iRGBRenderBuffer = -1;
+//	m_iRGBDecodeBuffer =
+	m_iYUVDecodeBuffer = m_iYUVRenderBuffer = 0;
 	m_bFlip=0;
 	fs=1;
 	m_bConfigured=false;
 	// Create the pixel shader
 	if (!m_hPixelShader)
 	{
-		D3DPIXELSHADERDEF* ShaderBuffer = (D3DPIXELSHADERDEF*)((char*)XLoadSection("PXLSHADER") + 4);
-		g_graphicsContext.Get3DDevice()->CreatePixelShader(ShaderBuffer, &m_hPixelShader);
+		//D3DPIXELSHADERDEF* ShaderBuffer = (D3DPIXELSHADERDEF*)((char*)XLoadSection("PXLSHADER") + 4);
+
+		// shader to interleave separate Y U and V planes into a single YUV output
+		const char* shader =
+			"xps.1.1\n"
+			"def c0,1,0,0,0\n"
+			"def c1,0,1,0,0\n"
+			"def c2,0,0,1,0\n"
+			"tex t0\n"
+			"tex t1\n"
+			"tex t2\n"
+			"xmma discard,discard,r0, t0,c0, t1,c1\n"
+			"mad r0, t2,c2,r0\n";
+
+		XGBuffer* pShader;
+		XGAssembleShader("XBMCShader", shader, strlen(shader), 0, NULL, &pShader, NULL, NULL, NULL, NULL, NULL);
+		g_graphicsContext.Get3DDevice()->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_hPixelShader);
+		pShader->Release();
 	}
 
 	return 0;
 }
 
 //********************************************************************************************************
-
+/*
 static void YV12ToRGB()
 {
 	g_graphicsContext.Lock();
@@ -704,7 +720,7 @@ static void YV12ToRGB()
 
 	g_graphicsContext.Unlock();
 }
-
+*/
 static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,int h,int x,int y )
 {
   BYTE *s;
@@ -777,8 +793,8 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
 
   if (iBottom+1>=(int)image_height)
   {
-		// frame finished, send buffer off for RGB conversion
-		YV12ToRGB();
+		// frame finished, output buffer to screen
+		//YV12ToRGB();
     ++m_iYUVDecodeBuffer %= NUM_BUFFERS;
     m_bFlip++;
   }
@@ -945,21 +961,27 @@ void xbox_video_render_osd()
 
 void xbox_video_render()
 {
-  if (m_iRGBRenderBuffer<0 || m_iRGBRenderBuffer >= NUM_BUFFERS) return;
+  //if (m_iRGBRenderBuffer<0 || m_iRGBRenderBuffer >= NUM_BUFFERS) return;
+	if (m_iYUVRenderBuffer<0 || m_iYUVRenderBuffer >= NUM_BUFFERS) return;
 
-  g_graphicsContext.Get3DDevice()->SetTexture( 0, m_RGBTexture[m_iRGBRenderBuffer]);
+  //g_graphicsContext.Get3DDevice()->SetTexture( 0, m_RGBTexture[m_iRGBRenderBuffer]);
+	g_graphicsContext.Get3DDevice()->SetTexture( 0, m_YTexture[m_iYUVRenderBuffer]);
+	g_graphicsContext.Get3DDevice()->SetTexture( 1, m_UTexture[m_iYUVRenderBuffer]);
+	g_graphicsContext.Get3DDevice()->SetTexture( 2, m_VTexture[m_iYUVRenderBuffer]);
 
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_SELECTARG1 );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1 );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_COLOROP,   D3DTOP_DISABLE );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSU,  D3DTADDRESS_CLAMP );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSV,  D3DTADDRESS_CLAMP );
-
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MAGFILTER,  g_stSettings.m_maxFilter );
-	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MINFILTER,  g_stSettings.m_minFilter );
+//	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_SELECTARG1 );
+//	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+//	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1 );
+//	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE );
+//	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_COLOROP,   D3DTOP_DISABLE );
+//	g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
+	for (int i = 0; i < 3; ++i)
+	{
+		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_ADDRESSU,  D3DTADDRESS_CLAMP );
+		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_ADDRESSV,  D3DTADDRESS_CLAMP );
+		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_MAGFILTER,  g_stSettings.m_maxFilter );
+		g_graphicsContext.Get3DDevice()->SetTextureStageState( i, D3DTSS_MINFILTER,  g_stSettings.m_minFilter );
+	}
 
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ZENABLE,      FALSE );
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGENABLE,    FALSE );
@@ -969,23 +991,35 @@ void xbox_video_render()
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_ONE );
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_ZERO );
-	g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_RGBVERTEX );
+	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_YUVENABLE, TRUE );
+	g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_YV12VERTEX );
+	g_graphicsContext.Get3DDevice()->SetPixelShader( m_hPixelShader );
 	// Render the image
 	g_graphicsContext.Get3DDevice()->Begin(D3DPT_QUADLIST);
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left, (float)rs.top );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.left/2.0f, (float)rs.top/2.0f );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.left/2.0f, (float)rs.top/2.0f );
 	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.left, (float)rd.top, 0, 1.0f );
 
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)rs.top );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.right/2.0f, (float)rs.top/2.0f );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.right/2.0f, (float)rs.top/2.0f );
 	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.right, (float)rd.top, 0, 1.0f );
 
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)rs.bottom );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.right/2.0f, (float)rs.bottom/2.0f );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.right/2.0f, (float)rs.bottom/2.0f );
 	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.right, (float)rd.bottom, 0, 1.0f );
 
 	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left, (float)rs.bottom );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.left/2.0f, (float)rs.bottom/2.0f );
+	g_graphicsContext.Get3DDevice()->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.left/2.0f, (float)rs.bottom/2.0f );
 	g_graphicsContext.Get3DDevice()->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.left, (float)rd.bottom, 0, 1.0f );
 	g_graphicsContext.Get3DDevice()->End();
 
-	g_graphicsContext.Get3DDevice()->SetTexture( 0, NULL);
+	g_graphicsContext.Get3DDevice()->SetTexture(0, NULL);
+	g_graphicsContext.Get3DDevice()->SetTexture(1, NULL);
+	g_graphicsContext.Get3DDevice()->SetTexture(2, NULL);
 
 	xbox_video_render_osd();
 }
@@ -999,7 +1033,8 @@ static void video_flip_page(void)
     return;
   }
 	m_bFlip--;
-  ++m_iRGBRenderBuffer %= NUM_BUFFERS;
+  //++m_iRGBRenderBuffer %= NUM_BUFFERS;
+	++m_iYUVRenderBuffer %= NUM_BUFFERS;
 //	m_pSubtitleYTexture[m_iBackBuffer]->UnlockRect(0);
 //	m_pSubtitleATexture[m_iBackBuffer]->UnlockRect(0);
 //	m_iBackBuffer = 1-m_iBackBuffer;
@@ -1080,7 +1115,8 @@ void xbox_video_getAR(float& fAR)
 //********************************************************************************************************
 void xbox_video_render_update()
 {
-  if (m_iRGBRenderBuffer < 0 || m_iRGBRenderBuffer >=NUM_BUFFERS) return;
+  //if (m_iRGBRenderBuffer < 0 || m_iRGBRenderBuffer >=NUM_BUFFERS) return;
+	if (m_iYUVRenderBuffer < 0 || m_iYUVRenderBuffer >=NUM_BUFFERS) return;
   bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
 	g_graphicsContext.Lock();
 	xbox_video_render();
@@ -1204,8 +1240,8 @@ static unsigned int put_image(mp_image_t *mpi)
 		return VO_FALSE; // no packed support
 	}
 
-	// frame finished, send buffer off for RGB conversion
-	YV12ToRGB();
+	// frame finished, send buffer to screen
+	//YV12ToRGB();
 	++m_iYUVDecodeBuffer %= NUM_BUFFERS;
 	m_bFlip++;
 
