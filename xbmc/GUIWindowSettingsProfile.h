@@ -13,6 +13,10 @@ public:
 protected:
 	int   m_iLastControl;
 
+  void  OnPopupMenu(int iItem);
+  void  DoRename(int iItem);
+  void  DoDelete(int iItem);
+  void  DoOverwrite(int iItem);
   bool  GetKeyboard(CStdString& strInput);
   int   GetSelectedItem();
   void  LoadList();
