@@ -583,6 +583,7 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID)
 				g_application.m_pPlayer->SeekPercentage(pControl->GetPercentage());
 			}
 		}
+    break;
     case OSD_BRIGHTNESS:
 		{
 			CGUISliderControl* pControl=(CGUISliderControl*)GetControl(iControlID);
