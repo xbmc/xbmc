@@ -2115,14 +2115,14 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
 	}
 }
 
-void CUtil::SecondsToHMSString(long lSeconds, CStdString& strHMS)
+void CUtil::SecondsToHMSString(long lSeconds, CStdString& strHMS, bool bMustUseHHMMSS)
 {
   int hh = lSeconds / 3600;
   lSeconds = lSeconds%3600;
   int mm = lSeconds / 60;
   int ss = lSeconds % 60;
 
-  if (hh>=1)
+  if (hh>=1 || bMustUseHHMMSS)
     strHMS.Format("%2.2i:%02.2i:%02.2i",hh,mm,ss);
   else
     strHMS.Format("%i:%02.2i",mm,ss);

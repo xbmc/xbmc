@@ -246,16 +246,14 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 				int iAction=message.GetParam1();
 				if (ACTION_SELECT_ITEM==iAction || ACTION_MOUSE_LEFT_CLICK == iAction)
 				{
-					CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
-					g_graphicsContext.SendMessage(msg);
-					int iItem=msg.GetParam1();
+					int iItem=GetSelectedItem();
+					// iItem is checked within the OnClick routine
 					OnClick(iItem);
 				}
         else if (ACTION_CONTEXT_MENU==iAction)
         {
-          CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
-					g_graphicsContext.SendMessage(msg);
-          int iItem=msg.GetParam1();
+          int iItem=GetSelectedItem();
+					// iItem is checked inside OnPopupMenu
           if (OnPopupMenu(iItem))
           { // update bookmark buttons
             int iStartID=100;
@@ -311,6 +309,10 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
 	}	
 	if ( m_strDirectory.IsEmpty() )
 	{
+		if (iItem < 0)
+		{	// TODO: Add option to add shares in this case
+			return false;
+		}
 		// mark the item
 		m_vecItems[iItem]->Select(true);
 		
@@ -680,8 +682,7 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 
 void CGUIWindowPrograms::OnClick(int iItem)
 {
-	if (iItem < 0 || iItem >(int)m_vecItems.size())
-		return;
+	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
 	CFileItem* pItem=m_vecItems[iItem];
 	if (pItem->m_bIsFolder)
 	{
@@ -1114,6 +1115,8 @@ int CGUIWindowPrograms::GetSelectedItem()
 	CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
 	g_graphicsContext.SendMessage(msg);
 	int iItem=msg.GetParam1();
+	if (iItem >= (int)m_vecItems.size())
+		return -1;
 	return iItem;
 }
 

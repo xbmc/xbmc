@@ -325,6 +325,7 @@ void CGUIWindowVideoYear::Update(const CStdString &strDirectory)
 //****************************************************************************************************************************
 void CGUIWindowVideoYear::OnClick(int iItem)
 {
+	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
   CFileItem* pItem=m_vecItems[iItem];
   CStdString strPath=pItem->m_strPath;
 
@@ -383,6 +384,7 @@ void CGUIWindowVideoYear::OnClick(int iItem)
 
 void CGUIWindowVideoYear::OnInfo(int iItem)
 {
+	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
   if ( m_strDirectory.IsEmpty() ) return;
 	CGUIWindowVideoBase::OnInfo(iItem);
 }

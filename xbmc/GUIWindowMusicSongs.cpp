@@ -266,13 +266,14 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 				}
 				g_settings.Save();
 
-				int nItem=GetSelectedItem();
-				CFileItem*pItem=m_vecItems[nItem];
-				CStdString strSelected=pItem->m_strPath;
-        
         UpdateButtons();
         UpdateListControl();
 
+				int nItem=GetSelectedItem();
+				if (nItem < 0) break;
+				CFileItem*pItem=m_vecItems[nItem];
+				CStdString strSelected=pItem->m_strPath;
+        
 				CStdString strDirectory=m_strDirectory;
 				if (CUtil::HasSlashAtEnd(strDirectory))
 					strDirectory.Delete(strDirectory.size()-1);
@@ -794,10 +795,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
   {
 	  if (!pControl->IsVisible())
 	  {
-		  CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_LIST,0,0,NULL);
-		  g_graphicsContext.SendMessage(msg);
-		  int iItem=msg.GetParam1();
-		  CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem);
+		  CONTROL_SELECT_ITEM(CONTROL_THUMBS,GetSelectedItem());
 	  }
   }
 	pControl=GetControl(CONTROL_LIST);
@@ -805,10 +803,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
   {
 	  if (!pControl->IsVisible())
 	  {
-		  CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_THUMBS,0,0,NULL);
-		  g_graphicsContext.SendMessage(msg);
-		  int iItem=msg.GetParam1();
-		  CONTROL_SELECT_ITEM(CONTROL_LIST,iItem);
+		  CONTROL_SELECT_ITEM(CONTROL_LIST,GetSelectedItem());
 	  }
   }
 
@@ -907,6 +902,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
 
 void CGUIWindowMusicSongs::OnClick(int iItem)
 {
+	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
 	CFileItem* pItem=m_vecItems[iItem];
 	CStdString strPath=pItem->m_strPath;
 	if (pItem->m_bIsFolder)
@@ -1577,6 +1573,9 @@ void CGUIWindowMusicSongs::FilterItems(VECFILEITEMS &items)
 
 void CGUIWindowMusicSongs::OnPopupMenu(int iItem)
 {
+	// We don't check for iItem range here, as we may later support creating shares
+	// from a blank starting setup
+
 	// calculate our position
 	int iPosX=200;
 	int iPosY=100;
@@ -1588,10 +1587,14 @@ void CGUIWindowMusicSongs::OnPopupMenu(int iItem)
 	}	
 	if ( m_strDirectory.IsEmpty() )
 	{
+		if (iItem < 0)
+		{	// TODO: we should check here whether the user can add shares, and have the option to do so
+			return;
+		}
 		// mark the item
 		m_vecItems[iItem]->Select(true);
 		
-		bool bMaxRetryExceeded=false;
+		bool bMaxRetryExceeded = false;
 		if (g_stSettings.m_iMasterLockMaxRetry!=0)
 			bMaxRetryExceeded=!(m_vecItems[iItem]->m_iBadPwdCount < g_stSettings.m_iMasterLockMaxRetry);
 		

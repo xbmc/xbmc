@@ -9,6 +9,7 @@
 #include "application.h"
 #include "videodatabase.h"
 #include "utils/imdb.h"
+#include "utils/GUIInfoManager.h"
 
 #define CONTROL_PLAYTIME		2
 #define CONTROL_PLAY_LOGO   3
@@ -62,28 +63,8 @@ void CGUIWindowVideoOverlay::Render()
   }
 
 	
-	char szTime[128];
-	if (hh>=1)
-		sprintf(szTime,"%02.2i:%02.2i:%02.2i",hh,mm,ss);
-	else
-		sprintf(szTime,"%02.2i:%02.2i",mm,ss);
-	{
-		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_BIG_PLAYTIME); 
-		msg.SetLabel(szTime); 
-		OnMessage(msg); 
-	}
-
-  if (iSpeed !=1)
-  {
-    char szTmp[32];
-    sprintf(szTmp,"(%ix)", iSpeed);
-    strcat(szTime,szTmp);
-  }
-  {
-		CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_PLAYTIME); 
-		msg.SetLabel(szTime); 
-		OnMessage(msg); 
-	}
+	SET_CONTROL_LABEL(CONTROL_BIG_PLAYTIME, g_infoManager.GetLabel("videoplayer.time")); 
+	SET_CONTROL_LABEL(CONTROL_PLAYTIME, g_infoManager.GetLabel("videoplayer.timespeed"));
 
 	HideControl(CONTROL_PLAY_LOGO); 
   HideControl(CONTROL_PAUSE_LOGO); 

@@ -562,6 +562,7 @@ void CGUIWindowVideoFiles::UpdateDir(const CStdString &strDirectory)
 
 void CGUIWindowVideoFiles::OnClick(int iItem)
 {
+	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
   CFileItem* pItem=m_vecItems[iItem];
   CStdString strPath=pItem->m_strPath;
   CStdString strExtension;
@@ -719,18 +720,19 @@ void CGUIWindowVideoFiles::OnClick(int iItem)
 
 void CGUIWindowVideoFiles::OnInfo(int iItem)
 {
- bool                 bFolder(false);
- CStdString           strFolder="";
- int iSelectedItem=GetSelectedItem();
- CFileItem*						pItem=m_vecItems[iItem];
- CStdString           strFile=pItem->m_strPath;
- CStdString           strMovie=pItem->GetLabel();
- if (pItem->m_bIsFolder && strMovie == "..") return;
- if (pItem->m_bIsFolder)
- {
-    // IMDB is done on a folder, find first file in folder
-   strFolder=pItem->m_strPath;
-    bFolder=true;
+	if ( iItem < 0 || iItem >= (int)m_vecItems.size() ) return;
+	bool                 bFolder(false);
+	CStdString           strFolder="";
+	int iSelectedItem=GetSelectedItem();
+	CFileItem*						pItem=m_vecItems[iItem];
+	CStdString           strFile=pItem->m_strPath;
+	CStdString           strMovie=pItem->GetLabel();
+	if (pItem->m_bIsFolder && strMovie == "..") return;
+	if (pItem->m_bIsFolder)
+	{
+		// IMDB is done on a folder, find first file in folder
+		strFolder=pItem->m_strPath;
+		bFolder=true;
     VECFILEITEMS vecitems;
     m_rootDir.GetDirectory(pItem->m_strPath, vecitems);
     bool bFoundFile(false);
@@ -1308,6 +1310,10 @@ void CGUIWindowVideoFiles::OnPopupMenu(int iItem)
 	}	
 	if ( m_strDirectory.IsEmpty() )
 	{
+		if (iItem < 0)
+		{	// TODO: We should add the option here for shares to be added if there aren't any
+			return;
+		}
 		// mark the item
 		m_vecItems[iItem]->Select(true);
 
