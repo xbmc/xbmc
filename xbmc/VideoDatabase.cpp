@@ -599,20 +599,19 @@ void CVideoDatabase::DeleteMovieInfo(const CStdString& strFileNameAndPath)
 
   // get path...
  	CStdString strSQL;
-  strSQL.Format("select * from movie,path,movieinfo where movieinfo.idmovie=movie.idmovie and movie.idpath=path.idpath and strPath like '%s' and strFilename like '%s'",strPath,strFileName);
+  strSQL.Format("select movieinfo.idmovie from movie,path,movieinfo where movieinfo.idmovie=movie.idmovie and movie.idpath=path.idpath and strPath like '%s' and strFilename like '%s'",strPath,strFileName);
 	m_pDS->query(strSQL.c_str());
-	if (m_pDS->num_rows() == 0) 
+	if (m_pDS->num_rows() ==1) 
   {
-    return;
+    long lMovieId = m_pDS->fv("movieinfo.idmovie").get_asLong();
+    strSQL.Format("delete from genrelinkmovie where idmovie=%i", lMovieId);
+    m_pDS->exec(strSQL.c_str());
+
+    strSQL.Format("delete from actorlinkmovie where idmovie=%i", lMovieId);
+    m_pDS->exec(strSQL.c_str());
+
+    
+    strSQL.Format("delete from movieinfo where idmovie=%i", lMovieId);
+    m_pDS->exec(strSQL.c_str());
   }
-  long lMovieId = m_pDS->fv("movieinfo.idmovie").get_asLong();
-  strSQL.Format("delete from genrelinkmovie where idmovie=%i", lMovieId);
-  m_pDS->exec(strSQL.c_str());
-
-  strSQL.Format("delete from actorlinkmovie where idmovie=%i", lMovieId);
-  m_pDS->exec(strSQL.c_str());
-
-  
-  strSQL.Format("delete from movieinfo where idmovie=%i", lMovieId);
-  m_pDS->exec(strSQL.c_str());
 }
