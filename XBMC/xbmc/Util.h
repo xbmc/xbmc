@@ -41,7 +41,7 @@ public:
   static void GetFileSize(__int64 dwFileSize, CStdString& strFileSize);
   static void GetDate(SYSTEMTIME stTime, CStdString& strDateTime);
 	static void GetHomePath(CStdString& strPath);
-  static bool InitializeNetwork(const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway, const char* szNameServer);
+  static bool InitializeNetwork(const char* szAssignment, const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway, const char* szNameServer);
   static bool IsEthernetConnected();
 	static void GetTitleIP(CStdString& ip);
   static void ConvertTimeTToFileTime(__int64 sec, long nsec, FILETIME &ftTime);

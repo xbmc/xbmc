@@ -443,7 +443,7 @@ void CUtil::GetTitleIP(CStdString& ip)
   ip = g_szTitleIP;
 }
 
-bool CUtil::InitializeNetwork(const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway, const char* szNameServer)
+bool CUtil::InitializeNetwork(const char* szAssignment, const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway, const char* szNameServer)
 {
   if (!IsEthernetConnected())
   {
@@ -454,13 +454,13 @@ bool CUtil::InitializeNetwork(const char* szLocalAddress, const char* szLocalSub
   struct network_info networkinfo ;
   memset(&networkinfo ,0,sizeof(networkinfo ));
   bool bSetup(false);
-  if (CUtil::cmpnocase(szLocalAddress,"dhcp")==0 )
+  if (CUtil::cmpnocase(szAssignment, "dhcp")==0 )
   {
     bSetup=true;
     CLog::Log(LOGNOTICE, "use DHCP");
     networkinfo.DHCP=true;
   }
-  else if (szLocalAddress[0] && szLocalSubnet[0] && szLocalGateway[0] && szNameServer[0])
+  else if (CUtil::cmpnocase(szAssignment, "static")==0)
   {
     bSetup=true;
     CLog::Log(LOGNOTICE, "use static ip");
@@ -473,17 +473,6 @@ bool CUtil::InitializeNetwork(const char* szLocalAddress, const char* szLocalSub
   else
   {
     CLog::Log(LOGWARNING, "Not initializing network, using settings as they are setup by dashboard");
-    if ( szLocalAddress[0] || szLocalSubnet[0] || szLocalGateway[0] ||szNameServer[0])
-    {
-      CLog::Log(LOGERROR, "Error initializing network. To setup a network you must choose:");
-      CLog::Log(LOGERROR, "Static ip:"); 
-      CLog::Log(LOGERROR, "  fill in the <ipadres>, <netmask>, <defaultgateway>, <nameserver> tags in xboxmediacenter.xml");
-      CLog::Log(LOGERROR, "DHCP:");
-      CLog::Log(LOGERROR, "  just set <ipadres>DHCP</ipadres> in xboxmediacenter.xml");
-      CLog::Log(LOGERROR, "use existing settings from dashboard:");
-      CLog::Log(LOGERROR, "  leave the <ipadres>, <netmask>, <defaultgateway>, <nameserver> tags in xboxmediacenter.xml empty");
-      CLog::Log(LOGERROR, "your current setup doesnt do any of those options. You filled in some tags, but not all!!");
-    }
   }
 
   if (bSetup)

@@ -143,7 +143,7 @@ public:
 		char      szDashboard[1024];
 		int       m_iStartupWindow;
 
-
+		char	  m_strIPAssignment[10];
 		char      m_strLocalIPAdres[32];
 		char      m_strLocalNetmask[32];
 		char      m_strGateway[32];
@@ -243,6 +243,7 @@ public:
 		int       m_iSlideShowTransistionFrames;
 		int       m_iSlideShowStayTime;
 		RESOLUTION		m_GUIResolution;
+		bool		  m_bHTTPProxyEnabled;
 		int			  m_iHTTPProxyPort;
 		char		  m_szHTTPProxy[128];
 		int			  m_iWebServerPort;
