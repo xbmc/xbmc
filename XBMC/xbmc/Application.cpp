@@ -811,9 +811,9 @@ void CApplication::UpdateLCD()
 		    strTime.Format("%02.2i:%02.2i",mm,ss);
 	    }
       if (m_iPlaySpeed < 1) 
-        strIcon.Format("RW:%ix", m_iPlaySpeed);
+        strIcon.Format("\3RW:%ix", m_iPlaySpeed);
       else if (m_iPlaySpeed > 1) 
-        strIcon.Format("FF:%ix", m_iPlaySpeed);
+        strIcon.Format("\4FF:%ix", m_iPlaySpeed);
       else if (m_pPlayer->IsPaused())
         strIcon.Format("\7");
       else
@@ -855,9 +855,9 @@ void CApplication::UpdateLCD()
 		    strTime.Format("%02.2i:%02.2i",mm,ss);
 	    }
       if (m_iPlaySpeed < 1) 
-        strIcon.Format("RW:%ix", m_iPlaySpeed);
+        strIcon.Format("\3RW:%ix", m_iPlaySpeed);
       else if (m_iPlaySpeed > 1) 
-        strIcon.Format("FF:%ix", m_iPlaySpeed);
+        strIcon.Format("\4FF:%ix", m_iPlaySpeed);
       else if (m_pPlayer->IsPaused())
         strIcon.Format("\7");
       else
