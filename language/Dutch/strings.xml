@@ -26,6 +26,8 @@
 <string><id>30</id><value>Oktober</value></string>
 <string><id>31</id><value>November</value></string>
 <string><id>32</id><value>December</value></string>
+<string><id>98</id><value>Weergave: Auto</value></string> 
+<string><id>99</id><value>Weergave: Auto Groot</value></string>
 <string><id>100</id><value>Weergave:Iconen</value></string>
 <string><id>101</id><value>Weergave:Lijst</value></string>
 <string><id>102</id><value>Scannen</value></string>
@@ -130,7 +132,8 @@
 <string><id>201</id><value>Jaar:</value></string>
 <string><id>202</id><value>Tagline:</value></string> 
 <string><id>203</id><value>Plot Outline:</value></string> 
-<string><id>204</id><value>Waardering:</value></string> 
+<string><id>204</id><value>Waardering:</value></string>
+<string><id>2050</id><value>Lengte:</value></string>
 <string><id>205</id><value>Stemmen:</value></string> 
 <string><id>206</id><value>Cast:</value></string> 
 <string><id>207</id><value>Plot</value></string> 
@@ -257,7 +260,7 @@
 <string><id>330</id><value>Een moment geduld a.u.b. ...</value></string>
 <string><id>331</id><value>Comprimeren database...</value></string>
 <string><id>332</id><value>Fout tijdens comprimeren database</value></string>
-<string><id>333</id><value>Wilt u de muziek database opschonen?</value></string>
+<string><id>333</id><value>Wilt u de muziek bibliotheek opschonen?</value></string>
 <string><id>334</id><value>Muziek database opschonen</value></string>
 <string><id>335</id><value>Start</value></string>
 <string><id>336</id><value>Framerate aanpassen</value></string>
@@ -404,7 +407,7 @@
 <string><id>477</id><value>Playlist kon niet worden geladen</value></string>
 <string><id>478</id><value>On Screen Display</value></string>
 <string><id>479</id><value>Skin &amp; Taal</value></string>
-<string><id>480</id><value>Gebruikersinterface</value></string>
+<string><id>480</id><value>UIterlijk</value></string>
 <string><id>481</id><value>Geluidinstellingen</value></string>
 <string><id>482</id><value>Over XBMC</value></string>
 <string><id>483</id><value>Album</value></string>
@@ -413,7 +416,7 @@
 <string><id>486</id><value>Herhaal</value></string>
 <string><id>487</id><value>Herhaal een</value></string>
 <string><id>488</id><value>Herhaal playlist in map</value></string>
-<string><id>489</id><value>Gebruik playlists in map</value></string>
+<string><id>489</id><value>Automatisch afspelen volgend nummer</value></string>
 <string><id>490</id><value>Kies automatisch lijst of iconen in nummers</value></string>
 <string><id>491</id><value>- Gebruik grote iconen</value></string>
 <string><id>492</id><value>Vergroot ondertiteling</value></string>
@@ -457,8 +460,8 @@
 <string><id>634</id><value>Uitrekken 16:9</value></string>
 <string><id>635</id><value>Originele Grootte</value></string>
 <string><id>636</id><value>Custom</value></string>
-<string><id>700</id><value>Schoon Database op</value></string>
-<string><id>701</id><value>Verwijder oude nummers uit de Database</value></string>
+<string><id>700</id><value>Schoon Bibliotheek op</value></string>
+<string><id>701</id><value>Verwijder oude nummers uit de Bibliotheek</value></string>
 <string><id>702</id><value>Deze directory is eerder gescanned</value></string>
 <string><id>703</id><value>Kies Ja om alle nummers in deze map te updaten</value></string>
 <string><id>704</id><value>Kies Nee om alleen nieuwe nummers toe te voegen</value></string>
@@ -574,9 +577,10 @@
 <string><id>13203</id><value>Laden van profiel '%s' geslaagd</value></string>
 <string><id>13204</id><value>Laatst gebruikte profiel:</value></string>
 <string><id>13205</id><value>Onbekend</value></string>
-<string><id>13300</id><value>Fan snelheid:</value></string>
-<string><id>13301</id><value>Temperatuurregeling</value></string>
-<string><id>13302</id><value>Fan snelheid</value></string>
+<string><id>13299</id><value>Doeltemperatuur:</value></string>
+<string><id>13300</id><value>Ventilator Snelheid:</value></string>
+<string><id>13301</id><value>Automatische Temperatuurregeling</value></string>
+<string><id>13302</id><value>Ventilator Snelheidsregeling</value></string>
 <string><id>13303</id><value>Lettertype voor skin</value></string>
 <string><id>13304</id><value>Omdraaien Bi-Directionele Strings inschakelen</value></string>
 <string><id>13305</id><value>RSS Feeds inschakelen</value></string>
@@ -590,9 +594,9 @@
 <string><id>13313</id><value>Reset/Reboot</value></string>
 <string><id>13314</id><value>Muziek OSD sluittijd</value></string>
 <string><id>13315</id><value>Maak Thumbnails</value></string>
-	<string><id>13316</id><value>Recursive Thumbnails</value></string> 
+<string><id>13316</id><value>Recursieve Thumbnails</value></string> 
 <string><id>13317</id><value>Bekijk Schuifvoorstelling</value></string>
-	<string><id>13318</id><value>Recursive Schuifvoorstelling</value></string>
+<string><id>13318</id><value>Recursieve Schuifvoorstelling</value></string>
 <string><id>13319</id><value>Willekeurige volgorde</value></string>
 <string><id>13320</id><value>Stereo</value></string>
 <string><id>13321</id><value>Alleen links</value></string> 
@@ -611,7 +615,7 @@
 <string><id>13334</id><value>Pas Label Aan</value></string> 
 <string><id>13335</id><value>Maak Standaard</value></string> 
 <string><id>13336</id><value>Verwijder Knop</value></string>
-<string><id>13337</id><value>- Stereo PCM weergave</value></string>
+<string><id>13337</id><value>2 kanaals PCM weergave</value></string>
 <string><id>14000</id><value>Delen Invoegen: Uit</value></string>
 <string><id>14001</id><value>Delen Invoegen: Simpel</value></string> 
 <string><id>14002</id><value>Delen Invoegen: Fuzzy</value></string>
@@ -620,6 +624,42 @@
 <string><id>14005</id><value>Uitpakken streams lijst...</value></string>
 <string><id>14006</id><value>Downloaden van streams lijst mislukt</value></string> 
 <string><id>14007</id><value>Downloaden van playlist bestand mislukt</value></string>
+<string><id>14008</id><value>Kai notificaties aanzetten</value></string> 
+<string><id>14009</id><value>Speldirectory</value></string>
+<string><id>14010</id><value>Autoswitch Opties</value></string> 
+<string><id>14011</id><value>Autoswitching Inschakelen?</value></string> 
+<string><id>14012</id><value>Gebruik Grote Iconen</value></string> 
+<string><id>14013</id><value>Methode:</value></string> 
+<string><id>14014</id><value>Percentage:</value></string> 
+<string><id>14015</id><value>Thumbpaneel bij geen bestanden</value></string> 
+<string><id>14016</id><value>Lijstpaneel bij geen mappen</value></string> 
+<string><id>14017</id><value>Percentage Thumbnails</value></string> 
+<string><id>14018</id><value>Weergave Opties</value></string> 
+<string><id>14019</id><value>Area code 1</value></string> 
+<string><id>14020</id><value>Area code 2</value></string> 
+<string><id>14021</id><value>Area code 3</value></string> 
+<string><id>14022</id><value>Bibliotheek</value></string> 
+<string><id>14023</id><value>Geen TV</value></string> 
+<string><id>14024</id><value>Vul de dichtbijzijnste grote plaats in of US ZIP code</value></string> 
+<string><id>14025</id><value>Video vanaf Harde Schijf</value></string> 
+<string><id>14026</id><value>Video vanaf DVDRom</value></string> 
+<string><id>14027</id><value>Video vanaf Lokaal Netwerk</value></string> 
+<string><id>14028</id><value>Video vanaf Internet</value></string> 
+<string><id>14029</id><value>Audio vanaf Harde Schijf</value></string> 
+<string><id>14030</id><value>Audio vanaf DVDRom</value></string> 
+<string><id>14031</id><value>Audio vanaf Lokaal Netwerk</value></string> 
+<string><id>14032</id><value>Audio vanaf Internet</value></string> 
+<string><id>14033</id><value>DVD vanaf Harde Schijf</value></string> 
+<string><id>14034</id><value>DVD vanaf DVDRom</value></string>
+<string><id>14035</id><value>DVD vanaf Lokaal Netwerk</value></string> 
+<string><id>14036</id><value>Servers</value></string> 
+<string><id>14037</id><value>Kijk en Voel</value></string> 
+<string><id>14038</id><value>Netwerkinstellingen veranderd</value></string> 
+<string><id>14039</id><value>XBMC moet herstarten om de netwerkinstellingen</value></string> 
+<string><id>14040</id><value>te veranderen.Wilt u nu herstarten?</value></string> 
+<string><id>14041</id><value>Post Processing</value></string>
+
+
 
 
 

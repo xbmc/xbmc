@@ -111,6 +111,14 @@
     <value>Dezember</value>
   </string>
   <string>
+    <id>98</id>
+    <value>Autoansicht</value>
+  </string>
+  <string>
+    <id>99</id>
+    <value>Große Autoansicht</value>
+  </string>
+  <string>
     <id>100</id>
     <value>Symbolansicht</value>
   </string>
@@ -531,6 +539,10 @@
     <value>Bewertung:</value>
   </string>
   <string>
+    <id>2050</id>
+    <value>Spieldauer:</value>
+  </string>
+  <string>
     <id>205</id>
     <value>Abstimmung:</value>
   </string>
@@ -564,11 +576,11 @@
   </string>
   <string>
     <id>213</id>
-    <value>UI Kalibrierung</value>
+    <value>GUI zentrieren...</value>
   </string>
   <string>
     <id>214</id>
-    <value>Bildschirm kalibrieren</value>
+    <value>Bildschirm kalibrieren...</value>
   </string>
   <string>
     <id>215</id>
@@ -856,7 +868,7 @@
   </string>
   <string>
     <id>287</id>
-    <value>SRT Untertitel</value>
+    <value>Untertitel</value>
   </string>
   <string>
     <id>288</id>
@@ -1036,11 +1048,11 @@
   </string>
   <string>
     <id>333</id>
-    <value>Wollen sie die Musik-Datenbank aufräumen?</value>
+    <value>Wollen sie die Musikbibliothek aufräumen?</value>
   </string>
   <string>
     <id>334</id>
-    <value>Musik-Datenbank aufräumen</value>
+    <value>Musikbibliothek aufräumen</value>
   </string>
   <string>
     <id>335</id>
@@ -1672,7 +1684,7 @@
   </string>
   <string>
     <id>492</id>
-    <value>Untertitel vergrößern</value>
+    <value>Vob-Untertitel vergrößern</value>
   </string>
   <string>
     <id>493</id>
@@ -1836,11 +1848,11 @@
   </string>
   <string>
     <id>700</id>
-    <value>Datenbank säubern</value>
+    <value>Bibliothek aufräumen</value>
   </string>
   <string>
     <id>701</id>
-    <value>Lösche alte Musikdaten</value>
+    <value>Alte Musikdaten aus der Bibliothek löschen</value>
   </string>
   <string>
     <id>702</id>
@@ -2016,11 +2028,11 @@
   </string>
   <string>
     <id>745</id>
-    <value>Keine Informationen für diese Ansicht</value>
+    <value>Keine Informationen für diese Ansicht.</value>
   </string>
   <string>
     <id>746</id>
-    <value>Wechsle zu Dateienansicht</value>
+    <value>Bitte wieder zu Ansicht "Dateien" wechseln.</value>
   </string>
   <string>
     <id>747</id>
@@ -2056,7 +2068,7 @@
   </string>
   <string>
     <id>999</id>
-    <value>Online Spielen</value>
+    <value>Online spielen</value>
   </string>
   <string>
     <id>10000</id>
@@ -2320,7 +2332,7 @@
   </string>
   <string>
     <id>13304</id>
-    <value>Bi-Direktionale Zeichenfolgen aktivieren</value>
+    <value>links-/rechtsläufige Zeichenfolgen ermöglichen</value>
   </string>
   <string>
     <id>13305</id>
@@ -2336,11 +2348,11 @@
   </string>
   <string>
     <id>13308</id>
-    <value>Soll die xbox neu gestartet werden</value>
+    <value>Drücke 'Ja' um die XBOX neu zu starten</value>
   </string>
   <string>
     <id>13309</id>
-    <value>oder nur XBMC?</value>
+    <value>Drücke 'Nein' um XBMC neu zu laden</value>
   </string>
   <string>
     <id>13310</id>
@@ -2494,4 +2506,37 @@
     <id>14009</id>
     <value>Spiele Verzeichnis</value>
   </string>
+  <string><id>14010</id><value>Autoswitch Optionen</value></string>
+  <string><id>14011</id><value>Autoswitching aktivieren?</value></string>
+  <string><id>14012</id><value>Große Symbole verwenden</value></string>
+  <string><id>14013</id><value>Methode:</value></string>
+  <string><id>14014</id><value>Prozent:</value></string>
+  <string><id>14015</id><value>Symbole wenn keine Dateien</value></string>
+  <string><id>14016</id><value>Liste wenn keine Verzeichnisse</value></string>
+  <string><id>14017</id><value>Symbole in Prozent</value></string>
+  <string><id>14018</id><value>Ansicht</value></string>
+  <string><id>14019</id><value>Ort 1</value></string>
+  <string><id>14020</id><value>Ort 2</value></string>
+  <string><id>14021</id><value>Ort 3</value></string>
+  <string><id>14022</id><value>Bibliothek</value></string>
+  <string><id>14023</id><value>Kein TV</value></string>
+  <string><id>14024</id><value>Bitte eine nächstgelege große Stadt oder einen US ZIP code eingeben</value></string>
+  <string><id>14025</id><value>Video von Festplatte</value></string>
+  <string><id>14026</id><value>Video von DVDRom</value></string>
+  <string><id>14027</id><value>Video vom lokalen Netzwerk</value></string>
+  <string><id>14028</id><value>Video aus dem Internet</value></string>
+  <string><id>14029</id><value>Audio von Festplatte</value></string>
+  <string><id>14030</id><value>Audio von DVDRom</value></string>
+  <string><id>14031</id><value>Audio vom lokalen Netzwerk</value></string>
+  <string><id>14032</id><value>Audio aus dem Internet</value></string>
+  <string><id>14033</id><value>DVD von Festplatte</value></string>
+  <string><id>14034</id><value>DVD von DVDRom</value></string>
+  <string><id>14035</id><value>DVD vom lokalen Netzwerk</value></string>
+  <string><id>14036</id><value>Server</value></string>
+  <string><id>14037</id><value>Darstellung</value></string>
+  <string><id>14038</id><value>Netwerkeinstellungen verändert</value></string>
+  <string><id>14039</id><value>XBMC muss neu gestartet werden damit die Änderungen</value></string>
+  <string><id>14040</id><value>Wirksam werden.  Soll jetzt neu gestartet werden?</value></string>
+  <string><id>14041</id><value>Post Processing</value></string>
+  <string><id>14042</id><value>Engine IP Addresse</value></string>
 </strings>
