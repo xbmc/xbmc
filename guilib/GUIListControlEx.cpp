@@ -12,10 +12,11 @@ CGUIListControlEx::CGUIListControlEx(DWORD dwParentID, DWORD dwControlId, DWORD 
                                  const CStdString& strUpFocus, const CStdString& strDownFocus, 
                                  DWORD dwSpinColor,DWORD dwSpinX, DWORD dwSpinY,
                                  const CStdString& strFont, DWORD dwTextColor,DWORD dwSelectedColor,
-                                 const CStdString& strButton, const CStdString& strButtonFocus)
+                                 const CStdString& strButton, const CStdString& strButtonFocus,
+								 DWORD dwItemTextOffsetX, DWORD dwItemTextOffsetY)
 :CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight)
 ,m_upDown(dwControlId, 0, dwSpinX, dwSpinY, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwSpinColor, SPIN_CONTROL_TYPE_INT)
-,m_imgButton(dwControlId, 0, dwPosX, dwPosY, dwWidth, dwHeight, strButtonFocus,strButton)
+,m_imgButton(dwControlId, 0, dwPosX, dwPosY, dwWidth, dwHeight, strButtonFocus,strButton, dwItemTextOffsetX, dwItemTextOffsetY)
 {
 	m_pList = NULL;
   m_dwSelectedColor=dwSelectedColor;
@@ -28,17 +29,15 @@ CGUIListControlEx::CGUIListControlEx(DWORD dwParentID, DWORD dwControlId, DWORD 
 	m_iCursorY=0;
   m_dwTextColor=dwTextColor;
   m_strSuffix=L"|";
-	m_iTextOffsetX=0;
-	m_iTextOffsetY=0;
 	m_iImageWidth=16;
 	m_iImageHeight=16;
 	m_iSpaceBetweenItems=4;
-	m_iTextOffsetX2=0;
-	m_iTextOffsetY2=0;
 	m_bUpDownVisible = true;	// show the spin control by default
 	
 	m_dwTextColor2=dwTextColor;
 	m_dwSelectedColor2=dwSelectedColor;
+	m_dwTextOffsetX = dwItemTextOffsetX;
+	m_dwTextOffsetY = dwItemTextOffsetY;
 }
 
 CGUIListControlEx::~CGUIListControlEx(void)
@@ -474,13 +473,7 @@ void CGUIListControlEx::OnPageDown()
 }
 
 
-void CGUIListControlEx::SetTextOffsets(int iXoffset, int iYOffset,int iXoffset2, int iYOffset2)
-{
-	m_iTextOffsetX = iXoffset;
-	m_iTextOffsetY = iYOffset;
-	m_iTextOffsetX2 = iXoffset2;
-	m_iTextOffsetY2 = iYOffset2;
-}
+
 
 void CGUIListControlEx::SetImageDimensions(int iWidth, int iHeight)
 {

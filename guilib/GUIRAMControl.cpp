@@ -13,7 +13,11 @@ extern CApplication g_application;
 #define BUTTON_HEIGHT_ADJUSTMENT	5
 #define CONTROL_POSX_ADJUSTMENT		8
 
-CGUIRAMControl::CGUIRAMControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strFontName, const CStdString& strFont2Name, D3DCOLOR dwTitleColor, D3DCOLOR dwNormalColor)
+CGUIRAMControl::CGUIRAMControl(DWORD dwParentID, DWORD dwControlId, 
+							   DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight,
+							   const CStdString& strFontName, const CStdString& strFont2Name,
+							   D3DCOLOR dwTitleColor, D3DCOLOR dwNormalColor,
+							   DWORD dwTextOffsetX, DWORD dwTextOffsetY)
 :CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight)
 {
 	m_dwTitleColor		= dwTitleColor;
@@ -25,7 +29,10 @@ CGUIRAMControl::CGUIRAMControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX
 	m_dwThumbnailHeight	= 128;
 	m_dwThumbnailSpaceX = 6;
 	m_dwThumbnailSpaceY = 25;
-	m_dwTextSpaceY		= 12;
+	m_dwTextOffsetX		= dwTextOffsetX;
+	m_dwTextOffsetY		= dwTextOffsetY; // text offset from button
+
+	m_dwTextSpaceY		= 12;			 // space between buttons
 
 	m_pMonitor	= NULL;
 
@@ -35,7 +42,7 @@ CGUIRAMControl::CGUIRAMControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX
 
 	for(int i=0;i<RECENT_MOVIES;i++)
 	{
-		m_pTextButton[i] = new CGUIButtonControl(m_dwControlID,0,0,0,0,0,"button-focus.png","");
+		m_pTextButton[i] = new CGUIButtonControl(m_dwControlID,0,0,0,0,0,"button-focus.png","",dwTextOffsetX,dwTextOffsetY);
 		m_pTextButton[i]->SetLabel(strFont2Name,"",m_dwTextColor);
 	}
 

@@ -34,7 +34,8 @@ public:
                   const CStdString& strUpFocus, const CStdString& strDownFocus, 
                   DWORD dwSpinColor,DWORD dwSpinX, DWORD dwSpinY,
                   const CStdString& strFont, DWORD dwTextColor,DWORD dwSelectedColor,
-                  const CStdString& strButton, const CStdString& strButtonFocus);
+                  const CStdString& strButton, const CStdString& strButtonFocus,
+				  DWORD dwItemTextOffsetX, DWORD dwItemTextOffsetY);
   virtual ~CGUIListControlEx(void);
   virtual void 					Render();
   virtual void 					OnAction(const CAction &action) ;
@@ -44,7 +45,6 @@ public:
   virtual void 					AllocResources() ;
   virtual void 					FreeResources() ;
   void         					SetScrollySuffix(const CStdString& wstrSuffix);
-	void				 					SetTextOffsets(int iXoffset, int iYOffset, int iXoffset2, int iYOffset2);
 	void				 					SetImageDimensions(int iWidth, int iHeight);
 	void									SetItemHeight(int iHeight);
 	void									SetSpace(int iHeight);
@@ -69,12 +69,11 @@ public:
 	DWORD									GetSpinY() const { return m_upDown.GetYPosition();};
 	DWORD									GetSpace() const { return m_iSpaceBetweenItems;};
 	DWORD									GetItemHeight() const { return m_iItemHeight;	};
-	DWORD									GetTextOffsetX() const { return m_iTextOffsetX;};
-	DWORD									GetTextOffsetY() const { return m_iTextOffsetY;};
-	DWORD									GetTextOffsetX2() const { return m_iTextOffsetX2;};
-	DWORD									GetTextOffsetY2() const { return m_iTextOffsetY2;};
 	DWORD									GetImageWidth() const { return m_iImageWidth;};
 	DWORD									GetImageHeight() const { return m_iImageHeight;};
+	DWORD	GetTextOffsetX() const { return m_dwTextOffsetX;};
+	DWORD	GetTextOffsetY() const { return m_dwTextOffsetY;};
+
 	const wstring&				GetSuffix() const { return m_strSuffix;};
 	const CStdString			GetButtonFocusName() const { return m_imgButton.GetTexutureFocusName();};
 	const CStdString			GetButtonNoFocusName() const { return m_imgButton.GetTexutureNoFocusName();};
@@ -92,15 +91,14 @@ protected:
   int                   m_iItemHeight;
   int                   m_iSelect;
 	int										m_iCursorY;
-	int										m_iTextOffsetX;
-	int										m_iTextOffsetY;
-	int										m_iTextOffsetX2;
-	int										m_iTextOffsetY2;
 	int										m_iImageWidth;
 	int										m_iImageHeight;
 	bool				m_bUpDownVisible;
   DWORD                 m_dwTextColor,m_dwTextColor2;
   DWORD                 m_dwSelectedColor,m_dwSelectedColor2;
+  	DWORD	m_dwTextOffsetX;
+	DWORD	m_dwTextOffsetY;
+
   CGUIFont*             m_pFont;
 	CGUIFont*             m_pFont2;
   CGUISpinControl       m_upDown;

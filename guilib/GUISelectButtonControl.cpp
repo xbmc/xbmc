@@ -9,12 +9,15 @@ CGUISelectButtonControl::CGUISelectButtonControl(DWORD dwParentID, DWORD dwContr
 																								 DWORD dwWidth, DWORD dwHeight, 
 																								 const CStdString& strButtonFocus,
 																								 const CStdString& strButton,
+																								 DWORD dwTextOffsetX,
+																								 DWORD dwTextOffsetY,
 																								 const CStdString& strSelectBackground,
 																								 const CStdString& strSelectArrowLeft,
 																								 const CStdString& strSelectArrowLeftFocus,
 																								 const CStdString& strSelectArrowRight,
-																								 const CStdString& strSelectArrowRightFocus)
-:CGUIButtonControl(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight, strButtonFocus, strButton)
+																								 const CStdString& strSelectArrowRightFocus
+																								 )
+:CGUIButtonControl(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight, strButtonFocus, strButton, dwTextOffsetX, dwTextOffsetY)
 ,m_imgBackground(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight,strSelectBackground)
 ,m_imgLeft(dwParentID, dwControlId, dwPosX, dwPosY, 16, 16,strSelectArrowLeft)
 ,m_imgLeftFocus(dwParentID, dwControlId, dwPosX, dwPosY, 16, 16,strSelectArrowLeftFocus)
