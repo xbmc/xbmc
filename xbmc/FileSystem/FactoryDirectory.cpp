@@ -8,6 +8,7 @@
 #include "XBMSDirectory.h"
 #include "CDDADirectory.h"
 #include "RTVDirectory.h"
+#include "SndtrkDirectory.h"
 #include "../url.h"
 
 CFactoryDirectory::CFactoryDirectory(void)
@@ -54,6 +55,10 @@ CDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 	if (strProtocol=="rtv")
 	{
 		return (CDirectory*)new CRTVDirectory();
+	}
+	if (strProtocol=="soundtrack")
+	{
+		return (CDirectory*)new CSndtrkDirectory();
 	}
 
   return (CDirectory*)new CHDDirectory();
