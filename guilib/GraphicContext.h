@@ -98,8 +98,8 @@ public:
 	RESOLUTION						GetVideoResolution() const;
 	void									ResetScreenParameters(RESOLUTION res);
 	void									SetOffset(int iXoffset, int iYoffset);
-	void									Lock();
-	void									Unlock();
+	void									Lock() { EnterCriticalSection(&m_critSection); }
+	void									Unlock() { LeaveCriticalSection(&m_critSection); }
 	void									EnablePreviewWindow(bool bEnable);
 	void									ScalePosToScreenResolution(DWORD& x, DWORD&  y, RESOLUTION res);
 	void									ScaleRectToScreenResolution(DWORD& left, DWORD&  top, DWORD& right, DWORD& bottom, RESOLUTION res);
