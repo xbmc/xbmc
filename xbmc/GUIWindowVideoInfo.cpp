@@ -3,9 +3,11 @@
 #include "graphiccontext.h"
 #include "localizestrings.h"
 #include "utils/http.h"
+#include "utils/log.h"
 #include "util.h"
 #include "picture.h"
 #include "application.h"
+#include "videodatabase.h"
 
 #define	CONTROL_TITLE					20
 #define	CONTROL_DIRECTOR			21
@@ -24,6 +26,7 @@
 
 #define CONTROL_BTN_TRACKS		5
 #define CONTROL_BTN_REFRESH		6
+#define CONTROL_DISC          7
 
 CGUIWindowVideoInfo::CGUIWindowVideoInfo(void)
 :CGUIDialog(0)
@@ -70,6 +73,57 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 			g_application.DisableOverlay();
 			m_pTexture=NULL;
 			m_bViewReview=true;
+      CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_DISC,0,0,NULL);
+      g_graphicsContext.SendMessage(msg);         
+      {
+        CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_DISC,0,0);
+				msg2.SetLabel("HD");
+        g_graphicsContext.SendMessage(msg2);         
+      }
+      {
+        CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_DISC,0,0);
+				msg2.SetLabel("share");
+			  g_graphicsContext.SendMessage(msg2);         
+      }
+			for (int i=1; i < 100; ++i)
+			{
+				CStdString strItem;
+        strItem.Format("DVD#%i", i);
+				CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_DISC,0,0);
+				msg2.SetLabel(strItem);
+				g_graphicsContext.SendMessage(msg2);    
+			}
+      
+      CONTROL_DISABLE(GetID(),CONTROL_DISC);
+      int iItem=0;
+      if ( CUtil::IsISO9660(m_pMovie->m_strPath) || CUtil::IsDVD(m_pMovie->m_strPath) )
+      {
+        CLog::Log("IMDB:%s label:%s" ,m_pMovie->m_strPath.c_str(),m_pMovie->m_strDVDLabel.c_str());
+        CONTROL_ENABLE(GetID(),CONTROL_DISC);
+        char szNumber[1024];
+        int iPos=0;
+        for (int i=0; i < (int)m_pMovie->m_strDVDLabel.size();++i)
+        {
+          char kar=m_pMovie->m_strDVDLabel.GetAt(i);
+          if (kar >='0'&& kar <= '9' )
+          {
+            szNumber[iPos]=kar;
+            iPos++;
+            szNumber[iPos]=0;
+          }
+        }
+        int iDVD;
+        sscanf(szNumber,"%i", &iDVD);
+        if (iDVD<=0) iDVD=1;
+        iItem=iDVD+1;
+      }
+      else 
+      {
+        if (CUtil::IsHD(m_pMovie->m_strPath)) iItem=0;
+        else if (CUtil::IsRemote(m_pMovie->m_strPath)) iItem=1;
+      }
+			CGUIMessage msgSet(GUI_MSG_ITEM_SELECT,GetID(),CONTROL_DISC,iItem,0,NULL);
+			g_graphicsContext.SendMessage(msgSet);         
 			Refresh();
 			return true;
     }
@@ -98,6 +152,27 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 				m_bViewReview=!m_bViewReview;
 				Update();
 			}
+      if (iControl==CONTROL_DISC)
+      {
+        int iItem=0;
+        CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),iControl,0,0,NULL);
+        g_graphicsContext.SendMessage(msg);         
+				wstring wstrHD=msg.GetLabel();
+				CStdString strItem;
+				CUtil::Unicode2Ansi(wstrHD, strItem);
+        if (strItem!="HD" && strItem !="share") 
+        {
+          long lMovieId;
+          sscanf(m_pMovie->m_strSearchString.c_str(),"%i", &lMovieId);
+          if (lMovieId>0)
+          {
+            CVideoDatabase dbs;
+            dbs.Open();
+            dbs.SetDVDLabel( lMovieId,strItem);
+            dbs.Close();
+          }
+        }
+      }
     }
     break;
   }
