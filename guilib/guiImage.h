@@ -72,5 +72,6 @@ protected:
 	LPDIRECT3DPALETTE8			m_pPalette;
   int                     m_iRenderWidth;
   int                     m_iRenderHeight;
+	bool										m_bWasVisible;
 };
 #endif
