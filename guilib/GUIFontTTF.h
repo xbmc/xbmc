@@ -24,7 +24,9 @@ using namespace std;
 	*/
 class CGUIFontTTF: public CGUIFont
 {
+
 public:
+
   CGUIFontTTF(const CStdString& strFontName);
   virtual ~CGUIFontTTF(void);
 
@@ -52,8 +54,7 @@ protected:
   int			m_iStyle;
   CStdString	m_strFilename;
 
-  static		stdext::hash_map<string, XFONT*>	m_usedTTFs;
-  static		stdext::hash_map<string, int>		m_usedTTFRefCount;
+  LPDIRECT3DSURFACE8 m_pSurface;
 };
 
 #endif

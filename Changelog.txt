@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 02-10-2004 fixed: display performance when TTF font was selected
   - 02-10-2004 updated: German language file
   - 02-10-2004 changed: my music, albums whose first artist is the same is and album of this artist now
   - 02-10-2004 changed: my music, scanning now deletes the old scanned data first before rescanning
