@@ -199,9 +199,9 @@ public:
 	bool		IsOpen();
 	void		Close() ;
 	void		AddSong(const CSong& song,bool bCheck=true);
-	long		AddAlbumInfo(const CAlbum& album);
-	long		UpdateAlbumInfo(const CAlbum& album);
-	bool		GetAlbumInfo(const CStdString& strAlbum, const CStdString& strPath, CAlbum& album);
+	long		AddAlbumInfo(const CAlbum& album, const VECSONGS& songs);
+	long		UpdateAlbumInfo(const CAlbum& album, const VECSONGS& songs);
+	bool		GetAlbumInfo(const CStdString& strAlbum, const CStdString& strPath, CAlbum& album, VECSONGS& songs);
 	bool		GetSong(const CStdString& strTitle, CSong& song);
 	bool		GetSongByFileName(const CStdString& strFileName, CSong& song);
 	bool		GetSongsByPath(const CStdString& strPath, VECSONGS& songs);
@@ -254,6 +254,9 @@ protected:
 	long		AddPath(const CStdString& strPath);
 	void		AddExtraArtists(const VECARTISTS& vecArtists, long lSongId, long lAlbumId, bool bCheck=true);
 	void		AddExtraGenres(const VECGENRES& vecGenres, long lSongId, long lAlbumId, bool bCheck=true);
+	bool		AddAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs);
+	bool		GetAlbumInfoSongs(long idAlbumInfo, VECSONGS& songs);
+	bool		UpdateAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs);
 	void		RemoveInvalidChars(CStdString& strTxt);
 
 private:
