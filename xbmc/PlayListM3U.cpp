@@ -91,7 +91,6 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
 			CStdString strFileName=szLine;
 			CUtil::RemoveCRLF(strFileName);
 			CUtil::GetQualifiedFilename(strBasePath,strFileName);
-			CUtil::GetFileName(
 			CPlayListItem newItem(strFileName, strFileName, 0);
 			Add(newItem);
 		}
