@@ -2,7 +2,7 @@
     $Id$
 
     Copyright (C) 2000 Herbert Valerio Riedel <hvr@gnu.org>
-    Copyright (C) 2003, 2004 Rocky Bernstein <rocky@panix.com>
+    Copyright (C) 2003, 2004, 2005 Rocky Bernstein <rocky@panix.com>
 
     See also iso9660.h by Eric Youngdale (1993).
 
@@ -25,7 +25,9 @@
 */
 /*!
  * \file iso9660.h 
- * \brief Header for libiso9660: the ISO-9660 filesystem library.
+ *
+ * \brief The top-level interface eader for libiso9660: the ISO-9660
+ * filesystem library; applications include this.
 */
 
 
@@ -50,41 +52,43 @@
 
     For ISO-9660 Level 1, the maximum needed string length is:
 
-\verbatim  
+@code
   	 30 chars (filename + ext)
     +	  2 chars ('.' + ';')
     +	  5 chars (strlen("32767"))
     +	  1 null byte
    ================================
     =	 38 chars
-\endverbatim 
+@endcode
+
 */
 
-/*! size in bytes of the filename portion + null byte */
+
+/*! \brief size in bytes of the filename portion + null byte */
 #define LEN_ISONAME     31
 
-/*! Max # characters in the entire ISO 9660 filename. */
+/*! \brief Maximum number of characters in the entire ISO 9660 filename. */
 #define MAX_ISONAME     37
 
-/*! Max # characters in the entire ISO 9660 filename. */
+/*! \brief Maximum number of characters in the entire ISO 9660 filename. */
 #define MAX_ISOPATHNAME 255
 
-/*! Max # characters in an perparer id. */
+/*! \brief Maximum number of characters in an perparer id. */
 #define ISO_MAX_PREPARER_ID 128
 
-/*! Max # characters in an publisher id. */
+/*! \brief Maximum number of characters in an publisher id. */
 #define ISO_MAX_PUBLISHER_ID 128
 
-/*! Max # characters in an application id. */
+/*! \brief Maximum number of characters in an application id. */
 #define ISO_MAX_APPLICATION_ID 128
 
-/*! Max # characters in an system id. */
+/*! \brief Maximum number of characters in an system id. */
 #define ISO_MAX_SYSTEM_ID 32
 
-/*! Max # characters in an volume id. */
+/*! \brief Maximum number of characters in an volume id. */
 #define ISO_MAX_VOLUME_ID 32
 
-/*! Max # characters in an volume-set id. */
+/*! \brief Maximum number of characters in an volume-set id. */
 #define ISO_MAX_VOLUMESET_ID 128
 
 /**! ISO 9660 directory flags. */
@@ -232,7 +236,7 @@ struct iso9660_pvd {
   uint32_t         opt_type_m_path_table;        /**< 732 encoded */
   iso9660_dir_t    root_directory_record;        /**< See section 9.1 of
                                                     ISO 9660 spec. */
-  char             root_directory_filename;      /**< Is \0 */
+  char             root_directory_filename;      /**< Is '\\0' */
   char             volume_set_id[ISO_MAX_VOLUMESET_ID];    /**< dchars */
   char             publisher_id[ISO_MAX_PUBLISHER_ID];     /**< achars */
   char             preparer_id[ISO_MAX_PREPARER_ID];       /**< achars */
@@ -371,14 +375,14 @@ typedef struct _iso9660 iso9660_t;
   Open an ISO 9660 image for reading. Maybe in the future we will have
   a mode. NULL is returned on error.
 */
-  iso9660_t *iso9660_open (const char *psz_pathname /*flags, mode */);
+  iso9660_t *iso9660_open (const char *psz_path /*flags, mode */);
 
 /*!
   Open an ISO 9660 image for reading allowing various ISO 9660
   extensions.  Maybe in the future we will have a mode. NULL is
   returned on error.
 */
-  iso9660_t *iso9660_open_ext (const char *psz_pathname, 
+  iso9660_t *iso9660_open_ext (const char *psz_path, 
                                iso_extension_mask_t iso_extension_mask);
 
 /*!
@@ -399,7 +403,7 @@ typedef struct _iso9660 iso9660_t;
   Read the Primary Volume Descriptor for a CD.
   True is returned if read, and false if there was an error.
 */
-  bool iso9660_fs_read_pvd ( const CdIo *p_cdio, 
+  bool iso9660_fs_read_pvd ( const CdIo_t *p_cdio, 
                              /*out*/ iso9660_pvd_t *p_pvd );
 
 /*!
@@ -414,7 +418,7 @@ typedef struct _iso9660 iso9660_t;
   Primary Volume Descriptor (PVD) and perhaps a Supplemental Volume 
   Descriptor if (Joliet) extensions are acceptable.
 */
-  bool iso9660_fs_read_superblock (CdIo *p_cdio, 
+  bool iso9660_fs_read_superblock (CdIo_t *p_cdio, 
                                    iso_extension_mask_t iso_extension_mask);
 
 /*!
@@ -489,7 +493,7 @@ int iso9660_name_translate(const char *psz_oldname, char *psz_newname);
 
    The length of the translated string is returned.
 */
-int iso9660_name_translate_ext(const char *old, char *new, 
+int iso9660_name_translate_ext(const char *psz_old, char *psz_new, 
                                uint8_t i_joliet_level);
 
 /*!  
@@ -511,27 +515,27 @@ char *iso9660_strncpy_pad(char dst[], const char src[], size_t len,
 ======================================================================*/
 
 /*!
-  Check that pathname is a valid ISO-9660 directory name.
+  Check that psz_path is a valid ISO-9660 directory name.
 
   A valid directory name should not start out with a slash (/), 
   dot (.) or null byte, should be less than 37 characters long, 
   have no more than 8 characters in a directory component 
   which is separated by a /, and consist of only DCHARs. 
 
-  True is returned if pathname is valid.
+  True is returned if psz_path is valid.
  */
-bool iso9660_dirname_valid_p (const char pathname[]);
+bool iso9660_dirname_valid_p (const char psz_path[]);
 
 /*!  
-  Take pathname and a version number and turn that into a ISO-9660
+  Take psz_path and a version number and turn that into a ISO-9660
   pathname.  (That's just the pathname followd by ";" and the version
   number. For example, mydir/file.ext -> MYDIR/FILE.EXT;1 for version
   1. The resulting ISO-9660 pathname is returned.
 */
-char *iso9660_pathname_isofy (const char pathname[], uint16_t i_version);
+char *iso9660_pathname_isofy (const char psz_path[], uint16_t i_version);
 
 /*!
-  Check that pathname is a valid ISO-9660 pathname.  
+  Check that psz_path is a valid ISO-9660 pathname.  
 
   A valid pathname contains a valid directory name, if one appears and
   the filename portion should be no more than 8 characters for the
@@ -539,9 +543,9 @@ char *iso9660_pathname_isofy (const char pathname[], uint16_t i_version);
   dot). There should be exactly one dot somewhere in the filename
   portion and the filename should be composed of only DCHARs.
   
-  True is returned if pathname is valid.
+  True is returned if psz_path is valid.
  */
-bool iso9660_pathname_valid_p (const char pathname[]);
+bool iso9660_pathname_valid_p (const char psz_path[]);
 
 /*=====================================================================
   directory tree 
@@ -574,7 +578,7 @@ iso9660_dir_calc_record_size (unsigned int namelen, unsigned int su_len);
 
    Returns stat_t of entry if we found lsn, or NULL otherwise.
  */
-iso9660_stat_t *iso9660_find_fs_lsn(CdIo *p_cdio, lsn_t i_lsn);
+iso9660_stat_t *iso9660_find_fs_lsn(CdIo_t *p_cdio, lsn_t i_lsn);
 
 
 /*!
@@ -587,48 +591,45 @@ iso9660_stat_t *iso9660_find_ifs_lsn(const iso9660_t *p_iso, lsn_t i_lsn);
 
 
 /*!
-  Get file status for pathname into stat. NULL is returned on error.
+  Return file status for psz_path. NULL is returned on error.
  */
-iso9660_stat_t *iso9660_fs_stat (CdIo *p_cdio, const char pathname[]);
+iso9660_stat_t *iso9660_fs_stat (CdIo_t *p_cdio, const char psz_path[]);
   
 
 /*!
-  Get file status for pathname into stat. NULL is returned on error.
-  pathname version numbers in the ISO 9660
-  name are dropped, i.e. ;1 is removed and if level 1 ISO-9660 names
-  are lowercased.
+  Return file status for path name psz_path. NULL is returned on error.
+  pathname version numbers in the ISO 9660 name are dropped, i.e. ;1
+  is removed and if level 1 ISO-9660 names are lowercased.
  */
-iso9660_stat_t *iso9660_fs_stat_translate (CdIo *p_cdio, 
-                                           const char pathname[], 
+iso9660_stat_t *iso9660_fs_stat_translate (CdIo_t *p_cdio, 
+                                           const char psz_path[], 
                                            bool b_mode2);
 
 /*!
-  Get file status for pathname into stat. NULL is returned on error.
+  Return file status for pathname. NULL is returned on error.
  */
-iso9660_stat_t *iso9660_ifs_stat (iso9660_t *p_iso, const char pathname[]);
+iso9660_stat_t *iso9660_ifs_stat (iso9660_t *p_iso, const char psz_path[]);
 
 
-/*!
-  Get file status for pathname into stat. NULL is returned on error.
-  pathname version numbers in the ISO 9660
-  name are dropped, i.e. ;1 is removed and if level 1 ISO-9660 names
-  are lowercased.
+/*!  Return file status for path name psz_path. NULL is returned on
+  error.  pathname version numbers in the ISO 9660 name are dropped,
+  i.e. ;1 is removed and if level 1 ISO-9660 names are lowercased.
  */
 iso9660_stat_t *iso9660_ifs_stat_translate (iso9660_t *p_iso, 
-                                            const char pathname[]);
+                                            const char psz_path[]);
 
-/*! 
-  Read pathname (a directory) and return a list of iso9660_stat_t
-  of the files inside that. The caller must free the returned result.
+/*!  Read psz_path (a directory) and return a list of iso9660_stat_t
+  pointers for the files inside that directory. The caller must free the
+  returned result.
 */
-CdioList * iso9660_fs_readdir (CdIo *p_cdio, const char pathname[], 
+CdioList_t * iso9660_fs_readdir (CdIo_t *p_cdio, const char psz_path[], 
                                bool b_mode2);
 
-/*! 
-  Read pathname (a directory) and return a list of iso9660_stat_t
-  of the files inside that. The caller must free the returned result.
+/*!  Read psz_path (a directory) and return a list of iso9660_stat_t
+  pointers for the files inside that directory. The caller must free
+  the returned result.
 */
-CdioList * iso9660_ifs_readdir (iso9660_t *p_iso, const char pathname[]);
+CdioList_t * iso9660_ifs_readdir (iso9660_t *p_iso, const char psz_path[]);
 
 /*!
   Return the PVD's application ID.
@@ -761,9 +762,9 @@ uint16_t
 iso9660_pathtable_m_add_entry (void *pt, const char name[], uint32_t extent,
                                uint16_t parent);
 
-/*=====================================================================
-                 Volume Descriptors
-======================================================================*/
+  /**=====================================================================
+     Volume Descriptors
+     ======================================================================*/
 
 void
 iso9660_set_pvd (void *pd, const char volume_id[], const char application_id[],
