@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 09-01-2005 updated: Chinese (Traditional) language file (Thnx to iikii)
+  - 09-01-2005 updated: Chinese (Simple) language file (Thnx to iikii)
   - 09-01-2005 fixed: Pathes in progress dialog where not correctly shortened
   - 09-01-2005 changed: minor GUIThumbnailPanel performance tweaks
   - 09-01-2005 fixed: scanning smb shares the second time doesn't show the add/rescan dialog

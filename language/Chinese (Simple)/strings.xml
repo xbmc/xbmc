@@ -27,8 +27,8 @@
   <string><id>30</id><value>Ê®ÔÂ</value></string>
   <string><id>31</id><value>Ê®Ò»ÔÂ</value></string>
   <string><id>32</id><value>Ê®¶şÔÂ</value></string>
-  <string><id>100</id><value>ÊÓÍ¼£ºÍ¼±ê</value></string>
-  <string><id>101</id><value>ÊÓÍ¼£ºÁĞ±í</value></string>
+  <string><id>100</id><value>²é¿´£ºÍ¼±ê</value></string>
+  <string><id>101</id><value>²é¿´£ºÁĞ±í</value></string>
   <string><id>102</id><value>É¨Ãè</value></string>
   <string><id>103</id><value>ÅÅĞò£ºÃû×Ö</value></string>
   <string><id>104</id><value>ÅÅĞò£ºÈÕÆÚ</value></string>
@@ -122,30 +122,31 @@
   <string><id>192</id><value>Çå³ı</value></string>
   <string><id>193</id><value>É¨Ãè</value></string>
   <string><id>194</id><value>²éÕÒ...</value></string>
-  <string><id>195</id><value>Ã»ÓĞ·¢ÏÖIMDBĞÅÏ¢</value></string>
+  <string><id>195</id><value>Ã»ÓĞ·¢ÏÖIMDbĞÅÏ¢</value></string>
   <string><id>196</id><value>Ñ¡ÔñÓ°Æ¬:</value></string>
-  <string><id>197</id><value>¶ÁÈ¡ IMDB ĞÅÏ¢</value></string>
+  <string><id>197</id><value>¶ÁÈ¡IMDbĞÅÏ¢</value></string>
   <string><id>198</id><value>¶ÁÈ¡Ó°Æ¬ÏêÏ¸×ÊÁÏ</value></string>
   <string><id>199</id><value>µ¼Ñİ:</value></string>
-  <string><id>200</id><value>×÷Õß:</value></string>
+  <string><id>200</id><value>±à¾ç:</value></string>
   <string><id>201</id><value>Äê:</value></string>
-  <string><id>202</id><value>Tagline:</value></string>
-  <string><id>203</id><value>Plot outline:</value></string>
-  <string><id>204</id><value>Rating:</value></string>
+  <string><id>202</id><value>±êÓï:</value></string>
+  <string><id>203</id><value>¾çÇé´ó¸Ù:</value></string>
+  <string><id>204</id><value>ÆÀ·Ö:</value></string>
+  <string><id>2050</id><value>Ê±³¤:</value></string>
   <string><id>205</id><value>Votes:</value></string>
   <string><id>206</id><value>ÑİÔ±±í</value></string>
-  <string><id>207</id><value>Plot</value></string>
+  <string><id>207</id><value>¾çÇé¼ò½é</value></string>
   <string><id>208</id><value>²¥·Å</value></string>
   <string><id>209</id><value>Ïòºó</value></string>
   <string><id>210</id><value>ÏòÇ°</value></string>
   <string><id>211</id><value>²éÕÒÓ¦ÓÃÈí¼ş</value></string>
   <string><id>212</id><value>ÕÒµ½Ó¦ÓÃÈí¼ş</value></string>
-  <string><id>213</id><value>UI Ğ£×¼</value></string>
+  <string><id>213</id><value>½çÃæĞ£×¼</value></string>
   <string><id>214</id><value>ÆÁÄ»Ğ£×¼</value></string>
   <string><id>215</id><value>Èá»¯</value></string>
   <string><id>216</id><value>Ëõ·Å</value></string>
   <string><id>217</id><value>ÑÓÉì</value></string>
-  <string><id>218</id><value>DVD Çı¶¯Æ÷</value></string>
+  <string><id>218</id><value>DVDÇı¶¯Æ÷</value></string>
   <string><id>219</id><value>Çë·ÅÈëÅÌÆ¬</value></string>
   <string><id>220</id><value>Ô¶³Ì¹²Ïí</value></string>
   <string><id>221</id><value>ÍøÂçÎ´Á¬½Ó</value></string>
@@ -156,7 +157,7 @@
   <string><id>226</id><value>¿ªÆô PAL60</value></string>
   <string><id>227</id><value>¿ªÆô CDDB</value></string>
   <string><id>228</id><value>Ëæ»ú²¥·ÅÁĞ±í</value></string>
-  <string><id>229</id><value>HD Spindown time (mins)</value></string>
+  <string><id>229</id><value>¹Ø±ÕÓ²ÅÌ ¿ÕÏĞÊ±¼ä (·Ö)</value></string>
   <string><id>230</id><value>ÂË¾µ</value></string>
   <string><id>231</id><value>None</value></string>
   <string><id>232</id><value>Point</value></string>
@@ -176,7 +177,7 @@
   <string><id>247</id><value>½Å±¾</value></string>
   <string><id>248</id><value>ÓïÑÔ</value></string>
   <string><id>249</id><value>ÒôÀÖ</value></string>
-  <string><id>250</id><value>Visualisation</value></string>
+  <string><id>250</id><value>ÊÓ¾õĞ§¹û</value></string>
   <string><id>251</id><value>Ñ¡ÔñÄ¿µÄÄ¿Â¼</value></string>
   <string><id>252</id><value>Êä³öµ½ËùÓĞÑïÉùÆ÷</value></string>
   <string><id>253</id><value>ÆµµÀ</value></string>
@@ -203,7 +204,7 @@
   <string><id>274</id><value>×ÖÄ»Î»ÖÃ</value></string>
   <string><id>275</id><value>ÏñËØ±ÈÖµµ÷Õû</value></string>
   <string><id>276</id><value>ÒÆ¶¯¼ıÍ·¸Ä±ä±ß¿ò</value></string>
-  <string><id>277</id><value>ÒÆ¶¯Ìõ¸Ä±ä×ÖÄ»µÄÎ»ÖÃ</value></string>
+  <string><id>277</id><value>ÒÆ¶¯ÏßÌõ¸Ä±ä×ÖÄ»µÄÎ»ÖÃ</value></string>
   <string><id>278</id><value>±ä¶¯·½¿éÊ¹ÆäÍêÃÀ</value></string>
   <string><id>279</id><value>²»ÄÜ¶ÁÈ¡ÉèÖÃ</value></string>
   <string><id>280</id><value>Ê¹ÓÃÄ¬ÈÏfallbacks</value></string>
@@ -211,9 +212,9 @@
   <string><id>282</id><value>ÕÒµ½ %i Ìõ</value></string>
   <string><id>283</id><value>²éÕÒ½á¹û</value></string>
   <string><id>284</id><value>ÎŞ½á¹û</value></string>
-  <string><id>285</id><value>Deinterlace filter</value></string>
+  <string><id>285</id><value>·´½»´íÂË¾µ</value></string>
   <string><id>286</id><value>ºóÆÚÂË¾µ</value></string>
-  <string><id>287</id><value>SRT×ÖÄ»</value></string>
+  <string><id>287</id><value>×ÖÄ»</value></string>
   <string><id>288</id><value>×ÖÌå</value></string>
   <string><id>289</id><value>³ß´ç</value></string>
   <string><id>290</id><value>ÒôÁ¿·Å´ó (dB)</value></string>
@@ -273,27 +274,27 @@
   <string><id>345</id><value>Äê</value></string>
   <string><id>346</id><value>¶ÑÕ»</value></string>
   <string><id>347</id><value>·Ç¶ÑÕ»</value></string>
-  <string><id>348</id><value>Flatten Directory Hierarchy</value></string>
+  <string><id>348</id><value>Õ¹¿ªÄ¿Â¼²ã¼¶</value></string>
   <string><id>349</id><value>Ö»ÏÔÊ¾Default.xbe</value></string>
   <string><id>350</id><value>³ÌĞò</value></string>
   <string><id>351</id><value>¹Ø</value></string>
   <string><id>352</id><value>»è°µ</value></string>
   <string><id>353</id><value>ºÚ</value></string>
   <string><id>354</id><value>Matrix Trails</value></string>
-  <string><id>355</id><value>ÆÁ±£¿ÕÏĞÊ±¼ä</value></string>
+  <string><id>355</id><value>ÆÁ±£ ¿ÕÏĞÊ±¼ä</value></string>
   <string><id>356</id><value>ÆÁÄ»±£»¤Ä£Ê½</value></string>
-  <string><id>357</id><value>¹Ø»ú¿ÕÏĞÊ±¼ä</value></string>
+  <string><id>357</id><value>¹Ø»ú ¿ÕÏĞÊ±¼ä</value></string>
   <string><id>358</id><value>È«²¿×¨¼­</value></string>
   <string><id>359</id><value>ĞÂµÄ×¨¼­</value></string>
   <string><id>360</id><value>ÆÁÄ»±£»¤</value></string>
-  <string><id>361</id><value>R. »ÃµÆÆ¬</value></string>
+  <string><id>361</id><value>R.»ÃµÆÆ¬</value></string>
   <string><id>362</id><value>ÆÁÄ»±£»¤Ë¥¼õ¼¶±ğ(%)</value></string>
   <string><id>363</id><value>ÅÅĞò£ºÎÄ¼ş</value></string>
   <string><id>364</id><value>DD/DTS Multichannel Passthrough</value></string>
   <string><id>365</id><value>ÅÅĞò£ºÃû×Ö</value></string>
   <string><id>366</id><value>ÅÅĞò£ºÄê</value></string>
   <string><id>367</id><value>ÅÅĞò£ºÆÀ·Ö</value></string>
-  <string><id>368</id><value>IMDB</value></string>
+  <string><id>368</id><value>IMDb</value></string>
   <string><id>369</id><value>±êÌâ</value></string>
   <string><id>370</id><value>±©·çÓê</value></string>
   <string><id>371</id><value>¾Ö²¿</value></string>
@@ -392,17 +393,17 @@
   <string><id>465</id><value>¶Ô±È¶È</value></string>
   <string><id>466</id><value>Gamma</value></string>
   <string><id>467</id><value>ÀàĞÍ</value></string>
-  <string><id>468</id><value>ÒÆ¶¯Ìõ¸Ä±ä²Ëµ¥Î»ÖÃ</value></string>
+  <string><id>468</id><value>ÒÆ¶¯ÏßÌõ¸Ä±ä²¥·Å¹¤¾ßÌõÎ»ÖÃ</value></string>
   <string><id>469</id><value>OSD Î»ÖÃ</value></string>
   <string><id>470</id><value>Credits</value></string>
   <string><id>471</id><value>Modchip</value></string>
-  <string><id>472</id><value>OSD ³¬Ê±</value></string>
+  <string><id>472</id><value>ÊÓÆµ²¥·Å¹¤¾ßÌõ ³¬Ê±</value></string>
   <string><id>473</id><value>¸ßÖÊÁ¿È¡Ñù</value></string>
   <string><id>474</id><value>¹Ø</value></string>
   <string><id>475</id><value>Ö»ÓĞÒôÀÖ</value></string>
   <string><id>476</id><value>ÒôÀÖ &amp; ÊÓÆµ</value></string>
   <string><id>477</id><value>²»ÄÜ¶ÁÈ¡²¥·ÅÁĞ±í</value></string>
-  <string><id>478</id><value>OSD</value></string>
+  <string><id>478</id><value>²¥·Å¹¤¾ßÌõ</value></string>
   <string><id>479</id><value>Æ¤·ôºÍÓïÑÔ</value></string>
   <string><id>480</id><value>ÓÃ»§½çÃæ</value></string>
   <string><id>481</id><value>ÒôÆµÉèÖÃ</value></string>
@@ -429,10 +430,10 @@
   <string><id>502</id><value>¿ªÆô</value></string>
   <string><id>503</id><value>Ã¦</value></string>
   <string><id>504</id><value>¿Õ</value></string>
-  <string><id>505</id><value>¶ÁÈ¡Ã½ÌåĞÅÏ¢ÎÄ¼ş...</value></string>
-  <string><id>506</id><value>Use Directory Names for Description</value></string>
+  <string><id>505</id><value>¶ÁÈ¡Ã½ÌåĞÅÏ¢...</value></string>
+  <string><id>506</id><value>Ê¹ÓÃÄ¿Â¼Ãû³Æ×÷ÃèÊö</value></string>
   <string><id>507</id><value>Sort by: Usage</value></string>
-  <string><id>508</id><value>Do not use Shortcuts or Scan</value></string>
+  <string><id>508</id><value>²»Ê¹ÓÃ Shortcuts Óë Scan</value></string>
   <string><id>600</id><value>Ñ¹ËõÒôÀÖCD</value></string>
   <string><id>601</id><value>ÖĞµÈ</value></string>
   <string><id>602</id><value>±ê×¼</value></string>
@@ -441,8 +442,8 @@
   <string><id>605</id><value>Ñ¹Ëõ...</value></string>
   <string><id>606</id><value>Òô¹ìĞòºÅ:</value></string>
   <string><id>607</id><value>To:</value></string>
-  <string><id>608</id><value>Could not rip CD or Track</value></string>
-  <string><id>609</id><value>CDDARipPath is not set in XboxMediaCenter.xml</value></string>
+  <string><id>608</id><value>²»ÄÜÑ¹ËõCD»òÒô¹ì</value></string>
+  <string><id>609</id><value>CDÑ¹ËõÂ·¾¶Ã»ÓĞÉèÖÃÔÚXboxMediaCenter.xml</value></string>
   <string><id>620</id><value>Ñ¹ËõÒôÀÖCD</value></string>
   <string><id>621</id><value>±àÂëÆ÷</value></string>
   <string><id>622</id><value>ÖÊÁ¿</value></string>
@@ -451,7 +452,7 @@
   <string><id>625</id><value>All songs of</value></string>
   <string><id>629</id><value>ÏÔÊ¾Ä£Ê½</value></string>
   <string><id>630</id><value>±ê×¼</value></string>
-  <string><id>631</id><value>·ÅËõÒÔÌîÆÁÄ»</value></string>
+  <string><id>631</id><value>·ÅËõÒÔÌîÂúÆÁÄ»</value></string>
   <string><id>632</id><value>À­ÉìÎª 4:3</value></string>
   <string><id>633</id><value>À­ÉìÎª 14:9</value></string>
   <string><id>634</id><value>À­ÉìÎª 16:9</value></string>
@@ -463,35 +464,35 @@
   <string><id>703</id><value>Press Yes to update all songs in this path.</value></string>
   <string><id>704</id><value>Press No to just add new songs.</value></string>
   <string><id>705</id><value>ÍøÂç</value></string>
-  <string><id>706</id><value>- HTTP Proxy Host</value></string>
-  <string><id>707</id><value>- HTTP Proxy Port</value></string>
-  <string><id>708</id><value>Enable HTTP Proxy</value></string>
+  <string><id>706</id><value>- HTTP´úÀí·şÎñÆ÷µØÖ·</value></string>
+  <string><id>707</id><value>- HTTP´úÀí·şÎñÆ÷¶Ë¿Ú</value></string>
+  <string><id>708</id><value>ÆôÓÃHTTP´úÀí·şÎñÆ÷</value></string>
   <string><id>709</id><value>XLink Kai XTag</value></string>
   <string><id>710</id><value>XLink Kai Password</value></string>
   <string><id>711</id><value>Internet Protocol (IP)</value></string>
   <string><id>712</id><value>Invalid port specified. Value must be between 1 and 65535.</value></string>
   <string><id>713</id><value>HTTP Proxy</value></string>
   <string><id>714</id><value>XLink Kai</value></string>
-  <string><id>715</id><value>Assignment</value></string>
-  <string><id>716</id><value>Automatic (DHCP)</value></string>
-  <string><id>717</id><value>Manual (Static)</value></string>
-  <string><id>718</id><value>Default (Dashboard)</value></string>
-  <string><id>719</id><value>- IP Address</value></string>
-  <string><id>720</id><value>- Netmask</value></string>
-  <string><id>721</id><value>- Default Gateway</value></string>
-  <string><id>722</id><value>- DNS Server</value></string>
-  <string><id>723</id><value>Save &amp; Restart</value></string>
-  <string><id>724</id><value>Invalid address specified. Value must be AAA.BBB.CCC.DDD</value></string>
-  <string><id>725</id><value>with numbers between 0 and 255.</value></string>
-  <string><id>726</id><value>Changes not saved. Continue without saving?</value></string>
-  <string><id>727</id><value>Web Server</value></string>
-  <string><id>728</id><value>FTP Server</value></string>
-  <string><id>729</id><value>Internet Time</value></string>
-  <string><id>730</id><value>- Web Server Port</value></string>
-  <string><id>731</id><value>- Time Server Host</value></string>
-  <string><id>732</id><value>Save &amp; Apply</value></string>
-  <string><id>733</id><value>- Web Server Password</value></string>
-  <string><id>734</id><value>No Pass</value></string>
+  <string><id>715</id><value>·ÖÅäIP</value></string>
+  <string><id>716</id><value>×Ô¶¯ (DHCP)</value></string>
+  <string><id>717</id><value>ÊÖ¶¯ (Static)</value></string>
+  <string><id>718</id><value>Ä¬ÈÏ (Dashboard)</value></string>
+  <string><id>719</id><value>- IPµØÖ·</value></string>
+  <string><id>720</id><value>- ÍøÂçÑÚÂë</value></string>
+  <string><id>721</id><value>- Ä¬ÈÏÍø¹Ø</value></string>
+  <string><id>722</id><value>- DNS·şÎñÆ÷</value></string>
+  <string><id>723</id><value>±£´æ &amp; ÖØÆô</value></string>
+  <string><id>724</id><value>ÎŞĞ§µØÖ·£¬ÕıÈ·¸ñÊ½Îª£ºAAA.BBB.CCC.DDD</value></string>
+  <string><id>725</id><value>´Ó0µ½255Ö®¼ä</value></string>
+  <string><id>726</id><value>¸Ä±äÎ´±£´æ£¬¼ÌĞø²»±£´æÂğ£¿</value></string>
+  <string><id>727</id><value>Web ·şÎñÆ÷</value></string>
+  <string><id>728</id><value>FTP ·şÎñÆ÷</value></string>
+  <string><id>729</id><value>»¥ÁªÍøÊ±¼ä</value></string>
+  <string><id>730</id><value>- Web·şÎñÆ÷¶Ë¿Ú</value></string>
+  <string><id>731</id><value>- ÍøÂç½ÏÊ±·şÎñÆ÷µØÖ·</value></string>
+  <string><id>732</id><value>±£´æ &amp; Ó¦ÓÃ</value></string>
+  <string><id>733</id><value>- Web·şÎñÆ÷ÃÜÂë</value></string>
+  <string><id>734</id><value>ÎŞÃÜÂë</value></string>
   <string><id>735</id><value>- ×Ö·û¼¯</value></string>
   <string><id>736</id><value>- ×ÖĞÎ</value></string>
   <string><id>737</id><value>- ÑÕÉ«</value></string>
@@ -503,14 +504,14 @@
   <string><id>743</id><value>»ÆÉ«</value></string>
   <string><id>744</id><value>ÎÄ¼ş</value></string>
   <string><id>745</id><value>No scanned information for this view</value></string>
-  <string><id>746</id><value>Switch to the Files view</value></string>
-  <string><id>747</id><value>Error loading image</value></string>
-  <string><id>748</id><value>Edit Path</value></string>
-  <string><id>749</id><value>Add Share</value></string>
-  <string><id>750</id><value>Are you sure?</value></string>
-  <string><id>751</id><value>Removing Share</value></string>
-  <string><id>752</id><value>Edit Share Path</value></string>
-  <string><id>753</id><value>Edit Share Name</value></string>
+  <string><id>746</id><value>ÇĞ»»µ½ÎÄ¼ş²é¿´Ä£Ê½</value></string>
+  <string><id>747</id><value>Í¼ÏñÔØÈë´íÎó</value></string>
+  <string><id>748</id><value>±à¼­Â·¾¶</value></string>
+  <string><id>749</id><value>Ìí¼Ó¹²Ïí</value></string>
+  <string><id>750</id><value>È·¶¨Âğ£¿</value></string>
+  <string><id>751</id><value>ÒÆ³ı¹²Ïí</value></string>
+  <string><id>752</id><value>±à¼­¹²ÏíÂ·¾¶</value></string>
+  <string><id>753</id><value>±à¼­¹²ÏíÃû³Æ</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>ÔÚÏßÓÎÏ·</value></string>
   <string><id>10000</id><value>Home</value></string>
@@ -523,7 +524,7 @@
   <string><id>10007</id><value>ÏµÍ³ĞÅÏ¢</value></string>
   <string><id>10008</id><value>ÉèÖÃ-&gt;Ò»°ã</value></string>
   <string><id>10009</id><value>ÉèÖÃ-&gt;ÆÁÄ»</value></string>
-  <string><id>10010</id><value>ÉèÖÃ-&gt;ÆÁÄ»-&gt;UI Ğ£×¼</value></string>
+  <string><id>10010</id><value>ÉèÖÃ-&gt;ÆÁÄ»-&gt;½çÃæ Ğ£×¼</value></string>
   <string><id>10011</id><value>ÉèÖÃ-&gt;ÆÁÄ»-&gt;ÆÁÄ» Ğ£×¼</value></string>
   <string><id>10012</id><value>ÉèÖÃ-&gt;»ÃµÆÆ¬</value></string>
   <string><id>10013</id><value>ÉèÖÃ-&gt;ÆÁÄ»-&gt;ÂË¾µ</value></string>
@@ -595,45 +596,45 @@
   <string><id>12344</id><value>Passwords entered did not match.</value></string>
   <string><id>12345</id><value>Access Denied</value></string>
   <string><id>12346</id><value>Password retry limit exceeded.</value></string>
-  <string><id>12347</id><value>The XBOX will now shut off.</value></string>
+  <string><id>12347</id><value>XBOX ½«Òª¹Ø»ú</value></string>
   <string><id>12600</id><value>ÎÒµÄÌìÆø</value></string>
   <string><id>12900</id><value>ÆÁÄ»±£»¤</value></string>
   <string><id>12901</id><value>È«ÆÁ OSD</value></string>
   <string><id>13000</id><value>ÏµÍ³</value></string>
-  <string><id>13001</id><value>Immediate HD Spindown</value></string>
-  <string><id>13002</id><value>Video Only</value></string>
+  <string><id>13001</id><value>Á¢¼´¹Ø±ÕÓ²ÅÌ</value></string>
+  <string><id>13002</id><value>Ö»ÓĞÊÓÆµ</value></string>
   <string><id>13003</id><value>- ÑÓ³Ù</value></string>
-  <string><id>13004</id><value>- Minimum File Duration</value></string>
+  <string><id>13004</id><value>- ×îĞ¡Ó°ÒôÎÄ¼şÊ±³¤</value></string>
   <string><id>13005</id><value>¹Ø»ú</value></string>
   <string><id>13006</id><value>Dashboard</value></string>
-  <string><id>13100</id><value>Flicker Filter</value></string>
+  <string><id>13100</id><value>ÉÁË¸¹ıÂË</value></string>
   <string><id>13200</id><value>Ô¤´æÉèÖÃ</value></string>
   <string><id>13201</id><value>É¾³ıÔ¤´æÉèÖÃ '%s'?</value></string>
   <string><id>13202</id><value>±£´æµ±Ç°ÉèÖÃÎªÔ¤´æÉèÖÃ...</value></string>
   <string><id>13203</id><value>Ô¤´æÉèÖÃ '%s' ÔØÈë³É¹¦</value></string>
   <string><id>13204</id><value>×î½üÔØÈëµÄÔ¤´æÉèÖÃ:</value></string>
-  <string><id>13205</id><value>Unknown</value></string>
-  <string><id>13299</id><value>Target Temperature</value></string>
-  <string><id>13300</id><value>·çÉÈËÙ¶È</value></string>
+  <string><id>13205</id><value>Î´Öª</value></string>
+  <string><id>13299</id><value>Ä¿±êÎÂ¶È</value></string>
+  <string><id>13300</id><value>·çÉÈ×ªËÙ</value></string>
   <string><id>13301</id><value>×Ô¶¯ÎÂ¶È¿ØÖÆ</value></string>
-  <string><id>13302</id><value>Fan Speed Override</value></string>
+  <string><id>13302</id><value>ÊÖ¶¯¿ØÖÆ·çÉÈ×ªËÙ</value></string>
   <string><id>13303</id><value>Æ¤·ô×ÖÌå</value></string>
   <string><id>13304</id><value>Enable Flipping Bi-Directional Strings</value></string>
-  <string><id>13305</id><value>Enable RSS Feeds</value></string>
+  <string><id>13305</id><value>ÆôÓÃ¾ÛºÏĞÂÎÅRSSÏÔÊ¾</value></string>
   <string><id>13306</id><value>Òş²ØÉÏ²ãÄ¿Â¼Í¼±ê</value></string>
   <string><id>13307</id><value>Òş²ØÒô¹ìĞòºÅ</value></string>
   <string><id>13308</id><value>ÄãÏëÖØĞÂÆô¶¯XBOXÂğ</value></string>
   <string><id>13309</id><value>instead of just XBMC?</value></string>
-  <string><id>13310</id><value>Zoom Effect</value></string>
-  <string><id>13311</id><value>Float Effect</value></string>
-  <string><id>13312</id><value>Black Bar Reduction</value></string>
+  <string><id>13310</id><value>·ÅËõĞ§¹û</value></string>
+  <string><id>13311</id><value>Æ¯¸¡Ğ§¹û</value></string>
+  <string><id>13312</id><value>ËõĞ¡ºÚ±ß</value></string>
   <string><id>13313</id><value>ÖØÆô</value></string>
-  <string><id>13314</id><value>Music OSD Timeout</value></string>
-  <string><id>13315</id><value>Create Thumbnails</value></string>
-  <string><id>13316</id><value>Recursive Thumbnails</value></string>
-  <string><id>13317</id><value>View Slideshow</value></string>
-  <string><id>13318</id><value>Recursive Slideshow</value></string>
-  <string><id>13319</id><value>Randomize</value></string>
+  <string><id>13314</id><value>ÒôÀÖ²¥·ÅOSD ³¬Ê±</value></string>
+  <string><id>13315</id><value>´´½¨ËõÂÔÍ¼</value></string>
+  <string><id>13316</id><value>Ñ­»·ËõÂÔÍ¼</value></string>
+  <string><id>13317</id><value>²é¿´»ÃµÆÆ¬</value></string>
+  <string><id>13318</id><value>Ñ­»·»ÃµÆÆ¬</value></string>
+  <string><id>13319</id><value>Ëæ»ú</value></string>
   <string><id>13320</id><value>Á¢ÌåÉù</value></string>
   <string><id>13321</id><value>×óÉùµÀ</value></string>
   <string><id>13322</id><value>ÓÒÉùµÀ</value></string>
@@ -642,50 +643,50 @@
   <string><id>13325</id><value>Ç°¾°Í¸Ã÷¶È</value></string>
   <string><id>13326</id><value>A/V ÑÓ³Ù</value></string>
   <string><id>13327</id><value>¿¨À­OK</value></string>
-  <string><id>13328</id><value>%s not found.</value></string>
-  <string><id>13329</id><value>Error opening %s</value></string>
-  <string><id>13330</id><value>Unable to load %s</value></string>
+  <string><id>13328</id><value>%s Î´ÕÒµ½</value></string>
+  <string><id>13329</id><value>´ò¿ª %s Ê±·¢Éú´íÎó</value></string>
+  <string><id>13330</id><value>ÎŞ·¨ÔØÈë %s</value></string>
   <string><id>13331</id><value>Error: out of memory.</value></string>
-  <string><id>13332</id><value>Move Up</value></string>
-  <string><id>13333</id><value>Move Down</value></string>
-  <string><id>13334</id><value>Edit Label</value></string>
-  <string><id>13335</id><value>Make Default</value></string>
-  <string><id>13336</id><value>Remove Button</value></string>
+  <string><id>13332</id><value>ÏòÉÏÒÆ¶¯</value></string>
+  <string><id>13333</id><value>ÏòÏÂÒÆ¶¯</value></string>
+  <string><id>13334</id><value>±à¼­±êÇ©</value></string>
+  <string><id>13335</id><value>ÉèÎªÄ¬ÈÏ</value></string>
+  <string><id>13336</id><value>É¾³ı°´¼ü</value></string>
   <string><id>13337</id><value>- 2 Channel PCM Passthrough</value></string>
-  <string><id>13338</id><value>Front LED</value></string>
-  <string><id>13339</id><value>Front LED Colour</value></string>
-  <string><id>13340</id><value>Leave As Is</value></string>
-  <string><id>13341</id><value>Green</value></string>
-  <string><id>13342</id><value>Orange</value></string>
-  <string><id>13343</id><value>Red</value></string>
-  <string><id>13344</id><value>Cycle</value></string>
-  <string><id>13345</id><value>Switch LED off on Playback</value></string>
-  <string><id>13346</id><value>Movie Information°</value></string>
-  <string><id>13347</id><value>Queue Item</value></string>
-  <string><id>13348</id><value>Search IMDb...</value></string>
-  <string><id>13349</id><value>Query Info For All Files</value></string>
-  <string><id>13350</id><value>Now Playing...</value></string>
-  <string><id>13351</id><value>Album Information</value></string>
-  <string><id>13352</id><value>Scan Folder to Database</value></string>
-  <string><id>13353</id><value>Stop Scanning</value></string>
-  <string><id>14000</id><value>Stacking: Off</value></string>
-  <string><id>14001</id><value>Stacking: Simple</value></string>
-  <string><id>14002</id><value>Stacking: Fuzzy</value></string>
-  <string><id>14003</id><value>Downloading playlist file...</value></string>
-  <string><id>14004</id><value>Downloading streams list...</value></string>
-  <string><id>14005</id><value>Parsing streams list...</value></string>
-  <string><id>14006</id><value>Downloading streams list failed</value></string>
-  <string><id>14007</id><value>Downloading playlist file failed</value></string>
-  <string><id>14008</id><value>Enable Kai Notifications</value></string>
-  <string><id>14009</id><value>Games Directory</value></string>
-  <string><id>14010</id><value>Autoswitch to Thumbs based on</value></string>
-  <string><id>14011</id><value>Enable Autoswitching to Thumbs View</value></string>
-  <string><id>14012</id><value>- Use Large Icons</value></string>
-  <string><id>14013</id><value>- Switch Based on</value></string>
-  <string><id>14014</id><value>- Percentage</value></string>
-  <string><id>14015</id><value>No Files and at least one Thumb</value></string>
-  <string><id>14016</id><value>At least one File and Thumb</value></string>
-  <string><id>14017</id><value>Percentage of Thumbs</value></string>
+  <string><id>13338</id><value>Ç°LED</value></string>
+  <string><id>13339</id><value>Ç°LEDÑÕÉ«</value></string>
+  <string><id>13340</id><value>Ä¬ÈÏ</value></string>
+  <string><id>13341</id><value>ÂÌÉ«</value></string>
+  <string><id>13342</id><value>³ÈÉ«</value></string>
+  <string><id>13343</id><value>ºìÉ«</value></string>
+  <string><id>13344</id><value>Ñ­»·</value></string>
+  <string><id>13345</id><value>µ±²¥·ÅÊ±¹Ø±ÕLED</value></string>
+  <string><id>13346</id><value>Ó°Æ¬ĞÅÏ¢</value></string>
+  <string><id>13347</id><value>¼ÓÈëµ±Ç°²¥·ÅÁĞ±í</value></string>
+  <string><id>13348</id><value>²éÑ¯IMDbĞÅÏ¢...</value></string>
+  <string><id>13349</id><value>²éÑ¯ËùÓĞÎÄ¼şĞÅÏ¢</value></string>
+  <string><id>13350</id><value>ÕıÔÚ²¥·ÅµÄ...</value></string>
+  <string><id>13351</id><value>×¨¼­ĞÅÏ¢</value></string>
+  <string><id>13352</id><value>É¨ÃèÎÄ¼ş¼ĞĞÅÏ¢</value></string>
+  <string><id>13353</id><value>Í£Ö¹É¨Ãè</value></string>
+  <string><id>14000</id><value>¶ÑÕ»: ¹Ø</value></string>
+  <string><id>14001</id><value>¶ÑÕ»: ¼òµ¥</value></string>
+  <string><id>14002</id><value>¶ÑÕ»: Ä£ºı</value></string>
+  <string><id>14003</id><value>ÏÂÔØ²¥·ÅÁĞ±íÎÄ¼ş...</value></string>
+  <string><id>14004</id><value>ÏÂÔØÁ÷Ã½ÌåÁĞ±í...</value></string>
+  <string><id>14005</id><value>·ÖÎöÁ÷Ã½ÌåÁĞ±í...</value></string>
+  <string><id>14006</id><value>ÏÂÔØÁ÷Ã½ÌåÁĞ±íÊ§°Ü</value></string>
+  <string><id>14007</id><value>ÏÂÔØ²¥·ÅÁĞ±íÎÄ¼şÊ§°Ü</value></string>
+  <string><id>14008</id><value>ÆôÓÃ Kai Í¨¸æ</value></string>
+  <string><id>14009</id><value>ÓÎÏ·Ä¿Â¼</value></string>
+  <string><id>14010</id><value>×Ô¶¯ÇĞ»»ÎªÍ¼±êÏÔÊ¾·½Ê½Ìõ¼ş</value></string>
+  <string><id>14011</id><value>ÔÊĞí×Ô¶¯ÇĞ»»ÎªÍ¼±êÏÔÊ¾·½Ê½</value></string>
+  <string><id>14012</id><value>- Ê¹ÓÃ´óÍ¼±ê</value></string>
+  <string><id>14013</id><value>- ÇĞ»»Ìõ¼ş</value></string>
+  <string><id>14014</id><value>- ±ÈÀı</value></string>
+  <string><id>14015</id><value>Ã»ÓĞÎÄ¼şÇÒÖÁÉÙÓĞÒ»¸öÍ¼±ê</value></string>
+  <string><id>14016</id><value>ÖÁÉÙÓĞÒ»¸öÎÄ¼şºÍÒ»¸öÍ¼±ê</value></string>
+  <string><id>14017</id><value>Í¼±êËùÕ¼±ÈÀı</value></string>
   <string><id>14018</id><value>ä¯ÀÀÉèÖÃ</value></string>
   <string><id>14019</id><value>¸Ä±äµØÇøÂë 1</value></string>
   <string><id>14020</id><value>¸Ä±äµØÇøÂë 2</value></string>
@@ -694,15 +695,15 @@
   <string><id>14023</id><value>No TV</value></string>
   <string><id>14024</id><value>Enter the nearest large town or US ZIP code</value></string>
   <string><id>14025</id><value>ÊÓÆµ»º´æ      - Ó²ÅÌ</value></string>
-  <string><id>14026</id><value>              - DVD¹âÇı</value></string>
+  <string><id>14026</id><value>              - DVDÇı¶¯Æ÷</value></string>
   <string><id>14027</id><value>              - ±¾µØÍøÂç</value></string>
   <string><id>14028</id><value>              - »¥Á¬Íø</value></string>
   <string><id>14029</id><value>ÒôÆµ»º´æ      - Ó²ÅÌ</value></string>
-  <string><id>14030</id><value>              - DVD¹âÇı</value></string>
+  <string><id>14030</id><value>              - DVDÇı¶¯Æ÷</value></string>
   <string><id>14031</id><value>              - ±¾µØÍøÂç</value></string>
   <string><id>14032</id><value>              - »¥Á¬Íø</value></string>
   <string><id>14033</id><value>DVD»º´æ      - Ó²ÅÌ</value></string>
-  <string><id>14034</id><value>              - DVD¹âÇı</value></string>
+  <string><id>14034</id><value>              - DVDÇı¶¯Æ÷</value></string>
   <string><id>14035</id><value>              - ±¾µØÍøÂç</value></string>
   <string><id>14036</id><value>·şÎñ</value></string>
   <string><id>14037</id><value>Íâ¹ÛÉèÖÃ</value></string>
@@ -711,19 +712,19 @@
   <string><id>14040</id><value>ÍøÂçÉèÖÃ¡£ÄãÏëÏÖÔÚ¾ÍÖØÆôÂğ£¿</value></string>
   <string><id>14041</id><value>ºó´¦Àí</value></string>
   <string><id>14042</id><value>Engine IP Address</value></string>
-  <string><id>14043</id><value>- Shutdown while playing</value></string>
+  <string><id>14043</id><value>- ²¥·ÅÊ±¹Ø»ú</value></string>
   <string><id>14044</id><value>%i ·Ö</value></string>
   <string><id>14045</id><value>%i Ãë</value></string>
-  <string><id>14046</id><value>%i ms</value></string>
+  <string><id>14046</id><value>%i ºÁÃë</value></string>
   <string><id>14047</id><value>%i %%</value></string>
   <string><id>14048</id><value>%i kbps</value></string>
   <string><id>14049</id><value>%i kb</value></string>
   <string><id>14050</id><value>%i.0 dB</value></string>
-  <string><id>14051</id><value>Show 12 hour clock</value></string>
-  <string><id>14052</id><value>Swap month and day in home screen</value></string>
-  <string><id>14053</id><value>GUIÂË¾µ</value></string>
-  <string><id>14054</id><value>Enable Internet Lookups</value></string>
-  <string><id>14055</id><value>Use Background Scanning</value></string>
-  <string><id>14056</id><value>Stop Scan</value></string>
-  <string><id>14057</id><value>Not possible while scanning for media info</value></string>
+  <string><id>14051</id><value>12Ğ¡Ê±ÖÆÊ±¼äÏÔÊ¾</value></string>
+  <string><id>14052</id><value>ÇĞ»»Ö÷½çÃæÔÂ·İÈÕÆÚÏÔÊ¾Ë³Ğò</value></string>
+  <string><id>14053</id><value>½çÃæÂË¾µ</value></string>
+  <string><id>14054</id><value>ÆôÓÃ»¥ÁªÍøĞÅÏ¢²éÑ¯</value></string>
+  <string><id>14055</id><value>Ê¹ÓÃºóÌ¨É¨Ãè</value></string>
+  <string><id>14056</id><value>Í£Ö¹É¨Ãè</value></string>
+  <string><id>14057</id><value>ÎŞ·¨É¨ÃèÃ½ÌåĞÅÏ¢Not possible while scanning for media info</value></string>
 </strings>
