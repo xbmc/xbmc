@@ -39,7 +39,8 @@ public:
   void          SetWidth(int iWidth);
   void          SetHeight(int iHeight);
   void          SetVisible(bool bVisible);
-
+	void					EnableCalibration(bool bOnOff);
+	bool					CalibrationEnabled() const;
 protected:  
   virtual void       Update() {};
   DWORD              m_dwControlLeft;
@@ -57,5 +58,6 @@ protected:
 	bool							 m_bVisible;
 	bool							 m_bDisabled;
   bool							 m_bSelected;
+	bool							 m_bCalibration;
 };
 #endif
