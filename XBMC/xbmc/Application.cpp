@@ -392,7 +392,17 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   g_fontManager.LoadFonts(strSkinPath+string("\\font.xml")) ;
 
   CLog::Log("  load new skin...");
-  m_guiHome.Load( strSkinPath+"\\home.xml" );  
+  if (!m_guiHome.Load( strSkinPath+"\\home.xml" ))
+  {
+    // failed to load home.xml
+    // fallback to mediacenter skin
+    if ( CUtil::cmpnocase(strSkin.c_str(),"mediacenter") !=0)
+    {
+      CLog::Log("failed to load home.xml for skin:%s, fallback to mediacenter skin", strSkin.c_str());
+      LoadSkin("mediacenter");
+      return;
+    }
+  }
   m_guiPrograms.Load( strSkinPath+"\\myprograms.xml" );  
 	m_guiPictures.Load( strSkinPath+"\\mypics.xml" );  
 	m_guiMyFiles.Load( strSkinPath+"\\myfiles.xml" );  
