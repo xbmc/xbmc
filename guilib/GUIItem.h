@@ -30,6 +30,10 @@ public:
 	
 	CGUIItem(CStdString& aItemName);
 	virtual void OnPaint(CGUIItem::RenderContext* pContext)=0;
+	virtual void GetDisplayText(CStdString& aString)
+	{
+		aString = m_strName;
+	};
 
 	CStdString GetName();
 	void SetCookie(DWORD aCookie);

@@ -25,7 +25,8 @@ public:
 	virtual void Add(CGUIItem* aListItem);
 	virtual void Remove(CStdString aListItemLabel);
 	virtual void Clear();
-	
+	virtual int  Size();
+
 	GUILISTITEMS& Lock();
 	CGUIItem* Find(CStdString aListItemLabel);
 	void Release();

@@ -70,6 +70,7 @@ void CGUIListControlEx::Render()
 			context.m_iPositionX			= iPosX;
 			context.m_iPositionY			= iPosY;
 			context.m_bFocused				= (i == m_iCursorY && HasFocus() && m_iSelect== CONTROL_LIST);
+			context.m_bActive				= (i == m_iCursorY);
 			context.m_pButton				= &m_imgButton;
 			context.m_pFont					= m_pFont;
 			context.m_dwTextNormalColour	= m_dwTextColor;
@@ -101,6 +102,9 @@ void CGUIListControlEx::Render()
 
 void CGUIListControlEx::OnAction(const CAction &action)
 {
+	// track state before action
+	int iOldItem = m_iCursorY+m_iOffset;
+
 	switch (action.wID)
 	{
 		case ACTION_PAGE_UP:
@@ -110,6 +114,9 @@ void CGUIListControlEx::OnAction(const CAction &action)
 		case ACTION_PAGE_DOWN:
 			OnPageDown();
 		break;
+
+		/* TODO: doesn't bloody work does it ;-)
+		         if you scroll up/down it often crashes and locks up XBMC
 
 		// smooth scrolling (for analog controls)
 		case ACTION_SCROLL_UP:
@@ -147,16 +154,38 @@ void CGUIListControlEx::OnAction(const CAction &action)
 			}
 		}
 		break;
+		*/
 
 		case ACTION_SELECT_ITEM:
 		{
+			// generate a control clicked event
 			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.wID);
 			g_graphicsContext.SendMessage(msg);
 			break;
 		}
 	}
+
 	// call the base class
 	CGUIControl::OnAction(action);
+
+	// post event notifications
+	switch (action.wID)
+	{
+		case ACTION_MOVE_UP:
+		case ACTION_MOVE_DOWN:
+		{
+			int iNewItem =  m_iCursorY+m_iOffset;
+
+			// determine of the item selection within list control has changed
+			if (iOldItem != iNewItem)
+			{
+				// generate control selection changed event
+				CGUIMessage msg(GUI_MSG_SELCHANGED, GetID(), GetParentID(), iOldItem, iNewItem);
+				g_graphicsContext.SendMessage(msg);
+			}
+			break;
+		}
+	}	
 }
 
 bool CGUIListControlEx::OnMessage(CGUIMessage& message)
