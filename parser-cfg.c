@@ -53,13 +53,13 @@ int m_config_parse_config_file(m_config_t* config, char *conffile)
 	config->mode = M_CONFIG_FILE;
 
 	if ((line = (char *) malloc(MAX_LINE_LEN + 1)) == NULL) {
-		//mp_msg(MSGT_CFGPARSER,MSGL_FATAL,"\ncan't get memory for 'line': %s", strerror(errno));
+		mp_msg(MSGT_CFGPARSER,MSGL_FATAL,"\ncan't get memory for 'line': %s", strerror(errno));
 		ret = -1;
 		goto out;
 	}
 
 	if ((fp = fopen(conffile, "r")) == NULL) {
-	  //mp_msg(MSGT_CFGPARSER,MSGL_ERR,": %s\n", strerror(errno));
+	  mp_msg(MSGT_CFGPARSER,MSGL_ERR,": %s\n", strerror(errno));
 		free(line);
 		ret = 0;
 		goto out;

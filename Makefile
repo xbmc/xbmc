@@ -35,11 +35,11 @@ OBJS_MPLAYER = $(SRCS_MPLAYER:.c=.o)
 VO_LIBS = $(AA_LIB) $(X_LIB) $(SDL_LIB) $(GGI_LIB) $(MP1E_LIB) $(MLIB_LIB) $(SVGA_LIB) $(DIRECTFB_LIB) $(CACA_LIB)
 AO_LIBS = $(ARTS_LIB) $(ESD_LIB) $(NAS_LIB) $(SGIAUDIO_LIB)
 CODEC_LIBS = $(AV_LIB) $(FAME_LIB) $(MAD_LIB) $(VORBIS_LIB) $(THEORA_LIB) $(FAAD_LIB) $(LIBLZO_LIB) $(DECORE_LIB) $(XVID_LIB) $(PNG_LIB) $(Z_LIB) $(JPEG_LIB) $(ALSA_LIB) $(XMMS_LIB) $(MATROSKA_LIB) 
-COMMON_LIBS = libmpcodecs/libmpcodecs.a mp3lib/libMP3.a liba52/liba52.a libmpeg2/libmpeg2.a $(W32_LIB) $(DS_LIB) libaf/libaf.a libmpdemux/libmpdemux.a input/libinput.a postproc/libswscale.a osdep/libosdep.a $(DVDREAD_LIB) $(CODEC_LIBS) $(FREETYPE_LIB) $(TERMCAP_LIB) $(CDPARANOIA_LIB) $(MPLAYER_NETWORK_LIB) $(WIN32_LIB) $(GIF_LIB) $(MACOSX_FRAMEWORKS) $(SMBSUPPORT_LIB) $(FRIBIDI_LIB) $(FLAC_LIB) $(FONTCONFIG_LIB)
+COMMON_LIBS = libmpcodecs/libmpcodecs.a mp3lib/libMP3.a liba52/liba52.a libmpeg2/libmpeg2.a $(W32_LIB) $(DS_LIB) libaf/libaf.a libmpdemux/libmpdemux.a input/libinput.a postproc/libswscale.a osdep/libosdep.a $(DVDREAD_LIB) $(CODEC_LIBS) $(FREETYPE_LIB) $(TERMCAP_LIB) $(CDPARANOIA_LIB) $(MPLAYER_NETWORK_LIB) $(WIN32_LIB) $(GIF_LIB) $(MACOSX_FRAMEWORKS) $(SMBSUPPORT_LIB) $(FRIBIDI_LIB) $(FONTCONFIG_LIB)
 
 CFLAGS = $(OPTFLAGS) -Ilibmpdemux -Iloader -Ilibvo $(FREETYPE_INC) $(EXTRA_INC) $(CDPARANOIA_INC) $(SDL_INC) $(X11_INC) $(FRIBIDI_INC) $(DVB_INC) $(XVID_INC) $(FONTCONFIG_INC) # -Wall
 
-PARTS = libmpdemux libmpcodecs mp3lib liba52 libmpeg2 libavcodec libao2 drivers osdep postproc input libvo libaf
+PARTS = libmpdemux libmpcodecs mp3lib liba52 libmpeg2 libavcodec libavformat libao2 drivers osdep postproc input libvo libaf
 ifeq ($(INTERNAL_FAAD),yes)
 COMMON_LIBS += libfaad2/libfaad2.a 
 PARTS += libfaad2
@@ -65,9 +65,6 @@ PARTS += loader loader/dshow loader/dmo
 endif
 ifeq ($(LIBMENU),yes)
 PARTS += libmenu
-endif
-ifneq ($(MPFLAC),none)
-PARTS += libmpflac
 endif
 
 ALL_PRG = $(PRG)
@@ -102,10 +99,6 @@ endif
 ifeq ($(GUI),yes)
 COMMON_DEPS += Gui/libgui.a
 GUI_LIBS = Gui/libgui.a
-endif
-
-ifneq ($(MPFLAC),none)
-COMMON_DEPS += libmpflac/libmpflac.a
 endif
 
 .SUFFIXES: .cc .c .o
@@ -146,6 +139,9 @@ loader/dmo/libDMO_Filter.a:
 
 libavcodec/libavcodec.a:
 	$(MAKE) -C libavcodec LIBPREF=lib LIBSUF=.a
+
+libavformat/libavformat.a:
+	$(MAKE) -C libavformat LIBPREF=lib LIBSUF=.a
 
 libmpeg2/libmpeg2.a:
 	$(MAKE) -C libmpeg2
@@ -188,9 +184,6 @@ libmenu/libmenu.a:
 
 libavcodec/libpostproc/libpostproc.so:
 	$(MAKE) -C libavcodec/libpostproc
-
-libmpflac/libmpflac.a:
-	$(MAKE) -C libmpflac
 
 MPLAYER_DEP = $(OBJS_MPLAYER) $(COMMON_DEPS)
 
@@ -314,6 +307,7 @@ distclean:
 	-rm -f *.o *.a .depend configure.log codecs.conf.h
 	@for a in $(PARTS); do $(MAKE) -C $$a distclean; done
 	-$(MAKE) -C libavcodec distclean LIBPREF=lib LIBSUF=.a
+	-$(MAKE) -C libavformat distclean LIBPREF=lib LIBSUF=.a
 
 strip:
 	strip -s $(ALL_PRG)

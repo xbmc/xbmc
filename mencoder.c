@@ -20,12 +20,17 @@
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
+#include "config.h"
+
 #ifdef __MINGW32__
 #define        SIGQUIT 3
 #endif
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 #include <sys/time.h>
 
-#include "config.h"
 
 #include "version.h"
 #include "mp_msg.h"
@@ -55,7 +60,7 @@
 #include "libmpcodecs/vf.h"
 
 // for MPEGLAYER3WAVEFORMAT:
-#include "loader/wine/mmreg.h"
+#include "libmpdemux/ms_hdr.h"
 
 #ifdef HAVE_MP3LAME
 #undef CDECL
@@ -189,6 +194,7 @@ float sub_last_pts = -303;
 #endif
 
 int auto_expand=1;
+int encode_duplicates=1;
 
 // infos are empty by default
 char *info_name=NULL;
@@ -1288,13 +1294,15 @@ case VCODEC_FRAMENO:
     break;
 default:
     // decode_video will callback down to ve_*.c encoders, through the video filters
-    blit_frame=decode_video(sh_video,start,in_size,(skip_flag>0)?1:0);
+    blit_frame=decode_video(sh_video,start,in_size,
+      skip_flag>0 && ((vf_instance_t *)sh_video->vfilter)->control(sh_video->vfilter, VFCTRL_SKIP_NEXT_FRAME, 0) != CONTROL_TRUE);
     if(!blit_frame){
       badframes++;
       if(skip_flag<=0){
 	// unwanted skipping of a frame, what to do?
 	if(skip_limit==0){
 	    // skipping not allowed -> write empty frame:
+	    if (!encode_duplicates || ((vf_instance_t *)sh_video->vfilter)->control(sh_video->vfilter, VFCTRL_DUPLICATE_FRAME, 0) != CONTROL_TRUE)
 	    muxer_write_chunk(mux_v,0,0);
 	} else {
 	    // skipping allowed -> skip it and distriubute timer error:
@@ -1312,6 +1320,7 @@ if(skip_flag<0){
 	if(file_format != DEMUXER_TYPE_TV && !verbose) printf(MSGTR_DuplicateFrames,-skip_flag);
     while(skip_flag<0){
 	duplicatedframes++;
+	if (!encode_duplicates || ((vf_instance_t *)sh_video->vfilter)->control(sh_video->vfilter, VFCTRL_DUPLICATE_FRAME, 0) != CONTROL_TRUE)
 	muxer_write_chunk(mux_v,0,0);
 	++skip_flag;
     }
