@@ -32,6 +32,10 @@
     <value>My Files</value>
   </string>
   <string>
+    <id>8</id>
+    <value>My Weather</value>
+  </string>  
+  <string>
     <id>11</id>
     <value>Monday</value>
   </string>
@@ -1182,4 +1186,48 @@
     <id>369</id>
     <value>Title</value>
   </string>
+  <string>
+    <id>401</id>
+    <value>Temp</value>
+  </string>   
+  <string>
+    <id>402</id>
+    <value>Feels Like</value>
+  </string> 
+  <string>
+    <id>403</id>
+    <value>UV Index</value>
+  </string>
+  <string>
+    <id>404</id>
+    <value>Wind</value>
+  </string>   
+  <string>
+    <id>405</id>
+    <value>Dew Point</value>
+  </string> 
+  <string>
+    <id>406</id>
+    <value>Humidity</value>
+  </string> 
+  <string>
+    <id>407</id>
+    <value>From</value>
+  </string>
+  <string>
+    <id>408</id>
+    <value>at</value>
+  </string>      
+  <string>
+    <id>410</id>
+    <value>Accessing Weather.com</value>
+  </string>       
+  <string>
+    <id>411</id>
+    <value>Getting Weather For:</value>
+  </string> 
+  <string>
+    <id>412</id>
+    <value>Unable to get weather data</value>
+  </string>    
 </strings>

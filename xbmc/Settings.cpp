@@ -179,6 +179,8 @@ CSettings::CSettings(void)
 	g_stSettings.m_bStretch=false;
 
 	g_stSettings.m_bAllowVideoSwitching=true;
+	strcpy(g_stSettings.m_szWeatherArea, "UKXX0085");	//default WEATHER to London for no good reason
+	strcpy(g_stSettings.m_szWeatherFormat, "m");		//default WEATHER units to metric
 }
 
 CSettings::~CSettings(void)
@@ -343,6 +345,13 @@ bool CSettings::Load()
   GetShares(pRootElement,"video",m_vecMyVideoShares,strDefault);
 	if (strDefault.size())
 		strcpy( g_stSettings.m_szDefaultVideos, strDefault.c_str());	
+	TiXmlElement* pWeatherElement =pRootElement->FirstChildElement("weather");	//grab WEATHER settings
+	if (pWeatherElement)
+	{
+		GetString(pWeatherElement, "areacode", g_stSettings.m_szWeatherArea, "UKXX0085");
+		GetString(pWeatherElement, "format", g_stSettings.m_szWeatherFormat, "m");
+	}
+
   return true;
 }
 
