@@ -65,6 +65,9 @@ void CGUICheckMarkControl::OnKey(const CKey& key)
     if (key.GetButtonCode() ==KEY_BUTTON_A || key.GetButtonCode() == KEY_REMOTE_SELECT)
     {
       m_bSelected=!m_bSelected;
+			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(),key.GetButtonCode());
+			g_graphicsContext.SendMessage(msg);
+
     }
   }
 }

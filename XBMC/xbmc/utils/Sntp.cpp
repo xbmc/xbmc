@@ -708,8 +708,8 @@ void CSNTPClient::OnExit()
 
 void CSNTPClient::Process()
 {
-	if (g_stSettings.m_strTimeServer[0]==0) return;
-	while (!m_bStop)
+	if (!g_stSettings.m_bTimeServerEnabled) return;
+	while (!m_bStop && g_stSettings.m_bTimeServerEnabled)
 	{
 		NtpServerResponse response;
 		if (GetServerTime( g_stSettings.m_strTimeServer, response))
@@ -726,7 +726,7 @@ void CSNTPClient::Process()
 		for (int i=0; i < 120; i++) 
 		{
 			Sleep(500);
-			if (m_bStop) break;
+			if (m_bStop || false==g_stSettings.m_bTimeServerEnabled) break;
 		}
 	}
 }
