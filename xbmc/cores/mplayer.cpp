@@ -116,6 +116,20 @@ bool CMPlayer::openfile(const CStdString& strFile)
 {
 	closefile();
 
+  int iCacheSize=1024;
+  if (CUtil::IsDVD(strFile) || CUtil::IsISO9660(strFile) || CUtil::IsRemote(strFile) )
+  {
+    iCacheSize=8192;
+  }
+  if (CUtil::IsAudio(strFile) )
+  {
+    iCacheSize=0;
+  }
+  if ( CUtil::IsShoutCast(strFile) ) 
+  {
+    iCacheSize=256;
+  }
+  
 	CUtil::CacheSubtitles(strFile);
 
 	m_iPTS			= 0;
@@ -132,16 +146,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 
 	mplayer_init(argc,argv);
 	
-	mplayer_setcache_size(1024);
-	if (CUtil::IsAudio(strFile) )
-	{
-		mplayer_setcache_size(0);
-	}
-
-	if ( CUtil::IsShoutCast(strFile) ) 
-	{
-		mplayer_setcache_size(256);
-	}
+  mplayer_setcache_size(iCacheSize);
 	
 	int iRet=mplayer_open_file(strFile.c_str());
 	if (iRet < 0)
@@ -175,11 +180,8 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			char *argv[] = {"xbmc.xbe", "-channels","2", "-ac","hwac3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
 			load();
 			mplayer_init(argc,argv);
-			mplayer_setcache_size(1024);
-			if (CUtil::IsAudio(strFile) )
-			{
-				mplayer_setcache_size(0);
-			}
+			mplayer_setcache_size(iCacheSize);
+
 			int iRet=mplayer_open_file(strFile.c_str());
 			if (iRet < 0)
 			{
@@ -198,11 +200,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		char *argv[] = {"xbmc.xbe", "-channels","6","-af","channels=6:6:0:0:1:1:2:4:3:5:4:2:5:3","-autoq", "6", "-vf", "pp", "1.avi",NULL};
 		load();
 		mplayer_init(argc,argv);
-		mplayer_setcache_size(1024);
-		if (CUtil::IsAudio(strFile) )
-		{
-			mplayer_setcache_size(0);
-		}
+    mplayer_setcache_size(iCacheSize);
 		int iRet=mplayer_open_file(strFile.c_str());
 		if (iRet < 0)
 		{
@@ -234,11 +232,8 @@ bool CMPlayer::openfile(const CStdString& strFile)
 				argv1[2] = szChannels;
 				load();
 				mplayer_init(argc,argv1);
-				mplayer_setcache_size(1024);
-				if (CUtil::IsAudio(strFile) )
-				{
-					mplayer_setcache_size(0);
-				}
+        mplayer_setcache_size(iCacheSize);
+
 				iRet=mplayer_open_file(strFile.c_str());
 				if (iRet < 0)
 				{
@@ -254,11 +249,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 				argc=10;
 				load();
 				mplayer_init(argc,argv2);
-				mplayer_setcache_size(1024);
-				if (CUtil::IsAudio(strFile) )
-				{
-					mplayer_setcache_size(0);
-				}
+        mplayer_setcache_size(iCacheSize);
 				iRet=mplayer_open_file(strFile.c_str());
 				if (iRet < 0)
 				{
@@ -274,11 +265,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 				argc=10;
 				load();
 				mplayer_init(argc,argv3);
-				mplayer_setcache_size(1024);
-				if (CUtil::IsAudio(strFile) )
-				{
-					mplayer_setcache_size(0);
-				}
+        mplayer_setcache_size(iCacheSize);
 				iRet=mplayer_open_file(strFile.c_str());
 				if (iRet < 0)
 				{
