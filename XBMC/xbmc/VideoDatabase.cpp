@@ -320,11 +320,10 @@ long CVideoDatabase::AddMovie(const CStdString& strFilenameAndPath, const CStdSt
 
       long lPathId = AddPath(strPath);
       if (lPathId < 0) return -1;
-      strSQL.Format("insert into movie (idMovie, idPath, hasSubtitles, cdlabel) values( NULL, %i, %i, %s)",
+      strSQL.Format("insert into movie (idMovie, idPath, hasSubtitles, cdlabel) values( NULL, %i, %i, '%s')",
                     lPathId,bHassubtitles,strCDLabel.c_str());
 	    m_pDS->exec(strSQL.c_str());
       lMovieId=sqlite_last_insert_rowid(m_pDB->getHandle());
-
       AddFile(lMovieId,lPathId,strFileName);
     }
     else
