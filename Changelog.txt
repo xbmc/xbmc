@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 21-08-2004 fixed: location of dialog windows did not scale correctly to other resolutions.
   - 21-08-2004 fixed: Volume control using digital buttons (such as the remote).
   - 21-08-2004 added: Failsafe patch from SF (Thanks Guybrush)
   - 21-08-2004 added: <align> tag works for buttons now.
