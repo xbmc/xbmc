@@ -117,9 +117,18 @@ bool CFileDAAP::Open(const CURL& url, bool bBinary)
 
 	OutputDebugString("\n");
 
-	// Create a client object if we don't already have one
-	if (!m_thisClient)
-		m_thisClient = DAAP_Client_Create(NULL, NULL);
+	if (g_application.m_DAAPPtr)
+	{
+		m_thisClient = (DAAP_SClient *) g_application.m_DAAPPtr;
+		m_thisHost = m_thisClient->hosts;
+	}
+	else
+	{
+		// Create a client object if we don't already have one
+		if (!m_thisClient)
+			m_thisClient = DAAP_Client_Create(NULL, NULL);
+		g_application.m_DAAPPtr = m_thisClient;
+	}
 
 	// Add the defined host to the client object if we don't already have one
 	if (!m_thisHost)
@@ -130,8 +139,11 @@ bool CFileDAAP::Open(const CURL& url, bool bBinary)
 		if (!m_thisHost) return false;		// tidy ups?
 
 		if (DAAP_ClientHost_Connect(m_thisHost) < 0) return false;		// tidy ups?
-		
-		if (DAAP_ClientHost_GetAudioFile(m_thisHost, m_thisHost->databases[0].id, fileID, (char *) strFileFormat, &m_song) < 0)
+	}
+
+	if (m_thisHost)
+	{	
+		if (DAAP_ClientHost_GetAudioFile(m_thisHost, g_application.m_DAAPDBID, fileID, (char *) strFileFormat, &m_song) < 0)
 		{
 			DestroyDAAP();
 			return false;
@@ -201,7 +213,7 @@ void CFileDAAP::Close()
 		m_song.size = 0;
 		m_fileSize = 0;
 
-		if (m_thisClient) DAAP_Client_Release(m_thisClient);
+		//if (m_thisClient) DAAP_Client_Release(m_thisClient);
 		m_thisHost = NULL;
 		m_thisClient = NULL;
 		g_application.m_DAAPSong = NULL;

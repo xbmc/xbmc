@@ -26,6 +26,7 @@
 #include "directorycache.h"
 // using the smb library for UTF-8 conversion
 #include "../lib/libsmb/xbLibSmb.h"
+#include "../application.h"
 
 CDAAPDirectory::CDAAPDirectory(void)
 {
@@ -42,7 +43,7 @@ CDAAPDirectory::CDAAPDirectory(void)
 
 CDAAPDirectory::~CDAAPDirectory(void)
 {
-	if (m_thisClient) DAAP_Client_Release(m_thisClient);
+	//if (m_thisClient) DAAP_Client_Release(m_thisClient);
 
 	free_artists();
 
@@ -52,6 +53,19 @@ CDAAPDirectory::~CDAAPDirectory(void)
 
 	m_currentSongItems = NULL;
 	CSectionLoader::Unload("LIBXDAAP");
+}
+
+void  CDAAPDirectory::CloseDAAP(void)
+{
+	if (g_application.m_DAAPPtr)
+	{
+		CSectionLoader::Load("LIBXDAAP");
+		m_thisClient = (DAAP_SClient *) g_application.m_DAAPPtr;
+		DAAP_Client_Release(m_thisClient);
+		m_thisClient = NULL;
+		CSectionLoader::Unload("LIBXDAAP");
+	}
+	g_application.m_DAAPPtr = NULL;
 }
 
 bool  CDAAPDirectory::GetDirectory(const CStdString& strPath, VECFILEITEMS &items)
@@ -65,21 +79,39 @@ bool  CDAAPDirectory::GetDirectory(const CStdString& strPath, VECFILEITEMS &item
 	if (!CUtil::HasSlashAtEnd(strPath)) strRoot+="/";
 
 	// Clear out any cached entries for this path
-	g_directoryCache.ClearDirectory(strPath);	
+	g_directoryCache.ClearDirectory(strPath);
 
-	// Create a client object if we don't already have one
-	if (!m_thisClient)
-		m_thisClient = DAAP_Client_Create(NULL, NULL);
+	// if we are accessing a different host then close any current host connection
+	if (strcmp(g_application.m_CurrDAAPHost, (char *) url.GetHostName().c_str()) != 0)
+	{
+		CloseDAAP();
+	}
+
+	if (g_application.m_DAAPPtr)
+	{
+		m_thisClient = (DAAP_SClient *) g_application.m_DAAPPtr;
+		m_thisHost = m_thisClient->hosts;
+	}
+	else
+	{
+		// Create a client object if we don't already have one
+		if (!m_thisClient) m_thisClient = DAAP_Client_Create(NULL, NULL);
+		g_application.m_DAAPPtr = m_thisClient;
+	}
 
 	// Add the defined host to the client object if we don't already have one
 	if (!m_thisHost)
 	{
 		m_thisHost = DAAP_Client_AddHost(m_thisClient, (char *) url.GetHostName().c_str(), "A", "A");
+		strcpy(g_application.m_CurrDAAPHost, m_thisHost->host);
 
 		// If no host object returned then the connection failed
 		if (!m_thisHost) return false;		// tidy ups?
 
 		if (DAAP_ClientHost_Connect(m_thisHost) < 0) return false;		// tidy ups?
+
+		DAAP_Client_GetDatabases(m_thisHost);
+		g_application.m_DAAPDBID =  m_thisHost->databases[0].id;
 	}
 
 	// if we have at least one database we should show it's contents

@@ -18,6 +18,7 @@ public:
 		CDAAPDirectory(void);
 		virtual ~CDAAPDirectory(void);
 		virtual bool  GetDirectory(const CStdString& strPath,VECFILEITEMS &items);
+		virtual void  CloseDAAP(void);
 
 private:
 		void free_albums(albumPTR *alb);
