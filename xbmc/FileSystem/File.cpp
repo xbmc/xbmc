@@ -61,27 +61,28 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 		auto_ptr<char> buffer ( new char[16384]);
 		int iRead;
 
-		long dwFileSize=GetLength();
-		long dwFileSizeOrg=dwFileSize;
-		DWORD dwPos=0,ipercent=0;
+		UINT64 llFileSize=GetLength();
+		UINT64 llFileSizeOrg=llFileSize;
+		UINT64 llPos=0;
+		DWORD  ipercent=0;
 		char *szFileName = strrchr(strFileName,'\\');
 		if (!szFileName) szFileName = strrchr(strFileName,'/');
-		while (dwFileSize>0)
+		while (llFileSize>0)
 		{
 			int iBytesToRead=16384;
-			if (iBytesToRead>dwFileSize) 
+			if (iBytesToRead>llFileSize) 
 			{
-				iBytesToRead=dwFileSize;
+				iBytesToRead=llFileSize;
 			}
 			iRead=Read(buffer.get(),iBytesToRead);
 			if (iRead > 0)
 			{
 				DWORD dwWrote;
 				WriteFile( (HANDLE)hMovie,buffer.get(),iRead,&dwWrote,NULL);
-				dwFileSize -= iRead;
-				dwPos+= iRead;
-				float fPercent=(float)dwPos;
-				fPercent /= ((float)dwFileSizeOrg);
+				llFileSize -= iRead;
+				llPos+= iRead;
+				float fPercent=(float)llPos;
+				fPercent /= ((float)llFileSizeOrg);
 				fPercent*=100.0;
 				if ( (int)fPercent != ipercent)
 				{

@@ -69,11 +69,11 @@ offset_t CFileSMB::GetPosition()
 {
 	if (m_fd == -1) return 0;
 	smb.Lock();
-	int pos = smbc_lseek(m_fd, 0, SEEK_CUR);
+	offset_t pos = smbc_lseek(m_fd, 0, SEEK_CUR);
 	smb.Unlock();
 	if( pos < 0 )
 		return 0;
-	return (offset_t)pos;
+	return pos;
 }
 
 offset_t CFileSMB::GetLength()
@@ -114,7 +114,7 @@ bool CFileSMB::Open(const char* strUserName, const char* strPassword,const char 
 		smb.Unlock();
 		return false;
 	}
-	INT64 ret = smbc_lseek(m_fd, 0, SEEK_END);
+	UINT64 ret = smbc_lseek(m_fd, 0, SEEK_END);
 
 	if( ret < 0 )
 	{
@@ -215,7 +215,7 @@ offset_t CFileSMB::Seek(offset_t iFilePosition, int iWhence)
 	if (m_fd == -1) return 0;
 
 	smb.Lock();	
-	INT64 pos = smbc_lseek(m_fd, (int)iFilePosition, iWhence);
+	INT64 pos = smbc_lseek(m_fd, iFilePosition, iWhence);
 	smb.Unlock();
 
 	if( pos < 0 )	return 0;
