@@ -1487,7 +1487,8 @@ void CUtil::RemoveTempFiles()
   {
     if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
     {
-      string strFile="Q:\\albums\\";
+      string strFile=g_stSettings.m_szAlbumDirectory;
+	  strFile += "\\";
       strFile += wfd.cFileName;
       DeleteFile(strFile.c_str());
     }
