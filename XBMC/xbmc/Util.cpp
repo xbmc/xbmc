@@ -850,13 +850,13 @@ void CUtil::FillInDefaultIcons(VECFILEITEMS &items)
 	{
 		CFileItem* pItem=items[i];
 	
-		if (pItem->m_bIsFolder)
-		{
-			pItem->SetIconImage("defaultFolder.png");
-		}
 
 		if (pItem->GetIconImage()=="")
 		{
+			if (pItem->m_bIsFolder)
+			{
+				pItem->SetIconImage("defaultFolder.png");
+			}
 			if (!pItem->m_bIsFolder)
 			{
 				CStdString strExtension;
