@@ -175,7 +175,7 @@ HRESULT CApplication::Initialize()
 				m_pWebServer->Start(ipadres.c_str(), 80, "Q:\\web");
 			}  
 			
-			if (FALSE)
+      if (g_stSettings.m_bFTPServerEnabled)
 			{
 				m_pFileZilla = new CXBFileZilla("Q:\\");
 				m_pFileZilla->Start();
