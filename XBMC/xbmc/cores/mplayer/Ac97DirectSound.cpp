@@ -24,14 +24,17 @@
 #include "Ac97DirectSound.h"
 #include "../../settings.h"
 #include "../../util.h"
+#include "mplayer.h"
 
 #define VOLUME_MIN		DSBVOLUME_MIN
 #define VOLUME_MAX		DSBVOLUME_MAX
 
 
+
 #define CALC_DELAY_START	 0
 #define CALC_DELAY_STARTED 1
 #define CALC_DELAY_DONE		 2
+
 
 //***********************************************************************************************
 void CALLBACK CAc97DirectSound::StaticStreamCallback(LPVOID pStreamContext, LPVOID pPacketContext, DWORD dwStatus)
@@ -54,6 +57,7 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback,int iChannels, unsi
 	m_pCallback=pCallback;
 	m_bAc3DTS = bAC3DTS;
 
+  m_bFirstPacketDone = false;
 	m_bResampleAudio = false;
 	if (bResample && g_guiSettings.GetBool("AudioOutput.HighQualityResampling") && uiSamplesPerSec != 48000)
 		m_bResampleAudio = true;
@@ -73,23 +77,11 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback,int iChannels, unsi
   m_dwNumPackets=8*iChannels;
 
 	HRESULT hr;
-/*
-#if 0	 
-	  // Create DirectSound
-	hr= DirectSoundCreate( NULL, &m_pDSound, NULL ) ;
-  if( DS_OK != hr  )
-	{
-		OutputDebugString("DirectSoundCreate() failed");
-    return;
-	}
-#endif
-*/
-	m_nCurrentVolume = GetMaximumVolume();
+
 
   m_adwStatus    = new DWORD[ m_dwNumPackets ];
 	for( DWORD j = 0; j < m_dwNumPackets; j++ )
 		m_adwStatus[ j ] = XMEDIAPACKET_STATUS_SUCCESS;
-
 
 	
 	m_pDigitalOutput=NULL;
@@ -324,6 +316,17 @@ DWORD CAc97DirectSound::AddPacketsResample(unsigned char *pData, DWORD iLeft)
 //***********************************************************************************************
 DWORD CAc97DirectSound::AddPackets(unsigned char *data, DWORD len)
 {
+  //Don't accept first packet recieved from mplayer since
+  //video modes(video_config) is set after this is recieved.
+  //video_config takes longer than this sample will last
+  //and such will make the renderer run out of data
+  //mplayer should sync this up by itself quickly.
+  if(!m_bFirstPacketDone)
+  {
+    m_bFirstPacketDone=true;
+    if(mplayer_HasVideo()) return 0;
+  }
+
 	if (m_bResampleAudio)
 		return AddPacketsResample(data, len);
 
