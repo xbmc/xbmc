@@ -419,7 +419,13 @@ void CApplication::OnKey(CKey& key)
 	m_gWindowManager.OnAction(action);
 
 	/* handle extra global presses */
-  
+  if (action.wID == ACTION_STOP)
+	{
+    if ( IsPlayingAudio() && !IsPlayingVideo())
+    {
+      m_pPlayer->closefile();
+    }
+	}  
 	if (action.wID == ACTION_PAUSE)
 	{
 		if (m_pPlayer) m_pPlayer->Pause();
