@@ -27,47 +27,51 @@
 #include "utils/KaiClient.h"
 #include "utils/MemUnit.h"
 
-#pragma comment (lib,"xbmc/lib/libXenium/XeniumSPIg.lib")    
-#ifdef _DEBUG
-#pragma comment (lib,"xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
-#pragma comment (lib,"xbmc/lib/libsmb/libsmbd.lib")      // SECTIONNAME=LIBSMB
-#pragma comment (lib,"xbmc/lib/cximage/ImageLibd.lib")   // SECTIONNAME=CXIMAGE
-#pragma comment (lib,"xbmc/lib/libID3/i3dlibd.lib")			 // SECTIONNAME=LIBID3
-#pragma comment (lib,"xbmc/lib/libCDRip/cdripd.lib")		 // SECTIONNAME=LIBCDRIP
-#pragma comment (lib,"xbmc/lib/libLame/liblamed.lib")		 // SECTIONNAME=LIBLAME
-#pragma comment (lib,"xbmc/lib/libPython/pythond.lib")	 // SECTIONNAME=PYTHON,PY_RW
-#pragma comment (lib,"xbmc/lib/libGoAhead/goaheadd.lib") // SECTIONNAME=LIBHTTP
-#pragma comment (lib,"xbmc/lib/sqlLite/libSQLited.lib")    
-#pragma comment (lib,"guilib/debug/guiLib.lib")				   // -
-#pragma comment (lib,"xbmc/cores/dllLoader/debug/dllloader.lib")				   // -
-#pragma comment (lib, "xbmc/lib/libcdio/libcdiod.lib" )
-#pragma comment (lib, "xbmc/lib/libshout/libshoutd.lib" )
-#pragma comment (lib,"xbmc/lib/libRTV/libRTVd.lib")    // SECTIONNAME=LIBRTV
-#pragma comment (lib,"xbmc/lib/mikxbox/mikxboxd.lib")  // SECTIONNAME=MOD_RW,MOD_RX
-#pragma comment (lib,"xbmc/lib/libsidplay/libsidplayd.lib")			// SECTIONNAME=SID_RW,SID_RX
-#pragma comment (lib,"xbmc/lib/libsidplay/libsidutilsd.lib")		// SECTIONNAME=SID_RW,SID_RX
-#pragma comment (lib,"xbmc/lib/libsidplay/resid_builderd.lib")	// SECTIONNAME=SID_RW,SID_RX
-#pragma comment (lib,"xbmc/lib/libmp4/libmp4v2d.lib")	// SECTIONNAME=LIBMP4
+// uncomment this if you want to use release libs in the debug build.
+// Atm this saves you 7 mb of memory
+
+//#define USE_RELEASE_LIBS
+
+	#pragma comment (lib,"xbmc/lib/libXenium/XeniumSPIg.lib") 
+
+#if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
+	#pragma comment (lib,"xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
+	#pragma comment (lib,"xbmc/lib/libsmb/libsmbd.lib")      // SECTIONNAME=LIBSMB
+	#pragma comment (lib,"xbmc/lib/cximage/ImageLibd.lib")   // SECTIONNAME=CXIMAGE
+	#pragma comment (lib,"xbmc/lib/libID3/i3dlibd.lib")			 // SECTIONNAME=LIBID3
+	#pragma comment (lib,"xbmc/lib/libCDRip/cdripd.lib")		 // SECTIONNAME=LIBCDRIP
+	#pragma comment (lib,"xbmc/lib/libLame/liblamed.lib")		 // SECTIONNAME=LIBLAME
+	#pragma comment (lib,"xbmc/lib/libOggVorbis/libOggVorbisd.lib")		 // SECTIONNAME=LIBOGGVO
+	#pragma comment (lib,"xbmc/lib/libPython/pythond.lib")	 // SECTIONNAME=PYTHON,PY_RW
+	#pragma comment (lib,"xbmc/lib/libGoAhead/goaheadd.lib") // SECTIONNAME=LIBHTTP
+	#pragma comment (lib,"xbmc/lib/sqlLite/libSQLited.lib")    
+	#pragma comment (lib,"xbmc/lib/libcdio/libcdiod.lib" )
+	#pragma comment (lib,"xbmc/lib/libshout/libshoutd.lib" )
+	#pragma comment (lib,"xbmc/lib/libRTV/libRTVd.lib")    // SECTIONNAME=LIBRTV
+	#pragma comment (lib,"xbmc/lib/mikxbox/mikxboxd.lib")  // SECTIONNAME=MOD_RW,MOD_RX
+	#pragma comment (lib,"xbmc/lib/libsidplay/libsidplayd.lib")			// SECTIONNAME=SID_RW,SID_RX
+	#pragma comment (lib,"xbmc/lib/libsidplay/libsidutilsd.lib")		// SECTIONNAME=SID_RW,SID_RX
+	#pragma comment (lib,"xbmc/lib/libsidplay/resid_builderd.lib")	// SECTIONNAME=SID_RW,SID_RX
+	#pragma comment (lib,"xbmc/lib/libmp4/libmp4v2d.lib")	// SECTIONNAME=LIBMP4
 #else
-#pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")
-#pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")
-#pragma comment (lib,"xbmc/lib/cximage/ImageLib.lib")
-#pragma comment (lib,"xbmc/lib/libID3/i3dlib.lib")
-#pragma comment (lib,"xbmc/lib/libCDRip/cdrip.lib")
-#pragma comment (lib,"xbmc/lib/libLame/liblame.lib")
-#pragma comment (lib,"xbmc/lib/libPython/python.lib")
-#pragma comment (lib,"xbmc/lib/libGoAhead/goahead.lib")
-#pragma comment (lib,"xbmc/lib/sqlLite/libSQLite.lib")
-#pragma comment (lib,"guiLib/release/guiLib.lib")
-#pragma comment (lib,"xbmc/cores/dllLoader/release/dllloader.lib")				   // -
-#pragma comment (lib, "xbmc/lib/libcdio/libcdio.lib")
-#pragma comment (lib, "xbmc/lib/libshout/libshout.lib")
-#pragma comment (lib,"xbmc/lib/libRTV/libRTV.lib")
-#pragma comment (lib,"xbmc/lib/mikxbox/mikxbox.lib")
-#pragma comment (lib,"xbmc/lib/libsidplay/libsidplay.lib")    // SECTIONNAME=SID_RW,SID_RX
-#pragma comment (lib,"xbmc/lib/libsidplay/libsidutils.lib")   // SECTIONNAME=SID_RW,SID_RX
-#pragma comment (lib,"xbmc/lib/libsidplay/resid_builder.lib") // SECTIONNAME=SID_RW,SID_RX
-#pragma comment (lib,"xbmc/lib/libmp4/libmp4v2.lib")	// SECTIONNAME=LIBMP4
+	#pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")
+	#pragma comment (lib,"xbmc/lib/libsmb/libsmb.lib")
+	#pragma comment (lib,"xbmc/lib/cximage/ImageLib.lib")
+	#pragma comment (lib,"xbmc/lib/libID3/i3dlib.lib")
+	#pragma comment (lib,"xbmc/lib/libCDRip/cdrip.lib")
+	#pragma comment (lib,"xbmc/lib/libLame/liblame.lib")
+	#pragma comment (lib,"xbmc/lib/libOggVorbis/libOggVorbis.lib")
+	#pragma comment (lib,"xbmc/lib/libPython/python.lib")
+	#pragma comment (lib,"xbmc/lib/libGoAhead/goahead.lib")
+	#pragma comment (lib,"xbmc/lib/sqlLite/libSQLite.lib")
+	#pragma comment (lib,"xbmc/lib/libcdio/libcdio.lib")
+	#pragma comment (lib,"xbmc/lib/libshout/libshout.lib")
+	#pragma comment (lib,"xbmc/lib/libRTV/libRTV.lib")
+	#pragma comment (lib,"xbmc/lib/mikxbox/mikxbox.lib")
+	#pragma comment (lib,"xbmc/lib/libsidplay/libsidplay.lib")    // SECTIONNAME=SID_RW,SID_RX
+	#pragma comment (lib,"xbmc/lib/libsidplay/libsidutils.lib")   // SECTIONNAME=SID_RW,SID_RX
+	#pragma comment (lib,"xbmc/lib/libsidplay/resid_builder.lib") // SECTIONNAME=SID_RW,SID_RX
+	#pragma comment (lib,"xbmc/lib/libmp4/libmp4v2.lib")	// SECTIONNAME=LIBMP4
 #endif
 
 CStdString g_LoadErrorStr;

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CDDARipper.h"
+#include "CDDAReader.h"
 #include "..\utils\log.h"
 #include "..\util.h"
 #include "..\GUIDialogProgress.h"
@@ -8,6 +9,7 @@
 #include "..\settings.h"
 #include "EncoderLame.h"
 #include "EncoderWav.h"
+#include "EncoderVorbis.h"
 #include "..\filesystem\CDDADirectory.h"
 #include "..\detectdvdtype.h"
 #include "..\localizestrings.h"
@@ -15,55 +17,52 @@
 CCDDARipper::CCDDARipper()
 {
 	m_pEncoder = NULL;
-	m_pbtStream = NULL;
 }
 
 CCDDARipper::~CCDDARipper()
 {
 	if(m_pEncoder) delete m_pEncoder;
-	if(m_pbtStream) delete []m_pbtStream;
 }
 
-bool CCDDARipper::Init(int iTrack, const char* strFile)
+bool CCDDARipper::Init(int iTrack, const char* strFile, MUSIC_INFO::CMusicInfoTag* infoTag)
 {
-	DWORD dwStartSector;
-	DWORD dwEndSector;
+	m_cdReader.Init(iTrack);
 
-	if (CDEX_OK != CR_Init(""))
+	switch(g_stSettings.m_iRipEncoder)
 	{
-		CLog::Log("Error: CR_Init failed");
-		return false;
+	case CDDARIP_ENCODER_WAV:
+		m_pEncoder = new CEncoderWav();
+		break;
+	case CDDARIP_ENCODER_VORBIS:
+		m_pEncoder = new CEncoderVorbis();
+		break;
+	default:
+		m_pEncoder = new CEncoderLame();
+		break;
 	}
 
-	// get and set cdrom params
-	CR_GetCDROMParameters(&m_cdParams);
-	//read around 128k per chunk instead of 0x1a which is the default. This makes the cd reading less noisy.
-	m_cdParams.nNumReadSectors = 0x37; 
-	CR_SetCDROMParameters(&m_cdParams);
-
-	CR_ReadToc();
-	dwStartSector = CR_GetTocEntry(iTrack - 1).dwStartSector;
-	dwEndSector = CR_GetTocEntry(iTrack).dwStartSector-1;
-	CLog::Log("Track %d, Sectors %d", CR_GetTocEntry(iTrack - 1).btTrackNumber,	dwEndSector - dwStartSector);
-
-	// Open ripper
-	if (CR_OpenRipper(&m_lBufferSize,	dwStartSector, dwEndSector) != CDEX_OK)
+	// we have to set the tags before we init the Encoder
+	if (infoTag)
 	{
-		CLog::Log("Error: Failed to open ripper");
-		return false;
-	}
+		SYSTEMTIME datetime;
+		infoTag->GetReleaseDate(datetime);
+		CStdString strDate, strTrack;
+		if (datetime.wYear > 0) strDate.Format("%d", datetime.wYear);
+		strTrack.Format("%i", iTrack);
 
-	// allocate buffer and setup a new encoder
-	m_pbtStream = new BYTE[m_lBufferSize];
-	if (g_stSettings.m_iRipEncoder == CDDARIP_ENCODER_LAME) m_pEncoder = new CEncoderLame();
-	else if (g_stSettings.m_iRipEncoder == CDDARIP_ENCODER_WAV) m_pEncoder = new CEncoderWav();
-	else m_pEncoder = new CEncoderLame(); // default
+		m_pEncoder->SetComment("Ripped with XBMC");
+		m_pEncoder->SetArtist(infoTag->GetArtist().c_str());
+		m_pEncoder->SetTitle(infoTag->GetTitle().c_str());
+		m_pEncoder->SetAlbum(infoTag->GetAlbum().c_str());
+		m_pEncoder->SetGenre(infoTag->GetGenre().c_str());
+		m_pEncoder->SetTrack(strTrack.c_str());
+		m_pEncoder->SetYear(strDate.c_str());
+	}
 
 	// init encoder
-	if(!m_pEncoder->Init(strFile))
+	if(!m_pEncoder->Init(strFile, 2, 44100, 16))
 	{
-		delete []m_pbtStream;
-		m_pbtStream = NULL;
+		m_cdReader.DeInit();
 		delete m_pEncoder;
 		m_pEncoder = NULL;
 		return false;
@@ -73,62 +72,33 @@ bool CCDDARipper::Init(int iTrack, const char* strFile)
 
 bool CCDDARipper::DeInit()
 {
-	// Close the Ripper session
-	CR_CloseRipper();
 	// Close the encoder
 	m_pEncoder->Close();
 
+	m_cdReader.DeInit();
+
 	if(m_pEncoder) delete m_pEncoder;
 	m_pEncoder = NULL;
-	if(m_pbtStream) delete []m_pbtStream;
-	m_pbtStream = NULL;
 
-	if (CDEX_OK != CR_DeInit())
-	{
-		CLog::Log("Error: CR_DeInit failed");
-		return false;
-	}
 	return true;
 }
 
-int CCDDARipper::RipChunk(int& nPercent, int& nPeakValue, int& nJitterErrors, int&	nJitterPos)
+int CCDDARipper::RipChunk(int& nPercent)
 {
-	CDEX_ERR ripErr;
-	BOOL bAbort = false;
+	BYTE* pbtStream = NULL;
 	long lBytesRead = 0;
 
-	// Initialize incoming paramters
-	nPercent = 0;
-	nJitterErrors = 0;
-	nPeakValue = 0;
-	nJitterPos = 0;
+	// get data
+	int iResult = m_cdReader.GetData(&pbtStream, lBytesRead);
+	
+	// return if rip is done or on some kind of error
+	if (iResult != CDDARIP_OK) return iResult;
 
-	ripErr = CR_RipChunk(m_pbtStream, &lBytesRead, bAbort);
-
-	if (CDEX_RIPPING_DONE == ripErr) return CDDARIP_DONE; 
-
-	// Check for jitter errors
-	if (CDEX_JITTER_ERROR == ripErr )
-	{
-		DWORD dwStartSector, dwEndSector;
-
-		// Get info where jitter error did occur
-		CR_GetLastJitterErrorPosition(dwStartSector,dwEndSector);
-		// and do something usefull with it ? :)
-	}
-
-	if (CDEX_ERROR == ripErr)	return CDDARIP_ERR;
-
-	m_pEncoder->Encode(lBytesRead, m_pbtStream);
+	// encode data
+	m_pEncoder->Encode(lBytesRead, pbtStream);
 
 	// Get progress indication
-	nPercent = CR_GetPercentCompleted();
-	// Get relative jitter position
-	nJitterPos = CR_GetJitterPosition();
-	// Get the Peak Value
-	nPeakValue = CR_GetPeakValue();
-	// Get the number of jitter errors
-	nJitterErrors = CR_GetNumberOfJitterErrors();
+	nPercent = m_cdReader.GetPercent();
 
 	return CDDARIP_OK;
 }
@@ -138,34 +108,16 @@ int CCDDARipper::RipChunk(int& nPercent, int& nPeakValue, int& nJitterErrors, in
 bool CCDDARipper::Rip(int iTrack, const char* strFile, MUSIC_INFO::CMusicInfoTag& infoTag)
 {
 	int	iPercent, iOldPercent = 0;
-	int	iPeakValue = 0;
-	int	iJitterErrors = 0;
-	int	iJitterPos = 0;
 	bool bCancled = false;
 
 	CLog::Log("Start ripping track %i to %s", iTrack, strFile);
 
 		// init ripper
-	if (!Init(iTrack, strFile))
+	if (!Init(iTrack, strFile, &infoTag))
 	{
 		CLog::Log("Error: CCDDARipper::Init failed");
 		return false;
 	}
-
-	SYSTEMTIME datetime;
-	infoTag.GetReleaseDate(datetime);
-	CStdString strDate, strTrack;
-	if (datetime.wYear > 0) strDate.Format("%d", datetime.wYear);
-	strTrack.Format("%i", iTrack);
-
-	// add tags to our media file
-	m_pEncoder->AddTag(ENC_COMMENT, "Ripped with XBMC");
-	m_pEncoder->AddTag(ENC_ARTIST, infoTag.GetArtist().c_str());
-	m_pEncoder->AddTag(ENC_TITLE, infoTag.GetTitle().c_str());
-	m_pEncoder->AddTag(ENC_ALBUM, infoTag.GetAlbum().c_str());
-	m_pEncoder->AddTag(ENC_GENRE, infoTag.GetGenre().c_str());
-	m_pEncoder->AddTag(ENC_TRACK, strTrack.c_str());
-	m_pEncoder->AddTag(ENC_YEAR, strDate.c_str());
 
 	// setup the progress dialog
 	CGUIDialogProgress*	pDlgProgress	= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
@@ -185,7 +137,7 @@ bool CCDDARipper::Rip(int iTrack, const char* strFile, MUSIC_INFO::CMusicInfoTag
 	g_graphicsContext.Unlock();
 
 	// start ripping
-	while(!bCancled && CDDARIP_DONE != RipChunk(iPercent, iPeakValue, iJitterErrors, iJitterPos))
+	while(!bCancled && CDDARIP_DONE != RipChunk(iPercent))
 	{
 		pDlgProgress->ProgressKeys();
 		bCancled = pDlgProgress->IsCanceled();

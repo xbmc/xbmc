@@ -19,14 +19,14 @@ class CEncoderLame : public CEncoder
 {
 public:
 	CEncoderLame();
-	bool               Init(const char* strFile);
+	bool               Init(const char* strFile, int iInChannels, int iInRate, int iInBits);
 	int                Encode(int nNumBytesRead, BYTE* pbtStream);
 	bool               Close();
 	void               AddTag(int key,const char* value);
 
 private:
 	lame_global_flags* m_pGlobalFlags;
-	FILE*              m_pFile;
+
 	unsigned char      m_buffer[48160]; // mp3buf_size in bytes = 1.25*(chunk size / 4) + 7200
 	char               m_inPath[MAX_PATH + 1];
 	char               m_outPath[MAX_PATH + 1];
