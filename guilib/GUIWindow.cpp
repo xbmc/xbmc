@@ -42,7 +42,7 @@ CGUIWindow::CGUIWindow(DWORD dwID)
   m_dwPreviousWindowId=WINDOW_HOME;
   m_dwDefaultFocusControlID=0;
   m_bRelativeCoords = false;
-  m_dwPosX = m_dwPosY = 0;
+  m_dwPosX = m_dwPosY = m_dwWidth = m_dwHeight = 0;
 }
 
 CGUIWindow::~CGUIWindow(void)
@@ -311,6 +311,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   }
   
   m_dwDefaultFocusControlID=0;
+  m_dwWidth=m_dwHeight=0;
 	
 	VECREFERENCECONTOLS  referencecontrols;
 	IVECREFERENCECONTOLS it;
@@ -377,6 +378,21 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 					if (pGUIControl)
 					{
 						Add(pGUIControl);
+
+						if (m_bRelativeCoords)
+						{
+							DWORD dwMaxX = pGUIControl->GetXPosition()+pGUIControl->GetWidth();
+							if (dwMaxX>m_dwWidth)
+							{
+								m_dwWidth=dwMaxX;
+							}
+							
+							DWORD dwMaxY = pGUIControl->GetYPosition()+pGUIControl->GetHeight();
+							if (dwMaxY>m_dwHeight)
+							{
+								m_dwHeight=dwMaxY;
+							}
+						}
 					}
 				}
          pControl=pControl->NextSibling();
@@ -400,6 +416,15 @@ void CGUIWindow::SetPosition(DWORD dwPosX, DWORD dwPosY)
 {
 	m_dwPosX = dwPosX;
 	m_dwPosY = dwPosY;
+}
+
+void CGUIWindow::CenterWindow()
+{
+	if (m_bRelativeCoords)
+	{
+		m_dwPosX = (g_graphicsContext.GetWidth() - m_dwWidth) / 2;
+		m_dwPosY = (g_graphicsContext.GetHeight() - m_dwHeight) / 2;
+	}
 }
 
 void CGUIWindow::Render()
