@@ -807,9 +807,9 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
                     m_dlgProgress->SetLine(1,strDescription);
                     m_dlgProgress->Progress();
                 }
-                CStdString strIcon;
-                CUtil::GetXBEIcon(pItem->m_strPath, strIcon);
-                ::DeleteFile(strIcon.c_str());
+               // CStdString strIcon;
+               // CUtil::GetXBEIcon(pItem->m_strPath, strIcon);
+               // ::DeleteFile(strIcon.c_str());
 
             }
         }
@@ -828,7 +828,8 @@ void CGUIWindowPrograms::DeleteThumbs(VECFILEITEMS& items)
             if (CUtil::IsXBE(pItem->m_strPath) )
             {
                 CStdString strThumb;
-                CUtil::GetThumbnail(pItem->m_strPath, strThumb);
+                // CUtil::GetThumbnail(pItem->m_strPath, strThumb);
+				CUtil::GetXBEIcon(pItem->m_strPath,strThumb);
                 ::DeleteFile(strThumb.c_str());
             }
         }
