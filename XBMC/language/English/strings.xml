@@ -749,6 +749,7 @@
   <string><id>14058</id><value>Film Grain Effect</value></string>
   <string><id>14059</id><value>Look for custom thumbnails on remote shares</value></string>
   <string><id>14060</id><value>Unknown type Cache - Internet</value></string>
+  <string><id>14061</id><value>Auto</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>The service is not connected, would you like to attempt</value></string>

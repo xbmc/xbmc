@@ -288,6 +288,8 @@ public:
 	void LoadXML(TiXmlElement *pRootElement);
 	void SaveXML(TiXmlNode *pRootNode);
 
+  //m_LookAndFeelResolution holds the real gui resolution, 
+  //also when g_guiSettings.GetInt("LookAndFeel.Resolution") is set to AUTORES
 	RESOLUTION m_LookAndFeelResolution;
 private:
 	typedef map<CStdString, CSetting*>::iterator mapIter;
