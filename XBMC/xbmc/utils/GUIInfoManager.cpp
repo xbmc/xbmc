@@ -223,6 +223,54 @@ CStdString CGUIInfoManager::GetVideoLabel(const CStdString &strItem)
 	return "";
 }
 
+CStdString CGUIInfoManager::GetProgressBar(const CStdString &strItem)
+{	
+	CStdString strProgressBar;
+	double tmpTotal, tmpCurrent, tmpTest, dBlockSize, dBlockSizeRest;
+	unsigned char cLCDsmallBlocks = 0xb0;	//this char (0xAC-0xAF) will be translated in LCD.cpp to the smallBlock
+	unsigned char cLCDbigBlock = 0xa0;		//this char will be translated in LCD.cpp to the right bigBlock
+	int iBigBlock = 5;						// a big block is a combination of 5 small blocks
+	int m_iColumns = g_guiSettings.GetInt("LCD.Columns") - 2;
+
+	if (m_iColumns>0)
+	{
+		tmpTotal = g_application.m_pPlayer->GetTotalTime();
+
+		if (strItem == "video") tmpCurrent = (double)g_application.m_pPlayer->GetPTS();
+		else tmpCurrent = (double)g_application.m_pPlayer->GetPTS()/10 - (g_infoManager.GetCurrentSongStart())/75;
+		
+		dBlockSize = tmpTotal/m_iColumns/iBigBlock;
+		dBlockSizeRest = (tmpCurrent-((int)(tmpCurrent/dBlockSize)*dBlockSize));
+
+		strProgressBar = "[";
+		for (int i=1;i<=m_iColumns;i++)
+		{
+			//set full blocks
+			if (tmpCurrent >= i * iBigBlock * dBlockSize)
+			{
+				strProgressBar += char(cLCDbigBlock);
+			}
+			//set a part of a block at the end, when needed
+			else if (tmpCurrent > (i-1) * iBigBlock * dBlockSize + dBlockSize)
+			{
+				tmpTest= tmpCurrent - ((int)(tmpCurrent/(iBigBlock * dBlockSize)) * iBigBlock * dBlockSize );
+				tmpTest=(tmpTest/dBlockSize);
+				if (tmpTest>=iBigBlock) tmpTest=iBigBlock-1;
+				strProgressBar += char(cLCDsmallBlocks-(int)tmpTest);
+				dBlockSizeRest=0;
+			}
+			//fill up the rest with blanks
+			else 
+			{
+				strProgressBar += " ";
+			}
+		}
+		strProgressBar += "]";
+		return strProgressBar;
+	}
+	else return "";
+}
+
 CStdString CGUIInfoManager::GetCurrentPlayTime()
 {
 	CStdString strTime;
