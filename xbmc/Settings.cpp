@@ -226,6 +226,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bMyProgramsNoShortcuts=true;
 	strcpy(g_stSettings.szDashboard,"C:\\xboxdash.xbe");
 	strcpy(g_stSettings.m_szAlternateSubtitleDirectory,"");
+	strcpy(g_stSettings.m_strIPAssignment, "dash");
 	strcpy(g_stSettings.m_strLocalIPAdres,"");
 	strcpy(g_stSettings.m_strLocalNetmask,"");
 	strcpy(g_stSettings.m_strGateway,"");
@@ -237,7 +238,9 @@ CSettings::CSettings(void)
 	g_stSettings.m_bFTPServerEnabled=true;
 	g_stSettings.m_bHTTPServerEnabled=false;
 	g_stSettings.m_iWebServerPort=80;
+	g_stSettings.m_bHTTPProxyEnabled=false;
 	strcpy(g_stSettings.m_szHTTPProxy,"");
+	g_stSettings.m_iHTTPProxyPort=8080;
 	strcpy(g_stSettings.szDefaultSkin,"Project Mayhem");
 	strcpy(g_stSettings.szHomeDir,"");
 
@@ -426,13 +429,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 		pFileType=pFileType->NextSibling();
 	}
 
-	TiXmlElement* pXLinkElement =pRootElement->FirstChildElement("xlink");
-	if (pXLinkElement)
-	{
-		GetString(pXLinkElement, "username", g_stSettings.szOnlineUsername,"");
-		GetString(pXLinkElement, "password", g_stSettings.szOnlinePassword,"");
-	}
-
 	TiXmlElement* pSambaElement =pRootElement->FirstChildElement("samba");
 	if (pSambaElement)
 	{
@@ -475,17 +471,12 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 		GetString(pRootElement, "CDDBIpAddress", g_stSettings.m_szCDDBIpAdres,"194.97.4.18");
 	//g_stSettings.m_bUseCDDB=GetBoolean(pRootElement, "CDDBEnabled");
 
-	GetString(pRootElement, "ipadres", g_stSettings.m_strLocalIPAdres,"");
-	GetString(pRootElement, "netmask", g_stSettings.m_strLocalNetmask,"");
-	GetString(pRootElement, "defaultgateway", g_stSettings.m_strGateway,"");
-	GetString(pRootElement, "nameserver", g_stSettings.m_strNameServer,"");
 	GetString(pRootElement, "timeserver", g_stSettings.m_strTimeServer,"207.46.248.43");
 
 	GetString(pRootElement, "thumbnails",g_stSettings.szThumbnailsDirectory,"");
 	GetString(pRootElement, "shortcuts", g_stSettings.m_szShortcutDirectory,"");
 	GetString(pRootElement, "screenshots", g_stSettings.m_szScreenshotsDirectory, "");
 	GetString(pRootElement, "recordings", g_stSettings.m_szMusicRecordingDirectory,"");
-	GetString(pRootElement, "httpproxy", g_stSettings.m_szHTTPProxy,"");
 
 	GetString(pRootElement, "albums", g_stSettings.m_szAlbumDirectory,"");
 	GetString(pRootElement, "subtitles", g_stSettings.m_szAlternateSubtitleDirectory,"");
@@ -498,7 +489,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
 	GetInteger(pRootElement, "startwindow", g_stSettings.m_iStartupWindow,0,0,INT_MAX);
 	g_stSettings.m_iStartupWindow += WINDOW_HOME;	// windows referenced from WINDOW_HOME
-	GetInteger(pRootElement, "httpproxyport", g_stSettings.m_iHTTPProxyPort,0,0,INT_MAX);
 	GetInteger(pRootElement, "webserverport", g_stSettings.m_iWebServerPort, 80,0,INT_MAX);
 
 	GetBoolean(pRootElement, "useFDrive", g_stSettings.m_bUseFDrive);
@@ -1178,7 +1168,21 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetString(pElement, "areacode3", g_stSettings.m_szWeatherArea[2], "CAXX0343");			//WEATHER SETTINGS
 		GetInteger(pElement, "osdtimeout", g_stSettings.m_iOSDTimeout,5,0,INT_MAX);
 		GetBoolean(pElement, "hideextensions", g_stSettings.m_bHideExtensions);
+
+		GetString(pElement, "ipassignment", g_stSettings.m_strIPAssignment, "dash");
+		GetString(pElement, "ipadres", g_stSettings.m_strLocalIPAdres, "192.168.0.1");
+		GetString(pElement, "netmask", g_stSettings.m_strLocalNetmask, "255.255.255.0");
+		GetString(pElement, "defaultgateway", g_stSettings.m_strGateway, "192.168.0.254");
+		GetString(pElement, "nameserver", g_stSettings.m_strNameServer, "192.168.0.1");
+
+		GetBoolean(pElement, "httpproxyenabled", g_stSettings.m_bHTTPProxyEnabled);
+		GetString(pElement, "httpproxyhost", g_stSettings.m_szHTTPProxy, "");
+		GetInteger(pElement, "httpproxyport", g_stSettings.m_iHTTPProxyPort, 8080, 1, 65535);
+	
+		GetString(pElement, "kaiusername", g_stSettings.szOnlineUsername, "");
+		GetString(pElement, "kaipassword", g_stSettings.szOnlinePassword, "");
 	}
+
 	// slideshow settings
 	pElement = pRootElement->FirstChildElement("slideshow");
 	if (pElement)
@@ -1561,6 +1565,20 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	SetString(pNode, "areacode3", g_stSettings.m_szWeatherArea[2]);			//WEATHER SETTINGS
 	SetInteger(pNode, "osdtimeout", g_stSettings.m_iOSDTimeout);
 	SetBoolean(pNode, "hideextensions", g_stSettings.m_bHideExtensions);
+
+	SetString(pNode, "ipassignment", g_stSettings.m_strIPAssignment);
+	SetString(pNode, "ipadres", g_stSettings.m_strLocalIPAdres);
+	SetString(pNode, "netmask", g_stSettings.m_strLocalNetmask);
+	SetString(pNode, "defaultgateway", g_stSettings.m_strGateway);
+	SetString(pNode, "nameserver", g_stSettings.m_strNameServer);
+
+	SetBoolean(pNode, "httpproxyenabled", g_stSettings.m_bHTTPProxyEnabled);
+	SetString(pNode, "httpproxyhost", g_stSettings.m_szHTTPProxy);
+	SetInteger(pNode, "httpproxyport", g_stSettings.m_iHTTPProxyPort);
+
+	SetString(pNode, "kaiusername", g_stSettings.szOnlineUsername);
+	SetString(pNode, "kaipassword", g_stSettings.szOnlinePassword);
+
 
 	// slideshow settings
 	TiXmlElement slideshowNode("slideshow");

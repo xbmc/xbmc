@@ -49,13 +49,13 @@
 #include "GUIWindowSettingsSubtitles.h"
 #include "GUIWindowScreensaver.h"		// CB: Matrix Screensaver
 #include "GUIWindowOSD.h"
-#include "GUIWindowMusicInfo.h" 
+#include "GUIWindowMusicInfo.h"
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowScriptsInfo.h"
 #include "GUIWindowMusicOverlay.h"
 #include "GUIWindowFullScreen.h"
 #include "GUIWindowVideoOverlay.h"
-#include "GUIWindowVideoPlaylist.h" 
+#include "GUIWindowVideoPlaylist.h"
 #include "GUIWindowSettingsSlideShow.h"
 #include "GUIWindowSettingsScreensaver.h"
 #include "GUIWindowSettingsCDRipper.h"
@@ -66,15 +66,19 @@
 #include "GUIWindowScripts.h"
 #include "GUIWindowVisualisation.h"
 #include "GUIWindowSlideshow.h"
-#include "GUIWindowMusicPlaylist.h" 
-#include "GUIWindowMusicSongs.h" 
+#include "GUIWindowMusicPlaylist.h"
+#include "GUIWindowMusicSongs.h"
 #include "GUIWindowMusicAlbum.h"
 #include "GUIWindowMusicArtists.h"
-#include "GUIWindowMusicGenres.h" 
-#include "GUIWindowMusicTop100.h" 
+#include "GUIWindowMusicGenres.h"
+#include "GUIWindowMusicTop100.h"
 #include "GUIWindowBuddies.h"		//BUDDIES
 #include "GUIWindowWeather.h"		//WEATHER
 #include "GUIWindowSettingsWeather.h"	//WEATHER SETTINGS
+#include "GUIWindowSettingsNetwork.h"
+#include "GUIWindowSettingsNetworkIP.h"
+#include "GUIWindowSettingsNetworkProxy.h"
+#include "GUIWindowSettingsNetworkKai.h"
 #include "GUIWindowSettingsCache.h"
 #include "GUIWindowPointer.h"		// Mouse pointer
 #include "LocalizeStrings.h"
@@ -110,7 +114,7 @@ public:
   virtual void					Render();
 	virtual HRESULT 			Create();
 
-  void StartServices(); 
+  void StartServices();
   void StopServices();
   void StartWebServer();
   void StopWebServer();
@@ -151,9 +155,9 @@ public:
 	void					ResetAllControls();
 	virtual void			Process();
 	void					ResetScreenSaver();
-	int						GetVolume() const;  
-	void					SetVolume(int iPercent);  
-	int						GetPlaySpeed() const;  
+	int						GetVolume() const;
+	void					SetVolume(int iPercent);
+	int						GetPlaySpeed() const;
 	void					SetPlaySpeed(int iSpeed);
 	bool									IsButtonDown(DWORD code);
 	bool				ResetScreenSaverWindow();
@@ -215,7 +219,11 @@ public:
 	CGUIWindowWeather								m_guiMyWeather;	//WEATHER
 	CGUIWindowBuddies						    m_guiMyBuddies;	//BUDDIES
 	CGUIWindowSettingsWeather				m_guiSettingsWeather; //WEATHER SETTINGS
-	CGUIWindowOSD										m_guiWindowOSD;
+	CGUIWindowSettingsNetwork				m_guiSettingsNetwork;
+	CGUIWindowSettingsNetworkIP				m_guiSettingsNetworkIP;
+	CGUIWindowSettingsNetworkProxy			m_guiSettingsNetworkProxy;
+	CGUIWindowSettingsNetworkKai			m_guiSettingsNetworkKai;
+	CGUIWindowOSD							m_guiWindowOSD;
 	CGUIWindowSettingsCache					m_guiSettingsCache;
 	CGUIWindowSettingsSkinLanguage	m_guiSettingsSkinLanguage;
 	CGUIWindowSettingsUserInterface	m_guiSettingsUserInterface;

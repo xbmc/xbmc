@@ -54,6 +54,14 @@ void CGUIDialogKeyboard::OnInitWindow()
 		}
 	}
 
+	// . button
+	CGUIButtonControl* pButton = ((CGUIButtonControl*)GetControl(46));		
+	if(pButton)
+	{
+		aLabel[0]=46;
+		pButton->SetText(aLabel);
+	}
+
 	// set alphabetic (capitals)
 	UpdateButtons();
 
@@ -193,7 +201,7 @@ void CGUIDialogKeyboard::Backspace()
 
 void CGUIDialogKeyboard::OnClickButton(int iButtonControl)
 {
-	if ( ((iButtonControl>=48) && (iButtonControl<=57)) || (iButtonControl==32) )
+	if ( ((iButtonControl>=48) && (iButtonControl<=57)) || (iButtonControl==32) || (iButtonControl==46))
 	{	// number or space
 		Character((WCHAR)iButtonControl);
 	}
@@ -267,5 +275,35 @@ void CGUIDialogKeyboard::UpdateButtons()
 			}
 			pButton->SetText(aLabel);
 		}
+	}
+}
+
+// Show keyboard with initial value (aTextString) and replace with result string.
+// Returns: true  - successful display and input (empty result may return true or false depending on parameter)
+//          false - unsucessful display of the keyboard or cancelled editing
+bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, bool allowEmptyResult)
+{
+	CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+
+	if (!pKeyboard) 
+		return false;
+
+	// setup keyboard
+	pKeyboard->CenterWindow();
+	pKeyboard->SetText(aTextString);
+	pKeyboard->DoModal(m_gWindowManager.GetActiveWindow());
+	pKeyboard->Close();
+
+	// If have text - update this.
+	if (pKeyboard->IsDirty())
+	{	
+		aTextString = pKeyboard->GetText();
+		if (!allowEmptyResult && aTextString.IsEmpty())
+			return false;
+		return true;
+	}
+	else
+	{
+		return false;
 	}
 }
