@@ -75,17 +75,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 			m_bViewReview=true;
       CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_DISC,0,0,NULL);
       g_graphicsContext.SendMessage(msg);         
-      {
-        CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_DISC,0,0);
-				msg2.SetLabel("HD");
-        g_graphicsContext.SendMessage(msg2);         
-      }
-      {
-        CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_DISC,0,0);
-				msg2.SetLabel("share");
-			  g_graphicsContext.SendMessage(msg2);         
-      }
-			for (int i=1; i < 100; ++i)
+			for (int i=0; i < 100; ++i)
 			{
 				CStdString strItem;
         strItem.Format("DVD#%02.2i", i);
@@ -94,10 +84,12 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 				g_graphicsContext.SendMessage(msg2);    
 			}
       
+      SET_CONTROL_HIDDEN(GetID(),CONTROL_DISC);
       CONTROL_DISABLE(GetID(),CONTROL_DISC);
       int iItem=0;
       if ( CUtil::IsISO9660(m_pMovie->m_strPath) || CUtil::IsDVD(m_pMovie->m_strPath) )
       {
+        SET_CONTROL_VISIBLE(GetID(),CONTROL_DISC);
         CONTROL_ENABLE(GetID(),CONTROL_DISC);
         char szNumber[1024];
         int iPos=0;
@@ -122,22 +114,14 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
         {
           sscanf(szNumber,"%i", &iDVD);
           if (iDVD <0 && iDVD >=100)
-            iDVD=0;
+            iDVD=-1;
         }
-        if (iDVD<=0) iDVD=1;
-        iItem=iDVD+1;
+        if (iDVD<=0) iDVD=0;
+        iItem=iDVD;
         
-        CLog::Log("IMDB:%s label:[%s] item:%i id:%s" ,
-          m_pMovie->m_strPath.c_str(),m_pMovie->m_strDVDLabel.c_str(),iItem,
-          m_pMovie->m_strSearchString.c_str());
+        CGUIMessage msgSet(GUI_MSG_ITEM_SELECT,GetID(),CONTROL_DISC,iItem,0,NULL);
+			  g_graphicsContext.SendMessage(msgSet);         
       }
-      else 
-      {
-        if (CUtil::IsHD(m_pMovie->m_strPath)) iItem=0;
-        else if (CUtil::IsRemote(m_pMovie->m_strPath)) iItem=1;
-      }
-			CGUIMessage msgSet(GUI_MSG_ITEM_SELECT,GetID(),CONTROL_DISC,iItem,0,NULL);
-			g_graphicsContext.SendMessage(msgSet);         
 			Refresh();
 			return true;
     }

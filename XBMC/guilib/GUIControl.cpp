@@ -54,33 +54,45 @@ void CGUIControl::OnAction(const CAction &action)
   {
     case ACTION_MOVE_DOWN:
     {
-//      SetFocus(false);
-      CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwControlDown, action.wID);
-      g_graphicsContext.SendMessage(msg);
+      if (HasFocus() )
+      {
+        SetFocus(false);
+        CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwControlDown, action.wID);
+        g_graphicsContext.SendMessage(msg);
+      }
     }
     break;
     
     case ACTION_MOVE_UP:
     {
-//      SetFocus(false);
-      CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwControlUp, action.wID);
-      g_graphicsContext.SendMessage(msg);
+      if (HasFocus() )
+      {
+        SetFocus(false);
+        CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwControlUp, action.wID);
+        g_graphicsContext.SendMessage(msg);
+      }
     }
     break;
     
     case ACTION_MOVE_LEFT:
     {
- //     SetFocus(false);
-      CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwControlLeft, action.wID);
-      g_graphicsContext.SendMessage(msg);
+      if (HasFocus() )
+      {
+        SetFocus(false);
+        CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwControlLeft, action.wID);
+        g_graphicsContext.SendMessage(msg);
+      }
     }
     break;
 
     case ACTION_MOVE_RIGHT:
     {
- //     SetFocus(false);
-      CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwControlRight, action.wID);
-      g_graphicsContext.SendMessage(msg);
+      if (HasFocus() )
+      {
+        SetFocus(false);
+        CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwControlRight, action.wID);
+        g_graphicsContext.SendMessage(msg);
+      }
     }
     break;
   }
