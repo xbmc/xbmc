@@ -491,8 +491,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
 
   g_LangCodeExpander.LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
 
-  g_LangCodeExpander.LoadStandardCodes();
-
 	bXboxMediacenter=true;
 	return true;
 }
