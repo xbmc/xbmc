@@ -140,7 +140,7 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 				}
 				
 				FILETIME fileTime,localTime;
-				LONGLONG ll = Int32x32To64(lTimeDate, 10000000) + 116444736000000000;
+				LONGLONG ll = Int32x32To64(lTimeDate & 0xffffffff, 10000000) + 116444736000000000;
 				fileTime.dwLowDateTime = (DWORD) (ll & 0xffffffff);
 				fileTime.dwHighDateTime = (DWORD)(ll >>32);
 

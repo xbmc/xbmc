@@ -64,6 +64,7 @@ public:
 	virtual HRESULT	SetCurrentVolume(LONG nVolume)=0;
 	virtual bool		SupportsSurroundSound()  const=0;
 	virtual int			SetPlaySpeed(int iSpeed)=0;
+	virtual void    WaitCompletion()=0;
 
 private:};
 

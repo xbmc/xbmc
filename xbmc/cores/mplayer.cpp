@@ -70,6 +70,8 @@
 //Transforms a string into a language code used by dvd's
 #define DVDLANGCODE(x) ((int)(x[1]|(x[0]<<8)))
 
+void xbox_audio_wait_completion();
+
 extern "C" void free_registry(void);
 extern void xbox_video_wait();
 extern void xbox_video_CheckScreenSaver();	// Screensaver check
@@ -860,6 +862,8 @@ void CMPlayer::Process()
 		{
 			CLog::Log("mplayer generated exception!");
 		}
+		if (!m_bStop)
+			xbox_audio_wait_completion();
 		mplayer_close_file();
 	}
 	m_bIsPlaying=false;

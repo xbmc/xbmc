@@ -646,3 +646,15 @@ void CASyncDirectSound::UnRegisterAudioCallback()
 	m_pCallback=NULL;
 }
 
+void CASyncDirectSound::WaitCompletion()
+{
+	if (!m_pStream)
+		return;
+
+	m_pStream->Discontinuity();
+	DWORD status;
+	do {
+		Sleep(10);
+		m_pStream->GetStatus(&status);
+	}	while (status & DSSTREAMSTATUS_PLAYING);
+}
