@@ -14,4 +14,7 @@ public:
   virtual void				OnAction(const CAction &action);
 	virtual void				Render();
 	void								SetCurrentFile(const CStdString& strFile);
+protected:
+  void                HideControl(int iControl);
+  void                ShowControl(int iControl);
 };

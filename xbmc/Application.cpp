@@ -642,6 +642,7 @@ void CApplication::OnKey(CKey& key)
         {
           m_iPlaySpeed=1;
           m_pPlayer->ToFFRW(m_iPlaySpeed);
+          m_pAudioDecoder->SetCurrentVolume (m_pAudioDecoder->GetMaximumVolume());
         }
       }
 	  }
@@ -671,6 +672,7 @@ void CApplication::OnKey(CKey& key)
             {
               m_iPlaySpeed=1;
               m_pPlayer->ToFFRW(m_iPlaySpeed);
+              m_pAudioDecoder->SetCurrentVolume (m_pAudioDecoder->GetMaximumVolume());
             }
           }
         }
@@ -694,10 +696,15 @@ void CApplication::OnKey(CKey& key)
             if (m_iPlaySpeed>=1)
             {
               m_pPlayer->ToFFRW(m_iPlaySpeed);
+              if(m_iPlaySpeed==1)
+                m_pAudioDecoder->SetCurrentVolume (m_pAudioDecoder->GetMaximumVolume());
+              else
+                m_pAudioDecoder->SetCurrentVolume (m_pAudioDecoder->GetMinimumVolume());
             }
             else
             {
               m_pPlayer->ToFFRW(m_iPlaySpeed);
+              m_pAudioDecoder->SetCurrentVolume (m_pAudioDecoder->GetMinimumVolume());
             }
           }
         }
