@@ -29,8 +29,8 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     {
       int iFocusControl=m_iLastControl;
 			CGUIWindow::OnMessage(message);
-      // make controls 101-110 invisible...
-      for (int iControl=102; iControl < 110; iControl++)
+      // make controls 101-120 invisible...
+      for (int iControl=102; iControl < 120; iControl++)
       {
 				SET_CONTROL_HIDDEN(GetID(), iControl);
       }
@@ -51,8 +51,8 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       m_iLastControl=iControl;
       if (iControl>=2 && iControl <=8)
       {
-        // make controls 101-110 invisible...
-        for (int i=102; i < 110; i++)
+        // make controls 101-120 invisible...
+        for (int i=102; i < 120; i++)
         {
 					SET_CONTROL_HIDDEN(GetID(), i);
         }

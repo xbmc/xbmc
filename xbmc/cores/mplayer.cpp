@@ -997,7 +997,12 @@ void CMPlayer::SeekTime(int iTime)
   xbox_video_wait();
 }
 
-int CMPlayer::GetTime()
+__int64 CMPlayer::GetTime()
+{
+  return mplayer_getCurrentTime();
+}
+
+int CMPlayer::GetTotalTime()
 {
   return mplayer_getTime();
 }

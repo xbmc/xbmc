@@ -97,7 +97,8 @@ public:
   virtual float   GetSubTitleDelay();
   virtual int     GetAudioStreamCount();
   virtual void	  SeekTime(int iTime=0);
-  virtual int	  GetTime();
+  virtual int	   GetTotalTime();
+  virtual __int64 GetTime();
   virtual void	  ToFFRW(int iSpeed=0);
 protected:
   bool                load();
