@@ -1159,6 +1159,12 @@
 				RelativePath=".\xbmc\utils\IMDB.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\utils\log.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\log.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.cpp">
 			</File>
 			<File

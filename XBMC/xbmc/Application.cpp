@@ -1,6 +1,7 @@
 #include "application.h"
 #include "xbox\iosupport.h"
 #include "xbox/xkutils.h"
+#include "utils/log.h"
 #include "settings.h"
 #include "util.h"
 #include "sectionLoader.h"
@@ -83,10 +84,15 @@ HRESULT CApplication::Create()
 	helper.Unmount("Q:");
 	helper.Mount("Q:", szDevicePath);	
 
+  CLog::Log("-----------------------------------------------------------------------");
+  CLog::Log("starting...");
 	// Transfer the resolution information to our graphics context
 	g_graphicsContext.SetD3DParameters(&m_d3dpp, g_settings.m_ResInfo);
+
+  CLog::Log("load settings...");
 	m_bSettingsLoaded=g_settings.Load();
 	
+  CLog::Log("map drives...");
 	helper.Remap("C:,Harddisk0\\Partition2");
 	helper.Remap("E:,Harddisk0\\Partition1");
 	helper.Remount("D:","Cdrom0");
@@ -100,6 +106,7 @@ HRESULT CApplication::Create()
 	// if there is, we check if it's a xbmc dir and map to it Q:
 	if (strlen(g_stSettings.szHomeDir) > 1)
 	{
+    CLog::Log("map Q: to homedir:%s...",g_stSettings.szHomeDir);
 		// home dir is defined in xboxmediacenter.xml
 		CStdString strHomePath = g_stSettings.szHomeDir;
 		strHomePath.TrimRight("\\");
@@ -114,11 +121,15 @@ HRESULT CApplication::Create()
 		}
 	}
 
+  CLog::Log("load language file");
 	CStdString strLanguagePath;
 	strLanguagePath.Format("Q:\\language\\%s\\strings.xml", g_stSettings.szDefaultLanguage);
 	g_localizeStrings.Load(strLanguagePath );
-	g_buttonTranslator.Load();
+	
+  CLog::Log("load keymap.xml");
+  g_buttonTranslator.Load();
 
+  CLog::Log("setup DirectX");
 	g_graphicsContext.SetGUIResolution(g_stSettings.m_ScreenResolution);
 	g_graphicsContext.SetOffset(g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY);
 	m_gWindowManager.Initialize();
@@ -128,6 +139,7 @@ HRESULT CApplication::Create()
 
 HRESULT CApplication::Initialize()
 {
+  CLog::Log("creating subdirectories");
   if (g_stSettings.szThumbnailsDirectory[0]==0)
   {
 		strcpy(g_stSettings.szThumbnailsDirectory,"Q:\\thumbs");
@@ -165,13 +177,15 @@ HRESULT CApplication::Initialize()
   }
 
   // initialize network
-  
+  CLog::Log("initialize network");
   if ( CUtil::InitializeNetwork(g_stSettings.m_strLocalIPAdres,
                             g_stSettings.m_strLocalNetmask,
                             g_stSettings.m_strGateway ) )
   {
+      CLog::Log("start timeserver thread");
 			m_sntpClient.Create(); 
 	
+      CLog::Log("start webserver");
 			if (g_stSettings.m_bHTTPServerEnabled)
 			{
 				CSectionLoader::Load("LIBHTTP");
@@ -180,7 +194,7 @@ HRESULT CApplication::Initialize()
 				CUtil::GetTitleIP(ipadres);
 				m_pWebServer->Start(ipadres.c_str(), 80, "Q:\\web");
 			}  
-			
+      CLog::Log("start ftpserver");
       if (g_stSettings.m_bFTPServerEnabled)
 			{
 				m_pFileZilla = new CXBFileZilla("Q:\\");
@@ -189,7 +203,10 @@ HRESULT CApplication::Initialize()
 
   }
 	g_graphicsContext.SetD3DDevice(m_pd3dDevice);
+  CLog::Log("load skin:%s",g_stSettings.szDefaultSkin);
 	LoadSkin(g_stSettings.szDefaultSkin);
+
+  CLog::Log("initializing skin");
   m_gWindowManager.Add(&m_guiHome);											// window id = 0
   m_gWindowManager.Add(&m_guiPrograms);									// window id = 1
 	m_gWindowManager.Add(&m_guiPictures);									// window id = 2
@@ -236,20 +253,24 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiMyWeather);						// window id = 2600 WEATHER
 
 	/* window id's 3000 - 3100 are reserved for python */
-  	
+  CLog::Log("initializing virtual keyboard");	
   m_keyboard.Initialize();
+
 	m_ctrDpad.SetDelays(g_stSettings.m_iMoveDelayController,g_stSettings.m_iRepeatDelayController);
 	m_ctrIR.SetDelays(g_stSettings.m_iMoveDelayIR,g_stSettings.m_iRepeatDelayIR);
 
 	m_gWindowManager.ActivateWindow(g_stSettings.m_iStartupWindow);
-	CUtil::RemoveTempFiles();
+	CLog::Log("removing tempfiles");	
+  CUtil::RemoveTempFiles();
 
 	//	Start Thread for DVD Mediatype detection
+  CLog::Log("start dvd mediatype detection");	
 	m_DetectDVDType.Create( false);
 
 
   if (!m_bSettingsLoaded)
   {
+    CLog::Log("settings not correct, show dialog");	
 		CStdString test;
 		CUtil::GetHomePath(test);
     m_guiDialogOK.SetHeading(279);
@@ -259,6 +280,7 @@ HRESULT CApplication::Initialize()
     m_guiDialogOK.DoModal(g_stSettings.m_iStartupWindow);
   }
 
+  CLog::Log("initialize done");	
 	return S_OK;
 }
 
@@ -268,6 +290,9 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	string strSkinPath = "Q:\\skin\\";
 	strSkinPath+=strSkin;
 
+  CLog::Log("load skin from:%s",strSkinPath.c_str());	
+
+  CLog::Log("delete old skin...");
 	m_guiWindowVideoOverlay.FreeResources();
 	m_guiWindowVideoOverlay.ClearAll();
 	
@@ -281,6 +306,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   g_graphicsContext.SetMediaDir(strSkinPath);
   g_fontManager.LoadFonts(strSkinPath+string("\\font.xml")) ;
 
+  CLog::Log("load new skin...");
   m_guiHome.Load( strSkinPath+"\\home.xml" );  
   m_guiPrograms.Load( strSkinPath+"\\myprograms.xml" );  
 	m_guiPictures.Load( strSkinPath+"\\mypics.xml" );  
@@ -325,12 +351,14 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiWindowScreensaver.SetID(WINDOW_SCREENSAVER);		// CB: Matrix Screensaver - saves us having to have our own XML file
 	m_guiMyWeather.Load( strSkinPath+"\\myweather.xml");	//WEATHER
 
+  CLog::Log("initialize new skin...");
 	m_guiMusicOverlay.AllocResources();
 	m_guiWindowVideoOverlay.AllocResources();
 	m_gWindowManager.AddMsgTarget(this);
 	m_gWindowManager.AddMsgTarget(&g_playlistPlayer);
 	m_gWindowManager.SetCallback(*this);
   m_gWindowManager.Initialize();
+  CLog::Log("skin loaded...");
 }
 
 
@@ -697,8 +725,10 @@ void CApplication::FrameMove()
 
 void CApplication::Stop()
 {
+  CLog::Log("stop all");
 	if (m_pWebServer)
 	{
+    CLog::Log("stop webserver");
 		m_pWebServer->Stop();
 		delete m_pWebServer;
 		m_pWebServer = NULL;
@@ -706,21 +736,33 @@ void CApplication::Stop()
 
 	if (m_pPlayer)
 	{
+    CLog::Log("stop mplayer");
 		delete m_pPlayer;
 		m_pPlayer=NULL;
 	}
 
+  CLog::Log("stop python");
 	g_applicationMessenger.Cleanup();
 	m_pythonParser.FreeResources();
+  
+  CLog::Log("stop dvd detect media");
 	m_DetectDVDType.StopThread();
+  
+  CLog::Log("stop time server");
 	m_sntpClient.StopThread();
+
+  CLog::Log("unload skin");
 	m_guiMusicOverlay.FreeResources();
 	m_guiWindowVideoOverlay.FreeResources();
 	g_fontManager.Clear();
 	m_gWindowManager.DeInitialize();
 	g_TextureManager.Cleanup();
+
+  CLog::Log("unload sections");
 	CSectionLoader::UnloadAll();
+  CLog::Log("destroy");
 	Destroy();
+  CLog::Log("stopped");
 }
 
 bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)

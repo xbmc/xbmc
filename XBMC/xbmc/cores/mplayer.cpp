@@ -1,6 +1,7 @@
 #include "mplayer.h"
 #include "mplayer/mplayer.h"
 #include "../util.h"
+#include "../utils/log.h"
 #include "../settings.h"
 #include "../url.h"
 #include "../filesystem/fileshoutcast.h"
@@ -203,9 +204,6 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     m_vecOptions.push_back("-aid");
     strTmp.Format("%i", m_iAudioStream);
     m_vecOptions.push_back(strTmp);
-    char szTmp[128];
-    sprintf(szTmp,"add param:-aid %i\n", m_iAudioStream);
-    OutputDebugString(szTmp);
   }
 
   if ( m_iChannels) 
@@ -351,14 +349,14 @@ bool CMPlayer::load()
 		m_pDLL = new DllLoader("Q:\\mplayer\\mplayer.dll");
 		if( !m_pDLL->Parse() )
 		{
-			OutputDebugString("cmplayer::load() parse failed\n");
+      CLog::Log("cmplayer::load() parse failed\n");
 			delete m_pDLL;
 			m_pDLL=NULL;
 			return false;
 		}
 		if( !m_pDLL->ResolveImports()  )
 		{
-			OutputDebugString("cmplayer::load() resolve imports failed\n");
+			CLog::Log("cmplayer::load() resolve imports failed\n");
 		}
 		mplayer_load_dll(*m_pDLL);
 	}
@@ -443,7 +441,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 	int iRet=mplayer_open_file(strFile.c_str());
 	if (iRet < 0)
 	{
-		OutputDebugString("cmplayer::openfile() openfile failed\n");
+		CLog::Log("cmplayer::openfile() %s failed",strFile.c_str());
 		closefile();
 		return false;
 	}
@@ -590,7 +588,7 @@ bool CMPlayer::openfile(const CStdString& strFile)
 			iRet=mplayer_open_file(strFile.c_str());
 			if (iRet < 0)
 			{
-				OutputDebugString("cmplayer::openfile() openfile failed\n");
+        CLog::Log("cmplayer::openfile() %s failed\n",strFile.c_str());
 				closefile();
 				return false;
 			}
@@ -661,7 +659,7 @@ void CMPlayer::Process()
     }
     catch(...)
     {
-        OutputDebugString("mplayer generated exception!\n");
+      CLog::Log("mplayer generated exception!\n");
     }
 		mplayer_close_file();
 	}

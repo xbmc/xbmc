@@ -10,6 +10,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------------
 #include "XBApplicationEx.h"
+#include "utils/log.h"
 #include <D3D8Perf.h>
 
 
@@ -82,20 +83,18 @@ HRESULT CXBApplicationEx::Create()
     HRESULT hr;
 
     // Create the Direct3D object
-    OUTPUT_DEBUG_STRING( "XBAppEx: Creating Direct3D...\n" );
     if( NULL == ( m_pD3D = Direct3DCreate8(D3D_SDK_VERSION) ) )
     {
-        OUTPUT_DEBUG_STRING( "XBAppEx: Unable to create Direct3D!\n" );
+        CLog::Log( "XBAppEx: Unable to create Direct3D!" );
         return E_FAIL;
     }
 
     // Create the device
-    OUTPUT_DEBUG_STRING( "XBAppEx: Creating the D3D device...\n" );
     if( FAILED( hr = m_pD3D->CreateDevice( 0, D3DDEVTYPE_HAL, NULL, 
                                            D3DCREATE_HARDWARE_VERTEXPROCESSING, 
                                            &m_d3dpp, &m_pd3dDevice ) ) )
     {
-        OUTPUT_DEBUG_STRING( "XBAppEx: Could not create D3D device!\n" );
+        CLog::Log(  "XBAppEx: Could not create D3D device!" );
         return hr;
     }
 
@@ -112,28 +111,25 @@ HRESULT CXBApplicationEx::Create()
     XInitDevices( m_dwNumInputDeviceTypes, m_InputDeviceTypes );
 
     // Create the gamepad devices
-    OUTPUT_DEBUG_STRING( "XBAppEx: Creating gamepad devices...\n" );
     if( FAILED( hr = XBInput_CreateGamepads( &m_Gamepad ) ) )
     {
-        OUTPUT_DEBUG_STRING( "XBAppEx: Call to CreateGamepads() failed!\n" );
+        CLog::Log(  "XBAppEx: Call to CreateGamepads() failed!" );
         return hr;
     }
 
 // XBMP 6.0 - START
     // Create the IR Remote devices
-    OUTPUT_DEBUG_STRING( "XBAppEx: Creating remote devices...\n" );
     if( FAILED( hr = XBInput_CreateIR_Remotes( ) ) )
     {
-        OUTPUT_DEBUG_STRING( "XBAppEx: Call to CreateIRRemotes() failed!\n" );
+        CLog::Log(  "XBAppEx: Call to CreateIRRemotes() failed!" );
         return hr;
     }
 // XBMP 6.0 - END
 
     // Initialize the app's device-dependent objects
-    OUTPUT_DEBUG_STRING( "XBAppEx: Initializing the app...\n" );
     if( FAILED( hr = Initialize() ) )
     {
-        OUTPUT_DEBUG_STRING( "XBAppEx: Call to Initialize() failed!\n" );
+        CLog::Log(  "XBAppEx: Call to Initialize() failed!" );
         return hr;
     }
 
@@ -166,7 +162,7 @@ VOID CXBApplicationEx::Destroy()
 //-----------------------------------------------------------------------------
 INT CXBApplicationEx::Run()
 {
-    OUTPUT_DEBUG_STRING( "XBAppEx: Running the application...\n" );
+  CLog::Log( "Running the application..." );
 
     // Get the frequency of the timer
     LARGE_INTEGER qwTicksPerSec;
@@ -230,13 +226,35 @@ INT CXBApplicationEx::Run()
         // Animate and render a frame
         //-----------------------------------------
 
-        Process();
+        try
+        {
+          Process();
+        }
+        catch(...)
+        {
+          CLog::Log("exception in CApplication::Process()");
+        }
         // Frame move the scene
-        FrameMove();
+        try
+        {
+          FrameMove();
+        }
+        catch(...)
+        {
+          CLog::Log("exception in CApplication::FrameMove()");
+        }
 
         // Render the scene
-        Render();
+        try
+        {
+          Render();
+        }
+        catch(...)
+        {
+          CLog::Log("exception in CApplication::Render()");
+        }
     }
+    CLog::Log( "application stopped..." );
     return 0;
 }
 
