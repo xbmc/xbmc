@@ -157,9 +157,66 @@ CGUIWindowBuddies::~CGUIWindowBuddies(void)
 {
 }
 
+void CGUIWindowBuddies::OnWindowUnload()
+{
+  //  free the resources of the lists if we switch
+  //  the another skin
+  CGUIList::GUILISTITEMS& friends=m_friends.Lock();
+  for (int i=0; i<(int)friends.size(); ++i)
+  {
+    CGUIItem* pItem=friends[i];
+    pItem->FreeResources();
+  }
+  m_friends.Release();
+
+  CGUIList::GUILISTITEMS& arena=m_arena.Lock();
+  for (int i=0; i<(int)arena.size(); ++i)
+  {
+    CGUIItem* pItem=arena[i];
+    pItem->FreeResources();
+  }
+  m_arena.Release();
+
+  CGUIList::GUILISTITEMS& games=m_games.Lock();
+  for (int i=0; i<(int)games.size(); ++i)
+  {
+    CGUIItem* pItem=games[i];
+    pItem->FreeResources();
+  }
+  m_games.Release();
+
+  CGUIWindow::OnWindowUnload();
+}
+
 void CGUIWindowBuddies::OnWindowLoaded()
 {
-	// bind to the control defined in the xml
+  //  allocate resources of the listitems if switched
+  //  to a new skin when xbmc is already running
+  CGUIList::GUILISTITEMS& friends=m_friends.Lock();
+  for (int i=0; i<(int)friends.size(); ++i)
+  {
+    CGUIItem* pItem=friends[i];
+    pItem->AllocResources();
+  }
+  m_friends.Release();
+
+  CGUIList::GUILISTITEMS& arena=m_arena.Lock();
+  for (int i=0; i<(int)arena.size(); ++i)
+  {
+    CGUIItem* pItem=arena[i];
+    pItem->AllocResources();
+  }
+  m_arena.Release();
+
+  CGUIList::GUILISTITEMS& games=m_games.Lock();
+  for (int i=0; i<(int)games.size(); ++i)
+  {
+    CGUIItem* pItem=games[i];
+    pItem->AllocResources();
+  }
+  m_games.Release();
+
+  // bind to the control defined in the xml
 	m_pConsole = (CGUIConsoleControl*)GetControl(CONTROL_KAI_CONSOLE);	
 
 	// set edit control observer
