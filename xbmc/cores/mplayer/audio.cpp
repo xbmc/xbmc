@@ -173,14 +173,15 @@ static int audio_init(int rate,int channels,int format,int flags)
 
 //******************************************************************************************
 // close audio device
-static void audio_uninit()
+static void audio_uninit(int immed)
 {
-   if (m_pAudioDecoder)
-	 {
-		 m_pAudioDecoder->Deinitialize();
-		 delete m_pAudioDecoder;
-		 m_pAudioDecoder=NULL;
-	 }
+  if (m_pAudioDecoder)
+	{
+		if (!immed)
+			m_pAudioDecoder->WaitCompletion();
+		delete m_pAudioDecoder;
+		m_pAudioDecoder=NULL;
+	}
 }
 
 //******************************************************************************************
