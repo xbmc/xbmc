@@ -1900,6 +1900,38 @@
 		<id>726</id>
 		<value>Zmiany nie zostaly zapisane. Kontynuowac bez zapisywania?</value>
 	</string>
+	<string>
+		<id>727</id>
+		<value>Web Serwer</value>
+	</string>	
+	<string>
+		<id>728</id>
+		<value>Serwer FTP</value>
+	</string>	
+	<string>
+		<id>729</id>
+		<value>Czas z internetu</value>
+	</string>	
+	<string>
+		<id>730</id>
+		<value>Port Web Serwera</value>
+	</string>	
+	<string>
+		<id>731</id>
+		<value>Host serwera czasu</value>
+	</string>
+	<string>
+		<id>732</id>
+		<value>Zapisz &amp; Zastosuj</value>
+	</string>
+	<string>
+		<id>733</id>
+		<value>Haslo do Web Serwera</value>
+	</string>
+	<string>
+		<id>734</id>
+		<value>Bez hasla</value>
+	</string>
 
 
 
@@ -1977,5 +2009,7 @@
   <string><id>13300</id><value>Predkosc wiatraka:</value></string>
   <string><id>13301</id><value>Automatyczna kontrola temperatury</value></string>
   <string><id>13302</id><value>Kontrola obrotow wiatraka</value></string>
-
+  <string><id>13303</id><value>Czcionka skorki</value></string>
+  <string><id>13304</id><value>Odwroc znaki</value></string>
+  <string><id>13305</id><value>Wlacz wiadomosci RSS</value></string>
 </strings>
