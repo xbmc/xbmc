@@ -1155,6 +1155,7 @@ void  CMPlayer::Pause()
 		m_bPaused=false;
 		if (!HasVideo())
 			audio_resume();
+    mplayer_ToFFRW(1); //Tell mplayer we have resumed playback
 	}
 }
 
