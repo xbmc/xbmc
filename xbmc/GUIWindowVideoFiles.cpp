@@ -318,7 +318,7 @@ void CGUIWindowVideoFiles::FormatItemLabels()
   }
 }
 
-void CGUIWindowVideoFiles::SortItems()
+void CGUIWindowVideoFiles::SortItems(VECFILEITEMS& items)
 {
   SSortVideoByName sortmethod;
 	if (m_strDirectory.IsEmpty())
@@ -331,7 +331,7 @@ void CGUIWindowVideoFiles::SortItems()
 		sortmethod.m_iSortMethod=g_stSettings.m_iMyVideoSortMethod;
 		sortmethod.m_bSortAscending=g_stSettings.m_bMyVideoSortAscending;
 	}
-  sort(m_vecItems.begin(), m_vecItems.end(), sortmethod);
+  sort(items.begin(), items.end(), sortmethod);
 }
 
 void CGUIWindowVideoFiles::Update(const CStdString &strDirectory)

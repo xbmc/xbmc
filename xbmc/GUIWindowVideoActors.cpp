@@ -195,7 +195,7 @@ void CGUIWindowVideoActors::FormatItemLabels()
   }
 }
 
-void CGUIWindowVideoActors::SortItems()
+void CGUIWindowVideoActors::SortItems(VECFILEITEMS& items)
 {
 	SSortVideoActorByName sortmethod;
 	if (m_strDirectory.IsEmpty())
@@ -208,7 +208,7 @@ void CGUIWindowVideoActors::SortItems()
 		sortmethod.m_iSortMethod=g_stSettings.m_iMyVideoActorSortMethod;
 		sortmethod.m_bSortAscending=g_stSettings.m_bMyVideoActorSortAscending;
 	}
-  sort(m_vecItems.begin(), m_vecItems.end(), sortmethod);
+  sort(items.begin(), items.end(), sortmethod);
 }
 
 //****************************************************************************************************************************

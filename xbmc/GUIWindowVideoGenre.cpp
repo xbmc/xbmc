@@ -197,7 +197,7 @@ void CGUIWindowVideoGenre::FormatItemLabels()
   }
 }
 
-void CGUIWindowVideoGenre::SortItems()
+void CGUIWindowVideoGenre::SortItems(VECFILEITEMS& items)
 {
 	SSortVideoGenreByName sortmethod;
 	if (m_strDirectory.IsEmpty())
@@ -210,7 +210,7 @@ void CGUIWindowVideoGenre::SortItems()
 		sortmethod.m_iSortMethod=g_stSettings.m_iMyVideoGenreSortMethod;
 		sortmethod.m_bSortAscending=g_stSettings.m_bMyVideoGenreSortAscending;
 	}
-  sort(m_vecItems.begin(), m_vecItems.end(), sortmethod);
+  sort(items.begin(), items.end(), sortmethod);
 }
 
 //****************************************************************************************************************************
