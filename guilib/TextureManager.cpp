@@ -35,6 +35,17 @@ void CTexture::Dump() const
   OutputDebugString(strLog.c_str());
 }
 
+void CTexture::SetDelay(int iDelay)
+{
+  if (iDelay)
+  {
+    m_iDelay=2*iDelay;
+  }
+  else
+  {
+    m_iDelay=100;
+  }
+}
 void CTexture::Flush()
 {
 	if (!m_iReferenceCount)
@@ -288,6 +299,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 		      pTexture->UnlockRect( 0 );
 	      } // of if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
         CTexture* pclsTexture = new CTexture(pTexture,iWidth,iHeight);
+        pclsTexture->SetDelay(pImage->Delay);
+
         pMap->Add(pclsTexture);
 		  } // of if (g_graphicsContext.Get3DDevice()->CreateTexture
     } // of for (int iImage=0; iImage < iImages; iImage++)
