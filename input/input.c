@@ -1306,6 +1306,7 @@ mp_input_free_binds(mp_cmd_bind_t* binds) {
     free(binds[i].cmd);
 
   free(binds);
+  binds = NULL;
 
 }
   
@@ -1477,10 +1478,12 @@ extern char *get_path(char *filename);
 void
 mp_input_init(void) {
   char* file;
-
-  file = config_file[0] != '/' ? get_path(config_file) : config_file;
-  if(!file)
+  char* inputconf=get_path(config_file);
+  file = config_file[0] != '/' ?inputconf : config_file;
+  if(!file){
+    free(inputconf);	
     return;
+    }
   
   if(! mp_input_parse_config(file)) {
     // Try global conf dir
@@ -1488,6 +1491,7 @@ mp_input_init(void) {
     if(! mp_input_parse_config(file))
       mp_msg(MSGT_INPUT,MSGL_WARN,"Falling back on default (hardcoded) input config\n");
   }
+  free(inputconf);
 
 #ifdef HAVE_JOYSTICK
   if(use_joystick) {
@@ -1533,6 +1537,8 @@ mp_input_init(void) {
 void
 mp_input_uninit(void) {
   unsigned int i;
+	
+  mp_input_free_binds(cmd_binds);
 
   for(i=0; i < num_key_fd; i++) {
     if(key_fds[i].close_func)
