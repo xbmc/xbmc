@@ -268,7 +268,7 @@ void CMusicDatabase::AddSong(const CSong& song1, bool bCheck)
 		if (bCheck)
 		{
 			strSQL.Format("select * from song where idAlbum=%i and dwFileNameCRC='%ul' and strTitle='%s'",
-					lAlbumId,song.strGenre.c_str(),dwCRC,song.strTitle.c_str());
+					lAlbumId,dwCRC,song.strTitle.c_str());
 			if (!m_pDS->query(strSQL.c_str())) return;
 			if (m_pDS->num_rows() != 0)
 			{
@@ -394,7 +394,6 @@ void CMusicDatabase::CheckVariousArtistsAndCoverArt()
 				if (strArtist!=strArtist1)
 				{
 					CStdString strVariousArtists=g_localizeStrings.Get(340);
-					RemoveInvalidChars(strVariousArtists);
 					lVariousArtistsId = AddArtist(strVariousArtists);
 					bSingleArtistCompilation=false;
 					bVarious=true;
@@ -1017,7 +1016,6 @@ bool CMusicDatabase::GetArtists(VECARTISTS& artists)
 
 		// Exclude "Various Artists"
 		CStdString strVariousArtists=g_localizeStrings.Get(340);
-		RemoveInvalidChars(strVariousArtists);
 		long lVariousArtistId=AddArtist(strVariousArtists);
 		CStdString strSQL;
 		strSQL.Format("select * from artist where idArtist <> %i ", lVariousArtistId );
@@ -1055,7 +1053,6 @@ bool CMusicDatabase::GetArtistsByName(const CStdString& strArtist1, VECARTISTS& 
 
 		// Exclude "Various Artists"
 		CStdString strVariousArtists=g_localizeStrings.Get(340);
-		RemoveInvalidChars(strVariousArtists);
 		long lVariousArtistId=AddArtist(strVariousArtists);
 		CStdString strSQL;
 		strSQL.Format("select * from artist where strArtist LIKE '%%%s%%' and idArtist <> %i ", strArtist, lVariousArtistId );
@@ -2104,7 +2101,6 @@ bool CMusicDatabase::CleanupArtists()
 		// must be executed AFTER the song, exartistsong, album and exartistalbum tables are cleaned.
 		// don't delete the "Various Artists" string
 		CStdString strVariousArtists=g_localizeStrings.Get(340);
-		RemoveInvalidChars(strVariousArtists);
 		long lVariousArtistsId = AddArtist(strVariousArtists);
 		CStdString strSQL = "delete from artist where idArtist not in (select distinct idArtist from song)";
 		strSQL += " and idArtist not in (select distinct idArtist from exartistsong)";
