@@ -1293,6 +1293,7 @@ void CGUIWindowMusicSongs::AutoSwitchControlThumbList()
 {
 	if (!m_strDirectory.IsEmpty() && g_stSettings.m_bMyMusicSongsAutoSwitchThumbsList)
 	{
+		DWORD dwControlId=GetFocusedControl();
 		if (CUtil::GetFolderCount(m_vecItems)==m_vecItems.size())
 		{
 			bool bAlbums=false;
@@ -1314,14 +1315,20 @@ void CGUIWindowMusicSongs::AutoSwitchControlThumbList()
 
 				ShowThumbPanel();
 				UpdateButtons();
-				SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
+				if (dwControlId==CONTROL_LIST)
+				{
+					SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
+				}
 			}
 			else
 			{
 				m_iViewAsIcons=VIEW_AS_LIST;
 				ShowThumbPanel();
 				UpdateButtons();
-				SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+				if (dwControlId==CONTROL_THUMBS)
+				{
+					SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+				}
 			}
 		}
 		else
@@ -1329,7 +1336,10 @@ void CGUIWindowMusicSongs::AutoSwitchControlThumbList()
 			m_iViewAsIcons=VIEW_AS_LIST;
 			ShowThumbPanel();
 			UpdateButtons();
-			SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+			if (dwControlId==CONTROL_THUMBS)
+			{
+				SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+			}
 		}
 	}
 }
