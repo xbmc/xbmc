@@ -21,12 +21,25 @@
 //	Playback stopped by user
 #define GUI_MSG_PLAYBACK_STOPPED				GUI_MSG_USER + 7
 
-//	Message is send by playlistplayer when starts playing or next/previous item is started
+//	Message is send by the playlistplayer when it starts a playlist
+//	Parameter:
+//	dwParam1 = Current Playlist, can be PLAYLIST_MUSIC, PLAYLIST_TEMP_MUSIC, PLAYLIST_VIDEO or PLAYLIST_TEMP_VIDEO
+//	dwParam2 = Item started in the playlist
+//	lpVoid = Playlistitem started playing
+#define GUI_MSG_PLAYLISTPLAYER_STARTED	GUI_MSG_USER + 8
+
+//	Message is send by playlistplayer when next/previous item is started
 //	Parameter:
 //	dwParam1 = Current Playlist, can be PLAYLIST_MUSIC, PLAYLIST_TEMP_MUSIC, PLAYLIST_VIDEO or PLAYLIST_TEMP_VIDEO
 //	dwParam2 = LOWORD Position of the current playlistitem
 //						 HIWORD Position of the previous playlistitem
 //	lpVoid = Current Playlistitem
-#define GUI_MSG_PLAYLIST_PLAY_NEXT_PREV	GUI_MSG_USER + 8
+#define GUI_MSG_PLAYLISTPLAYER_CHANGED	GUI_MSG_USER + 9
 
-#define GUI_MSG_LOAD_SKIN	GUI_MSG_USER + 9
+//	Message is send by the playlistplayer when the last item to play ended
+//	Parameter:
+//	dwParam1 = Current Playlist, can be PLAYLIST_MUSIC, PLAYLIST_TEMP_MUSIC, PLAYLIST_VIDEO or PLAYLIST_TEMP_VIDEO
+//	dwParam2 = Playlistitem played when stopping
+#define GUI_MSG_PLAYLISTPLAYER_STOPPED	GUI_MSG_USER + 10
+
+#define GUI_MSG_LOAD_SKIN	GUI_MSG_USER + 11
