@@ -600,3 +600,15 @@ void CGUIListControl::SetColors2(DWORD dwTextColor, DWORD dwSelectedColor)
 	m_dwTextColor2=dwTextColor;
 	m_dwSelectedColor2=dwSelectedColor;
 }
+
+int CGUIListControl::GetSelectedItem(CStdString& strLabel)
+{
+  strLabel="";
+  int iItem=m_iCursorY+m_iOffset;
+  if (iItem >=0 && iItem < (int)m_vecItems.size())
+  {
+   CGUIListItem *pItem=m_vecItems[iItem];
+   strLabel=pItem->GetLabel();
+  }
+  return iItem;
+}

@@ -675,3 +675,41 @@ void CGUISpinControl::SetShowRange(bool bOnoff)
 {
     m_bShowRange=bOnoff;
 }
+
+int CGUISpinControl::GetMinimum() const
+{
+  switch (m_iType)
+  {
+    case SPIN_CONTROL_TYPE_INT:
+      return m_iStart;
+    break;
+    
+    case SPIN_CONTROL_TYPE_TEXT:
+      return 1;
+    break;
+
+    case SPIN_CONTROL_TYPE_FLOAT:
+      return (int)(m_fStart*10.0f);
+    break;
+  }
+  return 0;
+}
+
+int CGUISpinControl::GetMaximum() const
+{
+  switch (m_iType)
+  {
+    case SPIN_CONTROL_TYPE_INT:
+      return m_iEnd;
+    break;
+    
+    case SPIN_CONTROL_TYPE_TEXT:
+      return (int)m_vecLabels.size();
+    break;
+
+    case SPIN_CONTROL_TYPE_FLOAT:
+      return (int)(m_fEnd*10.0f);
+    break;
+  }
+  return 100;
+}
