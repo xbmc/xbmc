@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 07-01-2005 changed: cdrip encoders moved into dll's, this should result in a smaller executable
+                        and a bit faster cd ripping (don't forget to copy the new system folder!)
   - 07-01-2005 fixed: music playlist, all cue items show the tag info of the first file 
   - 07-01-2005 updated: Spanish language file (Thnx to anghlar)
   - 07-01-2005 updated: Italian language file (Thnx to kotix)

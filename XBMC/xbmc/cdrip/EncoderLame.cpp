@@ -1,14 +1,16 @@
 #include "stdafx.h"
 #include "EncoderLame.h"
 #include "..\utils\log.h"
-#include "..\sectionLoader.h"
 #include "..\settings.h"
+#include "..\cores\DllLoader\Dll.h"
+#include "EncoderDLL.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "..\lib\liblame\parse.h"
+// forward declaration
+int  parse_args(lame_global_flags* gfp, int argc, char** argv, char * const inPath, char * const outPath, char * nogap_inPath[], int *max_nogap);
 
 // taken from Lame from main.c
 int parse_args_from_string(lame_global_flags * const gfp, const char *p,
@@ -49,6 +51,8 @@ int parse_args_from_string(lame_global_flags * const gfp, const char *p,
 
 CEncoderLame::CEncoderLame()
 {
+  m_pDLLLame = NULL;
+  
 	memset(m_inPath, 0, MAX_PATH + 1);
 	memset(m_outPath, 0, MAX_PATH + 1);
 }
@@ -61,8 +65,30 @@ bool CEncoderLame::Init(const char* strFile, int iInChannels, int iInRate, int i
 	// set input stream information and open the file
 	if (!CEncoder::Init(strFile, iInChannels, iInRate, iInBits)) return false;
 
-	// load lame section
-	g_sectionLoader.Load("LIBLAME");
+	// load the lame dll
+	if (!m_pDLLLame)
+	{
+	  CLog::Log(LOGNOTICE, "CEncoderLame::Init() Loading lame_enc.dll");
+		m_pDLLLame = new DllLoader("Q:\\system\\cdrip\\lame_enc.dll", false);
+		if(!m_pDLLLame->Parse())
+		{
+			CLog::Log(LOGERROR, "CEncoderLame::Init() parse lame_enc.dll failed");
+			delete m_pDLLLame;
+			m_pDLLLame = NULL;
+			return false;
+		}
+		if(!m_pDLLLame->ResolveImports() )
+		{
+			CLog::Log(LOGERROR, "CDVDPlayer::Load() resolving imports for lame_enc.dll failed");
+		}
+	  if (!cdripper_load_dll_lame(*m_pDLLLame))
+	  {
+	    CLog::Log(LOGERROR, "CDVDPlayer::Load() resolving exports for lame_enc.dll failed");
+			delete m_pDLLLame;
+			m_pDLLLame = NULL;
+		  return false;
+	  }
+	}
 
 	m_pGlobalFlags = lame_init();
 	if (!m_pGlobalFlags)
@@ -167,7 +193,13 @@ bool CEncoderLame::Close()
 
 	lame_close(m_pGlobalFlags);
 
-	// unload lame section
-	g_sectionLoader.Unload("LIBLAME");
+	// unload tle lame dll
+	if (m_pDLLLame)
+	{
+	  CLog::Log(LOGNOTICE, "CEncoderVorbis::Close() Unloading lame_enc.dll");
+		delete m_pDLLLame;
+		m_pDLLLame = NULL;
+	}
+	
 	return true;
 }
