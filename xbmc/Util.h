@@ -123,7 +123,8 @@ public:
   static void TakeScreenshot();
 	static void SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate);
   static void SetBrightnessContrastGammaPercent(int iBrightNess, int iContrast, int iGamma, bool bImmediate);
-	static void FlashScreen(bool bImmediate, bool bOn);
+  static void Tokenize(const CStdString& path, vector<CStdString>& tokens, const string& delimiters);
+  static void FlashScreen(bool bImmediate, bool bOn);
   static void RestoreBrightnessContrastGamma();
   static void InitGamma();
   static void ClearCache();
