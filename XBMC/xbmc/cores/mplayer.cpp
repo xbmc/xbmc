@@ -320,14 +320,14 @@ bool CMPlayer::load()
 		m_pDLL = new DllLoader("Q:\\mplayer\\mplayer.dll");
 		if( !m_pDLL->Parse() )
 		{
-			OutputDebugString("cmplayer::openfile() parse failed\n");
+			OutputDebugString("cmplayer::load() parse failed\n");
 			delete m_pDLL;
 			m_pDLL=NULL;
 			return false;
 		}
 		if( !m_pDLL->ResolveImports()  )
 		{
-			OutputDebugString("cmplayer::openfile() resolve imports failed\n");
+			OutputDebugString("cmplayer::load() resolve imports failed\n");
 		}
 		mplayer_load_dll(*m_pDLL);
 	}
@@ -448,17 +448,6 @@ bool CMPlayer::openfile(const CStdString& strFile)
 
 	  bool bSupportsSPDIFOut=(XGetAudioFlags() & (DSSPEAKER_ENABLE_AC3 | DSSPEAKER_ENABLE_DTS)) != 0;
 
-    // if xbox only got stereo output, then limit number of channels to 2
-    if (!bSupportsSPDIFOut)
-    {
-      if (iChannels > 2) 
-      {
-        options.SetChannels(2);
-        iChannels=2;
-        bNeed2Restart=true;
-      }
-    }
-
 	  // check if AC3 passthrough is enabled in MS dashboard
     // ifso we need 2 check if this movie has AC3 5.1 sound and if thats true
     // we reopen the movie with the ac3 5.1 passthrough audio filter
@@ -473,27 +462,47 @@ bool CMPlayer::openfile(const CStdString& strFile)
 		  }
 	  }
 
-    // if DMO filter is used we need 2 remap the audio speaker layout (MS does things differently)
-	  if( strstr(strAudioCodec,"DMO") && (iChannels==6) )
-	  {
-      options.SetChannels(6);
-      options.SetChannelMapping("channels=6:6:0:0:1:1:2:4:3:5:4:2:5:3");
-      bNeed2Restart=true;
-	  }	
+    // if we dont have ac3 passtru enabled
+    if (!options.GetAC3PassTru())
+    {
+      // if DMO filter is used we need 2 remap the audio speaker layout (MS does things differently)
+	    if( strstr(strAudioCodec,"DMO") && (iChannels==6) )
+	    {
+        options.SetChannels(6);
+        options.SetChannelMapping("channels=6:6:0:0:1:1:2:4:3:5:4:2:5:3");
+        bNeed2Restart=true;
+	    }	
 
-    // remap audio speaker layout for files with 5 audio channels 
-    if (iChannels==5)
-    {
-      options.SetChannels(6);
-      options.SetChannelMapping("channels=6:5:0:0:1:1:2:2:3:3:4:4:5:5");
-      bNeed2Restart=true;
-    }
-    // remap audio speaker layout for files with 3 audio channels 
-    if (iChannels==3)
-    {
-      options.SetChannels(4);
-      options.SetChannelMapping("channels=4:4:0:0:1:1:2:2:2:3");
-      bNeed2Restart=true;
+      // if xbox only got stereo output, then limit number of channels to 2
+      if (!bSupportsSPDIFOut)
+      {
+        if (iChannels > 2) 
+        {
+          iChannels=2;
+        }
+      }
+
+      // remap audio speaker layout for files with 5 audio channels 
+      if (iChannels==5)
+      {
+        options.SetChannels(6);
+        options.SetChannelMapping("channels=6:5:0:0:1:1:2:2:3:3:4:4:5:5");
+        bNeed2Restart=true;
+      }
+      // remap audio speaker layout for files with 3 audio channels 
+      if (iChannels==3)
+      {
+        options.SetChannels(4);
+        options.SetChannelMapping("channels=4:4:0:0:1:1:2:2:2:3");
+        bNeed2Restart=true;
+      }
+      
+      if (iChannels==1 || iChannels==2||iChannels==4)
+      {
+        if ( iChannels !=2) options.SetChannels(iChannels);
+        else options.SetChannels(0);
+        bNeed2Restart=true;
+      }
     }
 
     if (bNeed2Restart)
