@@ -168,8 +168,27 @@ void CKaiClient::EnterVector(CStdString& aVector, CStdString& aPassword)
 	{
 		CStdString strVectorMessage;
 		strVectorMessage.Format("KAI_CLIENT_VECTOR;%s;%s;",aVector,aPassword);
-
 		Send(server_addr, strVectorMessage);
+	}
+}
+
+void CKaiClient::JoinTextChat()
+{	
+	if (client_state==State::Authenticated)
+	{
+		CStdString strVectorMessage;
+		strVectorMessage.Format("KAI_CLIENT_CHATMODE;%s;", client_vector);
+		Send(server_addr, strVectorMessage);
+	}
+}
+
+void CKaiClient::Chat(CStdString& aMessage)
+{	
+	if (client_state==State::Authenticated)
+	{
+		CStdString strChatMessage;
+		strChatMessage.Format("KAI_CLIENT_CHAT;%s;", aMessage);
+		Send(server_addr, strChatMessage);
 	}
 }
 
@@ -836,6 +855,42 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 					CStdString strVector		= strtok(NULL, ";");
 					CStdString strPlayers		= strtok(NULL, ";");
 					observer->OnUpdateArena(strVector, atoi(strPlayers));
+				}
+			}
+			else if (strcmp(szMessage,"KAI_CLIENT_JOINS_CHAT")==0)
+			{
+				if (observer!=NULL)
+				{
+					CStdString strVector		= strtok(NULL, ";");
+					CStdString strOpponent		= strtok(NULL, ";");
+					
+					if (strVector.CompareNoCase(client_vector)==0)
+					{
+						observer->OnJoinsChat(strOpponent);
+					}
+				}
+			}
+			else if (strcmp(szMessage,"KAI_CLIENT_CHAT")==0)
+			{
+				if (observer!=NULL)
+				{
+					CStdString strVector		= strtok(NULL, ";");
+					CStdString strOpponent		= strtok(NULL, ";");
+					CStdString strMessage		= strtok(NULL, ";");
+					observer->OnChat(strVector,strOpponent,strMessage);
+				}
+			}
+			else if (strcmp(szMessage,"KAI_CLIENT_LEAVES_CHAT")==0)
+			{
+				if (observer!=NULL)
+				{
+					CStdString strVector		= strtok(NULL, ";");
+					CStdString strOpponent		= strtok(NULL, ";");
+					
+					if (strVector.CompareNoCase(client_vector)==0)
+					{
+						observer->OnLeavesChat(strOpponent);
+					}
 				}
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_DETACH")==0)

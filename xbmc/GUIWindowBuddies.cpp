@@ -9,6 +9,7 @@
 #include "GUIDialogHost.h"
 #include "GUIDialogProgress.h"
 #include "GUIDialogYesNo.h"
+#include "GUIConsoleControl.h"
 #include "localizestrings.h"
 #include "util.h"
 #include "Xbox/Undocumented.h"
@@ -23,8 +24,9 @@
 
 #define CONTROL_LISTEX			3031
 #define CONTROL_BTNPLAY			3033				// Play Button
-#define CONTROL_BTNHOST			3035				// Host Button
 #define CONTROL_BTNADD			3034				// Add Button
+#define CONTROL_BTNHOST			3035				// Host Button
+#define CONTROL_BTNKEYBOARD		3036				// Keyboard Button
 
 #define CONTROL_LABELBUDDYWIN	3050
 #define CONTROL_LABELUSERNAME	3051				// Xlink Kai Username
@@ -41,6 +43,8 @@
 #define CONTROL_LABELBUDDYSTAT	3071				// Buddy Game Status
 #define CONTROL_LABELBUDDYINVT	3072				// Buddy Invite Status
 #define CONTROL_LABELPLAYERCNT	3073				// Arena Player Count
+
+#define CONTROL_KAI_CONSOLE		3074				// Text Chat console
 
 #define SET_CONTROL_DISABLED(dwSenderId, dwControlID) \
 { \
@@ -125,6 +129,8 @@ CGUIWindowBuddies::CGUIWindowBuddies(void)
 :CGUIWindow(0)
 {
 	m_pKaiClient = NULL;
+	m_pConsole = NULL;
+
 	m_pOpponentImage = NULL; 
 	m_pCurrentAvatar = NULL;
 	m_pMe			 = NULL;
@@ -144,6 +150,7 @@ CGUIWindowBuddies::CGUIWindowBuddies(void)
 	ON_CLICK_MESSAGE(CONTROL_BTNJOIN,	CGUIWindowBuddies, OnClickJoinButton);
 	ON_CLICK_MESSAGE(CONTROL_BTNPLAY,	CGUIWindowBuddies, OnClickPlayButton);
 	ON_CLICK_MESSAGE(CONTROL_BTNHOST,	CGUIWindowBuddies, OnClickHostButton);
+	ON_CLICK_MESSAGE(CONTROL_BTNKEYBOARD,CGUIWindowBuddies,OnClickKeyboardButton);
 	ON_CLICK_MESSAGE(CONTROL_LISTEX,	CGUIWindowBuddies, OnClickListItem);
 	ON_SELECTED_MESSAGE(CONTROL_LISTEX,	CGUIWindowBuddies, OnSelectListItem);
 }
@@ -163,6 +170,9 @@ void CGUIWindowBuddies::OnInitWindow()
 
 	if (window_state==State::Uninitialized)
 	{
+		// bind to the control defined in the xml
+		m_pConsole = (CGUIConsoleControl*)GetControl(CONTROL_KAI_CONSOLE);	
+
 		// bind this image to the control defined in the xml, later we'll use this
 		// as a template to determine the size and position of avatars
 		m_pOpponentImage = (CGUIImage*)GetControl(CONTROL_IMAGEOPPONENT);	
@@ -386,6 +396,16 @@ void CGUIWindowBuddies::OnClickHostButton(CGUIMessage& aMessage)
 }
 
 
+void CGUIWindowBuddies::OnClickKeyboardButton(CGUIMessage& aMessage)
+{
+	CStdString strMessage;
+	CStdString strHeading = "Enter your message.";
+	if (CGUIDialogKeyboard::ShowAndGetInput(strMessage, strHeading, false))
+	{
+		m_pKaiClient->Chat(strMessage);
+	}
+}
+
 void CGUIWindowBuddies::OnClickListItem(CGUIMessage& aMessage)
 {
 	CArenaItem* pArena;
@@ -535,6 +555,13 @@ CGUIImage* CGUIWindowBuddies::GetCurrentAvatar()
 
 void CGUIWindowBuddies::OnAction(const CAction &action)
 {
+	if (window_state == State::Chat && (action.wID & KEY_ASCII || action.wID & KEY_VKEY) )
+	{
+		CGUIMessage dummy(0,0,0);
+		OnClickKeyboardButton(dummy);
+		return;
+	}
+
 	switch(action.wID)
 	{
 		case ACTION_PARENT_DIR:
@@ -842,6 +869,12 @@ void CGUIWindowBuddies::ChangeState()
 		}
 		case State::Arenas:
 		{
+			ChangeState(State::Chat);
+			m_pKaiClient->JoinTextChat();
+			break;
+		}
+		case State::Chat:
+		{
 			ChangeState(State::Buddies);
 			break;
 		}
@@ -874,9 +907,11 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_BTNSPEEX);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_BTNINVITE);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_BTNREMOVE);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_KAI_CONSOLE);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNPLAY);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNADD);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNHOST);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNKEYBOARD);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_LABELPLAYERCNT);
 
 			SET_CONTROL_LABEL(GetID(),  CONTROL_LABELBUDDYWIN,  "Friends");
@@ -902,6 +937,8 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNSPEEX);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNINVITE);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNREMOVE);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNKEYBOARD);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_KAI_CONSOLE);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_LISTEX);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_BTNMODE);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_BTNPLAY);
@@ -933,6 +970,8 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNSPEEX);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNINVITE);
 			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNREMOVE);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNKEYBOARD);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_KAI_CONSOLE);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_LISTEX);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_BTNMODE);
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_BTNPLAY);
@@ -941,7 +980,7 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_VISIBLE(GetID(),CONTROL_LABELPLAYERCNT);
 
 			SET_CONTROL_LABEL(GetID(),  CONTROL_LABELBUDDYWIN,  "Arenas");
-			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNMODE,		"Friends");
+			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNMODE,		"Chat");
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNPLAY,		"Play");
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNADD,			"Add");
 			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNHOST,		"Host");	
@@ -949,13 +988,39 @@ void CGUIWindowBuddies::ChangeState(CGUIWindowBuddies::State aNewState)
 			SET_CONTROL_ENABLED(GetID(), CONTROL_BTNHOST);	
 			break;
 		}
+
+		case State::Chat:
+		{
+			mode.SetNavigation(CONTROL_BTNKEYBOARD,CONTROL_BTNKEYBOARD,CONTROL_BTNMODE,CONTROL_BTNMODE);
+
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_IMAGEOPPONENT);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_IMAGEARENA);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_IMAGEBUDDYICON1);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_IMAGEBUDDYICON2);
+
+			SET_CONTROL_VISIBLE(GetID(),CONTROL_KAI_CONSOLE);
+			SET_CONTROL_VISIBLE(GetID(),CONTROL_BTNMODE);
+			SET_CONTROL_VISIBLE(GetID(),CONTROL_BTNKEYBOARD);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_LISTEX);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNJOIN);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNSPEEX);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNINVITE);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNREMOVE);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNPLAY);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNADD);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_BTNHOST);
+			SET_CONTROL_HIDDEN(GetID(), CONTROL_LABELPLAYERCNT);
+
+			SET_CONTROL_LABEL(GetID(),  CONTROL_LABELBUDDYWIN,  "Chat");
+			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNMODE,		"Friends");	
+			SET_CONTROL_LABEL(GetID(),  CONTROL_BTNKEYBOARD,	"Keyboard");	
+			break;
+		}
 	}
 }
 
 void CGUIWindowBuddies::Enter(CArenaItem& aArena)
 {
-	CLog::Log(LOGDEBUG, "CGUIWindowBuddies::Enter");
-
 	if (aArena.m_bIsPrivate)
 	{
 		CStdString strHeading = "A password is required to join this arena.";
@@ -1180,62 +1245,6 @@ void CGUIWindowBuddies::QueryInstalledGames()
 	}
 }
 
-/*
-void CGUIWindowBuddies::QueryInstalledGames()
-{
-	m_games.Clear();
-
-	if (g_stSettings.szOnlineGamesDir[0]==0)
-	{
-		return;
-	}
-
-	WIN32_FIND_DATA wfd;
-	memset(&wfd,0,sizeof(wfd));
-
-	// Search for XBE in within GamesDir subfolders.
-	CStdString strSearchMask;
-	strSearchMask.Format("%s\\*.*",g_stSettings.szOnlineGamesDir);
-	HANDLE hFind = FindFirstFile(strSearchMask.c_str(),&wfd);
-
-	if (hFind==NULL)
-	{
-		return;
-	}
-
-	do
-	{
-		if (wfd.cFileName[0]!=0)
-		{
-			if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-			{
-				// Calculate the path of the game's xbe
-				CStdString strGamePath;
-				strGamePath.Format("%s\\%s\\default.xbe",g_stSettings.szOnlineGamesDir,(CHAR*)wfd.cFileName);
-
-				// If the XBE actually exists
-				if (CUtil::FileExists(strGamePath))
-				{
-					// Read its header info
-					FILE* hFile  = fopen(strGamePath.c_str(),"rb");
-					_XBE_HEADER HS;
-					fread(&HS,1,sizeof(HS),hFile);
-					fseek(hFile,HS.XbeHeaderSize,SEEK_SET);
-					_XBE_CERTIFICATE HC;
-					fread(&HC,1,sizeof(HC),hFile);
-					fclose(hFile);
-
-					// Resolve vector to an arena.
-					m_pKaiClient->QueryVector(HC.TitleId);
-				}
-			}
-		}
-	} while (FindNextFile(hFind, &wfd));
-
-	CloseHandle(hFind);
-}
-*/
-
 void CGUIWindowBuddies::Play(CStdString& aVector)
 {
 	CStdString strGame;
@@ -1375,6 +1384,12 @@ void CGUIWindowBuddies::OnSupportedTitle(DWORD aTitleId, CStdString& aVector)
 void CGUIWindowBuddies::OnEnterArena(CStdString& aVector, BOOL bCanHost)
 {
 	m_arena.Clear();
+	
+	if (m_pConsole)
+	{
+		m_pConsole->Clear();
+	}
+
 	m_pKaiClient->GetSubVectors(aVector);
 }
 
@@ -1566,4 +1581,47 @@ void CGUIWindowBuddies::UpdateGamesPlayerCount()
 	}
 
 	m_games.Release();
+}
+
+void CGUIWindowBuddies::OnJoinsChat(CStdString& aOpponent)
+{
+	if (m_pConsole)
+	{
+		CStdString strMessage;
+		DWORD dwColour = 0xFFFF00FF;
+		strMessage.Format("%s joins chat.",aOpponent);
+		m_pConsole->Write(strMessage, dwColour);
+	}
+}
+
+void CGUIWindowBuddies::OnChat(CStdString& aVector, CStdString& aOpponent, CStdString& aMessage)
+{
+	if (m_pConsole)
+	{
+		CStdString strMessage;
+		DWORD dwColour = 0xFFFFFFFF;
+
+		if (aOpponent.CompareNoCase("Kai Orbital Mesh")==0)
+		{
+			dwColour = 0xFFFFFF00;
+			strMessage = aMessage;
+		}
+		else
+		{
+			strMessage.Format("%s: %s",aOpponent,aMessage);
+		}
+
+		m_pConsole->Write(strMessage, dwColour);
+	}
+}
+
+void CGUIWindowBuddies::OnLeavesChat(CStdString& aOpponent)
+{
+	if (m_pConsole)
+	{
+		CStdString strMessage;
+		DWORD dwColour = 0xFFFF00FF;
+		strMessage.Format("%s leaves chat.",aOpponent);
+		m_pConsole->Write(strMessage, dwColour);
+	}
 }

@@ -1430,7 +1430,7 @@ void CApplication::OnKey(CKey& key)
 		// current active window isnt the fullscreen window
 		// just use corresponding section from keymap.xml
 		// to map key->action
-		if (key.FromKeyboard() && iWin == WINDOW_DIALOG_KEYBOARD)
+		if (key.FromKeyboard() && (iWin == WINDOW_DIALOG_KEYBOARD || iWin == WINDOW_BUDDIES) )
 		{
 			// see if we've got an ascii key
 			if (g_Keyboard.GetAscii() != 0)

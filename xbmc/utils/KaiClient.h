@@ -45,6 +45,9 @@ class IBuddyObserver
 									 CStdString& aLocation, CStdString& aBio)=0;
 		virtual void OnUpdateOpponent(CStdString& aOpponent, CStdString& aAvatarURL)=0;
 		virtual void OnUpdateHostingStatus(BOOL bHosting)=0;
+		virtual void OnJoinsChat(CStdString& aOpponent)=0;
+		virtual void OnChat(CStdString& aVector, CStdString& aOpponent, CStdString& aMessage)=0;
+		virtual void OnLeavesChat(CStdString& aOpponent)=0;
 };
 
 
@@ -59,6 +62,8 @@ public:
 	void SetObserver(IBuddyObserver* aObserver);
 	void RemoveObserver();
 	void EnterVector(CStdString& aVector, CStdString& aPassword);
+	void JoinTextChat();
+	void Chat(CStdString& aMessage);
 	void ExitVector();
 	void GetSubVectors(CStdString& aVector);
 	void QueryVector(DWORD aTitleId);
