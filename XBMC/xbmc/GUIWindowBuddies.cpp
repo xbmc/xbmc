@@ -94,6 +94,12 @@ bool CGUIWindowBuddies::SortArena(CGUIItem* pStart, CGUIItem* pEnd)
 		{
 			return (  plStart.m_nStatus > plEnd.m_nStatus );
 		}
+
+		// order by player comms capability: headsets at the top
+		if ( plStart.m_bHeadset != plEnd.m_bHeadset )
+		{
+			return ( plStart.m_bHeadset );
+		}
 	}
 
 	// order alphabetically
@@ -1463,6 +1469,7 @@ void CGUIWindowBuddies::OnOpponentPing(CStdString& aOpponent, DWORD aPing, int a
 		if (!pOpponent->m_bBusy)
 		{
 			pOpponent->m_bHeadset  = aBearerCapability.Find('2')>=0;
+			pOpponent->m_bKeyboard = aBearerCapability.Find('3')>=0;
 		}
 	}
 
