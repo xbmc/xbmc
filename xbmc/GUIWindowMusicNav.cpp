@@ -18,6 +18,7 @@
 
 #define CONTROL_LIST    50
 #define CONTROL_THUMBS    51
+#define CONTROL_BIGLIST   52
 
 #define SHOW_ROOT     0
 #define SHOW_GENRES     8
@@ -187,9 +188,11 @@ CGUIWindowMusicNav::CGUIWindowMusicNav(void)
   m_strArtist = "";
   m_strAlbum = "";
   m_strAlbumPath = "";
+//  m_iThumbControl = CONTROL_THUMBS;
 }
 CGUIWindowMusicNav::~CGUIWindowMusicNav(void)
-{}
+{
+}
 
 bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 {
@@ -279,8 +282,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           CFileItem* pItem = m_vecItems[i];
           if (pItem->m_strPath == strSelected)
           {
-            CONTROL_SELECT_ITEM(CONTROL_LIST, i);
-            CONTROL_SELECT_ITEM(CONTROL_THUMBS, i);
+            SetSelectedItem(i);
             break;
           }
         }
@@ -288,9 +290,17 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNVIEWASICONS)
       {
-        // ViewAs is an odd case where you want to call the base
-        // class first
-        CGUIWindowMusicBase::OnMessage(message);
+        // First check if we have any additional view ability
+        if (m_iState == SHOW_ALBUMS)
+        { // allow the extra big list view
+          m_iViewAsIcons++;
+          if (m_iViewAsIcons > VIEW_AS_LARGE_LIST) m_iViewAsIcons = VIEW_AS_LIST;
+          UpdateButtons();
+        }
+        else
+        { // everything else is handled by the base class
+          CGUIWindowMusicBase::OnMessage(message);
+        }
 
         if (m_iState == SHOW_ROOT)
           g_stSettings.m_iMyMusicNavRootViewAsIcons = m_iViewAsIconsRoot;
@@ -336,7 +346,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 
         return true;
       }
-      else if (iControl == CONTROL_LIST || iControl == CONTROL_THUMBS)  // list/thumb control
+      else if (IsViewControl(iControl))  // list/thumb control
       {
         int iItem = GetSelectedItem();
         int iAction = message.GetParam1();
@@ -596,71 +606,10 @@ void CGUIWindowMusicNav::UpdateButtons()
     g_graphicsContext.SendMessage(msg);
   }
 
-  // Update listcontrol and view by icon/list button
-  const CGUIControl* pControl = GetControl(CONTROL_THUMBS);
-  if (pControl)
-    if (!pControl->IsVisible())
-      CONTROL_SELECT_ITEM(CONTROL_THUMBS, GetSelectedItem());
-  pControl = GetControl(CONTROL_LIST);
-  if (pControl)
-    if (!pControl->IsVisible())
-      CONTROL_SELECT_ITEM(CONTROL_LIST, GetSelectedItem());
-
-  SET_CONTROL_HIDDEN(CONTROL_LIST);
-  SET_CONTROL_HIDDEN(CONTROL_THUMBS);
-
-  bool bViewIcon = false;
-  int iString;
-
   if (m_iState == SHOW_ROOT)
-  {
-    switch (m_iViewAsIconsRoot)
-    {
-    case VIEW_AS_LIST:
-      iString = 101; // view as icons
-      break;
-
-    case VIEW_AS_ICONS:
-      iString = 100;  // view as large icons
-      bViewIcon = true;
-      break;
-
-    case VIEW_AS_LARGEICONS:
-      iString = 417; // view as list
-      bViewIcon = true;
-      break;
-    }
-  }
+    m_viewControl.SetCurrentView(m_iViewAsIconsRoot);
   else
-  {
-    switch (m_iViewAsIcons)
-    {
-    case VIEW_AS_LIST:
-      iString = 101; // view as icons
-      break;
-
-    case VIEW_AS_ICONS:
-      iString = 100;  // view as large icons
-      bViewIcon = true;
-      break;
-
-    case VIEW_AS_LARGEICONS:
-      iString = 417; // view as list
-      bViewIcon = true;
-      break;
-    }
-  }
-
-  if (bViewIcon)
-  {
-    SET_CONTROL_VISIBLE(CONTROL_THUMBS);
-  }
-  else
-  {
-    SET_CONTROL_VISIBLE(CONTROL_LIST);
-  }
-
-  SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS, iString);
+    m_viewControl.SetCurrentView(m_iViewAsIcons);
 
   // Update object count
   int iItems = m_vecItems.Size();
@@ -925,17 +874,8 @@ void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
         CFileItem* pItem = m_vecItems[i];
         if (pItem->m_strPath == pSelItem->m_strPath)
         {
-          CONTROL_SELECT_ITEM(CONTROL_LIST, i);
-          CONTROL_SELECT_ITEM(CONTROL_THUMBS, i);
-          const CGUIControl* pControl = GetControl(CONTROL_LIST);
-          if (pControl->IsVisible())
-          {
-            SET_CONTROL_FOCUS(CONTROL_LIST, 0);
-          }
-          else
-          {
-            SET_CONTROL_FOCUS(CONTROL_THUMBS, 0);
-          }
+          m_viewControl.SetSelectedItem(i);
+          m_viewControl.SetFocused();
           break;
         }
       }
@@ -963,17 +903,8 @@ void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
         CFileItem* pItem = m_vecItems[i];
         if (pItem->m_strPath == pSelItem->m_strPath)
         {
-          CONTROL_SELECT_ITEM(CONTROL_LIST, i);
-          CONTROL_SELECT_ITEM(CONTROL_THUMBS, i);
-          const CGUIControl* pControl = GetControl(CONTROL_LIST);
-          if (pControl->IsVisible())
-          {
-            SET_CONTROL_FOCUS(CONTROL_LIST, 0);
-          }
-          else
-          {
-            SET_CONTROL_FOCUS(CONTROL_THUMBS, 0);
-          }
+          m_viewControl.SetSelectedItem(i);
+          m_viewControl.SetFocused();
           break;
         }
       }
@@ -1008,17 +939,8 @@ void CGUIWindowMusicNav::OnSearchItemFound(const CFileItem* pSelItem)
       CFileItem* pItem = m_vecItems[i];
       if (pItem->m_strPath == pSelItem->m_strPath)
       {
-        CONTROL_SELECT_ITEM(CONTROL_LIST, i);
-        CONTROL_SELECT_ITEM(CONTROL_THUMBS, i);
-        const CGUIControl* pControl = GetControl(CONTROL_LIST);
-        if (pControl->IsVisible())
-        {
-          SET_CONTROL_FOCUS(CONTROL_LIST, 0);
-        }
-        else
-        {
-          SET_CONTROL_FOCUS(CONTROL_THUMBS, 0);
-        }
+        m_viewControl.SetSelectedItem(i);
+        m_viewControl.SetFocused();
         break;
       }
     }

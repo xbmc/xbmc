@@ -7,6 +7,10 @@
 #include "PlayListPlayer.h"
 #include "GUIThumbnailPanel.h"
 
+#define VIEW_AS_LIST           0
+#define VIEW_AS_ICONS          1
+#define VIEW_AS_LARGEICONS     2
+
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY     3
 #define CONTROL_BTNSORTASC    4

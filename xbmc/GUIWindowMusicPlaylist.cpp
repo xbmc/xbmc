@@ -50,7 +50,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       // global playlist changed outside playlist window
       Update("");
 
-      if ((m_iLastControl == CONTROL_THUMBS || m_iLastControl == CONTROL_LIST) && m_vecItems.Size() <= 0)
+      if (IsViewControl(m_iLastControl) && m_vecItems.Size() <= 0)
       {
         m_iLastControl = CONTROL_BTNVIEWASICONS;
         SET_CONTROL_FOCUS(m_iLastControl, 0);
@@ -80,7 +80,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
         CONTROL_SELECT(CONTROL_BTNSHUFFLE);
       }
 
-      if ((m_iLastControl == CONTROL_THUMBS || m_iLastControl == CONTROL_LIST) && m_vecItems.Size() <= 0)
+      if (IsViewControl(m_iLastControl) && m_vecItems.Size() <= 0)
       {
         m_iLastControl = CONTROL_BTNVIEWASICONS;
         SET_CONTROL_FOCUS(m_iLastControl, 0);
@@ -91,8 +91,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
         int iSong = g_playlistPlayer.GetCurrentSong();
         if (iSong >= 0 && iSong <= m_vecItems.Size())
         {
-          CONTROL_SELECT_ITEM(CONTROL_LIST, iSong);
-          CONTROL_SELECT_ITEM(CONTROL_THUMBS, iSong);
+          SetSelectedItem(iSong);
         }
       }
 
@@ -229,7 +228,7 @@ void CGUIWindowMusicPlayList::OnAction(const CAction &action)
 void CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iAction)
 {
   int iFocusedControl = GetFocusedControl();
-  if (iFocusedControl == CONTROL_THUMBS || iFocusedControl == CONTROL_LIST)
+  if (IsViewControl(iFocusedControl))
   {
     int iSelected = GetSelectedItem();
     int iNew = iSelected;
@@ -412,8 +411,7 @@ void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
   }
   else
   {
-    CONTROL_SELECT_ITEM(CONTROL_LIST, iItem - 1)
-    CONTROL_SELECT_ITEM(CONTROL_THUMBS, iItem - 1)
+    SetSelectedItem(iItem - 1);
   }
 }
 
@@ -452,55 +450,7 @@ void CGUIWindowMusicPlayList::UpdateButtons()
     CONTROL_DISABLE(CONTROL_BTNPREVIOUS);
   }
 
-  // Update listcontrol and and view by icon/list button
-  const CGUIControl* pControl = GetControl(CONTROL_THUMBS);
-  if (pControl)
-  {
-    if (!pControl->IsVisible())
-    {
-      CONTROL_SELECT_ITEM(CONTROL_THUMBS, GetSelectedItem());
-    }
-  }
-  pControl = GetControl(CONTROL_LIST);
-  if (pControl)
-  {
-    if (!pControl->IsVisible())
-    {
-      CONTROL_SELECT_ITEM(CONTROL_LIST, GetSelectedItem());
-    }
-  }
-
-  SET_CONTROL_HIDDEN(CONTROL_LIST);
-  SET_CONTROL_HIDDEN(CONTROL_THUMBS);
-
-  bool bViewIcon = false;
-  int iString;
-  switch (m_iViewAsIconsRoot)
-  {
-  case VIEW_AS_LIST:
-    iString = 101; // view as icons
-    break;
-
-  case VIEW_AS_ICONS:
-    iString = 100;  // view as large icons
-    bViewIcon = true;
-    break;
-  case VIEW_AS_LARGEICONS:
-    iString = 417; // view as list
-    bViewIcon = true;
-    break;
-  }
-
-  if (bViewIcon)
-  {
-    SET_CONTROL_VISIBLE(CONTROL_THUMBS);
-  }
-  else
-  {
-    SET_CONTROL_VISIBLE(CONTROL_LIST);
-  }
-
-  SET_CONTROL_LABEL(CONTROL_BTNVIEWASICONS, iString);
+  m_viewControl.SetCurrentView(m_iViewAsIconsRoot);
 
   // Update object count label
   int iItems = m_vecItems.Size();
@@ -592,11 +542,6 @@ void CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)
 
 void CGUIWindowMusicPlayList::ClearFileItems()
 {
-  CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg1);
-
-  CGUIMessage msg2(GUI_MSG_LABEL_RESET, GetID(), CONTROL_THUMBS, 0, 0, NULL);
-  g_graphicsContext.SendMessage(msg2);
-
+  m_viewControl.Clear();
   m_vecItems.ClearKeepPointers();
 }
