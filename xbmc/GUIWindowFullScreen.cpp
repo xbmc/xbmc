@@ -508,7 +508,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
 		else if (g_stSettings.m_bStretch) strStatus="Stretch";
 		else strStatus="Normal";
 
-		if (g_stSettings.m_bSoften)
+		if (g_stSettings.m_bSoftenVideo)
 			strStatus += "  |  Soften";
 		else
 			strStatus += "  |  No Soften";

@@ -289,10 +289,8 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ)
 	{
 		// These are only valid here and nowhere else
 		// set soften on/off
-		m_pd3dDevice->SetSoftDisplayFilter(m_bFullScreenVideo ? g_stSettings.m_bSoften : true);
-		// set the flicker filter - Changed by JM to improve subtitle flicker (using 1)
-		// HDTV modes may not need this, though.
-		m_pd3dDevice->SetFlickerFilter(!m_bFullScreenVideo || g_stSettings.m_bSoften ? 5 : 1);
+    m_pd3dDevice->SetSoftDisplayFilter(m_bFullScreenVideo ? g_stSettings.m_bSoftenVideo : g_stSettings.m_bSoftenUI);
+    m_pd3dDevice->SetFlickerFilter(m_bFullScreenVideo ? g_stSettings.m_iFlickerFilterVideo : g_stSettings.m_iFlickerFilterUI);
 	}
 	Unlock();
 	m_Resolution=res;
