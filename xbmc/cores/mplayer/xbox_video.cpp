@@ -517,10 +517,6 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
   // this means that the buffer has already been handed off to the RGB converter
 	// solution: have separate OSD textures
 
-	// clip to buffer
-	if (w > (int)image_width) w = image_width;
-	if (h > OSD_TEXTURE_HEIGHT) h = OSD_TEXTURE_HEIGHT;
-
 	// flip buffers and wait for gpu
 	m_iOSDBuffer = 1-m_iOSDBuffer;
 	while (m_pOSDYTexture[m_iOSDBuffer]->IsBusy()) Sleep(1);
@@ -530,15 +526,26 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
 	m_SubsOnOSD = (y0 > (int)image_height * 4 / 5);
 
 	// scale to fit screen
+	float EnlargeFactor = 1.0f + (g_stSettings.m_iEnlargeSubtitlePercent / 100.0f);
 	float xscale = float(rd.right - rd.left) / image_width;
 	float ar = (float)image_width / image_height;
 	float yscale = xscale * (ar / (g_graphicsContext.IsWidescreen() ? 16.0f/9.0f : 4.0f/3.0f));
-	m_OSDRect.left = rd.left + (float)x0 * xscale;
-	m_OSDRect.right = rd.left + (float)(x0 + w) * xscale;
+  yscale *= EnlargeFactor;
+	m_OSDRect.left   = (float)rd.left + (float)x0 * xscale;
+	m_OSDRect.right  = (float)rd.left + (float)(x0 + w) * xscale;
 	m_OSDRect.bottom = (float)g_settings.m_ResInfo[m_iResolution].iSubtitles;
-	m_OSDRect.top = m_OSDRect.bottom - h * yscale;
+	m_OSDRect.top    = m_OSDRect.bottom - (float)h * yscale;
 
-	m_OSDWidth = (float)w;
+  //enlarge subtitles
+  float center = m_OSDRect.left + (m_OSDRect.right - m_OSDRect.left) / 2.0f;
+  m_OSDRect.left  = center - ((center - m_OSDRect.left) * EnlargeFactor);
+  m_OSDRect.right = center + ((m_OSDRect.right - center) * EnlargeFactor);
+
+	// clip to buffer
+	if (w > (int)image_width) w = image_width;
+	if (h > OSD_TEXTURE_HEIGHT) h = OSD_TEXTURE_HEIGHT;
+
+  m_OSDWidth = (float)w;
 	m_OSDHeight = (float)h;
 
 	RECT rc = { 0, 0, w, h };
@@ -907,6 +914,12 @@ void xbox_video_render_osd()
 
 	// Clip the output to avoid borders flashing from texture filtering getting texels beyond the valid region
 	D3DRECT rs = { (long)m_OSDRect.left, (long)m_OSDRect.top, (long)m_OSDRect.right, (long)m_OSDRect.bottom };
+	if (rs.x1 < 0)
+		rs.x1 = 0;
+	if (rs.x2 > g_settings.m_ResInfo[m_iResolution].iWidth)
+		rs.x2 = g_settings.m_ResInfo[m_iResolution].iWidth;
+	if (rs.y1 < 0)
+		rs.y1 = 0;
 	if (rs.y2 > g_settings.m_ResInfo[m_iResolution].iHeight)
 		rs.y2 = g_settings.m_ResInfo[m_iResolution].iHeight;
 	g_graphicsContext.Get3DDevice()->SetScissors(1, FALSE, &rs);
