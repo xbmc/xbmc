@@ -97,7 +97,6 @@ bool  CSMBDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 					strUtfFile[strLen] = 0;
 
 					smb.Lock();
-					// it's safe to cast to a struct stat* here
 					smbc_stat(strUtfFile, &info);
 					smb.Unlock();
 
