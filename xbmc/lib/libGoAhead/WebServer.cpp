@@ -104,8 +104,7 @@ void CWebServer::Stop()
 {
   m_bFinished = true;
 
-  // wait until webserver is finished
-  WaitForSingleObject(m_hEvent, INFINITE);
+  StopThread();
 }
 
 
