@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 09-01-2005 changed: minor GUIThumbnailPanel performance tweaks
   - 09-01-2005 fixed: scanning smb shares the second time doesn't show the add/rescan dialog
   - 09-01-2005 fixed: audio skips once on startup of videos
   - 09-01-2005 fixed [ 1090730 ] Playback Of MP3 Files With @
