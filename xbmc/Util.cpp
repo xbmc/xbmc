@@ -1387,7 +1387,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie)
   // check alternate subtitle directory
   if (strlen(g_stSettings.m_szAlternateSubtitleDirectory)==0) return;
   WIN32_FIND_DATA wfd;
-  CAutoPtrFind hFind ( FindFirstFile("T:\\*.*",&wfd));
+  CAutoPtrFind hFind ( FindFirstFile("Z:\\*.*",&wfd));
   if (hFind.isValid())
   {
     do
@@ -1397,7 +1397,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie)
         if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)==0 )
         {
           CStdString strFile;
-          strFile.Format("T:\\%s", wfd.cFileName);
+          strFile.Format("Z:\\%s", wfd.cFileName);
           if (strFile.Find("subtitle")>=0 )
           {
             ::DeleteFile(strFile.c_str());
@@ -1411,7 +1411,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie)
   while (sub_exts[iPos])
   {
     CStdString strSource,strDest;
-    strDest.Format("T:\\subtitle%s", sub_exts[iPos]);
+    strDest.Format("Z:\\subtitle%s", sub_exts[iPos]);
 
     if (CUtil::IsVideo(strMovie))
     {
@@ -1436,7 +1436,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie)
   while (sub_exts[iPos])
   {
     CStdString strSource,strDest;
-    strDest.Format("T:\\subtitle%s", sub_exts[iPos]);
+    strDest.Format("Z:\\subtitle%s", sub_exts[iPos]);
 
     ::DeleteFile(strDest);
     if (CUtil::IsVideo(strMovie))

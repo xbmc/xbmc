@@ -62,7 +62,7 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate,int
 
   if (! CUtil::IsHD(strFileName))
   {
-	  strCachedFile="T:\\cachedpic";
+	  strCachedFile="Z:\\cachedpic";
 	  strCachedFile+= strExtension;
 	  CFile file;
     ::DeleteFile(strCachedFile.c_str());
@@ -288,7 +288,7 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
 
 	if (bCacheFile)
 	{
-		strCachedFile="T:\\cachedpic";
+		strCachedFile="Z:\\cachedpic";
 		strCachedFile+= strExtension;
 		CFile file;
 		if ( !file.Cache(strFileName.c_str(),strCachedFile.c_str(),NULL,NULL) )
@@ -538,7 +538,7 @@ bool CPicture::Convert(const CStdString& strSource,const CStdString& strDest)
 
   if (!CUtil::IsHD(strSource))
   {
-	  strCachedFile="T:\\cachedpic";
+	  strCachedFile="Z:\\cachedpic";
 	  strCachedFile+= strExtension;
 	  CFile file;
 	  if ( !file.Cache(strSource.c_str(),strCachedFile.c_str(),NULL,NULL) )
