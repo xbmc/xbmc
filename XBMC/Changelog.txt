@@ -6,6 +6,7 @@
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
 
+  - 12-10-2004 changed: German (Austrian) language file (Thnx to CEOMR)
   - 11-10-2004 fixed: My Programs, "&" symbol in path causes problems with shortcuts [sf bug #1043578] 
   - 11-10-2004 changed: Portuguese (Brazil) language file (Thnx to wellingtontu)
   - 11-10-2004 fixed: my programs, exception when no default path is set
