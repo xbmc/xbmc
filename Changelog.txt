@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 27-02-2005 added: [ 1122901 ] / [ 1122894 ] patch file for bug 1122894 (fix for RV10 crash)
   - 24-02-2005 fixed: Longstanding vobsubs bug.  Some long-ish (2 lines normally) subs weren't displayed.
   - 21-02-2005 fixed: read_font_desc() returned non-NULL when it should have been NULL.  Caused crash on exit of mplayer (particularly flac)
   - 21-02-2005 added: mplayer bugfix/patch for flac.c: http://www1.mplayerhq.hu/cgi-bin/cvsweb.cgi/ffmpeg/libavcodec/flac.c?cvsroot=FFMpeg&sortby=date

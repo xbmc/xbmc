@@ -226,10 +226,12 @@ static void add_index_item(demuxer_t *demuxer, int stream_id, int timestamp, int
     real_index_table_t *index;
     if (priv->index_table_size[stream_id] >= priv->index_malloc_size[stream_id])
     {
+      while (priv->index_table_size[stream_id] >=priv->index_malloc_size[stream_id]) {
       if (priv->index_malloc_size[stream_id] == 0)
 	priv->index_malloc_size[stream_id] = 2048;
       else
 	priv->index_malloc_size[stream_id] += priv->index_malloc_size[stream_id] / 2;
+      }
       priv->index_table[stream_id] = realloc(priv->index_table[stream_id], priv->index_malloc_size[stream_id]*sizeof(priv->index_table[0][0]));
     }
     if (priv->index_table_size[stream_id] > 0)
