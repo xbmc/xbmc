@@ -265,10 +265,22 @@
 				RelativePath=".\guiImage.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIItem.cpp">
+			</File>
+			<File
 				RelativePath=".\GUILabelControl.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIList.cpp">
+			</File>
+			<File
 				RelativePath=".\GUIListControl.cpp">
+			</File>
+			<File
+				RelativePath=".\GUIListControlEx.cpp">
+			</File>
+			<File
+				RelativePath=".\GUIListExItem.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIListItem.cpp">
@@ -286,10 +298,19 @@
 				RelativePath=".\GUIRadioButtonControl.cpp">
 			</File>
 			<File
+				RelativePath=".\GUIRAMControl.cpp">
+			</File>
+			<File
+				RelativePath=".\GUIRSSControl.cpp">
+			</File>
+			<File
 				RelativePath=".\GUISelectButtonControl.cpp">
 			</File>
 			<File
 				RelativePath=".\GUISliderControl.cpp">
+			</File>
+			<File
+				RelativePath=".\GUISpinButtonControl.cpp">
 			</File>
 			<File
 				RelativePath=".\GUISpinControl.cpp">
@@ -369,6 +390,9 @@
 				RelativePath=".\GUIButtonControl.h">
 			</File>
 			<File
+				RelativePath=".\GUICallback.h">
+			</File>
+			<File
 				RelativePath=".\GUICheckMarkControl.h">
 			</File>
 			<File
@@ -393,10 +417,22 @@
 				RelativePath=".\guiImage.h">
 			</File>
 			<File
+				RelativePath=".\GUIItem.h">
+			</File>
+			<File
 				RelativePath=".\GUILabelControl.h">
 			</File>
 			<File
+				RelativePath=".\GUIList.h">
+			</File>
+			<File
 				RelativePath=".\GUIListControl.h">
+			</File>
+			<File
+				RelativePath=".\GUIListControlEx.h">
+			</File>
+			<File
+				RelativePath=".\GUIListExItem.h">
 			</File>
 			<File
 				RelativePath=".\GUIListItem.h">
@@ -414,10 +450,19 @@
 				RelativePath=".\GUIRadioButtonControl.h">
 			</File>
 			<File
+				RelativePath=".\GUIRAMControl.h">
+			</File>
+			<File
+				RelativePath=".\GUIRSSControl.h">
+			</File>
+			<File
 				RelativePath=".\GUISelectButtonControl.h">
 			</File>
 			<File
 				RelativePath=".\GUISliderControl.h">
+			</File>
+			<File
+				RelativePath=".\GUISpinButtonControl.h">
 			</File>
 			<File
 				RelativePath=".\GUISpinControl.h">
