@@ -58,17 +58,10 @@ bool CGUIWindowScriptsInfo::OnMessage(CGUIMessage& message)
 			strInfo += message.GetLabel();
 			CGUIMessage msg(GUI_MSG_LABEL_SET,GetID(),CONTROL_TEXTAREA);
 			msg.SetLabel(strInfo);
+			msg.SetParam1(5); // 5 pages max
 			OnMessage(msg);
 		}
     break;
-
   }
-
   return CGUIWindow::OnMessage(message);
 }
-
-void CGUIWindowScriptsInfo::AddText(const CStdString& strLabel)
-{
-
-}
-

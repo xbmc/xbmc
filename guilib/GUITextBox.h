@@ -65,6 +65,7 @@ protected:
   int                   m_iOffset;
   int                   m_iItemsPerPage;
   int                   m_iItemHeight;
+	int                   m_iMaxPages;
   DWORD                 m_dwTextColor;
   CGUIFont*             m_pFont;
   CGUISpinControl       m_upDown;
