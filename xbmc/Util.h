@@ -115,6 +115,7 @@ public:
   static void GetPath(const CStdString& strFileName, CStdString& strPath);
 	static void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
 	static int  GetFolderCount(VECFILEITEMS &items);
+	static int GetFileCount(VECFILEITEMS &items);
 	static bool	ThumbExists(const CStdString& strFileName, bool bAddCache=false);
 	static bool ThumbCached(const CStdString& strFileName);
 	static void ThumbCacheAdd(const CStdString& strFileName, bool bFileExists);
@@ -142,6 +143,8 @@ public:
 	static bool CreateDirectoryEx(const CStdString& strPath);
 	static CStdString MakeLegalFATXFileName(const char* strFile, bool bKeepExtension);
 	static void ConvertFileItemToPlayListItem(const CFileItem *pItem, CPlayList::CPlayListItem &playlistitem);
+
+	static bool IsNaturalNumber(const CStdString& str);
 
 private:
 	static bool m_bNetworkUp;

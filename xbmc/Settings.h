@@ -410,6 +410,8 @@ public:
 
 		char      m_szFlipBiDiCharset[128];
 		int		  m_nVolumeLevel;				// measured in 100th's of a dB.  0dB is max, -60.00dB is min
+
+		bool			m_bEnableRSS; // disable RSS feeds?
 	};
 
 	VECSHARES					m_vecMyProgramsBookmarks;

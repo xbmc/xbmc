@@ -12,6 +12,7 @@
 #include "lib/libID3/misc_support.h"
 #include "lib/libID3/readers.h"
 #include "lib/libID3/io_helpers.h"
+#include "lib/libID3/globals.h"
 #include "XIStreamReader.h"
 
 using namespace MUSIC_INFO;
@@ -24,11 +25,14 @@ namespace MUSIC_INFO
 	public:
 		CMusicInfoTagLoaderMP3(void);
 		virtual ~CMusicInfoTagLoaderMP3();
-
 		virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag);
+
 	protected:
 		bool ReadTag(ID3_Tag& id3tag, CMusicInfoTag& tag);
 		int	 ReadDuration(CFile& file, const ID3_Tag& id3tag);
 		bool IsMp3FrameHeader(unsigned long head);
+	
+	private:
+		CStdString ParseMP3Genre(const CStdString& str);
 	};
 };
