@@ -380,6 +380,7 @@ void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth,
 	// and keep the aspect ratio (introduces with black bars)
 	// calculate the correct output frame ratio (using the users pixel ratio setting
 	// and the output pixel ratio setting)
+
 	float fOutputFrameRatio = fSourceFrameRatio*fUserPixelRatio / g_settings.m_ResInfo[m_iResolution].fPixelRatio; 
 
 	// maximize the movie width
@@ -447,7 +448,7 @@ unsigned int Directx_ManageDisplay()
 	rs.top    = 0;
 	rs.right  = image_width;
 	rs.bottom = image_height;
-	CalcNormalDisplayRect(fOffsetX1, fOffsetY1, iScreenWidth, iScreenHeight, g_stSettings.m_fUserPixelRatio, g_stSettings.m_fZoomAmount, &rd);
+	CalcNormalDisplayRect(fOffsetX1, fOffsetY1, iScreenWidth, iScreenHeight, g_stSettings.m_fPixelRatio, g_stSettings.m_fZoomAmount, &rd);
 	return 0;
 }
 

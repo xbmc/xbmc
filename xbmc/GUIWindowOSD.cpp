@@ -393,8 +393,8 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 					float fContrast=(float)g_settings.m_iContrast;
 					float fGamma=(float)g_settings.m_iGamma;
 					SetSliderValue(0.0f, 100.0f, (float) g_application.m_pPlayer->GetPercentage(), OSD_VIDEOPOS);
-					SetSliderValue(1.0f, 2.0f, g_stSettings.m_fZoomAmount, OSD_ZOOM, 0.01f);
-					SetSliderValue(0.5f, 2.0f, g_stSettings.m_fUserPixelRatio, OSD_PIXELRATIO, 0.01f);
+					SetSliderValue(0.5f, 2.0f, g_stSettings.m_fCustomZoomAmount, OSD_ZOOM, 0.01f);
+					SetSliderValue(0.5f, 2.0f, g_stSettings.m_fCustomPixelRatio, OSD_PIXELRATIO, 0.01f);
    					SetSliderValue(0.0f, 100.0f, (float) fBrightNess, OSD_BRIGHTNESS);
 					SetSliderValue(0.0f, 100.0f, (float) fContrast, OSD_CONTRAST);
 					SetSliderValue(0.0f, 100.0f, (float) fGamma, OSD_GAMMA);
@@ -684,7 +684,8 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 			CGUISliderControl* pControl=(CGUISliderControl*)GetControl(iControlID);
 			if (pControl)
 			{
-				g_stSettings.m_fZoomAmount = (float)pControl->GetFloatValue();
+				g_stSettings.m_fCustomZoomAmount = (float)pControl->GetFloatValue();
+				g_application.m_guiWindowFullScreen.SetViewMode(VIEW_MODE_CUSTOM);
 			}
 		}
 		break;
@@ -693,7 +694,8 @@ void CGUIWindowOSD::Handle_ControlSetting(DWORD iControlID, DWORD wID)
 			CGUISliderControl* pControl=(CGUISliderControl*)GetControl(iControlID);
 			if (pControl)
 			{
-				g_stSettings.m_fUserPixelRatio = (float)pControl->GetFloatValue();
+				g_stSettings.m_fCustomPixelRatio = (float)pControl->GetFloatValue();
+				g_application.m_guiWindowFullScreen.SetViewMode(VIEW_MODE_CUSTOM);
 			}
 		}
 		break;

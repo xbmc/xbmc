@@ -56,6 +56,7 @@ private:
 	// stuff to hold the clicks
 	DWORD dwLastClickTime[5];
 	DWORD dwLastActiveTime;
+	bool m_bActive;
 	bool bDown[5];		// is the button down?
 	bool bLastDown[5];	// was it down last frame?
 
