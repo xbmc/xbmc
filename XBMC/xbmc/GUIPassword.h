@@ -1,8 +1,6 @@
 #pragma once
-#include "guidialog.h"
-#include "guiwindow.h"
+#include "GUIDialog.h"
 #include "FileItem.h"
-#include "settings.h"
 
 class CGUIPassword :
 	public CGUIDialog

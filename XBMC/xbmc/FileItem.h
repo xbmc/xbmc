@@ -4,15 +4,12 @@
 	*/
 #pragma once
 #include "guilistitem.h"
-#include "stdstring.h"
 #include "MusicInfoTag.h"
 #include "MusicDatabase.h"
 #include "settings.h"
-#include <vector>
 #include "utils/archive.h"
 #include "cuedocument.h"
 
-using namespace std;
 using namespace MUSIC_INFO;
 
 /*!

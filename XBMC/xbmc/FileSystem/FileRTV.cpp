@@ -1,15 +1,11 @@
-
-#include "stdafx.h"
 // FileRTV.cpp: implementation of the CFileRTV class.
 //
 //////////////////////////////////////////////////////////////////////
 
+#include "../stdafx.h"
 #include "FileRTV.h"
-#include "../sectionLoader.h"
 #include "../util.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <fcntl.h>
+#include <sys/stat.h>
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

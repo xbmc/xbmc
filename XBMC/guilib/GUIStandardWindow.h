@@ -1,6 +1,5 @@
 #pragma once
-#include "guiwindow.h"
-#include "guiwindowmanager.h"
+#include "GUIWindow.h"
 
 // This class is designed to be the base class for any standard
 // full screen window.  Default implementations for action keys

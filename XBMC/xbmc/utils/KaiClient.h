@@ -1,5 +1,4 @@
 #pragma once
-#include "stdstring.h"
 #include "UdpClient.h"
 
 #include "KaiVoice.h"
@@ -10,8 +9,6 @@
 #define KAI_SYSTEM_PORT		34522
 #define KAI_SYSTEM_ROOT		"Arena"
 
-using namespace std;
-#include <vector>
 
 class CKaiClient;
 class CKaiRequestList;

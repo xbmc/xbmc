@@ -2,7 +2,6 @@
 #include "stdafx.h"
 #include "ThumbnailCache.h"
 #include "util.h"
-#include "utils/SingleLock.h"
 
 CThumbnailCache* CThumbnailCache::m_pCacheInstance=NULL;
 

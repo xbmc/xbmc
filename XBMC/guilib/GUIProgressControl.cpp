@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "GUIProgressControl.h"
-#include "guifontmanager.h"
 
 
 CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, CStdString& strBackGroundTexture,CStdString& strLeftTexture,CStdString& strMidTexture,CStdString& strRightTexture, CStdString& strOverlayTexture)

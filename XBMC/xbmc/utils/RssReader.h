@@ -10,11 +10,6 @@
 #endif // _MSC_VER > 1000
 
 #include "Thread.h"
-#include "StdString.h"
-#include "TinyXml\TinyXml.h"
-#include <list>
-
-using namespace std;
 
 #define RSS_COLOR_BODY		0
 #define RSS_COLOR_HEADLINE	1

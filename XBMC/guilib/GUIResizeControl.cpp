@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "GUIResizeControl.h"
-#include "guiWindowManager.h"
-#include "ActionManager.h"
+#include "GUIWindowManager.h"
 
 // time to reset accelerated cursors (digital movement)
 #define MOVE_TIME_OUT 500L

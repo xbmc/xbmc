@@ -1,12 +1,8 @@
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "modplayer.h"
 #include "../util.h"
 #include "../application.h"
-#include "../utils/log.h"
-#include "../settings.h"
-#include "../SectionLoader.h"
-#include "../URL.h"
 
 #pragma comment(linker,"/merge:MOD_RD=MOD_RX")
 #pragma comment(linker,"/section:MOD_RX,REN")

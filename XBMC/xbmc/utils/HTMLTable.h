@@ -1,8 +1,5 @@
 #pragma once
 
-#include "stdstring.h"
-#include <vector>
-using namespace std;
 namespace HTML
 {
 	class CHTMLRow

@@ -1,7 +1,5 @@
 #pragma once
-#include "GUIWindowVideoFiles.h"
-#include <map>
-#include <set>
+#include "GUIWindowVideoBase.h"
 
 class CGUIWindowVideoPlaylist : public CGUIWindow
 {

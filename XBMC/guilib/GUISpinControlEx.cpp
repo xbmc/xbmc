@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "GUISpinControlEx.h"
-#include "guifontmanager.h"
-#include "../xbmc/utils/CharsetConverter.h"
 #include "../xbmc/Util.h"
 
 CGUISpinControlEx::CGUISpinControlEx(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, DWORD dwSpinWidth, DWORD dwSpinHeight, const CStdString &strFocus, const CStdString &strNoFocus, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CStdString& strFont, DWORD dwTextColor, int iTextXOffset, int iTextYOffset, DWORD dwAlign, int iType)

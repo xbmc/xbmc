@@ -1,7 +1,7 @@
 #pragma once
 #include "iosdoption.h"
 #include "IExecutor.h" 
-#include "stdstring.h" 
+
 namespace OSD
 {
 	class COSDOptionButton :

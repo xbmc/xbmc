@@ -1,5 +1,5 @@
 #pragma once
-#include "factorydirectory.h"
+#include "../FileItem.h"
 
 namespace DIRECTORY
 {

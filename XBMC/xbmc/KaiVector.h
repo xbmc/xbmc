@@ -9,13 +9,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include <xtl.h>
-
-#include "StdString.h"
-#include <map>
-
-using namespace std;
-
 class CKaiVector 
 {
 public:

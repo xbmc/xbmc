@@ -1,7 +1,5 @@
 #pragma once
 
-#include "stdstring.h" 
-
 class CProfile
 {
 public:

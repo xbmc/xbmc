@@ -5,13 +5,11 @@
 
 #ifndef CGUIControlFactory_H
 #define CGUIControlFactory_H
-#pragma once
-#include "GUICOntrol.h"
-#include "tinyxml/tinyxml.h"
-#include "../xbmc/StringUtils.h"
 
-#include <string>
-using namespace std;
+#pragma once
+
+#include "GUIControl.h"
+
 /*!
 	\ingroup controls
 	\brief 

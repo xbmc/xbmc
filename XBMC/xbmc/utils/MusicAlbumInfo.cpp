@@ -1,11 +1,9 @@
-
 #include "../stdafx.h"
 #include ".\musicalbuminfo.h"
 #include ".\htmltable.h"
 #include ".\htmlutil.h"
 #include ".\http.h"
 #include "../util.h"
-#include "localizeStrings.h"
 
 using namespace MUSIC_GRABBER;
 using namespace HTML;

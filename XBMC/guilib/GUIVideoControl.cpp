@@ -1,7 +1,6 @@
 #include "stdafx.h"
-#include "guivideocontrol.h"
-#include "guifontmanager.h"
-#include "guiwindowmanager.h"
+#include "GUIVideoControl.h"
+#include "GUIWindowManager.h"
 
 
 CGUIVideoControl::CGUIVideoControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight)

@@ -1,12 +1,6 @@
 #pragma once
 #include "../fileitem.h"
-#include "../settings.h"
 #include "idirectory.h"
-
-#include <string>
-#include "stdstring.h"
-#include <vector>
-using namespace std;
 
 namespace DIRECTORY
 {

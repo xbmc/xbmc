@@ -12,15 +12,6 @@
 #include "ifile.h"
 using namespace XFILE;
 
-#ifdef _XBOX
-#include <xtl.h>
-#else
-#include <windows.h>
-#endif
-
-#include "stdstring.h"
-using namespace std;
-
 namespace XFILE
 {
 	class IFileCallback

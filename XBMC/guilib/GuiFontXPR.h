@@ -7,14 +7,8 @@
 #define CGUILIB_GUIFONTXPR_H
 #pragma once
 
-#include "gui3d.h"
-#include <string>
-#include "graphiccontext.h"
-#include "stdstring.h"
 #include "common/xbfont.h"
-#include "guifont.h"
-
-using namespace std;
+#include "GUIFont.h"
 
 /*!
 	\ingroup textures

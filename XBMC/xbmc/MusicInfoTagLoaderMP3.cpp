@@ -1,15 +1,11 @@
 
 #include "stdafx.h"
 #include "musicinfotagloadermp3.h"
-#include "stdstring.h"
-#include "sectionloader.h"
 #include "Util.h"
 #include "picture.h"
-#include "utils/log.h"
-#include "autoptrhandle.h"
-#include "utils/CharsetConverter.h"
+#include "lib/libID3/misc_support.h"
 
-using namespace AUTOPTR;
+using namespace MUSIC_INFO;
 
 const uchar* ID3_GetPictureBufferOfPicType(ID3_Tag* tag, ID3_PictureType pictype, size_t* pBufSize )
 {

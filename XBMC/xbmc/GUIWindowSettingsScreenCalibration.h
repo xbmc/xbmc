@@ -1,7 +1,5 @@
 #pragma once
-#include "guiwindow.h"
-#include "guiwindowmanager.h"
-#include "settings.h"
+#include "GUIWindow.h"
 
 class CGUIWindowSettingsScreenCalibration : public CGUIWindow
 {

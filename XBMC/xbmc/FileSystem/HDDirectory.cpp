@@ -1,14 +1,10 @@
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "hddirectory.h"
-#include "../url.h"
 #include "../util.h"
 #include "../xbox/iosupport.h"
-#include "../autoptrhandle.h"
 #include "directorycache.h"
 #include "iso9660.h"
-
-using namespace AUTOPTR;
 
 CHDDirectory::CHDDirectory(void)
 {

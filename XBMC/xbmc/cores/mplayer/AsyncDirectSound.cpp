@@ -18,11 +18,9 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "stdafx.h"
+#include "../../stdafx.h"
 #include <stdio.h>
 #include "AsyncDirectSound.h"
-#include "../../settings.h"
-#include "../../utils/log.h"
 #include "MPlayer.h"
 #include "../../util.h"
 #include "../../application.h"	// Karaoke patch (114097)

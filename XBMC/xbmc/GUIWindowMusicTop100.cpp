@@ -1,17 +1,8 @@
-
 #include "stdafx.h"
 #include "GUIWindowMusicTop100.h"
-#include "settings.h"
-#include "guiWindowManager.h"
-#include "localizestrings.h"
-#include "PlayListFactory.h"
-#include "util.h"
-#include "url.h"
-#include "PlayListM3U.h"
-#include "application.h"
-#include "playlistplayer.h"
-#include <algorithm>
-#include "GuiUserMessages.h"
+#include "Util.h"
+#include "Application.h"
+#include "PlayListPlayer.h"
 
 #define CONTROL_BTNVIEWASICONS		2
 #define CONTROL_BTNSORTBY					3

@@ -1,5 +1,5 @@
 #pragma once
-#include "guidialog.h"
+#include "GUIDialog.h"
 
 class CGUIDialogGamepad :
 	public CGUIDialog

@@ -9,12 +9,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#ifdef _XBOX
-#include <xtl.h>
-#else
-#include <windows.h>
-#endif
-
 class CCriticalSection  
 {
 public:

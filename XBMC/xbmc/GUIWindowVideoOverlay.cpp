@@ -1,14 +1,8 @@
 
 #include "stdafx.h"
 #include "GUIWindowVideoOverlay.h"
-#include "settings.h"
-#include "guiWindowManager.h"
-#include "localizestrings.h"
 #include "util.h"
-#include "stdstring.h"
 #include "application.h"
-#include "videodatabase.h"
-#include "utils/imdb.h"
 #include "utils/GUIInfoManager.h"
 
 #define CONTROL_PLAYTIME		2

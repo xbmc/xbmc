@@ -1,6 +1,6 @@
 #pragma once
 #include "guiwindow.h"
-#include "guiwindowmanager.h"
+
 class CGUIWindowSettings :
   public CGUIWindow
 {

@@ -1,12 +1,8 @@
-#include "stdafx.h"
-#include "..\..\..\settings.h"
-#include "..\..\..\applicationmessenger.h"
-#include "..\..\..\utils/log.h"
+#include "../../../stdafx.h"
 #include "..\python.h"
 #include "player.h"
 #include "pyplaylist.h"
 #include "keyboard.h"
-#include "localizestrings.h"
 #include "..\..\..\xbox\iosupport.h"
 #include <ConIo.h>
 #include "infotagvideo.h"

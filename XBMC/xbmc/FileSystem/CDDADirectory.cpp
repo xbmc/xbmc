@@ -1,16 +1,11 @@
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "cddadirectory.h"
-#include "../url.h"
 #include "../util.h"
-#include "../sectionloader.h"
-#include "../settings.h"
 #include "../xbox/iosupport.h"
 #include "../application.h"
 #include "cddb.h"
-#include "../GUIDialogProgress.h"
-#include "../guidialogok.h"
-#include "../GUIDialogSelect.h"
+
 using namespace CDDB;
 
 CCDDADirectory::CCDDADirectory(void)
@@ -36,15 +31,6 @@ bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 	CStdString strDir;
 	strDir.Format("%s\\cddb", g_stSettings.m_szAlbumDirectory);
 	cddb.setCacheDir(strDir);
-	//cddb.setCDDBIpAdress(g_stSettings.m_szCDDBIpAdres);
-
-	CGUIDialogProgress* pDialogProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-	CGUIDialogOK* pDialogOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-	CGUIDialogSelect *pDlgSelect= (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
-
-  if (!pDialogProgress) return false;
-  if (!pDialogOK) return false;
-  if (!pDlgSelect) return false;
 
 	//	Get information for the inserted disc
 	CCdInfo* pCdInfo = CDetectDVDMedia::GetCdInfo();
@@ -56,32 +42,29 @@ bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 	if (nTracks <= 0)
 		return false;
 
-	bool bCddbInfoLoaded=false;
-
 	//	Do we have to look for cddb information
-	if (pCdInfo->HasCDDBInfo() && g_guiSettings.GetBool("MyMusic.UseCDDB"))
+	if (pCdInfo->HasCDDBInfo() && g_guiSettings.GetBool("MyMusic.UseCDDB") && !cddb.isCDCached(pCdInfo))
 	{
-		bool bCloseProgress(false);
+		CGUIDialogProgress* pDialogProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+		CGUIDialogOK* pDialogOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+		CGUIDialogSelect *pDlgSelect= (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+
+		if (!pDialogProgress) return false;
+		if (!pDialogOK) return false;
+		if (!pDlgSelect) return false;
+
 		//	Show progress dialog if we have to connect to freedb.org
-		if ( !cddb.isCDCached( pCdInfo ) ) 
-		{
-			pDialogProgress->SetHeading(255);//CDDB
-			pDialogProgress->SetLine(0,"");// Querying freedb for CDDB info
-			pDialogProgress->SetLine(1,256);
-			pDialogProgress->SetLine(2,"");
-			pDialogProgress->StartModal(m_gWindowManager.GetActiveWindow());
-			pDialogProgress->Progress();
-			bCloseProgress=true;
-		}
+		pDialogProgress->SetHeading(255);//CDDB
+		pDialogProgress->SetLine(0,"");// Querying freedb for CDDB info
+		pDialogProgress->SetLine(1,256);
+		pDialogProgress->SetLine(2,"");
+		pDialogProgress->StartModal(m_gWindowManager.GetActiveWindow());
+		pDialogProgress->Progress();
 		
 		//	get cddb information
-		if ( !cddb.queryCDinfo( pCdInfo ) )
+		if (!cddb.queryCDinfo(pCdInfo))
 		{
-			//	error getting cddb information
-			if (bCloseProgress)
-			{
-				pDialogProgress->Close();
-			}
+			pDialogProgress->Close();
 			int lasterror=cddb.getLastError();
 
 			//	Have we found more then on match in cddb for this disc,...
@@ -111,29 +94,18 @@ bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 				if (iSelectedCD>= 0) 
 				{
 					//	...query cddb for the inexact match
-					if ( cddb.queryCDinfo(pCdInfo, 1+iSelectedCD))
-					{
-						//	cddb info loaded
-						bCddbInfoLoaded=true;
-					}
-					else
+					if (!cddb.queryCDinfo(pCdInfo, 1+iSelectedCD))
 						pCdInfo->SetNoCDDBInfo();
 				}
 				else
 					pCdInfo->SetNoCDDBInfo();
 
-				if (bCloseProgress)
-				{
-					pDialogProgress->Close();
-				}
+				pDialogProgress->Close();
 			}
 			else 
 			{
-				if (bCloseProgress)
-				{
-					pDialogProgress->Close();
-				}
 				pCdInfo->SetNoCDDBInfo();
+				pDialogProgress->Close();
 				//	..no, an error occured, display it to the user
 				pDialogOK->SetHeading(255);
 				pDialogOK->SetLine(0,257);//ERROR
@@ -142,26 +114,17 @@ bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 				pDialogOK->DoModal(m_gWindowManager.GetActiveWindow() );
 			}
 		}	//	if ( !cddb.queryCDinfo( pCdInfo ) )
-		else
-		{
-			// We got cddb information for this disc
-			if (bCloseProgress)
-			{
-				pDialogProgress->Close();
-			}
-			bCddbInfoLoaded=true;
-		}
+		pDialogProgress->Close();
 	} // if (pCdInfo->HasCDDBInfo() && g_stSettings.m_bUseCDDB)
 
-	// Get info for track zero, as we may have and need CD-Text Album info
-	cdtext_t discCDText = pCdInfo->GetDiscCDTextInformation();
+	//	Filling the file items with cddb info happens in CMusicInfoTagLoaderCDDA
 
 	//	Generate fileitems
-	for ( int i = 0; i < nTracks; i++ )
+	for (int i=0;i<nTracks;++i)
 	{
 		//	Skip Datatracks for display, 
 		//	but needed to query cddb
-		if ( !pCdInfo->IsAudio( i + 1 ) )
+		if (!pCdInfo->IsAudio(i+1))
 			continue;
 
 		//	Format standard cdda item label
@@ -170,73 +133,12 @@ bool  CCDDADirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items
 
 		CFileItem* pItem = new CFileItem(strLabel);
 		pItem->m_bIsFolder=false;
+		pItem->m_strPath.Format("cdda://local/%i.cdda",i);
 
-		CStdString strPath;
-		strPath.Format("cdda://local/%i.cdda",i);
-		pItem->m_strPath=strPath;
-
-		//	Tracknumber and duration is always available
-		pItem->m_musicInfoTag.SetTrackNumber(i+1);
-		pItem->m_musicInfoTag.SetDuration( ( pCdInfo->GetTrackInformation( i+1 ).nMins * 60 ) 
-			+ pCdInfo->GetTrackInformation( i+1 ).nSecs );
-
-		trackinfo ti = pCdInfo->GetTrackInformation( i+1 );
-
-		//	Fill the fileitems music tag with cddb information, if available
-		CStdString strTitle=cddb.getTrackTitle(i+1);
-		if (bCddbInfoLoaded && strTitle.size() > 0)
-		{
-			//	Title
-			pItem->m_musicInfoTag.SetTitle(strTitle);
-
-			//	Artist: Use track artist or disc artist
-			CStdString strArtist=cddb.getTrackArtist(i+1);
-			if (strArtist.IsEmpty())
-				cddb.getDiskArtist(strArtist);
-			pItem->m_musicInfoTag.SetArtist(strArtist);
-
-			// Album
-			CStdString strAlbum;
-			cddb.getDiskTitle( strAlbum );
-			pItem->m_musicInfoTag.SetAlbum(strAlbum);
-			
-			//	Year
-			SYSTEMTIME dateTime;
-			dateTime.wYear=atoi(cddb.getYear().c_str());
-			pItem->m_musicInfoTag.SetReleaseDate( dateTime );
-
-			//	Genre
-			pItem->m_musicInfoTag.SetGenre( cddb.getGenre() );
-
-			pItem->m_musicInfoTag.SetLoaded(true);
-		}
-		else
-		{
-			// Fill the fileitems music tag with CD-Text information, if available
-			CStdString strTitle=ti.cdtext.field[CDTEXT_TITLE];
-			if (strTitle.size() > 0)
-			{
-				//	Title
-				pItem->m_musicInfoTag.SetTitle(strTitle);
-
-				//	Artist: Use track artist or disc artist
-				CStdString strArtist=ti.cdtext.field[CDTEXT_PERFORMER];
-				if (strArtist.IsEmpty())
-					strArtist=discCDText.field[CDTEXT_PERFORMER];
-				pItem->m_musicInfoTag.SetArtist(strArtist);
-
-				// Album
-				CStdString strAlbum;
-				strAlbum=discCDText.field[CDTEXT_TITLE];
-				pItem->m_musicInfoTag.SetAlbum(strAlbum);
-			
-				//	Genre
-				CStdString strGenre=ti.cdtext.field[CDTEXT_GENRE];
-				pItem->m_musicInfoTag.SetGenre( strGenre );
-
-				pItem->m_musicInfoTag.SetLoaded(true);
-			}
-		}
+		__stat64 s64;
+		CFile file;
+		if (file.Stat(pItem->m_strPath, &s64)==0)
+			pItem->m_dwSize=s64.st_size;
 
 		items.push_back(pItem);
 	}

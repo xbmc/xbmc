@@ -1,14 +1,8 @@
-
 #include "stdafx.h"
-#include "localizestrings.h"
 #include "GUIWindowScreensaver.h"
 #include "application.h"
-#include "settings.h"
-#include "guiFontManager.h"
 #include "util.h"
-#include "sectionloader.h"
 #include "screensavers/ScreenSaverFactory.h"
-#include "utils/CriticalSection.h"
 
 CGUIWindowScreensaver::CGUIWindowScreensaver(void)
 :CGUIWindow(0)

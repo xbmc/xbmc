@@ -7,12 +7,8 @@
 #define GUILIB_GUIMoverCONTROL_H
 
 #pragma once
-#include "gui3d.h"
-#include "guicontrol.h"
-#include "guimessage.h"
-#include "guiimage.h"
-#include "stdstring.h"
-using namespace std;
+
+#include "GUIImage.h"
 
 #define ALLOWED_DIRECTIONS_ALL			0
 #define ALLOWED_DIRECTIONS_UPDOWN		1

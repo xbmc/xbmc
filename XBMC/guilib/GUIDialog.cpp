@@ -1,7 +1,6 @@
 #include "stdafx.h"
-#include "guidialog.h"
-#include "guimessage.h"
-#include "guiwindowmanager.h"
+#include "GUIDialog.h"
+#include "GUIWindowManager.h"
 #include "GUILabelControl.h"
 
 CGUIDialog::CGUIDialog(DWORD dwID)

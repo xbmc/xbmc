@@ -1,14 +1,8 @@
 
+#include "stdafx.h"
 #include "AutoSwitch.h"
-#include "settings.h"
-#include "GUISettings.h"
-#include "guiWindowManager.h"
-#include "localizestrings.h"
 #include "util.h"
 #include "application.h"
-#include "GuiUserMessages.h"
-#include "utils\log.h"
-#include <vector>
 
 #define VIEW_AS_LIST					0
 #define VIEW_AS_ICONS					1

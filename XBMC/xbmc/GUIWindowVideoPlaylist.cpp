@@ -1,18 +1,12 @@
-
 #include "stdafx.h"
 #include "GUIWindowVideoPlayList.h"
-#include "settings.h"
-#include "guiWindowManager.h"
-#include "localizestrings.h"
 #include "PlayListFactory.h"
-#include "util.h"
-#include "url.h"
+#include "Util.h"
 #include "PlayListM3U.h"
-#include "application.h"
-#include "playlistplayer.h"
-#include <algorithm>
-#include "GuiUserMessages.h"
+#include "Application.h"
+#include "PlayListPlayer.h"
 #include "GUIThumbnailPanel.h"
+
 #define CONTROL_BTNVIEWASICONS		2
 #define CONTROL_BTNSORTBY					3
 #define CONTROL_BTNSORTASC				4

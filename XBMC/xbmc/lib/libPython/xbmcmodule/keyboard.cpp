@@ -1,9 +1,6 @@
-#include "stdafx.h"
+#include "../../../stdafx.h"
 #include "keyboard.h"
-#include "GUIWindowManager.h"
 #include "pyutil.h"
-#include "..\..\..\guidialogkeyboard.h"
-#include "..\..\..\ApplicationMessenger.h"
 #include "..\..\..\util.h"
 
 #pragma code_seg("PY_TEXT")

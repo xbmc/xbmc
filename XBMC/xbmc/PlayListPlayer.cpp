@@ -3,7 +3,6 @@
 #include "PlayListPlayer.h"
 #include "application.h"
 #include "util.h"
-#include "GUIUserMessages.h"
 
 #define PLAYLIST_MUSIC_REPEAT						0x001
 #define PLAYLIST_MUSIC_REPEAT_ONE				0x002

@@ -1,13 +1,9 @@
 // Most of this based on playsid
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "sidplayer.h"
-#include "../utils/log.h"
 #include <sidplay/builders/resid.h>
-#include "../SectionLoader.h"
 #include "../util.h"
-#include "../settings.h"
-#include "../FileSystem/File.h"
 
 #pragma comment(linker,"/merge:SID_RD=SID_RX")
 #pragma comment(linker,"/section:SID_RX,REN")

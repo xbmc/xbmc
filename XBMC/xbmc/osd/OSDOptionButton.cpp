@@ -1,10 +1,8 @@
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include ".\osdoptionbutton.h"
-
-#include "localizestrings.h"
-#include "guifont.h"
 #include "guifontmanager.h"
+
 using namespace OSD;
 
 

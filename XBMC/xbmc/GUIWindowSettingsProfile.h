@@ -1,7 +1,5 @@
 #pragma once
-#include "guiwindow.h"
-#include "guiwindowmanager.h"
-#include "GUIListControl.h"
+#include "GUIWindow.h"
 
 class CGUIWindowSettingsProfile :
   public CGUIWindow

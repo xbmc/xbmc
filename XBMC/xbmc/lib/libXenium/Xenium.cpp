@@ -1,3 +1,4 @@
+#include "../../stdafx.h"
 #include "Xenium.h"
 #include "XeniumSPI.h"
 

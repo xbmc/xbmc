@@ -1,10 +1,9 @@
 
-#include "stdafx.h"
+#include "../../stdafx.h"
 #include "DVDPlayer.h"
 #include "DVDPlayerVideo.h"
 #include "DVDCodecs\DVDFactoryCodec.h"
 #include "DVDCodecs\DVDCodecUtils.h"
-#include "..\..\utils\log.h"
 #include "..\..\util.h"
 
 DWORD video_refresh_thread(void *arg);

@@ -1,7 +1,6 @@
 #pragma once
 #include "guiwindow.h"
 #include "FileItem.h"
-#include "GUIDialogProgress.h"
 #include "programdatabase.h"
 
 class CGUIWindowPrograms :

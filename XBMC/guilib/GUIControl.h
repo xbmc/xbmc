@@ -7,12 +7,10 @@
 #define GUILIB_GUICONTROL_H
 #pragma once
 
-#include "gui3d.h"
 #include "key.h"
-#include "common/mouse.h"
-#include "guimessage.h"
-#include "graphiccontext.h"
-
+#include "GraphicContext.h"
+#include "GUICallback.h"
+#include "GUIFont.h"
 
 /*!
 	\ingroup controls

@@ -1,4 +1,3 @@
-
 #include "stdafx.h"
 #include "GUIWindowSettings.h"
 #include "Credits.h"

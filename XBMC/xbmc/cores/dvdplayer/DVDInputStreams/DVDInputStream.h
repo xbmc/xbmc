@@ -1,6 +1,5 @@
 
 #pragma once
-#include <xtl.h>
 
 #define DVDSTREAM_TYPE_FILE 1
 #define DVDSTREAM_TYPE_DVD 2

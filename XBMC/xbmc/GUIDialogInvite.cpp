@@ -1,16 +1,10 @@
-
 #include "stdafx.h"
-#include "guiDialogInvite.h"
-#include "guiWindowManager.h"
+#include "GUIDialogInvite.h"
 #include "GUISpinControl.h"
 #include "GUILabelControl.h"
 #include "GUIButtonControl.h"
-#include "GUIDialogKeyboard.h"
-#include "localizeStrings.h"
 #include "Utils/KaiClient.h"
 #include "ArenaItem.h"
-#include <vector>
-using namespace std;
 
 #define CTL_LABEL_CAPTION	1
 #define CTL_LABEL_SCHEDULE	2

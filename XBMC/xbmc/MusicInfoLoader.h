@@ -1,6 +1,5 @@
 #include "utils/Thread.h"
-#include "StdString.h"
-#include "FileItem.h"
+
 #pragma once
 
 namespace MUSIC_INFO

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "GUIListControlEx.h"
-#include "guifontmanager.h"
-#include "../xbmc/utils/log.h"
+#include "GUIFontManager.h"
 
 #define CONTROL_LIST		0
 #define CONTROL_UPDOWN	1

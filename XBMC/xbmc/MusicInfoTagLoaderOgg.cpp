@@ -1,12 +1,8 @@
 
 #include "stdafx.h"
 #include "musicinfotagloaderogg.h"
-#include "stdstring.h"
-#include "sectionloader.h"
-#include "utils/log.h"
 
 using namespace MUSIC_INFO;
-using namespace XFILE;
 
 CMusicInfoTagLoaderOgg::CMusicInfoTagLoaderOgg(void)
 {

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "../../../stdafx.h"
 #include "pyutil.h"
 #include "pythonplayer.h"
 #include "..\xbpython.h"

@@ -1,17 +1,10 @@
 
 #include "stdafx.h"
 #include "musicinfotagloaderWMA.h"
-#include "stdstring.h"
-#include "sectionloader.h"
-#include "utils/log.h"
-#include "autoptrhandle.h"
 #include "util.h"
 #include "picture.h"
-#include "utils/CharsetConverter.h"
 
 using namespace MUSIC_INFO;
-using namespace XFILE;
-using namespace AUTOPTR;
 
 CStdString fixString(CStdString &ansiString)
 // ucs2CharsetToStringCharset is always called even when not required resulting in some strings

@@ -30,7 +30,6 @@
 #ifndef _DATASET_H
 #define _DATASET_H
 
-#include "stdafx.h"
 #include <cstdio>
 #include <string>
 #include <map>

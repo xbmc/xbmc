@@ -2,9 +2,7 @@
 #include "stdafx.h"
 #include "GUIWindowSettingsUICalibration.h"
 #include "GUIMoverControl.h"
-#include "settings.h"
-#include "stdstring.h"
-#include "application.h"
+#include "Application.h"
 
 #define CONTROL_MOVER 2
 #define CONTROL_LABEL 3

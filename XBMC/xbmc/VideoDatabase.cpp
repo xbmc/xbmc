@@ -6,9 +6,7 @@
 
 #include "stdafx.h"
 #include ".\videodatabase.h"
-#include "settings.h"
 #include "utils/fstrcmp.h"
-#include "utils/log.h"
 #include "util.h"
 
 #define VIDEO_DATABASE_VERSION 1.1f

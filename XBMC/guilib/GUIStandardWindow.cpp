@@ -1,4 +1,6 @@
-#include "guistandardwindow.h"
+#include "stdafx.h"
+#include "GUIStandardWindow.h"
+#include "GUIWindowManager.h"
 
 CGUIStandardWindow::CGUIStandardWindow(void) : CGUIWindow(0)
 {

@@ -1,8 +1,5 @@
 #pragma once
 #include "GUIDialog.h"
-#include "guiwindowmanager.h"
-
-#include "stdstring.h"
 
 class CGUIWindowScriptsInfo :
   public CGUIDialog

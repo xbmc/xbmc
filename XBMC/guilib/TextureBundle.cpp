@@ -1,9 +1,7 @@
 #include "stdafx.h"
-#include <xtl.h>
+#include ".\TextureBundle.h"
 #include <XGraphics.h>
-#include ".\texturebundle.h"
 #include "GraphicContext.h"
-#include "../xbmc/utils/log.h"
 #include "../xbmc/lib/liblzo/LZO1X.H"
 
 #pragma comment(lib,"xbmc/lib/liblzo/lzo.lib")

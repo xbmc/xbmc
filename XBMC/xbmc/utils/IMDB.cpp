@@ -1,14 +1,10 @@
-
-#include "../stdafx.h"
 // IMDB1.cpp: implementation of the CIMDB class.
 //
 //////////////////////////////////////////////////////////////////////
 
+#include "../stdafx.h"
 #include "IMDB.h"
 #include "../util.h"
-#include "log.h"
-#include "localizestrings.h"
-#include "../settings.h"
 #include "HTMLUtil.h"
 
 using namespace HTML;

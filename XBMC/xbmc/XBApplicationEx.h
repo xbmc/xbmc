@@ -9,9 +9,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include <xtl.h>
-#include <xgraphics.h>
-#include <stdio.h>
 #include "common/XBInput.h"
 #include "XBInputEx.h"
 #include "common/XBUtil.h"

@@ -2,11 +2,8 @@
 #include "guiImage.h"
 #include "guiwindow.h"
 #include "guiList.h"
-#include "TinyXML/TinyXML.h"
-#include "StdString.h"
 
 #include "guiEditControl.h"
-#include "guiDialogProgress.h"
 
 #include "utils/UdpClient.h"
 #include "utils/KaiClient.h"
@@ -14,9 +11,6 @@
 #include "KaiVector.h"
 #include "BuddyItem.h"
 #include "ArenaItem.h"
-
-using namespace std;
-#include <map>
 
 class CGUIConsoleControl;
 

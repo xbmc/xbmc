@@ -7,14 +7,8 @@
 #define GUILIB_SPINCONTROL_H
 
 #pragma once
-#include "gui3d.h"
-#include "guicontrol.h"
-#include "guimessage.h"
-#include "guifont.h"
-#include "guiimage.h"
-#include <string>
-#include <vector>
-using namespace std;
+
+#include "GUIImage.h"
 
 #define SPIN_CONTROL_TYPE_INT    1
 #define SPIN_CONTROL_TYPE_FLOAT  2

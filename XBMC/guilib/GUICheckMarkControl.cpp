@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "guiCheckMarkControl.h"
-#include "guifontmanager.h"
+#include "GUICheckMarkControl.h"
+#include "GUIFontManager.h"
 #include "../xbmc/utils/CharsetConverter.h"
 
 CGUICheckMarkControl::CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureCheckMark,const CStdString& strTextureCheckMarkNF,DWORD dwCheckWidth, DWORD dwCheckHeight,DWORD dwAlign)

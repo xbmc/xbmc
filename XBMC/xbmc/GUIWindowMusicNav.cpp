@@ -1,17 +1,10 @@
-
 #include "stdafx.h"
 #include "GUIWindowMusicNav.h"
-#include "settings.h"
-#include "guiWindowManager.h"
-#include "localizestrings.h"
 #include "PlayListFactory.h"
 #include "util.h"
-#include "url.h"
 #include "PlayListM3U.h"
 #include "application.h"
 #include "playlistplayer.h"
-#include <algorithm>
-#include "GuiUserMessages.h"
 #include "GUIPassword.h"
 
 #define CONTROL_BTNVIEWASICONS		2

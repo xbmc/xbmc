@@ -1,6 +1,5 @@
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "EncoderWav.h"
-#include "..\utils\log.h"
 
 CEncoderWav::CEncoderWav()
 {

@@ -1,9 +1,7 @@
 #pragma once
 
-#include "guiwindow.h"
-#include "settingscontrols.h"
-#include "GUISpinControl.h"
-#include "GUIButtonControl.h"
+#include "GUIWindow.h"
+#include "SettingsControls.h"
 
 class CGUIWindowSettingsCategory :
 	public CGUIWindow

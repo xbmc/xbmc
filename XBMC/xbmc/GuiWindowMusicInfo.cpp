@@ -1,14 +1,7 @@
-
-
 #include "stdafx.h"
 #include "GUIWindowMusicInfo.h"
-#include "graphiccontext.h"
-#include "localizestrings.h"
-#include "utils/http.h"
-#include "util.h"
-#include "picture.h"
-#include "application.h"
-#include "GUIsettings.h"
+#include "Utils/HTTP.h"
+#include "Util.h"
 
 #define	CONTROL_ALBUM		20
 #define	CONTROL_ARTIST	21

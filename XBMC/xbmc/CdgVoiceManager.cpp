@@ -1,9 +1,5 @@
+#include "stdafx.h"
 #include "CdgVoiceManager.h"
-#include <cassert>
-#include "StdString.h"
-#include "guisettings.h"
-#include "settings.h"
-#include <stdio.h>
 
 //CdgChatter
 CCdgChatter::CCdgChatter()

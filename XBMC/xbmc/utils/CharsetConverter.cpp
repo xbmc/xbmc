@@ -1,6 +1,4 @@
-#include "stdafx.h"
-#include "../settings.h"
-#include "CharsetConverter.h"
+#include "../stdafx.h"
 
 CCharsetConverter g_charsetConverter;
 

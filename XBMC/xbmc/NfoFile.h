@@ -9,12 +9,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include <xtl.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string>
-using namespace std;
-
 class CNfoFile
 {
 public:

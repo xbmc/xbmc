@@ -3,7 +3,6 @@
 #include "playlistm3u.h"
 #include "filesystem/file.h"
 #include "util.h"
-#include "utils/CharsetConverter.h"
 
 using namespace PLAYLIST;
 using namespace XFILE;

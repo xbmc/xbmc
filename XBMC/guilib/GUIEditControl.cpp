@@ -1,8 +1,6 @@
 #include "stdafx.h"
-#include "guiEditControl.h"
-#include "guifontmanager.h"
+#include "GUIEditControl.h"
 #include "../xbmc/util.h"
-#include "../xbmc/utils/CharsetConverter.h"
 
 CGUIEditControl::CGUIEditControl(DWORD dwParentID, DWORD dwControlId,
 	int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, 

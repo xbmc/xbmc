@@ -1,12 +1,10 @@
-
 #include "stdafx.h"
 #include "GUIWindowVisualisation.h"
-#include "settings.h"
 #include "application.h"
 #include "util.h"
 #include "visualizations/VisualisationFactory.h"
 #include "visualizations/fft.h"
-#include "utils/singlelock.h"
+
 #define LABEL_ROW1 10
 #define LABEL_ROW2 11
 #define LABEL_ROW3 12

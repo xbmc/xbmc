@@ -4,7 +4,7 @@
 	*/
 
 #pragma once
-#include "guibuttoncontrol.h"
+#include "GUIButtonControl.h"
 
 /*!
 	\ingroup controls

@@ -2,11 +2,7 @@
 #include "stdafx.h"
 #include "playlistpls.h"
 #include "util.h"
-#include "filesystem/file.h"
-#include "url.h"
 #include "utils\HTTP.h"
-#include "tinyxml/tinyxml.h"
-#include "utils\log.h"
 
 #define START_PLAYLIST_MARKER "[playlist]"
 #define PLAYLIST_NAME					"PlaylistName"

@@ -1,7 +1,5 @@
 #include "stdafx.h"
-#include "guicontrol.h"
-#include ".\guicontrol.h"
-
+#include "GUIControl.h"
 
 CGUIControl::CGUIControl()
 {

@@ -1,24 +1,13 @@
-
 #include "stdafx.h"
-#include "application.h"
-#include "guiwindowfilemanager.h"
-#include "settings.h"
-#include "guiWindowManager.h"
-#include "localizestrings.h"
-#include "util.h"
-#include "url.h"
-#include "filesystem/file.h"
-#include "filesystem/directory.h"
-#include "picture.h"
-#include <algorithm>
-#include "GUIDialogYesNo.h"
-#include "GUIDialogOK.h"
-#include "DetectDVDType.h"
-#include "texturemanager.h"
+#include "GUIWindowFileManager.h"
+#include "Application.h"
+#include "Util.h"
+#include "FileSystem/Directory.h"
+#include "Picture.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIListControl.h"
-#include "utils/CharsetConverter.h"
 #include "GUIPassword.h"
+#include "lib/libPython/XBPython.h"
 
 using namespace XFILE;
 

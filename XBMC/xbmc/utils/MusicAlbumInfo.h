@@ -1,11 +1,8 @@
 #pragma once
-#include "stdstring.h"
 #include "musicsong.h"
-#include "../musicdatabase.h"
-#include <vector>
-using namespace std;
 
 using namespace MUSIC_GRABBER;
+
 namespace MUSIC_GRABBER
 {
 	class CMusicAlbumInfo

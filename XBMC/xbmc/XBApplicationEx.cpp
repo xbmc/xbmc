@@ -12,9 +12,7 @@
 
 #include "stdafx.h"
 #include "XBApplicationEx.h"
-#include "utils/log.h"
 #include <D3D8Perf.h>
-#include "Settings.h"
 #include "XBVideoConfig.h"
 
 

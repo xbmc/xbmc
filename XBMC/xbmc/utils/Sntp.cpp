@@ -1,5 +1,3 @@
-
-#include "../stdafx.h"
 /*
 Module : SNTP.CPP
 Purpose: implementation for a MFC class to encapsulate the SNTP protocol
@@ -32,15 +30,13 @@ to maintain a single distribution point for the source code.
 */
 
 /////////////////////////////////  Includes  //////////////////////////////////
-#include "../settings.h" 
+
+#include "../stdafx.h"
 #ifndef _INC_MATH
 #include <math.h>
 #endif
 #include "sntp.h"
 #include "../DNSNameCache.h"
-#include "../autoptrhandle.h"
-#include "../utils/log.h"
-using namespace AUTOPTR;
 
 const double NTP_FRACTIONAL_TO_MS = (((double)1000.0)/0xFFFFFFFF);
 const double NTP_TO_SECOND = (((double)1.0)/0xFFFFFFFF);

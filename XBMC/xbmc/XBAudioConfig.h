@@ -1,8 +1,5 @@
 #pragma once
 
-#include <xtl.h>
-#include "xbox/undocumented.h"
-
 #define XC_AUDIO_FLAGS 9
 
 class XBAudioConfig

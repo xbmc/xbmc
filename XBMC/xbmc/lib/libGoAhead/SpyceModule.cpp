@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "../../stdafx.h"
 #include "SpyceModule.h"
 
 #pragma code_seg("WEB_TEXT")

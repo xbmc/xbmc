@@ -10,8 +10,7 @@
 #endif // _MSC_VER > 1000
 
 #include "IFile.h"
-#include "../autoptrhandle.h"
-using namespace AUTOPTR;
+
 using namespace XFILE;
 
 namespace XFILE
