@@ -6,6 +6,7 @@
 #include "filesystem/file.h"
 #include "utils/log.h"
 #include "autoptrhandle.h"
+#include "settings.h"
 
 using namespace AUTOPTR;
 
@@ -444,7 +445,7 @@ bool CPicture::CreateAlbumThumbnailFromMemory(const BYTE* pBuffer, int nBufSize,
 	return false;
 }
 
-void CPicture::RenderImage(IDirect3DTexture8* pTexture,int x, int y, int width, int height, int iTextureWidth, int iTextureHeight, bool bRGB)
+void CPicture::RenderImage(IDirect3DTexture8* pTexture,int x, int y, int width, int height, int iTextureWidth, int iTextureHeight, int iTextureLeft, int iTextureTop)
 {
   CPicture::VERTEX* vertex=NULL;
   LPDIRECT3DVERTEXBUFFER8 m_pVB;
@@ -456,8 +457,8 @@ void CPicture::RenderImage(IDirect3DTexture8* pTexture,int x, int y, int width, 
 	float fy=(float)y;
 	float fwidth=(float)width;
 	float fheight=(float)height;
-	float fxOff = 0;
-	float fyOff = 0;
+	float fxOff = (float)iTextureLeft;
+	float fyOff = (float)iTextureTop;
 
   vertex[0].p = D3DXVECTOR4( fx - 0.5f,	fy - 0.5f,		0, 0 );
   vertex[0].tu = fxOff;
@@ -494,6 +495,8 @@ void CPicture::RenderImage(IDirect3DTexture8* pTexture,int x, int y, int width, 
     g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
     g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSU,  D3DTADDRESS_CLAMP );
     g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSV,  D3DTADDRESS_CLAMP );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MAGFILTER,  g_stSettings.m_minFilter );
+	g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MINFILTER,  g_stSettings.m_maxFilter );
     g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ZENABLE,      FALSE );
     g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGENABLE,    FALSE );
     g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
@@ -502,7 +505,7 @@ void CPicture::RenderImage(IDirect3DTexture8* pTexture,int x, int y, int width, 
     g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
     g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA );
     g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_YUVENABLE, bRGB ? FALSE : TRUE);
+//	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_YUVENABLE, bRGB ? FALSE : TRUE);
     g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_VERTEX );
     // Render the image
     g_graphicsContext.Get3DDevice()->SetStreamSource( 0, m_pVB, sizeof(VERTEX) );

@@ -22,9 +22,9 @@ CGUIWindowSlideShow::CGUIWindowSlideShow(void)
 :CGUIWindow(0)
 {
   m_pTextureBackGround=NULL;
-  m_pSurfaceBackGround=NULL;
+//  m_pSurfaceBackGround=NULL;
   m_pTextureCurrent=NULL;
-  m_pSurfaceCurrent=NULL;
+//  m_pSurfaceCurrent=NULL;
   Reset();
   srand( timeGetTime() );
 
@@ -58,21 +58,21 @@ void CGUIWindowSlideShow::Reset()
 	m_strBackgroundSlide="";
 	m_strCurrentSlide="";
 	m_lSlideTime=0;
-	if (m_pSurfaceBackGround)
-	{
-		m_pSurfaceBackGround->Release();
-		m_pSurfaceBackGround=NULL;
-	}
+//	if (m_pSurfaceBackGround)
+//	{
+//		m_pSurfaceBackGround->Release();
+//		m_pSurfaceBackGround=NULL;
+//	}
 	if (m_pTextureBackGround)
 	{
 		m_pTextureBackGround->Release();
 		m_pTextureBackGround=NULL;
 	}
-	if (m_pSurfaceCurrent)
-	{
-		m_pSurfaceCurrent->Release();
-		m_pSurfaceCurrent=NULL;
-	}
+//	if (m_pSurfaceCurrent)
+//	{
+//		m_pSurfaceCurrent->Release();
+//		m_pSurfaceCurrent=NULL;
+//	}
 	if (m_pTextureCurrent)
 	{
 		m_pTextureCurrent->Release();
@@ -105,7 +105,7 @@ IDirect3DTexture8* CGUIWindowSlideShow::GetNextSlide(DWORD& dwWidth, DWORD& dwHe
 	strSlide=m_vecSlides[m_iCurrentSlide];
 	CPicture picture;
 
-	IDirect3DTexture8* pTexture=picture.Load(strSlide,0,MAX_PICTURE_WIDTH,MAX_PICTURE_HEIGHT, false);
+	IDirect3DTexture8* pTexture=picture.Load(strSlide,0,MAX_PICTURE_WIDTH,MAX_PICTURE_HEIGHT, true);
 	dwWidth=picture.GetWidth();
 	dwHeight=picture.GetHeight();
 	return pTexture;
@@ -128,7 +128,7 @@ IDirect3DTexture8* CGUIWindowSlideShow::GetPreviousSlide(DWORD& dwWidth, DWORD& 
 	strSlide=m_vecSlides[m_iCurrentSlide];
 	CPicture picture;
 
-	IDirect3DTexture8* pTexture=picture.Load(strSlide,0,MAX_PICTURE_WIDTH,MAX_PICTURE_HEIGHT, false);
+	IDirect3DTexture8* pTexture=picture.Load(strSlide,0,MAX_PICTURE_WIDTH,MAX_PICTURE_HEIGHT, true);
 	dwWidth=picture.GetWidth();
 	dwHeight=picture.GetHeight();
 	return pTexture;
@@ -138,21 +138,21 @@ IDirect3DTexture8* CGUIWindowSlideShow::GetPreviousSlide(DWORD& dwWidth, DWORD& 
 void  CGUIWindowSlideShow::ShowNext()
 {
 	if (m_bSlideShow) return;
-	if (m_pSurfaceBackGround) m_pSurfaceBackGround->Release();
+//	if (m_pSurfaceBackGround) m_pSurfaceBackGround->Release();
 	if (m_pTextureBackGround) m_pTextureBackGround->Release();
 
 	m_pTextureBackGround=GetNextSlide(m_dwWidthBackGround,m_dwHeightBackGround, m_strBackgroundSlide);
-	m_pTextureBackGround->GetSurfaceLevel(0,&m_pSurfaceBackGround);
+//	m_pTextureBackGround->GetSurfaceLevel(0,&m_pSurfaceBackGround);
 }
 
 void  CGUIWindowSlideShow::ShowPrevious()
 {
 	if (m_bSlideShow) return;
-	if (m_pSurfaceBackGround) m_pSurfaceBackGround->Release();
+//	if (m_pSurfaceBackGround) m_pSurfaceBackGround->Release();
 	if (m_pTextureBackGround) m_pTextureBackGround->Release();
 
 	m_pTextureBackGround=GetPreviousSlide(m_dwWidthBackGround,m_dwHeightBackGround, m_strBackgroundSlide);
-	m_pTextureBackGround->GetSurfaceLevel(0,&m_pSurfaceBackGround);
+//	m_pTextureBackGround->GetSurfaceLevel(0,&m_pSurfaceBackGround);
 }
 
 
@@ -200,7 +200,7 @@ void CGUIWindowSlideShow::Render()
 					{
 						// get next picture
 						m_pTextureCurrent=GetNextSlide(m_dwWidthCurrent,m_dwHeightCurrent, m_strCurrentSlide);
-						m_pTextureCurrent->GetSurfaceLevel(0, &m_pSurfaceCurrent);
+//						m_pTextureCurrent->GetSurfaceLevel(0, &m_pSurfaceCurrent);
 						m_dwFrameCounter=0;
 						int iNewMethod;
 						do
@@ -219,12 +219,12 @@ void CGUIWindowSlideShow::Render()
 		{
 			if (!m_pTextureCurrent) return;
 			m_pTextureBackGround=m_pTextureCurrent;
-			m_pSurfaceBackGround=m_pSurfaceCurrent;
+//			m_pSurfaceBackGround=m_pSurfaceCurrent;
 			m_dwWidthBackGround=m_dwWidthCurrent;
 			m_dwHeightBackGround=m_dwHeightCurrent;
 			m_strBackgroundSlide=m_strCurrentSlide;
 			m_pTextureCurrent=NULL;
-			m_pSurfaceCurrent=NULL;
+//			m_pSurfaceCurrent=NULL;
 			m_lSlideTime=timeGetTime();
 		}
 	}
@@ -234,33 +234,36 @@ void CGUIWindowSlideShow::Render()
 
 	int x,y,width,height;
 	GetOutputRect(m_dwWidthBackGround, m_dwHeightBackGround, x, y, width, height);
-	RECT source;
-	source.left=m_iZoomLeft;
-	source.top=m_iZoomTop;
+//	RECT source;
+//	source.left=m_iZoomLeft;
+//	source.top=m_iZoomTop;
 	// Overlays don't like being more than 2047 pixels source file in 1 dimension
 	// this will need to be changed if the max image size is increased or decreased
 	// perhaps we can implement "viewing based on resolution" for zooming?
 	// ie Zoom will reload the file if necessary?
-	if (m_iZoomWidth > 2047)
-		source.right=source.left + 2047;
-	else
-		source.right=source.left + m_iZoomWidth;
-	if (m_iZoomHeight > 2047)
-		source.bottom=source.top + 2047;
-	else
-		source.bottom=source.top + m_iZoomHeight;
-	RECT dest;
-	dest.left=x;
-	dest.top=y;
-	dest.right=dest.left+width;
-	dest.bottom=dest.top+height;
+//	if (m_iZoomWidth > 2047)
+//		source.right=source.left + 2047;
+//	else
+//		source.right=source.left + m_iZoomWidth;
+//	if (m_iZoomHeight > 2047)
+//		source.bottom=source.top + 2047;
+//	else
+//		source.bottom=source.top + m_iZoomHeight;
+//	RECT dest;
+//	dest.left=x;
+//	dest.top=y;
+//	dest.right=dest.left+width;
+//	dest.bottom=dest.top+height;
 
-	if (g_graphicsContext.GetVideoResolution() == HDTV_1080i)
-	{	// change the overlay to 540p (Overlays don't work properly in 1080i)
-		dest.top/=2;
-		dest.bottom/=2;
-	}
-	g_graphicsContext.Get3DDevice()->UpdateOverlay(m_pSurfaceBackGround, &source, &dest, true, 0x00010001);
+//	if (g_graphicsContext.GetVideoResolution() == HDTV_1080i)
+//	{	// change the overlay to 540p (Overlays don't work properly in 1080i)
+//		dest.top/=2;
+//		dest.bottom/=2;
+//	}
+	CPicture picture;
+	picture.RenderImage(m_pTextureBackGround, x, y, width, height, m_iZoomWidth, m_iZoomHeight, m_iZoomLeft, m_iZoomTop);
+
+//	g_graphicsContext.Get3DDevice()->UpdateOverlay(m_pSurfaceBackGround, &source, &dest, true, 0x00010001);
 
 	if (m_pTextureCurrent) 
 	{
@@ -300,23 +303,23 @@ void CGUIWindowSlideShow::Render()
 		if (bResult)
 		{
 			if (!m_pTextureCurrent) return;
-			if (m_pSurfaceBackGround)
-			{
-				m_pSurfaceBackGround->Release();
-				m_pSurfaceBackGround=NULL;
-			}
+//			if (m_pSurfaceBackGround)
+//			{
+//				m_pSurfaceBackGround->Release();
+//				m_pSurfaceBackGround=NULL;
+//			}
 			if (m_pTextureBackGround)
 			{
 				m_pTextureBackGround->Release();
 				m_pTextureBackGround=NULL;
 			}
 			m_pTextureBackGround=m_pTextureCurrent;
-			m_pSurfaceBackGround=m_pSurfaceCurrent;
+//			m_pSurfaceBackGround=m_pSurfaceCurrent;
 			m_dwWidthBackGround=m_dwWidthCurrent;
 			m_dwHeightBackGround=m_dwHeightCurrent;
 			m_strBackgroundSlide=m_strCurrentSlide;
 			m_pTextureCurrent=NULL; 
-			m_pSurfaceCurrent=NULL;
+//			m_pSurfaceCurrent=NULL;
 			m_lSlideTime=timeGetTime();
       g_application.ResetScreenSaver();
 		}
@@ -389,7 +392,7 @@ bool CGUIWindowSlideShow::RenderMethod1()
 		bResult=true;
 	}
 	CPicture picture;
-	picture.RenderImage(m_pTextureCurrent, x, y, iExpandWidth, height, m_dwWidthCurrent, m_dwHeightCurrent, false);
+	picture.RenderImage(m_pTextureCurrent, x, y, iExpandWidth, height, m_dwWidthCurrent, m_dwHeightCurrent);
 	return bResult;
 }
 
@@ -409,7 +412,7 @@ bool CGUIWindowSlideShow::RenderMethod2()
 		bResult=true;
 	}
 	CPicture picture;
-	picture.RenderImage(m_pTextureCurrent, iPosX, y, width, height, m_dwWidthCurrent, m_dwHeightCurrent, false);
+	picture.RenderImage(m_pTextureCurrent, iPosX, y, width, height, m_dwWidthCurrent, m_dwHeightCurrent);
 	return bResult;
 }
 
@@ -429,7 +432,7 @@ bool CGUIWindowSlideShow::RenderMethod3()
 		bResult=true;
 	}
 	CPicture picture;
-	picture.RenderImage(m_pTextureCurrent,posx,y,width,height,m_dwWidthCurrent,m_dwHeightCurrent,false);
+	picture.RenderImage(m_pTextureCurrent,posx,y,width,height,m_dwWidthCurrent,m_dwHeightCurrent);
 	return bResult;
 }
 
@@ -449,7 +452,7 @@ bool CGUIWindowSlideShow::RenderMethod4()
 		bResult=true;
 	}
 	CPicture picture;
-	picture.RenderImage(m_pTextureCurrent,x,posy,width,height,m_dwWidthCurrent,m_dwHeightCurrent,false);
+	picture.RenderImage(m_pTextureCurrent,x,posy,width,height,m_dwWidthCurrent,m_dwHeightCurrent);
 	return bResult;
 }
 
@@ -469,7 +472,7 @@ bool CGUIWindowSlideShow::RenderMethod5()
 		bResult=true;
 	}
 	CPicture picture;
-	picture.RenderImage(m_pTextureCurrent,x,posy,width,height,m_dwWidthCurrent,m_dwHeightCurrent,false);
+	picture.RenderImage(m_pTextureCurrent,x,posy,width,height,m_dwWidthCurrent,m_dwHeightCurrent);
 	return bResult;
 }
 
@@ -490,7 +493,7 @@ bool CGUIWindowSlideShow::RenderMethod6()
 		bResult=true;
 	}
 	CPicture picture;
-	picture.RenderImage(m_pTextureCurrent,x,y,width,newheight,m_dwWidthCurrent,m_dwHeightCurrent,false);
+	picture.RenderImage(m_pTextureCurrent,x,y,width,newheight,m_dwWidthCurrent,m_dwHeightCurrent);
 	return bResult;
 }
 
@@ -513,7 +516,7 @@ bool CGUIWindowSlideShow::RenderMethod7()
 	//right align the texture
 	int posx=x + width-newwidth;
 	CPicture picture;
-	picture.RenderImage(m_pTextureCurrent,posx,y,newwidth,height,m_dwWidthCurrent,m_dwHeightCurrent,false);
+	picture.RenderImage(m_pTextureCurrent,posx,y,newwidth,height,m_dwWidthCurrent,m_dwHeightCurrent);
 	return bResult;
 }
 
@@ -537,7 +540,7 @@ bool CGUIWindowSlideShow::RenderMethod8()
 	//bottom align the texture
 	int posy=y + height-newheight;
 	CPicture picture;
-	picture.RenderImage(m_pTextureCurrent,x,posy,width,newheight,m_dwWidthCurrent,m_dwHeightCurrent,false);
+	picture.RenderImage(m_pTextureCurrent,x,posy,width,newheight,m_dwWidthCurrent,m_dwHeightCurrent);
 	return bResult;
 }
 
@@ -568,7 +571,7 @@ bool CGUIWindowSlideShow::RenderMethod9()
 	int posx = x + (width - newwidth)/2;
 	int posy = y + (height - newheight)/2;
 	CPicture picture;
-	picture.RenderImage(m_pTextureCurrent,posx,posy,newwidth,newheight,m_dwWidthCurrent, m_dwHeightCurrent,false);
+	picture.RenderImage(m_pTextureCurrent,posx,posy,newwidth,newheight,m_dwWidthCurrent, m_dwHeightCurrent);
 	return bResult;
 }
 
@@ -743,11 +746,11 @@ void CGUIWindowSlideShow::RenderPause()
 
 void CGUIWindowSlideShow::DoRotate()
 {
-	if (m_pSurfaceBackGround)
-	{
-		m_pSurfaceBackGround->Release();
-		m_pSurfaceBackGround = NULL;
-	}
+//	if (m_pSurfaceBackGround)
+//	{
+//		m_pSurfaceBackGround->Release();
+//		m_pSurfaceBackGround = NULL;
+//	}
 	if (m_pTextureBackGround)
 	{
 		m_pTextureBackGround->Release();
@@ -756,7 +759,7 @@ void CGUIWindowSlideShow::DoRotate()
 	CPicture picture;
 	g_graphicsContext.Get3DDevice()->EnableOverlay(false);
 	m_pTextureBackGround=picture.Load(m_strBackgroundSlide, m_iRotate,MAX_PICTURE_WIDTH,MAX_PICTURE_HEIGHT, false);
-	m_pTextureBackGround->GetSurfaceLevel(0, &m_pSurfaceBackGround);
+//	m_pTextureBackGround->GetSurfaceLevel(0, &m_pSurfaceBackGround);
 	g_graphicsContext.Get3DDevice()->EnableOverlay(true);
 	m_dwWidthBackGround=picture.GetWidth();
 	m_dwHeightBackGround=picture.GetHeight();
