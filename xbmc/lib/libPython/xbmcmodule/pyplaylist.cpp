@@ -134,18 +134,21 @@ namespace PYXBMC
 
 		if (!PyArg_ParseTuple(args, "s", &cFileName))	return NULL;
 
-		if (CUtil::IsPlayList(cFileName))
+		CFileItem item(cFileName);
+		item.m_strPath=cFileName;
+
+		if (item.IsPlayList())
 		{
 			// load playlist and copy al items to existing playlist
 
 			// load a playlist like .m3u, .pls
 			// first get correct factory to load playlist
 			CPlayListFactory factory;
-			auto_ptr<CPlayList> pPlayList (factory.Create(cFileName));
+			auto_ptr<CPlayList> pPlayList (factory.Create(item.m_strPath));
 			if ( NULL != pPlayList.get())
 			{
 				// load it
-				if (!pPlayList->Load(cFileName))
+				if (!pPlayList->Load(item.m_strPath))
 				{
 					//hmmm unable to load playlist?
 					return Py_BuildValue("b", false);

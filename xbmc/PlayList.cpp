@@ -13,10 +13,10 @@ CPlayList::CPlayListItem::CPlayListItem() : m_lDuration(0)
 
 CPlayList::CPlayListItem::CPlayListItem(const CStdString& strDescription, const CStdString& strFileName, long lDuration, long lStartOffset, long lEndOffset)
 {
-	m_strDescription = strDescription;
-	m_strFilename		 = strFileName;
+	m_strLabel			 = strDescription;
+	m_strPath				 = strFileName;
 	m_lDuration			 = lDuration;
-	m_lStartOffset		 = lStartOffset;
+	m_lStartOffset	 = lStartOffset;
 	m_lEndOffset		 = lEndOffset;
 }
 
@@ -26,23 +26,23 @@ CPlayList::CPlayListItem::~CPlayListItem()
 
 void CPlayList::CPlayListItem::SetFileName(const CStdString& strFileName)
 {
-	m_strFilename=strFileName;
+	m_strPath=strFileName;
 }
 
 const CStdString& CPlayList::CPlayListItem::GetFileName() const
 {
-	return m_strFilename;
+	return m_strPath;
 }
 
 
 void CPlayList::CPlayListItem::SetDescription(const CStdString& strDescription)
 {
-	m_strDescription=strDescription;
+	m_strLabel=strDescription;
 }
 
 const CStdString& CPlayList::CPlayListItem::GetDescription() const
 {
-	return m_strDescription;
+	return m_strLabel;
 }
 
 
@@ -118,6 +118,11 @@ const CPlayList::CPlayListItem& CPlayList::operator[] (int iItem) const
 	return m_vecItems[iItem];
 }
 
+CPlayList::CPlayListItem& CPlayList::operator[] (int iItem)
+{
+	return m_vecItems[iItem];
+}
+
 void CPlayList::Shuffle()
 {
 	srand( timeGetTime() );
@@ -171,7 +176,7 @@ int CPlayList::RemoveDVDItems()
 	while (it != m_vecItems.end() )
 	{
 		CPlayListItem& item = *it;
-		if ( CUtil::IsCDDA( item.GetFileName() ) || CUtil::IsISO9660( item.GetFileName() ) || CUtil::IsDVD( item.GetFileName() ) )
+		if ( item.IsCDDA() || item.IsISO9660() || item.IsDVD() )
 		{
 			vecFilenames.push_back( item.GetFileName() );
 		}

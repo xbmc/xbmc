@@ -22,7 +22,8 @@ CMusicInfoTagLoaderFactory::~CMusicInfoTagLoaderFactory()
 IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& strFileName)
 {
   // dont try to locate a folder.jpg for streams &  shoutcast
-	if (CUtil::IsInternetStream(strFileName))
+	CFileItem item(strFileName, false);
+	if (item.IsInternetStream())
 		return NULL;
 
 	CStdString strExtension;

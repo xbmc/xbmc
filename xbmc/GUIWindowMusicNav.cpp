@@ -212,11 +212,11 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 				UpdateButtons();
 				UpdateListControl();
 
-				CStdString strDirectory=m_strDirectory;
+				CStdString strDirectory=m_Directory.m_strPath;
 				if (CUtil::HasSlashAtEnd(strDirectory))
 					strDirectory.Delete(strDirectory.size()-1);
 
-				if (!m_strDirectory.IsEmpty() && m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory==strDirectory && g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC_TEMP)
+				if (!strDirectory.IsEmpty() && m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory==strDirectory && g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC_TEMP)
 				{
 					int nSong=g_playlistPlayer.GetCurrentSong();
 					const CPlayList::CPlayListItem item=g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC_TEMP)[nSong];
@@ -810,7 +810,7 @@ void CGUIWindowMusicNav::OnClick(int iItem)
 
 		//	Save current window and directory to know where the selected item was
 		m_nTempPlayListWindow=GetID();
-		m_strTempPlayListDirectory=m_strDirectory;
+		m_strTempPlayListDirectory=m_Directory.m_strPath;
 		if (CUtil::HasSlashAtEnd(m_strTempPlayListDirectory))
 			m_strTempPlayListDirectory.Delete(m_strTempPlayListDirectory.size()-1);
 
@@ -854,10 +854,10 @@ void CGUIWindowMusicNav::OnFileItemFormatLabel(CFileItem* pItem)
 
 	//	set thumbs and default icons
 	if (m_iState!=SHOW_ROOT)
-		CUtil::SetMusicThumb(pItem);
+		pItem->SetMusicThumb();
 	if (pItem->GetIconImage()=="music.jpg")
 		pItem->SetThumbnailImage("MyMusic.jpg");
-	CUtil::FillInDefaultIcon(pItem);
+	pItem->FillInDefaultIcon();
 }
 
 void CGUIWindowMusicNav::DoSort(VECFILEITEMS& items)
@@ -867,7 +867,7 @@ void CGUIWindowMusicNav::DoSort(VECFILEITEMS& items)
 		return;
 
 	SSortMusicNav sortmethod;
-	sortmethod.m_strDirectory=m_strDirectory;
+	sortmethod.m_strDirectory=m_Directory.m_strPath;
 
 	if (m_iState==SHOW_GENRES)
 	{
@@ -1173,7 +1173,7 @@ void CGUIWindowMusicNav::AddItemToPlayList(const CFileItem* pItem)
 	}
 	else
 	{
-		if (!CUtil::IsNFO(pItem->m_strPath) && CUtil::IsAudio(pItem->m_strPath) && !CUtil::IsPlayList(pItem->m_strPath))
+		if (!pItem->IsNFO() && pItem->IsAudio() && !pItem->IsPlayList())
 		{
 			CPlayList::CPlayListItem playlistItem;
 			CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
@@ -1242,7 +1242,7 @@ void CGUIWindowMusicNav::AddItemToTempPlayList(const CFileItem* pItem)
 	}
 	else
 	{
-		if (!CUtil::IsNFO(pItem->m_strPath) && CUtil::IsAudio(pItem->m_strPath) && !CUtil::IsPlayList(pItem->m_strPath))
+		if (!pItem->IsNFO() && pItem->IsAudio() && !pItem->IsPlayList())
 		{
 			CPlayList::CPlayListItem playlistItem;
 			CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);

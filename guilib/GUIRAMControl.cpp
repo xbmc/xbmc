@@ -226,8 +226,7 @@ void CGUIRAMControl::OnAction(const CAction &action)
 
 		case ACTION_SELECT_ITEM:
 		{
-			CFileItem item;
-			item.m_strPath = m_current[m_iSelection].strFilepath;
+			CFileItem item(m_current[m_iSelection].strFilepath, false);
 			PlayMovie( item );
 			break;
 		}
@@ -300,12 +299,11 @@ void CGUIRAMControl::PlayMovie(CFileItem& item)
 				for (int i=0; i < (int)items.size(); ++i)
 				{
 					CFileItem *pItemTmp=items[i];
-					CStdString fileNameTemp = pItemTmp->m_strPath;
-					if (!CUtil::IsNFO(fileNameTemp) && !CUtil::IsPlayList(fileNameTemp))
+					if (!pItemTmp->IsNFO() && !pItemTmp->IsPlayList())
 					{
-						if (CUtil::IsVideo(fileNameTemp))
+						if (pItemTmp->IsVideo())
 						{
-							fileNameTemp = CUtil::GetFileName(fileNameTemp);
+							CStdString fileNameTemp = CUtil::GetFileName(pItemTmp->m_strPath);
 							bool stackFile = false;
 
 							if (fileName.Equals(fileNameTemp))

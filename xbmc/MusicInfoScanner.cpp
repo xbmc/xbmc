@@ -231,7 +231,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(VECFILEITEMS& items, const CStdString& 
 			return iFilesAdded;
 
     // dont try reading id3tags for folders, playlists or shoutcast streams
-		if (!pItem->m_bIsFolder && !CUtil::IsPlayList(pItem->m_strPath) && !CUtil::IsShoutCast(pItem->m_strPath) )
+		if (!pItem->m_bIsFolder && !pItem->IsPlayList() && !pItem->IsShoutCast() )
 		{
       // is tag for this file already loaded?
 			bool bNewFile=false;
@@ -281,9 +281,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(VECFILEITEMS& items, const CStdString& 
 				CSong song(tag);
 				song.iStartOffset = pItem->m_lStartOffset;
 				song.iEndOffset = pItem->m_lEndOffset;
-				//m_musicDatabase.BeginTransaction();
 				m_musicDatabase.AddSong(song,false);
-				//m_musicDatabase.CommitTransaction();
 				iFilesAdded++;
 			}
 		}//if (!pItem->m_bIsFolder)

@@ -43,7 +43,8 @@ using namespace DIRECTORY;
 CGUIWindowPrograms::CGUIWindowPrograms(void)
 :CGUIWindow(0)
 {
-	m_strDirectory="?";
+	m_Directory.m_strPath="?";
+  m_Directory.m_bIsFolder=true;
 	m_iLastControl=-1;
 	m_iViewAsIcons=-1;
 }
@@ -70,9 +71,9 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 			CGUIWindow::OnMessage(message);
 			m_database.Open();
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-			if (m_strDirectory=="?")
+			if (m_Directory.m_strPath=="?")
 			{
-				m_strDirectory=g_stSettings.m_szDefaultPrograms;
+				m_Directory.m_strPath=g_stSettings.m_szDefaultPrograms;
 				m_shareDirectory=g_stSettings.m_szDefaultPrograms;
 				m_iDepth=1;
 				m_strBookmarkName="default";
@@ -117,7 +118,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 			if (m_iLastControl>-1)
 				SET_CONTROL_FOCUS(m_iLastControl, 0);
 
-			UpdateDir(m_strDirectory);
+			UpdateDir(m_Directory.m_strPath);
 
 			if (m_iSelectedItem>-1)
 			{
@@ -149,8 +150,8 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 			else if (iControl==CONTROL_BTNSCAN) // button
 			{
 				int iTotalApps=0;
-				CStdString strDir=m_strDirectory;
-				m_strDirectory = g_stSettings.m_szShortcutDirectory;
+				CStdString strDir=m_Directory.m_strPath;
+				m_Directory.m_strPath = g_stSettings.m_szShortcutDirectory;
 
 				if (m_dlgProgress)
 				{
@@ -166,12 +167,12 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
 				// remove shortcuts...
 				rootDir.SetMask(".cut");
-				rootDir.GetDirectory(m_strDirectory,m_vecItems);
+				rootDir.GetDirectory(m_Directory.m_strPath,m_vecItems);
 
 				for (int i=0; i < (int)m_vecItems.size(); ++i)
 				{
 					CFileItem* pItem=m_vecItems[i];
-					if (CUtil::IsShortCut(pItem->m_strPath))
+					if (pItem->IsShortCut())
 					{
 						DeleteFile(pItem->m_strPath.c_str());
 					}
@@ -181,7 +182,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
 				VECFILEITEMS items;
 				{
-					m_strDirectory="C:";
+					m_Directory.m_strPath="C:";
 					rootDir.SetMask(".xbe");
 					rootDir.GetDirectory("C:\\",items);
 					OnScan(items,iTotalApps);
@@ -189,7 +190,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 				}
 
 				{
-					m_strDirectory="E:";
+					m_Directory.m_strPath="E:";
 					rootDir.SetMask(".xbe");
 					rootDir.GetDirectory("E:\\",items);
 					OnScan(items,iTotalApps);
@@ -198,7 +199,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
 				if (g_stSettings.m_bUseFDrive)
 				{
-					m_strDirectory="F:";
+					m_Directory.m_strPath="F:";
 					rootDir.SetMask(".xbe");
 					rootDir.GetDirectory("F:\\",items);
 					OnScan(items,iTotalApps);
@@ -206,7 +207,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 				}
 				if (g_stSettings.m_bUseGDrive)
 				{
-					m_strDirectory="G:";
+					m_Directory.m_strPath="G:";
 					rootDir.SetMask(".xbe");
 					rootDir.GetDirectory("G:\\",items);
 					OnScan(items,iTotalApps);
@@ -214,9 +215,9 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 				}
 
 
-				m_strDirectory=strDir;
+				m_Directory.m_strPath=strDir;
 				CUtil::ClearCache();
-				Update(m_strDirectory);
+				Update(m_Directory.m_strPath);
 
 				if (m_dlgProgress)
 				{
@@ -284,10 +285,10 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
             return false;
           }
 					m_shareDirectory=share.strPath;    // since m_strDirectory can change, we always want something that won't.
-					m_strDirectory=share.strPath;
+					m_Directory.m_strPath=share.strPath;
 					m_strBookmarkName=share.strName;
 					m_iDepth=share.m_iDepthSize;
-					Update(m_strDirectory);
+					Update(m_Directory.m_strPath);
 				}
 			}
 		}
@@ -307,7 +308,7 @@ bool CGUIWindowPrograms::OnPopupMenu(int iItem)
 		iPosX = pList->GetXPosition()+pList->GetWidth()/2;
 		iPosY = pList->GetYPosition()+pList->GetHeight()/2;
 	}	
-	if ( m_strDirectory.IsEmpty() )
+	if ( m_Directory.IsVirtualDirectoryRoot() )
 	{
 		if (iItem < 0)
 		{	// TODO: Add option to add shares in this case
@@ -368,7 +369,8 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
 	if (!CUtil::HasSlashAtEnd(strRootDir) )
 		strRootDir+="\\";
 
-	if ( CUtil::IsDVD(strRootDir) )
+	CFileItem rootDir(strRootDir, true);
+	if ( rootDir.IsDVD() )
 	{
 		CIoSupport helper;
 		helper.Remount("D:","Cdrom0");
@@ -383,16 +385,15 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
 	do {
 		if (wfd.cFileName[0]!=0)
 		{
-			CStdString strFileName=wfd.cFileName;
-			CStdString strFile=strRootDir;
-			strFile+=wfd.cFileName;
+			CFileItem fileName(wfd.cFileName, false);
+			CFileItem file(strRootDir+CStdString(wfd.cFileName), false);
 
 			if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
 			{
-				if ( strFileName != "." && strFileName != ".." && !bFlattenDir)
+				if ( fileName.m_strPath != "." && fileName.m_strPath != ".." && !bFlattenDir)
 				{
-					CFileItem *pItem = new CFileItem(strFileName);
-					pItem->m_strPath=strFile;
+					CFileItem *pItem = new CFileItem(fileName.m_strPath);
+					pItem->m_strPath=file.m_strPath;
 					pItem->m_bIsFolder=true;
 					FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
 					FileTimeToSystemTime(&localTime, &pItem->m_stTime);
@@ -400,11 +401,11 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
 				}
 				else
 				{
-					if (strFileName != "." && strFileName != ".." && bFlattenDir && idepth > 0 )
+					if (fileName.m_strPath != "." && fileName.m_strPath != ".." && bFlattenDir && idepth > 0 )
 					{
-						if (!m_database.EntryExists(strFile,m_strBookmarkName))
+						if (!m_database.EntryExists(file.m_strPath,m_strBookmarkName))
 						{
-							LoadDirectory(strFile, idepth-1);
+							LoadDirectory(file.m_strPath, idepth-1);
 						}
 					}
 				}
@@ -413,21 +414,21 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
 			}
 			else
 			{
-				if (bOnlyDefaultXBE ? CUtil::IsDefaultXBE(strFileName) : CUtil::IsXBE(strFileName))
+				if (bOnlyDefaultXBE ? fileName.IsDefaultXBE() : fileName.IsXBE())
 				{
 					CStdString strDescription;
 
-					if (!CUtil::GetXBEDescription(strFile, strDescription) || (bUseDirectoryName && CUtil::IsDefaultXBE(strFileName)) )
+					if (!CUtil::GetXBEDescription(file.m_strPath, strDescription) || (bUseDirectoryName && fileName.IsDefaultXBE()) )
 					{
-						CUtil::GetDirectoryName(strFile, strDescription);
+						CUtil::GetDirectoryName(file.m_strPath, strDescription);
 						CUtil::ShortenFileName(strDescription);
 						CUtil::RemoveIllegalChars(strDescription);
 					}
 
-					if (!bFlattenDir || CUtil::IsDVD(strFile))
+					if (!bFlattenDir || file.IsDVD())
 					{
 						CFileItem *pItem = new CFileItem(strDescription);
-						pItem->m_strPath=strFile;
+						pItem->m_strPath=file.m_strPath;
 						pItem->m_bIsFolder=false;
 						pItem->m_dwSize=wfd.nFileSizeLow;
 
@@ -437,17 +438,17 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
 					}
 					else
 					{
-						DWORD titleId = CUtil::GetXbeID(strFile);
-						m_database.AddProgram(strFile,titleId,strDescription,m_strBookmarkName);
+						DWORD titleId = CUtil::GetXbeID(file.m_strPath);
+						m_database.AddProgram(file.m_strPath,titleId,strDescription,m_strBookmarkName);
 					}
 				}
 
-				if (CUtil::IsShortCut(strFileName))
+				if (fileName.IsShortCut())
 				{
 					if (!bFlattenDir)
 					{
 						CFileItem *pItem = new CFileItem(wfd.cFileName);
-						pItem->m_strPath=strFile;
+						pItem->m_strPath=file.m_strPath;
 						pItem->m_bIsFolder=false;
 						pItem->m_dwSize=wfd.nFileSizeLow;
 
@@ -458,8 +459,8 @@ void CGUIWindowPrograms::LoadDirectory(const CStdString& strDirectory, int idept
 
 					else 
 					{
-						DWORD titleId = CUtil::GetXbeID(strFile);
-						m_database.AddProgram(strFile,titleId,wfd.cFileName,m_strBookmarkName);
+						DWORD titleId = CUtil::GetXbeID(file.m_strPath);
+						m_database.AddProgram(file.m_strPath,titleId,wfd.cFileName,m_strBookmarkName);
 					}
 				}
 			}
@@ -520,23 +521,17 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 		for (int i=0; i < (int)g_settings.m_vecMyProgramsBookmarks.size(); ++i)
 		{
 			CShare& share = g_settings.m_vecMyProgramsBookmarks[i];
-			CStdString sharePath = share.strPath;
 			vector<CStdString> vecShares;
-			CFileItem *pItem = new CFileItem(share.strName);
-			pItem->m_strPath=sharePath;
+			CFileItem *pItem = new CFileItem(share);
 			pItem->m_bIsShareOrDrive=false;
-			pItem->m_bIsFolder=true;
-			pItem->m_idepth=share.m_iDepthSize;
-			pItem->m_iLockMode=share.m_iLockMode;
-			pItem->m_strLockCode=share.m_strLockCode;
-			pItem->m_iBadPwdCount=share.m_iBadPwdCount;
-			CUtil::Tokenize(sharePath, vecShares, ",");
+			CUtil::Tokenize(pItem->m_strPath, vecShares, ",");
 			CStdString strThumb;
 			for (int j=0; j < (int)vecShares.size(); j++)    // use the first folder image that we find
 			{																								 // in the vector of shares
-				if (!CUtil::IsXBE(vecShares[j]))
+				CFileItem item(vecShares[j], false);
+				if (!item.IsXBE())
 				{
-					if (CUtil::GetFolderThumb(vecShares[j], strThumb)) 
+					if (CUtil::GetFolderThumb(item.m_strPath, strThumb)) 
 					{
 						pItem->SetThumbnailImage(strThumb);
 						break;
@@ -608,28 +603,29 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 	m_iLastControl=GetFocusedControl();
 
 
-	if (m_strDirectory!="")
+	if (!m_Directory.IsVirtualDirectoryRoot())
 	{
 		for (int j=0; j < (int)vecPaths.size(); j++)
 		{
-			if (CUtil::IsXBE(vecPaths[j]))					// we've found a single XBE in the path vector
+			CFileItem item(vecPaths[j], false);
+			if (item.IsXBE())					// we've found a single XBE in the path vector
 			{
 				CStdString strDescription;
-				if ( (m_database.GetFile(vecPaths[j],m_vecItems) < 0) && CUtil::FileExists(vecPaths[j]))
+				if ( (m_database.GetFile(item.m_strPath,m_vecItems) < 0) && CUtil::FileExists(item.m_strPath))
 				{
-					if (!CUtil::GetXBEDescription(vecPaths[j], strDescription))
+					if (!CUtil::GetXBEDescription(item.m_strPath, strDescription))
 					{
-						CUtil::GetDirectoryName(vecPaths[j], strDescription);
+						CUtil::GetDirectoryName(item.m_strPath, strDescription);
 						CUtil::ShortenFileName(strDescription);
 						CUtil::RemoveIllegalChars(strDescription);
 					}
 
-					if (CUtil::IsDVD(vecPaths[j]))
+					if (item.IsDVD())
 					{
 						WIN32_FILE_ATTRIBUTE_DATA FileAttributeData;
 						FILETIME localTime;
 						CFileItem *pItem = new CFileItem(strDescription);
-						pItem->m_strPath=vecPaths[j];
+						pItem->m_strPath=item.m_strPath;
 						pItem->m_bIsFolder=false;
 						GetFileAttributesEx(pItem->m_strPath, GetFileExInfoStandard, &FileAttributeData);
 						FileTimeToLocalFileTime(&FileAttributeData.ftLastWriteTime,&localTime);
@@ -639,19 +635,19 @@ void CGUIWindowPrograms::UpdateDir(const CStdString &strDirectory)
 					}
 					else
 					{      
-						DWORD titleId = CUtil::GetXbeID(vecPaths[j]);    
-						m_database.AddProgram(vecPaths[j], titleId, strDescription, m_strBookmarkName);
-						m_database.GetFile(vecPaths[j],m_vecItems);
+						DWORD titleId = CUtil::GetXbeID(item.m_strPath);    
+						m_database.AddProgram(item.m_strPath, titleId, strDescription, m_strBookmarkName);
+						m_database.GetFile(item.m_strPath,m_vecItems);
 					}
 				}
 			}
 			else
 			{
-				LoadDirectory(vecPaths[j], idepth);
+				LoadDirectory(item.m_strPath, idepth);
 				if (m_strBookmarkName=="shortcuts")
 					bOnlyDefaultXBE=false;			// let's do this so that we don't only grab default.xbe from database when getting shortcuts
 				if (bFlattenDir)
-					m_database.GetProgramsByPath(vecPaths[j], m_vecItems, idepth, bOnlyDefaultXBE);
+					m_database.GetProgramsByPath(item.m_strPath, m_vecItems, idepth, bOnlyDefaultXBE);
 			}
 		}
 	}
@@ -690,11 +686,11 @@ void CGUIWindowPrograms::OnClick(int iItem)
     if ( !CGUIPassword::IsItemUnlocked( pItem, "myprograms" ) )
       return;
 
-		if (m_strDirectory=="")
+		if (m_Directory.IsVirtualDirectoryRoot())
 			m_shareDirectory=pItem->m_strPath;
-		m_strDirectory=pItem->m_strPath;
+		m_Directory.m_strPath=pItem->m_strPath;
 		m_iDepth=pItem->m_idepth;
-		Update(m_strDirectory);
+		Update(m_Directory.m_strPath);
 	}
 	else
 	{
@@ -709,13 +705,14 @@ void CGUIWindowPrograms::OnClick(int iItem)
 
 		strcpy(szPath,pItem->m_strPath.c_str());
 
-		if (CUtil::IsShortCut(pItem->m_strPath) )
+		if (pItem->IsShortCut())
 		{
 			CShortcut shortcut;
 			if ( shortcut.Create(pItem->m_strPath))
 			{
+				CFileItem item(shortcut.m_strPath, false);
 				// if another shortcut is specified, load this up and use it
-				if ( CUtil::IsShortCut(shortcut.m_strPath.c_str() ) )
+				if (item.IsShortCut())
 				{
 					CHAR szNewPath[1024];
 					strcpy(szNewPath,szPath);
@@ -990,7 +987,7 @@ void CGUIWindowPrograms::UpdateButtons()
 void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 {
 	// remove username + password from m_strDirectory for display in Dialog
-	CURL url(m_strDirectory);
+	CURL url(m_Directory.m_strPath);
 	CStdString strStrippedPath;
 	url.GetURLWithoutUserDetails(strStrippedPath);
 
@@ -1010,7 +1007,7 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 	DeleteThumbs(items);
 	//CUtil::SetThumbs(items);
 	CUtil::CreateShortcuts(items);
-	if ((int)m_strDirectory.size() != 2) // true for C:, E:, F:, G:
+	if ((int)m_Directory.m_strPath.size() != 2) // true for C:, E:, F:, G:
 	{
 		// first check all files
 		for (int i=0; i < (int)items.size(); ++i)
@@ -1018,7 +1015,7 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 			CFileItem *pItem= items[i];
 			if (! pItem->m_bIsFolder)
 			{
-				if (CUtil::IsXBE(pItem->m_strPath) )
+				if (pItem->IsXBE() )
 				{
 					bScanSubDirs=false;
 					break;
@@ -1035,23 +1032,23 @@ void CGUIWindowPrograms::OnScan(VECFILEITEMS& items, int& iTotalAppsFound)
 			if (bScanSubDirs && !bFound && pItem->GetLabel() != "..")
 			{
 				// load subfolder
-				CStdString strDir=m_strDirectory;
+				CStdString strDir=m_Directory.m_strPath;
 				if (pItem->m_strPath != "E:\\UDATA" && pItem->m_strPath !="E:\\TDATA")
 				{
-					m_strDirectory=pItem->m_strPath;
+					m_Directory.m_strPath=pItem->m_strPath;
 					VECFILEITEMS subDirItems;
 					CFileItemList itemlist(subDirItems); // will clean up everything
 					CHDDirectory rootDir;
 					rootDir.SetMask(".xbe");
 					rootDir.GetDirectory(pItem->m_strPath,subDirItems);
 					OnScan(subDirItems,iTotalAppsFound);
-					m_strDirectory=strDir;
+					m_Directory.m_strPath=strDir;
 				}
 			}
 		}
 		else
 		{
-			if ( CUtil::IsXBE(pItem->m_strPath) )
+			if (pItem->IsXBE())
 			{
 				bFound=true;
 				iTotalAppsFound++;
@@ -1087,7 +1084,7 @@ void CGUIWindowPrograms::DeleteThumbs(VECFILEITEMS& items)
 		CFileItem *pItem= items[i];
 		if (! pItem->m_bIsFolder)
 		{
-			if (CUtil::IsXBE(pItem->m_strPath) )
+			if (pItem->IsXBE() )
 			{
 				CStdString strThumb;
 				CUtil::GetXBEIcon(pItem->m_strPath,strThumb);
@@ -1159,6 +1156,6 @@ void CGUIWindowPrograms::ShowThumbPanel()
 void CGUIWindowPrograms::GoParentFolder()
 {
 	//CStdString strPath=m_strParentPath;
-  m_strDirectory=m_strParentPath;
-	Update(m_strDirectory);
+	m_Directory.m_strPath=m_strParentPath;
+	Update(m_Directory.m_strPath);
 }

@@ -153,8 +153,9 @@ struct SSortVideoTitleByTitle
 //****************************************************************************************************************************
 CGUIWindowVideoTitle::CGUIWindowVideoTitle()
 {
-	m_strDirectory="";
-  m_iItemSelected=-1;
+	m_Directory.m_strPath="";
+	m_Directory.m_bIsFolder=true;
+	m_iItemSelected=-1;
 	m_iLastControl=-1;
 }
 
@@ -186,7 +187,7 @@ void CGUIWindowVideoTitle::OnAction(const CAction &action)
     m_database.GetFiles(atol(pItem->m_strPath),movies);
 		if (movies.size() <=0) return;
     m_database.DeleteMovie(movies[0]);
-    Update( m_strDirectory );
+    Update( m_Directory.m_strPath );
     return;
 
   }
@@ -283,11 +284,11 @@ void CGUIWindowVideoTitle::Update(const CStdString &strDirectory)
 		if (pItem->m_bIsFolder && pItem->GetLabel() != "..")
 		{
 			strSelectedItem=pItem->m_strPath;
-			m_history.Set(strSelectedItem,m_strDirectory);
+			m_history.Set(strSelectedItem,m_Directory.m_strPath);
 		}
 	}
   ClearFileItems();
-  m_strDirectory=strDirectory;
+  m_Directory.m_strPath=strDirectory;
   VECMOVIES movies;
   m_database.GetMovies(movies);
  	// Display an error message if the database doesn't contain any movies
@@ -309,7 +310,7 @@ void CGUIWindowVideoTitle::Update(const CStdString &strDirectory)
     pItem->m_strDVDLabel = movie.m_strDVDLabel;
 		m_vecItems.push_back(pItem);
   }
-  SET_CONTROL_LABEL(LABEL_TITLE,m_strDirectory);
+  SET_CONTROL_LABEL(LABEL_TITLE,m_Directory.m_strPath);
   
 	CUtil::SetThumbs(m_vecItems);
   SetIMDBThumbs(m_vecItems);
@@ -323,13 +324,13 @@ void CGUIWindowVideoTitle::Update(const CStdString &strDirectory)
 		//	Fake a videofile
 		pItem->m_strPath=pItem->m_strPath+".avi";
 
-		CUtil::FillInDefaultIcon(pItem);
+		pItem->FillInDefaultIcon();
 		pItem->m_strPath=strPath;
 	}
 
   OnSort();
   UpdateButtons();
-  strSelectedItem=m_history.Get(m_strDirectory);	
+  strSelectedItem=m_history.Get(m_Directory.m_strPath);	
 
 	m_iLastControl=GetFocusedControl();
 
@@ -417,7 +418,7 @@ void CGUIWindowVideoTitle::OnClick(int iItem)
 
 bool CGUIWindowVideoTitle::ViewByIcon()
 {
-  if ( m_strDirectory.IsEmpty() )
+  if ( m_Directory.IsVirtualDirectoryRoot() )
   {
     if (g_stSettings.m_iMyVideoTitleRootViewAsIcons != VIEW_AS_LIST) return true;
   }
@@ -430,7 +431,7 @@ bool CGUIWindowVideoTitle::ViewByIcon()
 
 bool CGUIWindowVideoTitle::ViewByLargeIcon()
 {
-  if ( m_strDirectory.IsEmpty() )
+  if ( m_Directory.IsVirtualDirectoryRoot() )
   {
     if (g_stSettings.m_iMyVideoTitleRootViewAsIcons == VIEW_AS_LARGEICONS) return true;
   }
@@ -443,7 +444,7 @@ bool CGUIWindowVideoTitle::ViewByLargeIcon()
 
 void CGUIWindowVideoTitle::SetViewMode(int iViewMode)
 {
-  if ( m_strDirectory.IsEmpty() )
+  if ( m_Directory.IsVirtualDirectoryRoot() )
     g_stSettings.m_iMyVideoTitleRootViewAsIcons = iViewMode;
   else
     g_stSettings.m_iMyVideoTitleViewAsIcons = iViewMode;

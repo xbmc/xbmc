@@ -87,7 +87,7 @@ protected:
 					void							OnInfo(int iItem);
 					bool							FindAlbumInfo(const CStdString& strAlbum, CMusicAlbumInfo& album);
 					void							ShowAlbumInfo(const CStdString& strAlbum, const CStdString& strPath, bool bSaveDb, bool bSaveDirThumb, bool bRefresh);
-					void							ClearFileItems();
+	virtual void							ClearFileItems();
 	virtual void							Update(const CStdString &strDirectory);
 					void							UpdateListControl();
 	virtual void							AddItemToPlayList(const CFileItem* pItem);
@@ -107,7 +107,7 @@ protected:
 					void							DisplayEmptyDatabaseMessage(bool bDisplay);
 					void							SetLabelFromTag(CFileItem *pItem);
 
-	CStdString								m_strDirectory;	///< Holds the current direcotry path after calling Update()
+	CFileItem									m_Directory;	///< Holds the current direcotry path after calling Update()
 	CVirtualDirectory					m_rootDir;	///< Used to get directories from shares and the shares itself
   VECFILEITEMS							m_vecItems;	///< Represents the current items listed in the list/thumb control
 	typedef vector <CFileItem*>::iterator ivecItems;	///< CFileItem* vector Iterator
@@ -141,6 +141,6 @@ protected:
 	static CStdString					m_strTempPlayListDirectory;	///< The directory the temporary playlist was started
 	int												m_nSelectedItem;	///< Backups the last selected item before window is deinitialized
 	int												m_iLastControl;	///< Backups the last selected control before window is deinitialized
-	bool		m_bDisplayEmptyDatabaseMessage;		///< If true we display a message informing the user to switch back to the Files view.
+	bool											m_bDisplayEmptyDatabaseMessage;		///< If true we display a message informing the user to switch back to the Files view.
 	CStdString								m_strParentPath;	///< Parent path to handle going up a dir
 };

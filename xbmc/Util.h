@@ -1,6 +1,7 @@
 #pragma once
 #include "stdstring.h"
 #include "fileitem.h"
+#include "playlist.h"
 
 #include <map>
 struct network_info
@@ -14,6 +15,7 @@ struct network_info
 };
 
 using namespace std;
+using namespace PLAYLIST;
 
 class CUtil
 {
@@ -31,10 +33,6 @@ public:
   static char* GetFileName(const CStdString& strFileNameAndPath);
   static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath);
   static bool  IsHD(const CStdString& strFileName);
-  static bool  IsXBE(const CStdString& strFileName);
-	static bool  IsPythonScript(const CStdString& strFileName);
-  static bool  IsDefaultXBE(const CStdString& strFileName);
-  static bool  IsShortCut(const CStdString& strFileName);
   static bool  IsBuiltIn(const CStdString& execString);
 	static void  ExecBuiltIn(const CStdString& execString);
   static int   cmpnocase(const char* str1,const char* str2);
@@ -62,13 +60,6 @@ public:
 	static bool IsCDDA(const CStdString& strFile);
 	static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
 	static void RemoveCRLF(CStdString& strLine);
-	static bool IsPicture(const CStdString& strLine) ;
-	static bool IsAudio(const CStdString& strLine) ;
-	static bool IsVideo(const CStdString& strLine) ;
-	static bool IsDVDImage(const CStdString& strLine) ;
-	static bool IsDVDFile(const CStdString& strFile, bool bVobs = true, bool bIfos = true);
-	static bool IsRAR(const CStdString& strLine);
-	static bool IsInternetStream(const CStdString& strFile);
 	static int GetDVDIfoTitle(const CStdString& strPathFile);
 	static void URLEncode(CStdString& strURLData);
 	static bool LoadString(string &strTxt, FILE *fd);
@@ -88,14 +79,11 @@ public:
 	static bool GetDirectoryName(const CStdString& strFileName, CStdString& strDescription);
 	static DWORD GetXbeID( const CStdString& strFilePath);
 	static void FillInDefaultIcons(VECFILEITEMS &items);
-	static void FillInDefaultIcon(CFileItem* pItem);
 	static void CreateShortcuts(VECFILEITEMS &items);
 	static void CreateShortcut(CFileItem* pItem);
 	static void SetThumbs(VECFILEITEMS &items);
-	static void SetThumb(CFileItem* pItem);
 	static void GetArtistDatabase(const CStdString& strFileName, CStdString& strArtistDBS);
 	static void GetGenreDatabase(const CStdString& strFileName, CStdString& strGenreDBS);
-	static bool IsPlayList(const CStdString& strFile) ;
 	static void ShortenFileName(CStdString& strFileNameAndPath);
 	static bool IsISO9660(const CStdString& strFile);
 	static bool IsSmb(const CStdString& strFile);
@@ -103,6 +91,7 @@ public:
 	static void GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon );
 	static void RemoveTempFiles();
 	static void DeleteTDATA();
+	static bool GetFolderThumb(const CStdString& strFolder, CStdString& strThumb);
 
 	// Added by JM to determine possible type of file from framesize
 	static bool IsNTSC_VCD(int iWidth, int iHeight);
@@ -111,8 +100,6 @@ public:
 	static bool IsPAL_VCD(int iWidth, int iHeight);
 	static bool IsPAL_SVCD(int iWidth, int iHeight);
 	static bool IsPAL_DVD(int iWidth, int iHeight);
-	static bool IsShoutCast(const CStdString& strFileName);
-	static bool IsCUESheet(const CStdString &strFileName);
 	static void RemoveIllegalChars( CStdString& strText);
 	static void CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached);
 	static void ClearSubtitles();
@@ -120,7 +107,6 @@ public:
   static void PrepareSubtitleFonts();
   static __int64 ToInt64(DWORD dwHigh, DWORD dwLow);
   static void AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult);
-  static bool IsNFO(const CStdString& strFile);
   static void GetPath(const CStdString& strFileName, CStdString& strPath);
 	static void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
 	static int  GetFolderCount(VECFILEITEMS &items);
@@ -131,10 +117,8 @@ public:
 	static void ThumbCacheClear();
   static void PlayDVD();
   static DWORD SetUpNetwork( bool resetmode, struct network_info& networkinfo );
-  static bool  GetFolderThumb(const CStdString& strFolder, CStdString& strThumb);
   static void GetVideoThumbnail(const CStdString& strIMDBID, CStdString& strThumb);
   static void SetMusicThumbs(VECFILEITEMS &items);
-  static void SetMusicThumb(CFileItem* pItem);
   static CStdString GetNextFilename(const char* fn_template, int max);
   static void TakeScreenshot();
 	static void SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate);
@@ -159,7 +143,6 @@ public:
   static bool IsNaturalNumber(const CStdStringW& str);
 	static bool IsUsingTTFSubtitles();
 	static void SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam);
-	static bool IsDefaultThumb(const CStdString& strThumb);
 
 private:
 	static bool m_bNetworkUp;

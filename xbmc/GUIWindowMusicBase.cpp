@@ -45,6 +45,7 @@ CGUIWindowMusicBase::CGUIWindowMusicBase ()
 	m_nSelectedItem=-1;
 	m_iLastControl=-1;
 	m_bDisplayEmptyDatabaseMessage=false;
+	m_Directory.m_bIsFolder=true;
 }
 
 CGUIWindowMusicBase::~CGUIWindowMusicBase ()
@@ -135,7 +136,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 		case GUI_MSG_PLAYBACK_STOPPED:
 		case GUI_MSG_PLAYLISTPLAYER_STOPPED:
 		{
-			CStdString strDirectory=m_strDirectory;
+			CStdString strDirectory=m_Directory.m_strPath;
 			if (CUtil::HasSlashAtEnd(strDirectory))
 				strDirectory.Delete(strDirectory.size()-1);
 			if ((m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory==strDirectory)
@@ -161,7 +162,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 		{
 			// started playing another song...
 			int nCurrentPlaylist=message.GetParam1();
-			CStdString strDirectory=m_strDirectory;
+			CStdString strDirectory=m_Directory.m_strPath;
 			if (CUtil::HasSlashAtEnd(strDirectory))
 				strDirectory.Delete(strDirectory.size()-1);
 			if ((nCurrentPlaylist==PLAYLIST_MUSIC_TEMP && m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory==strDirectory )
@@ -198,7 +199,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
 						if (pItem)
 						{
-							if (!CUtil::IsPlayList(pItem->m_strPath) && !CUtil::IsNFO(pItem->m_strPath))
+							if (!pItem->IsPlayList() && !pItem->IsNFO())
 								n++;
 							if ((n-1)==nCurrentItem)
 							{
@@ -215,9 +216,9 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
 		case GUI_MSG_DVDDRIVE_EJECTED_CD:
 		{
-			if ( !m_strDirectory.IsEmpty() )
+			if ( !m_Directory.IsVirtualDirectoryRoot() )
 			{
-				if (CUtil::IsCDDA(m_strDirectory) || CUtil::IsDVD(m_strDirectory) || CUtil::IsISO9660(m_strDirectory))
+				if (m_Directory.IsCDDA() || m_Directory.IsDVD() || m_Directory.IsISO9660())
 				{
 					//	Disc has changed and we are inside a DVD Drive share, get out of here :)
 					Update("");
@@ -226,7 +227,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 			else
 			{
 				int iItem = GetSelectedItem();
-				Update(m_strDirectory);
+				Update(m_Directory.m_strPath);
 				CONTROL_SELECT_ITEM(CONTROL_LIST,iItem)
 				CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem)
 			}
@@ -235,10 +236,10 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
 		case GUI_MSG_DVDDRIVE_CHANGED_CD:
 		{
-			if (m_strDirectory.IsEmpty())
+			if (m_Directory.IsVirtualDirectoryRoot())
 			{
 				int iItem = GetSelectedItem();
-				Update(m_strDirectory);
+				Update(m_Directory.m_strPath);
 				CONTROL_SELECT_ITEM(CONTROL_LIST,iItem)
 				CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem)
 			}
@@ -275,7 +276,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 				SET_CONTROL_FOCUS(m_iLastControl, 0);
 			}
 
-			Update(m_strDirectory);
+			Update(m_Directory.m_strPath);
 
 			if (m_nSelectedItem>-1)
 			{
@@ -290,7 +291,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
       int iControl=message.GetSenderId();
 			if (iControl==CONTROL_BTNVIEWASICONS)
       {
-				if ( m_strDirectory.IsEmpty() )
+				if ( m_Directory.IsVirtualDirectoryRoot() )
 				{
 					m_iViewAsIconsRoot++;
 					if (m_iViewAsIconsRoot > VIEW_AS_LARGEICONS) m_iViewAsIconsRoot=VIEW_AS_LIST;
@@ -454,17 +455,17 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 
 	ClearFileItems();
 
-	m_history.Set(strSelectedItem,m_strDirectory);
-	m_strDirectory=strDirectory;
+	m_history.Set(strSelectedItem,m_Directory.m_strPath);
+	m_Directory.m_strPath=strDirectory;
 
-	GetDirectory(m_strDirectory, m_vecItems);
+	GetDirectory(m_Directory.m_strPath, m_vecItems);
 
 	RetrieveMusicInfo();
 	
 	UpdateListControl();
 	UpdateButtons();
 
-	strSelectedItem=m_history.Get(m_strDirectory);
+	strSelectedItem=m_history.Get(m_Directory.m_strPath);
 
 	if (m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST)
 	{
@@ -481,7 +482,7 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 
 	int iCurrentPlaylistSong=-1;
 	//	Search current playlist item
-	CStdString strCurrentDirectory=m_strDirectory;
+	CStdString strCurrentDirectory=m_Directory.m_strPath;
 	if (CUtil::HasSlashAtEnd(strCurrentDirectory))
 		strCurrentDirectory.Delete(strCurrentDirectory.size()-1);
 	if ((m_nTempPlayListWindow==GetID() && m_strTempPlayListDirectory==strCurrentDirectory && g_application.IsPlayingAudio()
@@ -513,7 +514,7 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 		//	synchronize playlist with current directory
 		if (!bCurrentSongFound && iCurrentPlaylistSong>-1)
 		{
-			if (!pItem->m_bIsFolder && !CUtil::IsPlayList(pItem->m_strPath) && !CUtil::IsNFO(pItem->m_strPath))
+			if (!pItem->m_bIsFolder && !pItem->IsPlayList() && !pItem->IsNFO())
 				iSongInDirectory++;
 			if (iSongInDirectory==iCurrentPlaylistSong)
 			{
@@ -568,7 +569,7 @@ bool CGUIWindowMusicBase::HaveDiscOrConnection( CStdString& strPath, int iDriveT
 			//	Update listcontrol, maybe share
 			//	was selected while disc change
 			int iItem = GetSelectedItem();
-			Update( m_strDirectory );
+			Update( m_Directory.m_strPath );
 			CONTROL_SELECT_ITEM(CONTROL_LIST,iItem)
 			CONTROL_SELECT_ITEM(CONTROL_THUMBS,iItem)
 			return false;
@@ -925,7 +926,8 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
 					if (CUtil::FileExists(strThumb))
 					{
 						//	...yes...
-						if (!CUtil::IsCDDA(album.GetAlbumPath()))
+						CFileItem item(album.GetAlbumPath(), true);
+						if (!item.IsCDDA())
 						{
 							//	...also save a copy as directory thumb,
 							//	if the album isn't located on an audio cd
@@ -966,8 +968,8 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
 			//	refresh only the icon of
 			//	the current folder 
 			m_vecItems[iSelectedItem]->FreeIcons();
-			CUtil::SetMusicThumb(m_vecItems[iSelectedItem]);
-			CUtil::FillInDefaultIcon(m_vecItems[iSelectedItem]);
+			m_vecItems[iSelectedItem]->SetMusicThumb();
+			m_vecItems[iSelectedItem]->FillInDefaultIcon();
 		}
 		else
 		{
@@ -984,7 +986,7 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CStdString& strAlbum, const CStdSt
 
 		//	HACK: If we are in files view
 		//	autoswitch between list/thumb control
-		if (GetID()==WINDOW_MUSIC_FILES && !m_strDirectory.IsEmpty() && g_guiSettings.GetBool("MusicLists.UseAutoSwitching"))
+		if (GetID()==WINDOW_MUSIC_FILES && !m_Directory.IsVirtualDirectoryRoot() && g_guiSettings.GetBool("MusicLists.UseAutoSwitching"))
 		{
 			m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
 
@@ -1063,21 +1065,21 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItem* pItem)
 
 		// recursive
 		if (pItem->GetLabel() == "..") return;
-		CStdString strDirectory=m_strDirectory;
-		m_strDirectory=pItem->m_strPath;
+		CStdString strDirectory=m_Directory.m_strPath;
+		m_Directory.m_strPath=pItem->m_strPath;
 		VECFILEITEMS items;
 		CFileItemList itemlist(items);
-		GetDirectory(m_strDirectory, items);
+		GetDirectory(m_Directory.m_strPath, items);
 		DoSort(items);
 		for (int i=0; i < (int) items.size(); ++i)
 		{
 			AddItemToPlayList(items[i]);
 		}
-		m_strDirectory=strDirectory;
+		m_Directory.m_strPath=strDirectory;
 	}
 	else
 	{
-    if (!CUtil::IsNFO(pItem->m_strPath) && CUtil::IsAudio(pItem->m_strPath) && !CUtil::IsPlayList(pItem->m_strPath))
+		if (!pItem->IsNFO() && pItem->IsAudio() && !pItem->IsPlayList())
 		{
 			CPlayList::CPlayListItem playlistItem;
 			CUtil::ConvertFileItemToPlayListItem(pItem, playlistItem);
@@ -1189,7 +1191,7 @@ bool CGUIWindowMusicBase::GetKeyboard(CStdString& strInput)
 /// \return Returns \e true, if thumb control is visible
 bool CGUIWindowMusicBase::ViewByIcon()
 {
-  if ( m_strDirectory.IsEmpty() )
+  if ( m_Directory.IsVirtualDirectoryRoot() )
   {
     if (m_iViewAsIconsRoot != VIEW_AS_LIST) return true;
   }
@@ -1204,7 +1206,7 @@ bool CGUIWindowMusicBase::ViewByIcon()
 /// \return Returns \e true, if thumb control is in large icons mode
 bool CGUIWindowMusicBase::ViewByLargeIcon()
 {
-  if ( m_strDirectory.IsEmpty() )
+  if ( m_Directory.IsVirtualDirectoryRoot() )
   {
     if (m_iViewAsIconsRoot == VIEW_AS_LARGEICONS) return true;
   }
@@ -1495,7 +1497,7 @@ void CGUIWindowMusicBase::OnPopupMenu(int iItem)
 	if (!g_application.IsPlayingAudio())
 		pMenu->EnableButton(3, false);
 	// turn off the Scan button if we're not in files view or a internet stream
-	if (GetID() != WINDOW_MUSIC_FILES || CUtil::IsInternetStream(m_strDirectory))
+	if (GetID() != WINDOW_MUSIC_FILES || m_Directory.IsInternetStream())
 		pMenu->EnableButton(5, false);
 	// position it correctly
 	pMenu->SetPosition(iPosX-pMenu->GetWidth()/2, iPosY-pMenu->GetHeight()/2);
@@ -1534,7 +1536,7 @@ void CGUIWindowMusicBase::OnRipCD()
 	CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
 	if (CDetectDVDMedia::IsDiscInDrive() && pCdInfo && pCdInfo->IsAudio(1))
 	{
-		if (!CUtil::IsCDDA(g_application.CurrentFile()))
+		if (!g_application.CurrentFileItem().IsCDDA())
 		{
 			CCDDARipper ripper;
 			ripper.RipCD();

@@ -31,7 +31,7 @@ protected:
 
 	CVirtualDirectory		m_rootDir;
   VECFILEITEMS				m_vecItems;
-	CStdString					m_strDirectory;
+	CFileItem					m_Directory;
 	CStdString					m_strParentPath;
 	CDirectoryHistory		m_history;
 	bool								m_bDVDDiscChanged;

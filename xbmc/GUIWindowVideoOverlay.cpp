@@ -94,11 +94,12 @@ void CGUIWindowVideoOverlay::Render()
 }
 
 
-	void CGUIWindowVideoOverlay::SetCurrentFile(const CStdString& strFile)
+	void CGUIWindowVideoOverlay::SetCurrentFile(const CFileItem& item)
 	{
 		bool bLoaded=false;
-		if ( CUtil::IsVideo(strFile) )
+		if (item.IsVideo())
 		{
+			CStdString strFile=item.m_strPath;
 			CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_INFO); 
 			OnMessage(msg1);
 

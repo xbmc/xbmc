@@ -134,8 +134,10 @@ CGUIWindowFileManager::CGUIWindowFileManager(void)
 {
   m_iItemSelected=-1;
 	m_iLastControl=-1;
-  m_strDirectory[0]="?";
-  m_strDirectory[1]="?";
+  m_Directory[0].m_strPath="?";
+  m_Directory[1].m_strPath="?";
+  m_Directory[0].m_bIsFolder=true;
+  m_Directory[1].m_bIsFolder=true;
 }
 
 CGUIWindowFileManager::~CGUIWindowFileManager(void)
@@ -207,12 +209,12 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 		{
 			for (int i=0; i<2; i++)
 			{
-				if ( CUtil::IsCDDA( m_strDirectory[i] ) || CUtil::IsDVD( m_strDirectory[i] ) || CUtil::IsISO9660( m_strDirectory[i] ) )
+				if ( m_Directory[i].IsCDDA() || m_Directory[i].IsDVD() || m_Directory[i].IsISO9660() )
 				{
 					//	Disc has changed and we are inside a DVD Drive share, get out of here :)
-					m_strDirectory[i] = "";
+					m_Directory[i].m_strPath = "";
 				}
-				if (m_strDirectory[i].IsEmpty())
+				if (m_Directory[i].IsVirtualDirectoryRoot())
 				{
 					int iItem = GetSelectedItem(i);
 					Update(i, "");
@@ -225,7 +227,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 		{
 			for (int i=0; i<2; i++)
 			{
-				if (m_strDirectory[i].IsEmpty())
+				if (m_Directory[i].IsVirtualDirectoryRoot())
 				{
 					int iItem = GetSelectedItem(i);
 					Update(i, "");
@@ -259,11 +261,11 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 
 			m_rootDir.SetShares(g_settings.m_vecMyFilesShares);
 
-			if (m_strDirectory[0]=="?")
+			if (m_Directory[0].m_strPath=="?")
 			{
-				m_strDirectory[0]=g_stSettings.m_szDefaultFiles;
+				m_Directory[0].m_strPath=g_stSettings.m_szDefaultFiles;
 			}
-			if (m_strDirectory[1]=="?") m_strDirectory[1]="";
+			if (m_Directory[1].m_strPath=="?") m_Directory[1].m_strPath="";
 
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);      
       if (m_dlgProgress) m_dlgProgress->SetHeading(126);
@@ -271,7 +273,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 			for (int i=0; i<2; i++)
 			{
 				int iItem = GetSelectedItem(i);
-				Update(i, m_strDirectory[i]);
+				Update(i, m_Directory[i].m_strPath);
 				CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST+i, iItem)
 			}
 
@@ -319,7 +321,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 void CGUIWindowFileManager::OnSort(int iList)
 {
   SSortFilesByName sortmethod;
-	if (m_strDirectory[iList].IsEmpty())
+	if (m_Directory[iList].IsVirtualDirectoryRoot())
 	{
 		sortmethod.m_iSortMethod=g_stSettings.m_iMyFilesSourceRootSortMethod;
 		sortmethod.m_bSortAscending=g_stSettings.m_bMyFilesSourceRootSortAscending;
@@ -358,7 +360,7 @@ void CGUIWindowFileManager::OnSort(int iList)
 		//	Set free space on disc
 		if (pItem->m_bIsShareOrDrive)
 		{
-			if (CUtil::IsHD(pItem->m_strPath))
+			if (pItem->IsHD())
 			{
 				ULARGE_INTEGER ulBytesFree;
 				if (GetDiskFreeSpaceEx(pItem->m_strPath.c_str(), &ulBytesFree, NULL, NULL))
@@ -368,7 +370,7 @@ void CGUIWindowFileManager::OnSort(int iList)
 					pItem->SetLabel2(strShareSize);
 				}
 			}
-			else if (CUtil::IsDVD(pItem->m_strPath) && CDetectDVDMedia::IsDiscInDrive())
+			else if (pItem->IsDVD() && CDetectDVDMedia::IsDiscInDrive())
 			{
 				ULARGE_INTEGER ulBytesTotal;
 				if (GetDiskFreeSpaceEx(pItem->m_strPath.c_str(), NULL, &ulBytesTotal, NULL))
@@ -430,9 +432,9 @@ void CGUIWindowFileManager::UpdateButtons()
 */
 	// update our current directory labels
 	CStdString strDir;
-  CURL(m_strDirectory[0]).GetURLWithoutUserDetails(strDir);
+	CURL(m_Directory[0].m_strPath).GetURLWithoutUserDetails(strDir);
 	SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_LEFT,strDir);
-  CURL(m_strDirectory[1]).GetURLWithoutUserDetails(strDir);
+	CURL(m_Directory[1].m_strPath).GetURLWithoutUserDetails(strDir);
 	SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_RIGHT,strDir);
 
 	// update the number of items in each list
@@ -463,7 +465,7 @@ void CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 		if (pItem->m_bIsFolder && pItem->GetLabel() != "..")
 		{
 			GetDirectoryHistoryString(pItem, strSelectedItem);
-			m_history[iList].Set(strSelectedItem,m_strDirectory[iList]);
+			m_history[iList].Set(strSelectedItem,m_Directory[iList].m_strPath);
 		}
 	}
 
@@ -472,9 +474,9 @@ void CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 	GetDirectory(iList, strDirectory, m_vecItems[iList]);
 
 	if (CUtil::IsSmb(strDirectory)) //temp hack for multi byte char language
-		g_charsetConverter.utf8ToStringCharset(strDirectory,m_strDirectory[iList]);
+		g_charsetConverter.utf8ToStringCharset(strDirectory,m_Directory[iList].m_strPath);
 	else
-		m_strDirectory[iList]=strDirectory;
+		m_Directory[iList].m_strPath=strDirectory;
 	// if we have a .tbn file, use itself as the thumb
 	for (int i=0; i<(int)m_vecItems[iList].size(); i++)
 	{
@@ -483,7 +485,7 @@ void CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 		CUtil::GetExtension(pItem->m_strPath, strExtension);
 		if (strExtension == ".tbn")
 		{
-			CUtil::SetThumb(pItem);
+			pItem->SetThumb();
 		}
 	}
 //	CUtil::SetThumbs(m_vecItems[iList]);
@@ -494,7 +496,7 @@ void CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   UpdateButtons();
 	UpdateControl(iList);
 
-	strSelectedItem=m_history[iList].Get(m_strDirectory[iList]);
+	strSelectedItem=m_history[iList].Get(m_Directory[iList].m_strPath);
 	for (int i=0; i < (int)m_vecItems[iList].size(); ++i)
 	{
 		CFileItem* pItem=m_vecItems[iList][i];
@@ -546,21 +548,21 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
 
 void CGUIWindowFileManager::OnStart(CFileItem *pItem)
 {
-	if (CUtil::IsAudio(pItem->m_strPath) || CUtil::IsVideo(pItem->m_strPath))
+	if (pItem->IsAudio() || pItem->IsVideo())
   {
     g_application.PlayFile(*pItem);
     return;
   }
-  if (CUtil::IsPythonScript(pItem->m_strPath))
+  if (pItem->IsPythonScript())
   {
 		g_pythonParser.evalFile(pItem->m_strPath.c_str());
     return;
   }
-  if (CUtil::IsXBE(pItem->m_strPath))
+  if (pItem->IsXBE())
   {
 		CUtil::RunXBE(pItem->m_strPath.c_str());
   }
-	if (CUtil::IsPicture(pItem->m_strPath))
+	if (pItem->IsPicture())
 	{
 		CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
 		if (!pSlideShow)
@@ -855,7 +857,7 @@ void CGUIWindowFileManager::OnCopy(int iList)
 		m_dlgProgress->ShowProgressBar(true);
 	}
 	
-	DoProcess(ACTION_COPY, m_vecItems[iList], m_strDirectory[1-iList]);
+	DoProcess(ACTION_COPY, m_vecItems[iList], m_Directory[1-iList].m_strPath);
 
   if (m_dlgProgress) m_dlgProgress->Close();
 	
@@ -882,7 +884,7 @@ void CGUIWindowFileManager::OnMove(int iList)
 	  m_dlgProgress->ShowProgressBar(true);
   }
 	
-	DoProcess(ACTION_MOVE, m_vecItems[iList], m_strDirectory[1-iList]);
+	DoProcess(ACTION_MOVE, m_vecItems[iList], m_Directory[1-iList].m_strPath);
 
   if (m_dlgProgress) m_dlgProgress->Close();
 
@@ -904,7 +906,7 @@ void CGUIWindowFileManager::OnDelete(int iList)
  
   if (m_dlgProgress) m_dlgProgress->StartModal(GetID());
 
-	DoProcess(ACTION_DELETE,m_vecItems[iList], m_strDirectory[iList]);
+	DoProcess(ACTION_DELETE,m_vecItems[iList], m_Directory[iList].m_strPath);
 
 	if (m_dlgProgress) m_dlgProgress->Close();
 
@@ -982,7 +984,7 @@ void CGUIWindowFileManager::OnNewFolder(int iList)
 
 	if (pKeyboard->IsDirty())
 	{	// have text - update this.
-		CStdString strNewPath = m_strDirectory[iList];
+		CStdString strNewPath = m_Directory[iList].m_strPath;
 		if (!CUtil::HasSlashAtEnd(strNewPath) ) strNewPath+="\\";
 		CStdString strNewFolderName = pKeyboard->GetText();
 		if (!strNewFolderName.IsEmpty())
@@ -999,7 +1001,7 @@ void CGUIWindowFileManager::Refresh(int iList)
 {
 	int nSel=GetSelectedItem(iList);
 	// update the list views
-	Update(iList, m_strDirectory[iList]);
+	Update(iList, m_Directory[iList].m_strPath);
 
 //	UpdateButtons();
  // UpdateControl(iList);
@@ -1016,8 +1018,8 @@ void CGUIWindowFileManager::Refresh()
 	int iList = GetFocusedList();
 	int nSel=GetSelectedItem(iList);
 	// update the list views
-	Update(0, m_strDirectory[0]);
-  Update(1, m_strDirectory[1]);
+	Update(0, m_Directory[0].m_strPath);
+	Update(1, m_Directory[1].m_strPath);
 
 //	UpdateButtons();
 //  UpdateControl(0);
@@ -1165,8 +1167,8 @@ bool CGUIWindowFileManager::CanRename(int iList)
 {
 	// TODO: Renaming of shares (requires writing to xboxmediacenter.xml)
 	// this might be able to be done via the webserver code stuff...
-	if (m_strDirectory[iList].IsEmpty()) return false;
-	if (IsReadOnly(m_strDirectory[iList])) return false;
+	if (m_Directory[iList].IsVirtualDirectoryRoot()) return false;
+	if (m_Directory[iList].IsReadOnly()) return false;
 
 	return true;
 }
@@ -1176,43 +1178,32 @@ bool CGUIWindowFileManager::CanCopy(int iList)
 	// can't copy if the destination is not writeable, or if the source is a share!
 	// TODO: Perhaps if the source is removeable media (DVD/CD etc.) we could
 	// put ripping/backup in here.
-	if (m_strDirectory[1-iList].IsEmpty()) return false;
-	if (m_strDirectory[iList].IsEmpty()) return false;
-	if (IsReadOnly(m_strDirectory[1-iList])) return false;
+	if (m_Directory[1-iList].IsVirtualDirectoryRoot()) return false;
+	if (m_Directory[iList].IsVirtualDirectoryRoot()) return false;
+	if (m_Directory[1-iList].IsReadOnly()) return false;
 	return true;
 }
 
 bool CGUIWindowFileManager::CanMove(int iList)
 {
 	// can't move if the destination is not writeable, or if the source is a share or not writeable!
-	if (m_strDirectory[0].IsEmpty() || IsReadOnly(m_strDirectory[0])) return false;
-	if (m_strDirectory[1].IsEmpty() || IsReadOnly(m_strDirectory[1])) return false;
+	if (m_Directory[0].IsVirtualDirectoryRoot() || m_Directory[0].IsReadOnly()) return false;
+	if (m_Directory[1].IsVirtualDirectoryRoot() || m_Directory[1].IsReadOnly()) return false;
 	return true;
 }
 
 bool CGUIWindowFileManager::CanDelete(int iList)
 {
-	if (m_strDirectory[iList].IsEmpty()) return false;
-	if (IsReadOnly(m_strDirectory[iList])) return false;
+	if (m_Directory[iList].IsVirtualDirectoryRoot()) return false;
+	if (m_Directory[iList].IsReadOnly()) return false;
 	return true;
 }
 
 bool CGUIWindowFileManager::CanNewFolder(int iList)
 {
-	if (m_strDirectory[iList].IsEmpty()) return false;
-	if (IsReadOnly(m_strDirectory[iList])) return false;
+	if (m_Directory[iList].IsVirtualDirectoryRoot()) return false;
+	if (m_Directory[iList].IsReadOnly()) return false;
 	return true;
-}
-
-bool CGUIWindowFileManager::IsReadOnly(const CStdString &strFile) const
-{
-	// check for dvd/cd media
-	if (CUtil::IsDVD(strFile) || CUtil::IsCDDA(strFile) || CUtil::IsISO9660(strFile)) return true;
-	// now check for remote shares (smb is writeable??)
-	if (CUtil::IsSmb(strFile)) return false;
-	// no other protocols are writeable??
-	if (CUtil::IsRemote(strFile)) return true;
-	return false;
 }
 
 int CGUIWindowFileManager::NumSelected(int iList)
@@ -1243,7 +1234,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
 		iPosX = pList->GetXPosition()+pList->GetWidth()/2;
 		iPosY = pList->GetYPosition()+pList->GetHeight()/2;
 	}	
-	if (m_strDirectory[list] == "")
+	if (m_Directory[list].IsVirtualDirectoryRoot())
 	{
 		if (item < 0)
 		{	// TODO: We should add the option here for shares to be added if there aren't any
@@ -1257,7 +1248,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item)
 		if (CGUIDialogContextMenu::BookmarksMenu("files", m_vecItems[list][item]->GetLabel(), m_vecItems[list][item]->m_strPath, m_vecItems[list][item]->m_iLockMode, bMaxRetryExceeded, iPosX, iPosY))
 		{
 			m_rootDir.SetShares(g_settings.m_vecMyFilesShares);
-			if (m_strDirectory[1-list] == "")
+			if (m_Directory[1-list].IsVirtualDirectoryRoot())
 				Refresh();
 			else
 				Refresh(list);

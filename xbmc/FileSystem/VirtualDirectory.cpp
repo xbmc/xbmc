@@ -90,14 +90,9 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
  for (int i=0; i < (int)m_vecShares->size(); ++i)
 	{
 		CShare& share=m_vecShares->at(i);
-		CFileItem* pItem = new CFileItem(share.strName);
-		pItem->m_bIsFolder=true;
-		pItem->m_strPath=share.strPath;
-		CStdString strPathUpper=share.strPath;
+		CFileItem* pItem = new CFileItem(share);
+		CStdString strPathUpper=pItem->m_strPath;
 		strPathUpper.ToUpper();
-    pItem->m_iLockMode=share.m_iLockMode;
-    pItem->m_strLockCode=share.m_strLockCode;
-    pItem->m_iBadPwdCount=share.m_iBadPwdCount;
 
 		CStdString strIcon;
 			//	We have the real DVD-ROM, set icon on disktype
@@ -105,13 +100,13 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 			CUtil::GetDVDDriveIcon( pItem->m_strPath, strIcon );
 		else if (strPathUpper.Left(11) =="SOUNDTRACK:")
 			strIcon="defaultHardDisk.png";
-		else if (CUtil::IsRemote(pItem->m_strPath))
+		else if (pItem->IsRemote())
 			strIcon="defaultNetwork.png";	
-		else if (CUtil::IsISO9660(pItem->m_strPath))
+		else if (pItem->IsISO9660())
 			strIcon="defaultDVDRom.png";
-		else if (CUtil::IsDVD(pItem->m_strPath))
+		else if (pItem->IsDVD())
 			strIcon="defaultDVDRom.png";
-		else if (CUtil::IsCDDA(pItem->m_strPath))
+		else if (pItem->IsCDDA())
 				strIcon="defaultCDDA.png";
 		else 
 			strIcon="defaultHardDisk.png";
@@ -120,8 +115,6 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
       strIcon="defaultLocked.png";
 
 		pItem->SetIconImage(strIcon);
-		pItem->m_bIsShareOrDrive=true;
-		pItem->m_iDriveType=share.m_iDriveType;
 		CStdString strBig;
 		int iPos=strIcon.Find(".");
 		strBig=strIcon.Left(iPos);

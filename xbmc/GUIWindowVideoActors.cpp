@@ -104,8 +104,9 @@ struct SSortVideoActorByName
 //****************************************************************************************************************************
 CGUIWindowVideoActors::CGUIWindowVideoActors()
 {
-	m_strDirectory="";
-  m_iItemSelected=-1;
+	m_Directory.m_strPath="";
+	m_Directory.m_bIsFolder=true;
+	m_iItemSelected=-1;
 	m_iLastControl=-1;
 }
 
@@ -137,7 +138,7 @@ bool CGUIWindowVideoActors::OnMessage(CGUIMessage& message)
       int iControl=message.GetSenderId();
       if (iControl==CONTROL_BTNSORTBY) // sort by
       {
-        if (m_strDirectory.size())
+        if (!m_Directory.IsVirtualDirectoryRoot())
         {
 					g_stSettings.m_iMyVideoActorSortMethod++;
 					if (g_stSettings.m_iMyVideoActorSortMethod>=3)
@@ -149,7 +150,7 @@ bool CGUIWindowVideoActors::OnMessage(CGUIMessage& message)
       }
       else if (iControl==CONTROL_BTNSORTASC) // sort asc
       {
-				if (m_strDirectory.IsEmpty())
+				if (m_Directory.IsVirtualDirectoryRoot())
 					g_stSettings.m_bMyVideoActorRootSortAscending=!g_stSettings.m_bMyVideoActorRootSortAscending;
 				else
 					g_stSettings.m_bMyVideoActorSortAscending=!g_stSettings.m_bMyVideoActorSortAscending;
@@ -199,7 +200,7 @@ void CGUIWindowVideoActors::FormatItemLabels()
 void CGUIWindowVideoActors::SortItems(VECFILEITEMS& items)
 {
 	SSortVideoActorByName sortmethod;
-	if (m_strDirectory.IsEmpty())
+	if (m_Directory.IsVirtualDirectoryRoot())
 	{
 		sortmethod.m_iSortMethod=g_stSettings.m_iMyVideoActorRootSortMethod;
 		sortmethod.m_bSortAscending=g_stSettings.m_bMyVideoActorRootSortAscending;
@@ -224,12 +225,12 @@ void CGUIWindowVideoActors::Update(const CStdString &strDirectory)
 		if (pItem->m_bIsFolder && pItem->GetLabel() != "..")
 		{
 			strSelectedItem=pItem->m_strPath;
-			m_history.Set(strSelectedItem,m_strDirectory);
+			m_history.Set(strSelectedItem,m_Directory.m_strPath);
 		}
 	}
   ClearFileItems();
-  m_strDirectory=strDirectory;
-  if (m_strDirectory=="")
+  m_Directory.m_strPath=strDirectory;
+  if (m_Directory.IsVirtualDirectoryRoot())
   {
     VECMOVIEACTORS actors;
     m_database.GetActors( actors);
@@ -257,7 +258,7 @@ void CGUIWindowVideoActors::Update(const CStdString &strDirectory)
 		}
 		m_strParentPath = "";
 		VECMOVIES movies;
-		m_database.GetMoviesByActor(m_strDirectory, movies);
+		m_database.GetMoviesByActor(m_Directory.m_strPath, movies);
 		for (int i=0; i < (int)movies.size(); ++i)
 		{
 			CIMDBMovie movie=movies[i];
@@ -274,7 +275,7 @@ void CGUIWindowVideoActors::Update(const CStdString &strDirectory)
 			pItem->m_stTime.wYear= movie.m_iYear;
 			m_vecItems.push_back(pItem);
 		}
-		SET_CONTROL_LABEL(LABEL_ACTOR,m_strDirectory);
+		SET_CONTROL_LABEL(LABEL_ACTOR,m_Directory.m_strPath);
   }
 	CUtil::SetThumbs(m_vecItems);
   SetIMDBThumbs(m_vecItems);
@@ -288,13 +289,13 @@ void CGUIWindowVideoActors::Update(const CStdString &strDirectory)
 		//	Fake a videofile
 		pItem->m_strPath=pItem->m_strPath+".avi";
 
-		CUtil::FillInDefaultIcon(pItem);
+		pItem->FillInDefaultIcon();
 		pItem->m_strPath=strPath;
 	}
 
   OnSort();
   UpdateButtons();
-  strSelectedItem=m_history.Get(m_strDirectory);	
+  strSelectedItem=m_history.Get(m_Directory.m_strPath);	
 
 	m_iLastControl=GetFocusedControl();
 
@@ -383,13 +384,13 @@ void CGUIWindowVideoActors::OnClick(int iItem)
 
 void CGUIWindowVideoActors::OnInfo(int iItem)
 {
-  if ( m_strDirectory.IsEmpty() ) return;
+  if ( m_Directory.IsVirtualDirectoryRoot() ) return;
 	CGUIWindowVideoBase::OnInfo(iItem);
 }
 
 bool CGUIWindowVideoActors::ViewByIcon()
 {
-  if ( m_strDirectory.IsEmpty() )
+  if ( m_Directory.IsVirtualDirectoryRoot() )
   {
     if (g_stSettings.m_iMyVideoActorRootViewAsIcons != VIEW_AS_LIST) return true;
   }  else
@@ -401,7 +402,7 @@ bool CGUIWindowVideoActors::ViewByIcon()
 
 bool CGUIWindowVideoActors::ViewByLargeIcon()
 {
-  if ( m_strDirectory.IsEmpty() )
+  if ( m_Directory.IsVirtualDirectoryRoot() )
   {
     if (g_stSettings.m_iMyVideoActorRootViewAsIcons == VIEW_AS_LARGEICONS) return true;
   }
@@ -414,7 +415,7 @@ bool CGUIWindowVideoActors::ViewByLargeIcon()
 
 void CGUIWindowVideoActors::SetViewMode(int iViewMode)
 {
-  if ( m_strDirectory.IsEmpty() )
+  if ( m_Directory.IsVirtualDirectoryRoot() )
     g_stSettings.m_iMyVideoActorRootViewAsIcons = iViewMode;
   else
     g_stSettings.m_iMyVideoActorViewAsIcons = iViewMode;
@@ -422,7 +423,7 @@ void CGUIWindowVideoActors::SetViewMode(int iViewMode)
 
 int CGUIWindowVideoActors::SortMethod()
 {
-	if (m_strDirectory.IsEmpty())
+	if (m_Directory.IsVirtualDirectoryRoot())
 		return g_stSettings.m_iMyVideoActorRootSortMethod+365;
 	else
 		return g_stSettings.m_iMyVideoActorSortMethod+365;
@@ -430,7 +431,7 @@ int CGUIWindowVideoActors::SortMethod()
 
 bool CGUIWindowVideoActors::SortAscending()
 {
-	if (m_strDirectory.IsEmpty())
+	if (m_Directory.IsVirtualDirectoryRoot())
 		return g_stSettings.m_bMyVideoActorRootSortAscending;
 	else
 		return g_stSettings.m_bMyVideoActorSortAscending;
