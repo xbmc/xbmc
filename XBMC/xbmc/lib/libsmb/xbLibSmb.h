@@ -34,6 +34,7 @@ extern "C" {
 		void *dest, size_t destlen);
 		
 	void set_log_callback(smb_log_callback fn);
+	void xb_setSambaWorkgroup(char* workgroup);
 
 #ifdef __cplusplus
 }
