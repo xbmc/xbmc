@@ -11,6 +11,7 @@
 #define LABEL_ROW3 12
 
 
+
 CAudioBuffer::CAudioBuffer(int iSize)
 {
 	m_iLen=iSize;
@@ -132,7 +133,9 @@ void CGUIWindowVisualisation::Render()
 		{
 			try
 			{
-				m_pVisualisation->Render();
+				Sleep(8);
+					m_pVisualisation->Render();
+				
 			}
 			catch(...)
 			{
@@ -211,6 +214,7 @@ void CGUIWindowVisualisation::OnAudioData(const unsigned char* pAudioData, int i
 	{	// Transfer data to our visualisation
 		m_pVisualisation->AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, NULL, 0);
 	}
+	
 	return;
 }
 
