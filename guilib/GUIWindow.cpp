@@ -41,6 +41,8 @@ CGUIWindow::CGUIWindow(DWORD dwID)
   m_dwWindowId=dwID;
   m_dwPreviousWindowId=WINDOW_HOME;
   m_dwDefaultFocusControlID=0;
+  m_bRelativeCoords = false;
+  m_dwPosX = m_dwPosY = 0;
 }
 
 CGUIWindow::~CGUIWindow(void)
@@ -326,6 +328,27 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
     {
       m_dwDefaultFocusControlID=atoi(pChild->FirstChild()->Value());
     }
+    else if (strValue=="coordinates")
+    {
+		TiXmlNode* pSystem=pChild->FirstChild("system");
+		if (pSystem)
+		{
+			int iCoordinateSystem = atoi(pSystem->FirstChild()->Value());
+			m_bRelativeCoords = (iCoordinateSystem==1);
+		}
+
+		TiXmlNode* pPosX=pChild->FirstChild("posX");
+		if (pPosX)
+		{
+			m_dwPosX = atol(pPosX->FirstChild()->Value());
+		}
+
+		TiXmlNode* pPosY=pChild->FirstChild("posY");
+		if (pPosY)
+		{
+			m_dwPosY = atol(pPosY->FirstChild()->Value());
+		}
+    }
     else if (strValue=="controls")
     {
 			
@@ -373,14 +396,33 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   return true;
 }
 
+void CGUIWindow::SetPosition(DWORD dwPosX, DWORD dwPosY)
+{
+	m_dwPosX = dwPosX;
+	m_dwPosY = dwPosY;
+}
+
 void CGUIWindow::Render()
 {
-  ivecControls i;
-  for (i=m_vecControls.begin();i != m_vecControls.end(); ++i)
-  {
-    CGUIControl* pControl= *i;
-    pControl->Render();
-  }
+	ivecControls i;
+
+	for (i=m_vecControls.begin();i != m_vecControls.end(); ++i)
+	{
+		CGUIControl* pControl= *i;
+
+		if (m_bRelativeCoords)
+		{			
+			DWORD dwPosX = pControl->GetXPosition();
+			DWORD dwPosY = pControl->GetYPosition();
+			pControl->SetPosition(dwPosX+m_dwPosX, dwPosY+m_dwPosY);
+			pControl->Render();
+			pControl->SetPosition(dwPosX, dwPosY);
+		}
+		else
+		{
+			pControl->Render();
+		}
+	}
 }
 
 void CGUIWindow::OnAction(const CAction &action)
