@@ -407,8 +407,12 @@ int CCdIoSupport::GuessFilesystem(int start_session, track_t track_num)
     return FS_UNKNOWN;
 
 	if (IsIt(IS_UDF))
+	{
+		if (ReadBlock(32, start_session, 0, track_num) < 0)
+			return FS_UDF;
+		m_strDiscLabel=buffer[0]+25;
 		return FS_UDF;
-
+	}
 	/* filesystem */
   if (IsIt(IS_CD_I) && IsIt(IS_CD_RTOS) && !IsIt(IS_BRIDGE) && !IsIt(IS_XA)) 
 	{
@@ -432,15 +436,19 @@ int CCdIoSupport::GuessFilesystem(int start_session, track_t track_num)
 				ret = FS_ISO_9660;
 
       m_nIsofsSize = GetSize();
-
+			m_strDiscLabel=buffer[0]+40;
 			if (ReadBlock(UDF_ANCHOR_SECTOR, start_session, 5, track_num) < 0)
 				return ret;
 
 			//	Maybe there is an UDF anchor in iso session
 			//	so its ISO/UDF session and we prefere UDF
 			if ( IsUDF() )
+			{
+				if (ReadBlock(32, start_session, 0, track_num) < 0)
+					return FS_UDF;
+				m_strDiscLabel=buffer[0]+25;
 				return FS_UDF;
-
+			}
 #if 0
       if (IsRockridge())
 				ret |= ROCKRIDGE;
@@ -650,6 +658,7 @@ CCdInfo* CCdIoSupport::GetCdInfo()
 			ti.isofs_size = m_nIsofsSize;
 			ti.nJolietLevel = m_nJolietLevel;
 			ti.nFrames = cdio_get_track_lba(cdio, i);
+			info->SetDiscLabel(m_strDiscLabel);
 
 
 			if (i > 1) 
