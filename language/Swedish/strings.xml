@@ -2490,7 +2490,11 @@
   <string><id>13329</id><value>Fel vid öppnande av %s</value></string>
   <string><id>13330</id><value>Gick inte ladda %s</value></string>
   <string><id>13331</id><value>Fel:För lite ledigt minne.</value></string>
-
+  <string><id>13332</id><value>Gå uppåt</value></string>
+  <string><id>13333</id><value>Gå neråt</value></string>
+  <string><id>13334</id><value>Ändra Namn</value></string>
+  <string><id>13335</id><value>Gör till standard</value></string>
+  <string><id>13336</id><value>Ta bort knapp</value></string>
 <string>
 <id>14000</id>
 <value>Stacking: Av</value>
