@@ -18,8 +18,9 @@ public:
 	CStdString GetSkinPath(const CStdString& strFile, RESOLUTION *res);		// retrieve the best skin file for the resolution we are in - res will be made the resolution we are loading from
 	wchar_t* GetCreditsLine(int i);
 
-protected:
 	CStdString GetDirFromRes(RESOLUTION res);
+
+protected:
 
 	wchar_t credits[6][50];		// credits info
 	int m_iNumCreditLines;		// number of credit lines

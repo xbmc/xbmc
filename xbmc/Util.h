@@ -24,6 +24,10 @@ public:
   static void  RemoveExtension(CFileItem* pItem);
   static void  RemoveExtension(CStdString& strFileName);
   static void  RemoveExtensions(VECFILEITEMS &items);
+  static bool  GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumePrefix, int& volumeNumber);
+  static void  CleanFileName(CFileItem *pItem);
+  static void  CleanFileName(CStdString& strFileName);
+  static void  CleanFileNames(VECFILEITEMS &items);
   static char* GetFileName(const CStdString& strFileNameAndPath);
   static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath);
   static bool  IsHD(const CStdString& strFileName);
@@ -31,6 +35,8 @@ public:
 	static bool  IsPythonScript(const CStdString& strFileName);
   static bool  IsDefaultXBE(const CStdString& strFileName);
   static bool  IsShortCut(const CStdString& strFileName);
+  static bool  IsBuiltIn(const CStdString& execString);
+	static void  ExecBuiltIn(const CStdString& execString);
   static int   cmpnocase(const char* str1,const char* str2);
   static bool  GetParentPath(const CStdString& strPath, CStdString& strParent);
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
