@@ -133,6 +133,7 @@ public:
   int                   GetPlaySpeed() const;  
   void                  SetPlaySpeed(int iSpeed);
 	bool									IsButtonDown(DWORD code);
+	bool				ResetScreenSaverWindow();
 
 	CGUIWindowHome									m_guiHome;
   CGUIWindowPrograms							m_guiPrograms;
