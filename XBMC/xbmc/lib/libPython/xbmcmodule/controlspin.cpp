@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "..\python.h"
-#include "GuiButtonControl.h"
+#include "GuiSpinControl.h"
 #include "control.h"
 #include "pyutil.h"
 
@@ -17,15 +17,17 @@ extern "C" {
 
 namespace PYXBMC
 {
-	PyObject* ControlButton_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
+	/*
+	// not used for now
+	PyObject* ControlSpin_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
 	{
-		ControlButton *self;
+		ControlSpin *self;
 		char* cTextureFocus = NULL;
 		char* cTextureNoFocus = NULL;
 
 		PyObject* pObjectText;
 		
-		self = (ControlButton*)type->tp_alloc(type, 0);
+		self = (ControlSpin*)type->tp_alloc(type, 0);
 		if (!self) return NULL;
 		
 		if (!PyArg_ParseTuple(args, "llll|Oss", &self->dwPosX, &self->dwPosY, &self->dwWidth, &self->dwHeight,
@@ -42,56 +44,81 @@ namespace PYXBMC
 
 		return (PyObject*)self;
 	}
+*/
+	/*
+	 * allocate a new controlspin. Used for c++ and not the python user
+	 */
+	PyObject* ControlSpin_New()
+	{
+		//ControlSpin* self = (ControlSpin*)_PyObject_New(&ControlSpin_Type);
+		ControlSpin*self = (ControlSpin*)ControlSpin_Type.tp_alloc(&ControlSpin_Type, 0);
+		if (!self) return NULL;
 
-	void ControlButton_Dealloc(ControlButton* self)
+		// default values for spin control
+		self->dwColor = 0xffffffff;
+		self->dwPosX = 0;
+		self->dwPosY = 0;
+		self->dwWidth = 16;
+		self->dwHeight = 16;
+    self->strTextureUp = "scroll-up.png";
+		self->strTextureDown = "scroll-down.png";
+		self->strTextureUpFocus = "scroll-up-focus.png";
+		self->strTextureDownFocus = "scroll-down-focus.png";
+
+		return (PyObject*)self;
+	}
+
+	void ControlSpin_Dealloc(ControlSpin* self)
 	{
 		self->ob_type->tp_free((PyObject*)self);
 	}
 
-	PyObject* ControlButton_SetDisabledColor(ControlButton *self, PyObject *args)
+	PyObject* ControlSpin_SetColor(ControlSpin *self, PyObject *args)
 	{
-		char *cDisabledColor = NULL;
+		char *cColor = NULL;
 
-		if (!PyArg_ParseTuple(args, "s", &cDisabledColor))	return NULL;
+		if (!PyArg_ParseTuple(args, "s", &cColor))	return NULL;
 
-		// ControlButton *pControl = (ControlButton*)self;
-		
-		if (cDisabledColor) sscanf(cDisabledColor, "%x", &self->dwDisabledColor);
+		if (cColor) sscanf(cColor, "%x", &self->dwColor);
 
 		g_graphicsContext.Lock();
-		if (self->pGUIControl) 
-			((CGUIButtonControl*)self->pGUIControl)->SetDisabledColor(self->dwDisabledColor);
+		//if (self->pGUIControl) 
+			//((CGUISpinControl*)self->pGUIControl)->SetColor(self->dwDColor);
 		g_graphicsContext.Unlock();
 
+		Py_INCREF(Py_None);
+		return Py_None;
+	}
+
+	/*
+	 * set textures
+	 * (string textureUp, string textureDown, string textureUpFocus, string textureDownFocus)
+	 */
+	PyObject* ControlSpin_SetTextures(ControlSpin *self, PyObject *args)
+	{
+		char *cLine[4];
+
+		if (!PyArg_ParseTuple(args, "ssss", &cLine[0], &cLine[1], &cLine[2], &cLine[3]))	return NULL;
+
+		self->strTextureUp = cLine[0];
+		self->strTextureDown = cLine[1];
+		self->strTextureUpFocus = cLine[2];
+		self->strTextureDownFocus = cLine[3];
+		/*
+		g_graphicsContext.Lock();
+		if (self->pGUIControl) 
+		{
+      CGUISpinControl* pControl = (CGUISpinControl*)self->pGUIControl;
+			pControl->se
+		g_graphicsContext.Unlock();
+		*/
 		Py_INCREF(Py_None);
 		return Py_None;
 	}
 	
-	PyObject* ControlButton_SetLabel(ControlButton *self, PyObject *args)
-	{
-		PyObject *pObjectText;
-		char *cFont = NULL;
-		char *cTextColor = NULL;
-
-		if (!PyArg_ParseTuple(args, "O|ss", &pObjectText, &cFont, &cTextColor))	return NULL;
-		if (!PyGetUnicodeString(self->strText, pObjectText, 1)) return NULL;
-
-		self->strFont = cFont ? cFont : "font13";		
-		if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
-		else self->dwTextColor = 0xffffffff;
-
-		g_graphicsContext.Lock();
-		if (self->pGUIControl)
-			((CGUIButtonControl*)self->pGUIControl)->SetLabel(self->strFont, self->strText, self->dwTextColor);
-		g_graphicsContext.Unlock();
-
-		Py_INCREF(Py_None);
-		return Py_None;
-	}
-
-	PyMethodDef ControlButton_methods[] = {
-		{"setLabel", (PyCFunction)ControlButton_SetLabel, METH_VARARGS, ""},
-		{"setDisabledColor", (PyCFunction)ControlButton_SetDisabledColor, METH_VARARGS, ""},
+	PyMethodDef ControlSpin_methods[] = {
+		//{"setColor", (PyCFunction)ControlSpin_SetColor, METH_VARARGS, ""},
+		{"setTextures", (PyCFunction)ControlSpin_SetTextures, METH_VARARGS, ""},
 		{NULL, NULL, 0, NULL}
 	};
 
@@ -101,13 +128,13 @@ namespace PYXBMC
 #pragma bss_seg()
 #pragma const_seg()
 
-	PyTypeObject ControlButton_Type = {
+	PyTypeObject ControlSpin_Type = {
 			PyObject_HEAD_INIT(NULL)
 			0,                         /*ob_size*/
-			"xbmcgui.ControlButton",    /*tp_name*/
-			sizeof(ControlButton),      /*tp_basicsize*/
+			"xbmcgui.ControlSpin",     /*tp_name*/
+			sizeof(ControlSpin),       /*tp_basicsize*/
 			0,                         /*tp_itemsize*/
-			(destructor)ControlButton_Dealloc,/*tp_dealloc*/
+			(destructor)ControlSpin_Dealloc,/*tp_dealloc*/
 			0,                         /*tp_print*/
 			0,                         /*tp_getattr*/
 			0,                         /*tp_setattr*/
@@ -123,14 +150,14 @@ namespace PYXBMC
 			0,                         /*tp_setattro*/
 			0,                         /*tp_as_buffer*/
 			Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-			"ControlButton Objects",    /* tp_doc */
+			"ControlSpin Objects",     /* tp_doc */
 			0,		                     /* tp_traverse */
 			0,		                     /* tp_clear */
 			0,		                     /* tp_richcompare */
 			0,		                     /* tp_weaklistoffset */
 			0,		                     /* tp_iter */
 			0,		                     /* tp_iternext */
-			ControlButton_methods,      /* tp_methods */
+			ControlSpin_methods,       /* tp_methods */
 			0,                         /* tp_members */
 			0,                         /* tp_getset */
 			&Control_Type,             /* tp_base */
@@ -140,7 +167,7 @@ namespace PYXBMC
 			0,                         /* tp_dictoffset */
 			0,                         /* tp_init */
 			0,                         /* tp_alloc */
-			ControlButton_New,          /* tp_new */
+			0,//ControlSpin_New,           /* tp_new */
 	};
 }
 
