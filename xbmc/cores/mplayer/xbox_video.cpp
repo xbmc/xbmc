@@ -891,18 +891,18 @@ void xbox_video_render_osd()
 	// means do alphakill + inverse alphablend
 
 	g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-	if (m_SubsOnOSD)
-	{
+//	if (m_SubsOnOSD)
+//	{
 		// subs use mplayer style alpha
 		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_INVSRCALPHA );
 		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_SRCALPHA );
-	}
-	else
-	{
-		// OSD looks better with src+(1-a)*dst
-		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_ONE );
-		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-	}
+//	}
+//	else
+//	{
+//		// OSD looks better with src+(1-a)*dst
+//		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_ONE );
+//		g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+//	}
 
 	// Render the image
 	g_graphicsContext.Get3DDevice()->Begin(D3DPT_QUADLIST);
