@@ -25,6 +25,8 @@
   MOD format period table.  Used by both the MOD and M15 (15-inst mod) Loaders.
 
 ==============================================================================*/
+#include "xbsection_start.h"
+
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"

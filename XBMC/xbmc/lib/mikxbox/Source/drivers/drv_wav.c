@@ -25,6 +25,8 @@
   Driver for output to a file called MUSIC.WAV
 
 ==============================================================================*/
+#include "xbsection_start.h"
+
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"

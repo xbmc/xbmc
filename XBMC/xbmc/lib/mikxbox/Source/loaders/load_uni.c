@@ -25,6 +25,8 @@
   UNIMOD (libmikmod's and APlayer's internal module format) loader
 
 ==============================================================================*/
+#include "xbsection_start.h"
+
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"

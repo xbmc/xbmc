@@ -27,6 +27,8 @@
   The protracker driver supports all base Protracker 3.x commands and features.
 
 ==============================================================================*/
+#include "xbsection_start.h"
+
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"

@@ -31,6 +31,8 @@
 	Written by Jean-Paul Mikkers <mikmak@via.nl>
 
 */
+#include "xbsection_start.h"
+
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"

@@ -26,6 +26,8 @@
   Register an error handler with _mm_RegisterErrorHandler() and you're all set.
 
 ==============================================================================*/
+#include "xbsection_start.h"
+
 
 /*
 

@@ -25,6 +25,8 @@
   WAV sample loader
 
 ==============================================================================*/
+#include "xbsection_start.h"
+
 
 /*
    FIXME: Stereo .WAV files are not yet supported as samples.

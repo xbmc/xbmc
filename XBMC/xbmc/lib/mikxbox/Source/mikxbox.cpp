@@ -44,6 +44,8 @@
 *
 *
 **TABULATION 4*******RESOLUTION : 1280*1024 ***************************************************************************************************************/
+#include "xbsection_start.h"
+
 #include <mikmod.h>
 #include "mikmod_internals.h"
 #include "mikwin.h"
@@ -88,7 +90,7 @@ BOOL mikwinInit(UWORD mixfreq, BOOL stereo, BOOL bits16, BOOL interpolation,BYTE
 	/* initialize the library */
 	if (mixfreq == 0) mixfreq = DEFAULT_MIXFREQ;
 	md_mixfreq = mixfreq;
-	options = DMODE_SOFT_MUSIC | DMODE_SOFT_SNDFX;
+	options = DMODE_SOFT_MUSIC | DMODE_SOFT_SNDFX | DMODE_HQMIXER;
 	if (stereo) options |= DMODE_STEREO;
 	if (bits16) options |= DMODE_16BITS;
 	if (interpolation) options |= DMODE_INTERP;
@@ -401,3 +403,14 @@ SAMPLE* mikwinGetSfx(SWORD voice)
 }
 
 
+__int64 mikxboxGetPTS()
+{
+	extern __int64 get_ds_pts();
+	return get_ds_pts();
+}
+
+void mikxboxSetCallback(void (*p)(unsigned char*, int))
+{
+	void set_ds_callback(void (*p)(unsigned char*, int));
+	set_ds_callback(p);
+}
