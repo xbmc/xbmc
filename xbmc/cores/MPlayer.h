@@ -16,6 +16,9 @@ public:
   {
   public:
     Options();
+    float        GetVolumeAmplification() const;
+    void         SetVolumeAmplification(float fDB) ;
+
     int          GetChannels() const;
     void         SetChannels(int iChannels);
 
@@ -30,6 +33,7 @@ public:
     private:
       int     m_iChannels;
       bool    m_bAC3PassTru;
+      float   m_fVolumeAmplification;
       string  m_strChannelMapping;
       vector<string> m_vecOptions;
 

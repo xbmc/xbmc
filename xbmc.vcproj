@@ -1373,6 +1373,46 @@
 				</File>
 			</Filter>
 		</Filter>
+		<Filter
+			Name="osd"
+			Filter="">
+			<File
+				RelativePath=".\xbmc\osd\IOSDOption.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\osd\IOSDOption.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\osd\OSDMenu.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\osd\osdmenu.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\osd\OSDOptionBoolean.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\osd\OSDOptionBoolean.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\osd\OSDOptionFloatRange.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\osd\OSDOptionFloatRange.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\osd\OSDOptionIntRange.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\osd\OSDOptionIntRange.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\osd\OSDSubMenu.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\osd\OSDSubMenu.h">
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

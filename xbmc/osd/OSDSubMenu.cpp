@@ -33,12 +33,12 @@ void COSDSubMenu::Clear()
 	{
 		IOSDOption* pOption=*i;
 		delete pOption;
+    i=m_vecOptions.erase(i);
 	}
-	m_vecOptions.erase(m_vecOptions.begin(),m_vecOptions.end());
 }
 
 
-COSDSubMenu& COSDSubMenu::operator = (const COSDSubMenu& submenu)
+const COSDSubMenu& COSDSubMenu::operator = (const COSDSubMenu& submenu)
 {
 	if (&submenu==this) return *this;
   Clear();

@@ -9,7 +9,7 @@ namespace OSD
 		COSDOptionIntRange(void);
 		COSDOptionIntRange(int iStart, int iEnd, int iInterval, int iValue);
 		COSDOptionIntRange(const COSDOptionIntRange& option);
-		OSD::COSDOptionIntRange operator = (const COSDOptionIntRange& option);
+		const OSD::COSDOptionIntRange& operator = (const COSDOptionIntRange& option);
 
 
 		virtual ~COSDOptionIntRange(void);

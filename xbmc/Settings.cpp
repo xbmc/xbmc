@@ -12,6 +12,7 @@ CSettings::CSettings(void)
 
   strcpy(g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
   g_stSettings.m_iSubtitleHeight=28;
+  g_stSettings.m_fVolumeAmplification=0.0f;
   g_stSettings.m_bPostProcessing=true;
   g_stSettings.m_bDeInterlace=false;
 	g_stSettings.m_bAudioOnAllSpeakers=false;
@@ -740,6 +741,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetBoolean(pElement, "useid3", g_stSettings.m_bUseID3);
 		GetString(pElement, "visualisation", g_stSettings.szDefaultVisualisation, g_stSettings.szDefaultVisualisation);
 		GetBoolean(pElement, "autoshuffleplaylist", g_stSettings.m_bAutoShufflePlaylist);
+    GetFloat(pElement, "volumeamp", g_stSettings.m_fVolumeAmplification);
 	}
 	return true;
 }
@@ -920,7 +922,8 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetBoolean(pNode, "ac3passthru", g_stSettings.m_bAC3PassThru);
 	SetBoolean(pNode, "useid3", g_stSettings.m_bUseID3);
 	SetString(pNode, "visualisation", g_stSettings.szDefaultVisualisation);
-    SetBoolean(pNode, "autoshuffleplaylist", g_stSettings.m_bAutoShufflePlaylist);
+  SetBoolean(pNode, "autoshuffleplaylist", g_stSettings.m_bAutoShufflePlaylist);
+  SetFloat(pNode, "volumeamp", g_stSettings.m_fVolumeAmplification);
 
 	// save the file
 	return xmlDoc.SaveFile(strSettingsFile);

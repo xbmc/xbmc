@@ -10,7 +10,7 @@ namespace OSD
 		COSDSubMenu();
 		COSDSubMenu(int iHeading,int iXpos, int iYpos);
 		COSDSubMenu(const COSDSubMenu& submenu);
-		COSDSubMenu& operator = (const COSDSubMenu& submenu);
+		const COSDSubMenu& operator = (const COSDSubMenu& submenu);
 	
 		virtual ~COSDSubMenu(void);
 		COSDSubMenu* Clone() const;

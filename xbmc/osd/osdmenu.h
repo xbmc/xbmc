@@ -11,7 +11,7 @@ namespace OSD
 		COSDMenu();
 		COSDMenu(int iXpos, int iYpos);
 		COSDMenu(const COSDMenu& menu);
-		COSDMenu& operator = (const COSDMenu& menu);
+		const COSDMenu& operator = (const COSDMenu& menu);
 
 		virtual ~COSDMenu(void);
 		COSDMenu* Clone();

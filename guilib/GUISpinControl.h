@@ -47,7 +47,8 @@ public:
 	int								GetType() const { return m_iType;};
 	DWORD							GetSpinWidth() const { return m_imgspinUp.GetWidth(); };
 	DWORD							GetSpinHeight() const { return m_imgspinUp.GetHeight(); };
-
+  void              SetFloatInterval(float fInterval);
+  float             GetFloatInterval() const;
 protected:
 	bool			CanMoveDown();
 	bool			CanMoveUp();
@@ -62,6 +63,7 @@ protected:
   int       m_iType;
   int       m_iSelect;
 	bool			m_bReverse;
+  float     m_fInterval;
   vector<wstring> m_vecLabels;
   vector<int>			m_vecValues;
 	CGUIImage m_imgspinUp;
