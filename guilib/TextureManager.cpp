@@ -326,7 +326,7 @@ void CGUITextureManager::StartPreLoad()
 
 void CGUITextureManager::PreLoad(const CStdString& strTextureName)
 {
-	if (strTextureName.c_str()[1] == ':')
+	if (strTextureName.c_str()[1] == ':' || strTextureName == "-")
 		return;
 
 	for (int i=0; i < (int)m_vecTextures.size(); ++i)
@@ -369,6 +369,9 @@ void CGUITextureManager::FlushPreLoad()
 
 int CGUITextureManager::Load(const CStdString& strTextureName,DWORD dwColorKey)
 {
+	if (strTextureName == "-")
+		return NULL;
+	
 	CStdString strPalTex("pal/");
 	strPalTex += strTextureName;
 
