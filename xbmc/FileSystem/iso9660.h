@@ -203,7 +203,7 @@ protected:
 	HANDLE								      m_hCDROM;
   isofile*                    m_isoFiles[MAX_ISO_FILES];
 	#define CIRC_BUFFER_SIZE 10
-#if 0
+/*
 	bool												m_bUseMode2;
 	DWORD				m_dwCircBuffBegin;
 	DWORD				m_dwCircBuffEnd;
@@ -214,7 +214,7 @@ protected:
 	__int64			m_dwFilePos;
 	BYTE*       m_pBuffer;
 	__int64			m_dwFileSize;
-#endif
+*/
 
 };
 extern class iso9660 m_isoReader;

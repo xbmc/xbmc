@@ -431,6 +431,9 @@ int DllLoader::ResolveExport(char *_Name, void **Addr)
 			}
 		}
 	}
+	char szBuf[250];
+	sprintf(szBuf, "Unable to resolve: %s %s\n", strrchr(Dll, '\\') + 1, _Name);
+	OutputDebugString(szBuf);	
 	return 0;
 }
 
@@ -707,7 +710,7 @@ extern "C" int dummy_Unresolved(void) {
 		char szBuf[128];
 		__asm { mov eax, [ebp+4] }
 		__asm { mov rtn_addr, eax }
-    sprintf(szBuf,"unresolved function called from 0x%08X, Count number %d\n",rtn_addr,Count++);
+    sprintf(szBuf,"unresolved function called from %#08x, Count number %d\n",rtn_addr,Count++);
 		OutputDebugString(szBuf);
 		return 1;
 }
@@ -718,7 +721,7 @@ extern "C" int dummy_Kernel32Unresolved(void) {
 		char szBuf[128];
 		__asm { mov eax, [ebp+4] }
 		__asm { mov rtn_addr, eax }
-    sprintf(szBuf,"kernel32:unresolved function called from 0x%08X, Count number %d\n",rtn_addr,Count++);
+    sprintf(szBuf,"kernel32:unresolved function called from %#08x, Count number %d\n",rtn_addr,Count++);
 		OutputDebugString(szBuf);
 		return 1;
 }
@@ -731,7 +734,7 @@ extern "C" int dummy_User32Unresolved(void) {
 		char szBuf[128];
 		__asm { mov eax, [ebp+4] }
 		__asm { mov rtn_addr, eax }
-    sprintf(szBuf,"user32:unresolved function called from 0x%08X, Count number %d\n",rtn_addr,Count++);
+    sprintf(szBuf,"user32:unresolved function called from %#08x, Count number %d\n",rtn_addr,Count++);
 		OutputDebugString(szBuf);
 		return 1;
 }
@@ -743,7 +746,7 @@ extern "C" int dummy_OLE32Unresolved(void) {
 		char szBuf[128];
 		__asm { mov eax, [ebp+4] }
 		__asm { mov rtn_addr, eax }
-    sprintf(szBuf,"ole32:unresolved function called from 0x%08X, Count number %d\n",rtn_addr,Count++);
+    sprintf(szBuf,"ole32:unresolved function called from %#08x, Count number %d\n",rtn_addr,Count++);
 		OutputDebugString(szBuf);
 		return 1;
 }
@@ -755,7 +758,7 @@ extern "C" int dummy_MSVCRTUnresolved(void) {
 		char szBuf[128];
 		__asm { mov eax, [ebp+4] }
 		__asm { mov rtn_addr, eax }
-    sprintf(szBuf,"ole32:unresolved function called from 0x%08X, Count number %d\n",rtn_addr,Count++);
+    sprintf(szBuf,"ole32:unresolved function called from %#08x, Count number %d\n",rtn_addr,Count++);
 		OutputDebugString(szBuf);
 		return 1;
 }
@@ -768,7 +771,7 @@ extern "C" int dummy_MSVCR71Unresolved(void) {
 		char szBuf[128];
 		__asm { mov eax, [ebp+4] }
 		__asm { mov rtn_addr, eax }
-    sprintf(szBuf,"msvcr71.dll:unresolved function called from 0x%08X, Count number %d\n",rtn_addr,Count++);
+    sprintf(szBuf,"msvcr71.dll:unresolved function called from %#08x, Count number %d\n",rtn_addr,Count++);
 		OutputDebugString(szBuf);
 		return 1;
 }
@@ -781,7 +784,7 @@ extern "C" int dummy_DX8Unresolved(void) {
 		char szBuf[128];
 		__asm { mov eax, [ebp+4] }
 		__asm { mov rtn_addr, eax }
-    sprintf(szBuf,"xbox_dx8.dll:unresolved function called from 0x%08X, Count number %d\n",rtn_addr,Count++);
+		sprintf(szBuf,"xbox_dx8.dll:unresolved function called from %#08x, Count number %d\n",rtn_addr,Count++);
 		OutputDebugString(szBuf);
 		return 1;
 }

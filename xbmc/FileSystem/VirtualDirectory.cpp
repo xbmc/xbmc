@@ -54,12 +54,12 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &ite
 				 share.strPath == strPath3.Left( share.strPath.size() ) ||
          strPath.Left(2)=="Q:" || strPath.Left(2)=="q:")
 		{
-#if 0
+/*
 			//	Check if cd is detected already before
 			//	reading the directory.
 			if ( share.m_iDriveType == SHARE_TYPE_DVD )
 				CDetectDVDMedia::WaitMediaReady();
-#endif
+*/
 			CFactoryDirectory factory;
 			CDirectory *pDirectory = factory.Create(share.strPath);
 

@@ -20,7 +20,6 @@ int			mplayer_close_file();
 int			mplayer_init(int argc,char*	argv[]);
 BOOL		mplayer_HasVideo();
 BOOL		mplayer_HasAudio();
-void		yv12toyuy2(const unsigned	char *ysrc,	const	unsigned char	*usrc, const unsigned	char *vsrc,	unsigned char	*dst,unsigned	int	width, unsigned	int	height,int lumStride,	int	chromStride, int dstStride);
 void		mplayer_setcache_size(int	iCacheSize);
 __int64	mplayer_get_pts();
 
@@ -53,6 +52,7 @@ __int64	mplayer_getCurrentTime();
 void		mplayer_ToFFRW(int iSpeed);
 void		mplayer_setVolume(int	iPercentage);
 int			mplayer_getVolume();
+void		mplayer_get_current_module(char* s, int n);
 
 #ifdef __cplusplus
 }

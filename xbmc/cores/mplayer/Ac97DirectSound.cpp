@@ -70,6 +70,7 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback,int iChannels, unsi
   m_dwNumPackets=8*iChannels;
 
 	HRESULT hr;
+/*
 #if 0	 
 	  // Create DirectSound
 	hr= DirectSoundCreate( NULL, &m_pDSound, NULL ) ;
@@ -79,6 +80,7 @@ CAc97DirectSound::CAc97DirectSound(IAudioCallback* pCallback,int iChannels, unsi
     return;
 	}
 #endif
+*/
 	m_nCurrentVolume = GetMaximumVolume();
 
   m_adwStatus    = new DWORD[ m_dwNumPackets ];
