@@ -6,6 +6,7 @@
 #pragma once
 
 #define DEBUG_MOUSE
+#define DEBUG_KEYBOARD
 #include <xtl.h>
 
 // TODO: reference additional headers your program requires here

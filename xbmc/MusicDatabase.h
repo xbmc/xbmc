@@ -9,11 +9,23 @@
 #include <vector>
 #include <set>
 #include <memory>
-#include "MusicDatabaseReorg.h"
 #include "MusicInfotag.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
+
+//	return codes of Cleaning up the Database
+//	numbers are strings from strings.xml
+#define ERROR_OK					317
+#define ERROR_CANCEL				0
+#define ERROR_DATABASE				315
+#define ERROR_REORG_SONGS			319			
+#define ERROR_REORG_ARTIST			321
+#define ERROR_REORG_GENRE			323
+#define ERROR_REORG_PATH			325
+#define ERROR_REORG_ALBUM			327
+#define ERROR_WRITING_CHANGES		329	
+#define ERROR_COMPRESSING			332
 
 /*!
 	\ingroup music
@@ -28,6 +40,13 @@ public:
 	virtual ~CSong(){};
 	void Clear() ;
 
+	bool operator<(const CSong &song) const
+	{
+		if (strFileName < song.strFileName) return true;
+		if (strFileName > song.strFileName) return false;
+		if (iTrack < song.iTrack) return true;
+		return false;
+	}
 	CStdString strFileName;
 	CStdString strTitle;
 	CStdString strArtist;
@@ -49,6 +68,10 @@ public:
 class CAlbum
 {
 public:
+	bool operator<(const CAlbum &a) const
+	{
+		return strAlbum+strPath<a.strAlbum+a.strPath;
+	}
 	CStdString strAlbum;
 	CStdString strPath;
 	CStdString strArtist;
@@ -122,6 +145,8 @@ typedef set<CStdString>::iterator ISETPATHES;
 	*/
 typedef vector<long> VECLONGS;
 
+class CGUIDialogProgress;
+
 /*!
 	\ingroup music
 	\brief Class to store and read tag information
@@ -137,8 +162,6 @@ typedef vector<long> VECLONGS;
 	*/
 class CMusicDatabase
 {
-	friend class CMusicDatabaseReorg;
-
 	class CArtistCache
 	{
 	public:
@@ -164,7 +187,6 @@ class CMusicDatabase
 	{
 	public:
 		long idAlbum;
-//		long idArtist;
 		long idPath;
 	};
 
@@ -185,14 +207,14 @@ public:
 	bool		GetSongsByArtist(const CStdString strArtist, VECSONGS& songs);
 	bool		GetSongsByAlbum(const CStdString& strAlbum, const CStdString& strPath, VECSONGS& songs);
 	bool		GetSongsByGenre(const CStdString& strGenre, VECSONGS& songs);
-	bool		GetArtists(VECARTISTS& artists);
+	bool		GetArtists(VECARTISTS& vecArtists);
 	bool		GetArtistsByName(const CStdString& strArtist, VECARTISTS& artists);
 	bool		GetAlbums(VECALBUMS& albums);
 	bool		GetGenres(VECGENRES& genres);
 	bool		GetTop100(VECSONGS& songs);
 	bool		IncrTop100CounterByFileName(const CStdString& strFileName1);
 	void		BeginTransaction();
-	void		CommitTransaction();
+	bool		CommitTransaction();
 	void		RollbackTransaction();
 	bool		InTransaction();
 	void		EmptyCache();
@@ -205,9 +227,18 @@ public:
 	bool		FindAlbumsByName(const CStdString& strSearch, VECALBUMS& albums);
 	bool		FindSongsByName(const CStdString& strSearch, VECSONGS& songs);
 	bool		FindSongsByNameAndArtist(const CStdString& strSearch, VECSONGS& songs);
+	CStdString	GetSubpathsFromPath(const CStdString &strPath);
+	bool		RemoveSongsFromPaths(const CStdString &strPathIds);
+	bool		CleanupAlbumsArtistsGenres(const CStdString &strPathIds);
+	bool		Compress();
+	int			Cleanup(CGUIDialogProgress *pDlgProgress);
+	void		DeleteAlbumInfo();
+	void		DeleteCDDBInfo();
+
 protected:
 	auto_ptr<SqliteDatabase> m_pDB;
 	auto_ptr<Dataset>				 m_pDS;
+	auto_ptr<Dataset>				 m_pDS2;
 	map<CStdString, CArtistCache> m_artistCache;
 	map<CStdString, CGenreCache> m_genreCache;
 	map<CStdString, CPathCache> m_pathCache;
@@ -215,15 +246,27 @@ protected:
 	bool		m_bOpen;
 	int			m_iRefCount;
 	bool		CreateTables();
-	long		AddAlbum(const CStdString& strAlbum, const CStdString& strArtist, long lPathId, const CStdString& strPath);
+	long		AddAlbum(const CStdString& strAlbum, const long lArtistId, const int iNumArtists, const CStdString& strArtist, long lPathId, const CStdString& strPath);
 	long		AddGenre(const CStdString& strGenre);
 	long		AddArtist(const CStdString& strArtist);
 	long		AddPath(const CStdString& strPath);
-	void		AddArtists(const CStdString& strArtists, long lSongId, long lAlbumId, bool bCheck=true);
-	void		AddGenres(const CStdString& strGenres, long lSongId, long lAlbumId, bool bCheck=true);
-	void		AddArtistLinks(long lArtistId, long lSongId, long lAlbumId, bool bCheck=true);
-	void		AddGenreLinks(long lArtistId, long lSongId, long lAlbumId, bool bCheck=true);
+	void		AddExtraArtists(const VECARTISTS& vecArtists, long lSongId, long lAlbumId, bool bCheck=true);
+	void		AddExtraGenres(const VECGENRES& vecGenres, long lSongId, long lAlbumId, bool bCheck=true);
 	void		RemoveInvalidChars(CStdString& strTxt);
+
+private:
+	bool		GetExtraArtistsForAlbum(long lAlbumId, CStdString &strArtist);
+	bool		GetExtraArtistsForSong(long lSongId, CStdString &strArtist);
+	bool		GetExtraGenresForAlbum(long lAlbumId, CStdString &strGenre);
+	bool		GetExtraGenresForSong(long lSongId, CStdString &strGenre);
+	CSong		GetSongFromDataset();
+	CAlbum		GetAlbumFromDataset();
+	bool		CleanupSongs();
+	bool		CleanupPaths();
+	bool		CleanupAlbums();
+	bool		CleanupArtists();
+	bool		CleanupGenres();
+	bool		CleanupAlbumsFromPaths(const CStdString &strPathIds);
 };
 
 extern CMusicDatabase	g_musicDatabase;

@@ -48,6 +48,7 @@ int			mplayer_getAudioStreamInfo(int iStream,	stream_language_t* stream_info); /
 int			mplayer_getSubtitleStreamInfo(int	iStream, stream_language_t*	stream_info);
 void		mplayer_setAudioLanguage(int iAudioLang);
 void		mplayer_setTime(int	iTime);
+void		mplayer_setTimeMs(__int64 iTime);
 int			mplayer_getTime();
 __int64	mplayer_getCurrentTime();
 void		mplayer_ToFFRW(int iSpeed);
