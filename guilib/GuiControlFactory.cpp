@@ -452,6 +452,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 			iTextYOff			= ((CGUIListControl*)pReference)->GetTextOffsetY();
 			iTextXOff2			= ((CGUIListControl*)pReference)->GetTextOffsetX2();
 			iTextYOff2			= ((CGUIListControl*)pReference)->GetTextOffsetY2();
+			dwAlignY				= ((CGUIListControl*)pReference)->GetAlignmentY();
 			dwitemWidth			= ((CGUIListControl*)pReference)->GetImageWidth();
 			dwitemHeight		= ((CGUIListControl*)pReference)->GetImageHeight();
 			iTextureHeight		= ((CGUIListControl*)pReference)->GetItemHeight();
@@ -984,6 +985,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId,const TiXmlNode* pContr
 		pControl->SetColourDiffuse(dwColorDiffuse);
 		pControl->SetScrollySuffix(strSuffix);
 		pControl->SetTextOffsets(iTextXOff,iTextYOff, iTextXOff2,iTextYOff2);
+		pControl->SetAlignmentY(dwAlignY);
 		pControl->SetVisible(bVisible);
 		pControl->SetImageDimensions(dwitemWidth, dwitemHeight);
 		pControl->SetItemHeight(iTextureHeight);
