@@ -78,4 +78,5 @@ public:
 	static bool IsPAL_DVD(int iWidth, int iHeight);
 	static bool IsShoutCast(const CStdString& strFileName);
 	static void RemoveIllegalChars( CStdString& strText);
+	static void CacheSubtitles(const CStdString& strMovie);
 };
