@@ -12,9 +12,6 @@
 
 #include "../../utils/log.h"
 
-// define if you want to output all function names which the dll call's
-//#define OUPUT_CALLED_FUNCTIONS
-
 using namespace std;
 Exp2Dll *Head = 0;
 
@@ -179,85 +176,6 @@ void MakeDummyFunction(unsigned long* Addr, const char* strDllName, const char* 
 	// add it to AllocatedFunctionList so we can free the just created functions if we want
 	AllocatedFunctionList.push_back((unsigned long*)pData);
 }
-
-#ifdef OUPUT_CALLED_FUNCTIONS
-static char calledtmp[2048];
-
-extern "C" void dll_called_output(char* dllname, char* funcname)
-{
-	sprintf(calledtmp, "%s: called (%s)\n", dllname, funcname);
-	OutputDebugString(calledtmp);
-}
-
-// this piece of asm code calls dll_called_output(s, s) and will call function after it
-unsigned char dll_func[] = {
-
-		//0x8f, 0x05,	0, 0, 0, 0,	// pop ptr
-		//0xff, 0x35, 0, 0, 0, 0, // push ptr
-		//0x8b, 0xec,                     // mov         ebp,esp
-		//0x89, 0x25, 0, 0, 0, 0,         // mov         dword ptr [0 0 0 0], esp
-		0xe9, 0, 0, 0, 0,         // call        dword ptr[function]
-		//0x8b, 0x25,	0, 0, 0, 0,         // mov         esp, dword ptr [0 0 0 0]
-		//0x83, 0xc4,	0x00,               // add         esp, 16
-
-
-		//0xff, 0x35, 0, 0, 0, 0, // push ptr
-		//0xcb//0xc3,                           // ret
-};
-
-void MakeFunction(unsigned long* Addr, const char* strDllName, const char* strFunctionName, void* function)
-{
-	unsigned int iFunctionSize = sizeof(dll_func);
-	unsigned int iDllNameSize = strlen(strDllName) + 1;
-	unsigned int iFunctionNameSize = strlen(strFunctionName) + 1;
-
-	// allocate memory for function + strings + 4 x 4 bytes for three datapointers
-	char* pData = new char[iFunctionSize + 20 + iDllNameSize + iFunctionNameSize];
-
-	char* offDataPointer0 = pData + iFunctionSize;
-	char* offDataPointer1 = pData + iFunctionSize + 4;
-	char* offDataPointer2 = pData + iFunctionSize + 8;
-	char* offDataPointer3 = pData + iFunctionSize + 12;
-	char* offDataPointer4 = pData + iFunctionSize + 16;
-
-	char* offStringDll = pData + iFunctionSize + 20;
-	char* offStringFunc = pData + iFunctionSize + 20 + iDllNameSize;
-
-	// 1 copy assembly code
-	memcpy(pData, dll_func, iFunctionSize);
-
-	// insert pointers to datapointers into assembly code (fills 0x00000000)
-	int p;
-	if ((int)function < ((int)pData + 5)) p = -(((int)pData + 5) - (int)function);
-	else p = -((int)function - ((int)pData + 5));
-	*(int*)(pData + 1) = p;//(int)offDataPointer0; // esp pointer
-	//*(int*)(pData + 8) = (int)offDataPointer1;
-	//*(int*)(pData + 14) = (int)offDataPointer0;
-	//*(int*)(pData + 20) = (int)offDataPointer0;
-	//*(int*)(pData + 32) = (int)offDataPointer4;
-	//*(int*)(pData + 38) = (int)offDataPointer0; // esp pointer
-
-	// fill datapointers
-	//*(int*)offDataPointer0 = (int)function;
-	//*(int*)offDataPointer1 = (int)pData + 12;
-	//*(int*)offDataPointer0 = (int)function;
-	/**(int*)offDataPointer1 = (int)offStringFunc;
-	*(int*)offDataPointer2 = (int)offStringDll;
-	*(int*)offDataPointer3 = (int)dll_called_output;
-	*(int*)offDataPointer4 = (int)function;
-
-	// copy arguments to 5 (string) and 6 (string)
-	memcpy(offStringDll, strDllName, iDllNameSize);
-	memcpy(offStringFunc, strFunctionName, iFunctionNameSize);*/
-
-	// bind new function to Addr
-	*Addr = (unsigned long)pData;
-
-	// add it to AllocatedFunctionList so we can free the just created functions if we want
-	AllocatedFunctionList.push_back((unsigned long*)pData);
-}
-
-#endif // OUPUT_CALLED_FUNCTIONS
 
 #ifdef DUMPING_DATA
 
@@ -425,13 +343,7 @@ int DllLoader::ResolveImports(void)
 						sprintf(szBuf, "%d", *Table&0x7ffffff);
 						MakeDummyFunction(Addr, Name, szBuf);
 					} else { 
-#ifdef OUPUT_CALLED_FUNCTIONS
-						char szBuf[128];
-						sprintf(szBuf, "%d", *Table&0x7ffffff);
-            MakeFunction(Addr, Name, szBuf, Fixup);
-#else
 						*Addr = (unsigned long)Fixup;  //woohoo!!
-#endif
 					}
 				}     
 				else
@@ -467,11 +379,7 @@ int DllLoader::ResolveImports(void)
 								Fixup = track_free;
 							}
 						}
-#ifdef OUPUT_CALLED_FUNCTIONS
-            MakeFunction(Addr, Name, ImpName, Fixup);
-#else
 						*Addr = (unsigned long)Fixup;
-#endif
 					}
 				}
 				Table++;
@@ -782,7 +690,6 @@ extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR libname)
 	else
 		sprintf(plibname, "%s\\%s", DEFAULT_DLLPATH ,(char *)libname);
 	DllLoader * dllhandle = new DllLoader(plibname);
-	delete[] plibname;
 
 	int hr = dllhandle->Parse();
 	if ( hr == 0 ) 
