@@ -5,6 +5,13 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 09-12-2004 fixed: Issue with autorun videos/music (strings mix up)
+  - 09-12-2004 added: Skin language version.  Currently set at v1.2.  XBMC will not load any skin
+                      that doesn't have a <version>1.2</version> tag in it's skin.xml
+                      It will also not allow such skins in the settings spin control.
+                      If a current skin is not of the required version on bootup, it will use the default (Project                       Mayhem) skin, and if this is also not suitable, it will invoke the Fatal Error Handler.
+  - 09-12-2004 fixed: Small graphical glitch in the Fatal Error Handler (it wasn't rendering all the text available)
+  - 09-12-2004 added: SF patch for mouse + keyboard in gamecontroller ports
   - 08-12-2004 changed: settings, added category "View Options" for my programs
   - 08-12-2004 changed: a dummy time is displayed in the video osd when calibrating
   - 08-12-2004 added: option to show time as 12 hour clock

@@ -645,7 +645,7 @@
 	</string>
 	<string>
 		<id>230</id>
-		<value>Filters</value>
+		<value>Video Filters</value>
 	</string>
 	<string>
 		<id>231</id>
@@ -2373,4 +2373,5 @@
   <string><id>14050</id><value>%i.0 dB</value></string>
   <string><id>14051</id><value>Show 12 hour clock</value></string>
   <string><id>14052</id><value>Swap month and day in home screen</value></string>
+  <string><id>14053</id><value>GUI Filters</value></string>
 </strings>

@@ -1705,3 +1705,105 @@ bool CSettings::SaveHomeButtons()
 
 	return xbmcXml.SaveFile();
 }
+
+bool CSettings::LoadFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders)
+{	// load xml file...
+	CStdString strXMLFile = "T:\\";
+	strXMLFile += strFolderXML;
+
+	TiXmlDocument xmlDoc;
+	if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) )
+	{
+		CLog::Log(LOGERROR, "LoadFolderViews - Unable to load XML file %s", strFolderXML.c_str());
+		return false;
+	}
+
+	TiXmlElement* pRootElement =xmlDoc.RootElement();
+	CStdString strValue=pRootElement->Value();
+	if ( strValue != "folderviews")
+	{
+		g_LoadErrorStr.Format("%s Doesn't contain <folderviews>",strXMLFile.c_str());
+		return false;
+	}
+
+	// cleanup vecFolders if necessary...
+	if (vecFolders.size())
+	{
+		for (unsigned int i=0; i<vecFolders.size(); i++)
+			delete vecFolders[i];
+		vecFolders.clear();
+	}
+	// parse the view mode for each folder
+	const TiXmlNode *pChild = pRootElement->FirstChild("folder");
+	while (pChild)
+	{
+		CStdString strPath;
+		int iView = VIEW_AS_LIST;
+		int iSort = 0;
+		bool bSortUp = true;
+		TiXmlNode *pPath = pChild->FirstChild("path");
+		if (pPath && pPath->FirstChild())
+			strPath = pPath->FirstChild()->Value();
+		TiXmlNode *pView = pChild->FirstChild("view");
+		if (pView && pView->FirstChild())
+			iView = atoi(pView->FirstChild()->Value());
+		TiXmlNode *pSort = pChild->FirstChild("sort");
+		if (pSort && pSort->FirstChild())
+			iSort = atoi(pSort->FirstChild()->Value());
+		TiXmlNode *pDirection = pChild->FirstChild("direction");
+		if (pDirection && pDirection->FirstChild())
+			bSortUp = pDirection->FirstChild()->Value() == "up";
+		// fill in element
+		if (!strPath.IsEmpty())
+		{
+			CFolderView *pFolderView = new CFolderView(strPath, iView, iSort, bSortUp);
+			if (pFolderView)
+				vecFolders.push_back(pFolderView);
+		}
+		// run to next <folder> element
+		pChild = pChild->NextSibling("folder");
+	}
+	return true;
+}
+
+bool CSettings::SaveFolderViews(const CStdString &strFolderXML, VECFOLDERVIEWS &vecFolders)
+{
+	TiXmlDocument xmlDoc;
+	TiXmlElement xmlRootElement("folderviews");
+	TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
+	if (!pRoot) return false;
+	// write our folders one by one
+	CStdString strView, strSort, strSortUp;
+	for (unsigned int i=0; i<vecFolders.size(); i++)
+	{
+		CFolderView *pFolderView = vecFolders[i];
+		strView.Format("%i", pFolderView->m_iView);
+		strSort.Format("%i", pFolderView->m_iSort);
+		strSortUp = pFolderView->m_bSortAscending ? "up" : "down";
+
+		TiXmlText xmlPath(pFolderView->m_strPath.IsEmpty() ? "ROOT" : pFolderView->m_strPath);
+			
+		TiXmlText xmlView(strView);
+		TiXmlText xmlSort(strSort);
+		TiXmlText xmlSortUp(strSortUp);
+
+		TiXmlElement ePath("path");
+		TiXmlElement eView("view");
+		TiXmlElement eSort("sort");
+		TiXmlElement eSortUp("direction");
+
+		ePath.InsertEndChild(xmlPath);
+		eView.InsertEndChild(xmlView);
+		eSort.InsertEndChild(xmlSort);
+		eSortUp.InsertEndChild(xmlSortUp);
+
+		TiXmlElement folderNode("folder");
+		folderNode.InsertEndChild(ePath);
+		folderNode.InsertEndChild(eView);
+		folderNode.InsertEndChild(eSort);
+		folderNode.InsertEndChild(eSortUp);
+
+		pRoot->InsertEndChild(folderNode);
+	}
+	return xmlDoc.SaveFile(strFolderXML);
+}

@@ -41,9 +41,9 @@ public:
 
 private:
 	// variables for mouse state
-	XINPUT_STATE	m_MouseState[4];	// one for each port
-	HANDLE			m_hMouseDevice[4];	// handle to each device
-	DWORD			m_dwLastMousePacket[4];	// last packet received from mouse
+	XINPUT_STATE	m_MouseState[4*2];			// one for each port
+	HANDLE			m_hMouseDevice[4*2];		// handle to each device
+	DWORD			m_dwLastMousePacket[4*2];	// last packet received from mouse
 	DWORD			m_dwMousePort;	// mask of ports that currently hold a mouse
 	XINPUT_STATE	m_CurrentState;
 
