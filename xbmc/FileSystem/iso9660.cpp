@@ -62,9 +62,12 @@ const string iso9660::ParseName(struct	iso9660_Directory& isodir)
 				// ??
 				// "?" "?"  LEN		
 				// BP1 BP2  BP3   
-				iPos += isodir.FileName[iPos+2];	
+				iPos += isodir.FileName[iPos+2];
 			}
-		} while (33+iPos < isodir.ucRecordLength);
+		} while (33+iPos < isodir.ucRecordLength && isodir.FileName[iPos+2] != 0);
+                  // when this isodir.FileName[iPos+2] is equal to 0 it should break out
+                  // as it has finished the loop
+                  // this is the fix for rockridge support
 	}
 	return temp_text;
 }
@@ -89,6 +92,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
     }
   }
 
+
 #ifdef _DEBUG_OUTPUT
   CStdString strTmp;
   strTmp.Format("******************   Adding dir : %s\r",path);
@@ -99,6 +103,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
   if (!pDir)
   {
     OutputDebugString("out of memory");
+
     return NULL;
   }
 	pDir->next = NULL;
@@ -123,7 +128,8 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
   if (!bResult || lpNumberOfBytesRead != m_info.iso.wSectorSizeLE)
   {
     OutputDebugString("unable to read\n");
-    return NULL;
+
+   return NULL;
   }
 	memcpy( &isodir, pCurr_dir_cache, sizeof(isodir) );
 	memcpy( &curr_dir, pCurr_dir_cache, sizeof(isodir) );
@@ -142,7 +148,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
     if (!bResult ||lpNumberOfBytesRead!=curr_dir.dwFileLengthLE)
     {
       OutputDebugString("unable to read\n");
-      return NULL;
+	  return NULL;
     }
 	}
 	iso9660searchpointer = 0;
@@ -213,6 +219,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 					temp_text = GetThinText((WCHAR*)(isodir.FileName+1), isodir.Len_Fi );
 					temp_text.resize(isodir.Len_Fi/2);
 				}
+
 				if (!m_info.joliet && isodir.FileName[0]>=0x20 )
 				{
 					temp_text=ParseName(isodir);
@@ -272,6 +279,8 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 	{
 		if( isodir.ucRecordLength )
 			iso9660searchpointer += isodir.ucRecordLength;
+		
+		
 		else 
 		{
 			iso9660searchpointer = (iso9660searchpointer - (iso9660searchpointer % m_info.iso.wSectorSizeLE)) + m_info.iso.wSectorSizeLE;
@@ -307,7 +316,6 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 					if (semipos >= 0)
  						temp_text.erase(semipos,temp_text.length()-semipos);
 
-
 					pFile_Pointer->next = (struct iso_dirtree *)malloc(sizeof(struct iso_dirtree));
           if (!pFile_Pointer->next)
           {
@@ -319,6 +327,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 					pFile_Pointer->next = 0;
 					pFile_Pointer->dirpointer=NULL;
 					pFile_Pointer->path = (char *)malloc(strlen(path)+1);
+
           if (!pFile_Pointer->path)
           {
             OutputDebugString("out of memory");
@@ -327,12 +336,13 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
 
 					strcpy( pFile_Pointer->path, path );
 					pFile_Pointer->name = (char *)malloc( temp_text.length()+1);
+
           if (!pFile_Pointer->name)
           {
             OutputDebugString("out of memory");
-            return NULL;
+			return NULL;
           }
-					
+
 					strcpy( pFile_Pointer->name , temp_text.c_str());
 
 	#ifdef _DEBUG_OUTPUT
@@ -350,6 +360,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
           strPath+=temp_text;
 
           pFile_Pointer->dirpointer = ReadRecursiveDirFromSector( isodir.dwFileLocationLE, strPath.c_str() );
+
 					pFile_Pointer->type = 2;
 				}
 			}
@@ -373,7 +384,6 @@ void iso9660::Scan()
 
   m_hCDROM = m_IoSupport.OpenCDROM();
 	
-	
 	m_paths = 0;
 	m_lastpath = 0;
 	memset(&m_info,0,sizeof(m_info));
@@ -382,12 +392,13 @@ void iso9660::Scan()
 	m_info.Curr_dir = (char*)malloc( 4096 );
 	strcpy( m_info.Curr_dir, "\\" );
 
-
 	EnterCriticalSection(&m_critSection);
+
 	DWORD lpNumberOfBytesRead = 0;
 	::SetFilePointer( m_info.ISO_HANDLE, 0x8000,0,FILE_BEGIN );
+
 	::ReadFile( m_info.ISO_HANDLE, &m_info.iso, sizeof(m_info.iso), &lpNumberOfBytesRead, NULL );
-	
+
 	if(strncmp(m_info.iso.szSignature,"CD001",5))
 	{
 		m_IoSupport.CloseCDROM( m_info.ISO_HANDLE);
@@ -426,6 +437,7 @@ void iso9660::Scan()
 		::ReadFile( m_info.ISO_HANDLE, &m_info.iso, sizeof(m_info.iso), &lpNumberOfBytesRead, NULL );
 		memcpy( &m_info.isodir, m_info.iso.szRootDir, sizeof(m_info.isodir));
 	}
+
     memcpy( &m_info.isodir, &m_info.iso.szRootDir, sizeof(m_info.isodir) );
 	m_dirtree = ReadRecursiveDirFromSector( m_info.isodir.dwFileLocationLE, "\\" );
 	LeaveCriticalSection(&m_critSection);
