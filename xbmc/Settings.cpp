@@ -402,6 +402,8 @@ CSettings::CSettings(void)
 
 	g_stSettings.m_bSlideShowShuffle = false;
 
+	strcpy(g_stSettings.szDefaultScreenSaver, "pyro.xbs");
+
   m_iLastLoadedProfileIndex = -1;
 
 	xbmcXmlLoaded = false;
@@ -1259,6 +1261,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile, const bool loadp
 		GetInteger(pElement, "screensavertime", g_stSettings.m_iScreenSaverTime,3,1,INT_MAX);	// CB: SCREENSAVER PATCH
 		GetInteger(pElement, "screensavermode", g_stSettings.m_iScreenSaverMode,1,0,3);	// 0=Off, 1=Fade to dim, 2=Fade to black, 3=Matrix Trails
 		GetInteger(pElement, "screensaverfade", g_stSettings.m_iScreenSaverFadeLevel,20,1,100);	// default to 20%
+		GetString(pElement, "screensaver", g_stSettings.szDefaultScreenSaver, g_stSettings.szDefaultScreenSaver);
 		GetInteger(pElement, "audiostream",g_stSettings.m_iAudioStream,-1,-1,INT_MAX);
 		GetInteger(pElement, "weatherrefresh", g_stSettings.m_iWeatherRefresh, 15, 15, 120);	//WEATHER SETTINGS
 		GetString(pElement, "weathertemp", g_stSettings.m_szWeatherFTemp, "C");					//WEATHER SETTINGS
@@ -1691,6 +1694,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 	SetInteger(pNode, "screensavertime", g_stSettings.m_iScreenSaverTime);	// CB: SCREENSAVER PATCH
 	SetInteger(pNode, "screensavermode", g_stSettings.m_iScreenSaverMode);	// CB: SCREENSAVER PATCH
 	SetInteger(pNode, "screensaverfade", g_stSettings.m_iScreenSaverFadeLevel);
+	SetString(pNode, "screensaver", g_stSettings.szDefaultScreenSaver);
 	SetInteger(pNode, "audiostream",g_stSettings.m_iAudioStream);
 	SetInteger(pNode, "weatherrefresh", g_stSettings.m_iWeatherRefresh);	//WEATHER SETTINGS
 	SetString(pNode, "weathertemp", g_stSettings.m_szWeatherFTemp);			//WEATHER SETTINGS
