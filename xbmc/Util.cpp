@@ -2073,6 +2073,8 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
 
 
 			VECFILEITEMS items;
+      CFileItemList temp(items); //Releases memory when it goes out of scope
+
       CDirectory::GetDirectory(strLookInPaths[step],items);
 			int fnl = strFileNameNoExt.length();
 
