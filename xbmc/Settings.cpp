@@ -123,6 +123,7 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.m_szWeatherArea, "UKXX0085");	//default WEATHER to London for no good reason
 	strcpy(g_stSettings.m_szWeatherFTemp, "C");			//default WEATHER temp units 
 	strcpy(g_stSettings.m_szWeatherFSpeed, "K");		//default WEATHER speed units
+	g_stSettings.m_iWeatherRefresh = 1;
 }
 
 CSettings::~CSettings(void)
