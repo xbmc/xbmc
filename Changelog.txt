@@ -5,13 +5,17 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-  - 17-01-2004 added: some more startuplogging
-  - 17-01-2004 fixed: Minor blackscreen issues when starting videos in some view modes (NB: Zoom is still not functioning in the overlay modes).
-  - 17-01-2004 added: Combination Overlays/Pixel shader method (faster than just overlays, with the same (or better?) quality)
-  - 17-01-2004 changed: Minor tweaks to the pixel shader YV12->RGB coefficients.
-  - 17-01-2004 removed: Slow overlays method as it gave no improvement in quality
-  - 16-01-2004 changed: mplayer command for postprocessing, no quality changes
-  - 16-01-2004 added: Option to add Film Grain on video
+  - 18-01-2005 updated: Catalan language file (Thnx to buc)
+  - 18-01-2005 updated: German language file
+  - 18-01-2005 updated: German (Austrian) language file (Thnx to CEOMR)
+  - 18-01-2005 updated: Norwegian language file (Thnx to vnmartinsen)
+  - 17-01-2005 added: some more startuplogging
+  - 17-01-2005 fixed: Minor blackscreen issues when starting videos in some view modes (NB: Zoom is still not functioning in the overlay modes).
+  - 17-01-2005 added: Combination Overlays/Pixel shader method (faster than just overlays, with the same (or better?) quality)
+  - 17-01-2005 changed: Minor tweaks to the pixel shader YV12->RGB coefficients.
+  - 17-01-2005 removed: Slow overlays method as it gave no improvement in quality
+  - 16-01-2005 changed: mplayer command for postprocessing, no quality changes
+  - 16-01-2005 added: Option to add Film Grain on video
   - 16-01-2005 updated: Korean language file (Thnx to akoakoako)
   - 16-01-2005 updated: Polish language file (Thnx to napek)
   - 16-01-2005 fixed: CDDA playback broken
