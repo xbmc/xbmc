@@ -13,12 +13,18 @@
 #include "../musicInfoTagLoaderFactory.h"
 #include "../filesystem/SndtrkDirectory.h"
 
+#include "FanController.h"
+
 extern char g_szTitleIP[32];
 
 CGUIInfoManager g_infoManager;
 
 CGUIInfoManager::CGUIInfoManager(void)
 {
+  m_lastSysHeatInfoTime = 0;
+  m_fanSpeed = 0;
+  m_gpuTemp = 0;
+  m_cpuTemp = 0;
 }
 
 CGUIInfoManager::~CGUIInfoManager(void)
@@ -47,6 +53,12 @@ wstring CGUIInfoManager::GetLabel(const CStdString &strInfo)
 		strLabel = GetVideoLabel(strTest.Mid(12));
 	else if (strTest.Left(16) == "system.freespace")
 		return GetFreeSpace(strTest.Mid(17,1).ToUpper());
+  else if (strTest == "system.cputemperature")
+    return GetSystemHeatInfo("cpu");
+  else if (strTest == "system.gputemperature")
+    return GetSystemHeatInfo("gpu");
+  else if (strTest == "system.fanspeed")
+    return GetSystemHeatInfo("fan");
 	else if (strTest == "network.ipaddress")
 		strLabel = g_szTitleIP;
 	// convert our CStdString to a wstring (which the label expects!)
@@ -357,6 +369,42 @@ void CGUIInfoManager::SetCurrentSong(const CFileItem &item)
 	//	Find a thumb for this file.
 	CUtil::SetMusicThumb(&m_currentSong);
 	CUtil::FillInDefaultIcon(&m_currentSong);
+}
+
+wstring CGUIInfoManager::GetSystemHeatInfo(const CStdString &strInfo)
+{
+	if(timeGetTime() - m_lastSysHeatInfoTime >= 1000)
+	{ // update our variables
+		m_lastSysHeatInfoTime = timeGetTime();
+    m_fanSpeed = CFanController::Instance()->GetFanSpeed();
+    m_gpuTemp   = CFanController::Instance()->GetGPUTemp();
+    m_cpuTemp  = CFanController::Instance()->GetCPUTemp();
+	}
+  if (strInfo == "cpu")
+  {
+    WCHAR CPUText[32];
+    if(g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
+      swprintf(CPUText, L"%s %2.2f%cF", g_localizeStrings.Get(140).c_str(), ((9.0 / 5.0) * m_cpuTemp) + 32.0, 176);	
+    else
+      swprintf(CPUText, L"%s %2.2f%cC", g_localizeStrings.Get(140).c_str(), m_cpuTemp, 176);	
+    return CPUText;
+  }
+  else if (strInfo == "gpu")
+  {
+    WCHAR GPUText[32];
+    if(g_guiSettings.GetInt("Weather.TemperatureUnits") == 1 /*DEGREES_F*/)
+      swprintf(GPUText, L"%s %2.2f%cF", g_localizeStrings.Get(141).c_str(), ((9.0 / 5.0) * m_gpuTemp) + 32.0, 176);	
+    else
+      swprintf(GPUText, L"%s %2.2f%cC", g_localizeStrings.Get(141).c_str(), m_gpuTemp, 176);	
+    return GPUText;
+  }
+  else if (strInfo == "fan")
+  {
+    WCHAR FanText[32];
+    swprintf(FanText, L"%s %i%%", g_localizeStrings.Get(13300).c_str(), m_fanSpeed * 2);	
+    return FanText;
+  }
+  return L"";
 }
 
 wstring CGUIInfoManager::GetFreeSpace(const CStdString &strDrive)
