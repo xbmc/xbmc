@@ -136,6 +136,7 @@
 #define WINDOW_SETTINGS               4
 #define WINDOW_MUSIC                  5
 #define WINDOW_VIDEOS                 6
+#define WINDOW_SYSTEM_INFORMATION     7
 #define WINDOW_SETTINGS_GENERAL       8
 #define WINDOW_SETTINGS_SCREEN        9
 #define WINDOW_UI_CALIBRATION         10
@@ -143,15 +144,19 @@
 #define WINDOW_SETTINGS_SLIDESHOW     12
 #define WINDOW_SETTINGS_FILTER        13
 #define WINDOW_SETTINGS_MUSIC         14
+#define WINDOW_SETTINGS_SUBTITLES     15 
 #define WINDOW_SETTINGS_SCREENSAVER   16
+#define WINDOW_WEATHER_SETTINGS       17
 #define WINDOW_SCRIPTS                20
 #define WINDOW_VIDEO_GENRE            21
 #define WINDOW_VIDEO_ACTOR            22
 #define WINDOW_VIDEO_YEAR             23
+#define WINDOW_SETTINGS_PROGRAMS      24
 #define WINDOW_VIDEO_TITLE            25
 #define WINDOW_SETTINGS_CACHE         26
 #define WINDOW_SETTINGS_AUTORUN       27
 #define WINDOW_VIDEO_PLAYLIST         28
+#define WINDOW_SETTINGS_LCD           29
 
 #define WINDOW_DIALOG_YES_NO          100
 #define WINDOW_DIALOG_PROGRESS        101
@@ -171,6 +176,7 @@
 #define WINDOW_VISUALISATION          2006
 #define WINDOW_SLIDESHOW              2007
 #define WINDOW_DIALOG_FILESTACKING    2008
+#define WINDOW_WEATHER                2600
 #define WINDOW_SCREENSAVER            2900
 #define WINDOW_OSD                    2901
 
