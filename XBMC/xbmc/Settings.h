@@ -136,6 +136,7 @@ public:
 		bool			m_bAllowPAL60;
 		RECT			m_rectMovieCalibration[20];
 		bool			m_bAutoShufflePlaylist;
+		int			  m_iHDSpinDownTime;
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;

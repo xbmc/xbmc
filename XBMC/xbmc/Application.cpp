@@ -840,6 +840,7 @@ void CApplication::RenderFullScreen()
 
 void CApplication::SpinHD()
 {
+	if (!g_stSettings.m_iHDSpinDownTime) return;// dont do HD spindown
 	if (!m_bSpinDown)
 	{
 		if (!m_pPlayer)  
@@ -860,7 +861,7 @@ void CApplication::SpinHD()
 	// spin down HD after 3 mins of inactivity
 	if (m_bSpinDown)
 	{
-		if ( (timeGetTime() - m_dwSpinDownTime) > 3*60*1000)
+		if ( (long)(timeGetTime() - m_dwSpinDownTime) >= ((long)g_stSettings.m_iHDSpinDownTime*60L*1000L) )
 		{
 			m_dwSpinDownTime=timeGetTime();
 			CIoSupport helper;
