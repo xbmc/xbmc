@@ -9,10 +9,12 @@
 #include "IAudioCallback.h"
 #include "../../settings.h"
 #include "mplayer.h"
+#include "xbox_video.h"
 #include "../../utils/log.h"
 IDirectSoundRenderer* m_pAudioDecoder=NULL;
 
 static IAudioCallback* m_pAudioCallback=NULL;
+static int m_bHasVideo = false;
 void audio_uninit(int);
 
 ao_info_t audio_info =  {
@@ -153,6 +155,7 @@ static int audio_init(int rate,int channels,int format,int flags)
 	pao_data=GetAOData();
 
 	channels = pao_data->channels;
+  m_bHasVideo = mplayer_HasVideo()==TRUE;
     
 	//In the case of forced audio filter, channel number for the GetAudioInfo, and from pao_data
 	//is not the same, so the follwing two lines are not correct
@@ -171,7 +174,7 @@ static int audio_init(int rate,int channels,int format,int flags)
 		{
 			channels=2;
 			// ac3 passthru
-			m_pAudioDecoder = new CAc97DirectSound(m_pAudioCallback,channels,rate,ao_format_bits,bAC3PassThru,false,mplayer_HasVideo()==TRUE);
+			m_pAudioDecoder = new CAc97DirectSound(m_pAudioCallback,channels,rate,ao_format_bits,bAC3PassThru,false);
 		}
 		else
 		{	// check if we should resample this audio
@@ -185,9 +188,9 @@ static int audio_init(int rate,int channels,int format,int flags)
 				return 1;		// this is an ugly hack due to our code use mplayer_open_file for both playing file, and format detecttion
 
 			if( channels==2 && !mplayer_HasVideo() && (lSampleRate==48000 || bResample) && (g_guiSettings.GetInt("AudioOutput.Mode") == AUDIO_DIGITAL) && g_guiSettings.GetBool("AudioOutput.PCMPassthrough")) // need add menu options here
-				m_pAudioDecoder = new CAc97DirectSound(m_pAudioCallback,channels,rate,ao_format_bits,bAC3PassThru, bResample, mplayer_HasVideo()==TRUE);
+				m_pAudioDecoder = new CAc97DirectSound(m_pAudioCallback,channels,rate,ao_format_bits,bAC3PassThru, bResample);
 			else
-				m_pAudioDecoder = new CASyncDirectSound(m_pAudioCallback,channels,rate,ao_format_bits, bResample,0, strAudioCodec, mplayer_HasVideo()==TRUE);
+				m_pAudioDecoder = new CASyncDirectSound(m_pAudioCallback,channels,rate,ao_format_bits, bResample,0, strAudioCodec);
 		}
     pao_data->channels	= channels;
     pao_data->samplerate= rate;
@@ -258,6 +261,8 @@ static int audio_get_space()
 static int audio_play(void* data,int len,int flags)
 {
   if (!m_pAudioDecoder) return 0;
+  //if we have video, don't process any audio before video is ready to go.
+  if (m_bHasVideo && (!g_renderManager.IsStarted())) return 0;
 	return m_pAudioDecoder->AddPackets( (unsigned char*)data,len);
 } 
 

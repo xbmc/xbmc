@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 24-02-2005 changed: Delay audio output until video is ready to play
   - 24-02-2005 fixed: [ 1093336 ] MusicInfoTagLoaderWMA.cpp string conversion resulted in double length strings
   - 23-02-2005 changed: Get available subtitle fonts and sizes from alternate mplayer path if alternate mplayer is enabled
   - 23-02-2005 updated: Polish language file (Thnx to napek)
