@@ -566,64 +566,54 @@ void CIMDB::GetURL(const string &strMovie, string& strURL)
 	if (!imax) imax=strMovie.size();
 	for (int i=0; i < imax;i++)
 	{
-		char kar=strMovie[i];
+		for (int c=0;isdigit(strMovie[i+c]);c++)
+		{
+			if (c==3)
+			{
+				i+=4;
+				break;
+			}
+		}
+    	char kar=strMovie[i];
 		if (kar =='.') kar=' ';
-    
-    if (kar ==32) kar = '+';
+    	if (kar ==32) kar = '+';
 		if (kar == '[' || kar=='(' ) bSkip=true;			//skip everthing between () and []
 		else if (kar == ']' || kar==')' ) bSkip=false;
 		else if (!bSkip)
 		{
-      if (ipos > 0)
-      {
-        if (!isalnum(kar)) 
-        {
-          if (szMovie[ipos-1] != '+')
-            kar='+';
-          else 
-            kar='.';
-        }
-      }
+			if (ipos > 0)
+			{
+				if (!isalnum(kar)) 
+				{
+					if (szMovie[ipos-1] != '+')
+					kar='+';
+					else 
+					kar='.';
+				}
+			}
 			if (isalnum(kar) ||kar==' ' || kar=='+')
 			{
 				szMovie[ipos]=kar;
 				szMovie[ipos+1]=0;
 				ipos++;
 			}
-      }
+		}
 	
 	}
 
-  CStdString strTmp=szMovie;
-  strTmp.ToLower();
-  strTmp.Trim();
-  strcpy(szMovie,strTmp.c_str());
+	CStdString strTmp=szMovie;
+	strTmp.ToLower();
+	strTmp.Trim();
+	strcpy(szMovie,strTmp.c_str());
 
-  RemoveAllAfter(szMovie,"divx");
-  RemoveAllAfter(szMovie,"xvid");
-  RemoveAllAfter(szMovie,"dvd");
-  RemoveAllAfter(szMovie,"svcd");
-  RemoveAllAfter(szMovie,"ac3");
-  RemoveAllAfter(szMovie,"ogg");
-  RemoveAllAfter(szMovie,"ogm");
+	RemoveAllAfter(szMovie,"divx");
+	RemoveAllAfter(szMovie,"xvid");
+	RemoveAllAfter(szMovie,"dvd");
+	RemoveAllAfter(szMovie,"svcd");
+	RemoveAllAfter(szMovie,"ac3");
+	RemoveAllAfter(szMovie,"ogg");
+	RemoveAllAfter(szMovie,"ogm");
   
-
-  // remove anything after 4 digits 
-  int iNr=0;
-  for (int i=0; i < (int)strlen(szMovie);++i)
-  {
-    if (szMovie[i]>='0' && szMovie[i] <= '9')
-    {
-      iNr++;
-      if (iNr==4)
-      {
-        szMovie[i+1]=0;
-        break;
-      }
-    }
-    else iNr=0;
-  }
-
 	string strHTML;
 	sprintf(szURL,"http://us.imdb.com/Tsearch?title=%s", szMovie);
 	strURL = szURL;
