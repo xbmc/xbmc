@@ -750,7 +750,10 @@ bool CMPlayer::OpenFile(const CFileItem& file, __int64 iStartTime)
 		{
 			CStdString strPath;
 			CUtil::GetParentPath(strFile, strPath);
-			options.SetDVDDevice(strPath);
+      if(strPath.Equals("D:\\VIDEO_TS\\", false) || strPath.Equals("D:\\VIDEO_TS", false))
+        options.SetDVDDevice("D:\\"); //Properly mastered dvd, lets mplayer open the dvd properly
+      else
+			  options.SetDVDDevice(strPath);
 			CLog::Log(LOGINFO, " dvddevice: %s", strPath.c_str());
 		}	
 
