@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 27-07-2005 removed: YUY2 Overlays and LQ Pixel shader render modes have been removed.  Combo renderer has been renamed to "Hardware Overlays" and MQ Pixel shader is now LQ pixel shader.  Default is Combo renderer which is the best all-round.
   - 27-02-2005 added: IMDb scraping moved into system/HTMLScraper.dll.  You must have this in order for IMDb lookups to function!
   - 27-02-2005 added: Source for IMDb scraping dll + a windows test application (useful in it's own right). See Tools\HTMLScraper\IMDbLookup.
   - 26-02-2005 cleanup: moved (most) Is..(), SetThumb()... functions from CUtil to CFileItem,
