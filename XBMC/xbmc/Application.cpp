@@ -240,7 +240,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiSettingsScreen);						// window id = 9
 	m_gWindowManager.Add(&m_guiSettingsUICalibration);		// window id = 10
 	m_gWindowManager.Add(&m_guiSettingsMovieCalibration);	// window id = 11
-	m_gWindowManager.Add(&m_guiSettingsSlideShow);				// window id = 12
+	m_gWindowManager.Add(&m_guiSettingsSlideShow);				// window id = 12 slideshow:window id 2007
 	m_gWindowManager.Add(&m_guiSettingsFilter);						// window id = 13
 	m_gWindowManager.Add(&m_guiSettingsMusic);						// window id = 14
 	m_gWindowManager.Add(&m_guiScripts);									// window id = 20
@@ -255,7 +255,7 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiScriptsInfo);							// window id = 2004
 
 	m_gWindowManager.Add(&m_guiWindowVisualisation);			// window id = 2006
-
+																														
 	/* window id's 3000 - 3100 are reserved for python */
   	
   m_keyboard.Initialize();

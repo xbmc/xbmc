@@ -109,7 +109,7 @@ void CGUIWindowPictures::OnAction(const CAction &action)
 	{
 		// Get a new action, as we're using a different window now
 		CAction newAction;
-		g_buttonTranslator.ReGetAction(12, newAction);
+		g_buttonTranslator.ReGetAction(WINDOW_SLIDESHOW, newAction);
 		m_slideShow.OnAction(newAction);
 		if (!m_slideShow.IsPlaying())
 		{
