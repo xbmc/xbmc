@@ -1862,11 +1862,11 @@
 	</string>
 	<string>
 		<id>706</id>
-		<value>HTTP Proxy Host:</value>
+		<value>HTTP Proxy Host</value>
 	</string>
 	<string>
 		<id>707</id>
-		<value>HTTP Proxy Port:</value>
+		<value>HTTP Proxy Port</value>
 	</string>
 	<string>
 		<id>708</id>
@@ -1874,15 +1874,15 @@
 	</string>
 	<string>
 		<id>709</id>
-		<value>XLink Kai XTag:</value>
+		<value>XLink Kai XTag</value>
 	</string>
 	<string>
 		<id>710</id>
-		<value>XLink Kai Password:</value>
+		<value>XLink Kai Password</value>
 	</string>
 	<string>
 		<id>711</id>
-		<value>Internet Protocol (IP) Settings</value>
+		<value>Internet Protocol (IP)</value>
 	</string>
 	<string>
 		<id>712</id>
@@ -1890,15 +1890,15 @@
 	</string>
 	<string>
 		<id>713</id>
-		<value>HTTP Proxy Settings</value>
+		<value>HTTP Proxy</value>
 	</string>	
 	<string>
 		<id>714</id>
-		<value>XLink Kai Settings</value>
+		<value>XLink Kai</value>
 	</string>	
 	<string>
 		<id>715</id>
-		<value>Assignment:</value>
+		<value>Assignment</value>
 	</string>	
 	<string>
 		<id>716</id>
@@ -1914,19 +1914,19 @@
 	</string>	
 	<string>
 		<id>719</id>
-		<value>IP Address:</value>
+		<value>IP Address</value>
 	</string>	
 	<string>
 		<id>720</id>
-		<value>Netmask:</value>
+		<value>Netmask</value>
 	</string>	
 	<string>
 		<id>721</id>
-		<value>Default Gateway:</value>
+		<value>Default Gateway</value>
 	</string>	
 	<string>
 		<id>722</id>
-		<value>DNS Server:</value>
+		<value>DNS Server</value>
 	</string>
 	<string>
 		<id>723</id>
@@ -1946,23 +1946,23 @@
 	</string>
 	<string>
 		<id>727</id>
-		<value>Web Server Settings</value>
+		<value>Web Server</value>
 	</string>	
 	<string>
 		<id>728</id>
-		<value>FTP Server Settings</value>
+		<value>FTP Server</value>
 	</string>	
 	<string>
 		<id>729</id>
-		<value>Internet Time Settings</value>
+		<value>Internet Time</value>
 	</string>	
 	<string>
 		<id>730</id>
-		<value>Web Server Port:</value>
+		<value>Web Server Port</value>
 	</string>	
 	<string>
 		<id>731</id>
-		<value>Time Server Host:</value>
+		<value>Time Server Host</value>
 	</string>
 	<string>
 		<id>732</id>
@@ -2189,6 +2189,6 @@
   <string><id>13301</id><value>Auto temperature control</value></string>
   <string><id>13302</id><value>Fanspeed control</value></string>
   
-  <string><id>13303</id><value>Skin Fonts:</value></string>
-  <string><id>13304</id><value>Flip Charset:</value></string>
+  <string><id>13303</id><value>Skin Fonts</value></string>
+  <string><id>13304</id><value>Flip Charset</value></string>
 </strings>
