@@ -963,6 +963,10 @@ void CGUIWindowMusicSongs::OnClick(int iItem)
 			}
 			else
 			{
+				//	Reset Playlistplayer, playback started now does 
+				//	not use the playlistplayer.
+				g_playlistPlayer.Reset();
+				g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
 				g_application.PlayFile(*pItem);
 			}
 		}
