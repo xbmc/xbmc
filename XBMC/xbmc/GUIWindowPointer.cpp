@@ -47,6 +47,8 @@ void CGUIWindowPointer::OnWindowLoaded()
 		CGUIControl* pControl= *i;
 		pControl->SetVisible(false);
 	}
+  CGUIWindow::OnWindowLoaded();
+  DynamicResourceAlloc(false);
 }
 
 void CGUIWindowPointer::Render()

@@ -152,6 +152,13 @@ void CGUIResizeControl::FreeResources()
   m_imgNoFocus.FreeResources();
 }
 
+void CGUIResizeControl::DynamicResourceAlloc(bool bOnOff)
+{
+  CGUIControl::DynamicResourceAlloc(bOnOff);
+  m_imgFocus.DynamicResourceAlloc(bOnOff);
+  m_imgNoFocus.DynamicResourceAlloc(bOnOff);
+}
+
 void CGUIResizeControl::Update()
 {
   CGUIControl::Update();

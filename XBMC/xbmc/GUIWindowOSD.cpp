@@ -105,6 +105,14 @@ bool CGUIWindowOSD::SubMenuVisible()
 	return m_bSubMenuOn;
 }
 
+void CGUIWindowOSD::OnWindowLoaded()
+{
+  CGUIWindow::OnWindowLoaded();
+  //  Do not free resources of invisible controls
+  //  or hdd will spin up when entering a osd submenu
+  DynamicResourceAlloc(false);
+}
+
 void CGUIWindowOSD::Render()
 {
 	SetVideoProgress();			// get the percentage of playback complete so far

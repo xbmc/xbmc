@@ -389,7 +389,10 @@ void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
 			&& g_playlistPlayer.GetCurrentSong()==iItem)
 			return;
 
-	g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Remove(iItem);
+  CPlayList& playlist=g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+  CFileItem& item=playlist[iItem];
+	playlist.Remove(iItem);
+	m_vecItems.Remove(&item);
 
   /*
 	//	Correct the current playing song in playlistplayer
@@ -402,8 +405,6 @@ void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
 			g_playlistPlayer.SetCurrentSong(iCurrentSong);
 		}
 	}
-
-	m_vecItems.Remove(iItem);
 
 	UpdateListControl();
 	UpdateButtons();

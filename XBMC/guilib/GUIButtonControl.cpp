@@ -196,6 +196,13 @@ void CGUIButtonControl::FreeResources()
   m_imgNoFocus.FreeResources();
 }
 
+void CGUIButtonControl::DynamicResourceAlloc(bool bOnOff)
+{
+  CGUIControl::DynamicResourceAlloc(bOnOff);
+  m_imgFocus.DynamicResourceAlloc(bOnOff);
+  m_imgNoFocus.DynamicResourceAlloc(bOnOff);
+}
+
 void CGUIButtonControl::SetText(const CStdString &aLabel)
 {
   WCHAR wszText[1024];

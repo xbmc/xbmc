@@ -156,6 +156,13 @@ void CGUIButtonScroller::FreeResources()
   m_imgNoFocus.FreeResources();
 }
 
+void CGUIButtonScroller::DynamicResourceAlloc(bool bOnOff)
+{
+  CGUIControl::DynamicResourceAlloc(bOnOff);
+  m_imgFocus.DynamicResourceAlloc(bOnOff);
+  m_imgNoFocus.DynamicResourceAlloc(bOnOff);
+}
+
 void CGUIButtonScroller::SetFont(const CStdString &strFont, DWORD dwColor)
 {
   m_dwTextColor = dwColor;

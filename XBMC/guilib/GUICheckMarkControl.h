@@ -25,6 +25,7 @@ public:
   virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
+  virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void SetDisabledColor(D3DCOLOR color);
 
   void SetLabel(const CStdString& strFontName, const wstring& strLabel, D3DCOLOR dwColor);

@@ -89,6 +89,7 @@ public:
   virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
+  virtual void DynamicResourceAlloc(bool bOnOff);
   /// \brief Return the texture of the left arrow that is shown, when the control is in select mode
   const CStdString GetTextureLeft() const { return m_imgLeft.GetFileName();};
   /// \brief Return the texture of the left arrow focused that is shown, when the control is in select mode

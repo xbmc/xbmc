@@ -47,7 +47,9 @@ public:
   bool HasFocus(void) const;
   virtual void PreAllocResources() {}
   virtual void AllocResources();
-  virtual void FreeResources() {}
+  virtual void FreeResources();
+          bool IsAllocated();
+  virtual void DynamicResourceAlloc(bool bOnOff);
   virtual bool CanFocus() const;
   virtual bool IsVisible() const;
   virtual bool IsDisabled() const;
@@ -134,6 +136,7 @@ protected:
   int m_iGroup;
   bool m_bCalibration;
   bool m_bInvalidated;
+  bool m_bAllocated;
   GUICONTROLTYPES ControlType;
 };
 #endif

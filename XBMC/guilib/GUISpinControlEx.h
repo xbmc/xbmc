@@ -28,6 +28,7 @@ public:
   virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
+  virtual void DynamicResourceAlloc(bool bOnOff);
   DWORD GetAlignment() const { return m_buttonControl.GetTextAlign() & 0x00000004;};
   DWORD GetTextOffsetX() const { return m_buttonControl.GetTextOffsetX();};
   DWORD GetTextOffsetY() const { return m_buttonControl.GetTextOffsetY();};

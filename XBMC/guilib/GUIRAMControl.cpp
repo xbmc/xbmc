@@ -506,3 +506,12 @@ void CGUIRAMControl::FreeResources()
     m_pTextButton[i]->FreeResources();
   }
 }
+
+void CGUIRAMControl::DynamicResourceAlloc(bool bOnOff)
+{
+  CGUIControl::DynamicResourceAlloc(bOnOff);
+  for (int i = 0;i < RECENT_MOVIES;i++)
+  {
+    m_pTextButton[i]->DynamicResourceAlloc(bOnOff);
+  }
+}
