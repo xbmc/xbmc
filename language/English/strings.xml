@@ -1727,7 +1727,12 @@
 		<string>
 		<id>506</id>
 		<value>Use directory names for description</value>
-	</string> <string>
+	</string> 
+	<string>
+		<id>507</id>
+		<value>Sort by: Usage</value>
+	</string>
+	<string>
 		<id>600</id>
 		<value>Rip CD</value>
 	</string>

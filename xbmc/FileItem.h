@@ -37,6 +37,7 @@ public:
   float         m_fRating;
   CStdString    m_strDVDLabel;
 	CMusicInfoTag m_musicInfoTag;
+  int			m_iprogramCount;
 };
 
 /*!

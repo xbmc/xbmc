@@ -380,6 +380,7 @@ void CProgramDatabase::GetProgramsByBookmark(CStdString& strBookmark, VECFILEITE
 			if (CUtil::FileExists(strPathandFile))
 			{
 				CFileItem *pItem = new CFileItem(m_pDS->fv("files.xbedescription").get_asString());
+				pItem->m_iprogramCount=m_pDS->fv("files.iTimesPlayed").get_asLong();
 				pItem->m_strPath=strPathandFile;
 				pItem->m_bIsFolder=false;
 				GetFileAttributesEx(pItem->m_strPath, GetFileExInfoStandard, &FileAttributeData);
@@ -440,5 +441,44 @@ void CProgramDatabase::DeleteProgram(const CStdString& strPath)
   {
     CLog::Log(LOGERROR, "CProgramDatabase::DeleteProgram() failed");
   }
+}
+
+bool CProgramDatabase::IncTimesPlayed(const CStdString& strFileName1)
+{
+	try
+	{
+		CStdString strFileName=strFileName1;
+		RemoveInvalidChars(strFileName);
+
+		CStdString strPath, strFName;
+		CUtil::Split(strFileName, strPath, strFName);
+		strPath.Replace("\\","/");
+
+		if (NULL==m_pDB.get()) return false;
+		if (NULL==m_pDS.get()) return false;
+		CStdString strSQL;
+
+		strSQL.Format("select * from files,path where files.idPath=path.idPath and path.strPath='%s'",strPath.c_str());
+		if (!m_pDS->query(strSQL.c_str())) return false;
+		int iRowsFound = m_pDS->num_rows();
+		if (iRowsFound== 0) return false;
+
+		int idFile        = m_pDS->fv("files.idFile").get_asLong();
+		int iTimesPlayed  = m_pDS->fv("files.iTimesPlayed").get_asLong();
+
+		CLog::Log(LOGDEBUG, "CProgramDatabase::IncTimesPlayed(%s), idFile=%i, iTimesPlayed=%i",
+			strFileName1.c_str(), idFile, iTimesPlayed);
+
+		strSQL.Format("update files set iTimesPlayed=%i where idFile=%i",
+			++iTimesPlayed, idFile);
+		m_pDS->exec(strSQL.c_str());
+		return true;
+	}
+	catch(...)
+	{
+		CLog::Log(LOGERROR, "CProgramDatabase:IncTimesPlayed(%s) failed", strFileName1.c_str());
+	}
+
+	return false;
 }
 
