@@ -29,11 +29,12 @@
 
 #define BLOCK_SIZE 4096
 
+#ifdef _XBOX
 //Used to enable XBMC subtitle switching
 extern int oggsub_id;
 extern int oggsub_ids[32];
 extern int oggsub_count;
-
+#endif
 /// Vorbis decoder context : we need the vorbis_info for vorbis timestamping
 /// Shall we put this struct def in a common header ?
 typedef struct ov_struct_st {
@@ -900,14 +901,17 @@ int demux_ogg_open(demuxer_t* demuxer) {
 	  ogg_d->subs[ogg_d->num_sub].samplerate= get_uint64(&st->time_unit)/10;
 	  ogg_d->subs[ogg_d->num_sub].text = 1;
           if (demuxer->sub->id == n_text)
+#ifdef _XBOX
           {
-            text_id = ogg_d->num_sub;
             oggsub_id = oggsub_count;
-          }
-          n_text++;
-		  oggsub_ids[oggsub_count] = ogg_d->num_sub;
-		  oggsub_count++;
-		  
+#endif
+            text_id = ogg_d->num_sub;
+#ifdef _XBOX
+          }          
+          oggsub_ids[oggsub_count] = ogg_d->num_sub;
+          oggsub_count++;
+#endif
+	  n_text++;	  
           demux_ogg_init_sub();
 	//// Unknown header type
       } else
@@ -972,9 +976,12 @@ int demux_ogg_open(demuxer_t* demuxer) {
     demuxer->audio->id = -2;
   else
     demuxer->audio->id = audio_id;
-  if(!n_text || (text_id < 0))
+  /* Disable the subs only if there are no text streams at all.
+     Otherwise the stream to display might be chosen later when the comment
+     packet is encountered and the user used -slang instead of -sid. */
+  if(!n_text)
     demuxer->sub->id = -2;
-  else
+  else if (text_id >= 0)
     demuxer->sub->id = text_id;
 
   ogg_d->final_granulepos=0;

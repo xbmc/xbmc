@@ -27,7 +27,11 @@
 #include "avcodec.h"
 #include "dsputil.h"
 #include "mpegvideo.h"
+#include "integer.h"
 #include <stdarg.h>
+#include <limits.h>
+
+static void avcodec_default_free_buffers(AVCodecContext *s);
 
 void *av_mallocz(unsigned int size)
 {
@@ -514,6 +518,7 @@ int avcodec_close(AVCodecContext *avctx)
 {
     if (avctx->codec->close)
         avctx->codec->close(avctx);
+    avcodec_default_free_buffers(avctx);
     av_freep(&avctx->priv_data);
     avctx->codec = NULL;
     return 0;
@@ -738,7 +743,7 @@ void avcodec_flush_buffers(AVCodecContext *avctx)
         avctx->codec->flush(avctx);
 }
 
-void avcodec_default_free_buffers(AVCodecContext *s){
+static void avcodec_default_free_buffers(AVCodecContext *s){
     int i, j;
 
     if(s->internal_buffer==NULL) return;
@@ -773,15 +778,11 @@ int av_reduce(int *dst_nom, int *dst_den, int64_t nom, int64_t den, int64_t max)
 
     assert(den != 0);
 
-    if(den < 0){
-        den= -den;
-        nom= -nom;
-    }
+    if(den < 0)
+        return av_reduce(dst_nom, dst_den, -nom, -den, max);
     
-    if(nom < 0){
-        nom= -nom;
-        sign= 1;
-    }
+    sign= nom < 0;
+    nom= ABS(nom);
     
     gcd = ff_gcd(nom, den);
     nom /= gcd;
@@ -811,31 +812,31 @@ int av_reduce(int *dst_nom, int *dst_den, int64_t nom, int64_t den, int64_t max)
     
     assert(ff_gcd(nom, den) == 1);
     
-    if(sign) nom= -nom;
-    
-    *dst_nom = nom;
+    *dst_nom = sign ? -nom : nom;
     *dst_den = den;
     
     return exact;
 }
 
-int64_t av_rescale(int64_t a, int b, int c){
-    uint64_t h, l;
+int64_t av_rescale(int64_t a, int64_t b, int64_t c){
+    AVInteger ai, ci;
     assert(c > 0);
     assert(b >=0);
     
     if(a<0) return -av_rescale(-a, b, c);
     
-    h= a>>32;
-    if(h==0) return a*b/c;
+    if(b<=INT_MAX && c<=INT_MAX){
+        if(a<=INT_MAX)
+            return (a * b + c/2)/c;
+        else
+            return a/c*b + (a%c*b + c/2)/c;
+    }
     
-    l= a&0xFFFFFFFF;
-    l *= b;
-    h *= b;
-
-    l += (h%c)<<32;
-
-    return ((h/c)<<32) + l/c;
+    ai= av_mul_i(av_int2i(a), av_int2i(b));
+    ci= av_int2i(c);
+    ai= av_add_i(ai, av_shr_i(ci,1));
+    
+    return av_i2int(av_div_i(ai, ci));
 }
 
 /* av_log API */

@@ -113,7 +113,11 @@ int demux_audio_open(demuxer_t* demuxer) {
     for(n = 0; n < 5 ; n++) {
       pos = mp_decode_mp3_header(hdr);
       if(pos < 0)
-	break;//return 0; // changed to play more mp3's
+#ifdef _XBOX
+	break;  // changed to play more mp3's
+#else
+        return 0;
+#endif
       stream_skip(s,pos-4);
       if(s->eof)
 	return 0;

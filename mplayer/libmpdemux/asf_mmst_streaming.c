@@ -22,8 +22,6 @@
 #include <winsock2.h>
 #endif
 
-#undef USE_ICONV
-
 #ifdef USE_ICONV
 #include <locale.h>
 #include <iconv.h>
