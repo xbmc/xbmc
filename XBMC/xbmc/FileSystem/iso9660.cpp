@@ -688,6 +688,7 @@ long iso9660::ReadFile(int fd, byte *pBuffer, long lSize)
 //************************************************************************************
 INT64 iso9660::Seek(int fd, INT64 lOffset, int whence)
 {
+	INT64 dwFilePos=m_dwFilePos;
 	switch(whence)  
 	{
 		case SEEK_SET:
@@ -705,11 +706,12 @@ INT64 iso9660::Seek(int fd, INT64 lOffset, int whence)
 			break;
 	}
 
-	if (m_dwFilePos < 0)
-		return 0;
+	if (m_dwFilePos >m_dwFileSize || m_dwFilePos<0)
+	{
+		m_dwFilePos=dwFilePos;
+		return m_dwFilePos;
+	}
 
-	if (m_dwFilePos > m_dwFileSize)
-		return m_dwFileSize;
 
 	return m_dwFilePos;
 }

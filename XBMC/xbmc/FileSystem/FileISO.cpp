@@ -27,7 +27,6 @@
 CFileISO::CFileISO()
 {
 	m_pIsoReader=NULL;
-	m_i64FilePos=0;
 }
 
 //*********************************************************************************************
@@ -41,7 +40,6 @@ CFileISO::~CFileISO()
 //*********************************************************************************************
 bool CFileISO::Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName, int iport,bool bBinary)
 {
-  m_i64FilePos=0;
 	m_pIsoReader = new iso9660();
 	string strFName="\\";
 	strFName+=strFileName;
@@ -67,7 +65,7 @@ bool CFileISO::Open(const char* strUserName, const char* strPassword,const char*
 //*********************************************************************************************
 unsigned int CFileISO::Read(void *lpBuf, offset_t uiBufSize)
 {
-	if (!m_pIsoReader) return -1;
+	if (!m_pIsoReader) return 0;
 	if (m_cache.Size() > 0)
 	{
 		long lTotalBytesRead=0;
@@ -98,10 +96,7 @@ unsigned int CFileISO::Read(void *lpBuf, offset_t uiBufSize)
 		}
 		return lTotalBytesRead;
 	}
-	long lBytesRead=m_pIsoReader->ReadFile( 1,(byte*)lpBuf,(long)uiBufSize);
-	if (lBytesRead < 0) return -1;
-	m_i64FilePos+=lBytesRead;
-	return (unsigned int)lBytesRead;
+	return m_pIsoReader->ReadFile( 1,(byte*)lpBuf,(long)uiBufSize);
 }
 
 //*********************************************************************************************
@@ -116,10 +111,10 @@ void CFileISO::Close()
 //*********************************************************************************************
 offset_t CFileISO::Seek(offset_t iFilePosition, int iWhence)
 {
-	if (!m_pIsoReader) return 0;
-	m_i64FilePos=m_pIsoReader->Seek(1,iFilePosition,iWhence);
+	if (!m_pIsoReader) return -1;
+	m_pIsoReader->Seek(1,iFilePosition,iWhence);
 	m_cache.Clear();
-	return (m_i64FilePos);
+	return iFilePosition;
 }
 
 //*********************************************************************************************
@@ -133,7 +128,7 @@ offset_t CFileISO::GetLength()
 offset_t CFileISO::GetPosition()
 {
 	if (!m_pIsoReader) return -1;
-	return m_i64FilePos;
+	return m_pIsoReader->GetFilePosition();
 }
 
 
