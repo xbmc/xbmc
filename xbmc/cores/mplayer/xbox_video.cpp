@@ -108,7 +108,7 @@ static const DWORD FVF_Y8A8VERTEX = D3DFVF_XYZRHW|D3DFVF_TEX2;
 #define NUM_FORMATS (sizeof(g_ddpf) / sizeof(g_ddpf[0]))
 
 static void video_flip_page(void);
-
+void video_uninit(void);
 //********************************************************************************************************
 void choose_best_resolution(float fps)
 {
@@ -555,7 +555,7 @@ static unsigned int query_format(unsigned int format)
 }
 
 //********************************************************************************************************
-static void video_uninit(void)
+void video_uninit(void)
 {
 	OutputDebugString("video_uninit\n");  
 
@@ -594,6 +594,7 @@ static void video_check_events(void)
 //***********************************************************************************************************
 static unsigned int video_preinit(const char *arg)
 {
+  video_uninit();
 	m_iResolution=PAL_4x3;
 	m_bPauseDrawing=false;
 //	for (int i=0; i<NUM_BUFFERS; i++) iClearSubtitleRegion[i] = 0;
