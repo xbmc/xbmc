@@ -2338,7 +2338,7 @@ int mplayer_process( /*int iPAL, int iPAL60, int iFrameRateAdjust*/)
 
             // handle audio-only case:
   if(!playsize && !sh_video) {  // buffer is full, do not block here!!!
-    		sleep(50); // Wait a tick before retry
+    usec_sleep(10000); // Wait a tick before retry
                 continue;
             }
 
@@ -2581,13 +2581,13 @@ if(time_frame>0.001 && !(vo_flags&256)){
 #endif
                 {
                     // -------- USLEEP + SOFTSLEEP -----------
-	float min=softsleep?0.021:0.010;
+	float min=softsleep?0.021:0.005;
                     current_module="sleep_usleep";
         while(time_frame>min){
                         if(time_frame<=0.020)
-                            usec_sleep(10000); // sleeps 1 clock tick (10ms)!
+             usec_sleep(0); // sleeps 1 clock tick (10ms)!
                         else
-                            usec_sleep(20000); // sleeps 1 clock tick (10ms)!
+             usec_sleep(1000000*(time_frame-0.020));
                         time_frame-=GetRelativeTime();
                     }
 	if(softsleep){
@@ -2843,7 +2843,11 @@ if(auto_quality>0){
         }
 
         // handle -sstep
+#ifdef _XBOX //Needed otherwise we allways start up in fastforward for some reason.
 if(step_sec != 1) {
+#else
+if(step_sec>0) {
+#endif
               osd_function=OSD_FFW;
           rel_seek_secs+=step_sec;
         }
