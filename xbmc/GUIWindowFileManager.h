@@ -26,7 +26,7 @@ public:
 protected:
 	void							GoParentFolder(int iList);
   void              UpdateControl(int iList);
-  void              Update(int iList, const CStdString &strDirectory);
+  void              Update(int iList, const CStdString &strDirectory); //???
   void              OnStart(CFileItem *pItem);
 
   void							Clear();
@@ -47,10 +47,10 @@ protected:
 	void							Refresh(int iList);
   int				        GetSelectedItem(int iList);
   bool				      HaveDiscOrConnection( CStdString& strPath, int iDriveType );
-  void              OnSelect(int iItem);
 	void              GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
 	void							GetDirectory(const CStdString &strDirectory, VECFILEITEMS &items);
-
+	int								NumSelected(int iList);
+	int								GetFocusedList() const;
 	// functions to check for actions that we can perform
 	bool							CanRename(int iList);
 	bool							CanCopy(int iList);
@@ -60,8 +60,7 @@ protected:
 	bool							IsReadOnly(const CStdString &strFile) const;
 
 	CVirtualDirectory		m_rootDir;
-  VECFILEITEMS				m_vecLeftItems;
-	VECFILEITEMS				m_vecRightItems;
+  VECFILEITEMS				m_vecItems[2];
   typedef vector <CFileItem*> ::iterator ivecItems;
   CStdString          m_strDirectory[2];
   CGUIDialogProgress*	m_dlgProgress;
