@@ -19,11 +19,11 @@ CGUIDialogSelect::~CGUIDialogSelect(void)
 
 void CGUIDialogSelect::OnAction(const CAction &action)
 {
-	if (action.wID == ACTION_CLOSE_DIALOG)
-    {
+	if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
+  {
 		Close();
 		return;
-    }
+  }
 	CGUIWindow::OnAction(action);
 }
 
