@@ -222,6 +222,30 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 		}
 		break;
 
+		case GUI_MSG_DIRECTORY_SCANNED:
+		{
+			const CStdString& strDirectory=message.GetStringParam();
+
+			//	Only update thumb on a local drive
+			if (CUtil::IsHD(strDirectory))
+			{
+				CStdString strParent;
+				CUtil::GetParentPath(strDirectory, strParent);
+				if (strDirectory==m_strDirectory || strParent==m_strDirectory)
+				{
+					OutputDebugString("Update()\n");
+					Update(m_strDirectory);
+				}
+			}
+		}
+		break;
+
+		case GUI_MSG_SCAN_FINISHED:
+		{
+			UpdateButtons();
+		}
+		break;
+
 		case GUI_MSG_CLICKED:
     {
       int iControl=message.GetSenderId();
@@ -424,117 +448,148 @@ void CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, VECFILEI
 
 void CGUIWindowMusicSongs::OnScan()
 {
-	// remove username + password from m_strDirectory for display in Dialog
-	CURL url(m_strDirectory);
-	CStdString strStrippedPath;
-	url.GetURLWithoutUserDetails(strStrippedPath);
-
-	DWORD dwTick=timeGetTime();
-
-	// check whether we have scanned here before
-	bool m_bUpdateAll = false;
-	CStdString strPaths;
-	strPaths = g_musicDatabase.GetSubpathsFromPath(m_strDirectory);
-	if (strPaths.length() > 2)
-	{	// yes, we have, we should prompt the user to ask if they want
-		// to do a full scan, or just add new items...
-		CGUIDialogYesNo *pDialog = &(g_application.m_guiDialogYesNo);
-		pDialog->SetHeading(189);
-		pDialog->SetLine(0,702);
-		pDialog->SetLine(1,703);
-		pDialog->SetLine(2,704);
-		pDialog->DoModal(GetID());
-		if (pDialog->IsConfirmed())	m_bUpdateAll = true;
-	}
-
-	m_dlgProgress->SetHeading(189);
-	m_dlgProgress->SetLine(0, 330);
-	m_dlgProgress->SetLine(1,"");
-	m_dlgProgress->SetLine(2,strStrippedPath );
-	m_dlgProgress->StartModal(GetID());
-	m_dlgProgress->Progress();
-
-	// Preload section for ID3 cover art reading
-	CSectionLoader::Load("CXIMAGE");
-	CSectionLoader::Load("LIBMP4");
-
-	CUtil::ThumbCacheClear();
-
-  bool bOverlayAllowed=g_graphicsContext.IsOverlayAllowed();
-
-  if (bOverlayAllowed)
-    g_graphicsContext.SetOverlay(false);
-
-	g_musicDatabase.BeginTransaction();
-
-	bool bOKtoScan = true;
-	if (m_bUpdateAll)
+	if (g_guiSettings.GetBool("MusicLibrary.UseBackgroundScanner"))
 	{
-		m_dlgProgress->SetLine(2,701);
-		m_dlgProgress->Progress();
-		bOKtoScan = g_musicDatabase.RemoveSongsFromPaths(strPaths);
-	}
-	// enable scan mode in OnRetrieveMusicInfo()
-	m_bScan=true;
-
-	if (bOKtoScan)
-	{
-		if (m_bUpdateAll)
+		if (g_application.m_guiDialogMusicScan.IsRunning())
 		{
-			m_dlgProgress->SetLine(2,700);
-			m_dlgProgress->Progress();
-			bOKtoScan = g_musicDatabase.CleanupAlbumsArtistsGenres(strPaths);
+			g_application.m_guiDialogMusicScan.StopScanning();
+			UpdateButtons();
+			return;
+		}
+		// check whether we have scanned here before
+		bool bUpdateAll = false;
+		CStdString strPaths;
+		strPaths = g_musicDatabase.GetSubpathsFromPath(m_strDirectory);
+		if (strPaths.length() > 2)
+		{	// yes, we have, we should prompt the user to ask if they want
+			// to do a full scan, or just add new items...
+			CGUIDialogYesNo *pDialog = &(g_application.m_guiDialogYesNo);
+			pDialog->SetHeading(189);
+			pDialog->SetLine(0,702);
+			pDialog->SetLine(1,703);
+			pDialog->SetLine(2,704);
+			pDialog->DoModal(GetID());
+			if (pDialog->IsConfirmed())	bUpdateAll = true;
 		}
 
-		bool bCommit = false;
-		if (bOKtoScan)
-			bCommit = DoScan(m_vecItems);
+		g_application.m_guiDialogMusicScan.StartScanning(m_strDirectory, bUpdateAll);
+		UpdateButtons();
+		return;
+	}
+	else
+	{
+		// remove username + password from m_strDirectory for display in Dialog
+		CURL url(m_strDirectory);
+		CStdString strStrippedPath;
+		url.GetURLWithoutUserDetails(strStrippedPath);
 
-		if (bCommit)
+		DWORD dwTick=timeGetTime();
+
+		// check whether we have scanned here before
+		bool m_bUpdateAll = false;
+		CStdString strPaths;
+		strPaths = g_musicDatabase.GetSubpathsFromPath(m_strDirectory);
+		if (strPaths.length() > 2)
+		{	// yes, we have, we should prompt the user to ask if they want
+			// to do a full scan, or just add new items...
+			CGUIDialogYesNo *pDialog = &(g_application.m_guiDialogYesNo);
+			pDialog->SetHeading(189);
+			pDialog->SetLine(0,702);
+			pDialog->SetLine(1,703);
+			pDialog->SetLine(2,704);
+			pDialog->DoModal(GetID());
+			if (pDialog->IsConfirmed())	m_bUpdateAll = true;
+		}
+
+		m_dlgProgress->SetHeading(189);
+		m_dlgProgress->SetLine(0, 330);
+		m_dlgProgress->SetLine(1,"");
+		m_dlgProgress->SetLine(2,strStrippedPath );
+		m_dlgProgress->StartModal(GetID());
+		m_dlgProgress->Progress();
+
+		// Preload section for ID3 cover art reading
+		CSectionLoader::Load("CXIMAGE");
+		CSectionLoader::Load("LIBMP4");
+
+		CUtil::ThumbCacheClear();
+
+		bool bOverlayAllowed=g_graphicsContext.IsOverlayAllowed();
+
+		if (bOverlayAllowed)
+			g_graphicsContext.SetOverlay(false);
+
+		g_musicDatabase.BeginTransaction();
+
+		bool bOKtoScan = true;
+		if (m_bUpdateAll)
 		{
-			g_musicDatabase.CommitTransaction();
+			m_dlgProgress->SetLine(2,701);
+			m_dlgProgress->Progress();
+			bOKtoScan = g_musicDatabase.RemoveSongsFromPaths(strPaths);
+		}
+		// enable scan mode in OnRetrieveMusicInfo()
+		m_bScan=true;
+
+		if (bOKtoScan)
+		{
 			if (m_bUpdateAll)
 			{
-				m_dlgProgress->SetLine(2,331);
+				m_dlgProgress->SetLine(2,700);
 				m_dlgProgress->Progress();
-				g_musicDatabase.Compress();
+				bOKtoScan = g_musicDatabase.CleanupAlbumsArtistsGenres(strPaths);
 			}
+
+			bool bCommit = false;
+			if (bOKtoScan)
+				bCommit = DoScan(m_vecItems);
+
+			if (bCommit)
+			{
+				g_musicDatabase.CommitTransaction();
+				if (m_bUpdateAll)
+				{
+					m_dlgProgress->SetLine(2,331);
+					m_dlgProgress->Progress();
+					g_musicDatabase.Compress();
+				}
+			}
+			else
+				g_musicDatabase.RollbackTransaction();
+			m_dlgProgress->SetLine(0,328);
+			m_dlgProgress->SetLine(1,"");
+			m_dlgProgress->SetLine(2,330 );
+			m_dlgProgress->Progress();
 		}
 		else
 			g_musicDatabase.RollbackTransaction();
-		m_dlgProgress->SetLine(0,328);
-		m_dlgProgress->SetLine(1,"");
-		m_dlgProgress->SetLine(2,330 );
-		m_dlgProgress->Progress();
+
+		g_musicDatabase.EmptyCache();
+
+		CSectionLoader::Unload("CXIMAGE");
+		CSectionLoader::Unload("LIBMP4");
+
+		// disable scan mode
+		m_bScan=false;
+
+		CUtil::ThumbCacheClear();
+
+		if (bOverlayAllowed)
+			g_graphicsContext.SetOverlay(true);
+
+		m_dlgProgress->Close();
+
+		int iItem=GetSelectedItem();
+		Update(m_strDirectory);
+		CONTROL_SELECT_ITEM(CONTROL_LIST, iItem);
+		CONTROL_SELECT_ITEM(CONTROL_THUMBS, iItem);
+
+		dwTick = timeGetTime() - dwTick;
+		CStdString strTmp, strTmp1;
+		CUtil::SecondsToHMSString(dwTick/1000, strTmp1);
+		strTmp.Format("My Music: Scanning for music info without worker thread, operation took %s", strTmp1); 
+		CLog::Log(LOGNOTICE,strTmp.c_str());
 	}
-	else
-		g_musicDatabase.RollbackTransaction();
-
-	g_musicDatabase.EmptyCache();
-
-	CSectionLoader::Unload("CXIMAGE");
-	CSectionLoader::Unload("LIBMP4");
-
-	// disable scan mode
-	m_bScan=false;
-
-	CUtil::ThumbCacheClear();
-
-  if (bOverlayAllowed)
-    g_graphicsContext.SetOverlay(true);
-
-	m_dlgProgress->Close();
-
-	int iItem=GetSelectedItem();
-	Update(m_strDirectory);
-	CONTROL_SELECT_ITEM(CONTROL_LIST, iItem);
-	CONTROL_SELECT_ITEM(CONTROL_THUMBS, iItem);
-
-	dwTick = timeGetTime() - dwTick;
-	CStdString strTmp, strTmp1;
-	CUtil::SecondsToHMSString(dwTick/1000, strTmp1);
-  strTmp.Format("My Music: Scanning for music tag info took %s\n", strTmp1); 
-  CLog::Log(LOGNOTICE,strTmp.c_str());
 }
 
 bool CGUIWindowMusicSongs::DoScan(VECFILEITEMS& items)
@@ -721,6 +776,15 @@ void CGUIWindowMusicSongs::UpdateButtons()
 	else
 	{
 		CONTROL_ENABLE(CONTROL_BTNSCAN);
+	}
+
+	if (g_application.m_guiDialogMusicScan.IsRunning())
+	{
+		SET_CONTROL_LABEL(CONTROL_BTNSCAN,14056);	// Stop Scan
+	}
+	else
+	{
+		SET_CONTROL_LABEL(CONTROL_BTNSCAN,102);	//	Scan
 	}
 
 	//	Update sorting control
@@ -1339,12 +1403,17 @@ void CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
 	{
 		m_iViewAsIcons = CAutoSwitch::GetView(m_vecItems);
 
+		int iFocusedControl=GetFocusedControl();
+
 		ShowThumbPanel();
 		UpdateButtons();
 
-		int iControl = CONTROL_LIST;
-		if (m_iViewAsIcons != VIEW_AS_LIST) iControl = CONTROL_THUMBS;
-		SET_CONTROL_FOCUS(iControl, 0);
+		if (iFocusedControl==CONTROL_LIST || iFocusedControl==CONTROL_THUMBS)
+		{
+			int iControl = CONTROL_LIST;
+			if (m_iViewAsIcons != VIEW_AS_LIST) iControl = CONTROL_THUMBS;
+			SET_CONTROL_FOCUS(iControl, 0);
+		}
 	}
 }
 

@@ -665,11 +665,14 @@ CStdString CMusicInfoTagLoaderMP3::ParseMP3Genre (const CStdString& str)
 
 	// return the " / " seperate string
 	CStdString strGenre;
-	for (size_t i = 0; i < vecGenres.size() - 1; i++)
+	if (vecGenres.size())
 	{
-		strGenre += vecGenres.at(i) + " / ";
+		for (size_t i = 0; i < vecGenres.size() - 1; i++)
+		{
+			strGenre += vecGenres.at(i) + " / ";
+		}
+		strGenre += vecGenres.back();
 	}
-	strGenre += vecGenres.back();
 
 	return strGenre;
 }

@@ -192,16 +192,18 @@ CGUISettings::CGUISettings(void)
 	AddInt(6,"MyMusic.OSDTimeout", 13314, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_SECS);
 	AddCategory(3, "MusicLists", 14018);
 	AddBool(1,"MusicLists.HideTrackNumber", 13307, false);
-	AddBool(2,"MusicLists.HideParentDirItems", 13306, true);
-	AddBool(3,"MusicLists.UseAutoSwitching", 14011, false);
-	AddBool(4,"MusicLists.AutoSwitchUseLargeThumbs", 14012, false);
-	AddInt(5,"MusicLists.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
-	AddInt(6,"MusicLists.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+	AddBool(2,"MusicLists.HideExtensions", 497, false);
+	AddBool(3,"MusicLists.HideParentDirItems", 13306, true);
+	AddBool(4,"MusicLists.UseAutoSwitching", 14011, false);
+	AddBool(5,"MusicLists.AutoSwitchUseLargeThumbs", 14012, false);
+	AddInt(6,"MusicLists.AutoSwitchMethod", 14013, 0, 0, 1, 2, SPIN_CONTROL_TEXT);
+	AddInt(7,"MusicLists.AutoSwitchPercentage", 14014, 50, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
 	AddCategory(3, "MusicLibrary", 14022);
 	AddBool(1,"MusicLibrary.ShufflePlaylistsOnLoad", 228, false);
-	AddString(2,"MusicLibrary.Cleanup", 334, "", BUTTON_CONTROL_STANDARD);
-	AddString(3,"MusicLibrary.DeleteAlbumInfo", 422, "", BUTTON_CONTROL_STANDARD);
-	AddString(4,"MusicLibrary.DeleteCDDBInfo", 423, "", BUTTON_CONTROL_STANDARD);
+	AddBool(2,"MusicLibrary.UseBackgroundScanner", 14055, false);
+	AddString(3,"MusicLibrary.Cleanup", 334, "", BUTTON_CONTROL_STANDARD);
+	AddString(4,"MusicLibrary.DeleteAlbumInfo", 422, "", BUTTON_CONTROL_STANDARD);
+	AddString(5,"MusicLibrary.DeleteCDDBInfo", 423, "", BUTTON_CONTROL_STANDARD);
 	
 	// music osd 13314
 	AddCategory(3, "CDDARipper", 620);
