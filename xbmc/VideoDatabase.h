@@ -44,6 +44,7 @@ public:
   void    GetBookMarksForMovie(const CStdString& strFilenameAndPath, VECBOOKMARKS& bookmarks);
   void    AddBookMarkToMovie(const CStdString& strFilenameAndPath, float fPercentage);
   void    ClearBookMarksOfMovie(const CStdString& strFilenameAndPath);
+  void    DeleteMovie(const CStdString& strFilenameAndPath);
 
 protected:
   auto_ptr<SqliteDatabase>  m_pDB;
@@ -62,7 +63,6 @@ protected:
   
   void    AddActorToMovie(long lMovieId, long lActorId);
   void    AddGenreToMovie(long lMovieId, long lGenreId);
-
   void    Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   void    RemoveInvalidChars(CStdString& strTxt);
 	bool		CreateTables();
