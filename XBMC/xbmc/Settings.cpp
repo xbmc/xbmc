@@ -369,6 +369,7 @@ bool CSettings::Load()
 	GetString(pRootElement, "timeserver", g_stSettings.m_strTimeServer,"207.46.248.43");
   GetString(pRootElement, "thumbnails",g_stSettings.szThumbnailsDirectory,"");
   GetString(pRootElement, "shortcuts", g_stSettings.m_szShortcutDirectory,"");
+  GetString(pRootElement, "screenshots", g_stSettings.m_szScreenshotsDirectory, "");
 	GetString(pRootElement, "recordings", g_stSettings.m_szMusicRecordingDirectory,"");
 	GetString(pRootElement, "httpproxy", g_stSettings.m_szHTTPProxy,"");
 	
@@ -407,6 +408,9 @@ bool CSettings::Load()
   ConvertHomeVar(strDir);
   strcpy( g_stSettings.m_szMusicRecordingDirectory, strDir.c_str() );
   
+  strDir=g_stSettings.m_szScreenshotsDirectory;
+  ConvertHomeVar(strDir);
+  strcpy( g_stSettings.m_szScreenshotsDirectory, strDir.c_str() );
 
   if (g_stSettings.m_szShortcutDirectory[0])
   {
