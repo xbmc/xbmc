@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 16-03-2005 fixed: crash when switching skin if kai is connected
   - 16-03-2005 fixed: [ 1072255 ][ 1157300 ] Spindown does not work for wmv9 video
   - 16-03-2005 fixed: videoplayer.year showed 0 if no movie (or no movie info) was available.
   - 16-03-2005 fixed: musicplayer.title sometimes showed file extension if Hide File Extensions was on.

@@ -78,6 +78,7 @@ public:
   virtual bool IsDialog() { return false;};
 
 protected:
+  virtual void OnWindowUnload() {}
   virtual void OnWindowLoaded();
   virtual void OnInitWindow();
   struct stReferenceControl

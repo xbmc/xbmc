@@ -1067,6 +1067,8 @@ void CGUIWindow::SelectNextControl()
 
 void CGUIWindow::ClearAll()
 {
+  OnWindowUnload();
+
   for (int i = 0; i < (int)m_vecControls.size(); ++i)
   {
     CGUIControl* pControl = m_vecControls[i];
