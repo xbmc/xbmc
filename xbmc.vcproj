@@ -64,7 +64,7 @@
 				IncludeDebugInfo="TRUE"
 				InsertFile="$(TargetDir)YV12toRGB.xpu,PXLSHADER,R"
 				NoLibWarn="TRUE"
-				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBLAME"
+				NoPreload="LIBXBMS;LIBSMB;CXIMAGE;ISO9660;PYTHON;PY_RW;LIBHTTP;LIBLAME;LIBMP4"
 				TitleID="0xFACE008"
 				MediaTypes="0x80000007"
 				TitleName="Xbox Media Center Debug"/>
@@ -552,6 +552,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\GUIWindowVideoActors.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIWindowVideoGenre.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIWindowVideoInfo.cpp">
 				</File>
 				<File
@@ -654,10 +657,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\MusicInfoTagLoaderFlac.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\MusicInfoTagLoaderFlac.h">
+					RelativePath=".\xbmc\MusicInfoTagLoaderMP3.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\MusicInfoTagLoaderMP3.cpp">
+					RelativePath=".\xbmc\MusicInfoTagLoaderMP4.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\MusicInfoTagLoaderOgg.cpp">
@@ -667,6 +670,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\OggTag.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\XMP4File.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\XMP4File.h">
 				</File>
 			</Filter>
 			<Filter
@@ -1059,9 +1068,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\GUIWindowVideoActors.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\GUIWindowVideoGenre.cpp">
-			</File>
-			<File
 				RelativePath=".\xbmc\GUIWindowVideoGenre.h">
 			</File>
 			<File
@@ -1140,10 +1146,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\cores\ModPlayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\MPlayer.h">
+				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\mplayer\mplayer.h">
+				RelativePath=".\xbmc\cores\MPlayer.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\utils\MusicAlbumInfo.h">
@@ -1164,7 +1170,13 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\musicInfoTagLoaderFactory.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\MusicInfoTagLoaderFlac.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\MusicInfoTagLoaderMP3.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\MusicInfoTagLoaderMP4.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\MusicInfoTagLoaderOgg.h">
@@ -1820,10 +1832,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
