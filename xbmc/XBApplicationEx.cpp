@@ -129,24 +129,28 @@ HRESULT CXBApplicationEx::Create()
     // Initialize core peripheral port support. Note: If these parameters
     // are 0 and NULL, respectively, then the default number and types of 
     // controllers will be initialized.
-    XInitDevices( m_dwNumInputDeviceTypes, m_InputDeviceTypes );
+    //XInitDevices( m_dwNumInputDeviceTypes, m_InputDeviceTypes );
 
     // Create the gamepad devices
+    /*
     if( FAILED( hr = XBInput_CreateGamepads( &m_Gamepad ) ) )
     {
         CLog::Log(LOGERROR,   "XBAppEx: Call to CreateGamepads() failed!" );
         return hr;
     }
+    */
 
     // Create the IR Remote devices
+    /*
     if( FAILED( hr = XBInput_CreateIR_Remotes( ) ) )
     {
         CLog::Log(LOGERROR,   "XBAppEx: Call to CreateIRRemotes() failed!" );
         return hr;
     }
+    */
 
 	// Create the Mouse devices
-	g_Mouse.Initialize();
+//	g_Mouse.Initialize();
 
     // Initialize the app's device-dependent objects
     if( FAILED( hr = Initialize() ) )

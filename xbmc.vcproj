@@ -792,6 +792,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				Name="GUI Dialog"
 				Filter="">
 				<File
+					RelativePath=".\xbmc\GUIDialogContextMenu.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIDialogFileStacking.cpp">
 				</File>
 				<File
@@ -808,6 +811,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\GuiDialogSelect.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogSubMenu.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIDialogVolumeBar.cpp">
@@ -957,6 +963,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\GenreDirectory.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIDialogContextMenu.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIDialogFileStacking.h">
 			</File>
 			<File
@@ -973,6 +982,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIDialogSelect.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIDialogSubMenu.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIDialogVolumeBar.h">

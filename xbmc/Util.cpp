@@ -1568,6 +1568,28 @@ void CUtil::RemoveTempFiles()
   //} while (FindNextFile(hFind1, &wfd));
 }
 
+void CUtil::DeleteTDATA()
+{
+  WIN32_FIND_DATA wfd;
+  CStdString strTDATADir;
+  strTDATADir = "T:\\*.*";
+  memset(&wfd,0,sizeof(wfd));
+
+  CAutoPtrFind hFind( FindFirstFile(strTDATADir.c_str(),&wfd));
+  if (!hFind.isValid())
+    return ;
+  do
+  {
+    if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
+    {
+ 	  string strFile="T:\\";
+      strFile += wfd.cFileName;      
+	  CLog::Log(LOGINFO, "  DeleteFile(%s)", strFile.c_str());
+	  DeleteFile(strFile.c_str());
+    }
+  } while (FindNextFile(hFind, &wfd));
+}
+
 bool CUtil::IsHD(const CStdString& strFileName)
 {
   if (strFileName.size()<=2) return false;

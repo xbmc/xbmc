@@ -474,6 +474,41 @@ HRESULT CApplication::Create()
 	CLog::Log(LOGNOTICE, "starting...");
 	CLog::Log(LOGNOTICE, "Q is mapped to:%s",szDevicePath);
 
+	// Initialize core peripheral port support. Note: If these parameters
+	// are 0 and NULL, respectively, then the default number and types of
+	// controllers will be initialized.
+	XInitDevices( m_dwNumInputDeviceTypes, m_InputDeviceTypes );
+
+	// Create the gamepad devices
+	HRESULT hr;
+	if( FAILED(hr = XBInput_CreateGamepads(&m_Gamepad)) )
+	{
+		CLog::Log(LOGERROR, "XBAppEx: Call to CreateGamepads() failed!" );
+		return hr;
+	}
+
+	if( FAILED(hr = XBInput_CreateIR_Remotes()) )
+	{
+		CLog::Log(LOGERROR, "XBAppEx: Call to CreateIRRemotes() failed!" );
+		return hr;
+	}
+
+	// Create the Mouse devices
+	g_Mouse.Initialize();
+
+	// Wait for controller polling to finish. in an elegant way, instead of a Sleep(1000)
+	while (XGetDeviceEnumerationStatus()==XDEVICE_ENUMERATION_BUSY) {
+		ReadInput();
+	}
+
+	//Check for START+BACK and BLACK+WHITE
+	if (m_DefaultGamepad.wButtons & XINPUT_GAMEPAD_START+XINPUT_GAMEPAD_BACK ||
+		m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_BLACK] && m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_WHITE])
+	{
+		CLog::Log(LOGINFO, "Key combination detected for TDATA deletion (START+BACK or BLACK+WHITE)");
+		CUtil::DeleteTDATA();
+	}
+
 	CLog::Log(LOGNOTICE, "load settings...");
 	g_LoadErrorStr = "Unable to load settings";
 	m_bAllSettingsLoaded=g_settings.Load(m_bXboxMediacenterLoaded,m_bSettingsLoaded);
@@ -697,6 +732,8 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiDialogInvite);						// window id = 102
 	m_gWindowManager.Add(&m_guiDialogKeyboard);						// window id = 103
 	m_gWindowManager.Add(&m_guiDialogVolumeBar);					// window id = 104
+	m_gWindowManager.Add(&m_guiDialogSubMenu);						// window id = 105
+	m_gWindowManager.Add(&m_guiDialogContextMenu);				// window id = 106
 	m_gWindowManager.Add(&m_guiMyMusicPlayList);					// window id = 500
 	m_gWindowManager.Add(&m_guiMyMusicSongs);							// window id = 501
 	m_gWindowManager.Add(&m_guiMyMusicAlbum);							// window id = 502
@@ -958,6 +995,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiDialogYesNo.Load("dialogYesNo.xml");
 	m_guiDialogProgress.Load("dialogProgress.xml");
 	m_guiDialogVolumeBar.Load("dialogVolumeBar.xml");
+	m_guiDialogSubMenu.Load("dialogSubMenu.xml");
+	m_guiDialogContextMenu.Load("dialogContextMenu.xml");
 	m_guiMyMusicPlayList.Load("mymusicplaylist.xml");
 	m_guiMyMusicSongs.Load("mymusicsongs.xml");
 	m_guiMyMusicAlbum.Load("mymusicalbum.xml");
