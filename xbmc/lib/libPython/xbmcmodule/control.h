@@ -105,6 +105,7 @@ namespace PYXBMC
 		string strTextureNoFocus;
 		DWORD dwTextColor;
 		DWORD dwDisabledColor;
+		DWORD dwTextAlign;
 	} ControlButton;
 
 	typedef struct {
@@ -122,6 +123,7 @@ namespace PYXBMC
 		DWORD dwImageWidth;
 		DWORD dwItemHeight;
 		DWORD dwSpace;
+		DWORD dwAlignment;
 	} ControlList;
 
 	extern void Control_Dealloc(Control* self);
