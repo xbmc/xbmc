@@ -50,7 +50,7 @@ bool CIMDB::FindMovie(const string &strMovie,IMDB_MOVIELIST& movielist)
 
 	if (strHTML.size()==0) return false;
 
-	char *szBuffer= [strHTML.size()+1];
+	char *szBuffer= new char [strHTML.size()+1];
 	if (!szBuffer) return false;
 	strcpy(szBuffer,strHTML.c_str());
 	
