@@ -31,6 +31,9 @@ public:
 	virtual void		SetBrightness(bool bPlus=true);	
 	virtual void		SetHue(bool bPlus=true);	
 	virtual void		SetSaturation(bool bPlus=true);	
+	virtual void		GetAudioInfo( CStdString& strAudioInfo);
+	virtual void		GetVideoInfo( CStdString& strVideoInfo);
+	virtual void		GetGeneralInfo( CStdString& strVideoInfo);
 protected:
 	virtual void		OnStartup();
 	virtual void		OnExit();

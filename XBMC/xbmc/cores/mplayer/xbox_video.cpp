@@ -204,6 +204,21 @@ void choose_best_resolution()
 //********************************************************************************************************
 static void Directx_CreateOverlay(unsigned int uiFormat)
 {
+	/*
+			D3DFMT_YUY2 format (PC98 compliance). 
+			Two pixels are stored in each YUY2 word. 
+			Each data value (Y0, U, Y1, V) is 8 bits. This format is identical to the UYVY format described 
+			except that the ordering of the bits is changed.
+
+			D3DFMT_UYVY 
+			UYVY format (PC98 compliance). Two pixels are stored in each UYVY word. 
+			Each data value (U, Y0, V, Y1) is 8 bits. The U and V specify the chrominance and are 
+			shared by both pixels. The Y0 and Y1 values specify the luminance of the respective pixels. 
+			The chrominance and luminance can be computed from RGB values using the following formulas: 
+			Y = 0.299 * R + 0.587 * G + 0.114 * B
+			U = -0.168736 * R + -0.331264 * G + 0.5 * B
+			V = 0.5 * R + -0.418688 * G + -0.081312 * B 
+	*/
 	for (int i=0; i <=1; i++)
 	{
 		if ( m_pSurface[i]) m_pSurface[i]->Release();
@@ -380,13 +395,37 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
 	vo_draw_alpha_yuy2(w,h,src,srca,stride,((unsigned char *) image) + dstride*y0 + 2*x0,dstride);
 }
 
-//********************************************************************************************************
+/********************************************************************************************************
+  draw_osd(): this displays subtitles and OSD.
+	It's a bit tricky to use it, since it's a callback-style stuff.
+	It should call vo_draw_text() with screen dimension and your
+	draw_alpha implementation for the pixelformat (function pointer).
+	The vo_draw_text() checks the characters to draw, and calls
+	draw_alpha() for each. As a help, osd.c contains draw_alpha for
+	each pixelformats, use this if possible!
+	NOTE: this one will be obsolete soon! But it's still usefull when
+	you want to do tricks, like rendering osd _after_ hardware scaling
+	(tdfxfb) or render subtitles under of the image (vo_mpegpes, sdl)
+*/
 static void video_draw_osd(void)
 {
 	vo_draw_text(image_width, image_height, draw_alpha);
 }
 
-//********************************************************************************************************
+/********************************************************************************************************
+	 VOCTRL_QUERY_FORMAT  -  queries if a given pixelformat is supported.
+	  It also returns various flags decsirbing the capabilities
+		of the driver with teh given mode. for the flags, see file vfcaps.h !
+		the most important flags, every driver must properly report
+		these:
+		    0x1	 -  supported (with or without conversion)
+		    0x2  -  supported without conversion (define 0x1 too!)
+		    0x100  -  driver/hardware handles timing (blocking)
+		also SET sw/hw scaling and osd support flags, and flip,
+		and accept_stride if you implement VOCTRL_DRAW_IMAGE (see bellow)
+		NOTE: VOCTRL_QUERY_FORMAT may be called _before_ first config()
+		but is always called between preinit() and uninit()
+*/
 static unsigned int query_format(unsigned int format)
 {
   unsigned int i=0;
@@ -400,6 +439,7 @@ static unsigned int query_format(unsigned int format)
 }
 
 //********************************************************************************************************
+//      Uninit the whole system, this is on the same "level" as preinit.
 static void video_uninit(void)
 {
 	restore_resolution();
@@ -420,6 +460,8 @@ static void video_check_events(void)
 {
 }
 
+//***********************************************************************************************************
+/*init the video system (to support querying for supported formats)*/
 static unsigned int video_preinit(const char *arg)
 {
 	m_fScreenCompensationX=1.0f;
@@ -433,7 +475,12 @@ static unsigned int video_preinit(const char *arg)
 	fs=1;
   return 0;
 }
-//********************************************************************************************************
+/********************************************************************************************************
+  draw_slice(): this displays YV12 pictures (3 planes, one full sized that
+	contains brightness (Y), and 2 quarter-sized which the colour-info
+	(U,V). MPEG codecs (libmpeg2, opendivx) use this. This doesn't have
+	to display the whole frame, only update small parts of it.
+*/
 static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,int h,int x,int y )
 {
 	IMAGE img;
@@ -465,8 +512,9 @@ static void video_flip_page(void)
 	{
 		g_graphicsContext.Lock();
 		g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
+		g_application.RenderFullScreen();
 	  g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      
-		g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_dwVisibleOverlay], &rs, &rd, FALSE, 0x00010001  );
+		g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_dwVisibleOverlay], &rs, &rd, TRUE, 0x00010001  );
 		g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
 		g_graphicsContext.Unlock();
 	}
@@ -493,7 +541,7 @@ static void video_flip_page(void)
 		{
 			for (int x=0; x < (int)(dstride); x+=2)
 			{
-				*(image + dstride*(iSubTitlePos + y)+x   ) = 0x15;
+				*(image + dstride*(iSubTitlePos + y)+x   ) = 0x10;	// for black Y=0x10  U=0x80 V=0x80
 				*(image + dstride*(iSubTitlePos + y)+x+1 ) = 0x80;
 			}
 		}
@@ -508,7 +556,12 @@ static void video_flip_page(void)
 		g_graphicsContext.Unlock();
 	}
 }
-//********************************************************************************************************
+/********************************************************************************************************
+  draw_frame(): this is the older interface, this displays only complete
+	frames, and can do only packed format (YUY2, RGB/BGR).
+	Win32 codecs use this (DivX, Indeo, etc).
+	If you implement VOCTRL_DRAW_IMAGE, you can left draw_frame.
+*/
 static unsigned int video_draw_frame(unsigned char *src[])
 {
 	IMAGE img;
@@ -554,7 +607,26 @@ static unsigned int put_image(mp_image_t *mpi)
 	//yv12toyuy2(src[0],src[1],src[2],image,image_width,image_height,image_width,image_width>>1,dstride);
   return VO_TRUE;
 }
-//********************************************************************************************************
+/********************************************************************************************************
+  Set up the video system. You get the dimensions and flags.
+		width, height: size of the source image
+    d_width, d_height: wanted scaled/display size (it's a hint)
+    Flags:
+      0x01	- force fullscreen (-fs)
+			0x02	- allow mode switching (-vm)
+			0x04	- allow software scaling (-zoom)
+			0x08	- flipping (-flip)
+      They're defined as VOFLAG_* (see libvo/video_out.h)
+      
+      IMPORTAMT NOTE: config() may be called 0 (zero), 1 or more (2,3...)
+      times between preinit() and uninit() calls. You MUST handle it, and
+      you shouldn't crash at second config() call or at uninit() without
+      any config() call! To make your life easier, vo_config_count is
+      set to the number of previous config() call, counted from preinit().
+      It's set by the caller (vf_vo.c), you don't have to increase it!
+      So, you can check for vo_config_count>0 in uninit() when freeing
+      resources allocated in config() to avoid crash!
+*/
 static unsigned int video_config(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, unsigned int options, char *title, unsigned int format)
 {
 	OutputDebugString("video_config\n");
@@ -594,13 +666,23 @@ static unsigned int video_control(unsigned int request, void *data, ...)
   switch (request)
   {
     case VOCTRL_GET_IMAGE:
-    //  return get_image( (mp_image_t*)data);
+					//libmpcodecs Direct Rendering interface
+					//You need to update mpi (mp_image.h) structure, for example,
+					//look at vo_x11, vo_sdl, vo_xv or mga_common.
 		return VO_NOTIMPL;
 
     case VOCTRL_QUERY_FORMAT:
       return query_format(*((unsigned int*)data));
 
     case VOCTRL_DRAW_IMAGE:
+		/*	replacement for the current draw_slice/draw_frame way of
+				passing video frames. by implementing SET_IMAGE, you'll get
+				image in mp_image struct instead of by calling draw_*.
+				unless you return VO_TRUE for VOCTRL_DRAW_IMAGE call, the
+				old-style draw_* functils will be called!
+				Note: draw_slice is still mandatory, for per-slice rendering!
+		*/
+
 //      return put_image( (mp_image_t*)data );
 			return VO_NOTIMPL;
 
@@ -609,6 +691,14 @@ static unsigned int video_control(unsigned int request, void *data, ...)
 				//TODO
 			return VO_NOTIMPL;
     }
+		case VOCTRL_PAUSE:
+		case VOCTRL_RESUME:
+		case VOCTRL_RESET:
+		case VOCTRL_GUISUPPORT:
+		case VOCTRL_SET_EQUALIZER:
+		case VOCTRL_GET_EQUALIZER:
+		break;
+
     return VO_TRUE;
   };
   return VO_NOTIMPL;

@@ -268,6 +268,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_guiSettingsUICalibration.Load( strSkinPath+"\\settingsUICalibration.xml" );
 	m_guiSettingsMovieCalibration.Load( strSkinPath+"\\settingsMovieCalibration.xml" );
 	m_guiWindowVideoOverlay.Load( strSkinPath+"\\videoOverlay.xml" );
+	m_guiWindowFullScreen.Load( strSkinPath+"\\videoFullScreen.xml" );
 }
 
 
@@ -757,4 +758,8 @@ bool CApplication::IsPlayingVideo() const
 void CApplication::GetD3DParameters(D3DPRESENT_PARAMETERS& params)
 {
 	memcpy(&params, &m_d3dpp, sizeof(params));
+}
+void CApplication::RenderFullScreen()
+{
+	m_guiWindowFullScreen.Render();
 }

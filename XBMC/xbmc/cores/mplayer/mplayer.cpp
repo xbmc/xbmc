@@ -32,8 +32,28 @@ void						(__cdecl* pyv12toyuy2)(const unsigned char *ysrc, const unsigned char 
 int							(__cdecl* pImageOutput)(IMAGE * image, unsigned int width,int height,unsigned int edged_width, unsigned char * dst, unsigned int dst_stride,int csp,int interlaced);
 void						(__cdecl* pInitColorConversions)();
 void						(__cdecl* pSetCacheSize)(int);
+void						(__cdecl* pGetAudioInfo)(char* strFourCC,char* strAudioCodec, long* bitrate, long* samplerate, int* channels, int* bVBR);
+void						(__cdecl* pGetVideoInfo)(char* strFourCC,char* strVideoCodec, float* fps, unsigned int* iWidth,unsigned int* iHeight, long* tooearly, long* toolate);
+void						(__cdecl* pGetGeneralInfo)(long* lFramesDropped, int* iQuality, int* iCacheFilled, float* fTotalCorrection, float* fAVDelay);
+
+
 extern "C" 
 {
+	void mplayer_GetAudioInfo(char* strFourCC,char* strAudioCodec, long* bitrate, long* samplerate, int* channels, int* bVBR)
+	{
+		pGetAudioInfo(strFourCC,strAudioCodec, bitrate, samplerate, channels, bVBR);
+	}
+
+	void mplayer_GetVideoInfo(char* strFourCC,char* strVideoCodec, float* fps, unsigned int* iWidth,unsigned int* iHeight, long* tooearly, long* toolate)
+	{
+		pGetVideoInfo(strFourCC, strVideoCodec, fps, iWidth,iHeight, tooearly, toolate);
+	}
+
+	void mplayer_GetGeneralInfo(long* lFramesDropped, int* iQuality, int* iCacheFilled, float* fTotalCorrection, float* fAVDelay)
+	{
+		pGetGeneralInfo(lFramesDropped, iQuality, iCacheFilled, fTotalCorrection, fAVDelay);
+	}
+
 	void	mplayer_setcache_size(int iCacheSize)
 	{
 		pSetCacheSize(iCacheSize);
@@ -153,95 +173,105 @@ extern "C"
 		return pGetPTS();
 	}
 
-void mplayer_load_dll(DllLoader& dll)
-{
+	void mplayer_load_dll(DllLoader& dll)
+	{
 
-	void* pProc;
-	dll.ResolveExport("audio_out_format_bits", &pProc);
-	pAudioOutFormatBits=(int (__cdecl*)(int))pProc;
+		void* pProc;
+		dll.ResolveExport("audio_out_format_bits", &pProc);
+		pAudioOutFormatBits=(int (__cdecl*)(int))pProc;
 
-	dll.ResolveExport("SetVideoFunctions", &pProc);
-	pSetVideoFunctions=(void (__cdecl*)(vo_functions_t*))pProc;
+		dll.ResolveExport("SetVideoFunctions", &pProc);
+		pSetVideoFunctions=(void (__cdecl*)(vo_functions_t*))pProc;
 
-	dll.ResolveExport("GetAOData", &pProc);
-	pGetAOData=(ao_data_t* (__cdecl*)())pProc;
+		dll.ResolveExport("GetAOData", &pProc);
+		pGetAOData=(ao_data_t* (__cdecl*)())pProc;
 
-	dll.ResolveExport("SetAudioFunctions", &pProc);
-	pSetAudioFunctions=(void (__cdecl*)(ao_functions_t* ))pProc;
+		dll.ResolveExport("SetAudioFunctions", &pProc);
+		pSetAudioFunctions=(void (__cdecl*)(ao_functions_t* ))pProc;
 
-	dll.ResolveExport("mplayer_init", &pProc);
-	pInitPlayer=(int (__cdecl*)(int argc, char* argvp[]))pProc;
-	
-	dll.ResolveExport("mplayer_open_file", &pProc);
-	pOpenFile=(int (__cdecl*)(const char* ))pProc;
-	
-	dll.ResolveExport("mplayer_process", &pProc);
-	pProcess=(int (__cdecl*)())pProc;
+		dll.ResolveExport("mplayer_init", &pProc);
+		pInitPlayer=(int (__cdecl*)(int argc, char* argvp[]))pProc;
+		
+		dll.ResolveExport("mplayer_open_file", &pProc);
+		pOpenFile=(int (__cdecl*)(const char* ))pProc;
+		
+		dll.ResolveExport("mplayer_process", &pProc);
+		pProcess=(int (__cdecl*)())pProc;
 
-	
-	dll.ResolveExport("mplayer_close_file", &pProc);
-	pCloseFile=(int (__cdecl*)())pProc;
+		
+		dll.ResolveExport("mplayer_close_file", &pProc);
+		pCloseFile=(int (__cdecl*)())pProc;
 
-	dll.ResolveExport("mplayer_put_key", &pProc);
-	pMplayerPutKey=(void (__cdecl*)(int))pProc;
+		dll.ResolveExport("mplayer_put_key", &pProc);
+		pMplayerPutKey=(void (__cdecl*)(int))pProc;
 
-	dll.ResolveExport("vo_draw_text", &pProc);
-	pVODrawText=(void (__cdecl*)(int dxs,int dys,void (*draw_alpha)(int x0,int y0, int w,int h, unsigned char* src, unsigned char *srca, int stride)))pProc;
+		dll.ResolveExport("vo_draw_text", &pProc);
+		pVODrawText=(void (__cdecl*)(int dxs,int dys,void (*draw_alpha)(int x0,int y0, int w,int h, unsigned char* src, unsigned char *srca, int stride)))pProc;
 
 
-	dll.ResolveExport("aspect_save_screenres", &pProc);
-	pAspectSaveScreenres=(void (__cdecl*)(int scrw, int scrh))pProc;
+		dll.ResolveExport("aspect_save_screenres", &pProc);
+		pAspectSaveScreenres=(void (__cdecl*)(int scrw, int scrh))pProc;
 
-	dll.ResolveExport("aspect_save_prescale", &pProc);
-	pAspectSavePrescale=(void (__cdecl*)(int scrw, int scrh))pProc;
+		dll.ResolveExport("aspect_save_prescale", &pProc);
+		pAspectSavePrescale=(void (__cdecl*)(int scrw, int scrh))pProc;
 
-	dll.ResolveExport("aspect_save_orig", &pProc);
-	pAspectSaveOrig=(void (__cdecl*)(int scrw, int scrh))pProc;
+		dll.ResolveExport("aspect_save_orig", &pProc);
+		pAspectSaveOrig=(void (__cdecl*)(int scrw, int scrh))pProc;
 
-	dll.ResolveExport("aspect", &pProc);
-	pAspect=(void (__cdecl*)(unsigned int*,unsigned int*, int ))pProc;
+		dll.ResolveExport("aspect", &pProc);
+		pAspect=(void (__cdecl*)(unsigned int*,unsigned int*, int ))pProc;
 
-	dll.ResolveExport("vo_draw_alpha_yv12", &pProc);
-	pVODrawAlphayv12=(void (__cdecl*)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride))pProc;
+		dll.ResolveExport("vo_draw_alpha_yv12", &pProc);
+		pVODrawAlphayv12=(void (__cdecl*)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride))pProc;
 
-	dll.ResolveExport("vo_draw_alpha_yuy2", &pProc);
-	pVODrawAlphayuy2=(void (__cdecl*)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride))pProc;
+		dll.ResolveExport("vo_draw_alpha_yuy2", &pProc);
+		pVODrawAlphayuy2=(void (__cdecl*)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride))pProc;
 
-	dll.ResolveExport("vo_draw_alpha_rgb24", &pProc);
-	pVODrawAlphargb24=(void (__cdecl*)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride))pProc;
+		dll.ResolveExport("vo_draw_alpha_rgb24", &pProc);
+		pVODrawAlphargb24=(void (__cdecl*)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride))pProc;
 
-	dll.ResolveExport("vo_draw_alpha_rgb32", &pProc);
-	pVODrawAlphargb32=(void (__cdecl*)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride))pProc;
+		dll.ResolveExport("vo_draw_alpha_rgb32", &pProc);
+		pVODrawAlphargb32=(void (__cdecl*)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride))pProc;
 
-	dll.ResolveExport("vo_draw_alpha_rgb15", &pProc);
-	pVODrawAlphargb15=(void (__cdecl*)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride))pProc;
+		dll.ResolveExport("vo_draw_alpha_rgb15", &pProc);
+		pVODrawAlphargb15=(void (__cdecl*)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride))pProc;
 
-	dll.ResolveExport("vo_draw_alpha_rgb16", &pProc);
-	pVODrawAlphargb16=(void (__cdecl*)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride))pProc;
+		dll.ResolveExport("vo_draw_alpha_rgb16", &pProc);
+		pVODrawAlphargb16=(void (__cdecl*)(int w,int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dstbase,int dststride))pProc;
 
-	dll.ResolveExport("mplayer_get_pts", &pProc);
-	pGetPTS=(__int64 (__cdecl*)())pProc;
+		dll.ResolveExport("mplayer_get_pts", &pProc);
+		pGetPTS=(__int64 (__cdecl*)())pProc;
 
-	dll.ResolveExport("mplayer_HasVideo", &pProc);
-	pHasVideo=(BOOL (__cdecl*)())pProc;
+		dll.ResolveExport("mplayer_HasVideo", &pProc);
+		pHasVideo=(BOOL (__cdecl*)())pProc;
 
-	dll.ResolveExport("mplayer_HasAudio", &pProc);
-	pHasAudio=(BOOL (__cdecl*)())pProc;
+		dll.ResolveExport("mplayer_HasAudio", &pProc);
+		pHasAudio=(BOOL (__cdecl*)())pProc;
 
-	dll.ResolveExport("yv12toyuy2_C", &pProc);
-	pyv12toyuy2= (void (__cdecl*)(const unsigned char *ysrc, const unsigned char *usrc, const unsigned char *vsrc, unsigned char *dst,unsigned int width, unsigned int height,int lumStride, int chromStride, int dstStride))pProc;
+		dll.ResolveExport("yv12toyuy2_C", &pProc);
+		pyv12toyuy2= (void (__cdecl*)(const unsigned char *ysrc, const unsigned char *usrc, const unsigned char *vsrc, unsigned char *dst,unsigned int width, unsigned int height,int lumStride, int chromStride, int dstStride))pProc;
 
-	dll.ResolveExport("image_output", &pProc);
-	pImageOutput=(int (__cdecl*)(IMAGE * image, unsigned int width,int height,unsigned int edged_width, unsigned char * dst, unsigned int dst_stride,int csp,int interlaced))pProc;
+		dll.ResolveExport("image_output", &pProc);
+		pImageOutput=(int (__cdecl*)(IMAGE * image, unsigned int width,int height,unsigned int edged_width, unsigned char * dst, unsigned int dst_stride,int csp,int interlaced))pProc;
 
-	dll.ResolveExport("init_color_conversions", &pProc);
-	pInitColorConversions=(void(__cdecl*)())pProc;
+		dll.ResolveExport("init_color_conversions", &pProc);
+		pInitColorConversions=(void(__cdecl*)())pProc;
 
-	dll.ResolveExport("mplayer_setcache_size", &pProc);
-	pSetCacheSize=(void(__cdecl*)(int))pProc;
+		dll.ResolveExport("mplayer_setcache_size", &pProc);
+		pSetCacheSize=(void(__cdecl*)(int))pProc;
 
-	pSetVideoFunctions(&video_functions);
-	pSetAudioFunctions(&audio_functions);
-	init_color_conversions();
-}
+		dll.ResolveExport("mplayer_GetAudioInfo", &pProc);
+		pGetAudioInfo=(void(__cdecl*)(char* strFourCC,char* strAudioCodec, long* bitrate, long* samplerate, int* channels, BOOL* bVBR))pProc;
+
+		dll.ResolveExport("mplayer_GetVideoInfo", &pProc);
+		pGetVideoInfo=(void(__cdecl*)(char* strFourCC,char* strVideoCodec, float* fps, unsigned int* iWidth,unsigned int* iHeight, long* tooearly, long* toolate))pProc;
+
+		dll.ResolveExport("mplayer_GetGeneralInfo", &pProc);
+		pGetGeneralInfo=(void(__cdecl*)(long* lFramesDropped, int* iQuality, int* iCacheFilled, float* fTotalCorrection, float* fAVDelay))pProc;
+
+
+		pSetVideoFunctions(&video_functions);
+		pSetAudioFunctions(&audio_functions);
+		init_color_conversions();
+	}
 };

@@ -16,9 +16,9 @@ class CGUIWindowPictures : 	public CGUIWindow
 public:
 	CGUIWindowPictures(void);
 	virtual ~CGUIWindowPictures(void);
-  virtual bool    OnMessage(CGUIMessage& message);
-  virtual void    OnKey(const CKey& key);
-  virtual void    Render();
+  virtual bool			OnMessage(CGUIMessage& message);
+  virtual void			OnKey(const CKey& key);
+  virtual void			Render();
 
 protected:
 	void							GoParentFolder();
