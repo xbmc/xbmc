@@ -49,6 +49,7 @@ CApplication::CApplication(void)
 		m_bSpinDown=true;
 		m_bOverlayEnabled=true;
 		m_pWebServer=NULL;
+		m_pFileZilla=NULL;
 		m_pPlayer=NULL;
 		XSetProcessQuantumLength(5); //default=20msec
 		XSetFileCacheSize (256*1024);//default=64kb
@@ -173,6 +174,13 @@ HRESULT CApplication::Initialize()
 				CUtil::GetTitleIP(ipadres);
 				m_pWebServer->Start(ipadres.c_str(), 80, "Q:\\web");
 			}  
+			
+			if (FALSE)
+			{
+				m_pFileZilla = new CXBFileZilla("Q:\\");
+				m_pFileZilla->Start();
+			}
+
   }
 	g_graphicsContext.SetD3DDevice(m_pd3dDevice);//,m_d3dpp.BackBufferWidth,m_d3dpp.BackBufferHeight, g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY, (m_d3dpp.Flags&D3DPRESENTFLAG_WIDESCREEN) !=0 );
 	LoadSkin(g_stSettings.szDefaultSkin);

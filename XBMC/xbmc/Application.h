@@ -42,6 +42,7 @@
 #include "keyboard/virtualkeyboard.h"
 #include "lib/libPython/XBPython.h"
 #include "lib/libGoAhead/webserver.h"
+#include "lib/libfilezilla/xbfilezilla.h"
 #include "cores/IPlayer.h"
 #include "DetectDVDType.h"
 #include "Autorun.h"
@@ -114,6 +115,7 @@ public:
 	CDelayController								m_ctrDpad;
 	CDelayController								m_ctrIR;
 	CWebServer*											m_pWebServer;
+	CXBFileZilla*										m_pFileZilla;
 	IPlayer*												m_pPlayer;
 	bool														m_bSpinDown;
 	DWORD														m_dwSpinDownTime;
