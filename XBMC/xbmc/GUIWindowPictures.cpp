@@ -144,8 +144,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 		//	We have to process it later
 		//	(in Render()), if we have shares
 		//	visible
-		if ( m_strDirectory.IsEmpty() )
-			m_bDVDDiscEjected = true;
+		m_bDVDDiscEjected = true;
 		break;
 	case GUI_MSG_DVDDRIVE_CHANGED_CD:
 		//	Message send by a thread.
@@ -552,16 +551,25 @@ void CGUIWindowPictures::OnCreateThumbs()
 
 void CGUIWindowPictures::Render()
 {
-	//	Process GUI_MSG_DVDDRIVE_CHANGE_CD message, if we have shares
-	if ( m_bDVDDiscEjected && m_strDirectory.IsEmpty() ) {
-		int iItem = GetSelectedItem();
-		Update( m_strDirectory );
-		CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
-		CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
+	//	Process GUI_MSG_DVDDRIVE_EJECTED_CD message, if we have shares
+	if ( m_bDVDDiscEjected ) {
+		if ( !m_strDirectory.IsEmpty() ) {
+			if ( CUtil::IsCDDA( m_strDirectory ) || CUtil::IsDVD( m_strDirectory ) || CUtil::IsISO9660( m_strDirectory ) ) {
+				//	Disc has changed and we are inside a DVD Drive share, get out of here :)
+				m_strDirectory = "";
+				Update( m_strDirectory );
+			}
+		}
+		else {
+			int iItem = GetSelectedItem();
+			Update( m_strDirectory );
+			CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,iItem)
+			CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,iItem)
+		}
 		m_bDVDDiscEjected = false;
 	}
 
-	//	Process GUI_MSG_DVDDRIVED_CHANGE_CD message, if we have shares
+	//	Process GUI_MSG_DVDDRIVED_CHANGED_CD message, if we have shares
 	if ( m_bDVDDiscChanged && m_strDirectory.IsEmpty() ) {
 		int iItem = GetSelectedItem();
 		Update( m_strDirectory );
