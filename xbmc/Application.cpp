@@ -16,6 +16,10 @@
 #include "ActionManager.h"
 #include "cores/ModPlayer.h"
 #include "cores/mplayer/ASyncDirectSound.h"
+#include "GUIButtonControl.h"
+#include "GUISpinControl.h"
+#include "GUIListControl.h"
+#include "GUIThumbnailPanel.h"
 #ifdef _DEBUG
 //	#pragma comment (lib,"lib/filezilla/xbfilezillad.lib") // SECTIONNAME=FILEZILL
 	#pragma comment (lib,"xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
@@ -347,6 +351,11 @@ HRESULT CApplication::Initialize()
     m_guiDialogOK.DoModal(g_stSettings.m_iStartupWindow);
   }
 
+  if (g_stSettings.m_iLCDMode==LCD_MODE_NOTV)
+  {
+    // jump to my music when we're in NO tv mode
+    m_gWindowManager.ActivateWindow(WINDOW_MUSIC_FILES);
+  }
   CLog::Log("initialize done");	
   g_lcd.Initialize();
 	return S_OK;
@@ -889,23 +898,69 @@ void CApplication::UpdateLCD()
     }
     else
     {
-      // line 0: XBMC running...
-      // line 1: time/date
-      // line 2: free memory (megs)
-      // line 3: GUI resolution
-      g_lcd.SetLine(0,"XBMC running...");
-      SYSTEMTIME time;
-	    GetLocalTime(&time);
-      strTime.Format("%02.2i:%02.2i:%02.2i %02.2i-%02.2i-%02.2i", time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
-      g_lcd.SetLine(1,strTime);
-	    MEMORYSTATUS stat;
-	    GlobalMemoryStatus(&stat);
-		  DWORD dwMegFree=stat.dwAvailPhys / (1024*1024);
-      strTime.Format("Freemem:%i meg", dwMegFree);
-      g_lcd.SetLine(2,strTime);
-		  int  iResolution=g_graphicsContext.GetVideoResolution();
-		  strTime.Format("%ix%i %s", g_settings.m_ResInfo[iResolution].iWidth, g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].strMode);
-      g_lcd.SetLine(3,strTime);
+      if (g_stSettings.m_iLCDMode==LCD_MODE_NORMAL)
+      {
+        // line 0: XBMC running...
+        // line 1: time/date
+        // line 2: free memory (megs)
+        // line 3: GUI resolution
+        g_lcd.SetLine(0,"XBMC running...");
+        SYSTEMTIME time;
+	      GetLocalTime(&time);
+        strTime.Format("%02.2i:%02.2i:%02.2i %02.2i-%02.2i-%02.2i", time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
+        g_lcd.SetLine(1,strTime);
+	      MEMORYSTATUS stat;
+	      GlobalMemoryStatus(&stat);
+		    DWORD dwMegFree=stat.dwAvailPhys / (1024*1024);
+        strTime.Format("Freemem:%i meg", dwMegFree);
+        g_lcd.SetLine(2,strTime);
+		    int  iResolution=g_graphicsContext.GetVideoResolution();
+		    strTime.Format("%ix%i %s", g_settings.m_ResInfo[iResolution].iWidth, g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].strMode);
+        g_lcd.SetLine(3,strTime);
+      }
+      if (g_stSettings.m_iLCDMode==LCD_MODE_NOTV)
+      {
+        CStdString strTmp;
+        int iWin=m_gWindowManager.GetActiveWindow();        
+        CGUIWindow* pWindow=m_gWindowManager.GetWindow(iWin);
+        if (pWindow)
+        {
+          CStdString strLine;
+          wstring wstrLine;
+          wstrLine=g_localizeStrings.Get(10000+iWin);
+          CUtil::Unicode2Ansi(wstrLine,strLine);
+          g_lcd.SetLine(0,strLine);
+
+          int iControl=pWindow->GetFocusedControl();
+          CGUIControl* pControl=(CGUIControl* )pWindow->GetControl(iControl);
+          if (pControl)
+          {
+            CGUIButtonControl* pButton=dynamic_cast<CGUIButtonControl*>(pControl);
+            if (pButton)
+              g_lcd.SetLine(1,pButton->GetLabel());
+            CGUISpinControl* pSpinControl=dynamic_cast<CGUISpinControl*>(pControl);
+            if (pSpinControl)
+            {
+              strTmp.Format("%i/%i", 1+pSpinControl->GetValue(), pSpinControl->GetMaximum());
+              g_lcd.SetLine(1,strTmp);
+            }
+            CGUIListControl* pListControl=dynamic_cast<CGUIListControl*>(pControl);
+            if (pListControl)
+            {
+              pListControl->GetSelectedItem(strTmp);
+              g_lcd.SetLine(1,strTmp);
+            }
+            CGUIThumbnailPanel* pThumbControl=dynamic_cast<CGUIThumbnailPanel*>(pControl);
+            if (pThumbControl)
+            {
+              pThumbControl->GetSelectedItem(strTmp);
+              g_lcd.SetLine(1,strTmp);
+            }
+            g_lcd.SetLine(2,"");
+            g_lcd.SetLine(3,"");
+          }
+        }
+      }
     }
     lTickCount=GetTickCount();
   }
@@ -1273,7 +1328,7 @@ void CApplication::CheckScreenSaver()
 	FLOAT fFadeLevel;
 
   if ( m_gWindowManager.IsRouted()) return;
-
+  if (g_stSettings.m_iLCDMode==LCD_MODE_NOTV) return;
 	if (!m_bInactive)
 	{
 		if (IsPlayingVideo() && !m_pPlayer->IsPaused())	// are we playing a movie and is it paused?

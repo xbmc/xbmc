@@ -48,7 +48,7 @@ public:
 	void				 SetTextureDimensions(int iWidth, int iHeight);
   void         SetThumbDimensions(int iXpos, int iYpos,int iWidth, int iHeight);
   void         GetThumbDimensions(int& iXpos, int& iYpos,int& iWidth, int& iHeight);
-
+  int                   GetSelectedItem(CStdString& strLabel);
 	DWORD									GetTextColor() const { return m_dwTextColor;};
 	DWORD									GetSelectedColor() const { return m_dwSelectedColor;};
 	const CStdString&			GetFontName() const { return m_pFont->GetFontName(); };
