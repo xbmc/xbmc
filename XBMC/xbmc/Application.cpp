@@ -1188,6 +1188,13 @@ void CApplication::LoadSkin(const CStdString& strSkin)
     m_pPlayer = NULL;
   }
 
+  bool bKaiConnected=CKaiClient::GetInstance()->IsEngineConnected();
+  if (bKaiConnected)
+  {
+    CLog::Log(LOGINFO, " Disconnecting Kai...");
+    CKaiClient::GetInstance()->RemoveObserver();
+  }
+
   CLog::Log(LOGINFO, "  delete old skin...");
   m_guiVideoOverlay.FreeResources();
   m_guiVideoOverlay.ClearAll();
@@ -1313,7 +1320,12 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_gWindowManager.SetCallback(*this);
   m_gWindowManager.Initialize();
   CLog::Log(LOGINFO, "  skin loaded...");
-  
+
+  if (bKaiConnected)
+  {
+    CLog::Log(LOGINFO, " Reconnecting Kai...");
+    CKaiClient::GetInstance()->SetObserver(&m_guiMyBuddies);
+  }
 }
 
 bool CApplication::LoadUserWindows(const CStdString& strSkinPath)

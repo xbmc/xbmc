@@ -54,6 +54,7 @@ public:
 
 	virtual void			OnEditTextComplete(CStdString& strLineOfText);
 
+  virtual void      OnWindowUnload();
   virtual void      OnWindowLoaded();
 	virtual void			OnInitWindow();
 	virtual bool			OnMessage(CGUIMessage &message);

@@ -38,6 +38,8 @@ class RenderContext : public CGUIItem::RenderContext
 
   CGUIListExItem(CStdString& aItemName);
   virtual ~CGUIListExItem(void);
+  virtual void AllocResources();
+  virtual void FreeResources();
   virtual void OnPaint(CGUIItem::RenderContext* pContext);
   void SetIcon(CGUIImage* pImage);
   void SetIcon(INT aWidth, INT aHeight, const CStdString& aTexture);
