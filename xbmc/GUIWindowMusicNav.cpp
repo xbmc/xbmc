@@ -1155,7 +1155,11 @@ void CGUIWindowMusicNav::GoParentFolder()
 		m_strArtist.Empty();
 		m_strGenre.Empty();
 	}
-	Update(m_strParentPath);
+  CStdString strPath(m_strParentPath), strOldPath(m_Directory.m_strPath);
+	Update(strPath);
+
+  if(!g_guiSettings.GetBool("FileLists.FullDirectoryHistory"))
+    m_history.Remove(strOldPath); //Delete current path
 }
 
 void CGUIWindowMusicNav::GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString)

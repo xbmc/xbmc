@@ -444,7 +444,7 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 	if (iItem >=0 && iItem < (int)m_vecItems.size())
 	{
 		CFileItem* pItem=m_vecItems[iItem];
-		if (pItem->m_bIsFolder && pItem->GetLabel() != "..")
+		if (pItem->GetLabel() != "..")
 		{
 			GetDirectoryHistoryString(pItem, strSelectedItem);
 		}
@@ -528,8 +528,12 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 /// \brief Call to go to parent folder
 void CGUIWindowMusicBase::GoParentFolder()
 {
-	CStdString strPath=m_strParentPath;
+	CStdString strPath(m_strParentPath), strOldPath(m_Directory.m_strPath);
 	Update(strPath);
+
+  if(!g_guiSettings.GetBool("FileLists.FullDirectoryHistory"))
+    m_history.Remove(strOldPath); //Delete current path
+
 	/*
 	if (m_vecItems.size()==0) return;
 	CFileItem* pItem=m_vecItems[0];

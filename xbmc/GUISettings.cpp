@@ -428,6 +428,7 @@ CGUISettings::CGUISettings(void)
 	AddCategory(7, "FileLists", 14018);
 	AddBool(1,"FileLists.HideExtensions", 497, false);
 	AddBool(2,"FileLists.HideParentDirItems", 13306, false);
+  AddBool(3,"FileLists.FullDirectoryHistory", 15106, true);
 
 	AddCategory(7, "ScreenSaver", 360);
 	AddString(1, "ScreenSaver.Mode", 356, "Dim", SPIN_CONTROL_TEXT);

@@ -13,6 +13,24 @@ CDirectoryHistory::~CDirectoryHistory()
 {
 }
 
+void CDirectoryHistory::Remove(const CStdString& strDirectory)
+{
+  CStdString strDir=strDirectory;
+	strDir.ToLower();
+	while (CUtil::HasSlashAtEnd(strDir) )
+		strDir=strDir.Left(strDir.size()-1);
+
+  vector<CHistoryItem>::iterator Iter;
+	for (Iter = m_vecHistory.begin();Iter != m_vecHistory.end(); Iter++)
+	{
+    if (  strDir==Iter->m_strDirectory) 
+		{
+      m_vecHistory.erase(Iter);
+			return;
+		}
+	}
+}
+
 void	CDirectoryHistory::Set(const CStdString&  strSelectedItem, const CStdString& strDirectory)
 {
 	if (strSelectedItem.size()==0) return;
