@@ -23,6 +23,8 @@ using namespace std;
 #define CTL_BUTTON_OK				3108
 #define CTL_BUTTON_CANCEL			3109
 
+#define KAI_PRIVATE_ARENA_LIMIT		32
+
 CGUIDialogHost::CGUIDialogHost(void) : CGUIDialog(0)
 {
 	m_bPrivate = false;
@@ -39,10 +41,10 @@ void CGUIDialogHost::OnInitWindow()
 	spin_control.Clear();
 	spin_control.SetRange(1,16);
 
-	for (int i=0; i<16; i++)
+	for (int i=0; i<KAI_PRIVATE_ARENA_LIMIT; i++)
 	{
 		CStdString strItem;
-		strItem.Format("%i/16", i+1);
+		strItem.Format("%d/%d", i+1, KAI_PRIVATE_ARENA_LIMIT);
 		spin_control.AddLabel(strItem,i);
 	}
 
