@@ -125,6 +125,7 @@ public:
 	virtual bool			OnMessage(CGUIMessage& message);
 	virtual	void			OnPlayBackEnded();
 	virtual	void			OnPlayBackStarted();
+	virtual void			OnPlayBackStopped();
   bool          PlayMedia(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC_TEMP);
 	bool					PlayFile(const CFileItem& item,bool bRestart=false);
 	void					StopPlaying();
@@ -157,6 +158,9 @@ public:
 	bool					AnyButtonDown();
 	bool					ResetScreenSaverWindow();
 	void					SetKaiNotification(CStdString& aCaption, CStdString& aDescription, CGUIImage* aIcon=NULL);
+    double                  GetTotalTime() const;
+    double                  GetTime() const;
+    void                    SeekTime( double dTime=0.0 );
 
 	CGUIWindowHome								m_guiHome;
 	CGUIWindowPrograms							m_guiPrograms;
