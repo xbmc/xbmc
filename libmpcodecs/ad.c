@@ -21,6 +21,7 @@ extern ad_functions_t mpcodecs_ad_ffmpeg;
 extern ad_functions_t mpcodecs_ad_liba52;
 extern ad_functions_t mpcodecs_ad_hwac3;
 extern ad_functions_t mpcodecs_ad_pcm;
+extern ad_functions_t mpcodecs_ad_aiffpcm;
 extern ad_functions_t mpcodecs_ad_dvdpcm;
 extern ad_functions_t mpcodecs_ad_alaw;
 extern ad_functions_t mpcodecs_ad_imaadpcm;
@@ -54,6 +55,7 @@ ad_functions_t* mpcodecs_ad_drivers[] =
   &mpcodecs_ad_ffmpeg,
 #endif
   &mpcodecs_ad_pcm,
+  &mpcodecs_ad_aiffpcm,
   &mpcodecs_ad_dvdpcm,
   &mpcodecs_ad_alaw,
   &mpcodecs_ad_imaadpcm,

@@ -89,6 +89,7 @@ sh_audio_t* new_sh_audio(demuxer_t *demuxer,int id){
 void free_sh_audio(sh_audio_t* sh){
     mp_msg(MSGT_DEMUXER,MSGL_V,"DEMUXER: freeing sh_audio at %p  \n",sh);
     if(sh->wf) free(sh->wf);
+    if(sh->ah) free(sh->ah);
     free(sh);
 }
 
