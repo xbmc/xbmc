@@ -115,7 +115,9 @@ void CGUIWindowOSD::Render()
 {
 	SetVideoProgress();			// get the percentage of playback complete so far
 	Get_TimeInfo();				// show the time elapsed/total playing time
+  CLog::DebugLog("Rendering OSD");
 	CGUIWindow::Render();		// render our controls to the screen
+  CLog::DebugLog("Finished Rendering OSD");
 }
 
 void CGUIWindowOSD::OnAction(const CAction &action)
@@ -222,9 +224,13 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
 		case GUI_MSG_WINDOW_DEINIT:	// fired when OSD is hidden
 		{
 			OutputDebugString("OSD:DEINIT\n");
+      // lock our display as these effect our controls, and we're rendering from
+      // a separate thread
+      g_graphicsContext.Lock();
  			ClearAudioStreamItems();
 			ClearSubTitleItems();
 			ClearBookmarkItems();
+      g_graphicsContext.Unlock();
 			//hide the OSD
       HIDE_CONTROL(GetID(), GetID());
 			//if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(true);
@@ -953,6 +959,8 @@ void CGUIWindowOSD::PopulateBookmarks()
 	const CStdString& strMovie=g_application.CurrentFile();
 	CVideoDatabase dbs;
 
+  // lock our display (to prevent rendering while we're altering the contents of the listcontrol)
+  g_graphicsContext.Lock();
 	// tell the list control not to show the page x/y spin control
 	CGUIListControl* pControl=(CGUIListControl*)GetControl(OSD_BOOKMARKS_LIST);
 	if (pControl) pControl->SetPageControlVisible(false);
@@ -988,6 +996,7 @@ void CGUIWindowOSD::PopulateBookmarks()
 	// set the currently active bookmark as the selected item in the list control
 	CGUIMessage msgSet(GUI_MSG_ITEM_SELECT,GetID(),OSD_BOOKMARKS_LIST,m_iCurrentBookmark,0,NULL);
 	OnMessage(msgSet);
+  g_graphicsContext.Unlock();
 }
 
 void CGUIWindowOSD::ClearBookmarkItems()
@@ -1009,6 +1018,9 @@ void CGUIWindowOSD::PopulateAudioStreams()
 	// get the number of audio strams for the current movie
 	int iValue=g_application.m_pPlayer->GetAudioStreamCount();
 	int iCurrent=g_application.m_pPlayer->GetAudioStream();
+
+  // lock our display so that render isn't called while we are updating the list control
+  g_graphicsContext.Lock();
 	// tell the list control not to show the page x/y spin control
 	CGUIListControl* pControl=(CGUIListControl*)GetControl(OSD_AUDIOSTREAM_LIST);
 	if (pControl) pControl->SetPageControlVisible(false);
@@ -1081,6 +1093,7 @@ void CGUIWindowOSD::PopulateAudioStreams()
 	// set the current active audio stream as the selected item in the list control
 	CGUIMessage msgSet(GUI_MSG_ITEM_SELECT,GetID(),OSD_AUDIOSTREAM_LIST,g_stSettings.m_currentVideoSettings.m_AudioStream,0,NULL);
 	OnMessage(msgSet);
+  g_graphicsContext.Unlock();
 }
 
 void CGUIWindowOSD::ClearAudioStreamItems()
@@ -1099,6 +1112,8 @@ void CGUIWindowOSD::ClearAudioStreamItems()
 
 void CGUIWindowOSD::PopulateSubTitles()
 {
+  g_graphicsContext.Lock();
+  CLog::DebugLog("Populating SubItems");
 	// get the number of subtitles in the current movie
 	int bEnabled = g_application.m_pPlayer->GetSubtitleVisible();
 	int iValue=g_application.m_pPlayer->GetSubtitleCount();
@@ -1146,10 +1161,13 @@ void CGUIWindowOSD::PopulateSubTitles()
 	// set the current active subtitle as the selected item in the list control
 	CGUIMessage msgSet(GUI_MSG_ITEM_SELECT,GetID(),OSD_SUBTITLE_LIST,iCurrent,0,NULL);
 	OnMessage(msgSet);
+  g_graphicsContext.Unlock();
+  CLog::DebugLog("PopulateSubtitles done");
 }
 
 void CGUIWindowOSD::ClearSubTitleItems()
 {
+  CLog::DebugLog("Clearing SubItems");
 	CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),OSD_SUBTITLE_LIST,0,0,NULL);
 	OnMessage(msg);
 
@@ -1160,6 +1178,7 @@ void CGUIWindowOSD::ClearSubTitleItems()
 	}
 
 	m_vecSubTitlesItems.erase(m_vecSubTitlesItems.begin(), m_vecSubTitlesItems.end());
+  CLog::DebugLog("Clearing SubItems Done");
 }
 
 void CGUIWindowOSD::Reset()
