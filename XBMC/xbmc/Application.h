@@ -39,6 +39,7 @@
 #include "GUIWindowVideoOverlay.h"
 #include "GUIWindowSettingsSlideShow.h"
 #include "GUIWindowSettingsScreensaver.h"
+#include "guiwindowsettingsautorun.h"
 #include "guiwindowsettingsfilter.h"
 #include "guiwindowsettingsmusic.h"
 #include "GUIWindowScripts.h"
@@ -129,6 +130,7 @@ public:
 	CGUIWindowSettingsScreenCalibration m_guiSettingsScreenCalibration;
 	CGUIWindowSettingsSlideShow			m_guiSettingsSlideShow;
 	CGUIWindowSettingsScreensaver			m_guiSettingsScreensaver;
+  CGUIWindowSettingsAutoRun       m_guiSettingsAutoRun;
 	CGUIWindowScripts								m_guiScripts;
 	CGUIWindowSettingsFilter				m_guiSettingsFilter;
 	CGUIDialogSelect								m_guiDialogSelect;
