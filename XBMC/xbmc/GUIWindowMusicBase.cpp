@@ -40,7 +40,7 @@ CGUIWindowMusicBase::CGUIWindowMusicBase ()
 :CGUIWindow(0)
 {
 	m_nSelectedItem=-1;
-	m_nFocusedControl=-1;
+	m_iLastControl=-1;
 }
 
 CGUIWindowMusicBase::~CGUIWindowMusicBase ()
@@ -170,7 +170,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_WINDOW_DEINIT:
 		{
-			int m_nFocusedControl=GetFocusedControl();
+			m_iLastControl=GetFocusedControl();
       ClearFileItems();
 			CSectionLoader::Unload("LIBID3");
 			m_database.Close();
@@ -190,9 +190,9 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 			m_rootDir.SetMask(g_stSettings.m_szMyMusicExtensions);
 			m_rootDir.SetShares(g_settings.m_vecMyMusicShares);
 			
-			if (m_nFocusedControl>-1)
+			if (m_iLastControl>-1)
 			{
-				SET_CONTROL_FOCUS(GetID(), m_nFocusedControl);
+				SET_CONTROL_FOCUS(GetID(), m_iLastControl);
 			}
 			return true;
 		}
@@ -328,6 +328,8 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 		}
 	}
 
+	m_iLastControl=GetFocusedControl();
+
 	ClearFileItems();
 
 	m_history.Set(strSelectedItem,m_strDirectory);
@@ -342,13 +344,16 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 
 	strSelectedItem=m_history.Get(m_strDirectory);
 
-	if ( ViewByIcon() ) 
-	{	
-		SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS);
-	}
-	else 
+	if (m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST)
 	{
-		SET_CONTROL_FOCUS(GetID(), CONTROL_LIST);
+		if (ViewByIcon()) 
+		{	
+			SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS);
+		}
+		else 
+		{
+			SET_CONTROL_FOCUS(GetID(), CONTROL_LIST);
+		}
 	}
 
 	CStdString strFileName;
@@ -466,7 +471,7 @@ void CGUIWindowMusicBase::Update(const CStdString &strDirectory)
 			pItem->SetIconImage(pItem->GetThumbnailImage());
 
 
-		//	syncronize playlist with current directory
+		//	synchronize playlist with current directory
 		if (!strFileName.IsEmpty() && pItem->m_strPath == strFileName)
 		{
 			pItem->Select(true);
