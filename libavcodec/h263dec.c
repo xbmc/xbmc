@@ -111,6 +111,11 @@ int ff_h263_decode_init(AVCodecContext *avctx)
 int ff_h263_decode_end(AVCodecContext *avctx)
 {
     MpegEncContext *s = avctx->priv_data;
+    
+    if (s->h263_msmpeg4)		//free memory allocated by init_vlc_r1
+        ff_msmpeg4_decode_uninit();
+    else
+        h263_decode_uninit_vlc();
 
     MPV_common_end(s);
     return 0;
