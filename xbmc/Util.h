@@ -20,6 +20,7 @@ public:
   virtual ~CUtil(void);
   static char* GetExtension(const CStdString& strFileName);
   static void  RemoveExtension(CFileItem* pItem);
+  static void  RemoveExtension(CStdString& strFileName);
   static void  RemoveExtensions(VECFILEITEMS &items);
   static char* GetFileName(const CStdString& strFileNameAndPath);
   static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath);
