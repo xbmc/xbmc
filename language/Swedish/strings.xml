@@ -2433,4 +2433,42 @@
 <value>Aktivera RSS nyheter</value>
 </string>
 
+<string>
+<id>13306</id>
+<value>Göm föremål i huvudmappen</value>
+</string>
+  
+<string>
+<id>13307</id>
+<value>Reset/Starta om</value>
+</string>
+
+<string>
+<id>13308</id>
+<value>Vill du göra en kall omstart</value>
+</string>
+
+<string><id>13309</id>
+<value>istället för en reset?</value>
+</string>
+
+<string>
+<id>13310</id>
+<value>Transtion zoom</value>
+</string>
+
+<string>
+<id>13311</id>
+<value>Transtion float</value>
+</string>
+
+<string>
+<id>13312</id>
+<value>Border reduction</value>
+</string>
+
+<string>
+<id>13313</id>
+<value>Reseta/Starta om</value>
+</string>
 </strings>
