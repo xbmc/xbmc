@@ -30,21 +30,6 @@ CGraphicContext::~CGraphicContext(void)
 }
 
 
-LPDIRECT3DDEVICE8 CGraphicContext::Get3DDevice()
-{
-  return m_pd3dDevice;
-}
-
-int CGraphicContext::GetWidth() const
-{
-  return m_iScreenWidth;
-}
-
-int  CGraphicContext::GetHeight() const
-{
-  return m_iScreenHeight;
-}
-
 void CGraphicContext::SetD3DDevice(LPDIRECT3DDEVICE8 p3dDevice)
 {
 	m_pd3dDevice=p3dDevice;
@@ -54,16 +39,6 @@ void CGraphicContext::SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams, RESOLUT
 {
 	m_pd3dParams=p3dParams;
 	m_pResInfo=pResInfo;
-}
-
-void CGraphicContext::SetMediaDir(const CStdString& strMediaDir)
-{
-  m_strMediaDir=strMediaDir;
-}
-
-const CStdString& CGraphicContext::GetMediaDir() const
-{
-  return m_strMediaDir;
 }
 
 void CGraphicContext::SendMessage(CGUIMessage& message)
