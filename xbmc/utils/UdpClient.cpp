@@ -3,6 +3,9 @@
 #include "UdpClient.h"
 #include "Log.h"
 #include "graphiccontext.h"
+#include "../Settings.h"
+
+#define UDPCLIENT_DEBUG_LEVEL	LOGDEBUG
 
 CUdpClient::CUdpClient(void) : CThread()
 {
@@ -20,34 +23,34 @@ bool CUdpClient::Create(void)
 
 	InitializeCriticalSection(&critical_section);
 
-	CLog::Log(LOGINFO, "UDPCLIENT: Creating UDP socket...");	
+	CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT: Creating UDP socket...");	
 
 	// Create a UDP socket
 	client_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	if (client_socket == SOCKET_ERROR)
 	{
-		CLog::Log(LOGINFO, "UDPCLIENT: Unable to create socket.");	
+		CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT: Unable to create socket.");	
 		return false;
 	}
 
-	CLog::Log(LOGINFO, "UDPCLIENT: Setting broadcast socket option...");	
+	CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT: Setting broadcast socket option...");	
 
 	unsigned int value =  1;
 	if( setsockopt( client_socket, SOL_SOCKET, SO_BROADCAST, (char*) &value, sizeof( unsigned int ) ) == SOCKET_ERROR)
 	{
-		CLog::Log(LOGINFO, "UDPCLIENT: Unable to set socket option.");
+		CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT: Unable to set socket option.");
 		return false;
 	}
 
-	CLog::Log(LOGINFO, "UDPCLIENT: Setting non-blocking socket options...");	
+	CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT: Setting non-blocking socket options...");	
 
 	unsigned long nonblocking=1;
 	ioctlsocket(client_socket, FIONBIO, &nonblocking);
 
-	CLog::Log(LOGINFO, "UDPCLIENT: Spawning listener thread...");	
+	CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT: Spawning listener thread...");	
 	CThread::Create(false);
 
-	CLog::Log(LOGINFO, "UDPCLIENT: Ready.");	
+	CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT: Ready.");	
 
 	return true;
 }
@@ -117,7 +120,7 @@ void CUdpClient::Process()
 {
 	Sleep(2000);
 
-	CLog::Log(LOGINFO, "UDPCLIENT: Listening.");	
+	CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT: Listening.");	
 
 	SOCKADDR_IN remoteAddress;
 	char messageBuffer[1024];
@@ -145,6 +148,11 @@ void CUdpClient::Process()
 
 				CStdString message = messageBuffer;
 
+				if (UDPCLIENT_DEBUG_LEVEL >= g_stSettings.m_iLogLevel)
+				{
+					CLog::Log(UDPCLIENT_DEBUG_LEVEL,"UDPCLIENT RX: %u\t\t<- '%s'", timeGetTime(), message.c_str() );
+				}
+
 				// NOTE: You should consider locking access to the screen device
 				// or at least wait until after vertical refresh before firing off events
 				// to protect access to graphics resources.  
@@ -157,7 +165,7 @@ void CUdpClient::Process()
 			{
 				CStdString debug;
 				debug.Format("UDPCLIENT: Socket error %u",WSAGetLastError());
-				CLog::Log(LOGDEBUG, debug);
+				CLog::Log(UDPCLIENT_DEBUG_LEVEL, debug);
 			}
 
 			// is there any more data to read?
@@ -171,7 +179,7 @@ void CUdpClient::Process()
 
 	closesocket(client_socket);
 
-	CLog::Log(LOGNOTICE, "UDPCLIENT: Stopped listening.");	
+	CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT: Stopped listening.");	
 }
 
 
@@ -196,6 +204,12 @@ void CUdpClient::DispatchNextCommand()
 	int ret;
 	if (command.binarySize>0)
 	{
+		// only perform the following if logging level at debug
+		if (UDPCLIENT_DEBUG_LEVEL >= g_stSettings.m_iLogLevel)
+		{
+			CLog::Log(UDPCLIENT_DEBUG_LEVEL,"UDPCLIENT TX: %u\t\t-> <binary payload %u bytes>", timeGetTime(), command.binarySize );
+		}
+
 		do
 		{
 			ret = sendto(client_socket, (LPCSTR) command.binary, command.binarySize, 0, (struct sockaddr *) &command.address, sizeof(command.address));
@@ -205,6 +219,12 @@ void CUdpClient::DispatchNextCommand()
 	}
 	else
 	{
+		// only perform the following if logging level at debug
+		if (UDPCLIENT_DEBUG_LEVEL >= g_stSettings.m_iLogLevel)
+		{
+			CLog::Log(UDPCLIENT_DEBUG_LEVEL,"UDPCLIENT TX: %u\t\t-> '%s'", timeGetTime(), command.message.c_str() );
+		}
+
 		do
 		{
 			ret = sendto(client_socket, command.message, command.message.GetLength(), 0, (struct sockaddr *) &command.address, sizeof(command.address));
