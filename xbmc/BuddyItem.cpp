@@ -50,8 +50,9 @@ void CBuddyItem::OnPaint(CGUIItem::RenderContext* pContext)
 	CGUIListExItem::OnPaint(pContext);
 
 	// safely get a pointer to the derived (subclassed) context
-	CGUIListExItem::RenderContext* pDC = dynamic_cast<CGUIListExItem::RenderContext*>(pContext);
+	//CGUIListExItem::RenderContext* pDC = dynamic_cast<CGUIListExItem::RenderContext*>(pContext);
 
+	CGUIListExItem::RenderContext* pDC = (CGUIListExItem::RenderContext*)pContext;
 	if ( (pDC) && (m_pPingIcon) && (m_dwPing>0) && (m_dwPing<=PING_MAX_LATENCY) )
 	{
 		DWORD dwPosY = pDC->m_dwPositionY;
