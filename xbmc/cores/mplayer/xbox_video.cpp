@@ -301,6 +301,7 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 		m_RGBTexture[i]->UnlockRect(0);
 	}
 
+  m_iOSDTextureWidth = float(normalFullScreenVideoDisplayRect.right - normalFullScreenVideoDisplayRect.left);
 	// Create osd textures
 	for (int i = 0; i < 2; ++i)
 	{
@@ -418,8 +419,6 @@ unsigned int Directx_ManageDisplay()
   //we need dimensions of the video how it would be rendered fullscreen in normal view (for subs)
   CalcNormalDisplayRect(fOffsetX1, fOffsetY1, iScreenWidth, iScreenHeight, &normalFullScreenVideoDisplayRect);
   
-  m_iOSDTextureWidth = int(600 * float(normalFullScreenVideoDisplayRect.right - normalFullScreenVideoDisplayRect.left)/g_settings.m_ResInfo[m_iResolution].Overscan.width);
-
 	if( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
 	{
 		const RECT& rv = g_graphicsContext.GetViewWindow();
@@ -593,10 +592,7 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
 static void video_draw_osd(void)
 {
   if (m_bPauseDrawing) return;
-  //draw on a smaller area when subs are enlarged, area will then be stretched to viewport in draw_alpha
-  float width = (float)m_iOSDTextureWidth;
-  width *= (100.0f - g_stSettings.m_iEnlargeSubtitlePercent) / 100.0f;
-  vo_draw_text((int)width, normalFullScreenVideoDisplayRect.bottom - normalFullScreenVideoDisplayRect.top, draw_alpha);
+  vo_draw_text((int)m_iOSDTextureWidth, normalFullScreenVideoDisplayRect.bottom - normalFullScreenVideoDisplayRect.top, draw_alpha);
 }
 
 //********************************************************************************************************
