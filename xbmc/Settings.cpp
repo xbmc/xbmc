@@ -12,6 +12,26 @@ struct CSettings::stSettings g_stSettings;
 
 CSettings::CSettings(void)
 {
+  g_stSettings.m_iCacheSizeHD[CACHE_AUDIO] = 256;
+  g_stSettings.m_iCacheSizeHD[CACHE_VIDEO] = 1024;
+  g_stSettings.m_iCacheSizeHD[CACHE_VOB]   = 16384;
+
+  g_stSettings.m_iCacheSizeUDF[CACHE_AUDIO] = 256;
+  g_stSettings.m_iCacheSizeUDF[CACHE_VIDEO] = 8192;
+  g_stSettings.m_iCacheSizeUDF[CACHE_VOB]   = 16384;
+
+  g_stSettings.m_iCacheSizeISO[CACHE_AUDIO] = 256;
+  g_stSettings.m_iCacheSizeISO[CACHE_VIDEO] = 8192;
+  g_stSettings.m_iCacheSizeISO[CACHE_VOB]   = 16384;
+
+  g_stSettings.m_iCacheSizeLAN[CACHE_AUDIO] = 256;
+  g_stSettings.m_iCacheSizeLAN[CACHE_VIDEO] = 8192;
+  g_stSettings.m_iCacheSizeLAN[CACHE_VOB]   = 16384;
+
+  g_stSettings.m_iCacheSizeInternet[CACHE_AUDIO] = 512;
+  g_stSettings.m_iCacheSizeInternet[CACHE_VIDEO] = 2048;
+  g_stSettings.m_iCacheSizeInternet[CACHE_VOB]   = 16384;
+
   m_ResInfo[HDTV_1080i].Overscan.left = 0;
   m_ResInfo[HDTV_1080i].Overscan.top = 0;
   m_ResInfo[HDTV_1080i].Overscan.width = 1920;
@@ -721,8 +741,33 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     CLog::Log("%s doesnt contain <settings>",strSettingsFile.c_str());
 		return false;
 	}
+  // cache settings
+  TiXmlElement *pElement = pRootElement->FirstChildElement("cachesettings");
+  if (pElement)
+	{
+    GetInteger(pElement, "hdcacheaudio",g_stSettings.m_iCacheSizeHD[CACHE_AUDIO],256,0,16384);
+    GetInteger(pElement, "hdcachevideo",g_stSettings.m_iCacheSizeHD[CACHE_VIDEO],1024,0,16384);
+    GetInteger(pElement, "hdcachevob",g_stSettings.m_iCacheSizeHD[CACHE_VOB],16384,0,16384);
+
+    GetInteger(pElement, "udfcacheaudio",g_stSettings.m_iCacheSizeUDF[CACHE_AUDIO],256,0,16384);
+    GetInteger(pElement, "udfcachevideo",g_stSettings.m_iCacheSizeUDF[CACHE_VIDEO],8192,0,16384);
+    GetInteger(pElement, "udfcachevob",g_stSettings.m_iCacheSizeUDF[CACHE_VOB],16384,0,16384);
+
+    GetInteger(pElement, "isocacheaudio",g_stSettings.m_iCacheSizeISO[CACHE_AUDIO],256,0,16384);
+    GetInteger(pElement, "isocachevideo",g_stSettings.m_iCacheSizeISO[CACHE_VIDEO],8192,0,16384);
+    GetInteger(pElement, "isocachevob",g_stSettings.m_iCacheSizeISO[CACHE_VOB],16384,0,16384);
+
+    GetInteger(pElement, "lancacheaudio",g_stSettings.m_iCacheSizeLAN[CACHE_AUDIO],256,0,16384);
+    GetInteger(pElement, "lancachevideo",g_stSettings.m_iCacheSizeLAN[CACHE_VIDEO],8192,0,16384);
+    GetInteger(pElement, "lancachevob",g_stSettings.m_iCacheSizeLAN[CACHE_VOB],16384,0,16384);
+
+    GetInteger(pElement, "inetcacheaudio",g_stSettings.m_iCacheSizeInternet[CACHE_AUDIO],512,0,16384);
+    GetInteger(pElement, "inetcachevideo",g_stSettings.m_iCacheSizeInternet[CACHE_VIDEO],2048,0,16384);
+    GetInteger(pElement, "inetcachevob",g_stSettings.m_iCacheSizeInternet[CACHE_VOB],16384,0,16384);
+
+  }
 	// mypictures
-	TiXmlElement *pElement = pRootElement->FirstChildElement("mypictures");
+	pElement = pRootElement->FirstChildElement("mypictures");
 	if (pElement)
 	{
 		GetInteger(pElement, "picturesviewicons", g_stSettings.m_iMyPicturesViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
@@ -847,6 +892,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
       
 		GetInteger(pElement, "subtitleheight",g_stSettings.m_iSubtitleHeight,28,1,128);
 		GetString(pElement, "subtitlefont", g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
+		GetInteger(pElement, "smallstepbackseconds", g_stSettings.m_iSmallStepBackSeconds,7,1,INT_MAX);
+		GetInteger(pElement, "smallstepbacktries", g_stSettings.m_iSmallStepBackTries,3,1,10);
+		GetInteger(pElement, "smallstepbackdelay", g_stSettings.m_iSmallStepBackDelay,300,100,5000); //MS
 	}
 	// myscripts settings
 	pElement = pRootElement->FirstChildElement("myscripts");
@@ -971,6 +1019,31 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetBoolean(pNode, "programssortascending", g_stSettings.m_bMyProgramsSortAscending);
 	SetBoolean(pNode, "flatten", g_stSettings.m_bMyProgramsFlatten);
 	SetBoolean(pNode, "defaultxbe", g_stSettings.m_bMyProgramsDefaultXBE);
+
+
+  // cache settings
+	TiXmlElement cacheNode("cachesettings");
+	pNode = pRoot->InsertEndChild(cacheNode);
+	if (!pNode) return false;
+  SetInteger(pNode, "hdcacheaudio",g_stSettings.m_iCacheSizeHD[CACHE_AUDIO]);
+  SetInteger(pNode, "hdcachevideo",g_stSettings.m_iCacheSizeHD[CACHE_VIDEO]);
+  SetInteger(pNode, "hdcachevob",g_stSettings.m_iCacheSizeHD[CACHE_VOB]);
+
+  SetInteger(pNode, "udfcacheaudio",g_stSettings.m_iCacheSizeUDF[CACHE_AUDIO]);
+  SetInteger(pNode, "udfcachevideo",g_stSettings.m_iCacheSizeUDF[CACHE_VIDEO]);
+  SetInteger(pNode, "udfcachevob",g_stSettings.m_iCacheSizeUDF[CACHE_VOB]);
+
+  SetInteger(pNode, "isocacheaudio",g_stSettings.m_iCacheSizeISO[CACHE_AUDIO]);
+  SetInteger(pNode, "isocachevideo",g_stSettings.m_iCacheSizeISO[CACHE_VIDEO]);
+  SetInteger(pNode, "isocachevob",g_stSettings.m_iCacheSizeISO[CACHE_VOB]);
+
+  SetInteger(pNode, "lancacheaudio",g_stSettings.m_iCacheSizeLAN[CACHE_AUDIO]);
+  SetInteger(pNode, "lancachevideo",g_stSettings.m_iCacheSizeLAN[CACHE_VIDEO]);
+  SetInteger(pNode, "lancachevob",g_stSettings.m_iCacheSizeLAN[CACHE_VOB]);
+
+  SetInteger(pNode, "inetcacheaudio",g_stSettings.m_iCacheSizeInternet[CACHE_AUDIO]);
+  SetInteger(pNode, "inetcachevideo",g_stSettings.m_iCacheSizeInternet[CACHE_VIDEO]);
+  SetInteger(pNode, "inetcachevob",g_stSettings.m_iCacheSizeInternet[CACHE_VOB]);
 
 	// mypictures settings
 	TiXmlElement picturesNode("mypictures");
@@ -1107,6 +1180,9 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 
 	SetInteger(pNode, "subtitleheight",g_stSettings.m_iSubtitleHeight);
 	SetString(pNode, "subtitlefont", g_stSettings.m_szSubtitleFont);
+	SetInteger(pNode, "smallstepbackseconds", g_stSettings.m_iSmallStepBackSeconds);
+	SetInteger(pNode, "smallstepbacktries", g_stSettings.m_iSmallStepBackTries);
+	SetInteger(pNode, "smallstepbackdelay", g_stSettings.m_iSmallStepBackDelay);
 
 	// myscripts settings
 	TiXmlElement scriptsNode("myscripts");
