@@ -185,14 +185,15 @@ void Audio_Xbox::close(void)
 	{
 		pStream->Flush();
 		isPlaying = false;
-		for (int i = 0; i < AUDIO_XBOX_BUFFERS; ++i)
+	}
+
+	for (int i = 0; i < AUDIO_XBOX_BUFFERS; ++i)
+	{
+		if (pMPacket[i].pvBuffer)
 		{
-			if (pMPacket[BufIdx].pvBuffer)
-			{
-				free(pMPacket[BufIdx].pvBuffer);
-				pMPacket[BufIdx].pvBuffer = 0;
-				CloseHandle(pMPacket[BufIdx].hCompletionEvent);
-			}
+			free(pMPacket[i].pvBuffer);
+			pMPacket[i].pvBuffer = 0;
+			CloseHandle(pMPacket[i].hCompletionEvent);
 		}
 	}
 
