@@ -576,6 +576,11 @@
   <string><id>10503</id><value>My Music/artists</value></string>
   <string><id>10504</id><value>My Music/genres</value></string>
   <string><id>10505</id><value>My Music/top100</value></string>
+  <string><id>10506</id><value>Applications</value></string>
+  <string><id>10507</id><value>Configuration</value></string>
+  <string><id>10508</id><value>Weather Forecast</value></string>
+  <string><id>10509</id><value>Network Gaming</value></string>
+  <string><id>10510</id><value>Extensions</value></string>
   <string><id>11000</id><value>keyboard</value></string>
   <string><id>12000</id><value>Select dialog</value></string>
   <string><id>12001</id><value>My Music/info</value></string>
