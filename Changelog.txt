@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 30-01-2005 added: file manager, show free disk space for hdd and total size for DVD
   - 29-01-2005 fixed: 1080i aspect ratio in ComboRenderer
   - 29-01-2005 added: Pictures auto-rotate using EXIF information
   - 29-01-2005 fixed: Zoom in pictures should pause slideshow till unzoomed
