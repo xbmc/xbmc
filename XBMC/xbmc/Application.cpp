@@ -204,7 +204,7 @@ HRESULT CApplication::Initialize()
 	CreateDirectory((strDir+"\\python").c_str(),NULL);
 	CreateDirectory((strDir+"\\scripts").c_str(),NULL);
 	CreateDirectory((strDir+"\\language").c_str(),NULL);
-	CreateDirectory((strDir+"\\visualisation").c_str(),NULL);
+	CreateDirectory((strDir+"\\visualisations").c_str(),NULL);
 
 
   // initialize network
