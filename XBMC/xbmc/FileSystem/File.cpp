@@ -23,6 +23,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include "../autoptrhandle.h"
+using namespace AUTOPTR;
 using namespace XFILE;
 
 //////////////////////////////////////////////////////////////////////
@@ -48,8 +50,9 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 {
 	if ( Open(strFileName,true))
 	{
-		HANDLE hMovie = CreateFile( szDest, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL );
-		if (hMovie==NULL)
+		::DeleteFile(szDest);
+		CAutoPtrHandle hMovie ( CreateFile( szDest, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL ) );
+		if (!hMovie.isValid() )
 		{
 			delete m_pFile;
 			m_pFile=NULL;
@@ -74,7 +77,7 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 			if (iRead > 0)
 			{
 				DWORD dwWrote;
-				WriteFile(hMovie,buffer.get(),iRead,&dwWrote,NULL);
+				WriteFile( (HANDLE)hMovie,buffer.get(),iRead,&dwWrote,NULL);
 				dwFileSize -= iRead;
 				dwPos+= iRead;
 				float fPercent=(float)dwPos;
@@ -89,7 +92,6 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 						{
 							// canceled
 							Close();
-							CloseHandle(hMovie);
 							::DeleteFile(szDest);
 							return false;
 						}
@@ -99,13 +101,11 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 			if (iRead != iBytesToRead) 
 			{
 				Close();
-				CloseHandle(hMovie);
 				::DeleteFile(szDest);
 				return false;
 			}
 		}
 		Close();
-		CloseHandle(hMovie);
 		return true;
 	}
 	return false;

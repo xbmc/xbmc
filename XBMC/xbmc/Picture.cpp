@@ -221,7 +221,7 @@ bool CPicture::CreateThumnail(const CStdString& strFileName)
 {
 	CStdString strExtension;
 	CStdString strCachedFile;
-	DWORD dwImageType;
+	DWORD dwImageType=CXIMAGE_FORMAT_JPG;
 	
 	CUtil::GetExtension(strFileName,strExtension);
 	if (!strExtension.size()) return false;
@@ -244,6 +244,9 @@ bool CPicture::CreateThumnail(const CStdString& strFileName)
 	CFile file;
 	if ( !file.Cache(strFileName.c_str(),strCachedFile.c_str(),NULL,NULL) )
 	{
+			OutputDebugString("Unable to cache image:");
+			OutputDebugString(strFileName.c_str());
+			OutputDebugString("\n");
 		return NULL;
 	}
 
@@ -258,7 +261,9 @@ bool CPicture::CreateThumnail(const CStdString& strFileName)
 		CxImage image(dwImageType);
 		if (!image.Load(strCachedFile.c_str(),dwImageType))
 		{
-			
+			OutputDebugString("Unable to load image:");
+			OutputDebugString(strCachedFile.c_str());
+			OutputDebugString("\n");
 			return NULL;
 		}
 		m_dwWidth=image.GetWidth();
