@@ -37,7 +37,7 @@ CGUIListControl::CGUIListControl(DWORD dwParentID, DWORD dwControlId, int iPosX,
 	m_iTextOffsetX2=0;
 	m_iTextOffsetY2=0;
 	m_bUpDownVisible = true;	// show the spin control by default
-	
+	m_dwTextAlign = 0;
 	m_dwTextColor2=dwTextColor;
 	m_dwSelectedColor2=dwSelectedColor;
 	ControlType = GUICONTROL_LIST;
@@ -49,105 +49,116 @@ CGUIListControl::~CGUIListControl(void)
 
 void CGUIListControl::Render()
 {
-  if (!m_pFont) return;
-  if (!IsVisible()) return;
-  CGUIControl::Render();
-  CStdStringW labelUnicode;
-  CStdStringW labelUnicode2;
-  int iPosY=m_iPosY;
-	
-  for (int i=0; i < m_iItemsPerPage; i++)
-  {
-	int iPosX=m_iPosX;
-    if (i+m_iOffset < (int)m_vecItems.size() )
-    {
-      // render item
-      CGUIListItem *pItem=m_vecItems[i+m_iOffset];
-      if (i == m_iCursorY && HasFocus() && m_iSelect== CONTROL_LIST)
-	  {
-		// render focused line
-        m_imgButton.SetFocus(true);
-	  }
-	  else
-	  {
-		// render no-focused line
-        m_imgButton.SetFocus(false);
-	  }
+	if (!m_pFont) return;
+	if (!IsVisible()) return;
+	CGUIControl::Render();
+	CStdStringW labelUnicode;
+	CStdStringW labelUnicode2;
+	int iPosY=m_iPosY;
 
-      m_imgButton.SetPosition(m_iPosX, iPosY);	
-      m_imgButton.Render();
-      
-	  // render the icon
-	  if (pItem->HasIcon() )
-      {
-        // show icon
-		CGUIImage* pImage=pItem->GetIcon();
-		if (!pImage)
+	for (int i=0; i < m_iItemsPerPage; i++)
+	{
+		int iPosX=m_iPosX;
+		if (i+m_iOffset < (int)m_vecItems.size() )
 		{
-			pImage=new CGUIImage(0,0,0,0,m_iImageWidth,m_iImageHeight,pItem->GetIconImage(),0x0);
-			pImage->AllocResources();
-			pItem->SetIcon(pImage);
-			
-		}
+			// render item
+			CGUIListItem *pItem=m_vecItems[i+m_iOffset];
+			if (i == m_iCursorY && HasFocus() && m_iSelect== CONTROL_LIST)
+			{
+			// render focused line
+				m_imgButton.SetFocus(true);
+			}
+			else
+			{
+			// render no-focused line
+				m_imgButton.SetFocus(false);
+			}
 
-		pImage->SetWidth(m_iImageWidth);
-		pImage->SetHeight(m_iImageHeight);
-		// center vertically
-		pImage->SetPosition(iPosX+8, iPosY+(m_iItemHeight-m_iImageHeight)/2);
-		pImage->Render();
+			m_imgButton.SetPosition(m_iPosX, iPosY);	
+			m_imgButton.Render();
+      
+			// render the icon
+			if (pItem->HasIcon() )
+      {
+				// show icon
+				CGUIImage* pImage=pItem->GetIcon();
+				if (!pImage)
+				{
+					pImage=new CGUIImage(0,0,0,0,m_iImageWidth,m_iImageHeight,pItem->GetIconImage(),0x0);
+					pImage->AllocResources();
+					pItem->SetIcon(pImage);
+				}
+
+				pImage->SetWidth(m_iImageWidth);
+				pImage->SetHeight(m_iImageHeight);
+				// center vertically
+				pImage->SetPosition(iPosX+8, iPosY+(m_iItemHeight-m_iImageHeight)/2);
+				pImage->Render();
       }
-	  iPosX+=(m_iImageWidth+10);
+			iPosX+=(m_iImageWidth+10);
 
-	  // render the text
-      DWORD dwColor=m_dwTextColor;
-	  if (pItem->IsSelected())
-	  {
-        dwColor=m_dwSelectedColor;
-	  }
+			// render the text
+			DWORD dwColor=m_dwTextColor;
+			if (pItem->IsSelected())
+			{
+				dwColor=m_dwSelectedColor;
+			}
       
-	  iPosX +=m_iTextOffsetX;
-      bool bSelected(false);
-      if (i == m_iCursorY && HasFocus() && m_iSelect== CONTROL_LIST)
-	  {
-        bSelected=true;
-	  }
+			iPosX +=m_iTextOffsetX;
+			bool bSelected(false);
+			if (i == m_iCursorY && HasFocus() && m_iSelect== CONTROL_LIST)
+			{
+				bSelected=true;
+			}
 
-	  CStdString strLabel2=pItem->GetLabel2();
+			CStdString strLabel2=pItem->GetLabel2();
       
-	  DWORD dMaxWidth=(m_dwWidth-m_iImageWidth-16);
-	  if ( strLabel2.size() > 0 && m_pFont2)
-	  {
-		g_charsetConverter.stringCharsetToFontCharset(strLabel2, labelUnicode2);
-		if ( m_iTextOffsetY == m_iTextOffsetY2 ) 
-		{
-			float fTextHeight,fTextWidth;
-			m_pFont2->GetTextExtent( labelUnicode2.c_str(), &fTextWidth,&fTextHeight);
-			dMaxWidth -= (DWORD)(fTextWidth+20);
-		}
-  	  }
+			DWORD dMaxWidth=(m_dwWidth-m_iImageWidth-16);
+			if ( strLabel2.size() > 0 && m_pFont2)
+			{
+				g_charsetConverter.stringCharsetToFontCharset(strLabel2, labelUnicode2);
+				if ( m_iTextOffsetY == m_iTextOffsetY2 ) 
+				{
+					float fTextHeight,fTextWidth;
+					m_pFont2->GetTextExtent( labelUnicode2.c_str(), &fTextWidth,&fTextHeight);
+					dMaxWidth -= (DWORD)(fTextWidth+20);
+				}
+  		}
 
-	  g_charsetConverter.stringCharsetToFontCharset(pItem->GetLabel(), labelUnicode);
-	  float fTextHeight,fTextWidth;
-	  m_pFont->GetTextExtent( labelUnicode.c_str(), &fTextWidth,&fTextHeight);
-	  RenderText((float)iPosX, (float)iPosY+((m_iItemHeight-fTextHeight)/2), (FLOAT)dMaxWidth, dwColor, (WCHAR*) labelUnicode.c_str(), bSelected);
+			g_charsetConverter.stringCharsetToFontCharset(pItem->GetLabel(), labelUnicode);
+			float fPosY = (float)iPosY + m_iTextOffsetY;
+			if (m_dwTextAlign & XBFONT_CENTER_Y)
+			{
+				float fTextHeight,fTextWidth;
+				m_pFont->GetTextExtent( labelUnicode.c_str(), &fTextWidth,&fTextHeight);
+				fPosY = (float)iPosY + (m_iItemHeight-fTextHeight)/2;
+			}
+			RenderText((float)iPosX, fPosY, (FLOAT)dMaxWidth, dwColor, (WCHAR*) labelUnicode.c_str(), bSelected);
       
-      if (strLabel2.size()>0 && m_pFont2)
-      {
-		dwColor=m_dwTextColor2;
-		if (pItem->IsSelected())
-		{
-			dwColor=m_dwSelectedColor2;
-		}
-		if (!m_iTextOffsetX2)
-			iPosX=m_iPosX+m_dwWidth-16;
-		else
-			iPosX=m_iPosX+m_iTextOffsetX2;
+			if (strLabel2.size()>0 && m_pFont2)
+			{
+				dwColor=m_dwTextColor2;
+				if (pItem->IsSelected())
+				{
+					dwColor=m_dwSelectedColor2;
+				}
+				if (!m_iTextOffsetX2)
+					iPosX=m_iPosX+m_dwWidth-16;
+				else
+					iPosX=m_iPosX+m_iTextOffsetX2;
 
-		m_pFont2->DrawText((float)iPosX, (float)iPosY+((m_iItemHeight-fTextHeight)/2),dwColor,labelUnicode2.c_str(),XBFONT_RIGHT); 
+				float fPosY = (float)iPosY + m_iTextOffsetY2;
+				if (m_dwTextAlign & XBFONT_CENTER_Y)
+				{
+					float fTextHeight,fTextWidth;
+					m_pFont->GetTextExtent( labelUnicode.c_str(), &fTextWidth,&fTextHeight);
+					fPosY = (float)iPosY + (m_iItemHeight-fTextHeight)/2;
+				}
+				m_pFont2->DrawText((float)iPosX, fPosY,dwColor,labelUnicode2.c_str(),XBFONT_RIGHT); 
       }	
-      iPosY += (DWORD)(m_iItemHeight+m_iSpaceBetweenItems);
+			iPosY += (DWORD)(m_iItemHeight+m_iSpaceBetweenItems);
     }
-  }
+	}
 	if (m_bUpDownVisible)
 	{
 		m_upDown.SetValue(GetPage());

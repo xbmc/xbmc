@@ -87,7 +87,7 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate,int
 	CxImage image(dwImageType);
   try
   {
-	  if (!image.Load(strCachedFile.c_str(),dwImageType))
+	  if (!image.Load(strCachedFile.c_str(),dwImageType) || !image.IsValid())
 	  {
 			CLog::Log(LOGERROR, "PICTURE::load: Unable to open image: %s Error:%s\n", strCachedFile.c_str(), image.GetLastError());
 		  return NULL;
@@ -103,10 +103,18 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate,int
     return NULL;
   }
 
-  for (int i=0; i < iRotate; ++i)
-  {
-		image.RotateRight();
-  }
+	if (iRotate == 1)
+	{
+		if (!image.RotateRight() || !image.IsValid()) return NULL;
+	}
+	if (iRotate == 2)
+	{
+		if (!image.Rotate180() || !image.IsValid()) return NULL;
+	}
+	if (iRotate == 3)
+	{
+		if (!image.RotateLeft() || !image.IsValid()) return NULL;
+	}
 
 	m_dwWidth  = image.GetWidth();
 	m_dwHeight = image.GetHeight();
@@ -130,7 +138,7 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate,int
 
   if (bResize)
   {
-		if (!image.Resample(m_dwWidth,m_dwHeight, QUALITY))
+		if (!image.Resample(m_dwWidth,m_dwHeight, QUALITY) || !image.IsValid())
 		{
 			CLog::Log(LOGERROR, "PICTURE::Load: Unable to resample picture: %s\n", strCachedFile.c_str());
 			return NULL;
@@ -140,11 +148,6 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iRotate,int
 	m_dwWidth=image.GetWidth();
 	m_dwHeight=image.GetHeight();
 
-	if (!image.Flip())
-	{
-		CLog::Log(LOGERROR, "PICTURE::Load: Unable to flip picture: %s\n", strCachedFile.c_str());
-		return NULL;
-	}
 	if (bRGB)
 		pTexture=GetTexture(image);
 	else
@@ -193,7 +196,7 @@ IDirect3DTexture8* CPicture::GetTexture( CxImage& image  )
 			BYTE *pDest = (BYTE*)lr.pBits + strideScreen*y;
 			for (DWORD x=0; x < dwWidth; x++)
 			{
-				RGBQUAD rgb=image.GetPixelColor( x, y);
+				RGBQUAD rgb=image.GetPixelColor( x, dwHeight-1-y);
 
 				*pDest++ = rgb.rgbBlue;
 				*pDest++ = rgb.rgbGreen;
