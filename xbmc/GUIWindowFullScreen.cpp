@@ -11,6 +11,7 @@
 #include "utils/singlelock.h"
 #include "videodatabase.h"
 #include "cores/mplayer/ASyncDirectSound.h"
+#include "playlistplayer.h"
 
 #include <stdio.h>
 
@@ -35,6 +36,8 @@
 #define MENU_ACTION_NEW_BOOKMARK  9
 #define MENU_ACTION_NEXT_BOOKMARK  10
 #define MENU_ACTION_CLEAR_BOOKMARK  11
+
+#define MENU_ACTION_NOCACHE 12
 
 #define IMG_PAUSE     16
 #define IMG_2X	      17
@@ -87,6 +90,20 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
   
 	switch (action.wID)
 	{
+    // previous : play previous song from playlist
+    case ACTION_PREV_ITEM:
+	  {
+		  g_playlistPlayer.PlayPrevious();
+	  }
+    break;
+
+    // next : play next song from playlist
+    case ACTION_NEXT_ITEM:
+	  {
+		  g_playlistPlayer.PlayNext();
+	  }
+    break;
+
 		case ACTION_SHOW_GUI:
     {
 			// switch back to the menu
@@ -165,6 +182,10 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
         g_application.m_pPlayer->SeekPercentage(iPercent+10);
       }
     }
+    break;
+
+    case ACTION_SHOW_MPLAYER_OSD:
+      g_application.m_pPlayer->ToggleOSD();
     break;
 
 		case ACTION_SHOW_OSD:
@@ -287,19 +308,21 @@ void CGUIWindowFullScreen::OnAction(const CAction &action)
     break;
 
  		case ACTION_SMALL_STEP_BACK:
-    {
-      int orgpos=(int)g_application.m_pPlayer->GetTime();
-      int jumpsize = 8; // secs; of course better if configurable
-      int setpos=(orgpos > jumpsize) ? orgpos-jumpsize : 0; // First jump = 2*jumpsize
-      int newpos;
-      do
-      {
-        setpos = (setpos > jumpsize) ? setpos-jumpsize : 0;
-        g_application.m_pPlayer->SeekTime(setpos);
-        Sleep(300);
-        newpos = (int)g_application.m_pPlayer->GetTime();
-      } while ( (newpos>orgpos-jumpsize) && (setpos>0) );
-    }
+     {
+ 
+ 		int orgpos=(int)g_application.m_pPlayer->GetTime();
+		int triesleft=g_stSettings.m_iSmallStepBackTries;
+        int jumpsize = g_stSettings.m_iSmallStepBackSeconds; // secs
+        int setpos=(orgpos > jumpsize) ? orgpos-jumpsize : 0; // First jump = 2*jumpsize
+        int newpos;
+        do
+        {
+			setpos = (setpos > jumpsize) ? setpos-jumpsize : 0;
+ 			g_application.m_pPlayer->SeekTime(setpos);
+ 			Sleep(g_stSettings.m_iSmallStepBackDelay); // delay to let mplayer finish its seek (in ms)
+ 			newpos = (int)g_application.m_pPlayer->GetTime();
+ 		} while ( (newpos>orgpos-jumpsize) && (setpos>0) && (--triesleft>0));
+  	}
     break;
 	}
 	CGUIWindow::OnAction(action);
@@ -492,7 +515,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
       m_osdMenu.SetValue(MENU_ACTION_SEEK,iValue);
     }
 	  m_osdMenu.Draw();
-    SET_CONTROL_FOCUS(GetID(), m_osdMenu.GetSelectedMenu()+BTN_OSD_VIDEO);
+    SET_CONTROL_FOCUS(GetID(), m_osdMenu.GetSelectedMenu()+BTN_OSD_VIDEO, 0);
     return;
   }
     
@@ -655,7 +678,8 @@ void CGUIWindowFullScreen::ShowOSD()
   COSDOptionIntRange   optionPercentage(MENU_ACTION_SEEK,298,true,0,100,1,iValue);
   COSDOptionBoolean    optionNonInterleaved(MENU_ACTION_INTERLEAVED,306, g_stSettings.m_bNonInterleaved);
   COSDOptionBoolean    optionFrameRateConversions(MENU_ACTION_FRAMERATECONVERSIONS, 343, g_stSettings.m_bFrameRateConversions);
-
+  COSDOptionBoolean    optionNoCache(MENU_ACTION_NOCACHE,431, g_stSettings.m_bNoCache);
+  
   videoMenu.AddOption(&optionNewBookmark);
   videoMenu.AddOption(&optionNextBookmark);
   videoMenu.AddOption(&optionClearbookmarks);
@@ -663,6 +687,7 @@ void CGUIWindowFullScreen::ShowOSD()
   videoMenu.AddOption(&optionAVDelay);
   videoMenu.AddOption(&optionPercentage);
   videoMenu.AddOption(&optionNonInterleaved);
+  videoMenu.AddOption(&optionNoCache);
   videoMenu.AddOption(&optionFrameRateConversions);
   
 
@@ -763,6 +788,18 @@ void CGUIWindowFullScreen::OnExecute(int iAction, const IOSDOption* option)
         return;
 	  }
 	  break;
+
+   case MENU_ACTION_NOCACHE:
+	  {
+        const COSDOptionBoolean* boolOption = (const COSDOptionBoolean*)option;
+        g_stSettings.m_bNoCache=!g_stSettings.m_bNoCache;
+        HideOSD();
+        m_bOSDVisible=false;
+        g_application.Restart(true);
+        return;
+	  }
+	  break;
+
 	  case MENU_ACTION_FRAMERATECONVERSIONS:
 	  {
 		    const COSDOptionBoolean* boolOption = (const COSDOptionBoolean*)option;

@@ -54,6 +54,13 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 		{
 			//	global playlist changed outside playlist window
 			Update("");
+
+			if ((m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST) && m_vecItems.size()<=0)
+			{
+				m_iLastControl=CONTROL_BTNVIEWASICONS;
+				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
+			}
+
 		}
 		break;
 
@@ -70,6 +77,12 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 			m_iViewAsIconsRoot=g_stSettings.m_iMyMusicPlaylistViewAsIcons;
 
 			Update(m_strDirectory);
+
+			if ((m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST) && m_vecItems.size()<=0)
+			{
+				m_iLastControl=CONTROL_BTNVIEWASICONS;
+				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
+			}
 
 			if (m_nSelectedItem>-1)
 			{
@@ -104,6 +117,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 				CGUIWindowMusicBase::OnMessage(message);
 				g_stSettings.m_iMyMusicPlaylistViewAsIcons=m_iViewAsIconsRoot;
 				g_settings.Save();
+				return true;
 			}
 			else if (iControl==CONTROL_BTNSHUFFLE)
 			{
@@ -235,6 +249,7 @@ void CGUIWindowMusicPlayList::ClearPlayList()
 	g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Clear();
 	UpdateListControl();
 	UpdateButtons();
+	SET_CONTROL_FOCUS(GetID(), CONTROL_BTNVIEWASICONS, 0);
 }
 
 void CGUIWindowMusicPlayList::ShufflePlayList()
@@ -261,7 +276,6 @@ void CGUIWindowMusicPlayList::ShufflePlayList()
 	}
 
 	Update(m_strDirectory);
-	SET_CONTROL_FOCUS(GetID(), CONTROL_BTNSHUFFLE);
 }
 
 void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
@@ -350,15 +364,15 @@ void CGUIWindowMusicPlayList::UpdateButtons()
 	switch (m_iViewAsIconsRoot)
   {
     case VIEW_AS_LIST:
-      iString=100; // view as icons
+      iString=101; // view as icons
     break;
     
     case VIEW_AS_ICONS:
-      iString=417;  // view as large icons
+      iString=100;  // view as large icons
       bViewIcon=true;
     break;
     case VIEW_AS_LARGEICONS:
-      iString=101; // view as list
+      iString=417; // view as list
       bViewIcon=true;
     break;
   }
@@ -439,6 +453,9 @@ void CGUIWindowMusicPlayList::OnFileItemFormatLabel(CFileItem* pItem)
 			pItem->SetLabel2(str);
 		}
 	}
+	//	set thumbs and default icons
+	CUtil::SetMusicThumb(pItem);
+	CUtil::FillInDefaultIcon(pItem);
 }
 
 void CGUIWindowMusicPlayList::DoSort(VECFILEITEMS& items)
@@ -487,3 +504,4 @@ void CGUIWindowMusicPlayList::OnRetrieveMusicInfo(VECFILEITEMS& items)
 
 	songsMap.erase(songsMap.begin(),songsMap.end());
 }
+

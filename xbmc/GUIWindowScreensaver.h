@@ -9,6 +9,10 @@
 #include "stdstring.h"
 using namespace std;
 
+#define SCREENSAVER_FADE   1
+#define SCREENSAVER_BLACK  2
+#define SCREENSAVER_MATRIX 3
+
 class CGUIWindowScreensaver : public CGUIWindow
 {
 public:

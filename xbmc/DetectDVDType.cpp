@@ -1,5 +1,6 @@
 #include "DetectDVDType.h"
 #include "Filesystem/cdiosupport.h"
+#include "Filesystem/iso9660.h"
 #include "xbox/undocumented.h"
 #include "Settings.h"
 #include "playlistplayer.h"
@@ -65,12 +66,14 @@ VOID CDetectDVDMedia::UpdateDvdrom()
 			{
 				case DRIVE_OPEN:
 				{
+          m_isoReader.Reset();
 					m_DriveState = DRIVE_OPEN;
 					SetNewDVDShareUrl( "D:\\" ,false,"(open)");
 					//	Send Message to GUI that disc been ejected
 					CGUIMessage msg( GUI_MSG_DVDDRIVE_EJECTED_CD, 0, 0, 0, 0, NULL );
 					waitLock.Leave();
 					m_gWindowManager.SendThreadMessage( msg );
+
 					return;
 				}
 				break;
@@ -78,6 +81,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
 				case DRIVE_NOT_READY:
         {
 					// drive is not ready (closing, opening)
+          m_isoReader.Reset();
 					SetNewDVDShareUrl( "D:\\" ,false,"(busy)");
           m_DriveState = DRIVE_NOT_READY;
 					//	DVD-ROM in undefined state
@@ -103,6 +107,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
 				case DRIVE_CLOSED_NO_MEDIA:
 					{
 						// nothing in there...
+            m_isoReader.Reset();
 						m_DriveState = DRIVE_CLOSED_NO_MEDIA;
 						SetNewDVDShareUrl( "D:\\" ,false,"(empty)");
             //	Send Message to GUI that disc has changed
@@ -175,7 +180,10 @@ void CDetectDVDMedia::DetectMediaType()
 	{
 		//	Detect ISO9660(mode1/mode2) or CDDA filesystem
 		if ( m_pCdInfo->IsIso9660( 1 ) || m_pCdInfo->IsIso9660Interactive( 1 ) )
+    {
 			strNewUrl = "iso9660://";
+      m_isoReader.Scan();
+    }
 		else if ( m_pCdInfo->IsAudio( 1 ) )
 		{
 			strNewUrl = "cdda://local/";

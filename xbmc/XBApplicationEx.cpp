@@ -59,7 +59,8 @@ CXBApplicationEx::CXBApplicationEx()
     m_d3dpp.BackBufferHeight       = 576;
     m_d3dpp.BackBufferFormat       = D3DFMT_LIN_A8R8G8B8;
     m_d3dpp.BackBufferCount        = 1;
-    m_d3dpp.EnableAutoDepthStencil = FALSE;
+    m_d3dpp.EnableAutoDepthStencil = TRUE;
+	  m_d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
     m_d3dpp.SwapEffect             = D3DSWAPEFFECT_DISCARD ;
 		m_d3dpp.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 
@@ -94,7 +95,18 @@ HRESULT CXBApplicationEx::Create()
                                            D3DCREATE_HARDWARE_VERTEXPROCESSING, 
                                            &m_d3dpp, &m_pd3dDevice ) ) )
     {
-        CLog::Log(  "XBAppEx: Could not create D3D device!" );
+        CLog::Log("XBAppEx: Could not create D3D device!" );
+        CLog::Log(" width/height:(%ix%i)" , m_d3dpp.BackBufferWidth,m_d3dpp.BackBufferHeight);
+        CLog::Log(" refreshrate:%i" , m_d3dpp.FullScreen_RefreshRateInHz);
+        if (m_d3dpp.Flags & D3DPRESENTFLAG_WIDESCREEN)
+          CLog::Log(" 16:9 widescreen");  
+        else
+          CLog::Log(" 4:3");  
+
+        if (m_d3dpp.Flags & D3DPRESENTFLAG_INTERLACED)
+          CLog::Log(" interlaced");  
+        if (m_d3dpp.Flags & D3DPRESENTFLAG_PROGRESSIVE)
+          CLog::Log(" progressive");  
         return hr;
     }
 

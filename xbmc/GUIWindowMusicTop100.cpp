@@ -74,7 +74,6 @@ bool CGUIWindowMusicTop100::OnMessage(CGUIMessage& message)
 
 				g_stSettings.m_iMyMusicTop100ViewAsIcons=m_iViewAsIconsRoot;
 				g_settings.Save();
-				SET_CONTROL_FOCUS(GetID(), CONTROL_BTNVIEWASICONS);
 				return true;
 			}
 		}
@@ -263,6 +262,15 @@ void CGUIWindowMusicTop100::OnFileItemFormatLabel(CFileItem* pItem)
 			pItem->SetLabel2(str);
 		}
 	}
+
+	//	set thumbs and default icons
+	CUtil::SetMusicThumb(pItem);
+	CUtil::FillInDefaultIcon(pItem);
+
+	// CONTROL_THUMB in top 100 is a listcontrol, so big 
+	// iconimages have to be shown if its enabled
+	if (ViewByIcon())
+		pItem->SetIconImage(pItem->GetThumbnailImage());
 }
 
 void CGUIWindowMusicTop100::DoSort(VECFILEITEMS& items)

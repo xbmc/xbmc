@@ -5,9 +5,8 @@
 #include "../settings.h"
 #include "../url.h"
 #include "../filesystem/fileshoutcast.h"
-extern CFileShoutcast* m_pShoutCastRipper;
-extern "C" void dllReleaseAll( );
 #include "EMUkernel32.h"
+#include "dlgcache.h"
 
 #define KEY_ENTER 13
 #define KEY_TAB 9
@@ -70,10 +69,14 @@ extern "C" void dllReleaseAll( );
 extern "C" void free_registry(void);
 extern void xbox_video_wait();
 extern void xbox_video_CheckScreenSaver();	// Screensaver check
+extern CFileShoutcast* m_pShoutCastRipper;
+extern "C" void dllReleaseAll( );
 
 int m_iAudioStreamIDX=-1;
+static CDlgCache* m_dlgCache=NULL;
 CMPlayer::Options::Options()
 {
+    m_bNoCache=false;
     m_iChannels=0;
     m_bAC3PassTru=false;
     m_strChannelMapping="";
@@ -90,6 +93,17 @@ float CMPlayer::Options::GetFPS() const
 {
   return m_fFPS;
 }
+
+bool CMPlayer::Options::GetNoCache() const
+{
+  return m_bNoCache;
+}
+void CMPlayer::Options::SetNoCache(bool bOnOff) 
+{
+  m_bNoCache=bOnOff;
+}
+
+
 void  CMPlayer::Options::SetSpeed(float fSpeed)
 {
   m_fSpeed=fSpeed;
@@ -169,6 +183,10 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
   // enable direct rendering (mplayer directly draws on xbmc's overlay texture)
   m_vecOptions.push_back("-dr");    
 
+  if (m_bNoCache)
+  {
+    m_vecOptions.push_back("-nocache");    
+  }
   //limit A-V sync correction in order to get smoother playback.
   //defaults to 0.01 but for high quality videos 0.0001 results in 
   // much smoother playback but slow reaction time to fix A-V desynchronization
@@ -221,9 +239,11 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
   }
   if ( m_bAC3PassTru)
   {
-    //e
+    // this is nice, we can ask mplayer to try hwac3 filter (used for ac3/dts pass-through) first
+    // and if it fails try a52 filter (used for ac3 software decoding) and if that fails
+    // try the other audio codecs (mp3, wma,...)
     m_vecOptions.push_back("-ac");
-    m_vecOptions.push_back("hwac3");
+    m_vecOptions.push_back("hwac3,a52,");
   }
 
   if ( g_stSettings.m_bPostProcessing )
@@ -362,253 +382,317 @@ bool CMPlayer::load()
 	}
   return true;
 }
+void update_cache_dialog(const char* tmp)
+{
+  if (m_dlgCache)
+  {
+    m_dlgCache->SetMessage(tmp);
+    m_dlgCache->Update();
+  }
+}
 bool CMPlayer::openfile(const CStdString& strFile)
 {
   int iCacheSize=1024;
   closefile();
-
-  CLog::Log("mplayer play:%s", strFile.c_str());
-  // setup the cache size mplayer uses
-  // for DVD/CD's or remote shares we use 8 megs
-  if (CUtil::IsDVD(strFile) || CUtil::IsISO9660(strFile) || CUtil::IsRemote(strFile) )
-  {
-    iCacheSize=8192;
-  }
+  bool bFileOnHD(false);
+  bool bFileOnISO(false);
+  bool bFileOnUDF(false);
+  bool bFileOnInternet(false);
+  bool bFileOnLAN(false);
   
-  // for audio files we use 256kbyte cache
-  if (CUtil::IsAudio(strFile) && !CUtil::IsVideo(strFile) )
-  {
-    iCacheSize=256;
-  }
+  CURL url(strFile);
+  if ( CUtil::IsHD(strFile) )           bFileOnHD=true;
+  else if ( CUtil::IsISO9660(strFile) ) bFileOnISO=true;
+  else if ( CUtil::IsDVD(strFile) )     bFileOnUDF=true;
+  else if (url.GetProtocol()=="http")   bFileOnInternet=true;
+  else if (url.GetProtocol()=="shout")  bFileOnInternet=true;
+  else if (url.GetProtocol()=="mms")    bFileOnInternet=true;
+  else if (url.GetProtocol()=="rtp")    bFileOnInternet=true;
+  else bFileOnLAN=true;
+
+  bool bIsVideo =CUtil::IsVideo(strFile);
+  bool bIsAudio =CUtil::IsAudio(strFile);
+  bool bIsDVD(false);
   if (strFile.Find("dvd://") >=0 )
   {
-    iCacheSize=16384;
+    bIsDVD=true;
+    bIsVideo=true;
   }
 
-  CURL url(strFile);
-  bool bStreamingAudio=false;
-  // for shoutcast, use cache of 256 kbyte
-  if (url.GetProtocol()=="http") bStreamingAudio=true;
-  if (url.GetProtocol()=="shout") bStreamingAudio=true;
-  if (bStreamingAudio)
+  iCacheSize=GetCacheSize(bFileOnHD,bFileOnISO,bFileOnUDF,bFileOnInternet,bFileOnLAN, bIsVideo, bIsAudio, bIsDVD);
+  try
   {
-    iCacheSize=256;
-  }
-  
-  //CLog::Log("  cache sizem:%i kbyte",iCacheSize);
-  
-  // cache (remote) subtitles to HD
-	CUtil::CacheSubtitles(strFile);
-  CUtil::PrepareSubtitleFonts();
-	m_iPTS			= 0;
-	m_bPaused	  = false;
-
-  // first init mplayer. This is needed 2 find out all information
-  // like audio channels, fps etc
-	load();
-
-  char *argv[30];
-  int argc=8;
-  Options options;
-  if (CUtil::IsVideo(strFile))
-  {
-    options.SetNonInterleaved(g_stSettings.m_bNonInterleaved);
-  }
-
-  // shoutcast is always stereo
-  if (CUtil::IsShoutCast(strFile) ) 
-  {
-    options.SetChannels(2);
-  }
-  else if (g_stSettings.m_bUseDigitalOutput)
-  {
-    // if we are using digital output, try to open the file using 6 channels audio
-    options.SetChannels(6);
-  }
-  else 
-  {
-    // if we are using analog output, then we only got 2 stereo output
-    options.SetChannels(0);
-  }
-
-  options.SetAudioStream(m_iAudioStreamIDX);
-  options.SetVolumeAmplification(g_stSettings.m_fVolumeAmplification);
-  options.GetOptions(argc,argv);
-  
-  //CLog::Log("  open 1st time");
-	mplayer_init(argc,argv);
-  mplayer_setcache_size(iCacheSize);
-	int iRet=mplayer_open_file(strFile.c_str());
-	if (iRet < 0)
-	{
-		CLog::Log("cmplayer::openfile() %s failed",strFile.c_str());
-		closefile();
-		return false;
-	}
-
-  if (bStreamingAudio ) 
-  {
-    // for shoutcast we're done.
-  }
-  else
-  {
-    // for other files, check the codecs/audio channels etc etc...
-	  char          strFourCC[10],strVidFourCC[10];
-	  char          strAudioCodec[128],strVideoCodec[128];
-	  long          lBitRate;
-	  long          lSampleRate;
-	  int	          iChannels;
-	  BOOL          bVBR;
-	  float         fFPS;
-	  unsigned int  iWidth;
-	  unsigned int  iHeight;
-	  long          lFrames2Early;
-	  long          lFrames2Late;
-    bool          bNeed2Restart=false;
-
-    // get the audio & video info from the file
-	  mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
-    mplayer_GetVideoInfo(strVidFourCC,strVideoCodec, &fFPS, &iWidth,&iHeight, &lFrames2Early, &lFrames2Late);
-
-    // do we need 2 do frame rate conversions ?
-    if (g_stSettings.m_bFrameRateConversions && CUtil::IsVideo(strFile) )
+    if (bFileOnInternet)
     {
-      DWORD dwVideoStandard=XGetVideoStandard();
-      if (dwVideoStandard==XC_VIDEO_STANDARD_PAL_I)
+      m_dlgCache = new CDlgCache();
+      m_dlgCache->Update();
+    }
+    
+    CLog::Log("mplayer play:%s cachesize:%i", strFile.c_str(), iCacheSize);
+    
+    // cache (remote) subtitles to HD
+    if (!bFileOnInternet && bIsVideo)
+    {
+	    CUtil::CacheSubtitles(strFile);
+    }
+    CUtil::PrepareSubtitleFonts();
+	  m_iPTS			= 0;
+	  m_bPaused	  = false;
+
+    // first init mplayer. This is needed 2 find out all information
+    // like audio channels, fps etc
+	  load();
+
+    char *argv[30];
+    int argc=8;
+    Options options;
+    if (CUtil::IsVideo(strFile))
+    {
+      options.SetNonInterleaved(g_stSettings.m_bNonInterleaved);
+
+    }
+    options.SetNoCache(g_stSettings.m_bNoCache);
+
+    // shoutcast is always stereo
+    if (CUtil::IsShoutCast(strFile) ) 
+    {
+      options.SetChannels(2);
+    }
+    else if (g_stSettings.m_bUseDigitalOutput)
+    {
+      // if we are using digital output, try to open the file using 6 channels audio
+      options.SetChannels(6);
+    }
+    else 
+    {
+      // if we are using analog output, then we only got 2 stereo output
+      options.SetChannels(0);
+    }
+
+    // if we're using digital out & ac3/dts pass-through is enabled
+    // then try opening file with ac3/dts pass-through 
+    bool bSupportsSPDIFOut=(XGetAudioFlags() & (DSSPEAKER_ENABLE_AC3 | DSSPEAKER_ENABLE_DTS)) != 0;
+    if (g_stSettings.m_bUseDigitalOutput && bSupportsSPDIFOut )
+    {
+      if ( g_stSettings.m_bDDStereoPassThrough || g_stSettings.m_bDD_DTSMultiChannelPassThrough)
       {
-        // PAL. Framerate for pal=25.0fps
-        // do frame rate conversions for NTSC movie playback under PAL
-        if (fFPS >= 23.0 && fFPS <= 24.5f )
+        options.SetAC3PassTru(true);
+      }
+    }
+    options.SetAudioStream(m_iAudioStreamIDX);
+    if (bIsVideo) 
+    {
+      options.SetVolumeAmplification(g_stSettings.m_fVolumeAmplification);
+    }
+    options.GetOptions(argc,argv);
+    
+    //CLog::Log("  open 1st time");
+	  mplayer_init(argc,argv);
+    mplayer_setcache_size(iCacheSize);
+	  int iRet=mplayer_open_file(strFile.c_str());
+	  if (iRet < 0)
+	  {
+		  CLog::Log("cmplayer::openfile() %s failed",strFile.c_str());
+		  closefile();
+      if (m_dlgCache) delete m_dlgCache;
+      m_dlgCache=NULL;
+		  return false;
+	  }
+
+    if (bFileOnInternet ) 
+    {
+      // for streaming we're done.
+    }
+    else
+    {
+      // for other files, check the codecs/audio channels etc etc...
+	    char          strFourCC[10],strVidFourCC[10];
+	    char          strAudioCodec[128],strVideoCodec[128];
+	    long          lBitRate;
+	    long          lSampleRate;
+	    int	          iChannels;
+	    BOOL          bVBR;
+	    float         fFPS;
+	    unsigned int  iWidth;
+	    unsigned int  iHeight;
+	    long          lFrames2Early;
+	    long          lFrames2Late;
+      bool          bNeed2Restart=false;
+
+      // get the audio & video info from the file
+	    mplayer_GetAudioInfo(strFourCC,strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
+      mplayer_GetVideoInfo(strVidFourCC,strVideoCodec, &fFPS, &iWidth,&iHeight, &lFrames2Early, &lFrames2Late);
+
+      // do we need 2 do frame rate conversions ?
+      if (g_stSettings.m_bFrameRateConversions && CUtil::IsVideo(strFile) )
+      {
+        DWORD dwVideoStandard=XGetVideoStandard();
+        if (dwVideoStandard==XC_VIDEO_STANDARD_PAL_I)
         {
-          // 23.978  fps -> 25fps frame rate conversion
-          options.SetSpeed(25.0f / fFPS); 
-          options.SetFPS(25.0f);
-          bNeed2Restart=true;
-          CLog::Log("  --restart cause we use ntsc->pal framerate conversion");
+          // PAL. Framerate for pal=25.0fps
+          // do frame rate conversions for NTSC movie playback under PAL
+          if (fFPS >= 23.0 && fFPS <= 24.5f )
+          {
+            // 23.978  fps -> 25fps frame rate conversion
+            options.SetSpeed(25.0f / fFPS); 
+            options.SetFPS(25.0f);
+            bNeed2Restart=true;
+            CLog::Log("  --restart cause we use ntsc->pal framerate conversion");
+          }
         }
+        else
+        {
+          //NTSC framerate=23.976 fps
+          // do frame rate conversions for PAL movie playback under NTSC
+          if (fFPS>=24 && fFPS <= 25.5)
+          {
+            options.SetSpeed(23.976f / fFPS); 
+            options.SetFPS(23.976f);
+            bNeed2Restart=true;
+            CLog::Log("  --restart cause we use pal->ntsc framerate conversion");
+          }
+        }
+      }
+      // if we are not using ac3/dts pass-through
+      if (strstr(strAudioCodec,"AC3/SPDIF")==NULL)
+      {
+        // make sure to update the option (used below)
+        options.SetAC3PassTru(false);
       }
       else
       {
-        //NTSC framerate=23.976 fps
-        // do frame rate conversions for PAL movie playback under NTSC
-        if (fFPS>=24 && fFPS <= 25.5)
+        // if we are using ac3/dts pass-through
+        // then make sure samplerate = 48 khz. Other samplerates are NOT supported on the xbox
+        if (lSampleRate!=48000)
         {
-          options.SetSpeed(23.976f / fFPS); 
-          options.SetFPS(23.976f);
+          // 2bad, disable pass-through and restart
+          options.SetAC3PassTru(false);
           bNeed2Restart=true;
-          CLog::Log("  --restart cause we use pal->ntsc framerate conversion");
         }
       }
+#if 0
+	    // check if AC3 passthrough is enabled in MS dashboard
+      // ifso we need 2 check if this movie has AC3 5.1 sound and if thats true
+      // we reopen the movie with the ac3 5.1 passthrough audio filter
+      bool bAc3PassTru(false);
+      if (iChannels==2 && g_stSettings.m_bDDStereoPassThrough) bAc3PassTru=true;
+      if (iChannels> 2 && g_stSettings.m_bDD_DTSMultiChannelPassThrough) bAc3PassTru=true;
+
+      if (g_stSettings.m_bUseDigitalOutput && bSupportsSPDIFOut && bAc3PassTru )
+	    {
+		    // and the movie has an AC3 audio stream
+		    if ( strstr(strAudioCodec,"AC3-liba52") && (lSampleRate==48000) )
+		    {
+          options.SetChannels(2);
+          options.SetAC3PassTru(true);
+          bNeed2Restart=true;
+          CLog::Log("  --restart cause we use ac3 passtru");
+		    }
+	    }
+#endif
+      // if we dont have ac3 passtru enabled
+      if (!options.GetAC3PassTru())
+      {
+        // if DMO filter is used we need 2 remap the audio speaker layout (MS does things differently)
+	      if( strstr(strAudioCodec,"DMO") && (iChannels==6) )
+	      {
+          options.SetChannels(6);
+          options.SetChannelMapping("channels=6:6:0:0:1:1:2:4:3:5:4:2:5:3");
+          bNeed2Restart=true;
+          CLog::Log("  --restart cause speaker mapping needs fixing");
+	      }	
+
+        // if xbox only got stereo output, then limit number of channels to 2
+        // same if xbox got digital output, but we're listening to the analog output
+        if (!bSupportsSPDIFOut || !g_stSettings.m_bUseDigitalOutput)
+        {
+          if (iChannels > 2) 
+          {
+            iChannels=2;
+          }
+        }
+
+        // remap audio speaker layout for files with 5 audio channels 
+        if (iChannels==5)
+        {
+          options.SetChannels(6);
+          options.SetChannelMapping("channels=6:5:0:0:1:1:2:2:3:3:4:4:5:5");
+          bNeed2Restart=true;
+          CLog::Log("  --restart cause audio channels changed:5");
+        }
+        // remap audio speaker layout for files with 3 audio channels 
+        if (iChannels==3)
+        {
+          options.SetChannels(4);
+          options.SetChannelMapping("channels=4:4:0:0:1:1:2:2:2:3");
+          bNeed2Restart=true;
+          CLog::Log("  --restart cause audio channels changed:3");
+        }
+        
+        if (iChannels==1 || iChannels==2||iChannels==4)
+        {
+          int iChan=options.GetChannels();
+          if ( iChannels ==2) iChannels=0;
+          //if ( iChannels !=2) iChannels=2;
+          //else iChannels=0;
+          if (iChan!=iChannels)
+          {
+            CLog::Log("  --restart cause audio channels changed");
+            options.SetChannels(iChannels);
+            bNeed2Restart=true; 
+          }
+        }
+      }
+
+    
+      if (bNeed2Restart)
+      {
+        CLog::Log("  --------------- restart ---------------");
+        //CLog::Log("  open 2nd time");
+			  mplayer_close_file();
+        options.GetOptions(argc,argv);
+			  load();
+			  mplayer_init(argc,argv);
+        mplayer_setcache_size(iCacheSize);
+			  iRet=mplayer_open_file(strFile.c_str());
+			  if (iRet < 0)
+			  {
+          CLog::Log("cmplayer::openfile() %s failed",strFile.c_str());
+				  closefile();
+          if (m_dlgCache) delete m_dlgCache;
+          m_dlgCache=NULL;
+				  return false;
+			  }
+  			
+      }
     }
+    m_bIsPlaying= true;
 
-	  bool bSupportsSPDIFOut=(XGetAudioFlags() & (DSSPEAKER_ENABLE_AC3 | DSSPEAKER_ENABLE_DTS)) != 0;
-
-	  // check if AC3 passthrough is enabled in MS dashboard
-    // ifso we need 2 check if this movie has AC3 5.1 sound and if thats true
-    // we reopen the movie with the ac3 5.1 passthrough audio filter
-    bool bAc3PassTru(false);
-    if (iChannels==2 && g_stSettings.m_bDDStereoPassThrough) bAc3PassTru=true;
-    if (iChannels> 2 && g_stSettings.m_bDD_DTSMultiChannelPassThrough) bAc3PassTru=true;
-
-    if (g_stSettings.m_bUseDigitalOutput && bSupportsSPDIFOut && bAc3PassTru )
+    bIsVideo=HasVideo();
+    bIsAudio=HasAudio();
+    int iNewCacheSize=GetCacheSize(bFileOnHD,bFileOnISO,bFileOnUDF,bFileOnInternet,bFileOnLAN, bIsVideo, bIsAudio, bIsDVD);
+    if (iNewCacheSize!=iCacheSize)
+    {
+      CLog::Log("upgrade cachesize to %i", iNewCacheSize);
+      mplayer_setcache_size(iCacheSize);
+    }
+    
+	  if ( ThreadHandle() == NULL)
 	  {
-		  // and the movie has an AC3 audio stream
-		  if ( strstr(strAudioCodec,"AC3-liba52") && (lSampleRate==48000) )
-		  {
-        options.SetChannels(2);
-        options.SetAC3PassTru(true);
-        bNeed2Restart=true;
-        CLog::Log("  --restart cause we use ac3 passtru");
-		  }
+		  Create();
 	  }
 
-    // if we dont have ac3 passtru enabled
-    if (!options.GetAC3PassTru())
-    {
-      // if DMO filter is used we need 2 remap the audio speaker layout (MS does things differently)
-	    if( strstr(strAudioCodec,"DMO") && (iChannels==6) )
-	    {
-        options.SetChannels(6);
-        options.SetChannelMapping("channels=6:6:0:0:1:1:2:4:3:5:4:2:5:3");
-        bNeed2Restart=true;
-        CLog::Log("  --restart cause speaker mapping needs fixing");
-	    }	
-
-      // if xbox only got stereo output, then limit number of channels to 2
-      // same if xbox got digital output, but we're listening to the analog output
-      if (!bSupportsSPDIFOut || !g_stSettings.m_bUseDigitalOutput)
-      {
-        if (iChannels > 2) 
-        {
-          iChannels=2;
-        }
-      }
-
-      // remap audio speaker layout for files with 5 audio channels 
-      if (iChannels==5)
-      {
-        options.SetChannels(6);
-        options.SetChannelMapping("channels=6:5:0:0:1:1:2:2:3:3:4:4:5:5");
-        bNeed2Restart=true;
-        CLog::Log("  --restart cause audio channels changed:5");
-      }
-      // remap audio speaker layout for files with 3 audio channels 
-      if (iChannels==3)
-      {
-        options.SetChannels(4);
-        options.SetChannelMapping("channels=4:4:0:0:1:1:2:2:2:3");
-        bNeed2Restart=true;
-        CLog::Log("  --restart cause audio channels changed:3");
-      }
-      
-      if (iChannels==1 || iChannels==2||iChannels==4)
-      {
-        int iChan=options.GetChannels();
-        if ( iChannels ==2) iChannels=0;
-        //if ( iChannels !=2) iChannels=2;
-        //else iChannels=0;
-        if (iChan!=iChannels)
-        {
-          CLog::Log("  --restart cause audio channels changed");
-          options.SetChannels(iChannels);
-          bNeed2Restart=true; 
-        }
-      }
-    }
-
-  
-    if (bNeed2Restart)
-    {
-      CLog::Log("  --------------- restart ---------------");
-      //CLog::Log("  open 2nd time");
-			mplayer_close_file();
-      options.GetOptions(argc,argv);
-			load();
-			mplayer_init(argc,argv);
-      mplayer_setcache_size(iCacheSize);
-			iRet=mplayer_open_file(strFile.c_str());
-			if (iRet < 0)
-			{
-        CLog::Log("cmplayer::openfile() %s failed",strFile.c_str());
-				closefile();
-				return false;
-			}
-			
-    }
-  }
-  m_bIsPlaying= true;
-	if ( ThreadHandle() == NULL)
-	{
-		Create();
-	}
-
-  // if it turns out to b a video file after all, then 
-  // make sure the cache is set to at least 1 meg
-  if (HasVideo() && iCacheSize==256)
+  } 
+  catch(...)
   {
-    mplayer_setcache_size(1024);
+    CLog::Log("mplayer couldnt open file");
+    if (m_dlgCache) delete m_dlgCache;
+    m_dlgCache=NULL;  
+    return false;
   }
-	
+
+  if (m_dlgCache) delete m_dlgCache;
+  m_dlgCache=NULL;
 	return true;
 }
 
@@ -660,8 +744,11 @@ void CMPlayer::Process()
 			  }
 			  else 
 			  {
-				  //xbox_video_CheckScreenSaver();		// Check for screen saver
-				  Sleep(100);
+					if (HasVideo())
+					{
+						xbox_video_CheckScreenSaver();		// Check for screen saver
+						Sleep(100);
+					}
 			  }
 		  } while (m_bIsPlaying && !m_bStop);
     }
@@ -1012,4 +1099,42 @@ void CMPlayer::ToFFRW(int iSpeed)
   mplayer_ToFFRW( iSpeed);
   //SwitchToThread();
   //xbox_video_wait();
+}
+
+
+int CMPlayer::GetCacheSize(bool bFileOnHD,bool bFileOnISO,bool bFileOnUDF,bool bFileOnInternet,bool bFileOnLAN, bool bIsVideo, bool bIsAudio, bool bIsDVD)
+{
+  if (g_stSettings.m_bNoCache) return 0;
+
+  if (bFileOnHD)
+  {
+    if ( bIsDVD  ) return g_stSettings.m_iCacheSizeHD[CACHE_VOB];
+    if ( bIsVideo) return g_stSettings.m_iCacheSizeHD[CACHE_VIDEO];
+    if ( bIsAudio) return g_stSettings.m_iCacheSizeHD[CACHE_AUDIO];
+  }
+  if (bFileOnISO)
+  {
+    if ( bIsDVD  ) return g_stSettings.m_iCacheSizeISO[CACHE_VOB];
+    if ( bIsVideo) return g_stSettings.m_iCacheSizeISO[CACHE_VIDEO];
+    if ( bIsAudio) return g_stSettings.m_iCacheSizeISO[CACHE_AUDIO];
+  }
+  if (bFileOnUDF)
+  {
+    if ( bIsDVD  ) return g_stSettings.m_iCacheSizeUDF[CACHE_VOB];
+    if ( bIsVideo) return g_stSettings.m_iCacheSizeUDF[CACHE_VIDEO];
+    if ( bIsAudio) return g_stSettings.m_iCacheSizeUDF[CACHE_AUDIO];
+  }
+  if (bFileOnInternet)
+  {
+    if ( bIsDVD  ) return g_stSettings.m_iCacheSizeInternet[CACHE_VOB];
+    if ( bIsVideo) return g_stSettings.m_iCacheSizeInternet[CACHE_VIDEO];
+    if ( bIsAudio) return g_stSettings.m_iCacheSizeInternet[CACHE_AUDIO];
+  }
+  if (bFileOnLAN)
+  {
+    if ( bIsDVD  ) return g_stSettings.m_iCacheSizeLAN[CACHE_VOB];
+    if ( bIsVideo) return g_stSettings.m_iCacheSizeLAN[CACHE_VIDEO];
+    if ( bIsAudio) return g_stSettings.m_iCacheSizeLAN[CACHE_AUDIO];
+  }
+  return 1024;
 }

@@ -100,6 +100,7 @@ CGUIWindowVideoActors::CGUIWindowVideoActors()
 {
 	m_strDirectory="";
   m_iItemSelected=-1;
+	m_iLastControl=-1;
 }
 
 //****************************************************************************************************************************
@@ -158,6 +159,8 @@ bool CGUIWindowVideoActors::OnMessage(CGUIMessage& message)
 		}
 		break;
 		case GUI_MSG_WINDOW_DEINIT:
+			m_iLastControl=GetFocusedControl();
+			m_iItemSelected=GetSelectedItem();
 			Clear();
       m_database.Close();
 		break;
@@ -171,6 +174,10 @@ bool CGUIWindowVideoActors::OnMessage(CGUIMessage& message)
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 			m_rootDir.SetMask(g_stSettings.m_szMyVideoExtensions);
 			m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
+
+			if (m_iLastControl>-1)
+				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
+
 			Update(m_strDirectory);
 
       ShowThumbPanel();
@@ -268,15 +275,15 @@ void CGUIWindowVideoActors::UpdateButtons()
 		switch (g_stSettings.m_iMyVideoActorRootViewAsIcons)
     {
       case VIEW_AS_LIST:
-        iString=100; // view as icons
+        iString=101; // view as icons
       break;
       
       case VIEW_AS_ICONS:
-        iString=417;  // view as large icons
+        iString=100;  // view as large icons
         bViewIcon=true;
       break;
       case VIEW_AS_LARGEICONS:
-        iString=101; // view as list
+        iString=417; // view as list
         bViewIcon=true;
       break;
     }
@@ -286,15 +293,15 @@ void CGUIWindowVideoActors::UpdateButtons()
 		switch (g_stSettings.m_iMyVideoActorViewAsIcons)
     {
       case VIEW_AS_LIST:
-        iString=100; // view as icons
+        iString=101; // view as icons
       break;
       
       case VIEW_AS_ICONS:
-        iString=417;  // view as large icons
+        iString=100;  // view as large icons
         bViewIcon=true;
       break;
       case VIEW_AS_LARGEICONS:
-        iString=101; // view as list
+        iString=417; // view as list
         bViewIcon=true;
       break;
     }		
@@ -439,14 +446,11 @@ void CGUIWindowVideoActors::Update(const CStdString &strDirectory)
         CIMDBMovie movie=movies[i];
         CFileItem *pItem = new CFileItem(movie.m_strTitle);
         pItem->m_strPath=movie.m_strSearchString;
-        if (CUtil::IsVideo(pItem->m_strPath))
-			    pItem->m_bIsFolder=false;
-        else
-          pItem->m_bIsFolder=true;
+			  pItem->m_bIsFolder=false;
         pItem->m_bIsShareOrDrive=false;
 
         CStdString strThumb;
-        CUtil::GetThumbnail(movie.m_strSearchString,strThumb);
+        CUtil::GetVideoThumbnail(movie.m_strIMDBNumber,strThumb);
         pItem->SetThumbnailImage(strThumb);
         pItem->m_fRating     = movie.m_fRating; 
         pItem->m_stTime.wYear= movie.m_iYear;
@@ -461,12 +465,18 @@ void CGUIWindowVideoActors::Update(const CStdString &strDirectory)
   UpdateButtons();
   strSelectedItem=m_history.Get(m_strDirectory);	
 
-	if ( ViewByIcon() ) {	
-		SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS);
+	m_iLastControl=GetFocusedControl();
+
+	if (m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST)
+	{
+		if ( ViewByIcon() ) {	
+			SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
+		}
+		else {
+			SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+		}
 	}
-	else {
-		SET_CONTROL_FOCUS(GetID(), CONTROL_LIST);
-	}
+
   for (int i=0; i < (int)m_vecItems.size(); ++i)
 	{
 		CFileItem* pItem=m_vecItems[i];
@@ -544,8 +554,8 @@ void CGUIWindowVideoActors::OnClick(int iItem)
 
 void CGUIWindowVideoActors::OnInfo(int iItem)
 {
+  if ( m_strDirectory.IsEmpty() ) return;
   CFileItem* pItem=m_vecItems[iItem];
-  if (pItem->m_bIsFolder) return;
 	
   VECMOVIESFILES movies;
   m_database.GetFiles(atol(pItem->m_strPath),movies);

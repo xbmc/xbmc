@@ -46,6 +46,7 @@ protected:
 					bool							DoSearch(const CStdString strDir,const CStdString& strSearch,VECFILEITEMS& items);
 					bool							HaveDiscOrConnection( CStdString& strPath, int iDriveType );
 					bool							GetKeyboard(CStdString& strInput);
+	virtual	void							GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
 	virtual	void							ShowThumbPanel();
 					bool							ViewByIcon();
 					bool							ViewByLargeIcon();
@@ -56,11 +57,11 @@ protected:
 	typedef vector <CFileItem*>::iterator ivecItems;
 	CGUIDialogProgress*				m_dlgProgress;
 	CDirectoryHistory					m_history;
-	CMusicDatabase						m_database;
+	static CMusicDatabase			m_database;
 	int												m_iViewAsIcons;
 	int												m_iViewAsIconsRoot;
 	static int								m_nTempPlayListWindow;
 	static CStdString					m_strTempPlayListDirectory;
 	int												m_nSelectedItem;
-	int												m_nFocusedControl;
+	int												m_iLastControl;
 };

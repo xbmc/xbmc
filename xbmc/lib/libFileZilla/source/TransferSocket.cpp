@@ -73,7 +73,7 @@ void CTransferSocket::Init(t_dirlisting *pDir, int nMode)
 	m_bReady = TRUE;
 	m_status = 0;
 	if (m_pBuffer)
-		VirtualFree(m_pBuffer, 0, MEM_RELEASE);
+		XPhysicalFree(m_pBuffer);
 	m_pBuffer = 0;
 	m_pDirListing = pDir;
 
@@ -107,7 +107,7 @@ void CTransferSocket::Init(CStdString filename, int nMode, _int64 rest, BOOL bBi
 CTransferSocket::~CTransferSocket()
 {
 	if (m_pBuffer)
-		VirtualFree(m_pBuffer, 0, MEM_RELEASE);
+		XPhysicalFree(m_pBuffer);
 	if (m_hFile != INVALID_HANDLE_VALUE)
 	{
 		CloseHandle(m_hFile);
@@ -398,6 +398,7 @@ void CTransferSocket::OnClose(int nErrorCode)
 					WriteFile(m_hFile, m_pBuffer, m_nBufferPos, &numwritten, 0);
 				}
 				FlushFileBuffers(m_hFile);
+				SetEndOfFile(m_hFile);
 				CloseHandle(m_hFile);
 				m_hFile = INVALID_HANDLE_VALUE;
 			}
@@ -489,20 +490,33 @@ void CTransferSocket::OnReceive(int nErrorCode)
 				return;
 			}
 
-			XSetFileCacheSize(1024*1024);
-
 			LARGE_INTEGER size;
 			size.QuadPart = m_nRest;
 			VERIFY(SetFilePointerEx(m_hFile, size, NULL, FILE_BEGIN));
 			SetEndOfFile(m_hFile);
 			m_nBufferPos = 0;
+			m_nAlign = (4096 - (m_nRest & 4095)) & 4095;
 
 			if (m_pBuffer)
-				VirtualFree(m_pBuffer, 0, MEM_RELEASE);
+				XPhysicalFree(m_pBuffer);
 			// Xbox writes ide data in 128k blocks, so always try to write 128k of data at a time.
-			// Uses a 132k buffer so there's a bit of overrun as the tcp stack might not return enough data otherwise.
-			m_nBufSize = 132*1024;
-			m_pBuffer = (char*)VirtualAlloc(NULL, m_nBufSize, MEM_COMMIT | MEM_TOP_DOWN, PAGE_READWRITE);
+			// Uses a 160k buffer so there's a bit of overrun as it's more efficient to always try and read 32k+ from the socket.
+			// Also allows realignment to page alignment when restarting.
+			m_nBufSize = 160*1024;
+			m_pBuffer = (char*)XPhysicalAlloc(m_nBufSize, MAXULONG_PTR, 0, PAGE_READWRITE);
+			if (!m_pBuffer)
+			{
+				CloseHandle(m_hFile);
+				m_hFile = INVALID_HANDLE_VALUE;
+				Close();
+				if (!m_bSentClose)
+				{
+					m_bSentClose=TRUE;
+					m_status=6;
+					m_pOwner->m_pOwner->PostThreadMessage(WM_FILEZILLA_THREADMSG, FTM_TRANSFERMSG, m_pOwner->m_userid);
+				}
+			}
+			m_nPreAlloc = 0;
 		}
 
 		int len = m_nBufSize - m_nBufferPos;
@@ -527,7 +541,6 @@ void CTransferSocket::OnReceive(int nErrorCode)
 				{
 					CloseHandle(m_hFile);
 					m_hFile = INVALID_HANDLE_VALUE;
-					XSetFileCacheSize(64*1024);
 				}
 				Close();
 				if (!m_bSentClose)
@@ -549,9 +562,10 @@ void CTransferSocket::OnReceive(int nErrorCode)
 					DWORD numwritten;
 					WriteFile(m_hFile, m_pBuffer, m_nBufferPos, &numwritten, 0);
 				}
+				FlushFileBuffers(m_hFile);
+				SetEndOfFile(m_hFile);
 				CloseHandle(m_hFile);
 				m_hFile = INVALID_HANDLE_VALUE;
-				XSetFileCacheSize(64*1024);
 			}
 			Close();
 			if (!m_bSentClose)
@@ -569,14 +583,22 @@ void CTransferSocket::OnReceive(int nErrorCode)
 
 		m_nBufferPos += numread;
 
-		if (m_nBufferPos >= 128*1024)
+		if (m_nBufferPos >= 128*1024 + m_nAlign)
 		{
+			if (!m_nPreAlloc)
+			{
+				// pre alloc the file on disk - makes writing much faster due to less FAT updates
+				SetFilePointer(m_hFile, 32*1024*1024, 0, FILE_CURRENT);
+				SetEndOfFile(m_hFile);
+				SetFilePointer(m_hFile, -32*1024*1024, 0, FILE_CURRENT);
+				m_nPreAlloc = 32*1024*1024 / (128*1024);
+			}
+
 			DWORD numwritten;
-			if (!WriteFile(m_hFile, m_pBuffer, 128*1024, &numwritten, 0) || numwritten!=128*1024)
+			if (!WriteFile(m_hFile, m_pBuffer, 128*1024 + m_nAlign, &numwritten, 0) || numwritten != 128*1024 + m_nAlign)
 			{
 				CloseHandle(m_hFile);
 				m_hFile = INVALID_HANDLE_VALUE;
-				XSetFileCacheSize(64*1024);
 				Close();
 				if (!m_bSentClose)
 				{
@@ -593,6 +615,8 @@ void CTransferSocket::OnReceive(int nErrorCode)
 					memmove(m_pBuffer, m_pBuffer + numwritten, m_nBufferPos - numwritten);
 				}
 				m_nBufferPos -= numwritten;
+				--m_nPreAlloc;
+				m_nAlign = 0;
 			}
 		}
 	}
@@ -679,7 +703,6 @@ BOOL CTransferSocket::InitTransfer(BOOL bCalledFromSend)
 	if (bAccepted)
 	{
 		CStdString str="150 Connection accepted";
-		m_nRest &= 512;
 		if (m_nRest)
 			str.Format("150 Connection accepted, restarting at offset %I64d",m_nRest);
 		m_pOwner->Send(str);
@@ -689,10 +712,17 @@ BOOL CTransferSocket::InitTransfer(BOOL bCalledFromSend)
 	if (m_nMode==TRANSFERMODE_SEND)
 	{
 		if (m_pBuffer)
-			VirtualFree(m_pBuffer, 0, MEM_RELEASE);
+			XPhysicalFree(m_pBuffer);
 		// smaller read buffer than for writes to avoid having to do massive data moves
 		m_nBufSize = 32*1024;
-		m_pBuffer = (char*)VirtualAlloc(NULL, m_nBufSize, MEM_COMMIT | MEM_TOP_DOWN, PAGE_READWRITE);
+		m_pBuffer = (char*)XPhysicalAlloc(m_nBufSize, MAXULONG_PTR, 0, PAGE_READWRITE | PAGE_WRITECOMBINE);
+		if (!m_pBuffer)
+		{
+			m_status=6;
+			m_pOwner->m_pOwner->PostThreadMessage(WM_FILEZILLA_THREADMSG, FTM_TRANSFERMSG, m_pOwner->m_userid);
+			Close();
+			return FALSE;
+		}
 		ASSERT(m_Filename!="");
 		m_hFile = CreateFile(m_Filename, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
 		if (m_hFile == INVALID_HANDLE_VALUE)

@@ -294,7 +294,6 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 				if (strDirectory!=m_strDirectory)
 				{
 					Update(strDirectory);
-					SET_CONTROL_FOCUS(GetID(), CONTROL_BTNPLAYLISTS);
 				}
 			}
  			else if (iControl==CONTROL_BTNSCAN)
@@ -472,21 +471,39 @@ bool CGUIWindowMusicSongs::DoScan(VECFILEITEMS& items)
 
 void CGUIWindowMusicSongs::LoadPlayList(const CStdString& strPlayList)
 {
+  // load a playlist like .m3u, .pls
+  // first get correct factory to load playlist
 	CPlayListFactory factory;
 	auto_ptr<CPlayList> pPlayList (factory.Create(strPlayList));
 	if ( NULL != pPlayList.get())
 	{
+    // load it
 		if (!pPlayList->Load(strPlayList))
-			return;
+			return; //hmmm unable to load playlist?
 
+    // clear current playlist
 		g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Clear();
-		//	Do not autoshuffle shoutcast playlists
+
+    // how many songs are in the new playlist
+    if (pPlayList->size() == 1)
+    {
+      // just 1 song? then play it (no need to have a playlist of 1 song)
+      CPlayList::CPlayListItem item=(*pPlayList)[0];
+      g_application.PlayFile(item.GetFileName());
+      return;
+    }
+
+
+		//	if autoshuffle playlist on load option is enabled
+    //  then shuffle the playlist
+    // (dont do this for shoutcast .pls files)
 		CStdString strFileName;
 		if ((*pPlayList).size())
 			strFileName=(*pPlayList)[0].GetFileName();
 		if (!CUtil::IsShoutCast(strFileName) && g_stSettings.m_bAutoShufflePlaylist)
 			pPlayList->Shuffle();
 
+    // add each item of the playlist to the playlistplayer
 		for (int i=0; i < (int)pPlayList->size(); ++i)
 		{
 			const CPlayList::CPlayListItem& playListItem =(*pPlayList)[i];
@@ -502,13 +519,17 @@ void CGUIWindowMusicSongs::LoadPlayList(const CStdString& strPlayList)
 		}
 	} 
 
+  // if we got a playlist
 	if (g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size() )
 	{
+    // then get 1st song
 		CPlayList& playlist=g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC );
 		const CPlayList::CPlayListItem& item=playlist[0];
-		if ( !CUtil::IsShoutCast(item.GetFileName()) )
-			g_playlistPlayer.Play(0);
-		
+
+    // and start playing it
+		g_playlistPlayer.Play(0);
+
+    // and activate the playlist window if its not activated yet
     if (GetID() == m_gWindowManager.GetActiveWindow())
     {
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
@@ -598,15 +619,15 @@ void CGUIWindowMusicSongs::UpdateButtons()
 		switch (m_iViewAsIconsRoot)
     {
       case VIEW_AS_LIST:
-        iString=100; // view as icons
+        iString=101; // view as icons
       break;
       
       case VIEW_AS_ICONS:
-        iString=417;  // view as large icons
+        iString=100;  // view as large icons
         bViewIcon=true;
       break;
       case VIEW_AS_LARGEICONS:
-        iString=101; // view as list
+        iString=417; // view as list
         bViewIcon=true;
       break;
     }
@@ -616,15 +637,15 @@ void CGUIWindowMusicSongs::UpdateButtons()
 		switch (m_iViewAsIcons)
     {
       case VIEW_AS_LIST:
-        iString=100; // view as icons
+        iString=101; // view as icons
       break;
       
       case VIEW_AS_ICONS:
-        iString=417;  // view as large icons
+        iString=100;  // view as large icons
         bViewIcon=true;
       break;
       case VIEW_AS_LARGEICONS:
-        iString=101; // view as list
+        iString=417; // view as list
         bViewIcon=true;
       break;
     }		
@@ -764,50 +785,57 @@ void CGUIWindowMusicSongs::OnFileItemFormatLabel(CFileItem* pItem)
 
 	if (nMyMusicSortMethod==0||nMyMusicSortMethod==2||nMyMusicSortMethod==8)
 	{
-			if (pItem->m_bIsFolder) 
-				pItem->SetLabel2("");
-			else 
+		if (pItem->m_bIsFolder) 
+			pItem->SetLabel2("");
+		else 
+		{
+			if (pItem->m_dwSize > 0) 
 			{
-				if (pItem->m_dwSize > 0) 
+				CStdString strFileSize;
+				CUtil::GetFileSize(pItem->m_dwSize, strFileSize);
+				pItem->SetLabel2(strFileSize);
+			}
+			if ((nMyMusicSortMethod==0 || nMyMusicSortMethod==8) && pItem->m_musicInfoTag.Loaded()) 
+			{
+				int nDuration=pItem->m_musicInfoTag.GetDuration();
+				if (nDuration)
 				{
-					CStdString strFileSize;
-					CUtil::GetFileSize(pItem->m_dwSize, strFileSize);
-					pItem->SetLabel2(strFileSize);
-				}
-				if ((nMyMusicSortMethod==0 || nMyMusicSortMethod==8) && pItem->m_musicInfoTag.Loaded()) 
-				{
-					int nDuration=pItem->m_musicInfoTag.GetDuration();
-					if (nDuration)
-					{
-						CStdString strDuration;
-						CUtil::SecondsToHMSString(nDuration, strDuration);
-						pItem->SetLabel2(strDuration);
-					}
-				}
-				//	cdda items always have duration
-				if ((nMyMusicSortMethod==0 || nMyMusicSortMethod==8) && CStdString(CUtil::GetExtension(pItem->m_strPath))==".cdda")
-				{
-					int nDuration=pItem->m_musicInfoTag.GetDuration();
-					if (nDuration)
-					{
-						CStdString strDuration;
-						CUtil::SecondsToHMSString(nDuration, strDuration);
-						pItem->SetLabel2(strDuration);
-					}
+					CStdString strDuration;
+					CUtil::SecondsToHMSString(nDuration, strDuration);
+					pItem->SetLabel2(strDuration);
 				}
 			}
+			//	cdda items always have duration
+			if ((nMyMusicSortMethod==0 || nMyMusicSortMethod==8) && CStdString(CUtil::GetExtension(pItem->m_strPath))==".cdda")
+			{
+				int nDuration=pItem->m_musicInfoTag.GetDuration();
+				if (nDuration)
+				{
+					CStdString strDuration;
+					CUtil::SecondsToHMSString(nDuration, strDuration);
+					pItem->SetLabel2(strDuration);
+				}
+			}
+		}
+	}
+	else
+	{
+		if (pItem->m_stTime.wYear)
+		{
+			CStdString strDateTime;
+			CUtil::GetDate(pItem->m_stTime, strDateTime);
+			pItem->SetLabel2(strDateTime);
 		}
 		else
-		{
-			if (pItem->m_stTime.wYear)
-			{
-				CStdString strDateTime;
-				CUtil::GetDate(pItem->m_stTime, strDateTime);
-				pItem->SetLabel2(strDateTime);
-			}
-			else
-				pItem->SetLabel2("");
-		}
+			pItem->SetLabel2("");
+	}
+
+	//	set thumbs and default icons
+	if (!pItem->m_bIsShareOrDrive)
+	{
+		CUtil::SetMusicThumb(pItem);
+		CUtil::FillInDefaultIcon(pItem);
+	}
 }
 
 void CGUIWindowMusicSongs::DoSort(VECFILEITEMS& items)

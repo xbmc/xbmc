@@ -388,7 +388,7 @@
   </string> 
   <string>
     <id>168</id>
-    <value>Time server:</value>
+    <value>Synchronize Time:</value>
   </string> 
   <string>
     <id>169</id>
@@ -608,7 +608,7 @@
   </string> 
   <string>
     <id>223</id>
-    <value>Choose best resolution for videos</value>
+    <value>Auto widescreen switching</value>
   </string> 
   <string>
     <id>224</id>
@@ -1080,7 +1080,7 @@
   </string>
   <string>
     <id>343</id>
-    <value>7. Adjust Framerate</value>
+    <value>8. Adjust Framerate</value>
   </string>
   <string>
     <id>344</id>
@@ -1185,6 +1185,90 @@
   <string>
     <id>369</id>
     <value>Title</value>
+  </string>
+  <string>
+    <id>370</id>
+    <value>T-Storms</value>
+  </string>
+  <string>
+    <id>371</id>
+    <value>Partly</value>
+  </string>
+  <string>
+    <id>372</id>
+    <value>Mostly</value>
+  </string>
+  <string>
+    <id>373</id>
+    <value>Sunny</value>
+  </string>
+  <string>
+    <id>374</id>
+    <value>Cloudy</value>
+  </string>
+  <string>
+    <id>375</id>
+    <value>Snow</value>
+  </string>
+  <string>
+    <id>376</id>
+    <value>Rain</value>
+  </string>
+  <string>
+    <id>377</id>
+    <value>Light</value>
+  </string>
+  <string>
+    <id>378</id>
+    <value>AM</value>
+  </string>
+  <string>
+    <id>379</id>
+    <value>PM</value>
+  </string>
+  <string>
+    <id>380</id>
+    <value>Showers</value>
+  </string>
+  <string>
+    <id>381</id>
+    <value>Few</value>
+  </string>
+  <string>
+    <id>382</id>
+    <value>Scattered</value>
+  </string>
+  <string>
+    <id>383</id>
+    <value>Wind</value>
+  </string>
+  <string>
+    <id>384</id>
+    <value>Strong</value>
+  </string>
+  <string>
+    <id>385</id>
+    <value>Fair</value>
+  </string>
+  <string>
+  <id>396</id> 
+  <value>Select Location</value> 
+  </string>
+  <string>
+  <id>397</id> 
+  <value>Refresh Time</value> 
+  </string>
+  <string>
+  <id>398</id> 
+  <value>Temperature Units</value> 
+  </string>
+  <string>
+  <id>399</id> 
+  <value>Speed Units</value> 
+  </string>
+  <string>
+  <id>400</id> 
+  <value>Weather</value> 
   </string>
   <string>
     <id>401</id>
@@ -1301,5 +1385,105 @@
   <string>
     <id>430</id>
     <value>Sort by DVD#</value>
+  </string>  
+  <string>
+    <id>431</id>
+    <value>7. No Cache</value>
+  </string>  
+  <string>
+    <id>432</id>
+    <value>Delete movie from database</value>
+  </string>  
+  <string>
+    <id>433</id>
+    <value>Are you sure to remove</value>
+  </string>  
+  <string>
+    <id>434</id>
+    <value>the movie?</value>
+  </string> 
+  <string>
+    <id>435</id>
+    <value>Track</value>
+  </string> 
+  <string>
+    <id>436</id>
+    <value>Year:</value>
+  </string> 
+  <string>
+    <id>437</id>
+    <value>Duration:</value>
+  </string> 
+  <string>
+    <id>438</id>
+    <value>Opening file</value>
+  </string> 
+  <string>
+    <id>439</id>
+    <value>Cache</value>
+  </string> 
+  <string>
+    <id>440</id>
+    <value>Harddisk</value>
+  </string> 
+  <string>
+    <id>441</id>
+    <value>UDF</value>
+  </string> 
+  <string>
+    <id>442</id>
+    <value>LAN</value>
+  </string> 
+  <string>
+    <id>443</id>
+    <value>Internet</value>
+  </string> 
+  <string>
+    <id>444</id>
+    <value>video</value>
+  </string> 
+  <string>
+    <id>445</id>
+    <value>audio</value>
+  </string> 
+  <string>
+    <id>446</id>
+    <value>DVD</value>
+  </string> 
+  <string>
+    <id>447</id>
+    <value>Autorun</value>
+  </string> 
+  <string>
+    <id>448</id>
+    <value>LCD</value>
+  </string> 
+  <string>
+    <id>449</id>
+    <value>Enabled</value>
+  </string> 
+  <string>
+    <id>450</id>
+    <value>Columns</value>
+  </string> 
+  <string>
+    <id>451</id>
+    <value>Row 1 adress:</value>
+  </string> 
+  <string>
+    <id>452</id>
+    <value>Row 2 adress:</value>
+  </string> 
+  <string>
+    <id>453</id>
+    <value>Row 3 adress:</value>
+  </string> 
+  <string>
+    <id>454</id>
+    <value>Row 4 adress:</value>
+  </string> 
+  <string>
+    <id>455</id>
+    <value>Rows:</value>
   </string> 
 </strings>

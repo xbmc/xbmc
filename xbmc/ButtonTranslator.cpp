@@ -44,7 +44,11 @@ void CButtonTranslator::Load()
 		{
 			TiXmlNode* pNode=pAction->FirstChild("id");
 			WORD wID = 0;				// action identity
-			if (pNode) wID = (WORD)atol(pNode->FirstChild()->Value());
+			if (pNode) 
+      {
+        if (pNode->FirstChild())
+          wID = (WORD)atol(pNode->FirstChild()->Value());
+      }
 			if (wID>0)
 			{	// valid id, get the buttons associated with this action...
 				MapAction(wID, pAction->FirstChild(), map);
@@ -63,7 +67,11 @@ void CButtonTranslator::Load()
 		buttonMap map;
 		TiXmlNode* pID = pWindow->FirstChild("id");
 		WORD wWindowID = -1;
-		if (pID) wWindowID = (WORD)atol(pID->FirstChild()->Value());
+		if (pID) 
+    {
+      if (pID->FirstChild())
+        wWindowID = (WORD)atol(pID->FirstChild()->Value());
+    }
 		if (wWindowID>=0)
 		{
 			//char szTmp[128];
@@ -74,7 +82,11 @@ void CButtonTranslator::Load()
 			{
 				TiXmlNode* pNode=pAction->FirstChild("id");
 				WORD wID = 0;				// action identity
-				if (pNode) wID = (WORD)atol(pNode->FirstChild()->Value());
+				if (pNode) 
+        {
+          if (pNode->FirstChild())
+            wID = (WORD)atol(pNode->FirstChild()->Value());
+        }
 				if (wID>0)
 				{	// valid id, get the buttons associated with this action...
 					MapAction(wID, pAction->FirstChild(), map);
@@ -149,7 +161,9 @@ void CButtonTranslator::MapAction(WORD wAction, TiXmlNode *pNode, buttonMap &map
 		wButtonCode = 0;
 		if (strNode=="gamepad")
 		{
-			strButton = pNode->FirstChild()->Value();
+      if (pNode->FirstChild())
+			  strButton = pNode->FirstChild()->Value();
+      else strButton ="";
 			if (strButton == "A")					wButtonCode = KEY_BUTTON_A;
 			if (strButton == "B")					wButtonCode = KEY_BUTTON_B;
 			if (strButton == "X")					wButtonCode = KEY_BUTTON_X;
@@ -171,7 +185,10 @@ void CButtonTranslator::MapAction(WORD wAction, TiXmlNode *pNode, buttonMap &map
 		}
 		if (strNode=="remote")
 		{
-			strButton = pNode->FirstChild()->Value();
+      if (pNode->FirstChild())
+			  strButton = pNode->FirstChild()->Value();
+      else
+        strButton="";
 			if (strButton == "left")				wButtonCode = XINPUT_IR_REMOTE_LEFT;
 			if (strButton == "right")				wButtonCode = XINPUT_IR_REMOTE_RIGHT;
 			if (strButton == "up")					wButtonCode = XINPUT_IR_REMOTE_UP;

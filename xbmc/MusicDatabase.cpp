@@ -26,6 +26,7 @@ void CSong::Clear()
 
 CMusicDatabase::CMusicDatabase(void)
 {
+	m_bOpen=false;
 }
 
 CMusicDatabase::~CMusicDatabase(void)
@@ -90,7 +91,13 @@ bool CMusicDatabase::Open()
 	m_pDS->exec("PRAGMA synchronous='OFF'\n");
 	m_pDS->exec("PRAGMA count_changes='OFF'\n");
 //	m_pDS->exec("PRAGMA temp_store='MEMORY'\n");
+	m_bOpen=true;
 	return true;
+}
+
+bool CMusicDatabase::IsOpen()
+{
+	return m_bOpen;
 }
 
 void CMusicDatabase::Close()
@@ -98,6 +105,8 @@ void CMusicDatabase::Close()
 	if (NULL==m_pDB.get() ) return;
 	m_pDB->disconnect();
 	m_pDB.reset();
+	m_bOpen=false;
+	EmptyCache();
 }
 
 bool CMusicDatabase::CreateTables()
@@ -287,9 +296,16 @@ void CMusicDatabase::CheckVariousArtistsAndCoverArt()
 		CStdString strTempCoverArt;
 		CStdString strCoverArt;
 		CUtil::GetAlbumThumb(album.strAlbum+album.strPath, strTempCoverArt, true);
-		//	Was the thumb of this album read during scan?
+		//	Was the album art of this album read during scan?
 		if (CUtil::ThumbCached(strTempCoverArt))
 		{
+			//	Yes.
+			//	Copy as permanent directory thumb
+			CUtil::GetAlbumThumb(album.strPath, strCoverArt);
+			::CopyFile(strTempCoverArt, strCoverArt, false);
+
+			//	And move as permanent thumb for files and directory, where
+			//	album and path is known
 			CUtil::GetAlbumThumb(album.strAlbum+album.strPath, strCoverArt);
 			::MoveFileEx(strTempCoverArt, strCoverArt, MOVEFILE_REPLACE_EXISTING);
 		}

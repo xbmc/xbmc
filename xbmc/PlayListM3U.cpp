@@ -55,6 +55,9 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
     {
       CUtil::GetQualifiedFilename(strBasePath,strFileName);
       CPlayListItem newItem(strFileName, strFileName, 0);
+      CStdString strDescription;
+      strDescription=CUtil::GetFileName(strFileName);
+      newItem.SetDescription(strDescription);
       Add(newItem);
     }
 	}
@@ -85,6 +88,11 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
           {
 					  CUtil::GetQualifiedFilename(strBasePath,strFileName);
 					  CPlayListItem newItem(strInfo,strFileName,lDuration);
+            if (strInfo.size()==0)
+            {
+              strInfo=CUtil::GetFileName(strFileName);
+              newItem.SetDescription(strInfo);
+            }
 					  Add(newItem);
           }
 				}
@@ -103,6 +111,9 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
       {
 			  CUtil::GetQualifiedFilename(strBasePath,strFileName);
 			  CPlayListItem newItem(strFileName, strFileName, 0);
+        CStdString strDescription;
+        strDescription=CUtil::GetFileName(strFileName);
+        newItem.SetDescription(strDescription);
 			  Add(newItem);
       }
 		}

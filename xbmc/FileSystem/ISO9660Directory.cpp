@@ -22,7 +22,6 @@ bool  CISO9660Directory::GetDirectory(const CStdString& strPath,VECFILEITEMS &it
   CURL url(strPath);
   
   {
-		iso9660 iso;
 	  WIN32_FIND_DATA wfd;
 	  HANDLE					hFind;
 
@@ -44,7 +43,7 @@ bool  CISO9660Directory::GetDirectory(const CStdString& strPath,VECFILEITEMS &it
 		}
 
       FILETIME localTime;
-	    hFind = iso.FindFirstFile((char*)strSearchMask.c_str(),&wfd);
+      hFind = m_isoReader.FindFirstFile((char*)strSearchMask.c_str(),&wfd);
 	    if (hFind!=NULL)
 	    {
 	      do
@@ -81,8 +80,8 @@ bool  CISO9660Directory::GetDirectory(const CStdString& strPath,VECFILEITEMS &it
 				      }
             }
           }
-        } while (iso.FindNextFile(hFind, &wfd));
-				iso.FindClose(hFind);
+        } while (m_isoReader.FindNextFile(hFind, &wfd));
+				m_isoReader.FindClose(hFind);
       }  
     }
 	

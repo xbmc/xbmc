@@ -12,6 +12,145 @@ struct CSettings::stSettings g_stSettings;
 
 CSettings::CSettings(void)
 {
+
+	g_stSettings.m_bLCDUsed=false;
+  g_stSettings.m_iLCDColumns=20;
+  g_stSettings.m_iLCDRows=4;
+  g_stSettings.m_iLCDAdress[0]=0x0;
+  g_stSettings.m_iLCDAdress[1]=0x40;
+  g_stSettings.m_iLCDAdress[2]=0x14;
+  g_stSettings.m_iLCDAdress[3]=0x54;
+
+  g_stSettings.m_iCacheSizeHD[CACHE_AUDIO] = 256;
+  g_stSettings.m_iCacheSizeHD[CACHE_VIDEO] = 1024;
+  g_stSettings.m_iCacheSizeHD[CACHE_VOB]   = 16384;
+
+  g_stSettings.m_iCacheSizeUDF[CACHE_AUDIO] = 256;
+  g_stSettings.m_iCacheSizeUDF[CACHE_VIDEO] = 8192;
+  g_stSettings.m_iCacheSizeUDF[CACHE_VOB]   = 16384;
+
+  g_stSettings.m_iCacheSizeISO[CACHE_AUDIO] = 256;
+  g_stSettings.m_iCacheSizeISO[CACHE_VIDEO] = 8192;
+  g_stSettings.m_iCacheSizeISO[CACHE_VOB]   = 16384;
+
+  g_stSettings.m_iCacheSizeLAN[CACHE_AUDIO] = 256;
+  g_stSettings.m_iCacheSizeLAN[CACHE_VIDEO] = 8192;
+  g_stSettings.m_iCacheSizeLAN[CACHE_VOB]   = 16384;
+
+  g_stSettings.m_iCacheSizeInternet[CACHE_AUDIO] = 512;
+  g_stSettings.m_iCacheSizeInternet[CACHE_VIDEO] = 2048;
+  g_stSettings.m_iCacheSizeInternet[CACHE_VOB]   = 16384;
+
+  m_ResInfo[HDTV_1080i].Overscan.left = 0;
+  m_ResInfo[HDTV_1080i].Overscan.top = 0;
+  m_ResInfo[HDTV_1080i].Overscan.width = 1920;
+  m_ResInfo[HDTV_1080i].Overscan.height = 1080;
+  m_ResInfo[HDTV_1080i].iSubtitles = 1080;
+  m_ResInfo[HDTV_1080i].iWidth = 1920;
+  m_ResInfo[HDTV_1080i].iHeight = 1080;
+  m_ResInfo[HDTV_1080i].dwFlags = D3DPRESENTFLAG_INTERLACED|D3DPRESENTFLAG_WIDESCREEN;
+  m_ResInfo[HDTV_1080i].fPixelRatio = 1.0f;
+  strcpy(m_ResInfo[HDTV_1080i].strMode,"1080i 16:9");
+  
+  m_ResInfo[HDTV_720p].Overscan.left = 0;
+  m_ResInfo[HDTV_720p].Overscan.top = 0;
+  m_ResInfo[HDTV_720p].Overscan.width = 1280;
+  m_ResInfo[HDTV_720p].Overscan.height = 720;
+  m_ResInfo[HDTV_720p].iSubtitles = 720;
+  m_ResInfo[HDTV_720p].iWidth = 1280;
+  m_ResInfo[HDTV_720p].iHeight = 720;
+  m_ResInfo[HDTV_720p].dwFlags = D3DPRESENTFLAG_PROGRESSIVE|D3DPRESENTFLAG_WIDESCREEN;
+  m_ResInfo[HDTV_720p].fPixelRatio = 1.0f;
+  strcpy(m_ResInfo[HDTV_720p].strMode,"720p 16:9");
+  
+  m_ResInfo[HDTV_480p_4x3].Overscan.left = 0;
+  m_ResInfo[HDTV_480p_4x3].Overscan.top = 0;
+  m_ResInfo[HDTV_480p_4x3].Overscan.width = 720;
+  m_ResInfo[HDTV_480p_4x3].Overscan.height = 480;
+  m_ResInfo[HDTV_480p_4x3].iSubtitles = 480;
+  m_ResInfo[HDTV_480p_4x3].iWidth = 720;
+  m_ResInfo[HDTV_480p_4x3].iHeight = 480;
+  m_ResInfo[HDTV_480p_4x3].dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
+  m_ResInfo[HDTV_480p_4x3].fPixelRatio = 72.0f/79.0f;
+  strcpy(m_ResInfo[HDTV_480p_4x3].strMode,"480p 4:3");
+
+  m_ResInfo[HDTV_480p_16x9].Overscan.left = 0;
+  m_ResInfo[HDTV_480p_16x9].Overscan.top = 0;
+  m_ResInfo[HDTV_480p_16x9].Overscan.width = 720;
+  m_ResInfo[HDTV_480p_16x9].Overscan.height = 480;
+  m_ResInfo[HDTV_480p_16x9].iSubtitles = 480;
+  m_ResInfo[HDTV_480p_16x9].iWidth = 720;
+  m_ResInfo[HDTV_480p_16x9].iHeight = 480;
+  m_ResInfo[HDTV_480p_16x9].dwFlags = D3DPRESENTFLAG_PROGRESSIVE|D3DPRESENTFLAG_WIDESCREEN;
+  m_ResInfo[HDTV_480p_16x9].fPixelRatio = 72.0f/79.0f*4.0f/3.0f;
+  strcpy(m_ResInfo[HDTV_480p_16x9].strMode,"480p 16:9");
+
+  m_ResInfo[NTSC_4x3].Overscan.left = 0;
+  m_ResInfo[NTSC_4x3].Overscan.top = 0;
+  m_ResInfo[NTSC_4x3].Overscan.width = 720;
+  m_ResInfo[NTSC_4x3].Overscan.height = 480;
+  m_ResInfo[NTSC_4x3].iSubtitles = 480;
+  m_ResInfo[NTSC_4x3].iWidth = 720;
+  m_ResInfo[NTSC_4x3].iHeight = 480;
+  m_ResInfo[NTSC_4x3].dwFlags = 0;
+  m_ResInfo[NTSC_4x3].fPixelRatio = 72.0f/79.0f;
+  strcpy(m_ResInfo[NTSC_4x3].strMode,"NTSC 4:3");
+
+  m_ResInfo[NTSC_16x9].Overscan.left = 0;
+  m_ResInfo[NTSC_16x9].Overscan.top = 0;
+  m_ResInfo[NTSC_16x9].Overscan.width = 720;
+  m_ResInfo[NTSC_16x9].Overscan.height = 480;
+  m_ResInfo[NTSC_16x9].iSubtitles = 480;
+  m_ResInfo[NTSC_16x9].iWidth = 720;
+  m_ResInfo[NTSC_16x9].iHeight = 480;
+  m_ResInfo[NTSC_16x9].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
+  m_ResInfo[NTSC_16x9].fPixelRatio = 72.0f/79.0f*4.0f/3.0f;
+  strcpy(m_ResInfo[NTSC_16x9].strMode,"NTSC 16:9");
+
+  m_ResInfo[PAL_4x3].Overscan.left = 0;
+  m_ResInfo[PAL_4x3].Overscan.top = 0;
+  m_ResInfo[PAL_4x3].Overscan.width = 720;
+  m_ResInfo[PAL_4x3].Overscan.height = 576;
+  m_ResInfo[PAL_4x3].iSubtitles = 576;
+  m_ResInfo[PAL_4x3].iWidth = 720;
+  m_ResInfo[PAL_4x3].iHeight = 576;
+  m_ResInfo[PAL_4x3].dwFlags = 0;
+  m_ResInfo[PAL_4x3].fPixelRatio = 128.0f/117.0f;
+  strcpy(m_ResInfo[PAL_4x3].strMode,"PAL 4:3");
+
+  m_ResInfo[PAL_16x9].Overscan.left = 0;
+  m_ResInfo[PAL_16x9].Overscan.top = 0;
+  m_ResInfo[PAL_16x9].Overscan.width = 720;
+  m_ResInfo[PAL_16x9].Overscan.height = 576;
+  m_ResInfo[PAL_16x9].iSubtitles = 576;
+  m_ResInfo[PAL_16x9].iWidth = 720;
+  m_ResInfo[PAL_16x9].iHeight = 576;
+  m_ResInfo[PAL_16x9].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
+  m_ResInfo[PAL_16x9].fPixelRatio = 128.0f/117.0f*4.0f/3.0f;
+  strcpy(m_ResInfo[PAL_16x9].strMode,"PAL 16:9");
+
+  m_ResInfo[PAL60_4x3].Overscan.left = 0;
+  m_ResInfo[PAL60_4x3].Overscan.top = 0;
+  m_ResInfo[PAL60_4x3].Overscan.width = 720;
+  m_ResInfo[PAL60_4x3].Overscan.height = 480;
+  m_ResInfo[PAL60_4x3].iSubtitles = 480;
+  m_ResInfo[PAL60_4x3].iWidth = 720;
+  m_ResInfo[PAL60_4x3].iHeight = 480;
+  m_ResInfo[PAL60_4x3].dwFlags = 0;
+  m_ResInfo[PAL60_4x3].fPixelRatio = 72.0f/79.0f;
+  strcpy(m_ResInfo[PAL60_4x3].strMode,"PAL60 4:3");
+  
+  m_ResInfo[PAL60_16x9].Overscan.left = 0;
+  m_ResInfo[PAL60_16x9].Overscan.top = 0;
+  m_ResInfo[PAL60_16x9].Overscan.width = 720;
+  m_ResInfo[PAL60_16x9].Overscan.height = 480;
+  m_ResInfo[PAL60_16x9].iSubtitles = 480;
+  m_ResInfo[PAL60_16x9].iWidth = 720;
+  m_ResInfo[PAL60_16x9].iHeight = 480;
+  m_ResInfo[PAL60_16x9].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
+  m_ResInfo[PAL60_16x9].fPixelRatio = 72.0f/79.0f*4.0f/3.0f;
+  strcpy(m_ResInfo[PAL60_16x9].strMode,"PAL60 16:9");
+
   strcpy(g_stSettings.m_szExternalDVDPlayer,"");
   g_stSettings.m_bMyVideoVideoStack =false;
   g_stSettings.m_bMyVideoActorStack =false;
@@ -19,7 +158,7 @@ CSettings::CSettings(void)
   g_stSettings.m_bMyVideoYearStack =false;
 
 
-  g_stSettings.m_bPPAuto=true;
+  g_stSettings.m_bPPAuto=true;//only has effect if m_bPostProcessing = true
   g_stSettings.m_bPPVertical=false;
   g_stSettings.m_bPPHorizontal=false;
   g_stSettings.m_bPPAutoLevels=false;
@@ -28,9 +167,10 @@ CSettings::CSettings(void)
   g_stSettings.m_bUseDigitalOutput=false;
 
   strcpy(g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
-  g_stSettings.m_bPostProcessing=true;
+  g_stSettings.m_bPostProcessing=false;
   g_stSettings.m_bDeInterlace=false;
   g_stSettings.m_bNonInterleaved=false;
+  g_stSettings.m_bNoCache=false;
 	g_stSettings.m_bAudioOnAllSpeakers=false;
 	g_stSettings.m_bUseID3=true;
 	g_stSettings.m_bDD_DTSMultiChannelPassThrough=false;
@@ -49,7 +189,8 @@ CSettings::CSettings(void)
 	g_stSettings.m_bAllowPAL60=true;
 	g_stSettings.m_bAutoShufflePlaylist=true;
 	g_stSettings.dwFileVersion =CONFIG_VERSION;
-	g_stSettings.m_bMyProgramsViewAsIcons=false;
+	g_stSettings.m_iMyProgramsViewAsIcons=1;
+  g_stSettings.m_iMyVideoPlaylistViewAsIcons=1;
 	g_stSettings.m_bMyProgramsSortAscending=true;
 	g_stSettings.m_bMyProgramsFlatten=false;
 	g_stSettings.m_bMyProgramsDefaultXBE=false;
@@ -69,7 +210,7 @@ CSettings::CSettings(void)
 	g_stSettings.m_bMyPicturesSortAscending=true;
 
 	strcpy(g_stSettings.m_szMyPicturesExtensions,".bmp|.jpg|.png|.gif|.pcx|.tif|.jpeg");
-	strcpy(g_stSettings.m_szMyMusicExtensions,".ac3|.aac|.pls|.rm|.sc|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u");
+	strcpy(g_stSettings.m_szMyMusicExtensions,".ac3|.aac|.pls|.strm|.rm|.sc|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u");
 	strcpy(g_stSettings.m_szMyVideoExtensions,".nfo|.rm|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli");
 	
 	strcpy( g_stSettings.m_szDefaultPrograms, "Q:\\shortcuts");
@@ -122,7 +263,10 @@ CSettings::CSettings(void)
 	strcpy(g_stSettings.m_szWeatherArea, "UKXX0085");	//default WEATHER to London for no good reason
 	strcpy(g_stSettings.m_szWeatherFTemp, "C");			//default WEATHER temp units 
 	strcpy(g_stSettings.m_szWeatherFSpeed, "K");		//default WEATHER speed units
-	g_stSettings.m_iWeatherRefresh = 1;
+	g_stSettings.m_iWeatherRefresh = 30;
+
+  g_stSettings.m_minFilter= D3DTEXF_LINEAR;
+  g_stSettings.m_maxFilter= D3DTEXF_LINEAR;
 }
 
 CSettings::~CSettings(void)
@@ -134,11 +278,11 @@ void CSettings::Save() const
 {
 	if (!SaveSettings("T:\\settings.xml"))
 	{
-    CLog::Log("Unable to T:\\settings.xml");
+    CLog::Log("Unable to save settings to T:\\settings.xml");
 	}
 	if (!SaveCalibration("T:\\calibration.xml"))
 	{
-		CLog::Log("Unable to T:\\calibration.xml");
+		CLog::Log("Unable to save calibration to T:\\calibration.xml");
 	}
 }
 
@@ -148,7 +292,9 @@ bool CSettings::Load()
   CLog::Log("loading T:\\settings.xml");
 	if (!LoadSettings("T:\\settings.xml"))
 	{
-    CLog::Log("Unable to load T:\\settings.xml");
+    CLog::Log("Unable to load T:\\settings.xml, creating new T:\\settings.xml with default values");
+    Save();
+    return Load();
 	}
 	// load calibration file...
   CLog::Log("loading T:\\calibration.xml");
@@ -164,7 +310,7 @@ bool CSettings::Load()
 	TiXmlDocument xmlDoc;
   if ( !xmlDoc.LoadFile( strXMLFile.c_str() ) ) 
 	{
-    CLog::Log("unable to load:%s",strXMLFile.c_str());
+    CLog::Log("unable to load:%s (xml file is invalid)",strXMLFile.c_str());
 		return false;
 	}
 
@@ -216,8 +362,6 @@ bool CSettings::Load()
 	//g_stSettings.m_bUseCDDB=GetBoolean(pRootElement, "CDDBEnabled");
 
 	GetString(pRootElement, "ipadres", g_stSettings.m_strLocalIPAdres,"");
-	if (g_stSettings.m_strLocalIPAdres == "")
-		GetString(pRootElement, "ip", g_stSettings.m_strLocalIPAdres,"");
 	GetString(pRootElement, "netmask", g_stSettings.m_strLocalNetmask,"");
 	GetString(pRootElement, "defaultgateway", g_stSettings.m_strGateway,"");
 	GetString(pRootElement, "nameserver", g_stSettings.m_strNameServer,"");
@@ -232,7 +376,7 @@ bool CSettings::Load()
 
 	GetString(pRootElement, "pictureextensions", g_stSettings.m_szMyPicturesExtensions,".bmp|.jpg|.png|.gif|.pcx|.tif|.jpeg");
   
-	GetString(pRootElement, "musicextensions", g_stSettings.m_szMyMusicExtensions,".ac3|.aac|.pls|.rm|.sc|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u");
+	GetString(pRootElement, "musicextensions", g_stSettings.m_szMyMusicExtensions,".ac3|.aac|.strm|.pls|.rm|.sc|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u");
 	GetString(pRootElement, "videoextensions", g_stSettings.m_szMyVideoExtensions,".nfo|.rm|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli");
 
 	GetInteger(pRootElement, "startwindow", g_stSettings.m_iStartupWindow,0,0,INT_MAX);
@@ -295,21 +439,6 @@ bool CSettings::Load()
   GetShares(pRootElement,"video",m_vecMyVideoShares,strDefault);
 	if (strDefault.size())
 		strcpy( g_stSettings.m_szDefaultVideos, strDefault.c_str());	
-	TiXmlElement* pWeatherElement =pRootElement->FirstChildElement("weather");	//grab WEATHER settings
-	if (pWeatherElement)
-	{
-		GetString(pWeatherElement, "areacode", g_stSettings.m_szWeatherArea, "UKXX0085");
-		GetString(pWeatherElement, "unitT", g_stSettings.m_szWeatherFTemp, "C");
-		//do some validation
-		if(g_stSettings.m_szWeatherFTemp[0] != 'F' && g_stSettings.m_szWeatherFTemp[0] != 'C')
-			g_stSettings.m_szWeatherFTemp[0] = 'C';
-
-		GetString(pWeatherElement, "unitS", g_stSettings.m_szWeatherFSpeed, "K");
-		if(g_stSettings.m_szWeatherFSpeed[0] != 'M' && g_stSettings.m_szWeatherFSpeed[0] != 'K')
-			g_stSettings.m_szWeatherFSpeed[0] = 'K';
-
-		GetInteger(pWeatherElement, "refresh", g_stSettings.m_iWeatherRefresh,1,1,60);
-	}
 
   return true;
 }
@@ -340,6 +469,7 @@ void CSettings::ConvertHomeVar(CStdString& strText)
 
 void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items,CStdString& strDefault)
 {
+	CLog::Log("  Parsing <%s> tag", strTagName.c_str());
 	strDefault="";
 	const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
 	if (pChild)
@@ -352,11 +482,13 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 			{
 				const TiXmlNode *pNodeName=pChild->FirstChild("name");
 				const TiXmlNode *pPathName=pChild->FirstChild("path");
-        const TiXmlNode *pCacheNode=pChild->FirstChild("cache");
+				const TiXmlNode *pCacheNode=pChild->FirstChild("cache");
 				if (pNodeName && pPathName)
 				{
-          const char* szName=pNodeName->FirstChild()->Value();
-          const char* szPath=pPathName->FirstChild()->Value();
+					const char* szName=pNodeName->FirstChild()->Value();
+					CLog::Log("    Share Name: %s", szName);
+					const char* szPath=pPathName->FirstChild()->Value();
+					CLog::Log("    Share Path: %s", szPath);
 
 					CShare share;
 					share.strName=szName;
@@ -381,10 +513,10 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 						share.m_iDriveType = SHARE_TYPE_UNKNOWN;
 
           
-          if (pCacheNode)
-          {
-            share.m_iBufferSize=atoi( pCacheNode->FirstChild()->Value() );
-          }
+					if (pCacheNode)
+					{
+						share.m_iBufferSize=atoi( pCacheNode->FirstChild()->Value() );
+					}
 
           
           
@@ -392,6 +524,11 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 
 					items.push_back(share);
 				}
+				else
+				{
+					CLog::Log("    <name> and/or <path> not properly defined within <bookmark>");
+				}
+
 			}
 			if (strValue=="default")
 			{
@@ -401,10 +538,15 @@ void CSettings::GetShares(const TiXmlElement* pRootElement, const CStdString& st
 					const char* pszText=pChild->FirstChild()->Value();
 					if (strlen(pszText) > 0)
 						strDefault=pszText;
+						CLog::Log("    Setting <default> share to : %s", strDefault.c_str());
 				}
 			}
 		  pChild=pChild->NextSibling();
 		}
+	}
+	else 
+	{
+		CLog::Log("  <%s> tag is missing or XboxMediaCenter.xml is malformed", strTagName.c_str());
 	}
 }
 
@@ -414,17 +556,22 @@ void CSettings::GetString(const TiXmlElement* pRootElement, const CStdString& st
 	const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
 	if (pChild)
 	{
-		CStdString strValue=pChild->FirstChild()->Value();
-		if (strValue.size() )
-		{
-			if (strValue !="-")
-				strcpy(szValue,strValue.c_str());
-		}
-	}
+    if (pChild->FirstChild())
+    {
+		  CStdString strValue=pChild->FirstChild()->Value();
+		  if (strValue.size() )
+		  {
+			  if (strValue !="-")
+				  strcpy(szValue,strValue.c_str());
+		  }
+	  }
+  }
 	if (strlen(szValue)==0)
 	{
 		strcpy(szValue,strDefaultValue.c_str());
 	}
+
+	CLog::Log("  %s: %s", strTagName.c_str(), szValue); 
 }
 
 void CSettings::GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue, const int iDefault, const int iMin, const int iMax)
@@ -437,6 +584,8 @@ void CSettings::GetInteger(const TiXmlElement* pRootElement, const CStdString& s
 	} 
 	else
 		iValue=iDefault;
+
+	CLog::Log("  %s: %d", strTagName.c_str(), iValue);
 }
 
 void CSettings::GetFloat(const TiXmlElement* pRootElement, const CStdString& strTagName, float& fValue, const float fDefault, const float fMin, const float fMax)
@@ -449,6 +598,8 @@ void CSettings::GetFloat(const TiXmlElement* pRootElement, const CStdString& str
 	} 
 	else
 		fValue=fDefault;
+
+	CLog::Log("  %s: %f", strTagName.c_str(), fValue);
 }
 
 void CSettings::GetBoolean(const TiXmlElement* pRootElement, const CStdString& strTagName, bool& bValue)
@@ -464,6 +615,8 @@ void CSettings::GetBoolean(const TiXmlElement* pRootElement, const CStdString& s
 		return;
 	}
 	if (strlen(szString)!=0) bValue = false;
+	
+	CLog::Log("  %s: %s", strTagName.c_str(), bValue ? "true" : "false");
 }
 
 void CSettings::SetString(TiXmlNode* pRootNode, const CStdString& strTagName, const CStdString& strValue) const
@@ -508,14 +661,13 @@ bool CSettings::LoadCalibration(const CStdString& strCalibrationFile)
 	TiXmlDocument xmlDoc;
 	if (!xmlDoc.LoadFile(strCalibrationFile))
 	{
-		OutputDebugString("Unable to load:");
-		OutputDebugString(strCalibrationFile.c_str());
-		OutputDebugString("\n");
+    CLog::Log("Unable to load:%s",strCalibrationFile.c_str());
 		return false;
 	}
 	TiXmlElement *pRootElement = xmlDoc.RootElement();
 	if (CUtil::cmpnocase(pRootElement->Value(),"calibration")!=0)
 	{
+    CLog::Log("%s doesnt start with <calibration>");
 		return false;
 	}
 	TiXmlElement *pResolution = pRootElement->FirstChildElement("resolution");
@@ -525,21 +677,27 @@ bool CSettings::LoadCalibration(const CStdString& strCalibrationFile)
 		int iRes;
 		GetInteger(pResolution, "id", iRes, (int)PAL_4x3, HDTV_1080i, PAL60_16x9); //PAL4x3 as default data
 		GetString(pResolution, "description", m_ResInfo[iRes].strMode, m_ResInfo[iRes].strMode);
-		GetInteger(pResolution, "width", m_ResInfo[iRes].iWidth,720,640,10000);
-		GetInteger(pResolution, "height", m_ResInfo[iRes].iHeight,576,400,10000);
+//		GetInteger(pResolution, "width", m_ResInfo[iRes].iWidth,720,640,10000);
+//		GetInteger(pResolution, "height", m_ResInfo[iRes].iHeight,576,400,10000);
 		GetInteger(pResolution, "subtitles", m_ResInfo[iRes].iSubtitles,576,m_ResInfo[iRes].iHeight-128,m_ResInfo[iRes].iHeight);
-		GetInteger(pResolution, "flags", (int &)m_ResInfo[iRes].dwFlags,0,INT_MIN,INT_MAX);
+//		GetInteger(pResolution, "flags", (int &)m_ResInfo[iRes].dwFlags,0,INT_MIN,INT_MAX);
 		GetFloat(pResolution, "pixelratio", m_ResInfo[iRes].fPixelRatio,128.0f/117.0f,0.5f,2.0f);
 
 		// get the overscan info		
 		TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
 		if (pOverscan)
 		{
-			GetInteger(pOverscan, "left", m_ResInfo[iRes].Overscan.left,0,0,128);
-			GetInteger(pOverscan, "top", m_ResInfo[iRes].Overscan.top,0,0,128);
-			GetInteger(pOverscan, "width", m_ResInfo[iRes].Overscan.width,720,640,10000);
-			GetInteger(pOverscan, "height", m_ResInfo[iRes].Overscan.height,576,400,10000);
+			GetInteger(pOverscan, "left", m_ResInfo[iRes].Overscan.left,0,-128,128);
+			GetInteger(pOverscan, "top", m_ResInfo[iRes].Overscan.top,0,-128,128);
+			GetInteger(pOverscan, "width", m_ResInfo[iRes].Overscan.width,720,500,10000);
+			GetInteger(pOverscan, "height", m_ResInfo[iRes].Overscan.height,576,300,10000);
 		}
+    CLog::Log("  calibration for %s %ix%i",m_ResInfo[iRes].strMode,m_ResInfo[iRes].iWidth,m_ResInfo[iRes].iHeight);
+    CLog::Log("    subtitle yposition:%i pixelratio:%03.3f offset:(%i,%i) width:%i height:%i", 
+                   m_ResInfo[iRes].iSubtitles, m_ResInfo[iRes].fPixelRatio,
+                m_ResInfo[iRes].Overscan.left,m_ResInfo[iRes].Overscan.top, 
+                m_ResInfo[iRes].Overscan.width,m_ResInfo[iRes].Overscan.height);
+
 		// iterate around
 		pResolution = pResolution->NextSiblingElement("resolution");
 	}
@@ -593,8 +751,46 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     CLog::Log("%s doesnt contain <settings>",strSettingsFile.c_str());
 		return false;
 	}
+    
+  TiXmlElement *pElement = pRootElement->FirstChildElement("lcdsettings");
+  if (pElement)
+	{
+		GetBoolean(pElement, "lcdon", g_stSettings.m_bLCDUsed);
+    GetInteger(pElement, "lcdcolums",g_stSettings.m_iLCDColumns,20,1,20);
+    GetInteger(pElement, "lcdrows",g_stSettings.m_iLCDRows,4,1,4);
+    GetInteger(pElement, "lcdrow1",g_stSettings.m_iLCDAdress[0],0,0,0x400);
+    GetInteger(pElement, "lcdrow2",g_stSettings.m_iLCDAdress[1],0x40,0,0x400);
+    GetInteger(pElement, "lcdrow3",g_stSettings.m_iLCDAdress[2],0x14,0,0x400);
+    GetInteger(pElement, "lcdrow4",g_stSettings.m_iLCDAdress[3],0x54,0,0x400);
+  }
+
+  // cache settings
+  pElement = pRootElement->FirstChildElement("cachesettings");
+  if (pElement)
+	{
+    GetInteger(pElement, "hdcacheaudio",g_stSettings.m_iCacheSizeHD[CACHE_AUDIO],256,0,16384);
+    GetInteger(pElement, "hdcachevideo",g_stSettings.m_iCacheSizeHD[CACHE_VIDEO],1024,0,16384);
+    GetInteger(pElement, "hdcachevob",g_stSettings.m_iCacheSizeHD[CACHE_VOB],16384,0,16384);
+
+    GetInteger(pElement, "udfcacheaudio",g_stSettings.m_iCacheSizeUDF[CACHE_AUDIO],256,0,16384);
+    GetInteger(pElement, "udfcachevideo",g_stSettings.m_iCacheSizeUDF[CACHE_VIDEO],8192,0,16384);
+    GetInteger(pElement, "udfcachevob",g_stSettings.m_iCacheSizeUDF[CACHE_VOB],16384,0,16384);
+
+    GetInteger(pElement, "isocacheaudio",g_stSettings.m_iCacheSizeISO[CACHE_AUDIO],256,0,16384);
+    GetInteger(pElement, "isocachevideo",g_stSettings.m_iCacheSizeISO[CACHE_VIDEO],8192,0,16384);
+    GetInteger(pElement, "isocachevob",g_stSettings.m_iCacheSizeISO[CACHE_VOB],16384,0,16384);
+
+    GetInteger(pElement, "lancacheaudio",g_stSettings.m_iCacheSizeLAN[CACHE_AUDIO],256,0,16384);
+    GetInteger(pElement, "lancachevideo",g_stSettings.m_iCacheSizeLAN[CACHE_VIDEO],8192,0,16384);
+    GetInteger(pElement, "lancachevob",g_stSettings.m_iCacheSizeLAN[CACHE_VOB],16384,0,16384);
+
+    GetInteger(pElement, "inetcacheaudio",g_stSettings.m_iCacheSizeInternet[CACHE_AUDIO],512,0,16384);
+    GetInteger(pElement, "inetcachevideo",g_stSettings.m_iCacheSizeInternet[CACHE_VIDEO],2048,0,16384);
+    GetInteger(pElement, "inetcachevob",g_stSettings.m_iCacheSizeInternet[CACHE_VOB],16384,0,16384);
+
+  }
 	// mypictures
-	TiXmlElement *pElement = pRootElement->FirstChildElement("mypictures");
+	pElement = pRootElement->FirstChildElement("mypictures");
 	if (pElement)
 	{
 		GetInteger(pElement, "picturesviewicons", g_stSettings.m_iMyPicturesViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
@@ -689,6 +885,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetBoolean(pElement, "stackactor", g_stSettings.m_bMyVideoActorStack);
     GetBoolean(pElement, "stackyear", g_stSettings.m_bMyVideoYearStack);
     
+    GetInteger(pElement, "videoplaylistviewicons", g_stSettings.m_iMyVideoPlaylistViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
 		GetInteger(pElement, "videoviewicons", g_stSettings.m_iMyVideoViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
 		GetInteger(pElement, "videorooticons", g_stSettings.m_iMyVideoRootViewAsIcons,VIEW_AS_LIST,VIEW_AS_LIST,VIEW_AS_LARGEICONS);
 		GetInteger(pElement, "videosortmethod",g_stSettings.m_iMyVideoSortMethod,0,0,2);
@@ -719,6 +916,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
       
 		GetInteger(pElement, "subtitleheight",g_stSettings.m_iSubtitleHeight,28,1,128);
 		GetString(pElement, "subtitlefont", g_stSettings.m_szSubtitleFont,"arial-iso-8859-1");
+		GetInteger(pElement, "smallstepbackseconds", g_stSettings.m_iSmallStepBackSeconds,7,1,INT_MAX);
+		GetInteger(pElement, "smallstepbacktries", g_stSettings.m_iSmallStepBackTries,3,1,10);
+		GetInteger(pElement, "smallstepbackdelay", g_stSettings.m_iSmallStepBackDelay,300,100,5000); //MS
 	}
 	// myscripts settings
 	pElement = pRootElement->FirstChildElement("myscripts");
@@ -752,6 +952,10 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetInteger(pElement, "screensavermode", g_stSettings.m_iScreenSaverMode,1,0,3);	// 0=Off, 1=Fade to dim, 2=Fade to black, 3=Matrix Trails
 		GetInteger(pElement, "screensaverfade", g_stSettings.m_iScreenSaverFadeLevel,20,1,100);	// default to 20%
 		GetInteger(pElement, "audiostream",g_stSettings.m_iAudioStream,0,0,INT_MAX);
+		GetInteger(pElement, "weatherrefresh", g_stSettings.m_iWeatherRefresh, 15, 15, 120);	//WEATHER SETTINGS
+		GetString(pElement, "weathertemp", g_stSettings.m_szWeatherFTemp, "C");					//WEATHER SETTINGS
+		GetString(pElement, "weatherspeed", g_stSettings.m_szWeatherFSpeed, "K");				//WEATHER SETTINGS
+		GetString(pElement, "areacode", g_stSettings.m_szWeatherArea, "UKXX0085");				//WEATHER SETTINGS
 	}
 	// slideshow settings
 	pElement = pRootElement->FirstChildElement("slideshow");
@@ -773,8 +977,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 		GetBoolean(pElement, "stretch", g_stSettings.m_bStretch);
 		GetBoolean(pElement, "allowswitching", g_stSettings.m_bAllowVideoSwitching);
 		GetBoolean(pElement, "allowpal60", g_stSettings.m_bAllowPAL60);
-		GetInteger(pElement, "minfilter", (int &)g_stSettings.m_minFilter,D3DTEXF_LINEAR,INT_MIN,INT_MAX);
-		GetInteger(pElement, "maxfilter", (int &)g_stSettings.m_maxFilter,D3DTEXF_LINEAR,INT_MIN,INT_MAX);
+		GetInteger(pElement, "minfilter", (int &)g_stSettings.m_minFilter, D3DTEXF_LINEAR, D3DTEXF_LINEAR,D3DTEXF_GAUSSIANCUBIC);
+		GetInteger(pElement, "maxfilter", (int &)g_stSettings.m_maxFilter, D3DTEXF_LINEAR, D3DTEXF_LINEAR,D3DTEXF_GAUSSIANCUBIC);
 	}
 	// audio settings
 	pElement = pRootElement->FirstChildElement("audio");
@@ -813,10 +1017,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   pElement = pRootElement->FirstChildElement("myprograms");
   if (pElement)
   {
-	GetBoolean(pElement, "programsviewicons", g_stSettings.m_bMyProgramsViewAsIcons);
+	GetInteger(pElement, "programsviewicons", g_stSettings.m_iMyProgramsViewAsIcons,1,0,2);
 	GetInteger(pElement, "programssortmethod", g_stSettings.m_iMyProgramsSortMethod,0,0,2);
 	GetBoolean(pElement, "programssortascending", g_stSettings.m_bMyProgramsSortAscending);
-	GetInteger(pElement, "selecteditem",g_stSettings.m_iMyProgramsSelectedItem,0,0,INT_MAX);
 
 	  GetBoolean(pElement, "flatten", g_stSettings.m_bMyProgramsFlatten);
    	GetBoolean(pElement, "defaultxbe", g_stSettings.m_bMyProgramsDefaultXBE);
@@ -831,16 +1034,52 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
 	if (!pRoot) return false;
 	// write our tags one by one - just a big list for now (can be flashed up later)
-	// myprograms settings
-	TiXmlElement programsNode("myprograms");
-	TiXmlNode *pNode = pRoot->InsertEndChild(programsNode);
+	
+	TiXmlElement LCDNode("lcdsettings");
+	TiXmlNode *pNode = pRoot->InsertEndChild(LCDNode);
 	if (!pNode) return false;
-	SetBoolean(pNode, "programsviewicons", g_stSettings.m_bMyProgramsViewAsIcons);
+	SetBoolean(pNode, "lcdon", g_stSettings.m_bLCDUsed);
+  SetInteger(pNode, "lcdcolums",g_stSettings.m_iLCDColumns);
+  SetInteger(pNode, "lcdrows",g_stSettings.m_iLCDRows);
+  SetInteger(pNode, "lcdrow1",g_stSettings.m_iLCDAdress[0]);
+  SetInteger(pNode, "lcdrow2",g_stSettings.m_iLCDAdress[1]);
+  SetInteger(pNode, "lcdrow3",g_stSettings.m_iLCDAdress[2]);
+  SetInteger(pNode, "lcdrow4",g_stSettings.m_iLCDAdress[3]);
+
+  // myprograms settings
+	TiXmlElement programsNode("myprograms");
+	pNode = pRoot->InsertEndChild(programsNode);
+	if (!pNode) return false;
+	SetInteger(pNode, "programsviewicons", g_stSettings.m_iMyProgramsViewAsIcons);
 	SetInteger(pNode, "programssortmethod", g_stSettings.m_iMyProgramsSortMethod);
 	SetBoolean(pNode, "programssortascending", g_stSettings.m_bMyProgramsSortAscending);
 	SetBoolean(pNode, "flatten", g_stSettings.m_bMyProgramsFlatten);
 	SetBoolean(pNode, "defaultxbe", g_stSettings.m_bMyProgramsDefaultXBE);
-  SetInteger(pNode, "selecteditem",g_stSettings.m_iMyProgramsSelectedItem);
+
+
+  // cache settings
+	TiXmlElement cacheNode("cachesettings");
+	pNode = pRoot->InsertEndChild(cacheNode);
+	if (!pNode) return false;
+  SetInteger(pNode, "hdcacheaudio",g_stSettings.m_iCacheSizeHD[CACHE_AUDIO]);
+  SetInteger(pNode, "hdcachevideo",g_stSettings.m_iCacheSizeHD[CACHE_VIDEO]);
+  SetInteger(pNode, "hdcachevob",g_stSettings.m_iCacheSizeHD[CACHE_VOB]);
+
+  SetInteger(pNode, "udfcacheaudio",g_stSettings.m_iCacheSizeUDF[CACHE_AUDIO]);
+  SetInteger(pNode, "udfcachevideo",g_stSettings.m_iCacheSizeUDF[CACHE_VIDEO]);
+  SetInteger(pNode, "udfcachevob",g_stSettings.m_iCacheSizeUDF[CACHE_VOB]);
+
+  SetInteger(pNode, "isocacheaudio",g_stSettings.m_iCacheSizeISO[CACHE_AUDIO]);
+  SetInteger(pNode, "isocachevideo",g_stSettings.m_iCacheSizeISO[CACHE_VIDEO]);
+  SetInteger(pNode, "isocachevob",g_stSettings.m_iCacheSizeISO[CACHE_VOB]);
+
+  SetInteger(pNode, "lancacheaudio",g_stSettings.m_iCacheSizeLAN[CACHE_AUDIO]);
+  SetInteger(pNode, "lancachevideo",g_stSettings.m_iCacheSizeLAN[CACHE_VIDEO]);
+  SetInteger(pNode, "lancachevob",g_stSettings.m_iCacheSizeLAN[CACHE_VOB]);
+
+  SetInteger(pNode, "inetcacheaudio",g_stSettings.m_iCacheSizeInternet[CACHE_AUDIO]);
+  SetInteger(pNode, "inetcachevideo",g_stSettings.m_iCacheSizeInternet[CACHE_VIDEO]);
+  SetInteger(pNode, "inetcachevob",g_stSettings.m_iCacheSizeInternet[CACHE_VOB]);
 
 	// mypictures settings
 	TiXmlElement picturesNode("mypictures");
@@ -947,6 +1186,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
   SetBoolean(pNode, "stackactor", g_stSettings.m_bMyVideoActorStack);
   SetBoolean(pNode, "stackyear", g_stSettings.m_bMyVideoYearStack);
 
+  SetInteger(pNode, "videoplaylistviewicons", g_stSettings.m_iMyVideoPlaylistViewAsIcons);
 	SetInteger(pNode, "videoviewicons", g_stSettings.m_iMyVideoViewAsIcons);
 	SetInteger(pNode, "videorooticons", g_stSettings.m_iMyVideoRootViewAsIcons);
 	SetInteger(pNode, "videosortmethod",g_stSettings.m_iMyVideoSortMethod);
@@ -977,6 +1217,9 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 
 	SetInteger(pNode, "subtitleheight",g_stSettings.m_iSubtitleHeight);
 	SetString(pNode, "subtitlefont", g_stSettings.m_szSubtitleFont);
+	SetInteger(pNode, "smallstepbackseconds", g_stSettings.m_iSmallStepBackSeconds);
+	SetInteger(pNode, "smallstepbacktries", g_stSettings.m_iSmallStepBackTries);
+	SetInteger(pNode, "smallstepbackdelay", g_stSettings.m_iSmallStepBackDelay);
 
 	// myscripts settings
 	TiXmlElement scriptsNode("myscripts");
@@ -1010,6 +1253,10 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile) const
 	SetInteger(pNode, "screensavermode", g_stSettings.m_iScreenSaverMode);	// CB: SCREENSAVER PATCH
 	SetInteger(pNode, "screensaverfade", g_stSettings.m_iScreenSaverFadeLevel);
 	SetInteger(pNode, "audiostream",g_stSettings.m_iAudioStream);
+	SetInteger(pNode, "weatherrefresh", g_stSettings.m_iWeatherRefresh);	//WEATHER SETTINGS
+	SetString(pNode, "weathertemp", g_stSettings.m_szWeatherFTemp);			//WEATHER SETTINGS
+	SetString(pNode, "weatherspeed", g_stSettings.m_szWeatherFSpeed);		//WEATHER SETTINGS
+	SetString(pNode, "areacode", g_stSettings.m_szWeatherArea);				//WEATHER SETTINGS
 
   // slideshow settings
 	TiXmlElement slideshowNode("slideshow");

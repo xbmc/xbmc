@@ -1,4 +1,5 @@
 #include "graphiccontext.h"
+#include "../xbmc/utils/log.h"
 
 #define WIDE_SCREEN_COMPENSATIONY (FLOAT)1.2
 #define WIDE_SCREEN_COMPENSATIONX (FLOAT)0.85
@@ -266,7 +267,14 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res)
 		m_pd3dParams->Flags = m_pResInfo[res].dwFlags;
 		if (res == PAL60_4x3 || res == PAL60_16x9)
 		{
-			m_pd3dParams->FullScreen_RefreshRateInHz = 60;
+      if (m_pd3dParams->BackBufferWidth <= 720 && m_pd3dParams->BackBufferHeight <=480)
+      {
+			  m_pd3dParams->FullScreen_RefreshRateInHz = 60;
+      }
+      else
+        m_pd3dParams->FullScreen_RefreshRateInHz = 0;
+      {
+      }
 		}
 		else
 		{

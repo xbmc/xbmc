@@ -94,11 +94,9 @@ void  CGUIWindowSystemInfo::GetValues()
 	WCHAR CPUText[32];
 	WCHAR GPUText[32];
 	WCHAR wszText[1024];
-	if (cpudec == 0)
-		swprintf(CPUText, L"%u.000c", cputemp);	
-	else
-		swprintf(CPUText, L"%u.%uc", cputemp,cpudec);	
-	swprintf(GPUText, L"%u.000c", mbtemp);	
+  float fTemp=(float)cputemp + ((float)cpudec)/100.0f;
+	swprintf(CPUText, L"%2.2f%cC", fTemp,176);	
+	swprintf(GPUText, L"%u.2%cC", mbtemp,176);	
 	
 	{
 		const WCHAR *psztext=g_localizeStrings.Get(140).c_str();
@@ -128,7 +126,7 @@ void  CGUIWindowSystemInfo::GetValues()
 		WCHAR wszTime[32];
     SYSTEMTIME time;
     GetLocalTime(&time);
-    swprintf(wszTime,L"%s: %d:%02d:%02d %d/%d/%d",pszCurrent,time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
+    swprintf(wszTime,L"%s %d:%02d:%02d %d-%d-%d",pszCurrent,time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
 	
 		SET_CONTROL_LABEL(GetID(), 4,wszTime);
 	}

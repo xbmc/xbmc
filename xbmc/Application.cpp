@@ -1,4 +1,5 @@
 #include "application.h"
+#include "utils/lcd.h"
 #include "xbox\iosupport.h"
 #include "xbox/xkutils.h"
 #include "utils/log.h"
@@ -13,6 +14,7 @@
 #include "url.h"
 #include "autorun.h"
 #include "ActionManager.h"
+#include "cores/ModPlayer.h"
 #include "cores/mplayer/ASyncDirectSound.h"
 #ifdef _DEBUG
 //	#pragma comment (lib,"lib/filezilla/xbfilezillad.lib") // SECTIONNAME=FILEZILL
@@ -29,6 +31,7 @@
 	#pragma comment (lib, "xbmc/lib/libcdio/libcdiod.lib" )
 	#pragma comment (lib, "xbmc/lib/libshout/libshoutd.lib" )
 	#pragma comment (lib,"xbmc/lib/libRTV/libRTVd.lib")    // SECTIONNAME=LIBRTV
+	#pragma comment (lib,"xbmc/lib/mikxbox/mikxboxd.lib")  // SECTIONNAME=MOD_RW,MOD_RX
 #else
 //  #pragma comment (lib,"lib/filezilla/xbfilezilla.lib")
 	#pragma comment (lib,"xbmc/lib/libXBMS/libXBMS.lib")          
@@ -44,6 +47,7 @@
 	#pragma comment (lib, "xbmc/lib/libcdio/libcdio.lib" )
 	#pragma comment (lib, "xbmc/lib/libshout/libshout.lib" )
 	#pragma comment (lib,"xbmc/lib/libRTV/libRTV.lib")
+	#pragma comment (lib,"xbmc/lib/mikxbox/mikxbox.lib")
 #endif
 
 extern IDirectSoundRenderer* m_pAudioDecoder;
@@ -65,6 +69,7 @@ CApplication::CApplication(void)
 		m_bInactive = false;			// CB: SCREENSAVER PATCH
 		m_bScreenSave = false;			// CB: SCREENSAVER PATCH
 		m_dwSaverTick=timeGetTime();	// CB: SCREENSAVER PATCH
+		m_dwSkinTime = 0;
 }	
 
 CApplication::~CApplication(void)
@@ -188,6 +193,10 @@ HRESULT CApplication::Initialize()
   }
 
 	CreateDirectory(g_stSettings.szThumbnailsDirectory,NULL);
+  CStdString strThumbIMDB=g_stSettings.szThumbnailsDirectory;
+  strThumbIMDB+="\\imdb";
+  CreateDirectory(strThumbIMDB.c_str(),NULL);
+
 	CreateDirectory(g_stSettings.m_szShortcutDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szAlbumDirectory,NULL);
 	CreateDirectory(g_stSettings.m_szMusicRecordingDirectory,NULL);
@@ -282,6 +291,10 @@ HRESULT CApplication::Initialize()
 	m_gWindowManager.Add(&m_guiVideoYear);							  // window id = 23
   m_gWindowManager.Add(&m_guiSettingsPrograms);					// window id = 24
 	m_gWindowManager.Add(&m_guiVideoTitle);							  // window id = 25
+  m_gWindowManager.Add(&m_guiSettingsCache);						// window id = 26
+  m_gWindowManager.Add(&m_guiSettingsAutoRun);					// window id = 27
+  m_gWindowManager.Add(&m_guiMyVideoPlayList);					// window id = 28
+  m_gWindowManager.Add(&m_guiSettingsLCD);					    // window id = 29
 
   m_gWindowManager.Add(&m_guiDialogYesNo);							// window id = 100
   m_gWindowManager.Add(&m_guiDialogProgress);						// window id = 101
@@ -304,6 +317,7 @@ HRESULT CApplication::Initialize()
 
 	m_gWindowManager.Add(&m_guiWindowScreensaver);				// window id = 2900 Screensaver
 	m_gWindowManager.Add(&m_guiMyWeather);						// window id = 2600 WEATHER
+	m_gWindowManager.Add(&m_guiSettingsWeather);				// window id = 17 WEATHER SETTINGS
 
 	/* window id's 3000 - 3100 are reserved for python */
   CLog::Log("initializing virtual keyboard");	
@@ -334,16 +348,32 @@ HRESULT CApplication::Initialize()
   }
 
   CLog::Log("initialize done");	
+  g_lcd.Initialize();
 	return S_OK;
+}
+
+void CApplication::DelayLoadSkin()
+{
+	m_dwSkinTime = timeGetTime() + 2000;
+	return;
 }
 
 void CApplication::LoadSkin(const CStdString& strSkin)
 {
+	m_dwSkinTime = 0;
+
 	CStdString strHomePath;
 	string strSkinPath = "Q:\\skin\\";
 	strSkinPath+=strSkin;
 
   CLog::Log("  load skin from:%s",strSkinPath.c_str());	
+
+
+  if ( IsPlaying() )
+  {
+    CLog::Log(" stop playing...");
+    m_pPlayer->closefile();
+  }
 
   CLog::Log("  delete old skin...");
 	m_guiWindowVideoOverlay.FreeResources();
@@ -356,6 +386,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	g_TextureManager.Cleanup();
 
 	g_fontManager.Clear();
+  
+  CLog::Log("  load fonts for skin...");
   g_graphicsContext.SetMediaDir(strSkinPath);
   g_fontManager.LoadFonts(strSkinPath+string("\\font.xml")) ;
 
@@ -370,6 +402,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiVideoYear.Load( strSkinPath+"\\myvideoYear.xml" );  
   m_guiVideoTitle.Load( strSkinPath+"\\myvideoTitle.xml" );  
 	m_guiSettings.Load( strSkinPath+"\\settings.xml" );  
+  m_guiMyVideoPlayList.Load( strSkinPath+"\\myvideoplaylist.xml" );  
+  m_guiSettingsLCD.Load( strSkinPath+"\\settingsLCD.xml" );  
 	m_guiSystemInfo.Load( strSkinPath+"\\SettingsSystemInfo.xml" );  
 	m_guiMusicInfo.Load( strSkinPath+"\\DialogAlbumInfo.xml" );  
 	m_guiScriptsInfo.Load( strSkinPath+"\\DialogScriptInfo.xml" ); 
@@ -393,7 +427,9 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiSettingsScreenCalibration.Load( strSkinPath+"\\settingsScreenCalibration.xml" );
 	m_guiSettingsSlideShow.Load( strSkinPath+"\\SettingsSlideShow.xml" );
 	m_guiSettingsScreensaver.Load( strSkinPath+"\\SettingsScreensaver.xml" );
+  m_guiSettingsAutoRun.Load( strSkinPath+"\\SettingsAutoRun.xml" );
 	m_guiSettingsFilter.Load( strSkinPath+"\\SettingsFilter.xml" );
+  m_guiSettingsCache.Load( strSkinPath+"\\SettingsCache.xml" );
 	m_guiWindowVideoOverlay.Load( strSkinPath+"\\videoOverlay.xml" );
 	m_guiWindowFullScreen.Load( strSkinPath+"\\videoFullScreen.xml" );
 	m_guiScripts.Load( strSkinPath+"\\myscripts.xml");
@@ -403,6 +439,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiSettingsSubtitles.Load( strSkinPath+"\\SettingsScreenSubtitles.xml");
 	m_guiWindowScreensaver.SetID(WINDOW_SCREENSAVER);		// CB: Matrix Screensaver - saves us having to have our own XML file
 	m_guiMyWeather.Load( strSkinPath+"\\myweather.xml");	//WEATHER
+	m_guiSettingsWeather.Load(strSkinPath+"\\SettingsWeather.xml");	//WEATHER SETTINGS
+	CGUIWindow::FlushReferenceCache(); // flush the cache so it doesn't use memory all the time
 
   CLog::Log("  initialize new skin...");
 	m_guiMusicOverlay.AllocResources();
@@ -461,7 +499,7 @@ void CApplication::Render()
 	g_graphicsContext.Lock();
 
 	// draw GUI (always enable soften filter when displaying the UI)
-  m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
+  m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, 0x00010001, 1.0f, 0L );
 	m_pd3dDevice->SetSoftDisplayFilter(true);
 	m_pd3dDevice->SetFlickerFilter(5);
 
@@ -549,17 +587,25 @@ void CApplication::OnKey(CKey& key)
 		m_dwSpinDownTime=timeGetTime();
 
     ResetScreenSaver();
-	  m_bInactive=false;		// reset the inactive flag as a key has been pressed
-	  if (m_bScreenSave)		// Screen saver is active
-	  {
-		  m_bScreenSave = false;	// Reset the screensaver active flag
 
-		  if (g_stSettings.m_iScreenSaverMode == 3)	// Matrix Trails
+	  m_bInactive=false;		// reset the inactive flag as a key has been pressed
+    // if Screen saver is active
+	  if (m_bScreenSave)		
+	  {
+      // disable screensaver
+		  m_bScreenSave = false;	
+          
+	    // if matrix trails screensaver is active
+	    int iWin = m_gWindowManager.GetActiveWindow();
+		  if (iWin  == WINDOW_SCREENSAVER)	
 		  {
+        // then show previous window
 			  m_gWindowManager.PreviousWindow();
 		  }
-		  else										// Fade to dim or black
+		  else										
 		  {
+        // Fade to dim or black screensaver is active
+        // just un-dim the screen
 			  m_pd3dDevice->SetGammaRamp(0, &m_OldRamp);	// put the old gamma ramp back in place
 		  }
       return;
@@ -652,6 +698,7 @@ void CApplication::OnKey(CKey& key)
         }
       }
 	  }
+    
 
     // previous : play previous song from playlist
 	  if (action.wID == ACTION_PREV_ITEM)
@@ -682,30 +729,181 @@ void CApplication::OnKey(CKey& key)
         {
           if ( m_pAudioDecoder)
           {
-            if (action.wID == ACTION_MUSIC_REWIND && m_iPlaySpeed == 1) // Enables Rewinding
-	            m_iPlaySpeed *=-2;
-            else if (action.wID == ACTION_MUSIC_REWIND && m_iPlaySpeed > 1) //goes down a notch if you're FFing
-	            m_iPlaySpeed /=2;
-            else if (action.wID == ACTION_MUSIC_FORWARD && m_iPlaySpeed < 1) //goes up a notch if you're RWing
-	            m_iPlaySpeed /= 2;
+            int iPlaySpeed=m_iPlaySpeed;
+            if (action.wID == ACTION_MUSIC_REWIND && iPlaySpeed == 1) // Enables Rewinding
+	            iPlaySpeed *=-2;
+            else if (action.wID == ACTION_MUSIC_REWIND && iPlaySpeed > 1) //goes down a notch if you're FFing
+	            iPlaySpeed /=2;
+            else if (action.wID == ACTION_MUSIC_FORWARD && iPlaySpeed < 1) //goes up a notch if you're RWing
+	            iPlaySpeed /= 2;
             else 
-	            m_iPlaySpeed *= 2;
+	            iPlaySpeed *= 2;
 
-            if (action.wID == ACTION_MUSIC_FORWARD && m_iPlaySpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
-	            m_iPlaySpeed = 1;
-            if (m_iPlaySpeed > 32 || m_iPlaySpeed < -32)
-	            m_iPlaySpeed = 1;     
+            if (action.wID == ACTION_MUSIC_FORWARD && iPlaySpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
+	            iPlaySpeed = 1;
+            if (iPlaySpeed > 32 || iPlaySpeed < -32)
+	            iPlaySpeed = 1;     
 
-            SetPlaySpeed(m_iPlaySpeed);
+            SetPlaySpeed(iPlaySpeed);
           }
         }
       }
     }
   }
 }
+void CApplication::UpdateLCD()
+{
+  static lTickCount=0;
+  if (GetTickCount()-lTickCount >=1000)
+  {
+    CStdString strTime;
+    CStdString strIcon;
+    CStdString strLine;
+    if (IsPlayingVideo())
+    {
+      // line 0: play symbol current time/total time
+      // line 1: movie filename / title
+      // line 2: genre
+      // line 3: year
+      CStdString strTotalTime;
+      unsigned int tmpvar = g_application.m_pPlayer->GetTotalTime();
+		  if(tmpvar != 0)
+		  {
+			  int ihour = tmpvar / 3600;
+			  int imin  = (tmpvar-ihour*3600) / 60;
+			  int isec = (tmpvar-ihour*3600) % 60;
+        strTotalTime.Format("/%2.2d:%2.2d:%2.2d", ihour,imin,isec);
+		  }
+      else 
+      {
+			  strTotalTime=" ";
+      }
+
+      __int64 lPTS=10*g_application.m_pPlayer->GetTime();
+      int hh = (int)(lPTS / 36000) % 100;
+      int mm = (int)((lPTS / 600) % 60);
+      int ss = (int)((lPTS /  10) % 60);
+      if (hh >=1)
+	    {
+        strTime.Format("%02.2i:%02.2i:%02.2i",hh,mm,ss);
+	    }
+	    else
+	    {
+		    strTime.Format("%02.2i:%02.2i",mm,ss);
+	    }
+      if (m_iPlaySpeed < 1) 
+        strIcon.Format("RW:%ix", m_iPlaySpeed);
+      else if (m_iPlaySpeed > 1) 
+        strIcon.Format("FF:%ix", m_iPlaySpeed);
+      else if (m_pPlayer->IsPaused())
+        strIcon.Format("\7");
+      else
+        strIcon.Format("\5");
+      strLine.Format("%s %s%s", strIcon.c_str(), strTime.c_str(), strTotalTime.c_str());
+      g_lcd.SetLine(0,strLine);
+
+      strLine=CUtil::GetFileName(m_strCurrentFile);
+      int iLine=1;
+      if (m_tagCurrentMovie.m_strTitle!="") strLine=m_tagCurrentMovie.m_strTitle;
+      g_lcd.SetLine(iLine++,strLine);
+
+      if (iLine<4 && m_tagCurrentMovie.m_strGenre!="") g_lcd.SetLine(iLine++,m_tagCurrentMovie.m_strGenre);
+      if (iLine<4 && m_tagCurrentMovie.m_iYear>1900) 
+      {
+        strLine.Format("%i", m_tagCurrentMovie.m_iYear);
+        g_lcd.SetLine(iLine++,strLine);
+      }
+      while (iLine < 4) g_lcd.SetLine(iLine++,"");
+
+    }
+    else if (IsPlayingAudio())
+    {
+      // Show:
+      // line 0: play symbol current time/total time
+      // line 1: song title
+      // line 2: artist
+      // line 3: release date
+      __int64 lPTS=g_application.m_pPlayer->GetPTS();
+      int hh = (int)(lPTS / 36000) % 100;
+      int mm = (int)((lPTS / 600) % 60);
+      int ss = (int)((lPTS /  10) % 60);
+      if (hh >=1)
+	    {
+        strTime.Format("%02.2i:%02.2i:%02.2i",hh,mm,ss);
+	    }
+	    else
+	    {
+		    strTime.Format("%02.2i:%02.2i",mm,ss);
+	    }
+      if (m_iPlaySpeed < 1) 
+        strIcon.Format("RW:%ix", m_iPlaySpeed);
+      else if (m_iPlaySpeed > 1) 
+        strIcon.Format("FF:%ix", m_iPlaySpeed);
+      else if (m_pPlayer->IsPaused())
+        strIcon.Format("\7");
+      else
+        strIcon.Format("\5");
+      strLine.Format("%s %s", strIcon.c_str(), strTime.c_str());
+      
+      int iLine=1;
+      if (m_tagCurrentSong.Loaded())
+      {
+        int iDuration=m_tagCurrentSong.GetDuration();
+        if (iDuration>0)
+        {
+          CStdString strDuration;
+          CUtil::SecondsToHMSString(iDuration, strDuration);
+          strLine.Format("%s %s/%s", strIcon.c_str(), strTime.c_str(),strDuration.c_str());
+        }
+        g_lcd.SetLine(0,strLine);
+        strLine=m_tagCurrentSong.GetTitle();
+        if (iLine < 4 && strLine!="") g_lcd.SetLine(iLine++,strLine);
+        strLine=m_tagCurrentSong.GetArtist();
+        if (iLine < 4 && strLine!="") g_lcd.SetLine(iLine++,strLine);
+        SYSTEMTIME systemtime;
+        m_tagCurrentSong.GetReleaseDate(systemtime);
+        if (iLine < 4 && systemtime.wYear>=1900)
+        {
+          strLine.Format("%i", systemtime.wYear);
+          g_lcd.SetLine(iLine++,strLine);
+        }
+        while (iLine < 4) g_lcd.SetLine(iLine++,"");
+      }
+      else
+      {
+        g_lcd.SetLine(0,strLine);
+        g_lcd.SetLine(1,"");
+        g_lcd.SetLine(2,"");
+        g_lcd.SetLine(3,"");
+      }
+    }
+    else
+    {
+      // line 0: XBMC running...
+      // line 1: time/date
+      // line 2: free memory (megs)
+      // line 3: GUI resolution
+      g_lcd.SetLine(0,"XBMC running...");
+      SYSTEMTIME time;
+	    GetLocalTime(&time);
+      strTime.Format("%02.2i:%02.2i:%02.2i %02.2i-%02.2i-%02.2i", time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
+      g_lcd.SetLine(1,strTime);
+	    MEMORYSTATUS stat;
+	    GlobalMemoryStatus(&stat);
+		  DWORD dwMegFree=stat.dwAvailPhys / (1024*1024);
+      strTime.Format("Freemem:%i meg", dwMegFree);
+      g_lcd.SetLine(2,strTime);
+		  int  iResolution=g_graphicsContext.GetVideoResolution();
+		  strTime.Format("%ix%i %s", g_settings.m_ResInfo[iResolution].iWidth, g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].strMode);
+      g_lcd.SetLine(3,strTime);
+    }
+    lTickCount=GetTickCount();
+  }
+}
 
 void CApplication::FrameMove()
 {
+  UpdateLCD();
   // read raw input from controller & remote control
 	ReadInput();
 	XBIR_REMOTE* pRemote	= &m_DefaultIR_Remote;
@@ -867,13 +1065,18 @@ void CApplication::Stop()
 		m_pPlayer=NULL;
 	}
 
+  //g_lcd.StopThread();
   CLog::Log("stop python");
 	g_applicationMessenger.Cleanup();
 	m_pythonParser.FreeResources();
   
   CLog::Log("stop dvd detect media");
 	m_DetectDVDType.StopThread();
+
+  CLog::Log("stop LCD");
+  g_lcd.Stop();
   
+
   CLog::Log("stop time server");
 	m_sntpClient.StopThread();
 
@@ -893,12 +1096,17 @@ void CApplication::Stop()
 
 bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 {
+  m_tagCurrentSong.SetLoaded(false);
+  m_tagCurrentMovie.Reset();
   m_iPlaySpeed=1;
   if (!bRestart)
   {
     OutputDebugString("new file set audiostream:0\n");
     g_stSettings.m_iAudioStream=0;
+    g_stSettings.m_bNoCache=false;
+    g_stSettings.m_bNonInterleaved=false;
     m_iAudioStreamIDX=-1;
+
   }
   m_strCurrentFile=strFile;
   
@@ -907,6 +1115,10 @@ bool CApplication::PlayFile(const CStdString& strFile, bool bRestart)
 	if ( url.GetProtocol() == "cdda")
 	{
 		strNewPlayer = "cdda";
+	}
+	else if (ModPlayer::IsSupportedFormat(url.GetFileType()))
+	{
+		strNewPlayer = "mod";
 	}
 	if (m_pPlayer)
 	{
@@ -1054,7 +1266,7 @@ void CApplication::CheckScreenSaver()
 
 	if (!m_bInactive)
 	{
-		if (IsPlayingVideo() && !m_pPlayer->IsPaused())	// are we playing a movie?
+		if (IsPlayingVideo() && !m_pPlayer->IsPaused())	// are we playing a movie and is it paused?
 		{
 			m_bInactive=false;
 		}
@@ -1062,18 +1274,20 @@ void CApplication::CheckScreenSaver()
 		{
 			if (m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
 			{
-				m_bInactive=false;	// visualisation is on, so leave it alone
+				m_bInactive=false;	// visualisation is on, so we cannot show a screensaver
 			}
 			else
 			{
-				m_bInactive=true;	// music playing from menu, so start the timer going
+				m_bInactive=true;	// music playing from GUI, we can display a screensaver
 			}
 		}
-		else				// nothing doing here, so start the timer going
+		else				
 		{
+      // we can display a screensaver
 			m_bInactive=true;
 		}
 
+    // if we can display a screensaver, then start screensaver timer
 		if (m_bInactive) 
 		{
 			m_dwSaverTick=timeGetTime();	// Start the timer going ...
@@ -1081,34 +1295,43 @@ void CApplication::CheckScreenSaver()
 	}
 	else
 	{
-		if (!m_bScreenSave)	// Check we're not already in screensaver mode
+    // Check we're not already in screensaver mode
+		if (!m_bScreenSave)	
 		{
+      // no, then check the timer if screensaver should pop up
 			if ( (long)(timeGetTime() - m_dwSaverTick) >= (long)(g_stSettings.m_iScreenSaverTime*60*1000L) )
 			{
+        //yes, show the screensaver
 				m_bScreenSave = true;
 				m_dwSaverTick=timeGetTime();		// Save the current time for the shutdown timeout
 
 				switch ( g_stSettings.m_iScreenSaverMode )
 				{
-					case 1:
+					case SCREENSAVER_FADE:
 						{
 							fFadeLevel = (FLOAT) g_stSettings.m_iScreenSaverFadeLevel / 100; // 0.07f;
 						}
 						break;
 
-					case 2:
+					case SCREENSAVER_BLACK:
 						{
 							fFadeLevel = 0;
 						}
 						break;
 
-					case 3:
+					case SCREENSAVER_MATRIX:
 						{
-							m_gWindowManager.ActivateWindow(WINDOW_SCREENSAVER);
-							return;
+              if (!IsPlayingVideo())
+              {
+							  m_gWindowManager.ActivateWindow(WINDOW_SCREENSAVER);
+                return;
+              }
+              else 
+              {
+                fFadeLevel = (FLOAT) g_stSettings.m_iScreenSaverFadeLevel / 100; // 0.07f;
+              }
 						}
 						break;
-
 				}
 
 				m_pd3dDevice->GetGammaRamp(&m_OldRamp);	// Store the old gamma ramp
@@ -1284,9 +1507,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
       m_strCurrentFile="";
       if (CUtil::IsVideo(strFile))
       {
-        if (g_stSettings.m_bMyVideoVideoStack)
+        if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
         {
-          // do file stacking
           g_playlistPlayer.PlayNext(true);
         }
         if (!IsPlayingVideo() && m_gWindowManager.GetActiveWindow()==WINDOW_FULLSCREEN_VIDEO)
@@ -1338,6 +1560,13 @@ void CApplication::Process()
 {
   // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)
 	m_Autorun.HandleAutorun();
+
+	// check if we need to load a new skin
+	if (m_dwSkinTime && timeGetTime() >= m_dwSkinTime)
+	{
+		CGUIMessage msg(GUI_MSG_USER,-1,m_gWindowManager.GetActiveWindow());
+		g_graphicsContext.SendMessage(msg);
+	}
 
   // dispatch the messages generated by python or other threads to the current window
 	m_gWindowManager.DispatchThreadMessages();
@@ -1422,4 +1651,12 @@ void CApplication::SetPlaySpeed(int iSpeed)
 int CApplication::GetPlaySpeed() const
 {
   return m_iPlaySpeed;
+}
+void CApplication::SetCurrentSong(const CMusicInfoTag& tag)
+{
+  m_tagCurrentSong=tag;
+}
+void CApplication::SetCurrentMovie(const CIMDBMovie& tag)
+{
+  m_tagCurrentMovie=tag;
 }

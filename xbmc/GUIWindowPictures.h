@@ -43,4 +43,5 @@ protected:
 	CGUIDialogProgress*	m_dlgProgress;
 	CDirectoryHistory		m_history;
   int                 m_iItemSelected;
+	int									m_iLastControl;
 };

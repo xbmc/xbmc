@@ -30,6 +30,7 @@
 #include "../../settings.h"
 #include "../../application.h"
 #include "../../util.h"
+#include "../../utils/log.h"
 
 #define SUBTITLE_TEXTURE_WIDTH  720
 #define SUBTITLE_TEXTURE_HEIGHT 120
@@ -69,6 +70,9 @@ typedef struct directx_fourcc_caps
 } directx_fourcc_caps;
 
 // we just support 1 format which is YUY2
+// 20-2-2004. 
+// Removed the VFCAP_TIMER. (VFCAP_TIMER means that the video output driver handles all timing which we dont)
+// this solves problems playing movies with no audio. With VFCAP_TIMER enabled they played much 2 fast
 #define DIRECT3D8CAPS VFCAP_CSP_SUPPORTED_BY_HW |VFCAP_CSP_SUPPORTED |VFCAP_OSD |VFCAP_HWSCALE_UP|VFCAP_HWSCALE_DOWN//|VFCAP_TIMER
 static directx_fourcc_caps g_ddpf[] =
 {
@@ -96,6 +100,18 @@ void choose_best_resolution(float fps)
   bool bUsingPAL        = (dwStandard==XC_VIDEO_STANDARD_PAL_I);    // current video standard:PAL or NTSC 
   bool bCanDoWidescreen = (dwFlags & XC_VIDEO_FLAGS_WIDESCREEN)!=0; // can widescreen be enabled?
 
+  // check if widescreen is used by the GUI
+  int iGUIResolution=g_stSettings.m_ScreenResolution;
+  if (  (g_settings.m_ResInfo[iGUIResolution].dwFlags&D3DPRESENTFLAG_WIDESCREEN)==0)
+  {
+    // NO, then if 'Choose Best Resolution' option is disabled
+    // we dont wanna switch between 4:3 / 16:9 depending on the movie
+    if (!g_stSettings.m_bAllowVideoSwitching)
+    {
+      bCanDoWidescreen =false;
+    }
+  }
+
   // Work out if the framerate suits PAL50 or PAL60
   bool bPal60=false;
   if (bUsingPAL && g_stSettings.m_bAllowPAL60 && (dwFlags&XC_VIDEO_FLAGS_PAL_60Hz))
@@ -113,16 +129,19 @@ void choose_best_resolution(float fps)
   }
 
   // Work out if framesize suits 4:3 or 16:9
-  // Uses the frame aspect ratio of 8/(3*sqrt(3)) which is the optimal point
+  // Uses the frame aspect ratio of 8/(3*sqrt(3)) (=1.53960) which is the optimal point
   // where the percentage of black bars to screen area in 4:3 and 16:9 is equal
   bool bWidescreen = false;
   if (bCanDoWidescreen && ((float)d_image_width/d_image_height > 8.0f/(3.0f*sqrt(3.0f))))
   {
     bWidescreen = true;
   }
+  // dont use widescreen on mpeg1 resolutions (always use 4:3)
+  if (d_image_width==352 && d_image_height==240) bWidescreen = false;
+  if (d_image_width==352 && d_image_height==288) bWidescreen = false;
+  if (d_image_width==480 && d_image_height==480) bWidescreen = false;
 
   // if video switching is not allowed then use current resolution (with pal 60 if needed)
-  // PERHAPS ALSO SUPPORT WIDESCREEN SWITCHING HERE??
   // if we're not in fullscreen mode then use current resolution 
   // if we're calibrating the video  then use current resolution 
   if  ( (!g_stSettings.m_bAllowVideoSwitching) ||
@@ -154,6 +173,7 @@ void choose_best_resolution(float fps)
     g_graphicsContext.SetVideoResolution(m_iResolution);
     return;
   }
+  
   // We are allowed to switch video resolutions, so we must
   // now decide which is the best resolution for the video we have
   if (bUsingPAL)  // PAL resolutions
@@ -210,6 +230,7 @@ void choose_best_resolution(float fps)
       }
     }
   }
+  
   // Finished - update our video resolution
   g_graphicsContext.SetVideoResolution(m_iResolution);
 }
@@ -846,12 +867,22 @@ void xbox_video_getAR(float& fAR)
 void xbox_video_update(bool bPauseDrawing)
 {
 //  OutputDebugString("Calling xbox_video_update ... ");
+  m_bRenderGUI=true;
   m_bPauseDrawing = bPauseDrawing;
   bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
   g_graphicsContext.Lock();
   g_graphicsContext.SetVideoResolution(bFullScreen ? m_iResolution:g_stSettings.m_ScreenResolution);
   g_graphicsContext.Unlock();
   Directx_ManageDisplay();
+  if (rs.bottom != 0 && rs.right!=0 && rd.bottom !=0 && rd.right !=0)
+  {
+    if (m_pSurface[0] && m_pSurface[1])
+    {
+      g_graphicsContext.Lock();
+      g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[1-m_iBackBuffer], &rs, &rd, TRUE, 0x00010001  );
+      g_graphicsContext.Unlock();
+    }
+  }
 //  OutputDebugString("Done \n");
 }
 /********************************************************************************************************
@@ -947,7 +978,7 @@ static unsigned int video_config(unsigned int width, unsigned int height, unsign
 
   m_lFrameCounter=0;
   mplayer_GetVideoInfo(strFourCC,strVideoCodec, &m_fps, &iWidth,&iHeight, &tooearly, &toolate);
-
+  g_graphicsContext.SetFullScreenVideo(true);
   OutputDebugString("video_config\n");
   fs = options & 0x01;
   image_format   =  format;

@@ -47,6 +47,8 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 {
 	string strFile="";
 	m_strHostName="";
+    
+  CLog::Log("Get URL:%s", strURL.c_str());
 	if (!BreakURL(strURL, m_strHostName, m_iPort, strFile))
 	{
     CLog::Log("invalid URL:%s", strURL.c_str());
@@ -728,6 +730,7 @@ bool CHTTP::Post(const string &strURL, const string &strPostData, string &strHTM
 {
 	string strFile="";
 	m_strHostName="";
+  CLog::Log("Post URL:%s", strURL.c_str());
 	if (!BreakURL(strURL, m_strHostName, m_iPort, strFile))
 	{
     CLog::Log("Invalid url:%s",strURL.c_str());

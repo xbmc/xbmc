@@ -193,8 +193,15 @@ bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 		return false;
 	char *szBuffer= new char[strHTML.size()+1];
 	strcpy(szBuffer,strHTML.c_str());
-	//printf ("%s", szBuffer);
+	
+  char szURL[1024];
+  strcpy(szURL, strURL.c_str());
+  if (CUtil::HasSlashAtEnd(strURL)) szURL[ strURL.size()-1 ]=0;
+  int ipos=strlen(szURL)-1;
+  while (szURL[ipos] != '/' && ipos>0) ipos--;
 
+  movieDetails.m_strIMDBNumber=&szURL[ipos+1];
+  CLog::Log("imdb number:%s\n", movieDetails.m_strIMDBNumber.c_str());
 	char *pDirectedBy=strstr(szBuffer,"Directed by");
 	char *pCredits=strstr(szBuffer,"Writing credits");
 	char* pGenre=strstr(szBuffer,"Genre:");
@@ -485,6 +492,27 @@ bool CIMDB::Download(const CStdString &strURL, const CStdString &strFileName)
 	return true;
 }
 
+void CIMDBMovie::Reset()
+{
+  m_strDirector="";
+	m_strWritingCredits="";
+	m_strGenre="";
+	m_strTagLine="";
+	m_strPlotOutline="";
+	m_strPlot="";
+	m_strPictureURL="";
+	m_strTitle="";
+	m_strVotes="";
+	m_strCast="";
+	m_strSearchString="";
+  m_strFile="";
+  m_strPath="";
+  m_strDVDLabel="";
+  m_strIMDBNumber="";
+	m_iTop250=0;
+	m_iYear=0;
+	m_fRating=0.0f;
+}
 void CIMDBMovie::Save(const CStdString &strFileName)
 {
 }
@@ -574,13 +602,19 @@ void CIMDB::GetURL(const CStdString &strMovie, CStdString& strURL)
 	strTmp.Trim();
 	strcpy(szMovie,strTmp.c_str());
 
-	RemoveAllAfter(szMovie,"divx");
-	RemoveAllAfter(szMovie,"xvid");
-	RemoveAllAfter(szMovie,"dvd");
-	RemoveAllAfter(szMovie,"svcd");
-	RemoveAllAfter(szMovie,"ac3");
-	RemoveAllAfter(szMovie,"ogg");
-	RemoveAllAfter(szMovie,"ogm");
+	RemoveAllAfter(szMovie," divx ");
+	RemoveAllAfter(szMovie," xvid ");
+	RemoveAllAfter(szMovie," dvd ");
+	RemoveAllAfter(szMovie," svcd ");
+	RemoveAllAfter(szMovie," ac3 ");
+	RemoveAllAfter(szMovie," ogg ");
+	RemoveAllAfter(szMovie," ogm ");
+	RemoveAllAfter(szMovie," internal ");
+	RemoveAllAfter(szMovie," fragment ");
+	RemoveAllAfter(szMovie," dvdrip ");
+	RemoveAllAfter(szMovie," proper ");
+	RemoveAllAfter(szMovie," limited ");
+	RemoveAllAfter(szMovie," rerip ");
   
 	CStdString strHTML;
 	sprintf(szURL,"http://us.imdb.com/Tsearch?title=%s", szMovie);

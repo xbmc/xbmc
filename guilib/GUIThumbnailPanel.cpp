@@ -101,16 +101,16 @@ void CGUIThumbnailPanel::RenderItem(bool bFocus,DWORD dwPosX, DWORD dwPosY, CGUI
       pImage->SetKeepAspectRatio(true);
       pImage->AllocResources();
 			pItem->SetThumbnail(pImage);
-      int xOff=(m_iThumbWidth-pImage->GetWidth())/2;
-      int yOff=(m_iThumbHeight-pImage->GetHeight())/2;
+      int xOff=(m_iThumbWidth-pImage->GetRenderWidth())/2;
+      int yOff=(m_iThumbHeight-pImage->GetRenderHeight())/2;
       pImage->SetPosition(m_iThumbXPos+dwPosX+xOff,m_iThumbYPos+dwPosY+yOff);
     }
     else
     {
       pImage->SetWidth(m_iThumbWidth);
       pImage->SetHeight(m_iThumbHeight);
-      int xOff=(m_iThumbWidth-pImage->GetWidth())/2;
-      int yOff=(m_iThumbHeight-pImage->GetHeight())/2;
+      int xOff=(m_iThumbWidth-pImage->GetRenderWidth())/2;
+      int yOff=(m_iThumbHeight-pImage->GetRenderHeight())/2;
       pImage->SetPosition(m_iThumbXPos+dwPosX+xOff,m_iThumbYPos+dwPosY+yOff);
       pImage->Render();
     }
@@ -142,6 +142,8 @@ void CGUIThumbnailPanel::Render()
 
 	g_graphicsContext.SetViewPort( (float)m_dwPosX, (float)m_dwPosY, (float)m_iColumns*m_iItemWidth, (float)m_iRows*m_iItemHeight);
 
+  int iStartItem=30000;
+  int iEndItem=-1;
 	if (m_bScrollUp)
 	{
 		// render item on top
@@ -155,6 +157,8 @@ void CGUIThumbnailPanel::Render()
       {
         CGUIListItem *pItem=m_vecItems[iItem];
 				RenderItem(false,dwPosX,dwPosY,pItem);
+        if (iItem<iStartItem) iStartItem=iItem;
+        if (iItem>iEndItem) iEndItem=iItem;
       }
     }
     m_iOffset+=m_iColumns;
@@ -173,6 +177,8 @@ void CGUIThumbnailPanel::Render()
         CGUIListItem *pItem=m_vecItems[iItem];
 				bool bFocus=(m_iCursorX==iCol && m_iCursorY==iRow );
 				RenderItem(bFocus,dwPosX,dwPosY,pItem);
+        if (iItem<iStartItem) iStartItem=iItem;
+        if (iItem>iEndItem) iEndItem=iItem;
       }
     }
   }
@@ -189,6 +195,8 @@ void CGUIThumbnailPanel::Render()
       {
         CGUIListItem *pItem=m_vecItems[iItem];
 				RenderItem(false,dwPosX,dwPosY,pItem);
+        if (iItem<iStartItem) iStartItem=iItem;
+        if (iItem>iEndItem) iEndItem=iItem;
       }
     }
 	}
@@ -222,6 +230,27 @@ void CGUIThumbnailPanel::Render()
 			m_upDown.SetValue(iPage+1);
 		}
 	}
+  //free memory
+  if (iStartItem < 30000)
+  {
+    for (int i=0; i < iStartItem;++i)
+    {
+      CGUIListItem *pItem=m_vecItems[i];
+      if (pItem)
+      {
+        pItem->FreeMemory();
+      }
+    }
+  }
+
+  for (int i=iEndItem+1; i < (int)m_vecItems.size(); ++i) 
+  {
+    CGUIListItem *pItem=m_vecItems[i];
+    if (pItem)
+    {
+      pItem->FreeMemory();
+    }
+  }
 }
 
 void CGUIThumbnailPanel::OnAction(const CAction &action)

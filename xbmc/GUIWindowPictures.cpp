@@ -105,6 +105,7 @@ CGUIWindowPictures::CGUIWindowPictures(void)
 {
 	m_strDirectory="?";
   m_iItemSelected=-1;
+	m_iLastControl=-1;
 }
 
 CGUIWindowPictures::~CGUIWindowPictures(void)
@@ -165,11 +166,16 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
 		}
 		break;
     case GUI_MSG_WINDOW_DEINIT:
-	      Clear();
-		  	if (message.GetParam1() != WINDOW_SLIDESHOW)
+		{
+			m_iLastControl=GetFocusedControl();
+			m_iItemSelected=GetSelectedItem();
+
+			Clear();
+			if (message.GetParam1() != WINDOW_SLIDESHOW)
 			{
 				CSectionLoader::Unload("CXIMAGE");
 			}
+		}
     break;
 
     case GUI_MSG_WINDOW_INIT:
@@ -201,7 +207,12 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       }
 
 			m_rootDir.SetShares(g_settings.m_vecMyPictureShares);
+
+			if (m_iLastControl>-1)
+				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
+
 			Update(m_strDirectory);
+
       if (m_iItemSelected >=0)
       {
 			  CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_iItemSelected)
@@ -346,15 +357,15 @@ void CGUIWindowPictures::UpdateButtons()
 		switch (g_stSettings.m_iMyPicturesRootViewAsIcons)
     {
       case VIEW_AS_LIST:
-        iString=100; // view as icons
+        iString=101; // view as icons
       break;
       
       case VIEW_AS_ICONS:
-        iString=417;  // view as large icons
+        iString=100;  // view as large icons
         bViewIcon=true;
       break;
       case VIEW_AS_LARGEICONS:
-        iString=101; // view as list
+        iString=417; // view as list
         bViewIcon=true;
       break;
 
@@ -368,15 +379,15 @@ void CGUIWindowPictures::UpdateButtons()
 		switch (g_stSettings.m_iMyPicturesViewAsIcons)
     {
       case VIEW_AS_LIST:
-        iString=100; // view as icons
+        iString=101; // view as icons
       break;
       
       case VIEW_AS_ICONS:
-        iString=417;  // view as large icons
+        iString=100;  // view as large icons
         bViewIcon=true;
       break;
       case VIEW_AS_LARGEICONS:
-        iString=101; // view as list
+        iString=417; // view as list
         bViewIcon=true;
       break;
       default:
@@ -468,19 +479,27 @@ void CGUIWindowPictures::Update(const CStdString &strDirectory)
 	  m_vecItems.push_back(pItem);
   }
 
-  m_strDirectory=strDirectory;
+
+	m_iLastControl=GetFocusedControl();
+
+	m_strDirectory=strDirectory;
 	m_rootDir.GetDirectory(strDirectory,m_vecItems);
-  OnSort();
-  UpdateButtons();
+	CUtil::SetThumbs(m_vecItems);
+	CUtil::FillInDefaultIcons(m_vecItems);
+	OnSort();
+	UpdateButtons();
 
 	strSelectedItem=m_history.Get(m_strDirectory);	
 
-	if ( ViewByIcon() ) 
-  {	
-		SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS);
-	}
-	else {
-		SET_CONTROL_FOCUS(GetID(), CONTROL_LIST);
+	if (m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST)
+	{
+		if ( ViewByIcon() ) 
+		{	
+			SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
+		}
+		else {
+			SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+		}
 	}
 
 	for (int i=0; i < (int)m_vecItems.size(); ++i)
@@ -736,7 +755,7 @@ bool CGUIWindowPictures::ViewByLargeIcon()
 
 void CGUIWindowPictures::ShowThumbPanel()
 {
- 
+  int iItem=GetSelectedItem(); 
   if ( ViewByLargeIcon() )
   {
     CGUIThumbnailPanel* pControl=(CGUIThumbnailPanel*)GetControl(CONTROL_THUMBS);
@@ -752,5 +771,10 @@ void CGUIWindowPictures::ShowThumbPanel()
     pControl->SetTextureDimensions(80,80);
     pControl->SetItemHeight(128);
     pControl->SetItemWidth(128);
+  }
+  if (iItem>-1)
+  {
+    CONTROL_SELECT_ITEM(GetID(), CONTROL_LIST,m_iItemSelected);
+    CONTROL_SELECT_ITEM(GetID(), CONTROL_THUMBS,m_iItemSelected);
   }
 }

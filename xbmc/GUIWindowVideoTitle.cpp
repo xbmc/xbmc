@@ -23,7 +23,7 @@
 #include "xbox/iosupport.h"
 #include "playlistplayer.h"
 #include "GUIThumbnailPanel.h"
-
+#include "GUIDialogYesNo.h"
 #define VIEW_AS_LIST           0
 #define VIEW_AS_ICONS          1
 #define VIEW_AS_LARGEICONS     2
@@ -81,16 +81,45 @@ struct SSortVideoTitleByTitle
         
         case 3: // sort dvdLabel
         {
-          int iNotEqual=0;
-					strcpy(szfilename1, rpStart.m_strDVDLabel.c_str());
-					strcpy(szfilename2, rpEnd.m_strDVDLabel.c_str());
-				  iNotEqual=(strcmp(szfilename1,szfilename2));
-			    
-          if (0==iNotEqual)
+          int iLabel1=0,iLabel2=0;
+          char szTmp[20];
+          int  pos=0;
+          strcpy(szTmp,"");
+          for (int x=0; x < (int)rpStart.m_strDVDLabel.size(); x++)
           {
-            strcpy(szfilename1, rpStart.GetLabel().c_str());
-					  strcpy(szfilename2, rpEnd.GetLabel().c_str());
+            char k=rpStart.m_strDVDLabel.GetAt(x);
+            if (k >='0'&& k <= '9') 
+            {
+              if ( (k=='0' && pos > 0) || (k != '0' ) )  
+              {
+                szTmp[pos++] = k;
+                szTmp[pos]=0;
+              }
+            }
           }
+          sscanf(szTmp,"%i", &iLabel1);
+          strcpy(szTmp,"");
+          pos=0;
+          for (int x=0; x < (int)rpEnd.m_strDVDLabel.size(); x++)
+          {
+            char k=rpEnd.m_strDVDLabel.GetAt(x);
+            if (k >='0'&& k <= '9') 
+            {
+              if ( (k=='0' && pos > 0) || (k != '0' ) )  
+              {
+                szTmp[pos++] = k;
+                szTmp[pos]=0;
+              }
+            }
+          }
+          sscanf(szTmp,"%i", &iLabel2);
+
+          if ( iLabel1 < iLabel2) return bGreater;
+					if ( iLabel1 > iLabel2) return !bGreater;
+          
+          strcpy(szfilename1, rpStart.GetLabel().c_str());
+					strcpy(szfilename2, rpEnd.GetLabel().c_str());
+          
         }
         break;
 
@@ -123,6 +152,7 @@ CGUIWindowVideoTitle::CGUIWindowVideoTitle()
 {
 	m_strDirectory="";
   m_iItemSelected=-1;
+	m_iLastControl=-1;
 }
 
 //****************************************************************************************************************************
@@ -133,7 +163,32 @@ CGUIWindowVideoTitle::~CGUIWindowVideoTitle()
 //****************************************************************************************************************************
 void CGUIWindowVideoTitle::OnAction(const CAction &action)
 {
-  	if (action.wID == ACTION_PARENT_DIR)
+  if (action.wID == ACTION_DELETE_ITEM)
+  {
+    int iItem=GetSelectedItem();
+    if (iItem < 0|| iItem >= (int)m_vecItems.size()) return;
+	  
+		CFileItem* pItem=m_vecItems[iItem];
+    if (pItem->m_bIsFolder) return;
+      
+    CGUIDialogYesNo* pDialog= (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    if (!pDialog) return;
+    pDialog->SetHeading(432);
+    pDialog->SetLine(0,433);
+    pDialog->SetLine(1,434);
+    pDialog->SetLine(2,L"");
+    pDialog->DoModal(GetID());
+    if (!pDialog->IsConfirmed()) return;
+		VECMOVIESFILES movies;
+    m_database.GetFiles(atol(pItem->m_strPath),movies);
+		if (movies.size() <=0) return;
+    m_database.DeleteMovie(movies[0]);
+    Update( m_strDirectory );
+    return;
+
+  }
+
+  if (action.wID == ACTION_PARENT_DIR)
 	{
 		GoParentFolder();
 		return;
@@ -181,6 +236,8 @@ bool CGUIWindowVideoTitle::OnMessage(CGUIMessage& message)
 		}
 		break;
 		case GUI_MSG_WINDOW_DEINIT:
+			m_iLastControl=GetFocusedControl();
+			m_iItemSelected=GetSelectedItem();
 			Clear();
       m_database.Close();
 		break;
@@ -194,6 +251,10 @@ bool CGUIWindowVideoTitle::OnMessage(CGUIMessage& message)
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 			m_rootDir.SetMask(g_stSettings.m_szMyVideoExtensions);
 			m_rootDir.SetShares(g_settings.m_vecMyVideoShares);
+
+			if (m_iLastControl>-1)
+				SET_CONTROL_FOCUS(GetID(), m_iLastControl, 0);
+
 			Update(m_strDirectory);
 
       ShowThumbPanel();
@@ -290,15 +351,15 @@ void CGUIWindowVideoTitle::UpdateButtons()
 		switch (g_stSettings.m_iMyVideoTitleRootViewAsIcons)
     {
       case VIEW_AS_LIST:
-        iString=100; // view as icons
+        iString=101; // view as icons
       break;
       
       case VIEW_AS_ICONS:
-        iString=417;  // view as large icons
+        iString=100;  // view as large icons
         bViewIcon=true;
       break;
       case VIEW_AS_LARGEICONS:
-        iString=101; // view as list
+        iString=417; // view as list
         bViewIcon=true;
       break;
     }
@@ -308,15 +369,15 @@ void CGUIWindowVideoTitle::UpdateButtons()
 		switch (g_stSettings.m_iMyVideoTitleViewAsIcons)
     {
       case VIEW_AS_LIST:
-        iString=100; // view as icons
+        iString=101; // view as icons
       break;
       
       case VIEW_AS_ICONS:
-        iString=417;  // view as large icons
+        iString=100;  // view as large icons
         bViewIcon=true;
       break;
       case VIEW_AS_LARGEICONS:
-        iString=101; // view as list
+        iString=417; // view as list
         bViewIcon=true;
       break;
     }		
@@ -459,14 +520,11 @@ void CGUIWindowVideoTitle::Update(const CStdString &strDirectory)
     CIMDBMovie movie=movies[i];
     CFileItem *pItem = new CFileItem(movie.m_strTitle);
     pItem->m_strPath=movie.m_strSearchString;
-    if (CUtil::IsVideo(pItem->m_strPath))
-			pItem->m_bIsFolder=false;
-    else
-      pItem->m_bIsFolder=true;
+		pItem->m_bIsFolder=false;
     pItem->m_bIsShareOrDrive=false;
 
     CStdString strThumb;
-    CUtil::GetThumbnail(movie.m_strSearchString,strThumb);
+    CUtil::GetVideoThumbnail(movie.m_strIMDBNumber,strThumb);
     pItem->SetThumbnailImage(strThumb);
     pItem->m_fRating     = movie.m_fRating; 
     pItem->m_stTime.wYear= movie.m_iYear;
@@ -482,12 +540,18 @@ void CGUIWindowVideoTitle::Update(const CStdString &strDirectory)
   UpdateButtons();
   strSelectedItem=m_history.Get(m_strDirectory);	
 
-	if ( ViewByIcon() ) {	
-		SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS);
+	m_iLastControl=GetFocusedControl();
+
+	if (m_iLastControl==CONTROL_THUMBS || m_iLastControl==CONTROL_LIST)
+	{
+		if ( ViewByIcon() ) {	
+			SET_CONTROL_FOCUS(GetID(), CONTROL_THUMBS, 0);
+		}
+		else {
+			SET_CONTROL_FOCUS(GetID(), CONTROL_LIST, 0);
+		}
 	}
-	else {
-		SET_CONTROL_FOCUS(GetID(), CONTROL_LIST);
-	}
+
   for (int i=0; i < (int)m_vecItems.size(); ++i)
 	{
 		CFileItem* pItem=m_vecItems[i];
@@ -565,8 +629,7 @@ void CGUIWindowVideoTitle::OnClick(int iItem)
 void CGUIWindowVideoTitle::OnInfo(int iItem)
 {
   CFileItem* pItem=m_vecItems[iItem];
-  if (pItem->m_bIsFolder) return;
-	
+ 	
   VECMOVIESFILES movies;
   m_database.GetFiles(atol(pItem->m_strPath),movies);
 	if (movies.size() <=0) return;

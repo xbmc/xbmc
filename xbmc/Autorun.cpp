@@ -57,9 +57,6 @@ void CAutorun::RunXboxCd()
 	{
 		if ( CUtil::FileExists("D:\\default.xbe") ) 
 		{
-			m_gWindowManager.DeInitialize();
-			CSectionLoader::UnloadAll();
-
 			g_application.Stop();
 
 			CUtil::LaunchXbe( "Cdrom0", "D:\\default.xbe", NULL );
@@ -149,6 +146,7 @@ bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAdded
 		return false;
 	}
 
+  // check root...
   for (int i=0; i < (int)vecItems.size(); i++)
   {
 		CFileItem* pItem=vecItems[i];
@@ -187,14 +185,19 @@ bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAdded
 						break;
 					}
 				}
-				else
+        else if (bRoot && pItem->m_strPath.Find("PICTURES") != -1 )
 				{
-					if (RunDisc(pDir, pItem->m_strPath, nAddedToPlaylist,false)) 
-					{
-						bPlaying=true;
-						break;
-					}
-				}
+          if (g_stSettings.m_bAutorunPictures)
+          {
+            bPlaying=true;
+				    m_gWindowManager.ActivateWindow(WINDOW_PICTURES);
+            CStdString* strUrl = new CStdString( pItem->m_strPath.c_str() );
+				    CGUIMessage msg( GUI_MSG_START_SLIDESHOW, 0, 0, 0, 0, (void*) strUrl );
+				    m_gWindowManager.SendMessage( msg );
+				    delete strUrl;
+				    break;
+          }
+        }
 			}
 		}
 		else
@@ -227,6 +230,26 @@ bool CAutorun::RunDisc(CDirectory* pDir, const CStdString& strDrive, int& nAdded
 				break;
 			}
 		}
+  }
+
+  // check subdirs
+  if (!bPlaying)
+  {
+    for (int i=0; i < (int)vecItems.size(); i++)
+    {
+		  CFileItem* pItem=vecItems[i];
+		  if (pItem->m_bIsFolder)
+		  {
+			  if (pItem->m_strPath != "." && pItem->m_strPath != ".." )
+			  {
+          if (RunDisc(pDir, pItem->m_strPath, nAddedToPlaylist,false)) 
+					{
+						bPlaying=true;
+						break;
+					}
+        }
+      }
+    }
   }
 	return bPlaying;
 }

@@ -507,10 +507,9 @@ BOOL CNtpSocket::Connect(LPCTSTR pszHostAddress, int nPort)
 	sockAddr.sin_family = AF_INET;
 	sockAddr.sin_port = htons((u_short)nPort);
 
-	CDNSNameCache nameCache;
 	CStdString strHostName=lpszAscii;
 	CStdString strIpAdres;
-	if (!nameCache.Lookup(strHostName, strIpAdres))
+	if (!CDNSNameCache::Lookup(strHostName, strIpAdres))
 	{
 		return false;
 	}

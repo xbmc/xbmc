@@ -8,6 +8,8 @@
 #include "GUIImage.h"
 #include "GUIFontManager.h"
 #include "key.h"
+#include "utils/imdb.h"
+
 #include "GUIWindowHome.h"
 #include "GUIWindowPrograms.h"
 #include "GUIWindowSettingsPrograms.h"
@@ -25,6 +27,7 @@
 #include "GUIDialogSelect.h"
 #include "GUIDialogFileStacking.h"
 #include "GUIWindowSystemInfo.h"
+#include "GUIWindowSettingsLCD.h"
 #include "GUIWindowSettingsGeneral.h"
 #include "GUIWindowSettingsScreen.h"
 #include "GUIWindowSettingsUICalibration.h"
@@ -37,8 +40,10 @@
 #include "GUIWindowMusicOverlay.h"
 #include "GUIWindowFullScreen.h"
 #include "GUIWindowVideoOverlay.h"
+#include "GUIWindowVideoPlaylist.h" 
 #include "GUIWindowSettingsSlideShow.h"
 #include "GUIWindowSettingsScreensaver.h"
+#include "guiwindowsettingsautorun.h"
 #include "guiwindowsettingsfilter.h"
 #include "guiwindowsettingsmusic.h"
 #include "GUIWindowScripts.h"
@@ -51,6 +56,8 @@
 #include "GUIWindowMusicGenres.h" 
 #include "GUIWindowMusicTop100.h" 
 #include "GUIWindowWeather.h"		//WEATHER
+#include "GUIWindowSettingsWeather.h"	//WEATHER SETTINGS
+#include "GUIWindowSettingsCache.h"
 #include "LocalizeStrings.h"
 #include "utils/sntp.h"
 #include "utils/delaycontroller.h"
@@ -63,12 +70,13 @@
 #include "Autorun.h"
 #include "IMsgTargetCallback.h"
 #include "ButtonTranslator.h"
-
+#include "musicInfoTag.h"
 #include <vector>
 #include <memory>
 
 using namespace std;
 using namespace MEDIA_DETECT;
+using namespace MUSIC_INFO;
 
 class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback
 {
@@ -82,6 +90,7 @@ public:
 
 	void									Stop();
 	void									LoadSkin(const CStdString& strSkin);
+	void									DelayLoadSkin();
   const CStdString&     CurrentFile();
 	virtual bool					OnMessage(CGUIMessage& message);
 
@@ -99,8 +108,10 @@ public:
 	void									RenderFullScreen();
   bool                  NeedRenderFullScreen();
 	void									SpinHD();
-	void				CheckScreenSaver();		// CB: SCREENSAVER PATCH
-	void				CheckShutdown();
+	void				          CheckScreenSaver();		// CB: SCREENSAVER PATCH
+	void				          CheckShutdown();
+  void                  SetCurrentSong(const CMusicInfoTag& tag);
+  void                  SetCurrentMovie(const CIMDBMovie& tag);
 	void									ResetAllControls();
   virtual void          Process();
   void                  ResetScreenSaver();
@@ -126,6 +137,7 @@ public:
 	CGUIWindowSettingsScreenCalibration m_guiSettingsScreenCalibration;
 	CGUIWindowSettingsSlideShow			m_guiSettingsSlideShow;
 	CGUIWindowSettingsScreensaver			m_guiSettingsScreensaver;
+  CGUIWindowSettingsAutoRun       m_guiSettingsAutoRun;
 	CGUIWindowScripts								m_guiScripts;
 	CGUIWindowSettingsFilter				m_guiSettingsFilter;
 	CGUIDialogSelect								m_guiDialogSelect;
@@ -137,12 +149,14 @@ public:
 	CGUIWindowSettingsMusic					m_guiSettingsMusic;
 	CGUIWindowSlideShow							m_guiWindowSlideshow;
   CGUIWindowMusicPlayList					m_guiMyMusicPlayList;
+  CGUIWindowVideoPlaylist         m_guiMyVideoPlayList;
 	CGUIWindowMusicSongs						m_guiMyMusicSongs;
   CGUIWindowMusicAlbum						m_guiMyMusicAlbum;
 	CGUIWindowMusicArtists					m_guiMyMusicArtists;
 	CGUIWindowMusicGenres						m_guiMyMusicGenres;
 	CGUIWindowMusicTop100						m_guiMyMusicTop100;
 	CGUIWindowScreensaver					m_guiWindowScreensaver;
+  CGUIWindowSettingsLCD           m_guiSettingsLCD;
   CGUIWindowSettingsSubtitles     m_guiSettingsSubtitles;
   CGUIWindowVideoGenre            m_guiVideoGenre;
   CGUIWindowVideoActors           m_guiVideoActors;
@@ -163,8 +177,14 @@ public:
 	bool		m_bInactive;	// CB: SCREENSAVER PATCH
 	bool		m_bScreenSave;	// CB: SCREENSAVER PATCH
 	DWORD		m_dwSaverTick;	// CB: SCREENSAVER PATCH
-	CGUIWindowWeather						m_guiMyWeather;	//WEATHER
+	CGUIWindowWeather						    m_guiMyWeather;	//WEATHER
+	CGUIWindowSettingsWeather				m_guiSettingsWeather; //WEATHER SETTINGS
+  CGUIWindowSettingsCache         m_guiSettingsCache;
+	DWORD					                  m_dwSkinTime;
 protected:
+  void                    UpdateLCD();
+  CIMDBMovie              m_tagCurrentMovie;
+  CMusicInfoTag           m_tagCurrentSong;
   int                     m_iPlaySpeed;
 	bool										m_bOverlayEnabled;
 	CStdString							m_strCurrentPlayer;

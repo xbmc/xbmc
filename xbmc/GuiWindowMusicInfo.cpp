@@ -78,8 +78,7 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
 				if ( m_pAlbum->Load())
 				{
 					CStdString strThumb;
-					CStdString strImage=m_pAlbum->GetImageURL();
-					CUtil::GetThumbnail(strImage,strThumb);
+					CUtil::GetAlbumThumb(m_pAlbum->GetTitle()+m_pAlbum->GetAlbumPath(),strThumb);
 					DeleteFile(strThumb.c_str());
 				}
 				Refresh();
@@ -105,6 +104,7 @@ void CGUIWindowMusicInfo::SetAlbum(CMusicAlbumInfo& album)
 void CGUIWindowMusicInfo::Update()
 {
 	if (!m_pAlbum) return;
+	CStdString strTmp;
 	SetLabel(CONTROL_ALBUM, m_pAlbum->GetTitle() );
 	SetLabel(CONTROL_ARTIST, m_pAlbum->GetArtist() );
 	SetLabel(CONTROL_DATE, m_pAlbum->GetDateOfRelease() );
@@ -115,7 +115,16 @@ void CGUIWindowMusicInfo::Update()
 	SetLabel(CONTROL_RATING, strRating );
 
 	SetLabel(CONTROL_GENRE, m_pAlbum->GetGenre() );
-	SetLabel(CONTROL_TONE, m_pAlbum->GetTones() );
+	{
+	CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_TONE); 
+    OnMessage(msg1);
+	}
+	{
+	strTmp=m_pAlbum->GetTones(); strTmp.Trim();
+	CGUIMessage msg1(GUI_MSG_LABEL_ADD, GetID(), CONTROL_TONE); 
+    msg1.SetLabel( strTmp );
+    OnMessage(msg1);
+	}
 	SetLabel(CONTROL_STYLES, m_pAlbum->GetStyles() );
 
 	if (m_bViewReview)
@@ -197,8 +206,10 @@ void CGUIWindowMusicInfo::Refresh()
 	CStdString strThumb;
 	CStdString strImage=m_pAlbum->GetImageURL();
 	CUtil::GetAlbumThumb(m_pAlbum->GetTitle()+m_pAlbum->GetAlbumPath(),strThumb);
-	if (!CUtil::ThumbExists(strThumb) )
+	if (!CUtil::FileExists(strThumb) )
 	{
+		//	Download image and save as 
+		//	permanent thumb
 		CHTTP http;
 		http.Download(strImage,strThumb);
 	}
@@ -211,6 +222,16 @@ void CGUIWindowMusicInfo::Refresh()
 		m_iTextureWidth=picture.GetWidth();
 		m_iTextureHeight=picture.GetWidth();
 		CUtil::ThumbCacheAdd(strThumb, true);
+
+		if (!CUtil::IsCDDA(m_pAlbum->GetAlbumPath()))
+		{
+			//	Also save a copy as directory thumb,
+			//	if the album isn't located on an audio cd.
+			CStdString strFolderThumb;
+			CUtil::GetAlbumThumb(m_pAlbum->GetAlbumPath(),strFolderThumb);
+			::CopyFile( strThumb, strFolderThumb, false);
+			CUtil::ThumbCacheAdd(strFolderThumb, true);
+		}
 	}
 	Update();
 }
