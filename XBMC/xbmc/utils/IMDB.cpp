@@ -184,6 +184,7 @@ bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 	movieDetails.m_strPlotOutline=strLocNotAvail;
 	movieDetails.m_strPlot=strLocNotAvail;
 	movieDetails.m_strPictureURL="";
+	movieDetails.m_strRuntime=strLocNotAvail;
 	movieDetails.m_iYear=0;
 	movieDetails.m_fRating=0.0;
 	movieDetails.m_strVotes=strLocNotAvail;
@@ -214,6 +215,7 @@ bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 	char* pPlot=strstr(szBuffer,"<a href=\"plotsummary");
 	char* pImage=strstr(szBuffer,"<img border=\"0\" alt=\"cover\" src=\"");
 	char* pRating=strstr(szBuffer,"User Rating:</b>");
+	char* pRuntime=strstr(szBuffer,"Runtime:</b>");
 	char* pCast=strstr(szBuffer,"first billed only: </b></td></tr>");
 	char* pCred=strstr(szBuffer,"redited cast:"); // Complete credited cast or Credited cast
 	char* pTop=strstr(szBuffer, "top 250:");
@@ -338,6 +340,14 @@ bool CIMDB::GetDetails(const CIMDBUrl& url, CIMDBMovie& movieDetails)
 		char *pEnd = strstr(pTagLine,"<");
 		if (pEnd) *pEnd=0;
 		html.ConvertHTMLToAnsi(pTagLine,movieDetails.m_strTagLine);
+	}
+
+	if (pRuntime)
+	{
+		pRuntime += strlen("Runtime:</b>");
+		char *pEnd = strstr(pRuntime,"<");
+		if (pEnd) *pEnd=0;
+		html.ConvertHTMLToAnsi(pRuntime,movieDetails.m_strRuntime);
 	}
 
 	if (!pPlotOutline)
