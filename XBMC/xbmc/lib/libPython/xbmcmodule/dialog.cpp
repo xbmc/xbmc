@@ -8,10 +8,6 @@
 #pragma bss_seg("PY_BSS")
 #pragma const_seg("PY_RDATA")
 
-/*****************************************************************
- * start of dialog methods and python objects
- *****************************************************************/
-
 #ifdef __cplusplus
 extern "C" {
 #endif

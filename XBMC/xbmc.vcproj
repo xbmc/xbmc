@@ -1361,6 +1361,9 @@
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\control.h">
 					</File>
 					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\controlbutton.cpp">
+					</File>
+					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\controlimage.cpp">
 					</File>
 					<File
@@ -1377,6 +1380,27 @@
 					</File>
 					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\player.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\player.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\playlist.cpp">
+						<FileConfiguration
+							Name="Debug|Xbox">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Xbox">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\playlist.h">
 					</File>
 					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\pyutil.cpp">
