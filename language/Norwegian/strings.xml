@@ -525,7 +525,7 @@
   </string> 
   <string>
     <id>202</id>
-    <value>Undertittel</value>
+    <value>UnderTittel</value>
   </string> 
   <string>
     <id>203</id>
@@ -617,7 +617,7 @@
   </string> 
   <string>
     <id>225</id>
-    <value>Tid mellom overganger</value>
+    <value>Tid mellom overgang</value>
   </string> 
   <string>
     <id>226</id>
@@ -777,15 +777,15 @@
   </string>
   <string>
     <id>266</id>
-    <value>Sorter etter: spor</value>
+    <value>Sorter på: spor</value>
   </string>
   <string>
     <id>267</id>
-    <value>Sorter etter: Tid</value>
+    <value>Sorter på: Tid</value>
   </string>
   <string>
     <id>268</id>
-    <value>Sorter etter: tittel</value>
+    <value>Sorter på: Tittel</value>
   </string>
   <string>
     <id>269</id>
@@ -817,11 +817,11 @@
   </string>
   <string>
     <id>276</id>
-    <value>Flyt pilen for å endre Plassering</value>
+    <value>Flytt pilen for å endre plassering</value>
   </string>
   <string>
     <id>277</id>
-    <value>Flyt bjelken for å endre plasseringen av undertekst</value>
+    <value>Flytt bjelken for å endre plasseringen av undertekst</value>
   </string>
   <string>
     <id>278</id>
@@ -1093,7 +1093,7 @@
   </string>
   <string>
     <id>346</id>
-    <value>stabel</value>
+    <value>Stabel</value>
   </string>
   <string>
     <id>347</id>
@@ -1117,11 +1117,11 @@
   </string>
   <string>
     <id>352</id>
-    <value>dempe</value>
+    <value>Dempe</value>
   </string>
   <string>
     <id>353</id>
-    <value>svart</value>
+    <value>Svart</value>
   </string>
   <string>
     <id>354</id>
@@ -1161,7 +1161,7 @@
   </string>
   <string>
     <id>363</id>
-    <value>Sorter etter: Filer</value>
+    <value>Sorter på: Filer</value>
   </string>   
   <string>
     <id>364</id>
@@ -1169,15 +1169,15 @@
   </string>   
   <string>
     <id>365</id>
-    <value>Sorter etter: Navn</value>
+    <value>Sorter på: Navn</value>
   </string>   
   <string>
     <id>366</id>
-    <value>Sorter etter: år</value>
+    <value>Sorter på: år</value>
   </string>   
   <string>
     <id>367</id>
-    <value>Sorter etter: Bedømmelse</value>
+    <value>Sorter på: Bedømmelse</value>
   </string>   
   <string>
     <id>368</id>
@@ -1217,7 +1217,7 @@
   </string>
   <string>
     <id>377</id>
-    <value>Lys</value>
+    <value>Lett</value>
   </string>
   <string>
     <id>378</id>
@@ -1261,11 +1261,11 @@
   </string>
   <string>
   <id>398</id> 
-  <value>Temperatur målenhet</value>
+  <value>Temperaturskala</value>
   </string>
   <string>
   <id>399</id> 
-  <value>Hastighets målenhet</value>
+  <value>Hastighetskala</value>
   </string>
   <string>
   <id>400</id> 
@@ -1289,11 +1289,11 @@
   </string>   
   <string>
     <id>405</id>
-    <value>duggpunkt</value>
+    <value>Duggpunkt</value>
   </string> 
   <string>
     <id>406</id>
-    <value>fuktighet</value>
+    <value>Fuktighet</value>
   </string> 
   <string>
     <id>407</id>
@@ -1385,7 +1385,7 @@
   </string>  
   <string>
     <id>430</id>
-    <value>Sorter etter: DVD#</value>
+    <value>Sorter på: DVD#</value>
   </string>  
   <string>
     <id>431</id>
