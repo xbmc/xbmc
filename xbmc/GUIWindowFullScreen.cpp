@@ -382,9 +382,9 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 			m_bLastRender=false;
 			m_bOSDVisible=false;
 
-			CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness,g_stSettings.m_currentVideoSettings.m_Contrast,g_stSettings.m_currentVideoSettings.m_Gamma,true);
-
 			CGUIWindow::OnMessage(message);
+
+			CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness,g_stSettings.m_currentVideoSettings.m_Contrast,g_stSettings.m_currentVideoSettings.m_Gamma,true);
 
 			g_graphicsContext.Lock();
 			g_graphicsContext.SetFullScreenVideo( true );
