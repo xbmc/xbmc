@@ -62,10 +62,15 @@ void CGUISpinControlEx::SetVisible(bool bVisible)
 	CGUISpinControl::SetVisible(bVisible);
 }
 
-void CGUISpinControlEx::SetColourDiffuse(D3DCOLOR colour)
+void CGUISpinControlEx::SetColourDiffuse(D3DCOLOR color)
 {
-	m_buttonControl.SetColourDiffuse(colour);
-	CGUISpinControl::SetColourDiffuse(colour);
+	m_buttonControl.SetColourDiffuse(color);
+	CGUISpinControl::SetColourDiffuse(color);
+}
+
+void CGUISpinControlEx::SetSpinTextColor(D3DCOLOR color)
+{
+	CGUISpinControl::SetTextColor(color);
 }
 
 void CGUISpinControlEx::SetDisabledColor(D3DCOLOR color)

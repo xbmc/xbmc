@@ -40,7 +40,9 @@ public:
 	void							SetLabel(const CStdString &aLabel) {m_buttonControl.SetText(aLabel);};
 	void							SetLabel(const wstring & aLabel) {m_buttonControl.SetText(aLabel);};
 	virtual void			SetVisible(bool bVisible);
-  virtual void			SetColourDiffuse(D3DCOLOR colour);
+  virtual void			SetColourDiffuse(D3DCOLOR color);
+	D3DCOLOR					GetButtonTextColor() { return m_buttonControl.GetTextColor(); };
+	void							SetSpinTextColor(D3DCOLOR color);
   virtual void			SetDisabledColor(D3DCOLOR color);
 	virtual void			SetEnabled(bool bEnable);
 	virtual int				GetXPosition() const { return m_buttonControl.GetXPosition();};
