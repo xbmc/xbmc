@@ -159,9 +159,7 @@ void CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 			m_iCountD=0;
 			m_iCountL=0;
 			m_iCountR=0;
-      g_graphicsContext.SetFullScreenVideo(true);
       g_application.m_guiWindowOSD.ResetAllControls();
-      g_graphicsContext.SetFullScreenVideo(false);
 
 			return;
 		break;
@@ -173,9 +171,7 @@ void CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 				m_iCurRes = 0;
 			g_graphicsContext.SetGUIResolution(m_Res[m_iCurRes]);
       
-      g_graphicsContext.SetFullScreenVideo(true);
       g_application.m_guiWindowOSD.ResetAllControls();
-      g_graphicsContext.SetFullScreenVideo(false);
 			return;
 		break;
 
@@ -213,9 +209,7 @@ void CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 		case CONTROL_OSD:
 			g_settings.m_ResInfo[m_Res[m_iCurRes]].iOSDYOffset = (y - g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight);
       
-      g_graphicsContext.SetFullScreenVideo(true);
       g_application.m_guiWindowOSD.ResetAllControls();
-      g_graphicsContext.SetFullScreenVideo(false);
 		break;
 		case CONTROL_PIXEL_RATIO:
 			float fPixelRatio = (float)y/x;
@@ -233,7 +227,8 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
   {
 		case GUI_MSG_WINDOW_DEINIT:
 		{
-      g_application.m_guiWindowOSD.FreeResources();
+      CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0,0,0,NULL);
+	    g_application.m_guiWindowOSD.OnMessage(msg);	// Send an init msg to the OSD
 			g_application.EnableOverlay();
 			g_settings.Save();
 			g_graphicsContext.SetCalibrating(false);
@@ -291,10 +286,9 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
 			  pControl->EnableCalibration(false);
 			  m_fPixelRatioBoxHeight=(float)pControl->GetHeight();
       }
-      g_application.m_guiWindowOSD.AllocResources();
-      g_graphicsContext.SetFullScreenVideo(true);
-      g_application.m_guiWindowOSD.ResetAllControls();
-      g_graphicsContext.SetFullScreenVideo(false);
+
+      CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,0,0,NULL);
+	    g_application.m_guiWindowOSD.OnMessage(msg);	// Send an init msg to the OSD
 			return true;
 		}
 		break;
