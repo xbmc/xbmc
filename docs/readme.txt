@@ -33,5 +33,6 @@ xbmc/keyboard/media	->	e:\apps\xbmc\media		(copy all files & subdirs)
 visualisations    	->	e:\apps\xbmc\visualisations	(copy all files & subdirs)
 scripts/		->	e:\apps\xbmc\scripts		(unpack the .rar file)
 python			->	e:\apps\xbmc\python  		(unpack the .rar file)
+web					-> e:\apps\xbmc\web					(unpack the .rar file)
 
-!!! please not that you unpack the .rar files in scripts/ and python/ !!!
+!!! please not that you unpack the .rar files in scripts/ python/ and web/ !!!
