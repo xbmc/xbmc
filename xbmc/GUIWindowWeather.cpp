@@ -316,8 +316,11 @@ bool CGUIWindowWeather::LoadWeather(const CStdString& strWeatherFile)
 	{
 		GetString(pElement, "lsup", m_szUpdated, "");
 
-		GetInteger(pElement, "icon", iTmpInt);
-		sprintf(m_szNowIcon, "Q:\\weather\\128x128\\%i.png", iTmpInt);
+		GetString(pElement, "icon", iTmpStr, "");	//string cause i've seen it return N/A
+		if(strcmp(iTmpStr, "N/A") == 0)
+			sprintf(m_szNowIcon, "Q:\\weather\\128x128\\na.png");
+		else
+			sprintf(m_szNowIcon, "Q:\\weather\\128x128\\%s.png", iTmpStr);
 
 		GetString(pElement, "t", m_szNowCond, "");			//current condition
 		LocalizeOverview(m_szNowCond);
@@ -390,8 +393,12 @@ bool CGUIWindowWeather::LoadWeather(const CStdString& strWeatherFile)
 
 				if(pDayTimeElement)
 				{
-					GetInteger(pDayTimeElement, "icon", iTmpInt);
-					sprintf(m_dfForcast[i].m_szIcon, "Q:\\weather\\64x64\\%i.png", iTmpInt);
+					GetString(pDayTimeElement, "icon", iTmpStr, "");	//string cause i've seen it return N/A
+					if(strcmp(iTmpStr, "N/A") == 0)
+						sprintf(m_dfForcast[i].m_szIcon, "Q:\\weather\\64x64\\na.png");
+					else
+						sprintf(m_dfForcast[i].m_szIcon, "Q:\\weather\\64x64\\%s.png", iTmpStr);
+			
 					GetString(pDayTimeElement, "t", m_dfForcast[i].m_szOverview, "");
 					LocalizeOverview(m_dfForcast[i].m_szOverview);
 					SplitLongString(m_dfForcast[i].m_szOverview, 6, 15);
