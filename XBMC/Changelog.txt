@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 29-01-2005 fixed: textsubtitles were being rendered in sourceresolution instead of outputresolution causing larg(er) subs and >2 lines on low(er) resolution videos.
+  - 29-01-2005 fixed: vobsubs were being clipped instead of scaled unless displayresolution matched the vobsubresolution and no overscan was set. (only with mplayer pre6)
   - 29-01-2005 fixed: subtitle files with uppercase extension were not loaded
   - 28-01-2005 fixed: attempting to change audio track locks up xbmc.
   - 28-01-2005 added: [ 1102392 ] XLink, support for multiple games dirs (Thanks to scampa123)
