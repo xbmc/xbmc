@@ -21,6 +21,7 @@
 */
 #include "FileISO.h"
 #include "../sectionLoader.h"
+#include <sys/stat.h>
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -196,4 +197,24 @@ bool CFileISO::Exists(const char* strUserName, const char* strPassword,const cha
 
   m_isoReader.CloseFile(m_hFile);
 	return true;
+}
+
+int CFileISO::Stat(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName, int iport, struct __stat64* buffer)
+{
+	string strFName="\\";
+	strFName+=strFileName;
+	for (int i=0; i < (int)strFName.size(); ++i )
+	{
+		if (strFName[i]=='/') strFName[i]='\\';
+	}
+	m_hFile=m_isoReader.OpenFile((char*)strFName.c_str());
+	if (m_hFile != INVALID_HANDLE_VALUE)
+	{
+		buffer->st_size = m_isoReader.GetFileSize(m_hFile);
+		buffer->st_mode = _S_IFREG;
+		m_isoReader.CloseFile(m_hFile);
+		return 0;
+	}
+	errno = ENOENT;
+	return -1;
 }

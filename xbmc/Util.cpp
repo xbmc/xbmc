@@ -2530,6 +2530,36 @@ void CUtil::SortFileItemsByName(VECFILEITEMS& items, bool bSortAscending/*=true*
 	sort(items.begin(), items.end(), sortmethod);
 }
 
+void CUtil::Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat)
+{
+	result->st_dev = stat->st_dev;
+	result->st_ino = stat->st_ino;
+	result->st_mode = stat->st_mode;
+	result->st_nlink = stat->st_nlink;
+	result->st_uid = stat->st_uid;
+	result->st_gid = stat->st_gid;
+	result->st_rdev = stat->st_rdev;
+	result->st_size = stat->st_size;
+	result->st_atime = (long)stat->st_atime;
+	result->st_mtime = (long)stat->st_mtime;
+	result->st_ctime = (long)stat->st_ctime;
+}
+
+void CUtil::StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat)
+{
+	result->st_dev = stat->st_dev;
+	result->st_ino = stat->st_ino;
+	result->st_mode = stat->st_mode;
+	result->st_nlink = stat->st_nlink;
+	result->st_uid = stat->st_uid;
+	result->st_gid = stat->st_gid;
+	result->st_rdev = stat->st_rdev;
+	result->st_size = stat->st_size;
+	result->st_atime = stat->st_atime;
+	result->st_mtime = stat->st_mtime;
+	result->st_ctime = stat->st_ctime;
+}
+
 // around 50% faster than memcpy
 // only worthwhile if the destination buffer is not likely to be read back immediately
 // and the number of bytes copied is >16

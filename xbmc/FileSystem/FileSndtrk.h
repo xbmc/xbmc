@@ -24,19 +24,20 @@ namespace XFILE
 		virtual __int64			  GetPosition();
 		virtual __int64			  GetLength();
 		virtual bool					Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport, bool bBinary=true);
-		virtual bool			Exists(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport) { return true;};
+		virtual bool					Exists(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport) { return true;};
+		virtual int						Stat(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName, int iport, struct __stat64* buffer) { errno = ENOENT; return -1; };
 		virtual unsigned int	Read(void* lpBuf, __int64 uiBufSize);
 		virtual int						Write(const void* lpBuf, __int64 uiBufSize);
 		virtual bool					ReadString(char *szLine, int iLineLength);
 		virtual __int64			  Seek(__int64 iFilePosition, int iWhence=SEEK_SET);
 		virtual void					Close();
 
-		bool						    OpenForWrite(const char* strFileName);
-		unsigned int				Write(void *lpBuf, __int64 uiBufSize);
+		bool									OpenForWrite(const char* strFileName);
+		unsigned int					Write(void *lpBuf, __int64 uiBufSize);
 	protected:
-		CAutoPtrHandle	m_hFile;
-		__int64				m_i64FileLength;
-		__int64				m_i64FilePos;
+		CAutoPtrHandle				m_hFile;
+		__int64								m_i64FileLength;
+		__int64								m_i64FilePos;
 	};
 
 };
