@@ -631,6 +631,8 @@
   <string><id>13203</id><value>Profile '%s' loaded successfully</value></string>
   <string><id>13204</id><value>Last loaded profile:</value></string>
   <string><id>13205</id><value>Unknown</value></string>
+  <string><id>13206</id><value>Overwrite</value></string>
+  <string><id>13207</id><value>Overwrite profile '%s'?</value></string>
   <string><id>13299</id><value>Target Temperature</value></string>
   <string><id>13300</id><value>Fan Speed</value></string>
   <string><id>13301</id><value>Auto Temperature Control</value></string>
