@@ -172,6 +172,7 @@ bool CGUIWindowSettingsUICalibration::OnMessage(CGUIMessage& message)
 
 		case GUI_MSG_WINDOW_INIT:
 		{
+			CGUIWindow::OnMessage(message);
 			m_iSpeed=1;
 			m_iCountU=0;
 			m_iCountD=0;
@@ -181,6 +182,7 @@ bool CGUIWindowSettingsUICalibration::OnMessage(CGUIMessage& message)
 			CStdString strOffset;
 			strOffset.Format("%i,%i", g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY);
 			SET_CONTROL_LABEL(GetID(), CONTROL_LABEL,	strOffset);
+			return true;
 		}
 		break;
 	}

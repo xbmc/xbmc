@@ -63,10 +63,12 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_WINDOW_INIT:
     {
+			CGUIWindow::OnMessage(message);
 			g_application.DisableOverlay();
 			m_pTexture=NULL;
 			m_bViewReview=true;
 			Refresh();
+			return true;
     }
 		break;
 

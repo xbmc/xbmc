@@ -156,6 +156,7 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_WINDOW_INIT:
 		{
+			CGUIWindow::OnMessage(message);
 			if (m_strDirectory=="?") m_strDirectory="";//g_stSettings.m_szDefaultScripts;
 
 			m_rootDir.SetMask("*.py");
@@ -169,6 +170,7 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
 
 			m_rootDir.SetShares(shares);//g_settings.m_vecScriptShares);
 			Update(m_strDirectory);
+			return true;
 		}
 		break;
 

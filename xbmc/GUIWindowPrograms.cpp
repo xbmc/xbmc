@@ -44,6 +44,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_WINDOW_INIT:
     {
+			CGUIWindow::OnMessage(message);
 			m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(101);
 			CUtil::GetHomePath(m_strDirectory);
 			m_strDirectory+="\\shortcuts";
@@ -65,6 +66,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
       
       Update(m_strDirectory);
+			return true;
     }
     break;
 

@@ -42,6 +42,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 		break;
     case GUI_MSG_WINDOW_INIT:
     {
+			CGUIDialog::OnMessage(message);
 			g_application.DisableOverlay();
 			m_iSelected=-1;
 			CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_LIST,0,0,NULL);
@@ -58,6 +59,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 			swprintf(wszText,L"%i %s", m_vecList.size(),szText);
 
 			SET_CONTROL_LABEL(GetID(), CONTROL_NUMBEROFFILES,wszText);
+			return true;
 		}
 		break;
 

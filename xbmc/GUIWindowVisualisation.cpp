@@ -60,6 +60,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 
 		case GUI_MSG_WINDOW_INIT:
 		{
+			CGUIWindow::OnMessage(message);
 			m_bInitialized=false;
 			CVisualisationFactory factory;
 			CStdString strVisz;
@@ -72,6 +73,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 				if (g_application.m_pPlayer)
 					g_application.m_pPlayer->RegisterAudioCallback(this);
 			}
+			return true;
 		}
 	}
 	return CGUIWindow::OnMessage(message);

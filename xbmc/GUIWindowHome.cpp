@@ -26,11 +26,13 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_WINDOW_INIT:
     {
+			CGUIWindow::OnMessage(message);
       // make controls 101-110 invisible...
       for (int iControl=102; iControl < 110; iControl++)
       {
 				SET_CONTROL_HIDDEN(GetID(), iControl);
       }
+			return true;
     }
 
     case GUI_MSG_SETFOCUS:
