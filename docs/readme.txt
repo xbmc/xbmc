@@ -56,8 +56,8 @@ weather/            ->  e:\apps\xbmc\weather        (copy all files & subdirs)
 xbmc/keyboard/media ->  e:\apps\xbmc\media          (copy all files & subdirs)
 visualisations      ->  e:\apps\xbmc\visualisations (copy all files & subdirs)
 scripts/            ->  e:\apps\xbmc\scripts        (these are just samples, only extract if you want to experiment with it)
-python              ->  e:\apps\xbmc\python         (unpack the .rar file)
-web                 ->  e:\apps\xbmc\web             (unpack the .rar file)
+python              ->  e:\apps\xbmc\python         (unpack the python.rar file)
+web                 ->  e:\apps\xbmc\web            (unpack the xbmc.rar file)
 credits             ->  e:\apps\xbmc\credits        (copy all files but not subdirs)
 
 !!! please not that you unpack the .rar files in scripts/ python/ and web/ !!!
