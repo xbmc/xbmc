@@ -411,6 +411,8 @@ void CGUIWindowMusicSongs::OnScan()
 
 	m_dlgProgress->Close();
 
+	Update(m_strDirectory);
+
 	dwTick = timeGetTime() - dwTick;
 	CStdString strTmp, strTmp1;
 	CUtil::SecondsToHMSString(dwTick/1000, strTmp1);
@@ -912,7 +914,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
   m_database.GetSongsByPath(m_strDirectory,songsMap);
 
   // for every file found, but skip folder
-  for (int i=nFolderCount; i < (int)items.size(); ++i)
+  for (int i=0; i < (int)items.size(); ++i)
 	{
     g_application.ResetScreenSaver();
 		CFileItem* pItem=items[i];
