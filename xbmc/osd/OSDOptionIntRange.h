@@ -8,8 +8,8 @@ namespace OSD
 		public IOSDOption
 	{
 	public:
-		COSDOptionIntRange(int iAction,int iHeading);
-		COSDOptionIntRange(int iAction,int iHeading,int iStart, int iEnd, int iInterval, int iValue);
+		COSDOptionIntRange(int iAction,int iHeading, bool bPercent);
+		COSDOptionIntRange(int iAction,int iHeading, bool bPercent,int iStart, int iEnd, int iInterval, int iValue);
 		COSDOptionIntRange(const COSDOptionIntRange& option);
 		const OSD::COSDOptionIntRange& operator = (const COSDOptionIntRange& option);
 
@@ -22,6 +22,7 @@ namespace OSD
     int GetValue() const;
 	private:
     CGUISliderControl m_slider;
+    bool m_bPercent;
     int m_iAction;
 		int	m_iMin;
 		int	m_iMax;
