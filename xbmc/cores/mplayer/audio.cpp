@@ -131,8 +131,14 @@ static int audio_init(int rate,int channels,int format,int flags)
 		int ao_format_bits = audio_out_format_bits(format); 
 		if (format==AFMT_AC3) ao_format_bits=16;
 
-    //Make sure we only output as many channels as we how. don't try to create any virtual.
-    if (channels > iChannels) channels = iChannels; 
+	pao_data=GetAOData();
+
+	channels = pao_data->channels;
+    
+	//In the case of forced audio filter, channel number for the GetAudioInfo, and from pao_data
+	//is not the same, so the follwing two lines are not correct
+	//Make sure we only output as many channels as we how. don't try to create any virtual.
+    //if (channels > iChannels) channels = iChannels;
 
 		// Check whether we are passing digital output direct through.
 		// Anything with 48kHz 2 channel audio can be passed direct.
@@ -156,9 +162,10 @@ static int audio_init(int rate,int channels,int format,int flags)
 			{
 				bResample = true;
 			}
+			if( channels==3 || channels==5 || channels>6 )
+				return 1;		// this is an ugly hack due to our code use mplayer_open_file for both playing file, and format detecttion
 			m_pAudioDecoder = new CASyncDirectSound(m_pAudioCallback,channels,rate,ao_format_bits, bResample,0, strAudioCodec);
 		}
-		pao_data=GetAOData();
     pao_data->channels	= channels;
     pao_data->samplerate= rate;
     pao_data->format		= format;
