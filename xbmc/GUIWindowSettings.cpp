@@ -3,7 +3,8 @@
 #include "GUIWindowSettings.h"
 #include "Credits.h"
 
-#define CONTROL_CREDITS (10)
+//#define CONTROL_CREDITS (10)
+#define CONTROL_CREDITS 12
 
 CGUIWindowSettings::CGUIWindowSettings(void)
 :CGUIWindow(0)

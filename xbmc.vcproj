@@ -438,6 +438,9 @@
 					RelativePath=".\xbmc\GUIWindowSettings.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\GUIWindowSettingsAudio.cpp">
+				</File>
+				<File
 					RelativePath=".\xbmc\GUIWindowSettingsAutoRun.cpp">
 				</File>
 				<File
@@ -453,22 +456,22 @@
 					RelativePath=".\xbmc\GUIWindowSettingsLCD.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\GUIWindowSettingsMusic.cpp">
+					RelativePath=".\xbmc\GUIWindowSettingsMyMusic.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\GUIWindowSettingsOSD.cpp">
+					RelativePath=".\xbmc\GUIWindowSettingsMyVideo.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIWindowSettingsPrograms.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\GUIWindowSettingsScreen.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIWindowSettingsScreenCalibration.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIWindowSettingsScreensaver.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowSettingsSkinLanguage.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIWindowSettingsSlideShow.cpp">
@@ -478,6 +481,9 @@
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIWindowSettingsUICalibration.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIWindowSettingsUserInterface.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\GUIWindowSettingsWeather.cpp">
@@ -929,6 +935,9 @@
 				RelativePath=".\xbmc\GUIWindowSettings.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\GUIWindowSettingsAudio.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\GUIWindowSettingsAutoRun.h">
 			</File>
 			<File
@@ -944,22 +953,22 @@
 				RelativePath=".\xbmc\GUIWindowSettingsLCD.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\guiwindowsettingsmusic.h">
+				RelativePath=".\xbmc\GUIWindowSettingsMyMusic.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\GUIWindowSettingsOSD.h">
+				RelativePath=".\xbmc\GUIWindowSettingsMyVideo.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettingsPrograms.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\GUIWindowSettingsScreen.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettingsScreenCalibration.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettingsScreensaver.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsSkinLanguage.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettingsSlideShow.h">
@@ -969,6 +978,9 @@
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettingsUICalibration.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\GUIWindowSettingsUserInterface.h">
 			</File>
 			<File
 				RelativePath=".\xbmc\GUIWindowSettingsWeather.h">
@@ -1716,10 +1728,10 @@
 					RelativePath=".\xbmc\cores\sidplayer\audio\AudioDrv.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\sidplayer\audio\config.h">
+					RelativePath=".\xbmc\cores\sidplayer\config.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\sidplayer\IniConfig.cpp">
