@@ -31,6 +31,9 @@
 #include "../../application.h"
 #include "../../util.h"
 
+#define	SUBTITLE_TEXTURE_WIDTH 720
+#define SUBTITLE_TEXTURE_HEIGHT 120
+
 static RECT							rd;            						//rect of our stretched image
 static RECT							rs;            						//rect of our source image
 static unsigned int 				image_width, image_height;          //image width and height
@@ -41,12 +44,12 @@ static unsigned int 				primary_image_format;
 static float						fSourceFrameRatio=0;				//frame aspect ratio of video
 static unsigned int 				fs = 0;                             //display in window or fullscreen
 static unsigned int 				dstride;                            //surface stride
-static DWORD    					destcolorkey;                       //colorkey for our surface
 
-int									iSubtitlePos=0;						//position of subtitles in image coordinates
-int									iMaxSubtitlePos=0;					//max position of subtitles normally (for non-zoomed/stretched)
-int									iDestBottom=0;						//bottom of the destination window
-bool								bClearSubtitleRegion[2]={false,false};	// whether we need to clear the bottom black bar or not
+int									iClearSubtitleRegion[2]={0,0};			// amount of subtitle region to clear
+LPDIRECT3DTEXTURE8					m_pSubtitleTexture[2]={NULL,NULL};
+static unsigned char*				subtitleimage=NULL;                      //image data
+static unsigned int 				subtitlestride;                            //surface stride
+LPDIRECT3DVERTEXBUFFER8				m_pSubtitleVB;							// vertex buffer for subtitles
 
 int									m_dwVisibleOverlay=0;
 LPDIRECT3DTEXTURE8					m_pOverlay[2]={NULL,NULL};			// Overlay textures
@@ -70,6 +73,14 @@ static directx_fourcc_caps g_ddpf[] =
 {
     {"YV12 ",IMGFMT_YV12 ,DIRECT3D8CAPS},
 };
+
+  struct VERTEX 
+	{ 
+    D3DXVECTOR4 p;
+		D3DCOLOR col; 
+		FLOAT tu, tv; 
+	};
+  static const DWORD FVF_VERTEX = D3DFVF_XYZRHW|D3DFVF_DIFFUSE|D3DFVF_TEX1;
 
 #define NUM_FORMATS (sizeof(g_ddpf) / sizeof(g_ddpf[0]))
 
@@ -255,23 +266,52 @@ void choose_best_resolution(float fps)
 //**********************************************************************************************
 // ClearSubtitleRegion()
 //
-// Clears the black section below the movie picture
+// Clears our subtitle texture
 //**********************************************************************************************
-static void ClearSubtitleRegion()
+static void ClearSubtitleRegion(int iTexture)
 {
-	// calculate the position of the subtitle
-	// clear subtitle area (2 rows)
-	for (int y=image_height; y < iSubtitlePos; y++)
+	for (int y=SUBTITLE_TEXTURE_HEIGHT-iClearSubtitleRegion[iTexture]; y < SUBTITLE_TEXTURE_HEIGHT; y++)
 	{
-		for (int x=0; x < (int)(dstride); x+=2)
+		for (int x=0; x < (int)(subtitlestride); x+=2)
 		{
-			*(image + dstride*y+x   ) = 0x10;	// for black Y=0x10  U=0x80 V=0x80
-			*(image + dstride*y+x+1 ) = 0x80;
+			*(subtitleimage + subtitlestride*y+x   ) = 0x00;	// for black Y=0x10  U=0x80 V=0x80
+			*(subtitleimage + subtitlestride*y+x+1 ) = 0x01;
 		}
 	}
-	bClearSubtitleRegion[m_dwVisibleOverlay] = false;
+	iClearSubtitleRegion[iTexture] = 0;
 }
 
+void xbox_video_update_subtitle_position()
+{
+	if (!m_pSubtitleVB)
+		return;
+	VERTEX* vertex=NULL;
+	m_pSubtitleVB->Lock( 0, 0, (BYTE**)&vertex, 0L );
+	float fSubtitleHeight = (float)resInfo[m_iResolution].iWidth/SUBTITLE_TEXTURE_WIDTH*SUBTITLE_TEXTURE_HEIGHT;
+	float fSubtitlePosition = resInfo[m_iResolution].iHeight + g_settings.m_movieCalibration[m_iResolution].subtitles - fSubtitleHeight;
+	vertex[0].p = D3DXVECTOR4( 0,	fSubtitlePosition,		0, 0 );
+	vertex[0].tu = 0;
+	vertex[0].tv = 0;
+
+	vertex[1].p = D3DXVECTOR4( (float)resInfo[m_iResolution].iWidth,	fSubtitlePosition,		0, 0 );
+	vertex[1].tu = SUBTITLE_TEXTURE_WIDTH;
+	vertex[1].tv = 0;
+
+	vertex[2].p = D3DXVECTOR4( (float)resInfo[m_iResolution].iWidth, fSubtitlePosition + fSubtitleHeight,	0, 0 );
+	vertex[2].tu = SUBTITLE_TEXTURE_WIDTH;
+	vertex[2].tv = SUBTITLE_TEXTURE_HEIGHT;
+
+	vertex[3].p = D3DXVECTOR4( 0,	fSubtitlePosition + fSubtitleHeight,	0, 0 );
+	vertex[3].tu = 0;
+	vertex[3].tv = SUBTITLE_TEXTURE_HEIGHT;
+	 
+	vertex[0].col = 0xFFFFFFFF;
+	vertex[1].col = 0xFFFFFFFF;
+	vertex[2].col = 0xFFFFFFFF;
+	vertex[3].col = 0xFFFFFFFF;
+	m_pSubtitleVB->Unlock();  
+}
+	
 //********************************************************************************************************
 static void Directx_CreateOverlay(unsigned int uiFormat)
 {
@@ -290,52 +330,47 @@ static void Directx_CreateOverlay(unsigned int uiFormat)
 			U = -0.168736 * R + -0.331264 * G + 0.5 * B
 			V = 0.5 * R + -0.418688 * G + -0.081312 * B 
 	*/
-	// Calculate the amount of black bar we have on the bottom of the image for use
-	// with subtitles
-	CALIBRATION *pRect = &g_settings.m_movieCalibration[m_iResolution];
-	float fScreenWidth =(float)resInfo[m_iResolution].iWidth + pRect->right-pRect->left;
-	float fScreenHeight=(float)resInfo[m_iResolution].iHeight + pRect->bottom-pRect->top;
-	float fSubtitleOverlayPos = (float)resInfo[m_iResolution].iHeight + pRect->subtitles;
-
-	float fScreenFrameRatio = fScreenWidth / fScreenHeight * resInfo[m_iResolution].fPixelRatio;
-	float fnewheight = (float)image_height * fSourceFrameRatio / fScreenFrameRatio;
-	float fSubtitleImagePos = fSubtitleOverlayPos/fScreenHeight*fnewheight;
-	float fMaxHeight = (fnewheight + image_height)/2;
-
-	iMaxSubtitlePos = (int)(fSubtitleImagePos - (fnewheight + image_height)/2);
-	if (iMaxSubtitlePos < fMaxHeight)
-		iMaxSubtitlePos = (int)fMaxHeight;
-	iSubtitlePos = iMaxSubtitlePos;
-
-	int height = image_height;
-	if (iMaxSubtitlePos > height)
-		height = iMaxSubtitlePos;
-	else
-		iMaxSubtitlePos = height;
-
 	for (int i=0; i <=1; i++)
 	{
 		if ( m_pSurface[i]) m_pSurface[i]->Release();
 		if ( m_pOverlay[i]) m_pOverlay[i]->Release();
 
 		g_graphicsContext.Get3DDevice()->CreateTexture( image_width,
-																										height,
+																										image_height,
 																										1,
 																										0,
 																										D3DFMT_YUY2,
 																										0,
 																										&m_pOverlay[i] ) ;
 		m_pOverlay[i]->GetSurfaceLevel( 0, &m_pSurface[i] );
+
+		// Create subtitle texture
+		if (m_pSubtitleTexture[i])  m_pSubtitleTexture[i]->Release();
+		g_graphicsContext.Get3DDevice()->CreateTexture( SUBTITLE_TEXTURE_WIDTH,
+																										SUBTITLE_TEXTURE_HEIGHT,
+																										1,
+																										0,
+																										D3DFMT_LIN_A8R8G8B8,
+																										0,
+																										&m_pSubtitleTexture[i] ) ;
+
 		// Clear the subtitle region of this overlay
 		D3DLOCKED_RECT rectLocked;
-		if ( D3D_OK == m_pOverlay[i]->LockRect(0,&rectLocked,NULL,0L) )
+		if ( D3D_OK == m_pSubtitleTexture[i]->LockRect(0,&rectLocked,NULL,0L) )
 		{		
-			image  =(unsigned char*)rectLocked.pBits;
-			dstride = rectLocked.Pitch;
-			ClearSubtitleRegion();
+			subtitleimage  =(unsigned char*)rectLocked.pBits;
+			subtitlestride = rectLocked.Pitch;
+			iClearSubtitleRegion[i] = SUBTITLE_TEXTURE_HEIGHT;
+			ClearSubtitleRegion(i);
 		}
-		m_pOverlay[i]->UnlockRect(0);
+		m_pSubtitleTexture[i]->UnlockRect(0);
 	}
+
+	// Create our vertex buffer
+	if (m_pSubtitleVB) m_pSubtitleVB->Release();
+	g_graphicsContext.Get3DDevice()->CreateVertexBuffer( 4*sizeof(VERTEX), D3DUSAGE_WRITEONLY, 0L, D3DPOOL_DEFAULT, &m_pSubtitleVB );
+	xbox_video_update_subtitle_position();
+
 	g_graphicsContext.Get3DDevice()->EnableOverlay(TRUE);
 }
 
@@ -400,19 +435,10 @@ static unsigned int Directx_ManageDisplay()
 	float fOffsetY1 = (float)g_settings.m_movieCalibration[m_iResolution].top;
 	float fOffsetX2 = (float)g_settings.m_movieCalibration[m_iResolution].right;
 	float fOffsetY2 = (float)g_settings.m_movieCalibration[m_iResolution].bottom;
-	float fSubtitleOffset = (float)g_settings.m_movieCalibration[m_iResolution].subtitles;
 
 	float iScreenWidth =(float)resInfo[m_iResolution].iWidth + fOffsetX2-fOffsetX1;
 	float iScreenHeight=(float)resInfo[m_iResolution].iHeight + fOffsetY2-fOffsetY1;
-	float fSubtitleFractionalPos = (resInfo[m_iResolution].iHeight + fSubtitleOffset-fOffsetY1)/iScreenHeight;
 
-	if (m_iResolution == HDTV_1080i)
-	{
-		fOffsetY1/=2;
-		iScreenHeight/=2;
-	}
-
-	// POSSIBLY ALTER THIS NEXT BRACKET FOR HDTV_1080i
 	if( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
 	{
 		const RECT& rv = g_graphicsContext.GetViewWindow();
@@ -424,8 +450,15 @@ static unsigned int Directx_ManageDisplay()
 		fOffsetY2    = 0.0f;
 	}
 
+	// Correct for HDTV_1080i -> 540p
+	if (m_iResolution == HDTV_1080i)
+	{
+		fOffsetY1/=2;
+		iScreenHeight/=2;
+	}
+
 	//if( g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() )
-  {
+	{
 		if (g_stSettings.m_bStretch)
 		{
 			// stretch the movie so it occupies the entire screen (aspect ratio = gone)
@@ -439,7 +472,6 @@ static unsigned int Directx_ManageDisplay()
 			rd.top    = (int)fOffsetY1;
 			rd.bottom = (int)rd.top+(int)iScreenHeight;
 
-			iSubtitlePos = (int)(fSubtitleFractionalPos * image_height);
 			return 0;
 		}
 
@@ -479,7 +511,6 @@ static unsigned int Directx_ManageDisplay()
 				rd.top    = (int)fOffsetY1;
 				rd.bottom = (int)rd.top + (int)iScreenHeight;
 
-				iSubtitlePos = (int)(fSubtitleFractionalPos*image_height-fVertBorder);
 				return 0;
 		}
 
@@ -496,7 +527,7 @@ static unsigned int Directx_ManageDisplay()
 
 		if (fNewHeight > iScreenHeight)
 		{
-			fNewHeight = iScreenHeight;   // POSSIBLY CORRECT FOR SUBTITLE HEIGHT AS WELL
+			fNewHeight = iScreenHeight;
 			fNewWidth = fNewHeight*fOutputFrameRatio;
 		}
 
@@ -521,18 +552,7 @@ static unsigned int Directx_ManageDisplay()
 		rd.right  = (int)(rd.left + fNewWidth + 0.5f);
 		rd.top    = (int)(iPosY + fOffsetY1);
 		rd.bottom = (int)(rd.top + fNewHeight + 0.5f);
-		iDestBottom = rd.bottom;
 
-		// adjust for subtitles if necessary
-		iSubtitlePos = (int)((fSubtitleFractionalPos*iScreenHeight - iPosY)/fNewHeight*image_height+0.5f);
-		if (iSubtitlePos > iMaxSubtitlePos)
-			iSubtitlePos = iMaxSubtitlePos;
-		if (iSubtitlePos > rs.bottom)
-		{
-			rs.bottom = iSubtitlePos;
-			rd.bottom = (int)(fSubtitleFractionalPos*iScreenHeight+fOffsetY1+0.5f);
-		}
-		return 0;
 	}
 	return 0;
 }
@@ -550,9 +570,10 @@ static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src,unsigned
 	// if we're not in stretch mode try to put the subtitles below the video
 	if ( y0 > (int)(image_height/2)  )
 	{
-		bClearSubtitleRegion[m_dwVisibleOverlay] = true;
-		
-		vo_draw_alpha_yuy2(w,h,src,srca,stride,((unsigned char *) image) + dstride*(iSubtitlePos-h) + 2*x0,dstride);
+		if (iClearSubtitleRegion[m_dwVisibleOverlay] < h)
+			iClearSubtitleRegion[m_dwVisibleOverlay] = h;
+		int xpos = (SUBTITLE_TEXTURE_WIDTH-w)/2;
+		vo_draw_alpha_rgb32(w,h,src,srca,stride,((unsigned char *) subtitleimage) + subtitlestride*(SUBTITLE_TEXTURE_HEIGHT-h) + 4*xpos,subtitlestride);
 		return;
 	}
 	vo_draw_alpha_yuy2(w,h,src,srca,stride,((unsigned char *) image) + dstride*y0 + 2*x0,dstride);
@@ -614,6 +635,11 @@ static void video_uninit(void)
 		if ( m_pOverlay[i]) m_pOverlay[i]->Release();
 		m_pSurface[i]=NULL;
 		m_pOverlay[i]=NULL;
+		// subtitle stuff
+		if ( m_pSubtitleTexture[i]) m_pSubtitleTexture[i]->Release();
+		m_pSubtitleTexture[i]=NULL;
+		if (m_pSubtitleVB) m_pSubtitleVB->Release();
+		m_pSubtitleVB=NULL;
 	}
 	OutputDebugString("video_uninit done\n");
 }
@@ -628,7 +654,7 @@ static void video_check_events(void)
 static unsigned int video_preinit(const char *arg)
 {
 	m_iResolution=PAL_4_3;
-	for (int i=0; i<2; i++) bClearSubtitleRegion[i] = false;
+	for (int i=0; i<2; i++) iClearSubtitleRegion[i] = 0;
 	m_dwVisibleOverlay=0;
 	m_bFlip=false;
 	m_bFullScreen=false;
@@ -660,6 +686,41 @@ static unsigned int video_draw_slice(unsigned char *src[], int stride[], int w,i
 //  yv12toyuy2(src[0],src[1],src[2],image + dstride*y + 2*x ,w,h,stride[0],stride[1],dstride);
   return 0;
 }
+
+void xbox_video_render_subtitles()
+{
+  if (!m_pSubtitleTexture[m_dwVisibleOverlay])
+		return ;
+
+	if (!m_pSubtitleVB)
+		return;
+    // Set state to render the image
+    g_graphicsContext.Get3DDevice()->SetTexture( 0, m_pSubtitleTexture[m_dwVisibleOverlay]);
+    g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
+    g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+    g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+    g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_MODULATE );
+    g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+    g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+    g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_COLOROP,   D3DTOP_DISABLE );
+    g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE );
+    g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSU,  D3DTADDRESS_CLAMP );
+    g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSV,  D3DTADDRESS_CLAMP );
+
+    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ZENABLE,      FALSE );
+    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGENABLE,    FALSE );
+    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
+    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FILLMODE,     D3DFILL_SOLID );
+    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_CULLMODE,     D3DCULL_CCW );
+    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA );
+    g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+    g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_VERTEX );
+    // Render the image
+    g_graphicsContext.Get3DDevice()->SetStreamSource( 0, m_pSubtitleVB, sizeof(VERTEX) );
+    g_graphicsContext.Get3DDevice()->DrawPrimitive( D3DPT_QUADLIST, 0, 1 );
+
+}
 //********************************************************************************************************
 static void video_flip_page(void)
 {
@@ -673,11 +734,23 @@ static void video_flip_page(void)
 		g_graphicsContext.Lock();
 		g_graphicsContext.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x00010001, 1.0f, 0L );
 		g_application.RenderFullScreen();
+		// update our subtitle position
+		xbox_video_update_subtitle_position();
+		xbox_video_render_subtitles();
 	  g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();      
 		g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_dwVisibleOverlay], &rs, &rd, TRUE, 0x00010001  );
 		g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
 		g_graphicsContext.Unlock();
 	}
+/*	else if ( g_graphicsContext.IsCalibrating() )
+	{
+		g_graphicsContext.Lock();
+		// update our subtitle position
+		SetSubtitlePosition();
+		RenderSubtitles();
+		g_graphicsContext.Get3DDevice()->UpdateOverlay( m_pSurface[m_dwVisibleOverlay], &rs, &rd, TRUE, 0x00010001  );
+		g_graphicsContext.Unlock();
+	}*/
 	else
 	{
 		g_graphicsContext.Lock();
@@ -693,9 +766,15 @@ static void video_flip_page(void)
 		dstride=rectLocked.Pitch;
 		image  =(unsigned char*)rectLocked.pBits;
 	}
+	D3DLOCKED_RECT rectLocked2;
+	if ( D3D_OK == m_pSubtitleTexture[m_dwVisibleOverlay]->LockRect(0,&rectLocked2,NULL,0L  ))
+	{
+		subtitlestride=rectLocked2.Pitch;
+		subtitleimage  =(unsigned char*)rectLocked2.pBits;
+	}
 
-	if (bClearSubtitleRegion[m_dwVisibleOverlay])
-		ClearSubtitleRegion();
+	if (iClearSubtitleRegion[m_dwVisibleOverlay])
+		ClearSubtitleRegion(m_dwVisibleOverlay);
 
 	bool bFullScreen = g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating();
 	if ( m_bFullScreen != bFullScreen )
@@ -718,12 +797,6 @@ void xbox_video_getRect(RECT& SrcRect, RECT& DestRect)
 {
 	SrcRect=rs;
 	DestRect=rd;
-	// adjust for subtitle space at the bottom
-	if (!g_stSettings.m_bZoom && !g_stSettings.m_bStretch)
-	{
-		SrcRect.bottom = image_height;
-		DestRect.bottom = iDestBottom;
-	}
 }
 
 void xbox_video_getAR(float& fAR)
@@ -733,8 +806,6 @@ void xbox_video_getAR(float& fAR)
 		fOutputPixelRatio /= 2;
 	float fWidth = (float)(rd.right - rd.left);
 	float fHeight = (float)(rd.bottom - rd.top);
-	if (!g_stSettings.m_bZoom && !g_stSettings.m_bStretch)
-		fHeight = (float)(iDestBottom - rd.top);
 	fAR = fWidth/fHeight*fOutputPixelRatio;
 }
 

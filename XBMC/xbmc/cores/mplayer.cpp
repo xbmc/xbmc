@@ -430,6 +430,8 @@ extern void xbox_audio_unregistercallback();
 extern void xbox_video_getRect(RECT& SrcRect, RECT& DestRect);
 extern void xbox_video_getAR(float& fAR);
 extern void xbox_video_update();
+extern void xbox_video_update_subtitle_position();
+extern void xbox_video_render_subtitles();
 
 void CMPlayer::Update()
 {
@@ -467,6 +469,16 @@ void CMPlayer::SwitchToNextAudioLanguage()
  	
 }
 
+void CMPlayer::UpdateSubtitlePosition()
+{
+	xbox_video_update_subtitle_position();
+}
+
+void CMPlayer::RenderSubtitles()
+{
+	xbox_video_render_subtitles();
+}
+
 bool CMPlayer::CanRecord() 
 {
 	if (!m_pShoutCastRipper) return false;
@@ -487,4 +499,4 @@ bool CMPlayer::Record(bool bOnOff)
 	
 	m_pShoutCastRipper->StopRecording();
 	return true;
-} 
+}
