@@ -228,7 +228,7 @@ void xbmc_update_matroskasubs(void *mkvdemuxer)
     if (d->tracks[i] != NULL && d->tracks[i]->type == MATROSKA_TRACK_SUBTITLE)
 	{
 		id++;
-		xbmc_addsub(id, d->tracks[i]->language, XBMC_SUBTYPE_MKVSUB, 0);
+		xbmc_addsub(d->tracks[i]->tnum, d->tracks[i]->language, XBMC_SUBTYPE_MKVSUB, 0);
 	}
 }
 
