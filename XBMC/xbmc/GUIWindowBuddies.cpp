@@ -244,6 +244,12 @@ void CGUIWindowBuddies::OnInitWindow()
 
 	if (m_pKaiClient->IsEngineConnected())
 	{
+		if(m_vectors.IsEmpty())
+		{
+			m_vectors.Load(KAI_VECTOR_MAP_XML);
+			QueryInstalledGames();
+		}
+
 		CONTROL_ENABLE(CONTROL_BTNMODE);	
 
 		if (m_pMe==NULL)
@@ -263,8 +269,6 @@ void CGUIWindowBuddies::OnInitWindow()
 void CGUIWindowBuddies::OnInitialise(CKaiClient* pClient)
 {
 	m_pKaiClient = pClient;
-	m_vectors.Load(KAI_VECTOR_MAP_XML);
-	QueryInstalledGames();
 }
 
 CBuddyItem* CGUIWindowBuddies::GetBuddySelection()
@@ -1373,6 +1377,7 @@ void CGUIWindowBuddies::QueryInstalledGames()
 						if (m_vectors.GetTitle(titleId,strVector))
 						{
 							OnSupportedTitle(titleId, strVector);
+							m_pKaiClient->QueryVectorPlayerCount(strVector);
 						}
 						else
 						{

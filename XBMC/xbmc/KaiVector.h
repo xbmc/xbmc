@@ -25,9 +25,12 @@ public:
 	void Load(const CStdString& strPath);
 	void Save(const CStdString& strPath);
 
+	static CKaiVector* From(CStdString& strUrl);
+
 	void AddTitle(DWORD aTitleId, CStdString& aVector);
 	bool GetTitle(DWORD aTitleId, CStdString& aVector);
 	bool ContainsTitle(DWORD aTitleId);
+	bool IsEmpty();
 
 protected:
 
