@@ -220,8 +220,8 @@ void CGUIWindowSettingsCategory::SetupControls()
 	m_iSection = 0;
 	// setup our control groups...
 	m_vecGroups.clear();
-	m_vecGroups.push_back(0);
-	m_vecGroups.push_back(1);
+	m_vecGroups.push_back(-1);
+	m_vecGroups.push_back(-1);
 	// get a list of different sections
 	CSettingsGroup *pSettingsGroup = g_guiSettings.GetGroup(m_iScreen);
 	if (!pSettingsGroup) return;
@@ -250,7 +250,7 @@ void CGUIWindowSettingsCategory::SetupControls()
 													pControl->GetControlIdLeft(), pControl->GetControlIdRight());
 	CreateSettings();
 	// set focus correctly
-	m_dwDefaultFocusControlID = CONTROL_START_CONTROL;
+	m_dwDefaultFocusControlID = CONTROL_START_BUTTONS;
 }
 
 void CGUIWindowSettingsCategory::CreateSettings()
@@ -407,14 +407,14 @@ void CGUIWindowSettingsCategory::CreateSettings()
 			pControl->AddLabel(g_localizeStrings.Get(739), XFONT_BOLD);
 			pControl->AddLabel(g_localizeStrings.Get(740), XFONT_ITALICS);
 			pControl->AddLabel(g_localizeStrings.Get(741), XFONT_BOLDITALICS);
-			pControl->SetValue(pSettingInt->GetData());
+			pControl->SetValue(pSettingInt->GetData()-1);
 		}
 		else if (strSetting == "Subtitles.Color")
 		{
 			CSettingInt *pSettingInt = (CSettingInt*)pSetting;
 			CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-			pControl->AddLabel(g_localizeStrings.Get(742), SUBTITLE_COLOR_YELLOW);
-			pControl->AddLabel(g_localizeStrings.Get(743), SUBTITLE_COLOR_WHITE);
+			pControl->AddLabel(g_localizeStrings.Get(743), SUBTITLE_COLOR_YELLOW);
+			pControl->AddLabel(g_localizeStrings.Get(742), SUBTITLE_COLOR_WHITE);
 			pControl->SetValue(pSettingInt->GetData());
 		}
 		else if (strSetting == "Subtitles.Height")

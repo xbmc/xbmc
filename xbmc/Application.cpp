@@ -1806,8 +1806,20 @@ void CApplication::UpdateLCD()
 				g_lcd->SetLine(0,"XBMC running...");
 				SYSTEMTIME time;
 				GetLocalTime(&time);
-				strTime.Format("%02.2i:%02.2i:%02.2i %02.2i-%02.2i-%02.2i", time.wHour,time.wMinute,time.wSecond,time.wDay,time.wMonth,time.wYear);
-				g_lcd->SetLine(1,strTime);
+				if (g_guiSettings.GetBool("LookAndFeel.Clock12Hour"))
+				{
+					int hour = (time.wHour > 12) ? time.wHour-12 : time.wHour;
+					if (hour == 0) hour = 12;
+					strTime.Format("%02.2i:%02.2i:%02.2i %s", hour, time.wMinute, time.wSecond, time.wHour>12 ? "PM" : "AM");
+				}
+				else
+					strTime.Format("%02.2i:%02.2i:%02.2i", time.wHour,time.wMinute,time.wSecond);
+				CStdString strDateTime;
+				if (g_guiSettings.GetBool("LookAndFeel.SwapMonthAndDay"))
+					strDateTime.Format("%s %02.2i-%02.2i-%02.2i",strTime.c_str(), time.wMonth,time.wDay,time.wYear);
+				else
+					strDateTime.Format("%s %02.2i-%02.2i-%02.2i",strTime.c_str(), time.wDay,time.wMonth,time.wYear);
+				g_lcd->SetLine(1,strDateTime);
 				MEMORYSTATUS stat;
 				GlobalMemoryStatus(&stat);
 				DWORD dwMegFree=stat.dwAvailPhys / (1024*1024);

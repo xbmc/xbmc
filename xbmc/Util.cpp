@@ -3450,9 +3450,16 @@ void CUtil::ExecBuiltIn(const CStdString& execString)
 		g_applicationMessenger.Reset();
 	}
 	else if (execute == "ActivateWindow")
-	{
-		// get the parameter
+	{	// get the parameter
 		int iWindow = WINDOW_HOME + atoi(parameter.c_str());
+		// check what type of window we have (it could be a dialog)
+		CGUIWindow *pWindow = m_gWindowManager.GetWindow(iWindow);
+		if (pWindow && pWindow->IsDialog())
+		{	// Dialog
+			CGUIDialog *pDialog = (CGUIDialog *)pWindow;
+			pDialog->DoModal(m_gWindowManager.GetActiveWindow());
+			return;
+		}
 		m_gWindowManager.ActivateWindow(iWindow);
 	}
 	else if (execute == "RunScript")

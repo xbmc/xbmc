@@ -143,8 +143,8 @@
   <string><id>210</id><value>Previous</value></string>
   <string><id>211</id><value>Searching for applications</value></string>
   <string><id>212</id><value>applications found</value></string>
-  <string><id>213</id><value>User Interface Calibration</value></string>
-  <string><id>214</id><value>Video Calibration</value></string>
+  <string><id>213</id><value>Center User Interface...</value></string>
+  <string><id>214</id><value>Video Calibration...</value></string>
   <string><id>215</id><value>Soften</value></string>
   <string><id>216</id><value>Zoom Amount</value></string>
   <string><id>217</id><value>Pixel Ratio</value></string>
@@ -636,13 +636,13 @@
   <string><id>14007</id><value>Downloading playlist file failed</value></string>
   <string><id>14008</id><value>Enable Kai Notifications</value></string>
   <string><id>14009</id><value>Games Directory</value></string>
-  <string><id>14010</id><value>Autoswitch Options</value></string>
-  <string><id>14011</id><value>Enable Autoswitching</value></string>
+  <string><id>14010</id><value>Autoswitch to Thumbs based on</value></string>
+  <string><id>14011</id><value>Enable Autoswitching to Thumbs View</value></string>
   <string><id>14012</id><value>- Use Large Icons</value></string>
-  <string><id>14013</id><value>- Method</value></string>
+  <string><id>14013</id><value>- Switch Based on</value></string>
   <string><id>14014</id><value>- Percentage</value></string>
-  <string><id>14015</id><value>Thumbpanel if no Files</value></string>
-  <string><id>14016</id><value>Listpanel if no Folders</value></string>
+  <string><id>14015</id><value>No Files and at least one Thumb</value></string>
+  <string><id>14016</id><value>At least one File and Thumb</value></string>
   <string><id>14017</id><value>Percentage of Thumbs</value></string>
   <string><id>14018</id><value>View Options</value></string>
   <string><id>14019</id><value>Change Area Code 1</value></string>
