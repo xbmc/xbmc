@@ -237,6 +237,7 @@ bool	CMusicAlbumInfo::Parse(const CStdString& strHTML)
 			m_vecSongs.push_back(newSong);
 		}
 	}
+	if (m_strTitle2="") m_strTitle2=m_strTitle;
 	return true;
 }
 

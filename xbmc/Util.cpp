@@ -456,3 +456,19 @@ bool CUtil::IsVideo(const CStdString& strFile)
 	}
 	return false;
 }
+ void CUtil::URLEncode(CStdString& strURLData)
+{
+	CStdString strResult;
+	for (int i=0; i < (int)strURLData.size(); ++i)
+	{
+			char kar=strURLData[i];
+			if (kar==' ') strResult+='+';
+			else if (isalnum(kar) || kar=='&'  || kar=='=' ) strResult+=kar;
+			else {
+				CStdString strTmp;
+				strTmp.Format("%%%02.2x", kar);
+				strResult+=strTmp;
+			}
+	}
+	strURLData=strResult;
+}

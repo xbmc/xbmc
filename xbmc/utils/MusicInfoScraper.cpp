@@ -3,6 +3,7 @@
 #include ".\http.h"
 #include ".\htmlutil.h"
 #include ".\htmltable.h"
+#include "../util.h"
 using namespace HTML;
 
 CMusicInfoScraper::CMusicInfoScraper(void)
@@ -42,6 +43,18 @@ bool CMusicInfoScraper::FindAlbuminfo(const CStdString& strAlbum)
 		return false;
 	}
 	
+	// check if this is an album
+	{
+		CStdString strURL="http://www.allmusic.com/cg/amg.dll?";
+		CUtil::URLEncode(strPostData);
+		strURL+=strPostData;
+		CMusicAlbumInfo newAlbum("",strURL);
+		if ( newAlbum.Parse(strHTML) )
+		{
+			m_vecAlbums.push_back(newAlbum);
+			return true;
+		}
+	}
 	// check if we found a list of albums
 
 	CHTMLTable table;

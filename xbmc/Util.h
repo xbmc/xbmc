@@ -34,5 +34,6 @@ public:
 	static bool IsPicture(const CStdString& strLine) ;
 	static bool IsAudio(const CStdString& strLine) ;
 	static bool IsVideo(const CStdString& strLine) ;
+	static void URLEncode(CStdString& strURLData);
   virtual ~CUtil(void);
 };

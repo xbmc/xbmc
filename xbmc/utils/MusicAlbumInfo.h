@@ -27,8 +27,8 @@ namespace MUSIC_GRABBER
 		const CMusicSong& GetSong(int iSong);
 		const CStdString& GetAlbumURL() const;
 		bool							Load();
-	protected:
 		bool							Parse(const CStdString& strHTML);
+	protected:
 		CStdString		m_strArtist;
 		CStdString		m_strTitle;
 		CStdString		m_strTitle2;
