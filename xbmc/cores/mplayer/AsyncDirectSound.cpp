@@ -501,12 +501,7 @@ DWORD CASyncDirectSound::AddPacketsResample(unsigned char *pData, DWORD iLeft)
 				}
 				else
 				{	// put more data into the resampler
-					static __int64 timer = 0;
-					LARGE_INTEGER start, end;
-					QueryPerformanceCounter(&start);
 					DWORD iSize = m_Resampler.PutData(&pData[iBytesCopied], iLeft);
-					QueryPerformanceCounter(&end);
-
 					if (iSize == -1)
 					{	// Failed - we don't have enough data
 						return iBytesCopied;
@@ -515,20 +510,6 @@ DWORD CASyncDirectSound::AddPacketsResample(unsigned char *pData, DWORD iLeft)
 					{	// Success - update the amount that we have processed
 						iBytesCopied+=iSize;
 						iLeft -=iSize;
-
-						timer += end.QuadPart - start.QuadPart;
-						static DWORD n = 0;
-						n += iSize;
-						if (n >= 48000 * 2)
-						{
-							LARGE_INTEGER freq;
-							QueryPerformanceFrequency(&freq);
-							float secs = (float)n / float(48000 * 2);
-							CLog::DebugLog("Resampler: %.2fms/sec", (1000.0f * timer / freq.QuadPart) / secs);
-							n = 0;
-							timer = 0;
-						}
-
 					}
 					// Now loop back around and output data, or read more in
 				}
