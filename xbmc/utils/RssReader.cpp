@@ -54,6 +54,27 @@ void CRssReader::Process()
 
 	if ((!strXML.IsEmpty()) && m_pObserver)
 	{
+		// remove CDATA sections from our buffer (timyXML is not able to parse these)
+		CStdString strCDATAElement;
+		CStdString strTemp;
+		int iStart = strXML.Find("<![CDATA[");
+		int iEnd = 0;
+		while (iStart > 0)
+		{
+			// get CDATA contents
+			iEnd = strXML.Find("]]>", iStart) - iStart + 3;
+			strCDATAElement = strXML.substr(iStart, iEnd);
+
+			// remove "<![CDATA[" and "]]>"
+			strTemp = strCDATAElement.erase(iEnd - 3, 3); // remove "]]>"
+			strCDATAElement = strTemp.erase(0, 9); // remove "<![CDATA["
+
+			// replace CDATA section with new string
+			strXML = strXML.erase(iStart, iEnd).insert(iStart, strCDATAElement);
+
+			iStart = strXML.Find("<![CDATA[");
+		}
+
 		if (Parse((LPSTR)strXML.c_str()))
 		{
 			getFeed(strFeed, pbColors);
