@@ -368,9 +368,27 @@ void CGUISpinControl::Render()
 	CStdStringW strTextUnicode;
 
     if (m_iType == SPIN_CONTROL_TYPE_INT)
-        swprintf(wszText,L"%i/%i",m_iValue, m_iEnd);
+	{
+        if (m_bShowRange)
+        {
+	        swprintf(wszText,L"%i/%i",m_iValue, m_iEnd);
+		}
+		else
+		{
+	        swprintf(wszText,L"%i",m_iValue);
+		}
+	}
     else if (m_iType==SPIN_CONTROL_TYPE_FLOAT)
-        swprintf(wszText,L"%02.2f/%02.2f",m_fValue, m_fEnd);
+	{    
+		if (m_bShowRange)
+		{
+			swprintf(wszText,L"%02.2f/%02.2f",m_fValue, m_fEnd);
+		}
+		else
+		{
+			swprintf(wszText,L"%02.2f",m_fValue);
+		}
+	}
     else
     {
         swprintf(wszText,L"");

@@ -313,6 +313,9 @@ public:
 		char      m_szSubtitleFont[40];
 		char	  m_szStringCharset[40];
 		int       m_iSubtitleHeight;
+		int		  m_iSubtitleTTFStyle;
+		DWORD	  m_iSubtitleTTFColor;
+		char	  m_szSubtitleCharset[40];
 		int       m_iEnlargeSubtitlePercent;
 		float     m_fVolumeAmplification;
 		float     m_fVolumeHeadroom;
@@ -433,12 +436,14 @@ protected:
 	void GetFloat(const TiXmlElement* pRootElement, const CStdString& strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);
 	void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, char* szValue, const CStdString& strDefaultValue);
 	void GetShares(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSHARES& items, CStdString& strDefault);
+	void GetHex(const TiXmlNode* pRootElement, const CStdString& strTagName, DWORD& dwHexValue, DWORD dwDefaultValue);
 	void ConvertHomeVar(CStdString& strText);
 	// functions for writing xml files
 	void SetString(TiXmlNode* pRootNode, const CStdString& strTagName, const CStdString& strValue) const;
 	void SetInteger(TiXmlNode* pRootNode, const CStdString& strTagName, int iValue) const;
 	void SetFloat(TiXmlNode* pRootNode, const CStdString& strTagName, float fValue) const;
 	void SetBoolean(TiXmlNode* pRootNode, const CStdString& strTagName, bool bValue) const;
+	void SetHex(TiXmlNode* pRootNode, const CStdString& strTagName, DWORD dwHexValue) const;
 
   bool LoadCalibration(const TiXmlElement* pElement, const CStdString& strSettingsFile);
   bool SaveCalibration(TiXmlNode* pRootNode) const;
