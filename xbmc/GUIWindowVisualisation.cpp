@@ -73,6 +73,11 @@ void CGUIWindowVisualisation::OnAction(const CAction &action)
 {
 	switch (action.wID)
 	{
+		case ACTION_SHOW_INFO:
+			//send the action to the overlay
+			g_application.m_guiMusicOverlay.OnAction(action);
+			break;
+
 		case ACTION_SHOW_GUI:
 			m_gWindowManager.PreviousWindow();
 			break;
