@@ -159,6 +159,10 @@ void CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 			m_iCountD=0;
 			m_iCountL=0;
 			m_iCountR=0;
+      g_graphicsContext.SetFullScreenVideo(true);
+      g_application.m_guiWindowOSD.ResetAllControls();
+      g_graphicsContext.SetFullScreenVideo(false);
+
 			return;
 		break;
 
@@ -168,6 +172,10 @@ void CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 			if (m_iCurRes == m_Res.size())
 				m_iCurRes = 0;
 			g_graphicsContext.SetGUIResolution(m_Res[m_iCurRes]);
+      
+      g_graphicsContext.SetFullScreenVideo(true);
+      g_application.m_guiWindowOSD.ResetAllControls();
+      g_graphicsContext.SetFullScreenVideo(false);
 			return;
 		break;
 
