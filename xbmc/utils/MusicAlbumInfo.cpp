@@ -158,7 +158,15 @@ bool	CMusicAlbumInfo::Parse(const CStdString& strHTML)
 
 	if (m_strReview.IsEmpty())
 		m_strReview=g_localizeStrings.Get(414);
-	
+
+	// if the review has "read more..." get the full review
+	CStdString strReview=m_strReview;
+	strReview.ToLower();
+	if (strReview.Find("read more...") >= 0)
+	{
+		m_strAlbumURL += "~T1";
+		return Load();
+	}
   
 	//	Extract album, artist...
 	int iStartOfTable=strHTMLLow.Find("id=\"albumpage\"");
