@@ -805,4 +805,5 @@
   <string><id>15059</id><value>Inbjudan accepterad!</value></string>
   <string><id>15060</id><value>Meddelande här</value></string>
   <string><id>15061</id><value>Du är inbjuden att spela %s.</value></string>
+  <string><id>15062</id><value>Använd alternativ mplayer.dll</value></string>
 </strings>
