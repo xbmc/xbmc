@@ -598,10 +598,10 @@ void CGUIWindowVideoPlaylist::RemovePlayListItem(int iItem)
 void CGUIWindowVideoPlaylist::ShufflePlayList()
 {
 	ClearFileItems();
-	CPlayList& playlist=g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
+	CPlayList& playlist=g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
 	
 	CStdString strFileName;
-	if (g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_MUSIC)
+	if (g_application.IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist()==PLAYLIST_VIDEO)
 	{
 		const CPlayList::CPlayListItem& item=playlist[g_playlistPlayer.GetCurrentSong()];
 		strFileName=item.GetFileName();
