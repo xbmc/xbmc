@@ -114,6 +114,8 @@ bool CGUIDialogKaiToast::DoWork()
 		Notification toast = m_notifications.front();
 		m_notifications.pop();
 
+		g_graphicsContext.Lock();
+
 		CGUIMessage msg1(GUI_MSG_LABEL_SET,GetID(),POPUP_CAPTION_TEXT);
 		msg1.SetLabel(toast.caption);
 		OnMessage(msg1);
@@ -135,6 +137,8 @@ bool CGUIDialogKaiToast::DoWork()
 			toast.image->AllocResources();
 			m_pIcon = toast.image;
 		}
+
+		g_graphicsContext.Unlock();
 
 		ResetTimer();
 	}

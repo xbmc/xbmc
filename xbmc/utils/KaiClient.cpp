@@ -418,9 +418,9 @@ void CKaiClient::QueueContactVoice(CStdString& aContactName, DWORD aPlayerId, LP
 				COMPRESSED_FRAME_SIZE ); 
 		}
 
-		char szDebug[128];
-		sprintf(szDebug,"RX KAI SPEEX %d frames, total: %u bytes.\r\n",frames,dwMessageLength);
-		OutputDebugString(szDebug);
+		//char szDebug[128];
+		//sprintf(szDebug,"RX KAI SPEEX %d frames, total: %u bytes.\r\n",frames,dwMessageLength);
+		//OutputDebugString(szDebug);
 	}
 }
 
@@ -441,9 +441,9 @@ void CKaiClient::SendVoiceDataToEngine()
 
 			int nPackets = m_pEgress->Size();
 
-			char szDebug[128];
-			sprintf(szDebug,"Sending %d packets\r\n", nPackets);
-			OutputDebugString(szDebug);
+			//char szDebug[128];
+			//sprintf(szDebug,"Sending %d packets\r\n", nPackets);
+			//OutputDebugString(szDebug);
 
 			int messageOffset = strlen(buffer);
 			for(int i=0; i<nPackets; i++, messageOffset+= COMPRESSED_FRAME_SIZE)
@@ -582,8 +582,8 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_SPEEX_ON")==0)
 			{
-				OutputDebugString(szMessage);
-				OutputDebugString("\r\n");
+				//OutputDebugString(szMessage);
+				//OutputDebugString("\r\n");
 
 				if (observer!=NULL)
 				{
@@ -593,8 +593,8 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_SPEEX_OFF")==0)
 			{
-				OutputDebugString(szMessage);
-				OutputDebugString("\r\n");
+				//OutputDebugString(szMessage);
+				//OutputDebugString("\r\n");
 
 				if (observer!=NULL)
 				{
@@ -604,15 +604,15 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_SPEEX_START")==0)
 			{
-				OutputDebugString(szMessage);
-				OutputDebugString("\r\n");
+				//OutputDebugString(szMessage);
+				//OutputDebugString("\r\n");
 
 				VoiceChatStart();
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_SPEEX")==0)
 			{
-				OutputDebugString(szMessage);
-				OutputDebugString("\r\n");
+				//OutputDebugString(szMessage);
+				//OutputDebugString("\r\n");
 
 				CStdString strContactName = strtok(NULL, ";");
 
@@ -645,15 +645,15 @@ void CKaiClient::OnMessage(SOCKADDR_IN& aRemoteAddress, CStdString& aMessage, LP
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_SPEEX_STOP")==0)
 			{
-				OutputDebugString(szMessage);
-				OutputDebugString("\r\n");
+				//OutputDebugString(szMessage);
+				//OutputDebugString("\r\n");
 
 				VoiceChatStop();
 			}
 			else if (strcmp(szMessage,"KAI_CLIENT_SPEEX_RING")==0)
 			{
-				OutputDebugString(szMessage);
-				OutputDebugString("\r\n");
+				//OutputDebugString(szMessage);
+				//OutputDebugString("\r\n");
 
 				if (observer!=NULL)
 				{
