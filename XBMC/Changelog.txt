@@ -5,6 +5,11 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 01-08-2004 added: auto temperature control (Settings->General->System)
+  - 01-08-2004 added: fanspeed control (Settings->General->System)
+  - 01-08-2004 fixed: incorrect cpu temperature decimal value calculation
+  - 01-08-2004 changed: display systeminfo temperatures in °C or °F (uses weather setting)
+  - 01-08-2004 added: fanspeed to systeminfo
   - 31-07-2004 fixed: iTunes Smart Playlists
   - 30-07-2004 changed: iTunes DAAP performance improvements
   - 28-07-2004 added: iTunes DAAP support
