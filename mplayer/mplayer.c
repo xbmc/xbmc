@@ -1491,7 +1491,10 @@ if(!use_stdin && !slave_mode){
     if(filename) mp_msg(MSGT_CPLAYER,MSGL_INFO,MSGTR_Playing, filename);
 
 #ifdef _XBOX
-	if(xbmc_cancel) return 0;
+if(xbmc_cancel) {
+	printf("mplayer: user canceled startup");
+	return -1;
+}
 #endif
 
     //==================== Open VOB-Sub ============================
@@ -1541,7 +1544,10 @@ if(!use_stdin && !slave_mode){
     //============ Open & Sync STREAM --- fork cache2 ====================
 
 #ifdef _XBOX
-	if(xbmc_cancel) return -1;
+if(xbmc_cancel) {
+	printf("mplayer: user canceled startup");
+	return -1;
+}
 #endif
 
 	stream=NULL;
@@ -1638,7 +1644,10 @@ if(stream->type==STREAMTYPE_DVD){
     // CACHE2: initial prefill: 20%  later: 5%  (should be set by -cacheopts)
 
 #ifdef _XBOX
-	if(xbmc_cancel) return -1;
+if(xbmc_cancel) {
+	printf("mplayer: user canceled startup");
+	return -1;
+}
 #endif
 
 #ifdef HAS_DVBIN_SUPPORT
@@ -1659,7 +1668,10 @@ if(stream_cache_size>0){
     }
     //============ Open DEMUXERS --- DETECT file type =======================
 #ifdef _XBOX
-	if(xbmc_cancel) return -1;
+if(xbmc_cancel) {
+	printf("mplayer: user canceled startup");
+	return -1;
+}
 #endif
 
 	current_module="demux_open";
@@ -1879,7 +1891,10 @@ if(!sh_video && !sh_audio){
     //================== Read SUBTITLES (DVD & TEXT) ==========================
 
 #ifdef _XBOX
-	if(xbmc_cancel) return -1;
+if(xbmc_cancel) {
+	printf("mplayer: user canceled startup");
+	return -1;
+}
 #endif
 
     printf("id:%i vo_spudec:%x", d_dvdsub->id,vo_spudec);
@@ -1979,7 +1994,10 @@ if(sh_video) {
     //================== Init AUDIO (codec) ==========================
 
 #ifdef _XBOX
-	if(xbmc_cancel) return -1;
+if(xbmc_cancel) {
+	printf("mplayer: user canceled startup");
+	return -1;
+}
 #endif
 
 if(sh_audio){
@@ -2027,7 +2045,10 @@ if(!sh_video) goto main; // audio-only
     //================== Init VIDEO (codec & libvo) ==========================
 
 #ifdef _XBOX
-	if(xbmc_cancel) return -1;
+if(xbmc_cancel) {
+	printf("mplayer: user canceled startup");
+	return -1;
+}
 #endif
 
 if(!fixed_vo || !(inited_flags&INITED_VO)){
@@ -2167,7 +2188,10 @@ if(!sh_video && osd_level >= 0) { // save OSD level only once
         //================ SETUP AUDIO ==========================
 
 #ifdef _XBOX
-	if(xbmc_cancel) return -1;
+if(xbmc_cancel) {
+	printf("mplayer: user canceled startup");
+	return -1;
+}
 #endif
 
 if(sh_audio){
@@ -2264,7 +2288,10 @@ if(force_fps && sh_video){
         //==================== START PLAYING =======================
 
 #ifdef _XBOX
-	if(xbmc_cancel) return -1;
+if(xbmc_cancel) {
+	printf("mplayer: user canceled startup");
+	return -1;
+}
 #endif
 
 if(loop_times>1) loop_times--; else
