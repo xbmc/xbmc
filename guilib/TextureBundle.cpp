@@ -427,7 +427,6 @@ int CTextureBundle::LoadAnim(LPDIRECT3DDEVICE8 pDevice, const CStdString& Filena
 
 	DWORD ResDataOffset = ((Next - UnpackedBuf) + 127) & ~127;
 	ResData = UnpackedBuf + ResDataOffset;
-	UnpackedBuf.Release();
 
 	*ppTextures = new LPDIRECT3DTEXTURE8[nTextures];
 	for (int i = 0; i < nTextures; ++i)
@@ -455,6 +454,8 @@ int CTextureBundle::LoadAnim(LPDIRECT3DDEVICE8 pDevice, const CStdString& Filena
 	pInfo->Depth = 0;
 	pInfo->MipLevels = 1;
 	pInfo->Format = D3DFMT_UNKNOWN;
+
+	UnpackedBuf.Release();
 
 	return nTextures;
 
