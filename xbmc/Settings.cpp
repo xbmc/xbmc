@@ -269,6 +269,8 @@ CSettings::CSettings(void)
 
   g_stSettings.m_minFilter= D3DTEXF_LINEAR;
   g_stSettings.m_maxFilter= D3DTEXF_LINEAR;
+
+	g_stSettings.m_bDisplayRemoteCodes=false;
 }
 
 CSettings::~CSettings(void)
@@ -391,6 +393,7 @@ bool CSettings::Load()
 
 	GetBoolean(pRootElement, "useFDrive", g_stSettings.m_bUseFDrive);
 	GetBoolean(pRootElement, "useGDrive", g_stSettings.m_bUseGDrive);
+	GetBoolean(pRootElement, "displayremotecodes", g_stSettings.m_bDisplayRemoteCodes);
 
   GetString(pRootElement, "dvdplayer", g_stSettings.m_szExternalDVDPlayer,"");
 

@@ -293,6 +293,7 @@ public:
   int       m_iLCDAdress[4];
   int       m_iLCDMode;
   int       m_iLCDBackLight;
+	bool			m_bDisplayRemoteCodes;	// Remote code debug info
   };
 
   VECSHARES					m_vecMyProgramsBookmarks;
