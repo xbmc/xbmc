@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 30-01-2005 fixed: Canceling scan of videos causes freeze.
   - 30-01-2005 changed: Reboot from FatalErrorHandler works on all buttons now (thanks Fulg!)
   - 30-01-2005 fixed: Screensaver dims videos in ComboRenderer.
   - 30-01-2005 fixed: crash when leaving kai window
