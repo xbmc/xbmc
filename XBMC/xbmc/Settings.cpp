@@ -9,6 +9,7 @@ struct CSettings::stSettings g_stSettings;
 
 CSettings::CSettings(void)
 {
+	g_stSettings.m_bAllowPAL60=true;
   g_stSettings.m_iSlideShowTransistionFrames=25;
   g_stSettings.m_iSlideShowStayTime=3000;
 	g_stSettings.dwFileVersion =CONFIG_VERSION;
