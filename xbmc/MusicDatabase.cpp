@@ -235,9 +235,6 @@ void CMusicDatabase::AddSong(const CSong& song1, bool bCheck)
 	try
 	{
 		CSong song=song1;
-		RemoveInvalidChars(song.strAlbum);
-		RemoveInvalidChars(song.strGenre);
-		RemoveInvalidChars(song.strArtist);
 		RemoveInvalidChars(song.strTitle);
 
 		CStdString strPath, strFileName;
@@ -524,7 +521,7 @@ long CMusicDatabase::AddGenre(const CStdString& strGenre1)
 
 			CGenreCache genre;
 			genre.idGenre = sqlite_last_insert_rowid(m_pDB->getHandle());
-			genre.strGenre = strGenre;
+			genre.strGenre = strGenre1;
 			m_genreCache.insert(pair<CStdString, CGenreCache>(genre.strGenre, genre));
 			return genre.idGenre;
 		}
@@ -532,7 +529,7 @@ long CMusicDatabase::AddGenre(const CStdString& strGenre1)
 		{
 			CGenreCache genre;
 			genre.idGenre = m_pDS->fv("idGenre").get_asLong();
-			genre.strGenre = strGenre;
+			genre.strGenre = strGenre1;
 			m_genreCache.insert(pair<CStdString, CGenreCache>(genre.strGenre, genre));
 			return genre.idGenre;
 		}
@@ -575,7 +572,7 @@ long CMusicDatabase::AddArtist(const CStdString& strArtist1)
 			m_pDS->exec(strSQL.c_str());
 			CArtistCache artist;
 			artist.idArtist = sqlite_last_insert_rowid(m_pDB->getHandle());
-			artist.strArtist = strArtist;
+			artist.strArtist = strArtist1;
 			m_artistCache.insert(pair<CStdString, CArtistCache>(artist.strArtist, artist));
 			return artist.idArtist;
 		}
@@ -583,7 +580,7 @@ long CMusicDatabase::AddArtist(const CStdString& strArtist1)
 		{
 			CArtistCache artist;
 			artist.idArtist = m_pDS->fv("idArtist").get_asLong();
-			artist.strArtist = strArtist;
+			artist.strArtist = strArtist1;
 			m_artistCache.insert(pair<CStdString, CArtistCache>(artist.strArtist, artist));
 			return artist.idArtist;
 		}
