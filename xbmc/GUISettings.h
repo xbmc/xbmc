@@ -13,10 +13,11 @@
 using namespace std;
 
 // Render Methods
-#define RENDER_PIXEL_SHADER				0
+#define RENDER_LQ_RGB_SHADER			0
 #define RENDER_OVERLAYS						1
 #define RENDER_COMBO							2
-#define RENDER_RGB_SHADER					3
+#define RENDER_MQ_RGB_SHADER			3
+#define RENDER_HQ_RGB_SHADER			4
 
 // Subtitle colours
 
