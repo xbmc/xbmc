@@ -4,86 +4,60 @@
 
 //////////////////////////////////////////////////////////////////////
 
-
-
 #include "FileSmb.h"
 #include "../sectionloader.h"
 #include "../settings.h"
 using namespace XFILE;
-SMB* XFILE::CFileSMB::m_pSMB=NULL;
-int XFILE::CFileSMB::m_iReferences=0;
 
-static char szPassWd[128];
-static char szUserName[128];
 static CRITICAL_SECTION	m_critSection;
 
-class MyFileCallback : public SmbAnswerCallback
+void xb_smbc_auth(const char *srv, const char *shr, char *wg, int wglen, 
+			char *un, int unlen,  char *pw, int pwlen)
 {
-protected:
-	// Warning: don't use a fixed size buffer in a real application.
-	// This is a security hazard.
-	char buf[200];
-public:
-	char *getAnswer(int type, const char *optmessage) {
-		switch (type) {
-			case ANSWER_USER_NAME:
-				strcpy(buf, szUserName);
-				break;
-			case ANSWER_USER_PASSWORD:
-//				cout<<"Password for user "<<optmessage<<": ";
-//				cin>>buf;
-				strcpy(buf, szPassWd);
-				break;
-			case ANSWER_SERVICE_PASSWORD:
-				strcpy(buf, szPassWd);
-				break;
+	return;
+}
+
+CSMB::CSMB()
+{
+	binitialized = false;
+}
+
+void CSMB::Init()
+{
+	if(!binitialized)
+	{
+		// set ip and subnet
+		set_xbox_interface(g_stSettings.m_strLocalIPAdres, g_stSettings.m_strLocalNetmask);
+
+		if(!smbc_init(xb_smbc_auth, 1/*Debug Level*/))
+		{
+			// set wins nameserver
+			lp_do_parameter((-1), "wins server", g_stSettings.m_strNameServer);
+			binitialized = true;
 		}
-		return buf;
 	}
-} cb;
+}
+
+CSMB smb;
 
 CFileSMB::CFileSMB()
 {
-	if (!m_iReferences)
-	{
-		InitializeCriticalSection(&m_critSection);
-		CSectionLoader::Load("LIBSMB");
-		if (!m_pSMB)
-		{
-			m_pSMB = new SMB();
-		}
-		if( g_stSettings.m_strNameServer[0] != 0x00 )
-			m_pSMB->setNBNSAddress(g_stSettings.m_strNameServer);
-
-		m_pSMB->setPasswordCallback(&cb);
-
-	}
-	m_iReferences++;
+	InitializeCriticalSection(&m_critSection);
+	smb.Init();
 	m_fd = -1;
 }
 
 CFileSMB::~CFileSMB()
 {
 	Close();
-	m_iReferences--;
-	if (0==m_iReferences)
-	{
-		if (m_pSMB)
-			delete m_pSMB;
-		m_pSMB=NULL;
-		CSectionLoader::Unload("LIBSMB");
-		DeleteCriticalSection(&m_critSection);
-	}
+	DeleteCriticalSection(&m_critSection);
 }
-
-
 
 offset_t CFileSMB::GetPosition()
 {
-	if (!m_pSMB) return 0;
-	if (m_fd <0) return 0;
+	if (m_fd == -1) return 0;
 	::EnterCriticalSection(&m_critSection );
-	int pos = m_pSMB->lseek(m_fd, 0, SEEK_CUR);
+	int pos = smbc_lseek(m_fd, 0, SEEK_CUR);
 	::LeaveCriticalSection(&m_critSection );
 	if( pos < 0 )
 		return 0;
@@ -92,61 +66,51 @@ offset_t CFileSMB::GetPosition()
 
 offset_t CFileSMB::GetLength()
 {
-	if (!m_pSMB) return 0;
-	if (m_fd <0) return 0;
+	if (m_fd == -1) return 0;
 	return m_fileSize;
 }
 
 bool CFileSMB::Open(const char* strUserName, const char* strPassword,const char *strHostName, const char *strFileName,int iport, bool bBinary)
 {
+	char szFileName[1024];
+	m_bBinary = bBinary;
+
+	// since the syntax of the new smb is a little different, the workgroup is now specified
+	// as workgroup;username:pass@pc/share (strUserName contains workgroup;username)
+	// instead of username:pass@workgroup/pc/share
+	// this means that if no password and username is provided szFileName doesn't have the workgroup.
+	// should be fixed.
+
+	if (strPassword && strUserName)
+		sprintf(szFileName,"smb://%s:%s@%s/%s", strUserName, strPassword, strHostName, strFileName);
+	else
+		sprintf(szFileName,"smb://%s/%s", strHostName, strFileName);
+
 	Close();
 	::EnterCriticalSection(&m_critSection );
 
-	// have to convert dos line termination ourselves.
-	char szFileName[1024];
-	m_bBinary = bBinary;
-  if (strPassword)
-	  strcpy(szPassWd,strPassword);
-  else
-    strcpy(szPassWd,"");
+	m_fd = smbc_open(szFileName, O_RDONLY, 0);
 
-  if (strUserName)
-	  strcpy(szUserName,strUserName);
-  else
-    strcpy(szUserName,"");
-
-	sprintf(szFileName,"%s/%s", strHostName,strFileName);
-	if (strPassword)
-	{
-		strcpy(szPassWd,strPassword);
-		if (strPassword && strUserName)
-		{
-			sprintf(szFileName,"%s:%s@%s/%s", strUserName,strPassword,strHostName,strFileName);
-		}
-	}	
-
-	m_fd = m_pSMB->open(szFileName, O_RDONLY);
-
-	if( m_fd < 0 )
+	if(m_fd == -1)
 	{
 		::LeaveCriticalSection(&m_critSection );	
 		return false;
 	}
-	INT64 ret = m_pSMB->lseek(m_fd, 0, SEEK_END);
+	INT64 ret = smbc_lseek(m_fd, 0, SEEK_END);
 
 	if( ret < 0 )
 	{
-		m_pSMB->close(m_fd);
+		smbc_close(m_fd);
 		m_fd = -1;
 		::LeaveCriticalSection(&m_critSection );	
 		return false;
 	}
 
 	m_fileSize = ret;
-	ret = m_pSMB->lseek(m_fd, 0, SEEK_SET);
+	ret = smbc_lseek(m_fd, 0, SEEK_SET);
 	if( ret < 0 )
 	{
-		m_pSMB->close(m_fd);
+		smbc_close(m_fd);
 		m_fd = -1;
 		::LeaveCriticalSection(&m_critSection );	
 		return false;
@@ -158,10 +122,9 @@ bool CFileSMB::Open(const char* strUserName, const char* strPassword,const char 
 
 unsigned int CFileSMB::Read(void *lpBuf, offset_t uiBufSize)
 {
-	if (!m_pSMB) return 0;
-	if (m_fd <0) return 0;
+	if (m_fd == -1) return 0;
 	::EnterCriticalSection(&m_critSection );	
-	int bytesRead = m_pSMB->read(m_fd, lpBuf, (int)uiBufSize);
+	int bytesRead = smbc_read(m_fd, lpBuf, (int)uiBufSize);
 	::LeaveCriticalSection(&m_critSection );	
 	if( bytesRead <= 0 )
 	{
@@ -173,15 +136,13 @@ unsigned int CFileSMB::Read(void *lpBuf, offset_t uiBufSize)
 	return (unsigned int)bytesRead;
 }
 
-
 bool CFileSMB::ReadString(char *szLine, int iLineLength)
 {
-	if (!m_pSMB) return false;
-	if (m_fd <0) return false;
+	if (m_fd == -1) return false;
 	offset_t iFilePos=GetPosition();
 
 	::EnterCriticalSection(&m_critSection );	
-	int iBytesRead=m_pSMB->read(m_fd, (unsigned char*)szLine, iLineLength);
+	int iBytesRead = smbc_read(m_fd, (unsigned char*)szLine, iLineLength);
 	::LeaveCriticalSection(&m_critSection );	
 	if (iBytesRead <= 0)
 	{
@@ -231,56 +192,40 @@ bool CFileSMB::ReadString(char *szLine, int iLineLength)
 
 }
 
-
-
 offset_t CFileSMB::Seek(offset_t iFilePosition, int iWhence)
-
 {
-	if (!m_pSMB) return 0;
-	if (m_fd <0) return 0;
+	if (m_fd == -1) return 0;
 
 	::EnterCriticalSection(&m_critSection );	
-	INT64 pos = m_pSMB->lseek(m_fd, (int)iFilePosition, iWhence);
+	INT64 pos = smbc_lseek(m_fd, (int)iFilePosition, iWhence);
 	::LeaveCriticalSection(&m_critSection );	
 
-	if( pos < 0 )
-
-		return 0;
+	if( pos < 0 )	return 0;
 
 	return (offset_t)pos;
-
 }
-
-
 
 void CFileSMB::Close()
 {
-	if (m_fd>=0)
+	if (m_fd != -1)
 	{
 		::EnterCriticalSection(&m_critSection );	
-		m_pSMB->close(m_fd);
+		smbc_close(m_fd);
 		::LeaveCriticalSection(&m_critSection );	
 	}
 	m_fd = -1;
 }
 
-
-void CFileSMB::Lock()
+int CFileSMB::Write(const void* lpBuf, offset_t uiBufSize)
 {
+	if (m_fd == -1) return -1;
+
+	DWORD dwNumberOfBytesWritten=0;
+
+	// lpBuf can be safely casted to void* since xmbc_write will only read from it.
 	::EnterCriticalSection(&m_critSection );	
-}
+	dwNumberOfBytesWritten = smbc_write(m_fd, (void*)lpBuf, (DWORD)uiBufSize);
+	::LeaveCriticalSection(&m_critSection );
 
-void CFileSMB::Unlock()
-{
-	::LeaveCriticalSection(&m_critSection );	
-}
-
-SMB* CFileSMB::GetSMB()
-{
-	return m_pSMB;
-}
-void CFileSMB::SetLogin(const char* strLogin, const char* strPassword)
-{
-	strcpy(szUserName,strLogin);
-	strcpy(szPassWd,strPassword);
+	return (int)dwNumberOfBytesWritten;
 }

@@ -11,17 +11,25 @@
 #define AFX_FILESMB_H__2C4AB5BC_0742_458D_95EA_E9C77BA5663D__INCLUDED_
 
 
-
 #if _MSC_VER > 1000
 
 #pragma once
 
 #endif // _MSC_VER > 1000
 
-
-
-#include "../lib/libsmb/smb++.h"
 #include "IFile.h"
+#include "../lib/libsmb/xbLibSmb.h"
+
+class CSMB
+{
+public:
+	CSMB();
+	void Init();
+private:
+	bool binitialized;
+};
+
+extern CSMB smb;
 
 using namespace XFILE;
 
@@ -39,13 +47,8 @@ namespace XFILE
 		virtual bool					Open(const char* strUserName, const char* strPassword,const char* strHostName, const char* strFileName,int iport, bool bBinary=true);
 		virtual offset_t			GetLength();
 		virtual offset_t			GetPosition();
-		void									Lock();
-		void									Unlock();
-		void									SetLogin(const char* strLogin, const char* strPassword);
-		SMB*									GetSMB();
+		int										Write(const void* lpBuf, offset_t uiBufSize);
 	protected:
-		static SMB*			m_pSMB;
-		static int			m_iReferences;
 		offset_t	m_fileSize;
 		bool			m_bBinary;
 		int				m_fd;
