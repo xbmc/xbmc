@@ -294,6 +294,12 @@
 				RelativePath=".\xbmc\Application.cpp">
 			</File>
 			<File
+				RelativePath=".\xbmc\ApplicationMessenger.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\ApplicationMessenger.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\Autorun.cpp">
 			</File>
 			<File
@@ -1048,6 +1054,12 @@
 			<Filter
 				Name="mplayer"
 				Filter="">
+				<File
+					RelativePath=".\xbmc\cores\mplayer\Ac97DirectSound.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\mplayer\Ac97DirectSound.h">
+				</File>
 				<File
 					RelativePath=".\xbmc\cores\mplayer\AsyncDirectSound.cpp">
 				</File>

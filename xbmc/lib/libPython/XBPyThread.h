@@ -7,21 +7,23 @@
 class XBPyThread : public CThread  
 {
 public:
-	XBPyThread(PyThreadState *);
+	XBPyThread(LPVOID pExecuter, PyThreadState* mainThreadState, int id);
 	virtual ~XBPyThread();
-	int evalFile(const char *);
-	int evalString(const char *);
+	int evalFile(const char*);
+	int evalString(const char*);
 	bool isDone();
 	bool isStopping();
 	void stop();
 	
 protected:
-	PyThreadState *threadState;
+	PyThreadState*	threadState;
+	LPVOID					pExecuter;
 
 	char type;
 	char *source;
 	bool done;
 	bool stopping;
+	int id;
 
 	void OnStartup();
 	void Process();
