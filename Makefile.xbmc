@@ -70,6 +70,11 @@ ifneq ($(MUSEPACK_LIB),)
 	OBJECTS += $(LIB_PATH)/libmusepack.a
 endif
 
+ifeq ($(PNG),yes)
+	NAMES += PNG
+	OBJECTS += $(LIB_PATH)/libpng.a
+endif
+
 # targets
 all:	dll
 clean:
