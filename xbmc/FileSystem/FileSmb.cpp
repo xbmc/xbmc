@@ -136,7 +136,7 @@ bool CFileSMB::Open(const char* strUserName, const char* strPassword,const char 
 
 	// convert from string to UTF8
 	char strUtfFileName[1024];
-	int strLen = convert_string(CH_DOS, CH_UTF8, szFileName, (size_t)strlen(szFileName), strUtfFileName, 1024);
+	int strLen = convert_string(CH_DOS, CH_UTF8, szFileName, (size_t)strlen(szFileName), strUtfFileName, 1024, false);
 	strUtfFileName[strLen] = 0;
 
 	smb.Lock();
@@ -208,7 +208,7 @@ bool CFileSMB::Exists(const char* strUserName, const char* strPassword,const cha
 
 	// convert from string to UTF8
 	char strUtfFileName[1024];
-	int strLen = convert_string(CH_DOS, CH_UTF8, szFileName, (size_t)strlen(szFileName), strUtfFileName, 1024);
+	int strLen = convert_string(CH_DOS, CH_UTF8, szFileName, (size_t)strlen(szFileName), strUtfFileName, 1024, false);
 	strUtfFileName[strLen] = 0;
 
 	struct __stat64 info;
@@ -235,7 +235,7 @@ int CFileSMB::Stat(const char* strUserName, const char* strPassword,const char* 
 
 	// convert from string to UTF8
 	char strUtfFileName[1024];
-	int strLen = convert_string(CH_DOS, CH_UTF8, szFileName, (size_t)strlen(szFileName), strUtfFileName, 1024);
+	int strLen = convert_string(CH_DOS, CH_UTF8, szFileName, (size_t)strlen(szFileName), strUtfFileName, 1024, false);
 	strUtfFileName[strLen] = 0;
 
 	smb.Lock();
