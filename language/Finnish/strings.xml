@@ -1,6 +1,6 @@
 <!-- Finnish - language resource  -->
-<!-- Finnish Translation 2004-5-18 by Nanite1000 -->
-<!-- Based on CVS revision 2004-5-18 YYYY-MM-DD -->
+<!-- Finnish Translation 2004-6-7 by Nanite1000 -->
+<!-- Based on CVS revision 2004-6-7 YYYY-MM-DD -->
 <!-- For comments PM me in xboxmediacenter forum or IRC: nanite1k @ #xbmc on efnet-->
 <!-- Kommentteja voi l‰hetell‰ xboxmediacentterin foorumin kautta -->
 <!-- Not all weather strings are tranlated, cant get it to look correct/too long -->
@@ -1708,6 +1708,36 @@
     <id>500</id>
     <value>Albumin tietojen lataus ei onnistunut</value>
   </string>
+  <string>
+    <id>501</id>
+    <value>Etsit‰‰n albumien nimi‰...</value>
+  </string>
+  <string>
+    <id>502</id>
+    <value>Auki</value>
+  </string>
+  <string>
+    <id>503</id>
+    <value>Varattu</value>
+  </string>
+  <string>
+    <id>504</id>
+    <value>Tyhj‰</value>
+  </string>
+  <string>
+    <id>505</id>
+    <value>Haetaan median tiedot tiedostoista...</value>
+  </string>
+	
+  <string>
+    <id>998</id>
+    <value>XLink KAI</value>
+  </string>
+  <string>
+    <id>999</id>
+    <value>Online Pelaaminen</value>
+  </string> 
+
 <string><id>10000</id><value>Paavalikko</value></string>
 <string><id>10001</id><value>Ohjelmat</value></string>
 <string><id>10002</id><value>Kuvat</value></string>
