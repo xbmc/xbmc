@@ -403,6 +403,36 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 
 	Clear();
 
+	if (strDirectory=="")  // display only the root shares 
+	{
+		for (int i=0; i < (int)g_settings.m_vecMyProgramsBookmarks.size(); ++i)
+		{
+			CShare& share = g_settings.m_vecMyProgramsBookmarks[i];
+			CStdString sharePath = share.strPath;
+			vector<CStdString> vecShares;
+			CFileItem *pItem = new CFileItem(share.strName);
+			pItem->m_strPath=sharePath;
+			pItem->m_bIsShareOrDrive=false;
+			pItem->m_bIsFolder=true;
+			CUtil::Tokenize(sharePath, vecShares, ",");
+			CStdString strThumb;
+			for (int j=0; j < (int)vecShares.size(); j++)    // use the first folder image that we find
+			{																								 // in the vector of shares
+				if (!CUtil::IsXBE(vecShares[j]))
+				{
+					if (CUtil::GetFolderThumb(vecShares[j], strThumb)) 
+					{
+						pItem->SetThumbnailImage(strThumb);
+						break;
+					}
+				}
+			}
+			m_vecItems.push_back(pItem);
+		}
+
+		m_strParentPath = "";
+	}
+
 	CUtil::Tokenize(strDir, vecPaths, ",");			
 
 	if (!g_stSettings.m_bMyProgramsNoShortcuts)
@@ -425,7 +455,7 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 		}
 	}
 
-	if (!bFlattenDir)
+  if (!bFlattenDir)
 	{
 		vector<CStdString> vecOrigShare;
 		CUtil::Tokenize(m_shareDirectory, vecOrigShare, ",");
@@ -435,14 +465,19 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 			if (CUtil::HasSlashAtEnd(vecOrigShare[0]))
 				vecOrigShare[0].Delete(vecOrigShare[0].size()-1);
 			if (strParentPath<vecOrigShare[0])
+			{
  				bPastBookMark=false;
+				strParentPath="";
+			}				
 		}
 	}
-
-	if ( strParentPath.size() && bParentPath && !bFlattenDir && bPastBookMark)
+	else
 	{
-		if (strDir != strShortCutsDir)
-		{
+		strParentPath="";
+	}
+
+	if (strDirectory!="")
+	{
 			if (!g_stSettings.m_bHideParentDirItems)
 			{
 				CFileItem *pItem = new CFileItem("..");
@@ -452,7 +487,7 @@ void CGUIWindowPrograms::Update(const CStdString &strDirectory)
 				m_vecItems.push_back(pItem);
 			}
 			m_strParentPath = strParentPath;
-		}
+//		}
 	}
 
 	m_iLastControl=GetFocusedControl();
@@ -518,8 +553,9 @@ void CGUIWindowPrograms::OnClick(int iItem)
 	CFileItem* pItem=m_vecItems[iItem];
 	if (pItem->m_bIsFolder)
 	{
+		if (m_strDirectory=="")
+			m_shareDirectory=pItem->m_strPath;
 		m_strDirectory=pItem->m_strPath;
-		m_strDirectory+="\\";
 		Update(m_strDirectory);
 	}
 	else
