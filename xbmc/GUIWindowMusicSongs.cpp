@@ -604,6 +604,9 @@ bool CGUIWindowMusicSongs::DoScan(VECFILEITEMS& items)
 		{
 			if (pItem->GetLabel() != "..")
 			{
+        // grab the music thumb (makes sure it's cached to our local drive)
+        // references to (cached) thumbs are stored in the database.
+        pItem->SetMusicThumb();
 				// load subfolder
 				CStdString strDir=m_Directory.m_strPath;
 				m_Directory.m_strPath=pItem->m_strPath;
@@ -613,7 +616,6 @@ bool CGUIWindowMusicSongs::DoScan(VECFILEITEMS& items)
 				// filter items in the sub dir (for .cue sheet support)
 				FilterItems(subDirItems);
 				DoSort(subDirItems);
-
 				if (!DoScan(subDirItems))
 				{
 					bCancel=true;
@@ -1266,6 +1268,9 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 				CSong song(tag);
 				song.iStartOffset = pItem->m_lStartOffset;
 				song.iEndOffset = pItem->m_lEndOffset;
+        // get the thumb as well
+        pItem->SetMusicThumb();
+        song.strThumb = pItem->GetThumbnailImage();
 				g_musicDatabase.AddSong(song,false);
 			}
 		}//if (!pItem->m_bIsFolder)
