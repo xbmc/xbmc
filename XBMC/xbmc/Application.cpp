@@ -733,6 +733,10 @@ HRESULT CApplication::Initialize()
     m_gWindowManager.Add(&m_guiSettingsNetworkProxy);          // window id = 36
 	m_gWindowManager.Add(&m_guiSettingsNetworkKai);          // window id = 37
 	m_gWindowManager.Add(&m_guiSettingsNetworkIP);          // window id = 38
+	m_gWindowManager.Add(&m_guiSettingsNetworkWeb);          // window id = 39
+	m_gWindowManager.Add(&m_guiSettingsNetworkFTP);          // window id = 40
+	m_gWindowManager.Add(&m_guiSettingsNetworkTime);          // window id = 41
+
 	m_gWindowManager.Add(&m_guiDialogYesNo);							// window id = 100
 	m_gWindowManager.Add(&m_guiDialogProgress);						// window id = 101
 	m_gWindowManager.Add(&m_guiDialogInvite);						// window id = 102
@@ -1042,6 +1046,9 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiSettingsNetworkProxy.Load("SettingsNetworkProxy.xml");
 	m_guiSettingsNetworkKai.Load("SettingsNetworkKai.xml");
 	m_guiSettingsNetworkIP.Load("SettingsNetworkIP.xml");
+	m_guiSettingsNetworkFTP.Load("SettingsNetworkFTP.xml");
+	m_guiSettingsNetworkWeb.Load("SettingsNetworkWeb.xml");
+	m_guiSettingsNetworkTime.Load("SettingsNetworkTime.xml");
 	m_guiSettingsSkinLanguage.Load("SettingsSkinLanguage.xml");		// Skin & Language settings
 	m_guiSettingsUserInterface.Load("SettingsUserInterface.xml");	// User Interface settings
 	m_guiSettingsAudio.Load("SettingsAudioOptions.xml");			// Audio Options
