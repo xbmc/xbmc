@@ -943,6 +943,9 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiMusicOverlay.FreeResources();
 	m_guiMusicOverlay.ClearAll();
 
+  m_guiDialogVolumeBar.FreeResources();
+  m_guiDialogVolumeBar.ClearAll();
+
 	m_guiPointer.FreeResources();
 	m_guiPointer.ClearAll();
 
@@ -1049,6 +1052,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 	m_guiPointer.AllocResources();
 	m_guiMusicOverlay.AllocResources();
 	m_guiWindowVideoOverlay.AllocResources();
+  m_guiDialogVolumeBar.AllocResources();
 	m_gWindowManager.AddMsgTarget(this);
 	m_gWindowManager.AddMsgTarget(&g_playlistPlayer);
 	m_gWindowManager.SetCallback(*this);
@@ -1869,6 +1873,8 @@ void CApplication::Stop()
 		CLog::Log(LOGNOTICE, "unload skin");
 		m_guiMusicOverlay.FreeResources();
 		m_guiWindowVideoOverlay.FreeResources();
+    m_guiPointer.FreeResources();
+    m_guiDialogVolumeBar.FreeResources();
 		g_fontManager.Clear();
 		m_gWindowManager.DeInitialize();
 		g_TextureManager.Cleanup();
@@ -2398,6 +2404,7 @@ void CApplication::ResetAllControls()
 {
 	m_guiMusicOverlay.ResetAllControls();
 	m_guiWindowVideoOverlay.ResetAllControls();
+  m_guiDialogVolumeBar.ResetAllControls();
 }
 
 bool CApplication::OnMessage(CGUIMessage& message)
