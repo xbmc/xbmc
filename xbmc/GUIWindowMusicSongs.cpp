@@ -111,6 +111,13 @@ struct SSortMusicSongs
 					strcpy(szfilename2, rpEnd.m_strPath);
         break;
 
+        case 9:	//	Sort by share type
+					if ( rpStart.m_iDriveType > rpEnd.m_iDriveType) return bGreater;
+					if ( rpStart.m_iDriveType < rpEnd.m_iDriveType) return !bGreater;
+ 					strcpy(szfilename1, rpStart.GetLabel());
+					strcpy(szfilename2, rpEnd.GetLabel());
+        break;
+
 				default:	//	Sort by Filename by default
 					strcpy(szfilename1, rpStart.GetLabel().c_str());
 					strcpy(szfilename2, rpEnd.GetLabel().c_str());
@@ -209,8 +216,10 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
       {
 				if (m_strDirectory.IsEmpty())
 				{
-					g_stSettings.m_iMyMusicSongsRootSortMethod++;
-					if (g_stSettings.m_iMyMusicSongsRootSortMethod >=3) g_stSettings.m_iMyMusicSongsRootSortMethod=0;
+					if (g_stSettings.m_iMyMusicSongsRootSortMethod==0)
+						g_stSettings.m_iMyMusicSongsRootSortMethod=9;
+					else
+						g_stSettings.m_iMyMusicSongsRootSortMethod=0;
 				}
 				else
 				{
@@ -705,7 +714,14 @@ void CGUIWindowMusicSongs::UpdateButtons()
 	//	Update sort by button
 	if (m_strDirectory.IsEmpty())
 	{
+		if (g_stSettings.m_iMyMusicSongsRootSortMethod==0)
+		{
 			SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,g_stSettings.m_iMyMusicSongsRootSortMethod+103);
+		}
+		else
+		{
+			SET_CONTROL_LABEL(GetID(), CONTROL_BTNSORTBY,498);	//	Sort by: Type
+		}
 	}
 	else
 	{
