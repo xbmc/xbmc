@@ -16,7 +16,7 @@ typedef enum {CH_UCS2=0, CH_UNIX=1, CH_DISPLAY=2, CH_DOS=3, CH_UTF8=4} charset_t
 extern "C" {
 #endif
 
-	#include "../lib/libsmb/libsmbclient.h"
+	#include "libsmbclient.h"
 	#undef offset_t
 
 	BOOL lp_do_parameter(int snum, const char *pszParmName, const char *pszParmValue);
