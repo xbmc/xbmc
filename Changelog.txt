@@ -5,7 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
-  - 15-12-2004 fixed: background media scanning was not canceled on shutdown
+  - 16-12-2004 updated: German (Austrian) language file (Thnx to CEOMR)
+  - 16-12-2004 fixed: background media scanning was not canceled on shutdown
   - 16-12-2004 updated: German language file
   - 16-12-2004 updated: Spanish language file (Thnx to elotrolado)
   - 16-12-2004 updated: Norwegian language file (Thnx to vnmartinsen)
