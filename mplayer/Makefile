@@ -324,22 +324,22 @@ config.h: configure
 	@echo "############################################################"
 	@echo "####### Please run ./configure again - it's changed! #######"
 	@echo "############################################################"
-ifeq ($(wildcard .developer),)
+ifeq ($(wildcard developer),)
 	@exit 1
 endif
 
-# do not rebuild after cvs commits if .developer file is present!
+# do not rebuild after cvs commits if developer file is present!
 
 # rebuild at every config.h/config.mak change:
 version.h:
 	./version.sh `$(CC) -dumpversion`
-ifeq ($(wildcard .developer),)
+ifeq ($(wildcard developer),)
 	$(MAKE) distclean
 endif
 	$(MAKE) depend
 
 # rebuild at every CVS update or config/makefile change:
-ifeq ($(wildcard .developer),)
+ifeq ($(wildcard developer),)
 ifneq ($(wildcard CVS/Entries),)
 version.h: CVS/Entries
 endif
