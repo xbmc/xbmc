@@ -99,6 +99,7 @@ HRESULT CApplication::Create()
 
 	DWORD dwStandard=XGetVideoStandard();
 	DWORD dwFlags=XGetVideoFlags();
+	bool bCanDoWidescreen = (dwFlags & XC_VIDEO_FLAGS_WIDESCREEN)!=0;	// can widescreen be enabled?
 
 	//	0	PAL 720x576 @ 4:3
 	//	1	PAL 720x576 @ 16:9
@@ -138,7 +139,8 @@ HRESULT CApplication::Create()
 			m_d3dpp.BackBufferHeight       = 576;
 			if (g_stSettings.m_iScreenResolution==1)
 			{
-				m_d3dpp.Flags=D3DPRESENTFLAG_WIDESCREEN;
+				if (bCanDoWidescreen)
+					m_d3dpp.Flags=D3DPRESENTFLAG_WIDESCREEN;
 			}
 		}
 		else
@@ -150,7 +152,8 @@ HRESULT CApplication::Create()
 			m_d3dpp.BackBufferHeight       = 480;
 			if (g_stSettings.m_iScreenResolution==3)
 			{
-				m_d3dpp.Flags=D3DPRESENTFLAG_WIDESCREEN;
+				if (bCanDoWidescreen)
+					m_d3dpp.Flags=D3DPRESENTFLAG_WIDESCREEN;
 			}
 		}
 	}
