@@ -124,7 +124,7 @@ void CGUIListControl::Render()
 					pImage->SetWidth(m_iImageWidth);
 					pImage->SetHeight(m_iImageHeight);
 					// center vertically
-					pImage->SetPosition(iPosX + 8, iPosY + (m_iItemHeight - m_iImageHeight)/2);
+					pImage->SetPosition(iPosX + 8 + (m_iImageWidth - pImage->GetRenderWidth())/2, iPosY + (m_iItemHeight - pImage->GetRenderHeight())/2);
 					pImage->Render();
 				}
       }
