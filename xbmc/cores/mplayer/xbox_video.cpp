@@ -54,7 +54,7 @@ bool												m_bFullScreen=false;
 bool												m_bPal60Allowed=true;
 static int									m_iResolution=0;
 static float                m_fImageAR;
-static int									m_iConfigCount=0;
+static float                fARcompensation_final;
 
 typedef struct directx_fourcc_caps
 {
@@ -69,7 +69,25 @@ static directx_fourcc_caps g_ddpf[] =
 {
     {"YV12 ",IMGFMT_YV12 ,DIRECT3D8CAPS},
 };
+
+static float fARcompensation[11] = 
+{
+		0.0f,							// 0 = invalid resolution. Does not exists
+		1.0f,							// 1 = 1920x1280
+		1.0f,							// 2 = 1280x720
+		1.0f,							// 3 = 640x480 NTSC
+		10.0f/11.0f,			// 4 = 720x480 NTSC
+		1.0f,							// 5 = 640x480 PAL  (PAL60)
+		10.0f/11.0f,			// 6 = 720x480 PAL  (PAL60)
+		59.0f/54.0f,			// 7 = 720x576 PAL  (PAL60)
+		1.0f,							// 8 = 640x480 PAL  (PAL50)
+		10.0f/11.0f,			// 9 = 720x480 PAL  (PAL50)
+		59.0f/54.0f				// 10= 720x576 PAL  (PAL50)
+};
+
 #define NUM_FORMATS (sizeof(g_ddpf) / sizeof(g_ddpf[0]))
+
+
 
 static void video_flip_page(void);
 
@@ -317,15 +335,13 @@ static unsigned int Directx_ManageDisplay()
 				// zoom / panscan the movie so that it fills the entire screen
 				// and keeps the Aspect ratio
 
-				// calculate AR compensation for non square pixels (thx 2 poing)
-				float fARScreen=((float)m_iDeviceWidth)/((float)m_iDeviceHeight); // AR of the current screen resolution 
-				float fARTV    = 4.0f/3.0f; // aspect ratio of the TV for 4:3
-				if (g_graphicsContext.IsWidescreen()) fARTV=16.0f/9.0f; // for widescreen AR of TV = 16:9
+				// calculate AR compensation (see http://www.mir.com/DMG/aspect.html)
 
-				float fARCompensation =  (fARTV / fARScreen );
-
-				// now calculate the AR we need
-				float fAR = ( (float)image_width ) / ( ( (float)image_height) * fARCompensation ); 
+				float fARcompensation_final = fARcompensation[m_iResolution];
+				if (g_graphicsContext.IsWidescreen() && ((m_iResolution >= 3) || (m_iResolution <= 10)))
+				      fARcompensation_final *= 4.0f/3.0f;
+		
+				float fAR = ( (float)image_width ) / ( ( (float)image_height) * fARcompensation_final ); 
 
 			
 				float fNewWidth;
@@ -376,25 +392,20 @@ static unsigned int Directx_ManageDisplay()
 		// NORMAL
 		// scale up image as much as possible
 		// and keep the aspect ratio (introduces with black bars)
+
+		float fARcompensation_final = fARcompensation[m_iResolution];
+		if (g_graphicsContext.IsWidescreen() && ((m_iResolution >= 3) || (m_iResolution <= 10)))
+		      fARcompensation_final *= 4.0f/3.0f;
 		
-		// calculate AR compensation for non square pixels (thx 2 poing)
-		float fARScreen=((float)m_iDeviceWidth)/((float)m_iDeviceHeight); // AR of the current screen resolution 
-		float fARTV    = 4.0f/3.0f; // aspect ratio of the TV for 4:3
-		if (g_graphicsContext.IsWidescreen()) fARTV=16.0f/9.0f; // for widescreen AR of TV = 16:9
-		
-		float fARCompensation =  (fARTV / fARScreen );
-		
-		// now calculate the AR we need
-		float fAR = ( (float)image_width ) / ( ( (float)image_height) * fARCompensation ); 
+		float fAR = ( (float)image_width ) / ( ( (float)image_height) * fARcompensation_final ); 
 
 		// maximize the movie width
 		float fNewWidth  = (float)( iScreenWidth);
 		float fNewHeight = fNewWidth/fAR;
-		if ( image_height > image_width)
+
+		if (fNewHeight > iScreenHeight)
 		{
-			// if movie height is bigger then movie width
-			// then maximize the movie height
-			fNewHeight=(float)iScreenHeight - (float)iSubTitleHeight;
+			fNewHeight = (float)iScreenHeight;   // POSSIBLY CORRECT FOR SUBTITLE HEIGHT AS WELL
 			fNewWidth = fNewHeight*fAR;
 		}
 
@@ -529,7 +540,6 @@ static void video_check_events(void)
 /*init the video system (to support querying for supported formats)*/
 static unsigned int video_preinit(const char *arg)
 {
-	m_iConfigCount=0;
 	m_iResolution=0;
 	iSubTitleHeight=0;
 	iSubTitlePos=0;
@@ -744,9 +754,6 @@ static unsigned int put_image(mp_image_t *mpi)
 */
 static unsigned int video_config(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, unsigned int options, char *title, unsigned int format)
 {
-	m_iConfigCount++;
-	if (m_iConfigCount !=1) return 0;
-
 	char strFourCC[12];
 	char strVideoCodec[256];
 	float fps;
@@ -863,3 +870,4 @@ vo_functions_t video_functions =
 		video_check_events,
 		video_uninit
 };
+
