@@ -1970,4 +1970,9 @@
 		<id>12901</id>
 		<value>Fullscreen OSD</value>
 	</string>
+  <string><id>13000</id><value>System</value></string>
+  <string><id>13001</id><value>Immediate HD Spindown:</value></string>
+  <string><id>13002</id><value>Video Only</value></string>
+  <string><id>13003</id><value>- Delay:</value></string>
+  <string><id>13004</id><value>- Minimum file duration:</value></string>
 </strings>

@@ -211,6 +211,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
       //hide the OSD
       HIDE_CONTROL(GetID(), GetID());
 			if (g_application.m_pPlayer) g_application.m_pPlayer->ShowOSD(true);
+			g_application.m_guiWindowFullScreen.m_bOSDVisible = false;	// toggle the OSD off so parent window can de-init
 			return true;
 		}
 		break;

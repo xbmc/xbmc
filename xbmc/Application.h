@@ -88,6 +88,7 @@
 #include "GUIWindowSettingsSkinLanguage.h"
 #include "GUIWindowSettingsUserInterface.h"
 #include "GUIWindowSettingsAudio.h"
+#include "GUIWindowSettingsSystem.h"
 
 using namespace std;
 using namespace MEDIA_DETECT;
@@ -103,41 +104,43 @@ public:
   virtual void					Render();
 	virtual HRESULT 			Create();
 
-	void									Stop();
-	void									LoadSkin(const CStdString& strSkin);
-	void									DelayLoadSkin();
-	void									CancelDelayLoadSkin();
-  const CStdString&     CurrentFile();
-	virtual bool					OnMessage(CGUIMessage& message);
-	virtual	void					OnPlayBackEnded();
-	virtual	void					OnPlayBackStarted();
-	bool									PlayFile(const CStdString& strFile,bool bRestart=false);
-  void                  StopPlaying();
-  void                  Restart(bool bSamePosition=true);
-	void									EnableOverlay();
-	void									DisableOverlay();
-	bool									IsPlaying() const ;
-	bool									IsPlayingAudio() const ;
-	bool									IsPlayingVideo() const ;
-	void									OnKey(CKey& key);
-	void									RenderFullScreen();
-  bool                  NeedRenderFullScreen();
-	void									SpinHD();
-	void				          CheckScreenSaver();		// CB: SCREENSAVER PATCH
-	void				          CheckShutdown();
-  void                  SetCurrentSong(const CMusicInfoTag& tag);
-  void                  SetCurrentMovie(const CIMDBMovie& tag);
-	void									ResetAllControls();
-  virtual void          Process();
-  void                  ResetScreenSaver();
-  int                   GetPlaySpeed() const;  
-  void                  SetPlaySpeed(int iSpeed);
+	void					Stop();
+	void					LoadSkin(const CStdString& strSkin);
+	void					DelayLoadSkin();
+	void					CancelDelayLoadSkin();
+	const CStdString&		CurrentFile();
+	virtual bool			OnMessage(CGUIMessage& message);
+	virtual	void			OnPlayBackEnded();
+	virtual	void			OnPlayBackStarted();
+	bool					PlayFile(const CStdString& strFile,bool bRestart=false);
+	void					StopPlaying();
+	void					Restart(bool bSamePosition=true);
+	void					EnableOverlay();
+	void					DisableOverlay();
+	bool					IsPlaying() const ;
+	bool					IsPlayingAudio() const ;
+	bool					IsPlayingVideo() const ;
+	void					OnKey(CKey& key);
+	void					RenderFullScreen();
+	bool					NeedRenderFullScreen();
+  void          CheckNetworkHDSpinDown(bool playbackStarted = false);
+	void					CheckHDSpindown();
+	void				  CheckScreenSaver();		// CB: SCREENSAVER PATCH
+	void				  CheckShutdown();
+	void					SetCurrentSong(const CMusicInfoTag& tag);
+	void					SetCurrentMovie(const CIMDBMovie& tag);
+	void					ResetAllControls();
+	virtual void			Process();
+	void					ResetScreenSaver();
+	int						GetPlaySpeed() const;  
+	void					SetPlaySpeed(int iSpeed);
 	bool									IsButtonDown(DWORD code);
 	bool				ResetScreenSaverWindow();
 
 	CGUIWindowHome									m_guiHome;
   CGUIWindowPrograms							m_guiPrograms;
   CGUIWindowSettingsPrograms      m_guiSettingsPrograms;
+  CGUIWindowSettingsSystem        m_guiSettingsSytem;
 	CGUIWindowPictures							m_guiPictures;
 	CGUIDialogInvite								m_guiDialogInvite;
 	CGUIDialogKeyboard								m_guiDialogKeyboard;
@@ -205,6 +208,7 @@ public:
 	IPlayer*												m_pPlayer;
 
 	bool		m_bSpinDown;
+  bool    m_bNetworkSpinDown;
 	DWORD		m_dwSpinDownTime;
 	DWORD		m_dwIdleTime;
 	bool		m_bInactive;	// CB: SCREENSAVER PATCH
