@@ -5,6 +5,7 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 22-07-2004 fixed: album info from allmusic.com
   - 18-07-2004 changed: mplayer.conf updated to reflect improvements to playback smoothness observed by carlito
   - 16-07-2004 changed: Made Project Mayhem the default Skin.
   - 16-07-2004 fixed: Missing skin.xml from Project Mayhem skin (thanks foss)

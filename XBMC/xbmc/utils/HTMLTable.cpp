@@ -1,10 +1,6 @@
-
 #include "../stdafx.h"
-
 #include ".\htmltable.h"
 #include ".\htmlutil.h"
-
-
 
 using namespace HTML;
 CHTMLRow::CHTMLRow(void)
@@ -37,26 +33,13 @@ void CHTMLRow::Parse(const CStdString& strTable)
 		if (iTableRowStart>=0)
 		{
 			iTableRowStart+=(int)strTag.size();
-			int iTableRowEnd=util.FindTag(strTable,"</td",strTag,iTableRowStart)-1;
-			int iNextTag=util.FindTag(strTable,"<td",strTag,iTableRowStart+3)-1;
-			if (iNextTag>=0 && iNextTag<iTableRowEnd)
-			{
-				iTableRowEnd=iNextTag;
-			}
-			if (iTableRowEnd<0)
-			{
-				// no end tag, search for next opening tag
-				if (iNextTag>=0) iTableRowEnd=iNextTag;
-				else
-				{
-					// no next opening tag found.
-					iTableRowEnd=iPosEnd;
-				}
-			}
+			int iTableRowEnd=util.FindClosingTag(strTable,"td",strTag,iTableRowStart)-1;
+			if (iTableRowEnd<-1)
+				break;
+
 			CStdString strRow=strTable.Mid(iTableRowStart,1+iTableRowEnd-iTableRowStart);			
 			m_vecColums.push_back(strRow);
-			//OutputDebugString(strRow.c_str());
-			//OutputDebugString("\n");
+
 			iTableRowStart=iTableRowEnd+1;
 
 		}
@@ -90,7 +73,7 @@ void CHTMLTable::Parse(const CStdString& strHTML)
 	if (iPosStart>=0)
 	{
 		iPosStart+=(int)strTag.size();
-		int iPosEnd=util.FindTag(strHTML,"</table", strTag,iPosStart)-1;
+		int iPosEnd=util.FindClosingTag(strHTML,"table", strTag,iPosStart)-1;
 		if (iPosEnd < 0)
 		{
 			iPosEnd=(int)strHTML.size();
@@ -104,22 +87,10 @@ void CHTMLTable::Parse(const CStdString& strHTML)
 			if (iTableRowStart>=0)
 			{
 				iTableRowStart+=(int)strTag.size();
-				int iTableRowEnd=util.FindTag(strTable,"</tr",strTag,iTableRowStart)-1;
-				int iNextTag=util.FindTag(strTable,"<tr",strTag,iTableRowStart+3)-1;
-				if (iNextTag>=0 && iNextTag<iTableRowEnd)
-				{
-					iTableRowEnd=iNextTag;
-				}
+				int iTableRowEnd=util.FindClosingTag(strTable,"tr",strTag,iTableRowStart)-1;
 				if (iTableRowEnd<0)
-				{
-					// no end tag, search for next opening tag
-					if (iNextTag>=0) iTableRowEnd=iNextTag;
-					else
-					{
-						// no next opening tag found.
-						iTableRowEnd=iPosEnd;
-					}
-				}
+					break;
+
 				CStdString strRow=strTable.Mid(iTableRowStart,1+iTableRowEnd-iTableRowStart);
 				CHTMLRow row;
 				row.Parse(strRow);
