@@ -26,8 +26,9 @@ CHTTP::CHTTP(const string& strProxyServer, int iProxyPort)
 ,m_socket(INVALID_SOCKET)
 {
 	m_strCookie="";
-	m_iHTTPver=1;
 	hEvent = WSA_INVALID_EVENT;
+	m_RecvBytes = 0;
+	m_RecvBuffer = 0;
 }
 
 
@@ -38,6 +39,8 @@ CHTTP::CHTTP()
 	m_iProxyPort=g_stSettings.m_iHTTPProxyPort;
 	m_strCookie="";
 	hEvent = WSA_INVALID_EVENT;
+	m_RecvBytes = 0;
+	m_RecvBuffer = 0;
 }
 
 
@@ -48,17 +51,91 @@ CHTTP::~CHTTP()
 
 //------------------------------------------------------------------------------------------------------------------
 
-int CHTTP::FindLength(const string& strHeaders)
+bool CHTTP::ReadData(string& strData)
 {
-	string::size_type n = strHeaders.find("Content-Length: ");
-	if (n == string::npos)
+	strData.clear();
+	string::size_type n = m_strHeaders.find("Transfer-Encoding: chunked");
+	if (n != string::npos)
 	{
-		return -1;
+		char* p = m_RecvBuffer;
+		for (;;)
+		{
+			// chunked transfer
+			char* num = p;
+			p = strchr(p, '\n');
+			while (!p)
+			{
+				if (!Recv(-1))
+				{
+					CLog::Log("Recv failed: %d", WSAGetLastError());
+					Close();
+					return false;
+				}
+				p = strchr(m_RecvBuffer, '\n');
+			}
+			++p;
+
+			int len = strtol(num, NULL, 16);
+			if (!len)
+				break; // end of data
+
+			while (len > 0)
+			{
+				int size = m_RecvBytes - (p - m_RecvBuffer);
+				strData.append(p, p + (len > size ? size : len));
+				p += (len > size ? size : len);
+				len -= size;
+				if (len > 0)
+				{
+					m_RecvBytes = 0;
+					if (!Recv(-1))
+					{
+						strData.clear();
+						CLog::Log("Recv failed: %d", WSAGetLastError());
+						Close();
+						return false;
+					}
+					p = m_RecvBuffer;
+				}
+			}
+			if (p + 2 >= m_RecvBuffer + m_RecvBytes)
+			{
+				m_RecvBytes = (m_RecvBuffer + m_RecvBytes) - p;
+				if (!Recv(-1))
+				{
+					strData.clear();
+					CLog::Log("Recv failed: %d", WSAGetLastError());
+					Close();
+					return false;
+				}
+				p = m_RecvBuffer;
+			}
+			p += 2; // strip footer
+		}
 	}
 	else
 	{
-		return atol(strHeaders.c_str() + n+16);
+		// normal transfer
+		n = m_strHeaders.find("Content-Length:");
+		int len = atoi(m_strHeaders.c_str() + n + 16);
+		while (len > 0)
+		{
+			strData.append(m_RecvBuffer, m_RecvBuffer + (len > m_RecvBytes ? m_RecvBytes : len));
+			len -= m_RecvBytes;
+			if (len > 0)
+			{
+				m_RecvBytes = 0;
+				if (!Recv(len))
+				{
+					strData.clear();
+					CLog::Log("Recv failed: %d", WSAGetLastError());
+					Close();
+					return false;
+				}
+			}
+		}
 	}
+	return true;
 }
 
 //------------------------------------------------------------------------------------------------------------------
@@ -67,9 +144,7 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 {
   CLog::Log("Get URL: %s", strURL.c_str());
 
-	string strHeaders;
-	strHTML.clear();
-	int status = Open(strURL, "GET", strHeaders, strHTML);
+	int status = Open(strURL, "GET", NULL);
 
 	if (status != 200)
 	{
@@ -77,34 +152,69 @@ bool CHTTP::Get(string& strURL, string& strHTML)
 		return false;
 	}
 
-	bool bGotLength = false;
-	int Length = FindLength(strHeaders);
-	if (Length < 0)
-		Length = 65536;
-	else
-		bGotLength = true;
-	Length -= strHTML.size();
-
-	if (Length > 0)
-	{
-		char* buf = new char[Length];
-		int iRead;
-		if (!Recv(buf, Length, iRead, true))
-		{
-			if (bGotLength)
-			{
-				delete [] buf;
-				Close();
-				strHTML.clear();
-				return false;
-			}
-		}
-		buf[iRead]=0;
-		strHTML.append(buf, buf+iRead);
-		delete [] buf;
-	}
+	if (!ReadData(strHTML))
+		return false;
 	
 	Close();
+	return true;
+}
+
+//------------------------------------------------------------------------------------------------------------------
+
+bool CHTTP::Post(const string &strURL, const string &strPostData, string &strHTML)
+{
+	CLog::Log("Post URL:%s", strURL.c_str());
+
+	int status = Open(strURL, "POST", strPostData.c_str());
+
+	if (status != 200)
+	{
+		Close();
+		return false;
+	}
+
+	if (!ReadData(strHTML))
+		return false;
+
+	Close();
+	return true;
+}
+
+//------------------------------------------------------------------------------------------------------------------
+bool CHTTP::Download(const string &strURL, const string &strFileName)
+{
+	CLog::Log("Download: %s->%s",strURL.c_str(),strFileName.c_str());
+
+	int status = Open(strURL, "GET", NULL);
+
+	if (status != 200)
+	{
+		Close();
+		return false;
+	}
+
+	string strData;
+	if (!ReadData(strData))
+		return false;
+
+	Close();
+
+	HANDLE hFile = CreateFile(strFileName.c_str(), GENERIC_WRITE, FILE_SHARE_READ, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		CLog::Log("Unable to open file %s: %d", strFileName.c_str(), GetLastError());
+		return false;
+	}
+	if (strData.size())
+	{
+		SetFilePointer(hFile, strData.size(), 0, FILE_BEGIN);
+		SetEndOfFile(hFile);
+		SetFilePointer(hFile, 0, 0, FILE_BEGIN);
+		DWORD n;
+		WriteFile(hFile, strData.data(), strData.size(), &n, 0);
+	}
+	CloseHandle(hFile);
+
 	return true;
 }
 
@@ -164,6 +274,7 @@ bool CHTTP::Connect()
 	hEvent = WSACreateEvent();
 	return true;
 }
+
 
 //------------------------------------------------------------------------------------------------------------------
 bool CHTTP::BreakURL(const string &strURL, string &strHostName, int& iPort, string &strFile)
@@ -254,11 +365,11 @@ bool CHTTP::BreakURL(const string &strURL, string &strHostName, int& iPort, stri
 //*********************************************************************************************
 
 #define TIMEOUT (30*1000)
+#define BUFSIZE (32768)
 
 bool CHTTP::Send(char* pBuffer, int iLen)
 {
 	int iPos=0;
-	int iOrgLen=iLen;
 	WSABUF buf;
 	WSAOVERLAPPED ovl;
 	DWORD n, flags;
@@ -294,17 +405,22 @@ bool CHTTP::Send(char* pBuffer, int iLen)
 }
 
 //*********************************************************************************************
-bool CHTTP::Recv(char* pBuffer, int iLen, int& iRead, bool bFill)
+bool CHTTP::Recv(int iLen)
 {
-	iRead = 0;
-	int iOrgLen=iLen;
 	WSABUF buf;
 	WSAOVERLAPPED ovl;
 	DWORD n, flags;
+	bool bUnknown = (iLen < 0);
+
+	if (iLen > (BUFSIZE - m_RecvBytes) || bUnknown)
+		iLen = (BUFSIZE - m_RecvBytes);
+
+	if (!m_RecvBuffer)
+		m_RecvBuffer = new char[BUFSIZE];
 
 	while (iLen > 0)
 	{
-		buf.buf = &pBuffer[iRead];
+		buf.buf = &m_RecvBuffer[m_RecvBytes];
 		buf.len = iLen;
 		flags = 0;
 		ovl.hEvent = hEvent;
@@ -329,140 +445,24 @@ bool CHTTP::Recv(char* pBuffer, int iLen, int& iRead, bool bFill)
 		}
 		if (!n)
 		{
-			return false; // graceful close
+			return !bUnknown; // graceful close
 		}
-		iRead+=n;
+		m_RecvBytes+=n;
 		iLen-=n;
-
-		if (!bFill)
-			break;
 	}
 	return true;
 }
 
 //------------------------------------------------------------------------------------------------------------------
-bool CHTTP::Download(const string &strURL, const string &strFileName)
-{
-	CLog::Log("Download: %s->%s",strURL.c_str(),strFileName.c_str());
 
-	string strHeaders, strData;
-	int status = Open(strURL, "GET", strHeaders, strData);
-
-	if (status != 200)
-	{
-		Close();
-		return false;
-	}
-
-	bool bGotLength = false;
-	int Length = FindLength(strHeaders);
-	if (Length < 0)
-		Length = 65536;
-	else
-		bGotLength = true;
-
-	if (Length > 0)
-	{
-		char* buf = new char[Length];
-		memcpy(buf, strData.c_str(), strData.size());
-		int iRead;
-		if (!Recv(buf + strData.size(), Length - strData.size(), iRead, true))
-		{
-			if (bGotLength)
-			{
-				delete [] buf;
-				Close();
-				return false;
-			}
-		}
-
-		HANDLE hFile = CreateFile(strFileName.c_str(), GENERIC_WRITE, FILE_SHARE_READ, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-		if (hFile == INVALID_HANDLE_VALUE)
-		{
-			CLog::Log("Unable to open file %s: %d", strFileName.c_str(), GetLastError());
-			delete [] buf;
-			Close();
-			return false;
-		}
-		SetFilePointer(hFile, Length, 0, FILE_BEGIN);
-		SetEndOfFile(hFile);
-		SetFilePointer(hFile, 0, 0, FILE_BEGIN);
-		DWORD n;
-		WriteFile(hFile, buf, Length, &n, 0);
-		CloseHandle(hFile);
-		delete [] buf;
-	}
-	else
-		DeleteFile(strFileName.c_str());
-
-	Close();
-	return true;
-}
-
-
-//------------------------------------------------------------------------------------------------------------------
-void CHTTP::SetHTTPVer(unsigned int iVer)
-{
-	if(iVer == 0)
-		m_iHTTPver = 0;
-	else
-		m_iHTTPver = 1;
-}
-//------------------------------------------------------------------------------------------------------------------
 void CHTTP::SetCookie(const string &strCookie)
 {
 	m_strCookie=strCookie;
 }
 
-
-//------------------------------------------------------------------------------------------------------------------
-bool CHTTP::Post(const string &strURL, const string &strPostData, string &strHTML)
-{
-  CLog::Log("Post URL:%s", strURL.c_str());
-
-	string strHeaders;
-	strHTML = strPostData;
-	int status = Open(strURL, "POST", strHeaders, strHTML);
-
-	if (status != 200)
-	{
-		Close();
-		return false;
-	}
-
-	bool bGotLength = false;
-	int Length = FindLength(strHeaders);
-	if (Length < 0)
-		Length = 65536;
-	else
-		bGotLength = true;
-	Length -= strHTML.size();
-
-	if (Length > 0)
-	{
-		char* buf = new char[Length];
-		int iRead;
-		if (!Recv(buf, Length, iRead, true))
-		{
-			if (bGotLength)
-			{
-				delete [] buf;
-				Close();
-				strHTML.clear();
-				return false;
-			}
-		}
-		buf[iRead]=0;
-		strHTML.append(buf, buf+iRead);
-		delete [] buf;
-	}
-
-	Close();
-	return true;
-}
 //------------------------------------------------------------------------------------------------------------------
 
-int CHTTP::Open(const string& strURL, const char* verb, string& strHeaders, string& strData)
+int CHTTP::Open(const string& strURL, const char* verb, const char* pData)
 {
 	string strFile="";
 	m_strHostName="";
@@ -479,7 +479,7 @@ int CHTTP::Open(const string& strURL, const char* verb, string& strHeaders, stri
 	}
 
 	// send request...
-	char* szHTTPHEADER = (char*)_alloca(300 + m_strHostName.size() + m_strCookie.size() + strData.size());
+	char* szHTTPHEADER = (char*)_alloca(300 + m_strHostName.size() + m_strCookie.size() + (pData ? strlen(pData) : 0));
   strcpy(szHTTPHEADER,"Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/msword, */*\r\n"
 											"Accept-Language: en-us\r\n"
 											"Host:");
@@ -492,10 +492,10 @@ int CHTTP::Open(const string& strURL, const char* verb, string& strHeaders, stri
 		strcat(szHTTPHEADER,m_strCookie.c_str());
 		strcat(szHTTPHEADER, "\r\n");
 	}
-	if (!strcmp(verb, "POST"))
+	if (pData)
 	{
 		strcat(szHTTPHEADER, "\r\n");
-		strcat(szHTTPHEADER,strData.c_str());
+		strcat(szHTTPHEADER, pData);
 	}
 
 	char* szGet;
@@ -517,39 +517,40 @@ int CHTTP::Open(const string& strURL, const char* verb, string& strHeaders, stri
 		return 0;
 	}
 
-	char* pszBuffer = (char*)_alloca(5000), *HeaderEnd;
-	long lReadTotal=0;
+	m_RecvBytes = 0;
+	char* HeaderEnd;
 	do
 	{
-		if (lReadTotal >= 5000)
+		if (m_RecvBytes >= BUFSIZE-1)
 		{
 			CLog::Log("Invalid reply from server");
 			Close();
 			return 0;
 		}
-		int lenRead;
-		if (!Recv(&pszBuffer[lReadTotal],5000-lReadTotal,lenRead, false))
+		if (!Recv(BUFSIZE - m_RecvBytes - 1))
 		{
 			CLog::Log("Recv failed: %d", WSAGetLastError());
 			Close();
 			return 0;
 		}
-		lReadTotal+=lenRead;
-	} while ((HeaderEnd = strstr(pszBuffer,"\r\n\r\n"))==NULL);
+		m_RecvBuffer[m_RecvBytes] = 0;
+	} while ((HeaderEnd = strstr(m_RecvBuffer,"\r\n\r\n"))==NULL);
 	HeaderEnd += 4;
 
 	// expected return:
 	// HTTP-Version SP Status-Code SP Reason-Phrase CRLF
-	if (strnicmp(pszBuffer, "HTTP/", 5) || pszBuffer[5] != '1' || pszBuffer[6] != '.' || pszBuffer[7] < '0' || pszBuffer[7] > '1')
+	if (strnicmp(m_RecvBuffer, "HTTP/", 5) || m_RecvBuffer[5] != '1' || m_RecvBuffer[6] != '.' || m_RecvBuffer[7] < '0' || m_RecvBuffer[7] > '1')
 	{
 		CLog::Log("Invalid reply from server");
 		Close();
 		return 0; // malformed reply
 	}
-	int status = atoi(pszBuffer + 9);
-	char* end = strchr(pszBuffer + 13, '\r');
-	string strReason(pszBuffer + 13, end);
-	strHeaders.assign(end+2, HeaderEnd);
+	int status = atoi(m_RecvBuffer + 9);
+	char* end = strchr(m_RecvBuffer + 13, '\r');
+	string strReason(m_RecvBuffer + 13, end);
+	m_strHeaders.assign(end+2, HeaderEnd);
+
+	memmove(m_RecvBuffer, HeaderEnd, m_RecvBytes -= (HeaderEnd - m_RecvBuffer));
 
 	if (status < 100)
 	{
@@ -559,7 +560,6 @@ int CHTTP::Open(const string& strURL, const char* verb, string& strHeaders, stri
 	}
 	else if (status < 300)
 	{
-		strData.assign(HeaderEnd, pszBuffer + lReadTotal);
 		return status; // successful
 	}
 	else if (status < 400)
@@ -591,12 +591,12 @@ int CHTTP::Open(const string& strURL, const char* verb, string& strHeaders, stri
 			return status; // unhandlable
 		}
 
-		const char* pNewLocation = strstr(pszBuffer, "Location:");
-		if (pNewLocation)
+		string::size_type n = m_strHeaders.find("Location:");
+		if (n != string::npos)
 		{
-			pNewLocation += 10;
-			string strURL(pNewLocation, strchr(pNewLocation,'\r'));
-			if (strnicmp(pNewLocation,"http:", 5))
+			n += 10;
+			string strURL(m_strHeaders.begin() + n, m_strHeaders.begin() + m_strHeaders.find('\r', n));
+			if (strnicmp(strURL.c_str(),"http:", 5))
 			{
 				char portstr[8];
 				sprintf(portstr, ":%d", m_iPort);
@@ -604,7 +604,8 @@ int CHTTP::Open(const string& strURL, const char* verb, string& strHeaders, stri
 				strURL.insert(0, m_strHostName.c_str());
 				strURL.insert(0, "http://");
 			}
-			return Open(strURL, verb, strHeaders, strData);
+			m_RecvBytes = 0;
+			return Open(strURL, verb, pData);
 		}
 		else
 		{
@@ -628,4 +629,8 @@ void CHTTP::Close()
 	if (hEvent != WSA_INVALID_EVENT)
 		WSACloseEvent(hEvent);
 	hEvent = WSA_INVALID_EVENT;
+	m_RecvBytes = 0;
+	if (m_RecvBuffer)
+		delete [] m_RecvBuffer;
+	m_RecvBuffer = 0;
 }
