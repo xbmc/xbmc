@@ -3737,9 +3737,17 @@ bool CMusicDatabase::UpdateOldVersion(float fVersion)
       // version 0.5 to 1.0 upgrade - we need to add the thumbs table + run SetMusicThumbs()
       // on all elements and then produce a new songs table
       CLog::Log(LOGINFO, "Attempting update from version %f to %f", fVersion, MUSIC_DATABASE_VERSION);
-      CLog::Log(LOGINFO, "create thumbs table");
-      m_pDS->exec("CREATE TABLE thumb ( idThumb integer primary key, strThumb text )\n");
-
+      // check if we already have a thumbs table (could happen if the code below asserts for whatever reason)
+      m_pDS->query("SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'thumb'\n");
+      if (m_pDS->num_rows() > 0)
+		  {
+			  m_pDS->close();
+		  }
+      else
+      { // create it
+        CLog::Log(LOGINFO, "create thumbs table");
+        m_pDS->exec("CREATE TABLE thumb ( idThumb integer primary key, strThumb text )\n");
+      }
       m_pDS->exec("PRAGMA cache_size=8192\n");
 	    m_pDS->exec("PRAGMA synchronous='NORMAL'\n");
 	    m_pDS->exec("PRAGMA count_changes='OFF'\n");
@@ -3776,61 +3784,58 @@ bool CMusicDatabase::UpdateOldVersion(float fVersion)
       CLog::Log(LOGINFO, "Finding thumbs");
       if (!m_pDS2->query("SELECT * from song join album on song.idAlbum = album.idAlbum join path on path.idPath = song.idPath\n"))
         return false;
-		  if (m_pDS2->num_rows()==0)
-		  {
-			  m_pDS2->close();
-			  return false;
-		  }
-      CStdString strProgress;
-      strProgress.Format("Processing %i of %i", 1, m_pDS2->num_rows());
-      dialog.SetLine(2, strProgress);
-      dialog.Progress();
-      // turn on thumb caching - mayaswell make it as fast as we can
-	    g_directoryCache.InitMusicThumbCache();
-		  // get data from returned rows
-      int count = 1;
-		  while (!m_pDS2->eof())
-		  {
-        if (!(count%10))
-        {
-          strProgress.Format("Processing %i of %i", count, m_pDS2->num_rows());
-          dialog.SetLine(2, strProgress);
-          dialog.Progress();
-        }
-        CSong song;
-        // construct a song to be transferred to a fileitem
-        song.strAlbum     = m_pDS2->fv("album.strAlbum").get_asString();
-        song.iTrack       = m_pDS2->fv("song.iTrack").get_asLong() ;
-        song.iDuration    = m_pDS2->fv("song.iDuration").get_asLong() ;
-        song.iYear        = m_pDS2->fv("song.iYear").get_asLong() ;
-        song.strTitle     = m_pDS2->fv("song.strTitle").get_asString();
-        song.iTimedPlayed = m_pDS2->fv("song.iTimesPlayed").get_asLong();
-        song.iStartOffset = m_pDS2->fv("song.iStartOffset").get_asLong();
-        song.iEndOffset	  = m_pDS2->fv("song.iEndOffset").get_asLong();
-	      //	Get filename with full path
-	      song.strFileName=m_pDS2->fv("path.strPath").get_asString();
-	      CUtil::AddDirectorySeperator(song.strFileName);
-        song.strFileName+=m_pDS2->fv("song.strFileName").get_asString();
-        // ok, now transfer to a file item and obtain the thumb
-        CFileItem item(song);
-        item.SetMusicThumb();
-        long idSong = m_pDS2->fv("song.idSong").get_asLong();
-        // add any found thumb
-        CStdString strThumb = item.GetThumbnailImage();
-        long lThumb = AddThumb(strThumb);
-        CStdString strSQL;
-	      strSQL.Format("UPDATE song SET idThumb=%i where idSong=%i", lThumb, idSong);
-	      m_pDS->exec(strSQL.c_str());
-			  m_pDS2->next();
-        count++;
-		  }
-
+		  if (m_pDS2->num_rows() > 0)
+      {
+        CStdString strProgress;
+        strProgress.Format("Processing %i of %i", 1, m_pDS2->num_rows());
+        dialog.SetLine(2, strProgress);
+        dialog.Progress();
+        // turn on thumb caching - mayaswell make it as fast as we can
+	      g_directoryCache.InitMusicThumbCache();
+		    // get data from returned rows
+        int count = 1;
+		    while (!m_pDS2->eof())
+		    {
+          if (!(count%10))
+          {
+            strProgress.Format("Processing %i of %i", count, m_pDS2->num_rows());
+            dialog.SetLine(2, strProgress);
+            dialog.Progress();
+          }
+          CSong song;
+          // construct a song to be transferred to a fileitem
+          song.strAlbum     = m_pDS2->fv("album.strAlbum").get_asString();
+          song.iTrack       = m_pDS2->fv("song.iTrack").get_asLong() ;
+          song.iDuration    = m_pDS2->fv("song.iDuration").get_asLong() ;
+          song.iYear        = m_pDS2->fv("song.iYear").get_asLong() ;
+          song.strTitle     = m_pDS2->fv("song.strTitle").get_asString();
+          song.iTimedPlayed = m_pDS2->fv("song.iTimesPlayed").get_asLong();
+          song.iStartOffset = m_pDS2->fv("song.iStartOffset").get_asLong();
+          song.iEndOffset	  = m_pDS2->fv("song.iEndOffset").get_asLong();
+	        //	Get filename with full path
+	        song.strFileName=m_pDS2->fv("path.strPath").get_asString();
+	        CUtil::AddDirectorySeperator(song.strFileName);
+          song.strFileName+=m_pDS2->fv("song.strFileName").get_asString();
+          // ok, now transfer to a file item and obtain the thumb
+          CFileItem item(song);
+          item.SetMusicThumb();
+          long idSong = m_pDS2->fv("song.idSong").get_asLong();
+          // add any found thumb
+          CStdString strThumb = item.GetThumbnailImage();
+          long lThumb = AddThumb(strThumb);
+          CStdString strSQL;
+	        strSQL.Format("UPDATE song SET idThumb=%i where idSong=%i", lThumb, idSong);
+	        m_pDS->exec(strSQL.c_str());
+			    m_pDS2->next();
+          count++;
+		    }
+      }
 		  // cleanup
 		  m_pDS2->close();
       g_directoryCache.ClearMusicThumbCache();
       CommitTransaction();
       dialog.Close();
-		  fVersion = MUSIC_DATABASE_VERSION;
+		  fVersion = 1.0f;
       CStdString strVersion;
 		  strVersion.Format("UPDATE version SET idVersion=%f\n", fVersion);
 		  m_pDS->exec(strVersion.c_str());

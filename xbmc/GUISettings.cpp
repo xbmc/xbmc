@@ -347,8 +347,10 @@ CGUISettings::CGUISettings(void)
 	AddBool(4, "MyVideos.FrameRateConversions", 336, false);
 	AddBool(5, "MyVideos.UseGUIResolution", 495, true);
 	AddInt(6,"MyVideos.OSDTimeout", 472, 5, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_SECS);
-  // removed - we only use system directory now.
-//  AddBool(7, "MyVideos.AlternateMPlayer", 15062, false);
+  AddInt(7,"MyVideos.ViewMode", 13377, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, 1, VIEW_MODE_CUSTOM, SPIN_CONTROL_TEXT);
+  AddInt(8,"MyVideos.Brightness", 13378, 50, 0, 1, 100, SPIN_CONTROL_INT);
+  AddInt(9,"MyVideos.Contrast", 13379, 50, 0, 1, 100, SPIN_CONTROL_INT);
+  AddInt(10,"MyVideos.Gamma", 13380, 20, 0, 1, 100, SPIN_CONTROL_INT);
 
 	AddCategory(5, "VideoLists", 14018);
 	AddBool(1,"VideoLists.HideParentDirItems", 13306, true);

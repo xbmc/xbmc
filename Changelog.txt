@@ -5,6 +5,9 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 09-03-2005 fixed: Upgrade code incorrectly returned false if the database was empty.
+  - 09-03-2005 added: Default options for viewmode, brightness, contrast + gamma.
+  - 09-03-2005 added: Resume playback option to video context menu.  It will remember where you were last at in a video, and return there when you select this option.
   - 09-03-2005 fixed: Flickering screen after right thumbstick -> system info while watching a video
   - 09-03-2005 removed: old scanning code in music
   - 08-03-2005 fixed: IMDb thumb was not saved for folder lookups if the folder contained no files.
