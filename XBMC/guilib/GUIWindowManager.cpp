@@ -176,6 +176,13 @@ void CGUIWindowManager::RefreshWindow()
 
 void CGUIWindowManager::ActivateWindow(int iWindowID)
 {
+  // first check existence of the window we wish to activate.
+  CGUIWindow *pNewWindow = GetWindow(iWindowID);
+  if (!pNewWindow)
+  { // nothing to see here - move along
+    CLog::Log(LOGERROR, "Unable to locate window with id %d.  Check skin files", iWindowID - WINDOW_HOME);
+    return;
+  }
 	// deactivate any window
 	int iPrevActiveWindow = m_iActiveWindow;
 	if (m_iActiveWindow >=0)
@@ -204,9 +211,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID)
 			}
 			else
 			{
-				CGUIWindow *pWindowTest = m_vecWindows[iPrevActiveWindow];
-				DWORD dwID = pWindowTest->GetID();
-				if (pWindowTest==pWindow)
+				if (m_vecWindows[iPrevActiveWindow]==pWindow)
 				{
 					// we are going to the same window - leave previous window ID as is
 					CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,pWindow->GetPreviousWindowID(), iWindowID);
@@ -223,17 +228,8 @@ void CGUIWindowManager::ActivateWindow(int iWindowID)
 			return;
 		}
 	}
-
-	// new window doesnt exists. (maybe .xml file is invalid or doesnt exists)
-	// so we go back to the previous window
-	m_iActiveWindow = iPrevActiveWindow;
-	if (m_iActiveWindow >= 0)
-	{
-		CGUIWindow* pWindow = m_vecWindows[m_iActiveWindow];
-
-		CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0,WINDOW_INVALID);
-		pWindow->OnMessage(msg);
-	}
+  // we should never, ever get here.
+  CLog::Log(LOGERROR, "ActivateWindow() failed trying to activate window %d", iWindowID - WINDOW_HOME);
 }
 
 void CGUIWindowManager::OnAction(const CAction &action)
