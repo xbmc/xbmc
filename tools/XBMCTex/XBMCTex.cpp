@@ -718,8 +718,11 @@ void ConvertAnims(const char* Dir, const char* Filename, double MaxMSE)
 
 				// setup xpr header
 				WriteXPRHeader((DWORD*)pal, nImages);
-				XPRFile.AnimInfo->RealSize = (info.Width & 0xffff) | ((info.Height & 0xffff) << 16);
-				XPRFile.AnimInfo->nLoops = Anim.nLoops;
+				if (nImages > 1)
+				{
+					XPRFile.AnimInfo->RealSize = (info.Width & 0xffff) | ((info.Height & 0xffff) << 16);
+					XPRFile.AnimInfo->nLoops = Anim.nLoops;
+				}
 
 				int nActualImages = 0;
 
@@ -741,7 +744,8 @@ void ConvertAnims(const char* Dir, const char* Filename, double MaxMSE)
 					UncompressedSize += Width * Height;
 					CAnimatedGif* pGif = Anim.m_vecimg[i];
 
-					XPRFile.Texture[XPRFile.nImages].RealSize = pGif->Delay;
+					if (XPRFile.nImages)
+						XPRFile.Texture[i].RealSize = pGif->Delay;
 
 					// generate sha1 hash
 					SHA1((BYTE*)pGif->Raster, pGif->BytesPerRow * pGif->Height, HashBuf[i]);
@@ -912,7 +916,7 @@ int main(int argc, char* argv[])
 	ZeroMemory(&presentParams, sizeof(presentParams));
 	presentParams.Windowed = TRUE;
 	presentParams.hDeviceWindow = GetConsoleWindow();
-	presentParams.SwapEffect = D3DSWAPEFFECT_COPY_VSYNC;
+	presentParams.SwapEffect = D3DSWAPEFFECT_COPY;
 	presentParams.BackBufferWidth = 8;
 	presentParams.BackBufferHeight = 8;
 	presentParams.BackBufferFormat = dispMode.Format;
