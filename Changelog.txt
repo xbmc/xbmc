@@ -5,6 +5,10 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 20-12-2004 added: support for multiple subtitles, with language extension ie: filename.eng.sub (needs new mplayer.dll)
+  - 20-12-2004 changed: new subtitle name interface for xbmc, will fallback to old style if missing (support old dlls)
+  - 20-12-2004 added: full subtitle/audio translation database for both iso639-1 and iso639-2 language codes
+  - 20-12-2004 added: alternate subtitle support. add a file named subtitle.[langext].[subext] in the alternate subtitle directory, and it will show up as an alternate subtitle for all movies.
   - 20-12-2004 fixed: Crash in Pictures context menu.
   - 20-12-2004 fixed: Text glitches in some IMDb lookups
   - 19-12-2004 added: If the <home> tag does not work, XBMC looks in: E:\Apps\XBMC, E:\XBMC, F:\apps\XBMC, F:\xbmc to find it's home dir.

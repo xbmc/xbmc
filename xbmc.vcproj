@@ -673,6 +673,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\utils\LED.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\LangCodeExpander.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\LangCodeExpander.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\utils\MediaMonitor.cpp">
 				</File>
 				<File

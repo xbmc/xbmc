@@ -2016,17 +2016,12 @@ void CUtil::ClearSubtitles()
 	}
 }
 
+
+
 void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached )
 {
   char * sub_exts[] = {  ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx",".ifo", NULL};
   strExtensionCached = "";
-  int iPos=0;
-  bool bFoundSubs=false;
-  CStdString strPath,strFName;
-  CUtil::Split(strMovie,strPath,strFName);
-  if (CUtil::HasSlashAtEnd(strPath)) strPath=strPath.Left(strPath.size()-1);
-
-  g_directoryCache.ClearDirectory(strPath);
 
 	ClearSubtitles();
 
@@ -2041,54 +2036,81 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   if (CUtil::IsPlayList(strMovie)) return;
   if (!CUtil::IsVideo(strMovie)) return;
 
-  if (strlen(g_stSettings.m_szAlternateSubtitleDirectory)!=0)
-  {
-    // check alternate subtitle directory
-    iPos=0;
-    while (sub_exts[iPos])
+  const int iPaths = 2;
+  CStdString strLookInPaths[2];
+  
+  CStdString strFileName;
+  CStdString strFileNameNoExt;
+  
+  CUtil::Split(strMovie,strLookInPaths[0],strFileName);
+  strLookInPaths[0].TrimRight("\\");
+  strLookInPaths[0].TrimRight("/");
+
+  ReplaceExtension(strFileName, "", strFileNameNoExt);
+
+	if (strlen(g_stSettings.m_szAlternateSubtitleDirectory) != 0)
+	{
+		strLookInPaths[1] = g_stSettings.m_szAlternateSubtitleDirectory;
+    strLookInPaths[1].TrimLeft("./");
+    strLookInPaths[1].TrimLeft(".\\");
+    strLookInPaths[1].TrimRight("\\");
+    strLookInPaths[1].TrimRight("/");
+	}
+  else
+    strLookInPaths[1] = "";
+
+  CStdString strLExt;
+  CStdString strDest;
+  CStdString strItem, strPath;
+  CFile file;
+
+	// 2 steps for movie directory and alternate subtitles directory
+	for(int step=0; step<iPaths; step++)
+	{
+    if(strLookInPaths[step].length() != 0)
     {
-      CStdString strSource,strDest;
-      strDest.Format("Z:\\subtitle%s", sub_exts[iPos]);
 
-      CStdString strFname;
-      strFname=CUtil::GetFileName(strMovie);
-      strSource.Format("%s\\%s", g_stSettings.m_szAlternateSubtitleDirectory,strFname.c_str());
-      CUtil::ReplaceExtension(strSource,sub_exts[iPos],strSource);
-      CFile file;
-      if ( file.Cache(strSource.c_str(), strDest.c_str(),NULL,NULL))
-      {
-        CLog::Log(LOGINFO, " cached subtitle %s->%s\n", strSource.c_str(), strDest.c_str());
-        strExtensionCached = (CStdString)sub_exts[iPos];
-        bFoundSubs=true;
-      }
-      iPos++;
-    }
-  }
-
-  if (bFoundSubs) return;
+      g_directoryCache.ClearDirectory(strLookInPaths[step]);
 
 
-  // check original movie directory
-  iPos=0;
-  while (sub_exts[iPos])
-  {
-    CStdString strSource,strDest;
-    strDest.Format("Z:\\subtitle%s", sub_exts[iPos]);
+			VECFILEITEMS items;
+      CDirectory::GetDirectory(strLookInPaths[step],items);
+			int fnl = strFileNameNoExt.length();
 
-    ::DeleteFile(strDest);
-    strSource=strMovie;
-    CUtil::ReplaceExtension(strMovie,sub_exts[iPos],strSource);
-    CFile file;
-    if ( file.Cache(strSource.c_str(), strDest.c_str(),NULL,NULL))
-    {
-      CLog::Log(LOGINFO, " cached subtitle %s->%s\n", strSource.c_str(), strDest.c_str());
-      strExtensionCached = (CStdString)sub_exts[iPos];
-      bFoundSubs=true;
-    }
-    iPos++;
-  }
+			for (int j=0; j < (int)items.size(); j++)
+			{
+			  for(int i=0; sub_exts[i]; i++)
+			  {
+          int l = strlen(sub_exts[i]);
+          Split(items[j]->m_strPath, strPath, strItem);
+           
+          //Cache any alternate subtitles.
+          if (strItem.Left(9) == "subtitle." && strItem.Right(l) == sub_exts[i])
+          {
+						strLExt = strItem.Right(strItem.GetLength() - 9);
+						strDest.Format("Z:\\subtitle.alt-%s", strLExt);
+						if (file.Cache(items[j]->m_strPath, strDest.c_str(),NULL,NULL))
+						{
+              CLog::Log(LOGINFO, " cached subtitle %s->%s\n", strItem.c_str(), strDest.c_str());
+							strExtensionCached = strLExt;
+						}            
+          }
 
-
+          //Cache subtitle with same name as movie
+					if (strItem.Right(l) == sub_exts[i] && strItem.Left(fnl) == strFileNameNoExt)
+					{
+						strLExt = strItem.Right(strItem.GetLength() - fnl);
+						strDest.Format("Z:\\subtitle%s", strLExt);
+						if (file.Cache(items[j]->m_strPath, strDest.c_str(),NULL,NULL))
+						{
+              CLog::Log(LOGINFO, " cached subtitle %s->%s\n", strItem.c_str(), strDest.c_str());
+							strExtensionCached = strLExt;
+						}
+					}
+				}
+			}			
+		}
+	}
 }
 
 void CUtil::SecondsToHMSString(long lSeconds, CStdString& strHMS)
@@ -2205,7 +2227,7 @@ void CUtil::Split(const CStdString& strFileNameAndPath, CStdString& strPath, CSt
     else i--;
   }
   strPath     = strFileNameAndPath.Left(i);
-  strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i);
+  strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i - 1);
 }
 
 int CUtil::GetFolderCount(VECFILEITEMS &items)
