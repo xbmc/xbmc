@@ -20,6 +20,7 @@
 #include "File.h"
 #include "filefactory.h"
 #include "../url.h"
+#include "../application.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
@@ -69,6 +70,7 @@ bool CFile::Cache(const char* strFileName, const char* szDest, XFILE::IFileCallb
 		if (!szFileName) szFileName = strrchr(strFileName,'/');
 		while (llFileSize>0)
 		{
+      g_application.ResetScreenSaver();
 			int iBytesToRead=16384;
 			if (iBytesToRead>llFileSize) 
 			{
