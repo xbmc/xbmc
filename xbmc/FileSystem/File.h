@@ -30,6 +30,7 @@ namespace XFILE
 	  virtual ~CFile();
 
 	  unsigned int	Read(void* lpBuf, offset_t uiBufSize);
+		int						Write(const void* lpBuf, offset_t uiBufSize);
 	  bool					Open(const char* strFileName, bool bBinary=true);
 	  bool					Cache(const char* strFileName, const char* szDest, bool bShowCacheDialog=true);
 	  bool					ReadString(char *szLine, int iLineLength);
