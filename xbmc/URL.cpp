@@ -208,3 +208,28 @@ void  CURL::GetURL(CStdString& strURL)
 	strURL+=m_strFileName;
 
 }
+
+void CURL::GetURLWithoutUserDetails(CStdString& strURL)
+{
+	if (m_strProtocol=="")
+	{
+		strURL=m_strFileName;
+		return;
+	}
+	strURL=m_strProtocol;
+	strURL+="://";
+
+	if (m_strHostName!="")
+	{
+		strURL+=m_strHostName;
+		if ( HasPort() )
+		{
+			CStdString strPort;
+			strPort.Format("%i", m_iPort);
+			strURL += ":";
+			strURL += strPort;
+		}
+		strURL+="/";
+	}
+	strURL+=m_strFileName;
+}
