@@ -82,6 +82,7 @@ public:
 
 	void									Stop();
 	void									LoadSkin(const CStdString& strSkin);
+	void									DelayLoadSkin(const CStdString& strSkin);
   const CStdString&     CurrentFile();
 	virtual bool					OnMessage(CGUIMessage& message);
 
@@ -171,6 +172,8 @@ protected:
   bool                    m_bSettingsLoaded;
   CStdString              m_strCurrentFile;
   D3DGAMMARAMP m_OldRamp;			// CB: SCREENSAVER PATCH
+	DWORD					m_dwSkinTime;
+	CStdString		m_NewSkin;
 };
 
 extern CApplication g_application;
