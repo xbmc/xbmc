@@ -39,8 +39,8 @@ public:
 	const CGUIControl*	GetControl(int iControl) const;
 	void								ClearAll();
 	int									GetFocusedControl() const;
-	void								AllocResources();
-  void								FreeResources();
+	virtual void				AllocResources();
+  virtual void				FreeResources();
 	void								ResetAllControls();
 	static void         FlushReferenceCache();
 protected:
