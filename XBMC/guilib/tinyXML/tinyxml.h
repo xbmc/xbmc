@@ -892,7 +892,7 @@ public:
 	    TiXmlNode( TiXmlNode::DOCUMENT )
 	{
         value = documentName;
-		error = false;
+		m_bError = false;
 	}
 	#endif
 
@@ -942,29 +942,33 @@ public:
 	TiXmlElement* RootElement() const		{ return FirstChildElement(); }
 
 	/// If, during parsing, a error occurs, Error will be set to true.
-	bool Error() const						{ return error; }
+	bool IsError() const						{ return m_bError; }
 
 	/// Contains a textual (english) description of the error if one occurs.
-	const char * ErrorDesc() const	{ return errorDesc.c_str (); }
+	const char * GetErrorDesc() const	{ return errorDesc.c_str (); }
 
-	/** Generally, you probably want the error CStdString ( ErrorDesc() ). But if you
-			prefer the ErrorId, this function will fetch it.
+	/** Generally, you probably want the error CStdString ( GetErrorDesc() ). But if you
+			prefer the GetErrorId, this function will fetch it.
 		*/
-	const int ErrorId()	const				{ return errorId; }
+	const int GetErrorId()	const				{ return errorId; }
 
 	/// If you have handled the error, it can be reset with this call.
-	void ClearError()						{ error = false; errorId = 0; errorDesc = ""; }
+	void ClearError()						{ m_bError = false; errorId = 0; errorDesc = ""; }
 
-	/** Dump the document to standard out. */
-	void Print() const						{ Print( stdout, 0 ); }
 
 	// [internal use]
 	virtual void Print( FILE* cfile, int depth = 0 ) const;
 	// [internal use]
-	void SetError( int err ) {		assert( err > 0 && err < TIXML_ERROR_STRING_COUNT );
-		error   = true;
+	void XMLSetError( int err ) 
+	{		
+		assert( err > 0 && err < TIXML_ERROR_STRING_COUNT );
+		m_bError   = true;
+		char szTmp[1024];
+		sprintf(szTmp,"xml error:%i %s\n", err,errorString[ err ]);
+		OutputDebugString(szTmp);
 		errorId = err;
-	errorDesc = errorString[ errorId ]; }
+		errorDesc = errorString[ errorId ]; 
+	}
 
 protected :
 	virtual void StreamOut ( TIXML_OSTREAM * out) const;
@@ -975,7 +979,7 @@ protected :
 	#endif
 
 private:
-	bool error;
+	bool m_bError;
 	int  errorId;
 	TIXML_STRING errorDesc;
 	/*XBTVGuide Begin*/

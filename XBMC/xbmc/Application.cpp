@@ -202,20 +202,20 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   g_graphicsContext.SetMediaDir(strSkinPath);
   g_fontManager.LoadFonts(strSkinPath+string("\\font.xml")) ;
 
-  m_guiHome.Load( strSkinPath+string("\\home.xml" ));  
-  m_guiPrograms.Load( strSkinPath+string("\\myprograms.xml" ));  
-	m_guiPictures.Load( strSkinPath+string("\\mypics.xml" ));  
-	m_guiMyFiles.Load( strSkinPath+string("\\myfiles.xml" ));  
-	m_guiMyMusic.Load( strSkinPath+string("\\mymusic.xml" ));  
-	m_guiMyVideo.Load( strSkinPath+string("\\myvideo.xml" ));  
-	m_guiSettings.Load( strSkinPath+string("\\settings.xml" ));  
-	m_guiSystemInfo.Load( strSkinPath+string("\\SettingsSystemInfo.xml" ));  
-	m_guiMusicInfo.Load( strSkinPath+string("\\DialogAlbumInfo.xml" ));  
-	m_guiSettingsGeneral.Load( strSkinPath+string("\\SettingsGeneral.xml" ));  
-	m_guiDialogYesNo.Load( strSkinPath+string("\\dialogYesNo.xml" ));  
-	m_guiDialogProgress.Load( strSkinPath+string("\\dialogProgress.xml" ));  
-	m_guiDialogSelect.Load( strSkinPath+string("\\dialogSelect.xml" ));  
-	m_guiDialogOK.Load( strSkinPath+string("\\dialogOK.xml" ));  
+  m_guiHome.Load( strSkinPath+"\\home.xml" );  
+  m_guiPrograms.Load( strSkinPath+"\\myprograms.xml" );  
+	m_guiPictures.Load( strSkinPath+"\\mypics.xml" );  
+	m_guiMyFiles.Load( strSkinPath+"\\myfiles.xml" );  
+	m_guiMyMusic.Load( strSkinPath+"\\mymusic.xml" );  
+	m_guiMyVideo.Load( strSkinPath+"\\myvideo.xml" );  
+	m_guiSettings.Load( strSkinPath+"\\settings.xml" );  
+	m_guiSystemInfo.Load( strSkinPath+"\\SettingsSystemInfo.xml" );  
+	m_guiMusicInfo.Load( strSkinPath+"\\DialogAlbumInfo.xml" );  
+	m_guiSettingsGeneral.Load( strSkinPath+"\\SettingsGeneral.xml" );  
+	m_guiDialogYesNo.Load( strSkinPath+"\\dialogYesNo.xml" );  
+	m_guiDialogProgress.Load( strSkinPath+"\\dialogProgress.xml" );  
+	m_guiDialogSelect.Load( strSkinPath+"\\dialogSelect.xml" );  
+	m_guiDialogOK.Load( strSkinPath+"\\dialogOK.xml" );  
 }
 
 

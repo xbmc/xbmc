@@ -34,7 +34,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xapilibd.lib d3d8d.lib d3dx8d.lib xgraphicsd.lib dsoundd.lib dmusicd.lib xactengd.lib xsndtrkd.lib xvoiced.lib xonlined.lib xboxkrnl.lib xbdm.lib"
+				AdditionalDependencies="xapilibd.lib d3dx8d.lib d3d8d.lib xgraphicsd.lib dsoundd.lib xboxkrnld.lib xonlined.lib "
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
@@ -192,7 +192,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xapilib.lib d3d8.lib d3dx8.lib xgraphics.lib dsound.lib dmusic.lib xacteng.lib xsndtrk.lib xvoice.lib xonlines.lib xboxkrnl.lib"
+				AdditionalDependencies="xapilib.lib d3dx8.lib d3d8.lib xgraphics.lib dsound.lib xboxkrnl.lib xonline.lib "
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
@@ -280,6 +280,12 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
+			<File
+				RelativePath=".\xbmc\albumdatabase.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\AlbumDirectory.cpp">
+			</File>
 			<File
 				RelativePath=".\xbmc\Application.cpp">
 			</File>
@@ -399,6 +405,12 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
+			<File
+				RelativePath=".\xbmc\albumdatabase.h">
+			</File>
+			<File
+				RelativePath=".\xbmc\AlbumDirectory.h">
+			</File>
 			<File
 				RelativePath=".\xbmc\Application.h">
 			</File>
@@ -722,6 +734,12 @@
 		<Filter
 			Name="utils"
 			Filter="">
+			<File
+				RelativePath=".\xbmc\utils\Database.cpp">
+			</File>
+			<File
+				RelativePath=".\xbmc\utils\Database.h">
+			</File>
 			<File
 				RelativePath=".\xbmc\utils\DelayController.cpp">
 			</File>
