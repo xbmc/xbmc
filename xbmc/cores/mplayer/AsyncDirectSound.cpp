@@ -413,6 +413,15 @@ LONG CASyncDirectSound::GetCurrentVolume() const
 }
 
 //***********************************************************************************************
+void CASyncDirectSound::Mute(bool bMute)
+{
+	if (bMute)
+		m_pStream->SetVolume(GetMinimumVolume());
+	else
+		m_pStream->SetVolume(m_nCurrentVolume);
+}
+
+//***********************************************************************************************
 HRESULT CASyncDirectSound::SetCurrentVolume(LONG nVolume)
 {
 	if (!m_bIsAllocated) return -1;

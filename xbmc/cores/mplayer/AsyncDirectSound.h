@@ -65,6 +65,7 @@ public:
 	virtual LONG		GetMinimumVolume() const;
 	virtual LONG		GetMaximumVolume() const;
 	virtual LONG		GetCurrentVolume() const;
+	virtual void		Mute(bool bMute);
 	virtual HRESULT	SetCurrentVolume(LONG nVolume);
 	virtual bool		SupportsSurroundSound()  const;
 	static void CALLBACK StaticStreamCallback(LPVOID pStreamContext, LPVOID pPacketContext, DWORD dwStatus);

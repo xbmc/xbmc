@@ -128,18 +128,6 @@ void choose_best_resolution(float fps)
 	bool bUsingPAL        = (dwStandard==XC_VIDEO_STANDARD_PAL_I);    // current video standard:PAL or NTSC 
 	bool bCanDoWidescreen = (dwFlags & XC_VIDEO_FLAGS_WIDESCREEN)!=0; // can widescreen be enabled?
 
-	// check if widescreen is used by the GUI
-	int iGUIResolution=g_stSettings.m_GUIResolution;
-	if (  (g_settings.m_ResInfo[iGUIResolution].dwFlags&D3DPRESENTFLAG_WIDESCREEN)==0)
-	{
-		// NO, then if 'Auto Widescreen Switching' option is disabled
-		// we dont wanna switch between 4:3 / 16:9 depending on the movie
-		if (!g_stSettings.m_bAutoWidescreenSwitching)
-		{
-			bCanDoWidescreen =false;
-		}
-	}
-
 	// Work out if the framerate suits PAL50 or PAL60
 	bool bPal60=false;
 	if (bUsingPAL && g_stSettings.m_bAllowPAL60 && (dwFlags&XC_VIDEO_FLAGS_PAL_60Hz))
@@ -160,9 +148,16 @@ void choose_best_resolution(float fps)
 	// Uses the frame aspect ratio of 8/(3*sqrt(3)) (=1.53960) which is the optimal point
 	// where the percentage of black bars to screen area in 4:3 and 16:9 is equal
 	bool bWidescreen = false;
-	if (bCanDoWidescreen && ((float)d_image_width/d_image_height > 8.0f/(3.0f*sqrt(3.0f))))
-	{
-		bWidescreen = true;
+	if (g_stSettings.m_bAutoWidescreenSwitching)
+	{	// allowed to switch
+		if (bCanDoWidescreen && (float)d_image_width/d_image_height > 8.0f/(3.0f*sqrt(3.0f)))
+			bWidescreen = true;
+		else
+			bWidescreen = false;
+	}
+	else
+	{	// user doesn't want us to switch - use the GUI setting
+		bWidescreen = (g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].dwFlags&D3DPRESENTFLAG_WIDESCREEN)!=0;
 	}
 
 	// if we always upsample video to the GUI resolution then use it (with pal 60 if needed)
@@ -176,7 +171,6 @@ void choose_best_resolution(float fps)
 		// Check to see if we are using a PAL screen capable of PAL60
 		if (bUsingPAL)
 		{
-			bWidescreen = (g_settings.m_ResInfo[m_iResolution].dwFlags&D3DPRESENTFLAG_WIDESCREEN)!=0;
 			if (bPal60)
 			{
 				if (bWidescreen)
@@ -191,6 +185,20 @@ void choose_best_resolution(float fps)
 				else
 					m_iResolution = PAL_4x3;
 			}
+		}
+		else if (m_iResolution == NTSC_4x3 || m_iResolution == NTSC_16x9)
+		{
+			if (bWidescreen)
+				m_iResolution = NTSC_16x9;
+			else
+				m_iResolution = NTSC_4x3;
+		}
+		else if (m_iResolution == HDTV_480p_4x3 || m_iResolution == HDTV_480p_16x9)
+		{
+			if (bWidescreen)
+				m_iResolution = HDTV_480p_16x9;
+			else
+				m_iResolution = HDTV_480p_4x3;
 		}
 		// Change our screen resolution
 		Sleep(1000);
