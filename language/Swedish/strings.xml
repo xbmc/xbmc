@@ -2046,4 +2046,9 @@
  <value>- Minimum speltid:</value>
  </string>
 
+<string>
+<id>13100</id>
+<value>Fladder filter</value>
+</string>
+
 </strings>
