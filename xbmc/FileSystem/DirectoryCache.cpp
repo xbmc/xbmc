@@ -14,13 +14,16 @@ CDirectoryCache::~CDirectoryCache(void)
 }
 
 
-bool  CDirectoryCache::GetDirectory(const CStdString& strPath,VECFILEITEMS &items) 
+bool  CDirectoryCache::GetDirectory(const CStdString& strPath1,VECFILEITEMS &items) 
 {
   {
     CFileItemList itemlist(items); // will clean up everything
   }
 
-  
+  CStdString strPath=strPath1;
+	if (CUtil::HasSlashAtEnd(strPath))
+		strPath.Delete(strPath.size()-1);
+
   ivecCache i=g_directoryCache.m_vecCache.begin();
   while (i != g_directoryCache.m_vecCache.end() )
   {
@@ -42,23 +45,29 @@ bool  CDirectoryCache::GetDirectory(const CStdString& strPath,VECFILEITEMS &item
   return false;
 }
 
-void  CDirectoryCache::SetDirectory(const CStdString& strPath,const VECFILEITEMS &items)
+void  CDirectoryCache::SetDirectory(const CStdString& strPath1,const VECFILEITEMS &items)
 {
+  CStdString strPath=strPath1;
+	if (CUtil::HasSlashAtEnd(strPath))
+		strPath.Delete(strPath.size()-1);
+
   g_directoryCache.ClearDirectory(strPath);
   CDir dir;
   dir.m_strPath=strPath;
   for (int i=0; i < (int) items.size(); ++i)
   {
-    CFileItem* pItem= new CFileItem();
-    (*pItem) = *(items[i]);
+    CFileItem* pItem = items[i];
     dir.m_Items.push_back(pItem);
   }
   g_directoryCache.m_vecCache.push_back(dir);
 }
 
-
-void  CDirectoryCache::ClearDirectory(const CStdString& strPath)
+void  CDirectoryCache::ClearDirectory(const CStdString& strPath1)
 {
+  CStdString strPath=strPath1;
+	if (CUtil::HasSlashAtEnd(strPath))
+		strPath.Delete(strPath.size()-1);
+
   ivecCache i=g_directoryCache.m_vecCache.begin();
   while (i != g_directoryCache.m_vecCache.end() )
   {
@@ -75,6 +84,7 @@ void  CDirectoryCache::ClearDirectory(const CStdString& strPath)
     ++i;
   }
 }
+
 bool  CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
 {
   CStdString strPath,strFileName;
@@ -99,4 +109,18 @@ bool  CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
     ++i;
   }
   return false;
+}
+
+void  CDirectoryCache::Clear()
+{
+  ivecCache i=g_directoryCache.m_vecCache.begin();
+  while (i != g_directoryCache.m_vecCache.end() )
+  {
+    CDir& dir=*i;
+    {
+      CFileItemList itemlist(dir.m_Items); // will clean up everything
+    }
+
+    g_directoryCache.m_vecCache.erase(i);
+  }
 }

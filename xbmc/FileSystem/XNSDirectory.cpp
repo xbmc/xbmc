@@ -26,7 +26,9 @@ bool  CXNSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	int iport					 = 1400;
 	if (url.HasPort()) iport=url.GetPort();
 
+	VECFILEITEMS vecCacheItems;
   g_directoryCache.ClearDirectory(strPath);
+
 	CStdString strHostName;
 	if ( !CDNSNameCache::Lookup(url.GetHostName(), strHostName) )
 	{
@@ -190,19 +192,24 @@ bool  CXNSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
       if (attrib & FILE_ATTRIBUTE_DIRECTORY)
 				bIsFolder=true;
 
+			CFileItem*  pItem = new CFileItem(strLabel);
+			memcpy(&pItem->m_stTime, &dtDateTime,sizeof(dtDateTime));
+			pItem->m_dwSize=dwFileSize;
+			char szBuf[1024];
+			sprintf(szBuf,"xns://%s:%i/%s", url.GetHostName().c_str(), iport, szPath);
+			pItem->m_strPath=szBuf;
+			pItem->m_bIsFolder = bIsFolder;
+			if (attrib & FILE_ATTRIBUTE_DIRECTORY)
+				pItem->m_bIsFolder=true;
+
 			if ( bIsFolder || IsAllowed( szPath) )
 			{
-				CFileItem*  pItem = new CFileItem(strLabel);
-				memcpy(&pItem->m_stTime, &dtDateTime,sizeof(dtDateTime));
-				pItem->m_dwSize=dwFileSize;
-				char szBuf[1024];
-				sprintf(szBuf,"xns://%s:%i/%s", url.GetHostName().c_str(), iport, szPath);
-				pItem->m_strPath=szBuf;
-				pItem->m_bIsFolder = bIsFolder;
-				if (attrib & FILE_ATTRIBUTE_DIRECTORY)
-					pItem->m_bIsFolder=true;
-
-				items.push_back(pItem);
+				vecCacheItems.push_back(pItem);
+				items.push_back(new CFileItem(*pItem));
+			}
+			else
+			{
+				vecCacheItems.push_back(pItem);
 			}
 		}
 
@@ -210,6 +217,6 @@ bool  CXNSDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 	}
 
   
-  g_directoryCache.SetDirectory(strPath,items);
+	g_directoryCache.SetDirectory(strPath,vecCacheItems);
 	return true;
 }

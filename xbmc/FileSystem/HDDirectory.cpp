@@ -21,7 +21,9 @@ bool  CHDDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
 {
 	WIN32_FIND_DATA wfd;
 
+	VECFILEITEMS vecCacheItems;
   g_directoryCache.ClearDirectory(strPath);
+
 	CStdString strRoot=strPath;
 	CURL url(strPath);
 
@@ -58,27 +60,32 @@ bool  CHDDirectory::GetDirectory(const CStdString& strPath,VECFILEITEMS &items)
           FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
           FileTimeToSystemTime(&localTime, &pItem->m_stTime);
   	
-          items.push_back(pItem);      
+					vecCacheItems.push_back(pItem);
+          items.push_back(new CFileItem(*pItem));   
         }
       }
       else
       {
+				CFileItem *pItem = new CFileItem(wfd.cFileName);
+				pItem->m_strPath=strRoot;
+				pItem->m_strPath+=wfd.cFileName;
+
+				pItem->m_bIsFolder=false;
+				pItem->m_dwSize=CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
+				FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
+				FileTimeToSystemTime(&localTime, &pItem->m_stTime);
 				if ( IsAllowed( wfd.cFileName) )
 				{
-					CFileItem *pItem = new CFileItem(wfd.cFileName);
-					pItem->m_strPath=strRoot;
-					pItem->m_strPath+=wfd.cFileName;
-
-					pItem->m_bIsFolder=false;
-					pItem->m_dwSize=CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
-					FileTimeToLocalFileTime(&wfd.ftLastWriteTime,&localTime);
-					FileTimeToSystemTime(&localTime, &pItem->m_stTime);
-					items.push_back(pItem);
+					vecCacheItems.push_back(pItem);
+					items.push_back(new CFileItem(*pItem));
 				}
-      }
+				else
+ 					vecCacheItems.push_back(pItem);
+     }
     }
   } while (FindNextFile((HANDLE)hFind, &wfd));
-  g_directoryCache.SetDirectory(strPath,items);
+
+  g_directoryCache.SetDirectory(strPath,vecCacheItems);
 
   return true;
 }
