@@ -15,4 +15,5 @@ protected:
 	int			m_iCountL;
 	int			m_iCountR;
 	int			m_iSpeed;
+	DWORD   m_dwLastTime;
 };

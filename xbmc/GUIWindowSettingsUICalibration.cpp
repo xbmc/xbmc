@@ -16,6 +16,16 @@ CGUIWindowSettingsUICalibration::~CGUIWindowSettingsUICalibration(void)
 
 void CGUIWindowSettingsUICalibration::OnKey(const CKey& key)
 {
+	if (timeGetTime()-m_dwLastTime > 500)
+	{
+		m_iSpeed=1;
+		m_iCountU=0;
+		m_iCountD=0;
+		m_iCountL=0;
+		m_iCountR=0;
+	}
+	m_dwLastTime=timeGetTime();
+
 	int iXOff = g_stSettings.m_iUIOffsetX;
 	int iYOff = g_stSettings.m_iUIOffsetY;
 	if (key.IsButton())
@@ -34,6 +44,11 @@ void CGUIWindowSettingsUICalibration::OnKey(const CKey& key)
 			case KEY_REMOTE_SELECT:
 				iXOff=0;
 				iYOff=0;
+				m_iSpeed=1;
+				m_iCountU=0;
+				m_iCountD=0;
+				m_iCountL=0;
+				m_iCountR=0;
 			break;
 
 			case KEY_BUTTON_DPAD_LEFT:
@@ -118,16 +133,19 @@ void CGUIWindowSettingsUICalibration::OnKey(const CKey& key)
 		if ( iYOff > 128 ) iYOff=128;
 
 	}
+	if (g_stSettings.m_iUIOffsetX != iXOff || g_stSettings.m_iUIOffsetY != iYOff)
+	{
+		g_stSettings.m_iUIOffsetX=iXOff ;
+		g_stSettings.m_iUIOffsetY=iYOff ;
 
-	g_stSettings.m_iUIOffsetX=iXOff ;
-	g_stSettings.m_iUIOffsetY=iYOff ;
+		CStdString strOffset;
+		strOffset.Format("%i,%i", iXOff, iYOff);
+		SET_CONTROL_LABEL(GetID(), CONTROL_LABEL,	strOffset);
 
-	CStdString strOffset;
-	strOffset.Format("%i,%i", iXOff, iYOff);
-	SET_CONTROL_LABEL(GetID(), CONTROL_LABEL,	strOffset);
 
-	g_graphicsContext.SetOffset(g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY);
-
+		g_graphicsContext.SetOffset(g_stSettings.m_iUIOffsetX, g_stSettings.m_iUIOffsetY);
+		ResetAllControls();
+	}
   CGUIWindow::OnKey(key);
 }
 

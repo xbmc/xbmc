@@ -245,3 +245,12 @@ int	CGUIWindow::GetFocusedControl() const
   }
 	return -1;
 }
+
+void CGUIWindow::ResetAllControls()
+{
+	for (int i=0;i < (int)m_vecControls.size(); ++i)
+  {
+    CGUIControl* pControl= m_vecControls[i];
+		pControl->SetWidth( pControl->GetWidth() );
+	}
+}
