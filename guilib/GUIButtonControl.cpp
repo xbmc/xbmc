@@ -135,9 +135,6 @@ void CGUIButtonControl::OnAction(const CAction &action)
 			g_graphicsContext.SendMessage(message);
 		}
 
-		// button selected, send a message
-		SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
-
 		if (m_lHyperLinkWindowID != WINDOW_INVALID)
 		{
 			CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_lHyperLinkWindowID);
@@ -150,6 +147,9 @@ void CGUIButtonControl::OnAction(const CAction &action)
 				m_gWindowManager.ActivateWindow(m_lHyperLinkWindowID);
 			}
 		}
+
+		// button selected, send a message
+		SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
 	}
 }
 
