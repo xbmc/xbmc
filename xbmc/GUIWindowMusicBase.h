@@ -141,7 +141,6 @@ protected:
 	static CStdString					m_strTempPlayListDirectory;	///< The directory the temporary playlist was started
 	int												m_nSelectedItem;	///< Backups the last selected item before window is deinitialized
 	int												m_iLastControl;	///< Backups the last selected control before window is deinitialized
-	long		m_lPlayListSeq;	// sequence number for the playlist
 	bool		m_bDisplayEmptyDatabaseMessage;		///< If true we display a message informing the user to switch back to the Files view.
 	CStdString								m_strParentPath;	///< Parent path to handle going up a dir
 };

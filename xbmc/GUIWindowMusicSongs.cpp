@@ -1,20 +1,16 @@
 
 #include "stdafx.h"
 #include "GUIWindowMusicSongs.h"
-#include "settings.h"
 #include "guiWindowManager.h"
 #include "localizestrings.h"
 #include "PlayListFactory.h"
 #include "util.h"
-#include "url.h"
-#include "PlayListM3U.h"
 #include "application.h"
 #include "playlistplayer.h"
-#include <algorithm>
-#include "GuiUserMessages.h"
 #include "SectionLoader.h"
 #include "cuedocument.h"
 #include "AutoSwitch.h"
+#include "crc32.h"
 
 #define CONTROL_BTNVIEWASICONS		2
 #define CONTROL_BTNSORTBY					3
@@ -157,6 +153,9 @@ CGUIWindowMusicSongs::CGUIWindowMusicSongs(void)
 	m_bScan=false;
 	m_iViewAsIcons=-1;
 	m_iViewAsIconsRoot=-1;
+
+	//	Remove old HD cache every time XBMC is loaded
+	DeleteDirectoryCache();
 }
 
 CGUIWindowMusicSongs::~CGUIWindowMusicSongs(void)
@@ -1112,7 +1111,6 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
   //    -the artist id is looked up and or added
   //    -the path id is lookup and or added
 
-  
 	int nFolderCount=CUtil::GetFolderCount(items);
 	// Skip items with folders only
 	if (nFolderCount == (int)items.size())
@@ -1120,10 +1118,16 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 
 	int nFileCount=(int)items.size()-nFolderCount;
 
+	int iTagsLoaded=0;
 	CStdString strItem;
   MAPSONGS songsMap;
+	MAPFILEITEMS itemsMap;
   // get all information for all files in current directory from database 
-  g_musicDatabase.GetSongsByPath(m_strDirectory,songsMap);
+  if (!g_musicDatabase.GetSongsByPath(m_strDirectory,songsMap) && !m_bScan)
+	{
+		//	Directory not in database, do we have cached items
+		LoadDirectoryCache(m_strDirectory, itemsMap);
+	}
 
 	if (!m_bScan)
 	{
@@ -1202,7 +1206,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
       // is tag for this file already loaded?
 			bool bNewFile=false;
 			CMusicInfoTag& tag=pItem->m_musicInfoTag;
-			if (!tag.Loaded() )
+			if (!tag.Loaded())
 			{
         // no, then we gonna load it.
         // first search for file in our list of the current directory
@@ -1213,6 +1217,16 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 				{
 					song=it->second;
 					bFound=true;
+				}
+				if (!bFound && !m_bScan)
+				{
+					//	Query cached items previously cached on HD
+					IMAPFILEITEMS it=itemsMap.find(pItem->m_strPath);
+					if (it!=itemsMap.end())
+					{
+						pItem->m_musicInfoTag=it->second->m_musicInfoTag;
+						bFound=true;
+					}
 				}
         if (!bFound && !m_bScan)
         {
@@ -1232,6 +1246,7 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 				{
           // if id3 tag scanning is turned on OR we're scanning the directory
           // then parse id3tag from file
+					iTagsLoaded++;
 					if (g_guiSettings.GetBool("MyMusic.UseTags") || m_bScan)
 					{
             // get correct tag parser
@@ -1246,8 +1261,8 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 							}
 						}
 					}
-				}
-				else // of if ( !bFound )
+				} // of if ( !bFound )
+				else if (!tag.Loaded()) //	Loaded from cache?
 				{
 					tag.SetSong(song);
 				}
@@ -1268,6 +1283,20 @@ void CGUIWindowMusicSongs::OnRetrieveMusicInfo(VECFILEITEMS& items)
 			}
 		}//if (!pItem->m_bIsFolder)
 	}
+
+	if (iTagsLoaded>0 && !m_bScan)
+	{
+		SaveDirectoryCache(m_strDirectory, m_vecItems);
+	}
+
+	//	cleanup cache loaded from HD
+	IMAPFILEITEMS it=itemsMap.begin();
+	while(it!=itemsMap.end())
+	{
+		delete it->second;
+		it++;
+	}
+	itemsMap.erase(itemsMap.begin(), itemsMap.end());
 
 	if (bShowProgress)
 	{
@@ -1593,4 +1622,79 @@ void CGUIWindowMusicSongs::OnPopupMenu(int iItem)
 		return;
 	}
 	CGUIWindowMusicBase::OnPopupMenu(iItem);
+}
+
+void CGUIWindowMusicSongs::LoadDirectoryCache(const CStdString& strDirectory, MAPFILEITEMS& items)
+{
+	Crc32 crc;
+	crc.Reset();
+	crc.Compute(strDirectory.c_str(),strlen(strDirectory.c_str()));
+
+	CStdString strFileName;
+	strFileName.Format("Z:\\%x.fi", (DWORD)crc);
+
+	CFile file;
+	if (file.Open(strFileName))
+	{
+		CArchive ar(&file, CArchive::load);
+		int iSize=0;
+		ar >> iSize;
+		for (int i=0; i<iSize; i++)
+		{
+			CFileItem* pItem=new CFileItem();
+			ar >> *pItem;
+			items.insert(MAPFILEITEMSPAIR(pItem->m_strPath, pItem));
+		}
+		ar.Close();
+		file.Close();
+	}
+}
+
+void CGUIWindowMusicSongs::SaveDirectoryCache(const CStdString& strDirectory, VECFILEITEMS& items)
+{
+	int iSize=items.size();
+
+	if (iSize<=0)
+		return;
+
+	Crc32 crc;
+	crc.Reset();
+	crc.Compute(strDirectory.c_str(),strlen(strDirectory.c_str()));
+
+	CStdString strFileName;
+	strFileName.Format("Z:\\%x.fi", (DWORD)crc);
+
+	CFile file;
+	if (file.OpenForWrite(strFileName))
+	{
+		CArchive ar(&file, CArchive::store);
+		ar << (int)items.size();
+		for (int i=0; i<iSize; i++)
+		{
+			CFileItem* pItem=items[i];
+			ar << *pItem;
+		}
+		ar.Close();
+		file.Close();
+	}
+
+}
+
+void CGUIWindowMusicSongs::DeleteDirectoryCache()
+{
+  WIN32_FIND_DATA wfd;
+  memset(&wfd,0,sizeof(wfd));
+
+	CAutoPtrFind hFind( FindFirstFile("Z:\\*.fi",&wfd));
+  if (!hFind.isValid())
+    return ;
+  do
+  {
+    if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
+    {
+			CStdString strFile= "Z:\\";
+      strFile += wfd.cFileName;
+      DeleteFile(strFile.c_str());
+    }
+  } while (FindNextFile(hFind, &wfd));
 }

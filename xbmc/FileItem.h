@@ -9,6 +9,7 @@
 #include "MusicDatabase.h"
 #include "PlayList.h"
 #include <vector>
+#include "utils/archive.h"
 using namespace std;
 using namespace MUSIC_INFO;
 using namespace PLAYLIST;
@@ -18,7 +19,7 @@ using namespace PLAYLIST;
 	\sa VECFILEITEMS, CFileItemList
 	*/
 class CFileItem :
-  public CGUIListItem
+	public CGUIListItem, public ISerializable
 {
 public:
   CFileItem(void);
@@ -31,6 +32,8 @@ public:
 
 	void Clear();
   const CFileItem& operator=(const CFileItem& item);
+	virtual void Serialize(CArchive& ar);
+
   CStdString    m_strPath;						///< complete path to item
   bool          m_bIsShareOrDrive;		///< is this a root share/drive
   int			m_iDriveType;			///< If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CShare::m_iDriveType
@@ -61,15 +64,35 @@ typedef vector<CFileItem*> VECFILEITEMS;
 typedef vector<CFileItem*>::iterator IVECFILEITEMS;
 
 /*!
+	\brief A map of pointers to CFileItem
+	\sa CFileItem
+	*/
+typedef map<CStdString, CFileItem*> MAPFILEITEMS;
+
+/*!
+	\brief Iterator for MAPFILEITEMS
+	\sa MAPFILEITEMS
+	*/
+typedef map<CStdString, CFileItem*>::iterator IMAPFILEITEMS;
+
+/*!
+	\brief Pair for MAPFILEITEMS
+	\sa MAPFILEITEMS
+	*/
+typedef pair<CStdString, CFileItem*> MAPFILEITEMSPAIR;
+
+/*!
 	\brief Represents a list of files
 	\sa VECFILEITEMS, CFileItem
 	*/
-class CFileItemList
+class CFileItemList : public ISerializable
 {
 public:
 	CFileItemList(VECFILEITEMS& items);
 	virtual ~CFileItemList();
 	VECFILEITEMS& GetList() ;
+	void Clear();
+	virtual void Serialize(CArchive& ar);
 private:
 	VECFILEITEMS& m_items;
 };

@@ -380,7 +380,6 @@ void CGUIWindowMusicBase::UpdateListControl()
 	for (int i=0; i < (int)m_vecItems.size(); i++)
 	{
 		CFileItem* pItem=m_vecItems[i];
-		m_lPlayListSeq = (i+1);
 
 		//	Format label for listcontrol
 		//	and set thumb/icon for item
