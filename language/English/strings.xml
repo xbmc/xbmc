@@ -2053,6 +2053,8 @@
   <string><id>13201</id><value>Delete profile '%s'?</value></string>
   <string><id>13202</id><value>Save current settings as profile...</value></string>
   <string><id>13203</id><value>Profile '%s' loaded successfully</value></string>
+  <string><id>13204</id><value>Last loaded profile:</value></string>
+  <string><id>13205</id><value>Unknown</value></string>
   <string><id>13300</id><value>Fanspeed:</value></string>
   <string><id>13301</id><value>Auto temperature control</value></string>
   <string><id>13302</id><value>Fanspeed control</value></string>

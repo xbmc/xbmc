@@ -122,6 +122,7 @@ public:
 
   bool LoadProfile(int index);
   bool SaveSettingsToProfile(int index);
+  void DeleteProfile(int index);
 
 	struct stSettings
 	{
@@ -417,6 +418,7 @@ public:
 	VECSHARES					m_vecMyVideoShares;
 	VECFILETYPEICONS	m_vecIcons;
   VECPROFILES       m_vecProfiles;
+  int               m_iLastLoadedProfileIndex;
 	RESOLUTION_INFO			m_ResInfo[10];
 	int               m_iBrightness;
 	int               m_iContrast;

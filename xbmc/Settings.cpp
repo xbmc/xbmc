@@ -357,6 +357,8 @@ CSettings::CSettings(void)
 
 	g_stSettings.m_nVolumeLevel = 0;
 	g_stSettings.m_iLogLevel = LOGNOTICE;
+
+  m_iLastLoadedProfileIndex = -1;
 }
 
 CSettings::~CSettings(void)
@@ -1629,7 +1631,28 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, const bool savep
 bool CSettings::LoadProfile(int index)
 {
   CProfile& profile = m_vecProfiles.at(index);
-  return LoadSettings("T:\\" + profile.getFileName(), false);
+  if (LoadSettings("T:\\" + profile.getFileName(), false)) 
+  {
+    m_iLastLoadedProfileIndex = index;
+    Save();
+    return true;
+  }
+  return false;
+}
+
+void CSettings::DeleteProfile(int index)
+{
+  for (IVECPROFILES iProfile = g_settings.m_vecProfiles.begin(); iProfile != g_settings.m_vecProfiles.end(); ++iProfile)
+  {
+	  if (iProfile == &g_settings.m_vecProfiles.at(index))
+	  {
+      if (index == m_iLastLoadedProfileIndex) {m_iLastLoadedProfileIndex = -1;}
+      ::DeleteFile("T:\\" + iProfile->getFileName());
+      m_vecProfiles.erase(iProfile);
+      Save();
+      break;
+	  }
+  }
 }
 
 bool CSettings::SaveSettingsToProfile(int index)
@@ -1642,17 +1665,18 @@ bool CSettings::SaveSettingsToProfile(int index)
 bool CSettings::LoadProfiles(const TiXmlElement* pRootElement, const CStdString& strSettingsFile)
 {
  	CLog::Log(LOGINFO, "  Parsing <profiles> tag");
-	const TiXmlNode *pChild = pRootElement->FirstChild("profiles");
+	const TiXmlElement *pChild = pRootElement->FirstChildElement("profiles");
 	if (pChild)
 	{
-		pChild = pChild->FirstChild();
-		while (pChild>0)
+    GetInteger(pChild, "lastloaded", m_iLastLoadedProfileIndex, -1, -1, INT_MAX);
+		TiXmlNode *pChildNode = pChild->FirstChild();
+		while (pChildNode>0)
 		{
-			CStdString strValue=pChild->Value();
+			CStdString strValue=pChildNode->Value();
 			if (strValue=="profile")
 			{
-				const TiXmlNode *pProfileName=pChild->FirstChild("name");
-				const TiXmlNode *pProfileFile=pChild->FirstChild("file");
+				const TiXmlNode *pProfileName=pChildNode->FirstChild("name");
+				const TiXmlNode *pProfileFile=pChildNode->FirstChild("file");
 				if (pProfileName && pProfileFile)
 				{
 					const char* szName=pProfileName->FirstChild()->Value();
@@ -1672,7 +1696,7 @@ bool CSettings::LoadProfiles(const TiXmlElement* pRootElement, const CStdString&
 					CLog::Log(LOGERROR, "    <name> and/or <file> not properly defined within <profile>");
 				}
 			}
-			pChild=pChild->NextSibling();
+			pChildNode=pChildNode->NextSibling();
 		}
     return true;
 	}
@@ -1686,9 +1710,10 @@ bool CSettings::LoadProfiles(const TiXmlElement* pRootElement, const CStdString&
 
 bool CSettings::SaveProfiles(TiXmlNode* pRootElement) const
 {
-	TiXmlElement xmlCalibrationElement("profiles");
-	TiXmlNode *pProfileNode = pRootElement->InsertEndChild(xmlCalibrationElement);
+	TiXmlElement xmlProfilesElement("profiles");
+	TiXmlNode *pProfileNode = pRootElement->InsertEndChild(xmlProfilesElement);
   if (!pProfileNode) return false;
+  SetInteger(pProfileNode, "lastloaded", m_iLastLoadedProfileIndex);
   for (int i=0; i<(int)m_vecProfiles.size(); ++i)
   {
     const CProfile& profile=m_vecProfiles.at(i);
