@@ -213,7 +213,7 @@ bool CSMBDirectory::Exists(const char* strPath)
   smb.Lock();
 
   SMB_STRUCT_STAT info;
-  if (smbc_stat(strPath, &info) == 0)
+  if (smbc_stat(strPath, &info) != 0)
   {
     smb.Unlock();
     return false;
