@@ -50,6 +50,7 @@ public:
 		void         GetOptions(int& argc, char* argv[]);
 		void         SetDVDDevice(const string & strDevice);
 		void         SetFlipBiDiCharset(const string& strCharset);
+    void         SetRawAudioFormat(const string& strHexRawAudioFormat);
 	private:
 		bool    m_bResampleAudio;
 		bool    m_bNoCache;
@@ -66,6 +67,7 @@ public:
 		string  m_strChannelMapping;
 		string  m_strDvdDevice;
 		string  m_strFlipBiDiCharset;
+    string  m_strHexRawAudioFormat;
 		vector<string> m_vecOptions;
 
 	};
