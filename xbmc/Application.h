@@ -79,6 +79,7 @@ public:
 	virtual	void					OnPlayBackEnded();
 	virtual	void					OnPlayBackStarted();
 	bool									PlayFile(const CStdString& strFile);
+  void                  Restart(bool bSamePosition=true);
 	void									EnableOverlay();
 	void									DisableOverlay();
 	bool									IsPlayingAudio() const ;
@@ -138,6 +139,7 @@ protected:
 	bool										m_bOverlayEnabled;
 	CStdString							m_strCurrentPlayer;
   bool                    m_bSettingsLoaded;
+  CStdString              m_strCurrentFile;
 };
 
 extern CApplication g_application;

@@ -46,6 +46,7 @@ CApplication::CApplication(void)
 :m_ctrDpad(220,220)
 ,m_ctrIR(220,220)
 {
+    m_strCurrentFile="";
 		m_bSpinDown=true;
 		m_bOverlayEnabled=true;
 		m_pWebServer=NULL;
@@ -661,6 +662,7 @@ void CApplication::Stop()
 
 bool CApplication::PlayFile(const CStdString& strFile)
 {
+  m_strCurrentFile=strFile;
 	CURL url(strFile);
 	CStdString strNewPlayer = "mplayer";
 	if ( url.GetProtocol() == "cdda")
@@ -700,7 +702,8 @@ bool CApplication::PlayFile(const CStdString& strFile)
 
 void CApplication::OnPlayBackEnded()
 {
-	OutputDebugString("Playback has finished\n");
+  m_strCurrentFile="";
+  OutputDebugString("Playback has finished\n");
 	CGUIMessage msg( GUI_MSG_PLAYBACK_ENDED, 0, 0, 0, 0, NULL );
 	m_gWindowManager.SendThreadMessage( msg );
 }
@@ -885,5 +888,21 @@ void CApplication::Process()
 	SpinHD();
 	// process messages, even if a movie is playing
 	g_applicationMessenger.ProcessMessages();
+
+}
+void CApplication::Restart(bool bSamePosition)
+{
+  if ( !IsPlayingVideo() && !IsPlayingAudio()) return;
+  
+  if (false==bSamePosition)
+  {
+    PlayFile(m_strCurrentFile);
+    return;
+  }
+  int iPercentage=m_pPlayer->GetPercentage();
+  if (  PlayFile(m_strCurrentFile) )
+  {
+    m_pPlayer->SeekPercentage(iPercentage);
+  }
 
 }
