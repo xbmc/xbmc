@@ -437,6 +437,7 @@
   <string><id>506</id><value>Usa i Nomi delle Directory per la Descrizione</value></string>
   <string><id>507</id><value>Ordina x Utilizzo</value></string>
   <string><id>508</id><value>Non usare Shortcuts o Scan</value></string>
+  <string><id>509</id><value>Cache Icone Programmi</value></string>
   <string><id>600</id><value>Rip CD Audio</value></string>
   <string><id>601</id><value>Medio</value></string>
   <string><id>602</id><value>Standard</value></string>
@@ -515,6 +516,11 @@
   <string><id>751</id><value>Rimuovo condivisione</value></string>
   <string><id>752</id><value>Modifica percorso Condivisione</value></string>
   <string><id>753</id><value>Modifica Nome Condivisione</value></string>
+  <string><id>754</id><value>Aggiungi Collegamento</value></string>
+  <string><id>755</id><value>Modifica Percorso</value></string>
+  <string><id>756</id><value>Modifica Nome Programma</value></string>
+  <string><id>757</id><value>Modifica Depth Percorso</value></string>
+  <string><id>758</id><value>Rimuovo Collegamento</value></string>
   <string><id>998</id><value>XLink KAI</value></string>
   <string><id>999</id><value>Gioco Online</value></string>
   <string><id>10000</id><value>Home</value></string>
@@ -584,10 +590,10 @@
   <string><id>12329</id><value>Premere C per Annullare</value></string>
   <string><id>12330</id><value>Inserire combinazione tasti Gamepad e </value></string>
   <string><id>12331</id><value>premere Start, oppure Back per Annullare</value></string>
-  <string><id>12332</id><value>Blocco Condivisione</value></string>
-  <string><id>12333</id><value>Sblocco Condivisione</value></string>
-  <string><id>12334</id><value>Reset Blocco Condivisione</value></string>
-  <string><id>12335</id><value>Rimuovi Blocco Condivisione</value></string>
+  <string><id>12332</id><value>Blocca</value></string>
+  <string><id>12333</id><value>Sblocca</value></string>
+  <string><id>12334</id><value>Reset Blocco</value></string>
+  <string><id>12335</id><value>Rimuovi Blocco</value></string>
   <string><id>12336</id><value>Seleziona tipo di Blocco da usare:</value></string>
   <string><id>12337</id><value>Password Numerica</value></string>
   <string><id>12338</id><value>Sequenza tasti Gamepad</value></string>
@@ -605,7 +611,7 @@
   <string><id>12350</id><value>(Aprendo un oggetto in Impostazioni</value></string>
   <string><id>12351</id><value>riabiliterà automaticamente Master Lock.)</value></string>
   <string><id>12352</id><value>Inserire combinazione di tasti Master Code e </value></string>
-  <string><id>12353</id><value>Riattivare Blocco Condivisione</value></string>
+  <string><id>12353</id><value>Riattiva Blocco</value></string>
   <string><id>12354</id><value>Salta blocco cartelle fino al prossimo avvio?</value></string>
   <string><id>12355</id><value>riabiliterà automaticamente il blocco cartelle.)</value></string>
 
@@ -634,7 +640,7 @@
   <string><id>13304</id><value>Abilita Flipping in Stringhe Bidirezionali</value></string>
   <string><id>13305</id><value>Abilita i Feed RSS</value></string>
   <string><id>13306</id><value>Nascondi Oggetti delle Sottocartelle</value></string>
-  <string><id>13307</id><value>Nascondi Numero Traccia</value></string>
+  <string><id>13307</id><value>Template Nominativo Traccia</value></string>
   <string><id>13308</id><value>Vuoi riavviare la tua xbox</value></string>
   <string><id>13309</id><value>invece di XBMC?</value></string>
   <string><id>13310</id><value>Effetto Zoom</value></string>
@@ -711,16 +717,16 @@
   <string><id>14022</id><value>Archivio</value></string>
   <string><id>14023</id><value>No TV</value></string>
   <string><id>14024</id><value>Inserisci la città più grande vicina a te o US ZIPcode</value></string>
-  <string><id>14025</id><value>Video Cache   - Harddisk</value></string>
-  <string><id>14026</id><value>              - DVDRom</value></string>
+  <string><id>14025</id><value>Video/Audio/DVD Cache   - Harddisk</value></string>
+  <string><id>14026</id><value>Video Cache   - DVDRom</value></string>
   <string><id>14027</id><value>              - Rete Locale</value></string>
   <string><id>14028</id><value>              - Internet</value></string>
   <string><id>14029</id><value>Audio Cache  - Harddisk</value></string>
-  <string><id>14030</id><value>              - DVDRom</value></string>
+  <string><id>14030</id><value>Audio Cache  - DVDRom</value></string>
   <string><id>14031</id><value>              - Rete Locale</value></string>
   <string><id>14032</id><value>              - Internet</value></string>
   <string><id>14033</id><value>DVD Cache    - Harddisk</value></string>
-  <string><id>14034</id><value>              - DVDRom</value></string>
+  <string><id>14034</id><value>DVD Cache    - DVDRom</value></string>
   <string><id>14035</id><value>              - Rete Locale</value></string>
   <string><id>14036</id><value>Servers</value></string>
   <string><id>14037</id><value>Aspetto</value></string>
@@ -745,6 +751,9 @@
   <string><id>14056</id><value>Ferma Scansione</value></string>
   <string><id>14057</id><value>Impossibile durante scansione informazioni media</value></string>
   <string><id>14058</id><value>Effetto Film Sgranato</value></string>
+  <string><id>14059</id><value>Cerca Icone Personalizzate nelle Condivisioni Remote</value></string>
+  <string><id>14060</id><value>Cache di tipo Sconosciuto - Internet</value></string>
+  <string><id>14061</id><value>Auto</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Il servizio non è connesso, vuoi riprovare</value></string>

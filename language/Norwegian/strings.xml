@@ -1,3 +1,4 @@
+<!-- Based on English XML v1.159. Last updated by vnmartinsen  !-->
 <strings>
   <string><id>0</id><value>Mine Programmer</value></string>
   <string><id>1</id><value>Mine Bilder</value></string>
@@ -213,8 +214,8 @@
   <string><id>281</id><value>Vennligst sjekk .xml filene</value></string>
   <string><id>282</id><value>Fant %i treff</value></string>
   <string><id>283</id><value>Søkeresultater</value></string>
-  <string><id>284</id><value>Fant ingen treff</value></string>
-  <string><id>285</id><value>Deinterlace-filter</value></string>
+  <string><id>284</id><value>Ingen resultater funnet</value></string>
+  <string><id>285</id><value>Linjesprangfjerningsfilter</value></string>
   <string><id>286</id><value>Etterprosesseringsfilter</value></string>
   <string><id>287</id><value>SRT-undertekster</value></string>
   <string><id>288</id><value>Skrifttype</value></string>
@@ -226,7 +227,7 @@
   <string><id>294</id><value>Lag bokmerke</value></string>
   <string><id>295</id><value>Skift bokmerke</value></string>
   <string><id>296</id><value>Slett bokmerker</value></string>
-  <string><id>297</id><value>AVforsinkelse</value></string>
+  <string><id>297</id><value>AV-forsinkelse</value></string>
   <string><id>298</id><value>Glidebryter</value></string>
   <string><id>300</id><value>1. Språk</value></string>
   <string><id>301</id><value>2. Volum</value></string>
@@ -234,7 +235,7 @@
   <string><id>303</id><value>Forsinkelse</value></string>
   <string><id>304</id><value>Språk</value></string>
   <string><id>305</id><value>Aktivert</value></string>
-  <string><id>306</id><value>Non-Interleaved</value></string>
+  <string><id>306</id><value>Ikke-interleaved</value></string>
   <string><id>307</id><value>- Automatisk etterprosessering</value></string>
   <string><id>308</id><value>- vertikalt blokk-filter</value></string>
   <string><id>309</id><value>- horisontalt blokk-filter</value></string>
@@ -437,6 +438,7 @@
   <string><id>506</id><value>Bruke katalognavn som beskrivelse</value></string>
   <string><id>507</id><value>Sortering: Bruk</value></string>
   <string><id>508</id><value>Ikke bruke snarveier eller skanning</value></string>
+  <string><id>509</id><value>Cache programikoner</value></string>
   <string><id>600</id><value>Ripp musikk-CD</value></string>
   <string><id>601</id><value>Middels</value></string>
   <string><id>602</id><value>Standard</value></string>
@@ -447,7 +449,7 @@
   <string><id>607</id><value>Til:</value></string>
   <string><id>608</id><value>Kunne ikke rippe CD eller spor</value></string>
   <string><id>609</id><value>CDDARipPath er ikke satt i XboxMediaCenter.xml</value></string>
-  <string><id>620</id><value>CD Ripping</value></string>
+  <string><id>620</id><value>CD-ripping</value></string>
   <string><id>621</id><value>Enkoder</value></string>
   <string><id>622</id><value>Kvalitet</value></string>
   <string><id>623</id><value>Bitrate</value></string>
@@ -495,7 +497,7 @@
   <string><id>731</id><value>Tidstjener-vert</value></string>
   <string><id>732</id><value>Lagre &amp; bruke</value></string>
   <string><id>733</id><value>Webtjener-passord</value></string>
-  <string><id>734</id><value>Inget passord</value></string>
+  <string><id>734</id><value>Intet passord</value></string>
   <string><id>735</id><value>Karaktersett:</value></string>
   <string><id>736</id><value>Stil:</value></string>
   <string><id>737</id><value>Farge:</value></string>
@@ -595,8 +597,8 @@
   <string><id>12335</id><value>Fjern lås</value></string>
   <string><id>12336</id><value>Velg hvilken type lås som skal benyttes:</value></string>
   <string><id>12337</id><value>Nummerisk passord</value></string>
-  <string><id>12338</id><value>Spill-kontroll knappekombinasjon</value></string>
-  <string><id>12339</id><value>Fulltekst-password</value></string>
+  <string><id>12338</id><value>Knappekombinasjon</value></string>
+  <string><id>12339</id><value>Fulltekstpassord</value></string>
   <string><id>12340</id><value>Skriv inn nytt passord</value></string>
   <string><id>12341</id><value>Skriv det nye passordet om igjen</value></string>
   <string><id>12342</id><value>Feil passord,</value></string>
@@ -630,15 +632,17 @@
   <string><id>13203</id><value>Profilen '%s' er lastet</value></string>
   <string><id>13204</id><value>Sist lastede profil:</value></string>
   <string><id>13205</id><value>Ukjent</value></string>
+  <string><id>13206</id><value>Erstatt</value></string>
+  <string><id>13207</id><value>Erstatt profil '%s'?</value></string>
   <string><id>13299</id><value>Temperaturmål</value></string>
-  <string><id>13300</id><value>Viftehastighet:</value></string>
+  <string><id>13300</id><value>Viftehastighet</value></string>
   <string><id>13301</id><value>Automatisk temperaturkontroll</value></string>
   <string><id>13302</id><value>Viftehastighetskontroll</value></string>
-  <string><id>13303</id><value>Skrifttype for utseende</value></string>
-  <string><id>13304</id><value>Snu tekstsstrenger med karaktersett</value></string>
+  <string><id>13303</id><value>Skrifttype</value></string>
+  <string><id>13304</id><value>Snu tekstsstrenger</value></string>
   <string><id>13305</id><value>Aktivér RSS-nyheter</value></string>
   <string><id>13306</id><value>Skjul innhold i overordnet mappe</value></string>
-  <string><id>13307</id><value>Skjul spornummer</value></string>
+  <string><id>13307</id><value>Musikklisteformat</value></string>
   <string><id>13308</id><value>Ønsker du å starte XBOX'en din på nytt</value></string>
   <string><id>13309</id><value>istedenfor bare XBMC?</value></string>
   <string><id>13310</id><value>Zoom-effekt</value></string>
@@ -692,14 +696,14 @@
 
   <string><id>14000</id><value>Stabling: Av</value></string>
   <string><id>14001</id><value>Stabling: Enkel</value></string>
-  <string><id>14002</id><value>Stabling: Fuzzy</value></string>
+  <string><id>14002</id><value>Stabling: Samlet</value></string>
   <string><id>14003</id><value>Laster ned spilleliste...</value></string>
   <string><id>14004</id><value>Laster ned stream-liste...</value></string>
   <string><id>14005</id><value>Legger til stream-liste...</value></string>
   <string><id>14006</id><value>Nedlasting av stream-liste feilet</value></string>
   <string><id>14007</id><value>Nedlasting av spilleliste feilet</value></string>
   <string><id>14008</id><value>Aktivér Kai-beskjeder</value></string>
-  <string><id>14009</id><value>Spill-mappe</value></string>
+  <string><id>14009</id><value>Spillmappe</value></string>
   <string><id>14010</id><value>Bytt automatisk til miniatyrbilder ved</value></string>
   <string><id>14011</id><value>Aktivér automatisk bytte til miniatyrbilder</value></string>
   <string><id>14012</id><value>- Bruk store ikoner</value></string>
@@ -749,6 +753,7 @@
   <string><id>14058</id><value>Kornete filmeffekt</value></string>
   <string><id>14059</id><value>Se etter miniatyrbilder i nettverksmapper</value></string>
   <string><id>14060</id><value>Ukjent type cache - internett</value></string>
+  <string><id>14061</id><value>Auto</value></string>
 
   <string><id>15000</id><value>XLink Kai</value></string>
   <string><id>15001</id><value>Tjenesten er ikke tilkoblet, vil du forsøke</value></string>
@@ -812,4 +817,5 @@
   <string><id>15059</id><value>Invitasjon akseptert!</value></string>
   <string><id>15060</id><value>Melding her</value></string>
   <string><id>15061</id><value>Du er invitert til å spille %s.</value></string>
+  <string><id>15062</id><value>Bruk alternativ mplayer</value></string>
 </strings>
