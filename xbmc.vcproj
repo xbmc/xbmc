@@ -1372,6 +1372,37 @@
 					RelativePath=".\xbmc\lib\libGoAhead\XBMCweb.h">
 				</File>
 			</Filter>
+			<Filter
+				Name="sqlite"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\lib\sqlLite\dataset.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\sqlLite\dataset.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\sqlLite\qry_dat.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\sqlLite\qry_dat.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\sqlLite\sqlite.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\sqlLite\sqlitedataset.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\sqlLite\sqlitedataset.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\sqlLite\stringhelper.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\sqlLite\stringhelper.h">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="osd"
