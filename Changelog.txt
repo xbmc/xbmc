@@ -5,6 +5,8 @@
 *************************************************************************************************************
 
 added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 01-12-2004 added: extended memory tracking for dll's + added dll tracking for dll's
+  - 01-12-2004 fixed: removed old memorytracker since it had lot's of issues (this should fix the problem with AQTBrowser)
   - 30-11-2004 added: [ 917706 ] Extra OSD Info (estimated end time & movie filename)
   - 30-11-2004 fixed: [ 970904 ] Screensaver stays on with WebServer/un-pause
   - 30-11-2004 fixed: imdb info/thumbs not saved
