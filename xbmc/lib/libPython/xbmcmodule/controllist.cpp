@@ -46,8 +46,9 @@ namespace PYXBMC
 
 		self->dwSelectedColor = 0xffffffff;//0xFFF8BC70;
 
-		self->strTextureButton = cTextureButton ? cTextureButton : "list-nofocus.png";		
-		self->strTextureButtonFocus = cTextureButtonFocus ? cTextureButtonFocus : "list-focus.png";	
+		// if texture is supplied use it, else get default ones
+		self->strTextureButton = cTextureButton ? cTextureButton : GetDefaultImage("listcontrol", "textureNoFocus", "list-nofocus.png");		
+		self->strTextureButtonFocus = cTextureButtonFocus ? cTextureButtonFocus : GetDefaultImage("listcontrol", "textureFocus", "list-focus.png");	
 
 		self->dwImageHeight = 10;
 		self->dwImageWidth = 10;
