@@ -1440,22 +1440,30 @@ void CApplication::OnPlayBackStarted()
 {
 	//spin down harddisk when the current file being played is not on local harddrive and 
 	//duration is more then spindown timeoutsetting or duration is unknown (streams)
-	if ( 
-		!CUtil::IsHD(m_strCurrentFile) && 
-		(
-		(m_pPlayer->GetTotalTime() <= 0) || 
-		(m_pPlayer->GetTotalTime() > g_stSettings.m_iHDSpinDownTime*60)
-		)
-		)
-	{
-		m_bSpinDown      = true;
-		m_dwSpinDownTime = 0;
-	}
-	else 
-	{
-		//reset spindowntime
+	
+	//disabled because immediate spindown is annoying when you want to play a few seconds
+	//from a few different videos, or when you want to bring up the OSD immediately after
+	//playback starts (which is probably the most common time to use the OSD)
+
+//	if ( 
+//		!CUtil::IsHD(m_strCurrentFile) && 
+//		(
+//		(m_pPlayer->GetTotalTime() <= 0) || 
+//		(m_pPlayer->GetTotalTime() > g_stSettings.m_iHDSpinDownTime*60)
+//		)
+//		)
+//	{
+//		m_bSpinDown      = true;
+//		m_dwSpinDownTime = 0;
+//	}
+//	else 
+//	{
+//		//reset spindowntime
 		m_dwSpinDownTime = timeGetTime();
-	}
+//	}
+//
+//	
+
 }
 
 void CApplication::EnableOverlay()
