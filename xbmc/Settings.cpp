@@ -10,10 +10,10 @@ struct CSettings::stSettings g_stSettings;
 
 CSettings::CSettings(void)
 {
-  g_stSettings.m_bMyVideoVideoStack =true;
-  g_stSettings.m_bMyVideoActorStack =true;
-  g_stSettings.m_bMyVideoGenreStack =true;
-  g_stSettings.m_bMyVideoYearStack =true;
+  g_stSettings.m_bMyVideoVideoStack =false;
+  g_stSettings.m_bMyVideoActorStack =false;
+  g_stSettings.m_bMyVideoGenreStack =false;
+  g_stSettings.m_bMyVideoYearStack =false;
 
 
   g_stSettings.m_iMyProgramsSelectedItem=0;
