@@ -1846,9 +1846,9 @@ bool CSettings::UpdateBookmark(const CStdString &strType, const CStdString &strO
 
 	VECSHARES *pShares = NULL;
 	if (strType == "files") pShares = &m_vecMyFilesShares;
-	if (strType == "music") pShares = &m_vecMyFilesShares;
-	if (strType == "videos") pShares = &m_vecMyFilesShares;
-	if (strType == "pictures") pShares = &m_vecMyFilesShares;
+	if (strType == "music") pShares = &m_vecMyMusicShares;
+	if (strType == "videos") pShares = &m_vecMyVideoShares;
+	if (strType == "pictures") pShares = &m_vecMyPictureShares;
 
 	if (!pShares) return false;
 
@@ -1895,9 +1895,9 @@ bool CSettings::DeleteBookmark(const CStdString &strType, const CStdString &strN
 
 	VECSHARES *pShares = NULL;
 	if (strType == "files") pShares = &m_vecMyFilesShares;
-	if (strType == "music") pShares = &m_vecMyFilesShares;
-	if (strType == "videos") pShares = &m_vecMyFilesShares;
-	if (strType == "pictures") pShares = &m_vecMyFilesShares;
+	if (strType == "music") pShares = &m_vecMyMusicShares;
+	if (strType == "videos") pShares = &m_vecMyVideoShares;
+	if (strType == "pictures") pShares = &m_vecMyPictureShares;
 
 	if (!pShares) return false;
 
@@ -1946,9 +1946,9 @@ bool CSettings::AddBookmark(const CStdString &strType, const CStdString &strName
 
 	VECSHARES *pShares = NULL;
 	if (strType == "files") pShares = &m_vecMyFilesShares;
-	if (strType == "music") pShares = &m_vecMyFilesShares;
-	if (strType == "videos") pShares = &m_vecMyFilesShares;
-	if (strType == "pictures") pShares = &m_vecMyFilesShares;
+	if (strType == "music") pShares = &m_vecMyMusicShares;
+	if (strType == "videos") pShares = &m_vecMyVideoShares;
+	if (strType == "pictures") pShares = &m_vecMyPictureShares;
 
 	if (!pShares) return false;
 

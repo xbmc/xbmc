@@ -59,7 +59,7 @@ protected:
 	bool							CanDelete(int iList);
 	bool							CanNewFolder(int iList);
 	bool							IsReadOnly(const CStdString &strFile) const;
-	void							OnBookmarksPopupMenu(int iList, int iItem);
+	void							OnPopupMenu(int iList, int iItem);
 
 	CVirtualDirectory		m_rootDir;
   VECFILEITEMS				m_vecItems[2];
