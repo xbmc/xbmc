@@ -38,13 +38,13 @@ bool CFlacTag::FindVobisTagHeader(void)
 	do
 	{
 		m_file->Read(buffer,4);	// read the next METABLOCK header
-		if (buffer[0]&0x80)		// break if it's the last one
-			break;
 		if ((buffer[0]&0x7F) == 4)	// found a VORBIS_COMMENT tag
 		{
 			bFound=true;
 			break;
 		}
+		if (buffer[0]&0x80)		// break if it's the last one
+			break;
 		iPos += ((int)buffer[1]<<16)+((int)buffer[2]<<8)+int(buffer[3])+4;
 		m_file->Seek(iPos, SEEK_SET);
 	}
