@@ -424,6 +424,9 @@ bool CUtil::HasSlashAtEnd(const CStdString& strFile)
  bool CUtil::IsRemote(const CStdString& strFile)
 {
 	CURL url(strFile);
+	CStdString strProtocol=url.GetProtocol();
+	strProtocol.ToLower();
+	if (strProtocol=="cdda" || strProtocol=="iso9660") return false;
 	if ( url.GetProtocol().size() ) return true;
 	return false;
 }
@@ -438,7 +441,15 @@ bool CUtil::HasSlashAtEnd(const CStdString& strFile)
 {
 	CStdString strLeft=strFile.Left(5);
 	strLeft.ToLower();
-	if (strFile=="cdda:")
+	if (strLeft=="cdda:")
+		return true;
+	return false;
+}
+bool CUtil::IsISO9660(const CStdString& strFile)
+{
+	CStdString strLeft=strFile.Left(8);
+	strLeft.ToLower();
+	if (strLeft=="iso9660:")
 		return true;
 	return false;
 }

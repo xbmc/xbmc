@@ -59,4 +59,5 @@ public:
 	static bool IsPlayList(const CStdString& strFile) ;
 	static void ShortenFileName(CStdString& strFileNameAndPath);
 	static void GetIMDBInfo(const CStdString& strFileName, CStdString& strImbInfo);
+	static bool IsISO9660(const CStdString& strFile);
 };
