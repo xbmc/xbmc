@@ -1,25 +1,30 @@
 #pragma once
-#include "GUIDialog.h"
+#include "StdString.h"
 
-class CGUIPassword :
-      public CGUIDialog
+typedef map<CStdString, CStdString> MAPPASSWORDS;
+typedef map<CStdString, CStdString>::iterator IMAPPASSWORDS;
+
+class CGUIPassword
 {
 public:
   CGUIPassword(void);
   virtual ~CGUIPassword(void);
   bool IsConfirmed() const;
   bool IsCanceled() const;
-  void GetUserInput(CStdString* strOut);
-  CStdStringW m_strUserInput;
-  CStdStringW m_strPassword;
-  int m_iRetries;
-  bool m_bUserInputCleanup;
-  static bool IsItemUnlocked(CFileItem* pItem, const CStdString &strType);
-  static bool IsItemUnlocked(CShare* pItem, const CStdString &strType);
-  static bool IsMasterLockUnlocked(bool bPromptUser);
-  static void UpdateMasterLockRetryCount(bool bResetCount);
+  bool IsItemUnlocked(CFileItem* pItem, const CStdString &strType);
+  bool IsItemUnlocked(CShare* pItem, const CStdString &strType);
+  bool IsMasterLockUnlocked(bool bPromptUser);
+  void UpdateMasterLockRetryCount(bool bResetCount);
+  void GetSMBShareUserPassword();
+  void SetSMBShare(const CStdString &strShare);
+  CStdString GetSMBShare();
+
+	MAPPASSWORDS			m_mapSMBPasswordCache; // SMB share password cache
 protected:
   bool m_bConfirmed;
   bool m_bCanceled;
-  wchar_t m_cHideInputChar;
+  CStdString m_SMBShare;
 };
+
+extern CGUIPassword g_passwordManager;
+
