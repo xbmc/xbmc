@@ -22,19 +22,21 @@ void CGUIProgressControl::Render()
 	if (!IsVisible()) return;
 	if (IsDisabled()) return;
 
-	int iHeight=25;
+	int iHeight=m_guiBackground.GetTextureHeight(); //25;
 	m_guiBackground.Render();
 	m_guiBackground.SetHeight(iHeight);
 
-	iHeight=20;
+	//iHeight=20;
 	float fWidth = (float)m_iPercent;
 	fWidth/=100.0f;
 	fWidth *= (float) (m_guiBackground.GetTextureWidth()-24-m_guiLeft.GetTextureWidth()-m_guiRight.GetTextureWidth());
 
 	int iXPos=12+m_guiBackground.GetXPosition();
-	int iYPos=4+m_guiBackground.GetYPosition() ;
+	//int iYPos=4+m_guiBackground.GetYPosition() ;
+	int iYPos= m_guiBackground.GetYPosition() + ((m_guiBackground.GetTextureHeight() / 2) - (m_guiLeft.GetTextureHeight() / 2));
 	m_guiLeft.SetPosition(iXPos,iYPos);
-	m_guiLeft.SetHeight(iHeight);
+	//m_guiLeft.SetHeight(iHeight);
+	m_guiLeft.SetHeight(m_guiLeft.GetTextureHeight());
 	m_guiLeft.SetWidth(m_guiLeft.GetTextureWidth());
 	m_guiLeft.Render();
 
@@ -42,13 +44,15 @@ void CGUIProgressControl::Render()
 	if (m_iPercent && (int)fWidth > 1)
 	{
 		m_guiMid.SetPosition(iXPos,iYPos);
-		m_guiMid.SetHeight(iHeight);
+		//m_guiMid.SetHeight(iHeight);
+		m_guiMid.SetHeight(m_guiMid.GetTextureHeight());
 		m_guiMid.SetWidth((int)fWidth);
 		m_guiMid.Render();
 		iXPos += (int)fWidth;
 	}
 	m_guiRight.SetPosition(iXPos,iYPos);
-	m_guiRight.SetHeight(iHeight);
+	//m_guiRight.SetHeight(iHeight);
+	m_guiRight.SetHeight(m_guiRight.GetTextureHeight());
 	m_guiRight.SetWidth(m_guiLeft.GetTextureWidth());
 	m_guiRight.Render();
 	

@@ -126,6 +126,7 @@
 #define ACTION_COPY_ITEM            81  // copy current selected item. Can be used in myfiles.xml window id=3 
 #define ACTION_MOVE_ITEM            82  // move current selected item. Can be used in myfiles.xml window id=3
 #define ACTION_SHOW_MPLAYER_OSD     83  // toggles mplayers OSD. Can be used in videofullscreen.xml window id=2005
+#define ACTION_OSD_HIDESUBMENU		84  // removes an OSD sub menu. Can be used in videoOSD.xml window id=2901
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                -1

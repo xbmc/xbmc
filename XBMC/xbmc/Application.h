@@ -43,6 +43,7 @@
 #include "GUIWindowVideoPlaylist.h" 
 #include "GUIWindowSettingsSlideShow.h"
 #include "GUIWindowSettingsScreensaver.h"
+#include "GUIWindowOSD.h"
 #include "guiwindowsettingsautorun.h"
 #include "guiwindowsettingsfilter.h"
 #include "guiwindowsettingsmusic.h"
@@ -156,6 +157,7 @@ public:
 	CGUIWindowMusicGenres						m_guiMyMusicGenres;
 	CGUIWindowMusicTop100						m_guiMyMusicTop100;
 	CGUIWindowScreensaver					m_guiWindowScreensaver;
+	CGUIWindowOSD							m_guiWindowOSD;
   CGUIWindowSettingsLCD           m_guiSettingsLCD;
   CGUIWindowSettingsSubtitles     m_guiSettingsSubtitles;
   CGUIWindowVideoGenre            m_guiVideoGenre;
