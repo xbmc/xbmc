@@ -4,14 +4,14 @@
 
 #define CONTROL_LIST		0
 #define CONTROL_UPDOWN	1
-CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, 
+CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, 
                                  const CStdString& strFontName, 
                                  DWORD dwSpinWidth,DWORD dwSpinHeight,
                                  const CStdString& strUp, const CStdString& strDown, 
                                  const CStdString& strUpFocus, const CStdString& strDownFocus, 
                                  DWORD dwSpinColor,DWORD dwSpinX, DWORD dwSpinY,
                                  const CStdString& strFont, DWORD dwTextColor)
-:CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight)
+:CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
 ,m_upDown(dwControlId, 0, dwSpinX, dwSpinY, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwSpinColor, SPIN_CONTROL_TYPE_INT)
 {
   m_iOffset=0;
@@ -32,11 +32,11 @@ void CGUITextBox::Render()
   if (!m_pFont) return;
   if (!IsVisible()) return;
   CGUIControl::Render();
-  DWORD dwPosY=m_dwPosY;
+  int iPosY=m_iPosY;
 	
   for (int i=0; i < m_iItemsPerPage; i++)
   {
-		DWORD dwPosX=m_dwPosX;
+		int iPosX=m_iPosX;
     if (i+m_iOffset < (int)m_vecItems.size() )
     {
       // render item
@@ -55,10 +55,10 @@ void CGUITextBox::Render()
 				m_pFont->GetTextExtent( wszText2, &fTextWidth,&fTextHeight);
 				dMaxWidth -= (DWORD)(fTextWidth);
 
-				m_pFont->DrawTextWidth((float)dwPosX+dMaxWidth, (float)dwPosY+2, m_dwTextColor,wszText2,(float)fTextWidth);
+				m_pFont->DrawTextWidth((float)iPosX+dMaxWidth, (float)iPosY+2, m_dwTextColor,wszText2,(float)fTextWidth);
 			}
-			m_pFont->DrawTextWidth((float)dwPosX, (float)dwPosY+2, m_dwTextColor,wszText1,(float)dMaxWidth);
-      dwPosY += (DWORD)m_iItemHeight;
+			m_pFont->DrawTextWidth((float)iPosX, (float)iPosY+2, m_dwTextColor,wszText1,(float)dMaxWidth);
+      iPosY += (DWORD)m_iItemHeight;
     }
   }
 	m_upDown.Render();
@@ -69,41 +69,22 @@ void CGUITextBox::OnAction(const CAction &action)
   switch (action.wID)
   {
     case ACTION_PAGE_UP:
-      OnPageUp();
+		OnPageUp();
     break;
 
     case ACTION_PAGE_DOWN:
-      OnPageDown();
+		OnPageDown();
     break;
 
-    case ACTION_MOVE_DOWN:
-    {
-      OnDown();
-    }
-    break;
-    
-    case ACTION_MOVE_UP:
-    {
-      OnUp();
-    }
-    break;
+	case ACTION_MOVE_UP:
+	case ACTION_MOVE_DOWN:
+	case ACTION_MOVE_LEFT:
+	case ACTION_MOVE_RIGHT:
+		CGUIControl::OnAction(action);
+	break;
 
-    case ACTION_MOVE_LEFT:
-    {
-      OnLeft();
-    }
-    break;
-
-    case ACTION_MOVE_RIGHT:
-    {
-      OnRight();
-    }
-    break;
-
-    default:
-    {
+	default:
         m_upDown.OnAction(action);
-    }
   }
 }
 
@@ -200,49 +181,37 @@ void CGUITextBox::FreeResources()
 
 void CGUITextBox::OnRight()
 {
-  CKey key(KEY_BUTTON_DPAD_RIGHT);
-  CAction action;
-  action.wID = ACTION_MOVE_RIGHT;
-  m_upDown.OnAction(action);
+  m_upDown.OnRight();
   if (!m_upDown.HasFocus()) 
   {
-    CGUIControl::OnAction(action);
+    CGUIControl::OnRight();
   }
 }
 
 void CGUITextBox::OnLeft()
 {
-  CKey key(KEY_BUTTON_DPAD_LEFT);
-  CAction action;
-  action.wID = ACTION_MOVE_LEFT;
-  m_upDown.OnAction(action);
+  m_upDown.OnLeft();
   if (!m_upDown.HasFocus()) 
   {
-    CGUIControl::OnAction(action);
+    CGUIControl::OnLeft();
   }
 }
 
 void CGUITextBox::OnUp()
 {
-  CKey key(KEY_BUTTON_DPAD_UP);
-  CAction action;
-  action.wID = ACTION_MOVE_UP;
-  m_upDown.OnAction(action);
+  m_upDown.OnUp();
   if (!m_upDown.HasFocus()) 
   {
-    CGUIControl::OnAction(action);
+    CGUIControl::OnUp();
   }
 }
 
 void CGUITextBox::OnDown()
 {
-  CKey key(KEY_BUTTON_DPAD_DOWN);
-  CAction action;
-  action.wID = ACTION_MOVE_DOWN;
-  m_upDown.OnAction(action);
+  m_upDown.OnDown();
   if (!m_upDown.HasFocus()) 
   {
-    CGUIControl::OnAction(action);
+    CGUIControl::OnDown();
   }  
 }
 
@@ -355,4 +324,45 @@ void CGUITextBox::SetText(const wstring &strText)
   m_upDown.SetRange(1,iPages);
   m_upDown.SetValue(1);
 
+}
+
+bool CGUITextBox::HitTest(int iPosX, int iPosY) const
+{
+	if (m_upDown.HitTest(iPosX, iPosY)) return true;
+	return CGUIControl::HitTest(iPosX, iPosY);
+}
+
+void CGUITextBox::OnMouseOver()
+{
+	if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+		m_upDown.OnMouseOver();
+	CGUIControl::OnMouseOver();
+}
+
+void CGUITextBox::OnMouseClick(DWORD dwButton)
+{
+	if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+		m_upDown.OnMouseClick(dwButton);
+}
+
+void CGUITextBox::OnMouseWheel()
+{
+	if (m_upDown.HitTest(g_Mouse.iPosX, g_Mouse.iPosY))
+	{
+		m_upDown.OnMouseWheel();
+	}
+	else
+	{	// increase or decrease our offset by the appropriate amount.
+		m_iOffset -= g_Mouse.cWheel;
+		// check that we are within the correct bounds.
+		if (m_iOffset + m_iItemsPerPage > (int)m_vecItems.size())
+			m_iOffset = m_vecItems.size() - m_iItemsPerPage;
+		if (m_iOffset<0) m_iOffset = 0;
+		// update the page control...
+		int iPage=m_iOffset / m_iItemsPerPage + 1;
+		// last page??
+		if (m_iOffset + m_iItemsPerPage == (int)m_vecItems.size())
+			iPage = m_upDown.GetMaximum();
+		m_upDown.SetValue(iPage);
+	}
 }

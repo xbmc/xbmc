@@ -4,12 +4,12 @@
 #include "guiWindowManager.h"
 
 
-CGUIToggleButtonControl::CGUIToggleButtonControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus, const CStdString& strAltTextureFocus,const CStdString& strAltTextureNoFocus)
-:CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight)
-,m_imgFocus(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight, strTextureFocus)
-,m_imgNoFocus(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight, strTextureNoFocus)
-,m_imgAltFocus(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight, strAltTextureFocus)
-,m_imgAltNoFocus(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight, strAltTextureNoFocus)
+CGUIToggleButtonControl::CGUIToggleButtonControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureFocus,const CStdString& strTextureNoFocus, const CStdString& strAltTextureFocus,const CStdString& strAltTextureNoFocus)
+:CGUIControl(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight)
+,m_imgFocus(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight, strTextureFocus)
+,m_imgNoFocus(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight, strTextureNoFocus)
+,m_imgAltFocus(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight, strAltTextureFocus)
+,m_imgAltNoFocus(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight, strAltTextureNoFocus)
 {
   m_bSelected=false;
   m_dwFrameCounter = 0;
@@ -64,8 +64,8 @@ void CGUIToggleButtonControl::Render()
 
 	if (m_strLabel.size() > 0 && m_pFont)
 	{	
-		float fTextX = (float)10+m_dwPosX+m_lTextOffsetX;
-		float fTextY = (float) 2+m_dwPosY+m_lTextOffsetY;
+		float fTextX = (float)10+m_iPosX+m_lTextOffsetX;
+		float fTextY = (float) 2+m_iPosY+m_lTextOffsetY;
 
 		m_pFont->DrawText(fTextX, fTextY, 
 			IsDisabled() ? m_dwDisabledColor : m_dwTextColor, m_strLabel.c_str() );
@@ -86,8 +86,7 @@ void CGUIToggleButtonControl::OnAction(const CAction &action)
 		}
 		// button selected.
 		// send a message
-		CGUIMessage message(GUI_MSG_CLICKED,GetID(), GetParentID() );
-		g_graphicsContext.SendMessage(message);
+		SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
     }
 }
 
@@ -172,13 +171,13 @@ void  CGUIToggleButtonControl::Update()
   m_imgAltNoFocus.SetHeight(m_dwHeight);
 }
 
-void CGUIToggleButtonControl::SetPosition(DWORD dwPosX, DWORD dwPosY)
+void CGUIToggleButtonControl::SetPosition(int iPosX, int iPosY)
 {
-  CGUIControl::SetPosition(dwPosX, dwPosY);
-  m_imgFocus.SetPosition(dwPosX, dwPosY);
-  m_imgNoFocus.SetPosition(dwPosX, dwPosY);
-  m_imgAltFocus.SetPosition(dwPosX, dwPosY);
-  m_imgAltNoFocus.SetPosition(dwPosX, dwPosY);
+  CGUIControl::SetPosition(iPosX, iPosY);
+  m_imgFocus.SetPosition(iPosX, iPosY);
+  m_imgNoFocus.SetPosition(iPosX, iPosY);
+  m_imgAltFocus.SetPosition(iPosX, iPosY);
+  m_imgAltNoFocus.SetPosition(iPosX, iPosY);
 }
 void CGUIToggleButtonControl::SetAlpha(DWORD dwAlpha)
 {
@@ -202,4 +201,13 @@ void CGUIToggleButtonControl::SetColourDiffuse(D3DCOLOR colour)
 void CGUIToggleButtonControl::SetHyperLink(long dwWindowID)
 {
   m_lHyperLinkWindowID=dwWindowID;
+}
+
+void CGUIToggleButtonControl::OnMouseClick(DWORD dwButton)
+{
+	if (dwButton != MOUSE_LEFT_BUTTON) return;
+	g_Mouse.SetState(MOUSE_STATE_CLICK);
+	CAction action;
+	action.wID = ACTION_SELECT_ITEM;
+	OnAction(action);
 }

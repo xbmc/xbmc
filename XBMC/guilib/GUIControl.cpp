@@ -12,8 +12,8 @@ CGUIControl::CGUIControl()
   m_bSelected=false;
 	m_bCalibration=true;
   m_colDiffuse	= 0xFFFFFFFF;  
-  m_dwPosX=0;
-  m_dwPosY=0;
+  m_iPosX=0;
+  m_iPosY=0;
   m_dwControlLeft=0;
   m_dwControlRight=0;
   m_dwControlUp=0;
@@ -21,11 +21,11 @@ CGUIControl::CGUIControl()
 	ControlType = GUICONTROL_UNKNOWN;
 }
 
-CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight)
+CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight)
 {
   m_colDiffuse	= 0xFFFFFFFF;  
-  m_dwPosX=dwPosX;
-  m_dwPosY=dwPosY;
+  m_iPosX=iPosX;
+  m_iPosY=iPosY;
   m_dwWidth=dwWidth;
   m_dwHeight=dwHeight;
   m_bHasFocus=false;
@@ -53,53 +53,62 @@ void CGUIControl::Render()
 
 void CGUIControl::OnAction(const CAction &action) 
 {
-  switch (action.wID)
-  {
-    case ACTION_MOVE_DOWN:
-    {
-      if (HasFocus() )
-      {
-        SetFocus(false);
-        CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwControlDown, action.wID);
-        g_graphicsContext.SendMessage(msg);
-      }
-    }
-    break;
-    
-    case ACTION_MOVE_UP:
-    {
-      if (HasFocus() )
-      {
-        SetFocus(false);
-        CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwControlUp, action.wID);
-        g_graphicsContext.SendMessage(msg);
-      }
-    }
-    break;
-    
-    case ACTION_MOVE_LEFT:
-    {
-      if (HasFocus() )
-      {
-        SetFocus(false);
-        CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwControlLeft, action.wID);
-        g_graphicsContext.SendMessage(msg);
-      }
-    }
-    break;
+	switch (action.wID)
+	{
+		case ACTION_MOVE_DOWN:
+			OnDown();
+		break;
+	    
+		case ACTION_MOVE_UP:
+			OnUp();
+		break;
+	    
+		case ACTION_MOVE_LEFT:
+			OnLeft();
+		break;
 
-    case ACTION_MOVE_RIGHT:
-    {
-      if (HasFocus() )
-      {
-        SetFocus(false);
-        CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwControlRight, action.wID);
-        g_graphicsContext.SendMessage(msg);
-      }
-    }
-    break;
-  }
+		case ACTION_MOVE_RIGHT:
+			OnRight();
+		break;
+	}
+}
 
+// Movement controls (derived classes can override)
+void CGUIControl::OnUp()
+{
+	if (HasFocus())
+    {
+		SetFocus(false);
+		CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwControlUp, ACTION_MOVE_UP);
+		g_graphicsContext.SendMessage(msg);
+    }
+}
+void CGUIControl::OnDown()
+{
+	if (HasFocus())
+    {
+		SetFocus(false);
+		CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwControlDown, ACTION_MOVE_DOWN);
+		g_graphicsContext.SendMessage(msg);
+    }
+}
+void CGUIControl::OnLeft()
+{
+	if (HasFocus())
+    {
+		SetFocus(false);
+		CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwControlLeft, ACTION_MOVE_LEFT);
+		g_graphicsContext.SendMessage(msg);
+    }
+}
+void CGUIControl::OnRight()
+{
+	if (HasFocus())
+    {
+		SetFocus(false);
+		CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(), m_dwControlRight, ACTION_MOVE_RIGHT);
+		g_graphicsContext.SendMessage(msg);
+    }
 }
 
 DWORD CGUIControl::GetID(void) const
@@ -212,10 +221,10 @@ bool CGUIControl::IsDisabled() const
 }
 
 
-void CGUIControl::SetPosition(DWORD dwPosX, DWORD dwPosY)
+void CGUIControl::SetPosition(int iPosX, int iPosY)
 {
-  m_dwPosX=dwPosX;
-  m_dwPosY=dwPosY;
+  m_iPosX=iPosX;
+  m_iPosY=iPosY;
   Update();
 }
 
@@ -234,13 +243,13 @@ void CGUIControl::SetColourDiffuse(D3DCOLOR colour)
     Update();
 	}
 }
-DWORD CGUIControl::GetXPosition() const
+int CGUIControl::GetXPosition() const
 {
-  return m_dwPosX;
+  return m_iPosX;
 }
-DWORD CGUIControl::GetYPosition() const
+int CGUIControl::GetYPosition() const
 {
-  return m_dwPosY;
+  return m_iPosY;
 }
 DWORD CGUIControl::GetWidth() const
 {
@@ -284,4 +293,20 @@ void CGUIControl::EnableCalibration(bool bOnOff)
 bool CGUIControl::CalibrationEnabled() const
 {
 	return m_bCalibration;
+}
+
+bool CGUIControl::HitTest(int iPosX, int iPosY) const
+{
+	if (!CalibrationEnabled()) g_graphicsContext.Correct(iPosX, iPosY);
+	if (iPosX >= (int)m_iPosX && iPosX <= (int)(m_iPosX+m_dwWidth) && iPosY >= (int)m_iPosY && iPosY <= (int)(m_iPosY+m_dwHeight))
+		return true;
+	return false;
+}
+
+// override this function to implement custom mouse behaviour
+void CGUIControl::OnMouseOver()
+{
+	if (g_Mouse.GetState() != MOUSE_STATE_DRAG)
+		g_Mouse.SetState(MOUSE_STATE_FOCUS);
+	SetFocus(true);
 }

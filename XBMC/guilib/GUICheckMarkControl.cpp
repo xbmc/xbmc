@@ -3,10 +3,10 @@
 #include "guifontmanager.h"
 
 
-CGUICheckMarkControl::CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureCheckMark,const CStdString& strTextureCheckMarkNF,DWORD dwCheckWidth, DWORD dwCheckHeight,DWORD dwAlign)
-:CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY,dwWidth, dwHeight)
-,m_imgCheckMark(dwParentID, dwControlId, dwPosX, dwPosY,dwCheckWidth, dwCheckHeight, strTextureCheckMark)
-,m_imgCheckMarkNoFocus(dwParentID, dwControlId, dwPosX, dwPosY,dwCheckWidth, dwCheckHeight, strTextureCheckMarkNF)
+CGUICheckMarkControl::CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTextureCheckMark,const CStdString& strTextureCheckMarkNF,DWORD dwCheckWidth, DWORD dwCheckHeight,DWORD dwAlign)
+:CGUIControl(dwParentID, dwControlId, iPosX, iPosY,dwWidth, dwHeight)
+,m_imgCheckMark(dwParentID, dwControlId, iPosX, iPosY,dwCheckWidth, dwCheckHeight, strTextureCheckMark)
+,m_imgCheckMarkNoFocus(dwParentID, dwControlId, iPosX, iPosY,dwCheckWidth, dwCheckHeight, strTextureCheckMarkNF)
 {
 	m_strLabel=L""; 
 	m_dwTextColor	= 0xFFFFFFFF; 
@@ -25,51 +25,53 @@ CGUICheckMarkControl::~CGUICheckMarkControl(void)
 void CGUICheckMarkControl::Render()
 {
   if (!IsVisible()) return;
-	DWORD dwTextPosX=m_dwPosX;
-	DWORD dwCheckMarkPosX=m_dwPosX;
+	int iTextPosX=m_iPosX;
+	int iCheckMarkPosX=m_iPosX;
   if (m_pFont) 
   {
+	  float fTextHeight,fTextWidth;
+	  m_pFont->GetTextExtent( m_strLabel.c_str(), &fTextWidth, &fTextHeight);
+	  m_dwWidth = (DWORD)fTextWidth+5+m_imgCheckMark.GetWidth();
+	  m_dwHeight = m_imgCheckMark.GetHeight();
 	  if (m_dwAlign==XBFONT_LEFT)
 	  {
-		  float fTextHeight,fTextWidth;
-		  m_pFont->GetTextExtent( m_strLabel.c_str(), &fTextWidth,&fTextHeight);
-		  dwCheckMarkPosX += ( (DWORD)(fTextWidth)+5);
+		  iCheckMarkPosX += ( (DWORD)(fTextWidth)+5);
 	  }
 	  else
 	  {
-		  dwTextPosX += m_imgCheckMark.GetWidth() +5;
+		  iTextPosX += m_imgCheckMark.GetWidth() +5;
 	  }
 
     if (IsDisabled() )
     {
-      m_pFont->DrawText((float)dwTextPosX, (float)m_dwPosY, m_dwDisabledColor, m_strLabel.c_str());
+      m_pFont->DrawText((float)iTextPosX, (float)m_iPosY, m_dwDisabledColor, m_strLabel.c_str());
     }
     else
     {
       if (HasFocus())
       {
         if (m_bShadow)
-          m_pFont->DrawShadowText((float)dwTextPosX, (float)m_dwPosY, m_dwTextColor, m_strLabel.c_str());
+          m_pFont->DrawShadowText((float)iTextPosX, (float)m_iPosY, m_dwTextColor, m_strLabel.c_str());
         else
-          m_pFont->DrawText((float)dwTextPosX, (float)m_dwPosY, m_dwTextColor, m_strLabel.c_str());
+          m_pFont->DrawText((float)iTextPosX, (float)m_iPosY, m_dwTextColor, m_strLabel.c_str());
       }
       else
       {
         if (m_bShadow)
-          m_pFont->DrawShadowText((float)dwTextPosX, (float)m_dwPosY, m_dwDisabledColor, m_strLabel.c_str());
+          m_pFont->DrawShadowText((float)iTextPosX, (float)m_iPosY, m_dwDisabledColor, m_strLabel.c_str());
         else
-          m_pFont->DrawText((float)dwTextPosX, (float)m_dwPosY, m_dwDisabledColor, m_strLabel.c_str());
+          m_pFont->DrawText((float)iTextPosX, (float)m_iPosY, m_dwDisabledColor, m_strLabel.c_str());
       }
     }
   }
   if (m_bSelected)
   {
-    m_imgCheckMark.SetPosition(dwCheckMarkPosX, m_dwPosY); 
+    m_imgCheckMark.SetPosition(iCheckMarkPosX, m_iPosY); 
     m_imgCheckMark.Render();
   }
   else
   {
-    m_imgCheckMarkNoFocus.SetPosition(dwCheckMarkPosX, m_dwPosY); 
+    m_imgCheckMarkNoFocus.SetPosition(iCheckMarkPosX, m_iPosY); 
     m_imgCheckMarkNoFocus.Render();
   }
 }
@@ -161,4 +163,13 @@ bool CGUICheckMarkControl::GetShadow() const
 void CGUICheckMarkControl::SetShadow(bool bOnOff)
 {
   m_bShadow=bOnOff;
+}
+
+void CGUICheckMarkControl::OnMouseClick(DWORD dwButton)
+{
+	if (dwButton != MOUSE_LEFT_BUTTON) return;
+	g_Mouse.SetState(MOUSE_STATE_CLICK);
+	CAction action;
+	action.wID = ACTION_SELECT_ITEM;
+	OnAction(action);
 }

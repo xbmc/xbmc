@@ -40,10 +40,13 @@ public:
 	virtual ~CGUIWindow(void);
 
 	virtual bool      Load(const CStdString& strFileName, bool bContainsPath = false);
-	virtual void			SetPosition(DWORD dwPosX, DWORD dwPosY);
+	virtual void			SetPosition(int iPosX, int iPosY);
 	void					CenterWindow();
 	virtual void    		Render();
 	virtual void    		OnAction(const CAction &action);
+	void					OnMouseAction();
+	virtual void			OnMouse();
+	bool					HandleMouse(CGUIControl *pControl);
 	virtual bool    		OnMessage(CGUIMessage& message);
 	void            		Add(CGUIControl* pControl);
 	void					Remove(DWORD dwId);
@@ -55,8 +58,8 @@ public:
 	DWORD					GetPreviousWindowID(void) const;
 	DWORD					GetWidth() { return m_dwWidth; };
 	DWORD					GetHeight() { return m_dwHeight; };
-	DWORD					GetPosX() { return m_dwPosX; };
-	DWORD					GetPosY() { return m_dwPosY; };
+	int						GetPosX() { return m_iPosX; };
+	int						GetPosY() { return m_iPosY; };
 	const CGUIControl*		GetControl(int iControl) const;
 	void					ClearAll();
 	int						GetFocusedControl() const;
@@ -90,8 +93,8 @@ protected:
   DWORD  m_dwDefaultFocusControlID;
   vector<CPosition> m_vecPositions;
   bool m_bRelativeCoords;
-  DWORD m_dwPosX;
-  DWORD m_dwPosY;
+  DWORD m_iPosX;
+  DWORD m_iPosY;
   DWORD	m_dwWidth;
   DWORD m_dwHeight;
 };

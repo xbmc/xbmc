@@ -20,6 +20,33 @@ using namespace std;
 #define SPIN_CONTROL_TYPE_FLOAT  2
 #define SPIN_CONTROL_TYPE_TEXT   3
 
+class CRect
+{
+public:
+	CRect() { top = left = width = height = 0;};
+	~CRect() {};
+
+	void SetRect(int l, int t, int w, int h)
+	{
+		left = l;
+		top = t;
+		width = w;
+		height = h;
+	};
+
+	bool PtInRect(int x, int y) const
+	{
+		if (left<=x && x<=left+width && top<=y && y<=top+height)
+			return true;
+		return false;
+	};
+
+private:
+	int top;
+	int left;
+	int width;
+	int height;
+};
 /*!
 	\ingroup controls
 	\brief 
@@ -27,15 +54,21 @@ using namespace std;
 class CGUISpinControl :  public CGUIControl
 {
 public:  
-  CGUISpinControl(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CStdString& strFont, DWORD dwTextColor, int iType,DWORD dwAlign=XBFONT_RIGHT);
+  CGUISpinControl(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strUp, const CStdString& strDown, const CStdString& strUpFocus, const CStdString& strDownFocus, const CStdString& strFont, DWORD dwTextColor, int iType,DWORD dwAlign=XBFONT_RIGHT);
   virtual ~CGUISpinControl(void);
   virtual void 	Render();
-  virtual void 	OnAction(const CAction &action) ;
+  virtual void 	OnAction(const CAction &action);
+	virtual void	OnLeft();
+	virtual void	OnRight();
+  virtual void	OnMouseOver();
+  virtual void	OnMouseClick(DWORD dwButton);
+  virtual void	OnMouseWheel();
   virtual bool 	OnMessage(CGUIMessage& message);
 	virtual void PreAllocResources();
   virtual void 	AllocResources();
   virtual void 	FreeResources();
-  virtual void 	SetPosition(DWORD dwPosX, DWORD dwPosY);
+  virtual void 	SetPosition(int iPosX, int iPosY);
+  virtual bool	HitTest(int iPosX, int iPosY) const;
   virtual DWORD GetWidth() const;
   void 					SetRange(int iStart, int iEnd);
   void 					SetFloatRange(float fStart, float fEnd);
@@ -76,12 +109,12 @@ void		SetBuddyControlID(DWORD dwBuddyControlID);
 void				SetNonProportional(bool bOnOff);
   void				Clear();
 protected:
-  void      PageUp();
-  void      PageDown();
-	bool			CanMoveDown();
-	bool			CanMoveUp();
-	void			MoveUp();
-	void			MoveDown();
+	void			PageUp();
+	void			PageDown();
+	bool			CanMoveDown(bool bTestReverse = true);
+	bool			CanMoveUp(bool bTestReverse = true);
+	void			MoveUp(bool bTestReverse = true);
+	void			MoveDown(bool bTestReverse = true);
   int       m_iStart;
   int       m_iEnd;
   float     m_fStart;
@@ -112,5 +145,6 @@ protected:
   DWORD		m_dwBuddyControlID;
   bool		m_bBuddyDisabled;
   float		m_fMaxTextWidth;
+  CRect		m_rectHit;			// rect for hit test on the Text
 };
 #endif

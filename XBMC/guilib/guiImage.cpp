@@ -5,8 +5,8 @@
 
 
 
-CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTexture,DWORD dwColorKey)
-:CGUIControl(dwParentID, dwControlId,dwPosX, dwPosY, dwWidth, dwHeight)
+CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, const CStdString& strTexture,DWORD dwColorKey)
+:CGUIControl(dwParentID, dwControlId,iPosX, iPosY, dwWidth, dwHeight)
 {
   m_colDiffuse	= 0xFFFFFFFF;  
   
@@ -34,7 +34,7 @@ CGUIImage::~CGUIImage(void)
 {
 }
 
-void CGUIImage::Render(DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight)
+void CGUIImage::Render(int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight)
 {
   if (!m_pVB) return;
   if (m_vecTextures.size()==0) return;
@@ -42,8 +42,8 @@ void CGUIImage::Render(DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight
   CGUIImage::VERTEX* vertex=NULL;
   m_pVB->Lock( 0, 0, (BYTE**)&vertex, 0L );
 
-  float x=(float)dwPosX;
-  float y=(float)dwPosY;
+  float x=(float)iPosX;
+  float y=(float)iPosY;
 
 #ifdef ALLOW_TEXTURE_COMPRESSION
 	if (0==m_iImageWidth|| 0==m_iImageHeight)
@@ -276,8 +276,8 @@ void CGUIImage::Update()
   m_pVB->Lock( 0, 0, (BYTE**)&vertex, 0L );
   g_graphicsContext.Unlock(); 
 
-  float x=(float)m_dwPosX;
-  float y=(float)m_dwPosY;
+  float x=(float)m_iPosX;
+  float y=(float)m_iPosY;
 #ifdef ALLOW_TEXTURE_COMPRESSION
 	if (0==m_iImageWidth|| 0==m_iImageHeight)
 	{

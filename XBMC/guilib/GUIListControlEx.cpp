@@ -5,7 +5,7 @@
 
 #define CONTROL_LIST		0
 #define CONTROL_UPDOWN	1
-CGUIListControlEx::CGUIListControlEx(DWORD dwParentID, DWORD dwControlId, DWORD dwPosX, DWORD dwPosY, DWORD dwWidth, DWORD dwHeight, 
+CGUIListControlEx::CGUIListControlEx(DWORD dwParentID, DWORD dwControlId, int iPosX, int iPosY, DWORD dwWidth, DWORD dwHeight, 
                                  const CStdString& strFontName, 
                                  DWORD dwSpinWidth,DWORD dwSpinHeight,
                                  const CStdString& strUp, const CStdString& strDown, 
@@ -14,9 +14,9 @@ CGUIListControlEx::CGUIListControlEx(DWORD dwParentID, DWORD dwControlId, DWORD 
                                  const CStdString& strFont, DWORD dwTextColor,DWORD dwSelectedColor,
                                  const CStdString& strButton, const CStdString& strButtonFocus,
 								 DWORD dwItemTextOffsetX, DWORD dwItemTextOffsetY)
-:CGUIControl(dwParentID, dwControlId, dwPosX, dwPosY, dwWidth, dwHeight)
+:CGUIControl(dwParentID, dwControlId, iPosX, iPosY, dwWidth, dwHeight)
 ,m_upDown(dwControlId, 0, dwSpinX, dwSpinY, dwSpinWidth, dwSpinHeight, strUp, strDown, strUpFocus, strDownFocus, strFont, dwSpinColor, SPIN_CONTROL_TYPE_INT)
-,m_imgButton(dwControlId, 0, dwPosX, dwPosY, dwWidth, dwHeight, strButtonFocus,strButton, dwItemTextOffsetX, dwItemTextOffsetY)
+,m_imgButton(dwControlId, 0, iPosX, iPosY, dwWidth, dwHeight, strButtonFocus,strButton, dwItemTextOffsetX, dwItemTextOffsetY)
 {
 	m_pList = NULL;
   m_dwSelectedColor=dwSelectedColor;
@@ -55,20 +55,20 @@ void CGUIListControlEx::Render()
 
 	CGUIControl::Render();
 	
-	DWORD dwPosY=m_dwPosY;	
+	int iPosY=m_iPosY;	
 	CGUIList::GUILISTITEMS& list = m_pList->Lock();
 
 	for (int i=0; i < m_iItemsPerPage; i++)
 	{
-		DWORD dwPosX=m_dwPosX;
+		int iPosX=m_iPosX;
 		if (i+m_iOffset < (int)list.size() )
 		{
 			CGUIItem* pItem = list[i+m_iOffset];
 
 			// create a list item rendering context
 			CGUIListExItem::RenderContext context;
-			context.m_dwPositionX			= dwPosX;
-			context.m_dwPositionY			= dwPosY;
+			context.m_iPositionX			= iPosX;
+			context.m_iPositionY			= iPosY;
 			context.m_bFocused				= (i == m_iCursorY && HasFocus() && m_iSelect== CONTROL_LIST);
 			context.m_pButton				= &m_imgButton;
 			context.m_pFont					= m_pFont;
@@ -78,7 +78,7 @@ void CGUIListControlEx::Render()
 			// render the list item
 			pItem->OnPaint(&context);
 
-			dwPosY += (DWORD)(m_iItemHeight+m_iSpaceBetweenItems);
+			iPosY += (DWORD)(m_iItemHeight+m_iSpaceBetweenItems);
 		}
 	}
 	
@@ -101,47 +101,25 @@ void CGUIListControlEx::Render()
 
 void CGUIListControlEx::OnAction(const CAction &action)
 {
-  switch (action.wID)
-  {
-    case ACTION_PAGE_UP:
-      OnPageUp();
-    break;
-
-    case ACTION_PAGE_DOWN:
-      OnPageDown();
-    break;
-
-    case ACTION_MOVE_DOWN:
-    {
-      OnDown();
-    }
-    break;
-    
-     case ACTION_MOVE_UP:
-    {
-      OnUp();
-    }
-    break;
-
-    case ACTION_MOVE_LEFT:
-    {
-      OnLeft();
-    }
-    break;
-
-    case ACTION_MOVE_RIGHT:
-    {
-      OnRight();
-    }
-    break;
-
-    case ACTION_SELECT_ITEM:
-    {
-		CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.wID);
-		g_graphicsContext.SendMessage(msg);
+	switch (action.wID)
+	{
+		case ACTION_PAGE_UP:
+			OnPageUp();
 		break;
-    }
-  }
+
+		case ACTION_PAGE_DOWN:
+			OnPageDown();
+		break;
+
+		case ACTION_SELECT_ITEM:
+		{
+			CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.wID);
+			g_graphicsContext.SendMessage(msg);
+			break;
+		}
+	}
+	// call the base class
+	CGUIControl::OnAction(action);
 }
 
 bool CGUIListControlEx::OnMessage(CGUIMessage& message)
@@ -530,4 +508,16 @@ void CGUIListControlEx::SetPageControlVisible(bool bVisible)
 {
 	m_bUpDownVisible = bVisible;
 	return;
+}
+
+//TODO: Add OnMouseOver() and possibly HitTest() and SelectItemFromPoint from
+// CGUIListControl
+void CGUIListControlEx::OnMouseOver()
+{
+	CGUIControl::OnMouseOver();
+}
+
+void CGUIListControlEx::OnMouseClick(DWORD dwButton)
+{
+	CGUIControl::OnMouseClick(dwButton);
 }
