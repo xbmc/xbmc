@@ -588,16 +588,18 @@ HRESULT CApplication::Create()
 		helper.Remap("G:,Harddisk0\\Partition7");
 		g_stSettings.m_bUseGDrive = true;
 	}
+	CLog::Log(LOGINFO, "Drives are mapped");
 
 	// check settings to see if another home dir is defined.
 	// if there is, we check if it's a xbmc dir and map to it Q:
 	CStdString strHomePath = "Q:";
 	if (strlen(g_stSettings.szHomeDir) > 1)
 	{
-		CLog::Log(LOGNOTICE, "map Q: to homedir:%s...",g_stSettings.szHomeDir);
+		CLog::Log(LOGNOTICE, "remap Q: to homedir:%s...",g_stSettings.szHomeDir);
 		// home dir is defined in xboxmediacenter.xml
 		strHomePath = g_stSettings.szHomeDir;
 	}
+	CLog::Log(LOGINFO, "Checking skinpath existance:%s...", (strHomePath + "\\skin").c_str());
 	if(!access(strHomePath + "\\skin", 0))
 	{
 		if (strHomePath != "Q:")
@@ -616,6 +618,7 @@ HRESULT CApplication::Create()
 	}
 	else
 	{
+		CLog::Log(LOGNOTICE, "skinpath %s does not exist, trying defaults", (strHomePath + "\\skin").c_str());
 		// failed - lets try defaults:
 		// E:\apps\xbmc
 		// E:\xbmc
@@ -633,6 +636,7 @@ HRESULT CApplication::Create()
 		}
 		if (bFoundHomePath)
 		{
+			CLog::Log(LOGINFO, "Found homepath:%s...", strHomePath.c_str());
 			helper.GetPartition(strHomePath, szDevicePath);
 			strcat(szDevicePath, &strHomePath.c_str()[2]);
 			strcpy(g_stSettings.szHomeDir, strHomePath.c_str());
