@@ -3,7 +3,7 @@
 #include "GuiLabelControl.h"
 #include <vector>
 #include "control.h"
-#include "util.h"
+#include "pyutil.h"
 
 using namespace std;
 

@@ -1,7 +1,7 @@
 #include "GUIPythonWindow.h"
 #include "graphiccontext.h"
 #include "localizestrings.h"
-#include "util.h"
+#include "pyutil.h"
 #include "..\..\..\application.h"
 
 CGUIPythonWindow::CGUIPythonWindow(DWORD dwId)
