@@ -81,7 +81,7 @@ namespace XISO9660 {
 	{
 	public:
 		CCdInfo() { ZeroMemory( (void*)&m_ti, sizeof( m_ti ) ); m_nLenght = m_nFirstTrack = m_nNumTrack = m_nNumAudio = m_nFirstAudio = m_nNumData = m_nFirstData = 0; }
-		~CCdInfo() {}
+		virtual ~CCdInfo() {}
 		int GetTrackInformation( int nTrack ) { return m_ti[nTrack-1].nfsInfo; }
 		bool HasDataTracks() { return (m_nNumData > 0); }
 		bool HasAudioTracks() { return (m_nNumAudio > 0); }
@@ -194,7 +194,7 @@ namespace XISO9660 {
 	{
 	public:
 		CCdIoSupport();
-		~CCdIoSupport();
+		virtual ~CCdIoSupport();
 
 		HRESULT EjectTray();
 		HRESULT CloseTray();
