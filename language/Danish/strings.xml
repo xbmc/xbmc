@@ -1058,4 +1058,20 @@
     <id>336</id>
     <value>Juster billedhastighed</value>
   </string>
+  <string>
+    <id>337</id>
+    <value>Lyd udgange:</value>
+  </string>
+  <string>
+    <id>338</id>
+    <value>Analog</value>
+  </string>
+  <string>
+    <id>339</id>
+    <value>Digital</value>
+  </string>
+  <string>
+    <id>340</id>
+    <value>Diverse kunstnere</value>
+  </string>
 </strings>
