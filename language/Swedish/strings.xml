@@ -388,7 +388,7 @@
   </string> 
   <string>
     <id>168</id>
-    <value>Tidsserver:</value>
+    <value>Synkronisera Tid:</value>
   </string> 
   <string>
     <id>169</id>
@@ -608,7 +608,7 @@
   </string> 
   <string>
     <id>223</id>
-    <value>Välj bästa upplösning för filmer</value>
+    <value>Växla till widescreen automatiskt</value>
   </string> 
   <string>
     <id>224</id>
@@ -1392,4 +1392,61 @@
     <id>431</id>
     <value>7. Ingen Cache</value>
   </string> 
+    <string>
+     <id>432</id>
+     <value>Radera filmen från databasen</value>
+   </string> 
+   <string>
+     <id>433</id>
+     <value>Är du säker på att ta bort</value>
+   </string> 
+   <string>
+     <id>434</id>
+     <value>filmen?</value>
+   </string>
+   <string>
+     <id>435</id>
+     <value>Låt</value>
+   </string> 
+   <string>
+     <id>436</id>
+     <value>År:</value>
+   </string>
+   <string>
+   <id>437</id>
+    <value>Speltid</value>
+   </string>
+   <string>
+     <id>439</id>
+     <value>Cache</value>
+   </string> 
+   <string>
+     <id>440</id>
+     <value>Hårddisk</value>
+   </string> 
+   <string>
+     <id>441</id>
+     <value>UDF</value>
+   </string> 
+   <string>
+     <id>442</id>
+     <value>LAN</value>
+   </string> 
+   <string>
+     <id>443</id>
+     <value>Internet</value>
+   </string> 
+   <string>
+     <id>444</id>
+     <value>video</value>
+   </string> 
+   <string>
+     <id>445</id>
+     <value>audio</value>
+   </string> 
+   <string>
+     <id>446</id>
+     <value>DVD</value>
+   </string> 
+
 </strings>
